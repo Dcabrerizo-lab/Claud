@@ -1,0 +1,20 @@
+# Quellen für die Daten der App. Format: Dateiname  URL
+# Der Workflow "Quellen abrufen" (.github/workflows/quellen.yml) lädt jede Datei nach content/quellen/roh/
+# und schreibt Abrufdatum und Prüfsumme nach content/quellen/abruf.json. Daraus erzeugt tools/build-*.js die App-Daten.
+
+# PLZ -> Ort, Landkreis, Bundesland (GeoNames, CC BY 4.0)
+geonames-DE.zip                 https://download.geonames.org/export/zip/DE.zip
+# Mietenstufen: Wohngeldverordnung, Anlage (amtliches Werk)
+wogv-xml.zip                    https://www.gesetze-im-internet.de/wogv/xml.zip
+# Bayern: Landratsämter und kreisfreie Städte (Bayerisches Staatsministerium für Wohnen, Bau und Verkehr)
+stmb-landkreise.html            https://stmb.bayern.de/min/geschaeftsbereich/landkreise/index.php
+stmb-kreisfreie-staedte.html    https://bauministerium.bayern.de/min/geschaeftsbereich/kreisfreiestaedte/index.php
+stmb-wohngeld.html              https://www.stmb.bayern.de/wohnen/wohnraum_nutzen/wohngeld/index.php
+# Bayern: Behördenverzeichnis des Freistaats
+eap-landkreise-A.html           https://www.eap.bayern.de/adressen/behoerden/landkreise?initial=A
+eap-landkreise-D.html           https://www.eap.bayern.de/adressen/behoerden/landkreise?initial=D
+eap-behoerden.html              https://www.eap.bayern.de/adressen/behoerden/
+# Bayern: Jobcenter (Bayerisches Staatsministerium für Familie, Arbeit und Soziales, Stand Januar 2025)
+stmas-jobcenter.pdf             https://stmas.bayern.de/imperia/md/content/stmas/stmas_inet/grundsicherung/jobcenter_sgb-ii_internetseite__barrierefrei__stand_jan_2025.pdf
+# Bayern: ZBFS (Blindengeld, Schwerbehindertenausweis)
+zbfs-kontakt.html               https://www.zbfs.bayern.de/kontakt/index.php

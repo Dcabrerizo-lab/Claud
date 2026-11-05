@@ -1,0 +1,42 @@
+name: Quellen abrufen
+
+# Lädt die amtlichen Quellen (content/quellen/QUELLEN.txt) herunter und legt sie mit Abrufdatum im Repo ab.
+# Nur auf Knopfdruck: Actions -> "Quellen abrufen" -> Run workflow (Branch wählen).
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  abrufen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Herunterladen
+        run: |
+          mkdir -p content/quellen/roh
+          ua="Mozilla/5.0 (X11; Linux x86_64) Leistungs-Lotse-Datenabruf (+https://github.com/${GITHUB_REPOSITORY})"
+          echo '[' > content/quellen/abruf.json
+          first=1
+          grep -vE '^\s*(#|$)' content/quellen/QUELLEN.txt | while read -r name url; do
+            code=$(curl -sSL -A "$ua" --retry 3 --max-time 120 -o "content/quellen/roh/$name" -w '%{http_code}' "$url" || echo 000)
+            size=$(stat -c %s "content/quellen/roh/$name" 2>/dev/null || echo 0)
+            sha=$(sha256sum "content/quellen/roh/$name" 2>/dev/null | cut -d' ' -f1)
+            echo "$code $size $name"
+            [ "$code" = "200" ] || rm -f "content/quellen/roh/$name"
+            [ $first = 1 ] || echo ',' >> content/quellen/abruf.json; first=0
+            printf '{"datei":"%s","url":"%s","http":%s,"bytes":%s,"sha256":"%s","abgerufen":"%s"}' \
+              "$name" "$url" "$code" "$size" "$sha" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> content/quellen/abruf.json
+          done
+          echo ']' >> content/quellen/abruf.json
+          python3 -m json.tool content/quellen/abruf.json > /dev/null
+      - name: Ins Repo übernehmen
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add content/quellen
+          git diff --cached --quiet && { echo "Keine Änderungen"; exit 0; }
+          git commit -m "Quellen abgerufen ($(date -u +%Y-%m-%d))"
+          git push
