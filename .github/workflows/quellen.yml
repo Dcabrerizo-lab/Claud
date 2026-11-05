@@ -19,21 +19,29 @@ jobs:
       - name: Herunterladen
         run: |
           mkdir -p content/quellen/roh
-          ua="Mozilla/5.0 (X11; Linux x86_64) Leistungs-Lotse-Datenabruf (+https://github.com/${GITHUB_REPOSITORY})"
-          echo '[' > content/quellen/abruf.json
-          first=1
-          grep -vE '^\s*(#|$)' content/quellen/QUELLEN.txt | while read -r name url; do
-            code=$(curl -sSL -A "$ua" --retry 3 --max-time 120 -o "content/quellen/roh/$name" -w '%{http_code}' "$url" || echo 000)
-            size=$(stat -c %s "content/quellen/roh/$name" 2>/dev/null || echo 0)
-            sha=$(sha256sum "content/quellen/roh/$name" 2>/dev/null | cut -d' ' -f1)
-            echo "$code $size $name"
-            [ "$code" = "200" ] || rm -f "content/quellen/roh/$name"
-            [ $first = 1 ] || echo ',' >> content/quellen/abruf.json; first=0
-            printf '{"datei":"%s","url":"%s","http":%s,"bytes":%s,"sha256":"%s","abgerufen":"%s"}' \
-              "$name" "$url" "$code" "$size" "$sha" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> content/quellen/abruf.json
-          done
-          echo ']' >> content/quellen/abruf.json
-          python3 -m json.tool content/quellen/abruf.json > /dev/null
+          python3 - <<'PY'
+          import json, hashlib, subprocess, datetime, pathlib, os
+          # Ehrliche Kennung: Seiten, die automatische Abrufe ablehnen, werden nicht umgangen, sondern als fehlend protokolliert.
+          ua = "Leistungs-Lotse-Datenabruf/1.0 (+https://github.com/" + os.environ["GITHUB_REPOSITORY"] + ")"
+          out, log = pathlib.Path("content/quellen/roh"), []
+          for line in open("content/quellen/QUELLEN.txt", encoding="utf-8"):
+              line = line.strip()
+              if not line or line.startswith("#"): continue
+              name, url = line.split(None, 1)
+              f = out / name
+              r = subprocess.run(["curl", "-sSL", "-A", ua, "--retry", "2", "--connect-timeout", "20", "--max-time", "90",
+                                  "-o", str(f), "-w", "%{http_code}", url], capture_output=True, text=True)
+              code = int(r.stdout.strip()) if r.stdout.strip().isdigit() else 0
+              ok = code == 200 and f.exists() and f.stat().st_size > 0
+              if not ok and f.exists(): f.unlink()
+              e = {"datei": name, "url": url, "http": code, "ok": ok,
+                   "bytes": f.stat().st_size if ok else 0,
+                   "sha256": hashlib.sha256(f.read_bytes()).hexdigest() if ok else None,
+                   "abgerufen": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")}
+              print(("OK    " if ok else "FEHLT ") + f"{code} {e['bytes']:>9} {name} {r.stderr.strip()[:120]}")
+              log.append(e)
+          json.dump(log, open("content/quellen/abruf.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+          PY
       - name: Ins Repo übernehmen
         run: |
           git config user.name "github-actions[bot]"
