@@ -132,6 +132,30 @@
     say(src); altBlock();
   }
 
+  // Amtlicher Kreisschlüssel des Wohnorts (aus PLZ und ggf. gewähltem Ort), für die zuständige Stelle; null wenn unbekannt
+  function aktAgs() {
+    if (!Plz.available()) return null;
+    var r = Plz.lookup(state.plz);
+    if (!r) return null;
+    if (r.ags) return r.ags;
+    var c = r.candidates.filter(function (x) { return x.label + '|' + x.kreis + '|' + x.stufe === state.plzPick; })[0];
+    return c ? c.ags : null;
+  }
+  // Zuständige Stelle als HTML für die Karte
+  function zustHtml(r) {
+    var b = Behoerden.available() ? Behoerden.fuer(r.id, aktAgs()) : null;
+    var base = '<p class="zust">' + esc(t('zust', { z: t('zu.' + r.id) })) + '</p>';
+    if (!b) {
+      // Hinweis auf die PLZ nur, wo die App eine Anschrift nennen könnte (Bayern oder Bundesland noch offen)
+      var hint = Behoerden.available() && Behoerden.brauchtKreis(r.id) && r.level !== 'nein' && (!state.bundesland || state.bundesland === 'BY');
+      return base + (hint ? '<p class="small">' + esc(t('beh.plzHint')) + '</p>' : '');
+    }
+    var lines = [b.name + (b.abt ? ', ' + b.abt : '')].concat(b.anschrift || []);
+    return '<div class="zust behoerde" lang="de" dir="ltr"><p><strong>' + esc(t('beh.stelle')) + '</strong></p><address>' + lines.map(esc).join('<br>') + '</address>' +
+      (b.web ? '<p><a href="' + esc(b.web) + '" target="_blank" rel="noopener">' + esc(t('beh.web')) + '</a></p>' : '') + '</div>' +
+      '<p class="small">' + esc(b.anschrift ? t('beh.pruefen', { stand: b.stand }) : t('beh.ohneAdr')) + '</p>';
+  }
+
   function buildSelects() {
     var st = [['', t('stufe.unbekannt')]];
     for (var i = 1; i <= 7; i++) st.push([String(i), t('stufe.n', { n: Rules.roman(i) })]);
@@ -375,7 +399,7 @@
       '<header><div><h3' + (lang === 'de' ? '' : ' lang="de"') + '>' + esc(r.name) + '</h3>' + (desc ? '<div class="desc">' + esc(desc) + '</div>' : '') + '</div>' +
       '<span class="pill ' + r.level + '"><span aria-hidden="true">' + MARK[r.level] + '</span>' + esc(t('lvl.' + r.level)) + '</span></header>' +
       '<div class="body"><p class="head2">' + esc(t('h.' + r.hl)) + '</p><p>' + esc(resultText(r)) + '</p></div>' +
-      '<p class="zust">' + esc(t('zust', { z: t('zu.' + r.id) })) + '</p>' + steps + '</article>';
+      zustHtml(r) + steps + '</article>';
   }
 
   function renderPick(results) {
@@ -473,7 +497,10 @@
       blank(person.name), blank(person.strasse), blank(person.ort)
     ];
     if (person.tel && person.tel.trim()) L.push('Telefon: ' + person.tel.trim());
-    L.push('', 'An die', a.stelle, '', 'Datum: ' + today(), '', 'Betreff: ' + a.betreff, '', 'Sehr geehrte Damen und Herren,', '',
+    var b = Behoerden.available() ? Behoerden.fuer(id, aktAgs()) : null;
+    var empf = b ? [b.name].concat(b.abt ? [b.abt] : [], b.anschrift || []) : ['An die', a.stelle];
+    L.push.apply(L, [''].concat(empf));
+    L.push('', 'Datum: ' + today(), '', 'Betreff: ' + a.betreff, '', 'Sehr geehrte Damen und Herren,', '',
       a.satz + ' Bitte behandeln Sie dieses Schreiben als meinen Antrag und bestätigen Sie mir den Eingang. Bitte senden Sie mir außerdem die amtlichen Antragsformulare und eine Liste der Unterlagen zu, die Sie von mir benötigen. Die Formulare reiche ich schnellstmöglich nach.',
       '', 'Zu meinem Haushalt gehören: ' + haushaltZeile() + '.', '', 'Mit freundlichen Grüßen', '', '', blank(person.name) + '   (Unterschrift)');
     return L.join('\n');

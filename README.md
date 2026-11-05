@@ -11,7 +11,9 @@ Orientierungscheck für 21 Sozialleistungen in Deutschland: Familie, Wohnen, Gru
 | `src/rules.js` | Regeln als Daten und Logik (Rechtsstand im Feld `stand`). Liefert Textschlüssel und Beträge als Zahlen. |
 | `src/lang/*.json` | Texte in 8 Sprachen (de, en, tr, ar, ru, uk, pl, ro) |
 | `src/template.html`, `src/app.js` | Oberfläche |
-| `src/fmt.js`, `src/plz.js` | Betragsformat je Sprache; PLZ → Mietenstufe (Daten fehlen noch) |
+| `src/fmt.js`, `src/plz.js`, `src/behoerden.js` | Betragsformat je Sprache; PLZ → Bundesland, Kreis, Mietenstufe; zuständige Stelle mit Anschrift (Bayern) |
+| `content/` | App-Daten (`plz-data.json`, `behoerden-bayern.json`) und die amtlichen Originalquellen (`quellen/`) |
+| `tools/build-plz-data.js`, `tools/build-behoerden.js` | erzeugen die App-Daten aus den Quellen (`npm run build:data`) und brechen ab, wenn etwas nicht eindeutig ist |
 | `scripts/build.js` | baut die Web-Version → `dist/leistungs-lotse.html` |
 | `scripts/build-app.js` | baut die Store-App → `app/www` (Schriften lokal, strenge CSP, Kamera-Scan, PDF) |
 | `app/` | Capacitor-Projekt mit `android/` und `ios/`, PDF-Modul (`app/pdf`), Plugin Texterkennung |
@@ -35,6 +37,10 @@ npm run build:app   # app/www bauen und nach Android/iOS synchronisieren
 ```
 
 Danach `cd app && npx cap open android` bzw. `npx cap open ios`.
+
+## Daten und Quellen
+
+Die PLZ-Daten (GeoNames), die Mietenstufen (Wohngeldverordnung) und die Anschriften der bayerischen Landratsämter und kreisfreien Städte (Impressum der Behörden) werden nicht von Hand gepflegt. Der Workflow **„Quellen abrufen“** lädt die Originalquellen nach `content/quellen/roh/` und protokolliert Abrufdatum und Prüfsumme. Danach erzeugt `npm run build:data` daraus die App-Daten. Jede Anschrift muss wörtlich in ihrer Quelle stehen, sonst bricht der Build ab.
 
 ## CI
 

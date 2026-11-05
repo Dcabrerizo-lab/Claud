@@ -78,8 +78,18 @@ const MOCK = () => {
   ok('Scan: Felder erkannt, Name vorausgefüllt', (await p.locator('#sc-out .sc-row').count()) >= 3 && /Maria Muster/.test(await p.textContent('#sc-out')));
   ok('Scan: Foto danach gelöscht', (await calls('Filesystem.deleteFile')).some((o) => /foto\.jpg$/.test(o.path)));
 
+  // Wohnort: PLZ -> Mietenstufe und zuständige Stelle mit Anschrift (offline)
+  ok('Ohne PLZ: Hinweis auf die Postleitzahl in der Wohngeld-Karte', /Postleitzahl/.test(await p.textContent('#c-wohngeld')));
+  await p.fill('#plz', '90542'); await p.waitForTimeout(300);
+  ok('PLZ 90542: Bayern und Mietenstufe III gesetzt', (await p.inputValue('#bundesland')) === 'BY' && (await p.inputValue('#mietstufe')) === '3');
+  const beh = (await p.textContent('#c-wohngeld .behoerde').catch(() => '')).replace(/\s+/g, ' ');
+  ok('Wohngeld-Karte nennt Landratsamt Erlangen-Höchstadt mit Anschrift', /Landratsamt Erlangen-Höchstadt, Wohngeldstelle/.test(beh) && /Nägelsbachstraße 1/.test(beh) && /91052 Erlangen/.test(beh), beh);
+
   // Antragsmappe
   await p.click('#mappeMake'); ok('Mappe öffnet', await p.isVisible('#mappe'));
+  const brief = await p.inputValue('#mappeText');
+  ok('Anschreiben Wohngeld: Empfänger mit Anschrift', /Landratsamt Erlangen-Höchstadt\nWohngeldstelle\nNägelsbachstraße 1\n91052 Erlangen/.test(brief), brief.slice(0, 300));
+  ok('Anschreiben Kindergeld: ohne Verzeichnis bleibt die allgemeine Stelle', /An die\nFamilienkasse/.test(brief));
   ok('PDF-Knopf statt Drucken, Teilen sichtbar', (await p.textContent('#mappePrint')).includes('PDF') && (await p.isVisible('#mappeShare')));
   await p.click('#mappeShare');
   ok('Teilen übergibt die Mappe als Text', (await calls('Share.share')).some((o) => /Maria Muster/.test(o.text || '')));

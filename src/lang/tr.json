@@ -476,5 +476,10 @@
   "bl.unbekannt": "Bilmiyorum",
   "bl.hint": "Blindengeld ve Wohnberechtigungsschein için önemlidir. Uygulama bunu şimdilik yalnızca Bavyera için hesaplar.",
   "plz.altSum": "Bu ilçenin daha büyük bir belediyesinde mi oturuyorsun?",
-  "plz.alt": "Bulunduğun yer, farklı kira kademesi olan daha büyük bir belediyeye bağlı olabilir. Öyleyse onu buradan seç."
+  "plz.alt": "Bulunduğun yer, farklı kira kademesi olan daha büyük bir belediyeye bağlı olabilir. Öyleyse onu buradan seç.",
+  "beh.stelle": "Oturduğun yer için yetkili makam:",
+  "beh.web": "Kurumun web sitesi",
+  "beh.pruefen": "Adres, kurumun künye sayfasından alınmıştır ({stand}). Göndermeden önce lütfen kontrol et; kurumlar bazen taşınır.",
+  "beh.ohneAdr": "Adresi kurumun web sitesinde bulabilirsin.",
+  "beh.plzHint": "Yukarıya posta kodunu gir, uygulama yetkili makamı adresiyle gösterir (şimdilik Bavyera için)."
 }

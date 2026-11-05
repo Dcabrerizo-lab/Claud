@@ -1,0 +1,958 @@
+{
+ "stand": "Anschriften laut Impressum der Behörden, abgerufen 5.11.2026",
+ "kreise": {
+  "09161": {
+   "name": "Stadt Ingolstadt",
+   "web": "https://www.ingolstadt.de",
+   "anschrift": [
+    "Rathausplatz 4",
+    "85049 Ingolstadt"
+   ],
+   "quelle": "http://www.ingolstadt.de/Service/Impressum/",
+   "stand": "5.11.2026"
+  },
+  "09162": {
+   "name": "Landeshauptstadt München",
+   "web": "https://www.muenchen.de/rathaus/Stadtverwaltung.html",
+   "anschrift": [
+    "Marienplatz 8",
+    "80331 München"
+   ],
+   "quelle": "https://stadt.muenchen.de/infos/impressum.html",
+   "stand": "5.11.2026"
+  },
+  "09163": {
+   "name": "Stadt Rosenheim",
+   "web": "https://www.rosenheim.de",
+   "anschrift": [
+    "Königstraße 24",
+    "83022 Rosenheim"
+   ],
+   "quelle": "http://www.rosenheim.de/impressum/",
+   "stand": "5.11.2026"
+  },
+  "09171": {
+   "name": "Landratsamt Altötting",
+   "web": "https://www.lra-aoe.de/",
+   "anschrift": [
+    "Bahnhofstr. 38",
+    "84503 Altötting"
+   ],
+   "quelle": "https://www.lra-aoe.de/meta/impressum/",
+   "stand": "5.11.2026"
+  },
+  "09172": {
+   "name": "Landratsamt Berchtesgadener Land",
+   "web": "https://www.lra-bgl.de/",
+   "anschrift": [
+    "Salzburger Straße 64",
+    "83435 Bad Reichenhall"
+   ],
+   "quelle": "http://www.lra-bgl.de/t/das-landratsamt/impressum/",
+   "stand": "5.11.2026"
+  },
+  "09173": {
+   "name": "Landratsamt Bad Tölz-Wolfratshausen",
+   "web": "https://www.lra-toelz.de/",
+   "anschrift": [
+    "Prof.-Max-Lange-Platz 1",
+    "83646 Bad Tölz"
+   ],
+   "quelle": "https://www.lra-toelz.de/de/zentrale-infos/impressum/",
+   "stand": "5.11.2026"
+  },
+  "09174": {
+   "name": "Landratsamt Dachau",
+   "web": "https://www.landratsamt-dachau.de/",
+   "anschrift": [
+    "Weiherweg 16",
+    "85221 Dachau"
+   ],
+   "quelle": "http://www.landratsamt-dachau.de/Rechtliches/Impressum/",
+   "stand": "5.11.2026"
+  },
+  "09175": {
+   "name": "Landratsamt Ebersberg",
+   "web": "https://www.lra-ebe.de/",
+   "anschrift": null,
+   "quelle": "",
+   "stand": ""
+  },
+  "09176": {
+   "name": "Landratsamt Eichstätt",
+   "web": "https://www.landkreis-eichstaett.de/",
+   "anschrift": [
+    "Residenzplatz 1",
+    "85072 Eichstätt"
+   ],
+   "quelle": "http://www.landkreis-eichstaett.de/landratsamt/impressum-und-service/suche",
+   "stand": "5.11.2026"
+  },
+  "09177": {
+   "name": "Landratsamt Erding",
+   "web": "https://www.landkreis-erding.de/",
+   "anschrift": [
+    "Alois-Schießl-Platz 2",
+    "85435 Erding"
+   ],
+   "quelle": "http://www.landkreis-erding.de/buerger-verwaltung/familie-jugend-arbeit-soziales-auslaenderwesen/jobcenter-aruso-erding/impressum/",
+   "stand": "5.11.2026"
+  },
+  "09178": {
+   "name": "Landratsamt Freising",
+   "web": "https://www.kreis-freising.de/",
+   "anschrift": [
+    "Landshuter Str. 31",
+    "85356 Freising"
+   ],
+   "quelle": "http://www.kreis-freising.de/impressum.html",
+   "stand": "5.11.2026"
+  },
+  "09179": {
+   "name": "Landratsamt Fürstenfeldbruck",
+   "web": "https://www.lra-ffb.de/",
+   "anschrift": [
+    "Münchner Str. 32",
+    "82256 Fürstenfeldbruck"
+   ],
+   "quelle": "http://www.lra-ffb.de/impressum",
+   "stand": "5.11.2026"
+  },
+  "09180": {
+   "name": "Landratsamt Garmisch-Partenkirchen",
+   "web": "https://www.lra-gap.de/",
+   "anschrift": [
+    "Olympiastraße 10",
+    "82467 Garmisch-Partenkirchen"
+   ],
+   "quelle": "http://www.lra-gap.de/de/impressum.html",
+   "stand": "5.11.2026"
+  },
+  "09181": {
+   "name": "Landratsamt Landsberg am Lech",
+   "web": "https://www.landkreis-landsberg.de/",
+   "anschrift": [
+    "Von-Kühlmann-Straße 15",
+    "86899 Landsberg am Lech"
+   ],
+   "quelle": "http://www.landkreis-landsberg.de/impressum/",
+   "stand": "5.11.2026"
+  },
+  "09182": {
+   "name": "Landratsamt Miesbach",
+   "web": "https://www.landkreis-miesbach.de/",
+   "anschrift": [
+    "Riezlerstr. 2",
+    "83714 Miesbach"
+   ],
+   "quelle": "http://www.landkreis-miesbach.de/Impressum/",
+   "stand": "5.11.2026"
+  },
+  "09183": {
+   "name": "Landratsamt Mühldorf a.Inn",
+   "web": "https://www.lra-mue.de/",
+   "anschrift": [
+    "Töginger Straße 18",
+    "84453 Mühldorf a. Inn"
+   ],
+   "quelle": "http://www.lra-mue.de/impressum",
+   "stand": "5.11.2026"
+  },
+  "09184": {
+   "name": "Landratsamt München",
+   "web": "https://www.landkreis-muenchen.de/",
+   "anschrift": [
+    "Mariahilfplatz 17",
+    "81541 München"
+   ],
+   "quelle": "http://www.landkreis-muenchen.de/impressum/",
+   "stand": "5.11.2026"
+  },
+  "09185": {
+   "name": "Landratsamt Neuburg-Schrobenhausen",
+   "web": "https://www.neuburg-schrobenhausen.de/",
+   "anschrift": [
+    "Platz der Deutschen Einheit 1",
+    "86633 Neuburg a.d.Donau"
+   ],
+   "quelle": "http://www.neuburg-schrobenhausen.de/Kurzmen%C3%BC/Impressum/",
+   "stand": "5.11.2026"
+  },
+  "09186": {
+   "name": "Landratsamt Pfaffenhofen a.d.Ilm",
+   "web": "https://www.landkreis-pfaffenhofen.de/",
+   "anschrift": [
+    "Hauptplatz 22",
+    "85276 Pfaffenhofen a.d.Ilm"
+   ],
+   "quelle": "http://www.landkreis-pfaffenhofen.de/meta/impressum/",
+   "stand": "5.11.2026"
+  },
+  "09187": {
+   "name": "Landratsamt Rosenheim",
+   "web": "https://www.landkreis-rosenheim.de/",
+   "anschrift": [
+    "Wittelsbacherstraße 53",
+    "83022 Rosenheim"
+   ],
+   "quelle": "https://www.landkreis-rosenheim.de/impressum/",
+   "stand": "5.11.2026"
+  },
+  "09188": {
+   "name": "Landratsamt Starnberg",
+   "web": "https://www.landkreis-starnberg.de/",
+   "anschrift": [
+    "Strandbadstraße 2",
+    "82319 Starnberg"
+   ],
+   "quelle": "http://www.landkreis-starnberg.de/B%C3%BCrgerservice/Kontakt/Impressum/",
+   "stand": "5.11.2026"
+  },
+  "09189": {
+   "name": "Landratsamt Traunstein",
+   "web": "https://www.traunstein.com/",
+   "anschrift": [
+    "Papst-Benedikt-XVI.-Platz",
+    "83278 Traunstein"
+   ],
+   "quelle": "http://www.traunstein.com/impressum",
+   "stand": "5.11.2026"
+  },
+  "09190": {
+   "name": "Landratsamt Weilheim-Schongau",
+   "web": "https://www.weilheim-schongau.de/",
+   "anschrift": [
+    "Pütrichstraße 8",
+    "82362 Weilheim i. OB"
+   ],
+   "quelle": "http://www.weilheim-schongau.de/meta/impressum/",
+   "stand": "5.11.2026"
+  },
+  "09261": {
+   "name": "Stadt Landshut",
+   "web": "https://www.landshut.de",
+   "anschrift": [
+    "Luitpoldstraße 29",
+    "84034 Landshut"
+   ],
+   "quelle": "http://www.landshut.de/rathaus/impressum",
+   "stand": "5.11.2026"
+  },
+  "09262": {
+   "name": "Stadt Passau",
+   "web": "https://www.passau.de",
+   "anschrift": [
+    "Rathausplatz 2",
+    "94032 Passau"
+   ],
+   "quelle": "http://www.passau.de/impressum/",
+   "stand": "5.11.2026"
+  },
+  "09263": {
+   "name": "Stadt Straubing",
+   "web": "https://www.straubing.de",
+   "anschrift": [
+    "Theresienplatz 2",
+    "94315 Straubing"
+   ],
+   "quelle": "http://www.straubing.de/informationen/impressum/index.html",
+   "stand": "5.11.2026"
+  },
+  "09271": {
+   "name": "Landratsamt Deggendorf",
+   "web": "https://www.landkreis-deggendorf.de/",
+   "anschrift": [
+    "Herrenstraße 18",
+    "94469 Deggendorf"
+   ],
+   "quelle": "http://www.landkreis-deggendorf.de/meta/impressum/",
+   "stand": "5.11.2026"
+  },
+  "09272": {
+   "name": "Landratsamt Freyung-Grafenau",
+   "web": "https://www.landkreis-frg.de/",
+   "anschrift": [
+    "Grafenauer Str. 44",
+    "94078 Freyung"
+   ],
+   "quelle": "https://www.freyung-grafenau.de/impressum",
+   "stand": "5.11.2026"
+  },
+  "09273": {
+   "name": "Landratsamt Kelheim",
+   "web": "https://www.landkreis-kelheim.de/",
+   "anschrift": [
+    "Donaupark 12",
+    "93309 Kelheim"
+   ],
+   "quelle": "http://www.landkreis-kelheim.de/meta/impressum/",
+   "stand": "5.11.2026"
+  },
+  "09274": {
+   "name": "Landratsamt Landshut",
+   "web": "https://www.landkreis-landshut.de/",
+   "anschrift": [
+    "Josef-Neumeier-Allee 1",
+    "84051 Essenbach"
+   ],
+   "quelle": "https://www.landkreis-landshut.de/meta/impressum/",
+   "stand": "5.11.2026"
+  },
+  "09275": {
+   "name": "Landratsamt Passau",
+   "web": "https://www.landkreis-passau.de/",
+   "anschrift": [
+    "Domplatz 11",
+    "94032 Passau"
+   ],
+   "quelle": "http://www.landkreis-passau.de/meta/impressum/",
+   "stand": "5.11.2026"
+  },
+  "09276": {
+   "name": "Landratsamt Regen",
+   "web": "https://www.landkreis-regen.de/",
+   "anschrift": [
+    "Poschetsrieder Str. 16",
+    "94209 Regen"
+   ],
+   "quelle": "http://www.landkreis-regen.de/impressum",
+   "stand": "5.11.2026"
+  },
+  "09277": {
+   "name": "Landratsamt Rottal-Inn",
+   "web": "https://www.rottal-inn.de/",
+   "anschrift": [
+    "Ringstraße 4 - 7",
+    "84347 Pfarrkirchen"
+   ],
+   "quelle": "http://www.rottal-inn.de/meta/impressum/",
+   "stand": "5.11.2026"
+  },
+  "09278": {
+   "name": "Landratsamt Straubing-Bogen",
+   "web": "https://www.landkreis-straubing-bogen.de/",
+   "anschrift": [
+    "Leutnerstraße 15",
+    "94315 Straubing"
+   ],
+   "quelle": "http://www.landkreis-straubing-bogen.de/meta/impressum/",
+   "stand": "5.11.2026"
+  },
+  "09279": {
+   "name": "Landratsamt Dingolfing-Landau",
+   "web": "https://www.landkreis-dingolfing-landau.de/",
+   "anschrift": [
+    "Obere Stadt 1",
+    "84130 Dingolfing"
+   ],
+   "quelle": "https://dingolfing-landau.de/rechtliches/impressum/",
+   "stand": "5.11.2026"
+  },
+  "09361": {
+   "name": "Stadt Amberg",
+   "web": "https://www.amberg.de",
+   "anschrift": [
+    "Marktplatz 11",
+    "92224 Amberg"
+   ],
+   "quelle": "http://www.amberg.de/impressum",
+   "stand": "5.11.2026"
+  },
+  "09362": {
+   "name": "Stadt Regensburg",
+   "web": "https://www.regensburg.de",
+   "anschrift": [
+    "Rathausplatz 1",
+    "93047 Regensburg"
+   ],
+   "quelle": "http://www.regensburg.de/impressum",
+   "stand": "5.11.2026"
+  },
+  "09363": {
+   "name": "Stadt Weiden i.d.OPf.",
+   "web": "https://www.weiden.de",
+   "anschrift": [
+    "Dr.-Pfleger-Straße 15",
+    "92637 Weiden i.d.OPf."
+   ],
+   "quelle": "http://www.weiden.de/impressum",
+   "stand": "5.11.2026"
+  },
+  "09371": {
+   "name": "Landratsamt Amberg-Sulzbach",
+   "web": "https://www.kreis-as.de/",
+   "anschrift": [
+    "Schloßgraben 3",
+    "92224 Amberg"
+   ],
+   "quelle": "http://www.kreis-as.de/Quicknavigation/Impressum",
+   "stand": "5.11.2026"
+  },
+  "09372": {
+   "name": "Landratsamt Cham",
+   "web": "https://www.landkreis-cham.de/",
+   "anschrift": [
+    "Rachelstraße 6",
+    "93413 Cham"
+   ],
+   "quelle": "http://www.landkreis-cham.de/meta/impressum/",
+   "stand": "5.11.2026"
+  },
+  "09373": {
+   "name": "Landratsamt Neumarkt i.d.OPf.",
+   "web": "https://www.landkreis-neumarkt.de/",
+   "anschrift": [
+    "Nürnberger Straße 1",
+    "92318 Neumarkt i.d.OPf."
+   ],
+   "quelle": "https://www.landkreis-neumarkt.de/impressum/",
+   "stand": "5.11.2026"
+  },
+  "09374": {
+   "name": "Landratsamt Neustadt a.d.Waldnaab",
+   "web": "https://www.neustadt.de/",
+   "anschrift": [
+    "Am Hohlweg 2",
+    "92660 Neustadt an der Waldnaab"
+   ],
+   "quelle": "https://www.neustadt.de/impressum/",
+   "stand": "5.11.2026"
+  },
+  "09375": {
+   "name": "Landratsamt Regensburg",
+   "web": "https://www.landkreis-regensburg.de/",
+   "anschrift": null,
+   "quelle": "",
+   "stand": ""
+  },
+  "09376": {
+   "name": "Landratsamt Schwandorf",
+   "web": "https://www.landkreis-schwandorf.de/",
+   "anschrift": [
+    "Wackersdorfer Str. 80",
+    "92421 Schwandorf"
+   ],
+   "quelle": "http://www.landkreis-schwandorf.de/Quicknavigation/Impressum/",
+   "stand": "5.11.2026"
+  },
+  "09377": {
+   "name": "Landratsamt Tirschenreuth",
+   "web": "https://www.kreis-tir.de/",
+   "anschrift": [
+    "Mähringer Straße 7",
+    "95643 Tirschenreuth"
+   ],
+   "quelle": "http://www.kreis-tir.de/impressum",
+   "stand": "5.11.2026"
+  },
+  "09461": {
+   "name": "Stadt Bamberg",
+   "web": "https://www.bamberg.de",
+   "anschrift": [
+    "Maximiliansplatz 3",
+    "96047 Bamberg"
+   ],
+   "quelle": "https://www.stadt.bamberg.de/impressum",
+   "stand": "5.11.2026"
+  },
+  "09462": {
+   "name": "Stadt Bayreuth",
+   "web": "https://www.bayreuth.de",
+   "anschrift": [
+    "Luitpoldplatz 13",
+    "95444 Bayreuth"
+   ],
+   "quelle": "https://www.bayreuth.de/impressum/",
+   "stand": "5.11.2026"
+  },
+  "09463": {
+   "name": "Stadt Coburg",
+   "web": "https://www.coburg.de",
+   "anschrift": [
+    "Markt 1",
+    "96450 Coburg"
+   ],
+   "quelle": "http://www.coburg.de/impressum.php",
+   "stand": "5.11.2026"
+  },
+  "09464": {
+   "name": "Stadt Hof",
+   "web": "https://www.hof.de",
+   "anschrift": null,
+   "quelle": "",
+   "stand": ""
+  },
+  "09471": {
+   "name": "Landratsamt Bamberg",
+   "web": "https://www.landkreis-bamberg.de/",
+   "anschrift": [
+    "Ludwigstraße 23",
+    "96052 Bamberg"
+   ],
+   "quelle": "http://www.landkreis-bamberg.de/Kurzmen%C3%BC/Impressum/",
+   "stand": "5.11.2026"
+  },
+  "09472": {
+   "name": "Landratsamt Bayreuth",
+   "web": "https://www.landkreis-bayreuth.de/",
+   "anschrift": [
+    "Markgrafenallee 5",
+    "95448 Bayreuth"
+   ],
+   "quelle": "http://www.landkreis-bayreuth.de/impressum",
+   "stand": "5.11.2026"
+  },
+  "09473": {
+   "name": "Landratsamt Coburg",
+   "web": "https://www.landkreis-coburg.de/",
+   "anschrift": [
+    "Lauterer Straße 60",
+    "96450 Coburg"
+   ],
+   "quelle": "http://www.landkreis-coburg.de/impressum",
+   "stand": "5.11.2026"
+  },
+  "09474": {
+   "name": "Landratsamt Forchheim",
+   "web": "https://www.lra-fo.de/",
+   "anschrift": null,
+   "quelle": "",
+   "stand": ""
+  },
+  "09475": {
+   "name": "Landratsamt Hof",
+   "web": "https://www.landkreis-hof.de/",
+   "anschrift": [
+    "Schaumbergstraße 14",
+    "95032 Hof"
+   ],
+   "quelle": "https://www.landkreis-hof.de/impressum/",
+   "stand": "5.11.2026"
+  },
+  "09476": {
+   "name": "Landratsamt Kronach",
+   "web": "https://www.landkreis-kronach.de/",
+   "anschrift": [
+    "Güterstraße 18",
+    "96317 Kronach"
+   ],
+   "quelle": "http://www.landkreis-kronach.de/meta/impressum/",
+   "stand": "5.11.2026"
+  },
+  "09477": {
+   "name": "Landratsamt Kulmbach",
+   "web": "https://www.landkreis-kulmbach.de/",
+   "anschrift": [
+    "Konrad-Adenauer-Straße 5",
+    "95326 Kulmbach"
+   ],
+   "quelle": "http://www.landkreis-kulmbach.de/impressum",
+   "stand": "5.11.2026"
+  },
+  "09478": {
+   "name": "Landratsamt Lichtenfels",
+   "web": "https://www.landkreis-lichtenfels.de/",
+   "anschrift": [
+    "Kronacher Str. 30",
+    "96215 Lichtenfels"
+   ],
+   "quelle": "http://www.landkreis-lichtenfels.de/",
+   "stand": "5.11.2026"
+  },
+  "09479": {
+   "name": "Landratsamt Wunsiedel i.Fichtelgebirge",
+   "web": "https://www.landkreis-wunsiedel.de/",
+   "anschrift": [
+    "Jean-Paul-Straße 9",
+    "95632 Wunsiedel"
+   ],
+   "quelle": "https://www.landkreis-wunsiedel.de/impressum",
+   "stand": "5.11.2026"
+  },
+  "09561": {
+   "name": "Stadt Ansbach",
+   "web": "https://www.ansbach.de",
+   "anschrift": [
+    "Johann-Sebastian-Bach-Platz 1",
+    "91522 Ansbach"
+   ],
+   "quelle": "http://www.ansbach.de/Schnellnavigation/Impressum/",
+   "stand": "5.11.2026"
+  },
+  "09562": {
+   "name": "Stadt Erlangen",
+   "web": "https://www.erlangen.de",
+   "anschrift": [
+    "Rathausplatz 1",
+    "91052 Erlangen"
+   ],
+   "quelle": "https://www.erlangen.de/impressum",
+   "stand": "5.11.2026"
+  },
+  "09563": {
+   "name": "Stadt Fürth",
+   "web": "https://www.fuerth.de",
+   "anschrift": [
+    "Königstraße 88",
+    "90762 Fürth"
+   ],
+   "quelle": "http://www.fuerth.de/informationen/impressum/",
+   "stand": "5.11.2026"
+  },
+  "09564": {
+   "name": "Stadt Nürnberg",
+   "web": "https://www.nuernberg.de",
+   "anschrift": [
+    "Fünferplatz 2",
+    "90403 Nürnberg"
+   ],
+   "quelle": "http://www.nuernberg.de/internet/stadtportal/impressum.html",
+   "stand": "5.11.2026"
+  },
+  "09565": {
+   "name": "Stadt Schwabach",
+   "web": "https://www.schwabach.de",
+   "anschrift": [
+    "Ludwigstraße 16",
+    "91126 Schwabach"
+   ],
+   "quelle": "http://www.schwabach.de/de/impressum.html",
+   "stand": "5.11.2026"
+  },
+  "09571": {
+   "name": "Landratsamt Ansbach",
+   "web": "https://www.landkreis-ansbach.de/",
+   "anschrift": [
+    "Crailsheimstraße 1",
+    "91522 Ansbach"
+   ],
+   "quelle": "http://www.landkreis-ansbach.de/Kurzmen%C3%BC/Impressum/",
+   "stand": "5.11.2026"
+  },
+  "09572": {
+   "name": "Landratsamt Erlangen-Höchstadt",
+   "web": "https://www.erlangen-hoechstadt.de/",
+   "anschrift": [
+    "Nägelsbachstraße 1",
+    "91052 Erlangen"
+   ],
+   "quelle": "http://www.erlangen-hoechstadt.de/meta/impressum/",
+   "stand": "5.11.2026"
+  },
+  "09573": {
+   "name": "Landratsamt Fürth",
+   "web": "https://www.landkreis-fuerth.de/",
+   "anschrift": null,
+   "quelle": "",
+   "stand": ""
+  },
+  "09574": {
+   "name": "Landratsamt Nürnberger Land",
+   "web": "https://www.nuernberger-land.de/",
+   "anschrift": [
+    "Waldluststraße 1",
+    "91207 Lauf an der Pegnitz"
+   ],
+   "quelle": "http://www.nuernberger-land.de/impressum",
+   "stand": "5.11.2026"
+  },
+  "09575": {
+   "name": "Landratsamt Neustadt a.d.Aisch-Bad Windsheim",
+   "web": "https://www.landkreis-nea.de/",
+   "anschrift": [
+    "Konrad-Adenauer-Straße 1",
+    "91413 Neustadt a.d.Aisch"
+   ],
+   "quelle": "http://www.landkreis-nea.de/",
+   "stand": "5.11.2026"
+  },
+  "09576": {
+   "name": "Landratsamt Roth",
+   "web": "https://www.landratsamt-roth.de/",
+   "anschrift": [
+    "Weinbergweg 1",
+    "91154 Roth"
+   ],
+   "quelle": "https://www.landratsamt-roth.de/impressum",
+   "stand": "5.11.2026"
+  },
+  "09577": {
+   "name": "Landratsamt Weißenburg-Gunzenhausen",
+   "web": "https://www.landkreis-wug.de/",
+   "anschrift": [
+    "Bahnhofstraße 2",
+    "91781 Weißenburg i. Bay."
+   ],
+   "quelle": "https://www.landkreis-wug.de",
+   "stand": "5.11.2026"
+  },
+  "09661": {
+   "name": "Stadt Aschaffenburg",
+   "web": "https://www.aschaffenburg.de",
+   "anschrift": [
+    "Dalbergstraße 15",
+    "63739 Aschaffenburg"
+   ],
+   "quelle": "http://www.aschaffenburg.de/Service/Impressum/",
+   "stand": "5.11.2026"
+  },
+  "09662": {
+   "name": "Stadt Schweinfurt",
+   "web": "https://www.schweinfurt.de",
+   "anschrift": [
+    "Markt 1",
+    "97421 Schweinfurt"
+   ],
+   "quelle": "http://www.schweinfurt.de/sonstiges/impressum",
+   "stand": "5.11.2026"
+  },
+  "09663": {
+   "name": "Stadt Würzburg",
+   "web": "https://www.wuerzburg.de",
+   "anschrift": [
+    "Rückermainstraße 2",
+    "97070 Würzburg"
+   ],
+   "quelle": "http://www.wuerzburg.de/infos/impressum",
+   "stand": "5.11.2026"
+  },
+  "09671": {
+   "name": "Landratsamt Aschaffenburg",
+   "web": "https://www.landkreis-aschaffenburg.de/",
+   "anschrift": [
+    "Bayernstraße 18",
+    "63739 Aschaffenburg"
+   ],
+   "quelle": "http://www.landkreis-aschaffenburg.de/Service/Impressum/",
+   "stand": "5.11.2026"
+  },
+  "09672": {
+   "name": "Landratsamt Bad Kissingen",
+   "web": "https://www.landkreis-badkissingen.de/",
+   "anschrift": null,
+   "quelle": "",
+   "stand": ""
+  },
+  "09673": {
+   "name": "Landratsamt Rhön-Grabfeld",
+   "web": "https://www.rhoen-grabfeld.de/",
+   "anschrift": [
+    "Spörleinstraße 11",
+    "97616 Bad Neustadt a. d. Saale"
+   ],
+   "quelle": "http://www.rhoen-grabfeld.de/impressum",
+   "stand": "5.11.2026"
+  },
+  "09674": {
+   "name": "Landratsamt Haßberge",
+   "web": "https://www.hassberge.de/",
+   "anschrift": [
+    "Am Herrenhof 1",
+    "97437 Haßfurt"
+   ],
+   "quelle": "http://www.hassberge.de/impressum.html",
+   "stand": "5.11.2026"
+  },
+  "09675": {
+   "name": "Landratsamt Kitzingen",
+   "web": "https://www.kitzingen.de/",
+   "anschrift": [
+    "Kaiserstraße 4",
+    "97318 Kitzingen"
+   ],
+   "quelle": "http://www.kitzingen.de/impressum/",
+   "stand": "5.11.2026"
+  },
+  "09676": {
+   "name": "Landratsamt Miltenberg",
+   "web": "https://www.landkreis-miltenberg.de/",
+   "anschrift": [
+    "Brückenstraße 2",
+    "63897 Miltenberg"
+   ],
+   "quelle": "http://www.landkreis-miltenberg.de/impressum-lra.html",
+   "stand": "5.11.2026"
+  },
+  "09677": {
+   "name": "Landratsamt Main-Spessart",
+   "web": "https://www.main-spessart.de/",
+   "anschrift": [
+    "Marktplatz 8",
+    "97753 Karlstadt"
+   ],
+   "quelle": "http://www.main-spessart.de/themen/bauen-wohnen/energie--klimaschutz/regionalwerk/impressum-regionalwerk/index.html",
+   "stand": "5.11.2026"
+  },
+  "09678": {
+   "name": "Landratsamt Schweinfurt",
+   "web": "https://www.landkreis-schweinfurt.de/",
+   "anschrift": [
+    "Schrammstr. 1",
+    "97421 Schweinfurt"
+   ],
+   "quelle": "https://www.landkreis-schweinfurt.de/impressum/",
+   "stand": "5.11.2026"
+  },
+  "09679": {
+   "name": "Landratsamt Würzburg",
+   "web": "https://www.landkreis-wuerzburg.de/",
+   "anschrift": [
+    "Zeppelinstraße 15",
+    "97074 Würzburg"
+   ],
+   "quelle": "http://www.landkreis-wuerzburg.de/Auf-einen-Klick/Impressum",
+   "stand": "5.11.2026"
+  },
+  "09761": {
+   "name": "Stadt Augsburg",
+   "web": "https://www.augsburg.de",
+   "anschrift": [
+    "Rathausplatz 1",
+    "86150 Augsburg"
+   ],
+   "quelle": "https://www.augsburg.de/impressum/",
+   "stand": "5.11.2026"
+  },
+  "09762": {
+   "name": "Stadt Kaufbeuren",
+   "web": "https://www.kaufbeuren.de",
+   "anschrift": [
+    "Kaiser-Max-Straße 1",
+    "87600 Kaufbeuren"
+   ],
+   "quelle": "http://www.kaufbeuren.de/footernavigation/impressum.aspx",
+   "stand": "5.11.2026"
+  },
+  "09763": {
+   "name": "Stadt Kempten (Allgäu)",
+   "web": "https://www.kempten.de",
+   "anschrift": [
+    "Rathausplatz 22",
+    "87435 Kempten (Allgäu)"
+   ],
+   "quelle": "https://kempten.de/impressum-1583.html",
+   "stand": "5.11.2026"
+  },
+  "09764": {
+   "name": "Stadt Memmingen",
+   "web": "https://www.memmingen.de",
+   "anschrift": [
+    "Marktplatz 1",
+    "87700 Memmingen"
+   ],
+   "quelle": "http://www.memmingen.de/impressum.html",
+   "stand": "5.11.2026"
+  },
+  "09771": {
+   "name": "Landratsamt Aichach-Friedberg",
+   "web": "https://www.lra-aic-fdb.de/",
+   "anschrift": [
+    "Münchener Str. 9",
+    "86551 Aichach"
+   ],
+   "quelle": "http://www.lra-aic-fdb.de/impressum",
+   "stand": "5.11.2026"
+  },
+  "09772": {
+   "name": "Landratsamt Augsburg",
+   "web": "https://www.landkreis-augsburg.de/",
+   "anschrift": [
+    "Prinzregentenplatz 4",
+    "86150 Augsburg"
+   ],
+   "quelle": "http://www.landkreis-augsburg.de/impressum/",
+   "stand": "5.11.2026"
+  },
+  "09773": {
+   "name": "Landratsamt Dillingen a.d.Donau",
+   "web": "https://www.landkreis-dillingen.de/",
+   "anschrift": [
+    "Große Allee 24",
+    "89407 Dillingen a.d.Donau"
+   ],
+   "quelle": "http://www.landkreis-dillingen.de/service-links/impressum",
+   "stand": "5.11.2026"
+  },
+  "09774": {
+   "name": "Landratsamt Günzburg",
+   "web": "https://www.landkreis-guenzburg.de/",
+   "anschrift": [
+    "An der Kapuzinermauer 1",
+    "89312 Günzburg"
+   ],
+   "quelle": "https://www.landkreis-guenzburg.de/impressum/",
+   "stand": "5.11.2026"
+  },
+  "09775": {
+   "name": "Landratsamt Neu-Ulm",
+   "web": "https://www.landkreis.neu-ulm.de/",
+   "anschrift": [
+    "Kantstraße 8",
+    "89231 Neu-Ulm"
+   ],
+   "quelle": "https://www.landkreis-nu.de/impressum",
+   "stand": "5.11.2026"
+  },
+  "09776": {
+   "name": "Landratsamt Lindau (Bodensee)",
+   "web": "https://www.landkreis-lindau.de/",
+   "anschrift": [
+    "Stiftsplatz 4",
+    "88131 Lindau (Bodensee)"
+   ],
+   "quelle": "http://www.landkreis-lindau.de/Schnellnavigation/Impressum/",
+   "stand": "5.11.2026"
+  },
+  "09777": {
+   "name": "Landratsamt Ostallgäu",
+   "web": "https://www.lra-ostallgaeu.de/",
+   "anschrift": [
+    "Schwabenstraße 11",
+    "87616 Marktoberdorf"
+   ],
+   "quelle": "https://www.ostallgaeu.de/impressum",
+   "stand": "5.11.2026"
+  },
+  "09778": {
+   "name": "Landratsamt Unterallgäu",
+   "web": "https://www.unterallgaeu.de/",
+   "anschrift": [
+    "Bad Wörishofer Str. 33",
+    "87719 Mindelheim"
+   ],
+   "quelle": "https://www.landratsamt-unterallgaeu.de/impressum",
+   "stand": "5.11.2026"
+  },
+  "09779": {
+   "name": "Landratsamt Donau-Ries",
+   "web": "https://www.donau-ries.de/",
+   "anschrift": [
+    "Pflegstraße 2",
+    "86609 Donauwörth"
+   ],
+   "quelle": "http://www.donau-ries.de/impressum",
+   "stand": "5.11.2026"
+  },
+  "09780": {
+   "name": "Landratsamt Oberallgäu",
+   "web": "https://www.oberallgaeu.org/",
+   "anschrift": [
+    "Oberallgäuer Platz 2",
+    "87527 Sonthofen"
+   ],
+   "quelle": "http://www.oberallgaeu.org/impressum",
+   "stand": "5.11.2026"
+  }
+ },
+ "fest": {
+  "beitragsservice": {
+   "name": "ARD ZDF Deutschlandradio Beitragsservice",
+   "anschrift": [
+    "50656 Köln"
+   ],
+   "web": "https://www.rundfunkbeitrag.de",
+   "quelle": "https://www.rundfunkbeitrag.de",
+   "stand": ""
+  }
+ }
+}

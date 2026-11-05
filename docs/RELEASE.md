@@ -62,13 +62,16 @@ Später automatisierbar mit fastlane und App-Store-Connect-API-Schlüssel in der
 
 - [ ] `npm test`, `npm run test:e2e`, `npm run test:app` grün (macht die CI)
 - [ ] Rechtsstand prüfen: Regelsätze, Wohngeld, Kindergeld zum 1. Januar, siehe `docs/QUELLEN.md` und `src/rules.js` (`stand`)
+- [ ] **Daten aktualisieren (mindestens jährlich):** In GitHub unter Actions → „Quellen abrufen“ → Run workflow. Danach `npm run build:data`. Bricht das Skript ab, hat sich eine Quelle geändert, etwa eine Behörde, die umgezogen ist, oder neue Mietenstufen. Dann prüfen, anpassen und `npm test` laufen lassen.
 - [ ] Datenschutzerklärung passt noch zu dem, was die App tut
 - [ ] Übersetzungen neuer Texte von Muttersprachlern gegenlesen lassen
 
 ## Bekannte offene Punkte
 
 - **Echte Geräte:** Kamera, Texterkennung, PDF-Teilen und Speichern sind im Browser mit nachgeahmten Plugins getestet, nicht auf echten Geräten. Das Kompilieren prüft die CI.
-- **PLZ-Suche:** Code ist vorhanden (`src/plz.js`), die Daten (`content/plz-data.json`) fehlen. Das Feld bleibt bis dahin ausgeblendet, die Mietenstufe wird von Hand gewählt.
+- **Behörden außerhalb Bayerns:** PLZ, Mietenstufe und zuständige Stelle mit Anschrift gibt es nur für Bayern. In anderen Ländern nennt die App das Bundesland und die Art der Stelle.
+- **6 bayerische Stellen ohne Anschrift:** Ebersberg, Landkreis Regensburg, Stadt Hof, Forchheim, Landkreis Fürth und Bad Kissingen haben den automatischen Abruf abgelehnt. Die App zeigt dort Name und Website. Nachtragen: Anschrift im Impressum der Behörde nachsehen und in `tools/build-behoerden.js` (AUSWAHL) eintragen. Die Quelle muss dafür abrufbar sein, sonst bleibt es bei Name und Website.
+- **Noch ohne Anschrift:** Jobcenter, ZBFS-Regionalstellen (Blindengeld, Schwerbehindertenausweis), Bezirke (Eingliederungshilfe), Familienkasse.
 - **Übersetzungen** sind maschinell und sollten von Muttersprachlern geprüft werden.
 - **Fachliche Prüfung:** 10–20 echte Fälle mit einer Sozialberatung durchgehen.
 - **Wohngeld-Reform 1.1.2027:** Sobald sie beschlossen ist, Tabellen in `src/rules.js` aktualisieren. Die Tests in `test/test.js` rechnen die Grenzen unabhängig nach.
