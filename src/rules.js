@@ -124,7 +124,7 @@ const Rules = (function () {
     const regel = regelElt + kidsU6 * R.regelbedarf.kind0 + kids14 * R.regelbedarf.kind14 + (kids - kidsU6 - kids14) * R.regelbedarf.kind + young * R.regelbedarf.jungErwachsener;
     const pg = ['1', '2', '3', '4', '5'].indexOf(String(inp.pflegegrad)) >= 0 ? Number(inp.pflegegrad) : 0;
     return {
-      fehlt: { einkommen: blank(inp.brutto), vermoegen: blank(inp.vermoegen), miete: blank(inp.miete) },
+      fehlt: { einkommen: blank(inp.brutto), netto: blank(inp.netto), vermoegen: blank(inp.vermoegen), miete: blank(inp.miete) },
       adults, kids, kidsU6, kids14, young, persons, brutto, brutto2, erwerb: !inp.nichtArbeit, netto, nettoGiven, miete, vermoegen, regel, regelElt,
       children: kids + young,
       alleinerz: adults === 1 && kids > 0,
@@ -566,10 +566,14 @@ const Rules = (function () {
     wohngeld: ['einkommen', 'vermoegen', 'miete'], kiz: ['einkommen', 'vermoegen', 'miete'], ggeld: ['einkommen', 'vermoegen', 'miete'],
     gsa: ['einkommen', 'vermoegen', 'miete'], but: ['einkommen'], bafoeg: ['einkommen'], wbs: ['einkommen'], rundfunk: ['einkommen']
   };
+  // BAföG und Grundsicherung im Alter rechnen mit dem Nettoeinkommen: dort genügt eine Angabe zu Brutto ODER Netto
+  const NUR_NETTO = { bafoeg: true, gsa: true };
   const angabeFehlt = (h) => (x) => {
-    const need = (BRAUCHT[x.id] || []).filter((k) => h.fehlt[k]);
-    // „nein“ nur wegen leerer Felder (Miete 0, Mindesteinkommen nicht erreicht) ist ebenfalls keine Aussage
-    const leerNein = x.level === 'nein' && ((x.id === 'wohngeld' && h.fehlt.miete && x.tx[0][0] === 'wohngeld.keineMiete') || x.hl === 'minEink');
+    const fehlt = (k) => (k === 'einkommen' && NUR_NETTO[x.id] ? h.fehlt.einkommen && h.fehlt.netto : h.fehlt[k]);
+    const need = (BRAUCHT[x.id] || []).filter(fehlt);
+    // „nein“ nur wegen leerer Felder (Miete 0, Mindesteinkommen nicht erreicht) ist ebenfalls keine Aussage.
+    // Ein eingetragenes Einkommen unter dem Mindesteinkommen ist dagegen ein echtes „nein“, auch wenn z. B. das Vermögen fehlt.
+    const leerNein = x.level === 'nein' && ((x.id === 'wohngeld' && h.fehlt.miete && x.tx[0][0] === 'wohngeld.keineMiete') || (x.hl === 'minEink' && h.fehlt.einkommen));
     if (!need.length || (x.level !== 'ja' && x.level !== 'vielleicht' && !leerNein)) return x;
     return mk(x.id, 'vielleicht', 'angabeFehlt', need.map((k) => ['fehlt.' + k]));
   };
