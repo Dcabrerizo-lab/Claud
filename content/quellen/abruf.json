@@ -6,25 +6,25 @@
   "ok": true,
   "bytes": 387968,
   "sha256": "15f24dc4b5045eb7237d0ec0a48d643649dac568e7d1055d386ffae4c3ffdf25",
-  "abgerufen": "2026-11-05T20:20:18Z"
+  "abgerufen": "2026-11-05T22:26:25Z"
  },
  {
   "datei": "wogv-anlage.html",
   "url": "https://www.gesetze-im-internet.de/wogv/anlage.html",
-  "http": 200,
-  "ok": true,
-  "bytes": 256066,
-  "sha256": "e71af5b96726aedab6761741cff53d4029f2652af6e21e0400cf9f1a340c906b",
-  "abgerufen": "2026-11-05T20:20:19Z"
+  "http": 0,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-05T22:27:28Z"
  },
  {
   "datei": "wogv-index.html",
   "url": "https://www.gesetze-im-internet.de/wogv/index.html",
-  "http": 200,
-  "ok": true,
-  "bytes": 9701,
-  "sha256": "985134a45936688dc2ab34252b649308ea2c3e316e59d4c4dca736e39edf2007",
-  "abgerufen": "2026-11-05T20:20:20Z"
+  "http": 0,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-05T22:28:31Z"
  },
  {
   "datei": "wogv-buzer.html",
@@ -32,8 +32,8 @@
   "http": 200,
   "ok": true,
   "bytes": 111611,
-  "sha256": "bebeaf57fceca158991b77ee0ef93e010d34bd8a9c8f7db4623d52817177c711",
-  "abgerufen": "2026-11-05T20:20:21Z"
+  "sha256": "19170d346478355e5689f60de22667f5fc44cb9649b7e47229d29c1331fcc9a7",
+  "abgerufen": "2026-11-05T22:28:32Z"
  },
  {
   "datei": "stmb-landkreise.html",
@@ -42,7 +42,7 @@
   "ok": true,
   "bytes": 193685,
   "sha256": "c39db29706853de33a78307084adbe337c18ef174ad3dc8481fec2bf86bab2fb",
-  "abgerufen": "2026-11-05T20:20:22Z"
+  "abgerufen": "2026-11-05T22:28:34Z"
  },
  {
   "datei": "stmb-kreisfreie-staedte.html",
@@ -51,7 +51,7 @@
   "ok": true,
   "bytes": 95915,
   "sha256": "dc9057a29935a37a38500227654bc8f3242ebabe84be1161a19ac39b36e839f6",
-  "abgerufen": "2026-11-05T20:20:23Z"
+  "abgerufen": "2026-11-05T22:28:35Z"
  },
  {
   "datei": "stmb-wohngeld.html",
@@ -60,7 +60,7 @@
   "ok": true,
   "bytes": 97203,
   "sha256": "051925b3adb6c57631bbd5d17904e92e43aa9629c556dffd238b6401b8212422",
-  "abgerufen": "2026-11-05T20:20:24Z"
+  "abgerufen": "2026-11-05T22:28:36Z"
  },
  {
   "datei": "stmas-jobcenter.html",
@@ -69,6 +69,870 @@
   "ok": false,
   "bytes": 0,
   "sha256": null,
-  "abgerufen": "2026-11-05T20:20:25Z"
+  "abgerufen": "2026-11-05T22:28:37Z"
+ },
+ {
+  "datei": "start-09161.html",
+  "url": "http://www.ingolstadt.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 207960,
+  "sha256": "e012d4aa43262e4128010dfe1018a7912cc7b1ded63b4877988f46fe375ddb01",
+  "abgerufen": "2026-11-05T22:28:39Z"
+ },
+ {
+  "datei": "start-09162.html",
+  "url": "http://www.muenchen.de/rathaus/Stadtverwaltung.html",
+  "http": 200,
+  "ok": true,
+  "bytes": 196198,
+  "sha256": "c73b15979e5c573a88ca34a91dedfc31b18de93bc7259d151adfdd151b3bb26e",
+  "abgerufen": "2026-11-05T22:28:41Z"
+ },
+ {
+  "datei": "start-09163.html",
+  "url": "http://www.rosenheim.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 123402,
+  "sha256": "f22ed4d0cd740331fc71ed22884e0e841bd53f034ff14c0502851e4e8c03fd84",
+  "abgerufen": "2026-11-05T22:28:43Z"
+ },
+ {
+  "datei": "start-09171.html",
+  "url": "http://www.lra-aoe.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 173449,
+  "sha256": "d7f5beb1c895792c9c24ce84589be4ec14b12c6ecc23089aabd49b08428532d5",
+  "abgerufen": "2026-11-05T22:28:44Z"
+ },
+ {
+  "datei": "start-09172.html",
+  "url": "http://www.lra-bgl.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 491301,
+  "sha256": "db17818632ef102217596a4314852288506707c270b4d3f8970d1564b3ce886c",
+  "abgerufen": "2026-11-05T22:28:46Z"
+ },
+ {
+  "datei": "start-09173.html",
+  "url": "http://www.lra-toelz.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 148777,
+  "sha256": "216bb67ac6ab89be987f911b79183c8e6a86b74fef994b81f946af9e1c8be111",
+  "abgerufen": "2026-11-05T22:28:48Z"
+ },
+ {
+  "datei": "start-09174.html",
+  "url": "http://www.landratsamt-dachau.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 166658,
+  "sha256": "a246dbbed429e5ccda11cfa4f79cf4c8476d91609b2fd6d8ab50bd63399d9a1d",
+  "abgerufen": "2026-11-05T22:28:50Z"
+ },
+ {
+  "datei": "start-09175.html",
+  "url": "http://www.lra-ebe.de/",
+  "http": 0,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-05T22:29:53Z"
+ },
+ {
+  "datei": "start-09176.html",
+  "url": "http://www.landkreis-eichstaett.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 217170,
+  "sha256": "0b846156a13369d8a12dea1c9ce88b2ba33fca635ad1d8d967959591005c8cb0",
+  "abgerufen": "2026-11-05T22:29:55Z"
+ },
+ {
+  "datei": "start-09177.html",
+  "url": "http://www.landkreis-erding.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 470176,
+  "sha256": "aab704924a4a07fa7a284fda4e34883a5229fd6b8616828f1665b53c659ea2b4",
+  "abgerufen": "2026-11-05T22:29:57Z"
+ },
+ {
+  "datei": "start-09178.html",
+  "url": "http://www.kreis-freising.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 196892,
+  "sha256": "24ea9473b5bb4e94f167eaa93023e7eefba916462195751bc5b046120c289368",
+  "abgerufen": "2026-11-05T22:29:58Z"
+ },
+ {
+  "datei": "start-09179.html",
+  "url": "http://www.lra-ffb.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 128849,
+  "sha256": "c699f58750fd29f4b141caf6b52094a930652210902970b9c4b8d9a16d0ce396",
+  "abgerufen": "2026-11-05T22:30:00Z"
+ },
+ {
+  "datei": "start-09180.html",
+  "url": "http://www.lra-gap.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 53509,
+  "sha256": "b4b89107d7df688dfd4814233631a0d44db5eb8be5c1bd9e7ecb6804fc6d8b61",
+  "abgerufen": "2026-11-05T22:30:02Z"
+ },
+ {
+  "datei": "start-09181.html",
+  "url": "http://www.landkreis-landsberg.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 76150,
+  "sha256": "0c54206c567b92d5c10ea3b84ba2da2f43332f63dbf5d6eadcf524eac41bcdd5",
+  "abgerufen": "2026-11-05T22:30:03Z"
+ },
+ {
+  "datei": "start-09182.html",
+  "url": "http://www.landkreis-miesbach.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 39525,
+  "sha256": "332e79207d5c04d4959f64d2b7cef0b448735124251bd89aab812f9ded0b4730",
+  "abgerufen": "2026-11-05T22:30:05Z"
+ },
+ {
+  "datei": "start-09183.html",
+  "url": "http://www.lra-mue.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 59306,
+  "sha256": "57f1daa166eaf6659c83f0826626c7318dc3f28a900cb61180625d468ffe16fd",
+  "abgerufen": "2026-11-05T22:30:06Z"
+ },
+ {
+  "datei": "start-09184.html",
+  "url": "http://www.landkreis-muenchen.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 82330,
+  "sha256": "ae9feaa943b62e3017e33e37eeb9d04034d6c8b576de76a1905402a9682a48fd",
+  "abgerufen": "2026-11-05T22:30:08Z"
+ },
+ {
+  "datei": "start-09185.html",
+  "url": "http://www.neuburg-schrobenhausen.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 137615,
+  "sha256": "fcc83d4b4c888800406e2fa8ceea4755bb913429be4b57a0442ed1820a926acf",
+  "abgerufen": "2026-11-05T22:30:09Z"
+ },
+ {
+  "datei": "start-09186.html",
+  "url": "http://www.landkreis-pfaffenhofen.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 141386,
+  "sha256": "f4589178940b473fdab5bc790d40dcabf9ab6db7a609f13c41f3ba2baee8dfcd",
+  "abgerufen": "2026-11-05T22:30:10Z"
+ },
+ {
+  "datei": "start-09187.html",
+  "url": "http://www.landkreis-rosenheim.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 436523,
+  "sha256": "c7a63ff1311c269ff186c7a8277a837098c0e914a8c877d1471ccc839fbc401e",
+  "abgerufen": "2026-11-05T22:30:14Z"
+ },
+ {
+  "datei": "start-09188.html",
+  "url": "http://www.landkreis-starnberg.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 446753,
+  "sha256": "ccc8bb8e7cc9d9ff1824096f610850471630dfa089c1a605f50e9a6f14345a30",
+  "abgerufen": "2026-11-05T22:30:15Z"
+ },
+ {
+  "datei": "start-09189.html",
+  "url": "http://www.traunstein.com/",
+  "http": 200,
+  "ok": true,
+  "bytes": 52100,
+  "sha256": "ee80dbfbdc7c0ca9a912b1564d05e7ad5c2463fbb2c7e193f02278a11a470d09",
+  "abgerufen": "2026-11-05T22:30:16Z"
+ },
+ {
+  "datei": "start-09190.html",
+  "url": "http://www.weilheim-schongau.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 138248,
+  "sha256": "c6a0a8307f95d48ce5590e531ed23ed5c17df12db5e7e318973bdde04d4ed586",
+  "abgerufen": "2026-11-05T22:30:18Z"
+ },
+ {
+  "datei": "start-09261.html",
+  "url": "http://www.landshut.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 485492,
+  "sha256": "1cdaa2ce477966e1e8f5d9fbfecf4b83261a692defaffe4f452d61fcc890cb50",
+  "abgerufen": "2026-11-05T22:30:20Z"
+ },
+ {
+  "datei": "start-09262.html",
+  "url": "http://www.passau.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 99005,
+  "sha256": "ce42aaa4e3b332cbad8383db8ec8fec9ab7878bc1392cdd5641a419ebabb2e54",
+  "abgerufen": "2026-11-05T22:30:22Z"
+ },
+ {
+  "datei": "start-09263.html",
+  "url": "http://www.straubing.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 74513,
+  "sha256": "ec636ab0755708f6de57bb808d770581e89e490a65b11c410ec399ba434b0494",
+  "abgerufen": "2026-11-05T22:30:23Z"
+ },
+ {
+  "datei": "start-09271.html",
+  "url": "http://www.landkreis-deggendorf.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 80566,
+  "sha256": "b97e925b6d36a0bc7ab7cae87e7e6cbe668ca01f3294d308dedb9455e6a7ecc9",
+  "abgerufen": "2026-11-05T22:30:25Z"
+ },
+ {
+  "datei": "start-09272.html",
+  "url": "http://www.landkreis-frg.de/",
+  "http": 0,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-05T22:30:29Z"
+ },
+ {
+  "datei": "start-09273.html",
+  "url": "http://www.landkreis-kelheim.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 181357,
+  "sha256": "7354861321b1b0b83385b2749504a11560cc1db0d15dde47dd53fd0a37f2995a",
+  "abgerufen": "2026-11-05T22:30:30Z"
+ },
+ {
+  "datei": "start-09274.html",
+  "url": "http://www.landkreis-landshut.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 703,
+  "sha256": "557b5e9015b4963a130c7039e077b3ec0306d401b6ee13d631721d5d969d2917",
+  "abgerufen": "2026-11-05T22:30:31Z"
+ },
+ {
+  "datei": "start-09275.html",
+  "url": "http://www.landkreis-passau.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 257301,
+  "sha256": "0bc999adc29b2c920df6911b92efc48bd6818a50089922f0b0a46b6e77e44987",
+  "abgerufen": "2026-11-05T22:30:33Z"
+ },
+ {
+  "datei": "start-09276.html",
+  "url": "http://www.landkreis-regen.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 154487,
+  "sha256": "6b1ec3a80cf54fd1d492ba5923126078d8d15ceba183ddc4bf9cb7e7d5fb359a",
+  "abgerufen": "2026-11-05T22:30:40Z"
+ },
+ {
+  "datei": "start-09277.html",
+  "url": "http://www.rottal-inn.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 153014,
+  "sha256": "52d9ad479f54c5ded3312cb7c726be5f2b263bec544b821504fe1ec3de9596c2",
+  "abgerufen": "2026-11-05T22:30:41Z"
+ },
+ {
+  "datei": "start-09278.html",
+  "url": "http://www.landkreis-straubing-bogen.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 174344,
+  "sha256": "34703e9ba54de19460ae1d30a4549ce13418087d4d6c0fc0fa87f33d42b9915a",
+  "abgerufen": "2026-11-05T22:30:44Z"
+ },
+ {
+  "datei": "start-09279.html",
+  "url": "http://www.landkreis-dingolfing-landau.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 366959,
+  "sha256": "d4ef5efe39b4d1ddc895a0f66b23d66db215cfadcd7ece80b0be56f63b18b11d",
+  "abgerufen": "2026-11-05T22:30:46Z"
+ },
+ {
+  "datei": "start-09361.html",
+  "url": "http://www.amberg.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 326164,
+  "sha256": "4527009307f86d2b1037be7fabe75b12b19af88338474fe508d6e3be7a7793f8",
+  "abgerufen": "2026-11-05T22:30:48Z"
+ },
+ {
+  "datei": "start-09362.html",
+  "url": "http://www.regensburg.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 71555,
+  "sha256": "0c6a7b7db465d47cb4932eee2f7ba7b140124e1a102295b3adf74f94a37a83ce",
+  "abgerufen": "2026-11-05T22:30:49Z"
+ },
+ {
+  "datei": "start-09363.html",
+  "url": "http://www.weiden.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 51977,
+  "sha256": "420b9e37b11e861b4f431f8663e9aec0402ac98376edb97045cee74f999406a5",
+  "abgerufen": "2026-11-05T22:30:50Z"
+ },
+ {
+  "datei": "start-09371.html",
+  "url": "http://www.kreis-as.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 174324,
+  "sha256": "07b9496bb8bccc6e3209e09e1e9896d6b66ef08b03d2f16b0b2f102ed84a6bcb",
+  "abgerufen": "2026-11-05T22:30:51Z"
+ },
+ {
+  "datei": "start-09372.html",
+  "url": "http://www.landkreis-cham.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 124054,
+  "sha256": "8475f528afd0eb883c89d8dd67d25290143324ecc1b111b876f5bb9b832f1a11",
+  "abgerufen": "2026-11-05T22:30:53Z"
+ },
+ {
+  "datei": "start-09373.html",
+  "url": "http://www.landkreis-neumarkt.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 361362,
+  "sha256": "f8f93dda65563df006b7a4ee36130ee481541c050cad9ca8f701f5d81ef6320a",
+  "abgerufen": "2026-11-05T22:30:55Z"
+ },
+ {
+  "datei": "start-09374.html",
+  "url": "http://www.neustadt.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 529647,
+  "sha256": "a7618220bca6bd2e5e2f708d9e61d33e53afaa4661daaee7c5659181932eda7e",
+  "abgerufen": "2026-11-05T22:30:56Z"
+ },
+ {
+  "datei": "start-09375.html",
+  "url": "http://www.landkreis-regensburg.de/",
+  "http": 503,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-05T22:31:01Z"
+ },
+ {
+  "datei": "start-09376.html",
+  "url": "http://www.landkreis-schwandorf.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 84117,
+  "sha256": "234e54261de1dadc118fbe3677fcab2679b5f0fb83a2fb767c252b2124ed10a8",
+  "abgerufen": "2026-11-05T22:31:02Z"
+ },
+ {
+  "datei": "start-09377.html",
+  "url": "http://www.kreis-tir.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 100648,
+  "sha256": "58e82be8836d1f145f6e14a272d4ff864c6cf0951e4638c3f98944ab324644fa",
+  "abgerufen": "2026-11-05T22:31:03Z"
+ },
+ {
+  "datei": "start-09461.html",
+  "url": "http://www.bamberg.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 913,
+  "sha256": "d2e26afcbdfc680e5d060a1db905c0da9e02c4a65474042d793c5056c7e2eec9",
+  "abgerufen": "2026-11-05T22:31:04Z"
+ },
+ {
+  "datei": "start-09462.html",
+  "url": "http://www.bayreuth.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 256612,
+  "sha256": "d7a35c2d6e746a6db0f96b940230df091736631f016fdafe8204208532696bf2",
+  "abgerufen": "2026-11-05T22:31:07Z"
+ },
+ {
+  "datei": "start-09463.html",
+  "url": "http://www.coburg.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 162108,
+  "sha256": "3efd17c075ec00c8e7dfd2cd9280c9d4cefc336a1b778a8be9dbb06f07013dc9",
+  "abgerufen": "2026-11-05T22:31:08Z"
+ },
+ {
+  "datei": "start-09464.html",
+  "url": "http://www.hof.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 277571,
+  "sha256": "8b3886c500e22cef893a4fa62f3207b1a58c7dd0fe22462cfcfe4e157ea5866e",
+  "abgerufen": "2026-11-05T22:31:10Z"
+ },
+ {
+  "datei": "start-09471.html",
+  "url": "http://www.landkreis-bamberg.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 175493,
+  "sha256": "9472d49237e640d500597472a4e08c503107341ced89de4a5513a73d146aea69",
+  "abgerufen": "2026-11-05T22:31:12Z"
+ },
+ {
+  "datei": "start-09472.html",
+  "url": "http://www.landkreis-bayreuth.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 330521,
+  "sha256": "ed4632bd5ec4033c254745fb8038eaaf5a874b00425b0433cdb5868b634506a2",
+  "abgerufen": "2026-11-05T22:31:14Z"
+ },
+ {
+  "datei": "start-09473.html",
+  "url": "http://www.landkreis-coburg.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 86968,
+  "sha256": "e14c58cf4f5d9d6111e9adb7d7dd0b398855fe43f8aff5c019b75174aefd221d",
+  "abgerufen": "2026-11-05T22:31:15Z"
+ },
+ {
+  "datei": "start-09474.html",
+  "url": "http://www.lra-fo.de/",
+  "http": 301,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-05T22:31:16Z"
+ },
+ {
+  "datei": "start-09475.html",
+  "url": "http://www.landkreis-hof.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 795725,
+  "sha256": "fefa7bc69fda68965d14dff8c481bcc17467c6a4a09de66efd362929be8f8952",
+  "abgerufen": "2026-11-05T22:31:18Z"
+ },
+ {
+  "datei": "start-09476.html",
+  "url": "http://www.landkreis-kronach.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 208483,
+  "sha256": "a4eef23a91d9ee4332343050b3e5ee5f6dbed934152abf8e9ee37610c11d3a9e",
+  "abgerufen": "2026-11-05T22:31:21Z"
+ },
+ {
+  "datei": "start-09477.html",
+  "url": "http://www.landkreis-kulmbach.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 108750,
+  "sha256": "84bab44319f47387af05a080350de41d6f76905f3793ad514a67f6b8fdc87d79",
+  "abgerufen": "2026-11-05T22:31:23Z"
+ },
+ {
+  "datei": "start-09478.html",
+  "url": "http://www.landkreis-lichtenfels.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 36827,
+  "sha256": "155a89a2442f7094d0a6136dc61a4040f96ef9b538e3230fab7a12999b1c2120",
+  "abgerufen": "2026-11-05T22:31:25Z"
+ },
+ {
+  "datei": "start-09479.html",
+  "url": "http://www.landkreis-wunsiedel.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 485180,
+  "sha256": "81b65ecdc71adbee45470ed7e644e33f1d4096d310e15e93f48b3d21f233e0c9",
+  "abgerufen": "2026-11-05T22:31:27Z"
+ },
+ {
+  "datei": "start-09561.html",
+  "url": "http://www.ansbach.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 178507,
+  "sha256": "37216c8aafc08879376b5312769be26eb55c862f752479f9c04ef4704696a9da",
+  "abgerufen": "2026-11-05T22:31:28Z"
+ },
+ {
+  "datei": "start-09562.html",
+  "url": "http://www.erlangen.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 157007,
+  "sha256": "ea10b1e44f157f7da97845b2ff5ee12329bcdae3ea8fe2ea174320b6b965d65f",
+  "abgerufen": "2026-11-05T22:31:31Z"
+ },
+ {
+  "datei": "start-09563.html",
+  "url": "http://www.fuerth.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 326241,
+  "sha256": "bbf6b53873b03c17f631599a570112f521c82a9a1f2ea1b21da2c3fb74e14192",
+  "abgerufen": "2026-11-05T22:31:31Z"
+ },
+ {
+  "datei": "start-09564.html",
+  "url": "http://www.nuernberg.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 164361,
+  "sha256": "a61c2f30c33ec3ec1d772d8fb9b09d51394f39609be7212c589854767dcfe6be",
+  "abgerufen": "2026-11-05T22:31:32Z"
+ },
+ {
+  "datei": "start-09565.html",
+  "url": "http://www.schwabach.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 96431,
+  "sha256": "7892897db0d7e857548ed10767559426701c6834ea6e3e363a161091b6f7f251",
+  "abgerufen": "2026-11-05T22:31:34Z"
+ },
+ {
+  "datei": "start-09571.html",
+  "url": "http://www.landkreis-ansbach.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 73638,
+  "sha256": "113ea058520cdd3115b9389878bfa2255faf36d87c1c0d9c95af4bcd2bea3944",
+  "abgerufen": "2026-11-05T22:31:36Z"
+ },
+ {
+  "datei": "start-09572.html",
+  "url": "http://www.erlangen-hoechstadt.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 188990,
+  "sha256": "9b4a0f3c8137984429a5d4dae59bde1a0f70f51cf50911f9ac07951f30e69349",
+  "abgerufen": "2026-11-05T22:31:38Z"
+ },
+ {
+  "datei": "start-09573.html",
+  "url": "http://www.landkreis-fuerth.de/",
+  "http": 403,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-05T22:31:38Z"
+ },
+ {
+  "datei": "start-09574.html",
+  "url": "http://www.nuernberger-land.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 494567,
+  "sha256": "d42a49a6646058e8b917d767450d717d8cf7734ed11a192e8d95c54bcbecfcd3",
+  "abgerufen": "2026-11-05T22:31:40Z"
+ },
+ {
+  "datei": "start-09575.html",
+  "url": "http://www.landkreis-nea.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 75902,
+  "sha256": "f6f28714b27ee1628601a722d5f82b019a0420f5ae48c32a53d3fddd20b280bc",
+  "abgerufen": "2026-11-05T22:31:42Z"
+ },
+ {
+  "datei": "start-09576.html",
+  "url": "http://www.landratsamt-roth.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 93060,
+  "sha256": "ec99c44a6f453dd8fc03a4d71c4f95a579eeb4f9ce15d5487c0300f17ef8eb25",
+  "abgerufen": "2026-11-05T22:31:44Z"
+ },
+ {
+  "datei": "start-09577.html",
+  "url": "http://www.landkreis-wug.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 52990,
+  "sha256": "4aca36e7d60f3b3875e39fd706aeaaff2d1c94a5955ba2353f842ad1cc1625e0",
+  "abgerufen": "2026-11-05T22:31:46Z"
+ },
+ {
+  "datei": "start-09661.html",
+  "url": "http://www.aschaffenburg.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 123572,
+  "sha256": "e2c9aee56a2d1a745ae9f0b9c96fb100e620db876e1cf8e85e5e9d79db505109",
+  "abgerufen": "2026-11-05T22:31:47Z"
+ },
+ {
+  "datei": "start-09662.html",
+  "url": "http://www.schweinfurt.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 53290,
+  "sha256": "692253796539c41a86f6db173beda005c9fe12c6def0b987d81bde40e56a6ea5",
+  "abgerufen": "2026-11-05T22:31:48Z"
+ },
+ {
+  "datei": "start-09663.html",
+  "url": "http://www.wuerzburg.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 133645,
+  "sha256": "19f8f3a79813dda9aeb5a1951c43d9ce6689ba12dbd632fcab4d07527a2f09d4",
+  "abgerufen": "2026-11-05T22:31:50Z"
+ },
+ {
+  "datei": "start-09671.html",
+  "url": "http://www.landkreis-aschaffenburg.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 120958,
+  "sha256": "875416108be2693a73db22555808e65db64829da2e82ddd4b3bfad49fd77e6d6",
+  "abgerufen": "2026-11-05T22:31:51Z"
+ },
+ {
+  "datei": "start-09672.html",
+  "url": "http://www.landkreis-badkissingen.de/",
+  "http": 0,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-05T22:31:52Z"
+ },
+ {
+  "datei": "start-09673.html",
+  "url": "http://www.rhoen-grabfeld.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 73163,
+  "sha256": "8702fb804af68f9ad2e97bc6c4992d0d827ec92f263ffd3796a575a8a30d3755",
+  "abgerufen": "2026-11-05T22:31:56Z"
+ },
+ {
+  "datei": "start-09674.html",
+  "url": "http://www.hassberge.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 491655,
+  "sha256": "cb83fdd659ab86c6c3e4009d37c81a60cd14bc876d776edae2f6d5976ad40f60",
+  "abgerufen": "2026-11-05T22:31:58Z"
+ },
+ {
+  "datei": "start-09675.html",
+  "url": "http://www.kitzingen.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 433817,
+  "sha256": "e233a01599aaeb54b4379ddf6ee4bcd17495ad27235f4e8e2e46bb8e65edf58d",
+  "abgerufen": "2026-11-05T22:32:00Z"
+ },
+ {
+  "datei": "start-09676.html",
+  "url": "http://www.landkreis-miltenberg.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 138685,
+  "sha256": "9829ff716d0bfa464f252613cfd88ab077659f7bbe361e26a2a1e5ff11fe8b73",
+  "abgerufen": "2026-11-05T22:32:01Z"
+ },
+ {
+  "datei": "start-09677.html",
+  "url": "http://www.main-spessart.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 181180,
+  "sha256": "6b3214f237ce73e68bd2d4db1ce75debbe6068934583ad9123dadc39efe24859",
+  "abgerufen": "2026-11-05T22:32:03Z"
+ },
+ {
+  "datei": "start-09678.html",
+  "url": "http://www.landkreis-schweinfurt.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 262911,
+  "sha256": "12b49d9a852abfae2319bac9686a8a7d433ef568a500108fd31403a0c59a8310",
+  "abgerufen": "2026-11-05T22:32:05Z"
+ },
+ {
+  "datei": "start-09679.html",
+  "url": "http://www.landkreis-wuerzburg.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 45020,
+  "sha256": "b81c1bc6e4e34f5a1c2922d72fe9d7dae83bdd78069b918c522b0bbc44b87f01",
+  "abgerufen": "2026-11-05T22:32:06Z"
+ },
+ {
+  "datei": "start-09761.html",
+  "url": "http://www.augsburg.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 1735275,
+  "sha256": "07bb5f4d3d58849722149c27ec6f145de3beaf9c88819c4f8ae168db8ae8d919",
+  "abgerufen": "2026-11-05T22:32:08Z"
+ },
+ {
+  "datei": "start-09762.html",
+  "url": "http://www.kaufbeuren.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 68010,
+  "sha256": "eaff7e3274198e62452e198af6712d5c80046070b4472528ca39b7db992884c2",
+  "abgerufen": "2026-11-05T22:32:12Z"
+ },
+ {
+  "datei": "start-09763.html",
+  "url": "http://www.kempten.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 937954,
+  "sha256": "b9f14540078a966aa0abaa256613f67daddb0ac095cd4b14f2136b81f2d3afe1",
+  "abgerufen": "2026-11-05T22:32:15Z"
+ },
+ {
+  "datei": "start-09764.html",
+  "url": "http://www.memmingen.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 44810,
+  "sha256": "6b4bb7dd9eadb8e6dadccd5dc12ad5747838bb6b52b536cfd61cca292dd347e3",
+  "abgerufen": "2026-11-05T22:32:16Z"
+ },
+ {
+  "datei": "start-09771.html",
+  "url": "http://www.lra-aic-fdb.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 1029134,
+  "sha256": "550ebfc73db33229c37e4c9e77b1f40e0248a78859aa4c7d3a368762f4e83481",
+  "abgerufen": "2026-11-05T22:32:17Z"
+ },
+ {
+  "datei": "start-09772.html",
+  "url": "http://www.landkreis-augsburg.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 731251,
+  "sha256": "12abca732430bccc489ecde38f16600c37d9f402c1e74a24c818e19d221b9390",
+  "abgerufen": "2026-11-05T22:32:18Z"
+ },
+ {
+  "datei": "start-09773.html",
+  "url": "http://www.landkreis-dillingen.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 199123,
+  "sha256": "6a811cff395750be61850822d0f8baa8822550238bb5e7a6e69c50d0f19d7e39",
+  "abgerufen": "2026-11-05T22:32:23Z"
+ },
+ {
+  "datei": "start-09774.html",
+  "url": "http://www.landkreis-guenzburg.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 435626,
+  "sha256": "af5a988e84701cf6bb7109a432a902dc09d160d4167094964a00314f135ad423",
+  "abgerufen": "2026-11-05T22:32:25Z"
+ },
+ {
+  "datei": "start-09775.html",
+  "url": "http://www.landkreis.neu-ulm.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 155113,
+  "sha256": "3d6df9b9ef5a61caee06b490cd5f50e7d2bbe45ce4d36fc886aae830292cb8d2",
+  "abgerufen": "2026-11-05T22:32:27Z"
+ },
+ {
+  "datei": "start-09776.html",
+  "url": "http://www.landkreis-lindau.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 123978,
+  "sha256": "85fdd6a0398f26dde320f13d16b52d13e46d161391d941be3303c59bc1fa23bc",
+  "abgerufen": "2026-11-05T22:32:28Z"
+ },
+ {
+  "datei": "start-09777.html",
+  "url": "http://www.lra-ostallgaeu.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 872,
+  "sha256": "4b3446a8e77d725bd1ef522a21672e9789e962f73d59423c54324e3c3e62cfd9",
+  "abgerufen": "2026-11-05T22:32:28Z"
+ },
+ {
+  "datei": "start-09778.html",
+  "url": "http://www.unterallgaeu.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 18800,
+  "sha256": "5d000b641b022bd7e462df68ea0c7837db8d9bfbf4df9aacf1fd9a5e448eab00",
+  "abgerufen": "2026-11-05T22:32:29Z"
+ },
+ {
+  "datei": "start-09779.html",
+  "url": "http://www.donau-ries.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 40498,
+  "sha256": "09d9870752f63366e2e7bf718debb709827750ccf009474f848e93a344fca602",
+  "abgerufen": "2026-11-05T22:32:32Z"
+ },
+ {
+  "datei": "start-09780.html",
+  "url": "http://www.oberallgaeu.org/",
+  "http": 200,
+  "ok": true,
+  "bytes": 92257,
+  "sha256": "e5f9906155dd49544d4c1112a9113adb2b27be80be391c7504e48048facea8d4",
+  "abgerufen": "2026-11-05T22:32:33Z"
  }
 ]
