@@ -6,9 +6,10 @@
   "engines": { "node": ">=22" },
   "scripts": {
     "build:web": "node scripts/build.js",
+    "build:data": "node tools/build-plz-data.js",
     "build:app": "node scripts/build-app.js && cd app && npx cap sync",
     "test": "npm run build:web && npm run test:rules && npm run test:dom",
-    "test:rules": "node test/test.js && node test/test-strict.js && node test/test-beh.js && node test/test-faelle.js",
+    "test:rules": "node test/test.js && node test/test-strict.js && node test/test-beh.js && node test/test-faelle.js && node test/test-plz.js",
     "test:dom": "node test/dom-test.js",
     "test:e2e": "npm run build:web && node test/e2e-beh.js",
     "test:app": "node scripts/build-app.js && node test/app-test.js"
