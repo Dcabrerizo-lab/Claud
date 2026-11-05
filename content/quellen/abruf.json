@@ -6,7 +6,7 @@
   "ok": true,
   "bytes": 387968,
   "sha256": "15f24dc4b5045eb7237d0ec0a48d643649dac568e7d1055d386ffae4c3ffdf25",
-  "abgerufen": "2026-11-05T22:33:17Z"
+  "abgerufen": "2026-11-05T22:44:35Z"
  },
  {
   "datei": "wogv-anlage.html",
@@ -15,7 +15,7 @@
   "ok": false,
   "bytes": 0,
   "sha256": null,
-  "abgerufen": "2026-11-05T22:34:20Z"
+  "abgerufen": "2026-11-05T22:45:38Z"
  },
  {
   "datei": "wogv-index.html",
@@ -24,16 +24,16 @@
   "ok": false,
   "bytes": 0,
   "sha256": null,
-  "abgerufen": "2026-11-05T22:35:23Z"
+  "abgerufen": "2026-11-05T22:46:41Z"
  },
  {
   "datei": "wogv-buzer.html",
   "url": "https://www.buzer.de/Anlage_WoGV.htm",
   "http": 200,
   "ok": true,
-  "bytes": 111364,
-  "sha256": "69b4fb4d76d707695c45931faf116831e50f3cc82309e8fdf174ff5dd3f8c77f",
-  "abgerufen": "2026-11-05T22:35:24Z"
+  "bytes": 111611,
+  "sha256": "8be97e85e83ad082229272b77d6472ca65016935e62abe74c366b0c73c561ae0",
+  "abgerufen": "2026-11-05T22:46:41Z"
  },
  {
   "datei": "stmb-landkreise.html",
@@ -42,7 +42,7 @@
   "ok": true,
   "bytes": 193685,
   "sha256": "c39db29706853de33a78307084adbe337c18ef174ad3dc8481fec2bf86bab2fb",
-  "abgerufen": "2026-11-05T22:35:25Z"
+  "abgerufen": "2026-11-05T22:46:42Z"
  },
  {
   "datei": "stmb-kreisfreie-staedte.html",
@@ -51,7 +51,7 @@
   "ok": true,
   "bytes": 95915,
   "sha256": "dc9057a29935a37a38500227654bc8f3242ebabe84be1161a19ac39b36e839f6",
-  "abgerufen": "2026-11-05T22:35:26Z"
+  "abgerufen": "2026-11-05T22:46:43Z"
  },
  {
   "datei": "stmb-wohngeld.html",
@@ -60,7 +60,7 @@
   "ok": true,
   "bytes": 97203,
   "sha256": "051925b3adb6c57631bbd5d17904e92e43aa9629c556dffd238b6401b8212422",
-  "abgerufen": "2026-11-05T22:35:27Z"
+  "abgerufen": "2026-11-05T22:46:44Z"
  },
  {
   "datei": "stmas-jobcenter.html",
@@ -69,7 +69,7 @@
   "ok": false,
   "bytes": 0,
   "sha256": null,
-  "abgerufen": "2026-11-05T22:35:29Z"
+  "abgerufen": "2026-11-05T22:46:46Z"
  },
  {
   "datei": "start-09161.html",
@@ -77,8 +77,8 @@
   "http": 200,
   "ok": true,
   "bytes": 207960,
-  "sha256": "931c1b4d7aa40141e6446e5de0082ee19ea03b9b11594f6ff920258592c43f46",
-  "abgerufen": "2026-11-05T22:35:31Z"
+  "sha256": "616c10588707680e9bddedc01d5485eae22f2ee3f1c5cfde139da8b40c4a7fec",
+  "abgerufen": "2026-11-05T22:46:47Z"
  },
  {
   "datei": "start-09162.html",
@@ -87,7 +87,7 @@
   "ok": true,
   "bytes": 196198,
   "sha256": "c73b15979e5c573a88ca34a91dedfc31b18de93bc7259d151adfdd151b3bb26e",
-  "abgerufen": "2026-11-05T22:35:33Z"
+  "abgerufen": "2026-11-05T22:46:49Z"
  },
  {
   "datei": "start-09163.html",
@@ -96,7 +96,7 @@
   "ok": true,
   "bytes": 123402,
   "sha256": "f22ed4d0cd740331fc71ed22884e0e841bd53f034ff14c0502851e4e8c03fd84",
-  "abgerufen": "2026-11-05T22:35:35Z"
+  "abgerufen": "2026-11-05T22:46:51Z"
  },
  {
   "datei": "start-09171.html",
@@ -104,8 +104,8 @@
   "http": 200,
   "ok": true,
   "bytes": 173449,
-  "sha256": "8c05de87f174ee216a93757031552a5f42045ec15c5691e0e3155339742cac47",
-  "abgerufen": "2026-11-05T22:35:36Z"
+  "sha256": "012c74c954cf0048c19925d57eb2d029cc15b3bc2ee71773a895e4946026a462",
+  "abgerufen": "2026-11-05T22:46:52Z"
  },
  {
   "datei": "start-09172.html",
@@ -114,16 +114,16 @@
   "ok": true,
   "bytes": 483128,
   "sha256": "c833f62f2224937bb0ae7a15a33c1c74df34f8759ce16eefd932ccf8d2d5e047",
-  "abgerufen": "2026-11-05T22:35:38Z"
+  "abgerufen": "2026-11-05T22:46:53Z"
  },
  {
   "datei": "start-09173.html",
   "url": "http://www.lra-toelz.de/",
   "http": 200,
   "ok": true,
-  "bytes": 148798,
-  "sha256": "813afb8ca9a951b64f1bed8f1463bf0eacf352e933c0a029aa5774a3fc1aac99",
-  "abgerufen": "2026-11-05T22:35:40Z"
+  "bytes": 148787,
+  "sha256": "2f5286a13bea6a58b3c894537cd6b0dc062a976eb3e0aeed36b7c04010d98441",
+  "abgerufen": "2026-11-05T22:46:57Z"
  },
  {
   "datei": "start-09174.html",
@@ -132,7 +132,7 @@
   "ok": true,
   "bytes": 166658,
   "sha256": "a246dbbed429e5ccda11cfa4f79cf4c8476d91609b2fd6d8ab50bd63399d9a1d",
-  "abgerufen": "2026-11-05T22:35:42Z"
+  "abgerufen": "2026-11-05T22:46:59Z"
  },
  {
   "datei": "start-09175.html",
@@ -141,7 +141,7 @@
   "ok": false,
   "bytes": 0,
   "sha256": null,
-  "abgerufen": "2026-11-05T22:36:45Z"
+  "abgerufen": "2026-11-05T22:48:02Z"
  },
  {
   "datei": "start-09176.html",
@@ -149,8 +149,8 @@
   "http": 200,
   "ok": true,
   "bytes": 217170,
-  "sha256": "328810d91109161e1ea201e018a661b73afe548989755f61b4a0b4ee3ddba69d",
-  "abgerufen": "2026-11-05T22:36:47Z"
+  "sha256": "c325bf92f3123553dd4469d825a54afd275895858bdebccc61e40a296f211bff",
+  "abgerufen": "2026-11-05T22:48:04Z"
  },
  {
   "datei": "start-09177.html",
@@ -158,8 +158,8 @@
   "http": 200,
   "ok": true,
   "bytes": 470176,
-  "sha256": "3e036b6fc215c29d9c8b8a208a4c683ab65a0b666f2255bd095ba2aa6add87a6",
-  "abgerufen": "2026-11-05T22:36:49Z"
+  "sha256": "e5775c531b9102144a241a4a328e02e4b386e597bf687e0dd82c6322f824bdc9",
+  "abgerufen": "2026-11-05T22:48:06Z"
  },
  {
   "datei": "start-09178.html",
@@ -168,7 +168,7 @@
   "ok": true,
   "bytes": 196892,
   "sha256": "24ea9473b5bb4e94f167eaa93023e7eefba916462195751bc5b046120c289368",
-  "abgerufen": "2026-11-05T22:36:50Z"
+  "abgerufen": "2026-11-05T22:48:07Z"
  },
  {
   "datei": "start-09179.html",
@@ -177,7 +177,7 @@
   "ok": true,
   "bytes": 128849,
   "sha256": "c699f58750fd29f4b141caf6b52094a930652210902970b9c4b8d9a16d0ce396",
-  "abgerufen": "2026-11-05T22:36:52Z"
+  "abgerufen": "2026-11-05T22:48:08Z"
  },
  {
   "datei": "start-09180.html",
@@ -185,8 +185,8 @@
   "http": 200,
   "ok": true,
   "bytes": 53509,
-  "sha256": "e7a73ad2eaac91a25a5dd3995ad5296c007676ce37a66d4e5dd7d9e0e446ae3d",
-  "abgerufen": "2026-11-05T22:36:54Z"
+  "sha256": "46a63f04e387179ce94fe7e122144207679653d7aca004cc77de9027e06bccb7",
+  "abgerufen": "2026-11-05T22:48:10Z"
  },
  {
   "datei": "start-09181.html",
@@ -195,7 +195,7 @@
   "ok": true,
   "bytes": 76150,
   "sha256": "0c54206c567b92d5c10ea3b84ba2da2f43332f63dbf5d6eadcf524eac41bcdd5",
-  "abgerufen": "2026-11-05T22:36:55Z"
+  "abgerufen": "2026-11-05T22:48:11Z"
  },
  {
   "datei": "start-09182.html",
@@ -204,7 +204,7 @@
   "ok": true,
   "bytes": 39525,
   "sha256": "332e79207d5c04d4959f64d2b7cef0b448735124251bd89aab812f9ded0b4730",
-  "abgerufen": "2026-11-05T22:36:57Z"
+  "abgerufen": "2026-11-05T22:48:12Z"
  },
  {
   "datei": "start-09183.html",
@@ -213,7 +213,7 @@
   "ok": true,
   "bytes": 59306,
   "sha256": "57f1daa166eaf6659c83f0826626c7318dc3f28a900cb61180625d468ffe16fd",
-  "abgerufen": "2026-11-05T22:36:58Z"
+  "abgerufen": "2026-11-05T22:48:13Z"
  },
  {
   "datei": "start-09184.html",
@@ -222,7 +222,7 @@
   "ok": true,
   "bytes": 82330,
   "sha256": "ae9feaa943b62e3017e33e37eeb9d04034d6c8b576de76a1905402a9682a48fd",
-  "abgerufen": "2026-11-05T22:36:59Z"
+  "abgerufen": "2026-11-05T22:48:15Z"
  },
  {
   "datei": "start-09185.html",
@@ -231,7 +231,7 @@
   "ok": true,
   "bytes": 137615,
   "sha256": "fcc83d4b4c888800406e2fa8ceea4755bb913429be4b57a0442ed1820a926acf",
-  "abgerufen": "2026-11-05T22:37:01Z"
+  "abgerufen": "2026-11-05T22:48:16Z"
  },
  {
   "datei": "start-09186.html",
@@ -239,8 +239,8 @@
   "http": 200,
   "ok": true,
   "bytes": 141386,
-  "sha256": "cfdfc9cdc8c07f1d611f2c611557b48486a1cf4c89cc2e5881081673f2fd341a",
-  "abgerufen": "2026-11-05T22:37:02Z"
+  "sha256": "5861c87fe3241c60d2bd3984cc5df0f1c450375ffef57f12c6efc740a5e2ab4a",
+  "abgerufen": "2026-11-05T22:48:17Z"
  },
  {
   "datei": "start-09187.html",
@@ -248,8 +248,8 @@
   "http": 200,
   "ok": true,
   "bytes": 436546,
-  "sha256": "fdc5c545ac3bbb3f58bcc72b4d2f8e849a4ee8d4cdac2d2dabb1cccf4c92a4de",
-  "abgerufen": "2026-11-05T22:37:07Z"
+  "sha256": "0da2e1a450b12a4dfcc1b6aa4f3b6fe1c453f2a65b7cee7cd56b403592a3ebc1",
+  "abgerufen": "2026-11-05T22:48:20Z"
  },
  {
   "datei": "start-09188.html",
@@ -258,7 +258,7 @@
   "ok": true,
   "bytes": 446753,
   "sha256": "ccc8bb8e7cc9d9ff1824096f610850471630dfa089c1a605f50e9a6f14345a30",
-  "abgerufen": "2026-11-05T22:37:08Z"
+  "abgerufen": "2026-11-05T22:48:22Z"
  },
  {
   "datei": "start-09189.html",
@@ -267,7 +267,7 @@
   "ok": true,
   "bytes": 52100,
   "sha256": "ee80dbfbdc7c0ca9a912b1564d05e7ad5c2463fbb2c7e193f02278a11a470d09",
-  "abgerufen": "2026-11-05T22:37:09Z"
+  "abgerufen": "2026-11-05T22:48:23Z"
  },
  {
   "datei": "start-09190.html",
@@ -276,7 +276,7 @@
   "ok": true,
   "bytes": 138248,
   "sha256": "c6a0a8307f95d48ce5590e531ed23ed5c17df12db5e7e318973bdde04d4ed586",
-  "abgerufen": "2026-11-05T22:37:11Z"
+  "abgerufen": "2026-11-05T22:48:25Z"
  },
  {
   "datei": "start-09261.html",
@@ -284,8 +284,8 @@
   "http": 200,
   "ok": true,
   "bytes": 485492,
-  "sha256": "a550cc42ddbd12aba2f607661b79dd2014be0a0b8d6a90ce3ed282b481604301",
-  "abgerufen": "2026-11-05T22:37:13Z"
+  "sha256": "244366781e50ad5db205c12b0b8b7e654e2a966714915b2bcf7bb3931cbb5816",
+  "abgerufen": "2026-11-05T22:48:26Z"
  },
  {
   "datei": "start-09262.html",
@@ -293,8 +293,8 @@
   "http": 200,
   "ok": true,
   "bytes": 99005,
-  "sha256": "ce42aaa4e3b332cbad8383db8ec8fec9ab7878bc1392cdd5641a419ebabb2e54",
-  "abgerufen": "2026-11-05T22:37:15Z"
+  "sha256": "0162e245e7135a00de6873282bc3cd84c3e19e8a92363842489bb9aaeb12b0bc",
+  "abgerufen": "2026-11-05T22:48:27Z"
  },
  {
   "datei": "start-09263.html",
@@ -302,8 +302,8 @@
   "http": 200,
   "ok": true,
   "bytes": 74513,
-  "sha256": "29fb1b2dbc4d142e9e70bbf6ee8ed1f9b10f9a748d807591da301596b96764f7",
-  "abgerufen": "2026-11-05T22:37:16Z"
+  "sha256": "b23939f944c0685d3f7e3efd480b6729a0716e4fcbc36bc50d1c7d5deb8923c0",
+  "abgerufen": "2026-11-05T22:48:29Z"
  },
  {
   "datei": "start-09271.html",
@@ -311,8 +311,8 @@
   "http": 200,
   "ok": true,
   "bytes": 80566,
-  "sha256": "7ea8d682c2fc9820f1673e7a85fee1678eb96fc066162534caf74fa0e798b781",
-  "abgerufen": "2026-11-05T22:37:17Z"
+  "sha256": "e475837ef55562b7cf8db34f9510eeaacde0b1f2d2540aa523844ad236370d45",
+  "abgerufen": "2026-11-05T22:48:30Z"
  },
  {
   "datei": "start-09272.html",
@@ -321,7 +321,7 @@
   "ok": false,
   "bytes": 0,
   "sha256": null,
-  "abgerufen": "2026-11-05T22:37:21Z"
+  "abgerufen": "2026-11-05T22:48:34Z"
  },
  {
   "datei": "start-09273.html",
@@ -329,8 +329,8 @@
   "http": 200,
   "ok": true,
   "bytes": 181357,
-  "sha256": "30c1068148c9a299b0793209dac6bad6d509567148d06c22aa60a6ea993ec11a",
-  "abgerufen": "2026-11-05T22:37:23Z"
+  "sha256": "428720b49e412c7aede19192aab3a486f67c890e61d464038cd89b0c46a4d354",
+  "abgerufen": "2026-11-05T22:48:35Z"
  },
  {
   "datei": "start-09274.html",
@@ -339,7 +339,7 @@
   "ok": true,
   "bytes": 703,
   "sha256": "557b5e9015b4963a130c7039e077b3ec0306d401b6ee13d631721d5d969d2917",
-  "abgerufen": "2026-11-05T22:37:23Z"
+  "abgerufen": "2026-11-05T22:48:36Z"
  },
  {
   "datei": "start-09275.html",
@@ -347,8 +347,8 @@
   "http": 200,
   "ok": true,
   "bytes": 257301,
-  "sha256": "54fe010f8704edc7c261910551f1eb252c49ad512ba928d79054446901f1e1ab",
-  "abgerufen": "2026-11-05T22:37:26Z"
+  "sha256": "2bf6c2ffef2475df361ae0d27a2e1d93fb1b096651a990f929eadfa5ab0f9fb7",
+  "abgerufen": "2026-11-05T22:48:38Z"
  },
  {
   "datei": "start-09276.html",
@@ -357,16 +357,16 @@
   "ok": true,
   "bytes": 154487,
   "sha256": "6b1ec3a80cf54fd1d492ba5923126078d8d15ceba183ddc4bf9cb7e7d5fb359a",
-  "abgerufen": "2026-11-05T22:37:31Z"
+  "abgerufen": "2026-11-05T22:48:44Z"
  },
  {
   "datei": "start-09277.html",
   "url": "http://www.rottal-inn.de/",
   "http": 200,
   "ok": true,
-  "bytes": 152981,
-  "sha256": "031b7b2b3bacc391c9de930ea673635c6a776a14b5f2189ae8541322df823f11",
-  "abgerufen": "2026-11-05T22:37:32Z"
+  "bytes": 153021,
+  "sha256": "fcb4f1fd00d01bc80ff6158b5a2576b0787b07e16c8ce1b4058e6c4385ff6cd3",
+  "abgerufen": "2026-11-05T22:48:45Z"
  },
  {
   "datei": "start-09278.html",
@@ -374,8 +374,8 @@
   "http": 200,
   "ok": true,
   "bytes": 174344,
-  "sha256": "820e4641477d9ce47a8803bd6a6b1b46167c264637aceebb5c62cf226183f51d",
-  "abgerufen": "2026-11-05T22:37:34Z"
+  "sha256": "2e390e572c49e885a2d3812d6f7f2fc467712cdd110db24672730e87feaffaf5",
+  "abgerufen": "2026-11-05T22:48:46Z"
  },
  {
   "datei": "start-09279.html",
@@ -384,7 +384,7 @@
   "ok": true,
   "bytes": 366959,
   "sha256": "d4ef5efe39b4d1ddc895a0f66b23d66db215cfadcd7ece80b0be56f63b18b11d",
-  "abgerufen": "2026-11-05T22:37:36Z"
+  "abgerufen": "2026-11-05T22:48:48Z"
  },
  {
   "datei": "start-09361.html",
@@ -393,7 +393,7 @@
   "ok": true,
   "bytes": 326164,
   "sha256": "4527009307f86d2b1037be7fabe75b12b19af88338474fe508d6e3be7a7793f8",
-  "abgerufen": "2026-11-05T22:37:38Z"
+  "abgerufen": "2026-11-05T22:48:50Z"
  },
  {
   "datei": "start-09362.html",
@@ -401,8 +401,8 @@
   "http": 200,
   "ok": true,
   "bytes": 71555,
-  "sha256": "de1964114dcad994b817e3fac547271ce518a1d72e1acce975d715252e10c13e",
-  "abgerufen": "2026-11-05T22:37:39Z"
+  "sha256": "27949bc68ecfa49d4500a98c20600bf5ae6f7bc6379945328b8d27a5ee413958",
+  "abgerufen": "2026-11-05T22:48:50Z"
  },
  {
   "datei": "start-09363.html",
@@ -411,7 +411,7 @@
   "ok": true,
   "bytes": 51977,
   "sha256": "420b9e37b11e861b4f431f8663e9aec0402ac98376edb97045cee74f999406a5",
-  "abgerufen": "2026-11-05T22:37:40Z"
+  "abgerufen": "2026-11-05T22:48:51Z"
  },
  {
   "datei": "start-09371.html",
@@ -420,7 +420,7 @@
   "ok": true,
   "bytes": 174324,
   "sha256": "07b9496bb8bccc6e3209e09e1e9896d6b66ef08b03d2f16b0b2f102ed84a6bcb",
-  "abgerufen": "2026-11-05T22:37:42Z"
+  "abgerufen": "2026-11-05T22:48:53Z"
  },
  {
   "datei": "start-09372.html",
@@ -428,8 +428,8 @@
   "http": 200,
   "ok": true,
   "bytes": 124054,
-  "sha256": "67b9cfb1c16930d901d6d26913152be91fa17e7ce38ffa7067a43f3f29826b94",
-  "abgerufen": "2026-11-05T22:37:44Z"
+  "sha256": "382cf0c5c8352c71facebad6dc964c95555bd0496ef0b7ed8101cb0a444af935",
+  "abgerufen": "2026-11-05T22:48:54Z"
  },
  {
   "datei": "start-09373.html",
@@ -437,17 +437,17 @@
   "http": 200,
   "ok": true,
   "bytes": 361362,
-  "sha256": "c0a45ef46ba1a87e9f45936628acd4095f5f2fe0a07d393b2c22236dfd3f006e",
-  "abgerufen": "2026-11-05T22:37:46Z"
+  "sha256": "41b375815e3d0897e0210731fd6e84417c726112bff462d3b954528b3e51fac6",
+  "abgerufen": "2026-11-05T22:48:56Z"
  },
  {
   "datei": "start-09374.html",
   "url": "http://www.neustadt.de/",
   "http": 200,
   "ok": true,
-  "bytes": 529598,
-  "sha256": "fd981f153f0e7bd3f9e96c0a8f35e6c52c0803d4baa7557be34418acebde88e4",
-  "abgerufen": "2026-11-05T22:37:49Z"
+  "bytes": 529670,
+  "sha256": "f1385266b2ab00a4886bfd91ccee386aef9b4ddde3e83879b546fd6f7c2b5d83",
+  "abgerufen": "2026-11-05T22:48:58Z"
  },
  {
   "datei": "start-09375.html",
@@ -456,7 +456,7 @@
   "ok": false,
   "bytes": 0,
   "sha256": null,
-  "abgerufen": "2026-11-05T22:37:53Z"
+  "abgerufen": "2026-11-05T22:49:01Z"
  },
  {
   "datei": "start-09376.html",
@@ -465,7 +465,7 @@
   "ok": true,
   "bytes": 84117,
   "sha256": "234e54261de1dadc118fbe3677fcab2679b5f0fb83a2fb767c252b2124ed10a8",
-  "abgerufen": "2026-11-05T22:37:54Z"
+  "abgerufen": "2026-11-05T22:49:03Z"
  },
  {
   "datei": "start-09377.html",
@@ -474,7 +474,7 @@
   "ok": true,
   "bytes": 100648,
   "sha256": "58e82be8836d1f145f6e14a272d4ff864c6cf0951e4638c3f98944ab324644fa",
-  "abgerufen": "2026-11-05T22:37:56Z"
+  "abgerufen": "2026-11-05T22:49:04Z"
  },
  {
   "datei": "start-09461.html",
@@ -483,7 +483,7 @@
   "ok": true,
   "bytes": 913,
   "sha256": "d2e26afcbdfc680e5d060a1db905c0da9e02c4a65474042d793c5056c7e2eec9",
-  "abgerufen": "2026-11-05T22:37:57Z"
+  "abgerufen": "2026-11-05T22:49:04Z"
  },
  {
   "datei": "start-09462.html",
@@ -492,16 +492,16 @@
   "ok": true,
   "bytes": 256612,
   "sha256": "d7a35c2d6e746a6db0f96b940230df091736631f016fdafe8204208532696bf2",
-  "abgerufen": "2026-11-05T22:38:00Z"
+  "abgerufen": "2026-11-05T22:49:06Z"
  },
  {
   "datei": "start-09463.html",
   "url": "http://www.coburg.de",
   "http": 200,
   "ok": true,
-  "bytes": 162109,
-  "sha256": "af8c2f279bb67eb141a7bc351000910f59070ed4cffd31e9eced0578e82019a8",
-  "abgerufen": "2026-11-05T22:38:01Z"
+  "bytes": 162091,
+  "sha256": "00636a049a65e97ce7e7dd3396edd61f5bb7b9a3b96e2a987cf933668cf14591",
+  "abgerufen": "2026-11-05T22:49:08Z"
  },
  {
   "datei": "start-09464.html",
@@ -509,8 +509,8 @@
   "http": 200,
   "ok": true,
   "bytes": 277571,
-  "sha256": "eb38834e2e9fd65f832cbf6128b8d78ee0c2b8c1de221f41f0b4e04e471995fb",
-  "abgerufen": "2026-11-05T22:38:03Z"
+  "sha256": "2768f6d2fe4e4b480fe3ef2191a41371d83a3e5acd26523f0f4b2a029b65ec2e",
+  "abgerufen": "2026-11-05T22:49:09Z"
  },
  {
   "datei": "start-09471.html",
@@ -519,7 +519,7 @@
   "ok": true,
   "bytes": 175493,
   "sha256": "9472d49237e640d500597472a4e08c503107341ced89de4a5513a73d146aea69",
-  "abgerufen": "2026-11-05T22:38:04Z"
+  "abgerufen": "2026-11-05T22:49:11Z"
  },
  {
   "datei": "start-09472.html",
@@ -527,8 +527,8 @@
   "http": 200,
   "ok": true,
   "bytes": 330521,
-  "sha256": "ae17d4869d32027b257629cfa785b489fe0dd791a431aa0f54beade30fdcd6ad",
-  "abgerufen": "2026-11-05T22:38:06Z"
+  "sha256": "ecc537058df17acf09dc79f91b1607b50bdb8c76eda87904bcaff9d41ec252d8",
+  "abgerufen": "2026-11-05T22:49:13Z"
  },
  {
   "datei": "start-09473.html",
@@ -536,8 +536,8 @@
   "http": 200,
   "ok": true,
   "bytes": 86968,
-  "sha256": "208a4ce2a6e0dec253daa584555b92fc33d74ac9a055a4aaf5aa5b312c240200",
-  "abgerufen": "2026-11-05T22:38:08Z"
+  "sha256": "cdec623b46e89689e4826be4906037a4a989b2a859f2634dc59f7024876e0ad9",
+  "abgerufen": "2026-11-05T22:49:15Z"
  },
  {
   "datei": "start-09474.html",
@@ -546,7 +546,7 @@
   "ok": false,
   "bytes": 0,
   "sha256": null,
-  "abgerufen": "2026-11-05T22:38:09Z"
+  "abgerufen": "2026-11-05T22:49:15Z"
  },
  {
   "datei": "start-09475.html",
@@ -555,7 +555,7 @@
   "ok": true,
   "bytes": 795725,
   "sha256": "fefa7bc69fda68965d14dff8c481bcc17467c6a4a09de66efd362929be8f8952",
-  "abgerufen": "2026-11-05T22:38:11Z"
+  "abgerufen": "2026-11-05T22:49:17Z"
  },
  {
   "datei": "start-09476.html",
@@ -563,8 +563,8 @@
   "http": 200,
   "ok": true,
   "bytes": 208483,
-  "sha256": "6f31db2426dc2f619e223dcb3790cf698579bcae7879bf0bd5800eb53b636019",
-  "abgerufen": "2026-11-05T22:38:14Z"
+  "sha256": "1fcf4e2ec7a2994e39190217be11efcfd1ecd83c8fec36638702fa4fc24156cc",
+  "abgerufen": "2026-11-05T22:49:19Z"
  },
  {
   "datei": "start-09477.html",
@@ -573,7 +573,7 @@
   "ok": true,
   "bytes": 108750,
   "sha256": "84bab44319f47387af05a080350de41d6f76905f3793ad514a67f6b8fdc87d79",
-  "abgerufen": "2026-11-05T22:38:15Z"
+  "abgerufen": "2026-11-05T22:49:21Z"
  },
  {
   "datei": "start-09478.html",
@@ -581,8 +581,8 @@
   "http": 200,
   "ok": true,
   "bytes": 36827,
-  "sha256": "0d85097204dfeafb2d47f9106463aaa748eb92d8e71960ae1387ad56f28333e6",
-  "abgerufen": "2026-11-05T22:38:18Z"
+  "sha256": "e1846af678f09c1fcbe5d5fe6919b482091f34295968a556d62a61dc89ae04f1",
+  "abgerufen": "2026-11-05T22:49:22Z"
  },
  {
   "datei": "start-09479.html",
@@ -591,7 +591,7 @@
   "ok": true,
   "bytes": 485180,
   "sha256": "81b65ecdc71adbee45470ed7e644e33f1d4096d310e15e93f48b3d21f233e0c9",
-  "abgerufen": "2026-11-05T22:38:20Z"
+  "abgerufen": "2026-11-05T22:49:24Z"
  },
  {
   "datei": "start-09561.html",
@@ -599,8 +599,8 @@
   "http": 200,
   "ok": true,
   "bytes": 178507,
-  "sha256": "2955d46595084128f6101f38d44756a043fa336871dee7a846a628dc443e5496",
-  "abgerufen": "2026-11-05T22:38:22Z"
+  "sha256": "35dedcc3724d0c42ee7e6249dca539f3dfc5a15d268d6961c13c28026faffffd",
+  "abgerufen": "2026-11-05T22:49:25Z"
  },
  {
   "datei": "start-09562.html",
@@ -609,7 +609,7 @@
   "ok": true,
   "bytes": 157007,
   "sha256": "ea10b1e44f157f7da97845b2ff5ee12329bcdae3ea8fe2ea174320b6b965d65f",
-  "abgerufen": "2026-11-05T22:38:24Z"
+  "abgerufen": "2026-11-05T22:49:27Z"
  },
  {
   "datei": "start-09563.html",
@@ -618,7 +618,7 @@
   "ok": true,
   "bytes": 326241,
   "sha256": "bbf6b53873b03c17f631599a570112f521c82a9a1f2ea1b21da2c3fb74e14192",
-  "abgerufen": "2026-11-05T22:38:25Z"
+  "abgerufen": "2026-11-05T22:49:28Z"
  },
  {
   "datei": "start-09564.html",
@@ -626,17 +626,17 @@
   "http": 200,
   "ok": true,
   "bytes": 164361,
-  "sha256": "a61c2f30c33ec3ec1d772d8fb9b09d51394f39609be7212c589854767dcfe6be",
-  "abgerufen": "2026-11-05T22:38:26Z"
+  "sha256": "693c32d33d61c31642cbd99f4112b109cd8b2612e56cc638b666511a71ccc26e",
+  "abgerufen": "2026-11-05T22:49:29Z"
  },
  {
   "datei": "start-09565.html",
   "url": "http://www.schwabach.de",
   "http": 200,
   "ok": true,
-  "bytes": 96431,
-  "sha256": "275e05e73847d6822684c363d6fbf540829e4bd51e3850e6d41f73e8bae52b11",
-  "abgerufen": "2026-11-05T22:38:28Z"
+  "bytes": 96457,
+  "sha256": "7edc7d19a86a7e0fc6ec2499aa827b2de7c56ba3d8b0b828a20191d2ad384213",
+  "abgerufen": "2026-11-05T22:49:30Z"
  },
  {
   "datei": "start-09571.html",
@@ -645,7 +645,7 @@
   "ok": true,
   "bytes": 73638,
   "sha256": "113ea058520cdd3115b9389878bfa2255faf36d87c1c0d9c95af4bcd2bea3944",
-  "abgerufen": "2026-11-05T22:38:29Z"
+  "abgerufen": "2026-11-05T22:49:31Z"
  },
  {
   "datei": "start-09572.html",
@@ -653,8 +653,8 @@
   "http": 200,
   "ok": true,
   "bytes": 188990,
-  "sha256": "579e80bd9b6e4bb0f4c68bf9c6209e4d62dbaaf6504766e5e4be74afe899acbd",
-  "abgerufen": "2026-11-05T22:38:35Z"
+  "sha256": "b1d8980461a08b10aecb386177a3f3a001cd2c66bedc9ce82934da8eb7a7b00d",
+  "abgerufen": "2026-11-05T22:49:35Z"
  },
  {
   "datei": "start-09573.html",
@@ -663,7 +663,7 @@
   "ok": false,
   "bytes": 0,
   "sha256": null,
-  "abgerufen": "2026-11-05T22:38:35Z"
+  "abgerufen": "2026-11-05T22:49:35Z"
  },
  {
   "datei": "start-09574.html",
@@ -672,7 +672,7 @@
   "ok": true,
   "bytes": 494567,
   "sha256": "d42a49a6646058e8b917d767450d717d8cf7734ed11a192e8d95c54bcbecfcd3",
-  "abgerufen": "2026-11-05T22:38:38Z"
+  "abgerufen": "2026-11-05T22:49:37Z"
  },
  {
   "datei": "start-09575.html",
@@ -681,7 +681,7 @@
   "ok": true,
   "bytes": 75902,
   "sha256": "f6f28714b27ee1628601a722d5f82b019a0420f5ae48c32a53d3fddd20b280bc",
-  "abgerufen": "2026-11-05T22:38:39Z"
+  "abgerufen": "2026-11-05T22:49:38Z"
  },
  {
   "datei": "start-09576.html",
@@ -690,7 +690,7 @@
   "ok": true,
   "bytes": 93060,
   "sha256": "ec99c44a6f453dd8fc03a4d71c4f95a579eeb4f9ce15d5487c0300f17ef8eb25",
-  "abgerufen": "2026-11-05T22:38:40Z"
+  "abgerufen": "2026-11-05T22:49:39Z"
  },
  {
   "datei": "start-09577.html",
@@ -699,7 +699,7 @@
   "ok": true,
   "bytes": 52990,
   "sha256": "4aca36e7d60f3b3875e39fd706aeaaff2d1c94a5955ba2353f842ad1cc1625e0",
-  "abgerufen": "2026-11-05T22:38:42Z"
+  "abgerufen": "2026-11-05T22:49:40Z"
  },
  {
   "datei": "start-09661.html",
@@ -708,7 +708,7 @@
   "ok": true,
   "bytes": 123572,
   "sha256": "e2c9aee56a2d1a745ae9f0b9c96fb100e620db876e1cf8e85e5e9d79db505109",
-  "abgerufen": "2026-11-05T22:38:43Z"
+  "abgerufen": "2026-11-05T22:49:42Z"
  },
  {
   "datei": "start-09662.html",
@@ -716,8 +716,8 @@
   "http": 200,
   "ok": true,
   "bytes": 53290,
-  "sha256": "4c1ad1ccbf6f10c326ce6f06cebe9bbce5dc1344c914590300ca32aa431aaefa",
-  "abgerufen": "2026-11-05T22:38:45Z"
+  "sha256": "fb8e3d94ac32d6ceec519a251244e7b914e09a7096383d9ec4a8f69177300572",
+  "abgerufen": "2026-11-05T22:49:43Z"
  },
  {
   "datei": "start-09663.html",
@@ -725,8 +725,8 @@
   "http": 200,
   "ok": true,
   "bytes": 133645,
-  "sha256": "22efe31c267fe3fa0db00f86f4bfe4511de42af4d68d06f989ee9d80cdf58cb6",
-  "abgerufen": "2026-11-05T22:38:46Z"
+  "sha256": "a08e24a90718c233b2d964e4fe6564142875191efeddf98915324e387a65bb99",
+  "abgerufen": "2026-11-05T22:49:44Z"
  },
  {
   "datei": "start-09671.html",
@@ -734,8 +734,8 @@
   "http": 200,
   "ok": true,
   "bytes": 120958,
-  "sha256": "875416108be2693a73db22555808e65db64829da2e82ddd4b3bfad49fd77e6d6",
-  "abgerufen": "2026-11-05T22:38:47Z"
+  "sha256": "54880c5c6dc899a5252ff57f155b55f5e8edb4232764c2a204f1dd2fd9d56cb1",
+  "abgerufen": "2026-11-05T22:49:46Z"
  },
  {
   "datei": "start-09672.html",
@@ -744,7 +744,7 @@
   "ok": false,
   "bytes": 0,
   "sha256": null,
-  "abgerufen": "2026-11-05T22:38:48Z"
+  "abgerufen": "2026-11-05T22:49:46Z"
  },
  {
   "datei": "start-09673.html",
@@ -753,7 +753,7 @@
   "ok": true,
   "bytes": 73163,
   "sha256": "8702fb804af68f9ad2e97bc6c4992d0d827ec92f263ffd3796a575a8a30d3755",
-  "abgerufen": "2026-11-05T22:38:50Z"
+  "abgerufen": "2026-11-05T22:49:48Z"
  },
  {
   "datei": "start-09674.html",
@@ -762,7 +762,7 @@
   "ok": true,
   "bytes": 491655,
   "sha256": "cb83fdd659ab86c6c3e4009d37c81a60cd14bc876d776edae2f6d5976ad40f60",
-  "abgerufen": "2026-11-05T22:38:52Z"
+  "abgerufen": "2026-11-05T22:49:50Z"
  },
  {
   "datei": "start-09675.html",
@@ -771,16 +771,16 @@
   "ok": true,
   "bytes": 433817,
   "sha256": "e233a01599aaeb54b4379ddf6ee4bcd17495ad27235f4e8e2e46bb8e65edf58d",
-  "abgerufen": "2026-11-05T22:38:54Z"
+  "abgerufen": "2026-11-05T22:49:52Z"
  },
  {
   "datei": "start-09676.html",
   "url": "http://www.landkreis-miltenberg.de/",
   "http": 200,
   "ok": true,
-  "bytes": 138665,
-  "sha256": "51b63f461b8b62e445387475e6296fa34f8a0a9d6652fcd8991fd5412d68515f",
-  "abgerufen": "2026-11-05T22:38:56Z"
+  "bytes": 138671,
+  "sha256": "b878864dd30fc403dfebfc581cfa83aa9ae6d92a3dc2fb395fcbe5daf54f367a",
+  "abgerufen": "2026-11-05T22:49:53Z"
  },
  {
   "datei": "start-09677.html",
@@ -788,8 +788,8 @@
   "http": 200,
   "ok": true,
   "bytes": 181180,
-  "sha256": "c2dbd4adbd97c662f766f69e430411341689b1e235f063b96f6ea0139d8674d8",
-  "abgerufen": "2026-11-05T22:38:57Z"
+  "sha256": "e8fe3567f9a873f7501d312979215059b92582e9365f92476be1dc55dfe0067c",
+  "abgerufen": "2026-11-05T22:49:55Z"
  },
  {
   "datei": "start-09678.html",
@@ -797,8 +797,8 @@
   "http": 200,
   "ok": true,
   "bytes": 262911,
-  "sha256": "668499709b0785d8d74e3d072a9348ee43c82e8ff3373bbcfa281c0dcfcd715a",
-  "abgerufen": "2026-11-05T22:38:59Z"
+  "sha256": "010afefbe0605c33df0e355860c5686b7f1ac0c74fdb4b2beea05987029a538e",
+  "abgerufen": "2026-11-05T22:49:56Z"
  },
  {
   "datei": "start-09679.html",
@@ -807,7 +807,7 @@
   "ok": true,
   "bytes": 45020,
   "sha256": "b81c1bc6e4e34f5a1c2922d72fe9d7dae83bdd78069b918c522b0bbc44b87f01",
-  "abgerufen": "2026-11-05T22:39:01Z"
+  "abgerufen": "2026-11-05T22:49:58Z"
  },
  {
   "datei": "start-09761.html",
@@ -816,7 +816,7 @@
   "ok": true,
   "bytes": 1735275,
   "sha256": "07bb5f4d3d58849722149c27ec6f145de3beaf9c88819c4f8ae168db8ae8d919",
-  "abgerufen": "2026-11-05T22:39:03Z"
+  "abgerufen": "2026-11-05T22:49:59Z"
  },
  {
   "datei": "start-09762.html",
@@ -824,8 +824,8 @@
   "http": 200,
   "ok": true,
   "bytes": 68010,
-  "sha256": "b26e70352d791230a39619d2cf7cde8e5e9fe79843150be321b0fb83b6fb508d",
-  "abgerufen": "2026-11-05T22:39:06Z"
+  "sha256": "90c7c6c3559e64808fc1d7203e2a6a39de8f86817d1113d32eb5fc2dc0079218",
+  "abgerufen": "2026-11-05T22:50:03Z"
  },
  {
   "datei": "start-09763.html",
@@ -834,7 +834,7 @@
   "ok": true,
   "bytes": 937954,
   "sha256": "b9f14540078a966aa0abaa256613f67daddb0ac095cd4b14f2136b81f2d3afe1",
-  "abgerufen": "2026-11-05T22:39:09Z"
+  "abgerufen": "2026-11-05T22:50:05Z"
  },
  {
   "datei": "start-09764.html",
@@ -843,7 +843,7 @@
   "ok": true,
   "bytes": 44810,
   "sha256": "6b4bb7dd9eadb8e6dadccd5dc12ad5747838bb6b52b536cfd61cca292dd347e3",
-  "abgerufen": "2026-11-05T22:39:10Z"
+  "abgerufen": "2026-11-05T22:50:06Z"
  },
  {
   "datei": "start-09771.html",
@@ -851,8 +851,8 @@
   "http": 200,
   "ok": true,
   "bytes": 1029134,
-  "sha256": "00c74fb97ce8b80b3580ba9eeb2272c6b25f79f7a1748c11c0f948351a9ed9d7",
-  "abgerufen": "2026-11-05T22:39:12Z"
+  "sha256": "3f46b4839113767861df6213132e281a70a9b86cabb273d897a82072cfea6084",
+  "abgerufen": "2026-11-05T22:50:08Z"
  },
  {
   "datei": "start-09772.html",
@@ -861,7 +861,7 @@
   "ok": true,
   "bytes": 731251,
   "sha256": "12abca732430bccc489ecde38f16600c37d9f402c1e74a24c818e19d221b9390",
-  "abgerufen": "2026-11-05T22:39:12Z"
+  "abgerufen": "2026-11-05T22:50:08Z"
  },
  {
   "datei": "start-09773.html",
@@ -870,7 +870,7 @@
   "ok": true,
   "bytes": 199123,
   "sha256": "6a811cff395750be61850822d0f8baa8822550238bb5e7a6e69c50d0f19d7e39",
-  "abgerufen": "2026-11-05T22:39:16Z"
+  "abgerufen": "2026-11-05T22:50:11Z"
  },
  {
   "datei": "start-09774.html",
@@ -879,7 +879,7 @@
   "ok": true,
   "bytes": 435626,
   "sha256": "af5a988e84701cf6bb7109a432a902dc09d160d4167094964a00314f135ad423",
-  "abgerufen": "2026-11-05T22:39:18Z"
+  "abgerufen": "2026-11-05T22:50:12Z"
  },
  {
   "datei": "start-09775.html",
@@ -888,7 +888,7 @@
   "ok": true,
   "bytes": 155113,
   "sha256": "3d6df9b9ef5a61caee06b490cd5f50e7d2bbe45ce4d36fc886aae830292cb8d2",
-  "abgerufen": "2026-11-05T22:39:20Z"
+  "abgerufen": "2026-11-05T22:50:14Z"
  },
  {
   "datei": "start-09776.html",
@@ -897,7 +897,7 @@
   "ok": true,
   "bytes": 123978,
   "sha256": "85fdd6a0398f26dde320f13d16b52d13e46d161391d941be3303c59bc1fa23bc",
-  "abgerufen": "2026-11-05T22:39:22Z"
+  "abgerufen": "2026-11-05T22:50:16Z"
  },
  {
   "datei": "start-09777.html",
@@ -906,7 +906,7 @@
   "ok": true,
   "bytes": 872,
   "sha256": "4b3446a8e77d725bd1ef522a21672e9789e962f73d59423c54324e3c3e62cfd9",
-  "abgerufen": "2026-11-05T22:39:23Z"
+  "abgerufen": "2026-11-05T22:50:16Z"
  },
  {
   "datei": "start-09778.html",
@@ -915,7 +915,7 @@
   "ok": true,
   "bytes": 18800,
   "sha256": "5d000b641b022bd7e462df68ea0c7837db8d9bfbf4df9aacf1fd9a5e448eab00",
-  "abgerufen": "2026-11-05T22:39:24Z"
+  "abgerufen": "2026-11-05T22:50:17Z"
  },
  {
   "datei": "start-09779.html",
@@ -924,7 +924,7 @@
   "ok": true,
   "bytes": 40498,
   "sha256": "09d9870752f63366e2e7bf718debb709827750ccf009474f848e93a344fca602",
-  "abgerufen": "2026-11-05T22:39:26Z"
+  "abgerufen": "2026-11-05T22:50:19Z"
  },
  {
   "datei": "start-09780.html",
@@ -933,16 +933,16 @@
   "ok": true,
   "bytes": 92257,
   "sha256": "e5f9906155dd49544d4c1112a9113adb2b27be80be391c7504e48048facea8d4",
-  "abgerufen": "2026-11-05T22:39:27Z"
+  "abgerufen": "2026-11-05T22:50:21Z"
  },
  {
   "datei": "impressum-09161.html",
   "url": "http://www.ingolstadt.de/Service/Impressum/",
   "http": 200,
   "ok": true,
-  "bytes": 172241,
-  "sha256": "2ca0e1ed3df021be014db05226016e9514b37153705554b2dab7043056baa94c",
-  "abgerufen": "2026-11-05T22:39:28Z"
+  "bytes": 172205,
+  "sha256": "77e285b11cd781e0a33bd8cc3744268c342ad90eb8fa4a55a47b1e52d29010db",
+  "abgerufen": "2026-11-05T22:50:22Z"
  },
  {
   "datei": "impressum-09162.html",
@@ -951,7 +951,7 @@
   "ok": true,
   "bytes": 136213,
   "sha256": "6941b7e48b2e8913423f6aaecb8b21b58c77309c138fb0ab78ddf1a1dd149a52",
-  "abgerufen": "2026-11-05T22:39:29Z"
+  "abgerufen": "2026-11-05T22:50:22Z"
  },
  {
   "datei": "impressum-09163.html",
@@ -960,7 +960,7 @@
   "ok": true,
   "bytes": 81151,
   "sha256": "bf0c9db1d6ec5655b914af3c0ac3320f036dddedc5175a2da2e491898b615fac",
-  "abgerufen": "2026-11-05T22:39:30Z"
+  "abgerufen": "2026-11-05T22:50:24Z"
  },
  {
   "datei": "impressum-09171.html",
@@ -968,8 +968,8 @@
   "http": 200,
   "ok": true,
   "bytes": 151507,
-  "sha256": "21065756d006e34930da4eb434eabdaaa1814f3cf2a6e8f8e107b895506120c0",
-  "abgerufen": "2026-11-05T22:39:32Z"
+  "sha256": "3ef2115979fcec1f824278779fee09067ce99b4b1a6642f802422bc9104023a4",
+  "abgerufen": "2026-11-05T22:50:25Z"
  },
  {
   "datei": "impressum-09172.html",
@@ -978,16 +978,16 @@
   "ok": true,
   "bytes": 458551,
   "sha256": "d7abcefde6354e03360154cf7ac228c0bac78b858628a5c6ce424742119fc70c",
-  "abgerufen": "2026-11-05T22:39:35Z"
+  "abgerufen": "2026-11-05T22:50:28Z"
  },
  {
   "datei": "impressum-09173.html",
   "url": "https://www.lra-toelz.de/de/zentrale-infos/impressum/",
   "http": 200,
   "ok": true,
-  "bytes": 91243,
-  "sha256": "a0ccbba119b6b68bf0c038bfce4040584853e2da6da409a7c7173151594e54d4",
-  "abgerufen": "2026-11-05T22:39:36Z"
+  "bytes": 91211,
+  "sha256": "e0dacdb67881a9c54629ee753e034b7dfe1e9b7c36a05b0b21e1f5b02cbf3219",
+  "abgerufen": "2026-11-05T22:50:33Z"
  },
  {
   "datei": "impressum-09174.html",
@@ -996,7 +996,7 @@
   "ok": true,
   "bytes": 121752,
   "sha256": "0ff51df82f1677af80505a2a7d5c1d78bb8a26098530178e72658efe2a964dde",
-  "abgerufen": "2026-11-05T22:39:37Z"
+  "abgerufen": "2026-11-05T22:50:35Z"
  },
  {
   "datei": "impressum-09176.html",
@@ -1004,8 +1004,8 @@
   "http": 200,
   "ok": true,
   "bytes": 203539,
-  "sha256": "63b04a98eb2f373de5eb8dfb34648e5c29b450a1ad818f40039f63ef7cf9ad0d",
-  "abgerufen": "2026-11-05T22:39:39Z"
+  "sha256": "375e251eee6af285ee28344220bb8b06ea1525b8740c3a4d8012a9ab07134438",
+  "abgerufen": "2026-11-05T22:50:36Z"
  },
  {
   "datei": "impressum-09177.html",
@@ -1013,8 +1013,8 @@
   "http": 200,
   "ok": true,
   "bytes": 470176,
-  "sha256": "331e7b70ba587aa86074789d78753f23d76171d3cb7add2cf91e901498395a0e",
-  "abgerufen": "2026-11-05T22:39:41Z"
+  "sha256": "ccd3e02caa874d0206681ee8edbe48cf0a25a7ae00030e6e9a7f3932c05fbd37",
+  "abgerufen": "2026-11-05T22:50:38Z"
  },
  {
   "datei": "impressum-09178.html",
@@ -1023,7 +1023,7 @@
   "ok": true,
   "bytes": 121891,
   "sha256": "76cd329c5826a125e3e28e3576f164e8457ff39bef75128378fc639b58c79a39",
-  "abgerufen": "2026-11-05T22:39:42Z"
+  "abgerufen": "2026-11-05T22:50:39Z"
  },
  {
   "datei": "impressum-09179.html",
@@ -1032,7 +1032,7 @@
   "ok": true,
   "bytes": 85814,
   "sha256": "9d688e19f6ef3c0f46d23e2afcc8862134ee3a92c17d26d3ef68d3e1a5566ded",
-  "abgerufen": "2026-11-05T22:39:45Z"
+  "abgerufen": "2026-11-05T22:50:41Z"
  },
  {
   "datei": "impressum-09180.html",
@@ -1040,8 +1040,8 @@
   "http": 200,
   "ok": true,
   "bytes": 46867,
-  "sha256": "bb6b67569a8f2c9234605f7951a66978703369d8453f7557400aba1d8c1b360c",
-  "abgerufen": "2026-11-05T22:39:46Z"
+  "sha256": "97e12a286940e65959e0fe44f15b7da61a933902d264478717920141fc97286d",
+  "abgerufen": "2026-11-05T22:50:42Z"
  },
  {
   "datei": "impressum-09181.html",
@@ -1050,16 +1050,16 @@
   "ok": true,
   "bytes": 68151,
   "sha256": "c7097f4cde9e1fd1ae8043ddbdd6c003b75bc6e0164c39eda5b128a7c845c6bd",
-  "abgerufen": "2026-11-05T22:39:47Z"
+  "abgerufen": "2026-11-05T22:50:42Z"
  },
  {
   "datei": "impressum-09182.html",
   "url": "http://www.landkreis-miesbach.de/Impressum/",
   "http": 200,
   "ok": true,
-  "bytes": 100815,
-  "sha256": "5757780199918f255a67246a9bb70d2df2c69d105ba3d23378d3a5adf4c1337d",
-  "abgerufen": "2026-11-05T22:39:48Z"
+  "bytes": 100851,
+  "sha256": "676c7d21072afe1ce0688de21b4b14e9e29bfa4429646a43380675de33efa79a",
+  "abgerufen": "2026-11-05T22:50:44Z"
  },
  {
   "datei": "impressum-09183.html",
@@ -1068,7 +1068,7 @@
   "ok": true,
   "bytes": 53002,
   "sha256": "8cdae7f40d525b6bbd5ec72b47073f233064be25ee6d1391250cd7a6a5b4629e",
-  "abgerufen": "2026-11-05T22:39:50Z"
+  "abgerufen": "2026-11-05T22:50:45Z"
  },
  {
   "datei": "impressum-09184.html",
@@ -1077,7 +1077,7 @@
   "ok": true,
   "bytes": 65311,
   "sha256": "06de786e24185835064db69814719bf892c420977d75a5598da2b77797ae026c",
-  "abgerufen": "2026-11-05T22:39:51Z"
+  "abgerufen": "2026-11-05T22:50:46Z"
  },
  {
   "datei": "impressum-09185.html",
@@ -1086,7 +1086,7 @@
   "ok": true,
   "bytes": 124635,
   "sha256": "3939198175c72e66ffbdd1a00d73e656def9bf4e833ecac10c141df6937d974c",
-  "abgerufen": "2026-11-05T22:39:52Z"
+  "abgerufen": "2026-11-05T22:50:47Z"
  },
  {
   "datei": "impressum-09186.html",
@@ -1094,26 +1094,26 @@
   "http": 200,
   "ok": true,
   "bytes": 134294,
-  "sha256": "f3027b39a425f0ee32b9b33144846d0b33817a48e1ebc1f2493bee85957627d6",
-  "abgerufen": "2026-11-05T22:39:54Z"
+  "sha256": "279f5062654de88fb0d06e19aaca17eb9d488d15aa235502f44e11cc815b6b4d",
+  "abgerufen": "2026-11-05T22:50:48Z"
  },
  {
   "datei": "impressum-09187.html",
   "url": "https://www.landkreis-rosenheim.de/impressum/",
   "http": 200,
   "ok": true,
-  "bytes": 253065,
-  "sha256": "0fdd98cdbd31349699867e7305644e4e5c65d0552822eaf08824a6afe522e790",
-  "abgerufen": "2026-11-05T22:39:56Z"
+  "bytes": 253064,
+  "sha256": "87ee33b53f2ca0731d1e09411f974fbc9c76c0af8e252d1121694bb0125ec307",
+  "abgerufen": "2026-11-05T22:50:50Z"
  },
  {
   "datei": "impressum-09188.html",
   "url": "http://www.landkreis-starnberg.de/B%C3%BCrgerservice/Kontakt/Impressum/",
   "http": 200,
   "ok": true,
-  "bytes": 441553,
-  "sha256": "5008bf36228b4b0141dd2f22966a5380d48704c6f2a2c79602dfb483192c84af",
-  "abgerufen": "2026-11-05T22:39:58Z"
+  "bytes": 441589,
+  "sha256": "b2e10009f9b8f07ccf5e39f379a950853860ebfcf47e9057990a70203b6ed2af",
+  "abgerufen": "2026-11-05T22:50:52Z"
  },
  {
   "datei": "impressum-09189.html",
@@ -1122,7 +1122,7 @@
   "ok": true,
   "bytes": 25284,
   "sha256": "597d9930542877e366c3243ba0a54f9c3592ce3e5f95f58b58e72b3dacd76c2a",
-  "abgerufen": "2026-11-05T22:39:58Z"
+  "abgerufen": "2026-11-05T22:50:52Z"
  },
  {
   "datei": "impressum-09190.html",
@@ -1130,8 +1130,8 @@
   "http": 200,
   "ok": true,
   "bytes": 49521,
-  "sha256": "26aa774d8bb094c445350536d7b6948b19bdb1d70b391e579780d891116a65ca",
-  "abgerufen": "2026-11-05T22:40:00Z"
+  "sha256": "8e4832ded51dff0658f5622dfd4b7b79bf9afc4a9aa1424eb7a51c0789bbcafe",
+  "abgerufen": "2026-11-05T22:50:54Z"
  },
  {
   "datei": "impressum-09261.html",
@@ -1139,8 +1139,8 @@
   "http": 200,
   "ok": true,
   "bytes": 641262,
-  "sha256": "15c876a5ba3ae30f8a9c9fa4a77dcaf0a82a7337b3c6ba41d11b7ca41b99db0f",
-  "abgerufen": "2026-11-05T22:40:02Z"
+  "sha256": "34ff631a76ae20c3fe73e116fb67eba6625bfda585c5fde6ba6dbb2ae1bcaad2",
+  "abgerufen": "2026-11-05T22:50:55Z"
  },
  {
   "datei": "impressum-09262.html",
@@ -1149,7 +1149,7 @@
   "ok": true,
   "bytes": 100959,
   "sha256": "e49aa5ddeefac623b4d050429863874aa70f2e478ebb72da4b5aa1e1596e971e",
-  "abgerufen": "2026-11-05T22:40:03Z"
+  "abgerufen": "2026-11-05T22:50:56Z"
  },
  {
   "datei": "impressum-09263.html",
@@ -1157,8 +1157,8 @@
   "http": 200,
   "ok": true,
   "bytes": 59185,
-  "sha256": "4816f04ef2d1a9a98e4e8d443d89635de290b090a09913c7c3df8d01b515e99c",
-  "abgerufen": "2026-11-05T22:40:04Z"
+  "sha256": "453b1caea533b9caad985b3dec37f160ca87688ff3610b209dc08cab47a54e01",
+  "abgerufen": "2026-11-05T22:50:57Z"
  },
  {
   "datei": "impressum-09271.html",
@@ -1166,8 +1166,8 @@
   "http": 200,
   "ok": true,
   "bytes": 81896,
-  "sha256": "7180fc096146518dce3be1f3db424dbd9ed54ae64ba474d25dd64c7df717b98b",
-  "abgerufen": "2026-11-05T22:40:06Z"
+  "sha256": "986b76e56bd6c41f0031468fbff0caec27a867cf9841b65430ad05fbf9101da4",
+  "abgerufen": "2026-11-05T22:50:59Z"
  },
  {
   "datei": "impressum-09273.html",
@@ -1175,8 +1175,8 @@
   "http": 200,
   "ok": true,
   "bytes": 143023,
-  "sha256": "f37d5e3090c6dd24d50fff5981adb898f8fdbbd49afddcec6bed61080d85a6ef",
-  "abgerufen": "2026-11-05T22:40:07Z"
+  "sha256": "cfee646c860fbe069944f2a1eac8a72b0acfcabaece6e872cb1bdc4173b92132",
+  "abgerufen": "2026-11-05T22:51:00Z"
  },
  {
   "datei": "impressum-09275.html",
@@ -1184,8 +1184,8 @@
   "http": 200,
   "ok": true,
   "bytes": 182142,
-  "sha256": "8bec511aeb885662684edf5106daeabaa2a92af1437190eb9c19e5a10f11c599",
-  "abgerufen": "2026-11-05T22:40:09Z"
+  "sha256": "d5d0e6645a4f6ed20374cf4eb61e598b34654c803a59aac4f9c4f58f70c33c2d",
+  "abgerufen": "2026-11-05T22:51:02Z"
  },
  {
   "datei": "impressum-09276.html",
@@ -1194,7 +1194,7 @@
   "ok": true,
   "bytes": 129425,
   "sha256": "3eb6266d82685f7771bb64b1db854ca329d843589f3e47c00303594875226421",
-  "abgerufen": "2026-11-05T22:40:15Z"
+  "abgerufen": "2026-11-05T22:51:06Z"
  },
  {
   "datei": "impressum-09277.html",
@@ -1203,7 +1203,7 @@
   "ok": true,
   "bytes": 131936,
   "sha256": "1b28266c1db4437f751dc6333aeb09e7c3bb89812ebd87f2e063d03d6aaad3e8",
-  "abgerufen": "2026-11-05T22:40:16Z"
+  "abgerufen": "2026-11-05T22:51:07Z"
  },
  {
   "datei": "impressum-09278.html",
@@ -1211,8 +1211,8 @@
   "http": 200,
   "ok": true,
   "bytes": 112065,
-  "sha256": "aea4ab8f23c86b4b4bdefe40ef16c31d9477a6a8c73be7b52e8e4bcdd930db1c",
-  "abgerufen": "2026-11-05T22:40:18Z"
+  "sha256": "0bf6de6d84b7f5152b7508927fe57cad8e3983f77a1b0da43093712447855e77",
+  "abgerufen": "2026-11-05T22:51:08Z"
  },
  {
   "datei": "impressum-09279.html",
@@ -1221,7 +1221,7 @@
   "ok": true,
   "bytes": 227521,
   "sha256": "a1bae484466c26759527389580007a9af3eb022d5f2804c37f1b129e6de3cd03",
-  "abgerufen": "2026-11-05T22:40:19Z"
+  "abgerufen": "2026-11-05T22:51:09Z"
  },
  {
   "datei": "impressum-09361.html",
@@ -1230,7 +1230,7 @@
   "ok": true,
   "bytes": 274151,
   "sha256": "d409c51f9fc2d10c3f83651b19cd3bc5bc0652cbe316b3e843b73c73bb619c67",
-  "abgerufen": "2026-11-05T22:40:21Z"
+  "abgerufen": "2026-11-05T22:51:11Z"
  },
  {
   "datei": "impressum-09362.html",
@@ -1238,8 +1238,8 @@
   "http": 200,
   "ok": true,
   "bytes": 39888,
-  "sha256": "e6b954a95f9ebbbc760ab52b853a99c4e3923c326a62ff92bd82e73002a165fd",
-  "abgerufen": "2026-11-05T22:40:22Z"
+  "sha256": "e08f78f22701eac38a65f00aeab22471af0416b36d08a2088b398d5763d8ae90",
+  "abgerufen": "2026-11-05T22:51:11Z"
  },
  {
   "datei": "impressum-09363.html",
@@ -1248,16 +1248,16 @@
   "ok": true,
   "bytes": 41229,
   "sha256": "7046fdaf87f460687bd4aff844dafb976e1520fd2eadc8365c369b6de1467f27",
-  "abgerufen": "2026-11-05T22:40:23Z"
+  "abgerufen": "2026-11-05T22:51:12Z"
  },
  {
   "datei": "impressum-09371.html",
   "url": "http://www.kreis-as.de/Quicknavigation/Impressum",
   "http": 200,
   "ok": true,
-  "bytes": 177074,
-  "sha256": "a2a0f4922fa6781c7dc6b5480614057e596ac4e70591428341de55bd784e96d2",
-  "abgerufen": "2026-11-05T22:40:24Z"
+  "bytes": 177110,
+  "sha256": "6e6fe1a8ab3ee5666fed49ed64f77ec14f3a08c75db51691e19227bb2bf75a32",
+  "abgerufen": "2026-11-05T22:51:13Z"
  },
  {
   "datei": "impressum-09372.html",
@@ -1265,8 +1265,8 @@
   "http": 200,
   "ok": true,
   "bytes": 115343,
-  "sha256": "5e3dba69182e5d4518967e8cfdc600cb7bba33ccb32cefcd1b19ea892f9cc142",
-  "abgerufen": "2026-11-05T22:40:26Z"
+  "sha256": "e612cd2e7408a517a4ac4ec1feae51fca9450e8f20b968e8ffe1d04efdffe1b9",
+  "abgerufen": "2026-11-05T22:51:14Z"
  },
  {
   "datei": "impressum-09373.html",
@@ -1274,17 +1274,17 @@
   "http": 200,
   "ok": true,
   "bytes": 338567,
-  "sha256": "44fb551514ca3d87c1f5d35e9a51b89f2aa3d72545154be03744da13b4e43278",
-  "abgerufen": "2026-11-05T22:40:27Z"
+  "sha256": "85011ecee84d7385a1231c27c86034ebe12f86ccdd2045fc3aa7924b817ba176",
+  "abgerufen": "2026-11-05T22:51:15Z"
  },
  {
   "datei": "impressum-09374.html",
   "url": "https://www.neustadt.de/impressum/",
   "http": 200,
   "ok": true,
-  "bytes": 484410,
-  "sha256": "35aa3ebe0d368098e52b4dc1906fb5e2ccb02592cdb88c6edcbd031970cb1aec",
-  "abgerufen": "2026-11-05T22:40:28Z"
+  "bytes": 484375,
+  "sha256": "864442ab6f95df1994a303f7775c4acf0b4002ffc496e3f21ca77452979b9593",
+  "abgerufen": "2026-11-05T22:51:17Z"
  },
  {
   "datei": "impressum-09376.html",
@@ -1293,7 +1293,7 @@
   "ok": true,
   "bytes": 74433,
   "sha256": "d30f5f21144f91ee9cb08f576f4c965614e37a61ac53d0c547c21cdd601c5440",
-  "abgerufen": "2026-11-05T22:40:30Z"
+  "abgerufen": "2026-11-05T22:51:18Z"
  },
  {
   "datei": "impressum-09377.html",
@@ -1302,7 +1302,7 @@
   "ok": true,
   "bytes": 66363,
   "sha256": "cec7e4ad5dec56b947d2a3ac89b29b422e834679ba6d43d39a29bb95c09b7cf2",
-  "abgerufen": "2026-11-05T22:40:31Z"
+  "abgerufen": "2026-11-05T22:51:20Z"
  },
  {
   "datei": "impressum-09462.html",
@@ -1311,16 +1311,16 @@
   "ok": true,
   "bytes": 236868,
   "sha256": "d2ccec1b8552e73209f47135c2b80bbd43366e8b17c60fa57714ed4009ed9b27",
-  "abgerufen": "2026-11-05T22:40:32Z"
+  "abgerufen": "2026-11-05T22:51:20Z"
  },
  {
   "datei": "impressum-09463.html",
   "url": "http://www.coburg.de/impressum.php",
   "http": 200,
   "ok": true,
-  "bytes": 58797,
-  "sha256": "46885cbf1f5f8e0c9d62f76630897d399ed5f6a8ca946a2fd318348c987bf294",
-  "abgerufen": "2026-11-05T22:40:33Z"
+  "bytes": 58801,
+  "sha256": "3222072f1a14d41fa8a3e5d34504ec3405d0cc0bff19f6ce7c03f211fe17a691",
+  "abgerufen": "2026-11-05T22:51:22Z"
  },
  {
   "datei": "impressum-09464.html",
@@ -1329,7 +1329,7 @@
   "ok": true,
   "bytes": 70220,
   "sha256": "7d248408a6a92607ef60359fe983462275f2e16793068dd5f6acd0e3c7ef8489",
-  "abgerufen": "2026-11-05T22:40:35Z"
+  "abgerufen": "2026-11-05T22:51:23Z"
  },
  {
   "datei": "impressum-09471.html",
@@ -1338,7 +1338,7 @@
   "ok": true,
   "bytes": 173441,
   "sha256": "7f9b5128e1ee7507191723a241feb3c6c521982b8b70679d0ac8f1077fa4087e",
-  "abgerufen": "2026-11-05T22:40:39Z"
+  "abgerufen": "2026-11-05T22:51:24Z"
  },
  {
   "datei": "impressum-09472.html",
@@ -1346,8 +1346,8 @@
   "http": 200,
   "ok": true,
   "bytes": 191433,
-  "sha256": "f1df01b24f3d55b022cbb36e0d66f13492b7b40f0f66b7c229f11d94e1e75e1a",
-  "abgerufen": "2026-11-05T22:40:41Z"
+  "sha256": "347fe4cabdd842297481b9d348ea3842378cb2e29b9623d00be7c32f8bd35e26",
+  "abgerufen": "2026-11-05T22:51:26Z"
  },
  {
   "datei": "impressum-09473.html",
@@ -1356,7 +1356,7 @@
   "ok": true,
   "bytes": 34411,
   "sha256": "42dbce97f5efbe8d133fbd75af2afd4929bcb0d30041ae86b4f992752ada0990",
-  "abgerufen": "2026-11-05T22:40:42Z"
+  "abgerufen": "2026-11-05T22:51:27Z"
  },
  {
   "datei": "impressum-09475.html",
@@ -1365,7 +1365,7 @@
   "ok": true,
   "bytes": 259287,
   "sha256": "b5dbe0d0f70d49ea1a9de07d4d341c91fb923e7e4a412fdab4ea320ef85d63b8",
-  "abgerufen": "2026-11-05T22:40:43Z"
+  "abgerufen": "2026-11-05T22:51:28Z"
  },
  {
   "datei": "impressum-09476.html",
@@ -1373,8 +1373,8 @@
   "http": 200,
   "ok": true,
   "bytes": 149392,
-  "sha256": "fb1380ca8260b98fa0f9f1ff28a4e070d0a4c7855e6196e7edfee11acc319dd1",
-  "abgerufen": "2026-11-05T22:40:45Z"
+  "sha256": "fd4ba94e8a7455b248ff14e62dd69dfcaec583647576890594c7f759f482bc53",
+  "abgerufen": "2026-11-05T22:51:30Z"
  },
  {
   "datei": "impressum-09477.html",
@@ -1383,7 +1383,7 @@
   "ok": true,
   "bytes": 36419,
   "sha256": "c2b9c6aa3cac7a0e4ad8211ded92057398a7ca6143f7eb76cdddc690a4f66069",
-  "abgerufen": "2026-11-05T22:40:46Z"
+  "abgerufen": "2026-11-05T22:51:31Z"
  },
  {
   "datei": "impressum-09478.html",
@@ -1392,7 +1392,7 @@
   "ok": false,
   "bytes": 0,
   "sha256": null,
-  "abgerufen": "2026-11-05T22:40:51Z"
+  "abgerufen": "2026-11-05T22:51:36Z"
  },
  {
   "datei": "impressum-09479.html",
@@ -1401,7 +1401,7 @@
   "ok": true,
   "bytes": 470379,
   "sha256": "e9ceee3282f76dacb9985cbd5b959bb25f8803616c1da4e4ec539fb96b8998e5",
-  "abgerufen": "2026-11-05T22:40:52Z"
+  "abgerufen": "2026-11-05T22:51:36Z"
  },
  {
   "datei": "impressum-09561.html",
@@ -1410,7 +1410,7 @@
   "ok": true,
   "bytes": 157251,
   "sha256": "d09ccf49b9b65c8b1165bb944c7c628f5674aeaa889c357569830b3cbf736c05",
-  "abgerufen": "2026-11-05T22:40:54Z"
+  "abgerufen": "2026-11-05T22:51:37Z"
  },
  {
   "datei": "impressum-09563.html",
@@ -1418,8 +1418,8 @@
   "http": 200,
   "ok": true,
   "bytes": 56574,
-  "sha256": "eacbc595cb52fd72e07b14113c5367e00232e3da2cdfb3e10b13e2556db48380",
-  "abgerufen": "2026-11-05T22:40:54Z"
+  "sha256": "59c5f3cf7eae5283722c7ae1a13c7ea0a07f2b6aee548d9b0a770172c3acc13a",
+  "abgerufen": "2026-11-05T22:51:38Z"
  },
  {
   "datei": "impressum-09564.html",
@@ -1428,7 +1428,7 @@
   "ok": true,
   "bytes": 88437,
   "sha256": "b273118d6acbb2d8b1e85d421a4aaecda6c8785efe9ab07fe4137971205855f7",
-  "abgerufen": "2026-11-05T22:40:55Z"
+  "abgerufen": "2026-11-05T22:51:39Z"
  },
  {
   "datei": "impressum-09565.html",
@@ -1436,8 +1436,8 @@
   "http": 200,
   "ok": true,
   "bytes": 65477,
-  "sha256": "8d064d5b96be5046ca907432d0ccca63d6512ce1c62cebe43c3a62c4d92768a3",
-  "abgerufen": "2026-11-05T22:40:56Z"
+  "sha256": "bdb2cf730d44c2ec368ef5347b0bf89e6188ae8fed4a36fed864f0e2c0900937",
+  "abgerufen": "2026-11-05T22:51:40Z"
  },
  {
   "datei": "impressum-09571.html",
@@ -1446,7 +1446,7 @@
   "ok": true,
   "bytes": 63028,
   "sha256": "1e81749982dbd7fe36697490278575e9c9e83f26e8c4d677c8bc48b4379191f3",
-  "abgerufen": "2026-11-05T22:40:57Z"
+  "abgerufen": "2026-11-05T22:51:41Z"
  },
  {
   "datei": "impressum-09572.html",
@@ -1454,8 +1454,8 @@
   "http": 200,
   "ok": true,
   "bytes": 149772,
-  "sha256": "f3f900721b454a34fc6438f1dd2c754b1809bc4d33a43686984992febb8a5ebb",
-  "abgerufen": "2026-11-05T22:41:03Z"
+  "sha256": "60a8a5f96254c85b42dbc7004ea68a40342538d9cf26af12b8dae1ddf84a6381",
+  "abgerufen": "2026-11-05T22:51:47Z"
  },
  {
   "datei": "impressum-09574.html",
@@ -1464,7 +1464,7 @@
   "ok": true,
   "bytes": 469709,
   "sha256": "968b3b6a44783be4b40316d2b161b8ef5806e9b337a9dd9ec19574c81cfda3a8",
-  "abgerufen": "2026-11-05T22:41:05Z"
+  "abgerufen": "2026-11-05T22:51:48Z"
  },
  {
   "datei": "impressum-09575.html",
@@ -1473,7 +1473,7 @@
   "ok": false,
   "bytes": 0,
   "sha256": null,
-  "abgerufen": "2026-11-05T22:41:05Z"
+  "abgerufen": "2026-11-05T22:51:48Z"
  },
  {
   "datei": "impressum-09577.html",
@@ -1482,7 +1482,7 @@
   "ok": true,
   "bytes": 52990,
   "sha256": "4aca36e7d60f3b3875e39fd706aeaaff2d1c94a5955ba2353f842ad1cc1625e0",
-  "abgerufen": "2026-11-05T22:41:07Z"
+  "abgerufen": "2026-11-05T22:51:49Z"
  },
  {
   "datei": "impressum-09661.html",
@@ -1491,7 +1491,7 @@
   "ok": true,
   "bytes": 99994,
   "sha256": "4b5dedc77e51344615a7dcb34615ba018ba0156c8ae597aeb665b56c92a0cfcf",
-  "abgerufen": "2026-11-05T22:41:08Z"
+  "abgerufen": "2026-11-05T22:51:50Z"
  },
  {
   "datei": "impressum-09662.html",
@@ -1499,8 +1499,8 @@
   "http": 200,
   "ok": true,
   "bytes": 35968,
-  "sha256": "e772a33c5c187fb01204a4308ab30885042df7fd122ce054edd0888283f9ee34",
-  "abgerufen": "2026-11-05T22:41:09Z"
+  "sha256": "b345eba2ce3091c0978e5a0413489bcc8a5af84cb21f231e788485329647ff45",
+  "abgerufen": "2026-11-05T22:51:51Z"
  },
  {
   "datei": "impressum-09663.html",
@@ -1508,8 +1508,8 @@
   "http": 200,
   "ok": true,
   "bytes": 133938,
-  "sha256": "14abf6f22e85c7fabbe9cc3f47c28851357e56d6bf1ec3595efddae809f937fd",
-  "abgerufen": "2026-11-05T22:41:11Z"
+  "sha256": "2f8720d1f4c43c88a782da392d2c06072ef923e673e640c9d7cba07c4b15f4e1",
+  "abgerufen": "2026-11-05T22:51:53Z"
  },
  {
   "datei": "impressum-09671.html",
@@ -1518,7 +1518,7 @@
   "ok": true,
   "bytes": 75416,
   "sha256": "4938afd4a43dcb4e759717b8e8b578e9efad745b92da69e374bdbdce6a003720",
-  "abgerufen": "2026-11-05T22:41:12Z"
+  "abgerufen": "2026-11-05T22:51:54Z"
  },
  {
   "datei": "impressum-09673.html",
@@ -1527,7 +1527,7 @@
   "ok": true,
   "bytes": 70480,
   "sha256": "a76fde92d71666942a170eaca6965467582fed2462cefa1086198ff43b5e5f25",
-  "abgerufen": "2026-11-05T22:41:14Z"
+  "abgerufen": "2026-11-05T22:51:56Z"
  },
  {
   "datei": "impressum-09674.html",
@@ -1536,7 +1536,7 @@
   "ok": true,
   "bytes": 50590,
   "sha256": "1e884f1dce8a3ee454d6ecbedc53602a9e538c53678a1d243d86bd639ceadfb5",
-  "abgerufen": "2026-11-05T22:41:15Z"
+  "abgerufen": "2026-11-05T22:51:58Z"
  },
  {
   "datei": "impressum-09675.html",
@@ -1545,16 +1545,16 @@
   "ok": true,
   "bytes": 394139,
   "sha256": "174091b3165db544d3dd4ac9e840623531249b83b3e8ad1984dbdc135b3de36f",
-  "abgerufen": "2026-11-05T22:41:17Z"
+  "abgerufen": "2026-11-05T22:51:59Z"
  },
  {
   "datei": "impressum-09676.html",
   "url": "http://www.landkreis-miltenberg.de/impressum-lra.html",
   "http": 200,
   "ok": true,
-  "bytes": 107008,
-  "sha256": "d0ed357fae50840b6f37072673aa7fb8df37e78245a9fafd729637ede549f60b",
-  "abgerufen": "2026-11-05T22:41:18Z"
+  "bytes": 107029,
+  "sha256": "68e7d5b4d71847371587401099e7497d1dca822a5d8df472ba67ff74e70fb6e9",
+  "abgerufen": "2026-11-05T22:52:01Z"
  },
  {
   "datei": "impressum-09677.html",
@@ -1562,8 +1562,8 @@
   "http": 200,
   "ok": true,
   "bytes": 165345,
-  "sha256": "429924e2f10a2a4ae23ff9c64e245214f4917d24485476b58272f9f52fa7e541",
-  "abgerufen": "2026-11-05T22:41:20Z"
+  "sha256": "fa2565842e683bc0be2aa5851ce2e4f4f15aef0a7c1b76a85de5925ae7710b6f",
+  "abgerufen": "2026-11-05T22:52:03Z"
  },
  {
   "datei": "impressum-09678.html",
@@ -1571,8 +1571,8 @@
   "http": 200,
   "ok": true,
   "bytes": 212170,
-  "sha256": "03558fb28648c55e1b0fb178028d058774a01c3e7df8780c0035c7baf17b2380",
-  "abgerufen": "2026-11-05T22:41:21Z"
+  "sha256": "ba3948bdf6d30885ea479893121643f6d3974a018bff3f369f42497a77a3ebb1",
+  "abgerufen": "2026-11-05T22:52:04Z"
  },
  {
   "datei": "impressum-09679.html",
@@ -1580,8 +1580,8 @@
   "http": 200,
   "ok": true,
   "bytes": 73924,
-  "sha256": "7541e1ab2cb28851015ff3ebbadd0e21dd73b20dcb4c0595ac1f4300f2432060",
-  "abgerufen": "2026-11-05T22:41:22Z"
+  "sha256": "760a81d154eeb41156d34c701e8531d0dc37041de8ae99b82cd46613bf6096cf",
+  "abgerufen": "2026-11-05T22:52:05Z"
  },
  {
   "datei": "impressum-09761.html",
@@ -1590,7 +1590,7 @@
   "ok": true,
   "bytes": 483785,
   "sha256": "bd07cf901cd932aceeb8cd3dec3e1ce2cf3ea747fecaeb76f3db872bb6aafc8a",
-  "abgerufen": "2026-11-05T22:41:24Z"
+  "abgerufen": "2026-11-05T22:52:06Z"
  },
  {
   "datei": "impressum-09762.html",
@@ -1598,8 +1598,8 @@
   "http": 200,
   "ok": true,
   "bytes": 57533,
-  "sha256": "18a69f628f4095d6484d60522e06bc819972c2aae1b3b044e728ea89c5f701e3",
-  "abgerufen": "2026-11-05T22:41:26Z"
+  "sha256": "6af22b90b9cbb8507648cff6d7cf6186ef29f9f1cffe6798cc72da5a8a816c34",
+  "abgerufen": "2026-11-05T22:52:08Z"
  },
  {
   "datei": "impressum-09763.html",
@@ -1608,7 +1608,7 @@
   "ok": true,
   "bytes": 305310,
   "sha256": "697a4c96c441fdf77d52d999e485d88c6049c18a22bba54a7a61ef69466b3f87",
-  "abgerufen": "2026-11-05T22:41:28Z"
+  "abgerufen": "2026-11-05T22:52:10Z"
  },
  {
   "datei": "impressum-09764.html",
@@ -1617,7 +1617,7 @@
   "ok": true,
   "bytes": 26394,
   "sha256": "2e725004371295dbb695e733a8228c4dab4798a9b193ccbce17867da55ee3e2c",
-  "abgerufen": "2026-11-05T22:41:29Z"
+  "abgerufen": "2026-11-05T22:52:11Z"
  },
  {
   "datei": "impressum-09771.html",
@@ -1625,8 +1625,8 @@
   "http": 200,
   "ok": true,
   "bytes": 902806,
-  "sha256": "e6f1a4d788cb145c076d70a69abff6653516cac5a6cd3d7ae73974f8da98e3f4",
-  "abgerufen": "2026-11-05T22:41:32Z"
+  "sha256": "06f6c7ee186b5e81a1d63382a011d0545d53ed059d1bb19d8256187bb88dde69",
+  "abgerufen": "2026-11-05T22:52:13Z"
  },
  {
   "datei": "impressum-09772.html",
@@ -1635,7 +1635,7 @@
   "ok": true,
   "bytes": 709350,
   "sha256": "c753d5b932dac578b7180911e98027aee82d384dc26e3a350d6a88f955e2522d",
-  "abgerufen": "2026-11-05T22:41:33Z"
+  "abgerufen": "2026-11-05T22:52:13Z"
  },
  {
   "datei": "impressum-09773.html",
@@ -1644,7 +1644,7 @@
   "ok": true,
   "bytes": 180824,
   "sha256": "8b2406433c2bb0dc9dbdbb2f0406680a3b88502e20bc67a339997e4d2ed3b14d",
-  "abgerufen": "2026-11-05T22:41:35Z"
+  "abgerufen": "2026-11-05T22:52:16Z"
  },
  {
   "datei": "impressum-09774.html",
@@ -1653,7 +1653,7 @@
   "ok": true,
   "bytes": 401650,
   "sha256": "ac49c506527183c3998f6b80769b54d8305b0b6be8fe5f6a5899ae0f8695bfac",
-  "abgerufen": "2026-11-05T22:41:38Z"
+  "abgerufen": "2026-11-05T22:52:17Z"
  },
  {
   "datei": "impressum-09775.html",
@@ -1662,7 +1662,7 @@
   "ok": true,
   "bytes": 623583,
   "sha256": "9cf471a7317593a41e5a7010c8bb2316cc6a357ff7f4e9fa978b753d513e3a2d",
-  "abgerufen": "2026-11-05T22:41:51Z"
+  "abgerufen": "2026-11-05T22:52:29Z"
  },
  {
   "datei": "impressum-09776.html",
@@ -1671,7 +1671,7 @@
   "ok": true,
   "bytes": 117920,
   "sha256": "c4162b55953264b88eb25cd94757ce74ef2d3abf5a29d2fe32e314eb9baa3cfe",
-  "abgerufen": "2026-11-05T22:41:52Z"
+  "abgerufen": "2026-11-05T22:52:29Z"
  },
  {
   "datei": "impressum-09778.html",
@@ -1680,7 +1680,7 @@
   "ok": true,
   "bytes": 40783,
   "sha256": "d0dcf1a83c1016d18b5b21750926db7082f681a6fe9590777f6700c11ecf6c33",
-  "abgerufen": "2026-11-05T22:41:53Z"
+  "abgerufen": "2026-11-05T22:52:30Z"
  },
  {
   "datei": "impressum-09779.html",
@@ -1689,7 +1689,7 @@
   "ok": true,
   "bytes": 40889,
   "sha256": "cd3de9915d24226d10c2f59398ed538c09b52fc77ff12be784f85fa5deaa5e03",
-  "abgerufen": "2026-11-05T22:41:55Z"
+  "abgerufen": "2026-11-05T22:52:33Z"
  },
  {
   "datei": "impressum-09780.html",
@@ -1698,7 +1698,7 @@
   "ok": true,
   "bytes": 71469,
   "sha256": "2afff8c6b7ce459ea6ac59e5063ace5bccd1acaf043f5cf517af1a5f7806775b",
-  "abgerufen": "2026-11-05T22:41:56Z"
+  "abgerufen": "2026-11-05T22:52:34Z"
  },
  {
   "datei": "start2-09175.html",
@@ -1707,7 +1707,7 @@
   "ok": false,
   "bytes": 0,
   "sha256": null,
-  "abgerufen": "2026-11-05T22:42:59Z"
+  "abgerufen": "2026-11-05T22:53:37Z"
  },
  {
   "datei": "start2-09272.html",
@@ -1716,7 +1716,7 @@
   "ok": false,
   "bytes": 0,
   "sha256": null,
-  "abgerufen": "2026-11-05T22:43:03Z"
+  "abgerufen": "2026-11-05T22:53:40Z"
  },
  {
   "datei": "start2-09274.html",
@@ -1724,8 +1724,8 @@
   "http": 200,
   "ok": true,
   "bytes": 189594,
-  "sha256": "61221cc3021f51556dbc1f1f0732702989ceab90128fa979e0178e723fe5831f",
-  "abgerufen": "2026-11-05T22:43:04Z"
+  "sha256": "bcf2fbf382f3422a56dffd3893f381e77e0975bd499aeb29c50f19d5861f8f7b",
+  "abgerufen": "2026-11-05T22:53:42Z"
  },
  {
   "datei": "start2-09375.html",
@@ -1734,7 +1734,7 @@
   "ok": false,
   "bytes": 0,
   "sha256": null,
-  "abgerufen": "2026-11-05T22:43:08Z"
+  "abgerufen": "2026-11-05T22:53:45Z"
  },
  {
   "datei": "start2-09461.html",
@@ -1743,7 +1743,7 @@
   "ok": true,
   "bytes": 913,
   "sha256": "d2e26afcbdfc680e5d060a1db905c0da9e02c4a65474042d793c5056c7e2eec9",
-  "abgerufen": "2026-11-05T22:43:09Z"
+  "abgerufen": "2026-11-05T22:53:46Z"
  },
  {
   "datei": "start2-09474.html",
@@ -1752,7 +1752,7 @@
   "ok": false,
   "bytes": 0,
   "sha256": null,
-  "abgerufen": "2026-11-05T22:43:09Z"
+  "abgerufen": "2026-11-05T22:53:46Z"
  },
  {
   "datei": "start2-09562.html",
@@ -1761,7 +1761,7 @@
   "ok": true,
   "bytes": 157007,
   "sha256": "ea10b1e44f157f7da97845b2ff5ee12329bcdae3ea8fe2ea174320b6b965d65f",
-  "abgerufen": "2026-11-05T22:43:11Z"
+  "abgerufen": "2026-11-05T22:53:48Z"
  },
  {
   "datei": "start2-09573.html",
@@ -1770,7 +1770,7 @@
   "ok": false,
   "bytes": 0,
   "sha256": null,
-  "abgerufen": "2026-11-05T22:43:11Z"
+  "abgerufen": "2026-11-05T22:53:48Z"
  },
  {
   "datei": "start2-09576.html",
@@ -1779,7 +1779,7 @@
   "ok": true,
   "bytes": 93060,
   "sha256": "ec99c44a6f453dd8fc03a4d71c4f95a579eeb4f9ce15d5487c0300f17ef8eb25",
-  "abgerufen": "2026-11-05T22:43:12Z"
+  "abgerufen": "2026-11-05T22:53:48Z"
  },
  {
   "datei": "start2-09672.html",
@@ -1788,7 +1788,7 @@
   "ok": false,
   "bytes": 0,
   "sha256": null,
-  "abgerufen": "2026-11-05T22:43:13Z"
+  "abgerufen": "2026-11-05T22:53:49Z"
  },
  {
   "datei": "start2-09777.html",
@@ -1797,6 +1797,114 @@
   "ok": false,
   "bytes": 0,
   "sha256": null,
-  "abgerufen": "2026-11-05T22:43:13Z"
+  "abgerufen": "2026-11-05T22:53:49Z"
+ },
+ {
+  "datei": "impressum2-09175.html",
+  "url": "https://www.lra-ebe.de/impressum/",
+  "http": 0,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-05T22:54:52Z"
+ },
+ {
+  "datei": "impressum2-09272.html",
+  "url": "https://www.freyung-grafenau.de/impressum",
+  "http": 200,
+  "ok": true,
+  "bytes": 119165,
+  "sha256": "d6fbc96f59e19ffe3244963da238563a7946d8d1f1395b723719d2300ef78385",
+  "abgerufen": "2026-11-05T22:54:53Z"
+ },
+ {
+  "datei": "impressum2-09274.html",
+  "url": "https://www.landkreis-landshut.de/meta/impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 110159,
+  "sha256": "2593afd800b682a4d0d8138d037bb12a56fd7ca9dd573ab151c4481bf96ab8c5",
+  "abgerufen": "2026-11-05T22:54:54Z"
+ },
+ {
+  "datei": "impressum2-09375.html",
+  "url": "https://www.landkreis-regensburg.de/impressum/",
+  "http": 503,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-05T22:54:58Z"
+ },
+ {
+  "datei": "impressum2-09461.html",
+  "url": "https://www.stadt.bamberg.de/impressum",
+  "http": 200,
+  "ok": true,
+  "bytes": 96740,
+  "sha256": "7890ae1792469d7afb4978313a1b37535c8b2d07d0cc2d4f72fba7f99b325e13",
+  "abgerufen": "2026-11-05T22:54:59Z"
+ },
+ {
+  "datei": "impressum2-09464.html",
+  "url": "https://www.hof.de/kontakt",
+  "http": 404,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-05T22:55:00Z"
+ },
+ {
+  "datei": "impressum2-09474.html",
+  "url": "https://www.landkreis-forchheim.de/impressum",
+  "http": 0,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-05T22:55:00Z"
+ },
+ {
+  "datei": "impressum2-09562.html",
+  "url": "https://www.erlangen.de/impressum",
+  "http": 200,
+  "ok": true,
+  "bytes": 60776,
+  "sha256": "4d4b18669ca3bfb10fb2853a2602a55c6fa94f1b0ad159a7b8e294514956e43e",
+  "abgerufen": "2026-11-05T22:55:01Z"
+ },
+ {
+  "datei": "impressum2-09573.html",
+  "url": "https://www.landkreis-fuerth.de/impressum.html",
+  "http": 403,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-05T22:55:02Z"
+ },
+ {
+  "datei": "impressum2-09576.html",
+  "url": "https://www.landratsamt-roth.de/impressum",
+  "http": 200,
+  "ok": true,
+  "bytes": 43848,
+  "sha256": "9090940ef08a694f3f0caadf38714b2f4752230878217c102be4dba66ab54c9b",
+  "abgerufen": "2026-11-05T22:55:02Z"
+ },
+ {
+  "datei": "impressum2-09672.html",
+  "url": "https://www.landkreis-badkissingen.de/impressum",
+  "http": 0,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-05T22:55:03Z"
+ },
+ {
+  "datei": "impressum2-09777.html",
+  "url": "https://www.ostallgaeu.de/impressum",
+  "http": 200,
+  "ok": true,
+  "bytes": 87521,
+  "sha256": "c47385f56936316dc6f6bea18b1978e1a9987accc21f13bb9992cf0d024fcd80",
+  "abgerufen": "2026-11-05T22:55:04Z"
  }
 ]
