@@ -93,7 +93,9 @@ jobs:
   ios:
     name: iOS (Simulator-Build)
     needs: test
-    runs-on: macos-latest
+    # Mac-Rechner sind bei GitHub knapp: iOS nur für main, Pull Requests, Version-Tags und auf Knopfdruck (Actions → CI → Run workflow)
+    if: github.event_name != 'push' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+    runs-on: macos-15
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
