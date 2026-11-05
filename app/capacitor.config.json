@@ -1,0 +1,7 @@
+{
+  "appId": "de.leistungslotse.app",
+  "appName": "Leistungs-Lotse",
+  "webDir": "www",
+  "android": { "allowMixedContent": false },
+  "ios": { "contentInset": "never" }
+}

@@ -1,0 +1,18 @@
+# Wöchentliche Updates für Abhängigkeiten; jedes Update läuft durch die CI.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule: { interval: weekly }
+  - package-ecosystem: npm
+    directory: /app
+    schedule: { interval: weekly }
+    groups:
+      capacitor:
+        patterns: ['@capacitor/*']
+  - package-ecosystem: gradle
+    directory: /app/android
+    schedule: { interval: monthly }
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: { interval: monthly }
