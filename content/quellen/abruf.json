@@ -1,0 +1,74 @@
+[
+ {
+  "datei": "geonames-DE.zip",
+  "url": "https://download.geonames.org/export/zip/DE.zip",
+  "http": 200,
+  "ok": true,
+  "bytes": 387968,
+  "sha256": "15f24dc4b5045eb7237d0ec0a48d643649dac568e7d1055d386ffae4c3ffdf25",
+  "abgerufen": "2026-11-05T20:20:18Z"
+ },
+ {
+  "datei": "wogv-anlage.html",
+  "url": "https://www.gesetze-im-internet.de/wogv/anlage.html",
+  "http": 200,
+  "ok": true,
+  "bytes": 256066,
+  "sha256": "e71af5b96726aedab6761741cff53d4029f2652af6e21e0400cf9f1a340c906b",
+  "abgerufen": "2026-11-05T20:20:19Z"
+ },
+ {
+  "datei": "wogv-index.html",
+  "url": "https://www.gesetze-im-internet.de/wogv/index.html",
+  "http": 200,
+  "ok": true,
+  "bytes": 9701,
+  "sha256": "985134a45936688dc2ab34252b649308ea2c3e316e59d4c4dca736e39edf2007",
+  "abgerufen": "2026-11-05T20:20:20Z"
+ },
+ {
+  "datei": "wogv-buzer.html",
+  "url": "https://www.buzer.de/Anlage_WoGV.htm",
+  "http": 200,
+  "ok": true,
+  "bytes": 111611,
+  "sha256": "bebeaf57fceca158991b77ee0ef93e010d34bd8a9c8f7db4623d52817177c711",
+  "abgerufen": "2026-11-05T20:20:21Z"
+ },
+ {
+  "datei": "stmb-landkreise.html",
+  "url": "https://stmb.bayern.de/min/geschaeftsbereich/landkreise/index.php",
+  "http": 200,
+  "ok": true,
+  "bytes": 193685,
+  "sha256": "c39db29706853de33a78307084adbe337c18ef174ad3dc8481fec2bf86bab2fb",
+  "abgerufen": "2026-11-05T20:20:22Z"
+ },
+ {
+  "datei": "stmb-kreisfreie-staedte.html",
+  "url": "https://bauministerium.bayern.de/min/geschaeftsbereich/kreisfreiestaedte/index.php",
+  "http": 200,
+  "ok": true,
+  "bytes": 95915,
+  "sha256": "dc9057a29935a37a38500227654bc8f3242ebabe84be1161a19ac39b36e839f6",
+  "abgerufen": "2026-11-05T20:20:23Z"
+ },
+ {
+  "datei": "stmb-wohngeld.html",
+  "url": "https://www.stmb.bayern.de/wohnen/wohnraum_nutzen/wohngeld/index.php",
+  "http": 200,
+  "ok": true,
+  "bytes": 97203,
+  "sha256": "051925b3adb6c57631bbd5d17904e92e43aa9629c556dffd238b6401b8212422",
+  "abgerufen": "2026-11-05T20:20:24Z"
+ },
+ {
+  "datei": "stmas-jobcenter.html",
+  "url": "https://www.stmas.bayern.de/grundsicherung/jobcenter/index.php",
+  "http": 404,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-05T20:20:25Z"
+ }
+]
