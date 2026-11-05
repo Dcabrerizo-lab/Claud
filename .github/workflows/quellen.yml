@@ -1,8 +1,10 @@
 name: Quellen abrufen
 
 # Lädt die amtlichen Quellen (content/quellen/QUELLEN.txt) herunter und legt sie mit Abrufdatum im Repo ab.
-# Nur auf Knopfdruck: Actions -> "Quellen abrufen" -> Run workflow (Branch wählen).
+# Läuft, wenn sich die Quellenliste ändert, und auf Knopfdruck (Actions -> "Quellen abrufen" -> Run workflow).
 on:
+  push:
+    paths: ['content/quellen/QUELLEN.txt']
   workflow_dispatch:
 
 permissions:
