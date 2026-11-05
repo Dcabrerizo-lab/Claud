@@ -5,11 +5,14 @@ on:
   push:
     branches: ['**']
     tags: ['v*']
+    # Reine Quellen-Abrufe (Workflow "Quellen abrufen") brauchen keine CI
+    paths-ignore: ['content/quellen/**']
   pull_request:
   workflow_dispatch:
 
 concurrency:
-  group: ci-${{ github.ref }}
+  # Knopfdruck-Läufe (z. B. für iOS) werden nicht von späteren Pushes abgebrochen
+  group: ci-${{ github.ref }}-${{ github.event_name }}
   cancel-in-progress: true
 
 permissions:

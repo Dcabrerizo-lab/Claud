@@ -228,3 +228,22 @@ impressum2-09573.html           https://www.landkreis-fuerth.de/impressum.html
 impressum2-09576.html           https://www.landratsamt-roth.de/impressum
 impressum2-09672.html           https://www.landkreis-badkissingen.de/impressum
 impressum2-09777.html           https://www.ostallgaeu.de/impressum
+
+# Erkundung: BayernPortal (Behördenverzeichnis des Freistaats) und Familienkasse (Bundesagentur für Arbeit)
+bp-zbfs-obb.html                https://www.bayernportal.de/dokumente/behoerde/46220732321/adressen
+bp-zbfs-obb-start.html          https://www.bayernportal.de/dokumente/behoerde/46220732321
+bp-zbfs-liste.html              https://www.bayernportal.de/dokumente/behoerde/31552768601/staatlichebehoerden
+bp-jobcenter.html               https://www.bayernportal.de/dokumente/behoerde/9700728189106
+bp-bezirk-obb.html              https://www.bayernportal.de/dokumente/behoerde/3947649037517/adressen
+bp-behoerden.html               https://www.bayernportal.de/dokumente/behoerde
+ba-fk-nord.html                 https://www.arbeitsagentur.de/vor-ort/familienkasse-bayern-nord
+ba-fk-sued.html                 https://www.arbeitsagentur.de/vor-ort/familienkasse-bayern-sued
+ba-fk-finden.html               https://www.arbeitsagentur.de/familie-und-kinder/familienkasse-finden
+# Bayern: Bezirke (Eingliederungshilfe), Startseiten
+bezirk-091.html                 https://www.bezirk-oberbayern.de/
+bezirk-092.html                 https://www.bezirk-niederbayern.de/
+bezirk-093.html                 https://www.bezirk-oberpfalz.de/
+bezirk-094.html                 https://www.bezirk-oberfranken.de/
+bezirk-095.html                 https://www.bezirk-mittelfranken.de/
+bezirk-096.html                 https://www.bezirk-unterfranken.de/
+bezirk-097.html                 https://www.bezirk-schwaben.de/
