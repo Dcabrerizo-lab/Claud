@@ -215,3 +215,16 @@ start2-09573.html               https://www.landkreis-fuerth.de/
 start2-09576.html               https://www.landratsamt-roth.de/
 start2-09672.html               https://www.landkreis-badkissingen.de/
 start2-09777.html               https://www.lra-ostallgaeu.de/
+# Impressum-Seiten, die über die Startseite nicht gefunden wurden (übliche Pfade der jeweiligen Website)
+impressum2-09175.html           https://www.lra-ebe.de/impressum/
+impressum2-09272.html           https://www.freyung-grafenau.de/impressum
+impressum2-09274.html           https://www.landkreis-landshut.de/meta/impressum/
+impressum2-09375.html           https://www.landkreis-regensburg.de/impressum/
+impressum2-09461.html           https://www.stadt.bamberg.de/impressum
+impressum2-09464.html           https://www.hof.de/kontakt
+impressum2-09474.html           https://www.landkreis-forchheim.de/impressum
+impressum2-09562.html           https://www.erlangen.de/impressum
+impressum2-09573.html           https://www.landkreis-fuerth.de/impressum.html
+impressum2-09576.html           https://www.landratsamt-roth.de/impressum
+impressum2-09672.html           https://www.landkreis-badkissingen.de/impressum
+impressum2-09777.html           https://www.ostallgaeu.de/impressum
