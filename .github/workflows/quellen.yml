@@ -6,6 +6,11 @@ on:
   push:
     paths: ['content/quellen/QUELLEN.txt']
   workflow_dispatch:
+    inputs:
+      alle:
+        description: 'Alle Quellen neu laden (sonst nur neue oder fehlende)'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -17,6 +22,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Herunterladen
+        env:
+          ALLE: ${{ inputs.alle && '1' || '0' }}
         run: |
           mkdir -p content/quellen/roh
           python3 - <<'PY'
@@ -24,11 +31,19 @@ jobs:
           # Ehrliche Kennung: Seiten, die automatische Abrufe ablehnen, werden nicht umgangen, sondern als fehlend protokolliert.
           ua = "Leistungs-Lotse-Datenabruf/1.0 (+https://github.com/" + os.environ["GITHUB_REPOSITORY"] + ")"
           out, log = pathlib.Path("content/quellen/roh"), []
+          alt = {}
+          try: alt = {e["datei"]: e for e in json.load(open("content/quellen/abruf.json", encoding="utf-8"))}
+          except Exception: pass
+          alle = os.environ.get("ALLE") == "1"
           for line in open("content/quellen/QUELLEN.txt", encoding="utf-8"):
               line = line.strip()
               if not line or line.startswith("#"): continue
               name, url = line.split(None, 1)
               f = out / name
+              e0 = alt.get(name)
+              # Schon vorhanden und unverändert: nicht neu laden (außer "alle")
+              if not alle and e0 and e0.get("ok") and e0.get("url") == url and f.exists():
+                  log.append(e0); continue
               r = subprocess.run(["curl", "-sSL", "-A", ua, "--retry", "2", "--connect-timeout", "20", "--max-time", "90",
                                   "-o", str(f), "-w", "%{http_code}", url], capture_output=True, text=True)
               code = int(r.stdout.strip()) if r.stdout.strip().isdigit() else 0
@@ -49,4 +64,5 @@ jobs:
           git add content/quellen
           git diff --cached --quiet && { echo "Keine Änderungen"; exit 0; }
           git commit -m "Quellen abgerufen ($(date -u +%Y-%m-%d))"
-          git push
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
