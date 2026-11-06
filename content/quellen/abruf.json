@@ -3994,5 +3994,32 @@
   "bytes": 67347,
   "sha256": "92f62f7462f5df3d8d9d44367a098649ca3b8899bc83baa223e22746ef49b414",
   "abgerufen": "2026-11-06T00:31:08Z"
+ },
+ {
+  "datei": "bp-fk-schwandorf.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/5719945960116",
+  "http": 200,
+  "ok": true,
+  "bytes": 69351,
+  "sha256": "264e013f2c1d2f133b5d1ea25238ba590769da7e3567063f83df7ce15bbda575",
+  "abgerufen": "2026-11-06T00:34:43Z"
+ },
+ {
+  "datei": "bp-fk-schwandorf-geb.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/5719945960116/zustaendigkeitsgebiet",
+  "http": 200,
+  "ok": true,
+  "bytes": 69419,
+  "sha256": "7428984ba11351ddee47452f6fa1093197362301f1ef96ca83d9aff0c755650a",
+  "abgerufen": "2026-11-06T00:34:45Z"
+ },
+ {
+  "datei": "bp-fk-regensburg.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/5703168183116",
+  "http": 200,
+  "ok": true,
+  "bytes": 68938,
+  "sha256": "450c2e72e52731290176ffa9cd32caa9475d559916e1d6f49cf46bbb7bdea1f8",
+  "abgerufen": "2026-11-06T00:34:46Z"
  }
 ]
