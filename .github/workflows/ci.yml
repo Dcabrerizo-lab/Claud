@@ -98,7 +98,8 @@ jobs:
     needs: test
     # Mac-Rechner sind bei GitHub knapp: iOS nur für main, Pull Requests, Version-Tags und auf Knopfdruck (Actions → CI → Run workflow)
     if: github.event_name != 'push' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
-    runs-on: macos-15
+    # Intel-Mac: die arm64-Mac-Runner waren mehrfach ausgelastet (Job nach 15 Minuten nicht zugeteilt)
+    runs-on: macos-15-intel
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
