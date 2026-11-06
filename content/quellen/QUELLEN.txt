@@ -475,3 +475,7 @@ bp-lra-09672.html               https://www.bayernportal.de/dokumente/behoerde/4
 # BayernPortal: kommunales Jobcenter Landkreis Würzburg; Familienkasse Bayern Nord (Standort Nürnberg)
 bp-jc-6177395019106.html        https://www.bayernportal.de/dokumente/behoerde/6177395019106/adressen
 bp-fk-nord.html                 https://www.bayernportal.de/dokumente/behoerde/5652834852116/adressen
+# BayernPortal: Familienkasse-Standorte Schwandorf (Nord) und Regensburg (Süd), Beschreibung und Zuständigkeit
+bp-fk-schwandorf.html           https://www.bayernportal.de/dokumente/behoerde/5719945960116
+bp-fk-schwandorf-geb.html       https://www.bayernportal.de/dokumente/behoerde/5719945960116/zustaendigkeitsgebiet
+bp-fk-regensburg.html           https://www.bayernportal.de/dokumente/behoerde/5703168183116
