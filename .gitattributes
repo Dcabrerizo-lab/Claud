@@ -1,0 +1,12 @@
+# Abgerufene Originalquellen und daraus erzeugte Daten: in GitHub-Ansichten eingeklappt, nicht in der Sprachstatistik
+content/quellen/roh/** linguist-generated=true -diff
+content/quellen/abruf.json linguist-generated=true
+content/plz-data.json linguist-generated=true
+content/behoerden-bayern.json linguist-generated=true
+package-lock.json linguist-generated=true
+app/package-lock.json linguist-generated=true
+# Binärdateien
+*.zip binary
+*.png binary
+*.woff2 binary
+*.ttf binary

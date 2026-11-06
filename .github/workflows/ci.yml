@@ -1,0 +1,118 @@
+name: CI
+
+# Läuft bei jedem Push und Pull Request. Version-Tags (v1.2.3) bauen zusätzlich ein signiertes Play-Store-Bundle.
+on:
+  push:
+    branches: ['**']
+    tags: ['v*']
+    # Reine Quellen-Abrufe (Workflow "Quellen abrufen") brauchen keine CI
+    paths-ignore: ['content/quellen/**']
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  # Knopfdruck-Läufe (z. B. für iOS) werden nicht von späteren Pushes abgebrochen
+  group: ci-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Tests (Regeln, Oberfläche, Browser, App)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            app/package-lock.json
+      - run: npm ci
+      - run: npm ci
+        working-directory: app
+      - run: npx playwright install --with-deps chromium
+      - name: Regel- und Oberflächentests
+        run: npm test
+      - name: Browsertest (Behinderung, Mappe, Sprachen, RTL)
+        run: npm run test:e2e
+      - name: App-Test (offline, CSP, PDF, Scan, Speichern)
+        run: npm run test:app
+      - name: Web-Version als Artefakt
+        uses: actions/upload-artifact@v4
+        with:
+          name: leistungs-lotse-web
+          path: dist/leistungs-lotse.html
+
+  android:
+    name: Android
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      HAS_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm, cache-dependency-path: app/package-lock.json }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 21, cache: gradle }
+      - run: npm ci
+      - run: npm ci
+        working-directory: app
+      - run: npm run build:app
+      - name: Debug-APK (zum Testen auf dem Handy)
+        working-directory: app/android
+        env:
+          VERSION_CODE: ${{ github.run_number }}
+        run: ./gradlew --no-daemon assembleDebug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-debug-apk
+          path: app/android/app/build/outputs/apk/debug/*.apk
+      - name: Signiertes App-Bundle für den Play Store (nur bei Version-Tag und vorhandenen Secrets)
+        if: startsWith(github.ref, 'refs/tags/v') && env.HAS_KEYSTORE == 'true'
+        working-directory: app/android
+        env:
+          VERSION_CODE: ${{ github.run_number }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > "$RUNNER_TEMP/upload.jks"
+          ANDROID_KEYSTORE_FILE="$RUNNER_TEMP/upload.jks" ./gradlew --no-daemon bundleRelease
+          rm -f "$RUNNER_TEMP/upload.jks"
+      - uses: actions/upload-artifact@v4
+        if: startsWith(github.ref, 'refs/tags/v')
+        with:
+          name: android-release-aab
+          path: app/android/app/build/outputs/bundle/release/*.aab
+          if-no-files-found: ignore
+
+  ios:
+    name: iOS (Simulator-Build)
+    needs: test
+    # Mac-Rechner sind bei GitHub knapp: iOS nur für main, Pull Requests, Version-Tags und auf Knopfdruck (Actions → CI → Run workflow)
+    if: github.event_name != 'push' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+    # Intel-Mac: die arm64-Mac-Runner waren mehrfach ausgelastet (Job nach 15 Minuten nicht zugeteilt)
+    runs-on: macos-15-intel
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm, cache-dependency-path: app/package-lock.json }
+      - run: npm ci
+      - run: npm ci
+        working-directory: app
+      - run: npm run build:app
+      - name: Für den Simulator bauen (ohne Signatur; prüft, dass Projekt und Plugins kompilieren)
+        working-directory: app/ios/App
+        run: |
+          xcodebuild -project App.xcodeproj -scheme App -configuration Debug \
+            -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO build | tail -50
+          exit ${PIPESTATUS[0]}

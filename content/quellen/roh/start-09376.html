@@ -1,0 +1,1236 @@
+
+
+<!DOCTYPE HTML>
+<html lang="de" class="frontend">
+<head>
+	<meta charset="ISO-8859-15">
+			<title>Willkommen im Landkreis Schwandorf</title>
+		<meta name="author" content="Willkommen im Landkreis Schwandorf">
+	<meta name="publisher" content="Willkommen im Landkreis Schwandorf">
+	<meta name="designer" content="Advantic GmbH">
+	<meta name="copyright" content="&copy; 2026 advantic.de">
+     
+    <meta name="robots" content="index,follow">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+		
+	
+	<meta property="og:locale" content="de_DE">
+	<meta property="og:site_name" content="Willkommen im Landkreis Schwandorf">
+	<meta name="twitter:card" content="summary_large_image">
+	
+	
+			<meta property="og:type" content="website">
+		<meta property="og:title" content="Willkommen im Landkreis Schwandorf">
+		<meta name="twitter:title" content="Willkommen im Landkreis Schwandorf">
+		<meta property="og:description" content="">
+		<meta name="twitter:description" content="">
+		<meta property="og:url" content="https://www.landkreis-schwandorf.de/">
+		<meta name="twitter:url" content="https://www.landkreis-schwandorf.de/">	
+					<meta property="og:image" content="https://www.landkreis-schwandorf.de/media/custom/3300_4956_1_g.JPG?1792073214">
+			<meta name="twitter:image" content="https://www.landkreis-schwandorf.de/media/custom/3300_4956_1_g.JPG?1792073214">
+			<meta property="og:image:alt" content="Luftaufnahme vom Erlebnispark Wasser-Fisch-Natur">
+			<meta name="twitter:image:alt" content="Luftaufnahme vom Erlebnispark Wasser-Fisch-Natur">
+			<meta property="og:image" content="https://www.landkreis-schwandorf.de/layout/lk_schwandorf/assets/img/placeholder-1200x630.png">
+	<meta property="og:image:alt" content="Willkommen im Landkreis Schwandorf">
+		
+	
+	<link rel="stylesheet" href="/layout/lk_schwandorf/assets/js/slicknav/slicknav.min.css?__ts=1568637403">
+	<link rel="stylesheet" href="/layout/lk_schwandorf/layout.css?__ts=1791977410">
+	
+			<link rel="stylesheet" media="screen" href="/layout/lk_schwandorf/assets/fonts/open-sans.css">
+		<style>
+					body { font-size:18px; }
+					.primary-bg-color, .submenu .nlv_1 > li > a, #datepicker_events .ui-state-active { background-color:#007E8F; color:#FFFFFF; }
+			.result-list > li { border-bottom-color:#007E8F; }
+			input[type="submit"] { background-color:#007E8F !important; color:#FFFFFF !important; }
+					.primary-text-color, .primary-bg-color a, .primary-bg-color *, .main-navigation .nlv_2 a, .site-footer a.btn, .site-footer .btn, .site-footer .btn a { color:#FFFFFF; }
+					a, .linkcolor, .linkcolor a { color:#007E8F; }
+					.secondary-bg-color { background-color:#F9F9F9; color:#101010; }
+					.secondary-text-color, .secondary-bg-color a, .secondary-bg-color * { color:#101010; }
+			</style>
+	
+	
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#007e8f">
+	<meta name="msapplication-TileColor" content="#ffffff">
+	<meta name="theme-color" content="#ffffff">
+	
+	
+	<script src="/output/js/jquery/jquery-1.11.3.min.js"></script>
+	<script src="/output/js/jquery/jquery-ui.min.js"></script>
+	
+	
+	<script src="/output/js/ikiss/basic.min.js"></script>
+	
+	
+		<script src="/layout/lk_schwandorf/assets/js/flexslider/jquery.flexslider-min.js?__ts=1566466760"></script>
+	<script>
+	$(window).load(function() {
+		$('.titelbild-slider').flexslider({
+			controlNav: true,
+			directionNav: false,
+			namespace: "ikiss-",
+			fadeFirstSlide: false,
+			start: function() { $('.ikiss-control-nav').attr('ikissedit', 'nav|1.100|layout'); }
+		});
+		$('.titelbild-slider').addClass('loaded');
+	});
+	</script>
+		
+	
+	<script>document.addEventListener("touchstart", function(){}, true);</script>
+	
+	<script type="text/javascript">
+        $(function() {
+        
+            
+            $('input[name="qs"]').autocomplete({
+                source: "/output/autocomplete_solr.php",
+                minLength: 1,
+                response: function( event, ui ) {
+                    var c = ui.content;
+                    var t = (c && c[0] && c[0].t) ? c[0].t + ' ' : '';
+                    for(var i = 0; i < c.length; i++){
+                        c[i].value = t + c[i].s;
+                        c[i].label = t + c[i].s + ' (' + c[i].n + ')';
+                    }						
+                },
+                select: function( event, ui ) {
+                    $(this).val(ui.item.value);
+                    $(this).closest('form').submit();
+                }
+            });
+            
+            
+            $(".datepicker").datepicker();
+        });
+    </script>
+    
+    
+    <script async src="/output/js/eyeable/config/www.landkreis-schwandorf.de.js"></script>
+    <script async src="/output/js/eyeable/public/js/eyeAble.js"></script>
+    
+    
+    <script async src="https://translate-cdn.eye-able.com/eye-able-translate.js"></script>
+	
+
+<link href="/output/js/photoswipe/photoswipe.css" rel="styleSheet" type="text/css">
+
+<link href="/output/js/photoswipe/ikiss-skin.css" rel="styleSheet" type="text/css">
+
+<script data-mode="1" src="/output/js/photoswipe/photoswipe.min.js"></script>
+
+<script data-mode="1" src="/output/js/photoswipe/photoswipe-ui-default.js"></script>
+
+<script data-mode="1" src="/output/js/photoswipe/jqPhotoSwipe.js"></script>
+
+	</head>
+<body id="start" class=" startseite pagewidth-wide menuwidth-full jumbotronwidth-full dropdown-menu">
+	
+		<div class="sr-jump" aria-label="Sprunglinks">
+		<strong>Sprungziele</strong>
+		<ul>
+			<li><a href="#jump-content" title="direkt zum Inhalt springen">zum Inhalt</a></li>
+						<li><a href="#jump-menu" title="direkt zum Hauptmen&uuml; springen">zum Hauptmen&uuml;</a></li>
+						<li><a href="#jump-shortmenu" title="direkt zum Kurzmen&uuml; springen">zum Kurzmen&uuml;</a></li>
+			<li><a href="#jump-search" title="direkt zur Volltextsuche springen">zur Volltextsuche</a></li>
+		</ul>
+	</div>
+	
+	
+	<div class="main-navigation">
+		<a id="jump-menu"></a><div class="sr-only"><strong>Hauptmen&uuml;</strong></div>
+		<nav id="nav" aria-label="Hauptnavigation">
+			
+	<ul id="rid_0" class="nlv_1">
+		<li id="nlt_1901_1" class="npt_off npt_first childs"><a href="/Unser-Landkreis/" id="nid_1901_1" class="nlk_off npt_first childs">Unser Landkreis</a>
+		<ul id="rid_1901_1" class="nlv_2">
+			<li id="nlt_1901_6" class="npt_off npt_first"><a href="/Unser-Landkreis/Landrat-Thomas-Ebeling/" id="nid_1901_6" class="nlk_off npt_first">Landrat Thomas Ebeling</a></li>
+			<li id="nlt_1901_7" class="npt_off"><a href="/Unser-Landkreis/Kreistag/" id="nid_1901_7" class="nlk_off">Kreistag</a></li>
+			<li id="nlt_1901_70" class="npt_off"><a href="/Unser-Landkreis/Wahlen/" id="nid_1901_70" class="nlk_off">Wahlen</a></li>
+			<li id="nlt_1901_71" class="npt_off"><a href="/Unser-Landkreis/Landkreiskommunen/" id="nid_1901_71" class="nlk_off">Landkreiskommunen</a></li>
+			<li id="nlt_1901_111" class="npt_off"><a href="/Unser-Landkreis/Finanzen/" id="nid_1901_111" class="nlk_off">Finanzen</a></li>
+			<li id="nlt_1901_5" class="npt_off"><a href="/redirect.phtml?extlink=1&amp;La=1&amp;url_fid=3300.22.1" target="_blank" id="nid_1901_5" class="nlk_off">Geoinformationssystem</a></li>
+			<li id="nlt_1901_96" class="npt_off"><a href="/Unser-Landkreis/Landkreisverdienstmedaille/" id="nid_1901_96" class="nlk_off">Landkreisverdienstmedaille</a></li>
+			<li id="nlt_3300_10" class="npt_off"><a href="/Unser-Landkreis/Botschafter-f%C3%BCr-den-Landkreis/" id="nid_3300_10" class="nlk_off">Botschafter für den Landkreis</a></li>
+			<li id="nlt_1901_9" class="npt_off"><a href="/Unser-Landkreis/Bildung-Kultur/" id="nid_1901_9" class="nlk_off">Bildung + Kultur</a></li>
+			<li id="nlt_1901_10" class="npt_off"><a href="/Unser-Landkreis/Freizeit-Urlaub/" id="nid_1901_10" class="nlk_off">Freizeit + Urlaub</a></li>
+			<li id="nlt_1901_84" class="npt_off"><a href="/Unser-Landkreis/EU-Badegew%C3%A4sser-im-Landkreis/" id="nid_1901_84" class="nlk_off">EU-Badegewässer im Landkreis</a></li>
+			<li id="nlt_1901_35" class="npt_off"><a href="/Unser-Landkreis/Natur/" id="nid_1901_35" class="nlk_off">Natur</a></li>
+			<li id="nlt_3300_4" class="npt_off"><a href="/redirect.phtml?extlink=1&amp;La=1&amp;url_fid=3300.976.1" target="_blank" id="nid_3300_4" class="nlk_off">Veranstaltungen</a></li>
+			<li id="nlt_3300_6" class="npt_off"><a href="/Unser-Landkreis/Tourismus/" id="nid_3300_6" class="nlk_off">Tourismus</a></li>
+			<li id="nlt_3300_16" class="npt_off"><a href="/Unser-Landkreis/Landkreis-Schwandorf-Regional-App/" id="nid_3300_16" class="nlk_off">Landkreis Schwandorf Regional App</a></li>
+			<li id="nlt_3300_23" class="npt_off npt_last"><a href="/Unser-Landkreis/1000-Schulen-f%C3%BCr-unsere-Welt/" id="nid_3300_23" class="nlk_off npt_last">1000 Schulen für unsere Welt</a></li>
+		</ul>
+		</li>
+		<li id="nlt_1901_2" class="npt_off childs"><a href="/B%C3%BCrgerservice/" id="nid_1901_2" class="nlk_off childs">Bürgerservice</a>
+		<ul id="rid_1901_2" class="nlv_2">
+			<li id="nlt_1901_15" class="npt_off npt_first childs"><a href="/B%C3%BCrgerservice/Landratsamt/" id="nid_1901_15" class="nlk_off npt_first childs">Landratsamt</a>
+			<ul id="rid_1901_15" class="nlv_3">
+				<li id="nlt_3300_37" class="npt_off npt_first npt_last"><a href="/B%C3%BCrgerservice/Landratsamt/Dynamisches-Organigramm/" id="nid_3300_37" class="nlk_off npt_first npt_last">Dynamisches Organigramm</a></li>
+			</ul>
+			</li>
+			<li id="nlt_1901_73" class="npt_off"><a href="/B%C3%BCrgerservice/Mitarbeiter/" id="nid_1901_73" class="nlk_off">Mitarbeiter</a></li>
+			<li id="nlt_3300_27" class="npt_off"><a href="/B%C3%BCrgerservice/Ukraine-Hilfe/" id="nid_3300_27" class="nlk_off">Ukraine Hilfe</a></li>
+			<li id="nlt_1913_1" class="npt_off"><a href="/B%C3%BCrgerservice/Was-erledige-ich-wo-/" id="nid_1913_1" class="nlk_off">Was erledige ich wo?</a></li>
+			<li id="nlt_1901_13" class="npt_off childs"><a href="/B%C3%BCrgerservice/Online-Verfahren-und-Formulare/" id="nid_1901_13" class="nlk_off childs">Online-Verfahren und Formulare</a>
+			<ul id="rid_1901_13" class="nlv_3">
+				<li id="nlt_3300_35" class="npt_off npt_first"><a href="/B%C3%BCrgerservice/Online-Verfahren-und-Formulare/Online-Ausl%C3%A4nderamt/" id="nid_3300_35" class="nlk_off npt_first">Online Ausländeramt</a></li>
+				<li id="nlt_3300_39" class="npt_off"><a href="/B%C3%BCrgerservice/Online-Verfahren-und-Formulare/Online-Zulassungsbeh%C3%B6rde/" target="_blank" id="nid_3300_39" class="nlk_off">Online Zulassungsbehörde</a></li>
+				<li id="nlt_3300_59" class="npt_off"><a href="/B%C3%BCrgerservice/Online-Verfahren-und-Formulare/Formulare-nach-Themen/" id="nid_3300_59" class="nlk_off">Formulare nach Themen</a></li>
+				<li id="nlt_3300_60" class="npt_off npt_last npt_nolink"><a href="" id="nid_3300_60" class="nlk_off npt_last npt_nolink">Formulare A-Z</a></li>
+			</ul>
+			</li>
+			<li id="nlt_3300_28" class="npt_off childs"><a href="/B%C3%BCrgerservice/Bauamt/" id="nid_3300_28" class="nlk_off childs">Bauamt</a>
+			<ul id="rid_3300_28" class="nlv_3">
+				<li id="nlt_3300_34" class="npt_off npt_first npt_nolink"><a href="" id="nid_3300_34" class="nlk_off npt_first npt_nolink">Digitaler Bauantrag</a></li>
+				<li id="nlt_3300_36" class="npt_off npt_last"><a href="/B%C3%BCrgerservice/Bauamt/Baugenehmigung-Bauaufsicht-Abgeschlossenheit/" id="nid_3300_36" class="nlk_off npt_last">Baugenehmigung Bauaufsicht Abgeschlossenheit</a></li>
+			</ul>
+			</li>
+			<li id="nlt_1901_32" class="npt_off childs"><a href="/B%C3%BCrgerservice/Kfz-Zulassung-F%C3%BChrerschein-/" id="nid_1901_32" class="nlk_off childs">Kfz-Zulassung / Führerschein </a>
+			<ul id="rid_1901_32" class="nlv_3">
+				<li id="nlt_3300_42" class="npt_off npt_first"><a href="/B%C3%BCrgerservice/Kfz-Zulassung-F%C3%BChrerschein-/Kfz-Zulassung/" target="_blank" id="nid_3300_42" class="nlk_off npt_first">Kfz-Zulassung</a></li>
+				<li id="nlt_3300_48" class="npt_off npt_last childs"><a href="/B%C3%BCrgerservice/Kfz-Zulassung-F%C3%BChrerschein-/F%C3%BChrerscheinstelle/" target="_blank" id="nid_3300_48" class="nlk_off npt_last childs">Führerscheinstelle</a></li>
+			</ul>
+			</li>
+			<li id="nlt_1901_98" class="npt_off"><a href="/B%C3%BCrgerservice/%C3%96ffentlicher-Personennahverkehr/" id="nid_1901_98" class="nlk_off">Öffentlicher Personennahverkehr</a></li>
+			<li id="nlt_1901_77" class="npt_off childs"><a href="/B%C3%BCrgerservice/Abfallwirtschaft/" id="nid_1901_77" class="nlk_off childs">Abfallwirtschaft</a>
+			<ul id="rid_1901_77" class="nlv_3">
+				<li id="nlt_3300_56" class="npt_off npt_first npt_last"><a href="/B%C3%BCrgerservice/Abfallwirtschaft/Sperrm%C3%BCll/" target="_blank" title="Informationen zur Sperrmüllentsorgung im Landkreis" id="nid_3300_56" class="nlk_off npt_first npt_last">Sperrmüll</a></li>
+			</ul>
+			</li>
+			<li id="nlt_1901_85" class="npt_off"><a href="/redirect.phtml?extlink=1&amp;La=1&amp;url_fid=1901.665.1" target="_blank" id="nid_1901_85" class="nlk_off">Tausch- und Verschenkmarkt</a></li>
+			<li id="nlt_3300_97" class="npt_off npt_last"><a href="/B%C3%BCrgerservice/Virtuelles-Amt/" target="_blank" id="nid_3300_97" class="nlk_off npt_last">Virtuelles Amt</a></li>
+		</ul>
+		</li>
+		<li id="nlt_3300_58" class="npt_off childs"><a href="/Ver%C3%B6ffentlichungen/" id="nid_3300_58" class="nlk_off childs">Veröffentlichungen</a>
+		<ul id="rid_3300_58" class="nlv_2">
+			<li id="nlt_3300_15" class="npt_off npt_first childs"><a href="/Ver%C3%B6ffentlichungen/Bekanntmachungen/" id="nid_3300_15" class="nlk_off npt_first childs">Bekanntmachungen</a>
+			<ul id="rid_3300_15" class="nlv_3">
+				<li id="nlt_3300_53" class="npt_off npt_first"><a href="/Ver%C3%B6ffentlichungen/Bekanntmachungen/%C3%96ffentliche-Zustellungen/" id="nid_3300_53" class="nlk_off npt_first">Öffentliche Zustellungen</a></li>
+				<li id="nlt_3300_98" class="npt_off npt_last"><a href="/Ver%C3%B6ffentlichungen/Bekanntmachungen/%C3%96ffentliche-Bekanntmachungen-im-%C3%9Cbrigen/" target="_blank" id="nid_3300_98" class="nlk_off npt_last">Öffentliche Bekanntmachungen im Übrigen</a></li>
+			</ul>
+			</li>
+			<li id="nlt_1901_74" class="npt_off"><a href="/Ver%C3%B6ffentlichungen/Ausschreibungen/" id="nid_1901_74" class="nlk_off">Ausschreibungen</a></li>
+			<li id="nlt_1901_72" class="npt_off"><a href="/Ver%C3%B6ffentlichungen/Amtsblatt-/" id="nid_1901_72" class="nlk_off">Amtsblatt </a></li>
+			<li id="nlt_1901_95" class="npt_off"><a href="/Ver%C3%B6ffentlichungen/Stellenangebote/" id="nid_1901_95" class="nlk_off">Stellenangebote</a></li>
+			<li id="nlt_1901_65" class="npt_off npt_last"><a href="/Ver%C3%B6ffentlichungen/Mitteilungen/" id="nid_1901_65" class="nlk_off npt_last">Mitteilungen</a></li>
+		</ul>
+		</li>
+		<li id="nlt_1901_3" class="npt_off childs"><a href="/Wirtschaft-Arbeit-Regionales/" id="nid_1901_3" class="nlk_off childs">Wirtschaft + Arbeit  + Regionales</a>
+		<ul id="rid_1901_3" class="nlv_2">
+			<li id="nlt_1901_16" class="npt_off npt_first"><a href="/Wirtschaft-Arbeit-Regionales/Wirtschaft/" id="nid_1901_16" class="nlk_off npt_first">Wirtschaft</a></li>
+			<li id="nlt_1901_106" class="npt_off"><a href="/Wirtschaft-Arbeit-Regionales/Breitbandausbau/" id="nid_1901_106" class="nlk_off">Breitbandausbau</a></li>
+			<li id="nlt_1901_17" class="npt_off"><a href="/Wirtschaft-Arbeit-Regionales/Existenzgr%C3%BCndung/" id="nid_1901_17" class="nlk_off">Existenzgründung</a></li>
+			<li id="nlt_1901_66" class="npt_off"><a href="/Wirtschaft-Arbeit-Regionales/Arbeit/" id="nid_1901_66" class="nlk_off">Arbeit</a></li>
+			<li id="nlt_1901_18" class="npt_off"><a href="/Wirtschaft-Arbeit-Regionales/Regionalmanagement/" id="nid_1901_18" class="nlk_off">Regionalmanagement</a></li>
+			<li id="nlt_1901_104" class="npt_off"><a href="/Wirtschaft-Arbeit-Regionales/Regionalentwicklung-im-Landkreis/" id="nid_1901_104" class="nlk_off">Regionalentwicklung im Landkreis</a></li>
+			<li id="nlt_3300_13" class="npt_off"><a href="/redirect.phtml?extlink=1&amp;La=1&amp;url_fid=1901.801.1" target="_blank" id="nid_3300_13" class="nlk_off">Der Landkreis hält zusammen</a></li>
+			<li id="nlt_1901_60" class="npt_off"><a href="/Wirtschaft-Arbeit-Regionales/Partner-f%C3%BCr-den-Landkreis/" id="nid_1901_60" class="nlk_off">Partner für den Landkreis</a></li>
+			<li id="nlt_1901_99" class="npt_off"><a href="/Wirtschaft-Arbeit-Regionales/KarriereNetzwerk-Ostbayern/" id="nid_1901_99" class="nlk_off">KarriereNetzwerk Ostbayern</a></li>
+			<li id="nlt_1901_29" class="npt_off"><a href="/Wirtschaft-Arbeit-Regionales/Einheitlicher-Ansprechpartner/" id="nid_1901_29" class="nlk_off">Einheitlicher Ansprechpartner</a></li>
+			<li id="nlt_1901_109" class="npt_off"><a href="/redirect.phtml?extlink=1&amp;La=1&amp;url_fid=1901.561.1" target="_blank" title="Blog von TenneT zum Projekt Ostbayernring" id="nid_1901_109" class="nlk_off">Blog Ostbayernring</a></li>
+			<li id="nlt_3300_8" class="npt_off"><a href="/redirect.phtml?extlink=1&amp;La=1&amp;url_fid=3300.81.1" target="_blank" id="nid_3300_8" class="nlk_off">Energiemonitor für den Landkreis</a></li>
+			<li id="nlt_1901_100" class="npt_off npt_last"><a href="/Wirtschaft-Arbeit-Regionales/Klimaschutzkonzept/" id="nid_1901_100" class="nlk_off npt_last">Klimaschutzkonzept</a></li>
+		</ul>
+		</li>
+		<li id="nlt_1901_4" class="npt_off npt_last childs"><a href="/Familie-Soziales-Gesundheit/" id="nid_1901_4" class="nlk_off npt_last childs">Familie + Soziales + Gesundheit</a>
+		<ul id="rid_1901_4" class="nlv_2">
+			<li id="nlt_1901_22" class="npt_off npt_first"><a href="/Familie-Soziales-Gesundheit/Kinder-Jugendliche/" id="nid_1901_22" class="nlk_off npt_first">Kinder + Jugendliche</a></li>
+			<li id="nlt_3300_55" class="npt_off childs"><a href="/Familie-Soziales-Gesundheit/Gesundheitsamt/" id="nid_3300_55" class="nlk_off childs">Gesundheitsamt</a>
+			<ul id="rid_3300_55" class="nlv_3">
+				<li id="nlt_1901_103" class="npt_off npt_first"><a href="/Familie-Soziales-Gesundheit/Gesundheitsamt/Staatlich-anerkannte-Beratungsstelle-f%C3%BCr-Schwangerschaftsfragen/" id="nid_1901_103" class="nlk_off npt_first">Staatlich anerkannte Beratungsstelle für Schwangerschaftsfragen</a></li>
+				<li id="nlt_3300_29" class="npt_off"><a href="/Familie-Soziales-Gesundheit/Gesundheitsamt/Masernschutz/" id="nid_3300_29" class="nlk_off">Masernschutz</a></li>
+				<li id="nlt_3300_54" class="npt_off"><a href="/Familie-Soziales-Gesundheit/Gesundheitsamt/Schuleingangsuntersuchung/" id="nid_3300_54" class="nlk_off">Schuleingangsuntersuchung</a></li>
+				<li id="nlt_3300_63" class="npt_off childs"><a href="/Familie-Soziales-Gesundheit/Gesundheitsamt/Gesundheitsf%C3%B6rderung-und-Pr%C3%A4vention/" id="nid_3300_63" class="nlk_off childs">Gesundheitsförderung und Prävention</a></li>
+				<li id="nlt_3300_32" class="npt_off"><a href="/Familie-Soziales-Gesundheit/Gesundheitsamt/Prostituiertenschutzgesetz/" id="nid_3300_32" class="nlk_off">Prostituiertenschutzgesetz</a></li>
+				<li id="nlt_3300_57" class="npt_off"><a href="/Familie-Soziales-Gesundheit/Gesundheitsamt/Belehrung-nach-43-Infektionsschutzgesetz/" id="nid_3300_57" class="nlk_off">Belehrung nach § 43 Infektionsschutzgesetz</a></li>
+				<li id="nlt_3300_62" class="npt_off"><a href="/Familie-Soziales-Gesundheit/Gesundheitsamt/FQA-Fachstelle-f%C3%BCr-Pflege-und-Behinderteneinrichtungen-Qualit%C3%A4tsentwicklung-und-Aufsicht/" id="nid_3300_62" class="nlk_off">FQA - Fachstelle für Pflege- und Behinderteneinrichtungen, Qualitätsentwicklung und Aufsicht</a></li>
+				<li id="nlt_3300_70" class="npt_off"><a href="/Familie-Soziales-Gesundheit/Gesundheitsamt/Wasserhygiene/" id="nid_3300_70" class="nlk_off">Wasserhygiene</a></li>
+				<li id="nlt_3300_73" class="npt_off npt_last"><a href="/Familie-Soziales-Gesundheit/Gesundheitsamt/Infektionskrankheiten-und-Hygienetipps/" id="nid_3300_73" class="nlk_off npt_last">Infektionskrankheiten und Hygienetipps</a></li>
+			</ul>
+			</li>
+			<li id="nlt_1901_24" class="npt_off"><a href="/Familie-Soziales-Gesundheit/Senioren-und-GutePflegeLotsin/" id="nid_1901_24" class="nlk_off">Senioren und GutePflegeLotsin</a></li>
+			<li id="nlt_3300_41" class="npt_off"><a href="/Familie-Soziales-Gesundheit/Heimaufsicht-und-Betreuung/" id="nid_3300_41" class="nlk_off">Heimaufsicht und Betreuung</a></li>
+			<li id="nlt_3300_7" class="npt_off"><a href="/Familie-Soziales-Gesundheit/Kommunale-Gleichstellungsstelle/" id="nid_3300_7" class="nlk_off">Kommunale Gleichstellungsstelle</a></li>
+			<li id="nlt_1901_27" class="npt_off"><a href="/Familie-Soziales-Gesundheit/Kommunale-Behindertenbeauftragte/" id="nid_1901_27" class="nlk_off">Kommunale Behindertenbeauftragte</a></li>
+			<li id="nlt_1901_23" class="npt_off"><a href="/Familie-Soziales-Gesundheit/Lokales-B%C3%BCndnis-f%C3%BCr-Familien/" id="nid_1901_23" class="nlk_off">Lokales Bündnis für Familien</a></li>
+			<li id="nlt_1901_26" class="npt_off"><a href="/Familie-Soziales-Gesundheit/Arbeitskreis-Sexueller-Missbrauch/" id="nid_1901_26" class="nlk_off">Arbeitskreis Sexueller Missbrauch</a></li>
+			<li id="nlt_1901_105" class="npt_off"><a href="/Familie-Soziales-Gesundheit/Fl%C3%BCchtlings-und-Integrationsberatung/" id="nid_1901_105" class="nlk_off">Flüchtlings- und Integrationsberatung</a></li>
+			<li id="nlt_1901_28" class="npt_off"><a href="/Familie-Soziales-Gesundheit/Netzwerk-Soziale-Fachberatung/" id="nid_1901_28" class="nlk_off">Netzwerk Soziale Fachberatung</a></li>
+			<li id="nlt_3300_22" class="npt_off npt_last"><a href="/Familie-Soziales-Gesundheit/Krisendienst-Oberpfalz/" id="nid_3300_22" class="nlk_off npt_last">Krisendienst Oberpfalz</a></li>
+		</ul>
+		</li>
+	</ul>
+		</nav>
+	</div>
+	<header class="site-header">
+		<div class="top wrapper">
+			<div class="top-bar">
+				<div class="flex-row">
+					<div class="header-left headerheight flex-col-2 flex-col-md-2x3 flex-col-sm-1">
+						<div class="logo headerheight flex-col-2x6 flex-col-sm-2x4" data-ikiss-mfid="41.1.2.1">
+							<a href="/" title="Zur Startseite">
+																<img src="/media/custom/3300_1_1_g.PNG?1773322320" alt="Willkommen im Landkreis Schwandorf" />
+															</a>
+						</div>
+						<div class="search-btn headerheight flex-col-sm-4">
+							<div class="inner">
+								<i class="far fa-search" aria-hidden="true"></i>Suche
+							</div>
+						</div>
+						<div class="menu-btn headerheight flex-col-6 flex-col-sm-4">
+							<div class="inner">
+								<i class="far fa-bars" aria-hidden="true"></i>Men&uuml;
+							</div>
+						</div>
+						<nav class="kopfnavigation headerheight flex-col-3x6 hide-sm nav-h" aria-label="kopfnavigation">
+							
+	<ul>
+		<li class="npt_off npt_first npt_last childs"><a href="/Quicknavigation/Startseite/Barrierefreiheit/" class="nlk_off npt_first npt_last childs">Barrierefreiheit</a></li>
+	</ul>
+							
+    				        
+    				        <div id="google_translate_element" class="sprachen">
+                        	
+                        	<!-- Google Uebersetzer Platzhalter -->
+                        	<div class="google-translate-placeholder" dir="ltr">
+                        		<div style="white-space: nowrap;" class="goog-te-gadget-simple">
+                        			<span style="vertical-align: middle;">
+                        				<a aria-haspopup="true" class="goog-te-menu-value" href="javascript:void(0)">
+                        					<span>Sprache auswählen</span>
+                        					<span style="border-left: 1px solid rgb(187, 187, 187);"></span>
+                        					<span style="color: rgb(155, 155, 155);" aria-hidden="true">&#9660;</span>
+                        				</a>
+                        			</span>
+                        		</div>
+                        	</div>
+                        	<!-- /Google Uebersetzer Platzhalter -->
+                        	
+                        	<!-- Google Uebersetzer Infomeldung -->
+                        	<div class="google-translate-message">
+                        		Zum Aktivieren des Google-&Uuml;bersetzers bitte klicken. Wir m&ouml;chten darauf hinweisen, dass nach der Aktivierung Daten an Google übermittelt werden.<br/>
+                        		<a href="/Quicknavigation/Datenschutz/" style="color: #fff;">Mehr Informationen zum Datenschutz</a>
+                        	</div>
+                        	<!-- /Google Uebersetzer Infomeldung -->
+                        	
+                        </div>
+                        
+                        <script type="text/javascript">
+                        function googleTranslateElementInit() {
+                        	var transEl = new google.translate.TranslateElement({
+                        		pageLanguage: 'de',
+                        		includedLanguages: 'de,en,cs',
+                        		layout: google.translate.TranslateElement.InlineLayout.VERTICAL
+                        	},
+                        	'google_translate_element');
+                        	
+                        	setTimeout(function(){
+                        		$('#google_translate_element div.goog-te-gadget-simple').trigger('click');
+                        	}, 150);
+                        }
+                        
+                        $(function() {
+                        							
+                        	//Extra Klasse für iPhone/iPad/iPod, da sonst keine Click-Events durchgereicht werden 
+                        	if (!!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform))
+                        		$('body').addClass('is-ios');
+                        							
+                        	//Setzt die Sichtbarkeit der Infomeldung und speichert diesen Wert zeitversetzt um 50ms 
+                        	var setMessageState = function(displayed) {
+                        		$('div.google-translate-message').css('display', displayed ? 'block' : 'none');
+                        		setTimeout(function() {
+                        			window.ikiss_googleTranslateMessageVisible = displayed;	
+                        		}, 50);	
+                        	};
+                        	
+                        	//Google Uebersetzer Zwei-Klick-Loesung
+                        	$('div.google-translate-placeholder').on('click', function() {
+                        		
+                        		if (window.ikiss_googleTranslateLoaded)
+                        			return;
+                        		
+                        		//Falls Infolayer nicht sichtbar -> einblenden da scheinbar mouseenter nicht unterstuetzt
+                        		if (window.ikiss_googleTranslateMessageVisible !== true) {
+                        			setMessageState(true);
+                        			
+                        			$(document).on('click', function(ev) {
+                        				if (($(ev.target).closest('div.google-translate-placeholder, div.google-translate-message')).length || window.ikiss_googleTranslateLoaded) 
+                        					return;
+                        		
+                        				setMessageState(false);	
+                        			});
+                        			return;
+                        		}
+                        		
+                        		window.ikiss_googleTranslateLoaded = true;
+                        		
+                        		$('div.google-translate-placeholder').remove();
+                        		$('div.google-translate-message').remove();
+                        
+                        		var d = document, 
+                        			g = d.createElement("script"), 
+                        			s = d.getElementsByTagName("script")[0]; 
+                        
+                        		g.type = "text/javascript";
+                        		g.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"; 
+                        		s.parentNode.insertBefore(g,s);
+                        	}); 
+                        	
+                        	$('div.google-translate-placeholder, div.google-translate-message').on('mouseenter', function() {
+                        		setMessageState(true);
+                        	});
+                        	
+                        	$('div.google-translate-placeholder, div.google-translate-message').on('mouseleave', function() {
+                        		setMessageState(false);
+                        	});
+                        	
+                        });      
+                        </script>
+							
+														<span class="tooltip">
+								Barrierefreiheit							</span>
+													</nav>
+					</div>
+					<div class="header-right headerheight flex-col-2 flex-col-md-3 flex-col-sm-1 text-right">
+						<div class="inner flex-col-1">
+							<div class="suche" role="search">
+								<a id="jump-search"></a><div class="sr-only"><strong>Volltextsuche</strong></div>
+								<form name="suchform" action="/" method="get">
+									
+									<input name="NavID" value="3300.1" type="hidden"> 
+									<label for="text" class="sr-only">Wie k&ouml;nnen wir Ihnen weiterhelfen?</label>
+									<input name="qs" id="text" placeholder="Wie k&ouml;nnen wir Ihnen weiterhelfen?" type="text">
+									<button type="submit" class="submit" title="Suchen"><i class="fas fa-search fa-fw" aria-hidden="true"></i><span class="sr-only">Suchen</span></button>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<nav>
+				<div id="mobile-nav" class="hidden mob-nav">
+					
+	<ul id="rid_0" class="nlv_1">
+		<li id="nlt_1901_1" class="npt_off npt_first childs"><a href="/Unser-Landkreis/" id="nid_1901_1" class="nlk_off npt_first childs">Unser Landkreis</a>
+		<ul id="rid_1901_1" class="nlv_2">
+			<li id="nlt_1901_6" class="npt_off npt_first"><a href="/Unser-Landkreis/Landrat-Thomas-Ebeling/" id="nid_1901_6" class="nlk_off npt_first">Landrat Thomas Ebeling</a></li>
+			<li id="nlt_1901_7" class="npt_off"><a href="/Unser-Landkreis/Kreistag/" id="nid_1901_7" class="nlk_off">Kreistag</a></li>
+			<li id="nlt_1901_70" class="npt_off"><a href="/Unser-Landkreis/Wahlen/" id="nid_1901_70" class="nlk_off">Wahlen</a></li>
+			<li id="nlt_1901_71" class="npt_off"><a href="/Unser-Landkreis/Landkreiskommunen/" id="nid_1901_71" class="nlk_off">Landkreiskommunen</a></li>
+			<li id="nlt_1901_111" class="npt_off"><a href="/Unser-Landkreis/Finanzen/" id="nid_1901_111" class="nlk_off">Finanzen</a></li>
+			<li id="nlt_1901_5" class="npt_off"><a href="/redirect.phtml?extlink=1&amp;La=1&amp;url_fid=3300.22.1" target="_blank" id="nid_1901_5" class="nlk_off">Geoinformationssystem</a></li>
+			<li id="nlt_1901_96" class="npt_off"><a href="/Unser-Landkreis/Landkreisverdienstmedaille/" id="nid_1901_96" class="nlk_off">Landkreisverdienstmedaille</a></li>
+			<li id="nlt_3300_10" class="npt_off"><a href="/Unser-Landkreis/Botschafter-f%C3%BCr-den-Landkreis/" id="nid_3300_10" class="nlk_off">Botschafter für den Landkreis</a></li>
+			<li id="nlt_1901_9" class="npt_off"><a href="/Unser-Landkreis/Bildung-Kultur/" id="nid_1901_9" class="nlk_off">Bildung + Kultur</a></li>
+			<li id="nlt_1901_10" class="npt_off"><a href="/Unser-Landkreis/Freizeit-Urlaub/" id="nid_1901_10" class="nlk_off">Freizeit + Urlaub</a></li>
+			<li id="nlt_1901_84" class="npt_off"><a href="/Unser-Landkreis/EU-Badegew%C3%A4sser-im-Landkreis/" id="nid_1901_84" class="nlk_off">EU-Badegewässer im Landkreis</a></li>
+			<li id="nlt_1901_35" class="npt_off"><a href="/Unser-Landkreis/Natur/" id="nid_1901_35" class="nlk_off">Natur</a></li>
+			<li id="nlt_3300_4" class="npt_off"><a href="/redirect.phtml?extlink=1&amp;La=1&amp;url_fid=3300.976.1" target="_blank" id="nid_3300_4" class="nlk_off">Veranstaltungen</a></li>
+			<li id="nlt_3300_6" class="npt_off"><a href="/Unser-Landkreis/Tourismus/" id="nid_3300_6" class="nlk_off">Tourismus</a></li>
+			<li id="nlt_3300_16" class="npt_off"><a href="/Unser-Landkreis/Landkreis-Schwandorf-Regional-App/" id="nid_3300_16" class="nlk_off">Landkreis Schwandorf Regional App</a></li>
+			<li id="nlt_3300_23" class="npt_off npt_last"><a href="/Unser-Landkreis/1000-Schulen-f%C3%BCr-unsere-Welt/" id="nid_3300_23" class="nlk_off npt_last">1000 Schulen für unsere Welt</a></li>
+		</ul>
+		</li>
+		<li id="nlt_1901_2" class="npt_off childs"><a href="/B%C3%BCrgerservice/" id="nid_1901_2" class="nlk_off childs">Bürgerservice</a>
+		<ul id="rid_1901_2" class="nlv_2">
+			<li id="nlt_1901_15" class="npt_off npt_first childs"><a href="/B%C3%BCrgerservice/Landratsamt/" id="nid_1901_15" class="nlk_off npt_first childs">Landratsamt</a>
+			<ul id="rid_1901_15" class="nlv_3">
+				<li id="nlt_3300_37" class="npt_off npt_first npt_last"><a href="/B%C3%BCrgerservice/Landratsamt/Dynamisches-Organigramm/" id="nid_3300_37" class="nlk_off npt_first npt_last">Dynamisches Organigramm</a></li>
+			</ul>
+			</li>
+			<li id="nlt_1901_73" class="npt_off"><a href="/B%C3%BCrgerservice/Mitarbeiter/" id="nid_1901_73" class="nlk_off">Mitarbeiter</a></li>
+			<li id="nlt_3300_27" class="npt_off"><a href="/B%C3%BCrgerservice/Ukraine-Hilfe/" id="nid_3300_27" class="nlk_off">Ukraine Hilfe</a></li>
+			<li id="nlt_1913_1" class="npt_off"><a href="/B%C3%BCrgerservice/Was-erledige-ich-wo-/" id="nid_1913_1" class="nlk_off">Was erledige ich wo?</a></li>
+			<li id="nlt_1901_13" class="npt_off childs"><a href="/B%C3%BCrgerservice/Online-Verfahren-und-Formulare/" id="nid_1901_13" class="nlk_off childs">Online-Verfahren und Formulare</a>
+			<ul id="rid_1901_13" class="nlv_3">
+				<li id="nlt_3300_35" class="npt_off npt_first"><a href="/B%C3%BCrgerservice/Online-Verfahren-und-Formulare/Online-Ausl%C3%A4nderamt/" id="nid_3300_35" class="nlk_off npt_first">Online Ausländeramt</a></li>
+				<li id="nlt_3300_39" class="npt_off"><a href="/B%C3%BCrgerservice/Online-Verfahren-und-Formulare/Online-Zulassungsbeh%C3%B6rde/" target="_blank" id="nid_3300_39" class="nlk_off">Online Zulassungsbehörde</a></li>
+				<li id="nlt_3300_59" class="npt_off"><a href="/B%C3%BCrgerservice/Online-Verfahren-und-Formulare/Formulare-nach-Themen/" id="nid_3300_59" class="nlk_off">Formulare nach Themen</a></li>
+				<li id="nlt_3300_60" class="npt_off npt_last npt_nolink"><a href="" id="nid_3300_60" class="nlk_off npt_last npt_nolink">Formulare A-Z</a></li>
+			</ul>
+			</li>
+			<li id="nlt_3300_28" class="npt_off childs"><a href="/B%C3%BCrgerservice/Bauamt/" id="nid_3300_28" class="nlk_off childs">Bauamt</a>
+			<ul id="rid_3300_28" class="nlv_3">
+				<li id="nlt_3300_34" class="npt_off npt_first npt_nolink"><a href="" id="nid_3300_34" class="nlk_off npt_first npt_nolink">Digitaler Bauantrag</a></li>
+				<li id="nlt_3300_36" class="npt_off npt_last"><a href="/B%C3%BCrgerservice/Bauamt/Baugenehmigung-Bauaufsicht-Abgeschlossenheit/" id="nid_3300_36" class="nlk_off npt_last">Baugenehmigung Bauaufsicht Abgeschlossenheit</a></li>
+			</ul>
+			</li>
+			<li id="nlt_1901_32" class="npt_off childs"><a href="/B%C3%BCrgerservice/Kfz-Zulassung-F%C3%BChrerschein-/" id="nid_1901_32" class="nlk_off childs">Kfz-Zulassung / Führerschein </a>
+			<ul id="rid_1901_32" class="nlv_3">
+				<li id="nlt_3300_42" class="npt_off npt_first"><a href="/B%C3%BCrgerservice/Kfz-Zulassung-F%C3%BChrerschein-/Kfz-Zulassung/" target="_blank" id="nid_3300_42" class="nlk_off npt_first">Kfz-Zulassung</a>				</li>
+				<li id="nlt_3300_48" class="npt_off npt_last childs"><a href="/B%C3%BCrgerservice/Kfz-Zulassung-F%C3%BChrerschein-/F%C3%BChrerscheinstelle/" target="_blank" id="nid_3300_48" class="nlk_off npt_last childs">Führerscheinstelle</a>
+				<ul id="rid_3300_48" class="nlv_4">
+					<li id="nlt_3300_49" class="npt_off npt_first npt_last"><a href="/B%C3%BCrgerservice/Kfz-Zulassung-F%C3%BChrerschein-/F%C3%BChrerscheinstelle/Dienstleistungen-der-F%C3%BChrerscheinstelle/" target="_blank" id="nid_3300_49" class="nlk_off npt_first npt_last">Dienstleistungen der Führerscheinstelle</a></li>
+				</ul>
+				</li>
+			</ul>
+			</li>
+			<li id="nlt_1901_98" class="npt_off"><a href="/B%C3%BCrgerservice/%C3%96ffentlicher-Personennahverkehr/" id="nid_1901_98" class="nlk_off">Öffentlicher Personennahverkehr</a></li>
+			<li id="nlt_1901_77" class="npt_off childs"><a href="/B%C3%BCrgerservice/Abfallwirtschaft/" id="nid_1901_77" class="nlk_off childs">Abfallwirtschaft</a>
+			<ul id="rid_1901_77" class="nlv_3">
+				<li id="nlt_3300_56" class="npt_off npt_first npt_last"><a href="/B%C3%BCrgerservice/Abfallwirtschaft/Sperrm%C3%BCll/" target="_blank" title="Informationen zur Sperrmüllentsorgung im Landkreis" id="nid_3300_56" class="nlk_off npt_first npt_last">Sperrmüll</a></li>
+			</ul>
+			</li>
+			<li id="nlt_1901_85" class="npt_off"><a href="/redirect.phtml?extlink=1&amp;La=1&amp;url_fid=1901.665.1" target="_blank" id="nid_1901_85" class="nlk_off">Tausch- und Verschenkmarkt</a></li>
+			<li id="nlt_3300_97" class="npt_off npt_last"><a href="/B%C3%BCrgerservice/Virtuelles-Amt/" target="_blank" id="nid_3300_97" class="nlk_off npt_last">Virtuelles Amt</a></li>
+		</ul>
+		</li>
+		<li id="nlt_3300_58" class="npt_off childs"><a href="/Ver%C3%B6ffentlichungen/" id="nid_3300_58" class="nlk_off childs">Veröffentlichungen</a>
+		<ul id="rid_3300_58" class="nlv_2">
+			<li id="nlt_3300_15" class="npt_off npt_first childs"><a href="/Ver%C3%B6ffentlichungen/Bekanntmachungen/" id="nid_3300_15" class="nlk_off npt_first childs">Bekanntmachungen</a>
+			<ul id="rid_3300_15" class="nlv_3">
+				<li id="nlt_3300_53" class="npt_off npt_first"><a href="/Ver%C3%B6ffentlichungen/Bekanntmachungen/%C3%96ffentliche-Zustellungen/" id="nid_3300_53" class="nlk_off npt_first">Öffentliche Zustellungen</a></li>
+				<li id="nlt_3300_98" class="npt_off npt_last"><a href="/Ver%C3%B6ffentlichungen/Bekanntmachungen/%C3%96ffentliche-Bekanntmachungen-im-%C3%9Cbrigen/" target="_blank" id="nid_3300_98" class="nlk_off npt_last">Öffentliche Bekanntmachungen im Übrigen</a></li>
+			</ul>
+			</li>
+			<li id="nlt_1901_74" class="npt_off"><a href="/Ver%C3%B6ffentlichungen/Ausschreibungen/" id="nid_1901_74" class="nlk_off">Ausschreibungen</a></li>
+			<li id="nlt_1901_72" class="npt_off"><a href="/Ver%C3%B6ffentlichungen/Amtsblatt-/" id="nid_1901_72" class="nlk_off">Amtsblatt </a></li>
+			<li id="nlt_1901_95" class="npt_off"><a href="/Ver%C3%B6ffentlichungen/Stellenangebote/" id="nid_1901_95" class="nlk_off">Stellenangebote</a></li>
+			<li id="nlt_1901_65" class="npt_off npt_last"><a href="/Ver%C3%B6ffentlichungen/Mitteilungen/" id="nid_1901_65" class="nlk_off npt_last">Mitteilungen</a></li>
+		</ul>
+		</li>
+		<li id="nlt_1901_3" class="npt_off childs"><a href="/Wirtschaft-Arbeit-Regionales/" id="nid_1901_3" class="nlk_off childs">Wirtschaft + Arbeit  + Regionales</a>
+		<ul id="rid_1901_3" class="nlv_2">
+			<li id="nlt_1901_16" class="npt_off npt_first"><a href="/Wirtschaft-Arbeit-Regionales/Wirtschaft/" id="nid_1901_16" class="nlk_off npt_first">Wirtschaft</a></li>
+			<li id="nlt_1901_106" class="npt_off"><a href="/Wirtschaft-Arbeit-Regionales/Breitbandausbau/" id="nid_1901_106" class="nlk_off">Breitbandausbau</a></li>
+			<li id="nlt_1901_17" class="npt_off"><a href="/Wirtschaft-Arbeit-Regionales/Existenzgr%C3%BCndung/" id="nid_1901_17" class="nlk_off">Existenzgründung</a></li>
+			<li id="nlt_1901_66" class="npt_off"><a href="/Wirtschaft-Arbeit-Regionales/Arbeit/" id="nid_1901_66" class="nlk_off">Arbeit</a></li>
+			<li id="nlt_1901_18" class="npt_off"><a href="/Wirtschaft-Arbeit-Regionales/Regionalmanagement/" id="nid_1901_18" class="nlk_off">Regionalmanagement</a></li>
+			<li id="nlt_1901_104" class="npt_off"><a href="/Wirtschaft-Arbeit-Regionales/Regionalentwicklung-im-Landkreis/" id="nid_1901_104" class="nlk_off">Regionalentwicklung im Landkreis</a></li>
+			<li id="nlt_3300_13" class="npt_off"><a href="/redirect.phtml?extlink=1&amp;La=1&amp;url_fid=1901.801.1" target="_blank" id="nid_3300_13" class="nlk_off">Der Landkreis hält zusammen</a></li>
+			<li id="nlt_1901_60" class="npt_off"><a href="/Wirtschaft-Arbeit-Regionales/Partner-f%C3%BCr-den-Landkreis/" id="nid_1901_60" class="nlk_off">Partner für den Landkreis</a></li>
+			<li id="nlt_1901_99" class="npt_off"><a href="/Wirtschaft-Arbeit-Regionales/KarriereNetzwerk-Ostbayern/" id="nid_1901_99" class="nlk_off">KarriereNetzwerk Ostbayern</a></li>
+			<li id="nlt_1901_29" class="npt_off"><a href="/Wirtschaft-Arbeit-Regionales/Einheitlicher-Ansprechpartner/" id="nid_1901_29" class="nlk_off">Einheitlicher Ansprechpartner</a></li>
+			<li id="nlt_1901_109" class="npt_off"><a href="/redirect.phtml?extlink=1&amp;La=1&amp;url_fid=1901.561.1" target="_blank" title="Blog von TenneT zum Projekt Ostbayernring" id="nid_1901_109" class="nlk_off">Blog Ostbayernring</a></li>
+			<li id="nlt_3300_8" class="npt_off"><a href="/redirect.phtml?extlink=1&amp;La=1&amp;url_fid=3300.81.1" target="_blank" id="nid_3300_8" class="nlk_off">Energiemonitor für den Landkreis</a></li>
+			<li id="nlt_1901_100" class="npt_off npt_last"><a href="/Wirtschaft-Arbeit-Regionales/Klimaschutzkonzept/" id="nid_1901_100" class="nlk_off npt_last">Klimaschutzkonzept</a></li>
+		</ul>
+		</li>
+		<li id="nlt_1901_4" class="npt_off npt_last childs"><a href="/Familie-Soziales-Gesundheit/" id="nid_1901_4" class="nlk_off npt_last childs">Familie + Soziales + Gesundheit</a>
+		<ul id="rid_1901_4" class="nlv_2">
+			<li id="nlt_1901_22" class="npt_off npt_first"><a href="/Familie-Soziales-Gesundheit/Kinder-Jugendliche/" id="nid_1901_22" class="nlk_off npt_first">Kinder + Jugendliche</a></li>
+			<li id="nlt_3300_55" class="npt_off childs"><a href="/Familie-Soziales-Gesundheit/Gesundheitsamt/" id="nid_3300_55" class="nlk_off childs">Gesundheitsamt</a>
+			<ul id="rid_3300_55" class="nlv_3">
+				<li id="nlt_1901_103" class="npt_off npt_first"><a href="/Familie-Soziales-Gesundheit/Gesundheitsamt/Staatlich-anerkannte-Beratungsstelle-f%C3%BCr-Schwangerschaftsfragen/" id="nid_1901_103" class="nlk_off npt_first">Staatlich anerkannte Beratungsstelle für Schwangerschaftsfragen</a></li>
+				<li id="nlt_3300_29" class="npt_off"><a href="/Familie-Soziales-Gesundheit/Gesundheitsamt/Masernschutz/" id="nid_3300_29" class="nlk_off">Masernschutz</a></li>
+				<li id="nlt_3300_54" class="npt_off"><a href="/Familie-Soziales-Gesundheit/Gesundheitsamt/Schuleingangsuntersuchung/" id="nid_3300_54" class="nlk_off">Schuleingangsuntersuchung</a></li>
+				<li id="nlt_3300_63" class="npt_off childs"><a href="/Familie-Soziales-Gesundheit/Gesundheitsamt/Gesundheitsf%C3%B6rderung-und-Pr%C3%A4vention/" id="nid_3300_63" class="nlk_off childs">Gesundheitsförderung und Prävention</a>
+				<ul id="rid_3300_63" class="nlv_4">
+					<li id="nlt_1901_78" class="npt_off npt_first"><a href="/Familie-Soziales-Gesundheit/Gesundheitsamt/Gesundheitsf%C3%B6rderung-und-Pr%C3%A4vention/Psychosoziale-Arbeitsgemeinschaft/" id="nid_1901_78" class="nlk_off npt_first">Psychosoziale Arbeitsgemeinschaft</a></li>
+					<li id="nlt_3300_65" class="npt_off npt_nolink"><a href="" id="nid_3300_65" class="nlk_off npt_nolink">Gesundheitliche Beratung</a></li>
+					<li id="nlt_3300_66" class="npt_off npt_nolink"><a href="" id="nid_3300_66" class="nlk_off npt_nolink">Jahresthemen des Bayerischen Staatsministeriums für Gesundheit und Pflege</a></li>
+					<li id="nlt_3300_64" class="npt_off npt_nolink"><a href="" id="nid_3300_64" class="nlk_off npt_nolink">Präventionsarbeit</a></li>
+					<li id="nlt_3300_67" class="npt_off npt_last npt_nolink"><a href="" id="nid_3300_67" class="nlk_off npt_last npt_nolink">Selbsthilfe im Landkreis Schwandorf</a></li>
+				</ul>
+				</li>
+				<li id="nlt_3300_32" class="npt_off"><a href="/Familie-Soziales-Gesundheit/Gesundheitsamt/Prostituiertenschutzgesetz/" id="nid_3300_32" class="nlk_off">Prostituiertenschutzgesetz</a></li>
+				<li id="nlt_3300_57" class="npt_off"><a href="/Familie-Soziales-Gesundheit/Gesundheitsamt/Belehrung-nach-43-Infektionsschutzgesetz/" id="nid_3300_57" class="nlk_off">Belehrung nach § 43 Infektionsschutzgesetz</a></li>
+				<li id="nlt_3300_62" class="npt_off"><a href="/Familie-Soziales-Gesundheit/Gesundheitsamt/FQA-Fachstelle-f%C3%BCr-Pflege-und-Behinderteneinrichtungen-Qualit%C3%A4tsentwicklung-und-Aufsicht/" id="nid_3300_62" class="nlk_off">FQA - Fachstelle für Pflege- und Behinderteneinrichtungen, Qualitätsentwicklung und Aufsicht</a></li>
+				<li id="nlt_3300_70" class="npt_off"><a href="/Familie-Soziales-Gesundheit/Gesundheitsamt/Wasserhygiene/" id="nid_3300_70" class="nlk_off">Wasserhygiene</a></li>
+				<li id="nlt_3300_73" class="npt_off npt_last"><a href="/Familie-Soziales-Gesundheit/Gesundheitsamt/Infektionskrankheiten-und-Hygienetipps/" id="nid_3300_73" class="nlk_off npt_last">Infektionskrankheiten und Hygienetipps</a></li>
+			</ul>
+			</li>
+			<li id="nlt_1901_24" class="npt_off"><a href="/Familie-Soziales-Gesundheit/Senioren-und-GutePflegeLotsin/" id="nid_1901_24" class="nlk_off">Senioren und GutePflegeLotsin</a></li>
+			<li id="nlt_3300_41" class="npt_off"><a href="/Familie-Soziales-Gesundheit/Heimaufsicht-und-Betreuung/" id="nid_3300_41" class="nlk_off">Heimaufsicht und Betreuung</a></li>
+			<li id="nlt_3300_7" class="npt_off"><a href="/Familie-Soziales-Gesundheit/Kommunale-Gleichstellungsstelle/" id="nid_3300_7" class="nlk_off">Kommunale Gleichstellungsstelle</a></li>
+			<li id="nlt_1901_27" class="npt_off"><a href="/Familie-Soziales-Gesundheit/Kommunale-Behindertenbeauftragte/" id="nid_1901_27" class="nlk_off">Kommunale Behindertenbeauftragte</a></li>
+			<li id="nlt_1901_23" class="npt_off"><a href="/Familie-Soziales-Gesundheit/Lokales-B%C3%BCndnis-f%C3%BCr-Familien/" id="nid_1901_23" class="nlk_off">Lokales Bündnis für Familien</a></li>
+			<li id="nlt_1901_26" class="npt_off"><a href="/Familie-Soziales-Gesundheit/Arbeitskreis-Sexueller-Missbrauch/" id="nid_1901_26" class="nlk_off">Arbeitskreis Sexueller Missbrauch</a></li>
+			<li id="nlt_1901_105" class="npt_off"><a href="/Familie-Soziales-Gesundheit/Fl%C3%BCchtlings-und-Integrationsberatung/" id="nid_1901_105" class="nlk_off">Flüchtlings- und Integrationsberatung</a></li>
+			<li id="nlt_1901_28" class="npt_off"><a href="/Familie-Soziales-Gesundheit/Netzwerk-Soziale-Fachberatung/" id="nid_1901_28" class="nlk_off">Netzwerk Soziale Fachberatung</a></li>
+			<li id="nlt_3300_22" class="npt_off npt_last"><a href="/Familie-Soziales-Gesundheit/Krisendienst-Oberpfalz/" id="nid_3300_22" class="nlk_off npt_last">Krisendienst Oberpfalz</a></li>
+		</ul>
+		</li>
+	</ul>
+				</div>
+				<div id="rsp-nav"></div>
+			</nav>
+		</div>
+		<div class="jumbotron wrapper">
+						<div class="titelbild-slider">
+			<ul class="titelbild slides with-slogan">
+							<li class="elem bgimg-center" style="background-image:url('/output/img.php?id=3300.4956.1&amp;fm=g&amp;mfm=m')" data-ikiss-mfid="6.3300.4956.1">
+											<div class="slogan">
+						    <span class="wrapper">
+							<p class="title">HERZLICH WILLKOMMEN IM LANDKREIS SCHWANDORF</p>
+							<br><p>Natürlich leb ich hier'</p>							</span>
+						</div>
+						<small class="mc2_ac">Luftaufnahme vom Erlebnispark Wasser-Fisch-Natur</br>&copy; 24pfilm</small>				</li>
+							</ul>
+			</div>
+						<a href="#jump-content" class="arrow-down"><i class="far fa-chevron-double-down" aria-hidden="true"></i><span class="sr-only">nach unten</span></a>
+			
+			<div class="start_schnell-gefunden wrapper"><h2>Schnell gefunden</h2><div style="display:inline">
+<ul class="unstyled-list">
+					<li data-ikiss-mfid="5.1913.1.1">	
+				 
+					<a href="/B%C3%BCrgerservice/Was-erledige-ich-wo-/" class="csslink_intern">Was erledige ich wo?</a>
+							</li>
+					<li data-ikiss-mfid="5.1901.32.1">	
+				 
+					<a href="/B%C3%BCrgerservice/Kfz-Zulassung-F%C3%BChrerschein-/" class="csslink_intern">Kfz-Zulassung / Führerschein </a>
+							</li>
+					<li data-ikiss-mfid="5.1901.77.1">	
+				 
+					<a href="/B%C3%BCrgerservice/Abfallwirtschaft/" class="csslink_intern">Abfallwirtschaft</a>
+							</li>
+					<li data-ikiss-mfid="5.3300.55.1">	
+				 
+					<a href="/Familie-Soziales-Gesundheit/Gesundheitsamt/" class="csslink_intern">Gesundheitsamt</a>
+							</li>
+					<li data-ikiss-mfid="5.1901.13.1">	
+				 
+					<a href="/B%C3%BCrgerservice/Online-Verfahren-und-Formulare/" class="csslink_intern">Online-Verfahren und Formulare</a>
+							</li>
+					<li data-ikiss-mfid="5.3300.97.1">	
+				 
+					<a href="/B%C3%BCrgerservice/Virtuelles-Amt/" target="_blank" class="csslink_intern">Virtuelles Amt</a>
+							</li>
+			</ul>
+</div></div>
+			<div class="start_flags">
+				<a href="/Unser-Landkreis/Landrat-Thomas-Ebeling#Imagefilm" title="Imagefilm"><i class="fab fa-youtube" aria-hidden="true"></i><span class="hide-md">Imagefilm <i class="far fa-chevron-double-right" aria-hidden="true"></i></span></a>
+				<a href="http://sad.panoramaluftbild.com/" title="Aussichtst&uuml;rme" target="_blank"><i class="fas fa-sync-alt" aria-hidden="true"></i><span class="hide-md">Aussichtst&uuml;rme <i class="far fa-chevron-double-right" aria-hidden="true"></i></span></a>
+				<a href="/?NavID=1901.5" target="_blank" title="Hier gelangen Sie zu unserem Geo-Portal mit vielf&auml;ltigen Informationen"><i class="far fa-globe" aria-hidden="true"></i><span class="hide-md">Karten <i class="far fa-chevron-double-right" aria-hidden="true"></i></span></a>
+			    <a href="/Unser-Landkreis/Botschafter-für-den-Landkreis" title="Botschafter für den Landkreis Schwandorf"><i class="fas fa-landmark" aria-hidden="true"></i><span class="hide-md">Botschafter <i class="far fa-chevron-double-right" aria-hidden="true"></i></span></a>
+			   
+			</div>
+					</div>
+	</header>
+		
+	
+	<easy-speech></easy-speech>
+	<translation-select></translation-select>
+	
+	<section class="site-content wrapper">
+		<div class="main-row row">
+			    
+
+
+<div id="jump-content" class="main-content-area column-1">
+    <strong class="sr-only">Inhalt</strong>
+    	
+	
+</ikiss>
+      <div class="start-topmeldung row">
+    <div class="wrapper">
+        <div style="display:inline"><div class="mitteilungen">
+					<a id="nr_4_1"></a>
+			<article class="elem row" data-ikiss-mfid="7.3300.233682.1">
+										<div class="liste-bild column-5 column-sm-3" data-ikiss-mfid="6.3300.4976.1">
+							<a href="/index.php?object=tx,3300.5&amp;ModID=7&amp;FID=3300.233682.1">
+								<img src="/media/custom/3300_4976_1_m.JPG?1793622438" alt="Man sieht die Oberpf&auml;lzer Gleichstellungsbeauftragten mit dem Landrat Thomas Ebeling und der Schwandorfer Kollegin Helga Forster ">
+																	<small class="mc2_ac">&copy; Laura Kohl</small>
+															</a>
+						</div>
+									
+				
+				<div class="liste-text column-4x5 column-sm-2x3">
+											<small class="date"><i aria-hidden="true" class="fal fa-calendar-alt" title="Datum"></i><span class="sr-only">Datum: </span>02.11.2026</small>
+										<p class="liste-titel"><a href="/index.php?object=tx,3300.5&amp;ModID=7&amp;FID=3300.233682.1">Oberpf&auml;lzer Gleichstellungsbeauftragte tauschen sich in Schwandorf aus</a></p>
+											<div class="sr-jump"><a href="#nr_4_2">Textanriss &uuml;berspringen</a></div>
+						<p>
+							<a href="/index.php?object=tx,3300.5&amp;ModID=7&amp;FID=3300.233682.1">
+								Die Gleichstellungsbeauftragten der Oberpfalz trafen sich Ende Oktober auf Einladung von Helga Forster, Gleichstellungsbeauftragte des Landkreises Schwandorf, zu ihrer Herbstsitzung in Schwandorf. Im Mittelpunkt des Treffens standen der fachliche Austausch &uuml;ber aktuelle ... <span class="more"><i class="fas fa-chevron-double-right"></i> Mehr lesen</span>							</a>
+						</p>
+									</div>
+				
+			</article>
+							<div class="spacer"></div>
+			<a id="nr_4_2"></a>	</div>
+</div>
+    </div>
+</div>
+<div class="start-meldungen_boxen row">
+    <div class="wrapper">
+        <div style="display:inline"><div class="row">
+					<div class="column-2">
+				<h2>Aktuelles</h2><div style="display:inline">
+<div class="mitteilungen">
+					<a id="nr_6_1"></a>
+			<article class="elem row" data-ikiss-mfid="7.3300.233677.1">				
+				
+				<div class="liste-text column-1">
+											
+						<div class="column-5 date"><span>02.11.2026</span></div>
+										<div class="column-4x5 ">
+						<p class="liste-titel"><a href="/index.php?object=tx,3300.5&amp;ModID=7&amp;FID=3300.233677.1">Seniorennachmittag in Burglengenfeld wieder voller Erfolg</a></p>
+													<div class="sr-jump"><a href="#nr_6_2">Textanriss &uuml;berspringen</a></div>
+							<p>
+								<a href="/index.php?object=tx,3300.5&amp;ModID=7&amp;FID=3300.233677.1">
+									Musik, Tanz und Ehrungen pr&auml;gten den gelungenen Abschluss der Seniorennachmittage des Landkreises Schwandorf
+ Mit mehr ... <span class="more"><i class="fas fa-chevron-double-right"></i> Mehr lesen</span>								</a>
+							</p>
+											</div>
+				</div>
+				
+			</article>
+			<div class="spacer"></div>
+
+						<a id="nr_6_2"></a>
+			<article class="elem row" data-ikiss-mfid="7.3300.233680.1">				
+				
+				<div class="liste-text column-1">
+											
+						<div class="column-5 date"><span>30.10.2026</span></div>
+										<div class="column-4x5 ">
+						<p class="liste-titel"><a href="/index.php?object=tx,3300.5&amp;ModID=7&amp;FID=3300.233680.1">Amtsblatt Nr. 35 vom 30.10.2026</a></p>
+													<div class="sr-jump"><a href="#nr_6_3">Textanriss &uuml;berspringen</a></div>
+							<p>
+								<a href="/index.php?object=tx,3300.5&amp;ModID=7&amp;FID=3300.233680.1">
+									Inhalt
+ Taxitarifordnung (TTO) des Landkreises Schwandorf &uuml;ber die Bef&ouml;rderungsentgelte und Bef&ouml;rderungsbedingungen im Taxenverkehr 
+ im Landkreis Schwandorf ... <span class="more"><i class="fas fa-chevron-double-right"></i> Mehr lesen</span>								</a>
+							</p>
+											</div>
+				</div>
+				
+			</article>
+			<div class="spacer"></div>
+
+						<a id="nr_6_3"></a>
+			<article class="elem row" data-ikiss-mfid="7.3300.233679.1">				
+				
+				<div class="liste-text column-1">
+											
+						<div class="column-5 date"><span>30.10.2026</span></div>
+										<div class="column-4x5 ">
+						<p class="liste-titel"><a href="/index.php?object=tx,3300.5&amp;ModID=7&amp;FID=3300.233679.1">Amtsblatt Nr. 34 vom 30.10.2026</a></p>
+													<div class="sr-jump"><a href="#nr_6_4">Textanriss &uuml;berspringen</a></div>
+							<p>
+								<a href="/index.php?object=tx,3300.5&amp;ModID=7&amp;FID=3300.233679.1">
+									Inhaltsverzeichnis
+
+Bekanntmachung gem. Art. 66 Absatz 2 Satz 4 Bayerische Bauordnung (BayBO) (Seite 3)
+Gesch&auml;ftsordnung des Schulverbandes ... <span class="more"><i class="fas fa-chevron-double-right"></i> Mehr lesen</span>								</a>
+							</p>
+											</div>
+				</div>
+				
+			</article>
+			<div class="spacer"></div>
+
+			<a id="nr_6_4"></a>	</div>
+<p class="btn" style="text-align: right;"><a target="_self" href="/Ver%C3%B6ffentlichungen/Mitteilungen/" class="csslink_intern">Alle Mitteilungen</a></p>
+</div>
+			</div>
+						<div class="column-2">
+				<div style="display:inline">
+<ul class="flex-row">
+					
+			<li class="cards withimage flex-col-2" data-ikiss-mfid="5.1901.72.1">
+				 
+					<a href="/Ver%C3%B6ffentlichungen/Amtsblatt-/">
+										<div class="image">
+																<div class="bg-img" style="background-image:url('/output/img.php?id=3300.187.1&amp;fm=g&amp;mfm=m');" data-ikiss-mfid="6.3300.187.1">
+																		<small class="mc2_ac">
+											Stefanie Keller &copy; istockphoto.com										</small>
+									</div>						</div>
+										<div class="caption">
+													<p class="title">Amtsblatt </p>
+											</div>
+				</a>
+			</li>
+			
+					
+			<li class="cards withimage flex-col-2" data-ikiss-mfid="5.1901.95.1">
+				 
+					<a href="/Ver%C3%B6ffentlichungen/Stellenangebote/">
+										<div class="image">
+																<div class="bg-img" style="background-image:url('/output/img.php?id=3300.30.1&amp;fm=g&amp;mfm=m');" data-ikiss-mfid="6.3300.30.1">
+																		<small class="mc2_ac">
+											Thomas_EyeDesign &copy; istockphoto.com										</small>
+									</div>						</div>
+										<div class="caption">
+													<p class="title">Stellenangebote</p>
+											</div>
+				</a>
+			</li>
+			
+					
+			<li class="cards withimage flex-col-2" data-ikiss-mfid="5.1901.74.1">
+				 
+					<a href="/Ver%C3%B6ffentlichungen/Ausschreibungen/">
+										<div class="image">
+																<div class="bg-img" style="background-image:url('/output/img.php?id=3300.56.1&amp;fm=g&amp;mfm=m');" data-ikiss-mfid="6.3300.56.1">
+																		<small class="mc2_ac">
+											Geber86 &copy; istockphoto.com										</small>
+									</div>						</div>
+										<div class="caption">
+													<p class="title">Ausschreibungen</p>
+											</div>
+				</a>
+			</li>
+			
+					
+			<li class="cards withimage flex-col-2" data-ikiss-mfid="5.3300.4.1">
+									<a href="/redirect.phtml?extlink=1&amp;La=1&amp;url_fid=3300.976.1" target="_blank" title="Externer Link">
+										<div class="image">
+																<div class="bg-img" style="background-image:url('/output/img.php?id=3300.28.1&amp;fm=g&amp;mfm=m');" data-ikiss-mfid="6.3300.28.1">
+																		<small class="mc2_ac">
+											rzoze19 &copy; istockphoto.com										</small>
+									</div>						</div>
+										<div class="caption">
+													<p class="title">Veranstaltungen</p>
+											</div>
+				</a>
+			</li>
+			
+			</ul>
+</div>
+			</div>
+				</div>
+</div>
+    </div>
+</div>
+<div class="start-unsere_themen row" style="background-image:url('/output/img.php?id=3300.1161.1&amp;fm=g&amp;mfm=m');">
+    <div class="wrapper">
+        <h2>Unsere Themen</h2><div style="display:inline"><ul class="flex-row">
+					
+			<li class="cards withicon flex-col-3" data-ikiss-mfid="5.3300.6.1">
+				 
+					<a href="/Unser-Landkreis/Tourismus/">
+										<div class="icon">
+							<i aria-hidden="true" title="Tourismus" 
+																	class="far fa-chevron-double-right"
+															></i>						</div>
+										<div class="caption">
+													<p class="title">Tourismus</p>
+											</div>
+				</a>
+			</li>
+			
+					
+			<li class="cards withicon flex-col-3" data-ikiss-mfid="5.1901.60.1">
+				 
+					<a href="/Wirtschaft-Arbeit-Regionales/Partner-f%C3%BCr-den-Landkreis/">
+										<div class="icon">
+							<i aria-hidden="true" title="Partner f&uuml;r den Landkreis" 
+																	class="far fa-chevron-double-right"
+															></i>						</div>
+										<div class="caption">
+													<p class="title">Partner f&uuml;r den Landkreis</p>
+											</div>
+				</a>
+			</li>
+			
+					
+			<li class="cards withicon flex-col-3" data-ikiss-mfid="5.1901.85.1">
+									<a href="/redirect.phtml?extlink=1&amp;La=1&amp;url_fid=1901.665.1" target="_blank" title="Externer Link">
+										<div class="icon">
+							<i aria-hidden="true" title="Tausch- und Verschenkmarkt" 
+																	class="far fa-chevron-double-right"
+															></i>						</div>
+										<div class="caption">
+													<p class="title">Tausch- und Verschenkmarkt</p>
+											</div>
+				</a>
+			</li>
+			
+					
+			<li class="cards withicon flex-col-3" data-ikiss-mfid="5.1901.5.1">
+									<a href="/redirect.phtml?extlink=1&amp;La=1&amp;url_fid=3300.22.1" target="_blank" title="Externer Link">
+										<div class="icon">
+							<i aria-hidden="true" title="Geoinformationssystem" 
+																	class="far fa-chevron-double-right"
+															></i>						</div>
+										<div class="caption">
+													<p class="title">Geoinformationssystem</p>
+											</div>
+				</a>
+			</li>
+			
+					
+			<li class="cards withicon flex-col-3" data-ikiss-mfid="5.3300.8.1">
+									<a href="/redirect.phtml?extlink=1&amp;La=1&amp;url_fid=3300.81.1" target="_blank" title="Externer Link">
+										<div class="icon">
+							<i aria-hidden="true" title="Energiemonitor f&uuml;r den Landkreis" 
+																	class="far fa-chevron-double-right"
+															></i>						</div>
+										<div class="caption">
+													<p class="title">Energiemonitor f&uuml;r den Landkreis</p>
+											</div>
+				</a>
+			</li>
+			
+					
+			<li class="cards withicon flex-col-3" data-ikiss-mfid="5.3300.23.1">
+				 
+					<a href="/Unser-Landkreis/1000-Schulen-f%C3%BCr-unsere-Welt/">
+										<div class="icon">
+							<i aria-hidden="true" title="1000 Schulen f&uuml;r unsere Welt" 
+																	class="far fa-chevron-double-right"
+															></i>						</div>
+										<div class="caption">
+													<p class="title">1000 Schulen f&uuml;r unsere Welt</p>
+											</div>
+				</a>
+			</li>
+			
+			</ul>
+</div>
+    </div>
+</div>
+<div class="start-themenboxen row">
+    <div class="wrapper">
+        <div style="display:inline"><ul class="flex-row">
+					
+			<li class="cards withimage flex-col-3" data-ikiss-mfid="5.3300.13.1">
+									<a href="/redirect.phtml?extlink=1&amp;La=1&amp;url_fid=1901.801.1" target="_blank" title="Externer Link">
+										<div class="image">
+																<div class="bg-img" style="background-image:url('/output/img.php?id=3300.223.1&amp;fm=g&amp;mfm=m');" data-ikiss-mfid="6.3300.223.1">
+																		<small class="mc2_ac">
+											&copy; Landratsamt Schwandorf										</small>
+									</div>						</div>
+										<div class="caption">
+													<p class="title">Der Landkreis h&auml;lt zusammen</p>
+						 <span class="more"><i class="fas fa-chevron-double-right"></i> Mehr lesen</span>					</div>
+				</a>
+			</li>
+			
+					
+			<li class="cards withimage flex-col-3" data-ikiss-mfid="5.1901.98.1">
+				 
+					<a href="/B%C3%BCrgerservice/%C3%96ffentlicher-Personennahverkehr/">
+										<div class="image">
+																<div class="bg-img" style="background-image:url('/output/img.php?id=3300.217.1&amp;fm=g&amp;mfm=m');" data-ikiss-mfid="6.3300.217.1">
+																		<small class="mc2_ac">
+											&copy; Landratsamt Schwandorf										</small>
+									</div>						</div>
+										<div class="caption">
+													<p class="title">&Ouml;ffentlicher Personennahverkehr</p>
+						 <span class="more"><i class="fas fa-chevron-double-right"></i> Mehr lesen</span>					</div>
+				</a>
+			</li>
+			
+					
+			<li class="cards withimage flex-col-3" data-ikiss-mfid="5.1901.106.1">
+				 
+					<a href="/Wirtschaft-Arbeit-Regionales/Breitbandausbau/">
+										<div class="image">
+																<div class="bg-img" style="background-image:url('/output/img.php?id=3300.24.1&amp;fm=g&amp;mfm=m');" data-ikiss-mfid="6.3300.24.1">
+																		<small class="mc2_ac">
+											&copy; istockphoto.com										</small>
+									</div>						</div>
+										<div class="caption">
+													<p class="title">Breitbandausbau</p>
+						 <span class="more"><i class="fas fa-chevron-double-right"></i> Mehr lesen</span>					</div>
+				</a>
+			</li>
+			
+			</ul>
+</div>
+    </div>
+</div>
+<div class="start-unser_landkreis row">
+    <div class="wrapper">
+        <h2>Unser Landkreis</h2><div style="display:inline"><div class="row">
+					<div class="column-2">
+				<div style="display:inline"> 				<div class="image-single">
+									<div class="mt_noalign" data-ikiss-mfid="6.3300.184.1">
+									<div class="cont">
+						
+						<!-- IMGS --> 
+													<img src="/media/custom/3300_184_1_g.JPG?1582272600" alt="Blick &uuml;ber Wiese und Wald von Sch&ouml;mersdorf nach Teunz" title="Nat&uuml;rlich leb&#39; ich hier" />
+							 
+								<small class="mc2_ac">Markus Kurz &copy;&nbsp;Naturpark Oberpf&auml;lzer Wald</small>
+													<!-- IMGE --> 
+						
+					</div>
+				</div></div>
+</div>
+			</div>
+						<div class="column-2">
+				<h2>Landkreis Schwandorf - <br>Nat&uuml;rlich leb&acute; ich hier</h2><div style="display:inline">
+<p>Im Fr&uuml;hsommer 2018 haben wir die Aufnahmen f&uuml;r unseren Imagefilm gedreht. Zu sehen ist nur eine Auswahl an attraktiven H&ouml;hepunkten im Landkreis Schwandorf ...</p>
+<p class="btn"><a target="_self" href="/Unser-Landkreis/Landrat-Thomas-Ebeling/#Imagefilm" class="csslink_intern">Imagefilm ansehen</a></p>
+</div>
+			</div>
+							</div>
+				<div class="row">
+						<div class="column-2">
+				<h2>Virtuelle Aussichtst&uuml;rme im Landkreis Schwandorf</h2><div style="display:inline"><p>Sie bieten einen herrlichen Blick &uuml;ber St&auml;dte, Sehensw&uuml;rdigkeiten und Landschaften: Aussichtst&uuml;rme. Hier im Landkreis Schwandorf gibt es jetzt etwas weltweit Einzigartiges ...</p>
+<p class="btn"><a target="_self" href="/Unser-Landkreis/Landrat-Thomas-Ebeling/#VirtuelleAussichtst&uuml;rme" class="csslink_intern">ZU DEN VIRTUELLEN AUSSICHTST&Uuml;RMEN</a></p>
+</div>
+			</div>
+						<div class="column-2">
+				<div style="display:inline"><div class="image-single">
+									<div class="mt_noalign" data-ikiss-mfid="6.1901.4730.1">
+									<div class="cont">
+						
+						<!-- IMGS --> 
+													<img src="/media/custom/1901_4730_1_g.JPG?1542788541" alt="Das Bild zeigt die Stadt Schwandorf von oben" title="Virtuelle Aussichtst&uuml;rme" />
+							 
+								<small class="mc2_ac">&copy;&nbsp;Landratsamt Schwandorf</small>
+													<!-- IMGE --> 
+						
+					</div>
+				</div></div>
+</div>
+			</div>
+				</div>
+</div>
+    </div>
+</div></div>
+
+
+
+
+		</div>
+		<div class="bottom-controls clearfix wrapper">
+			<a href="#start" class="pull-right" title="zum Seitenanfang"><i class="far fa-chevron-up" aria-hidden="true"></i></a>
+			<a href="javascript:history.back()" class="pull-right" title="zur vorherigen Seite"><i class="far fa-chevron-left" aria-hidden="true"></i></a>
+		</div>
+	</section>
+	<footer class="site-footer secondary-bg-color">
+		<div class="seiteninhalte">
+			<div class="wrapper accordion">
+					<div class="accordion-title">Seiteninhalte einblenden <i class="fas fa-chevron-double-down" aria-hidden="true"></i></div>
+				<div class="accordion-container">
+						
+	<ul class="nlv_1">
+		<li class="npt_off npt_first childs"><a href="/Unser-Landkreis/" class="nlk_off npt_first childs">Unser Landkreis</a>
+		<ul class="nlv_2">
+			<li class="npt_off npt_first"><a href="/Unser-Landkreis/Landrat-Thomas-Ebeling/" class="nlk_off npt_first">Landrat Thomas Ebeling</a></li>
+			<li class="npt_off"><a href="/Unser-Landkreis/Kreistag/" class="nlk_off">Kreistag</a></li>
+			<li class="npt_off"><a href="/Unser-Landkreis/Wahlen/" class="nlk_off">Wahlen</a></li>
+			<li class="npt_off"><a href="/Unser-Landkreis/Landkreiskommunen/" class="nlk_off">Landkreiskommunen</a></li>
+			<li class="npt_off"><a href="/Unser-Landkreis/Finanzen/" class="nlk_off">Finanzen</a></li>
+			<li class="npt_off"><a href="/redirect.phtml?extlink=1&amp;La=1&amp;url_fid=3300.22.1" target="_blank" class="nlk_off">Geoinformationssystem</a></li>
+			<li class="npt_off"><a href="/Unser-Landkreis/Landkreisverdienstmedaille/" class="nlk_off">Landkreisverdienstmedaille</a></li>
+			<li class="npt_off"><a href="/Unser-Landkreis/Botschafter-f%C3%BCr-den-Landkreis/" class="nlk_off">Botschafter für den Landkreis</a></li>
+			<li class="npt_off"><a href="/Unser-Landkreis/Bildung-Kultur/" class="nlk_off">Bildung + Kultur</a></li>
+			<li class="npt_off"><a href="/Unser-Landkreis/Freizeit-Urlaub/" class="nlk_off">Freizeit + Urlaub</a></li>
+			<li class="npt_off"><a href="/Unser-Landkreis/EU-Badegew%C3%A4sser-im-Landkreis/" class="nlk_off">EU-Badegewässer im Landkreis</a></li>
+			<li class="npt_off"><a href="/Unser-Landkreis/Natur/" class="nlk_off">Natur</a></li>
+			<li class="npt_off"><a href="/redirect.phtml?extlink=1&amp;La=1&amp;url_fid=3300.976.1" target="_blank" class="nlk_off">Veranstaltungen</a></li>
+			<li class="npt_off"><a href="/Unser-Landkreis/Tourismus/" class="nlk_off">Tourismus</a></li>
+			<li class="npt_off"><a href="/Unser-Landkreis/Landkreis-Schwandorf-Regional-App/" class="nlk_off">Landkreis Schwandorf Regional App</a></li>
+			<li class="npt_off npt_last"><a href="/Unser-Landkreis/1000-Schulen-f%C3%BCr-unsere-Welt/" class="nlk_off npt_last">1000 Schulen für unsere Welt</a></li>
+		</ul>
+		</li>
+		<li class="npt_off childs"><a href="/B%C3%BCrgerservice/" class="nlk_off childs">Bürgerservice</a>
+		<ul class="nlv_2">
+			<li class="npt_off npt_first childs"><a href="/B%C3%BCrgerservice/Landratsamt/" class="nlk_off npt_first childs">Landratsamt</a>
+			<ul class="nlv_3">
+				<li class="npt_off npt_first npt_last"><a href="/B%C3%BCrgerservice/Landratsamt/Dynamisches-Organigramm/" class="nlk_off npt_first npt_last">Dynamisches Organigramm</a></li>
+			</ul>
+			</li>
+			<li class="npt_off"><a href="/B%C3%BCrgerservice/Mitarbeiter/" class="nlk_off">Mitarbeiter</a></li>
+			<li class="npt_off"><a href="/B%C3%BCrgerservice/Ukraine-Hilfe/" class="nlk_off">Ukraine Hilfe</a></li>
+			<li class="npt_off"><a href="/B%C3%BCrgerservice/Was-erledige-ich-wo-/" class="nlk_off">Was erledige ich wo?</a></li>
+			<li class="npt_off childs"><a href="/B%C3%BCrgerservice/Online-Verfahren-und-Formulare/" class="nlk_off childs">Online-Verfahren und Formulare</a>
+			<ul class="nlv_3">
+				<li class="npt_off npt_first"><a href="/B%C3%BCrgerservice/Online-Verfahren-und-Formulare/Online-Ausl%C3%A4nderamt/" class="nlk_off npt_first">Online Ausländeramt</a></li>
+				<li class="npt_off"><a href="/B%C3%BCrgerservice/Online-Verfahren-und-Formulare/Online-Zulassungsbeh%C3%B6rde/" target="_blank" class="nlk_off">Online Zulassungsbehörde</a></li>
+				<li class="npt_off"><a href="/B%C3%BCrgerservice/Online-Verfahren-und-Formulare/Formulare-nach-Themen/" class="nlk_off">Formulare nach Themen</a></li>
+				<li class="npt_off npt_last npt_nolink"><a href="" class="nlk_off npt_last npt_nolink">Formulare A-Z</a></li>
+			</ul>
+			</li>
+			<li class="npt_off childs"><a href="/B%C3%BCrgerservice/Bauamt/" class="nlk_off childs">Bauamt</a>
+			<ul class="nlv_3">
+				<li class="npt_off npt_first npt_nolink"><a href="" class="nlk_off npt_first npt_nolink">Digitaler Bauantrag</a></li>
+				<li class="npt_off npt_last"><a href="/B%C3%BCrgerservice/Bauamt/Baugenehmigung-Bauaufsicht-Abgeschlossenheit/" class="nlk_off npt_last">Baugenehmigung Bauaufsicht Abgeschlossenheit</a></li>
+			</ul>
+			</li>
+			<li class="npt_off childs"><a href="/B%C3%BCrgerservice/Kfz-Zulassung-F%C3%BChrerschein-/" class="nlk_off childs">Kfz-Zulassung / Führerschein </a>
+			<ul class="nlv_3">
+				<li class="npt_off npt_first"><a href="/B%C3%BCrgerservice/Kfz-Zulassung-F%C3%BChrerschein-/Kfz-Zulassung/" target="_blank" class="nlk_off npt_first">Kfz-Zulassung</a>				</li>
+				<li class="npt_off npt_last childs"><a href="/B%C3%BCrgerservice/Kfz-Zulassung-F%C3%BChrerschein-/F%C3%BChrerscheinstelle/" target="_blank" class="nlk_off npt_last childs">Führerscheinstelle</a>
+				<ul class="nlv_4">
+					<li class="npt_off npt_first npt_last"><a href="/B%C3%BCrgerservice/Kfz-Zulassung-F%C3%BChrerschein-/F%C3%BChrerscheinstelle/Dienstleistungen-der-F%C3%BChrerscheinstelle/" target="_blank" class="nlk_off npt_first npt_last">Dienstleistungen der Führerscheinstelle</a></li>
+				</ul>
+				</li>
+			</ul>
+			</li>
+			<li class="npt_off"><a href="/B%C3%BCrgerservice/%C3%96ffentlicher-Personennahverkehr/" class="nlk_off">Öffentlicher Personennahverkehr</a></li>
+			<li class="npt_off childs"><a href="/B%C3%BCrgerservice/Abfallwirtschaft/" class="nlk_off childs">Abfallwirtschaft</a>
+			<ul class="nlv_3">
+				<li class="npt_off npt_first npt_last"><a href="/B%C3%BCrgerservice/Abfallwirtschaft/Sperrm%C3%BCll/" target="_blank" title="Informationen zur Sperrmüllentsorgung im Landkreis" class="nlk_off npt_first npt_last">Sperrmüll</a></li>
+			</ul>
+			</li>
+			<li class="npt_off"><a href="/redirect.phtml?extlink=1&amp;La=1&amp;url_fid=1901.665.1" target="_blank" class="nlk_off">Tausch- und Verschenkmarkt</a></li>
+			<li class="npt_off npt_last"><a href="/B%C3%BCrgerservice/Virtuelles-Amt/" target="_blank" class="nlk_off npt_last">Virtuelles Amt</a></li>
+		</ul>
+		</li>
+		<li class="npt_off childs"><a href="/Ver%C3%B6ffentlichungen/" class="nlk_off childs">Veröffentlichungen</a>
+		<ul class="nlv_2">
+			<li class="npt_off npt_first childs"><a href="/Ver%C3%B6ffentlichungen/Bekanntmachungen/" class="nlk_off npt_first childs">Bekanntmachungen</a>
+			<ul class="nlv_3">
+				<li class="npt_off npt_first"><a href="/Ver%C3%B6ffentlichungen/Bekanntmachungen/%C3%96ffentliche-Zustellungen/" class="nlk_off npt_first">Öffentliche Zustellungen</a></li>
+				<li class="npt_off npt_last"><a href="/Ver%C3%B6ffentlichungen/Bekanntmachungen/%C3%96ffentliche-Bekanntmachungen-im-%C3%9Cbrigen/" target="_blank" class="nlk_off npt_last">Öffentliche Bekanntmachungen im Übrigen</a></li>
+			</ul>
+			</li>
+			<li class="npt_off"><a href="/Ver%C3%B6ffentlichungen/Ausschreibungen/" class="nlk_off">Ausschreibungen</a></li>
+			<li class="npt_off"><a href="/Ver%C3%B6ffentlichungen/Amtsblatt-/" class="nlk_off">Amtsblatt </a></li>
+			<li class="npt_off"><a href="/Ver%C3%B6ffentlichungen/Stellenangebote/" class="nlk_off">Stellenangebote</a></li>
+			<li class="npt_off npt_last"><a href="/Ver%C3%B6ffentlichungen/Mitteilungen/" class="nlk_off npt_last">Mitteilungen</a></li>
+		</ul>
+		</li>
+		<li class="npt_off childs"><a href="/Wirtschaft-Arbeit-Regionales/" class="nlk_off childs">Wirtschaft + Arbeit  + Regionales</a>
+		<ul class="nlv_2">
+			<li class="npt_off npt_first"><a href="/Wirtschaft-Arbeit-Regionales/Wirtschaft/" class="nlk_off npt_first">Wirtschaft</a></li>
+			<li class="npt_off"><a href="/Wirtschaft-Arbeit-Regionales/Breitbandausbau/" class="nlk_off">Breitbandausbau</a></li>
+			<li class="npt_off"><a href="/Wirtschaft-Arbeit-Regionales/Existenzgr%C3%BCndung/" class="nlk_off">Existenzgründung</a></li>
+			<li class="npt_off"><a href="/Wirtschaft-Arbeit-Regionales/Arbeit/" class="nlk_off">Arbeit</a></li>
+			<li class="npt_off"><a href="/Wirtschaft-Arbeit-Regionales/Regionalmanagement/" class="nlk_off">Regionalmanagement</a></li>
+			<li class="npt_off"><a href="/Wirtschaft-Arbeit-Regionales/Regionalentwicklung-im-Landkreis/" class="nlk_off">Regionalentwicklung im Landkreis</a></li>
+			<li class="npt_off"><a href="/redirect.phtml?extlink=1&amp;La=1&amp;url_fid=1901.801.1" target="_blank" class="nlk_off">Der Landkreis hält zusammen</a></li>
+			<li class="npt_off"><a href="/Wirtschaft-Arbeit-Regionales/Partner-f%C3%BCr-den-Landkreis/" class="nlk_off">Partner für den Landkreis</a></li>
+			<li class="npt_off"><a href="/Wirtschaft-Arbeit-Regionales/KarriereNetzwerk-Ostbayern/" class="nlk_off">KarriereNetzwerk Ostbayern</a></li>
+			<li class="npt_off"><a href="/Wirtschaft-Arbeit-Regionales/Einheitlicher-Ansprechpartner/" class="nlk_off">Einheitlicher Ansprechpartner</a></li>
+			<li class="npt_off"><a href="/redirect.phtml?extlink=1&amp;La=1&amp;url_fid=1901.561.1" target="_blank" title="Blog von TenneT zum Projekt Ostbayernring" class="nlk_off">Blog Ostbayernring</a></li>
+			<li class="npt_off"><a href="/redirect.phtml?extlink=1&amp;La=1&amp;url_fid=3300.81.1" target="_blank" class="nlk_off">Energiemonitor für den Landkreis</a></li>
+			<li class="npt_off npt_last"><a href="/Wirtschaft-Arbeit-Regionales/Klimaschutzkonzept/" class="nlk_off npt_last">Klimaschutzkonzept</a></li>
+		</ul>
+		</li>
+		<li class="npt_off npt_last childs"><a href="/Familie-Soziales-Gesundheit/" class="nlk_off npt_last childs">Familie + Soziales + Gesundheit</a>
+		<ul class="nlv_2">
+			<li class="npt_off npt_first"><a href="/Familie-Soziales-Gesundheit/Kinder-Jugendliche/" class="nlk_off npt_first">Kinder + Jugendliche</a></li>
+			<li class="npt_off childs"><a href="/Familie-Soziales-Gesundheit/Gesundheitsamt/" class="nlk_off childs">Gesundheitsamt</a>
+			<ul class="nlv_3">
+				<li class="npt_off npt_first"><a href="/Familie-Soziales-Gesundheit/Gesundheitsamt/Staatlich-anerkannte-Beratungsstelle-f%C3%BCr-Schwangerschaftsfragen/" class="nlk_off npt_first">Staatlich anerkannte Beratungsstelle für Schwangerschaftsfragen</a></li>
+				<li class="npt_off"><a href="/Familie-Soziales-Gesundheit/Gesundheitsamt/Masernschutz/" class="nlk_off">Masernschutz</a></li>
+				<li class="npt_off"><a href="/Familie-Soziales-Gesundheit/Gesundheitsamt/Schuleingangsuntersuchung/" class="nlk_off">Schuleingangsuntersuchung</a></li>
+				<li class="npt_off childs"><a href="/Familie-Soziales-Gesundheit/Gesundheitsamt/Gesundheitsf%C3%B6rderung-und-Pr%C3%A4vention/" class="nlk_off childs">Gesundheitsförderung und Prävention</a>
+				<ul class="nlv_4">
+					<li class="npt_off npt_first"><a href="/Familie-Soziales-Gesundheit/Gesundheitsamt/Gesundheitsf%C3%B6rderung-und-Pr%C3%A4vention/Psychosoziale-Arbeitsgemeinschaft/" class="nlk_off npt_first">Psychosoziale Arbeitsgemeinschaft</a></li>
+					<li class="npt_off npt_nolink"><a href="" class="nlk_off npt_nolink">Gesundheitliche Beratung</a></li>
+					<li class="npt_off npt_nolink"><a href="" class="nlk_off npt_nolink">Jahresthemen des Bayerischen Staatsministeriums für Gesundheit und Pflege</a></li>
+					<li class="npt_off npt_nolink"><a href="" class="nlk_off npt_nolink">Präventionsarbeit</a></li>
+					<li class="npt_off npt_last npt_nolink"><a href="" class="nlk_off npt_last npt_nolink">Selbsthilfe im Landkreis Schwandorf</a></li>
+				</ul>
+				</li>
+				<li class="npt_off"><a href="/Familie-Soziales-Gesundheit/Gesundheitsamt/Prostituiertenschutzgesetz/" class="nlk_off">Prostituiertenschutzgesetz</a></li>
+				<li class="npt_off"><a href="/Familie-Soziales-Gesundheit/Gesundheitsamt/Belehrung-nach-43-Infektionsschutzgesetz/" class="nlk_off">Belehrung nach § 43 Infektionsschutzgesetz</a></li>
+				<li class="npt_off"><a href="/Familie-Soziales-Gesundheit/Gesundheitsamt/FQA-Fachstelle-f%C3%BCr-Pflege-und-Behinderteneinrichtungen-Qualit%C3%A4tsentwicklung-und-Aufsicht/" class="nlk_off">FQA - Fachstelle für Pflege- und Behinderteneinrichtungen, Qualitätsentwicklung und Aufsicht</a></li>
+				<li class="npt_off"><a href="/Familie-Soziales-Gesundheit/Gesundheitsamt/Wasserhygiene/" class="nlk_off">Wasserhygiene</a></li>
+				<li class="npt_off npt_last"><a href="/Familie-Soziales-Gesundheit/Gesundheitsamt/Infektionskrankheiten-und-Hygienetipps/" class="nlk_off npt_last">Infektionskrankheiten und Hygienetipps</a></li>
+			</ul>
+			</li>
+			<li class="npt_off"><a href="/Familie-Soziales-Gesundheit/Senioren-und-GutePflegeLotsin/" class="nlk_off">Senioren und GutePflegeLotsin</a></li>
+			<li class="npt_off"><a href="/Familie-Soziales-Gesundheit/Heimaufsicht-und-Betreuung/" class="nlk_off">Heimaufsicht und Betreuung</a></li>
+			<li class="npt_off"><a href="/Familie-Soziales-Gesundheit/Kommunale-Gleichstellungsstelle/" class="nlk_off">Kommunale Gleichstellungsstelle</a></li>
+			<li class="npt_off"><a href="/Familie-Soziales-Gesundheit/Kommunale-Behindertenbeauftragte/" class="nlk_off">Kommunale Behindertenbeauftragte</a></li>
+			<li class="npt_off"><a href="/Familie-Soziales-Gesundheit/Lokales-B%C3%BCndnis-f%C3%BCr-Familien/" class="nlk_off">Lokales Bündnis für Familien</a></li>
+			<li class="npt_off"><a href="/Familie-Soziales-Gesundheit/Arbeitskreis-Sexueller-Missbrauch/" class="nlk_off">Arbeitskreis Sexueller Missbrauch</a></li>
+			<li class="npt_off"><a href="/Familie-Soziales-Gesundheit/Fl%C3%BCchtlings-und-Integrationsberatung/" class="nlk_off">Flüchtlings- und Integrationsberatung</a></li>
+			<li class="npt_off"><a href="/Familie-Soziales-Gesundheit/Netzwerk-Soziale-Fachberatung/" class="nlk_off">Netzwerk Soziale Fachberatung</a></li>
+			<li class="npt_off npt_last"><a href="/Familie-Soziales-Gesundheit/Krisendienst-Oberpfalz/" class="nlk_off npt_last">Krisendienst Oberpfalz</a></li>
+		</ul>
+		</li>
+	</ul>
+				</div>
+			</div>
+		</div>
+		<nav class="quickmenu nav-h" aria-label="Kurzmen&uuml;">
+			<div class="wrapper">
+				<a id="jump-shortmenu"></a><div class="sr-only"><strong>Kurzmen&uuml;</strong></div>
+				
+	<ul>
+		<li class="npt_on npt_first childs"><a href="/Quicknavigation/Startseite/" class="nlk_on npt_first childs">Startseite</a></li>
+		<li class="npt_off"><a href="/Quicknavigation/Seiten%C3%BCbersicht/" class="nlk_off">Seitenübersicht</a></li>
+		<li class="npt_off"><a href="/Quicknavigation/Impressum/" class="nlk_off">Impressum</a></li>
+		<li class="npt_off childs"><a href="/Quicknavigation/Datenschutz/" class="nlk_off childs">Datenschutz</a></li>
+		<li class="npt_off"><a href="/Quicknavigation/Fehler-melden/" class="nlk_off">Fehler melden</a></li>
+		<li class="npt_off npt_last childs"><a href="/B%C3%BCrgerservice/Online-Verfahren-und-Formulare/" class="nlk_off npt_last childs">Online-Verfahren und Formulare</a></li>
+	</ul>
+			</div>
+		</nav>
+				<div class="wrapper">
+			<div class="row">
+					<div class="column-4">
+				<div style="display:inline"><div class="image-single">
+									<div class="mt_noalign" data-ikiss-mfid="6.3300.3.1">
+									<div class="cont">
+						
+						<!-- IMGS --> 
+													<img src="/media/custom/3300_3_1_g.JPG?1569841836" alt="Der Landkreis Schwandorf in Bayern" title="Der Landkreis Schwandorf in Bayern" />
+													<!-- IMGE --> 
+						
+					</div>
+				</div></div>
+</div>
+			</div>
+						<div class="column-4">
+				<h2>Wir sind f&uuml;r Sie da</h2><div style="display:inline">
+<address class="elem" data-ikiss-mfid="9.105.103.1">
+	
+	<p>
+					<a href="/Quicknavigation/Startseite/index.php?object=tx,3300.1&amp;ModID=9&amp;FID=105.103.1" title="Detailansicht der Adresse anzeigen" class="contact-title"><strong>Landratsamt Schwandorf &nbsp;&raquo;</strong></a><br>
+				
+		
+		
+	</p>
+	
+			<p>
+			Wackersdorfer Straße&nbsp;80<br>92421&nbsp;Schwandorf<br>		</p>
+				<ul class="com-list">
+										<li>
+							 Telefon: 09431 / 471 - 0						</li>
+											<li>
+							 Fax: 09431 / 471 - 444						</li>
+											<li>
+							 
+								<a href="mailto:Poststelle@lra-sad.de" title="E-Mail schreiben">Poststelle@lra-sad.de</a>						</li>
+								</ul>
+			
+</address>
+<p>Barrierefeier Zugang:&nbsp;<a target="_blank" href="/media/custom/3300_2851_1.PDF?1670401278" class="csslink_PDF">Landratsamt - &Uuml;bersichtsplan, Zugangsm&ouml;glichkeiten und barrierefreier Zugang</a></p>
+<p><a target="_self" href="/B%C3%BCrgerservice/Landratsamt/" class="csslink_intern">Weitere Informationen</a></p>
+</div>
+			</div>
+						<div class="column-4">
+				<h2>&Ouml;ffnungszeiten</h2><div style="display:inline">
+<p>Montag - Donnerstag: 08.00 - 15.30 Uhr<br>Freitag: 08.00&nbsp; - 12.00 Uhr</p>
+<p><strong>Bitte beachten Sie:</strong></p>
+<p><strong>F&uuml;r die F&uuml;hrerscheinstelle und die KfZ-Zulassung gelten ge&auml;nderte &Ouml;ffnungszeiten. Diese finden Sie unter&nbsp;</strong><a target="_self" href="/index.php?La=1&amp;object=tx,3300.135.1&amp;kuo=2&amp;sub=0" class="csslink_intern">Kfz-Zulassung und F&uuml;hrerscheinstelle</a>.&nbsp;<strong><br class="clear" style="clear: both;"><br></strong></p>
+</div>
+			</div>
+						<div class="column-4">
+				<h2>Folgen Sie uns</h2><div style="display:inline">
+<p><a target="_blank" href="/redirect.phtml?extlink=1&amp;La=1&amp;url_fid=3300.1.1" title="Externer Link" class="csslink_extern">Facebook</a>&nbsp;&nbsp;</p>
+<p><a target="_blank" href="/redirect.phtml?extlink=1&amp;La=1&amp;url_fid=3300.812.1" title="Externer Link" class="csslink_extern">Instagram</a></p>
+</div>
+			</div>
+				</div>
+		</div>
+			</footer>
+	<script src="/layout/lk_schwandorf/assets/js/slicknav/jquery.slicknav.min.js?__ts=1568637108"></script>
+	<script src="/layout/lk_schwandorf/assets/js/layout.js?__ts=1574414621"></script>
+	<script src="/output/js/accordion/ikiss-accordion.js"></script>
+	
+	
+	<script src="/output/js/jquery/jquery.ui.datepicker-de.js"></script>
+	<script src="/output/js/ikiss/datepicker.min.js"></script>
+	<script src="/output/js/ikiss/ikissTwoClickCe.js"></script>
+	<script>
+		jQuery(document).ready(function($) {
+			
+			
+			if ($().jqPhotoSwipe) $(".photoswipe-gallery").jqPhotoSwipe({
+				galleryOpen: function (gallery){
+				}
+			});
+			
+			$('.datepicker').datepicker();
+			new ikiss_datepicker('#datepicker_events',{
+				datepicker	: {showWeek: false, showOtherMonths: false, selectOtherMonths: false},
+				setdate		: false,
+				
+				query		: { "vJ" : "","vMo" : "","vTag" : "","bJ" : "","bMo" : "","bTag" : ""}
+			});
+			$(".ui-tabs").tabs({
+                active: 0,
+            });
+		});
+	</script>
+	
+	
+</body>
+</html>
+<!-- Cache: 2026-11-05 20:10:58 -->

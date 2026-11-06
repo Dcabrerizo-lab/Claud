@@ -1,0 +1,626 @@
+<title>Leistungs-Lotse</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Schibsted+Grotesk:wght@600;800&display=swap">
+<style>
+  /* Layout: links der Fragebogen, rechts live das Ergebnis; auf dem Handy untereinander mit fester Leiste unten.
+     Alle Abstände nutzen logische Eigenschaften, damit Arabisch (rechts nach links) sauber spiegelt. */
+  :root {
+    --font-display: 'Schibsted Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --font-body: 'Atkinson Hyperlegible', system-ui, -apple-system, 'Segoe UI', 'Noto Sans Arabic', Tahoma, sans-serif;
+    --bg: #eef2f6;
+    --surface: #ffffff;
+    --ink: #13202b;
+    --muted: #54677a;
+    --line: #d3dce5;
+    --accent: #2b4a9b;
+    --accent-ink: #ffffff;
+    --ok: #17643f;     --ok-bg: #e2f3ea;
+    --warn: #7a5200;   --warn-bg: #fbefcf;
+    --bad: #a1301f;    --bad-bg: #fbe5e1;
+    --na: #4a5b6b;     --na-bg: #e5eaf0;
+    --focus: #1d6fe0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e161d; --surface: #16212a; --ink: #e7eef4; --muted: #9bb0c0; --line: #2b3b48;
+      --accent: #9db8ff; --accent-ink: #0e161d;
+      --ok: #6fd9a2; --ok-bg: #12301f; --warn: #f2c862; --warn-bg: #35290b;
+      --bad: #ff9a8a; --bad-bg: #3b1a15; --na: #a9bac8; --na-bg: #22313d; --focus: #7db2ff;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e161d; --surface: #16212a; --ink: #e7eef4; --muted: #9bb0c0; --line: #2b3b48;
+    --accent: #9db8ff; --accent-ink: #0e161d;
+    --ok: #6fd9a2; --ok-bg: #12301f; --warn: #f2c862; --warn-bg: #35290b;
+    --bad: #ff9a8a; --bad-bg: #3b1a15; --na: #a9bac8; --na-bg: #22313d; --focus: #7db2ff;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { height: auto; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  .app { font-size: 1rem; }
+  .app.big { font-size: 1.2rem; }
+  .shell {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 20px 96px;
+  }
+  h1, h2, h3 { font-family: var(--font-display); line-height: 1.2; margin: 0; text-wrap: balance; }
+  h1 { font-size: 2em; font-weight: 800; letter-spacing: -0.01em; }
+  h2 { font-size: 1.35em; font-weight: 800; }
+  h3 { font-size: 1.1em; font-weight: 600; }
+  p { margin: 0; }
+  a { color: var(--accent); }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+
+  /* Kopf */
+  .top { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: flex-end; justify-content: space-between; margin-bottom: 20px; }
+  .top .lead { max-width: 60ch; color: var(--muted); margin-top: 8px; }
+  .tools { display: flex; gap: 8px 12px; align-items: center; flex-wrap: wrap; }
+  .chip {
+    font: inherit; font-size: 0.85em; color: var(--ink);
+    background: var(--surface); border: 1px solid var(--line); border-radius: 999px;
+    padding: 6px 12px; min-height: 36px; cursor: pointer;
+  }
+  .chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .langpick { display: flex; align-items: center; gap: 8px; font-size: 0.85em; color: var(--muted); }
+  .langpick select { width: auto; min-height: 40px; padding: 0 10px; font-size: 1rem; border-radius: 999px; }
+  .stand { font-size: 0.8em; color: var(--muted); letter-spacing: 0.02em; }
+
+  .notice {
+    background: var(--warn-bg); color: var(--warn); border: 1px solid currentColor; border-radius: 8px;
+    padding: 10px 14px; font-size: 0.92em; margin-bottom: 12px;
+  }
+  .notice.info { background: var(--na-bg); color: var(--na); }
+  .notices { margin-bottom: 8px; }
+
+  .cols { display: grid; gap: 32px; grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 900px) {
+    .cols { grid-template-columns: minmax(0, 440px) minmax(0, 1fr); align-items: start; gap: 48px; }
+  }
+
+  /* Fragebogen */
+  [hidden] { display: none !important; }
+  .presets { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+  .presets-label { font-size: 0.85em; color: var(--muted); margin-bottom: 8px; }
+  form, .formgrid { display: grid; gap: 28px; }
+  fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 16px; min-width: 0; }
+  legend { font-family: var(--font-display); font-weight: 800; font-size: 1.1em; padding: 0 0 4px; width: 100%; border-bottom: 2px solid var(--ink); margin-bottom: 4px; }
+  .field { display: grid; gap: 6px; min-width: 0; }
+  .field > label, .field > .lab { font-weight: 700; font-size: 0.95em; }
+  .hint { font-size: 0.85em; color: var(--muted); }
+  .money { position: relative; }
+  .money input { padding-inline-end: 44px; }
+  .money span { position: absolute; inset-inline-end: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
+  input[type="number"], input[type="text"], select {
+    font: inherit; color: var(--ink); background: var(--surface);
+    border: 1px solid var(--line); border-radius: 8px; padding: 0 14px; min-height: 48px; width: 100%;
+    font-variant-numeric: tabular-nums;
+  }
+  .money input { direction: ltr; text-align: start; }
+  [dir="rtl"] .money input { text-align: right; }
+  #legal { display: grid; gap: 16px; max-width: 70ch; }
+  #legal[hidden] { display: none; }
+  #legal h3 { margin-top: 12px; }
+  #legal p, #legal li { line-height: 1.5; }
+  .linkbtn { background: none; border: 0; padding: 12px 0; min-height: 44px; color: var(--accent); font: inherit; text-decoration: underline; cursor: pointer; text-align: start; }
+  select { appearance: auto; }
+
+  .seg { position: relative; display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--surface); }
+  .seg input { position: absolute; opacity: 0; pointer-events: none; }
+  .seg label { display: grid; place-items: center; min-height: 48px; padding: 0 12px; cursor: pointer; font-weight: 700; text-align: center; }
+  .seg input:nth-of-type(2) + label { border-inline-start: 1px solid var(--line); }
+  .seg input:checked + label { background: var(--accent); color: var(--accent-ink); }
+  .seg input:focus-visible + label { outline: 3px solid var(--focus); outline-offset: -3px; }
+
+  .stepper { display: grid; grid-template-columns: 52px 1fr 52px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--surface); }
+  .stepper button { font: inherit; font-size: 1.4em; border: 0; background: transparent; color: var(--ink); min-height: 48px; cursor: pointer; }
+  .stepper button:hover { background: var(--bg); }
+  .stepper output { display: grid; place-items: center; font-weight: 700; font-variant-numeric: tabular-nums; border-inline: 1px solid var(--line); }
+
+  .checks { display: grid; gap: 4px; }
+  .check { display: flex; gap: 12px; align-items: flex-start; padding: 8px 0; cursor: pointer; }
+  .check input { width: 24px; height: 24px; margin: 1px 0 0; flex: none; accent-color: var(--accent); }
+  .check span { min-width: 0; }
+
+  /* Ergebnis */
+  .results { display: grid; gap: 16px; min-width: 0; }
+  .summary { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: baseline; justify-content: space-between; }
+  .summary .count { color: var(--muted); font-size: 0.95em; font-variant-numeric: tabular-nums; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 10px; min-width: 0; }
+  .card header { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; justify-content: space-between; }
+  .card .desc { font-size: 0.88em; color: var(--muted); margin-top: 2px; }
+  .card .zust { font-size: 0.85em; color: var(--muted); }
+  .card .behoerde { display: grid; gap: 4px; padding: 10px 12px; border-inline-start: 3px solid var(--accent); background: var(--bg); border-radius: 6px; color: var(--ink); }
+  .card .behoerde p { margin: 0; }
+  .card .behoerde address { font-style: normal; line-height: 1.45; }
+  .head2 { font-weight: 700; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: 0.85em;
+    border: 1px solid currentColor; border-radius: 999px; padding: 3px 10px; white-space: nowrap;
+  }
+  .pill.ja { color: var(--ok); background: var(--ok-bg); }
+  .pill.vielleicht { color: var(--warn); background: var(--warn-bg); }
+  .pill.nein { color: var(--bad); background: var(--bad-bg); }
+  .pill.na { color: var(--na); background: var(--na-bg); }
+  .card.dim { background: transparent; }
+  .card.dim .body { color: var(--muted); }
+
+  details { border-top: 1px solid var(--line); padding-top: 10px; }
+  details summary { cursor: pointer; font-weight: 700; color: var(--accent); min-height: 32px; display: flex; align-items: center; }
+  details .inner { display: grid; gap: 12px; padding-top: 8px; font-size: 0.95em; }
+  details ul { margin: 4px 0 0; padding-inline-start: 20px; display: grid; gap: 4px; }
+  .lab-s { font-weight: 700; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  details.optblock { border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; background: var(--surface); }
+  details.optblock > summary { color: var(--ink); }
+  details.optblock[open] > summary { margin-bottom: 4px; }
+  details.optblock fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+  .overview { display: flex; flex-wrap: wrap; gap: 8px; }
+  .overview a { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 4px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: inherit; text-decoration: none; font-size: 0.9em; }
+  .overview a .m { font-weight: 700; }
+  .overview a.ja .m { color: var(--ok); }
+  .overview a.vielleicht .m { color: var(--warn); }
+  .card { scroll-margin-top: 12px; }
+  .neinbox { border: 1px dashed var(--line); border-radius: 10px; padding: 10px 14px; display: grid; gap: 12px; }
+  .neinbox > summary { color: var(--muted); }
+  .neinbox[open] > summary { margin-bottom: 8px; }
+
+  .together { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 10px; }
+  .together ul { margin: 0; padding-inline-start: 20px; display: grid; gap: 8px; }
+
+  .helper { background: var(--surface); border: 2px solid var(--accent); border-radius: 10px; padding: 18px; display: grid; gap: 16px; }
+  .helper .two { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 560px) { .helper .two { grid-template-columns: 1fr 1fr; } }
+  .btn {
+    font: inherit; font-weight: 700; background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 8px;
+    min-height: 48px; padding: 0 20px; cursor: pointer;
+  }
+  .btn.ghost { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+  .btns { display: flex; flex-wrap: wrap; gap: 8px 12px; }
+  .msg { font-size: 0.9em; color: var(--muted); min-height: 1.4em; }
+  .scan { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 14px; }
+  .scan textarea { font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; width: 100%; min-height: 96px; resize: vertical; }
+  .scan, .scan > * { min-width: 0; }
+  .scan input[type="file"] { font: inherit; width: 100%; max-width: 100%; min-width: 0; }
+  .scan label { overflow-wrap: anywhere; }
+  .scan .box { border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; display: grid; gap: 10px; }
+  .scan .box[hidden] { display: none; }
+  .scan .box p { margin: 0; }
+  .sc-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+  .sc-row { border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; display: grid; gap: 6px; min-width: 0; }
+  .sc-lab { font-weight: 700; overflow-wrap: anywhere; }
+  .sc-row p { margin: 0; }
+  .sc-val { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
+  .sc-val bdi { background: var(--bg); border-radius: 6px; padding: 4px 8px; user-select: all; overflow-wrap: anywhere; }
+  .sc-val .btn { min-height: 36px; padding: 0 12px; font-size: 0.9em; }
+  .sc-tag { font-size: 0.8em; color: var(--muted); }
+
+  .rules { background: transparent; border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px; }
+  .rules details { border-top: 0; padding-top: 0; }
+  .rules table { width: 100%; border-collapse: collapse; font-size: 0.92em; margin-top: 8px; }
+  .rules th, .rules td { text-align: start; padding: 8px 8px 8px 0; padding-inline: 0 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .rules th { font-weight: 700; width: 34%; }
+  .rules .scroll { overflow-x: auto; }
+  .rules [lang="de"] { direction: ltr; text-align: left; }
+  .small { font-size: 0.85em; color: var(--muted); }
+
+  .foot { margin-top: 32px; display: grid; gap: 8px; max-width: 70ch; font-size: 0.9em; color: var(--muted); }
+
+  /* Feste Leiste auf dem Handy */
+  .jump {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 5;
+    display: flex; gap: 12px; align-items: center; justify-content: space-between;
+    background: var(--surface); border-top: 1px solid var(--line);
+    padding: 10px max(16px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  }
+  .jump .t { font-size: 0.92em; font-variant-numeric: tabular-nums; min-width: 0; }
+  .jump button {
+    font: inherit; font-weight: 700; background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 8px;
+    min-height: 44px; padding: 0 16px; cursor: pointer; white-space: nowrap;
+  }
+  @media (min-width: 900px) { .jump { display: none; } .shell { padding-bottom: 40px; } }
+
+  /* Antragsmappe: ersetzt die Seite, ist druckbar */
+  #mappe { display: grid; gap: 20px; }
+  #mappe[hidden] { display: none; }
+  .mappe-bar { display: grid; gap: 12px; }
+  .page {
+    background: #fff; color: #111; border: 1px solid var(--line); border-radius: 6px;
+    padding: 28px 32px; font-family: Georgia, 'Times New Roman', serif; font-size: 1rem; line-height: 1.55;
+  }
+  .page h3 { font-family: var(--font-display); font-size: 1.1em; margin-bottom: 12px; color: #111; }
+  .page pre { margin: 0; white-space: pre-wrap; font: inherit; direction: ltr; text-align: left; }
+  .page.docs { font-family: var(--font-body); }
+  .page.docs ul { margin: 4px 0 12px; padding-inline-start: 20px; }
+  .page.docs .tip { font-size: 0.92em; color: #333; }
+  #mappeText { width: 100%; min-height: 160px; padding: 10px; font: inherit; font-size: 0.9em; direction: ltr; }
+  .app.pm .top, .app.pm .notices, .app.pm .cols, .app.pm .foot, .app.pm .jump, .app.pm .first { display: none !important; }
+
+  @media print {
+    body { background: #fff; }
+    .app.pm .no-print { display: none !important; }
+    .app.pm .shell { padding: 0; max-width: none; }
+    .page { border: 0; border-radius: 0; padding: 0; break-after: page; }
+    .page:last-child { break-after: auto; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .card, .together { transition: background-color .15s ease; }
+  }
+</style>
+
+<div class="app" id="app" lang="de" dir="ltr">
+  <div class="shell">
+    <header class="top">
+      <div>
+        <h1>Leistungs-Lotse</h1>
+        <p class="lead" data-t="lead"></p>
+      </div>
+      <div class="tools">
+        <label class="langpick"><span data-t="lang.label"></span><select id="lang"></select></label>
+        <span class="stand" id="stand"></span>
+        <button type="button" class="chip" id="bigBtn" aria-pressed="false" data-t="big"></button>
+      </div>
+    </header>
+
+    <div class="notice info first" id="firstNotice" role="note" hidden>
+      <p data-t="first.text"></p>
+      <button type="button" class="btn" id="firstOk" data-t="first.ok"></button>
+    </div>
+    <div class="notices">
+      <div class="notice" id="sampleNotice" role="note" data-t="sample"></div>
+      <div class="notice info" id="transNotice" role="note" data-t="trans" hidden></div>
+    </div>
+
+    <div class="cols">
+      <section aria-labelledby="h-form">
+        <h2 id="h-form" style="margin-bottom:12px" data-t="h.form"></h2>
+        <div class="presets-label" id="presetLabel" data-t="preset.label"></div>
+        <div class="presets" role="group" aria-labelledby="presetLabel" id="presets" style="margin-bottom:8px"></div>
+        <p style="margin-bottom:24px"><button type="button" class="chip" id="clearBtn" data-t="clear.btn"></button> <span class="msg" id="clearMsg" role="status"></span></p>
+
+        <form id="form" onsubmit="return false" autocomplete="off">
+          <fieldset>
+            <legend data-t="lg.haus"></legend>
+            <div class="field">
+              <span class="lab" id="lab-adults" data-t="adults.label"></span>
+              <div class="seg" role="radiogroup" aria-labelledby="lab-adults">
+                <input type="radio" name="adults" id="adults1" value="1"><label for="adults1" data-t="adults.1"></label>
+                <input type="radio" name="adults" id="adults2" value="2"><label for="adults2" data-t="adults.2"></label>
+              </div>
+            </div>
+            <div class="field">
+              <span class="lab" id="lab-kids" data-t="kids.label"></span>
+              <div class="stepper" role="group" aria-labelledby="lab-kids" dir="ltr">
+                <button type="button" data-step="kids" data-d="-1" data-t-aria="kids.less">−</button>
+                <output id="kids" aria-live="polite">0</output>
+                <button type="button" data-step="kids" data-d="1" data-t-aria="kids.more">+</button>
+              </div>
+            </div>
+            <div class="field cond-kids">
+              <span class="lab" id="lab-k6" data-t="kids6.label"></span>
+              <div class="stepper" role="group" aria-labelledby="lab-k6" dir="ltr">
+                <button type="button" data-step="kidsU6" data-d="-1" data-t-aria="kids6.less">−</button>
+                <output id="kidsU6" aria-live="polite">0</output>
+                <button type="button" data-step="kidsU6" data-d="1" data-t-aria="kids6.more">+</button>
+              </div>
+            </div>
+            <div class="field cond-kids">
+              <span class="lab" id="lab-k14" data-t="kids14.label"></span>
+              <div class="stepper" role="group" aria-labelledby="lab-k14" dir="ltr">
+                <button type="button" data-step="kids14" data-d="-1" data-t-aria="kids14.less">−</button>
+                <output id="kids14" aria-live="polite">0</output>
+                <button type="button" data-step="kids14" data-d="1" data-t-aria="kids14.more">+</button>
+              </div>
+            </div>
+            <div class="field">
+              <span class="lab" id="lab-young" data-t="young.label"></span>
+              <div class="stepper" role="group" aria-labelledby="lab-young" dir="ltr">
+                <button type="button" data-step="young" data-d="-1" data-t-aria="young.less">−</button>
+                <output id="young" aria-live="polite">0</output>
+                <button type="button" data-step="young" data-d="1" data-t-aria="young.more">+</button>
+              </div>
+            </div>
+            <div class="checks">
+              <label class="check"><input type="checkbox" id="alter"><span data-t="cb.alter"></span></label>
+              <label class="check"><input type="checkbox" id="erwerbsgemindert"><span data-t="cb.erwerb"></span></label>
+              <label class="check"><input type="checkbox" id="behinderung"><span data-t="cb.behind"></span></label>
+              <label class="check cond-kids"><input type="checkbox" id="kinder12"><span data-t="cb.kinder12"></span></label>
+              <label class="check cond-kids"><input type="checkbox" id="unterhaltFehlt"><span data-t="cb.unterhalt"></span></label>
+            </div>
+            <div class="field">
+              <label for="alterGruppe" data-t="gruppe.label"></label>
+              <select id="alterGruppe"></select>
+            </div>
+            <div class="field">
+              <label for="ausbildung" data-t="ausb.label"></label>
+              <select id="ausbildung"></select>
+            </div>
+            <div class="field">
+              <label for="pflegegrad" data-t="pflege.label"></label>
+              <select id="pflegegrad"></select>
+            </div>
+          </fieldset>
+
+          <details class="optblock" id="behBlock">
+          <summary><span data-t="lg.beh"></span></summary>
+          <p class="small" data-t="beh.hint"></p>
+          <fieldset>
+            <legend class="vh" data-t="lg.beh"></legend>
+            <div class="field">
+              <label for="bhPerson" data-t="bh.person.label"></label>
+              <select id="bhPerson"></select>
+            </div>
+            <div class="field">
+              <label for="gdb" data-t="bh.gdb.label"></label>
+              <select id="gdb"></select>
+            </div>
+            <div class="field">
+              <label for="blind" data-t="bh.blind.label"></label>
+              <select id="blind"></select>
+            </div>
+            <div class="field">
+              <label for="emStd" data-t="bh.em.label"></label>
+              <select id="emStd"></select>
+            </div>
+            <div class="checks">
+              <label class="check"><input type="checkbox" id="bhSelbst"><span data-t="cb.bhSelbst"></span></label>
+              <label class="check"><input type="checkbox" id="em5"><span data-t="cb.em5"></span></label>
+              <label class="check"><input type="checkbox" id="wfbm"><span data-t="cb.wfbm"></span></label>
+              <label class="check"><input type="checkbox" id="babBetrieb"><span data-t="cb.babBetrieb"></span></label>
+              <label class="check"><input type="checkbox" id="babWohnt"><span data-t="cb.babWohnt"></span></label>
+            </div>
+          </fieldset>
+          </details>
+
+          <fieldset>
+            <legend data-t="lg.wohnen"></legend>
+            <div class="field">
+              <label for="miete" data-t="miete.label"></label>
+              <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="miete"><span aria-hidden="true">€</span></div>
+              <span class="hint" data-t="miete.hint"></span>
+            </div>
+            <div class="field" id="plzField" hidden>
+              <label for="plz" data-t="plz.label"></label>
+              <input type="text" id="plz" inputmode="numeric" pattern="[0-9]*" maxlength="5" autocomplete="postal-code">
+              <span class="hint" data-t="plz.hint"></span>
+              <div id="plzOut" role="status" aria-live="polite"></div>
+            </div>
+            <div class="field">
+              <label for="bundesland" data-t="bl.label"></label>
+              <select id="bundesland"></select>
+              <span class="hint" data-t="bl.hint"></span>
+            </div>
+            <div class="field">
+              <label for="mietstufe" data-t="stufe.label"></label>
+              <select id="mietstufe"></select>
+              <span class="hint"><span data-t="stufe.hint"></span> <a href="https://www.wohngeld.org/mietstufe/" target="_blank" rel="noopener" data-t="stufe.link"></a></span>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend data-t="lg.eink"></legend>
+            <div class="field">
+              <label for="brutto" data-t="brutto.label"></label>
+              <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="brutto"><span aria-hidden="true">€</span></div>
+              <span class="hint" data-t="brutto.hint"></span>
+            </div>
+            <div class="field cond-adults2">
+              <label for="brutto2" data-t="brutto2.label"></label>
+              <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="brutto2"><span aria-hidden="true">€</span></div>
+              <span class="hint" data-t="brutto2.hint"></span>
+            </div>
+            <div class="field">
+              <label for="netto" data-t="netto.label"></label>
+              <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="netto"><span aria-hidden="true">€</span></div>
+              <span class="hint" data-t="netto.hint"></span>
+            </div>
+            <label class="check"><input type="checkbox" id="nichtArbeit"><span data-t="cb.nichtArbeit"></span></label>
+            <div class="field">
+              <label for="vermoegen" data-t="verm.label"></label>
+              <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="vermoegen"><span aria-hidden="true">€</span></div>
+              <span class="hint" data-t="verm.hint"></span>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend data-t="lg.bezug"></legend>
+            <div class="checks">
+              <label class="check"><input type="checkbox" id="b-grundsicherungsgeld"><span data-t="bz.gg"></span></label>
+              <label class="check"><input type="checkbox" id="b-sozialamt"><span data-t="bz.sozial"></span></label>
+              <label class="check"><input type="checkbox" id="b-wohngeld"><span data-t="bz.wg"></span></label>
+              <label class="check"><input type="checkbox" id="b-kiz"><span data-t="bz.kiz"></span></label>
+              <label class="check"><input type="checkbox" id="b-kindergeld"><span data-t="bz.kg"></span></label>
+            </div>
+          </fieldset>
+        </form>
+      </section>
+
+      <section class="results" id="ergebnis" aria-labelledby="h-res" tabindex="-1">
+        <div class="summary">
+          <h2 id="h-res" data-t="res.h"></h2>
+          <span class="count" id="count" aria-live="polite"></span>
+        </div>
+        <nav id="overview" class="overview" hidden></nav>
+        <div id="together"></div>
+        <div id="cards" class="results"></div>
+
+        <section class="helper" id="helper" aria-labelledby="h-helper">
+          <h2 id="h-helper" data-t="f.h"></h2>
+          <p data-t="f.intro"></p>
+          <div class="two">
+            <div class="field"><label for="p-name" data-t="f.name"></label><input type="text" id="p-name" autocomplete="off"></div>
+            <div class="field"><label for="p-geb" data-t="f.geb"></label><input type="text" id="p-geb" placeholder="TT.MM.JJJJ" autocomplete="off"></div>
+            <div class="field"><label for="p-strasse" data-t="f.strasse"></label><input type="text" id="p-strasse" autocomplete="off"></div>
+            <div class="field"><label for="p-ort" data-t="f.ort"></label><input type="text" id="p-ort" autocomplete="off"></div>
+            <div class="field"><label for="p-tel" data-t="f.tel"></label><input type="text" id="p-tel" inputmode="tel" autocomplete="off"></div>
+          </div>
+          <div class="field">
+            <span class="lab" data-t="f.which"></span>
+            <div class="checks" id="pick"></div>
+          </div>
+          <div class="btns"><button type="button" class="btn" id="mappeMake" data-t="f.make"></button></div>
+          <p class="msg" id="pickMsg" role="status"></p>
+        </section>
+
+        <!--SCAN-->
+        <section class="scan" id="scan" aria-labelledby="h-scan">
+          <h2 id="h-scan" data-t="sc.h"></h2>
+          <p data-t="sc.intro"></p>
+          <div class="field">
+            <label for="sc-file" data-t="sc.photo"></label>
+            <input type="file" id="sc-file" accept="image/*">
+          </div>
+          <div class="field">
+            <label for="sc-text" data-t="sc.paste"></label>
+            <textarea id="sc-text" lang="de" dir="ltr" autocomplete="off" spellcheck="false"></textarea>
+          </div>
+          <div class="box">
+            <p class="hint" data-t="sc.localNote"></p>
+            <div class="btns"><button type="button" class="btn" id="sc-local" data-t="sc.local"></button></div>
+          </div>
+          <div class="box" id="sc-claudeBox" hidden>
+            <p class="hint" data-t="sc.claudeNote"></p>
+            <label class="check"><input type="checkbox" id="sc-consent"><span data-t="sc.consent"></span></label>
+            <div class="btns"><button type="button" class="btn ghost" id="sc-claude" data-t="sc.claude" disabled></button></div>
+          </div>
+          <p class="msg" id="sc-msg" role="status" aria-live="polite"></p>
+          <div id="sc-out"></div>
+        </section>
+        <!--/SCAN-->
+
+        <div class="rules">
+          <details>
+            <summary data-t="rules.sum"></summary>
+            <div class="inner">
+              <p data-t="rules.intro"></p>
+              <p class="small" data-t="rules.de"></p>
+              <div class="scroll" lang="de">
+                <table>
+                  <tbody>
+                    <tr><th>Kindergeld</th><td>259 € je Kind und Monat bis 18 Jahre, bei Ausbildung oder Studium bis 25 (§ 66 EStG).</td></tr>
+                    <tr><th>Wohngeld</th><td>Brutto-Einkommensgrenzen 2026 nach Haushaltsgröße und Mietenstufe (Wohngeldgesetz). „Wahrscheinlich“ gilt unterhalb der Grenze bei 10 % Abzug, „möglich“ bis zur Grenze bei 30 % Abzug. Die Grenzen werden mit der Wohngeld-Formel (§ 19 WoGG, Anlage 2) berechnet: Höchstbetrag der Miete nach Mietenstufe und Haushaltsgröße (Anlage 1 zu § 12) plus Klima- und Heizkostenkomponente. Die Warmmiete dient als Näherung, die Höchstmiete begrenzt sie. Günstige Miete ergibt eine niedrigere Grenze. Ab 1.1.2027 sind Änderungen geplant (Gesetzentwurf, noch nicht beschlossen). Vermögen: Richtwert 60.000 € plus 30.000 € je weiterer Person. Freibeträge (§ 17 WoGG): 150 € im Monat (1.800 € im Jahr) bei Schwerbehinderung, 110 € im Monat (1.320 € im Jahr) einmal je Haushalt bei Alleinerziehenden. Pauschalabzug je 10 % für Steuern, Krankenversicherung und Rentenversicherung (§ 16 WoGG).</td></tr>
+                    <tr><th>Kinderzuschlag</th><td>Höchstbetrag 297 € je Kind und Monat (§ 6a BKGG). Vermögensgrenze (Familienkasse): 55.000 € bei 2 Personen, 70.000 € bei 3 Personen, plus 15.000 € je weiteres Kind. Mindesteinkommen brutto 900 € (Paare) oder 600 € (Alleinerziehende). Ab dem Elternbedarf sinkt der Zuschlag um 45 Cent je Euro Einkommen. Der Elternbedarf wird geschätzt aus Regelsatz und einem Anteil der Miete.</td></tr>
+                    <tr><th>Grundsicherungsgeld</th><td>Regelsatz 563 € (Alleinstehende), 506 € je Partner, Kinder grob 390 €, junge Erwachsene 451 €, plus Miete, abzüglich Einkommen (SGB II). Erwerbstätigenfreibetrag (§ 11b SGB II) je Person: 100 € frei, 20 % von 100 bis 520 €, 30 % von 520 bis 1.000 €, 10 % von 1.000 bis 1.200 € (bis 1.500 € bei Kind unter 18). Bei Rente oder Arbeitslosengeld I gibt es keinen Freibetrag. Kindergeld zählt als Einkommen des Kindes. Schonvermögen je Person nach Alter (§ 12 Abs. 2 SGB II): 5.000 € (bis 30), 10.000 € (ab 31), 12.500 € (ab 41), 20.000 € (ab 51). Kinder zählen mit 5.000 €. Eine Karenzzeit gibt es seit der Reform vom 1.7.2026 nicht mehr.</td></tr>
+                    <tr><th>Bildung und Teilhabe</th><td>Anspruch bei Bezug von Grundsicherung, Sozialhilfe, Wohngeld oder Kinderzuschlag (§ 6b BKGG, § 28 SGB II). Schulbedarf 195 € im Jahr, Teilhabe 15 € im Monat.</td></tr>
+                    <tr><th>Unterhaltsvorschuss</th><td>227 € (bis 5 Jahre), 299 € (6 bis 11) und 394 € (12 bis 17) im Monat, jeweils Mindestunterhalt abzüglich Kindergeld (UVG). Voraussetzung: Kind unter 18, alleinerziehender Elternteil, Unterhalt fehlt. Ab 12 Jahren: Kind nicht im SGB-II-Bezug oder Elternteil mit mindestens 600 € brutto.</td></tr>
+                    <tr><th>Grundsicherung im Alter und bei voller Erwerbsminderung</th><td>Regelsatz 563 € (Alleinstehende) und 506 € je Partner plus Miete, abzüglich Einkommen (§§ 41 ff. SGB XII). Schonvermögen 10.000 € je volljähriger Person plus 500 € je unterhaltener Person (Barbetrag-Verordnung zu § 90 SGB XII).</td></tr>
+                    <tr><th>BAföG</th><td>Stark vereinfacht: Elternfreibetrag etwa 1.690 € netto im Monat (verheiratete Eltern 2.540 €), plus 770 € je weiterem Kind. Das Amt rechnet mit dem steuerpflichtigen Einkommen des Vorvorjahres. Vermögen: 15.000 € bis 29 Jahre, 45.000 € ab 30. Altersgrenze zu Beginn in der Regel 45 Jahre.</td></tr>
+                    <tr><th>Pflegegeld</th><td>Häusliche Pflege durch Angehörige: Pflegegrad 2: 347 €, Pflegegrad 3: 599 €, Pflegegrad 4: 800 €, Pflegegrad 5: 990 € im Monat. Entlastungsbetrag 131 € im Monat ab Pflegegrad 1 (§ 37 und § 45b SGB XI).</td></tr>
+                    <tr><th>Kindergeld für erwachsene Kinder mit Behinderung</th><td>Ohne Altersgrenze, wenn die Behinderung vor dem 25. Geburtstag eingetreten ist und das Kind sich deshalb nicht selbst unterhalten kann (§ 32 Abs. 4 EStG). Die Familienkasse vergleicht das Einkommen des Kindes mit dem Grundfreibetrag (2026: 12.348 €, § 32a EStG) plus behinderungsbedingtem Mehrbedarf. Die App rechnet das nicht aus.</td></tr>
+                    <tr><th>Erwerbsminderungsrente</th><td>Voll: unter 3 Stunden täglich, teilweise: 3 bis unter 6 Stunden. Wartezeit 5 Jahre, davon 3 Jahre Pflichtbeiträge in den letzten 5 Jahren; Werkstatt: 20 Jahre (Deutsche Rentenversicherung, § 43 SGB VI).</td></tr>
+                    <tr><th>Eingliederungshilfe</th><td>Keine Berechnung. Barvermögen bis 150 % der jährlichen Bezugsgröße bleibt außer Betracht (§ 139 SGB IX). Bei seelischer Behinderung von Kindern ist das Jugendamt zuständig (§ 35a SGB VIII).</td></tr>
+                    <tr><th>Behinderten-Pauschbetrag</th><td>Je Grad der Behinderung: 20: 384 €, 30: 620 €, 40: 860 €, 50: 1.140 €, 60: 1.440 €, 70: 1.780 €, 80: 2.120 €, 90: 2.460 €, 100: 2.840 €, hilflos, blind oder taubblind: 7.400 € (§ 33b Abs. 3 EStG). Bei Kindern auf Antrag auf die Eltern übertragbar.</td></tr>
+                    <tr><th>Schwerbehindertenausweis</th><td>Schwerbehindert ab GdB 50, Gleichstellung bei GdB 30 oder 40 auf Antrag bei der Agentur für Arbeit (§ 2 SGB IX). Zusatzurlaub 5 Arbeitstage im Jahr bei einer 5-Tage-Woche (§ 208 SGB IX).</td></tr>
+                    <tr><th>Blindengeld (Bayern)</th><td>Blind: 809 €, hochgradig sehbehindert: 242,70 € im Monat, Stand 1.7.2026. Pflegegeld wird angerechnet (Art. 4 BayBlindG): bei Pflegegrad 2 sind es 159,62 € (46 % von 347 €), es bleiben 649,38 € Blindengeld beziehungsweise 83,08 € Sehbehindertengeld; ab Pflegegrad 3 sind es 33 % des Pflegegeldes. Mindestens 20 € werden immer gezahlt (Zentrum Bayern Familie und Soziales). Andere Länder haben eigene Regeln.</td></tr>
+                    <tr><th>Verhinderungspflege und Pflegehilfsmittel</th><td>Pflegehilfsmittel zum Verbrauch bis 42 € im Monat, Zuschuss für Wohnumfeldverbesserung bis 4.180 € je Maßnahme (§ 40 SGB XI). Verhinderungspflege ab Pflegegrad 2, höchstens acht Wochen im Jahr, gemeinsamer Jahresbetrag mit der Kurzzeitpflege (§§ 39, 42a SGB XI). Der Jahresbetrag steht nicht in der App.</td></tr>
+                    <tr><th>Budget für Arbeit</th><td>Lohnkostenzuschuss bis 75 % des Lohns plus Anleitung und Begleitung am Arbeitsplatz, wenn ein Arbeitgeber einen sozialversicherungspflichtigen Vertrag zu Tariflohn oder ortsüblichem Lohn anbietet (§ 61 SGB IX).</td></tr>
+                    <tr><th>Befreiung vom Rundfunkbeitrag</th><td>Bei Bezug von Grundsicherung, Sozialhilfe, Grundsicherungsgeld oder Blindenhilfe und weiteren Sozialleistungen. Antrag innerhalb von zwei Monaten nach dem Bescheid. Die Befreiung gilt auch für Partner in derselben Wohnung.</td></tr>
+                    <tr><th>Befreiung von Zuzahlungen</th><td>Belastungsgrenze 2 % der jährlichen Bruttoeinnahmen zum Lebensunterhalt, bei schwerwiegend chronisch Kranken 1 % (§ 62 SGB V). Dazu zählt zum Beispiel ein GdB von mindestens 60 bei dauerhafter Behandlung. Es gibt Freibeträge für Familienangehörige. Die App rechnet keinen Betrag aus.</td></tr>
+                    <tr><th>Berufsausbildungsbeihilfe</th><td>Nur Voraussetzungen, keine Berechnung: anerkannter Ausbildungsberuf, Wohnen nicht bei den Eltern (oder ab 18, verheiratet, mit Kind), in der Regel erste Ausbildung (§§ 56 ff. SGB III). Die Höhe zeigt der BAB-Rechner der Bundesagentur für Arbeit.</td></tr>
+                    <tr><th>Wohnberechtigungsschein (Bayern)</th><td>Jahreseinkommensgrenze: 28.300 € (1 Person), 43.200 € (2 Personen), 10.700 € mehr je weitere Person, 3.200 € mehr je Kind (Art. 11 BayWoFG). Die App vergleicht das Brutto mit der Grenze; bis zu 30 % Abzug für Steuern und Versicherungen und bei Schwerbehinderung 4.000 € sind als Spielraum berücksichtigt. Das Wohnungsamt rechnet genau.</td></tr>
+                    <tr><th>Grobe Annahmen</th><td>Regelsatz für Kinder pauschal 390 €. Anteil der Eltern an den Wohnkosten geschätzt. Freibeträge auf das Einkommen vereinfacht. Kindeseinkommen, Unterhalt und Sonderfälle fließen nicht ein. Bei Paaren mit zwei Einkommen sollte das Einkommen der zweiten Person eingetragen werden, sonst ist der Freibetrag zu niedrig.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="small" data-t="rules.src"></p>
+            </div>
+          </details>
+        </div>
+
+        <div class="foot">
+          <p data-t="foot.1"></p>
+          <p data-t="foot.2"></p>
+          <p data-t="foot.3"></p>
+          <p><button type="button" class="linkbtn" id="legalBtn" data-t="legal.open"></button></p>
+        </div>
+      </section>
+    </div>
+
+
+    <section id="legal" hidden aria-labelledby="h-legal">
+      <div class="btns"><button type="button" class="btn ghost" id="legalClose" data-t="legal.close"></button></div>
+      <div lang="de" dir="ltr">
+      <h2 id="h-legal">Impressum, Datenschutz, Lizenzen</h2>
+      <h3>Impressum (§ 5 DDG)</h3>
+      <p><strong>Anbieter:</strong> David Cabrerizo (Leistungs-Lotse)<br>Haagstraße 33<br>90542 Eckental<br>E-Mail: d.cabrerizo@gmx.de</p>
+      <h3>Datenschutz</h3>
+      <p>Der Leistungs-Lotse rechnet vollständig auf deinem Gerät. Es gibt keine Konten, keine Tracker und keine Werbung. Deine Angaben werden nicht an einen Server gesendet.</p>
+      <ul>
+        <li><strong>Was gespeichert wird:</strong> Auf deinem Gerät merkt sich die App deine Eingaben im Formular, die Angaben für die Antragsmappe (Name, Anschrift, Telefon), die gewählte Sprache und die Schriftgröße, damit sie beim nächsten Öffnen noch da sind. Dazu gehören auch deine Postleitzahl und Angaben zu Gesundheit und Behinderung, falls du sie eingibst.</li>
+        <li><strong>Foto des Formulars (nur App):</strong> Die Texterkennung läuft auf deinem Gerät. Das Foto wird nicht gesendet und nach dem Lesen gelöscht.</li>
+        <li><strong>Löschen:</strong> Mit der Schaltfläche „Alle Angaben löschen“ im Formular werden die gespeicherten Eingaben entfernt. Beim Deinstallieren der App werden alle Daten gelöscht.</li>
+        <li><strong>Antragsmappe:</strong> Wenn du die Mappe teilst oder kopierst, entscheidest du, wohin sie geht. Die App sendet sie nirgendwohin.</li>
+      </ul>
+      <p id="legalWeb">Nur Web-Version: Beim Öffnen werden Schriften von Google Fonts geladen, dabei wird deine IP-Adresse an Google übertragen. Die optionale Texterkennung lädt Programmteile von cdnjs und jsDelivr nach; das Foto selbst bleibt auf deinem Gerät. Der optionale Scan mit Claude sendet das Bild nur nach deiner ausdrücklichen Zustimmung an Anthropic.</p>
+      <h3>Lizenzen</h3>
+      <ul>
+        <li>Atkinson Hyperlegible und Schibsted Grotesk: SIL Open Font License 1.1</li>
+        <li>Noto Sans (PDF-Erzeugung): SIL Open Font License 1.1</li>
+        <li>Capacitor und seine Plugins, pdf-lib: MIT-Lizenz</li>
+        <li>Texterkennung Android: Google ML Kit (Nutzungsbedingungen von Google)</li>
+        <li>Zuordnung Postleitzahl zu Ort: GeoNames (geonames.org), CC BY 4.0. Mietenstufen: Anlage zur Wohngeldverordnung (amtliches Werk)</li>
+      </ul>
+      <h3>Hinweis</h3>
+      <p>Der Leistungs-Lotse ist eine Orientierung. Er ist keine Rechtsberatung und ersetzt keinen Bescheid. Über deinen Anspruch entscheidet immer die zuständige Stelle.</p>
+      </div>
+    </section>
+
+    <section id="mappe" hidden aria-labelledby="h-mappe">
+      <div class="mappe-bar no-print">
+        <h2 id="h-mappe" data-t="f.mappe"></h2>
+        <p class="notice info" data-t="f.deNote"></p>
+        <p class="notice info" data-t="f.stichtag"></p>
+        <div class="btns">
+          <button type="button" class="btn" id="mappePrint" data-t="f.print"></button>
+          <button type="button" class="btn ghost" id="mappeCopy" data-t="f.copy"></button>
+          <button type="button" class="btn ghost" id="mappeShare" data-t="f.share" hidden></button>
+          <button type="button" class="btn ghost" id="mappeClose" data-t="f.close"></button>
+        </div>
+        <p class="msg" id="copyMsg" role="status"></p>
+        <textarea id="mappeText" readonly hidden></textarea>
+      </div>
+      <div id="mappeBody"></div>
+    </section>
+  </div>
+
+  <div class="jump" id="jump">
+    <span class="t" id="jumpText"></span>
+    <button type="button" id="jumpBtn" data-t="jump"></button>
+  </div>
+</div>
+
+<script>
+/*RULES*/
+</script>
+<script>
+/*I18N*/
+</script>
+<script>
+/*FMT*/
+</script>
+<script>
+/*PLZ*/
+Plz.init(/*PLZDATA*/null);
+</script>
+<script>
+/*BEHOERDEN*/
+Behoerden.init(/*BEHOERDENDATA*/null);
+</script>
+<script>
+/*APP*/
+</script>
+

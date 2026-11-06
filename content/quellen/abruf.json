@@ -1,0 +1,4025 @@
+[
+ {
+  "datei": "geonames-DE.zip",
+  "url": "https://download.geonames.org/export/zip/DE.zip",
+  "http": 200,
+  "ok": true,
+  "bytes": 387968,
+  "sha256": "15f24dc4b5045eb7237d0ec0a48d643649dac568e7d1055d386ffae4c3ffdf25",
+  "abgerufen": "2026-11-05T22:44:35Z"
+ },
+ {
+  "datei": "wogv-anlage.html",
+  "url": "https://www.gesetze-im-internet.de/wogv/anlage.html",
+  "http": 0,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-06T00:10:23Z"
+ },
+ {
+  "datei": "wogv-index.html",
+  "url": "https://www.gesetze-im-internet.de/wogv/index.html",
+  "http": 0,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-06T00:11:26Z"
+ },
+ {
+  "datei": "wogv-buzer.html",
+  "url": "https://www.buzer.de/Anlage_WoGV.htm",
+  "http": 200,
+  "ok": true,
+  "bytes": 111611,
+  "sha256": "8be97e85e83ad082229272b77d6472ca65016935e62abe74c366b0c73c561ae0",
+  "abgerufen": "2026-11-05T22:46:41Z"
+ },
+ {
+  "datei": "stmb-landkreise.html",
+  "url": "https://stmb.bayern.de/min/geschaeftsbereich/landkreise/index.php",
+  "http": 200,
+  "ok": true,
+  "bytes": 193685,
+  "sha256": "c39db29706853de33a78307084adbe337c18ef174ad3dc8481fec2bf86bab2fb",
+  "abgerufen": "2026-11-05T22:46:42Z"
+ },
+ {
+  "datei": "stmb-kreisfreie-staedte.html",
+  "url": "https://bauministerium.bayern.de/min/geschaeftsbereich/kreisfreiestaedte/index.php",
+  "http": 200,
+  "ok": true,
+  "bytes": 95915,
+  "sha256": "dc9057a29935a37a38500227654bc8f3242ebabe84be1161a19ac39b36e839f6",
+  "abgerufen": "2026-11-05T22:46:43Z"
+ },
+ {
+  "datei": "stmb-wohngeld.html",
+  "url": "https://www.stmb.bayern.de/wohnen/wohnraum_nutzen/wohngeld/index.php",
+  "http": 200,
+  "ok": true,
+  "bytes": 97203,
+  "sha256": "051925b3adb6c57631bbd5d17904e92e43aa9629c556dffd238b6401b8212422",
+  "abgerufen": "2026-11-05T22:46:44Z"
+ },
+ {
+  "datei": "stmas-jobcenter.html",
+  "url": "https://www.stmas.bayern.de/grundsicherung/jobcenter/index.php",
+  "http": 404,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-06T00:11:28Z"
+ },
+ {
+  "datei": "start-09161.html",
+  "url": "http://www.ingolstadt.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 207960,
+  "sha256": "616c10588707680e9bddedc01d5485eae22f2ee3f1c5cfde139da8b40c4a7fec",
+  "abgerufen": "2026-11-05T22:46:47Z"
+ },
+ {
+  "datei": "start-09162.html",
+  "url": "http://www.muenchen.de/rathaus/Stadtverwaltung.html",
+  "http": 200,
+  "ok": true,
+  "bytes": 196198,
+  "sha256": "c73b15979e5c573a88ca34a91dedfc31b18de93bc7259d151adfdd151b3bb26e",
+  "abgerufen": "2026-11-05T22:46:49Z"
+ },
+ {
+  "datei": "start-09163.html",
+  "url": "http://www.rosenheim.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 123402,
+  "sha256": "f22ed4d0cd740331fc71ed22884e0e841bd53f034ff14c0502851e4e8c03fd84",
+  "abgerufen": "2026-11-05T22:46:51Z"
+ },
+ {
+  "datei": "start-09171.html",
+  "url": "http://www.lra-aoe.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 173449,
+  "sha256": "012c74c954cf0048c19925d57eb2d029cc15b3bc2ee71773a895e4946026a462",
+  "abgerufen": "2026-11-05T22:46:52Z"
+ },
+ {
+  "datei": "start-09172.html",
+  "url": "http://www.lra-bgl.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 483128,
+  "sha256": "c833f62f2224937bb0ae7a15a33c1c74df34f8759ce16eefd932ccf8d2d5e047",
+  "abgerufen": "2026-11-05T22:46:53Z"
+ },
+ {
+  "datei": "start-09173.html",
+  "url": "http://www.lra-toelz.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 148787,
+  "sha256": "2f5286a13bea6a58b3c894537cd6b0dc062a976eb3e0aeed36b7c04010d98441",
+  "abgerufen": "2026-11-05T22:46:57Z"
+ },
+ {
+  "datei": "start-09174.html",
+  "url": "http://www.landratsamt-dachau.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 166658,
+  "sha256": "a246dbbed429e5ccda11cfa4f79cf4c8476d91609b2fd6d8ab50bd63399d9a1d",
+  "abgerufen": "2026-11-05T22:46:59Z"
+ },
+ {
+  "datei": "start-09175.html",
+  "url": "http://www.lra-ebe.de/",
+  "http": 0,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-06T00:12:31Z"
+ },
+ {
+  "datei": "start-09176.html",
+  "url": "http://www.landkreis-eichstaett.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 217170,
+  "sha256": "c325bf92f3123553dd4469d825a54afd275895858bdebccc61e40a296f211bff",
+  "abgerufen": "2026-11-05T22:48:04Z"
+ },
+ {
+  "datei": "start-09177.html",
+  "url": "http://www.landkreis-erding.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 470176,
+  "sha256": "e5775c531b9102144a241a4a328e02e4b386e597bf687e0dd82c6322f824bdc9",
+  "abgerufen": "2026-11-05T22:48:06Z"
+ },
+ {
+  "datei": "start-09178.html",
+  "url": "http://www.kreis-freising.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 196892,
+  "sha256": "24ea9473b5bb4e94f167eaa93023e7eefba916462195751bc5b046120c289368",
+  "abgerufen": "2026-11-05T22:48:07Z"
+ },
+ {
+  "datei": "start-09179.html",
+  "url": "http://www.lra-ffb.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 128849,
+  "sha256": "c699f58750fd29f4b141caf6b52094a930652210902970b9c4b8d9a16d0ce396",
+  "abgerufen": "2026-11-05T22:48:08Z"
+ },
+ {
+  "datei": "start-09180.html",
+  "url": "http://www.lra-gap.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 53509,
+  "sha256": "46a63f04e387179ce94fe7e122144207679653d7aca004cc77de9027e06bccb7",
+  "abgerufen": "2026-11-05T22:48:10Z"
+ },
+ {
+  "datei": "start-09181.html",
+  "url": "http://www.landkreis-landsberg.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 76150,
+  "sha256": "0c54206c567b92d5c10ea3b84ba2da2f43332f63dbf5d6eadcf524eac41bcdd5",
+  "abgerufen": "2026-11-05T22:48:11Z"
+ },
+ {
+  "datei": "start-09182.html",
+  "url": "http://www.landkreis-miesbach.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 39525,
+  "sha256": "332e79207d5c04d4959f64d2b7cef0b448735124251bd89aab812f9ded0b4730",
+  "abgerufen": "2026-11-05T22:48:12Z"
+ },
+ {
+  "datei": "start-09183.html",
+  "url": "http://www.lra-mue.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 59306,
+  "sha256": "57f1daa166eaf6659c83f0826626c7318dc3f28a900cb61180625d468ffe16fd",
+  "abgerufen": "2026-11-05T22:48:13Z"
+ },
+ {
+  "datei": "start-09184.html",
+  "url": "http://www.landkreis-muenchen.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 82330,
+  "sha256": "ae9feaa943b62e3017e33e37eeb9d04034d6c8b576de76a1905402a9682a48fd",
+  "abgerufen": "2026-11-05T22:48:15Z"
+ },
+ {
+  "datei": "start-09185.html",
+  "url": "http://www.neuburg-schrobenhausen.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 137615,
+  "sha256": "fcc83d4b4c888800406e2fa8ceea4755bb913429be4b57a0442ed1820a926acf",
+  "abgerufen": "2026-11-05T22:48:16Z"
+ },
+ {
+  "datei": "start-09186.html",
+  "url": "http://www.landkreis-pfaffenhofen.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 141386,
+  "sha256": "5861c87fe3241c60d2bd3984cc5df0f1c450375ffef57f12c6efc740a5e2ab4a",
+  "abgerufen": "2026-11-05T22:48:17Z"
+ },
+ {
+  "datei": "start-09187.html",
+  "url": "http://www.landkreis-rosenheim.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 436546,
+  "sha256": "0da2e1a450b12a4dfcc1b6aa4f3b6fe1c453f2a65b7cee7cd56b403592a3ebc1",
+  "abgerufen": "2026-11-05T22:48:20Z"
+ },
+ {
+  "datei": "start-09188.html",
+  "url": "http://www.landkreis-starnberg.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 446753,
+  "sha256": "ccc8bb8e7cc9d9ff1824096f610850471630dfa089c1a605f50e9a6f14345a30",
+  "abgerufen": "2026-11-05T22:48:22Z"
+ },
+ {
+  "datei": "start-09189.html",
+  "url": "http://www.traunstein.com/",
+  "http": 200,
+  "ok": true,
+  "bytes": 52100,
+  "sha256": "ee80dbfbdc7c0ca9a912b1564d05e7ad5c2463fbb2c7e193f02278a11a470d09",
+  "abgerufen": "2026-11-05T22:48:23Z"
+ },
+ {
+  "datei": "start-09190.html",
+  "url": "http://www.weilheim-schongau.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 138248,
+  "sha256": "c6a0a8307f95d48ce5590e531ed23ed5c17df12db5e7e318973bdde04d4ed586",
+  "abgerufen": "2026-11-05T22:48:25Z"
+ },
+ {
+  "datei": "start-09261.html",
+  "url": "http://www.landshut.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 485492,
+  "sha256": "244366781e50ad5db205c12b0b8b7e654e2a966714915b2bcf7bb3931cbb5816",
+  "abgerufen": "2026-11-05T22:48:26Z"
+ },
+ {
+  "datei": "start-09262.html",
+  "url": "http://www.passau.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 99005,
+  "sha256": "0162e245e7135a00de6873282bc3cd84c3e19e8a92363842489bb9aaeb12b0bc",
+  "abgerufen": "2026-11-05T22:48:27Z"
+ },
+ {
+  "datei": "start-09263.html",
+  "url": "http://www.straubing.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 74513,
+  "sha256": "b23939f944c0685d3f7e3efd480b6729a0716e4fcbc36bc50d1c7d5deb8923c0",
+  "abgerufen": "2026-11-05T22:48:29Z"
+ },
+ {
+  "datei": "start-09271.html",
+  "url": "http://www.landkreis-deggendorf.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 80566,
+  "sha256": "e475837ef55562b7cf8db34f9510eeaacde0b1f2d2540aa523844ad236370d45",
+  "abgerufen": "2026-11-05T22:48:30Z"
+ },
+ {
+  "datei": "start-09272.html",
+  "url": "http://www.landkreis-frg.de/",
+  "http": 0,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-06T00:12:36Z"
+ },
+ {
+  "datei": "start-09273.html",
+  "url": "http://www.landkreis-kelheim.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 181357,
+  "sha256": "428720b49e412c7aede19192aab3a486f67c890e61d464038cd89b0c46a4d354",
+  "abgerufen": "2026-11-05T22:48:35Z"
+ },
+ {
+  "datei": "start-09274.html",
+  "url": "http://www.landkreis-landshut.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 703,
+  "sha256": "557b5e9015b4963a130c7039e077b3ec0306d401b6ee13d631721d5d969d2917",
+  "abgerufen": "2026-11-05T22:48:36Z"
+ },
+ {
+  "datei": "start-09275.html",
+  "url": "http://www.landkreis-passau.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 257301,
+  "sha256": "2bf6c2ffef2475df361ae0d27a2e1d93fb1b096651a990f929eadfa5ab0f9fb7",
+  "abgerufen": "2026-11-05T22:48:38Z"
+ },
+ {
+  "datei": "start-09276.html",
+  "url": "http://www.landkreis-regen.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 154487,
+  "sha256": "6b1ec3a80cf54fd1d492ba5923126078d8d15ceba183ddc4bf9cb7e7d5fb359a",
+  "abgerufen": "2026-11-05T22:48:44Z"
+ },
+ {
+  "datei": "start-09277.html",
+  "url": "http://www.rottal-inn.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 153021,
+  "sha256": "fcb4f1fd00d01bc80ff6158b5a2576b0787b07e16c8ce1b4058e6c4385ff6cd3",
+  "abgerufen": "2026-11-05T22:48:45Z"
+ },
+ {
+  "datei": "start-09278.html",
+  "url": "http://www.landkreis-straubing-bogen.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 174344,
+  "sha256": "2e390e572c49e885a2d3812d6f7f2fc467712cdd110db24672730e87feaffaf5",
+  "abgerufen": "2026-11-05T22:48:46Z"
+ },
+ {
+  "datei": "start-09279.html",
+  "url": "http://www.landkreis-dingolfing-landau.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 366959,
+  "sha256": "d4ef5efe39b4d1ddc895a0f66b23d66db215cfadcd7ece80b0be56f63b18b11d",
+  "abgerufen": "2026-11-05T22:48:48Z"
+ },
+ {
+  "datei": "start-09361.html",
+  "url": "http://www.amberg.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 326164,
+  "sha256": "4527009307f86d2b1037be7fabe75b12b19af88338474fe508d6e3be7a7793f8",
+  "abgerufen": "2026-11-05T22:48:50Z"
+ },
+ {
+  "datei": "start-09362.html",
+  "url": "http://www.regensburg.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 71555,
+  "sha256": "27949bc68ecfa49d4500a98c20600bf5ae6f7bc6379945328b8d27a5ee413958",
+  "abgerufen": "2026-11-05T22:48:50Z"
+ },
+ {
+  "datei": "start-09363.html",
+  "url": "http://www.weiden.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 51977,
+  "sha256": "420b9e37b11e861b4f431f8663e9aec0402ac98376edb97045cee74f999406a5",
+  "abgerufen": "2026-11-05T22:48:51Z"
+ },
+ {
+  "datei": "start-09371.html",
+  "url": "http://www.kreis-as.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 174324,
+  "sha256": "07b9496bb8bccc6e3209e09e1e9896d6b66ef08b03d2f16b0b2f102ed84a6bcb",
+  "abgerufen": "2026-11-05T22:48:53Z"
+ },
+ {
+  "datei": "start-09372.html",
+  "url": "http://www.landkreis-cham.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 124054,
+  "sha256": "382cf0c5c8352c71facebad6dc964c95555bd0496ef0b7ed8101cb0a444af935",
+  "abgerufen": "2026-11-05T22:48:54Z"
+ },
+ {
+  "datei": "start-09373.html",
+  "url": "http://www.landkreis-neumarkt.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 361362,
+  "sha256": "41b375815e3d0897e0210731fd6e84417c726112bff462d3b954528b3e51fac6",
+  "abgerufen": "2026-11-05T22:48:56Z"
+ },
+ {
+  "datei": "start-09374.html",
+  "url": "http://www.neustadt.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 529670,
+  "sha256": "f1385266b2ab00a4886bfd91ccee386aef9b4ddde3e83879b546fd6f7c2b5d83",
+  "abgerufen": "2026-11-05T22:48:58Z"
+ },
+ {
+  "datei": "start-09375.html",
+  "url": "http://www.landkreis-regensburg.de/",
+  "http": 503,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-06T00:12:41Z"
+ },
+ {
+  "datei": "start-09376.html",
+  "url": "http://www.landkreis-schwandorf.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 84117,
+  "sha256": "234e54261de1dadc118fbe3677fcab2679b5f0fb83a2fb767c252b2124ed10a8",
+  "abgerufen": "2026-11-05T22:49:03Z"
+ },
+ {
+  "datei": "start-09377.html",
+  "url": "http://www.kreis-tir.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 100648,
+  "sha256": "58e82be8836d1f145f6e14a272d4ff864c6cf0951e4638c3f98944ab324644fa",
+  "abgerufen": "2026-11-05T22:49:04Z"
+ },
+ {
+  "datei": "start-09461.html",
+  "url": "http://www.bamberg.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 913,
+  "sha256": "d2e26afcbdfc680e5d060a1db905c0da9e02c4a65474042d793c5056c7e2eec9",
+  "abgerufen": "2026-11-05T22:49:04Z"
+ },
+ {
+  "datei": "start-09462.html",
+  "url": "http://www.bayreuth.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 256612,
+  "sha256": "d7a35c2d6e746a6db0f96b940230df091736631f016fdafe8204208532696bf2",
+  "abgerufen": "2026-11-05T22:49:06Z"
+ },
+ {
+  "datei": "start-09463.html",
+  "url": "http://www.coburg.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 162091,
+  "sha256": "00636a049a65e97ce7e7dd3396edd61f5bb7b9a3b96e2a987cf933668cf14591",
+  "abgerufen": "2026-11-05T22:49:08Z"
+ },
+ {
+  "datei": "start-09464.html",
+  "url": "http://www.hof.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 277571,
+  "sha256": "2768f6d2fe4e4b480fe3ef2191a41371d83a3e5acd26523f0f4b2a029b65ec2e",
+  "abgerufen": "2026-11-05T22:49:09Z"
+ },
+ {
+  "datei": "start-09471.html",
+  "url": "http://www.landkreis-bamberg.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 175493,
+  "sha256": "9472d49237e640d500597472a4e08c503107341ced89de4a5513a73d146aea69",
+  "abgerufen": "2026-11-05T22:49:11Z"
+ },
+ {
+  "datei": "start-09472.html",
+  "url": "http://www.landkreis-bayreuth.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 330521,
+  "sha256": "ecc537058df17acf09dc79f91b1607b50bdb8c76eda87904bcaff9d41ec252d8",
+  "abgerufen": "2026-11-05T22:49:13Z"
+ },
+ {
+  "datei": "start-09473.html",
+  "url": "http://www.landkreis-coburg.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 86968,
+  "sha256": "cdec623b46e89689e4826be4906037a4a989b2a859f2634dc59f7024876e0ad9",
+  "abgerufen": "2026-11-05T22:49:15Z"
+ },
+ {
+  "datei": "start-09474.html",
+  "url": "http://www.lra-fo.de/",
+  "http": 301,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-06T00:12:42Z"
+ },
+ {
+  "datei": "start-09475.html",
+  "url": "http://www.landkreis-hof.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 795725,
+  "sha256": "fefa7bc69fda68965d14dff8c481bcc17467c6a4a09de66efd362929be8f8952",
+  "abgerufen": "2026-11-05T22:49:17Z"
+ },
+ {
+  "datei": "start-09476.html",
+  "url": "http://www.landkreis-kronach.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 208483,
+  "sha256": "1fcf4e2ec7a2994e39190217be11efcfd1ecd83c8fec36638702fa4fc24156cc",
+  "abgerufen": "2026-11-05T22:49:19Z"
+ },
+ {
+  "datei": "start-09477.html",
+  "url": "http://www.landkreis-kulmbach.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 108750,
+  "sha256": "84bab44319f47387af05a080350de41d6f76905f3793ad514a67f6b8fdc87d79",
+  "abgerufen": "2026-11-05T22:49:21Z"
+ },
+ {
+  "datei": "start-09478.html",
+  "url": "http://www.landkreis-lichtenfels.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 36827,
+  "sha256": "e1846af678f09c1fcbe5d5fe6919b482091f34295968a556d62a61dc89ae04f1",
+  "abgerufen": "2026-11-05T22:49:22Z"
+ },
+ {
+  "datei": "start-09479.html",
+  "url": "http://www.landkreis-wunsiedel.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 485180,
+  "sha256": "81b65ecdc71adbee45470ed7e644e33f1d4096d310e15e93f48b3d21f233e0c9",
+  "abgerufen": "2026-11-05T22:49:24Z"
+ },
+ {
+  "datei": "start-09561.html",
+  "url": "http://www.ansbach.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 178507,
+  "sha256": "35dedcc3724d0c42ee7e6249dca539f3dfc5a15d268d6961c13c28026faffffd",
+  "abgerufen": "2026-11-05T22:49:25Z"
+ },
+ {
+  "datei": "start-09562.html",
+  "url": "http://www.erlangen.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 157007,
+  "sha256": "ea10b1e44f157f7da97845b2ff5ee12329bcdae3ea8fe2ea174320b6b965d65f",
+  "abgerufen": "2026-11-05T22:49:27Z"
+ },
+ {
+  "datei": "start-09563.html",
+  "url": "http://www.fuerth.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 326241,
+  "sha256": "bbf6b53873b03c17f631599a570112f521c82a9a1f2ea1b21da2c3fb74e14192",
+  "abgerufen": "2026-11-05T22:49:28Z"
+ },
+ {
+  "datei": "start-09564.html",
+  "url": "http://www.nuernberg.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 164361,
+  "sha256": "693c32d33d61c31642cbd99f4112b109cd8b2612e56cc638b666511a71ccc26e",
+  "abgerufen": "2026-11-05T22:49:29Z"
+ },
+ {
+  "datei": "start-09565.html",
+  "url": "http://www.schwabach.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 96457,
+  "sha256": "7edc7d19a86a7e0fc6ec2499aa827b2de7c56ba3d8b0b828a20191d2ad384213",
+  "abgerufen": "2026-11-05T22:49:30Z"
+ },
+ {
+  "datei": "start-09571.html",
+  "url": "http://www.landkreis-ansbach.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 73638,
+  "sha256": "113ea058520cdd3115b9389878bfa2255faf36d87c1c0d9c95af4bcd2bea3944",
+  "abgerufen": "2026-11-05T22:49:31Z"
+ },
+ {
+  "datei": "start-09572.html",
+  "url": "http://www.erlangen-hoechstadt.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 188990,
+  "sha256": "b1d8980461a08b10aecb386177a3f3a001cd2c66bedc9ce82934da8eb7a7b00d",
+  "abgerufen": "2026-11-05T22:49:35Z"
+ },
+ {
+  "datei": "start-09573.html",
+  "url": "http://www.landkreis-fuerth.de/",
+  "http": 403,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-06T00:12:42Z"
+ },
+ {
+  "datei": "start-09574.html",
+  "url": "http://www.nuernberger-land.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 494567,
+  "sha256": "d42a49a6646058e8b917d767450d717d8cf7734ed11a192e8d95c54bcbecfcd3",
+  "abgerufen": "2026-11-05T22:49:37Z"
+ },
+ {
+  "datei": "start-09575.html",
+  "url": "http://www.landkreis-nea.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 75902,
+  "sha256": "f6f28714b27ee1628601a722d5f82b019a0420f5ae48c32a53d3fddd20b280bc",
+  "abgerufen": "2026-11-05T22:49:38Z"
+ },
+ {
+  "datei": "start-09576.html",
+  "url": "http://www.landratsamt-roth.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 93060,
+  "sha256": "ec99c44a6f453dd8fc03a4d71c4f95a579eeb4f9ce15d5487c0300f17ef8eb25",
+  "abgerufen": "2026-11-05T22:49:39Z"
+ },
+ {
+  "datei": "start-09577.html",
+  "url": "http://www.landkreis-wug.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 52990,
+  "sha256": "4aca36e7d60f3b3875e39fd706aeaaff2d1c94a5955ba2353f842ad1cc1625e0",
+  "abgerufen": "2026-11-05T22:49:40Z"
+ },
+ {
+  "datei": "start-09661.html",
+  "url": "http://www.aschaffenburg.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 123572,
+  "sha256": "e2c9aee56a2d1a745ae9f0b9c96fb100e620db876e1cf8e85e5e9d79db505109",
+  "abgerufen": "2026-11-05T22:49:42Z"
+ },
+ {
+  "datei": "start-09662.html",
+  "url": "http://www.schweinfurt.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 53290,
+  "sha256": "fb8e3d94ac32d6ceec519a251244e7b914e09a7096383d9ec4a8f69177300572",
+  "abgerufen": "2026-11-05T22:49:43Z"
+ },
+ {
+  "datei": "start-09663.html",
+  "url": "http://www.wuerzburg.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 133645,
+  "sha256": "a08e24a90718c233b2d964e4fe6564142875191efeddf98915324e387a65bb99",
+  "abgerufen": "2026-11-05T22:49:44Z"
+ },
+ {
+  "datei": "start-09671.html",
+  "url": "http://www.landkreis-aschaffenburg.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 120958,
+  "sha256": "54880c5c6dc899a5252ff57f155b55f5e8edb4232764c2a204f1dd2fd9d56cb1",
+  "abgerufen": "2026-11-05T22:49:46Z"
+ },
+ {
+  "datei": "start-09672.html",
+  "url": "http://www.landkreis-badkissingen.de/",
+  "http": 0,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-06T00:12:42Z"
+ },
+ {
+  "datei": "start-09673.html",
+  "url": "http://www.rhoen-grabfeld.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 73163,
+  "sha256": "8702fb804af68f9ad2e97bc6c4992d0d827ec92f263ffd3796a575a8a30d3755",
+  "abgerufen": "2026-11-05T22:49:48Z"
+ },
+ {
+  "datei": "start-09674.html",
+  "url": "http://www.hassberge.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 491655,
+  "sha256": "cb83fdd659ab86c6c3e4009d37c81a60cd14bc876d776edae2f6d5976ad40f60",
+  "abgerufen": "2026-11-05T22:49:50Z"
+ },
+ {
+  "datei": "start-09675.html",
+  "url": "http://www.kitzingen.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 433817,
+  "sha256": "e233a01599aaeb54b4379ddf6ee4bcd17495ad27235f4e8e2e46bb8e65edf58d",
+  "abgerufen": "2026-11-05T22:49:52Z"
+ },
+ {
+  "datei": "start-09676.html",
+  "url": "http://www.landkreis-miltenberg.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 138671,
+  "sha256": "b878864dd30fc403dfebfc581cfa83aa9ae6d92a3dc2fb395fcbe5daf54f367a",
+  "abgerufen": "2026-11-05T22:49:53Z"
+ },
+ {
+  "datei": "start-09677.html",
+  "url": "http://www.main-spessart.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 181180,
+  "sha256": "e8fe3567f9a873f7501d312979215059b92582e9365f92476be1dc55dfe0067c",
+  "abgerufen": "2026-11-05T22:49:55Z"
+ },
+ {
+  "datei": "start-09678.html",
+  "url": "http://www.landkreis-schweinfurt.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 262911,
+  "sha256": "010afefbe0605c33df0e355860c5686b7f1ac0c74fdb4b2beea05987029a538e",
+  "abgerufen": "2026-11-05T22:49:56Z"
+ },
+ {
+  "datei": "start-09679.html",
+  "url": "http://www.landkreis-wuerzburg.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 45020,
+  "sha256": "b81c1bc6e4e34f5a1c2922d72fe9d7dae83bdd78069b918c522b0bbc44b87f01",
+  "abgerufen": "2026-11-05T22:49:58Z"
+ },
+ {
+  "datei": "start-09761.html",
+  "url": "http://www.augsburg.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 1735275,
+  "sha256": "07bb5f4d3d58849722149c27ec6f145de3beaf9c88819c4f8ae168db8ae8d919",
+  "abgerufen": "2026-11-05T22:49:59Z"
+ },
+ {
+  "datei": "start-09762.html",
+  "url": "http://www.kaufbeuren.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 68010,
+  "sha256": "90c7c6c3559e64808fc1d7203e2a6a39de8f86817d1113d32eb5fc2dc0079218",
+  "abgerufen": "2026-11-05T22:50:03Z"
+ },
+ {
+  "datei": "start-09763.html",
+  "url": "http://www.kempten.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 937954,
+  "sha256": "b9f14540078a966aa0abaa256613f67daddb0ac095cd4b14f2136b81f2d3afe1",
+  "abgerufen": "2026-11-05T22:50:05Z"
+ },
+ {
+  "datei": "start-09764.html",
+  "url": "http://www.memmingen.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 44810,
+  "sha256": "6b4bb7dd9eadb8e6dadccd5dc12ad5747838bb6b52b536cfd61cca292dd347e3",
+  "abgerufen": "2026-11-05T22:50:06Z"
+ },
+ {
+  "datei": "start-09771.html",
+  "url": "http://www.lra-aic-fdb.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 1029134,
+  "sha256": "3f46b4839113767861df6213132e281a70a9b86cabb273d897a82072cfea6084",
+  "abgerufen": "2026-11-05T22:50:08Z"
+ },
+ {
+  "datei": "start-09772.html",
+  "url": "http://www.landkreis-augsburg.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 731251,
+  "sha256": "12abca732430bccc489ecde38f16600c37d9f402c1e74a24c818e19d221b9390",
+  "abgerufen": "2026-11-05T22:50:08Z"
+ },
+ {
+  "datei": "start-09773.html",
+  "url": "http://www.landkreis-dillingen.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 199123,
+  "sha256": "6a811cff395750be61850822d0f8baa8822550238bb5e7a6e69c50d0f19d7e39",
+  "abgerufen": "2026-11-05T22:50:11Z"
+ },
+ {
+  "datei": "start-09774.html",
+  "url": "http://www.landkreis-guenzburg.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 435626,
+  "sha256": "af5a988e84701cf6bb7109a432a902dc09d160d4167094964a00314f135ad423",
+  "abgerufen": "2026-11-05T22:50:12Z"
+ },
+ {
+  "datei": "start-09775.html",
+  "url": "http://www.landkreis.neu-ulm.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 155113,
+  "sha256": "3d6df9b9ef5a61caee06b490cd5f50e7d2bbe45ce4d36fc886aae830292cb8d2",
+  "abgerufen": "2026-11-05T22:50:14Z"
+ },
+ {
+  "datei": "start-09776.html",
+  "url": "http://www.landkreis-lindau.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 123978,
+  "sha256": "85fdd6a0398f26dde320f13d16b52d13e46d161391d941be3303c59bc1fa23bc",
+  "abgerufen": "2026-11-05T22:50:16Z"
+ },
+ {
+  "datei": "start-09777.html",
+  "url": "http://www.lra-ostallgaeu.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 872,
+  "sha256": "4b3446a8e77d725bd1ef522a21672e9789e962f73d59423c54324e3c3e62cfd9",
+  "abgerufen": "2026-11-05T22:50:16Z"
+ },
+ {
+  "datei": "start-09778.html",
+  "url": "http://www.unterallgaeu.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 18800,
+  "sha256": "5d000b641b022bd7e462df68ea0c7837db8d9bfbf4df9aacf1fd9a5e448eab00",
+  "abgerufen": "2026-11-05T22:50:17Z"
+ },
+ {
+  "datei": "start-09779.html",
+  "url": "http://www.donau-ries.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 40498,
+  "sha256": "09d9870752f63366e2e7bf718debb709827750ccf009474f848e93a344fca602",
+  "abgerufen": "2026-11-05T22:50:19Z"
+ },
+ {
+  "datei": "start-09780.html",
+  "url": "http://www.oberallgaeu.org/",
+  "http": 200,
+  "ok": true,
+  "bytes": 92257,
+  "sha256": "e5f9906155dd49544d4c1112a9113adb2b27be80be391c7504e48048facea8d4",
+  "abgerufen": "2026-11-05T22:50:21Z"
+ },
+ {
+  "datei": "impressum-09161.html",
+  "url": "http://www.ingolstadt.de/Service/Impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 172205,
+  "sha256": "77e285b11cd781e0a33bd8cc3744268c342ad90eb8fa4a55a47b1e52d29010db",
+  "abgerufen": "2026-11-05T22:50:22Z"
+ },
+ {
+  "datei": "impressum-09162.html",
+  "url": "https://stadt.muenchen.de/infos/impressum.html",
+  "http": 200,
+  "ok": true,
+  "bytes": 136213,
+  "sha256": "6941b7e48b2e8913423f6aaecb8b21b58c77309c138fb0ab78ddf1a1dd149a52",
+  "abgerufen": "2026-11-05T22:50:22Z"
+ },
+ {
+  "datei": "impressum-09163.html",
+  "url": "http://www.rosenheim.de/impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 81151,
+  "sha256": "bf0c9db1d6ec5655b914af3c0ac3320f036dddedc5175a2da2e491898b615fac",
+  "abgerufen": "2026-11-05T22:50:24Z"
+ },
+ {
+  "datei": "impressum-09171.html",
+  "url": "https://www.lra-aoe.de/meta/impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 151507,
+  "sha256": "3ef2115979fcec1f824278779fee09067ce99b4b1a6642f802422bc9104023a4",
+  "abgerufen": "2026-11-05T22:50:25Z"
+ },
+ {
+  "datei": "impressum-09172.html",
+  "url": "http://www.lra-bgl.de/t/das-landratsamt/impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 458551,
+  "sha256": "d7abcefde6354e03360154cf7ac228c0bac78b858628a5c6ce424742119fc70c",
+  "abgerufen": "2026-11-05T22:50:28Z"
+ },
+ {
+  "datei": "impressum-09173.html",
+  "url": "https://www.lra-toelz.de/de/zentrale-infos/impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 91211,
+  "sha256": "e0dacdb67881a9c54629ee753e034b7dfe1e9b7c36a05b0b21e1f5b02cbf3219",
+  "abgerufen": "2026-11-05T22:50:33Z"
+ },
+ {
+  "datei": "impressum-09174.html",
+  "url": "http://www.landratsamt-dachau.de/Rechtliches/Impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 121752,
+  "sha256": "0ff51df82f1677af80505a2a7d5c1d78bb8a26098530178e72658efe2a964dde",
+  "abgerufen": "2026-11-05T22:50:35Z"
+ },
+ {
+  "datei": "impressum-09176.html",
+  "url": "http://www.landkreis-eichstaett.de/landratsamt/impressum-und-service/suche",
+  "http": 200,
+  "ok": true,
+  "bytes": 203539,
+  "sha256": "375e251eee6af285ee28344220bb8b06ea1525b8740c3a4d8012a9ab07134438",
+  "abgerufen": "2026-11-05T22:50:36Z"
+ },
+ {
+  "datei": "impressum-09177.html",
+  "url": "http://www.landkreis-erding.de/buerger-verwaltung/familie-jugend-arbeit-soziales-auslaenderwesen/jobcenter-aruso-erding/impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 470176,
+  "sha256": "ccd3e02caa874d0206681ee8edbe48cf0a25a7ae00030e6e9a7f3932c05fbd37",
+  "abgerufen": "2026-11-05T22:50:38Z"
+ },
+ {
+  "datei": "impressum-09178.html",
+  "url": "http://www.kreis-freising.de/impressum.html",
+  "http": 200,
+  "ok": true,
+  "bytes": 121891,
+  "sha256": "76cd329c5826a125e3e28e3576f164e8457ff39bef75128378fc639b58c79a39",
+  "abgerufen": "2026-11-05T22:50:39Z"
+ },
+ {
+  "datei": "impressum-09179.html",
+  "url": "http://www.lra-ffb.de/impressum",
+  "http": 200,
+  "ok": true,
+  "bytes": 85814,
+  "sha256": "9d688e19f6ef3c0f46d23e2afcc8862134ee3a92c17d26d3ef68d3e1a5566ded",
+  "abgerufen": "2026-11-05T22:50:41Z"
+ },
+ {
+  "datei": "impressum-09180.html",
+  "url": "http://www.lra-gap.de/de/impressum.html",
+  "http": 200,
+  "ok": true,
+  "bytes": 46867,
+  "sha256": "97e12a286940e65959e0fe44f15b7da61a933902d264478717920141fc97286d",
+  "abgerufen": "2026-11-05T22:50:42Z"
+ },
+ {
+  "datei": "impressum-09181.html",
+  "url": "http://www.landkreis-landsberg.de/impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 68151,
+  "sha256": "c7097f4cde9e1fd1ae8043ddbdd6c003b75bc6e0164c39eda5b128a7c845c6bd",
+  "abgerufen": "2026-11-05T22:50:42Z"
+ },
+ {
+  "datei": "impressum-09182.html",
+  "url": "http://www.landkreis-miesbach.de/Impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 100851,
+  "sha256": "676c7d21072afe1ce0688de21b4b14e9e29bfa4429646a43380675de33efa79a",
+  "abgerufen": "2026-11-05T22:50:44Z"
+ },
+ {
+  "datei": "impressum-09183.html",
+  "url": "http://www.lra-mue.de/impressum",
+  "http": 200,
+  "ok": true,
+  "bytes": 53002,
+  "sha256": "8cdae7f40d525b6bbd5ec72b47073f233064be25ee6d1391250cd7a6a5b4629e",
+  "abgerufen": "2026-11-05T22:50:45Z"
+ },
+ {
+  "datei": "impressum-09184.html",
+  "url": "http://www.landkreis-muenchen.de/impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 65311,
+  "sha256": "06de786e24185835064db69814719bf892c420977d75a5598da2b77797ae026c",
+  "abgerufen": "2026-11-05T22:50:46Z"
+ },
+ {
+  "datei": "impressum-09185.html",
+  "url": "http://www.neuburg-schrobenhausen.de/Kurzmen%C3%BC/Impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 124635,
+  "sha256": "3939198175c72e66ffbdd1a00d73e656def9bf4e833ecac10c141df6937d974c",
+  "abgerufen": "2026-11-05T22:50:47Z"
+ },
+ {
+  "datei": "impressum-09186.html",
+  "url": "http://www.landkreis-pfaffenhofen.de/meta/impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 134294,
+  "sha256": "279f5062654de88fb0d06e19aaca17eb9d488d15aa235502f44e11cc815b6b4d",
+  "abgerufen": "2026-11-05T22:50:48Z"
+ },
+ {
+  "datei": "impressum-09187.html",
+  "url": "https://www.landkreis-rosenheim.de/impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 253064,
+  "sha256": "87ee33b53f2ca0731d1e09411f974fbc9c76c0af8e252d1121694bb0125ec307",
+  "abgerufen": "2026-11-05T22:50:50Z"
+ },
+ {
+  "datei": "impressum-09188.html",
+  "url": "http://www.landkreis-starnberg.de/B%C3%BCrgerservice/Kontakt/Impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 441589,
+  "sha256": "b2e10009f9b8f07ccf5e39f379a950853860ebfcf47e9057990a70203b6ed2af",
+  "abgerufen": "2026-11-05T22:50:52Z"
+ },
+ {
+  "datei": "impressum-09189.html",
+  "url": "http://www.traunstein.com/impressum",
+  "http": 200,
+  "ok": true,
+  "bytes": 25284,
+  "sha256": "597d9930542877e366c3243ba0a54f9c3592ce3e5f95f58b58e72b3dacd76c2a",
+  "abgerufen": "2026-11-05T22:50:52Z"
+ },
+ {
+  "datei": "impressum-09190.html",
+  "url": "http://www.weilheim-schongau.de/meta/impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 49521,
+  "sha256": "8e4832ded51dff0658f5622dfd4b7b79bf9afc4a9aa1424eb7a51c0789bbcafe",
+  "abgerufen": "2026-11-05T22:50:54Z"
+ },
+ {
+  "datei": "impressum-09261.html",
+  "url": "http://www.landshut.de/rathaus/impressum",
+  "http": 200,
+  "ok": true,
+  "bytes": 641262,
+  "sha256": "34ff631a76ae20c3fe73e116fb67eba6625bfda585c5fde6ba6dbb2ae1bcaad2",
+  "abgerufen": "2026-11-05T22:50:55Z"
+ },
+ {
+  "datei": "impressum-09262.html",
+  "url": "http://www.passau.de/impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 100959,
+  "sha256": "e49aa5ddeefac623b4d050429863874aa70f2e478ebb72da4b5aa1e1596e971e",
+  "abgerufen": "2026-11-05T22:50:56Z"
+ },
+ {
+  "datei": "impressum-09263.html",
+  "url": "http://www.straubing.de/informationen/impressum/index.html",
+  "http": 200,
+  "ok": true,
+  "bytes": 59185,
+  "sha256": "453b1caea533b9caad985b3dec37f160ca87688ff3610b209dc08cab47a54e01",
+  "abgerufen": "2026-11-05T22:50:57Z"
+ },
+ {
+  "datei": "impressum-09271.html",
+  "url": "http://www.landkreis-deggendorf.de/meta/impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 81896,
+  "sha256": "986b76e56bd6c41f0031468fbff0caec27a867cf9841b65430ad05fbf9101da4",
+  "abgerufen": "2026-11-05T22:50:59Z"
+ },
+ {
+  "datei": "impressum-09273.html",
+  "url": "http://www.landkreis-kelheim.de/meta/impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 143023,
+  "sha256": "cfee646c860fbe069944f2a1eac8a72b0acfcabaece6e872cb1bdc4173b92132",
+  "abgerufen": "2026-11-05T22:51:00Z"
+ },
+ {
+  "datei": "impressum-09275.html",
+  "url": "http://www.landkreis-passau.de/meta/impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 182142,
+  "sha256": "d5d0e6645a4f6ed20374cf4eb61e598b34654c803a59aac4f9c4f58f70c33c2d",
+  "abgerufen": "2026-11-05T22:51:02Z"
+ },
+ {
+  "datei": "impressum-09276.html",
+  "url": "http://www.landkreis-regen.de/impressum",
+  "http": 200,
+  "ok": true,
+  "bytes": 129425,
+  "sha256": "3eb6266d82685f7771bb64b1db854ca329d843589f3e47c00303594875226421",
+  "abgerufen": "2026-11-05T22:51:06Z"
+ },
+ {
+  "datei": "impressum-09277.html",
+  "url": "http://www.rottal-inn.de/meta/impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 131936,
+  "sha256": "1b28266c1db4437f751dc6333aeb09e7c3bb89812ebd87f2e063d03d6aaad3e8",
+  "abgerufen": "2026-11-05T22:51:07Z"
+ },
+ {
+  "datei": "impressum-09278.html",
+  "url": "http://www.landkreis-straubing-bogen.de/meta/impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 112065,
+  "sha256": "0bf6de6d84b7f5152b7508927fe57cad8e3983f77a1b0da43093712447855e77",
+  "abgerufen": "2026-11-05T22:51:08Z"
+ },
+ {
+  "datei": "impressum-09279.html",
+  "url": "https://dingolfing-landau.de/rechtliches/impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 227521,
+  "sha256": "a1bae484466c26759527389580007a9af3eb022d5f2804c37f1b129e6de3cd03",
+  "abgerufen": "2026-11-05T22:51:09Z"
+ },
+ {
+  "datei": "impressum-09361.html",
+  "url": "http://www.amberg.de/impressum",
+  "http": 200,
+  "ok": true,
+  "bytes": 274151,
+  "sha256": "d409c51f9fc2d10c3f83651b19cd3bc5bc0652cbe316b3e843b73c73bb619c67",
+  "abgerufen": "2026-11-05T22:51:11Z"
+ },
+ {
+  "datei": "impressum-09362.html",
+  "url": "http://www.regensburg.de/impressum",
+  "http": 200,
+  "ok": true,
+  "bytes": 39888,
+  "sha256": "e08f78f22701eac38a65f00aeab22471af0416b36d08a2088b398d5763d8ae90",
+  "abgerufen": "2026-11-05T22:51:11Z"
+ },
+ {
+  "datei": "impressum-09363.html",
+  "url": "http://www.weiden.de/impressum",
+  "http": 200,
+  "ok": true,
+  "bytes": 41229,
+  "sha256": "7046fdaf87f460687bd4aff844dafb976e1520fd2eadc8365c369b6de1467f27",
+  "abgerufen": "2026-11-05T22:51:12Z"
+ },
+ {
+  "datei": "impressum-09371.html",
+  "url": "http://www.kreis-as.de/Quicknavigation/Impressum",
+  "http": 200,
+  "ok": true,
+  "bytes": 177110,
+  "sha256": "6e6fe1a8ab3ee5666fed49ed64f77ec14f3a08c75db51691e19227bb2bf75a32",
+  "abgerufen": "2026-11-05T22:51:13Z"
+ },
+ {
+  "datei": "impressum-09372.html",
+  "url": "http://www.landkreis-cham.de/meta/impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 115343,
+  "sha256": "e612cd2e7408a517a4ac4ec1feae51fca9450e8f20b968e8ffe1d04efdffe1b9",
+  "abgerufen": "2026-11-05T22:51:14Z"
+ },
+ {
+  "datei": "impressum-09373.html",
+  "url": "https://www.landkreis-neumarkt.de/impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 338567,
+  "sha256": "85011ecee84d7385a1231c27c86034ebe12f86ccdd2045fc3aa7924b817ba176",
+  "abgerufen": "2026-11-05T22:51:15Z"
+ },
+ {
+  "datei": "impressum-09374.html",
+  "url": "https://www.neustadt.de/impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 484375,
+  "sha256": "864442ab6f95df1994a303f7775c4acf0b4002ffc496e3f21ca77452979b9593",
+  "abgerufen": "2026-11-05T22:51:17Z"
+ },
+ {
+  "datei": "impressum-09376.html",
+  "url": "http://www.landkreis-schwandorf.de/Quicknavigation/Impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 74433,
+  "sha256": "d30f5f21144f91ee9cb08f576f4c965614e37a61ac53d0c547c21cdd601c5440",
+  "abgerufen": "2026-11-05T22:51:18Z"
+ },
+ {
+  "datei": "impressum-09377.html",
+  "url": "http://www.kreis-tir.de/impressum",
+  "http": 200,
+  "ok": true,
+  "bytes": 66363,
+  "sha256": "cec7e4ad5dec56b947d2a3ac89b29b422e834679ba6d43d39a29bb95c09b7cf2",
+  "abgerufen": "2026-11-05T22:51:20Z"
+ },
+ {
+  "datei": "impressum-09462.html",
+  "url": "https://www.bayreuth.de/impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 236868,
+  "sha256": "d2ccec1b8552e73209f47135c2b80bbd43366e8b17c60fa57714ed4009ed9b27",
+  "abgerufen": "2026-11-05T22:51:20Z"
+ },
+ {
+  "datei": "impressum-09463.html",
+  "url": "http://www.coburg.de/impressum.php",
+  "http": 200,
+  "ok": true,
+  "bytes": 58801,
+  "sha256": "3222072f1a14d41fa8a3e5d34504ec3405d0cc0bff19f6ce7c03f211fe17a691",
+  "abgerufen": "2026-11-05T22:51:22Z"
+ },
+ {
+  "datei": "impressum-09464.html",
+  "url": "https://www.we2p.de/?page_id=3",
+  "http": 200,
+  "ok": true,
+  "bytes": 70220,
+  "sha256": "7d248408a6a92607ef60359fe983462275f2e16793068dd5f6acd0e3c7ef8489",
+  "abgerufen": "2026-11-05T22:51:23Z"
+ },
+ {
+  "datei": "impressum-09471.html",
+  "url": "http://www.landkreis-bamberg.de/Kurzmen%C3%BC/Impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 173441,
+  "sha256": "7f9b5128e1ee7507191723a241feb3c6c521982b8b70679d0ac8f1077fa4087e",
+  "abgerufen": "2026-11-05T22:51:24Z"
+ },
+ {
+  "datei": "impressum-09472.html",
+  "url": "http://www.landkreis-bayreuth.de/impressum",
+  "http": 200,
+  "ok": true,
+  "bytes": 191433,
+  "sha256": "347fe4cabdd842297481b9d348ea3842378cb2e29b9623d00be7c32f8bd35e26",
+  "abgerufen": "2026-11-05T22:51:26Z"
+ },
+ {
+  "datei": "impressum-09473.html",
+  "url": "http://www.landkreis-coburg.de/impressum",
+  "http": 200,
+  "ok": true,
+  "bytes": 34411,
+  "sha256": "42dbce97f5efbe8d133fbd75af2afd4929bcb0d30041ae86b4f992752ada0990",
+  "abgerufen": "2026-11-05T22:51:27Z"
+ },
+ {
+  "datei": "impressum-09475.html",
+  "url": "https://www.landkreis-hof.de/impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 259287,
+  "sha256": "b5dbe0d0f70d49ea1a9de07d4d341c91fb923e7e4a412fdab4ea320ef85d63b8",
+  "abgerufen": "2026-11-05T22:51:28Z"
+ },
+ {
+  "datei": "impressum-09476.html",
+  "url": "http://www.landkreis-kronach.de/meta/impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 149392,
+  "sha256": "fd4ba94e8a7455b248ff14e62dd69dfcaec583647576890594c7f759f482bc53",
+  "abgerufen": "2026-11-05T22:51:30Z"
+ },
+ {
+  "datei": "impressum-09477.html",
+  "url": "http://www.landkreis-kulmbach.de/impressum",
+  "http": 200,
+  "ok": true,
+  "bytes": 36419,
+  "sha256": "c2b9c6aa3cac7a0e4ad8211ded92057398a7ca6143f7eb76cdddc690a4f66069",
+  "abgerufen": "2026-11-05T22:51:31Z"
+ },
+ {
+  "datei": "impressum-09478.html",
+  "url": "http://www.landkreis-lichtenfels.de/info/impressum/index.html",
+  "http": 301,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-06T00:12:47Z"
+ },
+ {
+  "datei": "impressum-09479.html",
+  "url": "https://www.landkreis-wunsiedel.de/impressum",
+  "http": 200,
+  "ok": true,
+  "bytes": 470379,
+  "sha256": "e9ceee3282f76dacb9985cbd5b959bb25f8803616c1da4e4ec539fb96b8998e5",
+  "abgerufen": "2026-11-05T22:51:36Z"
+ },
+ {
+  "datei": "impressum-09561.html",
+  "url": "http://www.ansbach.de/Schnellnavigation/Impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 157251,
+  "sha256": "d09ccf49b9b65c8b1165bb944c7c628f5674aeaa889c357569830b3cbf736c05",
+  "abgerufen": "2026-11-05T22:51:37Z"
+ },
+ {
+  "datei": "impressum-09563.html",
+  "url": "http://www.fuerth.de/informationen/impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 56574,
+  "sha256": "59c5f3cf7eae5283722c7ae1a13c7ea0a07f2b6aee548d9b0a770172c3acc13a",
+  "abgerufen": "2026-11-05T22:51:38Z"
+ },
+ {
+  "datei": "impressum-09564.html",
+  "url": "http://www.nuernberg.de/internet/stadtportal/impressum.html",
+  "http": 200,
+  "ok": true,
+  "bytes": 88437,
+  "sha256": "b273118d6acbb2d8b1e85d421a4aaecda6c8785efe9ab07fe4137971205855f7",
+  "abgerufen": "2026-11-05T22:51:39Z"
+ },
+ {
+  "datei": "impressum-09565.html",
+  "url": "http://www.schwabach.de/de/impressum.html",
+  "http": 200,
+  "ok": true,
+  "bytes": 65477,
+  "sha256": "bdb2cf730d44c2ec368ef5347b0bf89e6188ae8fed4a36fed864f0e2c0900937",
+  "abgerufen": "2026-11-05T22:51:40Z"
+ },
+ {
+  "datei": "impressum-09571.html",
+  "url": "http://www.landkreis-ansbach.de/Kurzmen%C3%BC/Impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 63028,
+  "sha256": "1e81749982dbd7fe36697490278575e9c9e83f26e8c4d677c8bc48b4379191f3",
+  "abgerufen": "2026-11-05T22:51:41Z"
+ },
+ {
+  "datei": "impressum-09572.html",
+  "url": "http://www.erlangen-hoechstadt.de/meta/impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 149772,
+  "sha256": "60a8a5f96254c85b42dbc7004ea68a40342538d9cf26af12b8dae1ddf84a6381",
+  "abgerufen": "2026-11-05T22:51:47Z"
+ },
+ {
+  "datei": "impressum-09574.html",
+  "url": "http://www.nuernberger-land.de/impressum",
+  "http": 200,
+  "ok": true,
+  "bytes": 469709,
+  "sha256": "968b3b6a44783be4b40316d2b161b8ef5806e9b337a9dd9ec19574c81cfda3a8",
+  "abgerufen": "2026-11-05T22:51:48Z"
+ },
+ {
+  "datei": "impressum-09575.html",
+  "url": "http://www.landkreis-nea.de/service/impressum",
+  "http": 404,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-06T00:12:47Z"
+ },
+ {
+  "datei": "impressum-09577.html",
+  "url": "https://www.landkreis-wug.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 52990,
+  "sha256": "4aca36e7d60f3b3875e39fd706aeaaff2d1c94a5955ba2353f842ad1cc1625e0",
+  "abgerufen": "2026-11-05T22:51:49Z"
+ },
+ {
+  "datei": "impressum-09661.html",
+  "url": "http://www.aschaffenburg.de/Service/Impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 99994,
+  "sha256": "4b5dedc77e51344615a7dcb34615ba018ba0156c8ae597aeb665b56c92a0cfcf",
+  "abgerufen": "2026-11-05T22:51:50Z"
+ },
+ {
+  "datei": "impressum-09662.html",
+  "url": "http://www.schweinfurt.de/sonstiges/impressum",
+  "http": 200,
+  "ok": true,
+  "bytes": 35968,
+  "sha256": "b345eba2ce3091c0978e5a0413489bcc8a5af84cb21f231e788485329647ff45",
+  "abgerufen": "2026-11-05T22:51:51Z"
+ },
+ {
+  "datei": "impressum-09663.html",
+  "url": "http://www.wuerzburg.de/infos/impressum",
+  "http": 200,
+  "ok": true,
+  "bytes": 133938,
+  "sha256": "2f8720d1f4c43c88a782da392d2c06072ef923e673e640c9d7cba07c4b15f4e1",
+  "abgerufen": "2026-11-05T22:51:53Z"
+ },
+ {
+  "datei": "impressum-09671.html",
+  "url": "http://www.landkreis-aschaffenburg.de/Service/Impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 75416,
+  "sha256": "4938afd4a43dcb4e759717b8e8b578e9efad745b92da69e374bdbdce6a003720",
+  "abgerufen": "2026-11-05T22:51:54Z"
+ },
+ {
+  "datei": "impressum-09673.html",
+  "url": "http://www.rhoen-grabfeld.de/impressum",
+  "http": 200,
+  "ok": true,
+  "bytes": 70480,
+  "sha256": "a76fde92d71666942a170eaca6965467582fed2462cefa1086198ff43b5e5f25",
+  "abgerufen": "2026-11-05T22:51:56Z"
+ },
+ {
+  "datei": "impressum-09674.html",
+  "url": "http://www.hassberge.de/impressum.html",
+  "http": 200,
+  "ok": true,
+  "bytes": 50590,
+  "sha256": "1e884f1dce8a3ee454d6ecbedc53602a9e538c53678a1d243d86bd639ceadfb5",
+  "abgerufen": "2026-11-05T22:51:58Z"
+ },
+ {
+  "datei": "impressum-09675.html",
+  "url": "http://www.kitzingen.de/impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 394139,
+  "sha256": "174091b3165db544d3dd4ac9e840623531249b83b3e8ad1984dbdc135b3de36f",
+  "abgerufen": "2026-11-05T22:51:59Z"
+ },
+ {
+  "datei": "impressum-09676.html",
+  "url": "http://www.landkreis-miltenberg.de/impressum-lra.html",
+  "http": 200,
+  "ok": true,
+  "bytes": 107029,
+  "sha256": "68e7d5b4d71847371587401099e7497d1dca822a5d8df472ba67ff74e70fb6e9",
+  "abgerufen": "2026-11-05T22:52:01Z"
+ },
+ {
+  "datei": "impressum-09677.html",
+  "url": "http://www.main-spessart.de/themen/bauen-wohnen/energie--klimaschutz/regionalwerk/impressum-regionalwerk/index.html",
+  "http": 200,
+  "ok": true,
+  "bytes": 165345,
+  "sha256": "fa2565842e683bc0be2aa5851ce2e4f4f15aef0a7c1b76a85de5925ae7710b6f",
+  "abgerufen": "2026-11-05T22:52:03Z"
+ },
+ {
+  "datei": "impressum-09678.html",
+  "url": "https://www.landkreis-schweinfurt.de/impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 212170,
+  "sha256": "ba3948bdf6d30885ea479893121643f6d3974a018bff3f369f42497a77a3ebb1",
+  "abgerufen": "2026-11-05T22:52:04Z"
+ },
+ {
+  "datei": "impressum-09679.html",
+  "url": "http://www.landkreis-wuerzburg.de/Auf-einen-Klick/Impressum",
+  "http": 200,
+  "ok": true,
+  "bytes": 73924,
+  "sha256": "760a81d154eeb41156d34c701e8531d0dc37041de8ae99b82cd46613bf6096cf",
+  "abgerufen": "2026-11-05T22:52:05Z"
+ },
+ {
+  "datei": "impressum-09761.html",
+  "url": "https://www.augsburg.de/impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 483785,
+  "sha256": "bd07cf901cd932aceeb8cd3dec3e1ce2cf3ea747fecaeb76f3db872bb6aafc8a",
+  "abgerufen": "2026-11-05T22:52:06Z"
+ },
+ {
+  "datei": "impressum-09762.html",
+  "url": "http://www.kaufbeuren.de/footernavigation/impressum.aspx",
+  "http": 200,
+  "ok": true,
+  "bytes": 57533,
+  "sha256": "6af22b90b9cbb8507648cff6d7cf6186ef29f9f1cffe6798cc72da5a8a816c34",
+  "abgerufen": "2026-11-05T22:52:08Z"
+ },
+ {
+  "datei": "impressum-09763.html",
+  "url": "https://kempten.de/impressum-1583.html",
+  "http": 200,
+  "ok": true,
+  "bytes": 305310,
+  "sha256": "697a4c96c441fdf77d52d999e485d88c6049c18a22bba54a7a61ef69466b3f87",
+  "abgerufen": "2026-11-05T22:52:10Z"
+ },
+ {
+  "datei": "impressum-09764.html",
+  "url": "http://www.memmingen.de/impressum.html",
+  "http": 200,
+  "ok": true,
+  "bytes": 26394,
+  "sha256": "2e725004371295dbb695e733a8228c4dab4798a9b193ccbce17867da55ee3e2c",
+  "abgerufen": "2026-11-05T22:52:11Z"
+ },
+ {
+  "datei": "impressum-09771.html",
+  "url": "http://www.lra-aic-fdb.de/impressum",
+  "http": 200,
+  "ok": true,
+  "bytes": 902806,
+  "sha256": "06f6c7ee186b5e81a1d63382a011d0545d53ed059d1bb19d8256187bb88dde69",
+  "abgerufen": "2026-11-05T22:52:13Z"
+ },
+ {
+  "datei": "impressum-09772.html",
+  "url": "http://www.landkreis-augsburg.de/impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 709350,
+  "sha256": "c753d5b932dac578b7180911e98027aee82d384dc26e3a350d6a88f955e2522d",
+  "abgerufen": "2026-11-05T22:52:13Z"
+ },
+ {
+  "datei": "impressum-09773.html",
+  "url": "http://www.landkreis-dillingen.de/service-links/impressum",
+  "http": 200,
+  "ok": true,
+  "bytes": 180824,
+  "sha256": "8b2406433c2bb0dc9dbdbb2f0406680a3b88502e20bc67a339997e4d2ed3b14d",
+  "abgerufen": "2026-11-05T22:52:16Z"
+ },
+ {
+  "datei": "impressum-09774.html",
+  "url": "https://www.landkreis-guenzburg.de/impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 401650,
+  "sha256": "ac49c506527183c3998f6b80769b54d8305b0b6be8fe5f6a5899ae0f8695bfac",
+  "abgerufen": "2026-11-05T22:52:17Z"
+ },
+ {
+  "datei": "impressum-09775.html",
+  "url": "https://www.landkreis-nu.de/impressum",
+  "http": 200,
+  "ok": true,
+  "bytes": 623583,
+  "sha256": "9cf471a7317593a41e5a7010c8bb2316cc6a357ff7f4e9fa978b753d513e3a2d",
+  "abgerufen": "2026-11-05T22:52:29Z"
+ },
+ {
+  "datei": "impressum-09776.html",
+  "url": "http://www.landkreis-lindau.de/Schnellnavigation/Impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 117920,
+  "sha256": "c4162b55953264b88eb25cd94757ce74ef2d3abf5a29d2fe32e314eb9baa3cfe",
+  "abgerufen": "2026-11-05T22:52:29Z"
+ },
+ {
+  "datei": "impressum-09778.html",
+  "url": "https://www.landratsamt-unterallgaeu.de/impressum",
+  "http": 200,
+  "ok": true,
+  "bytes": 40783,
+  "sha256": "d0dcf1a83c1016d18b5b21750926db7082f681a6fe9590777f6700c11ecf6c33",
+  "abgerufen": "2026-11-05T22:52:30Z"
+ },
+ {
+  "datei": "impressum-09779.html",
+  "url": "http://www.donau-ries.de/impressum",
+  "http": 200,
+  "ok": true,
+  "bytes": 40889,
+  "sha256": "cd3de9915d24226d10c2f59398ed538c09b52fc77ff12be784f85fa5deaa5e03",
+  "abgerufen": "2026-11-05T22:52:33Z"
+ },
+ {
+  "datei": "impressum-09780.html",
+  "url": "http://www.oberallgaeu.org/impressum",
+  "http": 200,
+  "ok": true,
+  "bytes": 71469,
+  "sha256": "2afff8c6b7ce459ea6ac59e5063ace5bccd1acaf043f5cf517af1a5f7806775b",
+  "abgerufen": "2026-11-05T22:52:34Z"
+ },
+ {
+  "datei": "start2-09175.html",
+  "url": "https://www.lra-ebe.de/",
+  "http": 0,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-06T00:13:50Z"
+ },
+ {
+  "datei": "start2-09272.html",
+  "url": "https://www.landkreis-frg.de/",
+  "http": 0,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-06T00:13:55Z"
+ },
+ {
+  "datei": "start2-09274.html",
+  "url": "https://www.landkreis-landshut.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 189594,
+  "sha256": "bcf2fbf382f3422a56dffd3893f381e77e0975bd499aeb29c50f19d5861f8f7b",
+  "abgerufen": "2026-11-05T22:53:42Z"
+ },
+ {
+  "datei": "start2-09375.html",
+  "url": "https://www.landkreis-regensburg.de/",
+  "http": 503,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-06T00:13:58Z"
+ },
+ {
+  "datei": "start2-09461.html",
+  "url": "https://www.bamberg.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 913,
+  "sha256": "d2e26afcbdfc680e5d060a1db905c0da9e02c4a65474042d793c5056c7e2eec9",
+  "abgerufen": "2026-11-05T22:53:46Z"
+ },
+ {
+  "datei": "start2-09474.html",
+  "url": "https://www.lra-fo.de/",
+  "http": 0,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-06T00:13:59Z"
+ },
+ {
+  "datei": "start2-09562.html",
+  "url": "https://www.erlangen.de",
+  "http": 200,
+  "ok": true,
+  "bytes": 157007,
+  "sha256": "ea10b1e44f157f7da97845b2ff5ee12329bcdae3ea8fe2ea174320b6b965d65f",
+  "abgerufen": "2026-11-05T22:53:48Z"
+ },
+ {
+  "datei": "start2-09573.html",
+  "url": "https://www.landkreis-fuerth.de/",
+  "http": 403,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-06T00:13:59Z"
+ },
+ {
+  "datei": "start2-09576.html",
+  "url": "https://www.landratsamt-roth.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 93060,
+  "sha256": "ec99c44a6f453dd8fc03a4d71c4f95a579eeb4f9ce15d5487c0300f17ef8eb25",
+  "abgerufen": "2026-11-05T22:53:48Z"
+ },
+ {
+  "datei": "start2-09672.html",
+  "url": "https://www.landkreis-badkissingen.de/",
+  "http": 0,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-06T00:13:59Z"
+ },
+ {
+  "datei": "start2-09777.html",
+  "url": "https://www.lra-ostallgaeu.de/",
+  "http": 0,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-06T00:14:00Z"
+ },
+ {
+  "datei": "impressum2-09175.html",
+  "url": "https://www.lra-ebe.de/impressum/",
+  "http": 0,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-06T00:15:03Z"
+ },
+ {
+  "datei": "impressum2-09272.html",
+  "url": "https://www.freyung-grafenau.de/impressum",
+  "http": 200,
+  "ok": true,
+  "bytes": 119165,
+  "sha256": "d6fbc96f59e19ffe3244963da238563a7946d8d1f1395b723719d2300ef78385",
+  "abgerufen": "2026-11-05T22:54:53Z"
+ },
+ {
+  "datei": "impressum2-09274.html",
+  "url": "https://www.landkreis-landshut.de/meta/impressum/",
+  "http": 200,
+  "ok": true,
+  "bytes": 110159,
+  "sha256": "2593afd800b682a4d0d8138d037bb12a56fd7ca9dd573ab151c4481bf96ab8c5",
+  "abgerufen": "2026-11-05T22:54:54Z"
+ },
+ {
+  "datei": "impressum2-09375.html",
+  "url": "https://www.landkreis-regensburg.de/impressum/",
+  "http": 503,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-06T00:15:07Z"
+ },
+ {
+  "datei": "impressum2-09461.html",
+  "url": "https://www.stadt.bamberg.de/impressum",
+  "http": 200,
+  "ok": true,
+  "bytes": 96740,
+  "sha256": "7890ae1792469d7afb4978313a1b37535c8b2d07d0cc2d4f72fba7f99b325e13",
+  "abgerufen": "2026-11-05T22:54:59Z"
+ },
+ {
+  "datei": "impressum2-09464.html",
+  "url": "https://www.hof.de/kontakt",
+  "http": 404,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-06T00:15:07Z"
+ },
+ {
+  "datei": "impressum2-09474.html",
+  "url": "https://www.landkreis-forchheim.de/impressum",
+  "http": 0,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-06T00:15:08Z"
+ },
+ {
+  "datei": "impressum2-09562.html",
+  "url": "https://www.erlangen.de/impressum",
+  "http": 200,
+  "ok": true,
+  "bytes": 60776,
+  "sha256": "4d4b18669ca3bfb10fb2853a2602a55c6fa94f1b0ad159a7b8e294514956e43e",
+  "abgerufen": "2026-11-05T22:55:01Z"
+ },
+ {
+  "datei": "impressum2-09573.html",
+  "url": "https://www.landkreis-fuerth.de/impressum.html",
+  "http": 403,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-06T00:15:08Z"
+ },
+ {
+  "datei": "impressum2-09576.html",
+  "url": "https://www.landratsamt-roth.de/impressum",
+  "http": 200,
+  "ok": true,
+  "bytes": 43848,
+  "sha256": "9090940ef08a694f3f0caadf38714b2f4752230878217c102be4dba66ab54c9b",
+  "abgerufen": "2026-11-05T22:55:02Z"
+ },
+ {
+  "datei": "impressum2-09672.html",
+  "url": "https://www.landkreis-badkissingen.de/impressum",
+  "http": 0,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-06T00:15:09Z"
+ },
+ {
+  "datei": "impressum2-09777.html",
+  "url": "https://www.ostallgaeu.de/impressum",
+  "http": 200,
+  "ok": true,
+  "bytes": 87521,
+  "sha256": "c47385f56936316dc6f6bea18b1978e1a9987accc21f13bb9992cf0d024fcd80",
+  "abgerufen": "2026-11-05T22:55:04Z"
+ },
+ {
+  "datei": "bp-zbfs-obb.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/46220732321/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 171529,
+  "sha256": "3121e0e2df4a1119345c9aaa1b4b24703a93aedbc0a9fc8342cfe6a3cddf0fdf",
+  "abgerufen": "2026-11-05T23:58:55Z"
+ },
+ {
+  "datei": "bp-zbfs-obb-start.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/46220732321",
+  "http": 200,
+  "ok": true,
+  "bytes": 80425,
+  "sha256": "33b581801451249f0af71242ba74a35b8d496f8f4f83f01d6a485f37b9d75246",
+  "abgerufen": "2026-11-05T23:58:57Z"
+ },
+ {
+  "datei": "bp-zbfs-liste.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/31552768601/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 96911,
+  "sha256": "03d8771cbcfe11debbaa0002ecf1c096f32fa95a13c518c52cfd92ef81adb4ca",
+  "abgerufen": "2026-11-05T23:58:58Z"
+ },
+ {
+  "datei": "bp-jobcenter.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/9700728189106",
+  "http": 200,
+  "ok": true,
+  "bytes": 156255,
+  "sha256": "90f9a9c254f39d0feec4d03564b14d20931ab3463a3ce601ddecb5eecae4dd98",
+  "abgerufen": "2026-11-05T23:58:59Z"
+ },
+ {
+  "datei": "bp-bezirk-obb.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/3947649037517/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 149386,
+  "sha256": "7b1839b74cdc8edbd328a8207d6fc9629721d1881309066f65e059172886a736",
+  "abgerufen": "2026-11-05T23:59:01Z"
+ },
+ {
+  "datei": "bp-behoerden.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde",
+  "http": 404,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-06T00:15:10Z"
+ },
+ {
+  "datei": "ba-fk-nord.html",
+  "url": "https://www.arbeitsagentur.de/vor-ort/familienkasse-bayern-nord",
+  "http": 404,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-06T00:15:11Z"
+ },
+ {
+  "datei": "ba-fk-sued.html",
+  "url": "https://www.arbeitsagentur.de/vor-ort/familienkasse-bayern-sued",
+  "http": 404,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-06T00:15:13Z"
+ },
+ {
+  "datei": "ba-fk-finden.html",
+  "url": "https://www.arbeitsagentur.de/familie-und-kinder/familienkasse-finden",
+  "http": 404,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-06T00:15:13Z"
+ },
+ {
+  "datei": "bezirk-091.html",
+  "url": "https://www.bezirk-oberbayern.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 128885,
+  "sha256": "6ca878a2766519b08b61f528dba565b85d252d86c8c2378f815360f385156803",
+  "abgerufen": "2026-11-05T23:59:04Z"
+ },
+ {
+  "datei": "bezirk-092.html",
+  "url": "https://www.bezirk-niederbayern.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 27505,
+  "sha256": "0bb2c94f7dd759b8c4dc3e3e1684d7b731764a83c113d0f0d939f81b5fde21f8",
+  "abgerufen": "2026-11-05T23:59:05Z"
+ },
+ {
+  "datei": "bezirk-093.html",
+  "url": "https://www.bezirk-oberpfalz.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 79603,
+  "sha256": "83b1a937291e17e50630368d8a2baf858072089c8796e1f196950e1d14e1619b",
+  "abgerufen": "2026-11-05T23:59:06Z"
+ },
+ {
+  "datei": "bezirk-094.html",
+  "url": "https://www.bezirk-oberfranken.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 278367,
+  "sha256": "76ae57292e82bced567959a280611ff170c19706a52875d32cb56043182a2fdc",
+  "abgerufen": "2026-11-05T23:59:06Z"
+ },
+ {
+  "datei": "bezirk-095.html",
+  "url": "https://www.bezirk-mittelfranken.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 383446,
+  "sha256": "fe95de679b63c39cf46fc628b5187fa325e9e84b9935d60ea27b889875ae9ee2",
+  "abgerufen": "2026-11-05T23:59:08Z"
+ },
+ {
+  "datei": "bezirk-096.html",
+  "url": "https://www.bezirk-unterfranken.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 75089,
+  "sha256": "c192281920285ab3ae40d88badefa9799769e8d292ad79d3c5789535c6ac39ee",
+  "abgerufen": "2026-11-05T23:59:08Z"
+ },
+ {
+  "datei": "bezirk-097.html",
+  "url": "https://www.bezirk-schwaben.de/",
+  "http": 200,
+  "ok": true,
+  "bytes": 185990,
+  "sha256": "6826aec9de0b6fa15866e472393c942f2199b59fef5999af9372abcff887daca",
+  "abgerufen": "2026-11-05T23:59:11Z"
+ },
+ {
+  "datei": "bp-jc-alle.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerdeordner/20887576283",
+  "http": 200,
+  "ok": true,
+  "bytes": 166080,
+  "sha256": "66a2430fcdaafa054e79a29ee4c35bcd0106edcb1c015ab8a029ba8280a128c8",
+  "abgerufen": "2026-11-06T00:06:21Z"
+ },
+ {
+  "datei": "bp-gemeinden.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/73886855438",
+  "http": 200,
+  "ok": true,
+  "bytes": 1649771,
+  "sha256": "793a88b2e148a7bbdb38d0ffaf7604d69dcb4b3a346cb5531fdb49542d3267b7",
+  "abgerufen": "2026-11-06T00:06:24Z"
+ },
+ {
+  "datei": "bp-bezirke.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/21109330384",
+  "http": 200,
+  "ok": true,
+  "bytes": 63491,
+  "sha256": "c41af53df7bfee2c97e3f026b843f7a075ae37e774b8b057ce163dc15e34fb09",
+  "abgerufen": "2026-11-06T00:06:25Z"
+ },
+ {
+  "datei": "bp-zbfs-091a.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/30776279323/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67309,
+  "sha256": "445e57272c018f093319abc5f430336b7c427b5caf5d0d21f664261cb0ec852d",
+  "abgerufen": "2026-11-06T00:06:26Z"
+ },
+ {
+  "datei": "bp-zbfs-091b.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/81109610323/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 66735,
+  "sha256": "082558b7f04888d330e5067aede6c6d6a175d49fb31aa3a6d70c368c3fb1e60e",
+  "abgerufen": "2026-11-06T00:06:27Z"
+ },
+ {
+  "datei": "bp-zbfs-092.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/80442948322/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 66564,
+  "sha256": "f9cd1235925f7f09fea0bfe16c8a0c79e65e50c40a3612cbf4232b8cc8964c06",
+  "abgerufen": "2026-11-06T00:06:28Z"
+ },
+ {
+  "datei": "bp-zbfs-093.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/14665164324/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67129,
+  "sha256": "09499bb804e412354d22d87ca102c08d956beb401d065140a5a2bb2c9674a85d",
+  "abgerufen": "2026-11-06T00:06:29Z"
+ },
+ {
+  "datei": "bp-zbfs-094.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/63665171322/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 75166,
+  "sha256": "bef8768e8d89e10370016d67c44635cc9dacf8b0d9d5e54d5549da1db48e661b",
+  "abgerufen": "2026-11-06T00:06:31Z"
+ },
+ {
+  "datei": "bp-zbfs-095.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/97887387323/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 66607,
+  "sha256": "8a018a11d0fab144c0edd0999fb47f6897c3bd80ce9b6df32473309057e17ef7",
+  "abgerufen": "2026-11-06T00:06:32Z"
+ },
+ {
+  "datei": "bp-zbfs-096.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/31442941324/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 69645,
+  "sha256": "d514bb1ff35e0144cfca3ef6b69d0be7ba555f1c084b8a26f78ccbddb4774482",
+  "abgerufen": "2026-11-06T00:06:33Z"
+ },
+ {
+  "datei": "bp-zbfs-097.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/30109617322/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 66530,
+  "sha256": "9c26b0cbef7d3e7f8a14d6f9c53d12cb4b2fa700379a37cd7238bb13dbf6bb85",
+  "abgerufen": "2026-11-06T00:06:34Z"
+ },
+ {
+  "datei": "bp-zbfs-094h.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/7784935982377/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 69099,
+  "sha256": "53f7df21860d6bc3dd6e68ff7e6e5fc89aa7124ce508fe96a2d2e341859a7644",
+  "abgerufen": "2026-11-06T00:06:35Z"
+ },
+ {
+  "datei": "bp-jc-3907946044116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/3907946044116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67013,
+  "sha256": "856d33fb4e5637d9f64a4a5dc70a55ca03a85c708e2524800dd127660faf1b18",
+  "abgerufen": "2026-11-06T00:06:36Z"
+ },
+ {
+  "datei": "bp-jc-5115945988116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/5115945988116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 66956,
+  "sha256": "aef8823ed346dcf90722953c4d37989c954856996d3e865c86d464d182ea3dbb",
+  "abgerufen": "2026-11-06T00:06:37Z"
+ },
+ {
+  "datei": "bp-jc-4327390469116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4327390469116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 66977,
+  "sha256": "2a9323e9f544f1061b10a9bb3dcf965e199c54f2753e46c699121913c9654cfc",
+  "abgerufen": "2026-11-06T00:06:38Z"
+ },
+ {
+  "datei": "bp-jc-4008612706116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4008612706116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 75596,
+  "sha256": "4d2be22f54813675ab898e1aeb4ebd247e49bf46fbd522efc1be1f997fcb6cce",
+  "abgerufen": "2026-11-06T00:06:39Z"
+ },
+ {
+  "datei": "bp-jc-4025390483116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4025390483116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67052,
+  "sha256": "0d8e7a934eb66a0be4681a51aefd2027e7fd4a896c4ee793a165f6242280792b",
+  "abgerufen": "2026-11-06T00:06:40Z"
+ },
+ {
+  "datei": "bp-jc-3891168267116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/3891168267116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67125,
+  "sha256": "ff06fa4ae4ca7e7fc68c18aa3740e48d5c49ffd670f6f69e7bca28e4385fcf08",
+  "abgerufen": "2026-11-06T00:06:41Z"
+ },
+ {
+  "datei": "bp-jc-4092501591116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4092501591116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 75552,
+  "sha256": "c98ddef16904b76183342381b4799f79cef19d80b3835d4c473aba248fd67f1b",
+  "abgerufen": "2026-11-06T00:06:43Z"
+ },
+ {
+  "datei": "bp-jc-4109279368116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4109279368116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67037,
+  "sha256": "4b298d05adefde1d9943cdfff0c4db8bd670a006bb7e44cadb5a271bbc04df36",
+  "abgerufen": "2026-11-06T00:06:44Z"
+ },
+ {
+  "datei": "bp-jc-4126057145116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4126057145116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67068,
+  "sha256": "6389e7927a648a73b0601cddaf5d645ec70512394f844d1e1f16ca02c68a0a3d",
+  "abgerufen": "2026-11-06T00:06:45Z"
+ },
+ {
+  "datei": "bp-jc-4159612699116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4159612699116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67003,
+  "sha256": "2d3d8496a381ad9785d829d2b0d48c570539b2bd779f5b57eccfa6e9a4e56d88",
+  "abgerufen": "2026-11-06T00:06:46Z"
+ },
+ {
+  "datei": "bp-jc-4176390476116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4176390476116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67009,
+  "sha256": "927613d0cee2c52138ab83c699d676ddcdca439c256b6293e5cd82076a739372",
+  "abgerufen": "2026-11-06T00:06:47Z"
+ },
+ {
+  "datei": "bp-jc-4193168253116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4193168253116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 66979,
+  "sha256": "bbe105988cd3d8684eec81a0e682be1c5161504734752f6135184af43f51fe74",
+  "abgerufen": "2026-11-06T00:06:48Z"
+ },
+ {
+  "datei": "bp-jc-4209946030116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4209946030116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 66956,
+  "sha256": "68cbca2dfc0f72962cec9812333a3d1b7433a5caa3744caf4b74dc4cad575b90",
+  "abgerufen": "2026-11-06T00:06:49Z"
+ },
+ {
+  "datei": "bp-jc-4226723807116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4226723807116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67049,
+  "sha256": "83ae308348bc55f4b29a5766b854416622c010df31aa4c0ea6595a30e8788b27",
+  "abgerufen": "2026-11-06T00:06:50Z"
+ },
+ {
+  "datei": "bp-jc-4260279361116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4260279361116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 66994,
+  "sha256": "05ed08c44c79b0580335ac357dc86d84f5b82474abe57997289dab6cdba425fc",
+  "abgerufen": "2026-11-06T00:06:51Z"
+ },
+ {
+  "datei": "bp-jc-4293834915116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4293834915116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 66949,
+  "sha256": "16bd8185b33f0b8faa8bc7cea08d60f91c675952880b490b5414e33c39612691",
+  "abgerufen": "2026-11-06T00:06:52Z"
+ },
+ {
+  "datei": "bp-jc-4310612692116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4310612692116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 66959,
+  "sha256": "d5625910fb37a73ac5e2dcfa7429d5bdc2cf8ce4eb9b86b7ebde819b281d2af3",
+  "abgerufen": "2026-11-06T00:06:52Z"
+ },
+ {
+  "datei": "bp-jc-4344168246116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4344168246116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 75717,
+  "sha256": "0e9dc5bd2f5fc7c7cb44af7abd56258cc9054a6612eb07dbe9125d1401af7439",
+  "abgerufen": "2026-11-06T00:06:53Z"
+ },
+ {
+  "datei": "bp-jc-5485057082116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/5485057082116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67011,
+  "sha256": "5664c872f50c05cae4c66d679098b1e8d8543c94ab518234f4645c5aa212d011",
+  "abgerufen": "2026-11-06T00:06:54Z"
+ },
+ {
+  "datei": "bp-jc-4394501577116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4394501577116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67035,
+  "sha256": "0534bbcbfe9bb0201c62b48647ecd8aec3af1584a5f819ade33b890f6b1b5a50",
+  "abgerufen": "2026-11-06T00:06:55Z"
+ },
+ {
+  "datei": "bp-jc-4411279354116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4411279354116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 66949,
+  "sha256": "45780fd5163fb9a31153fa2bccc4a603021a00bf40fb201f998a741b8d52a327",
+  "abgerufen": "2026-11-06T00:06:56Z"
+ },
+ {
+  "datei": "bp-jc-4428057131116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4428057131116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67013,
+  "sha256": "ffb980549392d04ffddce2d64be8836f28da76afb70b8f292a41847194790b91",
+  "abgerufen": "2026-11-06T00:06:57Z"
+ },
+ {
+  "datei": "bp-jc-3924723821116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/3924723821116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 76094,
+  "sha256": "179bb6af46b019b6032a2d0ba5f1a6909cbfdd00f648a7c77a606e01fe8b861c",
+  "abgerufen": "2026-11-06T00:06:58Z"
+ },
+ {
+  "datei": "bp-jc-4444834908116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4444834908116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67130,
+  "sha256": "a25cbf8f327e24b60ba49b0515f6de98eea86b2fd49efa1d5681d855ce59b4b9",
+  "abgerufen": "2026-11-06T00:06:59Z"
+ },
+ {
+  "datei": "bp-jc-4461612685116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4461612685116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 68656,
+  "sha256": "2b59afcb59658b94884c78406e64be3a7e0aefe76fa35f6417ebbef739002c13",
+  "abgerufen": "2026-11-06T00:07:00Z"
+ },
+ {
+  "datei": "bp-jc-4478390462116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4478390462116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 65659,
+  "sha256": "09ef2120e85f6937ff24b5c9b756621893be529d57613cf99cba4aa2ffd42024",
+  "abgerufen": "2026-11-06T00:07:01Z"
+ },
+ {
+  "datei": "bp-jc-4545501570116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4545501570116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 66979,
+  "sha256": "15c5b00a862bf839bcd5b82e14709bc64de01bde9a9692f9809786e338fe096a",
+  "abgerufen": "2026-11-06T00:07:02Z"
+ },
+ {
+  "datei": "bp-jc-4562279347116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4562279347116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 66987,
+  "sha256": "9f817ce3487589931aab15c85d0c69c655997c8f829f86d9f24c7291d022789f",
+  "abgerufen": "2026-11-06T00:07:03Z"
+ },
+ {
+  "datei": "bp-jc-4042168260116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4042168260116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67113,
+  "sha256": "18246cb7181c486f14b78fabdd13834310ef22f7dc3413f10dc477571881eb62",
+  "abgerufen": "2026-11-06T00:07:03Z"
+ },
+ {
+  "datei": "bp-jc-4142834922116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4142834922116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67005,
+  "sha256": "d628735fde9bd21102b2ac209609678036286825534a458e5937fc07ba4637a1",
+  "abgerufen": "2026-11-06T00:07:04Z"
+ },
+ {
+  "datei": "bp-jc-4528723793116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4528723793116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67053,
+  "sha256": "bf3687e9d06341343b37a2e8c8d96cf65eea0a154a6ed33cc1e21d13333a6ba8",
+  "abgerufen": "2026-11-06T00:07:05Z"
+ },
+ {
+  "datei": "bp-jc-5166279319116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/5166279319116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67219,
+  "sha256": "1839416eae8804a64cb8019127a6e9fd5e0892d0e02056e7010954d792a96846",
+  "abgerufen": "2026-11-06T00:07:06Z"
+ },
+ {
+  "datei": "bp-jc-5266945981116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/5266945981116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67527,
+  "sha256": "00fdd4f05d15e6a9f75850ca4c04c54663efd1ad57cb78d1b141b2ce6589c7c4",
+  "abgerufen": "2026-11-06T00:07:07Z"
+ },
+ {
+  "datei": "bp-jc-5283723758116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/5283723758116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67105,
+  "sha256": "098399d62c4bda7e5841af0a25d9195b1901670a502d81086c182789259eb4aa",
+  "abgerufen": "2026-11-06T00:07:08Z"
+ },
+ {
+  "datei": "bp-jc-4629390455116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4629390455116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67099,
+  "sha256": "77eea57aa4906757b843a974bab3dddc08948af602c78468960a5ab6d421c04b",
+  "abgerufen": "2026-11-06T00:07:09Z"
+ },
+ {
+  "datei": "bp-jc-4646168232116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4646168232116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 65610,
+  "sha256": "b9586a725f7e64a35d2ee1f62622cc7489d15aff041ff8d398ecc2681d098a59",
+  "abgerufen": "2026-11-06T00:07:10Z"
+ },
+ {
+  "datei": "bp-jc-4679723786116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4679723786116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 68696,
+  "sha256": "65a4ce059fa351991c21e5f1a603234439e3279af86d46b275d5e5bb144140bc",
+  "abgerufen": "2026-11-06T00:07:11Z"
+ },
+ {
+  "datei": "bp-jc-3975057152116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/3975057152116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67099,
+  "sha256": "d0d0a7b6c973802aa5f10434a4ec2e8be6fb7d84a1ac51806f99cf0a02326c34",
+  "abgerufen": "2026-11-06T00:07:12Z"
+ },
+ {
+  "datei": "bp-jc-4058946037116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4058946037116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67012,
+  "sha256": "f450b485faae20d4c78433765a06d557265005bfa5fff49b7ba6e102e2eb96a4",
+  "abgerufen": "2026-11-06T00:07:13Z"
+ },
+ {
+  "datei": "bp-jc-4243501584116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4243501584116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67097,
+  "sha256": "2e16ff1ca6decc41f3f50de230943c38763bd848711e999abb97dee94139621b",
+  "abgerufen": "2026-11-06T00:07:14Z"
+ },
+ {
+  "datei": "bp-jc-4495168239116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4495168239116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67191,
+  "sha256": "d7e7416d876aeee2fb213d7d352da8e2255827df8606263a1b1a67e588186ef3",
+  "abgerufen": "2026-11-06T00:07:15Z"
+ },
+ {
+  "datei": "bp-jc-4612612678116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4612612678116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67065,
+  "sha256": "bad07528ff69e1fa9720e146d2c81b0261afa91767fa2a8ce88411baa4d9188f",
+  "abgerufen": "2026-11-06T00:07:15Z"
+ },
+ {
+  "datei": "bp-jc-4662946009116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4662946009116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67017,
+  "sha256": "d0cb3d2249eb9ac53c3d6e40cdf57eef2a0ef6c3657a2c80a99697f27b91f776",
+  "abgerufen": "2026-11-06T00:07:16Z"
+ },
+ {
+  "datei": "bp-jc-4713279340116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4713279340116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67071,
+  "sha256": "1eadc9a66abbeb4cb2c516111e63e870dede1807c630cd94dc0d8f7d40bafe04",
+  "abgerufen": "2026-11-06T00:07:17Z"
+ },
+ {
+  "datei": "bp-jc-4746834894116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4746834894116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67101,
+  "sha256": "6f991274c64065492c748bb6e1e4067a727dcce2927e58416ca83d640efbd6a0",
+  "abgerufen": "2026-11-06T00:07:18Z"
+ },
+ {
+  "datei": "bp-jc-4763612671116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4763612671116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67149,
+  "sha256": "90e3d62b328ae4bc59d8b3b724738b63e1f877fe92c55945575df64c48ef5600",
+  "abgerufen": "2026-11-06T00:07:19Z"
+ },
+ {
+  "datei": "bp-jc-4830723779116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4830723779116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67041,
+  "sha256": "a3d0b5ec34ab9794d492983d405030de2c66e9f37ed5938cc1a6ed99a4f22bf7",
+  "abgerufen": "2026-11-06T00:07:20Z"
+ },
+ {
+  "datei": "bp-jc-4914612664116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4914612664116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67173,
+  "sha256": "ffde7d6f1863a0c9485607296cab3e7f23b691a584f783494e78e9079bc25756",
+  "abgerufen": "2026-11-06T00:07:21Z"
+ },
+ {
+  "datei": "bp-jc-4931390441116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4931390441116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67295,
+  "sha256": "b4c89f1be29fd9332a77c4c64d718a109d8303287211770ab3ff5771bd09d056",
+  "abgerufen": "2026-11-06T00:07:21Z"
+ },
+ {
+  "datei": "bp-jc-5082390434116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/5082390434116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67172,
+  "sha256": "ef0e8c5e64d441ff43130433c7ef1777298fbfe2e19d53581938242b9c134c32",
+  "abgerufen": "2026-11-06T00:07:22Z"
+ },
+ {
+  "datei": "bp-jc-5132723765116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/5132723765116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 65723,
+  "sha256": "34591d4a4df12f4ed6074069470b165fa2aa44d3bde75d8de61ff2d447d8ed57",
+  "abgerufen": "2026-11-06T00:07:23Z"
+ },
+ {
+  "datei": "bp-jc-5183057096116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/5183057096116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67032,
+  "sha256": "91bfcd6fe3c95fe3e3b23ff43f0409de8bd045e7715d35ba37f5ed693514427e",
+  "abgerufen": "2026-11-06T00:07:24Z"
+ },
+ {
+  "datei": "bp-jc-5233390427116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/5233390427116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67043,
+  "sha256": "56e2c5218f9fbf9dc61f24353643177a530581c9be1f53ac4a3152adb410bcba",
+  "abgerufen": "2026-11-06T00:07:25Z"
+ },
+ {
+  "datei": "bp-jc-5317279312116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/5317279312116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67017,
+  "sha256": "4ff00d8b1f9d444bc58216d74280a9b36692aa8dffdd0ba35f47c02c4630ccfd",
+  "abgerufen": "2026-11-06T00:07:26Z"
+ },
+ {
+  "datei": "bp-jc-4696501563116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4696501563116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67061,
+  "sha256": "47c6066df38056e63d79756aee90aac2d35c7f358e077f9fc26520143586c447",
+  "abgerufen": "2026-11-06T00:07:27Z"
+ },
+ {
+  "datei": "bp-jc-4730057117116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4730057117116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 66997,
+  "sha256": "7d62fb64c239183425c44a972e70c0bf7444584bd115c712ac9a364d81b206f9",
+  "abgerufen": "2026-11-06T00:07:27Z"
+ },
+ {
+  "datei": "bp-jc-4780390448116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4780390448116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67037,
+  "sha256": "6e8cdb4618e49d26a9e6ac1fc938c7ec1f91642568004b4a826589d61322b760",
+  "abgerufen": "2026-11-06T00:07:28Z"
+ },
+ {
+  "datei": "bp-jc-4797168225116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4797168225116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 66961,
+  "sha256": "24cb14431d73b803804035c00ed70293c54c58787e04229937559ec13c8f782e",
+  "abgerufen": "2026-11-06T00:07:29Z"
+ },
+ {
+  "datei": "bp-jc-4847501556116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4847501556116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67046,
+  "sha256": "9b627b81e51644bf30d190ba5eb492a3451aaa4064c32640556340c644828931",
+  "abgerufen": "2026-11-06T00:07:30Z"
+ },
+ {
+  "datei": "bp-jc-4881057110116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4881057110116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 66953,
+  "sha256": "cc81a35daf33801c43f4c32bf75d40eb60dc6a74877eaab82f793702106b2dd2",
+  "abgerufen": "2026-11-06T00:07:31Z"
+ },
+ {
+  "datei": "bp-jc-4897834887116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4897834887116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67124,
+  "sha256": "92f1594d8eacad19b52a3aec222a2cfb36d1c1b9333166654687dd82273a0117",
+  "abgerufen": "2026-11-06T00:07:32Z"
+ },
+ {
+  "datei": "bp-jc-4948168218116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4948168218116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 66977,
+  "sha256": "ab442d1eec435a27ce67b4e7ca8b2e076c5c8983e10dea157b53ef6e2a0f7e44",
+  "abgerufen": "2026-11-06T00:07:33Z"
+ },
+ {
+  "datei": "bp-jc-4981723772116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4981723772116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 75631,
+  "sha256": "adc767aecad79385a76a3318966290b4ec7f1631a5cdf41d3eaf5a38931d9013",
+  "abgerufen": "2026-11-06T00:07:33Z"
+ },
+ {
+  "datei": "bp-jc-4964945995116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4964945995116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67032,
+  "sha256": "c99f304f3c14d54e217dfd9aa5e1b5bbbc839b9c90982459bde10f30d33ba9dc",
+  "abgerufen": "2026-11-06T00:07:34Z"
+ },
+ {
+  "datei": "bp-jc-5032057103116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/5032057103116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 66995,
+  "sha256": "e3a71e7661e00a92c8c40acc2b94d2a476ee04b504364934fb13e646ec230239",
+  "abgerufen": "2026-11-06T00:07:35Z"
+ },
+ {
+  "datei": "bp-jc-5048834880116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/5048834880116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 66992,
+  "sha256": "a837dc2fe631c9c3c7cbb2a96e3a041012cab4f9fea88e4c8541ae11115bd1d5",
+  "abgerufen": "2026-11-06T00:07:36Z"
+ },
+ {
+  "datei": "bp-jc-5065612657116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/5065612657116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 66951,
+  "sha256": "e7b57ec2de26ac394af636546209c4e4aafd5a386e768e362cc7276a2889b149",
+  "abgerufen": "2026-11-06T00:07:37Z"
+ },
+ {
+  "datei": "bp-jc-5199834873116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/5199834873116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67015,
+  "sha256": "b52a9fecd2313f0d767f85417c284a1d5cf4049f189d4ad98c5257e5e26c831f",
+  "abgerufen": "2026-11-06T00:07:38Z"
+ },
+ {
+  "datei": "bp-jc-5216612650116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/5216612650116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 66932,
+  "sha256": "d6a824d05970358156111535fe727f69f1cb9b2df33185d7bf5aa96b7c47b090",
+  "abgerufen": "2026-11-06T00:07:39Z"
+ },
+ {
+  "datei": "bp-jc-5250168204116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/5250168204116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 66969,
+  "sha256": "a87349cc1c39fa637446408b0c7eaddac2bb49a6104a60be59c99797efe7329f",
+  "abgerufen": "2026-11-06T00:07:40Z"
+ },
+ {
+  "datei": "bp-jc-3958279375116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/3958279375116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67017,
+  "sha256": "13ac630b02388e76ef5a27d7dd4c67af8016965123999d1d062d14d0606bcdab",
+  "abgerufen": "2026-11-06T00:07:40Z"
+ },
+ {
+  "datei": "bp-jc-3991834929116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/3991834929116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67049,
+  "sha256": "a464c2f319705c209415d0ff1effc57285b8244fc579c1293564cfab75da44d2",
+  "abgerufen": "2026-11-06T00:07:41Z"
+ },
+ {
+  "datei": "bp-jc-4075723814116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4075723814116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 66980,
+  "sha256": "a4a83ccf325ca86110a7e572bfa1b9c548875a900e9fbd275a1f4fa19d5eb3a1",
+  "abgerufen": "2026-11-06T00:07:42Z"
+ },
+ {
+  "datei": "bp-jc-5149501542116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/5149501542116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 65715,
+  "sha256": "592d65b40a2ebe3a40231f516d5b042b26b5262ef5f773e1629208134e3e6c41",
+  "abgerufen": "2026-11-06T00:07:43Z"
+ },
+ {
+  "datei": "bp-jc-5518612636116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/5518612636116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67004,
+  "sha256": "f9938d3ba85117e0d8aa69dbf5483038d03327b2c66b70e6832c295b2b183b44",
+  "abgerufen": "2026-11-06T00:07:44Z"
+ },
+ {
+  "datei": "bp-jc-5350834866116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/5350834866116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67038,
+  "sha256": "eeb00d1a9d8e206859c2bbc3ba4b4708d1f9d0866d7a0a4668f21e51253c22b4",
+  "abgerufen": "2026-11-06T00:07:45Z"
+ },
+ {
+  "datei": "bp-jc-5367612643116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/5367612643116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67012,
+  "sha256": "9cce240d087bcf7e0fb8b309e6c773b9c26c40cb0ea197a0ca43bc3671302f67",
+  "abgerufen": "2026-11-06T00:07:46Z"
+ },
+ {
+  "datei": "bp-jc-5384390420116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/5384390420116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 66967,
+  "sha256": "7a5692312701ecd1fa76f1acb9cda5de2d0db1399c5cf7520b6b3506e5debe7a",
+  "abgerufen": "2026-11-06T00:07:47Z"
+ },
+ {
+  "datei": "bp-jc-5401168197116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/5401168197116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 66977,
+  "sha256": "d71aac0588541305781647ade9c62b15cc75107806e1ca637248b1e7fbe06fdc",
+  "abgerufen": "2026-11-06T00:07:47Z"
+ },
+ {
+  "datei": "bp-jc-5417945974116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/5417945974116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67025,
+  "sha256": "450a79462a414a3d22fd4aa762ef6081fbb252b6630b4915a4b4bad4bc58b6db",
+  "abgerufen": "2026-11-06T00:07:48Z"
+ },
+ {
+  "datei": "bp-jc-5434723751116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/5434723751116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67039,
+  "sha256": "36fb6cca9366e4951069051f0ccf772708f6b07854691d3d4b667529c765c570",
+  "abgerufen": "2026-11-06T00:07:49Z"
+ },
+ {
+  "datei": "bp-jc-5451501528116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/5451501528116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67130,
+  "sha256": "c19a8962b2c7d61a1d71d17569d4a683ae3ac8d88e65a0810d303ba5c51d6bba",
+  "abgerufen": "2026-11-06T00:07:50Z"
+ },
+ {
+  "datei": "bp-jc-5468279305116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/5468279305116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67005,
+  "sha256": "388dee2bcccd2578f70a7f277c0a282137cb6ef9f563bd1894384def7b0c7d8a",
+  "abgerufen": "2026-11-06T00:07:51Z"
+ },
+ {
+  "datei": "bp-gem-09161.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/72109323385/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 99516,
+  "sha256": "086af23e076a2471709d11d5794ff794277dca5fbd7379ea11142ece9e85c3f5",
+  "abgerufen": "2026-11-06T00:15:14Z"
+ },
+ {
+  "datei": "bp-gem-09162.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/88887100385/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 113267,
+  "sha256": "fb5406304b10600515af09273d6b4622659e9fc7a05884246ce074448ab8c54c",
+  "abgerufen": "2026-11-06T00:15:16Z"
+ },
+ {
+  "datei": "bp-gem-09163.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/05664877386/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 100061,
+  "sha256": "0189ecae13e789ab066d5faac7f0f4bc8d416560cca815f47a38ca740487d604",
+  "abgerufen": "2026-11-06T00:15:17Z"
+ },
+ {
+  "datei": "bp-gem-09171.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/07442409439/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 96111,
+  "sha256": "7ed34df131a8348675a73b93b13a2cc8bf32bbc2d2c706dba5fcafb82efb04d9",
+  "abgerufen": "2026-11-06T00:15:18Z"
+ },
+ {
+  "datei": "bp-gem-09172.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/95331266445/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 97764,
+  "sha256": "c19f2d366349c37267be18b9175f1434b557a2c8db19be149a6baef772962ada",
+  "abgerufen": "2026-11-06T00:15:19Z"
+ },
+ {
+  "datei": "bp-gem-09173.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/91331294439/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 98452,
+  "sha256": "13a429af101e913e1b58ac5df1dc010f3f6c6007ed585fd3d1abf3b0f0a16984",
+  "abgerufen": "2026-11-06T00:15:20Z"
+ },
+ {
+  "datei": "bp-gem-09174.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/28664366496/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 95322,
+  "sha256": "1d1b4a393bd4c180b8a255b05ecbb6cfcd487e9c8f8a762b56da888c001e8f11",
+  "abgerufen": "2026-11-06T00:15:21Z"
+ },
+ {
+  "datei": "bp-gem-09175.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/93331280442/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 96933,
+  "sha256": "2be73563f3bb3130e9ce2ace6a6e74f3b187c65fba5129885328374f27907aeb",
+  "abgerufen": "2026-11-06T00:15:23Z"
+ },
+ {
+  "datei": "bp-gem-09176.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/92664618441/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 100994,
+  "sha256": "2b5c0959f462e220787c1ad1f47582a90902be5dbfe37528f9571c7888138157",
+  "abgerufen": "2026-11-06T00:15:24Z"
+ },
+ {
+  "datei": "bp-gem-09177.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/10109057443/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 96930,
+  "sha256": "a42f7ccc23e6cacbd0d3cdc324d37c2d4341767e6fb15d094a7714bcb0b6a5c7",
+  "abgerufen": "2026-11-06T00:15:25Z"
+ },
+ {
+  "datei": "bp-gem-09178.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/09886603493/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 96965,
+  "sha256": "e3eba69f5591a0b8d9d2c6471c1da4b69980e3b2bb2d5b02ba6c06d0da1b5e12",
+  "abgerufen": "2026-11-06T00:15:26Z"
+ },
+ {
+  "datei": "bp-gem-09179.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/10441338670/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 95431,
+  "sha256": "97cb69a544969d32181dd5f78435aef6f2350c2e520e1c998e7863625e208b1a",
+  "abgerufen": "2026-11-06T00:15:27Z"
+ },
+ {
+  "datei": "bp-gem-09180.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/84330993504/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 97801,
+  "sha256": "9d1a43691ccb0a26ac5d0084aede1df6523fc1c185c16f16586f8532dfa12dad",
+  "abgerufen": "2026-11-06T00:15:28Z"
+ },
+ {
+  "datei": "bp-gem-09181.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/29997690498/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 96320,
+  "sha256": "4d2c0fc4126c28824149b51de217f65f91fd4db13ae9c5612cf216a96c09b803",
+  "abgerufen": "2026-11-06T00:15:29Z"
+ },
+ {
+  "datei": "bp-gem-09182.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/15442353451/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 95350,
+  "sha256": "87b997294e65935189052e624c2867141780814eff30b34121ac2c03a340e073",
+  "abgerufen": "2026-11-06T00:15:29Z"
+ },
+ {
+  "datei": "bp-gem-09183.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/17442339454/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 96238,
+  "sha256": "40898b6ca75a24291c4f83cbae297c5bf631d4241cec0f5d6b5ab5dce3ff752b",
+  "abgerufen": "2026-11-06T00:15:30Z"
+ },
+ {
+  "datei": "bp-gem-09184.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/66552873578/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 99930,
+  "sha256": "b32fb10f36e238338998ec404adea12cc4f7ac65e8991a1ee4ea184fbe4211fd",
+  "abgerufen": "2026-11-06T00:15:31Z"
+ },
+ {
+  "datei": "bp-gem-09185.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/97886687474/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 99690,
+  "sha256": "ab106ce0f86b729641e153314bbab8cdbacc156802080e3c88c6e6515712f855",
+  "abgerufen": "2026-11-06T00:15:32Z"
+ },
+ {
+  "datei": "bp-gem-09186.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/63775698448/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 98112,
+  "sha256": "333006bc8ed3a0a8df2b9b83622d4ba41bfee666730613b5e20bcd7d1d8a9158",
+  "abgerufen": "2026-11-06T00:15:33Z"
+ },
+ {
+  "datei": "bp-gem-09187.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/11442381445/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 101528,
+  "sha256": "6aca5f43d00f93b3557e123e7fa6aafa2f91887fa625edc4b08f1dc2665c0aef",
+  "abgerufen": "2026-11-06T00:15:34Z"
+ },
+ {
+  "datei": "bp-gem-09188.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/04664534460/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 97607,
+  "sha256": "428005eb630c8be3284baa37aafa8139539e22371ac90cbf9a757cc002badacf",
+  "abgerufen": "2026-11-06T00:15:35Z"
+ },
+ {
+  "datei": "bp-gem-09189.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/44886708470/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 96924,
+  "sha256": "cd2e96c761c4b068d5440c52b48e345436cc7afc8545e8a3f3faac5f81d76724",
+  "abgerufen": "2026-11-06T00:15:36Z"
+ },
+ {
+  "datei": "bp-gem-09190.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/72442304461/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 99062,
+  "sha256": "c0a8aa80c2ab27c28160f9f13704af96647b217287376ba891e0c73d455264bc",
+  "abgerufen": "2026-11-06T00:15:36Z"
+ },
+ {
+  "datei": "bp-gem-09261.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/22442654386/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 97638,
+  "sha256": "0c86813920194aec028aff966cff017ca585b31896df9fe70649a7f63667efbe",
+  "abgerufen": "2026-11-06T00:15:37Z"
+ },
+ {
+  "datei": "bp-gem-09262.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/39220431386/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 99720,
+  "sha256": "2368ae8f542d0df055c502db65ec1cc8dbc8207444427ce168623c129f470343",
+  "abgerufen": "2026-11-06T00:15:39Z"
+ },
+ {
+  "datei": "bp-gem-09263.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/55998208386/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 96867,
+  "sha256": "1bac2ea0dfd52a6ee9680be8c0ef4149a94bfa1ce09781abf8ee30bfdc26dbec",
+  "abgerufen": "2026-11-06T00:15:39Z"
+ },
+ {
+  "datei": "bp-gem-09271.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/89220081461/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 99112,
+  "sha256": "258dd2968d53104185cfb6c6ac39e756721192ff4862ccee2dbbbb8e01846e69",
+  "abgerufen": "2026-11-06T00:15:40Z"
+ },
+ {
+  "datei": "bp-gem-09272.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/12109043446/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 98938,
+  "sha256": "4bc18cf8f7d62da6d6a444f72c64d105d19f49c9c2549554b49234463657cbf2",
+  "abgerufen": "2026-11-06T00:15:41Z"
+ },
+ {
+  "datei": "bp-gem-09273.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/24220186439/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 96910,
+  "sha256": "cfa0c25347980dc62f15d20686d58b380566c624d199b9a63f9e8f145e42af41",
+  "abgerufen": "2026-11-06T00:15:42Z"
+ },
+ {
+  "datei": "bp-gem-09274.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/87108868483/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 97520,
+  "sha256": "9206d6515f3fe75be09c7b0991ddfea12c15fd3132433c41246feba6cdb73d94",
+  "abgerufen": "2026-11-06T00:15:43Z"
+ },
+ {
+  "datei": "bp-gem-09275.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/99331238451/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 100418,
+  "sha256": "e43cea7bf4eba189a6222b271b28344de41c4fd59dbf15081eb6d6fb04be68bb",
+  "abgerufen": "2026-11-06T00:15:44Z"
+ },
+ {
+  "datei": "bp-gem-09276.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/54331203459/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 98091,
+  "sha256": "84ce87872c8acde06f93eec5d04e43b9ea9d1a60b5d04e9c482ae3a9c88433ce",
+  "abgerufen": "2026-11-06T00:15:44Z"
+ },
+ {
+  "datei": "bp-gem-09277.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/77220165443/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 98408,
+  "sha256": "76b5f4c9307863bee13fac029fe21408829944fe69692b197b6c9cb07909c129",
+  "abgerufen": "2026-11-06T00:15:46Z"
+ },
+ {
+  "datei": "bp-gem-09278.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/28886820446/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 97633,
+  "sha256": "ad1b158dbe00bf24d59d8dff23eb797be53783aede3783e63bea796788bff571",
+  "abgerufen": "2026-11-06T00:15:47Z"
+ },
+ {
+  "datei": "bp-gem-09279.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/08109071440/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 98419,
+  "sha256": "e97a099d98b29e67c818007b2ba0c69e3ae7a3ef75ddc86d52c15a1ba6951bf1",
+  "abgerufen": "2026-11-06T00:15:47Z"
+ },
+ {
+  "datei": "bp-gem-09361.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/72775985386/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 99763,
+  "sha256": "5d07188bc68dffa77923782da14cf4f8da7849c94f9c3a262ff42ca22a70026e",
+  "abgerufen": "2026-11-06T00:15:48Z"
+ },
+ {
+  "datei": "bp-gem-09362.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/89553762386/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 97528,
+  "sha256": "598c5d914a2cda43641ed589210ecc35febc321e0ae185004725e21d823e9dde",
+  "abgerufen": "2026-11-06T00:15:49Z"
+ },
+ {
+  "datei": "bp-gem-09363.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/06331539387/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 99367,
+  "sha256": "e93bdfa054bd96b2cb842ae6d4a4ddf2648488a03f623dc8c89ee4b14a0dfcd4",
+  "abgerufen": "2026-11-06T00:15:49Z"
+ },
+ {
+  "datei": "bp-gem-09371.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/83220123452/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 100681,
+  "sha256": "e3d9c2d8f4dd9e03f629d9bf8a39856511dc4d498cbfce3506e71c4ada9782ea",
+  "abgerufen": "2026-11-06T00:15:50Z"
+ },
+ {
+  "datei": "bp-gem-09372.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/93997942443/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 99623,
+  "sha256": "ef30b909ec72111592b360f3309573ff410f024f400c2ca1091d0c7ec84defdf",
+  "abgerufen": "2026-11-06T00:15:51Z"
+ },
+ {
+  "datei": "bp-gem-09373.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/24886848440/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 96927,
+  "sha256": "dbbff6062859a9ec100d29833e61e47acabe1e16aed92ebc6e154919a9221c10",
+  "abgerufen": "2026-11-06T00:15:52Z"
+ },
+ {
+  "datei": "bp-gem-09374.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/48331245450/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 100855,
+  "sha256": "238fcb637b8cc3ac603643547567e685500a3d9ff29c4fa934c7aac3a0061812",
+  "abgerufen": "2026-11-06T00:15:53Z"
+ },
+ {
+  "datei": "bp-gem-09375.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/59664499467/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 97568,
+  "sha256": "aba4be79ce234c5967909e2bd07bbbdd02283aae363c27171b26f21599e0e982",
+  "abgerufen": "2026-11-06T00:15:53Z"
+ },
+ {
+  "datei": "bp-gem-09376.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/95997928446/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 103682,
+  "sha256": "112e907737a3436f9ccd7fe2d590eb11eea5e478eeabadc74a06f30b146dd80a",
+  "abgerufen": "2026-11-06T00:15:55Z"
+ },
+ {
+  "datei": "bp-gem-09377.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/41664625440/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 100044,
+  "sha256": "f6c3f2e22134b049fbda4e7aa3cfedfa3e81170080e3459f7f3492879a0e923a",
+  "abgerufen": "2026-11-06T00:15:55Z"
+ },
+ {
+  "datei": "bp-gem-09461.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/23109316387/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 92278,
+  "sha256": "3109cdc746a62e34fbb0b57f785524c203afb989eb4c530140fd21e4321dd71c",
+  "abgerufen": "2026-11-06T00:15:56Z"
+ },
+ {
+  "datei": "bp-gem-09462.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/39887093387/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 93032,
+  "sha256": "5f1c7f1ebea4eb2fe32df561a75d6764fdcc3442430b4dd6d949ba6960e89e26",
+  "abgerufen": "2026-11-06T00:15:57Z"
+ },
+ {
+  "datei": "bp-gem-09463.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/56664870387/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 93536,
+  "sha256": "89e997b292ca82cad72d4c9dea4a01963998f3c05fe71a0ea28fdb5703a0e69c",
+  "abgerufen": "2026-11-06T00:15:58Z"
+ },
+ {
+  "datei": "bp-gem-09464.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/73442647387/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 94247,
+  "sha256": "7d58fea360f043f13f11d7da2842e56151ad6127c4a1578f362c3e7e763f5588",
+  "abgerufen": "2026-11-06T00:15:58Z"
+ },
+ {
+  "datei": "bp-gem-09471.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/26886834443/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 92951,
+  "sha256": "a5e4786895e5c9bff7a2a90b19eb4ffceff1a54bab8b46e33c5fe8219f1c438c",
+  "abgerufen": "2026-11-06T00:15:59Z"
+ },
+ {
+  "datei": "bp-gem-09472.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/45664597446/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 93779,
+  "sha256": "3491a448d153eefcc7ce5e604ba89dccba0c3d0592d2e427e6f698cd43999408",
+  "abgerufen": "2026-11-06T00:16:00Z"
+ },
+ {
+  "datei": "bp-gem-09473.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/48220018475/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 94330,
+  "sha256": "c6f3282e86be46616938334eb150e39b6b88f63ac6c6a511a14450bc30fef67f",
+  "abgerufen": "2026-11-06T00:16:01Z"
+ },
+ {
+  "datei": "bp-gem-09474.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/79886813447/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 93765,
+  "sha256": "3fc3d1c52870da3c790182e59d330bf458e10cf033df2ebee91d7166f8dc073e",
+  "abgerufen": "2026-11-06T00:16:01Z"
+ },
+ {
+  "datei": "bp-gem-09475.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/36886764458/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 95107,
+  "sha256": "1daa340edd879cf430bfcffed68a3954a8f689d091a630065edeeeeaf734e3a2",
+  "abgerufen": "2026-11-06T00:16:02Z"
+ },
+ {
+  "datei": "bp-gem-09476.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/74442290464/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 94402,
+  "sha256": "9b186bc6d9608438fb5fbbdf17b1033532dab908c3e4e3d234c82d8614e5a80b",
+  "abgerufen": "2026-11-06T00:16:03Z"
+ },
+ {
+  "datei": "bp-gem-09477.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/50997893454/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 93002,
+  "sha256": "8b612600b28daf1c0d8e70ed5e71eb8eacc15dda76b3e0b1b0f2673856ed0c63",
+  "abgerufen": "2026-11-06T00:16:04Z"
+ },
+ {
+  "datei": "bp-gem-09478.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/50220004478/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 94432,
+  "sha256": "96015ec57042bfcd65ad722d7fd07d829fd3bec3bd24e2fdbf5e65ad2d98be63",
+  "abgerufen": "2026-11-06T00:16:05Z"
+ },
+ {
+  "datei": "bp-gem-09479.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/58442402440/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 94547,
+  "sha256": "d321ab605952120ea79460338e6953a6c5149dbe628a9bbd22c6a3a2749b2723",
+  "abgerufen": "2026-11-06T00:16:05Z"
+ },
+ {
+  "datei": "bp-gem-09561.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/90220424387/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 92990,
+  "sha256": "1edde73807b7b8f7f0462b9c78b5dede7e3047ade22278773fab9b2028463d7c",
+  "abgerufen": "2026-11-06T00:16:06Z"
+ },
+ {
+  "datei": "bp-gem-09562.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/06998201388/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 95461,
+  "sha256": "79cc3487e5f8ddcf9f4df55f0123fd805afeef07cfbdf5ba6c0966eb74c9c270",
+  "abgerufen": "2026-11-06T00:16:07Z"
+ },
+ {
+  "datei": "bp-gem-09563.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/23775978388/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 98467,
+  "sha256": "1c4756491f7ec8b1bf168906004eb08778c7676661a2544839aa7d5e45a54779",
+  "abgerufen": "2026-11-06T00:16:08Z"
+ },
+ {
+  "datei": "bp-gem-09564.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/40553755388/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 98348,
+  "sha256": "b856f73fb09227c65e9feccdfb45831e0501b44ba6ae0c1684b69768addda676",
+  "abgerufen": "2026-11-06T00:16:09Z"
+ },
+ {
+  "datei": "bp-gem-09565.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/57331532388/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 94682,
+  "sha256": "76abccbe803942e5d4cdb9317cfd03c7e1441c8568fbfc9e88495f8a9c476478",
+  "abgerufen": "2026-11-06T00:16:09Z"
+ },
+ {
+  "datei": "bp-gem-09571.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/91220067464/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 94677,
+  "sha256": "267f9393395ae71511fa902fae8bb522c0db670c4af4afa6abff365245aec39e",
+  "abgerufen": "2026-11-06T00:16:10Z"
+ },
+ {
+  "datei": "bp-gem-09572.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/43664611443/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 96233,
+  "sha256": "68111a7ca694a1cf68897a8c3d0192e28c9dc703daca6f2c7fd5f555affa3050",
+  "abgerufen": "2026-11-06T00:16:11Z"
+ },
+ {
+  "datei": "bp-gem-09573.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/29553482447/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 97671,
+  "sha256": "c86b1212625ff349bfdf75eaffaa6f9ffcea4dc0c8f6104f148532e8562ad41b",
+  "abgerufen": "2026-11-06T00:16:12Z"
+ },
+ {
+  "datei": "bp-gem-09574.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/69108994456/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 97664,
+  "sha256": "33e027753e06a593a53cee7e1aad599870fb53e5803d49c90413d23502b32b2b",
+  "abgerufen": "2026-11-06T00:16:12Z"
+ },
+ {
+  "datei": "bp-gem-09575.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/91997956440/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 94976,
+  "sha256": "382c974c260da6db595d173af41e9634f4aeff491dc0a8f43a990e72f147ef52",
+  "abgerufen": "2026-11-06T00:16:13Z"
+ },
+ {
+  "datei": "bp-gem-09576.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/40997963439/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 95371,
+  "sha256": "1f310ce9e0e68a9f4c2263cd2db8da5340908d0dac4873cce0c4826abbe079e6",
+  "abgerufen": "2026-11-06T00:16:14Z"
+ },
+ {
+  "datei": "bp-gem-09577.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/32220130451/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 96417,
+  "sha256": "5ee225b420bcae0cad47a95d265c441d6efac6dd42ba5a802012cab3b17788c9",
+  "abgerufen": "2026-11-06T00:16:15Z"
+ },
+ {
+  "datei": "bp-gem-09661.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/74109309388/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 90950,
+  "sha256": "6f57111359d75eadb9a567d14fc9bdfce13abeb2089bae438c6c668f04a299d2",
+  "abgerufen": "2026-11-06T00:16:15Z"
+ },
+ {
+  "datei": "bp-gem-09662.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/90887086388/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 90133,
+  "sha256": "c3279d35a51fe2af196ea031642b83d2a18eac5d0cf55519da887241f1233faf",
+  "abgerufen": "2026-11-06T00:16:16Z"
+ },
+ {
+  "datei": "bp-gem-09663.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/07664863389/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 92386,
+  "sha256": "5618a464b40a7fe18a71854d145b599b9a7a3049c58e5659dbe9af1c68f59308",
+  "abgerufen": "2026-11-06T00:16:17Z"
+ },
+ {
+  "datei": "bp-gem-09671.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/06442066513/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 91746,
+  "sha256": "84e568d7ab9da515d940ba547ee097150b0e4e6c3a6a247d7fa63aacbb7e0339",
+  "abgerufen": "2026-11-06T00:16:18Z"
+ },
+ {
+  "datei": "bp-gem-09672.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/42331287441/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 94291,
+  "sha256": "4bf44c8e7950046aaebd8c94b7eac1e3ea23e01304d81ebc08e0cb77792b0098",
+  "abgerufen": "2026-11-06T00:16:18Z"
+ },
+ {
+  "datei": "bp-gem-09673.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/97997914449/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 94287,
+  "sha256": "ca8a31438133263309b6e8e4a97ad51aafc20c4e40042fbd5db9c93278e9294f",
+  "abgerufen": "2026-11-06T00:16:19Z"
+ },
+ {
+  "datei": "bp-gem-09674.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/34886778455/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 91479,
+  "sha256": "c7c010828b96fc28a365bf1f5c0b5b467ecd9b676506f46a7362ceea0decf4be",
+  "abgerufen": "2026-11-06T00:16:20Z"
+ },
+ {
+  "datei": "bp-gem-09675.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/61775712445/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 92446,
+  "sha256": "9adbb9edf47223b0e39d982b80d2a024c9943defb1bef5a4e0a646b5d6c2a10b",
+  "abgerufen": "2026-11-06T00:16:20Z"
+ },
+ {
+  "datei": "bp-gem-09676.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/08775733441/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 93234,
+  "sha256": "a14bc1e4aa9883a525e034f872205a0c3e872632dec60fe6dc48738d5902f2de",
+  "abgerufen": "2026-11-06T00:16:21Z"
+ },
+ {
+  "datei": "bp-gem-09677.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/42997949442/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 93946,
+  "sha256": "ece5c26d331edf2699a959403d581ff61dcacaa315688d5062360811440d5aa0",
+  "abgerufen": "2026-11-06T00:16:22Z"
+ },
+ {
+  "datei": "bp-gem-09678.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/36220102457/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 90834,
+  "sha256": "2f4cb167874a8d5fdaf38767f1b54f61382ee6a8b7653b3ff0783c426a1869ed",
+  "abgerufen": "2026-11-06T00:16:23Z"
+ },
+ {
+  "datei": "bp-gem-09679.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/59775726442/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 92419,
+  "sha256": "2b13b352f49f916e9b039b98b4e76c0dc2fb743973bb280a6cdd031a81132945",
+  "abgerufen": "2026-11-06T00:16:23Z"
+ },
+ {
+  "datei": "bp-gem-09761.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/24442640389/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 95015,
+  "sha256": "4fda032af29d81d46d07a536e1a97642dd5bf0787de41558d8ccbf55a6b94880",
+  "abgerufen": "2026-11-06T00:16:25Z"
+ },
+ {
+  "datei": "bp-gem-09762.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/41220417389/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 92125,
+  "sha256": "48fe567e214c255b81172e4332aa884c0b8d0ae5c3e4767b266c3f216596dcbf",
+  "abgerufen": "2026-11-06T00:16:25Z"
+ },
+ {
+  "datei": "bp-gem-09763.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/57998194389/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 93112,
+  "sha256": "2daef85225c0f327c62a1f6f536929081f56c01bb55cea86ffcdbabdf6b6b551",
+  "abgerufen": "2026-11-06T00:16:26Z"
+ },
+ {
+  "datei": "bp-gem-09764.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/74775971389/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 92374,
+  "sha256": "2f1caf54fdf0bf6b9265086b802460ba94fb3a39cccc4c0991a3250253421050",
+  "abgerufen": "2026-11-06T00:16:27Z"
+ },
+ {
+  "datei": "bp-gem-09771.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/59109064441/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 92210,
+  "sha256": "dda33fb276a9646c9a42b018b282d722f56a10808104b3a783ffb76fbd4116bb",
+  "abgerufen": "2026-11-06T00:16:28Z"
+ },
+ {
+  "datei": "bp-gem-09772.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/48997907451/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 93759,
+  "sha256": "b436a58252a31ef93e55410a3746da077a27c26800dcfabb36c667a80bb65f1f",
+  "abgerufen": "2026-11-06T00:16:28Z"
+ },
+ {
+  "datei": "bp-gem-09773.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/40886736464/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 91753,
+  "sha256": "a41c3928a5e2f43e6bc2cdc6da7bcdd55d12c531071456d5545e46dae5c5badf",
+  "abgerufen": "2026-11-06T00:16:29Z"
+ },
+ {
+  "datei": "bp-gem-09774.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/96664590447/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 92137,
+  "sha256": "f9e883bfa92c1e19241c29f64b6c1349ae5b99104c00a8cf1964f497848bbdee",
+  "abgerufen": "2026-11-06T00:16:30Z"
+ },
+ {
+  "datei": "bp-gem-09775.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/84553447454/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 92119,
+  "sha256": "19d114539e5c7e1e8423bc03784ee29180a8c3bed1226e1ac6ad115ac70a2f8a",
+  "abgerufen": "2026-11-06T00:16:30Z"
+ },
+ {
+  "datei": "bp-gem-09776.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/26553153518/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 93081,
+  "sha256": "f814fec4ef645fed41e3a41b136cb7e6ccf6b187dc60e929698c3485cef92bd0",
+  "abgerufen": "2026-11-06T00:16:31Z"
+ },
+ {
+  "datei": "bp-gem-09777.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/13442367448/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 92826,
+  "sha256": "47105d0c434c5be3d9311d9114e22bf4f71a90db1074205eaec1787b1a6143f5",
+  "abgerufen": "2026-11-06T00:16:32Z"
+ },
+ {
+  "datei": "bp-gem-09778.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/77886827444/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 93135,
+  "sha256": "4f524bea05eb7a6fa7b3f281e35efbd453bcc98b70a8dc99490c2cd24ca0bb8c",
+  "abgerufen": "2026-11-06T00:16:33Z"
+ },
+ {
+  "datei": "bp-gem-09779.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/70997753484/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 93782,
+  "sha256": "0d86f465fff21a52d8118230f5c980a096a03e66b0a4178a20caf0cc65381808",
+  "abgerufen": "2026-11-06T00:16:33Z"
+ },
+ {
+  "datei": "bp-gem-09780.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/22108973461/staatlichebehoerden",
+  "http": 200,
+  "ok": true,
+  "bytes": 93777,
+  "sha256": "d9ea8cb2c5901715e7c7164614e49f6946901821b50e0cdf040403371d0b8969",
+  "abgerufen": "2026-11-06T00:16:34Z"
+ },
+ {
+  "datei": "bp-bezirk-091.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/37887107384/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 737518,
+  "sha256": "66896716281c5554de7447d2c4b6ce01f1119410498a3c102a74e55581ebed83",
+  "abgerufen": "2026-11-06T00:16:36Z"
+ },
+ {
+  "datei": "bp-bezirk-092.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/54664884384/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 228522,
+  "sha256": "96176e28efbc7e501a602f5b6979415157c44a0b2d5173163497003d003cad91",
+  "abgerufen": "2026-11-06T00:16:37Z"
+ },
+ {
+  "datei": "bp-bezirk-093.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/71442661384/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 249922,
+  "sha256": "920dedbf28516cb7bd9dac00589ab13b7ff48267eaa332b1b30e19d78f95a92b",
+  "abgerufen": "2026-11-06T00:16:38Z"
+ },
+ {
+  "datei": "bp-bezirk-094.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/88220438384/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 253161,
+  "sha256": "7848ba4e1a88b22dfc4f5d9325a194bc551432f619203a2617bf80f36ffaefea",
+  "abgerufen": "2026-11-06T00:16:39Z"
+ },
+ {
+  "datei": "bp-bezirk-095.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/04998215385/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 284465,
+  "sha256": "94ce964289df5581520a7955e0eb2c52c1640900ade9abe5d5cee0681a2923c9",
+  "abgerufen": "2026-11-06T00:16:40Z"
+ },
+ {
+  "datei": "bp-bezirk-096.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/21775992385/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 398661,
+  "sha256": "6fa773aa9f69b777969398f6b9a5084dd071bb943ffcec098f38fd4cf444dddc",
+  "abgerufen": "2026-11-06T00:16:41Z"
+ },
+ {
+  "datei": "bp-bezirk-097.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/38553769385/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 262971,
+  "sha256": "0e4064a995a6b70b2815654899c914ee50522261b684162c460e1e69a1030dfa",
+  "abgerufen": "2026-11-06T00:16:42Z"
+ },
+ {
+  "datei": "bp-jc-850435458193.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/850435458193/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 68528,
+  "sha256": "050a568137d0ea44b4408bb62eda80f298ba2971724a30221c864651f8b2ac3f",
+  "abgerufen": "2026-11-06T00:16:43Z"
+ },
+ {
+  "datei": "bp-jc-485192809634.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/485192809634/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 236095,
+  "sha256": "95dd8a725ea2922b535614184b4daf653dc24fe8fe4f988034f447ac1c599746",
+  "abgerufen": "2026-11-06T00:16:44Z"
+ },
+ {
+  "datei": "bp-jc-4511946016116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4511946016116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 133119,
+  "sha256": "3499a6c950b4f3b29fb9268152002699b6f771af18ca4959d0ac9118665981a5",
+  "abgerufen": "2026-11-06T00:16:45Z"
+ },
+ {
+  "datei": "bp-jc-5300501535116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/5300501535116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 69886,
+  "sha256": "b8cdb2f4ca0d42267e33d82baa84fd0ab66c2b7722b8903e50e178a558784f9d",
+  "abgerufen": "2026-11-06T00:16:45Z"
+ },
+ {
+  "datei": "bp-jc-4813946002116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4813946002116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 66548,
+  "sha256": "9930b22b1ba7eae264e3b49afb5f5d45006b5ddade6102f7472922085451cfb6",
+  "abgerufen": "2026-11-06T00:16:46Z"
+ },
+ {
+  "datei": "bp-jc-9651905763442.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/9651905763442/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 72349,
+  "sha256": "20a5c56f83ee05937ed5f66ba1f3111187cf01223bf11b5aab37b3848ecfb135",
+  "abgerufen": "2026-11-06T00:16:47Z"
+ },
+ {
+  "datei": "bp-jc-4864279333116.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/4864279333116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 66560,
+  "sha256": "0217a14e5547d73104329ca38203a8a80e4ed58a5e146dcab45f86e27dfa0963",
+  "abgerufen": "2026-11-06T00:16:47Z"
+ },
+ {
+  "datei": "bp-jc-9058278675117.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/9058278675117/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 68525,
+  "sha256": "2fe5d50b457aca5047151640cc3d7233196891b057b2418f10e486a0a1eaab09",
+  "abgerufen": "2026-11-06T00:16:48Z"
+ },
+ {
+  "datei": "bp-jc-0383278150119.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/0383278150119/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67017,
+  "sha256": "8ff9ac24390460d6cfdd235b6fd78575b2aaedfd84269cf43aa68bacbcaad5db",
+  "abgerufen": "2026-11-06T00:16:49Z"
+ },
+ {
+  "datei": "bp-fk-sued.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/5703168183116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67350,
+  "sha256": "bd75af2a4f2b14b09143e66cb242557772235e79fae4082e2dbb66b84be15841",
+  "abgerufen": "2026-11-06T00:16:50Z"
+ },
+ {
+  "datei": "bp-lra-09175.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/33109246402/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 119590,
+  "sha256": "8fc079803f0d2bba79d4c372ad28d7b7f0d848488ef32d93c18e9add9d8181f7",
+  "abgerufen": "2026-11-06T00:31:01Z"
+ },
+ {
+  "datei": "bp-lra-09375.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/49109134426/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 138304,
+  "sha256": "cba36c5b4c0a0326615ba08dde25c6da3a0376a3f54b6744231c05827b6b66c2",
+  "abgerufen": "2026-11-06T00:31:02Z"
+ },
+ {
+  "datei": "bp-lra-09464.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/73442647387/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 500229,
+  "sha256": "6963d5d222c3417c946d71c75ddd3c28e9cfb196c8f2d81942aa4acf315748f7",
+  "abgerufen": "2026-11-06T00:31:03Z"
+ },
+ {
+  "datei": "bp-lra-09474.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/18331455405/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 230569,
+  "sha256": "e1e36340e05c693a347e2a394db22dbaf9fabd9699122d527d1ddb24eec900ad",
+  "abgerufen": "2026-11-06T00:31:04Z"
+ },
+ {
+  "datei": "bp-lra-09573.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/02887002407/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 180460,
+  "sha256": "52c15ac42f1e7eb608a2e2b41768244faebe7e659bf63f83e427a4de3709e677",
+  "abgerufen": "2026-11-06T00:31:05Z"
+ },
+ {
+  "datei": "bp-lra-09672.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/44553727394/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 167738,
+  "sha256": "fad7e76ee6611c9670324f4d3acb1159af286bd5bbc385b2452c3377521f85cb",
+  "abgerufen": "2026-11-06T00:31:06Z"
+ },
+ {
+  "datei": "bp-jc-6177395019106.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/6177395019106/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 144932,
+  "sha256": "63bcce4fa3b938fc906319f2ba62d3078c4e7ca85435032701ecd6f29eb4c901",
+  "abgerufen": "2026-11-06T00:31:07Z"
+ },
+ {
+  "datei": "bp-fk-nord.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/5652834852116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67347,
+  "sha256": "92f62f7462f5df3d8d9d44367a098649ca3b8899bc83baa223e22746ef49b414",
+  "abgerufen": "2026-11-06T00:31:08Z"
+ },
+ {
+  "datei": "bp-fk-schwandorf.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/5719945960116",
+  "http": 200,
+  "ok": true,
+  "bytes": 69351,
+  "sha256": "264e013f2c1d2f133b5d1ea25238ba590769da7e3567063f83df7ce15bbda575",
+  "abgerufen": "2026-11-06T00:34:43Z"
+ },
+ {
+  "datei": "bp-fk-schwandorf-geb.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/5719945960116/zustaendigkeitsgebiet",
+  "http": 200,
+  "ok": true,
+  "bytes": 69419,
+  "sha256": "7428984ba11351ddee47452f6fa1093197362301f1ef96ca83d9aff0c755650a",
+  "abgerufen": "2026-11-06T00:34:45Z"
+ },
+ {
+  "datei": "bp-fk-regensburg.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/5703168183116",
+  "http": 200,
+  "ok": true,
+  "bytes": 68938,
+  "sha256": "450c2e72e52731290176ffa9cd32caa9475d559916e1d6f49cf46bbb7bdea1f8",
+  "abgerufen": "2026-11-06T00:34:46Z"
+ }
+]
