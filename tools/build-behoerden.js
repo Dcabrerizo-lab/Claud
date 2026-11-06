@@ -162,11 +162,82 @@ plz.kreise.forEach((k) => {
   kreise[ags] = e;
 });
 if (Object.keys(kreise).length !== 96) fehler.push('erwartet 96 Kreise, erzeugt ' + Object.keys(kreise).length);
+
+// ---------- BayernPortal: Jobcenter, Familienkasse, Bezirke, ZBFS ----------
+// Zuständigkeit je Kreis aus der amtlichen Seite "Ausgewählte Behörden ... zuständig für das Gebiet" einer Gemeinde des Kreises
+// (bp-gem-<Kreisschlüssel>.html). Gegenprobe: Die Seite muss den Bezirk des Regierungsbezirks und bei Landkreisen das
+// Landratsamt des Kreises nennen; sonst bricht das Skript ab.
+const bp = require('./bayernportal.js');
+const R = (datei) => path.join(RAW, datei);
+const ok = (datei) => { const l = abruf.find((x) => x.datei === datei); return l && l.ok ? l : null; };
+const RB = { '091': 'Oberbayern', '092': 'Niederbayern', '093': 'Oberpfalz', '094': 'Oberfranken', '095': 'Mittelfranken', '096': 'Unterfranken', '097': 'Schwaben' };
+const norm = (s) => String(s).toLowerCase().replace(/ß/g, 'ss').replace(/a\.d\.|a\. d\.|an der/g, 'ad').replace(/i\.d\.|in der/g, 'id').replace(/[^a-zäöü]/g, '');
+
+// Für Anschreiben: Postanschrift, wenn angegeben, sonst Hausanschrift
+function bpStelle(datei, name) {
+  const l = ok(datei);
+  if (!l) return null;
+  const a = bp.anschrift(R(datei));
+  if (!a) { fehler.push('keine Anschrift in ' + datei); return null; }
+  return { name: name || a.titel, anschrift: a.post && a.post.length ? a.post : a.haus, haus: a.haus, quelle: urlVon(datei) || l.url, stand: deDatum(l.abgerufen) };
+}
+
+const jobcenter = {}, fkZuordnung = {}, lraBp = {};
+plz.kreise.forEach((k) => {
+  const ags = k.ags, rb = ags.slice(0, 3), datei = 'bp-gem-' + ags + '.html';
+  if (!ok(datei)) { fehler.push(ags + ': Zuständigkeitsseite fehlt (' + datei + ')'); return; }
+  const v = bp.verweise(R(datei));
+  const bez = v.filter((x) => /^Bezirk /.test(x.name)).map((x) => x.name);
+  if (bez.length !== 1 || bez[0] !== 'Bezirk ' + RB[rb]) fehler.push(ags + ': Bezirk passt nicht: ' + bez.join(', '));
+  if (Number(ags.slice(3)) > 70) {
+    const lra = v.filter((x) => /^Landratsamt /.test(x.name) && norm(x.name) === norm(kreise[ags].name));
+    if (lra.length !== 1) fehler.push(ags + ': Landratsamt ' + kreise[ags].name + ' nicht auf der Zuständigkeitsseite: ' + v.filter((x) => /^Landratsamt/.test(x.name)).map((x) => x.name).join(', '));
+    else lraBp[ags] = lra[0].id;
+  } else {
+    const st = v.filter((x) => /^(Stadt|Landeshauptstadt|Große Kreisstadt) /.test(x.name) && norm(x.name).endsWith(norm(kreise[ags].name.replace(/^(Stadt|Landeshauptstadt) /, ''))));
+    if (st.length) lraBp[ags] = st[0].id;
+  }
+  const jc = v.filter((x) => /Jobcenter/.test(x.name));
+  if (jc.length !== 1) { fehler.push(ags + ': nicht genau ein Jobcenter: ' + jc.map((x) => x.name).join(', ')); }
+  else {
+    const s = bpStelle('bp-jc-' + jc[0].id + '.html', jc[0].name);
+    if (s) jobcenter[ags] = s; else fehler.push(ags + ': Anschrift des ' + jc[0].name + ' fehlt (bp-jc-' + jc[0].id + '.html)');
+  }
+  const fk = [...new Set(v.filter((x) => /^Familienkasse Bayern (Nord|Süd)/.test(x.name)).map((x) => (/Nord/.test(x.name) ? 'nord' : 'sued')))];
+  if (fk.length !== 1) fehler.push(ags + ': Familienkasse nicht eindeutig: ' + fk.join(', '));
+  else fkZuordnung[ags] = fk[0];
+});
+
+// Bezirke (überörtliche Träger der Eingliederungshilfe) und ZBFS-Regionalstellen je Regierungsbezirk
+const bezirke = {}, zbfs = {};
+Object.keys(RB).forEach((rb) => {
+  const b = bpStelle('bp-bezirk-' + rb + '.html', 'Bezirk ' + RB[rb]);
+  if (b) bezirke[rb] = b; else fehler.push(rb + ': Anschrift Bezirk ' + RB[rb] + ' fehlt');
+  // Oberbayern hat zwei Dienstorte; Hauptsitz der Region ist die Richelstraße
+  const z = bpStelle('bp-zbfs-' + (rb === '091' ? '091a' : rb) + '.html', 'Zentrum Bayern Familie und Soziales, Region ' + RB[rb]);
+  if (z) zbfs[rb] = z; else fehler.push(rb + ': Anschrift ZBFS Region ' + RB[rb] + ' fehlt');
+});
+
+// Familienkasse Bayern Nord / Süd (Postanschrift laut BayernPortal)
+const familienkasse = {};
+[['nord', 'Familienkasse Bayern Nord'], ['sued', 'Familienkasse Bayern Süd']].forEach(([k, name]) => {
+  const s = bpStelle('bp-fk-' + k + '.html', name);
+  if (s) familienkasse[k] = s; else fehler.push('Anschrift ' + name + ' fehlt (bp-fk-' + k + '.html)');
+});
+
+// Landratsämter/Städte, deren Impressum nicht abrufbar war: Anschrift aus dem BayernPortal
+OHNE_ANSCHRIFT.forEach((ags) => {
+  const s = lraBp[ags] && bpStelle('bp-lra-' + ags + '.html', kreise[ags].name);
+  if (s) Object.assign(kreise[ags], { anschrift: s.anschrift, quelle: s.quelle, stand: s.stand });
+});
+
 if (fehler.length) { console.error('Fehler:\n  ' + fehler.join('\n  ')); process.exit(1); }
+// IDs für weitere Abrufe (Familienkasse Nord, fehlende Landratsämter) ausgeben, falls Quellen fehlen
+if (process.env.ZEIGE_IDS) console.log(JSON.stringify({ lraBp }));
 
 const data = {
   stand: 'Anschriften laut Impressum der Behörden, abgerufen ' + deDatum([...new Set(abruf.filter((x) => /^(impressum|start)/.test(x.datei) && x.ok).map((x) => x.abgerufen))].sort().pop()),
-  kreise,
+  kreise, jobcenter, fkZuordnung, familienkasse, bezirke, zbfs,
   fest: {
     // Bundesweit eine Anschrift (www.rundfunkbeitrag.de, Kontakt)
     beitragsservice: { name: 'ARD ZDF Deutschlandradio Beitragsservice', anschrift: ['50656 Köln'], web: 'https://www.rundfunkbeitrag.de', quelle: 'https://www.rundfunkbeitrag.de', stand: '' }
