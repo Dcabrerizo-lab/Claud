@@ -479,7 +479,8 @@
   "plz.alt": "Your place may belong to a larger municipality that has a different rent level. If so, choose it here.",
   "beh.stelle": "Responsible office for where you live:",
   "beh.web": "Website of the authority",
-  "beh.pruefen": "Address from the authority's legal notice (retrieved {stand}). Please check before sending; offices sometimes move.",
+  "beh.pruefen": "Address from official information (the authority's legal notice or BayernPortal, retrieved {stand}). Please check before sending; offices sometimes move.",
   "beh.ohneAdr": "You can find the address on the authority's website.",
-  "beh.plzHint": "Enter your postcode above and the app will show the responsible office with its address (currently for Bavaria)."
+  "beh.plzHint": "Enter your postcode above and the app will show the responsible office with its address (currently for Bavaria).",
+  "beh.besuch": "Visiting address:"
 }

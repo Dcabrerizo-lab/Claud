@@ -479,7 +479,8 @@
   "plz.alt": "Bulunduğun yer, farklı kira kademesi olan daha büyük bir belediyeye bağlı olabilir. Öyleyse onu buradan seç.",
   "beh.stelle": "Oturduğun yer için yetkili makam:",
   "beh.web": "Kurumun web sitesi",
-  "beh.pruefen": "Adres, kurumun künye sayfasından alınmıştır ({stand}). Göndermeden önce lütfen kontrol et; kurumlar bazen taşınır.",
+  "beh.pruefen": "Adres resmî bilgilerden alınmıştır (kurumun künye sayfası veya BayernPortal, {stand}). Göndermeden önce lütfen kontrol et; kurumlar bazen taşınır.",
   "beh.ohneAdr": "Adresi kurumun web sitesinde bulabilirsin.",
-  "beh.plzHint": "Yukarıya posta kodunu gir, uygulama yetkili makamı adresiyle gösterir (şimdilik Bavyera için)."
+  "beh.plzHint": "Yukarıya posta kodunu gir, uygulama yetkili makamı adresiyle gösterir (şimdilik Bavyera için).",
+  "beh.besuch": "Ziyaret adresi:"
 }

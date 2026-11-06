@@ -135,7 +135,7 @@ const AUSWAHL = {
   '09779': ['impressum-09779.html', 'Pflegstraße 2', '86609 Donauwörth'],
   '09780': ['impressum-09780.html', 'Oberallgäuer Platz 2', '87527 Sonthofen']
 };
-// Ohne abrufbare Quelle (Seite lehnte den Abruf ab oder antwortete nicht): nur Name und Website, keine geratene Anschrift
+// Impressum nicht abrufbar (Seite lehnte den Abruf ab oder antwortete nicht): Anschrift stattdessen aus dem BayernPortal (s. u.)
 const OHNE_ANSCHRIFT = ['09175', '09375', '09464', '09474', '09573', '09672'];
 
 const deDatum = (iso) => { const [y, m, d] = iso.slice(0, 10).split('-'); return Number(d) + '.' + Number(m) + '.' + y; };
@@ -210,7 +210,9 @@ plz.kreise.forEach((k) => {
   else {
     const n = jcId[jc[0]];
     // Kommunales Jobcenter ohne "Jobcenter" im Namen (z. B. Geschäftsbereich eines Landratsamts): Behörde voranstellen
-    const name = /Jobcenter/.test(n) ? n : kreise[ags].name + ', ' + n + ' (Jobcenter)';
+    // Interne Kürzel vor dem Namen entfernen ("SG 44 Jobcenter Oberallgäu" -> "Jobcenter Oberallgäu")
+    const sauber = n.replace(/^(SG \d+|\d+[a-z]?|Abteilung \d+|Fachbereich \d+ -)\s+/, '');
+    const name = /Jobcenter/.test(sauber) ? sauber.replace(/^Kommunales Jobcenter/, 'Kommunales Jobcenter') : kreise[ags].name + ', ' + sauber + ' (Jobcenter)';
     const s = bpStelle('bp-jc-' + jc[0] + '.html', name);
     if (s) jobcenter[ags] = s; else fehler.push(ags + ': Anschrift von ' + n + ' fehlt (bp-jc-' + jc[0] + '.html)');
   }
@@ -240,8 +242,10 @@ const familienkasse = {};
 
 // Landratsämter/Städte, deren Impressum nicht abrufbar war: Anschrift aus dem BayernPortal
 OHNE_ANSCHRIFT.forEach((ags) => {
-  const s = lraBp[ags] && bpStelle('bp-lra-' + ags + '.html', kreise[ags].name);
-  if (s) Object.assign(kreise[ags], { anschrift: s.anschrift, quelle: s.quelle, stand: s.stand });
+  // Landratsamt aus der Zuständigkeitsseite; kreisfreie Stadt: ihr eigener Gemeinde-Eintrag im BayernPortal
+  const s = (lraBp[ags] || ok('bp-lra-' + ags + '.html')) && bpStelle('bp-lra-' + ags + '.html', kreise[ags].name);
+  if (s) Object.assign(kreise[ags], { anschrift: s.anschrift, haus: s.haus, quelle: s.quelle, stand: s.stand });
+  else fehler.push(ags + ': keine Anschrift für ' + kreise[ags].name);
 });
 
 if (fehler.length) { console.error('Fehler:\n  ' + fehler.join('\n  ')); process.exit(1); }
@@ -249,7 +253,7 @@ if (fehler.length) { console.error('Fehler:\n  ' + fehler.join('\n  ')); process
 if (process.env.ZEIGE_IDS) console.log(JSON.stringify({ lraBp: OHNE_ANSCHRIFT.map((a) => [a, lraBp[a]]), fkUnklar }));
 
 const data = {
-  stand: 'Anschriften laut Impressum der Behörden, abgerufen ' + deDatum([...new Set(abruf.filter((x) => /^(impressum|start)/.test(x.datei) && x.ok).map((x) => x.abgerufen))].sort().pop()),
+  stand: 'Anschriften laut Impressum der Behörden bzw. BayernPortal, abgerufen ' + deDatum([...new Set(abruf.filter((x) => /^(impressum|start)/.test(x.datei) && x.ok).map((x) => x.abgerufen))].sort().pop()),
   kreise, jobcenter, fkZuordnung, familienkasse, bezirke, zbfs,
   fest: {
     // Bundesweit eine Anschrift (www.rundfunkbeitrag.de, Kontakt)

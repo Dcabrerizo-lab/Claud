@@ -479,7 +479,8 @@
   "plz.alt": "Dein Ort kann zu einer größeren Gemeinde gehören, die eine andere Mietenstufe hat. Wenn das so ist, wähle sie hier.",
   "beh.stelle": "Zuständige Stelle für deinen Wohnort:",
   "beh.web": "Website der Behörde",
-  "beh.pruefen": "Anschrift laut Impressum der Behörde (abgerufen {stand}). Bitte vor dem Absenden prüfen, Behörden ziehen manchmal um.",
+  "beh.pruefen": "Anschrift aus amtlichen Angaben (Impressum der Behörde oder BayernPortal, abgerufen {stand}). Bitte vor dem Absenden prüfen, Behörden ziehen manchmal um.",
   "beh.ohneAdr": "Die Anschrift findest du auf der Website der Behörde.",
-  "beh.plzHint": "Gib oben deine Postleitzahl ein, dann nennt die App die zuständige Stelle mit Anschrift (derzeit für Bayern)."
+  "beh.plzHint": "Gib oben deine Postleitzahl ein, dann nennt die App die zuständige Stelle mit Anschrift (derzeit für Bayern).",
+  "beh.besuch": "Besucheranschrift:"
 }

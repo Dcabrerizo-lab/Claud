@@ -479,7 +479,8 @@
   "plz.alt": "Twoja miejscowość może należeć do większej gminy z innym stopniem czynszu. Jeśli tak, wybierz ją tutaj.",
   "beh.stelle": "Właściwy urząd dla Twojego miejsca zamieszkania:",
   "beh.web": "Strona urzędu",
-  "beh.pruefen": "Adres ze stopki redakcyjnej urzędu (pobrano {stand}). Sprawdź przed wysłaniem, urzędy czasem się przeprowadzają.",
+  "beh.pruefen": "Adres z oficjalnych danych (stopka redakcyjna urzędu lub BayernPortal, pobrano {stand}). Sprawdź przed wysłaniem, urzędy czasem się przeprowadzają.",
   "beh.ohneAdr": "Adres znajdziesz na stronie urzędu.",
-  "beh.plzHint": "Wpisz powyżej kod pocztowy, a aplikacja pokaże właściwy urząd z adresem (na razie dla Bawarii)."
+  "beh.plzHint": "Wpisz powyżej kod pocztowy, a aplikacja pokaże właściwy urząd z adresem (na razie dla Bawarii).",
+  "beh.besuch": "Adres dla odwiedzających:"
 }

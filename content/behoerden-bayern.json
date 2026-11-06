@@ -1,5 +1,5 @@
 {
- "stand": "Anschriften laut Impressum der Behörden, abgerufen 5.11.2026",
+ "stand": "Anschriften laut Impressum der Behörden bzw. BayernPortal, abgerufen 5.11.2026",
  "kreise": {
   "09161": {
    "name": "Stadt Ingolstadt",
@@ -74,9 +74,16 @@
   "09175": {
    "name": "Landratsamt Ebersberg",
    "web": "https://www.lra-ebe.de/",
-   "anschrift": null,
-   "quelle": "",
-   "stand": ""
+   "anschrift": [
+    "Postfach 1449",
+    "85555 Ebersberg"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/33109246402/adressen",
+   "stand": "6.11.2026",
+   "haus": [
+    "Eichthalstraße 5",
+    "85560 Ebersberg"
+   ]
   },
   "09176": {
    "name": "Landratsamt Eichstätt",
@@ -421,9 +428,16 @@
   "09375": {
    "name": "Landratsamt Regensburg",
    "web": "https://www.landkreis-regensburg.de/",
-   "anschrift": null,
-   "quelle": "",
-   "stand": ""
+   "anschrift": [
+    "Postfach 120329",
+    "93025 Regensburg"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/49109134426/adressen",
+   "stand": "6.11.2026",
+   "haus": [
+    "Altmühlstr. 3",
+    "93059 Regensburg"
+   ]
   },
   "09376": {
    "name": "Landratsamt Schwandorf",
@@ -478,9 +492,16 @@
   "09464": {
    "name": "Stadt Hof",
    "web": "https://www.hof.de",
-   "anschrift": null,
-   "quelle": "",
-   "stand": ""
+   "anschrift": [
+    "Postfach 1665",
+    "95015 Hof"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/73442647387/adressen",
+   "stand": "6.11.2026",
+   "haus": [
+    "Klosterstraße 1-3",
+    "95028 Hof"
+   ]
   },
   "09471": {
    "name": "Landratsamt Bamberg",
@@ -515,9 +536,15 @@
   "09474": {
    "name": "Landratsamt Forchheim",
    "web": "https://www.lra-fo.de/",
-   "anschrift": null,
-   "quelle": "",
-   "stand": ""
+   "anschrift": [
+    "91299 Forchheim"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/18331455405/adressen",
+   "stand": "6.11.2026",
+   "haus": [
+    "Oberes Tor 1",
+    "91320 Ebermannstadt"
+   ]
   },
   "09475": {
    "name": "Landratsamt Hof",
@@ -642,9 +669,16 @@
   "09573": {
    "name": "Landratsamt Fürth",
    "web": "https://www.landkreis-fuerth.de/",
-   "anschrift": null,
-   "quelle": "",
-   "stand": ""
+   "anschrift": [
+    "Im Pinderpark 2",
+    "90513 Zirndorf"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/02887002407/adressen",
+   "stand": "6.11.2026",
+   "haus": [
+    "Im Pinderpark 2",
+    "90513 Zirndorf"
+   ]
   },
   "09574": {
    "name": "Landratsamt Nürnberger Land",
@@ -729,9 +763,16 @@
   "09672": {
    "name": "Landratsamt Bad Kissingen",
    "web": "https://www.landkreis-badkissingen.de/",
-   "anschrift": null,
-   "quelle": "",
-   "stand": ""
+   "anschrift": [
+    "Postfach 1820",
+    "97685 Bad Kissingen"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/44553727394/adressen",
+   "stand": "6.11.2026",
+   "haus": [
+    "Obere Marktstr. 6",
+    "97688 Bad Kissingen"
+   ]
   },
   "09673": {
    "name": "Landratsamt Rhön-Grabfeld",
@@ -942,6 +983,1548 @@
    ],
    "quelle": "http://www.oberallgaeu.org/impressum",
    "stand": "5.11.2026"
+  }
+ },
+ "jobcenter": {
+  "09161": {
+   "name": "Jobcenter Ingolstadt",
+   "anschrift": [
+    "Rathausplatz 4",
+    "85049 Ingolstadt"
+   ],
+   "haus": [
+    "Adolf-Kolping-Straße 10",
+    "85049 Ingolstadt"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/9651905763442/adressen",
+   "stand": "6.11.2026"
+  },
+  "09162": {
+   "name": "Jobcenter München",
+   "anschrift": [
+    "Orleansplatz 11",
+    "81667 München"
+   ],
+   "haus": [
+    "Orleansplatz 11",
+    "81667 München"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4881057110116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09163": {
+   "name": "Jobcenter Rosenheim Stadt",
+   "anschrift": [
+    "Mühlbachbogen 3",
+    "83022 Rosenheim"
+   ],
+   "haus": [
+    "Mühlbachbogen 3",
+    "83022 Rosenheim"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/5199834873116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09171": {
+   "name": "Jobcenter Altötting",
+   "anschrift": [
+    "Gabriel-Mayer-Str. 8a",
+    "84503 Altötting"
+   ],
+   "haus": [
+    "Gabriel-Mayer-Str. 8a",
+    "84503 Altötting"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/3907946044116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09172": {
+   "name": "Jobcenter Berchtesgadener Land",
+   "anschrift": [
+    "Postfach 1118",
+    "83421 Bad Reichenhall"
+   ],
+   "haus": [
+    "Bahnhofstr. 22",
+    "83435 Bad Reichenhall"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4126057145116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09173": {
+   "name": "Jobcenter Bad Tölz-Wolfratshausen",
+   "anschrift": [
+    "Prof.-Max-Lange-Platz 14",
+    "83646 Bad Tölz"
+   ],
+   "haus": [
+    "Prof.-Max-Lange-Platz 14",
+    "83646 Bad Tölz"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/3891168267116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09174": {
+   "name": "Jobcenter Dachau",
+   "anschrift": [
+    "Bürgermeister-Zauner-Ring 7",
+    "85221 Dachau"
+   ],
+   "haus": [
+    "Bürgermeister-Zauner-Ring 7",
+    "85221 Dachau"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4193168253116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09175": {
+   "name": "Jobcenter Ebersberg",
+   "anschrift": [
+    "Kolpingstr. 1",
+    "85560 Ebersberg"
+   ],
+   "haus": [
+    "Kolpingstr. 1",
+    "85560 Ebersberg"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4293834915116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09176": {
+   "name": "Jobcenter Eichstätt",
+   "anschrift": [
+    "Am Anger 1",
+    "85072 Eichstätt"
+   ],
+   "haus": [
+    "Am Anger 1",
+    "85072 Eichstätt"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4310612692116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09177": {
+   "name": "Jobcenter ARUSO Erding",
+   "anschrift": [
+    "Otto-Hahn-Str. 21",
+    "85435 Erding"
+   ],
+   "haus": [
+    "Otto-Hahn-Str. 21",
+    "85435 Erding"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4327390469116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09178": {
+   "name": "Jobcenter Freising",
+   "anschrift": [
+    "Parkstraße 11",
+    "85356 Freising"
+   ],
+   "haus": [
+    "Parkstraße 11",
+    "85356 Freising"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4411279354116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09179": {
+   "name": "Jobcenter Fürstenfeldbruck",
+   "anschrift": [
+    "Oskar-von-Miller-Straße 4f",
+    "82256 Fürstenfeldbruck"
+   ],
+   "haus": [
+    "Oskar-von-Miller-Straße 4f",
+    "82256 Fürstenfeldbruck"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4444834908116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09180": {
+   "name": "Jobcenter Landkreis Garmisch-Partenkirchen",
+   "anschrift": [
+    "Postfach 1152",
+    "82451 Garmisch-Partenkrichen"
+   ],
+   "haus": [
+    "Bahnhofstr. 35a",
+    "82467 Garmisch-Partenkirchen"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4495168239116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09181": {
+   "name": "Jobcenter Landsberg am Lech",
+   "anschrift": [
+    "Postfach 101453",
+    "86884 Landsberg am Lech"
+   ],
+   "haus": [
+    "Kohlstattstr. 8",
+    "86899 Landsberg am Lech"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4696501563116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09182": {
+   "name": "Jobcenter des Landratsamts Miesbach",
+   "anschrift": [
+    "Münchner Str. 3",
+    "83714 Miesbach"
+   ],
+   "haus": [
+    "Riezlerstraße 2",
+    "83714 Miesbach"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4813946002116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09183": {
+   "name": "Jobcenter Mühldorf a.Inn",
+   "anschrift": [
+    "Postfach 1570",
+    "84447 Mühldorf a.Inn"
+   ],
+   "haus": [
+    "Am Kellerberg 11",
+    "84453 Mühldorf a.Inn"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4847501556116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09184": {
+   "name": "Jobcenter Landkreis München",
+   "anschrift": [
+    "Mariahilfplatz 17",
+    "81541 München"
+   ],
+   "haus": [
+    "Mariahilfplatz 17",
+    "81541 München"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4864279333116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09185": {
+   "name": "Jobcenter Neuburg-Schrobenhausen",
+   "anschrift": [
+    "Längenmühlweg 24",
+    "86633 Neuburg a.d.Donau"
+   ],
+   "haus": [
+    "Längenmühlweg 24",
+    "86633 Neuburg a.d.Donau"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4897834887116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09186": {
+   "name": "Jobcenter Landkreis Pfaffenhofen a.d. Ilm",
+   "anschrift": [
+    "Hauptplatz 39",
+    "85276 Pfaffenhofen a.d.Ilm"
+   ],
+   "haus": [
+    "Hauptplatz 39",
+    "85276 Pfaffenhofen a.d.Ilm"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/5082390434116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09187": {
+   "name": "Jobcenter Landkreis Rosenheim",
+   "anschrift": [
+    "Möslstr. 25",
+    "83024 Rosenheim"
+   ],
+   "haus": [
+    "Möslstr. 25",
+    "83024 Rosenheim"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/5183057096116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09188": {
+   "name": "Jobcenter Landkreis Starnberg",
+   "anschrift": [
+    "Moosstr. 5",
+    "82319 Starnberg"
+   ],
+   "haus": [
+    "Moosstr. 5",
+    "82319 Starnberg"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/5317279312116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09189": {
+   "name": "Jobcenter Traunstein",
+   "anschrift": [
+    "Postfach 1120",
+    "83261 Traunstein"
+   ],
+   "haus": [
+    "Chiemseestr. 35",
+    "83278 Traunstein"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/5384390420116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09190": {
+   "name": "Jobcenter Weilheim-Schongau",
+   "anschrift": [
+    "Postfach 1118",
+    "82360 Weilheim i.OB"
+   ],
+   "haus": [
+    "Karwendelstr. 1",
+    "82362 Weilheim i.OB"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/5434723751116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09261": {
+   "name": "Jobcenter Landshut Stadt",
+   "anschrift": [
+    "Leinfelderstr. 6",
+    "84034 Landshut"
+   ],
+   "haus": [
+    "Leinfelderstr. 6",
+    "84034 Landshut"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4730057117116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09262": {
+   "name": "Jobcenter Passau Stadt",
+   "anschrift": [
+    "Postfach 1131",
+    "94001 Passau"
+   ],
+   "haus": [
+    "Innstr. 30",
+    "94032 Passau"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/5065612657116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09263": {
+   "name": "Jobcenter Straubing-Bogen",
+   "anschrift": [
+    "Postfach 0116",
+    "94301 Straubing"
+   ],
+   "haus": [
+    "Elbinger Straße 8",
+    "94315 Straubing"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/5350834866116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09271": {
+   "name": "Jobcenter Deggendorf",
+   "anschrift": [
+    "94454 Deggendorf"
+   ],
+   "haus": [
+    "Hindenburgstr. 32",
+    "94469 Deggendorf"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4209946030116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09272": {
+   "name": "Jobcenter Freyung-Grafenau",
+   "anschrift": [
+    "Bahnhofstr. 3",
+    "94065 Waldkirchen"
+   ],
+   "haus": [
+    "Bahnhofstr. 3",
+    "94065 Waldkirchen"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4428057131116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09273": {
+   "name": "Jobcenter Landkreis Kelheim",
+   "anschrift": [
+    "Münchener Straße 2a",
+    "93326 Abensberg"
+   ],
+   "haus": [
+    "Münchener Straße 2a",
+    "93326 Abensberg"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4612612678116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09274": {
+   "name": "Jobcenter Landkreis Landshut",
+   "anschrift": [
+    "Josef-Neumeier-Allee 1",
+    "84051 Essenbach"
+   ],
+   "haus": [
+    "Josef-Neumeier-Allee 1",
+    "84051 Essenbach"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4713279340116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09275": {
+   "name": "Jobcenter Passau Land",
+   "anschrift": [
+    "Postfach 1131",
+    "94001 Passau"
+   ],
+   "haus": [
+    "Dr.-Hans-Kapfinger-Str 14c",
+    "94032 Passau"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/5048834880116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09276": {
+   "name": "Jobcenter Arberland",
+   "anschrift": [
+    "Industriestr. 2",
+    "94209 Regen"
+   ],
+   "haus": [
+    "Industriestr. 2",
+    "94209 Regen"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/5115945988116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09277": {
+   "name": "Jobcenter Landkreis Rottal-Inn",
+   "anschrift": [
+    "Postfach 1156",
+    "84341 Pfarrkirchen"
+   ],
+   "haus": [
+    "Ringstr. 23",
+    "84347 Pfarrkirchen"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/5233390427116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09278": {
+   "name": "Jobcenter Straubing-Bogen",
+   "anschrift": [
+    "Postfach 0116",
+    "94301 Straubing"
+   ],
+   "haus": [
+    "Elbinger Straße 8",
+    "94315 Straubing"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/5350834866116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09279": {
+   "name": "Jobcenter Landkreis Dingolfing-Landau",
+   "anschrift": [
+    "Aitrachstr. 7",
+    "84130 Dingolfing"
+   ],
+   "haus": [
+    "Aitrachstr. 7",
+    "84130 Dingolfing"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4243501584116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09361": {
+   "name": "Jobcenter für den Landkreis Amberg-Sulzbach und die Stadt Amberg",
+   "anschrift": [
+    "Jahnstr. 4",
+    "92224 Amberg"
+   ],
+   "haus": [
+    "Jahnstr. 4",
+    "92224 Amberg"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/3924723821116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09362": {
+   "name": "Jobcenter Stadt Regensburg",
+   "anschrift": [
+    "Im Gewerbepark D 83",
+    "93059 Regensburg"
+   ],
+   "haus": [
+    "Im Gewerbepark D 83",
+    "93059 Regensburg"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/5149501542116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09363": {
+   "name": "Jobcenter Weiden-Neustadt",
+   "anschrift": [
+    "Postfach 1151",
+    "92601 Weiden i.d.OPf."
+   ],
+   "haus": [
+    "Weigelstr. 24",
+    "92637 Weiden i.d.OPf."
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/5417945974116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09371": {
+   "name": "Jobcenter für den Landkreis Amberg-Sulzbach und die Stadt Amberg",
+   "anschrift": [
+    "Jahnstr. 4",
+    "92224 Amberg"
+   ],
+   "haus": [
+    "Jahnstr. 4",
+    "92224 Amberg"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/3924723821116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09372": {
+   "name": "Jobcenter im Landkreis Cham",
+   "anschrift": [
+    "Arbeitsamtstr. 8",
+    "93413 Cham"
+   ],
+   "haus": [
+    "Arbeitsamtstr. 8",
+    "93413 Cham"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4142834922116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09373": {
+   "name": "Jobcenter Landkreis Neumarkt i.d.Opf.",
+   "anschrift": [
+    "Dr.-Grundler-Straße 3",
+    "92318 Neumarkt i.d.OPf."
+   ],
+   "haus": [
+    "Dr.-Grundler-Straße 3",
+    "92318 Neumarkt i.d.OPf."
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4914612664116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09374": {
+   "name": "Jobcenter Weiden-Neustadt",
+   "anschrift": [
+    "Postfach 1151",
+    "92601 Weiden i.d.OPf."
+   ],
+   "haus": [
+    "Weigelstr. 24",
+    "92637 Weiden i.d.OPf."
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/5417945974116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09375": {
+   "name": "Jobcenter Landkreis Regensburg",
+   "anschrift": [
+    "Altmühlstr. 3",
+    "93059 Regensburg"
+   ],
+   "haus": [
+    "Altmühlstr. 3",
+    "93059 Regensburg"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/5132723765116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09376": {
+   "name": "Jobcenter im Landkreis Schwandorf",
+   "anschrift": [
+    "Wackersdorfer Str. 4",
+    "92421 Schwandorf"
+   ],
+   "haus": [
+    "Wackersdorfer Str. 4",
+    "92421 Schwandorf"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/5266945981116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09377": {
+   "name": "Jobcenter Tirschenreuth",
+   "anschrift": [
+    "Postfach 1145",
+    "95633 Tirschenreuth"
+   ],
+   "haus": [
+    "Kornbühlstr. 28",
+    "95643 Tirschenreuth"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/5367612643116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09461": {
+   "name": "Jobcenter Stadt Bamberg",
+   "anschrift": [
+    "Mannlehenweg 27",
+    "96050 Bamberg"
+   ],
+   "haus": [
+    "Mannlehenweg 27",
+    "96050 Bamberg"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4075723814116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09462": {
+   "name": "Jobcenter Bayreuth Stadt",
+   "anschrift": [
+    "Spinnereistraße 6 / 8",
+    "95445 Bayreuth"
+   ],
+   "haus": [
+    "Spinnereistraße 6 / 8",
+    "95445 Bayreuth"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4109279368116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09463": {
+   "name": "Jobcenter Coburg Stadt",
+   "anschrift": [
+    "Hinterer Floßanger 10",
+    "96450 Coburg"
+   ],
+   "haus": [
+    "Hinterer Floßanger 10",
+    "96450 Coburg"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4176390476116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09464": {
+   "name": "Jobcenter Hof Stadt",
+   "anschrift": [
+    "Postfach 3360",
+    "95003 Hof"
+   ],
+   "haus": [
+    "Äußere Bayreuther Str. 2",
+    "95032 Hof"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4562279347116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09471": {
+   "name": "Jobcenter Landkreis Bamberg",
+   "anschrift": [
+    "Mannlehenweg 27",
+    "96050 Bamberg"
+   ],
+   "haus": [
+    "Mannlehenweg 27",
+    "96050 Bamberg"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4058946037116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09472": {
+   "name": "Jobcenter Bayreuth Land",
+   "anschrift": [
+    "Casselmannstr. 6",
+    "95444 Bayreuth"
+   ],
+   "haus": [
+    "Casselmannstr. 6",
+    "95444 Bayreuth"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4092501591116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09473": {
+   "name": "Jobcenter Coburg Land",
+   "anschrift": [
+    "Wilhelm-Ruß-Straße 3",
+    "96450 Coburg"
+   ],
+   "haus": [
+    "Wilhelm-Ruß-Straße 3",
+    "96450 Coburg"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4159612699116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09474": {
+   "name": "Jobcenter Forchheim",
+   "anschrift": [
+    "Äußere Nürnberger Str. 1",
+    "91301 Forchheim"
+   ],
+   "haus": [
+    "Äußere Nürnberger Str. 1",
+    "91301 Forchheim"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4394501577116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09475": {
+   "name": "Jobcenter Hof Land",
+   "anschrift": [
+    "Postfach 3360",
+    "95003 Hof"
+   ],
+   "haus": [
+    "Äußere Bayreuther Str. 2",
+    "95032 Hof"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4545501570116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09476": {
+   "name": "Jobcenter Landkreis Kronach",
+   "anschrift": [
+    "Langer Steig 10",
+    "96317 Kronach"
+   ],
+   "haus": [
+    "Langer Steig 10",
+    "96317 Kronach"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4662946009116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09477": {
+   "name": "Jobcenter Kulmbach",
+   "anschrift": [
+    "Fritz-Hornschuch-Str. 9",
+    "95326 Kulmbach"
+   ],
+   "haus": [
+    "Fritz-Hornschuch-Str. 9",
+    "95326 Kulmbach"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4679723786116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09478": {
+   "name": "Jobcenter Landkreis Lichtenfels",
+   "anschrift": [
+    "Conrad-Wagner-Straße 2",
+    "96215 Lichtenfels"
+   ],
+   "haus": [
+    "Conrad-Wagner-Straße 2",
+    "96215 Lichtenfels"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4746834894116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09479": {
+   "name": "Jobcenter Fichtelgebirge",
+   "anschrift": [
+    "Postfach 148",
+    "95601 Marktredwitz"
+   ],
+   "haus": [
+    "Fabrikstr. 4",
+    "95615 Marktredwitz"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/5485057082116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09561": {
+   "name": "Jobcenter Stadt Ansbach",
+   "anschrift": [
+    "Schalkhäuser Str. 40",
+    "91522 Ansbach"
+   ],
+   "haus": [
+    "Schalkhäuser Str. 40",
+    "91522 Ansbach"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/3958279375116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09562": {
+   "name": "Erlanger Jobcenter",
+   "anschrift": [
+    "Rathausplatz 1",
+    "91052 Erlangen"
+   ],
+   "haus": [
+    "Rathausplatz 1",
+    "91052 Erlangen"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/485192809634/adressen",
+   "stand": "6.11.2026"
+  },
+  "09563": {
+   "name": "Jobcenter Fürth Stadt",
+   "anschrift": [
+    "Kurgartenstr. 37",
+    "90762 Fürth"
+   ],
+   "haus": [
+    "Kurgartenstr. 37",
+    "90762 Fürth"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4478390462116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09564": {
+   "name": "Jobcenter Nürnberg-Stadt",
+   "anschrift": [
+    "Postfach 1757",
+    "90006 Nürnberg"
+   ],
+   "haus": [
+    "Richard-Wagner-Platz 5",
+    "90443 Nürnberg"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4964945995116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09565": {
+   "name": "Jobcenter Schwabach",
+   "anschrift": [
+    "Postfach 1160",
+    "91101 Schwabach"
+   ],
+   "haus": [
+    "Nördlingerstr. 3",
+    "91126 Schwabach"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/5250168204116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09571": {
+   "name": "Jobcenter Landkreis Ansbach",
+   "anschrift": [
+    "Crailsheimstr. 1",
+    "91522 Ansbach"
+   ],
+   "haus": [
+    "Crailsheimstr. 1",
+    "91522 Ansbach"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/850435458193/adressen",
+   "stand": "6.11.2026"
+  },
+  "09572": {
+   "name": "Jobcenter Erlangen-Höchstadt",
+   "anschrift": [
+    "Postfach 1149",
+    "91052 Erlangen"
+   ],
+   "haus": [
+    "Karl-Zucker-Str. 12",
+    "91052 Erlangen"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4344168246116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09573": {
+   "name": "Jobcenter Fürth Land",
+   "anschrift": [
+    "Postfach 1152",
+    "90701 Fürth"
+   ],
+   "haus": [
+    "Stresemannplatz 5",
+    "90763 Fürth"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4461612685116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09574": {
+   "name": "Jobcenter Nürnberger Land",
+   "anschrift": [
+    "91192 Lauf a.d.Pegnitz"
+   ],
+   "haus": [
+    "Hersbrucker Straße 52c",
+    "91207 Lauf a.d.Pegnitz"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4981723772116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09575": {
+   "name": "Jobcenter Landkreis Neustadt a.d.Aisch - Bad Windsheim",
+   "anschrift": [
+    "Postfach 680",
+    "91401 Neustadt a.d.Aisch"
+   ],
+   "haus": [
+    "Hans-Böckler-Str. 3",
+    "91413 Neustadt a.d.Aisch"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4931390441116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09576": {
+   "name": "Jobcenter Roth",
+   "anschrift": [
+    "Hilpoltsteiner Str. 30a",
+    "91154 Roth"
+   ],
+   "haus": [
+    "Hilpoltsteiner Str. 30a",
+    "91154 Roth"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/5216612650116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09577": {
+   "name": "Jobcenter Weißenburg-Gunzenhausen",
+   "anschrift": [
+    "Postfach 109",
+    "91780 Weißenburg i.Bay."
+   ],
+   "haus": [
+    "Schwärzgasse 1",
+    "91781 Weißenburg i.Bay."
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/5451501528116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09661": {
+   "name": "Jobcenter Stadt Aschaffenburg",
+   "anschrift": [
+    "Auhofstr. 2",
+    "63741 Aschaffenburg"
+   ],
+   "haus": [
+    "Auhofstr. 2",
+    "63741 Aschaffenburg"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/3991834929116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09662": {
+   "name": "Jobcenter der Stadt Schweinfurt",
+   "anschrift": [
+    "Lange Zehntstraße 17",
+    "97421 Schweinfurt"
+   ],
+   "haus": [
+    "Lange Zehntstraße 17",
+    "97421 Schweinfurt"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/5300501535116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09663": {
+   "name": "Jobcenter Stadt Würzburg",
+   "anschrift": [
+    "Bahnhofstr. 7",
+    "97070 Würzburg"
+   ],
+   "haus": [
+    "Bahnhofstr. 7",
+    "97070 Würzburg"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/5518612636116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09671": {
+   "name": "Jobcenter Landkreis Aschaffenburg",
+   "anschrift": [
+    "Lange Straße 17",
+    "63741 Aschaffenburg"
+   ],
+   "haus": [
+    "Lange Straße 17",
+    "63741 Aschaffenburg"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/3975057152116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09672": {
+   "name": "Jobcenter im Landkreis Bad Kissingen",
+   "anschrift": [
+    "Columbiastr. 10",
+    "97688 Bad Kissingen"
+   ],
+   "haus": [
+    "Columbiastr. 10",
+    "97688 Bad Kissingen"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4042168260116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09673": {
+   "name": "Jobcenter im Landkreis Rhön-Grabfeld",
+   "anschrift": [
+    "Hedwig-Fichtel-Straße 2",
+    "97616 Bad Neustadt a.d.Saale"
+   ],
+   "haus": [
+    "Hedwig-Fichtel-Straße 2",
+    "97616 Bad Neustadt a.d.Saale"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/5166279319116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09674": {
+   "name": "Jobcenter im Landkreis Haßberge",
+   "anschrift": [
+    "Promenade 17",
+    "97437 Haßfurt"
+   ],
+   "haus": [
+    "Promenade 17",
+    "97437 Haßfurt"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4528723793116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09675": {
+   "name": "Jobcenter Kitzingen",
+   "anschrift": [
+    "conneKT14",
+    "97318 Kitzingen"
+   ],
+   "haus": [
+    "conneKT14",
+    "97318 Kitzingen"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4646168232116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09676": {
+   "name": "Jobcenter Landkreis Miltenberg",
+   "anschrift": [
+    "Bauscherweg 6",
+    "63897 Miltenberg"
+   ],
+   "haus": [
+    "Bauscherweg 6",
+    "63897 Miltenberg"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4830723779116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09677": {
+   "name": "Jobcenter Main-Spessart",
+   "anschrift": [
+    "Würzburger Straße 11",
+    "97753 Karlstadt"
+   ],
+   "haus": [
+    "Würzburger Straße 11",
+    "97753 Karlstadt"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4780390448116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09678": {
+   "name": "Jobcenter im Landkreis Schweinfurt",
+   "anschrift": [
+    "Kornacherstraße 6",
+    "97421 Schweinfurt"
+   ],
+   "haus": [
+    "Kornacherstraße 6",
+    "97421 Schweinfurt"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/5283723758116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09679": {
+   "name": "Landratsamt Würzburg, Geschäftsbereich 4 - Arbeit und Soziale Angelegenheiten (Jobcenter)",
+   "anschrift": [
+    "97067 Würzburg"
+   ],
+   "haus": [
+    "Zeppelinstraße 15",
+    "97074 Würzburg"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/6177395019106/adressen",
+   "stand": "6.11.2026"
+  },
+  "09761": {
+   "name": "Jobcenter Augsburg-Stadt",
+   "anschrift": [
+    "August-Wessels-Str. 31 u. 35",
+    "86156 Augsburg"
+   ],
+   "haus": [
+    "August-Wessels-Str. 31 u. 35",
+    "86156 Augsburg"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4025390483116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09762": {
+   "name": "Jobcenter Kaufbeuren",
+   "anschrift": [
+    "Gewerbestraße 46",
+    "87600 Kaufbeuren"
+   ],
+   "haus": [
+    "Gewerbestraße 46",
+    "87600 Kaufbeuren"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/0383278150119/adressen",
+   "stand": "6.11.2026"
+  },
+  "09763": {
+   "name": "Jobcenter Kempten (Allgäu)",
+   "anschrift": [
+    "Keselstraße 14 a",
+    "87435 Kempten (Allgäu)"
+   ],
+   "haus": [
+    "Keselstraße 14 a",
+    "87435 Kempten (Allgäu)"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4629390455116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09764": {
+   "name": "Jobcenter Memmingen",
+   "anschrift": [
+    "Lindentorstr. 22",
+    "87700 Memmingen"
+   ],
+   "haus": [
+    "Lindentorstr. 22",
+    "87700 Memmingen"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4797168225116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09771": {
+   "name": "Jobcenter Wittelsbacher Land",
+   "anschrift": [
+    "Hauptstr. 2",
+    "86551 Aichach"
+   ],
+   "haus": [
+    "Hauptstr. 2",
+    "86551 Aichach"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/5468279305116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09772": {
+   "name": "Jobcenter Augsburg Land",
+   "anschrift": [
+    "Hermanstr. 11",
+    "86150 Augsburg"
+   ],
+   "haus": [
+    "Hermanstr. 11",
+    "86150 Augsburg"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4008612706116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09773": {
+   "name": "Jobcenter Dillingen a.d.Donau",
+   "anschrift": [
+    "89401 Dillingen a.d.Donau"
+   ],
+   "haus": [
+    "Rosenstr. 4",
+    "89407 Dillingen a.d.Donau"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4226723807116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09774": {
+   "name": "Kommunales Jobcenter Günzburg",
+   "anschrift": [
+    "Postfach 200157",
+    "89308 Günzburg"
+   ],
+   "haus": [
+    "An der Kapuzinermauer 1",
+    "89312 Günzburg"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4511946016116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09775": {
+   "name": "Jobcenter Neu-Ulm",
+   "anschrift": [
+    "Albrecht-Berblinger-Str. 6",
+    "89231 Neu-Ulm"
+   ],
+   "haus": [
+    "Albrecht-Berblinger-Str. 6",
+    "89231 Neu-Ulm"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4948168218116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09776": {
+   "name": "Jobcenter Landkreis Lindau (Bodensee)",
+   "anschrift": [
+    "Bregenzer Str. 35",
+    "88131 Lindau (Bodensee)"
+   ],
+   "haus": [
+    "Bregenzer Str. 35",
+    "88131 Lindau (Bodensee)"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4763612671116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09777": {
+   "name": "Jobcenter Ostallgäu",
+   "anschrift": [
+    "Iglauer Str. 3",
+    "87616 Marktoberdorf"
+   ],
+   "haus": [
+    "Iglauer Str. 3",
+    "87616 Marktoberdorf"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/5032057103116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09778": {
+   "name": "Jobcenter Unterallgäu",
+   "anschrift": [
+    "Postfach 1160",
+    "87711 Mindelheim"
+   ],
+   "haus": [
+    "Bahnhofstr. 6",
+    "87719 Mindelheim"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/5401168197116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09779": {
+   "name": "Jobcenter Donau-Ries",
+   "anschrift": [
+    "86607 Donauwörth"
+   ],
+   "haus": [
+    "Zirgesheimer Str. 9",
+    "86609 Donauwörth"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/4260279361116/adressen",
+   "stand": "6.11.2026"
+  },
+  "09780": {
+   "name": "Jobcenter Oberallgäu",
+   "anschrift": [
+    "Oberallgäuer Platz 2",
+    "87527 Sonthofen"
+   ],
+   "haus": [
+    "Oberallgäuer Platz 2",
+    "87527 Sonthofen"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/9058278675117/adressen",
+   "stand": "6.11.2026"
+  }
+ },
+ "fkZuordnung": {
+  "09161": "sued",
+  "09162": "sued",
+  "09163": "sued",
+  "09171": "sued",
+  "09172": "sued",
+  "09173": "sued",
+  "09174": "sued",
+  "09175": "sued",
+  "09176": "sued",
+  "09177": "sued",
+  "09178": "sued",
+  "09179": "sued",
+  "09180": "sued",
+  "09181": "sued",
+  "09182": "sued",
+  "09183": "sued",
+  "09184": "sued",
+  "09185": "sued",
+  "09186": "sued",
+  "09187": "sued",
+  "09188": "sued",
+  "09189": "sued",
+  "09190": "sued",
+  "09261": "sued",
+  "09262": "sued",
+  "09263": "sued",
+  "09271": "sued",
+  "09272": "sued",
+  "09273": "sued",
+  "09274": "sued",
+  "09275": "sued",
+  "09276": "sued",
+  "09277": "sued",
+  "09278": "sued",
+  "09279": "sued",
+  "09362": "sued",
+  "09373": "sued",
+  "09375": "sued",
+  "09461": "nord",
+  "09462": "nord",
+  "09463": "nord",
+  "09464": "nord",
+  "09471": "nord",
+  "09472": "nord",
+  "09473": "nord",
+  "09474": "nord",
+  "09475": "nord",
+  "09476": "nord",
+  "09477": "nord",
+  "09478": "nord",
+  "09479": "nord",
+  "09561": "nord",
+  "09562": "nord",
+  "09563": "nord",
+  "09564": "nord",
+  "09565": "nord",
+  "09571": "nord",
+  "09572": "nord",
+  "09573": "nord",
+  "09574": "nord",
+  "09575": "nord",
+  "09576": "nord",
+  "09577": "nord",
+  "09661": "nord",
+  "09662": "nord",
+  "09663": "nord",
+  "09671": "nord",
+  "09672": "nord",
+  "09673": "nord",
+  "09674": "nord",
+  "09675": "nord",
+  "09676": "nord",
+  "09677": "nord",
+  "09678": "nord",
+  "09679": "nord",
+  "09761": "sued",
+  "09762": "sued",
+  "09763": "sued",
+  "09764": "sued",
+  "09771": "sued",
+  "09772": "sued",
+  "09773": "nord",
+  "09774": "sued",
+  "09775": "sued",
+  "09776": "sued",
+  "09777": "sued",
+  "09778": "sued",
+  "09779": "nord",
+  "09780": "sued"
+ },
+ "familienkasse": {
+  "nord": {
+   "name": "Familienkasse Bayern Nord",
+   "anschrift": [
+    "90316 Nürnberg"
+   ],
+   "haus": [
+    "Solgerstraße 1",
+    "90429 Nürnberg"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/5652834852116/adressen",
+   "stand": "6.11.2026"
+  },
+  "sued": {
+   "name": "Familienkasse Bayern Süd",
+   "anschrift": [
+    "93013 Regensburg"
+   ],
+   "haus": [
+    "Galgenbergstr. 24",
+    "93053 Regensburg"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/5703168183116/adressen",
+   "stand": "6.11.2026"
+  }
+ },
+ "bezirke": {
+  "091": {
+   "name": "Bezirk Oberbayern",
+   "anschrift": [
+    "80535 München"
+   ],
+   "haus": [
+    "Prinzregentenstr. 14",
+    "80538 München"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/37887107384/adressen",
+   "stand": "6.11.2026"
+  },
+  "092": {
+   "name": "Bezirk Niederbayern",
+   "anschrift": [
+    "84023 Landshut"
+   ],
+   "haus": [
+    "Maximilianstraße 15",
+    "84028 Landshut"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/54664884384/adressen",
+   "stand": "6.11.2026"
+  },
+  "093": {
+   "name": "Bezirk Oberpfalz",
+   "anschrift": [
+    "Am Schlosshof 1",
+    "93087 Alteglofsheim"
+   ],
+   "haus": [
+    "Am Schlosshof 1",
+    "93087 Alteglofsheim"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/71442661384/adressen",
+   "stand": "6.11.2026"
+  },
+  "094": {
+   "name": "Bezirk Oberfranken",
+   "anschrift": [
+    "Postfach 101152",
+    "95411 Bayreuth"
+   ],
+   "haus": [
+    "Cottenbacher Straße 23",
+    "95445 Bayreuth"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/88220438384/adressen",
+   "stand": "6.11.2026"
+  },
+  "095": {
+   "name": "Bezirk Mittelfranken",
+   "anschrift": [
+    "Postfach 617",
+    "91511 Ansbach"
+   ],
+   "haus": [
+    "Danziger Str. 5",
+    "91522 Ansbach"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/04998215385/adressen",
+   "stand": "6.11.2026"
+  },
+  "096": {
+   "name": "Bezirk Unterfranken",
+   "anschrift": [
+    "Balthasar-Neumann-Platz 1",
+    "97440 Werneck"
+   ],
+   "haus": [
+    "Balthasar-Neumann-Platz 1",
+    "97440 Werneck"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/21775992385/adressen",
+   "stand": "6.11.2026"
+  },
+  "097": {
+   "name": "Bezirk Schwaben",
+   "anschrift": [
+    "Mindelheimer Straße 47",
+    "86381 Krumbach (Schwaben)"
+   ],
+   "haus": [
+    "Mindelheimer Straße 47",
+    "86381 Krumbach (Schwaben)"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/38553769385/adressen",
+   "stand": "6.11.2026"
+  }
+ },
+ "zbfs": {
+  "091": {
+   "name": "Zentrum Bayern Familie und Soziales, Region Oberbayern",
+   "anschrift": [
+    "Postfach 200124",
+    "80001 München"
+   ],
+   "haus": [
+    "Richelstr. 17",
+    "80634 München"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/30776279323/adressen",
+   "stand": "6.11.2026"
+  },
+  "092": {
+   "name": "Zentrum Bayern Familie und Soziales, Region Niederbayern",
+   "anschrift": [
+    "84026 Landshut"
+   ],
+   "haus": [
+    "Friedhofstr. 7",
+    "84028 Landshut"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/80442948322/adressen",
+   "stand": "6.11.2026"
+  },
+  "093": {
+   "name": "Zentrum Bayern Familie und Soziales, Region Oberpfalz",
+   "anschrift": [
+    "Landshuter Str. 55",
+    "93053 Regensburg"
+   ],
+   "haus": [
+    "Landshuter Str. 55",
+    "93053 Regensburg"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/14665164324/adressen",
+   "stand": "6.11.2026"
+  },
+  "094": {
+   "name": "Zentrum Bayern Familie und Soziales, Region Oberfranken",
+   "anschrift": [
+    "95440 Bayreuth"
+   ],
+   "haus": [
+    "Hegelstr. 2",
+    "95447 Bayreuth"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/63665171322/adressen",
+   "stand": "6.11.2026"
+  },
+  "095": {
+   "name": "Zentrum Bayern Familie und Soziales, Region Mittelfranken",
+   "anschrift": [
+    "90336 Nürnberg"
+   ],
+   "haus": [
+    "Roonstraße 22",
+    "90429 Nürnberg"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/97887387323/adressen",
+   "stand": "6.11.2026"
+  },
+  "096": {
+   "name": "Zentrum Bayern Familie und Soziales, Region Unterfranken",
+   "anschrift": [
+    "Postfach 5309",
+    "97003 Würzburg"
+   ],
+   "haus": [
+    "Georg-Eydel-Str. 13",
+    "97082 Würzburg"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/31442941324/adressen",
+   "stand": "6.11.2026"
+  },
+  "097": {
+   "name": "Zentrum Bayern Familie und Soziales, Region Schwaben",
+   "anschrift": [
+    "86135 Augsburg"
+   ],
+   "haus": [
+    "Morellstr. 30",
+    "86159 Augsburg"
+   ],
+   "quelle": "https://www.bayernportal.de/dokumente/behoerde/30109617322/adressen",
+   "stand": "6.11.2026"
   }
  },
  "fest": {

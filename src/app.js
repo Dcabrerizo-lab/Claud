@@ -143,15 +143,19 @@
   }
   // Zuständige Stelle als HTML für die Karte
   function zustHtml(r) {
-    var b = Behoerden.available() ? Behoerden.fuer(r.id, aktAgs()) : null;
+    var ags = aktAgs();
+    var b = Behoerden.available() ? Behoerden.fuer(r.id, ags) : null;
     var base = '<p class="zust">' + esc(t('zust', { z: t('zu.' + r.id) })) + '</p>';
     if (!b) {
-      // Hinweis auf die PLZ nur, wo die App eine Anschrift nennen könnte (Bayern oder Bundesland noch offen)
-      var hint = Behoerden.available() && Behoerden.brauchtKreis(r.id) && r.level !== 'nein' && (!state.bundesland || state.bundesland === 'BY');
+      // Hinweis auf die PLZ nur, solange der Wohnort fehlt und die App dort eine Anschrift nennen könnte (Bayern oder Land offen)
+      var hint = !ags && Behoerden.available() && Behoerden.brauchtKreis(r.id) && r.level !== 'nein' && (!state.bundesland || state.bundesland === 'BY');
       return base + (hint ? '<p class="small">' + esc(t('beh.plzHint')) + '</p>' : '');
     }
     var lines = [b.name + (b.abt ? ', ' + b.abt : '')].concat(b.anschrift || []);
-    return '<div class="zust behoerde" lang="de" dir="ltr"><p><strong>' + esc(t('beh.stelle')) + '</strong></p><address>' + lines.map(esc).join('<br>') + '</address>' +
+    // Eingliederungshilfe: Der allgemeine Satz (bei seelischer Behinderung von Kindern das Jugendamt) bleibt sichtbar
+    return (r.id === 'eingl' ? base : '') +
+      '<div class="zust behoerde" lang="de" dir="ltr"><p><strong>' + esc(t('beh.stelle')) + '</strong></p><address>' + lines.map(esc).join('<br>') + '</address>' +
+      (b.haus ? '<p class="small"><bdi>' + esc(t('beh.besuch')) + '</bdi> ' + esc(b.haus.join(', ')) + '</p>' : '') +
       (b.web ? '<p><a href="' + esc(b.web) + '" target="_blank" rel="noopener">' + esc(t('beh.web')) + '</a></p>' : '') + '</div>' +
       '<p class="small">' + esc(b.anschrift ? t('beh.pruefen', { stand: b.stand }) : t('beh.ohneAdr')) + '</p>';
   }

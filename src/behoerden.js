@@ -36,7 +36,10 @@ const Behoerden = (function () {
   };
 
   function stelle(e, abt) {
-    return e ? { name: e.name, abt: abt || e.abt || '', anschrift: e.anschrift || null, web: e.web || '', quelle: e.quelle || '', stand: e.stand || '' } : null;
+    if (!e) return null;
+    // anschrift: für Briefe (Postanschrift, wenn vorhanden); haus: Hausanschrift für Besuche, nur wenn sie abweicht
+    var haus = e.haus && e.anschrift && e.haus.join('|') !== e.anschrift.join('|') ? e.haus : null;
+    return { name: e.name, abt: abt || e.abt || '', anschrift: e.anschrift || null, haus: haus, web: e.web || '', quelle: e.quelle || '', stand: e.stand || '' };
   }
 
   // Ergebnis: { name, abt, anschrift: [Zeilen] | null, web, quelle, stand } oder null (keine Angabe, unbekannter Ort oder nicht Bayern)

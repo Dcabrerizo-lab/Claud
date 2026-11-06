@@ -89,7 +89,7 @@ const MOCK = () => {
   await p.click('#mappeMake'); ok('Mappe öffnet', await p.isVisible('#mappe'));
   const brief = await p.inputValue('#mappeText');
   ok('Anschreiben Wohngeld: Empfänger mit Anschrift', /Landratsamt Erlangen-Höchstadt\nWohngeldstelle\nNägelsbachstraße 1\n91052 Erlangen/.test(brief), brief.slice(0, 300));
-  ok('Anschreiben Kindergeld: ohne Verzeichnis bleibt die allgemeine Stelle', /An die\nFamilienkasse/.test(brief));
+  ok('Anschreiben Kindergeld: Familienkasse Bayern Nord, Postanschrift', /Familienkasse Bayern Nord\n90316 Nürnberg/.test(brief), brief.slice(0, 300));
   ok('PDF-Knopf statt Drucken, Teilen sichtbar', (await p.textContent('#mappePrint')).includes('PDF') && (await p.isVisible('#mappeShare')));
   await p.click('#mappeShare');
   ok('Teilen übergibt die Mappe als Text', (await calls('Share.share')).some((o) => /Maria Muster/.test(o.text || '')));

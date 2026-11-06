@@ -479,7 +479,8 @@
   "plz.alt": "Localitatea ta poate aparține unei comune mai mari, cu altă treaptă de chirie. Dacă da, alege-o aici.",
   "beh.stelle": "Autoritatea competentă pentru localitatea ta:",
   "beh.web": "Site-ul instituției",
-  "beh.pruefen": "Adresa este preluată din pagina de impressum a instituției ({stand}). Verifică înainte de trimitere, instituțiile se mută uneori.",
+  "beh.pruefen": "Adresa provine din date oficiale (pagina de impressum a instituției sau BayernPortal, preluată la {stand}). Verifică înainte de trimitere, instituțiile se mută uneori.",
   "beh.ohneAdr": "Adresa o găsești pe site-ul instituției.",
-  "beh.plzHint": "Introdu mai sus codul poștal și aplicația îți arată autoritatea competentă cu adresa (deocamdată pentru Bavaria)."
+  "beh.plzHint": "Introdu mai sus codul poștal și aplicația îți arată autoritatea competentă cu adresa (deocamdată pentru Bavaria).",
+  "beh.besuch": "Adresa pentru vizite:"
 }
