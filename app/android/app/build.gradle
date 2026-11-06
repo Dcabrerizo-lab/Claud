@@ -20,6 +20,14 @@ android {
     // Signieren für den Play Store: Schlüssel nur über Umgebungsvariablen (GitHub-Secrets), nie im Repo.
     // Ohne ANDROID_KEYSTORE_FILE wird ein unsigniertes Release gebaut.
     signingConfigs {
+        // Fester Test-Schlüssel (app/android/debug.keystore, Passwort "android"): Jede Test-Version aus der CI hat dieselbe
+        // Signatur, neue Versionen lassen sich über alte installieren. Nur für Debug-Builds, nie für den Play Store.
+        debug {
+            storeFile rootProject.file('debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
         release {
             def ks = System.getenv('ANDROID_KEYSTORE_FILE')
             if (ks) {
@@ -31,6 +39,9 @@ android {
         }
     }
     buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
         release {
             if (System.getenv('ANDROID_KEYSTORE_FILE')) signingConfig signingConfigs.release
             minifyEnabled false

@@ -5,5 +5,7 @@ app/android/app/build/
 app/android/.gradle/
 app/ios/App/Pods/
 *.keystore
+# Ausnahme: fester Test-Schlüssel für Debug-Builds (öffentlich, nur für Tests; der Play-Store-Schlüssel kommt nie ins Repo)
+!app/android/debug.keystore
 *.jks
 .DS_Store
