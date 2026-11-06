@@ -464,3 +464,14 @@ bp-jc-9058278675117.html        https://www.bayernportal.de/dokumente/behoerde/9
 bp-jc-0383278150119.html        https://www.bayernportal.de/dokumente/behoerde/0383278150119/adressen
 # BayernPortal: Familienkasse Bayern Süd, Standort Regensburg (Postanschrift)
 bp-fk-sued.html                 https://www.bayernportal.de/dokumente/behoerde/5703168183116/adressen
+
+# BayernPortal: Anschriften der Landratsämter/Städte, deren Impressum nicht abrufbar war
+bp-lra-09175.html               https://www.bayernportal.de/dokumente/behoerde/33109246402/adressen
+bp-lra-09375.html               https://www.bayernportal.de/dokumente/behoerde/49109134426/adressen
+bp-lra-09464.html               https://www.bayernportal.de/dokumente/behoerde/73442647387/adressen
+bp-lra-09474.html               https://www.bayernportal.de/dokumente/behoerde/18331455405/adressen
+bp-lra-09573.html               https://www.bayernportal.de/dokumente/behoerde/02887002407/adressen
+bp-lra-09672.html               https://www.bayernportal.de/dokumente/behoerde/44553727394/adressen
+# BayernPortal: kommunales Jobcenter Landkreis Würzburg; Familienkasse Bayern Nord (Standort Nürnberg)
+bp-jc-6177395019106.html        https://www.bayernportal.de/dokumente/behoerde/6177395019106/adressen
+bp-fk-nord.html                 https://www.bayernportal.de/dokumente/behoerde/5652834852116/adressen

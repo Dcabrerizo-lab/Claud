@@ -41,8 +41,8 @@ jobs:
               name, url = line.split(None, 1)
               f = out / name
               e0 = alt.get(name)
-              # Schon vorhanden und unverändert: nicht neu laden (außer "alle")
-              if not alle and e0 and e0.get("ok") and e0.get("url") == url and f.exists():
+              # Schon abgerufen (erfolgreich oder gescheitert) und URL unverändert: nicht erneut laden (außer "alle")
+              if not alle and e0 and e0.get("url") == url and (f.exists() or not e0.get("ok")):
                   log.append(e0); continue
               r = subprocess.run(["curl", "-sSL", "-A", ua, "--retry", "2", "--connect-timeout", "20", "--max-time", "90",
                                   "-o", str(f), "-w", "%{http_code}", url], capture_output=True, text=True)

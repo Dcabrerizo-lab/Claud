@@ -182,7 +182,11 @@ function bpStelle(datei, name) {
   return { name: name || a.titel, anschrift: a.post && a.post.length ? a.post : a.haus, haus: a.haus, quelle: urlVon(datei) || l.url, stand: deDatum(l.abgerufen) };
 }
 
-const jobcenter = {}, fkZuordnung = {}, lraBp = {};
+const jobcenter = {}, fkZuordnung = {}, lraBp = {}, fkUnklar = [];
+// Amtliche Liste aller Jobcenter in Bayern (gemeinsame Einrichtungen und zugelassene kommunale Träger)
+const JC_ALLE = bp.verweise(R('bp-jc-alle.html'));
+const jcId = {}; JC_ALLE.forEach((x) => { jcId[x.id] = x.name; });
+const jcNachName = {}; JC_ALLE.forEach((x) => { jcNachName[x.name] = x.id; });
 plz.kreise.forEach((k) => {
   const ags = k.ags, rb = ags.slice(0, 3), datei = 'bp-gem-' + ags + '.html';
   if (!ok(datei)) { fehler.push(ags + ': Zuständigkeitsseite fehlt (' + datei + ')'); return; }
@@ -197,15 +201,24 @@ plz.kreise.forEach((k) => {
     const st = v.filter((x) => /^(Stadt|Landeshauptstadt|Große Kreisstadt) /.test(x.name) && norm(x.name).endsWith(norm(kreise[ags].name.replace(/^(Stadt|Landeshauptstadt) /, ''))));
     if (st.length) lraBp[ags] = st[0].id;
   }
-  const jc = v.filter((x) => /Jobcenter/.test(x.name));
-  if (jc.length !== 1) { fehler.push(ags + ': nicht genau ein Jobcenter: ' + jc.map((x) => x.name).join(', ')); }
-  else {
-    const s = bpStelle('bp-jc-' + jc[0].id + '.html', jc[0].name);
-    if (s) jobcenter[ags] = s; else fehler.push(ags + ': Anschrift des ' + jc[0].name + ' fehlt (bp-jc-' + jc[0].id + '.html)');
+  // Jobcenter: Eintrag aus der amtlichen Jobcenter-Liste; nennt die Seite nur eine Geschäftsstelle, gilt deren Hauptstelle
+  let jc = [...new Set(v.filter((x) => jcId[x.id]).map((x) => x.id))];
+  if (!jc.length) {
+    jc = [...new Set(v.filter((x) => / Geschäftsstelle /.test(x.name)).map((x) => jcNachName[x.name.replace(/ Geschäftsstelle .*$/, '')]).filter(Boolean))];
   }
+  if (jc.length !== 1) { fehler.push(ags + ': nicht genau ein Jobcenter: ' + v.filter((x) => /Jobcenter|Geschäftsbereich/.test(x.name)).map((x) => x.name).join(', ')); }
+  else {
+    const n = jcId[jc[0]];
+    // Kommunales Jobcenter ohne "Jobcenter" im Namen (z. B. Geschäftsbereich eines Landratsamts): Behörde voranstellen
+    const name = /Jobcenter/.test(n) ? n : kreise[ags].name + ', ' + n + ' (Jobcenter)';
+    const s = bpStelle('bp-jc-' + jc[0] + '.html', name);
+    if (s) jobcenter[ags] = s; else fehler.push(ags + ': Anschrift von ' + n + ' fehlt (bp-jc-' + jc[0] + '.html)');
+  }
+  // Familienkasse: Nord oder Süd. Nennt die Seite beide (nördliche Oberpfalz), bleibt es offen: keine geratene Zuordnung.
   const fk = [...new Set(v.filter((x) => /^Familienkasse Bayern (Nord|Süd)/.test(x.name)).map((x) => (/Nord/.test(x.name) ? 'nord' : 'sued')))];
-  if (fk.length !== 1) fehler.push(ags + ': Familienkasse nicht eindeutig: ' + fk.join(', '));
-  else fkZuordnung[ags] = fk[0];
+  if (fk.length === 1) fkZuordnung[ags] = fk[0];
+  else if (fk.length === 2) fkUnklar.push(ags);
+  else fehler.push(ags + ': keine Familienkasse auf der Zuständigkeitsseite');
 });
 
 // Bezirke (überörtliche Träger der Eingliederungshilfe) und ZBFS-Regionalstellen je Regierungsbezirk
@@ -233,7 +246,7 @@ OHNE_ANSCHRIFT.forEach((ags) => {
 
 if (fehler.length) { console.error('Fehler:\n  ' + fehler.join('\n  ')); process.exit(1); }
 // IDs für weitere Abrufe (Familienkasse Nord, fehlende Landratsämter) ausgeben, falls Quellen fehlen
-if (process.env.ZEIGE_IDS) console.log(JSON.stringify({ lraBp }));
+if (process.env.ZEIGE_IDS) console.log(JSON.stringify({ lraBp: OHNE_ANSCHRIFT.map((a) => [a, lraBp[a]]), fkUnklar }));
 
 const data = {
   stand: 'Anschriften laut Impressum der Behörden, abgerufen ' + deDatum([...new Set(abruf.filter((x) => /^(impressum|start)/.test(x.datei) && x.ok).map((x) => x.abgerufen))].sort().pop()),
