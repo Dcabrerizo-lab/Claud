@@ -3922,5 +3922,77 @@
   "bytes": 67350,
   "sha256": "bd75af2a4f2b14b09143e66cb242557772235e79fae4082e2dbb66b84be15841",
   "abgerufen": "2026-11-06T00:16:50Z"
+ },
+ {
+  "datei": "bp-lra-09175.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/33109246402/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 119590,
+  "sha256": "8fc079803f0d2bba79d4c372ad28d7b7f0d848488ef32d93c18e9add9d8181f7",
+  "abgerufen": "2026-11-06T00:31:01Z"
+ },
+ {
+  "datei": "bp-lra-09375.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/49109134426/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 138304,
+  "sha256": "cba36c5b4c0a0326615ba08dde25c6da3a0376a3f54b6744231c05827b6b66c2",
+  "abgerufen": "2026-11-06T00:31:02Z"
+ },
+ {
+  "datei": "bp-lra-09464.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/73442647387/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 500229,
+  "sha256": "6963d5d222c3417c946d71c75ddd3c28e9cfb196c8f2d81942aa4acf315748f7",
+  "abgerufen": "2026-11-06T00:31:03Z"
+ },
+ {
+  "datei": "bp-lra-09474.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/18331455405/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 230569,
+  "sha256": "e1e36340e05c693a347e2a394db22dbaf9fabd9699122d527d1ddb24eec900ad",
+  "abgerufen": "2026-11-06T00:31:04Z"
+ },
+ {
+  "datei": "bp-lra-09573.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/02887002407/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 180460,
+  "sha256": "52c15ac42f1e7eb608a2e2b41768244faebe7e659bf63f83e427a4de3709e677",
+  "abgerufen": "2026-11-06T00:31:05Z"
+ },
+ {
+  "datei": "bp-lra-09672.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/44553727394/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 167738,
+  "sha256": "fad7e76ee6611c9670324f4d3acb1159af286bd5bbc385b2452c3377521f85cb",
+  "abgerufen": "2026-11-06T00:31:06Z"
+ },
+ {
+  "datei": "bp-jc-6177395019106.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/6177395019106/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 144932,
+  "sha256": "63bcce4fa3b938fc906319f2ba62d3078c4e7ca85435032701ecd6f29eb4c901",
+  "abgerufen": "2026-11-06T00:31:07Z"
+ },
+ {
+  "datei": "bp-fk-nord.html",
+  "url": "https://www.bayernportal.de/dokumente/behoerde/5652834852116/adressen",
+  "http": 200,
+  "ok": true,
+  "bytes": 67347,
+  "sha256": "92f62f7462f5df3d8d9d44367a098649ca3b8899bc83baa223e22746ef49b414",
+  "abgerufen": "2026-11-06T00:31:08Z"
  }
 ]
