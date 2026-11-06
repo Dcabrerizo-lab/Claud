@@ -40,7 +40,7 @@ Danach `cd app && npx cap open android` bzw. `npx cap open ios`.
 
 ## Daten und Quellen
 
-Die PLZ-Daten (GeoNames), die Mietenstufen (Wohngeldverordnung) und die Anschriften der bayerischen Landratsämter und kreisfreien Städte (Impressum der Behörden) werden nicht von Hand gepflegt. Der Workflow **„Quellen abrufen“** lädt die Originalquellen nach `content/quellen/roh/` und protokolliert Abrufdatum und Prüfsumme. Danach erzeugt `npm run build:data` daraus die App-Daten. Jede Anschrift muss wörtlich in ihrer Quelle stehen, sonst bricht der Build ab.
+Die PLZ-Daten (GeoNames), die Mietenstufen (Wohngeldverordnung) und die zuständigen Stellen in Bayern werden nicht von Hand gepflegt. Die Stellen sind Landratsämter und kreisfreie Städte (Impressum der Behörden), Jobcenter, Familienkassen, ZBFS-Regionalstellen und Bezirke. Zuständigkeit und Anschriften stammen aus dem BayernPortal, dem amtlichen Behördenverzeichnis des Freistaats. Der Workflow **„Quellen abrufen“** lädt die Originalquellen nach `content/quellen/roh/` und protokolliert Abrufdatum und Prüfsumme. Danach erzeugt `npm run build:data` daraus die App-Daten. Jede Anschrift muss wörtlich in ihrer Quelle stehen, sonst bricht der Build ab.
 
 ## CI
 

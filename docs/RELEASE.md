@@ -68,10 +68,10 @@ Später automatisierbar mit fastlane und App-Store-Connect-API-Schlüssel in der
 
 ## Bekannte offene Punkte
 
-- **Echte Geräte:** Kamera, Texterkennung, PDF-Teilen und Speichern sind im Browser mit nachgeahmten Plugins getestet, nicht auf echten Geräten. Das Kompilieren prüft die CI.
+- **Echte Geräte:** Kamera, Texterkennung, PDF-Teilen und Speichern sind im Browser mit nachgeahmten Plugins getestet, nicht auf echten Geräten. Dass Android und iOS kompilieren, prüft die CI. Der iOS-Build läuft für `main`, Tags und auf Knopfdruck auf einem Intel-Mac-Runner, weil die arm64-Runner oft ausgelastet sind.
 - **Behörden außerhalb Bayerns:** PLZ, Mietenstufe und zuständige Stelle mit Anschrift gibt es nur für Bayern. In anderen Ländern nennt die App das Bundesland und die Art der Stelle.
-- **6 bayerische Stellen ohne Anschrift:** Ebersberg, Landkreis Regensburg, Stadt Hof, Forchheim, Landkreis Fürth und Bad Kissingen haben den automatischen Abruf abgelehnt. Die App zeigt dort Name und Website. Nachtragen: Anschrift im Impressum der Behörde nachsehen und in `tools/build-behoerden.js` (AUSWAHL) eintragen. Die Quelle muss dafür abrufbar sein, sonst bleibt es bei Name und Website.
-- **Noch ohne Anschrift:** Jobcenter, ZBFS-Regionalstellen (Blindengeld, Schwerbehindertenausweis), Bezirke (Eingliederungshilfe), Familienkasse.
+- **Familienkasse in der nördlichen Oberpfalz** (Amberg, Weiden, Amberg-Sulzbach, Cham, Neustadt a. d. Waldnaab, Schwandorf, Tirschenreuth): Das BayernPortal nennt dort Nord **und** Süd. Die App nennt deshalb keine bestimmte Familienkasse, sondern allgemein die Familienkasse der Bundesagentur für Arbeit.
+- **Ohne Anschrift, weil sie vom Einzelfall abhängt:** Pflegekasse und Krankenkasse (die eigene Kasse), Deutsche Rentenversicherung (der eigene Rentenversicherungsträger), Finanzamt (Pauschbetrag in der Steuererklärung), Studierendenwerk (BAföG im Studium), Agentur für Arbeit (Berufsausbildungsbeihilfe), Wohnberechtigungsschein (in Bayern teils Gemeinde, teils Landratsamt).
 - **Übersetzungen** sind maschinell und sollten von Muttersprachlern geprüft werden.
 - **Fachliche Prüfung:** 10–20 echte Fälle mit einer Sozialberatung durchgehen.
 - **Wohngeld-Reform 1.1.2027:** Sobald sie beschlossen ist, Tabellen in `src/rules.js` aktualisieren. Die Tests in `test/test.js` rechnen die Grenzen unabhängig nach.
