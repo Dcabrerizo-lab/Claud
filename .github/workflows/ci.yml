@@ -70,6 +70,12 @@ jobs:
         env:
           VERSION_CODE: ${{ github.run_number }}
         run: ./gradlew --no-daemon assembleDebug
+      - name: Signatur prüfen (fester Test-Schlüssel, damit Updates ohne Deinstallieren gehen)
+        run: |
+          AS="$(ls -d "$ANDROID_HOME"/build-tools/*/ | sort -V | tail -1)apksigner"
+          "$AS" verify --print-certs app/android/app/build/outputs/apk/debug/app-debug.apk | tee "$RUNNER_TEMP/cert.txt"
+          grep -qi "SHA-256 digest: 2e2df4ead968b510de7d000f2a4c193e82add2f3aa2d0cd81f22aa0e52da9563" "$RUNNER_TEMP/cert.txt" \
+            || { echo "::error::Test-APK ist nicht mit app/android/debug.keystore signiert"; exit 1; }
       - uses: actions/upload-artifact@v4
         with:
           name: android-debug-apk
