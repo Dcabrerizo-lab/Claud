@@ -483,5 +483,6 @@
   "beh.ohneAdr": "Die Anschrift findest du auf der Website der Behörde.",
   "beh.plzHint": "Gib oben deine Postleitzahl ein, dann nennt die App die zuständige Stelle mit Anschrift (derzeit für Bayern).",
   "beh.besuch": "Besucheranschrift:",
-  "beh.fkUnklar": "Für deinen Wohnort nennt das amtliche Verzeichnis die Familienkasse Bayern Nord (Post: {nord}) oder Bayern Süd (Post: {sued}). Welche zuständig ist, sagt dir die kostenlose Servicenummer der Familienkassen: {tel}."
+  "beh.fkUnklar": "Für deinen Wohnort nennt das amtliche Verzeichnis die Familienkasse Bayern Nord (Post: {nord}) oder Bayern Süd (Post: {sued}). Welche zuständig ist, sagt dir die kostenlose Servicenummer der Familienkassen: {tel}.",
+  "f.adrFehlt": "Für die Anschrift der zuständigen Stelle braucht die App deine Postleitzahl (derzeit für Bayern). Trage sie oben im Fragebogen oder bei deiner Anschrift unter „PLZ und Ort“ ein, dann setzt die App die Empfänger ein."
 }

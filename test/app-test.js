@@ -126,6 +126,22 @@ const MOCK = () => {
   await p.click('#clearBtn');
   ok('„Alle Angaben löschen“ entfernt gespeicherte Eingaben', (await calls('Preferences.remove')).length > 0);
 
+  // Wohnort nur in der Anschrift der Antragsmappe (PLZ-Feld im Fragebogen leer): App nutzt die PLZ aus „PLZ und Ort“
+  await p.click('#p1'); await p.fill('#plz', ''); await p.fill('#p-name', 'Maria Muster'); await p.fill('#p-ort', '');
+  await p.click('#mappeMake');
+  ok('Ohne Wohnort: Hinweis in der Mappe, dass die PLZ fehlt', await p.isVisible('#mappeAdrNote'));
+  await p.click('#mappeClose');
+  await p.fill('#p-ort', '90542 Eckental'); await p.waitForTimeout(200);
+  ok('PLZ aus der Anschrift: Karte nennt die zuständige Stelle', /Familienkasse Bayern Nord/.test(await p.textContent('#c-kindergeld')));
+  await p.click('#mappeMake');
+  const brief2 = await p.inputValue('#mappeText');
+  ok('PLZ aus der Anschrift: Anschreiben an Familienkasse Bayern Nord mit Postanschrift', /Familienkasse Bayern Nord\n90316 Nürnberg/.test(brief2), brief2.slice(0, 250));
+  ok('PLZ aus der Anschrift: kein Hinweis auf fehlende PLZ', !(await p.isVisible('#mappeAdrNote')));
+  await p.click('#mappeClose');
+  // Mehrere Orte unter einer PLZ: Ortsname aus der Anschrift entscheidet (84032: Altdorf im Lkr. Landshut oder Stadt Landshut)
+  await p.fill('#p-ort', '84032 Altdorf'); await p.waitForTimeout(200);
+  ok('84032 Altdorf: Landratsamt Landshut (nicht Stadt Landshut)', /Landratsamt Landshut/.test(await p.textContent('#c-wohngeld').catch(() => '')));
+
   const net = reqs.filter((u) => !u.startsWith(origin) && !u.startsWith('data:') && !u.startsWith('blob:'));
   ok('Nur lokale Anfragen (kein Netz)', net.length === 0, net.join(','));
   ok('Keine CSP-Verstöße', csp.length === 0, csp.join('|'));

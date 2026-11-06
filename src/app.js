@@ -133,12 +133,22 @@
   }
 
   // Amtlicher Kreisschlüssel des Wohnorts (aus PLZ und ggf. gewähltem Ort), für die zuständige Stelle; null wenn unbekannt
+  // Quelle: PLZ-Feld im Fragebogen; ist es leer, die PLZ aus „PLZ und Ort“ der Antragsmappe (z. B. „90542 Eckental“)
   function aktAgs() {
     if (!Plz.available()) return null;
-    var r = Plz.lookup(state.plz);
+    var ausFrage = /^\d{5}$/.test(String(state.plz || ''));
+    var m = String(person.ort || '').match(/\b(\d{5})\b/);
+    var r = Plz.lookup(ausFrage ? state.plz : (m ? m[1] : ''));
     if (!r) return null;
     if (r.ags) return r.ags;
-    var c = r.candidates.filter(function (x) { return x.label + '|' + x.kreis + '|' + x.stufe === state.plzPick; })[0];
+    var c = ausFrage ? r.candidates.filter(function (x) { return x.label + '|' + x.kreis + '|' + x.stufe === state.plzPick; })[0] : null;
+    if (!c && person.ort) {
+      // Mehrere Orte unter der PLZ: Ortsname aus der Anschrift abgleichen (nur bei genau einem Treffer)
+      var ort = String(person.ort).toLowerCase();
+      var hits = r.candidates.filter(function (x) { return x.ags && ort.indexOf(String(x.label).toLowerCase().split(/[,(]/)[0].trim()) >= 0; });
+      var agsHits = hits.map(function (x) { return x.ags; }).filter(function (a, i, arr) { return arr.indexOf(a) === i; });
+      if (agsHits.length === 1) return agsHits[0];
+    }
     return c ? c.ags : null;
   }
   // Zuständige Stelle als HTML für die Karte
@@ -303,7 +313,11 @@
       el.focus({ preventScroll: true });
     });
     [['p-name', 'name'], ['p-geb', 'geb'], ['p-strasse', 'strasse'], ['p-ort', 'ort'], ['p-tel', 'tel']].forEach(function (x) {
-      $(x[0]).addEventListener('input', function () { person[x[1]] = $(x[0]).value; save(); });
+      $(x[0]).addEventListener('input', function () {
+        person[x[1]] = $(x[0]).value; save();
+        // Die Anschrift kann den Wohnort liefern (PLZ): Karten mit der zuständigen Stelle aktualisieren
+        if (x[1] === 'ort' && !/^\d{5}$/.test(String(state.plz || ''))) render();
+      });
     });
     $('mappeMake').addEventListener('click', function () {
       var any = Object.keys(picked).some(function (k) { return picked[k]; });
@@ -570,6 +584,10 @@
         '<p>' + esc(t(s.wo)) + '</p>' + listItems(s.u.map(function (k) { return t(k); })) + '<p class="tip">' + esc(t(s.tip)) + '</p>';
     }).join('') + '</article>';
     $('mappeBody').innerHTML = html;
+    // Hinweis, wenn Anschreiben ohne Empfänger-Anschrift bleiben, weil der Wohnort fehlt (Anschriften gibt es für Bayern)
+    var ohneOrt = Behoerden.available() && !aktAgs() && (!state.bundesland || state.bundesland === 'BY') &&
+      ids.some(function (r) { return Behoerden.brauchtKreis(r.id); });
+    $('mappeAdrNote').hidden = !ohneOrt;
     $('mappeText').value = ids.map(function (r) { return letterText(r.id); }).concat([sheetText()]).join('\n\n----------------------------------------\n\n');
   }
 

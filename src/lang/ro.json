@@ -483,5 +483,6 @@
   "beh.ohneAdr": "Adresa o găsești pe site-ul instituției.",
   "beh.plzHint": "Introdu mai sus codul poștal și aplicația îți arată autoritatea competentă cu adresa (deocamdată pentru Bavaria).",
   "beh.besuch": "Adresa pentru vizite:",
-  "beh.fkUnklar": "Pentru localitatea ta, registrul oficial indică Familienkasse Bayern Nord (poștă: {nord}) sau Bayern Süd (poștă: {sued}). Care este competentă îți spune numărul de serviciu gratuit al Familienkasse: {tel}."
+  "beh.fkUnklar": "Pentru localitatea ta, registrul oficial indică Familienkasse Bayern Nord (poștă: {nord}) sau Bayern Süd (poștă: {sued}). Care este competentă îți spune numărul de serviciu gratuit al Familienkasse: {tel}.",
+  "f.adrFehlt": "Pentru adresa autorității competente, aplicația are nevoie de codul tău poștal (deocamdată pentru Bavaria). Introdu-l mai sus în chestionar sau în adresa ta la „cod poștal și localitate”, iar aplicația completează destinatarii."
 }

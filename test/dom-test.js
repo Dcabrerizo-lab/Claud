@@ -146,7 +146,8 @@ check('Mappe öffnet sich und ersetzt die Seite', d.getElementById('mappe').hidd
 const pages = [...d.querySelectorAll('#mappeBody .page')];
 check('Mappe enthält zwei Briefe, ein Angabenblatt und die Unterlagenliste', pages.length === 4, pages.length);
 const txt = pages.map((p) => p.textContent).join('\n');
-check('Brief: Absender, Empfänger und Betreff', /Maria Beispiel/.test(txt) && /Hauptstraße 1/.test(txt) && /An die\nWohngeldstelle/.test(txt) && /Betreff: Antrag auf Wohngeld/.test(txt) && /Betreff: Antrag auf Unterhaltsvorschuss/.test(txt));
+// Anschrift „91056 Erlangen“ liefert den Wohnort (kein PLZ-Feld ausgefüllt): Empfänger ist die Stadt Erlangen
+check('Brief: Absender, Empfänger (aus der PLZ der Anschrift) und Betreff', /Maria Beispiel/.test(txt) && /Hauptstraße 1/.test(txt) && /Stadt Erlangen\nWohngeldstelle\nRathausplatz 1\n91052 Erlangen/.test(txt) && /Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle/.test(txt) && /Betreff: Antrag auf Wohngeld/.test(txt) && /Betreff: Antrag auf Unterhaltsvorschuss/.test(txt));
 check('Brief: bittet um Eingangsbestätigung und Formulare', /bestätigen Sie mir den Eingang/.test(txt) && /Antragsformulare/.test(txt));
 check('Brief auf Deutsch und links nach rechts gesetzt', pages[0].getAttribute('lang') === 'de' && pages[0].getAttribute('dir') === 'ltr');
 check('Angabenblatt enthält Haushalt, Miete, Einkommen', /Angabenblatt/.test(txt) && /Warmmiete im Monat: 950 €/.test(txt) && /Bruttoeinkommen im Monat \(alle Erwachsenen\): 2\.200 €/.test(txt) && /Kinder unter 18 Jahren: 2/.test(txt) && /Geburtsdatum: 01\.02\.1985/.test(txt));
