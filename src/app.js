@@ -146,6 +146,8 @@
     var ags = aktAgs();
     var b = Behoerden.available() ? Behoerden.fuer(r.id, ags) : null;
     var base = '<p class="zust">' + esc(t('zust', { z: t('zu.' + r.id) })) + '</p>';
+    var hw = !b && Behoerden.available() && r.level !== 'nein' ? Behoerden.hinweis(r.id, ags) : null;
+    if (hw) return base + '<p class="small">' + esc(t(hw.key, hw.p)) + '</p>';
     if (!b) {
       // Hinweis auf die PLZ nur, solange der Wohnort fehlt und die App dort eine Anschrift nennen könnte (Bayern oder Land offen)
       var hint = !ags && Behoerden.available() && Behoerden.brauchtKreis(r.id) && r.level !== 'nein' && (!state.bundesland || state.bundesland === 'BY');

@@ -57,6 +57,9 @@ check('Franken -> Nord, Ober-/Niederbayern -> Süd', ['094', '095', '096'].every
 check('Schwaben: Süd, außer Dillingen und Donau-Ries (Nord)', ags.filter((a) => a.startsWith('097')).every((a) => D.fkZuordnung[a] === (['09773', '09779'].includes(a) ? 'nord' : 'sued')));
 check('Nördliche Oberpfalz (Quelle nennt Nord und Süd): keine geratene Familienkasse', ['09361', '09363', '09371', '09372', '09374', '09376', '09377'].every((a) => b('kindergeld', a) === null));
 
+check('Nördliche Oberpfalz: Hinweis mit beiden Familienkassen und Servicenummer', (() => { const h = Behoerden.hinweis('kindergeld', '09363'); return h && h.key === 'beh.fkUnklar' && h.p.nord === '90316 Nürnberg' && h.p.sued === '93013 Regensburg' && /0800/.test(h.p.tel); })());
+check('Kein Hinweis, wo die Familienkasse eindeutig ist', Behoerden.hinweis('kindergeld', '09572') === null && Behoerden.hinweis('wohngeld', '09363') === null);
+
 // ZBFS und Bezirke nach Regierungsbezirk
 check('Blindengeld Eckental -> ZBFS Region Mittelfranken', b('blindengeld', '09572').name === 'Zentrum Bayern Familie und Soziales, Region Mittelfranken');
 check('Schwerbehindertenausweis München -> ZBFS Region Oberbayern', /Region Oberbayern/.test(b('ausweis', '09162').name) && b('ausweis', '09162').abt === 'Schwerbehindertenrecht');

@@ -482,5 +482,6 @@
   "beh.pruefen": "Adres z oficjalnych danych (stopka redakcyjna urzędu lub BayernPortal, pobrano {stand}). Sprawdź przed wysłaniem, urzędy czasem się przeprowadzają.",
   "beh.ohneAdr": "Adres znajdziesz na stronie urzędu.",
   "beh.plzHint": "Wpisz powyżej kod pocztowy, a aplikacja pokaże właściwy urząd z adresem (na razie dla Bawarii).",
-  "beh.besuch": "Adres dla odwiedzających:"
+  "beh.besuch": "Adres dla odwiedzających:",
+  "beh.fkUnklar": "Dla Twojego miejsca zamieszkania oficjalny rejestr podaje Familienkasse Bayern Nord (poczta: {nord}) lub Bayern Süd (poczta: {sued}). Która jest właściwa, powie bezpłatna infolinia Familienkasse: {tel}."
 }

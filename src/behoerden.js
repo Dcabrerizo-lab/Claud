@@ -56,10 +56,17 @@ const Behoerden = (function () {
     if (z.typ === 'fk') { var fk = D.fkZuordnung && D.fkZuordnung[ags]; return fk && has(D.familienkasse, fk) ? stelle(D.familienkasse[fk], z.abt) : null; }
     return null;
   }
+  // Hinweis statt Anschrift, wenn die Quelle keine eindeutige Stelle nennt: { key, p } oder null
+  function hinweis(id, ags) {
+    if (!D || !has(ZUST, id) || ZUST[id].typ !== 'fk' || !ags) return null;
+    if ((D.fkUnklar || []).indexOf(ags) < 0) return null;
+    var n = D.familienkasse || {};
+    return { key: 'beh.fkUnklar', p: { nord: n.nord ? n.nord.anschrift.join(', ') : '', sued: n.sued ? n.sued.anschrift.join(', ') : '', tel: D.fkTelefon || '' } };
+  }
   // Braucht die Leistung den Wohnort (Kreis), um eine Stelle zu nennen?
   function brauchtKreis(id) { return has(ZUST, id) && ZUST[id].typ !== 'fest'; }
   function ids() { return Object.keys(ZUST); }
   function info() { return D ? D.stand : null; }
-  return { init: init, available: available, fuer: fuer, ids: ids, brauchtKreis: brauchtKreis, info: info };
+  return { init: init, available: available, fuer: fuer, hinweis: hinweis, ids: ids, brauchtKreis: brauchtKreis, info: info };
 })();
 if (typeof module !== 'undefined') module.exports = Behoerden;

@@ -2527,6 +2527,16 @@
    "stand": "6.11.2026"
   }
  },
+ "fkUnklar": [
+  "09361",
+  "09363",
+  "09371",
+  "09372",
+  "09374",
+  "09376",
+  "09377"
+ ],
+ "fkTelefon": "0800 4 5555 30",
  "fest": {
   "beitragsservice": {
    "name": "ARD ZDF Deutschlandradio Beitragsservice",

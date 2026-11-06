@@ -255,6 +255,10 @@ if (process.env.ZEIGE_IDS) console.log(JSON.stringify({ lraBp: OHNE_ANSCHRIFT.ma
 const data = {
   stand: 'Anschriften laut Impressum der Behörden bzw. BayernPortal, abgerufen ' + deDatum([...new Set(abruf.filter((x) => /^(impressum|start)/.test(x.datei) && x.ok).map((x) => x.abgerufen))].sort().pop()),
   kreise, jobcenter, fkZuordnung, familienkasse, bezirke, zbfs,
+  // Kreise, für die das BayernPortal Familienkasse Nord und Süd nennt (keine eindeutige Zuordnung)
+  fkUnklar,
+  // Servicenummer der Familienkassen (BayernPortal, Standorte Schwandorf und Regensburg)
+  fkTelefon: '0800 4 5555 30',
   fest: {
     // Bundesweit eine Anschrift (www.rundfunkbeitrag.de, Kontakt)
     beitragsservice: { name: 'ARD ZDF Deutschlandradio Beitragsservice', anschrift: ['50656 Köln'], web: 'https://www.rundfunkbeitrag.de', quelle: 'https://www.rundfunkbeitrag.de', stand: '' }
