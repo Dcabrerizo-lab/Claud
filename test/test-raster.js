@@ -132,10 +132,35 @@ for (let i = 0; i < N2; i++) {
   if (/NaN|Infinity|undefined/.test(JSON.stringify(out))) melde('Fehlwerte (NaN/undefined)', e, {});
 }
 
+// Vollständiges Raster für Werkstatt-Beschäftigte (jede Kombination) und Eigenschaften, die immer gelten müssen
+const RANG = { ja: 2, vielleicht: 1, nein: 0, na: -1 };
+const W = { wohn: ['', 'eltern', 'heim'], wfbm: [0, 52, 100, 180, 250, 350, 500, 700], rente: [0, 300, 600, 800, 1000, 1300], lohn: [0, 300, 900], g: [false, true], essen: [false, true], miete: ['', 0, 350, 700], geb: [1955, 1960, 1990], verm: [0, 9000, 15000] };
+let raster = 0;
+for (const wohn of W.wohn) for (const wf of W.wfbm) for (const re of W.rente) for (const lo of W.lohn) for (const g of W.g) for (const essen of W.essen) for (const miete of W.miete) for (const geb of W.geb) for (const verm of W.verm) {
+  if (wohn === 'heim' && miete !== '') continue;
+  const ein = [];
+  if (wf) ein.push({ art: 'wfbm', b: wf });
+  if (re) ein.push({ art: 'rente', b: re });
+  if (lo) ein.push({ art: 'lohn', b: lo });
+  const e = { adults: 1, kids: 0, young: 0, einkommen: ein, wohnform: wohn, miete, wfbm: wf > 0, wfbmEssen: essen && wf > 0, mzG: g, gebJahr: geb, heute: 2026 + 10 / 12, vermoegen: verm, bhPerson: 'erwNach25', bezug: {} };
+  raster++; n++;
+  const r = {}; Rules.evaluate(e).results.forEach((x) => { r[x.id] = x; });
+  vergleicheGSA(e, r);
+  // Eigenschaft: 100 € mehr Rente macht die Grundsicherung nie wahrscheinlicher
+  const r2 = {}; Rules.evaluate({ ...e, einkommen: ein.concat([{ art: 'rente', b: 100 }]) }).results.forEach((x) => { r2[x.id] = x; });
+  if (RANG[r2.gsa.level] > RANG[r.gsa.level]) melde('Eigenschaft: mehr Einkommen verbessert die Grundsicherung', e, { vorher: r.gsa.level, nachher: r2.gsa.level });
+  // Eigenschaft: Merkzeichen G (Mehrbedarf) macht die Grundsicherung nie unwahrscheinlicher
+  if (!g) { const r3 = {}; Rules.evaluate({ ...e, mzG: true }).results.forEach((x) => { r3[x.id] = x; }); if (RANG[r3.gsa.level] < RANG[r.gsa.level]) melde('Eigenschaft: Mehrbedarf G verschlechtert die Grundsicherung', e, {}); }
+  // Eigenschaft: Werkstatt-Beschäftigte sind nie beim Jobcenter (Grundsicherungsgeld) richtig
+  if (wf > 0 && (r.ggeld.level === 'ja' || r.ggeld.level === 'vielleicht')) melde('Eigenschaft: Werkstatt beim Jobcenter', e, { app: r.ggeld.level });
+  // Eigenschaft: im Rentenalter (geboren 1955) nie Grundsicherungsgeld, nie Arbeitslosengeld
+  if (geb === 1955 && (r.ggeld.level !== 'nein' || r.alg1.level === 'ja')) melde('Eigenschaft: Rentenalter beim Jobcenter', e, {});
+}
+
 const arten = Object.keys(fehler);
 if (arten.length) {
   console.log('ABWEICHUNGEN zwischen App und Referenz (' + n + ' Haushalte):');
   arten.forEach((a) => { console.log('\n- ' + a + ': ' + fehler[a].anzahl + 'x\n  Beispiel: ' + JSON.stringify(fehler[a].beispiel)); });
   process.exit(1);
 }
-console.log('Raster-Test bestanden: ' + n + ' Haushalte, App und unabhängige Referenz stimmen überein (Grundsicherungsgeld, Grundsicherung im Alter und bei Erwerbsminderung mit Werkstattlohn und Wohnform, Wohngeld, Kinderzuschlag: Einstufung und Beträge).');
+console.log('Raster-Test bestanden: ' + n + ' Haushalte (davon ' + raster + ' als vollständiges Raster für Werkstatt-Beschäftigte), App und unabhängige Referenz stimmen überein (Grundsicherungsgeld, Grundsicherung im Alter und bei Erwerbsminderung mit Werkstattlohn und Wohnform, Wohngeld, Kinderzuschlag: Einstufung und Beträge).');
