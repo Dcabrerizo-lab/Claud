@@ -52,7 +52,7 @@
   "stufe.hint": "Fără indicare, calculul se face prudent.",
   "stufe.link": "Caută treapta de chirie",
   "brutto.label": "Venit brut pe lună",
-  "brutto.hint": "Toți adulții împreună, inclusiv pensia. Fără alocația pentru copii.",
+  "brutto.hint": "Toți adulții împreună, inclusiv pensia, ajutorul de șomaj (Arbeitslosengeld I) și indemnizația de boală (Krankengeld). Fără Kindergeld. Arbeitslosengeld I și Krankengeld nu au sumă brută: trece suma plătită aici și la net.",
   "netto.label": "Venit net pe lună",
   "netto.hint": "Ce ajunge în cont. Lasă gol, atunci se presupune 80 % din brut.",
   "verm.label": "Economii și active financiare",

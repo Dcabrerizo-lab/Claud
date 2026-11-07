@@ -52,7 +52,7 @@
   "stufe.hint": "Bez podania obliczenia są ostrożne.",
   "stufe.link": "Sprawdź stopień czynszu",
   "brutto.label": "Dochód brutto miesięcznie",
-  "brutto.hint": "Wszyscy dorośli razem, także emerytura. Bez zasiłku na dzieci.",
+  "brutto.hint": "Wszyscy dorośli razem, także emerytura, zasiłek dla bezrobotnych (Arbeitslosengeld I) i zasiłek chorobowy (Krankengeld). Bez Kindergeld. Arbeitslosengeld I i Krankengeld nie mają kwoty brutto: wpisz wypłaconą kwotę tutaj i w polu netto.",
   "netto.label": "Dochód netto miesięcznie",
   "netto.hint": "To, co wpływa na konto. Zostaw puste, wtedy przyjmuje się 80 % brutto.",
   "verm.label": "Oszczędności i majątek pieniężny",

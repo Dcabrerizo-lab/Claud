@@ -52,7 +52,7 @@
   "stufe.hint": "Belirtilmezse temkinli hesaplanır.",
   "stufe.link": "Kira kademesini ara",
   "brutto.label": "Aylık brüt gelir",
-  "brutto.hint": "Tüm yetişkinler birlikte, emekli maaşı dahil. Çocuk parası hariç.",
+  "brutto.hint": "Tüm yetişkinler birlikte; emekli maaşı, işsizlik parası (Arbeitslosengeld I) ve hastalık parası (Krankengeld) dahil. Kindergeld hariç. Arbeitslosengeld I ve Krankengeld'in brütü yoktur: ödenen tutarı buraya ve nete yaz.",
   "netto.label": "Aylık net gelir",
   "netto.hint": "Hesabınıza geçen tutar. Boş bırakırsanız brütün yüzde 80 i alınır.",
   "verm.label": "Birikim ve parasal varlık",

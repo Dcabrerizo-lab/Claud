@@ -52,7 +52,7 @@
   "stufe.hint": "Ohne Angabe wird vorsichtig gerechnet.",
   "stufe.link": "Mietenstufe nachschlagen",
   "brutto.label": "Bruttoeinkommen im Monat",
-  "brutto.hint": "Alle Erwachsenen zusammen, auch Rente. Ohne Kindergeld.",
+  "brutto.hint": "Alle Erwachsenen zusammen, auch Rente, Arbeitslosengeld I und Krankengeld. Ohne Kindergeld. Arbeitslosengeld I und Krankengeld haben kein Brutto: Trage den ausgezahlten Betrag hier und beim Netto ein.",
   "netto.label": "Nettoeinkommen im Monat",
   "netto.hint": "Was auf dem Konto ankommt. Leer lassen, dann wird 80 % vom Brutto angenommen.",
   "verm.label": "Erspartes und Geldvermögen",

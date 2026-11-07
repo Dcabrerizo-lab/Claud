@@ -52,7 +52,7 @@
   "stufe.hint": "If left empty, the check calculates cautiously.",
   "stufe.link": "Look up your rent level",
   "brutto.label": "Gross income per month",
-  "brutto.hint": "All adults together, including pensions. Without child benefit.",
+  "brutto.hint": "All adults together, including pension, unemployment benefit (Arbeitslosengeld I) and sickness benefit (Krankengeld). Without Kindergeld. Arbeitslosengeld I and Krankengeld have no gross amount: enter the amount paid out here and under net.",
   "netto.label": "Net income per month",
   "netto.hint": "What arrives in your account. Leave empty to assume 80 % of gross.",
   "verm.label": "Savings and financial assets",
