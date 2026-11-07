@@ -285,8 +285,8 @@
   "sc.f.gesundheit": "Engellilik, bakım derecesi veya çalışma gücü kaybı bilgileri. Kararları kanıt olarak ekleyin.",
   "sc.f.unterschrift": "Yer, tarih ve imzanız. İmza olmadan başvuru çoğu zaman geçerli olmaz.",
   "brutto2.label": "Bunun içinde: ikinci yetişkinin brüt geliri",
-  "brutto2.hint": "Yalnızca ikisi de çalışıyorsa doldurun. Tutar yukarıdaki brüt gelirin içinde zaten vardır. Boş bırakırsanız yalnızca bir kişi çalışıyor sayılır.",
-  "cb.nichtArbeit": "Gelir (neredeyse) çalışmadan gelmiyor, örneğin emekli maaşı, işsizlik parası I (Arbeitslosengeld I) veya hastalık parası.",
+  "brutto2.hint": "Yalnızca iki yetişkinin de geliri varsa doldur (maaş, emekli maaşı, Arbeitslosengeld I, Krankengeld). Tutar yukarıdaki brüte zaten dahildir. Boş: yalnızca bir kişinin geliri var demektir.",
+  "cb.nichtArbeit": "Gelir (neredeyse) çalışmadan gelmiyor, örneğin emekli maaşı, Arbeitslosengeld I veya Krankengeld. Çiftlerde bu birinci kişi için geçerlidir.",
   "t.kiz.verm": "Önemli ölçüde varlık varsa Kinderzuschlag verilmez. {n} kişilik hane için kabaca sınır: yaklaşık {limit}. Familienkasse her durumu ayrı değerlendirir.",
   "foot.3": "Bu kontrol 2026 kurallarına göredir. 2027 için değişiklikler planlanıyor, örneğin Wohngeld için (kanun taslağı, henüz kabul edilmedi). Tutarlar yılbaşında değişebilir.",
   "f.share": "Paylaş veya kaydet",
@@ -488,5 +488,6 @@
   "unterh.label": "Çocuklar için aylık nafaka",
   "unterh.hint": "Diğer ebeveynin çocuklar için ödediği tutar, tüm çocuklar için toplam. Hiçbir şey ödenmiyorsa boş bırak. Unterhaltsvorschuss buraya yazılmaz. Kendin için aldığın nafakayı gelirine ekle.",
   "t.uvg.teil": "Çocukların zaten aldığı nafaka (ayda {u}) mahsup edilir. Unterhaltsvorschuss yalnızca bu nafakanın Unterhaltsvorschuss tutarının altında kalan kısmı için ödenir.",
-  "t.uvg.genug": "Çocuklar zaten ayda {u} nafaka alıyor. Bu en az Unterhaltsvorschuss kadardır; ödenen nafaka tamamen mahsup edilir."
+  "t.uvg.genug": "Çocuklar zaten ayda {u} nafaka alıyor. Bu en az Unterhaltsvorschuss kadardır; ödenen nafaka tamamen mahsup edilir.",
+  "cb.nichtArbeit2": "İkinci kişinin geliri çalışmadan gelmiyor, örneğin emekli maaşı, Arbeitslosengeld I veya Krankengeld."
 }

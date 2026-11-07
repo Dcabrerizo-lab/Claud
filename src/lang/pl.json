@@ -285,8 +285,8 @@
   "sc.f.gesundheit": "Dane o niepełnosprawności, stopniu opieki lub niezdolności do pracy. Dołącz decyzje jako dowód.",
   "sc.f.unterschrift": "Miejsce, data i Twój podpis. Bez podpisu wniosek często jest nieważny.",
   "brutto2.label": "Z tego: dochód brutto drugiej osoby dorosłej",
-  "brutto2.hint": "Wypełnij tylko, jeśli pracują obie osoby. Kwota jest już zawarta w dochodzie brutto powyżej. Puste oznacza, że pracuje tylko jedna osoba.",
-  "cb.nichtArbeit": "Dochód (prawie) nie pochodzi z pracy, na przykład emerytura, zasiłek dla bezrobotnych I (Arbeitslosengeld I) lub zasiłek chorobowy.",
+  "brutto2.hint": "Wypełnij tylko, jeśli oboje dorośli mają dochód (wynagrodzenie, emerytura, Arbeitslosengeld I, Krankengeld). Kwota jest już wliczona w brutto powyżej. Puste oznacza: dochód ma tylko jedna osoba.",
+  "cb.nichtArbeit": "Dochód (prawie) nie pochodzi z pracy, na przykład emerytura, Arbeitslosengeld I lub Krankengeld. U par dotyczy to pierwszej osoby.",
   "t.kiz.verm": "Przy znacznym majątku nie przysługuje Kinderzuschlag. Orientacyjna granica dla gospodarstwa {n}-osobowego: około {limit}. Familienkasse decyduje indywidualnie.",
   "foot.3": "Ten test odzwierciedla zasady z 2026 roku. Na 2027 rok planowane są zmiany, na przykład w Wohngeld (projekt ustawy, jeszcze nieuchwalony). Kwoty mogą się zmienić z początkiem roku.",
   "f.share": "Udostępnij lub zapisz",
@@ -488,5 +488,6 @@
   "unterh.label": "Alimenty na dzieci miesięcznie",
   "unterh.hint": "Ile drugi rodzic płaci na dzieci, łącznie na wszystkie dzieci. Zostaw puste, jeśli nic nie płaci. Nie wpisuj tu Unterhaltsvorschuss. Alimenty dla siebie wlicz do dochodu.",
   "t.uvg.teil": "Alimenty, które dzieci już otrzymują ({u} miesięcznie), są zaliczane. Unterhaltsvorschuss przysługuje tylko w części, o którą są niższe od kwoty Unterhaltsvorschuss.",
-  "t.uvg.genug": "Dzieci otrzymują już {u} alimentów miesięcznie. To co najmniej tyle, ile Unterhaltsvorschuss; płacone alimenty są zaliczane w całości."
+  "t.uvg.genug": "Dzieci otrzymują już {u} alimentów miesięcznie. To co najmniej tyle, ile Unterhaltsvorschuss; płacone alimenty są zaliczane w całości.",
+  "cb.nichtArbeit2": "Dochód drugiej osoby nie pochodzi z pracy, na przykład emerytura, Arbeitslosengeld I lub Krankengeld."
 }

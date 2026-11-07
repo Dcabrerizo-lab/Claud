@@ -228,6 +228,23 @@ check('Wohngeld: Netto allein genügt NICHT (Wohngeld rechnet mit Brutto)', get(
   check('Unterhalt ohne Kinder im Haushalt bleibt ohne Wirkung', JSON.stringify(ev({ brutto: 1500, netto: 1200, miete: 600, vermoegen: 0, unterhalt: 500 }).results) === JSON.stringify(ev({ brutto: 1500, netto: 1200, miete: 600, vermoegen: 0 }).results));
 }
 
+// 10d) Gemischtes Einkommen bei Paaren: Freibetrag (§ 11b SGB II) je Person und nur für Einkommen aus Arbeit.
+// Paar ohne Kinder, Brutto 2.500, davon 1.000 bei der zweiten Person. Handrechnung: erste Person 1.500 -> 348 (gedeckelt bei 1.200),
+// zweite Person 1.000 -> 100 + 20 % x 420 + 30 % x 480 = 328.
+{
+  const fb = (o) => Rules.haushaltsFreibetrag(Rules.derive({ adults: 2, kids: 0, brutto: 2500, brutto2: 1000, netto: 2150, ...o }));
+  check('Paar, beide arbeiten: Freibetrag 348 + 328 = 676', Math.abs(fb({}) - 676) < 1e-9, fb({}));
+  check('Paar, zweite Person bekommt Arbeitslosengeld I: nur 348 (erste Person)', Math.abs(fb({ nichtArbeit2: true }) - 348) < 1e-9, fb({ nichtArbeit2: true }));
+  check('Paar, erste Person bekommt Rente, zweite arbeitet: nur 328 (zweite Person)', Math.abs(fb({ nichtArbeit: true }) - 328) < 1e-9, fb({ nichtArbeit: true }));
+  check('Paar, beide ohne Arbeitseinkommen: kein Freibetrag', fb({ nichtArbeit: true, nichtArbeit2: true }) === 0);
+  check('Alleinstehend: zweiter Haken ohne Wirkung', Rules.haushaltsFreibetrag(Rules.derive({ adults: 1, brutto: 1000, netto: 900, nichtArbeit2: true })) === 328);
+  // Wirkung auf die Einstufung: Bedarf 1.012 + 800 = 1.812; netto 2.150.
+  // beide arbeiten: 2.150 - 676 = 1.474 -> Lücke 338 -> wahrscheinlich; zweite Person Arbeitslosengeld: 2.150 - 348 = 1.802 -> Lücke 10 -> nur möglich
+  const gg = (o) => lv(ev({ adults: 2, brutto: 2500, brutto2: 1000, netto: 2150, miete: 800, vermoegen: 0, ...o }), 'ggeld');
+  check('Grundsicherungsgeld: beide arbeiten -> wahrscheinlich', gg({}) === 'ja');
+  check('Grundsicherungsgeld: zweite Person Arbeitslosengeld I -> nur möglich (kein Freibetrag für sie)', gg({ nichtArbeit2: true }) === 'vielleicht');
+}
+
 // 11) Sortierung und Robustheit
 const order = { ja: 0, vielleicht: 1, nein: 2, na: 3 };
 let sorted = true;

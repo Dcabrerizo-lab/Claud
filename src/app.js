@@ -234,7 +234,7 @@
     pr.appendChild(b);
   });
 
-  var CHECKS = ['nichtArbeit', 'alter', 'erwerbsgemindert', 'behinderung', 'kinder12', 'unterhaltFehlt', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt'];
+  var CHECKS = ['nichtArbeit', 'nichtArbeit2', 'alter', 'erwerbsgemindert', 'behinderung', 'kinder12', 'unterhaltFehlt', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt'];
   var SELECTS = ['bundesland', 'mietstufe', 'alterGruppe', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd'];
   var BEZUG = ['grundsicherungsgeld', 'sozialamt', 'wohngeld', 'kiz', 'kindergeld'];
 

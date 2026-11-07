@@ -285,8 +285,8 @@
   "sc.f.gesundheit": "Angaben zu Behinderung, Pflegegrad oder Erwerbsminderung. Lege die Bescheide als Nachweis bei.",
   "sc.f.unterschrift": "Ort, Datum und deine Unterschrift. Ohne Unterschrift gilt der Antrag oft nicht.",
   "brutto2.label": "Davon: Brutto der zweiten erwachsenen Person",
-  "brutto2.hint": "Nur ausfüllen, wenn beide arbeiten. Der Betrag steckt schon im Brutto oben. Leer heißt: nur eine Person arbeitet.",
-  "cb.nichtArbeit": "Das Einkommen stammt (fast) nicht aus Arbeit, zum Beispiel Rente, Arbeitslosengeld I oder Krankengeld.",
+  "brutto2.hint": "Nur ausfüllen, wenn beide Erwachsenen Einkommen haben (Lohn, Rente, Arbeitslosengeld I, Krankengeld). Der Betrag steckt schon im Brutto oben. Leer heißt: nur eine Person hat Einkommen.",
+  "cb.nichtArbeit": "Das Einkommen stammt (fast) nicht aus Arbeit, zum Beispiel Rente, Arbeitslosengeld I oder Krankengeld. Bei Paaren gilt das für die erste Person.",
   "t.kiz.verm": "Bei erheblichem Vermögen gibt es keinen Kinderzuschlag. Richtwert bei Haushaltsgröße {n}: etwa {limit}. Die Familienkasse entscheidet im Einzelfall.",
   "foot.3": "Stand dieses Checks: Rechtslage 2026. Für 2027 sind Änderungen geplant, zum Beispiel beim Wohngeld (Gesetzentwurf, noch nicht beschlossen). Die Beträge können sich zum Jahreswechsel ändern.",
   "f.share": "Teilen oder speichern",
@@ -488,5 +488,6 @@
   "unterh.label": "Unterhalt für die Kinder im Monat",
   "unterh.hint": "Was der andere Elternteil für die Kinder zahlt, zusammen für alle Kinder. Leer lassen, wenn nichts gezahlt wird. Unterhaltsvorschuss hier nicht eintragen. Unterhalt für dich selbst rechnest du beim Einkommen mit.",
   "t.uvg.teil": "Der Unterhalt, den die Kinder schon bekommen ({u} im Monat), wird angerechnet. Unterhaltsvorschuss gibt es nur noch für den Teil, um den er unter dem Unterhaltsvorschuss liegt.",
-  "t.uvg.genug": "Die Kinder bekommen schon {u} Unterhalt im Monat. Das ist mindestens so viel wie der Unterhaltsvorschuss, der gezahlte Unterhalt wird voll angerechnet."
+  "t.uvg.genug": "Die Kinder bekommen schon {u} Unterhalt im Monat. Das ist mindestens so viel wie der Unterhaltsvorschuss, der gezahlte Unterhalt wird voll angerechnet.",
+  "cb.nichtArbeit2": "Das Einkommen der zweiten Person stammt nicht aus Arbeit, zum Beispiel Rente, Arbeitslosengeld I oder Krankengeld."
 }

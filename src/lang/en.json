@@ -285,8 +285,8 @@
   "sc.f.gesundheit": "Details on disability, care level or reduced earning capacity. Attach the notices as proof.",
   "sc.f.unterschrift": "Place, date and your signature. Without a signature the application is often not valid.",
   "brutto2.label": "Of this: gross income of the second adult",
-  "brutto2.hint": "Fill in only if both work. The amount is already included in the gross income above. Empty means only one person works.",
-  "cb.nichtArbeit": "The income is (almost) not from work, for example pension, unemployment benefit I or sickness benefit.",
+  "brutto2.hint": "Only fill in if both adults have income (wages, pension, Arbeitslosengeld I, Krankengeld). The amount is already included in the gross above. Empty means: only one person has income.",
+  "cb.nichtArbeit": "The income comes (almost) not from work, for example pension, Arbeitslosengeld I or Krankengeld. For couples this applies to the first person.",
   "t.kiz.verm": "With substantial assets there is no Kinderzuschlag. Guide value for household size {n}: about {limit}. The Familienkasse decides case by case.",
   "foot.3": "This check reflects the 2026 rules. Changes are planned for 2027, for example for Wohngeld (draft law, not yet passed). Amounts may change at the turn of the year.",
   "f.share": "Share or save",
@@ -488,5 +488,6 @@
   "unterh.label": "Maintenance for the children per month",
   "unterh.hint": "What the other parent pays for the children, for all children together. Leave empty if nothing is paid. Do not enter Unterhaltsvorschuss here. Include maintenance for yourself in your income.",
   "t.uvg.teil": "The maintenance the children already receive ({u} per month) is deducted. Unterhaltsvorschuss is only paid for the part by which it falls short of the Unterhaltsvorschuss amount.",
-  "t.uvg.genug": "The children already receive {u} maintenance per month. That is at least as much as Unterhaltsvorschuss; the maintenance paid is fully deducted."
+  "t.uvg.genug": "The children already receive {u} maintenance per month. That is at least as much as Unterhaltsvorschuss; the maintenance paid is fully deducted.",
+  "cb.nichtArbeit2": "The second person's income does not come from work, for example pension, Arbeitslosengeld I or Krankengeld."
 }

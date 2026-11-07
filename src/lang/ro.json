@@ -285,8 +285,8 @@
   "sc.f.gesundheit": "Date despre handicap, grad de îngrijire sau capacitate redusă de muncă. Atașează deciziile ca dovadă.",
   "sc.f.unterschrift": "Locul, data și semnătura ta. Fără semnătură, cererea nu este adesea valabilă.",
   "brutto2.label": "Din care: venitul brut al celui de-al doilea adult",
-  "brutto2.hint": "Completează doar dacă lucrează amândoi. Suma este deja inclusă în venitul brut de mai sus. Gol înseamnă că lucrează o singură persoană.",
-  "cb.nichtArbeit": "Venitul (aproape) nu provine din muncă, de exemplu pensie, ajutor de șomaj I (Arbeitslosengeld I) sau indemnizație de boală.",
+  "brutto2.hint": "Completează doar dacă ambii adulți au venit (salariu, pensie, Arbeitslosengeld I, Krankengeld). Suma este deja inclusă în brutul de mai sus. Gol înseamnă: doar o persoană are venit.",
+  "cb.nichtArbeit": "Venitul (aproape) nu provine din muncă, de exemplu pensie, Arbeitslosengeld I sau Krankengeld. La cupluri se aplică primei persoane.",
   "t.kiz.verm": "Cu un patrimoniu semnificativ nu se acordă Kinderzuschlag. Valoare orientativă pentru o gospodărie de {n} persoane: aproximativ {limit}. Familienkasse decide de la caz la caz.",
   "foot.3": "Această verificare reflectă regulile din 2026. Pentru 2027 sunt planificate modificări, de exemplu la Wohngeld (proiect de lege, încă neadoptat). Sumele se pot schimba la început de an.",
   "f.share": "Distribuie sau salvează",
@@ -488,5 +488,6 @@
   "unterh.label": "Pensia de întreținere pentru copii pe lună",
   "unterh.hint": "Cât plătește celălalt părinte pentru copii, în total pentru toți copiii. Lasă gol dacă nu se plătește nimic. Nu trece aici Unterhaltsvorschuss. Pensia pentru tine include-o la venit.",
   "t.uvg.teil": "Pensia pe care copiii o primesc deja ({u} pe lună) se scade. Unterhaltsvorschuss se plătește doar pentru partea cu care aceasta este sub suma Unterhaltsvorschuss.",
-  "t.uvg.genug": "Copiii primesc deja {u} pensie de întreținere pe lună. Aceasta este cel puțin cât Unterhaltsvorschuss; pensia plătită se scade integral."
+  "t.uvg.genug": "Copiii primesc deja {u} pensie de întreținere pe lună. Aceasta este cel puțin cât Unterhaltsvorschuss; pensia plătită se scade integral.",
+  "cb.nichtArbeit2": "Venitul celei de-a doua persoane nu provine din muncă, de exemplu pensie, Arbeitslosengeld I sau Krankengeld."
 }

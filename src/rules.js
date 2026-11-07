@@ -127,7 +127,7 @@ const Rules = (function () {
     const pg = ['1', '2', '3', '4', '5'].indexOf(String(inp.pflegegrad)) >= 0 ? Number(inp.pflegegrad) : 0;
     return {
       fehlt: { einkommen: blank(inp.brutto), netto: blank(inp.netto), vermoegen: blank(inp.vermoegen), miete: blank(inp.miete) },
-      adults, kids, kidsU6, kids14, young, persons, brutto, brutto2, erwerb: !inp.nichtArbeit, netto, nettoGiven, miete, vermoegen, unterhalt, regel, regelElt,
+      adults, kids, kidsU6, kids14, young, persons, brutto, brutto2, erwerb: !inp.nichtArbeit, erwerb2: !inp.nichtArbeit2, netto, nettoGiven, miete, vermoegen, unterhalt, regel, regelElt,
       children: kids + young,
       alleinerz: adults === 1 && kids > 0,
       stufe: [1, 2, 3, 4, 5, 6, 7].indexOf(Number(inp.mietstufe)) >= 0 ? Number(inp.mietstufe) : null,
@@ -176,10 +176,13 @@ const Rules = (function () {
   }
 
   // Freibetrag des Haushalts: je Person einzeln, nur bei Einkommen aus Arbeit
+  // Der Freibetrag gilt je Person und nur für Einkommen aus Arbeit (§ 11b Abs. 3 SGB II), nicht für Rente,
+  // Arbeitslosengeld I oder Krankengeld. erwerb: erste Person (bei Alleinstehenden der ganze Haushalt), erwerb2: zweite Person.
   function haushaltsFreibetrag(h) {
-    if (!h.erwerb) return 0;
     const mk_ = h.kids > 0;
-    return sgb2Freibetrag(h.brutto - h.brutto2, mk_) + (h.adults === 2 ? sgb2Freibetrag(h.brutto2, mk_) : 0);
+    const f1 = h.erwerb ? sgb2Freibetrag(h.brutto - h.brutto2, mk_) : 0;
+    const f2 = h.adults === 2 && h.erwerb2 ? sgb2Freibetrag(h.brutto2, mk_) : 0;
+    return f1 + f2;
   }
 
   // ---------------------------------------------------------------
