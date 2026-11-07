@@ -61,7 +61,7 @@
   function save() { clearTimeout(saveTimer); saveTimer = setTimeout(flush, 300); }
   function smooth() { return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'; }
   function blankState() {
-    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', kindEink: '', miete: '', mietstufe: '', plz: '', plzPick: '', bundesland: '', vermoegen: '', gebJahr: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', bezug: {} };
+    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', kindEink: '', miete: '', mietstufe: '', plz: '', plzPick: '', bundesland: '', vermoegen: '', gebJahr: '', arbeitSit: '', algMonate: '', krankWochen: '', lohnVorher: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', bezug: {} };
   }
 
   function detect() {
@@ -141,12 +141,18 @@
     if (state.emStd !== 'unter3' && state.emStd !== '3bis6') reset(['em5']);
     if (!state.bhPerson) reset(['mzG']);
     if (state.kids + state.young === 0) reset(['kindEink']);
+    if (state.arbeitSit !== 'arbeitslos') reset(['algZeit', 'algMonate']);
+    if (state.arbeitSit !== 'krank') reset(['krankWochen']);
+    if (!state.arbeitSit) reset(['lohnVorher']);
     if (state.ausbildung !== 'ich') reset(['babBetrieb', 'babWohnt']);
     var show = function (sel, on) { document.querySelectorAll(sel).forEach(function (el) { el.hidden = !on; }); };
     show('.cond-bh', !!state.bhPerson);
     show('.cond-bh25', state.bhPerson === 'erwVor25');
     show('.cond-em', state.emStd === 'unter3' || state.emStd === '3bis6');
     show('.cond-kinder', state.kids + state.young > 0);
+    show('.cond-alos', state.arbeitSit === 'arbeitslos');
+    show('.cond-krank', state.arbeitSit === 'krank');
+    show('.cond-job', !!state.arbeitSit);
     show('.cond-ausbich', state.ausbildung === 'ich');
   }
   // Frühere Fragen (Haken „Grad der Behinderung 100“ und „voll erwerbsgemindert“) in die neuen Fragen übernehmen
@@ -289,6 +295,9 @@
     fillSelect('ek2Art', ek, state.ek2Art);
     fillSelect('mietstufe', st, state.mietstufe);
     fillSelect('bundesland', [['', t('bl.unbekannt')]].concat(BUNDESLAENDER), state.bundesland);
+    fillSelect('arbeitSit', [['', t('arbeit.0')], ['arbeitslos', t('arbeit.arbeitslos')], ['krank', t('arbeit.krank')]], state.arbeitSit);
+    fillSelect('algMonate', [['', t('algMon.0')]].concat([[12, 15], [16, 19], [20, 23], [24, 29], [30, 35], [36, 47]].map(function (x) { return [String(x[0]), t('algMon.n', { a: x[0], b: x[1] })]; }), [['48', t('algMon.48')]]), state.algMonate);
+    fillSelect('krankWochen', [['', t('krankW.0')], ['unter6', t('krankW.unter6')], ['laeuft', t('krankW.laeuft')], ['ende', t('krankW.ende')]], state.krankWochen);
     fillSelect('ausbildung', [['', t('ausb.0')], ['kind', t('ausb.kind')], ['kindBetrieb', t('ausb.kindBetrieb')], ['ich', t('ausb.ich')]], state.ausbildung);
     var pf = [['', t('pflege.0')], ['antrag', t('pflege.antrag')]];
     for (var n = 1; n <= 5; n++) pf.push([String(n), t('pflege.n', { n: n })]);
@@ -346,9 +355,9 @@
     pr.appendChild(b);
   });
 
-  var CHECKS = ['mzG', 'kinder12', 'unterhaltFehlt', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt'];
-  var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd'];
-  var NUMS = ['miete', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'kindEink', 'vermoegen'];
+  var CHECKS = ['mzG', 'algZeit', 'kinder12', 'unterhaltFehlt', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt'];
+  var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'arbeitSit', 'algMonate', 'krankWochen', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd'];
+  var NUMS = ['miete', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'kindEink', 'lohnVorher', 'vermoegen'];
   var BEZUG = ['grundsicherungsgeld', 'sozialamt', 'wohngeld', 'kiz', 'kindergeld'];
 
   function writeForm() {
@@ -621,6 +630,7 @@
     arbeit: { stelle: 'Träger der Eingliederungshilfe (in Bayern der Bezirk)', betreff: 'Antrag auf Budget für Arbeit', satz: 'hiermit beantrage ich ein Budget für Arbeit nach § 61 SGB IX.' },
     rundfunk: { stelle: 'ARD ZDF Deutschlandradio Beitragsservice', betreff: 'Antrag auf Befreiung vom Rundfunkbeitrag', satz: 'hiermit beantrage ich die Befreiung vom Rundfunkbeitrag. Den Bescheid über meine Sozialleistung füge ich bei.' },
     zuzahl: { stelle: 'Meine Krankenkasse', betreff: 'Antrag auf Befreiung von Zuzahlungen', satz: 'hiermit beantrage ich die Befreiung von Zuzahlungen oder die Feststellung der Belastungsgrenze. Bitte prüfen Sie auch, ob ich als chronisch krank gelte.' },
+    alg1: { stelle: 'Agentur für Arbeit', betreff: 'Arbeitsuchendmeldung und Antrag auf Arbeitslosengeld', satz: 'hiermit melde ich mich arbeitsuchend und beantrage Arbeitslosengeld. Bitte nennen Sie mir einen Termin für die persönliche Arbeitslosmeldung. Ist mein Leistungsvermögen wegen Krankheit eingeschränkt, bitte ich um Prüfung nach § 145 SGB III.' },
     bab: { stelle: 'Agentur für Arbeit', betreff: 'Antrag auf Berufsausbildungsbeihilfe', satz: 'hiermit beantrage ich Berufsausbildungsbeihilfe für meine Berufsausbildung.' },
     wbs: { stelle: 'Wohnungsamt meiner Gemeinde oder Stadt (Bayern)', betreff: 'Antrag auf Erteilung eines Wohnberechtigungsscheins', satz: 'hiermit beantrage ich einen Wohnberechtigungsschein für meinen Haushalt.' }
   };
@@ -663,6 +673,9 @@
     if (s.gdb === 'antrag') b.push('Feststellung der Behinderung ist beantragt, Bescheid steht noch aus');
     if (s.mzG) b.push('Merkzeichen G oder aG');
     if (s.emStd === 'unklar') b.push('Längere Krankheit, Arbeitsfähigkeit noch ungeklärt');
+    if (s.arbeitSit === 'arbeitslos') b.push('Arbeitslos oder Kündigung erhalten' + (s.algZeit ? ', in den letzten 30 Monaten mindestens 12 Monate versicherungspflichtig beschäftigt' : ''));
+    if (s.arbeitSit === 'krank') b.push('Krankgeschrieben' + (s.krankWochen === 'unter6' ? ', unter 6 Wochen' : s.krankWochen === 'laeuft' ? ', Krankengeld läuft' : s.krankWochen === 'ende' ? ', Krankengeld endet bald oder ist ausgelaufen' : ''));
+    if (s.lohnVorher) b.push('Letztes Bruttoarbeitsentgelt: ' + money(s.lohnVorher) + ' im Monat');
     if (s.kindEink) b.push('Eigenes Einkommen der Kinder: ' + money(s.kindEink) + ' im Monat');
     if (s.blind === 'blind') b.push('blind');
     if (s.blind === 'hoch') b.push('hochgradig sehbehindert');

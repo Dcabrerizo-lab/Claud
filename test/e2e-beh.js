@@ -31,7 +31,7 @@ const file = process.argv[2] || (__dirname + '/../dist/leistungs-lotse.html');
   const opts = (id) => p.evaluate((i) => [...document.getElementById(i).options].map((o) => o.value + '|' + o.textContent), id);
   ok('GdB-Auswahl hat 12 Einträge (mit „beantragt“)', (await opts('gdb')).length === 12);
   ok('Person-Auswahl hat 4 Einträge', (await opts('bhPerson')).length === 4);
-  ok('Alle Karten (21) da', (await p.locator('#cards .card').count()) === 21);
+  ok('Alle Karten (23) da', (await p.locator('#cards .card').count()) === 23);
 
   // Fall 1: volljähriges Kind, Behinderung vor 25, GdB 100
   await sel('bhPerson', 'erwVor25'); await p.check('#bhSelbst'); await sel('gdb', '100');
@@ -99,9 +99,9 @@ const file = process.argv[2] || (__dirname + '/../dist/leistungs-lotse.html');
     ok('Sprache ' + l + ': keine Rohschlüssel sichtbar', bad.length === 0, bad.join(','));
     const labs = await p.evaluate(() => ['bhPerson', 'gdb', 'blind', 'emStd'].every((i) => [...document.getElementById(i).options].every((o) => o.textContent.trim().length > 0)));
     ok('Sprache ' + l + ': alle Auswahlfelder beschriftet', labs);
-    const cut = await p.evaluate(() => { const out = []; const sp = document.createElement('span'); sp.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap'; document.body.appendChild(sp);
+    const cut = await p.evaluate(() => { const versteckt = [...document.querySelectorAll('.subbox[hidden], .cond-kinder[hidden], .cond-kids[hidden], .cond-adults2[hidden], [id$="BruttoF"][hidden], [id$="NettoF"][hidden]')]; versteckt.forEach((e) => { e.hidden = false; }); const out = []; const sp = document.createElement('span'); sp.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap'; document.body.appendChild(sp);
       document.querySelectorAll('select').forEach((s) => { if (s.id === 'lang' || !s.clientWidth) return; const cs = getComputedStyle(s); sp.style.font = cs.font; const avail = s.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 4;
-        [...s.options].forEach((o) => { sp.textContent = o.textContent; if (sp.offsetWidth > avail) out.push(s.id + ': ' + o.textContent); }); }); sp.remove(); return out; });
+        [...s.options].forEach((o) => { sp.textContent = o.textContent; if (sp.offsetWidth > avail) out.push(s.id + ': ' + o.textContent); }); }); sp.remove(); versteckt.forEach((e) => { e.hidden = true; }); return out; });
     ok('Sprache ' + l + ': keine abgeschnittenen Auswahl-Einträge (390 px)', cut.length === 0, cut.join(' | '));
     const ov = await p.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     ok('Sprache ' + l + ': kein seitliches Scrollen bei 390 px', ov <= 1, ov);

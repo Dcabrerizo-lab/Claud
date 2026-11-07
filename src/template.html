@@ -394,6 +394,34 @@
           </fieldset>
 
           <fieldset>
+            <legend data-t="lg.arbeit"></legend>
+            <div class="field">
+              <label for="arbeitSit" data-t="arbeit.label"></label>
+              <select id="arbeitSit"></select>
+            </div>
+            <div class="subbox cond-alos">
+              <label class="check"><input type="checkbox" id="algZeit"><span data-t="cb.algZeit"></span></label>
+              <div class="field">
+                <label for="algMonate" data-t="algMon.label"></label>
+                <select id="algMonate"></select>
+              </div>
+            </div>
+            <div class="subbox cond-krank">
+              <div class="field">
+                <label for="krankWochen" data-t="krankW.label"></label>
+                <select id="krankWochen"></select>
+              </div>
+            </div>
+            <div class="subbox cond-job">
+              <div class="field">
+                <label for="lohnVorher" data-t="lohnV.label"></label>
+                <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="lohnVorher"><span aria-hidden="true">€</span></div>
+                <span class="hint" data-t="lohnV.hint"></span>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
             <legend data-t="lg.ausb"></legend>
             <div class="field">
               <label for="ausbildung" data-t="ausb.label"></label>

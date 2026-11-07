@@ -180,7 +180,7 @@ for (let i = 0; i < 30000; i++) {
   o.netto = o.brutto * 0.8;
   let out; try { out = R.evaluate(o); } catch (e) { randBad++; console.log('Absturz', JSON.stringify(o), e.message); continue; }
   const ids = new Set(out.results.map((x) => x.id));
-  if (out.results.length !== 21 || ids.size !== 21 || !out.results.every((x) => LV.includes(x.level) && x.name && x.steps && x.tx.length >= 1)) randBad++;
+  if (out.results.length !== 23 || ids.size !== 23 || !out.results.every((x) => LV.includes(x.level) && x.name && x.steps && x.tx.length >= 1)) randBad++;
   // Texte müssen in allen Sprachen ohne offene Platzhalter erscheinen
   if (i % 50 === 0) out.results.forEach((x) => x.tx.forEach((y) => {
     ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro'].forEach((l) => {
@@ -206,13 +206,13 @@ check('Alle Ergebnistexte in 8 Sprachen ohne offene Platzhalter', textBad.length
 // Müll-Eingaben
 [null, undefined, {}, { gdb: {} }, { bhPerson: [] }, { blind: 1 }, { emStd: false }, { brutto: 'abc', gdb: 'H' }, { brutto: -5, kids: -2 }, { gdb: 50 }, { gdb: '050' }].forEach((j, i) => {
   let err = null, out; try { out = R.evaluate(j || {}); } catch (e) { err = e; }
-  check('Müll ' + i + ' ohne Absturz', !err && out && out.results.length === 21, err && err.message);
+  check('Müll ' + i + ' ohne Absturz', !err && out && out.results.length === 23, err && err.message);
 });
 check('GdB als Zahl 50 wird erkannt', lv({ gdb: 50 }, 'ausweis') === 'ja');
 
-// Namen: alle 21 vorhanden, eindeutig, die Grundsicherungskarte heißt wie gewünscht
+// Namen: alle 23 vorhanden, eindeutig, die Grundsicherungskarte heißt wie gewünscht
 const names = R.evaluate({}).results.map((x) => x.name);
-check('21 verschiedene Namen', new Set(names).size === 21);
+check('23 verschiedene Namen', new Set(names).size === 23);
 check('Grundsicherungskarte heißt "Grundsicherung im Alter und bei voller Erwerbsminderung"', names.includes('Grundsicherung im Alter und bei voller Erwerbsminderung'));
 
 console.log(fails ? '\n' + fails + ' FEHLER von ' + n : '\nBehinderungs-Tests bestanden: ' + n + ' Prüfungen');

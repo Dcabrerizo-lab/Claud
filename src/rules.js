@@ -28,6 +28,12 @@ const Rules = (function () {
     but: { schulbedarf: 195, teilhabeMonat: 15 },
     // Minijob-Grenze 2026 (§ 8 Abs. 1a SGB IV): Erwerbseinkommen von Schülern und Azubis unter 25 bleibt bis dahin frei (§ 11b Abs. 2b SGB II)
     minijob: 603,
+    // Arbeitslosengeld I (SGB III): 60 %, mit Kind 67 % des pauschalierten Nettos (§ 149); Beitragsbemessungsgrenze 2026: 8.450 € im Monat;
+    // Netto grob 60-72 % des Bruttos; Dauer § 147 Abs. 2: [Monate versichert in 5 Jahren, Mindestalter, Monate Anspruch]
+    alg: { satz: 0.6, satzKind: 0.67, bbg: 8450, netto: [0.6, 0.72], dauer: [[48, 58, 24], [36, 55, 18], [30, 50, 15], [24, 0, 12], [20, 0, 10], [16, 0, 8], [12, 0, 6]] },
+    // Krankengeld (§ 47 SGB V): 70 % des Bruttos, höchstens 90 % des Nettos, bis zur Beitragsbemessungsgrenze 2026 (5.812,50 € im Monat);
+    // davon gehen Beiträge zur Renten-, Arbeitslosen- und Pflegeversicherung ab (rund 12,5 %); höchstens 78 Wochen (§ 48 SGB V)
+    krank: { satz: 0.7, nettoMax: 0.9, bbg: 5812.5, abzug: 0.125, wochen: 78 },
     // Pauschale für Versicherungen bei Einkommen, das kein Lohn ist (§ 6 Abs. 1 Nr. 1 Bürgergeld-V)
     versPauschale: 30,
     // Elterngeld: bis 300 € frei beim Wohngeld (§ 10 Abs. 1 BEEG); bei Grundsicherung und Kinderzuschlag nur, wenn vor der Geburt Einkommen da war (§ 10 Abs. 5 BEEG)
@@ -188,8 +194,12 @@ const Rules = (function () {
       egFreiSGB: sumIf((a, b) => a === 'eg' && b > R.elterngeldFrei ? R.elterngeldFrei : 0),
       vPausch: sumIf((a, b) => a !== 'lohn' && a !== 'ohne' && b > 0 ? R.versPauschale : 0),
       mzG: !!inp.mzG,
+      arbeitSit: inp.arbeitSit === 'arbeitslos' || inp.arbeitSit === 'krank' ? inp.arbeitSit : '',
+      algZeit: !!inp.algZeit, algMonate: [12, 16, 20, 24, 30, 36, 48].indexOf(Number(inp.algMonate)) >= 0 ? Number(inp.algMonate) : 0,
+      krankWochen: ['unter6', 'laeuft', 'ende'].indexOf(inp.krankWochen) >= 0 ? inp.krankWochen : '',
+      lohnVorher: num(inp.lohnVorher), alterJahre: jahr >= 1900 && jahr <= 2010 ? heute - jahr - 0.5 : 0,
       fehlt: { einkommen: blank(inp.brutto), netto: blank(inp.netto), vermoegen: blank(inp.vermoegen), miete: blank(inp.miete) },
-      adults, kids, kidsU6, kids14, young, persons, brutto, brutto2, erwerb: !inp.nichtArbeit, erwerb2: !inp.nichtArbeit2, netto, nettoGiven, miete, vermoegen, unterhalt, regel, regelElt,
+      adults, kids, kidsU6, kids14, young, persons, brutto, brutto2, erwerb: art1 === 'lohn', erwerb2: art2 === 'lohn', netto, nettoGiven, miete, vermoegen, unterhalt, regel, regelElt,
       children: kids + young,
       alleinerz: adults === 1 && kids > 0,
       stufe: [1, 2, 3, 4, 5, 6, 7].indexOf(Number(inp.mietstufe)) >= 0 ? Number(inp.mietstufe) : null,
@@ -396,6 +406,8 @@ const Rules = (function () {
   function bildungTeilhabe(h, wg, kz, gg) {
     const id = 'but';
     if (h.children === 0) return mk(id, 'nein', 'keinKind', [['but.keinKind']]);
+    // § 28 Abs. 1 SGB II: junge Erwachsene nur, solange sie zur Schule gehen und keine Ausbildungsvergütung bekommen
+    if (h.kids === 0 && (h.ausbildung === 'kindBetrieb' || h.kindEink > 0)) return mk(id, 'nein', 'vorausFehlt', [['but.azubi']]);
     const inhalt = h.young === 0 && h.kids > 0 && h.kidsU6 === h.kids ? ['but.inhaltKlein', { teil: eur(R.but.teilhabeMonat) }] : ['but.inhalt', { schul: eur(R.but.schulbedarf), teil: eur(R.but.teilhabeMonat) }];
     if (h.bezug.grundsicherungsgeld || h.bezug.sozialamt || h.bezug.kiz || h.bezug.wohngeld) {
       return mk(id, 'ja', 'ja', [['but.bezug'], inhalt]);
@@ -504,12 +516,54 @@ const Rules = (function () {
   function erwerbsminderungsrente(h) {
     const id = 'emrente';
     if (h.alter) return mk(id, 'nein', 'vorausFehlt', [['emrente.alter']]);
+    if (!h.emStd && h.arbeitSit === 'krank' && h.krankWochen && h.krankWochen !== 'unter6') return mk(id, 'vielleicht', 'vielleicht', [['emrente.unklar']]);
     if (!h.emStd) return mk(id, 'nein', 'vorausFehlt', [['emrente.keine']]);
     if (h.emStd === 'unklar') return mk(id, 'vielleicht', 'vielleicht', [['emrente.unklar']]);
     const art = h.emStd === 'unter3' ? 'emrente.voll' : 'emrente.teil';
     if (h.em5) return mk(id, 'ja', 'ja', [[art], ['emrente.ja']]);
     if (h.wfbm) return mk(id, 'vielleicht', 'vielleicht', [[art], ['emrente.werkstatt']]);
     return mk(id, 'vielleicht', 'vielleicht', [[art], ['emrente.warte']]);
+  }
+
+  // Arbeitslosengeld I (§§ 136 ff. SGB III)
+  function alg1(h) {
+    const id = 'alg1';
+    const melden = ['alg1.melden'];
+    if (h.art1 === 'alg' || (h.adults === 2 && h.art2 === 'alg')) return mk(id, 'na', 'na', [['alg1.na']]);
+    // Krankengeld läuft aus: Arbeitslosengeld trotz eingeschränkter Leistungsfähigkeit (Nahtlosigkeit, § 145 SGB III)
+    if (h.arbeitSit === 'krank' && h.krankWochen === 'ende') return mk(id, 'vielleicht', 'vielleicht', [['alg1.nahtlos'], melden]);
+    if (h.arbeitSit !== 'arbeitslos') return mk(id, 'nein', 'vorausFehlt', [['alg1.keine']]);
+    if (h.alter) return mk(id, 'nein', 'vorausFehlt', [['alg1.alter']]);
+    if (!h.algZeit) return mk(id, 'vielleicht', 'vielleicht', [['alg1.zeit'], melden]);
+    const p = h.children > 0 ? R.alg.satzKind : R.alg.satz;
+    const tx = [['alg1.ja', { p: Math.round(p * 100) }]];
+    if (h.algMonate) {
+      const row = R.alg.dauer.find((r) => h.algMonate >= r[0] && h.alterJahre >= r[1]);
+      tx.push(['alg1.dauer', { m: row[2] }]);
+    } else tx.push(['alg1.dauerMin']);
+    if (h.lohnVorher > 0) {
+      const b = Math.min(h.lohnVorher, R.alg.bbg);
+      tx.push(['schaetz.spanne', { a: eur(r10(b * R.alg.netto[0] * p)), b: eur(r10(b * R.alg.netto[1] * p)) }]);
+    }
+    tx.push(melden);
+    return mk(id, 'ja', 'ja', tx);
+  }
+
+  // Krankengeld (§§ 44 ff. SGB V)
+  function krankengeld(h) {
+    const id = 'krankengeld';
+    if (h.art1 === 'kg' || (h.adults === 2 && h.art2 === 'kg')) return mk(id, 'na', 'na', [['krank.na'], ['krank.78']]);
+    if (h.arbeitSit !== 'krank') return mk(id, 'nein', 'vorausFehlt', [['krank.keine']]);
+    if (h.krankWochen === 'ende') return mk(id, 'nein', 'vorausFehlt', [['krank.ende']]);
+    const tx = [[h.krankWochen === 'unter6' ? 'krank.lfz' : 'krank.ja']];
+    if (h.lohnVorher > 0) {
+      const b = Math.min(h.lohnVorher, R.krank.bbg);
+      // Netto grob 60-72 % des Bruttos; Krankengeld = min(70 % brutto, 90 % netto), abzüglich der Beiträge
+      const kgv = (q) => r10(Math.min(R.krank.satz * b, R.krank.nettoMax * b * q) * (1 - R.krank.abzug));
+      tx.push(['schaetz.spanne', { a: eur(kgv(R.alg.netto[0])), b: eur(kgv(R.alg.netto[1])) }]);
+    }
+    tx.push(['krank.78']);
+    return mk(id, h.krankWochen === 'unter6' ? 'vielleicht' : 'ja', h.krankWochen === 'unter6' ? 'vielleicht' : 'ja', tx);
   }
 
   // Eingliederungshilfe (SGB IX Teil 2, bei seelischer Behinderung von Kindern § 35a SGB VIII)
@@ -664,7 +718,7 @@ const Rules = (function () {
     eingl: 'Eingliederungshilfe', pausch: 'Behinderten-Pauschbetrag', ausweis: 'Schwerbehindertenausweis und Nachteilsausgleiche',
     blindengeld: 'Blindengeld (Bayern)', pflegeplus: 'Verhinderungspflege und Pflegehilfsmittel', arbeit: 'Budget für Arbeit',
     rundfunk: 'Befreiung vom Rundfunkbeitrag', zuzahl: 'Befreiung von Zuzahlungen', bab: 'Berufsausbildungsbeihilfe',
-    wbs: 'Wohnberechtigungsschein (Bayern)'
+    wbs: 'Wohnberechtigungsschein (Bayern)', alg1: 'Arbeitslosengeld I', krankengeld: 'Krankengeld'
   };
   // Unterlagen der neuen Karten: gemeinsame Schlüssel (u.*), damit nicht jede Karte eigene Texte braucht
   const NEWSTEPS = {
@@ -673,7 +727,8 @@ const Rules = (function () {
     blindengeld: ['u.ausweis', 'u.arzt', 'u.bescheide'], pflegeplus: ['u.versichertenkarte', 'u.pflegebescheid', 'u.kosten'],
     arbeit: ['u.ausweis', 'u.arzt', 'u.vertrag'], rundfunk: ['u.beitragsnr', 'u.bescheide', 'u.ausweis'],
     zuzahl: ['u.versichertenkarte', 'u.quittungen', 'u.einkommen'], bab: ['u.ausbildungsvertrag', 'u.einkommen', 'u.mietvertrag'],
-    wbs: ['u.einkommen', 'u.ausweis', 'u.haushalt']
+    wbs: ['u.einkommen', 'u.ausweis', 'u.haushalt'],
+    alg1: ['u.ausweis', 'u.kuendigung', 'u.lohnabrechnung'], krankengeld: ['u.au', 'u.versichertenkarte', 'u.lohnabrechnung']
   };
   const STEPS = {};
   Object.keys(NAMES).forEach((id) => {
@@ -714,7 +769,7 @@ const Rules = (function () {
     const baf = bafoeg(h);
     const pf = pflege(h);
     const results = [kg, wg, kz, gg, but, uvg, gsa, baf, pf,
-      kindergeldBeh(h), erwerbsminderungsrente(h), eingliederungshilfe(h), pauschbetrag(h), ausweis(h), blindengeld(h),
+      alg1(h), krankengeld(h), kindergeldBeh(h), erwerbsminderungsrente(h), eingliederungshilfe(h), pauschbetrag(h), ausweis(h), blindengeld(h),
       pflegeplus(h), budgetArbeit(h), rundfunk(h, gg, gsa), zuzahlung(h), bab(h), wbs(h)].map(angabeFehlt(h)).map((x, i) => ({ ...x, name: NAMES[x.id], order: i, steps: STEPS[x.id] }));
     const sorted = results.slice().sort((a, b) => ORDER[a.level] - ORDER[b.level] || a.order - b.order);
     return { h, results: sorted, zusammen: zusammenspiel(h, results) };

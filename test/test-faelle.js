@@ -110,7 +110,48 @@ ck('EM 3 bis 6 h: Jobcenter', L({ emStd: '3bis6', brutto: 200, miete: 400, miets
 const gueltig = ['ja', 'vielleicht', 'nein', 'na'];
 [f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15, f16, f17, f18, f19, f20].forEach((o, i) => {
   const r = R.evaluate({ ...base, ...o });
-  ck('Fall ' + (i + 1) + ': 21 Ergebnisse, gültige Stufen, keine Fehlwerte', r.results.length === 21 && r.results.every((x) => gueltig.includes(x.level)) && !/NaN|undefined|Infinity/.test(JSON.stringify(r)));
+  ck('Fall ' + (i + 1) + ': 23 Ergebnisse, gültige Stufen, keine Fehlwerte', r.results.length === 23 && r.results.every((x) => gueltig.includes(x.level)) && !/NaN|undefined|Infinity/.test(JSON.stringify(r)));
 });
+// ---------- Arbeitslosengeld I und Krankengeld (SGB III, SGB V) ----------
+const T = (o, id, key) => { const x = res(o).m[id].tx.find((a) => a[0] === key); return x ? x[1] : null; };
+// § 147 Abs. 2 SGB III: ab 58 Jahren und 48 Monaten Versicherung 24 Monate; mit Kind 67 % (§ 149)
+const a1 = { adults: 2, kids: 2, arbeitSit: 'arbeitslos', algZeit: true, algMonate: 48, gebJahr: 1966, heute: 2026.8, lohnVorher: 4000 };
+ck('ALG I: 60 Jahre, 48 Monate → 24 Monate, mit Kindern 67 %', L(a1, 'alg1') === 'ja' && T(a1, 'alg1', 'alg1.dauer').m === 24 && T(a1, 'alg1', 'alg1.ja').p === 67);
+ck('ALG I: Schätzung 4.000 € x (60-72 %) x 67 % = 1.610 bis 1.930 €', T(a1, 'alg1', 'schaetz.spanne').a === E(1610) && T(a1, 'alg1', 'schaetz.spanne').b === E(1930), JSON.stringify(T(a1, 'alg1', 'schaetz.spanne')));
+ck('ALG I: 57 Jahre mit 48 Monaten → 18 Monate (ab 55 und 36 Monaten)', T({ ...a1, gebJahr: 1969 }, 'alg1', 'alg1.dauer').m === 18);
+ck('ALG I: 30 Jahre, 20 Monate → 10 Monate, ohne Kind 60 %', T({ ...a1, adults: 1, kids: 0, gebJahr: 1996, algMonate: 20 }, 'alg1', 'alg1.dauer').m === 10 && T({ ...a1, adults: 1, kids: 0, gebJahr: 1996, algMonate: 20 }, 'alg1', 'alg1.ja').p === 60);
+ck('ALG I: über der Beitragsbemessungsgrenze gedeckelt (8.450 €)', T({ ...a1, lohnVorher: 12000 }, 'alg1', 'schaetz.spanne').b === E(Math.round(8450 * 0.72 * 0.67 / 10) * 10));
+ck('ALG I: ohne 12 Monate Versicherung nur möglich', L({ ...a1, algZeit: false }, 'alg1') === 'vielleicht');
+ck('ALG I: im Rentenalter nicht', L({ ...a1, gebJahr: 1955 }, 'alg1') === 'nein');
+ck('ALG I: wer es schon bekommt → schon vorhanden', L({ ...a1, art1: 'alg', brutto: 1900, netto: 1900 }, 'alg1') === 'na');
+ck('ALG I: Krankengeld läuft aus → Nahtlosigkeit möglich (§ 145 SGB III)', L({ arbeitSit: 'krank', krankWochen: 'ende' }, 'alg1') === 'vielleicht' && K({ arbeitSit: 'krank', krankWochen: 'ende' }, 'alg1')[0] === 'alg1.nahtlos');
+// § 47 SGB V: 70 % brutto, höchstens 90 % netto; abzüglich Beiträge 12,5 %. 3.000 € brutto: netto 60-72 % → 1.620/1.944 x 0,9
+const k1 = { arbeitSit: 'krank', krankWochen: 'laeuft', lohnVorher: 3000 };
+ck('Krankengeld läuft: wahrscheinlich, Hinweis auf 78 Wochen', L(k1, 'krankengeld') === 'ja' && K(k1, 'krankengeld').includes('krank.78'));
+ck('Krankengeld: Schätzung 3.000 € → 1.420 bis 1.700 €', T(k1, 'krankengeld', 'schaetz.spanne').a === E(Math.round(3000 * 0.6 * 0.9 * 0.875 / 10) * 10) && T(k1, 'krankengeld', 'schaetz.spanne').b === E(Math.round(Math.min(2100, 3000 * 0.72 * 0.9) * 0.875 / 10) * 10), JSON.stringify(T(k1, 'krankengeld', 'schaetz.spanne')));
+ck('Krankengeld: unter 6 Wochen zahlt der Arbeitgeber (möglich)', L({ ...k1, krankWochen: 'unter6' }, 'krankengeld') === 'vielleicht' && K({ ...k1, krankWochen: 'unter6' }, 'krankengeld')[0] === 'krank.lfz');
+ck('Krankengeld nach 78 Wochen: endet, EM-Rente wird möglich', L({ ...k1, krankWochen: 'ende' }, 'krankengeld') === 'nein' && L({ ...k1, krankWochen: 'ende' }, 'emrente') === 'vielleicht');
+
+// ---------- Fälle aus den Nutzertests ----------
+// Jasmin: alleinerziehend, Kinder 3 und 8, Minijob 538 €, Miete 780: Bedarf 563 + 357 + 390 + 780 + 36 % Mehrbedarf = 2.292,68
+const jas = { kids: 2, kidsU6: 1, unterhaltFehlt: true, art1: 'lohn', brutto: 538, netto: 538, miete: 780, mietstufe: 5, vermoegen: 400, bezug: { kindergeld: true } };
+ck('Jasmin: Bedarf mit Mehrbedarf 2.293 €', P(jas, 'ggeld', 'bedarf') === E(563 + 357 + 390 + 780 + 0.36 * 563));
+ck('Jasmin: Grundsicherungsgeld wahrscheinlich, Unterhaltsvorschuss wahrscheinlich, Kinderzuschlag nein (Mindesteinkommen)', L(jas, 'ggeld') === 'ja' && L(jas, 'uvg') === 'ja' && L(jas, 'kiz') === 'nein');
+// Thomas: Paar, Tochter 19 in Ausbildung im Betrieb mit 850 €: kein BAföG, Einkommen der Tochter mindert die Grundsicherung
+const tho = { adults: 2, young: 1, art1: 'kg', art2: 'lohn', brutto: 1450 + 1100, brutto2: 1100, netto: 1450 + 870, miete: 920, mietstufe: 3, vermoegen: 12000, gebJahr: 1968, heute: 2026.8, ausbildung: 'kindBetrieb' };
+ck('Thomas: Kind im Betrieb → kein BAföG, BAB-Hinweis', L(tho, 'bafoeg') === 'nein' && K(tho, 'bafoeg')[0] === 'bafoeg.betrieb' && L(tho, 'bab') === 'vielleicht');
+ck('Thomas: mit 850 € Ausbildungsvergütung keine „wahrscheinliche“ Grundsicherung mehr', L(tho, 'ggeld') === 'ja' && L({ ...tho, kindEink: 850 }, 'ggeld') !== 'ja');
+ck('Thomas: Krankengeld schon vorhanden', L(tho, 'krankengeld') === 'na');
+// Elena: ALG I 2.050 + Elterngeld 1.200, 2 Kinder unter 6, München VII, Miete 1.680: Elterngeld nicht wie Lohn
+const ele = { adults: 2, kids: 2, kidsU6: 2, art1: 'alg', art2: 'eg', brutto: 3250, brutto2: 1200, netto: 3250, miete: 1680, mietstufe: 7, vermoegen: 28000, gebJahr: 1990, heute: 2026.8 };
+ck('Elena: Wohngeld und Kinderzuschlag wahrscheinlich, mit Beträgen', L(ele, 'wohngeld') === 'ja' && L(ele, 'kiz') === 'ja' && !!T(ele, 'kiz', 'schaetz.eins') && (!!T(ele, 'wohngeld', 'schaetz.spanne') || !!T(ele, 'wohngeld', 'schaetz.eins')));
+ck('Elena: Elterngeld bekommt keinen Freibetrag für Arbeit (anders als Lohn)', L(ele, 'ggeld') !== 'ja' || L({ ...ele, art2: 'lohn' }, 'ggeld') === 'ja');
+// Günter: 66 Jahre (geb. 1960, Grenze 66 Jahre 4 Monate → je nach Monat), Rente 1.050, Miete 520, GdB 80 mit G, Pflegegrad 2
+const gue = { art1: 'rente', brutto: 1180, netto: 1050, miete: 520, mietstufe: 4, vermoegen: 900, gebJahr: 1958, heute: 2026.8, bhPerson: 'erwNach25', gdb: '80', mzG: true, pflegegrad: '2' };
+ck('Günter: Rentenalter aus dem Geburtsjahr → Sozialamt statt Jobcenter', L(gue, 'ggeld') === 'nein' && K(gue, 'ggeld')[0] === 'ggeld.sozialamtZustaendig');
+ck('Günter: Mehrbedarf G (17 % von 563 €) im Bedarf', P(gue, 'gsa', 'bedarf') === E(563 + 520 + 0.17 * 563));
+ck('Günter: Fahrtkostenpauschale 900 € ab GdB 80, Steuer-Hinweis', !!T(gue, 'pausch', 'pausch.fahrt') && K(gue, 'pausch').includes('pausch.steuer'));
+ck('Günter: geboren 1960 → je nach Geburtsmonat (möglich, mit Hinweis)', K({ ...gue, gebJahr: 1960 }, 'gsa').includes('gsa.grenz'));
+
 console.log(fails ? '\n' + fails + ' von ' + n + ' FEHLGESCHLAGEN' : '\nFall-Tests bestanden: ' + n + ' Prüfungen');
 process.exit(fails ? 1 : 0);
