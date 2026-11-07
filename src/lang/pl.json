@@ -587,5 +587,14 @@
   "t.krank.78": "Krankengeld z powodu tej samej choroby przysługuje maksymalnie 78 tygodni w ciągu 3 lat; 6 tygodni wynagrodzenia chorobowego się wlicza. Planuj z wyprzedzeniem: potem może przysługiwać zasiłek dla bezrobotnych (Nahtlosigkeit) i Erwerbsminderungsrente.",
   "t.krank.ende": "Po 78 tygodniach Krankengeld się kończy. Potem może przysługiwać zasiłek dla bezrobotnych (również przy ograniczonej zdolności do pracy) i Erwerbsminderungsrente. Jeśli to nie wystarczy, sprawdź Grundsicherungsgeld lub Wohngeld.",
   "t.but.azubi": "Pakiet edukacyjny przysługuje dzieciom poniżej 18 lat oraz młodym dorosłym do 25 lat, którzy chodzą do szkoły i nie otrzymują wynagrodzenia za naukę zawodu.",
-  "beh.pruefenKurz": "Przed wysłaniem sprawdź adres."
+  "beh.pruefenKurz": "Przed wysłaniem sprawdź adres.",
+  "ek.art.wfbm": "Wynagrodzenie z warsztatu (WfbM)",
+  "ek.betrag.hint.wfbm": "Podane na pasku wypłaty z warsztatu: kwota wypłacana.",
+  "t.schaetz.mind": "Szacunkowo: co najmniej {a} miesięcznie.",
+  "t.gsa.essen": "Do tego dochodzi dodatek na obiad w warsztacie.",
+  "t.gsa.eltern": "Kto mieszka z rodzicami, dostaje Grundsicherung tylko dla siebie. Dochód rodziców się nie liczy (dopiero od 100 000 € rocznie). Do tego dochodzi część kosztów mieszkania.",
+  "t.gsa.heim": "W domu mieszkalnym Grundsicherung pokrywa stawkę podstawową i koszty mieszkania. Sozialamt rozlicza koszty mieszkania z domem.",
+  "t.wohngeld.eltern": "Kto mieszka z rodzicami, należy do ich gospodarstwa. Wohngeld składają wtedy rodzice dla wszystkich. Dla ciebie samego zwykle właściwa jest Grundsicherung.",
+  "t.wohngeld.heim": "W domu mieszkalnym pierwszeństwo ma Grundsicherung.",
+  "t.rundfunk.rf": "Z oznaczeniem RF przysługuje obniżka abonamentu do jednej trzeciej. Przy Grundsicherung nawet zwolnienie."
 }

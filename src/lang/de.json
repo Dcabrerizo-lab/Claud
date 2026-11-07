@@ -587,5 +587,14 @@
   "t.krank.78": "Krankengeld gibt es für dieselbe Krankheit höchstens 78 Wochen in 3 Jahren, die 6 Wochen Lohnfortzahlung zählen mit. Plane rechtzeitig: Danach können Arbeitslosengeld (Nahtlosigkeit) und eine Erwerbsminderungsrente in Frage kommen.",
   "t.krank.ende": "Nach 78 Wochen endet das Krankengeld. Danach können Arbeitslosengeld (auch bei eingeschränkter Leistungsfähigkeit) und eine Erwerbsminderungsrente in Frage kommen. Reicht das nicht, prüfe Grundsicherungsgeld oder Wohngeld.",
   "t.but.azubi": "Das Bildungspaket gibt es für Kinder unter 18 und für junge Erwachsene bis 25, die zur Schule gehen und keine Ausbildungsvergütung bekommen.",
-  "beh.pruefenKurz": "Bitte die Anschrift vor dem Absenden prüfen."
+  "beh.pruefenKurz": "Bitte die Anschrift vor dem Absenden prüfen.",
+  "ek.art.wfbm": "Lohn aus der Werkstatt",
+  "ek.betrag.hint.wfbm": "Steht auf dem Lohnzettel der Werkstatt: der Betrag, der ausgezahlt wird.",
+  "t.schaetz.mind": "Grob geschätzt: mindestens {a} im Monat.",
+  "t.gsa.essen": "Dazu kommt ein Mehrbedarf für das Mittagessen in der Werkstatt.",
+  "t.gsa.eltern": "Wer bei den Eltern wohnt, bekommt die Grundsicherung für sich allein. Das Einkommen der Eltern zählt nicht (erst ab 100.000 € im Jahr). Dazu kommt ein Anteil an den Wohnkosten.",
+  "t.gsa.heim": "Im Wohnheim zahlt die Grundsicherung den Regelsatz und die Wohnkosten. Das Sozialamt rechnet die Wohnkosten mit dem Wohnheim ab.",
+  "t.wohngeld.eltern": "Wer bei den Eltern wohnt, gehört zu deren Haushalt. Wohngeld beantragen dann die Eltern für alle. Für dich allein ist meist die Grundsicherung richtig.",
+  "t.wohngeld.heim": "Im Wohnheim geht die Grundsicherung vor.",
+  "t.rundfunk.rf": "Mit dem Merkzeichen RF gibt es eine Ermäßigung auf ein Drittel des Rundfunkbeitrags. Mit Grundsicherung ist es sogar eine Befreiung."
 }

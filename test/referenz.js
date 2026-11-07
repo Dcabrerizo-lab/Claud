@@ -33,7 +33,7 @@ function haushalt(e) {
   const brutto = zahl(e.brutto), brutto2 = erwachsene === 2 ? Math.min(zahl(e.brutto2), brutto) : 0;
   const nettoAngabe = !leer(e.netto) && zahl(e.netto) > 0;
   const netto = nettoAngabe ? zahl(e.netto) : brutto * 0.8;
-  const arten = ['lohn', 'rente', 'alg', 'kg', 'eg', 'ohne'];
+  const arten = ['lohn', 'rente', 'alg', 'kg', 'eg', 'wfbm', 'ohne'];
   const art = (a, alt) => (arten.indexOf(a) >= 0 ? a : (alt ? 'rente' : 'lohn'));
   const p = [{ art: art(e.art1, e.nichtArbeit), brutto: brutto - brutto2 }];
   if (erwachsene === 2) p.push({ art: art(e.art2, e.nichtArbeit2), brutto: brutto2 });
@@ -66,7 +66,7 @@ function haushalt(e) {
     const prozent = Math.min(0.6, Math.max(0.12 * kinder, u6 >= 1 || (unter16 >= 2 && unter16 <= 3) ? 0.36 : 0));
     mehrAE = prozent * RB[1];
   }
-  const em = e.emStd === 'unter3' || !!e.wfbm || !!e.erwerbsgemindert;
+  const em = e.emStd === 'unter3' || !!e.wfbm || !!e.erwerbsgemindert || e.art1 === 'wfbm' || e.art2 === 'wfbm' || (Array.isArray(e.einkommen) && e.einkommen.some((x) => x.art === 'wfbm'));
   return { e, erwachsene, kinder, jung, u6, k14, mitte, personen, brutto, brutto2, netto, p, rente, grenz, gruppe, em,
     regelEltern, regel: regelEltern + regelKinder, regelKinder, miete: zahl(e.miete), vermoegen: zahl(e.vermoegen), unterhalt, kindEink, uvg, mehrAE,
     bezug: e.bezug || {}, kids: kinder + jung };
@@ -126,7 +126,7 @@ const heiz = (n) => proPerson(HEIZ, n);
 const wg = (n, M, Y) => { const [a, b, c] = ABC[Math.min(n, 12) - 1]; return 1.15 * (M - (a + b * M + c * Y) * Y); };
 function yGrenze(n, M) { let lo = 0, hi = 30000; for (let i = 0; i < 80; i++) { const m = (lo + hi) / 2; if (wg(n, M, m) > 0) lo = m; else hi = m; } return lo; }
 const mieteWG = (st, n, warm, faktor) => Math.min(faktor * Math.max(0, warm - heiz(n)), hoechst(st, n)) + heiz(n);
-const ABZUG = { lohn: [0.1, 0.3], rente: [0.1, 0.2], kg: [0.1, 0.2], alg: [0, 0], eg: [0, 0], ohne: [0, 0] };
+const ABZUG = { lohn: [0.1, 0.3], rente: [0.1, 0.2], kg: [0.1, 0.2], alg: [0, 0], eg: [0, 0], wfbm: [0, 0.1], ohne: [0, 0] };
 
 function wohngeld(h) {
   const b = h.bezug, e = h.e;
@@ -175,4 +175,52 @@ function kinderzuschlag(h) {
   return { level: kiz >= 60 ? 'ja' : 'vielleicht', kiz };
 }
 
-module.exports = { haushalt, grundsicherungsgeld, wohngeld, kinderzuschlag, regelaltersgrenze, freibetragArbeit, RB };
+// ---------- Grundsicherung im Alter und bei Erwerbsminderung (SGB XII, 4. Kapitel) ----------
+// Einkommen § 82: Werkstattlohn ohne Arbeitsförderungsgeld (52 €), davon frei: RS1/8 + 50 % des Rests (Abs. 3 Satz 2);
+// Lohn: 30 % frei, höchstens RS1/2 (Abs. 3 Satz 1); Elterngeld über 300 €: 300 € frei; Renten, ALG, Krankengeld voll.
+function einkommenSGB12(e, h) {
+  let posten;
+  if (Array.isArray(e.einkommen)) posten = e.einkommen.map((x) => ({ art: x.art, n: zahl(x.b) }));
+  else {
+    const summe = h.p.reduce((s, x) => s + x.brutto, 0);
+    posten = h.p.map((x) => ({ art: x.art, n: summe > 0 ? h.netto * x.brutto / summe : h.netto / h.p.length, b: x.brutto }));
+  }
+  const rs1 = RB[1];
+  let summe = 0;
+  for (const x of posten) {
+    if (x.art === 'wfbm') { const lohn = Math.max(0, x.n - 52); const frei = Math.min(lohn, rs1 / 8 + 0.5 * Math.max(0, lohn - rs1 / 8)); summe += lohn - frei; }
+    else if (x.art === 'lohn') summe += x.n - Math.min(0.3 * x.n, 0.5 * rs1);
+    else if (x.art === 'eg') summe += Math.max(0, x.n - ((x.b != null ? x.b : x.n) > 300 ? 300 : 0));
+    else if (x.art !== 'ohne') summe += x.n;
+  }
+  return summe;
+}
+function grundsicherungAlter(e) {
+  const h = haushalt(e);
+  if (Array.isArray(e.einkommen)) { const s = e.einkommen.reduce((a, x) => a + zahl(x.b), 0); h.brutto = s; h.netto = s; h.p = [{ art: e.einkommen.length ? e.einkommen[0].art : 'ohne', brutto: s }]; }
+  const em = h.em;
+  if (!h.rente && !em && !h.grenz) return { level: 'nein' };
+  if (h.bezug.sozialamt) return { level: 'na' };
+  if (h.bezug.grundsicherungsgeld) return { level: 'nein' };
+  const wf = e.wohnform === 'eltern' || e.wohnform === 'heim' ? e.wohnform : '';
+  if (h.vermoegen > (wf ? 10000 : 10000 * h.erwachsene + 500 * h.kids)) return { level: 'nein' };
+  const regelPerson = wf === 'heim' || (h.erwachsene === 2 && !wf) ? RB[2] : RB[1];
+  const g = e.mzG ? 0.17 * regelPerson : 0;
+  const mieteDa = !leer(e.miete) && zahl(e.miete) > 0;
+  let bedarf, unsicher = 0;
+  if (wf === 'eltern') { bedarf = RB[1] + (mieteDa ? zahl(e.miete) : 0) + g; unsicher = mieteDa ? 0 : 300; }
+  else if (wf === 'heim') { bedarf = RB[2] + g; unsicher = 700; }
+  else bedarf = h.regel + h.miete + h.mehrAE + g;
+  if (e.wfbmEssen) unsicher += 90;
+  const eink = einkommenSGB12(e, h) + (wf ? 0 : h.kids * KG + kinderEinkommen(h));
+  const luecke = bedarf - eink;
+  let level = luecke >= 50 ? 'ja' : luecke > -(100 + unsicher) ? 'vielleicht' : 'nein';
+  if (h.grenz && level === 'ja') level = 'vielleicht';
+  // Konvention der App: Fehlt eine Angabe (Einkommen, Vermögen, Miete in der eigenen Wohnung), gibt es kein „wahrscheinlich“
+  const fehlt = (!Array.isArray(e.einkommen) && leer(e.brutto) && leer(e.netto)) || leer(e.vermoegen) || (!wf && leer(e.miete));
+  if (fehlt && level === 'ja') return { level: 'vielleicht' };
+  if (fehlt && level === 'vielleicht') return { level: 'vielleicht' };
+  return { level, bedarf, luecke };
+}
+
+module.exports = { haushalt, grundsicherungsgeld, wohngeld, kinderzuschlag, grundsicherungAlter, regelaltersgrenze, freibetragArbeit, RB };

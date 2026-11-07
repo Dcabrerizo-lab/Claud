@@ -66,9 +66,9 @@ G('KiZ: 3 Personen, 70.001 → nein', { adults: 2, kids: 1, brutto: 2000, netto:
 G('KiZ: 4 Personen, 85.001 → nein', { adults: 2, kids: 2, brutto: 2600, netto: 2050, vermoegen: 85001 }, 'kiz', 'nein');
 G('KiZ: 4 Personen, 85.000 → ja', { adults: 2, kids: 2, brutto: 2600, netto: 2050, vermoegen: 85000 }, 'kiz', 'ja');
 // Grundsicherung im Alter
-G('GSA: Lücke 163 → ja', { alter: true, netto: 880, miete: 480 }, 'gsa', 'ja');
-G('GSA: Einkommen knapp darüber (Lücke -57) → vielleicht', { alter: true, netto: 1100, miete: 480 }, 'gsa', 'vielleicht');
-G('GSA: Einkommen klar darüber → nein', { alter: true, netto: 1200, miete: 480 }, 'gsa', 'nein');
+G('GSA: Lücke 163 → ja', { alter: true, art1: 'rente', netto: 880, miete: 480 }, 'gsa', 'ja');
+G('GSA: Einkommen knapp darüber (Lücke -57) → vielleicht', { alter: true, art1: 'rente', netto: 1100, miete: 480 }, 'gsa', 'vielleicht');
+G('GSA: Einkommen klar darüber → nein', { alter: true, art1: 'rente', netto: 1200, miete: 480 }, 'gsa', 'nein');
 G('GSA: Vermögen 10001 → nein', { alter: true, netto: 500, vermoegen: 10001 }, 'gsa', 'nein');
 G('GSA: Paar mit einem Kind: 20.500 → ja, 20.501 → nein', { alter: true, adults: 2, kids: 1, netto: 500, vermoegen: 20500 }, 'gsa', 'ja');
 G('GSA: Paar mit einem Kind: 20.501 → nein', { alter: true, adults: 2, kids: 1, netto: 500, vermoegen: 20501 }, 'gsa', 'nein');

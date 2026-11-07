@@ -201,7 +201,7 @@
       $('ek' + i + 'BruttoF').hidden = !mitBrutto;
       $('ek' + i + 'NettoF').hidden = !art || art === 'ohne';
       $('ek' + i + 'BruttoHint').textContent = art === 'rente' ? t('ek.brutto.hint.rente') : t('ek.brutto.hint.lohn');
-      var bescheid = art === 'alg' || art === 'kg' || art === 'eg';
+      var bescheid = art === 'alg' || art === 'kg' || art === 'eg' || art === 'wfbm';
       $('ek' + i + 'NettoLab').textContent = bescheid ? t(art === 'kg' ? 'ek.betrag.kg' : 'ek.betrag') : t('ek.netto');
       $('ek' + i + 'NettoHint').textContent = bescheid ? t('ek.betrag.hint.' + art) : t('ek.netto.hint');
       // Plausibilität: Netto größer als Brutto ist fast immer ein Tippfehler; sehr kleine oder sehr große Beträge nachfragen
@@ -290,7 +290,7 @@
   function buildSelects() {
     var st = [['', t('stufe.unbekannt')]];
     for (var i = 1; i <= 7; i++) st.push([String(i), t('stufe.n', { n: Rules.roman(i) })]);
-    var ek = [['', t('ek.art.0')], ['lohn', t('ek.art.lohn')], ['rente', t('ek.art.rente')], ['alg', t('ek.art.alg')], ['kg', t('ek.art.kg')], ['eg', t('ek.art.eg')], ['ohne', t('ek.art.ohne')]];
+    var ek = [['', t('ek.art.0')], ['lohn', t('ek.art.lohn')], ['rente', t('ek.art.rente')], ['alg', t('ek.art.alg')], ['kg', t('ek.art.kg')], ['eg', t('ek.art.eg')], ['wfbm', t('ek.art.wfbm')], ['ohne', t('ek.art.ohne')]];
     fillSelect('ek1Art', ek, state.ek1Art);
     fillSelect('ek2Art', ek, state.ek2Art);
     fillSelect('mietstufe', st, state.mietstufe);
@@ -700,14 +700,14 @@
     if (person.tel && person.tel.trim()) L.push('Telefon: ' + person.tel.trim());
     L.push('', 'Haushalt: ' + haushaltZeile());
     L.push('Warmmiete im Monat: ' + money(s.miete) + (s.mietstufe ? ' (Mietenstufe ' + Rules.roman(Number(s.mietstufe)) + ')' : ''));
-    var ARTDE = { lohn: 'Lohn oder Gehalt', rente: 'Rente oder Pension', alg: 'Arbeitslosengeld I', kg: 'Krankengeld', eg: 'Elterngeld', ohne: 'kein Einkommen' };
+    var ARTDE = { lohn: 'Lohn oder Gehalt', rente: 'Rente oder Pension', alg: 'Arbeitslosengeld I', kg: 'Krankengeld', eg: 'Elterngeld', wfbm: 'Lohn aus der Werkstatt für behinderte Menschen', ohne: 'kein Einkommen' };
     var ekZeile = function (i, wer) {
       var art = s['ek' + i + 'Art'];
       if (!art) return wer + ': nicht angegeben';
       if (art === 'ohne') return wer + ': kein Einkommen';
       var teile = [];
       if ((art === 'lohn' || art === 'rente') && !blankVal(s['ek' + i + 'Brutto'])) teile.push('brutto ' + money(s['ek' + i + 'Brutto']));
-      if (!blankVal(s['ek' + i + 'Netto'])) teile.push((art === 'alg' || art === 'kg' || art === 'eg' ? '' : 'netto ') + money(s['ek' + i + 'Netto']));
+      if (!blankVal(s['ek' + i + 'Netto'])) teile.push((art === 'alg' || art === 'kg' || art === 'eg' || art === 'wfbm' ? '' : 'netto ') + money(s['ek' + i + 'Netto']));
       return wer + ': ' + ARTDE[art] + (teile.length ? ', ' + teile.join(', ') + ' im Monat' : '');
     };
     L.push(ekZeile(1, s.adults === 2 ? 'Einkommen (ich)' : 'Einkommen'));

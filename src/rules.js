@@ -38,12 +38,20 @@ const Rules = (function () {
     versPauschale: 30,
     // Elterngeld: bis 300 € frei beim Wohngeld (§ 10 Abs. 1 BEEG); bei Grundsicherung und Kinderzuschlag nur, wenn vor der Geburt Einkommen da war (§ 10 Abs. 5 BEEG)
     elterngeldFrei: 300,
+    // Werkstatt für behinderte Menschen (WfbM) und Grundsicherung nach dem SGB XII:
+    // § 82 Abs. 3 Satz 2 SGB XII: vom Werkstattlohn bleiben ein Achtel der Regelbedarfsstufe 1 und die Hälfte des Rests frei;
+    // § 82 Abs. 2 Nr. 5 SGB XII i. V. m. § 59 SGB IX: Arbeitsförderungsgeld (52 €) zählt nicht; § 82 Abs. 3 Satz 1: sonst 30 % frei,
+    // höchstens 50 % der Regelbedarfsstufe 1. Regelbedarfsstufe 1 auch bei den Eltern, Stufe 2 in einer besonderen Wohnform (Anlage zu § 28).
+    wfbm: { afoeg: 52, achtel: 1 / 8, rest: 0.5 }, gsaArbeit: { quote: 0.3, max: 0.5 },
+    // Unsichere Teile ohne feste Zahl (die App rechnet sie nicht, sondern verbreitert den Bereich „möglich“):
+    // Mittagessen in der Werkstatt (§ 42b Abs. 2 SGB XII), Wohnkosten bei den Eltern ohne Mietvertrag (§ 42a Abs. 3) oder im Wohnheim (§ 42a Abs. 5)
+    offen: { essen: 90, elternKdu: 300, heimKdu: 700 },
     // Mehrbedarfe: Alleinerziehende § 21 Abs. 3 SGB II / § 30 Abs. 3 SGB XII; Merkzeichen G bei Rentenalter oder voller Erwerbsminderung § 30 Abs. 1 SGB XII (17 %)
     mehr: { ae36: 0.36, aeJeKind: 0.12, aeMax: 0.6, g: 0.17 },
     // Freibetrag beim Wohngeld für eigenes Einkommen von Kindern (16 bis 24 Jahre): 1.200 € im Jahr (§ 17 Nr. 4 WoGG)
     wgKindFrei: 100,
     // Pauschalabzug beim Wohngeld (§ 16 WoGG) je Einkommensart: [kleinster, größter] üblicher Abzug
-    wgAbzug: { lohn: [0.1, 0.3], rente: [0.1, 0.2], kg: [0.1, 0.2], alg: [0, 0], eg: [0, 0], ohne: [0, 0] },
+    wgAbzug: { lohn: [0.1, 0.3], rente: [0.1, 0.2], kg: [0.1, 0.2], alg: [0, 0], eg: [0, 0], wfbm: [0, 0.1], ohne: [0, 0] },
     // Regelaltersgrenze (§ 235 SGB VI) in Monaten über 65, je Geburtsjahr 1947..1963; ab 1964: 67 Jahre
     rag: { 1947: 1, 1948: 2, 1949: 3, 1950: 4, 1951: 5, 1952: 6, 1953: 7, 1954: 8, 1955: 9, 1956: 10, 1957: 11, 1958: 12, 1959: 14, 1960: 16, 1961: 18, 1962: 20, 1963: 22 },
     uvg: { bis5: 227, bis11: 299, bis17: 394, min12: 600 },
@@ -138,10 +146,13 @@ const Rules = (function () {
     const kids = Math.max(0, inp.kids | 0);
     const young = Math.max(0, inp.young | 0);
     const persons = adults + kids + young;
-    const brutto = num(inp.brutto);
-    const brutto2 = adults === 2 ? Math.min(num(inp.brutto2), brutto) : 0;
-    const nettoGiven = inp.netto !== '' && inp.netto != null && num(inp.netto) > 0;
-    const netto = nettoGiven ? num(inp.netto) : brutto * 0.8;
+    // Einfache Version: Liste der Einkommen einer Person [{ art, b }] (b = ausgezahlter Betrag)
+    const ARTEN = ['lohn', 'rente', 'alg', 'kg', 'eg', 'wfbm', 'ohne'];
+    const liste = Array.isArray(inp.einkommen) ? inp.einkommen.filter((x) => x && ARTEN.indexOf(x.art) >= 0).map((x) => [x.art, num(x.b)]) : null;
+    const brutto = liste ? liste.reduce((a, x) => a + x[1], 0) : num(inp.brutto);
+    const brutto2 = adults === 2 && !liste ? Math.min(num(inp.brutto2), brutto) : 0;
+    const nettoGiven = liste ? true : inp.netto !== '' && inp.netto != null && num(inp.netto) > 0;
+    const netto = liste ? brutto : nettoGiven ? num(inp.netto) : brutto * 0.8;
     const miete = num(inp.miete);
     const vermoegen = num(inp.vermoegen);
     // Unterhalt, den die Kinder vom anderen Elternteil bekommen (im Monat, alle Kinder zusammen); nur mit Kindern im Haushalt
@@ -153,10 +164,9 @@ const Rules = (function () {
     const regel = regelElt + kidsU6 * R.regelbedarf.kind0 + kids14 * R.regelbedarf.kind14 + (kids - kidsU6 - kids14) * R.regelbedarf.kind + young * R.regelbedarf.jungErwachsener;
     const pg = ['1', '2', '3', '4', '5'].indexOf(String(inp.pflegegrad)) >= 0 ? Number(inp.pflegegrad) : 0;
     // Einkommensart je erwachsener Person (lohn, rente, alg, kg, eg = Elterngeld, ohne). Ältere Speicherstände: aus den Haken.
-    const ARTEN = ['lohn', 'rente', 'alg', 'kg', 'eg', 'ohne'];
-    const art1 = ARTEN.indexOf(inp.art1) >= 0 ? inp.art1 : (inp.nichtArbeit ? 'rente' : 'lohn');
+    const art1 = liste ? (liste.some((x) => x[0] === 'lohn') ? 'lohn' : liste.length ? liste[0][0] : 'ohne') : ARTEN.indexOf(inp.art1) >= 0 ? inp.art1 : (inp.nichtArbeit ? 'rente' : 'lohn');
     const art2 = ARTEN.indexOf(inp.art2) >= 0 ? inp.art2 : (inp.nichtArbeit2 ? 'rente' : 'lohn');
-    const pers = adults === 2 ? [[art1, brutto - brutto2], [art2, brutto2]] : [[art1, brutto]];
+    const pers = liste ? (liste.length ? liste : [['ohne', 0]]) : adults === 2 ? [[art1, brutto - brutto2], [art2, brutto2]] : [[art1, brutto]];
     const sumIf = (f) => pers.reduce((a, x) => a + f(x[0], x[1]), 0);
     // Eigenes Einkommen der Kinder (Ausbildungsvergütung, Minijob; ohne Kindergeld und Unterhalt), im Monat
     const kindEink = kids + young > 0 ? num(inp.kindEink) : 0;
@@ -189,23 +199,25 @@ const Rules = (function () {
       gruppe = age < 31 ? '<31' : age < 41 ? '31-40' : age < 51 ? '41-50' : '51+';
     }
     return {
-      art1, art2, pers, kindEink, uvgEst, kindZahl: unterhalt + uvgEst, mehrAE, alterGrenz,
+      art1, art2, pers, liste: !!liste, kindEink, uvgEst, kindZahl: unterhalt + uvgEst, mehrAE, alterGrenz,
       egFreiWG: sumIf((a, b) => a === 'eg' ? Math.min(R.elterngeldFrei, b) : 0),
       egFreiSGB: sumIf((a, b) => a === 'eg' && b > R.elterngeldFrei ? R.elterngeldFrei : 0),
       vPausch: sumIf((a, b) => a !== 'lohn' && a !== 'ohne' && b > 0 ? R.versPauschale : 0),
-      mzG: !!inp.mzG,
+      mzG: !!inp.mzG, mzRF: !!(inp.mz && inp.mz.RF),
+      wohnform: inp.wohnform === 'eltern' || inp.wohnform === 'heim' ? inp.wohnform : '', wfbmEssen: !!inp.wfbmEssen,
+      mieteGegeben: !blank(inp.miete) && num(inp.miete) > 0,
       arbeitSit: inp.arbeitSit === 'arbeitslos' || inp.arbeitSit === 'krank' ? inp.arbeitSit : '',
       algZeit: !!inp.algZeit, algMonate: [12, 16, 20, 24, 30, 36, 48].indexOf(Number(inp.algMonate)) >= 0 ? Number(inp.algMonate) : 0,
       krankWochen: ['unter6', 'laeuft', 'ende'].indexOf(inp.krankWochen) >= 0 ? inp.krankWochen : '',
       lohnVorher: num(inp.lohnVorher), alterJahre: jahr >= 1900 && jahr <= 2010 ? heute - jahr - 0.5 : 0,
-      fehlt: { einkommen: blank(inp.brutto), netto: blank(inp.netto), vermoegen: blank(inp.vermoegen), miete: blank(inp.miete) },
-      adults, kids, kidsU6, kids14, young, persons, brutto, brutto2, erwerb: art1 === 'lohn', erwerb2: art2 === 'lohn', netto, nettoGiven, miete, vermoegen, unterhalt, regel, regelElt,
+      fehlt: { einkommen: !liste && blank(inp.brutto), netto: !liste && blank(inp.netto), vermoegen: blank(inp.vermoegen), miete: blank(inp.miete) && inp.wohnform !== 'heim' && inp.wohnform !== 'eltern' },
+      adults, kids, kidsU6, kids14, young, persons, brutto, brutto2, erwerb: pers[0][0] === 'lohn' || (liste ? liste.some((x) => x[0] === 'lohn') : false), erwerb2: art2 === 'lohn', netto, nettoGiven, miete, vermoegen, unterhalt, regel, regelElt,
       children: kids + young,
       alleinerz: adults === 1 && kids > 0,
       stufe: [1, 2, 3, 4, 5, 6, 7].indexOf(Number(inp.mietstufe)) >= 0 ? Number(inp.mietstufe) : null,
       alter,
       // WfbM-Arbeitsbereich gilt als voll erwerbsgemindert (BA-Weisung § 8 SGB II Rz. 8.8-8.10a) -> Sozialamt statt Jobcenter
-      erwerbsgemindert: !!inp.erwerbsgemindert || inp.emStd === 'unter3' || !!inp.wfbm,
+      erwerbsgemindert: !!inp.erwerbsgemindert || inp.emStd === 'unter3' || !!inp.wfbm || pers.some((x) => x[0] === 'wfbm'),
       behinderung: !!inp.behinderung || String(inp.gdb) === '100',
       kinder12: !!inp.kinder12,
       unterhaltFehlt: !!inp.unterhaltFehlt,
@@ -259,7 +271,9 @@ const Rules = (function () {
   // Arbeitslosengeld I oder Krankengeld. erwerb: erste Person (bei Alleinstehenden der ganze Haushalt), erwerb2: zweite Person.
   function haushaltsFreibetrag(h) {
     const mk_ = h.kids > 0;
-    const f1 = h.erwerb ? sgb2Freibetrag(h.brutto - h.brutto2, mk_) : 0;
+    // Einfache Version: nur der Lohn zählt für den Freibetrag (nicht Rente oder Werkstattlohn derselben Person)
+    const b1 = h.liste ? h.pers.filter((x) => x[0] === 'lohn').reduce((a, x) => a + x[1], 0) : h.brutto - h.brutto2;
+    const f1 = h.erwerb ? sgb2Freibetrag(b1, mk_) : 0;
     const f2 = h.adults === 2 && h.erwerb2 ? sgb2Freibetrag(h.brutto2, mk_) : 0;
     return f1 + f2;
   }
@@ -281,6 +295,8 @@ const Rules = (function () {
     const id = 'wohngeld';
     if (h.bezug.grundsicherungsgeld || h.bezug.sozialamt) return mk(id, 'nein', 'ausschluss', [['wohngeld.ausschluss']]);
     if (h.bezug.wohngeld) return mk(id, 'na', 'na', [['wohngeld.na']]);
+    // Bei den Eltern: Wohngeld gibt es nur für den ganzen Haushalt (Antrag der Eltern); im Wohnheim geht die Grundsicherung vor
+    if (h.wohnform) return mk(id, 'nein', 'vorausFehlt', [['wohngeld.' + h.wohnform]]);
     const vermLimit = R.wohngeld.vermoegenErste + R.wohngeld.vermoegenJeWeitere * (h.persons - 1);
     if (h.vermoegen > vermLimit) return mk(id, 'nein', 'vermHoch', [['wohngeld.verm', { n: h.persons, limit: eur(vermLimit) }]]);
 
@@ -441,21 +457,55 @@ const Rules = (function () {
   // ---------------------------------------------------------------
   // Grundsicherung im Alter und bei Erwerbsminderung (SGB XII)
   // ---------------------------------------------------------------
+  // Einkommen für die Grundsicherung nach dem SGB XII je Einkommen der Person(en) (§ 82 SGB XII)
+  function gsaEinkommen(h) {
+    const pers = h.pers || [['lohn', h.brutto]];
+    const sumB = pers.reduce((a, x) => a + x[1], 0);
+    const rs1 = R.regelbedarf.alleinstehend;
+    return pers.reduce((a, x) => {
+      const art = x[0], b = x[1];
+      // Netto dieses Einkommens: in der ausführlichen Version anteilig aus dem Haushaltsnetto
+      const n = h.liste ? b : sumB > 0 ? h.netto * b / sumB : h.netto / pers.length;
+      if (art === 'wfbm') {
+        const e = Math.max(0, n - R.wfbm.afoeg);
+        const frei = Math.min(e, R.wfbm.achtel * rs1 + R.wfbm.rest * Math.max(0, e - R.wfbm.achtel * rs1));
+        return a + e - frei;
+      }
+      if (art === 'lohn') return a + n - Math.min(R.gsaArbeit.quote * n, R.gsaArbeit.max * rs1);
+      if (art === 'eg') return a + Math.max(0, n - (b > R.elterngeldFrei ? R.elterngeldFrei : 0));
+      if (art === 'ohne') return a;
+      return a + n;
+    }, 0);
+  }
+
   function grundsicherungAlter(h) {
     const id = 'gsa';
     if (!h.alter && !h.erwerbsgemindert && !h.alterGrenz) return mk(id, 'nein', 'vorausFehlt', [['gsa.voraus']]);
     if (h.bezug.sozialamt) return mk(id, 'na', 'na', [['gsa.na']]);
     if (h.bezug.grundsicherungsgeld) return mk(id, 'nein', 'schonGrund', [['gsa.ggBezug']]);
     // Barbetrag-Verordnung zu § 90 SGB XII: 10.000 € je volljähriger Person, 500 € je überwiegend unterhaltene Person
-    const schon = R.grundsicherung.schonAllein * h.adults + 500 * h.children;
+    const eigen = h.wohnform !== '';
+    const schon = eigen ? R.grundsicherung.schonAllein : R.grundsicherung.schonAllein * h.adults + 500 * h.children;
     if (h.vermoegen > schon) return mk(id, 'nein', 'vermHoch', [['gsa.verm', { schon: eur(schon) }]]);
+    // Bei den Eltern oder im Wohnheim zählt nur der eigene Bedarf der Person (keine Einsatzgemeinschaft mit den Eltern; § 43 Abs. 5 SGB XII:
+    // Einkommen der Eltern erst ab 100.000 € im Jahr). Regelbedarfsstufe 1 bei den Eltern, Stufe 2 im Wohnheim.
+    const regelP = h.wohnform === 'heim' ? R.regelbedarf.partner : (h.adults === 2 && !eigen ? R.regelbedarf.partner : R.regelbedarf.alleinstehend);
     // Mehrbedarf Merkzeichen G (§ 30 Abs. 1 SGB XII): 17 % des Regelsatzes der Person
-    const mehrG = h.mzG ? R.mehr.g * (h.adults === 2 ? R.regelbedarf.partner : R.regelbedarf.alleinstehend) : 0;
-    const bedarf = h.regel + h.miete + (h.mehrAE || 0) + mehrG;
-    const luecke = bedarf - Math.max(0, h.netto - (h.egFreiSGB || 0)) - h.children * R.kindergeld - unterhaltAnrechenbar(h);
-    const grenzTx = h.alterGrenz ? [['gsa.grenz']] : [];
-    if (luecke >= R.grundsicherung.sicherAb) return mk(id, h.alterGrenz ? 'vielleicht' : 'ja', h.alterGrenz ? 'vielleicht' : 'ja', bedarfTx('ja', bedarf).concat([['schaetz.eins', { a: eur(r10(luecke)) }]], grenzTx));
-    if (luecke > -R.grundsicherung.knappPuffer) return mk(id, 'vielleicht', 'vielleicht', bedarfTx('vielleicht', bedarf).concat(grenzTx));
+    const mehrG = h.mzG ? R.mehr.g * regelP : 0;
+    let bedarf, kduOffen = 0;
+    if (h.wohnform === 'eltern') { bedarf = regelP + (h.mieteGegeben ? h.miete : 0) + mehrG; if (!h.mieteGegeben) kduOffen = R.offen.elternKdu; }
+    else if (h.wohnform === 'heim') { bedarf = regelP + mehrG; kduOffen = R.offen.heimKdu; }
+    else bedarf = h.regel + h.miete + (h.mehrAE || 0) + mehrG;
+    const offen = kduOffen + (h.wfbmEssen ? R.offen.essen : 0);
+    const eink = gsaEinkommen(h) + (eigen ? 0 : h.children * R.kindergeld + unterhaltAnrechenbar(h));
+    const luecke = bedarf - eink;
+    const extra = (h.alterGrenz ? [['gsa.grenz']] : []).concat(h.wfbmEssen ? [['gsa.essen']] : [], kduOffen ? [[h.wohnform === 'heim' ? 'gsa.heim' : 'gsa.eltern']] : []);
+    const ja = !h.alterGrenz;
+    if (luecke >= R.grundsicherung.sicherAb) {
+      const sch = offen ? ['schaetz.mind', { a: eur(r10(luecke)) }] : ['schaetz.eins', { a: eur(r10(luecke)) }];
+      return mk(id, ja ? 'ja' : 'vielleicht', ja ? 'ja' : 'vielleicht', bedarfTx('ja', bedarf).concat([sch], extra));
+    }
+    if (luecke > -(R.grundsicherung.knappPuffer + offen)) return mk(id, 'vielleicht', 'vielleicht', bedarfTx('vielleicht', bedarf).concat(extra));
     return mk(id, 'nein', 'einkoHoch', bedarfTx('nein', bedarf));
   }
 
@@ -649,6 +699,7 @@ const Rules = (function () {
     if (h.bezug.grundsicherungsgeld || h.bezug.sozialamt) return mk(id, 'ja', 'ja', [['rundfunk.bezug']]);
     if (gg.level === 'ja' || gsa.level === 'ja') return mk(id, 'vielleicht', 'butMoeglich', [['rundfunk.folgt']]);
     if (gg.level === 'vielleicht' || gsa.level === 'vielleicht') return mk(id, 'vielleicht', 'butMoeglich', [['rundfunk.haerte']]);
+    if (h.mzRF) return mk(id, 'vielleicht', 'vielleicht', [['rundfunk.rf']]);
     return mk(id, 'nein', 'vorausFehlt', [['rundfunk.nein']]);
   }
 

@@ -12,7 +12,7 @@ const rnd = () => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed
 const pick = (a) => a[Math.floor(rnd() * a.length)];
 const geld = (max, schritt) => Math.round(rnd() * max / schritt) * schritt;
 
-const ARTEN = ['lohn', 'rente', 'alg', 'kg', 'eg', 'ohne'];
+const ARTEN = ['lohn', 'rente', 'alg', 'kg', 'eg', 'wfbm', 'ohne'];
 // Wie die App (syncEinkommen): Einkommen je Person -> brutto (Summe), brutto2, netto (Summe), art1, art2
 function haushaltZufall(i) {
   const adults = rnd() < 0.5 ? 1 : 2;
@@ -23,7 +23,7 @@ function haushaltZufall(i) {
   const person = () => {
     const art = pick(ARTEN);
     if (art === 'ohne') return { art, b: 0, n: 0 };
-    const b = art === 'lohn' ? pick([geld(600, 1), geld(2500, 10), geld(6000, 50), 603, 1000, 1200, 1500]) : geld(art === 'eg' ? 1800 : 2600, 10);
+    const b = art === 'wfbm' ? pick([52, 150, 250, 400]) : art === 'lohn' ? pick([geld(600, 1), geld(2500, 10), geld(6000, 50), 603, 1000, 1200, 1500]) : geld(art === 'eg' ? 1800 : 2600, 10);
     const n = art === 'lohn' || art === 'rente' ? Math.round(b * (0.6 + rnd() * 0.3)) : b;
     return { art, b, n };
   };
@@ -89,11 +89,48 @@ function pruefe(e) {
     const s = zahlAus(r.kiz, 'schaetz.eins', 'a');
     if (s !== Math.max(10, Math.round(k.kiz / 10) * 10)) melde('Kinderzuschlag: geschätzter Betrag', e, { app: s, ref: k.kiz });
   }
+  // Grundsicherung im Alter und bei Erwerbsminderung
+  vergleicheGSA(e, r);
   // Allgemein: keine Fehlwerte
   if (/NaN|Infinity|undefined/.test(JSON.stringify(out))) melde('Fehlwerte (NaN/undefined)', e, {});
 }
 
+function vergleicheGSA(e, r) {
+  const g = Ref.grundsicherungAlter(e);
+  if (r.gsa.level !== g.level) melde('Grundsicherung im Alter: Einstufung', e, { app: r.gsa.level, ref: g.level, ref2: g });
+  else if (g.bedarf != null && r.gsa.tx[0][1] && r.gsa.tx[0][1].bedarf) {
+    if (r.gsa.tx[0][1].bedarf.eur !== Math.round(g.bedarf)) melde('Grundsicherung im Alter: Bedarf', e, { app: r.gsa.tx[0][1].bedarf.eur, ref: g.bedarf });
+    const s = zahlAus(r.gsa, 'schaetz.eins', 'a') ?? zahlAus(r.gsa, 'schaetz.mind', 'a');
+    if (g.luecke >= 50 && s !== Math.round(g.luecke / 10) * 10) melde('Grundsicherung im Alter: geschätzter Betrag', e, { app: s, ref: g.luecke });
+  }
+}
+// Werkstatt-Beschäftigte und einfache Version: eine Person, Liste von Einkommen, Wohnform
+function personZufall() {
+  const ein = [];
+  if (rnd() < 0.6) ein.push({ art: 'wfbm', b: pick([52, 120, 180, 250, 300, 400, geld(600, 1)]) });
+  if (rnd() < 0.2) ein.push({ art: 'lohn', b: geld(1500, 5) });
+  if (rnd() < 0.5) ein.push({ art: 'rente', b: geld(1600, 5) });
+  const wf = pick(['', 'eltern', 'heim']);
+  return {
+    adults: 1, kids: 0, young: 0, einkommen: ein, wohnform: wf,
+    miete: wf === 'heim' ? '' : pick(['', 0, geld(300, 10), geld(900, 10) + 200]),
+    wfbm: rnd() < 0.7, wfbmEssen: rnd() < 0.5, emStd: pick(['', 'unter3', 'unklar']),
+    gebJahr: pick([1950, 1958, 1960, 1962, 1970, 1985, 2000]), heute: 2026 + 10 / 12,
+    mzG: rnd() < 0.3, gdb: pick(['', '50', '80', '100', 'H']), bhPerson: 'erwNach25', pflegegrad: pick(['', '2', '3']),
+    vermoegen: pick([0, 5000, 9999, 10001, 20000]), mietstufe: pick(['', '3', '5']), bezug: { sozialamt: rnd() < 0.05 }
+  };
+}
+
 for (let i = 0; i < N; i++) pruefe(haushaltZufall(i));
+const N2 = Math.round(N / 2);
+for (let i = 0; i < N2; i++) {
+  const e = personZufall(); n++;
+  const out = Rules.evaluate(e); const r = {}; out.results.forEach((x) => { r[x.id] = x; });
+  vergleicheGSA(e, r);
+  if (e.wohnform && r.wohngeld.level !== 'nein') melde('Wohngeld bei Eltern/Wohnheim', e, { app: r.wohngeld.level });
+  if (r.ggeld.level === 'ja' && (e.wfbm || e.emStd === 'unter3')) melde('Grundsicherungsgeld trotz Erwerbsminderung', e, {});
+  if (/NaN|Infinity|undefined/.test(JSON.stringify(out))) melde('Fehlwerte (NaN/undefined)', e, {});
+}
 
 const arten = Object.keys(fehler);
 if (arten.length) {
@@ -101,4 +138,4 @@ if (arten.length) {
   arten.forEach((a) => { console.log('\n- ' + a + ': ' + fehler[a].anzahl + 'x\n  Beispiel: ' + JSON.stringify(fehler[a].beispiel)); });
   process.exit(1);
 }
-console.log('Raster-Test bestanden: ' + n + ' Haushalte, App und unabhängige Referenz stimmen überein (Grundsicherungsgeld, Wohngeld, Kinderzuschlag: Einstufung und Beträge).');
+console.log('Raster-Test bestanden: ' + n + ' Haushalte, App und unabhängige Referenz stimmen überein (Grundsicherungsgeld, Grundsicherung im Alter und bei Erwerbsminderung mit Werkstattlohn und Wohnform, Wohngeld, Kinderzuschlag: Einstufung und Beträge).');

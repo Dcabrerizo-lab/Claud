@@ -587,5 +587,14 @@
   "t.krank.78": "Krankengeld for the same illness is paid for at most 78 weeks within 3 years; the 6 weeks of continued pay count. Plan ahead: afterwards unemployment benefit (Nahtlosigkeit) and a Erwerbsminderungsrente may apply.",
   "t.krank.ende": "Krankengeld ends after 78 weeks. Afterwards unemployment benefit (also with limited ability to work) and a Erwerbsminderungsrente may apply. If that is not enough, check Grundsicherungsgeld or Wohngeld.",
   "t.but.azubi": "The education package is for children under 18 and for young adults up to 25 who attend school and receive no apprenticeship pay.",
-  "beh.pruefenKurz": "Please check the address before sending."
+  "beh.pruefenKurz": "Please check the address before sending.",
+  "ek.art.wfbm": "Pay from the sheltered workshop",
+  "ek.betrag.hint.wfbm": "Shown on the workshop payslip: the amount paid out.",
+  "t.schaetz.mind": "Rough estimate: at least {a} per month.",
+  "t.gsa.essen": "In addition there is an extra allowance for lunch at the workshop.",
+  "t.gsa.eltern": "If you live with your parents, you get Grundsicherung for yourself alone. Your parents' income does not count (only from 100,000 € a year). A share of the housing costs is added.",
+  "t.gsa.heim": "In a residential home, Grundsicherung pays the standard rate and housing costs. The Sozialamt settles the housing costs with the home.",
+  "t.wohngeld.eltern": "If you live with your parents, you belong to their household. Your parents then apply for Wohngeld for everyone. For you alone, Grundsicherung is usually right.",
+  "t.wohngeld.heim": "In a residential home, Grundsicherung comes first.",
+  "t.rundfunk.rf": "With the marker RF there is a reduction to one third of the broadcasting fee. With Grundsicherung it is even an exemption."
 }

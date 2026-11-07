@@ -153,5 +153,37 @@ ck('Günter: Mehrbedarf G (17 % von 563 €) im Bedarf', P(gue, 'gsa', 'bedarf')
 ck('Günter: Fahrtkostenpauschale 900 € ab GdB 80, Steuer-Hinweis', !!T(gue, 'pausch', 'pausch.fahrt') && K(gue, 'pausch').includes('pausch.steuer'));
 ck('Günter: geboren 1960 → je nach Geburtsmonat (möglich, mit Hinweis)', K({ ...gue, gebJahr: 1960 }, 'gsa').includes('gsa.grenz'));
 
+// ---------- Werkstatt für behinderte Menschen (SGB XII, von Hand gerechnet) ----------
+// § 82 Abs. 3 Satz 2 SGB XII: Werkstattlohn ohne Arbeitsförderungsgeld (52 €); frei: 563/8 = 70,375 € plus 50 % des Rests.
+// W1: 30 Jahre, bei den Eltern ohne Miete, Werkstatt 250 € -> 198 € anrechenbar vor Freibetrag; frei 70,375 + 63,8125 = 134,19
+//     -> 63,81 € zählen. Bedarf Stufe 1: 563 €. Lücke 499,19 -> wahrscheinlich, „mindestens 500 €“ (Wohnkosten offen).
+const w1 = { einkommen: [{ art: 'wfbm', b: 250 }], wohnform: 'eltern', miete: 0, wfbm: true, gebJahr: 1996, heute: 2026.8, vermoegen: 500, bhPerson: 'erwNach25' };
+ck('W1 Werkstatt bei den Eltern: wahrscheinlich, Bedarf 563 €', L(w1, 'gsa') === 'ja' && P(w1, 'gsa', 'bedarf') === E(563));
+ck('W1 Betrag: mindestens 500 € (Wohnkosten bei den Eltern offen)', T(w1, 'gsa', 'schaetz.mind') && T(w1, 'gsa', 'schaetz.mind').a === E(500), JSON.stringify(res(w1).m.gsa.tx));
+ck('W1 Hinweis: Einkommen der Eltern zählt nicht', K(w1, 'gsa').includes('gsa.eltern'));
+ck('W1 kein Grundsicherungsgeld (Jobcenter), kein Wohngeld für sich allein', L(w1, 'ggeld') === 'nein' && L(w1, 'wohngeld') === 'nein');
+// W2: mit Merkzeichen G: Bedarf 563 + 17 % = 658,71
+ck('W2 Merkzeichen G: Bedarf 658,71 €', P({ ...w1, mzG: true }, 'gsa', 'bedarf') === E(658.71));
+// W3: eigene Wohnung, Miete 450, Werkstatt 300 + Erwerbsminderungsrente 900: anrechenbar 248 - (70,375 + 88,8125) = 88,81;
+//     Einkommen 988,81; Bedarf 1.013 -> Lücke 24,19 -> nur möglich
+const w3 = { einkommen: [{ art: 'wfbm', b: 300 }, { art: 'rente', b: 900 }], miete: 450, wfbm: true, gebJahr: 1980, heute: 2026.8, vermoegen: 1000 };
+ck('W3 Werkstatt plus Rente, eigene Wohnung: knapp (möglich)', L(w3, 'gsa') === 'vielleicht');
+ck('W3 mit Mittagessen in der Werkstatt: weiter möglich, Hinweis Mehrbedarf', L({ ...w3, wfbmEssen: true }, 'gsa') === 'vielleicht' && K({ ...w3, wfbmEssen: true }, 'gsa').includes('gsa.essen'));
+// W4: Wohnheim, Werkstatt 200: anrechenbar 148 - (70,375 + 38,8125) = 38,81; Bedarf Stufe 2: 506 -> Lücke 467 -> wahrscheinlich
+const w4 = { einkommen: [{ art: 'wfbm', b: 200 }], wohnform: 'heim', wfbm: true, gebJahr: 1975, heute: 2026.8, vermoegen: 0 };
+ck('W4 Wohnheim: Regelbedarfsstufe 2 (506 €), wahrscheinlich, mindestens 470 €', L(w4, 'gsa') === 'ja' && P(w4, 'gsa', 'bedarf') === E(506) && T(w4, 'gsa', 'schaetz.mind').a === E(470));
+// W5: Vermögen über 10.000 € -> nein (Barbetragsverordnung), auch bei den Eltern
+ck('W5 Vermögen 12.000 € -> keine Grundsicherung', L({ ...w1, vermoegen: 12000 }, 'gsa') === 'nein');
+// W6: Arbeitsförderungsgeld bleibt frei: 52 € Werkstattlohn zählen gar nicht
+ck('W6 nur 52 € Werkstattlohn (= Arbeitsförderungsgeld): zählt nicht, Lücke = Bedarf', T({ ...w1, einkommen: [{ art: 'wfbm', b: 52 }] }, 'gsa', 'schaetz.mind').a === E(560));
+// W7: Merkzeichen RF -> Rundfunk-Ermäßigung möglich, auch ohne Grundsicherung
+ck('W7 Merkzeichen RF: Rundfunk möglich', L({ ...w1, vermoegen: 12000, mz: { RF: true } }, 'rundfunk') === 'vielleicht');
+// W8: Lohn auf dem allgemeinen Arbeitsmarkt im Rentenalter: 30 % frei, höchstens 281,50 €
+const w8 = { einkommen: [{ art: 'lohn', b: 1200 }, { art: 'rente', b: 700 }], miete: 600, gebJahr: 1955, heute: 2026.8, vermoegen: 0 };
+// anrechenbar 1.200 - 281,50 + 700 = 1.618,50; Bedarf 1.163 -> nein
+ck('W8 Rentner mit Lohn 1.200 € und Rente 700 €: Freibetrag höchstens 281,50 € -> keine Grundsicherung', L(w8, 'gsa') === 'nein');
+// 400 € Lohn: 30 % = 120 frei -> 280 + 700 = 980 < 1.163 -> Lücke 183 -> wahrscheinlich, etwa 180 €
+ck('W8b Minijob 400 € neben Rente: 120 € frei, etwa 180 € Grundsicherung', L({ ...w8, einkommen: [{ art: 'lohn', b: 400 }, { art: 'rente', b: 700 }] }, 'gsa') === 'ja' && T({ ...w8, einkommen: [{ art: 'lohn', b: 400 }, { art: 'rente', b: 700 }] }, 'gsa', 'schaetz.eins').a === E(180));
+
 console.log(fails ? '\n' + fails + ' von ' + n + ' FEHLGESCHLAGEN' : '\nFall-Tests bestanden: ' + n + ' Prüfungen');
 process.exit(fails ? 1 : 0);
