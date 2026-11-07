@@ -56,16 +56,16 @@ const file = process.argv[2] || (__dirname + '/../dist/leistungs-lotse.html');
   await p.check('#babWohnt'); c = await card('Berufsausbildungsbeihilfe'); ok('BAB mit Wohn-Haken: möglich', c.pill === 'vielleicht');
 
   // Fall 5: WBS
-  await fillNum('brutto', '1400'); c = await card('Wohnberechtigungsschein (Bayern)'); ok('WBS 1.400 € brutto allein (16.800 € im Jahr): wahrscheinlich, Grenze 17.500 €', c.pill === 'ja' && /17\.500 €/.test(c.text), c.text);
-  await fillNum('brutto', '2000'); c = await card('Wohnberechtigungsschein (Bayern)'); ok('WBS 2.000 € brutto allein: möglich (nach Abzügen unter 17.500 €)', c.pill === 'vielleicht', c.text);
-  await fillNum('brutto', '3000'); c = await card('Wohnberechtigungsschein (Bayern)'); ok('WBS 3.000 € brutto allein: möglich (nur mit Gebietsverordnung, bis 28.300 €)', c.pill === 'vielleicht' && /28\.300 €/.test(c.text), c.text);
-  await fillNum('brutto', '5000'); c = await card('Wohnberechtigungsschein (Bayern)'); ok('WBS 5.000 € brutto allein: unwahrscheinlich', c.pill === 'nein');
-  await fillNum('brutto', '2000');
+  await fillNum('ek1Brutto', '1400'); c = await card('Wohnberechtigungsschein (Bayern)'); ok('WBS 1.400 € brutto allein (16.800 € im Jahr): wahrscheinlich, Grenze 17.500 €', c.pill === 'ja' && /17\.500 €/.test(c.text), c.text);
+  await fillNum('ek1Brutto', '2000'); c = await card('Wohnberechtigungsschein (Bayern)'); ok('WBS 2.000 € brutto allein: möglich (nach Abzügen unter 17.500 €)', c.pill === 'vielleicht', c.text);
+  await fillNum('ek1Brutto', '3000'); c = await card('Wohnberechtigungsschein (Bayern)'); ok('WBS 3.000 € brutto allein: möglich (nur mit Gebietsverordnung, bis 28.300 €)', c.pill === 'vielleicht' && /28\.300 €/.test(c.text), c.text);
+  await fillNum('ek1Brutto', '5000'); c = await card('Wohnberechtigungsschein (Bayern)'); ok('WBS 5.000 € brutto allein: unwahrscheinlich', c.pill === 'nein');
+  await fillNum('ek1Brutto', '2000');
 
   await p.click('#p1');
   ok('Beispiel laden schließt den Block wieder (dort nichts gesetzt)', (await p.evaluate(() => document.getElementById('behBlock').open)) === false);
   await p.click('#p2'); await p.click('#behBlock > summary'); await sel('bhPerson', 'erwVor25'); await p.check('#bhSelbst'); await sel('gdb', '100'); await sel('blind', 'hoch'); await sel('emStd', 'unter3'); await p.check('#em5'); await sel('pflegegrad', '3');
-  await p.check('#babBetrieb'); await p.check('#babWohnt'); await sel('ausbildung', 'ich'); await fillNum('brutto', '2000'); await p.uncheck('#alter');
+  await p.check('#babBetrieb'); await p.check('#babWohnt'); await sel('ausbildung', 'ich'); await fillNum('ek1Brutto', '2000'); await p.uncheck('#alter');
     // Rundfunk
   await p.check('#b-sozialamt'); c = await card('Befreiung vom Rundfunkbeitrag'); ok('Rundfunk: Sozialamt bezogen => wahrscheinlich', c.pill === 'ja'); await p.uncheck('#b-sozialamt');
 

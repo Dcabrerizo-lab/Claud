@@ -143,6 +143,8 @@
   .card header { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; justify-content: space-between; }
   .card .desc { font-size: 0.88em; color: var(--muted); margin-top: 2px; }
   .card .zust { font-size: 0.85em; color: var(--muted); }
+  .ekbox { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; gap: 14px; background: var(--surface); }
+  .ekbox h3 { font-size: 1em; }
   .card .behoerde { display: grid; gap: 4px; padding: 10px 12px; border-inline-start: 3px solid var(--accent); background: var(--bg); border-radius: 6px; color: var(--ink); }
   .card .behoerde p { margin: 0; }
   .card .behoerde address { font-style: normal; line-height: 1.45; }
@@ -413,23 +415,43 @@
 
           <fieldset>
             <legend data-t="lg.eink"></legend>
-            <div class="field">
-              <label for="brutto" data-t="brutto.label"></label>
-              <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="brutto"><span aria-hidden="true">€</span></div>
-              <span class="hint" data-t="brutto.hint"></span>
+            <p class="hint" data-t="ek.intro"></p>
+            <div class="ekbox" id="ekbox1">
+              <h3 data-t="ek.h1"></h3>
+              <div class="field">
+                <label for="ek1Art" data-t="ek.art"></label>
+                <select id="ek1Art"></select>
+                <span class="hint" data-t="ek.art.hint"></span>
+              </div>
+              <div class="field" id="ek1BruttoF" hidden>
+                <label for="ek1Brutto" data-t="ek.brutto"></label>
+                <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="ek1Brutto"><span aria-hidden="true">€</span></div>
+                <span class="hint" id="ek1BruttoHint"></span>
+              </div>
+              <div class="field" id="ek1NettoF" hidden>
+                <label for="ek1Netto" id="ek1NettoLab"></label>
+                <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="ek1Netto"><span aria-hidden="true">€</span></div>
+                <span class="hint" id="ek1NettoHint"></span>
+              </div>
             </div>
-            <div class="field cond-adults2">
-              <label for="brutto2" data-t="brutto2.label"></label>
-              <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="brutto2"><span aria-hidden="true">€</span></div>
-              <span class="hint" data-t="brutto2.hint"></span>
+            <div class="ekbox cond-adults2" id="ekbox2">
+              <h3 data-t="ek.h2"></h3>
+              <div class="field">
+                <label for="ek2Art" data-t="ek.art2"></label>
+                <select id="ek2Art"></select>
+                <span class="hint" data-t="ek.art.hint"></span>
+              </div>
+              <div class="field" id="ek2BruttoF" hidden>
+                <label for="ek2Brutto" data-t="ek.brutto"></label>
+                <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="ek2Brutto"><span aria-hidden="true">€</span></div>
+                <span class="hint" id="ek2BruttoHint"></span>
+              </div>
+              <div class="field" id="ek2NettoF" hidden>
+                <label for="ek2Netto" id="ek2NettoLab"></label>
+                <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="ek2Netto"><span aria-hidden="true">€</span></div>
+                <span class="hint" id="ek2NettoHint"></span>
+              </div>
             </div>
-            <label class="check cond-adults2"><input type="checkbox" id="nichtArbeit2"><span data-t="cb.nichtArbeit2"></span></label>
-            <div class="field">
-              <label for="netto" data-t="netto.label"></label>
-              <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="netto"><span aria-hidden="true">€</span></div>
-              <span class="hint" data-t="netto.hint"></span>
-            </div>
-            <label class="check"><input type="checkbox" id="nichtArbeit"><span data-t="cb.nichtArbeit"></span></label>
             <div class="field cond-kids">
               <label for="unterhalt" data-t="unterh.label"></label>
               <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="unterhalt"><span aria-hidden="true">€</span></div>

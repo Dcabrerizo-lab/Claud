@@ -48,14 +48,14 @@ check('Unterhaltsvorschuss im Beispiel 1 wahrscheinlich', level('Unterhaltsvorsc
 // Beispiel 2
 d.getElementById('p2').click();
 check('Beispiel 2: Grundsicherung im Alter wahrscheinlich', level('Grundsicherung im Alter und bei voller Erwerbsminderung') === 'ja', pills() + '');
-check('Beispiel 2 füllt Formular und Auswahlfelder', d.getElementById('brutto').value === '880' && d.getElementById('alter').checked === true && d.getElementById('alterGruppe').value === '51+' && d.getElementById('mietstufe').value === '3');
+check('Beispiel 2 füllt Formular und Auswahlfelder', d.getElementById('ek1Art').value === 'rente' && d.getElementById('ek1Brutto').value === '880' && d.getElementById('alter').checked === true && d.getElementById('alterGruppe').value === '51+' && d.getElementById('mietstufe').value === '3');
 check('Beispiel 2: Entweder-oder-Hinweis', /nicht gleichzeitig/.test(d.getElementById('together').textContent));
 check('Ohne Kinder sind Kinder-Fragen ausgeblendet', [...d.querySelectorAll('.cond-kids')].every((e) => e.hidden === true));
 
 // Eingabe ändern
 d.getElementById('p1').click();
 check('Mit Kindern sind Kinder-Fragen sichtbar', [...d.querySelectorAll('.cond-kids')].every((e) => e.hidden === false));
-setNum('brutto', 9000); setNum('netto', 6500);
+setNum('ek1Brutto', 9000); setNum('ek1Netto', 6500);
 check('Hinweis verschwindet nach eigener Eingabe', d.getElementById('sampleNotice').hidden === true);
 check('Hohes Einkommen: Wohngeld und Kinderzuschlag unwahrscheinlich', level('Wohngeld') === 'nein' && level('Kinderzuschlag') === 'nein');
 
@@ -73,7 +73,7 @@ setChk('b-kindergeld', true);
 check('Kindergeld schon bezogen: Karte "Schon vorhanden"', level('Kindergeld') === 'na');
 setChk('b-kindergeld', false);
 setSel('ausbildung', 'kind');
-setNum('netto', 1500);
+setNum('ek1Netto', 1500);
 check('BAföG: Kind in Ausbildung, niedriges Einkommen wahrscheinlich', level('BAföG') === 'ja', level('BAföG'));
 setSel('pflegegrad', '3');
 check('Pflegegrad 3: Pflegegeld wahrscheinlich mit Betrag', level('Pflegegeld und Entlastungsbetrag') === 'ja' && /599/.test(card('Pflegegeld und Entlastungsbetrag').textContent));
@@ -93,12 +93,31 @@ d.getElementById('p1').click();
 d.getElementById('adults2').checked = true; fire(d.getElementById('adults2'), 'change');
 check('Zwei Erwachsene werden übernommen', cards().length === 21);
 
+// ---------- Einkommen je Person: nur passende Felder, verständliche Beschriftung ----------
+d.getElementById('p1').click();
+const vis = (id) => !d.getElementById(id).hidden;
+check('Lohn: Brutto- und Netto-Feld sichtbar', vis('ek1BruttoF') && vis('ek1NettoF') && d.getElementById('ek1NettoLab').textContent === I18N.de['ek.netto']);
+setSel('ek1Art', 'alg');
+check('Arbeitslosengeld I: kein Brutto-Feld, Betrag laut Bescheid mit Hinweis auf Tagesbetrag', !vis('ek1BruttoF') && vis('ek1NettoF') && d.getElementById('ek1NettoLab').textContent === I18N.de['ek.betrag'] && /Agentur für Arbeit/.test(d.getElementById('ek1NettoHint').textContent));
+setSel('ek1Art', 'kg');
+check('Krankengeld: Hinweis auf das Schreiben der Krankenkasse', /Krankenkasse/.test(d.getElementById('ek1NettoHint').textContent));
+setSel('ek1Art', 'rente');
+check('Rente: Brutto-Hinweis auf den Rentenbescheid', vis('ek1BruttoF') && /Rentenbescheid/.test(d.getElementById('ek1BruttoHint').textContent));
+setSel('ek1Art', 'ohne');
+check('Kein Einkommen: keine Betragsfelder', !vis('ek1BruttoF') && !vis('ek1NettoF'));
+setSel('ek1Art', '');
+check('Noch nichts gewählt: keine Betragsfelder', !vis('ek1BruttoF') && !vis('ek1NettoF'));
+check('Partner-Block nur bei zwei Erwachsenen', d.getElementById('ekbox2').hidden === true);
+d.getElementById('p3').click();
+check('Beispiel Paar: Partner-Block sichtbar, Partner ohne Einkommen', d.getElementById('ekbox2').hidden === false && d.getElementById('ek2Art').value === 'ohne');
+d.getElementById('p1').click();
+
 // Große Schrift
 d.getElementById('bigBtn').click();
 check('Große Schrift schaltet Klasse', d.getElementById('app').classList.contains('big') && d.getElementById('bigBtn').getAttribute('aria-pressed') === 'true');
 
 // Leere Eingaben
-['miete', 'brutto', 'netto', 'vermoegen'].forEach((k) => setNum(k, ''));
+['miete', 'ek1Brutto', 'ek1Netto', 'vermoegen'].forEach((k) => setNum(k, ''));
 check('Leere Felder erzeugen keinen Fehler', errors.length === 0 && cards().length === 21, errors.join('; '));
 
 // ---------- Sprachen ----------
@@ -150,7 +169,7 @@ const txt = pages.map((p) => p.textContent).join('\n');
 check('Brief: Absender, Empfänger (aus der PLZ der Anschrift) und Betreff', /Maria Beispiel/.test(txt) && /Hauptstraße 1/.test(txt) && /Stadt Erlangen\nWohngeldstelle\nRathausplatz 1\n91052 Erlangen/.test(txt) && /Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle/.test(txt) && /Betreff: Antrag auf Wohngeld/.test(txt) && /Betreff: Antrag auf Unterhaltsvorschuss/.test(txt));
 check('Brief: bittet um Eingangsbestätigung und Formulare', /bestätigen Sie mir den Eingang/.test(txt) && /Antragsformulare/.test(txt));
 check('Brief auf Deutsch und links nach rechts gesetzt', pages[0].getAttribute('lang') === 'de' && pages[0].getAttribute('dir') === 'ltr');
-check('Angabenblatt enthält Haushalt, Miete, Einkommen', /Angabenblatt/.test(txt) && /Warmmiete im Monat: 950 €/.test(txt) && /Bruttoeinkommen im Monat \(alle Erwachsenen\): 2\.200 €/.test(txt) && /Kinder unter 18 Jahren: 2/.test(txt) && /Geburtsdatum: 01\.02\.1985/.test(txt));
+check('Angabenblatt enthält Haushalt, Miete, Einkommen', /Angabenblatt/.test(txt) && /Warmmiete im Monat: 950 €/.test(txt) && /Einkommen: Lohn oder Gehalt, brutto 2\.200 €, netto 1\.750 € im Monat/.test(txt) && /Kinder unter 18 Jahren: 2/.test(txt) && /Geburtsdatum: 01\.02\.1985/.test(txt));
 check('Angabenblatt nennt Selbstauskunft-Hinweis', /Selbstauskunft/.test(txt));
 check('Leere Felder werden zu Strichen statt "undefined"', !/undefined|null/.test(txt));
 check('Kopiertext enthält Briefe und Angabenblatt', /Betreff: Antrag auf Wohngeld/.test(d.getElementById('mappeText').value) && /Angabenblatt/.test(d.getElementById('mappeText').value));
@@ -174,7 +193,7 @@ setTimeout(() => {
   check('Dunkelmodus doppelt definiert', (html.match(/color-scheme: dark/g) || []).length >= 2);
   check('Kein horizontales Scrollen erzwungen', !/min-width:\s*\d{4,}px/.test(html));
   check('Logische statt physische Abstände im Formular (RTL-fähig)', !/\.money input\s*\{[^}]*padding-right/.test(html) && /inset-inline-end/.test(html));
-  check('Jedes Formularfeld hat eine Beschriftung', ['miete', 'mietstufe', 'brutto', 'netto', 'vermoegen', 'alterGruppe', 'ausbildung', 'pflegegrad', 'p-name', 'p-geb', 'p-strasse', 'p-ort', 'p-tel'].every((id) => d.querySelector('label[for="' + id + '"]')));
+  check('Jedes Formularfeld hat eine Beschriftung', ['miete', 'mietstufe', 'ek1Art', 'ek1Brutto', 'ek1Netto', 'ek2Art', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'vermoegen', 'alterGruppe', 'ausbildung', 'pflegegrad', 'p-name', 'p-geb', 'p-strasse', 'p-ort', 'p-tel'].every((id) => d.querySelector('label[for="' + id + '"]')));
   check('Dateigröße unter 1 MB', html.length < 1024 * 1024, (html.length / 1024).toFixed(0) + ' KB');
   // ----- Antrag scannen -----
   setLang('de');
@@ -232,6 +251,19 @@ setTimeout(() => {
     }, 100);
   }, 100);
   function finish() {
+  // Gespeicherte Angaben im alten Format (brutto/brutto2/netto/nichtArbeit) werden in die neue Eingabe übernommen
+  const alt = { s: { adults: 2, kids: 1, brutto: 3000, brutto2: 1000, netto: 2300, nichtArbeit: false, nichtArbeit2: true, miete: 900, mietstufe: '3', vermoegen: 0, bezug: {} }, p: {}, e: true };
+  const dom3 = new JSDOM('<!doctype html><html><head><meta charset="utf-8"></head><body>' + html + '</body></html>', {
+    runScripts: 'dangerously', pretendToBeVisual: true,
+    beforeParse(w3) {
+      w3.HTMLElement.prototype.scrollIntoView = function () {}; w3.scrollTo = function () {};
+      Object.defineProperty(w3, 'localStorage', { value: { getItem: (k) => (k === 'lotse.state' ? JSON.stringify(alt) : null), setItem: () => {}, removeItem: () => {} }, configurable: true });
+    }
+  });
+  const d3 = dom3.window.document;
+  check('Alte Angaben übernommen: erste Person Lohn 2.000 € brutto, Netto 2.300 €', d3.getElementById('ek1Art').value === 'lohn' && d3.getElementById('ek1Brutto').value === '2000' && d3.getElementById('ek1Netto').value === '2300', d3.getElementById('ek1Art').value + ' ' + d3.getElementById('ek1Brutto').value);
+  check('Alte Angaben übernommen: Partner Rente o. Ä. 1.000 € brutto', d3.getElementById('ek2Art').value === 'rente' && d3.getElementById('ek2Brutto').value === '1000');
+
   check('Keine Skriptfehler im gesamten Test', errors.length === 0, errors.join('; '));
   console.log(fails ? '\n' + fails + ' FEHLER' : '\nAlle DOM-Tests bestanden');
   process.exit(fails ? 1 : 0);

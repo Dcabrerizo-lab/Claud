@@ -1,8 +1,8 @@
 (function () {
   var PRESETS = [
-    { id: 'p1', key: 'preset.p1', v: { adults: 1, kids: 2, kidsU6: 0, kids14: 0, young: 0, brutto: 2200, netto: 1750, miete: 950, mietstufe: '3', vermoegen: 3000, alter: false, erwerbsgemindert: false, behinderung: false, kinder12: false, unterhaltFehlt: true, alterGruppe: '31-40', ausbildung: '', pflegegrad: '', bezug: {} } },
-    { id: 'p2', key: 'preset.p2', v: { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, brutto: 880, netto: 780, miete: 480, mietstufe: '3', vermoegen: 4000, alter: true, erwerbsgemindert: false, behinderung: false, kinder12: false, unterhaltFehlt: false, alterGruppe: '51+', ausbildung: '', pflegegrad: '', bezug: {} } },
-    { id: 'p3', key: 'preset.p3', v: { adults: 2, kids: 1, kidsU6: 0, kids14: 0, young: 0, brutto: 3200, brutto2: '', netto: 2500, miete: 1100, mietstufe: '5', vermoegen: 8000, alter: false, erwerbsgemindert: false, behinderung: false, kinder12: false, unterhaltFehlt: false, alterGruppe: '31-40', ausbildung: '', pflegegrad: '', bezug: {} } }
+    { id: 'p1', key: 'preset.p1', v: { adults: 1, kids: 2, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'lohn', ek1Brutto: 2200, ek1Netto: 1750, brutto: 2200, netto: 1750, miete: 950, mietstufe: '3', vermoegen: 3000, alter: false, erwerbsgemindert: false, behinderung: false, kinder12: false, unterhaltFehlt: true, alterGruppe: '31-40', ausbildung: '', pflegegrad: '', bezug: {} } },
+    { id: 'p2', key: 'preset.p2', v: { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'rente', ek1Brutto: 880, ek1Netto: 780, brutto: 880, netto: 780, miete: 480, mietstufe: '3', vermoegen: 4000, alter: true, erwerbsgemindert: false, behinderung: false, kinder12: false, unterhaltFehlt: false, alterGruppe: '51+', ausbildung: '', pflegegrad: '', bezug: {} } },
+    { id: 'p3', key: 'preset.p3', v: { adults: 2, kids: 1, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'lohn', ek1Brutto: 3200, ek1Netto: 2500, ek2Art: 'ohne', brutto: 3200, brutto2: '', netto: 2500, miete: 1100, mietstufe: '5', vermoegen: 8000, alter: false, erwerbsgemindert: false, behinderung: false, kinder12: false, unterhaltFehlt: false, alterGruppe: '31-40', ausbildung: '', pflegegrad: '', bezug: {} } }
   ];
   var NATIVE = /*NATIVE*/ false; // true in der Store-App (Android und iOS)
   var LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro'];
@@ -60,7 +60,7 @@
   function save() { clearTimeout(saveTimer); saveTimer = setTimeout(flush, 300); }
   function smooth() { return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'; }
   function blankState() {
-    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, brutto: '', brutto2: '', netto: '', unterhalt: '', miete: '', mietstufe: '', plz: '', plzPick: '', bundesland: '', vermoegen: '', alterGruppe: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', bezug: {} };
+    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', miete: '', mietstufe: '', plz: '', plzPick: '', bundesland: '', vermoegen: '', alterGruppe: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', bezug: {} };
   }
 
   function detect() {
@@ -132,6 +132,50 @@
     say(src); altBlock();
   }
 
+  // ----- Einkommen je Person -> Werte, mit denen die Regeln rechnen (brutto, brutto2, netto, nichtArbeit, nichtArbeit2) -----
+  // Art: lohn (Lohn/Gehalt, Freibetrag bei der Grundsicherung), rente, alg (Arbeitslosengeld I), kg (Krankengeld), ohne (kein Einkommen).
+  // Arbeitslosengeld I und Krankengeld haben kein Brutto: dort zählt der ausgezahlte Betrag (Feld „Betrag laut Bescheid“).
+  function ekPerson(i) {
+    var art = state['ek' + i + 'Art'], b = state['ek' + i + 'Brutto'], n = state['ek' + i + 'Netto'];
+    var leer = function (v) { return v === '' || v == null; };
+    if (!art) return { gesetzt: false, b: '', n: '', arbeit: true };
+    if (art === 'ohne') return { gesetzt: true, b: 0, n: 0, arbeit: false };
+    var mitBrutto = art === 'lohn' || art === 'rente';
+    return { gesetzt: true, b: mitBrutto ? (leer(b) ? '' : Number(b)) : (leer(n) ? '' : Number(n)), n: leer(n) ? '' : Number(n), arbeit: art === 'lohn' };
+  }
+  function syncEinkommen() {
+    var p1 = ekPerson(1), p2 = state.adults === 2 ? ekPerson(2) : { gesetzt: false, b: '', n: '', arbeit: true };
+    var sum = function (a, c) { return a === '' && c === '' ? '' : (a === '' ? 0 : a) + (c === '' ? 0 : c); };
+    state.brutto = sum(p1.b, p2.b);
+    state.netto = sum(p1.n, p2.n);
+    state.brutto2 = p2.gesetzt && p2.b !== '' ? p2.b : '';
+    state.nichtArbeit = p1.gesetzt && !p1.arbeit;
+    state.nichtArbeit2 = p2.gesetzt && !p2.arbeit;
+  }
+  // Nur die Felder zeigen, die zur gewählten Art passen; Beschriftung je Art
+  function ekFelder() {
+    [1, 2].forEach(function (i) {
+      var art = state['ek' + i + 'Art'];
+      var mitBrutto = art === 'lohn' || art === 'rente';
+      $('ek' + i + 'BruttoF').hidden = !mitBrutto;
+      $('ek' + i + 'NettoF').hidden = !art || art === 'ohne';
+      $('ek' + i + 'BruttoHint').textContent = art === 'rente' ? t('ek.brutto.hint.rente') : t('ek.brutto.hint.lohn');
+      var bescheid = art === 'alg' || art === 'kg';
+      $('ek' + i + 'NettoLab').textContent = bescheid ? t('ek.betrag') : t('ek.netto');
+      $('ek' + i + 'NettoHint').textContent = bescheid ? t(art === 'alg' ? 'ek.betrag.hint.alg' : 'ek.betrag.hint.kg') : t('ek.netto.hint');
+    });
+  }
+  // Gespeicherte Angaben aus der früheren Eingabe (Summen und Haken) übernehmen
+  function migriereEinkommen(s) {
+    if (s.ek1Art || (s.brutto === '' || s.brutto == null) && (s.netto === '' || s.netto == null)) return s;
+    var b2 = s.adults === 2 && s.brutto2 !== '' && s.brutto2 != null ? Number(s.brutto2) : 0;
+    s.ek1Art = s.nichtArbeit ? 'rente' : 'lohn';
+    s.ek1Brutto = s.brutto === '' || s.brutto == null ? '' : Math.max(0, Number(s.brutto) - b2);
+    s.ek1Netto = s.netto == null ? '' : s.netto;
+    if (b2) { s.ek2Art = s.nichtArbeit2 ? 'rente' : 'lohn'; s.ek2Brutto = b2; }
+    return s;
+  }
+
   // Amtlicher Kreisschlüssel des Wohnorts (aus PLZ und ggf. gewähltem Ort), für die zuständige Stelle; null wenn unbekannt
   // Quelle: PLZ-Feld im Fragebogen; ist es leer, die PLZ aus „PLZ und Ort“ der Antragsmappe (z. B. „90542 Eckental“)
   function aktAgs() {
@@ -175,6 +219,9 @@
   function buildSelects() {
     var st = [['', t('stufe.unbekannt')]];
     for (var i = 1; i <= 7; i++) st.push([String(i), t('stufe.n', { n: Rules.roman(i) })]);
+    var ek = [['', t('ek.art.0')], ['lohn', t('ek.art.lohn')], ['rente', t('ek.art.rente')], ['alg', t('ek.art.alg')], ['kg', t('ek.art.kg')], ['ohne', t('ek.art.ohne')]];
+    fillSelect('ek1Art', ek, state.ek1Art);
+    fillSelect('ek2Art', ek, state.ek2Art);
     fillSelect('mietstufe', st, state.mietstufe);
     fillSelect('bundesland', [['', t('bl.unbekannt')]].concat(BUNDESLAENDER), state.bundesland);
     fillSelect('alterGruppe', [['', t('gruppe.0')], ['<31', t('gruppe.1')], ['31-40', t('gruppe.2')], ['41-50', t('gruppe.3')], ['51+', t('gruppe.4')]], state.alterGruppe);
@@ -234,8 +281,8 @@
     pr.appendChild(b);
   });
 
-  var CHECKS = ['nichtArbeit', 'nichtArbeit2', 'alter', 'erwerbsgemindert', 'behinderung', 'kinder12', 'unterhaltFehlt', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt'];
-  var SELECTS = ['bundesland', 'mietstufe', 'alterGruppe', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd'];
+  var CHECKS = ['alter', 'erwerbsgemindert', 'behinderung', 'kinder12', 'unterhaltFehlt', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt'];
+  var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'alterGruppe', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd'];
   var BEZUG = ['grundsicherungsgeld', 'sozialamt', 'wohngeld', 'kiz', 'kindergeld'];
 
   function writeForm() {
@@ -245,7 +292,7 @@
     $('kidsU6').textContent = state.kidsU6 || 0;
     $('kids14').textContent = state.kids14 || 0;
     $('young').textContent = state.young;
-    ['miete', 'brutto', 'brutto2', 'netto', 'unterhalt', 'vermoegen'].forEach(function (k) { $(k).value = state[k] == null ? '' : state[k]; });
+    ['miete', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'vermoegen'].forEach(function (k) { $(k).value = state[k] == null ? '' : state[k]; });
     CHECKS.forEach(function (k) { $(k).checked = !!state[k]; });
     BEZUG.forEach(function (k) { $('b-' + k).checked = !!state.bezug[k]; });
     var used = ['bhPerson', 'gdb', 'blind', 'emStd'].some(function (k) { return state[k] && state[k] !== '0'; }) ||
@@ -257,7 +304,6 @@
     if (!edited) { edited = true; $('sampleNotice').hidden = true; }
     // Ausgeblendete Felder zurücksetzen, damit keine alten Werte mitrechnen
     if (state.kids === 0) { state.kinder12 = false; state.unterhaltFehlt = false; state.kidsU6 = 0; state.kids14 = 0; $('kinder12').checked = false; $('unterhaltFehlt').checked = false; }
-    if (state.adults !== 2 && state.brutto2 !== '' && state.brutto2 != null) { state.brutto2 = ''; $('brutto2').value = ''; }
     render(); save();
   }
   var soonTimer = null;
@@ -285,7 +331,7 @@
         $('kids').textContent = state.kids; $('young').textContent = state.young; $('kidsU6').textContent = state.kidsU6 || 0; $('kids14').textContent = state.kids14 || 0; touched();
       });
     });
-    ['miete', 'brutto', 'brutto2', 'netto', 'unterhalt', 'vermoegen'].forEach(function (k) {
+    ['miete', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'vermoegen'].forEach(function (k) {
       $(k).addEventListener('input', function () { state[k] = parseAmount($(k).value); touchedSoon(); });
       $(k).addEventListener('change', function () { clearTimeout(soonTimer); state[k] = parseAmount($(k).value); touched(); });
       $(k).addEventListener('blur', function () { $(k).value = state[k] === '' ? '' : String(state[k]).replace('.', ','); });
@@ -439,6 +485,7 @@
   }
 
   function render() {
+    syncEinkommen(); ekFelder();
     var out = Rules.evaluate(state);
     lastOut = out;
     var n = { ja: 0, vielleicht: 0 };
@@ -555,9 +602,18 @@
     if (person.tel && person.tel.trim()) L.push('Telefon: ' + person.tel.trim());
     L.push('', 'Haushalt: ' + haushaltZeile());
     L.push('Warmmiete im Monat: ' + money(s.miete) + (s.mietstufe ? ' (Mietenstufe ' + Rules.roman(Number(s.mietstufe)) + ')' : ''));
-    L.push('Bruttoeinkommen im Monat (alle Erwachsenen): ' + money(s.brutto) + (s.adults === 2 && !blankVal(s.brutto2) ? ' (davon zweite Person: ' + money(s.brutto2) + ')' : ''));
-    if (s.nichtArbeit) L.push('Das Einkommen stammt überwiegend nicht aus Arbeit (zum Beispiel Rente oder Arbeitslosengeld).');
-    L.push('Nettoeinkommen im Monat: ' + (s.netto === '' || s.netto == null ? 'nicht angegeben' : money(s.netto)));
+    var ARTDE = { lohn: 'Lohn oder Gehalt', rente: 'Rente oder Pension', alg: 'Arbeitslosengeld I', kg: 'Krankengeld', ohne: 'kein Einkommen' };
+    var ekZeile = function (i, wer) {
+      var art = s['ek' + i + 'Art'];
+      if (!art) return wer + ': nicht angegeben';
+      if (art === 'ohne') return wer + ': kein Einkommen';
+      var teile = [];
+      if ((art === 'lohn' || art === 'rente') && !blankVal(s['ek' + i + 'Brutto'])) teile.push('brutto ' + money(s['ek' + i + 'Brutto']));
+      if (!blankVal(s['ek' + i + 'Netto'])) teile.push((art === 'alg' || art === 'kg' ? '' : 'netto ') + money(s['ek' + i + 'Netto']));
+      return wer + ': ' + ARTDE[art] + (teile.length ? ', ' + teile.join(', ') + ' im Monat' : '');
+    };
+    L.push(ekZeile(1, s.adults === 2 ? 'Einkommen (ich)' : 'Einkommen'));
+    if (s.adults === 2) L.push(ekZeile(2, 'Einkommen (Partner/in)'));
     if ((s.kids || s.young) && s.unterhalt !== '' && s.unterhalt != null && Number(s.unterhalt) > 0) L.push('Unterhalt für die Kinder im Monat (vom anderen Elternteil): ' + money(s.unterhalt));
     L.push('Erspartes und Geldvermögen: ' + money(s.vermoegen));
     L.push('Besonderheiten: ' + (besond().length ? besond().join('; ') : 'keine'));
@@ -892,7 +948,7 @@
       var d = JSON.parse(v);
       if (!d || !d.s) return;
       var b = blankState();
-      state = Object.assign(b, d.s); state.bezug = d.s.bezug || {};
+      state = Object.assign(b, migriereEinkommen(d.s)); state.bezug = d.s.bezug || {};
       if (d.p) person = Object.assign(person, d.p);
       edited = true; $('sampleNotice').hidden = true;
       [['p-name', 'name'], ['p-geb', 'geb'], ['p-strasse', 'strasse'], ['p-ort', 'ort'], ['p-tel', 'tel']].forEach(function (x) { $(x[0]).value = person[x[1]] || ''; });
