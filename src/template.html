@@ -51,6 +51,41 @@
   .app { font-size: 1rem; }
   .app.big { font-size: 1.2rem; }
   html.big { font-size: 19px; }
+  /* Einfache Version: groß, klar, eine Frage pro Bildschirm */
+  .es-schalter { font-weight: 700; border-color: var(--accent); }
+  .einfach { max-width: 640px; margin: 0 auto 32px; font-size: 1.15rem; }
+  .es-top { margin-bottom: 14px; }
+  .es-prog { font-size: 0.85em; color: var(--muted); }
+  .es-bar { height: 8px; background: var(--line); border-radius: 99px; margin-top: 6px; overflow: hidden; }
+  .es-bar span { display: block; height: 100%; background: var(--accent); }
+  .es-q { font-size: 1.5em; line-height: 1.25; margin: 6px 0 10px; outline: none; }
+  .es-h { color: var(--muted); margin-bottom: 14px; }
+  .es-vor { font: inherit; font-size: 0.9em; background: none; border: 1px solid var(--line); border-radius: 99px; padding: 8px 14px; margin-bottom: 16px; cursor: pointer; color: var(--ink); min-height: 44px; }
+  .es-wahl { display: grid; gap: 12px; }
+  .es-wahl.es-klein { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+  .es-btn { font: inherit; display: flex; align-items: center; gap: 14px; width: 100%; min-height: 64px; padding: 12px 18px; text-align: start;
+    background: var(--surface); color: var(--ink); border: 2px solid var(--line); border-radius: 14px; cursor: pointer; font-weight: 600; }
+  .es-btn:hover, .es-btn:focus-visible { border-color: var(--accent); }
+  .es-btn.an { border-color: var(--accent); background: var(--accent); color: var(--accent-ink); }
+  .es-ico { font-size: 1.6em; line-height: 1; }
+  .es-klein .es-btn { justify-content: center; text-align: center; flex-direction: column; gap: 2px; }
+  .es-mz { font-size: 1.4em; font-weight: 800; }
+  .es-mzt { font-size: 0.75em; font-weight: 500; }
+  .es-zahl { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .es-zahl input { font: inherit; font-size: 1.6em; width: 100%; max-width: 9em; min-height: 64px; padding: 6px 14px; border: 2px solid var(--line); border-radius: 14px; background: var(--surface); color: var(--ink); }
+  .es-zahl span { font-size: 1.4em; }
+  .es-nav1 { display: grid; gap: 12px; margin-top: 16px; }
+  .es-weiter { justify-content: center; background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .es-skip { justify-content: center; }
+  .es-nav { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+  .es-karte { background: var(--surface); border: 2px solid var(--line); border-radius: 14px; padding: 14px 16px; margin-bottom: 14px; }
+  .es-karte.ja { border-color: var(--ok, #2e7d32); }
+  .es-karte h3 { font-size: 1.2em; margin-bottom: 4px; }
+  .es-lvl { font-weight: 700; margin-bottom: 6px; }
+  .es-geld { font-weight: 700; font-size: 1.1em; margin-top: 6px; }
+  .es-wo { font-size: 0.9em; color: var(--muted); margin-top: 8px; }
+  .es-sub { margin: 20px 0 8px; }
+  .es-liste { padding-inline-start: 1.2em; }
   input.kurz { max-width: 9em; }
   .legende { font-size: 0.85em; color: var(--muted); margin: -4px 0 10px; }
   .info { font-size: 0.85em; background: var(--surface); border-left: 3px solid var(--accent); padding: 6px 10px; margin: 6px 0 0; }
@@ -281,6 +316,7 @@
         <label class="langpick"><span data-t="lang.label"></span><select id="lang"></select></label>
         <span class="stand" id="stand"></span>
         <button type="button" class="chip" id="bigBtn" aria-pressed="false" data-t="big"></button>
+        <button type="button" class="chip es-schalter" id="einfachBtn" aria-pressed="false"><span aria-hidden="true">🙂</span> <span data-t="einfach.btn"></span></button>
       </div>
     </header>
 
@@ -288,12 +324,14 @@
       <p data-t="first.text"></p>
       <button type="button" class="btn" id="firstOk" data-t="first.ok"></button>
     </div>
-    <div class="notices">
+    <div class="notices" id="notices">
       <div class="notice" id="sampleNotice" role="note" data-t="sample"></div>
       <div class="notice info" id="transNotice" role="note" data-t="trans" hidden></div>
     </div>
 
-    <div class="cols">
+    <section id="einfach" class="einfach" hidden></section>
+
+    <div class="cols" id="cols">
       <section aria-labelledby="h-form">
         <h2 id="h-form" style="margin-bottom:12px" data-t="h.form"></h2>
         <div class="presets-label" id="presetLabel" data-t="preset.label"></div>

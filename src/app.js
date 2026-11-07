@@ -331,6 +331,7 @@
     render();
     if (!$('mappe').hidden) buildMappe();
     renderScan();
+    if (esModus) esRender();
   }
 
   function setLang(c) {
@@ -673,7 +674,11 @@
     if (s.bhPerson === 'erwVor25') b.push('Volljährige Person, Behinderung vor dem 25. Geburtstag eingetreten');
     if (s.bhPerson === 'erwNach25') b.push('Erwachsene Person mit Behinderung');
     if (s.gdb === 'antrag') b.push('Feststellung der Behinderung ist beantragt, Bescheid steht noch aus');
-    if (s.mzG) b.push('Merkzeichen G oder aG');
+    if (s.mz && Object.keys(s.mz).some(function (k) { return s.mz[k]; })) b.push('Merkzeichen im Ausweis: ' + Object.keys(s.mz).filter(function (k) { return s.mz[k]; }).join(', '));
+    else if (s.mzG) b.push('Merkzeichen G oder aG');
+    if (s.wohnform === 'eltern') b.push('Wohnt bei den Eltern' + (s.miete ? ', zahlt ' + money(s.miete) + ' Miete im Monat' : ', zahlt keine Miete'));
+    if (s.wohnform === 'heim') b.push('Wohnt in einer besonderen Wohnform (Wohnheim)');
+    if (s.wfbmEssen) b.push('Nimmt am gemeinsamen Mittagessen in der Werkstatt teil');
     if (s.emStd === 'unklar') b.push('Längere Krankheit, Arbeitsfähigkeit noch ungeklärt');
     if (s.arbeitSit === 'arbeitslos') b.push('Arbeitslos oder Kündigung erhalten' + (s.algZeit ? ', in den letzten 30 Monaten mindestens 12 Monate versicherungspflichtig beschäftigt' : ''));
     if (s.arbeitSit === 'krank') b.push('Krankgeschrieben' + (s.krankWochen === 'unter6' ? ', unter 6 Wochen' : s.krankWochen === 'laeuft' ? ', Krankengeld läuft' : s.krankWochen === 'ende' ? ', Krankengeld endet bald oder ist ausgelaufen' : ''));
@@ -710,7 +715,8 @@
       if (!blankVal(s['ek' + i + 'Netto'])) teile.push((art === 'alg' || art === 'kg' || art === 'eg' || art === 'wfbm' ? '' : 'netto ') + money(s['ek' + i + 'Netto']));
       return wer + ': ' + ARTDE[art] + (teile.length ? ', ' + teile.join(', ') + ' im Monat' : '');
     };
-    L.push(ekZeile(1, s.adults === 2 ? 'Einkommen (ich)' : 'Einkommen'));
+    if (Array.isArray(s.einkommen)) L.push('Einkommen: ' + (s.einkommen.length ? s.einkommen.map(function (x) { return ARTDE[x.art] + ' ' + money(x.b); }).join(', ') + ' im Monat' : 'kein Einkommen'));
+    else L.push(ekZeile(1, s.adults === 2 ? 'Einkommen (ich)' : 'Einkommen'));
     if (s.adults === 2) L.push(ekZeile(2, 'Einkommen (Partner/in)'));
     if ((s.kids || s.young) && s.unterhalt !== '' && s.unterhalt != null && Number(s.unterhalt) > 0) L.push('Unterhalt für die Kinder im Monat (vom anderen Elternteil): ' + money(s.unterhalt));
     L.push('Erspartes und Geldvermögen: ' + money(s.vermoegen));
@@ -758,6 +764,7 @@
   function closeMappe() {
     $('mappe').hidden = true;
     $('app').classList.remove('pm');
+    if (esAltState) { state = esAltState.state; picked = esAltState.picked; pickedUser = esAltState.pickedUser; lastOut = esAltState.lastOut; esAltState = null; render(); }
   }
 
   // ----- Antragsmappe als PDF (nur App): pdf-lib im WebView, Datei in den Cache, dann Teilen-Dialog (Drucken, Dateien, Mail) -----
@@ -1034,6 +1041,213 @@
     });
   }
 
+  // =====================================================================
+  // Einfache Version (Leichte Sprache): eine Frage pro Bildschirm, große Knöpfe, Vorlesen.
+  // Gedacht für Menschen mit Lernschwierigkeiten, zum Beispiel in einer Werkstatt für behinderte Menschen.
+  // Rechnet mit denselben Regeln (Rules.evaluate) wie die ausführliche Version: eine Person, eigener Bedarf.
+  // =====================================================================
+  var es = null, esModus = false;
+  function esLeer() { return { schritt: 0, geb: '', wohnen: '', mieteJa: '', miete: '', arbeit: '', lohn: '', essen: '', em: '', renteJa: '', rente: '', ausweis: '', gdb: '', mz: {}, kind: '', pflege: '', erspart: '', plz: '' }; }
+  // Die Fragen. wenn(): nur zeigen, wenn die Frage passt. art: wahl (Knöpfe), zahl (Eingabe), mz (Buchstaben im Ausweis)
+  var ES_FRAGEN = [
+    { id: 'geb', art: 'zahl', max: 4, key: 'es.q.geb', hilfe: 'es.h.geb' },
+    { id: 'wohnen', art: 'wahl', key: 'es.q.wohnen', wahl: [['allein', '🏠', 'es.a.allein'], ['eltern', '👪', 'es.a.eltern'], ['heim', '🏢', 'es.a.heim']] },
+    { id: 'mieteJa', art: 'wahl', key: 'es.q.mieteEltern', wenn: function () { return es.wohnen === 'eltern'; }, wahl: [['ja', '✅', 'es.a.ja'], ['nein', '❌', 'es.a.nein']] },
+    { id: 'miete', art: 'zahl', key: 'es.q.miete', hilfe: 'es.h.miete', wenn: function () { return es.wohnen === 'allein' || (es.wohnen === 'eltern' && es.mieteJa === 'ja'); } },
+    { id: 'arbeit', art: 'wahl', key: 'es.q.arbeit', wahl: [['werkstatt', '🛠️', 'es.a.werkstatt'], ['job', '💼', 'es.a.job'], ['nein', '✋', 'es.a.keineArbeit']] },
+    { id: 'lohn', art: 'zahl', key: 'es.q.lohn', hilfe: 'es.h.lohn', wenn: function () { return es.arbeit === 'werkstatt' || es.arbeit === 'job'; } },
+    { id: 'essen', art: 'wahl', key: 'es.q.essen', wenn: function () { return es.arbeit === 'werkstatt'; }, wahl: [['ja', '🍽️', 'es.a.ja'], ['nein', '❌', 'es.a.nein']] },
+    { id: 'em', art: 'wahl', key: 'es.q.em', hilfe: 'es.h.em', wenn: function () { return es.arbeit !== 'werkstatt' && !esRentenalter(); }, wahl: [['ja', '✅', 'es.a.emJa'], ['nein', '❌', 'es.a.emNein'], ['weiss', '❓', 'es.a.weissNicht']] },
+    { id: 'renteJa', art: 'wahl', key: 'es.q.rente', wahl: [['ja', '✅', 'es.a.ja'], ['nein', '❌', 'es.a.nein']] },
+    { id: 'rente', art: 'zahl', key: 'es.q.renteBetrag', hilfe: 'es.h.rente', wenn: function () { return es.renteJa === 'ja'; } },
+    { id: 'ausweis', art: 'wahl', key: 'es.q.ausweis', wahl: [['ja', '🪪', 'es.a.ja'], ['nein', '❌', 'es.a.nein'], ['antrag', '📨', 'es.a.antrag']] },
+    { id: 'gdb', art: 'wahl', key: 'es.q.gdb', hilfe: 'es.h.gdb', wenn: function () { return es.ausweis === 'ja'; }, wahl: [['50', '', '50'], ['60', '', '60'], ['70', '', '70'], ['80', '', '80'], ['90', '', '90'], ['100', '', '100']] },
+    { id: 'mz', art: 'mz', key: 'es.q.mz', hilfe: 'es.h.mz', wenn: function () { return es.ausweis === 'ja'; } },
+    { id: 'kind', art: 'wahl', key: 'es.q.kind', hilfe: 'es.h.kind', wenn: function () { return es.ausweis === 'ja' || es.ausweis === 'antrag' || es.arbeit === 'werkstatt'; }, wahl: [['ja', '✅', 'es.a.ja'], ['nein', '❌', 'es.a.nein'], ['weiss', '❓', 'es.a.weissNicht']] },
+    { id: 'pflege', art: 'wahl', key: 'es.q.pflege', wahl: [['nein', '❌', 'es.a.nein'], ['1', '', '1'], ['2', '', '2'], ['3', '', '3'], ['4', '', '4'], ['5', '', '5'], ['antrag', '📨', 'es.a.pflegeAntrag']] },
+    { id: 'erspart', art: 'wahl', key: 'es.q.erspart', wahl: [['wenig', '👍', 'es.a.wenig'], ['viel', '💰', 'es.a.viel'], ['weiss', '❓', 'es.a.weissNicht']] },
+    { id: 'plz', art: 'zahl', max: 5, key: 'es.q.plz', hilfe: 'es.h.plz', optional: true }
+  ];
+  var MZ = ['G', 'aG', 'B', 'H', 'RF', 'Bl', 'Gl', 'TBl'];
+  function esRentenalter() { var j = Number(es.geb); return j > 1900 && Rules.evaluate({ gebJahr: j }).h.alter; }
+  function esAktiv() { return ES_FRAGEN.filter(function (f) { return !f.wenn || f.wenn(); }); }
+
+  // Antworten -> Eingaben der Regeln (eine Person; bei den Eltern oder im Wohnheim zählt nur der eigene Bedarf)
+  function esEingabe() {
+    var ein = [];
+    if ((es.arbeit === 'werkstatt' || es.arbeit === 'job') && es.lohn !== '') ein.push({ art: es.arbeit === 'werkstatt' ? 'wfbm' : 'lohn', b: Number(es.lohn) });
+    if (es.renteJa === 'ja' && es.rente !== '') ein.push({ art: 'rente', b: Number(es.rente) });
+    var gdb = es.ausweis === 'ja' ? (es.mz.H || es.mz.Bl || es.mz.TBl ? 'H' : es.gdb) : (es.ausweis === 'antrag' ? 'antrag' : '');
+    var inp = {
+      adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, gebJahr: es.geb === '' ? '' : Number(es.geb),
+      einkommen: ein, wohnform: es.wohnen === 'eltern' ? 'eltern' : es.wohnen === 'heim' ? 'heim' : '',
+      miete: es.wohnen === 'heim' ? '' : (es.miete === '' ? (es.wohnen === 'eltern' && es.mieteJa === 'nein' ? 0 : '') : Number(es.miete)),
+      wfbm: es.arbeit === 'werkstatt', wfbmEssen: es.essen === 'ja',
+      emStd: es.em === 'ja' ? 'unter3' : es.em === 'weiss' ? 'unklar' : '',
+      // Behinderung schon in der Kindheit (vor dem 25. Geburtstag): Kindergeld für die Eltern (§ 32 Abs. 4 Nr. 3 EStG);
+      // „kann sich nicht selbst unterhalten“: eigenes Einkommen unter dem Grundfreibetrag (12.348 € im Jahr)
+      bhPerson: es.kind === 'ja' ? 'erwVor25' : (es.ausweis === 'ja' || es.ausweis === 'antrag' || es.arbeit === 'werkstatt' ? 'erwNach25' : ''),
+      bhSelbst: es.kind === 'ja' && ein.reduce(function (a, x) { return a + x.b; }, 0) * 12 < Rules.RULES.beh.grundfreibetrag,
+      gdb: gdb, mzG: !!(es.mz.G || es.mz.aG), mz: es.mz, blind: es.mz.Bl ? 'blind' : '',
+      pflegegrad: es.pflege === 'nein' ? '' : es.pflege,
+      vermoegen: es.erspart === 'wenig' ? 0 : es.erspart === 'viel' ? 20000 : '',
+      plz: es.plz, mietstufe: '', bezug: {}
+    };
+    var r = es.plz && Plz.lookup ? Plz.lookup(es.plz) : null;
+    if (r && r.stufe) inp.mietstufe = String(r.stufe);
+    if (r && r.bl) inp.bundesland = r.bl;
+    return inp;
+  }
+
+  function esSpeichern() { Store.set('lotse.einfach', JSON.stringify({ es: es, an: esModus })); }
+
+  function esSprich(text) {
+    try {
+      if (!window.speechSynthesis) return;
+      window.speechSynthesis.cancel();
+      var u = new SpeechSynthesisUtterance(text);
+      u.lang = { de: 'de-DE', en: 'en-GB', tr: 'tr-TR', ar: 'ar', ru: 'ru-RU', uk: 'uk-UA', pl: 'pl-PL', ro: 'ro-RO' }[lang] || 'de-DE';
+      u.rate = 0.85;
+      window.speechSynthesis.speak(u);
+    } catch (e) {}
+  }
+
+  function esRender() {
+    var box = $('einfach');
+    if (!esModus) { box.hidden = true; $('cols').hidden = false; $('notices').hidden = false; $('jump').hidden = false; return; }
+    box.hidden = false; $('cols').hidden = true; $('notices').hidden = true; $('jump').hidden = true;
+    var fr = esAktiv();
+    if (es.schritt >= fr.length) { esErgebnis(fr); return; }
+    var f = fr[es.schritt];
+    var vorlesen = t(f.key) + (f.hilfe ? ' ' + t(f.hilfe) : '');
+    var h = '<div class="es-top"><span class="es-prog">' + esc(t('es.frage', { n: es.schritt + 1, m: fr.length })) + '</span>' +
+      '<div class="es-bar" aria-hidden="true"><span style="width:' + Math.round(100 * es.schritt / fr.length) + '%"></span></div></div>' +
+      '<h2 class="es-q" id="es-q" tabindex="-1">' + esc(t(f.key)) + '</h2>' +
+      (f.hilfe ? '<p class="es-h">' + esc(t(f.hilfe)) + '</p>' : '') +
+      (window.speechSynthesis ? '<button type="button" class="es-vor" id="es-vor">🔊 ' + esc(t('es.vorlesen')) + '</button>' : '');
+    if (f.art === 'wahl') {
+      h += '<div class="es-wahl' + (f.wahl.length > 4 ? ' es-klein' : '') + '" role="group" aria-labelledby="es-q">' + f.wahl.map(function (w) {
+        var txt = /^es\./.test(w[2]) ? t(w[2]) : w[2];
+        return '<button type="button" class="es-btn' + (es[f.id] === w[0] ? ' an' : '') + '" data-es="' + esc(w[0]) + '">' + (w[1] ? '<span class="es-ico" aria-hidden="true">' + w[1] + '</span>' : '') + '<span>' + esc(txt) + '</span></button>';
+      }).join('') + '</div>';
+    } else if (f.art === 'zahl') {
+      h += '<div class="es-zahl"><input id="es-in" type="text" inputmode="numeric" autocomplete="off" aria-labelledby="es-q" value="' + esc(es[f.id]) + '"' + (f.max ? ' maxlength="' + f.max + '"' : '') + '>' + (f.id === 'geb' || f.id === 'plz' ? '' : '<span aria-hidden="true">€</span>') + '</div>' +
+        '<p class="warn" id="es-warn" hidden></p>' +
+        '<div class="es-nav1"><button type="button" class="es-btn es-weiter" id="es-weiter">' + esc(t('es.weiter')) + ' ➜</button>' +
+        (f.id !== 'geb' ? '<button type="button" class="es-btn es-skip" id="es-skip">' + esc(t(f.optional ? 'es.ueberspringen' : 'es.weissNicht')) + '</button>' : '') + '</div>';
+    } else if (f.art === 'mz') {
+      h += '<div class="es-wahl es-klein" role="group" aria-labelledby="es-q">' + MZ.map(function (m) {
+        return '<button type="button" class="es-btn' + (es.mz[m] ? ' an' : '') + '" data-mz="' + m + '" aria-pressed="' + (es.mz[m] ? 'true' : 'false') + '"><span class="es-mz">' + m + '</span><span class="es-mzt">' + esc(t('es.mz.' + m)) + '</span></button>';
+      }).join('') + '</div><div class="es-nav1"><button type="button" class="es-btn es-weiter" id="es-weiter">' + esc(t('es.weiter')) + ' ➜</button></div>';
+    }
+    h += '<div class="es-nav">' + (es.schritt > 0 ? '<button type="button" class="chip" id="es-zurueck">← ' + esc(t('es.zurueck')) + '</button>' : '') +
+      '<button type="button" class="chip" id="es-raus">' + esc(t('es.ausfuehrlich')) + '</button></div>';
+    box.innerHTML = h;
+    var weiter = function () { es.schritt++; esSpeichern(); esRender(); var q = $('es-q'); if (q) q.focus(); };
+    box.querySelectorAll('[data-es]').forEach(function (b) { b.addEventListener('click', function () { es[f.id] = b.getAttribute('data-es'); weiter(); }); });
+    box.querySelectorAll('[data-mz]').forEach(function (b) { b.addEventListener('click', function () { var m = b.getAttribute('data-mz'); es.mz[m] = !es.mz[m]; b.classList.toggle('an', es.mz[m]); b.setAttribute('aria-pressed', String(es.mz[m])); esSpeichern(); }); });
+    if ($('es-in')) {
+      var inp = $('es-in');
+      var pruef = function () {
+        var raw = inp.value.trim();
+        if (f.id === 'geb' || f.id === 'plz') { var d = raw.replace(/\D/g, ''); return d.length === f.max && (f.id !== 'geb' || (Number(d) >= 1900 && Number(d) <= new Date().getFullYear())) ? d : null; }
+        var v = parseAmount(raw); return v === '' ? null : v;
+      };
+      var ok = function () {
+        var v = pruef();
+        if (v === null) { $('es-warn').textContent = t(f.id === 'geb' ? 'warn.geb' : f.id === 'plz' ? 'es.warn.plz' : 'warn.zahl'); $('es-warn').hidden = false; inp.focus(); return; }
+        es[f.id] = f.id === 'geb' || f.id === 'plz' ? v : String(v); weiter();
+      };
+      $('es-weiter').addEventListener('click', ok);
+      inp.addEventListener('keydown', function (ev) { if (ev.key === 'Enter') ok(); });
+      if ($('es-skip')) $('es-skip').addEventListener('click', function () { es[f.id] = ''; weiter(); });
+    } else if ($('es-weiter')) $('es-weiter').addEventListener('click', weiter);
+    if ($('es-vor')) $('es-vor').addEventListener('click', function () { esSprich(vorlesen); });
+    if ($('es-zurueck')) $('es-zurueck').addEventListener('click', function () { es.schritt = Math.max(0, es.schritt - 1); esSpeichern(); esRender(); });
+    $('es-raus').addEventListener('click', function () { esUmschalten(false); });
+  }
+
+  // Ergebnis in Leichter Sprache: nur, was für eine Person mit Behinderung zählt; Beträge grob, mit zuständiger Stelle
+  var ES_KARTEN = ['gsa', 'ggeld', 'wohngeld', 'pflege', 'pflegeplus', 'emrente', 'rundfunk', 'ausweis', 'eingl', 'blindengeld', 'zuzahl', 'kgBeh', 'pausch', 'arbeit'];
+  var ES_ICON = { gsa: '💶', ggeld: '💶', wohngeld: '🏠', pflege: '🤝', pflegeplus: '🧺', emrente: '👴', rundfunk: '📺', ausweis: '🪪', eingl: '🧩', blindengeld: '🦯', zuzahl: '💊', kgBeh: '👪', pausch: '🧾', arbeit: '💼' };
+  function esErgebnis(fr) {
+    var out = Rules.evaluate(esEingabe());
+    lastEs = out;
+    var r = out.results.filter(function (x) { return ES_KARTEN.indexOf(x.id) >= 0; });
+    // Schon vorhanden: der Ausweis (wenn ja), alles mit „schon vorhanden“; ohne Steuern kein Steuer-Freibetrag
+    var hatSchon = function (x) { return x.level === 'na' || (x.id === 'ausweis' && es.ausweis === 'ja'); };
+    var unnuetz = function (x) { return x.id === 'pausch' && x.tx.some(function (y) { return y[0] === 'pausch.steuer'; }); };
+    var gut = r.filter(function (x) { return (x.level === 'ja' || x.level === 'vielleicht') && !hatSchon(x) && !unnuetz(x); });
+    var schon = r.filter(hatSchon);
+    var betrag = function (x) {
+      var s = x.tx.filter(function (y) { return /^schaetz\./.test(y[0]); })[0];
+      if (s) return '<p class="es-geld">' + esc(t('t.' + s[0], s[1])) + '</p>';
+      // Feste Beträge (Pflegegeld, Blindengeld, Kindergeld)
+      var f = x.tx.filter(function (y) { return y[1] && (y[1].geld || y[1].betrag || y[1].kg) && /^(pflege\.pg2|blindengeld\.(blind|hoch)|kgBeh\.ja)$/.test(y[0]); })[0];
+      return f ? '<p class="es-geld">' + esc(t('es.betrag', { a: f[1].geld || f[1].betrag || f[1].kg })) + '</p>' : '';
+    };
+    var stelle = function (x) {
+      var b = Behoerden.fuer ? Behoerden.fuer(x.id, aktAgsEs()) : null;
+      var name = b ? b.name : t('zu.' + x.id);
+      return '<p class="es-wo"><strong>' + esc(t('es.wo')) + '</strong> ' + esc(name) + (b && b.anschrift ? '<br><span lang="de">' + esc(b.anschrift.join(', ')) + '</span>' : '') + '</p>';
+    };
+    var karte = function (x) {
+      var txt = I18N[lang]['es.r.' + x.id] ? t('es.r.' + x.id) : t('h.' + x.hl);
+      return '<article class="es-karte ' + x.level + '"><h3><span aria-hidden="true">' + (ES_ICON[x.id] || '•') + '</span> ' + esc(t('es.n.' + x.id)) + '</h3>' +
+        '<p class="es-lvl">' + esc(t(x.level === 'ja' ? 'es.gut' : 'es.vielleicht')) + '</p><p>' + esc(txt) + '</p>' + betrag(x) + stelle(x) + '</article>';
+    };
+    var h = '<h2 class="es-q" id="es-q" tabindex="-1">' + esc(t(gut.length ? 'es.erg.h' : 'es.erg.keine')) + '</h2>' +
+      '<p class="es-h">' + esc(t('es.erg.hinweis')) + '</p>' + gut.map(karte).join('') +
+      (schon.length ? '<h3 class="es-sub">' + esc(t('es.erg.schon')) + '</h3><ul class="es-liste">' + schon.map(function (x) { return '<li>' + (ES_ICON[x.id] || '•') + ' ' + esc(t('es.n.' + x.id)) + '</li>'; }).join('') + '</ul>' : '') +
+      '<div class="es-nav1">' +
+      '<button type="button" class="es-btn es-weiter" id="es-mappe">✉️ ' + esc(t('es.briefe')) + '</button>' +
+      '<button type="button" class="es-btn" id="es-teilen">📤 ' + esc(t('es.teilen')) + '</button>' +
+      (window.speechSynthesis ? '<button type="button" class="es-btn" id="es-vor">🔊 ' + esc(t('es.vorlesen')) + '</button>' : '') + '</div>' +
+      '<p class="msg" id="es-msg" role="status"></p>' +
+      '<div class="es-nav"><button type="button" class="chip" id="es-zurueck">← ' + esc(t('es.zurueck')) + '</button>' +
+      '<button type="button" class="chip" id="es-neu">' + esc(t('es.neu')) + '</button>' +
+      '<button type="button" class="chip" id="es-raus">' + esc(t('es.ausfuehrlich')) + '</button></div>';
+    $('einfach').innerHTML = h;
+    var text = function () {
+      return [t(gut.length ? 'es.erg.h' : 'es.erg.keine')].concat(gut.map(function (x) {
+        var s = x.tx.filter(function (y) { return /^schaetz\./.test(y[0]); })[0];
+        return '- ' + t('es.n.' + x.id) + ': ' + t(x.level === 'ja' ? 'es.gut' : 'es.vielleicht') + (s ? ' ' + t('t.' + s[0], s[1]) : '');
+      })).join('\n');
+    };
+    $('es-zurueck').addEventListener('click', function () { es.schritt = fr.length - 1; esSpeichern(); esRender(); });
+    $('es-neu').addEventListener('click', function () { es = esLeer(); esSpeichern(); esRender(); });
+    $('es-raus').addEventListener('click', function () { esUmschalten(false); });
+    if ($('es-vor')) $('es-vor').addEventListener('click', function () { esSprich(text()); });
+    $('es-teilen').addEventListener('click', function () {
+      var sh = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Share;
+      if (sh) sh.share({ title: 'Leistungs-Lotse', text: text() }).catch(function () {});
+      else if (navigator.share) navigator.share({ title: 'Leistungs-Lotse', text: text() }).catch(function () {});
+      else { copyText(text()); $('es-msg').textContent = t('f.copied'); }
+    });
+    $('es-mappe').addEventListener('click', function () {
+      // Antragsmappe mit den Antworten der einfachen Version; die Angaben der ausführlichen Version bleiben unverändert
+      esAltState = { state: state, picked: picked, pickedUser: pickedUser, lastOut: lastOut };
+      state = Object.assign(blankState(), esEingabe());
+      picked = {}; pickedUser = {};
+      out.results.forEach(function (x) { pickedUser[x.id] = false; });
+      gut.forEach(function (x) { if (ANTRAG[x.id]) pickedUser[x.id] = x.level === 'ja'; });
+      lastOut = out; renderPick(out.results);
+      openMappe();
+    });
+  }
+  var lastEs = null, esAltState = null;
+  function aktAgsEs() { var r = es.plz && Plz.lookup ? Plz.lookup(es.plz) : null; return r && r.ags ? r.ags : null; }
+  function copyText(s) { try { navigator.clipboard.writeText(s); } catch (e) {} }
+
+  function esUmschalten(an) {
+    esModus = an;
+    if (an && !es) es = esLeer();
+    $('einfachBtn').setAttribute('aria-pressed', String(an));
+    esSpeichern(); esRender();
+    try { window.scrollTo(0, 0); } catch (e) {}
+    var q = an ? $('es-q') : $('h-form'); if (q) { q.setAttribute('tabindex', '-1'); q.focus({ preventScroll: true }); }
+  }
+
   state = blankState();
   $('sampleNotice').hidden = true; // Beispiel-Hinweis nur, wenn ein Beispiel geladen ist
   bind();
@@ -1041,6 +1255,11 @@
   lang = detect();
   applyLang();
   initClaude();
+
+  $('einfachBtn').addEventListener('click', function () { esUmschalten(!esModus); });
+  Store.get('lotse.einfach', function (v) {
+    try { var d = v ? JSON.parse(v) : null; if (d && d.es) { es = Object.assign(esLeer(), d.es); if (d.an) esUmschalten(true); } } catch (e) {}
+  });
   Store.get('lotse.ack', function (v) { $('firstNotice').hidden = !!v; });
   Store.get('lotse.state', function (v) {
     if (!v) return;

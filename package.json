@@ -11,7 +11,7 @@
     "test": "npm run build:web && npm run test:rules && npm run test:dom",
     "test:rules": "node test/test.js && node test/test-strict.js && node test/test-beh.js && node test/test-faelle.js && node test/test-plz.js && node test/test-behoerden.js && node test/test-raster.js",
     "test:dom": "node test/dom-test.js",
-    "test:e2e": "npm run build:web && node test/e2e-beh.js",
+    "test:e2e": "npm run build:web && node test/e2e-beh.js && node test/e2e-einfach.js",
     "test:app": "node scripts/build-app.js && node test/app-test.js"
   },
   "devDependencies": {
