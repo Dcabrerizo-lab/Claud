@@ -117,6 +117,8 @@ const Rules = (function () {
     const netto = nettoGiven ? num(inp.netto) : brutto * 0.8;
     const miete = num(inp.miete);
     const vermoegen = num(inp.vermoegen);
+    // Unterhalt, den die Kinder vom anderen Elternteil bekommen (im Monat, alle Kinder zusammen); nur mit Kindern im Haushalt
+    const unterhalt = kids + young > 0 ? num(inp.unterhalt) : 0;
     const regelElt = adults === 2 ? 2 * R.regelbedarf.partner : R.regelbedarf.alleinstehend;
     // Alter der Kinder optional: ohne Angabe gilt die mittlere Stufe (6-13 Jahre, 390 €)
     const kidsU6 = Math.min(Math.max(0, inp.kidsU6 | 0), kids);
@@ -125,7 +127,7 @@ const Rules = (function () {
     const pg = ['1', '2', '3', '4', '5'].indexOf(String(inp.pflegegrad)) >= 0 ? Number(inp.pflegegrad) : 0;
     return {
       fehlt: { einkommen: blank(inp.brutto), netto: blank(inp.netto), vermoegen: blank(inp.vermoegen), miete: blank(inp.miete) },
-      adults, kids, kidsU6, kids14, young, persons, brutto, brutto2, erwerb: !inp.nichtArbeit, netto, nettoGiven, miete, vermoegen, regel, regelElt,
+      adults, kids, kidsU6, kids14, young, persons, brutto, brutto2, erwerb: !inp.nichtArbeit, netto, nettoGiven, miete, vermoegen, unterhalt, regel, regelElt,
       children: kids + young,
       alleinerz: adults === 1 && kids > 0,
       stufe: [1, 2, 3, 4, 5, 6, 7].indexOf(Number(inp.mietstufe)) >= 0 ? Number(inp.mietstufe) : null,
@@ -162,6 +164,15 @@ const Rules = (function () {
     if (b > 520) f += 0.3 * (Math.min(b, 1000) - 520);
     if (b > 1000) f += 0.1 * (Math.min(b, cap) - 1000);
     return f;
+  }
+
+  // Unterhalt für Kinder bei Grundsicherungsgeld / Grundsicherung im Alter: Einkommen des Kindes, aber nur bis zu dessen
+  // eigenem Bedarf (Regelbedarf der Kinder plus Kopfanteil der Miete); ein Überschuss mindert nicht den Bedarf der Eltern
+  // (§ 11 Abs. 1 SGB II, § 82 SGB XII). Das Kindergeld wird wie bisher voll beim Kind angerechnet.
+  function unterhaltAnrechenbar(h) {
+    if (!h.unterhalt) return 0;
+    const kinderBedarf = (h.regel - h.regelElt) + h.miete * h.children / h.persons;
+    return Math.min(h.unterhalt, Math.max(0, kinderBedarf - h.children * R.kindergeld));
   }
 
   // Freibetrag des Haushalts: je Person einzeln, nur bei Einkommen aus Arbeit
@@ -209,19 +220,22 @@ const Rules = (function () {
     if (gdbNum(h) === 100 || (gdbNum(h) >= 50 && h.pflegegrad > 0)) freib += R.wohngeld.freibetragBehinderungMonat;
     if (h.alleinerz) freib += R.wohngeld.freibetragAlleinerzMonat; // § 17 Nr. 3 WoGG: 1.320 € im Jahr, einmal je Haushalt
     const bruttoEff = Math.max(0, h.brutto - freib / R.wohngeld.abzugMittel);
+    // Unterhalt für die Kinder zählt als Einkommen (§ 14 WoGG), aber ohne Pauschalabzug (§ 16 WoGG: das Kind zahlt keine
+    // Steuern und Beiträge). Umgerechnet auf die Brutto-Grenzen: bei 10 % Abzug u / 0,9, bei 30 % Abzug u / 0,7.
+    const effLo = bruttoEff + h.unterhalt / 0.9, effHi = bruttoEff + h.unterhalt / 0.7;
 
     const grenze = h.stufe
       ? ['wohngeld.grenzeStufe', { n: h.persons, stufe: roman(h.stufe), lo: eur(lo), hi: eur(hi) }]
       : ['wohngeld.grenzeOhne', { n: h.persons, lo: eur(lo), hi: eur(hi) }];
     const unb = h.stufe ? [] : [['wohngeld.stufeUnbekannt']];
 
-    if (bruttoEff > hi) return mk(id, 'nein', 'einkoHoch', [['wohngeld.hoch'], grenze].concat(unb));
+    if (effHi > hi) return mk(id, 'nein', 'einkoHoch', [['wohngeld.hoch'], grenze].concat(unb));
 
-    let level = bruttoEff <= lo ? 'ja' : 'vielleicht';
+    let level = effLo <= lo ? 'ja' : 'vielleicht';
     let hl = level;
     let tx = [[level === 'ja' ? 'wohngeld.ja' : 'wohngeld.vielleicht'], grenze].concat(unb);
 
-    const mittel = h.netto + h.kids * R.kindergeld;
+    const mittel = h.netto + h.kids * R.kindergeld + h.unterhalt;
     const mindest = R.wohngeld.mindestAnteil * (h.regel + h.miete);
     if (h.miete > 0 && mittel < mindest) {
       level = 'vielleicht'; hl = 'einkoNiedrig';
@@ -249,11 +263,12 @@ const Rules = (function () {
     const gmax = R.kiz.max * h.children;
     const elternAnteil = h.adults / (h.adults + R.kiz.wohnkostenGewichtKind * h.children);
     const bemessung = h.regelElt + h.miete * elternAnteil;
-    const est = Math.max(0, gmax - R.kiz.anrechnung * Math.max(0, h.netto - bemessung));
+    // Einkommen der Kinder (hier: Unterhalt) mindert den Kinderzuschlag um 45 % (§ 6a Abs. 3 BKGG)
+    const est = Math.max(0, gmax - R.kiz.anrechnung * Math.max(0, h.netto - bemessung) - R.kiz.anrechnung * h.unterhalt);
     const gesamtBedarf = h.regel + h.miete;
 
     if (est <= 0) return mk(id, 'nein', 'einkoHoch', [['kiz.zuHoch']]);
-    if (h.netto + gmax + R.kiz.puffer < gesamtBedarf) return mk(id, 'vielleicht', 'einkoNiedrig', [['kiz.zuNiedrig']]);
+    if (h.netto + h.unterhalt + gmax + R.kiz.puffer < gesamtBedarf) return mk(id, 'vielleicht', 'einkoNiedrig', [['kiz.zuNiedrig']]);
     if (est >= R.kiz.ampelGruenAb) return mk(id, 'ja', 'ja', [['kiz.ja', { max: eur(R.kiz.max) }]]);
     return mk(id, 'vielleicht', 'vielleicht', [['kiz.rand', { max: eur(R.kiz.max) }]]);
   }
@@ -278,7 +293,7 @@ const Rules = (function () {
     // § 12 Abs. 2 SGB II: je Person der Bedarfsgemeinschaft ein Freibetrag nach Alter; Kinder und junge Erwachsene bis 30: 5.000 €
     const schon = R.sgb2.schon[h.gruppe] * h.adults + R.sgb2.schon['<31'] * h.children;
     if (h.vermoegen > schon) return mk(id, 'nein', 'vermHoch', [['ggeld.verm', { schon: eur(schon) }]]);
-    const einkommen = Math.max(0, h.netto - haushaltsFreibetrag(h)) + h.children * R.kindergeld;
+    const einkommen = Math.max(0, h.netto - haushaltsFreibetrag(h)) + h.children * R.kindergeld + unterhaltAnrechenbar(h);
     const bedarf = h.regel + h.miete;
     const luecke = bedarf - einkommen;
     if (luecke >= R.grundsicherung.sicherAb) return mk(id, 'ja', 'ja', bedarfTx('ja', bedarf));
@@ -311,6 +326,12 @@ const Rules = (function () {
     if (h.kids === 0) return mk(id, 'nein', 'keinKind', [['uvg.keinKind']]);
     if (!h.unterhaltFehlt) return mk(id, 'nein', 'vorausFehlt', [['uvg.unterhalt']]);
     const betrag = ['uvg.ja', { a: eur(R.uvg.bis5), b: eur(R.uvg.bis11), c: eur(R.uvg.bis17) }];
+    // Gezahlter Unterhalt wird angerechnet (§ 2 Abs. 3 UVG). Erreicht er den höchsten Unterhaltsvorschuss für alle Kinder,
+    // bleibt nichts übrig; sonst nur noch der Unterschied (Alter der Kinder unbekannt, daher "möglich").
+    if (h.unterhalt > 0) {
+      if (h.unterhalt >= h.kids * R.uvg.bis17) return mk(id, 'nein', 'vorausFehlt', [['uvg.genug', { u: eur(h.unterhalt) }]]);
+      return mk(id, 'vielleicht', 'vielleicht', [['uvg.teil', { u: eur(h.unterhalt) }], betrag]);
+    }
     if (h.adults === 2) return mk(id, 'vielleicht', 'vielleicht', [['uvg.zwei'], betrag]);
     if (h.kinder12 && h.brutto < R.uvg.min12) return mk(id, 'vielleicht', 'vielleicht', [['uvg.ab12', { min: eur(R.uvg.min12) }], betrag]);
     return mk(id, 'ja', 'ja', [betrag]);
@@ -328,7 +349,7 @@ const Rules = (function () {
     const schon = R.grundsicherung.schonAllein * h.adults + 500 * h.children;
     if (h.vermoegen > schon) return mk(id, 'nein', 'vermHoch', [['gsa.verm', { schon: eur(schon) }]]);
     const bedarf = h.regel + h.miete;
-    const luecke = bedarf - h.netto;
+    const luecke = bedarf - h.netto - unterhaltAnrechenbar(h);
     if (luecke >= R.grundsicherung.sicherAb) return mk(id, 'ja', 'ja', bedarfTx('ja', bedarf));
     if (luecke > -R.grundsicherung.knappPuffer) return mk(id, 'vielleicht', 'vielleicht', bedarfTx('vielleicht', bedarf));
     return mk(id, 'nein', 'einkoHoch', bedarfTx('nein', bedarf));

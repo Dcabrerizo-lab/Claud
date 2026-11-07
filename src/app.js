@@ -60,7 +60,7 @@
   function save() { clearTimeout(saveTimer); saveTimer = setTimeout(flush, 300); }
   function smooth() { return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'; }
   function blankState() {
-    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, brutto: '', brutto2: '', netto: '', miete: '', mietstufe: '', plz: '', plzPick: '', bundesland: '', vermoegen: '', alterGruppe: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', bezug: {} };
+    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, brutto: '', brutto2: '', netto: '', unterhalt: '', miete: '', mietstufe: '', plz: '', plzPick: '', bundesland: '', vermoegen: '', alterGruppe: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', bezug: {} };
   }
 
   function detect() {
@@ -245,7 +245,7 @@
     $('kidsU6').textContent = state.kidsU6 || 0;
     $('kids14').textContent = state.kids14 || 0;
     $('young').textContent = state.young;
-    ['miete', 'brutto', 'brutto2', 'netto', 'vermoegen'].forEach(function (k) { $(k).value = state[k] == null ? '' : state[k]; });
+    ['miete', 'brutto', 'brutto2', 'netto', 'unterhalt', 'vermoegen'].forEach(function (k) { $(k).value = state[k] == null ? '' : state[k]; });
     CHECKS.forEach(function (k) { $(k).checked = !!state[k]; });
     BEZUG.forEach(function (k) { $('b-' + k).checked = !!state.bezug[k]; });
     var used = ['bhPerson', 'gdb', 'blind', 'emStd'].some(function (k) { return state[k] && state[k] !== '0'; }) ||
@@ -285,7 +285,7 @@
         $('kids').textContent = state.kids; $('young').textContent = state.young; $('kidsU6').textContent = state.kidsU6 || 0; $('kids14').textContent = state.kids14 || 0; touched();
       });
     });
-    ['miete', 'brutto', 'brutto2', 'netto', 'vermoegen'].forEach(function (k) {
+    ['miete', 'brutto', 'brutto2', 'netto', 'unterhalt', 'vermoegen'].forEach(function (k) {
       $(k).addEventListener('input', function () { state[k] = parseAmount($(k).value); touchedSoon(); });
       $(k).addEventListener('change', function () { clearTimeout(soonTimer); state[k] = parseAmount($(k).value); touched(); });
       $(k).addEventListener('blur', function () { $(k).value = state[k] === '' ? '' : String(state[k]).replace('.', ','); });
@@ -558,6 +558,7 @@
     L.push('Bruttoeinkommen im Monat (alle Erwachsenen): ' + money(s.brutto) + (s.adults === 2 && !blankVal(s.brutto2) ? ' (davon zweite Person: ' + money(s.brutto2) + ')' : ''));
     if (s.nichtArbeit) L.push('Das Einkommen stammt überwiegend nicht aus Arbeit (zum Beispiel Rente oder Arbeitslosengeld).');
     L.push('Nettoeinkommen im Monat: ' + (s.netto === '' || s.netto == null ? 'nicht angegeben' : money(s.netto)));
+    if ((s.kids || s.young) && s.unterhalt !== '' && s.unterhalt != null && Number(s.unterhalt) > 0) L.push('Unterhalt für die Kinder im Monat (vom anderen Elternteil): ' + money(s.unterhalt));
     L.push('Erspartes und Geldvermögen: ' + money(s.vermoegen));
     L.push('Besonderheiten: ' + (besond().length ? besond().join('; ') : 'keine'));
     var names = { grundsicherungsgeld: 'Grundsicherungsgeld', sozialamt: 'Grundsicherung oder Sozialhilfe', wohngeld: 'Wohngeld', kiz: 'Kinderzuschlag', kindergeld: 'Kindergeld' };

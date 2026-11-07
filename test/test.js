@@ -170,6 +170,64 @@ check('BAföG: Netto allein genügt als Einkommensangabe', lv(ev({ kids: 1, nett
 check('Grundsicherung im Alter: Netto allein genügt als Einkommensangabe', get(ev({ alter: true, netto: 600, miete: 450, vermoegen: 0 }), 'gsa').hl !== 'angabeFehlt');
 check('Wohngeld: Netto allein genügt NICHT (Wohngeld rechnet mit Brutto)', get(ev({ netto: 1000, miete: 600, vermoegen: 0, mietstufe: 3 }), 'wohngeld').hl === 'angabeFehlt');
 
+// 10c) Unterhalt für die Kinder (Feld „unterhalt“, im Monat, alle Kinder zusammen)
+{
+  const raw = Rules.raw || Rules;
+  const uvg = (o) => get(ev({ kids: 1, brutto: 1500, netto: 1200, unterhaltFehlt: true, ...o }), 'uvg');
+  check('UVG ohne gezahlten Unterhalt: wahrscheinlich', uvg({}).level === 'ja');
+  check('UVG: 150 € Unterhalt werden angerechnet -> nur noch möglich, mit Hinweis (§ 2 Abs. 3 UVG)', uvg({ unterhalt: 150 }).level === 'vielleicht' && keys(ev({ kids: 1, brutto: 1500, netto: 1200, unterhaltFehlt: true, unterhalt: 150 }), 'uvg')[0] === 'uvg.teil');
+  check('UVG: Unterhalt mindestens so hoch wie der höchste UVG (394 € je Kind) -> nein', uvg({ unterhalt: 394 }).level === 'nein' && uvg({ unterhalt: 394 }).tx[0][0] === 'uvg.genug');
+  check('UVG: 2 Kinder, 500 € Unterhalt (< 2 x 394 €) -> möglich', get(ev({ kids: 2, brutto: 1500, netto: 1200, unterhaltFehlt: true, unterhalt: 500 }), 'uvg').level === 'vielleicht');
+
+  // Kinderzuschlag (§ 6a Abs. 3 BKGG): Paar, 2 Kinder, netto 2.050, Miete 950. Handrechnung:
+  // Höchstbetrag 2 x 297 = 594; Elternanteil Miete 2/3 -> Bemessung 1.012 + 633,33 = 1.645,33; ohne Unterhalt 594 - 0,45 x 404,67 = 411,90
+  // mit 800 € Unterhalt: 411,90 - 0,45 x 800 = 51,90 (< 60 -> nur „möglich“); mit 1.000 €: 411,90 - 450 < 0 -> nein
+  const kz = (u) => lv(ev({ adults: 2, kids: 2, brutto: 2600, netto: 2050, miete: 950, vermoegen: 0, unterhalt: u }), 'kiz');
+  check('KiZ ohne Unterhalt: wahrscheinlich (Schätzung 411,90 €)', kz('') === 'ja');
+  check('KiZ mit 800 € Unterhalt: Rest 51,90 € -> möglich', kz(800) === 'vielleicht');
+  check('KiZ mit 1.000 € Unterhalt: kein Zuschlag mehr -> nein', kz(1000) === 'nein');
+
+  // Wohngeld (§§ 14, 16 WoGG): Unterhalt ohne Pauschalabzug; bei der unteren Grenze (10 % Abzug) zählt er wie u / 0,9 Brutto,
+  // bei der oberen (30 %) wie u / 0,7. Paar mit 1 Kind, Stufe III, Miete 800.
+  const wgo = { adults: 2, kids: 1, miete: 800, mietstufe: 3, vermoegen: 0 };
+  const grenze = raw.evaluate({ ...wgo, brutto: 1000, netto: 800 }).results.find((x) => x.id === 'wohngeld').tx.find((x) => /grenze/.test(x[0]))[1];
+  const lo = grenze.lo.eur, hi = grenze.hi.eur;
+  const wg = (brutto, u) => lv(ev({ ...wgo, brutto, netto: brutto * 0.8, unterhalt: u }), 'wohngeld');
+  check('Wohngeld: 50 € unter der unteren Grenze -> wahrscheinlich', wg(lo - 50, '') === 'ja', lo);
+  check('Wohngeld: dazu 50 € Unterhalt (zählt wie 55,56 € Brutto) -> nur noch möglich', wg(lo - 50, 50) === 'vielleicht');
+  check('Wohngeld: 50 € unter der oberen Grenze -> möglich', wg(hi - 50, '') === 'vielleicht', hi);
+  check('Wohngeld: dazu 40 € Unterhalt (zählt wie 57,14 € Brutto) -> nein', wg(hi - 50, 40) === 'nein');
+
+  // Grundsicherungsgeld: Unterhalt ist Einkommen des Kindes, aber nur bis zu dessen Bedarf. Alleinerziehend, 1 Kind (390 €),
+  // Miete 600, Rente 900 (kein Freibetrag): Bedarf 563 + 390 + 600 = 1.553; Kinderbedarf 390 + 300 = 690, abzüglich 259 Kindergeld
+  // = 431 € anrechenbarer Unterhalt. Mit 1.000 € Unterhalt: Einkommen 900 + 259 + 431 = 1.590 -> Lücke -37 -> „möglich“
+  // (bei voller Anrechnung wären es 2.159 € und damit „nein“).
+  const gg = (u) => lv(ev({ kids: 1, brutto: 900, netto: 900, nichtArbeit: true, miete: 600, vermoegen: 0, unterhalt: u }), 'ggeld');
+  check('Grundsicherungsgeld ohne Unterhalt: Lücke 394 € -> wahrscheinlich', gg('') === 'ja');
+  check('Grundsicherungsgeld mit 1.000 € Unterhalt: nur 431 € angerechnet -> möglich (nicht nein)', gg(1000) === 'vielleicht');
+  check('Grundsicherungsgeld: 431 € und 1.000 € Unterhalt wirken gleich (Deckel beim Kinderbedarf)', gg(431) === gg(1000));
+
+  // Eigenschaft: mehr Unterhalt verbessert keine Einstufung (über viele Haushalte)
+  {
+    const rank = { ja: 0, vielleicht: 1, nein: 2, na: 3 }; let bad = [];
+    for (const adults of [1, 2]) for (const kids of [1, 2, 3]) for (const b of [0, 900, 1600, 2400, 3400]) for (const miete of [400, 800, 1200]) for (const alter of [false, true]) {
+      let last = null;
+      for (const u of [0, 100, 250, 400, 700, 1000, 1500]) {
+        const r = ev({ adults, kids, brutto: b, netto: b * 0.8, miete, mietstufe: 3, vermoegen: 0, alter, unterhaltFehlt: true, unterhalt: u });
+        // Ausnahme (gesetzlich gewollt): Wohngeld und Kinderzuschlag setzen genug Einkommen zum Leben voraus (hl einkoNiedrig,
+        // § 6a Abs. 1 Nr. 3 BKGG; Plausibilität beim Wohngeld). Dort darf mehr Einkommen die Leistung erst möglich machen.
+        const ids = ['wohngeld', 'kiz', 'ggeld', 'gsa', 'uvg'];
+        const niedrig = ids.map((id) => get(r, id).hl === 'einkoNiedrig');
+        const now = ids.map((id) => rank[lv(r, id)]);
+        if (last && now.some((v, i) => v < last.v[i] && !niedrig[i] && !last.niedrig[i])) bad.push([adults, kids, b, miete, alter, u].join('/'));
+        last = { v: now, niedrig };
+      }
+    }
+    check('Mehr Unterhalt macht Wohngeld, KiZ, Grundsicherung und UVG nie wahrscheinlicher (' + (2 * 3 * 5 * 3 * 2) + ' Haushalte)', bad.length === 0, bad.slice(0, 5).join(' | '));
+  }
+  check('Unterhalt ohne Kinder im Haushalt bleibt ohne Wirkung', JSON.stringify(ev({ brutto: 1500, netto: 1200, miete: 600, vermoegen: 0, unterhalt: 500 }).results) === JSON.stringify(ev({ brutto: 1500, netto: 1200, miete: 600, vermoegen: 0 }).results));
+}
+
 // 11) Sortierung und Robustheit
 const order = { ja: 0, vielleicht: 1, nein: 2, na: 3 };
 let sorted = true;

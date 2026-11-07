@@ -484,5 +484,9 @@
   "beh.plzHint": "Enter your postcode above and the app will show the responsible office with its address (currently for Bavaria).",
   "beh.besuch": "Visiting address:",
   "beh.fkUnklar": "For where you live, the official directory lists Familienkasse Bayern Nord (post: {nord}) or Bayern Süd (post: {sued}). The free Familienkasse service number tells you which one is responsible: {tel}.",
-  "f.adrFehlt": "To fill in the address of the responsible office, the app needs your postcode (currently for Bavaria). Enter it in the questionnaire above or in your address under \"postcode and town\", and the app will add the recipients."
+  "f.adrFehlt": "To fill in the address of the responsible office, the app needs your postcode (currently for Bavaria). Enter it in the questionnaire above or in your address under \"postcode and town\", and the app will add the recipients.",
+  "unterh.label": "Maintenance for the children per month",
+  "unterh.hint": "What the other parent pays for the children, for all children together. Leave empty if nothing is paid. Do not enter Unterhaltsvorschuss here. Include maintenance for yourself in your income.",
+  "t.uvg.teil": "The maintenance the children already receive ({u} per month) is deducted. Unterhaltsvorschuss is only paid for the part by which it falls short of the Unterhaltsvorschuss amount.",
+  "t.uvg.genug": "The children already receive {u} maintenance per month. That is at least as much as Unterhaltsvorschuss; the maintenance paid is fully deducted."
 }

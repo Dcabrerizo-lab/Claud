@@ -484,5 +484,9 @@
   "beh.plzHint": "Wpisz powyżej kod pocztowy, a aplikacja pokaże właściwy urząd z adresem (na razie dla Bawarii).",
   "beh.besuch": "Adres dla odwiedzających:",
   "beh.fkUnklar": "Dla Twojego miejsca zamieszkania oficjalny rejestr podaje Familienkasse Bayern Nord (poczta: {nord}) lub Bayern Süd (poczta: {sued}). Która jest właściwa, powie bezpłatna infolinia Familienkasse: {tel}.",
-  "f.adrFehlt": "Aby wpisać adres właściwego urzędu, aplikacja potrzebuje Twojego kodu pocztowego (na razie dla Bawarii). Wpisz go powyżej w kwestionariuszu lub w swoim adresie w polu „kod i miejscowość”, a aplikacja doda adresatów."
+  "f.adrFehlt": "Aby wpisać adres właściwego urzędu, aplikacja potrzebuje Twojego kodu pocztowego (na razie dla Bawarii). Wpisz go powyżej w kwestionariuszu lub w swoim adresie w polu „kod i miejscowość”, a aplikacja doda adresatów.",
+  "unterh.label": "Alimenty na dzieci miesięcznie",
+  "unterh.hint": "Ile drugi rodzic płaci na dzieci, łącznie na wszystkie dzieci. Zostaw puste, jeśli nic nie płaci. Nie wpisuj tu Unterhaltsvorschuss. Alimenty dla siebie wlicz do dochodu.",
+  "t.uvg.teil": "Alimenty, które dzieci już otrzymują ({u} miesięcznie), są zaliczane. Unterhaltsvorschuss przysługuje tylko w części, o którą są niższe od kwoty Unterhaltsvorschuss.",
+  "t.uvg.genug": "Dzieci otrzymują już {u} alimentów miesięcznie. To co najmniej tyle, ile Unterhaltsvorschuss; płacone alimenty są zaliczane w całości."
 }

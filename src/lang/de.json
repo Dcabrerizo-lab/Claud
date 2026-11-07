@@ -484,5 +484,9 @@
   "beh.plzHint": "Gib oben deine Postleitzahl ein, dann nennt die App die zuständige Stelle mit Anschrift (derzeit für Bayern).",
   "beh.besuch": "Besucheranschrift:",
   "beh.fkUnklar": "Für deinen Wohnort nennt das amtliche Verzeichnis die Familienkasse Bayern Nord (Post: {nord}) oder Bayern Süd (Post: {sued}). Welche zuständig ist, sagt dir die kostenlose Servicenummer der Familienkassen: {tel}.",
-  "f.adrFehlt": "Für die Anschrift der zuständigen Stelle braucht die App deine Postleitzahl (derzeit für Bayern). Trage sie oben im Fragebogen oder bei deiner Anschrift unter „PLZ und Ort“ ein, dann setzt die App die Empfänger ein."
+  "f.adrFehlt": "Für die Anschrift der zuständigen Stelle braucht die App deine Postleitzahl (derzeit für Bayern). Trage sie oben im Fragebogen oder bei deiner Anschrift unter „PLZ und Ort“ ein, dann setzt die App die Empfänger ein.",
+  "unterh.label": "Unterhalt für die Kinder im Monat",
+  "unterh.hint": "Was der andere Elternteil für die Kinder zahlt, zusammen für alle Kinder. Leer lassen, wenn nichts gezahlt wird. Unterhaltsvorschuss hier nicht eintragen. Unterhalt für dich selbst rechnest du beim Einkommen mit.",
+  "t.uvg.teil": "Der Unterhalt, den die Kinder schon bekommen ({u} im Monat), wird angerechnet. Unterhaltsvorschuss gibt es nur noch für den Teil, um den er unter dem Unterhaltsvorschuss liegt.",
+  "t.uvg.genug": "Die Kinder bekommen schon {u} Unterhalt im Monat. Das ist mindestens so viel wie der Unterhaltsvorschuss, der gezahlte Unterhalt wird voll angerechnet."
 }

@@ -484,5 +484,9 @@
   "beh.plzHint": "Yukarıya posta kodunu gir, uygulama yetkili makamı adresiyle gösterir (şimdilik Bavyera için).",
   "beh.besuch": "Ziyaret adresi:",
   "beh.fkUnklar": "Oturduğun yer için resmî rehber Familienkasse Bayern Nord (posta: {nord}) veya Bayern Süd (posta: {sued}) gösteriyor. Hangisinin yetkili olduğunu Familienkasse'nin ücretsiz hizmet hattı söyler: {tel}.",
-  "f.adrFehlt": "Yetkili makamın adresi için uygulamanın posta kodunu bilmesi gerekir (şimdilik Bavyera için). Yukarıdaki ankete veya adresinde \"posta kodu ve yer\" alanına yaz, uygulama alıcıları ekler."
+  "f.adrFehlt": "Yetkili makamın adresi için uygulamanın posta kodunu bilmesi gerekir (şimdilik Bavyera için). Yukarıdaki ankete veya adresinde \"posta kodu ve yer\" alanına yaz, uygulama alıcıları ekler.",
+  "unterh.label": "Çocuklar için aylık nafaka",
+  "unterh.hint": "Diğer ebeveynin çocuklar için ödediği tutar, tüm çocuklar için toplam. Hiçbir şey ödenmiyorsa boş bırak. Unterhaltsvorschuss buraya yazılmaz. Kendin için aldığın nafakayı gelirine ekle.",
+  "t.uvg.teil": "Çocukların zaten aldığı nafaka (ayda {u}) mahsup edilir. Unterhaltsvorschuss yalnızca bu nafakanın Unterhaltsvorschuss tutarının altında kalan kısmı için ödenir.",
+  "t.uvg.genug": "Çocuklar zaten ayda {u} nafaka alıyor. Bu en az Unterhaltsvorschuss kadardır; ödenen nafaka tamamen mahsup edilir."
 }

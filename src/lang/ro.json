@@ -484,5 +484,9 @@
   "beh.plzHint": "Introdu mai sus codul poștal și aplicația îți arată autoritatea competentă cu adresa (deocamdată pentru Bavaria).",
   "beh.besuch": "Adresa pentru vizite:",
   "beh.fkUnklar": "Pentru localitatea ta, registrul oficial indică Familienkasse Bayern Nord (poștă: {nord}) sau Bayern Süd (poștă: {sued}). Care este competentă îți spune numărul de serviciu gratuit al Familienkasse: {tel}.",
-  "f.adrFehlt": "Pentru adresa autorității competente, aplicația are nevoie de codul tău poștal (deocamdată pentru Bavaria). Introdu-l mai sus în chestionar sau în adresa ta la „cod poștal și localitate”, iar aplicația completează destinatarii."
+  "f.adrFehlt": "Pentru adresa autorității competente, aplicația are nevoie de codul tău poștal (deocamdată pentru Bavaria). Introdu-l mai sus în chestionar sau în adresa ta la „cod poștal și localitate”, iar aplicația completează destinatarii.",
+  "unterh.label": "Pensia de întreținere pentru copii pe lună",
+  "unterh.hint": "Cât plătește celălalt părinte pentru copii, în total pentru toți copiii. Lasă gol dacă nu se plătește nimic. Nu trece aici Unterhaltsvorschuss. Pensia pentru tine include-o la venit.",
+  "t.uvg.teil": "Pensia pe care copiii o primesc deja ({u} pe lună) se scade. Unterhaltsvorschuss se plătește doar pentru partea cu care aceasta este sub suma Unterhaltsvorschuss.",
+  "t.uvg.genug": "Copiii primesc deja {u} pensie de întreținere pe lună. Aceasta este cel puțin cât Unterhaltsvorschuss; pensia plătită se scade integral."
 }
