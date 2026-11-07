@@ -586,5 +586,6 @@
   "t.krank.ja": "Casa de asigurări plătește Krankengeld: 70 % din brut, cel mult 90 % din net. Din el se mai scad contribuții.",
   "t.krank.78": "Krankengeld pentru aceeași boală se plătește cel mult 78 de săptămâni în 3 ani; cele 6 săptămâni de salariu continuat se socotesc. Planifică din timp: după aceea pot intra în calcul ajutorul de șomaj (Nahtlosigkeit) și o Erwerbsminderungsrente.",
   "t.krank.ende": "După 78 de săptămâni Krankengeld se termină. După aceea pot intra în calcul ajutorul de șomaj (și cu capacitate de muncă limitată) și o Erwerbsminderungsrente. Dacă nu ajunge, verifică Grundsicherungsgeld sau Wohngeld.",
-  "t.but.azubi": "Pachetul educațional este pentru copii sub 18 ani și pentru tineri până la 25 de ani care merg la școală și nu primesc indemnizație de ucenicie."
+  "t.but.azubi": "Pachetul educațional este pentru copii sub 18 ani și pentru tineri până la 25 de ani care merg la școală și nu primesc indemnizație de ucenicie.",
+  "beh.pruefenKurz": "Verifică adresa înainte de trimitere."
 }

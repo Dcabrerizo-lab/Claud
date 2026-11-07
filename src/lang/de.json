@@ -586,5 +586,6 @@
   "t.krank.ja": "Die Krankenkasse zahlt Krankengeld: 70 % vom Brutto, höchstens 90 % vom Netto. Davon gehen noch Beiträge ab.",
   "t.krank.78": "Krankengeld gibt es für dieselbe Krankheit höchstens 78 Wochen in 3 Jahren, die 6 Wochen Lohnfortzahlung zählen mit. Plane rechtzeitig: Danach können Arbeitslosengeld (Nahtlosigkeit) und eine Erwerbsminderungsrente in Frage kommen.",
   "t.krank.ende": "Nach 78 Wochen endet das Krankengeld. Danach können Arbeitslosengeld (auch bei eingeschränkter Leistungsfähigkeit) und eine Erwerbsminderungsrente in Frage kommen. Reicht das nicht, prüfe Grundsicherungsgeld oder Wohngeld.",
-  "t.but.azubi": "Das Bildungspaket gibt es für Kinder unter 18 und für junge Erwachsene bis 25, die zur Schule gehen und keine Ausbildungsvergütung bekommen."
+  "t.but.azubi": "Das Bildungspaket gibt es für Kinder unter 18 und für junge Erwachsene bis 25, die zur Schule gehen und keine Ausbildungsvergütung bekommen.",
+  "beh.pruefenKurz": "Bitte die Anschrift vor dem Absenden prüfen."
 }

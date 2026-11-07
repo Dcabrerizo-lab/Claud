@@ -586,5 +586,6 @@
   "t.krank.ja": "Kasa chorych wypłaca Krankengeld: 70 % brutto, maksymalnie 90 % netto. Odlicza się od niego jeszcze składki.",
   "t.krank.78": "Krankengeld z powodu tej samej choroby przysługuje maksymalnie 78 tygodni w ciągu 3 lat; 6 tygodni wynagrodzenia chorobowego się wlicza. Planuj z wyprzedzeniem: potem może przysługiwać zasiłek dla bezrobotnych (Nahtlosigkeit) i Erwerbsminderungsrente.",
   "t.krank.ende": "Po 78 tygodniach Krankengeld się kończy. Potem może przysługiwać zasiłek dla bezrobotnych (również przy ograniczonej zdolności do pracy) i Erwerbsminderungsrente. Jeśli to nie wystarczy, sprawdź Grundsicherungsgeld lub Wohngeld.",
-  "t.but.azubi": "Pakiet edukacyjny przysługuje dzieciom poniżej 18 lat oraz młodym dorosłym do 25 lat, którzy chodzą do szkoły i nie otrzymują wynagrodzenia za naukę zawodu."
+  "t.but.azubi": "Pakiet edukacyjny przysługuje dzieciom poniżej 18 lat oraz młodym dorosłym do 25 lat, którzy chodzą do szkoły i nie otrzymują wynagrodzenia za naukę zawodu.",
+  "beh.pruefenKurz": "Przed wysłaniem sprawdź adres."
 }

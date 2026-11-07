@@ -586,5 +586,6 @@
   "t.krank.ja": "Sağlık sigortası Krankengeld öder: brütün %70'i, en fazla netin %90'ı. Bundan ayrıca primler düşülür.",
   "t.krank.78": "Aynı hastalık için Krankengeld 3 yıl içinde en fazla 78 hafta ödenir; 6 haftalık ücret ödemesi buna dahildir. Zamanında planlayın: Sonrasında işsizlik parası (Nahtlosigkeit) ve Erwerbsminderungsrente söz konusu olabilir.",
   "t.krank.ende": "78 haftadan sonra Krankengeld biter. Sonrasında işsizlik parası (sınırlı çalışma gücünde de) ve Erwerbsminderungsrente söz konusu olabilir. Bu yetmezse Grundsicherungsgeld veya Wohngeld'i kontrol edin.",
-  "t.but.azubi": "Eğitim paketi 18 yaşından küçük çocuklar ile okula giden ve meslek eğitimi ücreti almayan 25 yaşına kadar gençler içindir."
+  "t.but.azubi": "Eğitim paketi 18 yaşından küçük çocuklar ile okula giden ve meslek eğitimi ücreti almayan 25 yaşına kadar gençler içindir.",
+  "beh.pruefenKurz": "Göndermeden önce adresi kontrol edin."
 }

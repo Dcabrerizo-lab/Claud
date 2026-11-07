@@ -284,7 +284,7 @@
       '<div class="zust behoerde" lang="de" dir="ltr"><p><strong>' + esc(t('beh.stelle')) + '</strong></p><address>' + lines.map(esc).join('<br>') + '</address>' +
       (b.haus ? '<p class="small"><bdi>' + esc(t('beh.besuch')) + '</bdi> ' + esc(b.haus.join(', ')) + '</p>' : '') +
       (b.web ? '<p><a href="' + esc(b.web) + '" target="_blank" rel="noopener">' + esc(t('beh.web')) + '</a></p>' : '') + '</div>' +
-      '<p class="small">' + esc(b.anschrift ? t('beh.pruefen', { stand: b.stand }) : t('beh.ohneAdr')) + '</p>';
+      '<p class="small">' + esc(b.anschrift ? (b.stand ? t('beh.pruefen', { stand: b.stand }) : t('beh.pruefenKurz')) : t('beh.ohneAdr')) + '</p>';
   }
 
   function buildSelects() {
@@ -449,10 +449,12 @@
     });
     $('mappeClose').addEventListener('click', closeMappe);
     if (NATIVE) { $('mappePrint').setAttribute('data-t', 'f.pdf'); $('mappePrint').textContent = t('f.pdf'); $('mappeShare').hidden = false; }
+    else if (navigator.share) $('mappeShare').hidden = false; // Web: Teilen-Dialog des Handys (z. B. an die Betreuerin per E-Mail oder Messenger)
     $('mappeShare').addEventListener('click', function () {
       var sh = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Share;
       var txt = $('mappeText').value;
       if (sh) sh.share({ title: t('f.mappe'), text: txt }).catch(function () {});
+      else if (navigator.share) navigator.share({ title: t('f.mappe'), text: txt }).catch(function () {});
       else copyMappe();
     });
     $('mappePrint').addEventListener('click', function () {

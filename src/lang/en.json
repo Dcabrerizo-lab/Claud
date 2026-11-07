@@ -586,5 +586,6 @@
   "t.krank.ja": "The health insurance fund pays Krankengeld: 70 % of gross, at most 90 % of net. Contributions are deducted from it.",
   "t.krank.78": "Krankengeld for the same illness is paid for at most 78 weeks within 3 years; the 6 weeks of continued pay count. Plan ahead: afterwards unemployment benefit (Nahtlosigkeit) and a Erwerbsminderungsrente may apply.",
   "t.krank.ende": "Krankengeld ends after 78 weeks. Afterwards unemployment benefit (also with limited ability to work) and a Erwerbsminderungsrente may apply. If that is not enough, check Grundsicherungsgeld or Wohngeld.",
-  "t.but.azubi": "The education package is for children under 18 and for young adults up to 25 who attend school and receive no apprenticeship pay."
+  "t.but.azubi": "The education package is for children under 18 and for young adults up to 25 who attend school and receive no apprenticeship pay.",
+  "beh.pruefenKurz": "Please check the address before sending."
 }
