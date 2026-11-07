@@ -4021,5 +4021,230 @@
   "bytes": 68938,
   "sha256": "450c2e72e52731290176ffa9cd32caa9475d559916e1d6f49cf46bbb7bdea1f8",
   "abgerufen": "2026-11-06T00:34:46Z"
+ },
+ {
+  "datei": "sgb12-82.html",
+  "url": "https://www.buzer.de/82_SGB_XII.htm",
+  "http": 403,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-07T16:18:42Z"
+ },
+ {
+  "datei": "sgb12-42a.html",
+  "url": "https://www.buzer.de/42a_SGB_XII.htm",
+  "http": 403,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-07T16:18:43Z"
+ },
+ {
+  "datei": "sgb12-42b.html",
+  "url": "https://www.buzer.de/42b_SGB_XII.htm",
+  "http": 403,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-07T16:18:43Z"
+ },
+ {
+  "datei": "sgb12-30.html",
+  "url": "https://www.buzer.de/30_SGB_XII.htm",
+  "http": 403,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-07T16:18:44Z"
+ },
+ {
+  "datei": "sgb12-41.html",
+  "url": "https://www.buzer.de/41_SGB_XII.htm",
+  "http": 403,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-07T16:18:45Z"
+ },
+ {
+  "datei": "sgb12-43.html",
+  "url": "https://www.buzer.de/43_SGB_XII.htm",
+  "http": 403,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-07T16:18:45Z"
+ },
+ {
+  "datei": "sgb12-82a.html",
+  "url": "https://www.buzer.de/82a_SGB_XII.htm",
+  "http": 403,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-07T16:18:46Z"
+ },
+ {
+  "datei": "sgb12-90.html",
+  "url": "https://www.buzer.de/90_SGB_XII.htm",
+  "http": 403,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-07T16:18:46Z"
+ },
+ {
+  "datei": "sgb12-anlage.html",
+  "url": "https://www.buzer.de/Anlage_SGB_XII.htm",
+  "http": 403,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-07T16:18:47Z"
+ },
+ {
+  "datei": "sgb9-59.html",
+  "url": "https://www.buzer.de/59_SGB_IX.htm",
+  "http": 403,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-07T16:18:48Z"
+ },
+ {
+  "datei": "sgb9-221.html",
+  "url": "https://www.buzer.de/221_SGB_IX.htm",
+  "http": 403,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-07T16:18:48Z"
+ },
+ {
+  "datei": "svev-2.html",
+  "url": "https://www.buzer.de/2_SvEV.htm",
+  "http": 403,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-07T16:18:49Z"
+ },
+ {
+  "datei": "sgb6-43.html",
+  "url": "https://www.buzer.de/43_SGB_VI.htm",
+  "http": 403,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-07T16:18:49Z"
+ },
+ {
+  "datei": "sgb2-11b.html",
+  "url": "https://www.buzer.de/11b_SGB_II.htm",
+  "http": 403,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-07T16:18:50Z"
+ },
+ {
+  "datei": "sgb2-21.html",
+  "url": "https://www.buzer.de/21_SGB_II.htm",
+  "http": 403,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-07T16:18:50Z"
+ },
+ {
+  "datei": "bkgg-6a.html",
+  "url": "https://www.buzer.de/6a_BKGG.htm",
+  "http": 403,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-07T16:18:51Z"
+ },
+ {
+  "datei": "wogg-14.html",
+  "url": "https://www.buzer.de/14_WoGG.htm",
+  "http": 403,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-07T16:18:52Z"
+ },
+ {
+  "datei": "wogg-16.html",
+  "url": "https://www.buzer.de/16_WoGG.htm",
+  "http": 403,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-07T16:18:52Z"
+ },
+ {
+  "datei": "wogg-17.html",
+  "url": "https://www.buzer.de/17_WoGG.htm",
+  "http": 403,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-07T16:18:53Z"
+ },
+ {
+  "datei": "sgb3-147.html",
+  "url": "https://www.buzer.de/147_SGB_III.htm",
+  "http": 403,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-07T16:18:53Z"
+ },
+ {
+  "datei": "sgb3-149.html",
+  "url": "https://www.buzer.de/149_SGB_III.htm",
+  "http": 0,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-07T16:19:56Z"
+ },
+ {
+  "datei": "sgb5-47.html",
+  "url": "https://www.buzer.de/47_SGB_V.htm",
+  "http": 0,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-07T16:20:59Z"
+ },
+ {
+  "datei": "sgb5-48.html",
+  "url": "https://www.buzer.de/48_SGB_V.htm",
+  "http": 0,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-07T16:22:02Z"
+ },
+ {
+  "datei": "beeg-10.html",
+  "url": "https://www.buzer.de/10_BEEG.htm",
+  "http": 0,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-07T16:23:05Z"
+ },
+ {
+  "datei": "uvg-2.html",
+  "url": "https://www.buzer.de/2_UVG.htm",
+  "http": 0,
+  "ok": false,
+  "bytes": 0,
+  "sha256": null,
+  "abgerufen": "2026-11-07T16:24:08Z"
  }
 ]
