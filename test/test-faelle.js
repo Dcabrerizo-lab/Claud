@@ -15,7 +15,7 @@ const f1 = { kids: 2, brutto: 1800, miete: 850, mietstufe: 3, unterhaltFehlt: tr
 ck('F1 Kindergeld 259', L(f1, 'kindergeld') === 'ja' && P(f1, 'kindergeld', 'kg') === '259 €');
 ck('F1 UVG ja', L(f1, 'uvg') === 'ja' && P(f1, 'uvg', 'a') === '227 €' && P(f1, 'uvg', 'b') === '299 €' && P(f1, 'uvg', 'c') === '394 €');
 ck('F1 Hinweis Kindergeld zuerst und Wohngeld/KiZ', res(f1).z.includes('z.kgZuerst') && res(f1).z.includes('z.wgKiz'));
-ck('F1 Bedarf 563+780+850', P(f1, 'ggeld', 'bedarf') === E(563 + 780 + 850));
+ck('F1 Bedarf 563+780+850 + 36 % Mehrbedarf Alleinerziehende', P(f1, 'ggeld', 'bedarf') === E(563 + 780 + 850 + 0.36 * 563));
 // 2 Rentnerin, Rente 1100, Miete 550
 const f2 = { alter: true, nichtArbeit: true, brutto: 1100, miete: 550, mietstufe: 3, vermoegen: 5000 };
 ck('F2 GSA ja, Bedarf 563+550', L(f2, 'gsa') === 'ja' && P(f2, 'gsa', 'bedarf') === E(563 + 550));
@@ -31,7 +31,9 @@ ck('F3 Verhinderungspflege ja', L(f3, 'pflegeplus') === 'ja');
 // 4 Paar, 2 Kinder, 4.000 € brutto gesamt
 const f4 = { adults: 2, kids: 2, brutto: 4000, brutto2: 1500, miete: 1100, mietstufe: 4 };
 ck('F4 Bedarf 1012+780+1100', P(f4, 'ggeld', 'bedarf') === E(1012 + 780 + 1100));
-ck('F4 KiZ zu hoch', L(f4, 'kiz') === 'nein');
+// Elterneinkommen 3.200 - 2 x 378 Freibetrag = 2.444; Bemessung 1.012 + 1.100 x 2/2,8 = 1.797,71; 594 - 0,45 x 646 = 303 -> wahrscheinlich
+ck('F4 KiZ mit Freibeträgen für Arbeit: wahrscheinlich', L(f4, 'kiz') === 'ja');
+ck('F4b KiZ bei 5.200 € brutto zu hoch', L({ ...f4, brutto: 5200 }, 'kiz') === 'nein');
 ck('F4 WBS-Grenze 4 Personen (2 Kinder) = 27.500 + 2 x 5.000 + 2 x 1.300 = 40.100', P(f4, 'wbs', 'grenze') === '40.100 €' && L(f4, 'wbs') === 'vielleicht');
 // 5 Bezug von Grundsicherungsgeld
 const f5 = { adults: 2, kids: 3, nichtArbeit: true, miete: 1000, mietstufe: 3, bezug: { grundsicherungsgeld: true } };

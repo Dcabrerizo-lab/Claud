@@ -87,12 +87,12 @@ G('WG: Obergrenze 2182 → vielleicht', { brutto: 2182, netto: 1700, miete: 700 
 G('WG: 2184 → nein', { brutto: 2184, netto: 1700, miete: 700 }, 'wohngeld', 'nein');
 G('WG: Behinderung 1800: 1800−187,5 = 1612,5 → ja', { brutto: 1800, netto: 1400, behinderung: true }, 'wohngeld', 'ja');
 G('WG: ohne Behinderung 1800 → vielleicht', { brutto: 1800, netto: 1400 }, 'wohngeld', 'vielleicht');
-G('WG: Alleinerziehend 1 Kind 2350: 2350−137,5 = 2212,5 ≤ 2264 → ja', { kids: 1, brutto: 2350, netto: 1900, miete: 700, unterhaltFehlt: true }, 'wohngeld', 'ja');
+G('WG: Alleinerziehend 1 Kind 2350: (2350·0,9−110 = 2005 ≤ 2264·0,9) → ja', { kids: 1, brutto: 2350, netto: 1900, miete: 700 }, 'wohngeld', 'ja');
 // Alleinerziehende: Freibetrag 110 €/Monat nur EINMAL (§ 17 Nr. 3 WoGG), nicht je Kind. 3 Personen, Stufe III, Höchstmiete: Grenze 2832 (10 % Abzug)
 { const lim = R.limits(3, 4)[0]; // Alleinerziehend mit 3 Kindern = 4 Personen
-  const kb = { kids: 3, unterhaltFehlt: true, miete: 1500, netto: 3000 };
-  G('WG: Alleinerziehend 3 Kinder: Freibetrag nur einmal (137,5 brutto-Äquivalent), knapp über Grenze → vielleicht', { ...kb, brutto: Math.floor(lim + 137.5 + 20) }, 'wohngeld', 'vielleicht');
-  G('WG: Alleinerziehend 3 Kinder: einmaliger Freibetrag, knapp darunter → ja', { ...kb, brutto: Math.floor(lim + 137.5 - 5) }, 'wohngeld', 'ja'); }
+  const kb = { kids: 3, miete: 1500, netto: 3000 };
+  G('WG: Alleinerziehend 3 Kinder: Freibetrag nur einmal (110 € = 122,2 € brutto bei 10 % Abzug), knapp über Grenze → vielleicht', { ...kb, brutto: Math.floor(lim + 122.2 + 20) }, 'wohngeld', 'vielleicht');
+  G('WG: Alleinerziehend 3 Kinder: einmaliger Freibetrag, knapp darunter → ja', { ...kb, brutto: Math.floor(lim + 122.2 - 5) }, 'wohngeld', 'ja'); }
 G('WG: Vermögen 1 Person 60001 → nein', { brutto: 1000, netto: 900, vermoegen: 60001 }, 'wohngeld', 'nein');
 G('WG: Vermögen 1 Person 60000 → ja', { brutto: 1000, netto: 900, miete: 300, vermoegen: 60000 }, 'wohngeld', 'ja');
 G('WG: Vermögen 2 Personen 90000 ok', { adults: 2, brutto: 1500, netto: 1300, vermoegen: 90000 }, 'wohngeld', 'ja');

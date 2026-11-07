@@ -50,6 +50,10 @@
   }
   .app { font-size: 1rem; }
   .app.big { font-size: 1.2rem; }
+  html.big { font-size: 19px; }
+  input.kurz { max-width: 9em; }
+  .legende { font-size: 0.85em; color: var(--muted); margin: -4px 0 10px; }
+  .info { font-size: 0.85em; background: var(--surface); border-left: 3px solid var(--accent); padding: 6px 10px; margin: 6px 0 0; }
   .shell {
     max-width: 1100px;
     margin: 0 auto;
@@ -72,7 +76,7 @@
   .chip {
     font: inherit; font-size: 0.85em; color: var(--ink);
     background: var(--surface); border: 1px solid var(--line); border-radius: 999px;
-    padding: 6px 12px; min-height: 36px; cursor: pointer;
+    padding: 6px 14px; min-height: 44px; cursor: pointer;
   }
   .chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
   .langpick { display: flex; align-items: center; gap: 8px; font-size: 0.85em; color: var(--muted); }
@@ -345,10 +349,11 @@
               </div>
             </div>
             <div class="field">
-              <label for="alterGruppe" data-t="gruppe.label"></label>
-              <select id="alterGruppe"></select>
+              <label for="gebJahr" data-t="geb.label"></label>
+              <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" id="gebJahr" class="kurz">
+              <span class="hint" data-t="geb.hint"></span>
+              <p class="warn" id="gebWarn" hidden></p>
             </div>
-            <label class="check"><input type="checkbox" id="alter"><span data-t="cb.alter"></span></label>
           </fieldset>
 
           <fieldset>
@@ -381,6 +386,7 @@
                 <select id="blind"></select>
               </div>
               <div class="checks">
+                <label class="check"><input type="checkbox" id="mzG"><span data-t="cb.mzG"></span></label>
                 <label class="check cond-bh25"><input type="checkbox" id="bhSelbst"><span data-t="cb.bhSelbst"></span></label>
                 <label class="check"><input type="checkbox" id="wfbm"><span data-t="cb.wfbm"></span></label>
               </div>
@@ -408,6 +414,7 @@
               <label for="miete" data-t="miete.label"></label>
               <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="miete"><span aria-hidden="true">€</span></div>
               <span class="hint" data-t="miete.hint"></span>
+              <p class="warn" id="mieteWarn" hidden></p>
             </div>
             <div class="field" id="plzField" hidden>
               <label for="plz" data-t="plz.label"></label>
@@ -473,6 +480,11 @@
               <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="unterhalt"><span aria-hidden="true">€</span></div>
               <span class="hint" data-t="unterh.hint"></span>
             </div>
+            <div class="field cond-kinder">
+              <label for="kindEink" data-t="kindEink.label"></label>
+              <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="kindEink"><span aria-hidden="true">€</span></div>
+              <span class="hint" data-t="kindEink.hint"></span>
+            </div>
             <div class="field">
               <label for="vermoegen" data-t="verm.label"></label>
               <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="vermoegen"><span aria-hidden="true">€</span></div>
@@ -498,6 +510,7 @@
           <h2 id="h-res" data-t="res.h"></h2>
           <span class="count" id="count" aria-live="polite"></span>
         </div>
+        <p class="legende" id="legende" data-t="legende"></p>
         <nav id="overview" class="overview" hidden></nav>
         <div id="together"></div>
         <div id="cards" class="results"></div>

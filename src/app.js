@@ -1,8 +1,8 @@
 (function () {
   var PRESETS = [
-    { id: 'p1', key: 'preset.p1', v: { adults: 1, kids: 2, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'lohn', ek1Brutto: 2200, ek1Netto: 1750, brutto: 2200, netto: 1750, miete: 950, mietstufe: '3', vermoegen: 3000, alter: false, kinder12: false, unterhaltFehlt: true, alterGruppe: '31-40', ausbildung: '', pflegegrad: '', bezug: {} } },
-    { id: 'p2', key: 'preset.p2', v: { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'rente', ek1Brutto: 880, ek1Netto: 780, brutto: 880, netto: 780, miete: 480, mietstufe: '3', vermoegen: 4000, alter: true, kinder12: false, unterhaltFehlt: false, alterGruppe: '51+', ausbildung: '', pflegegrad: '', bezug: {} } },
-    { id: 'p3', key: 'preset.p3', v: { adults: 2, kids: 1, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'lohn', ek1Brutto: 3200, ek1Netto: 2500, ek2Art: 'ohne', brutto: 3200, brutto2: '', netto: 2500, miete: 1100, mietstufe: '5', vermoegen: 8000, alter: false, kinder12: false, unterhaltFehlt: false, alterGruppe: '31-40', ausbildung: '', pflegegrad: '', bezug: {} } }
+    { id: 'p1', key: 'preset.p1', v: { adults: 1, kids: 2, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'lohn', ek1Brutto: 2200, ek1Netto: 1750, brutto: 2200, netto: 1750, miete: 950, mietstufe: '3', vermoegen: 3000, gebJahr: 1991, kinder12: false, unterhaltFehlt: true, ausbildung: '', pflegegrad: '', bezug: {} } },
+    { id: 'p2', key: 'preset.p2', v: { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'rente', ek1Brutto: 880, ek1Netto: 780, brutto: 880, netto: 780, miete: 480, mietstufe: '3', vermoegen: 4000, gebJahr: 1955, kinder12: false, unterhaltFehlt: false, ausbildung: '', pflegegrad: '', bezug: {} } },
+    { id: 'p3', key: 'preset.p3', v: { adults: 2, kids: 1, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'lohn', ek1Brutto: 3200, ek1Netto: 2500, ek2Art: 'ohne', brutto: 3200, brutto2: '', netto: 2500, miete: 1100, mietstufe: '5', vermoegen: 8000, gebJahr: 1988, kinder12: false, unterhaltFehlt: false, ausbildung: '', pflegegrad: '', bezug: {} } }
   ];
   var NATIVE = /*NATIVE*/ false; // true in der Store-App (Android und iOS)
   var LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro'];
@@ -61,7 +61,7 @@
   function save() { clearTimeout(saveTimer); saveTimer = setTimeout(flush, 300); }
   function smooth() { return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'; }
   function blankState() {
-    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', miete: '', mietstufe: '', plz: '', plzPick: '', bundesland: '', vermoegen: '', alterGruppe: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', bezug: {} };
+    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', kindEink: '', miete: '', mietstufe: '', plz: '', plzPick: '', bundesland: '', vermoegen: '', gebJahr: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', bezug: {} };
   }
 
   function detect() {
@@ -138,12 +138,15 @@
     var reset = function (keys) { keys.forEach(function (k) { if (typeof state[k] === 'boolean') { state[k] = false; $(k).checked = false; } else { state[k] = ''; $(k).value = ''; } }); };
     if (!state.bhPerson) reset(['gdb', 'blind', 'wfbm', 'bhSelbst']);
     if (state.bhPerson !== 'erwVor25') reset(['bhSelbst']);
-    if (!state.emStd) reset(['em5']);
+    if (state.emStd !== 'unter3' && state.emStd !== '3bis6') reset(['em5']);
+    if (!state.bhPerson) reset(['mzG']);
+    if (state.kids + state.young === 0) reset(['kindEink']);
     if (state.ausbildung !== 'ich') reset(['babBetrieb', 'babWohnt']);
     var show = function (sel, on) { document.querySelectorAll(sel).forEach(function (el) { el.hidden = !on; }); };
     show('.cond-bh', !!state.bhPerson);
     show('.cond-bh25', state.bhPerson === 'erwVor25');
-    show('.cond-em', !!state.emStd);
+    show('.cond-em', state.emStd === 'unter3' || state.emStd === '3bis6');
+    show('.cond-kinder', state.kids + state.young > 0);
     show('.cond-ausbich', state.ausbildung === 'ich');
   }
   // Frühere Fragen (Haken „Grad der Behinderung 100“ und „voll erwerbsgemindert“) in die neuen Fragen übernehmen
@@ -151,19 +154,27 @@
     if (s.behinderung && !s.gdb) { s.gdb = '100'; if (!s.bhPerson) s.bhPerson = 'erwNach25'; }
     if (s.erwerbsgemindert && !s.emStd) s.emStd = 'unter3';
     s.behinderung = false; s.erwerbsgemindert = false;
+    // Altersfrage: früher Haken „Rentenalter“ und Altersgruppe, jetzt das Geburtsjahr (neu eintragen)
+    delete s.alter; delete s.alterGruppe;
     return s;
   }
 
   // ----- Einkommen je Person -> Werte, mit denen die Regeln rechnen (brutto, brutto2, netto, nichtArbeit, nichtArbeit2) -----
   // Art: lohn (Lohn/Gehalt, Freibetrag bei der Grundsicherung), rente, alg (Arbeitslosengeld I), kg (Krankengeld), ohne (kein Einkommen).
   // Arbeitslosengeld I und Krankengeld haben kein Brutto: dort zählt der ausgezahlte Betrag (Feld „Betrag laut Bescheid“).
+  // Fehlt das Brutto, schätzt die App es aus dem Betrag auf dem Konto: Minijob (bis 603 €) brutto = netto,
+  // sonst Lohn etwa netto / 0,7 und Rente etwa netto / 0,89 (Kranken- und Pflegeversicherung). geschaetzt = true zeigt einen Hinweis.
   function ekPerson(i) {
     var art = state['ek' + i + 'Art'], b = state['ek' + i + 'Brutto'], n = state['ek' + i + 'Netto'];
     var leer = function (v) { return v === '' || v == null; };
-    if (!art) return { gesetzt: false, b: '', n: '', arbeit: true };
-    if (art === 'ohne') return { gesetzt: true, b: 0, n: 0, arbeit: false };
+    if (!art) return { gesetzt: false, b: '', n: '', arbeit: true, art: '' };
+    if (art === 'ohne') return { gesetzt: true, b: 0, n: 0, arbeit: false, art: art };
     var mitBrutto = art === 'lohn' || art === 'rente';
-    return { gesetzt: true, b: mitBrutto ? (leer(b) ? '' : Number(b)) : (leer(n) ? '' : Number(n)), n: leer(n) ? '' : Number(n), arbeit: art === 'lohn' };
+    var nn = leer(n) ? '' : Number(n), bb = mitBrutto ? (leer(b) ? '' : Number(b)) : nn, geschaetzt = false;
+    if (mitBrutto && bb === '' && nn !== '' && nn > 0) {
+      bb = Math.round(art === 'rente' ? nn / 0.89 : nn <= 603 ? nn : nn / 0.7); geschaetzt = true;
+    }
+    return { gesetzt: true, b: bb, n: nn, arbeit: art === 'lohn', art: art, geschaetzt: geschaetzt };
   }
   function syncEinkommen() {
     var p1 = ekPerson(1), p2 = state.adults === 2 ? ekPerson(2) : { gesetzt: false, b: '', n: '', arbeit: true };
@@ -173,6 +184,8 @@
     state.brutto2 = p2.gesetzt && p2.b !== '' ? p2.b : '';
     state.nichtArbeit = p1.gesetzt && !p1.arbeit;
     state.nichtArbeit2 = p2.gesetzt && !p2.arbeit;
+    state.art1 = p1.art; state.art2 = p2.art || '';
+    state.ek1Geschaetzt = !!p1.geschaetzt; state.ek2Geschaetzt = !!p2.geschaetzt;
   }
   // Nur die Felder zeigen, die zur gewählten Art passen; Beschriftung je Art
   function ekFelder() {
@@ -182,15 +195,40 @@
       $('ek' + i + 'BruttoF').hidden = !mitBrutto;
       $('ek' + i + 'NettoF').hidden = !art || art === 'ohne';
       $('ek' + i + 'BruttoHint').textContent = art === 'rente' ? t('ek.brutto.hint.rente') : t('ek.brutto.hint.lohn');
-      var bescheid = art === 'alg' || art === 'kg';
-      $('ek' + i + 'NettoLab').textContent = bescheid ? t('ek.betrag') : t('ek.netto');
-      $('ek' + i + 'NettoHint').textContent = bescheid ? t(art === 'alg' ? 'ek.betrag.hint.alg' : 'ek.betrag.hint.kg') : t('ek.netto.hint');
-      // Plausibilität: Netto größer als Brutto ist fast immer ein Tippfehler
+      var bescheid = art === 'alg' || art === 'kg' || art === 'eg';
+      $('ek' + i + 'NettoLab').textContent = bescheid ? t(art === 'kg' ? 'ek.betrag.kg' : 'ek.betrag') : t('ek.netto');
+      $('ek' + i + 'NettoHint').textContent = bescheid ? t('ek.betrag.hint.' + art) : t('ek.netto.hint');
+      // Plausibilität: Netto größer als Brutto ist fast immer ein Tippfehler; sehr kleine oder sehr große Beträge nachfragen
       var bb = state['ek' + i + 'Brutto'], nn = state['ek' + i + 'Netto'];
-      var falsch = mitBrutto && bb !== '' && bb != null && nn !== '' && nn != null && Number(nn) > Number(bb);
-      $('ek' + i + 'Warn').hidden = !falsch;
-      $('ek' + i + 'Warn').textContent = falsch ? t('warn.netto') : '';
+      var w = '';
+      if (mitBrutto && bb !== '' && bb != null && nn !== '' && nn != null && Number(nn) > Number(bb)) w = t('warn.netto');
+      else if (art && art !== 'ohne') w = plausi(mitBrutto ? bb : nn, 20, 15000) || (mitBrutto ? plausi(nn, 20, 15000) : '');
+      if (!w && !$('ek' + i + 'Art').closest('[hidden]')) w = feldUngueltig('ek' + i + 'Brutto') || feldUngueltig('ek' + i + 'Netto');
+      var info = !w && state['ek' + i + 'Geschaetzt'] ? t('ek.geschaetzt', { b: money(ekPerson(i).b) }) : '';
+      $('ek' + i + 'Warn').hidden = !w && !info;
+      $('ek' + i + 'Warn').className = w ? 'warn' : 'info';
+      $('ek' + i + 'Warn').textContent = w || info;
     });
+  }
+  // Sehr kleine oder sehr große Beträge: wahrscheinlich ein Tippfehler (z. B. „2.05“ statt „2.050“)
+  function plausi(v, min, max) {
+    if (v === '' || v == null) return '';
+    v = Number(v);
+    if (v > 0 && v < min) return t('warn.klein', { v: money(v) });
+    if (v > max) return t('warn.gross', { v: money(v) });
+    return '';
+  }
+  // Text im Feld, aber keine gültige Zahl (z. B. „-500“ oder nur Buchstaben)
+  function feldUngueltig(id) {
+    var el = $(id);
+    return el && el.value.trim() !== '' && parseAmount(el.value) === '' ? t('warn.zahl') : '';
+  }
+  function weitereWarnungen() {
+    var mw = feldUngueltig('miete') || plausi(state.miete, 50, 6000);
+    $('mieteWarn').hidden = !mw; $('mieteWarn').textContent = mw;
+    var gj = state.gebJahr, gw = '';
+    if (gj !== '' && gj != null && (gj < 1900 || gj > new Date().getFullYear() - 15)) gw = t('warn.geb');
+    $('gebWarn').hidden = !gw; $('gebWarn').textContent = gw;
   }
   // Gespeicherte Angaben aus der früheren Eingabe (Summen und Haken) übernehmen
   function migriereEinkommen(s) {
@@ -246,13 +284,12 @@
   function buildSelects() {
     var st = [['', t('stufe.unbekannt')]];
     for (var i = 1; i <= 7; i++) st.push([String(i), t('stufe.n', { n: Rules.roman(i) })]);
-    var ek = [['', t('ek.art.0')], ['lohn', t('ek.art.lohn')], ['rente', t('ek.art.rente')], ['alg', t('ek.art.alg')], ['kg', t('ek.art.kg')], ['ohne', t('ek.art.ohne')]];
+    var ek = [['', t('ek.art.0')], ['lohn', t('ek.art.lohn')], ['rente', t('ek.art.rente')], ['alg', t('ek.art.alg')], ['kg', t('ek.art.kg')], ['eg', t('ek.art.eg')], ['ohne', t('ek.art.ohne')]];
     fillSelect('ek1Art', ek, state.ek1Art);
     fillSelect('ek2Art', ek, state.ek2Art);
     fillSelect('mietstufe', st, state.mietstufe);
     fillSelect('bundesland', [['', t('bl.unbekannt')]].concat(BUNDESLAENDER), state.bundesland);
-    fillSelect('alterGruppe', [['', t('gruppe.0')], ['<31', t('gruppe.1')], ['31-40', t('gruppe.2')], ['41-50', t('gruppe.3')], ['51+', t('gruppe.4')]], state.alterGruppe);
-    fillSelect('ausbildung', [['', t('ausb.0')], ['kind', t('ausb.kind')], ['ich', t('ausb.ich')]], state.ausbildung);
+    fillSelect('ausbildung', [['', t('ausb.0')], ['kind', t('ausb.kind')], ['kindBetrieb', t('ausb.kindBetrieb')], ['ich', t('ausb.ich')]], state.ausbildung);
     var pf = [['', t('pflege.0')], ['antrag', t('pflege.antrag')]];
     for (var n = 1; n <= 5; n++) pf.push([String(n), t('pflege.n', { n: n })]);
     fillSelect('pflegegrad', pf, state.pflegegrad);
@@ -260,9 +297,10 @@
     var gd = [['', t('bh.gdb.0')]];
     [20, 30, 40, 50, 60, 70, 80, 90, 100].forEach(function (g) { gd.push([String(g), t('bh.gdb.n', { n: g })]); });
     gd.push(['H', t('bh.gdb.H')]);
+    gd.push(['antrag', t('bh.gdb.antrag')]);
     fillSelect('gdb', gd, state.gdb);
     fillSelect('blind', [['', t('bh.blind.0')], ['blind', t('bh.blind.blind')], ['hoch', t('bh.blind.hoch')]], state.blind);
-    fillSelect('emStd', [['', t('bh.em.0')], ['unter3', t('bh.em.unter3')], ['3bis6', t('bh.em.3bis6')]], state.emStd);
+    fillSelect('emStd', [['', t('bh.em.0')], ['unter3', t('bh.em.unter3')], ['3bis6', t('bh.em.3bis6')], ['unklar', t('bh.em.unklar')]], state.emStd);
     fillSelect('lang', LANGS.map(function (c) { return [c, I18N[c]['meta.name']]; }), lang);
     plzUpdate(false);
   }
@@ -308,8 +346,9 @@
     pr.appendChild(b);
   });
 
-  var CHECKS = ['alter', 'kinder12', 'unterhaltFehlt', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt'];
-  var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'alterGruppe', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd'];
+  var CHECKS = ['mzG', 'kinder12', 'unterhaltFehlt', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt'];
+  var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd'];
+  var NUMS = ['miete', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'kindEink', 'vermoegen'];
   var BEZUG = ['grundsicherungsgeld', 'sozialamt', 'wohngeld', 'kiz', 'kindergeld'];
 
   function writeForm() {
@@ -319,7 +358,8 @@
     $('kidsU6').textContent = state.kidsU6 || 0;
     $('kids14').textContent = state.kids14 || 0;
     $('young').textContent = state.young;
-    ['miete', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'vermoegen'].forEach(function (k) { $(k).value = state[k] == null ? '' : state[k]; });
+    NUMS.forEach(function (k) { $(k).value = state[k] == null ? '' : String(state[k]).replace('.', ','); });
+    $('gebJahr').value = state.gebJahr || '';
     CHECKS.forEach(function (k) { $(k).checked = !!state[k]; });
     BEZUG.forEach(function (k) { $('b-' + k).checked = !!state.bezug[k]; });
   }
@@ -356,7 +396,9 @@
         $('kids').textContent = state.kids; $('young').textContent = state.young; $('kidsU6').textContent = state.kidsU6 || 0; $('kids14').textContent = state.kids14 || 0; touched();
       });
     });
-    ['miete', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'vermoegen'].forEach(function (k) {
+    $('gebJahr').addEventListener('input', function () { var v = $('gebJahr').value.replace(/\D/g, '').slice(0, 4); state.gebJahr = v.length === 4 ? Number(v) : ''; touchedSoon(); });
+    $('gebJahr').addEventListener('change', function () { clearTimeout(soonTimer); touched(); });
+    NUMS.forEach(function (k) {
       $(k).addEventListener('input', function () { state[k] = parseAmount($(k).value); touchedSoon(); });
       $(k).addEventListener('change', function () { clearTimeout(soonTimer); state[k] = parseAmount($(k).value); touched(); });
       $(k).addEventListener('blur', function () { $(k).value = state[k] === '' ? '' : String(state[k]).replace('.', ','); });
@@ -374,7 +416,7 @@
     }
     $('bigBtn').addEventListener('click', function () {
       var on = !$('app').classList.contains('big');
-      $('app').classList.toggle('big', on);
+      $('app').classList.toggle('big', on); document.documentElement.classList.toggle('big', on);
       $('bigBtn').setAttribute('aria-pressed', String(on));
       save();
     });
@@ -494,7 +536,9 @@
   }
 
   function renderPick(results) {
-    var avail = results.filter(function (r) { return (r.level === 'ja' || r.level === 'vielleicht') && ANTRAG[r.id]; });
+    // Keine Briefe für Dinge, die schon da sind: Pflegegrad festgestellt, Grad der Behinderung festgestellt oder beantragt
+    var schonDa = function (id) { return (id === 'pflege' && state.pflegegrad && state.pflegegrad !== 'antrag') || (id === 'ausweis' && !!state.gdb); };
+    var avail = results.filter(function (r) { return (r.level === 'ja' || r.level === 'vielleicht') && ANTRAG[r.id] && !schonDa(r.id); });
     var next = {};
     avail.forEach(function (r) { next[r.id] = Object.prototype.hasOwnProperty.call(pickedUser, r.id) ? pickedUser[r.id] : r.level === 'ja'; });
     picked = next;
@@ -510,7 +554,7 @@
   }
 
   function render() {
-    syncEinkommen(); ekFelder(); folgefragen();
+    syncEinkommen(); folgefragen(); ekFelder(); weitereWarnungen();
     document.querySelectorAll('.cond-kids').forEach(function (el) { el.hidden = state.kids === 0; });
     document.querySelectorAll('.cond-adults2').forEach(function (el) { el.hidden = state.adults !== 2; });
     if (!started) {
@@ -518,10 +562,10 @@
       $('count').textContent = t('c.leer'); $('jumpText').textContent = t('c.leer');
       $('overview').hidden = true; $('together').innerHTML = '';
       $('cards').innerHTML = '<div class="card startcard"><h3>' + esc(t('start.h')) + '</h3>' + listItems([t('start.1'), t('start.2'), t('start.3')]) + '</div>';
-      $('helper').hidden = true;
+      $('helper').hidden = true; $('legende').hidden = true;
       return;
     }
-    $('helper').hidden = false;
+    $('helper').hidden = false; $('legende').hidden = false;
     var out = Rules.evaluate(state);
     lastOut = out;
     var n = { ja: 0, vielleicht: 0 };
@@ -601,7 +645,7 @@
     ];
     if (person.tel && person.tel.trim()) L.push('Telefon: ' + person.tel.trim());
     var b = Behoerden.available() ? Behoerden.fuer(id, aktAgs()) : null;
-    var empf = b ? [b.name].concat(b.abt ? [b.abt] : [], b.anschrift || []) : ['An die', a.stelle];
+    var empf = b ? [b.name].concat(b.abt ? [b.abt] : [], b.anschrift || []) : [a.stelle];
     L.push.apply(L, [''].concat(empf));
     L.push('', 'Datum: ' + today(), '', 'Betreff: ' + a.betreff, '', 'Sehr geehrte Damen und Herren,', '',
       a.satz + ' Bitte behandeln Sie dieses Schreiben als meinen Antrag und bestätigen Sie mir den Eingang. Bitte senden Sie mir außerdem die amtlichen Antragsformulare und eine Liste der Unterlagen zu, die Sie von mir benötigen. Die Formulare reiche ich schnellstmöglich nach.',
@@ -611,11 +655,15 @@
 
   function besond() {
     var s = state, b = [];
-    if (s.alter) b.push('Regelaltersgrenze erreicht');
+    if (s.gebJahr) b.push('Geburtsjahr der ältesten erwachsenen Person: ' + s.gebJahr);
     if (s.gdb) b.push(s.gdb === 'H' ? 'Merkzeichen H, Bl oder TBl' : 'Grad der Behinderung ' + s.gdb);
     if (s.bhPerson === 'minder') b.push('Kind mit Behinderung unter 18 Jahren');
     if (s.bhPerson === 'erwVor25') b.push('Volljährige Person, Behinderung vor dem 25. Geburtstag eingetreten');
-    if (s.bhPerson === 'erwNach25') b.push('Erwachsene Person, Behinderung nach dem 25. Geburtstag eingetreten');
+    if (s.bhPerson === 'erwNach25') b.push('Erwachsene Person mit Behinderung');
+    if (s.gdb === 'antrag') b.push('Feststellung der Behinderung ist beantragt, Bescheid steht noch aus');
+    if (s.mzG) b.push('Merkzeichen G oder aG');
+    if (s.emStd === 'unklar') b.push('Längere Krankheit, Arbeitsfähigkeit noch ungeklärt');
+    if (s.kindEink) b.push('Eigenes Einkommen der Kinder: ' + money(s.kindEink) + ' im Monat');
     if (s.blind === 'blind') b.push('blind');
     if (s.blind === 'hoch') b.push('hochgradig sehbehindert');
     if (s.emStd === 'unter3') b.push('kann weniger als 3 Stunden täglich arbeiten');
@@ -624,7 +672,8 @@
     if (s.pflegegrad && s.pflegegrad !== 'antrag') b.push('Pflegegrad ' + s.pflegegrad);
     if (s.pflegegrad === 'antrag') b.push('Pflegegrad beantragt oder möglich');
     if (s.unterhaltFehlt) b.push('Unterhalt des anderen Elternteils fehlt');
-    if (s.ausbildung === 'kind') b.push('Kind in Schule, Ausbildung oder Studium');
+    if (s.ausbildung === 'kind') b.push('Kind in Schule oder Studium');
+    if (s.ausbildung === 'kindBetrieb') b.push('Kind in betrieblicher Ausbildung');
     if (s.ausbildung === 'ich') b.push('Ich selbst in Ausbildung oder Studium');
     return b;
   }
@@ -636,14 +685,14 @@
     if (person.tel && person.tel.trim()) L.push('Telefon: ' + person.tel.trim());
     L.push('', 'Haushalt: ' + haushaltZeile());
     L.push('Warmmiete im Monat: ' + money(s.miete) + (s.mietstufe ? ' (Mietenstufe ' + Rules.roman(Number(s.mietstufe)) + ')' : ''));
-    var ARTDE = { lohn: 'Lohn oder Gehalt', rente: 'Rente oder Pension', alg: 'Arbeitslosengeld I', kg: 'Krankengeld', ohne: 'kein Einkommen' };
+    var ARTDE = { lohn: 'Lohn oder Gehalt', rente: 'Rente oder Pension', alg: 'Arbeitslosengeld I', kg: 'Krankengeld', eg: 'Elterngeld', ohne: 'kein Einkommen' };
     var ekZeile = function (i, wer) {
       var art = s['ek' + i + 'Art'];
       if (!art) return wer + ': nicht angegeben';
       if (art === 'ohne') return wer + ': kein Einkommen';
       var teile = [];
       if ((art === 'lohn' || art === 'rente') && !blankVal(s['ek' + i + 'Brutto'])) teile.push('brutto ' + money(s['ek' + i + 'Brutto']));
-      if (!blankVal(s['ek' + i + 'Netto'])) teile.push((art === 'alg' || art === 'kg' ? '' : 'netto ') + money(s['ek' + i + 'Netto']));
+      if (!blankVal(s['ek' + i + 'Netto'])) teile.push((art === 'alg' || art === 'kg' || art === 'eg' ? '' : 'netto ') + money(s['ek' + i + 'Netto']));
       return wer + ': ' + ARTDE[art] + (teile.length ? ', ' + teile.join(', ') + ' im Monat' : '');
     };
     L.push(ekZeile(1, s.adults === 2 ? 'Einkommen (ich)' : 'Einkommen'));
@@ -806,7 +855,7 @@
       v = got.length ? got.join(', ') : 'keine';
     }
     else if (id === 'unterhalt') v = s.unterhaltFehlt ? 'Der andere Elternteil zahlt keinen oder nicht ausreichend Unterhalt.' : null;
-    else if (id === 'ausbildung') v = s.ausbildung === 'kind' ? 'Kind in Schule, Ausbildung oder Studium' : (s.ausbildung === 'ich' ? 'Ich selbst in Ausbildung oder Studium' : null);
+    else if (id === 'ausbildung') v = s.ausbildung === 'kind' ? 'Kind in Schule oder Studium' : s.ausbildung === 'kindBetrieb' ? 'Kind in betrieblicher Ausbildung' : (s.ausbildung === 'ich' ? 'Ich selbst in Ausbildung oder Studium' : null);
     else if (id === 'gesundheit') { var b = besond().filter(function (x) { return /Behinderung|Pflegegrad|erwerbsgemindert/.test(x); }); v = b.length ? b.join('; ') : null; }
     return blankVal(v) ? null : String(v);
   }
@@ -988,7 +1037,7 @@
       if (d.p) person = Object.assign(person, d.p);
       edited = true; $('sampleNotice').hidden = true;
       [['p-name', 'name'], ['p-geb', 'geb'], ['p-strasse', 'strasse'], ['p-ort', 'ort'], ['p-tel', 'tel']].forEach(function (x) { $(x[0]).value = person[x[1]] || ''; });
-      if (d.big) { $('app').classList.add('big'); $('bigBtn').setAttribute('aria-pressed', 'true'); }
+      if (d.big) { $('app').classList.add('big'); document.documentElement.classList.add('big'); $('bigBtn').setAttribute('aria-pressed', 'true'); }
       writeForm(); buildSelects(); render();
     } catch (e) {}
   });

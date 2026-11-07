@@ -9,6 +9,7 @@ const file = process.argv[2] || (__dirname + '/../dist/leistungs-lotse.html');
   await p.goto('file://' + file);
   const card = (name) => p.evaluate((nm) => { const c = [...document.querySelectorAll('#cards .card')].find((x) => x.querySelector('h3').textContent === nm); return c ? { pill: c.querySelector('.pill').className.replace('pill ', ''), text: c.querySelector('.body').textContent.replace(/\u00a0/g, ' '), zust: c.querySelector('.zust').textContent } : null; }, name);
   const sel = (id, v) => p.selectOption('#' + id, v);
+  const geb = async (v) => { await p.fill('#gebJahr', v); await p.waitForTimeout(250); };
   const fillNum = async (id, v) => { await p.fill('#' + id, v); await p.press('#' + id, 'Tab'); };
   await p.evaluate(() => document.getElementById('p2').click());
   await p.click('#p2');
@@ -28,7 +29,7 @@ const file = process.argv[2] || (__dirname + '/../dist/leistungs-lotse.html');
   ok('Hinweise ("Beachten") stehen vor den Karten', ordnung);
   // neue Felder vorhanden und befüllt
   const opts = (id) => p.evaluate((i) => [...document.getElementById(i).options].map((o) => o.value + '|' + o.textContent), id);
-  ok('GdB-Auswahl hat 11 Einträge', (await opts('gdb')).length === 11);
+  ok('GdB-Auswahl hat 12 Einträge (mit „beantragt“)', (await opts('gdb')).length === 12);
   ok('Person-Auswahl hat 4 Einträge', (await opts('bhPerson')).length === 4);
   ok('Alle Karten (21) da', (await p.locator('#cards .card').count()) === 21);
 
@@ -37,7 +38,7 @@ const file = process.argv[2] || (__dirname + '/../dist/leistungs-lotse.html');
   let c = await card('Kindergeld für erwachsene Kinder mit Behinderung');
   ok('Kindergeld-Beh: wahrscheinlich, 259 €', c && c.pill === 'ja' && /259 €/.test(c.text), JSON.stringify(c));
   c = await card('Behinderten-Pauschbetrag'); ok('Pauschbetrag 2.840 €', c && c.pill === 'ja' && /2\.840 €/.test(c.text), JSON.stringify(c));
-  c = await card('Schwerbehindertenausweis und Nachteilsausgleiche'); ok('Ausweis wahrscheinlich, 5 Tage', c && c.pill === 'ja' && /5 Tage/.test(c.text), JSON.stringify(c));
+  c = await card('Schwerbehindertenausweis und Nachteilsausgleiche'); ok('Ausweis wahrscheinlich; im Rentenalter ohne Hinweis auf Zusatzurlaub', c && c.pill === 'ja' && !/Tage/.test(c.text), JSON.stringify(c));
   c = await card('Eingliederungshilfe'); ok('Eingliederungshilfe möglich', c && c.pill === 'vielleicht');
   ok('Kein Wert "undefined" auf der Seite', !(await p.evaluate(() => /undefined|NaN|\{\w+\}/.test(document.getElementById('cards').textContent))));
 
@@ -51,10 +52,10 @@ const file = process.argv[2] || (__dirname + '/../dist/leistungs-lotse.html');
   await sel('blind', 'hoch'); c = await card('Blindengeld (Bayern)'); ok('Sehbehindertengeld 242,70 €, bei Pflegegrad 2 bleiben 83,08 €', /242,70 €/.test(c.text) && /83,08 €/.test(c.text), c.text); await sel('pflegegrad', '3');
 
   // Fall 3: Erwerbsminderungsrente
-  await p.uncheck('#alter'); await sel('emStd', 'unter3');
+  await geb('1970'); await sel('emStd', 'unter3');
   c = await card('Erwerbsminderungsrente'); ok('EM-Rente zunächst nur möglich (Wartezeit offen)', c.pill === 'vielleicht');
   await p.check('#em5'); c = await card('Erwerbsminderungsrente'); ok('EM-Rente mit Wartezeit wahrscheinlich', c.pill === 'ja');
-  await p.check('#alter'); c = await card('Erwerbsminderungsrente'); ok('Regelaltersgrenze: keine EM-Rente', c.pill === 'nein'); await p.uncheck('#alter');
+  await geb('1950'); c = await card('Erwerbsminderungsrente'); ok('Regelaltersgrenze: keine EM-Rente', c.pill === 'nein'); await geb('1970');
 
   // Fall 4: BAB
   await sel('ausbildung', 'ich'); await p.check('#babBetrieb'); c = await card('Berufsausbildungsbeihilfe'); ok('BAB ohne Wohn-Haken: unwahrscheinlich', c.pill === 'nein');
@@ -70,7 +71,7 @@ const file = process.argv[2] || (__dirname + '/../dist/leistungs-lotse.html');
   await p.click('#p1');
   ok('Beispiel 1: keine Gesundheits-Unterfragen offen', !(await p.isVisible('#gdb')) && !(await p.isVisible('#em5')));
   await p.click('#p2'); await sel('bhPerson', 'erwVor25'); await p.check('#bhSelbst'); await sel('gdb', '100'); await sel('blind', 'hoch'); await sel('emStd', 'unter3'); await p.check('#em5'); await sel('pflegegrad', '3');
-  await sel('ausbildung', 'ich'); await p.check('#babBetrieb'); await p.check('#babWohnt'); await fillNum('ek1Brutto', '2000'); await p.uncheck('#alter');
+  await sel('ausbildung', 'ich'); await p.check('#babBetrieb'); await p.check('#babWohnt'); await fillNum('ek1Brutto', '2000'); await geb('1970');
     // Rundfunk
   await p.check('#b-sozialamt'); c = await card('Befreiung vom Rundfunkbeitrag'); ok('Rundfunk: Sozialamt bezogen => wahrscheinlich', c.pill === 'ja'); await p.uncheck('#b-sozialamt');
 
@@ -81,7 +82,8 @@ const file = process.argv[2] || (__dirname + '/../dist/leistungs-lotse.html');
   await p.evaluate(() => document.querySelectorAll('[data-pick]').forEach((x) => { if (!x.checked) x.click(); }));
   await p.click('#mappeMake');
   const txt = await p.inputValue('#mappeText');
-  ['Antrag auf Kindergeld für ein volljähriges Kind mit Behinderung', 'Rente wegen Erwerbsminderung', 'Blindengeld nach dem Bayerischen Blindengeldgesetz', 'Wohnberechtigungsschein', 'Berufsausbildungsbeihilfe', 'Eingliederungshilfe', 'Feststellung der Behinderung'].forEach((s) => ok('Mappe enthält "' + s + '"', txt.includes(s)));
+  ['Antrag auf Kindergeld für ein volljähriges Kind mit Behinderung', 'Rente wegen Erwerbsminderung', 'Blindengeld nach dem Bayerischen Blindengeldgesetz', 'Wohnberechtigungsschein', 'Berufsausbildungsbeihilfe', 'Eingliederungshilfe'].forEach((s) => ok('Mappe enthält "' + s + '"', txt.includes(s)));
+  ok('Kein Antrag auf Feststellung der Behinderung, wenn der GdB schon feststeht', !txt.includes('Feststellung der Behinderung'));
   ok('Mappe ohne "undefined"', !/undefined|NaN/.test(txt));
   ok('Angabenblatt nennt GdB und Sehbehinderung', /Grad der Behinderung 100/.test(txt) && /hochgradig sehbehindert/.test(txt) && /weniger als 3 Stunden/.test(txt), txt.slice(-700));
   await p.screenshot({ path: require('os').tmpdir() + '/shot-beh-mappe.png' });

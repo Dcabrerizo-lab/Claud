@@ -11,7 +11,9 @@ const Rules = (function () {
     // RBSFV 2026, Anlage zu § 28 SGB XII: Stufe 1 563, Stufe 2 506, Stufe 3 451, Stufe 4 (14-17) 471, Stufe 5 (6-13) 390, Stufe 6 (0-5) 357
     regelbedarf: { alleinstehend: 563, partner: 506, kind0: 357, kind: 390, kind14: 471, jungErwachsener: 451 },
     kindergeld: 259,
-    kiz: { vermZwei: 55000, vermDrei: 70000, vermJeWeiteres: 15000, max: 297, minAlleinerziehend: 600, minPaar: 900, anrechnung: 0.45, wohnkostenGewichtKind: 0.5, puffer: 300, ampelGruenAb: 60 },
+    // Wohnkostenanteil der Eltern (§ 6a Abs. 5 BKGG, Existenzminimumbericht): Näherung über ein Gewicht je Kind,
+    // Alleinerziehende ca. 77 % / 63 % / 53 % bei 1 / 2 / 3 Kindern, Paare ca. 83 % / 71 % / 62 %
+    kiz: { vermZwei: 55000, vermDrei: 70000, vermJeWeiteres: 15000, max: 297, minAlleinerziehend: 600, minPaar: 900, anrechnung: 0.45, gewichtKindAllein: 0.29, gewichtKindPaar: 0.4, puffer: 300, ampelGruenAb: 60 },
     wohngeld: {
       // Keine Beträge im Gesetzestext (§ 21 Nr. 3 WoGG: nur "erhebliches Vermögen"); die Beträge sind die Regelvermutung der Verwaltungsvorschrift (nur Sekundärquellen)
       vermoegenErste: 60000,
@@ -24,6 +26,20 @@ const Rules = (function () {
     grundsicherung: { schonAllein: 10000, schonPaar: 20000, knappPuffer: 100, sicherAb: 50 },
     sgb2: { schon: { '': 10000, '<31': 5000, '31-40': 10000, '41-50': 12500, '51+': 20000 } },
     but: { schulbedarf: 195, teilhabeMonat: 15 },
+    // Minijob-Grenze 2026 (§ 8 Abs. 1a SGB IV): Erwerbseinkommen von Schülern und Azubis unter 25 bleibt bis dahin frei (§ 11b Abs. 2b SGB II)
+    minijob: 603,
+    // Pauschale für Versicherungen bei Einkommen, das kein Lohn ist (§ 6 Abs. 1 Nr. 1 Bürgergeld-V)
+    versPauschale: 30,
+    // Elterngeld: bis 300 € frei beim Wohngeld (§ 10 Abs. 1 BEEG); bei Grundsicherung und Kinderzuschlag nur, wenn vor der Geburt Einkommen da war (§ 10 Abs. 5 BEEG)
+    elterngeldFrei: 300,
+    // Mehrbedarfe: Alleinerziehende § 21 Abs. 3 SGB II / § 30 Abs. 3 SGB XII; Merkzeichen G bei Rentenalter oder voller Erwerbsminderung § 30 Abs. 1 SGB XII (17 %)
+    mehr: { ae36: 0.36, aeJeKind: 0.12, aeMax: 0.6, g: 0.17 },
+    // Freibetrag beim Wohngeld für eigenes Einkommen von Kindern (16 bis 24 Jahre): 1.200 € im Jahr (§ 17 Nr. 4 WoGG)
+    wgKindFrei: 100,
+    // Pauschalabzug beim Wohngeld (§ 16 WoGG) je Einkommensart: [kleinster, größter] üblicher Abzug
+    wgAbzug: { lohn: [0.1, 0.3], rente: [0.1, 0.2], kg: [0.1, 0.2], alg: [0, 0], eg: [0, 0], ohne: [0, 0] },
+    // Regelaltersgrenze (§ 235 SGB VI) in Monaten über 65, je Geburtsjahr 1947..1963; ab 1964: 67 Jahre
+    rag: { 1947: 1, 1948: 2, 1949: 3, 1950: 4, 1951: 5, 1952: 6, 1953: 7, 1954: 8, 1955: 9, 1956: 10, 1957: 11, 1958: 12, 1959: 14, 1960: 16, 1961: 18, 1962: 20, 1963: 22 },
     uvg: { bis5: 227, bis11: 299, bis17: 394, min12: 600 },
     bafoeg: { freiAllein: 1690, freiPaar: 2540, jeKind: 770, spanne: 1200, vermBis29: 15000, vermAb30: 45000 },
     pflege: { geld: { 2: 347, 3: 599, 4: 800, 5: 990 }, entlastung: 131 },
@@ -65,6 +81,11 @@ const Rules = (function () {
     return k <= 5 ? HEIZ[k - 1] : HEIZ[4] + (k - 5) * HEIZ_WEITER;
   }
   // Höchstes anrechenbares Monatseinkommen Y (nach Pauschalabzug), bei dem bei Miete M noch Wohngeld > 0 bleibt
+  // Wohngeld im Monat nach § 19 Abs. 1 WoGG
+  function wgBetrag(n, M, Y) {
+    const [a, b, c] = WGF[wgIdx(n)];
+    return 1.15 * (M - (a + b * M + c * Y) * Y);
+  }
   function wgYmax(n, M) {
     const [a, b, c] = WGF[wgIdx(n)];
     const p = a + b * M;
@@ -125,30 +146,72 @@ const Rules = (function () {
     const kids14 = Math.min(Math.max(0, inp.kids14 | 0), kids - kidsU6);
     const regel = regelElt + kidsU6 * R.regelbedarf.kind0 + kids14 * R.regelbedarf.kind14 + (kids - kidsU6 - kids14) * R.regelbedarf.kind + young * R.regelbedarf.jungErwachsener;
     const pg = ['1', '2', '3', '4', '5'].indexOf(String(inp.pflegegrad)) >= 0 ? Number(inp.pflegegrad) : 0;
+    // Einkommensart je erwachsener Person (lohn, rente, alg, kg, eg = Elterngeld, ohne). Ältere Speicherstände: aus den Haken.
+    const ARTEN = ['lohn', 'rente', 'alg', 'kg', 'eg', 'ohne'];
+    const art1 = ARTEN.indexOf(inp.art1) >= 0 ? inp.art1 : (inp.nichtArbeit ? 'rente' : 'lohn');
+    const art2 = ARTEN.indexOf(inp.art2) >= 0 ? inp.art2 : (inp.nichtArbeit2 ? 'rente' : 'lohn');
+    const pers = adults === 2 ? [[art1, brutto - brutto2], [art2, brutto2]] : [[art1, brutto]];
+    const sumIf = (f) => pers.reduce((a, x) => a + f(x[0], x[1]), 0);
+    // Eigenes Einkommen der Kinder (Ausbildungsvergütung, Minijob; ohne Kindergeld und Unterhalt), im Monat
+    const kindEink = kids + young > 0 ? num(inp.kindEink) : 0;
+    // Unterhaltsvorschuss, den die Kinder bekommen würden (zählt als ihr Einkommen): nur Alleinerziehende, wenn Unterhalt fehlt.
+    // Ab 12 Jahren nur mit eigenem Einkommen des Elternteils von mindestens 600 € (oder ohne Grundsicherung), daher dann ohne die Älteren.
+    let uvgEst = 0;
+    if (adults === 1 && kids > 0 && inp.unterhaltFehlt) {
+      const mitte = kids - kidsU6 - kids14;
+      const ab12raus = !!inp.kinder12 && brutto < R.uvg.min12;
+      uvgEst = Math.max(0, kidsU6 * R.uvg.bis5 + mitte * R.uvg.bis11 + (ab12raus ? 0 : kids14 * R.uvg.bis17) - unterhalt);
+    }
+    // Mehrbedarf für Alleinerziehende: 36 % bei einem Kind unter 7 oder 2-3 Kindern unter 16, sonst 12 % je Kind, höchstens 60 %
+    let mehrAE = 0;
+    if (adults === 1 && kids > 0) {
+      const unter16 = kids - kids14; // sicher unter 16 (14- bis 17-Jährige ungewiss)
+      let p = R.mehr.aeJeKind * kids;
+      if (kidsU6 >= 1 || (unter16 >= 2 && unter16 <= 3)) p = Math.max(p, R.mehr.ae36);
+      mehrAE = Math.min(p, R.mehr.aeMax) * R.regelbedarf.alleinstehend;
+    }
+    // Regelaltersgrenze aus dem Geburtsjahr der ältesten erwachsenen Person: sicher erreicht, oder je nach Geburtsmonat (grenz)
+    const jahr = Number(inp.gebJahr) | 0;
+    const heute = inp.heute ? Number(inp.heute) : (new Date().getFullYear() + new Date().getMonth() / 12);
+    let alter = !!inp.alter, alterGrenz = false, gruppe = R.sgb2.schon.hasOwnProperty(inp.alterGruppe || '') ? (inp.alterGruppe || '') : '';
+    if (jahr >= 1900 && jahr <= 2010) {
+      const ragJahre = jahr < 1947 ? 65 : jahr >= 1964 ? 67 : 65 + R.rag[jahr] / 12;
+      // geboren im Dezember: Grenze erst am Ende des Jahres jahr + rag erreicht; im Januar: am Anfang
+      alter = jahr + 1 + ragJahre <= heute;
+      alterGrenz = !alter && jahr + ragJahre <= heute;
+      const age = heute - jahr - 0.5;
+      gruppe = age < 31 ? '<31' : age < 41 ? '31-40' : age < 51 ? '41-50' : '51+';
+    }
     return {
+      art1, art2, pers, kindEink, uvgEst, kindZahl: unterhalt + uvgEst, mehrAE, alterGrenz,
+      egFreiWG: sumIf((a, b) => a === 'eg' ? Math.min(R.elterngeldFrei, b) : 0),
+      egFreiSGB: sumIf((a, b) => a === 'eg' && b > R.elterngeldFrei ? R.elterngeldFrei : 0),
+      vPausch: sumIf((a, b) => a !== 'lohn' && a !== 'ohne' && b > 0 ? R.versPauschale : 0),
+      mzG: !!inp.mzG,
       fehlt: { einkommen: blank(inp.brutto), netto: blank(inp.netto), vermoegen: blank(inp.vermoegen), miete: blank(inp.miete) },
       adults, kids, kidsU6, kids14, young, persons, brutto, brutto2, erwerb: !inp.nichtArbeit, erwerb2: !inp.nichtArbeit2, netto, nettoGiven, miete, vermoegen, unterhalt, regel, regelElt,
       children: kids + young,
       alleinerz: adults === 1 && kids > 0,
       stufe: [1, 2, 3, 4, 5, 6, 7].indexOf(Number(inp.mietstufe)) >= 0 ? Number(inp.mietstufe) : null,
-      alter: !!inp.alter,
+      alter,
       // WfbM-Arbeitsbereich gilt als voll erwerbsgemindert (BA-Weisung § 8 SGB II Rz. 8.8-8.10a) -> Sozialamt statt Jobcenter
       erwerbsgemindert: !!inp.erwerbsgemindert || inp.emStd === 'unter3' || !!inp.wfbm,
       behinderung: !!inp.behinderung || String(inp.gdb) === '100',
       kinder12: !!inp.kinder12,
       unterhaltFehlt: !!inp.unterhaltFehlt,
-      ausbildung: inp.ausbildung === 'kind' || inp.ausbildung === 'ich' ? inp.ausbildung : '',
-      gruppe: R.sgb2.schon.hasOwnProperty(inp.alterGruppe || '') ? (inp.alterGruppe || '') : '',
+      ausbildung: ['kind', 'kindBetrieb', 'ich'].indexOf(inp.ausbildung) >= 0 ? inp.ausbildung : '',
+      gruppe,
       pflegegrad: pg,
       pflegeAntrag: inp.pflegegrad === 'antrag',
       bezug: inp.bezug || {},
       // Behinderung
       bhPerson: ['minder', 'erwVor25', 'erwNach25'].indexOf(inp.bhPerson) >= 0 ? inp.bhPerson : '',
       gdb: R.beh.pausch.hasOwnProperty(String(inp.gdb || '')) ? String(inp.gdb) : '',
+      gdbAntrag: inp.gdb === 'antrag',
       blind: inp.blind === 'blind' || inp.blind === 'hoch' ? inp.blind : '',
       // Bundesland als Kürzel (BY, BW, ...); leer = unbekannt. Blindengeld und WBS-Grenzen der App gelten nur für Bayern.
       land: /^(BW|BY|BE|BB|HB|HH|HE|MV|NI|NW|RP|SL|SN|ST|SH|TH)$/.test(inp.bundesland) ? inp.bundesland : '',
-      emStd: inp.emStd === 'unter3' || inp.emStd === '3bis6' ? inp.emStd : '',
+      emStd: inp.emStd === 'unter3' || inp.emStd === '3bis6' || inp.emStd === 'unklar' ? inp.emStd : '',
       em5: !!inp.em5, wfbm: !!inp.wfbm, bhSelbst: !!inp.bhSelbst,
       babBetrieb: !!inp.babBetrieb, babWohnt: !!inp.babWohnt
     };
@@ -169,11 +232,17 @@ const Rules = (function () {
   // Unterhalt für Kinder bei Grundsicherungsgeld / Grundsicherung im Alter: Einkommen des Kindes, aber nur bis zu dessen
   // eigenem Bedarf (Regelbedarf der Kinder plus Kopfanteil der Miete); ein Überschuss mindert nicht den Bedarf der Eltern
   // (§ 11 Abs. 1 SGB II, § 82 SGB XII). Das Kindergeld wird wie bisher voll beim Kind angerechnet.
+  // Einkommen der Kinder: Unterhalt, Unterhaltsvorschuss und eigenes Einkommen (Ausbildungsvergütung bis zur Minijob-Grenze frei).
   function unterhaltAnrechenbar(h) {
-    if (!h.unterhalt) return 0;
+    const eink = (h.kindZahl || 0) + Math.max(0, (h.kindEink || 0) - R.minijob);
+    if (!eink) return 0;
     const kinderBedarf = (h.regel - h.regelElt) + h.miete * h.children / h.persons;
-    return Math.min(h.unterhalt, Math.max(0, kinderBedarf - h.children * R.kindergeld));
+    return Math.min(eink, Math.max(0, kinderBedarf - h.children * R.kindergeld));
   }
+  // Einkommen der Eltern nach Abzügen (§ 11b SGB II): Freibetrag für Arbeit, Versicherungspauschale, Elterngeld-Freibetrag
+  const elternEinkSGB2 = (h) => Math.max(0, h.netto - haushaltsFreibetrag(h) - (h.egFreiSGB || 0) - (h.vPausch || 0));
+  // Grobe Schätzung als Betrag, auf 10 € gerundet
+  const r10 = (x) => Math.round(x / 10) * 10;
 
   // Freibetrag des Haushalts: je Person einzeln, nur bei Einkommen aus Arbeit
   // Der Freibetrag gilt je Person und nur für Einkommen aus Arbeit (§ 11b Abs. 3 SGB II), nicht für Rente,
@@ -212,34 +281,47 @@ const Rules = (function () {
     if (h.miete <= 0) return mk(id, 'nein', 'vorausFehlt', [['wohngeld.keineMiete']]);
 
     const stufen = h.stufe ? [h.stufe, h.stufe] : [1, 7];
-    // Grenzen mit der tatsächlichen Miete (Formel § 19 WoGG)
-    // vorsichtig für "wahrscheinlich": 90 % der Bruttokaltmiete, für "möglich": 100 %
-    const lo = wgYmax(h.persons, wgMiete(stufen[0], h.persons, h.miete, 0.9)) / 0.9;
-    const hi = wgYmax(h.persons, wgMiete(stufen[1], h.persons, h.miete, 1)) / 0.7;
+    // Höchstes Einkommen Y (nach Pauschalabzug und Freibeträgen) mit der tatsächlichen Miete (Formel § 19 WoGG):
+    // vorsichtig für "wahrscheinlich" mit 90 % der Bruttokaltmiete, für "möglich" mit 100 %
+    const yMaxLo = wgYmax(h.persons, wgMiete(stufen[0], h.persons, h.miete, 0.9));
+    const yMaxHi = wgYmax(h.persons, wgMiete(stufen[1], h.persons, h.miete, 1));
+    // Pauschalabzug je Person und Einkommensart (§ 16 WoGG): Lohn 10-30 %, Rente und Krankengeld 10-20 %, ALG I und Elterngeld 0 %
+    const pers = h.pers || [['lohn', h.brutto]];
+    let sumB = 0, yA = 0, yB = 0;
+    pers.forEach(function (x) { const ab = R.wgAbzug[x[0]] || R.wgAbzug.lohn; sumB += x[1]; yA += x[1] * (1 - ab[0]); yB += x[1] * (1 - ab[1]); });
+    const wA = sumB > 0 ? yA / sumB : 0.9, wB = sumB > 0 ? yB / sumB : 0.7;
+    // Anzeige als Grenze für das Brutto (bzw. den ausgezahlten Betrag bei ALG I und Elterngeld)
+    const lo = yMaxLo / wA, hi = yMaxHi / wB;
 
     let freib = 0;
     // § 17 Nr. 1 WoGG: 1.800 €/Jahr je schwerbehindertem Haushaltsmitglied mit GdB 100, oder GdB unter 100 (ab 50) bei Pflegebedürftigkeit
     // (nicht bei vollstationärer Pflege). Pflegegrad allein ohne Schwerbehinderung gibt den Freibetrag nicht. Die App kennt nur eine Person mit Behinderung.
     if (gdbNum(h) === 100 || (gdbNum(h) >= 50 && h.pflegegrad > 0)) freib += R.wohngeld.freibetragBehinderungMonat;
     if (h.alleinerz) freib += R.wohngeld.freibetragAlleinerzMonat; // § 17 Nr. 3 WoGG: 1.320 € im Jahr, einmal je Haushalt
-    const bruttoEff = Math.max(0, h.brutto - freib / R.wohngeld.abzugMittel);
-    // Unterhalt für die Kinder zählt als Einkommen (§ 14 WoGG), aber ohne Pauschalabzug (§ 16 WoGG: das Kind zahlt keine
-    // Steuern und Beiträge). Umgerechnet auf die Brutto-Grenzen: bei 10 % Abzug u / 0,9, bei 30 % Abzug u / 0,7.
-    const effLo = bruttoEff + h.unterhalt / 0.9, effHi = bruttoEff + h.unterhalt / 0.7;
+    // Unterhalt und Unterhaltsvorschuss der Kinder zählen als Einkommen (§ 14 WoGG), ohne Pauschalabzug; eigenes Einkommen
+    // der Kinder mit Freibetrag (§ 17 Nr. 4 WoGG); Elterngeld bis 300 € frei (§ 10 Abs. 1 BEEG); Freibeträge nach § 17 WoGG.
+    const extra = (h.kindZahl || 0) + Math.max(0, (h.kindEink || 0) - R.wgKindFrei) - (h.egFreiWG || 0) - freib;
+    const yPess = Math.max(0, yA + extra), yOpt = Math.max(0, yB + extra);
 
     const grenze = h.stufe
       ? ['wohngeld.grenzeStufe', { n: h.persons, stufe: roman(h.stufe), lo: eur(lo), hi: eur(hi) }]
       : ['wohngeld.grenzeOhne', { n: h.persons, lo: eur(lo), hi: eur(hi) }];
     const unb = h.stufe ? [] : [['wohngeld.stufeUnbekannt']];
 
-    if (effHi > hi) return mk(id, 'nein', 'einkoHoch', [['wohngeld.hoch'], grenze].concat(unb));
+    if (yOpt > yMaxHi) return mk(id, 'nein', 'einkoHoch', [['wohngeld.hoch'], grenze].concat(unb));
 
-    let level = effLo <= lo ? 'ja' : 'vielleicht';
+    let level = yPess <= yMaxLo ? 'ja' : 'vielleicht';
     let hl = level;
     let tx = [[level === 'ja' ? 'wohngeld.ja' : 'wohngeld.vielleicht'], grenze].concat(unb);
+    // Grobe Höhe (nur mit bekannter Mietenstufe): Formel § 19 WoGG mit dem Einkommen bei kleinem und großem Abzug
+    if (h.stufe) {
+      const M = wgMiete(h.stufe, h.persons, h.miete, 1);
+      const a = Math.max(0, r10(wgBetrag(h.persons, M, yPess))), b = Math.max(0, r10(wgBetrag(h.persons, M, yOpt)));
+      if (b >= 10) tx.push(a >= 10 && a < b ? ['schaetz.spanne', { a: eur(a), b: eur(b) }] : a >= 10 ? ['schaetz.eins', { a: eur(a) }] : ['schaetz.bis', { b: eur(b) }]);
+    }
 
-    const mittel = h.netto + h.kids * R.kindergeld + h.unterhalt;
-    const mindest = R.wohngeld.mindestAnteil * (h.regel + h.miete);
+    const mittel = h.netto + h.kids * R.kindergeld + (h.kindZahl || 0) + (h.kindEink || 0);
+    const mindest = R.wohngeld.mindestAnteil * (h.regel + h.miete + (h.mehrAE || 0));
     if (h.miete > 0 && mittel < mindest) {
       level = 'vielleicht'; hl = 'einkoNiedrig';
       const schonGS = (h.alter || h.erwerbsgemindert)
@@ -264,16 +346,20 @@ const Rules = (function () {
     if (h.brutto < minEink) return mk(id, 'nein', 'minEink', [['kiz.minEink', { min: eur(minEink) }]]);
 
     const gmax = R.kiz.max * h.children;
-    const elternAnteil = h.adults / (h.adults + R.kiz.wohnkostenGewichtKind * h.children);
-    const bemessung = h.regelElt + h.miete * elternAnteil;
-    // Einkommen der Kinder (hier: Unterhalt) mindert den Kinderzuschlag um 45 % (§ 6a Abs. 3 BKGG)
-    const est = Math.max(0, gmax - R.kiz.anrechnung * Math.max(0, h.netto - bemessung) - R.kiz.anrechnung * h.unterhalt);
-    const gesamtBedarf = h.regel + h.miete;
+    const gewicht = h.adults === 1 ? R.kiz.gewichtKindAllein : R.kiz.gewichtKindPaar;
+    const elternAnteil = h.adults / (h.adults + gewicht * h.children);
+    const bemessung = h.regelElt + (h.mehrAE || 0) + h.miete * elternAnteil;
+    // Einkommen der Eltern nach § 11b SGB II (Freibetrag für Arbeit usw.); Einkommen der Kinder (Unterhalt, Unterhaltsvorschuss,
+    // eigenes Einkommen über der Minijob-Grenze) mindert den Kinderzuschlag um 45 % (§ 6a Abs. 3 und 6 BKGG)
+    const kindAnr = (h.kindZahl || 0) + Math.max(0, (h.kindEink || 0) - R.minijob);
+    const est = Math.max(0, gmax - R.kiz.anrechnung * Math.max(0, elternEinkSGB2(h) - bemessung) - R.kiz.anrechnung * kindAnr);
+    const gesamtBedarf = h.regel + h.miete + (h.mehrAE || 0);
 
     if (est <= 0) return mk(id, 'nein', 'einkoHoch', [['kiz.zuHoch']]);
-    if (h.netto + h.unterhalt + gmax + R.kiz.puffer < gesamtBedarf) return mk(id, 'vielleicht', 'einkoNiedrig', [['kiz.zuNiedrig']]);
-    if (est >= R.kiz.ampelGruenAb) return mk(id, 'ja', 'ja', [['kiz.ja', { max: eur(R.kiz.max) }]]);
-    return mk(id, 'vielleicht', 'vielleicht', [['kiz.rand', { max: eur(R.kiz.max) }]]);
+    if (h.netto + (h.kindZahl || 0) + (h.kindEink || 0) + gmax + R.kiz.puffer < gesamtBedarf) return mk(id, 'vielleicht', 'einkoNiedrig', [['kiz.zuNiedrig']]);
+    const sch = ['schaetz.eins', { a: eur(Math.max(10, r10(est))) }];
+    if (est >= R.kiz.ampelGruenAb) return mk(id, 'ja', 'ja', [['kiz.ja', { max: eur(R.kiz.max) }], sch]);
+    return mk(id, 'vielleicht', 'vielleicht', [['kiz.rand', { max: eur(R.kiz.max) }], sch]);
   }
 
   // ---------------------------------------------------------------
@@ -296,10 +382,10 @@ const Rules = (function () {
     // § 12 Abs. 2 SGB II: je Person der Bedarfsgemeinschaft ein Freibetrag nach Alter; Kinder und junge Erwachsene bis 30: 5.000 €
     const schon = R.sgb2.schon[h.gruppe] * h.adults + R.sgb2.schon['<31'] * h.children;
     if (h.vermoegen > schon) return mk(id, 'nein', 'vermHoch', [['ggeld.verm', { schon: eur(schon) }]]);
-    const einkommen = Math.max(0, h.netto - haushaltsFreibetrag(h)) + h.children * R.kindergeld + unterhaltAnrechenbar(h);
-    const bedarf = h.regel + h.miete;
+    const einkommen = elternEinkSGB2(h) + h.children * R.kindergeld + unterhaltAnrechenbar(h);
+    const bedarf = h.regel + h.miete + (h.mehrAE || 0);
     const luecke = bedarf - einkommen;
-    if (luecke >= R.grundsicherung.sicherAb) return mk(id, 'ja', 'ja', bedarfTx('ja', bedarf));
+    if (luecke >= R.grundsicherung.sicherAb) return mk(id, 'ja', 'ja', bedarfTx('ja', bedarf).concat([['schaetz.eins', { a: eur(r10(luecke)) }]]));
     if (luecke > -R.grundsicherung.knappPuffer) return mk(id, 'vielleicht', 'vielleicht', bedarfTx('vielleicht', bedarf));
     return mk(id, 'nein', 'einkoHoch', bedarfTx('nein', bedarf));
   }
@@ -310,7 +396,7 @@ const Rules = (function () {
   function bildungTeilhabe(h, wg, kz, gg) {
     const id = 'but';
     if (h.children === 0) return mk(id, 'nein', 'keinKind', [['but.keinKind']]);
-    const inhalt = ['but.inhalt', { schul: eur(R.but.schulbedarf), teil: eur(R.but.teilhabeMonat) }];
+    const inhalt = h.young === 0 && h.kids > 0 && h.kidsU6 === h.kids ? ['but.inhaltKlein', { teil: eur(R.but.teilhabeMonat) }] : ['but.inhalt', { schul: eur(R.but.schulbedarf), teil: eur(R.but.teilhabeMonat) }];
     if (h.bezug.grundsicherungsgeld || h.bezug.sozialamt || h.bezug.kiz || h.bezug.wohngeld) {
       return mk(id, 'ja', 'ja', [['but.bezug'], inhalt]);
     }
@@ -345,16 +431,19 @@ const Rules = (function () {
   // ---------------------------------------------------------------
   function grundsicherungAlter(h) {
     const id = 'gsa';
-    if (!h.alter && !h.erwerbsgemindert) return mk(id, 'nein', 'vorausFehlt', [['gsa.voraus']]);
+    if (!h.alter && !h.erwerbsgemindert && !h.alterGrenz) return mk(id, 'nein', 'vorausFehlt', [['gsa.voraus']]);
     if (h.bezug.sozialamt) return mk(id, 'na', 'na', [['gsa.na']]);
     if (h.bezug.grundsicherungsgeld) return mk(id, 'nein', 'schonGrund', [['gsa.ggBezug']]);
     // Barbetrag-Verordnung zu § 90 SGB XII: 10.000 € je volljähriger Person, 500 € je überwiegend unterhaltene Person
     const schon = R.grundsicherung.schonAllein * h.adults + 500 * h.children;
     if (h.vermoegen > schon) return mk(id, 'nein', 'vermHoch', [['gsa.verm', { schon: eur(schon) }]]);
-    const bedarf = h.regel + h.miete;
-    const luecke = bedarf - h.netto - unterhaltAnrechenbar(h);
-    if (luecke >= R.grundsicherung.sicherAb) return mk(id, 'ja', 'ja', bedarfTx('ja', bedarf));
-    if (luecke > -R.grundsicherung.knappPuffer) return mk(id, 'vielleicht', 'vielleicht', bedarfTx('vielleicht', bedarf));
+    // Mehrbedarf Merkzeichen G (§ 30 Abs. 1 SGB XII): 17 % des Regelsatzes der Person
+    const mehrG = h.mzG ? R.mehr.g * (h.adults === 2 ? R.regelbedarf.partner : R.regelbedarf.alleinstehend) : 0;
+    const bedarf = h.regel + h.miete + (h.mehrAE || 0) + mehrG;
+    const luecke = bedarf - Math.max(0, h.netto - (h.egFreiSGB || 0)) - h.children * R.kindergeld - unterhaltAnrechenbar(h);
+    const grenzTx = h.alterGrenz ? [['gsa.grenz']] : [];
+    if (luecke >= R.grundsicherung.sicherAb) return mk(id, h.alterGrenz ? 'vielleicht' : 'ja', h.alterGrenz ? 'vielleicht' : 'ja', bedarfTx('ja', bedarf).concat([['schaetz.eins', { a: eur(r10(luecke)) }]], grenzTx));
+    if (luecke > -R.grundsicherung.knappPuffer) return mk(id, 'vielleicht', 'vielleicht', bedarfTx('vielleicht', bedarf).concat(grenzTx));
     return mk(id, 'nein', 'einkoHoch', bedarfTx('nein', bedarf));
   }
 
@@ -364,6 +453,7 @@ const Rules = (function () {
   function bafoeg(h) {
     const id = 'bafoeg';
     if (!h.ausbildung) return mk(id, 'nein', 'vorausFehlt', [['bafoeg.keine']]);
+    if (h.ausbildung === 'kindBetrieb') return mk(id, 'nein', 'vorausFehlt', [['bafoeg.betrieb']]);
     if (h.ausbildung === 'kind') {
       if (h.children === 0) return mk(id, 'nein', 'vorausFehlt', [['bafoeg.keinKind']]);
       const fb = (h.adults === 2 ? R.bafoeg.freiPaar : R.bafoeg.freiAllein) + Math.max(0, h.children - 1) * R.bafoeg.jeKind;
@@ -397,7 +487,7 @@ const Rules = (function () {
   // ---------------------------------------------------------------
   const gdbEff = (h) => h.gdb || (h.behinderung ? '100' : '');
   const gdbNum = (h) => { const g = gdbEff(h); return g === 'H' ? 100 : g ? Number(g) : 0; };
-  const hatBeh = (h) => !!(h.bhPerson || gdbEff(h) || h.erwerbsgemindert || h.pflegegrad > 0 || h.pflegeAntrag || h.blind || h.wfbm);
+  const hatBeh = (h) => !!(h.bhPerson || gdbEff(h) || h.gdbAntrag || h.erwerbsgemindert || h.pflegegrad > 0 || h.pflegeAntrag || h.blind || h.wfbm);
   const keinBeh = (id) => mk(id, 'nein', 'keinBeh', [[id + '.keine']]);
 
   // Kindergeld für volljährige Kinder mit Behinderung (§ 32 Abs. 4 Satz 1 Nr. 3 EStG)
@@ -415,6 +505,7 @@ const Rules = (function () {
     const id = 'emrente';
     if (h.alter) return mk(id, 'nein', 'vorausFehlt', [['emrente.alter']]);
     if (!h.emStd) return mk(id, 'nein', 'vorausFehlt', [['emrente.keine']]);
+    if (h.emStd === 'unklar') return mk(id, 'vielleicht', 'vielleicht', [['emrente.unklar']]);
     const art = h.emStd === 'unter3' ? 'emrente.voll' : 'emrente.teil';
     if (h.em5) return mk(id, 'ja', 'ja', [[art], ['emrente.ja']]);
     if (h.wfbm) return mk(id, 'vielleicht', 'vielleicht', [[art], ['emrente.werkstatt']]);
@@ -435,8 +526,13 @@ const Rules = (function () {
   function pauschbetrag(h) {
     const id = 'pausch';
     const g = gdbEff(h);
+    if (!g && h.gdbAntrag) return mk(id, 'vielleicht', 'vielleicht', [['pausch.laeuft']]);
     if (!g) return keinBeh(id);
     const tx = [['pausch.ja', { betrag: eur(R.beh.pausch[g]) }]];
+    // Fahrtkostenpauschale (§ 33 Abs. 2a EStG): 900 € ab GdB 80 oder GdB 70 mit Merkzeichen G; 4.500 € bei aG, Bl, TBl oder H
+    if (g === 'H') tx.push(['pausch.fahrt', { betrag: eur(4500) }]);
+    else if (gdbNum(h) >= 80 || (gdbNum(h) >= 70 && h.mzG)) tx.push(['pausch.fahrt', { betrag: eur(900) }]);
+    if (h.alter || h.netto * 12 < R.beh.grundfreibetrag) tx.push(['pausch.steuer']);
     if (h.bhPerson === 'minder' || h.bhPerson === 'erwVor25') tx.push(['pausch.kind']);
     return mk(id, 'ja', 'ja', tx);
   }
@@ -445,7 +541,8 @@ const Rules = (function () {
   function ausweis(h) {
     const id = 'ausweis';
     const g = gdbNum(h);
-    if (gdbEff(h) && g >= 50) return mk(id, 'ja', 'ja', [['ausweis.schwer', { tage: R.beh.zusatzurlaub }]]);
+    if (!gdbEff(h) && h.gdbAntrag) return mk(id, 'na', 'na', [['ausweis.laeuft']]);
+    if (gdbEff(h) && g >= 50) return mk(id, 'ja', 'ja', [h.alter ? ['ausweis.schwerRente'] : ['ausweis.schwer', { tage: R.beh.zusatzurlaub }]].concat(h.mzG ? [['ausweis.g']] : []));
     if (gdbEff(h) && g >= 30) return mk(id, 'vielleicht', 'vielleicht', [['ausweis.gleich']]);
     if (gdbEff(h)) return mk(id, 'nein', 'vorausFehlt', [['ausweis.niedrig']]);
     if (hatBeh(h)) return mk(id, 'vielleicht', 'vielleicht', [['ausweis.antrag']]);
@@ -483,7 +580,7 @@ const Rules = (function () {
   // Budget für Arbeit (§ 61 SGB IX)
   function budgetArbeit(h) {
     const id = 'arbeit';
-    if (!h.wfbm) return mk(id, 'nein', 'vorausFehlt', [['arbeit.keine']]);
+    if (!h.wfbm || h.alter) return mk(id, 'nein', 'vorausFehlt', [['arbeit.keine']]);
     return mk(id, 'vielleicht', 'vielleicht', [['arbeit.ja', { prozent: R.beh.budgetProzent }]]);
   }
 
@@ -513,6 +610,7 @@ const Rules = (function () {
   // Berufsausbildungsbeihilfe (§§ 56 ff. SGB III): nur Voraussetzungen, keine Berechnung
   function bab(h) {
     const id = 'bab';
+    if (h.ausbildung === 'kindBetrieb') return mk(id, 'vielleicht', 'vielleicht', [['bab.kind']]);
     if (h.ausbildung !== 'ich' || !h.babBetrieb) return mk(id, 'nein', 'vorausFehlt', [['bab.keine']]);
     if (!h.babWohnt) return mk(id, 'nein', 'vorausFehlt', [['bab.wohnen']]);
     return mk(id, 'vielleicht', 'vielleicht', [['bab.ja']]);
@@ -529,7 +627,7 @@ const Rules = (function () {
     const id = 'wbs';
     if (h.land && h.land !== 'BY') return mk(id, 'na', 'land', [['land.wbs']]);
     const grenze = wbsGrenze(h, false), max = wbsGrenze(h, true);
-    const jahr = h.brutto * 12;
+    const jahr = (h.brutto + (h.kindEink || 0)) * 12;
     const frei = gdbNum(h) >= 50 ? R.wbs.schwerbFrei : 0;
     const netto = jahr * (1 - R.wbs.maxAbzug) - frei;
     if (jahr <= grenze) return mk(id, 'ja', 'ja', [['wbs.ja', { grenze: eur(grenze) }], ['wbs.abzug']]);
@@ -546,7 +644,7 @@ const Rules = (function () {
     const ok = (x) => !!x && (x.level === 'ja' || x.level === 'vielleicht');
     const g = (id) => r.find((x) => x.id === id);
     if (h.bezug.grundsicherungsgeld) out.push(['z.ggBezug']);
-    if (ok(g('wohngeld')) && ok(g('kiz'))) out.push(['z.wgKiz']);
+    if (ok(g('wohngeld')) && ok(g('kiz')) && g('wohngeld').hl !== 'einkoNiedrig' && g('kiz').hl !== 'einkoNiedrig') out.push(['z.wgKiz']);
     if (ok(g('gsa')) && ok(g('wohngeld'))) out.push(['z.gsaWg']);
     if (!h.bezug.grundsicherungsgeld && !h.bezug.sozialamt && ok(g('ggeld')) && (ok(g('wohngeld')) || ok(g('kiz')))) out.push(['z.ggVsWg']);
     if (g('kindergeld').level === 'ja' && ok(g('kiz'))) out.push(['z.kgZuerst']);
