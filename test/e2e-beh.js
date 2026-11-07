@@ -100,7 +100,7 @@ const file = process.argv[2] || (__dirname + '/../dist/leistungs-lotse.html');
     const labs = await p.evaluate(() => ['bhPerson', 'gdb', 'blind', 'emStd'].every((i) => [...document.getElementById(i).options].every((o) => o.textContent.trim().length > 0)));
     ok('Sprache ' + l + ': alle Auswahlfelder beschriftet', labs);
     const cut = await p.evaluate(() => { const versteckt = [...document.querySelectorAll('.subbox[hidden], .cond-kinder[hidden], .cond-kids[hidden], .cond-adults2[hidden], [id$="BruttoF"][hidden], [id$="NettoF"][hidden]')]; versteckt.forEach((e) => { e.hidden = false; }); const out = []; const sp = document.createElement('span'); sp.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap'; document.body.appendChild(sp);
-      document.querySelectorAll('select').forEach((s) => { if (s.id === 'lang' || !s.clientWidth) return; const cs = getComputedStyle(s); sp.style.font = cs.font; const avail = s.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 4;
+      document.querySelectorAll('select').forEach((s) => { if (s.id === 'lang' || !s.clientWidth) return; const cs = getComputedStyle(s); sp.style.font = cs.font; const avail = s.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 12; // Reserve: Schriften in der CI sind etwas breiter
         [...s.options].forEach((o) => { sp.textContent = o.textContent; if (sp.offsetWidth > avail) out.push(s.id + ': ' + o.textContent); }); }); sp.remove(); versteckt.forEach((e) => { e.hidden = true; }); return out; });
     ok('Sprache ' + l + ': keine abgeschnittenen Auswahl-Einträge (390 px)', cut.length === 0, cut.join(' | '));
     const ov = await p.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);

@@ -489,7 +489,7 @@
   "ek.art.lohn": "Доход от работы",
   "ek.art.rente": "Пенсия",
   "ek.art.alg": "Arbeitslosengeld I",
-  "ek.art.kg": "Krankengeld (пособие по болезни)",
+  "ek.art.kg": "Krankengeld",
   "ek.art.ohne": "Нет дохода",
   "ek.brutto": "Брутто в месяц",
   "ek.brutto.hint.lohn": "Указано вверху расчётного листка (общее брутто). Если зарплата меняется: среднее за последние месяцы.",
