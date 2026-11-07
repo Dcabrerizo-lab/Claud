@@ -13,10 +13,15 @@ const file = process.argv[2] || (__dirname + '/../dist/leistungs-lotse.html');
   await p.evaluate(() => document.getElementById('p2').click());
   await p.click('#p2');
   // Übersicht und Bedienung
-  ok('Behinderungs-Block ist zunächst eingeklappt', (await p.evaluate(() => document.getElementById('behBlock').open)) === false);
-  ok('Auswahlfeld im eingeklappten Block ist nicht sichtbar', !(await p.isVisible('#bhPerson')));
-  await p.click('#behBlock > summary');
-  ok('Block lässt sich öffnen, Feld sichtbar', await p.isVisible('#bhPerson'));
+  ok('GdB-Frage erst sichtbar, wenn eine Behinderung angegeben ist', !(await p.isVisible('#gdb')) && await p.isVisible('#bhPerson'));
+  ok('Wartezeit-Frage erst bei eingeschränkter Arbeitsfähigkeit sichtbar', !(await p.isVisible('#em5')));
+  ok('BAB-Fragen erst bei eigener Ausbildung sichtbar', !(await p.isVisible('#babBetrieb')));
+  await sel('bhPerson', 'erwNach25');
+  ok('Nach Auswahl: GdB sichtbar, Kindergeld-Frage (vor 25) nicht', await p.isVisible('#gdb') && !(await p.isVisible('#bhSelbst')));
+  await sel('bhPerson', 'erwVor25');
+  ok('Erwachsenes Kind: Frage zur eigenen Lebensführung sichtbar', await p.isVisible('#bhSelbst'));
+  await sel('gdb', '50'); await sel('bhPerson', '');
+  ok('Ausgeblendete Angaben werden zurückgesetzt', (await p.inputValue('#gdb')) === '');
   const ov = await p.evaluate(() => { const o = document.getElementById('overview'); const links = [...o.querySelectorAll('a')]; return { hidden: o.hidden, n: links.length, ziele: links.every((a) => document.querySelector(a.getAttribute('href'))) }; });
   ok('Schnellübersicht zeigt Treffer und jeder Link hat ein Ziel', !ov.hidden && ov.n >= 3 && ov.ziele, JSON.stringify(ov));
   const ordnung = await p.evaluate(() => { const t = document.getElementById('together'); const c = document.getElementById('cards'); return !t.innerHTML || (t.compareDocumentPosition(c) & Node.DOCUMENT_POSITION_FOLLOWING) > 0; });
@@ -63,9 +68,9 @@ const file = process.argv[2] || (__dirname + '/../dist/leistungs-lotse.html');
   await fillNum('ek1Brutto', '2000');
 
   await p.click('#p1');
-  ok('Beispiel laden schließt den Block wieder (dort nichts gesetzt)', (await p.evaluate(() => document.getElementById('behBlock').open)) === false);
-  await p.click('#p2'); await p.click('#behBlock > summary'); await sel('bhPerson', 'erwVor25'); await p.check('#bhSelbst'); await sel('gdb', '100'); await sel('blind', 'hoch'); await sel('emStd', 'unter3'); await p.check('#em5'); await sel('pflegegrad', '3');
-  await p.check('#babBetrieb'); await p.check('#babWohnt'); await sel('ausbildung', 'ich'); await fillNum('ek1Brutto', '2000'); await p.uncheck('#alter');
+  ok('Beispiel 1: keine Gesundheits-Unterfragen offen', !(await p.isVisible('#gdb')) && !(await p.isVisible('#em5')));
+  await p.click('#p2'); await sel('bhPerson', 'erwVor25'); await p.check('#bhSelbst'); await sel('gdb', '100'); await sel('blind', 'hoch'); await sel('emStd', 'unter3'); await p.check('#em5'); await sel('pflegegrad', '3');
+  await sel('ausbildung', 'ich'); await p.check('#babBetrieb'); await p.check('#babWohnt'); await fillNum('ek1Brutto', '2000'); await p.uncheck('#alter');
     // Rundfunk
   await p.check('#b-sozialamt'); c = await card('Befreiung vom Rundfunkbeitrag'); ok('Rundfunk: Sozialamt bezogen => wahrscheinlich', c.pill === 'ja'); await p.uncheck('#b-sozialamt');
 
@@ -92,6 +97,10 @@ const file = process.argv[2] || (__dirname + '/../dist/leistungs-lotse.html');
     ok('Sprache ' + l + ': keine Rohschlüssel sichtbar', bad.length === 0, bad.join(','));
     const labs = await p.evaluate(() => ['bhPerson', 'gdb', 'blind', 'emStd'].every((i) => [...document.getElementById(i).options].every((o) => o.textContent.trim().length > 0)));
     ok('Sprache ' + l + ': alle Auswahlfelder beschriftet', labs);
+    const cut = await p.evaluate(() => { const out = []; const sp = document.createElement('span'); sp.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap'; document.body.appendChild(sp);
+      document.querySelectorAll('select').forEach((s) => { if (s.id === 'lang' || !s.clientWidth) return; const cs = getComputedStyle(s); sp.style.font = cs.font; const avail = s.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 4;
+        [...s.options].forEach((o) => { sp.textContent = o.textContent; if (sp.offsetWidth > avail) out.push(s.id + ': ' + o.textContent); }); }); sp.remove(); return out; });
+    ok('Sprache ' + l + ': keine abgeschnittenen Auswahl-Einträge (390 px)', cut.length === 0, cut.join(' | '));
     const ov = await p.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     ok('Sprache ' + l + ': kein seitliches Scrollen bei 390 px', ov <= 1, ov);
     if (l === 'ar') {

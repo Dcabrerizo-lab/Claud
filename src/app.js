@@ -1,14 +1,15 @@
 (function () {
   var PRESETS = [
-    { id: 'p1', key: 'preset.p1', v: { adults: 1, kids: 2, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'lohn', ek1Brutto: 2200, ek1Netto: 1750, brutto: 2200, netto: 1750, miete: 950, mietstufe: '3', vermoegen: 3000, alter: false, erwerbsgemindert: false, behinderung: false, kinder12: false, unterhaltFehlt: true, alterGruppe: '31-40', ausbildung: '', pflegegrad: '', bezug: {} } },
-    { id: 'p2', key: 'preset.p2', v: { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'rente', ek1Brutto: 880, ek1Netto: 780, brutto: 880, netto: 780, miete: 480, mietstufe: '3', vermoegen: 4000, alter: true, erwerbsgemindert: false, behinderung: false, kinder12: false, unterhaltFehlt: false, alterGruppe: '51+', ausbildung: '', pflegegrad: '', bezug: {} } },
-    { id: 'p3', key: 'preset.p3', v: { adults: 2, kids: 1, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'lohn', ek1Brutto: 3200, ek1Netto: 2500, ek2Art: 'ohne', brutto: 3200, brutto2: '', netto: 2500, miete: 1100, mietstufe: '5', vermoegen: 8000, alter: false, erwerbsgemindert: false, behinderung: false, kinder12: false, unterhaltFehlt: false, alterGruppe: '31-40', ausbildung: '', pflegegrad: '', bezug: {} } }
+    { id: 'p1', key: 'preset.p1', v: { adults: 1, kids: 2, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'lohn', ek1Brutto: 2200, ek1Netto: 1750, brutto: 2200, netto: 1750, miete: 950, mietstufe: '3', vermoegen: 3000, alter: false, kinder12: false, unterhaltFehlt: true, alterGruppe: '31-40', ausbildung: '', pflegegrad: '', bezug: {} } },
+    { id: 'p2', key: 'preset.p2', v: { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'rente', ek1Brutto: 880, ek1Netto: 780, brutto: 880, netto: 780, miete: 480, mietstufe: '3', vermoegen: 4000, alter: true, kinder12: false, unterhaltFehlt: false, alterGruppe: '51+', ausbildung: '', pflegegrad: '', bezug: {} } },
+    { id: 'p3', key: 'preset.p3', v: { adults: 2, kids: 1, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'lohn', ek1Brutto: 3200, ek1Netto: 2500, ek2Art: 'ohne', brutto: 3200, brutto2: '', netto: 2500, miete: 1100, mietstufe: '5', vermoegen: 8000, alter: false, kinder12: false, unterhaltFehlt: false, alterGruppe: '31-40', ausbildung: '', pflegegrad: '', bezug: {} } }
   ];
   var NATIVE = /*NATIVE*/ false; // true in der Store-App (Android und iOS)
   var LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro'];
   var MARK = { ja: '✓', vielleicht: '~', nein: '✕', na: '•' };
 
-  var state = JSON.parse(JSON.stringify(PRESETS[0].v));
+  var state = null; // wird unten mit blankState() belegt (leerer Fragebogen beim ersten Start)
+  var started = false; // false: noch keine Angaben -> Ergebnis zeigt Anleitung statt Karten
   var person = { name: '', geb: '', strasse: '', ort: '', tel: '' };
   var picked = {};
   var pickedUser = {}; // nur was die Person selbst umgestellt hat; sonst gilt: Haken bei "wahrscheinlich"
@@ -132,6 +133,27 @@
     say(src); altBlock();
   }
 
+  // ----- Folgefragen: nur zeigen, wenn sie passen; ausgeblendete Werte zurücksetzen, damit sie nicht mitrechnen -----
+  function folgefragen() {
+    var reset = function (keys) { keys.forEach(function (k) { if (typeof state[k] === 'boolean') { state[k] = false; $(k).checked = false; } else { state[k] = ''; $(k).value = ''; } }); };
+    if (!state.bhPerson) reset(['gdb', 'blind', 'wfbm', 'bhSelbst']);
+    if (state.bhPerson !== 'erwVor25') reset(['bhSelbst']);
+    if (!state.emStd) reset(['em5']);
+    if (state.ausbildung !== 'ich') reset(['babBetrieb', 'babWohnt']);
+    var show = function (sel, on) { document.querySelectorAll(sel).forEach(function (el) { el.hidden = !on; }); };
+    show('.cond-bh', !!state.bhPerson);
+    show('.cond-bh25', state.bhPerson === 'erwVor25');
+    show('.cond-em', !!state.emStd);
+    show('.cond-ausbich', state.ausbildung === 'ich');
+  }
+  // Frühere Fragen (Haken „Grad der Behinderung 100“ und „voll erwerbsgemindert“) in die neuen Fragen übernehmen
+  function migriereFragen(s) {
+    if (s.behinderung && !s.gdb) { s.gdb = '100'; if (!s.bhPerson) s.bhPerson = 'erwNach25'; }
+    if (s.erwerbsgemindert && !s.emStd) s.emStd = 'unter3';
+    s.behinderung = false; s.erwerbsgemindert = false;
+    return s;
+  }
+
   // ----- Einkommen je Person -> Werte, mit denen die Regeln rechnen (brutto, brutto2, netto, nichtArbeit, nichtArbeit2) -----
   // Art: lohn (Lohn/Gehalt, Freibetrag bei der Grundsicherung), rente, alg (Arbeitslosengeld I), kg (Krankengeld), ohne (kein Einkommen).
   // Arbeitslosengeld I und Krankengeld haben kein Brutto: dort zählt der ausgezahlte Betrag (Feld „Betrag laut Bescheid“).
@@ -163,6 +185,11 @@
       var bescheid = art === 'alg' || art === 'kg';
       $('ek' + i + 'NettoLab').textContent = bescheid ? t('ek.betrag') : t('ek.netto');
       $('ek' + i + 'NettoHint').textContent = bescheid ? t(art === 'alg' ? 'ek.betrag.hint.alg' : 'ek.betrag.hint.kg') : t('ek.netto.hint');
+      // Plausibilität: Netto größer als Brutto ist fast immer ein Tippfehler
+      var bb = state['ek' + i + 'Brutto'], nn = state['ek' + i + 'Netto'];
+      var falsch = mitBrutto && bb !== '' && bb != null && nn !== '' && nn != null && Number(nn) > Number(bb);
+      $('ek' + i + 'Warn').hidden = !falsch;
+      $('ek' + i + 'Warn').textContent = falsch ? t('warn.netto') : '';
     });
   }
   // Gespeicherte Angaben aus der früheren Eingabe (Summen und Haken) übernehmen
@@ -275,13 +302,13 @@
     b.type = 'button'; b.className = 'chip'; b.id = p.id;
     b.addEventListener('click', function () {
       state = JSON.parse(JSON.stringify(p.v));
-      edited = false; pickedUser = {}; $('sampleNotice').hidden = false;
+      edited = false; started = true; pickedUser = {}; $('sampleNotice').hidden = false;
       writeForm(); buildSelects(); render(); save();
     });
     pr.appendChild(b);
   });
 
-  var CHECKS = ['alter', 'erwerbsgemindert', 'behinderung', 'kinder12', 'unterhaltFehlt', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt'];
+  var CHECKS = ['alter', 'kinder12', 'unterhaltFehlt', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt'];
   var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'alterGruppe', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd'];
   var BEZUG = ['grundsicherungsgeld', 'sozialamt', 'wohngeld', 'kiz', 'kindergeld'];
 
@@ -295,12 +322,10 @@
     ['miete', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'vermoegen'].forEach(function (k) { $(k).value = state[k] == null ? '' : state[k]; });
     CHECKS.forEach(function (k) { $(k).checked = !!state[k]; });
     BEZUG.forEach(function (k) { $('b-' + k).checked = !!state.bezug[k]; });
-    var used = ['bhPerson', 'gdb', 'blind', 'emStd'].some(function (k) { return state[k] && state[k] !== '0'; }) ||
-      ['bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt'].some(function (k) { return state[k]; });
-    $('behBlock').open = !!used;
   }
 
   function touched() {
+    started = true;
     if (!edited) { edited = true; $('sampleNotice').hidden = true; }
     // Ausgeblendete Felder zurücksetzen, damit keine alten Werte mitrechnen
     if (state.kids === 0) { state.kinder12 = false; state.unterhaltFehlt = false; state.kidsU6 = 0; state.kids14 = 0; $('kinder12').checked = false; $('unterhaltFehlt').checked = false; }
@@ -385,7 +410,7 @@
     });
     $('mappeCopy').addEventListener('click', copyMappe);
     $('clearBtn').addEventListener('click', function () {
-      state = blankState(); person = { name: '', geb: '', strasse: '', ort: '', tel: '' }; picked = {}; pickedUser = {};
+      state = blankState(); person = { name: '', geb: '', strasse: '', ort: '', tel: '' }; picked = {}; pickedUser = {}; started = false;
       ['p-name', 'p-geb', 'p-strasse', 'p-ort', 'p-tel'].forEach(function (id) { $(id).value = ''; });
       edited = true; $('sampleNotice').hidden = true;
       clearTimeout(saveTimer); clearTimeout(soonTimer); saveTimer = null;
@@ -485,7 +510,18 @@
   }
 
   function render() {
-    syncEinkommen(); ekFelder();
+    syncEinkommen(); ekFelder(); folgefragen();
+    document.querySelectorAll('.cond-kids').forEach(function (el) { el.hidden = state.kids === 0; });
+    document.querySelectorAll('.cond-adults2').forEach(function (el) { el.hidden = state.adults !== 2; });
+    if (!started) {
+      // Erster Start: keine erfundenen Ergebnisse zeigen, sondern erklären, wie es geht
+      $('count').textContent = t('c.leer'); $('jumpText').textContent = t('c.leer');
+      $('overview').hidden = true; $('together').innerHTML = '';
+      $('cards').innerHTML = '<div class="card startcard"><h3>' + esc(t('start.h')) + '</h3>' + listItems([t('start.1'), t('start.2'), t('start.3')]) + '</div>';
+      $('helper').hidden = true;
+      return;
+    }
+    $('helper').hidden = false;
     var out = Rules.evaluate(state);
     lastOut = out;
     var n = { ja: 0, vielleicht: 0 };
@@ -576,8 +612,6 @@
   function besond() {
     var s = state, b = [];
     if (s.alter) b.push('Regelaltersgrenze erreicht');
-    if (s.erwerbsgemindert) b.push('dauerhaft voll erwerbsgemindert');
-    if (s.behinderung) b.push('Grad der Behinderung 100');
     if (s.gdb) b.push(s.gdb === 'H' ? 'Merkzeichen H, Bl oder TBl' : 'Grad der Behinderung ' + s.gdb);
     if (s.bhPerson === 'minder') b.push('Kind mit Behinderung unter 18 Jahren');
     if (s.bhPerson === 'erwVor25') b.push('Volljährige Person, Behinderung vor dem 25. Geburtstag eingetreten');
@@ -936,6 +970,8 @@
     });
   }
 
+  state = blankState();
+  $('sampleNotice').hidden = true; // Beispiel-Hinweis nur, wenn ein Beispiel geladen ist
   bind();
   writeForm();
   lang = detect();
@@ -948,7 +984,7 @@
       var d = JSON.parse(v);
       if (!d || !d.s) return;
       var b = blankState();
-      state = Object.assign(b, migriereEinkommen(d.s)); state.bezug = d.s.bezug || {};
+      state = Object.assign(b, migriereEinkommen(migriereFragen(d.s))); state.bezug = d.s.bezug || {}; started = true;
       if (d.p) person = Object.assign(person, d.p);
       edited = true; $('sampleNotice').hidden = true;
       [['p-name', 'name'], ['p-geb', 'geb'], ['p-strasse', 'strasse'], ['p-ort', 'ort'], ['p-tel', 'tel']].forEach(function (x) { $(x[0]).value = person[x[1]] || ''; });

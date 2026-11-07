@@ -145,6 +145,8 @@
   .card .zust { font-size: 0.85em; color: var(--muted); }
   .ekbox { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; gap: 14px; background: var(--surface); }
   .ekbox h3 { font-size: 1em; }
+  .subbox { border-inline-start: 3px solid var(--line); padding-inline-start: 14px; display: grid; gap: 14px; }
+  .warn { color: var(--warn); background: var(--warn-bg); border-radius: 6px; padding: 6px 10px; font-size: 0.9em; }
   .card .behoerde { display: grid; gap: 4px; padding: 10px 12px; border-inline-start: 3px solid var(--accent); background: var(--bg); border-radius: 6px; color: var(--ink); }
   .card .behoerde p { margin: 0; }
   .card .behoerde address { font-style: normal; line-height: 1.45; }
@@ -312,20 +314,26 @@
                 <button type="button" data-step="kids" data-d="1" data-t-aria="kids.more">+</button>
               </div>
             </div>
-            <div class="field cond-kids">
-              <span class="lab" id="lab-k6" data-t="kids6.label"></span>
-              <div class="stepper" role="group" aria-labelledby="lab-k6" dir="ltr">
+            <div class="subbox cond-kids">
+            <div class="field">
+              <span class="lab" id="lab-kidsU6" data-t="kids6.label"></span>
+              <div class="stepper" role="group" aria-labelledby="lab-kidsU6" dir="ltr">
                 <button type="button" data-step="kidsU6" data-d="-1" data-t-aria="kids6.less">−</button>
                 <output id="kidsU6" aria-live="polite">0</output>
                 <button type="button" data-step="kidsU6" data-d="1" data-t-aria="kids6.more">+</button>
               </div>
             </div>
-            <div class="field cond-kids">
-              <span class="lab" id="lab-k14" data-t="kids14.label"></span>
-              <div class="stepper" role="group" aria-labelledby="lab-k14" dir="ltr">
+            <div class="field">
+              <span class="lab" id="lab-kids14" data-t="kids14.label"></span>
+              <div class="stepper" role="group" aria-labelledby="lab-kids14" dir="ltr">
                 <button type="button" data-step="kids14" data-d="-1" data-t-aria="kids14.less">−</button>
                 <output id="kids14" aria-live="polite">0</output>
                 <button type="button" data-step="kids14" data-d="1" data-t-aria="kids14.more">+</button>
+              </div>
+            </div>
+              <div class="checks">
+                <label class="check"><input type="checkbox" id="kinder12"><span data-t="cb.kinder12"></span></label>
+                <label class="check"><input type="checkbox" id="unterhaltFehlt"><span data-t="cb.unterhalt"></span></label>
               </div>
             </div>
             <div class="field">
@@ -336,57 +344,63 @@
                 <button type="button" data-step="young" data-d="1" data-t-aria="young.more">+</button>
               </div>
             </div>
-            <div class="checks">
-              <label class="check"><input type="checkbox" id="alter"><span data-t="cb.alter"></span></label>
-              <label class="check"><input type="checkbox" id="erwerbsgemindert"><span data-t="cb.erwerb"></span></label>
-              <label class="check"><input type="checkbox" id="behinderung"><span data-t="cb.behind"></span></label>
-              <label class="check cond-kids"><input type="checkbox" id="kinder12"><span data-t="cb.kinder12"></span></label>
-              <label class="check cond-kids"><input type="checkbox" id="unterhaltFehlt"><span data-t="cb.unterhalt"></span></label>
-            </div>
             <div class="field">
               <label for="alterGruppe" data-t="gruppe.label"></label>
               <select id="alterGruppe"></select>
             </div>
-            <div class="field">
-              <label for="ausbildung" data-t="ausb.label"></label>
-              <select id="ausbildung"></select>
-            </div>
+            <label class="check"><input type="checkbox" id="alter"><span data-t="cb.alter"></span></label>
+          </fieldset>
+
+          <fieldset>
+            <legend data-t="lg.gesund"></legend>
+            <p class="hint" data-t="lg.gesund.hint"></p>
             <div class="field">
               <label for="pflegegrad" data-t="pflege.label"></label>
               <select id="pflegegrad"></select>
-            </div>
-          </fieldset>
-
-          <details class="optblock" id="behBlock">
-          <summary><span data-t="lg.beh"></span></summary>
-          <p class="small" data-t="beh.hint"></p>
-          <fieldset>
-            <legend class="vh" data-t="lg.beh"></legend>
-            <div class="field">
-              <label for="bhPerson" data-t="bh.person.label"></label>
-              <select id="bhPerson"></select>
-            </div>
-            <div class="field">
-              <label for="gdb" data-t="bh.gdb.label"></label>
-              <select id="gdb"></select>
-            </div>
-            <div class="field">
-              <label for="blind" data-t="bh.blind.label"></label>
-              <select id="blind"></select>
             </div>
             <div class="field">
               <label for="emStd" data-t="bh.em.label"></label>
               <select id="emStd"></select>
             </div>
-            <div class="checks">
-              <label class="check"><input type="checkbox" id="bhSelbst"><span data-t="cb.bhSelbst"></span></label>
+            <div class="subbox cond-em">
               <label class="check"><input type="checkbox" id="em5"><span data-t="cb.em5"></span></label>
-              <label class="check"><input type="checkbox" id="wfbm"><span data-t="cb.wfbm"></span></label>
-              <label class="check"><input type="checkbox" id="babBetrieb"><span data-t="cb.babBetrieb"></span></label>
-              <label class="check"><input type="checkbox" id="babWohnt"><span data-t="cb.babWohnt"></span></label>
+            </div>
+            <div class="field">
+              <label for="bhPerson" data-t="bh.person.label"></label>
+              <select id="bhPerson"></select>
+              <span class="hint" data-t="bh.person.hint"></span>
+            </div>
+            <div class="subbox cond-bh">
+              <div class="field">
+                <label for="gdb" data-t="bh.gdb.label"></label>
+                <select id="gdb"></select>
+                <span class="hint" data-t="bh.gdb.hint"></span>
+              </div>
+              <div class="field">
+                <label for="blind" data-t="bh.blind.label"></label>
+                <select id="blind"></select>
+              </div>
+              <div class="checks">
+                <label class="check cond-bh25"><input type="checkbox" id="bhSelbst"><span data-t="cb.bhSelbst"></span></label>
+                <label class="check"><input type="checkbox" id="wfbm"><span data-t="cb.wfbm"></span></label>
+              </div>
             </div>
           </fieldset>
-          </details>
+
+          <fieldset>
+            <legend data-t="lg.ausb"></legend>
+            <div class="field">
+              <label for="ausbildung" data-t="ausb.label"></label>
+              <select id="ausbildung"></select>
+              <span class="hint" data-t="ausb.hint"></span>
+            </div>
+            <div class="subbox cond-ausbich">
+              <div class="checks">
+                <label class="check"><input type="checkbox" id="babBetrieb"><span data-t="cb.babBetrieb"></span></label>
+                <label class="check"><input type="checkbox" id="babWohnt"><span data-t="cb.babWohnt"></span></label>
+              </div>
+            </div>
+          </fieldset>
 
           <fieldset>
             <legend data-t="lg.wohnen"></legend>
@@ -433,6 +447,7 @@
                 <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="ek1Netto"><span aria-hidden="true">€</span></div>
                 <span class="hint" id="ek1NettoHint"></span>
               </div>
+              <p class="warn" id="ek1Warn" role="status" hidden></p>
             </div>
             <div class="ekbox cond-adults2" id="ekbox2">
               <h3 data-t="ek.h2"></h3>
@@ -451,6 +466,7 @@
                 <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="ek2Netto"><span aria-hidden="true">€</span></div>
                 <span class="hint" id="ek2NettoHint"></span>
               </div>
+              <p class="warn" id="ek2Warn" role="status" hidden></p>
             </div>
             <div class="field cond-kids">
               <label for="unterhalt" data-t="unterh.label"></label>
