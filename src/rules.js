@@ -52,6 +52,10 @@ const Rules = (function () {
     wgKindFrei: 100,
     // Pauschalabzug beim Wohngeld (§ 16 WoGG) je Einkommensart: [kleinster, größter] üblicher Abzug
     wgAbzug: { lohn: [0.1, 0.3], rente: [0.1, 0.2], kg: [0.1, 0.2], alg: [0, 0], eg: [0, 0], wfbm: [0, 0.1], ohne: [0, 0] },
+    // Wenn nur die Auszahlung bekannt ist: Rente netto ≈ 0,89 × Brutto, also 90 % (bzw. 80 %) Brutto ≈ 100 % (bzw. 94 %) der Auszahlung; Lohn netto 70-80 %
+    wgAbzugAuszahlung: { lohn: [0, 0.12], rente: [0, 0.06], kg: [0, 0.06], alg: [0, 0], eg: [0, 0], wfbm: [0, 0.05], ohne: [0, 0] },
+    // Grundrentenfreibetrag (§ 82a SGB XII): bei 33 Jahren Grundrentenzeiten bleiben von der Rente 100 € und 30 % des Rests frei, höchstens 50 % der Regelbedarfsstufe 1
+    grundrente: { sockel: 100, quote: 0.3, max: 0.5 },
     // Regelaltersgrenze (§ 235 SGB VI) in Monaten über 65, je Geburtsjahr 1947..1963; ab 1964: 67 Jahre
     rag: { 1947: 1, 1948: 2, 1949: 3, 1950: 4, 1951: 5, 1952: 6, 1953: 7, 1954: 8, 1955: 9, 1956: 10, 1957: 11, 1958: 12, 1959: 14, 1960: 16, 1961: 18, 1962: 20, 1963: 22 },
     uvg: { bis5: 227, bis11: 299, bis17: 394, min12: 600 },
@@ -148,11 +152,15 @@ const Rules = (function () {
     const persons = adults + kids + young;
     // Einfache Version: Liste der Einkommen einer Person [{ art, b }] (b = ausgezahlter Betrag)
     const ARTEN = ['lohn', 'rente', 'alg', 'kg', 'eg', 'wfbm', 'ohne'];
-    const liste = Array.isArray(inp.einkommen) ? inp.einkommen.filter((x) => x && ARTEN.indexOf(x.art) >= 0).map((x) => [x.art, num(x.b)]) : null;
+    // Eintrag: [Art, Brutto, Netto, nurAuszahlung] – ohne eigenes Netto ist b der ausgezahlte Betrag (einfache Version)
+    const liste = Array.isArray(inp.einkommen) ? inp.einkommen.filter((x) => x && ARTEN.indexOf(x.art) >= 0).map((x) => {
+      const nurAus = blank(x.n);
+      return [x.art, num(x.b), nurAus ? num(x.b) : num(x.n), nurAus];
+    }) : null;
     const brutto = liste ? liste.reduce((a, x) => a + x[1], 0) : num(inp.brutto);
     const brutto2 = adults === 2 && !liste ? Math.min(num(inp.brutto2), brutto) : 0;
     const nettoGiven = liste ? true : inp.netto !== '' && inp.netto != null && num(inp.netto) > 0;
-    const netto = liste ? brutto : nettoGiven ? num(inp.netto) : brutto * 0.8;
+    const netto = liste ? liste.reduce((a, x) => a + x[2], 0) : nettoGiven ? num(inp.netto) : brutto * 0.8;
     const miete = num(inp.miete);
     const vermoegen = num(inp.vermoegen);
     // Unterhalt, den die Kinder vom anderen Elternteil bekommen (im Monat, alle Kinder zusammen); nur mit Kindern im Haushalt
@@ -203,7 +211,7 @@ const Rules = (function () {
       egFreiWG: sumIf((a, b) => a === 'eg' ? Math.min(R.elterngeldFrei, b) : 0),
       egFreiSGB: sumIf((a, b) => a === 'eg' && b > R.elterngeldFrei ? R.elterngeldFrei : 0),
       vPausch: sumIf((a, b) => a !== 'lohn' && a !== 'ohne' && b > 0 ? R.versPauschale : 0),
-      mzG: !!inp.mzG, mzRF: !!(inp.mz && inp.mz.RF),
+      mzG: !!inp.mzG, mzRF: !!(inp.mz && inp.mz.RF), wfbmJahre: num(inp.wfbmJahre), grundrente33: !!inp.grundrente33, bhEinkHoch: !!inp.bhEinkHoch,
       wohnform: inp.wohnform === 'eltern' || inp.wohnform === 'heim' ? inp.wohnform : '', wfbmEssen: !!inp.wfbmEssen,
       mieteGegeben: !blank(inp.miete) && num(inp.miete) > 0,
       arbeitSit: inp.arbeitSit === 'arbeitslos' || inp.arbeitSit === 'krank' ? inp.arbeitSit : '',
@@ -314,7 +322,8 @@ const Rules = (function () {
     // Pauschalabzug je Person und Einkommensart (§ 16 WoGG): Lohn 10-30 %, Rente und Krankengeld 10-20 %, ALG I und Elterngeld 0 %
     const pers = h.pers || [['lohn', h.brutto]];
     let sumB = 0, yA = 0, yB = 0;
-    pers.forEach(function (x) { const ab = R.wgAbzug[x[0]] || R.wgAbzug.lohn; sumB += x[1]; yA += x[1] * (1 - ab[0]); yB += x[1] * (1 - ab[1]); });
+    // Nur der ausgezahlte Betrag bekannt: Steuern und Beiträge sind schon abgezogen, das Brutto nach § 16-Abzug liegt nahe daran
+    pers.forEach(function (x) { const ab = (x[3] ? R.wgAbzugAuszahlung[x[0]] : R.wgAbzug[x[0]]) || R.wgAbzug.lohn; sumB += x[1]; yA += x[1] * (1 - ab[0]); yB += x[1] * (1 - ab[1]); });
     const wA = sumB > 0 ? yA / sumB : 0.9, wB = sumB > 0 ? yB / sumB : 0.7;
     // Anzeige als Grenze für das Brutto (bzw. den ausgezahlten Betrag bei ALG I und Elterngeld)
     const lo = yMaxLo / wA, hi = yMaxHi / wB;
@@ -465,7 +474,7 @@ const Rules = (function () {
     return pers.reduce((a, x) => {
       const art = x[0], b = x[1];
       // Netto dieses Einkommens: in der ausführlichen Version anteilig aus dem Haushaltsnetto
-      const n = h.liste ? b : sumB > 0 ? h.netto * b / sumB : h.netto / pers.length;
+      const n = h.liste ? x[2] : sumB > 0 ? h.netto * b / sumB : h.netto / pers.length;
       if (art === 'wfbm') {
         const e = Math.max(0, n - R.wfbm.afoeg);
         const frei = Math.min(e, R.wfbm.achtel * rs1 + R.wfbm.rest * Math.max(0, e - R.wfbm.achtel * rs1));
@@ -473,6 +482,7 @@ const Rules = (function () {
       }
       if (art === 'lohn') return a + n - Math.min(R.gsaArbeit.quote * n, R.gsaArbeit.max * rs1);
       if (art === 'eg') return a + Math.max(0, n - (b > R.elterngeldFrei ? R.elterngeldFrei : 0));
+      if (art === 'rente' && h.grundrente33) return a + n - Math.min(R.grundrente.sockel + R.grundrente.quote * Math.max(0, n - R.grundrente.sockel), R.grundrente.max * rs1);
       if (art === 'ohne') return a;
       return a + n;
     }, 0);
@@ -499,7 +509,9 @@ const Rules = (function () {
     const offen = kduOffen + (h.wfbmEssen ? R.offen.essen : 0);
     const eink = gsaEinkommen(h) + (eigen ? 0 : h.children * R.kindergeld + unterhaltAnrechenbar(h));
     const luecke = bedarf - eink;
-    const extra = (h.alterGrenz ? [['gsa.grenz']] : []).concat(h.wfbmEssen ? [['gsa.essen']] : [], kduOffen ? [[h.wohnform === 'heim' ? 'gsa.heim' : 'gsa.eltern']] : []);
+    const hatRente = (h.pers || []).some((x) => x[0] === 'rente' && x[1] > 0);
+    const extra = (h.alterGrenz ? [['gsa.grenz']] : []).concat(h.wfbmEssen ? [['gsa.essen']] : [], kduOffen ? [[h.wohnform === 'heim' ? 'gsa.heim' : 'gsa.eltern']] : [],
+      hatRente && !h.grundrente33 ? [['gsa.grundrente']] : []);
     const ja = !h.alterGrenz;
     if (luecke >= R.grundsicherung.sicherAb) {
       const sch = offen ? ['schaetz.mind', { a: eur(r10(luecke)) }] : ['schaetz.eins', { a: eur(r10(luecke)) }];
@@ -558,6 +570,7 @@ const Rules = (function () {
     if (h.bhPerson === 'erwNach25') return mk(id, 'nein', 'vorausFehlt', [['kgBeh.nach25']]);
     if (h.bhPerson !== 'erwVor25') return keinBeh(id);
     if (h.bezug.kindergeld) return mk(id, 'na', 'na', [['kgBeh.na']]);
+    if (h.bhEinkHoch) return mk(id, 'nein', 'einkoHoch', [['kgBeh.hoch', { gfb: eur(R.beh.grundfreibetrag) }]]);
     if (h.bhSelbst) return mk(id, 'ja', 'ja', [['kgBeh.ja', { kg: eur(R.kindergeld) }]]);
     return mk(id, 'vielleicht', 'vielleicht', [['kgBeh.pruefen', { gfb: eur(R.beh.grundfreibetrag) }]]);
   }
@@ -566,6 +579,9 @@ const Rules = (function () {
   function erwerbsminderungsrente(h) {
     const id = 'emrente';
     if (h.alter) return mk(id, 'nein', 'vorausFehlt', [['emrente.alter']]);
+    if (h.bezug.emrente) return mk(id, 'na', 'na', [['emrente.na']]);
+    // Werkstatt: gilt als voll erwerbsgemindert; Rente nach 20 Jahren Wartezeit (§ 43 Abs. 6 SGB VI), sonst wie üblich
+    if (!h.emStd && h.wfbm) return h.wfbmJahre >= 20 ? mk(id, 'ja', 'ja', [['emrente.wfbm20']]) : mk(id, 'vielleicht', 'vielleicht', [['emrente.werkstatt']]);
     if (!h.emStd && h.arbeitSit === 'krank' && h.krankWochen && h.krankWochen !== 'unter6') return mk(id, 'vielleicht', 'vielleicht', [['emrente.unklar']]);
     if (!h.emStd) return mk(id, 'nein', 'vorausFehlt', [['emrente.keine']]);
     if (h.emStd === 'unklar') return mk(id, 'vielleicht', 'vielleicht', [['emrente.unklar']]);
@@ -627,6 +643,7 @@ const Rules = (function () {
     if (!hatBeh(h)) return keinBeh(id);
     // nur Pflegebedürftigkeit im Rentenalter, ohne Hinweis auf Behinderung: hier nicht vorschlagen (dafür gibt es die Pflegekarten)
     if (h.alter && !h.bhPerson && !gdbEff(h) && !h.blind && !h.wfbm && !h.erwerbsgemindert) return keinBeh(id);
+    if (h.bezug.eingl) return mk(id, 'na', 'na', [['eingl.na']]);
     if (h.bhPerson === 'minder') return mk(id, 'vielleicht', 'vielleicht', [['eingl.kind']]);
     return mk(id, 'vielleicht', 'vielleicht', [['eingl.erw']]);
   }

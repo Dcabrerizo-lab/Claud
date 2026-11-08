@@ -30,13 +30,16 @@ const file = process.argv[2] || (__dirname + '/../dist/leistungs-lotse.html');
     }
     await p.click('#einfachBtn'); await pruefe('Einfache Version: Frage');
     await p.fill('#es-in', '1990'); await p.click('#es-weiter'); await pruefe('Einfache Version: Auswahl');
-    await p.click('[data-es="eltern"]'); await p.click('[data-es="nein"]'); await p.click('[data-es="werkstatt"]');
+    for (const a of ['eltern', 'nein', 'werkstatt']) { await p.click('[data-es="' + a + '"]'); await p.waitForTimeout(450); }
     await p.fill('#es-in', '250'); await p.click('#es-weiter');
     for (let i = 0; i < 15 && await p.isVisible('#es-q') && !(/bekommen|Passendes/.test(await p.textContent('#es-q'))); i++) {
       if (await p.isVisible('#es-skip')) await p.click('#es-skip');
+      else if (await p.isVisible('#es-keine')) await p.click('#es-keine');
+      else if (await p.isVisible('#es-nichts')) await p.click('#es-nichts');
       else if (await p.isVisible('[data-es="nein"]')) await p.click('[data-es="nein"]');
-      else if (await p.isVisible('[data-es]')) await p.click('[data-es]');
+      else if (await p.isVisible('[data-es]')) await p.click('[data-es] >> nth=0');
       else if (await p.isVisible('#es-weiter')) await p.click('#es-weiter');
+      await p.waitForTimeout(450);
     }
     await pruefe('Einfache Version: Ergebnis');
   }

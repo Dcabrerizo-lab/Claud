@@ -187,5 +187,25 @@ ck('W8 Rentner mit Lohn 1.200 € und Rente 700 €: Freibetrag höchstens 281,5
 // 400 € Lohn: 30 % = 120 frei -> 280 + 700 = 980 < 1.163 -> Lücke 183 -> wahrscheinlich, etwa 180 €
 ck('W8b Minijob 400 € neben Rente: 120 € frei, etwa 180 € Grundsicherung', L({ ...w8, einkommen: [{ art: 'lohn', b: 400 }, { art: 'rente', b: 700 }] }, 'gsa') === 'ja' && T({ ...w8, einkommen: [{ art: 'lohn', b: 400 }, { art: 'rente', b: 700 }] }, 'gsa', 'schaetz.eins').a === E(180));
 
+// ---------- Fälle aus dem zweiten Nutzertest (einfache Version) ----------
+// Lena: bei den Eltern ohne Miete, Werkstatt 180 €: 128 € nach Arbeitsförderungsgeld; frei 70,375 + 28,81 -> 28,81 zählen; 563 - 28,81 = 534 -> „mindestens 530 €“
+const lena = { einkommen: [{ art: 'wfbm', b: 180 }], wohnform: 'eltern', miete: 0, wfbm: true, gebJahr: 2002, heute: 2026.8, vermoegen: 1500, bhPerson: 'erwVor25', bhSelbst: true, gdb: 'H', pflegegrad: '2' };
+ck('Lena: Grundsicherung mindestens 530 €, Kindergeld für die Eltern 259 €', T(lena, 'gsa', 'schaetz.mind').a === E(530) && L(lena, 'kgBeh') === 'ja');
+// Markus: Wohnheim, Werkstatt 320 €, G: 506 + 86,02 - (268 - 70,375 - 98,81) = 493,21 -> „mindestens 490 €“; 15 Jahre Werkstatt -> Rente erst nach 20 Jahren
+const markus = { einkommen: [{ art: 'wfbm', b: 320 }], wohnform: 'heim', wfbm: true, mzG: true, gebJahr: 1985, heute: 2026.8, vermoegen: 0, bhPerson: 'erwVor25' };
+ck('Markus: Wohnheim, mindestens 490 €', T(markus, 'gsa', 'schaetz.mind').a === E(490));
+ck('Markus: Erwerbsminderungsrente möglich (Werkstatt, 20 Jahre Wartezeit)', L(markus, 'emrente') === 'vielleicht' && K(markus, 'emrente')[0] === 'emrente.werkstatt');
+ck('Markus mit 20 Jahren Werkstatt: Erwerbsminderungsrente wahrscheinlich', L({ ...markus, wfbmJahre: 20 }, 'emrente') === 'ja');
+ck('Schon Grundsicherung und Eingliederungshilfe: „schon vorhanden“', L({ ...markus, bezug: { sozialamt: true, eingl: true } }, 'gsa') === 'na' && L({ ...markus, bezug: { sozialamt: true, eingl: true } }, 'eingl') === 'na');
+// Sabine: eigene Wohnung 480 €, Werkstatt 250 € + Rente 1.100 €, G: Bedarf 1.138,71; Einkommen 63,81 + 1.100 = 1.163,81 -> knapp (möglich)
+const sabine = { einkommen: [{ art: 'wfbm', b: 250 }, { art: 'rente', b: 1100 }], miete: 480, wfbm: true, wfbmEssen: true, mzG: true, gebJahr: 1968, heute: 2026.8, vermoegen: 4000 };
+ck('Sabine: Grundsicherung möglich, Hinweis auf Grundrente', L(sabine, 'gsa') === 'vielleicht' && K(sabine, 'gsa').includes('gsa.grundrente'));
+// Mit 33 Jahren Grundrentenzeiten (§ 82a): von 1.100 € frei min(100 + 0,3 × 1.000, 281,50) = 281,50 -> Einkommen 882,31 -> Lücke 256 -> etwa 260 €
+ck('Sabine mit 33 Jahren: Grundrentenfreibetrag 281,50 €, Grundsicherung wahrscheinlich (mindestens 260 €)', L({ ...sabine, grundrente33: true }, 'gsa') === 'ja' && T({ ...sabine, grundrente33: true }, 'gsa', 'schaetz.mind').a === E(260));
+ck('Kindergeld bei Behinderung: Einkommen klar zu hoch -> eher nicht', L({ ...sabine, bhPerson: 'erwVor25', bhEinkHoch: true }, 'kgBeh') === 'nein');
+// Ausführliche Version: Brutto und Netto der Rente in der Liste, Werkstattlohn als zweites Einkommen
+const sabineAusf = { ...sabine, einkommen: [{ art: 'rente', b: 1236, n: 1100 }, { art: 'wfbm', b: 250 }] };
+ck('Ausführliche Version mit zweitem Einkommen: gleiche Einstufung wie die einfache', L(sabineAusf, 'gsa') === L(sabine, 'gsa'));
+
 console.log(fails ? '\n' + fails + ' von ' + n + ' FEHLGESCHLAGEN' : '\nFall-Tests bestanden: ' + n + ' Prüfungen');
 process.exit(fails ? 1 : 0);

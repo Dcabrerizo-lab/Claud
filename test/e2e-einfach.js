@@ -8,8 +8,9 @@ async function durchlauf(p, antworten) {
   for (const a of antworten) {
     if (a.startsWith('#')) { await p.fill('#es-in', a.slice(1)); await p.click('#es-weiter'); }
     else if (a === 'skip') await p.click('#es-skip');
-    else if (a.startsWith('mz:')) { for (const m of a.slice(3).split(',').filter(Boolean)) await p.click('[data-mz="' + m + '"]'); await p.click('#es-weiter'); }
-    else await p.click('[data-es="' + a + '"]');
+    else if (a.startsWith('mz:')) { const l = a.slice(3).split(',').filter(Boolean); for (const m of l) await p.click('[data-mz="' + m + '"]'); await p.click(l.length ? '#es-weiter' : '#es-keine'); }
+    else if (a.startsWith('schon:')) { const l = a.slice(6).split(',').filter(Boolean); for (const m of l) await p.click('[data-schon="' + m + '"]'); await p.click(l.length ? '#es-weiter' : '#es-nichts'); }
+    else { await p.click('[data-es="' + a + '"]'); await p.waitForTimeout(450); } // Auswahl wird kurz gezeigt, dann geht es weiter
   }
 }
 const ergebnis = (p) => p.evaluate(() => {
@@ -33,7 +34,7 @@ const ergebnis = (p) => p.evaluate(() => {
   ok('Ungültiges Geburtsjahr: Hinweis, bleibt auf der Frage', await p.isVisible('#es-warn') && /geboren/.test(await p.textContent('#es-q')));
 
   // Fall A: 36 Jahre, bei den Eltern ohne Miete, Werkstatt 250 €, Mittagessen, keine Rente, Ausweis 80 + G, seit Kindheit, Pflegegrad 2, wenig Erspartes, PLZ Regensburg
-  await durchlauf(p, ['#1990', 'eltern', 'nein', 'werkstatt', '#250', 'ja', 'nein', 'ja', '80', 'mz:G', 'ja', '2', 'wenig', '#93047']);
+  await durchlauf(p, ['#1990', 'eltern', 'nein', 'werkstatt', '#250', 'ja', 'unter20', 'nein', 'ja', '80', 'mz:G', 'ja', '2', 'schon:', 'wenig', '#93047']);
   let e = await ergebnis(p);
   const karte = (n) => e.k.find((x) => x.name.includes(n));
   ok('A: Grundsicherung „Gute Chance“, mindestens 590 €', karte('Grundsicherung') && karte('Grundsicherung').lvl === 'ja' && /mindestens 590/.test(karte('Grundsicherung').geld), JSON.stringify(e.k));
@@ -44,6 +45,8 @@ const ergebnis = (p) => p.evaluate(() => {
   ok('A: kein Wohngeld und kein Jobcenter', !karte('Wohngeld') && !karte('Jobcenter'));
   ok('A: Sozialamt Regensburg mit Anschrift', /Stadt Regensburg[\s\S]*Rathausplatz/.test(e.text));
   ok('A: Hinweis auf Hilfe durch Betreuer', /Betreuer/.test(e.text));
+  ok('A: Tipp Wohnkosten bei den Eltern und Mittagessen', /Teil der Wohnkosten/.test(e.text) && /Mittag/.test(e.text));
+  ok('A: Tipp Wertmarke (G, mit Grundsicherung kostenlos) und Kindergeld-Antrag durch die Eltern', /Wertmarke/.test(e.text) && /Antrag auf Kindergeld stellen deine Eltern/.test(e.text));
   // Antragsmappe: nur passende Briefe vorausgewählt, ausführliche Angaben bleiben unverändert
   await p.click('#es-mappe');
   const picks = await p.evaluate(() => [...document.querySelectorAll('[data-pick]')].filter((x) => x.checked).map((x) => x.getAttribute('data-pick')));
@@ -52,11 +55,28 @@ const ergebnis = (p) => p.evaluate(() => {
   ok('A: Brief an das Sozialamt mit Werkstatt und Eltern im Angabenblatt', /Grundsicherung im Alter und bei Erwerbsminderung/.test(txt) && /Werkstatt/.test(txt) && /Wohnt bei den Eltern/.test(txt));
   await p.click('#mappeClose');
   ok('A: Zurück in der einfachen Version', await p.isVisible('#einfach'));
+  // Mappe ist sichtbar (nicht unter dem Ergebnis versteckt)
+  await p.click('#es-mappe');
+  ok('A: Mappe sichtbar, Ergebnis der einfachen Version ausgeblendet', await p.isVisible('#h-mappe') && !(await p.isVisible('#einfach')));
+  await p.click('#mappeClose');
 
   // Speichern: nach Neuladen weiter in der einfachen Version beim Ergebnis
   await p.reload(); await p.waitForTimeout(300);
   ok('Nach Neuladen: einfache Version und Ergebnis noch da', await p.isVisible('#einfach') && /Das kannst du bekommen/.test(await p.textContent('#einfach')));
 
+  // Plausibilität: Werkstattlohn 810 € wird einmal nachgefragt
+  await p.click('#es-neu');
+  await durchlauf(p, ['#1990', 'eltern', 'nein', 'werkstatt']);
+  await p.fill('#es-in', '810'); await p.click('#es-weiter');
+  ok('810 € Werkstattlohn: Rückfrage, bleibt auf der Frage', /Stimmt das/.test(await p.textContent('#es-warn')) && /Geld/.test(await p.textContent('#es-q')));
+  await p.click('#es-weiter');
+  ok('Zweites Weiter übernimmt die Zahl', !/Wie viel Geld/.test(await p.textContent('#es-q')));
+  await p.click('#es-zurueck'); await p.fill('#es-in', '250'); await p.click('#es-weiter');
+  await durchlauf(p, ['ja', 'unter20', 'nein', 'ja', '80']);
+  await p.click('#es-weiter');
+  ok('Buchstaben: Weiter ohne Auswahl fragt nach „Keine Buchstaben“', await p.isVisible('.es-frag'));
+  await p.click('#es-keine');
+  await durchlauf(p, ['ja', '2', 'schon:', 'wenig', '#93047']);
   // Zurück-Knopf
   await p.click('#es-zurueck');
   ok('Zurück vom Ergebnis: letzte Frage (Postleitzahl)', /Postleitzahl/.test(await p.textContent('#es-q')));
@@ -68,20 +88,20 @@ const ergebnis = (p) => p.evaluate(() => {
   await p.click('#es-raus'); await p.click('#einfachBtn');
   // „Neu anfangen“ gibt es auf dem Ergebnis; hier frisch über Zurück bis zur ersten Frage
   for (let i = 0; i < 20 && !(await p.isVisible('#es-in') && /geboren/.test(await p.textContent('#es-q'))); i++) { if (await p.isVisible('#es-zurueck')) await p.click('#es-zurueck'); else break; }
-  await durchlauf(p, ['#1996', 'allein', '#500', 'job', '#2500', 'nein', 'nein', 'nein', 'nein', 'wenig', 'skip']);
+  await durchlauf(p, ['#1996', 'allein', '#500', 'job', '#2500', 'nein', 'nein', 'nein', 'nein', 'schon:', 'wenig', 'skip']);
   e = await ergebnis(p);
   ok('B: Gutes Einkommen ohne Behinderung: keine Grundsicherung als „Gute Chance“', !e.k.some((x) => /Grundsicherung/.test(x.name) && x.lvl === 'ja'), JSON.stringify(e.k));
   await p.click('#es-neu');
   ok('Neu anfangen: erste Frage', /geboren/.test(await p.textContent('#es-q')));
 
   // Fall C: Rentenalter (1950), Wohnheim, Rente 600 €, Ausweis 100 + H
-  await durchlauf(p, ['#1950', 'heim', 'nein', 'ja', '#600', 'ja', '100', 'mz:H', 'nein', '3', 'wenig', 'skip']);
+  await durchlauf(p, ['#1950', 'heim', 'nein', 'ja', '#600', 'ja', '100', 'mz:H', 'nein', '3', 'schon:', 'wenig', 'skip']);
   e = await ergebnis(p);
   // 600 € liegen über dem Regelsatz im Wohnheim (Stufe 2: 506 €); die Wohnkosten des Heims kennt die App nicht -> „Vielleicht“
   ok('C: Wohnheim, Rente 600 €: Grundsicherung „Vielleicht“ (Wohnkosten des Heims offen)', karte('Grundsicherung') && karte('Grundsicherung').lvl === 'vielleicht', JSON.stringify(e.k));
   ok('C: Pflegegrad 3: Pflegegeld 599 €', karte('Pflegegeld') && /599/.test(karte('Pflegegeld').geld));
   await p.click('#es-neu');
-  await durchlauf(p, ['#1950', 'heim', 'nein', 'ja', '#400', 'ja', '100', 'mz:', 'nein', '3', 'wenig', 'skip']);
+  await durchlauf(p, ['#1950', 'heim', 'nein', 'ja', '#400', 'ja', '100', 'mz:', 'nein', '3', 'schon:', 'wenig', 'skip']);
   e = await ergebnis(p);
   ok('C2: Wohnheim, Rente 400 €: Grundsicherung „Gute Chance“, mindestens 110 €', karte('Grundsicherung') && karte('Grundsicherung').lvl === 'ja' && /mindestens 110/.test(karte('Grundsicherung').geld), JSON.stringify(e.k));
   ok('C: keine Frage nach eingeschränkter Arbeit im Rentenalter, keine Erwerbsminderungsrente', !karte('Erwerbsminderung'));

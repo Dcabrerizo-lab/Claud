@@ -131,14 +131,14 @@ function personZufall() {
   const ein = [];
   if (rnd() < 0.6) ein.push({ art: 'wfbm', b: pick([52, 120, 180, 250, 300, 400, geld(600, 1)]) });
   if (rnd() < 0.2) ein.push({ art: 'lohn', b: geld(1500, 5) });
-  if (rnd() < 0.5) ein.push({ art: 'rente', b: geld(1600, 5) });
+  if (rnd() < 0.5) { const b = geld(1600, 5); ein.push(rnd() < 0.5 ? { art: 'rente', b } : { art: 'rente', b: Math.round(b / 0.89), n: b }); }
   const wf = pick(['', 'eltern', 'heim']);
   return {
     adults: 1, kids: 0, young: 0, einkommen: ein, wohnform: wf,
     miete: wf === 'heim' ? '' : pick(['', 0, geld(300, 10), geld(900, 10) + 200]),
     wfbm: rnd() < 0.7, wfbmEssen: rnd() < 0.5, emStd: pick(['', 'unter3', 'unklar']),
     gebJahr: pick([1950, 1958, 1960, 1962, 1970, 1985, 2000]), heute: 2026 + 10 / 12,
-    mzG: rnd() < 0.3, gdb: pick(['', '50', '80', '100', 'H']), bhPerson: 'erwNach25', pflegegrad: pick(['', '2', '3']),
+    mzG: rnd() < 0.3, gdb: pick(['', '50', '80', '100', 'H']), bhPerson: 'erwNach25', pflegegrad: pick(['', '2', '3']), grundrente33: rnd() < 0.3,
     vermoegen: pick([0, 5000, 9999, 10001, 20000]), mietstufe: pick(['', '3', '5']), bezug: { sozialamt: rnd() < 0.05 }
   };
 }

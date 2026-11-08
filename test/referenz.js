@@ -180,7 +180,7 @@ function kinderzuschlag(h) {
 // Lohn: 30 % frei, höchstens RS1/2 (Abs. 3 Satz 1); Elterngeld über 300 €: 300 € frei; Renten, ALG, Krankengeld voll.
 function einkommenSGB12(e, h) {
   let posten;
-  if (Array.isArray(e.einkommen)) posten = e.einkommen.map((x) => ({ art: x.art, n: zahl(x.b) }));
+  if (Array.isArray(e.einkommen)) posten = e.einkommen.map((x) => ({ art: x.art, n: leer(x.n) ? zahl(x.b) : zahl(x.n), b: zahl(x.b) }));
   else {
     const summe = h.p.reduce((s, x) => s + x.brutto, 0);
     posten = h.p.map((x) => ({ art: x.art, n: summe > 0 ? h.netto * x.brutto / summe : h.netto / h.p.length, b: x.brutto }));
@@ -191,13 +191,14 @@ function einkommenSGB12(e, h) {
     if (x.art === 'wfbm') { const lohn = Math.max(0, x.n - 52); const frei = Math.min(lohn, rs1 / 8 + 0.5 * Math.max(0, lohn - rs1 / 8)); summe += lohn - frei; }
     else if (x.art === 'lohn') summe += x.n - Math.min(0.3 * x.n, 0.5 * rs1);
     else if (x.art === 'eg') summe += Math.max(0, x.n - ((x.b != null ? x.b : x.n) > 300 ? 300 : 0));
+    else if (x.art === 'rente' && e.grundrente33) summe += x.n - Math.min(100 + 0.3 * Math.max(0, x.n - 100), 0.5 * rs1); // § 82a
     else if (x.art !== 'ohne') summe += x.n;
   }
   return summe;
 }
 function grundsicherungAlter(e) {
   const h = haushalt(e);
-  if (Array.isArray(e.einkommen)) { const s = e.einkommen.reduce((a, x) => a + zahl(x.b), 0); h.brutto = s; h.netto = s; h.p = [{ art: e.einkommen.length ? e.einkommen[0].art : 'ohne', brutto: s }]; }
+  if (Array.isArray(e.einkommen)) { const s = e.einkommen.reduce((a, x) => a + zahl(x.b), 0); h.brutto = s; h.netto = e.einkommen.reduce((a, x) => a + (leer(x.n) ? zahl(x.b) : zahl(x.n)), 0); h.p = [{ art: e.einkommen.length ? e.einkommen[0].art : 'ohne', brutto: s }]; }
   const em = h.em;
   if (!h.rente && !em && !h.grenz) return { level: 'nein' };
   if (h.bezug.sozialamt) return { level: 'na' };

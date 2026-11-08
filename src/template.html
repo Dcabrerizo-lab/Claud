@@ -53,6 +53,14 @@
   html.big { font-size: 19px; }
   /* Einfache Version: groß, klar, eine Frage pro Bildschirm */
   .es-schalter { font-weight: 700; border-color: var(--accent); }
+  /* In der einfachen Version: Kopfzeile kurz, kein langer Hinweis; Ziffern ohne Schrägstrich in der Null */
+  .app.es-an .top .lead, .app.es-an .top .stand, .app.es-an .first { display: none !important; }
+  .app.es-an .top h1 { font-size: 1.3em; }
+  .einfach, .einfach input { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans', sans-serif; }
+  .es-ok { margin-inline-start: auto; font-size: 1.4em; }
+  .es-tipps { background: var(--surface); border: 2px dashed var(--line); border-radius: 14px; padding: 12px 16px; margin: 14px 0; }
+  .es-tipps li { margin: 6px 0; }
+  .es-text { width: 100%; min-height: 140px; font: inherit; font-size: 0.9em; margin-top: 8px; }
   .einfach { max-width: 640px; margin: 0 auto 32px; font-size: 1.15rem; }
   .es-top { margin-bottom: 14px; }
   .es-prog { font-size: 0.85em; color: var(--muted); }
@@ -65,7 +73,8 @@
   .es-wahl.es-klein { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
   .es-btn { font: inherit; display: flex; align-items: center; gap: 14px; width: 100%; min-height: 64px; padding: 12px 18px; text-align: start;
     background: var(--surface); color: var(--ink); border: 2px solid var(--line); border-radius: 14px; cursor: pointer; font-weight: 600; }
-  .es-btn:hover, .es-btn:focus-visible { border-color: var(--accent); }
+  .es-btn:focus-visible { border-color: var(--accent); }
+  @media (hover: hover) { .es-btn:hover { border-color: var(--accent); } }
   .es-btn.an { border-color: var(--accent); background: var(--accent); color: var(--accent-ink); }
   .es-ico { font-size: 1.6em; line-height: 1; }
   .es-klein .es-btn { justify-content: center; text-align: center; flex-direction: column; gap: 2px; }
@@ -291,7 +300,7 @@
   .page.docs ul { margin: 4px 0 12px; padding-inline-start: 20px; }
   .page.docs .tip { font-size: 0.92em; color: #333; }
   #mappeText { width: 100%; min-height: 160px; padding: 10px; font: inherit; font-size: 0.9em; direction: ltr; }
-  .app.pm .top, .app.pm .notices, .app.pm .cols, .app.pm .foot, .app.pm .jump, .app.pm .first { display: none !important; }
+  .app.pm .top, .app.pm .notices, .app.pm .cols, .app.pm .foot, .app.pm .jump, .app.pm .first, .app.pm .einfach { display: none !important; }
 
   @media print {
     body { background: #fff; }
@@ -427,6 +436,7 @@
                 <label class="check"><input type="checkbox" id="mzG"><span data-t="cb.mzG"></span></label>
                 <label class="check cond-bh25"><input type="checkbox" id="bhSelbst"><span data-t="cb.bhSelbst"></span></label>
                 <label class="check"><input type="checkbox" id="wfbm"><span data-t="cb.wfbm"></span></label>
+                <label class="check cond-wfbm"><input type="checkbox" id="wfbmEssen"><span data-t="cb.wfbmEssen"></span></label>
               </div>
             </div>
           </fieldset>
@@ -521,6 +531,18 @@
                 <span class="hint" id="ek1NettoHint"></span>
               </div>
               <p class="warn" id="ek1Warn" role="status" hidden></p>
+              <div class="subbox cond-ek1b">
+                <div class="field">
+                  <label for="ek1bArt" data-t="ek.weiteres"></label>
+                  <select id="ek1bArt"></select>
+                  <span class="hint" data-t="ek.weiteres.hint"></span>
+                </div>
+                <div class="field cond-ek1bBetrag">
+                  <label for="ek1bBetrag" data-t="ek.weiteres.betrag"></label>
+                  <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="ek1bBetrag"><span aria-hidden="true">€</span></div>
+                </div>
+              </div>
+              <label class="check cond-rente"><input type="checkbox" id="grundrente33"><span data-t="cb.grundrente33"></span></label>
             </div>
             <div class="ekbox cond-adults2" id="ekbox2">
               <h3 data-t="ek.h2"></h3>

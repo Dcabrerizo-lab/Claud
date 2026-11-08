@@ -30,11 +30,12 @@ const APP = 'file://' + require('path').join(__dirname, '..', 'dist', 'leistungs
   await p.addStyleTag({ content: '.top{display:none!important}' }); // Kopfzeile nur für das Bild ausblenden
   await p.fill('#es-in', '1990'); await p.click('#es-weiter');
   await roh('4-einfach', async () => { await zu('.es-top', 16); });
-  for (const a of ['eltern', 'nein', 'werkstatt']) await p.click('[data-es="' + a + '"]');
+  for (const a of ['eltern', 'nein', 'werkstatt']) { await p.click('[data-es="' + a + '"]'); await p.waitForTimeout(450); }
   await p.fill('#es-in', '250'); await p.click('#es-weiter');
-  for (const a of ['ja', 'nein', 'ja', '80']) await p.click('[data-es="' + a + '"]');
+  for (const a of ['ja', 'unter20', 'nein', 'ja', '80']) { await p.click('[data-es="' + a + '"]'); await p.waitForTimeout(450); }
   await p.click('[data-mz="G"]'); await p.click('#es-weiter');
-  for (const a of ['ja', '2', 'wenig']) await p.click('[data-es="' + a + '"]');
+  for (const a of ['ja', '2']) { await p.click('[data-es="' + a + '"]'); await p.waitForTimeout(450); }
+  await p.click('#es-nichts'); await p.click('[data-es="wenig"]'); await p.waitForTimeout(450);
   await p.fill('#es-in', '93047'); await p.click('#es-weiter');
   await roh('5-einfach-ergebnis', async () => { await zu('#es-q', 16); });
   // In Store-Formate setzen

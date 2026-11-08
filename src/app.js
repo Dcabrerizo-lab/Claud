@@ -61,7 +61,7 @@
   function save() { clearTimeout(saveTimer); saveTimer = setTimeout(flush, 300); }
   function smooth() { return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'; }
   function blankState() {
-    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', kindEink: '', miete: '', mietstufe: '', plz: '', plzPick: '', bundesland: '', vermoegen: '', gebJahr: '', arbeitSit: '', algMonate: '', krankWochen: '', lohnVorher: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', bezug: {} };
+    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', kindEink: '', ek1bArt: '', ek1bBetrag: '', miete: '', mietstufe: '', plz: '', plzPick: '', bundesland: '', vermoegen: '', gebJahr: '', arbeitSit: '', algMonate: '', krankWochen: '', lohnVorher: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', bezug: {} };
   }
 
   function detect() {
@@ -142,6 +142,10 @@
     if (!state.bhPerson) reset(['mzG']);
     if (state.kids + state.young === 0) reset(['kindEink']);
     if (state.arbeitSit !== 'arbeitslos') reset(['algZeit', 'algMonate']);
+    if (state.adults !== 1 || !state.ek1Art || state.ek1Art === 'ohne') reset(['ek1bArt', 'ek1bBetrag']);
+    if (!state.ek1bArt) reset(['ek1bBetrag']);
+    if (!(state.ek1Art === 'rente' || state.ek2Art === 'rente' || state.ek1bArt === 'rente')) reset(['grundrente33']);
+    if (!(state.wfbm || state.ek1Art === 'wfbm' || state.ek1bArt === 'wfbm')) reset(['wfbmEssen']);
     if (state.arbeitSit !== 'krank') reset(['krankWochen']);
     if (!state.arbeitSit) reset(['lohnVorher']);
     if (state.ausbildung !== 'ich') reset(['babBetrieb', 'babWohnt']);
@@ -151,6 +155,10 @@
     show('.cond-em', state.emStd === 'unter3' || state.emStd === '3bis6');
     show('.cond-kinder', state.kids + state.young > 0);
     show('.cond-alos', state.arbeitSit === 'arbeitslos');
+    show('.cond-ek1b', state.adults === 1 && !!state.ek1Art && state.ek1Art !== 'ohne');
+    show('.cond-ek1bBetrag', !!state.ek1bArt);
+    show('.cond-rente', state.ek1Art === 'rente' || state.ek2Art === 'rente' || state.ek1bArt === 'rente');
+    show('.cond-wfbm', !!state.wfbm || state.ek1Art === 'wfbm' || state.ek1bArt === 'wfbm');
     show('.cond-krank', state.arbeitSit === 'krank');
     show('.cond-job', !!state.arbeitSit);
     show('.cond-ausbich', state.ausbildung === 'ich');
@@ -191,6 +199,12 @@
     state.nichtArbeit = p1.gesetzt && !p1.arbeit;
     state.nichtArbeit2 = p2.gesetzt && !p2.arbeit;
     state.art1 = p1.art; state.art2 = p2.art || '';
+    // Allein: ein zweites Einkommen derselben Person (z. B. Werkstattlohn und Rente) als Liste für die Regeln
+    var b2 = state.ek1bBetrag === '' || state.ek1bBetrag == null ? 0 : Number(state.ek1bBetrag);
+    if (state.adults === 1 && state.ek1bArt && b2 > 0 && p1.gesetzt) {
+      var mitN = p1.art === 'lohn' || p1.art === 'rente';
+      state.einkommen = [mitN ? { art: p1.art, b: p1.b === '' ? 0 : p1.b, n: p1.n === '' ? (p1.b === '' ? 0 : p1.b * 0.8) : p1.n } : { art: p1.art, b: p1.b === '' ? 0 : p1.b }, { art: state.ek1bArt, b: b2 }];
+    } else delete state.einkommen;
     state.ek1Geschaetzt = !!p1.geschaetzt; state.ek2Geschaetzt = !!p2.geschaetzt;
   }
   // Nur die Felder zeigen, die zur gewählten Art passen; Beschriftung je Art
@@ -293,6 +307,7 @@
     var ek = [['', t('ek.art.0')], ['lohn', t('ek.art.lohn')], ['rente', t('ek.art.rente')], ['alg', t('ek.art.alg')], ['kg', t('ek.art.kg')], ['eg', t('ek.art.eg')], ['wfbm', t('ek.art.wfbm')], ['ohne', t('ek.art.ohne')]];
     fillSelect('ek1Art', ek, state.ek1Art);
     fillSelect('ek2Art', ek, state.ek2Art);
+    fillSelect('ek1bArt', [['', t('ek.weiteres.0')]].concat(ek.slice(1).filter(function (x) { return x[0] !== 'ohne'; })), state.ek1bArt);
     fillSelect('mietstufe', st, state.mietstufe);
     fillSelect('bundesland', [['', t('bl.unbekannt')]].concat(BUNDESLAENDER), state.bundesland);
     fillSelect('arbeitSit', [['', t('arbeit.0')], ['arbeitslos', t('arbeit.arbeitslos')], ['krank', t('arbeit.krank')]], state.arbeitSit);
@@ -356,9 +371,9 @@
     pr.appendChild(b);
   });
 
-  var CHECKS = ['mzG', 'algZeit', 'kinder12', 'unterhaltFehlt', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt'];
-  var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'arbeitSit', 'algMonate', 'krankWochen', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd'];
-  var NUMS = ['miete', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'kindEink', 'lohnVorher', 'vermoegen'];
+  var CHECKS = ['mzG', 'algZeit', 'grundrente33', 'wfbmEssen', 'kinder12', 'unterhaltFehlt', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt'];
+  var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'ek1bArt', 'arbeitSit', 'algMonate', 'krankWochen', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd'];
+  var NUMS = ['miete', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'kindEink', 'lohnVorher', 'ek1bBetrag', 'vermoegen'];
   var BEZUG = ['grundsicherungsgeld', 'sozialamt', 'wohngeld', 'kiz', 'kindergeld'];
 
   function writeForm() {
@@ -704,7 +719,9 @@
     L.push('Name: ' + blank(person.name), 'Geburtsdatum: ' + blank(person.geb), 'Anschrift: ' + blank(person.strasse) + ', ' + blank(person.ort));
     if (person.tel && person.tel.trim()) L.push('Telefon: ' + person.tel.trim());
     L.push('', 'Haushalt: ' + haushaltZeile());
-    L.push('Warmmiete im Monat: ' + money(s.miete) + (s.mietstufe ? ' (Mietenstufe ' + Rules.roman(Number(s.mietstufe)) + ')' : ''));
+    if (s.wohnform === 'heim') L.push('Wohnkosten: laut Wohn- und Betreuungsvertrag des Wohnheims (Betrag liegt dem Vertrag bei)');
+    else if (s.wohnform === 'eltern' && !s.miete) L.push('Wohnt bei den Eltern, zahlt keine Miete');
+    else L.push('Warmmiete im Monat: ' + money(s.miete) + (s.mietstufe ? ' (Mietenstufe ' + Rules.roman(Number(s.mietstufe)) + ')' : ''));
     var ARTDE = { lohn: 'Lohn oder Gehalt', rente: 'Rente oder Pension', alg: 'Arbeitslosengeld I', kg: 'Krankengeld', eg: 'Elterngeld', wfbm: 'Lohn aus der Werkstatt für behinderte Menschen', ohne: 'kein Einkommen' };
     var ekZeile = function (i, wer) {
       var art = s['ek' + i + 'Art'];
@@ -1047,7 +1064,7 @@
   // Rechnet mit denselben Regeln (Rules.evaluate) wie die ausführliche Version: eine Person, eigener Bedarf.
   // =====================================================================
   var es = null, esModus = false;
-  function esLeer() { return { schritt: 0, geb: '', wohnen: '', mieteJa: '', miete: '', arbeit: '', lohn: '', essen: '', em: '', renteJa: '', rente: '', ausweis: '', gdb: '', mz: {}, kind: '', pflege: '', erspart: '', plz: '' }; }
+  function esLeer() { return { schritt: 0, geb: '', wohnen: '', mieteJa: '', miete: '', arbeit: '', lohn: '', essen: '', em: '', renteJa: '', rente: '', ausweis: '', gdb: '', mz: {}, kind: '', pflege: '', schon: {}, wfbmJahre: '', erspart: '', plz: '' }; }
   // Die Fragen. wenn(): nur zeigen, wenn die Frage passt. art: wahl (Knöpfe), zahl (Eingabe), mz (Buchstaben im Ausweis)
   var ES_FRAGEN = [
     { id: 'geb', art: 'zahl', max: 4, key: 'es.q.geb', hilfe: 'es.h.geb' },
@@ -1057,6 +1074,7 @@
     { id: 'arbeit', art: 'wahl', key: 'es.q.arbeit', wahl: [['werkstatt', '🛠️', 'es.a.werkstatt'], ['job', '💼', 'es.a.job'], ['nein', '✋', 'es.a.keineArbeit']] },
     { id: 'lohn', art: 'zahl', key: 'es.q.lohn', hilfe: 'es.h.lohn', wenn: function () { return es.arbeit === 'werkstatt' || es.arbeit === 'job'; } },
     { id: 'essen', art: 'wahl', key: 'es.q.essen', wenn: function () { return es.arbeit === 'werkstatt'; }, wahl: [['ja', '🍽️', 'es.a.ja'], ['nein', '❌', 'es.a.nein']] },
+    { id: 'wfbmJahre', art: 'wahl', key: 'es.q.wfbmJahre', wenn: function () { return es.arbeit === 'werkstatt'; }, wahl: [['unter20', '⏳', 'es.a.unter20'], ['20', '🏅', 'es.a.ab20'], ['33', '🏆', 'es.a.ab33'], ['weiss', '❓', 'es.a.weissNicht']] },
     { id: 'em', art: 'wahl', key: 'es.q.em', hilfe: 'es.h.em', wenn: function () { return es.arbeit !== 'werkstatt' && !esRentenalter(); }, wahl: [['ja', '✅', 'es.a.emJa'], ['nein', '❌', 'es.a.emNein'], ['weiss', '❓', 'es.a.weissNicht']] },
     { id: 'renteJa', art: 'wahl', key: 'es.q.rente', wahl: [['ja', '✅', 'es.a.ja'], ['nein', '❌', 'es.a.nein']] },
     { id: 'rente', art: 'zahl', key: 'es.q.renteBetrag', hilfe: 'es.h.rente', wenn: function () { return es.renteJa === 'ja'; } },
@@ -1065,10 +1083,12 @@
     { id: 'mz', art: 'mz', key: 'es.q.mz', hilfe: 'es.h.mz', wenn: function () { return es.ausweis === 'ja'; } },
     { id: 'kind', art: 'wahl', key: 'es.q.kind', hilfe: 'es.h.kind', wenn: function () { return es.ausweis === 'ja' || es.ausweis === 'antrag' || es.arbeit === 'werkstatt'; }, wahl: [['ja', '✅', 'es.a.ja'], ['nein', '❌', 'es.a.nein'], ['weiss', '❓', 'es.a.weissNicht']] },
     { id: 'pflege', art: 'wahl', key: 'es.q.pflege', wahl: [['nein', '❌', 'es.a.nein'], ['1', '', '1'], ['2', '', '2'], ['3', '', '3'], ['4', '', '4'], ['5', '', '5'], ['antrag', '📨', 'es.a.pflegeAntrag']] },
+    { id: 'schon', art: 'schon', key: 'es.q.schon', hilfe: 'es.h.schon' },
     { id: 'erspart', art: 'wahl', key: 'es.q.erspart', wahl: [['wenig', '👍', 'es.a.wenig'], ['viel', '💰', 'es.a.viel'], ['weiss', '❓', 'es.a.weissNicht']] },
     { id: 'plz', art: 'zahl', max: 5, key: 'es.q.plz', hilfe: 'es.h.plz', optional: true }
   ];
   var MZ = ['G', 'aG', 'B', 'H', 'RF', 'Bl', 'Gl', 'TBl'];
+  var SCHON = [['gsa', '💶'], ['eingl', '🧩'], ['kg', '👪']];
   function esRentenalter() { var j = Number(es.geb); return j > 1900 && Rules.evaluate({ gebJahr: j }).h.alter; }
   function esAktiv() { return ES_FRAGEN.filter(function (f) { return !f.wenn || f.wenn(); }); }
 
@@ -1091,7 +1111,14 @@
       gdb: gdb, mzG: !!(es.mz.G || es.mz.aG), mz: es.mz, blind: es.mz.Bl ? 'blind' : '',
       pflegegrad: es.pflege === 'nein' ? '' : es.pflege,
       vermoegen: es.erspart === 'wenig' ? 0 : es.erspart === 'viel' ? 20000 : '',
-      plz: es.plz, mietstufe: '', bezug: {}
+      plz: es.plz, mietstufe: '', wfbmJahre: es.wfbmJahre === '33' ? 33 : es.wfbmJahre === '20' ? 20 : 0,
+      // 33 Jahre Werkstatt sind 33 Jahre Pflichtbeiträge, also Grundrentenzeiten (§ 82a SGB XII)
+      grundrente33: es.wfbmJahre === '33',
+      // Kindergeld bei Behinderung: eigenes Einkommen klar über Grundfreibetrag plus Pauschbetrag -> kann sich selbst unterhalten
+      bhEinkHoch: es.kind === 'ja' && ein.reduce(function (a, x) { return a + x.b; }, 0) * 12 >= Rules.RULES.beh.grundfreibetrag + (Rules.RULES.beh.pausch[gdb] || 0),
+      // Schon vorhanden: Grundsicherung vom Sozialamt, Eingliederungshilfe, Kindergeld (bei den Eltern);
+      // Rente vor dem Rentenalter ist meist schon die Erwerbsminderungsrente
+      bezug: { sozialamt: !!(es.schon && es.schon.gsa), eingl: !!(es.schon && es.schon.eingl), kindergeld: !!(es.schon && es.schon.kg), emrente: es.renteJa === 'ja' && !esRentenalter() }
     };
     var r = es.plz && Plz.lookup ? Plz.lookup(es.plz) : null;
     if (r && r.stufe) inp.mietstufe = String(r.stufe);
@@ -1114,13 +1141,14 @@
 
   function esRender() {
     var box = $('einfach');
-    if (!esModus) { box.hidden = true; $('cols').hidden = false; $('notices').hidden = false; $('jump').hidden = false; return; }
+    if (!esModus) { box.hidden = true; $('cols').hidden = false; $('notices').hidden = false; $('jump').hidden = false; $('app').classList.remove('es-an'); return; }
     box.hidden = false; $('cols').hidden = true; $('notices').hidden = true; $('jump').hidden = true;
+    $('app').classList.add('es-an');
     var fr = esAktiv();
     if (es.schritt >= fr.length) { esErgebnis(fr); return; }
     var f = fr[es.schritt];
     var vorlesen = t(f.key) + (f.hilfe ? ' ' + t(f.hilfe) : '');
-    var h = '<div class="es-top"><span class="es-prog">' + esc(t('es.frage', { n: es.schritt + 1, m: fr.length })) + '</span>' +
+    var h = '<div class="es-top"><span class="es-prog">' + esc(t('es.frage', { n: es.schritt + 1 })) + '</span>' +
       '<div class="es-bar" aria-hidden="true"><span style="width:' + Math.round(100 * es.schritt / fr.length) + '%"></span></div></div>' +
       '<h2 class="es-q" id="es-q" tabindex="-1">' + esc(t(f.key)) + '</h2>' +
       (f.hilfe ? '<p class="es-h">' + esc(t(f.hilfe)) + '</p>' : '') +
@@ -1135,16 +1163,33 @@
         '<p class="warn" id="es-warn" hidden></p>' +
         '<div class="es-nav1"><button type="button" class="es-btn es-weiter" id="es-weiter">' + esc(t('es.weiter')) + ' ➜</button>' +
         (f.id !== 'geb' ? '<button type="button" class="es-btn es-skip" id="es-skip">' + esc(t(f.optional ? 'es.ueberspringen' : 'es.weissNicht')) + '</button>' : '') + '</div>';
+    } else if (f.art === 'schon') {
+      es.schon = es.schon || {};
+      h += '<div class="es-wahl" role="group" aria-labelledby="es-q">' + SCHON.map(function (x) {
+        return '<button type="button" class="es-btn' + (es.schon[x[0]] ? ' an' : '') + '" data-schon="' + x[0] + '" aria-pressed="' + (es.schon[x[0]] ? 'true' : 'false') + '"><span class="es-ico" aria-hidden="true">' + x[1] + '</span><span>' + esc(t('es.schon.' + x[0])) + '</span></button>';
+      }).join('') + '</div><div class="es-nav1"><button type="button" class="es-btn es-weiter" id="es-weiter">' + esc(t('es.weiter')) + ' ➜</button>' +
+        '<button type="button" class="es-btn es-skip" id="es-nichts">' + esc(t('es.schon.nichts')) + '</button></div>';
     } else if (f.art === 'mz') {
       h += '<div class="es-wahl es-klein" role="group" aria-labelledby="es-q">' + MZ.map(function (m) {
         return '<button type="button" class="es-btn' + (es.mz[m] ? ' an' : '') + '" data-mz="' + m + '" aria-pressed="' + (es.mz[m] ? 'true' : 'false') + '"><span class="es-mz">' + m + '</span><span class="es-mzt">' + esc(t('es.mz.' + m)) + '</span></button>';
-      }).join('') + '</div><div class="es-nav1"><button type="button" class="es-btn es-weiter" id="es-weiter">' + esc(t('es.weiter')) + ' ➜</button></div>';
+      }).join('') + '</div><div class="es-nav1"><button type="button" class="es-btn es-weiter" id="es-weiter">' + esc(t('es.weiter')) + ' ➜</button>' +
+        '<button type="button" class="es-btn es-skip" id="es-keine">' + esc(t('es.mz.keine')) + '</button></div>';
     }
     h += '<div class="es-nav">' + (es.schritt > 0 ? '<button type="button" class="chip" id="es-zurueck">← ' + esc(t('es.zurueck')) + '</button>' : '') +
       '<button type="button" class="chip" id="es-raus">' + esc(t('es.ausfuehrlich')) + '</button></div>';
     box.innerHTML = h;
     var weiter = function () { es.schritt++; esSpeichern(); esRender(); var q = $('es-q'); if (q) q.focus(); };
-    box.querySelectorAll('[data-es]').forEach(function (b) { b.addEventListener('click', function () { es[f.id] = b.getAttribute('data-es'); weiter(); }); });
+    var weg = false;
+    box.querySelectorAll('[data-es]').forEach(function (b) { b.addEventListener('click', function () {
+      if (weg) return; weg = true;
+      es[f.id] = b.getAttribute('data-es');
+      box.querySelectorAll('[data-es]').forEach(function (x) { x.classList.toggle('an', x === b); });
+      b.insertAdjacentHTML('beforeend', '<span class="es-ok" aria-hidden="true">✓</span>');
+      setTimeout(weiter, 350);
+    }); });
+    if ($('es-keine')) $('es-keine').addEventListener('click', function () { es.mz = {}; weiter(); });
+    if ($('es-nichts')) $('es-nichts').addEventListener('click', function () { es.schon = {}; weiter(); });
+    box.querySelectorAll('[data-schon]').forEach(function (b) { b.addEventListener('click', function () { var k = b.getAttribute('data-schon'); es.schon[k] = !es.schon[k]; b.classList.toggle('an', es.schon[k]); b.setAttribute('aria-pressed', String(es.schon[k])); esSpeichern(); }); });
     box.querySelectorAll('[data-mz]').forEach(function (b) { b.addEventListener('click', function () { var m = b.getAttribute('data-mz'); es.mz[m] = !es.mz[m]; b.classList.toggle('an', es.mz[m]); b.setAttribute('aria-pressed', String(es.mz[m])); esSpeichern(); }); });
     if ($('es-in')) {
       var inp = $('es-in');
@@ -1156,12 +1201,26 @@
       var ok = function () {
         var v = pruef();
         if (v === null) { $('es-warn').textContent = t(f.id === 'geb' ? 'warn.geb' : f.id === 'plz' ? 'es.warn.plz' : 'warn.zahl'); $('es-warn').hidden = false; inp.focus(); return; }
+        // Ungewöhnlich hoch (z. B. 810 statt 180): einmal nachfragen, beim zweiten Tippen auf Weiter gilt die Zahl
+        var grenze = { lohn: es.arbeit === 'werkstatt' ? 450 : 6000, rente: 3000, miete: 2000 }[f.id];
+        var unten = { lohn: 20, rente: 30, miete: 50 }[f.id];
+        var komisch = (grenze && v > grenze) || (unten && v > 0 && v < unten);
+        if (komisch && inp.getAttribute('data-ok') !== String(v)) {
+          inp.setAttribute('data-ok', String(v));
+          $('es-warn').textContent = t(v > grenze ? 'es.warn.hoch' : 'es.warn.niedrig', { v: money(v) }); $('es-warn').hidden = false; inp.focus(); return;
+        }
         es[f.id] = f.id === 'geb' || f.id === 'plz' ? v : String(v); weiter();
       };
       $('es-weiter').addEventListener('click', ok);
       inp.addEventListener('keydown', function (ev) { if (ev.key === 'Enter') ok(); });
       if ($('es-skip')) $('es-skip').addEventListener('click', function () { es[f.id] = ''; weiter(); });
-    } else if ($('es-weiter')) $('es-weiter').addEventListener('click', weiter);
+    } else if ($('es-weiter')) $('es-weiter').addEventListener('click', function () {
+      var leer = function (o) { return !o || !Object.keys(o).some(function (k) { return o[k]; }); };
+      if (f.art === 'mz' && leer(es.mz) && !box.querySelector('.es-frag')) {
+        box.querySelector('.es-nav1').insertAdjacentHTML('beforebegin', '<p class="warn es-frag" role="status">' + esc(t('es.warn.keineMz')) + '</p>'); return;
+      }
+      weiter();
+    });
     if ($('es-vor')) $('es-vor').addEventListener('click', function () { esSprich(vorlesen); });
     if ($('es-zurueck')) $('es-zurueck').addEventListener('click', function () { es.schritt = Math.max(0, es.schritt - 1); esSpeichern(); esRender(); });
     $('es-raus').addEventListener('click', function () { esUmschalten(false); });
@@ -1187,7 +1246,9 @@
       return f ? '<p class="es-geld">' + esc(t('es.betrag', { a: f[1].geld || f[1].betrag || f[1].kg })) + '</p>' : '';
     };
     var stelle = function (x) {
-      var b = Behoerden.fuer ? Behoerden.fuer(x.id, aktAgsEs()) : null;
+      // Wohnheim mit Eingliederungshilfe: In Bayern zahlt der Bezirk auch die Grundsicherung (Leistungen aus einer Hand)
+      var bid = x.id === 'gsa' && es.wohnen === 'heim' && esLand() === 'BY' ? 'eingl' : x.id;
+      var b = Behoerden.fuer ? Behoerden.fuer(bid, aktAgsEs()) : null;
       var name = b ? b.name : t('zu.' + x.id);
       return '<p class="es-wo"><strong>' + esc(t('es.wo')) + '</strong> ' + esc(name) + (b && b.anschrift ? '<br><span lang="de">' + esc(b.anschrift.join(', ')) + '</span>' : '') + '</p>';
     };
@@ -1196,23 +1257,43 @@
       return '<article class="es-karte ' + x.level + '"><h3><span aria-hidden="true">' + (ES_ICON[x.id] || '•') + '</span> ' + esc(t('es.n.' + x.id)) + '</h3>' +
         '<p class="es-lvl">' + esc(t(x.level === 'ja' ? 'es.gut' : 'es.vielleicht')) + '</p><p>' + esc(txt) + '</p>' + betrag(x) + stelle(x) + '</article>';
     };
+    // Tipps: was die Antworten außerdem bedeuten (Wertmarke, Begleitperson, Eltern, Wohnkosten, Mittagessen)
+    var g = function (id) { return out.results.filter(function (x) { return x.id === id; })[0]; };
+    var hat = function (id, key) { var x = g(id); return x && x.tx.some(function (y) { return y[0] === key; }); };
+    var mz = es.mz || {}, tipps = [];
+    var gsaDa = (g('gsa') && (g('gsa').level === 'ja' || g('gsa').level === 'na')) || (es.schon && es.schon.gsa);
+    if (mz.H || mz.Bl || mz.TBl) tipps.push(t('es.tipp.wertmarkeFrei'));
+    else if (mz.G || mz.aG || mz.Gl) tipps.push(t(gsaDa ? 'es.tipp.wertmarkeGsa' : 'es.tipp.wertmarke'));
+    if (mz.B) tipps.push(t('es.tipp.b'));
+    if (mz.RF) tipps.push(t('es.tipp.rf'));
+    if (hat('gsa', 'gsa.eltern')) tipps.push(t('es.tipp.eltern'));
+    if (hat('gsa', 'gsa.heim')) tipps.push(t('es.tipp.heim'));
+    if (hat('gsa', 'gsa.essen')) tipps.push(t('es.tipp.essen'));
+    if (es.kind === 'ja' && es.ausweis === 'ja') tipps.push(t(mz.H || mz.Bl || mz.TBl ? 'es.tipp.pauschElternH' : 'es.tipp.pauschEltern'));
+    if (es.wohnen === 'eltern' && (['2', '3', '4', '5'].indexOf(es.pflege) >= 0 || mz.H)) tipps.push(t('es.tipp.pflegePausch'));
+    if ((out.zusammen || []).some(function (z) { return z[0] === 'z.gsaWg'; })) tipps.unshift(t('es.tipp.wgOderGsa'));
+    if (hat('gsa', 'gsa.grundrente') && es.renteJa === 'ja') tipps.push(t('es.tipp.grundrente'));
+    if (gut.some(function (x) { return x.id === 'kgBeh'; })) tipps.push(t(es.wohnen === 'eltern' ? 'es.tipp.kgEltern' : 'es.tipp.kgAbzweig'));
     var h = '<h2 class="es-q" id="es-q" tabindex="-1">' + esc(t(gut.length ? 'es.erg.h' : 'es.erg.keine')) + '</h2>' +
+      (window.speechSynthesis ? '<button type="button" class="es-vor" id="es-vor">🔊 ' + esc(t('es.vorlesen')) + '</button>' : '') +
       '<p class="es-h">' + esc(t('es.erg.hinweis')) + '</p>' + gut.map(karte).join('') +
+      (tipps.length ? '<div class="es-tipps"><h3 class="es-sub">💡 ' + esc(t('es.erg.tipps')) + '</h3><ul>' + tipps.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div>' : '') +
       (schon.length ? '<h3 class="es-sub">' + esc(t('es.erg.schon')) + '</h3><ul class="es-liste">' + schon.map(function (x) { return '<li>' + (ES_ICON[x.id] || '•') + ' ' + esc(t('es.n.' + x.id)) + '</li>'; }).join('') + '</ul>' : '') +
       '<div class="es-nav1">' +
       '<button type="button" class="es-btn es-weiter" id="es-mappe">✉️ ' + esc(t('es.briefe')) + '</button>' +
-      '<button type="button" class="es-btn" id="es-teilen">📤 ' + esc(t('es.teilen')) + '</button>' +
-      (window.speechSynthesis ? '<button type="button" class="es-btn" id="es-vor">🔊 ' + esc(t('es.vorlesen')) + '</button>' : '') + '</div>' +
-      '<p class="msg" id="es-msg" role="status"></p>' +
+      '<button type="button" class="es-btn" id="es-teilen">📤 ' + esc(t('es.teilen')) + '</button></div>' +
+      '<p class="msg" id="es-msg" role="status"></p><textarea class="es-text" id="es-text" hidden readonly></textarea>' +
       '<div class="es-nav"><button type="button" class="chip" id="es-zurueck">← ' + esc(t('es.zurueck')) + '</button>' +
       '<button type="button" class="chip" id="es-neu">' + esc(t('es.neu')) + '</button>' +
       '<button type="button" class="chip" id="es-raus">' + esc(t('es.ausfuehrlich')) + '</button></div>';
     $('einfach').innerHTML = h;
+    // Text zum Teilen und Vorlesen: Leistung, Einschätzung, Betrag, zuständige Stelle, Tipps, Hinweis „Schätzung“
     var text = function () {
-      return [t(gut.length ? 'es.erg.h' : 'es.erg.keine')].concat(gut.map(function (x) {
-        var s = x.tx.filter(function (y) { return /^schaetz\./.test(y[0]); })[0];
-        return '- ' + t('es.n.' + x.id) + ': ' + t(x.level === 'ja' ? 'es.gut' : 'es.vielleicht') + (s ? ' ' + t('t.' + s[0], s[1]) : '');
-      })).join('\n');
+      var div = document.createElement('div');
+      return ['Leistungs-Lotse: ' + t(gut.length ? 'es.erg.h' : 'es.erg.keine'), ''].concat(gut.map(function (x) {
+        div.innerHTML = betrag(x) + stelle(x);
+        return '- ' + t('es.n.' + x.id) + ': ' + t(x.level === 'ja' ? 'es.gut' : 'es.vielleicht') + (div.textContent ? ' ' + div.textContent.replace(/\s+/g, ' ').trim() : '');
+      }), tipps.length ? ['', t('es.erg.tipps') + ':'].concat(tipps.map(function (x) { return '- ' + x; })) : [], ['', t('es.erg.hinweis')]).join('\n');
     };
     $('es-zurueck').addEventListener('click', function () { es.schritt = fr.length - 1; esSpeichern(); esRender(); });
     $('es-neu').addEventListener('click', function () { es = esLeer(); esSpeichern(); esRender(); });
@@ -1222,7 +1303,11 @@
       var sh = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Share;
       if (sh) sh.share({ title: 'Leistungs-Lotse', text: text() }).catch(function () {});
       else if (navigator.share) navigator.share({ title: 'Leistungs-Lotse', text: text() }).catch(function () {});
-      else { copyText(text()); $('es-msg').textContent = t('f.copied'); }
+      else copyText(text(), function (ok) {
+        // Nur bei Erfolg „kopiert“ melden; sonst den Text zum Markieren zeigen
+        $('es-msg').textContent = t(ok ? 'es.kopiert' : 'f.copyFail');
+        $('es-text').hidden = ok; if (!ok) { $('es-text').value = text(); $('es-text').focus(); $('es-text').select(); }
+      });
     });
     $('es-mappe').addEventListener('click', function () {
       // Antragsmappe mit den Antworten der einfachen Version; die Angaben der ausführlichen Version bleiben unverändert
@@ -1233,11 +1318,17 @@
       gut.forEach(function (x) { if (ANTRAG[x.id]) pickedUser[x.id] = x.level === 'ja'; });
       lastOut = out; renderPick(out.results);
       openMappe();
+      var hm = $('h-mappe'); if (hm) { hm.setAttribute('tabindex', '-1'); hm.focus({ preventScroll: true }); }
     });
   }
   var lastEs = null, esAltState = null;
   function aktAgsEs() { var r = es.plz && Plz.lookup ? Plz.lookup(es.plz) : null; return r && r.ags ? r.ags : null; }
-  function copyText(s) { try { navigator.clipboard.writeText(s); } catch (e) {} }
+  function copyText(s, fertig) {
+    var fallback = function () { var ok = false; try { var ta = document.createElement('textarea'); ta.value = s; document.body.appendChild(ta); ta.select(); ok = document.execCommand && document.execCommand('copy'); ta.remove(); } catch (e) {} fertig && fertig(!!ok); };
+    try { if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(s).then(function () { fertig && fertig(true); }, fallback); return; } } catch (e) {}
+    fallback();
+  }
+  function esLand() { var r = es.plz && Plz.lookup ? Plz.lookup(es.plz) : null; return r && r.bl ? r.bl : ''; }
 
   function esUmschalten(an) {
     esModus = an;
