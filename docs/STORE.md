@@ -22,10 +22,10 @@ Alles muss zur [Datenschutzerklärung](../datenschutz.html) passen. Bei Änderun
 
 ## Beschreibung (Play und iOS)
 
-> Steht dir Wohngeld zu? Kinderzuschlag? Grundsicherung? Der Leistungs-Lotse prüft in zwei Minuten 23 Sozialleistungen und zeigt dir, was wahrscheinlich, möglich oder unwahrscheinlich ist, mit den nächsten Schritten, der zuständigen Stelle und den nötigen Unterlagen.
+> Steht dir Wohngeld zu? Kinderzuschlag? Grundsicherung? Der Leistungs-Lotse prüft in zwei Minuten 27 Sozialleistungen und Vergünstigungen und zeigt dir, was wahrscheinlich, möglich oder unwahrscheinlich ist, mit den nächsten Schritten, der zuständigen Stelle und den nötigen Unterlagen.
 >
 > **Was die App prüft**
-> Kindergeld, Wohngeld, Kinderzuschlag, Grundsicherungsgeld, Arbeitslosengeld I, Krankengeld, Bildung und Teilhabe, Unterhaltsvorschuss, Grundsicherung im Alter und bei Erwerbsminderung, BAföG, Berufsausbildungsbeihilfe, Pflegegeld, Entlastungsbetrag, Verhinderungspflege und Pflegehilfsmittel, Leistungen bei Behinderung (Pauschbetrag, Schwerbehindertenausweis, Eingliederungshilfe, Budget für Arbeit, Erwerbsminderungsrente), Blindengeld (Bayern), Wohnberechtigungsschein (Bayern), Befreiung vom Rundfunkbeitrag und von Zuzahlungen.
+> Kindergeld, Elterngeld, Wohngeld, Kinderzuschlag, Grundsicherungsgeld, Arbeitslosengeld I, Krankengeld, Bildung und Teilhabe, Unterhaltsvorschuss, Grundsicherung im Alter und bei Erwerbsminderung, BAföG, Berufsausbildungsbeihilfe, Pflegegeld, Entlastungsbetrag, Verhinderungspflege und Pflegehilfsmittel, Hilfe zur Pflege, Leistungen bei Behinderung (Pauschbetrag, Schwerbehindertenausweis, Eingliederungshilfe, Budget für Arbeit, Erwerbsminderungsrente, Altersrente für schwerbehinderte Menschen), Blindengeld (Bayern), Wohnberechtigungsschein (Bayern), Befreiung vom Rundfunkbeitrag und von Zuzahlungen, Leistungen nach dem Asylbewerberleistungsgesetz.
 >
 > **Auch in einfacher Sprache**
 > Für Menschen mit Lernschwierigkeiten, zum Beispiel in einer Werkstatt: eine Frage pro Bildschirm, große Knöpfe, Vorlesen. Das Ergebnis zeigt, was du bekommen kannst, wie viel ungefähr und wo du hingehst.
@@ -72,7 +72,7 @@ Fertige Bilder (7 Motive in allen drei Formaten, Werbegrafik, Symbol 512 × 512)
 Ursprünglicher Vorschlag für die Motive:
 
 1. Fragebogen mit Beispiel: „In zwei Minuten zum Überblick“
-2. Ergebnis mit grünen Karten: „21 Leistungen geprüft“
+2. Ergebnis mit grünen Karten: „27 Leistungen geprüft“
 3. Karte aufgeklappt (Wo beantragen, Unterlagen): „Nächste Schritte und Unterlagen“
 4. Antragsmappe: „Formlose Anträge als PDF“
 5. Sprache Arabisch oder Türkisch: „In 8 Sprachen“
