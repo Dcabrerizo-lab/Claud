@@ -427,7 +427,7 @@
   "t.rundfunk.nein": "Według Twoich danych zwolnienie nie przysługuje. Przysługuje głównie przy pobieraniu określonych świadczeń socjalnych.",
   "t.zuzahl.keine": "Nie podano niepełnosprawności ani potrzeby opieki.",
   "t.zuzahl.grenze": "Przy dopłatach do leków, środków pomocniczych i leczenia obowiązuje granica obciążenia 2 % rocznych przychodów brutto na utrzymanie. Po jej osiągnięciu Krankenkasse wystawia zwolnienie do końca roku. Dla członków rodziny w gospodarstwie przewidziano kwoty wolne.",
-  "t.zuzahl.chron": "U osób poważnie przewlekle chorych granica wynosi 1 %. Należy do nich na przykład osoba z GdB co najmniej 60, która jest stale leczona. Decyduje Krankenkasse.",
+  "t.zuzahl.chron": "U osób poważnie przewlekle chorych granica wynosi 1 %. Należy do nich na przykład osoba z GdB co najmniej 60, która jest stale leczona. Decyduje Krankenkasse. Liczy się też Pflegegrad 3 do 5.",
   "t.bab.keine": "Zasiłek na naukę zawodu jest dla uczniów w uznanym zawodzie. Brakuje pasujących danych.",
   "t.bab.wohnen": "Zasiłek przysługuje, jeśli z powodu nauki nie możesz mieszkać z rodzicami. Od 18. roku życia, w małżeństwie lub przy własnym dziecku ten warunek nie obowiązuje.",
   "t.bab.ja": "Możliwe. Wysokość zależy od Twojego dochodu oraz dochodu rodziców lub partnera. Ich dochód liczy się tylko powyżej kwot wolnych. Kalkulator BAB Federalnej Agencji Pracy pokaże kwotę. Z reguły musi to być Twoja pierwsza nauka zawodu.",
@@ -735,5 +735,9 @@
   "es.tipp.wgOderGsa": "Wohngeld i Grundsicherung nie można łączyć. Zapytaj w Sozialamt, co jest dla ciebie lepsze. Przy Grundsicherung autobus i pociąg (z G) oraz abonament RTV są często bezpłatne.",
   "es.tipp.grundrente": "Kto ma 33 lata składek (także lata w warsztacie), temu część renty pozostaje wolna, do 281,50 €. Jest to w decyzji o rencie.",
   "t.gsa.grundrente": "Kto ma co najmniej 33 lata okresów do Grundrente (praca, także w warsztacie, wychowanie dzieci, opieka), temu część renty pozostaje wolna: 100 € i 30 % reszty, maksymalnie 281,50 € (§ 82a SGB XII). Wtedy Grundsicherung może przysługiwać mimo wyższej renty.",
-  "t.kgBeh.hoch": "Własny dochód jest wyraźnie wyższy niż kwota wolna ({gfb} rocznie) i ryczałt. Wtedy osoba zwykle może się sama utrzymać, Kindergeld raczej nie przysługuje."
+  "t.kgBeh.hoch": "Własny dochód jest wyraźnie wyższy niż kwota wolna ({gfb} rocznie) i ryczałt. Wtedy osoba zwykle może się sama utrzymać, Kindergeld raczej nie przysługuje.",
+  "t.ggeld.gemischt": "Jeśli jedna osoba jest w wieku emerytalnym lub całkowicie niezdolna do pracy, właściwy dla niej jest Sozialamt. Jeśli druga osoba może pracować, należy z dziećmi do Jobcenter (mieszane gospodarstwo). Zleć sprawdzenie obu.",
+  "t.krank.minijob": "Minijob (do 603 € miesięcznie) nie daje ubezpieczenia zdrowotnego z pracy. Nie ma z niego Krankengeld.",
+  "t.alg1.minijob": "Minijob (do 603 € miesięcznie) nie jest objęty ubezpieczeniem na wypadek bezrobocia i nie liczy się do zasiłku. Liczyć się mogą wcześniejsze prace z wyższym wynagrodzeniem.",
+  "alt.hinweis": "Uwaga: Zasady w tej wersji są według stanu na {stand}. Od 1 stycznia kwoty mogły się zmienić. Zaktualizuj aplikację."
 }

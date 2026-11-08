@@ -8,6 +8,8 @@ const Rules = (function () {
   // ---------------------------------------------------------------
   const R = {
     stand: 'November 2026',
+    // Ab diesem Tag können sich Beträge geändert haben (Regelsätze, Kindergeld, Wohngeld jeweils zum 1. Januar): Die App zeigt dann einen Hinweis
+    pruefenAb: '2027-01-01',
     // RBSFV 2026, Anlage zu § 28 SGB XII: Stufe 1 563, Stufe 2 506, Stufe 3 451, Stufe 4 (14-17) 471, Stufe 5 (6-13) 390, Stufe 6 (0-5) 357
     regelbedarf: { alleinstehend: 563, partner: 506, kind0: 357, kind: 390, kind14: 471, jungErwachsener: 451 },
     kindergeld: 259,
@@ -211,7 +213,7 @@ const Rules = (function () {
       egFreiWG: sumIf((a, b) => a === 'eg' ? Math.min(R.elterngeldFrei, b) : 0),
       egFreiSGB: sumIf((a, b) => a === 'eg' && b > R.elterngeldFrei ? R.elterngeldFrei : 0),
       vPausch: sumIf((a, b) => a !== 'lohn' && a !== 'ohne' && b > 0 ? R.versPauschale : 0),
-      mzG: !!inp.mzG, mzRF: !!(inp.mz && inp.mz.RF), wfbmJahre: num(inp.wfbmJahre), grundrente33: !!inp.grundrente33, bhEinkHoch: !!inp.bhEinkHoch,
+      mzG: !!inp.mzG, mzRF: !!(inp.mz && inp.mz.RF), mzAG: !!(inp.mz && inp.mz.aG), wfbmJahre: num(inp.wfbmJahre), grundrente33: !!inp.grundrente33, bhEinkHoch: !!inp.bhEinkHoch,
       wohnform: inp.wohnform === 'eltern' || inp.wohnform === 'heim' ? inp.wohnform : '', wfbmEssen: !!inp.wfbmEssen,
       mieteGegeben: !blank(inp.miete) && num(inp.miete) > 0,
       arbeitSit: inp.arbeitSit === 'arbeitslos' || inp.arbeitSit === 'krank' ? inp.arbeitSit : '',
@@ -406,7 +408,12 @@ const Rules = (function () {
 
   function grundsicherungsgeld(h) {
     const id = 'ggeld';
-    if (h.alter || h.erwerbsgemindert) return mk(id, 'nein', 'andereStelle', [['ggeld.sozialamtZustaendig']]);
+    // Paar mit Kindern, eine Person im Rentenalter oder voll erwerbsgemindert: Die andere Person kann erwerbsfähig sein und gehört
+    // dann mit den Kindern zum Jobcenter (gemischte Bedarfsgemeinschaft, § 7 Abs. 2 und 3 SGB II); ohne Kinder nur als Hinweis
+    if (h.alter || h.erwerbsgemindert) {
+      if (h.adults === 2 && h.children > 0 && !h.bezug.grundsicherungsgeld) return mk(id, 'vielleicht', 'vielleicht', [['ggeld.gemischt']]);
+      return mk(id, 'nein', 'andereStelle', [['ggeld.sozialamtZustaendig']].concat(h.adults === 2 ? [['ggeld.gemischt']] : []));
+    }
     if (h.bezug.grundsicherungsgeld) return mk(id, 'na', 'na', [['ggeld.na']]);
     if (h.bezug.sozialamt) return mk(id, 'nein', 'ausschluss', [['ggeld.sozialamt']]);
     // § 7 Abs. 5 SGB II: Schule/Studium, die nach BAföG förderfähig sind, schließen Grundsicherungsgeld in der Regel aus
@@ -604,6 +611,8 @@ const Rules = (function () {
     if (h.arbeitSit !== 'arbeitslos') return mk(id, 'nein', 'vorausFehlt', [['alg1.keine']]);
     if (h.alter) return mk(id, 'nein', 'vorausFehlt', [['alg1.alter']]);
     if (!h.algZeit) return mk(id, 'vielleicht', 'vielleicht', [['alg1.zeit'], melden]);
+    // Minijob ist arbeitslosenversicherungsfrei (§ 27 Abs. 2 SGB III): zählt nicht für den Anspruch
+    if (h.lohnVorher > 0 && h.lohnVorher <= R.minijob) return mk(id, 'vielleicht', 'vielleicht', [['alg1.minijob'], melden]);
     const p = h.children > 0 ? R.alg.satzKind : R.alg.satz;
     const tx = [['alg1.ja', { p: Math.round(p * 100) }]];
     if (h.algMonate) {
@@ -625,6 +634,8 @@ const Rules = (function () {
     if (h.art1 === 'kg' || (h.adults === 2 && h.art2 === 'kg')) return mk(id, 'na', 'na', [['krank.na'], ['krank.78']]);
     if (h.arbeitSit !== 'krank') return mk(id, 'nein', 'vorausFehlt', [['krank.keine']]);
     if (h.krankWochen === 'ende') return mk(id, 'nein', 'vorausFehlt', [['krank.ende']]);
+    // Minijob (bis 603 €): nicht krankenversichert über die Arbeit, daher kein Krankengeld (§ 7 SGB V, § 44 SGB V)
+    if (h.lohnVorher > 0 && h.lohnVorher <= R.minijob) return mk(id, 'nein', 'vorausFehlt', [['krank.minijob']]);
     const tx = [[h.krankWochen === 'unter6' ? 'krank.lfz' : 'krank.ja']];
     if (h.lohnVorher > 0) {
       const b = Math.min(h.lohnVorher, R.krank.bbg);
@@ -656,7 +667,7 @@ const Rules = (function () {
     if (!g) return keinBeh(id);
     const tx = [['pausch.ja', { betrag: eur(R.beh.pausch[g]) }]];
     // Fahrtkostenpauschale (§ 33 Abs. 2a EStG): 900 € ab GdB 80 oder GdB 70 mit Merkzeichen G; 4.500 € bei aG, Bl, TBl oder H
-    if (g === 'H') tx.push(['pausch.fahrt', { betrag: eur(4500) }]);
+    if (g === 'H' || h.mzAG) tx.push(['pausch.fahrt', { betrag: eur(4500) }]);
     else if (gdbNum(h) >= 80 || (gdbNum(h) >= 70 && h.mzG)) tx.push(['pausch.fahrt', { betrag: eur(900) }]);
     if (h.alter || h.netto * 12 < R.beh.grundfreibetrag) tx.push(['pausch.steuer']);
     if (h.bhPerson === 'minder' || h.bhPerson === 'erwVor25') tx.push(['pausch.kind']);
@@ -730,7 +741,8 @@ const Rules = (function () {
     const id = 'zuzahl';
     if (!hatBeh(h)) return keinBeh(id);
     const tx = [['zuzahl.grenze']];
-    if (gdbNum(h) >= 60) tx.push(['zuzahl.chron']);
+    // Chroniker-Richtlinie § 2: GdB mindestens 60 oder Pflegegrad 3 bis 5 (bei Dauerbehandlung)
+    if (gdbNum(h) >= 60 || h.pflegegrad >= 3) tx.push(['zuzahl.chron']);
     return mk(id, 'vielleicht', 'vielleicht', tx);
   }
 

@@ -427,7 +427,7 @@
   "t.rundfunk.nein": "După datele tale nu ai dreptul la scutire. Aceasta se acordă mai ales la primirea unor anumite prestații sociale.",
   "t.zuzahl.keine": "Nu a fost indicată nicio dizabilitate sau nevoie de îngrijire.",
   "t.zuzahl.grenze": "Pentru coplățile la medicamente, mijloace ajutătoare și tratamente există o limită de 2 % din veniturile brute anuale pentru trai. După atingerea ei, Krankenkasse emite o scutire pentru restul anului. Pentru membrii familiei din gospodărie există sume neimpozabile.",
-  "t.zuzahl.chron": "La bolnavii cronici grav limita este de 1 %. Din această categorie face parte, de exemplu, cine are un GdB de cel puțin 60 și este tratat permanent. Decide Krankenkasse.",
+  "t.zuzahl.chron": "La bolnavii cronici grav limita este de 1 %. Din această categorie face parte, de exemplu, cine are un GdB de cel puțin 60 și este tratat permanent. Decide Krankenkasse. Contează și Pflegegrad 3 până la 5.",
   "t.bab.keine": "Ajutorul pentru formare este pentru cei care învață o meserie recunoscută. Lipsește o informație potrivită.",
   "t.bab.wohnen": "Ajutorul se acordă dacă nu poți locui cu părinții din cauza formării. De la 18 ani, în căsătorie sau cu copil propriu, această condiție nu se cere.",
   "t.bab.ja": "Posibil. Suma depinde de venitul tău și de venitul părinților sau al partenerului. Venitul lor contează doar peste sumele neimpozabile. Calculatorul BAB al Agenției Federale arată suma. De regulă trebuie să fie prima ta formare.",
@@ -735,5 +735,9 @@
   "es.tipp.wgOderGsa": "Wohngeld și Grundsicherung nu se pot primi împreună. Întreabă la Sozialamt ce e mai bine pentru tine. Cu Grundsicherung, autobuzul și trenul (cu G) și taxa radio-TV sunt adesea gratuite.",
   "es.tipp.grundrente": "Cine are 33 de ani de contribuții (și ani în atelier) păstrează o parte din pensie liberă, până la 281,50 €. Scrie în decizia de pensie.",
   "t.gsa.grundrente": "Cine are cel puțin 33 de ani de perioade pentru Grundrente (muncă, și în atelier, creșterea copiilor, îngrijire) păstrează o parte din pensie liberă: 100 € și 30 % din rest, cel mult 281,50 € (§ 82a SGB XII). Atunci Grundsicherung poate fi posibilă chiar cu o pensie mai mare.",
-  "t.kgBeh.hoch": "Venitul propriu este clar peste suma scutită ({gfb} pe an) și suma forfetară. Atunci persoana se poate de obicei întreține singură, Kindergeld probabil nu se acordă."
+  "t.kgBeh.hoch": "Venitul propriu este clar peste suma scutită ({gfb} pe an) și suma forfetară. Atunci persoana se poate de obicei întreține singură, Kindergeld probabil nu se acordă.",
+  "t.ggeld.gemischt": "Dacă o persoană a atins vârsta de pensionare sau este total incapabilă de muncă, pentru ea este competent Sozialamt. Dacă cealaltă persoană poate lucra, ea și copiii aparțin de Jobcenter (gospodărie mixtă). Cere verificarea ambelor.",
+  "t.krank.minijob": "Un minijob (până la 603 € pe lună) nu include asigurare de sănătate prin muncă. Din el nu există Krankengeld.",
+  "t.alg1.minijob": "Un minijob (până la 603 € pe lună) nu este asigurat pentru șomaj și nu contează pentru ajutorul de șomaj. Pot conta locuri de muncă anterioare cu salariu mai mare.",
+  "alt.hinweis": "Atenție: Regulile din această versiune sunt valabile la {stand}. De la 1 ianuarie sumele se pot fi schimbat. Actualizează aplicația."
 }

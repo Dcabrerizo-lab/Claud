@@ -96,7 +96,7 @@ function kinderEinkommen(h) {
 }
 
 function grundsicherungsgeld(h) {
-  if (h.rente || h.em) return { level: 'nein' };
+  if (h.rente || h.em) return { level: h.erwachsene === 2 && h.kids > 0 && !h.bezug.grundsicherungsgeld ? 'vielleicht' : 'nein' };
   const b = h.bezug;
   if (b.grundsicherungsgeld) return { level: 'na' };
   if (b.sozialamt) return { level: 'nein' };
@@ -261,6 +261,7 @@ function arbeitslosengeld(e) {
   if (e.arbeitSit !== 'arbeitslos') return { level: 'nein' };
   if (h.rente) return { level: 'nein' };
   if (!e.algZeit) return { level: 'vielleicht' };
+  if (zahl(e.lohnVorher) > 0 && zahl(e.lohnVorher) <= MINIJOB) return { level: 'vielleicht', spanne: null };
   const satz = h.kids > 0 ? 67 : 60;
   const jahr = Number(e.gebJahr) | 0;
   const heute = e.heute ? Number(e.heute) : new Date().getFullYear() + new Date().getMonth() / 12;
@@ -281,6 +282,7 @@ function krankengeld(e) {
   if (h.p.some((x) => x.art === 'kg')) return { level: 'na' };
   if (e.arbeitSit !== 'krank') return { level: 'nein' };
   if (e.krankWochen === 'ende') return { level: 'nein' };
+  if (zahl(e.lohnVorher) > 0 && zahl(e.lohnVorher) <= MINIJOB) return { level: 'nein', spanne: null };
   const lohn = Math.min(zahl(e.lohnVorher), 5812.5);
   const kg = (q) => runde10(Math.min(0.7 * lohn, 0.9 * lohn * q) * 0.875);
   return { level: e.krankWochen === 'unter6' ? 'vielleicht' : 'ja', spanne: lohn > 0 ? [kg(0.6), kg(lohn <= 2000 ? 0.8 : 0.72)] : null };

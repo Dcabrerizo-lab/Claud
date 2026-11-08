@@ -427,7 +427,7 @@
   "t.rundfunk.nein": "Nach deinen Angaben besteht kein Anspruch auf Befreiung. Sie gibt es vor allem bei Bezug bestimmter Sozialleistungen.",
   "t.zuzahl.keine": "Es wurde keine Behinderung oder Pflegebedürftigkeit angegeben.",
   "t.zuzahl.grenze": "Bei den Zuzahlungen zu Medikamenten, Hilfsmitteln und Behandlungen gibt es eine Belastungsgrenze von 2 % der jährlichen Bruttoeinnahmen zum Lebensunterhalt. Ist sie erreicht, stellt die Krankenkasse eine Befreiung für den Rest des Jahres aus. Für Familienangehörige im Haushalt gibt es Freibeträge.",
-  "t.zuzahl.chron": "Bei schwerwiegend chronisch Kranken liegt die Grenze bei 1 %. Dazu zählt zum Beispiel, wer einen GdB von mindestens 60 hat und dauerhaft behandelt wird. Die Krankenkasse entscheidet.",
+  "t.zuzahl.chron": "Bei schwerwiegend chronisch Kranken liegt die Grenze bei 1 %. Dazu zählt zum Beispiel, wer einen GdB von mindestens 60 oder Pflegegrad 3 bis 5 hat und dauerhaft behandelt wird. Die Krankenkasse entscheidet.",
   "t.bab.keine": "Berufsausbildungsbeihilfe gibt es für Auszubildende in einem anerkannten Ausbildungsberuf. Dafür fehlt eine passende Angabe.",
   "t.bab.wohnen": "Berufsausbildungsbeihilfe gibt es, wenn du wegen der Ausbildung nicht bei deinen Eltern wohnen kannst. Ab 18 Jahren, bei Ehe oder mit eigenem Kind geht es auch ohne diese Voraussetzung.",
   "t.bab.ja": "Möglich. Die Höhe hängt von deinem Einkommen und dem Einkommen deiner Eltern oder deines Partners ab. Deren Einkommen zählt nur oberhalb von Freibeträgen. Der BAB-Rechner der Bundesagentur für Arbeit zeigt dir den Betrag. In der Regel muss es deine erste Ausbildung sein.",
@@ -735,5 +735,9 @@
   "es.tipp.wgOderGsa": "Wohngeld und Grundsicherung gibt es nicht zusammen. Frag beim Sozialamt, was für dich besser ist. Mit Grundsicherung sind Bus und Bahn (mit G) und der Rundfunkbeitrag oft kostenlos.",
   "es.tipp.grundrente": "Wer 33 Jahre Rentenbeiträge hat (auch Werkstatt-Jahre), bei dem bleibt ein Teil der Rente frei, bis 281,50 €. Das steht im Rentenbescheid.",
   "t.gsa.grundrente": "Wer mindestens 33 Jahre Grundrentenzeiten hat (Arbeit, auch in einer Werkstatt, Kindererziehung, Pflege), bei dem bleibt ein Teil der Rente frei: 100 € und 30 % des Rests, höchstens 281,50 € (§ 82a SGB XII). Dann kann es Grundsicherung geben, auch wenn die Rente höher ist.",
-  "t.kgBeh.hoch": "Das eigene Einkommen liegt deutlich über dem Grundfreibetrag ({gfb} im Jahr) und dem Pauschbetrag. Dann kann sich die Person in der Regel selbst unterhalten, Kindergeld gibt es eher nicht."
+  "t.kgBeh.hoch": "Das eigene Einkommen liegt deutlich über dem Grundfreibetrag ({gfb} im Jahr) und dem Pauschbetrag. Dann kann sich die Person in der Regel selbst unterhalten, Kindergeld gibt es eher nicht.",
+  "t.ggeld.gemischt": "Ist eine Person im Rentenalter oder voll erwerbsgemindert, ist für sie das Sozialamt zuständig. Kann die andere Person arbeiten, gehört sie mit den Kindern zum Jobcenter (gemischte Bedarfsgemeinschaft). Lass beides prüfen.",
+  "t.krank.minijob": "Ein Minijob (bis 603 € im Monat) ist nicht krankenversichert über die Arbeit. Daraus gibt es kein Krankengeld.",
+  "t.alg1.minijob": "Ein Minijob (bis 603 € im Monat) ist nicht arbeitslosenversichert und zählt nicht für das Arbeitslosengeld. Zählen können frühere Stellen mit höherem Lohn.",
+  "alt.hinweis": "Achtung: Die Regeln dieser Version haben den Stand {stand}. Seit dem 1. Januar können sich Beträge geändert haben. Bitte die App aktualisieren."
 }

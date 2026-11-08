@@ -427,7 +427,7 @@
   "t.rundfunk.nein": "According to your information there is no entitlement to exemption. It is mainly granted when receiving certain social benefits.",
   "t.zuzahl.keine": "No disability or need for care was given.",
   "t.zuzahl.grenze": "For co-payments on medicines, aids and treatments there is a limit of 2 % of the annual gross income for living expenses. Once it is reached, the Krankenkasse issues an exemption for the rest of the year. There are allowances for family members in the household.",
-  "t.zuzahl.chron": "For people with a serious chronic illness the limit is 1 %. This includes, for example, someone with a GdB of at least 60 who is in continuous treatment. The Krankenkasse decides.",
+  "t.zuzahl.chron": "For people with a serious chronic illness the limit is 1 %. This includes, for example, someone with a GdB of at least 60 who is in continuous treatment. The Krankenkasse decides. Pflegegrad 3 to 5 also counts.",
   "t.bab.keine": "Vocational training allowance is for apprentices in a recognised training occupation. A matching entry is missing.",
   "t.bab.wohnen": "Vocational training allowance is available if you cannot live with your parents because of the training. From age 18, if married or with a child of your own, this condition is not needed.",
   "t.bab.ja": "Possible. The amount depends on your income and the income of your parents or partner. Their income only counts above allowances. The BAB calculator of the Federal Employment Agency shows you the amount. As a rule it must be your first training.",
@@ -735,5 +735,9 @@
   "es.tipp.wgOderGsa": "Wohngeld and Grundsicherung cannot be combined. Ask the Sozialamt which is better for you. With Grundsicherung, bus and train (with G) and the broadcasting fee are often free.",
   "es.tipp.grundrente": "If you have 33 years of pension contributions (also workshop years), part of your pension stays free, up to 281.50 €. It is in your pension notice.",
   "t.gsa.grundrente": "With at least 33 years of basic pension periods (work, also in a workshop, child-raising, care), part of the pension stays free: 100 € and 30 % of the rest, at most 281.50 € (§ 82a SGB XII). Then Grundsicherung may be possible even with a higher pension.",
-  "t.kgBeh.hoch": "Own income is well above the basic tax allowance ({gfb} a year) and the disability allowance. Then the person can usually support themselves; Kindergeld is unlikely."
+  "t.kgBeh.hoch": "Own income is well above the basic tax allowance ({gfb} a year) and the disability allowance. Then the person can usually support themselves; Kindergeld is unlikely.",
+  "t.ggeld.gemischt": "If one person has reached retirement age or is fully unable to work, the Sozialamt is responsible for them. If the other person can work, they and the children belong to the Jobcenter (mixed household). Have both checked.",
+  "t.krank.minijob": "A mini-job (up to 603 € a month) does not include health insurance through work. It gives no Krankengeld.",
+  "t.alg1.minijob": "A mini-job (up to 603 € a month) is not unemployment-insured and does not count for unemployment benefit. Earlier jobs with higher pay can count.",
+  "alt.hinweis": "Note: The rules in this version are as of {stand}. Amounts may have changed since 1 January. Please update the app."
 }

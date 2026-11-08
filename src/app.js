@@ -338,6 +338,9 @@
     document.querySelectorAll('[data-t]').forEach(function (el) { el.textContent = t(el.getAttribute('data-t')); });
     document.querySelectorAll('[data-t-aria]').forEach(function (el) { el.setAttribute('aria-label', t(el.getAttribute('data-t-aria'))); });
     $('stand').textContent = t('stand', { stand: Rules.RULES.stand });
+    // Regeln älter als der nächste Stichtag (1. Januar): deutlich darauf hinweisen
+    var veraltet = regelnVeraltet();
+    $('altNotice').hidden = !veraltet; $('altNotice').textContent = veraltet ? t('alt.hinweis', { stand: Rules.RULES.stand }) : '';
     $('transNotice').hidden = lang === 'de';
     document.querySelectorAll('#presets button').forEach(function (b) {
       b.textContent = t(PRESETS.filter(function (p) { return p.id === b.id; })[0].key);
@@ -348,6 +351,8 @@
     renderScan();
     if (esModus) esRender();
   }
+
+  function regelnVeraltet() { var ab = Rules.RULES.pruefenAb; return !!ab && new Date() >= new Date(ab + 'T00:00:00'); }
 
   function setLang(c) {
     if (!I18N[c]) return;
@@ -1276,6 +1281,7 @@
     if (gut.some(function (x) { return x.id === 'kgBeh'; })) tipps.push(t(es.wohnen === 'eltern' ? 'es.tipp.kgEltern' : 'es.tipp.kgAbzweig'));
     var h = '<h2 class="es-q" id="es-q" tabindex="-1">' + esc(t(gut.length ? 'es.erg.h' : 'es.erg.keine')) + '</h2>' +
       (window.speechSynthesis ? '<button type="button" class="es-vor" id="es-vor">🔊 ' + esc(t('es.vorlesen')) + '</button>' : '') +
+      (regelnVeraltet() ? '<p class="warn" role="alert">' + esc(t('alt.hinweis', { stand: Rules.RULES.stand })) + '</p>' : '') +
       '<p class="es-h">' + esc(t('es.erg.hinweis')) + '</p>' + gut.map(karte).join('') +
       (tipps.length ? '<div class="es-tipps"><h3 class="es-sub">💡 ' + esc(t('es.erg.tipps')) + '</h3><ul>' + tipps.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div>' : '') +
       (schon.length ? '<h3 class="es-sub">' + esc(t('es.erg.schon')) + '</h3><ul class="es-liste">' + schon.map(function (x) { return '<li>' + (ES_ICON[x.id] || '•') + ' ' + esc(t('es.n.' + x.id)) + '</li>'; }).join('') + '</ul>' : '') +

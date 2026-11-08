@@ -427,7 +427,7 @@
   "t.rundfunk.nein": "Bilgilerinize göre muafiyet hakkı yok. Muafiyet esas olarak belirli sosyal yardımların alınması halinde verilir.",
   "t.zuzahl.keine": "Engellilik veya bakım ihtiyacı belirtilmedi.",
   "t.zuzahl.grenze": "İlaç, yardımcı malzeme ve tedavi katkı paylarında, geçim için yıllık brüt gelirin %2’si oranında bir yük sınırı vardır. Sınıra ulaşıldığında Krankenkasse yılın geri kalanı için muafiyet verir. Hanedeki aile bireyleri için muafiyet tutarları vardır.",
-  "t.zuzahl.chron": "Ağır kronik hastalarda sınır %1’dir. Örneğin en az GdB 60’a sahip olan ve sürekli tedavi gören kişi bu kapsamdadır. Krankenkasse karar verir.",
+  "t.zuzahl.chron": "Ağır kronik hastalarda sınır %1’dir. Örneğin en az GdB 60’a sahip olan ve sürekli tedavi gören kişi bu kapsamdadır. Krankenkasse karar verir. Pflegegrad 3 ile 5 de sayılır.",
   "t.bab.keine": "Meslek eğitimi yardımı, tanınmış bir meslekte eğitim gören çıraklar içindir. Bunun için uygun bir bilgi eksik.",
   "t.bab.wohnen": "Meslek eğitimi yardımı, eğitim nedeniyle ailenizle yaşayamıyorsanız verilir. 18 yaşından itibaren, evlilikte veya kendi çocuğunuz varsa bu koşul aranmaz.",
   "t.bab.ja": "Mümkün. Tutar, sizin ve ailenizin veya eşinizin gelirine bağlıdır. Onların geliri yalnızca muafiyet tutarlarının üzerinde dikkate alınır. Federal İş Ajansı’nın BAB hesaplayıcısı tutarı gösterir. Kural olarak ilk eğitiminiz olmalıdır.",
@@ -735,5 +735,9 @@
   "es.tipp.wgOderGsa": "Wohngeld ve Grundsicherung birlikte alınamaz. Senin için hangisinin daha iyi olduğunu Sozialamt'a sor. Grundsicherung ile otobüs ve tren (G ile) ve yayın ücreti çoğu zaman ücretsizdir.",
   "es.tipp.grundrente": "33 yıl primi olanın (atölye yılları dahil) emekli maaşının bir kısmı 281,50 €'ya kadar serbest kalır. Emeklilik kararında yazar.",
   "t.gsa.grundrente": "En az 33 yıl Grundrente süresi olanın (çalışma, atölye dahil, çocuk yetiştirme, bakım) emekli maaşının bir kısmı serbest kalır: 100 € ve kalanın %30'u, en fazla 281,50 € (§ 82a SGB XII). O zaman daha yüksek maaşla da Grundsicherung mümkün olabilir.",
-  "t.kgBeh.hoch": "Kendi geliri temel muafiyetin (yılda {gfb}) ve götürü indirimin açıkça üzerinde. O zaman kişi genellikle kendini geçindirebilir, Kindergeld pek olası değil."
+  "t.kgBeh.hoch": "Kendi geliri temel muafiyetin (yılda {gfb}) ve götürü indirimin açıkça üzerinde. O zaman kişi genellikle kendini geçindirebilir, Kindergeld pek olası değil.",
+  "t.ggeld.gemischt": "Bir kişi emeklilik yaşındaysa veya tamamen çalışamıyorsa, onun için Sozialamt yetkilidir. Diğer kişi çalışabiliyorsa, çocuklarla birlikte Jobcenter'a bağlıdır (karma hane). İkisini de kontrol ettir.",
+  "t.krank.minijob": "Minijob (ayda 603 €'ya kadar) işten sağlık sigortası sağlamaz. Krankengeld yoktur.",
+  "t.alg1.minijob": "Minijob (ayda 603 €'ya kadar) işsizlik sigortalı değildir ve işsizlik parası için sayılmaz. Daha yüksek ücretli önceki işler sayılabilir.",
+  "alt.hinweis": "Dikkat: Bu sürümdeki kurallar {stand} itibarıyladır. 1 Ocak'tan beri tutarlar değişmiş olabilir. Lütfen uygulamayı güncelleyin."
 }

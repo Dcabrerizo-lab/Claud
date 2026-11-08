@@ -198,7 +198,8 @@ for (let i = 0; i < N; i++) {
   if (keinKind && (g('kiz') !== 'nein' || g('but') !== 'nein')) flag('Kinderleistungen ohne Kind', o);
   if (keinKind && !b.kindergeld && g('kindergeld') !== 'nein') flag('Kindergeld ohne Kind', o);
   if (o.kids === 0 && g('uvg') !== 'nein') flag('UVG ohne Kind', o);
-  if ((o.alter || o.erwerbsgemindert) && g('ggeld') !== 'nein' && g('ggeld') !== 'na') flag('GG trotz Alter/Erwerbsminderung', o);
+  // Ausnahme: Paar mit Kindern, die andere Person kann erwerbsfähig sein (gemischte Bedarfsgemeinschaft) -> höchstens „möglich“
+  if ((o.alter || o.erwerbsgemindert) && g('ggeld') !== 'nein' && g('ggeld') !== 'na' && !(o.adults === 2 && o.kids + o.young > 0 && g('ggeld') === 'vielleicht')) flag('GG trotz Alter/Erwerbsminderung', o);
   if (!o.alter && !o.erwerbsgemindert && g('gsa') !== 'nein') flag('GSA ohne Voraussetzung', o);
   if (!o.ausbildung && g('bafoeg') !== 'nein') flag('BAföG ohne Ausbildung', o);
   if (!['1', '2', '3', '4', '5', 'antrag'].includes(o.pflegegrad) && g('pflege') !== 'nein') flag('Pflege ohne Pflegegrad', o);

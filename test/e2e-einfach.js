@@ -121,6 +121,12 @@ const ergebnis = (p) => p.evaluate(() => {
   const hoehe = await p.evaluate(() => Math.min(...[...document.querySelectorAll('.es-btn')].map((x) => x.getBoundingClientRect().height)));
   ok('Antwort-Knöpfe sind groß (mindestens 56 px)', hoehe >= 56, hoehe);
   await p.screenshot({ path: require('os').tmpdir() + '/shot-einfach.png' });
+  // Veraltete Regeln: ab dem nächsten Stichtag (1.1.2027) ein deutlicher Hinweis
+  const c2 = await b.newContext({ locale: 'de-DE' });
+  await c2.addInitScript(() => { const D = Date; const fest = new D('2027-02-01T10:00:00').getTime(); window.Date = class extends D { constructor(...a) { super(...(a.length ? a : [fest])); } static now() { return fest; } }; });
+  const p2 = await c2.newPage(); await p2.goto('file://' + file);
+  ok('Ab 2027: Hinweis „Regeln veraltet“ sichtbar', await p2.isVisible('#altNotice') && /aktualisieren/.test(await p2.textContent('#altNotice')));
+  await c2.close();
   ok('Keine Skriptfehler', errs.length === 0, errs.join(' | '));
   await b.close();
   console.log(out.join('\n'));
