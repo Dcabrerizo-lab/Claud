@@ -85,6 +85,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 |---|---|---|
 | Höchstbetrag, Mindesteinkommen, 45 % Minderung, Vermögen; Einkommen der Eltern nach § 11b SGB II; Mehrbedarf Alleinerziehende | ✓ | `kiz-formel` |
 | Mehrbedarfe der Eltern im Bedarf der Eltern (Schwangerschaft, Warmwasser, 35 % Teilhabe) | ✓ | `kiz-mehr` |
+| Vermögensgrenze (App: 40.000 € für die erste, 15.000 € je weitere Person, wie bisher beim Bürgergeld) | ○ (nach der Reform zur neuen Grundsicherung bitte prüfen, ob § 6a Abs. 3 BKGG weiter diese Werte nutzt oder die neuen Altersstufen) | |
 | Ausschluss bei Asylbewerberleistungen (kein Kindergeld) | ✓ | `asyl-ausschluss` |
 
 ## Kindergeld (EStG, BKGG)
@@ -129,6 +130,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Regel | Status | Test |
 |---|---|---|
 | Elternfreibeträge (§ 25) und Grenzbereich | ✓ | `bafoeg-eltern` |
+| Höhe der Elternfreibeträge 2026 (App: 2.540 / 1.690 €, je Kind 770 €) | ○ (zum WS 2024/25 waren es 2.415 / 1.605 / 730 €; ob und wie sie zum WS 2026/27 erhöht wurden, konnte ich nicht an einer Quelle prüfen: bitte mit der aktuellen Fassung von § 25 BAföG abgleichen) | |
 | Vermögensfreibetrag nach Alter (§ 29) | ✓ | `bafoeg-verm` |
 | Altersgrenze 45 bei Beginn (§ 10 Abs. 3), Ausnahmen möglich | ✓ | `bafoeg-alter` |
 | Betriebliche Ausbildung: kein BAföG, sondern Berufsausbildungsbeihilfe | ✓ | `bafoeg-betrieb` |
