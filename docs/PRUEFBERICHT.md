@@ -52,6 +52,13 @@ Bei der Durchsicht vom Gesetz her gefunden und behoben:
 - **Kindergeld:** Hinweis auf arbeitslose Kinder bis 21, Freiwilligendienst, Übergangszeit und 20-Stunden-Grenze ergänzt.
 - 14 Karten hatten noch keinen Abschnitt in der Prüfliste (zum Beispiel Kindergeld, Arbeitslosengeld I, Rundfunkbeitrag). Alle sind ergänzt.
 
+Weitere Tests (laufen ebenfalls bei jedem `npm test`):
+- **Eigenschaftstest** (`test/test-eigenschaften.js`, 15.000 Zufallshaushalte): Mehr Einkommen bringt nie mehr Grundsicherungsgeld, Grundsicherung, Wohngeld oder Kinderzuschlag; ein Kind mehr erhöht immer den Bedarf; mehr Miete senkt nie Bedarf oder Wohngeld; mehr Vermögen verbessert nie eine Einstufung; ein höherer GdB oder Pflegegrad bringt nie weniger. Dazu Widerspruchsfreiheit zwischen den Karten (z. B. Grundsicherungsgeld wahrscheinlich, dann auch Bildung und Teilhabe; kein Betrag bei „unwahrscheinlich“). Mit 6 eingebauten Fehlern geprüft, alle erkannt.
+- **Jahreswechsel** (`test/test-jahreswechsel.js`): am 31.12.2026 kein Hinweis, ab 1.1.2027 deutlicher Hinweis auf veraltete Regeln, App läuft weiter; Rentenalter verschiebt sich mit dem Datum.
+- **Datenschutz**: Die Web-Version ruft während der ganzen Nutzung keinen Server auf (geprüft im Browser). Dabei gefunden: Sie lud bisher Schriften von Google Fonts (IP-Adresse an Google, vgl. LG München I, Urteil vom 20.1.2022). Behoben: Die Web-Version nutzt jetzt die Schriften des Geräts, die App bringt ihre Schriften als Dateien mit.
+- **Leichte Sprache**: In der einfachen Version keine Sätze über 15 Wörter, lange Wörter mit Bindestrich gegliedert (z. B. „Eingliederungs-Hilfe“).
+- **Musterfälle** für den Abgleich mit den amtlichen Rechnern: `docs/Musterfaelle-Abgleich.csv` mit Anleitung `docs/ABGLEICH.md`.
+
 Was keine Sicherung leisten kann: Die Prüfliste ist nur so vollständig wie das Wissen, mit dem sie geschrieben ist. Eine Fachperson sollte sie vor der Veröffentlichung einmal gegenlesen. Die Punkte mit ○ (zum Beispiel Freibetrag für Azubis über der Minijob-Grenze, Höhe der Blindenhilfe, Zuständigkeit Bezirk) sind dafür markiert.
 
 ## Fachlich: bekannte Grenzen (bewusst so gelöst)

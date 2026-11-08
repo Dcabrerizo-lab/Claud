@@ -274,6 +274,18 @@ LANGS.forEach((l) => {
 });
 check('Arabisch läuft rechts nach links, alle anderen links nach rechts', I18N.ar['meta.dir'] === 'rtl' && LANGS.filter((l) => l !== 'ar').every((l) => I18N[l]['meta.dir'] === 'ltr'));
 
+// Leichte Sprache (einfache Version, Deutsch): kurze Sätze (höchstens 15 Wörter), lange Wörter mit Bindestrich gegliedert
+{
+  const lang = [], wort = [];
+  Object.keys(I18N.de).filter((k) => /^es\./.test(k)).forEach((k) => {
+    const s = I18N.de[k].replace(/\{[^}]*\}/g, 'X');
+    s.split(/[.!?]\s+/).forEach((satz) => { const w = satz.split(/\s+/).filter(Boolean); if (w.length > 15) lang.push(k + ' (' + w.length + ' Wörter)'); });
+    s.split(/[\s,.;:!?()„“"]+/).forEach((w) => { if (w.length > 16 && !/-/.test(w)) wort.push(k + ': ' + w); });
+  });
+  check('Leichte Sprache: keine Sätze über 15 Wörter', lang.length === 0, lang.join(', '));
+  check('Leichte Sprache: lange Wörter mit Bindestrich gegliedert', wort.length === 0, wort.join(', '));
+}
+
 // Amtsbegriffe bleiben deutsch erhalten
 const TERMS = ['Wohngeld', 'Kinderzuschlag', 'Kindergeld', 'Grundsicherungsgeld', 'Grundsicherung im Alter', 'Jobcenter', 'Sozialamt', 'Familienkasse', 'Pflegekasse', 'BAföG', 'Pflegegeld', 'Unterhaltsvorschuss', 'Bürgergeld', 'Wohngeldstelle'];
 LANGS.filter((l) => l !== 'de').forEach((l) => {

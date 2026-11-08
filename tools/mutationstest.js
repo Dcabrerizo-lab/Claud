@@ -44,7 +44,7 @@ const M = [
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'mut-'));
 for (const d of ['src', 'test', 'docs', 'dist']) fs.cpSync(path.join(ROOT, d), path.join(tmp, d), { recursive: true });
 const orig = fs.readFileSync(path.join(ROOT, 'src', 'rules.js'), 'utf8');
-const TESTS = ['test.js', 'test-strict.js', 'test-beh.js', 'test-faelle.js', 'test-raster.js 8000', 'test-pruefliste.js'];
+const TESTS = ['test.js', 'test-strict.js', 'test-beh.js', 'test-faelle.js', 'test-raster.js 8000', 'test-pruefliste.js', 'test-eigenschaften.js 3000'];
 const laeuft = () => { try { for (const t of TESTS) execSync('node test/' + t, { cwd: tmp, stdio: 'ignore' }); return true; } catch (e) { return false; } };
 
 let unentdeckt = 0, geprueft = 0;

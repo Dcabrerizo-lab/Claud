@@ -6,6 +6,7 @@ const file = process.argv[2] || (__dirname + '/../dist/leistungs-lotse.html');
   const b = await chromium.launch();
   const ctx = await b.newContext({ viewport: { width: 390, height: 900 }, locale: 'de-DE', deviceScaleFactor: 1 });
   const p = await ctx.newPage(); const errs = [];
+  const netz = []; p.on('request', (r) => { if (!/^(file|data|blob):/.test(r.url())) netz.push(r.url()); });
   p.on('pageerror', (e) => errs.push(e.message)); p.on('console', (m) => { if (m.type() === 'error' && !/ERR_TUNNEL|ERR_NAME|ERR_INTERNET|fonts.g/.test(m.text())) errs.push(m.text()); });
   await p.goto('file://' + file);
   const card = (name) => p.evaluate((nm) => { const c = [...document.querySelectorAll('#cards .card')].find((x) => x.querySelector('h3').textContent === nm); return c ? { pill: c.querySelector('.pill').className.replace('pill ', ''), text: c.querySelector('.body').textContent.replace(/\u00a0/g, ' '), zust: c.querySelector('.zust').textContent } : null; }, name);
@@ -115,5 +116,6 @@ const file = process.argv[2] || (__dirname + '/../dist/leistungs-lotse.html');
     }
   }
   ok('Keine Konsolen- oder Skriptfehler', errs.length === 0, errs.join(' | '));
+  ok('Datenschutz: Die Web-Version ruft während der ganzen Nutzung keinen Server auf', netz.length === 0, netz.slice(0, 5).join(' '));
   await b.close(); console.log(out.join('\n')); process.exit(out.some((l) => l.startsWith('FAIL')) ? 1 : 0);
 })().catch((e) => { console.log(out.join('\n')); console.log('ABSTURZ', e.message); process.exit(1); });

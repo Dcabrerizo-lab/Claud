@@ -37,8 +37,8 @@ const NATIVE_SCAN = [
   '        </section>'
 ].join('\n');
 html = replaceOnce(html, /<!--SCAN-->[\s\S]*?<!--\/SCAN-->/, NATIVE_SCAN, 'Scan-Block');
-html = replaceOnce(html, /<link rel="preconnect"[^>]*>\s*/, '', 'preconnect');
-html = replaceOnce(html, /<link rel="stylesheet" href="https:\/\/fonts[^>]*>\s*/, '', 'Google Fonts');
+// Schriften: keine Google Fonts (auch nicht im Template); die App bringt sie als Dateien mit (siehe unten)
+html = html.replace(/<link rel="preconnect"[^>]*>\s*/, '').replace(/<link rel="stylesheet" href="https:\/\/fonts[^>]*>\s*/, '');
 html = html.replace(/<meta name="claude:viewport-fit-sides"[^>]*>\s*/, '');
 // Keine extern eingebundenen Dateien (Links zum Anklicken sind erlaubt und öffnen im Systembrowser).
 // Die Web-only-Adressen im Code (Tesseract) werden in der App nie aufgerufen und wären durch die CSP blockiert.
