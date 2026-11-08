@@ -12,7 +12,7 @@ Alles muss zur [Datenschutzerklärung](../datenschutz.html) passen. Bei Änderun
 | Kategorie | Play: *Finanzen* · iOS: *Finanzen* (Zweitkategorie *Dienstprogramme*) |
 | Altersfreigabe | Ab 0 / 4+ (keine kritischen Inhalte) |
 | Preis | Kostenlos, keine In-App-Käufe, keine Werbung |
-| Datenschutz-URL | `https://dcabrerizo-lab.github.io/Claud/datenschutz.html` (nach dem Zusammenführen in `main`, siehe RELEASE.md) |
+| Datenschutz-URL | `datenschutz.html` öffentlich ins Netz stellen, z. B. GitHub Pages (`https://dcabrerizo-lab.github.io/Claud/datenschutz.html`), eine eigene Website, Netlify oder Codeberg Pages |
 | Support-E-Mail | d.cabrerizo@gmx.de |
 | Sprachen im Store | Deutsch (Haupt), weitere optional: Englisch, Türkisch, Arabisch, Russisch, Ukrainisch, Polnisch, Rumänisch |
 
@@ -22,10 +22,13 @@ Alles muss zur [Datenschutzerklärung](../datenschutz.html) passen. Bei Änderun
 
 ## Beschreibung (Play und iOS)
 
-> Steht dir Wohngeld zu? Kinderzuschlag? Grundsicherung? Der Leistungs-Lotse prüft in zwei Minuten 21 Sozialleistungen und zeigt dir, was wahrscheinlich, möglich oder unwahrscheinlich ist, mit den nächsten Schritten, der zuständigen Stelle und den nötigen Unterlagen.
+> Steht dir Wohngeld zu? Kinderzuschlag? Grundsicherung? Der Leistungs-Lotse prüft in zwei Minuten 23 Sozialleistungen und zeigt dir, was wahrscheinlich, möglich oder unwahrscheinlich ist, mit den nächsten Schritten, der zuständigen Stelle und den nötigen Unterlagen.
 >
 > **Was die App prüft**
-> Kindergeld, Wohngeld, Kinderzuschlag, Grundsicherungsgeld, Bildung und Teilhabe, Unterhaltsvorschuss, Grundsicherung im Alter und bei Erwerbsminderung, BAföG, Berufsausbildungsbeihilfe, Pflegegeld, Entlastungsbetrag, Verhinderungspflege und Pflegehilfsmittel, Leistungen bei Behinderung (Pauschbetrag, Schwerbehindertenausweis, Eingliederungshilfe, Budget für Arbeit, Erwerbsminderungsrente), Blindengeld (Bayern), Wohnberechtigungsschein (Bayern), Befreiung vom Rundfunkbeitrag und von Zuzahlungen.
+> Kindergeld, Wohngeld, Kinderzuschlag, Grundsicherungsgeld, Arbeitslosengeld I, Krankengeld, Bildung und Teilhabe, Unterhaltsvorschuss, Grundsicherung im Alter und bei Erwerbsminderung, BAföG, Berufsausbildungsbeihilfe, Pflegegeld, Entlastungsbetrag, Verhinderungspflege und Pflegehilfsmittel, Leistungen bei Behinderung (Pauschbetrag, Schwerbehindertenausweis, Eingliederungshilfe, Budget für Arbeit, Erwerbsminderungsrente), Blindengeld (Bayern), Wohnberechtigungsschein (Bayern), Befreiung vom Rundfunkbeitrag und von Zuzahlungen.
+>
+> **Auch in einfacher Sprache**
+> Für Menschen mit Lernschwierigkeiten, zum Beispiel in einer Werkstatt: eine Frage pro Bildschirm, große Knöpfe, Vorlesen. Das Ergebnis zeigt, was du bekommen kannst, wie viel ungefähr und wo du hingehst.
 >
 > **Antragsmappe**
 > Die App schreibt dir formlose Anträge auf Deutsch, so wie die Ämter sie brauchen. Damit sicherst du bei vielen Leistungen den Startmonat. Dazu kommen ein Angabenblatt und eine Liste der Unterlagen. Teile alles als PDF, zum Drucken oder per E-Mail.
@@ -64,8 +67,9 @@ Alles muss zur [Datenschutzerklärung](../datenschutz.html) passen. Bei Änderun
 
 ## Screenshots
 
-Benötigt: Play mindestens 2 Handy-Screenshots; iOS 6,9″ (1320 × 2868) und 6,5″ (1242 × 2688), optional iPad.
-Vorschlag für 5 Motive (auf Deutsch, je mit kurzer Überschrift):
+Benötigt: Play mindestens 2 Handy-Screenshots und eine Werbegrafik (1024 × 500); iOS 6,9″ (1320 × 2868) und 6,5″ (1242 × 2688), optional iPad.
+Fertige Bilder (7 Motive in allen drei Formaten, Werbegrafik, Symbol 512 × 512) entstehen mit `node tools/store-bilder.js` nach `store-bilder/`.
+Ursprünglicher Vorschlag für die Motive:
 
 1. Fragebogen mit Beispiel: „In zwei Minuten zum Überblick“
 2. Ergebnis mit grünen Karten: „21 Leistungen geprüft“

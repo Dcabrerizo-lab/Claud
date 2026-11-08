@@ -9,3 +9,4 @@ app/ios/App/Pods/
 !app/android/debug.keystore
 *.jks
 .DS_Store
+store-bilder/
