@@ -739,5 +739,13 @@
   "t.ggeld.gemischt": "Dacă o persoană a atins vârsta de pensionare sau este total incapabilă de muncă, pentru ea este competent Sozialamt. Dacă cealaltă persoană poate lucra, ea și copiii aparțin de Jobcenter (gospodărie mixtă). Cere verificarea ambelor.",
   "t.krank.minijob": "Un minijob (până la 603 € pe lună) nu include asigurare de sănătate prin muncă. Din el nu există Krankengeld.",
   "t.alg1.minijob": "Un minijob (până la 603 € pe lună) nu este asigurat pentru șomaj și nu contează pentru ajutorul de șomaj. Pot conta locuri de muncă anterioare cu salariu mai mare.",
-  "alt.hinweis": "Atenție: Regulile din această versiune sunt valabile la {stand}. De la 1 ianuarie sumele se pot fi schimbat. Actualizează aplicația."
+  "alt.hinweis": "Atenție: Regulile din această versiune sunt valabile la {stand}. De la 1 ianuarie sumele se pot fi schimbat. Actualizează aplicația.",
+  "cb.teilhabe": "Primește din cauza dizabilității ajutor pentru școală, formare sau pregătire profesională (de ex. Berufsbildungswerk, însoțitor școlar). Nu: atelier.",
+  "bhWeitere.label": "Alte persoane din gospodărie cu dizabilitate gravă",
+  "bhWeitere.hint": "Doar cine are GdB 100 sau GdB de la 50 și un grad de îngrijire. Important pentru Wohngeld și Wohnberechtigungsschein.",
+  "bhWeitere.0": "Niciuna",
+  "t.mehr.teilhabe": "Aceasta include un necesar suplimentar de {betrag}: 35 % din suma standard, pentru că persoana primește din cauza dizabilității ajutor pentru școală, formare sau muncă.",
+  "t.ggeld.mehrBeh": "Pentru un copil cu dizabilitate de la 15 ani se poate adăuga un necesar suplimentar (35 % la ajutor pentru școală sau formare, 17 % la mențiunea G). Spune asta la cerere.",
+  "t.ggeld.kindGsa": "Un copil adult care nu poate lucra permanent primește propria Grundsicherung de la Sozialamt, chiar dacă locuiește cu părinții.",
+  "t.pflege.pauschbetrag": "Cine îngrijește această persoană acasă fără plată primește în declarația fiscală o sumă forfetară pentru îngrijire de {betrag} pe an."
 }

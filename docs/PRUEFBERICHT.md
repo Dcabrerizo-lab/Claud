@@ -44,6 +44,8 @@ Eine Prüfung durch eine Sozialberatung oder eine Fachanwältin ersetzt dieser B
 - **Elterngeld Plus:** Für die Hälfte des Freibetrags (150 €) gibt es keine eigene Auswahl.
 - **Grundrentenfreibetrag beim Wohngeld (§ 17a WoGG):** ist nicht eingerechnet. Das Wohngeld kann dadurch etwas höher sein.
 
+Ergänzend zeigt `docs/PRUEFLISTE.md` vom Gesetz her für jede Regel, ob die App sie kennt, auch die noch fehlenden.
+
 ## Technisch
 
 - **Sicherheit:** Alle Texte aus Eingaben werden vor dem Einfügen ins HTML maskiert (`esc`). Briefe und Angabenblatt stehen nur in `<pre>`/`textarea`. Die App hat eine strenge Content-Security-Policy (`connect-src 'self'`, kein Fremdcode).

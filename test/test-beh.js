@@ -138,7 +138,9 @@ WB.forEach(([o, g]) => {
   check('WBS über Höchstwert nach Abzug => nein', lv({ ...o, brutto: mx / 0.7 / 12 + 50 }, 'wbs') === 'nein' && get({ ...o, brutto: mx / 0.7 / 12 + 50 }, 'wbs').tx[0][1].grenze === eur(mx));
   check('WBS knapp unter dem Höchstwert nach Abzug => möglich', lv({ ...o, brutto: mx / 0.7 / 12 - 20 }, 'wbs') === 'vielleicht');
 });
-check('WBS: Schwerbehinderung erweitert die "möglich"-Spanne um 4.000 € im Jahr', lv({ adults: 1, brutto: (28300 + 4000) / 0.7 / 12 - 5, gdb: '50' }, 'wbs') === 'vielleicht' && lv({ adults: 1, brutto: (28300 + 4000) / 0.7 / 12 + 20, gdb: '50' }, 'wbs') === 'nein' && lv({ adults: 1, brutto: 28300 / 0.7 / 12 + 20 }, 'wbs') === 'nein');
+// Freibeträge nach dem Muster § 24 WoFG: GdB 100 oder ab 80 mit Pflegegrad 4.500 €, unter 80 mit Pflegegrad 2.100 €, ohne Pflegegrad (GdB 50-90) 0 €
+check('WBS: GdB 100 erweitert die "möglich"-Spanne um 4.500 € im Jahr', lv({ adults: 1, brutto: (28300 + 4500) / 0.7 / 12 - 5, gdb: '100' }, 'wbs') === 'vielleicht' && lv({ adults: 1, brutto: (28300 + 4500) / 0.7 / 12 + 20, gdb: '100' }, 'wbs') === 'nein' && lv({ adults: 1, brutto: 28300 / 0.7 / 12 + 20 }, 'wbs') === 'nein');
+check('WBS: GdB 50 mit Pflegegrad 2.100 €, GdB 50 ohne Pflegegrad kein Freibetrag', lv({ adults: 1, brutto: (28300 + 2100) / 0.7 / 12 - 5, gdb: '50', pflegegrad: '2' }, 'wbs') === 'vielleicht' && lv({ adults: 1, brutto: 28300 / 0.7 / 12 + 20, gdb: '50' }, 'wbs') === 'nein');
 check('WBS: Einkommen 0 => ja', lv({ brutto: 0 }, 'wbs') === 'ja');
 // Monotonie: mehr Einkommen kann das Ergebnis nur verschlechtern
 {

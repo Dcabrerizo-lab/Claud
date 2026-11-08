@@ -139,7 +139,7 @@
     if (!state.bhPerson) reset(['gdb', 'blind', 'wfbm', 'bhSelbst']);
     if (state.bhPerson !== 'erwVor25') reset(['bhSelbst']);
     if (state.emStd !== 'unter3' && state.emStd !== '3bis6') reset(['em5']);
-    if (!state.bhPerson) reset(['mzG']);
+    if (!state.bhPerson) reset(['mzG', 'teilhabe', 'bhWeitere']);
     if (state.kids + state.young === 0) reset(['kindEink']);
     if (state.arbeitSit !== 'arbeitslos') reset(['algZeit', 'algMonate']);
     if (state.adults !== 1 || !state.ek1Art || state.ek1Art === 'ohne') reset(['ek1bArt', 'ek1bBetrag']);
@@ -323,6 +323,7 @@
     gd.push(['H', t('bh.gdb.H')]);
     gd.push(['antrag', t('bh.gdb.antrag')]);
     fillSelect('gdb', gd, state.gdb);
+    fillSelect('bhWeitere', [['', t('bhWeitere.0')], ['1', '1'], ['2', '2'], ['3', '3']], state.bhWeitere);
     fillSelect('blind', [['', t('bh.blind.0')], ['blind', t('bh.blind.blind')], ['hoch', t('bh.blind.hoch')]], state.blind);
     fillSelect('emStd', [['', t('bh.em.0')], ['unter3', t('bh.em.unter3')], ['3bis6', t('bh.em.3bis6')], ['unklar', t('bh.em.unklar')]], state.emStd);
     fillSelect('lang', LANGS.map(function (c) { return [c, I18N[c]['meta.name']]; }), lang);
@@ -376,8 +377,8 @@
     pr.appendChild(b);
   });
 
-  var CHECKS = ['mzG', 'algZeit', 'grundrente33', 'wfbmEssen', 'kinder12', 'unterhaltFehlt', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt'];
-  var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'ek1bArt', 'arbeitSit', 'algMonate', 'krankWochen', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd'];
+  var CHECKS = ['mzG', 'algZeit', 'grundrente33', 'wfbmEssen', 'teilhabe', 'kinder12', 'unterhaltFehlt', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt'];
+  var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'ek1bArt', 'bhWeitere', 'arbeitSit', 'algMonate', 'krankWochen', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd'];
   var NUMS = ['miete', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'kindEink', 'lohnVorher', 'ek1bBetrag', 'vermoegen'];
   var BEZUG = ['grundsicherungsgeld', 'sozialamt', 'wohngeld', 'kiz', 'kindergeld'];
 
@@ -694,6 +695,8 @@
     if (s.bhPerson === 'erwVor25') b.push('Volljährige Person, Behinderung vor dem 25. Geburtstag eingetreten');
     if (s.bhPerson === 'erwNach25') b.push('Erwachsene Person mit Behinderung');
     if (s.gdb === 'antrag') b.push('Feststellung der Behinderung ist beantragt, Bescheid steht noch aus');
+    if (s.teilhabe) b.push('Erhält wegen der Behinderung Hilfe für Schule, Ausbildung oder Berufsvorbereitung (Eingliederungshilfe bzw. Teilhabe am Arbeitsleben)');
+    if (s.bhWeitere) b.push('Weitere Personen mit Schwerbehinderung im Haushalt: ' + s.bhWeitere);
     if (s.mz && Object.keys(s.mz).some(function (k) { return s.mz[k]; })) b.push('Merkzeichen im Ausweis: ' + Object.keys(s.mz).filter(function (k) { return s.mz[k]; }).join(', '));
     else if (s.mzG) b.push('Merkzeichen G oder aG');
     if (s.wohnform === 'eltern') b.push('Wohnt bei den Eltern' + (s.miete ? ', zahlt ' + money(s.miete) + ' Miete im Monat' : ', zahlt keine Miete'));

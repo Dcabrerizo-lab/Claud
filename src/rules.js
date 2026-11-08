@@ -49,7 +49,11 @@ const Rules = (function () {
     // Mittagessen in der Werkstatt (§ 42b Abs. 2 SGB XII), Wohnkosten bei den Eltern ohne Mietvertrag (§ 42a Abs. 3) oder im Wohnheim (§ 42a Abs. 5)
     offen: { essen: 90, elternKdu: 300, heimKdu: 700 },
     // Mehrbedarfe: Alleinerziehende § 21 Abs. 3 SGB II / § 30 Abs. 3 SGB XII; Merkzeichen G bei Rentenalter oder voller Erwerbsminderung § 30 Abs. 1 SGB XII (17 %)
-    mehr: { ae36: 0.36, aeJeKind: 0.12, aeMax: 0.6, g: 0.17 },
+    mehr: { ae36: 0.36, aeJeKind: 0.12, aeMax: 0.6, g: 0.17, teilhabe: 0.35 },
+    // Mehrbedarf 35 % für Menschen mit Behinderung bei Hilfe zur Schule, Ausbildung oder Teilhabe am Arbeitsleben:
+    // § 21 Abs. 4 SGB II (erwerbsfähig), § 23 Nr. 2 SGB II (Sozialgeld ab 15), § 30 Abs. 4 SGB XII (ab 15, Eingliederungshilfe § 112 SGB IX)
+    // Pflege-Pauschbetrag für unentgeltlich Pflegende (§ 33b Abs. 6 EStG): Pflegegrad 2: 600 €, 3: 1.100 €, 4 und 5 sowie Merkzeichen H: 1.800 €
+    pflegePausch: { 2: 600, 3: 1100, 4: 1800, 5: 1800, H: 1800 },
     // Freibetrag beim Wohngeld für eigenes Einkommen von Kindern (16 bis 24 Jahre): 1.200 € im Jahr (§ 17 Nr. 4 WoGG)
     wgKindFrei: 100,
     // Pauschalabzug beim Wohngeld (§ 16 WoGG) je Einkommensart: [kleinster, größter] üblicher Abzug
@@ -74,7 +78,10 @@ const Rules = (function () {
     },
     // Wohnberechtigungsschein Bayern: Art. 4 Abs. 1 BayWoBindG (seit 1.8.2024). In Gebieten mit erhöhtem Wohnungsbedarf darf die Gemeinde per
     // Verordnung höhere Grenzen bis zu den Höchstwerten nach Art. 11 Abs. 1 BayWoFG festlegen (Art. 4 Abs. 3 BayWoBindG); ob das bei dir gilt, weiß die App nicht.
-    wbs: { ein: 17500, zwei: 27500, weitere: 5000, kind: 1300, maxEin: 28300, maxZwei: 43200, maxWeitere: 10700, maxKind: 3200, maxAbzug: 0.3, schwerbFrei: 4000 }
+    wbs: { ein: 17500, zwei: 27500, weitere: 5000, kind: 1300, maxEin: 28300, maxZwei: 43200, maxWeitere: 10700, maxKind: 3200, maxAbzug: 0.3,
+      // Freibeträge für Schwerbehinderte nach dem Muster § 24 WoFG: 4.500 € (GdB 100 oder ab 80 mit Pflegegrad), 2.100 € (unter 80 mit Pflegegrad).
+      // Bayerische Werte bitte fachlich prüfen; die App nutzt sie nur für „möglich“, nie für „wahrscheinlich“.
+      schwerbFreiHoch: 4500, schwerbFreiPflege: 2100 }
   };
 
   // ---------------------------------------------------------------
@@ -213,7 +220,7 @@ const Rules = (function () {
       egFreiWG: sumIf((a, b) => a === 'eg' ? Math.min(R.elterngeldFrei, b) : 0),
       egFreiSGB: sumIf((a, b) => a === 'eg' && b > R.elterngeldFrei ? R.elterngeldFrei : 0),
       vPausch: sumIf((a, b) => a !== 'lohn' && a !== 'ohne' && b > 0 ? R.versPauschale : 0),
-      mzG: !!inp.mzG, mzRF: !!(inp.mz && inp.mz.RF), mzAG: !!(inp.mz && inp.mz.aG), wfbmJahre: num(inp.wfbmJahre), grundrente33: !!inp.grundrente33, bhEinkHoch: !!inp.bhEinkHoch,
+      mzG: !!inp.mzG, mzRF: !!(inp.mz && inp.mz.RF), mzAG: !!(inp.mz && inp.mz.aG), wfbmJahre: num(inp.wfbmJahre), grundrente33: !!inp.grundrente33, bhEinkHoch: !!inp.bhEinkHoch, teilhabe: !!inp.teilhabe, bhWeitere: Math.min(4, Math.max(0, inp.bhWeitere | 0)),
       wohnform: inp.wohnform === 'eltern' || inp.wohnform === 'heim' ? inp.wohnform : '', wfbmEssen: !!inp.wfbmEssen,
       mieteGegeben: !blank(inp.miete) && num(inp.miete) > 0,
       arbeitSit: inp.arbeitSit === 'arbeitslos' || inp.arbeitSit === 'krank' ? inp.arbeitSit : '',
@@ -270,6 +277,25 @@ const Rules = (function () {
     if (!eink) return 0;
     const kinderBedarf = (h.regel - h.regelElt) + h.miete * h.children / h.persons;
     return Math.min(eink, Math.max(0, kinderBedarf - h.children * R.kindergeld));
+  }
+  // Regelsatz der Person mit Behinderung: Kind unter 18 (Stufe 4), erwachsenes Kind im Haushalt (Stufe 3), erwachsene Person (Stufe 1 oder 2)
+  function regelBhPerson(h) {
+    if (h.bhPerson === 'minder') return R.regelbedarf.kind14;
+    if (h.bhPerson === 'erwVor25' && h.young > 0) return R.regelbedarf.jungErwachsener;
+    if (h.bhPerson) return h.adults === 2 ? R.regelbedarf.partner : R.regelbedarf.alleinstehend;
+    return 0;
+  }
+  // Mehrbedarfe wegen Behinderung im Grundsicherungsgeld (SGB II): fest = sicher anzusetzen, offen = möglich (Alter oder Erwerbsfähigkeit unbekannt)
+  function mehrBehSGB2(h) {
+    const rp = regelBhPerson(h);
+    let fest = 0, offen = 0;
+    if (h.teilhabe && !h.wfbm) {
+      if (h.bhPerson === 'minder') offen += R.mehr.teilhabe * rp; // nur ab 15 Jahren (§ 23 Nr. 2 SGB II)
+      else if (h.bhPerson) fest += R.mehr.teilhabe * rp;           // § 21 Abs. 4 SGB II
+    }
+    // Merkzeichen G bei nicht erwerbsfähigen Kindern ab 15 bzw. befristet voll erwerbsgeminderten Erwachsenen (§ 23 Nr. 4 SGB II)
+    if (h.mzG && (h.bhPerson === 'minder' || h.bhPerson === 'erwVor25')) offen += Math.max(0, R.mehr.g * rp - (h.teilhabe ? R.mehr.teilhabe * rp : 0));
+    return { fest, offen };
   }
   // Einkommen der Eltern nach Abzügen (§ 11b SGB II): Freibetrag für Arbeit, Versicherungspauschale, Elterngeld-Freibetrag
   const elternEinkSGB2 = (h) => Math.max(0, h.netto - haushaltsFreibetrag(h) - (h.egFreiSGB || 0) - (h.vPausch || 0));
@@ -334,6 +360,8 @@ const Rules = (function () {
     // § 17 Nr. 1 WoGG: 1.800 €/Jahr je schwerbehindertem Haushaltsmitglied mit GdB 100, oder GdB unter 100 (ab 50) bei Pflegebedürftigkeit
     // (nicht bei vollstationärer Pflege). Pflegegrad allein ohne Schwerbehinderung gibt den Freibetrag nicht. Die App kennt nur eine Person mit Behinderung.
     if (gdbNum(h) === 100 || (gdbNum(h) >= 50 && h.pflegegrad > 0)) freib += R.wohngeld.freibetragBehinderungMonat;
+    // weitere Personen im Haushalt mit GdB 100 oder Schwerbehinderung und Pflegegrad: je 1.800 € im Jahr
+    freib += (h.bhWeitere || 0) * R.wohngeld.freibetragBehinderungMonat;
     if (h.alleinerz) freib += R.wohngeld.freibetragAlleinerzMonat; // § 17 Nr. 3 WoGG: 1.320 € im Jahr, einmal je Haushalt
     // Unterhalt und Unterhaltsvorschuss der Kinder zählen als Einkommen (§ 14 WoGG), ohne Pauschalabzug; eigenes Einkommen
     // der Kinder mit Freibetrag (§ 17 Nr. 4 WoGG); Elterngeld bis 300 € frei (§ 10 Abs. 1 BEEG); Freibeträge nach § 17 WoGG.
@@ -425,10 +453,13 @@ const Rules = (function () {
     const schon = R.sgb2.schon[h.gruppe] * h.adults + R.sgb2.schon['<31'] * h.children;
     if (h.vermoegen > schon) return mk(id, 'nein', 'vermHoch', [['ggeld.verm', { schon: eur(schon) }]]);
     const einkommen = elternEinkSGB2(h) + h.children * R.kindergeld + unterhaltAnrechenbar(h);
-    const bedarf = h.regel + h.miete + (h.mehrAE || 0);
+    const mb = mehrBehSGB2(h);
+    const bedarf = h.regel + h.miete + (h.mehrAE || 0) + mb.fest;
     const luecke = bedarf - einkommen;
-    if (luecke >= R.grundsicherung.sicherAb) return mk(id, 'ja', 'ja', bedarfTx('ja', bedarf).concat([['schaetz.eins', { a: eur(r10(luecke)) }]]));
-    if (luecke > -R.grundsicherung.knappPuffer) return mk(id, 'vielleicht', 'vielleicht', bedarfTx('vielleicht', bedarf));
+    const behTx = (mb.fest ? [['mehr.teilhabe', { betrag: eur(mb.fest) }]] : []).concat(mb.offen ? [['ggeld.mehrBeh']] : [],
+      h.bhPerson === 'erwVor25' && h.erwerbsgemindert ? [['ggeld.kindGsa']] : []);
+    if (luecke >= R.grundsicherung.sicherAb) return mk(id, 'ja', 'ja', bedarfTx('ja', bedarf).concat([['schaetz.eins', { a: eur(r10(luecke)) }]], behTx));
+    if (luecke > -(R.grundsicherung.knappPuffer + mb.offen)) return mk(id, 'vielleicht', 'vielleicht', bedarfTx('vielleicht', bedarf).concat(behTx));
     return mk(id, 'nein', 'einkoHoch', bedarfTx('nein', bedarf));
   }
 
@@ -509,16 +540,22 @@ const Rules = (function () {
     const regelP = h.wohnform === 'heim' ? R.regelbedarf.partner : (h.adults === 2 && !eigen ? R.regelbedarf.partner : R.regelbedarf.alleinstehend);
     // Mehrbedarf Merkzeichen G (§ 30 Abs. 1 SGB XII): 17 % des Regelsatzes der Person
     const mehrG = h.mzG ? R.mehr.g * regelP : 0;
+    // § 30 Abs. 4 SGB XII: 35 % bei Eingliederungshilfe für Schule oder Ausbildung (ab 15; nicht für die Werkstatt). Kind unter 18: Alter unbekannt -> nur „möglich“
+    const rpB = regelBhPerson(h);
+    const teilFest = h.teilhabe && !h.wfbm && (h.bhPerson === 'erwVor25' || h.bhPerson === 'erwNach25') ? R.mehr.teilhabe * (h.bhPerson === 'erwNach25' && eigen ? regelP : rpB) : 0;
+    const teilOffen = h.teilhabe && !h.wfbm && h.bhPerson === 'minder' && !eigen ? R.mehr.teilhabe * rpB : 0;
     let bedarf, kduOffen = 0;
-    if (h.wohnform === 'eltern') { bedarf = regelP + (h.mieteGegeben ? h.miete : 0) + mehrG; if (!h.mieteGegeben) kduOffen = R.offen.elternKdu; }
-    else if (h.wohnform === 'heim') { bedarf = regelP + mehrG; kduOffen = R.offen.heimKdu; }
-    else bedarf = h.regel + h.miete + (h.mehrAE || 0) + mehrG;
-    const offen = kduOffen + (h.wfbmEssen ? R.offen.essen : 0);
+    // Mehrbedarf G und 35 % für dieselbe Person nicht zusammen (§ 30 Abs. 1 Satz 2 SGB XII): der höhere zählt
+    const mehrBeh = h.bhPerson === 'erwNach25' || eigen ? Math.max(mehrG, teilFest) : mehrG + teilFest;
+    if (h.wohnform === 'eltern') { bedarf = regelP + (h.mieteGegeben ? h.miete : 0) + mehrBeh; if (!h.mieteGegeben) kduOffen = R.offen.elternKdu; }
+    else if (h.wohnform === 'heim') { bedarf = regelP + mehrBeh; kduOffen = R.offen.heimKdu; }
+    else bedarf = h.regel + h.miete + (h.mehrAE || 0) + mehrBeh;
+    const offen = kduOffen + (h.wfbmEssen ? R.offen.essen : 0) + teilOffen;
     const eink = gsaEinkommen(h) + (eigen ? 0 : h.children * R.kindergeld + unterhaltAnrechenbar(h));
     const luecke = bedarf - eink;
     const hatRente = (h.pers || []).some((x) => x[0] === 'rente' && x[1] > 0);
     const extra = (h.alterGrenz ? [['gsa.grenz']] : []).concat(h.wfbmEssen ? [['gsa.essen']] : [], kduOffen ? [[h.wohnform === 'heim' ? 'gsa.heim' : 'gsa.eltern']] : [],
-      hatRente && !h.grundrente33 ? [['gsa.grundrente']] : []);
+      hatRente && !h.grundrente33 ? [['gsa.grundrente']] : [], teilFest ? [['mehr.teilhabe', { betrag: eur(teilFest) }]] : [], teilOffen ? [['ggeld.mehrBeh']] : []);
     const ja = !h.alterGrenz;
     if (luecke >= R.grundsicherung.sicherAb) {
       const sch = offen ? ['schaetz.mind', { a: eur(r10(luecke)) }] : ['schaetz.eins', { a: eur(r10(luecke)) }];
@@ -560,7 +597,8 @@ const Rules = (function () {
     if (h.pflegeAntrag) return mk(id, 'vielleicht', 'vielleicht', [['pflege.antrag']]);
     if (h.pflegegrad === 0) return mk(id, 'nein', 'vorausFehlt', [['pflege.keiner']]);
     if (h.pflegegrad === 1) return mk(id, 'ja', 'ja', [['pflege.pg1', { ent: eur(R.pflege.entlastung) }]]);
-    return mk(id, 'ja', 'ja', [['pflege.pg2', { geld: eur(R.pflege.geld[h.pflegegrad]), pg: h.pflegegrad, ent: eur(R.pflege.entlastung) }]]);
+    return mk(id, 'ja', 'ja', [['pflege.pg2', { geld: eur(R.pflege.geld[h.pflegegrad]), pg: h.pflegegrad, ent: eur(R.pflege.entlastung) }],
+      ['pflege.pauschbetrag', { betrag: eur(R.pflegePausch[h.pflegegrad]) }]]);
   }
 
   // ---------------------------------------------------------------
@@ -670,6 +708,7 @@ const Rules = (function () {
     if (g === 'H' || h.mzAG) tx.push(['pausch.fahrt', { betrag: eur(4500) }]);
     else if (gdbNum(h) >= 80 || (gdbNum(h) >= 70 && h.mzG)) tx.push(['pausch.fahrt', { betrag: eur(900) }]);
     if (h.alter || h.netto * 12 < R.beh.grundfreibetrag) tx.push(['pausch.steuer']);
+    if (g === 'H' && h.pflegegrad < 2) tx.push(['pflege.pauschbetrag', { betrag: eur(R.pflegePausch.H) }]);
     if (h.bhPerson === 'minder' || h.bhPerson === 'erwVor25') tx.push(['pausch.kind']);
     return mk(id, 'ja', 'ja', tx);
   }
@@ -767,7 +806,8 @@ const Rules = (function () {
     if (h.land && h.land !== 'BY') return mk(id, 'na', 'land', [['land.wbs']]);
     const grenze = wbsGrenze(h, false), max = wbsGrenze(h, true);
     const jahr = (h.brutto + (h.kindEink || 0)) * 12;
-    const frei = gdbNum(h) >= 50 ? R.wbs.schwerbFrei : 0;
+    const gd = gdbNum(h), pg = h.pflegegrad > 0;
+    const frei = (gd === 100 || (gd >= 80 && pg) ? R.wbs.schwerbFreiHoch : gd >= 50 && pg ? R.wbs.schwerbFreiPflege : 0) + (h.bhWeitere || 0) * R.wbs.schwerbFreiPflege;
     const netto = jahr * (1 - R.wbs.maxAbzug) - frei;
     if (jahr <= grenze) return mk(id, 'ja', 'ja', [['wbs.ja', { grenze: eur(grenze) }], ['wbs.abzug']]);
     if (netto <= grenze) return mk(id, 'vielleicht', 'vielleicht', [['wbs.rand', { grenze: eur(grenze) }], ['wbs.abzug']]);

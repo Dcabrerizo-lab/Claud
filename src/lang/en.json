@@ -739,5 +739,13 @@
   "t.ggeld.gemischt": "If one person has reached retirement age or is fully unable to work, the Sozialamt is responsible for them. If the other person can work, they and the children belong to the Jobcenter (mixed household). Have both checked.",
   "t.krank.minijob": "A mini-job (up to 603 € a month) does not include health insurance through work. It gives no Krankengeld.",
   "t.alg1.minijob": "A mini-job (up to 603 € a month) is not unemployment-insured and does not count for unemployment benefit. Earlier jobs with higher pay can count.",
-  "alt.hinweis": "Note: The rules in this version are as of {stand}. Amounts may have changed since 1 January. Please update the app."
+  "alt.hinweis": "Note: The rules in this version are as of {stand}. Amounts may have changed since 1 January. Please update the app.",
+  "cb.teilhabe": "Gets help for school, training or job preparation because of the disability (e.g. vocational training centre, school assistant). Not: workshop.",
+  "bhWeitere.label": "Other people in the household with a severe disability",
+  "bhWeitere.hint": "Only those with GdB 100, or GdB from 50 and a care level. Important for Wohngeld and the Wohnberechtigungsschein.",
+  "bhWeitere.0": "None",
+  "t.mehr.teilhabe": "This includes an extra allowance of {betrag}: 35 % of the standard rate, because the person gets help for school, training or work due to the disability.",
+  "t.ggeld.mehrBeh": "For a child with a disability aged 15 or over, an extra allowance may be added (35 % with help for school or training, 17 % with marker G). Mention it in the application.",
+  "t.ggeld.kindGsa": "An adult child who permanently cannot work gets their own Grundsicherung from the Sozialamt, even when living with the parents.",
+  "t.pflege.pauschbetrag": "Whoever cares for this person at home without pay gets a care allowance of {betrag} a year in their tax return."
 }

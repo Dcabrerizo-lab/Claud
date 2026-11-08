@@ -207,5 +207,22 @@ ck('Kindergeld bei Behinderung: Einkommen klar zu hoch -> eher nicht', L({ ...sa
 const sabineAusf = { ...sabine, einkommen: [{ art: 'rente', b: 1236, n: 1100 }, { art: 'wfbm', b: 250 }] };
 ck('Ausführliche Version mit zweitem Einkommen: gleiche Einstufung wie die einfache', L(sabineAusf, 'gsa') === L(sabine, 'gsa'));
 
+// ---------- Freibeträge und Mehrbedarfe wegen Behinderung und Pflege (nach der Prüfliste docs/PRUEFLISTE.md) ----------
+// Paar mit einem erwachsenen Kind (20) im Berufsbildungswerk: Mehrbedarf 35 % von 451 € = 157,85 € (§ 21 Abs. 4 SGB II)
+const bbw = { adults: 2, young: 1, art1: 'lohn', brutto: 2400, netto: 1800, miete: 800, vermoegen: 0, gebJahr: 1975, heute: 2026.8, bhPerson: 'erwVor25', gdb: '60', teilhabe: true };
+ck('Mehrbedarf 35 %: Bedarf 1.012 + 451 + 800 + 157,85 = 2.420,85 €', P(bbw, 'ggeld', 'bedarf') === E(1012 + 451 + 800 + 0.35 * 451) && K(bbw, 'ggeld').includes('mehr.teilhabe'));
+ck('Werkstatt zählt nicht als Ausbildungshilfe (kein 35 % in der Grundsicherung)', P({ einkommen: [{ art: 'wfbm', b: 200 }], wfbm: true, teilhabe: true, bhPerson: 'erwNach25', miete: 400, gebJahr: 1990, heute: 2026.8, vermoegen: 0 }, 'gsa', 'bedarf') === E(563 + 400));
+// Kind unter 18 mit G: Alter unbekannt -> Hinweis auf möglichen Mehrbedarf (ab 15)
+ck('Kind mit Merkzeichen G: Hinweis auf möglichen Mehrbedarf', K({ adults: 1, kids: 1, art1: 'lohn', brutto: 1200, netto: 950, miete: 600, vermoegen: 0, bhPerson: 'minder', gdb: '80', mzG: true }, 'ggeld').includes('ggeld.mehrBeh'));
+// Grundsicherung im Alter: G und 35 % nicht zusammen für dieselbe Person (§ 30 Abs. 1 Satz 2 SGB XII), der höhere zählt
+const gsaT = { art1: 'rente', brutto: 500, netto: 500, miete: 400, gebJahr: 1955, heute: 2026.8, vermoegen: 0, bhPerson: 'erwNach25', mzG: true, teilhabe: true };
+ck('G und 35 % für dieselbe Person: nur der höhere (35 % von 563 € = 197,05 €)', P(gsaT, 'gsa', 'bedarf') === E(563 + 400 + 0.35 * 563));
+// Wohngeld: Freibetrag 1.800 € je schwerbehinderter Person (§ 17 Nr. 1 WoGG); zwei Personen -> 300 € im Monat
+const wg2 = { adults: 2, art1: 'rente', art2: 'rente', brutto: 2300, brutto2: 1000, netto: 2050, miete: 700, mietstufe: 3, vermoegen: 0, gebJahr: 1950, heute: 2026.8, bhPerson: 'erwNach25', gdb: '100' };
+ck('Wohngeld: zweite schwerbehinderte Person verbessert die Einstufung oder den Betrag', (() => { const a = res(wg2).m.wohngeld, b = res({ ...wg2, bhWeitere: 1 }).m.wohngeld; const rang = { ja: 2, vielleicht: 1, nein: 0 }; return rang[b.level] > rang[a.level] || JSON.stringify(b.tx) !== JSON.stringify(a.tx); })());
+// Pflege-Pauschbetrag (§ 33b Abs. 6 EStG): 600 / 1.100 / 1.800 €
+ck('Pflege-Pauschbetrag: Pflegegrad 2 600 €, 3 1.100 €, 4 1.800 €', T({ pflegegrad: '2' }, 'pflege', 'pflege.pauschbetrag').betrag === E(600) && T({ pflegegrad: '3' }, 'pflege', 'pflege.pauschbetrag').betrag === E(1100) && T({ pflegegrad: '4' }, 'pflege', 'pflege.pauschbetrag').betrag === E(1800));
+ck('Pflege-Pauschbetrag bei Merkzeichen H ohne Pflegegrad: 1.800 €', T({ bhPerson: 'erwNach25', gdb: 'H' }, 'pausch', 'pflege.pauschbetrag').betrag === E(1800));
+
 console.log(fails ? '\n' + fails + ' von ' + n + ' FEHLGESCHLAGEN' : '\nFall-Tests bestanden: ' + n + ' Prüfungen');
 process.exit(fails ? 1 : 0);

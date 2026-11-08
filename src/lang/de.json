@@ -739,5 +739,13 @@
   "t.ggeld.gemischt": "Ist eine Person im Rentenalter oder voll erwerbsgemindert, ist für sie das Sozialamt zuständig. Kann die andere Person arbeiten, gehört sie mit den Kindern zum Jobcenter (gemischte Bedarfsgemeinschaft). Lass beides prüfen.",
   "t.krank.minijob": "Ein Minijob (bis 603 € im Monat) ist nicht krankenversichert über die Arbeit. Daraus gibt es kein Krankengeld.",
   "t.alg1.minijob": "Ein Minijob (bis 603 € im Monat) ist nicht arbeitslosenversichert und zählt nicht für das Arbeitslosengeld. Zählen können frühere Stellen mit höherem Lohn.",
-  "alt.hinweis": "Achtung: Die Regeln dieser Version haben den Stand {stand}. Seit dem 1. Januar können sich Beträge geändert haben. Bitte die App aktualisieren."
+  "alt.hinweis": "Achtung: Die Regeln dieser Version haben den Stand {stand}. Seit dem 1. Januar können sich Beträge geändert haben. Bitte die App aktualisieren.",
+  "cb.teilhabe": "Bekommt wegen der Behinderung Hilfe für Schule, Ausbildung oder Berufsvorbereitung (z. B. Berufsbildungswerk, Schulbegleitung). Nicht: Werkstatt.",
+  "bhWeitere.label": "Weitere Personen im Haushalt mit Schwerbehinderung",
+  "bhWeitere.hint": "Nur wer GdB 100 hat, oder GdB ab 50 und einen Pflegegrad. Wichtig für Wohngeld und Wohnberechtigungsschein.",
+  "bhWeitere.0": "Keine",
+  "t.mehr.teilhabe": "Darin ist ein Mehrbedarf von {betrag} enthalten: 35 % des Regelsatzes, weil die Person wegen der Behinderung Hilfe für Schule, Ausbildung oder Arbeit bekommt.",
+  "t.ggeld.mehrBeh": "Für ein Kind mit Behinderung ab 15 Jahren kann ein Mehrbedarf dazukommen (35 % bei Hilfe für Schule oder Ausbildung, 17 % bei Merkzeichen G). Sag das beim Antrag.",
+  "t.ggeld.kindGsa": "Ein erwachsenes Kind, das dauerhaft nicht arbeiten kann, bekommt eigene Grundsicherung beim Sozialamt, auch wenn es bei den Eltern wohnt.",
+  "t.pflege.pauschbetrag": "Wer diese Person ohne Bezahlung zu Hause pflegt, bekommt in der Steuererklärung einen Pflege-Pauschbetrag von {betrag} im Jahr."
 }

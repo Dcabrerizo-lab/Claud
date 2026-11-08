@@ -95,6 +95,23 @@ function kinderEinkommen(h) {
   return Math.min(e, Math.max(0, bedarfKinder));
 }
 
+// Regelsatz der Person mit Behinderung und Mehrbedarfe wegen Behinderung (§ 21 Abs. 4, § 23 Nr. 2 und 4 SGB II; § 30 Abs. 1 und 4 SGB XII)
+function regelSatzBehindert(h) {
+  const p = h.e.bhPerson;
+  if (p === 'minder') return RB[4];
+  if (p === 'erwVor25' && h.jung > 0) return RB[3];
+  if (p === 'erwVor25' || p === 'erwNach25') return h.erwachsene === 2 ? RB[2] : RB[1];
+  return 0;
+}
+function behMehrSGB2(h) {
+  const e = h.e, rp = regelSatzBehindert(h);
+  const teil = !!e.teilhabe && !e.wfbm;
+  const sicher = teil && (e.bhPerson === 'erwVor25' || e.bhPerson === 'erwNach25') ? 0.35 * rp : 0;
+  let moeglich = teil && e.bhPerson === 'minder' ? 0.35 * rp : 0;
+  if (e.mzG && (e.bhPerson === 'minder' || e.bhPerson === 'erwVor25')) moeglich += Math.max(0, 0.17 * rp - (e.teilhabe ? 0.35 * rp : 0));
+  return { sicher, moeglich };
+}
+
 function grundsicherungsgeld(h) {
   if (h.rente || h.em) return { level: h.erwachsene === 2 && h.kids > 0 && !h.bezug.grundsicherungsgeld ? 'vielleicht' : 'nein' };
   const b = h.bezug;
@@ -104,10 +121,11 @@ function grundsicherungsgeld(h) {
   if (h.e.ausbildung === 'ich' && !h.e.babBetrieb && jung) return { level: 'nein' };
   const schon = { '': 10000, '<31': 5000, '31-40': 10000, '41-50': 12500, '51+': 20000 }[h.gruppe] * h.erwachsene + 5000 * h.kids;
   if (h.vermoegen > schon) return { level: 'nein' };
-  const bedarf = h.regel + h.miete + h.mehrAE;
+  const bm = behMehrSGB2(h);
+  const bedarf = h.regel + h.miete + h.mehrAE + bm.sicher;
   const eink = elternEinkommenSGB2(h) + h.kids * KG + kinderEinkommen(h);
   const luecke = bedarf - eink;
-  return { level: luecke >= 50 ? 'ja' : luecke > -100 ? 'vielleicht' : 'nein', bedarf, luecke };
+  return { level: luecke >= 50 ? 'ja' : luecke > -(100 + bm.moeglich) ? 'vielleicht' : 'nein', bedarf, luecke };
 }
 
 // ---------- Wohngeld (WoGG) ----------
@@ -143,6 +161,7 @@ function wohngeld(h) {
   const gdb = e.gdb === 'H' ? 100 : Number(e.gdb) || (e.behinderung ? 100 : 0);
   const pg = ['1', '2', '3', '4', '5'].indexOf(String(e.pflegegrad)) >= 0;
   let frei = (gdb === 100 || (gdb >= 50 && pg) ? 150 : 0) + (h.erwachsene === 1 && h.kinder > 0 ? 110 : 0);
+  frei += Math.min(4, Math.max(0, e.bhWeitere | 0)) * 150; // weitere schwerbehinderte Haushaltsmitglieder
   frei += h.p.reduce((s, x) => s + (x.art === 'eg' ? Math.min(300, x.brutto) : 0), 0);
   const plus = h.unterhalt + h.uvg + Math.max(0, h.kindEink - 100);
   const yPess = Math.max(0, h.p.reduce((s, x) => s + x.brutto * (1 - ABZUG[x.art][0]), 0) + plus - frei);
@@ -207,12 +226,17 @@ function grundsicherungAlter(e) {
   if (h.vermoegen > (wf ? 10000 : 10000 * h.erwachsene + 500 * h.kids)) return { level: 'nein' };
   const regelPerson = wf === 'heim' || (h.erwachsene === 2 && !wf) ? RB[2] : RB[1];
   const g = e.mzG ? 0.17 * regelPerson : 0;
+  const rpB = regelSatzBehindert(h), teil = !!e.teilhabe && !e.wfbm;
+  const tSicher = teil && (e.bhPerson === 'erwVor25' || e.bhPerson === 'erwNach25') ? 0.35 * (e.bhPerson === 'erwNach25' && wf ? regelPerson : rpB) : 0;
+  const tMoeglich = teil && e.bhPerson === 'minder' && !wf ? 0.35 * rpB : 0;
+  const mehrB = e.bhPerson === 'erwNach25' || wf ? Math.max(g, tSicher) : g + tSicher;
   const mieteDa = !leer(e.miete) && zahl(e.miete) > 0;
   let bedarf, unsicher = 0;
-  if (wf === 'eltern') { bedarf = RB[1] + (mieteDa ? zahl(e.miete) : 0) + g; unsicher = mieteDa ? 0 : 300; }
-  else if (wf === 'heim') { bedarf = RB[2] + g; unsicher = 700; }
-  else bedarf = h.regel + h.miete + h.mehrAE + g;
+  if (wf === 'eltern') { bedarf = RB[1] + (mieteDa ? zahl(e.miete) : 0) + mehrB; unsicher = mieteDa ? 0 : 300; }
+  else if (wf === 'heim') { bedarf = RB[2] + mehrB; unsicher = 700; }
+  else bedarf = h.regel + h.miete + h.mehrAE + mehrB;
   if (e.wfbmEssen) unsicher += 90;
+  unsicher += tMoeglich;
   const eink = einkommenSGB12(e, h) + (wf ? 0 : h.kids * KG + kinderEinkommen(h));
   const luecke = bedarf - eink;
   let level = luecke >= 50 ? 'ja' : luecke > -(100 + unsicher) ? 'vielleicht' : 'nein';
