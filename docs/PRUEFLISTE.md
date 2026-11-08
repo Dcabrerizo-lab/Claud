@@ -4,7 +4,9 @@ Diese Liste geht **vom Gesetz aus, nicht vom Code**. Sie zählt je Leistung die 
 Die Tests (auch die unabhängige Referenzrechnung) prüfen nur, ob die App ihre Regeln richtig rechnet. Ob eine Regel ganz fehlt, zeigt nur diese Liste.
 Bei jeder neuen Regel und jedes Jahr zum 1. Januar durchgehen.
 
-Status: ✓ eingebaut (mit Test) · ◐ als Hinweis oder als „möglich“ · ✗ fehlt
+Status: ✓ eingebaut (mit Test) · ◐ als Hinweis oder als „möglich“ (keine feste Zahl möglich, z. B. weil sie vom Einzelfall abhängt) · ✗ fehlt
+
+Aktuell gibt es in den geprüften Leistungen **keinen Punkt mit ✗** mehr.
 
 ## Grundsicherungsgeld (SGB II)
 
@@ -19,11 +21,11 @@ Status: ✓ eingebaut (mit Test) · ◐ als Hinweis oder als „möglich“ · �
 | Mehrbedarf 35 % bei Teilhabe am Arbeitsleben bzw. Schule und Ausbildung (§ 21 Abs. 4, § 23 Nr. 2) | ✓ / ◐ bei Kindern (Alter unbekannt) |
 | Mehrbedarf G für nicht erwerbsfähige Personen (§ 23 Nr. 4) | ◐ |
 | Gemischte Bedarfsgemeinschaft (eine Person im Rentenalter oder voll erwerbsgemindert) | ◐ |
-| Mehrbedarf Schwangerschaft 17 % ab der 13. Woche (§ 21 Abs. 2) | ✗ |
-| Mehrbedarf kostenaufwändige Ernährung (§ 21 Abs. 5) | ✗ |
-| Mehrbedarf dezentrale Warmwasserbereitung (§ 21 Abs. 7) | ✗ |
-| Mehrbedarf Schulbücher (§ 21 Abs. 6a) | ✗ |
-| Angemessenheit der Miete nach örtlicher Richtlinie | ✗ (bewusst: Daten fehlen) |
+| Mehrbedarf Schwangerschaft 17 % ab der 13. Woche (§ 21 Abs. 2), Hinweis Erstausstattung (§ 24 Abs. 3) | ✓ |
+| Mehrbedarf kostenaufwändige Ernährung (§ 21 Abs. 5): Höhe je Krankheit | ◐ (als „möglich“ mit Hinweis) |
+| Mehrbedarf dezentrale Warmwasserbereitung (§ 21 Abs. 7) | ✓ |
+| Mehrbedarf Schulbücher (§ 21 Abs. 6a); in Bayern Lernmittelfreiheit | ◐ (Hinweis außerhalb Bayerns) |
+| Angemessenheit der Miete nach örtlicher Richtlinie | ◐ (Hinweis; örtliche Grenzen fehlen) |
 
 ## Grundsicherung im Alter und bei Erwerbsminderung (SGB XII)
 
@@ -41,9 +43,9 @@ Status: ✓ eingebaut (mit Test) · ◐ als Hinweis oder als „möglich“ · �
 | Einkommen der Eltern erst ab 100.000 € (§ 94 Abs. 1a) | ✓ |
 | Schonvermögen 10.000 € je Erwachsenem (Barbetragsverordnung) | ✓ |
 | Pflegegeld zählt nicht als Einkommen (§ 13 Abs. 5 SGB XI) | ✓ (wird nicht abgefragt) |
-| Mehrbedarf Schwangerschaft (§ 30 Abs. 2) | ✗ |
-| Mehrbedarf kostenaufwändige Ernährung (§ 30 Abs. 5) | ✗ |
-| Mehrbedarf dezentrale Warmwasserbereitung (§ 30 Abs. 7) | ✗ |
+| Mehrbedarf Schwangerschaft (§ 30 Abs. 2) | ✓ |
+| Mehrbedarf kostenaufwändige Ernährung (§ 30 Abs. 5) | ◐ |
+| Mehrbedarf dezentrale Warmwasserbereitung (§ 30 Abs. 7) | ✓ |
 
 ## Wohngeld (WoGG)
 
@@ -56,7 +58,7 @@ Status: ✓ eingebaut (mit Test) · ◐ als Hinweis oder als „möglich“ · �
 | Freibetrag Einkommen von Kindern 16–24 (§ 17 Nr. 4) | ✓ |
 | Elterngeld bis 300 € frei (§ 10 Abs. 1 BEEG) | ✓ |
 | Pflegegeld, Kindergeld und Kinderzuschlag kein Einkommen (§ 14) | ✓ |
-| Grundrentenfreibetrag (§ 17a) | ✗ |
+| Grundrentenfreibetrag (§ 17a) | ✓ |
 | Vermögen: Regelvermutung der Verwaltungsvorschrift | ✓ |
 
 ## Kinderzuschlag (BKGG)
@@ -66,7 +68,7 @@ Status: ✓ eingebaut (mit Test) · ◐ als Hinweis oder als „möglich“ · �
 | Höchstbetrag, Mindesteinkommen, 45 % Minderung, Vermögen | ✓ |
 | Einkommen der Eltern nach § 11b SGB II (Freibeträge) | ✓ |
 | Mehrbedarf Alleinerziehende im Bedarf der Eltern | ✓ |
-| Mehrbedarfe wegen Behinderung eines Elternteils im Bedarf der Eltern | ✗ |
+| Mehrbedarfe der Eltern im Bedarf der Eltern (Schwangerschaft, Warmwasser, 35 % Teilhabe) | ✓ |
 
 ## Steuer (EStG)
 
@@ -75,30 +77,30 @@ Status: ✓ eingebaut (mit Test) · ◐ als Hinweis oder als „möglich“ · �
 | Behinderten-Pauschbetrag (§ 33b Abs. 3), Übertragung auf die Eltern (§ 33b Abs. 5) | ✓ |
 | Fahrtkostenpauschale 900 / 4.500 € (§ 33 Abs. 2a) | ✓ |
 | Pflege-Pauschbetrag 600 / 1.100 / 1.800 € (§ 33b Abs. 6) | ✓ |
-| Steuerermäßigung haushaltsnahe Dienstleistungen und Pflege (§ 35a) | ✗ |
+| Steuerermäßigung haushaltsnahe Dienstleistungen und Pflege (§ 35a) | ◐ (Hinweis) |
 
 ## Pflege (SGB XI)
 
 | Regel | Status |
 |---|---|
 | Pflegegeld, Entlastungsbetrag | ✓ |
-| Verhinderungspflege, Pflegehilfsmittel, Wohnumfeld | ✓ |
-| Pflegesachleistung und Kombinationsleistung (§§ 36, 38) | ✗ |
-| Tages- und Nachtpflege (§ 41) | ✗ |
-| Rentenversicherung für pflegende Angehörige (§ 44) | ✗ |
-| Pflegezeit, Familienpflegezeit, Pflegeunterstützungsgeld | ✗ |
+| Verhinderungspflege, Kurzzeitpflege (Entlastungsbudget 3.539 €), Pflegehilfsmittel, Wohnumfeld | ✓ |
+| Pflegesachleistung und Kombinationsleistung (§§ 36, 38) | ✓ |
+| Tages- und Nachtpflege (§ 41) | ✓ |
+| Rentenversicherung für pflegende Angehörige (§ 44) | ✓ (Hinweis mit Voraussetzungen) |
+| Pflegezeit, Familienpflegezeit, Pflegeunterstützungsgeld | ✓ (Hinweis) |
 
 ## Schwerbehinderung (SGB IX und andere)
 
 | Regel | Status |
 |---|---|
 | Schwerbehindertenausweis, Zusatzurlaub 5 Tage (§ 208) | ✓ |
-| Wertmarke: kostenlos bei H/Bl, mit G und Grundsicherung (§ 228) | ◐ (einfache Version) |
+| Wertmarke: kostenlos bei H/Bl/TBl/aG, mit G und Grundsicherung (§ 228) | ✓ |
 | Begleitperson bei B, Rundfunk-Ermäßigung bei RF | ◐ |
-| Kfz-Steuer-Ermäßigung bei G, Befreiung bei H/Bl/aG | ◐ |
-| Altersrente für schwerbehinderte Menschen (§ 236a SGB VI) | ✗ |
-| Besonderer Kündigungsschutz (§ 168 SGB IX) | ✗ |
-| Parkerleichterungen bei aG/Bl | ✗ |
+| Kfz-Steuer-Ermäßigung bei G, Befreiung bei H/Bl/aG | ✓ |
+| Altersrente für schwerbehinderte Menschen (§§ 37, 236a SGB VI), Altersgrenzen je Jahrgang | ✓ (eigene Karte) |
+| Besonderer Kündigungsschutz (§ 168 SGB IX) | ✓ (Hinweis) |
+| Parkerleichterungen bei aG/Bl | ✓ (Hinweis) |
 | Wohnberechtigungsschein: Freibetrag Schwerbehinderte | ✓ (Staffel nach § 24 WoFG; bayerische Werte prüfen) |
 
 ## Krankenversicherung (SGB V)
@@ -106,5 +108,17 @@ Status: ✓ eingebaut (mit Test) · ◐ als Hinweis oder als „möglich“ · �
 | Regel | Status |
 |---|---|
 | Belastungsgrenze 2 % / 1 % bei chronisch Kranken (GdB ab 60 oder Pflegegrad 3–5) | ✓ |
-| Fahrtkosten zur ambulanten Behandlung bei aG, Bl, H oder Pflegegrad 3 (mit Einschränkung) bis 5 | ✗ |
+| Fahrtkosten zur ambulanten Behandlung bei aG, Bl, H oder Pflegegrad 3 (mit Einschränkung) bis 5 (§ 60 SGB V) | ✓ (Hinweis) |
 | Krankengeld, Minijob ohne Krankengeld | ✓ |
+
+## Leistungen, die die App (noch) nicht prüft
+
+Damit niemand denkt, die App decke alles ab:
+
+- Elterngeld, Mutterschaftsgeld, Kinderbetreuung (Kita-Gebühren-Ermäßigung)
+- Hilfe zur Pflege (SGB XII), wenn Pflegeversicherung und Einkommen nicht reichen
+- Blindenhilfe nach dem SGB XII (ergänzend zum Landesblindengeld)
+- Leistungen nach dem Asylbewerberleistungsgesetz
+- Wohngeld und Zuständigkeiten außerhalb Bayerns: Wohngeld ja, Anschriften und landesrechtliche Leistungen nur für Bayern
+- Härtefallleistungen und einmalige Bedarfe im Einzelfall (z. B. Waschmaschine, Umzug, Mietschulden)
+- Schuldnerberatung, Sozialtarife (Strom, Telefon, Kultur), Bildungskredit

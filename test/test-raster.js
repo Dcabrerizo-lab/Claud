@@ -47,6 +47,7 @@ function haushaltZufall(i) {
     wfbm: rnd() < 0.05,
     gdb: pick(['', '', '', '50', '80', '100', 'H']),
     bhPerson: pick(['', '', 'minder', 'erwVor25', 'erwNach25']), teilhabe: rnd() < 0.25, mzG: rnd() < 0.2, bhWeitere: pick([0, 0, 0, 1, 2]),
+    schwanger: rnd() < 0.1, warmwasser: rnd() < 0.2, ernaehrung: rnd() < 0.1, grundrente33: rnd() < 0.15,
     pflegegrad: pick(['', '', '', '2', '3']),
     arbeitSit: pick(['', '', 'arbeitslos', 'krank']), algZeit: rnd() < 0.6, algMonate: pick(['', 12, 16, 20, 24, 30, 36, 48]),
     krankWochen: pick(['', 'unter6', 'laeuft', 'ende']), lohnVorher: pick(['', geld(4000, 10), 9000, 6000]),

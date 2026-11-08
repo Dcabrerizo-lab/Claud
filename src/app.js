@@ -377,7 +377,7 @@
     pr.appendChild(b);
   });
 
-  var CHECKS = ['mzG', 'algZeit', 'grundrente33', 'wfbmEssen', 'teilhabe', 'kinder12', 'unterhaltFehlt', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt'];
+  var CHECKS = ['mzG', 'algZeit', 'grundrente33', 'wfbmEssen', 'teilhabe', 'schwanger', 'ernaehrung', 'warmwasser', 'kinder12', 'unterhaltFehlt', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt'];
   var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'ek1bArt', 'bhWeitere', 'arbeitSit', 'algMonate', 'krankWochen', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd'];
   var NUMS = ['miete', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'kindEink', 'lohnVorher', 'ek1bBetrag', 'vermoegen'];
   var BEZUG = ['grundsicherungsgeld', 'sozialamt', 'wohngeld', 'kiz', 'kindergeld'];
@@ -646,6 +646,7 @@
     bafoeg: { stelle: 'Amt für Ausbildungsförderung', betreff: 'Antrag auf Ausbildungsförderung nach dem BAföG', satz: 'hiermit beantrage ich Ausbildungsförderung nach dem Bundesausbildungsförderungsgesetz (BAföG).' },
     pflege: { stelle: 'Pflegekasse', betreff: 'Antrag auf Feststellung eines Pflegegrades und Leistungen der Pflegeversicherung', satz: 'hiermit beantrage ich die Feststellung eines Pflegegrades und Leistungen der Pflegeversicherung, insbesondere Pflegegeld und den Entlastungsbetrag.' },
     kgBeh: { stelle: 'Familienkasse der Bundesagentur für Arbeit', betreff: 'Antrag auf Kindergeld für ein volljähriges Kind mit Behinderung', satz: 'hiermit beantrage ich Kindergeld für mein volljähriges Kind. Die Behinderung ist vor dem 25. Geburtstag eingetreten, das Kind kann sich wegen der Behinderung nicht selbst unterhalten.' },
+    srente: { stelle: 'Deutsche Rentenversicherung', betreff: 'Altersrente für schwerbehinderte Menschen: Bitte um Rentenauskunft und Beratung', satz: 'hiermit bitte ich um eine Rentenauskunft und um Beratung zur Altersrente für schwerbehinderte Menschen, insbesondere zum frühestmöglichen Rentenbeginn mit und ohne Abschlag und zur Wartezeit von 35 Jahren.' },
     emrente: { stelle: 'Deutsche Rentenversicherung', betreff: 'Antrag auf Rente wegen Erwerbsminderung', satz: 'hiermit beantrage ich eine Rente wegen Erwerbsminderung. Bitte prüfen Sie auch Leistungen zur Teilhabe (Rehabilitation).' },
     eingl: { stelle: 'Träger der Eingliederungshilfe (in Bayern der Bezirk; bei seelischer Behinderung eines Kindes das Jugendamt)', betreff: 'Antrag auf Leistungen der Eingliederungshilfe', satz: 'hiermit beantrage ich Leistungen der Eingliederungshilfe für die Person mit Behinderung in meinem Haushalt.' },
     ausweis: { stelle: 'Versorgungsamt (in Bayern: Zentrum Bayern Familie und Soziales)', betreff: 'Antrag auf Feststellung der Behinderung und Ausstellung eines Schwerbehindertenausweises', satz: 'hiermit beantrage ich die Feststellung des Grades der Behinderung, der Merkzeichen und die Ausstellung eines Schwerbehindertenausweises.' },
@@ -695,6 +696,9 @@
     if (s.bhPerson === 'erwVor25') b.push('Volljährige Person, Behinderung vor dem 25. Geburtstag eingetreten');
     if (s.bhPerson === 'erwNach25') b.push('Erwachsene Person mit Behinderung');
     if (s.gdb === 'antrag') b.push('Feststellung der Behinderung ist beantragt, Bescheid steht noch aus');
+    if (s.schwanger) b.push('Schwangerschaft (ab der 13. Woche)');
+    if (s.ernaehrung) b.push('Krankheitsbedingt kostenaufwändige Ernährung (ärztliche Bescheinigung folgt)');
+    if (s.warmwasser) b.push('Warmwasser über Boiler oder Durchlauferhitzer in der Wohnung');
     if (s.teilhabe) b.push('Erhält wegen der Behinderung Hilfe für Schule, Ausbildung oder Berufsvorbereitung (Eingliederungshilfe bzw. Teilhabe am Arbeitsleben)');
     if (s.bhWeitere) b.push('Weitere Personen mit Schwerbehinderung im Haushalt: ' + s.bhWeitere);
     if (s.mz && Object.keys(s.mz).some(function (k) { return s.mz[k]; })) b.push('Merkzeichen im Ausweis: ' + Object.keys(s.mz).filter(function (k) { return s.mz[k]; }).join(', '));
@@ -1235,8 +1239,8 @@
   }
 
   // Ergebnis in Leichter Sprache: nur, was für eine Person mit Behinderung zählt; Beträge grob, mit zuständiger Stelle
-  var ES_KARTEN = ['gsa', 'ggeld', 'wohngeld', 'pflege', 'pflegeplus', 'emrente', 'rundfunk', 'ausweis', 'eingl', 'blindengeld', 'zuzahl', 'kgBeh', 'pausch', 'arbeit'];
-  var ES_ICON = { gsa: '💶', ggeld: '💶', wohngeld: '🏠', pflege: '🤝', pflegeplus: '🧺', emrente: '👴', rundfunk: '📺', ausweis: '🪪', eingl: '🧩', blindengeld: '🦯', zuzahl: '💊', kgBeh: '👪', pausch: '🧾', arbeit: '💼' };
+  var ES_KARTEN = ['gsa', 'ggeld', 'wohngeld', 'pflege', 'pflegeplus', 'emrente', 'srente', 'rundfunk', 'ausweis', 'eingl', 'blindengeld', 'zuzahl', 'kgBeh', 'pausch', 'arbeit'];
+  var ES_ICON = { gsa: '💶', ggeld: '💶', wohngeld: '🏠', pflege: '🤝', pflegeplus: '🧺', emrente: '👴', srente: '🧓', rundfunk: '📺', ausweis: '🪪', eingl: '🧩', blindengeld: '🦯', zuzahl: '💊', kgBeh: '👪', pausch: '🧾', arbeit: '💼' };
   function esErgebnis(fr) {
     var out = Rules.evaluate(esEingabe());
     lastEs = out;

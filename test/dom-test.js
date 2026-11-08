@@ -38,7 +38,7 @@ check('Start ohne Beispielwerte: leeres Formular', d.getElementById('ek1Brutto')
 check('Start zeigt Anleitung statt Karten', d.querySelector('#cards .startcard') !== null && cards().length === 0, d.getElementById('cards').innerHTML.slice(0, 200));
 check('Start: Beispiel-Hinweis versteckt', d.getElementById('sampleNotice').hidden === true);
 d.getElementById('p1').click();
-check('23 Ergebnis-Karten', cards().length === 23, cards().length);
+check('24 Ergebnis-Karten', cards().length === 24, cards().length);
 check('Beispiel 1: Wohngeld, Kinderzuschlag, Kindergeld wahrscheinlich', ['Wohngeld', 'Kinderzuschlag', 'Kindergeld'].every((n) => level(n) === 'ja'), names() + ' | ' + pills());
 check('Zusammenfassung zeigt Anzahl', /\d+ wahrscheinlich/.test(d.getElementById('count').textContent), d.getElementById('count').textContent);
 check('Unwahrscheinliche Leistungen sind eingeklappt gruppiert', d.querySelector('.neinbox') !== null && d.querySelector('.neinbox').open === false);
@@ -95,7 +95,7 @@ setChk('b-grundsicherungsgeld', true);
 check('Grundsicherungsgeld: Hinweis im Zusammenspiel', /Grundsicherungsgeld/.test(d.getElementById('together').textContent));
 d.getElementById('p1').click();
 d.getElementById('adults2').checked = true; fire(d.getElementById('adults2'), 'change');
-check('Zwei Erwachsene werden übernommen', cards().length === 23);
+check('Zwei Erwachsene werden übernommen', cards().length === 24);
 
 // ---------- Einkommen je Person: nur passende Felder, verständliche Beschriftung ----------
 d.getElementById('p1').click();
@@ -122,7 +122,7 @@ check('Große Schrift schaltet Klasse', d.getElementById('app').classList.contai
 
 // Leere Eingaben
 ['miete', 'ek1Brutto', 'ek1Netto', 'vermoegen'].forEach((k) => setNum(k, ''));
-check('Leere Felder erzeugen keinen Fehler', errors.length === 0 && cards().length === 23, errors.join('; '));
+check('Leere Felder erzeugen keinen Fehler', errors.length === 0 && cards().length === 24, errors.join('; '));
 
 // ---------- Sprachen ----------
 const LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro'];

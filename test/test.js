@@ -253,7 +253,7 @@ const order = { ja: 0, vielleicht: 1, nein: 2, na: 3 };
 let sorted = true;
 [t1, t2, t3, t4, t5, t6].forEach((r) => { for (let i = 1; i < r.results.length; i++) if (order[r.results[i - 1].level] > order[r.results[i].level]) sorted = false; });
 check('Ergebnisse sortiert nach Wahrscheinlichkeit', sorted);
-check('Leere Eingaben erzeugen 23 Ergebnisse', ev({}).results.length === 23);
+check('Leere Eingaben erzeugen 24 Ergebnisse', ev({}).results.length === 24);
 check('Jedes Ergebnis hat Namen und Schritte', ev({}).results.every((r) => r.name && r.steps && r.steps.wo));
 
 // 12) Sprachen

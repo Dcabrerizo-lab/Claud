@@ -103,6 +103,18 @@ function regelSatzBehindert(h) {
   if (p === 'erwVor25' || p === 'erwNach25') return h.erwachsene === 2 ? RB[2] : RB[1];
   return 0;
 }
+// Schwangerschaft 17 % (Erwachsenen-Regelsatz), Warmwasser aus dem Boiler (2,3 / 1,4 / 1,2 / 0,8 %), Ernährung nur als „möglich“ (20 % RS1)
+function mehrSonst(h, eigenRegel) {
+  const e = h.e;
+  const erw = eigenRegel || (h.erwachsene === 2 ? RB[2] : RB[1]);
+  const schw = e.schwanger ? 0.17 * erw : 0;
+  let ww = 0, wwEltern = 0;
+  if (e.warmwasser) {
+    if (eigenRegel) ww = 0.023 * eigenRegel;
+    else { wwEltern = 0.023 * h.regelEltern; ww = wwEltern + 0.023 * h.jung * RB[3] + 0.014 * h.k14 * RB[4] + 0.012 * h.mitte * RB[5] + 0.008 * h.u6 * RB[6]; }
+  }
+  return { sicher: schw + ww, eltern: schw + wwEltern, moeglich: e.ernaehrung ? 0.2 * RB[1] : 0 };
+}
 function behMehrSGB2(h) {
   const e = h.e, rp = regelSatzBehindert(h);
   const teil = !!e.teilhabe && !e.wfbm;
@@ -121,11 +133,11 @@ function grundsicherungsgeld(h) {
   if (h.e.ausbildung === 'ich' && !h.e.babBetrieb && jung) return { level: 'nein' };
   const schon = { '': 10000, '<31': 5000, '31-40': 10000, '41-50': 12500, '51+': 20000 }[h.gruppe] * h.erwachsene + 5000 * h.kids;
   if (h.vermoegen > schon) return { level: 'nein' };
-  const bm = behMehrSGB2(h);
-  const bedarf = h.regel + h.miete + h.mehrAE + bm.sicher;
+  const bm = behMehrSGB2(h), ms = mehrSonst(h);
+  const bedarf = h.regel + h.miete + h.mehrAE + bm.sicher + ms.sicher;
   const eink = elternEinkommenSGB2(h) + h.kids * KG + kinderEinkommen(h);
   const luecke = bedarf - eink;
-  return { level: luecke >= 50 ? 'ja' : luecke > -(100 + bm.moeglich) ? 'vielleicht' : 'nein', bedarf, luecke };
+  return { level: luecke >= 50 ? 'ja' : luecke > -(100 + bm.moeglich + ms.moeglich) ? 'vielleicht' : 'nein', bedarf, luecke };
 }
 
 // ---------- Wohngeld (WoGG) ----------
@@ -163,13 +175,15 @@ function wohngeld(h) {
   let frei = (gdb === 100 || (gdb >= 50 && pg) ? 150 : 0) + (h.erwachsene === 1 && h.kinder > 0 ? 110 : 0);
   frei += Math.min(4, Math.max(0, e.bhWeitere | 0)) * 150; // weitere schwerbehinderte Haushaltsmitglieder
   frei += h.p.reduce((s, x) => s + (x.art === 'eg' ? Math.min(300, x.brutto) : 0), 0);
+  // § 17a WoGG: Grundrentenfreibetrag je Rente
+  frei += e.grundrente33 ? h.p.filter((x) => x.art === 'rente').reduce((a, x) => a + Math.min(100 + 0.3 * Math.max(0, x.brutto - 100), 0.5 * RB[1]), 0) : 0;
   const plus = h.unterhalt + h.uvg + Math.max(0, h.kindEink - 100);
   const yPess = Math.max(0, h.p.reduce((s, x) => s + x.brutto * (1 - ABZUG[x.art][0]), 0) + plus - frei);
   const yOpt = Math.max(0, h.p.reduce((s, x) => s + x.brutto * (1 - ABZUG[x.art][1]), 0) + plus - frei);
   if (yOpt > yMaxHi) return { level: 'nein' };
   let level = yPess <= yMaxLo ? 'ja' : 'vielleicht';
   const mittel = h.netto + h.kinder * KG + h.unterhalt + h.uvg + h.kindEink;
-  if (mittel < 0.8 * (h.regel + h.miete + h.mehrAE)) level = 'vielleicht';
+  if (mittel < 0.8 * (h.regel + h.miete + h.mehrAE)) level = 'vielleicht'; // App: ohne weitere Mehrbedarfe
   let betrag = null;
   if (st) { const M = mieteWG(st, n, h.miete, 1); betrag = [Math.max(0, runde10(wg(n, M, yPess))), Math.max(0, runde10(wg(n, M, yOpt)))]; }
   return { level, yPess, yOpt, betrag };
@@ -186,11 +200,12 @@ function kinderzuschlag(h) {
   if (h.brutto < (h.erwachsene === 2 ? 900 : 600)) return { level: 'nein' };
   const max = 297 * h.kids;
   const anteilEltern = h.erwachsene / (h.erwachsene + (h.erwachsene === 1 ? 0.29 : 0.4) * h.kids);
-  const bedarfEltern = h.regelEltern + h.mehrAE + h.miete * anteilEltern;
+  const ms = mehrSonst(h), bm = behMehrSGB2(h);
+  const bedarfEltern = h.regelEltern + h.mehrAE + ms.eltern + (h.e.bhPerson === 'erwNach25' ? bm.sicher : 0) + h.miete * anteilEltern;
   const kindAnr = h.unterhalt + h.uvg + Math.max(0, h.kindEink - MINIJOB);
   const kiz = Math.max(0, max - 0.45 * Math.max(0, elternEinkommenSGB2(h) - bedarfEltern) - 0.45 * kindAnr);
   if (kiz <= 0) return { level: 'nein' };
-  if (h.netto + h.unterhalt + h.uvg + h.kindEink + max + 300 < h.regel + h.miete + h.mehrAE) return { level: 'vielleicht', kiz };
+  if (h.netto + h.unterhalt + h.uvg + h.kindEink + max + 300 < h.regel + h.miete + h.mehrAE + ms.sicher + bm.sicher) return { level: 'vielleicht', kiz };
   return { level: kiz >= 60 ? 'ja' : 'vielleicht', kiz };
 }
 
@@ -232,11 +247,13 @@ function grundsicherungAlter(e) {
   const mehrB = e.bhPerson === 'erwNach25' || wf ? Math.max(g, tSicher) : g + tSicher;
   const mieteDa = !leer(e.miete) && zahl(e.miete) > 0;
   let bedarf, unsicher = 0;
+  const msG = mehrSonst(h, wf ? regelPerson : 0);
   if (wf === 'eltern') { bedarf = RB[1] + (mieteDa ? zahl(e.miete) : 0) + mehrB; unsicher = mieteDa ? 0 : 300; }
   else if (wf === 'heim') { bedarf = RB[2] + mehrB; unsicher = 700; }
   else bedarf = h.regel + h.miete + h.mehrAE + mehrB;
   if (e.wfbmEssen) unsicher += 90;
-  unsicher += tMoeglich;
+  unsicher += tMoeglich + msG.moeglich;
+  bedarf += msG.sicher;
   const eink = einkommenSGB12(e, h) + (wf ? 0 : h.kids * KG + kinderEinkommen(h));
   const luecke = bedarf - eink;
   let level = luecke >= 50 ? 'ja' : luecke > -(100 + unsicher) ? 'vielleicht' : 'nein';

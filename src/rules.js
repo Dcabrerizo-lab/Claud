@@ -49,11 +49,19 @@ const Rules = (function () {
     // Mittagessen in der Werkstatt (§ 42b Abs. 2 SGB XII), Wohnkosten bei den Eltern ohne Mietvertrag (§ 42a Abs. 3) oder im Wohnheim (§ 42a Abs. 5)
     offen: { essen: 90, elternKdu: 300, heimKdu: 700 },
     // Mehrbedarfe: Alleinerziehende § 21 Abs. 3 SGB II / § 30 Abs. 3 SGB XII; Merkzeichen G bei Rentenalter oder voller Erwerbsminderung § 30 Abs. 1 SGB XII (17 %)
-    mehr: { ae36: 0.36, aeJeKind: 0.12, aeMax: 0.6, g: 0.17, teilhabe: 0.35 },
+    mehr: { ae36: 0.36, aeJeKind: 0.12, aeMax: 0.6, g: 0.17, teilhabe: 0.35, schwanger: 0.17, ernaehrung: 0.2,
+      // Dezentrale Warmwasserbereitung (§ 21 Abs. 7 SGB II, § 30 Abs. 7 SGB XII): Anteil am Regelbedarf je Person
+      ww: { erw: 0.023, kind14: 0.014, kind: 0.012, kind0: 0.008 } },
+    // Pflegesachleistung (§ 36 SGB XI) und Tages-/Nachtpflege (§ 41 SGB XI) im Monat, seit 1.1.2025; Entlastungsbudget für Verhinderungs-
+    // und Kurzzeitpflege seit 1.7.2025 (§ 42a SGB XI)
+    pflegeSach: { 2: 796, 3: 1497, 4: 1859, 5: 2299 }, pflegeTages: { 2: 721, 3: 1357, 4: 1685, 5: 2085 }, entlastungsbudget: 3539,
     // Mehrbedarf 35 % für Menschen mit Behinderung bei Hilfe zur Schule, Ausbildung oder Teilhabe am Arbeitsleben:
     // § 21 Abs. 4 SGB II (erwerbsfähig), § 23 Nr. 2 SGB II (Sozialgeld ab 15), § 30 Abs. 4 SGB XII (ab 15, Eingliederungshilfe § 112 SGB IX)
     // Pflege-Pauschbetrag für unentgeltlich Pflegende (§ 33b Abs. 6 EStG): Pflegegrad 2: 600 €, 3: 1.100 €, 4 und 5 sowie Merkzeichen H: 1.800 €
     pflegePausch: { 2: 600, 3: 1100, 4: 1800, 5: 1800, H: 1800 },
+    // Altersrente für schwerbehinderte Menschen (§ 37, § 236a SGB VI): abschlagsfrei ab 65 (ab Jahrgang 1964), frühestens 3 Jahre früher mit Abschlag
+    // (höchstens 10,8 %); Jahrgänge 1952 bis 1963 nach der gleichen Staffel wie die Regelaltersgrenze, nur 2 Jahre früher; bis 1951: 63. Wartezeit 35 Jahre.
+    srente: { frei: 65, frueher: 3, bis1951: 63, abschlag: 10.8 },
     // Freibetrag beim Wohngeld für eigenes Einkommen von Kindern (16 bis 24 Jahre): 1.200 € im Jahr (§ 17 Nr. 4 WoGG)
     wgKindFrei: 100,
     // Pauschalabzug beim Wohngeld (§ 16 WoGG) je Einkommensart: [kleinster, größter] üblicher Abzug
@@ -220,7 +228,7 @@ const Rules = (function () {
       egFreiWG: sumIf((a, b) => a === 'eg' ? Math.min(R.elterngeldFrei, b) : 0),
       egFreiSGB: sumIf((a, b) => a === 'eg' && b > R.elterngeldFrei ? R.elterngeldFrei : 0),
       vPausch: sumIf((a, b) => a !== 'lohn' && a !== 'ohne' && b > 0 ? R.versPauschale : 0),
-      mzG: !!inp.mzG, mzRF: !!(inp.mz && inp.mz.RF), mzAG: !!(inp.mz && inp.mz.aG), wfbmJahre: num(inp.wfbmJahre), grundrente33: !!inp.grundrente33, bhEinkHoch: !!inp.bhEinkHoch, teilhabe: !!inp.teilhabe, bhWeitere: Math.min(4, Math.max(0, inp.bhWeitere | 0)),
+      mzG: !!inp.mzG, mzRF: !!(inp.mz && inp.mz.RF), mzAG: !!(inp.mz && inp.mz.aG), wfbmJahre: num(inp.wfbmJahre), grundrente33: !!inp.grundrente33, bhEinkHoch: !!inp.bhEinkHoch, teilhabe: !!inp.teilhabe, bhWeitere: Math.min(4, Math.max(0, inp.bhWeitere | 0)), schwanger: !!inp.schwanger, ernaehrung: !!inp.ernaehrung, warmwasser: !!inp.warmwasser, gebJahr: jahr,
       wohnform: inp.wohnform === 'eltern' || inp.wohnform === 'heim' ? inp.wohnform : '', wfbmEssen: !!inp.wfbmEssen,
       mieteGegeben: !blank(inp.miete) && num(inp.miete) > 0,
       arbeitSit: inp.arbeitSit === 'arbeitslos' || inp.arbeitSit === 'krank' ? inp.arbeitSit : '',
@@ -278,6 +286,27 @@ const Rules = (function () {
     const kinderBedarf = (h.regel - h.regelElt) + h.miete * h.children / h.persons;
     return Math.min(eink, Math.max(0, kinderBedarf - h.children * R.kindergeld));
   }
+  // Weitere Mehrbedarfe (SGB II und SGB XII gleich): Schwangerschaft 17 % ab der 13. Woche (§ 21 Abs. 2 / § 30 Abs. 2),
+  // dezentrale Warmwasserbereitung (§ 21 Abs. 7 / § 30 Abs. 7). Kostenaufwändige Ernährung (§ 21 Abs. 5 / § 30 Abs. 5) hängt von der
+  // Krankheit ab (Empfehlungen des Deutschen Vereins) und wird nur als „möglich“ berücksichtigt.
+  function mehrAllg(h, nurEigen, regelEigen) {
+    const rErw = h.adults === 2 && !nurEigen ? R.regelbedarf.partner : R.regelbedarf.alleinstehend;
+    const schw = h.schwanger ? R.mehr.schwanger * (nurEigen ? regelEigen : rErw) : 0;
+    let ww = 0, wwEltern = 0;
+    if (h.warmwasser) {
+      if (nurEigen) ww = R.mehr.ww.erw * regelEigen;
+      else {
+        wwEltern = R.mehr.ww.erw * h.regelElt;
+        const mitte = h.kids - h.kidsU6 - h.kids14;
+        ww = wwEltern + R.mehr.ww.erw * h.young * R.regelbedarf.jungErwachsener + R.mehr.ww.kind14 * h.kids14 * R.regelbedarf.kind14 +
+          R.mehr.ww.kind * mitte * R.regelbedarf.kind + R.mehr.ww.kind0 * h.kidsU6 * R.regelbedarf.kind0;
+      }
+    }
+    const ern = h.ernaehrung ? R.mehr.ernaehrung * R.regelbedarf.alleinstehend : 0;
+    const tx = (schw ? [['mehr.schwanger', { betrag: eur(schw) }]] : []).concat(ww ? [['mehr.warmwasser', { betrag: eur(ww) }]] : [], ern ? [['mehr.ernaehrung']] : []);
+    return { fest: schw + ww, eltern: schw + wwEltern, offen: ern, tx };
+  }
+
   // Regelsatz der Person mit Behinderung: Kind unter 18 (Stufe 4), erwachsenes Kind im Haushalt (Stufe 3), erwachsene Person (Stufe 1 oder 2)
   function regelBhPerson(h) {
     if (h.bhPerson === 'minder') return R.regelbedarf.kind14;
@@ -365,7 +394,9 @@ const Rules = (function () {
     if (h.alleinerz) freib += R.wohngeld.freibetragAlleinerzMonat; // § 17 Nr. 3 WoGG: 1.320 € im Jahr, einmal je Haushalt
     // Unterhalt und Unterhaltsvorschuss der Kinder zählen als Einkommen (§ 14 WoGG), ohne Pauschalabzug; eigenes Einkommen
     // der Kinder mit Freibetrag (§ 17 Nr. 4 WoGG); Elterngeld bis 300 € frei (§ 10 Abs. 1 BEEG); Freibeträge nach § 17 WoGG.
-    const extra = (h.kindZahl || 0) + Math.max(0, (h.kindEink || 0) - R.wgKindFrei) - (h.egFreiWG || 0) - freib;
+    // § 17a WoGG: Grundrentenfreibetrag bei 33 Jahren Grundrentenzeiten (100 € + 30 % des Rests, höchstens 50 % RS1)
+    const grFrei = h.grundrente33 ? pers.filter((x) => x[0] === 'rente').reduce((a, x) => a + Math.min(R.grundrente.sockel + R.grundrente.quote * Math.max(0, x[1] - R.grundrente.sockel), R.grundrente.max * R.regelbedarf.alleinstehend), 0) : 0;
+    const extra = (h.kindZahl || 0) + Math.max(0, (h.kindEink || 0) - R.wgKindFrei) - (h.egFreiWG || 0) - freib - grFrei;
     const yPess = Math.max(0, yA + extra), yOpt = Math.max(0, yB + extra);
 
     const grenze = h.stufe
@@ -413,12 +444,15 @@ const Rules = (function () {
     const gmax = R.kiz.max * h.children;
     const gewicht = h.adults === 1 ? R.kiz.gewichtKindAllein : R.kiz.gewichtKindPaar;
     const elternAnteil = h.adults / (h.adults + gewicht * h.children);
-    const bemessung = h.regelElt + (h.mehrAE || 0) + h.miete * elternAnteil;
+    // Mehrbedarfe der Eltern gehören zum Bedarf der Eltern (Schwangerschaft, Warmwasser, 35 % bei Teilhabe am Arbeitsleben)
+    const maK = mehrAllg(h, false), mbK = mehrBehSGB2(h);
+    const mehrEltern = maK.eltern + (h.bhPerson === 'erwNach25' ? mbK.fest : 0);
+    const bemessung = h.regelElt + (h.mehrAE || 0) + mehrEltern + h.miete * elternAnteil;
     // Einkommen der Eltern nach § 11b SGB II (Freibetrag für Arbeit usw.); Einkommen der Kinder (Unterhalt, Unterhaltsvorschuss,
     // eigenes Einkommen über der Minijob-Grenze) mindert den Kinderzuschlag um 45 % (§ 6a Abs. 3 und 6 BKGG)
     const kindAnr = (h.kindZahl || 0) + Math.max(0, (h.kindEink || 0) - R.minijob);
     const est = Math.max(0, gmax - R.kiz.anrechnung * Math.max(0, elternEinkSGB2(h) - bemessung) - R.kiz.anrechnung * kindAnr);
-    const gesamtBedarf = h.regel + h.miete + (h.mehrAE || 0);
+    const gesamtBedarf = h.regel + h.miete + (h.mehrAE || 0) + maK.fest + mbK.fest;
 
     if (est <= 0) return mk(id, 'nein', 'einkoHoch', [['kiz.zuHoch']]);
     if (h.netto + (h.kindZahl || 0) + (h.kindEink || 0) + gmax + R.kiz.puffer < gesamtBedarf) return mk(id, 'vielleicht', 'einkoNiedrig', [['kiz.zuNiedrig']]);
@@ -453,11 +487,13 @@ const Rules = (function () {
     const schon = R.sgb2.schon[h.gruppe] * h.adults + R.sgb2.schon['<31'] * h.children;
     if (h.vermoegen > schon) return mk(id, 'nein', 'vermHoch', [['ggeld.verm', { schon: eur(schon) }]]);
     const einkommen = elternEinkSGB2(h) + h.children * R.kindergeld + unterhaltAnrechenbar(h);
-    const mb = mehrBehSGB2(h);
-    const bedarf = h.regel + h.miete + (h.mehrAE || 0) + mb.fest;
+    const mb = mehrBehSGB2(h), ma = mehrAllg(h, false);
+    const bedarf = h.regel + h.miete + (h.mehrAE || 0) + mb.fest + ma.fest;
     const luecke = bedarf - einkommen;
-    const behTx = (mb.fest ? [['mehr.teilhabe', { betrag: eur(mb.fest) }]] : []).concat(mb.offen ? [['ggeld.mehrBeh']] : [],
-      h.bhPerson === 'erwVor25' && h.erwerbsgemindert ? [['ggeld.kindGsa']] : []);
+    mb.offen += ma.offen;
+    const behTx = (mb.fest ? [['mehr.teilhabe', { betrag: eur(mb.fest) }]] : []).concat(mb.offen - ma.offen ? [['ggeld.mehrBeh']] : [],
+      h.bhPerson === 'erwVor25' && h.erwerbsgemindert ? [['ggeld.kindGsa']] : [], ma.tx, h.schwanger ? [['mehr.erstausstattung']] : [],
+      h.kids > 0 && h.land && h.land !== 'BY' ? [['ggeld.schulbuch']] : [], h.miete > 0 ? [['kdu.angemessen']] : []);
     if (luecke >= R.grundsicherung.sicherAb) return mk(id, 'ja', 'ja', bedarfTx('ja', bedarf).concat([['schaetz.eins', { a: eur(r10(luecke)) }]], behTx));
     if (luecke > -(R.grundsicherung.knappPuffer + mb.offen)) return mk(id, 'vielleicht', 'vielleicht', bedarfTx('vielleicht', bedarf).concat(behTx));
     return mk(id, 'nein', 'einkoHoch', bedarfTx('nein', bedarf));
@@ -550,12 +586,15 @@ const Rules = (function () {
     if (h.wohnform === 'eltern') { bedarf = regelP + (h.mieteGegeben ? h.miete : 0) + mehrBeh; if (!h.mieteGegeben) kduOffen = R.offen.elternKdu; }
     else if (h.wohnform === 'heim') { bedarf = regelP + mehrBeh; kduOffen = R.offen.heimKdu; }
     else bedarf = h.regel + h.miete + (h.mehrAE || 0) + mehrBeh;
-    const offen = kduOffen + (h.wfbmEssen ? R.offen.essen : 0) + teilOffen;
+    const maG = mehrAllg(h, eigen, regelP);
+    bedarf += maG.fest;
+    const offen = kduOffen + (h.wfbmEssen ? R.offen.essen : 0) + teilOffen + maG.offen;
     const eink = gsaEinkommen(h) + (eigen ? 0 : h.children * R.kindergeld + unterhaltAnrechenbar(h));
     const luecke = bedarf - eink;
     const hatRente = (h.pers || []).some((x) => x[0] === 'rente' && x[1] > 0);
     const extra = (h.alterGrenz ? [['gsa.grenz']] : []).concat(h.wfbmEssen ? [['gsa.essen']] : [], kduOffen ? [[h.wohnform === 'heim' ? 'gsa.heim' : 'gsa.eltern']] : [],
-      hatRente && !h.grundrente33 ? [['gsa.grundrente']] : [], teilFest ? [['mehr.teilhabe', { betrag: eur(teilFest) }]] : [], teilOffen ? [['ggeld.mehrBeh']] : []);
+      hatRente && !h.grundrente33 ? [['gsa.grundrente']] : [], teilFest ? [['mehr.teilhabe', { betrag: eur(teilFest) }]] : [], teilOffen ? [['ggeld.mehrBeh']] : [], maG.tx,
+      !eigen && h.miete > 0 ? [['kdu.angemessen']] : []);
     const ja = !h.alterGrenz;
     if (luecke >= R.grundsicherung.sicherAb) {
       const sch = offen ? ['schaetz.mind', { a: eur(r10(luecke)) }] : ['schaetz.eins', { a: eur(r10(luecke)) }];
@@ -596,9 +635,13 @@ const Rules = (function () {
     const id = 'pflege';
     if (h.pflegeAntrag) return mk(id, 'vielleicht', 'vielleicht', [['pflege.antrag']]);
     if (h.pflegegrad === 0) return mk(id, 'nein', 'vorausFehlt', [['pflege.keiner']]);
-    if (h.pflegegrad === 1) return mk(id, 'ja', 'ja', [['pflege.pg1', { ent: eur(R.pflege.entlastung) }]]);
-    return mk(id, 'ja', 'ja', [['pflege.pg2', { geld: eur(R.pflege.geld[h.pflegegrad]), pg: h.pflegegrad, ent: eur(R.pflege.entlastung) }],
-      ['pflege.pauschbetrag', { betrag: eur(R.pflegePausch[h.pflegegrad]) }]]);
+    if (h.pflegegrad === 1) return mk(id, 'ja', 'ja', [['pflege.pg1', { ent: eur(R.pflege.entlastung) }], ['pflege.zeit']]);
+    const pg = h.pflegegrad;
+    return mk(id, 'ja', 'ja', [['pflege.pg2', { geld: eur(R.pflege.geld[pg]), pg, ent: eur(R.pflege.entlastung) }],
+      // Pflegedienst statt Angehörige (Sachleistung, auch kombiniert), Tages- und Nachtpflege zusätzlich
+      ['pflege.sach', { sach: eur(R.pflegeSach[pg]), tages: eur(R.pflegeTages[pg]) }],
+      // Pflegende Angehörige: Rentenversicherung (§ 44 SGB XI), Pflege-Pauschbetrag (§ 33b Abs. 6 EStG), Steuerermäßigung (§ 35a EStG), Pflegezeit
+      ['pflege.rente'], ['pflege.pauschbetrag', { betrag: eur(R.pflegePausch[pg]) }], ['pflege.steuer35a'], ['pflege.zeit']]);
   }
 
   // ---------------------------------------------------------------
@@ -686,6 +729,19 @@ const Rules = (function () {
     return mk(id, h.krankWochen === 'unter6' ? 'vielleicht' : 'ja', h.krankWochen === 'unter6' ? 'vielleicht' : 'ja', tx);
   }
 
+  // Altersrente für schwerbehinderte Menschen (§§ 37, 236a SGB VI)
+  function schwerbRente(h) {
+    const id = 'srente';
+    if (h.alter) return mk(id, 'nein', 'vorausFehlt', [['srente.alter']]);
+    if (!(gdbNum(h) >= 50) && !h.gdbAntrag) return keinBeh(id);
+    const j = h.gebJahr;
+    if (!(j >= 1900 && j <= 2010)) return mk(id, 'vielleicht', 'vielleicht', [['srente.allg', { abschlag: R.srente.abschlag }]]);
+    const frei = j <= 1951 ? R.srente.bis1951 : j >= 1964 ? R.srente.frei : R.srente.frei - 2 + R.rag[j] / 12;
+    const jm = (x) => { const y = Math.floor(x + 1e-9); return [y, Math.round((x - y) * 12)]; };
+    const [fj, fm] = jm(frei), [gj, gm] = jm(frei - R.srente.frueher);
+    return mk(id, 'vielleicht', 'vielleicht', [['srente.alter2', { fj, fm, gj, gm, abschlag: R.srente.abschlag }]]);
+  }
+
   // Eingliederungshilfe (SGB IX Teil 2, bei seelischer Behinderung von Kindern § 35a SGB VIII)
   function eingliederungshilfe(h) {
     const id = 'eingl';
@@ -718,7 +774,11 @@ const Rules = (function () {
     const id = 'ausweis';
     const g = gdbNum(h);
     if (!gdbEff(h) && h.gdbAntrag) return mk(id, 'na', 'na', [['ausweis.laeuft']]);
-    if (gdbEff(h) && g >= 50) return mk(id, 'ja', 'ja', [h.alter ? ['ausweis.schwerRente'] : ['ausweis.schwer', { tage: R.beh.zusatzurlaub }]].concat(h.mzG ? [['ausweis.g']] : []));
+    if (gdbEff(h) && g >= 50) {
+      const frei = gdbEff(h) === 'H' || h.blind === 'blind' || h.mzAG; // H, Bl, TBl, aG
+      return mk(id, 'ja', 'ja', [h.alter ? ['ausweis.schwerRente'] : ['ausweis.schwer', { tage: R.beh.zusatzurlaub }]]
+        .concat(h.alter ? [] : [['ausweis.kuendigung']], frei ? [['ausweis.frei']] : h.mzG ? [['ausweis.g']] : [], h.mzAG || h.blind === 'blind' ? [['ausweis.park']] : []));
+    }
     if (gdbEff(h) && g >= 30) return mk(id, 'vielleicht', 'vielleicht', [['ausweis.gleich']]);
     if (gdbEff(h)) return mk(id, 'nein', 'vorausFehlt', [['ausweis.niedrig']]);
     if (hatBeh(h)) return mk(id, 'vielleicht', 'vielleicht', [['ausweis.antrag']]);
@@ -749,7 +809,7 @@ const Rules = (function () {
     if (h.pflegeAntrag) return mk(id, 'vielleicht', 'vielleicht', [['pflegeplus.antrag']]);
     if (h.pflegegrad === 0) return mk(id, 'nein', 'vorausFehlt', [['pflegeplus.keiner']]);
     const tx = [['pflegeplus.mittel', { verbrauch: eur(R.beh.verbrauch), wohn: eur(R.beh.wohnumfeld) }]];
-    if (h.pflegegrad >= 2) tx.push(['pflegeplus.verh']);
+    if (h.pflegegrad >= 2) tx.push(['pflegeplus.budget', { betrag: eur(R.entlastungsbudget) }]);
     return mk(id, 'ja', 'ja', tx);
   }
 
@@ -782,6 +842,8 @@ const Rules = (function () {
     const tx = [['zuzahl.grenze']];
     // Chroniker-Richtlinie § 2: GdB mindestens 60 oder Pflegegrad 3 bis 5 (bei Dauerbehandlung)
     if (gdbNum(h) >= 60 || h.pflegegrad >= 3) tx.push(['zuzahl.chron']);
+    // Fahrten zur ambulanten Behandlung (§ 60 SGB V, Krankentransport-Richtlinie): bei aG, Bl, H oder Pflegegrad 3 (mit Einschränkung) bis 5
+    if (gdbEff(h) === 'H' || h.mzAG || h.blind === 'blind' || h.pflegegrad >= 3) tx.push(['zuzahl.fahrt']);
     return mk(id, 'vielleicht', 'vielleicht', tx);
   }
 
@@ -843,7 +905,7 @@ const Rules = (function () {
     eingl: 'Eingliederungshilfe', pausch: 'Behinderten-Pauschbetrag', ausweis: 'Schwerbehindertenausweis und Nachteilsausgleiche',
     blindengeld: 'Blindengeld (Bayern)', pflegeplus: 'Verhinderungspflege und Pflegehilfsmittel', arbeit: 'Budget für Arbeit',
     rundfunk: 'Befreiung vom Rundfunkbeitrag', zuzahl: 'Befreiung von Zuzahlungen', bab: 'Berufsausbildungsbeihilfe',
-    wbs: 'Wohnberechtigungsschein (Bayern)', alg1: 'Arbeitslosengeld I', krankengeld: 'Krankengeld'
+    wbs: 'Wohnberechtigungsschein (Bayern)', alg1: 'Arbeitslosengeld I', krankengeld: 'Krankengeld', srente: 'Altersrente für schwerbehinderte Menschen'
   };
   // Unterlagen der neuen Karten: gemeinsame Schlüssel (u.*), damit nicht jede Karte eigene Texte braucht
   const NEWSTEPS = {
@@ -853,6 +915,7 @@ const Rules = (function () {
     arbeit: ['u.ausweis', 'u.arzt', 'u.vertrag'], rundfunk: ['u.beitragsnr', 'u.bescheide', 'u.ausweis'],
     zuzahl: ['u.versichertenkarte', 'u.quittungen', 'u.einkommen'], bab: ['u.ausbildungsvertrag', 'u.einkommen', 'u.mietvertrag'],
     wbs: ['u.einkommen', 'u.ausweis', 'u.haushalt'],
+    srente: ['u.ausweis', 'u.arzt', 'u.rentenverlauf'],
     alg1: ['u.ausweis', 'u.kuendigung', 'u.lohnabrechnung'], krankengeld: ['u.au', 'u.versichertenkarte', 'u.lohnabrechnung']
   };
   const STEPS = {};
@@ -894,7 +957,7 @@ const Rules = (function () {
     const baf = bafoeg(h);
     const pf = pflege(h);
     const results = [kg, wg, kz, gg, but, uvg, gsa, baf, pf,
-      alg1(h), krankengeld(h), kindergeldBeh(h), erwerbsminderungsrente(h), eingliederungshilfe(h), pauschbetrag(h), ausweis(h), blindengeld(h),
+      alg1(h), krankengeld(h), kindergeldBeh(h), erwerbsminderungsrente(h), schwerbRente(h), eingliederungshilfe(h), pauschbetrag(h), ausweis(h), blindengeld(h),
       pflegeplus(h), budgetArbeit(h), rundfunk(h, gg, gsa), zuzahlung(h), bab(h), wbs(h)].map(angabeFehlt(h)).map((x, i) => ({ ...x, name: NAMES[x.id], order: i, steps: STEPS[x.id] }));
     const sorted = results.slice().sort((a, b) => ORDER[a.level] - ORDER[b.level] || a.order - b.order);
     return { h, results: sorted, zusammen: zusammenspiel(h, results) };

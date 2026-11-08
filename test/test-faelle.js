@@ -110,7 +110,7 @@ ck('EM 3 bis 6 h: Jobcenter', L({ emStd: '3bis6', brutto: 200, miete: 400, miets
 const gueltig = ['ja', 'vielleicht', 'nein', 'na'];
 [f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15, f16, f17, f18, f19, f20].forEach((o, i) => {
   const r = R.evaluate({ ...base, ...o });
-  ck('Fall ' + (i + 1) + ': 23 Ergebnisse, gültige Stufen, keine Fehlwerte', r.results.length === 23 && r.results.every((x) => gueltig.includes(x.level)) && !/NaN|undefined|Infinity/.test(JSON.stringify(r)));
+  ck('Fall ' + (i + 1) + ': 24 Ergebnisse, gültige Stufen, keine Fehlwerte', r.results.length === 24 && r.results.every((x) => gueltig.includes(x.level)) && !/NaN|undefined|Infinity/.test(JSON.stringify(r)));
 });
 // ---------- Arbeitslosengeld I und Krankengeld (SGB III, SGB V) ----------
 const T = (o, id, key) => { const x = res(o).m[id].tx.find((a) => a[0] === key); return x ? x[1] : null; };
@@ -223,6 +223,25 @@ ck('Wohngeld: zweite schwerbehinderte Person verbessert die Einstufung oder den 
 // Pflege-Pauschbetrag (§ 33b Abs. 6 EStG): 600 / 1.100 / 1.800 €
 ck('Pflege-Pauschbetrag: Pflegegrad 2 600 €, 3 1.100 €, 4 1.800 €', T({ pflegegrad: '2' }, 'pflege', 'pflege.pauschbetrag').betrag === E(600) && T({ pflegegrad: '3' }, 'pflege', 'pflege.pauschbetrag').betrag === E(1100) && T({ pflegegrad: '4' }, 'pflege', 'pflege.pauschbetrag').betrag === E(1800));
 ck('Pflege-Pauschbetrag bei Merkzeichen H ohne Pflegegrad: 1.800 €', T({ bhPerson: 'erwNach25', gdb: 'H' }, 'pausch', 'pflege.pauschbetrag').betrag === E(1800));
+
+// ---------- Weitere Mehrbedarfe und Regeln (Prüfliste vollständig) ----------
+// Alleinstehende Schwangere, Miete 500: Bedarf 563 + 500 + 17 % (95,71) = 1.158,71 (§ 21 Abs. 2 SGB II)
+ck('Schwangerschaft: Mehrbedarf 17 %, Hinweis Erstausstattung', P({ art1: 'ohne', brutto: 0, netto: 0, miete: 500, vermoegen: 0, gebJahr: 1995, heute: 2026.8, schwanger: true }, 'ggeld', 'bedarf') === E(563 + 500 + 0.17 * 563) && K({ art1: 'ohne', brutto: 0, netto: 0, miete: 500, vermoegen: 0, gebJahr: 1995, heute: 2026.8, schwanger: true }, 'ggeld').includes('mehr.erstausstattung'));
+// Warmwasser aus dem Boiler, Paar mit Kind 8: 2 x 506 x 2,3 % + 390 x 1,2 % = 23,28 + 4,68 = 27,96 (§ 21 Abs. 7 SGB II)
+ck('Warmwasser: Paar mit Kind 8, Mehrbedarf 27,96 €', P({ adults: 2, kids: 1, art1: 'lohn', brutto: 1500, netto: 1150, miete: 700, vermoegen: 0, gebJahr: 1990, heute: 2026.8, warmwasser: true }, 'ggeld', 'bedarf') === E(1012 + 390 + 700 + 23.276 + 4.68));
+ck('Ernährung: nur Hinweis, keine feste Zahl', K({ art1: 'ohne', brutto: 0, netto: 0, miete: 500, vermoegen: 0, gebJahr: 1995, heute: 2026.8, ernaehrung: true }, 'ggeld').includes('mehr.ernaehrung'));
+// Altersrente für schwerbehinderte Menschen (§ 236a SGB VI): Jahrgang 1960 abschlagsfrei 64 J. 4 M., frühestens 61 J. 4 M.; ab 1964: 65 / 62
+ck('Schwerbehindertenrente Jahrgang 1960: 64 J. 4 M. / 61 J. 4 M.', (() => { const x = T({ gebJahr: 1960, heute: 2026.4, gdb: '50', bhPerson: 'erwNach25' }, 'srente', 'srente.alter2'); return x && x.fj === 64 && x.fm === 4 && x.gj === 61 && x.gm === 4; })());
+ck('Schwerbehindertenrente Jahrgang 1970: 65 / 62', (() => { const x = T({ gebJahr: 1970, heute: 2026.8, gdb: '80', bhPerson: 'erwNach25' }, 'srente', 'srente.alter2'); return x && x.fj === 65 && x.fm === 0 && x.gj === 62; })());
+ck('Schwerbehindertenrente ohne GdB 50: nein; im Rentenalter: nein', L({ gebJahr: 1970, heute: 2026.8, gdb: '40', bhPerson: 'erwNach25' }, 'srente') === 'nein' && L({ gebJahr: 1950, heute: 2026.8, gdb: '80', bhPerson: 'erwNach25' }, 'srente') === 'nein');
+// Pflege: Sachleistung und Tagespflege (§§ 36, 41 SGB XI), Rentenversicherung für Pflegepersonen (§ 44 SGB XI)
+ck('Pflegegrad 3: Sachleistung 1.497 €, Tagespflege 1.357 €, Rentenversicherung für Pflegende', T({ pflegegrad: '3' }, 'pflege', 'pflege.sach').sach === E(1497) && T({ pflegegrad: '3' }, 'pflege', 'pflege.sach').tages === E(1357) && K({ pflegegrad: '3' }, 'pflege').includes('pflege.rente'));
+// Ausweis: Kündigungsschutz; H/Bl/aG: Wertmarke kostenlos und Kfz-Steuer-Befreiung; aG/Bl: Parkausweis
+ck('Ausweis GdB 50: Kündigungsschutz', K({ gdb: '50', bhPerson: 'erwNach25', gebJahr: 1980, heute: 2026.8 }, 'ausweis').includes('ausweis.kuendigung'));
+ck('Ausweis aG: frei fahren, Parkausweis, 4.500 € Fahrtkosten', K({ gdb: '80', bhPerson: 'erwNach25', mz: { aG: true }, mzG: true, gebJahr: 1980, heute: 2026.8 }, 'ausweis').includes('ausweis.frei') && K({ gdb: '80', bhPerson: 'erwNach25', mz: { aG: true }, mzG: true, gebJahr: 1980, heute: 2026.8 }, 'ausweis').includes('ausweis.park') && T({ gdb: '80', bhPerson: 'erwNach25', mz: { aG: true }, mzG: true }, 'pausch', 'pausch.fahrt').betrag === E(4500));
+// Wohngeld: Grundrentenfreibetrag (§ 17a WoGG) verbessert Einstufung oder Betrag
+const wgr = { art1: 'rente', brutto: 1400, netto: 1250, miete: 650, mietstufe: 4, vermoegen: 0, gebJahr: 1955, heute: 2026.8 };
+ck('Wohngeld: Grundrentenfreibetrag (§ 17a WoGG) wirkt', JSON.stringify(res(wgr).m.wohngeld.tx) !== JSON.stringify(res({ ...wgr, grundrente33: true }).m.wohngeld.tx));
 
 console.log(fails ? '\n' + fails + ' von ' + n + ' FEHLGESCHLAGEN' : '\nFall-Tests bestanden: ' + n + ' Prüfungen');
 process.exit(fails ? 1 : 0);
