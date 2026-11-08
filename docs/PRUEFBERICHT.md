@@ -12,7 +12,7 @@ Eine Prüfung durch eine Sozialberatung oder eine Fachanwältin ersetzt dieser B
 | Kinderzuschlag höchstens 297 € je Kind, Mindesteinkommen 900 / 600 €, Minderung 45 % | ✓ | § 6a BKGG |
 | Vermögen Kinderzuschlag 40.000 € + 15.000 € je weitere Person | ✓ | § 6a Abs. 3 BKGG i. V. m. § 12 SGB II |
 | Unterhaltsvorschuss 227 / 299 / 394 € | ✓ | § 2 UVG (Mindestunterhalt minus Kindergeld) |
-| BAföG-Freibeträge Eltern 2.540 / 1.690 €, je Kind 770 € | bitte prüfen | § 25 BAföG (zum WS 2024/25: 2.415 / 1.605 / 730 €; spätere Erhöhung nicht an einer Quelle bestätigt) |
+| BAföG-Freibeträge Eltern 2.540 / 1.690 €, je Kind 770 € | ✓ | § 25 BAföG (Websuche 8.11.2026: mehrere Quellen übereinstimmend) |
 | Pflegegeld 347 / 599 / 800 / 990 €, Entlastungsbetrag 131 € | ✓ | §§ 37, 45b SGB XI |
 | Behinderten-Pauschbeträge, Fahrtkosten 900 / 4.500 € | ✓ | § 33b Abs. 3 EStG, § 33 Abs. 2a EStG |
 | Grundfreibetrag 12.348 € | ✓ | § 32a EStG |
@@ -60,7 +60,7 @@ Weitere Tests (laufen ebenfalls bei jedem `npm test`):
 - **Leichte Sprache**: In der einfachen Version keine Sätze über 15 Wörter, lange Wörter mit Bindestrich gegliedert (z. B. „Eingliederungs-Hilfe“).
 - **Musterfälle** für den Abgleich mit den amtlichen Rechnern: `docs/Musterfaelle-Abgleich.csv` mit Anleitung `docs/ABGLEICH.md`.
 
-**Durchsicht aller Zahlenwerte (8. November 2026):** Alle Werte in `src/rules.js` einzeln gegen die Rechtslage 2026 geprüft (Regelbedarfe, Kindergeld 259 €, Kinderzuschlag 297 €, Unterhaltsvorschuss, Minijob-Grenze 603 €, Beitragsbemessungsgrenzen 8.450 € / 5.812,50 €, Pflegeleistungen, Pauschbeträge, Grundfreibetrag 12.348 €, Schonvermögen, Elterngeld). Zwei Werte konnte ich nicht sicher bestätigen; sie stehen in der Prüfliste mit ○ und sollten vor der Veröffentlichung geprüft werden: die BAföG-Elternfreibeträge und die Vermögensgrenze beim Kinderzuschlag nach der Grundsicherungsreform. Die amtlichen Rechner und Gesetzesseiten lassen sich von hier aus nicht automatisch abfragen; dafür gibt es die Musterfälle.
+**Durchsicht aller Zahlenwerte (8. November 2026):** Alle Werte in `src/rules.js` einzeln gegen die Rechtslage 2026 geprüft (Regelbedarfe, Kindergeld 259 €, Kinderzuschlag 297 €, Unterhaltsvorschuss, Minijob-Grenze 603 €, Beitragsbemessungsgrenzen 8.450 € / 5.812,50 €, Pflegeleistungen, Pauschbeträge, Grundfreibetrag 12.348 €, Schonvermögen, Elterngeld). Zwei unsichere Werte wurden per Websuche geklärt (mehrere übereinstimmende Quellen): Die BAföG-Elternfreibeträge 2.540 / 1.690 / 770 € stimmen, der Kinderzuschlag behält die Vermögensgrenze 40.000 € + 15.000 € je weitere Person. **Dabei gefunden und behoben:** Die Altersstufen beim Schonvermögen (Grundsicherungsgeld) und beim BAföG-Vermögen galten ein Jahr zu spät. Richtig ist nach dem Wortlaut („bis zur Vollendung des 30. Lebensjahres“) die höhere Stufe ab dem 30., 40. und 50. Geburtstag; BAföG 45.000 € ab dem 30. Geburtstag. Die BAföG-Altersgrenze 45 wird jetzt genau aus dem Geburtsjahr bestimmt. Die Quellen sind teils widersprüchlich bei den Altersgrenzen; die App folgt dem gesetzlichen Wortlaut, eine Fachperson sollte das bestätigen. Die amtlichen Rechner und Gesetzesseiten lassen sich von hier aus nicht automatisch abfragen; dafür gibt es die Musterfälle.
 
 Was keine Sicherung leisten kann: Die Prüfliste ist nur so vollständig wie das Wissen, mit dem sie geschrieben ist. Eine Fachperson sollte sie vor der Veröffentlichung einmal gegenlesen. Die Punkte mit ○ (zum Beispiel Freibetrag für Azubis über der Minijob-Grenze, Höhe der Blindenhilfe, Zuständigkeit Bezirk) sind dafür markiert.
 

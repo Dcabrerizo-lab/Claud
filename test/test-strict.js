@@ -4,7 +4,7 @@ const I18N = require('../dist/i18n.js');
 const KARTEN = require('./karten.js');
 let fails = 0, passes = 0;
 const check = (n, c, x) => { if (!c) { fails++; console.log('FAIL', n, x === undefined ? '' : x); } else passes++; };
-const base = { adults: 1, kids: 0, young: 0, brutto: 0, brutto2: '', netto: 0, miete: 600, mietstufe: '3', vermoegen: 2000, alter: false, erwerbsgemindert: false, behinderung: false, kinder12: false, unterhaltFehlt: false, alterGruppe: '31-40', ausbildung: '', pflegegrad: '', nichtArbeit: false, bezug: {} };
+const base = { adults: 1, kids: 0, young: 0, brutto: 0, brutto2: '', netto: 0, miete: 600, mietstufe: '3', vermoegen: 2000, alter: false, erwerbsgemindert: false, behinderung: false, kinder12: false, unterhaltFehlt: false, alterGruppe: '30-39', ausbildung: '', pflegegrad: '', nichtArbeit: false, bezug: {} };
 const ev = (o) => R.evaluate({ ...base, ...o, bezug: { ...(o && o.bezug) } });
 const lv = (o, id) => ev(o).results.find((r) => r.id === id).level;
 const ID = KARTEN;
@@ -32,11 +32,11 @@ G('GG: 1500 brutto, Lücke 311 → ja', { brutto: 1500, netto: 1200 }, 'ggeld', 
 G('GG: ohne Einkommen → ja', { miete: 500 }, 'ggeld', 'ja');
 G('GG: Vermögen 10001 > 10000 → nein', { vermoegen: 10001 }, 'ggeld', 'nein');
 G('GG: Vermögen 10000 → ja', { vermoegen: 10000 }, 'ggeld', 'ja');
-G('GG: unter 31, Vermögen 5001 → nein', { alterGruppe: '<31', vermoegen: 5001 }, 'ggeld', 'nein');
-G('GG: unter 31, Vermögen 5000 → ja', { alterGruppe: '<31', vermoegen: 5000 }, 'ggeld', 'ja');
-G('GG: ab 51 Vermögen 20000 → ja', { alterGruppe: '51+', vermoegen: 20000 }, 'ggeld', 'ja');
-G('GG: Paar 2×51+ Vermögen 40000 → ja, 40001 → nein', { adults: 2, alterGruppe: '51+', vermoegen: 40000 }, 'ggeld', 'ja');
-G('GG: Paar 2×51+ Vermögen 40001 → nein', { adults: 2, alterGruppe: '51+', vermoegen: 40001 }, 'ggeld', 'nein');
+G('GG: unter 30, Vermögen 5001 → nein', { alterGruppe: '<30', vermoegen: 5001 }, 'ggeld', 'nein');
+G('GG: unter 30, Vermögen 5000 → ja', { alterGruppe: '<30', vermoegen: 5000 }, 'ggeld', 'ja');
+G('GG: ab 50 Vermögen 20000 → ja', { alterGruppe: '50+', vermoegen: 20000 }, 'ggeld', 'ja');
+G('GG: Paar 2×51+ Vermögen 40000 → ja, 40001 → nein', { adults: 2, alterGruppe: '50+', vermoegen: 40000 }, 'ggeld', 'ja');
+G('GG: Paar 2×51+ Vermögen 40001 → nein', { adults: 2, alterGruppe: '50+', vermoegen: 40001 }, 'ggeld', 'nein');
 G('GG: Paar zwei Verdiener 1500+1500: Einkommen 1604, Bedarf 1812 → ja', { adults: 2, brutto: 3000, brutto2: 1500, netto: 2300, miete: 800 }, 'ggeld', 'ja');
 G('GG: gleiches Paar, ein Verdiener gerechnet: Einkommen 1952 → nein', { adults: 2, brutto: 3000, netto: 2300, miete: 800 }, 'ggeld', 'nein');
 G('GG: Paar mit 2 Kindern, Einkommen 2190, Bedarf 2742 → ja', { adults: 2, kids: 2, brutto: 2600, netto: 2050, miete: 950 }, 'ggeld', 'ja');
@@ -135,9 +135,9 @@ G('BAföG Kind: Paar 4000 → nein', { adults: 2, kids: 1, ausbildung: 'kind', n
 G('BAföG Kind: allein 1600 → ja', { kids: 1, ausbildung: 'kind', netto: 1600 }, 'bafoeg', 'ja');
 G('BAföG Kind: allein 1700 → vielleicht', { kids: 1, ausbildung: 'kind', netto: 1700 }, 'bafoeg', 'vielleicht');
 G('BAföG Kind: zwei Kinder +770: 2460 → ja', { kids: 2, ausbildung: 'kind', netto: 2460 }, 'bafoeg', 'ja');
-G('BAföG ich: ab 51 → nein', { ausbildung: 'ich', alterGruppe: '51+' }, 'bafoeg', 'nein');
-G('BAföG ich: unter 31 Vermögen 15001 → nein', { ausbildung: 'ich', alterGruppe: '<31', vermoegen: 15001 }, 'bafoeg', 'nein');
-G('BAföG ich: unter 31 Vermögen 15000 → vielleicht', { ausbildung: 'ich', alterGruppe: '<31', vermoegen: 15000 }, 'bafoeg', 'vielleicht');
+G('BAföG ich: ab 50 → nein', { ausbildung: 'ich', alterGruppe: '50+' }, 'bafoeg', 'nein');
+G('BAföG ich: unter 30 Vermögen 15001 → nein', { ausbildung: 'ich', alterGruppe: '<30', vermoegen: 15001 }, 'bafoeg', 'nein');
+G('BAföG ich: unter 30 Vermögen 15000 → vielleicht', { ausbildung: 'ich', alterGruppe: '<30', vermoegen: 15000 }, 'bafoeg', 'vielleicht');
 G('BAföG: keine Ausbildung → nein', {}, 'bafoeg', 'nein');
 // Pflege
 G('Pflege: Pflegegrad 3 → ja', { pflegegrad: '3' }, 'pflege', 'ja');
@@ -163,7 +163,7 @@ const randHH = () => {
     adults, kids: pick([0, 0, 1, 2, 3, 5]), young: pick([0, 0, 0, 1, 2]), brutto, brutto2: adults === 2 && rnd() < 0.5 ? Math.round(rnd() * brutto / 10) * 10 : '',
     netto: rnd() < 0.2 ? '' : Math.round(brutto * (0.6 + rnd() * 0.3)), miete: Math.round(rnd() * 1800 / 10) * 10, mietstufe: pick(['', '1', '2', '3', '4', '5', '6', '7']),
     vermoegen: pick([0, 500, 3000, 9000, 15000, 25000, 70000, 150000]), alter: rnd() < 0.15, erwerbsgemindert: rnd() < 0.1, behinderung: rnd() < 0.15, kinder12: rnd() < 0.3, unterhaltFehlt: rnd() < 0.3,
-    alterGruppe: pick(['', '<31', '31-40', '41-50', '51+']), ausbildung: pick(['', '', 'kind', 'ich']), pflegegrad: pick(['', '', '', 'antrag', '1', '2', '3', '4', '5']), nichtArbeit: rnd() < 0.2,
+    alterGruppe: pick(['', '<30', '30-39', '40-49', '50+']), ausbildung: pick(['', '', 'kind', 'ich']), pflegegrad: pick(['', '', '', 'antrag', '1', '2', '3', '4', '5']), nichtArbeit: rnd() < 0.2,
     bezug: { grundsicherungsgeld: rnd() < 0.08, sozialamt: rnd() < 0.05, wohngeld: rnd() < 0.05, kiz: rnd() < 0.05, kindergeld: rnd() < 0.1 }
   };
 };

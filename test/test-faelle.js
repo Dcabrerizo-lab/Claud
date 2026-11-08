@@ -52,7 +52,7 @@ ck('[gg-studium] F7 Student: kein Grundsicherungsgeld (§ 7 Abs. 5 SGB II)', L(f
 ck('F7 Student: kein Wohngeld', L(f7, 'wohngeld') === 'nein');
 ck('F7 BAföG möglich', L(f7, 'bafoeg') === 'vielleicht');
 ck('F7 Student mit Kind: Wohngeld nicht per § 20 ausgeschlossen', K({ ...f7, kids: 1 }, 'wohngeld')[0] !== 'wohngeld.ausbildung');
-ck('F7 Student 51+: Ausschluss entfällt (nicht mehr förderfähig)', K({ ...f7, alterGruppe: '51+' }, 'ggeld')[0] !== 'ggeld.ausbildung');
+ck('F7 Student 51+: Ausschluss entfällt (nicht mehr förderfähig)', K({ ...f7, alterGruppe: '50+' }, 'ggeld')[0] !== 'ggeld.ausbildung');
 // 8 Familie, Kind 20 mit GdB 100
 const f8 = { adults: 2, young: 1, brutto: 3000, brutto2: 1000, miete: 900, mietstufe: 3, bhPerson: 'erwVor25', bhSelbst: true, gdb: '100', ausbildung: 'kind' };
 ck('[kgbeh-ja] F8 KG-Beh ja, 259', L(f8, 'kgBeh') === 'ja' && P(f8, 'kgBeh', 'kg') === '259 €');
@@ -289,7 +289,7 @@ ck('[gg-azubi] Ausbildungsvergütung des Kindes bis 603 € frei (550 € änder
 ck('[gg-eg300] Elterngeld 300 € zählt voll (etwa 790 €), 500 € nur mit 200 € (etwa 890 €)', A({ einkommen: [{ art: 'eg', b: 300 }], miete: 500 }, 'ggeld') === E(790) && A({ einkommen: [{ art: 'eg', b: 500 }], miete: 500 }, 'ggeld') === E(890));
 // Alleinerziehend, 1 Kind, Miete 700: Unterhalt 2.000 € zählt nur bis zum Bedarf des Kindes (390 + 350 - 259 Kindergeld = 481)
 ck('[gg-unterhalt] Hoher Unterhalt fürs Kind mindert nur bis zu dessen Bedarf: 1.460 - 481 = etwa 980 €', A(ohne({ kids: 1, miete: 700 }), 'ggeld') === E(1460) && A(ohne({ kids: 1, miete: 700, unterhalt: 2000 }), 'ggeld') === E(980));
-ck('[gg-verm] Schonvermögen: bis 30 Jahre 5.000 €, ab 51 Jahre 20.000 €, Paar doppelt', L(ohne({ miete: 400, vermoegen: 6000, alterGruppe: '<31' }), 'ggeld') === 'nein' && L(ohne({ miete: 400, vermoegen: 15000, alterGruppe: '51+' }), 'ggeld') !== 'nein' && L(ohne({ adults: 2, miete: 500, vermoegen: 19000, alterGruppe: '31-40' }), 'ggeld') !== 'nein');
+ck('[gg-verm] Schonvermögen: bis 30 Jahre 5.000 €, ab 50 Jahre 20.000 €, Paar doppelt', L(ohne({ miete: 400, vermoegen: 6000, alterGruppe: '<30' }), 'ggeld') === 'nein' && L(ohne({ miete: 400, vermoegen: 15000, alterGruppe: '50+' }), 'ggeld') !== 'nein' && L(ohne({ adults: 2, miete: 500, vermoegen: 19000, alterGruppe: '30-39' }), 'ggeld') !== 'nein');
 ck('[gg-gemischt] Paar mit Kind, eine Person im Rentenalter: Jobcenter möglich (gemischte Bedarfsgemeinschaft)', L({ adults: 2, kids: 1, alter: true, miete: 700 }, 'ggeld') === 'vielleicht' && K({ adults: 2, kids: 1, alter: true, miete: 700 }, 'ggeld')[0] === 'ggeld.gemischt');
 ck('[gg-schulbuch] Schulbücher: Hinweis außerhalb Bayerns, nicht in Bayern (Lernmittelfreiheit)', K({ kids: 1, miete: 600, art1: 'lohn', brutto: 1500, netto: 1150, bundesland: 'NW' }, 'ggeld').includes('ggeld.schulbuch') && !K({ kids: 1, miete: 600, art1: 'lohn', brutto: 1500, netto: 1150, bundesland: 'BY' }, 'ggeld').includes('ggeld.schulbuch'));
 ck('[gg-kdu] Miete: Hinweis auf die örtliche Angemessenheit', K({ art1: 'lohn', brutto: 1000, netto: 1000, miete: 500 }, 'ggeld').includes('kdu.angemessen'));
@@ -325,8 +325,8 @@ ck('[but-azubi] Junger Erwachsener in betrieblicher Ausbildung: keine Bildung un
 ck('[uvg-anrechnung] Unterhalt 100 € wird angerechnet (nur möglich), 400 € reicht (nein)', L({ kids: 1, brutto: 1500, unterhaltFehlt: true, unterhalt: 100 }, 'uvg') === 'vielleicht' && L({ kids: 1, brutto: 1500, unterhaltFehlt: true, unterhalt: 400 }, 'uvg') === 'nein');
 ck('[uvg-ab12] Kind ab 12: mit 400 € brutto nur möglich, mit 700 € wahrscheinlich (Grenze 600 €)', L({ kids: 1, brutto: 400, unterhaltFehlt: true, kinder12: true }, 'uvg') === 'vielleicht' && L({ kids: 1, brutto: 700, unterhaltFehlt: true, kinder12: true }, 'uvg') === 'ja');
 ck('[uvg-paar] Zwei Erwachsene im Haushalt: nur möglich (Heirat schließt aus)', L({ adults: 2, kids: 1, unterhaltFehlt: true }, 'uvg') === 'vielleicht' && K({ adults: 2, kids: 1, unterhaltFehlt: true }, 'uvg')[0] === 'uvg.zwei');
-ck('[bafoeg-verm] BAföG-Vermögen: unter 30 Jahren bis 15.000 €', L({ ausbildung: 'ich', alterGruppe: '<31', vermoegen: 16000 }, 'bafoeg') === 'nein' && L({ ausbildung: 'ich', alterGruppe: '<31', vermoegen: 14000 }, 'bafoeg') === 'vielleicht');
-ck('[bafoeg-alter] BAföG-Altersgrenze 45: ab 51 nein, 41 bis 50 nur möglich', L({ ausbildung: 'ich', alterGruppe: '51+' }, 'bafoeg') === 'nein' && L({ ausbildung: 'ich', alterGruppe: '41-50' }, 'bafoeg') === 'vielleicht');
+ck('[bafoeg-verm] BAföG-Vermögen: unter 30 Jahren bis 15.000 €', L({ ausbildung: 'ich', alterGruppe: '<30', vermoegen: 16000 }, 'bafoeg') === 'nein' && L({ ausbildung: 'ich', alterGruppe: '<30', vermoegen: 14000 }, 'bafoeg') === 'vielleicht');
+ck('[bafoeg-alter] BAföG-Altersgrenze 45: ab 50 nein, 41 bis 50 nur möglich', L({ ausbildung: 'ich', alterGruppe: '50+' }, 'bafoeg') === 'nein' && L({ ausbildung: 'ich', alterGruppe: '40-49' }, 'bafoeg') === 'vielleicht');
 ck('[bafoeg-betrieb] Betriebliche Ausbildung: kein BAföG', L({ young: 1, ausbildung: 'kindBetrieb' }, 'bafoeg') === 'nein');
 // Pflege
 ck('[pfl-geld] Pflegegeld Pflegegrad 2: 347 €, Entlastungsbetrag 131 €; Pflegegrad 1 nur Entlastungsbetrag', P({ pflegegrad: '2' }, 'pflege', 'geld') === E(347) && P({ pflegegrad: '2' }, 'pflege', 'ent') === E(131) && K({ pflegegrad: '1' }, 'pflege')[0] === 'pflege.pg1');
@@ -370,5 +370,14 @@ ck('[wbs-land] WBS-Regeln nur für Bayern', L({ bundesland: 'NW' }, 'wbs') === '
 // Elterngeld
 ck('[eg-hinweise] Elterngeld: Hinweise Mutterschaftsgeld und Einkommensgrenze 175.000 €', K({ baby: 'da', egVor: 1500 }, 'elterngeld').includes('eg.mutterschaft') && T({ baby: 'da', egVor: 1500 }, 'elterngeld', 'eg.grenze').grenze === E(175000));
 
+// Altersgrenzen nach vollendeten Lebensjahren (heute = Ende 2026; Geburtsjahr 1996 -> 30 Jahre, 1997 -> 29)
+const gv = (jahr, verm) => L(ohne({ miete: 400, vermoegen: verm, gebJahr: jahr, heute: 2026.8 }), 'ggeld');
+ck('[gg-verm] Schonvermögen ab dem 30. Geburtstag 10.000 € (29: 5.000 €), ab dem 40. 12.500 €, ab dem 50. 20.000 €', gv(1997, 8000) === 'nein' && gv(1996, 8000) !== 'nein' && gv(1987, 12000) === 'nein' && gv(1986, 12000) !== 'nein' && gv(1977, 18000) === 'nein' && gv(1976, 18000) !== 'nein');
+ck('[bafoeg-verm] BAföG-Vermögen: ab dem 30. Geburtstag 45.000 € (29 Jahre: 15.000 €)', L({ ausbildung: 'ich', vermoegen: 30000, gebJahr: 1997, heute: 2026.8 }, 'bafoeg') === 'nein' && L({ ausbildung: 'ich', vermoegen: 30000, gebJahr: 1996, heute: 2026.8 }, 'bafoeg') === 'vielleicht');
+ck('[gg-studium] Studium mit 44: kein Grundsicherungsgeld (BAföG-Alter); mit 46 Ausschluss offen', K(ohne({ ausbildung: 'ich', miete: 400, gebJahr: 1982, heute: 2026.8 }), 'ggeld')[0] === 'ggeld.ausbildung' && K(ohne({ ausbildung: 'ich', miete: 400, gebJahr: 1980, heute: 2026.8 }), 'ggeld')[0] !== 'ggeld.ausbildung');
+ck('[bafoeg-alter] BAföG mit 44 normal geprüft, mit 46 nur möglich (Altersgrenze 45), mit 50 nein', K({ ausbildung: 'ich', gebJahr: 1982, heute: 2026.8 }, 'bafoeg')[0] === 'bafoeg.ich' && K({ ausbildung: 'ich', gebJahr: 1980, heute: 2026.8 }, 'bafoeg')[0] === 'bafoeg.alter' && L({ ausbildung: 'ich', gebJahr: 1976, heute: 2026.8 }, 'bafoeg') === 'nein');
+ck('[gg-verm] Alte gespeicherte Altersgruppen werden übernommen', L(ohne({ miete: 400, vermoegen: 6000, alterGruppe: '<31' }), 'ggeld') === 'nein' && L(ohne({ miete: 400, vermoegen: 15000, alterGruppe: '51+' }), 'ggeld') !== 'nein');
+
+ck('[kiz-verm] Kinderzuschlag: Vermögen 55.000 € bei 2 Personen erlaubt (40.000 + 15.000), 55.001 € nicht', L({ kids: 1, art1: 'lohn', brutto: 1800, netto: 1350, miete: 700, mietstufe: '3', vermoegen: 55000 }, 'kiz') === 'ja' && K({ kids: 1, art1: 'lohn', brutto: 1800, netto: 1350, miete: 700, mietstufe: '3', vermoegen: 55001 }, 'kiz')[0] === 'kiz.verm');
 console.log(fails ? '\n' + fails + ' von ' + n + ' FEHLGESCHLAGEN' : '\nFall-Tests bestanden: ' + n + ' Prüfungen');
 process.exit(fails ? 1 : 0);

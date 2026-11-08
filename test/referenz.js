@@ -40,13 +40,14 @@ function haushalt(e) {
   // Alter
   const jahr = Number(e.gebJahr) | 0;
   const heute = e.heute ? Number(e.heute) : new Date().getFullYear() + new Date().getMonth() / 12;
-  let rente = !!e.alter, grenz = false, gruppe = ['<31', '31-40', '41-50', '51+'].indexOf(e.alterGruppe) >= 0 ? e.alterGruppe : '';
+  let rente = !!e.alter, grenz = false, gruppe = { '<31': '<30', '31-40': '30-39', '41-50': '40-49', '51+': '50+', '<30': '<30', '30-39': '30-39', '40-49': '40-49', '50+': '50+' }[e.alterGruppe] || '', jahre = 0;
   if (jahr >= 1900 && jahr <= 2010) {
     const rag = regelaltersgrenze(jahr);
     rente = jahr + 1 + rag <= heute; // auch bei Geburt im Dezember erreicht
     grenz = !rente && jahr + rag <= heute; // bei Geburt im Januar erreicht
     const alter = heute - jahr - 0.5;
-    gruppe = alter < 31 ? '<31' : alter < 41 ? '31-40' : alter < 51 ? '41-50' : '51+';
+    jahre = alter; // vollendete Lebensjahre (Mitte des Geburtsjahres)
+    gruppe = alter < 30 ? '<30' : alter < 40 ? '30-39' : alter < 50 ? '40-49' : '50+';
   }
   const regelEltern = erwachsene === 2 ? 2 * RB[2] : RB[1];
   const regelKinder = u6 * RB[6] + mitte * RB[5] + k14 * RB[4] + jung * RB[3];
@@ -67,7 +68,7 @@ function haushalt(e) {
     mehrAE = prozent * RB[1];
   }
   const em = e.emStd === 'unter3' || !!e.wfbm || !!e.erwerbsgemindert || e.art1 === 'wfbm' || e.art2 === 'wfbm' || (Array.isArray(e.einkommen) && e.einkommen.some((x) => x.art === 'wfbm'));
-  return { e, erwachsene, kinder, jung, u6, k14, mitte, personen, brutto, brutto2, netto, p, rente, grenz, gruppe, em,
+  return { e, erwachsene, kinder, jung, u6, k14, mitte, personen, brutto, brutto2, netto, p, rente, grenz, gruppe, jahre, em,
     regelEltern, regel: regelEltern + regelKinder, regelKinder, miete: zahl(e.miete), vermoegen: zahl(e.vermoegen), unterhalt, kindEink, uvg, mehrAE,
     bezug: e.bezug || {}, kids: kinder + jung };
 }
@@ -129,9 +130,9 @@ function grundsicherungsgeld(h) {
   const b = h.bezug;
   if (b.grundsicherungsgeld) return { level: 'na' };
   if (b.sozialamt) return { level: 'nein' };
-  const jung = h.gruppe === '' || h.gruppe === '<31' || h.gruppe === '31-40';
+  const jung = h.jahre ? h.jahre < 45 : (h.gruppe === '' || h.gruppe === '<30' || h.gruppe === '30-39');
   if (h.e.ausbildung === 'ich' && !h.e.babBetrieb && jung) return { level: 'nein' };
-  const schon = { '': 10000, '<31': 5000, '31-40': 10000, '41-50': 12500, '51+': 20000 }[h.gruppe] * h.erwachsene + 5000 * h.kids;
+  const schon = { '': 10000, '<30': 5000, '30-39': 10000, '40-49': 12500, '50+': 20000 }[h.gruppe] * h.erwachsene + 5000 * h.kids;
   if (h.vermoegen > schon) return { level: 'nein' };
   const bm = behMehrSGB2(h), ms = mehrSonst(h);
   const bedarf = h.regel + h.miete + h.mehrAE + bm.sicher + ms.sicher;
@@ -163,7 +164,7 @@ function wohngeld(h) {
   if (b.grundsicherungsgeld || b.sozialamt) return { level: 'nein' };
   if (b.wohngeld) return { level: 'na' };
   if (h.vermoegen > 60000 + 30000 * (h.personen - 1)) return { level: 'nein' };
-  const jung = h.gruppe === '' || h.gruppe === '<31' || h.gruppe === '31-40';
+  const jung = h.jahre ? h.jahre < 45 : (h.gruppe === '' || h.gruppe === '<30' || h.gruppe === '30-39');
   if (e.ausbildung === 'ich' && h.erwachsene === 1 && h.kids === 0 && (!e.babBetrieb || e.babWohnt) && jung) return { level: 'nein' };
   if (h.miete <= 0) return { level: 'nein' };
   const st = [1, 2, 3, 4, 5, 6, 7].indexOf(Number(e.mietstufe)) >= 0 ? Number(e.mietstufe) : null;
@@ -287,9 +288,9 @@ function bafoeg(e) {
     const frei = (h.erwachsene === 2 ? 2540 : 1690) + Math.max(0, h.kids - 1) * 770;
     return { level: h.netto <= frei ? 'ja' : h.netto <= frei + 1200 ? 'vielleicht' : 'nein', frei };
   }
-  if (h.gruppe === '51+') return { level: 'nein' };
-  if (h.gruppe === '41-50') return { level: 'vielleicht' };
-  if (h.vermoegen > (h.gruppe === '<31' ? 15000 : 45000)) return { level: 'nein' };
+  if (h.gruppe === '50+') return { level: 'nein' };
+  if (h.gruppe === '40-49' && !(h.jahre && h.jahre < 45)) return { level: 'vielleicht' };
+  if (h.vermoegen > (h.gruppe === '<30' ? 15000 : 45000)) return { level: 'nein' };
   return { level: 'vielleicht' };
 }
 

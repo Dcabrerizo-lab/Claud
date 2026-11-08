@@ -58,7 +58,7 @@ check('Regelbedarf Alleinstehende = 563', ev({}).h.regel === 563);
 check('Regelbedarf Jungerwachsene 451', ev({ young: 1 }).h.regel === 563 + 451);
 
 // 3) Beispielhaushalte
-const t1 = ev({ kids: 2, brutto: 2200, netto: 1750, miete: 950, mietstufe: 3, vermoegen: 3000, unterhaltFehlt: true, alterGruppe: '31-40' });
+const t1 = ev({ kids: 2, brutto: 2200, netto: 1750, miete: 950, mietstufe: 3, vermoegen: 3000, unterhaltFehlt: true, alterGruppe: '30-39' });
 check('T1 Alleinerziehend: Wohngeld ja', lv(t1, 'wohngeld') === 'ja');
 check('T1 Kinderzuschlag ja', lv(t1, 'kiz') === 'ja', lv(t1, 'kiz'));
 check('T1 BuT ja', lv(t1, 'but') === 'ja');
@@ -70,18 +70,18 @@ check('T1 Grundsicherung im Alter nein', lv(t1, 'gsa') === 'nein');
 check('T1 Grundsicherungsgeld knapp (Aufstocker mit Mehrbedarf und Unterhaltsvorschuss)', lv(t1, 'ggeld') === 'vielleicht', lv(t1, 'ggeld'));
 check('T1 Hinweis Grundsicherungsgeld gegen Wohngeld', t1.zusammen.some((z) => z[0] === 'z.ggVsWg'));
 
-const t2 = ev({ brutto: 880, netto: 780, miete: 480, mietstufe: 3, vermoegen: 4000, alter: true, alterGruppe: '51+' });
+const t2 = ev({ brutto: 880, netto: 780, miete: 480, mietstufe: 3, vermoegen: 4000, alter: true, alterGruppe: '50+' });
 check('T2 Rentnerin: Grundsicherung im Alter ja', lv(t2, 'gsa') === 'ja', lv(t2, 'gsa'));
 check('T2 Wohngeld nur möglich (Mindesteinkommen)', lv(t2, 'wohngeld') === 'vielleicht' && get(t2, 'wohngeld').hl === 'einkoNiedrig');
 check('T2 Kinder-Leistungen, UVG, BAföG, Pflege nein', ['kiz', 'but', 'uvg', 'bafoeg', 'pflege', 'kindergeld'].every((id) => lv(t2, id) === 'nein'));
 check('T2 Grundsicherungsgeld nein (Sozialamt zuständig)', lv(t2, 'ggeld') === 'nein' && get(t2, 'ggeld').hl === 'andereStelle');
 
-const t3 = ev({ adults: 2, kids: 1, brutto: 3200, netto: 2500, miete: 1100, mietstufe: 5, vermoegen: 8000, alterGruppe: '31-40' });
+const t3 = ev({ adults: 2, kids: 1, brutto: 3200, netto: 2500, miete: 1100, mietstufe: 5, vermoegen: 8000, alterGruppe: '30-39' });
 check('T3 Paar mit Kind: Wohngeld vielleicht', lv(t3, 'wohngeld') === 'vielleicht', lv(t3, 'wohngeld'));
 // Elterneinkommen 2.500 - 378 Freibetrag = 2.122; Bemessung 1.012 + 1.100 x 2/2,4 = 1.928,67; 297 - 0,45 x 193,33 = 210 -> wahrscheinlich
 check('T3 Kinderzuschlag wahrscheinlich (Freibetrag für Arbeit mindert das Einkommen, § 6a BKGG mit § 11b SGB II)', lv(t3, 'kiz') === 'ja', lv(t3, 'kiz'));
 
-const t4 = ev({ adults: 2, kids: 2, brutto: 6500, netto: 4500, miete: 1400, mietstufe: 4, vermoegen: 20000, alterGruppe: '41-50' });
+const t4 = ev({ adults: 2, kids: 2, brutto: 6500, netto: 4500, miete: 1400, mietstufe: 4, vermoegen: 20000, alterGruppe: '40-49' });
 check('T4 hohes Einkommen: Wohngeld, Kinderzuschlag, Grundsicherungsgeld nein', ['wohngeld', 'kiz', 'ggeld'].every((id) => lv(t4, id) === 'nein'));
 check('T4 Kindergeld bleibt ja', lv(t4, 'kindergeld') === 'ja');
 const t4b = ev({ brutto: 6000, netto: 4000, miete: 800, vermoegen: 90000 });
@@ -129,9 +129,9 @@ check('Kindergeld: Jungerwachsener in Ausbildung ja', lv(ev({ young: 1 }), 'kind
 check('Kindergeld: schon bezogen = na', lv(ev({ kids: 1, bezug: { kindergeld: true } }), 'kindergeld') === 'na');
 
 // 7) Grundsicherungsgeld
-check('Grundsicherungsgeld: Schonvermögen bis 30 Jahre 5.000', lv(ev({ brutto: 0, miete: 400, vermoegen: 6000, alterGruppe: '<31' }), 'ggeld') === 'nein' && get(ev({ brutto: 0, miete: 400, vermoegen: 6000, alterGruppe: '<31' }), 'ggeld').hl === 'vermHoch');
-check('Grundsicherungsgeld: ab 51 Jahren 15.000 sind erlaubt', lv(ev({ brutto: 0, miete: 400, vermoegen: 15000, alterGruppe: '51+' }), 'ggeld') === 'ja');
-check('Grundsicherungsgeld: Paar verdoppelt Schonvermögen', lv(ev({ adults: 2, brutto: 0, miete: 500, vermoegen: 19000, alterGruppe: '31-40' }), 'ggeld') === 'ja');
+check('Grundsicherungsgeld: Schonvermögen bis 30 Jahre 5.000', lv(ev({ brutto: 0, miete: 400, vermoegen: 6000, alterGruppe: '<30' }), 'ggeld') === 'nein' && get(ev({ brutto: 0, miete: 400, vermoegen: 6000, alterGruppe: '<30' }), 'ggeld').hl === 'vermHoch');
+check('Grundsicherungsgeld: ab 50 Jahren 15.000 sind erlaubt', lv(ev({ brutto: 0, miete: 400, vermoegen: 15000, alterGruppe: '50+' }), 'ggeld') === 'ja');
+check('Grundsicherungsgeld: Paar verdoppelt Schonvermögen', lv(ev({ adults: 2, brutto: 0, miete: 500, vermoegen: 19000, alterGruppe: '30-39' }), 'ggeld') === 'ja');
 check('Grundsicherungsgeld: Alter -> Sozialamt zuständig', get(ev({ alter: true, miete: 400 }), 'ggeld').hl === 'andereStelle');
 check('Grundsicherungsgeld: Erwerbsminderung -> Sozialamt zuständig', get(ev({ erwerbsgemindert: true, miete: 400 }), 'ggeld').hl === 'andereStelle');
 check('Grundsicherungsgeld: Einkommen über Bedarf nein', lv(ev({ brutto: 3000, netto: 2400, miete: 600 }), 'ggeld') === 'nein');
@@ -155,9 +155,9 @@ check('BAföG: Kind, etwas über Freibetrag vielleicht', lv(ev({ kids: 1, netto:
 check('BAföG: Kind, weit über Freibetrag nein', lv(ev({ kids: 1, netto: 4000, ausbildung: 'kind' }), 'bafoeg') === 'nein');
 check('BAföG: Paar mit 2 jungen Erwachsenen, Freibetrag 2.540 + 770', lv(ev({ adults: 2, young: 2, netto: 3300, ausbildung: 'kind' }), 'bafoeg') === 'ja' && lv(ev({ adults: 2, young: 2, netto: 3400, ausbildung: 'kind' }), 'bafoeg') === 'vielleicht');
 check('BAföG: Kind angegeben, aber kein Kind im Haushalt nein', lv(ev({ ausbildung: 'kind', netto: 1000 }), 'bafoeg') === 'nein');
-check('BAföG: selbst, Vermögen über 15.000 bis 29 nein', lv(ev({ ausbildung: 'ich', alterGruppe: '<31', vermoegen: 20000 }), 'bafoeg') === 'nein');
-check('BAföG: selbst, Vermögen im Rahmen vielleicht', lv(ev({ ausbildung: 'ich', alterGruppe: '<31', vermoegen: 5000 }), 'bafoeg') === 'vielleicht');
-check('BAföG: selbst, ab 51 nein, 41 bis 50 vielleicht', lv(ev({ ausbildung: 'ich', alterGruppe: '51+' }), 'bafoeg') === 'nein' && lv(ev({ ausbildung: 'ich', alterGruppe: '41-50' }), 'bafoeg') === 'vielleicht');
+check('BAföG: selbst, Vermögen über 15.000 bis 29 nein', lv(ev({ ausbildung: 'ich', alterGruppe: '<30', vermoegen: 20000 }), 'bafoeg') === 'nein');
+check('BAföG: selbst, Vermögen im Rahmen vielleicht', lv(ev({ ausbildung: 'ich', alterGruppe: '<30', vermoegen: 5000 }), 'bafoeg') === 'vielleicht');
+check('BAföG: selbst, ab 50 nein, 41 bis 50 vielleicht', lv(ev({ ausbildung: 'ich', alterGruppe: '50+' }), 'bafoeg') === 'nein' && lv(ev({ ausbildung: 'ich', alterGruppe: '40-49' }), 'bafoeg') === 'vielleicht');
 
 // 10) Pflegegeld
 check('Pflege: kein Pflegegrad nein', lv(ev({}), 'pflege') === 'nein');
@@ -302,7 +302,7 @@ LANGS.filter((l) => l !== 'de').forEach((l) => {
 const used = new Set();
 const states = [];
 for (const adults of [1, 2]) for (const kids of [0, 1, 3]) for (const young of [0, 1]) for (const b of [0, 400, 900, 1500, 2500, 4500, 9000]) for (const alter of [false, true]) {
-  for (const extra of [{}, { unterhaltFehlt: true, kinder12: true }, { ausbildung: 'kind' }, { ausbildung: 'ich', alterGruppe: '<31', vermoegen: 20000 }, { ausbildung: 'ich', alterGruppe: '51+' }, { pflegegrad: '1' }, { pflegegrad: '3' }, { pflegegrad: 'antrag' }, { bezug: { grundsicherungsgeld: true, kindergeld: true } }, { bezug: { sozialamt: true, wohngeld: true, kiz: true } }, { vermoegen: 99999 }, { erwerbsgemindert: true }, { mietstufe: 4, behinderung: true }, { bezug: { wohngeld: true } }, { bezug: { kiz: true } }, { ausbildung: 'ich', alterGruppe: '31-40', vermoegen: 1000 }, { bhPerson: 'minder', gdb: '50', blind: 'blind', pflegegrad: '3' }, { bhPerson: 'erwVor25', bhSelbst: true, gdb: '100' }, { bhPerson: 'erwVor25', gdb: 'H', blind: 'hoch', pflegegrad: '2' }, { bhPerson: 'erwNach25', gdb: '30', emStd: 'unter3', em5: true }, { emStd: '3bis6', wfbm: true, gdb: '20' }, { emStd: '3bis6', gdb: '40', pflegegrad: 'antrag' }, { gdb: '60', behinderung: true, ausbildung: 'ich', babBetrieb: true, babWohnt: true }, { ausbildung: 'ich', babBetrieb: true, babWohnt: false }, { bezug: { grundsicherungsgeld: true } , erwerbsgemindert: true }]) {
+  for (const extra of [{}, { unterhaltFehlt: true, kinder12: true }, { ausbildung: 'kind' }, { ausbildung: 'ich', alterGruppe: '<30', vermoegen: 20000 }, { ausbildung: 'ich', alterGruppe: '50+' }, { pflegegrad: '1' }, { pflegegrad: '3' }, { pflegegrad: 'antrag' }, { bezug: { grundsicherungsgeld: true, kindergeld: true } }, { bezug: { sozialamt: true, wohngeld: true, kiz: true } }, { vermoegen: 99999 }, { erwerbsgemindert: true }, { mietstufe: 4, behinderung: true }, { bezug: { wohngeld: true } }, { bezug: { kiz: true } }, { ausbildung: 'ich', alterGruppe: '30-39', vermoegen: 1000 }, { bhPerson: 'minder', gdb: '50', blind: 'blind', pflegegrad: '3' }, { bhPerson: 'erwVor25', bhSelbst: true, gdb: '100' }, { bhPerson: 'erwVor25', gdb: 'H', blind: 'hoch', pflegegrad: '2' }, { bhPerson: 'erwNach25', gdb: '30', emStd: 'unter3', em5: true }, { emStd: '3bis6', wfbm: true, gdb: '20' }, { emStd: '3bis6', gdb: '40', pflegegrad: 'antrag' }, { gdb: '60', behinderung: true, ausbildung: 'ich', babBetrieb: true, babWohnt: true }, { ausbildung: 'ich', babBetrieb: true, babWohnt: false }, { bezug: { grundsicherungsgeld: true } , erwerbsgemindert: true }]) {
     states.push({ adults, kids, young, brutto: b, netto: b * 0.8, miete: 650, alter, ...extra });
   }
 }

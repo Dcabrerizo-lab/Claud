@@ -26,7 +26,9 @@ const Rules = (function () {
       abzugMittel: 0.8
     },
     grundsicherung: { schonAllein: 10000, schonPaar: 20000, knappPuffer: 100, sicherAb: 50 },
-    sgb2: { schon: { '': 10000, '<31': 5000, '31-40': 10000, '41-50': 12500, '51+': 20000 } },
+    // § 12 Abs. 2 SGB II (neue Grundsicherung ab 1.7.2026): bis zur Vollendung des 30. Lebensjahres 5.000 €, ab dem 30. Geburtstag 10.000 €,
+    // ab dem 40. 12.500 €, ab dem 50. 20.000 € je Person
+    sgb2: { schon: { '': 10000, '<30': 5000, '30-39': 10000, '40-49': 12500, '50+': 20000 } },
     but: { schulbedarf: 195, teilhabeMonat: 15 },
     // Minijob-Grenze 2026 (§ 8 Abs. 1a SGB IV): Erwerbseinkommen von Schülern und Azubis unter 25 bleibt bis dahin frei (§ 11b Abs. 2b SGB II)
     minijob: 603,
@@ -223,14 +225,14 @@ const Rules = (function () {
     // Regelaltersgrenze aus dem Geburtsjahr der ältesten erwachsenen Person: sicher erreicht, oder je nach Geburtsmonat (grenz)
     const jahr = Number(inp.gebJahr) | 0;
     const heute = inp.heute ? Number(inp.heute) : (new Date().getFullYear() + new Date().getMonth() / 12);
-    let alter = !!inp.alter, alterGrenz = false, gruppe = R.sgb2.schon.hasOwnProperty(inp.alterGruppe || '') ? (inp.alterGruppe || '') : '';
+    let alter = !!inp.alter, alterGrenz = false, gruppe = ({ '<31': '<30', '31-40': '30-39', '41-50': '40-49', '51+': '50+' })[inp.alterGruppe] || (R.sgb2.schon.hasOwnProperty(inp.alterGruppe || '') ? (inp.alterGruppe || '') : '');
     if (jahr >= 1900 && jahr <= 2010) {
       const ragJahre = jahr < 1947 ? 65 : jahr >= 1964 ? 67 : 65 + R.rag[jahr] / 12;
       // geboren im Dezember: Grenze erst am Ende des Jahres jahr + rag erreicht; im Januar: am Anfang
       alter = jahr + 1 + ragJahre <= heute;
       alterGrenz = !alter && jahr + ragJahre <= heute;
       const age = heute - jahr - 0.5;
-      gruppe = age < 31 ? '<31' : age < 41 ? '31-40' : age < 51 ? '41-50' : '51+';
+      gruppe = age < 30 ? '<30' : age < 40 ? '30-39' : age < 50 ? '40-49' : '50+'; // vollendete Lebensjahre
     }
     return {
       art1, art2, pers, liste: !!liste, kindEink, uvgEst, kindZahl: unterhalt + uvgEst, mehrAE, alterGrenz,
@@ -352,6 +354,9 @@ const Rules = (function () {
     return f1 + f2;
   }
 
+  // BAföG dem Grunde nach möglich (Altersgrenze 45 bei Beginn, § 10 Abs. 3 BAföG): genau mit Geburtsjahr, sonst nach Altersgruppe
+  const bafoegAlter = (h) => (h.alterJahre ? h.alterJahre < 45 : (h.gruppe === '' || h.gruppe === '<30' || h.gruppe === '30-39'));
+
   // ---------------------------------------------------------------
   // Kindergeld
   // ---------------------------------------------------------------
@@ -380,7 +385,7 @@ const Rules = (function () {
     if (h.vermoegen > vermLimit) return mk(id, 'nein', 'vermHoch', [['wohngeld.verm', { n: h.persons, limit: eur(vermLimit) }]]);
 
     // § 20 Abs. 2 WoGG: kein Wohngeld, wenn allen Haushaltsmitgliedern BAföG oder BAB dem Grunde nach zusteht
-    if (h.ausbildung === 'ich' && h.adults === 1 && h.children === 0 && (!h.babBetrieb || h.babWohnt) && (h.gruppe === '' || h.gruppe === '<31' || h.gruppe === '31-40')) {
+    if (h.ausbildung === 'ich' && h.adults === 1 && h.children === 0 && (!h.babBetrieb || h.babWohnt) && bafoegAlter(h)) {
       return mk(id, 'nein', 'ausschluss', [['wohngeld.ausbildung']]);
     }
     if (h.miete <= 0) return mk(id, 'nein', 'vorausFehlt', [['wohngeld.keineMiete']]);
@@ -441,7 +446,7 @@ const Rules = (function () {
       level = 'vielleicht'; hl = 'einkoNiedrig';
       const schonGS = (h.alter || h.erwerbsgemindert)
         ? R.grundsicherung.schonAllein * h.adults + 500 * h.children
-        : R.sgb2.schon[h.gruppe] * h.adults + R.sgb2.schon['<31'] * h.children;
+        : R.sgb2.schon[h.gruppe] * h.adults + R.sgb2.schon['<30'] * h.children;
       tx = [[h.vermoegen > schonGS ? 'wohngeld.zuNiedrigVerm' : 'wohngeld.zuNiedrig'], grenze];
     }
     return mk(id, level, hl, tx);
@@ -500,12 +505,12 @@ const Rules = (function () {
     if (h.bezug.grundsicherungsgeld) return mk(id, 'na', 'na', [['ggeld.na']]);
     if (h.bezug.sozialamt) return mk(id, 'nein', 'ausschluss', [['ggeld.sozialamt']]);
     // § 7 Abs. 5 SGB II: Schule/Studium, die nach BAföG förderfähig sind, schließen Grundsicherungsgeld in der Regel aus
-    // (betriebliche Ausbildung mit Berufsausbildungsbeihilfe: aufstockend möglich). Nicht mehr förderfähig: ab 41 Jahren offen.
-    if (h.ausbildung === 'ich' && !h.babBetrieb && (h.gruppe === '' || h.gruppe === '<31' || h.gruppe === '31-40')) {
+    // (betriebliche Ausbildung mit Berufsausbildungsbeihilfe: aufstockend möglich). Ab 45 (Altersgrenze BAföG) nicht mehr förderfähig: offen.
+    if (h.ausbildung === 'ich' && !h.babBetrieb && bafoegAlter(h)) {
       return mk(id, 'nein', 'ausschluss', [['ggeld.ausbildung']]);
     }
     // § 12 Abs. 2 SGB II: je Person der Bedarfsgemeinschaft ein Freibetrag nach Alter; Kinder und junge Erwachsene bis 30: 5.000 €
-    const schon = R.sgb2.schon[h.gruppe] * h.adults + R.sgb2.schon['<31'] * h.children;
+    const schon = R.sgb2.schon[h.gruppe] * h.adults + R.sgb2.schon['<30'] * h.children;
     if (h.vermoegen > schon) return mk(id, 'nein', 'vermHoch', [['ggeld.verm', { schon: eur(schon) }]]);
     const einkommen = elternEinkSGB2(h) + h.children * R.kindergeld + unterhaltAnrechenbar(h);
     const mb = mehrBehSGB2(h), ma = mehrAllg(h, false);
@@ -642,10 +647,11 @@ const Rules = (function () {
       return mk(id, 'nein', 'einkoHoch', [['bafoeg.kindNein', p]]);
     }
     // ich selbst: Elterneinkommen unbekannt
-    if (h.gruppe === '51+' || h.gruppe === '41-50') {
-      return mk(id, h.gruppe === '51+' ? 'nein' : 'vielleicht', h.gruppe === '51+' ? 'vorausFehlt' : 'vielleicht', [['bafoeg.alter']]);
+    // § 10 Abs. 3 BAföG: Altersgrenze 45 bei Beginn (Ausnahmen möglich); ab 50 unwahrscheinlich
+    if (h.gruppe === '50+' || (h.gruppe === '40-49' && !bafoegAlter(h))) {
+      return mk(id, h.gruppe === '50+' ? 'nein' : 'vielleicht', h.gruppe === '50+' ? 'vorausFehlt' : 'vielleicht', [['bafoeg.alter']]);
     }
-    const vermGrenze = h.gruppe === '<31' ? R.bafoeg.vermBis29 : R.bafoeg.vermAb30;
+    const vermGrenze = h.gruppe === '<30' ? R.bafoeg.vermBis29 : R.bafoeg.vermAb30; // § 29: 15.000 € bis zur Vollendung des 30. Lebensjahres
     if (h.vermoegen > vermGrenze) return mk(id, 'nein', 'vermHoch', [['bafoeg.vermHoch', { verm: eur(vermGrenze) }]]);
     return mk(id, 'vielleicht', 'vielleicht', [['bafoeg.ich']]);
   }
