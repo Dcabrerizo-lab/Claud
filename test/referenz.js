@@ -223,4 +223,66 @@ function grundsicherungAlter(e) {
   return { level, bedarf, luecke };
 }
 
-module.exports = { haushalt, grundsicherungsgeld, wohngeld, kinderzuschlag, grundsicherungAlter, regelaltersgrenze, freibetragArbeit, RB };
+// ---------- Unterhaltsvorschuss (UVG) ----------
+function unterhaltsvorschuss(e) {
+  const h = haushalt(e);
+  if (h.kinder === 0) return { level: 'nein' };
+  if (!e.unterhaltFehlt) return { level: 'nein' };
+  if (h.unterhalt > 0) return { level: h.unterhalt >= h.kinder * UVG.u18 ? 'nein' : 'vielleicht' };
+  if (h.erwachsene === 2) return { level: 'vielleicht' };
+  if (e.kinder12 && h.brutto < 600) return { level: 'vielleicht' };
+  return { level: 'ja' };
+}
+
+// ---------- BAföG (nur Einstufung; Kind: Freibeträge der Eltern § 25 BAföG, vereinfacht wie in der App) ----------
+function bafoeg(e) {
+  const h = haushalt(e);
+  const a = e.ausbildung;
+  if (a !== 'kind' && a !== 'kindBetrieb' && a !== 'ich') return { level: 'nein' };
+  if (a === 'kindBetrieb') return { level: 'nein' };
+  if (a === 'kind') {
+    if (h.kids === 0) return { level: 'nein' };
+    const frei = (h.erwachsene === 2 ? 2540 : 1690) + Math.max(0, h.kids - 1) * 770;
+    return { level: h.netto <= frei ? 'ja' : h.netto <= frei + 1200 ? 'vielleicht' : 'nein', frei };
+  }
+  if (h.gruppe === '51+') return { level: 'nein' };
+  if (h.gruppe === '41-50') return { level: 'vielleicht' };
+  if (h.vermoegen > (h.gruppe === '<31' ? 15000 : 45000)) return { level: 'nein' };
+  return { level: 'vielleicht' };
+}
+
+// ---------- Arbeitslosengeld I (§§ 137, 147, 149 SGB III) ----------
+function arbeitslosengeld(e) {
+  const h = haushalt(e);
+  const bekommt = h.p.some((x) => x.art === 'alg');
+  if (bekommt) return { level: 'na' };
+  if (e.arbeitSit === 'krank' && e.krankWochen === 'ende') return { level: 'vielleicht' };
+  if (e.arbeitSit !== 'arbeitslos') return { level: 'nein' };
+  if (h.rente) return { level: 'nein' };
+  if (!e.algZeit) return { level: 'vielleicht' };
+  const satz = h.kids > 0 ? 67 : 60;
+  const jahr = Number(e.gebJahr) | 0;
+  const heute = e.heute ? Number(e.heute) : new Date().getFullYear() + new Date().getMonth() / 12;
+  const alter = jahr >= 1900 && jahr <= 2010 ? heute - jahr - 0.5 : 0;
+  const m = [12, 16, 20, 24, 30, 36, 48].indexOf(Number(e.algMonate)) >= 0 ? Number(e.algMonate) : 0;
+  // § 147 Abs. 2: Versicherungsmonate -> Anspruchsdauer, ab bestimmten Altersgrenzen länger
+  let dauer = null;
+  if (m) dauer = m >= 48 && alter >= 58 ? 24 : m >= 36 && alter >= 55 ? 18 : m >= 30 && alter >= 50 ? 15 : m >= 24 ? 12 : m >= 20 ? 10 : m >= 16 ? 8 : 6;
+  const lohn = Math.min(zahl(e.lohnVorher), 8450);
+  const oben = lohn <= 2000 ? 0.8 : 0.72; // Netto bei kleinem Brutto höher
+  const spanne = lohn > 0 ? [runde10(lohn * 0.6 * satz / 100), runde10(lohn * oben * satz / 100)] : null;
+  return { level: 'ja', satz, dauer, spanne };
+}
+
+// ---------- Krankengeld (§§ 47, 48 SGB V) ----------
+function krankengeld(e) {
+  const h = haushalt(e);
+  if (h.p.some((x) => x.art === 'kg')) return { level: 'na' };
+  if (e.arbeitSit !== 'krank') return { level: 'nein' };
+  if (e.krankWochen === 'ende') return { level: 'nein' };
+  const lohn = Math.min(zahl(e.lohnVorher), 5812.5);
+  const kg = (q) => runde10(Math.min(0.7 * lohn, 0.9 * lohn * q) * 0.875);
+  return { level: e.krankWochen === 'unter6' ? 'vielleicht' : 'ja', spanne: lohn > 0 ? [kg(0.6), kg(lohn <= 2000 ? 0.8 : 0.72)] : null };
+}
+
+module.exports = { haushalt, grundsicherungsgeld, wohngeld, kinderzuschlag, grundsicherungAlter, unterhaltsvorschuss, bafoeg, arbeitslosengeld, krankengeld, regelaltersgrenze, freibetragArbeit, RB };

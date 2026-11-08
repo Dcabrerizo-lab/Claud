@@ -47,7 +47,9 @@ function haushaltZufall(i) {
     wfbm: rnd() < 0.05,
     gdb: pick(['', '', '', '50', '80', '100', 'H']),
     pflegegrad: pick(['', '', '', '2', '3']),
-    bezug: { grundsicherungsgeld: rnd() < 0.05, sozialamt: rnd() < 0.03, wohngeld: rnd() < 0.05, kiz: rnd() < 0.05, kindergeld: rnd() < 0.4 }
+    arbeitSit: pick(['', '', 'arbeitslos', 'krank']), algZeit: rnd() < 0.6, algMonate: pick(['', 12, 16, 20, 24, 30, 36, 48]),
+    krankWochen: pick(['', 'unter6', 'laeuft', 'ende']), lohnVorher: pick(['', geld(4000, 10), 9000, 6000]),
+        bezug: { grundsicherungsgeld: rnd() < 0.05, sozialamt: rnd() < 0.03, wohngeld: rnd() < 0.05, kiz: rnd() < 0.05, kindergeld: rnd() < 0.4 }
   };
   return e;
 }
@@ -91,6 +93,26 @@ function pruefe(e) {
   }
   // Grundsicherung im Alter und bei Erwerbsminderung
   vergleicheGSA(e, r);
+  // Unterhaltsvorschuss, BAföG, Arbeitslosengeld I, Krankengeld
+  const u = Ref.unterhaltsvorschuss(e);
+  if (r.uvg.level !== u.level) melde('Unterhaltsvorschuss: Einstufung', e, { app: r.uvg.level, ref: u.level });
+  const bf = Ref.bafoeg(e);
+  if (r.bafoeg.level !== bf.level) melde('BAföG: Einstufung', e, { app: r.bafoeg.level, ref: bf.level });
+  const al = Ref.arbeitslosengeld(e);
+  if (r.alg1.level !== al.level) melde('Arbeitslosengeld I: Einstufung', e, { app: r.alg1.level, ref: al.level });
+  else if (al.level === 'ja') {
+    const p = r.alg1.tx.find((x) => x[0] === 'alg1.ja'), d = r.alg1.tx.find((x) => x[0] === 'alg1.dauer');
+    if (!p || p[1].p !== al.satz) melde('Arbeitslosengeld I: Satz', e, { app: p && p[1], ref: al.satz });
+    if ((d ? d[1].m : null) !== al.dauer) melde('Arbeitslosengeld I: Dauer', e, { app: d && d[1], ref: al.dauer });
+    const sp = r.alg1.tx.find((x) => x[0] === 'schaetz.spanne');
+    if (JSON.stringify(sp ? [sp[1].a.eur, sp[1].b.eur] : null) !== JSON.stringify(al.spanne)) melde('Arbeitslosengeld I: Betrag', e, { app: sp && sp[1], ref: al.spanne });
+  }
+  const kk = Ref.krankengeld(e);
+  if (r.krankengeld.level !== kk.level) melde('Krankengeld: Einstufung', e, { app: r.krankengeld.level, ref: kk.level });
+  else if (kk.level === 'ja' || kk.level === 'vielleicht') {
+    const sp = r.krankengeld.tx.find((x) => x[0] === 'schaetz.spanne');
+    if (JSON.stringify(sp ? [sp[1].a.eur, sp[1].b.eur] : null) !== JSON.stringify(kk.spanne)) melde('Krankengeld: Betrag', e, { app: sp && sp[1], ref: kk.spanne });
+  }
   // Allgemein: keine Fehlwerte
   if (/NaN|Infinity|undefined/.test(JSON.stringify(out))) melde('Fehlwerte (NaN/undefined)', e, {});
 }
@@ -157,10 +179,32 @@ for (const wohn of W.wohn) for (const wf of W.wfbm) for (const re of W.rente) fo
   if (geb === 1955 && (r.ggeld.level !== 'nein' || r.alg1.level === 'ja')) melde('Eigenschaft: Rentenalter beim Jobcenter', e, {});
 }
 
+// Schwellen-Raster: BAföG (Kind) und Unterhaltsvorschuss in 10-€-Schritten über alle Grenzen
+let schwelle = 0;
+for (const adults of [1, 2]) for (const kids of [1, 2, 3]) for (let netto = 0; netto <= 6000; netto += 10) {
+  const e = { adults, kids, young: 0, art1: 'lohn', brutto: Math.round(netto / 0.75), netto, miete: 700, vermoegen: 0, ausbildung: 'kind', unterhaltFehlt: true, kinder12: true, bezug: {} };
+  schwelle++; n++;
+  const r = {}; Rules.evaluate(e).results.forEach((x) => { r[x.id] = x; });
+  const bf = Ref.bafoeg(e); if (r.bafoeg.level !== bf.level) melde('BAföG (Schwellen-Raster): Einstufung', e, { app: r.bafoeg.level, ref: bf.level });
+  const u = Ref.unterhaltsvorschuss(e); if (r.uvg.level !== u.level) melde('Unterhaltsvorschuss (Schwellen-Raster): Einstufung', e, { app: r.uvg.level, ref: u.level });
+}
+// Arbeitslosengeld und Krankengeld: jedes Brutto in 10-€-Schritten bis über die Beitragsbemessungsgrenzen
+for (let lohn = 10; lohn <= 10000; lohn += 10) for (const kids of [0, 1]) {
+  for (const e of [{ adults: 1, kids, young: 0, arbeitSit: 'arbeitslos', algZeit: true, algMonate: 24, gebJahr: 1980, heute: 2026.8, lohnVorher: lohn, bezug: {} },
+    { adults: 1, kids, young: 0, arbeitSit: 'krank', krankWochen: 'laeuft', lohnVorher: lohn, bezug: {} }]) {
+    schwelle++; n++;
+    const r = {}; Rules.evaluate(e).results.forEach((x) => { r[x.id] = x; });
+    const ref = e.arbeitSit === 'krank' ? Ref.krankengeld(e) : Ref.arbeitslosengeld(e);
+    const id = e.arbeitSit === 'krank' ? 'krankengeld' : 'alg1';
+    const sp = r[id].tx.find((x) => x[0] === 'schaetz.spanne');
+    if (JSON.stringify(sp ? [sp[1].a.eur, sp[1].b.eur] : null) !== JSON.stringify(ref.spanne)) melde(id + ' (Schwellen-Raster): Betrag', e, { app: sp && sp[1], ref: ref.spanne });
+  }
+}
+
 const arten = Object.keys(fehler);
 if (arten.length) {
   console.log('ABWEICHUNGEN zwischen App und Referenz (' + n + ' Haushalte):');
   arten.forEach((a) => { console.log('\n- ' + a + ': ' + fehler[a].anzahl + 'x\n  Beispiel: ' + JSON.stringify(fehler[a].beispiel)); });
   process.exit(1);
 }
-console.log('Raster-Test bestanden: ' + n + ' Haushalte (davon ' + raster + ' als vollständiges Raster für Werkstatt-Beschäftigte), App und unabhängige Referenz stimmen überein (Grundsicherungsgeld, Grundsicherung im Alter und bei Erwerbsminderung mit Werkstattlohn und Wohnform, Wohngeld, Kinderzuschlag: Einstufung und Beträge).');
+console.log('Raster-Test bestanden: ' + n + ' Haushalte (davon ' + raster + ' als vollständiges Raster für Werkstatt-Beschäftigte, ' + schwelle + ' im Schwellen-Raster), App und unabhängige Referenz stimmen überein (Grundsicherungsgeld, Grundsicherung im Alter und bei Erwerbsminderung mit Werkstattlohn und Wohnform, Wohngeld, Kinderzuschlag, Unterhaltsvorschuss, BAföG, Arbeitslosengeld I, Krankengeld: Einstufung und Beträge).');

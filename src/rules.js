@@ -30,7 +30,7 @@ const Rules = (function () {
     minijob: 603,
     // Arbeitslosengeld I (SGB III): 60 %, mit Kind 67 % des pauschalierten Nettos (§ 149); Beitragsbemessungsgrenze 2026: 8.450 € im Monat;
     // Netto grob 60-72 % des Bruttos; Dauer § 147 Abs. 2: [Monate versichert in 5 Jahren, Mindestalter, Monate Anspruch]
-    alg: { satz: 0.6, satzKind: 0.67, bbg: 8450, netto: [0.6, 0.72], dauer: [[48, 58, 24], [36, 55, 18], [30, 50, 15], [24, 0, 12], [20, 0, 10], [16, 0, 8], [12, 0, 6]] },
+    alg: { satz: 0.6, satzKind: 0.67, bbg: 8450, netto: [0.6, 0.72], nettoKlein: 0.8, kleinBis: 2000, dauer: [[48, 58, 24], [36, 55, 18], [30, 50, 15], [24, 0, 12], [20, 0, 10], [16, 0, 8], [12, 0, 6]] },
     // Krankengeld (§ 47 SGB V): 70 % des Bruttos, höchstens 90 % des Nettos, bis zur Beitragsbemessungsgrenze 2026 (5.812,50 € im Monat);
     // davon gehen Beiträge zur Renten-, Arbeitslosen- und Pflegeversicherung ab (rund 12,5 %); höchstens 78 Wochen (§ 48 SGB V)
     krank: { satz: 0.7, nettoMax: 0.9, bbg: 5812.5, abzug: 0.125, wochen: 78 },
@@ -575,6 +575,9 @@ const Rules = (function () {
     return mk(id, 'vielleicht', 'vielleicht', [[art], ['emrente.warte']]);
   }
 
+  // Netto grob als Anteil vom Brutto: 60 % (Steuerklasse V, hohe Abzüge) bis 72 %, bei kleinem Brutto (bis 2.000 €) bis 80 %
+  const nettoSpanne = (b) => [R.alg.netto[0], b <= R.alg.kleinBis ? R.alg.nettoKlein : R.alg.netto[1]];
+
   // Arbeitslosengeld I (§§ 136 ff. SGB III)
   function alg1(h) {
     const id = 'alg1';
@@ -593,7 +596,8 @@ const Rules = (function () {
     } else tx.push(['alg1.dauerMin']);
     if (h.lohnVorher > 0) {
       const b = Math.min(h.lohnVorher, R.alg.bbg);
-      tx.push(['schaetz.spanne', { a: eur(r10(b * R.alg.netto[0] * p)), b: eur(r10(b * R.alg.netto[1] * p)) }]);
+      const q = nettoSpanne(b);
+      tx.push(['schaetz.spanne', { a: eur(r10(b * q[0] * p)), b: eur(r10(b * q[1] * p)) }]);
     }
     tx.push(melden);
     return mk(id, 'ja', 'ja', tx);
@@ -610,7 +614,8 @@ const Rules = (function () {
       const b = Math.min(h.lohnVorher, R.krank.bbg);
       // Netto grob 60-72 % des Bruttos; Krankengeld = min(70 % brutto, 90 % netto), abzüglich der Beiträge
       const kgv = (q) => r10(Math.min(R.krank.satz * b, R.krank.nettoMax * b * q) * (1 - R.krank.abzug));
-      tx.push(['schaetz.spanne', { a: eur(kgv(R.alg.netto[0])), b: eur(kgv(R.alg.netto[1])) }]);
+      const q = nettoSpanne(b);
+      tx.push(['schaetz.spanne', { a: eur(kgv(q[0])), b: eur(kgv(q[1])) }]);
     }
     tx.push(['krank.78']);
     return mk(id, h.krankWochen === 'unter6' ? 'vielleicht' : 'ja', h.krankWochen === 'unter6' ? 'vielleicht' : 'ja', tx);

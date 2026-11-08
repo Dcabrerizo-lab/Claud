@@ -129,6 +129,8 @@ ck('ALG I: Krankengeld läuft aus → Nahtlosigkeit möglich (§ 145 SGB III)', 
 const k1 = { arbeitSit: 'krank', krankWochen: 'laeuft', lohnVorher: 3000 };
 ck('Krankengeld läuft: wahrscheinlich, Hinweis auf 78 Wochen', L(k1, 'krankengeld') === 'ja' && K(k1, 'krankengeld').includes('krank.78'));
 ck('Krankengeld: Schätzung 3.000 € → 1.420 bis 1.700 €', T(k1, 'krankengeld', 'schaetz.spanne').a === E(Math.round(3000 * 0.6 * 0.9 * 0.875 / 10) * 10) && T(k1, 'krankengeld', 'schaetz.spanne').b === E(Math.round(Math.min(2100, 3000 * 0.72 * 0.9) * 0.875 / 10) * 10), JSON.stringify(T(k1, 'krankengeld', 'schaetz.spanne')));
+// Kleines Brutto (1.500 €): Netto bis 80 % -> 90 % davon = 1.080 € liegt über 70 % brutto = 1.050 € -> die 70-%-Grenze greift
+ck('Krankengeld bei 1.500 € brutto: 70-%-Grenze greift (oben 1.050 € x 0,875 = 920 €)', T({ ...k1, lohnVorher: 1500 }, 'krankengeld', 'schaetz.spanne').b === E(920), JSON.stringify(T({ ...k1, lohnVorher: 1500 }, 'krankengeld', 'schaetz.spanne')));
 ck('Krankengeld: unter 6 Wochen zahlt der Arbeitgeber (möglich)', L({ ...k1, krankWochen: 'unter6' }, 'krankengeld') === 'vielleicht' && K({ ...k1, krankWochen: 'unter6' }, 'krankengeld')[0] === 'krank.lfz');
 ck('Krankengeld nach 78 Wochen: endet, EM-Rente wird möglich', L({ ...k1, krankWochen: 'ende' }, 'krankengeld') === 'nein' && L({ ...k1, krankWochen: 'ende' }, 'emrente') === 'vielleicht');
 
