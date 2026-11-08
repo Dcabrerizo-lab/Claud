@@ -286,6 +286,14 @@ check('Arabisch läuft rechts nach links, alle anderen links nach rechts', I18N.
   check('Leichte Sprache: lange Wörter mit Bindestrich gegliedert', wort.length === 0, wort.join(', '));
 }
 
+// Die Webseite zum Hochladen (site/) enthält dieselbe Datenschutzerklärung wie das Projekt
+{
+  const fsx = require('fs'), px = require('path');
+  const a = fsx.readFileSync(px.join(__dirname, '..', 'datenschutz.html'), 'utf8'), b = fsx.readFileSync(px.join(__dirname, '..', 'site', 'datenschutz.html'), 'utf8');
+  check('Webseite: site/datenschutz.html ist aktuell (gleich wie datenschutz.html)', a === b);
+  check('Webseite: Startseite verlinkt Datenschutz und Impressum', /datenschutz\.html"/.test(fsx.readFileSync(px.join(__dirname, '..', 'site', 'index.html'), 'utf8')) && /id="impressum"/.test(b));
+}
+
 // Amtsbegriffe bleiben deutsch erhalten
 const TERMS = ['Wohngeld', 'Kinderzuschlag', 'Kindergeld', 'Grundsicherungsgeld', 'Grundsicherung im Alter', 'Jobcenter', 'Sozialamt', 'Familienkasse', 'Pflegekasse', 'BAföG', 'Pflegegeld', 'Unterhaltsvorschuss', 'Bürgergeld', 'Wohngeldstelle'];
 LANGS.filter((l) => l !== 'de').forEach((l) => {
