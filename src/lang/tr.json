@@ -820,5 +820,22 @@
   "u.geburtsurkunde": "Çocuğun doğum belgesi",
   "u.aufenthalt": "Oturum belgesi (Aufenthaltsgestattung, Duldung)",
   "es.n.hzp": "Bakım yardımı",
-  "es.r.hzp": "Bakım için para yetmiyor mu? O zaman kurum yardım eder. Bavyera'da bu Bezirk'tir."
+  "es.r.hzp": "Bakım için para yetmiyor mu? O zaman kurum yardım eder. Bavyera'da bu Bezirk'tir.",
+  "t.blh.keine": "Blindenhilfe (körler yardımı), geliri ve varlığı az olan kör kişilere ödenir.",
+  "t.blh.hoch": "Blindenhilfe sadece kör kişiler içindir (görme keskinliği en fazla 1/50 veya aynı ağırlıkta bir bozukluk). Ağır görme engelinde ödenmez.",
+  "t.blh.asyl": "Asylbewerberleistungsgesetz kapsamında yardım alanlar Blindenhilfe'yi genellikle ancak 36 ay sonra alır (Analogleistungen). Öncesinde kurum özel durumlarda yardım edebilir.",
+  "t.blh.verm": "Korunan miktarın üzerindeki varlık önce kullanılmalıdır.",
+  "t.blh.unter": "Gelir, ayda yaklaşık {grenze} olan sınırın altında. Bu durumda gelir kullanılmak zorunda değildir.",
+  "t.blh.ueber": "Gelir, ayda yaklaşık {grenze} olan sınırın üzerinde. Bunun üzerindeki gelirin en fazla %{prozent}'i hesaba katılır, bu yüzden yine de Blindenhilfe olabilir.",
+  "t.blh.bayern": "Önce Bavyera Blindengeld ödenir. Tamamı Blindenhilfe'den düşülür. Blindenhilfe genellikle biraz daha yüksektir, kurum farkı öder. Miktar her yıl 1 Temmuz'da emekli maaşlarıyla birlikte artar.",
+  "t.blh.landAnders": "Önce eyaletinin Landesblindengeld'i ödenir. Tamamı hesaba katılır. Blindenhilfe'den düşükse farkı Sozialamt öder.",
+  "t.blh.kind": "18 yaşından küçük çocuklarda Blindenhilfe yarı yarıyadır. Landesblindengeld düşüldüğü için genellikle bir şey kalmaz.",
+  "t.blh.pflege": "Bakım derecesi 2 ile 5 arasında Pflegegeld'in bir kısmı Blindenhilfe'den düşülür.",
+  "t.blh.heim": "Bakım evinde Blindenhilfe en fazla yarısına kadar düşürülebilir.",
+  "n.blh": "Körler yardımı (sosyal yardım)",
+  "zu.blh": "Bezirk (sosyal yardım kurumu)",
+  "s.blh.wo": "Bezirk'te (Bavyera'da), başka yerlerde Sozialamt'ta. Resmî olmayan bir başvuru yeterlidir.",
+  "s.blh.tip": "Önce Landesblindengeld için başvur. Blindenhilfe ancak kurumun haberdar olduğu aydan itibaren ödenir.",
+  "es.n.blh": "Körler yardımı",
+  "es.r.blh": "Kör ve az paran mı var? O zaman Blindengeld'e ek olarak biraz daha alabilirsin. Bavyera'da Bezirk'te."
 }

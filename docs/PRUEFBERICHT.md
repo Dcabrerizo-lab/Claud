@@ -32,7 +32,7 @@ Eine Prüfung durch eine Sozialberatung oder eine Fachanwältin ersetzt dieser B
 - **Gemischte Bedarfsgemeinschaft:** Ist bei einem Paar mit Kindern eine Person im Rentenalter oder voll erwerbsgemindert, kann die andere Person mit den Kindern zum Jobcenter gehören. Das zeigt die App jetzt als „möglich“, statt pauschal „nur Sozialamt“.
 - **Zuzahlungen:** Als schwerwiegend chronisch krank gilt auch, wer Pflegegrad 3 bis 5 hat (Chroniker-Richtlinie § 2).
 - **Fahrtkostenpauschale bei Merkzeichen aG:** 4.500 € statt 900 €.
-- **Neue Karten:** Elterngeld (Höhe nach § 2 BEEG mit Ersatzrate, 300 bis 1.800 €, ElterngeldPlus), Hilfe zur Pflege (Einkommensgrenze § 85 SGB XII) und Asylbewerberleistungen. Wer im Asylverfahren ist oder eine Duldung hat, bekommt kein Grundsicherungsgeld, keine Grundsicherung im Alter, kein Wohngeld und keinen Kinderzuschlag mehr angezeigt.
+- **Neue Karten:** Elterngeld (Höhe nach § 2 BEEG mit Ersatzrate, 300 bis 1.800 €, ElterngeldPlus), Hilfe zur Pflege (Einkommensgrenze § 85 SGB XII), Blindenhilfe (§ 72 SGB XII, ergänzend zum Landesblindengeld) und Asylbewerberleistungen. Wer im Asylverfahren ist oder eine Duldung hat, bekommt kein Grundsicherungsgeld, keine Grundsicherung im Alter, kein Wohngeld und keinen Kinderzuschlag mehr angezeigt.
 - **Veraltete Regeln:** Ab dem 1.1.2027 zeigt die App einen deutlichen Hinweis, bis sie aktualisiert ist.
 
 ## Fachlich: bekannte Grenzen (bewusst so gelöst)

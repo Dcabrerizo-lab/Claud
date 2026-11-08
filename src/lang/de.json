@@ -820,5 +820,22 @@
   "u.geburtsurkunde": "Geburtsurkunde des Kindes",
   "u.aufenthalt": "Aufenthaltsdokument (Aufenthaltsgestattung, Duldung)",
   "es.n.hzp": "Hilfe zur Pflege",
-  "es.r.hzp": "Reicht das Geld für die Pflege nicht? Dann hilft das Amt. In Bayern ist das der Bezirk."
+  "es.r.hzp": "Reicht das Geld für die Pflege nicht? Dann hilft das Amt. In Bayern ist das der Bezirk.",
+  "t.blh.keine": "Blindenhilfe gibt es für blinde Menschen, wenn Einkommen und Vermögen gering sind.",
+  "t.blh.hoch": "Blindenhilfe gibt es nur für blinde Menschen (Sehschärfe höchstens 1/50 oder eine gleich schwere Sehstörung). Bei hochgradiger Sehbehinderung gibt es sie nicht.",
+  "t.blh.asyl": "Wer Leistungen nach dem Asylbewerberleistungsgesetz bekommt, bekommt Blindenhilfe meist erst nach 36 Monaten (Analogleistungen). Davor kann das Amt im Einzelfall helfen.",
+  "t.blh.verm": "Vermögen über dem Schonbetrag muss zuerst eingesetzt werden.",
+  "t.blh.unter": "Das Einkommen liegt unter der Einkommensgrenze von etwa {grenze} im Monat. Dann muss kein Einkommen eingesetzt werden.",
+  "t.blh.ueber": "Das Einkommen liegt über der Einkommensgrenze von etwa {grenze} im Monat. Vom Einkommen darüber werden höchstens {prozent} % angerechnet. Deshalb kann es trotzdem Blindenhilfe geben.",
+  "t.blh.bayern": "Zuerst gibt es das Bayerische Blindengeld. Es wird voll auf die Blindenhilfe angerechnet. Die Blindenhilfe ist meist etwas höher, dann zahlt das Amt den Unterschied dazu. Die Höhe steigt jedes Jahr zum 1. Juli mit den Renten.",
+  "t.blh.landAnders": "Zuerst gibt es das Landesblindengeld deines Bundeslandes. Es wird voll angerechnet. Ist es niedriger als die Blindenhilfe, zahlt das Sozialamt den Unterschied.",
+  "t.blh.kind": "Für Kinder unter 18 Jahren ist die Blindenhilfe nur halb so hoch. Weil das Landesblindengeld angerechnet wird, bleibt dann meist nichts übrig.",
+  "t.blh.pflege": "Bei Pflegegrad 2 bis 5 wird ein Teil des Pflegegeldes auf die Blindenhilfe angerechnet.",
+  "t.blh.heim": "Im Heim kann die Blindenhilfe gekürzt werden, höchstens auf die Hälfte.",
+  "n.blh": "",
+  "zu.blh": "Bezirk (Sozialhilfeträger)",
+  "s.blh.wo": "Beim Bezirk (in Bayern), sonst beim Sozialamt. Ein formloser Antrag reicht.",
+  "s.blh.tip": "Zuerst das Landesblindengeld beantragen. Blindenhilfe gibt es erst ab dem Monat, in dem das Amt davon erfährt.",
+  "es.n.blh": "Blindenhilfe",
+  "es.r.blh": "Blind und wenig Geld? Dann gibt es vielleicht noch etwas zum Blindengeld dazu. In Bayern beim Bezirk."
 }

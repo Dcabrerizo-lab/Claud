@@ -652,6 +652,7 @@
     kgBeh: { stelle: 'Familienkasse der Bundesagentur für Arbeit', betreff: 'Antrag auf Kindergeld für ein volljähriges Kind mit Behinderung', satz: 'hiermit beantrage ich Kindergeld für mein volljähriges Kind. Die Behinderung ist vor dem 25. Geburtstag eingetreten, das Kind kann sich wegen der Behinderung nicht selbst unterhalten.' },
     elterngeld: { stelle: 'Elterngeldstelle (in Bayern: Zentrum Bayern Familie und Soziales)', betreff: 'Antrag auf Elterngeld', satz: 'hiermit beantrage ich Elterngeld für mein Kind. Bitte senden Sie mir die Antragsunterlagen zu. Bitte werten Sie den Eingang dieses Schreibens als Antragsdatum, da Elterngeld rückwirkend nur für drei Monate gezahlt wird.' },
     hzp: { stelle: 'Träger der Sozialhilfe (in Bayern: der Bezirk)', betreff: 'Antrag auf Hilfe zur Pflege', satz: 'hiermit beantrage ich Hilfe zur Pflege nach dem Siebten Kapitel des Zwölften Buches Sozialgesetzbuch (SGB XII), weil die Leistungen der Pflegeversicherung und mein Einkommen die Kosten der Pflege nicht decken.' },
+    blh: { stelle: 'Träger der Sozialhilfe (in Bayern: der Bezirk)', betreff: 'Antrag auf Blindenhilfe', satz: 'hiermit beantrage ich Blindenhilfe nach § 72 des Zwölften Buches Sozialgesetzbuch (SGB XII). Ich bin blind. Ein Bescheid über das Landesblindengeld liegt bei oder ist beantragt.' },
     asylblg: { stelle: 'Sozialamt beziehungsweise Landratsamt (Leistungen nach dem Asylbewerberleistungsgesetz)', betreff: 'Antrag auf Leistungen nach dem Asylbewerberleistungsgesetz', satz: 'hiermit beantrage ich Leistungen nach dem Asylbewerberleistungsgesetz für mich und die Personen meines Haushalts, einschließlich der Leistungen für Bildung und Teilhabe für die Kinder.' },
     srente: { stelle: 'Deutsche Rentenversicherung', betreff: 'Altersrente für schwerbehinderte Menschen: Bitte um Rentenauskunft und Beratung', satz: 'hiermit bitte ich um eine Rentenauskunft und um Beratung zur Altersrente für schwerbehinderte Menschen, insbesondere zum frühestmöglichen Rentenbeginn mit und ohne Abschlag und zur Wartezeit von 35 Jahren.' },
     emrente: { stelle: 'Deutsche Rentenversicherung', betreff: 'Antrag auf Rente wegen Erwerbsminderung', satz: 'hiermit beantrage ich eine Rente wegen Erwerbsminderung. Bitte prüfen Sie auch Leistungen zur Teilhabe (Rehabilitation).' },
@@ -1250,8 +1251,8 @@
   }
 
   // Ergebnis in Leichter Sprache: nur, was für eine Person mit Behinderung zählt; Beträge grob, mit zuständiger Stelle
-  var ES_KARTEN = ['gsa', 'ggeld', 'wohngeld', 'pflege', 'pflegeplus', 'hzp', 'emrente', 'srente', 'rundfunk', 'ausweis', 'eingl', 'blindengeld', 'zuzahl', 'kgBeh', 'pausch', 'arbeit'];
-  var ES_ICON = { gsa: '💶', ggeld: '💶', wohngeld: '🏠', pflege: '🤝', pflegeplus: '🧺', emrente: '👴', srente: '🧓', hzp: '🏥', rundfunk: '📺', ausweis: '🪪', eingl: '🧩', blindengeld: '🦯', zuzahl: '💊', kgBeh: '👪', pausch: '🧾', arbeit: '💼' };
+  var ES_KARTEN = ['gsa', 'ggeld', 'wohngeld', 'pflege', 'pflegeplus', 'hzp', 'emrente', 'srente', 'rundfunk', 'ausweis', 'eingl', 'blindengeld', 'blh', 'zuzahl', 'kgBeh', 'pausch', 'arbeit'];
+  var ES_ICON = { gsa: '💶', ggeld: '💶', wohngeld: '🏠', pflege: '🤝', pflegeplus: '🧺', emrente: '👴', srente: '🧓', hzp: '🏥', rundfunk: '📺', ausweis: '🪪', eingl: '🧩', blindengeld: '🦯', blh: '🦮', zuzahl: '💊', kgBeh: '👪', pausch: '🧾', arbeit: '💼' };
   function esErgebnis(fr) {
     var out = Rules.evaluate(esEingabe());
     lastEs = out;

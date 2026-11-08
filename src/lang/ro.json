@@ -820,5 +820,22 @@
   "u.geburtsurkunde": "Certificatul de naștere al copilului",
   "u.aufenthalt": "Document de ședere (Aufenthaltsgestattung, Duldung)",
   "es.n.hzp": "Ajutor pentru îngrijire",
-  "es.r.hzp": "Nu ajung banii pentru îngrijire? Atunci ajută instituția. În Bavaria este Bezirk."
+  "es.r.hzp": "Nu ajung banii pentru îngrijire? Atunci ajută instituția. În Bavaria este Bezirk.",
+  "t.blh.keine": "Blindenhilfe (ajutor pentru nevăzători) se acordă persoanelor nevăzătoare cu venituri și bunuri reduse.",
+  "t.blh.hoch": "Blindenhilfe este doar pentru persoanele nevăzătoare (acuitate vizuală de cel mult 1/50 sau o tulburare la fel de gravă). Nu se acordă pentru deficiență de vedere gravă.",
+  "t.blh.asyl": "Cine primește prestații după Asylbewerberleistungsgesetz primește Blindenhilfe de obicei abia după 36 de luni (Analogleistungen). Înainte, oficiul poate ajuta în cazuri individuale.",
+  "t.blh.verm": "Bunurile peste suma protejată trebuie folosite mai întâi.",
+  "t.blh.unter": "Venitul este sub limita de aproximativ {grenze} pe lună. Atunci nu trebuie folosit venitul.",
+  "t.blh.ueber": "Venitul este peste limita de aproximativ {grenze} pe lună. Din venitul de peste se ia în calcul cel mult {prozent} %, de aceea poate exista totuși Blindenhilfe.",
+  "t.blh.bayern": "Mai întâi se primește Blindengeld din Bavaria. Se scade integral din Blindenhilfe. Blindenhilfe este de obicei puțin mai mare, oficiul plătește diferența. Suma crește în fiecare an la 1 iulie odată cu pensiile.",
+  "t.blh.landAnders": "Mai întâi se primește Landesblindengeld din landul tău. Se ia integral în calcul. Dacă este mai mic decât Blindenhilfe, Sozialamt plătește diferența.",
+  "t.blh.kind": "Pentru copiii sub 18 ani, Blindenhilfe este doar pe jumătate. Pentru că Landesblindengeld se scade, de obicei nu mai rămâne nimic.",
+  "t.blh.pflege": "La gradul de îngrijire 2–5, o parte din Pflegegeld se scade din Blindenhilfe.",
+  "t.blh.heim": "Într-un cămin, Blindenhilfe poate fi redus, cel mult la jumătate.",
+  "n.blh": "Ajutor pentru nevăzători (asistență socială)",
+  "zu.blh": "Bezirk (instituția de asistență socială)",
+  "s.blh.wo": "La Bezirk (în Bavaria), altfel la Sozialamt. Este suficientă o cerere informală.",
+  "s.blh.tip": "Cere mai întâi Landesblindengeld. Blindenhilfe se acordă abia din luna în care oficiul află de ea.",
+  "es.n.blh": "Ajutor pentru nevăzători",
+  "es.r.blh": "Nevăzător și puțini bani? Poate primești ceva în plus la Blindengeld. În Bavaria la Bezirk."
 }

@@ -820,5 +820,22 @@
   "u.geburtsurkunde": "Child's birth certificate",
   "u.aufenthalt": "Residence document (Aufenthaltsgestattung, Duldung)",
   "es.n.hzp": "Care assistance",
-  "es.r.hzp": "Not enough money for care? Then the office helps. In Bavaria that is the Bezirk."
+  "es.r.hzp": "Not enough money for care? Then the office helps. In Bavaria that is the Bezirk.",
+  "t.blh.keine": "Blindenhilfe (blind assistance) is paid to blind people with low income and assets.",
+  "t.blh.hoch": "Blindenhilfe is only for blind people (visual acuity at most 1/50 or an equally severe impairment). It is not paid for severe visual impairment.",
+  "t.blh.asyl": "People receiving benefits under the Asylbewerberleistungsgesetz usually only get Blindenhilfe after 36 months (Analogleistungen). Before that the office can help in individual cases.",
+  "t.blh.verm": "Assets above the protected amount must be used first.",
+  "t.blh.unter": "Income is below the limit of about {grenze} a month. Then no income has to be used.",
+  "t.blh.ueber": "Income is above the limit of about {grenze} a month. At most {prozent} % of the income above it is counted, so Blindenhilfe may still be paid.",
+  "t.blh.bayern": "First you get the Bavarian Blindengeld. It is fully counted against the Blindenhilfe. Blindenhilfe is usually a little higher, so the office pays the difference. The amount rises every year on 1 July with pensions.",
+  "t.blh.landAnders": "First you get the Landesblindengeld of your federal state. It is fully counted. If it is lower than the Blindenhilfe, the welfare office (Sozialamt) pays the difference.",
+  "t.blh.kind": "For children under 18, Blindenhilfe is only half as high. Because the Landesblindengeld is counted, usually nothing is left.",
+  "t.blh.pflege": "With care level 2 to 5, part of the Pflegegeld is counted against the Blindenhilfe.",
+  "t.blh.heim": "In a care home, Blindenhilfe can be reduced, at most to half.",
+  "n.blh": "Blind assistance (social welfare)",
+  "zu.blh": "Bezirk (welfare office)",
+  "s.blh.wo": "At the Bezirk (in Bavaria), otherwise at the welfare office (Sozialamt). An informal application is enough.",
+  "s.blh.tip": "Apply for the Landesblindengeld first. Blindenhilfe is only paid from the month the office learns about it.",
+  "es.n.blh": "Blind assistance",
+  "es.r.blh": "Blind and little money? Then you may get a little extra on top of the Blindengeld. In Bavaria at the Bezirk."
 }

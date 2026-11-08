@@ -820,5 +820,22 @@
   "u.geburtsurkunde": "Akt urodzenia dziecka",
   "u.aufenthalt": "Dokument pobytowy (Aufenthaltsgestattung, Duldung)",
   "es.n.hzp": "Pomoc w opiece",
-  "es.r.hzp": "Brakuje pieniędzy na opiekę? Wtedy pomaga urząd. W Bawarii to Bezirk."
+  "es.r.hzp": "Brakuje pieniędzy na opiekę? Wtedy pomaga urząd. W Bawarii to Bezirk.",
+  "t.blh.keine": "Blindenhilfe (pomoc dla niewidomych) przysługuje niewidomym o niskich dochodach i majątku.",
+  "t.blh.hoch": "Blindenhilfe jest tylko dla niewidomych (ostrość wzroku najwyżej 1/50 lub równie ciężkie zaburzenie). Przy znacznym niedowidzeniu nie przysługuje.",
+  "t.blh.asyl": "Osoby otrzymujące świadczenia z Asylbewerberleistungsgesetz zwykle dostają Blindenhilfe dopiero po 36 miesiącach (Analogleistungen). Wcześniej urząd może pomóc w indywidualnych przypadkach.",
+  "t.blh.verm": "Majątek powyżej kwoty chronionej trzeba najpierw wykorzystać.",
+  "t.blh.unter": "Dochód jest poniżej granicy ok. {grenze} miesięcznie. Wtedy nie trzeba wykorzystywać dochodu.",
+  "t.blh.ueber": "Dochód jest powyżej granicy ok. {grenze} miesięcznie. Liczy się najwyżej {prozent} % dochodu powyżej niej, więc Blindenhilfe i tak może przysługiwać.",
+  "t.blh.bayern": "Najpierw jest bawarskie Blindengeld. Jest w całości zaliczane na Blindenhilfe. Blindenhilfe jest zwykle trochę wyższa, urząd dopłaca różnicę. Kwota rośnie co roku 1 lipca razem z emeryturami.",
+  "t.blh.landAnders": "Najpierw jest Landesblindengeld twojego kraju związkowego. Jest zaliczane w całości. Jeśli jest niższe niż Blindenhilfe, Sozialamt dopłaca różnicę.",
+  "t.blh.kind": "Dla dzieci poniżej 18 lat Blindenhilfe jest o połowę niższa. Ponieważ Landesblindengeld jest zaliczane, zwykle nic nie zostaje.",
+  "t.blh.pflege": "Przy stopniu opieki 2–5 część Pflegegeld jest zaliczana na Blindenhilfe.",
+  "t.blh.heim": "W domu opieki Blindenhilfe może zostać obniżona, najwyżej o połowę.",
+  "n.blh": "Pomoc dla niewidomych (pomoc społeczna)",
+  "zu.blh": "Bezirk (instytucja pomocy społecznej)",
+  "s.blh.wo": "W Bezirk (w Bawarii), poza tym w Sozialamt. Wystarczy nieformalny wniosek.",
+  "s.blh.tip": "Najpierw złóż wniosek o Landesblindengeld. Blindenhilfe przysługuje dopiero od miesiąca, w którym urząd się o niej dowie.",
+  "es.n.blh": "Pomoc dla niewidomych",
+  "es.r.blh": "Niewidomy i mało pieniędzy? Może dostaniesz coś więcej do Blindengeld. W Bawarii w Bezirk."
 }

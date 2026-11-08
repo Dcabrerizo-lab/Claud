@@ -110,7 +110,7 @@ ck('EM 3 bis 6 h: Jobcenter', L({ emStd: '3bis6', brutto: 200, miete: 400, miets
 const gueltig = ['ja', 'vielleicht', 'nein', 'na'];
 [f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15, f16, f17, f18, f19, f20].forEach((o, i) => {
   const r = R.evaluate({ ...base, ...o });
-  ck('Fall ' + (i + 1) + ': 27 Ergebnisse, gültige Stufen, keine Fehlwerte', r.results.length === 27 && r.results.every((x) => gueltig.includes(x.level)) && !/NaN|undefined|Infinity/.test(JSON.stringify(r)));
+  ck('Fall ' + (i + 1) + ': 28 Ergebnisse, gültige Stufen, keine Fehlwerte', r.results.length === 28 && r.results.every((x) => gueltig.includes(x.level)) && !/NaN|undefined|Infinity/.test(JSON.stringify(r)));
 });
 // ---------- Arbeitslosengeld I und Krankengeld (SGB III, SGB V) ----------
 const T = (o, id, key) => { const x = res(o).m[id].tx.find((a) => a[0] === key); return x ? x[1] : null; };
@@ -263,6 +263,16 @@ ck('Asyl: Grundsicherungsgeld, Wohngeld, Kinderzuschlag nein', L(asyl, 'ggeld') 
 ck('Asyl im Rentenalter: keine Grundsicherung im Alter', L({ ...asyl, adults: 1, kids: 0, gebJahr: 1950 }, 'gsa') === 'nein');
 ck('Asyl: Kindergeld und Elterngeld nur möglich (abhängig vom Aufenthaltstitel)', L(asyl, 'kindergeld') === 'vielleicht' && L({ ...asyl, baby: 'da', egVor: 0 }, 'elterngeld') === 'vielleicht');
 ck('Ohne Asyl: Asylbewerberleistungen nein', L({ ...asyl, aufenthalt: '' }, 'asylblg') === 'nein');
+
+// ---------- Blindenhilfe (§ 72 SGB XII) ----------
+const blind = { art1: 'rente', brutto: 900, netto: 900, miete: 450, vermoegen: 0, gebJahr: 1960, heute: 2026.8, bhPerson: 'erwNach25', gdb: '100', blind: 'blind' };
+ck('Blindenhilfe: blind, wenig Einkommen -> möglich, unter der Grenze 2 x 563 + 450 = 1.576 €', L(blind, 'blh') === 'vielleicht' && T(blind, 'blh', 'blh.unter') && T(blind, 'blh', 'blh.unter').grenze === E(2 * 563 + 450) && K(blind, 'blh').includes('blh.bayern'));
+ck('Blindenhilfe: über der Grenze höchstens 40 % angerechnet', T({ ...blind, brutto: 2500, netto: 2500 }, 'blh', 'blh.ueber').prozent === 40);
+ck('Blindenhilfe: hochgradig sehbehindert -> nein; nicht blind -> nein', L({ ...blind, blind: 'hoch' }, 'blh') === 'nein' && K({ ...blind, blind: 'hoch' }, 'blh')[0] === 'blh.hoch' && L({ ...blind, blind: '' }, 'blh') === 'nein');
+ck('Blindenhilfe: Vermögen 15.000 € -> nein', L({ ...blind, vermoegen: 15000 }, 'blh') === 'nein');
+ck('Blindenhilfe: Kind halbiert, Pflegegrad angerechnet', K({ ...blind, bhPerson: 'minder', adults: 2, kids: 1 }, 'blh').includes('blh.kind') && K({ ...blind, pflegegrad: '3' }, 'blh').includes('blh.pflege'));
+ck('Blindenhilfe außerhalb Bayerns: Landesblindengeld des Landes', K({ ...blind, bundesland: 'NW' }, 'blh').includes('blh.landAnders'));
+ck('Blindenhilfe bei Asyl: nur möglich mit Hinweis', K({ ...blind, aufenthalt: 'asyl' }, 'blh')[0] === 'blh.asyl');
 
 console.log(fails ? '\n' + fails + ' von ' + n + ' FEHLGESCHLAGEN' : '\nFall-Tests bestanden: ' + n + ' Prüfungen');
 process.exit(fails ? 1 : 0);

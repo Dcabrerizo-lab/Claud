@@ -133,6 +133,21 @@ Aktuell gibt es in den geprüften Leistungen **keinen Punkt mit ✗** mehr.
 | Heim: Eigenanteil, Barbetrag (§ 27b) | ◐ (Hinweis) |
 | Unterhalt der Kinder erst ab 100.000 € (§ 94 Abs. 1a) | ◐ (Hinweis) |
 
+## Blindenhilfe (SGB XII, § 72)
+
+| Regel | Status |
+|---|---|
+| Nur für blinde Menschen (Sehschärfe höchstens 1/50 oder gleich schwere Störung, § 72 Abs. 5), nicht bei hochgradiger Sehbehinderung | ✓ |
+| Landesblindengeld wird voll angerechnet (§ 72 Abs. 1 Satz 2); in Bayern meist nur ein kleiner Unterschiedsbetrag | ✓ (Hinweis, keine feste Zahl) |
+| Einkommensgrenze wie bei Hilfe zur Pflege (§ 85), darüber höchstens 40 % eingesetzt (§ 87 Abs. 1 Satz 3) | ✓ |
+| Schonvermögen 10.000 € je Erwachsenem | ✓ |
+| Unter 18 Jahren halber Betrag (§ 72 Abs. 2) | ◐ (Hinweis) |
+| Anrechnung von Pflegegeld bei Pflegegrad 2 bis 5 (§ 72 Abs. 1 Satz 3) | ◐ (Hinweis) |
+| Kürzung im Heim (§ 72 Abs. 4) | ◐ (Hinweis) |
+| Asylbewerber: erst mit Analogleistungen (§ 2 AsylbLG) | ◐ |
+| Höhe der Blindenhilfe (jährlich zum 1. Juli mit dem Rentenwert angepasst) | ◐ (nicht eingebaut; vor Veröffentlichung aktuellen Betrag prüfen, wenn er angezeigt werden soll) |
+| Zuständig in Bayern: Bezirk | ◐ (bitte bestätigen) |
+
 ## Asylbewerberleistungen (AsylbLG)
 
 | Regel | Status |
@@ -148,7 +163,6 @@ Aktuell gibt es in den geprüften Leistungen **keinen Punkt mit ✗** mehr.
 Damit niemand denkt, die App decke alles ab:
 
 - Mutterschaftsgeld als eigene Leistung, Kinderbetreuung (Kita-Gebühren-Ermäßigung)
-- Blindenhilfe nach dem SGB XII (ergänzend zum Landesblindengeld)
 - Wohngeld und Zuständigkeiten außerhalb Bayerns: Wohngeld ja, Anschriften und landesrechtliche Leistungen nur für Bayern
 - Härtefallleistungen und einmalige Bedarfe im Einzelfall (z. B. Waschmaschine, Umzug, Mietschulden)
 - Schuldnerberatung, Sozialtarife (Strom, Telefon, Kultur), Bildungskredit
