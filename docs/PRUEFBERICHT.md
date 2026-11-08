@@ -51,7 +51,7 @@ Eine Prüfung durch eine Sozialberatung oder eine Fachanwältin ersetzt dieser B
 - **Android:** targetSdk 36, minSdk 24. Debug-APK mit festem Test-Schlüssel, Release mit eigenem Upload-Schlüssel (Play App Signing).
 - **Abhängigkeiten:** `npm audit`: 0 bekannte Schwachstellen (App und Werkzeuge).
 - **Tests:**
-  - Regeln: 7 Testdateien, rund 900 Einzelprüfungen.
+  - Regeln: 6 Testdateien mit rund 680 Einzelprüfungen.
   - Unabhängige Referenzrechnung über rund 144.000 Haushalte, davon vollständige Raster für Werkstatt-Beschäftigte und alle Einkommensgrenzen.
   - Mutationstests zeigen, dass der Test absichtlich eingebaute Fehler findet.
   - Browser: ausführliche Version, einfache Version (49 Prüfungen) und App mit nachgeahmten Plugins.
