@@ -1,6 +1,6 @@
 # Quellen für die Daten der App. Format: Dateiname  URL
-# Änderungen an dieser Datei lösen den Abruf automatisch aus (nur neue oder fehlende Quellen; alle neu: Knopfdruck mit "alle").
-# Der Workflow "Quellen abrufen" (.github/workflows/quellen.yml) lädt jede Datei nach content/quellen/roh/
+# Abruf von Hand auf dem eigenen Rechner: python3 tools/quellen-abrufen.py [--alle] (kein GitHub-Workflow mehr).
+# Das Skript lädt jede Datei nach content/quellen/roh/
 # und schreibt Abrufdatum und Prüfsumme nach content/quellen/abruf.json. Daraus erzeugt tools/build-*.js die App-Daten.
 # Seiten, die automatische Abrufe ablehnen (z. B. ZBFS), stehen nicht hier; deren Angaben sind von Hand
 # aus amtlichen Dokumenten übernommen und in content/behoerden-bayern.json mit Quelle belegt.

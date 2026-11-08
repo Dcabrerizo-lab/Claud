@@ -1,4 +1,4 @@
-// Liest Seiten des BayernPortals (www.bayernportal.de), die der Workflow "Quellen abrufen" gespeichert hat.
+// Liest Seiten des BayernPortals (www.bayernportal.de), die tools/quellen-abrufen.py gespeichert hat.
 'use strict';
 const fs = require('fs');
 

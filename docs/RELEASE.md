@@ -62,13 +62,13 @@ Später automatisierbar mit fastlane und App-Store-Connect-API-Schlüssel in der
 
 - [ ] `npm test`, `npm run test:e2e`, `npm run test:app` grün (macht die CI)
 - [ ] Rechtsstand prüfen: Regelsätze, Wohngeld, Kindergeld zum 1. Januar, siehe `docs/QUELLEN.md` und `src/rules.js` (`stand`)
-- [ ] **Daten aktualisieren (mindestens jährlich):** In GitHub unter Actions → „Quellen abrufen“ → Run workflow. Danach `npm run build:data`. Bricht das Skript ab, hat sich eine Quelle geändert, etwa eine Behörde, die umgezogen ist, oder neue Mietenstufen. Dann prüfen, anpassen und `npm test` laufen lassen.
+- [ ] **Daten aktualisieren (mindestens jährlich):** Auf dem eigenen Rechner `python3 tools/quellen-abrufen.py` starten (höflich, mit Pausen; Seiten, die Abrufe ablehnen, werden übersprungen, nicht umgangen). Danach `npm run build:data`. Bricht das Skript ab, hat sich eine Quelle geändert, etwa eine Behörde, die umgezogen ist, oder neue Mietenstufen. Dann prüfen, anpassen und `npm test` laufen lassen.
 - [ ] Datenschutzerklärung passt noch zu dem, was die App tut
 - [ ] Übersetzungen neuer Texte von Muttersprachlern gegenlesen lassen
 
 ## Bekannte offene Punkte
 
-- **Echte Geräte:** Kamera, Texterkennung, PDF-Teilen und Speichern sind im Browser mit nachgeahmten Plugins getestet, nicht auf echten Geräten. Dass Android und iOS kompilieren, prüft die CI. Der iOS-Build läuft für `main`, Tags und auf Knopfdruck auf einem Intel-Mac-Runner, weil die arm64-Runner oft ausgelastet sind.
+- **Echte Geräte:** Kamera, Texterkennung, PDF-Teilen und Speichern sind im Browser mit nachgeahmten Plugins getestet, nicht auf echten Geräten. Dass Android und iOS kompilieren, prüft die CI. Der iOS-Build läuft nur für Version-Tags und auf Knopfdruck (Actions → CI → Run workflow) auf einem Intel-Mac-Runner, weil die arm64-Runner oft ausgelastet sind.
 - **Behörden außerhalb Bayerns:** PLZ, Mietenstufe und zuständige Stelle mit Anschrift gibt es nur für Bayern. In anderen Ländern nennt die App das Bundesland und die Art der Stelle.
 - **Familienkasse in der nördlichen Oberpfalz** (Amberg, Weiden, Amberg-Sulzbach, Cham, Neustadt a. d. Waldnaab, Schwandorf, Tirschenreuth): Das BayernPortal nennt dort Nord **und** Süd. Die App nennt deshalb beide Familienkassen mit Postanschrift und die kostenlose Servicenummer der Familienkassen (0800 4 5555 30). Im Anschreiben steht allgemein „Familienkasse der Bundesagentur für Arbeit“. Auch die Seiten der Standorte Schwandorf und Regensburg nennen keinen Zuständigkeitsbereich.
 - **Ohne Anschrift, weil sie vom Einzelfall abhängt:** Pflegekasse und Krankenkasse (die eigene Kasse), Deutsche Rentenversicherung (der eigene Rentenversicherungsträger), Agentur für Arbeit (Arbeitslosengeld, noch ohne Verzeichnis), Finanzamt (Pauschbetrag in der Steuererklärung), Studierendenwerk (BAföG im Studium), Agentur für Arbeit (Berufsausbildungsbeihilfe), Wohnberechtigungsschein (in Bayern teils Gemeinde, teils Landratsamt).
