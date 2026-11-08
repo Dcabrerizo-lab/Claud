@@ -62,6 +62,12 @@ const Rules = (function () {
     // Altersrente für schwerbehinderte Menschen (§ 37, § 236a SGB VI): abschlagsfrei ab 65 (ab Jahrgang 1964), frühestens 3 Jahre früher mit Abschlag
     // (höchstens 10,8 %); Jahrgänge 1952 bis 1963 nach der gleichen Staffel wie die Regelaltersgrenze, nur 2 Jahre früher; bis 1951: 63. Wartezeit 35 Jahre.
     srente: { frei: 65, frueher: 3, bis1951: 63, abschlag: 10.8 },
+    // Elterngeld (§ 2 BEEG): 67 % des Nettos vor der Geburt (65 % ab 1.240 €, bis 100 % bei kleinem Einkommen), 300 bis 1.800 €;
+    // ElterngeldPlus die Hälfte für doppelt so lange; Basiselterngeld 12 Monate, mit Partnermonaten oder alleinerziehend 14;
+    // kein Anspruch über 175.000 € zu versteuerndem Einkommen der Eltern (Geburten ab 1.4.2025, § 1 Abs. 8 BEEG)
+    eg: { min: 300, max: 1800, satz: 0.67, satzHoch: 0.65, grenzeUnten: 1000, grenzeOben: 1200, monate: 12, partner: 2, einkommenGrenze: 175000 },
+    // Hilfe zur Pflege (§§ 61 ff., 85 SGB XII): Einkommensgrenze 2 × RS1 + Wohnkosten + 70 % RS1 je weiterer Person; Vermögen 10.000 € je Erwachsenem
+    hzp: { grund: 2, familie: 0.7 },
     // Freibetrag beim Wohngeld für eigenes Einkommen von Kindern (16 bis 24 Jahre): 1.200 € im Jahr (§ 17 Nr. 4 WoGG)
     wgKindFrei: 100,
     // Pauschalabzug beim Wohngeld (§ 16 WoGG) je Einkommensart: [kleinster, größter] üblicher Abzug
@@ -229,6 +235,7 @@ const Rules = (function () {
       egFreiSGB: sumIf((a, b) => a === 'eg' && b > R.elterngeldFrei ? R.elterngeldFrei : 0),
       vPausch: sumIf((a, b) => a !== 'lohn' && a !== 'ohne' && b > 0 ? R.versPauschale : 0),
       mzG: !!inp.mzG, mzRF: !!(inp.mz && inp.mz.RF), mzAG: !!(inp.mz && inp.mz.aG), wfbmJahre: num(inp.wfbmJahre), grundrente33: !!inp.grundrente33, bhEinkHoch: !!inp.bhEinkHoch, teilhabe: !!inp.teilhabe, bhWeitere: Math.min(4, Math.max(0, inp.bhWeitere | 0)), schwanger: !!inp.schwanger, ernaehrung: !!inp.ernaehrung, warmwasser: !!inp.warmwasser, gebJahr: jahr,
+      baby: inp.baby === 'bald' || inp.baby === 'da' ? inp.baby : '', egVor: blank(inp.egVor) ? null : num(inp.egVor), asyl: inp.aufenthalt === 'asyl',
       wohnform: inp.wohnform === 'eltern' || inp.wohnform === 'heim' ? inp.wohnform : '', wfbmEssen: !!inp.wfbmEssen,
       mieteGegeben: !blank(inp.miete) && num(inp.miete) > 0,
       arbeitSit: inp.arbeitSit === 'arbeitslos' || inp.arbeitSit === 'krank' ? inp.arbeitSit : '',
@@ -350,6 +357,8 @@ const Rules = (function () {
     const id = 'kindergeld';
     if (h.children === 0) return mk(id, 'nein', 'keinKind', [['kindergeld.keinKind']]);
     if (h.bezug.kindergeld) return mk(id, 'na', 'na', [['kindergeld.na']]);
+    // § 62 Abs. 2 EStG: Ausländerinnen und Ausländer nur mit bestimmten Aufenthaltstiteln; im Asylverfahren oder mit Duldung meist nicht
+    if (h.asyl) return mk(id, 'vielleicht', 'vielleicht', [['kindergeld.asyl']]);
     return mk(id, 'ja', 'ja', [['kindergeld.ja', { kg: eur(R.kindergeld) }]]);
   }
 
@@ -360,6 +369,7 @@ const Rules = (function () {
     const id = 'wohngeld';
     if (h.bezug.grundsicherungsgeld || h.bezug.sozialamt) return mk(id, 'nein', 'ausschluss', [['wohngeld.ausschluss']]);
     if (h.bezug.wohngeld) return mk(id, 'na', 'na', [['wohngeld.na']]);
+    if (h.asyl) return mk(id, 'nein', 'ausschluss', [['wohngeld.asyl']]); // § 7 Abs. 1 Nr. 9 WoGG
     // Bei den Eltern: Wohngeld gibt es nur für den ganzen Haushalt (Antrag der Eltern); im Wohnheim geht die Grundsicherung vor
     if (h.wohnform) return mk(id, 'nein', 'vorausFehlt', [['wohngeld.' + h.wohnform]]);
     const vermLimit = R.wohngeld.vermoegenErste + R.wohngeld.vermoegenJeWeitere * (h.persons - 1);
@@ -436,6 +446,7 @@ const Rules = (function () {
     if (h.children === 0) return mk(id, 'nein', 'keinKind', [['kiz.keinKind']]);
     if (h.bezug.grundsicherungsgeld || h.bezug.sozialamt) return mk(id, 'nein', 'ausschluss', [['kiz.ausschluss']]);
     if (h.bezug.kiz) return mk(id, 'na', 'na', [['kiz.na']]);
+    if (h.asyl) return mk(id, 'nein', 'ausschluss', [['kiz.asyl']]);
     const vermGrenze = h.persons <= 2 ? R.kiz.vermZwei : R.kiz.vermDrei + R.kiz.vermJeWeiteres * (h.persons - 3);
     if (h.vermoegen > vermGrenze) return mk(id, 'nein', 'vermHoch', [['kiz.verm', { n: h.persons, limit: eur(vermGrenze) }]]);
     const minEink = h.adults === 2 ? R.kiz.minPaar : R.kiz.minAlleinerziehend;
@@ -472,6 +483,7 @@ const Rules = (function () {
     const id = 'ggeld';
     // Paar mit Kindern, eine Person im Rentenalter oder voll erwerbsgemindert: Die andere Person kann erwerbsfähig sein und gehört
     // dann mit den Kindern zum Jobcenter (gemischte Bedarfsgemeinschaft, § 7 Abs. 2 und 3 SGB II); ohne Kinder nur als Hinweis
+    if (h.asyl) return mk(id, 'nein', 'ausschluss', [['ggeld.asyl']]);
     if (h.alter || h.erwerbsgemindert) {
       if (h.adults === 2 && h.children > 0 && !h.bezug.grundsicherungsgeld) return mk(id, 'vielleicht', 'vielleicht', [['ggeld.gemischt']]);
       return mk(id, 'nein', 'andereStelle', [['ggeld.sozialamtZustaendig']].concat(h.adults === 2 ? [['ggeld.gemischt']] : []));
@@ -564,6 +576,7 @@ const Rules = (function () {
 
   function grundsicherungAlter(h) {
     const id = 'gsa';
+    if (h.asyl) return mk(id, 'nein', 'ausschluss', [['ggeld.asyl']]);
     if (!h.alter && !h.erwerbsgemindert && !h.alterGrenz) return mk(id, 'nein', 'vorausFehlt', [['gsa.voraus']]);
     if (h.bezug.sozialamt) return mk(id, 'na', 'na', [['gsa.na']]);
     if (h.bezug.grundsicherungsgeld) return mk(id, 'nein', 'schonGrund', [['gsa.ggBezug']]);
@@ -727,6 +740,46 @@ const Rules = (function () {
     }
     tx.push(['krank.78']);
     return mk(id, h.krankWochen === 'unter6' ? 'vielleicht' : 'ja', h.krankWochen === 'unter6' ? 'vielleicht' : 'ja', tx);
+  }
+
+  // Elterngeld (BEEG)
+  function elterngeldBerechnen(n) {
+    const E = R.eg;
+    let q = E.satz;
+    if (n < E.grenzeUnten) q = Math.min(1, E.satz + (E.grenzeUnten - n) / 2 * 0.001);       // § 2 Abs. 2 Satz 1
+    else if (n > E.grenzeOben) q = Math.max(E.satzHoch, E.satz - (n - E.grenzeOben) / 2 * 0.001); // § 2 Abs. 2 Satz 2
+    return Math.min(E.max, Math.max(E.min, n * q));
+  }
+  function elterngeld(h) {
+    const id = 'elterngeld';
+    if (!h.baby) return mk(id, 'nein', 'vorausFehlt', [['eg.keine']]);
+    if ((h.pers || []).some((x) => x[0] === 'eg' && x[1] > 0)) return mk(id, 'na', 'na', [['eg.na']]);
+    if (h.asyl) return mk(id, 'vielleicht', 'vielleicht', [['eg.asyl']]);
+    const monate = R.eg.monate + R.eg.partner; // Paare zusammen 14, Alleinerziehende allein 14 (§ 4 Abs. 4, 6 BEEG)
+    const tx = [];
+    if (h.egVor == null) tx.push(['eg.ohneBetrag', { min: eur(R.eg.min), max: eur(R.eg.max) }]);
+    else {
+      const basis = elterngeldBerechnen(h.egVor);
+      tx.push(['eg.ja', { basis: eur(basis), plus: eur(basis / 2), monate }], ['schaetz.eins', { a: eur(r10(basis)) }]);
+    }
+    tx.push(['eg.mutterschaft'], ['eg.grenze', { grenze: eur(R.eg.einkommenGrenze) }]);
+    return mk(id, h.egVor == null ? 'vielleicht' : 'ja', h.egVor == null ? 'vielleicht' : 'ja', tx);
+  }
+
+  // Hilfe zur Pflege (SGB XII, 7. Kapitel): wenn Pflegekasse und eigenes Geld nicht reichen (Pflegedienst, Tagespflege, Heim)
+  function hilfeZurPflege(h) {
+    const id = 'hzp';
+    if (h.pflegegrad < 2 && !h.pflegeAntrag) return mk(id, 'nein', 'vorausFehlt', [['hzp.keine']]);
+    if (h.vermoegen > R.grundsicherung.schonAllein * h.adults + 500 * h.children) return mk(id, 'nein', 'vermHoch', [['hzp.verm']]);
+    const grenze = R.hzp.grund * R.regelbedarf.alleinstehend + h.miete + R.hzp.familie * R.regelbedarf.alleinstehend * (h.persons - 1);
+    return mk(id, 'vielleicht', 'vielleicht', [[h.netto <= grenze ? 'hzp.unter' : 'hzp.ueber', { grenze: eur(grenze) }], ['hzp.heim']]);
+  }
+
+  // Leistungen nach dem Asylbewerberleistungsgesetz
+  function asylbewerber(h) {
+    const id = 'asylblg';
+    if (!h.asyl) return mk(id, 'nein', 'vorausFehlt', [['asyl.keine']]);
+    return mk(id, 'ja', 'ja', [['asyl.ja'], ['asyl.analog']]);
   }
 
   // Altersrente für schwerbehinderte Menschen (§§ 37, 236a SGB VI)
@@ -905,7 +958,7 @@ const Rules = (function () {
     eingl: 'Eingliederungshilfe', pausch: 'Behinderten-Pauschbetrag', ausweis: 'Schwerbehindertenausweis und Nachteilsausgleiche',
     blindengeld: 'Blindengeld (Bayern)', pflegeplus: 'Verhinderungspflege und Pflegehilfsmittel', arbeit: 'Budget für Arbeit',
     rundfunk: 'Befreiung vom Rundfunkbeitrag', zuzahl: 'Befreiung von Zuzahlungen', bab: 'Berufsausbildungsbeihilfe',
-    wbs: 'Wohnberechtigungsschein (Bayern)', alg1: 'Arbeitslosengeld I', krankengeld: 'Krankengeld', srente: 'Altersrente für schwerbehinderte Menschen'
+    wbs: 'Wohnberechtigungsschein (Bayern)', alg1: 'Arbeitslosengeld I', krankengeld: 'Krankengeld', srente: 'Altersrente für schwerbehinderte Menschen', elterngeld: 'Elterngeld', hzp: 'Hilfe zur Pflege', asylblg: 'Asylbewerberleistungen'
   };
   // Unterlagen der neuen Karten: gemeinsame Schlüssel (u.*), damit nicht jede Karte eigene Texte braucht
   const NEWSTEPS = {
@@ -916,6 +969,7 @@ const Rules = (function () {
     zuzahl: ['u.versichertenkarte', 'u.quittungen', 'u.einkommen'], bab: ['u.ausbildungsvertrag', 'u.einkommen', 'u.mietvertrag'],
     wbs: ['u.einkommen', 'u.ausweis', 'u.haushalt'],
     srente: ['u.ausweis', 'u.arzt', 'u.rentenverlauf'],
+    elterngeld: ['u.geburtsurkunde', 'u.lohnabrechnung', 'u.steuerid'], hzp: ['u.pflegebescheid', 'u.einkommen', 'u.kosten'], asylblg: ['u.ausweis', 'u.aufenthalt', 'u.einkommen'],
     alg1: ['u.ausweis', 'u.kuendigung', 'u.lohnabrechnung'], krankengeld: ['u.au', 'u.versichertenkarte', 'u.lohnabrechnung']
   };
   const STEPS = {};
@@ -957,7 +1011,7 @@ const Rules = (function () {
     const baf = bafoeg(h);
     const pf = pflege(h);
     const results = [kg, wg, kz, gg, but, uvg, gsa, baf, pf,
-      alg1(h), krankengeld(h), kindergeldBeh(h), erwerbsminderungsrente(h), schwerbRente(h), eingliederungshilfe(h), pauschbetrag(h), ausweis(h), blindengeld(h),
+      alg1(h), krankengeld(h), elterngeld(h), hilfeZurPflege(h), asylbewerber(h), kindergeldBeh(h), erwerbsminderungsrente(h), schwerbRente(h), eingliederungshilfe(h), pauschbetrag(h), ausweis(h), blindengeld(h),
       pflegeplus(h), budgetArbeit(h), rundfunk(h, gg, gsa), zuzahlung(h), bab(h), wbs(h)].map(angabeFehlt(h)).map((x, i) => ({ ...x, name: NAMES[x.id], order: i, steps: STEPS[x.id] }));
     const sorted = results.slice().sort((a, b) => ORDER[a.level] - ORDER[b.level] || a.order - b.order);
     return { h, results: sorted, zusammen: zusammenspiel(h, results) };

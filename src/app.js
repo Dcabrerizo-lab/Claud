@@ -61,7 +61,7 @@
   function save() { clearTimeout(saveTimer); saveTimer = setTimeout(flush, 300); }
   function smooth() { return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'; }
   function blankState() {
-    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', kindEink: '', ek1bArt: '', ek1bBetrag: '', miete: '', mietstufe: '', plz: '', plzPick: '', bundesland: '', vermoegen: '', gebJahr: '', arbeitSit: '', algMonate: '', krankWochen: '', lohnVorher: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', bezug: {} };
+    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', kindEink: '', ek1bArt: '', ek1bBetrag: '', baby: '', egVor: '', aufenthalt: '', miete: '', mietstufe: '', plz: '', plzPick: '', bundesland: '', vermoegen: '', gebJahr: '', arbeitSit: '', algMonate: '', krankWochen: '', lohnVorher: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', bezug: {} };
   }
 
   function detect() {
@@ -140,6 +140,7 @@
     if (state.bhPerson !== 'erwVor25') reset(['bhSelbst']);
     if (state.emStd !== 'unter3' && state.emStd !== '3bis6') reset(['em5']);
     if (!state.bhPerson) reset(['mzG', 'teilhabe', 'bhWeitere']);
+    if (!state.baby) reset(['egVor']);
     if (state.kids + state.young === 0) reset(['kindEink']);
     if (state.arbeitSit !== 'arbeitslos') reset(['algZeit', 'algMonate']);
     if (state.adults !== 1 || !state.ek1Art || state.ek1Art === 'ohne') reset(['ek1bArt', 'ek1bBetrag']);
@@ -155,6 +156,7 @@
     show('.cond-em', state.emStd === 'unter3' || state.emStd === '3bis6');
     show('.cond-kinder', state.kids + state.young > 0);
     show('.cond-alos', state.arbeitSit === 'arbeitslos');
+    show('.cond-baby', !!state.baby);
     show('.cond-ek1b', state.adults === 1 && !!state.ek1Art && state.ek1Art !== 'ohne');
     show('.cond-ek1bBetrag', !!state.ek1bArt);
     show('.cond-rente', state.ek1Art === 'rente' || state.ek2Art === 'rente' || state.ek1bArt === 'rente');
@@ -323,6 +325,8 @@
     gd.push(['H', t('bh.gdb.H')]);
     gd.push(['antrag', t('bh.gdb.antrag')]);
     fillSelect('gdb', gd, state.gdb);
+    fillSelect('baby', [['', t('baby.0')], ['bald', t('baby.bald')], ['da', t('baby.da')]], state.baby);
+    fillSelect('aufenthalt', [['', t('aufenthalt.0')], ['asyl', t('aufenthalt.asyl')]], state.aufenthalt);
     fillSelect('bhWeitere', [['', t('bhWeitere.0')], ['1', '1'], ['2', '2'], ['3', '3']], state.bhWeitere);
     fillSelect('blind', [['', t('bh.blind.0')], ['blind', t('bh.blind.blind')], ['hoch', t('bh.blind.hoch')]], state.blind);
     fillSelect('emStd', [['', t('bh.em.0')], ['unter3', t('bh.em.unter3')], ['3bis6', t('bh.em.3bis6')], ['unklar', t('bh.em.unklar')]], state.emStd);
@@ -378,8 +382,8 @@
   });
 
   var CHECKS = ['mzG', 'algZeit', 'grundrente33', 'wfbmEssen', 'teilhabe', 'schwanger', 'ernaehrung', 'warmwasser', 'kinder12', 'unterhaltFehlt', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt'];
-  var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'ek1bArt', 'bhWeitere', 'arbeitSit', 'algMonate', 'krankWochen', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd'];
-  var NUMS = ['miete', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'kindEink', 'lohnVorher', 'ek1bBetrag', 'vermoegen'];
+  var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'ek1bArt', 'bhWeitere', 'baby', 'aufenthalt', 'arbeitSit', 'algMonate', 'krankWochen', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd'];
+  var NUMS = ['miete', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'kindEink', 'lohnVorher', 'ek1bBetrag', 'egVor', 'vermoegen'];
   var BEZUG = ['grundsicherungsgeld', 'sozialamt', 'wohngeld', 'kiz', 'kindergeld'];
 
   function writeForm() {
@@ -646,6 +650,9 @@
     bafoeg: { stelle: 'Amt für Ausbildungsförderung', betreff: 'Antrag auf Ausbildungsförderung nach dem BAföG', satz: 'hiermit beantrage ich Ausbildungsförderung nach dem Bundesausbildungsförderungsgesetz (BAföG).' },
     pflege: { stelle: 'Pflegekasse', betreff: 'Antrag auf Feststellung eines Pflegegrades und Leistungen der Pflegeversicherung', satz: 'hiermit beantrage ich die Feststellung eines Pflegegrades und Leistungen der Pflegeversicherung, insbesondere Pflegegeld und den Entlastungsbetrag.' },
     kgBeh: { stelle: 'Familienkasse der Bundesagentur für Arbeit', betreff: 'Antrag auf Kindergeld für ein volljähriges Kind mit Behinderung', satz: 'hiermit beantrage ich Kindergeld für mein volljähriges Kind. Die Behinderung ist vor dem 25. Geburtstag eingetreten, das Kind kann sich wegen der Behinderung nicht selbst unterhalten.' },
+    elterngeld: { stelle: 'Elterngeldstelle (in Bayern: Zentrum Bayern Familie und Soziales)', betreff: 'Antrag auf Elterngeld', satz: 'hiermit beantrage ich Elterngeld für mein Kind. Bitte senden Sie mir die Antragsunterlagen zu. Bitte werten Sie den Eingang dieses Schreibens als Antragsdatum, da Elterngeld rückwirkend nur für drei Monate gezahlt wird.' },
+    hzp: { stelle: 'Träger der Sozialhilfe (in Bayern: der Bezirk)', betreff: 'Antrag auf Hilfe zur Pflege', satz: 'hiermit beantrage ich Hilfe zur Pflege nach dem Siebten Kapitel des Zwölften Buches Sozialgesetzbuch (SGB XII), weil die Leistungen der Pflegeversicherung und mein Einkommen die Kosten der Pflege nicht decken.' },
+    asylblg: { stelle: 'Sozialamt beziehungsweise Landratsamt (Leistungen nach dem Asylbewerberleistungsgesetz)', betreff: 'Antrag auf Leistungen nach dem Asylbewerberleistungsgesetz', satz: 'hiermit beantrage ich Leistungen nach dem Asylbewerberleistungsgesetz für mich und die Personen meines Haushalts, einschließlich der Leistungen für Bildung und Teilhabe für die Kinder.' },
     srente: { stelle: 'Deutsche Rentenversicherung', betreff: 'Altersrente für schwerbehinderte Menschen: Bitte um Rentenauskunft und Beratung', satz: 'hiermit bitte ich um eine Rentenauskunft und um Beratung zur Altersrente für schwerbehinderte Menschen, insbesondere zum frühestmöglichen Rentenbeginn mit und ohne Abschlag und zur Wartezeit von 35 Jahren.' },
     emrente: { stelle: 'Deutsche Rentenversicherung', betreff: 'Antrag auf Rente wegen Erwerbsminderung', satz: 'hiermit beantrage ich eine Rente wegen Erwerbsminderung. Bitte prüfen Sie auch Leistungen zur Teilhabe (Rehabilitation).' },
     eingl: { stelle: 'Träger der Eingliederungshilfe (in Bayern der Bezirk; bei seelischer Behinderung eines Kindes das Jugendamt)', betreff: 'Antrag auf Leistungen der Eingliederungshilfe', satz: 'hiermit beantrage ich Leistungen der Eingliederungshilfe für die Person mit Behinderung in meinem Haushalt.' },
@@ -696,6 +703,10 @@
     if (s.bhPerson === 'erwVor25') b.push('Volljährige Person, Behinderung vor dem 25. Geburtstag eingetreten');
     if (s.bhPerson === 'erwNach25') b.push('Erwachsene Person mit Behinderung');
     if (s.gdb === 'antrag') b.push('Feststellung der Behinderung ist beantragt, Bescheid steht noch aus');
+    if (s.baby === 'bald') b.push('Ein Baby wird erwartet');
+    if (s.baby === 'da') b.push('Baby jünger als 14 Monate');
+    if (s.egVor) b.push('Nettoeinkommen vor der Geburt (für das Elterngeld): ' + money(s.egVor) + ' im Monat');
+    if (s.aufenthalt === 'asyl') b.push('Im Asylverfahren, mit Duldung oder ausreisepflichtig');
     if (s.schwanger) b.push('Schwangerschaft (ab der 13. Woche)');
     if (s.ernaehrung) b.push('Krankheitsbedingt kostenaufwändige Ernährung (ärztliche Bescheinigung folgt)');
     if (s.warmwasser) b.push('Warmwasser über Boiler oder Durchlauferhitzer in der Wohnung');
@@ -1239,8 +1250,8 @@
   }
 
   // Ergebnis in Leichter Sprache: nur, was für eine Person mit Behinderung zählt; Beträge grob, mit zuständiger Stelle
-  var ES_KARTEN = ['gsa', 'ggeld', 'wohngeld', 'pflege', 'pflegeplus', 'emrente', 'srente', 'rundfunk', 'ausweis', 'eingl', 'blindengeld', 'zuzahl', 'kgBeh', 'pausch', 'arbeit'];
-  var ES_ICON = { gsa: '💶', ggeld: '💶', wohngeld: '🏠', pflege: '🤝', pflegeplus: '🧺', emrente: '👴', srente: '🧓', rundfunk: '📺', ausweis: '🪪', eingl: '🧩', blindengeld: '🦯', zuzahl: '💊', kgBeh: '👪', pausch: '🧾', arbeit: '💼' };
+  var ES_KARTEN = ['gsa', 'ggeld', 'wohngeld', 'pflege', 'pflegeplus', 'hzp', 'emrente', 'srente', 'rundfunk', 'ausweis', 'eingl', 'blindengeld', 'zuzahl', 'kgBeh', 'pausch', 'arbeit'];
+  var ES_ICON = { gsa: '💶', ggeld: '💶', wohngeld: '🏠', pflege: '🤝', pflegeplus: '🧺', emrente: '👴', srente: '🧓', hzp: '🏥', rundfunk: '📺', ausweis: '🪪', eingl: '🧩', blindengeld: '🦯', zuzahl: '💊', kgBeh: '👪', pausch: '🧾', arbeit: '💼' };
   function esErgebnis(fr) {
     var out = Rules.evaluate(esEingabe());
     lastEs = out;

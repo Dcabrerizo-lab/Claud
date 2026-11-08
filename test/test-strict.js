@@ -6,7 +6,7 @@ const check = (n, c, x) => { if (!c) { fails++; console.log('FAIL', n, x === und
 const base = { adults: 1, kids: 0, young: 0, brutto: 0, brutto2: '', netto: 0, miete: 600, mietstufe: '3', vermoegen: 2000, alter: false, erwerbsgemindert: false, behinderung: false, kinder12: false, unterhaltFehlt: false, alterGruppe: '31-40', ausbildung: '', pflegegrad: '', nichtArbeit: false, bezug: {} };
 const ev = (o) => R.evaluate({ ...base, ...o, bezug: { ...(o && o.bezug) } });
 const lv = (o, id) => ev(o).results.find((r) => r.id === id).level;
-const ID = ['kindergeld', 'wohngeld', 'kiz', 'ggeld', 'but', 'uvg', 'gsa', 'bafoeg', 'pflege', 'kgBeh', 'emrente', 'eingl', 'pausch', 'ausweis', 'blindengeld', 'pflegeplus', 'arbeit', 'rundfunk', 'zuzahl', 'bab', 'wbs', 'alg1', 'krankengeld', 'srente'];
+const ID = ['kindergeld', 'wohngeld', 'kiz', 'ggeld', 'but', 'uvg', 'gsa', 'bafoeg', 'pflege', 'kgBeh', 'emrente', 'eingl', 'pausch', 'ausweis', 'blindengeld', 'pflegeplus', 'arbeit', 'rundfunk', 'zuzahl', 'bab', 'wbs', 'alg1', 'krankengeld', 'srente', 'elterngeld', 'hzp', 'asylblg'];
 
 // ---------- 1. Freibetrag § 11b SGB II (von Hand) ----------
 [[0, 0, 0], [50, 50, 0], [100, 100, 0], [300, 140, 0], [520, 184, 0], [800, 268, 0], [1000, 328, 0], [1200, 348, 0], [1500, 348, 0], [2600, 348, 0]].forEach(([b, f]) => check('Freibetrag ohne Kind ' + b, Math.abs(R.sgb2Freibetrag(b, false) - f) < 1e-9, R.sgb2Freibetrag(b, false)));
@@ -181,7 +181,7 @@ for (let i = 0; i < N; i++) {
   try { out = R.evaluate(o); } catch (e) { flag('Absturz: ' + e.message, o); continue; }
   if (JSON.stringify(o) !== snap) flag('Eingabe verändert', o);
   const ids = out.results.map((r) => r.id).sort().join();
-  if (ids !== ID.slice().sort().join()) flag('Nicht genau 24 Ergebnisse', o);
+  if (ids !== ID.slice().sort().join()) flag('Nicht genau 27 Ergebnisse', o);
   if (!out.results.every((r) => ['ja', 'vielleicht', 'nein', 'na'].includes(r.level) && r.name && r.steps)) flag('Ungültiges Ergebnis', o);
   const sorted = out.results.every((r, j, a) => j === 0 || order[a[j - 1].level] <= order[r.level]);
   if (!sorted) flag('Sortierung', o);
@@ -233,12 +233,12 @@ const junk = [{}, { brutto: 'abc' }, { brutto: -500, netto: -1 }, { brutto: 1e12
   { adults: 5 }, { adults: '2' }, { kids: -3 }, { kids: 99, young: 99 }, { kids: 1.7 }, { mietstufe: '9' }, { mietstufe: 'abc' }, { mietstufe: 0 }, { mietstufe: 8 }, { alterGruppe: 'xyz' }, { alterGruppe: null }, { pflegegrad: '9' }, { pflegegrad: 3 }, { bezug: null }, { bezug: undefined }, { ausbildung: 'quatsch' }, { brutto2: 'x', adults: 2 }, { brutto2: -5, adults: 2 }, { brutto2: 1e9, adults: 2, brutto: 100 }];
 junk.forEach((j, i) => {
   let out, err = null; try { out = R.evaluate({ ...j }); } catch (e) { err = e; }
-  check('Müll-Eingabe ' + i + ' ' + JSON.stringify(j) + ' ohne Absturz', !err && out && out.results.length === 24, err && err.message);
+  check('Müll-Eingabe ' + i + ' ' + JSON.stringify(j) + ' ohne Absturz', !err && out && out.results.length === 27, err && err.message);
   if (out) check('Müll-Eingabe ' + i + ': keine NaN/undefined in Parametern', textKeys(out).every(([k, p]) => !p || Object.values(p).every((v) => !/NaN|undefined|Infinity/.test(String(v)))), JSON.stringify(textKeys(out).filter(([k, p]) => p && Object.values(p).some((v) => /NaN|undefined|Infinity/.test(String(v))))));
 });
 check('Deutsches Dezimalkomma wird gelesen (1.234,5 zählt nicht als 1,234)', true); // dokumentiert; Eingabe kommt aus type=number, dort gilt Punkt
 check('Komma-Dezimal 1500,5 → 1500,5', R.derive({ ...base, brutto: '1500,5' }).brutto === 1500.5);
-check('Haushaltsgröße 12 und mehr wird gedeckelt', R.evaluate({ ...base, adults: 2, kids: 8, young: 8, brutto: 1000, netto: 900 }).results.length === 24);
+check('Haushaltsgröße 12 und mehr wird gedeckelt', R.evaluate({ ...base, adults: 2, kids: 8, young: 8, brutto: 1000, netto: 900 }).results.length === 27);
 check('Determinismus', JSON.stringify(ev({ brutto: 1800, netto: 1400 })) === JSON.stringify(ev({ brutto: 1800, netto: 1400 })));
 
 // ---------- 6. Tabelle Wohngeld ----------

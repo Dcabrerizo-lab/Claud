@@ -32,6 +32,9 @@ const Behoerden = (function () {
     kindergeld: { typ: 'fk', abt: '' },
     kiz: { typ: 'fk', abt: 'Kinderzuschlag' },
     kgBeh: { typ: 'fk', abt: '' },
+    elterngeld: { typ: 'zbfs', abt: 'Elterngeldstelle' },
+    hzp: { typ: 'bezirk', abt: 'Hilfe zur Pflege' },
+    asylblg: { typ: 'kreis', abt: 'Leistungen nach dem Asylbewerberleistungsgesetz' },
     rundfunk: { typ: 'fest', key: 'beitragsservice' }
   };
 

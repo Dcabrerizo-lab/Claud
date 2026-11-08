@@ -110,7 +110,7 @@ ck('EM 3 bis 6 h: Jobcenter', L({ emStd: '3bis6', brutto: 200, miete: 400, miets
 const gueltig = ['ja', 'vielleicht', 'nein', 'na'];
 [f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15, f16, f17, f18, f19, f20].forEach((o, i) => {
   const r = R.evaluate({ ...base, ...o });
-  ck('Fall ' + (i + 1) + ': 24 Ergebnisse, gültige Stufen, keine Fehlwerte', r.results.length === 24 && r.results.every((x) => gueltig.includes(x.level)) && !/NaN|undefined|Infinity/.test(JSON.stringify(r)));
+  ck('Fall ' + (i + 1) + ': 27 Ergebnisse, gültige Stufen, keine Fehlwerte', r.results.length === 27 && r.results.every((x) => gueltig.includes(x.level)) && !/NaN|undefined|Infinity/.test(JSON.stringify(r)));
 });
 // ---------- Arbeitslosengeld I und Krankengeld (SGB III, SGB V) ----------
 const T = (o, id, key) => { const x = res(o).m[id].tx.find((a) => a[0] === key); return x ? x[1] : null; };
@@ -242,6 +242,27 @@ ck('Ausweis aG: frei fahren, Parkausweis, 4.500 € Fahrtkosten', K({ gdb: '80',
 // Wohngeld: Grundrentenfreibetrag (§ 17a WoGG) verbessert Einstufung oder Betrag
 const wgr = { art1: 'rente', brutto: 1400, netto: 1250, miete: 650, mietstufe: 4, vermoegen: 0, gebJahr: 1955, heute: 2026.8 };
 ck('Wohngeld: Grundrentenfreibetrag (§ 17a WoGG) wirkt', JSON.stringify(res(wgr).m.wohngeld.tx) !== JSON.stringify(res({ ...wgr, grundrente33: true }).m.wohngeld.tx));
+
+// ---------- Elterngeld (§ 2 BEEG), Hilfe zur Pflege (§ 85 SGB XII), Asylbewerberleistungen ----------
+// Basiselterngeld: 67 %; unter 1.000 € +0,1 Punkte je 2 € (bis 100 %), über 1.200 € -0,1 Punkte je 2 € (bis 65 %); 300 bis 1.800 €
+const egB = (vor) => T({ baby: 'bald', egVor: vor, miete: 500, gebJahr: 1995, heute: 2026.8 }, 'elterngeld', 'eg.ja');
+[[0, 300], [500, 460], [900, 648], [1100, 737], [1500, 975], [3000, 1800]].forEach(([vor, soll]) => {
+  ck('Elterngeld bei ' + vor + ' € netto vorher: ' + soll + ' €', egB(vor) && egB(vor).basis === E(soll) && egB(vor).plus === E(soll / 2) && egB(vor).monate === 14, egB(vor));
+});
+ck('Elterngeld ohne Kind: nein; ohne Betrag: möglich mit Spanne', L({ miete: 500 }, 'elterngeld') === 'nein' && L({ baby: 'da', miete: 500 }, 'elterngeld') === 'vielleicht' && K({ baby: 'da', miete: 500 }, 'elterngeld')[0] === 'eg.ohneBetrag');
+ck('Elterngeld schon bezogen: na', L({ baby: 'da', einkommen: [{ art: 'eg', b: 400 }], miete: 500 }, 'elterngeld') === 'na');
+// Hilfe zur Pflege: Einkommensgrenze 2 x 563 + Miete + 70 % von 563 je weiterer Person
+ck('Hilfe zur Pflege: ohne Pflegegrad nein', L({ miete: 500 }, 'hzp') === 'nein');
+ck('Hilfe zur Pflege: Paar, Miete 600, Grenze 2 x 563 + 600 + 394,10 = 2.120 €', (() => { const x = T({ adults: 2, pflegegrad: '4', art1: 'rente', brutto: 1500, netto: 1500, miete: 600, vermoegen: 0, gebJahr: 1950, heute: 2026.8 }, 'hzp', 'hzp.unter'); return x && x.grenze === E(2 * 563 + 600 + 0.7 * 563); })());
+ck('Hilfe zur Pflege: Einkommen über der Grenze -> Hinweis auf Eigenanteil', K({ pflegegrad: '3', art1: 'rente', brutto: 2500, netto: 2500, miete: 500, vermoegen: 0, gebJahr: 1950, heute: 2026.8 }, 'hzp')[0] === 'hzp.ueber');
+ck('Hilfe zur Pflege: Vermögen über 10.000 € -> nein', L({ pflegegrad: '3', art1: 'rente', brutto: 900, netto: 900, miete: 500, vermoegen: 15000, gebJahr: 1950, heute: 2026.8 }, 'hzp') === 'nein');
+// Asylbewerber: eigene Leistung, kein Grundsicherungsgeld, keine Grundsicherung im Alter, kein Wohngeld, kein Kinderzuschlag (§ 7 Abs. 1 SGB II, § 23 Abs. 2 SGB XII, § 20 WoGG)
+const asyl = { adults: 2, kids: 2, art1: 'ohne', brutto: 0, netto: 0, miete: 700, vermoegen: 0, gebJahr: 1990, heute: 2026.8, aufenthalt: 'asyl' };
+ck('Asyl: Asylbewerberleistungen ja', L(asyl, 'asylblg') === 'ja');
+ck('Asyl: Grundsicherungsgeld, Wohngeld, Kinderzuschlag nein', L(asyl, 'ggeld') === 'nein' && K(asyl, 'ggeld')[0] === 'ggeld.asyl' && L(asyl, 'wohngeld') === 'nein' && L(asyl, 'kiz') === 'nein');
+ck('Asyl im Rentenalter: keine Grundsicherung im Alter', L({ ...asyl, adults: 1, kids: 0, gebJahr: 1950 }, 'gsa') === 'nein');
+ck('Asyl: Kindergeld und Elterngeld nur möglich (abhängig vom Aufenthaltstitel)', L(asyl, 'kindergeld') === 'vielleicht' && L({ ...asyl, baby: 'da', egVor: 0 }, 'elterngeld') === 'vielleicht');
+ck('Ohne Asyl: Asylbewerberleistungen nein', L({ ...asyl, aufenthalt: '' }, 'asylblg') === 'nein');
 
 console.log(fails ? '\n' + fails + ' von ' + n + ' FEHLGESCHLAGEN' : '\nFall-Tests bestanden: ' + n + ' Prüfungen');
 process.exit(fails ? 1 : 0);

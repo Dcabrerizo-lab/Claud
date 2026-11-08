@@ -111,14 +111,44 @@ Aktuell gibt es in den geprüften Leistungen **keinen Punkt mit ✗** mehr.
 | Fahrtkosten zur ambulanten Behandlung bei aG, Bl, H oder Pflegegrad 3 (mit Einschränkung) bis 5 (§ 60 SGB V) | ✓ (Hinweis) |
 | Krankengeld, Minijob ohne Krankengeld | ✓ |
 
+## Elterngeld (BEEG)
+
+| Regel | Status |
+|---|---|
+| Basiselterngeld 67 %, Ersatzrate bis 100 % unter 1.000 €, bis 65 % über 1.200 € (§ 2 Abs. 2) | ✓ |
+| Mindestens 300 €, höchstens 1.800 €; ElterngeldPlus halb so hoch, doppelt so lange (§ 2 Abs. 4, § 4a) | ✓ |
+| Bis zu 14 Monate mit Partnermonaten, Alleinerziehende allein 14 (§ 4) | ✓ |
+| Einkommensgrenze 175.000 € zu versteuerndes Einkommen (§ 1 Abs. 8) | ◐ (Hinweis) |
+| Mutterschaftsgeld wird angerechnet (§ 3) | ◐ (Hinweis) |
+| Geschwisterbonus, Mehrlingszuschlag (§ 2a) | ◐ (in der Spanne bis 1.800 € nicht eigens gerechnet) |
+| Ausländer: Anspruch abhängig vom Aufenthaltstitel (§ 1 Abs. 7) | ◐ |
+
+## Hilfe zur Pflege (SGB XII, 7. Kapitel)
+
+| Regel | Status |
+|---|---|
+| Voraussetzung Pflegegrad 2–5 oder laufender Antrag (§ 61a) | ✓ |
+| Einkommensgrenze: 2 × Regelsatz Stufe 1 + Wohnkosten + 70 % Familienzuschlag (§ 85) | ✓ (als „möglich“, Kosten der Pflege fehlen) |
+| Schonvermögen 10.000 € je Erwachsenem, 500 € je unterhaltener Person | ✓ |
+| Heim: Eigenanteil, Barbetrag (§ 27b) | ◐ (Hinweis) |
+| Unterhalt der Kinder erst ab 100.000 € (§ 94 Abs. 1a) | ◐ (Hinweis) |
+
+## Asylbewerberleistungen (AsylbLG)
+
+| Regel | Status |
+|---|---|
+| Eigene Leistung bei Aufenthaltsgestattung, Duldung, Ausreisepflicht (§ 1) | ✓ |
+| Ausschluss vom Grundsicherungsgeld (§ 7 Abs. 1 Satz 2 Nr. 3 SGB II), von der Grundsicherung im Alter (§ 23 Abs. 2 SGB XII), vom Wohngeld (§ 20 WoGG) und vom Kinderzuschlag | ✓ |
+| Analogleistungen nach 36 Monaten (§ 2) | ◐ (Hinweis) |
+| Kindergeld und Elterngeld nur mit bestimmten Aufenthaltstiteln | ◐ |
+| Höhe der Leistungen (Bedarfsstufen, Sachleistungen in Unterkünften) | ◐ (keine feste Zahl, hängt von Unterbringung ab) |
+
 ## Leistungen, die die App (noch) nicht prüft
 
 Damit niemand denkt, die App decke alles ab:
 
-- Elterngeld, Mutterschaftsgeld, Kinderbetreuung (Kita-Gebühren-Ermäßigung)
-- Hilfe zur Pflege (SGB XII), wenn Pflegeversicherung und Einkommen nicht reichen
+- Mutterschaftsgeld als eigene Leistung, Kinderbetreuung (Kita-Gebühren-Ermäßigung)
 - Blindenhilfe nach dem SGB XII (ergänzend zum Landesblindengeld)
-- Leistungen nach dem Asylbewerberleistungsgesetz
 - Wohngeld und Zuständigkeiten außerhalb Bayerns: Wohngeld ja, Anschriften und landesrechtliche Leistungen nur für Bayern
 - Härtefallleistungen und einmalige Bedarfe im Einzelfall (z. B. Waschmaschine, Umzug, Mietschulden)
 - Schuldnerberatung, Sozialtarife (Strom, Telefon, Kultur), Bildungskredit
