@@ -1,4 +1,5 @@
 const { chromium } = require('playwright');
+const KARTEN = require('./karten.js');
 const out = []; const ok = (n, c, x) => out.push((c ? 'ok   ' : 'FAIL ') + n + (c ? '' : ' ' + (x || '')));
 const file = process.argv[2] || (__dirname + '/../dist/leistungs-lotse.html');
 (async () => {
@@ -31,7 +32,7 @@ const file = process.argv[2] || (__dirname + '/../dist/leistungs-lotse.html');
   const opts = (id) => p.evaluate((i) => [...document.getElementById(i).options].map((o) => o.value + '|' + o.textContent), id);
   ok('GdB-Auswahl hat 12 Einträge (mit „beantragt“)', (await opts('gdb')).length === 12);
   ok('Person-Auswahl hat 4 Einträge', (await opts('bhPerson')).length === 4);
-  ok('Alle Karten (28) da', (await p.locator('#cards .card').count()) === 28);
+  ok('Alle Karten (' + KARTEN.length + ') da', (await p.locator('#cards .card').count()) === KARTEN.length);
 
   // Fall 1: volljähriges Kind, Behinderung vor 25, GdB 100
   await sel('bhPerson', 'erwVor25'); await p.check('#bhSelbst'); await sel('gdb', '100');

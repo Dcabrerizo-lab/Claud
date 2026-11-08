@@ -837,5 +837,9 @@
   "s.blh.wo": "La Bezirk (în Bavaria), altfel la Sozialamt. Este suficientă o cerere informală.",
   "s.blh.tip": "Cere mai întâi Landesblindengeld. Blindenhilfe se acordă abia din luna în care oficiul află de ea.",
   "es.n.blh": "Ajutor pentru nevăzători",
-  "es.r.blh": "Nevăzător și puțini bani? Poate primești ceva în plus la Blindengeld. În Bavaria la Bezirk."
+  "es.r.blh": "Nevăzător și puțini bani? Poate primești ceva în plus la Blindengeld. În Bavaria la Bezirk.",
+  "t.rundfunk.asyl": "Cine primește prestații după Asylbewerberleistungsgesetz este scutit la cerere de Rundfunkbeitrag. Trimite decizia la Beitragsservice.",
+  "t.alg1.sperrzeit": "Cine demisionează sau semnează un acord de încetare fără un motiv important primește de obicei o perioadă de blocare: {wochen} săptămâni fără Arbeitslosengeld.",
+  "t.alg1.neben": "Pe lângă Arbeitslosengeld poți lucra mai puțin de 15 ore pe săptămână. {frei} pe lună rămân libere, restul se ia în calcul.",
+  "t.kindergeld.mehr": "Kindergeld se plătește și pentru copiii până la 21 de ani înregistrați ca șomeri și până la 25 de ani în serviciu voluntar, în căutarea unui loc de ucenicie sau într-o pauză de cel mult 4 luni între două formări. După prima formare copilul poate lucra cel mult 20 de ore pe săptămână."
 }

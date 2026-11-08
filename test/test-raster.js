@@ -203,10 +203,37 @@ for (let lohn = 10; lohn <= 10000; lohn += 10) for (const kids of [0, 1]) {
   }
 }
 
+// Elterngeld: jedes Netto vor der Geburt in 1-€-Schritten bis 3.000 € (Basis und ElterngeldPlus, auf den Euro wie angezeigt)
+for (let vor = 0; vor <= 3000; vor += 1) {
+  schwelle++; n++;
+  const e = { adults: 1, kids: 0, young: 0, baby: 'da', egVor: vor, bezug: {} };
+  const t = Rules.evaluate(e).results.find((x) => x.id === 'elterngeld').tx.find((x) => x[0] === 'eg.ja');
+  const ref = Ref.elterngeld(vor);
+  if (!t || t[1].basis.eur !== Math.round(ref.basis) || t[1].plus.eur !== Math.round(ref.plus) || t[1].monate !== ref.monate) melde('Elterngeld: Betrag', e, { app: t && t[1], ref });
+}
+// Hilfe zur Pflege und Blindenhilfe: Einkommensgrenze § 85 SGB XII, Schonvermögen; Asylbewerber: Ausschlüsse
+for (let i = 0; i < 20000; i++) {
+  const e = haushaltZufall(i);
+  e.pflegegrad = pick(['2', '3', '4', '5']); e.blind = 'blind'; e.bhPerson = 'erwNach25';
+  schwelle++; n++;
+  const r = {}; Rules.evaluate(e).results.forEach((x) => { r[x.id] = x; });
+  for (const id of ['hzp', 'blh']) {
+    const verm = (Number(e.vermoegen) || 0) > Ref.schon90(e);
+    const app = r[id];
+    if (verm) { if (app.level !== 'nein') melde(id + ': Vermögen', e, { app: app.level }); continue; }
+    const g = Ref.grenze85(e);
+    const k = app.tx[0];
+    if (!k || !/\.(unter|ueber)$/.test(k[0]) || k[1].grenze.eur !== Math.round(g)) melde(id + ': Einkommensgrenze', e, { app: k, ref: g });
+  }
+  const a = Rules.evaluate({ ...e, aufenthalt: 'asyl' }).results;
+  Ref.ASYL_NEIN.forEach((id) => { const x = a.find((y) => y.id === id); if (x.level !== 'nein' && x.level !== 'na') melde('Asyl: ' + id + ' muss ausgeschlossen sein', e, { app: x.level }); });
+  if (a.find((y) => y.id === 'asylblg').level !== 'ja') melde('Asyl: Asylbewerberleistungen', e, {});
+}
+
 const arten = Object.keys(fehler);
 if (arten.length) {
   console.log('ABWEICHUNGEN zwischen App und Referenz (' + n + ' Haushalte):');
   arten.forEach((a) => { console.log('\n- ' + a + ': ' + fehler[a].anzahl + 'x\n  Beispiel: ' + JSON.stringify(fehler[a].beispiel)); });
   process.exit(1);
 }
-console.log('Raster-Test bestanden: ' + n + ' Haushalte (davon ' + raster + ' als vollständiges Raster für Werkstatt-Beschäftigte, ' + schwelle + ' im Schwellen-Raster), App und unabhängige Referenz stimmen überein (Grundsicherungsgeld, Grundsicherung im Alter und bei Erwerbsminderung mit Werkstattlohn und Wohnform, Wohngeld, Kinderzuschlag, Unterhaltsvorschuss, BAföG, Arbeitslosengeld I, Krankengeld: Einstufung und Beträge).');
+console.log('[wg-formel] [wg-ae] [kiz-formel] [eg-satz] [hzp-grenze] [blh-grenze] [asyl-ausschluss] Raster-Test bestanden: ' + n + ' Haushalte (davon ' + raster + ' als vollständiges Raster für Werkstatt-Beschäftigte, ' + schwelle + ' im Schwellen-Raster), App und unabhängige Referenz stimmen überein (Grundsicherungsgeld, Grundsicherung im Alter und bei Erwerbsminderung mit Werkstattlohn und Wohnform, Wohngeld, Kinderzuschlag, Unterhaltsvorschuss, BAföG, Arbeitslosengeld I, Krankengeld, Elterngeld, Hilfe zur Pflege, Blindenhilfe, Ausschlüsse bei Asyl: Einstufung und Beträge).');

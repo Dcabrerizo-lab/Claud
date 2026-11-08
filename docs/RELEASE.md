@@ -61,6 +61,8 @@ Später automatisierbar mit fastlane und App-Store-Connect-API-Schlüssel in der
 ## 5. Vor jedem Release
 
 - [ ] `npm test`, `npm run test:e2e`, `npm run test:app` grün (macht die CI)
+- [ ] `npm run test:mutation` grün: Die Tests finden jeden absichtlich eingebauten Rechenfehler
+- [ ] Prüfliste vom Gesetz her (`docs/PRUEFLISTE.md`) durchgesehen; bei neuen Regeln oder zum 1. Januar ergänzt. `npm test` scheitert, wenn eine Karte keinen Abschnitt hat, eine Regel ohne Test ist oder ein ✗ drinsteht
 - [ ] Rechtsstand prüfen: Regelsätze, Wohngeld, Kindergeld zum 1. Januar, siehe `docs/QUELLEN.md` und `src/rules.js` (`stand`)
 - [ ] **Daten aktualisieren (mindestens jährlich):** Auf dem eigenen Rechner `python3 tools/quellen-abrufen.py` starten (höflich, mit Pausen; Seiten, die Abrufe ablehnen, werden übersprungen, nicht umgangen). Danach `npm run build:data`. Bricht das Skript ab, hat sich eine Quelle geändert, etwa eine Behörde, die umgezogen ist, oder neue Mietenstufen. Dann prüfen, anpassen und `npm test` laufen lassen.
 - [ ] Datenschutzerklärung passt noch zu dem, was die App tut

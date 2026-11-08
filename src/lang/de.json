@@ -837,5 +837,9 @@
   "s.blh.wo": "Beim Bezirk (in Bayern), sonst beim Sozialamt. Ein formloser Antrag reicht.",
   "s.blh.tip": "Zuerst das Landesblindengeld beantragen. Blindenhilfe gibt es erst ab dem Monat, in dem das Amt davon erfährt.",
   "es.n.blh": "Blindenhilfe",
-  "es.r.blh": "Blind und wenig Geld? Dann gibt es vielleicht noch etwas zum Blindengeld dazu. In Bayern beim Bezirk."
+  "es.r.blh": "Blind und wenig Geld? Dann gibt es vielleicht noch etwas zum Blindengeld dazu. In Bayern beim Bezirk.",
+  "t.rundfunk.asyl": "Wer Leistungen nach dem Asylbewerberleistungsgesetz bekommt, wird auf Antrag vom Rundfunkbeitrag befreit. Den Bescheid an den Beitragsservice schicken.",
+  "t.alg1.sperrzeit": "Wer selbst kündigt oder einen Aufhebungsvertrag unterschreibt, bekommt ohne wichtigen Grund meist eine Sperrzeit: {wochen} Wochen kein Arbeitslosengeld.",
+  "t.alg1.neben": "Neben dem Arbeitslosengeld darfst du weniger als 15 Stunden in der Woche arbeiten. {frei} im Monat bleiben frei, der Rest wird angerechnet.",
+  "t.kindergeld.mehr": "Kindergeld gibt es auch für Kinder bis 21, die arbeitslos gemeldet sind, und bis 25 im Freiwilligendienst, bei der Suche nach einem Ausbildungsplatz oder in einer Pause von höchstens 4 Monaten zwischen zwei Ausbildungen. Nach der ersten Ausbildung darf das Kind höchstens 20 Stunden in der Woche arbeiten."
 }

@@ -1,6 +1,7 @@
 const fs = require('fs');
 const Rules = require('./rules-de.js');
 const I18N = require('../dist/i18n.js');
+const KARTEN = require('./karten.js');
 let fails = 0;
 function check(name, cond, extra) {
   if (!cond) { fails++; console.log('FAIL', name, extra || ''); } else { console.log('ok  ', name); }
@@ -253,7 +254,7 @@ const order = { ja: 0, vielleicht: 1, nein: 2, na: 3 };
 let sorted = true;
 [t1, t2, t3, t4, t5, t6].forEach((r) => { for (let i = 1; i < r.results.length; i++) if (order[r.results[i - 1].level] > order[r.results[i].level]) sorted = false; });
 check('Ergebnisse sortiert nach Wahrscheinlichkeit', sorted);
-check('Leere Eingaben erzeugen 28 Ergebnisse', ev({}).results.length === 28);
+check('Leere Eingaben erzeugen ' + KARTEN.length + ' Ergebnisse', ev({}).results.length === KARTEN.length);
 check('Jedes Ergebnis hat Namen und Schritte', ev({}).results.every((r) => r.name && r.steps && r.steps.wo));
 
 // 12) Sprachen

@@ -837,5 +837,9 @@
   "s.blh.wo": "W Bezirk (w Bawarii), poza tym w Sozialamt. Wystarczy nieformalny wniosek.",
   "s.blh.tip": "Najpierw złóż wniosek o Landesblindengeld. Blindenhilfe przysługuje dopiero od miesiąca, w którym urząd się o niej dowie.",
   "es.n.blh": "Pomoc dla niewidomych",
-  "es.r.blh": "Niewidomy i mało pieniędzy? Może dostaniesz coś więcej do Blindengeld. W Bawarii w Bezirk."
+  "es.r.blh": "Niewidomy i mało pieniędzy? Może dostaniesz coś więcej do Blindengeld. W Bawarii w Bezirk.",
+  "t.rundfunk.asyl": "Osoby otrzymujące świadczenia z Asylbewerberleistungsgesetz są na wniosek zwolnione z Rundfunkbeitrag. Wyślij decyzję do Beitragsservice.",
+  "t.alg1.sperrzeit": "Kto sam wypowie umowę lub podpisze porozumienie o rozwiązaniu bez ważnego powodu, zwykle dostaje okres karencji: {wochen} tygodni bez Arbeitslosengeld.",
+  "t.alg1.neben": "Przy Arbeitslosengeld możesz pracować mniej niż 15 godzin tygodniowo. {frei} miesięcznie jest wolne, reszta jest zaliczana.",
+  "t.kindergeld.mehr": "Kindergeld przysługuje też na dzieci do 21 lat zarejestrowane jako bezrobotne oraz do 25 lat w wolontariacie, przy szukaniu miejsca nauki zawodu lub w przerwie najwyżej 4 miesięcy między dwoma etapami nauki. Po pierwszej nauce zawodu dziecko może pracować najwyżej 20 godzin tygodniowo."
 }

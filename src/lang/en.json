@@ -837,5 +837,9 @@
   "s.blh.wo": "At the Bezirk (in Bavaria), otherwise at the welfare office (Sozialamt). An informal application is enough.",
   "s.blh.tip": "Apply for the Landesblindengeld first. Blindenhilfe is only paid from the month the office learns about it.",
   "es.n.blh": "Blind assistance",
-  "es.r.blh": "Blind and little money? Then you may get a little extra on top of the Blindengeld. In Bavaria at the Bezirk."
+  "es.r.blh": "Blind and little money? Then you may get a little extra on top of the Blindengeld. In Bavaria at the Bezirk.",
+  "t.rundfunk.asyl": "People receiving benefits under the Asylbewerberleistungsgesetz are exempted from the broadcasting fee (Rundfunkbeitrag) on application. Send the notice to the Beitragsservice.",
+  "t.alg1.sperrzeit": "If you resign yourself or sign a termination agreement without an important reason, you usually get a blocking period: {wochen} weeks without unemployment benefit (Arbeitslosengeld).",
+  "t.alg1.neben": "Alongside Arbeitslosengeld you may work less than 15 hours a week. {frei} a month stay free, the rest is counted.",
+  "t.kindergeld.mehr": "Kindergeld is also paid for children up to 21 registered as unemployed, and up to 25 in voluntary service, while looking for a training place or in a break of at most 4 months between two training periods. After the first training the child may work at most 20 hours a week."
 }

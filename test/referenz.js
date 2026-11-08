@@ -329,4 +329,23 @@ function krankengeld(e) {
   return { level: e.krankWochen === 'unter6' ? 'vielleicht' : 'ja', spanne: lohn > 0 ? [kg(0.6), kg(lohn <= 2000 ? 0.8 : 0.72)] : null };
 }
 
-module.exports = { haushalt, grundsicherungsgeld, wohngeld, kinderzuschlag, grundsicherungAlter, unterhaltsvorschuss, bafoeg, arbeitslosengeld, krankengeld, regelaltersgrenze, freibetragArbeit, RB };
+
+// ---------- Elterngeld (§ 2 BEEG, wörtlich: 0,1 Prozentpunkte je volle 2 € Abstand) ----------
+function elterngeld(nettoVorher) {
+  const n = Math.max(0, nettoVorher);
+  let prozent = 67;
+  if (n < 1000) prozent = Math.min(100, 67 + Math.floor((1000 - n) / 2) * 0.1);
+  if (n > 1200) prozent = Math.max(65, 67 - Math.floor((n - 1200) / 2) * 0.1);
+  const basis = Math.min(1800, Math.max(300, n * prozent / 100));
+  return { basis, plus: basis / 2, monate: 14 };
+}
+// ---------- Einkommensgrenze § 85 SGB XII (Hilfe zur Pflege, Blindenhilfe) und Schonvermögen ----------
+function grenze85(e) {
+  const personen = (e.adults === 2 ? 2 : 1) + Math.max(0, e.kids | 0) + Math.max(0, e.young | 0);
+  return 2 * RB[1] + zahl(e.miete) + 0.7 * RB[1] * (personen - 1);
+}
+function schon90(e) { return 10000 * (e.adults === 2 ? 2 : 1) + 500 * (Math.max(0, e.kids | 0) + Math.max(0, e.young | 0)); }
+// ---------- Asylbewerber: Ausschlüsse (§ 7 Abs. 1 SGB II, § 23 Abs. 2 SGB XII, § 7 WoGG, § 6a BKGG mit § 62 EStG) ----------
+const ASYL_NEIN = ['ggeld', 'gsa', 'wohngeld', 'kiz'];
+
+module.exports = { elterngeld, grenze85, schon90, ASYL_NEIN, haushalt, grundsicherungsgeld, wohngeld, kinderzuschlag, grundsicherungAlter, unterhaltsvorschuss, bafoeg, arbeitslosengeld, krankengeld, regelaltersgrenze, freibetragArbeit, RB };

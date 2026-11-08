@@ -32,7 +32,7 @@ const Rules = (function () {
     minijob: 603,
     // Arbeitslosengeld I (SGB III): 60 %, mit Kind 67 % des pauschalierten Nettos (§ 149); Beitragsbemessungsgrenze 2026: 8.450 € im Monat;
     // Netto grob 60-72 % des Bruttos; Dauer § 147 Abs. 2: [Monate versichert in 5 Jahren, Mindestalter, Monate Anspruch]
-    alg: { satz: 0.6, satzKind: 0.67, bbg: 8450, netto: [0.6, 0.72], nettoKlein: 0.8, kleinBis: 2000, dauer: [[48, 58, 24], [36, 55, 18], [30, 50, 15], [24, 0, 12], [20, 0, 10], [16, 0, 8], [12, 0, 6]] },
+    alg: { nebenFrei: 165, sperrWochen: 12, satz: 0.6, satzKind: 0.67, bbg: 8450, netto: [0.6, 0.72], nettoKlein: 0.8, kleinBis: 2000, dauer: [[48, 58, 24], [36, 55, 18], [30, 50, 15], [24, 0, 12], [20, 0, 10], [16, 0, 8], [12, 0, 6]] },
     // Krankengeld (§ 47 SGB V): 70 % des Bruttos, höchstens 90 % des Nettos, bis zur Beitragsbemessungsgrenze 2026 (5.812,50 € im Monat);
     // davon gehen Beiträge zur Renten-, Arbeitslosen- und Pflegeversicherung ab (rund 12,5 %); höchstens 78 Wochen (§ 48 SGB V)
     krank: { satz: 0.7, nettoMax: 0.9, bbg: 5812.5, abzug: 0.125, wochen: 78 },
@@ -234,7 +234,6 @@ const Rules = (function () {
     }
     return {
       art1, art2, pers, liste: !!liste, kindEink, uvgEst, kindZahl: unterhalt + uvgEst, mehrAE, alterGrenz,
-      egFreiWG: sumIf((a, b) => a === 'eg' ? Math.min(R.elterngeldFrei, b) : 0),
       egFreiSGB: sumIf((a, b) => a === 'eg' && b > R.elterngeldFrei ? R.elterngeldFrei : 0),
       vPausch: sumIf((a, b) => a !== 'lohn' && a !== 'ohne' && b > 0 ? R.versPauschale : 0),
       mzG: !!inp.mzG, mzRF: !!(inp.mz && inp.mz.RF), mzAG: !!(inp.mz && inp.mz.aG), wfbmJahre: num(inp.wfbmJahre), grundrente33: !!inp.grundrente33, bhEinkHoch: !!inp.bhEinkHoch, teilhabe: !!inp.teilhabe, bhWeitere: Math.min(4, Math.max(0, inp.bhWeitere | 0)), schwanger: !!inp.schwanger, ernaehrung: !!inp.ernaehrung, warmwasser: !!inp.warmwasser, gebJahr: jahr,
@@ -358,11 +357,13 @@ const Rules = (function () {
   // ---------------------------------------------------------------
   function kindergeld(h) {
     const id = 'kindergeld';
-    if (h.children === 0) return mk(id, 'nein', 'keinKind', [['kindergeld.keinKind']]);
+    // § 32 Abs. 4 EStG: auch arbeitslos gemeldet bis 21, Freiwilligendienst, Ausbildungsplatzsuche, Übergangszeit bis 4 Monate;
+    // nach der ersten Ausbildung höchstens 20 Stunden Arbeit in der Woche (Satz 2, 3)
+    if (h.children === 0) return mk(id, 'nein', 'keinKind', [['kindergeld.keinKind'], ['kindergeld.mehr']]);
     if (h.bezug.kindergeld) return mk(id, 'na', 'na', [['kindergeld.na']]);
     // § 62 Abs. 2 EStG: Ausländerinnen und Ausländer nur mit bestimmten Aufenthaltstiteln; im Asylverfahren oder mit Duldung meist nicht
     if (h.asyl) return mk(id, 'vielleicht', 'vielleicht', [['kindergeld.asyl']]);
-    return mk(id, 'ja', 'ja', [['kindergeld.ja', { kg: eur(R.kindergeld) }]]);
+    return mk(id, 'ja', 'ja', [['kindergeld.ja', { kg: eur(R.kindergeld) }], ['kindergeld.mehr']]);
   }
 
   // ---------------------------------------------------------------
@@ -393,7 +394,12 @@ const Rules = (function () {
     const pers = h.pers || [['lohn', h.brutto]];
     let sumB = 0, yA = 0, yB = 0;
     // Nur der ausgezahlte Betrag bekannt: Steuern und Beiträge sind schon abgezogen, das Brutto nach § 16-Abzug liegt nahe daran
-    pers.forEach(function (x) { const ab = (x[3] ? R.wgAbzugAuszahlung[x[0]] : R.wgAbzug[x[0]]) || R.wgAbzug.lohn; sumB += x[1]; yA += x[1] * (1 - ab[0]); yB += x[1] * (1 - ab[1]); });
+    // Elterngeld bis 300 € je Person ist gar kein Einkommen (§ 10 Abs. 1 BEEG): nur der Teil darüber zählt, mit Pauschalabzug
+    pers.forEach(function (x) {
+      const ab = (x[3] ? R.wgAbzugAuszahlung[x[0]] : R.wgAbzug[x[0]]) || R.wgAbzug.lohn;
+      const zaehlt = x[0] === 'eg' ? Math.max(0, x[1] - R.elterngeldFrei) : x[1];
+      sumB += zaehlt; yA += zaehlt * (1 - ab[0]); yB += zaehlt * (1 - ab[1]);
+    });
     const wA = sumB > 0 ? yA / sumB : 0.9, wB = sumB > 0 ? yB / sumB : 0.7;
     // Anzeige als Grenze für das Brutto (bzw. den ausgezahlten Betrag bei ALG I und Elterngeld)
     const lo = yMaxLo / wA, hi = yMaxHi / wB;
@@ -409,7 +415,7 @@ const Rules = (function () {
     // der Kinder mit Freibetrag (§ 17 Nr. 4 WoGG); Elterngeld bis 300 € frei (§ 10 Abs. 1 BEEG); Freibeträge nach § 17 WoGG.
     // § 17a WoGG: Grundrentenfreibetrag bei 33 Jahren Grundrentenzeiten (100 € + 30 % des Rests, höchstens 50 % RS1)
     const grFrei = h.grundrente33 ? pers.filter((x) => x[0] === 'rente').reduce((a, x) => a + Math.min(R.grundrente.sockel + R.grundrente.quote * Math.max(0, x[1] - R.grundrente.sockel), R.grundrente.max * R.regelbedarf.alleinstehend), 0) : 0;
-    const extra = (h.kindZahl || 0) + Math.max(0, (h.kindEink || 0) - R.wgKindFrei) - (h.egFreiWG || 0) - freib - grFrei;
+    const extra = (h.kindZahl || 0) + Math.max(0, (h.kindEink || 0) - R.wgKindFrei) - freib - grFrei;
     const yPess = Math.max(0, yA + extra), yOpt = Math.max(0, yB + extra);
 
     const grenze = h.stufe
@@ -721,7 +727,8 @@ const Rules = (function () {
       const q = nettoSpanne(b);
       tx.push(['schaetz.spanne', { a: eur(r10(b * q[0] * p)), b: eur(r10(b * q[1] * p)) }]);
     }
-    tx.push(melden);
+    // Sperrzeit bei eigener Kündigung oder Aufhebungsvertrag (§ 159 SGB III); Nebeneinkommen 165 € frei (§ 155 SGB III)
+    tx.push(['alg1.sperrzeit', { wochen: R.alg.sperrWochen }], ['alg1.neben', { frei: eur(R.alg.nebenFrei) }], melden);
     return mk(id, 'ja', 'ja', tx);
   }
 
@@ -749,8 +756,9 @@ const Rules = (function () {
   function elterngeldBerechnen(n) {
     const E = R.eg;
     let q = E.satz;
-    if (n < E.grenzeUnten) q = Math.min(1, E.satz + (E.grenzeUnten - n) / 2 * 0.001);       // § 2 Abs. 2 Satz 1
-    else if (n > E.grenzeOben) q = Math.max(E.satzHoch, E.satz - (n - E.grenzeOben) / 2 * 0.001); // § 2 Abs. 2 Satz 2
+    // § 2 Abs. 2 BEEG: 0,1 Prozentpunkte für je (volle) 2 € Abstand zur Grenze
+    if (n < E.grenzeUnten) q = Math.min(1, E.satz + Math.floor((E.grenzeUnten - n) / 2) * 0.001);
+    else if (n > E.grenzeOben) q = Math.max(E.satzHoch, E.satz - Math.floor((n - E.grenzeOben) / 2) * 0.001);
     return Math.min(E.max, Math.max(E.min, n * q));
   }
   function elterngeld(h) {
@@ -900,6 +908,8 @@ const Rules = (function () {
   function rundfunk0(h, gg, gsa) {
     const id = 'rundfunk';
     if (h.bezug.grundsicherungsgeld || h.bezug.sozialamt) return mk(id, 'ja', 'ja', [['rundfunk.bezug']]);
+    // § 4 Abs. 1 Nr. 4 RBStV: Leistungen nach dem Asylbewerberleistungsgesetz
+    if (h.asyl) return mk(id, 'vielleicht', 'butMoeglich', [['rundfunk.asyl']]);
     if (gg.level === 'ja' || gsa.level === 'ja') return mk(id, 'vielleicht', 'butMoeglich', [['rundfunk.folgt']]);
     if (gg.level === 'vielleicht' || gsa.level === 'vielleicht') return mk(id, 'vielleicht', 'butMoeglich', [['rundfunk.haerte']]);
     if (h.mzRF) return mk(id, 'vielleicht', 'vielleicht', [['rundfunk.rf']]);
