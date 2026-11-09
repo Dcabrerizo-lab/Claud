@@ -4,7 +4,7 @@ Reihenfolge so, wie Profis es machen: erst geschlossen testen, dann schrittweise
 
 ## 0. Einmalig vorbereiten
 
-- [ ] **App-ID festlegen.** Sie kann nach der ersten Veröffentlichung nicht mehr geändert werden. Derzeit `de.sozialleistungslotse.app`. Falls du eine eigene Domain hast, eher `de.<deine-domain>.sozialleistungslotse`. Ändern in `app/capacitor.config.json`, `app/android/app/build.gradle` (`namespace`, `applicationId`, Java-Paket `de/sozialleistungslotse/app`) und in Xcode (Bundle Identifier).
+- [ ] **App-ID festlegen.** Sie kann nach der ersten Veröffentlichung nicht mehr geändert werden. Derzeit `com.sozialleistungslotse.apk` (so in der Play Console angelegt; der interne Java-Namespace bleibt `de.sozialleistungslotse.app`, das ist erlaubt). Falls du eine eigene Domain hast, eher `de.<deine-domain>.sozialleistungslotse`. Ändern in `app/capacitor.config.json`, `app/android/app/build.gradle` (`namespace`, `applicationId`, Java-Paket `de/sozialleistungslotse/app`) und in Xcode (Bundle Identifier).
 - [ ] **Impressum prüfen.** Die App und `datenschutz.html` zeigen Name und Privatanschrift. Für Apps mit Impressumspflicht ist eine ladungsfähige Anschrift nötig. Wer die Privatadresse nicht zeigen will, nutzt eine Geschäfts- oder Impressumsadresse (Dienstleister).
 - [ ] **Datenschutz-URL online.** Den Branch in `main` zusammenführen. GitHub Pages veröffentlicht dann `https://dcabrerizo-lab.github.io/Claud/datenschutz.html` (Einstellungen → Pages → Quelle: `main`, Ordner `/`). Im Browser prüfen, ob die Seite erreichbar ist.
 - [ ] **Konten anlegen:** Google Play Console (einmalig 25 US-$, Identitätsprüfung dauert einige Tage), Apple Developer Program (99 US-$ pro Jahr).

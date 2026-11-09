@@ -4,7 +4,7 @@ android {
     namespace = "de.sozialleistungslotse.app"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "de.sozialleistungslotse.app"
+        applicationId "com.sozialleistungslotse.apk"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         // Version: versionName aus package.json im Hauptordner, versionCode aus der Build-Nummer (CI) oder 1 (lokal)
