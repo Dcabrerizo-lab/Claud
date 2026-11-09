@@ -40,7 +40,7 @@ const APP = 'file://' + require('path').join(__dirname, '..', 'dist', 'leistungs
   await roh('5-einfach-ergebnis', async () => { await zu('#es-q', 16); });
   // In Store-Formate setzen
   const MOTIVE = [['1-formular', 'In zwei Minuten zum Überblick', 'Einfache Fragen zu Haushalt, Wohnung und Einkommen'],
-    ['2-ergebnis', '23 Leistungen geprüft', 'Mit grober Höhe und klarer Einschätzung'],
+    ['2-ergebnis', require('../test/karten.js').length + ' Leistungen geprüft', 'Mit grober Höhe und klarer Einschätzung'],
     ['3-stelle', 'Wo du den Antrag stellst', 'Zuständige Stelle mit Anschrift und Unterlagen'],
     ['4-einfach', 'Auch in einfacher Sprache', 'Eine Frage pro Bildschirm, große Knöpfe, Vorlesen'],
     ['5-einfach-ergebnis', 'Klares Ergebnis', 'Was du bekommen kannst und wo du hingehst'],
