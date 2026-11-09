@@ -1,4 +1,4 @@
-// Baut die Web-Version: dist/i18n.js und dist/leistungs-lotse.html
+// Baut die Web-Version: dist/i18n.js und dist/sozialleistungslotse.html
 // aus src/template.html, src/rules.js, src/fmt.js, src/plz.js, src/app.js und src/lang/*.json.
 'use strict';
 const fs = require('fs');
@@ -51,8 +51,8 @@ function build() {
   const { html, i18n } = render();
   fs.mkdirSync(DIST, { recursive: true });
   fs.writeFileSync(path.join(DIST, 'i18n.js'), i18n);
-  fs.writeFileSync(path.join(DIST, 'leistungs-lotse.html'), html);
-  console.log('Web-Build: dist/leistungs-lotse.html', (html.length / 1024).toFixed(1), 'KB');
+  fs.writeFileSync(path.join(DIST, 'sozialleistungslotse.html'), html);
+  console.log('Web-Build: dist/sozialleistungslotse.html', (html.length / 1024).toFixed(1), 'KB');
 }
 
 module.exports = { render, i18nSource, LANGS, ROOT };

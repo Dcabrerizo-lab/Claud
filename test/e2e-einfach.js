@@ -1,7 +1,7 @@
 // Browsertest der einfachen Version (Leichte Sprache): Durchlauf, Ergebnisse, Sprachen, Speichern, Zurück, Antragsmappe
 const { chromium } = require('playwright');
 const out = []; const ok = (n, c, x) => out.push((c ? 'ok   ' : 'FAIL ') + n + (c ? '' : ' ' + (x || '')));
-const file = process.argv[2] || (__dirname + '/../dist/leistungs-lotse.html');
+const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html');
 
 // Antworten nacheinander geben: Zahl (string mit #) oder Knopf (data-es) oder Buchstaben-Liste (mz:...)
 async function durchlauf(p, antworten) {

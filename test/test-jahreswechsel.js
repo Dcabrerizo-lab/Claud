@@ -6,7 +6,7 @@ const { JSDOM } = require('jsdom');
 const fs = require('fs');
 const KARTEN = require('./karten.js');
 const Rules = require('../src/rules.js');
-const html = fs.readFileSync(__dirname + '/../dist/leistungs-lotse.html', 'utf8');
+const html = fs.readFileSync(__dirname + '/../dist/sozialleistungslotse.html', 'utf8');
 
 let n = 0, fails = 0;
 const ck = (name, c, x) => { n++; if (!c) { fails++; console.log('FAIL', name, x === undefined ? '' : x); } };

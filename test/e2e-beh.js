@@ -1,7 +1,7 @@
 const { chromium } = require('playwright');
 const KARTEN = require('./karten.js');
 const out = []; const ok = (n, c, x) => out.push((c ? 'ok   ' : 'FAIL ') + n + (c ? '' : ' ' + (x || '')));
-const file = process.argv[2] || (__dirname + '/../dist/leistungs-lotse.html');
+const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html');
 (async () => {
   const b = await chromium.launch();
   const ctx = await b.newContext({ viewport: { width: 390, height: 900 }, locale: 'de-DE', deviceScaleFactor: 1 });

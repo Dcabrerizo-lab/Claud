@@ -294,6 +294,16 @@ check('Arabisch läuft rechts nach links, alle anderen links nach rechts', I18N.
   check('Webseite: Startseite verlinkt Datenschutz und Impressum', /datenschutz\.html"/.test(fsx.readFileSync(px.join(__dirname, '..', 'site', 'index.html'), 'utf8')) && /id="impressum"/.test(b));
 }
 
+// Name der App: überall „SoLo – Sozialleistungslotse“, nie der alte Name „Leistungslotse“ / „Leistungs-Lotse“ ohne „Sozial“
+{
+  const fsx = require('fs'), px = require('path'), R0 = px.join(__dirname, '..');
+  const dateien = ['src/template.html', 'src/app.js', 'datenschutz.html', 'site/index.html', 'site/datenschutz.html', 'docs/STORE.md', 'docs/PLAY-TEST.md', 'docs/RELEASE.md', 'README.md',
+    'app/capacitor.config.json', 'app/android/app/src/main/res/values/strings.xml', 'app/android/app/build.gradle', 'app/ios/App/App/Info.plist']
+    .concat(fsx.readdirSync(px.join(R0, 'src', 'lang')).map((f) => 'src/lang/' + f));
+  const alt = dateien.filter((f) => /(?<![Ss]ozial)[Ll]eistungs-?[Ll]otse/.test(fsx.readFileSync(px.join(R0, f), 'utf8')));
+  check('Name: nirgends mehr der alte Name „Leistungslotse“ ohne „Sozial“', alt.length === 0, alt.join(', '));
+}
+
 // Amtsbegriffe bleiben deutsch erhalten
 const TERMS = ['Wohngeld', 'Kinderzuschlag', 'Kindergeld', 'Grundsicherungsgeld', 'Grundsicherung im Alter', 'Jobcenter', 'Sozialamt', 'Familienkasse', 'Pflegekasse', 'BAföG', 'Pflegegeld', 'Unterhaltsvorschuss', 'Bürgergeld', 'Wohngeldstelle'];
 LANGS.filter((l) => l !== 'de').forEach((l) => {

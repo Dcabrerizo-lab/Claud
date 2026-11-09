@@ -1,7 +1,7 @@
 // Barrierefreiheit (axe-core, WCAG 2.1 AA): ausführliche Version (leer, mit Beispiel, Arabisch), Antragsmappe, einfache Version
 const { chromium } = require('playwright');
 const axePfad = require.resolve('axe-core/axe.min.js');
-const file = process.argv[2] || (__dirname + '/../dist/leistungs-lotse.html');
+const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html');
 (async () => {
   const b = await chromium.launch();
   const out = [];

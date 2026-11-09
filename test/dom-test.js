@@ -2,7 +2,7 @@ const { JSDOM } = require('jsdom');
 const fs = require('fs');
 const I18N = require('../dist/i18n.js');
 const KARTEN = require('./karten.js');
-const html = fs.readFileSync(__dirname + '/../dist/leistungs-lotse.html', 'utf8');
+const html = fs.readFileSync(__dirname + '/../dist/sozialleistungslotse.html', 'utf8');
 const errors = [];
 const store = {};
 const dom = new JSDOM('<!doctype html><html><head><meta charset="utf-8"></head><body>' + html + '</body></html>', {

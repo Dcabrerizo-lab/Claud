@@ -6,8 +6,8 @@ Im Ordner `site/` liegen zwei Seiten: `index.html` (kurze Startseite) und `daten
 
 1. Auf **app.netlify.com/drop** gehen (kostenlos, Anmeldung mit E-Mail).
 2. Den ganzen Ordner `site` in das Feld ziehen.
-3. Netlify zeigt eine Adresse wie `https://irgendein-name.netlify.app`. Unter „Site configuration“ kann man den Namen ändern, z. B. `leistungs-lotse.netlify.app`.
-4. In der Play Console als Datenschutz-Adresse eintragen: `https://leistungs-lotse.netlify.app/datenschutz.html`
+3. Netlify zeigt eine Adresse wie `https://irgendein-name.netlify.app`. Unter „Site configuration“ kann man den Namen ändern, z. B. `sozialleistungslotse.netlify.app`.
+4. In der Play Console als Datenschutz-Adresse eintragen: `https://sozialleistungslotse.netlify.app/datenschutz.html`
 
 ## 2. Einladung an die Tester (zum Kopieren)
 

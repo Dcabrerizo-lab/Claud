@@ -3,7 +3,7 @@
 const { chromium } = require('playwright');
 const fs = require('fs');
 const D = require('path').join(__dirname, '..', 'store-bilder') + '/'; require('fs').mkdirSync(D, { recursive: true });
-const APP = 'file://' + require('path').join(__dirname, '..', 'dist', 'leistungs-lotse.html');
+const APP = 'file://' + require('path').join(__dirname, '..', 'dist', 'sozialleistungslotse.html');
 (async () => {
   const b = await chromium.launch();
   const ctx = await b.newContext({ viewport: { width: 390, height: 760 }, deviceScaleFactor: 3, locale: 'de-DE' });
