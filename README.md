@@ -1,4 +1,4 @@
-# Leistungs-Lotse
+# SoLo – Sozialleistungslotse
 
 Orientierungscheck für 21 Sozialleistungen in Deutschland: Familie, Wohnen, Grundsicherung, Pflege, Behinderung, Rente, Ausbildung. Es gibt eine Web-Version und Store-Apps für Android und iOS. Alles läuft auf dem Gerät: keine Server, keine Konten, kein Tracking.
 
@@ -59,4 +59,4 @@ Siehe [`docs/RELEASE.md`](docs/RELEASE.md) (Checkliste) und [`docs/STORE.md`](do
 
 Gesetzesänderungen stehen in `src/rules.js`. Jährlich zum 1. Januar prüfen und Tests laufen lassen. Die Quellen jeder Zahl stehen in `docs/QUELLEN.md` und `docs/quellen/`.
 
-**Hinweis:** Der Leistungs-Lotse ist eine Orientierung, keine Rechtsberatung.
+**Hinweis:** SoLo ist eine Orientierung, keine Rechtsberatung.

@@ -739,7 +739,7 @@
 
   function sheetText() {
     var s = state, L = [];
-    L.push('Angabenblatt zu meinem Antrag', '(Selbstauskunft aus dem Leistungs-Lotse, Regeln Stand ' + Rules.RULES.stand + ')', '');
+    L.push('Angabenblatt zu meinem Antrag', '(Selbstauskunft aus SoLo – Sozialleistungslotse, Regeln Stand ' + Rules.RULES.stand + ')', '');
     L.push('Name: ' + blank(person.name), 'Geburtsdatum: ' + blank(person.geb), 'Anschrift: ' + blank(person.strasse) + ', ' + blank(person.ort));
     if (person.tel && person.tel.trim()) L.push('Telefon: ' + person.tel.trim());
     L.push('', 'Haushalt: ' + haushaltZeile());
@@ -1315,7 +1315,7 @@
     // Text zum Teilen und Vorlesen: Leistung, Einschätzung, Betrag, zuständige Stelle, Tipps, Hinweis „Schätzung“
     var text = function () {
       var div = document.createElement('div');
-      return ['Leistungs-Lotse: ' + t(gut.length ? 'es.erg.h' : 'es.erg.keine'), ''].concat(gut.map(function (x) {
+      return ['SoLo: ' + t(gut.length ? 'es.erg.h' : 'es.erg.keine'), ''].concat(gut.map(function (x) {
         div.innerHTML = betrag(x) + stelle(x);
         return '- ' + t('es.n.' + x.id) + ': ' + t(x.level === 'ja' ? 'es.gut' : 'es.vielleicht') + (div.textContent ? ' ' + div.textContent.replace(/\s+/g, ' ').trim() : '');
       }), tipps.length ? ['', t('es.erg.tipps') + ':'].concat(tipps.map(function (x) { return '- ' + x; })) : [], ['', t('es.erg.hinweis')]).join('\n');
@@ -1326,8 +1326,8 @@
     if ($('es-vor')) $('es-vor').addEventListener('click', function () { esSprich(text()); });
     $('es-teilen').addEventListener('click', function () {
       var sh = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Share;
-      if (sh) sh.share({ title: 'Leistungs-Lotse', text: text() }).catch(function () {});
-      else if (navigator.share) navigator.share({ title: 'Leistungs-Lotse', text: text() }).catch(function () {});
+      if (sh) sh.share({ title: 'SoLo', text: text() }).catch(function () {});
+      else if (navigator.share) navigator.share({ title: 'SoLo', text: text() }).catch(function () {});
       else copyText(text(), function (ok) {
         // Nur bei Erfolg „kopiert“ melden; sonst den Text zum Markieren zeigen
         $('es-msg').textContent = t(ok ? 'es.kopiert' : 'f.copyFail');

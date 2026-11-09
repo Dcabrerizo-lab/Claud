@@ -2,7 +2,7 @@
   "name": "leistungs-lotse",
   "version": "1.0.0",
   "private": true,
-  "description": "Leistungs-Lotse: Orientierungscheck für Sozialleistungen, offline, ohne Server",
+  "description": "SoLo – Sozialleistungslotse: Orientierungscheck für Sozialleistungen, offline, ohne Server",
   "engines": {
     "node": ">=22"
   },

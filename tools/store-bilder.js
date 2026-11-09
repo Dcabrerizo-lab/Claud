@@ -67,7 +67,7 @@ const APP = 'file://' + require('path').join(__dirname, '..', 'dist', 'leistungs
   await p2.setViewportSize({ width: 1024, height: 500 });
   await p2.setContent(`<html><body style="margin:0;width:1024px;height:500px;background:linear-gradient(135deg,#1f3f8f,#2c5bd1);font-family:system-ui,sans-serif;color:#fff;display:flex;align-items:center;gap:48px;padding:0 70px;box-sizing:border-box">
     <img src="${icon}" style="width:200px;height:200px;border-radius:44px;box-shadow:0 12px 40px rgba(0,0,0,.35)">
-    <div><div style="font-size:68px;font-weight:800">Leistungs-Lotse</div><div style="font-size:30px;margin-top:14px;line-height:1.3;opacity:.95">Welche Sozialleistungen stehen dir zu?<br>In zwei Minuten, offline, in 8 Sprachen.</div></div></body></html>`);
+    <div><div style="font-size:68px;font-weight:800">SoLo</div><div style="font-size:34px;font-weight:600;margin-top:4px">Sozialleistungslotse</div><div style="font-size:30px;margin-top:14px;line-height:1.3;opacity:.95">Welche Sozialleistungen stehen dir zu?<br>In zwei Minuten, offline, in 8 Sprachen.</div></div></body></html>`);
   await p2.screenshot({ path: D + 'play-werbegrafik-1024x500.png' });
   await p2.setViewportSize({ width: 512, height: 512 });
   await p2.setContent(`<html><body style="margin:0"><img src="${icon}" style="width:512px;height:512px;display:block"></body></html>`);

@@ -413,7 +413,7 @@
   "t.fehlt.einkommen": "Enter the household’s monthly gross income (0 if there is none). Only then can this benefit be assessed.",
   "t.fehlt.vermoegen": "Enter your assets (savings), 0 if you have none.",
   "t.fehlt.miete": "Enter your rent, 0 if you pay none.",
-  "first.text": "The Leistungs-Lotse gives guidance. It is not legal advice and does not replace an official decision. The responsible office always decides on your entitlement.",
+  "first.text": "SoLo gives guidance. It is not legal advice and does not replace an official decision. The responsible office always decides on your entitlement.",
   "first.ok": "Understood",
   "clear.btn": "Delete all entries",
   "clear.done": "Deleted. The form is empty.",

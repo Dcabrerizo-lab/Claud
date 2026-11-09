@@ -15,7 +15,7 @@ Mindestens 12 Personen, die 14 Tage am Stück dabeibleiben. Am besten 15 bis 20 
 
 > Hallo,
 >
-> ich habe eine kostenlose App entwickelt: den **Leistungs-Lotse**. Er zeigt in zwei Minuten, welche Sozialleistungen jemandem zustehen könnten, zum Beispiel Wohngeld, Kinderzuschlag oder Pflegegeld. Alles bleibt auf dem Handy, es gibt keine Anmeldung und keine Werbung.
+> ich habe eine kostenlose App entwickelt: den **SoLo**. Er zeigt in zwei Minuten, welche Sozialleistungen jemandem zustehen könnten, zum Beispiel Wohngeld, Kinderzuschlag oder Pflegegeld. Alles bleibt auf dem Handy, es gibt keine Anmeldung und keine Werbung.
 >
 > Damit die App in den Play Store darf, verlangt Google einen Test mit mindestens 12 Personen über 14 Tage. Hilfst du mir?
 >
@@ -31,7 +31,7 @@ Mindestens 12 Personen, die 14 Tage am Stück dabeibleiben. Am besten 15 bis 20 
 
 **Erinnerung nach 7 Tagen** (zum Kopieren):
 
-> Kurze Erinnerung zum Leistungs-Lotse: Bitte die App noch 7 Tage drauflassen, sonst zählt der Test nicht. Wenn du magst, probier einmal die „einfache Version“ oder die Antragsmappe aus und sag mir, ob alles klar war. Danke!
+> Kurze Erinnerung zum SoLo: Bitte die App noch 7 Tage drauflassen, sonst zählt der Test nicht. Wenn du magst, probier einmal die „einfache Version“ oder die Antragsmappe aus und sag mir, ob alles klar war. Danke!
 
 ## 3. Antrag auf Produktionszugriff: Antwortentwürfe
 

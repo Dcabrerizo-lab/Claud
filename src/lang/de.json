@@ -413,7 +413,7 @@
   "t.fehlt.einkommen": "Trage das monatliche Bruttoeinkommen des Haushalts ein (0, wenn es keins gibt). Erst dann kann die Leistung eingeschätzt werden.",
   "t.fehlt.vermoegen": "Trage das Vermögen (Erspartes) ein, 0 wenn du keins hast.",
   "t.fehlt.miete": "Trage die Miete ein, 0 wenn du keine zahlst.",
-  "first.text": "Der Leistungs-Lotse gibt eine Orientierung. Er ist keine Rechtsberatung und ersetzt keinen Bescheid. Über deinen Anspruch entscheidet immer die zuständige Stelle.",
+  "first.text": "SoLo gibt eine Orientierung. SoLo ist keine Rechtsberatung und ersetzt keinen Bescheid. Über deinen Anspruch entscheidet immer die zuständige Stelle.",
   "first.ok": "Verstanden",
   "clear.btn": "Alle Angaben löschen",
   "clear.done": "Gelöscht. Das Formular ist leer.",

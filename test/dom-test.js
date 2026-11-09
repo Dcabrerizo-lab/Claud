@@ -194,7 +194,7 @@ setTimeout(() => {
 
   // Struktur
   const title = html.match(/<title>(.*?)<\/title>/)[1];
-  check('Titel ist ein Name', title === 'Leistungs-Lotse');
+  check('Titel ist ein Name', title === 'SoLo – Sozialleistungslotse');
   check('Dunkelmodus doppelt definiert', (html.match(/color-scheme: dark/g) || []).length >= 2);
   check('Kein horizontales Scrollen erzwungen', !/min-width:\s*\d{4,}px/.test(html));
   check('Logische statt physische Abstände im Formular (RTL-fähig)', !/\.money input\s*\{[^}]*padding-right/.test(html) && /inset-inline-end/.test(html));

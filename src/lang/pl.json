@@ -413,7 +413,7 @@
   "t.fehlt.einkommen": "Wpisz miesięczny dochód brutto gospodarstwa (0, jeśli go nie ma). Dopiero wtedy można ocenić to świadczenie.",
   "t.fehlt.vermoegen": "Wpisz majątek (oszczędności), 0 jeśli go nie masz.",
   "t.fehlt.miete": "Wpisz czynsz, 0 jeśli go nie płacisz.",
-  "first.text": "Leistungs-Lotse daje orientację. To nie jest porada prawna i nie zastępuje decyzji urzędowej. O prawie do świadczenia zawsze decyduje właściwy urząd.",
+  "first.text": "SoLo daje orientację. To nie jest porada prawna i nie zastępuje decyzji urzędowej. O prawie do świadczenia zawsze decyduje właściwy urząd.",
   "first.ok": "Rozumiem",
   "clear.btn": "Usuń wszystkie dane",
   "clear.done": "Usunięto. Formularz jest pusty.",

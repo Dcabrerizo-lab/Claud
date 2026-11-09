@@ -7,7 +7,7 @@ Alles muss zur [Datenschutzerklärung](../datenschutz.html) passen. Bei Änderun
 
 | Feld | Wert |
 |---|---|
-| App-Name | Leistungs-Lotse |
+| App-Name | SoLo – Sozialleistungslotse (27 Zeichen) |
 | Untertitel (iOS, max. 30 Zeichen) | Sozialleistungen schnell prüfen |
 | Kategorie | Play: *Finanzen* · iOS: *Finanzen* (Zweitkategorie *Dienstprogramme*) |
 | Altersfreigabe | Ab 0 / 4+ (keine kritischen Inhalte) |
@@ -22,7 +22,7 @@ Alles muss zur [Datenschutzerklärung](../datenschutz.html) passen. Bei Änderun
 
 ## Beschreibung (Play und iOS)
 
-> Steht dir Wohngeld zu? Kinderzuschlag? Grundsicherung? Der Leistungs-Lotse prüft in zwei Minuten 28 Sozialleistungen und Vergünstigungen und zeigt dir, was wahrscheinlich, möglich oder unwahrscheinlich ist, mit den nächsten Schritten, der zuständigen Stelle und den nötigen Unterlagen.
+> Steht dir Wohngeld zu? Kinderzuschlag? Grundsicherung? SoLo prüft in zwei Minuten 28 Sozialleistungen und Vergünstigungen und zeigt dir, was wahrscheinlich, möglich oder unwahrscheinlich ist, mit den nächsten Schritten, der zuständigen Stelle und den nötigen Unterlagen.
 >
 > **Was die App prüft**
 > Kindergeld, Elterngeld, Wohngeld, Kinderzuschlag, Grundsicherungsgeld, Arbeitslosengeld I, Krankengeld, Bildung und Teilhabe, Unterhaltsvorschuss, Grundsicherung im Alter und bei Erwerbsminderung, BAföG, Berufsausbildungsbeihilfe, Pflegegeld, Entlastungsbetrag, Verhinderungspflege und Pflegehilfsmittel, Hilfe zur Pflege, Leistungen bei Behinderung (Pauschbetrag, Schwerbehindertenausweis, Eingliederungshilfe, Budget für Arbeit, Erwerbsminderungsrente, Altersrente für schwerbehinderte Menschen), Blindengeld (Bayern), Blindenhilfe, Wohnberechtigungsschein (Bayern), Befreiung vom Rundfunkbeitrag und von Zuzahlungen, Leistungen nach dem Asylbewerberleistungsgesetz.
@@ -42,7 +42,7 @@ Alles muss zur [Datenschutzerklärung](../datenschutz.html) passen. Bei Änderun
 > **Deine Daten bleiben bei dir**
 > Keine Anmeldung, keine Server, keine Werbung, kein Tracking. Alles wird auf deinem Gerät berechnet und gespeichert.
 >
-> **Wichtig:** Der Leistungs-Lotse ist eine Orientierung, keine Rechtsberatung. Über deinen Anspruch entscheidet immer die zuständige Stelle. Rechtsstand: November 2026.
+> **Wichtig:** SoLo ist eine Orientierung, keine Rechtsberatung. Über deinen Anspruch entscheidet immer die zuständige Stelle. Rechtsstand: November 2026.
 
 ## Google Play: Datensicherheit
 

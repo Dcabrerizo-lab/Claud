@@ -413,7 +413,7 @@
   "t.fehlt.einkommen": "Hanenin aylık brüt gelirini girin (yoksa 0). Ancak bundan sonra bu yardım değerlendirilebilir.",
   "t.fehlt.vermoegen": "Varlığınızı (birikim) girin, yoksa 0.",
   "t.fehlt.miete": "Kirayı girin, ödemiyorsanız 0.",
-  "first.text": "Leistungs-Lotse yol gösterir. Hukuki danışmanlık değildir ve resmi bir kararın yerini tutmaz. Hakkınıza her zaman yetkili kurum karar verir.",
+  "first.text": "SoLo yol gösterir. Hukuki danışmanlık değildir ve resmi bir kararın yerini tutmaz. Hakkınıza her zaman yetkili kurum karar verir.",
   "first.ok": "Anladım",
   "clear.btn": "Tüm girdileri sil",
   "clear.done": "Silindi. Form boş.",
