@@ -9,7 +9,7 @@ import json, hashlib, subprocess, datetime, pathlib, sys, time, urllib.parse
 WURZEL = pathlib.Path(__file__).resolve().parent.parent
 ROH = WURZEL / "content/quellen/roh"
 LOG = WURZEL / "content/quellen/abruf.json"
-UA = "Leistungs-Lotse-Datenabruf/1.0 (manueller Abruf fuer eine gemeinnuetzige App)"
+UA = "SoLo-Sozialleistungslotse-Datenabruf/1.0 (manueller Abruf fuer eine gemeinnuetzige App)"
 PAUSE = 3  # Sekunden zwischen zwei Abrufen
 
 def main():
