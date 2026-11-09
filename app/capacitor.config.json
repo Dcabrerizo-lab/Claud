@@ -1,5 +1,5 @@
 {
-  "appId": "de.leistungslotse.app",
+  "appId": "de.sozialleistungslotse.app",
   "appName": "SoLo",
   "webDir": "www",
   "android": { "allowMixedContent": false },
