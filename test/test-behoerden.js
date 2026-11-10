@@ -12,7 +12,7 @@ const P = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'content', 'plz-
 check('Daten werden angenommen', Behoerden.init(D) && Behoerden.available() && Plz.init(P));
 
 // Vollständigkeit: jeder bayerische Kreis aus den PLZ-Daten hat eine Stelle
-const ags = P.kreise.map((k) => k.ags);
+const ags = P.kreise.map((k) => k.ags).filter((a) => a.startsWith('09')); // Anschriften gibt es (noch) nur für Bayern
 check('96 Kreise, alle mit Eintrag', ags.length === 96 && ags.every((a) => D.kreise[a]), ags.filter((a) => !D.kreise[a]).join(','));
 const mit = ags.filter((a) => D.kreise[a].anschrift);
 check('alle 96 Kreise mit Anschrift', mit.length === 96, mit.length);

@@ -59,6 +59,15 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
   c = await card('Schwerbehindertenausweis und Nachteilsausgleiche'); ok('NRW: Ausweis beim Kreis bzw. der kreisfreien Stadt', c && /Kreis bzw\. kreisfreie Stadt/.test(c.zust), c && c.zust);
   await sel('bundesland', 'BY'); await sel('blind', '');
 
+  // PLZ außerhalb Bayerns: Bundesland und Mietenstufe werden gesetzt (Köln: NRW, Stufe VI laut Anlage zur WoGV)
+  await fillNum('plz', '50667');
+  const pz = await p.evaluate(() => ({ bl: document.getElementById('bundesland').value, st: document.getElementById('mietstufe').value }));
+  ok('PLZ 50667 (Köln): Bundesland NW und Mietenstufe 6 automatisch', pz.bl === 'NW' && pz.st === '6', JSON.stringify(pz));
+  await fillNum('plz', '04109');
+  const pl = await p.evaluate(() => ({ bl: document.getElementById('bundesland').value, st: document.getElementById('mietstufe').value }));
+  ok('PLZ 04109 (Stadt Leipzig): Sachsen, Mietenstufe 2', pl.bl === 'SN' && pl.st === '2', JSON.stringify(pl));
+  await fillNum('plz', ''); await sel('bundesland', 'BY');
+
   // Fall 3: Erwerbsminderungsrente
   await geb('1970'); await sel('emStd', 'unter3');
   c = await card('Erwerbsminderungsrente'); ok('EM-Rente zunächst nur möglich (Wartezeit offen)', c.pill === 'vielleicht');

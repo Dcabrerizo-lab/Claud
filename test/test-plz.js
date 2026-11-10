@@ -40,11 +40,17 @@ const cand = (plz, ort) => (at(plz) || { candidates: [] }).candidates.find((c) =
 check('84416: Taufkirchen (Vils) V oder Inning am Holz (Kreis Erding IV) -> Nachfrage', (() => { const r = at('84416'); return r && !r.sure && cand('84416', 'Taufkirchen (Vils)').stufe === 5 && cand('84416', 'Inning am Holz').stufe === 4; })());
 check('84032: Altdorf (Lkr. Landshut) III oder Stadt Landshut IV -> Nachfrage', (() => { const r = at('84032'); return r && !r.sure && cand('84032', 'Altdorf').stufe === 3 && cand('84032', 'Landshut').stufe === 4; })());
 
-// Andere Bundesländer: nur das Land, keine Stufe
-[['20095', 'HH'], ['10115', 'BE'], ['01067', 'SN'], ['70173', 'BW'], ['50667', 'NW']].forEach(([plz, bl]) => {
+// Andere Bundesländer: Mietenstufe aus der Anlage zur WoGV (von Hand mit der Verordnung abgeglichen):
+// Hamburg VI, Berlin IV, Dresden III, Stuttgart VI, Köln VI, Leipzig (Stadt) II, Landkreis Leipzig I, Bremen IV, Bremerhaven II, Potsdam IV, Erfurt III
+[['20095', 'HH', 6], ['10115', 'BE', 4], ['01067', 'SN', 3], ['70173', 'BW', 6], ['50667', 'NW', 6], ['04109', 'SN', 2], ['28195', 'HB', 4], ['27568', 'HB', 2], ['14467', 'BB', 4], ['99084', 'TH', 3], ['30159', 'NI', 5], ['55116', 'RP', 6]].forEach(([plz, bl, st]) => {
   const r = at(plz);
-  check(`${plz}: Bundesland ${bl}, keine Mietenstufe`, r && r.bl === bl && !r.sure && r.stufe === null, JSON.stringify(r));
+  check(`${plz}: Bundesland ${bl}, Mietenstufe ${st}`, r && r.bl === bl && r.sure && r.stufe === st, JSON.stringify(r));
 });
+check('[plz-stufe] Mietenstufe aus der PLZ in ganz Deutschland: Köln VI, Berlin IV, Leipzig II, Bremerhaven II', at('50667').stufe === 6 && at('10115').stufe === 4 && at('04109').stufe === 2 && at('27568').stufe === 2);
+check('Landkreis Leipzig (Kreis I) und Stadt Leipzig (II) getrennt', at('04109').ags === '14713' && Object.values(D.plz).some((l) => l.some((e) => e[1] >= 0 && D.kreise[e[1]].ags === '14729' && e[2] === 1)));
+// Nicht eindeutige Orte außerhalb Bayerns bekommen keine Stufe (statt einer geratenen): die App rechnet dann vorsichtig
+const ohneStufe = Object.keys(D.plz).filter((p) => D.plz[p].some((e) => D.bl[e[4]] !== 'BY' && e[2] === null));
+check('außerhalb Bayerns nur wenige Orte ohne Stufe (unter 10 %)', ohneStufe.length < 0.1 * Object.keys(D.plz).length, ohneStufe.length);
 
 // Großkunden-PLZ (Firmen) sind aussortiert und färben keine Wohn-PLZ falsch ein
 check('20083 (Großkunde in München, Hamburger PLZ-Bereich) nicht als Bayern', !(at('20083') && at('20083').bl === 'BY'));
@@ -54,15 +60,15 @@ check('Ungültige Eingaben ergeben null', at('') === null && at('123') === null 
 check('90542: Kreisschlüssel 09572 (Erlangen-Höchstadt)', at('90542').ags === '09572');
 check('80331: Kreisschlüssel 09162 (Stadt München)', at('80331').ags === '09162');
 check('84032: zwei Kreise (Lkr. Landshut, Stadt Landshut) -> kein eindeutiger Schlüssel', at('84032').ags === null && cand('84032', 'Altdorf').ags === '09274' && cand('84032', 'Landshut').ags === '09261');
-check('20095 Hamburg: kein Kreisschlüssel', at('20095').ags === null);
+check('20095 Hamburg: Kreisschlüssel 02000', at('20095').ags === '02000');
 
 // Vollständigkeit
-check('96 bayerische Kreise mit amtlichem Schlüssel', D.kreise.length === 96 && D.kreise.every((k) => /^09\d{3}$/.test(k.ags)));
+check('400 Kreise und kreisfreie Städte, davon 96 in Bayern, alle mit amtlichem Schlüssel', D.kreise.length === 400 && D.kreise.filter((k) => /^09\d{3}$/.test(k.ags)).length === 96 && D.kreise.every((k) => /^\d{5}$/.test(k.ags)));
 const byPlz = Object.keys(D.plz).filter((p) => D.plz[p].some((e) => D.bl[e[4]] === 'BY'));
 check('über 2.000 bayerische PLZ', byPlz.length > 2000, byPlz.length);
 check('jede bayerische PLZ hat Kreis und Mietenstufe I-VII', byPlz.every((p) => D.plz[p].filter((e) => D.bl[e[4]] === 'BY').every((e) => e[1] >= 0 && e[2] >= 1 && e[2] <= 7)));
-check('jeder Kreis kommt in den PLZ vor', D.kreise.every((k, i) => byPlz.some((p) => D.plz[p].some((e) => e[1] === i))));
-check('233 bayerische Gemeinden mit eigener Stufe (Anlage WoGV)', D.kreise.reduce((s, k) => s + k.g.length, 0) === 233);
+check('jeder Kreis kommt in den PLZ vor', D.kreise.every((k, i) => Object.keys(D.plz).some((p) => D.plz[p].some((e) => e[1] === i))));
+check('233 bayerische Gemeinden mit eigener Stufe (Anlage WoGV)', D.kreise.filter((k) => k.ags.startsWith('09')).reduce((s, k) => s + k.g.length, 0) === 233);
 check('Quellenangabe mit Stichtag', /1\.1\.2023/.test(D.stand.wogv) && /GeoNames/.test(D.stand.geonames));
 
 console.log(fails ? '\n' + fails + ' FEHLER von ' + n : '\nPLZ-Tests bestanden: ' + n + ' Prüfungen');

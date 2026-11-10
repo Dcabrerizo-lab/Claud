@@ -64,6 +64,8 @@ Weitere Tests (laufen ebenfalls bei jedem `npm test`):
 
 **Ganz Deutschland (Phase 1 und 2, 10. November 2026):** Landesblindengeld und Wohnberechtigungsschein gelten jetzt in allen Ländern (sichere Einstufung, Spanne statt unsicherer Einzelbeträge), zuständige Stellen je Land ohne Anschrift. Neu: Bayerisches Landespflegegeld (500 € im Jahr ab 2026, vorher 1.000 €), Hinweis auf Familiengeld und Krippengeld (nur noch für Kinder bis Geburtsjahr 2024), Merkzeichen Gl mit Hinweis auf das Gehörlosengeld einiger Länder. Genaue Beträge anderer Länder fehlen bewusst, weil die Quellen sich widersprechen (Prüfliste ○).
 
+**Mietenstufen für ganz Deutschland (Phase 3a):** Jede Postleitzahl bekommt jetzt Kreis und Mietenstufe aus der Anlage zur Wohngeldverordnung, nicht mehr nur in Bayern. Nicht eindeutige Orte (etwa 7 % außerhalb Bayerns) bleiben ohne Stufe, dann fragt die App nach und rechnet vorsichtig. Eine unabhängig geschriebene Gegenprüfung hat alle 13.386 zugeordneten Einträge mit der Verordnung verglichen: 0 Abweichungen. Dabei gefunden und behoben: Landkreis und gleichnamige kreisfreie Stadt (Leipzig) wurden zunächst verwechselt.
+
 Was keine Sicherung leisten kann: Die Prüfliste ist nur so vollständig wie das Wissen, mit dem sie geschrieben ist. Eine Fachperson sollte sie vor der Veröffentlichung einmal gegenlesen. Die Punkte mit ○ (zum Beispiel Freibetrag für Azubis über der Minijob-Grenze, Höhe der Blindenhilfe, Zuständigkeit Bezirk) sind dafür markiert.
 
 ## Fachlich: bekannte Grenzen (bewusst so gelöst)

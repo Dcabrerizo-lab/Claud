@@ -199,8 +199,8 @@ setTimeout(() => {
   check('Kein horizontales Scrollen erzwungen', !/min-width:\s*\d{4,}px/.test(html));
   check('Logische statt physische Abstände im Formular (RTL-fähig)', !/\.money input\s*\{[^}]*padding-right/.test(html) && /inset-inline-end/.test(html));
   check('Jedes Formularfeld hat eine Beschriftung', ['miete', 'mietstufe', 'ek1Art', 'ek1Brutto', 'ek1Netto', 'ek2Art', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'vermoegen', 'gebJahr', 'kindEink', 'ausbildung', 'pflegegrad', 'p-name', 'p-geb', 'p-strasse', 'p-ort', 'p-tel'].every((id) => d.querySelector('label[for="' + id + '"]')));
-  // Grenze 1,2 MB: eine einzige Datei, die offline läuft; der größte Teil sind PLZ- und Behördendaten (Bayern) und 8 Sprachen
-  check('Dateigröße unter 1,2 MB', html.length < 1.2 * 1024 * 1024, (html.length / 1024).toFixed(0) + ' KB');
+  // Grenze 2 MB: eine einzige Datei, die offline läuft; der größte Teil sind PLZ-Daten (ganz Deutschland mit Mietenstufen), Behörden (Bayern) und 8 Sprachen
+  check('Dateigröße unter 2 MB', html.length < 2 * 1024 * 1024, (html.length / 1024).toFixed(0) + ' KB');
   // ----- Antrag scannen -----
   setLang('de');
   d.getElementById('p1').click();
