@@ -1,0 +1,80 @@
+name: Schwere Tests
+
+# Große Testläufe: viele Millionen Haushalte gegen die unabhängige Referenzrechnung, Logik-Test mit 1 Million Haushalten,
+# vollständiger Mutationstest und Browsertests in Firefox und WebKit (Safari). Sparsam: nur von Hand (Actions -> Schwere Tests
+# -> Run workflow) und einmal, wenn diese Datei geändert wird. Dauer etwa 20 bis 40 Minuten.
+on:
+  workflow_dispatch:
+  push:
+    paths: ['.github/workflows/schwer.yml']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: schwer-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  raster:
+    name: Rastertest 3 Millionen Haushalte
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npm run build:web
+      - name: App gegen unabhängige Referenz (3.000.000 Zufallshaushalte plus feste Raster)
+        run: node test/test-raster.js 3000000
+
+  eigenschaften:
+    name: Logik-Test 1 Million Haushalte
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - name: Monotonie und Widerspruchsfreiheit (1.000.000 Haushalte)
+        run: node test/test-eigenschaften.js 1000000
+
+  mutation:
+    name: Mutationstest (große Testreihen)
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Alle Tests einmal sauber
+        run: npm test
+      - name: Eingebaute Fehler müssen alle entdeckt werden
+        env: { MUT_RASTER: '60000', MUT_EIGEN: '15000' }
+        run: node tools/mutationstest.js
+
+  browser:
+    name: Browsertests ${{ matrix.browser }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [firefox, webkit]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npx playwright install --with-deps ${{ matrix.browser }}
+      - run: npm run build:web
+      - name: Ausführliche Version (alle Sprachen, Behinderung, Mappe, PLZ)
+        env: { BROWSER: '${{ matrix.browser }}' }
+        run: node test/e2e-beh.js
+      - name: Einfache Version
+        env: { BROWSER: '${{ matrix.browser }}' }
+        run: node test/e2e-einfach.js

@@ -53,7 +53,7 @@ for (const f of ['site', 'datenschutz.html', 'README.md', 'app/capacitor.config.
   fs.cpSync(path.join(ROOT, f), path.join(tmp, f), { recursive: true });
 }
 const orig = fs.readFileSync(path.join(ROOT, 'src', 'rules.js'), 'utf8');
-const TESTS = ['test.js', 'test-strict.js', 'test-beh.js', 'test-faelle.js', 'test-raster.js 8000', 'test-pruefliste.js', 'test-eigenschaften.js 3000'];
+const TESTS = ['test.js', 'test-strict.js', 'test-beh.js', 'test-faelle.js', 'test-raster.js ' + (process.env.MUT_RASTER || 8000), 'test-pruefliste.js', 'test-eigenschaften.js ' + (process.env.MUT_EIGEN || 3000)];
 const laeuft = () => { try { for (const t of TESTS) execSync('node test/' + t, { cwd: tmp, stdio: 'ignore' }); return true; } catch (e) { return false; } };
 
 let unentdeckt = 0, geprueft = 0;

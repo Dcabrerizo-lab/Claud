@@ -1,4 +1,4 @@
-const { chromium } = require('playwright');
+const chromium = require('playwright')[process.env.BROWSER || 'chromium']; // BROWSER=firefox oder webkit für andere Browser
 const KARTEN = require('./karten.js');
 const out = []; const ok = (n, c, x) => out.push((c ? 'ok   ' : 'FAIL ') + n + (c ? '' : ' ' + (x || '')));
 const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html');
