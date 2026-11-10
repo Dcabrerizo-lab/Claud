@@ -28,6 +28,7 @@ const M = [
   ['Landespflegegeld auch außerhalb Bayerns', "if (h.land && h.land !== 'BY') return mk(id, 'nein', 'land', [['lpg.land']]);", ''],
   ['Familiengeld-Hinweis auch außerhalb Bayerns', "const bay = !h.land || h.land === 'BY';", 'const bay = true;'],
   ['Landesblindengeld außerhalb Bayerns wieder „schon vorhanden“', "if (h.blind !== 'blind') return mk(id, 'vielleicht', 'vielleicht', [['blindengeld.hochLand']]);", "return mk(id, 'na', 'land', [['land.blindengeld']]);"],
+  ['Minijob-Grenze 2027 nicht umgestellt', 'minijob: heute >= 2027 ? R.minijob2027 : R.minijob,', 'minijob: R.minijob,'],
   ['ALG I: Sperrzeit 8 statt 12 Wochen', 'sperrWochen: 12', 'sperrWochen: 8'],
   ['ALG I: Nebeneinkommen 100 statt 165 €', 'nebenFrei: 165', 'nebenFrei: 100'],
   ['Kindergeld: Hinweis 21/25 fehlt', "[['kindergeld.ja', { kg: eur(R.kindergeld) }], ['kindergeld.mehr']]", "[['kindergeld.ja', { kg: eur(R.kindergeld) }]]"],

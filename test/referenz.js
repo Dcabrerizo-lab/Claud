@@ -7,7 +7,8 @@
 // ---------- Beträge 2026 ----------
 const RB = { 1: 563, 2: 506, 3: 451, 4: 471, 5: 390, 6: 357 }; // Regelbedarfsstufen (RBSFV 2026)
 const KG = 259; // Kindergeld je Kind (§ 66 EStG)
-const MINIJOB = 603; // § 8 Abs. 1a SGB IV
+// Minijob-Grenze (§ 8 Abs. 1a SGB IV): 603 € im Jahr 2026, 633 € ab 1.1.2027 (Mindestlohn 14,60 €)
+const minijobAm = (heute) => ((heute || new Date().getFullYear() + new Date().getMonth() / 12) >= 2027 ? 633 : 603);
 const UVG = { u6: 227, u12: 299, u18: 394 }; // § 2 UVG i. V. m. Mindestunterhalt, abzgl. Kindergeld
 
 // ---------- Hilfen ----------
@@ -69,7 +70,7 @@ function haushalt(e) {
   }
   const em = e.emStd === 'unter3' || !!e.wfbm || !!e.erwerbsgemindert || e.art1 === 'wfbm' || e.art2 === 'wfbm' || (Array.isArray(e.einkommen) && e.einkommen.some((x) => x.art === 'wfbm'));
   return { e, erwachsene, kinder, jung, u6, k14, mitte, personen, brutto, brutto2, netto, p, rente, grenz, gruppe, jahre, em,
-    regelEltern, regel: regelEltern + regelKinder, regelKinder, miete: zahl(e.miete), vermoegen: zahl(e.vermoegen), unterhalt, kindEink, uvg, mehrAE,
+    mini: minijobAm(heute), regelEltern, regel: regelEltern + regelKinder, regelKinder, miete: zahl(e.miete), vermoegen: zahl(e.vermoegen), unterhalt, kindEink, uvg, mehrAE,
     bezug: e.bezug || {}, kids: kinder + jung };
 }
 
@@ -90,7 +91,7 @@ function elternEinkommenSGB2(h) {
 }
 // Einkommen der Kinder, das ihren Bedarf deckt (Überschuss mindert nicht den Bedarf der Eltern)
 function kinderEinkommen(h) {
-  const e = h.unterhalt + h.uvg + Math.max(0, h.kindEink - MINIJOB);
+  const e = h.unterhalt + h.uvg + Math.max(0, h.kindEink - h.mini);
   if (!e) return 0;
   const bedarfKinder = h.regelKinder + h.miete * h.kids / h.personen - h.kids * KG;
   return Math.min(e, Math.max(0, bedarfKinder));
@@ -203,7 +204,7 @@ function kinderzuschlag(h) {
   const anteilEltern = h.erwachsene / (h.erwachsene + (h.erwachsene === 1 ? 0.29 : 0.4) * h.kids);
   const ms = mehrSonst(h), bm = behMehrSGB2(h);
   const bedarfEltern = h.regelEltern + h.mehrAE + ms.eltern + (h.e.bhPerson === 'erwNach25' ? bm.sicher : 0) + h.miete * anteilEltern;
-  const kindAnr = h.unterhalt + h.uvg + Math.max(0, h.kindEink - MINIJOB);
+  const kindAnr = h.unterhalt + h.uvg + Math.max(0, h.kindEink - h.mini);
   const kiz = Math.max(0, max - 0.45 * Math.max(0, elternEinkommenSGB2(h) - bedarfEltern) - 0.45 * kindAnr);
   if (kiz <= 0) return { level: 'nein' };
   if (h.netto + h.unterhalt + h.uvg + h.kindEink + max + 300 < h.regel + h.miete + h.mehrAE + ms.sicher + bm.sicher) return { level: 'vielleicht', kiz };
@@ -303,7 +304,7 @@ function arbeitslosengeld(e) {
   if (e.arbeitSit !== 'arbeitslos') return { level: 'nein' };
   if (h.rente) return { level: 'nein' };
   if (!e.algZeit) return { level: 'vielleicht' };
-  if (zahl(e.lohnVorher) > 0 && zahl(e.lohnVorher) <= MINIJOB) return { level: 'vielleicht', spanne: null };
+  if (zahl(e.lohnVorher) > 0 && zahl(e.lohnVorher) <= minijobAm(e.heute ? Number(e.heute) : 0)) return { level: 'vielleicht', spanne: null };
   const satz = h.kids > 0 ? 67 : 60;
   const jahr = Number(e.gebJahr) | 0;
   const heute = e.heute ? Number(e.heute) : new Date().getFullYear() + new Date().getMonth() / 12;
@@ -324,7 +325,7 @@ function krankengeld(e) {
   if (h.p.some((x) => x.art === 'kg')) return { level: 'na' };
   if (e.arbeitSit !== 'krank') return { level: 'nein' };
   if (e.krankWochen === 'ende') return { level: 'nein' };
-  if (zahl(e.lohnVorher) > 0 && zahl(e.lohnVorher) <= MINIJOB) return { level: 'nein', spanne: null };
+  if (zahl(e.lohnVorher) > 0 && zahl(e.lohnVorher) <= minijobAm(e.heute ? Number(e.heute) : 0)) return { level: 'nein', spanne: null };
   const lohn = Math.min(zahl(e.lohnVorher), 5812.5);
   const kg = (q) => runde10(Math.min(0.7 * lohn, 0.9 * lohn * q) * 0.875);
   return { level: e.krankWochen === 'unter6' ? 'vielleicht' : 'ja', spanne: lohn > 0 ? [kg(0.6), kg(lohn <= 2000 ? 0.8 : 0.72)] : null };

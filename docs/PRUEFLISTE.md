@@ -23,6 +23,8 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Freibetrag für Erwerbstätige (§ 11b Abs. 2, 3): 100 € frei, 20 % bis 520 €, 30 % bis 1.000 €, 10 % bis 1.200 € (mit Kind 1.500 €) | ✓ | `gg-ewt` |
 | Freibetrag nur für Einkommen aus Arbeit, nicht für Rente, Arbeitslosengeld, Krankengeld, Elterngeld | ✓ | `gg-ewt-art` |
 | Schüler und Azubis unter 25: Einkommen bis zur Minijob-Grenze frei (§ 11b Abs. 2b) | ✓ | `gg-azubi` |
+| Minijob-Grenze ab 1.1.2027: 633 € (Mindestlohn 14,60 €), die App schaltet am Stichtag selbst um (auch Krankengeld und Arbeitslosengeld) | ✓ | `minijob-2027` |
+| Weitere Beträge 2027 (Kindergeld 267 €, Grundfreibetrag 12.564 €, Beitragsbemessungsgrenzen, Regelsätze, Wohngeld) | ○ (Stand 10.11.2026 nur Entwürfe bzw. offen; erst nach Verkündung einarbeiten; die App weist ab 1.1.2027 darauf hin) | |
 | Schüler und Azubis über der Minijob-Grenze: auf den Teil darüber zusätzlich der Freibetrag nach Abs. 3 | ○ (die App rechnet vorsichtig ohne diesen Zusatz, der Betrag fällt also eher zu niedrig aus; von einer Fachperson bestätigen lassen) | |
 | Elterngeld 300 € frei bei Einkommen vor der Geburt (§ 10 Abs. 5 BEEG) | ✓ | `gg-eg300` |
 | Unterhalt und Unterhaltsvorschuss als Einkommen der Kinder, gedeckelt auf ihren Bedarf | ✓ | `gg-unterhalt` |

@@ -739,7 +739,7 @@
   "t.ggeld.gemischt": "Jeśli jedna osoba jest w wieku emerytalnym lub całkowicie niezdolna do pracy, właściwy dla niej jest Sozialamt. Jeśli druga osoba może pracować, należy z dziećmi do Jobcenter (mieszane gospodarstwo). Zleć sprawdzenie obu.",
   "t.krank.minijob": "Minijob (do 603 € miesięcznie) nie daje ubezpieczenia zdrowotnego z pracy. Nie ma z niego Krankengeld.",
   "t.alg1.minijob": "Minijob (do 603 € miesięcznie) nie jest objęty ubezpieczeniem na wypadek bezrobocia i nie liczy się do zasiłku. Liczyć się mogą wcześniejsze prace z wyższym wynagrodzeniem.",
-  "alt.hinweis": "Uwaga: Zasady w tej wersji są według stanu na {stand}. Od 1 stycznia kwoty mogły się zmienić. Zaktualizuj aplikację.",
+  "alt.hinweis": "Uwaga: zasady tej wersji są aktualne na {stand}. Na 2027 rok uwzględniono dotąd tylko nową granicę Minijob (633 €). Kindergeld, stawki podstawowe, Wohngeld i inne kwoty mogły zmienić się od 1 stycznia. Zaktualizuj aplikację.",
   "cb.teilhabe": "Dostaje z powodu niepełnosprawności pomoc w szkole, nauce zawodu lub przygotowaniu zawodowym (np. Berufsbildungswerk, asystent szkolny). Nie: warsztat.",
   "bhWeitere.label": "Inne osoby w gospodarstwie z ciężką niepełnosprawnością",
   "bhWeitere.hint": "Tylko z GdB 100 albo GdB od 50 i stopniem opieki. Ważne dla Wohngeld i Wohnberechtigungsschein.",

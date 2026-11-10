@@ -739,7 +739,7 @@
   "t.ggeld.gemischt": "Bir kişi emeklilik yaşındaysa veya tamamen çalışamıyorsa, onun için Sozialamt yetkilidir. Diğer kişi çalışabiliyorsa, çocuklarla birlikte Jobcenter'a bağlıdır (karma hane). İkisini de kontrol ettir.",
   "t.krank.minijob": "Minijob (ayda 603 €'ya kadar) işten sağlık sigortası sağlamaz. Krankengeld yoktur.",
   "t.alg1.minijob": "Minijob (ayda 603 €'ya kadar) işsizlik sigortalı değildir ve işsizlik parası için sayılmaz. Daha yüksek ücretli önceki işler sayılabilir.",
-  "alt.hinweis": "Dikkat: Bu sürümdeki kurallar {stand} itibarıyladır. 1 Ocak'tan beri tutarlar değişmiş olabilir. Lütfen uygulamayı güncelleyin.",
+  "alt.hinweis": "Dikkat: Bu sürümün kuralları {stand} tarihlidir. 2027 için şimdiye kadar sadece yeni Minijob sınırı (633 €) eklendi. Kindergeld, temel ihtiyaç tutarları, Wohngeld ve diğer tutarlar 1 Ocak'ta değişmiş olabilir. Lütfen uygulamayı güncelleyin.",
   "cb.teilhabe": "Engeli nedeniyle okul, meslek eğitimi veya mesleğe hazırlık için yardım alıyor (ör. Berufsbildungswerk, okul refakatçisi). Değil: atölye.",
   "bhWeitere.label": "Hanede ağır engelli başka kişiler",
   "bhWeitere.hint": "Sadece GdB 100 olanlar veya GdB 50'den itibaren ve bakım derecesi olanlar. Wohngeld ve Wohnberechtigungsschein için önemli.",

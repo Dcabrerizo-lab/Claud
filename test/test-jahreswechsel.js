@@ -35,7 +35,7 @@ ck('31.12.2026: App startet ohne Skriptfehler', !!vor.d.querySelector('#cards .s
 
 const nach = seite('2027-01-01T08:00:00');
 const alt = nach.d.getElementById('altNotice');
-ck('1.1.2027: deutlicher Hinweis auf veraltete Regeln', alt.hidden === false && /2026/.test(alt.textContent), alt.textContent);
+ck('1.1.2027: deutlicher Hinweis auf veraltete Regeln, nennt die schon eingearbeitete Minijob-Grenze', alt.hidden === false && /2026/.test(alt.textContent) && /633/.test(alt.textContent), alt.textContent);
 ck('1.1.2027: App startet weiter ohne Skriptfehler', !!nach.d.querySelector('#cards .startcard') && nach.errors.length === 0, nach.errors.join('; '));
 // Eingabe nach dem Jahreswechsel: Karten erscheinen, keine Fehler
 const kinder = nach.d.querySelector('[data-step="kids"][data-d="1"]');

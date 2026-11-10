@@ -32,6 +32,8 @@ const Rules = (function () {
     but: { schulbedarf: 195, teilhabeMonat: 15 },
     // Minijob-Grenze 2026 (§ 8 Abs. 1a SGB IV): Erwerbseinkommen von Schülern und Azubis unter 25 bleibt bis dahin frei (§ 11b Abs. 2b SGB II)
     minijob: 603,
+    // Ab 1.1.2027: 633 € (Mindestlohn 14,60 €, Mindestlohnanpassungsverordnung; § 8 Abs. 1a SGB IV). Die App schaltet am Stichtag selbst um.
+    minijob2027: 633,
     // Arbeitslosengeld I (SGB III): 60 %, mit Kind 67 % des pauschalierten Nettos (§ 149); Beitragsbemessungsgrenze 2026: 8.450 € im Monat;
     // Netto grob 60-72 % des Bruttos; Dauer § 147 Abs. 2: [Monate versichert in 5 Jahren, Mindestalter, Monate Anspruch]
     alg: { nebenFrei: 165, sperrWochen: 12, satz: 0.6, satzKind: 0.67, bbg: 8450, netto: [0.6, 0.72], nettoKlein: 0.8, kleinBis: 2000, dauer: [[48, 58, 24], [36, 55, 18], [30, 50, 15], [24, 0, 12], [20, 0, 10], [16, 0, 8], [12, 0, 6]] },
@@ -254,6 +256,7 @@ const Rules = (function () {
       arbeitSit: inp.arbeitSit === 'arbeitslos' || inp.arbeitSit === 'krank' ? inp.arbeitSit : '',
       algZeit: !!inp.algZeit, algMonate: [12, 16, 20, 24, 30, 36, 48].indexOf(Number(inp.algMonate)) >= 0 ? Number(inp.algMonate) : 0,
       krankWochen: ['unter6', 'laeuft', 'ende'].indexOf(inp.krankWochen) >= 0 ? inp.krankWochen : '',
+      minijob: heute >= 2027 ? R.minijob2027 : R.minijob,
       lohnVorher: num(inp.lohnVorher), alterJahre: jahr >= 1900 && jahr <= 2010 ? heute - jahr - 0.5 : 0,
       fehlt: { einkommen: !liste && blank(inp.brutto), netto: !liste && blank(inp.netto), vermoegen: blank(inp.vermoegen), miete: blank(inp.miete) && inp.wohnform !== 'heim' && inp.wohnform !== 'eltern' },
       adults, kids, kidsU6, kids14, young, persons, brutto, brutto2, erwerb: pers[0][0] === 'lohn' || (liste ? liste.some((x) => x[0] === 'lohn') : false), erwerb2: art2 === 'lohn', netto, nettoGiven, miete, vermoegen, unterhalt, regel, regelElt,
@@ -301,7 +304,7 @@ const Rules = (function () {
   // (§ 11 Abs. 1 SGB II, § 82 SGB XII). Das Kindergeld wird wie bisher voll beim Kind angerechnet.
   // Einkommen der Kinder: Unterhalt, Unterhaltsvorschuss und eigenes Einkommen (Ausbildungsvergütung bis zur Minijob-Grenze frei).
   function unterhaltAnrechenbar(h) {
-    const eink = (h.kindZahl || 0) + Math.max(0, (h.kindEink || 0) - R.minijob);
+    const eink = (h.kindZahl || 0) + Math.max(0, (h.kindEink || 0) - h.minijob);
     if (!eink) return 0;
     const kinderBedarf = (h.regel - h.regelElt) + h.miete * h.children / h.persons;
     return Math.min(eink, Math.max(0, kinderBedarf - h.children * R.kindergeld));
@@ -485,7 +488,7 @@ const Rules = (function () {
     const bemessung = h.regelElt + (h.mehrAE || 0) + mehrEltern + h.miete * elternAnteil;
     // Einkommen der Eltern nach § 11b SGB II (Freibetrag für Arbeit usw.); Einkommen der Kinder (Unterhalt, Unterhaltsvorschuss,
     // eigenes Einkommen über der Minijob-Grenze) mindert den Kinderzuschlag um 45 % (§ 6a Abs. 3 und 6 BKGG)
-    const kindAnr = (h.kindZahl || 0) + Math.max(0, (h.kindEink || 0) - R.minijob);
+    const kindAnr = (h.kindZahl || 0) + Math.max(0, (h.kindEink || 0) - h.minijob);
     const est = Math.max(0, gmax - R.kiz.anrechnung * Math.max(0, elternEinkSGB2(h) - bemessung) - R.kiz.anrechnung * kindAnr);
     const gesamtBedarf = h.regel + h.miete + (h.mehrAE || 0) + maK.fest + mbK.fest;
 
@@ -731,7 +734,7 @@ const Rules = (function () {
     if (h.alter) return mk(id, 'nein', 'vorausFehlt', [['alg1.alter']]);
     if (!h.algZeit) return mk(id, 'vielleicht', 'vielleicht', [['alg1.zeit'], melden]);
     // Minijob ist arbeitslosenversicherungsfrei (§ 27 Abs. 2 SGB III): zählt nicht für den Anspruch
-    if (h.lohnVorher > 0 && h.lohnVorher <= R.minijob) return mk(id, 'vielleicht', 'vielleicht', [['alg1.minijob'], melden]);
+    if (h.lohnVorher > 0 && h.lohnVorher <= h.minijob) return mk(id, 'vielleicht', 'vielleicht', [['alg1.minijob'], melden]);
     const p = h.children > 0 ? R.alg.satzKind : R.alg.satz;
     const tx = [['alg1.ja', { p: Math.round(p * 100) }]];
     if (h.algMonate) {
@@ -755,7 +758,7 @@ const Rules = (function () {
     if (h.arbeitSit !== 'krank') return mk(id, 'nein', 'vorausFehlt', [['krank.keine']]);
     if (h.krankWochen === 'ende') return mk(id, 'nein', 'vorausFehlt', [['krank.ende']]);
     // Minijob (bis 603 €): nicht krankenversichert über die Arbeit, daher kein Krankengeld (§ 7 SGB V, § 44 SGB V)
-    if (h.lohnVorher > 0 && h.lohnVorher <= R.minijob) return mk(id, 'nein', 'vorausFehlt', [['krank.minijob']]);
+    if (h.lohnVorher > 0 && h.lohnVorher <= h.minijob) return mk(id, 'nein', 'vorausFehlt', [['krank.minijob']]);
     const tx = [[h.krankWochen === 'unter6' ? 'krank.lfz' : 'krank.ja']];
     if (h.lohnVorher > 0) {
       const b = Math.min(h.lohnVorher, R.krank.bbg);

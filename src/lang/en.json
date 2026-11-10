@@ -739,7 +739,7 @@
   "t.ggeld.gemischt": "If one person has reached retirement age or is fully unable to work, the Sozialamt is responsible for them. If the other person can work, they and the children belong to the Jobcenter (mixed household). Have both checked.",
   "t.krank.minijob": "A mini-job (up to 603 € a month) does not include health insurance through work. It gives no Krankengeld.",
   "t.alg1.minijob": "A mini-job (up to 603 € a month) is not unemployment-insured and does not count for unemployment benefit. Earlier jobs with higher pay can count.",
-  "alt.hinweis": "Note: The rules in this version are as of {stand}. Amounts may have changed since 1 January. Please update the app.",
+  "alt.hinweis": "Note: The rules in this version are as of {stand}. For 2027 only the new minijob limit (633 €) has been added so far. Kindergeld, standard rates, Wohngeld and other amounts may have changed on 1 January. Please update the app.",
   "cb.teilhabe": "Gets help for school, training or job preparation because of the disability (e.g. vocational training centre, school assistant). Not: workshop.",
   "bhWeitere.label": "Other people in the household with a severe disability",
   "bhWeitere.hint": "Only those with GdB 100, or GdB from 50 and a care level. Important for Wohngeld and the Wohnberechtigungsschein.",

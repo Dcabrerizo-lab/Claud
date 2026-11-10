@@ -739,7 +739,7 @@
   "t.ggeld.gemischt": "Ist eine Person im Rentenalter oder voll erwerbsgemindert, ist für sie das Sozialamt zuständig. Kann die andere Person arbeiten, gehört sie mit den Kindern zum Jobcenter (gemischte Bedarfsgemeinschaft). Lass beides prüfen.",
   "t.krank.minijob": "Ein Minijob (bis 603 € im Monat) ist nicht krankenversichert über die Arbeit. Daraus gibt es kein Krankengeld.",
   "t.alg1.minijob": "Ein Minijob (bis 603 € im Monat) ist nicht arbeitslosenversichert und zählt nicht für das Arbeitslosengeld. Zählen können frühere Stellen mit höherem Lohn.",
-  "alt.hinweis": "Achtung: Die Regeln dieser Version haben den Stand {stand}. Seit dem 1. Januar können sich Beträge geändert haben. Bitte die App aktualisieren.",
+  "alt.hinweis": "Achtung: Die Regeln dieser Version haben den Stand {stand}. Für 2027 ist bisher nur die neue Minijob-Grenze (633 €) eingearbeitet. Kindergeld, Regelsätze, Wohngeld und andere Beträge können sich zum 1. Januar geändert haben. Bitte die App aktualisieren.",
   "cb.teilhabe": "Bekommt wegen der Behinderung Hilfe für Schule, Ausbildung oder Berufsvorbereitung (z. B. Berufsbildungswerk, Schulbegleitung). Nicht: Werkstatt.",
   "bhWeitere.label": "Weitere Personen im Haushalt mit Schwerbehinderung",
   "bhWeitere.hint": "Nur wer GdB 100 hat, oder GdB ab 50 und einen Pflegegrad. Wichtig für Wohngeld und Wohnberechtigungsschein.",

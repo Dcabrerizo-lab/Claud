@@ -390,5 +390,11 @@ ck('[lpg-voraus] Landespflegegeld: Pflegegrad 1 nein, laufender Antrag möglich,
 ck('[kg-familiengeld] Bayern mit Kind: Hinweis Familiengeld 250 € / 300 €, Krippengeld bis 100 € (nur Geburten bis 2024); nicht in anderen Ländern', T({ kids: 1, bundesland: 'BY' }, 'kindergeld', 'kindergeld.familiengeld').betrag === E(250) && T({ kids: 1, bundesland: 'BY' }, 'kindergeld', 'kindergeld.familiengeld').ab3 === E(300) && !K({ kids: 1, bundesland: 'NW' }, 'kindergeld').includes('kindergeld.familiengeld') && !K({ young: 1, bundesland: 'BY' }, 'kindergeld').includes('kindergeld.familiengeld'));
 ck('[sb-gl] Merkzeichen Gl: Hinweis Gehörlosengeld und Freifahrt-Hinweis, auch aus der einfachen Version (mz.Gl)', K({ gdb: '80', bhPerson: 'erwNach25', mzGl: true }, 'ausweis').includes('ausweis.gl') && K({ gdb: '80', bhPerson: 'erwNach25', mzGl: true }, 'ausweis').includes('ausweis.g') && K({ gdb: '80', bhPerson: 'erwNach25', mz: { Gl: true } }, 'ausweis').includes('ausweis.gl') && !K({ gdb: '80', bhPerson: 'erwNach25' }, 'ausweis').includes('ausweis.gl'));
 
+// ---------- Jahreswechsel 2027: Minijob-Grenze 633 € (Mindestlohn 14,60 €), automatisch ab 1.1.2027 ----------
+const kg620 = (heute) => L({ arbeitSit: 'krank', krankWochen: 'laeuft', lohnVorher: 620, heute }, 'krankengeld');
+ck('[minijob-2027] 620 € Lohn: 2026 versicherungspflichtig (Krankengeld), ab 2027 Minijob (kein Krankengeld)', kg620(2026.95) === 'ja' && kg620(2027.05) === 'nein');
+const az = (heute, kindEink) => A({ young: 1, art1: 'lohn', brutto: 1800, netto: 1400, miete: 600, vermoegen: 0, kindEink, heute }, 'ggeld');
+ck('[minijob-2027] Ausbildungsvergütung 620 €: 2026 zählen 17 €, ab 2027 ganz frei', az(2026.95, 620) !== az(2026.95, 0) && az(2027.05, 620) === az(2027.05, 0));
+
 console.log(fails ? '\n' + fails + ' von ' + n + ' FEHLGESCHLAGEN' : '\nFall-Tests bestanden: ' + n + ' Prüfungen');
 process.exit(fails ? 1 : 0);
