@@ -56,7 +56,7 @@ const Behoerden = (function () {
     if (ags && !has(D.kreise, ags) && D.de && has(D.de.kreise, ags)) {
       var e = D.de.kreise[ags];
       if (z.typ !== 'kreis' || (e.typ !== 'stadt' && id !== 'gsa')) return null;
-      return { name: e.name, abt: z.abt, anschrift: null, haus: null, web: e.web || '', quelle: 'Wikidata', stand: '' };
+      return { name: e.name, abt: z.abt, anschrift: e.anschrift || null, haus: null, web: e.web || '', quelle: e.quelle || 'Wikidata', stand: e.stand || '' };
     }
     if (!ags || !has(D.kreise, ags)) return null;
     var rb = String(ags).slice(0, 3);

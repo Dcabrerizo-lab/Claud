@@ -19,6 +19,12 @@ check('[beh-de] Landkreis (Kreis Mettmann): nur Grundsicherung im Alter, kein Wo
 check('[beh-de] Berlin und Hamburg: keine Stadt-Angabe (dort die Bezirksämter)', bd('wohngeld', '11000') === null && bd('wohngeld', '02000') === null);
 check('[beh-de] Landkreis und Stadt Leipzig getrennt', bd('wohngeld', '14713').name === 'Stadt Leipzig' && bd('wohngeld', '14729') === null && bd('gsa', '14729').name === 'Landkreis Leipzig');
 check('[beh-de] Alle Kreise außerhalb Bayerns (außer Berlin, Hamburg) mit Website, 79 kreisfreie Städte', P.kreise.filter((k) => !/^(09|11|02)/.test(k.ags)).every((k) => DE.kreise[k.ags] && /^https?:\/\//.test(DE.kreise[k.ags].web)) && Object.values(DE.kreise).filter((e) => e.typ === 'stadt').length === 79);
+{ // Anschrift aus dem Handy-Abruf (nur Beispiel im Speicher): erscheint mit Stand
+  const D2 = JSON.parse(JSON.stringify(D)); D2.de.kreise['05315'] = Object.assign({}, D2.de.kreise['05315'], { anschrift: ['Beispielplatz 1', '50667 Köln'], stand: '11.11.2026', quelle: 'https://example.org/impressum' });
+  Behoerden.init(D2);
+  check('[beh-de] Anschrift aus dem Handy-Abruf wird genutzt', JSON.stringify(Behoerden.fuer('wohngeld', '05315').anschrift) === JSON.stringify(['Beispielplatz 1', '50667 Köln']) && Behoerden.fuer('wohngeld', '05315').stand === '11.11.2026');
+  Behoerden.init(D);
+}
 check('[beh-de] Bayern unverändert: Erlangen-Höchstadt mit Anschrift', /Landratsamt/.test(bd('wohngeld', '09572').name) && !!bd('wohngeld', '09572').anschrift);
 
 // Vollständigkeit: jeder bayerische Kreis aus den PLZ-Daten hat eine Stelle
