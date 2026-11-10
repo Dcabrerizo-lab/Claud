@@ -79,6 +79,13 @@ const Rules = (function () {
     landBlind: { von: 350, bis: 950 },
     // Bayerisches Landespflegegeld (BayLPflGG): ab Pflegegrad 2, unabhängig vom Einkommen; ab dem Pflegegeldjahr 2026 500 € im Jahr (vorher 1.000 €)
     lpg: { betrag: 500, stand: '2026' },
+    // Mutterschaftsgeld (§ 19 MuSchG, § 24i SGB V): Krankenkasse höchstens 13 € je Kalendertag, Arbeitgeber zahlt den Unterschied
+    // zum bisherigen Netto (§ 20 MuSchG); nicht gesetzlich versicherte Arbeitnehmerinnen (auch Minijob, familienversichert):
+    // Bundesamt für Soziale Sicherung einmalig höchstens 210 €. Schutzfrist 6 Wochen vor, 8 (bei Früh- oder Mehrlingsgeburt 12) nach der Geburt
+    mutter: { tag: 13, bas: 210, vor: 6, nach: 8, nachLang: 12 },
+    // Kinderkrankengeld (§ 45 SGB V): 90 % des Nettos (höchstens 135,63 € am Tag); Arbeitstage je Kind und Elternteil:
+    // 2026 befristet 15 (Alleinerziehende 30), höchstens 35 (70); ab 2027 wieder 10 (20), höchstens 25 (50)
+    kkg: { 2026: { tage: 15, ae: 30, max: 35, maxAe: 70 }, 2027: { tage: 10, ae: 20, max: 25, maxAe: 50 }, satz: 90, hoechst: 135.63 },
     // Bayerisches Familiengeld (250 €, ab dem 3. Kind 300 € im Monat, 13. bis 36. Lebensmonat) und Krippengeld (bis 100 €, einkommensabhängig):
     // nur noch für Kinder, die bis 31.12.2024 geboren sind
     famgeld: { betrag: 250, ab3: 300, krippe: 100 },
@@ -256,7 +263,7 @@ const Rules = (function () {
       arbeitSit: inp.arbeitSit === 'arbeitslos' || inp.arbeitSit === 'krank' ? inp.arbeitSit : '',
       algZeit: !!inp.algZeit, algMonate: [12, 16, 20, 24, 30, 36, 48].indexOf(Number(inp.algMonate)) >= 0 ? Number(inp.algMonate) : 0,
       krankWochen: ['unter6', 'laeuft', 'ende'].indexOf(inp.krankWochen) >= 0 ? inp.krankWochen : '',
-      minijob: heute >= 2027 ? R.minijob2027 : R.minijob,
+      minijob: heute >= 2027 ? R.minijob2027 : R.minijob, heute,
       lohnVorher: num(inp.lohnVorher), alterJahre: jahr >= 1900 && jahr <= 2010 ? heute - jahr - 0.5 : 0,
       fehlt: { einkommen: !liste && blank(inp.brutto), netto: !liste && blank(inp.netto), vermoegen: blank(inp.vermoegen), miete: blank(inp.miete) && inp.wohnform !== 'heim' && inp.wohnform !== 'eltern' },
       adults, kids, kidsU6, kids14, young, persons, brutto, brutto2, erwerb: pers[0][0] === 'lohn' || (liste ? liste.some((x) => x[0] === 'lohn') : false), erwerb2: art2 === 'lohn', netto, nettoGiven, miete, vermoegen, unterhalt, regel, regelElt,
@@ -548,11 +555,13 @@ const Rules = (function () {
     if (h.kids === 0 && (h.ausbildung === 'kindBetrieb' || h.kindEink > 0)) return mk(id, 'nein', 'vorausFehlt', [['but.azubi']]);
     const inhalt = h.young === 0 && h.kids > 0 && h.kidsU6 === h.kids ? ['but.inhaltKlein', { teil: eur(R.but.teilhabeMonat) }] : ['but.inhalt', { schul: eur(R.but.schulbedarf), teil: eur(R.but.teilhabeMonat) }];
     if (h.bezug.grundsicherungsgeld || h.bezug.sozialamt || h.bezug.kiz || h.bezug.wohngeld) {
-      return mk(id, 'ja', 'ja', [['but.bezug'], inhalt]);
+      return mk(id, 'ja', 'ja', [['but.bezug'], inhalt].concat(h.kidsU6 > 0 ? [['but.kita']] : []));
     }
-    if (wg.level === 'ja' || kz.level === 'ja' || gg.level === 'ja') return mk(id, 'ja', 'butFolgt', [['but.folgt'], inhalt]);
+    // § 90 Abs. 4 SGB VIII: Kita und Tagespflege ohne Kostenbeitrag bei Grundsicherung, Wohngeld, Kinderzuschlag, Asylbewerberleistungen
+    const kita = h.kidsU6 > 0 ? [['but.kita']] : [];
+    if (wg.level === 'ja' || kz.level === 'ja' || gg.level === 'ja') return mk(id, 'ja', 'butFolgt', [['but.folgt'], inhalt].concat(kita));
     if (wg.level === 'vielleicht' || kz.level === 'vielleicht' || gg.level === 'vielleicht') {
-      return mk(id, 'vielleicht', 'butMoeglich', [['but.moeglich'], inhalt]);
+      return mk(id, 'vielleicht', 'butMoeglich', [['but.moeglich'], inhalt].concat(kita));
     }
     return mk(id, 'nein', 'vorausFehlt', [['but.fehlt']]);
   }
@@ -805,6 +814,32 @@ const Rules = (function () {
     return mk(id, 'vielleicht', 'vielleicht', [[h.netto <= grenze ? 'hzp.unter' : 'hzp.ueber', { grenze: eur(grenze) }], ['hzp.heim']]);
   }
 
+  // Mutterschaftsgeld: für angestellte (auch Minijob) oder arbeitslose Schwangere in der Schutzfrist
+  function mutterschaftsgeld(h) {
+    const id = 'mutter';
+    if (!h.baby) return mk(id, 'nein', 'vorausFehlt', [['mu.keine']]);
+    const pers = h.pers || [];
+    const lohn = pers.filter((x) => x[0] === 'lohn' && x[1] > 0), alg = pers.some((x) => x[0] === 'alg' && x[1] > 0);
+    if (!lohn.length && !alg) return mk(id, 'nein', 'vorausFehlt', [['mu.ohne']]);
+    const M = R.mutter, p = { tag: eur(M.tag), bas: eur(M.bas), vor: M.vor, nach: M.nach, nachLang: M.nachLang };
+    const tx = [[alg && !lohn.length ? 'mu.alg' : 'mu.lohn', p]];
+    if (lohn.some((x) => x[1] <= h.minijob)) tx.push(['mu.minijob', p]);
+    tx.push(['mu.frist', p]);
+    if (h.baby === 'da') return mk(id, 'vielleicht', 'vielleicht', [['mu.da', p]].concat(tx));
+    // Bei zwei Erwachsenen weiß die App nicht, wer schwanger ist und wer das Einkommen hat
+    return h.adults === 1 ? mk(id, 'ja', 'ja', tx) : mk(id, 'vielleicht', 'vielleicht', tx.concat([['mu.wer']]));
+  }
+
+  // Kinderkrankengeld: Eltern mit Arbeitseinkommen, Kind unter 12 krank (Alter der Kinder unbekannt, daher „möglich“)
+  function kinderkrankengeld(h) {
+    const id = 'kkg';
+    if (h.kids === 0) return mk(id, 'nein', 'keinKind', [['kkg.keine']]);
+    const pers = h.pers || [];
+    if (!pers.some((x) => x[0] === 'lohn' && x[1] > h.minijob)) return mk(id, 'nein', 'vorausFehlt', [['kkg.ohne']]);
+    const T = h.heute >= 2027 ? R.kkg[2027] : R.kkg[2026];
+    return mk(id, 'vielleicht', 'vielleicht', [[h.alleinerz ? 'kkg.ae' : 'kkg.ja', { tage: h.alleinerz ? T.ae : T.tage, max: h.alleinerz ? T.maxAe : T.max, satz: R.kkg.satz, hoechst: eur2(R.kkg.hoechst) }], ['kkg.hinweis']]);
+  }
+
   // Bayerisches Landespflegegeld (BayLPflGG): Pflegegrad 2 bis 5, Hauptwohnsitz Bayern, einkommensunabhängig, Antrag beim Landesamt für Pflege
   function landespflegegeld(h) {
     const id = 'lpg';
@@ -1026,7 +1061,7 @@ const Rules = (function () {
     eingl: 'Eingliederungshilfe', pausch: 'Behinderten-Pauschbetrag', ausweis: 'Schwerbehindertenausweis und Nachteilsausgleiche',
     blindengeld: 'Landesblindengeld', pflegeplus: 'Verhinderungspflege und Pflegehilfsmittel', arbeit: 'Budget für Arbeit',
     rundfunk: 'Befreiung vom Rundfunkbeitrag', zuzahl: 'Befreiung von Zuzahlungen', bab: 'Berufsausbildungsbeihilfe',
-    wbs: 'Wohnberechtigungsschein', alg1: 'Arbeitslosengeld I', krankengeld: 'Krankengeld', srente: 'Altersrente für schwerbehinderte Menschen', elterngeld: 'Elterngeld', hzp: 'Hilfe zur Pflege', lpg: 'Landespflegegeld (Bayern)', blh: 'Blindenhilfe (Sozialhilfe)', asylblg: 'Asylbewerberleistungen'
+    wbs: 'Wohnberechtigungsschein', alg1: 'Arbeitslosengeld I', krankengeld: 'Krankengeld', srente: 'Altersrente für schwerbehinderte Menschen', elterngeld: 'Elterngeld', hzp: 'Hilfe zur Pflege', lpg: 'Landespflegegeld (Bayern)', mutter: 'Mutterschaftsgeld', kkg: 'Kinderkrankengeld', blh: 'Blindenhilfe (Sozialhilfe)', asylblg: 'Asylbewerberleistungen'
   };
   // Unterlagen der neuen Karten: gemeinsame Schlüssel (u.*), damit nicht jede Karte eigene Texte braucht
   const NEWSTEPS = {
@@ -1037,7 +1072,7 @@ const Rules = (function () {
     zuzahl: ['u.versichertenkarte', 'u.quittungen', 'u.einkommen'], bab: ['u.ausbildungsvertrag', 'u.einkommen', 'u.mietvertrag'],
     wbs: ['u.einkommen', 'u.ausweis', 'u.haushalt'],
     srente: ['u.ausweis', 'u.arzt', 'u.rentenverlauf'],
-    elterngeld: ['u.geburtsurkunde', 'u.lohnabrechnung', 'u.steuerid'], hzp: ['u.pflegebescheid', 'u.einkommen', 'u.kosten'], lpg: ['u.pflegebescheid', 'u.ausweis', 'u.bescheide'], blh: ['u.ausweis', 'u.bescheide', 'u.einkommen'], asylblg: ['u.ausweis', 'u.aufenthalt', 'u.einkommen'],
+    elterngeld: ['u.geburtsurkunde', 'u.lohnabrechnung', 'u.steuerid'], hzp: ['u.pflegebescheid', 'u.einkommen', 'u.kosten'], lpg: ['u.pflegebescheid', 'u.ausweis', 'u.bescheide'], mutter: ['u.arzt', 'u.versichertenkarte', 'u.lohnabrechnung'], kkg: ['u.arzt', 'u.versichertenkarte', 'u.lohnabrechnung'], blh: ['u.ausweis', 'u.bescheide', 'u.einkommen'], asylblg: ['u.ausweis', 'u.aufenthalt', 'u.einkommen'],
     alg1: ['u.ausweis', 'u.kuendigung', 'u.lohnabrechnung'], krankengeld: ['u.au', 'u.versichertenkarte', 'u.lohnabrechnung']
   };
   const STEPS = {};
@@ -1115,7 +1150,7 @@ const Rules = (function () {
     const baf = bafoeg(h);
     const pf = pflege(h);
     const results = [kg, wg, kz, gg, but, uvg, gsa, baf, pf,
-      alg1(h), krankengeld(h), elterngeld(h), hilfeZurPflege(h), landespflegegeld(h), asylbewerber(h), kindergeldBeh(h), erwerbsminderungsrente(h), schwerbRente(h), eingliederungshilfe(h), pauschbetrag(h), ausweis(h), blindengeld(h), blindenhilfe(h),
+      alg1(h), krankengeld(h), elterngeld(h), mutterschaftsgeld(h), kinderkrankengeld(h), hilfeZurPflege(h), landespflegegeld(h), asylbewerber(h), kindergeldBeh(h), erwerbsminderungsrente(h), schwerbRente(h), eingliederungshilfe(h), pauschbetrag(h), ausweis(h), blindengeld(h), blindenhilfe(h),
       pflegeplus(h), budgetArbeit(h), rundfunk(h, gg, gsa), zuzahlung(h), bab(h), wbs(h)].map(angabeFehlt(h)).map((x, i) => ({ ...x, name: NAMES[x.id], order: i, steps: STEPS[x.id] }));
     const sorted = results.slice().sort((a, b) => ORDER[a.level] - ORDER[b.level] || a.order - b.order);
     return { h, results: sorted, zusammen: zusammenspiel(h, results) };
