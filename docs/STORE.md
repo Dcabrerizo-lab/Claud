@@ -75,7 +75,7 @@ Fertige Bilder (7 Motive in allen drei Formaten, Werbegrafik, Symbol 512 × 512)
 Ursprünglicher Vorschlag für die Motive:
 
 1. Fragebogen mit Beispiel: „In zwei Minuten zum Überblick“
-2. Ergebnis mit grünen Karten: „28 Leistungen geprüft“
+2. Ergebnis mit grünen Karten: „31 Leistungen geprüft“
 3. Karte aufgeklappt (Wo beantragen, Unterlagen): „Nächste Schritte und Unterlagen“
 4. Antragsmappe: „Formlose Anträge als PDF“
 5. Sprache Arabisch oder Türkisch: „In 8 Sprachen“

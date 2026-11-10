@@ -1,4 +1,4 @@
-# Prüfbericht (Stand 8. November 2026)
+# Prüfbericht (Stand 11. November 2026)
 
 Gründliche Durchsicht aus zwei Blickwinkeln: fachlich (Sozialrecht) und technisch. Grundlage ist der Code in `src/`.
 Eine Prüfung durch eine Sozialberatung oder eine Fachanwältin ersetzt dieser Bericht nicht. Er soll sie erleichtern.
@@ -34,6 +34,16 @@ Eine Prüfung durch eine Sozialberatung oder eine Fachanwältin ersetzt dieser B
 - **Fahrtkostenpauschale bei Merkzeichen aG:** 4.500 € statt 900 €.
 - **Neue Karten:** Elterngeld (Höhe nach § 2 BEEG mit Ersatzrate, 300 bis 1.800 €, ElterngeldPlus), Hilfe zur Pflege (Einkommensgrenze § 85 SGB XII), Blindenhilfe (§ 72 SGB XII, ergänzend zum Landesblindengeld) und Asylbewerberleistungen. Wer im Asylverfahren ist oder eine Duldung hat, bekommt kein Grundsicherungsgeld, keine Grundsicherung im Alter, kein Wohngeld und keinen Kinderzuschlag mehr angezeigt.
 - **Veraltete Regeln:** Ab dem 1.1.2027 zeigt die App einen deutlichen Hinweis, bis sie aktualisiert ist.
+
+## Nachtarbeit 10./11. November 2026
+
+- **Werte 2027 mit automatischem Umschalten:** Ab dem 1.1.2027 rechnet die App mit der Minijob-Grenze 633 € (Mindestlohn 14,60 € × 130 / 3, § 8 Abs. 1a SGB IV) und mit den regulären Kinderkrankentagen (10 je Kind und Elternteil, 20 für Alleinerziehende, höchstens 25 / 50, § 45 Abs. 2 SGB V). Die Sonderregel 15 / 30 (35 / 70) gilt nur bis 31.12.2026. Der Hinweis „Regeln veraltet“ nennt diese Werte ab 2027 als schon angepasst.
+- **Neue Karte Mutterschaftsgeld:** 13 € je Tag von der Krankenkasse plus Arbeitgeberzuschuss bis zum Nettolohn; privat oder familienversichert höchstens 210 € einmalig vom Bundesamt für Soziale Sicherung; bei Arbeitslosengeld in Höhe des Arbeitslosengeldes; Schutzfristen 6 Wochen vor, 8 (12) Wochen nach der Geburt (§ 19 MuSchG, § 24i SGB V).
+- **Neue Karte Kinderkrankengeld:** 90 % des ausgefallenen Nettos, höchstens 135,63 € je Tag (70 % der Beitragsbemessungsgrenze 2026), Tage wie oben (§ 45 SGB V).
+- **Bildung und Teilhabe:** Hinweis, dass die Kita bei Grundsicherungsgeld, Wohngeld oder Kinderzuschlag beitragsfrei ist (§ 90 Abs. 4 SGB VIII).
+- **Geräte-Tests auf GitHub:** Die echte APK wird im Android-Emulator (Android 8, 11 und 15) installiert, gestartet und auf Abstürze und JavaScript-Fehler geprüft; die iOS-App wird für den Simulator gebaut.
+- **Mutationstest:** 39 absichtlich eingebaute Fehler, alle entdeckt. Der zuerst nicht entdeckte Fehler (Kita-Hinweis auch ohne kleine Kinder) hat einen neuen Test bekommen.
+- **Noch offen für 2027:** Die Beitragsbemessungsgrenze der Krankenversicherung 2027 (6.375 € im Monat) ist vom Kabinett beschlossen, aber noch nicht vom Bundesrat. Sie ändert nur den Höchstbetrag beim Kranken- und Kinderkrankengeld für hohe Einkommen (2027 dann 148,75 € je Tag). Nach der Verkündung eintragen. Ebenso prüfen, ob der Bundestag die 15 Kinderkrankentage doch verlängert.
 
 ## Absicherung gegen fehlende Regeln
 

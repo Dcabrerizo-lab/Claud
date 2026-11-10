@@ -56,13 +56,13 @@ Google stellt nach den 14 Tagen Fragen zum Test. **Die Platzhalter in [eckigen K
 > Für Menschen in Deutschland, die wissen möchten, welche Sozialleistungen ihnen zustehen könnten, z. B. Familien mit kleinem Einkommen, Alleinerziehende, Rentnerinnen und Rentner, Menschen mit Behinderung und pflegende Angehörige. Es gibt eine einfache Version für Menschen mit Lernschwierigkeiten und 8 Sprachen.
 
 **Welchen Nutzen bietet die App?**
-> Viele Menschen beantragen Leistungen nicht, weil sie nicht wissen, dass sie Anspruch haben. Die App prüft 28 Leistungen in zwei Minuten, nennt die zuständige Stelle und die Unterlagen und schreibt formlose Anträge. Sie läuft vollständig offline, ohne Konto, ohne Werbung und ohne Datenübertragung. Sie ist eine Orientierung und keine Behörden-App.
+> Viele Menschen beantragen Leistungen nicht, weil sie nicht wissen, dass sie Anspruch haben. Die App prüft 31 Leistungen in zwei Minuten, nennt die zuständige Stelle und die Unterlagen und schreibt formlose Anträge. Sie läuft vollständig offline, ohne Konto, ohne Werbung und ohne Datenübertragung. Sie ist eine Orientierung und keine Behörden-App.
 
 **Wie viele Installationen erwarten Sie im ersten Jahr?**
 > [Realistische Schätzung, z. B. 1.000 bis 10.000.]
 
 **Woran haben Sie erkannt, dass die App bereit ist?**
-> Die Rechenregeln sind gegen eine Prüfliste vom Gesetz her mit über 1.000 automatischen Prüfungen und einer unabhängigen Vergleichsrechnung über mehr als 160.000 Haushalte getestet. Dazu kommen Barrierefreiheitstests (WCAG 2.1 AA) und der geschlossene Test ohne offene Fehler. [Falls zutreffend: Eine Sozialberatung hat die Ergebnisse gegengelesen.]
+> Die Rechenregeln sind gegen eine Prüfliste vom Gesetz her mit über 1.000 automatischen Prüfungen und einer unabhängigen Vergleichsrechnung über 3 Millionen Zufallshaushalte getestet. Dazu kommen Barrierefreiheitstests (WCAG 2.1 AA) und der geschlossene Test ohne offene Fehler. [Falls zutreffend: Eine Sozialberatung hat die Ergebnisse gegengelesen.]
 
 ## 4. Danach
 
