@@ -51,6 +51,13 @@ const Behoerden = (function () {
     if (!D || !has(ZUST, id)) return null;
     var z = ZUST[id];
     if (z.typ === 'fest') return stelle(D.fest && D.fest[z.key], '');
+    // Außerhalb Bayerns (Daten „de“, ohne Anschrift): kreisfreie Städte für alle Leistungen der Kreisebene,
+    // Landkreise nur für die Grundsicherung im Alter (Wohngeld und Jugendamt liegen dort teils bei Gemeinden)
+    if (ags && !has(D.kreise, ags) && D.de && has(D.de.kreise, ags)) {
+      var e = D.de.kreise[ags];
+      if (z.typ !== 'kreis' || (e.typ !== 'stadt' && id !== 'gsa')) return null;
+      return { name: e.name, abt: z.abt, anschrift: null, haus: null, web: e.web || '', quelle: 'Wikidata', stand: '' };
+    }
     if (!ags || !has(D.kreise, ags)) return null;
     var rb = String(ags).slice(0, 3);
     if (z.typ === 'kreis') return stelle(D.kreise[ags], z.abt);

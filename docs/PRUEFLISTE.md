@@ -302,6 +302,8 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Regel | Status | Test |
 |---|---|---|
 | Versorgungsamt, Elterngeldstelle, Träger der Eingliederungshilfe und Stelle für das Landesblindengeld je Land (ohne Anschrift), sonst allgemeine Angabe | ◐ | `zust-land` |
+| Kreisebene außerhalb Bayerns: kreisfreie Städte (außer Berlin, Hamburg) mit Name und offizieller Website für Wohngeld, Grundsicherung, Unterhaltsvorschuss, Bildung und Teilhabe, Asyl; Landkreise nur für Grundsicherung im Alter | ✓ | `beh-de` |
+| Postanschriften außerhalb Bayerns | ○ (noch nicht hinterlegt; die Karte verweist auf die Website der Behörde) | |
 | Einzelne Zuständigkeiten (z. B. Thüringen, Niedersachsen, Schleswig-Holstein beim Blindengeld) | ○ (nicht sicher bestätigt, daher die allgemeine Angabe; bitte von Fachleuten prüfen lassen) | |
 
 ## Leistungen, die die App (noch) nicht prüft

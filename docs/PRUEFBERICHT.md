@@ -66,6 +66,8 @@ Weitere Tests (laufen ebenfalls bei jedem `npm test`):
 
 **Mietenstufen für ganz Deutschland (Phase 3a):** Jede Postleitzahl bekommt jetzt Kreis und Mietenstufe aus der Anlage zur Wohngeldverordnung, nicht mehr nur in Bayern. Nicht eindeutige Orte (etwa 7 % außerhalb Bayerns) bleiben ohne Stufe, dann fragt die App nach und rechnet vorsichtig. Eine unabhängig geschriebene Gegenprüfung hat alle 13.386 zugeordneten Einträge mit der Verordnung verglichen: 0 Abweichungen. Dabei gefunden und behoben: Landkreis und gleichnamige kreisfreie Stadt (Leipzig) wurden zunächst verwechselt.
 
+**Stellen außerhalb Bayerns (Phase 3b):** Für alle 79 kreisfreien Städte außerhalb Bayerns (ohne Berlin und Hamburg) nennt die App die Stadt mit ihrer offiziellen Website (Wikidata, CC0) bei Wohngeld, Grundsicherung, Unterhaltsvorschuss, Bildung und Teilhabe und Asyl; bei Landkreisen nur für die Grundsicherung im Alter, weil Wohngeld und Jugendamt dort teils bei den Gemeinden liegen. Postanschriften außerhalb Bayerns fehlen noch (Wikidata führt sie nur für 10 von 304 Kreisen).
+
 Was keine Sicherung leisten kann: Die Prüfliste ist nur so vollständig wie das Wissen, mit dem sie geschrieben ist. Eine Fachperson sollte sie vor der Veröffentlichung einmal gegenlesen. Die Punkte mit ○ (zum Beispiel Freibetrag für Azubis über der Minijob-Grenze, Höhe der Blindenhilfe, Zuständigkeit Bezirk) sind dafür markiert.
 
 ## Fachlich: bekannte Grenzen (bewusst so gelöst)

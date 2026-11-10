@@ -20,7 +20,15 @@ function i18nSource() {
 // Optional: PLZ-Daten (content/plz-data.json). Fehlen sie, bleibt das PLZ-Feld ausgeblendet.
 function plzData() { return jsonData('plz-data.json'); }
 // Optional: Behördenverzeichnis Bayern (content/behoerden-bayern.json). Fehlt es, nennt die App nur die Art der Stelle.
-function behoerdenData() { return jsonData('behoerden-bayern.json'); }
+// Dazu Stellen außerhalb Bayerns (content/behoerden-deutschland.json: Name und Website, noch ohne Anschrift) als Feld „de“.
+function behoerdenData() {
+  const by = jsonData('behoerden-bayern.json');
+  if (by === 'null') return by;
+  const o = JSON.parse(by);
+  const de = jsonData('behoerden-deutschland.json');
+  if (de !== 'null') o.de = JSON.parse(de);
+  return JSON.stringify(o);
+}
 function jsonData(name) {
   const f = path.join(ROOT, 'content', name);
   return fs.existsSync(f) ? JSON.stringify(JSON.parse(fs.readFileSync(f, 'utf8'))) : 'null';

@@ -63,6 +63,8 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
   await fillNum('plz', '50667');
   const pz = await p.evaluate(() => ({ bl: document.getElementById('bundesland').value, st: document.getElementById('mietstufe').value }));
   ok('PLZ 50667 (Köln): Bundesland NW und Mietenstufe 6 automatisch', pz.bl === 'NW' && pz.st === '6', JSON.stringify(pz));
+  c = await card('Grundsicherung im Alter und bei voller Erwerbsminderung');
+  ok('PLZ 50667: zuständige Stelle Stadt Köln mit Website-Link', c && /Stadt Köln/.test(c.zust) && await p.evaluate(() => [...document.querySelectorAll('#cards .zust a')].some((a) => /stadt-koeln\.de/.test(a.href))), c && c.zust);
   await fillNum('plz', '04109');
   const pl = await p.evaluate(() => ({ bl: document.getElementById('bundesland').value, st: document.getElementById('mietstufe').value }));
   ok('PLZ 04109 (Stadt Leipzig): Sachsen, Mietenstufe 2', pl.bl === 'SN' && pl.st === '2', JSON.stringify(pl));

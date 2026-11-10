@@ -9,7 +9,17 @@ const check = (name, c, x) => { n++; if (!c) { fails++; console.log('FAIL', name
 
 const D = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'content', 'behoerden-bayern.json'), 'utf8'));
 const P = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'content', 'plz-data.json'), 'utf8'));
+const DE = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'content', 'behoerden-deutschland.json'), 'utf8'));
+D.de = DE; // wie im Build (scripts/build.js)
 check('Daten werden angenommen', Behoerden.init(D) && Behoerden.available() && Plz.init(P));
+// Außerhalb Bayerns: Name und Website, keine Anschrift; nur gesicherte Zuständigkeiten
+const bd = (id, a) => Behoerden.fuer(id, a);
+check('[beh-de] Köln (kreisfreie Stadt): Wohngeld, Grundsicherung, Unterhaltsvorschuss bei der Stadt Köln mit Website, ohne Anschrift', bd('wohngeld', '05315').name === 'Stadt Köln' && /stadt-koeln\.de/.test(bd('wohngeld', '05315').web) && bd('wohngeld', '05315').anschrift === null && bd('gsa', '05315').name === 'Stadt Köln' && bd('uvg', '05315').name === 'Stadt Köln');
+check('[beh-de] Landkreis (Kreis Mettmann): nur Grundsicherung im Alter, kein Wohngeld und kein Jugendamt (liegen teils bei Gemeinden)', bd('gsa', '05158').name === 'Kreis Mettmann' && bd('wohngeld', '05158') === null && bd('uvg', '05158') === null);
+check('[beh-de] Berlin und Hamburg: keine Stadt-Angabe (dort die Bezirksämter)', bd('wohngeld', '11000') === null && bd('wohngeld', '02000') === null);
+check('[beh-de] Landkreis und Stadt Leipzig getrennt', bd('wohngeld', '14713').name === 'Stadt Leipzig' && bd('wohngeld', '14729') === null && bd('gsa', '14729').name === 'Landkreis Leipzig');
+check('[beh-de] Alle Kreise außerhalb Bayerns (außer Berlin, Hamburg) mit Website, 79 kreisfreie Städte', P.kreise.filter((k) => !/^(09|11|02)/.test(k.ags)).every((k) => DE.kreise[k.ags] && /^https?:\/\//.test(DE.kreise[k.ags].web)) && Object.values(DE.kreise).filter((e) => e.typ === 'stadt').length === 79);
+check('[beh-de] Bayern unverändert: Erlangen-Höchstadt mit Anschrift', /Landratsamt/.test(bd('wohngeld', '09572').name) && !!bd('wohngeld', '09572').anschrift);
 
 // Vollständigkeit: jeder bayerische Kreis aus den PLZ-Daten hat eine Stelle
 const ags = P.kreise.map((k) => k.ags).filter((a) => a.startsWith('09')); // Anschriften gibt es (noch) nur für Bayern
@@ -67,7 +77,7 @@ check('Eingliederungshilfe Würzburg -> Bezirk Unterfranken', b('eingl', '09663'
 check('Budget für Arbeit Augsburg -> Bezirk Schwaben', b('arbeit', '09761').name === 'Bezirk Schwaben');
 check('7 Bezirke und 7 ZBFS-Regionalstellen mit Anschrift', Object.keys(D.bezirke).length === 7 && Object.keys(D.zbfs).length === 7 && Object.values(D.bezirke).concat(Object.values(D.zbfs)).every((x) => x.anschrift && x.quelle));
 check('Besucheranschrift nur, wenn sie von der Postanschrift abweicht', b('eingl', '09162').haus && b('eingl', '09162').haus.join(', ') === 'Prinzregentenstr. 14, 80538 München' && b('wohngeld', '09572').haus === null);
-check('ohne Kreis (z. B. außerhalb Bayerns) -> null', b('wohngeld', null) === null && b('wohngeld', '') === null && b('wohngeld', '05315') === null);
+check('ohne Kreis -> null; Kreis außerhalb Bayerns ohne Eintrag (Berlin) -> null', b('wohngeld', null) === null && b('wohngeld', '') === null && b('wohngeld', '11000') === null);
 check('Kreis ohne belegte Anschrift: Name und Website, keine Anschrift', (() => { const x = ags.find((a) => !D.kreise[a].anschrift); return !x || (b('wohngeld', x).anschrift === null && b('wohngeld', x).web); })());
 
 // Zusammenspiel mit der PLZ: Postleitzahl -> Kreis -> Stelle

@@ -1,0 +1,1515 @@
+{
+ "stand": "Website laut Wikidata (CC0), abgerufen 10.11.2026; Anschriften außerhalb Bayerns noch nicht hinterlegt",
+ "kreise": {
+  "10041": {
+   "name": "Regionalverband Saarbrücken",
+   "web": "https://www.regionalverband-saarbruecken.de/",
+   "typ": "kreis"
+  },
+  "10042": {
+   "name": "Merzig-Wadern",
+   "web": "https://www.merzig-wadern.de/",
+   "typ": "kreis"
+  },
+  "10043": {
+   "name": "Neunkirchen",
+   "web": "https://www.landkreis-neunkirchen.de/",
+   "typ": "kreis"
+  },
+  "10044": {
+   "name": "Saarlouis",
+   "web": "https://www.kreis-saarlouis.de/",
+   "typ": "kreis"
+  },
+  "10045": {
+   "name": "Saarpfalz-Kreis",
+   "web": "https://www.saarpfalz-kreis.de/",
+   "typ": "kreis"
+  },
+  "10046": {
+   "name": "St. Wendel",
+   "web": "https://www.landkreis-st-wendel.de/",
+   "typ": "kreis"
+  },
+  "12051": {
+   "name": "Stadt Brandenburg an der Havel",
+   "web": "https://www.stadt-brandenburg.de/",
+   "typ": "stadt"
+  },
+  "12052": {
+   "name": "Stadt Cottbus",
+   "web": "https://www.cottbus.de/",
+   "typ": "stadt"
+  },
+  "12053": {
+   "name": "Stadt Frankfurt (Oder)",
+   "web": "https://www.frankfurt-oder.de/",
+   "typ": "stadt"
+  },
+  "12054": {
+   "name": "Stadt Potsdam",
+   "web": "https://www.potsdam.de/",
+   "typ": "stadt"
+  },
+  "12060": {
+   "name": "Landkreis Barnim",
+   "web": "https://www.barnim.de/",
+   "typ": "kreis"
+  },
+  "12061": {
+   "name": "Landkreis Dahme-Spreewald",
+   "web": "https://www.dahme-spreewald.info/",
+   "typ": "kreis"
+  },
+  "12062": {
+   "name": "Landkreis Elbe-Elster",
+   "web": "https://www.lkee.de/",
+   "typ": "kreis"
+  },
+  "12063": {
+   "name": "Landkreis Havelland",
+   "web": "https://www.havelland.de/",
+   "typ": "kreis"
+  },
+  "12064": {
+   "name": "Landkreis Märkisch-Oderland",
+   "web": "https://www.maerkisch-oderland.de/",
+   "typ": "kreis"
+  },
+  "12065": {
+   "name": "Landkreis Oberhavel",
+   "web": "https://www.oberhavel.de/",
+   "typ": "kreis"
+  },
+  "12066": {
+   "name": "Landkreis Oberspreewald-Lausitz",
+   "web": "https://www.osl-online.de/",
+   "typ": "kreis"
+  },
+  "12067": {
+   "name": "Landkreis Oder-Spree",
+   "web": "https://www.landkreis-oder-spree.de/",
+   "typ": "kreis"
+  },
+  "12068": {
+   "name": "Landkreis Ostprignitz-Ruppin",
+   "web": "https://www.ostprignitz-ruppin.de/",
+   "typ": "kreis"
+  },
+  "12069": {
+   "name": "Landkreis Potsdam-Mittelmark",
+   "web": "https://www.potsdam-mittelmark.de/",
+   "typ": "kreis"
+  },
+  "12070": {
+   "name": "Landkreis Prignitz",
+   "web": "https://landkreis-prignitz.de",
+   "typ": "kreis"
+  },
+  "12071": {
+   "name": "Landkreis Spree-Neiße",
+   "web": "https://www.lkspn.de/",
+   "typ": "kreis"
+  },
+  "12072": {
+   "name": "Landkreis Teltow-Fläming",
+   "web": "https://www.teltow-flaeming.de/",
+   "typ": "kreis"
+  },
+  "12073": {
+   "name": "Landkreis Uckermark",
+   "web": "https://www.uckermark.de/",
+   "typ": "kreis"
+  },
+  "13003": {
+   "name": "Stadt Rostock",
+   "web": "https://www.rostock.de/",
+   "typ": "stadt"
+  },
+  "13004": {
+   "name": "Stadt Schwerin",
+   "web": "https://www.schwerin.de/",
+   "typ": "stadt"
+  },
+  "13071": {
+   "name": "Mecklenburgische Seenplatte",
+   "web": "https://www.lk-mecklenburgische-seenplatte.de/",
+   "typ": "kreis"
+  },
+  "13072": {
+   "name": "Landkreis Rostock",
+   "web": "https://www.landkreis-rostock.de/",
+   "typ": "kreis"
+  },
+  "13073": {
+   "name": "Vorpommern-Rügen",
+   "web": "https://www.lk-vr.de/",
+   "typ": "kreis"
+  },
+  "13074": {
+   "name": "Nordwestmecklenburg",
+   "web": "https://www.nordwestmecklenburg.de/",
+   "typ": "kreis"
+  },
+  "13075": {
+   "name": "Vorpommern-Greifswald",
+   "web": "https://www.kreis-vg.de/",
+   "typ": "kreis"
+  },
+  "13076": {
+   "name": "Ludwigslust-Parchim",
+   "web": "https://www.kreis-lup.de/",
+   "typ": "kreis"
+  },
+  "14511": {
+   "name": "Stadt Chemnitz",
+   "web": "https://www.chemnitz.de/",
+   "typ": "stadt"
+  },
+  "14521": {
+   "name": "Erzgebirgskreis",
+   "web": "https://www.erzgebirgskreis.de/",
+   "typ": "kreis"
+  },
+  "14522": {
+   "name": "Landkreis Mittelsachsen",
+   "web": "https://www.landkreis-mittelsachsen.de/",
+   "typ": "kreis"
+  },
+  "14523": {
+   "name": "Vogtlandkreis",
+   "web": "https://www.vogtlandkreis.de/",
+   "typ": "kreis"
+  },
+  "14524": {
+   "name": "Zwickau",
+   "web": "https://www.landkreis-zwickau.de/",
+   "typ": "kreis"
+  },
+  "14612": {
+   "name": "Stadt Dresden",
+   "web": "https://www.dresden.de/",
+   "typ": "stadt"
+  },
+  "14625": {
+   "name": "Landkreis Bautzen",
+   "web": "https://www.landkreis-bautzen.de/",
+   "typ": "kreis"
+  },
+  "14626": {
+   "name": "Landkreis Görlitz",
+   "web": "https://www.kreis-goerlitz.de/",
+   "typ": "kreis"
+  },
+  "14627": {
+   "name": "Landkreis Meißen",
+   "web": "https://www.kreis-meissen.de/",
+   "typ": "kreis"
+  },
+  "14628": {
+   "name": "Landkreis Sächsische Schweiz",
+   "web": "https://www.landratsamt-pirna.de/",
+   "typ": "kreis"
+  },
+  "14713": {
+   "name": "Stadt Leipzig",
+   "web": "https://www.leipzig.de/",
+   "typ": "stadt"
+  },
+  "14729": {
+   "name": "Landkreis Leipzig",
+   "web": "https://www.landkreisleipzig.de/",
+   "typ": "kreis"
+  },
+  "14730": {
+   "name": "Landkreis Nordsachsen",
+   "web": "https://www.landkreis-nordsachsen.de/",
+   "typ": "kreis"
+  },
+  "15001": {
+   "name": "Stadt Dessau-Roßlau",
+   "web": "https://verwaltung.dessau-rosslau.de/",
+   "typ": "stadt"
+  },
+  "15002": {
+   "name": "Stadt Halle",
+   "web": "https://halle.de/",
+   "typ": "stadt"
+  },
+  "15003": {
+   "name": "Stadt Magdeburg",
+   "web": "https://www.magdeburg.de/",
+   "typ": "stadt"
+  },
+  "15081": {
+   "name": "Altmarkkreis Salzwedel",
+   "web": "https://www.altmarkkreis-salzwedel.de/",
+   "typ": "kreis"
+  },
+  "15082": {
+   "name": "Anhalt-Bitterfeld",
+   "web": "https://www.anhalt-bitterfeld.de/",
+   "typ": "kreis"
+  },
+  "15083": {
+   "name": "Börde",
+   "web": "https://www.landkreis-boerde.de/",
+   "typ": "kreis"
+  },
+  "15084": {
+   "name": "Burgenlandkreis",
+   "web": "https://www.burgenlandkreis.de/",
+   "typ": "kreis"
+  },
+  "15085": {
+   "name": "Landkreis Harz",
+   "web": "https://www.kreis-hz.de/",
+   "typ": "kreis"
+  },
+  "15086": {
+   "name": "Jerichower Land",
+   "web": "https://www.lkjl.de/",
+   "typ": "kreis"
+  },
+  "15087": {
+   "name": "Mansfeld-Südharz",
+   "web": "https://www.mansfeldsuedharz.de/",
+   "typ": "kreis"
+  },
+  "15088": {
+   "name": "Saalekreis",
+   "web": "https://www.saalekreis.de/",
+   "typ": "kreis"
+  },
+  "15089": {
+   "name": "Salzlandkreis",
+   "web": "https://www.salzlandkreis.de/",
+   "typ": "kreis"
+  },
+  "15090": {
+   "name": "Landkreis Stendal",
+   "web": "https://www.landkreis-stendal.de/",
+   "typ": "kreis"
+  },
+  "15091": {
+   "name": "Landkreis Wittenberg",
+   "web": "https://www.landkreis-wittenberg.de/",
+   "typ": "kreis"
+  },
+  "16051": {
+   "name": "Stadt Erfurt",
+   "web": "https://www.erfurt.de/",
+   "typ": "stadt"
+  },
+  "16052": {
+   "name": "Stadt Gera",
+   "web": "https://www.gera.de/",
+   "typ": "stadt"
+  },
+  "16053": {
+   "name": "Stadt Jena",
+   "web": "https://www.jena.de/",
+   "typ": "stadt"
+  },
+  "16054": {
+   "name": "Stadt Suhl",
+   "web": "https://www.suhl.eu/",
+   "typ": "stadt"
+  },
+  "16055": {
+   "name": "Stadt Weimar",
+   "web": "https://www.weimar.de/",
+   "typ": "stadt"
+  },
+  "16061": {
+   "name": "Eichsfeld",
+   "web": "https://www.kreis-eic.de/",
+   "typ": "kreis"
+  },
+  "16062": {
+   "name": "Landkreis Nordhausen",
+   "web": "https://landkreis-nordhausen.de/",
+   "typ": "kreis"
+  },
+  "16063": {
+   "name": "Wartburgkreis",
+   "web": "https://www.wartburgkreis.de/",
+   "typ": "kreis"
+  },
+  "16064": {
+   "name": "Unstrut-Hainich-Kreis",
+   "web": "https://www.unstrut-hainich-kreis.de/",
+   "typ": "kreis"
+  },
+  "16065": {
+   "name": "Kyffhäuserkreis",
+   "web": "https://www.kyffhaeuser.de/",
+   "typ": "kreis"
+  },
+  "16066": {
+   "name": "Landkreis Schmalkalden-Meiningen",
+   "web": "https://www.lra-sm.de/",
+   "typ": "kreis"
+  },
+  "16067": {
+   "name": "Landkreis Gotha",
+   "web": "https://www.landkreis-gotha.de/",
+   "typ": "kreis"
+  },
+  "16068": {
+   "name": "Landkreis Sömmerda",
+   "web": "https://www.lra-soemmerda.de/",
+   "typ": "kreis"
+  },
+  "16069": {
+   "name": "Landkreis Hildburghausen",
+   "web": "https://www.landkreis-hildburghausen.de/",
+   "typ": "kreis"
+  },
+  "16070": {
+   "name": "Ilm-Kreis",
+   "web": "https://www.ilm-kreis.de/",
+   "typ": "kreis"
+  },
+  "16071": {
+   "name": "Weimarer Land",
+   "web": "https://weimarerland.de/",
+   "typ": "kreis"
+  },
+  "16072": {
+   "name": "Landkreis Sonneberg",
+   "web": "https://www.kreis-sonneberg.de/",
+   "typ": "kreis"
+  },
+  "16073": {
+   "name": "Saalfeld-Rudolstadt",
+   "web": "https://www.kreis-slf.de/",
+   "typ": "kreis"
+  },
+  "16074": {
+   "name": "Saale-Holzland-Kreis",
+   "web": "https://www.saaleholzlandkreis.de/",
+   "typ": "kreis"
+  },
+  "16075": {
+   "name": "Saale-Orla-Kreis",
+   "web": "https://www.saale-orla-kreis.de/",
+   "typ": "kreis"
+  },
+  "16076": {
+   "name": "Landkreis Greiz",
+   "web": "https://www.landkreis-greiz.de/",
+   "typ": "kreis"
+  },
+  "16077": {
+   "name": "Altenburger Land",
+   "web": "https://www.altenburgerland.de/",
+   "typ": "kreis"
+  },
+  "08111": {
+   "name": "Stadt Stuttgart",
+   "web": "https://www.stuttgart.de/",
+   "typ": "stadt"
+  },
+  "08115": {
+   "name": "Landkreis Böblingen",
+   "web": "https://www.lrabb.de/",
+   "typ": "kreis"
+  },
+  "08116": {
+   "name": "Landkreis Esslingen",
+   "web": "https://www.landkreis-esslingen.de/",
+   "typ": "kreis"
+  },
+  "08117": {
+   "name": "Landkreis Göppingen",
+   "web": "https://www.landkreis-goeppingen.de/",
+   "typ": "kreis"
+  },
+  "08118": {
+   "name": "Landkreis Ludwigsburg",
+   "web": "https://www.landkreis-ludwigsburg.de/",
+   "typ": "kreis"
+  },
+  "08119": {
+   "name": "Rems-Murr-Kreis",
+   "web": "https://www.rems-murr-kreis.de/",
+   "typ": "kreis"
+  },
+  "08121": {
+   "name": "Stadt Heilbronn",
+   "web": "https://www.heilbronn.de/",
+   "typ": "stadt"
+  },
+  "08125": {
+   "name": "Landkreis Heilbronn",
+   "web": "https://www.landkreis-heilbronn.de/",
+   "typ": "kreis"
+  },
+  "08126": {
+   "name": "Hohenlohekreis",
+   "web": "https://www.hohenlohekreis.de/",
+   "typ": "kreis"
+  },
+  "08127": {
+   "name": "Landkreis Schwäbisch Hall",
+   "web": "https://www.lrasha.de/",
+   "typ": "kreis"
+  },
+  "08128": {
+   "name": "Main-Tauber-Kreis",
+   "web": "https://www.main-tauber-kreis.de/",
+   "typ": "kreis"
+  },
+  "08135": {
+   "name": "Landkreis Heidenheim",
+   "web": "http://www.landkreis-heidenheim.de",
+   "typ": "kreis"
+  },
+  "08136": {
+   "name": "Ostalbkreis",
+   "web": "https://www.ostalbkreis.de/",
+   "typ": "kreis"
+  },
+  "08211": {
+   "name": "Stadt Baden-Baden",
+   "web": "https://www.baden-baden.de/",
+   "typ": "stadt"
+  },
+  "08212": {
+   "name": "Stadt Karlsruhe",
+   "web": "https://www.karlsruhe.de/",
+   "typ": "stadt"
+  },
+  "08215": {
+   "name": "Landkreis Karlsruhe",
+   "web": "https://www.landkreis-karlsruhe.de/",
+   "typ": "kreis"
+  },
+  "08216": {
+   "name": "Landkreis Rastatt",
+   "web": "https://www.landkreis-rastatt.de/",
+   "typ": "kreis"
+  },
+  "08221": {
+   "name": "Stadt Heidelberg",
+   "web": "https://www.heidelberg.de/",
+   "typ": "stadt"
+  },
+  "08222": {
+   "name": "Stadt Mannheim",
+   "web": "https://www.mannheim.de/",
+   "typ": "stadt"
+  },
+  "08225": {
+   "name": "Neckar-Odenwald-Kreis",
+   "web": "http://www.neckar-odenwald-kreis.de",
+   "typ": "kreis"
+  },
+  "08226": {
+   "name": "Rhein-Neckar-Kreis",
+   "web": "https://www.rhein-neckar-kreis.de",
+   "typ": "kreis"
+  },
+  "08231": {
+   "name": "Stadt Pforzheim",
+   "web": "https://www.pforzheim.de/",
+   "typ": "stadt"
+  },
+  "08235": {
+   "name": "Landkreis Calw",
+   "web": "https://www.kreis-calw.de/",
+   "typ": "kreis"
+  },
+  "08236": {
+   "name": "Enzkreis",
+   "web": "https://www.enzkreis.de/",
+   "typ": "kreis"
+  },
+  "08237": {
+   "name": "Freudenstadt",
+   "web": "https://www.landkreis-freudenstadt.de/",
+   "typ": "kreis"
+  },
+  "08311": {
+   "name": "Stadt Freiburg im Breisgau",
+   "web": "https://www.freiburg.de/",
+   "typ": "stadt"
+  },
+  "08315": {
+   "name": "Landkreis Breisgau-Hochschwarzwald",
+   "web": "https://www.breisgau-hochschwarzwald.de",
+   "typ": "kreis"
+  },
+  "08316": {
+   "name": "Landkreis Emmendingen",
+   "web": "http://www.landkreis-emmendingen.de/",
+   "typ": "kreis"
+  },
+  "08317": {
+   "name": "Ortenaukreis",
+   "web": "https://www.ortenaukreis.de/",
+   "typ": "kreis"
+  },
+  "08325": {
+   "name": "Landkreis Rottweil",
+   "web": "https://www.landkreis-rottweil.de",
+   "typ": "kreis"
+  },
+  "08326": {
+   "name": "Schwarzwald-Baar-Kreis",
+   "web": "https://www.lrasbk.de/",
+   "typ": "kreis"
+  },
+  "08327": {
+   "name": "Landkreis Tuttlingen",
+   "web": "http://www.landkreis-tuttlingen.de/",
+   "typ": "kreis"
+  },
+  "08335": {
+   "name": "Landkreis Konstanz",
+   "web": "http://www.landkreis-konstanz.de/",
+   "typ": "kreis"
+  },
+  "08336": {
+   "name": "Landkreis Lörrach",
+   "web": "https://www.loerrach-landkreis.de/",
+   "typ": "kreis"
+  },
+  "08337": {
+   "name": "Landkreis Waldshut",
+   "web": "https://www.landkreis-waldshut.de/",
+   "typ": "kreis"
+  },
+  "08415": {
+   "name": "Landkreis Reutlingen",
+   "web": "http://www.kreis-reutlingen.de/",
+   "typ": "kreis"
+  },
+  "08416": {
+   "name": "Landkreis Tübingen",
+   "web": "http://www.kreis-tuebingen.de/",
+   "typ": "kreis"
+  },
+  "08417": {
+   "name": "Zollernalbkreis",
+   "web": "http://www.zollernalbkreis.de",
+   "typ": "kreis"
+  },
+  "08421": {
+   "name": "Stadt Ulm",
+   "web": "https://www.ulm.de/",
+   "typ": "stadt"
+  },
+  "08425": {
+   "name": "Alb-Donau-Kreis",
+   "web": "https://www.alb-donau-kreis.de",
+   "typ": "kreis"
+  },
+  "08426": {
+   "name": "Landkreis Biberach",
+   "web": "https://www.biberach.de/",
+   "typ": "kreis"
+  },
+  "08435": {
+   "name": "Bodenseekreis",
+   "web": "http://www.bodenseekreis.de",
+   "typ": "kreis"
+  },
+  "08436": {
+   "name": "Landkreis Ravensburg",
+   "web": "https://www.rv.de/",
+   "typ": "kreis"
+  },
+  "08437": {
+   "name": "Landkreis Sigmaringen",
+   "web": "https://www.landkreis-sigmaringen.de/",
+   "typ": "kreis"
+  },
+  "04011": {
+   "name": "Stadt Bremen",
+   "web": "https://www.bremen.de/",
+   "typ": "stadt"
+  },
+  "04012": {
+   "name": "Stadt Bremerhaven",
+   "web": "https://www.bremerhaven.de/",
+   "typ": "stadt"
+  },
+  "06411": {
+   "name": "Stadt Darmstadt",
+   "web": "https://www.darmstadt.de/",
+   "typ": "stadt"
+  },
+  "06412": {
+   "name": "Stadt Frankfurt am Main",
+   "web": "https://frankfurt.de",
+   "typ": "stadt"
+  },
+  "06413": {
+   "name": "Stadt Offenbach am Main",
+   "web": "https://www.offenbach.de/",
+   "typ": "stadt"
+  },
+  "06414": {
+   "name": "Stadt Wiesbaden",
+   "web": "https://www.wiesbaden.de/",
+   "typ": "stadt"
+  },
+  "06431": {
+   "name": "Landkreis Bergstraße",
+   "web": "https://www.kreis-bergstrasse.de/",
+   "typ": "kreis"
+  },
+  "06432": {
+   "name": "Landkreis Darmstadt-Dieburg",
+   "web": "https://www.ladadi.de/",
+   "typ": "kreis"
+  },
+  "06433": {
+   "name": "Landkreis Groß-Gerau",
+   "web": "https://www.kreisgg.de/",
+   "typ": "kreis"
+  },
+  "06434": {
+   "name": "Hochtaunuskreis",
+   "web": "https://www.hochtaunuskreis.de/",
+   "typ": "kreis"
+  },
+  "06435": {
+   "name": "Main-Kinzig-Kreis",
+   "web": "https://www.mkk.de/",
+   "typ": "kreis"
+  },
+  "06436": {
+   "name": "Main-Taunus-Kreis",
+   "web": "https://www.mtk.org/",
+   "typ": "kreis"
+  },
+  "06437": {
+   "name": "Odenwaldkreis",
+   "web": "https://www.odenwaldkreis.de/",
+   "typ": "kreis"
+  },
+  "06438": {
+   "name": "Landkreis Offenbach",
+   "web": "https://www.kreis-offenbach.de/",
+   "typ": "kreis"
+  },
+  "06439": {
+   "name": "Rheingau-Taunus-Kreis",
+   "web": "https://www.rheingau-taunus.de/",
+   "typ": "kreis"
+  },
+  "06440": {
+   "name": "Wetteraukreis",
+   "web": "https://wetteraukreis.de/",
+   "typ": "kreis"
+  },
+  "06531": {
+   "name": "Landkreis Gießen",
+   "web": "https://www.lkgi.de/",
+   "typ": "kreis"
+  },
+  "06532": {
+   "name": "Lahn-Dill-Kreis",
+   "web": "https://www.lahn-dill-kreis.de/",
+   "typ": "kreis"
+  },
+  "06533": {
+   "name": "Landkreis Limburg-Weilburg",
+   "web": "https://www.landkreis-limburg-weilburg.de/",
+   "typ": "kreis"
+  },
+  "06534": {
+   "name": "Landkreis Marburg-Biedenkopf",
+   "web": "https://www.marburg-biedenkopf.de/",
+   "typ": "kreis"
+  },
+  "06535": {
+   "name": "Vogelsbergkreis",
+   "web": "https://www.vogelsbergkreis.de/",
+   "typ": "kreis"
+  },
+  "06611": {
+   "name": "Stadt Kassel",
+   "web": "https://www.kassel.de/",
+   "typ": "stadt"
+  },
+  "06631": {
+   "name": "Landkreis Fulda",
+   "web": "https://www.landkreis-fulda.de/",
+   "typ": "kreis"
+  },
+  "06632": {
+   "name": "Landkreis Hersfeld-Rotenburg",
+   "web": "https://www.hef-rof.de/",
+   "typ": "kreis"
+  },
+  "06633": {
+   "name": "Landkreis Kassel",
+   "web": "https://www.landkreiskassel.de/",
+   "typ": "kreis"
+  },
+  "06634": {
+   "name": "Schwalm-Eder-Kreis",
+   "web": "https://www.schwalm-eder-kreis.de/",
+   "typ": "kreis"
+  },
+  "06635": {
+   "name": "Landkreis Waldeck-Frankenberg",
+   "web": "https://www.landkreis-waldeck-frankenberg.de/",
+   "typ": "kreis"
+  },
+  "06636": {
+   "name": "Werra-Meißner-Kreis",
+   "web": "https://www.werra-meissner-kreis.de/",
+   "typ": "kreis"
+  },
+  "03101": {
+   "name": "Stadt Braunschweig",
+   "web": "https://www.braunschweig.de/",
+   "typ": "stadt"
+  },
+  "03102": {
+   "name": "Stadt Salzgitter",
+   "web": "https://www.salzgitter.de/",
+   "typ": "stadt"
+  },
+  "03103": {
+   "name": "Stadt Wolfsburg",
+   "web": "https://www.wolfsburg.de/",
+   "typ": "stadt"
+  },
+  "03151": {
+   "name": "Landkreis Gifhorn",
+   "web": "https://landkreis-gifhorn.de",
+   "typ": "kreis"
+  },
+  "03153": {
+   "name": "Landkreis Goslar",
+   "web": "https://www.landkreis-goslar.de/",
+   "typ": "kreis"
+  },
+  "03154": {
+   "name": "Landkreis Helmstedt",
+   "web": "https://www.landkreis-helmstedt.de/",
+   "typ": "kreis"
+  },
+  "03155": {
+   "name": "Northeim",
+   "web": "https://www.landkreis-northeim.de/",
+   "typ": "kreis"
+  },
+  "03157": {
+   "name": "Peine",
+   "web": "https://www.landkreis-peine.de/",
+   "typ": "kreis"
+  },
+  "03158": {
+   "name": "Landkreis Wolfenbüttel",
+   "web": "https://www.lkwf.de/",
+   "typ": "kreis"
+  },
+  "03159": {
+   "name": "Landkreis Göttingen",
+   "web": "https://www.landkreisgoettingen.de/",
+   "typ": "kreis"
+  },
+  "03241": {
+   "name": "Region Hannover",
+   "web": "https://www.hannover.de/Leben-in-der-Region-Hannover/Verwaltungen-Kommunen/Die-Verwaltung-der-Region-Hannover",
+   "typ": "kreis"
+  },
+  "03251": {
+   "name": "Landkreis Diepholz",
+   "web": "https://www.diepholz.de/",
+   "typ": "kreis"
+  },
+  "03252": {
+   "name": "Landkreis Hameln-Pyrmont",
+   "web": "https://www.hameln-pyrmont.de/",
+   "typ": "kreis"
+  },
+  "03254": {
+   "name": "Landkreis Hildesheim",
+   "web": "https://www.landkreishildesheim.de/",
+   "typ": "kreis"
+  },
+  "03255": {
+   "name": "Landkreis Holzminden",
+   "web": "https://www.landkreis-holzminden.de/",
+   "typ": "kreis"
+  },
+  "03256": {
+   "name": "Landkreis Nienburg/Weser",
+   "web": "https://www.lk-nienburg.de/",
+   "typ": "kreis"
+  },
+  "03257": {
+   "name": "Landkreis Schaumburg",
+   "web": "https://www.schaumburg.de/",
+   "typ": "kreis"
+  },
+  "03351": {
+   "name": "Landkreis Celle",
+   "web": "https://www.landkreis-celle.de/",
+   "typ": "kreis"
+  },
+  "03352": {
+   "name": "Landkreis Cuxhaven",
+   "web": "https://www.landkreis-cuxhaven.de/",
+   "typ": "kreis"
+  },
+  "03353": {
+   "name": "Landkreis Harburg",
+   "web": "https://www.landkreis-harburg.de/",
+   "typ": "kreis"
+  },
+  "03354": {
+   "name": "Lüchow-Dannenberg",
+   "web": "https://www.luechow-dannenberg.de/",
+   "typ": "kreis"
+  },
+  "03355": {
+   "name": "Landkreis Lüneburg",
+   "web": "https://www.landkreis-lueneburg.de/",
+   "typ": "kreis"
+  },
+  "03356": {
+   "name": "Landkreis Osterholz",
+   "web": "https://www.landkreis-osterholz.de/",
+   "typ": "kreis"
+  },
+  "03357": {
+   "name": "Rotenburg (Wümme)",
+   "web": "https://www.lk-row.de/",
+   "typ": "kreis"
+  },
+  "03358": {
+   "name": "Landkreis Heidekreis",
+   "web": "https://www.heidekreis.de/",
+   "typ": "kreis"
+  },
+  "03359": {
+   "name": "Landkreis Stade",
+   "web": "https://www.landkreis-stade.de/",
+   "typ": "kreis"
+  },
+  "03360": {
+   "name": "Landkreis Uelzen",
+   "web": "https://www.landkreis-uelzen.de/",
+   "typ": "kreis"
+  },
+  "03361": {
+   "name": "Landkreis Verden",
+   "web": "https://www.landkreis-verden.de/",
+   "typ": "kreis"
+  },
+  "03401": {
+   "name": "Stadt Delmenhorst",
+   "web": "https://www.delmenhorst.de/",
+   "typ": "stadt"
+  },
+  "03402": {
+   "name": "Stadt Emden",
+   "web": "https://www.emden.de/",
+   "typ": "stadt"
+  },
+  "03403": {
+   "name": "Stadt Oldenburg",
+   "web": "https://www.oldenburg.de/",
+   "typ": "stadt"
+  },
+  "03404": {
+   "name": "Stadt Osnabrück",
+   "web": "https://www.osnabrueck.de/",
+   "typ": "stadt"
+  },
+  "03405": {
+   "name": "Stadt Wilhelmshaven",
+   "web": "https://www.wilhelmshaven.de/",
+   "typ": "stadt"
+  },
+  "03451": {
+   "name": "Landkreis Ammerland",
+   "web": "https://www.ammerland.de/",
+   "typ": "kreis"
+  },
+  "03452": {
+   "name": "Landkreis Aurich",
+   "web": "https://www.landkreis-aurich.de/",
+   "typ": "kreis"
+  },
+  "03453": {
+   "name": "Landkreis Cloppenburg",
+   "web": "https://www.lkclp.de/",
+   "typ": "kreis"
+  },
+  "03454": {
+   "name": "Landkreis Emsland",
+   "web": "https://www.emsland.de/",
+   "typ": "kreis"
+  },
+  "03455": {
+   "name": "Landkreis Friesland",
+   "web": "https://www.friesland.de/",
+   "typ": "kreis"
+  },
+  "03456": {
+   "name": "Landkreis Grafschaft Bentheim",
+   "web": "https://www.grafschaft-bentheim.de/",
+   "typ": "kreis"
+  },
+  "03457": {
+   "name": "Landkreis Leer",
+   "web": "https://www.landkreis-leer.de/",
+   "typ": "kreis"
+  },
+  "03458": {
+   "name": "Landkreis Oldenburg",
+   "web": "https://www.oldenburg-kreis.de/",
+   "typ": "kreis"
+  },
+  "03459": {
+   "name": "Landkreis Osnabrück",
+   "web": "https://www.landkreis-osnabrueck.de/",
+   "typ": "kreis"
+  },
+  "03460": {
+   "name": "Landkreis Vechta",
+   "web": "https://www.landkreis-vechta.de/",
+   "typ": "kreis"
+  },
+  "03461": {
+   "name": "Wesermarsch",
+   "web": "https://wesermarsch.de/",
+   "typ": "kreis"
+  },
+  "03462": {
+   "name": "Landkreis Wittmund",
+   "web": "https://www.landkreis-wittmund.de/",
+   "typ": "kreis"
+  },
+  "05111": {
+   "name": "Stadt Düsseldorf",
+   "web": "https://www.duesseldorf.de/",
+   "typ": "stadt"
+  },
+  "05112": {
+   "name": "Stadt Duisburg",
+   "web": "https://duisburg.de",
+   "typ": "stadt"
+  },
+  "05113": {
+   "name": "Stadt Essen",
+   "web": "https://www.essen.de/",
+   "typ": "stadt"
+  },
+  "05114": {
+   "name": "Stadt Krefeld",
+   "web": "https://www.krefeld.de/",
+   "typ": "stadt"
+  },
+  "05116": {
+   "name": "Stadt Mönchengladbach",
+   "web": "https://www.moenchengladbach.de/",
+   "typ": "stadt"
+  },
+  "05117": {
+   "name": "Stadt Mülheim an der Ruhr",
+   "web": "https://www.muelheim-ruhr.de/",
+   "typ": "stadt"
+  },
+  "05119": {
+   "name": "Stadt Oberhausen",
+   "web": "https://www.oberhausen.de/",
+   "typ": "stadt"
+  },
+  "05120": {
+   "name": "Stadt Remscheid",
+   "web": "https://www.remscheid.de/",
+   "typ": "stadt"
+  },
+  "05122": {
+   "name": "Stadt Solingen",
+   "web": "https://www.solingen.de/",
+   "typ": "stadt"
+  },
+  "05124": {
+   "name": "Stadt Wuppertal",
+   "web": "https://www.wuppertal.de/",
+   "typ": "stadt"
+  },
+  "05154": {
+   "name": "Kreis Kleve",
+   "web": "https://www.kreis-kleve.de/",
+   "typ": "kreis"
+  },
+  "05158": {
+   "name": "Kreis Mettmann",
+   "web": "https://www.kreis-mettmann.de/",
+   "typ": "kreis"
+  },
+  "05162": {
+   "name": "Rhein-Kreis Neuss",
+   "web": "https://www.rhein-kreis-neuss.de/",
+   "typ": "kreis"
+  },
+  "05166": {
+   "name": "Kreis Viersen",
+   "web": "https://www.kreis-viersen.de/",
+   "typ": "kreis"
+  },
+  "05170": {
+   "name": "Kreis Wesel",
+   "web": "https://www.kreis-wesel.de/",
+   "typ": "kreis"
+  },
+  "05314": {
+   "name": "Stadt Bonn",
+   "web": "https://www.bonn.de/",
+   "typ": "stadt"
+  },
+  "05315": {
+   "name": "Stadt Köln",
+   "web": "https://www.stadt-koeln.de/",
+   "typ": "stadt"
+  },
+  "05316": {
+   "name": "Stadt Leverkusen",
+   "web": "https://www.leverkusen.de/",
+   "typ": "stadt"
+  },
+  "05334": {
+   "name": "Städteregion Aachen",
+   "web": "https://www.staedteregion-aachen.de/",
+   "typ": "kreis"
+  },
+  "05358": {
+   "name": "Kreis Düren",
+   "web": "https://www.kreis-dueren.de/",
+   "typ": "kreis"
+  },
+  "05362": {
+   "name": "Rhein-Erft-Kreis",
+   "web": "https://www.rhein-erft-kreis.de/",
+   "typ": "kreis"
+  },
+  "05366": {
+   "name": "Kreis Euskirchen",
+   "web": "https://www.kreis-euskirchen.de/",
+   "typ": "kreis"
+  },
+  "05370": {
+   "name": "Kreis Heinsberg",
+   "web": "https://www.kreis-heinsberg.de/",
+   "typ": "kreis"
+  },
+  "05374": {
+   "name": "Oberbergischer Kreis",
+   "web": "https://www.obk.de/",
+   "typ": "kreis"
+  },
+  "05378": {
+   "name": "Rheinisch-Bergischer Kreis",
+   "web": "https://www.rbk-direkt.de/",
+   "typ": "kreis"
+  },
+  "05382": {
+   "name": "Rhein-Sieg-Kreis",
+   "web": "https://www.rhein-sieg-kreis.de/",
+   "typ": "kreis"
+  },
+  "05512": {
+   "name": "Stadt Bottrop",
+   "web": "https://www.bottrop.de/",
+   "typ": "stadt"
+  },
+  "05513": {
+   "name": "Stadt Gelsenkirchen",
+   "web": "https://www.gelsenkirchen.de/",
+   "typ": "stadt"
+  },
+  "05515": {
+   "name": "Stadt Münster",
+   "web": "https://www.stadt-muenster.de/",
+   "typ": "stadt"
+  },
+  "05554": {
+   "name": "Kreis Borken",
+   "web": "https://www.kreis-borken.de/",
+   "typ": "kreis"
+  },
+  "05558": {
+   "name": "Kreis Coesfeld",
+   "web": "https://www.kreis-coesfeld.de/",
+   "typ": "kreis"
+  },
+  "05562": {
+   "name": "Kreis Recklinghausen",
+   "web": "https://www.kreis-re.de/",
+   "typ": "kreis"
+  },
+  "05566": {
+   "name": "Kreis Steinfurt",
+   "web": "https://www.kreis-steinfurt.de/",
+   "typ": "kreis"
+  },
+  "05570": {
+   "name": "Kreis Warendorf",
+   "web": "https://www.kreis-warendorf.de/",
+   "typ": "kreis"
+  },
+  "05711": {
+   "name": "Stadt Bielefeld",
+   "web": "https://www.bielefeld.de/",
+   "typ": "stadt"
+  },
+  "05754": {
+   "name": "Kreis Gütersloh",
+   "web": "https://www.kreis-guetersloh.de/",
+   "typ": "kreis"
+  },
+  "05758": {
+   "name": "Kreis Herford",
+   "web": "https://www.kreis-herford.de/",
+   "typ": "kreis"
+  },
+  "05762": {
+   "name": "Kreis Höxter",
+   "web": "https://www.kreis-hoexter.de/",
+   "typ": "kreis"
+  },
+  "05766": {
+   "name": "Kreis Lippe",
+   "web": "https://www.kreis-lippe.de/",
+   "typ": "kreis"
+  },
+  "05770": {
+   "name": "Kreis Minden-Lübbecke",
+   "web": "https://www.minden-luebbecke.de/",
+   "typ": "kreis"
+  },
+  "05774": {
+   "name": "Kreis Paderborn",
+   "web": "https://www.kreis-paderborn.de/",
+   "typ": "kreis"
+  },
+  "05911": {
+   "name": "Stadt Bochum",
+   "web": "https://www.bochum.de/",
+   "typ": "stadt"
+  },
+  "05913": {
+   "name": "Stadt Dortmund",
+   "web": "https://www.dortmund.de/",
+   "typ": "stadt"
+  },
+  "05914": {
+   "name": "Stadt Hagen",
+   "web": "https://www.hagen.de/",
+   "typ": "stadt"
+  },
+  "05915": {
+   "name": "Stadt Hamm",
+   "web": "https://www.hamm.de/",
+   "typ": "stadt"
+  },
+  "05916": {
+   "name": "Stadt Herne",
+   "web": "https://www.herne.de/",
+   "typ": "stadt"
+  },
+  "05954": {
+   "name": "Ennepe-Ruhr-Kreis",
+   "web": "https://www.enkreis.de/",
+   "typ": "kreis"
+  },
+  "05958": {
+   "name": "Hochsauerlandkreis",
+   "web": "https://www.hochsauerlandkreis.de/",
+   "typ": "kreis"
+  },
+  "05962": {
+   "name": "Märkischer Kreis",
+   "web": "http://www.maerkischer-kreis.de",
+   "typ": "kreis"
+  },
+  "05966": {
+   "name": "Kreis Olpe",
+   "web": "https://kreis-olpe.de/",
+   "typ": "kreis"
+  },
+  "05970": {
+   "name": "Kreis Siegen-Wittgenstein",
+   "web": "https://www.siegen-wittgenstein.de/",
+   "typ": "kreis"
+  },
+  "05974": {
+   "name": "Kreis Soest",
+   "web": "https://www.kreis-soest.de/",
+   "typ": "kreis"
+  },
+  "05978": {
+   "name": "Kreis Unna",
+   "web": "https://www.kreis-unna.de/",
+   "typ": "kreis"
+  },
+  "07111": {
+   "name": "Stadt Koblenz",
+   "web": "https://www.koblenz.de/",
+   "typ": "stadt"
+  },
+  "07131": {
+   "name": "Landkreis Ahrweiler",
+   "web": "https://www.kreis-ahrweiler.de/",
+   "typ": "kreis"
+  },
+  "07132": {
+   "name": "Landkreis Altenkirchen",
+   "web": "https://www.kreis-altenkirchen.de/",
+   "typ": "kreis"
+  },
+  "07133": {
+   "name": "Landkreis Bad Kreuznach",
+   "web": "https://www.kreis-badkreuznach.de/",
+   "typ": "kreis"
+  },
+  "07134": {
+   "name": "Landkreis Birkenfeld",
+   "web": "https://www.landkreis-birkenfeld.de/",
+   "typ": "kreis"
+  },
+  "07135": {
+   "name": "Landkreis Cochem-Zell",
+   "web": "https://www.cochem-zell.de/",
+   "typ": "kreis"
+  },
+  "07137": {
+   "name": "Landkreis Mayen-Koblenz",
+   "web": "http://www.mayen-koblenz.de",
+   "typ": "kreis"
+  },
+  "07138": {
+   "name": "Landkreis Neuwied",
+   "web": "https://www.kreis-neuwied.de",
+   "typ": "kreis"
+  },
+  "07140": {
+   "name": "Rhein-Hunsrück-Kreis",
+   "web": "https://www.kreis-sim.de/",
+   "typ": "kreis"
+  },
+  "07141": {
+   "name": "Rhein-Lahn-Kreis",
+   "web": "https://www.rhein-lahn-kreis.de/",
+   "typ": "kreis"
+  },
+  "07143": {
+   "name": "Westerwaldkreis",
+   "web": "http://www.westerwald-kreis.de",
+   "typ": "kreis"
+  },
+  "07211": {
+   "name": "Stadt Trier",
+   "web": "https://www.trier.de/",
+   "typ": "stadt"
+  },
+  "07231": {
+   "name": "Landkreis Bernkastel-Wittlich",
+   "web": "https://www.bernkastel-wittlich.de/",
+   "typ": "kreis"
+  },
+  "07232": {
+   "name": "Eifelkreis Bitburg-Prüm",
+   "web": "https://www.bitburg-pruem.de/",
+   "typ": "kreis"
+  },
+  "07233": {
+   "name": "Vulkaneifel",
+   "web": "https://www.vulkaneifel.de/",
+   "typ": "kreis"
+  },
+  "07235": {
+   "name": "Landkreis Trier-Saarburg",
+   "web": "http://www.trier-saarburg.de",
+   "typ": "kreis"
+  },
+  "07311": {
+   "name": "Stadt Frankenthal (Pfalz)",
+   "web": "http://www.frankenthal.de",
+   "typ": "stadt"
+  },
+  "07312": {
+   "name": "Stadt Kaiserslautern",
+   "web": "https://www.kaiserslautern.de/",
+   "typ": "stadt"
+  },
+  "07313": {
+   "name": "Stadt Landau in der Pfalz",
+   "web": "https://www.landau.de/",
+   "typ": "stadt"
+  },
+  "07314": {
+   "name": "Stadt Ludwigshafen am Rhein",
+   "web": "https://ludwigshafen.de",
+   "typ": "stadt"
+  },
+  "07315": {
+   "name": "Stadt Mainz",
+   "web": "https://www.mainz.de/",
+   "typ": "stadt"
+  },
+  "07316": {
+   "name": "Stadt Neustadt an der Weinstraße",
+   "web": "https://www.neustadt.eu/",
+   "typ": "stadt"
+  },
+  "07317": {
+   "name": "Stadt Pirmasens",
+   "web": "https://www.pirmasens.de/",
+   "typ": "stadt"
+  },
+  "07318": {
+   "name": "Stadt Speyer",
+   "web": "https://www.speyer.de/",
+   "typ": "stadt"
+  },
+  "07319": {
+   "name": "Stadt Worms",
+   "web": "https://www.worms.de/neu-de/index.php",
+   "typ": "stadt"
+  },
+  "07320": {
+   "name": "Stadt Zweibrücken",
+   "web": "https://www.zweibruecken.de/",
+   "typ": "stadt"
+  },
+  "07331": {
+   "name": "Landkreis Alzey-Worms",
+   "web": "https://www.kreis-alzey-worms.de/",
+   "typ": "kreis"
+  },
+  "07332": {
+   "name": "Landkreis Bad Dürkheim",
+   "web": "https://www.kreis-bad-duerkheim.de/",
+   "typ": "kreis"
+  },
+  "07333": {
+   "name": "Donnersbergkreis",
+   "web": "http://www.donnersberg.de/",
+   "typ": "kreis"
+  },
+  "07334": {
+   "name": "Landkreis Germersheim",
+   "web": "https://www.kreis-germersheim.de/",
+   "typ": "kreis"
+  },
+  "07335": {
+   "name": "Landkreis Kaiserslautern",
+   "web": "https://www.kaiserslautern-kreis.de/",
+   "typ": "kreis"
+  },
+  "07336": {
+   "name": "Landkreis Kusel",
+   "web": "https://www.landkreis-kusel.de/",
+   "typ": "kreis"
+  },
+  "07337": {
+   "name": "Landkreis Südliche Weinstraße",
+   "web": "https://www.suedliche-weinstrasse.de/",
+   "typ": "kreis"
+  },
+  "07338": {
+   "name": "Rhein-Pfalz-Kreis",
+   "web": "https://www.rhein-pfalz-kreis.de/",
+   "typ": "kreis"
+  },
+  "07339": {
+   "name": "Landkreis Mainz-Bingen",
+   "web": "http://www.mainz-bingen.de/",
+   "typ": "kreis"
+  },
+  "07340": {
+   "name": "Südwestpfalz",
+   "web": "https://www.lksuedwestpfalz.de/",
+   "typ": "kreis"
+  },
+  "01001": {
+   "name": "Stadt Flensburg",
+   "web": "https://www.flensburg.de/",
+   "typ": "stadt"
+  },
+  "01002": {
+   "name": "Stadt Kiel",
+   "web": "https://www.kiel.de/",
+   "typ": "stadt"
+  },
+  "01003": {
+   "name": "Stadt Lübeck",
+   "web": "https://www.luebeck.de/",
+   "typ": "stadt"
+  },
+  "01004": {
+   "name": "Stadt Neumünster",
+   "web": "https://www.neumuenster.de/",
+   "typ": "stadt"
+  },
+  "01051": {
+   "name": "Kreis Dithmarschen",
+   "web": "https://www.dithmarschen.de/",
+   "typ": "kreis"
+  },
+  "01053": {
+   "name": "Kreis Herzogtum Lauenburg",
+   "web": "https://www.kreis-rz.de/",
+   "typ": "kreis"
+  },
+  "01054": {
+   "name": "Kreis Nordfriesland",
+   "web": "https://www.nordfriesland.de/",
+   "typ": "kreis"
+  },
+  "01055": {
+   "name": "Kreis Ostholstein",
+   "web": "https://www.kreis-oh.de/",
+   "typ": "kreis"
+  },
+  "01056": {
+   "name": "Kreis Pinneberg",
+   "web": "https://www.kreis-pinneberg.de/",
+   "typ": "kreis"
+  },
+  "01057": {
+   "name": "Kreis Plön",
+   "web": "https://www.kreis-ploen.de/",
+   "typ": "kreis"
+  },
+  "01058": {
+   "name": "Kreis Rendsburg-Eckernförde",
+   "web": "https://www.kreis-rendsburg-eckernfoerde.de/",
+   "typ": "kreis"
+  },
+  "01059": {
+   "name": "Kreis Schleswig-Flensburg",
+   "web": "https://www.schleswig-flensburg.de/",
+   "typ": "kreis"
+  },
+  "01060": {
+   "name": "Kreis Segeberg",
+   "web": "https://www.segeberg.de/",
+   "typ": "kreis"
+  },
+  "01061": {
+   "name": "Kreis Steinburg",
+   "web": "https://www.steinburg.de/",
+   "typ": "kreis"
+  },
+  "01062": {
+   "name": "Kreis Stormarn",
+   "web": "https://www.kreis-stormarn.de/",
+   "typ": "kreis"
+  }
+ }
+}

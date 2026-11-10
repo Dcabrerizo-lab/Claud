@@ -14,6 +14,7 @@ Orientierungscheck für 21 Sozialleistungen in Deutschland: Familie, Wohnen, Gru
 | `src/fmt.js`, `src/plz.js`, `src/behoerden.js` | Betragsformat je Sprache; PLZ → Bundesland, Kreis, Mietenstufe; zuständige Stelle mit Anschrift (Bayern) |
 | `content/` | App-Daten (`plz-data.json`, `behoerden-bayern.json`) und die amtlichen Originalquellen (`quellen/`) |
 | `tools/build-plz-data.js`, `tools/build-behoerden.js` | erzeugen die App-Daten aus den Quellen (`npm run build:data`) und brechen ab, wenn etwas nicht eindeutig ist |
+| `tools/wikidata-kreise.js`, `tools/build-behoerden-de.js` | Website und Zuständigkeit der Kreise und Städte außerhalb Bayerns (Wikidata) → `content/behoerden-deutschland.json` |
 | `scripts/build.js` | baut die Web-Version → `dist/sozialleistungslotse.html` |
 | `scripts/build-app.js` | baut die Store-App → `app/www` (Schriften lokal, strenge CSP, Kamera-Scan, PDF) |
 | `app/` | Capacitor-Projekt mit `android/` und `ios/`, PDF-Modul (`app/pdf`), Plugin Texterkennung |
