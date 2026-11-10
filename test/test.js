@@ -304,6 +304,13 @@ check('Arabisch läuft rechts nach links, alle anderen links nach rechts', I18N.
   check('Name: nirgends mehr der alte Name „Leistungslotse“ ohne „Sozial“', alt.length === 0, alt.join(', '));
 }
 
+// Zahl der Leistungen in Store-Text und Webseite passt zur App (Kartenliste)
+{
+  const fsx = require('fs'), px = require('path'), N = require('./karten.js').length;
+  check('Store-Text nennt ' + N + ' Leistungen', fsx.readFileSync(px.join(__dirname, '..', 'docs', 'STORE.md'), 'utf8').includes(N + ' Sozialleistungen'));
+  check('Webseite nennt ' + N + ' Leistungen', fsx.readFileSync(px.join(__dirname, '..', 'site', 'index.html'), 'utf8').includes('Prüft ' + N + ' Leistungen'));
+}
+
 // Amtsbegriffe bleiben deutsch erhalten
 const TERMS = ['Wohngeld', 'Kinderzuschlag', 'Kindergeld', 'Grundsicherungsgeld', 'Grundsicherung im Alter', 'Jobcenter', 'Sozialamt', 'Familienkasse', 'Pflegekasse', 'BAföG', 'Pflegegeld', 'Unterhaltsvorschuss', 'Bürgergeld', 'Wohngeldstelle'];
 LANGS.filter((l) => l !== 'de').forEach((l) => {

@@ -847,5 +847,19 @@
   "t.blindengeld.pflegeLand": "If you receive Pflegegeld, most states partly count it against the Landesblindengeld.",
   "t.wbs.landJa": "Your gross income is even below the nationwide limit ({grenze} per year for your household). No federal state has a lower limit, so a Wohnberechtigungsschein is very likely.",
   "t.wbs.landEigen": "Each federal state sets its own income limits for the Wohnberechtigungsschein, often well above the federal values. Whether yours is low enough is calculated exactly (with deductions) by the Wohnungsamt. With a low or medium income it is worth asking.",
-  "t.wbs.landStelle": "You apply at the Wohnungsamt of your city or municipality. There you will also learn the exact limits in your state."
+  "t.wbs.landStelle": "You apply at the Wohnungsamt of your city or municipality. There you will also learn the exact limits in your state.",
+  "t.lpg.land": "Landespflegegeld only exists in Bavaria.",
+  "t.lpg.keine": "In Bavaria Landespflegegeld is paid from care level 2.",
+  "t.lpg.ja": "In Bavaria there is Landespflegegeld from care level 2: {betrag} per year (from {stand}), regardless of income. It is paid in addition to the Pflegegeld from the Pflegekasse.",
+  "t.lpg.antrag": "You apply once at the Bayerisches Landesamt für Pflege, after that the money comes every year. Apply soon, as there is a deadline; the Landesamt will tell you which one.",
+  "t.lpg.pflegeAntrag": "As soon as a care level of 2 or more is confirmed, Bavaria also pays Landespflegegeld: {betrag} per year.",
+  "t.kindergeld.familiengeld": "Bavaria only: For children born up to the end of 2024 there is still Familiengeld until their 3rd birthday ({betrag} per month, from the 3rd child {ab3}) and, with a crèche, up to {krippe} Krippengeld per month depending on income. For children born from 2025 neither exists any more.",
+  "t.ausweis.gl": "Deaf (marker Gl): Some federal states pay their own Gehörlosengeld, for example Hessen and Sachsen-Anhalt; Bavaria does not. Ask the Versorgungsamt of your state.",
+  "cb.mzGl": "The Schwerbehindertenausweis shows the marker Gl (deaf)",
+  "n.lpg": "State care allowance (Bavaria)",
+  "zu.lpg": "Bayerisches Landesamt für Pflege",
+  "s.lpg.wo": "At the Bayerisches Landesamt für Pflege, online or with a form.",
+  "s.lpg.tip": "Enclose the Pflegekasse decision on the care level. One application is enough, after that the money comes every year.",
+  "es.n.lpg": "State care allowance",
+  "es.r.lpg": "Care level 2 or more? Then Bavaria pays you money every year."
 }

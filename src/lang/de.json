@@ -847,5 +847,19 @@
   "t.blindengeld.pflegeLand": "Bekommst du Pflegegeld, wird es in den meisten Ländern teilweise auf das Landesblindengeld angerechnet.",
   "t.wbs.landJa": "Dein Bruttoeinkommen liegt sogar unter der bundesweiten Grenze ({grenze} im Jahr für deinen Haushalt). Kein Bundesland hat eine niedrigere Grenze, ein Wohnberechtigungsschein ist also sehr wahrscheinlich.",
   "t.wbs.landEigen": "Jedes Bundesland legt eigene Einkommensgrenzen für den Wohnberechtigungsschein fest, oft deutlich über den Bundeswerten. Ob es bei dir reicht, rechnet das Wohnungsamt mit Abzügen genau aus. Mit kleinem oder mittlerem Einkommen lohnt sich die Frage.",
-  "t.wbs.landStelle": "Den Antrag stellst du beim Wohnungsamt deiner Stadt oder Gemeinde. Dort erfährst du auch die genauen Grenzen in deinem Land."
+  "t.wbs.landStelle": "Den Antrag stellst du beim Wohnungsamt deiner Stadt oder Gemeinde. Dort erfährst du auch die genauen Grenzen in deinem Land.",
+  "t.lpg.land": "Das Landespflegegeld gibt es nur in Bayern.",
+  "t.lpg.keine": "Landespflegegeld gibt es in Bayern ab Pflegegrad 2.",
+  "t.lpg.ja": "In Bayern gibt es ab Pflegegrad 2 Landespflegegeld: {betrag} im Jahr (ab {stand}), unabhängig vom Einkommen. Es kommt zusätzlich zum Pflegegeld der Pflegekasse.",
+  "t.lpg.antrag": "Den Antrag stellst du einmal beim Bayerischen Landesamt für Pflege, danach kommt das Geld jedes Jahr. Stell ihn bald, denn es gibt eine Frist; welche, sagt dir das Landesamt.",
+  "t.lpg.pflegeAntrag": "Sobald ein Pflegegrad ab 2 feststeht, gibt es in Bayern zusätzlich Landespflegegeld: {betrag} im Jahr.",
+  "t.kindergeld.familiengeld": "Nur in Bayern: Für Kinder, die bis Ende 2024 geboren sind, gibt es bis zum 3. Geburtstag noch Familiengeld ({betrag} im Monat, ab dem 3. Kind {ab3}) und bei Krippe bis zu {krippe} Krippengeld im Monat, abhängig vom Einkommen. Für Kinder, die ab 2025 geboren sind, gibt es beides nicht mehr.",
+  "t.ausweis.gl": "Gehörlos (Merkzeichen Gl): In einigen Bundesländern gibt es ein eigenes Gehörlosengeld, zum Beispiel in Hessen und Sachsen-Anhalt; in Bayern nicht. Frag beim Versorgungsamt deines Landes.",
+  "cb.mzGl": "Im Schwerbehindertenausweis steht das Merkzeichen Gl (gehörlos)",
+  "n.lpg": "",
+  "zu.lpg": "Bayerisches Landesamt für Pflege",
+  "s.lpg.wo": "Beim Bayerischen Landesamt für Pflege, online oder mit Formular.",
+  "s.lpg.tip": "Den Bescheid der Pflegekasse über den Pflegegrad beilegen. Ein Antrag reicht, danach kommt das Geld jedes Jahr.",
+  "es.n.lpg": "Landespflegegeld",
+  "es.r.lpg": "Pflegegrad 2 oder mehr? Dann gibt es in Bayern jedes Jahr Geld vom Land."
 }

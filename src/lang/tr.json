@@ -847,5 +847,19 @@
   "t.blindengeld.pflegeLand": "Pflegegeld alıyorsanız, çoğu eyalette bunun bir kısmı Landesblindengeld'den düşülür.",
   "t.wbs.landJa": "Brüt geliriniz ülke genelindeki sınırın bile altında (haneniz için yılda {grenze}). Hiçbir eyaletin sınırı daha düşük değildir, bu yüzden Wohnberechtigungsschein çok olasıdır.",
   "t.wbs.landEigen": "Her eyalet Wohnberechtigungsschein için kendi gelir sınırlarını belirler, çoğu zaman federal değerlerin epey üzerinde. Sizin için yetip yetmediğini Wohnungsamt kesintilerle birlikte tam olarak hesaplar. Düşük veya orta gelirle sormaya değer.",
-  "t.wbs.landStelle": "Başvuruyu şehrinizin veya belediyenizin Wohnungsamt'ına yaparsınız. Eyaletinizdeki kesin sınırları da orada öğrenirsiniz."
+  "t.wbs.landStelle": "Başvuruyu şehrinizin veya belediyenizin Wohnungsamt'ına yaparsınız. Eyaletinizdeki kesin sınırları da orada öğrenirsiniz.",
+  "t.lpg.land": "Landespflegegeld sadece Bavyera'da vardır.",
+  "t.lpg.keine": "Bavyera'da Landespflegegeld bakım derecesi 2'den itibaren ödenir.",
+  "t.lpg.ja": "Bavyera'da bakım derecesi 2'den itibaren Landespflegegeld vardır: yılda {betrag} ({stand} itibarıyla), gelirden bağımsız. Pflegekasse'nin Pflegegeld'ine ek olarak ödenir.",
+  "t.lpg.antrag": "Başvuruyu bir kez Bayerisches Landesamt für Pflege'ye yaparsın, sonra para her yıl gelir. Bir süre sınırı olduğu için yakında başvur; hangisi olduğunu Landesamt söyler.",
+  "t.lpg.pflegeAntrag": "Bakım derecesi 2 veya üstü belli olur olmaz Bavyera ayrıca Landespflegegeld öder: yılda {betrag}.",
+  "t.kindergeld.familiengeld": "Sadece Bavyera: 2024 sonuna kadar doğan çocuklar için 3. yaş gününe kadar hâlâ Familiengeld (ayda {betrag}, 3. çocuktan itibaren {ab3}) ve kreşte gelire bağlı olarak ayda {krippe}'ya kadar Krippengeld vardır. 2025'ten itibaren doğan çocuklar için ikisi de artık yok.",
+  "t.ausweis.gl": "Sağır (Gl işareti): Bazı eyaletler kendi Gehörlosengeld'ini öder, örneğin Hessen ve Sachsen-Anhalt; Bavyera ödemez. Eyaletinin Versorgungsamt'ına sor.",
+  "cb.mzGl": "Schwerbehindertenausweis'ta Gl (sağır) işareti var",
+  "n.lpg": "Eyalet bakım parası (Bavyera)",
+  "zu.lpg": "Bayerisches Landesamt für Pflege",
+  "s.lpg.wo": "Bayerisches Landesamt für Pflege'de, internetten veya formla.",
+  "s.lpg.tip": "Pflegekasse'nin bakım derecesi kararını ekle. Bir başvuru yeterli, sonra para her yıl gelir.",
+  "es.n.lpg": "Eyalet bakım parası",
+  "es.r.lpg": "Bakım derecesi 2 veya üstü mü? O zaman Bavyera her yıl para öder."
 }

@@ -96,6 +96,8 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | 259 € je Kind und Monat (2026); bis 18, bis 25 in Ausbildung oder Studium (§ 32 Abs. 4 Nr. 2) | ✓ | `kg-betrag` |
 | Bis 21 arbeitslos gemeldet, bis 25 Freiwilligendienst, Ausbildungsplatzsuche, Übergangszeit bis 4 Monate; nach erster Ausbildung höchstens 20 Stunden Arbeit (§ 32 Abs. 4) | ◐ | `kg-mehr` |
 | Ausländer: nur mit bestimmten Aufenthaltstiteln (§ 62 Abs. 2) | ◐ | `kg-asyl` |
+| Bayern: Familiengeld (250 €, ab dem 3. Kind 300 €, 13. bis 36. Lebensmonat) und Krippengeld (bis 100 €) nur noch für Kinder, die bis Ende 2024 geboren sind | ◐ (Geburtsdatum der Kinder wird nicht abgefragt, daher Hinweis) | `kg-familiengeld` |
+| Bayern: angekündigtes Kinderstartgeld | ○ (nach neueren Berichten nicht eingeführt; ohne amtliche Bestätigung nicht erwähnt) | |
 
 ## Kindergeld für erwachsene Kinder mit Behinderung (§ 32 Abs. 4 Satz 1 Nr. 3 EStG)
 <!-- karten: kgBeh -->
@@ -154,6 +156,15 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Rentenversicherung für pflegende Angehörige (§ 44) | ◐ | `pfl-rente` |
 | Pflegezeit, Familienpflegezeit, Pflegeunterstützungsgeld | ◐ | `pfl-zeit` |
 
+## Bayerisches Landespflegegeld (BayLPflGG)
+<!-- karten: lpg -->
+
+| Regel | Status | Test |
+|---|---|---|
+| Ab Pflegegrad 2, Hauptwohnsitz Bayern, unabhängig vom Einkommen; ab dem Pflegegeldjahr 2026 500 € im Jahr (vorher 1.000 €) | ✓ | `lpg-ja` |
+| Nur in Bayern; ohne Pflegegrad 2 nein, bei laufendem Pflegegrad-Antrag möglich | ✓ | `lpg-voraus` |
+| Antrag einmal beim Bayerischen Landesamt für Pflege; Antragsfrist | ◐ (Fristangaben der Quellen widersprüchlich; die App rät zum baldigen Antrag) | `lpg-ja` |
+
 ## Hilfe zur Pflege (SGB XII, 7. Kapitel)
 <!-- karten: hzp -->
 
@@ -186,6 +197,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Parkerleichterungen bei aG/Bl | ◐ | `sb-park` |
 | Eingliederungshilfe (SGB IX Teil 2, § 35a SGB VIII für Kinder mit seelischer Behinderung) | ◐ | `sb-eingl` |
 | Budget für Arbeit statt Werkstatt, Lohnkostenzuschuss bis 75 % (§ 61) | ◐ | `sb-budget` |
+| Merkzeichen Gl: Freifahrt mit Wertmarke; Gehörlosengeld nur in einigen Ländern (z. B. Hessen, Sachsen-Anhalt) | ◐ (Länderliste und Beträge in den Quellen uneinheitlich, daher Hinweis ohne Betrag) | `sb-gl` |
 
 ## Renten (SGB VI)
 <!-- karten: emrente, srente -->
@@ -296,6 +308,6 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 Damit niemand denkt, die App decke alles ab:
 
 - Mutterschaftsgeld als eigene Leistung, Kinderkrankengeld, Kinderbetreuung (Kita-Gebühren-Ermäßigung)
-- Anschriften der Ämter außerhalb Bayerns (Phase 3); weitere Landesleistungen wie Gehörlosengeld, Landespflegegeld, Familiengeld (Phase 2)
+- Anschriften der Ämter außerhalb Bayerns (Phase 3); genaue Beträge der Landesleistungen anderer Länder (Gehörlosengeld, Landesblindengeld, WBS-Grenzen), sobald verlässliche Quellen vorliegen
 - Härtefallleistungen und einmalige Bedarfe im Einzelfall (z. B. Waschmaschine, Umzug, Mietschulden)
 - Schuldnerberatung, Sozialtarife (Strom, Telefon, Kultur), Bildungskredit

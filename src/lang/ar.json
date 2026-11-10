@@ -847,5 +847,19 @@
   "t.blindengeld.pflegeLand": "إذا كنت تحصل على Pflegegeld، فإن معظم الولايات تخصم جزءًا منه من Landesblindengeld.",
   "t.wbs.landJa": "دخلك الإجمالي أقل حتى من الحد على مستوى ألمانيا ({grenze} سنويًا لأسرتك). لا توجد ولاية بحد أدنى من ذلك، لذا فإن Wohnberechtigungsschein مرجح جدًا.",
   "t.wbs.landEigen": "تحدد كل ولاية حدود دخل خاصة بها لـ Wohnberechtigungsschein، وغالبًا أعلى بكثير من القيم الاتحادية. يحسب Wohnungsamt بدقة مع الخصومات إن كان دخلك كافيًا. مع دخل منخفض أو متوسط يستحق السؤال.",
-  "t.wbs.landStelle": "تقدّم الطلب لدى Wohnungsamt في مدينتك أو بلديتك. هناك تعرف أيضًا الحدود الدقيقة في ولايتك."
+  "t.wbs.landStelle": "تقدّم الطلب لدى Wohnungsamt في مدينتك أو بلديتك. هناك تعرف أيضًا الحدود الدقيقة في ولايتك.",
+  "t.lpg.land": "Landespflegegeld موجود فقط في بافاريا.",
+  "t.lpg.keine": "في بافاريا يُدفع Landespflegegeld ابتداءً من درجة الرعاية 2.",
+  "t.lpg.ja": "في بافاريا يوجد Landespflegegeld ابتداءً من درجة الرعاية 2: {betrag} سنويًا (منذ {stand})، بغض النظر عن الدخل. يُدفع إضافةً إلى Pflegegeld من Pflegekasse.",
+  "t.lpg.antrag": "تقدّم الطلب مرة واحدة لدى Bayerisches Landesamt für Pflege، وبعدها يأتي المال كل عام. قدّمه قريبًا لأن هناك مهلة؛ يخبرك Landesamt بها.",
+  "t.lpg.pflegeAntrag": "بمجرد تحديد درجة رعاية 2 أو أكثر تدفع بافاريا أيضًا Landespflegegeld: {betrag} سنويًا.",
+  "t.kindergeld.familiengeld": "في بافاريا فقط: للأطفال المولودين حتى نهاية 2024 لا يزال يوجد Familiengeld حتى عيد ميلادهم الثالث ({betrag} شهريًا، ومن الطفل الثالث {ab3}) ومع الحضانة حتى {krippe} شهريًا Krippengeld حسب الدخل. للأطفال المولودين منذ 2025 لم يعد أي منهما موجودًا.",
+  "t.ausweis.gl": "أصم (العلامة Gl): بعض الولايات تدفع Gehörlosengeld خاصًا، مثل هيسن وساكسونيا-أنهالت؛ بافاريا لا. اسأل Versorgungsamt في ولايتك.",
+  "cb.mzGl": "في بطاقة Schwerbehindertenausweis توجد العلامة Gl (أصم)",
+  "n.lpg": "مخصص الرعاية من الولاية (بافاريا)",
+  "zu.lpg": "Bayerisches Landesamt für Pflege",
+  "s.lpg.wo": "لدى Bayerisches Landesamt für Pflege، عبر الإنترنت أو باستمارة.",
+  "s.lpg.tip": "أرفق قرار Pflegekasse بشأن درجة الرعاية. طلب واحد يكفي، وبعدها يأتي المال كل عام.",
+  "es.n.lpg": "مخصص الرعاية من الولاية",
+  "es.r.lpg": "درجة رعاية 2 أو أكثر؟ إذن تدفع بافاريا لك مالًا كل عام."
 }

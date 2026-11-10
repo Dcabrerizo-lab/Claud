@@ -22,10 +22,10 @@ Alles muss zur [Datenschutzerklärung](../datenschutz.html) passen. Bei Änderun
 
 ## Beschreibung (Play und iOS)
 
-> Steht dir Wohngeld zu? Kinderzuschlag? Grundsicherung? SoLo prüft in zwei Minuten 28 Sozialleistungen und Vergünstigungen und zeigt dir, was wahrscheinlich, möglich oder unwahrscheinlich ist, mit den nächsten Schritten, der zuständigen Stelle und den nötigen Unterlagen.
+> Steht dir Wohngeld zu? Kinderzuschlag? Grundsicherung? SoLo prüft in zwei Minuten 29 Sozialleistungen und Vergünstigungen und zeigt dir, was wahrscheinlich, möglich oder unwahrscheinlich ist, mit den nächsten Schritten, der zuständigen Stelle und den nötigen Unterlagen.
 >
 > **Was die App prüft**
-> Kindergeld, Elterngeld, Wohngeld, Kinderzuschlag, Grundsicherungsgeld, Arbeitslosengeld I, Krankengeld, Bildung und Teilhabe, Unterhaltsvorschuss, Grundsicherung im Alter und bei Erwerbsminderung, BAföG, Berufsausbildungsbeihilfe, Pflegegeld, Entlastungsbetrag, Verhinderungspflege und Pflegehilfsmittel, Hilfe zur Pflege, Leistungen bei Behinderung (Pauschbetrag, Schwerbehindertenausweis, Eingliederungshilfe, Budget für Arbeit, Erwerbsminderungsrente, Altersrente für schwerbehinderte Menschen), Landesblindengeld, Blindenhilfe, Wohnberechtigungsschein, Befreiung vom Rundfunkbeitrag und von Zuzahlungen, Leistungen nach dem Asylbewerberleistungsgesetz.
+> Kindergeld, Elterngeld, Wohngeld, Kinderzuschlag, Grundsicherungsgeld, Arbeitslosengeld I, Krankengeld, Bildung und Teilhabe, Unterhaltsvorschuss, Grundsicherung im Alter und bei Erwerbsminderung, BAföG, Berufsausbildungsbeihilfe, Pflegegeld, Entlastungsbetrag, Verhinderungspflege und Pflegehilfsmittel, Bayerisches Landespflegegeld, Hilfe zur Pflege, Leistungen bei Behinderung (Pauschbetrag, Schwerbehindertenausweis, Eingliederungshilfe, Budget für Arbeit, Erwerbsminderungsrente, Altersrente für schwerbehinderte Menschen), Landesblindengeld, Blindenhilfe, Wohnberechtigungsschein, Befreiung vom Rundfunkbeitrag und von Zuzahlungen, Leistungen nach dem Asylbewerberleistungsgesetz.
 >
 > **Auch in einfacher Sprache**
 > Für Menschen mit Lernschwierigkeiten, zum Beispiel in einer Werkstatt: eine Frage pro Bildschirm, große Knöpfe, Vorlesen. Das Ergebnis zeigt, was du bekommen kannst, wie viel ungefähr und wo du hingehst.

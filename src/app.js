@@ -139,7 +139,7 @@
     if (!state.bhPerson) reset(['gdb', 'blind', 'wfbm', 'bhSelbst']);
     if (state.bhPerson !== 'erwVor25') reset(['bhSelbst']);
     if (state.emStd !== 'unter3' && state.emStd !== '3bis6') reset(['em5']);
-    if (!state.bhPerson) reset(['mzG', 'teilhabe', 'bhWeitere']);
+    if (!state.bhPerson) reset(['mzG', 'mzGl', 'teilhabe', 'bhWeitere']);
     if (!state.baby) reset(['egVor']);
     if (state.kids + state.young === 0) reset(['kindEink']);
     if (state.arbeitSit !== 'arbeitslos') reset(['algZeit', 'algMonate']);
@@ -382,7 +382,7 @@
     pr.appendChild(b);
   });
 
-  var CHECKS = ['mzG', 'algZeit', 'grundrente33', 'wfbmEssen', 'teilhabe', 'schwanger', 'ernaehrung', 'warmwasser', 'kinder12', 'unterhaltFehlt', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt'];
+  var CHECKS = ['mzG', 'mzGl', 'algZeit', 'grundrente33', 'wfbmEssen', 'teilhabe', 'schwanger', 'ernaehrung', 'warmwasser', 'kinder12', 'unterhaltFehlt', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt'];
   var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'ek1bArt', 'bhWeitere', 'baby', 'aufenthalt', 'arbeitSit', 'algMonate', 'krankWochen', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd'];
   var NUMS = ['miete', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'kindEink', 'lohnVorher', 'ek1bBetrag', 'egVor', 'vermoegen'];
   var BEZUG = ['grundsicherungsgeld', 'sozialamt', 'wohngeld', 'kiz', 'kindergeld'];
@@ -653,6 +653,7 @@
     kgBeh: { stelle: 'Familienkasse der Bundesagentur für Arbeit', betreff: 'Antrag auf Kindergeld für ein volljähriges Kind mit Behinderung', satz: 'hiermit beantrage ich Kindergeld für mein volljähriges Kind. Die Behinderung ist vor dem 25. Geburtstag eingetreten, das Kind kann sich wegen der Behinderung nicht selbst unterhalten.' },
     elterngeld: { stelle: 'Elterngeldstelle (in Bayern: Zentrum Bayern Familie und Soziales)', betreff: 'Antrag auf Elterngeld', satz: 'hiermit beantrage ich Elterngeld für mein Kind. Bitte senden Sie mir die Antragsunterlagen zu. Bitte werten Sie den Eingang dieses Schreibens als Antragsdatum, da Elterngeld rückwirkend nur für drei Monate gezahlt wird.' },
     hzp: { stelle: 'Träger der Sozialhilfe (in Bayern: der Bezirk)', betreff: 'Antrag auf Hilfe zur Pflege', satz: 'hiermit beantrage ich Hilfe zur Pflege nach dem Siebten Kapitel des Zwölften Buches Sozialgesetzbuch (SGB XII), weil die Leistungen der Pflegeversicherung und mein Einkommen die Kosten der Pflege nicht decken.' },
+    lpg: { stelle: 'Bayerisches Landesamt für Pflege', betreff: 'Antrag auf Bayerisches Landespflegegeld', satz: 'hiermit beantrage ich das Bayerische Landespflegegeld nach dem Bayerischen Landespflegegeldgesetz. Ich habe meinen Hauptwohnsitz in Bayern und bin pflegebedürftig ab Pflegegrad 2. Den Bescheid der Pflegekasse lege ich bei.' },
     blh: { stelle: 'Träger der Sozialhilfe (in Bayern: der Bezirk)', betreff: 'Antrag auf Blindenhilfe', satz: 'hiermit beantrage ich Blindenhilfe nach § 72 des Zwölften Buches Sozialgesetzbuch (SGB XII). Ich bin blind. Ein Bescheid über das Landesblindengeld liegt bei oder ist beantragt.' },
     asylblg: { stelle: 'Sozialamt beziehungsweise Landratsamt (Leistungen nach dem Asylbewerberleistungsgesetz)', betreff: 'Antrag auf Leistungen nach dem Asylbewerberleistungsgesetz', satz: 'hiermit beantrage ich Leistungen nach dem Asylbewerberleistungsgesetz für mich und die Personen meines Haushalts, einschließlich der Leistungen für Bildung und Teilhabe für die Kinder.' },
     srente: { stelle: 'Deutsche Rentenversicherung', betreff: 'Altersrente für schwerbehinderte Menschen: Bitte um Rentenauskunft und Beratung', satz: 'hiermit bitte ich um eine Rentenauskunft und um Beratung zur Altersrente für schwerbehinderte Menschen, insbesondere zum frühestmöglichen Rentenbeginn mit und ohne Abschlag und zur Wartezeit von 35 Jahren.' },
@@ -717,6 +718,7 @@
     if (s.bhWeitere) b.push('Weitere Personen mit Schwerbehinderung im Haushalt: ' + s.bhWeitere);
     if (s.mz && Object.keys(s.mz).some(function (k) { return s.mz[k]; })) b.push('Merkzeichen im Ausweis: ' + Object.keys(s.mz).filter(function (k) { return s.mz[k]; }).join(', '));
     else if (s.mzG) b.push('Merkzeichen G oder aG');
+    if (s.mzGl) b.push('Merkzeichen Gl (gehörlos)');
     if (s.wohnform === 'eltern') b.push('Wohnt bei den Eltern' + (s.miete ? ', zahlt ' + money(s.miete) + ' Miete im Monat' : ', zahlt keine Miete'));
     if (s.wohnform === 'heim') b.push('Wohnt in einer besonderen Wohnform (Wohnheim)');
     if (s.wfbmEssen) b.push('Nimmt am gemeinsamen Mittagessen in der Werkstatt teil');
@@ -1253,8 +1255,8 @@
   }
 
   // Ergebnis in Leichter Sprache: nur, was für eine Person mit Behinderung zählt; Beträge grob, mit zuständiger Stelle
-  var ES_KARTEN = ['gsa', 'ggeld', 'wohngeld', 'pflege', 'pflegeplus', 'hzp', 'emrente', 'srente', 'rundfunk', 'ausweis', 'eingl', 'blindengeld', 'blh', 'zuzahl', 'kgBeh', 'pausch', 'arbeit'];
-  var ES_ICON = { gsa: '💶', ggeld: '💶', wohngeld: '🏠', pflege: '🤝', pflegeplus: '🧺', emrente: '👴', srente: '🧓', hzp: '🏥', rundfunk: '📺', ausweis: '🪪', eingl: '🧩', blindengeld: '🦯', blh: '🦮', zuzahl: '💊', kgBeh: '👪', pausch: '🧾', arbeit: '💼' };
+  var ES_KARTEN = ['gsa', 'ggeld', 'wohngeld', 'pflege', 'pflegeplus', 'lpg', 'hzp', 'emrente', 'srente', 'rundfunk', 'ausweis', 'eingl', 'blindengeld', 'blh', 'zuzahl', 'kgBeh', 'pausch', 'arbeit'];
+  var ES_ICON = { gsa: '💶', ggeld: '💶', wohngeld: '🏠', pflege: '🤝', pflegeplus: '🧺', lpg: '💶', emrente: '👴', srente: '🧓', hzp: '🏥', rundfunk: '📺', ausweis: '🪪', eingl: '🧩', blindengeld: '🦯', blh: '🦮', zuzahl: '💊', kgBeh: '👪', pausch: '🧾', arbeit: '💼' };
   function esErgebnis(fr) {
     var out = Rules.evaluate(esEingabe());
     lastEs = out;

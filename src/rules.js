@@ -75,6 +75,11 @@ const Rules = (function () {
     blh: { einsatzUeber: 0.4 },
     // Landesblindengeld außerhalb Bayerns: für Erwachsene je nach Land etwa 350 € (Schleswig-Holstein) bis 950 € (Nordrhein-Westfalen, unter 60)
     landBlind: { von: 350, bis: 950 },
+    // Bayerisches Landespflegegeld (BayLPflGG): ab Pflegegrad 2, unabhängig vom Einkommen; ab dem Pflegegeldjahr 2026 500 € im Jahr (vorher 1.000 €)
+    lpg: { betrag: 500, stand: '2026' },
+    // Bayerisches Familiengeld (250 €, ab dem 3. Kind 300 € im Monat, 13. bis 36. Lebensmonat) und Krippengeld (bis 100 €, einkommensabhängig):
+    // nur noch für Kinder, die bis 31.12.2024 geboren sind
+    famgeld: { betrag: 250, ab3: 300, krippe: 100 },
     // Wohnberechtigungsschein, Bundeswerte § 9 Abs. 2 WoFG (Untergrenze; die Länder legen eigene, meist höhere Grenzen fest)
     wbsBund: { ein: 12000, zwei: 18000, weitere: 4100, kind: 500 },
     // Freibetrag beim Wohngeld für eigenes Einkommen von Kindern (16 bis 24 Jahre): 1.200 € im Jahr (§ 17 Nr. 4 WoGG)
@@ -242,7 +247,7 @@ const Rules = (function () {
       art1, art2, pers, liste: !!liste, kindEink, uvgEst, kindZahl: unterhalt + uvgEst, mehrAE, alterGrenz,
       egFreiSGB: sumIf((a, b) => a === 'eg' && b > R.elterngeldFrei ? R.elterngeldFrei : 0),
       vPausch: sumIf((a, b) => a !== 'lohn' && a !== 'ohne' && b > 0 ? R.versPauschale : 0),
-      mzG: !!inp.mzG, mzRF: !!(inp.mz && inp.mz.RF), mzAG: !!(inp.mz && inp.mz.aG), wfbmJahre: num(inp.wfbmJahre), grundrente33: !!inp.grundrente33, bhEinkHoch: !!inp.bhEinkHoch, teilhabe: !!inp.teilhabe, bhWeitere: Math.min(4, Math.max(0, inp.bhWeitere | 0)), schwanger: !!inp.schwanger, ernaehrung: !!inp.ernaehrung, warmwasser: !!inp.warmwasser, gebJahr: jahr,
+      mzG: !!inp.mzG, mzGl: !!inp.mzGl || !!(inp.mz && inp.mz.Gl), mzRF: !!(inp.mz && inp.mz.RF), mzAG: !!(inp.mz && inp.mz.aG), wfbmJahre: num(inp.wfbmJahre), grundrente33: !!inp.grundrente33, bhEinkHoch: !!inp.bhEinkHoch, teilhabe: !!inp.teilhabe, bhWeitere: Math.min(4, Math.max(0, inp.bhWeitere | 0)), schwanger: !!inp.schwanger, ernaehrung: !!inp.ernaehrung, warmwasser: !!inp.warmwasser, gebJahr: jahr,
       baby: inp.baby === 'bald' || inp.baby === 'da' ? inp.baby : '', egVor: blank(inp.egVor) ? null : num(inp.egVor), asyl: inp.aufenthalt === 'asyl',
       wohnform: inp.wohnform === 'eltern' || inp.wohnform === 'heim' ? inp.wohnform : '', wfbmEssen: !!inp.wfbmEssen,
       mieteGegeben: !blank(inp.miete) && num(inp.miete) > 0,
@@ -372,7 +377,8 @@ const Rules = (function () {
     if (h.bezug.kindergeld) return mk(id, 'na', 'na', [['kindergeld.na']]);
     // § 62 Abs. 2 EStG: Ausländerinnen und Ausländer nur mit bestimmten Aufenthaltstiteln; im Asylverfahren oder mit Duldung meist nicht
     if (h.asyl) return mk(id, 'vielleicht', 'vielleicht', [['kindergeld.asyl']]);
-    return mk(id, 'ja', 'ja', [['kindergeld.ja', { kg: eur(R.kindergeld) }], ['kindergeld.mehr']]);
+    const bay = !h.land || h.land === 'BY';
+    return mk(id, 'ja', 'ja', [['kindergeld.ja', { kg: eur(R.kindergeld) }], ['kindergeld.mehr']].concat(bay && h.kids > 0 ? [['kindergeld.familiengeld', { betrag: eur(R.famgeld.betrag), ab3: eur(R.famgeld.ab3), krippe: eur(R.famgeld.krippe) }]] : []));
   }
 
   // ---------------------------------------------------------------
@@ -796,6 +802,15 @@ const Rules = (function () {
     return mk(id, 'vielleicht', 'vielleicht', [[h.netto <= grenze ? 'hzp.unter' : 'hzp.ueber', { grenze: eur(grenze) }], ['hzp.heim']]);
   }
 
+  // Bayerisches Landespflegegeld (BayLPflGG): Pflegegrad 2 bis 5, Hauptwohnsitz Bayern, einkommensunabhängig, Antrag beim Landesamt für Pflege
+  function landespflegegeld(h) {
+    const id = 'lpg';
+    if (h.land && h.land !== 'BY') return mk(id, 'nein', 'land', [['lpg.land']]);
+    if (h.pflegegrad < 2 && !h.pflegeAntrag) return mk(id, 'nein', 'vorausFehlt', [['lpg.keine']]);
+    const tx = [['lpg.ja', { betrag: eur(R.lpg.betrag), stand: R.lpg.stand }], ['lpg.antrag']];
+    return h.pflegegrad >= 2 ? mk(id, 'ja', 'ja', tx) : mk(id, 'vielleicht', 'vielleicht', [['lpg.pflegeAntrag', { betrag: eur(R.lpg.betrag) }]]);
+  }
+
   // Blindenhilfe (§ 72 SGB XII): ergänzt das Landesblindengeld, wenn Einkommen und Vermögen gering sind
   function blindenhilfe(h) {
     const id = 'blh';
@@ -866,7 +881,7 @@ const Rules = (function () {
     if (gdbEff(h) && g >= 50) {
       const frei = gdbEff(h) === 'H' || h.blind === 'blind' || h.mzAG; // H, Bl, TBl, aG
       return mk(id, 'ja', 'ja', [h.alter ? ['ausweis.schwerRente'] : ['ausweis.schwer', { tage: R.beh.zusatzurlaub }]]
-        .concat(h.alter ? [] : [['ausweis.kuendigung']], frei ? [['ausweis.frei']] : h.mzG ? [['ausweis.g']] : [], h.mzAG || h.blind === 'blind' ? [['ausweis.park']] : []));
+        .concat(h.alter ? [] : [['ausweis.kuendigung']], frei ? [['ausweis.frei']] : h.mzG || h.mzGl ? [['ausweis.g']] : [], h.mzGl ? [['ausweis.gl']] : [], h.mzAG || h.blind === 'blind' ? [['ausweis.park']] : []));
     }
     if (gdbEff(h) && g >= 30) return mk(id, 'vielleicht', 'vielleicht', [['ausweis.gleich']]);
     if (gdbEff(h)) return mk(id, 'nein', 'vorausFehlt', [['ausweis.niedrig']]);
@@ -1008,7 +1023,7 @@ const Rules = (function () {
     eingl: 'Eingliederungshilfe', pausch: 'Behinderten-Pauschbetrag', ausweis: 'Schwerbehindertenausweis und Nachteilsausgleiche',
     blindengeld: 'Landesblindengeld', pflegeplus: 'Verhinderungspflege und Pflegehilfsmittel', arbeit: 'Budget für Arbeit',
     rundfunk: 'Befreiung vom Rundfunkbeitrag', zuzahl: 'Befreiung von Zuzahlungen', bab: 'Berufsausbildungsbeihilfe',
-    wbs: 'Wohnberechtigungsschein', alg1: 'Arbeitslosengeld I', krankengeld: 'Krankengeld', srente: 'Altersrente für schwerbehinderte Menschen', elterngeld: 'Elterngeld', hzp: 'Hilfe zur Pflege', blh: 'Blindenhilfe (Sozialhilfe)', asylblg: 'Asylbewerberleistungen'
+    wbs: 'Wohnberechtigungsschein', alg1: 'Arbeitslosengeld I', krankengeld: 'Krankengeld', srente: 'Altersrente für schwerbehinderte Menschen', elterngeld: 'Elterngeld', hzp: 'Hilfe zur Pflege', lpg: 'Landespflegegeld (Bayern)', blh: 'Blindenhilfe (Sozialhilfe)', asylblg: 'Asylbewerberleistungen'
   };
   // Unterlagen der neuen Karten: gemeinsame Schlüssel (u.*), damit nicht jede Karte eigene Texte braucht
   const NEWSTEPS = {
@@ -1019,7 +1034,7 @@ const Rules = (function () {
     zuzahl: ['u.versichertenkarte', 'u.quittungen', 'u.einkommen'], bab: ['u.ausbildungsvertrag', 'u.einkommen', 'u.mietvertrag'],
     wbs: ['u.einkommen', 'u.ausweis', 'u.haushalt'],
     srente: ['u.ausweis', 'u.arzt', 'u.rentenverlauf'],
-    elterngeld: ['u.geburtsurkunde', 'u.lohnabrechnung', 'u.steuerid'], hzp: ['u.pflegebescheid', 'u.einkommen', 'u.kosten'], blh: ['u.ausweis', 'u.bescheide', 'u.einkommen'], asylblg: ['u.ausweis', 'u.aufenthalt', 'u.einkommen'],
+    elterngeld: ['u.geburtsurkunde', 'u.lohnabrechnung', 'u.steuerid'], hzp: ['u.pflegebescheid', 'u.einkommen', 'u.kosten'], lpg: ['u.pflegebescheid', 'u.ausweis', 'u.bescheide'], blh: ['u.ausweis', 'u.bescheide', 'u.einkommen'], asylblg: ['u.ausweis', 'u.aufenthalt', 'u.einkommen'],
     alg1: ['u.ausweis', 'u.kuendigung', 'u.lohnabrechnung'], krankengeld: ['u.au', 'u.versichertenkarte', 'u.lohnabrechnung']
   };
   const STEPS = {};
@@ -1097,7 +1112,7 @@ const Rules = (function () {
     const baf = bafoeg(h);
     const pf = pflege(h);
     const results = [kg, wg, kz, gg, but, uvg, gsa, baf, pf,
-      alg1(h), krankengeld(h), elterngeld(h), hilfeZurPflege(h), asylbewerber(h), kindergeldBeh(h), erwerbsminderungsrente(h), schwerbRente(h), eingliederungshilfe(h), pauschbetrag(h), ausweis(h), blindengeld(h), blindenhilfe(h),
+      alg1(h), krankengeld(h), elterngeld(h), hilfeZurPflege(h), landespflegegeld(h), asylbewerber(h), kindergeldBeh(h), erwerbsminderungsrente(h), schwerbRente(h), eingliederungshilfe(h), pauschbetrag(h), ausweis(h), blindengeld(h), blindenhilfe(h),
       pflegeplus(h), budgetArbeit(h), rundfunk(h, gg, gsa), zuzahlung(h), bab(h), wbs(h)].map(angabeFehlt(h)).map((x, i) => ({ ...x, name: NAMES[x.id], order: i, steps: STEPS[x.id] }));
     const sorted = results.slice().sort((a, b) => ORDER[a.level] - ORDER[b.level] || a.order - b.order);
     return { h, results: sorted, zusammen: zusammenspiel(h, results) };

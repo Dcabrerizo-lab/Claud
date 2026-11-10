@@ -847,5 +847,19 @@
   "t.blindengeld.pflegeLand": "Jeśli otrzymujesz Pflegegeld, w większości krajów jest ono częściowo zaliczane na Landesblindengeld.",
   "t.wbs.landJa": "Twój dochód brutto jest nawet poniżej ogólnoniemieckiej granicy ({grenze} rocznie dla twojego gospodarstwa). Żaden kraj nie ma niższej granicy, więc Wohnberechtigungsschein jest bardzo prawdopodobny.",
   "t.wbs.landEigen": "Każdy kraj związkowy ustala własne granice dochodu dla Wohnberechtigungsschein, często wyraźnie powyżej wartości federalnych. Czy u ciebie wystarczy, dokładnie obliczy Wohnungsamt z odliczeniami. Przy niskim lub średnim dochodzie warto zapytać.",
-  "t.wbs.landStelle": "Wniosek składasz w Wohnungsamt swojego miasta lub gminy. Tam też poznasz dokładne granice w twoim kraju."
+  "t.wbs.landStelle": "Wniosek składasz w Wohnungsamt swojego miasta lub gminy. Tam też poznasz dokładne granice w twoim kraju.",
+  "t.lpg.land": "Landespflegegeld istnieje tylko w Bawarii.",
+  "t.lpg.keine": "W Bawarii Landespflegegeld przysługuje od stopnia opieki 2.",
+  "t.lpg.ja": "W Bawarii od stopnia opieki 2 jest Landespflegegeld: {betrag} rocznie (od {stand}), niezależnie od dochodu. Jest wypłacane dodatkowo do Pflegegeld z Pflegekasse.",
+  "t.lpg.antrag": "Wniosek składasz raz w Bayerisches Landesamt für Pflege, potem pieniądze przychodzą co roku. Złóż go szybko, bo jest termin; jaki, powie Landesamt.",
+  "t.lpg.pflegeAntrag": "Gdy tylko zostanie ustalony stopień opieki 2 lub wyższy, Bawaria płaci dodatkowo Landespflegegeld: {betrag} rocznie.",
+  "t.kindergeld.familiengeld": "Tylko w Bawarii: na dzieci urodzone do końca 2024 roku do ich 3. urodzin jest jeszcze Familiengeld ({betrag} miesięcznie, od 3. dziecka {ab3}), a przy żłobku do {krippe} Krippengeld miesięcznie zależnie od dochodu. Na dzieci urodzone od 2025 roku nie ma już ani jednego, ani drugiego.",
+  "t.ausweis.gl": "Głuchota (oznaczenie Gl): niektóre kraje związkowe płacą własne Gehörlosengeld, na przykład Hesja i Saksonia-Anhalt; Bawaria nie. Zapytaj w Versorgungsamt swojego kraju.",
+  "cb.mzGl": "W Schwerbehindertenausweis jest oznaczenie Gl (głuchota)",
+  "n.lpg": "Krajowy zasiłek opiekuńczy (Bawaria)",
+  "zu.lpg": "Bayerisches Landesamt für Pflege",
+  "s.lpg.wo": "W Bayerisches Landesamt für Pflege, online lub na formularzu.",
+  "s.lpg.tip": "Dołącz decyzję Pflegekasse o stopniu opieki. Jeden wniosek wystarczy, potem pieniądze przychodzą co roku.",
+  "es.n.lpg": "Krajowy zasiłek opiekuńczy",
+  "es.r.lpg": "Stopień opieki 2 lub wyższy? Wtedy Bawaria płaci ci pieniądze co roku."
 }
