@@ -3,6 +3,7 @@ name: Schwere Tests
 # Große Testläufe: viele Millionen Haushalte gegen die unabhängige Referenzrechnung, Logik-Test mit 1 Million Haushalten,
 # vollständiger Mutationstest und Browsertests in Firefox und WebKit (Safari). Sparsam: nur von Hand (Actions -> Schwere Tests
 # -> Run workflow) und einmal, wenn diese Datei geändert wird. Dauer etwa 20 bis 40 Minuten.
+# (Die Knopfdruck-Variante erscheint erst, wenn diese Datei auch im Haupt-Branch liegt.)
 on:
   workflow_dispatch:
   push:
