@@ -355,7 +355,7 @@
   "s.pausch.tip": "Kto korzysta z ryczałtu, nie może ponownie odliczyć osobno kosztów, które on obejmuje.",
   "s.ausweis.wo": "W Versorgungsamt. W Bawarii jest to Zentrum Bayern Familie und Soziales (ZBFS).",
   "s.ausweis.tip": "Karta jest dobrowolna, ale otwiera dostęp do wielu ulg.",
-  "s.blindengeld.wo": "W Zentrum Bayern Familie und Soziales (ZBFS) lub w Twojej gminie.",
+  "s.blindengeld.wo": "W Bawarii w Zentrum Bayern Familie und Soziales (ZBFS). W innych krajach związkowych w urzędzie podanym wyżej przy „Właściwy urząd”.",
   "s.blindengeld.tip": "Pierwszy wniosek można złożyć nieformalnie, ustnie lub e-mailem. Blindengeld wypłaca się najwcześniej od miesiąca złożenia wniosku.",
   "s.pflegeplus.wo": "W Pflegekasse przy Twojej kasie chorych.",
   "s.pflegeplus.tip": "Wniosek o przebudowę złóż, zanim rozpoczną się prace.",
@@ -841,5 +841,11 @@
   "t.rundfunk.asyl": "Osoby otrzymujące świadczenia z Asylbewerberleistungsgesetz są na wniosek zwolnione z Rundfunkbeitrag. Wyślij decyzję do Beitragsservice.",
   "t.alg1.sperrzeit": "Kto sam wypowie umowę lub podpisze porozumienie o rozwiązaniu bez ważnego powodu, zwykle dostaje okres karencji: {wochen} tygodni bez Arbeitslosengeld.",
   "t.alg1.neben": "Przy Arbeitslosengeld możesz pracować mniej niż 15 godzin tygodniowo. {frei} miesięcznie jest wolne, reszta jest zaliczana.",
-  "t.kindergeld.mehr": "Kindergeld przysługuje też na dzieci do 21 lat zarejestrowane jako bezrobotne oraz do 25 lat w wolontariacie, przy szukaniu miejsca nauki zawodu lub w przerwie najwyżej 4 miesięcy między dwoma etapami nauki. Po pierwszej nauce zawodu dziecko może pracować najwyżej 20 godzin tygodniowo."
+  "t.kindergeld.mehr": "Kindergeld przysługuje też na dzieci do 21 lat zarejestrowane jako bezrobotne oraz do 25 lat w wolontariacie, przy szukaniu miejsca nauki zawodu lub w przerwie najwyżej 4 miesięcy między dwoma etapami nauki. Po pierwszej nauce zawodu dziecko może pracować najwyżej 20 godzin tygodniowo.",
+  "t.blindengeld.landJa": "W każdym kraju związkowym osoby niewidome otrzymują Landesblindengeld, zwykle niezależnie od dochodu. Wysokość każdy kraj ustala sam: dla dorosłych około {von} do {bis} miesięcznie, dla dzieci i osób starszych często mniej. Dokładną kwotę poda właściwy urząd.",
+  "t.blindengeld.hochLand": "Tylko niektóre kraje związkowe płacą osobne świadczenie osobom ze znacznym niedowidzeniem (na przykład Bawaria). Zapytaj we właściwym urzędzie, czy jest ono w twoim kraju.",
+  "t.blindengeld.pflegeLand": "Jeśli otrzymujesz Pflegegeld, w większości krajów jest ono częściowo zaliczane na Landesblindengeld.",
+  "t.wbs.landJa": "Twój dochód brutto jest nawet poniżej ogólnoniemieckiej granicy ({grenze} rocznie dla twojego gospodarstwa). Żaden kraj nie ma niższej granicy, więc Wohnberechtigungsschein jest bardzo prawdopodobny.",
+  "t.wbs.landEigen": "Każdy kraj związkowy ustala własne granice dochodu dla Wohnberechtigungsschein, często wyraźnie powyżej wartości federalnych. Czy u ciebie wystarczy, dokładnie obliczy Wohnungsamt z odliczeniami. Przy niskim lub średnim dochodzie warto zapytać.",
+  "t.wbs.landStelle": "Wniosek składasz w Wohnungsamt swojego miasta lub gminy. Tam też poznasz dokładne granice w twoim kraju."
 }

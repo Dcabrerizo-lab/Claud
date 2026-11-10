@@ -46,12 +46,18 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
 
   // Fall 2: blind
   await sel('blind', 'blind');
-  c = await card('Blindengeld (Bayern)'); ok('Blindengeld 809 €', c && c.pill === 'ja' && /809 €/.test(c.text), JSON.stringify(c));
-  await sel('pflegegrad', '2'); c = await card('Blindengeld (Bayern)'); ok('Anrechnung 159,62 € bei Pflegegrad 2 (ZBFS)', /159,62 €/.test(c.text) && /649,38 €/.test(c.text), c.text);
-  await sel('pflegegrad', '3'); c = await card('Blindengeld (Bayern)'); ok('Pflegegrad 3: 33 % von 599 € = 197,67 € (Art. 4 BayBlindG)', /197,67 €/.test(c.text), c.text);
+  c = await card('Landesblindengeld'); ok('Blindengeld 809 €', c && c.pill === 'ja' && /809 €/.test(c.text), JSON.stringify(c));
+  await sel('pflegegrad', '2'); c = await card('Landesblindengeld'); ok('Anrechnung 159,62 € bei Pflegegrad 2 (ZBFS)', /159,62 €/.test(c.text) && /649,38 €/.test(c.text), c.text);
+  await sel('pflegegrad', '3'); c = await card('Landesblindengeld'); ok('Pflegegrad 3: 33 % von 599 € = 197,67 € (Art. 4 BayBlindG)', /197,67 €/.test(c.text), c.text);
   await sel('pflegegrad', '2');
   c = await card('Verhinderungspflege und Pflegehilfsmittel'); ok('Pflegehilfsmittel 42 € / 4.180 €', c.pill === 'ja' && /42 €/.test(c.text) && /4\.180 €/.test(c.text), c.text);
-  await sel('blind', 'hoch'); c = await card('Blindengeld (Bayern)'); ok('Sehbehindertengeld 242,70 €, bei Pflegegrad 2 bleiben 83,08 €', /242,70 €/.test(c.text) && /83,08 €/.test(c.text), c.text); await sel('pflegegrad', '3');
+  await sel('blind', 'hoch'); c = await card('Landesblindengeld'); ok('Sehbehindertengeld 242,70 €, bei Pflegegrad 2 bleiben 83,08 €', /242,70 €/.test(c.text) && /83,08 €/.test(c.text), c.text); await sel('pflegegrad', '3');
+
+  // Anderes Bundesland: Landesblindengeld mit Spanne und Landschaftsverband als zuständige Stelle (NRW), danach zurück zu Bayern
+  await sel('blind', 'blind'); await sel('bundesland', 'NW');
+  c = await card('Landesblindengeld'); ok('NRW: Landesblindengeld wahrscheinlich, Spanne 350 bis 950 €, Stelle Landschaftsverband', c && c.pill === 'ja' && /350 €/.test(c.text) && /950 €/.test(c.text) && /Landschaftsverband/.test(c.zust), JSON.stringify(c));
+  c = await card('Schwerbehindertenausweis und Nachteilsausgleiche'); ok('NRW: Ausweis beim Kreis bzw. der kreisfreien Stadt', c && /Kreis bzw\. kreisfreie Stadt/.test(c.zust), c && c.zust);
+  await sel('bundesland', 'BY'); await sel('blind', '');
 
   // Fall 3: Erwerbsminderungsrente
   await geb('1970'); await sel('emStd', 'unter3');
@@ -64,10 +70,10 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
   await p.check('#babWohnt'); c = await card('Berufsausbildungsbeihilfe'); ok('BAB mit Wohn-Haken: möglich', c.pill === 'vielleicht');
 
   // Fall 5: WBS
-  await fillNum('ek1Brutto', '1400'); c = await card('Wohnberechtigungsschein (Bayern)'); ok('WBS 1.400 € brutto allein (16.800 € im Jahr): wahrscheinlich, Grenze 17.500 €', c.pill === 'ja' && /17\.500 €/.test(c.text), c.text);
-  await fillNum('ek1Brutto', '2000'); c = await card('Wohnberechtigungsschein (Bayern)'); ok('WBS 2.000 € brutto allein: möglich (nach Abzügen unter 17.500 €)', c.pill === 'vielleicht', c.text);
-  await fillNum('ek1Brutto', '3000'); c = await card('Wohnberechtigungsschein (Bayern)'); ok('WBS 3.000 € brutto allein: möglich (nur mit Gebietsverordnung, bis 28.300 €)', c.pill === 'vielleicht' && /28\.300 €/.test(c.text), c.text);
-  await fillNum('ek1Brutto', '5000'); c = await card('Wohnberechtigungsschein (Bayern)'); ok('WBS 5.000 € brutto allein: unwahrscheinlich', c.pill === 'nein');
+  await fillNum('ek1Brutto', '1400'); c = await card('Wohnberechtigungsschein'); ok('WBS 1.400 € brutto allein (16.800 € im Jahr): wahrscheinlich, Grenze 17.500 €', c.pill === 'ja' && /17\.500 €/.test(c.text), c.text);
+  await fillNum('ek1Brutto', '2000'); c = await card('Wohnberechtigungsschein'); ok('WBS 2.000 € brutto allein: möglich (nach Abzügen unter 17.500 €)', c.pill === 'vielleicht', c.text);
+  await fillNum('ek1Brutto', '3000'); c = await card('Wohnberechtigungsschein'); ok('WBS 3.000 € brutto allein: möglich (nur mit Gebietsverordnung, bis 28.300 €)', c.pill === 'vielleicht' && /28\.300 €/.test(c.text), c.text);
+  await fillNum('ek1Brutto', '5000'); c = await card('Wohnberechtigungsschein'); ok('WBS 5.000 € brutto allein: unwahrscheinlich', c.pill === 'nein');
   await fillNum('ek1Brutto', '2000');
 
   await p.click('#p1');

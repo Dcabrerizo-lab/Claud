@@ -355,7 +355,7 @@
   "s.pausch.tip": "Cine folosește deducerea forfetară nu poate deduce încă o dată separat costurile pe care le acoperă.",
   "s.ausweis.wo": "La Versorgungsamt. În Bavaria este Zentrum Bayern Familie und Soziales (ZBFS).",
   "s.ausweis.tip": "Cardul este facultativ, dar deschide accesul la multe facilități.",
-  "s.blindengeld.wo": "La Zentrum Bayern Familie und Soziales (ZBFS) sau la comuna ta.",
+  "s.blindengeld.wo": "În Bavaria la Zentrum Bayern Familie und Soziales (ZBFS). În alte landuri la instituția indicată mai sus la „Autoritate competentă”.",
   "s.blindengeld.tip": "Prima cerere poate fi informală, orală sau prin e-mail. Blindengeld se plătește cel mai devreme din luna cererii.",
   "s.pflegeplus.wo": "La Pflegekasse a casei tale de asigurări de sănătate.",
   "s.pflegeplus.tip": "Depune cererea pentru amenajări înainte de începerea lucrărilor.",
@@ -841,5 +841,11 @@
   "t.rundfunk.asyl": "Cine primește prestații după Asylbewerberleistungsgesetz este scutit la cerere de Rundfunkbeitrag. Trimite decizia la Beitragsservice.",
   "t.alg1.sperrzeit": "Cine demisionează sau semnează un acord de încetare fără un motiv important primește de obicei o perioadă de blocare: {wochen} săptămâni fără Arbeitslosengeld.",
   "t.alg1.neben": "Pe lângă Arbeitslosengeld poți lucra mai puțin de 15 ore pe săptămână. {frei} pe lună rămân libere, restul se ia în calcul.",
-  "t.kindergeld.mehr": "Kindergeld se plătește și pentru copiii până la 21 de ani înregistrați ca șomeri și până la 25 de ani în serviciu voluntar, în căutarea unui loc de ucenicie sau într-o pauză de cel mult 4 luni între două formări. După prima formare copilul poate lucra cel mult 20 de ore pe săptămână."
+  "t.kindergeld.mehr": "Kindergeld se plătește și pentru copiii până la 21 de ani înregistrați ca șomeri și până la 25 de ani în serviciu voluntar, în căutarea unui loc de ucenicie sau într-o pauză de cel mult 4 luni între două formări. După prima formare copilul poate lucra cel mult 20 de ore pe săptămână.",
+  "t.blindengeld.landJa": "În fiecare land, persoanele nevăzătoare primesc Landesblindengeld, de obicei indiferent de venit. Suma o stabilește fiecare land: pentru adulți aproximativ {von} până la {bis} pe lună, pentru copii și persoane în vârstă adesea mai puțin. Suma exactă ți-o spune instituția competentă.",
+  "t.blindengeld.hochLand": "Doar unele landuri plătesc o prestație separată pentru persoanele cu deficiență gravă de vedere (de exemplu Bavaria). Întreabă instituția competentă dacă există în landul tău.",
+  "t.blindengeld.pflegeLand": "Dacă primești Pflegegeld, în majoritatea landurilor acesta se scade parțial din Landesblindengeld.",
+  "t.wbs.landJa": "Venitul tău brut este chiar sub limita la nivel național ({grenze} pe an pentru gospodăria ta). Niciun land nu are o limită mai mică, deci un Wohnberechtigungsschein este foarte probabil.",
+  "t.wbs.landEigen": "Fiecare land își stabilește propriile limite de venit pentru Wohnberechtigungsschein, adesea mult peste valorile federale. Dacă venitul tău este suficient de mic calculează exact Wohnungsamt, cu deduceri. Cu venit mic sau mediu merită să întrebi.",
+  "t.wbs.landStelle": "Cererea o depui la Wohnungsamt din orașul sau comuna ta. Acolo afli și limitele exacte din landul tău."
 }

@@ -355,7 +355,7 @@
   "s.pausch.tip": "Anyone who uses the allowance cannot deduct the costs it covers again individually.",
   "s.ausweis.wo": "At the Versorgungsamt. In Bavaria this is the Zentrum Bayern Familie und Soziales (ZBFS).",
   "s.ausweis.tip": "The card is voluntary but opens access to many compensations for disadvantages.",
-  "s.blindengeld.wo": "At the Zentrum Bayern Familie und Soziales (ZBFS) or at your municipality.",
+  "s.blindengeld.wo": "In Bavaria at the Zentrum Bayern Familie und Soziales (ZBFS). In other federal states at the office shown above under “Responsible office”.",
   "s.blindengeld.tip": "The first application can be informal, oral or by email. Blindengeld is paid from the month of the application at the earliest.",
   "s.pflegeplus.wo": "At the Pflegekasse that belongs to your health insurance.",
   "s.pflegeplus.tip": "Apply for conversions before the work starts.",
@@ -841,5 +841,11 @@
   "t.rundfunk.asyl": "People receiving benefits under the Asylbewerberleistungsgesetz are exempted from the broadcasting fee (Rundfunkbeitrag) on application. Send the notice to the Beitragsservice.",
   "t.alg1.sperrzeit": "If you resign yourself or sign a termination agreement without an important reason, you usually get a blocking period: {wochen} weeks without unemployment benefit (Arbeitslosengeld).",
   "t.alg1.neben": "Alongside Arbeitslosengeld you may work less than 15 hours a week. {frei} a month stay free, the rest is counted.",
-  "t.kindergeld.mehr": "Kindergeld is also paid for children up to 21 registered as unemployed, and up to 25 in voluntary service, while looking for a training place or in a break of at most 4 months between two training periods. After the first training the child may work at most 20 hours a week."
+  "t.kindergeld.mehr": "Kindergeld is also paid for children up to 21 registered as unemployed, and up to 25 in voluntary service, while looking for a training place or in a break of at most 4 months between two training periods. After the first training the child may work at most 20 hours a week.",
+  "t.blindengeld.landJa": "In every federal state blind people receive Landesblindengeld, usually regardless of income. Each state sets the amount: for adults about {von} to {bis} per month, often less for children and older people. The responsible office will tell you the exact amount.",
+  "t.blindengeld.hochLand": "Only some federal states pay a separate benefit for people with severe visual impairment (for example Bavaria). Ask the responsible office whether it exists in your state.",
+  "t.blindengeld.pflegeLand": "If you receive Pflegegeld, most states partly count it against the Landesblindengeld.",
+  "t.wbs.landJa": "Your gross income is even below the nationwide limit ({grenze} per year for your household). No federal state has a lower limit, so a Wohnberechtigungsschein is very likely.",
+  "t.wbs.landEigen": "Each federal state sets its own income limits for the Wohnberechtigungsschein, often well above the federal values. Whether yours is low enough is calculated exactly (with deductions) by the Wohnungsamt. With a low or medium income it is worth asking.",
+  "t.wbs.landStelle": "You apply at the Wohnungsamt of your city or municipality. There you will also learn the exact limits in your state."
 }

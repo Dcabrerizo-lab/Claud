@@ -355,7 +355,7 @@
   "s.pausch.tip": "Wer den Pauschbetrag nutzt, kann die Kosten, die er abdeckt, nicht noch einmal einzeln absetzen.",
   "s.ausweis.wo": "Beim Versorgungsamt. In Bayern ist das das Zentrum Bayern Familie und Soziales (ZBFS).",
   "s.ausweis.tip": "Der Ausweis ist freiwillig, öffnet aber den Zugang zu vielen Nachteilsausgleichen.",
-  "s.blindengeld.wo": "Beim Zentrum Bayern Familie und Soziales (ZBFS) oder bei deiner Gemeinde.",
+  "s.blindengeld.wo": "In Bayern beim Zentrum Bayern Familie und Soziales (ZBFS). In anderen Bundesländern bei der Stelle, die oben bei „Zuständig“ steht.",
   "s.blindengeld.tip": "Der erste Antrag geht auch formlos, mündlich oder per E-Mail. Blindengeld gibt es frühestens ab dem Monat des Antrags.",
   "s.pflegeplus.wo": "Bei der Pflegekasse, die zu deiner Krankenkasse gehört.",
   "s.pflegeplus.tip": "Stelle den Antrag für Umbauten, bevor die Arbeiten beginnen.",
@@ -841,5 +841,11 @@
   "t.rundfunk.asyl": "Wer Leistungen nach dem Asylbewerberleistungsgesetz bekommt, wird auf Antrag vom Rundfunkbeitrag befreit. Den Bescheid an den Beitragsservice schicken.",
   "t.alg1.sperrzeit": "Wer selbst kündigt oder einen Aufhebungsvertrag unterschreibt, bekommt ohne wichtigen Grund meist eine Sperrzeit: {wochen} Wochen kein Arbeitslosengeld.",
   "t.alg1.neben": "Neben dem Arbeitslosengeld darfst du weniger als 15 Stunden in der Woche arbeiten. {frei} im Monat bleiben frei, der Rest wird angerechnet.",
-  "t.kindergeld.mehr": "Kindergeld gibt es auch für Kinder bis 21, die arbeitslos gemeldet sind, und bis 25 im Freiwilligendienst, bei der Suche nach einem Ausbildungsplatz oder in einer Pause von höchstens 4 Monaten zwischen zwei Ausbildungen. Nach der ersten Ausbildung darf das Kind höchstens 20 Stunden in der Woche arbeiten."
+  "t.kindergeld.mehr": "Kindergeld gibt es auch für Kinder bis 21, die arbeitslos gemeldet sind, und bis 25 im Freiwilligendienst, bei der Suche nach einem Ausbildungsplatz oder in einer Pause von höchstens 4 Monaten zwischen zwei Ausbildungen. Nach der ersten Ausbildung darf das Kind höchstens 20 Stunden in der Woche arbeiten.",
+  "t.blindengeld.landJa": "In jedem Bundesland gibt es für blinde Menschen Landesblindengeld, meist unabhängig vom Einkommen. Die Höhe legt jedes Land selbst fest: für Erwachsene etwa {von} bis {bis} im Monat, für Kinder und ältere Menschen oft weniger. Die zuständige Stelle nennt dir den genauen Betrag.",
+  "t.blindengeld.hochLand": "Für hochgradig sehbehinderte Menschen zahlen nur einige Bundesländer eine eigene Leistung (zum Beispiel Bayern). Frag bei der zuständigen Stelle, ob es sie in deinem Land gibt.",
+  "t.blindengeld.pflegeLand": "Bekommst du Pflegegeld, wird es in den meisten Ländern teilweise auf das Landesblindengeld angerechnet.",
+  "t.wbs.landJa": "Dein Bruttoeinkommen liegt sogar unter der bundesweiten Grenze ({grenze} im Jahr für deinen Haushalt). Kein Bundesland hat eine niedrigere Grenze, ein Wohnberechtigungsschein ist also sehr wahrscheinlich.",
+  "t.wbs.landEigen": "Jedes Bundesland legt eigene Einkommensgrenzen für den Wohnberechtigungsschein fest, oft deutlich über den Bundeswerten. Ob es bei dir reicht, rechnet das Wohnungsamt mit Abzügen genau aus. Mit kleinem oder mittlerem Einkommen lohnt sich die Frage.",
+  "t.wbs.landStelle": "Den Antrag stellst du beim Wohnungsamt deiner Stadt oder Gemeinde. Dort erfährst du auch die genauen Grenzen in deinem Land."
 }

@@ -73,6 +73,10 @@ const Rules = (function () {
     // Blindenhilfe (§ 72 SGB XII): gleiche Einkommensgrenze wie Hilfe zur Pflege (§ 85); vom Einkommen über der Grenze
     // werden höchstens 40 % eingesetzt (§ 87 Abs. 1 Satz 3); Landesblindengeld wird voll angerechnet (§ 72 Abs. 1 Satz 2)
     blh: { einsatzUeber: 0.4 },
+    // Landesblindengeld außerhalb Bayerns: für Erwachsene je nach Land etwa 350 € (Schleswig-Holstein) bis 950 € (Nordrhein-Westfalen, unter 60)
+    landBlind: { von: 350, bis: 950 },
+    // Wohnberechtigungsschein, Bundeswerte § 9 Abs. 2 WoFG (Untergrenze; die Länder legen eigene, meist höhere Grenzen fest)
+    wbsBund: { ein: 12000, zwei: 18000, weitere: 4100, kind: 500 },
     // Freibetrag beim Wohngeld für eigenes Einkommen von Kindern (16 bis 24 Jahre): 1.200 € im Jahr (§ 17 Nr. 4 WoGG)
     wgKindFrei: 100,
     // Pauschalabzug beim Wohngeld (§ 16 WoGG) je Einkommensart: [kleinster, größter] üblicher Abzug
@@ -267,7 +271,7 @@ const Rules = (function () {
       gdb: R.beh.pausch.hasOwnProperty(String(inp.gdb || '')) ? String(inp.gdb) : '',
       gdbAntrag: inp.gdb === 'antrag',
       blind: inp.blind === 'blind' || inp.blind === 'hoch' ? inp.blind : '',
-      // Bundesland als Kürzel (BY, BW, ...); leer = unbekannt. Blindengeld und WBS-Grenzen der App gelten nur für Bayern.
+      // Bundesland als Kürzel (BY, BW, ...); leer = unbekannt (dann gelten die bayerischen Werte für Blindengeld und WBS).
       land: /^(BW|BY|BE|BB|HB|HH|HE|MV|NI|NW|RP|SL|SN|ST|SH|TH)$/.test(inp.bundesland) ? inp.bundesland : '',
       emStd: inp.emStd === 'unter3' || inp.emStd === '3bis6' || inp.emStd === 'unklar' ? inp.emStd : '',
       em5: !!inp.em5, wfbm: !!inp.wfbm, bhSelbst: !!inp.bhSelbst,
@@ -874,7 +878,13 @@ const Rules = (function () {
   function blindengeld(h) {
     const id = 'blindengeld';
     if (!h.blind) return keinBeh(id);
-    if (h.land && h.land !== 'BY') return mk(id, 'na', 'land', [['land.blindengeld']]);
+    // Andere Länder: Jedes Land hat ein eigenes Landesblindengeld (eigene Gesetze und Beträge). Blinde Menschen bekommen es überall,
+    // meist unabhängig vom Einkommen; hochgradig Sehbehinderte nur in einigen Ländern. Die Beträge der Länder sind in den Quellen
+    // widersprüchlich, daher nur eine Spanne und keine feste Zahl (Prüfliste).
+    if (h.land && h.land !== 'BY') {
+      if (h.blind !== 'blind') return mk(id, 'vielleicht', 'vielleicht', [['blindengeld.hochLand']]);
+      return mk(id, 'ja', 'ja', [['blindengeld.landJa', { von: eur(R.landBlind.von), bis: eur(R.landBlind.bis) }]].concat(h.pflegegrad >= 2 ? [['blindengeld.pflegeLand']] : []));
+    }
     const b = R.beh.blind;
     const tx = [[h.blind === 'blind' ? 'blindengeld.blind' : 'blindengeld.hoch', { betrag: eur2(h.blind === 'blind' ? b.blind : b.hoch), stand: b.stand }]];
     // Art. 4 Abs. 1 BayBlindG: Pflegegeld wird angerechnet, PG 2: 46 %, PG 3-5: 33 % des Pflegegeldes; Mindestzahlbetrag 20 € (Abs. 4)
@@ -952,7 +962,13 @@ const Rules = (function () {
   }
   function wbs(h) {
     const id = 'wbs';
-    if (h.land && h.land !== 'BY') return mk(id, 'na', 'land', [['land.wbs']]);
+    // Andere Länder: eigene Einkommensgrenzen (Landesrecht). Sicher ist nur: Kein Land liegt unter den Bundeswerten (§ 9 Abs. 2 WoFG).
+    // Das Brutto ist nie kleiner als das maßgebliche Gesamteinkommen; liegt es unter der Bundesgrenze, ist der WBS wahrscheinlich.
+    if (h.land && h.land !== 'BY') {
+      const w = R.wbsBund, jahr = (h.brutto + (h.kindEink || 0)) * 12;
+      const bund = (h.persons <= 1 ? w.ein : w.zwei + (h.persons - 2) * w.weitere) + h.children * w.kind;
+      return jahr <= bund ? mk(id, 'ja', 'ja', [['wbs.landJa', { grenze: eur(bund) }], ['wbs.landStelle']]) : mk(id, 'vielleicht', 'vielleicht', [['wbs.landEigen'], ['wbs.landStelle']]);
+    }
     const grenze = wbsGrenze(h, false), max = wbsGrenze(h, true);
     const jahr = (h.brutto + (h.kindEink || 0)) * 12;
     const gd = gdbNum(h), pg = h.pflegegrad > 0;
@@ -990,9 +1006,9 @@ const Rules = (function () {
     bafoeg: 'BAföG', pflege: 'Pflegegeld und Entlastungsbetrag',
     kgBeh: 'Kindergeld für erwachsene Kinder mit Behinderung', emrente: 'Erwerbsminderungsrente',
     eingl: 'Eingliederungshilfe', pausch: 'Behinderten-Pauschbetrag', ausweis: 'Schwerbehindertenausweis und Nachteilsausgleiche',
-    blindengeld: 'Blindengeld (Bayern)', pflegeplus: 'Verhinderungspflege und Pflegehilfsmittel', arbeit: 'Budget für Arbeit',
+    blindengeld: 'Landesblindengeld', pflegeplus: 'Verhinderungspflege und Pflegehilfsmittel', arbeit: 'Budget für Arbeit',
     rundfunk: 'Befreiung vom Rundfunkbeitrag', zuzahl: 'Befreiung von Zuzahlungen', bab: 'Berufsausbildungsbeihilfe',
-    wbs: 'Wohnberechtigungsschein (Bayern)', alg1: 'Arbeitslosengeld I', krankengeld: 'Krankengeld', srente: 'Altersrente für schwerbehinderte Menschen', elterngeld: 'Elterngeld', hzp: 'Hilfe zur Pflege', blh: 'Blindenhilfe (Sozialhilfe)', asylblg: 'Asylbewerberleistungen'
+    wbs: 'Wohnberechtigungsschein', alg1: 'Arbeitslosengeld I', krankengeld: 'Krankengeld', srente: 'Altersrente für schwerbehinderte Menschen', elterngeld: 'Elterngeld', hzp: 'Hilfe zur Pflege', blh: 'Blindenhilfe (Sozialhilfe)', asylblg: 'Asylbewerberleistungen'
   };
   // Unterlagen der neuen Karten: gemeinsame Schlüssel (u.*), damit nicht jede Karte eigene Texte braucht
   const NEWSTEPS = {
@@ -1033,6 +1049,42 @@ const Rules = (function () {
 
   const ORDER = { ja: 0, vielleicht: 1, nein: 2, na: 3 };
 
+
+  // ---------------------------------------------------------------
+  // Zuständige Stellen außerhalb Bayerns (ohne Anschrift). Nur Einträge, die als gesichert gelten; sonst die allgemeine Angabe ('_').
+  // In Bayern nennt die App die Stelle mit Anschrift (behoerden.js). Bitte fachlich prüfen (Prüfliste).
+  // ---------------------------------------------------------------
+  const ZUST_LAND = {
+    ausweis: {
+      _: 'Versorgungsamt deines Bundeslandes',
+      BW: 'Landratsamt bzw. Stadtkreis (Versorgungsamt)', BE: 'Landesamt für Gesundheit und Soziales (LAGeSo)', BB: 'Landesamt für Soziales und Versorgung (LASV)',
+      HB: 'Amt für Versorgung und Integration Bremen', HH: 'Versorgungsamt Hamburg', HE: 'Hessisches Amt für Versorgung und Soziales',
+      MV: 'Landesamt für Gesundheit und Soziales (LAGuS)', NI: 'Niedersächsisches Landesamt für Soziales, Jugend und Familie', NW: 'Kreis bzw. kreisfreie Stadt (Versorgungsamt)',
+      RP: 'Landesamt für Soziales, Jugend und Versorgung', SL: 'Landesamt für Soziales', SN: 'Landratsamt bzw. kreisfreie Stadt (Versorgungsamt)',
+      ST: 'Landesverwaltungsamt Sachsen-Anhalt (Versorgungsamt)', SH: 'Landesamt für soziale Dienste'
+    },
+    blindengeld: {
+      _: 'Stelle für das Landesblindengeld (das Sozialamt deines Kreises oder deiner Stadt sagt dir, wer zuständig ist)',
+      BE: 'Landesamt für Gesundheit und Soziales (LAGeSo)', HE: 'Landeswohlfahrtsverband Hessen', NW: 'Landschaftsverband Rheinland bzw. Westfalen-Lippe',
+      ST: 'Sozialagentur Sachsen-Anhalt', BW: 'Landratsamt bzw. Stadtkreis'
+    },
+    elterngeld: {
+      _: 'Elterngeldstelle deines Kreises oder deiner Stadt',
+      BW: 'L-Bank (Elterngeldstelle)', BE: 'Elterngeldstelle des Bezirksamts', HH: 'Elterngeldstelle des Bezirksamts', HE: 'Hessisches Amt für Versorgung und Soziales',
+      MV: 'Landesamt für Gesundheit und Soziales (LAGuS)', SL: 'Landesamt für Soziales', SH: 'Landesamt für soziale Dienste'
+    },
+    eingl: {
+      _: 'Träger der Eingliederungshilfe (meist der Landkreis oder die kreisfreie Stadt; bei seelischer Behinderung von Kindern das Jugendamt)',
+      HE: 'Landeswohlfahrtsverband Hessen (Erwachsene), Kreis oder Stadt (Kinder)', NW: 'Landschaftsverband Rheinland bzw. Westfalen-Lippe (Erwachsene), Kreis oder Stadt (Kinder)',
+      SL: 'Landesamt für Soziales', ST: 'Sozialagentur Sachsen-Anhalt', BE: 'Bezirksamt (Teilhabefachdienst)'
+    },
+    arbeit: { _: 'Träger der Eingliederungshilfe (meist der Landkreis oder die kreisfreie Stadt)', HE: 'Landeswohlfahrtsverband Hessen', NW: 'Landschaftsverband Rheinland bzw. Westfalen-Lippe' },
+    hzp: { _: 'Sozialamt deines Kreises oder deiner Stadt' },
+    blh: { _: 'Sozialamt deines Kreises oder deiner Stadt' },
+    wbs: { _: 'Wohnungsamt deiner Stadt oder Gemeinde' }
+  };
+  const zustLand = (id, land) => (land && land !== 'BY' && ZUST_LAND[id] ? (ZUST_LAND[id][land] || ZUST_LAND[id]._) : null);
+
   function evaluate(inp) {
     const h = derive(inp);
     const kg = kindergeld(h);
@@ -1051,7 +1103,7 @@ const Rules = (function () {
     return { h, results: sorted, zusammen: zusammenspiel(h, results) };
   }
 
-  return { evaluate, RULES: R, WG, limits, wgYmax, wgMiete, wgCap, wgHeiz, roman, sgb2Freibetrag, haushaltsFreibetrag, derive, NAMES, STEPS };
+  return { evaluate, RULES: R, WG, limits, wgYmax, wgMiete, wgCap, wgHeiz, roman, sgb2Freibetrag, haushaltsFreibetrag, derive, NAMES, STEPS, ZUST_LAND, zustLand };
 })();
 
 if (typeof module !== 'undefined') module.exports = Rules;

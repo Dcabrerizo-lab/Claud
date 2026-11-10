@@ -355,7 +355,7 @@
   "s.pausch.tip": "Götürü indirimi kullanan, kapsadığı giderleri ayrıca düşemez.",
   "s.ausweis.wo": "Versorgungsamt’ta. Bavyera’da bu Zentrum Bayern Familie und Soziales (ZBFS)’dir.",
   "s.ausweis.tip": "Kart isteğe bağlıdır, ancak birçok dezavantaj giderimine erişim sağlar.",
-  "s.blindengeld.wo": "Zentrum Bayern Familie und Soziales (ZBFS)’de veya belediyenizde.",
+  "s.blindengeld.wo": "Bavyera'da Zentrum Bayern Familie und Soziales (ZBFS). Diğer eyaletlerde yukarıda „Yetkili daire“ altında yazan yerde.",
   "s.blindengeld.tip": "İlk başvuru şekilsiz, sözlü veya e-postayla yapılabilir. Blindengeld en erken başvuru ayından itibaren ödenir.",
   "s.pflegeplus.wo": "Sağlık sigortanıza bağlı Pflegekasse’de.",
   "s.pflegeplus.tip": "Tadilatlar için başvuruyu işler başlamadan yapın.",
@@ -841,5 +841,11 @@
   "t.rundfunk.asyl": "Asylbewerberleistungsgesetz kapsamında yardım alanlar başvuru üzerine Rundfunkbeitrag'dan muaf tutulur. Kararı Beitragsservice'e gönder.",
   "t.alg1.sperrzeit": "Kendin istifa edersen veya önemli bir sebep olmadan fesih sözleşmesi imzalarsan genellikle bir bekleme süresi olur: {wochen} hafta Arbeitslosengeld yok.",
   "t.alg1.neben": "Arbeitslosengeld alırken haftada 15 saatten az çalışabilirsin. Ayda {frei} serbest kalır, gerisi hesaba katılır.",
-  "t.kindergeld.mehr": "Kindergeld, işsiz olarak kayıtlı 21 yaşına kadar çocuklar için ve 25 yaşına kadar gönüllü hizmette, meslek eğitimi yeri ararken veya iki eğitim arasında en fazla 4 aylık arada da ödenir. İlk eğitimden sonra çocuk haftada en fazla 20 saat çalışabilir."
+  "t.kindergeld.mehr": "Kindergeld, işsiz olarak kayıtlı 21 yaşına kadar çocuklar için ve 25 yaşına kadar gönüllü hizmette, meslek eğitimi yeri ararken veya iki eğitim arasında en fazla 4 aylık arada da ödenir. İlk eğitimden sonra çocuk haftada en fazla 20 saat çalışabilir.",
+  "t.blindengeld.landJa": "Her eyalette kör kişiler için Landesblindengeld vardır, genellikle gelirden bağımsızdır. Miktarı her eyalet kendisi belirler: yetişkinler için ayda yaklaşık {von} ile {bis} arası, çocuklar ve yaşlılar için çoğu zaman daha az. Kesin miktarı yetkili daire söyler.",
+  "t.blindengeld.hochLand": "Ağır görme engelli kişiler için sadece bazı eyaletler ayrı bir yardım öder (örneğin Bavyera). Eyaletinizde olup olmadığını yetkili daireye sorun.",
+  "t.blindengeld.pflegeLand": "Pflegegeld alıyorsanız, çoğu eyalette bunun bir kısmı Landesblindengeld'den düşülür.",
+  "t.wbs.landJa": "Brüt geliriniz ülke genelindeki sınırın bile altında (haneniz için yılda {grenze}). Hiçbir eyaletin sınırı daha düşük değildir, bu yüzden Wohnberechtigungsschein çok olasıdır.",
+  "t.wbs.landEigen": "Her eyalet Wohnberechtigungsschein için kendi gelir sınırlarını belirler, çoğu zaman federal değerlerin epey üzerinde. Sizin için yetip yetmediğini Wohnungsamt kesintilerle birlikte tam olarak hesaplar. Düşük veya orta gelirle sormaya değer.",
+  "t.wbs.landStelle": "Başvuruyu şehrinizin veya belediyenizin Wohnungsamt'ına yaparsınız. Eyaletinizdeki kesin sınırları da orada öğrenirsiniz."
 }

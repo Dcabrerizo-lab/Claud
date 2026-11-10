@@ -286,7 +286,8 @@
   function zustHtml(r) {
     var ags = aktAgs();
     var b = Behoerden.available() ? Behoerden.fuer(r.id, ags) : null;
-    var base = '<p class="zust">' + esc(t('zust', { z: t('zu.' + r.id) })) + '</p>';
+    var zl = Rules.zustLand(r.id, state.bundesland);
+    var base = zl ? '<p class="zust">' + esc(t('zust', { z: '' })).replace(/\s*$/, ' ') + '<span lang="de">' + esc(zl) + '</span></p>' : '<p class="zust">' + esc(t('zust', { z: t('zu.' + r.id) })) + '</p>';
     var hw = !b && Behoerden.available() && r.level !== 'nein' ? Behoerden.hinweis(r.id, ags) : null;
     if (hw) return base + '<p class="small">' + esc(t(hw.key, hw.p)) + '</p>';
     if (!b) {
@@ -688,7 +689,8 @@
     ];
     if (person.tel && person.tel.trim()) L.push('Telefon: ' + person.tel.trim());
     var b = Behoerden.available() ? Behoerden.fuer(id, aktAgs()) : null;
-    var empf = b ? [b.name].concat(b.abt ? [b.abt] : [], b.anschrift || []) : [a.stelle];
+    var zl = Rules.zustLand(id, state.bundesland);
+    var empf = b ? [b.name].concat(b.abt ? [b.abt] : [], b.anschrift || []) : [zl || a.stelle];
     L.push.apply(L, [''].concat(empf));
     L.push('', 'Datum: ' + today(), '', 'Betreff: ' + a.betreff, '', 'Sehr geehrte Damen und Herren,', '',
       a.satz + ' Bitte behandeln Sie dieses Schreiben als meinen Antrag und bestätigen Sie mir den Eingang. Bitte senden Sie mir außerdem die amtlichen Antragsformulare und eine Liste der Unterlagen zu, die Sie von mir benötigen. Die Formulare reiche ich schnellstmöglich nach.',
@@ -1273,7 +1275,7 @@
       // Wohnheim mit Eingliederungshilfe: In Bayern zahlt der Bezirk auch die Grundsicherung (Leistungen aus einer Hand)
       var bid = x.id === 'gsa' && es.wohnen === 'heim' && esLand() === 'BY' ? 'eingl' : x.id;
       var b = Behoerden.fuer ? Behoerden.fuer(bid, aktAgsEs()) : null;
-      var name = b ? b.name : t('zu.' + x.id);
+      var name = b ? b.name : (Rules.zustLand(x.id, esLand()) || t('zu.' + x.id));
       return '<p class="es-wo"><strong>' + esc(t('es.wo')) + '</strong> ' + esc(name) + (b && b.anschrift ? '<br><span lang="de">' + esc(b.anschrift.join(', ')) + '</span>' : '') + '</p>';
     };
     var karte = function (x) {

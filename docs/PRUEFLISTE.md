@@ -196,14 +196,15 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Werkstatt: volle Erwerbsminderung, Rente nach 20 Jahren (§ 43 Abs. 6) | ✓ | `rente-wfbm` |
 | Altersrente für schwerbehinderte Menschen (§§ 37, 236a), Altersgrenzen je Jahrgang | ✓ | `rente-sb` |
 
-## Blindengeld Bayern (BayBlindG)
+## Landesblindengeld (BayBlindG und Gesetze der anderen Länder)
 <!-- karten: blindengeld -->
 
 | Regel | Status | Test |
 |---|---|---|
 | Blindengeld und Sehbehindertengeld, Beträge Stand 7/2026 | ✓ | `bg-betrag` |
 | Anrechnung von Pflegegeld: 46 % bei Pflegegrad 2, 33 % ab 3, mindestens 20 € (Art. 4) | ✓ | `bg-pflege` |
-| Nur bei Wohnsitz in Bayern | ✓ | `bg-land` |
+| Andere Länder: blinde Menschen „wahrscheinlich“ (Landesblindengeld gibt es in jedem Land), Spanne für Erwachsene etwa 350 bis 950 €; hochgradig Sehbehinderte nur „möglich“; Hinweis Pflegegeld-Anrechnung | ◐ | `bg-land` |
+| Genaue Beträge und Anrechnungsregeln der anderen 15 Länder | ○ (die Quellen widersprechen sich stark; ohne geprüfte Quelle je Land keine feste Zahl) | |
 
 ## Blindenhilfe (SGB XII, § 72)
 <!-- karten: blh -->
@@ -253,14 +254,15 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Weitere Befreiungen: BAföG, Berufsausbildungsbeihilfe außerhalb des Elternhauses, Hilfe zur Pflege, Blindenhilfe, Taubblindheit; Härtefall | ◐ | `rf-mehr` |
 | Ermäßigung auf ein Drittel bei Merkzeichen RF (§ 4 Abs. 2) | ◐ | `rf-rf` |
 
-## Wohnberechtigungsschein Bayern (BayWoFG, WoFG)
+## Wohnberechtigungsschein (BayWoFG, WoFG und Landesrecht)
 <!-- karten: wbs -->
 
 | Regel | Status | Test |
 |---|---|---|
 | Einkommensgrenzen nach Haushaltsgröße und Kindern; höhere Grenzen per Gebietsverordnung | ✓ | `wbs-grenze` |
 | Freibetrag Schwerbehinderte nach § 24 WoFG (4.500 € / 2.100 €) | ✓ | `wbs-schwerb` |
-| Nur in Bayern | ✓ | `wbs-land` |
+| Andere Länder: unter den Bundeswerten (§ 9 Abs. 2 WoFG: 12.000 / 18.000 €, + 4.100 € je weitere Person, + 500 € je Kind) „wahrscheinlich“, sonst „möglich“ mit Hinweis auf die Landesgrenzen | ◐ | `wbs-land` |
+| Genaue Einkommensgrenzen der anderen 15 Länder | ○ (Quellen widersprüchlich; Annahme: kein Land liegt unter den Bundeswerten, bitte bestätigen) | |
 
 ## Elterngeld (BEEG)
 <!-- karten: elterngeld -->
@@ -281,11 +283,19 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Ausschluss vom Grundsicherungsgeld, von der Grundsicherung im Alter, vom Wohngeld und vom Kinderzuschlag | ✓ | `asyl-ausschluss` |
 | Höhe der Leistungen (Bedarfsstufen, Sachleistungen in Unterkünften) | ○ (hängt von der Unterbringung ab; die Stelle rechnet) | |
 
+## Zuständige Stellen außerhalb Bayerns
+<!-- karten: -->
+
+| Regel | Status | Test |
+|---|---|---|
+| Versorgungsamt, Elterngeldstelle, Träger der Eingliederungshilfe und Stelle für das Landesblindengeld je Land (ohne Anschrift), sonst allgemeine Angabe | ◐ | `zust-land` |
+| Einzelne Zuständigkeiten (z. B. Thüringen, Niedersachsen, Schleswig-Holstein beim Blindengeld) | ○ (nicht sicher bestätigt, daher die allgemeine Angabe; bitte von Fachleuten prüfen lassen) | |
+
 ## Leistungen, die die App (noch) nicht prüft
 
 Damit niemand denkt, die App decke alles ab:
 
 - Mutterschaftsgeld als eigene Leistung, Kinderkrankengeld, Kinderbetreuung (Kita-Gebühren-Ermäßigung)
-- Wohngeld und Zuständigkeiten außerhalb Bayerns: Wohngeld ja, Anschriften und landesrechtliche Leistungen nur für Bayern
+- Anschriften der Ämter außerhalb Bayerns (Phase 3); weitere Landesleistungen wie Gehörlosengeld, Landespflegegeld, Familiengeld (Phase 2)
 - Härtefallleistungen und einmalige Bedarfe im Einzelfall (z. B. Waschmaschine, Umzug, Mietschulden)
 - Schuldnerberatung, Sozialtarife (Strom, Telefon, Kultur), Bildungskredit
