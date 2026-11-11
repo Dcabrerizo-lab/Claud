@@ -471,7 +471,7 @@
   "beh.web": "Kurumun web sitesi",
   "beh.pruefen": "Adres resmî bilgilerden alınmıştır (kurumun künye sayfası veya BayernPortal, {stand}). Göndermeden önce lütfen kontrol et; kurumlar bazen taşınır.",
   "beh.ohneAdr": "Adresi kurumun web sitesinde bulabilirsin.",
-  "beh.plzHint": "Yukarıya posta kodunu gir, uygulama yetkili makamı adresiyle gösterir (şimdilik Bavyera için).",
+  "beh.plzHint": "Yukarıya posta kodunu gir, uygulama yetkili makamı adresiyle gösterir.",
   "beh.besuch": "Ziyaret adresi:",
   "beh.fkUnklar": "Oturduğun yer için resmî rehber Familienkasse Bayern Nord (posta: {nord}) veya Bayern Süd (posta: {sued}) gösteriyor. Hangisinin yetkili olduğunu Familienkasse'nin ücretsiz hizmet hattı söyler: {tel}.",
   "f.adrFehlt": "Yetkili makamın adresi için uygulamanın posta kodunu bilmesi gerekir (şimdilik Bavyera için). Yukarıdaki ankete veya adresinde \"posta kodu ve yer\" alanına yaz, uygulama alıcıları ekler.",

@@ -12,9 +12,18 @@ const P = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'content', 'plz-
 const DE = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'content', 'behoerden-deutschland.json'), 'utf8'));
 D.de = DE; // wie im Build (scripts/build.js)
 check('Daten werden angenommen', Behoerden.init(D) && Behoerden.available() && Plz.init(P));
-// Außerhalb Bayerns: Name und Website, keine Anschrift; nur gesicherte Zuständigkeiten
+// Außerhalb Bayerns: Name, Website und (aus dem Handy-Abruf geprüfte) Anschrift; nur gesicherte Zuständigkeiten
 const bd = (id, a) => Behoerden.fuer(id, a);
-check('[beh-de] Köln (kreisfreie Stadt): Wohngeld, Grundsicherung, Unterhaltsvorschuss bei der Stadt Köln mit Website, ohne Anschrift', bd('wohngeld', '05315').name === 'Stadt Köln' && /stadt-koeln\.de/.test(bd('wohngeld', '05315').web) && bd('wohngeld', '05315').anschrift === null && bd('gsa', '05315').name === 'Stadt Köln' && bd('uvg', '05315').name === 'Stadt Köln');
+check('[beh-de] Köln (kreisfreie Stadt): Wohngeld, Grundsicherung, Unterhaltsvorschuss bei der Stadt Köln mit Website und Anschrift (Quelle angegeben)', bd('wohngeld', '05315').name === 'Stadt Köln' && /stadt-koeln\.de/.test(bd('wohngeld', '05315').web) && /^50\d{3} Köln$/.test((bd('wohngeld', '05315').anschrift || [])[1]) && /^(impressum|wikipedia)$/.test(bd('wohngeld', '05315').quelleArt) && bd('gsa', '05315').name === 'Stadt Köln' && bd('uvg', '05315').name === 'Stadt Köln');
+// Alle Anschriften außerhalb Bayerns: Quelle und Abrufdatum, zwei saubere Zeilen, PLZ im selben Bundesland wie die Behörde
+{
+  const PK = (plz) => (P.plz[plz] || []).filter((e) => e[1] >= 0).map((e) => P.kreise[e[1]].ags);
+  const schlecht = Object.entries(DE.kreise).filter(([ags, e]) => e.anschrift && !(
+    e.anschrift.length === 2 && /^[A-ZÄÖÜa-zäöüß0-9]/.test(e.anschrift[0]) && !/[():;]|^(Haus|Post)?anschrift/i.test(e.anschrift[0]) && /^\d{5} [A-ZÄÖÜ]/.test(e.anschrift[1]) &&
+    PK(e.anschrift[1].slice(0, 5)).some((a) => a.slice(0, 2) === ags.slice(0, 2)) && /^(impressum|wikipedia)$/.test(e.quelleArt) && /^https?:\/\//.test(e.quelle) && /^\d{1,2}\.\d{1,2}\.20\d\d$/.test(e.stand)));
+  check('[beh-de] Alle Anschriften außerhalb Bayerns sauber, mit Quelle und Abrufdatum, PLZ im Bundesland der Behörde', schlecht.length === 0, schlecht.slice(0, 5).map(([a, e]) => a + ' ' + e.anschrift.join(', ')).join(' | '));
+  check('[beh-de] Mindestens 290 von 302 Stellen außerhalb Bayerns mit Anschrift', Object.values(DE.kreise).filter((e) => e.anschrift).length >= 290);
+}
 check('[beh-de] Landkreis (Kreis Mettmann): nur Grundsicherung im Alter, kein Wohngeld und kein Jugendamt (liegen teils bei Gemeinden)', bd('gsa', '05158').name === 'Kreis Mettmann' && bd('wohngeld', '05158') === null && bd('uvg', '05158') === null);
 check('[beh-de] Berlin und Hamburg: keine Stadt-Angabe (dort die Bezirksämter)', bd('wohngeld', '11000') === null && bd('wohngeld', '02000') === null);
 check('[beh-de] Landkreis und Stadt Leipzig getrennt', bd('wohngeld', '14713').name === 'Stadt Leipzig' && bd('wohngeld', '14729') === null && bd('gsa', '14729').name === 'Landkreis Leipzig');
