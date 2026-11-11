@@ -36,7 +36,8 @@ jobs:
       - run: npm ci
       - run: npm ci
         working-directory: app
-      - run: npx playwright install --with-deps chromium
+      - name: Browser installieren (bis zu 3 Versuche, je höchstens 5 Minuten)
+        run: for i in 1 2 3; do timeout 300 npx playwright install --with-deps chromium && exit 0; echo "Versuch $i fehlgeschlagen"; sleep 20; done; exit 1
       - name: Regel- und Oberflächentests
         run: npm test
       - name: Browsertest (Behinderung, Mappe, Sprachen, RTL)

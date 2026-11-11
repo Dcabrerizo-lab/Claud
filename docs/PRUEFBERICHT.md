@@ -40,7 +40,9 @@ Eine Prüfung durch eine Sozialberatung oder eine Fachanwältin ersetzt dieser B
 - **Gleiche Zahlen in allen Sprachen** (`test/test-sprachen-zahlen.js`): Jede Zahl und jeder Paragraf jeder Übersetzung muss wie im Deutschen stehen. So bleibt nach einer Wertänderung kein alter Betrag in einer Übersetzung stehen. Ausgeschriebene Zahlen („sechs Monate“) sind als Ausnahme eingetragen, die wieder anschlägt, sobald sich die deutsche Zahl ändert.
 - **Jahreswechsel mit ganzen Seiten:** 4 Haushalte in allen 8 Sprachen am 31.12.2026 und am 1.1.2027 (75 statt 9 Prüfungen). Dazu der Logik-Test mit Datum 2027.
 - **Kleine Handys und große Schrift** (`test/e2e-klein.js`): 320 px breit, 8 Sprachen, normal, große Schrift der App und Systemschrift 200 %. Der Test fand 28 Darstellungsfehler, alle behoben: Regeltabelle zu breit, seitliches Scrollen bei großer Schrift, zu breite Auswahlfelder, nicht umbrechende lange Wörter, abgeschnittener Knopf „Ergebnis ansehen“.
-- **Echte Bedienung im Android-Emulator** (Android 8, 11, 15): Fragebogen ausfüllen, Antragsmappe erzeugen, PDF über den Teilen-Dialog des Systems; Update über eine ältere Version, die Angaben bleiben erhalten.
+- **Echte Bedienung im Android-Emulator** (Android 10 und neuer, getestet mit 11 und 15): Fragebogen ausfüllen, alle Karten, Antragsmappe erzeugen, PDF über den Teilen-Dialog des Systems; Update über eine ältere Version, die Angaben bleiben erhalten. Auf Android 8 werden Start, Absturzfreiheit und Update geprüft (das Emulator-Abbild hat eine zu alte WebView für das Testwerkzeug; echte Geräte aktualisieren sie über den Play Store).
+- **Dabei gefunden und behoben:** Die Android-App fragte eine nicht vorhandene Datei an (Seitensymbol, Fehler 404 im Protokoll).
+- **Version 96** (App-Datei 95) enthält alle Korrekturen dieses Tages.
 - **Nicht umgesetzt:** Abgleich mit den amtlichen Rechnern (Netzfreigabe nötig, siehe ABGLEICH.md) und ein automatischer Wächter für Gesetzesänderungen (automatische Abrufe über GitHub sind bewusst abgeschaltet).
 
 ## Nachtarbeit 10./11. November 2026
