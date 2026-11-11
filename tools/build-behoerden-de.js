@@ -32,6 +32,11 @@ P.kreise.filter((k) => !k.ags.startsWith('09') && !/^(11|02)/.test(k.ags)).forEa
   if (KREISFREI(k.n)) { kreise[k.ags] = { name: amtlich(k.n), web: w, typ: 'stadt' }; nStadt++; }
   else { kreise[k.ags] = { name: k.n.replace(/^Kreis\s+/, 'Kreis '), web: w, typ: 'kreis' }; nKreis++; }
 });
+// Von Hand oder per Handy-Skript ergänzte Felder (Wikipedia-Titel, Anschrift, Quelle) beim Neuaufbau behalten
+try {
+  const alt = JSON.parse(fs.readFileSync(path.join(ROOT, 'content', 'behoerden-deutschland.json'), 'utf8')).kreise || {};
+  Object.keys(kreise).forEach((k) => { ['wiki', 'adr', 'anschrift', 'quelle', 'quelleArt'].forEach((f) => { if (alt[k] && alt[k][f] !== undefined) kreise[k][f] = alt[k][f]; }); });
+} catch (e) { /* erste Erzeugung */ }
 const out = { stand: 'Website laut Wikidata (CC0), abgerufen ' + stand + '; Anschriften außerhalb Bayerns noch nicht hinterlegt', kreise };
 fs.writeFileSync(path.join(ROOT, 'content', 'behoerden-deutschland.json'), JSON.stringify(out, null, 1));
 console.log(`behoerden-deutschland.json: ${nStadt} kreisfreie Städte, ${nKreis} Landkreise (ohne Bayern, Berlin, Hamburg)`);

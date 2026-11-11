@@ -1,6 +1,6 @@
 # Anschriften mit dem Android-Handy sammeln
 
-SoLo kennt die Anschriften der Ämter bisher nur für Bayern. Für die anderen Bundesländer sammelt dieses Skript die Anschriften aus den Impressum-Seiten der rund 300 Landkreise und kreisfreien Städte. Es läuft auf deinem Android-Handy in der kostenlosen App **Termux**. Dauer: etwa 20 bis 40 Minuten.
+SoLo kennt die Anschriften der Ämter bisher nur für Bayern. Für die anderen Bundesländer sammelt dieses Skript die Anschriften der rund 300 Landkreise und kreisfreien Städte: zuerst aus dem Impressum der Behörde, und wo das nicht klappt, aus dem Wikipedia-Artikel (Adresse der Kreis- oder Stadtverwaltung). Es läuft auf deinem Android-Handy in der kostenlosen App **Termux**. Dauer: etwa 40 bis 60 Minuten.
 
 ## 1. Termux installieren (einmalig)
 
@@ -36,12 +36,14 @@ python ~/storage/downloads/solo-anschriften.py
 
 Am Ende steht `Fertig: ... Datei: .../solo-anschriften.json`. Die Datei **`solo-anschriften.json`** liegt im Ordner **Download**. Schick sie mir hier im Chat (über das Büroklammer-Symbol anhängen).
 
-Ich übernehme dann nur Anschriften, deren Postleitzahl im eigenen Kreis der Behörde liegt. Alles andere wird verworfen.
+Ich übernehme dann nur Anschriften, deren Postleitzahl im eigenen Kreis der Behörde liegt. Alles andere wird verworfen. Die Anschrift aus dem Impressum hat Vorrang; kommt sie aus Wikipedia, sagt die App das dazu und bittet, sie auf der Website der Behörde zu prüfen.
+
+Hast du das Skript schon einmal laufen lassen: einfach mit der neuen Datei noch einmal starten. Es ergänzt dann nur die Wikipedia-Angaben.
 
 ## Was das Skript tut und was nicht
 
-- Es ruft nur öffentliche Seiten auf: die Startseite und das Impressum jeder Behörde.
+- Es ruft nur öffentliche Seiten auf: die Startseite und das Impressum jeder Behörde und den Wikipedia-Artikel des Kreises.
 - Es meldet sich ehrlich als „SoLo-Sozialleistungslotse“, beachtet die Regeln der Seiten (robots.txt) und wartet 3 Sekunden zwischen den Abrufen.
 - Lehnt eine Seite den Abruf ab, wird sie übersprungen, nicht umgangen.
 - Es sendet keine Daten von dir irgendwohin und speichert nur die eine Ergebnisdatei.
-- Datenvolumen: etwa 50 bis 150 MB. Am besten im WLAN starten.
+- Datenvolumen: etwa 100 bis 250 MB. Am besten im WLAN starten.

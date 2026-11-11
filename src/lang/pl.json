@@ -588,6 +588,7 @@
   "t.krank.ende": "Po 78 tygodniach Krankengeld się kończy. Potem może przysługiwać zasiłek dla bezrobotnych (również przy ograniczonej zdolności do pracy) i Erwerbsminderungsrente. Jeśli to nie wystarczy, sprawdź Grundsicherungsgeld lub Wohngeld.",
   "t.but.azubi": "Pakiet edukacyjny przysługuje dzieciom poniżej 18 lat oraz młodym dorosłym do 25 lat, którzy chodzą do szkoły i nie otrzymują wynagrodzenia za naukę zawodu.",
   "beh.pruefenKurz": "Przed wysłaniem sprawdź adres.",
+  "beh.pruefenWiki": "Adres administracji powiatu lub miasta według Wikipedii (pobrano {stand}). Właściwy urząd może mieścić się w innym budynku: przed wysłaniem sprawdź na stronie urzędu.",
   "ek.art.wfbm": "Warsztat (WfbM)",
   "ek.betrag.hint.wfbm": "Podane na pasku wypłaty z warsztatu: kwota wypłacana.",
   "t.schaetz.mind": "Szacunkowo: co najmniej {a} miesięcznie.",

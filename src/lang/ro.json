@@ -588,6 +588,7 @@
   "t.krank.ende": "După 78 de săptămâni Krankengeld se termină. După aceea pot intra în calcul ajutorul de șomaj (și cu capacitate de muncă limitată) și o Erwerbsminderungsrente. Dacă nu ajunge, verifică Grundsicherungsgeld sau Wohngeld.",
   "t.but.azubi": "Pachetul educațional este pentru copii sub 18 ani și pentru tineri până la 25 de ani care merg la școală și nu primesc indemnizație de ucenicie.",
   "beh.pruefenKurz": "Verifică adresa înainte de trimitere.",
+  "beh.pruefenWiki": "Adresa administrației districtului sau a orașului conform Wikipedia (preluată la {stand}). Serviciul competent poate fi în altă clădire: verifică pe site-ul autorității înainte de trimitere.",
   "ek.art.wfbm": "Atelier protejat (WfbM)",
   "ek.betrag.hint.wfbm": "Apare pe fluturașul atelierului: suma plătită.",
   "t.schaetz.mind": "Estimare aproximativă: cel puțin {a} pe lună.",

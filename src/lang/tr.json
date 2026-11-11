@@ -588,6 +588,7 @@
   "t.krank.ende": "78 haftadan sonra Krankengeld biter. Sonrasında işsizlik parası (sınırlı çalışma gücünde de) ve Erwerbsminderungsrente söz konusu olabilir. Bu yetmezse Grundsicherungsgeld veya Wohngeld'i kontrol edin.",
   "t.but.azubi": "Eğitim paketi 18 yaşından küçük çocuklar ile okula giden ve meslek eğitimi ücreti almayan 25 yaşına kadar gençler içindir.",
   "beh.pruefenKurz": "Göndermeden önce adresi kontrol edin.",
+  "beh.pruefenWiki": "Wikipedia’ya göre ilçe veya şehir yönetiminin adresi ({stand} tarihinde alındı). Yetkili birim başka bir binada olabilir: Göndermeden önce lütfen kurumun internet sitesinden kontrol edin.",
   "ek.art.wfbm": "Atölyeden ücret (WfbM)",
   "ek.betrag.hint.wfbm": "Atölyenin maaş bordrosunda yazar: ödenen tutar.",
   "t.schaetz.mind": "Kaba tahmin: ayda en az {a}.",

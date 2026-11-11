@@ -10,3 +10,4 @@ app/ios/App/Pods/
 *.jks
 .DS_Store
 store-bilder/
+__pycache__/

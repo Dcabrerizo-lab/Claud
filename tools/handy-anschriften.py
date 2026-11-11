@@ -6,6 +6,8 @@
 #  - ruft für jede Behörde die offizielle Startseite auf, sucht den Link zum Impressum und liest dort die Anschrift
 #  - höflich: ehrliche Kennung, beachtet robots.txt, 3 Sekunden Pause, lehnt eine Seite ab, wird sie übersprungen
 #  - speichert nach jeder Behörde; bricht es ab, einfach neu starten, es macht dort weiter
+#  - findet es im Impressum keine Anschrift, liest es die „Adresse der Kreis-/Stadtverwaltung“ aus dem Wikipedia-Artikel
+#    (normale Artikelseite, wie im Browser; robots.txt wird auch dort beachtet)
 #  - Ergebnis: Datei solo-anschriften.json im Ordner Download des Handys. Diese Datei an Claude schicken.
 #
 # Die Liste der Behörden (BEHOERDEN unten) erzeugt tools/handy-skript-erzeugen.js aus content/behoerden-deutschland.json.
@@ -56,7 +58,7 @@ def impressum_link(basis_url, seite):
 
 def zeilen(seite):
     s = re.sub(r"(?is)<(script|style|noscript)[^>]*>.*?</\1>", " ", seite)
-    s = re.sub(r"(?i)<br\s*/?>|</(p|div|li|tr|h\d|address|dd|dt|td|span)>", "\n", s)
+    s = re.sub(r"(?i)<br\s*/?>|</(p|div|li|tr|h\d|address|dd|dt|td|th|span)>", "\n", s)
     s = re.sub(r"<[^>]+>", " ", s)
     s = html.unescape(s).replace("\xa0", " ")
     return [re.sub(r"\s+", " ", z).strip() for z in s.split("\n") if z.strip()]
@@ -87,6 +89,19 @@ def anschriften(z):
             gesehen.add(s); aus.append({"zeilen": k["zeilen"], "plz": k["plz"]})
     return aus[:5]
 
+def wiki_anschriften(titel):
+    """Anschrift aus dem Infokasten des Wikipedia-Artikels („Adresse der Kreisverwaltung/Stadtverwaltung“)."""
+    url = "https://de.wikipedia.org/wiki/" + urllib.parse.quote(titel.replace(" ", "_"))
+    if not erlaubt(url): raise RuntimeError("robots.txt verbietet Wikipedia")
+    url2, seite = holen(url); time.sleep(PAUSE)
+    trenn = r"(?:\s|&#160;|&nbsp;|<[^>]+>)+"   # Leerraum oder Zeilenumbruch (<br />) im Infokasten
+    m = re.search(r"Adresse" + trenn + r"der" + trenn + r"[\wäöüÄÖÜß-]*verwaltung\s*:?", seite, re.I)
+    if not m: return url2, []
+    stueck = seite[m.end(): m.end() + 2500]
+    erg = anschriften(zeilen(stueck))[:3]
+    for k in erg: k["zeilen"] = [z.lstrip(":;, ").strip() for z in k["zeilen"]]
+    return url2, erg
+
 def main():
     if not BEHOERDEN:
         print("Die Liste der Behörden fehlt. Bitte die Datei verwenden, die Claude geschickt hat."); return
@@ -99,9 +114,11 @@ def main():
     # Neu versuchen: noch nicht abgerufen oder mit vorübergehendem Fehler (kein Netz, Zeitüberschreitung).
     # Nicht neu: Seite lehnt ab (403/429), robots.txt verbietet es, oder es gibt kein Impressum.
     dauerhaft = re.compile(r"robots|403|429|kein Impressum")
-    offen = [b for b in BEHOERDEN if b["ags"] not in erg or ("fehler" in erg[b["ags"]] and not dauerhaft.search(erg[b["ags"]]["fehler"]))]
+    offen = [b for b in BEHOERDEN if b["ags"] not in erg
+             or ("fehler" in erg[b["ags"]] and not dauerhaft.search(erg[b["ags"]]["fehler"]))
+             or (b.get("wiki") and "wikipedia" not in erg[b["ags"]] and "wiki_fehler" not in erg[b["ags"]])]
     print(f"SoLo: {len(BEHOERDEN)} Behörden, davon noch {len(offen)} offen. Ergebnis: {datei}")
-    print("Das dauert etwa 20 bis 40 Minuten. Handy am Strom lassen, Termux geöffnet lassen.\n")
+    print("Das dauert etwa 40 bis 60 Minuten. Handy am Strom lassen, Termux geöffnet lassen.\n")
     for n, b in enumerate(offen, 1):
         host = urllib.parse.urlsplit(b["web"]).netloc
         eintrag = {"name": b["name"], "web": b["web"], "zeit": time.strftime("%Y-%m-%d %H:%M")}
@@ -119,12 +136,20 @@ def main():
             code = getattr(e, "code", None)
             if code in (403, 429): gesperrt.add(host)
             eintrag["fehler"] = (str(code) + " " if code else "") + str(e)[:200]
-            print(f"[{n}/{len(offen)}] {b['name']}: übersprungen ({eintrag['fehler']})")
+            print(f"[{n}/{len(offen)}] {b['name']}: Behördenseite übersprungen ({eintrag['fehler']})")
             time.sleep(PAUSE)
+        # Zusätzlich Wikipedia (Ausweichquelle; die Übernahme bevorzugt das Impressum der Behörde)
+        if b.get("wiki"):
+            try:
+                wurl, wk = wiki_anschriften(b["wiki"])
+                eintrag.update({"wikipedia": wurl, "wiki_kandidaten": wk})
+                if not eintrag.get("kandidaten"): print(f"      Wikipedia: {len(wk)} Anschrift(en)")
+            except Exception as e:
+                eintrag["wiki_fehler"] = str(e)[:200]
         erg[b["ags"]] = eintrag
         with open(datei, "w", encoding="utf-8") as f:
             json.dump(erg, f, ensure_ascii=False, indent=1)
-    ok = sum(1 for e in erg.values() if e.get("kandidaten"))
+    ok = sum(1 for e in erg.values() if e.get("kandidaten") or e.get("wiki_kandidaten"))
     print(f"\nFertig: {ok} von {len(erg)} Behörden mit Anschrift. Datei: {datei}")
     print("Bitte diese Datei an Claude schicken (im Chat anhängen).")
 

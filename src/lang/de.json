@@ -588,6 +588,7 @@
   "t.krank.ende": "Nach 78 Wochen endet das Krankengeld. Danach können Arbeitslosengeld (auch bei eingeschränkter Leistungsfähigkeit) und eine Erwerbsminderungsrente in Frage kommen. Reicht das nicht, prüfe Grundsicherungsgeld oder Wohngeld.",
   "t.but.azubi": "Das Bildungspaket gibt es für Kinder unter 18 und für junge Erwachsene bis 25, die zur Schule gehen und keine Ausbildungsvergütung bekommen.",
   "beh.pruefenKurz": "Bitte die Anschrift vor dem Absenden prüfen.",
+  "beh.pruefenWiki": "Anschrift der Kreis- oder Stadtverwaltung laut Wikipedia (abgerufen {stand}). Die zuständige Stelle kann in einem anderen Gebäude sitzen: Bitte vor dem Absenden auf der Website der Behörde prüfen.",
   "ek.art.wfbm": "Lohn aus der Werkstatt",
   "ek.betrag.hint.wfbm": "Steht auf dem Lohnzettel der Werkstatt: der Betrag, der ausgezahlt wird.",
   "t.schaetz.mind": "Grob geschätzt: mindestens {a} im Monat.",

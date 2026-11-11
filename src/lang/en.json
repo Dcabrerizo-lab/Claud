@@ -588,6 +588,7 @@
   "t.krank.ende": "Krankengeld ends after 78 weeks. Afterwards unemployment benefit (also with limited ability to work) and a Erwerbsminderungsrente may apply. If that is not enough, check Grundsicherungsgeld or Wohngeld.",
   "t.but.azubi": "The education package is for children under 18 and for young adults up to 25 who attend school and receive no apprenticeship pay.",
   "beh.pruefenKurz": "Please check the address before sending.",
+  "beh.pruefenWiki": "Address of the district or city administration according to Wikipedia (retrieved {stand}). The responsible office may be in another building: please check on the authority’s website before sending.",
   "ek.art.wfbm": "Pay from the sheltered workshop",
   "ek.betrag.hint.wfbm": "Shown on the workshop payslip: the amount paid out.",
   "t.schaetz.mind": "Rough estimate: at least {a} per month.",
