@@ -270,7 +270,8 @@
      Lange Wörter brechen um, Raster richten sich nach der Bildschirmbreite statt nach dem breitesten Inhalt,
      Auswahlfelder werden nicht breiter als ihre Spalte, die Regeltabelle steht auf schmalen Bildschirmen untereinander. */
   .app { overflow-wrap: anywhere; hyphens: auto; }
-  .results, .card, fieldset, .field, .cols > * { grid-template-columns: minmax(0, 1fr); }
+  .results, .card, fieldset, .field, .cols > *, form, .formgrid, .checks, .ekbox, .subbox, .card .behoerde, details .inner, details ul,
+  .neinbox, .together, .together ul, .helper, .scan, .scan .box, .sc-list, .sc-row, .foot, #legal, #mappe, .es-nav1 { grid-template-columns: minmax(0, 1fr); }
   .seg { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .seg label { white-space: normal; text-align: center; }
   select { max-width: 100%; min-width: 0; overflow: hidden; text-overflow: ellipsis; } /* WebKit: langer Eintrag läuft sonst über die Spalte hinaus */
