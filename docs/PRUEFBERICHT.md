@@ -35,6 +35,14 @@ Eine Prüfung durch eine Sozialberatung oder eine Fachanwältin ersetzt dieser B
 - **Neue Karten:** Elterngeld (Höhe nach § 2 BEEG mit Ersatzrate, 300 bis 1.800 €, ElterngeldPlus), Hilfe zur Pflege (Einkommensgrenze § 85 SGB XII), Blindenhilfe (§ 72 SGB XII, ergänzend zum Landesblindengeld) und Asylbewerberleistungen. Wer im Asylverfahren ist oder eine Duldung hat, bekommt kein Grundsicherungsgeld, keine Grundsicherung im Alter, kein Wohngeld und keinen Kinderzuschlag mehr angezeigt.
 - **Veraltete Regeln:** Ab dem 1.1.2027 zeigt die App einen deutlichen Hinweis, bis sie aktualisiert ist.
 
+## Neue Tests 11. November 2026
+
+- **Gleiche Zahlen in allen Sprachen** (`test/test-sprachen-zahlen.js`): Jede Zahl und jeder Paragraf jeder Übersetzung muss wie im Deutschen stehen. So bleibt nach einer Wertänderung kein alter Betrag in einer Übersetzung stehen. Ausgeschriebene Zahlen („sechs Monate“) sind als Ausnahme eingetragen, die wieder anschlägt, sobald sich die deutsche Zahl ändert.
+- **Jahreswechsel mit ganzen Seiten:** 4 Haushalte in allen 8 Sprachen am 31.12.2026 und am 1.1.2027 (75 statt 9 Prüfungen). Dazu der Logik-Test mit Datum 2027.
+- **Kleine Handys und große Schrift** (`test/e2e-klein.js`): 320 px breit, 8 Sprachen, normal, große Schrift der App und Systemschrift 200 %. Der Test fand 28 Darstellungsfehler, alle behoben: Regeltabelle zu breit, seitliches Scrollen bei großer Schrift, zu breite Auswahlfelder, nicht umbrechende lange Wörter, abgeschnittener Knopf „Ergebnis ansehen“.
+- **Echte Bedienung im Android-Emulator** (Android 8, 11, 15): Fragebogen ausfüllen, Antragsmappe erzeugen, PDF über den Teilen-Dialog des Systems; Update über eine ältere Version, die Angaben bleiben erhalten.
+- **Nicht umgesetzt:** Abgleich mit den amtlichen Rechnern (Netzfreigabe nötig, siehe ABGLEICH.md) und ein automatischer Wächter für Gesetzesänderungen (automatische Abrufe über GitHub sind bewusst abgeschaltet).
+
 ## Nachtarbeit 10./11. November 2026
 
 - **Werte 2027 mit automatischem Umschalten:** Ab dem 1.1.2027 rechnet die App mit der Minijob-Grenze 633 € (Mindestlohn 14,60 € × 130 / 3, § 8 Abs. 1a SGB IV) und mit den regulären Kinderkrankentagen (10 je Kind und Elternteil, 20 für Alleinerziehende, höchstens 25 / 50, § 45 Abs. 2 SGB V). Die Sonderregel 15 / 30 (35 / 70) gilt nur bis 31.12.2026. Der Hinweis „Regeln veraltet“ nennt diese Werte ab 2027 als schon angepasst.
