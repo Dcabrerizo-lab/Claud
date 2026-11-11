@@ -275,6 +275,9 @@
   .seg label { white-space: normal; text-align: center; }
   select { max-width: 100%; min-width: 0; overflow: hidden; text-overflow: ellipsis; } /* WebKit: langer Eintrag läuft sonst über die Spalte hinaus */
   .field > * { min-width: 0; }
+  /* WebKit rechnet bei Auswahlfeldern die Breite des längsten Eintrags in die Scrollbreite ein: am Feldrand abschneiden
+     (3 px Luft für den Fokusrahmen). Ohne Wirkung in Chrome und Firefox, dort ragt nichts heraus. */
+  .field { overflow-x: clip; padding-inline: 3px; margin-inline: -3px; }
   .langpick { min-width: 0; max-width: 100%; }
   .langpick select { max-width: 100%; min-width: 0; }
   .pill { white-space: normal; max-width: 100%; }
