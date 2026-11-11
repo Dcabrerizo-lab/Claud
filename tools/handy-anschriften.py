@@ -106,6 +106,9 @@ def main():
     if not BEHOERDEN:
         print("Die Liste der Behörden fehlt. Bitte die Datei verwenden, die Claude geschickt hat."); return
     datei = ziel_datei()
+    # Termux: Handy wach halten, damit das Skript auch im Hintergrund und bei ausgeschaltetem Bildschirm weiterläuft
+    if os.system("termux-wake-lock >/dev/null 2>&1") == 0:
+        print("Handy bleibt wach: Du kannst Termux verlassen und den Bildschirm ausschalten.")
     erg = {}
     if os.path.exists(datei):
         try: erg = json.load(open(datei, encoding="utf-8"))
@@ -152,6 +155,7 @@ def main():
     ok = sum(1 for e in erg.values() if e.get("kandidaten") or e.get("wiki_kandidaten"))
     print(f"\nFertig: {ok} von {len(erg)} Behörden mit Anschrift. Datei: {datei}")
     print("Bitte diese Datei an Claude schicken (im Chat anhängen).")
+    os.system("termux-wake-unlock >/dev/null 2>&1")
 
 if __name__ == "__main__":
     main()

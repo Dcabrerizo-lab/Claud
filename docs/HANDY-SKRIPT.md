@@ -29,8 +29,8 @@ Bei `pkg update` kommen eventuell Fragen, einfach mit Eingabetaste bestätigen. 
 python ~/storage/downloads/solo-anschriften.py
 ```
 
-3. Das Skript zeigt, welche Behörde es gerade abruft, zum Beispiel `[12/302] Stadt Köln: 1 Anschrift(en)`. Das Handy am Ladekabel lassen und Termux geöffnet lassen.
-4. Bricht es ab (Bildschirm aus, Netz weg), einfach denselben Befehl noch einmal eingeben. Es macht dort weiter, wo es aufgehört hat.
+3. Das Skript zeigt, welche Behörde es gerade abruft, zum Beispiel `[12/302] Stadt Köln: 1 Anschrift(en)`. Es hält das Handy wach: Du kannst Termux verlassen, das Handy weiter benutzen oder den Bildschirm ausschalten. In der Benachrichtigungsleiste steht dann „Termux – wake lock held“. Das Handy am besten am Ladekabel lassen.
+4. Bricht es trotzdem ab (Netz weg, Akku-Sparmodus), einfach denselben Befehl noch einmal eingeben. Es macht dort weiter, wo es aufgehört hat. Hilft das nicht: In den Android-Einstellungen bei Termux den Akku-Sparmodus ausschalten („Akku: Nicht eingeschränkt“).
 
 ## 4. Ergebnis schicken
 
