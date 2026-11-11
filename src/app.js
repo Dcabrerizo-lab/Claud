@@ -91,7 +91,8 @@
     if (!r) { say(esc(t('plz.notFound'))); return; }
     if (r.bl) { if (apply) { state.bundesland = r.bl; $('bundesland').value = r.bl; } } else say(esc(t('plz.states')));
     // Nur nach Eingabe der PLZ setzen; beim Neuladen bleibt, was die Person selbst eingestellt hat
-    var applyStufe = function (n) { if (!apply) return; state.mietstufe = String(n); $('mietstufe').value = String(n); };
+    // ... außer die Mietenstufe ist noch leer (z. B. PLZ aus der einfachen Version oder aus einem älteren Speicherstand)
+    var applyStufe = function (n) { if (!apply && state.mietstufe) return; state.mietstufe = String(n); $('mietstufe').value = String(n); };
     var altBlock = function () {
       if (!r.alternatives.length) return;
       var d = document.createElement('details'); d.className = 'plz-alt';

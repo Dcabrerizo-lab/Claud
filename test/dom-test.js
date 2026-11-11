@@ -271,6 +271,16 @@ setTimeout(() => {
   check('Alte Angaben übernommen: erste Person Lohn 2.000 € brutto, Netto 2.300 €', d3.getElementById('ek1Art').value === 'lohn' && d3.getElementById('ek1Brutto').value === '2000' && d3.getElementById('ek1Netto').value === '2300', d3.getElementById('ek1Art').value + ' ' + d3.getElementById('ek1Brutto').value);
   check('Alte Angaben übernommen: Partner Rente o. Ä. 1.000 € brutto', d3.getElementById('ek2Art').value === 'rente' && d3.getElementById('ek2Brutto').value === '1000');
 
+  // Gespeicherte PLZ ohne Mietenstufe (z. B. aus der einfachen Version): Mietenstufe wird beim Laden ergänzt; eine selbst gewählte bleibt
+  const mitPlz = (ms) => {
+    const st = { s: { adults: 1, kids: 0, ek1Art: 'lohn', ek1Brutto: '1500', ek1Netto: '1150', miete: '600', plz: '50667', mietstufe: ms, vermoegen: '0', bezug: {} }, p: {}, e: true };
+    const dm = new JSDOM('<!doctype html><html><head><meta charset="utf-8"></head><body>' + html + '</body></html>', { runScripts: 'dangerously', pretendToBeVisual: true,
+      beforeParse(w4) { w4.HTMLElement.prototype.scrollIntoView = function () {}; w4.scrollTo = function () {};
+        Object.defineProperty(w4, 'localStorage', { value: { getItem: (k) => (k === 'lotse.state' ? JSON.stringify(st) : null), setItem: () => {}, removeItem: () => {} }, configurable: true }); } });
+    return dm.window.document.getElementById('mietstufe').value;
+  };
+  check('Gespeicherte PLZ 50667 ohne Mietenstufe: Mietenstufe VI (Köln) wird ergänzt', mitPlz('') === '6', mitPlz(''));
+  check('Selbst gewählte Mietenstufe bleibt beim Laden erhalten', mitPlz('3') === '3', mitPlz('3'));
   check('Keine Skriptfehler im gesamten Test', errors.length === 0, errors.join('; '));
   console.log(fails ? '\n' + fails + ' FEHLER' : '\nAlle DOM-Tests bestanden');
   process.exit(fails ? 1 : 0);
