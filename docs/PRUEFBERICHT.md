@@ -45,6 +45,18 @@ Eine Prüfung durch eine Sozialberatung oder eine Fachanwältin ersetzt dieser B
 - **Version 96** (App-Datei 95) enthält alle Korrekturen dieses Tages.
 - **Nicht umgesetzt:** Abgleich mit den amtlichen Rechnern (Netzfreigabe nötig, siehe ABGLEICH.md) und ein automatischer Wächter für Gesetzesänderungen (automatische Abrufe über GitHub sind bewusst abgeschaltet).
 
+## Offen für 2027 (Stand 11. November 2026, noch nicht beschlossen)
+
+Diese Werte stehen erst im Entwurf und sind deshalb nicht eingebaut. Ab dem 1.1.2027 zeigt die App ohnehin einen Hinweis, dass die Regeln geprüft werden müssen. Am 1. Dezember 2026 ist eine erneute Prüfung eingeplant.
+
+| Wert | Stand | Was die App 2027 rechnet |
+|---|---|---|
+| Regelsätze (Grundsicherungsgeld, Sozialhilfe) | Haushaltsbegleitgesetz 2027 im Verfahren, Nullrunde wahrscheinlich | 563 € usw. (Werte 2026) |
+| Kindergeld | Einkommensteuerreformgesetz 2027 im Bundestag, geplant 267 € | 259 € |
+| Pflegegeld | Pflegeneuordnungsgesetz als Kabinettsentwurf, Beträge in den Quellen uneinheitlich | 347 / 599 / 800 / 990 € |
+| Beitragsbemessungsgrenze KV (Höchstbetrag Kranken- und Kinderkrankengeld) | Kabinett: 6.375 € im Monat, Bundesrat fehlt | 5.812,50 € (Höchstbetrag 135,63 € je Tag) |
+| Kinderkrankentage | Sonderregel endet laut Gesetz am 31.12.2026, Verlängerung wird diskutiert | 10 / 20 Tage (Gesetzeslage) |
+
 ## Nachtarbeit 10./11. November 2026
 
 - **Werte 2027 mit automatischem Umschalten:** Ab dem 1.1.2027 rechnet die App mit der Minijob-Grenze 633 € (Mindestlohn 14,60 € × 130 / 3, § 8 Abs. 1a SGB IV) und mit den regulären Kinderkrankentagen (10 je Kind und Elternteil, 20 für Alleinerziehende, höchstens 25 / 50, § 45 Abs. 2 SGB V). Die Sonderregel 15 / 30 (35 / 70) gilt nur bis 31.12.2026. Der Hinweis „Regeln veraltet“ nennt diese Werte ab 2027 als schon angepasst.
