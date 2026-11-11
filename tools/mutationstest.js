@@ -34,6 +34,8 @@ const M = [
   ['Mutterschaftsgeld auch ohne Arbeit', "if (!lohn.length && !alg) return mk(id, 'nein', 'vorausFehlt', [['mu.ohne']]);", ''],
   ['Landesblindengeld Hessen 800 statt 818,65 €', 'HE: 818.65,', 'HE: 800,'],
   ['Blindenhilfe 900 statt 951,92 €', 'blhBetrag: { erw: 951.92,', 'blhBetrag: { erw: 900,'],
+  ['WBS NRW Grenze 25.000 statt 23.540 €', 'NW: { ein: 23540,', 'NW: { ein: 25000,'],
+  ['WBS: falsches „nein“ ohne Reserve', 'grenze * L.hoch * 1.05)', 'grenze * L.hoch)'],
   ['Kita-Hinweis auch ohne kleine Kinder', 'const kita = h.kidsU6 > 0 ?', 'const kita = true ?'],
   ['ALG I: Sperrzeit 8 statt 12 Wochen', 'sperrWochen: 12', 'sperrWochen: 8'],
   ['ALG I: Nebeneinkommen 100 statt 165 €', 'nebenFrei: 165', 'nebenFrei: 100'],

@@ -96,6 +96,18 @@ const Rules = (function () {
     famgeld: { betrag: 250, ab3: 300, krippe: 100 },
     // Wohnberechtigungsschein, Bundeswerte § 9 Abs. 2 WoFG (Untergrenze; die Länder legen eigene, meist höhere Grenzen fest)
     wbsBund: { ein: 12000, zwei: 18000, weitere: 4100, kind: 500 },
+    // Landesgrenzen für den WBS, wo belegt (Jahreseinkommen; Stand 11/2026). hoch: höchste Stufe (Faktor) für eingeschränkte/erhöhte Scheine.
+    //  NW: § 13 WFNG NRW, Werte ab 1.1.2025 (Städte Köln, Bonn, Münster), Gruppe B bis +40 %
+    //  HE: HWoFG, Werte laut Verwaltungsportal Hessen und Landkreis
+    //  BE: Bundeswerte +40 % (WBS 140), erhöhte Stufe WBS 180 (+80 %) laut berlin.de
+    //  HB: Bundeswerte +10 % (uneingeschränkter Schein), eingeschränkt bis +60 % (Senatorin für Bau)
+    // Ältere (niedrigere) Werte bleiben auf der sicheren Seite: „wahrscheinlich“ nur, wenn das Brutto darunter liegt.
+    wbsLand: {
+      NW: { ein: 23540, zwei: 28350, weitere: 6530, kind: 860, hoch: 1.4, stand: '1/2025' },
+      HE: { ein: 18166, zwei: 27561, weitere: 6265, kind: 833, hoch: 0, stand: '2026' },
+      BE: { ein: 16800, zwei: 25200, weitere: 5740, kind: 700, hoch: 1.8 / 1.4, stand: '2026' },
+      HB: { ein: 13200, zwei: 19800, weitere: 4510, kind: 550, hoch: 1.6 / 1.1, stand: '2026' },
+    },
     // Freibetrag beim Wohngeld für eigenes Einkommen von Kindern (16 bis 24 Jahre): 1.200 € im Jahr (§ 17 Nr. 4 WoGG)
     wgKindFrei: 100,
     // Pauschalabzug beim Wohngeld (§ 16 WoGG) je Einkommensart: [kleinster, größter] üblicher Abzug
@@ -1029,8 +1041,18 @@ const Rules = (function () {
     // Andere Länder: eigene Einkommensgrenzen (Landesrecht). Sicher ist nur: Kein Land liegt unter den Bundeswerten (§ 9 Abs. 2 WoFG).
     // Das Brutto ist nie kleiner als das maßgebliche Gesamteinkommen; liegt es unter der Bundesgrenze, ist der WBS wahrscheinlich.
     if (h.land && h.land !== 'BY') {
-      const w = R.wbsBund, jahr = (h.brutto + (h.kindEink || 0)) * 12;
-      const bund = (h.persons <= 1 ? w.ein : w.zwei + (h.persons - 2) * w.weitere) + h.children * w.kind;
+      const jahr = (h.brutto + (h.kindEink || 0)) * 12;
+      const gr = (w) => (h.persons <= 1 ? w.ein : w.zwei + (h.persons - 2) * w.weitere) + h.children * w.kind;
+      const L = R.wbsLand[h.land];
+      if (L) {
+        const grenze = gr(L), land = BL_NAME[h.land];
+        if (jahr <= grenze) return mk(id, 'ja', 'ja', [['wbs.landGrenze', { land, grenze: eur(grenze), stand: L.stand }], ['wbs.landStelle']]);
+        // Höchstens 30 % Abzüge (§ 16 WoFG und Landesrecht); darüber hinaus auch nicht mit der höchsten Landesstufe
+        // 5 % Reserve, weil die Länder ihre Grenzen jährlich erhöhen (ältere Werte dürfen kein falsches „nein“ ergeben)
+        if (L.hoch && jahr * (1 - R.wbs.maxAbzug) > grenze * L.hoch * 1.05) return mk(id, 'nein', 'einkoHoch', [['wbs.landHoch', { land, grenze: eur(grenze * L.hoch) }]]);
+        return mk(id, 'vielleicht', 'vielleicht', [['wbs.landUeber', { land, grenze: eur(grenze), stand: L.stand }], ['wbs.landStelle']]);
+      }
+      const bund = gr(R.wbsBund);
       return jahr <= bund ? mk(id, 'ja', 'ja', [['wbs.landJa', { grenze: eur(bund) }], ['wbs.landStelle']]) : mk(id, 'vielleicht', 'vielleicht', [['wbs.landEigen'], ['wbs.landStelle']]);
     }
     const grenze = wbsGrenze(h, false), max = wbsGrenze(h, true);
