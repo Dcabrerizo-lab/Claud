@@ -42,6 +42,8 @@ jobs:
       - run: npm ci
       - name: Monotonie und Widerspruchsfreiheit (1.000.000 Haushalte)
         run: node test/test-eigenschaften.js 1000000
+      - name: Dasselbe nach dem Jahreswechsel (Werte 2027, 300.000 Haushalte)
+        run: HEUTE=2027.05 node test/test-eigenschaften.js 300000
 
   mutation:
     name: Mutationstest (große Testreihen)

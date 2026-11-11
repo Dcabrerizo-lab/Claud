@@ -10,6 +10,7 @@ const Rules = require('../src/rules.js');
 const KARTEN = require('./karten.js');
 
 const N = Number(process.argv[2]) || 15000;
+const HEUTE = Number(process.env.HEUTE) || 2026.8; // HEUTE=2027.05 prüft dieselben Eigenschaften nach dem Jahreswechsel
 let seed = 777;
 const rnd = () => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; };
 const pick = (a) => a[Math.floor(rnd() * a.length)];
@@ -35,7 +36,7 @@ function zufall() {
     art1, art2, brutto: b1 + b2, brutto2: adults === 2 ? b2 : '', netto: Math.round(b1 * q(art1) + b2 * q(art2)),
     miete: pick([0, 300 + Math.round(rnd() * 1200)]), mietstufe: pick(['', '1', '3', '5', '7']),
     vermoegen: pick([0, 0, 3000, 9000, 14000, 40000, 70000]),
-    gebJahr: pick(['', 1950, 1958, 1965, 1980, 1995, 2003]), heute: 2026.8,
+    gebJahr: pick(['', 1950, 1958, 1965, 1980, 1995, 2003]), heute: HEUTE,
     unterhaltFehlt: kids > 0 && rnd() < 0.4, unterhalt: kids > 0 && rnd() < 0.3 ? Math.round(rnd() * 600) : '',
     pflegegrad: pick(['', '', '', '1', '2', '3', '4', '5']),
     bhPerson: pick(['', '', 'erwNach25', 'erwVor25', 'minder']), gdb: pick(['', '30', '50', '60', '80', '100', 'H']),

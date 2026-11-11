@@ -11,9 +11,9 @@ const html = fs.readFileSync(__dirname + '/../dist/sozialleistungslotse.html', '
 let n = 0, fails = 0;
 const ck = (name, c, x) => { n++; if (!c) { fails++; console.log('FAIL', name, x === undefined ? '' : x); } };
 
-function seite(iso) {
+function seite(iso, vorbelegt) {
   const errors = [];
-  const store = {};
+  const store = Object.assign({}, vorbelegt || {});
   const dom = new JSDOM('<!doctype html><html><head><meta charset="utf-8"></head><body>' + html + '</body></html>', {
     runScripts: 'dangerously', pretendToBeVisual: true,
     beforeParse(w) {
@@ -51,6 +51,34 @@ const gsa = (heute) => Rules.evaluate({ adults: 1, kids: 0, young: 0, art1: 'ren
 ck('Jahrgang 1960: Anfang 2026 noch nicht im Rentenalter', gsa(2026.2).level === 'nein');
 ck('Jahrgang 1960: Mitte 2026 je nach Geburtsmonat (möglich, mit Hinweis)', gsa(2026.5).level === 'vielleicht' && gsa(2026.5).tx.some((t) => t[0] === 'gsa.grenz'));
 ck('Jahrgang 1960: Mitte 2027 sicher im Rentenalter', gsa(2027.5).level === 'ja');
+
+// Ganze Ergebnisseiten nach dem Jahreswechsel in allen 8 Sprachen: keine Skriptfehler, keine kaputten Texte
+// (undefined, NaN, offene Platzhalter, fehlende Übersetzungsschlüssel), und die 2027-Werte stehen wirklich auf den Karten.
+const SPRACHEN = fs.readdirSync(__dirname + '/../src/lang').filter((f) => f.endsWith('.json')).map((f) => f.replace('.json', ''));
+const leer = { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', unterhalt: '', kindEink: '', baby: '', aufenthalt: '', miete: '', mietstufe: '', plz: '', vermoegen: '', gebJahr: '', pflegegrad: '', gdb: '', bezug: {} };
+const HH = {
+  allein620: { kids: 1, kidsU6: 1, ek1Art: 'lohn', ek1Brutto: '620', ek1Netto: '620', miete: '600', plz: '90402', vermoegen: '0', baby: 'bald' },
+  paar: { adults: 2, kids: 2, kidsU6: 1, ek1Art: 'lohn', ek1Brutto: '2400', ek1Netto: '1750', ek2Art: 'lohn', ek2Brutto: '500', ek2Netto: '500', miete: '850', plz: '10115', vermoegen: '2000' },
+  rente: { ek1Art: 'rente', ek1Brutto: '900', ek1Netto: '820', miete: '480', plz: '01067', vermoegen: '3000', gebJahr: '1958', pflegegrad: '2', gdb: '80' },
+  alg: { kids: 1, ek1Art: 'alg', ek1Netto: '1100', miete: '700', plz: '50667', vermoegen: '0', baby: 'da' },
+};
+const kaputt = /undefined|NaN|\[object|\{[a-zA-Z0-9]+\}|\b[a-z]{2,}\.[a-zA-Z0-9]+\.[a-zA-Z0-9.]+\b/;
+for (const iso of ['2026-12-31T22:00:00', '2027-01-01T08:00:00']) {
+  for (const lang of SPRACHEN) {
+    for (const [name, hh] of Object.entries(HH)) {
+      const st = { 'lotse-lang': lang, 'lotse.ack': '1', 'lotse.state': JSON.stringify({ s: Object.assign({}, leer, hh), p: {}, e: true }) };
+      const pg = seite(iso, st);
+      const txt = pg.d.getElementById('cards').textContent;
+      const m = txt.match(kaputt);
+      ck(`${iso.slice(0, 10)} ${lang} ${name}: Karten ohne Skriptfehler und ohne kaputte Texte`, pg.errors.length === 0 && pg.d.querySelectorAll('#cards .card:not(.startcard)').length === KARTEN.length && !m, (pg.errors.join('; ') || '') + (m ? ' Text: …' + txt.slice(Math.max(0, m.index - 60), m.index + 60) + '…' : ''));
+      if (lang === 'de' && name === 'allein620') {
+        const kkg = pg.d.getElementById('c-kkg'), k = kkg ? kkg.textContent : '';
+        if (iso.startsWith('2026')) ck('31.12.2026: 620 € Lohn ist kein Minijob, Kinderkrankengeld möglich mit 30 Tagen (alleinerziehend)', /Möglich/.test(k) && /30 Arbeitstage/.test(k) && /höchstens 70/.test(k), k.slice(0, 200));
+        else ck('1.1.2027: 620 € Lohn ist jetzt Minijob (Grenze 633 €), kein Kinderkrankengeld', /Unwahrscheinlich/.test(k) && /Minijob/.test(k) && !/Arbeitstage/.test(k), k.slice(0, 200));
+      }
+    }
+  }
+}
 
 console.log(fails ? '\n' + fails + ' von ' + n + ' FEHLGESCHLAGEN' : 'Jahreswechsel-Test bestanden: ' + n + ' Prüfungen');
 process.exit(fails ? 1 : 0);
