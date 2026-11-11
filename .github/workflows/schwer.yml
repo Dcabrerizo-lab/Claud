@@ -104,16 +104,20 @@ jobs:
       - run: npm ci
         working-directory: app
       - run: npm run build:app
-      - name: Debug-APK bauen
+      - name: Debug-APK bauen (alte Version 1000 und neue Version 1001 für den Update-Test)
         working-directory: app/android
-        run: ./gradlew --no-daemon assembleDebug
+        run: |
+          VERSION_CODE=1000 ./gradlew --no-daemon assembleDebug
+          cp app/build/outputs/apk/debug/app-debug.apk ${{ github.workspace }}/app-alt.apk
+          VERSION_CODE=1001 ./gradlew --no-daemon assembleDebug
       - name: KVM für den Emulator freischalten
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
-      - name: App im Emulator installieren, starten, auf Absturz prüfen
+      - name: App im Emulator installieren, starten, bedienen, PDF teilen, Update über die alte Version
         uses: reactivecircus/android-emulator-runner@v2
+        env: { ALT_APK: app-alt.apk }
         with:
           api-level: ${{ matrix.api }}
           arch: x86_64
