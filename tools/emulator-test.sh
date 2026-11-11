@@ -4,7 +4,7 @@
 set -u
 APK=app/android/app/build/outputs/apk/debug/app-debug.apk
 ALT=${ALT_APK:-$APK}   # ältere Version (kleinere Versionsnummer) für den Update-Test
-PKG=com.sozialleistungslotse.apk
+PKG=com.Sozialleistungslotse
 API=$(adb shell getprop ro.build.version.sdk | tr -d '\r')
 echo "Android-API $API"
 adb install -r "$ALT" || { echo "::error::Installation fehlgeschlagen (API $API)"; exit 1; }

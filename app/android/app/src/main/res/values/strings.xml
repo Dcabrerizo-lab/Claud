@@ -2,6 +2,6 @@
 <resources>
     <string name="app_name">SoLo</string>
     <string name="title_activity_main">SoLo</string>
-    <string name="package_name">com.sozialleistungslotse.apk</string>
-    <string name="custom_url_scheme">com.sozialleistungslotse.apk</string>
+    <string name="package_name">com.Sozialleistungslotse</string>
+    <string name="custom_url_scheme">com.Sozialleistungslotse</string>
 </resources>

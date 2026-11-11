@@ -1,5 +1,5 @@
 {
-  "appId": "com.sozialleistungslotse.apk",
+  "appId": "com.Sozialleistungslotse",
   "appName": "SoLo",
   "webDir": "www",
   "android": { "allowMixedContent": false },

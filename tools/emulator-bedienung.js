@@ -5,7 +5,7 @@
 'use strict';
 const { _android: android } = require('playwright');
 const { execSync } = require('child_process');
-const PKG = 'com.sozialleistungslotse.apk';
+const PKG = 'com.Sozialleistungslotse';
 const KARTEN = require('../test/karten.js');
 const phase = process.argv[2] || 'vorher';
 let n = 0, fails = 0;
