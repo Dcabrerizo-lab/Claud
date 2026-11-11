@@ -20,7 +20,12 @@ const pruefen = () => {
     const alle = [...document.querySelectorAll('body *')].map((e) => ({ e, r: e.getBoundingClientRect() })).filter((x) => x.r.right > W + 1 && x.r.width > 0)
       .sort((a, b) => b.r.right - a.r.right).slice(0, 4)
       .map((x) => { const cs = getComputedStyle(x.e); return x.e.tagName + (x.e.id ? '#' + x.e.id : '') + '.' + (x.e.className || '') + ' right=' + Math.round(x.r.right) + ' w=' + Math.round(x.r.width) + ' pos=' + cs.position + ' vis=' + cs.visibility + ' disp=' + cs.display + ' „' + (x.e.textContent || '').trim().slice(0, 30) + '“'; });
-    out.push('seitliches Scrollen ' + ov + ' px [' + alle.join(' ; ') + ']');
+    // Inhalt, der über seinen eigenen Kasten hinausläuft (z. B. nicht umbrechender Text)
+    const inhalt = [...document.querySelectorAll('body *')].map((e) => ({ e, r: e.getBoundingClientRect() }))
+      .filter((x) => x.e.scrollWidth > x.e.clientWidth + 1 && x.r.left + x.e.scrollWidth > W + 1 && x.e.clientWidth > 0)
+      .filter((x) => ![...x.e.children].some((c) => c.scrollWidth > c.clientWidth + 1 && c.getBoundingClientRect().left + c.scrollWidth > W + 1))
+      .slice(0, 4).map((x) => x.e.tagName + (x.e.id ? '#' + x.e.id : '') + '.' + (x.e.className || '') + ' sw=' + x.e.scrollWidth + ' cw=' + x.e.clientWidth + ' ov=' + getComputedStyle(x.e).overflowX + ' „' + (x.e.textContent || '').trim().slice(0, 30) + '“');
+    out.push('seitliches Scrollen ' + ov + ' px [' + alle.join(' ; ') + '] Inhalt: [' + inhalt.join(' ; ') + ']');
   }
   document.querySelectorAll('body *').forEach((e) => {
     if (!sichtbar(e) || e.closest('.mappe-text, textarea, pre')) return;

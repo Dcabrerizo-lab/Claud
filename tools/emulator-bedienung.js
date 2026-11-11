@@ -26,8 +26,8 @@ const warte = (ms) => new Promise((r) => setTimeout(r, ms));
   ok('Native App erkannt (Capacitor)', await p.evaluate(() => !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform())));
 
   if (phase === 'vorher') {
-    if (await p.isVisible('#firstOk')) await p.tap('#firstOk');
-    await p.tap('#p2'); await warte(800);
+    if (await p.isVisible('#firstOk')) await p.evaluate(() => document.getElementById('firstOk').click());
+    await p.evaluate(() => document.getElementById('p2').click()); await warte(800);
     ok('Beispiel-Haushalt: alle ' + KARTEN.length + ' Karten', (await p.locator('#cards .card:not(.startcard)').count()) === KARTEN.length);
     await p.fill('#ek1Brutto', '2100'); await p.locator('#ek1Brutto').press('Tab'); await warte(500);
     await p.fill('#p-name', 'Maria Muster'); await p.fill('#p-strasse', 'Hauptstr. 1'); await p.fill('#p-ort', '91054 Erlangen');
