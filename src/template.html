@@ -273,7 +273,8 @@
   .results, .card, fieldset, .field, .cols > * { grid-template-columns: minmax(0, 1fr); }
   .seg { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .seg label { white-space: normal; text-align: center; }
-  select { max-width: 100%; }
+  select { max-width: 100%; min-width: 0; overflow: hidden; text-overflow: ellipsis; } /* WebKit: langer Eintrag läuft sonst über die Spalte hinaus */
+  .field > * { min-width: 0; }
   .langpick { min-width: 0; max-width: 100%; }
   .langpick select { max-width: 100%; min-width: 0; }
   .pill { white-space: normal; max-width: 100%; }

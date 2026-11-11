@@ -83,7 +83,8 @@ const safeArea = 'body{padding-top:env(safe-area-inset-top);padding-bottom:env(s
 html = replaceOnce(html, '<style>', '<style>\n' + faces + safeArea, 'erstes <style>');
 const head = '<!doctype html>\n<html lang="de"><head><meta charset="utf-8">' +
   '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">\n' +
-  '<meta http-equiv="Content-Security-Policy" content="' + CSP + '">\n'; // <title>, Links und <style> folgen aus der Vorlage
+  '<meta http-equiv="Content-Security-Policy" content="' + CSP + '">\n' +
+  '<link rel="icon" href="data:,">\n'; // leeres Symbol: sonst fragt die WebView /favicon.ico an (404 im Log); <title>, Links und <style> folgen aus der Vorlage
 fs.writeFileSync(path.join(WWW, 'index.html'), head + html + '\n</body></html>\n');
 
 const kb = (f) => (fs.statSync(path.join(WWW, f)).size / 1024).toFixed(0);

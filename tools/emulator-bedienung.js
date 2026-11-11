@@ -20,7 +20,8 @@ const warte = (ms) => new Promise((r) => setTimeout(r, ms));
   await device.shell('monkey -p ' + PKG + ' -c android.intent.category.LAUNCHER 1');
   const webview = await device.webView({ pkg: PKG }, { timeout: 90000 });
   const p = await webview.page();
-  const fehler = []; p.on('pageerror', (e) => fehler.push(e.message)); p.on('console', (m) => { if (m.type() === 'error') fehler.push(m.text()); });
+  const fehler = []; p.on('pageerror', (e) => fehler.push(e.message)); p.on('console', (m) => { if (m.type() === 'error' && !/Share canceled/.test(m.text())) fehler.push(m.text()); }); // „Share canceled“: der Test schließt den Teilen-Dialog selbst
+  p.on('response', (r) => { if (r.status() >= 400) fehler.push('Datei fehlt (' + r.status() + '): ' + r.url()); });
   await p.waitForSelector('#cards', { timeout: 60000 });
   await warte(1500);
   ok('Native App erkannt (Capacitor)', await p.evaluate(() => !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform())));
