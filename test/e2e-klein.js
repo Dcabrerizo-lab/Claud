@@ -15,7 +15,13 @@ const pruefen = () => {
   const W = window.innerWidth, out = [];
   const sichtbar = (e) => { const r = e.getBoundingClientRect(); const cs = getComputedStyle(e); return r.width > 0 && r.height > 0 && cs.visibility !== 'hidden' && !e.closest('[hidden], .sr-only, .visually-hidden, dialog:not([open])'); };
   const ov = document.documentElement.scrollWidth - W;
-  if (ov > 1) out.push('seitliches Scrollen ' + ov + ' px');
+  if (ov > 1) {
+    // Verursacher nennen, auch unsichtbare oder absolut positionierte Elemente
+    const alle = [...document.querySelectorAll('body *')].map((e) => ({ e, r: e.getBoundingClientRect() })).filter((x) => x.r.right > W + 1 && x.r.width > 0)
+      .sort((a, b) => b.r.right - a.r.right).slice(0, 4)
+      .map((x) => { const cs = getComputedStyle(x.e); return x.e.tagName + (x.e.id ? '#' + x.e.id : '') + '.' + (x.e.className || '') + ' right=' + Math.round(x.r.right) + ' w=' + Math.round(x.r.width) + ' pos=' + cs.position + ' vis=' + cs.visibility + ' disp=' + cs.display + ' „' + (x.e.textContent || '').trim().slice(0, 30) + '“'; });
+    out.push('seitliches Scrollen ' + ov + ' px [' + alle.join(' ; ') + ']');
+  }
   document.querySelectorAll('body *').forEach((e) => {
     if (!sichtbar(e) || e.closest('.mappe-text, textarea, pre')) return;
     const r = e.getBoundingClientRect();
