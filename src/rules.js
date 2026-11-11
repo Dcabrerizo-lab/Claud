@@ -75,8 +75,13 @@ const Rules = (function () {
     // Blindenhilfe (§ 72 SGB XII): gleiche Einkommensgrenze wie Hilfe zur Pflege (§ 85); vom Einkommen über der Grenze
     // werden höchstens 40 % eingesetzt (§ 87 Abs. 1 Satz 3); Landesblindengeld wird voll angerechnet (§ 72 Abs. 1 Satz 2)
     blh: { einsatzUeber: 0.4 },
-    // Landesblindengeld außerhalb Bayerns: für Erwachsene je nach Land etwa 350 € (Schleswig-Holstein) bis 950 € (Nordrhein-Westfalen, unter 60)
-    landBlind: { von: 350, bis: 950 },
+    // Landesblindengeld außerhalb Bayerns: für Erwachsene je nach Land etwa 350 € (Schleswig-Holstein) bis 950 € (Nordrhein-Westfalen, unter 60).
+    // Feste Beträge nur, wo belegt (Stand 11/2026): BW 410 € (§ 2 BliHG), HE 86 % der Blindenhilfe = 818,65 € (BliGG Hessen),
+    // MV 430 € (LBlGG M-V), NI 450 € (Merkblatt Landesblindengeld), RP 410 € (LBlGG, Merkblatt Kreisverwaltung), SH 350 € ab 4/2026.
+    // Übrige Länder: Quellen widersprüchlich, daher nur die Spanne (Prüfliste).
+    landBlind: { von: 350, bis: 950, land: { BW: 410, HE: 818.65, MV: 430, NI: 450, RP: 410, SH: 350 }, stand: '11/2026' },
+    // Blindenhilfe § 72 Abs. 1 SGB XII ab 1.7.2026 (angepasst wie die Renten); unter 18 die Hälfte (§ 72 Abs. 2)
+    blhBetrag: { erw: 951.92, kind: 476.78, stand: '7/2026' },
     // Bayerisches Landespflegegeld (BayLPflGG): ab Pflegegrad 2, unabhängig vom Einkommen; ab dem Pflegegeldjahr 2026 500 € im Jahr (vorher 1.000 €)
     lpg: { betrag: 500, stand: '2026' },
     // Mutterschaftsgeld (§ 19 MuSchG, § 24i SGB V): Krankenkasse höchstens 13 € je Kalendertag, Arbeitgeber zahlt den Unterschied
@@ -858,6 +863,10 @@ const Rules = (function () {
     const grenze = R.hzp.grund * R.regelbedarf.alleinstehend + h.miete + R.hzp.familie * R.regelbedarf.alleinstehend * (h.persons - 1);
     const tx = [h.netto <= grenze ? ['blh.unter', { grenze: eur(grenze) }] : ['blh.ueber', { grenze: eur(grenze), prozent: Math.round(R.blh.einsatzUeber * 100) }],
       [h.land && h.land !== 'BY' ? 'blh.landAnders' : 'blh.bayern']];
+    // Höhe: Blindenhilfe minus Landesblindengeld (voll angerechnet, § 72 Abs. 1 Satz 2), wo das Landesblindengeld belegt ist
+    const B = R.blhBetrag, landB = !h.land || h.land === 'BY' ? R.beh.blind.blind : R.landBlind.land[h.land];
+    tx.push(['blh.betrag', { betrag: eur2(B.erw), kind: eur2(B.kind), stand: B.stand }]);
+    if (landB && h.bhPerson !== 'minder') tx.push(['blh.differenz', { land: BL_NAME[h.land || 'BY'], landbetrag: eur2(landB), rest: eur2(Math.max(0, B.erw - landB)) }]);
     if (h.bhPerson === 'minder') tx.push(['blh.kind']);
     if (h.pflegegrad >= 2) tx.push(['blh.pflege']);
     tx.push(['blh.heim']);
@@ -936,7 +945,9 @@ const Rules = (function () {
     // widersprüchlich, daher nur eine Spanne und keine feste Zahl (Prüfliste).
     if (h.land && h.land !== 'BY') {
       if (h.blind !== 'blind') return mk(id, 'vielleicht', 'vielleicht', [['blindengeld.hochLand']]);
-      return mk(id, 'ja', 'ja', [['blindengeld.landJa', { von: eur(R.landBlind.von), bis: eur(R.landBlind.bis) }]].concat(h.pflegegrad >= 2 ? [['blindengeld.pflegeLand']] : []));
+      const fest = R.landBlind.land[h.land];
+      const t1 = fest ? ['blindengeld.landBetrag', { land: BL_NAME[h.land], betrag: eur2(fest), stand: R.landBlind.stand }] : ['blindengeld.landJa', { von: eur(R.landBlind.von), bis: eur(R.landBlind.bis) }];
+      return mk(id, 'ja', 'ja', [t1].concat(h.pflegegrad >= 2 ? [['blindengeld.pflegeLand']] : []));
     }
     const b = R.beh.blind;
     const tx = [[h.blind === 'blind' ? 'blindengeld.blind' : 'blindengeld.hoch', { betrag: eur2(h.blind === 'blind' ? b.blind : b.hoch), stand: b.stand }]];
@@ -1107,6 +1118,8 @@ const Rules = (function () {
   // Zuständige Stellen außerhalb Bayerns (ohne Anschrift). Nur Einträge, die als gesichert gelten; sonst die allgemeine Angabe ('_').
   // In Bayern nennt die App die Stelle mit Anschrift (behoerden.js). Bitte fachlich prüfen (Prüfliste).
   // ---------------------------------------------------------------
+  const BL_NAME = { BW: 'Baden-Württemberg', BY: 'Bayern', BE: 'Berlin', BB: 'Brandenburg', HB: 'Bremen', HH: 'Hamburg', HE: 'Hessen', MV: 'Mecklenburg-Vorpommern',
+    NI: 'Niedersachsen', NW: 'Nordrhein-Westfalen', RP: 'Rheinland-Pfalz', SL: 'Saarland', SN: 'Sachsen', ST: 'Sachsen-Anhalt', SH: 'Schleswig-Holstein', TH: 'Thüringen' };
   const ZUST_LAND = {
     ausweis: {
       _: 'Versorgungsamt deines Bundeslandes',
