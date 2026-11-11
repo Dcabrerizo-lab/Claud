@@ -82,6 +82,9 @@ jobs:
       - name: Einfache Version
         env: { BROWSER: '${{ matrix.browser }}' }
         run: node test/e2e-einfach.js
+      - name: Kleine Handys und große Schrift (320 px, Systemschrift 200 %)
+        env: { BROWSER: '${{ matrix.browser }}' }
+        run: node test/e2e-klein.js
 
   android-geraete:
     name: Android-Emulator API ${{ matrix.api }}
