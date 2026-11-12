@@ -527,7 +527,7 @@
   "ek.betrag.kg": "Aylık net Krankengeld (ödenen)",
   "ek.betrag.hint.eg": "Elterngeldstelle kararında yazar. ElterngeldPlus'ta aylık tutarı girin.",
   "bh.gdb.antrag": "Başvuruldu, karar henüz gelmedi",
-  "bh.em.unklar": "Bilmiyorum ama uzun süredir hastayım",
+  "bh.em.unklar": "Bilmiyorum, uzun süredir hastayım",
   "ausb.kindBetrieb": "Evet, bir çocuk: işletmede eğitim",
   "t.schaetz.eins": "Kaba tahmin: ayda yaklaşık {a}.",
   "t.schaetz.spanne": "Kaba tahmin: ayda yaklaşık {a} ile {b} arası.",
