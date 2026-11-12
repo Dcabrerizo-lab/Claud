@@ -11,7 +11,7 @@ Alles muss zur [Datenschutzerklärung](../datenschutz.html) passen. Bei Änderun
 | Untertitel (iOS, max. 30 Zeichen) | Sozialleistungen schnell prüfen |
 | Kategorie | Play: *Finanzen* · iOS: *Finanzen* (Zweitkategorie *Dienstprogramme*) |
 | Altersfreigabe | Ab 0 / 4+ (keine kritischen Inhalte) |
-| Preis | 1,99 € einmalig (Play Console: „Mit Google Play monetarisieren“), keine In-App-Käufe, keine Werbung, kein Abo. Tester bekommen Gutscheincodes. |
+| Preis | 1,49 € einmalig (Play Console: „Mit Google Play monetarisieren“), keine In-App-Käufe, keine Werbung, kein Abo. Tester bekommen Gutscheincodes. |
 | Datenschutz-URL | `datenschutz.html` öffentlich ins Netz stellen, z. B. GitHub Pages (`https://dcabrerizo-lab.github.io/Claud/datenschutz.html`), eine eigene Website, Netlify oder Codeberg Pages |
 | Support-E-Mail | d.cabrerizo@gmx.de |
 | Sprachen im Store | Deutsch (Haupt), weitere optional: Englisch, Türkisch, Arabisch, Russisch, Ukrainisch, Polnisch, Rumänisch |
