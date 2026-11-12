@@ -15,15 +15,16 @@ Mindestens 12 Personen, die 14 Tage am Stück dabeibleiben. Am besten 15 bis 20 
 
 > Hallo,
 >
-> ich habe eine kostenlose App entwickelt: den **SoLo**. Er zeigt in zwei Minuten, welche Sozialleistungen jemandem zustehen könnten, zum Beispiel Wohngeld, Kinderzuschlag oder Pflegegeld. Alles bleibt auf dem Handy, es gibt keine Anmeldung und keine Werbung.
+> ich habe eine App entwickelt: den **SoLo**. Er zeigt in zwei Minuten, welche Sozialleistungen jemandem zustehen könnten, zum Beispiel Wohngeld, Kinderzuschlag oder Pflegegeld. Alles bleibt auf dem Handy, es gibt keine Anmeldung und keine Werbung.
 >
 > Damit die App in den Play Store darf, verlangt Google einen Test mit mindestens 12 Personen über 14 Tage. Hilfst du mir?
 >
 > So geht's (dauert 2 Minuten):
 > 1. Schick mir die **Gmail-Adresse**, mit der du im Play Store angemeldet bist.
-> 2. Ich trage dich ein und schicke dir einen Link.
-> 3. Link öffnen, „Tester werden“ tippen, dann die App aus dem Play Store installieren.
-> 4. **Die App 14 Tage lang nicht deinstallieren.** Es reicht, sie ab und zu zu öffnen und einmal auszuprobieren.
+> 2. Ich trage dich ein und schicke dir einen Link und einen Gutscheincode. Für dich als Tester kostet die App nichts.
+> 3. Code einlösen: Play Store öffnen, oben rechts auf dein Profilbild, „Zahlungen und Abos“, „Code einlösen“.
+> 4. Link öffnen, „Tester werden“ tippen, dann die App aus dem Play Store installieren.
+> 5. **Die App 14 Tage lang nicht deinstallieren.** Es reicht, sie ab und zu zu öffnen und einmal auszuprobieren.
 >
 > Wenn dir etwas auffällt (unklare Frage, falsches Ergebnis, Fehler), schreib mir gern. Jede Rückmeldung hilft.
 >
@@ -56,7 +57,7 @@ Google stellt nach den 14 Tagen Fragen zum Test. **Die Platzhalter in [eckigen K
 > Für Menschen in Deutschland, die wissen möchten, welche Sozialleistungen ihnen zustehen könnten, z. B. Familien mit kleinem Einkommen, Alleinerziehende, Rentnerinnen und Rentner, Menschen mit Behinderung und pflegende Angehörige. Es gibt eine einfache Version für Menschen mit Lernschwierigkeiten und 8 Sprachen.
 
 **Welchen Nutzen bietet die App?**
-> Viele Menschen beantragen Leistungen nicht, weil sie nicht wissen, dass sie Anspruch haben. Die App prüft 31 Leistungen in zwei Minuten, nennt die zuständige Stelle und die Unterlagen und schreibt formlose Anträge. Sie läuft vollständig offline, ohne Konto, ohne Werbung und ohne Datenübertragung. Sie ist eine Orientierung und keine Behörden-App.
+> Viele Menschen beantragen Leistungen nicht, weil sie nicht wissen, dass sie Anspruch haben. Die App prüft 31 Leistungen in zwei Minuten, nennt die zuständige Stelle und die Unterlagen und schreibt formlose Anträge. Sie läuft vollständig offline, ohne Konto, ohne Werbung, ohne In-App-Käufe und ohne Datenübertragung. Sie ist eine Orientierung und keine Behörden-App.
 
 **Wie viele Installationen erwarten Sie im ersten Jahr?**
 > [Realistische Schätzung, z. B. 1.000 bis 10.000.]
