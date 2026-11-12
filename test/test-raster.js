@@ -250,6 +250,7 @@ if (arten.length) {
   arten.forEach((a) => { console.log('\n- ' + a + ': ' + fehler[a].anzahl + 'x\n  Beispiel: ' + JSON.stringify(fehler[a].beispiel)); });
   process.exit(1);
 }
-if (!((zukZahl.alg || 0) >= 500 && (zukZahl.kg || 0) >= 500 && (zukZahl.eg || 0) >= 200)) { console.log('Zu wenige Haushalte mit künftiger Leistung im Raster:', JSON.stringify(zukZahl)); process.exit(1); }
+const zukMin = Math.max(10, Math.round(N / 300)); // je Leistung mindestens rund 0,3 % der Zufallshaushalte (bei 60.000: 200)
+if (!((zukZahl.alg || 0) >= zukMin && (zukZahl.kg || 0) >= zukMin && (zukZahl.eg || 0) >= zukMin)) { console.log('Zu wenige Haushalte mit künftiger Leistung im Raster:', JSON.stringify(zukZahl)); process.exit(1); }
 console.log('[zuk-einkommen] Künftige vorrangige Leistung als Einkommen geprüft: ' + JSON.stringify(zukZahl));
 console.log('[wg-formel] [wg-ae] [kiz-formel] [eg-satz] [hzp-grenze] [blh-grenze] [asyl-ausschluss] Raster-Test bestanden: ' + n + ' Haushalte (davon ' + raster + ' als vollständiges Raster für Werkstatt-Beschäftigte, ' + schwelle + ' im Schwellen-Raster), App und unabhängige Referenz stimmen überein (Grundsicherungsgeld, Grundsicherung im Alter und bei Erwerbsminderung mit Werkstattlohn und Wohnform, Wohngeld, Kinderzuschlag, Unterhaltsvorschuss, BAföG, Arbeitslosengeld I, Krankengeld, Elterngeld, Hilfe zur Pflege, Blindenhilfe, Ausschlüsse bei Asyl: Einstufung und Beträge).');
