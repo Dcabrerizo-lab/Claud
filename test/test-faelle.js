@@ -425,5 +425,24 @@ const butWg = (u6) => K({ kids: 1, kidsU6: u6, art1: 'lohn', brutto: 2600, netto
 ck('[but-kita] Wohngeld möglich (noch nicht bezogen): Kita-Hinweis nur mit Kind unter 6', butWg(1).includes('but.kita') && !butWg(0).includes('but.kita'));
 ck('[but-kita] Kita beitragsfrei bei Wohngeld/Kinderzuschlag/Grundsicherung: Hinweis nur mit Kind unter 6', K({ kids: 1, kidsU6: 1, bezug: { wohngeld: true } }, 'but').includes('but.kita') && !K({ kids: 1, bezug: { wohngeld: true } }, 'but').includes('but.kita'));
 
+// Unterhalt, den die Person selbst zahlt (§ 11b Abs. 1 Satz 1 Nr. 7 SGB II; § 18 WoGG; SGB XII ohne Abzug)
+const S = (o, id) => { const t = res(o).m[id].tx.find((a) => a[0] === 'schaetz.eins'); return t ? Number(t[1].a.replace(/\D/g, '')) : null; };
+const uzA = { art1: 'lohn', brutto: 1500, netto: 1150, miete: 600 }; // Freibetrag 100 + 84 + 144 + 20 = 348, Einkommen 802, Bedarf 1.163, Lücke 361
+ck('[uz-sgb2] Festgelegter Unterhalt (300 €) wird beim Grundsicherungsgeld voll abgezogen: Lücke 361 € -> 661 €', S(uzA, 'ggeld') === 360 && S({ ...uzA, uzBetrag: 300, uzAn: 'k1', uzTitel: true }, 'ggeld') === 660 && K({ ...uzA, uzBetrag: 300, uzAn: 'k1', uzTitel: true }, 'ggeld').includes('uz.sgb2Titel'));
+ck('[uz-sgb2] Ohne festgelegten Betrag kein Abzug, aber Hinweis auf Jugendamtsurkunde', S({ ...uzA, uzBetrag: 300, uzAn: 'k1' }, 'ggeld') === 360 && K({ ...uzA, uzBetrag: 300, uzAn: 'k1' }, 'ggeld').includes('uz.sgb2Ohne'));
+const uzK = { adults: 2, kids: 1, art1: 'lohn', brutto: 3000, netto: 2300, miete: 900, mietstufe: 3 };
+ck('[uz-sgb2] Kinderzuschlag: festgelegter Unterhalt mindert das Einkommen der Eltern (230 € -> Höchstbetrag 297 €)', S(uzK, 'kiz') === 230 && S({ ...uzK, uzBetrag: 300, uzAn: 'k1', uzTitel: true }, 'kiz') === 300 && S({ ...uzK, uzBetrag: 300, uzAn: 'k1' }, 'kiz') === 230);
+const D = (o) => R.derive({ ...base, ...o });
+const dz = (o) => { const h = D(o); return [h.uzWGpess, h.uzWGopt, h.uzSGB].join('/'); };
+ck('[uz-wg] Wohngeld-Höchstbeträge § 18 WoGG: 250 € je Kind, 500 € Ex-Partner; ohne Titel vorsichtig 0, günstig bis Höchstbetrag; mit Titel günstig ganzer Betrag',
+  dz({ uzBetrag: 400, uzAn: 'k1', uzTitel: true }) === '250/400/400' && dz({ uzBetrag: 400, uzAn: 'k1' }) === '0/250/0' && dz({ uzBetrag: 600, uzAn: 'ex', uzTitel: true }) === '500/600/600' &&
+  dz({ uzBetrag: 1000, uzAn: 'k3' }) === '0/750/0' && dz({ uzBetrag: 900, uzAn: 'exk', uzTitel: true }) === '750/900/900' && dz({ uzBetrag: 400, uzAn: 'k2', uzTitel: true }) === '400/400/400' && dz({ uzBetrag: 400 }) === '0/250/0', [dz({ uzBetrag: 400, uzAn: 'k1', uzTitel: true }), dz({ uzBetrag: 1000, uzAn: 'k3' })]);
+const uzW = { art1: 'lohn', brutto: 1800, netto: 1350, miete: 750, mietstufe: 4 };
+ck('[uz-wg] Wohngeld: 250 € Unterhalt ohne Titel hebt nur die günstige Schätzung (bleibt „möglich“), mit Titel „wahrscheinlich“', L(uzW, 'wohngeld') === 'vielleicht' && L({ ...uzW, uzBetrag: 250, uzAn: 'k1' }, 'wohngeld') === 'vielleicht' && L({ ...uzW, uzBetrag: 250, uzAn: 'k1', uzTitel: true }, 'wohngeld') === 'ja' && K({ ...uzW, uzBetrag: 250, uzAn: 'k1' }, 'wohngeld').includes('uz.wg'));
+ck('[uz-wg] Nach hohem Unterhalt reicht das Geld nicht mehr zum Leben: Hinweis Mindesteinkommen statt Betrag', K({ ...uzW, uzBetrag: 1000, uzAn: 'k1', uzTitel: true }, 'wohngeld').includes('wohngeld.zuNiedrig'));
+const uzG = { alter: true, nichtArbeit: true, brutto: 900, miete: 500, mietstufe: 3 };
+ck('[uz-gsa] Grundsicherung im Alter: gezahlter Unterhalt ändert nichts am Betrag, Hinweis und Selbstbehalt', S(uzG, 'gsa') === S({ ...uzG, uzBetrag: 200, uzAn: 'ex', uzTitel: true }, 'gsa') && K({ ...uzG, uzBetrag: 200, uzAn: 'ex', uzTitel: true }, 'gsa').includes('uz.gsa') && K({ ...uzG, uzBetrag: 200, uzAn: 'ex', uzTitel: true }, 'gsa').includes('uz.selbstbehalt'));
+ck('[uz-sgb2] Ohne gezahlten Unterhalt keine Unterhalts-Hinweise', !K(uzA, 'ggeld').some((k) => /^uz\./.test(k)) && !K(uzW, 'wohngeld').some((k) => /^uz\./.test(k)));
+
 console.log(fails ? '\n' + fails + ' von ' + n + ' FEHLGESCHLAGEN' : '\nFall-Tests bestanden: ' + n + ' Prüfungen');
 process.exit(fails ? 1 : 0);

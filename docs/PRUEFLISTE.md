@@ -28,6 +28,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Schüler und Azubis über der Minijob-Grenze: auf den Teil darüber zusätzlich der Freibetrag nach Abs. 3 | ○ (die App rechnet vorsichtig ohne diesen Zusatz, der Betrag fällt also eher zu niedrig aus; von einer Fachperson bestätigen lassen) | |
 | Elterngeld 300 € frei bei Einkommen vor der Geburt (§ 10 Abs. 5 BEEG) | ✓ | `gg-eg300` |
 | Unterhalt und Unterhaltsvorschuss als Einkommen der Kinder, gedeckelt auf ihren Bedarf | ✓ | `gg-unterhalt` |
+| Selbst gezahlter Unterhalt: Abzug vom Einkommen, wenn festgelegt (Unterhaltstitel, Jugendamtsurkunde, notarielle Vereinbarung) und gezahlt (§ 11b Abs. 1 Satz 1 Nr. 7); ohne Titel kein Abzug, Hinweis | ✓ | `uz-sgb2` |
 | Schonvermögen nach Alter (§ 12 Abs. 2, ab 1.7.2026): 5.000 € bis zum 30. Geburtstag, dann 10.000 €, ab dem 40. 12.500 €, ab dem 50. 20.000 € je Person | ✓ | `gg-verm` |
 | Mehrbedarf Alleinerziehende (§ 21 Abs. 3) | ✓ | `gg-mb-ae` |
 | Mehrbedarf 35 % bei Teilhabe am Arbeitsleben bzw. Schule und Ausbildung (§ 21 Abs. 4, § 23 Nr. 2); bei Kindern Alter unbekannt | ✓ / ◐ | `gg-mb-teilhabe`, `gg-mb-kind` |
@@ -49,6 +50,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 |---|---|---|
 | Voraussetzung Rentenalter oder dauerhaft volle Erwerbsminderung (§ 41) | ✓ | `gsa-voraus` |
 | Freibetrag Erwerbstätige 30 %, höchstens 50 % RS1 (§ 82 Abs. 3 Satz 1) | ✓ | `gsa-ewt` |
+| Selbst gezahlter Unterhalt: in der Regel kein Abzug (§ 82 SGB XII kennt ihn nicht), Hinweis auf Selbstbehalt | ◐ | `uz-gsa` |
 | Werkstattlohn: Arbeitsförderungsgeld frei, 1/8 RS1 + 50 % frei (§ 82 Abs. 2 Nr. 5, Abs. 3 Satz 2) | ✓ | `gsa-wfbm` |
 | Grundrentenfreibetrag (§ 82a) | ✓ | `gsa-grundrente` |
 | Mehrbedarf G 17 % (§ 30 Abs. 1) | ✓ | `gsa-mb-g` |
@@ -80,6 +82,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Vermögen: Regelvermutung der Verwaltungsvorschrift (60.000 € + 30.000 € je weitere Person) | ✓ | `wg-verm` |
 | Ausschluss bei Grundsicherungsgeld, Grundsicherung, Asylbewerberleistungen (§ 7) | ✓ | `wg-ausschluss`, `asyl-ausschluss` |
 | Ausschluss Azubis und Studierende mit dem Grunde nach förderfähiger Ausbildung (§ 20 Abs. 2) | ✓ | `wg-azubi` |
+| Selbst gezahlter Unterhalt (§ 18 WoGG): bis 3.000 € im Jahr je Kind oder sonstiger Person, 6.000 € für frühere oder getrennt lebende Ehe- oder Lebenspartner; ohne Titel vorsichtig nur für „möglich“, mit Titel günstig der ganze Betrag (ob ein Titel über den Höchstbetrag hinaus zählt, ist nicht am Gesetzestext geprüft) | ◐ | `uz-wg` |
 
 ## Kinderzuschlag (BKGG)
 <!-- karten: kiz -->
@@ -90,6 +93,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Mehrbedarfe der Eltern im Bedarf der Eltern (Schwangerschaft, Warmwasser, 35 % Teilhabe) | ✓ | `kiz-mehr` |
 | Vermögensgrenze 40.000 € für die erste, 15.000 € je weitere Person (§ 6a Abs. 3 BKGG, bleibt trotz Grundsicherungsreform) | ✓ | `kiz-verm` |
 | Ausschluss bei Asylbewerberleistungen (kein Kindergeld) | ✓ | `asyl-ausschluss` |
+| Selbst gezahlter, festgelegter Unterhalt mindert das Einkommen der Eltern (§ 11b Abs. 1 Satz 1 Nr. 7 SGB II) | ✓ | `uz-sgb2` |
 
 ## Kindergeld (EStG, BKGG)
 <!-- karten: kindergeld -->

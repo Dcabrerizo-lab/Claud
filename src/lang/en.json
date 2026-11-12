@@ -890,5 +890,20 @@
   "s.mutter.wo": "At your Krankenkasse; if privately or family insured at the Bundesamt für Soziale Sicherung (online).",
   "s.mutter.tip": "The doctor's certificate of the due date is available at the earliest 7 weeks before the birth. Inform your employer, who pays the top-up.",
   "s.kkg.wo": "At your Krankenkasse. The certificate comes from the paediatrician.",
-  "s.kkg.tip": "Inform your employer on the first day and get the certificate."
+  "s.kkg.tip": "Inform your employer on the first day and get the certificate.",
+  "uz.label": "Maintenance you pay or have to pay, per month",
+  "uz.hint": "For children who do not live with you, or for a former partner. As much as you actually transfer. Leave empty if none.",
+  "uz.an.label": "Who receives the maintenance?",
+  "uz.an.0": "Please choose",
+  "uz.an.k1": "1 child",
+  "uz.an.k2": "2 children",
+  "uz.an.k3": "3 or more children",
+  "uz.an.ex": "Former or separated spouse or civil partner",
+  "uz.an.exk": "Former partner and children",
+  "cb.uzTitel": "The amount is fixed: by a court decision, a Jugendamt certificate (Jugendamtsurkunde) or a notarial agreement",
+  "t.uz.wg": "Maintenance you pay ({u} per month) is deducted from income (§ 18 WoGG), usually at most 250 € per month per child and 500 € for a former partner. The app calculates cautiously: without a fixed amount (court decision, Jugendamtsurkunde, notarial agreement) the deduction only counts for “possible”. Bring proof of the payments.",
+  "t.uz.sgb2Titel": "Maintenance you pay ({u} per month) is deducted from income because the amount is fixed (§ 11b SGB II). Only what is actually paid is deducted. Bring bank statements as proof.",
+  "t.uz.sgb2Ohne": "The maintenance you pay ({u} per month) is only deducted here if the amount is fixed: by a court decision, a Jugendamtsurkunde or a notarial agreement (§ 11b SGB II). For children the Jugendamt certifies maintenance free of charge. The app therefore calculates without a deduction.",
+  "t.uz.gsa": "Maintenance you pay ({u} per month) is usually not deducted from income for this benefit.",
+  "t.uz.selbstbehalt": "If your income is tight, you only have to pay maintenance as long as you keep your personal allowance (Selbstbehalt). Have the amount checked, for example by a lawyer. With low income you can get Beratungshilfe (legal advice aid) from the local court."
 }

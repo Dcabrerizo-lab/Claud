@@ -61,7 +61,7 @@
   function save() { clearTimeout(saveTimer); saveTimer = setTimeout(flush, 300); }
   function smooth() { return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'; }
   function blankState() {
-    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', kindEink: '', ek1bArt: '', ek1bBetrag: '', baby: '', egVor: '', aufenthalt: '', miete: '', mietstufe: '', plz: '', plzPick: '', bundesland: '', vermoegen: '', gebJahr: '', arbeitSit: '', algMonate: '', krankWochen: '', lohnVorher: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', bezug: {} };
+    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', kindEink: '', ek1bArt: '', ek1bBetrag: '', baby: '', egVor: '', aufenthalt: '', miete: '', mietstufe: '', plz: '', plzPick: '', bundesland: '', vermoegen: '', gebJahr: '', arbeitSit: '', algMonate: '', krankWochen: '', lohnVorher: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', uzBetrag: '', uzAn: '', uzTitel: false, bezug: {} };
   }
 
   function detect() {
@@ -151,6 +151,8 @@
     if (state.arbeitSit !== 'krank') reset(['krankWochen']);
     if (!state.arbeitSit) reset(['lohnVorher']);
     if (state.ausbildung !== 'ich') reset(['babBetrieb', 'babWohnt']);
+    var ohneUz = !(Number(state.uzBetrag) > 0);
+    if (ohneUz) reset(['uzAn', 'uzTitel']);
     var show = function (sel, on) { document.querySelectorAll(sel).forEach(function (el) { el.hidden = !on; }); };
     show('.cond-bh', !!state.bhPerson);
     show('.cond-bh25', state.bhPerson === 'erwVor25');
@@ -165,6 +167,7 @@
     show('.cond-krank', state.arbeitSit === 'krank');
     show('.cond-job', !!state.arbeitSit);
     show('.cond-ausbich', state.ausbildung === 'ich');
+    show('.cond-uz', !ohneUz);
   }
   // Frühere Fragen (Haken „Grad der Behinderung 100“ und „voll erwerbsgemindert“) in die neuen Fragen übernehmen
   function migriereFragen(s) {
@@ -331,6 +334,7 @@
     fillSelect('aufenthalt', [['', t('aufenthalt.0')], ['asyl', t('aufenthalt.asyl')]], state.aufenthalt);
     fillSelect('bhWeitere', [['', t('bhWeitere.0')], ['1', '1'], ['2', '2'], ['3', '3']], state.bhWeitere);
     fillSelect('blind', [['', t('bh.blind.0')], ['blind', t('bh.blind.blind')], ['hoch', t('bh.blind.hoch')]], state.blind);
+    fillSelect('uzAn', [['', t('uz.an.0')], ['k1', t('uz.an.k1')], ['k2', t('uz.an.k2')], ['k3', t('uz.an.k3')], ['ex', t('uz.an.ex')], ['exk', t('uz.an.exk')]], state.uzAn);
     fillSelect('emStd', [['', t('bh.em.0')], ['unter3', t('bh.em.unter3')], ['3bis6', t('bh.em.3bis6')], ['unklar', t('bh.em.unklar')]], state.emStd);
     fillSelect('lang', LANGS.map(function (c) { return [c, I18N[c]['meta.name']]; }), lang);
     plzUpdate(false);
@@ -383,9 +387,9 @@
     pr.appendChild(b);
   });
 
-  var CHECKS = ['mzG', 'mzGl', 'algZeit', 'grundrente33', 'wfbmEssen', 'teilhabe', 'schwanger', 'ernaehrung', 'warmwasser', 'kinder12', 'unterhaltFehlt', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt'];
-  var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'ek1bArt', 'bhWeitere', 'baby', 'aufenthalt', 'arbeitSit', 'algMonate', 'krankWochen', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd'];
-  var NUMS = ['miete', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'kindEink', 'lohnVorher', 'ek1bBetrag', 'egVor', 'vermoegen'];
+  var CHECKS = ['mzG', 'mzGl', 'algZeit', 'grundrente33', 'wfbmEssen', 'teilhabe', 'schwanger', 'ernaehrung', 'warmwasser', 'kinder12', 'unterhaltFehlt', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt', 'uzTitel'];
+  var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'ek1bArt', 'bhWeitere', 'baby', 'aufenthalt', 'arbeitSit', 'algMonate', 'krankWochen', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd', 'uzAn'];
+  var NUMS = ['miete', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'kindEink', 'lohnVorher', 'ek1bBetrag', 'egVor', 'vermoegen', 'uzBetrag'];
   var BEZUG = ['grundsicherungsgeld', 'sozialamt', 'wohngeld', 'kiz', 'kindergeld'];
 
   function writeForm() {
@@ -730,6 +734,7 @@
     if (s.arbeitSit === 'krank') b.push('Krankgeschrieben' + (s.krankWochen === 'unter6' ? ', unter 6 Wochen' : s.krankWochen === 'laeuft' ? ', Krankengeld läuft' : s.krankWochen === 'ende' ? ', Krankengeld endet bald oder ist ausgelaufen' : ''));
     if (s.lohnVorher) b.push('Letztes Bruttoarbeitsentgelt: ' + money(s.lohnVorher) + ' im Monat');
     if (s.kindEink) b.push('Eigenes Einkommen der Kinder: ' + money(s.kindEink) + ' im Monat');
+    if (s.uzBetrag) b.push('Zahlt Unterhalt: ' + money(s.uzBetrag) + ' im Monat' + ({ k1: ' an 1 Kind', k2: ' an 2 Kinder', k3: ' an 3 oder mehr Kinder', ex: ' an frühere Partnerin oder früheren Partner', exk: ' an frühere Partner und Kinder' }[s.uzAn] || '') + (s.uzTitel ? ', Betrag festgelegt (Urteil, Jugendamtsurkunde oder Notarvertrag)' : ''));
     if (s.blind === 'blind') b.push('blind');
     if (s.blind === 'hoch') b.push('hochgradig sehbehindert');
     if (s.emStd === 'unter3') b.push('kann weniger als 3 Stunden täglich arbeiten');

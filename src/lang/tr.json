@@ -890,5 +890,20 @@
   "s.mutter.wo": "Krankenkasse'nde; özel veya aile sigortalıysan Bundesamt für Soziale Sicherung'da (internetten).",
   "s.mutter.tip": "Doğum tarihine dair doktor belgesi en erken doğumdan 7 hafta önce alınır. İşvereni bilgilendir, ek ödemeyi o yapar.",
   "s.kkg.wo": "Krankenkasse'nde. Belgeyi çocuk doktoru verir.",
-  "s.kkg.tip": "İlk gün işvereni bilgilendir ve belgeyi al."
+  "s.kkg.tip": "İlk gün işvereni bilgilendir ve belgeyi al.",
+  "uz.label": "Ödediğin veya ödemek zorunda olduğun nafaka, aylık",
+  "uz.hint": "Seninle yaşamayan çocuklar veya eski eş için. Gerçekten havale ettiğin kadar. Yoksa boş bırak.",
+  "uz.an.label": "Nafaka kime gidiyor?",
+  "uz.an.0": "Lütfen seç",
+  "uz.an.k1": "1 çocuğa",
+  "uz.an.k2": "2 çocuğa",
+  "uz.an.k3": "3 veya daha fazla çocuğa",
+  "uz.an.ex": "Eski veya ayrı yaşayan eşe ya da hayat arkadaşına",
+  "uz.an.exk": "Eski eşe ve çocuklara",
+  "cb.uzTitel": "Tutar belirlenmiş: mahkeme kararıyla, Jugendamt belgesiyle (Jugendamtsurkunde) veya noter sözleşmesiyle",
+  "t.uz.wg": "Ödenen nafaka (ayda {u}) gelirden düşülür (§ 18 WoGG), genellikle en fazla çocuk başına ayda 250 € ve eski eş için 500 €. Uygulama temkinli hesaplar: belirlenmiş tutar yoksa (mahkeme kararı, Jugendamtsurkunde, noter sözleşmesi) indirim yalnızca „mümkün“ için sayılır. Ödemelerin belgelerini getir.",
+  "t.uz.sgb2Titel": "Ödenen nafaka (ayda {u}) tutar belirlenmiş olduğu için gelirden düşülür (§ 11b SGB II). Yalnızca gerçekten ödenen düşülür. Belge olarak banka dökümlerini getir.",
+  "t.uz.sgb2Ohne": "Ödediğin nafaka (ayda {u}) burada yalnızca tutar belirlenmişse düşülür: mahkeme kararı, Jugendamtsurkunde veya noter sözleşmesiyle (§ 11b SGB II). Çocuklar için Jugendamt nafakayı ücretsiz belgelendirir. Bu yüzden uygulama indirimsiz hesaplar.",
+  "t.uz.gsa": "Ödenen nafaka (ayda {u}) bu yardımda genellikle gelirden düşülmez.",
+  "t.uz.selbstbehalt": "Gelirin kıtsa, nafakayı yalnızca sana kendi payın (Selbstbehalt) kaldığı ölçüde ödemek zorundasın. Tutarı kontrol ettir, örneğin bir avukata. Düşük gelirde bunun için Amtsgericht’ten Beratungshilfe alabilirsin."
 }

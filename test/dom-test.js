@@ -281,6 +281,14 @@ setTimeout(() => {
   };
   check('Gespeicherte PLZ 50667 ohne Mietenstufe: Mietenstufe VI (Köln) wird ergänzt', mitPlz('') === '6', mitPlz(''));
   check('Selbst gewählte Mietenstufe bleibt beim Laden erhalten', mitPlz('3') === '3', mitPlz('3'));
+  // Unterhalt, den man selbst zahlt: Zusatzfragen erst mit Betrag, beim Löschen zurückgesetzt
+  setLang('de'); setNum('uzBetrag', '');
+  const uzBox = () => d.querySelector('.cond-uz');
+  check('Unterhalt (gezahlt): Feld beschriftet, Zusatzfragen ohne Betrag verborgen', !!d.querySelector('label[for="uzBetrag"]') && !!d.querySelector('label[for="uzAn"]') && uzBox().hidden);
+  setNum('uzBetrag', '300'); setSel('uzAn', 'k2'); setChk('uzTitel', true);
+  check('Unterhalt (gezahlt): mit Betrag erscheinen „An wen“ (6 Auswahlen) und „Betrag festgelegt“', !uzBox().hidden && d.getElementById('uzAn').options.length === 6 && d.getElementById('uzTitel').checked);
+  setNum('uzBetrag', '');
+  check('Unterhalt (gezahlt): Betrag gelöscht -> Zusatzfragen verborgen und zurückgesetzt', uzBox().hidden && d.getElementById('uzAn').value === '' && !d.getElementById('uzTitel').checked);
   check('Keine Skriptfehler im gesamten Test', errors.length === 0, errors.join('; '));
   console.log(fails ? '\n' + fails + ' FEHLER' : '\nAlle DOM-Tests bestanden');
   process.exit(fails ? 1 : 0);

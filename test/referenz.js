@@ -55,6 +55,11 @@ function haushalt(e) {
   const personen = erwachsene + kinder + jung;
   const unterhalt = kinder + jung > 0 ? zahl(e.unterhalt) : 0;
   const kindEink = kinder + jung > 0 ? zahl(e.kindEink) : 0;
+  // Selbst gezahlter Unterhalt: SGB II nur festgelegt (Titel, Urkunde, Notar); Wohngeld § 18 WoGG 3.000 €/Jahr je Kind, 6.000 €/Jahr Ex-Partner
+  const uz = zahl(e.uzBetrag);
+  const uzFest = uz > 0 && !!e.uzTitel;
+  const uzWer = { k1: [1, 0], k2: [2, 0], k3: [3, 0], ex: [0, 1], exk: [1, 1] }[e.uzAn] || [1, 0];
+  const uzDeckel = uzWer[0] * 3000 / 12 + uzWer[1] * 6000 / 12;
   // Unterhaltsvorschuss, den die Kinder bekämen (Alleinerziehende, Unterhalt fehlt); ab 12 nur mit 600 € eigenem Einkommen
   let uvg = 0;
   if (erwachsene === 1 && kinder > 0 && e.unterhaltFehlt) {
@@ -70,7 +75,7 @@ function haushalt(e) {
   }
   const em = e.emStd === 'unter3' || !!e.wfbm || !!e.erwerbsgemindert || e.art1 === 'wfbm' || e.art2 === 'wfbm' || (Array.isArray(e.einkommen) && e.einkommen.some((x) => x.art === 'wfbm'));
   return { e, erwachsene, kinder, jung, u6, k14, mitte, personen, brutto, brutto2, netto, p, rente, grenz, gruppe, jahre, em,
-    mini: minijobAm(heute), regelEltern, regel: regelEltern + regelKinder, regelKinder, miete: zahl(e.miete), vermoegen: zahl(e.vermoegen), unterhalt, kindEink, uvg, mehrAE,
+    mini: minijobAm(heute), regelEltern, regel: regelEltern + regelKinder, regelKinder, miete: zahl(e.miete), vermoegen: zahl(e.vermoegen), unterhalt, kindEink, uvg, mehrAE, uz, uzFest, uzDeckel,
     bezug: e.bezug || {}, kids: kinder + jung };
 }
 
@@ -87,6 +92,7 @@ function elternEinkommenSGB2(h) {
     else if (x.art !== 'ohne' && x.brutto > 0) abzug += 30; // Versicherungspauschale
     if (x.art === 'eg' && x.brutto > 300) abzug += 300; // § 10 Abs. 5 BEEG
   });
+  if (h.uzFest) abzug += h.uz; // § 11b Abs. 1 Satz 1 Nr. 7 SGB II
   return Math.max(0, h.netto - abzug);
 }
 // Einkommen der Kinder, das ihren Bedarf deckt (Überschuss mindert nicht den Bedarf der Eltern)
@@ -180,11 +186,12 @@ function wohngeld(h) {
   // § 17a WoGG: Grundrentenfreibetrag je Rente
   frei += e.grundrente33 ? h.p.filter((x) => x.art === 'rente').reduce((a, x) => a + Math.min(100 + 0.3 * Math.max(0, x.brutto - 100), 0.5 * RB[1]), 0) : 0;
   const plus = h.unterhalt + h.uvg + Math.max(0, h.kindEink - 100);
-  const yPess = Math.max(0, h.p.reduce((s, x) => s + x.brutto * (1 - ABZUG[x.art][0]), 0) + plus - frei);
-  const yOpt = Math.max(0, h.p.reduce((s, x) => s + x.brutto * (1 - ABZUG[x.art][1]), 0) + plus - frei);
+  const uzVorsichtig = h.uzFest ? Math.min(h.uz, h.uzDeckel) : 0, uzGuenstig = h.uzFest ? h.uz : Math.min(h.uz, h.uzDeckel);
+  const yPess = Math.max(0, h.p.reduce((s, x) => s + x.brutto * (1 - ABZUG[x.art][0]), 0) + plus - frei - uzVorsichtig);
+  const yOpt = Math.max(0, h.p.reduce((s, x) => s + x.brutto * (1 - ABZUG[x.art][1]), 0) + plus - frei - uzGuenstig);
   if (yOpt > yMaxHi) return { level: 'nein' };
   let level = yPess <= yMaxLo ? 'ja' : 'vielleicht';
-  const mittel = h.netto + h.kinder * KG + h.unterhalt + h.uvg + h.kindEink;
+  const mittel = h.netto + h.kinder * KG + h.unterhalt + h.uvg + h.kindEink - h.uz;
   if (mittel < 0.8 * (h.regel + h.miete + h.mehrAE)) level = 'vielleicht'; // App: ohne weitere Mehrbedarfe
   let betrag = null;
   if (st) { const M = mieteWG(st, n, h.miete, 1); betrag = [Math.max(0, runde10(wg(n, M, yPess))), Math.max(0, runde10(wg(n, M, yOpt)))]; }
@@ -207,7 +214,7 @@ function kinderzuschlag(h) {
   const kindAnr = h.unterhalt + h.uvg + Math.max(0, h.kindEink - h.mini);
   const kiz = Math.max(0, max - 0.45 * Math.max(0, elternEinkommenSGB2(h) - bedarfEltern) - 0.45 * kindAnr);
   if (kiz <= 0) return { level: 'nein' };
-  if (h.netto + h.unterhalt + h.uvg + h.kindEink + max + 300 < h.regel + h.miete + h.mehrAE + ms.sicher + bm.sicher) return { level: 'vielleicht', kiz };
+  if (h.netto - (h.uzFest ? h.uz : 0) + h.unterhalt + h.uvg + h.kindEink + max + 300 < h.regel + h.miete + h.mehrAE + ms.sicher + bm.sicher) return { level: 'vielleicht', kiz };
   return { level: kiz >= 60 ? 'ja' : 'vielleicht', kiz };
 }
 

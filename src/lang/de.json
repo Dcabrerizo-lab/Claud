@@ -890,5 +890,20 @@
   "s.mutter.wo": "Bei deiner Krankenkasse; privat oder familienversichert beim Bundesamt für Soziale Sicherung (online).",
   "s.mutter.tip": "Die ärztliche Bescheinigung über den Termin gibt es frühestens 7 Wochen vor der Geburt. Den Arbeitgeber informieren, er zahlt den Zuschuss.",
   "s.kkg.wo": "Bei deiner Krankenkasse. Die Bescheinigung gibt es beim Kinderarzt.",
-  "s.kkg.tip": "Gleich am ersten Tag den Arbeitgeber informieren und die Bescheinigung holen."
+  "s.kkg.tip": "Gleich am ersten Tag den Arbeitgeber informieren und die Bescheinigung holen.",
+  "uz.label": "Unterhalt, den du zahlst oder zahlen musst, im Monat",
+  "uz.hint": "Für Kinder, die nicht bei dir wohnen, oder für frühere Partner. So viel, wie du wirklich überweist. Leer lassen, wenn keiner.",
+  "uz.an.label": "An wen geht der Unterhalt?",
+  "uz.an.0": "Bitte wählen",
+  "uz.an.k1": "An 1 Kind",
+  "uz.an.k2": "An 2 Kinder",
+  "uz.an.k3": "An 3 oder mehr Kinder",
+  "uz.an.ex": "An frühere oder getrennt lebende Ehe- oder Lebenspartner",
+  "uz.an.exk": "An frühere Partner und Kinder",
+  "cb.uzTitel": "Der Betrag ist festgelegt: durch Urteil oder Beschluss, Jugendamtsurkunde oder Notarvertrag",
+  "t.uz.wg": "Gezahlter Unterhalt ({u} im Monat) wird vom Einkommen abgezogen (§ 18 WoGG), in der Regel höchstens 250 € im Monat je Kind und 500 € für frühere Partner. Die App rechnet vorsichtig: Ohne festgelegten Betrag (Urteil oder Beschluss, Jugendamtsurkunde, Notarvertrag) zählt der Abzug nur für „möglich“. Nachweise der Zahlungen mitbringen.",
+  "t.uz.sgb2Titel": "Gezahlter Unterhalt ({u} im Monat) wird vom Einkommen abgezogen, weil der Betrag festgelegt ist (§ 11b SGB II). Abgezogen wird nur, was wirklich gezahlt wird. Kontoauszüge als Nachweis mitbringen.",
+  "t.uz.sgb2Ohne": "Der Unterhalt, den du zahlst ({u} im Monat), wird hier nur abgezogen, wenn der Betrag festgelegt ist: durch Urteil oder Beschluss, Jugendamtsurkunde oder Notarvertrag (§ 11b SGB II). Für Kinder beurkundet das Jugendamt den Unterhalt kostenlos. Die App rechnet deshalb ohne Abzug.",
+  "t.uz.gsa": "Gezahlter Unterhalt ({u} im Monat) wird bei dieser Leistung in der Regel nicht vom Einkommen abgezogen.",
+  "t.uz.selbstbehalt": "Ist dein Einkommen knapp, musst du Unterhalt nur zahlen, soweit dir der Selbstbehalt bleibt. Lass den Betrag prüfen, zum Beispiel bei einer Anwältin oder einem Anwalt. Bei wenig Einkommen gibt es dafür Beratungshilfe vom Amtsgericht."
 }

@@ -890,5 +890,20 @@
   "s.mutter.wo": "W twojej Krankenkasse; przy ubezpieczeniu prywatnym lub rodzinnym w Bundesamt für Soziale Sicherung (online).",
   "s.mutter.tip": "Zaświadczenie lekarskie o terminie można dostać najwcześniej 7 tygodni przed porodem. Poinformuj pracodawcę, on płaci dopłatę.",
   "s.kkg.wo": "W twojej Krankenkasse. Zaświadczenie wystawia pediatra.",
-  "s.kkg.tip": "Pierwszego dnia poinformuj pracodawcę i weź zaświadczenie."
+  "s.kkg.tip": "Pierwszego dnia poinformuj pracodawcę i weź zaświadczenie.",
+  "uz.label": "Alimenty, które płacisz lub musisz płacić, miesięcznie",
+  "uz.hint": "Na dzieci, które z tobą nie mieszkają, lub dla byłego partnera. Tyle, ile naprawdę przelewasz. Zostaw puste, jeśli nie ma.",
+  "uz.an.label": "Komu płacisz alimenty?",
+  "uz.an.0": "Proszę wybrać",
+  "uz.an.k1": "1 dziecku",
+  "uz.an.k2": "2 dzieciom",
+  "uz.an.k3": "3 lub więcej dzieciom",
+  "uz.an.ex": "Byłemu lub żyjącemu w separacji małżonkowi lub partnerowi",
+  "uz.an.exk": "Byłemu partnerowi i dzieciom",
+  "cb.uzTitel": "Kwota jest ustalona: wyrokiem lub postanowieniem sądu, dokumentem Jugendamt (Jugendamtsurkunde) lub umową notarialną",
+  "t.uz.wg": "Płacone alimenty ({u} miesięcznie) odlicza się od dochodu (§ 18 WoGG), zwykle najwyżej 250 € miesięcznie na dziecko i 500 € na byłego partnera. Aplikacja liczy ostrożnie: bez ustalonej kwoty (wyrok lub postanowienie, Jugendamtsurkunde, umowa notarialna) odliczenie liczy się tylko dla „możliwe”. Przynieś potwierdzenia płatności.",
+  "t.uz.sgb2Titel": "Płacone alimenty ({u} miesięcznie) odlicza się od dochodu, bo kwota jest ustalona (§ 11b SGB II). Odlicza się tylko to, co naprawdę zapłacono. Przynieś wyciągi z konta jako dowód.",
+  "t.uz.sgb2Ohne": "Alimenty, które płacisz ({u} miesięcznie), odlicza się tutaj tylko wtedy, gdy kwota jest ustalona: wyrokiem lub postanowieniem, Jugendamtsurkunde lub umową notarialną (§ 11b SGB II). Dla dzieci Jugendamt poświadcza alimenty bezpłatnie. Dlatego aplikacja liczy bez odliczenia.",
+  "t.uz.gsa": "Płacone alimenty ({u} miesięcznie) przy tym świadczeniu zwykle nie są odliczane od dochodu.",
+  "t.uz.selbstbehalt": "Jeśli twój dochód jest niski, alimenty musisz płacić tylko w takim zakresie, w jakim zostaje ci kwota wolna (Selbstbehalt). Poproś o sprawdzenie kwoty, na przykład u adwokata. Przy niskim dochodzie jest na to Beratungshilfe z Amtsgericht."
 }

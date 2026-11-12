@@ -37,6 +37,7 @@ function haushaltZufall(i) {
     vermoegen: pick([0, geld(9000, 100), geld(30000, 500), geld(120000, 1000), 5000, 10000, 15000, 20000, 55000, 70000]),
     unterhalt: kids + young > 0 && rnd() < 0.3 ? geld(900, 10) : '',
     unterhaltFehlt: kids > 0 && rnd() < 0.5,
+    uzBetrag: rnd() < 0.2 ? geld(1200, 10) : '', uzAn: ['', 'k1', 'k2', 'k3', 'ex', 'exk'][Math.floor(rnd() * 6)], uzTitel: rnd() < 0.5,
     kinder12: kids > 0 && rnd() < 0.3,
     kindEink: kids + young > 0 && rnd() < 0.25 ? geld(1200, 10) : '',
     gebJahr: pick([1940, 1955, 1958, 1959, 1960, 1961, 1965, 1972, 1980, 1990, 1996, 2003]),

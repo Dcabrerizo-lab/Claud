@@ -890,5 +890,20 @@
   "s.mutter.wo": "La Krankenkasse ta; dacă ești asigurată privat sau prin familie, la Bundesamt für Soziale Sicherung (online).",
   "s.mutter.tip": "Adeverința medicală despre termen se poate obține cel mai devreme cu 7 săptămâni înainte de naștere. Informează angajatorul, el plătește suplimentul.",
   "s.kkg.wo": "La Krankenkasse ta. Adeverința o eliberează medicul pediatru.",
-  "s.kkg.tip": "Informează angajatorul din prima zi și ia adeverința."
+  "s.kkg.tip": "Informează angajatorul din prima zi și ia adeverința.",
+  "uz.label": "Pensia de întreținere pe care o plătești sau trebuie să o plătești, pe lună",
+  "uz.hint": "Pentru copii care nu locuiesc cu tine sau pentru un fost partener. Cât transferi efectiv. Lasă gol dacă nu e cazul.",
+  "uz.an.label": "Cui îi plătești întreținerea?",
+  "uz.an.0": "Te rog alege",
+  "uz.an.k1": "La 1 copil",
+  "uz.an.k2": "La 2 copii",
+  "uz.an.k3": "La 3 sau mai mulți copii",
+  "uz.an.ex": "Fostului soț sau partener ori celui de care ești separat",
+  "uz.an.exk": "Fostului partener și copiilor",
+  "cb.uzTitel": "Suma este stabilită: prin hotărâre judecătorească, act de la Jugendamt (Jugendamtsurkunde) sau contract notarial",
+  "t.uz.wg": "Întreținerea plătită ({u} pe lună) se scade din venit (§ 18 WoGG), de regulă cel mult 250 € pe lună pentru fiecare copil și 500 € pentru fostul partener. Aplicația calculează prudent: fără sumă stabilită (hotărâre judecătorească, Jugendamtsurkunde, contract notarial) deducerea contează doar pentru „posibil”. Adu dovezi ale plăților.",
+  "t.uz.sgb2Titel": "Întreținerea plătită ({u} pe lună) se scade din venit, pentru că suma este stabilită (§ 11b SGB II). Se scade doar ce se plătește efectiv. Adu extrase de cont ca dovadă.",
+  "t.uz.sgb2Ohne": "Întreținerea pe care o plătești ({u} pe lună) se scade aici doar dacă suma este stabilită: prin hotărâre judecătorească, Jugendamtsurkunde sau contract notarial (§ 11b SGB II). Pentru copii, Jugendamt autentifică gratuit întreținerea. De aceea aplicația calculează fără deducere.",
+  "t.uz.gsa": "Întreținerea plătită ({u} pe lună) de regulă nu se scade din venit la această prestație.",
+  "t.uz.selbstbehalt": "Dacă venitul tău e mic, trebuie să plătești întreținere doar în măsura în care îți rămâne suma proprie (Selbstbehalt). Cere verificarea sumei, de exemplu la un avocat. La venit mic există pentru asta Beratungshilfe de la Amtsgericht."
 }

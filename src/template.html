@@ -673,6 +673,18 @@
               <span class="hint" data-t="kindEink.hint"></span>
             </div>
             <div class="field">
+              <label for="uzBetrag" data-t="uz.label"></label>
+              <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="uzBetrag"><span aria-hidden="true">€</span></div>
+              <span class="hint" data-t="uz.hint"></span>
+            </div>
+            <div class="subbox cond-uz" hidden>
+              <div class="field">
+                <label for="uzAn" data-t="uz.an.label"></label>
+                <select id="uzAn"></select>
+              </div>
+              <label class="check"><input type="checkbox" id="uzTitel"><span data-t="cb.uzTitel"></span></label>
+            </div>
+            <div class="field">
               <label for="vermoegen" data-t="verm.label"></label>
               <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="vermoegen"><span aria-hidden="true">€</span></div>
               <span class="hint" data-t="verm.hint"></span>
@@ -762,6 +774,7 @@
                     <tr><th>Bildung und Teilhabe</th><td>Anspruch bei Bezug von Grundsicherung, Sozialhilfe, Wohngeld oder Kinderzuschlag (§ 6b BKGG, § 28 SGB II). Schulbedarf 195 € im Jahr, Teilhabe 15 € im Monat.</td></tr>
                     <tr><th>Unterhaltsvorschuss</th><td>227 € (bis 5 Jahre), 299 € (6 bis 11) und 394 € (12 bis 17) im Monat, jeweils Mindestunterhalt abzüglich Kindergeld (UVG). Voraussetzung: Kind unter 18, alleinerziehender Elternteil, Unterhalt fehlt. Ab 12 Jahren: Kind nicht im SGB-II-Bezug oder Elternteil mit mindestens 600 € brutto.</td></tr>
                     <tr><th>Unterhalt für Kinder</th><td>Gezahlter Unterhalt wird beim Unterhaltsvorschuss angerechnet (§ 2 Abs. 3 UVG). Beim Kinderzuschlag mindert er als Einkommen der Kinder den Zuschlag um 45 % (§ 6a Abs. 3 BKGG). Beim Wohngeld zählt er als Einkommen, ohne Pauschalabzug (§§ 14, 16 WoGG). Beim Grundsicherungsgeld und bei der Grundsicherung im Alter zählt er als Einkommen der Kinder, aber nur bis zu ihrem eigenen Bedarf.</td></tr>
+                    <tr><th>Unterhalt, den du zahlst</th><td>Grundsicherungsgeld und Kinderzuschlag: Abzug vom Einkommen, wenn der Betrag festgelegt ist (Urteil oder Beschluss, Jugendamtsurkunde, Notarvertrag) und wirklich gezahlt wird (§ 11b Abs. 1 Satz 1 Nr. 7 SGB II). Wohngeld: Abzug in der Regel bis 250 € im Monat je Kind und 500 € für frühere Partner (§ 18 WoGG); ohne festgelegten Betrag rechnet die App den Abzug nur für „möglich“, mit festgelegtem Betrag für „möglich“ den ganzen Betrag. Grundsicherung im Alter: in der Regel kein Abzug (§ 82 SGB XII).</td></tr>
                     <tr><th>Grundsicherung im Alter und bei voller Erwerbsminderung</th><td>Regelsatz 563 € (Alleinstehende) und 506 € je Partner plus Miete, abzüglich Einkommen (§§ 41 ff. SGB XII). Schonvermögen 10.000 € je volljähriger Person plus 500 € je unterhaltener Person (Barbetrag-Verordnung zu § 90 SGB XII).</td></tr>
                     <tr><th>BAföG</th><td>Stark vereinfacht: Elternfreibetrag etwa 1.690 € netto im Monat (verheiratete Eltern 2.540 €), plus 770 € je weiterem Kind. Das Amt rechnet mit dem steuerpflichtigen Einkommen des Vorvorjahres. Vermögen: 15.000 € bis 29 Jahre, 45.000 € ab 30. Altersgrenze zu Beginn in der Regel 45 Jahre.</td></tr>
                     <tr><th>Pflegegeld</th><td>Häusliche Pflege durch Angehörige: Pflegegrad 2: 347 €, Pflegegrad 3: 599 €, Pflegegrad 4: 800 €, Pflegegrad 5: 990 € im Monat. Entlastungsbetrag 131 € im Monat ab Pflegegrad 1 (§ 37 und § 45b SGB XI).</td></tr>
@@ -777,7 +790,7 @@
                     <tr><th>Befreiung von Zuzahlungen</th><td>Belastungsgrenze 2 % der jährlichen Bruttoeinnahmen zum Lebensunterhalt, bei schwerwiegend chronisch Kranken 1 % (§ 62 SGB V). Dazu zählt zum Beispiel ein GdB von mindestens 60 bei dauerhafter Behandlung. Es gibt Freibeträge für Familienangehörige. Die App rechnet keinen Betrag aus.</td></tr>
                     <tr><th>Berufsausbildungsbeihilfe</th><td>Nur Voraussetzungen, keine Berechnung: anerkannter Ausbildungsberuf, Wohnen nicht bei den Eltern (oder ab 18, verheiratet, mit Kind), in der Regel erste Ausbildung (§§ 56 ff. SGB III). Die Höhe zeigt der BAB-Rechner der Bundesagentur für Arbeit.</td></tr>
                     <tr><th>Wohnberechtigungsschein (Bayern)</th><td>Jahreseinkommensgrenze: 28.300 € (1 Person), 43.200 € (2 Personen), 10.700 € mehr je weitere Person, 3.200 € mehr je Kind (Art. 11 BayWoFG). Die App vergleicht das Brutto mit der Grenze; bis zu 30 % Abzug für Steuern und Versicherungen und bei Schwerbehinderung 4.000 € sind als Spielraum berücksichtigt. Das Wohnungsamt rechnet genau.</td></tr>
-                    <tr><th>Grobe Annahmen</th><td>Regelsatz für Kinder nach Alter (357 €, 390 € oder 471 €), ohne Altersangabe 390 €. Anteil der Eltern an den Wohnkosten geschätzt. Freibeträge auf das Einkommen vereinfacht. Unterhalt und eigenes Einkommen der Kinder fließen ein (siehe oben). Unterhalt, den du selbst an andere zahlst, wird nicht abgezogen. Sonderfälle fließen nicht ein. Bei Paaren mit zwei Einkommen sollte das Einkommen der zweiten Person eingetragen werden, sonst ist der Freibetrag zu niedrig.</td></tr>
+                    <tr><th>Grobe Annahmen</th><td>Regelsatz für Kinder nach Alter (357 €, 390 € oder 471 €), ohne Altersangabe 390 €. Anteil der Eltern an den Wohnkosten geschätzt. Freibeträge auf das Einkommen vereinfacht. Unterhalt und eigenes Einkommen der Kinder fließen ein (siehe oben). Sonderfälle fließen nicht ein. Bei Paaren mit zwei Einkommen sollte das Einkommen der zweiten Person eingetragen werden, sonst ist der Freibetrag zu niedrig.</td></tr>
                   </tbody>
                 </table>
               </div>

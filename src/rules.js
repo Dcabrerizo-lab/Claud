@@ -119,6 +119,9 @@ const Rules = (function () {
     // Regelaltersgrenze (§ 235 SGB VI) in Monaten über 65, je Geburtsjahr 1947..1963; ab 1964: 67 Jahre
     rag: { 1947: 1, 1948: 2, 1949: 3, 1950: 4, 1951: 5, 1952: 6, 1953: 7, 1954: 8, 1955: 9, 1956: 10, 1957: 11, 1958: 12, 1959: 14, 1960: 16, 1961: 18, 1962: 20, 1963: 22 },
     uvg: { bis5: 227, bis11: 299, bis17: 394, min12: 600 },
+    // Gezahlter Unterhalt (Höchstbeträge im Monat für das Wohngeld, § 18 WoGG: 3.000 € im Jahr je Kind oder sonstiger Person,
+    // 6.000 € im Jahr für frühere oder dauernd getrennt lebende Ehe- oder Lebenspartner)
+    uzWG: { kind: 250, ex: 500 },
     bafoeg: { freiAllein: 1690, freiPaar: 2540, jeKind: 770, spanne: 1200, vermBis29: 15000, vermAb30: 45000 },
     pflege: { geld: { 2: 347, 3: 599, 4: 800, 5: 990 }, entlastung: 131 },
     // Menschen mit Behinderung. Quellen: § 33b Abs. 3 EStG (Pauschbeträge), § 32a EStG (Grundfreibetrag 2026),
@@ -239,6 +242,16 @@ const Rules = (function () {
     const art2 = ARTEN.indexOf(inp.art2) >= 0 ? inp.art2 : (inp.nichtArbeit2 ? 'rente' : 'lohn');
     const pers = liste ? (liste.length ? liste : [['ohne', 0]]) : adults === 2 ? [[art1, brutto - brutto2], [art2, brutto2]] : [[art1, brutto]];
     const sumIf = (f) => pers.reduce((a, x) => a + f(x[0], x[1]), 0);
+    // Unterhalt, den die Person selbst an andere zahlt (Kinder, die nicht im Haushalt leben, frühere Partner), im Monat.
+    // Grundsicherungsgeld und Kinderzuschlag: abgezogen, soweit festgelegt (Unterhaltstitel, Jugendamtsurkunde, notarielle
+    // Vereinbarung) und wirklich gezahlt (§ 11b Abs. 1 Satz 1 Nr. 7 SGB II). Wohngeld: Höchstbeträge nach § 18 WoGG; mit
+    // festgelegtem Betrag rechnet die App für „möglich“ den ganzen Betrag, ohne festgelegten Betrag für „wahrscheinlich“ nichts.
+    const uzBetrag = num(inp.uzBetrag);
+    const uzAn = ['k1', 'k2', 'k3', 'ex', 'exk'].indexOf(inp.uzAn) >= 0 ? inp.uzAn : '';
+    const uzTitel = uzBetrag > 0 && !!inp.uzTitel;
+    // ohne Angabe, an wen: wie für ein Kind (niedrigster Höchstbetrag)
+    const uzCap = ({ k1: 1, k2: 2, k3: 3, ex: 0, exk: 1 })[uzAn || 'k1'] * R.uzWG.kind + (uzAn === 'ex' || uzAn === 'exk' ? R.uzWG.ex : 0);
+    const uzWGpess = uzTitel ? Math.min(uzBetrag, uzCap) : 0, uzWGopt = uzTitel ? uzBetrag : Math.min(uzBetrag, uzCap);
     // Eigenes Einkommen der Kinder (Ausbildungsvergütung, Minijob; ohne Kindergeld und Unterhalt), im Monat
     const kindEink = kids + young > 0 ? num(inp.kindEink) : 0;
     // Unterhaltsvorschuss, den die Kinder bekommen würden (zählt als ihr Einkommen): nur Alleinerziehende, wenn Unterhalt fehlt.
@@ -270,6 +283,7 @@ const Rules = (function () {
       gruppe = age < 30 ? '<30' : age < 40 ? '30-39' : age < 50 ? '40-49' : '50+'; // vollendete Lebensjahre
     }
     return {
+      uzBetrag, uzAn, uzTitel, uzSGB: uzTitel ? uzBetrag : 0, uzWGpess, uzWGopt,
       art1, art2, pers, liste: !!liste, kindEink, uvgEst, kindZahl: unterhalt + uvgEst, mehrAE, alterGrenz,
       egFreiSGB: sumIf((a, b) => a === 'eg' && b > R.elterngeldFrei ? R.elterngeldFrei : 0),
       vPausch: sumIf((a, b) => a !== 'lohn' && a !== 'ohne' && b > 0 ? R.versPauschale : 0),
@@ -374,7 +388,7 @@ const Rules = (function () {
     return { fest, offen };
   }
   // Einkommen der Eltern nach Abzügen (§ 11b SGB II): Freibetrag für Arbeit, Versicherungspauschale, Elterngeld-Freibetrag
-  const elternEinkSGB2 = (h) => Math.max(0, h.netto - haushaltsFreibetrag(h) - (h.egFreiSGB || 0) - (h.vPausch || 0));
+  const elternEinkSGB2 = (h) => Math.max(0, h.netto - haushaltsFreibetrag(h) - (h.egFreiSGB || 0) - (h.vPausch || 0) - (h.uzSGB || 0));
   // Grobe Schätzung als Betrag, auf 10 € gerundet
   const r10 = (x) => Math.round(x / 10) * 10;
 
@@ -458,7 +472,7 @@ const Rules = (function () {
     // § 17a WoGG: Grundrentenfreibetrag bei 33 Jahren Grundrentenzeiten (100 € + 30 % des Rests, höchstens 50 % RS1)
     const grFrei = h.grundrente33 ? pers.filter((x) => x[0] === 'rente').reduce((a, x) => a + Math.min(R.grundrente.sockel + R.grundrente.quote * Math.max(0, x[1] - R.grundrente.sockel), R.grundrente.max * R.regelbedarf.alleinstehend), 0) : 0;
     const extra = (h.kindZahl || 0) + Math.max(0, (h.kindEink || 0) - R.wgKindFrei) - freib - grFrei;
-    const yPess = Math.max(0, yA + extra), yOpt = Math.max(0, yB + extra);
+    const yPess = Math.max(0, yA + extra - (h.uzWGpess || 0)), yOpt = Math.max(0, yB + extra - (h.uzWGopt || 0));
 
     const grenze = h.stufe
       ? ['wohngeld.grenzeStufe', { n: h.persons, stufe: roman(h.stufe), lo: eur(lo), hi: eur(hi) }]
@@ -477,7 +491,7 @@ const Rules = (function () {
       if (b >= 10) tx.push(a >= 10 && a < b ? ['schaetz.spanne', { a: eur(a), b: eur(b) }] : a >= 10 ? ['schaetz.eins', { a: eur(a) }] : ['schaetz.bis', { b: eur(b) }]);
     }
 
-    const mittel = h.netto + h.kids * R.kindergeld + (h.kindZahl || 0) + (h.kindEink || 0);
+    const mittel = h.netto + h.kids * R.kindergeld + (h.kindZahl || 0) + (h.kindEink || 0) - (h.uzBetrag || 0);
     const mindest = R.wohngeld.mindestAnteil * (h.regel + h.miete + (h.mehrAE || 0));
     if (h.miete > 0 && mittel < mindest) {
       level = 'vielleicht'; hl = 'einkoNiedrig';
@@ -517,7 +531,7 @@ const Rules = (function () {
     const gesamtBedarf = h.regel + h.miete + (h.mehrAE || 0) + maK.fest + mbK.fest;
 
     if (est <= 0) return mk(id, 'nein', 'einkoHoch', [['kiz.zuHoch']]);
-    if (h.netto + (h.kindZahl || 0) + (h.kindEink || 0) + gmax + R.kiz.puffer < gesamtBedarf) return mk(id, 'vielleicht', 'einkoNiedrig', [['kiz.zuNiedrig']]);
+    if (h.netto - (h.uzSGB || 0) + (h.kindZahl || 0) + (h.kindEink || 0) + gmax + R.kiz.puffer < gesamtBedarf) return mk(id, 'vielleicht', 'einkoNiedrig', [['kiz.zuNiedrig']]);
     const sch = ['schaetz.eins', { a: eur(Math.max(10, r10(est))) }];
     if (est >= R.kiz.ampelGruenAb) return mk(id, 'ja', 'ja', [['kiz.ja', { max: eur(R.kiz.max) }], sch]);
     return mk(id, 'vielleicht', 'vielleicht', [['kiz.rand', { max: eur(R.kiz.max) }], sch]);
@@ -1173,6 +1187,18 @@ const Rules = (function () {
   };
   const zustLand = (id, land) => (land && land !== 'BY' && ZUST_LAND[id] ? (ZUST_LAND[id][land] || ZUST_LAND[id]._) : null);
 
+  // Hinweise zum Unterhalt, den die Person selbst zahlt (nur wo er die Einstufung beeinflussen kann)
+  function uzHinweise(h, results) {
+    if (!(h.uzBetrag > 0)) return;
+    const u = { u: eur(h.uzBetrag) };
+    results.forEach(function (r) {
+      if (r.level === 'na' || (r.level === 'nein' && r.hl !== 'einkoHoch' && r.hl !== 'einkoNiedrig')) return;
+      if (r.id === 'wohngeld') r.tx = r.tx.concat([['uz.wg', u]]);
+      else if (r.id === 'kiz' || r.id === 'ggeld') r.tx = r.tx.concat([[h.uzTitel ? 'uz.sgb2Titel' : 'uz.sgb2Ohne', u]], r.id === 'ggeld' && r.level !== 'nein' ? [['uz.selbstbehalt']] : []);
+      else if (r.id === 'gsa') r.tx = r.tx.concat([['uz.gsa', u], ['uz.selbstbehalt']]);
+    });
+  }
+
   function evaluate(inp) {
     const h = derive(inp);
     const kg = kindergeld(h);
@@ -1187,6 +1213,7 @@ const Rules = (function () {
     const results = [kg, wg, kz, gg, but, uvg, gsa, baf, pf,
       alg1(h), krankengeld(h), elterngeld(h), mutterschaftsgeld(h), kinderkrankengeld(h), hilfeZurPflege(h), landespflegegeld(h), asylbewerber(h), kindergeldBeh(h), erwerbsminderungsrente(h), schwerbRente(h), eingliederungshilfe(h), pauschbetrag(h), ausweis(h), blindengeld(h), blindenhilfe(h),
       pflegeplus(h), budgetArbeit(h), rundfunk(h, gg, gsa), zuzahlung(h), bab(h), wbs(h)].map(angabeFehlt(h)).map((x, i) => ({ ...x, name: NAMES[x.id], order: i, steps: STEPS[x.id] }));
+    uzHinweise(h, results);
     const sorted = results.slice().sort((a, b) => ORDER[a.level] - ORDER[b.level] || a.order - b.order);
     return { h, results: sorted, zusammen: zusammenspiel(h, results) };
   }

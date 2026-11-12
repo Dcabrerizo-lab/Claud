@@ -9,6 +9,10 @@ const { execSync } = require('child_process');
 const ROOT = path.join(__dirname, '..');
 // [Beschreibung, Original, Fehler]
 const M = [
+  ['Unterhalt: Abzug SGB II auch ohne Titel', 'uzSGB: uzTitel ? uzBetrag : 0,', 'uzSGB: uzBetrag,'],
+  ['Unterhalt: kein Abzug SGB II', "- (h.vPausch || 0) - (h.uzSGB || 0));", "- (h.vPausch || 0));"],
+  ['Unterhalt: Wohngeld-Höchstbetrag je Kind 300 €', 'uzWG: { kind: 250, ex: 500 },', 'uzWG: { kind: 300, ex: 500 },'],
+  ['Unterhalt: Wohngeld ohne Titel schon vorsichtig abgezogen', 'const uzWGpess = uzTitel ? Math.min(uzBetrag, uzCap) : 0,', 'const uzWGpess = Math.min(uzBetrag, uzCap),'],
   ['Elterngeld: Untergrenze 65 % fehlt', 'q = Math.max(E.satzHoch, E.satz - Math.floor', 'q = Math.max(0, E.satz - Math.floor'],
   ['Elterngeld: 0,1 Punkte je 4 statt 2 €', 'Math.floor((E.grenzeUnten - n) / 2)', 'Math.floor((E.grenzeUnten - n) / 4)'],
   ['Elterngeld: Mindestbetrag 300 € fehlt', 'return Math.min(E.max, Math.max(E.min, n * q));', 'return Math.min(E.max, n * q);'],

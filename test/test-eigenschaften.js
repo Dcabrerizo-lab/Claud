@@ -37,7 +37,7 @@ function zufall() {
     miete: pick([0, 300 + Math.round(rnd() * 1200)]), mietstufe: pick(['', '1', '3', '5', '7']),
     vermoegen: pick([0, 0, 3000, 9000, 14000, 40000, 70000]),
     gebJahr: pick(['', 1950, 1958, 1965, 1980, 1995, 2003]), heute: HEUTE,
-    unterhaltFehlt: kids > 0 && rnd() < 0.4, unterhalt: kids > 0 && rnd() < 0.3 ? Math.round(rnd() * 600) : '',
+    unterhaltFehlt: kids > 0 && rnd() < 0.4, uzBetrag: rnd() < 0.15 ? Math.round(rnd() * 900) : '', uzAn: ['', 'k1', 'k2', 'ex', 'exk'][Math.floor(rnd() * 5)], uzTitel: rnd() < 0.5, unterhalt: kids > 0 && rnd() < 0.3 ? Math.round(rnd() * 600) : '',
     pflegegrad: pick(['', '', '', '1', '2', '3', '4', '5']),
     bhPerson: pick(['', '', 'erwNach25', 'erwVor25', 'minder']), gdb: pick(['', '30', '50', '60', '80', '100', 'H']),
     blind: pick(['', '', '', 'blind', 'hoch']), mzG: rnd() < 0.2,
