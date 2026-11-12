@@ -9,6 +9,9 @@ const { execSync } = require('child_process');
 const ROOT = path.join(__dirname, '..');
 // [Beschreibung, Original, Fehler]
 const M = [
+  ['Künftige Leistung: keine zweite Rechnung', '    if (zk) { wg = mitZukunft(', '    if (false) { wg = mitZukunft('],
+  ['Künftige Leistung: Elterngeld auch bei Paaren', "h.baby === 'bald' && h.adults === 1 && h.egVor != null", "h.baby === 'bald' && h.egVor != null"],
+  ['Künftige Leistung: Lohn bleibt zusätzlich', 'netto: Math.max(0, h.netto - netto1) + betrag, aus1: true', 'netto: h.netto + betrag, aus1: true'],
   ['Unterhalt: Abzug SGB II auch ohne Titel', 'uzSGB: uzTitel ? uzBetrag : 0,', 'uzSGB: uzBetrag,'],
   ['Unterhalt: kein Abzug SGB II', "- (h.vPausch || 0) - (h.uzSGB || 0));", "- (h.vPausch || 0));"],
   ['Unterhalt: Wohngeld-Höchstbetrag je Kind 300 €', 'uzWG: { kind: 250, ex: 500 },', 'uzWG: { kind: 300, ex: 500 },'],

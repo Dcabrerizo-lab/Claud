@@ -905,5 +905,18 @@
   "t.uz.sgb2Titel": "Ödenen nafaka (ayda {u}) tutar belirlenmiş olduğu için gelirden düşülür (§ 11b SGB II). Yalnızca gerçekten ödenen düşülür. Belge olarak banka dökümlerini getir.",
   "t.uz.sgb2Ohne": "Ödediğin nafaka (ayda {u}) burada yalnızca tutar belirlenmişse düşülür: mahkeme kararı, Jugendamtsurkunde veya noter sözleşmesiyle (§ 11b SGB II). Çocuklar için Jugendamt nafakayı ücretsiz belgelendirir. Bu yüzden uygulama indirimsiz hesaplar.",
   "t.uz.gsa": "Ödenen nafaka (ayda {u}) bu yardımda genellikle gelirden düşülmez.",
-  "t.uz.selbstbehalt": "Gelirin kıtsa, nafakayı yalnızca sana kendi payın (Selbstbehalt) kaldığı ölçüde ödemek zorundasın. Tutarı kontrol ettir, örneğin bir avukata. Düşük gelirde bunun için Amtsgericht’ten Beratungshilfe alabilirsin."
+  "t.uz.selbstbehalt": "Gelirin kıtsa, nafakayı yalnızca sana kendi payın (Selbstbehalt) kaldığı ölçüde ödemek zorundasın. Tutarı kontrol ettir, örneğin bir avukata. Düşük gelirde bunun için Amtsgericht’ten Beratungshilfe alabilirsin.",
+  "t.zuk.alg": "İşsizlik parası (Arbeitslosengeld) ödenmeye başlayınca (tahminen ayda yaklaşık {a}), burada gelir sayılır.",
+  "t.zuk.kg": "Hastalık parası (Krankengeld) ödenmeye başlayınca (tahminen ayda yaklaşık {a}), burada gelir sayılır.",
+  "t.zuk.eg": "Ebeveyn parası (Elterngeld) ödenmeye başlayınca (tahminen ayda yaklaşık {a}), 300 € üzerindeki kısım burada gelir sayılır.",
+  "t.zuk.ohneLohn": "Uygulama o zaman önceki maaşın olmadan hesaplar.",
+  "t.zuk.ja": "Sonrasında tahminen: muhtemel.",
+  "t.zuk.vielleicht": "Sonrasında tahminen: kesin hesaba bağlı olarak mümkün.",
+  "t.zuk.nein": "Sonrasında muhtemelen hak kalmaz.",
+  "t.zuk.betragEins": "O zaman kaba tahmin: ayda yaklaşık {a}.",
+  "t.zuk.betragSpanne": "O zaman kaba tahmin: ayda yaklaşık {a} ile {b} arası.",
+  "t.zuk.ueberbruecken": "İlk ödeme gelene kadar Grundsicherungsgeld aradaki zamanı köprüleyebilir. İki başvuruyu da hemen yap.",
+  "z.zuk.alg": "Önce Arbeitslosengeld için başvur: Grundsicherungsgeld’den önce gelir ve Grundsicherungsgeld, Wohngeld ve Kinderzuschlag’da gelir sayılır. Kartlar o zaman neyin değişeceğini gösterir.",
+  "z.zuk.kg": "Krankengeld, Grundsicherungsgeld’den önce gelir ve Grundsicherungsgeld, Wohngeld ve Kinderzuschlag’da gelir sayılır. Kartlar o zaman neyin değişeceğini gösterir.",
+  "z.zuk.eg": "Doğumdan sonra Elterngeld için zamanında başvur: 300 € üzeri Grundsicherungsgeld, Wohngeld ve Kinderzuschlag’da gelir sayılır. Kartlar o zaman neyin değişeceğini gösterir."
 }

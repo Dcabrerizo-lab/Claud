@@ -905,5 +905,18 @@
   "t.uz.sgb2Titel": "Întreținerea plătită ({u} pe lună) se scade din venit, pentru că suma este stabilită (§ 11b SGB II). Se scade doar ce se plătește efectiv. Adu extrase de cont ca dovadă.",
   "t.uz.sgb2Ohne": "Întreținerea pe care o plătești ({u} pe lună) se scade aici doar dacă suma este stabilită: prin hotărâre judecătorească, Jugendamtsurkunde sau contract notarial (§ 11b SGB II). Pentru copii, Jugendamt autentifică gratuit întreținerea. De aceea aplicația calculează fără deducere.",
   "t.uz.gsa": "Întreținerea plătită ({u} pe lună) de regulă nu se scade din venit la această prestație.",
-  "t.uz.selbstbehalt": "Dacă venitul tău e mic, trebuie să plătești întreținere doar în măsura în care îți rămâne suma proprie (Selbstbehalt). Cere verificarea sumei, de exemplu la un avocat. La venit mic există pentru asta Beratungshilfe de la Amtsgericht."
+  "t.uz.selbstbehalt": "Dacă venitul tău e mic, trebuie să plătești întreținere doar în măsura în care îți rămâne suma proprie (Selbstbehalt). Cere verificarea sumei, de exemplu la un avocat. La venit mic există pentru asta Beratungshilfe de la Amtsgericht.",
+  "t.zuk.alg": "De îndată ce se plătește ajutorul de șomaj (Arbeitslosengeld) (estimat circa {a} pe lună), aici contează ca venit.",
+  "t.zuk.kg": "De îndată ce se plătește indemnizația de boală (Krankengeld) (estimat circa {a} pe lună), aici contează ca venit.",
+  "t.zuk.eg": "De îndată ce se plătește indemnizația pentru părinți (Elterngeld) (estimat circa {a} pe lună), partea de peste 300 € contează aici ca venit.",
+  "t.zuk.ohneLohn": "Aplicația calculează atunci fără salariul de până acum.",
+  "t.zuk.ja": "După aceea, probabil: probabil.",
+  "t.zuk.vielleicht": "După aceea, probabil: posibil, în funcție de calculul exact.",
+  "t.zuk.nein": "După aceea, probabil nu mai există drept.",
+  "t.zuk.betragEins": "Estimare aproximativă atunci: circa {a} pe lună.",
+  "t.zuk.betragSpanne": "Estimare aproximativă atunci: circa {a} până la {b} pe lună.",
+  "t.zuk.ueberbruecken": "Până vine prima plată, Grundsicherungsgeld poate acoperi perioada. Depune imediat ambele cereri.",
+  "z.zuk.alg": "Cere mai întâi Arbeitslosengeld: are prioritate față de Grundsicherungsgeld și contează ca venit la Grundsicherungsgeld, Wohngeld și Kinderzuschlag. Cardurile arată ce se schimbă atunci.",
+  "z.zuk.kg": "Krankengeld are prioritate față de Grundsicherungsgeld și contează ca venit la Grundsicherungsgeld, Wohngeld și Kinderzuschlag. Cardurile arată ce se schimbă atunci.",
+  "z.zuk.eg": "Cere la timp Elterngeld după naștere: peste 300 € contează ca venit la Grundsicherungsgeld, Wohngeld și Kinderzuschlag. Cardurile arată ce se schimbă atunci."
 }

@@ -240,7 +240,7 @@ const Rules = (function () {
     // Einkommensart je erwachsener Person (lohn, rente, alg, kg, eg = Elterngeld, ohne). Ältere Speicherstände: aus den Haken.
     const art1 = liste ? (liste.some((x) => x[0] === 'lohn') ? 'lohn' : liste.length ? liste[0][0] : 'ohne') : ARTEN.indexOf(inp.art1) >= 0 ? inp.art1 : (inp.nichtArbeit ? 'rente' : 'lohn');
     const art2 = ARTEN.indexOf(inp.art2) >= 0 ? inp.art2 : (inp.nichtArbeit2 ? 'rente' : 'lohn');
-    const pers = liste ? (liste.length ? liste : [['ohne', 0]]) : adults === 2 ? [[art1, brutto - brutto2], [art2, brutto2]] : [[art1, brutto]];
+    const pers = liste ? (liste.length ? liste : [['ohne', 0]]) : adults === 2 ? [[art1, brutto - brutto2, 0, !!inp.aus1], [art2, brutto2]] : [[art1, brutto, 0, !!inp.aus1]];
     const sumIf = (f) => pers.reduce((a, x) => a + f(x[0], x[1]), 0);
     // Unterhalt, den die Person selbst an andere zahlt (Kinder, die nicht im Haushalt leben, frühere Partner), im Monat.
     // Grundsicherungsgeld und Kinderzuschlag: abgezogen, soweit festgelegt (Unterhaltstitel, Jugendamtsurkunde, notarielle
@@ -1199,23 +1199,64 @@ const Rules = (function () {
     });
   }
 
+  // Geschätzte neue Leistung der ersten Person (Arbeitslosengeld I, Krankengeld, Elterngeld): Sie geht Grundsicherungsgeld,
+  // Wohngeld und Kinderzuschlag vor und zählt dort als Einkommen. Zweite Rechnung „sobald gezahlt“: Das Einkommen der ersten
+  // Person (Lohn oder keins) wird durch die Leistung ersetzt (Mitte der geschätzten Spanne, ausgezahlter Betrag).
+  // Nur die ausführliche Version, nur ohne Asyl; Elterngeld nur bei Alleinstehenden vor der Geburt (bei Paaren ist offen, wer es bekommt).
+  const spanneMitte = (r) => { const t = r.tx.find((x) => x[0] === 'schaetz.spanne' || x[0] === 'schaetz.eins'); return t ? (t[0] === 'schaetz.eins' ? t[1].a.eur : (t[1].a.eur + t[1].b.eur) / 2) : 0; };
+  function zukunft(inp, h, a1, krg, eg) {
+    if (h.liste || h.asyl || (h.art1 !== 'lohn' && h.art1 !== 'ohne')) return null;
+    let quelle = '', art = '', betrag = 0;
+    if (a1.level === 'ja' && h.arbeitSit === 'arbeitslos' && h.lohnVorher > 0) { quelle = 'alg'; art = 'alg'; betrag = spanneMitte(a1); }
+    else if ((krg.level === 'ja' || krg.level === 'vielleicht') && (h.krankWochen === 'unter6' || h.krankWochen === 'laeuft') && h.lohnVorher > 0) { quelle = 'kg'; art = 'kg'; betrag = spanneMitte(krg); }
+    else if (eg.level === 'ja' && h.baby === 'bald' && h.adults === 1 && h.egVor != null) { quelle = 'eg'; art = 'eg'; betrag = spanneMitte(eg); }
+    if (!quelle || !(betrag > 0)) return null;
+    const b1 = h.brutto - h.brutto2;
+    const netto1 = h.adults === 1 ? h.netto : h.brutto > 0 ? h.netto * b1 / h.brutto : 0;
+    const inp2 = Object.assign({}, inp, { art1: art, brutto: betrag + h.brutto2, brutto2: h.brutto2, netto: Math.max(0, h.netto - netto1) + betrag, aus1: true });
+    return { h: derive(inp2), quelle, betrag, ohneLohn: h.art1 === 'lohn' && b1 > 0 };
+  }
+  // Einstufung aus beiden Rechnungen: gleich -> bleibt, sonst „möglich“; dazu ein Hinweis, was sich mit der neuen Leistung ändert
+  function mitZukunft(jetzt, dann, zk) {
+    if (jetzt.level === 'na' || (jetzt.level === 'nein' && dann.level === 'nein')) return jetzt;
+    const level = jetzt.level === dann.level ? jetzt.level : 'vielleicht';
+    let tx = jetzt.tx.slice();
+    if (level !== jetzt.level) {
+      const um = { bedarfJa: 'bedarfRand', bedarfNein: 'bedarfRand', 'wohngeld.ja': 'wohngeld.vielleicht', 'kiz.ja': 'kiz.rand' };
+      tx = tx.map((t) => (um[t[0]] ? [um[t[0]]].concat(t.slice(1)) : t));
+    }
+    tx.push(['zuk.' + zk.quelle, { a: eur(r10(zk.betrag)) }]);
+    if (zk.ohneLohn) tx.push(['zuk.ohneLohn']);
+    tx.push(['zuk.' + dann.level]);
+    if (dann.level !== 'nein') {
+      const s = dann.tx.find((t) => t[0] === 'schaetz.eins' || t[0] === 'schaetz.spanne');
+      if (s) tx.push(s[0] === 'schaetz.eins' ? ['zuk.betragEins', s[1]] : ['zuk.betragSpanne', s[1]]);
+    } else if (jetzt.id === 'ggeld') tx.push(['zuk.ueberbruecken']);
+    return { id: jetzt.id, level, hl: level === jetzt.level ? jetzt.hl : level, tx };
+  }
+
   function evaluate(inp) {
     const h = derive(inp);
     const kg = kindergeld(h);
-    const wg = wohngeld(h);
-    const kz = kinderzuschlag(h);
-    const gg = grundsicherungsgeld(h);
+    const a1 = alg1(h), krg = krankengeld(h), eg = elterngeld(h);
+    const zk = zukunft(inp, h, a1, krg, eg);
+    let wg = wohngeld(h);
+    let kz = kinderzuschlag(h);
+    let gg = grundsicherungsgeld(h);
+    if (zk) { wg = mitZukunft(wg, wohngeld(zk.h), zk); kz = mitZukunft(kz, kinderzuschlag(zk.h), zk); gg = mitZukunft(gg, grundsicherungsgeld(zk.h), zk); }
     const but = bildungTeilhabe(h, wg, kz, gg);
     const uvg = unterhaltsvorschuss(h);
     const gsa = grundsicherungAlter(h);
     const baf = bafoeg(h);
     const pf = pflege(h);
     const results = [kg, wg, kz, gg, but, uvg, gsa, baf, pf,
-      alg1(h), krankengeld(h), elterngeld(h), mutterschaftsgeld(h), kinderkrankengeld(h), hilfeZurPflege(h), landespflegegeld(h), asylbewerber(h), kindergeldBeh(h), erwerbsminderungsrente(h), schwerbRente(h), eingliederungshilfe(h), pauschbetrag(h), ausweis(h), blindengeld(h), blindenhilfe(h),
+      a1, krg, eg, mutterschaftsgeld(h), kinderkrankengeld(h), hilfeZurPflege(h), landespflegegeld(h), asylbewerber(h), kindergeldBeh(h), erwerbsminderungsrente(h), schwerbRente(h), eingliederungshilfe(h), pauschbetrag(h), ausweis(h), blindengeld(h), blindenhilfe(h),
       pflegeplus(h), budgetArbeit(h), rundfunk(h, gg, gsa), zuzahlung(h), bab(h), wbs(h)].map(angabeFehlt(h)).map((x, i) => ({ ...x, name: NAMES[x.id], order: i, steps: STEPS[x.id] }));
     uzHinweise(h, results);
     const sorted = results.slice().sort((a, b) => ORDER[a.level] - ORDER[b.level] || a.order - b.order);
-    return { h, results: sorted, zusammen: zusammenspiel(h, results) };
+    const zus = zusammenspiel(h, results);
+    if (zk) zus.splice(zus.length - (zus.length && zus[zus.length - 1][0] === 'z.stichtag' ? 1 : 0), 0, ['z.zuk.' + zk.quelle]);
+    return { h, results: sorted, zusammen: zus };
   }
 
   return { evaluate, RULES: R, WG, limits, wgYmax, wgMiete, wgCap, wgHeiz, roman, sgb2Freibetrag, haushaltsFreibetrag, derive, NAMES, STEPS, ZUST_LAND, zustLand };

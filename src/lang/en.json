@@ -905,5 +905,18 @@
   "t.uz.sgb2Titel": "Maintenance you pay ({u} per month) is deducted from income because the amount is fixed (§ 11b SGB II). Only what is actually paid is deducted. Bring bank statements as proof.",
   "t.uz.sgb2Ohne": "The maintenance you pay ({u} per month) is only deducted here if the amount is fixed: by a court decision, a Jugendamtsurkunde or a notarial agreement (§ 11b SGB II). For children the Jugendamt certifies maintenance free of charge. The app therefore calculates without a deduction.",
   "t.uz.gsa": "Maintenance you pay ({u} per month) is usually not deducted from income for this benefit.",
-  "t.uz.selbstbehalt": "If your income is tight, you only have to pay maintenance as long as you keep your personal allowance (Selbstbehalt). Have the amount checked, for example by a lawyer. With low income you can get Beratungshilfe (legal advice aid) from the local court."
+  "t.uz.selbstbehalt": "If your income is tight, you only have to pay maintenance as long as you keep your personal allowance (Selbstbehalt). Have the amount checked, for example by a lawyer. With low income you can get Beratungshilfe (legal advice aid) from the local court.",
+  "t.zuk.alg": "Once unemployment benefit (Arbeitslosengeld) is paid (estimated about {a} per month), it counts as income here.",
+  "t.zuk.kg": "Once sickness benefit (Krankengeld) is paid (estimated about {a} per month), it counts as income here.",
+  "t.zuk.eg": "Once parental allowance (Elterngeld) is paid (estimated about {a} per month), the part above 300 € counts as income here.",
+  "t.zuk.ohneLohn": "The app then calculates without your previous wages.",
+  "t.zuk.ja": "After that, expected: likely.",
+  "t.zuk.vielleicht": "After that, expected: possible, depending on the exact calculation.",
+  "t.zuk.nein": "After that, probably no entitlement any more.",
+  "t.zuk.betragEins": "Rough estimate then: about {a} per month.",
+  "t.zuk.betragSpanne": "Rough estimate then: about {a} to {b} per month.",
+  "t.zuk.ueberbruecken": "Until the first payment arrives, Grundsicherungsgeld can bridge the gap. Submit both applications right away.",
+  "z.zuk.alg": "Apply for Arbeitslosengeld first: it takes priority over Grundsicherungsgeld and counts as income for Grundsicherungsgeld, Wohngeld and Kinderzuschlag. The cards show what changes then.",
+  "z.zuk.kg": "Krankengeld takes priority over Grundsicherungsgeld and counts as income for Grundsicherungsgeld, Wohngeld and Kinderzuschlag. The cards show what changes then.",
+  "z.zuk.eg": "Apply for Elterngeld in time after the birth: above 300 € it counts as income for Grundsicherungsgeld, Wohngeld and Kinderzuschlag. The cards show what changes then."
 }

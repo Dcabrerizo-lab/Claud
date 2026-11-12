@@ -42,7 +42,8 @@ function zufall() {
     bhPerson: pick(['', '', 'erwNach25', 'erwVor25', 'minder']), gdb: pick(['', '30', '50', '60', '80', '100', 'H']),
     blind: pick(['', '', '', 'blind', 'hoch']), mzG: rnd() < 0.2,
     ausbildung: pick(['', '', '', 'ich', 'kind']), aufenthalt: rnd() < 0.08 ? 'asyl' : '',
-    baby: pick(['', '', '', 'da']), egVor: pick(['', 0, 900, 2000]),
+    baby: pick(['', '', '', 'da', 'bald']), egVor: pick(['', 0, 900, 2000]),
+    arbeitSit: pick(['', '', '', 'arbeitslos', 'krank']), algZeit: rnd() < 0.7, krankWochen: pick(['', 'unter6', 'laeuft', 'ende']), lohnVorher: pick(['', 1500, 2800, 4500]),
     bundesland: pick(['', 'BY', 'BY', 'NW']), bezug: {}
   };
 }

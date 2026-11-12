@@ -36,7 +36,7 @@ function haushalt(e) {
   const netto = nettoAngabe ? zahl(e.netto) : brutto * 0.8;
   const arten = ['lohn', 'rente', 'alg', 'kg', 'eg', 'wfbm', 'ohne'];
   const art = (a, alt) => (arten.indexOf(a) >= 0 ? a : (alt ? 'rente' : 'lohn'));
-  const p = [{ art: art(e.art1, e.nichtArbeit), brutto: brutto - brutto2 }];
+  const p = [{ art: art(e.art1, e.nichtArbeit), brutto: brutto - brutto2, aus: !!e.aus1 }]; // aus: Betrag ist schon ausgezahlt (künftige Leistung)
   if (erwachsene === 2) p.push({ art: art(e.art2, e.nichtArbeit2), brutto: brutto2 });
   // Alter
   const jahr = Number(e.gebJahr) | 0;
@@ -165,6 +165,9 @@ const wg = (n, M, Y) => { const [a, b, c] = ABC[Math.min(n, 12) - 1]; return 1.1
 function yGrenze(n, M) { let lo = 0, hi = 30000; for (let i = 0; i < 80; i++) { const m = (lo + hi) / 2; if (wg(n, M, m) > 0) lo = m; else hi = m; } return lo; }
 const mieteWG = (st, n, warm, faktor) => Math.min(faktor * Math.max(0, warm - heiz(n)), hoechst(st, n)) + heiz(n);
 const ABZUG = { lohn: [0.1, 0.3], rente: [0.1, 0.2], kg: [0.1, 0.2], alg: [0, 0], eg: [0, 0], wfbm: [0, 0.1], ohne: [0, 0] };
+// Auf schon ausgezahlte Beträge (Beiträge sind abgezogen) nur noch ein kleiner Abzug (Konvention der App für ausgezahlte Beträge)
+const ABZUG_AUSZ = { lohn: [0, 0.12], rente: [0, 0.06], kg: [0, 0.06], alg: [0, 0], eg: [0, 0], wfbm: [0, 0.05], ohne: [0, 0] };
+const abzugAus = (x, i) => (x.aus ? ABZUG_AUSZ : ABZUG)[x.art][i];
 
 function wohngeld(h) {
   const b = h.bezug, e = h.e;
@@ -187,8 +190,8 @@ function wohngeld(h) {
   frei += e.grundrente33 ? h.p.filter((x) => x.art === 'rente').reduce((a, x) => a + Math.min(100 + 0.3 * Math.max(0, x.brutto - 100), 0.5 * RB[1]), 0) : 0;
   const plus = h.unterhalt + h.uvg + Math.max(0, h.kindEink - 100);
   const uzVorsichtig = h.uzFest ? Math.min(h.uz, h.uzDeckel) : 0, uzGuenstig = h.uzFest ? h.uz : Math.min(h.uz, h.uzDeckel);
-  const yPess = Math.max(0, h.p.reduce((s, x) => s + x.brutto * (1 - ABZUG[x.art][0]), 0) + plus - frei - uzVorsichtig);
-  const yOpt = Math.max(0, h.p.reduce((s, x) => s + x.brutto * (1 - ABZUG[x.art][1]), 0) + plus - frei - uzGuenstig);
+  const yPess = Math.max(0, h.p.reduce((s, x) => s + x.brutto * (1 - abzugAus(x, 0)), 0) + plus - frei - uzVorsichtig);
+  const yOpt = Math.max(0, h.p.reduce((s, x) => s + x.brutto * (1 - abzugAus(x, 1)), 0) + plus - frei - uzGuenstig);
   if (yOpt > yMaxHi) return { level: 'nein' };
   let level = yPess <= yMaxLo ? 'ja' : 'vielleicht';
   const mittel = h.netto + h.kinder * KG + h.unterhalt + h.uvg + h.kindEink - h.uz;
@@ -357,4 +360,24 @@ function schon90(e) { return 10000 * (e.adults === 2 ? 2 : 1) + 500 * (Math.max(
 // ---------- Asylbewerber: Ausschlüsse (§ 7 Abs. 1 SGB II, § 23 Abs. 2 SGB XII, § 7 WoGG, § 6a BKGG mit § 62 EStG) ----------
 const ASYL_NEIN = ['ggeld', 'gsa', 'wohngeld', 'kiz'];
 
-module.exports = { elterngeld, grenze85, schon90, ASYL_NEIN, haushalt, grundsicherungsgeld, wohngeld, kinderzuschlag, grundsicherungAlter, unterhaltsvorschuss, bafoeg, arbeitslosengeld, krankengeld, regelaltersgrenze, freibetragArbeit, RB };
+// ---------- Künftige vorrangige Leistung der ersten Person (Arbeitslosengeld, Krankengeld, Elterngeld) ----------
+// Sie zählt bei Grundsicherungsgeld, Wohngeld und Kinderzuschlag als Einkommen (§ 11 SGB II, § 14 WoGG; Elterngeld über 300 €).
+// Zweiter Haushalt: Einkommen der ersten Person (Lohn oder keins) wird durch die Mitte der geschätzten Spanne ersetzt.
+function kuenftig(e) {
+  if (Array.isArray(e.einkommen) || e.aufenthalt === 'asyl') return null;
+  const h = haushalt(e);
+  if (h.p[0].art !== 'lohn' && h.p[0].art !== 'ohne') return null;
+  let art = null, betrag = 0;
+  const a = arbeitslosengeld(e), k = krankengeld(e);
+  if (a.level === 'ja' && e.arbeitSit === 'arbeitslos' && a.spanne) { art = 'alg'; betrag = (a.spanne[0] + a.spanne[1]) / 2; }
+  else if ((k.level === 'ja' || k.level === 'vielleicht') && (e.krankWochen === 'unter6' || e.krankWochen === 'laeuft') && k.spanne) { art = 'kg'; betrag = (k.spanne[0] + k.spanne[1]) / 2; }
+  else if (e.baby === 'bald' && h.erwachsene === 1 && !leer(e.egVor)) { art = 'eg'; betrag = runde10(elterngeld(zahl(e.egVor)).basis); }
+  if (!art || !(betrag > 0)) return null;
+  const lohn1 = h.brutto - h.brutto2;
+  const netto1 = h.erwachsene === 1 ? h.netto : h.brutto > 0 ? h.netto * lohn1 / h.brutto : 0;
+  return Object.assign({}, e, { art1: art, nichtArbeit: false, brutto: betrag + h.brutto2, brutto2: h.brutto2, netto: Math.max(0, h.netto - netto1) + betrag, aus1: true, _art: art, _betrag: betrag });
+}
+// Einstufung aus jetzt und künftig: gleich bleibt, sonst „möglich“
+const zusammen = (jetzt, dann) => (jetzt === 'na' ? 'na' : jetzt === dann ? jetzt : 'vielleicht');
+
+module.exports = { kuenftig, zusammen, elterngeld, grenze85, schon90, ASYL_NEIN, haushalt, grundsicherungsgeld, wohngeld, kinderzuschlag, grundsicherungAlter, unterhaltsvorschuss, bafoeg, arbeitslosengeld, krankengeld, regelaltersgrenze, freibetragArbeit, RB };

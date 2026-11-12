@@ -905,5 +905,18 @@
   "t.uz.sgb2Titel": "Gezahlter Unterhalt ({u} im Monat) wird vom Einkommen abgezogen, weil der Betrag festgelegt ist (§ 11b SGB II). Abgezogen wird nur, was wirklich gezahlt wird. Kontoauszüge als Nachweis mitbringen.",
   "t.uz.sgb2Ohne": "Der Unterhalt, den du zahlst ({u} im Monat), wird hier nur abgezogen, wenn der Betrag festgelegt ist: durch Urteil oder Beschluss, Jugendamtsurkunde oder Notarvertrag (§ 11b SGB II). Für Kinder beurkundet das Jugendamt den Unterhalt kostenlos. Die App rechnet deshalb ohne Abzug.",
   "t.uz.gsa": "Gezahlter Unterhalt ({u} im Monat) wird bei dieser Leistung in der Regel nicht vom Einkommen abgezogen.",
-  "t.uz.selbstbehalt": "Ist dein Einkommen knapp, musst du Unterhalt nur zahlen, soweit dir der Selbstbehalt bleibt. Lass den Betrag prüfen, zum Beispiel bei einer Anwältin oder einem Anwalt. Bei wenig Einkommen gibt es dafür Beratungshilfe vom Amtsgericht."
+  "t.uz.selbstbehalt": "Ist dein Einkommen knapp, musst du Unterhalt nur zahlen, soweit dir der Selbstbehalt bleibt. Lass den Betrag prüfen, zum Beispiel bei einer Anwältin oder einem Anwalt. Bei wenig Einkommen gibt es dafür Beratungshilfe vom Amtsgericht.",
+  "t.zuk.alg": "Sobald das Arbeitslosengeld gezahlt wird (geschätzt etwa {a} im Monat), zählt es hier als Einkommen.",
+  "t.zuk.kg": "Sobald das Krankengeld gezahlt wird (geschätzt etwa {a} im Monat), zählt es hier als Einkommen.",
+  "t.zuk.eg": "Sobald das Elterngeld gezahlt wird (geschätzt etwa {a} im Monat), zählt der Teil über 300 € hier als Einkommen.",
+  "t.zuk.ohneLohn": "Die App rechnet dann ohne den bisherigen Lohn.",
+  "t.zuk.ja": "Danach voraussichtlich: wahrscheinlich.",
+  "t.zuk.vielleicht": "Danach voraussichtlich: möglich, je nach genauer Rechnung.",
+  "t.zuk.nein": "Danach voraussichtlich kein Anspruch mehr.",
+  "t.zuk.betragEins": "Grob geschätzt dann: etwa {a} im Monat.",
+  "t.zuk.betragSpanne": "Grob geschätzt dann: etwa {a} bis {b} im Monat.",
+  "t.zuk.ueberbruecken": "Bis die erste Zahlung kommt, kann Grundsicherungsgeld die Zeit überbrücken. Stelle beide Anträge gleich.",
+  "z.zuk.alg": "Arbeitslosengeld zuerst beantragen: Es geht dem Grundsicherungsgeld vor und zählt beim Grundsicherungsgeld, Wohngeld und Kinderzuschlag als Einkommen. Die Karten zeigen, was sich dann ändert.",
+  "z.zuk.kg": "Krankengeld geht dem Grundsicherungsgeld vor und zählt beim Grundsicherungsgeld, Wohngeld und Kinderzuschlag als Einkommen. Die Karten zeigen, was sich dann ändert.",
+  "z.zuk.eg": "Elterngeld nach der Geburt rechtzeitig beantragen: Über 300 € zählt es beim Grundsicherungsgeld, Wohngeld und Kinderzuschlag als Einkommen. Die Karten zeigen, was sich dann ändert."
 }

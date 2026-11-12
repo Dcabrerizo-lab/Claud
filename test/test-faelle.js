@@ -444,5 +444,28 @@ const uzG = { alter: true, nichtArbeit: true, brutto: 900, miete: 500, mietstufe
 ck('[uz-gsa] Grundsicherung im Alter: gezahlter Unterhalt ändert nichts am Betrag, Hinweis und Selbstbehalt', S(uzG, 'gsa') === S({ ...uzG, uzBetrag: 200, uzAn: 'ex', uzTitel: true }, 'gsa') && K({ ...uzG, uzBetrag: 200, uzAn: 'ex', uzTitel: true }, 'gsa').includes('uz.gsa') && K({ ...uzG, uzBetrag: 200, uzAn: 'ex', uzTitel: true }, 'gsa').includes('uz.selbstbehalt'));
 ck('[uz-sgb2] Ohne gezahlten Unterhalt keine Unterhalts-Hinweise', !K(uzA, 'ggeld').some((k) => /^uz\./.test(k)) && !K(uzW, 'wohngeld').some((k) => /^uz\./.test(k)));
 
+// Künftige vorrangige Leistung (Arbeitslosengeld, Krankengeld, Elterngeld) zählt bei Grundsicherungsgeld, Wohngeld, Kinderzuschlag als Einkommen
+const Z = (o) => R.evaluate({ ...base, ...o });
+const ZR = (o, id) => Z(o).results.find((x) => x.id === id);
+const zAlg = { art1: 'ohne', miete: 600, mietstufe: 3, vermoegen: 1000, arbeitSit: 'arbeitslos', algZeit: true, lohnVorher: 3000, gebJahr: 1985 };
+// Arbeitslosengeld: 3.000 € brutto, Netto 60-72 %, 60 % davon: 1.080 bis 1.300 €, Mitte 1.190 €; danach 1.190 - 30 € Pauschale = 1.160 € gegen Bedarf 1.163 €
+ck('[zuk-einkommen] Arbeitslos ohne Einkommen: Grundsicherungsgeld jetzt wahrscheinlich, mit 1.190 € Arbeitslosengeld nur noch knapp -> „möglich“ mit Hinweis',
+  L({ ...zAlg, arbeitSit: '' }, 'ggeld') === 'ja' && L(zAlg, 'ggeld') === 'vielleicht' && ZR(zAlg, 'ggeld').tx.some((t) => t[0] === 'zuk.alg' && t[1].a === E(1190)) && K(zAlg, 'ggeld').includes('bedarfRand') && K(zAlg, 'ggeld').includes('zuk.vielleicht'));
+ck('[zuk-einkommen] Hinweis „Arbeitslosengeld zuerst beantragen“ auf der Ergebnisseite, vor dem Stichtag-Hinweis', Z(zAlg).zusammen.map((a) => a[0]).join() === 'z.ggVsWg,z.zuk.alg,z.stichtag');
+ck('[zuk-einkommen] Wohngeld: ohne Einkommen nur „möglich“ (Mindesteinkommen), mit Arbeitslosengeld danach wahrscheinlich, Betrag dazu', K(zAlg, 'wohngeld').includes('zuk.ja') && K(zAlg, 'wohngeld').includes('zuk.betragEins'));
+ck('[zuk-einkommen] Ohne Kinder kein Kinderzuschlag, auch kein Hinweis', L(zAlg, 'kiz') === 'nein' && !K(zAlg, 'kiz').some((k) => /^zuk\./.test(k)));
+const zKg = { kids: 1, art1: 'lohn', brutto: 2500, netto: 1800, miete: 700, mietstufe: 4, vermoegen: 1000, arbeitSit: 'krank', krankWochen: 'unter6', lohnVorher: 2500 };
+// Krankengeld: min(70 % brutto, 90 % netto) minus 12,5 % Beiträge: 1.180 bis 1.420 €, Mitte 1.300 €, statt des Lohns
+ck('[zuk-einkommen] Krankgeschrieben (Lohnfortzahlung): Krankengeld 1.300 € ersetzt den Lohn, Grundsicherungsgeld danach wahrscheinlich -> „möglich“, Kinderzuschlag höher',
+  L({ ...zKg, arbeitSit: '' }, 'ggeld') !== 'ja' && L(zKg, 'ggeld') === 'vielleicht' && ZR(zKg, 'ggeld').tx.some((t) => t[0] === 'zuk.kg' && t[1].a === E(1300)) && K(zKg, 'ggeld').includes('zuk.ohneLohn') && K(zKg, 'kiz').includes('zuk.betragEins'));
+const zEg = { art1: 'lohn', brutto: 2200, netto: 1600, miete: 650, mietstufe: 3, vermoegen: 1000, baby: 'bald', egVor: 1600 };
+// Elterngeld: 1.600 € Netto -> 67 % - 0,1 Punkte je 2 € über 1.200 € = 47 % -> Untergrenze 65 %: 1.040 €
+ck('[zuk-einkommen] Baby kommt bald (alleinstehend): Elterngeld 1.040 € statt Lohn, Wohngeld danach wahrscheinlich',
+  ZR(zEg, 'wohngeld').tx.some((t) => t[0] === 'zuk.eg' && t[1].a === E(1040)) && L({ ...zEg, baby: '' }, 'wohngeld') === 'nein' && L(zEg, 'wohngeld') === 'vielleicht' && K(zEg, 'wohngeld').includes('zuk.ja'));
+ck('[zuk-einkommen] Elterngeld bei Paaren: offen, wer es bekommt -> keine zweite Rechnung', !Z({ ...zEg, adults: 2, art2: 'lohn', brutto: 4000, brutto2: 1800, netto: 2900 }).zusammen.some((a) => a[0] === 'z.zuk.eg'));
+ck('[zuk-einkommen] Bekommt die Leistung schon (Einkommensart Arbeitslosengeld): keine zweite Rechnung', !Z({ ...zAlg, art1: 'alg', brutto: 1200, netto: 1200 }).zusammen.some((a) => /^z\.zuk/.test(a[0])));
+ck('[zuk-einkommen] Grundsicherungsgeld fällt danach weg: Hinweis aufs Überbrücken bis zur ersten Zahlung',
+  K({ ...zAlg, lohnVorher: 4500 }, 'ggeld').includes('zuk.nein') && K({ ...zAlg, lohnVorher: 4500 }, 'ggeld').includes('zuk.ueberbruecken') && L({ ...zAlg, lohnVorher: 4500 }, 'ggeld') === 'vielleicht');
+
 console.log(fails ? '\n' + fails + ' von ' + n + ' FEHLGESCHLAGEN' : '\nFall-Tests bestanden: ' + n + ' Prüfungen');
 process.exit(fails ? 1 : 0);

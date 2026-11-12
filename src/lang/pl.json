@@ -905,5 +905,18 @@
   "t.uz.sgb2Titel": "Płacone alimenty ({u} miesięcznie) odlicza się od dochodu, bo kwota jest ustalona (§ 11b SGB II). Odlicza się tylko to, co naprawdę zapłacono. Przynieś wyciągi z konta jako dowód.",
   "t.uz.sgb2Ohne": "Alimenty, które płacisz ({u} miesięcznie), odlicza się tutaj tylko wtedy, gdy kwota jest ustalona: wyrokiem lub postanowieniem, Jugendamtsurkunde lub umową notarialną (§ 11b SGB II). Dla dzieci Jugendamt poświadcza alimenty bezpłatnie. Dlatego aplikacja liczy bez odliczenia.",
   "t.uz.gsa": "Płacone alimenty ({u} miesięcznie) przy tym świadczeniu zwykle nie są odliczane od dochodu.",
-  "t.uz.selbstbehalt": "Jeśli twój dochód jest niski, alimenty musisz płacić tylko w takim zakresie, w jakim zostaje ci kwota wolna (Selbstbehalt). Poproś o sprawdzenie kwoty, na przykład u adwokata. Przy niskim dochodzie jest na to Beratungshilfe z Amtsgericht."
+  "t.uz.selbstbehalt": "Jeśli twój dochód jest niski, alimenty musisz płacić tylko w takim zakresie, w jakim zostaje ci kwota wolna (Selbstbehalt). Poproś o sprawdzenie kwoty, na przykład u adwokata. Przy niskim dochodzie jest na to Beratungshilfe z Amtsgericht.",
+  "t.zuk.alg": "Gdy zacznie być wypłacany zasiłek dla bezrobotnych (Arbeitslosengeld) (szacunkowo około {a} miesięcznie), liczy się tu jako dochód.",
+  "t.zuk.kg": "Gdy zacznie być wypłacany zasiłek chorobowy (Krankengeld) (szacunkowo około {a} miesięcznie), liczy się tu jako dochód.",
+  "t.zuk.eg": "Gdy zacznie być wypłacany zasiłek rodzicielski (Elterngeld) (szacunkowo około {a} miesięcznie), część powyżej 300 € liczy się tu jako dochód.",
+  "t.zuk.ohneLohn": "Aplikacja liczy wtedy bez dotychczasowego wynagrodzenia.",
+  "t.zuk.ja": "Potem prawdopodobnie: prawdopodobne.",
+  "t.zuk.vielleicht": "Potem prawdopodobnie: możliwe, zależnie od dokładnego wyliczenia.",
+  "t.zuk.nein": "Potem prawdopodobnie brak prawa do świadczenia.",
+  "t.zuk.betragEins": "Wtedy w przybliżeniu: około {a} miesięcznie.",
+  "t.zuk.betragSpanne": "Wtedy w przybliżeniu: około {a} do {b} miesięcznie.",
+  "t.zuk.ueberbruecken": "Do pierwszej wypłaty Grundsicherungsgeld może pomóc przetrwać ten czas. Złóż od razu oba wnioski.",
+  "z.zuk.alg": "Najpierw złóż wniosek o Arbeitslosengeld: ma pierwszeństwo przed Grundsicherungsgeld i liczy się jako dochód przy Grundsicherungsgeld, Wohngeld i Kinderzuschlag. Karty pokazują, co się wtedy zmieni.",
+  "z.zuk.kg": "Krankengeld ma pierwszeństwo przed Grundsicherungsgeld i liczy się jako dochód przy Grundsicherungsgeld, Wohngeld i Kinderzuschlag. Karty pokazują, co się wtedy zmieni.",
+  "z.zuk.eg": "Złóż wniosek o Elterngeld w porę po porodzie: powyżej 300 € liczy się jako dochód przy Grundsicherungsgeld, Wohngeld i Kinderzuschlag. Karty pokazują, co się wtedy zmieni."
 }
