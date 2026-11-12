@@ -1220,11 +1220,8 @@ const Rules = (function () {
   function mitZukunft(jetzt, dann, zk) {
     if (jetzt.level === 'na' || (jetzt.level === 'nein' && dann.level === 'nein')) return jetzt;
     const level = jetzt.level === dann.level ? jetzt.level : 'vielleicht';
-    let tx = jetzt.tx.slice();
-    if (level !== jetzt.level) {
-      const um = { bedarfJa: 'bedarfRand', bedarfNein: 'bedarfRand', 'wohngeld.ja': 'wohngeld.vielleicht', 'kiz.ja': 'kiz.rand' };
-      tx = tx.map((t) => (um[t[0]] ? [um[t[0]]].concat(t.slice(1)) : t));
-    }
+    // Die Texte der jetzigen Lage bleiben (sie beschreiben das heutige Einkommen), der Hinweis danach erklärt die Änderung
+    const tx = jetzt.tx.slice();
     tx.push(['zuk.' + zk.quelle, { a: eur(r10(zk.betrag)) }]);
     if (zk.ohneLohn) tx.push(['zuk.ohneLohn']);
     tx.push(['zuk.' + dann.level]);

@@ -450,7 +450,7 @@ const ZR = (o, id) => Z(o).results.find((x) => x.id === id);
 const zAlg = { art1: 'ohne', miete: 600, mietstufe: 3, vermoegen: 1000, arbeitSit: 'arbeitslos', algZeit: true, lohnVorher: 3000, gebJahr: 1985 };
 // Arbeitslosengeld: 3.000 € brutto, Netto 60-72 %, 60 % davon: 1.080 bis 1.300 €, Mitte 1.190 €; danach 1.190 - 30 € Pauschale = 1.160 € gegen Bedarf 1.163 €
 ck('[zuk-einkommen] Arbeitslos ohne Einkommen: Grundsicherungsgeld jetzt wahrscheinlich, mit 1.190 € Arbeitslosengeld nur noch knapp -> „möglich“ mit Hinweis',
-  L({ ...zAlg, arbeitSit: '' }, 'ggeld') === 'ja' && L(zAlg, 'ggeld') === 'vielleicht' && ZR(zAlg, 'ggeld').tx.some((t) => t[0] === 'zuk.alg' && t[1].a === E(1190)) && K(zAlg, 'ggeld').includes('bedarfRand') && K(zAlg, 'ggeld').includes('zuk.vielleicht'));
+  L({ ...zAlg, arbeitSit: '' }, 'ggeld') === 'ja' && L(zAlg, 'ggeld') === 'vielleicht' && ZR(zAlg, 'ggeld').tx.some((t) => t[0] === 'zuk.alg' && t[1].a === E(1190)) && K(zAlg, 'ggeld').includes('bedarfJa') && K(zAlg, 'ggeld').includes('zuk.vielleicht'));
 ck('[zuk-einkommen] Hinweis „Arbeitslosengeld zuerst beantragen“ auf der Ergebnisseite, vor dem Stichtag-Hinweis', Z(zAlg).zusammen.map((a) => a[0]).join() === 'z.ggVsWg,z.zuk.alg,z.stichtag');
 ck('[zuk-einkommen] Wohngeld: ohne Einkommen nur „möglich“ (Mindesteinkommen), mit Arbeitslosengeld danach wahrscheinlich, Betrag dazu', K(zAlg, 'wohngeld').includes('zuk.ja') && K(zAlg, 'wohngeld').includes('zuk.betragEins'));
 ck('[zuk-einkommen] Ohne Kinder kein Kinderzuschlag, auch kein Hinweis', L(zAlg, 'kiz') === 'nein' && !K(zAlg, 'kiz').some((k) => /^zuk\./.test(k)));
