@@ -334,13 +334,65 @@
   @media (prefers-reduced-motion: no-preference) {
     .card, .together { transition: background-color .15s ease; }
   }
+
+  /* ===== Moderne Optik (nur Gestaltung; Bedienung, Größen und Kontraste wie geprüft) =====
+     Weiche Karten mit Schatten statt Rahmen, runde Formen, farbiger Rand je Einstufung, ruhige Kopfzeile mit Symbol. */
+  :root { --r-card: 16px; --r-ctl: 12px; --shadow: 0 1px 2px rgba(19, 32, 43, .06), 0 6px 20px rgba(19, 32, 43, .07); --shadow-s: 0 1px 2px rgba(19, 32, 43, .08); --bg: #f2f5f9; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --shadow: 0 1px 2px rgba(0, 0, 0, .5), 0 6px 20px rgba(0, 0, 0, .35); --shadow-s: 0 1px 2px rgba(0, 0, 0, .5); --bg: #0e161d; } }
+  :root[data-theme="dark"] { --shadow: 0 1px 2px rgba(0, 0, 0, .5), 0 6px 20px rgba(0, 0, 0, .35); --shadow-s: 0 1px 2px rgba(0, 0, 0, .5); --bg: #0e161d; }
+  /* Kopf */
+  .top h1 { display: flex; align-items: center; gap: 12px; }
+  .top h1 .logo { flex: none; width: 48px; height: 48px; border-radius: 14px; box-shadow: var(--shadow-s); }
+  .top h1 .titel { display: block; }
+  .tools .chip, .langpick select { box-shadow: var(--shadow-s); }
+  /* Fragebogen-Abschnitte als Karten, Überschrift mit Farbbalken */
+  form > fieldset { background: var(--surface); border: 1px solid transparent; border-radius: var(--r-card); padding: 18px; box-shadow: var(--shadow); }
+  form > fieldset > legend { float: left; border-bottom: 0; padding: 0 0 0 12px; padding-inline: 12px 0; margin-bottom: 2px; border-inline-start: 4px solid var(--accent); line-height: 1.25; }
+  details.optblock { border-color: transparent; border-radius: var(--r-card); box-shadow: var(--shadow); padding: 14px 18px; }
+  /* Handy: Abschnitts-Karten bis fast an den Rand, damit Eingabefelder und Auswahllisten ihre volle Breite behalten */
+  @media (max-width: 600px) { form > fieldset, details.optblock { margin-inline: -12px; padding-inline: 12px; border-radius: 14px; } }
+  details.optblock > summary { min-height: 44px; }
+  .ekbox { border-radius: var(--r-ctl); background: var(--bg); border-color: transparent; }
+  /* Eingabefelder, Umschalter, Zähler */
+  input[type="number"], input[type="text"], select { border-radius: var(--r-ctl); transition: border-color .15s ease, box-shadow .15s ease; }
+  input[type="number"]:focus, input[type="text"]:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); outline: none; }
+  input[type="number"]:focus-visible, input[type="text"]:focus-visible, select:focus-visible { outline: 3px solid var(--focus); outline-offset: 1px; }
+  .seg, .stepper { border-radius: var(--r-ctl); }
+  .seg { padding: 3px; gap: 3px; background: var(--bg); border-color: transparent; }
+  .seg label { border-radius: 9px; min-height: 44px; }
+  .seg input:nth-of-type(2) + label { border-inline-start: 0; }
+  .seg input:checked + label { box-shadow: var(--shadow-s); }
+  .stepper button { color: var(--accent); font-weight: 700; }
+  .chip { box-shadow: var(--shadow-s); transition: transform .1s ease; }
+  .chip:active { transform: scale(.97); }
+  .presets .chip { border-color: transparent; }
+  /* Ergebnis: Karten mit Schatten und farbigem Rand je Einstufung */
+  .card, .together { border: 0; border-radius: var(--r-card); box-shadow: var(--shadow); padding: 20px; border-inline-start: 5px solid transparent; }
+  .card:has(.pill.ja) { border-inline-start-color: var(--ok); }
+  .card:has(.pill.vielleicht) { border-inline-start-color: var(--warn); }
+  .card:has(.pill.nein), .card:has(.pill.na) { border-inline-start-color: var(--line); }
+  .card.dim { background: var(--surface); box-shadow: var(--shadow-s); }
+  .card header h3 { font-size: 1.15em; font-weight: 700; }
+  .together { border-inline-start-color: var(--accent); }
+  .pill { border: 0; padding: 5px 12px; }
+  .card .behoerde { border-radius: var(--r-ctl); border-inline-start-width: 4px; }
+  .overview a { border-color: transparent; box-shadow: var(--shadow-s); }
+  .summary h2 { font-size: 1.45em; }
+  details summary { min-height: 44px; }
+  /* Knöpfe */
+  .btn { border-radius: 999px; box-shadow: var(--shadow-s); }
+  .btn.ghost { box-shadow: none; }
+  /* Leiste unten: leicht durchscheinend, Knopf als Pille */
+  .jump { background: color-mix(in srgb, var(--surface) 88%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-top: 1px solid var(--line); box-shadow: 0 -4px 16px rgba(19, 32, 43, .06); }
+  .jump button { border-radius: 999px; padding-inline: 22px; box-shadow: var(--shadow-s); }
+  @media (prefers-reduced-motion: reduce) { .chip, input, select { transition: none; } .chip:active { transform: none; } }
 </style>
 
 <div class="app" id="app" lang="de" dir="ltr">
   <div class="shell">
     <header class="top">
       <div>
-        <h1>SoLo <span class="sub">Sozialleistungslotse</span></h1>
+        <h1><svg class="logo" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><rect width="48" height="48" rx="14" fill="#2b4a9b"/><circle cx="24" cy="24" r="13" fill="none" stroke="#fff" stroke-width="3.2"/><path d="M24 7.5v4M24 36.5v4M7.5 24h4M36.5 24h4" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/><path d="M18.2 24.4l4 4 7.8-8.2" fill="none" stroke="#7fe0b0" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="titel">SoLo <span class="sub">Sozialleistungslotse</span></span></h1>
         <p class="lead" data-t="lead"></p>
       </div>
       <div class="tools">
