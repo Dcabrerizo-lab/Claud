@@ -10,28 +10,37 @@
     "spike:render": "node spike/m0/render.mjs",
     "spike:photos": "node spike/m0b/make-photos.mjs",
     "spike:scan": "tsx spike/m0b/run.ts",
-    "test:offline": "node spike/m0b/offline-browser.mjs && WORKER_CSP=1 node spike/m0b/offline-browser.mjs"
+    "test:offline": "node spike/m0b/offline-browser.mjs && WORKER_CSP=1 node spike/m0b/offline-browser.mjs",
+    "dev": "vite",
+    "build": "vite build",
+    "test:e2e": "vite build && node test/e2e/app.e2e.mjs"
   },
   "devDependencies": {
-    "@expo-google-fonts/noto-sans": "^0.4.2",
-    "@expo-google-fonts/noto-sans-arabic": "^0.4.3",
-    "@pdf-lib/fontkit": "^1.1.1",
-    "@tesseract.js-data/deu": "^1.0.0",
     "@types/node": "^26.6.6",
     "fake-indexeddb": "^6.0.1",
-    "hash-wasm": "^4.12.0",
     "jpeg-js": "^0.4.4",
-    "pdf-lib": "^1.17.1",
-    "pdfjs-dist": "^4.10.38",
     "playwright": "1.63.0",
-    "tesseract.js": "^7.0.0",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2",
+    "vite": "^8.3.8",
+    "vite-plugin-singlefile": "^2.3.4",
     "vitest": "^5.1.0"
   },
   "private": true,
   "type": "module",
   "engines": {
     "node": ">=22"
+  },
+  "dependencies": {
+    "@expo-google-fonts/noto-sans": "^0.4.2",
+    "@expo-google-fonts/noto-sans-arabic": "^0.4.3",
+    "@fontsource/atkinson-hyperlegible": "^5.3.0",
+    "@fontsource/schibsted-grotesk": "^5.3.0",
+    "@pdf-lib/fontkit": "^1.1.1",
+    "@tesseract.js-data/deu": "^1.0.0",
+    "hash-wasm": "^4.12.0",
+    "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^4.10.38",
+    "tesseract.js": "^7.0.0"
   }
 }

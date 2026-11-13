@@ -28,3 +28,13 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm test
+      - run: npx playwright install --with-deps chromium
+      - name: Browsertest (Einrichten, Entsperren, Wiederherstellen, kein Klartext, kein Netz)
+        run: npm run test:e2e
+      - name: Offline-Nachweis Texterkennung (Foto-Weg)
+        run: npm run test:offline
+      - name: App als einzelne HTML-Datei
+        uses: actions/upload-artifact@v4
+        with:
+          name: daten-tresor-web
+          path: buerokratie-app/dist/daten-tresor.html

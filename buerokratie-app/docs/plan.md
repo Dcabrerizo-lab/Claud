@@ -42,7 +42,7 @@ Ist ein Punkt nicht erreichbar, bleibt der Foto-Weg draußen, und der MVP umfass
 
 - **M0 PDF-Spike** ✔ (`spike-m0.md`), mit echten amtlichen PDFs noch nachzutesten
 - **M0b Foto-Spike** ✔ (`spike-m0b.md`), Freigabe offen (siehe oben)
-- **M1 Tresor:** Passphrase, Sperren/Entsperren, Stammdaten-Maske, verschlüsselt (unverändert)
+- **M1 Tresor** ✔ (`m1-tresor.md`): Passphrase plus Wiederherstellungscode, Sperren/Entsperren, Stammdaten-Maske, Modul-Schnittstelle
 - **M2 Zuordnung und Ausfüllen:** PDF-Weg; Foto-Weg nur nach Freigabe, mit gemeinsamer Bestätigungsansicht. Für Fotos: Kästchen verschieben und Beschriftung von Hand wählen. Vorlagen merken (bei Fotos über einen Layout-Fingerabdruck)
 - **M3 Backup** (unverändert)
 - **M4 Mehrsprachigkeit** (unverändert)

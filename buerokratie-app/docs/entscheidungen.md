@@ -42,3 +42,6 @@ Automatisch nach 5 Minuten ohne Bedienung und sofort, wenn die App in den Hinter
 
 ## E11 Ablage im Repo
 Vorerst `buerokratie-app/` neben dem Lotsen im selben Repo. Das erleichtert das spätere Zusammenführen (gemeinsame Schriften, Texte, Build). Wird der Kern als Bibliothek veröffentlicht, zieht `src/core/` in ein eigenes öffentliches Paket um.
+
+## E12 Nur in sicheren Kontexten
+Ohne `https://` (oder Datei bzw. installierte App) gibt der Browser keine Verschlüsselung frei. Die App läuft dann bewusst nicht und erklärt, warum. Einrichtungen stellen sie per https bereit oder verteilen die Datei.
