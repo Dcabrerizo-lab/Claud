@@ -1,20 +1,125 @@
 {
-  "_hinweis": "Spike-Ausschnitt des Feldkatalogs (M0b). Synonyme sind Formularbeschriftungen, keine Rechtstexte. Vollständiger Katalog mit 8 Sprachen folgt in M2/M4.",
+  "_hinweis": "Feldkatalog des Stammdatentresors. Stabile Schlüssel: Module und Formular-Vorlagen verweisen darauf, Schlüssel daher nie umbenennen, nur neue ergänzen. Beschriftungen: de und en; die übrigen Sprachen des Leistungs-Lotsen (tr, ar, ru, uk, pl, ro) folgen in M4, bis dahin gilt Deutsch. Synonyme sind typische Formularbeschriftungen zum Erkennen von Feldern, keine Rechtstexte.",
+  "version": 1,
   "stand": "2026-11",
+  "gruppen": {
+    "person": { "label": { "de": "Ich", "en": "Me" } },
+    "adresse": { "label": { "de": "Anschrift", "en": "Address" } },
+    "kontakt": { "label": { "de": "Kontakt", "en": "Contact" } },
+    "haushalt": { "liste": true, "max": 15, "label": { "de": "Weitere Personen im Haushalt", "en": "Other people in the household" } },
+    "wohnen": { "label": { "de": "Wohnung", "en": "Home" } },
+    "einkommen": { "liste": true, "max": 20, "label": { "de": "Einkommen", "en": "Income" } },
+    "vermoegen": { "label": { "de": "Vermögen", "en": "Assets" } },
+    "gesundheit": { "label": { "de": "Pflege und Behinderung", "en": "Care and disability" } },
+    "bank": { "label": { "de": "Bankverbindung", "en": "Bank account" } }
+  },
   "felder": [
-    { "key": "person.nachname", "typ": "text", "de": "Familienname", "synonyme": { "de": ["Familienname", "Nachname", "Name"] } },
-    { "key": "person.vorname", "typ": "text", "de": "Vorname", "synonyme": { "de": ["Vorname(n)", "Vornamen", "Vorname", "Rufname"] } },
-    { "key": "person.name_vorname", "typ": "text", "de": "Name, Vorname", "abgeleitet": "{person.nachname}, {person.vorname}", "synonyme": { "de": ["Name, Vorname", "Familienname, Vorname", "Name und Vorname"] } },
-    { "key": "person.geburtsdatum", "typ": "datum", "de": "Geburtsdatum", "synonyme": { "de": ["Geburtsdatum", "geboren am", "Geb.-Datum"] } },
-    { "key": "person.staatsangehoerigkeit", "typ": "text", "de": "Staatsangehörigkeit", "synonyme": { "de": ["Staatsangehörigkeit", "Nationalität"] } },
-    { "key": "adresse.strasse_hausnr", "typ": "text", "de": "Straße, Hausnummer", "synonyme": { "de": ["Straße, Hausnummer", "Straße und Hausnummer", "Straße/Hausnr.", "Straße"] } },
-    { "key": "adresse.plz", "typ": "text", "de": "Postleitzahl", "synonyme": { "de": ["Postleitzahl", "PLZ"] } },
-    { "key": "adresse.ort", "typ": "text", "de": "Wohnort", "synonyme": { "de": ["Wohnort", "Ort"] } },
-    { "key": "wohnen.kaltmiete", "typ": "betrag", "de": "Kaltmiete", "synonyme": { "de": ["Miete ohne Heiz- und Nebenkosten", "Nettokaltmiete", "Kaltmiete", "Grundmiete"] } },
-    { "key": "bank.iban", "typ": "text", "de": "IBAN", "synonyme": { "de": ["IBAN"] } },
-    { "key": "kind.name_vorname", "typ": "text", "de": "Name des Kindes", "liste": "kinder", "synonyme": { "de": ["Name des Kindes", "Name, Vorname"] } },
-    { "key": "kind.geburtsdatum", "typ": "datum", "de": "Geburtsdatum des Kindes", "liste": "kinder", "synonyme": { "de": ["Geburtsdatum"] } },
-    { "key": "kind.schule", "typ": "text", "de": "Schule / Kita", "liste": "kinder", "synonyme": { "de": ["Schule / Kita", "Name der Schule", "Schule", "Kita"] } },
-    { "key": "kind.klasse", "typ": "text", "de": "Klasse", "liste": "kinder", "synonyme": { "de": ["Klasse", "Jahrgangsstufe"] } }
+    { "key": "person.anrede", "typ": "auswahl", "label": { "de": "Anrede", "en": "Title" },
+      "optionen": [
+        { "wert": "frau", "label": { "de": "Frau", "en": "Ms" } },
+        { "wert": "herr", "label": { "de": "Herr", "en": "Mr" } },
+        { "wert": "divers", "label": { "de": "Divers", "en": "Diverse" } },
+        { "wert": "keine", "label": { "de": "Keine Angabe", "en": "Not specified" } }
+      ],
+      "synonyme": { "de": ["Anrede"] } },
+    { "key": "person.vorname", "typ": "name", "label": { "de": "Vorname(n)", "en": "First name(s)" },
+      "hilfe": { "de": "Wie im Pass oder Aufenthaltstitel, in lateinischer Schrift.", "en": "As in your passport or residence permit, in Latin letters." },
+      "synonyme": { "de": ["Vorname(n)", "Vornamen", "Vorname", "Rufname"] } },
+    { "key": "person.nachname", "typ": "name", "label": { "de": "Familienname", "en": "Surname" },
+      "hilfe": { "de": "Wie im Pass oder Aufenthaltstitel, in lateinischer Schrift.", "en": "As in your passport or residence permit, in Latin letters." },
+      "synonyme": { "de": ["Familienname", "Nachname", "Name"] } },
+    { "key": "person.name_vorname", "typ": "name", "abgeleitet": "{person.nachname}, {person.vorname}", "label": { "de": "Name, Vorname", "en": "Surname, first name" },
+      "synonyme": { "de": ["Name, Vorname", "Familienname, Vorname", "Name und Vorname"] } },
+    { "key": "person.geburtsname", "typ": "name", "label": { "de": "Geburtsname", "en": "Birth name" },
+      "synonyme": { "de": ["Geburtsname", "geborene", "geb."] } },
+    { "key": "person.geburtsdatum", "typ": "datum", "label": { "de": "Geburtsdatum", "en": "Date of birth" },
+      "synonyme": { "de": ["Geburtsdatum", "geboren am", "Geb.-Datum"] } },
+    { "key": "person.geburtsort", "typ": "text", "label": { "de": "Geburtsort", "en": "Place of birth" },
+      "synonyme": { "de": ["Geburtsort", "geboren in"] } },
+    { "key": "person.staatsangehoerigkeit", "typ": "text", "label": { "de": "Staatsangehörigkeit", "en": "Nationality" },
+      "synonyme": { "de": ["Staatsangehörigkeit", "Nationalität"] } },
+    { "key": "person.familienstand", "typ": "auswahl", "label": { "de": "Familienstand", "en": "Marital status" },
+      "optionen": [
+        { "wert": "ledig", "label": { "de": "ledig", "en": "single" } },
+        { "wert": "verheiratet", "label": { "de": "verheiratet", "en": "married" } },
+        { "wert": "lebenspartnerschaft", "label": { "de": "eingetragene Lebenspartnerschaft", "en": "registered partnership" } },
+        { "wert": "getrennt", "label": { "de": "dauernd getrennt lebend", "en": "permanently separated" } },
+        { "wert": "geschieden", "label": { "de": "geschieden", "en": "divorced" } },
+        { "wert": "verwitwet", "label": { "de": "verwitwet", "en": "widowed" } }
+      ],
+      "synonyme": { "de": ["Familienstand"] } },
+
+    { "key": "adresse.strasse", "typ": "text", "label": { "de": "Straße", "en": "Street" }, "synonyme": { "de": ["Straße"] } },
+    { "key": "adresse.hausnummer", "typ": "text", "label": { "de": "Hausnummer", "en": "House number" }, "synonyme": { "de": ["Hausnummer", "Hausnr.", "Nr."] } },
+    { "key": "adresse.strasse_hausnr", "typ": "text", "abgeleitet": "{adresse.strasse} {adresse.hausnummer}", "label": { "de": "Straße, Hausnummer", "en": "Street, number" },
+      "synonyme": { "de": ["Straße, Hausnummer", "Straße und Hausnummer", "Straße/Hausnr."] } },
+    { "key": "adresse.plz", "typ": "plz", "label": { "de": "Postleitzahl", "en": "Postcode" }, "synonyme": { "de": ["Postleitzahl", "PLZ"] } },
+    { "key": "adresse.ort", "typ": "text", "label": { "de": "Wohnort", "en": "Town" }, "synonyme": { "de": ["Wohnort", "Ort"] } },
+    { "key": "adresse.bundesland", "typ": "auswahl", "label": { "de": "Bundesland", "en": "Federal state" },
+      "optionen": [
+        { "wert": "BW", "label": { "de": "Baden-Württemberg" } }, { "wert": "BY", "label": { "de": "Bayern" } },
+        { "wert": "BE", "label": { "de": "Berlin" } }, { "wert": "BB", "label": { "de": "Brandenburg" } },
+        { "wert": "HB", "label": { "de": "Bremen" } }, { "wert": "HH", "label": { "de": "Hamburg" } },
+        { "wert": "HE", "label": { "de": "Hessen" } }, { "wert": "MV", "label": { "de": "Mecklenburg-Vorpommern" } },
+        { "wert": "NI", "label": { "de": "Niedersachsen" } }, { "wert": "NW", "label": { "de": "Nordrhein-Westfalen" } },
+        { "wert": "RP", "label": { "de": "Rheinland-Pfalz" } }, { "wert": "SL", "label": { "de": "Saarland" } },
+        { "wert": "SN", "label": { "de": "Sachsen" } }, { "wert": "ST", "label": { "de": "Sachsen-Anhalt" } },
+        { "wert": "SH", "label": { "de": "Schleswig-Holstein" } }, { "wert": "TH", "label": { "de": "Thüringen" } }
+      ],
+      "synonyme": { "de": ["Bundesland"] } },
+
+    { "key": "kontakt.telefon", "typ": "telefon", "label": { "de": "Telefon", "en": "Phone" }, "synonyme": { "de": ["Telefon", "Tel.", "Telefonnummer", "Mobil"] } },
+    { "key": "kontakt.email", "typ": "email", "label": { "de": "E-Mail", "en": "E-mail" }, "synonyme": { "de": ["E-Mail", "E-Mail-Adresse", "Email"] } },
+
+    { "key": "haushalt[].beziehung", "typ": "auswahl", "label": { "de": "Wer ist das?", "en": "Who is this?" },
+      "optionen": [
+        { "wert": "partner", "label": { "de": "Ehe- oder Lebenspartner/in", "en": "Spouse or partner" } },
+        { "wert": "kind", "label": { "de": "Kind", "en": "Child" } },
+        { "wert": "elternteil", "label": { "de": "Mutter oder Vater", "en": "Mother or father" } },
+        { "wert": "sonstige", "label": { "de": "andere Person", "en": "Other person" } }
+      ],
+      "synonyme": { "de": ["Verwandtschaftsverhältnis", "Beziehung zur antragstellenden Person"] } },
+    { "key": "haushalt[].vorname", "typ": "name", "label": { "de": "Vorname(n)", "en": "First name(s)" }, "synonyme": { "de": ["Vorname"] } },
+    { "key": "haushalt[].nachname", "typ": "name", "label": { "de": "Familienname", "en": "Surname" }, "synonyme": { "de": ["Familienname", "Name"] } },
+    { "key": "haushalt[].geburtsdatum", "typ": "datum", "label": { "de": "Geburtsdatum", "en": "Date of birth" }, "synonyme": { "de": ["Geburtsdatum", "geboren am"] } },
+    { "key": "haushalt[].staatsangehoerigkeit", "typ": "text", "label": { "de": "Staatsangehörigkeit", "en": "Nationality" }, "synonyme": { "de": ["Staatsangehörigkeit"] } },
+    { "key": "haushalt[].schule", "typ": "text", "label": { "de": "Schule oder Kita", "en": "School or daycare" }, "synonyme": { "de": ["Schule / Kita", "Name der Schule", "Schule", "Kita"] } },
+    { "key": "haushalt[].klasse", "typ": "text", "label": { "de": "Klasse", "en": "Class / grade" }, "synonyme": { "de": ["Klasse", "Jahrgangsstufe"] } },
+
+    { "key": "wohnen.kaltmiete", "typ": "betrag", "label": { "de": "Kaltmiete im Monat", "en": "Basic rent per month" },
+      "hilfe": { "de": "Miete ohne Heizung und ohne Nebenkosten.", "en": "Rent without heating and without service charges." },
+      "synonyme": { "de": ["Miete ohne Heiz- und Nebenkosten", "Nettokaltmiete", "Kaltmiete", "Grundmiete"] } },
+    { "key": "wohnen.nebenkosten", "typ": "betrag", "label": { "de": "Nebenkosten im Monat (ohne Heizung)", "en": "Service charges per month (without heating)" },
+      "synonyme": { "de": ["Nebenkosten", "Betriebskosten", "kalte Nebenkosten"] } },
+    { "key": "wohnen.heizkosten", "typ": "betrag", "label": { "de": "Heizkosten im Monat", "en": "Heating costs per month" }, "synonyme": { "de": ["Heizkosten", "Heizung"] } },
+    { "key": "wohnen.wohnflaeche", "typ": "zahl", "einheit": "m²", "label": { "de": "Wohnfläche in m²", "en": "Living space in m²" }, "synonyme": { "de": ["Wohnfläche", "Größe der Wohnung", "m²"] } },
+
+    { "key": "einkommen[].wer", "typ": "person", "label": { "de": "Wer bekommt das Geld?", "en": "Who receives the money?" } },
+    { "key": "einkommen[].art", "typ": "auswahl", "label": { "de": "Art", "en": "Type" },
+      "optionen": [
+        { "wert": "arbeit", "label": { "de": "Lohn oder Gehalt", "en": "Wages or salary" } },
+        { "wert": "selbststaendig", "label": { "de": "Selbstständige Arbeit", "en": "Self-employment" } },
+        { "wert": "rente", "label": { "de": "Rente", "en": "Pension" } },
+        { "wert": "alg", "label": { "de": "Arbeitslosengeld", "en": "Unemployment benefit" } },
+        { "wert": "kindergeld", "label": { "de": "Kindergeld", "en": "Child benefit" } },
+        { "wert": "unterhalt", "label": { "de": "Unterhalt", "en": "Maintenance" } },
+        { "wert": "sonstige", "label": { "de": "Sonstiges", "en": "Other" } }
+      ] },
+    { "key": "einkommen[].brutto", "typ": "betrag", "label": { "de": "Brutto im Monat", "en": "Gross per month" }, "synonyme": { "de": ["Bruttoeinkommen", "brutto"] } },
+    { "key": "einkommen[].netto", "typ": "betrag", "label": { "de": "Netto im Monat", "en": "Net per month" }, "synonyme": { "de": ["Nettoeinkommen", "netto"] } },
+
+    { "key": "vermoegen.gesamt", "typ": "betrag", "label": { "de": "Erspartes und Vermögen gesamt", "en": "Savings and assets in total" }, "synonyme": { "de": ["Vermögen", "Ersparnisse"] } },
+
+    { "key": "gesundheit.pflegegrad", "typ": "auswahl", "label": { "de": "Pflegegrad", "en": "Care level" },
+      "optionen": [
+        { "wert": "0", "label": { "de": "kein Pflegegrad", "en": "none" } },
+        { "wert": "1", "label": { "de": "1" } }, { "wert": "2", "label": { "de": "2" } }, { "wert": "3", "label": { "de": "3" } },
+        { "wert": "4", "label": { "de": "4" } }, { "wert": "5", "label": { "de": "5" } }
+      ],
+      "synonyme": { "de": ["Pflegegrad"] } },
+    { "key": "gesundheit.gdb", "typ": "zahl", "min": 0, "max": 100, "label": { "de": "Grad der Behinderung (GdB)", "en": "Degree of disability" }, "synonyme": { "de": ["Grad der Behinderung", "GdB"] } },
+
+    { "key": "bank.iban", "typ": "iban", "label": { "de": "IBAN", "en": "IBAN" }, "synonyme": { "de": ["IBAN"] } },
+    { "key": "bank.kontoinhaber", "typ": "name", "label": { "de": "Kontoinhaber/in", "en": "Account holder" }, "synonyme": { "de": ["Kontoinhaber", "Kontoinhaberin", "Name des Kontoinhabers"] } }
   ]
 }

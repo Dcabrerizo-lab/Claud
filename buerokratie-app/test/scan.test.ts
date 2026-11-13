@@ -12,7 +12,7 @@ import { overlayPdf } from '../src/scan/overlay.js';
 import { wordsFromTesseract, textBoxes } from '../src/scan/ocr.js';
 import { FONTS } from '../spike/m0/testdata.js';
 
-const catalog: CatalogField[] = JSON.parse(readFileSync(new URL('../data/feldkatalog.json', import.meta.url), 'utf8')).felder;
+const catalog: CatalogField[] = JSON.parse(readFileSync(new URL('../spike/m0b/feldkatalog-spike.json', import.meta.url), 'utf8')).felder;
 const word = (text: string, x0: number, y0: number, x1: number, y1: number, conf = 90): OcrWord =>
   ({ text, confidence: conf, bbox: { x0, y0, x1, y1 }, baseline: { x0, y0: y1 - 3, x1, y1: y1 - 3 } });
 

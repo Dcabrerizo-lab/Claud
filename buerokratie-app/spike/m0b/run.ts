@@ -17,7 +17,7 @@ import { FONTS } from '../m0/testdata.js';
 import { VAULT, valueFor, EXPECTED } from './vault.js';
 
 const dir = fileURLToPath(new URL('.', import.meta.url));
-const catalog: CatalogField[] = JSON.parse(readFileSync(new URL('../../data/feldkatalog.json', import.meta.url), 'utf8')).felder;
+const catalog: CatalogField[] = JSON.parse(readFileSync(new URL('./feldkatalog-spike.json', import.meta.url), 'utf8')).felder;
 const truth = JSON.parse(readFileSync(join(dir, 'photos/truth.json'), 'utf8'));
 const list = (d: string) => existsSync(d) ? readdirSync(d).filter((f) => /\.jpe?g$/i.test(f)).map((f) => join(d, f)) : [];
 const files = [...list(join(dir, 'photos')), ...list(join(dir, 'photos/real')), ...process.argv.slice(2)];
