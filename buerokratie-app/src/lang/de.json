@@ -69,5 +69,13 @@
   "err.auswahl": "Bitte wählen Sie aus der Liste.",
   "err.person": "Bitte wählen Sie aus der Liste.",
   "err.storage": "Speichern hat nicht geklappt. Ist der Gerätespeicher voll?",
-  "err.nocrypto": "Hier ist keine sichere Verschlüsselung möglich. Bitte öffnen Sie die App über eine https-Adresse, als installierte App oder als Datei auf dem Gerät."
+  "err.nocrypto": "Hier ist keine sichere Verschlüsselung möglich. Bitte öffnen Sie die App über eine https-Adresse, als installierte App oder als Datei auf dem Gerät.",
+  "sec.h": "Sicherheit",
+  "sec.code": "Neuen Wiederherstellungscode erstellen",
+  "sec.code.confirm": "Der alte Wiederherstellungscode gilt danach nicht mehr. Fortfahren?",
+  "sec.pass": "Passphrase ändern",
+  "chpass.h": "Neue Passphrase festlegen",
+  "chpass.go": "Passphrase ändern",
+  "chpass.done": "Die Passphrase wurde geändert.",
+  "rec.renew": "Ihr Wiederherstellungscode wurde noch nicht bestätigt. Deshalb bekommen Sie hier einen neuen Code. Ein früher angezeigter Code gilt nicht mehr."
 }

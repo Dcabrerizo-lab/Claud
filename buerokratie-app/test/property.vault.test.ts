@@ -206,6 +206,7 @@ describe('Ausfälle des Speichers (Gerätespeicher voll, Absturz beim Schreiben)
   class Flaky extends MemoryStorage {
     failNext = false;
     async set(key: string, value: unknown) { if (this.failNext) { this.failNext = false; throw new Error('QuotaExceededError'); } return super.set(key, value); }
+    async setIf(key: string, m: (c: unknown) => boolean, value: unknown) { if (this.failNext) { this.failNext = false; throw new Error('QuotaExceededError'); } return super.setIf(key, m, value); }
   }
   it('fehlgeschlagenes Speichern ändert weder Anzeige noch Gerät; danach geht es normal weiter', async () => {
     await fc.assert(fc.asyncProperty(fc.array(fc.tuple(fc.boolean(), fc.constantFrom(...singleDefs).chain((d) => valid(d, () => 0).map(([i, w]) => [d.key, i, w] as const))), { minLength: 1, maxLength: 25, size: 'max' }), async (ops) => {
@@ -228,9 +229,9 @@ describe('Ausfälle des Speichers (Gerätespeicher voll, Absturz beim Schreiben)
 
   it('Absturz mitten im Einrichten hinterlässt keinen halben Tresor', async () => {
     const storage = new Flaky();
-    // fails when writing meta (second write) → no meta → no vault, can be set up again
-    let n = 0; const orig = storage.set.bind(storage);
-    storage.set = async (k, v) => { if (++n === 2) throw new Error('Absturz'); return orig(k, v); };
+    // data is written first (setIf), then meta (set): crash while writing meta → no meta → no vault, can be set up again
+    const orig = storage.set.bind(storage);
+    storage.set = async () => { throw new Error('Absturz'); };
     await expect(Vault.create(storage, catalog, 'Passphrase-123', FAST)).rejects.toThrow('Absturz');
     expect(await Vault.exists(storage)).toBe(false);
     storage.set = orig;

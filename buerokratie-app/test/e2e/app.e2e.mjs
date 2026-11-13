@@ -1,6 +1,6 @@
 // End-to-end test of the built single-file app (dist/index.html) in Chromium, phone-sized.
 // Network: only the app file itself is served; every other request is blocked and fails the test.
-import { chromium, devices } from 'playwright';
+import * as pw from 'playwright';
 import { readFileSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import assert from 'node:assert/strict';
@@ -11,8 +11,11 @@ const shots = root + 'docs/img/';
 mkdirSync(shots, { recursive: true });
 const SHOT = process.env.SHOTS === '1';
 
-const browser = await chromium.launch();
-const ctx = await browser.newContext({ ...devices['Pixel 7'], locale: 'de-DE' });
+const browserName = process.env.BROWSER ?? 'chromium';
+const browser = await pw[browserName].launch();
+// phone emulation (touch, mobile viewport) where the engine supports it; Firefox has no mobile mode
+const phone = browserName === 'firefox' ? { viewport: { width: 412, height: 915 } } : pw.devices['Pixel 7'];
+const ctx = await browser.newContext({ ...phone, locale: 'de-DE' });
 const external = [], problems = [];
 await ctx.route('**/*', (r) => {
   const u = new URL(r.request().url());
@@ -158,4 +161,4 @@ await browser.close();
 assert.deepEqual(external, [], 'Netzaufrufe nach außen: ' + external.join(', '));
 assert.deepEqual(problems, [], 'Fehler/CSP-Verstöße: ' + problems.join(' | '));
 ok('ABNAHME: kein Netzaufruf nach außen, keine Fehler, keine CSP-Verstöße');
-console.log(`\nAlle ${step} Schritte bestanden.`);
+console.log(`\n${browserName}: alle ${step} Schritte bestanden.`);

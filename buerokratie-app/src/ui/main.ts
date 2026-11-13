@@ -22,6 +22,13 @@ const storage = new IndexedDbStorage();
 const app = document.getElementById('app')!;
 let vault: Vault | null = null;
 let current: () => void = () => {};
+let mask: Mask | null = null;
+let offChange: (() => void) | null = null;
+/** Other windows/tabs of the app on this device: tell each other when something was saved. */
+const channel = typeof BroadcastChannel === 'function' ? new BroadcastChannel('stammdaten-tresor') : null;
+if (channel) channel.onmessage = async () => { if (vault && !vault.locked) await vault.refresh().catch(() => false); };
+const stammdaten = () => vault!.module(STAMMDATEN_MODULE);
+interface UiState { recoveryConfirmed?: boolean }
 let big = false;
 try { big = localStorage.getItem('tresor-big') === '1'; } catch { /* ignore */ }
 
@@ -101,6 +108,7 @@ function setup() {
     try {
       const r = await Vault.create(storage, catalog, p1);
       vault = r.vault;
+      await stammdaten().setState({ recoveryConfirmed: false });
       IndexedDbStorage.persist();
       show(() => recovery(r.recoveryCode));
     } catch {
@@ -109,8 +117,8 @@ function setup() {
   });
 }
 
-function recovery(code: string) {
-  app.innerHTML = shell(`<section class="card"><h1>${esc(t('rec.h'))}</h1><p>${esc(t('rec.p'))}</p>
+function recovery(code: string, renewed = false) {
+  app.innerHTML = shell(`<section class="card"><h1>${esc(t('rec.h'))}</h1>${renewed ? `<p class="msg warn">${esc(t('rec.renew'))}</p>` : ''}<p>${esc(t('rec.p'))}</p>
     <div class="code" id="code" role="img" aria-label="${esc(code.split('').join(' '))}">${code.split('-').map((g) => `<span class="g">${esc(g)}</span>`).join('<span aria-hidden="true">-</span>')}</div>
     <div class="btns noprint"><button type="button" class="btn secondary" id="print">🖨 ${esc(t('rec.print'))}</button></div>
     <label class="check"><input type="checkbox" id="ok"> <span>${esc(t('rec.check'))}</span></label>
@@ -121,8 +129,10 @@ function recovery(code: string) {
   ok.addEventListener('change', sync);
   document.getElementById('last')!.addEventListener('input', sync);
   document.getElementById('print')!.addEventListener('click', () => window.print());
-  done.addEventListener('click', () => {
+  done.addEventListener('click', async () => {
     if (val('last').toUpperCase() !== code.slice(-4)) { document.getElementById('last-e')!.textContent = t('rec.wrong'); return; }
+    done.disabled = true;
+    await stammdaten().setState({ ...stammdaten().getState<UiState>(), recoveryConfirmed: true });
     show(main);
   });
 }
@@ -141,7 +151,7 @@ function unlock(notice?: string) {
     go.disabled = true; go.textContent = t('unlock.busy');
     try {
       vault = await Vault.unlock(storage, catalog, val('p'));
-      show(main);
+      await afterOpen();
     } catch (err) {
       go.disabled = false; go.textContent = t('unlock.go');
       msg(err instanceof WrongSecretError ? t('unlock.wrong') : t('err.storage'));
@@ -169,6 +179,7 @@ function forgot() {
     go.disabled = true;
     try {
       vault = await Vault.recover(storage, catalog, val('code'), val('p1'));
+      await stammdaten().setState({ ...stammdaten().getState<UiState>(), recoveryConfirmed: true }); // the code was just used: it exists
       show(main);
     } catch (err) {
       go.disabled = false;
@@ -177,22 +188,78 @@ function forgot() {
   });
 }
 
-function main() {
+/** After unlocking: if the recovery code was never confirmed (app closed too early), issue a new one. */
+async function afterOpen() {
+  if (!stammdaten().getState<UiState>()?.recoveryConfirmed) {
+    const code = await vault!.renewRecoveryCode();
+    return show(() => recovery(code, true));
+  }
+  show(main);
+}
+
+function toast(text: string) {
+  const saved = document.getElementById('saved');
+  if (!saved) return;
+  saved.textContent = '✓ ' + text; saved.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => saved.classList.remove('show'), 1500);
+}
+let toastTimer: ReturnType<typeof setTimeout>;
+
+function main(notice?: string) {
   if (!vault || vault.locked) return show(() => unlock());
-  app.innerHTML = shell(`<h1>${esc(t('app.title'))}</h1><p class="lead">${esc(t('app.tagline'))}</p><div id="mask"></div>`, { lockable: true });
-  const saved = document.getElementById('saved')!;
-  let timer: ReturnType<typeof setTimeout>;
-  const mask = new Mask(document.getElementById('mask')!, vault.module(STAMMDATEN_MODULE), catalog, () => {
-    saved.textContent = '✓ ' + t('main.saved'); saved.classList.add('show');
-    clearTimeout(timer); timer = setTimeout(() => saved.classList.remove('show'), 1500);
+  app.innerHTML = shell(`<h1>${esc(t('app.title'))}</h1><p class="lead">${esc(t('app.tagline'))}</p>
+    ${notice ? `<p class="msg ok" role="status">${esc(t(notice))}</p>` : ''}<div id="mask"></div>
+    <section class="card"><h2>${esc(t('sec.h'))}</h2><div class="btns">
+      <button type="button" class="btn secondary" id="newcode">${esc(t('sec.code'))}</button>
+      <button type="button" class="btn secondary" id="chpass">${esc(t('sec.pass'))}</button></div></section>`, { lockable: true });
+  const v = vault;
+  mask = new Mask(document.getElementById('mask')!, stammdaten(), catalog, () => toast(t('main.saved')));
+  offChange?.();
+  offChange = v.onChange((keys, by) => {
+    if (by !== 'extern') channel?.postMessage('changed');   // tell other windows
+    else if (keys.includes('*')) mask?.external();          // another window saved: show its state
   });
-  mask.render();
+  document.getElementById('newcode')!.addEventListener('click', async () => {
+    if (!confirm(t('sec.code.confirm'))) return;
+    const code = await v.renewRecoveryCode();
+    await stammdaten().setState({ ...stammdaten().getState<UiState>(), recoveryConfirmed: false });
+    show(() => recovery(code));
+  });
+  document.getElementById('chpass')!.addEventListener('click', () => show(changePass));
+  // render only after pending saves are stored (e.g. language switch right after typing)
+  v.idle().then(() => mask?.render());
+}
+
+function changePass() {
+  app.innerHTML = shell(`<section class="card"><h1>${esc(t('chpass.h'))}</h1><p class="lead">${esc(t('setup.p'))}</p>
+    <div class="msg" id="msg" role="alert"></div>
+    <form id="f" novalidate>${pwField('p1', t('forgot.new'), 'new-password')}${pwField('p2', t('setup.pass2'), 'new-password')}
+    <div class="btns"><button class="btn block" id="go">${esc(t('chpass.go'))}</button></div></form>
+    <button type="button" class="link" id="back">${esc(t('back'))}</button></section>`, { lockable: true });
+  bindToggles();
+  document.getElementById('p1')!.addEventListener('input', () => { document.getElementById('p1-e')!.textContent = strength(val('p1')); });
+  document.getElementById('back')!.addEventListener('click', () => show(main));
+  document.getElementById('f')!.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if ([...val('p1')].length < MIN_PASSPHRASE) return msg(t('pass.short'));
+    if (val('p1') !== val('p2')) return msg(t('pass.mismatch'));
+    const go = document.getElementById('go') as HTMLButtonElement;
+    go.disabled = true;
+    try { await vault!.changePassphrase(val('p1')); show(() => main('chpass.done')); }
+    catch { go.disabled = false; msg(t('err.storage')); }
+  });
 }
 
 // ---------- locking ----------
-function lock(notice: string) {
-  if (!vault) return;
-  vault.lock(); vault = null;
+/** Saves what is still being typed, waits until everything is stored, then locks. */
+async function lock(notice: string) {
+  const v = vault;
+  if (!v) return;
+  (document.activeElement as HTMLElement | null)?.blur?.(); // fires "change" → field is saved
+  await v.idle().catch(() => undefined);
+  if (vault !== v) return;
+  offChange?.(); offChange = null; mask = null;
+  v.lock(); vault = null;
   show(() => unlock(notice));
 }
 let idle: ReturnType<typeof setTimeout>;
@@ -200,7 +267,7 @@ const touch = () => { clearTimeout(idle); idle = setTimeout(() => lock('main.aut
 ['pointerdown', 'keydown', 'input'].forEach((ev) => document.addEventListener(ev, touch, { passive: true }));
 let hiddenAt = 0;
 document.addEventListener('visibilitychange', () => {
-  if (document.hidden) hiddenAt = Date.now();
+  if (document.hidden) { hiddenAt = Date.now(); (document.activeElement as HTMLElement | null)?.blur?.(); } // save the field being edited
   else if (vault && Date.now() - hiddenAt > HIDDEN_MS) lock('main.autolocked');
 });
 // Capacitor (Android/iOS): lock immediately when the app goes to the background

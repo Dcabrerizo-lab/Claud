@@ -33,6 +33,9 @@ export class Mask {
   private open = new Set<string>(['person']);
   private adding: string | null = null;
   private values: Record<string, Value | undefined> = {};
+  private busy = false;           // ignores double taps on add/remove while one is running
+  private pendingExternal = false;
+  private typing = new Map<HTMLElement, ReturnType<typeof setTimeout>>();
 
   constructor(private readonly root: HTMLElement, private readonly access: ModuleAccess, private readonly catalog: Catalog, private readonly onSaved: () => void) {}
 
@@ -43,6 +46,27 @@ export class Mask {
     if (!this.catalog.group(group)?.liste) return fs.map((f) => f.key);
     const n = this.access.count(group);
     return Array.from({ length: n }, (_, i) => fs.map((f) => f.key.replace('[]', `[${i}]`))).flat();
+  }
+
+  /** The focused field, if it holds input that is not saved yet (the user is in the middle of typing). */
+  private dirtyField(): HTMLInputElement | HTMLSelectElement | null {
+    const a = document.activeElement;
+    if (!(a instanceof HTMLInputElement || a instanceof HTMLSelectElement) || !this.root.contains(a) || !a.dataset.key) return null;
+    const def = this.catalog.parse(a.dataset.key).def;
+    const stored = this.values[a.dataset.key];
+    const shown = a instanceof HTMLSelectElement ? String(stored ?? '') : display(def, stored);
+    return a.value !== shown ? a : null;
+  }
+
+  /**
+   * Another window saved: redraw with its state, keeping the focus where it is. Only a field with unsaved
+   * typing blocks this; the redraw then follows as soon as that field is saved or left.
+   */
+  external() {
+    if (this.dirtyField()) { this.pendingExternal = true; return; }
+    this.pendingExternal = false;
+    const a = document.activeElement as HTMLElement | null;
+    this.render(a && this.root.contains(a) ? a.dataset?.key : undefined);
   }
 
   async render(focusKey?: string) {
@@ -116,24 +140,49 @@ export class Mask {
   private bind() {
     this.root.querySelectorAll<HTMLDetailsElement>('details.section').forEach((d) =>
       d.addEventListener('toggle', () => { const g = d.dataset.group!; d.open ? this.open.add(g) : this.open.delete(g); }));
-    this.root.querySelectorAll<HTMLInputElement | HTMLSelectElement>('[data-key]').forEach((el) =>
-      el.addEventListener('change', () => this.save(el)));
+    this.root.querySelectorAll<HTMLInputElement | HTMLSelectElement>('[data-key]').forEach((el) => {
+      el.addEventListener('change', () => { clearTimeout(this.typing.get(el)); this.save(el); });
+      // while typing: save quietly after a pause (only valid values, no error messages yet),
+      // so nothing is lost if the app is closed without leaving the field
+      if (el instanceof HTMLInputElement) el.addEventListener('input', () => {
+        clearTimeout(this.typing.get(el));
+        this.typing.set(el, setTimeout(() => this.access.write(el.dataset.key!, el.value).catch(() => undefined), 1500));
+      });
+      el.addEventListener('blur', () => { if (this.pendingExternal) setTimeout(() => this.flushExternal(), 0); });
+    });
     this.root.querySelectorAll<HTMLButtonElement>('[data-adding]').forEach((b) =>
-      b.addEventListener('click', async () => { this.adding = b.dataset.adding!; this.open.add(this.adding); await this.render(); (this.root.querySelector(`[data-add="${this.adding}"]`) as HTMLElement | null)?.focus(); }));
-    this.root.querySelectorAll<HTMLButtonElement>('[data-add]').forEach((b) => b.addEventListener('click', async () => {
+      b.addEventListener('click', () => this.once(async () => { this.adding = b.dataset.adding!; this.open.add(this.adding); await this.render(); (this.root.querySelector(`[data-add="${this.adding}"]`) as HTMLElement | null)?.focus(); })));
+    this.root.querySelectorAll<HTMLButtonElement>('[data-add]').forEach((b) => b.addEventListener('click', () => this.once(async () => {
       const g = b.dataset.add!, n = this.access.count(g);
       await this.access.write(`${g}[${n}].${FIRST[g]}`, b.dataset.val!);
       this.adding = null;
       this.onSaved();
       const next = this.fieldsOf(g).find((f) => !f.key.endsWith('.' + FIRST[g]));
       await this.render(next ? next.key.replace('[]', `[${n}]`) : undefined);
-    }));
-    this.root.querySelectorAll<HTMLButtonElement>('[data-remove]').forEach((b) => b.addEventListener('click', async () => {
+    })));
+    this.root.querySelectorAll<HTMLButtonElement>('[data-remove]').forEach((b) => b.addEventListener('click', () => this.once(async () => {
       if (!confirm(t('main.remove.confirm'))) return;
       await this.access.remove(b.dataset.remove!, Number(b.dataset.index));
       this.onSaved();
       await this.render();
-    }));
+    })));
+  }
+
+  /** Runs one add/remove action at a time; further taps until the form is redrawn are ignored. */
+  private async once(fn: () => Promise<void>) {
+    if (this.busy) return;
+    this.busy = true;
+    this.root.querySelectorAll<HTMLButtonElement>('[data-add],[data-adding],[data-remove]').forEach((x) => { x.disabled = true; });
+    try { await fn(); }
+    finally {
+      this.busy = false;
+      // e.g. "remove" cancelled: the old buttons are still there and must work again
+      this.root.querySelectorAll<HTMLButtonElement>('[data-add],[data-adding],[data-remove]').forEach((x) => { x.disabled = false; });
+    }
+  }
+
+  private flushExternal() {
+    if (this.pendingExternal) this.external();
   }
 
   private async save(el: HTMLInputElement | HTMLSelectElement) {
@@ -156,6 +205,7 @@ export class Mask {
       err.textContent = e instanceof ValueError ? t('err.' + def.typ) : t('err.storage');
       el.dataset.state = 'error';
     }
+    if (this.pendingExternal) setTimeout(() => this.flushExternal(), 0);
   }
 
   private updateCount(group: string) {

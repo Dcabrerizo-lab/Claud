@@ -13,7 +13,7 @@
     "test:offline": "node spike/m0b/offline-browser.mjs && WORKER_CSP=1 node spike/m0b/offline-browser.mjs",
     "dev": "vite",
     "build": "vite build",
-    "test:e2e": "vite build && node test/e2e/app.e2e.mjs && node test/e2e/a11y.e2e.mjs && node test/e2e/fuzz.e2e.mjs",
+    "test:e2e": "vite build && node test/e2e/app.e2e.mjs && node test/e2e/robust.e2e.mjs && node test/e2e/a11y.e2e.mjs && node test/e2e/fuzz.e2e.mjs",
     "test:mutation": "FC_RUNS=400 stryker run",
     "test:big": "FC_RUNS=50000 vitest run && SESSIONS=60 node test/e2e/fuzz.e2e.mjs",
     "test:coverage": "vitest run --coverage --coverage.include=src/core/** --coverage.include=src/pdf/** --coverage.include=src/scan/**"

@@ -53,8 +53,11 @@ export class Vault {
   private queue: Promise<unknown> = Promise.resolve();
   private listeners = new Set<ChangeListener>();
 
-  private constructor(private readonly storage: VaultStorage, readonly catalog: Catalog, private meta: Meta, dek: CryptoKey, data: VaultData) {
-    this.dek = dek; this.data = data;
+  /** IV of the stored record this instance's state is based on (detects changes from other tabs). */
+  private dataIv: string | undefined;
+
+  private constructor(private readonly storage: VaultStorage, readonly catalog: Catalog, private meta: Meta, dek: CryptoKey, data: VaultData, dataIv?: string) {
+    this.dek = dek; this.data = data; this.dataIv = dataIv;
   }
 
   // ---------- lifecycle ----------
@@ -74,6 +77,7 @@ export class Vault {
     };
     const data: VaultData = { single: {}, lists: {}, moduleData: {} };
     const vault = new Vault(storage, catalog, meta, dek, data);
+    await storage.delete('data'); // leftover from an interrupted earlier setup (no meta = no vault)
     await vault.persist();
     await storage.set('meta', meta); // meta last: a half-created vault has no meta and counts as "none"
     return { vault, recoveryCode };
@@ -82,7 +86,8 @@ export class Vault {
   static async unlock(storage: VaultStorage, catalog: Catalog, passphrase: string): Promise<Vault> {
     const meta = await loadMeta(storage);
     const dek = await unwrapKey(meta.passphrase, passphrase);
-    return new Vault(storage, catalog, meta, dek, await loadData(storage, dek));
+    const { data, iv } = await loadData(storage, dek);
+    return new Vault(storage, catalog, meta, dek, data, iv);
   }
 
   /** Forgotten passphrase: unlock with the recovery code and set a new passphrase. */
@@ -90,7 +95,8 @@ export class Vault {
     checkPassphrase(newPassphrase);
     const meta = await loadMeta(storage);
     const dek = await unwrapKey(meta.recovery, normalizeRecoveryCode(recoveryCode));
-    const vault = new Vault(storage, catalog, meta, dek, await loadData(storage, dek));
+    const { data, iv } = await loadData(storage, dek);
+    const vault = new Vault(storage, catalog, meta, dek, data, iv);
     await vault.changePassphrase(newPassphrase);
     return vault;
   }
@@ -105,8 +111,45 @@ export class Vault {
   async changePassphrase(newPassphrase: string): Promise<void> {
     checkPassphrase(newPassphrase);
     const wrapped = await wrapKey(this.key(), newPassphrase, freshSalt(this.meta.passphrase.kdf));
-    this.meta = { ...this.meta, passphrase: wrapped };
-    await this.serial(() => this.storage.set('meta', this.meta));
+    await this.updateMeta((m) => ({ ...m, passphrase: wrapped }));
+  }
+
+  /** Replaces the recovery code (e.g. the old note is lost or was never written down). Returns the new code. */
+  async renewRecoveryCode(): Promise<string> {
+    const code = newRecoveryCode();
+    const wrapped = await wrapKey(this.key(), code, freshSalt(this.meta.recovery.kdf));
+    await this.updateMeta((m) => ({ ...m, recovery: wrapped }));
+    return code;
+  }
+
+  /** Reads meta fresh (another tab may have changed the other half) and writes it back changed. */
+  private updateMeta(change: (m: Meta) => Meta): Promise<void> {
+    return this.serial(async () => {
+      this.key();
+      this.meta = change(await loadMeta(this.storage));
+      await this.storage.set('meta', this.meta);
+    });
+  }
+
+  /** Resolves when all changes started so far are stored (call before locking). */
+  idle(): Promise<void> { return this.queue.then(() => undefined); }
+
+  /**
+   * Picks up changes another window/tab has stored meanwhile. Returns true if something changed;
+   * listeners are then notified with the key "*" (= reload everything).
+   */
+  async refresh(): Promise<boolean> {
+    const changed = await this.serial(async () => {
+      const dek = this.key();
+      const current = await this.storage.get<Sealed>('data');
+      if (!current || current.iv === this.dataIv) return false;
+      const data = await open<VaultData>(dek, current, DATA_CONTEXT);
+      if (!this.data) return false;
+      this.data = data; this.dataIv = current.iv;
+      return true;
+    });
+    if (changed) this.emit(['*'], 'extern');
+    return changed;
   }
 
   /** Deletes everything. Cannot be undone. */
@@ -196,12 +239,26 @@ export class Vault {
    */
   private commit(mutate: (d: VaultData) => void): Promise<void> {
     return this.serial(async () => {
-      const dek = this.key();
-      const next = structuredClone(this.content());
-      mutate(next);
-      const sealed = await seal(dek, next, DATA_CONTEXT);
-      await this.storage.set('data', sealed);
-      if (this.data) this.data = next; // still unlocked: publish the committed state
+      for (let attempt = 0; attempt < 200; attempt++) {
+        // another window saved at the same moment: wait a short random time, then retry on top of its state
+        if (attempt > 0) await new Promise((r) => setTimeout(r, Math.random() * Math.min(50, 2 ** attempt)));
+        const dek = this.key();
+        let base = this.content();
+        const current = await this.storage.get<Sealed>('data');
+        if (current === undefined && this.dataIv !== undefined) throw new Error('Der Tresor wurde in einem anderen Fenster gelöscht');
+        let external = false;
+        if (current && current.iv !== this.dataIv) { base = await open<VaultData>(dek, current, DATA_CONTEXT); external = true; } // another tab saved
+        const next = structuredClone(base);
+        mutate(next);
+        const sealed = await seal(dek, next, DATA_CONTEXT);
+        const expected = current?.iv;
+        if (await this.storage.setIf('data', (c) => (c as Sealed | undefined)?.iv === expected, sealed)) {
+          if (this.data) { this.data = next; this.dataIv = sealed.iv; } // still unlocked: publish the committed state
+          if (external) this.emit(['*'], 'extern');
+          return;
+        }
+      }
+      throw new Error('Speichern nicht möglich: zu viele gleichzeitige Änderungen');
     });
   }
 
@@ -261,6 +318,7 @@ export class ModuleAccess {
   onChange(fn: (keys: string[], by: string) => void): () => void {
     return this.vault.onChange((keys, by) => {
       const visible = keys.filter((k) => {
+        if (k === '*') return true; // changed in another window: everything may be different
         const removed = /^([a-z_]+)\[\d+\]$/.exec(k); // "haushalt[3]": a whole list entry was removed
         if (removed) return this.manifest.reads.some((p) => p === '*' || patternGroup(p) === removed[1]);
         try { this.parse(k, 'lesen'); return true; } catch { return false; }
@@ -300,8 +358,8 @@ async function loadMeta(storage: VaultStorage): Promise<Meta> {
   return meta;
 }
 
-async function loadData(storage: VaultStorage, dek: CryptoKey): Promise<VaultData> {
+async function loadData(storage: VaultStorage, dek: CryptoKey): Promise<{ data: VaultData; iv: string }> {
   const sealed = await storage.get<Sealed>('data');
   if (!sealed) throw new Error('Tresordaten fehlen');
-  return open<VaultData>(dek, sealed, DATA_CONTEXT);
+  return { data: await open<VaultData>(dek, sealed, DATA_CONTEXT), iv: sealed.iv };
 }

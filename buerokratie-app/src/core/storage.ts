@@ -6,6 +6,11 @@ export interface VaultStorage {
   set(key: string, value: unknown): Promise<void>;
   delete(key: string): Promise<void>;
   keys(): Promise<string[]>;
+  /**
+   * Atomic compare-and-set: writes `value` only if `matches(current)` holds at the moment of writing.
+   * Lets several open windows/tabs share one vault without overwriting each other's changes.
+   */
+  setIf(key: string, matches: (current: unknown) => boolean, value: unknown): Promise<boolean>;
 }
 
 /** For tests and for "try without saving". */
@@ -15,6 +20,13 @@ export class MemoryStorage implements VaultStorage {
   async set(key: string, value: unknown) { this.map.set(key, JSON.stringify(value)); }
   async delete(key: string) { this.map.delete(key); }
   async keys() { return [...this.map.keys()]; }
+  async setIf(key: string, matches: (current: unknown) => boolean, value: unknown) {
+    // check and write without any await in between = atomic, like the IndexedDB transaction
+    const cur = this.map.get(key);
+    if (!matches(cur === undefined ? undefined : JSON.parse(cur))) return false;
+    this.map.set(key, JSON.stringify(value));
+    return true;
+  }
 }
 
 /**
@@ -50,6 +62,21 @@ export class IndexedDbStorage implements VaultStorage {
   async set(key: string, value: unknown) { await this.tx('readwrite', (s) => s.put(value, key)); }
   async delete(key: string) { await this.tx('readwrite', (s) => s.delete(key)); }
   async keys() { return (await this.tx<IDBValidKey[]>('readonly', (s) => s.getAllKeys())).map(String); }
+
+  /** Read and conditional write inside ONE readwrite transaction, so no other tab can write in between. */
+  async setIf(key: string, matches: (current: unknown) => boolean, value: unknown): Promise<boolean> {
+    const db = await this.open();
+    return new Promise<boolean>((resolve, reject) => {
+      const t = db.transaction('records', 'readwrite');
+      const store = t.objectStore('records');
+      let ok = false;
+      const get = store.get(key);
+      get.onsuccess = () => { if (matches(get.result)) { ok = true; store.put(value, key); } };
+      t.oncomplete = () => resolve(ok);
+      t.onerror = () => reject(t.error);
+      t.onabort = () => reject(t.error);
+    });
+  }
 
   /** Ask the browser not to evict the data under storage pressure (best effort, may be refused). */
   static async persist(): Promise<boolean> {

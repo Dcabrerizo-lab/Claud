@@ -38,5 +38,6 @@ function csp(): Plugin {
 export default defineConfig({
   plugins: [viteSingleFile({ removeViteModuleLoader: true }), csp()],
   build: { target: 'es2022', outDir: 'dist', emptyOutDir: true, assetsInlineLimit: 100_000_000, chunkSizeWarningLimit: 5000 },
-  test: { include: ['test/**/*.test.ts'] },
+  // large property runs (FC_RUNS=50000) need more time per test than the 5 s default
+  test: { include: ['test/**/*.test.ts'], testTimeout: Math.max(30_000, Number(process.env.FC_RUNS ?? 0) * 12) },
 });
