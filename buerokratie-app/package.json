@@ -13,11 +13,19 @@
     "test:offline": "node spike/m0b/offline-browser.mjs && WORKER_CSP=1 node spike/m0b/offline-browser.mjs",
     "dev": "vite",
     "build": "vite build",
-    "test:e2e": "vite build && node test/e2e/app.e2e.mjs"
+    "test:e2e": "vite build && node test/e2e/app.e2e.mjs && node test/e2e/a11y.e2e.mjs && node test/e2e/fuzz.e2e.mjs",
+    "test:mutation": "FC_RUNS=400 stryker run",
+    "test:big": "FC_RUNS=50000 vitest run && SESSIONS=60 node test/e2e/fuzz.e2e.mjs",
+    "test:coverage": "vitest run --coverage --coverage.include=src/core/** --coverage.include=src/pdf/** --coverage.include=src/scan/**"
   },
   "devDependencies": {
+    "@stryker-mutator/core": "^10.1.1",
+    "@stryker-mutator/vitest-runner": "^10.1.1",
     "@types/node": "^26.6.6",
+    "@vitest/coverage-v8": "^5.1.0",
+    "axe-core": "^4.14.0",
     "fake-indexeddb": "^6.0.1",
+    "fast-check": "^4.10.2",
     "jpeg-js": "^0.4.4",
     "playwright": "1.63.0",
     "tsx": "^4.23.15",

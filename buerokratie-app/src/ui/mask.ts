@@ -147,12 +147,14 @@ export class Mask {
       const stored = (await this.access.read([key]))[key];
       this.values[key] = stored;
       if (el instanceof HTMLInputElement) el.value = display(def, stored); // show normalised form (e.g. 1.2.1985 → 01.02.1985)
+      el.dataset.state = 'saved'; // marker for automated tests
       this.onSaved();
       // titles and counters depend on some fields
-      if (/\.(vorname|nachname|beziehung|art)$/.test(key) || /\]\./.test(key) === false) this.updateCount(key.split(/[[.]/)[0]);
+      this.updateCount(key.split(/[[.]/)[0]);
     } catch (e) {
       el.setAttribute('aria-invalid', 'true');
       err.textContent = e instanceof ValueError ? t('err.' + def.typ) : t('err.storage');
+      el.dataset.state = 'error';
     }
   }
 

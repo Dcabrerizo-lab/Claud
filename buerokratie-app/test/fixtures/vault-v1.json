@@ -1,0 +1,9 @@
+{
+ "_hinweis": "Eingefrorener Tresor im Format v1 (erfundene Daten). NICHT ändern: Jede künftige App-Version muss ihn öffnen können.",
+ "passphrase": "Prüfstück Version 1",
+ "recoveryCode": "AK3X-RZV4-FD2S-KPPX-EAUJ",
+ "records": {
+  "data": "{\"iv\":\"AqZ+xwjHHmtEoM0y\",\"data\":\"16p58zfByki47HbT8F0PzyOnukQSTx6YSosMgsg0El1VK++BUO7wB9uiV2jlpwcbPmOn5AD/PSgnr+ZmmZQJvPs2jyQc2Kxk+K/YA/fEEPMMQ1eQV1TeQOdHGYIgeUeyKaFG5+bh/LEEXB+IeadQP/J0r8G6YEYEBIiKdl0DuYnQgcJvpoth4tQz46chWezEpucZGEyswr9uTk87pc3vELTAgYpckRE2nQpwtSfwsAmQXcbCpAbsqpZn78+DpQtScmwBoK0R3lFJNNoVx6PpNi3baNi/hUQmDnMRNzWEnCUxH/NaIgZEVa4zqzOg4goSxlgoVv3cJxKcmQJGgg9VhhcRkrmDBXYlvCc0BJdx/BXsE1vjzxyPeR00HvuHizQLvHUFH2HtC3Si7luJeSvFHwJl0cH0r8S8tfmfNut8bTjBr/E1SHsWtdtJt2zx2H1v8fFl3YyNhCjNBYskHPkB+mhFc5Nk/YpzT3/QPKL4Mj4N3Apfs75/3CUajqAz0YuokTeRSJ49W3xA0ytEqrViAM7GxgI9stjRqIkCBMSIkiCwE5UETvPHgZFse8PbSO4fA5IWRvN20JZUuSNYanMnbQFvPmyWPuHm8U6ztiLhvZZVEs8nHvtB60puLr7EEVzql1/MxcGdMC9zyFM1EBPbbuv5NPeKcNAi6xpm5aRVyoiMxM7npPCko72UqWwIeGXO/7SA+CZzeCAKpbqP/u/a0D5OHVcXMdtc0+uXxcr/rWf1H8U4njj0MZbaDjA0iFuIWK+0VfNgbhd0Q/XZ2QnkFlryNgppVs05DxVDsAYYAYINxyj/+pex93Ada9fP9AukG16Kf3/XBg==\"}",
+  "meta": "{\"format\":\"stammdaten-tresor\",\"version\":1,\"created\":\"2026-11-13T13:06:19.142Z\",\"passphrase\":{\"kdf\":{\"alg\":\"argon2id\",\"salt\":\"8aQBUm3rdI22eU/sdBV8Vg==\",\"memKiB\":1024,\"iterations\":2,\"parallelism\":1},\"iv\":\"oluJrDdeq/ivsIhk\",\"data\":\"zamLp5A4BWQAetw3fxXoGm2sIZt1v1THOWQHQnTymIZLdJZWhEsOcBy7jFePt0IN\"},\"recovery\":{\"kdf\":{\"alg\":\"argon2id\",\"salt\":\"yjCkovFaetdxIi2Wyiv1bg==\",\"memKiB\":1024,\"iterations\":2,\"parallelism\":1},\"iv\":\"fOq+BfHUrhK7z9kh\",\"data\":\"F5IM+r3ol6QTGqb1/UJSYMzegF3i/VprdGqNVYD4FYM7hqAnIChvv9y5A6zEHlaZ\"}}"
+ }
+}

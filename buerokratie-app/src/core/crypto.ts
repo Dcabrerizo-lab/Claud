@@ -41,7 +41,8 @@ export const random = (n: number): Bytes => globalThis.crypto.getRandomValues(ne
 /** Unicode-normalised so the same passphrase typed on different keyboards gives the same key. */
 const norm = (secret: string): Bytes => new Uint8Array(enc.encode(secret.normalize('NFC')));
 
-async function deriveRaw(secret: string, kdf: KdfParams): Promise<Bytes> {
+/** Exported for known-answer tests against reference implementations. */
+export async function deriveRaw(secret: string, kdf: KdfParams): Promise<Bytes> {
   const salt = unb64(kdf.salt);
   if (kdf.alg === 'argon2id') {
     return new Uint8Array(await argon2id({
@@ -58,6 +59,9 @@ async function kek(secret: string, kdf: KdfParams): Promise<CryptoKey> {
   try { return await subtle.importKey('raw', raw, 'AES-GCM', false, ['encrypt', 'decrypt']); }
   finally { raw.fill(0); }
 }
+
+/** Same algorithm and strength as before, with a fresh random salt (used when the passphrase changes). */
+export function freshSalt(kdf: KdfParams): KdfParams { return { ...kdf, salt: b64(random(16)) }; }
 
 /** Argon2id if WebAssembly works (and has enough memory), otherwise PBKDF2. */
 export async function newKdf(prefer: 'argon2id' | 'pbkdf2-sha256' = 'argon2id', argon = ARGON2_DEFAULT, pbkdf2 = PBKDF2_DEFAULT): Promise<KdfParams> {
@@ -117,12 +121,16 @@ export async function open<T = unknown>(dek: CryptoKey, s: Sealed, context: stri
 // 20 characters from an alphabet without look-alikes (no 0/O, 1/I/L), shown as 5 groups of 4:
 // easy to write down by hand, ≈ 100 bit entropy (32^20 = 2^100), so a fast KDF would suffice; we use the same KDF anyway.
 const ALPHABET = '23456789ABCDEFGHJKMNPQRSTUVWXYZ';
-export function newRecoveryCode(): string {
+/** Maps random bytes to code characters; bytes ≥ 248 (= 8·31) are skipped, so every character is equally likely. */
+export function codeChars(bytes: Uint8Array): string[] {
   const out: string[] = [];
-  const bytes = random(40);
-  for (const b of bytes) { if (b < 248) out.push(ALPHABET[b % 31]); if (out.length === 20) break; } // 248 = 8·31: no modulo bias
-  while (out.length < 20) { const b = random(1)[0]; if (b < 248) out.push(ALPHABET[b % 31]); }
-  return out.join('').replace(/(.{4})(?=.)/g, '$1-');
+  for (const b of bytes) if (b < 248) out.push(ALPHABET[b % 31]);
+  return out;
+}
+export function newRecoveryCode(): string {
+  let chars: string[] = [];
+  while (chars.length < 20) chars = chars.concat(codeChars(random(24)));
+  return chars.slice(0, 20).join('').replace(/(.{4})(?=.)/g, '$1-');
 }
 /** Accepts lower case, spaces and missing or extra dashes when typing the code back. */
 export function normalizeRecoveryCode(input: string): string {

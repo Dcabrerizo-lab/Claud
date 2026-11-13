@@ -34,8 +34,8 @@ function shell(inner: string, opts: { lockable?: boolean } = {}): string {
       ${opts.lockable ? `<button type="button" class="btn small" id="lock">🔒 ${esc(t('main.lock'))}</button>` : ''}
     </div></header>
     <main id="main" tabindex="-1">${inner}</main>
-    <p class="disclaimer">${esc(t('app.disclaimer'))}</p>
-    <div class="saved" id="saved" role="status" aria-live="polite"></div>`;
+    <footer><p class="disclaimer">${esc(t('app.disclaimer'))}</p>
+    <div class="saved" id="saved" role="status" aria-live="polite"></div></footer>`;
 }
 
 function show(render: () => void) {

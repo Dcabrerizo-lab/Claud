@@ -2,8 +2,8 @@
 // Storage sees ciphertext only. A module sees only the keys it declared in its manifest.
 import { Catalog, refs, type Value, type ParsedKey } from './catalog.js';
 import {
-  newDataKey, newKdf, wrapKey, unwrapKey, seal, open, newRecoveryCode, normalizeRecoveryCode,
-  type Wrapped, type Sealed, type KdfParams, ARGON2_DEFAULT, PBKDF2_DEFAULT,
+  newDataKey, newKdf, freshSalt, wrapKey, unwrapKey, seal, open, newRecoveryCode, normalizeRecoveryCode,
+  type Wrapped, type Sealed, ARGON2_DEFAULT, PBKDF2_DEFAULT,
 } from './crypto.js';
 import type { VaultStorage } from './storage.js';
 
@@ -22,7 +22,6 @@ export interface Meta {
 export interface VaultData {
   single: Record<string, Record<string, Value>>;       // group → field → value
   lists: Record<string, Record<string, Value>[]>;      // group → entries → field → value
-  changed: Record<string, { at: string; by: string }>; // concrete key → last change
   lastBackup?: string;
   /** Extension point for later modules (saved form templates, deadlines …), keyed by module id. */
   moduleData: Record<string, unknown>;
@@ -73,7 +72,7 @@ export class Vault {
       passphrase: await wrapKey(dek, passphrase, await kdf()),
       recovery: await wrapKey(dek, recoveryCode, await kdf()),
     };
-    const data: VaultData = { single: {}, lists: {}, changed: {}, moduleData: {} };
+    const data: VaultData = { single: {}, lists: {}, moduleData: {} };
     const vault = new Vault(storage, catalog, meta, dek, data);
     await vault.persist();
     await storage.set('meta', meta); // meta last: a half-created vault has no meta and counts as "none"
@@ -105,11 +104,8 @@ export class Vault {
 
   async changePassphrase(newPassphrase: string): Promise<void> {
     checkPassphrase(newPassphrase);
-    const dek = this.key();
-    const kdf: KdfParams = await newKdf(this.meta.passphrase.kdf.alg,
-      this.meta.passphrase.kdf.alg === 'argon2id' ? { memKiB: this.meta.passphrase.kdf.memKiB, iterations: this.meta.passphrase.kdf.iterations, parallelism: this.meta.passphrase.kdf.parallelism } : undefined,
-      this.meta.passphrase.kdf.alg === 'pbkdf2-sha256' ? { iterations: this.meta.passphrase.kdf.iterations } : undefined);
-    this.meta = { ...this.meta, passphrase: await wrapKey(dek, newPassphrase, kdf) };
+    const wrapped = await wrapKey(this.key(), newPassphrase, freshSalt(this.meta.passphrase.kdf));
+    this.meta = { ...this.meta, passphrase: wrapped };
     await this.serial(() => this.storage.set('meta', this.meta));
   }
 
@@ -137,51 +133,52 @@ export class Vault {
 
   private derive(p: ParsedKey): Value | undefined {
     const parts = refs(p.def.abgeleitet);
-    const vals = parts.map((r) => this.readRaw(this.catalog.parse(p.index === undefined ? r : r.replace('[]', `[${p.index}]`))));
-    if (vals.every((v) => v === undefined || v === '')) return undefined;
+    const vals = parts.map((r) => this.readRaw(this.catalog.parse(r.replace('[]', `[${p.index}]`)))); // '[]' only occurs in list fields
+    if (vals.every((v) => v === undefined)) return undefined; // empty strings are never stored
     let i = 0;
     return p.def.abgeleitet!.replace(/\{[^}]+\}/g, () => String(vals[i++] ?? '')).replace(/^[\s,]+|[\s,]+$/g, '').replace(/\s+/g, ' ');
   }
 
   /** @internal */ async writeRaw(entries: [ParsedKey, string, Value | undefined][], by: string): Promise<void> {
-    const d = this.content();
-    const at = new Date().toISOString();
-    for (const [p, key, v] of entries) {
-      if (p.index === undefined) {
-        const g = (d.single[p.group] ??= {});
-        if (v === undefined) delete g[p.field]; else g[p.field] = v;
-      } else {
-        const list = (d.lists[p.group] ??= []);
-        if (p.index > list.length) throw new Error(`${key}: Eintrag ${p.index} gibt es nicht (erst ${list.length} Einträge)`);
-        const row = (list[p.index] ??= {});
-        if (v === undefined) delete row[p.field]; else row[p.field] = v;
+    // apply list entries in index order, so a batch may create entries 0, 1, 2 … in any key order
+    const sorted = [...entries].sort((x, y) => (x[0].index ?? 0) - (y[0].index ?? 0));
+    await this.commit((d) => {
+      for (const [p, key, v] of sorted) {
+        if (p.index === undefined) {
+          const g = (d.single[p.group] ??= {});
+          if (v === undefined) delete g[p.field]; else g[p.field] = v;
+        } else {
+          const list = (d.lists[p.group] ??= []);
+          if (p.index > list.length) throw new Error(`${key}: Eintrag ${p.index} gibt es nicht (erst ${list.length} Einträge)`);
+          if (v === undefined && !list[p.index]) continue; // clearing a field must not create an entry
+          const row = (list[p.index] ??= {});
+          if (v === undefined) delete row[p.field]; else row[p.field] = v;
+        }
       }
-      d.changed[key] = { at, by };
-    }
-    await this.persist();
+    });
     this.emit(entries.map((e) => e[1]), by);
   }
 
   /** @internal */ listLength(group: string): number { return this.content().lists[group]?.length ?? 0; }
 
   /** @internal */ async removeListEntry(group: string, index: number, by: string): Promise<void> {
-    const list = this.content().lists[group];
-    if (!list || index < 0 || index >= list.length) return;
-    list.splice(index, 1);
-    // references to later household entries (e.g. income "wer") shift down
-    if (group === 'haushalt') for (const inc of this.content().lists.einkommen ?? []) {
-      const m = /^haushalt\[(\d+)\]$/.exec(String(inc.wer ?? ''));
-      if (m) { const n = +m[1]; if (n === index) delete inc.wer; else if (n > index) inc.wer = `haushalt[${n - 1}]`; }
-    }
-    await this.persist();
+    if (!Number.isInteger(index) || index < 0 || index >= this.listLength(group)) return;
+    await this.commit((d) => {
+      d.lists[group].splice(index, 1);
+      // references to later household entries (e.g. income "wer") shift down
+      if (group === 'haushalt') for (const inc of d.lists.einkommen ?? []) {
+        const m = /^haushalt\[(\d+)\]$/.exec(String(inc.wer ?? ''));
+        if (m) { const n = +m[1]; if (n === index) delete inc.wer; else if (n > index) inc.wer = `haushalt[${n - 1}]`; }
+      }
+    });
     this.emit([`${group}[${index}]`], by);
   }
 
-  /** @internal */ moduleState(id: string): unknown { return this.content().moduleData[id]; }
-  /** @internal */ async setModuleState(id: string, v: unknown): Promise<void> { this.content().moduleData[id] = v; await this.persist(); }
+  /** @internal */ moduleState(id: string): unknown { return structuredClone(this.content().moduleData[id]); }
+  /** @internal */ async setModuleState(id: string, v: unknown): Promise<void> { await this.commit((d) => { d.moduleData[id] = structuredClone(v); }); }
 
   get lastBackup(): string | undefined { return this.content().lastBackup; }
-  async markBackup(at = new Date().toISOString()): Promise<void> { this.content().lastBackup = at; await this.persist(); }
+  async markBackup(at = new Date().toISOString()): Promise<void> { await this.commit((d) => { d.lastBackup = at; }); }
 
   private key(): CryptoKey { if (!this.dek) throw new LockedError(); return this.dek; }
   private content(): VaultData { if (!this.data) throw new LockedError(); return this.data; }
@@ -192,14 +189,23 @@ export class Vault {
     return p;
   }
 
-  private persist(): Promise<void> {
-    const dek = this.key();
-    const snapshot = structuredClone(this.content()); // encrypt a consistent copy
+  /**
+   * All-or-nothing change: the mutation is applied to a copy, the copy is encrypted and stored, and only
+   * then does it become the current state. If anything fails (invalid entry, storage full, vault locked
+   * meanwhile), memory and storage both keep the previous state. Changes run strictly one after another.
+   */
+  private commit(mutate: (d: VaultData) => void): Promise<void> {
     return this.serial(async () => {
-      const sealed = await seal(dek, snapshot, DATA_CONTEXT);
+      const dek = this.key();
+      const next = structuredClone(this.content());
+      mutate(next);
+      const sealed = await seal(dek, next, DATA_CONTEXT);
       await this.storage.set('data', sealed);
+      if (this.data) this.data = next; // still unlocked: publish the committed state
     });
   }
+
+  private persist(): Promise<void> { return this.commit(() => {}); }
 
   private emit(keys: string[], by: string) { for (const l of this.listeners) { try { l(keys, by); } catch { /* listener errors must not break saving */ } } }
 }
@@ -224,7 +230,7 @@ export class ModuleAccess {
   /** Keys that have no value yet: the module asks for these once and writes them back. */
   async missing(keys: string[]): Promise<string[]> {
     const vals = await this.read(keys);
-    return keys.filter((k) => vals[k] === undefined || vals[k] === '');
+    return keys.filter((k) => vals[k] === undefined); // empty input is stored as "no value"
   }
 
   async write(key: string, value: Value): Promise<void> { await this.writeMany({ [key]: value }); }
@@ -239,7 +245,7 @@ export class ModuleAccess {
   }
 
   count(group: string): number {
-    if (!this.manifest.reads.some((pat) => pat === '*' || pat.startsWith(group + '[]') || pat === `${group}.*`)) throw new AccessError(this.manifest.id, group, 'lesen');
+    if (!this.manifest.reads.some((pat) => pat === '*' || patternGroup(pat) === group)) throw new AccessError(this.manifest.id, group, 'lesen');
     return this.vault.listLength(group);
   }
 
@@ -254,13 +260,19 @@ export class ModuleAccess {
 
   onChange(fn: (keys: string[], by: string) => void): () => void {
     return this.vault.onChange((keys, by) => {
-      const visible = keys.filter((k) => { try { this.parse(k, 'lesen'); return true; } catch { return /\[\d+\]$/.test(k) && this.manifest.reads.some((p) => p === '*' || p.startsWith(k.replace(/\[\d+\]$/, '[]'))); } });
+      const visible = keys.filter((k) => {
+        const removed = /^([a-z_]+)\[\d+\]$/.exec(k); // "haushalt[3]": a whole list entry was removed
+        if (removed) return this.manifest.reads.some((p) => p === '*' || patternGroup(p) === removed[1]);
+        try { this.parse(k, 'lesen'); return true; } catch { return false; }
+      });
       if (visible.length) fn(visible, by);
     });
   }
 }
 
 // ---------- helpers ----------
+const patternGroup = (pattern: string) => pattern.split(/[[.]/)[0];
+
 function matches(pattern: string, p: ParsedKey): boolean {
   if (pattern === '*') return true;
   const generic = p.index === undefined ? `${p.group}.${p.field}` : `${p.group}[].${p.field}`;

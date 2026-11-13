@@ -41,6 +41,7 @@ export class Catalog {
       if (!!m[2] !== !!g.liste) throw new CatalogError(`${f.key}: Listenschreibweise passt nicht zur Gruppe`);
       if (this.byKey.has(f.key)) throw new CatalogError(`Doppelter Schlüssel ${f.key}`);
       if (f.typ === 'auswahl' && !f.optionen?.length) throw new CatalogError(`${f.key}: Auswahl ohne Optionen`);
+      if (g.liste && !(g.max! > 0)) throw new CatalogError(`${f.key}: Liste ohne Höchstzahl`);
       this.byKey.set(f.key, f);
     }
     for (const f of data.felder) for (const ref of refs(f.abgeleitet)) {
@@ -65,7 +66,7 @@ export class Catalog {
     if (groupDef.liste && idx === undefined) throw new CatalogError(`${key}: Listenfeld braucht eine Nummer, z. B. ${group}[0].${field}`);
     if (!groupDef.liste && idx !== undefined) throw new CatalogError(`${key}: ${group} ist keine Liste`);
     const index = idx === undefined ? undefined : Number(idx);
-    if (index !== undefined && groupDef.max !== undefined && index >= groupDef.max) throw new CatalogError(`${key}: höchstens ${groupDef.max} Einträge`);
+    if (index !== undefined && index >= groupDef.max!) throw new CatalogError(`${key}: höchstens ${groupDef.max} Einträge`);
     return { group, index, field, def, groupDef };
   }
 
@@ -94,12 +95,12 @@ export class Catalog {
       }
       case 'betrag': {
         const n = parseAmount(s);
-        if (n === undefined || n < 0 || n > 10_000_000) throw new ValueError(key, 'Betrag bitte als Zahl, z. B. 512,50');
+        if (n === undefined || n > 10_000_000) throw new ValueError(key, 'Betrag bitte als Zahl, z. B. 512,50');
         return n;
       }
       case 'zahl': {
         const n = Number(s.replace(',', '.'));
-        if (!Number.isFinite(n) || (def.min !== undefined && n < def.min) || (def.max !== undefined && n > def.max)) throw new ValueError(key, 'ungültige Zahl');
+        if (!Number.isFinite(n) || n < (def.min ?? -Infinity) || n > (def.max ?? Infinity)) throw new ValueError(key, 'ungültige Zahl');
         return n;
       }
       case 'auswahl':
@@ -109,7 +110,7 @@ export class Catalog {
         if (!/^\d{5}$/.test(s)) throw new ValueError(key, 'Postleitzahl hat 5 Ziffern');
         return s;
       case 'iban': {
-        const iban = s.replace(/\s+/g, '').toUpperCase();
+        const iban = s.replace(/\s/g, '').toUpperCase();
         if (!ibanValid(iban)) throw new ValueError(key, 'IBAN ist nicht gültig (Prüfziffer)');
         return iban;
       }
@@ -138,18 +139,27 @@ export function parseDate(s: string): string | undefined {
   if (r) { d = +r[1]; m = +r[2]; y = +r[3]; }
   else if ((r = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s))) { y = +r[1]; m = +r[2]; d = +r[3]; }
   else return undefined;
-  const dt = new Date(Date.UTC(y, m - 1, d));
-  if (dt.getUTCFullYear() !== y || dt.getUTCMonth() !== m - 1 || dt.getUTCDate() !== d || y < 1900 || y > 2100) return undefined;
-  return `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+  if (y < 1900 || y > 2100) return undefined;
+  const iso = `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+  // the date exists exactly if the calendar gives back the same day (31.04. would become 01.05.)
+  return new Date(Date.UTC(y, m - 1, d)).toISOString().slice(0, 10) === iso ? iso : undefined;
 }
 
-/** German amounts: "512,50", "1.234,56", "1234.5", "512 €". Returns euros as number with 2 decimals. */
-export function parseAmount(s: string): number | undefined {
-  let t = s.replace(/[€\s]/g, '').replace(/eur$/i, '');
-  if (/^\d{1,3}(\.\d{3})+(,\d{1,2})?$/.test(t)) t = t.replace(/\./g, '').replace(',', '.');
-  else if (/^\d+,\d{1,2}$/.test(t)) t = t.replace(',', '.');
-  if (!/^\d+(\.\d{1,2})?$/.test(t)) return undefined;
-  return Math.round(Number(t) * 100) / 100;
+/**
+ * Amounts as people type them: "512,50", "1.234,56", "1 234,56", "512 €", "512.50", "1,234.56".
+ * Ambiguous input is rejected instead of guessed: "1,234" (German 1.234 or English 1234?), "12 5".
+ * Returns euros as number with at most 2 decimals.
+ */
+export function parseAmount(input: string): number | undefined {
+  const s = input.trim().replace(/\s*(€|eur|euro)$/i, '');
+  const SP = '[ \u00a0\u202f]';
+  let t: string | undefined;
+  if (/^\d+$/.test(s)) t = s;
+  else if (/^\d+[,.]\d{1,2}$/.test(s)) t = s.replace(',', '.');
+  else if (new RegExp(`^\\d{1,3}([.]\\d{3}|${SP}\\d{3})+(,\\d{1,2})?$`).test(s) && !/[.].*\s|\s.*[.]/.test(s)) t = s.replace(/[.\s\u00a0\u202f]/g, '').replace(',', '.');
+  else if (/^\d{1,3}(,\d{3})+\.\d{1,2}$/.test(s)) t = s.replace(/,/g, '');
+  const n = Number(t); // undefined → NaN
+  return Number.isFinite(n) ? Math.round(n * 100) / 100 : undefined;
 }
 
 /** ISO 13616 check digits (mod 97). */
