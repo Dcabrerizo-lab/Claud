@@ -7,12 +7,12 @@ Alles muss zur [Datenschutzerklärung](../datenschutz.html) passen. Bei Änderun
 
 | Feld | Wert |
 |---|---|
-| App-Name | Leistungs-Lotse |
+| App-Name | SoLo – Sozialleistungslotse (27 Zeichen) |
 | Untertitel (iOS, max. 30 Zeichen) | Sozialleistungen schnell prüfen |
 | Kategorie | Play: *Finanzen* · iOS: *Finanzen* (Zweitkategorie *Dienstprogramme*) |
 | Altersfreigabe | Ab 0 / 4+ (keine kritischen Inhalte) |
-| Preis | Kostenlos, keine In-App-Käufe, keine Werbung |
-| Datenschutz-URL | `https://dcabrerizo-lab.github.io/Claud/datenschutz.html` (nach dem Zusammenführen in `main`, siehe RELEASE.md) |
+| Preis | 1,49 € einmalig (Play Console: „Mit Google Play monetarisieren“), keine In-App-Käufe, keine Werbung, kein Abo. Tester bekommen Gutscheincodes. |
+| Datenschutz-URL | `https://dcabrerizo-lab.github.io/Claud/datenschutz.html` (GitHub Pages aus dem Ordner `docs/`, Startseite `https://dcabrerizo-lab.github.io/Claud/` als Support-URL) |
 | Support-E-Mail | d.cabrerizo@gmx.de |
 | Sprachen im Store | Deutsch (Haupt), weitere optional: Englisch, Türkisch, Arabisch, Russisch, Ukrainisch, Polnisch, Rumänisch |
 
@@ -22,10 +22,13 @@ Alles muss zur [Datenschutzerklärung](../datenschutz.html) passen. Bei Änderun
 
 ## Beschreibung (Play und iOS)
 
-> Steht dir Wohngeld zu? Kinderzuschlag? Grundsicherung? Der Leistungs-Lotse prüft in zwei Minuten 21 Sozialleistungen und zeigt dir, was wahrscheinlich, möglich oder unwahrscheinlich ist, mit den nächsten Schritten, der zuständigen Stelle und den nötigen Unterlagen.
+> Steht dir Wohngeld zu? Kinderzuschlag? Grundsicherung? SoLo prüft in zwei Minuten 31 Sozialleistungen und Vergünstigungen und zeigt dir, was wahrscheinlich, möglich oder unwahrscheinlich ist, mit den nächsten Schritten, der zuständigen Stelle und den nötigen Unterlagen.
 >
 > **Was die App prüft**
-> Kindergeld, Wohngeld, Kinderzuschlag, Grundsicherungsgeld, Bildung und Teilhabe, Unterhaltsvorschuss, Grundsicherung im Alter und bei Erwerbsminderung, BAföG, Berufsausbildungsbeihilfe, Pflegegeld, Entlastungsbetrag, Verhinderungspflege und Pflegehilfsmittel, Leistungen bei Behinderung (Pauschbetrag, Schwerbehindertenausweis, Eingliederungshilfe, Budget für Arbeit, Erwerbsminderungsrente), Blindengeld (Bayern), Wohnberechtigungsschein (Bayern), Befreiung vom Rundfunkbeitrag und von Zuzahlungen.
+> Kindergeld, Elterngeld, Mutterschaftsgeld, Wohngeld, Kinderzuschlag, Grundsicherungsgeld, Arbeitslosengeld I, Krankengeld, Kinderkrankengeld, Bildung und Teilhabe, Unterhaltsvorschuss, Grundsicherung im Alter und bei Erwerbsminderung, BAföG, Berufsausbildungsbeihilfe, Pflegegeld, Entlastungsbetrag, Verhinderungspflege und Pflegehilfsmittel, Bayerisches Landespflegegeld, Hilfe zur Pflege, Leistungen bei Behinderung (Pauschbetrag, Schwerbehindertenausweis, Eingliederungshilfe, Budget für Arbeit, Erwerbsminderungsrente, Altersrente für schwerbehinderte Menschen), Landesblindengeld, Blindenhilfe, Wohnberechtigungsschein, Befreiung vom Rundfunkbeitrag und von Zuzahlungen, Leistungen nach dem Asylbewerberleistungsgesetz.
+>
+> **Auch in einfacher Sprache**
+> Für Menschen mit Lernschwierigkeiten, zum Beispiel in einer Werkstatt: eine Frage pro Bildschirm, große Knöpfe, Vorlesen. Das Ergebnis zeigt, was du bekommen kannst, wie viel ungefähr und wo du hingehst.
 >
 > **Antragsmappe**
 > Die App schreibt dir formlose Anträge auf Deutsch, so wie die Ämter sie brauchen. Damit sicherst du bei vielen Leistungen den Startmonat. Dazu kommen ein Angabenblatt und eine Liste der Unterlagen. Teile alles als PDF, zum Drucken oder per E-Mail.
@@ -39,7 +42,10 @@ Alles muss zur [Datenschutzerklärung](../datenschutz.html) passen. Bei Änderun
 > **Deine Daten bleiben bei dir**
 > Keine Anmeldung, keine Server, keine Werbung, kein Tracking. Alles wird auf deinem Gerät berechnet und gespeichert.
 >
-> **Wichtig:** Der Leistungs-Lotse ist eine Orientierung, keine Rechtsberatung. Über deinen Anspruch entscheidet immer die zuständige Stelle. Rechtsstand: November 2026.
+> **Für ganz Deutschland**
+> Die Leistungen werden für alle Bundesländer geprüft. Für Bayern nennt SoLo die zuständige Stelle mit Anschrift, in den anderen Ländern die Art der Stelle.
+>
+> **Wichtig:** SoLo ist eine Orientierung, keine Rechtsberatung. Über deinen Anspruch entscheidet immer die zuständige Stelle. Rechtsstand: November 2026.
 
 ## Google Play: Datensicherheit
 
@@ -64,11 +70,12 @@ Alles muss zur [Datenschutzerklärung](../datenschutz.html) passen. Bei Änderun
 
 ## Screenshots
 
-Benötigt: Play mindestens 2 Handy-Screenshots; iOS 6,9″ (1320 × 2868) und 6,5″ (1242 × 2688), optional iPad.
-Vorschlag für 5 Motive (auf Deutsch, je mit kurzer Überschrift):
+Benötigt: Play mindestens 2 Handy-Screenshots und eine Werbegrafik (1024 × 500); iOS 6,9″ (1320 × 2868) und 6,5″ (1242 × 2688), optional iPad.
+Fertige Bilder (7 Motive in allen drei Formaten, Werbegrafik, Symbol 512 × 512) entstehen mit `node tools/store-bilder.js` nach `store-bilder/`.
+Ursprünglicher Vorschlag für die Motive:
 
 1. Fragebogen mit Beispiel: „In zwei Minuten zum Überblick“
-2. Ergebnis mit grünen Karten: „21 Leistungen geprüft“
+2. Ergebnis mit grünen Karten: „31 Leistungen geprüft“
 3. Karte aufgeklappt (Wo beantragen, Unterlagen): „Nächste Schritte und Unterlagen“
 4. Antragsmappe: „Formlose Anträge als PDF“
 5. Sprache Arabisch oder Türkisch: „In 8 Sprachen“

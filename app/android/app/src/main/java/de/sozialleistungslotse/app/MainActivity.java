@@ -1,4 +1,4 @@
-package de.leistungslotse.app;
+package de.sozialleistungslotse.app;
 
 import android.os.Bundle;
 

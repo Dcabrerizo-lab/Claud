@@ -9,10 +9,35 @@ const check = (name, c, x) => { n++; if (!c) { fails++; console.log('FAIL', name
 
 const D = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'content', 'behoerden-bayern.json'), 'utf8'));
 const P = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'content', 'plz-data.json'), 'utf8'));
+const DE = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'content', 'behoerden-deutschland.json'), 'utf8'));
+D.de = DE; // wie im Build (scripts/build.js)
 check('Daten werden angenommen', Behoerden.init(D) && Behoerden.available() && Plz.init(P));
+// Außerhalb Bayerns: Name, Website und (aus dem Handy-Abruf geprüfte) Anschrift; nur gesicherte Zuständigkeiten
+const bd = (id, a) => Behoerden.fuer(id, a);
+check('[beh-de] Köln (kreisfreie Stadt): Wohngeld, Grundsicherung, Unterhaltsvorschuss bei der Stadt Köln mit Website und Anschrift (Quelle angegeben)', bd('wohngeld', '05315').name === 'Stadt Köln' && /stadt-koeln\.de/.test(bd('wohngeld', '05315').web) && /^50\d{3} Köln$/.test((bd('wohngeld', '05315').anschrift || [])[1]) && /^(impressum|wikipedia)$/.test(bd('wohngeld', '05315').quelleArt) && bd('gsa', '05315').name === 'Stadt Köln' && bd('uvg', '05315').name === 'Stadt Köln');
+// Alle Anschriften außerhalb Bayerns: Quelle und Abrufdatum, zwei saubere Zeilen, PLZ im selben Bundesland wie die Behörde
+{
+  const PK = (plz) => (P.plz[plz] || []).filter((e) => e[1] >= 0).map((e) => P.kreise[e[1]].ags);
+  const schlecht = Object.entries(DE.kreise).filter(([ags, e]) => e.anschrift && !(
+    e.anschrift.length === 2 && /^[A-ZÄÖÜa-zäöüß0-9]/.test(e.anschrift[0]) && !/[():;]|^(Haus|Post)?anschrift/i.test(e.anschrift[0]) && /^\d{5} [A-ZÄÖÜ]/.test(e.anschrift[1]) &&
+    PK(e.anschrift[1].slice(0, 5)).some((a) => a.slice(0, 2) === ags.slice(0, 2)) && /^(impressum|wikipedia)$/.test(e.quelleArt) && /^https?:\/\//.test(e.quelle) && /^\d{1,2}\.\d{1,2}\.20\d\d$/.test(e.stand)));
+  check('[beh-de] Alle Anschriften außerhalb Bayerns sauber, mit Quelle und Abrufdatum, PLZ im Bundesland der Behörde', schlecht.length === 0, schlecht.slice(0, 5).map(([a, e]) => a + ' ' + e.anschrift.join(', ')).join(' | '));
+  check('[beh-de] Mindestens 290 von 302 Stellen außerhalb Bayerns mit Anschrift', Object.values(DE.kreise).filter((e) => e.anschrift).length >= 290);
+}
+check('[beh-de] Landkreis (Kreis Mettmann): nur Grundsicherung im Alter, kein Wohngeld und kein Jugendamt (liegen teils bei Gemeinden)', bd('gsa', '05158').name === 'Kreis Mettmann' && bd('wohngeld', '05158') === null && bd('uvg', '05158') === null);
+check('[beh-de] Berlin und Hamburg: keine Stadt-Angabe (dort die Bezirksämter)', bd('wohngeld', '11000') === null && bd('wohngeld', '02000') === null);
+check('[beh-de] Landkreis und Stadt Leipzig getrennt', bd('wohngeld', '14713').name === 'Stadt Leipzig' && bd('wohngeld', '14729') === null && bd('gsa', '14729').name === 'Landkreis Leipzig');
+check('[beh-de] Alle Kreise außerhalb Bayerns (außer Berlin, Hamburg) mit Website, 79 kreisfreie Städte', P.kreise.filter((k) => !/^(09|11|02)/.test(k.ags)).every((k) => DE.kreise[k.ags] && /^https?:\/\//.test(DE.kreise[k.ags].web)) && Object.values(DE.kreise).filter((e) => e.typ === 'stadt').length === 79);
+{ // Anschrift aus dem Handy-Abruf (nur Beispiel im Speicher): erscheint mit Stand
+  const D2 = JSON.parse(JSON.stringify(D)); D2.de.kreise['05315'] = Object.assign({}, D2.de.kreise['05315'], { anschrift: ['Beispielplatz 1', '50667 Köln'], stand: '11.11.2026', quelle: 'https://example.org/impressum' });
+  Behoerden.init(D2);
+  check('[beh-de] Anschrift aus dem Handy-Abruf wird genutzt', JSON.stringify(Behoerden.fuer('wohngeld', '05315').anschrift) === JSON.stringify(['Beispielplatz 1', '50667 Köln']) && Behoerden.fuer('wohngeld', '05315').stand === '11.11.2026');
+  Behoerden.init(D);
+}
+check('[beh-de] Bayern unverändert: Erlangen-Höchstadt mit Anschrift', /Landratsamt/.test(bd('wohngeld', '09572').name) && !!bd('wohngeld', '09572').anschrift);
 
 // Vollständigkeit: jeder bayerische Kreis aus den PLZ-Daten hat eine Stelle
-const ags = P.kreise.map((k) => k.ags);
+const ags = P.kreise.map((k) => k.ags).filter((a) => a.startsWith('09')); // Anschriften gibt es (noch) nur für Bayern
 check('96 Kreise, alle mit Eintrag', ags.length === 96 && ags.every((a) => D.kreise[a]), ags.filter((a) => !D.kreise[a]).join(','));
 const mit = ags.filter((a) => D.kreise[a].anschrift);
 check('alle 96 Kreise mit Anschrift', mit.length === 96, mit.length);
@@ -67,7 +92,7 @@ check('Eingliederungshilfe Würzburg -> Bezirk Unterfranken', b('eingl', '09663'
 check('Budget für Arbeit Augsburg -> Bezirk Schwaben', b('arbeit', '09761').name === 'Bezirk Schwaben');
 check('7 Bezirke und 7 ZBFS-Regionalstellen mit Anschrift', Object.keys(D.bezirke).length === 7 && Object.keys(D.zbfs).length === 7 && Object.values(D.bezirke).concat(Object.values(D.zbfs)).every((x) => x.anschrift && x.quelle));
 check('Besucheranschrift nur, wenn sie von der Postanschrift abweicht', b('eingl', '09162').haus && b('eingl', '09162').haus.join(', ') === 'Prinzregentenstr. 14, 80538 München' && b('wohngeld', '09572').haus === null);
-check('ohne Kreis (z. B. außerhalb Bayerns) -> null', b('wohngeld', null) === null && b('wohngeld', '') === null && b('wohngeld', '05315') === null);
+check('ohne Kreis -> null; Kreis außerhalb Bayerns ohne Eintrag (Berlin) -> null', b('wohngeld', null) === null && b('wohngeld', '') === null && b('wohngeld', '11000') === null);
 check('Kreis ohne belegte Anschrift: Name und Website, keine Anschrift', (() => { const x = ags.find((a) => !D.kreise[a].anschrift); return !x || (b('wohngeld', x).anschrift === null && b('wohngeld', x).web); })());
 
 // Zusammenspiel mit der PLZ: Postleitzahl -> Kreis -> Stelle

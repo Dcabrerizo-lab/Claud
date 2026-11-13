@@ -37,8 +37,8 @@ const NATIVE_SCAN = [
   '        </section>'
 ].join('\n');
 html = replaceOnce(html, /<!--SCAN-->[\s\S]*?<!--\/SCAN-->/, NATIVE_SCAN, 'Scan-Block');
-html = replaceOnce(html, /<link rel="preconnect"[^>]*>\s*/, '', 'preconnect');
-html = replaceOnce(html, /<link rel="stylesheet" href="https:\/\/fonts[^>]*>\s*/, '', 'Google Fonts');
+// Schriften: keine Google Fonts (auch nicht im Template); die App bringt sie als Dateien mit (siehe unten)
+html = html.replace(/<link rel="preconnect"[^>]*>\s*/, '').replace(/<link rel="stylesheet" href="https:\/\/fonts[^>]*>\s*/, '');
 html = html.replace(/<meta name="claude:viewport-fit-sides"[^>]*>\s*/, '');
 // Keine extern eingebundenen Dateien (Links zum Anklicken sind erlaubt und öffnen im Systembrowser).
 // Die Web-only-Adressen im Code (Tesseract) werden in der App nie aufgerufen und wären durch die CSP blockiert.
@@ -83,7 +83,8 @@ const safeArea = 'body{padding-top:env(safe-area-inset-top);padding-bottom:env(s
 html = replaceOnce(html, '<style>', '<style>\n' + faces + safeArea, 'erstes <style>');
 const head = '<!doctype html>\n<html lang="de"><head><meta charset="utf-8">' +
   '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">\n' +
-  '<meta http-equiv="Content-Security-Policy" content="' + CSP + '">\n'; // <title>, Links und <style> folgen aus der Vorlage
+  '<meta http-equiv="Content-Security-Policy" content="' + CSP + '">\n' +
+  '<link rel="icon" href="data:,">\n'; // leeres Symbol: sonst fragt die WebView /favicon.ico an (404 im Log); <title>, Links und <style> folgen aus der Vorlage
 fs.writeFileSync(path.join(WWW, 'index.html'), head + html + '\n</body></html>\n');
 
 const kb = (f) => (fs.statSync(path.join(WWW, f)).size / 1024).toFixed(0);

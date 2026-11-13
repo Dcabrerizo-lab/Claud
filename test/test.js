@@ -1,6 +1,7 @@
 const fs = require('fs');
 const Rules = require('./rules-de.js');
 const I18N = require('../dist/i18n.js');
+const KARTEN = require('./karten.js');
 let fails = 0;
 function check(name, cond, extra) {
   if (!cond) { fails++; console.log('FAIL', name, extra || ''); } else { console.log('ok  ', name); }
@@ -57,27 +58,30 @@ check('Regelbedarf Alleinstehende = 563', ev({}).h.regel === 563);
 check('Regelbedarf Jungerwachsene 451', ev({ young: 1 }).h.regel === 563 + 451);
 
 // 3) Beispielhaushalte
-const t1 = ev({ kids: 2, brutto: 2200, netto: 1750, miete: 950, mietstufe: 3, vermoegen: 3000, unterhaltFehlt: true, alterGruppe: '31-40' });
+const t1 = ev({ kids: 2, brutto: 2200, netto: 1750, miete: 950, mietstufe: 3, vermoegen: 3000, unterhaltFehlt: true, alterGruppe: '30-39' });
 check('T1 Alleinerziehend: Wohngeld ja', lv(t1, 'wohngeld') === 'ja');
 check('T1 Kinderzuschlag ja', lv(t1, 'kiz') === 'ja', lv(t1, 'kiz'));
 check('T1 BuT ja', lv(t1, 'but') === 'ja');
 check('T1 Kindergeld ja', lv(t1, 'kindergeld') === 'ja');
 check('T1 Unterhaltsvorschuss ja', lv(t1, 'uvg') === 'ja');
 check('T1 Grundsicherung im Alter nein', lv(t1, 'gsa') === 'nein');
-check('T1 Grundsicherungsgeld wird geprüft (Aufstocker, Bedarf 2.293 > Einkommen 1.890)', lv(t1, 'ggeld') === 'ja', lv(t1, 'ggeld'));
+// Bedarf 563 + 2 x 390 + 950 + Mehrbedarf Alleinerziehende 36 % (202,68) = 2.495,68; Einkommen 1.750 - 378 Freibetrag + 518 Kindergeld
+// + 598 Unterhaltsvorschuss (2 x 299, Einkommen der Kinder) = 2.488 -> knapp -> möglich
+check('T1 Grundsicherungsgeld knapp (Aufstocker mit Mehrbedarf und Unterhaltsvorschuss)', lv(t1, 'ggeld') === 'vielleicht', lv(t1, 'ggeld'));
 check('T1 Hinweis Grundsicherungsgeld gegen Wohngeld', t1.zusammen.some((z) => z[0] === 'z.ggVsWg'));
 
-const t2 = ev({ brutto: 880, netto: 780, miete: 480, mietstufe: 3, vermoegen: 4000, alter: true, alterGruppe: '51+' });
+const t2 = ev({ brutto: 880, netto: 780, miete: 480, mietstufe: 3, vermoegen: 4000, alter: true, alterGruppe: '50+' });
 check('T2 Rentnerin: Grundsicherung im Alter ja', lv(t2, 'gsa') === 'ja', lv(t2, 'gsa'));
 check('T2 Wohngeld nur möglich (Mindesteinkommen)', lv(t2, 'wohngeld') === 'vielleicht' && get(t2, 'wohngeld').hl === 'einkoNiedrig');
 check('T2 Kinder-Leistungen, UVG, BAföG, Pflege nein', ['kiz', 'but', 'uvg', 'bafoeg', 'pflege', 'kindergeld'].every((id) => lv(t2, id) === 'nein'));
 check('T2 Grundsicherungsgeld nein (Sozialamt zuständig)', lv(t2, 'ggeld') === 'nein' && get(t2, 'ggeld').hl === 'andereStelle');
 
-const t3 = ev({ adults: 2, kids: 1, brutto: 3200, netto: 2500, miete: 1100, mietstufe: 5, vermoegen: 8000, alterGruppe: '31-40' });
+const t3 = ev({ adults: 2, kids: 1, brutto: 3200, netto: 2500, miete: 1100, mietstufe: 5, vermoegen: 8000, alterGruppe: '30-39' });
 check('T3 Paar mit Kind: Wohngeld vielleicht', lv(t3, 'wohngeld') === 'vielleicht', lv(t3, 'wohngeld'));
-check('T3 Kinderzuschlag vielleicht (oberer Rand)', lv(t3, 'kiz') === 'vielleicht', lv(t3, 'kiz'));
+// Elterneinkommen 2.500 - 378 Freibetrag = 2.122; Bemessung 1.012 + 1.100 x 2/2,4 = 1.928,67; 297 - 0,45 x 193,33 = 210 -> wahrscheinlich
+check('T3 Kinderzuschlag wahrscheinlich (Freibetrag für Arbeit mindert das Einkommen, § 6a BKGG mit § 11b SGB II)', lv(t3, 'kiz') === 'ja', lv(t3, 'kiz'));
 
-const t4 = ev({ adults: 2, kids: 2, brutto: 6500, netto: 4500, miete: 1400, mietstufe: 4, vermoegen: 20000, alterGruppe: '41-50' });
+const t4 = ev({ adults: 2, kids: 2, brutto: 6500, netto: 4500, miete: 1400, mietstufe: 4, vermoegen: 20000, alterGruppe: '40-49' });
 check('T4 hohes Einkommen: Wohngeld, Kinderzuschlag, Grundsicherungsgeld nein', ['wohngeld', 'kiz', 'ggeld'].every((id) => lv(t4, id) === 'nein'));
 check('T4 Kindergeld bleibt ja', lv(t4, 'kindergeld') === 'ja');
 const t4b = ev({ brutto: 6000, netto: 4000, miete: 800, vermoegen: 90000 });
@@ -125,9 +129,9 @@ check('Kindergeld: Jungerwachsener in Ausbildung ja', lv(ev({ young: 1 }), 'kind
 check('Kindergeld: schon bezogen = na', lv(ev({ kids: 1, bezug: { kindergeld: true } }), 'kindergeld') === 'na');
 
 // 7) Grundsicherungsgeld
-check('Grundsicherungsgeld: Schonvermögen bis 30 Jahre 5.000', lv(ev({ brutto: 0, miete: 400, vermoegen: 6000, alterGruppe: '<31' }), 'ggeld') === 'nein' && get(ev({ brutto: 0, miete: 400, vermoegen: 6000, alterGruppe: '<31' }), 'ggeld').hl === 'vermHoch');
-check('Grundsicherungsgeld: ab 51 Jahren 15.000 sind erlaubt', lv(ev({ brutto: 0, miete: 400, vermoegen: 15000, alterGruppe: '51+' }), 'ggeld') === 'ja');
-check('Grundsicherungsgeld: Paar verdoppelt Schonvermögen', lv(ev({ adults: 2, brutto: 0, miete: 500, vermoegen: 19000, alterGruppe: '31-40' }), 'ggeld') === 'ja');
+check('Grundsicherungsgeld: Schonvermögen bis 30 Jahre 5.000', lv(ev({ brutto: 0, miete: 400, vermoegen: 6000, alterGruppe: '<30' }), 'ggeld') === 'nein' && get(ev({ brutto: 0, miete: 400, vermoegen: 6000, alterGruppe: '<30' }), 'ggeld').hl === 'vermHoch');
+check('Grundsicherungsgeld: ab 50 Jahren 15.000 sind erlaubt', lv(ev({ brutto: 0, miete: 400, vermoegen: 15000, alterGruppe: '50+' }), 'ggeld') === 'ja');
+check('Grundsicherungsgeld: Paar verdoppelt Schonvermögen', lv(ev({ adults: 2, brutto: 0, miete: 500, vermoegen: 19000, alterGruppe: '30-39' }), 'ggeld') === 'ja');
 check('Grundsicherungsgeld: Alter -> Sozialamt zuständig', get(ev({ alter: true, miete: 400 }), 'ggeld').hl === 'andereStelle');
 check('Grundsicherungsgeld: Erwerbsminderung -> Sozialamt zuständig', get(ev({ erwerbsgemindert: true, miete: 400 }), 'ggeld').hl === 'andereStelle');
 check('Grundsicherungsgeld: Einkommen über Bedarf nein', lv(ev({ brutto: 3000, netto: 2400, miete: 600 }), 'ggeld') === 'nein');
@@ -151,9 +155,9 @@ check('BAföG: Kind, etwas über Freibetrag vielleicht', lv(ev({ kids: 1, netto:
 check('BAföG: Kind, weit über Freibetrag nein', lv(ev({ kids: 1, netto: 4000, ausbildung: 'kind' }), 'bafoeg') === 'nein');
 check('BAföG: Paar mit 2 jungen Erwachsenen, Freibetrag 2.540 + 770', lv(ev({ adults: 2, young: 2, netto: 3300, ausbildung: 'kind' }), 'bafoeg') === 'ja' && lv(ev({ adults: 2, young: 2, netto: 3400, ausbildung: 'kind' }), 'bafoeg') === 'vielleicht');
 check('BAföG: Kind angegeben, aber kein Kind im Haushalt nein', lv(ev({ ausbildung: 'kind', netto: 1000 }), 'bafoeg') === 'nein');
-check('BAföG: selbst, Vermögen über 15.000 bis 29 nein', lv(ev({ ausbildung: 'ich', alterGruppe: '<31', vermoegen: 20000 }), 'bafoeg') === 'nein');
-check('BAföG: selbst, Vermögen im Rahmen vielleicht', lv(ev({ ausbildung: 'ich', alterGruppe: '<31', vermoegen: 5000 }), 'bafoeg') === 'vielleicht');
-check('BAföG: selbst, ab 51 nein, 41 bis 50 vielleicht', lv(ev({ ausbildung: 'ich', alterGruppe: '51+' }), 'bafoeg') === 'nein' && lv(ev({ ausbildung: 'ich', alterGruppe: '41-50' }), 'bafoeg') === 'vielleicht');
+check('BAföG: selbst, Vermögen über 15.000 bis 29 nein', lv(ev({ ausbildung: 'ich', alterGruppe: '<30', vermoegen: 20000 }), 'bafoeg') === 'nein');
+check('BAföG: selbst, Vermögen im Rahmen vielleicht', lv(ev({ ausbildung: 'ich', alterGruppe: '<30', vermoegen: 5000 }), 'bafoeg') === 'vielleicht');
+check('BAföG: selbst, ab 50 nein, 41 bis 50 vielleicht', lv(ev({ ausbildung: 'ich', alterGruppe: '50+' }), 'bafoeg') === 'nein' && lv(ev({ ausbildung: 'ich', alterGruppe: '40-49' }), 'bafoeg') === 'vielleicht');
 
 // 10) Pflegegeld
 check('Pflege: kein Pflegegrad nein', lv(ev({}), 'pflege') === 'nein');
@@ -170,12 +174,87 @@ check('BAföG: Netto allein genügt als Einkommensangabe', lv(ev({ kids: 1, nett
 check('Grundsicherung im Alter: Netto allein genügt als Einkommensangabe', get(ev({ alter: true, netto: 600, miete: 450, vermoegen: 0 }), 'gsa').hl !== 'angabeFehlt');
 check('Wohngeld: Netto allein genügt NICHT (Wohngeld rechnet mit Brutto)', get(ev({ netto: 1000, miete: 600, vermoegen: 0, mietstufe: 3 }), 'wohngeld').hl === 'angabeFehlt');
 
+// 10c) Unterhalt für die Kinder (Feld „unterhalt“, im Monat, alle Kinder zusammen)
+{
+  const raw = Rules.raw || Rules;
+  const uvg = (o) => get(ev({ kids: 1, brutto: 1500, netto: 1200, unterhaltFehlt: true, ...o }), 'uvg');
+  check('UVG ohne gezahlten Unterhalt: wahrscheinlich', uvg({}).level === 'ja');
+  check('UVG: 150 € Unterhalt werden angerechnet -> nur noch möglich, mit Hinweis (§ 2 Abs. 3 UVG)', uvg({ unterhalt: 150 }).level === 'vielleicht' && keys(ev({ kids: 1, brutto: 1500, netto: 1200, unterhaltFehlt: true, unterhalt: 150 }), 'uvg')[0] === 'uvg.teil');
+  check('UVG: Unterhalt mindestens so hoch wie der höchste UVG (394 € je Kind) -> nein', uvg({ unterhalt: 394 }).level === 'nein' && uvg({ unterhalt: 394 }).tx[0][0] === 'uvg.genug');
+  check('UVG: 2 Kinder, 500 € Unterhalt (< 2 x 394 €) -> möglich', get(ev({ kids: 2, brutto: 1500, netto: 1200, unterhaltFehlt: true, unterhalt: 500 }), 'uvg').level === 'vielleicht');
+
+  // Kinderzuschlag (§ 6a Abs. 3 BKGG): Paar, 2 Kinder, netto 2.050, Miete 950. Handrechnung:
+  // Höchstbetrag 2 x 297 = 594; Elterneinkommen 2.050 - 378 Freibetrag = 1.672; Elternanteil Miete 2/2,8 -> Bemessung 1.012 + 678,57
+  // = 1.690,57 -> kein Überschuss, Schätzung 594 €. Mit 1.200 € Unterhalt: 594 - 540 = 54 (< 60 -> „möglich“); mit 1.400 €: < 0 -> nein
+  const kz = (u) => lv(ev({ adults: 2, kids: 2, brutto: 2600, netto: 2050, miete: 950, vermoegen: 0, unterhalt: u }), 'kiz');
+  check('KiZ ohne Unterhalt: wahrscheinlich (Schätzung 594 €)', kz('') === 'ja');
+  check('KiZ mit 1.200 € Unterhalt: Rest 54 € -> möglich', kz(1200) === 'vielleicht');
+  check('KiZ mit 1.400 € Unterhalt: kein Zuschlag mehr -> nein', kz(1400) === 'nein');
+
+  // Wohngeld (§§ 14, 16 WoGG): Unterhalt ohne Pauschalabzug; bei der unteren Grenze (10 % Abzug) zählt er wie u / 0,9 Brutto,
+  // bei der oberen (30 %) wie u / 0,7. Paar mit 1 Kind, Stufe III, Miete 800.
+  const wgo = { adults: 2, kids: 1, miete: 800, mietstufe: 3, vermoegen: 0 };
+  const grenze = raw.evaluate({ ...wgo, brutto: 1000, netto: 800 }).results.find((x) => x.id === 'wohngeld').tx.find((x) => /grenze/.test(x[0]))[1];
+  const lo = grenze.lo.eur, hi = grenze.hi.eur;
+  const wg = (brutto, u) => lv(ev({ ...wgo, brutto, netto: brutto * 0.8, unterhalt: u }), 'wohngeld');
+  check('Wohngeld: 50 € unter der unteren Grenze -> wahrscheinlich', wg(lo - 50, '') === 'ja', lo);
+  check('Wohngeld: dazu 50 € Unterhalt (zählt wie 55,56 € Brutto) -> nur noch möglich', wg(lo - 50, 50) === 'vielleicht');
+  check('Wohngeld: 50 € unter der oberen Grenze -> möglich', wg(hi - 50, '') === 'vielleicht', hi);
+  check('Wohngeld: dazu 40 € Unterhalt (zählt wie 57,14 € Brutto) -> nein', wg(hi - 50, 40) === 'nein');
+
+  // Grundsicherungsgeld: Unterhalt ist Einkommen des Kindes, aber nur bis zu dessen Bedarf. Alleinerziehend, 1 Kind (390 €),
+  // Miete 600, Rente 900 (kein Freibetrag, 30 € Versicherungspauschale): Bedarf 563 + 390 + 600 + 67,56 Mehrbedarf (12 %) = 1.620,56;
+  // Kinderbedarf 390 + 300 = 690, abzüglich 259 Kindergeld = 431 € anrechenbarer Unterhalt. Mit 1.000 € Unterhalt: Einkommen
+  // 870 + 259 + 431 = 1.560 -> Lücke 60,56 -> noch „wahrscheinlich“ (bei voller Anrechnung wären es 2.129 € und damit „nein“).
+  const gg = (u) => lv(ev({ kids: 1, brutto: 900, netto: 900, nichtArbeit: true, miete: 600, vermoegen: 0, unterhalt: u }), 'ggeld');
+  check('Grundsicherungsgeld ohne Unterhalt: Lücke 394 € -> wahrscheinlich', gg('') === 'ja');
+  check('Grundsicherungsgeld mit 1.000 € Unterhalt: nur 431 € angerechnet -> Lücke 61 € (nicht nein)', gg(1000) === 'ja');
+  check('Grundsicherungsgeld: 431 € und 1.000 € Unterhalt wirken gleich (Deckel beim Kinderbedarf)', gg(431) === gg(1000));
+
+  // Eigenschaft: mehr Unterhalt verbessert keine Einstufung (über viele Haushalte)
+  {
+    const rank = { ja: 0, vielleicht: 1, nein: 2, na: 3 }; let bad = [];
+    for (const adults of [1, 2]) for (const kids of [1, 2, 3]) for (const b of [0, 900, 1600, 2400, 3400]) for (const miete of [400, 800, 1200]) for (const alter of [false, true]) {
+      let last = null;
+      for (const u of [0, 100, 250, 400, 700, 1000, 1500]) {
+        const r = ev({ adults, kids, brutto: b, netto: b * 0.8, miete, mietstufe: 3, vermoegen: 0, alter, unterhaltFehlt: true, unterhalt: u });
+        // Ausnahme (gesetzlich gewollt): Wohngeld und Kinderzuschlag setzen genug Einkommen zum Leben voraus (hl einkoNiedrig,
+        // § 6a Abs. 1 Nr. 3 BKGG; Plausibilität beim Wohngeld). Dort darf mehr Einkommen die Leistung erst möglich machen.
+        const ids = ['wohngeld', 'kiz', 'ggeld', 'gsa', 'uvg'];
+        const niedrig = ids.map((id) => get(r, id).hl === 'einkoNiedrig');
+        const now = ids.map((id) => rank[lv(r, id)]);
+        if (last && now.some((v, i) => v < last.v[i] && !niedrig[i] && !last.niedrig[i])) bad.push([adults, kids, b, miete, alter, u].join('/'));
+        last = { v: now, niedrig };
+      }
+    }
+    check('Mehr Unterhalt macht Wohngeld, KiZ, Grundsicherung und UVG nie wahrscheinlicher (' + (2 * 3 * 5 * 3 * 2) + ' Haushalte)', bad.length === 0, bad.slice(0, 5).join(' | '));
+  }
+  check('Unterhalt ohne Kinder im Haushalt bleibt ohne Wirkung', JSON.stringify(ev({ brutto: 1500, netto: 1200, miete: 600, vermoegen: 0, unterhalt: 500 }).results) === JSON.stringify(ev({ brutto: 1500, netto: 1200, miete: 600, vermoegen: 0 }).results));
+}
+
+// 10d) Gemischtes Einkommen bei Paaren: Freibetrag (§ 11b SGB II) je Person und nur für Einkommen aus Arbeit.
+// Paar ohne Kinder, Brutto 2.500, davon 1.000 bei der zweiten Person. Handrechnung: erste Person 1.500 -> 348 (gedeckelt bei 1.200),
+// zweite Person 1.000 -> 100 + 20 % x 420 + 30 % x 480 = 328.
+{
+  const fb = (o) => Rules.haushaltsFreibetrag(Rules.derive({ adults: 2, kids: 0, brutto: 2500, brutto2: 1000, netto: 2150, ...o }));
+  check('Paar, beide arbeiten: Freibetrag 348 + 328 = 676', Math.abs(fb({}) - 676) < 1e-9, fb({}));
+  check('Paar, zweite Person bekommt Arbeitslosengeld I: nur 348 (erste Person)', Math.abs(fb({ nichtArbeit2: true }) - 348) < 1e-9, fb({ nichtArbeit2: true }));
+  check('Paar, erste Person bekommt Rente, zweite arbeitet: nur 328 (zweite Person)', Math.abs(fb({ nichtArbeit: true }) - 328) < 1e-9, fb({ nichtArbeit: true }));
+  check('Paar, beide ohne Arbeitseinkommen: kein Freibetrag', fb({ nichtArbeit: true, nichtArbeit2: true }) === 0);
+  check('Alleinstehend: zweiter Haken ohne Wirkung', Rules.haushaltsFreibetrag(Rules.derive({ adults: 1, brutto: 1000, netto: 900, nichtArbeit2: true })) === 328);
+  // Wirkung auf die Einstufung: Bedarf 1.012 + 800 = 1.812; netto 2.150.
+  // beide arbeiten: 2.150 - 676 = 1.474 -> Lücke 338 -> wahrscheinlich; zweite Person Arbeitslosengeld: 2.150 - 348 = 1.802 -> Lücke 10 -> nur möglich
+  const gg = (o) => lv(ev({ adults: 2, brutto: 2500, brutto2: 1000, netto: 2150, miete: 800, vermoegen: 0, ...o }), 'ggeld');
+  check('Grundsicherungsgeld: beide arbeiten -> wahrscheinlich', gg({}) === 'ja');
+  check('Grundsicherungsgeld: zweite Person Arbeitslosengeld I -> nur möglich (kein Freibetrag für sie)', gg({ nichtArbeit2: true }) === 'vielleicht');
+}
+
 // 11) Sortierung und Robustheit
 const order = { ja: 0, vielleicht: 1, nein: 2, na: 3 };
 let sorted = true;
 [t1, t2, t3, t4, t5, t6].forEach((r) => { for (let i = 1; i < r.results.length; i++) if (order[r.results[i - 1].level] > order[r.results[i].level]) sorted = false; });
 check('Ergebnisse sortiert nach Wahrscheinlichkeit', sorted);
-check('Leere Eingaben erzeugen 21 Ergebnisse', ev({}).results.length === 21);
+check('Leere Eingaben erzeugen ' + KARTEN.length + ' Ergebnisse', ev({}).results.length === KARTEN.length);
 check('Jedes Ergebnis hat Namen und Schritte', ev({}).results.every((r) => r.name && r.steps && r.steps.wo));
 
 // 12) Sprachen
@@ -195,6 +274,45 @@ LANGS.forEach((l) => {
 });
 check('Arabisch läuft rechts nach links, alle anderen links nach rechts', I18N.ar['meta.dir'] === 'rtl' && LANGS.filter((l) => l !== 'ar').every((l) => I18N[l]['meta.dir'] === 'ltr'));
 
+// Leichte Sprache (einfache Version, Deutsch): kurze Sätze (höchstens 15 Wörter), lange Wörter mit Bindestrich gegliedert
+{
+  const lang = [], wort = [];
+  Object.keys(I18N.de).filter((k) => /^es\./.test(k)).forEach((k) => {
+    const s = I18N.de[k].replace(/\{[^}]*\}/g, 'X');
+    s.split(/[.!?]\s+/).forEach((satz) => { const w = satz.split(/\s+/).filter(Boolean); if (w.length > 15) lang.push(k + ' (' + w.length + ' Wörter)'); });
+    s.split(/[\s,.;:!?()„“"]+/).forEach((w) => { if (w.length > 16 && !/-/.test(w)) wort.push(k + ': ' + w); });
+  });
+  check('Leichte Sprache: keine Sätze über 15 Wörter', lang.length === 0, lang.join(', '));
+  check('Leichte Sprache: lange Wörter mit Bindestrich gegliedert', wort.length === 0, wort.join(', '));
+}
+
+// Die Webseite zum Hochladen (site/) enthält dieselbe Datenschutzerklärung wie das Projekt
+{
+  const fsx = require('fs'), px = require('path');
+  const a = fsx.readFileSync(px.join(__dirname, '..', 'datenschutz.html'), 'utf8'), b = fsx.readFileSync(px.join(__dirname, '..', 'site', 'datenschutz.html'), 'utf8');
+  check('Webseite: site/datenschutz.html ist aktuell (gleich wie datenschutz.html)', a === b);
+  // GitHub Pages veröffentlicht den Ordner docs/: dort dieselbe Webseite
+  check('Webseite: docs/ (GitHub Pages) hat dieselbe Startseite und Datenschutzerklärung wie site/', fsx.readFileSync(px.join(__dirname, '..', 'docs', 'datenschutz.html'), 'utf8') === b && fsx.readFileSync(px.join(__dirname, '..', 'docs', 'index.html'), 'utf8') === fsx.readFileSync(px.join(__dirname, '..', 'site', 'index.html'), 'utf8') && fsx.existsSync(px.join(__dirname, '..', 'docs', '.nojekyll')));
+  check('Webseite: Startseite verlinkt Datenschutz und Impressum', /datenschutz\.html"/.test(fsx.readFileSync(px.join(__dirname, '..', 'site', 'index.html'), 'utf8')) && /id="impressum"/.test(b));
+}
+
+// Name der App: überall „SoLo – Sozialleistungslotse“, nie der alte Name „Leistungslotse“ / „Leistungs-Lotse“ ohne „Sozial“
+{
+  const fsx = require('fs'), px = require('path'), R0 = px.join(__dirname, '..');
+  const dateien = ['src/template.html', 'src/app.js', 'datenschutz.html', 'site/index.html', 'site/datenschutz.html', 'docs/STORE.md', 'docs/PLAY-TEST.md', 'docs/RELEASE.md', 'README.md',
+    'app/capacitor.config.json', 'app/android/app/src/main/res/values/strings.xml', 'app/android/app/build.gradle', 'app/ios/App/App/Info.plist']
+    .concat(fsx.readdirSync(px.join(R0, 'src', 'lang')).map((f) => 'src/lang/' + f));
+  const alt = dateien.filter((f) => /(?<![Ss]ozial)[Ll]eistungs-?[Ll]otse/.test(fsx.readFileSync(px.join(R0, f), 'utf8')));
+  check('Name: nirgends mehr der alte Name „Leistungslotse“ ohne „Sozial“', alt.length === 0, alt.join(', '));
+}
+
+// Zahl der Leistungen in Store-Text und Webseite passt zur App (Kartenliste)
+{
+  const fsx = require('fs'), px = require('path'), N = require('./karten.js').length;
+  check('Store-Text nennt ' + N + ' Leistungen', fsx.readFileSync(px.join(__dirname, '..', 'docs', 'STORE.md'), 'utf8').includes(N + ' Sozialleistungen'));
+  check('Webseite nennt ' + N + ' Leistungen', fsx.readFileSync(px.join(__dirname, '..', 'site', 'index.html'), 'utf8').includes('Prüft ' + N + ' Leistungen'));
+}
+
 // Amtsbegriffe bleiben deutsch erhalten
 const TERMS = ['Wohngeld', 'Kinderzuschlag', 'Kindergeld', 'Grundsicherungsgeld', 'Grundsicherung im Alter', 'Jobcenter', 'Sozialamt', 'Familienkasse', 'Pflegekasse', 'BAföG', 'Pflegegeld', 'Unterhaltsvorschuss', 'Bürgergeld', 'Wohngeldstelle'];
 LANGS.filter((l) => l !== 'de').forEach((l) => {
@@ -211,7 +329,7 @@ LANGS.filter((l) => l !== 'de').forEach((l) => {
 const used = new Set();
 const states = [];
 for (const adults of [1, 2]) for (const kids of [0, 1, 3]) for (const young of [0, 1]) for (const b of [0, 400, 900, 1500, 2500, 4500, 9000]) for (const alter of [false, true]) {
-  for (const extra of [{}, { unterhaltFehlt: true, kinder12: true }, { ausbildung: 'kind' }, { ausbildung: 'ich', alterGruppe: '<31', vermoegen: 20000 }, { ausbildung: 'ich', alterGruppe: '51+' }, { pflegegrad: '1' }, { pflegegrad: '3' }, { pflegegrad: 'antrag' }, { bezug: { grundsicherungsgeld: true, kindergeld: true } }, { bezug: { sozialamt: true, wohngeld: true, kiz: true } }, { vermoegen: 99999 }, { erwerbsgemindert: true }, { mietstufe: 4, behinderung: true }, { bezug: { wohngeld: true } }, { bezug: { kiz: true } }, { ausbildung: 'ich', alterGruppe: '31-40', vermoegen: 1000 }, { bhPerson: 'minder', gdb: '50', blind: 'blind', pflegegrad: '3' }, { bhPerson: 'erwVor25', bhSelbst: true, gdb: '100' }, { bhPerson: 'erwVor25', gdb: 'H', blind: 'hoch', pflegegrad: '2' }, { bhPerson: 'erwNach25', gdb: '30', emStd: 'unter3', em5: true }, { emStd: '3bis6', wfbm: true, gdb: '20' }, { emStd: '3bis6', gdb: '40', pflegegrad: 'antrag' }, { gdb: '60', behinderung: true, ausbildung: 'ich', babBetrieb: true, babWohnt: true }, { ausbildung: 'ich', babBetrieb: true, babWohnt: false }, { bezug: { grundsicherungsgeld: true } , erwerbsgemindert: true }]) {
+  for (const extra of [{}, { unterhaltFehlt: true, kinder12: true }, { ausbildung: 'kind' }, { ausbildung: 'ich', alterGruppe: '<30', vermoegen: 20000 }, { ausbildung: 'ich', alterGruppe: '50+' }, { pflegegrad: '1' }, { pflegegrad: '3' }, { pflegegrad: 'antrag' }, { bezug: { grundsicherungsgeld: true, kindergeld: true } }, { bezug: { sozialamt: true, wohngeld: true, kiz: true } }, { vermoegen: 99999 }, { erwerbsgemindert: true }, { mietstufe: 4, behinderung: true }, { bezug: { wohngeld: true } }, { bezug: { kiz: true } }, { ausbildung: 'ich', alterGruppe: '30-39', vermoegen: 1000 }, { bhPerson: 'minder', gdb: '50', blind: 'blind', pflegegrad: '3' }, { bhPerson: 'erwVor25', bhSelbst: true, gdb: '100' }, { bhPerson: 'erwVor25', gdb: 'H', blind: 'hoch', pflegegrad: '2' }, { bhPerson: 'erwNach25', gdb: '30', emStd: 'unter3', em5: true }, { emStd: '3bis6', wfbm: true, gdb: '20' }, { emStd: '3bis6', gdb: '40', pflegegrad: 'antrag' }, { gdb: '60', behinderung: true, ausbildung: 'ich', babBetrieb: true, babWohnt: true }, { ausbildung: 'ich', babBetrieb: true, babWohnt: false }, { bezug: { grundsicherungsgeld: true } , erwerbsgemindert: true }]) {
     states.push({ adults, kids, young, brutto: b, netto: b * 0.8, miete: 650, alter, ...extra });
   }
 }

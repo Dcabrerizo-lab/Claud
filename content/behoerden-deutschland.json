@@ -1,0 +1,3924 @@
+{
+ "stand": "Website laut Wikidata (CC0), abgerufen 10.11.2026; Anschriften: Impressum der Behörden und Wikipedia (Handy-Abruf), geprüft (PLZ im Land, Abgleich beider Quellen)",
+ "kreise": {
+  "10041": {
+   "name": "Regionalverband Saarbrücken",
+   "web": "https://www.regionalverband-saarbruecken.de/",
+   "typ": "kreis",
+   "wiki": "Regionalverband Saarbrücken",
+   "anschrift": [
+    "Schlossplatz 12",
+    "66119 Saarbrücken"
+   ],
+   "quelle": "https://www.regionalverband-saarbruecken.de/service/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "10042": {
+   "name": "Merzig-Wadern",
+   "web": "https://www.merzig-wadern.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Merzig-Wadern",
+   "anschrift": [
+    "Bahnhofstraße 44",
+    "66663 Merzig"
+   ],
+   "quelle": "https://www.merzig-wadern.de/Service/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "10043": {
+   "name": "Neunkirchen",
+   "web": "https://www.landkreis-neunkirchen.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Neunkirchen",
+   "anschrift": [
+    "Wilhelm-Heinrich-Straße 36",
+    "66564 Ottweiler"
+   ],
+   "quelle": "https://www.landkreis-neunkirchen.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "10044": {
+   "name": "Saarlouis",
+   "web": "https://www.kreis-saarlouis.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Saarlouis",
+   "anschrift": [
+    "Kaiser-Wilhelm-Straße 4–6",
+    "66740 Saarlouis"
+   ],
+   "quelle": "https://www.kreis-saarlouis.de/Impressum.htm",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "10045": {
+   "name": "Saarpfalz-Kreis",
+   "web": "https://www.saarpfalz-kreis.de/",
+   "typ": "kreis",
+   "wiki": "Saarpfalz-Kreis",
+   "anschrift": [
+    "Am Forum 1",
+    "66424 Homburg"
+   ],
+   "quelle": "https://www.saarpfalz-kreis.de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "10046": {
+   "name": "St. Wendel",
+   "web": "https://www.landkreis-st-wendel.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis St. Wendel",
+   "anschrift": [
+    "Mommstraße 21–31",
+    "66606 St. Wendel"
+   ],
+   "quelle": "https://www.landkreis-st-wendel.de/footer/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "12051": {
+   "name": "Stadt Brandenburg an der Havel",
+   "web": "https://www.stadt-brandenburg.de/",
+   "typ": "stadt",
+   "wiki": "Brandenburg an der Havel",
+   "anschrift": [
+    "Altstädtischer Markt 10",
+    "14770 Brandenburg an der Havel"
+   ],
+   "quelle": "https://www.stadt-brandenburg.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "12052": {
+   "name": "Stadt Cottbus",
+   "web": "https://www.cottbus.de/",
+   "typ": "stadt",
+   "wiki": "Cottbus",
+   "anschrift": [
+    "Neumarkt 5",
+    "03046 Cottbus"
+   ],
+   "quelle": "https://cottbus.de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "12053": {
+   "name": "Stadt Frankfurt (Oder)",
+   "web": "https://www.frankfurt-oder.de/",
+   "typ": "stadt",
+   "wiki": "Frankfurt (Oder)",
+   "anschrift": [
+    "Am Marktplatz 1",
+    "15230 Frankfurt (Oder)"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Frankfurt_%28Oder%29",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "12054": {
+   "name": "Stadt Potsdam",
+   "web": "https://www.potsdam.de/",
+   "typ": "stadt",
+   "wiki": "Potsdam",
+   "anschrift": [
+    "Friedrich-Ebert-Straße 79/81",
+    "14469 Potsdam"
+   ],
+   "quelle": "https://www.potsdam.de/de/content/impressum-von-wwwpotsdamde",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "12060": {
+   "name": "Landkreis Barnim",
+   "web": "https://www.barnim.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Barnim",
+   "anschrift": [
+    "Am Markt 1",
+    "16225 Eberswalde"
+   ],
+   "quelle": "https://www.barnim.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "12061": {
+   "name": "Landkreis Dahme-Spreewald",
+   "web": "https://www.dahme-spreewald.info/",
+   "typ": "kreis",
+   "wiki": "Landkreis Dahme-Spreewald",
+   "anschrift": [
+    "Reutergasse 12",
+    "15907 Lübben (Spreewald)"
+   ],
+   "quelle": "https://www.dahme-spreewald.de/de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "12062": {
+   "name": "Landkreis Elbe-Elster",
+   "web": "https://www.lkee.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Elbe-Elster",
+   "anschrift": [
+    "Ludwig-Jahn-Straße 2",
+    "04916 Herzberg (Elster)"
+   ],
+   "quelle": "https://www.lkee.de/Quickmenu/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "12063": {
+   "name": "Landkreis Havelland",
+   "web": "https://www.havelland.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Havelland",
+   "anschrift": [
+    "Platz der Freiheit 1",
+    "14712 Rathenow"
+   ],
+   "quelle": "https://www.havelland.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "12064": {
+   "name": "Landkreis Märkisch-Oderland",
+   "web": "https://www.maerkisch-oderland.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Märkisch-Oderland",
+   "anschrift": [
+    "Puschkinplatz 12",
+    "15306 Seelow"
+   ],
+   "quelle": "https://www.maerkisch-oderland.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "12065": {
+   "name": "Landkreis Oberhavel",
+   "web": "https://www.oberhavel.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Oberhavel",
+   "anschrift": [
+    "Adolf-Dechert-Straße 1",
+    "16515 Oranienburg"
+   ],
+   "quelle": "https://www.oberhavel.de/Quicknavigation/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "12066": {
+   "name": "Landkreis Oberspreewald-Lausitz",
+   "web": "https://www.osl-online.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Oberspreewald-Lausitz",
+   "anschrift": [
+    "Dubinaweg 1",
+    "01968 Senftenberg"
+   ],
+   "quelle": "https://www.osl-online.de/impressum/index.php",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "12067": {
+   "name": "Landkreis Oder-Spree",
+   "web": "https://www.landkreis-oder-spree.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Oder-Spree",
+   "anschrift": [
+    "Breitscheidstraße 7",
+    "15848 Beeskow"
+   ],
+   "quelle": "https://www.landkreis-oder-spree.de/Schnellnavigation/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "12068": {
+   "name": "Landkreis Ostprignitz-Ruppin",
+   "web": "https://www.ostprignitz-ruppin.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Ostprignitz-Ruppin",
+   "anschrift": [
+    "Virchowstraße 14–16",
+    "16816 Neuruppin"
+   ],
+   "quelle": "https://www.ostprignitz-ruppin.de/Kurzmen%C3%BC/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "12069": {
+   "name": "Landkreis Potsdam-Mittelmark",
+   "web": "https://www.potsdam-mittelmark.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Potsdam-Mittelmark",
+   "anschrift": [
+    "Niemöllerstraße 1",
+    "14806 Bad Belzig"
+   ],
+   "quelle": "https://www.potsdam-mittelmark.de/de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "12070": {
+   "name": "Landkreis Prignitz",
+   "web": "https://landkreis-prignitz.de",
+   "typ": "kreis",
+   "wiki": "Landkreis Prignitz",
+   "anschrift": [
+    "Berliner Straße 49",
+    "19348 Perleberg"
+   ],
+   "quelle": "https://landkreis-prignitz.de/de/impressum/index.php",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "12071": {
+   "name": "Landkreis Spree-Neiße",
+   "web": "https://www.lkspn.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Spree-Neiße",
+   "anschrift": [
+    "Heinrich-Heine-Straße 1",
+    "03149 Forst (Lausitz)"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Landkreis_Spree-Nei%C3%9Fe",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "12072": {
+   "name": "Landkreis Teltow-Fläming",
+   "web": "https://www.teltow-flaeming.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Teltow-Fläming",
+   "anschrift": [
+    "Am Nuthefließ 2",
+    "14943 Luckenwalde"
+   ],
+   "quelle": "https://www.teltow-flaeming.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "12073": {
+   "name": "Landkreis Uckermark",
+   "web": "https://www.uckermark.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Uckermark",
+   "anschrift": [
+    "Karl-Marx-Straße 1",
+    "17291 Prenzlau"
+   ],
+   "quelle": "https://www.uckermark.de/Kurzmen%C3%BC/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "13003": {
+   "name": "Stadt Rostock",
+   "web": "https://www.rostock.de/",
+   "typ": "stadt",
+   "wiki": "Rostock",
+   "anschrift": [
+    "Neuer Markt 1",
+    "18055 Rostock"
+   ],
+   "quelle": "https://www.rostock.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "13004": {
+   "name": "Stadt Schwerin",
+   "web": "https://www.schwerin.de/",
+   "typ": "stadt",
+   "wiki": "Schwerin",
+   "anschrift": [
+    "Am Packhof 2–6",
+    "19053 Schwerin"
+   ],
+   "quelle": "https://www.schwerin.de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "13071": {
+   "name": "Mecklenburgische Seenplatte",
+   "web": "https://www.lk-mecklenburgische-seenplatte.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Mecklenburgische Seenplatte",
+   "anschrift": [
+    "Platanenstraße 43",
+    "17033 Neubrandenburg"
+   ],
+   "quelle": "https://www.lk-mecklenburgische-seenplatte.de/Schnellnavigation/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "13072": {
+   "name": "Landkreis Rostock",
+   "web": "https://www.landkreis-rostock.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Rostock",
+   "anschrift": [
+    "Am Wall 3–5",
+    "18273 Güstrow"
+   ],
+   "quelle": "https://www.landkreis-rostock.de/de/impressum-lkr.html",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "13073": {
+   "name": "Vorpommern-Rügen",
+   "web": "https://www.lk-vr.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Vorpommern-Rügen",
+   "anschrift": [
+    "Carl-Heydemann-Ring 67",
+    "18437 Stralsund"
+   ],
+   "quelle": "https://www.lk-vr.de/Quicknavigation/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "13074": {
+   "name": "Nordwestmecklenburg",
+   "web": "https://www.nordwestmecklenburg.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Nordwestmecklenburg",
+   "anschrift": [
+    "Rostocker Straße 76",
+    "23970 Wismar"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Landkreis_Nordwestmecklenburg",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "13075": {
+   "name": "Vorpommern-Greifswald",
+   "web": "https://www.kreis-vg.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Vorpommern-Greifswald",
+   "anschrift": [
+    "Feldstraße 85a",
+    "17489 Greifswald"
+   ],
+   "quelle": "https://www.kreis-vg.de/Kurzmen%C3%BC/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "13076": {
+   "name": "Ludwigslust-Parchim",
+   "web": "https://www.kreis-lup.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Ludwigslust-Parchim",
+   "anschrift": [
+    "Putlitzer Straße 25",
+    "19370 Parchim"
+   ],
+   "quelle": "https://www.kreis-lup.de/Kurzmen%C3%BC/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "14511": {
+   "name": "Stadt Chemnitz",
+   "web": "https://www.chemnitz.de/",
+   "typ": "stadt",
+   "wiki": "Chemnitz",
+   "anschrift": [
+    "Markt 1",
+    "09111 Chemnitz"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Chemnitz",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "14521": {
+   "name": "Erzgebirgskreis",
+   "web": "https://www.erzgebirgskreis.de/",
+   "typ": "kreis",
+   "wiki": "Erzgebirgskreis",
+   "anschrift": [
+    "Paulus-Jenisius-Straße 24",
+    "09456 Annaberg-Buchholz"
+   ],
+   "quelle": "https://www.erzgebirgskreis.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "14522": {
+   "name": "Landkreis Mittelsachsen",
+   "web": "https://www.landkreis-mittelsachsen.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Mittelsachsen",
+   "anschrift": [
+    "Frauensteiner Straße 43",
+    "09599 Freiberg"
+   ],
+   "quelle": "https://www.landkreis-mittelsachsen.de/impressum.html",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "14523": {
+   "name": "Vogtlandkreis",
+   "web": "https://www.vogtlandkreis.de/",
+   "typ": "kreis",
+   "wiki": "Vogtlandkreis",
+   "anschrift": [
+    "Postplatz 5",
+    "08523 Plauen"
+   ],
+   "quelle": "https://www.vogtlandkreis.de/Quicknavigation/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "14524": {
+   "name": "Zwickau",
+   "web": "https://www.landkreis-zwickau.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Zwickau",
+   "anschrift": [
+    "Robert-Müller-Straße 4–8",
+    "08056 Zwickau"
+   ],
+   "quelle": "https://www.landkreis-zwickau.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "14612": {
+   "name": "Stadt Dresden",
+   "web": "https://www.dresden.de/",
+   "typ": "stadt",
+   "wiki": "Dresden",
+   "anschrift": [
+    "Dr.-Külz-Ring 19",
+    "01067 Dresden"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Dresden",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "14625": {
+   "name": "Landkreis Bautzen",
+   "web": "https://www.landkreis-bautzen.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Bautzen",
+   "anschrift": [
+    "Bahnhofstraße 9",
+    "02625 Bautzen"
+   ],
+   "quelle": "https://www.landkreis-bautzen.de/impressum.php",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "14626": {
+   "name": "Landkreis Görlitz",
+   "web": "https://www.kreis-goerlitz.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Görlitz",
+   "anschrift": [
+    "Bahnhofstraße 24",
+    "02826 Görlitz"
+   ],
+   "quelle": "https://www.kreis-goerlitz.de/Impressum.htm",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "14627": {
+   "name": "Landkreis Meißen",
+   "web": "https://www.kreis-meissen.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Meißen",
+   "anschrift": [
+    "Brauhausstraße 21",
+    "01662 Meißen"
+   ],
+   "quelle": "https://www.kreis-meissen.de/Kurzmen%C3%BC/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "14628": {
+   "name": "Landkreis Sächsische Schweiz",
+   "web": "https://www.landratsamt-pirna.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Sächsische Schweiz-Osterzgebirge",
+   "anschrift": [
+    "Schloßhof 2/4",
+    "01796 Pirna"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Landkreis_S%C3%A4chsische_Schweiz-Osterzgebirge",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "14713": {
+   "name": "Stadt Leipzig",
+   "web": "https://www.leipzig.de/",
+   "typ": "stadt",
+   "wiki": "Leipzig",
+   "anschrift": [
+    "Martin-Luther-Ring 4–6",
+    "04109 Leipzig"
+   ],
+   "quelle": "https://www.leipzig.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "14729": {
+   "name": "Landkreis Leipzig",
+   "web": "https://www.landkreisleipzig.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Leipzig",
+   "anschrift": [
+    "Stauffenbergstraße 4",
+    "04552 Borna"
+   ],
+   "quelle": "https://www.landkreisleipzig.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "14730": {
+   "name": "Landkreis Nordsachsen",
+   "web": "https://www.landkreis-nordsachsen.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Nordsachsen",
+   "anschrift": [
+    "Schloßstraße 27",
+    "04860 Torgau"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Landkreis_Nordsachsen",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "15001": {
+   "name": "Stadt Dessau-Roßlau",
+   "web": "https://verwaltung.dessau-rosslau.de/",
+   "typ": "stadt",
+   "wiki": "Dessau-Roßlau",
+   "anschrift": [
+    "Zerbster Straße 4",
+    "06844 Dessau-Roßlau"
+   ],
+   "quelle": "https://verwaltung.dessau-rosslau.de/impressum.html",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "15002": {
+   "name": "Stadt Halle",
+   "web": "https://halle.de/",
+   "typ": "stadt",
+   "wiki": "Halle (Saale)",
+   "anschrift": [
+    "Marktplatz 1",
+    "06108 Halle (Saale)"
+   ],
+   "quelle": "https://halle.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "15003": {
+   "name": "Stadt Magdeburg",
+   "web": "https://www.magdeburg.de/",
+   "typ": "stadt",
+   "wiki": "Magdeburg",
+   "anschrift": [
+    "Alter Markt 6",
+    "39104 Magdeburg"
+   ],
+   "quelle": "https://www.magdeburg.de/B%C3%BCrger-Stadt/System/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "15081": {
+   "name": "Altmarkkreis Salzwedel",
+   "web": "https://www.altmarkkreis-salzwedel.de/",
+   "typ": "kreis",
+   "wiki": "Altmarkkreis Salzwedel",
+   "anschrift": [
+    "Karl-Marx-Straße 32",
+    "29410 Salzwedel"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Altmarkkreis_Salzwedel",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "15082": {
+   "name": "Anhalt-Bitterfeld",
+   "web": "https://www.anhalt-bitterfeld.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Anhalt-Bitterfeld",
+   "anschrift": [
+    "Am Flugplatz 1",
+    "06366 Köthen (Anhalt)"
+   ],
+   "quelle": "https://www.anhalt-bitterfeld.de/de/lkabi-impressum.html",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "15083": {
+   "name": "Börde",
+   "web": "https://www.landkreis-boerde.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Börde",
+   "anschrift": [
+    "Bornsche Straße 2",
+    "39340 Haldensleben"
+   ],
+   "quelle": "https://www.landkreis-boerde.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "15084": {
+   "name": "Burgenlandkreis",
+   "web": "https://www.burgenlandkreis.de/",
+   "typ": "kreis",
+   "wiki": "Burgenlandkreis",
+   "anschrift": [
+    "Schönburger Straße 41",
+    "06618 Naumburg"
+   ],
+   "quelle": "https://www.burgenlandkreis.de/de/impressum.html",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "15085": {
+   "name": "Landkreis Harz",
+   "web": "https://www.kreis-hz.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Harz",
+   "anschrift": [
+    "Friedrich-Ebert-Straße 42",
+    "38820 Halberstadt"
+   ],
+   "quelle": "https://www.kreis-hz.de/de/impressum.html",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "15086": {
+   "name": "Jerichower Land",
+   "web": "https://www.lkjl.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Jerichower Land",
+   "anschrift": [
+    "Bahnhofstraße 9",
+    "39288 Burg"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Landkreis_Jerichower_Land",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "15087": {
+   "name": "Mansfeld-Südharz",
+   "web": "https://www.mansfeldsuedharz.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Mansfeld-Südharz",
+   "anschrift": [
+    "Rudolf-Breitscheid-Straße 20/22",
+    "06526 Sangerhausen"
+   ],
+   "quelle": "https://www.mansfeldsuedharz.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "15088": {
+   "name": "Saalekreis",
+   "web": "https://www.saalekreis.de/",
+   "typ": "kreis",
+   "wiki": "Saalekreis",
+   "anschrift": [
+    "Domplatz 9",
+    "06217 Merseburg"
+   ],
+   "quelle": "https://www.saalekreis.de/de/impressum.html",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "15089": {
+   "name": "Salzlandkreis",
+   "web": "https://www.salzlandkreis.de/",
+   "typ": "kreis",
+   "wiki": "Salzlandkreis",
+   "anschrift": [
+    "Karlsplatz 37",
+    "06406 Bernburg"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Salzlandkreis",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "15090": {
+   "name": "Landkreis Stendal",
+   "web": "https://www.landkreis-stendal.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Stendal",
+   "anschrift": [
+    "Hospitalstraße 1–2",
+    "39576 Stendal"
+   ],
+   "quelle": "https://www.landkreis-stendal.de/de/impressum.html",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "15091": {
+   "name": "Landkreis Wittenberg",
+   "web": "https://www.landkreis-wittenberg.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Wittenberg",
+   "anschrift": [
+    "Breitscheidstraße 3",
+    "06886 Lutherstadt Wittenberg"
+   ],
+   "quelle": "https://www.landkreis-wittenberg.de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "16051": {
+   "name": "Stadt Erfurt",
+   "web": "https://www.erfurt.de/",
+   "typ": "stadt",
+   "wiki": "Erfurt",
+   "anschrift": [
+    "Fischmarkt 1",
+    "99084 Erfurt"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Erfurt",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "16052": {
+   "name": "Stadt Gera",
+   "web": "https://www.gera.de/",
+   "typ": "stadt",
+   "wiki": "Gera",
+   "anschrift": [
+    "Kornmarkt 12",
+    "07545 Gera"
+   ],
+   "quelle": "https://www.gera.de/rechtliches/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "16053": {
+   "name": "Stadt Jena",
+   "web": "https://www.jena.de/",
+   "typ": "stadt",
+   "wiki": "Jena",
+   "anschrift": [
+    "Am Anger 15",
+    "07743 Jena"
+   ],
+   "quelle": "https://rathaus.jena.de/de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "16054": {
+   "name": "Stadt Suhl",
+   "web": "https://www.suhl.eu/",
+   "typ": "stadt",
+   "wiki": "Suhl",
+   "anschrift": [
+    "Am Marktplatz 1",
+    "98527 Suhl"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Suhl",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "16055": {
+   "name": "Stadt Weimar",
+   "web": "https://www.weimar.de/",
+   "typ": "stadt",
+   "wiki": "Weimar",
+   "anschrift": [
+    "Schwanseestraße 17",
+    "99423 Weimar"
+   ],
+   "quelle": "https://www.weimar.de/leben/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "16061": {
+   "name": "Eichsfeld",
+   "web": "https://www.kreis-eic.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Eichsfeld",
+   "anschrift": [
+    "Friedensplatz 8",
+    "37308 Heilbad Heiligenstadt"
+   ],
+   "quelle": "https://www.kreis-eic.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "16062": {
+   "name": "Landkreis Nordhausen",
+   "web": "https://landkreis-nordhausen.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Nordhausen",
+   "anschrift": [
+    "Grimmelallee 23",
+    "99734 Nordhausen"
+   ],
+   "quelle": "https://landkreis-nordhausen.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "16063": {
+   "name": "Wartburgkreis",
+   "web": "https://www.wartburgkreis.de/",
+   "typ": "kreis",
+   "wiki": "Wartburgkreis",
+   "anschrift": [
+    "Erzberger Allee 14",
+    "36433 Bad Salzungen"
+   ],
+   "quelle": "https://www.wartburgkreis.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "16064": {
+   "name": "Unstrut-Hainich-Kreis",
+   "web": "https://www.unstrut-hainich-kreis.de/",
+   "typ": "kreis",
+   "wiki": "Unstrut-Hainich-Kreis",
+   "anschrift": [
+    "Lindenhof 1",
+    "99974 Mühlhausen/Thüringen"
+   ],
+   "quelle": "https://www.unstrut-hainich-kreis.de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "16065": {
+   "name": "Kyffhäuserkreis",
+   "web": "https://www.kyffhaeuser.de/",
+   "typ": "kreis",
+   "wiki": "Kyffhäuserkreis",
+   "anschrift": [
+    "Markt 8",
+    "99706 Sondershausen"
+   ],
+   "quelle": "https://www.kyffhaeuser.de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "16066": {
+   "name": "Landkreis Schmalkalden-Meiningen",
+   "web": "https://www.lra-sm.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Schmalkalden-Meiningen",
+   "anschrift": [
+    "Obertshäuser Platz 1",
+    "98617 Meiningen"
+   ],
+   "quelle": "https://www.lra-sm.de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "16067": {
+   "name": "Landkreis Gotha",
+   "web": "https://www.landkreis-gotha.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Gotha",
+   "anschrift": [
+    "18.-März-Straße 50",
+    "99867 Gotha"
+   ],
+   "quelle": "https://www.landkreis-gotha.de/funktionsmenue/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "16068": {
+   "name": "Landkreis Sömmerda",
+   "web": "https://www.lra-soemmerda.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Sömmerda",
+   "anschrift": [
+    "Bahnhofstraße 9",
+    "99610 Sömmerda"
+   ],
+   "quelle": "https://www.lra-soemmerda.de/?page_id=57",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "16069": {
+   "name": "Landkreis Hildburghausen",
+   "web": "https://www.landkreis-hildburghausen.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Hildburghausen",
+   "anschrift": [
+    "Wiesenstraße 18",
+    "98646 Hildburghausen"
+   ],
+   "quelle": "https://www.landkreis-hildburghausen.de/Schnellnavigation/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "16070": {
+   "name": "Ilm-Kreis",
+   "web": "https://www.ilm-kreis.de/",
+   "typ": "kreis",
+   "wiki": "Ilm-Kreis",
+   "anschrift": [
+    "Ritterstraße 14",
+    "99310 Arnstadt"
+   ],
+   "quelle": "https://www.ilm-kreis.de/Quicknavigation/Impressum-Datenschutzerkl%C3%A4rung/Datenschutzerkl%C3%A4rung/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "16071": {
+   "name": "Weimarer Land",
+   "web": "https://weimarerland.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Weimarer Land",
+   "anschrift": [
+    "Bahnhofstraße 28",
+    "99510 Apolda"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Landkreis_Weimarer_Land",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "16072": {
+   "name": "Landkreis Sonneberg",
+   "web": "https://www.kreis-sonneberg.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Sonneberg",
+   "anschrift": [
+    "Bahnhofstraße 66",
+    "96515 Sonneberg"
+   ],
+   "quelle": "https://www.kreis-sonneberg.de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "16073": {
+   "name": "Saalfeld-Rudolstadt",
+   "web": "https://www.kreis-slf.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Saalfeld-Rudolstadt",
+   "anschrift": [
+    "Schloßstraße 24",
+    "07318 Saalfeld/Saale"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Landkreis_Saalfeld-Rudolstadt",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "16074": {
+   "name": "Saale-Holzland-Kreis",
+   "web": "https://www.saaleholzlandkreis.de/",
+   "typ": "kreis",
+   "wiki": "Saale-Holzland-Kreis"
+  },
+  "16075": {
+   "name": "Saale-Orla-Kreis",
+   "web": "https://www.saale-orla-kreis.de/",
+   "typ": "kreis",
+   "wiki": "Saale-Orla-Kreis",
+   "anschrift": [
+    "Oschitzer Straße 4",
+    "07907 Schleiz"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Saale-Orla-Kreis",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "16076": {
+   "name": "Landkreis Greiz",
+   "web": "https://www.landkreis-greiz.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Greiz",
+   "anschrift": [
+    "Dr.-Rathenau-Platz 11",
+    "07973 Greiz"
+   ],
+   "quelle": "https://www.landkreis-greiz.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "16077": {
+   "name": "Altenburger Land",
+   "web": "https://www.altenburgerland.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Altenburger Land",
+   "anschrift": [
+    "Lindenaustraße 9",
+    "04600 Altenburg"
+   ],
+   "quelle": "https://www.altenburgerland.de/de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "08111": {
+   "name": "Stadt Stuttgart",
+   "web": "https://www.stuttgart.de/",
+   "typ": "stadt",
+   "wiki": "Stuttgart",
+   "anschrift": [
+    "Marktplatz 1",
+    "70173 Stuttgart"
+   ],
+   "quelle": "https://www.stuttgart.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "08115": {
+   "name": "Landkreis Böblingen",
+   "web": "https://www.lrabb.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Böblingen",
+   "anschrift": [
+    "Parkstraße 16",
+    "71034 Böblingen"
+   ],
+   "quelle": "https://www.lrabb.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "08116": {
+   "name": "Landkreis Esslingen",
+   "web": "https://www.landkreis-esslingen.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Esslingen",
+   "anschrift": [
+    "Pulverwiesen 11",
+    "73728 Esslingen am Neckar"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Landkreis_Esslingen",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "08117": {
+   "name": "Landkreis Göppingen",
+   "web": "https://www.landkreis-goeppingen.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Göppingen",
+   "anschrift": [
+    "Lorcher Straße 6",
+    "73033 Göppingen"
+   ],
+   "quelle": "https://www.landkreis-goeppingen.de/21947539",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "08118": {
+   "name": "Landkreis Ludwigsburg",
+   "web": "https://www.landkreis-ludwigsburg.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Ludwigsburg",
+   "anschrift": [
+    "Hindenburgstraße 40",
+    "71638 Ludwigsburg"
+   ],
+   "quelle": "https://www.landkreis-ludwigsburg.de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "08119": {
+   "name": "Rems-Murr-Kreis",
+   "web": "https://www.rems-murr-kreis.de/",
+   "typ": "kreis",
+   "wiki": "Rems-Murr-Kreis",
+   "anschrift": [
+    "Alter Postplatz 10",
+    "71332 Waiblingen"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Rems-Murr-Kreis",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "08121": {
+   "name": "Stadt Heilbronn",
+   "web": "https://www.heilbronn.de/",
+   "typ": "stadt",
+   "wiki": "Heilbronn",
+   "anschrift": [
+    "Marktplatz 7",
+    "74072 Heilbronn"
+   ],
+   "quelle": "https://www.heilbronn.de/impressum.html",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "08125": {
+   "name": "Landkreis Heilbronn",
+   "web": "https://www.landkreis-heilbronn.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Heilbronn",
+   "anschrift": [
+    "Lerchenstraße 40",
+    "74072 Heilbronn"
+   ],
+   "quelle": "https://www.landkreis-heilbronn.de/impressum.8693.htm",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "08126": {
+   "name": "Hohenlohekreis",
+   "web": "https://www.hohenlohekreis.de/",
+   "typ": "kreis",
+   "wiki": "Hohenlohekreis",
+   "anschrift": [
+    "Allee 17",
+    "74653 Künzelsau"
+   ],
+   "quelle": "https://www.hohenlohekreis.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "08127": {
+   "name": "Landkreis Schwäbisch Hall",
+   "web": "https://www.lrasha.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Schwäbisch Hall",
+   "anschrift": [
+    "Münzstraße 1",
+    "74523 Schwäbisch Hall"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Landkreis_Schw%C3%A4bisch_Hall",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "08128": {
+   "name": "Main-Tauber-Kreis",
+   "web": "https://www.main-tauber-kreis.de/",
+   "typ": "kreis",
+   "wiki": "Main-Tauber-Kreis",
+   "anschrift": [
+    "Gartenstraße 1",
+    "97941 Tauberbischofsheim"
+   ],
+   "quelle": "https://www.main-tauber-kreis.de/Service/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "08135": {
+   "name": "Landkreis Heidenheim",
+   "web": "http://www.landkreis-heidenheim.de",
+   "typ": "kreis",
+   "wiki": "Landkreis Heidenheim",
+   "anschrift": [
+    "Felsenstraße 36",
+    "89518 Heidenheim an der Brenz"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Landkreis_Heidenheim",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "08136": {
+   "name": "Ostalbkreis",
+   "web": "https://www.ostalbkreis.de/",
+   "typ": "kreis",
+   "wiki": "Ostalbkreis",
+   "anschrift": [
+    "Stuttgarter Straße 41",
+    "73430 Aalen"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Ostalbkreis",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "08211": {
+   "name": "Stadt Baden-Baden",
+   "web": "https://www.baden-baden.de/",
+   "typ": "stadt",
+   "wiki": "Baden-Baden",
+   "anschrift": [
+    "Marktplatz 2",
+    "76530 Baden-Baden"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Baden-Baden",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "08212": {
+   "name": "Stadt Karlsruhe",
+   "web": "https://www.karlsruhe.de/",
+   "typ": "stadt",
+   "wiki": "Karlsruhe",
+   "anschrift": [
+    "Karl-Friedrich-Straße 10",
+    "76133 Karlsruhe"
+   ],
+   "quelle": "https://www.karlsruhe.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "08215": {
+   "name": "Landkreis Karlsruhe",
+   "web": "https://www.landkreis-karlsruhe.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Karlsruhe",
+   "anschrift": [
+    "Kriegsstraße 100",
+    "76133 Karlsruhe"
+   ],
+   "quelle": "https://www.landkreis-karlsruhe.de/Quicknavigation/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "08216": {
+   "name": "Landkreis Rastatt",
+   "web": "https://www.landkreis-rastatt.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Rastatt",
+   "anschrift": [
+    "Am Schlossplatz 5",
+    "76437 Rastatt"
+   ],
+   "quelle": "https://www.landkreis-rastatt.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "08221": {
+   "name": "Stadt Heidelberg",
+   "web": "https://www.heidelberg.de/",
+   "typ": "stadt",
+   "wiki": "Heidelberg",
+   "anschrift": [
+    "Marktplatz 10",
+    "69117 Heidelberg"
+   ],
+   "quelle": "https://www.heidelberg.de/HD/service/impressum.html",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "08222": {
+   "name": "Stadt Mannheim",
+   "web": "https://www.mannheim.de/",
+   "typ": "stadt",
+   "wiki": "Mannheim",
+   "anschrift": [
+    "Rathaus E 5",
+    "68159 Mannheim"
+   ],
+   "quelle": "https://www.mannheim.de/de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "08225": {
+   "name": "Neckar-Odenwald-Kreis",
+   "web": "http://www.neckar-odenwald-kreis.de",
+   "typ": "kreis",
+   "wiki": "Neckar-Odenwald-Kreis",
+   "anschrift": [
+    "Neckarelzer Straße 7",
+    "74821 Mosbach"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Neckar-Odenwald-Kreis",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "08226": {
+   "name": "Rhein-Neckar-Kreis",
+   "web": "https://www.rhein-neckar-kreis.de",
+   "typ": "kreis",
+   "wiki": "Rhein-Neckar-Kreis",
+   "anschrift": [
+    "Kurfürstenanlage 38–40",
+    "69115 Heidelberg"
+   ],
+   "quelle": "https://www.rhein-neckar-kreis.de/3848756",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "08231": {
+   "name": "Stadt Pforzheim",
+   "web": "https://www.pforzheim.de/",
+   "typ": "stadt",
+   "wiki": "Pforzheim",
+   "anschrift": [
+    "Marktplatz 1",
+    "75175 Pforzheim"
+   ],
+   "quelle": "https://www.pforzheim.de/servicemenu/impressum.html",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "08235": {
+   "name": "Landkreis Calw",
+   "web": "https://www.kreis-calw.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Calw",
+   "anschrift": [
+    "Vogteistraße 42–46",
+    "75365 Calw"
+   ],
+   "quelle": "https://www.kreis-calw.de/Schnellnavigation/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "08236": {
+   "name": "Enzkreis",
+   "web": "https://www.enzkreis.de/",
+   "typ": "kreis",
+   "wiki": "Enzkreis",
+   "anschrift": [
+    "Zähringerallee 3",
+    "75177 Pforzheim"
+   ],
+   "quelle": "https://www.enzkreis.de/Sonstiges/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "08237": {
+   "name": "Freudenstadt",
+   "web": "https://www.landkreis-freudenstadt.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Freudenstadt",
+   "anschrift": [
+    "Herrenfelder Straße 14",
+    "72250 Freudenstadt"
+   ],
+   "quelle": "https://www.kreis-fds.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "08311": {
+   "name": "Stadt Freiburg im Breisgau",
+   "web": "https://www.freiburg.de/",
+   "typ": "stadt",
+   "wiki": "Freiburg im Breisgau",
+   "anschrift": [
+    "Rathausplatz 2–4",
+    "79098 Freiburg im Breisgau"
+   ],
+   "quelle": "https://www.freiburg.de/pb/224613.html",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "08315": {
+   "name": "Landkreis Breisgau-Hochschwarzwald",
+   "web": "https://www.breisgau-hochschwarzwald.de",
+   "typ": "kreis",
+   "wiki": "Landkreis Breisgau-Hochschwarzwald",
+   "anschrift": [
+    "Stadtstraße 2",
+    "79104 Freiburg im Breisgau"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Landkreis_Breisgau-Hochschwarzwald",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "08316": {
+   "name": "Landkreis Emmendingen",
+   "web": "http://www.landkreis-emmendingen.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Emmendingen",
+   "anschrift": [
+    "Bahnhofstraße 2–4",
+    "79312 Emmendingen"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Landkreis_Emmendingen",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "08317": {
+   "name": "Ortenaukreis",
+   "web": "https://www.ortenaukreis.de/",
+   "typ": "kreis",
+   "wiki": "Ortenaukreis",
+   "anschrift": [
+    "Badstraße 20",
+    "77652 Offenburg"
+   ],
+   "quelle": "https://www.ortenaukreis.de/Kurzmen%C3%BC/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "08325": {
+   "name": "Landkreis Rottweil",
+   "web": "https://www.landkreis-rottweil.de",
+   "typ": "kreis",
+   "wiki": "Landkreis Rottweil",
+   "anschrift": [
+    "Königstraße 36",
+    "78628 Rottweil"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Landkreis_Rottweil",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "08326": {
+   "name": "Schwarzwald-Baar-Kreis",
+   "web": "https://www.lrasbk.de/",
+   "typ": "kreis",
+   "wiki": "Schwarzwald-Baar-Kreis",
+   "anschrift": [
+    "Am Hoptbühl 2",
+    "78048 Villingen-Schwenningen"
+   ],
+   "quelle": "https://www.lrasbk.de/Kurzmen%C3%BC/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "08327": {
+   "name": "Landkreis Tuttlingen",
+   "web": "http://www.landkreis-tuttlingen.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Tuttlingen",
+   "anschrift": [
+    "Bahnhofstraße 100",
+    "78532 Tuttlingen"
+   ],
+   "quelle": "https://www.landkreis-tuttlingen.de/Quicknavigation/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "08335": {
+   "name": "Landkreis Konstanz",
+   "web": "http://www.landkreis-konstanz.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Konstanz",
+   "anschrift": [
+    "Benediktinerplatz 1",
+    "78467 Konstanz"
+   ],
+   "quelle": "https://www.lrakn.de/strukturseiten/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "08336": {
+   "name": "Landkreis Lörrach",
+   "web": "https://www.loerrach-landkreis.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Lörrach",
+   "anschrift": [
+    "Palmstraße 3",
+    "79539 Lörrach"
+   ],
+   "quelle": "https://www.loerrach-landkreis.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "08337": {
+   "name": "Landkreis Waldshut",
+   "web": "https://www.landkreis-waldshut.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Waldshut",
+   "anschrift": [
+    "Kaiserstraße 110",
+    "79761 Waldshut-Tiengen"
+   ],
+   "quelle": "https://www.landkreis-waldshut.de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "08415": {
+   "name": "Landkreis Reutlingen",
+   "web": "http://www.kreis-reutlingen.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Reutlingen",
+   "anschrift": [
+    "Karlstraße 99",
+    "72766 Reutlingen"
+   ],
+   "quelle": "https://www.kreis-reutlingen.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "08416": {
+   "name": "Landkreis Tübingen",
+   "web": "http://www.kreis-tuebingen.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Tübingen",
+   "anschrift": [
+    "Wilhelm-Keil-Straße 50",
+    "72072 Tübingen"
+   ],
+   "quelle": "https://www.kreis-tuebingen.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "08417": {
+   "name": "Zollernalbkreis",
+   "web": "http://www.zollernalbkreis.de",
+   "typ": "kreis",
+   "wiki": "Zollernalbkreis",
+   "anschrift": [
+    "Hirschbergstraße 29",
+    "72336 Balingen"
+   ],
+   "quelle": "https://www.zollernalbkreis.de/landratsamt/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "08421": {
+   "name": "Stadt Ulm",
+   "web": "https://www.ulm.de/",
+   "typ": "stadt",
+   "wiki": "Ulm",
+   "anschrift": [
+    "Marktplatz 1",
+    "89073 Ulm"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Ulm",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "08425": {
+   "name": "Alb-Donau-Kreis",
+   "web": "https://www.alb-donau-kreis.de",
+   "typ": "kreis",
+   "wiki": "Alb-Donau-Kreis",
+   "anschrift": [
+    "Schillerstraße 30",
+    "89077 Ulm"
+   ],
+   "quelle": "https://www.alb-donau-kreis.de/alb-donau-kreis/startseite/impressum.html",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "08426": {
+   "name": "Landkreis Biberach",
+   "web": "https://www.biberach.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Biberach",
+   "anschrift": [
+    "Rollinstraße 9",
+    "88400 Biberach"
+   ],
+   "quelle": "https://www.biberach.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "08435": {
+   "name": "Bodenseekreis",
+   "web": "http://www.bodenseekreis.de",
+   "typ": "kreis",
+   "wiki": "Bodenseekreis",
+   "anschrift": [
+    "Glärnischstraße 1–3",
+    "88045 Friedrichshafen"
+   ],
+   "quelle": "https://www.bodenseekreis.de/service/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "08436": {
+   "name": "Landkreis Ravensburg",
+   "web": "https://www.rv.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Ravensburg",
+   "anschrift": [
+    "Friedenstraße 6",
+    "88212 Ravensburg"
+   ],
+   "quelle": "https://www.rv.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "08437": {
+   "name": "Landkreis Sigmaringen",
+   "web": "https://www.landkreis-sigmaringen.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Sigmaringen",
+   "anschrift": [
+    "Leopoldstraße 4",
+    "72488 Sigmaringen"
+   ],
+   "quelle": "https://www.landkreis-sigmaringen.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "04011": {
+   "name": "Stadt Bremen",
+   "web": "https://www.bremen.de/",
+   "typ": "stadt",
+   "wiki": "Bremen",
+   "anschrift": [
+    "Am Markt 21",
+    "28195 Bremen"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Bremen",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "04012": {
+   "name": "Stadt Bremerhaven",
+   "web": "https://www.bremerhaven.de/",
+   "typ": "stadt",
+   "wiki": "Bremerhaven",
+   "anschrift": [
+    "Hinrich-Schmalfeldt-Straße 30",
+    "27576 Bremerhaven"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Bremerhaven",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "06411": {
+   "name": "Stadt Darmstadt",
+   "web": "https://www.darmstadt.de/",
+   "typ": "stadt",
+   "wiki": "Darmstadt",
+   "anschrift": [
+    "Luisenplatz 5",
+    "64283 Darmstadt"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Darmstadt",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "06412": {
+   "name": "Stadt Frankfurt am Main",
+   "web": "https://frankfurt.de",
+   "typ": "stadt",
+   "wiki": "Frankfurt am Main",
+   "anschrift": [
+    "Römerberg 23",
+    "60311 Frankfurt am Main"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Frankfurt_am_Main",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "06413": {
+   "name": "Stadt Offenbach am Main",
+   "web": "https://www.offenbach.de/",
+   "typ": "stadt",
+   "wiki": "Offenbach am Main",
+   "anschrift": [
+    "Berliner Straße 100",
+    "63065 Offenbach am Main"
+   ],
+   "quelle": "https://www.offenbach.de/service/impressum.php",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "06414": {
+   "name": "Stadt Wiesbaden",
+   "web": "https://www.wiesbaden.de/",
+   "typ": "stadt",
+   "wiki": "Wiesbaden",
+   "anschrift": [
+    "Schlossplatz 6",
+    "65183 Wiesbaden"
+   ],
+   "quelle": "https://www.wiesbaden.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "06431": {
+   "name": "Landkreis Bergstraße",
+   "web": "https://www.kreis-bergstrasse.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Bergstraße",
+   "anschrift": [
+    "Gräffstraße 5",
+    "64646 Heppenheim (Bergstraße)"
+   ],
+   "quelle": "https://www.kreis-bergstrasse.de/footer/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "06432": {
+   "name": "Landkreis Darmstadt-Dieburg",
+   "web": "https://www.ladadi.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Darmstadt-Dieburg",
+   "anschrift": [
+    "Jägertorstraße 207",
+    "64289 Darmstadt"
+   ],
+   "quelle": "https://www.ladadi.de/kreis-bildung/der-kreis/kreisverwaltung/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "06433": {
+   "name": "Landkreis Groß-Gerau",
+   "web": "https://www.kreisgg.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Groß-Gerau",
+   "anschrift": [
+    "Wilhelm-Seipp-Straße 4",
+    "64521 Groß-Gerau"
+   ],
+   "quelle": "https://www.kreisgg.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "06434": {
+   "name": "Hochtaunuskreis",
+   "web": "https://www.hochtaunuskreis.de/",
+   "typ": "kreis",
+   "wiki": "Hochtaunuskreis",
+   "anschrift": [
+    "Ludwig-Erhard-Anlage 1–5",
+    "61352 Bad Homburg v. d. Höhe"
+   ],
+   "quelle": "https://www.hochtaunuskreis.de/Kurzmen%C3%BC/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "06435": {
+   "name": "Main-Kinzig-Kreis",
+   "web": "https://www.mkk.de/",
+   "typ": "kreis",
+   "wiki": "Main-Kinzig-Kreis",
+   "anschrift": [
+    "Barbarossastraße 16–24",
+    "63571 Gelnhausen"
+   ],
+   "quelle": "https://www.mkk.de/de/mkk_de/technische_inhalte/Impressum.html",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "06436": {
+   "name": "Main-Taunus-Kreis",
+   "web": "https://www.mtk.org/",
+   "typ": "kreis",
+   "wiki": "Main-Taunus-Kreis",
+   "anschrift": [
+    "Am Kreishaus 1–5",
+    "65719 Hofheim am Taunus"
+   ],
+   "quelle": "https://www.mtk.org/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "06437": {
+   "name": "Odenwaldkreis",
+   "web": "https://www.odenwaldkreis.de/",
+   "typ": "kreis",
+   "wiki": "Odenwaldkreis",
+   "anschrift": [
+    "Michelstädter Straße 12",
+    "64711 Erbach"
+   ],
+   "quelle": "https://www.odenwaldkreis.de/de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "06438": {
+   "name": "Landkreis Offenbach",
+   "web": "https://www.kreis-offenbach.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Offenbach",
+   "anschrift": [
+    "Werner-Hilpert-Straße 1",
+    "63128 Dietzenbach"
+   ],
+   "quelle": "https://www.kreis-offenbach.de/Servicemen%C3%BC/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "06439": {
+   "name": "Rheingau-Taunus-Kreis",
+   "web": "https://www.rheingau-taunus.de/",
+   "typ": "kreis",
+   "wiki": "Rheingau-Taunus-Kreis",
+   "anschrift": [
+    "Heimbacher Straße 7",
+    "65307 Bad Schwalbach"
+   ],
+   "quelle": "https://www.rheingau-taunus.de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "06440": {
+   "name": "Wetteraukreis",
+   "web": "https://wetteraukreis.de/",
+   "typ": "kreis",
+   "wiki": "Wetteraukreis",
+   "anschrift": [
+    "Europaplatz",
+    "61169 Friedberg (Hessen)"
+   ],
+   "quelle": "https://wetteraukreis.de/navi-impressum/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "06531": {
+   "name": "Landkreis Gießen",
+   "web": "https://www.lkgi.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Gießen",
+   "anschrift": [
+    "Riversplatz 1–9",
+    "35394 Gießen"
+   ],
+   "quelle": "https://www.lkgi.de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "06532": {
+   "name": "Lahn-Dill-Kreis",
+   "web": "https://www.lahn-dill-kreis.de/",
+   "typ": "kreis",
+   "wiki": "Lahn-Dill-Kreis",
+   "anschrift": [
+    "Karl-Kellner-Ring 51",
+    "35576 Wetzlar"
+   ],
+   "quelle": "https://www.lahn-dill-kreis.de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "06533": {
+   "name": "Landkreis Limburg-Weilburg",
+   "web": "https://www.landkreis-limburg-weilburg.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Limburg-Weilburg",
+   "anschrift": [
+    "Schiede 43",
+    "65549 Limburg a"
+   ],
+   "quelle": "https://www.landkreis-limburg-weilburg.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "06534": {
+   "name": "Landkreis Marburg-Biedenkopf",
+   "web": "https://www.marburg-biedenkopf.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Marburg-Biedenkopf",
+   "anschrift": [
+    "Im Lichtenholz 60",
+    "35043 Marburg"
+   ],
+   "quelle": "https://www.marburg-biedenkopf.de/impressum.php",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "06535": {
+   "name": "Vogelsbergkreis",
+   "web": "https://www.vogelsbergkreis.de/",
+   "typ": "kreis",
+   "wiki": "Vogelsbergkreis",
+   "anschrift": [
+    "Goldhelg 20",
+    "36341 Lauterbach"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Vogelsbergkreis",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "06611": {
+   "name": "Stadt Kassel",
+   "web": "https://www.kassel.de/",
+   "typ": "stadt",
+   "wiki": "Kassel",
+   "anschrift": [
+    "Obere Königsstraße 8",
+    "34117 Kassel"
+   ],
+   "quelle": "https://www.kassel.de/impressum.php",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "06631": {
+   "name": "Landkreis Fulda",
+   "web": "https://www.landkreis-fulda.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Fulda",
+   "anschrift": [
+    "Wörthstraße 15",
+    "36037 Fulda"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Landkreis_Fulda",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "06632": {
+   "name": "Landkreis Hersfeld-Rotenburg",
+   "web": "https://www.hef-rof.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Hersfeld-Rotenburg",
+   "anschrift": [
+    "Friedloser Straße 12",
+    "36251 Bad Hersfeld"
+   ],
+   "quelle": "https://www.hef-rof.de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "06633": {
+   "name": "Landkreis Kassel",
+   "web": "https://www.landkreiskassel.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Kassel",
+   "anschrift": [
+    "Wilhelmshöher Allee 19–21",
+    "34117 Kassel"
+   ],
+   "quelle": "https://www.landkreiskassel.de/impressum.php",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "06634": {
+   "name": "Schwalm-Eder-Kreis",
+   "web": "https://www.schwalm-eder-kreis.de/",
+   "typ": "kreis",
+   "wiki": "Schwalm-Eder-Kreis",
+   "anschrift": [
+    "Parkstraße 6",
+    "34576 Homberg (Efze)"
+   ],
+   "quelle": "https://www.schwalm-eder-kreis.de/Home/Impressum.htm",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "06635": {
+   "name": "Landkreis Waldeck-Frankenberg",
+   "web": "https://www.landkreis-waldeck-frankenberg.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Waldeck-Frankenberg",
+   "anschrift": [
+    "Südring 2",
+    "34497 Korbach"
+   ],
+   "quelle": "https://www.landkreis-waldeck-frankenberg.de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "06636": {
+   "name": "Werra-Meißner-Kreis",
+   "web": "https://www.werra-meissner-kreis.de/",
+   "typ": "kreis",
+   "wiki": "Werra-Meißner-Kreis",
+   "anschrift": [
+    "Schlossplatz 1",
+    "37269 Eschwege"
+   ],
+   "quelle": "https://www.werra-meissner-kreis.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03101": {
+   "name": "Stadt Braunschweig",
+   "web": "https://www.braunschweig.de/",
+   "typ": "stadt",
+   "wiki": "Braunschweig",
+   "anschrift": [
+    "Platz der Deutschen Einheit 1",
+    "38100 Braunschweig"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Braunschweig",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "03102": {
+   "name": "Stadt Salzgitter",
+   "web": "https://www.salzgitter.de/",
+   "typ": "stadt",
+   "wiki": "Salzgitter",
+   "anschrift": [
+    "Joachim-Campe-Straße 6–8",
+    "38226 Salzgitter"
+   ],
+   "quelle": "https://www.salzgitter.de/service/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03103": {
+   "name": "Stadt Wolfsburg",
+   "web": "https://www.wolfsburg.de/",
+   "typ": "stadt",
+   "wiki": "Wolfsburg",
+   "anschrift": [
+    "Porschestraße 49",
+    "38440 Wolfsburg"
+   ],
+   "quelle": "https://www.wolfsburg.de/custom-pages/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03151": {
+   "name": "Landkreis Gifhorn",
+   "web": "https://landkreis-gifhorn.de",
+   "typ": "kreis",
+   "wiki": "Landkreis Gifhorn",
+   "anschrift": [
+    "Schlossplatz 1",
+    "38518 Gifhorn"
+   ],
+   "quelle": "https://www.landkreis-gifhorn.de/Service/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03153": {
+   "name": "Landkreis Goslar",
+   "web": "https://www.landkreis-goslar.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Goslar",
+   "anschrift": [
+    "Klubgartenstraße 6",
+    "38640 Goslar"
+   ],
+   "quelle": "https://www.landkreis-goslar.de/Kurzmen%C3%BC/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03154": {
+   "name": "Landkreis Helmstedt",
+   "web": "https://www.landkreis-helmstedt.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Helmstedt",
+   "anschrift": [
+    "Südertor 6",
+    "38350 Helmstedt"
+   ],
+   "quelle": "https://www.landkreis-helmstedt.de/portal/seiten/Seite-900000101-34150.html?naviID=reset1",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03155": {
+   "name": "Northeim",
+   "web": "https://www.landkreis-northeim.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Northeim",
+   "anschrift": [
+    "Medenheimer Straße 6–8",
+    "37154 Northeim"
+   ],
+   "quelle": "https://www.landkreis-northeim.de/portal/seiten/impressum-900000002-23900.html?titel=Impressum&naviID=reset1",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03157": {
+   "name": "Peine",
+   "web": "https://www.landkreis-peine.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Peine",
+   "anschrift": [
+    "Burgstraße 1",
+    "31224 Peine"
+   ],
+   "quelle": "https://www.landkreis-peine.de/Kurzmen%C3%BC/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03158": {
+   "name": "Landkreis Wolfenbüttel",
+   "web": "https://www.lkwf.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Wolfenbüttel",
+   "anschrift": [
+    "Bahnhofstraße 11",
+    "38300 Wolfenbüttel"
+   ],
+   "quelle": "https://www.lkwf.de/Kurzmen%C3%BC/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03159": {
+   "name": "Landkreis Göttingen",
+   "web": "https://www.landkreisgoettingen.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Göttingen",
+   "anschrift": [
+    "Reinhäuser Landstraße 4",
+    "37083 Göttingen"
+   ],
+   "quelle": "https://www.landkreisgoettingen.de/Services/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03241": {
+   "name": "Region Hannover",
+   "web": "https://www.hannover.de/Leben-in-der-Region-Hannover/Verwaltungen-Kommunen/Die-Verwaltung-der-Region-Hannover",
+   "typ": "kreis",
+   "wiki": "Region Hannover",
+   "anschrift": [
+    "Hildesheimer Straße 20",
+    "30169 Hannover"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Region_Hannover",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "03251": {
+   "name": "Landkreis Diepholz",
+   "web": "https://www.diepholz.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Diepholz",
+   "anschrift": [
+    "Niedersachsenstraße 2",
+    "49356 Diepholz"
+   ],
+   "quelle": "https://www.diepholz.de/portal/seiten/impressum-1000702-21750.html?titel=Impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03252": {
+   "name": "Landkreis Hameln-Pyrmont",
+   "web": "https://www.hameln-pyrmont.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Hameln-Pyrmont",
+   "anschrift": [
+    "Süntelstraße 9",
+    "31785 Hameln"
+   ],
+   "quelle": "https://www.hameln-pyrmont.de/Schnellnavigation/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03254": {
+   "name": "Landkreis Hildesheim",
+   "web": "https://www.landkreishildesheim.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Hildesheim",
+   "anschrift": [
+    "Marie-Wagenknecht-Straße 3",
+    "31134 Hildesheim"
+   ],
+   "quelle": "https://www.landkreishildesheim.de/Service/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03255": {
+   "name": "Landkreis Holzminden",
+   "web": "https://www.landkreis-holzminden.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Holzminden",
+   "anschrift": [
+    "Bürgermeister-Schrader-Straße 24",
+    "37603 Holzminden"
+   ],
+   "quelle": "https://www.landkreis-holzminden.de/portal/seiten/Seite-900000001-25600.html?naviID=reset1",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03256": {
+   "name": "Landkreis Nienburg/Weser",
+   "web": "https://www.lk-nienburg.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Nienburg/Weser",
+   "anschrift": [
+    "Kreishaus am Schloßplatz",
+    "31582 Nienburg/Weser"
+   ],
+   "quelle": "https://www.lk-nienburg.de/portal/seiten/impressum-901000166-21500.html?naviID=reset1",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03257": {
+   "name": "Landkreis Schaumburg",
+   "web": "https://www.schaumburg.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Schaumburg",
+   "anschrift": [
+    "Jahnstraße 20",
+    "31655 Stadthagen"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Landkreis_Schaumburg",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "03351": {
+   "name": "Landkreis Celle",
+   "web": "https://www.landkreis-celle.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Celle",
+   "anschrift": [
+    "Trift 26",
+    "29221 Celle"
+   ],
+   "quelle": "https://www.landkreis-celle.de/Kurzmen%C3%BC/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03352": {
+   "name": "Landkreis Cuxhaven",
+   "web": "https://www.landkreis-cuxhaven.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Cuxhaven",
+   "anschrift": [
+    "Vincent-Lübeck-Straße 2",
+    "27474 Cuxhaven"
+   ],
+   "quelle": "https://www.landkreis-cuxhaven.de/Quicknavigation/Startseite/index.php?NavID=1779.7.1",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03353": {
+   "name": "Landkreis Harburg",
+   "web": "https://www.landkreis-harburg.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Harburg",
+   "anschrift": [
+    "Schlossplatz 6",
+    "21423 Winsen (Luhe)"
+   ],
+   "quelle": "https://www.landkreis-harburg.de/portal/seiten/Seite-1000979-20100.html",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03354": {
+   "name": "Lüchow-Dannenberg",
+   "web": "https://www.luechow-dannenberg.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Lüchow-Dannenberg",
+   "anschrift": [
+    "Königsberger Straße 10",
+    "29439 Lüchow (Wendland)"
+   ],
+   "quelle": "https://www.luechow-dannenberg.de/portal/seiten/Seite-900000001-38100.html?naviID=reset1",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03355": {
+   "name": "Landkreis Lüneburg",
+   "web": "https://www.landkreis-lueneburg.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Lüneburg",
+   "anschrift": [
+    "Auf dem Michaeliskloster 4",
+    "21335 Lüneburg"
+   ],
+   "quelle": "https://www.landkreis-lueneburg.de/impressum.html",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03356": {
+   "name": "Landkreis Osterholz",
+   "web": "https://www.landkreis-osterholz.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Osterholz",
+   "anschrift": [
+    "Am Osterholze 2a",
+    "27711 Osterholz-Scharmbeck"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Landkreis_Osterholz",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "03357": {
+   "name": "Rotenburg (Wümme)",
+   "web": "https://www.lk-row.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Rotenburg (Wümme)",
+   "anschrift": [
+    "Hopfengarten 2",
+    "27356 Rotenburg (Wümme)"
+   ],
+   "quelle": "https://www.lk-row.de/portal/seiten/impressum-1001-23700.html",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03358": {
+   "name": "Landkreis Heidekreis",
+   "web": "https://www.heidekreis.de/",
+   "typ": "kreis",
+   "wiki": "Heidekreis",
+   "anschrift": [
+    "Vogteistraße 19",
+    "29683 Bad Fallingbostel"
+   ],
+   "quelle": "https://www.heidekreis.de/footer/impressum.html",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03359": {
+   "name": "Landkreis Stade",
+   "web": "https://www.landkreis-stade.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Stade",
+   "anschrift": [
+    "Am Sande 2",
+    "21682 Stade"
+   ],
+   "quelle": "https://www.landkreis-stade.de/portal/seiten/impressum-901000404-20350.html?naviID=reset1",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03360": {
+   "name": "Landkreis Uelzen",
+   "web": "https://www.landkreis-uelzen.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Uelzen",
+   "anschrift": [
+    "Albrecht-Thaer-Straße 101",
+    "29525 Uelzen"
+   ],
+   "quelle": "https://www.landkreis-uelzen.de/home/global/impressum.aspx",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03361": {
+   "name": "Landkreis Verden",
+   "web": "https://www.landkreis-verden.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Verden",
+   "anschrift": [
+    "Lindhooper Straße 67",
+    "27283 Verden (Aller)"
+   ],
+   "quelle": "https://www.landkreis-verden.de/portal/seiten/Seite-901000937-20600.html",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03401": {
+   "name": "Stadt Delmenhorst",
+   "web": "https://www.delmenhorst.de/",
+   "typ": "stadt",
+   "wiki": "Delmenhorst",
+   "anschrift": [
+    "Rathausplatz 1",
+    "27749 Delmenhorst"
+   ],
+   "quelle": "https://www.delmenhorst.de/service/content/impressum.php",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03402": {
+   "name": "Stadt Emden",
+   "web": "https://www.emden.de/",
+   "typ": "stadt",
+   "wiki": "Emden",
+   "anschrift": [
+    "Frickensteinplatz 2",
+    "26721 Emden"
+   ],
+   "quelle": "https://www.emden.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03403": {
+   "name": "Stadt Oldenburg",
+   "web": "https://www.oldenburg.de/",
+   "typ": "stadt",
+   "wiki": "Oldenburg (Oldb)",
+   "anschrift": [
+    "Markt 1",
+    "26122 Oldenburg (Oldb)"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Oldenburg_%28Oldb%29",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "03404": {
+   "name": "Stadt Osnabrück",
+   "web": "https://www.osnabrueck.de/",
+   "typ": "stadt",
+   "wiki": "Osnabrück",
+   "anschrift": [
+    "Natruper-Tor-Wall 2",
+    "49076 Osnabrück"
+   ],
+   "quelle": "https://www.osnabrueck.de/de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03405": {
+   "name": "Stadt Wilhelmshaven",
+   "web": "https://www.wilhelmshaven.de/",
+   "typ": "stadt",
+   "wiki": "Wilhelmshaven",
+   "anschrift": [
+    "Rathausplatz 1",
+    "26382 Wilhelmshaven"
+   ],
+   "quelle": "https://www.wilhelmshaven.de/Service/Impressum.php",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03451": {
+   "name": "Landkreis Ammerland",
+   "web": "https://www.ammerland.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Ammerland",
+   "anschrift": [
+    "Ammerlandallee 12",
+    "26655 Westerstede"
+   ],
+   "quelle": "https://www.ammerland.de/Kurzmen%C3%BC/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03452": {
+   "name": "Landkreis Aurich",
+   "web": "https://www.landkreis-aurich.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Aurich",
+   "anschrift": [
+    "Fischteichweg 7–13",
+    "26603 Aurich"
+   ],
+   "quelle": "https://www.landkreis-aurich.de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03453": {
+   "name": "Landkreis Cloppenburg",
+   "web": "https://www.lkclp.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Cloppenburg",
+   "anschrift": [
+    "Eschstraße 29",
+    "49661 Cloppenburg"
+   ],
+   "quelle": "https://www.lkclp.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03454": {
+   "name": "Landkreis Emsland",
+   "web": "https://www.emsland.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Emsland",
+   "anschrift": [
+    "Ordeniederung 1",
+    "49716 Meppen"
+   ],
+   "quelle": "https://emsland.de/de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03455": {
+   "name": "Landkreis Friesland",
+   "web": "https://www.friesland.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Friesland",
+   "anschrift": [
+    "Lindenallee 1",
+    "26441 Jever"
+   ],
+   "quelle": "https://www.friesland.de/portal/seiten/Seite-1000008-20800.html?naviID=reset1",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03456": {
+   "name": "Landkreis Grafschaft Bentheim",
+   "web": "https://www.grafschaft-bentheim.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Grafschaft Bentheim",
+   "anschrift": [
+    "Van-Delden-Straße 1–7",
+    "48529 Nordhorn"
+   ],
+   "quelle": "https://www.grafschaft-bentheim.de/grafschaft/impressum.php",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03457": {
+   "name": "Landkreis Leer",
+   "web": "https://www.landkreis-leer.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Leer",
+   "anschrift": [
+    "Bergmannstraße 37",
+    "26789 Leer (Ostfriesland)"
+   ],
+   "quelle": "https://www.landkreis-leer.de/Kurzmen%C3%BC/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03458": {
+   "name": "Landkreis Oldenburg",
+   "web": "https://www.oldenburg-kreis.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Oldenburg",
+   "anschrift": [
+    "Delmenhorster Straße 6",
+    "27793 Wildeshausen"
+   ],
+   "quelle": "https://www.oldenburg-kreis.de/portal/seiten/Seite-900000002-21700.html?naviID=reset1",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03459": {
+   "name": "Landkreis Osnabrück",
+   "web": "https://www.landkreis-osnabrueck.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Osnabrück",
+   "anschrift": [
+    "Am Schölerberg 1",
+    "49082 Osnabrück"
+   ],
+   "quelle": "https://www.landkreis-osnabrueck.de/impressum-und-oeffnungszeiten",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03460": {
+   "name": "Landkreis Vechta",
+   "web": "https://www.landkreis-vechta.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Vechta",
+   "anschrift": [
+    "Ravensberger Straße 20",
+    "49377 Vechta"
+   ],
+   "quelle": "https://www.landkreis-vechta.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03461": {
+   "name": "Wesermarsch",
+   "web": "https://wesermarsch.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Wesermarsch",
+   "anschrift": [
+    "Poggenburger Straße 15",
+    "26919 Brake (Unterweser)"
+   ],
+   "quelle": "https://wesermarsch.de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "03462": {
+   "name": "Landkreis Wittmund",
+   "web": "https://www.landkreis-wittmund.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Wittmund",
+   "anschrift": [
+    "Am Markt 9",
+    "26409 Wittmund"
+   ],
+   "quelle": "https://www.landkreis-wittmund.de/Kurzmen%C3%BC/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05111": {
+   "name": "Stadt Düsseldorf",
+   "web": "https://www.duesseldorf.de/",
+   "typ": "stadt",
+   "wiki": "Düsseldorf",
+   "anschrift": [
+    "Marktplatz 2",
+    "40213 Düsseldorf"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/D%C3%BCsseldorf",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "05112": {
+   "name": "Stadt Duisburg",
+   "web": "https://duisburg.de",
+   "typ": "stadt",
+   "wiki": "Duisburg",
+   "anschrift": [
+    "Burgplatz 19",
+    "47051 Duisburg"
+   ],
+   "quelle": "https://duisburg.de/service/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05113": {
+   "name": "Stadt Essen",
+   "web": "https://www.essen.de/",
+   "typ": "stadt",
+   "wiki": "Essen",
+   "anschrift": [
+    "Porscheplatz 1",
+    "45127 Essen"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Essen",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "05114": {
+   "name": "Stadt Krefeld",
+   "web": "https://www.krefeld.de/",
+   "typ": "stadt",
+   "wiki": "Krefeld",
+   "anschrift": [
+    "Von-der-Leyen-Platz 1",
+    "47798 Krefeld"
+   ],
+   "quelle": "https://www.krefeld.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05116": {
+   "name": "Stadt Mönchengladbach",
+   "web": "https://www.moenchengladbach.de/",
+   "typ": "stadt",
+   "wiki": "Mönchengladbach",
+   "anschrift": [
+    "Rathausplatz 1",
+    "41061 Mönchengladbach"
+   ],
+   "quelle": "https://www.moenchengladbach.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05117": {
+   "name": "Stadt Mülheim an der Ruhr",
+   "web": "https://www.muelheim-ruhr.de/",
+   "typ": "stadt",
+   "wiki": "Mülheim an der Ruhr",
+   "anschrift": [
+    "Am Rathaus 1",
+    "45468 Mülheim an der Ruhr"
+   ],
+   "quelle": "https://cms.muelheim-ruhr.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05119": {
+   "name": "Stadt Oberhausen",
+   "web": "https://www.oberhausen.de/",
+   "typ": "stadt",
+   "wiki": "Oberhausen",
+   "anschrift": [
+    "Schwartzstraße 72",
+    "46045 Oberhausen"
+   ],
+   "quelle": "https://www.oberhausen.de/impressum.php",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05120": {
+   "name": "Stadt Remscheid",
+   "web": "https://www.remscheid.de/",
+   "typ": "stadt",
+   "wiki": "Remscheid",
+   "anschrift": [
+    "Theodor-Heuss-Platz 1",
+    "42853 Remscheid"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Remscheid",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "05122": {
+   "name": "Stadt Solingen",
+   "web": "https://www.solingen.de/",
+   "typ": "stadt",
+   "wiki": "Solingen",
+   "anschrift": [
+    "Walter-Scheel-Platz 1",
+    "42651 Solingen"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Solingen",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "05124": {
+   "name": "Stadt Wuppertal",
+   "web": "https://www.wuppertal.de/",
+   "typ": "stadt",
+   "wiki": "Wuppertal",
+   "anschrift": [
+    "Johannes-Rau-Platz 1",
+    "42275 Wuppertal"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Wuppertal",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "05154": {
+   "name": "Kreis Kleve",
+   "web": "https://www.kreis-kleve.de/",
+   "typ": "kreis",
+   "wiki": "Kreis Kleve",
+   "anschrift": [
+    "Nassauerallee 15–23",
+    "47533 Kleve"
+   ],
+   "quelle": "https://www.kreis-kleve.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05158": {
+   "name": "Kreis Mettmann",
+   "web": "https://www.kreis-mettmann.de/",
+   "typ": "kreis",
+   "wiki": "Kreis Mettmann",
+   "anschrift": [
+    "Düsseldorfer Straße 26",
+    "40822 Mettmann"
+   ],
+   "quelle": "https://www.kreis-mettmann.de/Quickmenu/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05162": {
+   "name": "Rhein-Kreis Neuss",
+   "web": "https://www.rhein-kreis-neuss.de/",
+   "typ": "kreis",
+   "wiki": "Rhein-Kreis Neuss",
+   "anschrift": [
+    "Oberstraße 91",
+    "41460 Neuss"
+   ],
+   "quelle": "https://www.rhein-kreis-neuss.de/de/service/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05166": {
+   "name": "Kreis Viersen",
+   "web": "https://www.kreis-viersen.de/",
+   "typ": "kreis",
+   "wiki": "Kreis Viersen",
+   "anschrift": [
+    "Rathausmarkt 3",
+    "41747 Viersen"
+   ],
+   "quelle": "https://www.kreis-viersen.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05170": {
+   "name": "Kreis Wesel",
+   "web": "https://www.kreis-wesel.de/",
+   "typ": "kreis",
+   "wiki": "Kreis Wesel",
+   "anschrift": [
+    "Reeser Landstraße 31",
+    "46483 Wesel"
+   ],
+   "quelle": "https://www.kreis-wesel.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05314": {
+   "name": "Stadt Bonn",
+   "web": "https://www.bonn.de/",
+   "typ": "stadt",
+   "wiki": "Bonn",
+   "anschrift": [
+    "Berliner Platz 2",
+    "53111 Bonn"
+   ],
+   "quelle": "https://www.bonn.de/impressum.php",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05315": {
+   "name": "Stadt Köln",
+   "web": "https://www.stadt-koeln.de/",
+   "typ": "stadt",
+   "wiki": "Köln",
+   "anschrift": [
+    "Rathausplatz 2",
+    "50667 Köln"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/K%C3%B6ln",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "05316": {
+   "name": "Stadt Leverkusen",
+   "web": "https://www.leverkusen.de/",
+   "typ": "stadt",
+   "wiki": "Leverkusen",
+   "anschrift": [
+    "Friedrich-Ebert-Platz 1",
+    "51373 Leverkusen"
+   ],
+   "quelle": "https://www.leverkusen.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05334": {
+   "name": "Städteregion Aachen",
+   "web": "https://www.staedteregion-aachen.de/",
+   "typ": "kreis",
+   "wiki": "Städteregion Aachen",
+   "anschrift": [
+    "Zollernstraße 10",
+    "52070 Aachen"
+   ],
+   "quelle": "https://www.staedteregion-aachen.de/de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05358": {
+   "name": "Kreis Düren",
+   "web": "https://www.kreis-dueren.de/",
+   "typ": "kreis",
+   "wiki": "Kreis Düren",
+   "anschrift": [
+    "Bismarckstraße 16",
+    "52351 Düren"
+   ],
+   "quelle": "https://www.kreis-dueren.de/impressum.php",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05362": {
+   "name": "Rhein-Erft-Kreis",
+   "web": "https://www.rhein-erft-kreis.de/",
+   "typ": "kreis",
+   "wiki": "Rhein-Erft-Kreis",
+   "anschrift": [
+    "Willy-Brandt-Platz 1",
+    "50126 Bergheim"
+   ],
+   "quelle": "https://www.rhein-erft-kreis.de/impressum.php",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05366": {
+   "name": "Kreis Euskirchen",
+   "web": "https://www.kreis-euskirchen.de/",
+   "typ": "kreis",
+   "wiki": "Kreis Euskirchen",
+   "anschrift": [
+    "Jülicher Ring 32",
+    "53879 Euskirchen"
+   ],
+   "quelle": "https://www.kreis-euskirchen.de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05370": {
+   "name": "Kreis Heinsberg",
+   "web": "https://www.kreis-heinsberg.de/",
+   "typ": "kreis",
+   "wiki": "Kreis Heinsberg",
+   "anschrift": [
+    "Valkenburger Straße 45",
+    "52525 Heinsberg"
+   ],
+   "quelle": "https://www.kreis-heinsberg.de/impressum.html",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05374": {
+   "name": "Oberbergischer Kreis",
+   "web": "https://www.obk.de/",
+   "typ": "kreis",
+   "wiki": "Oberbergischer Kreis",
+   "anschrift": [
+    "Moltkestraße 42",
+    "51643 Gummersbach"
+   ],
+   "quelle": "https://www.obk.de/obk/impressum/index.shtml.de",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05378": {
+   "name": "Rheinisch-Bergischer Kreis",
+   "web": "https://www.rbk-direkt.de/",
+   "typ": "kreis",
+   "wiki": "Rheinisch-Bergischer Kreis",
+   "anschrift": [
+    "Am Rübezahlwald 7",
+    "51469 Bergisch Gladbach"
+   ],
+   "quelle": "https://www.rbk-direkt.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05382": {
+   "name": "Rhein-Sieg-Kreis",
+   "web": "https://www.rhein-sieg-kreis.de/",
+   "typ": "kreis",
+   "wiki": "Rhein-Sieg-Kreis",
+   "anschrift": [
+    "Kaiser-Wilhelm-Platz 1",
+    "53721 Siegburg"
+   ],
+   "quelle": "https://www.rhein-sieg-kreis.de/impressum.php",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05512": {
+   "name": "Stadt Bottrop",
+   "web": "https://www.bottrop.de/",
+   "typ": "stadt",
+   "wiki": "Bottrop",
+   "anschrift": [
+    "Ernst-Wilczok-Platz 1",
+    "46236 Bottrop"
+   ],
+   "quelle": "https://www.bottrop.de/service/impressum.php",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05513": {
+   "name": "Stadt Gelsenkirchen",
+   "web": "https://www.gelsenkirchen.de/",
+   "typ": "stadt",
+   "wiki": "Gelsenkirchen",
+   "anschrift": [
+    "Ebertstraße 11",
+    "45879 Gelsenkirchen"
+   ],
+   "quelle": "https://www.gelsenkirchen.de/de/_funktionsnavigation/impressum.aspx",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05515": {
+   "name": "Stadt Münster",
+   "web": "https://www.stadt-muenster.de/",
+   "typ": "stadt",
+   "wiki": "Münster",
+   "anschrift": [
+    "Klemensstraße 10",
+    "48143 Münster"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/M%C3%BCnster",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "05554": {
+   "name": "Kreis Borken",
+   "web": "https://www.kreis-borken.de/",
+   "typ": "kreis",
+   "wiki": "Kreis Borken",
+   "anschrift": [
+    "Burloer Straße 93",
+    "46325 Borken"
+   ],
+   "quelle": "https://www.kreis-borken.de/de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05558": {
+   "name": "Kreis Coesfeld",
+   "web": "https://www.kreis-coesfeld.de/",
+   "typ": "kreis",
+   "wiki": "Kreis Coesfeld",
+   "anschrift": [
+    "Friedrich-Ebert-Straße 7",
+    "48653 Coesfeld"
+   ],
+   "quelle": "https://www.kreis-coesfeld.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05562": {
+   "name": "Kreis Recklinghausen",
+   "web": "https://www.kreis-re.de/",
+   "typ": "kreis",
+   "wiki": "Kreis Recklinghausen",
+   "anschrift": [
+    "Kurt-Schumacher-Allee 1",
+    "45657 Recklinghausen"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Kreis_Recklinghausen",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "05566": {
+   "name": "Kreis Steinfurt",
+   "web": "https://www.kreis-steinfurt.de/",
+   "typ": "kreis",
+   "wiki": "Kreis Steinfurt",
+   "anschrift": [
+    "Tecklenburger Straße 10",
+    "48565 Steinfurt"
+   ],
+   "quelle": "https://www.kreis-steinfurt.de/kv_steinfurt/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05570": {
+   "name": "Kreis Warendorf",
+   "web": "https://www.kreis-warendorf.de/",
+   "typ": "kreis",
+   "wiki": "Kreis Warendorf",
+   "anschrift": [
+    "Waldenburger Str. 2",
+    "48231 Warendorf"
+   ],
+   "quelle": "https://www.kreis-warendorf.de/meta-navigation-oben/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05711": {
+   "name": "Stadt Bielefeld",
+   "web": "https://www.bielefeld.de/",
+   "typ": "stadt",
+   "wiki": "Bielefeld",
+   "anschrift": [
+    "Niederwall 23",
+    "33602 Bielefeld"
+   ],
+   "quelle": "https://www.bielefeld.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05754": {
+   "name": "Kreis Gütersloh",
+   "web": "https://www.kreis-guetersloh.de/",
+   "typ": "kreis",
+   "wiki": "Kreis Gütersloh",
+   "anschrift": [
+    "Herzebrocker Straße 140",
+    "33334 Gütersloh"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Kreis_G%C3%BCtersloh",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "05758": {
+   "name": "Kreis Herford",
+   "web": "https://www.kreis-herford.de/",
+   "typ": "kreis",
+   "wiki": "Kreis Herford",
+   "anschrift": [
+    "Amtshausstraße 3",
+    "32051 Herford"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Kreis_Herford",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "05762": {
+   "name": "Kreis Höxter",
+   "web": "https://www.kreis-hoexter.de/",
+   "typ": "kreis",
+   "wiki": "Kreis Höxter",
+   "anschrift": [
+    "Moltkestraße 12",
+    "37671 Höxter"
+   ],
+   "quelle": "https://www.kreis-hoexter.de/informationen/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05766": {
+   "name": "Kreis Lippe",
+   "web": "https://www.kreis-lippe.de/",
+   "typ": "kreis",
+   "wiki": "Kreis Lippe",
+   "anschrift": [
+    "Felix-Fechenbach-Straße 5",
+    "32756 Detmold"
+   ],
+   "quelle": "https://www.kreis-lippe.de/kreis-lippe/impressum.php",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05770": {
+   "name": "Kreis Minden-Lübbecke",
+   "web": "https://www.minden-luebbecke.de/",
+   "typ": "kreis",
+   "wiki": "Kreis Minden-Lübbecke",
+   "anschrift": [
+    "Portastraße 13",
+    "32423 Minden"
+   ],
+   "quelle": "https://www.minden-luebbecke.de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05774": {
+   "name": "Kreis Paderborn",
+   "web": "https://www.kreis-paderborn.de/",
+   "typ": "kreis",
+   "wiki": "Kreis Paderborn",
+   "anschrift": [
+    "Aldegreverstraße 10–14",
+    "33102 Paderborn"
+   ],
+   "quelle": "https://www.kreis-paderborn.de/kreis_paderborn/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05911": {
+   "name": "Stadt Bochum",
+   "web": "https://www.bochum.de/",
+   "typ": "stadt",
+   "wiki": "Bochum",
+   "anschrift": [
+    "Willy-Brandt-Platz 2–6",
+    "44787 Bochum"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Bochum",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "05913": {
+   "name": "Stadt Dortmund",
+   "web": "https://www.dortmund.de/",
+   "typ": "stadt",
+   "wiki": "Dortmund",
+   "anschrift": [
+    "Friedensplatz 1",
+    "44135 Dortmund"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Dortmund",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "05914": {
+   "name": "Stadt Hagen",
+   "web": "https://www.hagen.de/",
+   "typ": "stadt",
+   "wiki": "Hagen",
+   "anschrift": [
+    "Rathausstraße 11",
+    "58095 Hagen"
+   ],
+   "quelle": "https://www.hagen.de/meta/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05915": {
+   "name": "Stadt Hamm",
+   "web": "https://www.hamm.de/",
+   "typ": "stadt",
+   "wiki": "Hamm",
+   "anschrift": [
+    "Theodor-Heuss-Platz 16",
+    "59065 Hamm"
+   ],
+   "quelle": "https://www.hamm.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05916": {
+   "name": "Stadt Herne",
+   "web": "https://www.herne.de/",
+   "typ": "stadt",
+   "wiki": "Herne",
+   "anschrift": [
+    "Friedrich-Ebert-Platz 2",
+    "44623 Herne"
+   ],
+   "quelle": "https://www.herne.de/Technische-Seiten/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05954": {
+   "name": "Ennepe-Ruhr-Kreis",
+   "web": "https://www.enkreis.de/",
+   "typ": "kreis",
+   "wiki": "Ennepe-Ruhr-Kreis",
+   "anschrift": [
+    "Hauptstraße 92",
+    "58332 Schwelm"
+   ],
+   "quelle": "https://www.enkreis.de/politik-verwaltung/verwaltung/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05958": {
+   "name": "Hochsauerlandkreis",
+   "web": "https://www.hochsauerlandkreis.de/",
+   "typ": "kreis",
+   "wiki": "Hochsauerlandkreis",
+   "anschrift": [
+    "Steinstraße 27",
+    "59872 Meschede"
+   ],
+   "quelle": "https://www.hochsauerlandkreis.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05962": {
+   "name": "Märkischer Kreis",
+   "web": "http://www.maerkischer-kreis.de",
+   "typ": "kreis",
+   "wiki": "Märkischer Kreis",
+   "anschrift": [
+    "Heedfelder Straße 45",
+    "58509 Lüdenscheid"
+   ],
+   "quelle": "https://www.maerkischer-kreis.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05966": {
+   "name": "Kreis Olpe",
+   "web": "https://kreis-olpe.de/",
+   "typ": "kreis",
+   "wiki": "Kreis Olpe",
+   "anschrift": [
+    "Westfälische Straße 75",
+    "57462 Olpe"
+   ],
+   "quelle": "https://kreis-olpe.de/Quicknavigation/Impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05970": {
+   "name": "Kreis Siegen-Wittgenstein",
+   "web": "https://www.siegen-wittgenstein.de/",
+   "typ": "kreis",
+   "wiki": "Kreis Siegen-Wittgenstein",
+   "anschrift": [
+    "Koblenzer Straße 73",
+    "57072 Siegen"
+   ],
+   "quelle": "https://www.siegen-wittgenstein.de/Kurzmen%C3%BC/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05974": {
+   "name": "Kreis Soest",
+   "web": "https://www.kreis-soest.de/",
+   "typ": "kreis",
+   "wiki": "Kreis Soest",
+   "anschrift": [
+    "Hoher Weg 1–3",
+    "59494 Soest"
+   ],
+   "quelle": "https://www.kreis-soest.de/start/startseite/impressum/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "05978": {
+   "name": "Kreis Unna",
+   "web": "https://www.kreis-unna.de/",
+   "typ": "kreis",
+   "wiki": "Kreis Unna",
+   "anschrift": [
+    "Friedrich-Ebert-Straße 17",
+    "59425 Unna"
+   ],
+   "quelle": "https://www.kreis-unna.de/Kurzmen%C3%BC/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "07111": {
+   "name": "Stadt Koblenz",
+   "web": "https://www.koblenz.de/",
+   "typ": "stadt",
+   "wiki": "Koblenz",
+   "anschrift": [
+    "Willi-Hörter-Platz 1",
+    "56068 Koblenz"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Koblenz",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "07131": {
+   "name": "Landkreis Ahrweiler",
+   "web": "https://www.kreis-ahrweiler.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Ahrweiler",
+   "anschrift": [
+    "Wilhelmstraße 24–30",
+    "53474 Bad Neuenahr-Ahrweiler"
+   ],
+   "quelle": "https://kreis-ahrweiler.de/verwaltung/datenschutz/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "07132": {
+   "name": "Landkreis Altenkirchen",
+   "web": "https://www.kreis-altenkirchen.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Altenkirchen (Westerwald)",
+   "anschrift": [
+    "Parkstraße 1",
+    "57610 Altenkirchen (Westerwald)"
+   ],
+   "quelle": "https://www.kreis-altenkirchen.de/INTERNET/Quicknavigation/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "07133": {
+   "name": "Landkreis Bad Kreuznach",
+   "web": "https://www.kreis-badkreuznach.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Bad Kreuznach",
+   "anschrift": [
+    "Salinenstraße 47",
+    "55543 Bad Kreuznach"
+   ],
+   "quelle": "https://www.kreis-badkreuznach.de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "07134": {
+   "name": "Landkreis Birkenfeld",
+   "web": "https://www.landkreis-birkenfeld.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Birkenfeld",
+   "anschrift": [
+    "Schneewiesenstraße 25",
+    "55765 Birkenfeld"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Landkreis_Birkenfeld",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "07135": {
+   "name": "Landkreis Cochem-Zell",
+   "web": "https://www.cochem-zell.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Cochem-Zell",
+   "anschrift": [
+    "Endertplatz 2",
+    "56812 Cochem"
+   ],
+   "quelle": "https://www.cochem-zell.de/verwaltung/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "07137": {
+   "name": "Landkreis Mayen-Koblenz",
+   "web": "http://www.mayen-koblenz.de",
+   "typ": "kreis",
+   "wiki": "Landkreis Mayen-Koblenz",
+   "anschrift": [
+    "Bahnhofstraße 9",
+    "56068 Koblenz"
+   ],
+   "quelle": "https://www.kvmyk.de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "07138": {
+   "name": "Landkreis Neuwied",
+   "web": "https://www.kreis-neuwied.de",
+   "typ": "kreis",
+   "wiki": "Landkreis Neuwied",
+   "anschrift": [
+    "Wilhelm-Leuschner-Straße 9",
+    "56564 Neuwied"
+   ],
+   "quelle": "https://www.kreis-neuwied.de/ueber-uns/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "07140": {
+   "name": "Rhein-Hunsrück-Kreis",
+   "web": "https://www.kreis-sim.de/",
+   "typ": "kreis",
+   "wiki": "Rhein-Hunsrück-Kreis",
+   "anschrift": [
+    "Ludwigstraße 3–5",
+    "55469 Simmern/Hunsrück"
+   ],
+   "quelle": "https://www.kv-rhk.de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "07141": {
+   "name": "Rhein-Lahn-Kreis",
+   "web": "https://www.rhein-lahn-kreis.de/",
+   "typ": "kreis",
+   "wiki": "Rhein-Lahn-Kreis",
+   "anschrift": [
+    "Insel Silberau 1",
+    "56130 Bad Ems"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Rhein-Lahn-Kreis",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "07143": {
+   "name": "Westerwaldkreis",
+   "web": "http://www.westerwald-kreis.de",
+   "typ": "kreis",
+   "wiki": "Westerwaldkreis",
+   "anschrift": [
+    "Peter-Altmeier-Platz 1",
+    "56410 Montabaur"
+   ],
+   "quelle": "https://www.westerwaldkreis.de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "07211": {
+   "name": "Stadt Trier",
+   "web": "https://www.trier.de/",
+   "typ": "stadt",
+   "wiki": "Trier",
+   "anschrift": [
+    "Am Augustinerhof",
+    "54290 Trier"
+   ],
+   "quelle": "https://www.trier.de/information/impressum/14712.Impressum.html",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "07231": {
+   "name": "Landkreis Bernkastel-Wittlich",
+   "web": "https://www.bernkastel-wittlich.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Bernkastel-Wittlich",
+   "anschrift": [
+    "Kurfürstenstraße 16",
+    "54516 Wittlich"
+   ],
+   "quelle": "https://www.bernkastel-wittlich.de/allgemein/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "07232": {
+   "name": "Eifelkreis Bitburg-Prüm",
+   "web": "https://www.bitburg-pruem.de/",
+   "typ": "kreis",
+   "wiki": "Eifelkreis Bitburg-Prüm",
+   "anschrift": [
+    "Trierer Straße 1",
+    "54634 Bitburg"
+   ],
+   "quelle": "https://www.bitburg-pruem.de/allgemein/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "07233": {
+   "name": "Vulkaneifel",
+   "web": "https://www.vulkaneifel.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Vulkaneifel",
+   "anschrift": [
+    "Mainzer Straße 25",
+    "54550 Daun"
+   ],
+   "quelle": "https://www.vulkaneifel.de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "07235": {
+   "name": "Landkreis Trier-Saarburg",
+   "web": "http://www.trier-saarburg.de",
+   "typ": "kreis",
+   "wiki": "Landkreis Trier-Saarburg",
+   "anschrift": [
+    "Willy-Brandt-Platz 1",
+    "54290 Trier"
+   ],
+   "quelle": "https://trier-saarburg.de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "07311": {
+   "name": "Stadt Frankenthal (Pfalz)",
+   "web": "http://www.frankenthal.de",
+   "typ": "stadt",
+   "wiki": "Frankenthal (Pfalz)",
+   "anschrift": [
+    "Rathausplatz 2–7",
+    "67227 Frankenthal (Pfalz)"
+   ],
+   "quelle": "https://www.frankenthal.de/stadt-frankenthal/de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "07312": {
+   "name": "Stadt Kaiserslautern",
+   "web": "https://www.kaiserslautern.de/",
+   "typ": "stadt",
+   "wiki": "Kaiserslautern",
+   "anschrift": [
+    "Willy-Brandt-Platz 1",
+    "67657 Kaiserslautern"
+   ],
+   "quelle": "https://www.kaiserslautern.de/service/impressum/index.html.de",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "07313": {
+   "name": "Stadt Landau in der Pfalz",
+   "web": "https://www.landau.de/",
+   "typ": "stadt",
+   "wiki": "Landau in der Pfalz",
+   "anschrift": [
+    "Marktstraße 50",
+    "76829 Landau in der Pfalz"
+   ],
+   "quelle": "https://www.landau.de/Quicknav/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "07314": {
+   "name": "Stadt Ludwigshafen am Rhein",
+   "web": "https://ludwigshafen.de",
+   "typ": "stadt",
+   "wiki": "Ludwigshafen am Rhein",
+   "anschrift": [
+    "Bismarckstraße 25",
+    "67059 Ludwigshafen am Rhein"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Ludwigshafen_am_Rhein",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "07315": {
+   "name": "Stadt Mainz",
+   "web": "https://www.mainz.de/",
+   "typ": "stadt",
+   "wiki": "Mainz",
+   "anschrift": [
+    "Löwenhofstraße 1",
+    "55116 Mainz"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Mainz",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "07316": {
+   "name": "Stadt Neustadt an der Weinstraße",
+   "web": "https://www.neustadt.eu/",
+   "typ": "stadt",
+   "wiki": "Neustadt an der Weinstraße",
+   "anschrift": [
+    "Marktplatz 1",
+    "67433 Neustadt an der Weinstraße"
+   ],
+   "quelle": "https://www.neustadt.eu/Quicknavigation/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "07317": {
+   "name": "Stadt Pirmasens",
+   "web": "https://www.pirmasens.de/",
+   "typ": "stadt",
+   "wiki": "Pirmasens",
+   "anschrift": [
+    "Exerzierplatzstraße 17",
+    "66953 Pirmasens"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Pirmasens",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "07318": {
+   "name": "Stadt Speyer",
+   "web": "https://www.speyer.de/",
+   "typ": "stadt",
+   "wiki": "Speyer",
+   "anschrift": [
+    "Maximilianstraße 100",
+    "67346 Speyer"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Speyer",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "07319": {
+   "name": "Stadt Worms",
+   "web": "https://www.worms.de/neu-de/index.php",
+   "typ": "stadt",
+   "wiki": "Worms",
+   "anschrift": [
+    "Marktplatz 2",
+    "67547 Worms"
+   ],
+   "quelle": "https://www.worms.de/neu-de/service/impressum.php",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "07320": {
+   "name": "Stadt Zweibrücken",
+   "web": "https://www.zweibruecken.de/",
+   "typ": "stadt",
+   "wiki": "Zweibrücken",
+   "anschrift": [
+    "Herzogstraße 1",
+    "66482 Zweibrücken"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Zweibr%C3%BCcken",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "07331": {
+   "name": "Landkreis Alzey-Worms",
+   "web": "https://www.kreis-alzey-worms.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Alzey-Worms",
+   "anschrift": [
+    "Ernst-Ludwig-Straße 36",
+    "55232 Alzey"
+   ],
+   "quelle": "https://www.kreis-alzey-worms.de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "07332": {
+   "name": "Landkreis Bad Dürkheim",
+   "web": "https://www.kreis-bad-duerkheim.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Bad Dürkheim",
+   "anschrift": [
+    "Philipp-Fauth-Straße 11",
+    "67098 Bad Dürkheim"
+   ],
+   "quelle": "https://www.kreis-bad-duerkheim.de/buergerservice/organisation/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "07333": {
+   "name": "Donnersbergkreis",
+   "web": "http://www.donnersberg.de/",
+   "typ": "kreis",
+   "wiki": "Donnersbergkreis",
+   "anschrift": [
+    "Uhlandstraße 2",
+    "67292 Kirchheimbolanden"
+   ],
+   "quelle": "https://www.donnersberg.de/buergerservice/kontakt-oeffnungszeiten/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "07334": {
+   "name": "Landkreis Germersheim",
+   "web": "https://www.kreis-germersheim.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Germersheim",
+   "anschrift": [
+    "Luitpoldplatz 1",
+    "76726 Germersheim"
+   ],
+   "quelle": "https://www.kreis-germersheim.de/buergerservice/zentraler-service/impressum-datenschutz/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "07335": {
+   "name": "Landkreis Kaiserslautern",
+   "web": "https://www.kaiserslautern-kreis.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Kaiserslautern",
+   "anschrift": [
+    "Lauterstraße 8",
+    "67657 Kaiserslautern"
+   ],
+   "quelle": "https://www.kaiserslautern-kreis.de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "07336": {
+   "name": "Landkreis Kusel",
+   "web": "https://www.landkreis-kusel.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Kusel",
+   "anschrift": [
+    "Trierer Straße 49–51",
+    "66869 Kusel"
+   ],
+   "quelle": "https://www.landkreis-kusel.de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "07337": {
+   "name": "Landkreis Südliche Weinstraße",
+   "web": "https://www.suedliche-weinstrasse.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Südliche Weinstraße",
+   "anschrift": [
+    "An der Kreuzmühle 2",
+    "76829 Landau in der Pfalz"
+   ],
+   "quelle": "https://www.suedliche-weinstrasse.de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "07338": {
+   "name": "Rhein-Pfalz-Kreis",
+   "web": "https://www.rhein-pfalz-kreis.de/",
+   "typ": "kreis",
+   "wiki": "Rhein-Pfalz-Kreis",
+   "anschrift": [
+    "Europaplatz 5",
+    "67063 Ludwigshafen am Rhein"
+   ],
+   "quelle": "https://www.rhein-pfalz-kreis.de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "07339": {
+   "name": "Landkreis Mainz-Bingen",
+   "web": "http://www.mainz-bingen.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Mainz-Bingen",
+   "anschrift": [
+    "Georg-Rückert-Straße 11",
+    "55218 Ingelheim am Rhein"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Landkreis_Mainz-Bingen",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "07340": {
+   "name": "Südwestpfalz",
+   "web": "https://www.lksuedwestpfalz.de/",
+   "typ": "kreis",
+   "wiki": "Landkreis Südwestpfalz",
+   "anschrift": [
+    "Unterer Sommerwaldweg 40–42",
+    "66953 Pirmasens"
+   ],
+   "quelle": "https://www.lksuedwestpfalz.de/verschiedenes/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "01001": {
+   "name": "Stadt Flensburg",
+   "web": "https://www.flensburg.de/",
+   "typ": "stadt",
+   "wiki": "Flensburg",
+   "anschrift": [
+    "Rathausplatz 1",
+    "24937 Flensburg"
+   ],
+   "quelle": "https://www.flensburg.de/Service/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "01002": {
+   "name": "Stadt Kiel",
+   "web": "https://www.kiel.de/",
+   "typ": "stadt",
+   "wiki": "Kiel",
+   "anschrift": [
+    "Fleethörn 9",
+    "24103 Kiel"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Kiel",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "01003": {
+   "name": "Stadt Lübeck",
+   "web": "https://www.luebeck.de/",
+   "typ": "stadt",
+   "wiki": "Lübeck",
+   "anschrift": [
+    "Breite Straße 62",
+    "23552 Lübeck"
+   ],
+   "quelle": "https://www.luebeck.de/de/impressum/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "01004": {
+   "name": "Stadt Neumünster",
+   "web": "https://www.neumuenster.de/",
+   "typ": "stadt",
+   "wiki": "Neumünster",
+   "anschrift": [
+    "Großflecken 59",
+    "24534 Neumünster"
+   ],
+   "quelle": "https://www.neumuenster.de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "01051": {
+   "name": "Kreis Dithmarschen",
+   "web": "https://www.dithmarschen.de/",
+   "typ": "kreis",
+   "wiki": "Kreis Dithmarschen",
+   "anschrift": [
+    "Stettiner Straße 30",
+    "25746 Heide"
+   ],
+   "quelle": "https://www.dithmarschen.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "01053": {
+   "name": "Kreis Herzogtum Lauenburg",
+   "web": "https://www.kreis-rz.de/",
+   "typ": "kreis",
+   "wiki": "Kreis Herzogtum Lauenburg",
+   "anschrift": [
+    "Barlachstraße 2",
+    "23909 Ratzeburg"
+   ],
+   "quelle": "https://www.kreis-rz.de/Quicknavigation/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "01054": {
+   "name": "Kreis Nordfriesland",
+   "web": "https://www.nordfriesland.de/",
+   "typ": "kreis",
+   "wiki": "Kreis Nordfriesland",
+   "anschrift": [
+    "Marktstraße 6",
+    "25813 Husum"
+   ],
+   "quelle": "https://www.nordfriesland.de/Quicknavigation/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "01055": {
+   "name": "Kreis Ostholstein",
+   "web": "https://www.kreis-oh.de/",
+   "typ": "kreis",
+   "wiki": "Kreis Ostholstein",
+   "anschrift": [
+    "Lübecker Straße 41",
+    "23701 Eutin"
+   ],
+   "quelle": "https://www.kreis-oh.de/Service-Navigation/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "01056": {
+   "name": "Kreis Pinneberg",
+   "web": "https://www.kreis-pinneberg.de/",
+   "typ": "kreis",
+   "wiki": "Kreis Pinneberg",
+   "anschrift": [
+    "Kurt-Wagener-Straße 11",
+    "25337 Elmshorn"
+   ],
+   "quelle": "https://de.wikipedia.org/wiki/Kreis_Pinneberg",
+   "quelleArt": "wikipedia",
+   "stand": "11.11.2026"
+  },
+  "01057": {
+   "name": "Kreis Plön",
+   "web": "https://www.kreis-ploen.de/",
+   "typ": "kreis",
+   "wiki": "Kreis Plön",
+   "anschrift": [
+    "Hamburger Straße 17–18",
+    "24306 Plön"
+   ],
+   "quelle": "https://www.kreis-ploen.de/Kurzmen%C3%BC/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "01058": {
+   "name": "Kreis Rendsburg-Eckernförde",
+   "web": "https://www.kreis-rendsburg-eckernfoerde.de/",
+   "typ": "kreis",
+   "wiki": "Kreis Rendsburg-Eckernförde",
+   "anschrift": [
+    "Kaiserstraße 8",
+    "24768 Rendsburg"
+   ],
+   "quelle": "https://www.kreis-rendsburg-eckernfoerde.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "01059": {
+   "name": "Kreis Schleswig-Flensburg",
+   "web": "https://www.schleswig-flensburg.de/",
+   "typ": "kreis",
+   "wiki": "Kreis Schleswig-Flensburg",
+   "anschrift": [
+    "Flensburger Straße 7",
+    "24837 Schleswig"
+   ],
+   "quelle": "https://www.schleswig-flensburg.de/Kurzmen%C3%BC/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "01060": {
+   "name": "Kreis Segeberg",
+   "web": "https://www.segeberg.de/",
+   "typ": "kreis",
+   "wiki": "Kreis Segeberg",
+   "anschrift": [
+    "Hamburger Straße 30",
+    "23795 Bad Segeberg"
+   ],
+   "quelle": "https://www.segeberg.de/Kurzmen%C3%BC/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "01061": {
+   "name": "Kreis Steinburg",
+   "web": "https://www.steinburg.de/",
+   "typ": "kreis",
+   "wiki": "Kreis Steinburg",
+   "anschrift": [
+    "Viktoriastraße 16–18",
+    "25524 Itzehoe"
+   ],
+   "quelle": "https://www.steinburg.de/impressum.html",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  },
+  "01062": {
+   "name": "Kreis Stormarn",
+   "web": "https://www.kreis-stormarn.de/",
+   "typ": "kreis",
+   "wiki": "Kreis Stormarn",
+   "anschrift": [
+    "Mommsenstraße 13",
+    "23843 Bad Oldesloe"
+   ],
+   "quelle": "https://www.kreis-stormarn.de/nutzungsbedingungen/index.html",
+   "quelleArt": "impressum",
+   "stand": "11.11.2026"
+  }
+ }
+}

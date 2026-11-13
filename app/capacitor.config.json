@@ -1,6 +1,6 @@
 {
-  "appId": "de.leistungslotse.app",
-  "appName": "Leistungs-Lotse",
+  "appId": "com.Sozialleistungslotse",
+  "appName": "SoLo",
   "webDir": "www",
   "android": { "allowMixedContent": false },
   "ios": { "contentInset": "never" }

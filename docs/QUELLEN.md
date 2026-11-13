@@ -1,4 +1,4 @@
-# Quellenverzeichnis – Leistungs-Lotse (Prüfstand 5.11.2026)
+# Quellenverzeichnis – SoLo Sozialleistungslotse (Prüfstand 5.11.2026)
 
 Jede Zahl und Regel der riskantesten Teile wurde von vier unabhängigen Prüfläufen gegen amtliche Quellen (gesetze-im-internet.de, Bundesagentur für Arbeit, BMG, ZBFS, Bayerische Staatsregierung) gelesen. Die vollständigen Tabellen mit Paragraph, URL, Wortzitat und Status stehen in `quellen/`:
 

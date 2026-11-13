@@ -1,0 +1,20 @@
+{
+ "ar": {
+  "preset.p1": "2",
+  "adults.1": "1",
+  "adults.2": "2",
+  "t.uvg.ja": "11 12 17 18 5 6",
+  "s.kindergeld.tip": "6",
+  "t.kgBeh.nach25": "25",
+  "t.kgBeh.ja": "25",
+  "t.kgBeh.pruefen": "2026 25",
+  "ausb.hint": "10",
+  "t.krank.78": "3 6 78",
+  "t.pflege.rente": "10 2 30",
+  "t.srente.allg": "2 35 5 50",
+  "t.kindergeld.familiengeld": "2024 2025 3 3"
+ },
+ "en": {
+  "s.kindergeld.tip": "6"
+ }
+}

@@ -34,14 +34,21 @@ geo.length = 0; geo.push(...geoWohn);
 console.log(`GeoNames: ${geoAlle} Einträge, davon ${geoAlle - geo.length} Firmen-/Behörden-PLZ aussortiert`);
 
 // ---------- Wohngeldverordnung, Anlage ----------
-function wogvBayern() {
-  const html = fs.readFileSync(path.join(RAW, 'wogv-anlage.html'), 'utf8');
+// Quelle: gesetze-im-internet.de (wogv-anlage.html); fehlt sie, die Fassung von buzer.de (gleicher Verordnungstext)
+const WOGV_DATEI = fs.existsSync(path.join(RAW, 'wogv-anlage.html')) ? 'wogv-anlage.html' : 'wogv-buzer.html';
+function wogvText() {
+  const html = fs.readFileSync(path.join(RAW, WOGV_DATEI), 'utf8');
   const text = html.replace(/<(script|style)[^>]*>[\s\S]*?<\/\1>/g, '').replace(/<\/(tr|p|div|h\d|li)>/g, '\n')
     .replace(/<\/t[dh]>/g, '\t').replace(/<[^>]+>/g, '').replace(/&nbsp;| /g, ' ')
+    .replace(/&(auml|ouml|uuml|Auml|Ouml|Uuml|szlig);/g, (m, e) => ({ auml: 'ä', ouml: 'ö', uuml: 'ü', Auml: 'Ä', Ouml: 'Ö', Uuml: 'Ü', szlig: 'ß' })[e])
     .replace(/&amp;/g, '&').replace(/&#(\d+);/g, (m, n) => String.fromCharCode(n));
   const lines = text.split('\n').map((l) => l.trim()).filter(Boolean);
   const stand = (text.replace(/\s+/g, ' ').match(/Mietenstufen der Gemeinden nach Ländern ab ([0-9]+\. \S+ \d{4})/) || [])[1];
   if (!stand) throw new Error('WoGV: Überschrift mit Stichtag nicht gefunden');
+  return { lines: lines.map((l) => l.replace(/^(Land:\s*[A-Za-zÄÖÜäöüß-]+?)(Gemeinde\s*\tMietenstufe)$/, '$1\n$2')).join('\n').split('\n').map((l) => l.trim()), stand };
+}
+function wogvBayern() {
+  const { lines, stand } = wogvText();
   const a = lines.findIndex((l) => /^Land:\s*Bayern$/.test(l));
   const b = lines.findIndex((l, i) => i > a && /^Land:/.test(l));
   if (a < 0 || b < 0) throw new Error('WoGV: Abschnitt Bayern nicht gefunden');
@@ -49,7 +56,7 @@ function wogvBayern() {
   let mode = null;
   lines.slice(a + 1, b).forEach((l) => {
     const [name, st] = l.split('\t').map((x) => x.trim());
-    if (name === 'Gemeinde') { mode = 'gemeinden'; return; }
+    if (name === 'Gemeinde' || name === 'Gemeinde ') { mode = 'gemeinden'; return; }
     if (name === 'Kreis') { mode = 'kreise'; return; }
     if (!mode || !ROMAN[st]) throw new Error('WoGV: unerwartete Zeile: ' + l);
     rows[mode].push({ name, stufe: ROMAN[st] });
@@ -158,11 +165,99 @@ kreisAGS.filter(istKreisfrei).forEach((a) => {
   kreisStufe[a] = g.stufe;
 });
 
+// ---------- Übrige Länder: Mietenstufe und Kreis automatisch, nur eindeutige Zuordnungen ----------
+// Regel: Ein Ort bekommt die Stufe einer Gemeinde der Verordnung nur, wenn der Name im Land genau einer Gemeinde entspricht und
+// alle GeoNames-Treffer dieses Namens in einem Kreis liegen; sonst die Stufe seines Kreises (Gemeinden unter 10.000 Einwohnern
+// richten sich nach dem Kreis). Nicht eindeutige Gemeindenamen: Orte mit diesem Namen bekommen KEINE Stufe (die App rechnet dann
+// vorsichtig und fragt nach). Kreise ohne Treffer in der Verordnung: keine Stufe.
+const LAND_NAME = Object.fromEntries(BL.map((b) => [b[0], b[1]]));
+function wogvLand(code) {
+  const { lines } = wogvText();
+  const kopf = (l) => /^Land:\s*/.test(l);
+  let a, b;
+  if (code === 'BW') { // Baden-Württemberg steht ohne Überschrift vor Bayern
+    b = lines.findIndex((l) => /^Land:\s*Bayern$/.test(l));
+    a = lines.findIndex((l) => /\t(I|II|III|IV|V|VI|VII)$/.test(l)) - 1;
+  } else {
+    a = lines.findIndex((l) => new RegExp('^Land:\\s*' + LAND_NAME[code].replace(/-/g, '\\-') + '$').test(l));
+    b = lines.findIndex((l, i) => i > a && kopf(l));
+    if (b < 0) b = lines.findIndex((l, i) => i > a && /^(Fußnote|Zum Seitenanfang|Anlage|Impressum)/.test(l));
+    if (b < 0) b = lines.length;
+  }
+  if (a < 0) throw new Error('WoGV: Abschnitt ' + code + ' nicht gefunden');
+  const rows = { gemeinden: [], kreise: [] };
+  let mode = 'gemeinden';
+  lines.slice(a + 1, b).forEach((l) => {
+    const [name, st] = l.split('\t').map((x) => x.trim());
+    if (name === 'Gemeinde') { mode = 'gemeinden'; return; }
+    if (name === 'Kreis') { mode = 'kreise'; return; }
+    if (!ROMAN[st]) return; // Fließtext am Ende des Abschnitts
+    rows[mode].push({ name, stufe: ROMAN[st] });
+  });
+  return rows;
+}
+const KEY_K = (s) => key(String(s).replace(/\b(Kreis|Region|Städteregion|Regionalverband|Stadtkreis|Landkreis)\b/gi, ''));
+const andere = { kreise: [], plz: {}, bericht: [] };
+BL.map((b) => b[0]).filter((c) => c !== 'BY').forEach((code) => {
+  const W2 = wogvLand(code);
+  const G = geo.filter((g) => g.bl === code && /^\d{5}$/.test(g.ags || ''));
+  const kName = {}; G.forEach((g) => { kName[g.ags] = g.kreis; });
+  // Kreise: Name der Verordnung -> Kreisschlüssel (genau ein Treffer)
+  // GeoNames schreibt die Kreise uneinheitlich. Kreisfreie Städte erkennbar an „Kreisfreie Stadt“, „Stadtkreis“, „, Stadt“ u. ä.;
+  // Landkreise an „Landkreis“, „Kreis“, „Region“ oder der Endung „-kreis“. Kreisfreie Städte nie mit einem Landkreis gleichsetzen
+  // (Beispiel: Landkreis Leipzig hat Stufe I, die Stadt Leipzig Stufe II).
+  const KREISFREI = (n) => /(Kreisfreie Stadt|kreisfreie Stadt|Stadtkreis|, Stadt\b|^Stadt\s|Freie und Hansestadt)/.test(n);
+  const LANDKREIS = (n) => /^(Landkreis|Kreis\s|Region\s|Städteregion\s|Regionalverband\s)|kreis$|kreis\s|Kreis\s/i.test(n) && !KREISFREI(n);
+  const wogvKreisKeys = new Set(W2.kreise.map((k) => KEY_K(k.name)));
+  const kStufe = {}; let kOffen = 0;
+  W2.kreise.forEach((k) => {
+    const hits = Object.keys(kName).filter((a) => !KREISFREI(kName[a]) && KEY_K(kName[a]) === KEY_K(k.name));
+    if (hits.length === 1) kStufe[hits[0]] = k.stufe; else kOffen++;
+  });
+  // Gemeinden: Name -> Orte (eindeutig im Land, alle Treffer in einem Kreis)
+  const wKeys = {}; W2.gemeinden.forEach((g) => { const k = ortKey(g.name); (wKeys[k] = wKeys[k] || []).push(g); });
+  const ortStufe = {}, gesperrt = new Set(); let gOffen = 0;
+  const gemProKreis = {};
+  Object.keys(wKeys).forEach((k) => {
+    const hits = G.filter((g) => ortKey(g.ort) === k);
+    const kreiseT = [...new Set(hits.map((g) => g.ags))];
+    if (wKeys[k].length !== 1 || kreiseT.length !== 1) { gOffen++; gesperrt.add(k); return; }
+    ortStufe[kreiseT[0] + '|' + k] = wKeys[k][0].stufe;
+    (gemProKreis[kreiseT[0]] = gemProKreis[kreiseT[0]] || []).push([wKeys[k][0].name, wKeys[k][0].stufe]);
+  });
+  // Kreisfreie Städte: Der ganze Kreis ist eine Gemeinde, alle Orte (auch Stadtteile) haben die Stufe der Stadt.
+  // Erkennung: Kreisname = genau eine Gemeinde der Verordnung, der Kreis selbst steht nicht in der Kreisliste.
+  const stadtStufe = {};
+  Object.keys(kName).forEach((ags) => {
+    if (kStufe[ags]) return;
+    const n = kName[ags];
+    if (!KREISFREI(n) && (LANDKREIS(n) || wogvKreisKeys.has(KEY_K(n)))) return; // ein Landkreis ohne Treffer bleibt ohne Stufe
+    const k = ortKey(String(kName[ags]).replace(/^(Kreisfreie Stadt|Stadtkreis|Stadt)\s+/, ''));
+    if (wKeys[k] && wKeys[k].length === 1) stadtStufe[ags] = wKeys[k][0].stufe;
+  });
+  // Stadtstaaten: eine Gemeinde für alle Orte des Landes (Berlin, Hamburg); Bremen: Bremen und Bremerhaven über den Kreis
+  const einheit = (code === 'BE' || code === 'HH') && W2.gemeinden.length >= 1 ? W2.gemeinden[0].stufe : null;
+  Object.keys(kName).sort().forEach((ags) => {
+    andere.kreise.push({ n: kName[ags].replace(/^Kreisfreie Stadt /, 'Stadt '), ags, g: (gemProKreis[ags] || []).sort((p, q) => p[0].localeCompare(q[0], 'de')) });
+  });
+  let mitStufe = 0, ohne = 0;
+  G.forEach((g) => {
+    const k = ortKey(g.ort);
+    const eigen = ortStufe[g.ags + '|' + k];
+    let stufe = einheit || stadtStufe[g.ags] || eigen || (gesperrt.has(k) ? null : kStufe[g.ags]) || null;
+    if (stufe) mitStufe++; else ohne++;
+    (andere.plz[g.plz] = andere.plz[g.plz] || []).push({ ort: g.ort, ags: g.ags, stufe, eigen: eigen || einheit || stadtStufe[g.ags] ? 1 : 0, bl: BL.findIndex((b) => b[0] === code) });
+  });
+  andere.bericht.push(`${code}: ${W2.gemeinden.length} Gemeinden/${W2.kreise.length} Kreise in der Verordnung, ${gOffen} Gemeindenamen und ${kOffen} Kreise nicht eindeutig; Orte mit Stufe ${mitStufe}, ohne ${ohne}`);
+});
+console.log('Übrige Länder:\n  ' + andere.bericht.join('\n  '));
+
 // ---------- Ausgabe im Format von src/plz.js ----------
 const kreise = kreisAGS.map((a) => ({
   n: amtlich(a), ags: a,
   g: gemeinden.filter((x) => x.ags === a).map((x) => [x.name, x.stufe]).sort((p, q) => p[0].localeCompare(q[0], 'de'))
 }));
+andere.kreise.forEach((k) => kreise.push(k));
 const kIdx = {}; kreise.forEach((k, i) => { kIdx[k.ags] = i; });
 const gemStufe = {}; gemeinden.forEach((x) => x.orte.forEach((o) => { gemStufe[x.ags + '|' + o] = x.stufe; }));
 
@@ -175,18 +270,25 @@ geo.forEach((g) => {
     const eigen = gemStufe[g.ags + '|' + g.ort];
     const e = [g.ort, kIdx[g.ags], eigen || kreisStufe[g.ags], eigen || istKreisfrei(g.ags) ? 1 : 0, bl];
     if (!list.some((x) => x[0] === e[0] && x[1] === e[1])) list.push(e);
-  } else if (!list.some((x) => x[4] === bl)) list.push([g.ort, -1, null, 0, bl]);
+  }
+});
+Object.keys(andere.plz).forEach((p) => {
+  const list = (plz[p] = plz[p] || []);
+  andere.plz[p].forEach((e) => {
+    const x = [e.ort, kIdx[e.ags], e.stufe, e.eigen, e.bl];
+    if (!list.some((y) => y[0] === x[0] && y[1] === x[1])) list.push(x);
+  });
 });
 
 const data = {
   stand: {
     wogv: 'Anlage zur Wohngeldverordnung, Mietenstufen ab ' + W.stand,
     geonames: 'GeoNames (CC BY 4.0), abgerufen ' + abgerufen('geonames-DE.zip').slice(0, 10),
-    umfang: 'Kreis und Mietenstufe nur Bayern; übrige Länder nur Bundesland'
+    umfang: 'Kreis und Mietenstufe bundesweit; Bayern geprüft, übrige Länder automatisch und nur bei eindeutiger Zuordnung'
   },
   bl: BL.map((b) => b[0]), blNamen: BL.map((b) => b[1]),
   kreise, plz
 };
 fs.writeFileSync(OUT, JSON.stringify(data));
 const nBY = Object.values(plz).filter((l) => l.some((e) => e[4] === 1)).length;
-console.log(`plz-data.json: ${Object.keys(plz).length} PLZ (Bayern ${nBY}), ${kreise.length} bayerische Kreise, ${gemeinden.length} Gemeinden mit eigener Mietenstufe, ${(fs.statSync(OUT).size / 1024).toFixed(0)} KB`);
+console.log(`plz-data.json: ${Object.keys(plz).length} PLZ (Bayern ${nBY}), ${kreise.length} Kreise, ${gemeinden.length} Gemeinden mit eigener Mietenstufe, ${(fs.statSync(OUT).size / 1024).toFixed(0)} KB`);
