@@ -81,7 +81,7 @@ export class Mask {
     const g = this.catalog.group(group)!;
     const keys = this.keysOf(group);
     const filled = keys.filter((k) => this.values[k] !== undefined).length;
-    const count = g.liste ? String(this.access.count(group)) : t('main.filled', { n: filled, m: keys.length });
+    const count = g.liste ? t('main.entries', { n: this.access.count(group) }) : t('main.filled', { n: filled, m: keys.length });
     let body: string;
     if (g.liste) {
       const n = this.access.count(group);
@@ -96,7 +96,7 @@ export class Mask {
       body = this.fieldsOf(group).map((f) => this.field(f, f.key)).join('');
     }
     return `<details class="section" data-group="${group}"${this.open.has(group) ? ' open' : ''}>
-      <summary><h2>${esc(lab(g.label))}</h2><span class="count">${esc(count)}</span></summary>
+      <summary><span class="sumrow"><h2>${esc(lab(g.label))}</h2><span class="count">${esc(count)}</span></span></summary>
       <div class="body">${body}</div></details>`;
   }
 

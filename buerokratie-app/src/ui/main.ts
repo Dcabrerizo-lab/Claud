@@ -201,7 +201,7 @@ function toast(text: string) {
   const saved = document.getElementById('saved');
   if (!saved) return;
   saved.textContent = '✓ ' + text; saved.classList.add('show');
-  clearTimeout(toastTimer); toastTimer = setTimeout(() => saved.classList.remove('show'), 1500);
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => { saved.classList.remove('show'); saved.textContent = ''; }, 1500);
 }
 let toastTimer: ReturnType<typeof setTimeout>;
 

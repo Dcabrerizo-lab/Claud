@@ -77,5 +77,6 @@
   "chpass.h": "Neue Passphrase festlegen",
   "chpass.go": "Passphrase ändern",
   "chpass.done": "Die Passphrase wurde geändert.",
-  "rec.renew": "Ihr Wiederherstellungscode wurde noch nicht bestätigt. Deshalb bekommen Sie hier einen neuen Code. Ein früher angezeigter Code gilt nicht mehr."
+  "rec.renew": "Ihr Wiederherstellungscode wurde noch nicht bestätigt. Deshalb bekommen Sie hier einen neuen Code. Ein früher angezeigter Code gilt nicht mehr.",
+  "main.entries": "{n} eingetragen"
 }

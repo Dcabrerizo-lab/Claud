@@ -20,7 +20,7 @@ async function audit(page, label) {
 }
 
 const VARIANTS = [];
-for (const scheme of ['light', 'dark']) for (const big of [false, true]) for (const lang of ['de', 'en']) for (const vp of [{ width: 320, height: 640 }, { width: 412, height: 915 }, { width: 1280, height: 800 }]) VARIANTS.push({ scheme, big, lang, vp });
+for (const scheme of ['light', 'dark']) for (const big of [false, true]) for (const lang of ['de', 'en']) for (const vp of [{ width: 280, height: 640 }, { width: 320, height: 640 }, { width: 412, height: 915 }, { width: 1280, height: 800 }]) VARIANTS.push({ scheme, big, lang, vp });
 
 for (const v of VARIANTS) {
   const label = `${v.scheme}/${v.big ? 'groß' : 'normal'}/${v.lang}/${v.vp.width}px`;
@@ -59,6 +59,8 @@ for (const v of VARIANTS) {
 {
   const { ctx, page } = await openApp(browser);
   const tabTo = async (sel, max = 15) => { for (let i = 0; i < max; i++) { await page.keyboard.press('Tab'); if (await page.evaluate((s) => document.activeElement?.matches(s), sel)) return; } throw new Error('Tastatur erreicht ' + sel + ' nicht'); };
+  // start keyboard navigation inside the page (a fresh headless window may have focus in the browser frame)
+  await page.locator('h1').click();
   await tabTo('#start'); await page.keyboard.press('Enter');
   await tabTo('#p1'); await page.keyboard.type('Sonne Fahrrad Küche 7');
   await tabTo('#p2'); await page.keyboard.type('Sonne Fahrrad Küche 7'); await page.keyboard.press('Enter');

@@ -77,5 +77,6 @@
   "chpass.h": "Choose a new passphrase",
   "chpass.go": "Change passphrase",
   "chpass.done": "The passphrase has been changed.",
-  "rec.renew": "Your recovery code has not been confirmed yet, so here is a new one. Any code shown earlier no longer works."
+  "rec.renew": "Your recovery code has not been confirmed yet, so here is a new one. Any code shown earlier no longer works.",
+  "main.entries": "{n} entered"
 }
