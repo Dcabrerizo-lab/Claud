@@ -291,6 +291,8 @@ check('Arabisch läuft rechts nach links, alle anderen links nach rechts', I18N.
   const fsx = require('fs'), px = require('path');
   const a = fsx.readFileSync(px.join(__dirname, '..', 'datenschutz.html'), 'utf8'), b = fsx.readFileSync(px.join(__dirname, '..', 'site', 'datenschutz.html'), 'utf8');
   check('Webseite: site/datenschutz.html ist aktuell (gleich wie datenschutz.html)', a === b);
+  // GitHub Pages veröffentlicht den Ordner docs/: dort dieselbe Webseite
+  check('Webseite: docs/ (GitHub Pages) hat dieselbe Startseite und Datenschutzerklärung wie site/', fsx.readFileSync(px.join(__dirname, '..', 'docs', 'datenschutz.html'), 'utf8') === b && fsx.readFileSync(px.join(__dirname, '..', 'docs', 'index.html'), 'utf8') === fsx.readFileSync(px.join(__dirname, '..', 'site', 'index.html'), 'utf8') && fsx.existsSync(px.join(__dirname, '..', 'docs', '.nojekyll')));
   check('Webseite: Startseite verlinkt Datenschutz und Impressum', /datenschutz\.html"/.test(fsx.readFileSync(px.join(__dirname, '..', 'site', 'index.html'), 'utf8')) && /id="impressum"/.test(b));
 }
 
