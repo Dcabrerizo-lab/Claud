@@ -18,6 +18,7 @@ Offline-App mit verschlüsseltem Stammdatentresor, die PDF-Formulare und fotogra
 | `docs/spike-m0.md` | **Ergebnis M0**: was pdf-lib kann und wo es scheitert |
 | `docs/spike-m0b.md` | **Ergebnis M0b**: Papierformulare per Foto (Abschreibhilfe und ausgefülltes PDF) |
 | `docs/m1-tresor.md` | **Ergebnis M1** |
+| `docs/testbericht.md` | **Testbericht**: Prüfebenen, gefundene und behobene Fehler, was noch fehlt |
 | `docs/entscheidungen.md` | technische Entscheidungen mit Begründung |
 | `docs/plan.md` | fortgeschriebener Plan mit Davids Entscheidungen |
 | `docs/pruefung-auftrag.md` | Prüfung des Auftrags, Stack-Vergleich, Widersprüche |
@@ -27,7 +28,9 @@ npm ci
 npm run dev        # App im Browser entwickeln
 npm run build      # dist/daten-tresor.html (eine Datei, offline)
 npm test           # Logik-Tests
-npm run test:e2e   # Browsertest der gebauten App
+npm run test:e2e   # Browser: Ablauf, Robustheit, Barrierefreiheit, Zufallseingaben
+npm run test:big   # großer Lauf (50 000 Fälle je Eigenschaft, 60 Browser-Sitzungen)
+npm run test:mutation  # Mutationstests (Qualität der Tests)
 npm run typecheck
 npm run spike:fixtures && npm run spike && npm run spike:render   # PDF-Weg
 npm run spike:photos && npm run spike:scan                         # Foto-Weg

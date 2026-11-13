@@ -103,3 +103,45 @@ describe('Zufällige Abläufe in 2–4 Fenstern', () => {
       }), { numRuns: Math.ceil(RUNS / 25) });
   }, 600_000);
 });
+
+describe('Abgleich und Warten – Randfälle', () => {
+  it('idle() wartet, bis alle angestoßenen Änderungen gespeichert sind', async () => {
+    const storage = new MemoryStorage();
+    const [a] = await tabs(storage, 1);
+    a.module(ALL).write('person.vorname', 'Ida');
+    a.module(ALL).write('person.nachname', 'Kaya');
+    await a.idle();
+    const fresh = await Vault.unlock(storage, catalog, PASS);
+    expect(await fresh.module(ALL).read(['person.vorname', 'person.nachname'])).toEqual({ 'person.vorname': 'Ida', 'person.nachname': 'Kaya' });
+  });
+  it('gesperrt während des Abgleichs: kein Klartext wird wieder geladen', async () => {
+    const storage = new MemoryStorage();
+    const [a, b] = await tabs(storage, 2);
+    await a.module(ALL).write('person.vorname', 'Ida');
+    const r = b.refresh();
+    b.lock();
+    await expect(r).resolves.toBe(false);
+    expect(b.locked).toBe(true);
+  });
+});
+
+describe('IndexedDB: Transaktionsfehler kommen als Fehler an', () => {
+  // minimal fake: the transaction fails (e.g. storage quota) after the request was issued
+  function failingFactory(kind: 'error' | 'abort'): IDBFactory {
+    const db = {
+      transaction: () => {
+        const t: any = { error: new Error('Transaktion ' + kind), objectStore: () => ({
+          get: () => { const req: any = {}; setTimeout(() => { req.onsuccess?.(); setTimeout(() => (kind === 'error' ? t.onerror : t.onabort)?.()); }); return req; },
+          put: () => ({}), delete: () => ({}), getAllKeys: () => ({}),
+        }) };
+        return t;
+      },
+    };
+    return { open: () => { const req: any = { result: db }; setTimeout(() => req.onsuccess?.()); return req; } } as unknown as IDBFactory;
+  }
+  it.each(['error', 'abort'] as const)('Transaktion %s: Lesen und atomares Schreiben schlagen sauber fehl', async (kind) => {
+    const s = new IndexedDbStorage('x', failingFactory(kind));
+    await expect(s.get('a')).rejects.toThrow('Transaktion ' + kind);
+    await expect(s.setIf('a', () => true, 1)).rejects.toThrow('Transaktion ' + kind);
+  });
+});

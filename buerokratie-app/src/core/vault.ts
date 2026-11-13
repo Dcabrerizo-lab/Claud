@@ -140,7 +140,8 @@ export class Vault {
    */
   async refresh(): Promise<boolean> {
     const changed = await this.serial(async () => {
-      const dek = this.key();
+      if (!this.dek) return false; // locked meanwhile: nothing to refresh
+      const dek = this.dek;
       const current = await this.storage.get<Sealed>('data');
       if (!current || current.iv === this.dataIv) return false;
       const data = await open<VaultData>(dek, current, DATA_CONTEXT);
