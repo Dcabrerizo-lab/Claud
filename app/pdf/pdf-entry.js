@@ -58,8 +58,8 @@ async function buildPdf({ pages, title, loadFont }) {
   const doc = await PDFDocument.create();
   doc.registerFontkit(fontkit);
   doc.setTitle(title || 'Antragsmappe');
-  doc.setCreator('Leistungs-Lotse');
-  doc.setProducer('Leistungs-Lotse');
+  doc.setCreator('SoLo – Sozialleistungslotse');
+  doc.setProducer('SoLo – Sozialleistungslotse');
   doc.setLanguage('de-DE');
   const [regBytes, boldBytes] = await Promise.all([loadFont('NotoSans-Regular.ttf'), loadFont('NotoSans-Bold.ttf')]);
   const reg = await doc.embedFont(regBytes, { subset: false });

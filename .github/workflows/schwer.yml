@@ -1,0 +1,157 @@
+name: Schwere Tests
+
+# Große Testläufe: viele Millionen Haushalte gegen die unabhängige Referenzrechnung, Logik-Test mit 1 Million Haushalten,
+# vollständiger Mutationstest, Browsertests in Firefox und WebKit (Safari), die echte App im Android-Emulator (Android 8, 11, 15)
+# und der iOS-Build. Sparsam: nur von Hand (Actions -> Schwere Tests
+# -> Run workflow) und einmal, wenn diese Datei geändert wird. Dauer etwa 20 bis 40 Minuten.
+# (Die Knopfdruck-Variante erscheint erst, wenn diese Datei auch im Haupt-Branch liegt.)
+on:
+  workflow_dispatch:
+  push:
+    paths: ['.github/workflows/schwer.yml']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: schwer-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  raster:
+    name: Rastertest 3 Millionen Haushalte
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npm run build:web
+      - name: App gegen unabhängige Referenz (3.000.000 Zufallshaushalte plus feste Raster)
+        run: node test/test-raster.js 3000000
+
+  eigenschaften:
+    name: Logik-Test 1 Million Haushalte
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - name: Monotonie und Widerspruchsfreiheit (1.000.000 Haushalte)
+        run: node test/test-eigenschaften.js 1000000
+      - name: Dasselbe nach dem Jahreswechsel (Werte 2027, 300.000 Haushalte)
+        run: HEUTE=2027.05 node test/test-eigenschaften.js 300000
+
+  mutation:
+    name: Mutationstest (große Testreihen)
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - name: Browser installieren (bis zu 3 Versuche, je höchstens 5 Minuten)
+        run: for i in 1 2 3; do timeout 300 npx playwright install --with-deps chromium && exit 0; echo "Versuch $i fehlgeschlagen"; sleep 20; done; exit 1
+      - name: Alle Tests einmal sauber
+        run: npm test
+      - name: Eingebaute Fehler müssen alle entdeckt werden
+        env: { MUT_RASTER: '60000', MUT_EIGEN: '15000' }
+        run: node tools/mutationstest.js
+
+  browser:
+    name: Browsertests ${{ matrix.browser }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [firefox, webkit]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - name: Browser installieren (bis zu 3 Versuche, je höchstens 5 Minuten)
+        run: for i in 1 2 3; do timeout 300 npx playwright install --with-deps ${{ matrix.browser }} && exit 0; echo "Versuch $i fehlgeschlagen"; sleep 20; done; exit 1
+      - run: npm run build:web
+      - name: Ausführliche Version (alle Sprachen, Behinderung, Mappe, PLZ)
+        env: { BROWSER: '${{ matrix.browser }}' }
+        run: node test/e2e-beh.js
+      - name: Einfache Version
+        env: { BROWSER: '${{ matrix.browser }}' }
+        run: node test/e2e-einfach.js
+      - name: Kleine Handys und große Schrift (320 px, Systemschrift 200 %)
+        env: { BROWSER: '${{ matrix.browser }}' }
+        run: node test/e2e-klein.js
+
+  android-geraete:
+    name: Android-Emulator API ${{ matrix.api }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        api: [26, 30, 35]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm, cache-dependency-path: app/package-lock.json }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 21, cache: gradle }
+      - run: npm ci
+      - run: npm ci
+        working-directory: app
+      - run: npm run build:app
+      - name: Debug-APK bauen (alte Version 1000 und neue Version 1001 für den Update-Test)
+        working-directory: app/android
+        run: |
+          VERSION_CODE=1000 ./gradlew --no-daemon assembleDebug
+          cp app/build/outputs/apk/debug/app-debug.apk ${{ github.workspace }}/app-alt.apk
+          VERSION_CODE=1001 ./gradlew --no-daemon assembleDebug
+      - name: KVM für den Emulator freischalten
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: App im Emulator installieren, starten, bedienen, PDF teilen, Update über die alte Version
+        uses: reactivecircus/android-emulator-runner@v2
+        env: { ALT_APK: app-alt.apk }
+        with:
+          api-level: ${{ matrix.api }}
+          arch: x86_64
+          target: google_apis
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+          script: bash tools/emulator-test.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: emulator-api-${{ matrix.api }}
+          path: |
+            emulator-*.png
+            ui-*.xml
+          if-no-files-found: ignore
+
+  ios:
+    name: iOS (Simulator-Build)
+    runs-on: macos-15-intel
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm, cache-dependency-path: app/package-lock.json }
+      - run: npm ci
+      - run: npm ci
+        working-directory: app
+      - run: npm run build:app
+      - name: Für den Simulator bauen (ohne Signatur)
+        working-directory: app/ios/App
+        run: |
+          xcodebuild -project App.xcodeproj -scheme App -configuration Debug \
+            -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO build | tail -50
+          exit ${PIPESTATUS[0]}

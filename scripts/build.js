@@ -1,4 +1,4 @@
-// Baut die Web-Version: dist/i18n.js und dist/leistungs-lotse.html
+// Baut die Web-Version: dist/i18n.js und dist/sozialleistungslotse.html
 // aus src/template.html, src/rules.js, src/fmt.js, src/plz.js, src/app.js und src/lang/*.json.
 'use strict';
 const fs = require('fs');
@@ -20,7 +20,15 @@ function i18nSource() {
 // Optional: PLZ-Daten (content/plz-data.json). Fehlen sie, bleibt das PLZ-Feld ausgeblendet.
 function plzData() { return jsonData('plz-data.json'); }
 // Optional: Behördenverzeichnis Bayern (content/behoerden-bayern.json). Fehlt es, nennt die App nur die Art der Stelle.
-function behoerdenData() { return jsonData('behoerden-bayern.json'); }
+// Dazu Stellen außerhalb Bayerns (content/behoerden-deutschland.json: Name und Website, noch ohne Anschrift) als Feld „de“.
+function behoerdenData() {
+  const by = jsonData('behoerden-bayern.json');
+  if (by === 'null') return by;
+  const o = JSON.parse(by);
+  const de = jsonData('behoerden-deutschland.json');
+  if (de !== 'null') o.de = JSON.parse(de);
+  return JSON.stringify(o);
+}
 function jsonData(name) {
   const f = path.join(ROOT, 'content', name);
   return fs.existsSync(f) ? JSON.stringify(JSON.parse(fs.readFileSync(f, 'utf8'))) : 'null';
@@ -51,8 +59,11 @@ function build() {
   const { html, i18n } = render();
   fs.mkdirSync(DIST, { recursive: true });
   fs.writeFileSync(path.join(DIST, 'i18n.js'), i18n);
-  fs.writeFileSync(path.join(DIST, 'leistungs-lotse.html'), html);
-  console.log('Web-Build: dist/leistungs-lotse.html', (html.length / 1024).toFixed(1), 'KB');
+  // Eigenständige Datei (zum Öffnen im Browser, für die Webseite): mit Zeichensatz und Viewport. Ohne <meta charset> zeigt
+  // Safari (WebKit) die Umlaute falsch; ohne Viewport ist die Seite auf dem Handy winzig. Die App setzt ihren Kopf selbst (build-app.js).
+  const doc = '<!doctype html>\n<html lang="de">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n<link rel="icon" href="data:,">\n</head>\n<body>\n' + html + '\n</body>\n</html>\n';
+  fs.writeFileSync(path.join(DIST, 'sozialleistungslotse.html'), doc);
+  console.log('Web-Build: dist/sozialleistungslotse.html', (html.length / 1024).toFixed(1), 'KB');
 }
 
 module.exports = { render, i18nSource, LANGS, ROOT };

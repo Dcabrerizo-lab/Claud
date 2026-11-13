@@ -1,20 +1,24 @@
 {
-  "name": "leistungs-lotse",
+  "name": "sozialleistungslotse",
   "version": "1.0.0",
   "private": true,
-  "description": "Leistungs-Lotse: Orientierungscheck für Sozialleistungen, offline, ohne Server",
-  "engines": { "node": ">=22" },
+  "description": "SoLo – Sozialleistungslotse: Orientierungscheck für Sozialleistungen, offline, ohne Server",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "build:web": "node scripts/build.js",
     "build:data": "node tools/build-plz-data.js && node tools/build-behoerden.js",
     "build:app": "node scripts/build-app.js && cd app && npx cap sync",
     "test": "npm run build:web && npm run test:rules && npm run test:dom",
-    "test:rules": "node test/test.js && node test/test-strict.js && node test/test-beh.js && node test/test-faelle.js && node test/test-plz.js && node test/test-behoerden.js",
-    "test:dom": "node test/dom-test.js",
-    "test:e2e": "npm run build:web && node test/e2e-beh.js",
-    "test:app": "node scripts/build-app.js && node test/app-test.js"
+    "test:rules": "node test/test.js && node test/test-strict.js && node test/test-beh.js && node test/test-faelle.js && node test/test-plz.js && node test/test-behoerden.js && node test/test-raster.js && node test/test-pruefliste.js && node test/test-eigenschaften.js && HEUTE=2027.05 node test/test-eigenschaften.js 8000 && node test/test-sprachen-zahlen.js",
+    "test:dom": "node test/dom-test.js && node test/test-jahreswechsel.js && node test/test-sicherheit.js",
+    "test:e2e": "npm run build:web && node test/e2e-beh.js && node test/e2e-einfach.js && node test/e2e-klein.js && node test/a11y.js",
+    "test:app": "node scripts/build-app.js && node test/app-test.js",
+    "test:mutation": "npm run build:web && node tools/mutationstest.js"
   },
   "devDependencies": {
+    "axe-core": "^4.10.3",
     "jsdom": "^26.1.0",
     "playwright": "1.63.0"
   }

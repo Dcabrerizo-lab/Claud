@@ -1,8 +1,8 @@
 {
-  "name": "leistungs-lotse-app",
+  "name": "sozialleistungslotse-app",
   "version": "1.0.0",
   "private": true,
-  "description": "Capacitor-Hülle des Leistungs-Lotsen für Android und iOS",
+  "description": "Capacitor-Hülle von SoLo – Sozialleistungslotse für Android und iOS",
   "dependencies": {
     "@capacitor/android": "^8.6.0",
     "@capacitor/app": "^8.1.2",

@@ -14,10 +14,14 @@ const Fmt = (function () {
   }
 
   // Betragseingabe: „1.200,50“, „1200“, „1,5“, „950.50“ -> Zahl; leer oder ungültig -> ''
+  // Betrag aus einer Eingabe lesen: „1.234,50“, „1234,5“, „780 €“, „780 warm“, „2,050.50“ (englisch). Ungültig oder negativ: ''.
   function parse(v) {
-    var s = String(v == null ? '' : v).replace(/[€\s]/g, '');
+    var raw = String(v == null ? '' : v);
+    if (/-\s*\d/.test(raw)) return '';
+    var s = raw.replace(/[^\d.,]/g, '');
     if (!s) return '';
-    if (s.indexOf(',') >= 0) s = s.replace(/\./g, '').replace(',', '.');
+    if (s.indexOf(',') >= 0 && s.indexOf('.') >= 0 && s.lastIndexOf('.') > s.lastIndexOf(',')) s = s.replace(/,/g, '');
+    else if (s.indexOf(',') >= 0) s = s.replace(/\./g, '').replace(',', '.').replace(/,/g, '');
     else if (/^\d{1,3}(\.\d{3})+$/.test(s)) s = s.replace(/\./g, '');
     else if (!/^\d*\.\d{1,2}$/.test(s)) s = s.replace(/\./g, '');
     var n = Number(s);

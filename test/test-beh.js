@@ -8,6 +8,7 @@
 //  - § 208 SGB IX: 5 Arbeitstage Zusatzurlaub; § 61 SGB IX: Lohnkostenzuschuss bis 75 %
 const R = require('./rules-de.js');
 const I18N = require('../dist/i18n.js');
+const KARTEN = require('./karten.js');
 let fails = 0, n = 0;
 function check(name, cond, extra) { n++; if (!cond) { fails++; console.log('FAIL', name, extra === undefined ? '' : extra); } }
 const base = { adults: 1, kids: 0, young: 0, brutto: 0, netto: '', miete: 0, vermoegen: 0, bezug: {} };
@@ -84,7 +85,7 @@ check('Pflege plus: kein Pflegegrad => nein', lv({}, 'pflegeplus') === 'nein');
 check('Pflege plus: beantragt => möglich', lv({ pflegegrad: 'antrag' }, 'pflegeplus') === 'vielleicht');
 const pp1 = get({ pflegegrad: '1' }, 'pflegeplus'), pp3 = get({ pflegegrad: '3' }, 'pflegeplus');
 check('Pflege plus Grad 1: 42 € / 4.180 €, keine Verhinderungspflege', pp1.level === 'ja' && pp1.tx[0][1].verbrauch === '42 €' && pp1.tx[0][1].wohn === '4.180 €' && pp1.tx.length === 1);
-check('Pflege plus Grad 3: mit Verhinderungspflege', pp3.tx.length === 2 && pp3.tx[1][0] === 'pflegeplus.verh');
+check('Pflege plus Grad 3: mit Verhinderungs-/Kurzzeitpflege und Entlastungsbudget 3.539 €', pp3.tx.length === 2 && pp3.tx[1][0] === 'pflegeplus.budget' && pp3.tx[1][1].betrag === '3.539 €');
 
 // --- Budget für Arbeit ---
 check('Budget für Arbeit: ohne Werkstatt => nein', lv({ gdb: '100' }, 'arbeit') === 'nein');
@@ -111,7 +112,9 @@ check('Rundfunk: Rentnerin mit Anspruch auf Grundsicherung => möglich', lv({ al
 check('Zuzahlung: ohne Angabe => nein', lv({}, 'zuzahl') === 'nein');
 check('Zuzahlung: mit Pflegegrad => möglich, nur 2 %', lv({ pflegegrad: '2' }, 'zuzahl') === 'vielleicht' && txKeys({ pflegegrad: '2' }, 'zuzahl').join() === 'zuzahl.grenze');
 check('Zuzahlung: GdB 50 => nur 2 %', txKeys({ gdb: '50' }, 'zuzahl').join() === 'zuzahl.grenze');
-['60', '100', 'H'].forEach((g) => check('Zuzahlung: GdB ' + g + ' => 1 %-Hinweis', txKeys({ gdb: g }, 'zuzahl').join() === 'zuzahl.grenze,zuzahl.chron'));
+['60', '100'].forEach((g) => check('Zuzahlung: GdB ' + g + ' => 1 %-Hinweis', txKeys({ gdb: g }, 'zuzahl').join() === 'zuzahl.grenze,zuzahl.chron'));
+check('Zuzahlung: Merkzeichen H => 1 %-Hinweis und Fahrtkosten', txKeys({ gdb: 'H' }, 'zuzahl').join() === 'zuzahl.grenze,zuzahl.chron,zuzahl.fahrt');
+check('Zuzahlung: Pflegegrad 3 => 1 %-Hinweis und Fahrtkosten', txKeys({ pflegegrad: '3' }, 'zuzahl').join() === 'zuzahl.grenze,zuzahl.chron,zuzahl.fahrt');
 
 // --- BAB ---
 check('BAB: ohne Angaben => nein', lv({}, 'bab') === 'nein');
@@ -138,7 +141,9 @@ WB.forEach(([o, g]) => {
   check('WBS über Höchstwert nach Abzug => nein', lv({ ...o, brutto: mx / 0.7 / 12 + 50 }, 'wbs') === 'nein' && get({ ...o, brutto: mx / 0.7 / 12 + 50 }, 'wbs').tx[0][1].grenze === eur(mx));
   check('WBS knapp unter dem Höchstwert nach Abzug => möglich', lv({ ...o, brutto: mx / 0.7 / 12 - 20 }, 'wbs') === 'vielleicht');
 });
-check('WBS: Schwerbehinderung erweitert die "möglich"-Spanne um 4.000 € im Jahr', lv({ adults: 1, brutto: (28300 + 4000) / 0.7 / 12 - 5, gdb: '50' }, 'wbs') === 'vielleicht' && lv({ adults: 1, brutto: (28300 + 4000) / 0.7 / 12 + 20, gdb: '50' }, 'wbs') === 'nein' && lv({ adults: 1, brutto: 28300 / 0.7 / 12 + 20 }, 'wbs') === 'nein');
+// Freibeträge nach dem Muster § 24 WoFG: GdB 100 oder ab 80 mit Pflegegrad 4.500 €, unter 80 mit Pflegegrad 2.100 €, ohne Pflegegrad (GdB 50-90) 0 €
+check('WBS: GdB 100 erweitert die "möglich"-Spanne um 4.500 € im Jahr', lv({ adults: 1, brutto: (28300 + 4500) / 0.7 / 12 - 5, gdb: '100' }, 'wbs') === 'vielleicht' && lv({ adults: 1, brutto: (28300 + 4500) / 0.7 / 12 + 20, gdb: '100' }, 'wbs') === 'nein' && lv({ adults: 1, brutto: 28300 / 0.7 / 12 + 20 }, 'wbs') === 'nein');
+check('WBS: GdB 50 mit Pflegegrad 2.100 €, GdB 50 ohne Pflegegrad kein Freibetrag', lv({ adults: 1, brutto: (28300 + 2100) / 0.7 / 12 - 5, gdb: '50', pflegegrad: '2' }, 'wbs') === 'vielleicht' && lv({ adults: 1, brutto: 28300 / 0.7 / 12 + 20, gdb: '50' }, 'wbs') === 'nein');
 check('WBS: Einkommen 0 => ja', lv({ brutto: 0 }, 'wbs') === 'ja');
 // Monotonie: mehr Einkommen kann das Ergebnis nur verschlechtern
 {
@@ -180,7 +185,7 @@ for (let i = 0; i < 30000; i++) {
   o.netto = o.brutto * 0.8;
   let out; try { out = R.evaluate(o); } catch (e) { randBad++; console.log('Absturz', JSON.stringify(o), e.message); continue; }
   const ids = new Set(out.results.map((x) => x.id));
-  if (out.results.length !== 21 || ids.size !== 21 || !out.results.every((x) => LV.includes(x.level) && x.name && x.steps && x.tx.length >= 1)) randBad++;
+  if (out.results.length !== KARTEN.length || ids.size !== KARTEN.length || !out.results.every((x) => LV.includes(x.level) && x.name && x.steps && x.tx.length >= 1)) randBad++;
   // Texte müssen in allen Sprachen ohne offene Platzhalter erscheinen
   if (i % 50 === 0) out.results.forEach((x) => x.tx.forEach((y) => {
     ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro'].forEach((l) => {
@@ -206,13 +211,13 @@ check('Alle Ergebnistexte in 8 Sprachen ohne offene Platzhalter', textBad.length
 // Müll-Eingaben
 [null, undefined, {}, { gdb: {} }, { bhPerson: [] }, { blind: 1 }, { emStd: false }, { brutto: 'abc', gdb: 'H' }, { brutto: -5, kids: -2 }, { gdb: 50 }, { gdb: '050' }].forEach((j, i) => {
   let err = null, out; try { out = R.evaluate(j || {}); } catch (e) { err = e; }
-  check('Müll ' + i + ' ohne Absturz', !err && out && out.results.length === 21, err && err.message);
+  check('Müll ' + i + ' ohne Absturz', !err && out && out.results.length === KARTEN.length, err && err.message);
 });
 check('GdB als Zahl 50 wird erkannt', lv({ gdb: 50 }, 'ausweis') === 'ja');
 
-// Namen: alle 21 vorhanden, eindeutig, die Grundsicherungskarte heißt wie gewünscht
+// Namen: alle vorhanden, eindeutig, die Grundsicherungskarte heißt wie gewünscht
 const names = R.evaluate({}).results.map((x) => x.name);
-check('21 verschiedene Namen', new Set(names).size === 21);
+check(KARTEN.length + ' verschiedene Namen', new Set(names).size === KARTEN.length);
 check('Grundsicherungskarte heißt "Grundsicherung im Alter und bei voller Erwerbsminderung"', names.includes('Grundsicherung im Alter und bei voller Erwerbsminderung'));
 
 console.log(fails ? '\n' + fails + ' FEHLER von ' + n : '\nBehinderungs-Tests bestanden: ' + n + ' Prüfungen');

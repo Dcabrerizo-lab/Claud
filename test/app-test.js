@@ -7,6 +7,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const { PDFDocument } = require(path.join(__dirname, '..', 'app', 'node_modules', 'pdf-lib'));
+const KARTEN = require('./karten.js');
 
 const WWW = path.join(__dirname, '..', 'app', 'www');
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.woff2': 'font/woff2', '.ttf': 'font/ttf' };
@@ -62,11 +63,13 @@ const MOCK = () => {
   await p.waitForTimeout(400);
   ok('Keine Skriptfehler beim Start', errs.length === 0, errs.join('|'));
   ok('Gespeicherte Daten werden über Preferences gelesen', (await calls('Preferences.get')).length > 0);
-  ok('21 Karten', (await p.locator('#cards .card').count()) === 21);
+  ok('Erster Start: Anleitung statt Beispielwerte', (await p.locator('#cards .startcard').count()) === 1 && (await p.inputValue('#ek1Brutto')) === '');
+  await p.click('#p1');
+  ok(KARTEN.length + ' Karten', (await p.locator('#cards .card').count()) === KARTEN.length);
   ok('Schrift lokal geladen', await p.evaluate(async () => { await document.fonts.ready; return [...document.fonts].some((f) => f.status === 'loaded'); }));
   ok('Hinweis zur Web-Version im Impressum ausgeblendet', await p.evaluate(() => { document.getElementById('legalBtn').click(); const h = document.getElementById('legalWeb').hidden; document.getElementById('legalClose').click(); return h; }));
   ok('Web-Scan (Tesseract/Claude) nicht enthalten, Kamera-Scan vorhanden', (await p.locator('#sc-local').count()) === 0 && (await p.locator('#sc-claudeBox').count()) === 0 && (await p.isVisible('#sc-take')));
-  for (const l of ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro']) { await p.selectOption('#lang', l); ok('Sprache ' + l, (await p.locator('#cards .card').count()) === 21); }
+  for (const l of ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro']) { await p.selectOption('#lang', l); ok('Sprache ' + l, (await p.locator('#cards .card').count()) === KARTEN.length); }
   await p.selectOption('#lang', 'de');
 
   // Foto-Scan: Kamera -> Texterkennung -> Felder, Foto wird danach gelöscht
@@ -125,6 +128,22 @@ const MOCK = () => {
   ok('Eingaben werden über Preferences gespeichert', (await calls('Preferences.set')).some((o) => /777/.test(o.value || '')));
   await p.click('#clearBtn');
   ok('„Alle Angaben löschen“ entfernt gespeicherte Eingaben', (await calls('Preferences.remove')).length > 0);
+
+  // Wohnort nur in der Anschrift der Antragsmappe (PLZ-Feld im Fragebogen leer): App nutzt die PLZ aus „PLZ und Ort“
+  await p.click('#p1'); await p.fill('#plz', ''); await p.fill('#p-name', 'Maria Muster'); await p.fill('#p-ort', '');
+  await p.click('#mappeMake');
+  ok('Ohne Wohnort: Hinweis in der Mappe, dass die PLZ fehlt', await p.isVisible('#mappeAdrNote'));
+  await p.click('#mappeClose');
+  await p.fill('#p-ort', '90542 Eckental'); await p.waitForTimeout(200);
+  ok('PLZ aus der Anschrift: Karte nennt die zuständige Stelle', /Familienkasse Bayern Nord/.test(await p.textContent('#c-kindergeld')));
+  await p.click('#mappeMake');
+  const brief2 = await p.inputValue('#mappeText');
+  ok('PLZ aus der Anschrift: Anschreiben an Familienkasse Bayern Nord mit Postanschrift', /Familienkasse Bayern Nord\n90316 Nürnberg/.test(brief2), brief2.slice(0, 250));
+  ok('PLZ aus der Anschrift: kein Hinweis auf fehlende PLZ', !(await p.isVisible('#mappeAdrNote')));
+  await p.click('#mappeClose');
+  // Mehrere Orte unter einer PLZ: Ortsname aus der Anschrift entscheidet (84032: Altdorf im Lkr. Landshut oder Stadt Landshut)
+  await p.fill('#p-ort', '84032 Altdorf'); await p.waitForTimeout(200);
+  ok('84032 Altdorf: Landratsamt Landshut (nicht Stadt Landshut)', /Landratsamt Landshut/.test(await p.textContent('#c-wohngeld').catch(() => '')));
 
   const net = reqs.filter((u) => !u.startsWith(origin) && !u.startsWith('data:') && !u.startsWith('blob:'));
   ok('Nur lokale Anfragen (kein Netz)', net.length === 0, net.join(','));

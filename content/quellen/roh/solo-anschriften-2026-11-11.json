@@ -1,0 +1,9778 @@
+{
+ "01001": {
+  "name": "Stadt Flensburg",
+  "web": "https://www.flensburg.de/",
+  "zeit": "2026-11-11 18:57",
+  "impressum": "https://www.flensburg.de/Service/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Rathausplatz 1",
+     "24937 Flensburg"
+    ],
+    "plz": "24937"
+   },
+   {
+    "zeilen": [
+     "Vierhörn 2b",
+     "23556 Lübeck"
+    ],
+    "plz": "23556"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Flensburg",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Rathausplatz 1",
+     "24937 Flensburg"
+    ],
+    "plz": "24937"
+   }
+  ]
+ },
+ "01002": {
+  "name": "Stadt Kiel",
+  "web": "https://www.kiel.de/",
+  "zeit": "2026-11-11 18:57",
+  "impressum": "https://www.kiel.de/de/_info/impressum.php",
+  "kandidaten": [],
+  "wikipedia": "https://de.wikipedia.org/wiki/Kiel",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Fleethörn 9",
+     "24103 Kiel"
+    ],
+    "plz": "24103"
+   }
+  ]
+ },
+ "01003": {
+  "name": "Stadt Lübeck",
+  "web": "https://www.luebeck.de/",
+  "zeit": "2026-11-11 18:57",
+  "impressum": "https://www.luebeck.de/de/impressum/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Breite Straße 62",
+     "23552 Lübeck"
+    ],
+    "plz": "23552"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/L%C3%BCbeck",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Breite Straße 62",
+     "23552 Lübeck"
+    ],
+    "plz": "23552"
+   }
+  ]
+ },
+ "01004": {
+  "name": "Stadt Neumünster",
+  "web": "https://www.neumuenster.de/",
+  "zeit": "2026-11-11 18:58",
+  "impressum": "https://www.neumuenster.de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Großflecken 59",
+     "24534 Neumünster"
+    ],
+    "plz": "24534"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Neum%C3%BCnster",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Großflecken 59",
+     "24534 Neumünster"
+    ],
+    "plz": "24534"
+   }
+  ]
+ },
+ "01051": {
+  "name": "Kreis Dithmarschen",
+  "web": "https://www.dithmarschen.de/",
+  "zeit": "2026-11-11 18:58",
+  "impressum": "https://www.dithmarschen.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Stettiner Straße 30",
+     "25746 Heide"
+    ],
+    "plz": "25746"
+   },
+   {
+    "zeilen": [
+     "An der Schiffbrücke 2",
+     "24768 Rendsburg"
+    ],
+    "plz": "24768"
+   },
+   {
+    "zeilen": [
+     "Dänische Straße 3-5",
+     "24103 Kiel"
+    ],
+    "plz": "24103"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Kreis_Dithmarschen",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Stettiner Straße 30",
+     "25746 Heide"
+    ],
+    "plz": "25746"
+   }
+  ]
+ },
+ "01053": {
+  "name": "Kreis Herzogtum Lauenburg",
+  "web": "https://www.kreis-rz.de/",
+  "zeit": "2026-11-11 18:58",
+  "impressum": "https://www.kreis-rz.de/Quicknavigation/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Barlachstraße 2",
+     "23909 Ratzeburg"
+    ],
+    "plz": "23909"
+   },
+   {
+    "zeilen": [
+     "Am Markt 4",
+     "23909 Ratzeburg"
+    ],
+    "plz": "23909"
+   },
+   {
+    "zeilen": [
+     "Am Markt 10",
+     "23909 Ratzeburg"
+    ],
+    "plz": "23909"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Kreis_Herzogtum_Lauenburg",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Barlachstraße 2",
+     "23909 Ratzeburg"
+    ],
+    "plz": "23909"
+   }
+  ]
+ },
+ "01054": {
+  "name": "Kreis Nordfriesland",
+  "web": "https://www.nordfriesland.de/",
+  "zeit": "2026-11-11 18:58",
+  "impressum": "https://www.nordfriesland.de/Quicknavigation/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Marktstraße 6",
+     "25813 Husum"
+    ],
+    "plz": "25813"
+   },
+   {
+    "zeilen": [
+     "Markstraße 6",
+     "25813 Husum"
+    ],
+    "plz": "25813"
+   },
+   {
+    "zeilen": [
+     "König-Friedrich V-Allee",
+     "25813 Husum"
+    ],
+    "plz": "25813"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Kreis_Nordfriesland",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Marktstraße 6",
+     "25813 Husum"
+    ],
+    "plz": "25813"
+   }
+  ]
+ },
+ "01055": {
+  "name": "Kreis Ostholstein",
+  "web": "https://www.kreis-oh.de/",
+  "zeit": "2026-11-11 18:58",
+  "impressum": "https://www.kreis-oh.de/Service-Navigation/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Lübecker Straße 41",
+     "23701 Eutin"
+    ],
+    "plz": "23701"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Kreis_Ostholstein",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Lübecker Straße 41",
+     "23701 Eutin"
+    ],
+    "plz": "23701"
+   }
+  ]
+ },
+ "01056": {
+  "name": "Kreis Pinneberg",
+  "web": "https://www.kreis-pinneberg.de/",
+  "zeit": "2026-11-11 18:58",
+  "fehler": "kein Impressum-Link gefunden",
+  "wikipedia": "https://de.wikipedia.org/wiki/Kreis_Pinneberg",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Kurt-Wagener -Straße 11",
+     "25337 Elmshorn"
+    ],
+    "plz": "25337"
+   }
+  ]
+ },
+ "01057": {
+  "name": "Kreis Plön",
+  "web": "https://www.kreis-ploen.de/",
+  "zeit": "2026-11-11 18:59",
+  "impressum": "https://www.kreis-ploen.de/Kurzmen%C3%BC/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Hamburger Str. 17-18",
+     "24306 Plön"
+    ],
+    "plz": "24306"
+   },
+   {
+    "zeilen": [
+     "Hamburger Straße 17–18",
+     "24306 Plön"
+    ],
+    "plz": "24306"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Kreis_Pl%C3%B6n",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Hamburger Straße 17–18",
+     "24306 Plön"
+    ],
+    "plz": "24306"
+   }
+  ]
+ },
+ "01058": {
+  "name": "Kreis Rendsburg-Eckernförde",
+  "web": "https://www.kreis-rendsburg-eckernfoerde.de/",
+  "zeit": "2026-11-11 18:59",
+  "impressum": "https://www.kreis-rendsburg-eckernfoerde.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Kaiserstraße 8",
+     "24768 Rendsburg"
+    ],
+    "plz": "24768"
+   },
+   {
+    "zeilen": [
+     "An der Schiffbrücke 2",
+     "24768 Rendsburg"
+    ],
+    "plz": "24768"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Kreis_Rendsburg-Eckernf%C3%B6rde",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Kaiserstraße 8",
+     "24768 Rendsburg"
+    ],
+    "plz": "24768"
+   }
+  ]
+ },
+ "01059": {
+  "name": "Kreis Schleswig-Flensburg",
+  "web": "https://www.schleswig-flensburg.de/",
+  "zeit": "2026-11-11 18:59",
+  "impressum": "https://www.schleswig-flensburg.de/Kurzmen%C3%BC/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Flensburger Straße 7",
+     "24837 Schleswig"
+    ],
+    "plz": "24837"
+   },
+   {
+    "zeilen": [
+     "Kerkmannstraße 1",
+     "33729 Bielefeld"
+    ],
+    "plz": "33729"
+   },
+   {
+    "zeilen": [
+     "Gutenbergstraße 15",
+     "23566 Lübeck"
+    ],
+    "plz": "23566"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Kreis_Schleswig-Flensburg",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Flensburger Straße 7",
+     "24837 Schleswig"
+    ],
+    "plz": "24837"
+   }
+  ]
+ },
+ "01060": {
+  "name": "Kreis Segeberg",
+  "web": "https://www.segeberg.de/",
+  "zeit": "2026-11-11 18:59",
+  "impressum": "https://www.segeberg.de/Kurzmen%C3%BC/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Hamburger Straße 30",
+     "23795 Bad Segeberg"
+    ],
+    "plz": "23795"
+   },
+   {
+    "zeilen": [
+     "(Zugang über Waldemar-von-Mohl-Straße)",
+     "23795 Bad Segeberg"
+    ],
+    "plz": "23795"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Kreis_Segeberg",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Hamburger Straße 30",
+     "23795 Bad Segeberg"
+    ],
+    "plz": "23795"
+   }
+  ]
+ },
+ "01061": {
+  "name": "Kreis Steinburg",
+  "web": "https://www.steinburg.de/",
+  "zeit": "2026-11-11 18:59",
+  "impressum": "https://www.steinburg.de/impressum.html",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Viktoriastraße 16-18",
+     "25524 Itzehoe"
+    ],
+    "plz": "25524"
+   },
+   {
+    "zeilen": [
+     "Doberaner Straße 155",
+     "18057 Rostock"
+    ],
+    "plz": "18057"
+   },
+   {
+    "zeilen": [
+     "An der Schiffbrücke 2",
+     "24768 Rendsburg"
+    ],
+    "plz": "24768"
+   },
+   {
+    "zeilen": [
+     "Langer Peter 27a",
+     "25524 Itzehoe"
+    ],
+    "plz": "25524"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Kreis_Steinburg",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Viktoriastraße 16–18",
+     "25524 Itzehoe"
+    ],
+    "plz": "25524"
+   }
+  ]
+ },
+ "01062": {
+  "name": "Kreis Stormarn",
+  "web": "https://www.kreis-stormarn.de/",
+  "zeit": "2026-11-11 19:00",
+  "impressum": "https://www.kreis-stormarn.de/nutzungsbedingungen/index.html",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Mommsenstrasse 13",
+     "23843 Bad Oldesloe"
+    ],
+    "plz": "23843"
+   },
+   {
+    "zeilen": [
+     "Mommsenstraße 13",
+     "23843 Bad Oldesloe"
+    ],
+    "plz": "23843"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Kreis_Stormarn",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Mommsenstraße 13",
+     "23843 Bad Oldesloe"
+    ],
+    "plz": "23843"
+   }
+  ]
+ },
+ "03101": {
+  "name": "Stadt Braunschweig",
+  "web": "https://www.braunschweig.de/",
+  "zeit": "2026-11-11 19:00",
+  "impressum": "https://www.braunschweig.de/impressum.php",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Dieter Heitefuß (Buchfinkenweg 10",
+     "38122 BS"
+    ],
+    "plz": "38122"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Braunschweig",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Platz der Deutschen Einheit 1",
+     "38100 Braunschweig"
+    ],
+    "plz": "38100"
+   }
+  ]
+ },
+ "03102": {
+  "name": "Stadt Salzgitter",
+  "web": "https://www.salzgitter.de/",
+  "zeit": "2026-11-11 19:00",
+  "impressum": "https://www.salzgitter.de/service/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Joachim-Campe-Straße 9 - 11",
+     "38226 Salzgitter"
+    ],
+    "plz": "38226"
+   },
+   {
+    "zeilen": [
+     "Joachim-Campe-Straße 6 - 8",
+     "38226 Salzgitter"
+    ],
+    "plz": "38226"
+   },
+   {
+    "zeilen": [
+     "Joachim-Campe-Straße 6-8",
+     "38226 Salzgitter"
+    ],
+    "plz": "38226"
+   },
+   {
+    "zeilen": [
+     "Neuer Markt 27",
+     "53340 Meckenheim"
+    ],
+    "plz": "53340"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Salzgitter",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "6–8",
+     "38226 Salzgitter"
+    ],
+    "plz": "38226"
+   }
+  ]
+ },
+ "03103": {
+  "name": "Stadt Wolfsburg",
+  "web": "https://www.wolfsburg.de/",
+  "zeit": "2026-11-11 19:00",
+  "impressum": "https://www.wolfsburg.de/custom-pages/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Porschestraße 49",
+     "38440 Wolfsburg"
+    ],
+    "plz": "38440"
+   },
+   {
+    "zeilen": [
+     "Porschestraße 2",
+     "38440 Wolfsburg"
+    ],
+    "plz": "38440"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Wolfsburg",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Porschestraße 49",
+     "38440 Wolfsburg"
+    ],
+    "plz": "38440"
+   }
+  ]
+ },
+ "03151": {
+  "name": "Landkreis Gifhorn",
+  "web": "https://landkreis-gifhorn.de",
+  "zeit": "2026-11-11 19:00",
+  "impressum": "https://www.landkreis-gifhorn.de/Service/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Schlossplatz 1",
+     "38518 Gifhorn"
+    ],
+    "plz": "38518"
+   },
+   {
+    "zeilen": [
+     "Karrenführerstraße 1-3",
+     "38100 Braunschweig"
+    ],
+    "plz": "38100"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Gifhorn",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Schlossplatz 1",
+     "38518 Gifhorn"
+    ],
+    "plz": "38518"
+   }
+  ]
+ },
+ "03153": {
+  "name": "Landkreis Goslar",
+  "web": "https://www.landkreis-goslar.de/",
+  "zeit": "2026-11-11 19:01",
+  "impressum": "https://www.landkreis-goslar.de/Kurzmen%C3%BC/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Klubgartenstraße 6",
+     "38640 Goslar"
+    ],
+    "plz": "38640"
+   },
+   {
+    "zeilen": [
+     "Klubgartenstraße 6",
+     "38640 Goslar."
+    ],
+    "plz": "38640"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Goslar",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Klubgartenstraße 6",
+     "38640 Goslar"
+    ],
+    "plz": "38640"
+   }
+  ]
+ },
+ "03154": {
+  "name": "Landkreis Helmstedt",
+  "web": "https://www.landkreis-helmstedt.de/",
+  "zeit": "2026-11-11 19:01",
+  "impressum": "https://www.landkreis-helmstedt.de/portal/seiten/Seite-900000101-34150.html?naviID=reset1",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Hausanschrift: Südertor 6",
+     "38350 Helmstedt"
+    ],
+    "plz": "38350"
+   },
+   {
+    "zeilen": [
+     "Südertor 6",
+     "38350 Helmstedt"
+    ],
+    "plz": "38350"
+   },
+   {
+    "zeilen": [
+     "Celler Straße 53",
+     "31582 Nienburg/Weser"
+    ],
+    "plz": "31582"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Helmstedt",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "6",
+     "38350 Helmstedt"
+    ],
+    "plz": "38350"
+   }
+  ]
+ },
+ "03155": {
+  "name": "Northeim",
+  "web": "https://www.landkreis-northeim.de/",
+  "zeit": "2026-11-11 19:01",
+  "impressum": "https://www.landkreis-northeim.de/portal/seiten/impressum-900000002-23900.html?titel=Impressum&naviID=reset1",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Medenheimer Str. 6/8 -",
+     "37154 Northeim"
+    ],
+    "plz": "37154"
+   },
+   {
+    "zeilen": [
+     "Medenheimer Str. 6/8",
+     "37154 Northeim"
+    ],
+    "plz": "37154"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Northeim",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Medenheimer Straße 6–8",
+     "37154 Northeim"
+    ],
+    "plz": "37154"
+   }
+  ]
+ },
+ "03157": {
+  "name": "Peine",
+  "web": "https://www.landkreis-peine.de/",
+  "zeit": "2026-11-11 19:01",
+  "impressum": "https://www.landkreis-peine.de/Kurzmen%C3%BC/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Vierhörn 2 a-b",
+     "23556 Lübeck"
+    ],
+    "plz": "23556"
+   },
+   {
+    "zeilen": [
+     "Burgstraße 1",
+     "31224 Peine"
+    ],
+    "plz": "31224"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Peine",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Burgstraße 1",
+     "31224 Peine"
+    ],
+    "plz": "31224"
+   }
+  ]
+ },
+ "03158": {
+  "name": "Landkreis Wolfenbüttel",
+  "web": "https://www.lkwf.de/",
+  "zeit": "2026-11-11 19:01",
+  "impressum": "https://www.lkwf.de/Kurzmen%C3%BC/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Bahnhofstraße 11",
+     "38300 Wolfenbüttel"
+    ],
+    "plz": "38300"
+   },
+   {
+    "zeilen": [
+     "Vierhörn 2 a–b",
+     "23556 Lübeck"
+    ],
+    "plz": "23556"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Wolfenb%C3%BCttel",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Bahnhofstraße 11",
+     "38300 Wolfenbüttel"
+    ],
+    "plz": "38300"
+   }
+  ]
+ },
+ "03159": {
+  "name": "Landkreis Göttingen",
+  "web": "https://www.landkreisgoettingen.de/",
+  "zeit": "2026-11-11 19:02",
+  "impressum": "https://www.landkreisgoettingen.de/Services/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Reinhäuser Landstraße 4",
+     "37083 Göttingen"
+    ],
+    "plz": "37083"
+   },
+   {
+    "zeilen": [
+     "Dr.Lindemann-Straße 11",
+     "29439 Lüchow"
+    ],
+    "plz": "29439"
+   },
+   {
+    "zeilen": [
+     "Vierhörn 2 a – b",
+     "23556 Lübeck"
+    ],
+    "plz": "23556"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_G%C3%B6ttingen",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Reinhäuser Landstraße 4",
+     "37083 Göttingen"
+    ],
+    "plz": "37083"
+   }
+  ]
+ },
+ "03241": {
+  "name": "Region Hannover",
+  "web": "https://www.hannover.de/Leben-in-der-Region-Hannover/Verwaltungen-Kommunen/Die-Verwaltung-der-Region-Hannover",
+  "zeit": "2026-11-11 19:02",
+  "impressum": "https://www.hannover.de/Impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Vahrenwalder Straße 7",
+     "30165 Hannover"
+    ],
+    "plz": "30165"
+   },
+   {
+    "zeilen": [
+     "Hohenzollernstraße 26",
+     "30161 Hannover"
+    ],
+    "plz": "30161"
+   },
+   {
+    "zeilen": [
+     "Am Mittelfelde 29",
+     "30519 Hannover"
+    ],
+    "plz": "30519"
+   },
+   {
+    "zeilen": [
+     "Großer Burstah 50-52",
+     "20457 Hamburg"
+    ],
+    "plz": "20457"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Region_Hannover",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Hildesheimer Straße 20",
+     "30169 Hannover"
+    ],
+    "plz": "30169"
+   }
+  ]
+ },
+ "03251": {
+  "name": "Landkreis Diepholz",
+  "web": "https://www.diepholz.de/",
+  "zeit": "2026-11-11 19:02",
+  "impressum": "https://www.diepholz.de/portal/seiten/impressum-1000702-21750.html?titel=Impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Niedersachsenstr. 2",
+     "49356 Diepholz"
+    ],
+    "plz": "49356"
+   },
+   {
+    "zeilen": [
+     "Celler Straße 53",
+     "31582 Nienburg/Weser"
+    ],
+    "plz": "31582"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Diepholz",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Niedersachsenstraße 2",
+     "49356 Diepholz"
+    ],
+    "plz": "49356"
+   }
+  ]
+ },
+ "03252": {
+  "name": "Landkreis Hameln-Pyrmont",
+  "web": "https://www.hameln-pyrmont.de/",
+  "zeit": "2026-11-11 19:02",
+  "impressum": "https://www.hameln-pyrmont.de/Schnellnavigation/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Süntelstraße 9",
+     "31785 Hameln"
+    ],
+    "plz": "31785"
+   },
+   {
+    "zeilen": [
+     "Vierhörn 2 a-b",
+     "23556 Lübeck"
+    ],
+    "plz": "23556"
+   },
+   {
+    "zeilen": [
+     "Süntelstr. 9",
+     "31785 Hameln"
+    ],
+    "plz": "31785"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Hameln-Pyrmont",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Süntelstraße 9",
+     "31785 Hameln"
+    ],
+    "plz": "31785"
+   }
+  ]
+ },
+ "03254": {
+  "name": "Landkreis Hildesheim",
+  "web": "https://www.landkreishildesheim.de/",
+  "zeit": "2026-11-11 19:02",
+  "impressum": "https://www.landkreishildesheim.de/Service/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Marie-Wagenknecht-Straße 3",
+     "31134 Hildesheim"
+    ],
+    "plz": "31134"
+   },
+   {
+    "zeilen": [
+     "Vierhörn 2 a – b",
+     "23556 Lübeck"
+    ],
+    "plz": "23556"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Hildesheim",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Marie-Wagenknecht-Straße 3",
+     "31134 Hildesheim"
+    ],
+    "plz": "31134"
+   }
+  ]
+ },
+ "03255": {
+  "name": "Landkreis Holzminden",
+  "web": "https://www.landkreis-holzminden.de/",
+  "zeit": "2026-11-11 19:03",
+  "impressum": "https://www.landkreis-holzminden.de/portal/seiten/Seite-900000001-25600.html?naviID=reset1",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Bürgermeister-Schrader-Straße 24",
+     "37603 Holzminden"
+    ],
+    "plz": "37603"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Holzminden",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Bürgermeister-Schrader-Straße 24",
+     "37603 Holzminden"
+    ],
+    "plz": "37603"
+   }
+  ]
+ },
+ "03256": {
+  "name": "Landkreis Nienburg/Weser",
+  "web": "https://www.lk-nienburg.de/",
+  "zeit": "2026-11-11 19:03",
+  "impressum": "https://www.lk-nienburg.de/portal/seiten/impressum-901000166-21500.html?naviID=reset1",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Kreishaus am Schloßplatz",
+     "31582 Nienburg"
+    ],
+    "plz": "31582"
+   },
+   {
+    "zeilen": [
+     "Kreishaus am Schloßplatz",
+     "31577 Nienburg"
+    ],
+    "plz": "31577"
+   },
+   {
+    "zeilen": [
+     "Celler Straße 53",
+     "31582 Nienburg/Weser"
+    ],
+    "plz": "31582"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Nienburg/Weser",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Kreishaus am Schloßplatz",
+     "31582 Nienburg/Weser"
+    ],
+    "plz": "31582"
+   }
+  ]
+ },
+ "03257": {
+  "name": "Landkreis Schaumburg",
+  "web": "https://www.schaumburg.de/",
+  "zeit": "2026-11-11 19:03",
+  "impressum": "https://www.schaumburg.de/Kurzmen%C3%BC/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Vierhörn 2 a – b",
+     "23566 Lübeck"
+    ],
+    "plz": "23566"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Schaumburg",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Jahnstraße 20",
+     "31655 Stadthagen"
+    ],
+    "plz": "31655"
+   }
+  ]
+ },
+ "03351": {
+  "name": "Landkreis Celle",
+  "web": "https://www.landkreis-celle.de/",
+  "zeit": "2026-11-11 19:03",
+  "impressum": "https://www.landkreis-celle.de/Kurzmen%C3%BC/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Trift 26",
+     "29221 Celle"
+    ],
+    "plz": "29221"
+   },
+   {
+    "zeilen": [
+     "Gebäude 1",
+     "29221 Celle"
+    ],
+    "plz": "29221"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Celle",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Trift 26",
+     "29221 Celle"
+    ],
+    "plz": "29221"
+   }
+  ]
+ },
+ "03352": {
+  "name": "Landkreis Cuxhaven",
+  "web": "https://www.landkreis-cuxhaven.de/",
+  "zeit": "2026-11-11 19:03",
+  "impressum": "https://www.landkreis-cuxhaven.de/Quicknavigation/Startseite/index.php?NavID=1779.7.1",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Vincent-Lübeck-Straße 2",
+     "27474 Cuxhaven"
+    ],
+    "plz": "27474"
+   },
+   {
+    "zeilen": [
+     "Vierhörn 2 a-b",
+     "23556 Lübeck"
+    ],
+    "plz": "23556"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Cuxhaven",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "2",
+     "27474 Cuxhaven"
+    ],
+    "plz": "27474"
+   }
+  ]
+ },
+ "03353": {
+  "name": "Landkreis Harburg",
+  "web": "https://www.landkreis-harburg.de/",
+  "zeit": "2026-11-11 19:03",
+  "impressum": "https://www.landkreis-harburg.de/portal/seiten/Seite-1000979-20100.html",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Schloßplatz 6",
+     "21423 Winsen (Luhe)"
+    ],
+    "plz": "21423"
+   },
+   {
+    "zeilen": [
+     "Celler Straße 53",
+     "31582 Nienburg/Weser"
+    ],
+    "plz": "31582"
+   },
+   {
+    "zeilen": [
+     "Mittelweg 161",
+     "20148 Hamburg"
+    ],
+    "plz": "20148"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Harburg",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Schlossplatz 6",
+     "21423 Winsen (Luhe)"
+    ],
+    "plz": "21423"
+   }
+  ]
+ },
+ "03354": {
+  "name": "Lüchow-Dannenberg",
+  "web": "https://www.luechow-dannenberg.de/",
+  "zeit": "2026-11-11 19:04",
+  "impressum": "https://www.luechow-dannenberg.de/portal/seiten/Seite-900000001-38100.html?naviID=reset1",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Königsberger Straße 10",
+     "29439 Lüchow (Wendland)"
+    ],
+    "plz": "29439"
+   },
+   {
+    "zeilen": [
+     "Königsberger Str. 10",
+     "29439 Lüchow (Wendland)"
+    ],
+    "plz": "29439"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_L%C3%BCchow-Dannenberg",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Königsberger Straße 10",
+     "29439 Lüchow (Wendland)"
+    ],
+    "plz": "29439"
+   }
+  ]
+ },
+ "03355": {
+  "name": "Landkreis Lüneburg",
+  "web": "https://www.landkreis-lueneburg.de/",
+  "zeit": "2026-11-11 19:04",
+  "impressum": "https://www.landkreis-lueneburg.de/impressum.html",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Auf dem Michaeliskloster 4",
+     "21335 Lüneburg"
+    ],
+    "plz": "21335"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_L%C3%BCneburg",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Auf dem Michaeliskloster 4",
+     "21335 Lüneburg"
+    ],
+    "plz": "21335"
+   }
+  ]
+ },
+ "03356": {
+  "name": "Landkreis Osterholz",
+  "web": "https://www.landkreis-osterholz.de/",
+  "zeit": "2026-11-11 19:04",
+  "impressum": "https://www.landkreis-osterholz.de/portal/seiten/Seite-901000870-21000.html?naviID=reset1",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Osterholzer Straße 23",
+     "27711 Osterholz-Scharmbeck"
+    ],
+    "plz": "27711"
+   },
+   {
+    "zeilen": [
+     "Celler Straße 53",
+     "31582 Nienburg/Weser"
+    ],
+    "plz": "31582"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Osterholz",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "23",
+     "27711 Osterholz-Scharmbeck"
+    ],
+    "plz": "27711"
+   },
+   {
+    "zeilen": [
+     "Am Osterholze 2a",
+     "27711 Osterholz-Scharmbeck"
+    ],
+    "plz": "27711"
+   }
+  ]
+ },
+ "03357": {
+  "name": "Rotenburg (Wümme)",
+  "web": "https://www.lk-row.de/",
+  "zeit": "2026-11-11 19:04",
+  "impressum": "https://www.lk-row.de/portal/seiten/impressum-1001-23700.html",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Hopfengarten 2",
+     "27356 Rotenburg (Wümme)"
+    ],
+    "plz": "27356"
+   },
+   {
+    "zeilen": [
+     "Celler Straße 53",
+     "31582 Nienburg"
+    ],
+    "plz": "31582"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Rotenburg_%28W%C3%BCmme%29",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Hopfengarten 2",
+     "27356 Rotenburg (Wümme)"
+    ],
+    "plz": "27356"
+   }
+  ]
+ },
+ "03358": {
+  "name": "Landkreis Heidekreis",
+  "web": "https://www.heidekreis.de/",
+  "zeit": "2026-11-11 19:04",
+  "impressum": "https://www.heidekreis.de/footer/impressum.html",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Vogteistraße 19",
+     "29683 Bad Fallingbostel"
+    ],
+    "plz": "29683"
+   },
+   {
+    "zeilen": [
+     "Harburger Straße 2",
+     "29614 Soltau"
+    ],
+    "plz": "29614"
+   },
+   {
+    "zeilen": [
+     "Schießhausstraße 14",
+     "97228 Rottendorf"
+    ],
+    "plz": "97228"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Heidekreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Vogteistraße 19",
+     "29683 Bad Fallingbostel"
+    ],
+    "plz": "29683"
+   }
+  ]
+ },
+ "03359": {
+  "name": "Landkreis Stade",
+  "web": "https://www.landkreis-stade.de/",
+  "zeit": "2026-11-11 19:05",
+  "impressum": "https://www.landkreis-stade.de/portal/seiten/impressum-901000404-20350.html?naviID=reset1",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Plantage 13",
+     "28215 Bremen"
+    ],
+    "plz": "28215"
+   },
+   {
+    "zeilen": [
+     "Am Sande 2",
+     "21682 Stade"
+    ],
+    "plz": "21682"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Stade",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "2",
+     "21682 Stade"
+    ],
+    "plz": "21682"
+   }
+  ]
+ },
+ "03360": {
+  "name": "Landkreis Uelzen",
+  "web": "https://www.landkreis-uelzen.de/",
+  "zeit": "2026-11-11 19:05",
+  "impressum": "https://www.landkreis-uelzen.de/home/global/impressum.aspx",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Anschrift: Albrecht-Thaer-Straße 101",
+     "29525 Uelzen"
+    ],
+    "plz": "29525"
+   },
+   {
+    "zeilen": [
+     "Lavesallee 6",
+     "30169 Hannover"
+    ],
+    "plz": "30169"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Uelzen",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Albrecht-Thaer-Straße 101",
+     "29525 Uelzen"
+    ],
+    "plz": "29525"
+   }
+  ]
+ },
+ "03361": {
+  "name": "Landkreis Verden",
+  "web": "https://www.landkreis-verden.de/",
+  "zeit": "2026-11-11 19:05",
+  "impressum": "https://www.landkreis-verden.de/portal/seiten/Seite-901000937-20600.html",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Hausanschrift: Lindhooper Straße 67",
+     "27283 Verden (Aller)"
+    ],
+    "plz": "27283"
+   },
+   {
+    "zeilen": [
+     "Lindhooper Straße 67",
+     "27283 Verden (Aller)"
+    ],
+    "plz": "27283"
+   },
+   {
+    "zeilen": [
+     "Elsässer Straße 66",
+     "26121 Oldenburg"
+    ],
+    "plz": "26121"
+   },
+   {
+    "zeilen": [
+     "Celler Straße 53",
+     "31582 Nienburg/Weser"
+    ],
+    "plz": "31582"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Verden",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Lindhooper Straße 67",
+     "27283 Verden (Aller)"
+    ],
+    "plz": "27283"
+   }
+  ]
+ },
+ "03401": {
+  "name": "Stadt Delmenhorst",
+  "web": "https://www.delmenhorst.de/",
+  "zeit": "2026-11-11 19:05",
+  "impressum": "https://www.delmenhorst.de/service/content/impressum.php",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Rathausplatz 1",
+     "27749 Delmenhorst"
+    ],
+    "plz": "27749"
+   },
+   {
+    "zeilen": [
+     "Neubrückenstraße 8-11",
+     "48143 Münster"
+    ],
+    "plz": "48143"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Delmenhorst",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "1",
+     "27749 Delmenhorst"
+    ],
+    "plz": "27749"
+   }
+  ]
+ },
+ "03402": {
+  "name": "Stadt Emden",
+  "web": "https://www.emden.de/",
+  "zeit": "2026-11-11 19:05",
+  "impressum": "https://www.emden.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Postanschrift: Postfach 22 54",
+     "26702 Emden"
+    ],
+    "plz": "26702"
+   },
+   {
+    "zeilen": [
+     "Frickensteinplatz 2",
+     "26721 Emden"
+    ],
+    "plz": "26721"
+   },
+   {
+    "zeilen": [
+     "Postfach 2254,",
+     "26702 Emden"
+    ],
+    "plz": "26702"
+   },
+   {
+    "zeilen": [
+     "Postfach 22 54",
+     "26702 Emden"
+    ],
+    "plz": "26702"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Emden",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Frickensteinplatz 2",
+     "26721 Emden"
+    ],
+    "plz": "26721"
+   }
+  ]
+ },
+ "03403": {
+  "name": "Stadt Oldenburg",
+  "web": "https://www.oldenburg.de/",
+  "zeit": "2026-11-11 19:05",
+  "impressum": "https://www.oldenburg.de/metanavigation/impressum.html",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Markt 2-3",
+     "26105 Oldenburg"
+    ],
+    "plz": "26105"
+   },
+   {
+    "zeilen": [
+     "Markt 1",
+     "26105 Oldenburg"
+    ],
+    "plz": "26105"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Oldenburg_%28Oldb%29",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Markt 1",
+     "26122 Oldenburg (Oldb)"
+    ],
+    "plz": "26122"
+   }
+  ]
+ },
+ "03404": {
+  "name": "Stadt Osnabrück",
+  "web": "https://www.osnabrueck.de/",
+  "zeit": "2026-11-11 19:06",
+  "impressum": "https://www.osnabrueck.de/de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Hohenzollernring 72",
+     "50672 Köln"
+    ],
+    "plz": "50672"
+   },
+   {
+    "zeilen": [
+     "Bierstraße 28",
+     "49074 Osnabrück"
+    ],
+    "plz": "49074"
+   },
+   {
+    "zeilen": [
+     "Natruper-Tor-Wall 2",
+     "49076 Osnabrück"
+    ],
+    "plz": "49076"
+   },
+   {
+    "zeilen": [
+     "Herrenteichsstr. 17+18",
+     "49074 Osnabrück"
+    ],
+    "plz": "49074"
+   },
+   {
+    "zeilen": [
+     "Postfach 44 60",
+     "49034 Osnabrück"
+    ],
+    "plz": "49034"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Osnabr%C3%BCck",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Natruper-Tor-Wall 2",
+     "49076 Osnabrück"
+    ],
+    "plz": "49076"
+   }
+  ]
+ },
+ "03405": {
+  "name": "Stadt Wilhelmshaven",
+  "web": "https://www.wilhelmshaven.de/",
+  "zeit": "2026-11-11 19:06",
+  "impressum": "https://www.wilhelmshaven.de/Service/Impressum.php",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Rathausplatz 1",
+     "26382 Wilhelmshaven"
+    ],
+    "plz": "26382"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Wilhelmshaven",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Rathausplatz 1",
+     "26382 Wilhelmshaven"
+    ],
+    "plz": "26382"
+   }
+  ]
+ },
+ "03451": {
+  "name": "Landkreis Ammerland",
+  "web": "https://www.ammerland.de/",
+  "zeit": "2026-11-11 19:06",
+  "impressum": "https://www.ammerland.de/Kurzmen%C3%BC/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Ammerlandallee 12",
+     "26655 Westerstede"
+    ],
+    "plz": "26655"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Ammerland",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Ammerlandallee 12",
+     "26655 Westerstede"
+    ],
+    "plz": "26655"
+   }
+  ]
+ },
+ "03452": {
+  "name": "Landkreis Aurich",
+  "web": "https://www.landkreis-aurich.de/",
+  "zeit": "2026-11-11 19:06",
+  "impressum": "https://www.landkreis-aurich.de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Fischteichweg 7-13",
+     "26603 Aurich"
+    ],
+    "plz": "26603"
+   },
+   {
+    "zeilen": [
+     "Hafenstraße 9",
+     "26603 Aurich"
+    ],
+    "plz": "26603"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Aurich",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Fischteichweg 7–13",
+     "26603 Aurich"
+    ],
+    "plz": "26603"
+   }
+  ]
+ },
+ "03453": {
+  "name": "Landkreis Cloppenburg",
+  "web": "https://www.lkclp.de/",
+  "zeit": "2026-11-11 19:06",
+  "impressum": "https://www.lkclp.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Eschstr. 29",
+     "49661 Cloppenburg"
+    ],
+    "plz": "49661"
+   },
+   {
+    "zeilen": [
+     "Alt-Moabit 91c",
+     "10559 Berlin"
+    ],
+    "plz": "10559"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Cloppenburg",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Eschstraße 29",
+     "49661 Cloppenburg"
+    ],
+    "plz": "49661"
+   }
+  ]
+ },
+ "03454": {
+  "name": "Landkreis Emsland",
+  "web": "https://www.emsland.de/",
+  "zeit": "2026-11-11 19:07",
+  "impressum": "https://emsland.de/de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Ordeniederung 1",
+     "49716 Meppen"
+    ],
+    "plz": "49716"
+   },
+   {
+    "zeilen": [
+     "Spielplatzstraße 19",
+     "33129 Delbrück"
+    ],
+    "plz": "33129"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Emsland",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Ordeniederung 1",
+     "49716 Meppen"
+    ],
+    "plz": "49716"
+   }
+  ]
+ },
+ "03455": {
+  "name": "Landkreis Friesland",
+  "web": "https://www.friesland.de/",
+  "zeit": "2026-11-11 19:07",
+  "impressum": "https://www.friesland.de/portal/seiten/Seite-1000008-20800.html?naviID=reset1",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Lindenallee 1",
+     "26441 Jever"
+    ],
+    "plz": "26441"
+   },
+   {
+    "zeilen": [
+     "Celler Straße 53",
+     "31582 Nienburg"
+    ],
+    "plz": "31582"
+   },
+   {
+    "zeilen": [
+     "Celler Str. 53",
+     "31582 Nienburg"
+    ],
+    "plz": "31582"
+   },
+   {
+    "zeilen": [
+     "Elsässer Straße 66",
+     "26121 Oldenburg"
+    ],
+    "plz": "26121"
+   },
+   {
+    "zeilen": [
+     "Lavesallee 6",
+     "30169 Hannover"
+    ],
+    "plz": "30169"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Friesland",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Lindenallee 1",
+     "26441 Jever"
+    ],
+    "plz": "26441"
+   }
+  ]
+ },
+ "03456": {
+  "name": "Landkreis Grafschaft Bentheim",
+  "web": "https://www.grafschaft-bentheim.de/",
+  "zeit": "2026-11-11 19:07",
+  "impressum": "https://www.grafschaft-bentheim.de/grafschaft/impressum.php",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "van-Delden-Straße 1-7",
+     "48529 Nordhorn"
+    ],
+    "plz": "48529"
+   },
+   {
+    "zeilen": [
+     "Spielplatzstraße 19",
+     "33129 Delbrück"
+    ],
+    "plz": "33129"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Grafschaft_Bentheim",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Van-Delden-Straße 1–7",
+     "48529 Nordhorn"
+    ],
+    "plz": "48529"
+   }
+  ]
+ },
+ "03457": {
+  "name": "Landkreis Leer",
+  "web": "https://www.landkreis-leer.de/",
+  "zeit": "2026-11-11 19:08",
+  "impressum": "https://www.landkreis-leer.de/Kurzmen%C3%BC/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Elgendorfer Str. 57",
+     "56410 Montabaur"
+    ],
+    "plz": "56410"
+   },
+   {
+    "zeilen": [
+     "Stüvestr. 26",
+     "49076 Osnabrück"
+    ],
+    "plz": "49076"
+   },
+   {
+    "zeilen": [
+     "Bergmannstraße 37",
+     "26789 Leer (Ostfriesland)"
+    ],
+    "plz": "26789"
+   },
+   {
+    "zeilen": [
+     "Bergmannstraße 37",
+     "26789 Leer"
+    ],
+    "plz": "26789"
+   },
+   {
+    "zeilen": [
+     "Prinzenstr. 5",
+     "30159 Hannover"
+    ],
+    "plz": "30159"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Leer",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Bergmannstraße 37",
+     "26789 Leer (Ostfriesland)"
+    ],
+    "plz": "26789"
+   }
+  ]
+ },
+ "03458": {
+  "name": "Landkreis Oldenburg",
+  "web": "https://www.oldenburg-kreis.de/",
+  "zeit": "2026-11-11 19:08",
+  "impressum": "https://www.oldenburg-kreis.de/portal/seiten/Seite-900000002-21700.html?naviID=reset1",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Delmenhorster Straße 6",
+     "27793 Wildeshausen"
+    ],
+    "plz": "27793"
+   },
+   {
+    "zeilen": [
+     "Delmenhorster Str. 6",
+     "27793 Wildeshausen"
+    ],
+    "plz": "27793"
+   },
+   {
+    "zeilen": [
+     "Elsässer Straße 66",
+     "26121 Oldenburg"
+    ],
+    "plz": "26121"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Oldenburg",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Delmenhorster Straße 6",
+     "27793 Wildeshausen"
+    ],
+    "plz": "27793"
+   }
+  ]
+ },
+ "03459": {
+  "name": "Landkreis Osnabrück",
+  "web": "https://www.landkreis-osnabrueck.de/",
+  "zeit": "2026-11-11 19:08",
+  "impressum": "https://www.landkreis-osnabrueck.de/impressum-und-oeffnungszeiten",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Am Schölerberg 1",
+     "49082 Osnabrück"
+    ],
+    "plz": "49082"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Osnabr%C3%BCck",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Am Schölerberg 1",
+     "49082 Osnabrück"
+    ],
+    "plz": "49082"
+   }
+  ]
+ },
+ "03460": {
+  "name": "Landkreis Vechta",
+  "web": "https://www.landkreis-vechta.de/",
+  "zeit": "2026-11-11 19:08",
+  "impressum": "https://www.landkreis-vechta.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Ravensberger Straße 20",
+     "49377 Vechta"
+    ],
+    "plz": "49377"
+   },
+   {
+    "zeilen": [
+     "Ravensberger Str. 20",
+     "49377 Vechta"
+    ],
+    "plz": "49377"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Vechta",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Ravensberger Straße 20",
+     "49377 Vechta"
+    ],
+    "plz": "49377"
+   }
+  ]
+ },
+ "03461": {
+  "name": "Wesermarsch",
+  "web": "https://wesermarsch.de/",
+  "zeit": "2026-11-11 19:08",
+  "impressum": "https://wesermarsch.de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Poggenburger Str. 15",
+     "26919 Brake"
+    ],
+    "plz": "26919"
+   },
+   {
+    "zeilen": [
+     "Poggenburger Straße 15",
+     "26919 Brake"
+    ],
+    "plz": "26919"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Wesermarsch",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Poggenburger Straße 15",
+     "26919 Brake (Unterweser)"
+    ],
+    "plz": "26919"
+   }
+  ]
+ },
+ "03462": {
+  "name": "Landkreis Wittmund",
+  "web": "https://www.landkreis-wittmund.de/",
+  "zeit": "2026-11-11 19:09",
+  "impressum": "https://www.landkreis-wittmund.de/Kurzmen%C3%BC/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Am Markt 9",
+     "26409 Wittmund"
+    ],
+    "plz": "26409"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Wittmund",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Am Markt 9",
+     "26409 Wittmund"
+    ],
+    "plz": "26409"
+   }
+  ]
+ },
+ "04011": {
+  "name": "Stadt Bremen",
+  "web": "https://www.bremen.de/",
+  "zeit": "2026-11-11 19:09",
+  "fehler": "kein Impressum-Link gefunden",
+  "wikipedia": "https://de.wikipedia.org/wiki/Bremen",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Am Markt 21",
+     "28195 Bremen"
+    ],
+    "plz": "28195"
+   }
+  ]
+ },
+ "04012": {
+  "name": "Stadt Bremerhaven",
+  "web": "https://www.bremerhaven.de/",
+  "zeit": "2026-11-11 19:09",
+  "fehler": "robots.txt verbietet den Abruf",
+  "wikipedia": "https://de.wikipedia.org/wiki/Bremerhaven",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Hinrich-Schmalfeldt-Straße 30",
+     "27576 Bremerhaven"
+    ],
+    "plz": "27576"
+   }
+  ]
+ },
+ "05111": {
+  "name": "Stadt Düsseldorf",
+  "web": "https://www.duesseldorf.de/",
+  "zeit": "2026-11-11 19:09",
+  "fehler": "robots.txt verbietet den Abruf",
+  "wikipedia": "https://de.wikipedia.org/wiki/D%C3%BCsseldorf",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Marktplatz 2",
+     "40213 Düsseldorf"
+    ],
+    "plz": "40213"
+   }
+  ]
+ },
+ "05112": {
+  "name": "Stadt Duisburg",
+  "web": "https://duisburg.de",
+  "zeit": "2026-11-11 19:09",
+  "impressum": "https://duisburg.de/service/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Burgplatz 19",
+     "47051 Duisburg"
+    ],
+    "plz": "47051"
+   },
+   {
+    "zeilen": [
+     "Neubrückenstraße 8-11",
+     "48143 Münster"
+    ],
+    "plz": "48143"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Duisburg",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Burgplatz 19",
+     "47051 Duisburg"
+    ],
+    "plz": "47051"
+   }
+  ]
+ },
+ "05113": {
+  "name": "Stadt Essen",
+  "web": "https://www.essen.de/",
+  "zeit": "2026-11-11 19:09",
+  "impressum": "https://www.essen.de/impressum.de.html",
+  "kandidaten": [],
+  "wikipedia": "https://de.wikipedia.org/wiki/Essen",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Porscheplatz 1",
+     "45127 Essen"
+    ],
+    "plz": "45127"
+   }
+  ]
+ },
+ "05114": {
+  "name": "Stadt Krefeld",
+  "web": "https://www.krefeld.de/",
+  "zeit": "2026-11-11 19:09",
+  "impressum": "https://www.krefeld.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Von-der-Leyen-Platz 1",
+     "47798 Krefeld"
+    ],
+    "plz": "47798"
+   },
+   {
+    "zeilen": [
+     "Cecilienallee 2",
+     "40474 Düsseldorf"
+    ],
+    "plz": "40474"
+   },
+   {
+    "zeilen": [
+     "Postfach 10 14 09",
+     "47714 Krefeld"
+    ],
+    "plz": "47714"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Krefeld",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Von-der-Leyen-Platz 1",
+     "47798 Krefeld"
+    ],
+    "plz": "47798"
+   }
+  ]
+ },
+ "05116": {
+  "name": "Stadt Mönchengladbach",
+  "web": "https://www.moenchengladbach.de/",
+  "zeit": "2026-11-11 19:10",
+  "impressum": "https://www.moenchengladbach.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Rathausplatz 1",
+     "41061 Mönchengladbach"
+    ],
+    "plz": "41061"
+   },
+   {
+    "zeilen": [
+     "Am Nordpark 3",
+     "41069 Mönchengladbach"
+    ],
+    "plz": "41069"
+   },
+   {
+    "zeilen": [
+     "Steinmetzstr. 57-61",
+     "41061 Mönchengladbach"
+    ],
+    "plz": "41061"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/M%C3%B6nchengladbach",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Rathausplatz 1",
+     "41061 Mönchengladbach"
+    ],
+    "plz": "41061"
+   }
+  ]
+ },
+ "05117": {
+  "name": "Stadt Mülheim an der Ruhr",
+  "web": "https://www.muelheim-ruhr.de/",
+  "zeit": "2026-11-11 19:10",
+  "impressum": "https://cms.muelheim-ruhr.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Postfach 10 19 53",
+     "45419 Mülheim an der Ruhr"
+    ],
+    "plz": "45419"
+   },
+   {
+    "zeilen": [
+     "Am Rathaus 1",
+     "45468 Mülheim an der Ruhr"
+    ],
+    "plz": "45468"
+   },
+   {
+    "zeilen": [
+     "Lothringerstraße 23",
+     "52062 Aachen"
+    ],
+    "plz": "52062"
+   },
+   {
+    "zeilen": [
+     "Amt 37, Berufsfeuerwehr",
+     "45466 Mülheim an der Ruhr"
+    ],
+    "plz": "45466"
+   },
+   {
+    "zeilen": [
+     "Heißener Straße 16-18",
+     "45468 Mülheim an der Ruhr"
+    ],
+    "plz": "45468"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/M%C3%BClheim_an_der_Ruhr",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Am Rathaus 1",
+     "45468 Mülheim an der Ruhr"
+    ],
+    "plz": "45468"
+   }
+  ]
+ },
+ "05119": {
+  "name": "Stadt Oberhausen",
+  "web": "https://www.oberhausen.de/",
+  "zeit": "2026-11-11 19:10",
+  "impressum": "https://www.oberhausen.de/impressum.php",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Schwartzstraße 72",
+     "46042 Oberhausen"
+    ],
+    "plz": "46042"
+   },
+   {
+    "zeilen": [
+     "Schwartzstraße 72",
+     "46045 Oberhausen"
+    ],
+    "plz": "46045"
+   },
+   {
+    "zeilen": [
+     "Max-Planck-Ring 62a",
+     "46049 Oberhausen"
+    ],
+    "plz": "46049"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Oberhausen",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Schwartzstraße 72",
+     "46045 Oberhausen"
+    ],
+    "plz": "46045"
+   }
+  ]
+ },
+ "05120": {
+  "name": "Stadt Remscheid",
+  "web": "https://www.remscheid.de/",
+  "zeit": "2026-11-11 19:10",
+  "fehler": "403 HTTP Error 403: Forbidden",
+  "wikipedia": "https://de.wikipedia.org/wiki/Remscheid",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Theodor-Heuss-Platz 1",
+     "42853 Remscheid"
+    ],
+    "plz": "42853"
+   }
+  ]
+ },
+ "05122": {
+  "name": "Stadt Solingen",
+  "web": "https://www.solingen.de/",
+  "zeit": "2026-11-11 19:10",
+  "fehler": "kein Impressum-Link gefunden",
+  "wikipedia": "https://de.wikipedia.org/wiki/Solingen",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Walter-Scheel-Platz 1",
+     "42651 Solingen"
+    ],
+    "plz": "42651"
+   }
+  ]
+ },
+ "05124": {
+  "name": "Stadt Wuppertal",
+  "web": "https://www.wuppertal.de/",
+  "zeit": "2026-11-11 19:11",
+  "fehler": "403 HTTP Error 403: Forbidden",
+  "wikipedia": "https://de.wikipedia.org/wiki/Wuppertal",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Johannes-Rau-Platz 1",
+     "42275 Wuppertal"
+    ],
+    "plz": "42275"
+   }
+  ]
+ },
+ "05154": {
+  "name": "Kreis Kleve",
+  "web": "https://www.kreis-kleve.de/",
+  "zeit": "2026-11-11 19:11",
+  "impressum": "https://www.kreis-kleve.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Nassauerallee 15-23",
+     "47533 Kleve"
+    ],
+    "plz": "47533"
+   },
+   {
+    "zeilen": [
+     "Prinzessinnenstraße 8",
+     "10969 Berlin"
+    ],
+    "plz": "10969"
+   },
+   {
+    "zeilen": [
+     "Gutenbergstraße 15",
+     "23566 Lübeck"
+    ],
+    "plz": "23566"
+   },
+   {
+    "zeilen": [
+     "Friedrich-Heinrich-Allee 130",
+     "47475 Kamp-Lintfort"
+    ],
+    "plz": "47475"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Kreis_Kleve",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Nassauerallee 15–23",
+     "47533 Kleve"
+    ],
+    "plz": "47533"
+   }
+  ]
+ },
+ "05158": {
+  "name": "Kreis Mettmann",
+  "web": "https://www.kreis-mettmann.de/",
+  "zeit": "2026-11-11 19:11",
+  "impressum": "https://www.kreis-mettmann.de/Quickmenu/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Düsseldorfer Str. 26",
+     "40822 Mettmann"
+    ],
+    "plz": "40822"
+   },
+   {
+    "zeilen": [
+     "Düsseldorfer Straße 26",
+     "40822 Mettmann"
+    ],
+    "plz": "40822"
+   },
+   {
+    "zeilen": [
+     "Postfach",
+     "40806 Mettmann"
+    ],
+    "plz": "40806"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Kreis_Mettmann",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Düsseldorfer Straße 26",
+     "40822 Mettmann"
+    ],
+    "plz": "40822"
+   }
+  ]
+ },
+ "05162": {
+  "name": "Rhein-Kreis Neuss",
+  "web": "https://www.rhein-kreis-neuss.de/",
+  "zeit": "2026-11-11 19:11",
+  "impressum": "https://www.rhein-kreis-neuss.de/de/service/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Oberstraße 91",
+     "41460 Neuss"
+    ],
+    "plz": "41460"
+   },
+   {
+    "zeilen": [
+     "Herwarthstraße 12",
+     "50672 Köln"
+    ],
+    "plz": "50672"
+   },
+   {
+    "zeilen": [
+     "Münsterstraße 1",
+     "53111 Bonn"
+    ],
+    "plz": "53111"
+   },
+   {
+    "zeilen": [
+     "Münsterstraße 121",
+     "40476 Düsseldorf"
+    ],
+    "plz": "40476"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Rhein-Kreis_Neuss",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Oberstraße 91",
+     "41460 Neuss"
+    ],
+    "plz": "41460"
+   }
+  ]
+ },
+ "05166": {
+  "name": "Kreis Viersen",
+  "web": "https://www.kreis-viersen.de/",
+  "zeit": "2026-11-11 19:11",
+  "impressum": "https://www.kreis-viersen.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Münsterstraße 121",
+     "40476 Düsseldorf"
+    ],
+    "plz": "40476"
+   },
+   {
+    "zeilen": [
+     "Rathausmarkt 3",
+     "41747 Viersen"
+    ],
+    "plz": "41747"
+   },
+   {
+    "zeilen": [
+     "Friedrich-Heinrich-Allee 130",
+     "47475 Kamp-Lintfort"
+    ],
+    "plz": "47475"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Kreis_Viersen",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Rathausmarkt 3",
+     "41747 Viersen"
+    ],
+    "plz": "41747"
+   }
+  ]
+ },
+ "05170": {
+  "name": "Kreis Wesel",
+  "web": "https://www.kreis-wesel.de/",
+  "zeit": "2026-11-11 19:11",
+  "impressum": "https://www.kreis-wesel.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Reeser Landstraße 31",
+     "46483 Wesel"
+    ],
+    "plz": "46483"
+   },
+   {
+    "zeilen": [
+     "Reeser Landstraße 31",
+     "46483 Wesel."
+    ],
+    "plz": "46483"
+   },
+   {
+    "zeilen": [
+     "Friedrich-Heinrich-Allee 130",
+     "47475 Kamp-Lintfort"
+    ],
+    "plz": "47475"
+   },
+   {
+    "zeilen": [
+     "Münsterstr. 121",
+     "40476 Düsseldorf"
+    ],
+    "plz": "40476"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Kreis_Wesel",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Reeser Landstraße 31",
+     "46483 Wesel"
+    ],
+    "plz": "46483"
+   }
+  ]
+ },
+ "05314": {
+  "name": "Stadt Bonn",
+  "web": "https://www.bonn.de/",
+  "zeit": "2026-11-11 19:12",
+  "impressum": "https://www.bonn.de/impressum.php",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Berliner Platz 2",
+     "53111 Bonn (Hausanschrift)"
+    ],
+    "plz": "53111"
+   },
+   {
+    "zeilen": [
+     "53111 Bonn (Hausanschrift)",
+     "53103 Bonn (Postanschrift)"
+    ],
+    "plz": "53103"
+   },
+   {
+    "zeilen": [
+     "Berliner Platz 2",
+     "53103 Bonn (Postanschrift)"
+    ],
+    "plz": "53103"
+   },
+   {
+    "zeilen": [
+     "53103 Bonn (Postanschrift)",
+     "53111 Bonn (Hausanschrift)"
+    ],
+    "plz": "53111"
+   },
+   {
+    "zeilen": [
+     "Berliner Platz 2",
+     "53111 Bonn"
+    ],
+    "plz": "53111"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Bonn",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Berliner Platz 2",
+     "53111 Bonn"
+    ],
+    "plz": "53111"
+   }
+  ]
+ },
+ "05315": {
+  "name": "Stadt Köln",
+  "web": "https://www.stadt-koeln.de/",
+  "zeit": "2026-11-11 19:12",
+  "impressum": "https://www.stadt-koeln.de/service/kontakt/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Historisches Rathaus",
+     "50667 Köln-Innenstadt"
+    ],
+    "plz": "50667"
+   },
+   {
+    "zeilen": [
+     "Postfach 20 04 44",
+     "40102 Düsseldorf"
+    ],
+    "plz": "40102"
+   },
+   {
+    "zeilen": [
+     "Willy-Brandt-Platz 2",
+     "50679 Köln"
+    ],
+    "plz": "50679"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/K%C3%B6ln",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Rathausplatz 2",
+     "50667 Köln"
+    ],
+    "plz": "50667"
+   }
+  ]
+ },
+ "05316": {
+  "name": "Stadt Leverkusen",
+  "web": "https://www.leverkusen.de/",
+  "zeit": "2026-11-11 19:12",
+  "impressum": "https://www.leverkusen.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Friedrich-Ebert-Platz 1",
+     "51373 Leverkusen"
+    ],
+    "plz": "51373"
+   },
+   {
+    "zeilen": [
+     "Postfach 10 11 40",
+     "51311 Leverkusen"
+    ],
+    "plz": "51311"
+   },
+   {
+    "zeilen": [
+     "Friedrich-Ebert-Platz",
+     "51373 Leverkusen"
+    ],
+    "plz": "51373"
+   },
+   {
+    "zeilen": [
+     "Hauptstraße 101",
+     "51373 Leverkusen"
+    ],
+    "plz": "51373"
+   },
+   {
+    "zeilen": [
+     "Neubrückenstraße 8-11",
+     "48143 Münster"
+    ],
+    "plz": "48143"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Leverkusen",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Friedrich-Ebert-Platz 1",
+     "51373 Leverkusen"
+    ],
+    "plz": "51373"
+   }
+  ]
+ },
+ "05334": {
+  "name": "Städteregion Aachen",
+  "web": "https://www.staedteregion-aachen.de/",
+  "zeit": "2026-11-11 19:12",
+  "impressum": "https://www.staedteregion-aachen.de/de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Zollernstraße 10",
+     "52070 Aachen"
+    ],
+    "plz": "52070"
+   },
+   {
+    "zeilen": [
+     "Lombardenstraße 24",
+     "52070 Aachen"
+    ],
+    "plz": "52070"
+   },
+   {
+    "zeilen": [
+     "Alfonsstraße 44. c/o Kloster St. Alfons",
+     "52070 Aachen"
+    ],
+    "plz": "52070"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/St%C3%A4dteregion_Aachen",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Zollernstraße 10",
+     "52070 Aachen"
+    ],
+    "plz": "52070"
+   }
+  ]
+ },
+ "05358": {
+  "name": "Kreis Düren",
+  "web": "https://www.kreis-dueren.de/",
+  "zeit": "2026-11-11 19:12",
+  "impressum": "https://www.kreis-dueren.de/impressum.php",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Bismarckstraße 16",
+     "52351 Düren"
+    ],
+    "plz": "52351"
+   },
+   {
+    "zeilen": [
+     "Bismarckstr. 16",
+     "52351 Düren"
+    ],
+    "plz": "52351"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Kreis_D%C3%BCren",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Bismarckstraße 16",
+     "52351 Düren"
+    ],
+    "plz": "52351"
+   }
+  ]
+ },
+ "05362": {
+  "name": "Rhein-Erft-Kreis",
+  "web": "https://www.rhein-erft-kreis.de/",
+  "zeit": "2026-11-11 19:13",
+  "impressum": "https://www.rhein-erft-kreis.de/impressum.php",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Willy-Brandt-Platz 1",
+     "50126 Bergheim"
+    ],
+    "plz": "50126"
+   },
+   {
+    "zeilen": [
+     "Hürth Park B 100 (Ärztehaus)",
+     "50354 Hürth"
+    ],
+    "plz": "50354"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Rhein-Erft-Kreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Willy-Brandt-Platz 1",
+     "50126 Bergheim"
+    ],
+    "plz": "50126"
+   }
+  ]
+ },
+ "05366": {
+  "name": "Kreis Euskirchen",
+  "web": "https://www.kreis-euskirchen.de/",
+  "zeit": "2026-11-11 19:13",
+  "impressum": "https://www.kreis-euskirchen.de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Jülicher Ring 32",
+     "53879 Euskirchen"
+    ],
+    "plz": "53879"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Kreis_Euskirchen",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Jülicher Ring 32",
+     "53879 Euskirchen"
+    ],
+    "plz": "53879"
+   }
+  ]
+ },
+ "05370": {
+  "name": "Kreis Heinsberg",
+  "web": "https://www.kreis-heinsberg.de/",
+  "zeit": "2026-11-11 19:13",
+  "impressum": "https://www.kreis-heinsberg.de/impressum.html",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Valkenburger Str. 45",
+     "52525 Heinsberg"
+    ],
+    "plz": "52525"
+   },
+   {
+    "zeilen": [
+     "Valkenburger Straße 45",
+     "52525 Heinsberg"
+    ],
+    "plz": "52525"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Kreis_Heinsberg",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Valkenburger Straße 45",
+     "52525 Heinsberg"
+    ],
+    "plz": "52525"
+   }
+  ]
+ },
+ "05374": {
+  "name": "Oberbergischer Kreis",
+  "web": "https://www.obk.de/",
+  "zeit": "2026-11-11 19:13",
+  "impressum": "https://www.obk.de/obk/impressum/index.shtml.de",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Moltkestraße 42",
+     "51643 Gummersbach"
+    ],
+    "plz": "51643"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Oberbergischer_Kreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Moltkestraße 42",
+     "51643 Gummersbach"
+    ],
+    "plz": "51643"
+   }
+  ]
+ },
+ "05378": {
+  "name": "Rheinisch-Bergischer Kreis",
+  "web": "https://www.rbk-direkt.de/",
+  "zeit": "2026-11-11 19:13",
+  "impressum": "https://www.rbk-direkt.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Am Rübezahlwald 7",
+     "51469 Bergisch Gladbach"
+    ],
+    "plz": "51469"
+   },
+   {
+    "zeilen": [
+     "Postfach 20 04 50",
+     "51434 Bergisch Gladbach"
+    ],
+    "plz": "51434"
+   },
+   {
+    "zeilen": [
+     "Adlerstraße 74",
+     "40211 Düsseldorf"
+    ],
+    "plz": "40211"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Rheinisch-Bergischer_Kreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Am Rübezahlwald 7",
+     "51469 Bergisch Gladbach"
+    ],
+    "plz": "51469"
+   }
+  ]
+ },
+ "05382": {
+  "name": "Rhein-Sieg-Kreis",
+  "web": "https://www.rhein-sieg-kreis.de/",
+  "zeit": "2026-11-11 19:14",
+  "impressum": "https://www.rhein-sieg-kreis.de/impressum.php",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Kaiser-Wilhelm-Platz 1",
+     "53721 Siegburg"
+    ],
+    "plz": "53721"
+   },
+   {
+    "zeilen": [
+     "Schwalbacher Str. 78",
+     "65183 Wiesbaden"
+    ],
+    "plz": "65183"
+   },
+   {
+    "zeilen": [
+     "Neubrückenstr. 8-11",
+     "48143 Münster"
+    ],
+    "plz": "48143"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Rhein-Sieg-Kreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Kaiser-Wilhelm-Platz 1",
+     "53721 Siegburg"
+    ],
+    "plz": "53721"
+   }
+  ]
+ },
+ "05512": {
+  "name": "Stadt Bottrop",
+  "web": "https://www.bottrop.de/",
+  "zeit": "2026-11-11 19:14",
+  "impressum": "https://www.bottrop.de/service/impressum.php",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Ernst-Wilczok-Platz 1",
+     "46236 Bottrop"
+    ],
+    "plz": "46236"
+   },
+   {
+    "zeilen": [
+     "Neubrückenstraße 8-11",
+     "48143 Münster"
+    ],
+    "plz": "48143"
+   },
+   {
+    "zeilen": [
+     "Postfach 10 15 54",
+     "46215 Bottrop"
+    ],
+    "plz": "46215"
+   },
+   {
+    "zeilen": [
+     "Domplatz 1 - 3",
+     "48143 Münster"
+    ],
+    "plz": "48143"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Bottrop",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Ernst-Wilczok-Platz 1",
+     "46236 Bottrop"
+    ],
+    "plz": "46236"
+   }
+  ]
+ },
+ "05513": {
+  "name": "Stadt Gelsenkirchen",
+  "web": "https://www.gelsenkirchen.de/",
+  "zeit": "2026-11-11 19:14",
+  "impressum": "https://www.gelsenkirchen.de/de/_funktionsnavigation/impressum.aspx",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Ebertstraße 11",
+     "45879 Gelsenkirchen"
+    ],
+    "plz": "45879"
+   },
+   {
+    "zeilen": [
+     "Tulpenfeld 4",
+     "53113 Bonn"
+    ],
+    "plz": "53113"
+   },
+   {
+    "zeilen": [
+     "Domplatz 1-3",
+     "48143 Münster"
+    ],
+    "plz": "48143"
+   },
+   {
+    "zeilen": [
+     "Vattmannstraße 11",
+     "45879 Gelsenkirchen"
+    ],
+    "plz": "45879"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Gelsenkirchen",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Ebertstraße 11",
+     "45879 Gelsenkirchen"
+    ],
+    "plz": "45879"
+   }
+  ]
+ },
+ "05515": {
+  "name": "Stadt Münster",
+  "web": "https://www.stadt-muenster.de/",
+  "zeit": "2026-11-11 19:14",
+  "impressum": "https://www.stadt-muenster.de/impressum",
+  "kandidaten": [],
+  "wikipedia": "https://de.wikipedia.org/wiki/M%C3%BCnster",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Klemensstraße 10",
+     "48143 Münster"
+    ],
+    "plz": "48143"
+   }
+  ]
+ },
+ "05554": {
+  "name": "Kreis Borken",
+  "web": "https://www.kreis-borken.de/",
+  "zeit": "2026-11-11 19:14",
+  "impressum": "https://www.kreis-borken.de/de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Burloer Str. 93",
+     "46325 Borken"
+    ],
+    "plz": "46325"
+   },
+   {
+    "zeilen": [
+     "Domplatz 1-3",
+     "48143 Münster"
+    ],
+    "plz": "48143"
+   },
+   {
+    "zeilen": [
+     "Internetkoordinator",
+     "46322 Borken"
+    ],
+    "plz": "46322"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Kreis_Borken",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Burloer Straße 93",
+     "46325 Borken"
+    ],
+    "plz": "46325"
+   }
+  ]
+ },
+ "05558": {
+  "name": "Kreis Coesfeld",
+  "web": "https://www.kreis-coesfeld.de/",
+  "zeit": "2026-11-11 19:14",
+  "impressum": "https://www.kreis-coesfeld.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Friedrich-Ebert-Str. 7",
+     "48653 Coesfeld"
+    ],
+    "plz": "48653"
+   },
+   {
+    "zeilen": [
+     "Friedrich-Ebert-Straße 7",
+     "48653 Coesfeld"
+    ],
+    "plz": "48653"
+   },
+   {
+    "zeilen": [
+     "Domplatz 1-3",
+     "48143 Münster"
+    ],
+    "plz": "48143"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Kreis_Coesfeld",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Friedrich-Ebert-Straße 7",
+     "48653 Coesfeld"
+    ],
+    "plz": "48653"
+   }
+  ]
+ },
+ "05562": {
+  "name": "Kreis Recklinghausen",
+  "web": "https://www.kreis-re.de/",
+  "zeit": "2026-11-11 19:15",
+  "fehler": "unknown encoding: utf-8,text/html",
+  "wikipedia": "https://de.wikipedia.org/wiki/Kreis_Recklinghausen",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Kurt-Schumacher-Allee 1",
+     "45657 Recklinghausen"
+    ],
+    "plz": "45657"
+   }
+  ]
+ },
+ "05566": {
+  "name": "Kreis Steinfurt",
+  "web": "https://www.kreis-steinfurt.de/",
+  "zeit": "2026-11-11 19:15",
+  "impressum": "https://www.kreis-steinfurt.de/kv_steinfurt/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Tecklenburger Straße 10",
+     "48565 Steinfurt"
+    ],
+    "plz": "48565"
+   },
+   {
+    "zeilen": [
+     "Tecklenburger Str. 10",
+     "48565 Steinfurt"
+    ],
+    "plz": "48565"
+   },
+   {
+    "zeilen": [
+     "Robert-Bosch-Straße 12",
+     "56410 Montabaur"
+    ],
+    "plz": "56410"
+   },
+   {
+    "zeilen": [
+     "Bahnhofsplatz 6",
+     "56410 Montabaur"
+    ],
+    "plz": "56410"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Kreis_Steinfurt",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Tecklenburger Straße 10",
+     "48565 Steinfurt"
+    ],
+    "plz": "48565"
+   }
+  ]
+ },
+ "05570": {
+  "name": "Kreis Warendorf",
+  "web": "https://www.kreis-warendorf.de/",
+  "zeit": "2026-11-11 19:15",
+  "impressum": "https://www.kreis-warendorf.de/meta-navigation-oben/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Waldenburger Str. 2",
+     "48231 Warendorf"
+    ],
+    "plz": "48231"
+   },
+   {
+    "zeilen": [
+     "Waldenburger Straße 2",
+     "48231 Warendorf"
+    ],
+    "plz": "48231"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Kreis_Warendorf",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "2",
+     "48231 Warendorf"
+    ],
+    "plz": "48231"
+   }
+  ]
+ },
+ "05711": {
+  "name": "Stadt Bielefeld",
+  "web": "https://www.bielefeld.de/",
+  "zeit": "2026-11-11 19:15",
+  "impressum": "https://www.bielefeld.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Mühlenstr. 51",
+     "53721 Siegburg) erhält notwendigerweise Kenntnis von den o. g. Date"
+    ],
+    "plz": "53721"
+   },
+   {
+    "zeilen": [
+     "Niederwall 23",
+     "33602 Bielefeld"
+    ],
+    "plz": "33602"
+   },
+   {
+    "zeilen": [
+     "Postfach 20 04 44",
+     "40102 Düsseldorf"
+    ],
+    "plz": "40102"
+   },
+   {
+    "zeilen": [
+     "Niederwall 25",
+     "33602 Bielefeld"
+    ],
+    "plz": "33602"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Bielefeld",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Niederwall 23",
+     "33602 Bielefeld"
+    ],
+    "plz": "33602"
+   }
+  ]
+ },
+ "05754": {
+  "name": "Kreis Gütersloh",
+  "web": "https://www.kreis-guetersloh.de/",
+  "zeit": "2026-11-11 19:15",
+  "fehler": "The read operation timed out",
+  "wikipedia": "https://de.wikipedia.org/wiki/Kreis_G%C3%BCtersloh",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Herzebrocker Straße 140",
+     "33334 Gütersloh"
+    ],
+    "plz": "33334"
+   }
+  ]
+ },
+ "05758": {
+  "name": "Kreis Herford",
+  "web": "https://www.kreis-herford.de/",
+  "zeit": "2026-11-11 19:16",
+  "fehler": "robots.txt verbietet den Abruf",
+  "wikipedia": "https://de.wikipedia.org/wiki/Kreis_Herford",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Amtshausstraße 3",
+     "32051 Herford"
+    ],
+    "plz": "32051"
+   }
+  ]
+ },
+ "05762": {
+  "name": "Kreis Höxter",
+  "web": "https://www.kreis-hoexter.de/",
+  "zeit": "2026-11-11 19:16",
+  "impressum": "https://www.kreis-hoexter.de/informationen/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Moltkestraße 12",
+     "37671 Höxter"
+    ],
+    "plz": "37671"
+   },
+   {
+    "zeilen": [
+     "An der Spielleite 9",
+     "97294 Unterpleichfeld"
+    ],
+    "plz": "97294"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Kreis_H%C3%B6xter",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Moltkestraße 12",
+     "37671 Höxter"
+    ],
+    "plz": "37671"
+   }
+  ]
+ },
+ "05766": {
+  "name": "Kreis Lippe",
+  "web": "https://www.kreis-lippe.de/",
+  "zeit": "2026-11-11 19:16",
+  "impressum": "https://www.kreis-lippe.de/kreis-lippe/impressum.php",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Felix-Fechenbach-Straße 5",
+     "32756 Detmold"
+    ],
+    "plz": "32756"
+   },
+   {
+    "zeilen": [
+     "Felix-Fechenbach-Str. 5",
+     "32756 Detmold"
+    ],
+    "plz": "32756"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Kreis_Lippe",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "5",
+     "32756 Detmold"
+    ],
+    "plz": "32756"
+   }
+  ]
+ },
+ "05770": {
+  "name": "Kreis Minden-Lübbecke",
+  "web": "https://www.minden-luebbecke.de/",
+  "zeit": "2026-11-11 19:17",
+  "impressum": "https://www.minden-luebbecke.de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Portastraße 13",
+     "32423 Minden"
+    ],
+    "plz": "32423"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Kreis_Minden-L%C3%BCbbecke",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Portastraße 13",
+     "32423 Minden"
+    ],
+    "plz": "32423"
+   }
+  ]
+ },
+ "05774": {
+  "name": "Kreis Paderborn",
+  "web": "https://www.kreis-paderborn.de/",
+  "zeit": "2026-11-11 19:17",
+  "impressum": "https://www.kreis-paderborn.de/kreis_paderborn/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Aldegreverstraße 10 – 14",
+     "33102 Paderborn"
+    ],
+    "plz": "33102"
+   },
+   {
+    "zeilen": [
+     "Aldegrever Str. 10-14",
+     "33102 Paderborn"
+    ],
+    "plz": "33102"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Kreis_Paderborn",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Aldegreverstraße 10–14",
+     "33102 Paderborn"
+    ],
+    "plz": "33102"
+   }
+  ]
+ },
+ "05911": {
+  "name": "Stadt Bochum",
+  "web": "https://www.bochum.de/",
+  "zeit": "2026-11-11 19:17",
+  "fehler": "<urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1032)>",
+  "wikipedia": "https://de.wikipedia.org/wiki/Bochum",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Willy-Brandt-Platz 2–6",
+     "44787 Bochum"
+    ],
+    "plz": "44787"
+   }
+  ]
+ },
+ "05913": {
+  "name": "Stadt Dortmund",
+  "web": "https://www.dortmund.de/",
+  "zeit": "2026-11-11 19:18",
+  "impressum": "https://www.dortmund.de/allgemeines/",
+  "kandidaten": [],
+  "wikipedia": "https://de.wikipedia.org/wiki/Dortmund",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Friedensplatz 1",
+     "44135 Dortmund"
+    ],
+    "plz": "44135"
+   }
+  ]
+ },
+ "05914": {
+  "name": "Stadt Hagen",
+  "web": "https://www.hagen.de/",
+  "zeit": "2026-11-11 19:18",
+  "impressum": "https://www.hagen.de/meta/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Rathausstraße 11",
+     "58095 Hagen"
+    ],
+    "plz": "58095"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Hagen",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Rathausstraße 11",
+     "58095 Hagen"
+    ],
+    "plz": "58095"
+   }
+  ]
+ },
+ "05915": {
+  "name": "Stadt Hamm",
+  "web": "https://www.hamm.de/",
+  "zeit": "2026-11-11 19:18",
+  "impressum": "https://www.hamm.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Theodor-Heuss-Platz 16",
+     "59065 Hamm"
+    ],
+    "plz": "59065"
+   },
+   {
+    "zeilen": [
+     "Postfach 2449",
+     "59014 Hamm"
+    ],
+    "plz": "59014"
+   },
+   {
+    "zeilen": [
+     "Postfach 20 04 44",
+     "40102 Düsseldorf"
+    ],
+    "plz": "40102"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Hamm",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Theodor-Heuss-Platz 16",
+     "59065 Hamm"
+    ],
+    "plz": "59065"
+   }
+  ]
+ },
+ "05916": {
+  "name": "Stadt Herne",
+  "web": "https://www.herne.de/",
+  "zeit": "2026-11-11 19:18",
+  "impressum": "https://www.herne.de/Technische-Seiten/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Friedrich-Ebert-Platz 2",
+     "44623 Herne"
+    ],
+    "plz": "44623"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Herne",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Friedrich-Ebert-Platz 2",
+     "44623 Herne"
+    ],
+    "plz": "44623"
+   }
+  ]
+ },
+ "05954": {
+  "name": "Ennepe-Ruhr-Kreis",
+  "web": "https://www.enkreis.de/",
+  "zeit": "2026-11-11 19:18",
+  "impressum": "https://www.enkreis.de/politik-verwaltung/verwaltung/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Hauptstraße 92",
+     "58332 Schwelm"
+    ],
+    "plz": "58332"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Ennepe-Ruhr-Kreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Hauptstraße 92",
+     "58332 Schwelm"
+    ],
+    "plz": "58332"
+   }
+  ]
+ },
+ "05958": {
+  "name": "Hochsauerlandkreis",
+  "web": "https://www.hochsauerlandkreis.de/",
+  "zeit": "2026-11-11 19:19",
+  "impressum": "https://www.hochsauerlandkreis.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Seibertzstr. 1",
+     "59821 Arnsberg."
+    ],
+    "plz": "59821"
+   },
+   {
+    "zeilen": [
+     "Steinstraße 27",
+     "59872 Meschede"
+    ],
+    "plz": "59872"
+   },
+   {
+    "zeilen": [
+     "Steinstr. 27",
+     "59872 Meschede"
+    ],
+    "plz": "59872"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Hochsauerlandkreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Steinstraße 27",
+     "59872 Meschede"
+    ],
+    "plz": "59872"
+   }
+  ]
+ },
+ "05962": {
+  "name": "Märkischer Kreis",
+  "web": "http://www.maerkischer-kreis.de",
+  "zeit": "2026-11-11 19:19",
+  "impressum": "https://www.maerkischer-kreis.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Heedfelder Str. 45",
+     "58509 Lüdenscheid"
+    ],
+    "plz": "58509"
+   },
+   {
+    "zeilen": [
+     "Seibertzstr. 1",
+     "59821 Arnsberg"
+    ],
+    "plz": "59821"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/M%C3%A4rkischer_Kreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Heedfelder Straße 45",
+     "58509 Lüdenscheid"
+    ],
+    "plz": "58509"
+   }
+  ]
+ },
+ "05966": {
+  "name": "Kreis Olpe",
+  "web": "https://kreis-olpe.de/",
+  "zeit": "2026-11-11 19:19",
+  "impressum": "https://kreis-olpe.de/Quicknavigation/Impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Westfälische Straße 75",
+     "57462 Olpe"
+    ],
+    "plz": "57462"
+   },
+   {
+    "zeilen": [
+     "Kavalleriestraße 2–4",
+     "40213 Düsseldorf"
+    ],
+    "plz": "40213"
+   },
+   {
+    "zeilen": [
+     "Vierhörn 2 a–b",
+     "23556 Lübeck"
+    ],
+    "plz": "23556"
+   },
+   {
+    "zeilen": [
+     "Bahnhofsstraße 10",
+     "76137 Karlsruhe"
+    ],
+    "plz": "76137"
+   },
+   {
+    "zeilen": [
+     "Sonnenblumenallee 3",
+     "58675 Hemer"
+    ],
+    "plz": "58675"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Kreis_Olpe",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Westfälische Straße 75",
+     "57462 Olpe"
+    ],
+    "plz": "57462"
+   }
+  ]
+ },
+ "05970": {
+  "name": "Kreis Siegen-Wittgenstein",
+  "web": "https://www.siegen-wittgenstein.de/",
+  "zeit": "2026-11-11 19:19",
+  "impressum": "https://www.siegen-wittgenstein.de/Kurzmen%C3%BC/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Koblenzer Straße 73",
+     "57072 Siegen"
+    ],
+    "plz": "57072"
+   },
+   {
+    "zeilen": [
+     "Vierhörn 2 a – b",
+     "23556 Lübeck"
+    ],
+    "plz": "23556"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Kreis_Siegen-Wittgenstein",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Koblenzer Straße 73",
+     "57072 Siegen"
+    ],
+    "plz": "57072"
+   }
+  ]
+ },
+ "05974": {
+  "name": "Kreis Soest",
+  "web": "https://www.kreis-soest.de/",
+  "zeit": "2026-11-11 19:19",
+  "impressum": "https://www.kreis-soest.de/start/startseite/impressum/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Hoher Weg 1-3",
+     "59494 Soest"
+    ],
+    "plz": "59494"
+   },
+   {
+    "zeilen": [
+     "Sonnenblumenallee 3",
+     "58675 Hemer"
+    ],
+    "plz": "58675"
+   },
+   {
+    "zeilen": [
+     "Wernsdorfer Str. 1",
+     "59955 Winterberg"
+    ],
+    "plz": "59955"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Kreis_Soest",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Hoher Weg 1–3",
+     "59494 Soest"
+    ],
+    "plz": "59494"
+   }
+  ]
+ },
+ "05978": {
+  "name": "Kreis Unna",
+  "web": "https://www.kreis-unna.de/",
+  "zeit": "2026-11-11 19:20",
+  "impressum": "https://www.kreis-unna.de/Kurzmen%C3%BC/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Friedrich-Ebert-Straße 17",
+     "59425 Unna"
+    ],
+    "plz": "59425"
+   },
+   {
+    "zeilen": [
+     "Friedrich-Ebert-Straße 17",
+     "59425 Unna."
+    ],
+    "plz": "59425"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Kreis_Unna",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Friedrich-Ebert-Straße 17",
+     "59425 Unna"
+    ],
+    "plz": "59425"
+   }
+  ]
+ },
+ "06411": {
+  "name": "Stadt Darmstadt",
+  "web": "https://www.darmstadt.de/",
+  "zeit": "2026-11-11 19:20",
+  "impressum": "https://www.darmstadt.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Luisenplatz 5 A",
+     "64283 Darmstadt"
+    ],
+    "plz": "64283"
+   },
+   {
+    "zeilen": [
+     "Luisenplatz 2",
+     "64283 Darmstadt"
+    ],
+    "plz": "64283"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Darmstadt",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Luisenplatz 5",
+     "64283 Darmstadt"
+    ],
+    "plz": "64283"
+   }
+  ]
+ },
+ "06412": {
+  "name": "Stadt Frankfurt am Main",
+  "web": "https://frankfurt.de",
+  "zeit": "2026-11-11 19:20",
+  "fehler": "403 HTTP Error 403: Forbidden",
+  "wikipedia": "https://de.wikipedia.org/wiki/Frankfurt_am_Main",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Römerberg 23",
+     "60311 Frankfurt am Main"
+    ],
+    "plz": "60311"
+   }
+  ]
+ },
+ "06413": {
+  "name": "Stadt Offenbach am Main",
+  "web": "https://www.offenbach.de/",
+  "zeit": "2026-11-11 19:20",
+  "impressum": "https://www.offenbach.de/service/impressum.php",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Berliner Straße 100",
+     "63065 Offenbach"
+    ],
+    "plz": "63065"
+   },
+   {
+    "zeilen": [
+     "Luisenplatz 2",
+     "64283 Darmstadt"
+    ],
+    "plz": "64283"
+   },
+   {
+    "zeilen": [
+     "Aachener Straße 952-958",
+     "50933 Köln"
+    ],
+    "plz": "50933"
+   },
+   {
+    "zeilen": [
+     "Berliner Straße 100",
+     "63065 Offenbach am Main"
+    ],
+    "plz": "63065"
+   },
+   {
+    "zeilen": [
+     "Senefelderstraße 162",
+     "63069 Offenbach am Main"
+    ],
+    "plz": "63069"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Offenbach_am_Main",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Berliner Straße 100",
+     "63065 Offenbach am Main"
+    ],
+    "plz": "63065"
+   }
+  ]
+ },
+ "06414": {
+  "name": "Stadt Wiesbaden",
+  "web": "https://www.wiesbaden.de/",
+  "zeit": "2026-11-11 19:20",
+  "impressum": "https://www.wiesbaden.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Postfach 3920",
+     "65029 Wiesbaden"
+    ],
+    "plz": "65029"
+   },
+   {
+    "zeilen": [
+     "Schlossplatz 6",
+     "65183 Wiesbaden"
+    ],
+    "plz": "65183"
+   },
+   {
+    "zeilen": [
+     "Schwalbacher Straße 78",
+     "65183 Wiesbaden"
+    ],
+    "plz": "65183"
+   },
+   {
+    "zeilen": [
+     "Neubrückenstraße 8-11",
+     "48143 Münster"
+    ],
+    "plz": "48143"
+   },
+   {
+    "zeilen": [
+     "Postfach 3840",
+     "65028 Wiesbaden"
+    ],
+    "plz": "65028"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Wiesbaden",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "6",
+     "65183 Wiesbaden"
+    ],
+    "plz": "65183"
+   }
+  ]
+ },
+ "06431": {
+  "name": "Landkreis Bergstraße",
+  "web": "https://www.kreis-bergstrasse.de/",
+  "zeit": "2026-11-11 19:20",
+  "impressum": "https://www.kreis-bergstrasse.de/footer/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Gräffstraße 5",
+     "64646 Heppenheim"
+    ],
+    "plz": "64646"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Bergstra%C3%9Fe",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Gräffstraße 5",
+     "64646 Heppenheim (Bergstraße)"
+    ],
+    "plz": "64646"
+   }
+  ]
+ },
+ "06432": {
+  "name": "Landkreis Darmstadt-Dieburg",
+  "web": "https://www.ladadi.de/",
+  "zeit": "2026-11-11 19:21",
+  "impressum": "https://www.ladadi.de/kreis-bildung/der-kreis/kreisverwaltung/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Jägertorstraße 207",
+     "64289 Darmstadt"
+    ],
+    "plz": "64289"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Darmstadt-Dieburg",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Jägertorstraße 207",
+     "64289 Darmstadt"
+    ],
+    "plz": "64289"
+   }
+  ]
+ },
+ "06433": {
+  "name": "Landkreis Groß-Gerau",
+  "web": "https://www.kreisgg.de/",
+  "zeit": "2026-11-11 19:21",
+  "impressum": "https://www.kreisgg.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Wilhelm-Seipp-Str. 4",
+     "64521 Groß-Gerau"
+    ],
+    "plz": "64521"
+   },
+   {
+    "zeilen": [
+     "Postfach 1446",
+     "64504 Groß-Gerau"
+    ],
+    "plz": "64504"
+   },
+   {
+    "zeilen": [
+     "Lichtenbergstraße 68",
+     "64289 Darmstadt"
+    ],
+    "plz": "64289"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Gro%C3%9F-Gerau",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Wilhelm-Seipp-Straße 4",
+     "64521 Groß-Gerau"
+    ],
+    "plz": "64521"
+   }
+  ]
+ },
+ "06434": {
+  "name": "Hochtaunuskreis",
+  "web": "https://www.hochtaunuskreis.de/",
+  "zeit": "2026-11-11 19:21",
+  "impressum": "https://www.hochtaunuskreis.de/Kurzmen%C3%BC/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Ludwig-Erhard-Anlage 1–5",
+     "61352 Bad Homburg v. d. Höhe"
+    ],
+    "plz": "61352"
+   },
+   {
+    "zeilen": [
+     "Vierhörn 2a–b",
+     "23556 Lübeck"
+    ],
+    "plz": "23556"
+   },
+   {
+    "zeilen": [
+     "Ludwig-Erhard-Anlage 1 – 5",
+     "61352 Bad Homburg"
+    ],
+    "plz": "61352"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Hochtaunuskreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "1–5",
+     "61352 Bad Homburg v."
+    ],
+    "plz": "61352"
+   }
+  ]
+ },
+ "06435": {
+  "name": "Main-Kinzig-Kreis",
+  "web": "https://www.mkk.de/",
+  "zeit": "2026-11-11 19:21",
+  "impressum": "https://www.mkk.de/de/mkk_de/technische_inhalte/Impressum.html",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Barbarossastraße 16-24",
+     "63571 Gelnhausen"
+    ],
+    "plz": "63571"
+   },
+   {
+    "zeilen": [
+     "Barbarossastr. 16-24",
+     "63571 Gelnhausen"
+    ],
+    "plz": "63571"
+   },
+   {
+    "zeilen": [
+     "Postfach 1465",
+     "63569 Gelnhausen"
+    ],
+    "plz": "63569"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Main-Kinzig-Kreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Barbarossastraße 16–24",
+     "63571 Gelnhausen"
+    ],
+    "plz": "63571"
+   }
+  ]
+ },
+ "06436": {
+  "name": "Main-Taunus-Kreis",
+  "web": "https://www.mtk.org/",
+  "zeit": "2026-11-11 19:21",
+  "impressum": "https://www.mtk.org/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Am Kreishaus 1 - 5",
+     "65719 Hofheim"
+    ],
+    "plz": "65719"
+   },
+   {
+    "zeilen": [
+     "Postfach 1480",
+     "65704 Hofheim"
+    ],
+    "plz": "65704"
+   },
+   {
+    "zeilen": [
+     "Neuer Zollhof 1",
+     "40221 Düsseldorf"
+    ],
+    "plz": "40221"
+   },
+   {
+    "zeilen": [
+     "Am Kreishaus 1-5",
+     "65719 Hofheim"
+    ],
+    "plz": "65719"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Main-Taunus-Kreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Am Kreishaus 1–5",
+     "65719 Hofheim am Taunus"
+    ],
+    "plz": "65719"
+   }
+  ]
+ },
+ "06437": {
+  "name": "Odenwaldkreis",
+  "web": "https://www.odenwaldkreis.de/",
+  "zeit": "2026-11-11 19:22",
+  "impressum": "https://www.odenwaldkreis.de/de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Michelstädter Str. 12",
+     "64711 Erbach"
+    ],
+    "plz": "64711"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Odenwaldkreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Michelstädter Straße 12",
+     "64711 Erbach"
+    ],
+    "plz": "64711"
+   }
+  ]
+ },
+ "06438": {
+  "name": "Landkreis Offenbach",
+  "web": "https://www.kreis-offenbach.de/",
+  "zeit": "2026-11-11 19:22",
+  "impressum": "https://www.kreis-offenbach.de/Servicemen%C3%BC/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Werner-Hilpert-Straße 1",
+     "63128 Dietzenbach"
+    ],
+    "plz": "63128"
+   },
+   {
+    "zeilen": [
+     "Dreikronen 12",
+     "24223 Schwentinental"
+    ],
+    "plz": "24223"
+   },
+   {
+    "zeilen": [
+     "Subbelrather Straße 13",
+     "50672 Köln"
+    ],
+    "plz": "50672"
+   },
+   {
+    "zeilen": [
+     "Gartenstraße 12c",
+     "97276 Margetshöchheim"
+    ],
+    "plz": "97276"
+   },
+   {
+    "zeilen": [
+     "Vierhörn 2 a–b",
+     "23556 Lübeck"
+    ],
+    "plz": "23556"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Offenbach",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Werner-Hilpert-Straße 1",
+     "63128 Dietzenbach"
+    ],
+    "plz": "63128"
+   }
+  ]
+ },
+ "06439": {
+  "name": "Rheingau-Taunus-Kreis",
+  "web": "https://www.rheingau-taunus.de/",
+  "zeit": "2026-11-11 19:22",
+  "impressum": "https://www.rheingau-taunus.de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Heimbacher Straße 7",
+     "65307 Bad Schwalbach"
+    ],
+    "plz": "65307"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Rheingau-Taunus-Kreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Heimbacher Straße 7",
+     "65307 Bad Schwalbach"
+    ],
+    "plz": "65307"
+   }
+  ]
+ },
+ "06440": {
+  "name": "Wetteraukreis",
+  "web": "https://wetteraukreis.de/",
+  "zeit": "2026-11-11 19:22",
+  "impressum": "https://wetteraukreis.de/navi-impressum/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Europaplatz",
+     "61169 Friedberg (Hessen)"
+    ],
+    "plz": "61169"
+   },
+   {
+    "zeilen": [
+     "Postfach 10 06 61",
+     "61146 Friedberg (Hessen)"
+    ],
+    "plz": "61146"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Wetteraukreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Europaplatz",
+     "61169 Friedberg (Hessen)"
+    ],
+    "plz": "61169"
+   }
+  ]
+ },
+ "06531": {
+  "name": "Landkreis Gießen",
+  "web": "https://www.lkgi.de/",
+  "zeit": "2026-11-11 19:23",
+  "impressum": "https://www.lkgi.de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Riversplatz 1-9",
+     "35394 Gießen"
+    ],
+    "plz": "35394"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Gie%C3%9Fen",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Riversplatz 1–9",
+     "35394 Gießen"
+    ],
+    "plz": "35394"
+   }
+  ]
+ },
+ "06532": {
+  "name": "Lahn-Dill-Kreis",
+  "web": "https://www.lahn-dill-kreis.de/",
+  "zeit": "2026-11-11 19:23",
+  "impressum": "https://www.lahn-dill-kreis.de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Karl-Kellner-Ring 51",
+     "35576 Wetzlar"
+    ],
+    "plz": "35576"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Lahn-Dill-Kreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Karl-Kellner-Ring 51",
+     "35576 Wetzlar"
+    ],
+    "plz": "35576"
+   }
+  ]
+ },
+ "06533": {
+  "name": "Landkreis Limburg-Weilburg",
+  "web": "https://www.landkreis-limburg-weilburg.de/",
+  "zeit": "2026-11-11 19:23",
+  "impressum": "https://www.landkreis-limburg-weilburg.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Schiede 43",
+     "65549 Limburg"
+    ],
+    "plz": "65549"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Limburg-Weilburg",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Schiede 43",
+     "65549 Limburg a."
+    ],
+    "plz": "65549"
+   }
+  ]
+ },
+ "06534": {
+  "name": "Landkreis Marburg-Biedenkopf",
+  "web": "https://www.marburg-biedenkopf.de/",
+  "zeit": "2026-11-11 19:23",
+  "impressum": "https://www.marburg-biedenkopf.de/impressum.php",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Im Lichtenholz 60",
+     "35043 Marburg"
+    ],
+    "plz": "35043"
+   },
+   {
+    "zeilen": [
+     "Neubrückenstraße 8-11",
+     "48143 Münster"
+    ],
+    "plz": "48143"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Marburg-Biedenkopf",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Im Lichtenholz 60",
+     "35043 Marburg"
+    ],
+    "plz": "35043"
+   }
+  ]
+ },
+ "06535": {
+  "name": "Vogelsbergkreis",
+  "web": "https://www.vogelsbergkreis.de/",
+  "zeit": "2026-11-11 19:23",
+  "impressum": "https://www.vogelsbergkreis.de/informationen/impressum/",
+  "kandidaten": [],
+  "wikipedia": "https://de.wikipedia.org/wiki/Vogelsbergkreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Goldhelg 20",
+     "36341 Lauterbach"
+    ],
+    "plz": "36341"
+   }
+  ]
+ },
+ "06611": {
+  "name": "Stadt Kassel",
+  "web": "https://www.kassel.de/",
+  "zeit": "2026-11-11 19:24",
+  "impressum": "https://www.kassel.de/impressum.php",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Obere Königsstraße 8",
+     "34117 Kassel"
+    ],
+    "plz": "34117"
+   },
+   {
+    "zeilen": [
+     "Obere Königsstraße 8 / Rathaus",
+     "34117 Kassel"
+    ],
+    "plz": "34117"
+   },
+   {
+    "zeilen": [
+     "Steinweg 6",
+     "34117 Kassel"
+    ],
+    "plz": "34117"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Kassel",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Obere Königsstraße 8",
+     "34117 Kassel"
+    ],
+    "plz": "34117"
+   }
+  ]
+ },
+ "06631": {
+  "name": "Landkreis Fulda",
+  "web": "https://www.landkreis-fulda.de/",
+  "zeit": "2026-11-11 19:24",
+  "fehler": "robots.txt verbietet den Abruf",
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Fulda",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Wörthstraße 15",
+     "36037 Fulda"
+    ],
+    "plz": "36037"
+   }
+  ]
+ },
+ "06632": {
+  "name": "Landkreis Hersfeld-Rotenburg",
+  "web": "https://www.hef-rof.de/",
+  "zeit": "2026-11-11 19:24",
+  "impressum": "https://www.hef-rof.de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Friedloser Straße 12",
+     "36251 Bad Hersfeld"
+    ],
+    "plz": "36251"
+   },
+   {
+    "zeilen": [
+     "Friedloser Straße 12",
+     "36251 Bad Hersfeld. Aufsichtsbehörde für den Landkreis Hersfeld-Rot"
+    ],
+    "plz": "36251"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Hersfeld-Rotenburg",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Friedloser Straße 12",
+     "36251 Bad Hersfeld"
+    ],
+    "plz": "36251"
+   }
+  ]
+ },
+ "06633": {
+  "name": "Landkreis Kassel",
+  "web": "https://www.landkreiskassel.de/",
+  "zeit": "2026-11-11 19:24",
+  "impressum": "https://www.landkreiskassel.de/impressum.php",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Wilhelmshöher Allee 19-21",
+     "34117 Kassel"
+    ],
+    "plz": "34117"
+   },
+   {
+    "zeilen": [
+     "Am Alten Stadtschloss 1",
+     "34117 Kassel"
+    ],
+    "plz": "34117"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Kassel",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Wilhelmshöher Allee 19–21",
+     "34117 Kassel"
+    ],
+    "plz": "34117"
+   }
+  ]
+ },
+ "06634": {
+  "name": "Schwalm-Eder-Kreis",
+  "web": "https://www.schwalm-eder-kreis.de/",
+  "zeit": "2026-11-11 19:24",
+  "impressum": "https://www.schwalm-eder-kreis.de/Home/Impressum.htm",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Parkstraße 6",
+     "34576 Homberg (Efze)"
+    ],
+    "plz": "34576"
+   },
+   {
+    "zeilen": [
+     "Albert-Brickwedde-Straße 2",
+     "49084 Osnabrück"
+    ],
+    "plz": "49084"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Schwalm-Eder-Kreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Parkstraße 6",
+     "34576 Homberg (Efze)"
+    ],
+    "plz": "34576"
+   }
+  ]
+ },
+ "06635": {
+  "name": "Landkreis Waldeck-Frankenberg",
+  "web": "https://www.landkreis-waldeck-frankenberg.de/",
+  "zeit": "2026-11-11 19:25",
+  "impressum": "https://www.landkreis-waldeck-frankenberg.de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Südring 2",
+     "34497 Korbach"
+    ],
+    "plz": "34497"
+   },
+   {
+    "zeilen": [
+     "Südring 2",
+     "34497 Korbach. Aufsichtsbehörde für den Landkreis Waldeck-Frankenbe"
+    ],
+    "plz": "34497"
+   },
+   {
+    "zeilen": [
+     "Südring 2",
+     "34497 Korbach."
+    ],
+    "plz": "34497"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Waldeck-Frankenberg",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Südring 2",
+     "34497 Korbach"
+    ],
+    "plz": "34497"
+   }
+  ]
+ },
+ "06636": {
+  "name": "Werra-Meißner-Kreis",
+  "web": "https://www.werra-meissner-kreis.de/",
+  "zeit": "2026-11-11 19:25",
+  "impressum": "https://www.werra-meissner-kreis.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Schlossplatz 1",
+     "37269 Eschwege"
+    ],
+    "plz": "37269"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Werra-Mei%C3%9Fner-Kreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Schlossplatz 1",
+     "37269 Eschwege"
+    ],
+    "plz": "37269"
+   }
+  ]
+ },
+ "07111": {
+  "name": "Stadt Koblenz",
+  "web": "https://www.koblenz.de/",
+  "zeit": "2026-11-11 19:25",
+  "fehler": "The read operation timed out",
+  "wikipedia": "https://de.wikipedia.org/wiki/Koblenz",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Willi-Hörter-Platz 1",
+     "56068 Koblenz"
+    ],
+    "plz": "56068"
+   }
+  ]
+ },
+ "07131": {
+  "name": "Landkreis Ahrweiler",
+  "web": "https://www.kreis-ahrweiler.de/",
+  "zeit": "2026-11-11 19:26",
+  "impressum": "https://kreis-ahrweiler.de/verwaltung/datenschutz/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Wilhelmstraße 24-30",
+     "53474 Bad Neuenahr-Ahrweiler"
+    ],
+    "plz": "53474"
+   },
+   {
+    "zeilen": [
+     "Wilhelmstraße 24 – 30",
+     "53474 Bad Neuenahr-Ahrweiler"
+    ],
+    "plz": "53474"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Ahrweiler",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Wilhelmstraße 24–30",
+     "53474 Bad Neuenahr-Ahrweiler"
+    ],
+    "plz": "53474"
+   }
+  ]
+ },
+ "07132": {
+  "name": "Landkreis Altenkirchen",
+  "web": "https://www.kreis-altenkirchen.de/",
+  "zeit": "2026-11-11 19:26",
+  "impressum": "https://www.kreis-altenkirchen.de/INTERNET/Quicknavigation/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Parkstraße 1",
+     "57610 Altenkirchen"
+    ],
+    "plz": "57610"
+   },
+   {
+    "zeilen": [
+     "Gutenbergstraße 15",
+     "23566 Lübeck"
+    ],
+    "plz": "23566"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Altenkirchen_%28Westerwald%29",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Parkstraße 1",
+     "57610 Altenkirchen (Westerwald)"
+    ],
+    "plz": "57610"
+   }
+  ]
+ },
+ "07133": {
+  "name": "Landkreis Bad Kreuznach",
+  "web": "https://www.kreis-badkreuznach.de/",
+  "zeit": "2026-11-11 19:26",
+  "impressum": "https://www.kreis-badkreuznach.de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Salinenstraße 47",
+     "55543 Bad Kreuznach"
+    ],
+    "plz": "55543"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Bad_Kreuznach",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Salinenstraße 47",
+     "55543 Bad Kreuznach"
+    ],
+    "plz": "55543"
+   }
+  ]
+ },
+ "07134": {
+  "name": "Landkreis Birkenfeld",
+  "web": "https://www.landkreis-birkenfeld.de/",
+  "zeit": "2026-11-11 19:26",
+  "impressum": "https://www.landkreis-birkenfeld.de/Impressum-1.htm",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Albert-Brickwedde-Straße 2",
+     "49084 Osnabrück"
+    ],
+    "plz": "49084"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Birkenfeld",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Schneewiesenstraße 25",
+     "55765 Birkenfeld"
+    ],
+    "plz": "55765"
+   }
+  ]
+ },
+ "07135": {
+  "name": "Landkreis Cochem-Zell",
+  "web": "https://www.cochem-zell.de/",
+  "zeit": "2026-11-11 19:26",
+  "impressum": "https://www.cochem-zell.de/verwaltung/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Endertplatz 2",
+     "56812 Cochem"
+    ],
+    "plz": "56812"
+   },
+   {
+    "zeilen": [
+     "Robert-Bosch-Straße 12 / Haus IV",
+     "56410 Montabaur"
+    ],
+    "plz": "56410"
+   },
+   {
+    "zeilen": [
+     "Willy-Brandt-Platz 3",
+     "54290 Trier"
+    ],
+    "plz": "54290"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Cochem-Zell",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Endertplatz 2",
+     "56812 Cochem"
+    ],
+    "plz": "56812"
+   }
+  ]
+ },
+ "07137": {
+  "name": "Landkreis Mayen-Koblenz",
+  "web": "http://www.mayen-koblenz.de",
+  "zeit": "2026-11-11 19:27",
+  "impressum": "https://www.kvmyk.de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Bahnhofstraße 9",
+     "56068 Koblenz"
+    ],
+    "plz": "56068"
+   },
+   {
+    "zeilen": [
+     "Robert-Bosch-Straße 12 / Haus IV",
+     "56410 Montabaur"
+    ],
+    "plz": "56410"
+   },
+   {
+    "zeilen": [
+     "Valenciaplatz 6",
+     "55118 Mainz"
+    ],
+    "plz": "55118"
+   },
+   {
+    "zeilen": [
+     "Willy-Brandt-Platz 3",
+     "54290 Trier"
+    ],
+    "plz": "54290"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Mayen-Koblenz",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Bahnhofstraße 9",
+     "56068 Koblenz"
+    ],
+    "plz": "56068"
+   }
+  ]
+ },
+ "07138": {
+  "name": "Landkreis Neuwied",
+  "web": "https://www.kreis-neuwied.de",
+  "zeit": "2026-11-11 19:27",
+  "impressum": "https://www.kreis-neuwied.de/ueber-uns/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Wilhelm-Leuschner-Straße 9",
+     "56564 Neuwied"
+    ],
+    "plz": "56564"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Neuwied",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Wilhelm-Leuschner-Straße 9",
+     "56564 Neuwied"
+    ],
+    "plz": "56564"
+   }
+  ]
+ },
+ "07140": {
+  "name": "Rhein-Hunsrück-Kreis",
+  "web": "https://www.kreis-sim.de/",
+  "zeit": "2026-11-11 19:27",
+  "impressum": "https://www.kv-rhk.de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Ludwigstraße 3-5",
+     "55469 Simmern/Hunsrück"
+    ],
+    "plz": "55469"
+   },
+   {
+    "zeilen": [
+     "Ludwigstraße 3-5",
+     "55469 Simmern"
+    ],
+    "plz": "55469"
+   },
+   {
+    "zeilen": [
+     "Robert-Bosch-Straße 12 / Haus IV",
+     "56410 Montabaur"
+    ],
+    "plz": "56410"
+   },
+   {
+    "zeilen": [
+     "Willy-Brandt-Platz 3",
+     "54290 Trier"
+    ],
+    "plz": "54290"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Rhein-Hunsr%C3%BCck-Kreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Ludwigstraße 3–5",
+     "55469 Simmern/Hunsrück"
+    ],
+    "plz": "55469"
+   }
+  ]
+ },
+ "07141": {
+  "name": "Rhein-Lahn-Kreis",
+  "web": "https://www.rhein-lahn-kreis.de/",
+  "zeit": "2026-11-11 19:27",
+  "impressum": "https://www.rhein-lahn-kreis.de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Insel Silberau 1",
+     "56129 Bad Ems"
+    ],
+    "plz": "56129"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Rhein-Lahn-Kreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Insel Silberau 1",
+     "56130 Bad Ems"
+    ],
+    "plz": "56130"
+   }
+  ]
+ },
+ "07143": {
+  "name": "Westerwaldkreis",
+  "web": "http://www.westerwald-kreis.de",
+  "zeit": "2026-11-11 19:28",
+  "impressum": "https://www.westerwaldkreis.de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Provinostr. 52",
+     "86153 Augsburg."
+    ],
+    "plz": "86153"
+   },
+   {
+    "zeilen": [
+     "Peter-Altmeier-Platz 1",
+     "56410 Montabaur"
+    ],
+    "plz": "56410"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Westerwaldkreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Peter-Altmeier-Platz 1",
+     "56410 Montabaur"
+    ],
+    "plz": "56410"
+   }
+  ]
+ },
+ "07211": {
+  "name": "Stadt Trier",
+  "web": "https://www.trier.de/",
+  "zeit": "2026-11-11 19:28",
+  "impressum": "https://www.trier.de/information/impressum/14712.Impressum.html",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Am Augustinerhof",
+     "54290 Trier"
+    ],
+    "plz": "54290"
+   },
+   {
+    "zeilen": [
+     "Angebot der Firma DiViBib GmbH (Luisenstr. 19",
+     "65185 Wiesbaden)"
+    ],
+    "plz": "65185"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Trier",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Am Augustinerhof",
+     "54290 Trier"
+    ],
+    "plz": "54290"
+   }
+  ]
+ },
+ "07231": {
+  "name": "Landkreis Bernkastel-Wittlich",
+  "web": "https://www.bernkastel-wittlich.de/",
+  "zeit": "2026-11-11 19:28",
+  "impressum": "https://www.bernkastel-wittlich.de/allgemein/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Kurfürstenstraße 16",
+     "54516 Wittlich"
+    ],
+    "plz": "54516"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Bernkastel-Wittlich",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Kurfürstenstraße 16",
+     "54516 Wittlich"
+    ],
+    "plz": "54516"
+   }
+  ]
+ },
+ "07232": {
+  "name": "Eifelkreis Bitburg-Prüm",
+  "web": "https://www.bitburg-pruem.de/",
+  "zeit": "2026-11-11 19:28",
+  "impressum": "https://www.bitburg-pruem.de/allgemein/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Trierer Straße 1",
+     "54634 Bitburg"
+    ],
+    "plz": "54634"
+   },
+   {
+    "zeilen": [
+     "Trierer Straße 1",
+     "54634 Bitburg/Eifel"
+    ],
+    "plz": "54634"
+   },
+   {
+    "zeilen": [
+     "Robert-Bosch-Straße 12 / Haus IV",
+     "56410 Montabaur"
+    ],
+    "plz": "56410"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Eifelkreis_Bitburg-Pr%C3%BCm",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Trierer Straße 1",
+     "54634 Bitburg"
+    ],
+    "plz": "54634"
+   }
+  ]
+ },
+ "07233": {
+  "name": "Vulkaneifel",
+  "web": "https://www.vulkaneifel.de/",
+  "zeit": "2026-11-11 19:28",
+  "impressum": "https://www.vulkaneifel.de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Mainzer Straße 25",
+     "54550 Daun"
+    ],
+    "plz": "54550"
+   },
+   {
+    "zeilen": [
+     "Robert-Bosch-Straße 12",
+     "56410 Montabaur"
+    ],
+    "plz": "56410"
+   },
+   {
+    "zeilen": [
+     "Willy-Brandt-Platz 3",
+     "54290 Trier"
+    ],
+    "plz": "54290"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Vulkaneifel",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Mainzer Straße 25",
+     "54550 Daun"
+    ],
+    "plz": "54550"
+   }
+  ]
+ },
+ "07235": {
+  "name": "Landkreis Trier-Saarburg",
+  "web": "http://www.trier-saarburg.de",
+  "zeit": "2026-11-11 19:29",
+  "impressum": "https://trier-saarburg.de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Willy-Brandt-Platz 1",
+     "54290 Trier"
+    ],
+    "plz": "54290"
+   },
+   {
+    "zeilen": [
+     "Im Gewerbegebiet 22",
+     "54344 Kenn"
+    ],
+    "plz": "54344"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Trier-Saarburg",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Willy-Brandt-Platz 1",
+     "54290 Trier"
+    ],
+    "plz": "54290"
+   }
+  ]
+ },
+ "07311": {
+  "name": "Stadt Frankenthal (Pfalz)",
+  "web": "http://www.frankenthal.de",
+  "zeit": "2026-11-11 19:29",
+  "impressum": "https://www.frankenthal.de/stadt-frankenthal/de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Rathausplatz 2-7",
+     "67227 Frankenthal (Pfalz)"
+    ],
+    "plz": "67227"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Frankenthal_%28Pfalz%29",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Rathausplatz 2–7",
+     "67227 Frankenthal (Pfalz)"
+    ],
+    "plz": "67227"
+   }
+  ]
+ },
+ "07312": {
+  "name": "Stadt Kaiserslautern",
+  "web": "https://www.kaiserslautern.de/",
+  "zeit": "2026-11-11 19:29",
+  "impressum": "https://www.kaiserslautern.de/service/impressum/index.html.de",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Willy-Brandt-Platz 1",
+     "67657 Kaiserslautern"
+    ],
+    "plz": "67657"
+   },
+   {
+    "zeilen": [
+     "Postfach 1320",
+     "67603 Kaiserslautern"
+    ],
+    "plz": "67603"
+   },
+   {
+    "zeilen": [
+     "Willy-Brandt-Platz 3",
+     "54290 Trier"
+    ],
+    "plz": "54290"
+   },
+   {
+    "zeilen": [
+     "Postfach 13 20",
+     "54203 Trier"
+    ],
+    "plz": "54203"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Kaiserslautern",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Willy-Brandt-Platz 1",
+     "67657 Kaiserslautern"
+    ],
+    "plz": "67657"
+   }
+  ]
+ },
+ "07313": {
+  "name": "Stadt Landau in der Pfalz",
+  "web": "https://www.landau.de/",
+  "zeit": "2026-11-11 19:29",
+  "impressum": "https://www.landau.de/Quicknav/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Marktstraße 50",
+     "76829 Landau in der Pfalz"
+    ],
+    "plz": "76829"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landau_in_der_Pfalz",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Marktstraße 50",
+     "76829 Landau in der Pfalz"
+    ],
+    "plz": "76829"
+   }
+  ]
+ },
+ "07314": {
+  "name": "Stadt Ludwigshafen am Rhein",
+  "web": "https://ludwigshafen.de",
+  "zeit": "2026-11-11 19:30",
+  "impressum": "https://ludwigshafen.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Postfach 21 12 25",
+     "67012 Ludwigshafen"
+    ],
+    "plz": "67012"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Ludwigshafen_am_Rhein",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Bismarckstraße 25",
+     "67059 Ludwigshafen am Rhein"
+    ],
+    "plz": "67059"
+   }
+  ]
+ },
+ "07315": {
+  "name": "Stadt Mainz",
+  "web": "https://www.mainz.de/",
+  "zeit": "2026-11-11 19:30",
+  "impressum": "https://www.mainz.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Postfach 3820",
+     "55028 Mainz"
+    ],
+    "plz": "55028"
+   },
+   {
+    "zeilen": [
+     "Maarweg 165",
+     "50825 Köln."
+    ],
+    "plz": "50825"
+   },
+   {
+    "zeilen": [
+     "Große Bleiche 46/Löwenhofstraße 1",
+     "55116 Mainz"
+    ],
+    "plz": "55116"
+   },
+   {
+    "zeilen": [
+     "Neubrückenstraße 8-11",
+     "48143 Münster"
+    ],
+    "plz": "48143"
+   },
+   {
+    "zeilen": [
+     "Eppichmauergasse 8",
+     "55116 Mainz"
+    ],
+    "plz": "55116"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Mainz",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Löwenhofstraße 1",
+     "55116 Mainz"
+    ],
+    "plz": "55116"
+   }
+  ]
+ },
+ "07316": {
+  "name": "Stadt Neustadt an der Weinstraße",
+  "web": "https://www.neustadt.eu/",
+  "zeit": "2026-11-11 19:30",
+  "impressum": "https://www.neustadt.eu/Quicknavigation/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Marktplatz 1",
+     "67433 Neustadt an der Weinstraße"
+    ],
+    "plz": "67433"
+   },
+   {
+    "zeilen": [
+     "Konrad-Adenauer-Straße 47",
+     "67433 Neustadt an der Weinstraße"
+    ],
+    "plz": "67433"
+   },
+   {
+    "zeilen": [
+     "(Besucheradresse der Tourist-Information: Hetzelplatz 1)",
+     "67434 Neustadt an der Weinstraße"
+    ],
+    "plz": "67434"
+   },
+   {
+    "zeilen": [
+     "2. OG",
+     "67433 Neustadt an der Weinstraße"
+    ],
+    "plz": "67433"
+   },
+   {
+    "zeilen": [
+     "Lise-Meitner.Str. 4",
+     "60486 Frankfurt am Main"
+    ],
+    "plz": "60486"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Neustadt_an_der_Weinstra%C3%9Fe",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Marktplatz 1",
+     "67433 Neustadt an der Weinstraße"
+    ],
+    "plz": "67433"
+   }
+  ]
+ },
+ "07317": {
+  "name": "Stadt Pirmasens",
+  "web": "https://www.pirmasens.de/",
+  "zeit": "2026-11-11 19:30",
+  "impressum": "https://www.pirmasens.de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Postfach 2763",
+     "66933 Pirmasens"
+    ],
+    "plz": "66933"
+   },
+   {
+    "zeilen": [
+     "Willy- Brandt- Platz 3",
+     "54290 Trier"
+    ],
+    "plz": "54290"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Pirmasens",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Exerzierplatzstraße 17",
+     "66953 Pirmasens"
+    ],
+    "plz": "66953"
+   }
+  ]
+ },
+ "07318": {
+  "name": "Stadt Speyer",
+  "web": "https://www.speyer.de/",
+  "zeit": "2026-11-11 19:30",
+  "impressum": "https://www.speyer.de/de/impressum/",
+  "kandidaten": [],
+  "wikipedia": "https://de.wikipedia.org/wiki/Speyer",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Maximilianstraße 100",
+     "67346 Speyer"
+    ],
+    "plz": "67346"
+   }
+  ]
+ },
+ "07319": {
+  "name": "Stadt Worms",
+  "web": "https://www.worms.de/neu-de/index.php",
+  "zeit": "2026-11-11 19:31",
+  "impressum": "https://www.worms.de/neu-de/service/impressum.php",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Am Obertor 4",
+     "67592 Flörsheim-Dalsheim"
+    ],
+    "plz": "67592"
+   },
+   {
+    "zeilen": [
+     "Im Driescher 7-9",
+     "66459 Kirkel"
+    ],
+    "plz": "66459"
+   },
+   {
+    "zeilen": [
+     "Marktplatz 2",
+     "67547 Worms"
+    ],
+    "plz": "67547"
+   },
+   {
+    "zeilen": [
+     "Gottliebenstraße 24",
+     "67550 Worms"
+    ],
+    "plz": "67550"
+   },
+   {
+    "zeilen": [
+     "Wißstraße 18",
+     "44137 Dortmund"
+    ],
+    "plz": "44137"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Worms",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Marktplatz 2",
+     "67547 Worms"
+    ],
+    "plz": "67547"
+   }
+  ]
+ },
+ "07320": {
+  "name": "Stadt Zweibrücken",
+  "web": "https://www.zweibruecken.de/",
+  "zeit": "2026-11-11 19:31",
+  "impressum": "https://www.zweibruecken.de/de/verwaltung/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Schillerstr. 2-4",
+     "66482 Zweibrücken"
+    ],
+    "plz": "66482"
+   },
+   {
+    "zeilen": [
+     "Willy-Brandt-Platz 3",
+     "54290 Trier"
+    ],
+    "plz": "54290"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Zweibr%C3%BCcken",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Herzogstraße 1",
+     "66482 Zweibrücken"
+    ],
+    "plz": "66482"
+   }
+  ]
+ },
+ "07331": {
+  "name": "Landkreis Alzey-Worms",
+  "web": "https://www.kreis-alzey-worms.de/",
+  "zeit": "2026-11-11 19:31",
+  "impressum": "https://www.kreis-alzey-worms.de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Postanschrift: Postfach 1360",
+     "55221 Alzey"
+    ],
+    "plz": "55221"
+   },
+   {
+    "zeilen": [
+     "Ernst-Ludwig-Straße 36",
+     "55232 Alzey"
+    ],
+    "plz": "55232"
+   },
+   {
+    "zeilen": [
+     "Luzenbergstraße 54-56",
+     "68305 Mannheim"
+    ],
+    "plz": "68305"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Alzey-Worms",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Ernst-Ludwig-Straße 36",
+     "55232 Alzey"
+    ],
+    "plz": "55232"
+   }
+  ]
+ },
+ "07332": {
+  "name": "Landkreis Bad Dürkheim",
+  "web": "https://www.kreis-bad-duerkheim.de/",
+  "zeit": "2026-11-11 19:31",
+  "impressum": "https://www.kreis-bad-duerkheim.de/buergerservice/organisation/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Philipp-Fauth-Straße 11",
+     "67098 Bad Dürkheim"
+    ],
+    "plz": "67098"
+   },
+   {
+    "zeilen": [
+     "Valenciaplatz 6",
+     "55118 Mainz"
+    ],
+    "plz": "55118"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Bad_D%C3%BCrkheim",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Philipp-Fauth-Straße 11",
+     "67098 Bad Dürkheim"
+    ],
+    "plz": "67098"
+   }
+  ]
+ },
+ "07333": {
+  "name": "Donnersbergkreis",
+  "web": "http://www.donnersberg.de/",
+  "zeit": "2026-11-11 19:31",
+  "impressum": "https://www.donnersberg.de/buergerservice/kontakt-oeffnungszeiten/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Uhlandstraße 2",
+     "67292 Kirchheimbolanden"
+    ],
+    "plz": "67292"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Donnersbergkreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Uhlandstraße 2",
+     "67292 Kirchheimbolanden"
+    ],
+    "plz": "67292"
+   }
+  ]
+ },
+ "07334": {
+  "name": "Landkreis Germersheim",
+  "web": "https://www.kreis-germersheim.de/",
+  "zeit": "2026-11-11 19:32",
+  "impressum": "https://www.kreis-germersheim.de/buergerservice/zentraler-service/impressum-datenschutz/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Luitpoldplatz 1",
+     "76726 Germersheim"
+    ],
+    "plz": "76726"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Germersheim",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Luitpoldplatz 1",
+     "76726 Germersheim"
+    ],
+    "plz": "76726"
+   }
+  ]
+ },
+ "07335": {
+  "name": "Landkreis Kaiserslautern",
+  "web": "https://www.kaiserslautern-kreis.de/",
+  "zeit": "2026-11-11 19:32",
+  "impressum": "https://www.kaiserslautern-kreis.de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Lauterstraße 8",
+     "67657 Kaiserslautern"
+    ],
+    "plz": "67657"
+   },
+   {
+    "zeilen": [
+     "Robert-Bosch-Straße 12",
+     "56410 Montabaur"
+    ],
+    "plz": "56410"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Kaiserslautern",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Lauterstraße 8",
+     "67657 Kaiserslautern"
+    ],
+    "plz": "67657"
+   }
+  ]
+ },
+ "07336": {
+  "name": "Landkreis Kusel",
+  "web": "https://www.landkreis-kusel.de/",
+  "zeit": "2026-11-11 19:32",
+  "impressum": "https://www.landkreis-kusel.de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Schwebelstr. 14",
+     "66869 Kusel"
+    ],
+    "plz": "66869"
+   },
+   {
+    "zeilen": [
+     "Trierer Str. 49-51",
+     "66869 Kusel"
+    ],
+    "plz": "66869"
+   },
+   {
+    "zeilen": [
+     "Robert-Bosch-Straße 12",
+     "56410 Montabaur"
+    ],
+    "plz": "56410"
+   },
+   {
+    "zeilen": [
+     "Valenciaplatz 6",
+     "55118 Mainz"
+    ],
+    "plz": "55118"
+   },
+   {
+    "zeilen": [
+     "Trierer Straße 49-51",
+     "66869 Kusel"
+    ],
+    "plz": "66869"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Kusel",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Trierer Straße 49–51",
+     "66869 Kusel"
+    ],
+    "plz": "66869"
+   }
+  ]
+ },
+ "07337": {
+  "name": "Landkreis Südliche Weinstraße",
+  "web": "https://www.suedliche-weinstrasse.de/",
+  "zeit": "2026-11-11 19:32",
+  "impressum": "https://www.suedliche-weinstrasse.de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "An der Kreuzmühle 2",
+     "76829 Landau"
+    ],
+    "plz": "76829"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_S%C3%BCdliche_Weinstra%C3%9Fe",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "An der Kreuzmühle 2",
+     "76829 Landau in der Pfalz"
+    ],
+    "plz": "76829"
+   }
+  ]
+ },
+ "07338": {
+  "name": "Rhein-Pfalz-Kreis",
+  "web": "https://www.rhein-pfalz-kreis.de/",
+  "zeit": "2026-11-11 19:33",
+  "impressum": "https://www.rhein-pfalz-kreis.de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Europaplatz 5",
+     "67063 Ludwigshafen"
+    ],
+    "plz": "67063"
+   },
+   {
+    "zeilen": [
+     "Industriestr. 109",
+     "67063 Ludwigshafen"
+    ],
+    "plz": "67063"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Rhein-Pfalz-Kreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Europaplatz 5",
+     "67063 Ludwigshafen am Rhein"
+    ],
+    "plz": "67063"
+   }
+  ]
+ },
+ "07339": {
+  "name": "Landkreis Mainz-Bingen",
+  "web": "http://www.mainz-bingen.de/",
+  "zeit": "2026-11-11 19:33",
+  "impressum": "https://www.mainz-bingen.de/de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Konrad-Adenauer-Str. 34",
+     "55218 Ingelheim"
+    ],
+    "plz": "55218"
+   },
+   {
+    "zeilen": [
+     "Prinz-Carl-Anlage 22",
+     "67547 Worms"
+    ],
+    "plz": "67547"
+   },
+   {
+    "zeilen": [
+     "Konrad-Adenauer-Str. 34",
+     "55218 Ingelheim am Rhein"
+    ],
+    "plz": "55218"
+   },
+   {
+    "zeilen": [
+     "Heimesgasse 14A",
+     "55218 Ingelheim am Rhein"
+    ],
+    "plz": "55218"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Mainz-Bingen",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Georg-Rückert-Straße 11",
+     "55218 Ingelheim am Rhein"
+    ],
+    "plz": "55218"
+   }
+  ]
+ },
+ "07340": {
+  "name": "Südwestpfalz",
+  "web": "https://www.lksuedwestpfalz.de/",
+  "zeit": "2026-11-11 19:33",
+  "impressum": "https://www.lksuedwestpfalz.de/verschiedenes/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Unterer Sommerwaldweg 40-42",
+     "66953 Pirmasens"
+    ],
+    "plz": "66953"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_S%C3%BCdwestpfalz",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Unterer Sommerwaldweg 40–42",
+     "66953 Pirmasens"
+    ],
+    "plz": "66953"
+   }
+  ]
+ },
+ "08111": {
+  "name": "Stadt Stuttgart",
+  "web": "https://www.stuttgart.de/",
+  "zeit": "2026-11-11 19:33",
+  "impressum": "https://www.stuttgart.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Marktplatz 1",
+     "70173 Stuttgart"
+    ],
+    "plz": "70173"
+   },
+   {
+    "zeilen": [
+     "Rathauspassage 2",
+     "70173 Stuttgart"
+    ],
+    "plz": "70173"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Stuttgart",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Marktplatz 1",
+     "70173 Stuttgart"
+    ],
+    "plz": "70173"
+   }
+  ]
+ },
+ "08115": {
+  "name": "Landkreis Böblingen",
+  "web": "https://www.lrabb.de/",
+  "zeit": "2026-11-11 19:33",
+  "impressum": "https://www.lrabb.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Parkstr. 16",
+     "71034 Böblingen"
+    ],
+    "plz": "71034"
+   },
+   {
+    "zeilen": [
+     "Weissacher Str. 15",
+     "70469 Stuttgart"
+    ],
+    "plz": "70469"
+   },
+   {
+    "zeilen": [
+     "Parkstraße 16",
+     "71034 Böblingen"
+    ],
+    "plz": "71034"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_B%C3%B6blingen",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Parkstraße 16",
+     "71034 Böblingen"
+    ],
+    "plz": "71034"
+   }
+  ]
+ },
+ "08116": {
+  "name": "Landkreis Esslingen",
+  "web": "https://www.landkreis-esslingen.de/",
+  "zeit": "2026-11-11 19:34",
+  "impressum": "https://www.landkreis-esslingen.de/start/impressum.html",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Ruppmannstr. 21,",
+     "70565 Stuttgart"
+    ],
+    "plz": "70565"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Esslingen",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Pulverwiesen 11",
+     "73728 Esslingen am Neckar"
+    ],
+    "plz": "73728"
+   }
+  ]
+ },
+ "08117": {
+  "name": "Landkreis Göppingen",
+  "web": "https://www.landkreis-goeppingen.de/",
+  "zeit": "2026-11-11 19:34",
+  "impressum": "https://www.landkreis-goeppingen.de/21947539",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Lorcher Str. 6",
+     "73033 Göppingen."
+    ],
+    "plz": "73033"
+   },
+   {
+    "zeilen": [
+     "Weissacher Str. 15",
+     "70499 Stuttgart"
+    ],
+    "plz": "70499"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_G%C3%B6ppingen",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Lorcher Straße 6",
+     "73033 Göppingen"
+    ],
+    "plz": "73033"
+   }
+  ]
+ },
+ "08118": {
+  "name": "Landkreis Ludwigsburg",
+  "web": "https://www.landkreis-ludwigsburg.de/",
+  "zeit": "2026-11-11 19:34",
+  "impressum": "https://www.landkreis-ludwigsburg.de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Hindenburgstraße 40",
+     "71638 Ludwigsburg"
+    ],
+    "plz": "71638"
+   },
+   {
+    "zeilen": [
+     "Echterdinger Straße 57/9",
+     "70794 Filderstadt"
+    ],
+    "plz": "70794"
+   },
+   {
+    "zeilen": [
+     "Ruppmannstraße 21",
+     "70565 Stuttgart"
+    ],
+    "plz": "70565"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Ludwigsburg",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Hindenburgstraße 40",
+     "71638 Ludwigsburg"
+    ],
+    "plz": "71638"
+   }
+  ]
+ },
+ "08119": {
+  "name": "Rems-Murr-Kreis",
+  "web": "https://www.rems-murr-kreis.de/",
+  "zeit": "2026-11-11 19:34",
+  "impressum": "https://www.rems-murr-kreis.de/impressum",
+  "kandidaten": [],
+  "wikipedia": "https://de.wikipedia.org/wiki/Rems-Murr-Kreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Alter Postplatz 10",
+     "71332 Waiblingen"
+    ],
+    "plz": "71332"
+   }
+  ]
+ },
+ "08121": {
+  "name": "Stadt Heilbronn",
+  "web": "https://www.heilbronn.de/",
+  "zeit": "2026-11-11 19:35",
+  "impressum": "https://www.heilbronn.de/impressum.html",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Marktplatz 7",
+     "74072 Heilbronn"
+    ],
+    "plz": "74072"
+   },
+   {
+    "zeilen": [
+     "Postfach 34 40",
+     "74024 Heilbronn"
+    ],
+    "plz": "74024"
+   },
+   {
+    "zeilen": [
+     "Kirchbrunnenstraße 3",
+     "74072 Heilbronn"
+    ],
+    "plz": "74072"
+   },
+   {
+    "zeilen": [
+     "Oststraße 12",
+     "74072 Heilbronn"
+    ],
+    "plz": "74072"
+   },
+   {
+    "zeilen": [
+     "Wannenäckerstraße 53",
+     "74078 Heilbronn"
+    ],
+    "plz": "74078"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Heilbronn",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Marktplatz 7",
+     "74072 Heilbronn"
+    ],
+    "plz": "74072"
+   }
+  ]
+ },
+ "08125": {
+  "name": "Landkreis Heilbronn",
+  "web": "https://www.landkreis-heilbronn.de/",
+  "zeit": "2026-11-11 19:35",
+  "impressum": "https://www.landkreis-heilbronn.de/impressum.8693.htm",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Reinsburgstraße 27",
+     "70178 Stuttgart"
+    ],
+    "plz": "70178"
+   },
+   {
+    "zeilen": [
+     "Lerchenstraße 40",
+     "74072 Heilbronn"
+    ],
+    "plz": "74072"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Heilbronn",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Lerchenstraße 40",
+     "74072 Heilbronn"
+    ],
+    "plz": "74072"
+   }
+  ]
+ },
+ "08126": {
+  "name": "Hohenlohekreis",
+  "web": "https://www.hohenlohekreis.de/",
+  "zeit": "2026-11-11 19:35",
+  "impressum": "https://www.hohenlohekreis.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Allee 17",
+     "74653 Künzelsau"
+    ],
+    "plz": "74653"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Hohenlohekreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Allee 17",
+     "74653 Künzelsau"
+    ],
+    "plz": "74653"
+   }
+  ]
+ },
+ "08127": {
+  "name": "Landkreis Schwäbisch Hall",
+  "web": "https://www.lrasha.de/",
+  "zeit": "2026-11-11 19:35",
+  "impressum": "https://www.lrasha.de/landratsamt/impressum-service/inhalt",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Mühlenstr. 43",
+     "26180 Rastede"
+    ],
+    "plz": "26180"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Schw%C3%A4bisch_Hall",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Münzstraße 1",
+     "74523 Schwäbisch Hall"
+    ],
+    "plz": "74523"
+   }
+  ]
+ },
+ "08128": {
+  "name": "Main-Tauber-Kreis",
+  "web": "https://www.main-tauber-kreis.de/",
+  "zeit": "2026-11-11 19:35",
+  "impressum": "https://www.main-tauber-kreis.de/Service/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Gartenstr. 1",
+     "97941 Tauberbischofsheim."
+    ],
+    "plz": "97941"
+   },
+   {
+    "zeilen": [
+     "Gartenstraße 1",
+     "97941 Tauberbischofsheim"
+    ],
+    "plz": "97941"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Main-Tauber-Kreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Gartenstraße 1",
+     "97941 Tauberbischofsheim"
+    ],
+    "plz": "97941"
+   }
+  ]
+ },
+ "08135": {
+  "name": "Landkreis Heidenheim",
+  "web": "http://www.landkreis-heidenheim.de",
+  "zeit": "2026-11-11 19:35",
+  "impressum": "https://www.landkreis-heidenheim.de/impressum",
+  "kandidaten": [],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Heidenheim",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Felsenstraße 36",
+     "89518 Heidenheim an der Brenz"
+    ],
+    "plz": "89518"
+   }
+  ]
+ },
+ "08136": {
+  "name": "Ostalbkreis",
+  "web": "https://www.ostalbkreis.de/",
+  "zeit": "2026-11-11 19:36",
+  "fehler": "kein Impressum-Link gefunden",
+  "wikipedia": "https://de.wikipedia.org/wiki/Ostalbkreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Stuttgarter Straße 41",
+     "73430 Aalen"
+    ],
+    "plz": "73430"
+   }
+  ]
+ },
+ "08211": {
+  "name": "Stadt Baden-Baden",
+  "web": "https://www.baden-baden.de/",
+  "zeit": "2026-11-11 19:36",
+  "impressum": "https://www.baden-baden.de/3766823",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Postfach 100453",
+     "76530 Baden-Baden"
+    ],
+    "plz": "76530"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Baden-Baden",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Marktplatz 2",
+     "76530 Baden-Baden"
+    ],
+    "plz": "76530"
+   }
+  ]
+ },
+ "08212": {
+  "name": "Stadt Karlsruhe",
+  "web": "https://www.karlsruhe.de/",
+  "zeit": "2026-11-11 19:36",
+  "impressum": "https://www.karlsruhe.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Karl-Friedrich-Straße 10",
+     "76133 Karlsruhe"
+    ],
+    "plz": "76133"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Karlsruhe",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Karl-Friedrich-Straße 10",
+     "76133 Karlsruhe"
+    ],
+    "plz": "76133"
+   }
+  ]
+ },
+ "08215": {
+  "name": "Landkreis Karlsruhe",
+  "web": "https://www.landkreis-karlsruhe.de/",
+  "zeit": "2026-11-11 19:36",
+  "impressum": "https://www.landkreis-karlsruhe.de/Quicknavigation/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Kriegsstraße 100",
+     "76133 Karlsruhe"
+    ],
+    "plz": "76133"
+   },
+   {
+    "zeilen": [
+     "Vierhörn 2a–b",
+     "23556 Lübeck"
+    ],
+    "plz": "23556"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Karlsruhe",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Kriegsstraße 100",
+     "76133 Karlsruhe"
+    ],
+    "plz": "76133"
+   }
+  ]
+ },
+ "08216": {
+  "name": "Landkreis Rastatt",
+  "web": "https://www.landkreis-rastatt.de/",
+  "zeit": "2026-11-11 19:37",
+  "impressum": "https://www.landkreis-rastatt.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Postfach 14 29",
+     "76404 Rastatt"
+    ],
+    "plz": "76404"
+   },
+   {
+    "zeilen": [
+     "Postfach 14 32",
+     "76404 Rastatt"
+    ],
+    "plz": "76404"
+   },
+   {
+    "zeilen": [
+     "Postfach 18 63",
+     "76408 Rastatt"
+    ],
+    "plz": "76408"
+   },
+   {
+    "zeilen": [
+     "Am Schlossplatz 5",
+     "76437 Rastatt"
+    ],
+    "plz": "76437"
+   },
+   {
+    "zeilen": [
+     "Weissacher Straße 15",
+     "70499 Stuttgart"
+    ],
+    "plz": "70499"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Rastatt",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Am Schlossplatz 5",
+     "76437 Rastatt"
+    ],
+    "plz": "76437"
+   }
+  ]
+ },
+ "08221": {
+  "name": "Stadt Heidelberg",
+  "web": "https://www.heidelberg.de/",
+  "zeit": "2026-11-11 19:37",
+  "impressum": "https://www.heidelberg.de/HD/service/impressum.html",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Marktplatz 10",
+     "69117 Heidelberg"
+    ],
+    "plz": "69117"
+   },
+   {
+    "zeilen": [
+     "Rathaus - Marktplatz 10",
+     "69117 Heidelberg"
+    ],
+    "plz": "69117"
+   },
+   {
+    "zeilen": [
+     "Rohrbacher Strasse 12",
+     "69115 Heidelberg"
+    ],
+    "plz": "69115"
+   },
+   {
+    "zeilen": [
+     "Weissacher Straße 15",
+     "70499 Stuttgart"
+    ],
+    "plz": "70499"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Heidelberg",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Marktplatz 10",
+     "69117 Heidelberg"
+    ],
+    "plz": "69117"
+   }
+  ]
+ },
+ "08222": {
+  "name": "Stadt Mannheim",
+  "web": "https://www.mannheim.de/",
+  "zeit": "2026-11-11 19:37",
+  "impressum": "https://www.mannheim.de/de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Rathaus E 5",
+     "68159 Mannheim"
+    ],
+    "plz": "68159"
+   },
+   {
+    "zeilen": [
+     "Rheinvorlandstraße 7",
+     "68159 Mannheim"
+    ],
+    "plz": "68159"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Mannheim",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "5",
+     "68159 Mannheim"
+    ],
+    "plz": "68159"
+   }
+  ]
+ },
+ "08225": {
+  "name": "Neckar-Odenwald-Kreis",
+  "web": "http://www.neckar-odenwald-kreis.de",
+  "zeit": "2026-11-11 19:37",
+  "fehler": "robots.txt verbietet den Abruf",
+  "wikipedia": "https://de.wikipedia.org/wiki/Neckar-Odenwald-Kreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Neckarelzer Straße 7",
+     "74821 Mosbach"
+    ],
+    "plz": "74821"
+   }
+  ]
+ },
+ "08226": {
+  "name": "Rhein-Neckar-Kreis",
+  "web": "https://www.rhein-neckar-kreis.de",
+  "zeit": "2026-11-11 19:38",
+  "impressum": "https://www.rhein-neckar-kreis.de/3848756",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Kurfürsten-Anlage 38 - 40",
+     "69115 Heidelberg"
+    ],
+    "plz": "69115"
+   },
+   {
+    "zeilen": [
+     "Krailenshaldenstr. 44",
+     "70469 Stuttgart"
+    ],
+    "plz": "70469"
+   },
+   {
+    "zeilen": [
+     "Im Breitspiel 5",
+     "69126 Heidelberg-Rohrbach"
+    ],
+    "plz": "69126"
+   },
+   {
+    "zeilen": [
+     "Lautenschlagerstraße 20",
+     "70173 Stuttgart"
+    ],
+    "plz": "70173"
+   },
+   {
+    "zeilen": [
+     "Kurfürsten-Anlage 38-40",
+     "69115 Heidelberg"
+    ],
+    "plz": "69115"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Rhein-Neckar-Kreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Kurfürstenanlage 38–40",
+     "69115 Heidelberg"
+    ],
+    "plz": "69115"
+   }
+  ]
+ },
+ "08231": {
+  "name": "Stadt Pforzheim",
+  "web": "https://www.pforzheim.de/",
+  "zeit": "2026-11-11 19:38",
+  "impressum": "https://www.pforzheim.de/servicemenu/impressum.html",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Marktplatz 1",
+     "75175 Pforzheim"
+    ],
+    "plz": "75175"
+   },
+   {
+    "zeilen": [
+     "Echterdinger Straße 57/9",
+     "70794 Filderstadt"
+    ],
+    "plz": "70794"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Pforzheim",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Marktplatz 1",
+     "75175 Pforzheim"
+    ],
+    "plz": "75175"
+   }
+  ]
+ },
+ "08235": {
+  "name": "Landkreis Calw",
+  "web": "https://www.kreis-calw.de/",
+  "zeit": "2026-11-11 19:38",
+  "impressum": "https://www.kreis-calw.de/Schnellnavigation/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Vogteistraße 42- 46",
+     "75365 Calw"
+    ],
+    "plz": "75365"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Calw",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Vogteistraße 42–46",
+     "75365 Calw"
+    ],
+    "plz": "75365"
+   }
+  ]
+ },
+ "08236": {
+  "name": "Enzkreis",
+  "web": "https://www.enzkreis.de/",
+  "zeit": "2026-11-11 19:38",
+  "impressum": "https://www.enzkreis.de/Sonstiges/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Zähringerallee 3",
+     "75177 Pforzheim"
+    ],
+    "plz": "75177"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Enzkreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Zähringerallee 3",
+     "75177 Pforzheim"
+    ],
+    "plz": "75177"
+   }
+  ]
+ },
+ "08237": {
+  "name": "Freudenstadt",
+  "web": "https://www.landkreis-freudenstadt.de/",
+  "zeit": "2026-11-11 19:39",
+  "impressum": "https://www.kreis-fds.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Anschrift: Herrenfelder Straße 14",
+     "72250 Freudenstadt"
+    ],
+    "plz": "72250"
+   },
+   {
+    "zeilen": [
+     "Weissacher Straße 15",
+     "70499 Stuttgart"
+    ],
+    "plz": "70499"
+   },
+   {
+    "zeilen": [
+     "Herrenfelder Straße 14",
+     "72250 Freudenstadt"
+    ],
+    "plz": "72250"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Freudenstadt",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Herrenfelder Straße 14",
+     "72250 Freudenstadt"
+    ],
+    "plz": "72250"
+   }
+  ]
+ },
+ "08311": {
+  "name": "Stadt Freiburg im Breisgau",
+  "web": "https://www.freiburg.de/",
+  "zeit": "2026-11-11 19:41",
+  "impressum": "https://www.freiburg.de/pb/224613.html",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Rathausplatz 2-4",
+     "79098 Freiburg"
+    ],
+    "plz": "79098"
+   },
+   {
+    "zeilen": [
+     "Rathausplatz 2 - 4",
+     "79098 Freiburg"
+    ],
+    "plz": "79098"
+   },
+   {
+    "zeilen": [
+     "Krailenshaldenstraße 44",
+     "70469 Stuttgart"
+    ],
+    "plz": "70469"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Freiburg_im_Breisgau",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Rathausplatz 2–4",
+     "79098 Freiburg im Breisgau"
+    ],
+    "plz": "79098"
+   }
+  ]
+ },
+ "08315": {
+  "name": "Landkreis Breisgau-Hochschwarzwald",
+  "web": "https://www.breisgau-hochschwarzwald.de",
+  "zeit": "2026-11-11 19:43",
+  "fehler": "kein Impressum-Link gefunden",
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Breisgau-Hochschwarzwald",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Stadtstraße 2",
+     "79104 Freiburg im Breisgau"
+    ],
+    "plz": "79104"
+   }
+  ]
+ },
+ "08316": {
+  "name": "Landkreis Emmendingen",
+  "web": "http://www.landkreis-emmendingen.de/",
+  "zeit": "2026-11-11 19:44",
+  "impressum": "https://www.landkreis-emmendingen.de/kultur-freizeit-aktuelles/impressum-service/inhalt",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Aixheimer Str. 2",
+     "78549 Spaichingen"
+    ],
+    "plz": "78549"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Emmendingen",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Bahnhofstraße 2–4",
+     "79312 Emmendingen"
+    ],
+    "plz": "79312"
+   }
+  ]
+ },
+ "08317": {
+  "name": "Ortenaukreis",
+  "web": "https://www.ortenaukreis.de/",
+  "zeit": "2026-11-11 19:45",
+  "impressum": "https://www.ortenaukreis.de/Kurzmen%C3%BC/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Badstraße 20",
+     "77652 Offenburg"
+    ],
+    "plz": "77652"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Ortenaukreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Badstraße 20",
+     "77652 Offenburg"
+    ],
+    "plz": "77652"
+   }
+  ]
+ },
+ "08325": {
+  "name": "Landkreis Rottweil",
+  "web": "https://www.landkreis-rottweil.de",
+  "zeit": "2026-11-11 19:45",
+  "impressum": "https://www.landkreis-rottweil.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Marienstraße 2",
+     "78628 Rottweil"
+    ],
+    "plz": "78628"
+   },
+   {
+    "zeilen": [
+     "Kaiser-Joseph-Straße 167",
+     "79083 Freiburg im Breisgau"
+    ],
+    "plz": "79083"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Rottweil",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Königstraße 36",
+     "78628 Rottweil"
+    ],
+    "plz": "78628"
+   }
+  ]
+ },
+ "08326": {
+  "name": "Schwarzwald-Baar-Kreis",
+  "web": "https://www.lrasbk.de/",
+  "zeit": "2026-11-11 19:45",
+  "impressum": "https://www.lrasbk.de/Kurzmen%C3%BC/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Am Hoptbühl 2",
+     "78048 Villingen-Schwenningen"
+    ],
+    "plz": "78048"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Schwarzwald-Baar-Kreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Am Hoptbühl 2",
+     "78048 Villingen-Schwenningen"
+    ],
+    "plz": "78048"
+   }
+  ]
+ },
+ "08327": {
+  "name": "Landkreis Tuttlingen",
+  "web": "http://www.landkreis-tuttlingen.de/",
+  "zeit": "2026-11-11 19:45",
+  "impressum": "https://www.landkreis-tuttlingen.de/Quicknavigation/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Bahnhofstraße 100",
+     "78532 Tuttlingen"
+    ],
+    "plz": "78532"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Tuttlingen",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Bahnhofstraße 100",
+     "78532 Tuttlingen"
+    ],
+    "plz": "78532"
+   }
+  ]
+ },
+ "08335": {
+  "name": "Landkreis Konstanz",
+  "web": "http://www.landkreis-konstanz.de/",
+  "zeit": "2026-11-11 19:45",
+  "impressum": "https://www.lrakn.de/strukturseiten/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Benediktinerplatz 1",
+     "78467 Konstanz"
+    ],
+    "plz": "78467"
+   },
+   {
+    "zeilen": [
+     "Krailenshaldenstraße 44",
+     "70469 Stuttgart"
+    ],
+    "plz": "70469"
+   },
+   {
+    "zeilen": [
+     "Bissierstraße 7",
+     "79114 Freiburg im Breisgau"
+    ],
+    "plz": "79114"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Konstanz",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Benediktinerplatz 1",
+     "78467 Konstanz"
+    ],
+    "plz": "78467"
+   }
+  ]
+ },
+ "08336": {
+  "name": "Landkreis Lörrach",
+  "web": "https://www.loerrach-landkreis.de/",
+  "zeit": "2026-11-11 19:45",
+  "impressum": "https://www.loerrach-landkreis.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Palmstraße 3",
+     "79539 Lörrach"
+    ],
+    "plz": "79539"
+   },
+   {
+    "zeilen": [
+     "Härdtnerstraße 6",
+     "78655 Dunningen"
+    ],
+    "plz": "78655"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_L%C3%B6rrach",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Palmstraße 3",
+     "79539 Lörrach"
+    ],
+    "plz": "79539"
+   }
+  ]
+ },
+ "08337": {
+  "name": "Landkreis Waldshut",
+  "web": "https://www.landkreis-waldshut.de/",
+  "zeit": "2026-11-11 19:46",
+  "impressum": "https://www.landkreis-waldshut.de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Kaiserstraße 110",
+     "79761 Waldshut-Tiengen"
+    ],
+    "plz": "79761"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Waldshut",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Landratsamt Waldshut Kaiserstraße 110",
+     "79761 Waldshut-Tiengen"
+    ],
+    "plz": "79761"
+   }
+  ]
+ },
+ "08415": {
+  "name": "Landkreis Reutlingen",
+  "web": "http://www.kreis-reutlingen.de/",
+  "zeit": "2026-11-11 19:48",
+  "impressum": "https://www.kreis-reutlingen.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Karlstraße 99",
+     "72766 Reutlingen"
+    ],
+    "plz": "72766"
+   },
+   {
+    "zeilen": [
+     "Junghansstraße 1",
+     "78655 Dunningen"
+    ],
+    "plz": "78655"
+   },
+   {
+    "zeilen": [
+     "Konrad-Adenauer-Straße 20",
+     "72072 Tübingen"
+    ],
+    "plz": "72072"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Reutlingen",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Karlstraße 99",
+     "72766 Reutlingen"
+    ],
+    "plz": "72766"
+   }
+  ]
+ },
+ "08416": {
+  "name": "Landkreis Tübingen",
+  "web": "http://www.kreis-tuebingen.de/",
+  "zeit": "2026-11-11 19:49",
+  "impressum": "https://www.kreis-tuebingen.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Postfach 1929",
+     "72009 Tübingen"
+    ],
+    "plz": "72009"
+   },
+   {
+    "zeilen": [
+     "Wilhelm-Keil-Straße 50",
+     "72072 Tübingen"
+    ],
+    "plz": "72072"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_T%C3%BCbingen",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Wilhelm-Keil-Straße 50",
+     "72072 Tübingen"
+    ],
+    "plz": "72072"
+   }
+  ]
+ },
+ "08417": {
+  "name": "Zollernalbkreis",
+  "web": "http://www.zollernalbkreis.de",
+  "zeit": "2026-11-11 19:51",
+  "impressum": "https://www.zollernalbkreis.de/landratsamt/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Hirschbergstr. 29",
+     "72336 Balingen"
+    ],
+    "plz": "72336"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Zollernalbkreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Hirschbergstraße 29",
+     "72336 Balingen"
+    ],
+    "plz": "72336"
+   }
+  ]
+ },
+ "08421": {
+  "name": "Stadt Ulm",
+  "web": "https://www.ulm.de/",
+  "zeit": "2026-11-11 19:51",
+  "fehler": "403 HTTP Error 403: Forbidden",
+  "wikipedia": "https://de.wikipedia.org/wiki/Ulm",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Marktplatz 1",
+     "89073 Ulm"
+    ],
+    "plz": "89073"
+   }
+  ]
+ },
+ "08425": {
+  "name": "Alb-Donau-Kreis",
+  "web": "https://www.alb-donau-kreis.de",
+  "zeit": "2026-11-11 19:51",
+  "impressum": "https://www.alb-donau-kreis.de/alb-donau-kreis/startseite/impressum.html",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Schillerstraße 30",
+     "89077 Ulm"
+    ],
+    "plz": "89077"
+   },
+   {
+    "zeilen": [
+     "Konrad-Adenauer-Straße 20",
+     "72072 Tübingen"
+    ],
+    "plz": "72072"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Alb-Donau-Kreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Schillerstraße 30",
+     "89077 Ulm"
+    ],
+    "plz": "89077"
+   }
+  ]
+ },
+ "08426": {
+  "name": "Landkreis Biberach",
+  "web": "https://www.biberach.de/",
+  "zeit": "2026-11-11 19:51",
+  "impressum": "https://www.biberach.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Rollinstraße 18",
+     "88400 Biberach"
+    ],
+    "plz": "88400"
+   },
+   {
+    "zeilen": [
+     "Rollinstraße 9",
+     "88400 Biberach"
+    ],
+    "plz": "88400"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Biberach",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Rollinstraße 9",
+     "88400 Biberach"
+    ],
+    "plz": "88400"
+   }
+  ]
+ },
+ "08435": {
+  "name": "Bodenseekreis",
+  "web": "http://www.bodenseekreis.de",
+  "zeit": "2026-11-11 19:52",
+  "impressum": "https://www.bodenseekreis.de/service/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Glärnischstraße 1 - 3",
+     "88045 Friedrichshafen"
+    ],
+    "plz": "88045"
+   },
+   {
+    "zeilen": [
+     "Paulinenstraße 21",
+     "70178 Stuttgart"
+    ],
+    "plz": "70178"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Bodenseekreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Glärnischstraße 1–3",
+     "88045 Friedrichshafen"
+    ],
+    "plz": "88045"
+   }
+  ]
+ },
+ "08436": {
+  "name": "Landkreis Ravensburg",
+  "web": "https://www.rv.de/",
+  "zeit": "2026-11-11 19:52",
+  "impressum": "https://www.rv.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Friedenstraße 6",
+     "88212 Ravensburg"
+    ],
+    "plz": "88212"
+   },
+   {
+    "zeilen": [
+     "Konrad-Adenauer-Straße 20",
+     "72072 Tübingen"
+    ],
+    "plz": "72072"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Ravensburg",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Friedenstraße 6",
+     "88212 Ravensburg"
+    ],
+    "plz": "88212"
+   }
+  ]
+ },
+ "08437": {
+  "name": "Landkreis Sigmaringen",
+  "web": "https://www.landkreis-sigmaringen.de/",
+  "zeit": "2026-11-11 19:52",
+  "impressum": "https://www.landkreis-sigmaringen.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Leopoldstraße 4",
+     "72488 Sigmaringen"
+    ],
+    "plz": "72488"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Sigmaringen",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Leopoldstraße 4",
+     "72488 Sigmaringen"
+    ],
+    "plz": "72488"
+   }
+  ]
+ },
+ "10041": {
+  "name": "Regionalverband Saarbrücken",
+  "web": "https://www.regionalverband-saarbruecken.de/",
+  "zeit": "2026-11-11 19:52",
+  "impressum": "https://www.regionalverband-saarbruecken.de/service/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Schlossplatz 12",
+     "66119 Saarbrücken"
+    ],
+    "plz": "66119"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Regionalverband_Saarbr%C3%BCcken",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Schlossplatz 12",
+     "66119 Saarbrücken"
+    ],
+    "plz": "66119"
+   }
+  ]
+ },
+ "10042": {
+  "name": "Merzig-Wadern",
+  "web": "https://www.merzig-wadern.de/",
+  "zeit": "2026-11-11 19:53",
+  "impressum": "https://www.merzig-wadern.de/Service/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Bahnhofstraße 44",
+     "66663 Merzig"
+    ],
+    "plz": "66663"
+   },
+   {
+    "zeilen": [
+     "Franz-Josef-Röder-Str. 21",
+     "66119 Saarbrücken"
+    ],
+    "plz": "66119"
+   },
+   {
+    "zeilen": [
+     "Am Markt 7",
+     "66386 St Ingbert"
+    ],
+    "plz": "66386"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Merzig-Wadern",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Bahnhofstraße 44",
+     "66663 Merzig"
+    ],
+    "plz": "66663"
+   }
+  ]
+ },
+ "10043": {
+  "name": "Neunkirchen",
+  "web": "https://www.landkreis-neunkirchen.de/",
+  "zeit": "2026-11-11 19:53",
+  "impressum": "https://www.landkreis-neunkirchen.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Wilhelm-Heinrich-Straße 36",
+     "66564 Ottweiler"
+    ],
+    "plz": "66564"
+   },
+   {
+    "zeilen": [
+     "Talstraße 34 - 42",
+     "66119 Saarbrücken"
+    ],
+    "plz": "66119"
+   },
+   {
+    "zeilen": [
+     "Wilhelm-Heinrich-Str. 36",
+     "66564 Ottweiler"
+    ],
+    "plz": "66564"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Neunkirchen",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Wilhelm-Heinrich-Straße 36",
+     "66564 Ottweiler"
+    ],
+    "plz": "66564"
+   }
+  ]
+ },
+ "10044": {
+  "name": "Saarlouis",
+  "web": "https://www.kreis-saarlouis.de/",
+  "zeit": "2026-11-11 19:53",
+  "impressum": "https://www.kreis-saarlouis.de/Impressum.htm",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Kaiser-Wilhelm-Straße 4-6",
+     "66740 Saarlouis"
+    ],
+    "plz": "66740"
+   },
+   {
+    "zeilen": [
+     "Am Markt 7",
+     "66386 St. Ingbert"
+    ],
+    "plz": "66386"
+   },
+   {
+    "zeilen": [
+     "Kaiser-Wilhelm-Straße 4 - 6",
+     "66740 Saarlouis"
+    ],
+    "plz": "66740"
+   },
+   {
+    "zeilen": [
+     "Albert-Brickwedde-Straße 2",
+     "49084 Osnabrück"
+    ],
+    "plz": "49084"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Saarlouis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Kaiser-Wilhelm-Straße 4–6",
+     "66740 Saarlouis"
+    ],
+    "plz": "66740"
+   }
+  ]
+ },
+ "10045": {
+  "name": "Saarpfalz-Kreis",
+  "web": "https://www.saarpfalz-kreis.de/",
+  "zeit": "2026-11-11 19:53",
+  "impressum": "https://www.saarpfalz-kreis.de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Am Forum 1",
+     "66424 Homburg"
+    ],
+    "plz": "66424"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Saarpfalz-Kreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Am Forum 1",
+     "66424 Homburg"
+    ],
+    "plz": "66424"
+   }
+  ]
+ },
+ "10046": {
+  "name": "St. Wendel",
+  "web": "https://www.landkreis-st-wendel.de/",
+  "zeit": "2026-11-11 19:53",
+  "impressum": "https://www.landkreis-st-wendel.de/footer/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Mommstraße 21-31",
+     "66606 St.Wendel"
+    ],
+    "plz": "66606"
+   },
+   {
+    "zeilen": [
+     "Werschweilerstr. 40",
+     "66606 St. Wendel / Saarland"
+    ],
+    "plz": "66606"
+   },
+   {
+    "zeilen": [
+     "Mommstraße 21-31",
+     "66606 St. Wendel"
+    ],
+    "plz": "66606"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_St._Wendel",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Mommstraße 21-31",
+     "66606 St. Wendel"
+    ],
+    "plz": "66606"
+   }
+  ]
+ },
+ "12051": {
+  "name": "Stadt Brandenburg an der Havel",
+  "web": "https://www.stadt-brandenburg.de/",
+  "zeit": "2026-11-11 19:53",
+  "impressum": "https://www.stadt-brandenburg.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Klosterstraße 14",
+     "14770 Brandenburg an der Havel"
+    ],
+    "plz": "14770"
+   },
+   {
+    "zeilen": [
+     "Altstädtischer Markt 10",
+     "14770 Brandenburg an der Havel"
+    ],
+    "plz": "14770"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Brandenburg_an_der_Havel",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Altstädtischer Markt 10",
+     "14770 Brandenburg an der Havel"
+    ],
+    "plz": "14770"
+   }
+  ]
+ },
+ "12052": {
+  "name": "Stadt Cottbus",
+  "web": "https://www.cottbus.de/",
+  "zeit": "2026-11-11 19:54",
+  "impressum": "https://cottbus.de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Neumarkt 5",
+     "03046 Cottbus"
+    ],
+    "plz": "03046"
+   },
+   {
+    "zeilen": [
+     "Am Nordrand 40",
+     "03044 Cottbus"
+    ],
+    "plz": "03044"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Cottbus",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Neumarkt 5",
+     "03046 Cottbus"
+    ],
+    "plz": "03046"
+   }
+  ]
+ },
+ "12053": {
+  "name": "Stadt Frankfurt (Oder)",
+  "web": "https://www.frankfurt-oder.de/",
+  "zeit": "2026-11-11 19:54",
+  "impressum": "https://www.frankfurt-oder.de/Schnellnavigation/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Marktplatz 1",
+     "15230 Frankfurt (Oder)"
+    ],
+    "plz": "15230"
+   },
+   {
+    "zeilen": [
+     "Wielandstraße 14",
+     "23558 Lübeck"
+    ],
+    "plz": "23558"
+   },
+   {
+    "zeilen": [
+     "Stahnsdorfer Damm 77",
+     "14532 Kleinmachnow"
+    ],
+    "plz": "14532"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Frankfurt_%28Oder%29",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Am Marktplatz 1",
+     "15230 Frankfurt (Oder)"
+    ],
+    "plz": "15230"
+   }
+  ]
+ },
+ "12054": {
+  "name": "Stadt Potsdam",
+  "web": "https://www.potsdam.de/",
+  "zeit": "2026-11-11 19:54",
+  "impressum": "https://www.potsdam.de/de/content/impressum-von-wwwpotsdamde",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Friedrich-Ebert-Straße 79/81",
+     "14469 Potsdam"
+    ],
+    "plz": "14469"
+   },
+   {
+    "zeilen": [
+     "Krausnickstraße 3",
+     "10115 Berlin (Mitte)"
+    ],
+    "plz": "10115"
+   },
+   {
+    "zeilen": [
+     "Ziolkowskistr. 8",
+     "14480 Potsdam"
+    ],
+    "plz": "14480"
+   },
+   {
+    "zeilen": [
+     "Rothenburg 14-16",
+     "48143 Münster"
+    ],
+    "plz": "48143"
+   },
+   {
+    "zeilen": [
+     "Gewerbeweg 3",
+     "03044 Cottbus"
+    ],
+    "plz": "03044"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Potsdam",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Friedrich-Ebert-Straße 79/81",
+     "14469 Potsdam"
+    ],
+    "plz": "14469"
+   }
+  ]
+ },
+ "12060": {
+  "name": "Landkreis Barnim",
+  "web": "https://www.barnim.de/",
+  "zeit": "2026-11-11 19:54",
+  "impressum": "https://www.barnim.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Am Markt 1",
+     "16225 Eberswalde"
+    ],
+    "plz": "16225"
+   },
+   {
+    "zeilen": [
+     "Dresdner Straße 40",
+     "09130 Chemnitz"
+    ],
+    "plz": "09130"
+   },
+   {
+    "zeilen": [
+     "Schillerstraße 34",
+     "13158 Berlin"
+    ],
+    "plz": "13158"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Barnim",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Am Markt 1",
+     "16225 Eberswalde"
+    ],
+    "plz": "16225"
+   }
+  ]
+ },
+ "12061": {
+  "name": "Landkreis Dahme-Spreewald",
+  "web": "https://www.dahme-spreewald.info/",
+  "zeit": "2026-11-11 19:54",
+  "impressum": "https://www.dahme-spreewald.de/de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Reutergasse 12",
+     "15907 Lübben (Spreewald) /Lubin (Błota)"
+    ],
+    "plz": "15907"
+   },
+   {
+    "zeilen": [
+     "Reutergasse 12",
+     "15907 Lübben (Spreewald)"
+    ],
+    "plz": "15907"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Dahme-Spreewald",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Reutergasse 12",
+     "15907 Lübben (Spreewald)"
+    ],
+    "plz": "15907"
+   }
+  ]
+ },
+ "12062": {
+  "name": "Landkreis Elbe-Elster",
+  "web": "https://www.lkee.de/",
+  "zeit": "2026-11-11 19:55",
+  "impressum": "https://www.lkee.de/Quickmenu/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Ludwig-Jahn-Straße 2",
+     "04916 Herzberg(Elster)"
+    ],
+    "plz": "04916"
+   },
+   {
+    "zeilen": [
+     "Ludwig-Jahn-Straße 2",
+     "04916 Herzberg (Elster)"
+    ],
+    "plz": "04916"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Elbe-Elster",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Ludwig-Jahn-Straße 2",
+     "04916 Herzberg (Elster)"
+    ],
+    "plz": "04916"
+   }
+  ]
+ },
+ "12063": {
+  "name": "Landkreis Havelland",
+  "web": "https://www.havelland.de/",
+  "zeit": "2026-11-11 19:55",
+  "impressum": "https://www.havelland.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Platz der Freiheit 1",
+     "14712 Rathenow"
+    ],
+    "plz": "14712"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Havelland",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Platz der Freiheit 1",
+     "14712 Rathenow"
+    ],
+    "plz": "14712"
+   }
+  ]
+ },
+ "12064": {
+  "name": "Landkreis Märkisch-Oderland",
+  "web": "https://www.maerkisch-oderland.de/",
+  "zeit": "2026-11-11 19:55",
+  "impressum": "https://www.maerkisch-oderland.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Puschkinplatz 12",
+     "15306 Seelow"
+    ],
+    "plz": "15306"
+   },
+   {
+    "zeilen": [
+     "Stresemannstraße 6",
+     "21335 Lüneburg"
+    ],
+    "plz": "21335"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_M%C3%A4rkisch-Oderland",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Puschkinplatz 12",
+     "15306 Seelow"
+    ],
+    "plz": "15306"
+   }
+  ]
+ },
+ "12065": {
+  "name": "Landkreis Oberhavel",
+  "web": "https://www.oberhavel.de/",
+  "zeit": "2026-11-11 19:55",
+  "impressum": "https://www.oberhavel.de/Quicknavigation/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Adolf-Dechert-Straße 1",
+     "16515 Oranienburg"
+    ],
+    "plz": "16515"
+   },
+   {
+    "zeilen": [
+     "Gutenbergstraße 15",
+     "23566 Lübeck"
+    ],
+    "plz": "23566"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Oberhavel",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Adolf-Dechert-Straße 1",
+     "16515 Oranienburg"
+    ],
+    "plz": "16515"
+   }
+  ]
+ },
+ "12066": {
+  "name": "Landkreis Oberspreewald-Lausitz",
+  "web": "https://www.osl-online.de/",
+  "zeit": "2026-11-11 19:55",
+  "impressum": "https://www.osl-online.de/impressum/index.php",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Dubinaweg 1",
+     "01968 Senftenberg"
+    ],
+    "plz": "01968"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Oberspreewald-Lausitz",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Dubinaweg 1",
+     "01968 Senftenberg"
+    ],
+    "plz": "01968"
+   }
+  ]
+ },
+ "12067": {
+  "name": "Landkreis Oder-Spree",
+  "web": "https://www.landkreis-oder-spree.de/",
+  "zeit": "2026-11-11 19:56",
+  "impressum": "https://www.landkreis-oder-spree.de/Schnellnavigation/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Breitscheidstraße 7",
+     "15848 Beeskow"
+    ],
+    "plz": "15848"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Oder-Spree",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Breitscheidstraße 7",
+     "15848 Beeskow"
+    ],
+    "plz": "15848"
+   }
+  ]
+ },
+ "12068": {
+  "name": "Landkreis Ostprignitz-Ruppin",
+  "web": "https://www.ostprignitz-ruppin.de/",
+  "zeit": "2026-11-11 19:56",
+  "impressum": "https://www.ostprignitz-ruppin.de/Kurzmen%C3%BC/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Virchowstr. 14-16",
+     "16816 Neuruppin"
+    ],
+    "plz": "16816"
+   },
+   {
+    "zeilen": [
+     "Virchowstraße 14-16",
+     "16816 Neuruppin"
+    ],
+    "plz": "16816"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Ostprignitz-Ruppin",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Virchowstraße 14–16",
+     "16816 Neuruppin"
+    ],
+    "plz": "16816"
+   }
+  ]
+ },
+ "12069": {
+  "name": "Landkreis Potsdam-Mittelmark",
+  "web": "https://www.potsdam-mittelmark.de/",
+  "zeit": "2026-11-11 19:56",
+  "impressum": "https://www.potsdam-mittelmark.de/de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Niemöllerstraße 1",
+     "14806 Bad Belzig"
+    ],
+    "plz": "14806"
+   },
+   {
+    "zeilen": [
+     "Paul-Lincke-Ufer 42/43",
+     "10999 Berlin"
+    ],
+    "plz": "10999"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Potsdam-Mittelmark",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Niemöllerstraße 1",
+     "14806 Bad Belzig"
+    ],
+    "plz": "14806"
+   }
+  ]
+ },
+ "12070": {
+  "name": "Landkreis Prignitz",
+  "web": "https://landkreis-prignitz.de",
+  "zeit": "2026-11-11 19:56",
+  "impressum": "https://landkreis-prignitz.de/de/impressum/index.php",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Berliner Str. 49 -",
+     "19348 Perleberg -"
+    ],
+    "plz": "19348"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Prignitz",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Berliner Straße 49",
+     "19348 Perleberg"
+    ],
+    "plz": "19348"
+   }
+  ]
+ },
+ "12071": {
+  "name": "Landkreis Spree-Neiße",
+  "web": "https://www.lkspn.de/",
+  "zeit": "2026-11-11 19:56",
+  "impressum": "https://www.lkspn.de/impressum.html",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Hohenzollernring 72",
+     "50672 Köln"
+    ],
+    "plz": "50672"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Spree-Nei%C3%9Fe",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Heinrich-Heine-Straße 1",
+     "03149 Forst (Lausitz)"
+    ],
+    "plz": "03149"
+   }
+  ]
+ },
+ "12072": {
+  "name": "Landkreis Teltow-Fläming",
+  "web": "https://www.teltow-flaeming.de/",
+  "zeit": "2026-11-11 19:56",
+  "impressum": "https://www.teltow-flaeming.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Alpenblickstrasse 10",
+     "79761 Waldshut-Tiengen"
+    ],
+    "plz": "79761"
+   },
+   {
+    "zeilen": [
+     "Am Nuthefließ 2",
+     "14943 Luckenwalde"
+    ],
+    "plz": "14943"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Teltow-Fl%C3%A4ming",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Am Nuthefließ 2",
+     "14943 Luckenwalde"
+    ],
+    "plz": "14943"
+   }
+  ]
+ },
+ "12073": {
+  "name": "Landkreis Uckermark",
+  "web": "https://www.uckermark.de/",
+  "zeit": "2026-11-11 19:57",
+  "impressum": "https://www.uckermark.de/Kurzmen%C3%BC/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Karl-Marx-Straße 1",
+     "17291 Prenzlau"
+    ],
+    "plz": "17291"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Uckermark",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Karl-Marx-Straße 1",
+     "17291 Prenzlau"
+    ],
+    "plz": "17291"
+   }
+  ]
+ },
+ "13003": {
+  "name": "Stadt Rostock",
+  "web": "https://www.rostock.de/",
+  "zeit": "2026-11-11 19:57",
+  "impressum": "https://www.rostock.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Neuer Markt 1",
+     "18055 Rostock"
+    ],
+    "plz": "18055"
+   },
+   {
+    "zeilen": [
+     "Neuer Markt 1, 18055 Rostock",
+     "18050 Rostock"
+    ],
+    "plz": "18050"
+   },
+   {
+    "zeilen": [
+     "Rahnstädter Weg 33",
+     "18069 Rostock"
+    ],
+    "plz": "18069"
+   },
+   {
+    "zeilen": [
+     "Am Strom 59",
+     "18119 Rostock"
+    ],
+    "plz": "18119"
+   },
+   {
+    "zeilen": [
+     "Seestraße 24",
+     "17424 Seebad Heringsdorf"
+    ],
+    "plz": "17424"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Rostock",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Neuer Markt 1",
+     "18055 Rostock"
+    ],
+    "plz": "18055"
+   }
+  ]
+ },
+ "13004": {
+  "name": "Stadt Schwerin",
+  "web": "https://www.schwerin.de/",
+  "zeit": "2026-11-11 19:57",
+  "impressum": "https://www.schwerin.de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Mettenheimer Straße 9",
+     "19061 Schwerin"
+    ],
+    "plz": "19061"
+   },
+   {
+    "zeilen": [
+     "Am Packhof 2-6",
+     "19053 Schwerin"
+    ],
+    "plz": "19053"
+   },
+   {
+    "zeilen": [
+     "Conradin-Kreutzer-Straße 21",
+     "88602 Meßkirch"
+    ],
+    "plz": "88602"
+   },
+   {
+    "zeilen": [
+     "Konrad-Zuse-Straße 2",
+     "18057 Rostock"
+    ],
+    "plz": "18057"
+   },
+   {
+    "zeilen": [
+     "Mendelejewstraße 24",
+     "19063 Schwerin"
+    ],
+    "plz": "19063"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Schwerin",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Am Packhof 2–6",
+     "19053 Schwerin"
+    ],
+    "plz": "19053"
+   }
+  ]
+ },
+ "13071": {
+  "name": "Mecklenburgische Seenplatte",
+  "web": "https://www.lk-mecklenburgische-seenplatte.de/",
+  "zeit": "2026-11-11 19:57",
+  "impressum": "https://www.lk-mecklenburgische-seenplatte.de/Schnellnavigation/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Platanenstraße 43",
+     "17033 Neubrandenburg"
+    ],
+    "plz": "17033"
+   },
+   {
+    "zeilen": [
+     "Gutenbergstraße 15",
+     "23566 Lübeck"
+    ],
+    "plz": "23566"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Mecklenburgische_Seenplatte",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Platanenstraße 43",
+     "17033 Neubrandenburg"
+    ],
+    "plz": "17033"
+   }
+  ]
+ },
+ "13072": {
+  "name": "Landkreis Rostock",
+  "web": "https://www.landkreis-rostock.de/",
+  "zeit": "2026-11-11 19:57",
+  "impressum": "https://www.landkreis-rostock.de/de/impressum-lkr.html",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Am Wall 3 - 5",
+     "18273 Güstrow"
+    ],
+    "plz": "18273"
+   },
+   {
+    "zeilen": [
+     "Fritz-Haber-Straße 9",
+     "06217 Merseburg (Saale)"
+    ],
+    "plz": "06217"
+   },
+   {
+    "zeilen": [
+     "Alexandrinenstraße 1",
+     "19055 Schwerin"
+    ],
+    "plz": "19055"
+   },
+   {
+    "zeilen": [
+     "August-Bebel-Straße 3",
+     "18209 Bad Doberan"
+    ],
+    "plz": "18209"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Rostock",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Am Wall 3–5",
+     "18273 Güstrow"
+    ],
+    "plz": "18273"
+   }
+  ]
+ },
+ "13073": {
+  "name": "Vorpommern-Rügen",
+  "web": "https://www.lk-vr.de/",
+  "zeit": "2026-11-11 19:58",
+  "impressum": "https://www.lk-vr.de/Quicknavigation/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Carl-Heydemann-Ring 67",
+     "18437 Stralsund"
+    ],
+    "plz": "18437"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Vorpommern-R%C3%BCgen",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Carl-Heydemann-Ring 67",
+     "18437 Stralsund"
+    ],
+    "plz": "18437"
+   }
+  ]
+ },
+ "13074": {
+  "name": "Nordwestmecklenburg",
+  "web": "https://www.nordwestmecklenburg.de/",
+  "zeit": "2026-11-11 19:58",
+  "fehler": "<urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1032)>",
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Nordwestmecklenburg",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Rostocker Straße 76",
+     "23970 Wismar"
+    ],
+    "plz": "23970"
+   }
+  ]
+ },
+ "13075": {
+  "name": "Vorpommern-Greifswald",
+  "web": "https://www.kreis-vg.de/",
+  "zeit": "2026-11-11 19:58",
+  "impressum": "https://www.kreis-vg.de/Kurzmen%C3%BC/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Feldstraße 85 a",
+     "17489 Greifswald"
+    ],
+    "plz": "17489"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Vorpommern-Greifswald",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Feldstraße 85a",
+     "17489 Greifswald"
+    ],
+    "plz": "17489"
+   }
+  ]
+ },
+ "13076": {
+  "name": "Ludwigslust-Parchim",
+  "web": "https://www.kreis-lup.de/",
+  "zeit": "2026-11-11 19:58",
+  "impressum": "https://www.kreis-lup.de/Kurzmen%C3%BC/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Putlitzer Straße 25",
+     "19370 Parchim"
+    ],
+    "plz": "19370"
+   },
+   {
+    "zeilen": [
+     "Postfach 16 02 20",
+     "19092 Schwerin"
+    ],
+    "plz": "19092"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Ludwigslust-Parchim",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Putlitzer Straße 25",
+     "19370 Parchim"
+    ],
+    "plz": "19370"
+   }
+  ]
+ },
+ "14511": {
+  "name": "Stadt Chemnitz",
+  "web": "https://www.chemnitz.de/",
+  "zeit": "2026-11-11 19:58",
+  "fehler": "403 HTTP Error 403: Forbidden",
+  "wikipedia": "https://de.wikipedia.org/wiki/Chemnitz",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Markt 1",
+     "09111 Chemnitz"
+    ],
+    "plz": "09111"
+   }
+  ]
+ },
+ "14521": {
+  "name": "Erzgebirgskreis",
+  "web": "https://www.erzgebirgskreis.de/",
+  "zeit": "2026-11-11 19:59",
+  "impressum": "https://www.erzgebirgskreis.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Paulus-Jenisius-Straße 24",
+     "09456 Annaberg-Buchholz"
+    ],
+    "plz": "09456"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Erzgebirgskreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Paulus-Jenisius-Straße 24",
+     "09456 Annaberg-Buchholz"
+    ],
+    "plz": "09456"
+   }
+  ]
+ },
+ "14522": {
+  "name": "Landkreis Mittelsachsen",
+  "web": "https://www.landkreis-mittelsachsen.de/",
+  "zeit": "2026-11-11 19:59",
+  "impressum": "https://www.landkreis-mittelsachsen.de/impressum.html",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Frauensteiner Straße 43",
+     "09599 Freiberg"
+    ],
+    "plz": "09599"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Mittelsachsen",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Frauensteiner Straße 43",
+     "09599 Freiberg"
+    ],
+    "plz": "09599"
+   }
+  ]
+ },
+ "14523": {
+  "name": "Vogtlandkreis",
+  "web": "https://www.vogtlandkreis.de/",
+  "zeit": "2026-11-11 19:59",
+  "impressum": "https://www.vogtlandkreis.de/Quicknavigation/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Postplatz 5",
+     "08523 Plauen"
+    ],
+    "plz": "08523"
+   },
+   {
+    "zeilen": [
+     "Gutenbergstraße 15",
+     "23566 Lübeck"
+    ],
+    "plz": "23566"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Vogtlandkreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Postplatz 5",
+     "08523 Plauen"
+    ],
+    "plz": "08523"
+   }
+  ]
+ },
+ "14524": {
+  "name": "Zwickau",
+  "web": "https://www.landkreis-zwickau.de/",
+  "zeit": "2026-11-11 19:59",
+  "impressum": "https://www.landkreis-zwickau.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Robert-Müller-Straße 4 - 8",
+     "08056 Zwickau"
+    ],
+    "plz": "08056"
+   },
+   {
+    "zeilen": [
+     "Sudhausweg 9, Waldschlösschenareal",
+     "01099 Dresden"
+    ],
+    "plz": "01099"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Zwickau",
+  "wiki_kandidaten": []
+ },
+ "14612": {
+  "name": "Stadt Dresden",
+  "web": "https://www.dresden.de/",
+  "zeit": "2026-11-11 19:59",
+  "impressum": "https://www.dresden.de/de/sonstiges/impressum.php",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Postfach 12 00 20",
+     "01001 Dresden"
+    ],
+    "plz": "01001"
+   },
+   {
+    "zeilen": [
+     "Waisenhausstraße 14",
+     "01069 Dresden (Stadtforum Dresden)"
+    ],
+    "plz": "01069"
+   },
+   {
+    "zeilen": [
+     "Prager Straße 2b",
+     "01069 Dresden"
+    ],
+    "plz": "01069"
+   },
+   {
+    "zeilen": [
+     "Zwinglistraße 11/13",
+     "01277 Dresden"
+    ],
+    "plz": "01277"
+   },
+   {
+    "zeilen": [
+     "Rathausplatz 1",
+     "01067 Dresden"
+    ],
+    "plz": "01067"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Dresden",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Dr.-Külz-Ring 19",
+     "01067 Dresden"
+    ],
+    "plz": "01067"
+   }
+  ]
+ },
+ "14625": {
+  "name": "Landkreis Bautzen",
+  "web": "https://www.landkreis-bautzen.de/",
+  "zeit": "2026-11-11 20:00",
+  "impressum": "https://www.landkreis-bautzen.de/impressum.php",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Bahnhofstraße 9",
+     "02625 Bautzen"
+    ],
+    "plz": "02625"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Bautzen",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Bahnhofstraße 9",
+     "02625 Bautzen"
+    ],
+    "plz": "02625"
+   }
+  ]
+ },
+ "14626": {
+  "name": "Landkreis Görlitz",
+  "web": "https://www.kreis-goerlitz.de/",
+  "zeit": "2026-11-11 20:00",
+  "impressum": "https://www.kreis-goerlitz.de/Impressum.htm",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Bahnhofstraße 24",
+     "02826 Görlitz"
+    ],
+    "plz": "02826"
+   },
+   {
+    "zeilen": [
+     "PF 30 01 52",
+     "02806 Görlitz"
+    ],
+    "plz": "02806"
+   },
+   {
+    "zeilen": [
+     "Bahnhofstr. 24",
+     "02826 Görlitz"
+    ],
+    "plz": "02826"
+   },
+   {
+    "zeilen": [
+     "Bahnhofstr. 24",
+     "02826 Görlitz."
+    ],
+    "plz": "02826"
+   },
+   {
+    "zeilen": [
+     "Albert-Brickwedde-Straße 2",
+     "49084 Osnabrück"
+    ],
+    "plz": "49084"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_G%C3%B6rlitz",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Bahnhofstraße 24",
+     "02826 Görlitz"
+    ],
+    "plz": "02826"
+   }
+  ]
+ },
+ "14627": {
+  "name": "Landkreis Meißen",
+  "web": "https://www.kreis-meissen.de/",
+  "zeit": "2026-11-11 20:00",
+  "impressum": "https://www.kreis-meissen.de/Kurzmen%C3%BC/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Brauhausstraße 21",
+     "01662 Meißen"
+    ],
+    "plz": "01662"
+   },
+   {
+    "zeilen": [
+     "Vierhörn 2 a – b",
+     "23556 Lübeck"
+    ],
+    "plz": "23556"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Mei%C3%9Fen",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Brauhausstraße 21",
+     "01662 Meißen"
+    ],
+    "plz": "01662"
+   }
+  ]
+ },
+ "14628": {
+  "name": "Landkreis Sächsische Schweiz",
+  "web": "https://www.landratsamt-pirna.de/",
+  "zeit": "2026-11-11 20:00",
+  "impressum": "https://www.landratsamt-pirna.de/impressum.html",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Postfach 11 01 32",
+     "01330 Dresden"
+    ],
+    "plz": "01330"
+   },
+   {
+    "zeilen": [
+     "Maternistraße 17",
+     "01067 Dresden"
+    ],
+    "plz": "01067"
+   },
+   {
+    "zeilen": [
+     "Postfach 10 0253/54",
+     "01782 Pirna"
+    ],
+    "plz": "01782"
+   },
+   {
+    "zeilen": [
+     "Weißeritzstraße 7",
+     "01744 Dippoldiswalde"
+    ],
+    "plz": "01744"
+   },
+   {
+    "zeilen": [
+     "Sudhausweg 9",
+     "01099 Dresden"
+    ],
+    "plz": "01099"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_S%C3%A4chsische_Schweiz-Osterzgebirge",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Schloßhof 2/4",
+     "01796 Pirna"
+    ],
+    "plz": "01796"
+   }
+  ]
+ },
+ "14713": {
+  "name": "Stadt Leipzig",
+  "web": "https://www.leipzig.de/",
+  "zeit": "2026-11-11 20:00",
+  "impressum": "https://www.leipzig.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Martin-Luther-Ring 4-6",
+     "04109 Leipzig"
+    ],
+    "plz": "04109"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Leipzig",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Martin-Luther-Ring 4–6",
+     "04109 Leipzig"
+    ],
+    "plz": "04109"
+   }
+  ]
+ },
+ "14729": {
+  "name": "Landkreis Leipzig",
+  "web": "https://www.landkreisleipzig.de/",
+  "zeit": "2026-11-11 20:00",
+  "impressum": "https://www.landkreisleipzig.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Stauffenbergstraße 4",
+     "04552 Borna"
+    ],
+    "plz": "04552"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Leipzig",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Stauffenbergstraße 4",
+     "04552 Borna"
+    ],
+    "plz": "04552"
+   }
+  ]
+ },
+ "14730": {
+  "name": "Landkreis Nordsachsen",
+  "web": "https://www.landkreis-nordsachsen.de/",
+  "zeit": "2026-11-11 20:01",
+  "impressum": "https://www.landkreis-nordsachsen.de/impressum",
+  "kandidaten": [],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Nordsachsen",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Schloßstraße 27",
+     "04860 Torgau"
+    ],
+    "plz": "04860"
+   }
+  ]
+ },
+ "15001": {
+  "name": "Stadt Dessau-Roßlau",
+  "web": "https://verwaltung.dessau-rosslau.de/",
+  "zeit": "2026-11-11 20:01",
+  "impressum": "https://verwaltung.dessau-rosslau.de/impressum.html",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Zerbster Straße 4",
+     "06844 Dessau-Roßlau"
+    ],
+    "plz": "06844"
+   },
+   {
+    "zeilen": [
+     "Fritz-Haber-Straße 9",
+     "06217 Merseburg"
+    ],
+    "plz": "06217"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Dessau-Ro%C3%9Flau",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Zerbster Straße 4",
+     "06844 Dessau-Roßlau"
+    ],
+    "plz": "06844"
+   }
+  ]
+ },
+ "15002": {
+  "name": "Stadt Halle",
+  "web": "https://halle.de/",
+  "zeit": "2026-11-11 20:01",
+  "impressum": "https://halle.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Marktplatz 1",
+     "06108 Halle (Saale)"
+    ],
+    "plz": "06108"
+   },
+   {
+    "zeilen": [
+     "Neustädter Passage 18",
+     "06122 Halle (Saale)"
+    ],
+    "plz": "06122"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Halle_%28Saale%29",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Marktplatz 1",
+     "06108 Halle (Saale)"
+    ],
+    "plz": "06108"
+   }
+  ]
+ },
+ "15003": {
+  "name": "Stadt Magdeburg",
+  "web": "https://www.magdeburg.de/",
+  "zeit": "2026-11-11 20:01",
+  "impressum": "https://www.magdeburg.de/B%C3%BCrger-Stadt/System/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Vierhörn 2a",
+     "23556 Lübeck"
+    ],
+    "plz": "23556"
+   },
+   {
+    "zeilen": [
+     "Alter Markt 6",
+     "39104 Magdeburg"
+    ],
+    "plz": "39104"
+   },
+   {
+    "zeilen": [
+     "Alter Markt 15",
+     "39104 Magdeburg"
+    ],
+    "plz": "39104"
+   },
+   {
+    "zeilen": [
+     "Freiberger Straße 114",
+     "01159 Dresden"
+    ],
+    "plz": "01159"
+   },
+   {
+    "zeilen": [
+     "Dielingerstraße 39/40",
+     "49074 Osnabrück"
+    ],
+    "plz": "49074"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Magdeburg",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Alter Markt 6",
+     "39104 Magdeburg"
+    ],
+    "plz": "39104"
+   }
+  ]
+ },
+ "15081": {
+  "name": "Altmarkkreis Salzwedel",
+  "web": "https://www.altmarkkreis-salzwedel.de/",
+  "zeit": "2026-11-11 20:01",
+  "impressum": "https://www.altmarkkreis-salzwedel.de/global/impressum.aspx",
+  "kandidaten": [],
+  "wikipedia": "https://de.wikipedia.org/wiki/Altmarkkreis_Salzwedel",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Karl-Marx-Straße 32",
+     "29410 Salzwedel"
+    ],
+    "plz": "29410"
+   }
+  ]
+ },
+ "15082": {
+  "name": "Anhalt-Bitterfeld",
+  "web": "https://www.anhalt-bitterfeld.de/",
+  "zeit": "2026-11-11 20:02",
+  "impressum": "https://www.anhalt-bitterfeld.de/de/lkabi-impressum.html",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Am Flugplatz 1",
+     "06366 Köthen (Anhalt)"
+    ],
+    "plz": "06366"
+   },
+   {
+    "zeilen": [
+     "Fritz-Haber-Straße 9",
+     "06217 Merseburg"
+    ],
+    "plz": "06217"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Anhalt-Bitterfeld",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Am Flugplatz 1",
+     "06366 Köthen (Anhalt)"
+    ],
+    "plz": "06366"
+   }
+  ]
+ },
+ "15083": {
+  "name": "Börde",
+  "web": "https://www.landkreis-boerde.de/",
+  "zeit": "2026-11-11 20:02",
+  "impressum": "https://www.landkreis-boerde.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Postfach 10 01 53",
+     "39331 Haldensleben"
+    ],
+    "plz": "39331"
+   },
+   {
+    "zeilen": [
+     "Bornsche Str. 2",
+     "39340 Haldensleben"
+    ],
+    "plz": "39340"
+   },
+   {
+    "zeilen": [
+     "Bornsche Straße 2",
+     "39340 Haldensleben"
+    ],
+    "plz": "39340"
+   },
+   {
+    "zeilen": [
+     "Kronesruhe 8",
+     "39340 Haldensleben"
+    ],
+    "plz": "39340"
+   },
+   {
+    "zeilen": [
+     "Triftstraße 9-10",
+     "39387 Oschersleben (Bode)"
+    ],
+    "plz": "39387"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_B%C3%B6rde",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Bornsche Straße 2",
+     "39340 Haldensleben"
+    ],
+    "plz": "39340"
+   }
+  ]
+ },
+ "15084": {
+  "name": "Burgenlandkreis",
+  "web": "https://www.burgenlandkreis.de/",
+  "zeit": "2026-11-11 20:02",
+  "impressum": "https://www.burgenlandkreis.de/de/impressum.html",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Schönburger Straße 41",
+     "06618 Naumburg"
+    ],
+    "plz": "06618"
+   },
+   {
+    "zeilen": [
+     "Fritz-Haber-Straße 9",
+     "06217 Merseburg"
+    ],
+    "plz": "06217"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Burgenlandkreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Schönburger Straße 41",
+     "06618 Naumburg"
+    ],
+    "plz": "06618"
+   }
+  ]
+ },
+ "15085": {
+  "name": "Landkreis Harz",
+  "web": "https://www.kreis-hz.de/",
+  "zeit": "2026-11-11 20:02",
+  "impressum": "https://www.kreis-hz.de/de/impressum.html",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Friedrich-Ebert-Straße 42",
+     "38820 Halberstadt"
+    ],
+    "plz": "38820"
+   },
+   {
+    "zeilen": [
+     "Friedrich-Ebert-Str. 42",
+     "38820 Halberstadt"
+    ],
+    "plz": "38820"
+   },
+   {
+    "zeilen": [
+     "Fritz-Haber-Straße 9",
+     "06217 Merseburg"
+    ],
+    "plz": "06217"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Harz",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Friedrich-Ebert-Straße 42",
+     "38820 Halberstadt"
+    ],
+    "plz": "38820"
+   }
+  ]
+ },
+ "15086": {
+  "name": "Jerichower Land",
+  "web": "https://www.lkjl.de/",
+  "zeit": "2026-11-11 20:03",
+  "fehler": "<urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1032)>",
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Jerichower_Land",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Bahnhofstraße 9",
+     "39288 Burg"
+    ],
+    "plz": "39288"
+   }
+  ]
+ },
+ "15087": {
+  "name": "Mansfeld-Südharz",
+  "web": "https://www.mansfeldsuedharz.de/",
+  "zeit": "2026-11-11 20:03",
+  "impressum": "https://www.mansfeldsuedharz.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Rudolf-Breitscheid-Straße 20 / 22",
+     "06526 Sangerhausen"
+    ],
+    "plz": "06526"
+   },
+   {
+    "zeilen": [
+     "Rudolf-Breitscheid-Str. 20/22",
+     "06526 Sangerhausen"
+    ],
+    "plz": "06526"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Mansfeld-S%C3%BCdharz",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Rudolf-Breitscheid-Straße 20/22",
+     "06526 Sangerhausen"
+    ],
+    "plz": "06526"
+   }
+  ]
+ },
+ "15088": {
+  "name": "Saalekreis",
+  "web": "https://www.saalekreis.de/",
+  "zeit": "2026-11-11 20:03",
+  "impressum": "https://www.saalekreis.de/de/impressum.html",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Domplatz 9",
+     "06217 Merseburg"
+    ],
+    "plz": "06217"
+   },
+   {
+    "zeilen": [
+     "Naumburger Straße 44",
+     "04229 Leipzig"
+    ],
+    "plz": "04229"
+   },
+   {
+    "zeilen": [
+     "Fritz-Haber-Str. 9",
+     "06217 Merseburg"
+    ],
+    "plz": "06217"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Saalekreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Domplatz 9",
+     "06217 Merseburg"
+    ],
+    "plz": "06217"
+   }
+  ]
+ },
+ "15089": {
+  "name": "Salzlandkreis",
+  "web": "https://www.salzlandkreis.de/",
+  "zeit": "2026-11-11 20:04",
+  "impressum": "https://www.salzlandkreis.de/impressum/",
+  "kandidaten": [],
+  "wikipedia": "https://de.wikipedia.org/wiki/Salzlandkreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Karlsplatz 37",
+     "06406 Bernburg"
+    ],
+    "plz": "06406"
+   }
+  ]
+ },
+ "15090": {
+  "name": "Landkreis Stendal",
+  "web": "https://www.landkreis-stendal.de/",
+  "zeit": "2026-11-11 20:04",
+  "impressum": "https://www.landkreis-stendal.de/de/impressum.html",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Hospitalstraße 1-2",
+     "39576 Hansestadt Stendal"
+    ],
+    "plz": "39576"
+   },
+   {
+    "zeilen": [
+     "Fritz-Haber-Straße 9",
+     "06217 Merseburg"
+    ],
+    "plz": "06217"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Stendal",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Hospitalstraße 1–2",
+     "39576 Stendal"
+    ],
+    "plz": "39576"
+   }
+  ]
+ },
+ "15091": {
+  "name": "Landkreis Wittenberg",
+  "web": "https://www.landkreis-wittenberg.de/",
+  "zeit": "2026-11-11 20:04",
+  "impressum": "https://www.landkreis-wittenberg.de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Breitscheidstr. 3",
+     "06886 Lutherstadt Wittenberg"
+    ],
+    "plz": "06886"
+   },
+   {
+    "zeilen": [
+     "Breitscheidstraße 4",
+     "06886 Lutherstadt Wittenberg"
+    ],
+    "plz": "06886"
+   },
+   {
+    "zeilen": [
+     "Richard-Wagner-Straße 1a",
+     "18055 Rostock"
+    ],
+    "plz": "18055"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Wittenberg",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Breitscheidstraße 3",
+     "06886 Lutherstadt Wittenberg"
+    ],
+    "plz": "06886"
+   }
+  ]
+ },
+ "16051": {
+  "name": "Stadt Erfurt",
+  "web": "https://www.erfurt.de/",
+  "zeit": "2026-11-11 20:04",
+  "impressum": "https://www.erfurt.de/ef/de/service/impressum/index.html",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Stadtplan: Fischmarkt 1",
+     "99084 Erfurt"
+    ],
+    "plz": "99084"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Erfurt",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Fischmarkt 1",
+     "99084 Erfurt"
+    ],
+    "plz": "99084"
+   }
+  ]
+ },
+ "16052": {
+  "name": "Stadt Gera",
+  "web": "https://www.gera.de/",
+  "zeit": "2026-11-11 20:04",
+  "impressum": "https://www.gera.de/rechtliches/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Kornmarkt 12",
+     "07545 Gera"
+    ],
+    "plz": "07545"
+   },
+   {
+    "zeilen": [
+     "Gagarinstraße 92",
+     "07545 Gera"
+    ],
+    "plz": "07545"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Gera",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Kornmarkt 12",
+     "07545 Gera"
+    ],
+    "plz": "07545"
+   }
+  ]
+ },
+ "16053": {
+  "name": "Stadt Jena",
+  "web": "https://www.jena.de/",
+  "zeit": "2026-11-11 20:05",
+  "impressum": "https://rathaus.jena.de/de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Am Anger 15",
+     "07743 Jena"
+    ],
+    "plz": "07743"
+   },
+   {
+    "zeilen": [
+     "Postfach 100338",
+     "07703 Jena"
+    ],
+    "plz": "07703"
+   },
+   {
+    "zeilen": [
+     "Steinweg 10",
+     "07743 Jena"
+    ],
+    "plz": "07743"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Jena",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Am Anger 15",
+     "07743 Jena"
+    ],
+    "plz": "07743"
+   }
+  ]
+ },
+ "16054": {
+  "name": "Stadt Suhl",
+  "web": "https://www.suhl.eu/",
+  "zeit": "2026-11-11 20:05",
+  "impressum": "https://www.suhl.eu/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Postanschrift: Postfach 100164",
+     "98490 Suhl"
+    ],
+    "plz": "98490"
+   },
+   {
+    "zeilen": [
+     "Postfach 100164",
+     "98490 Suhl"
+    ],
+    "plz": "98490"
+   },
+   {
+    "zeilen": [
+     "Marktplatz 1",
+     "98527 Suhl"
+    ],
+    "plz": "98527"
+   },
+   {
+    "zeilen": [
+     "Steigerstraße 24",
+     "99096 Erfurt"
+    ],
+    "plz": "99096"
+   },
+   {
+    "zeilen": [
+     "Friedrich-König-Str. 42",
+     "98527 Suhl"
+    ],
+    "plz": "98527"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Suhl",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Am Marktplatz 1",
+     "98527 Suhl"
+    ],
+    "plz": "98527"
+   }
+  ]
+ },
+ "16055": {
+  "name": "Stadt Weimar",
+  "web": "https://www.weimar.de/",
+  "zeit": "2026-11-11 20:05",
+  "impressum": "https://www.weimar.de/leben/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Markt 1",
+     "99423 Weimar"
+    ],
+    "plz": "99423"
+   },
+   {
+    "zeilen": [
+     "Postfach 2014",
+     "99401 Weimar"
+    ],
+    "plz": "99401"
+   },
+   {
+    "zeilen": [
+     "UNESCO-Platz 1",
+     "99423 Weimar"
+    ],
+    "plz": "99423"
+   },
+   {
+    "zeilen": [
+     "Schwanseestraße 17",
+     "99423 Weimar"
+    ],
+    "plz": "99423"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Weimar",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Schwanseestraße 17",
+     "99423 Weimar"
+    ],
+    "plz": "99423"
+   }
+  ]
+ },
+ "16061": {
+  "name": "Eichsfeld",
+  "web": "https://www.kreis-eic.de/",
+  "zeit": "2026-11-11 20:05",
+  "impressum": "https://www.kreis-eic.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Friedensplatz 8",
+     "37308 Heilbad Heiligenstadt"
+    ],
+    "plz": "37308"
+   },
+   {
+    "zeilen": [
+     "Bochumer Straße 7",
+     "99734 Nordhausen"
+    ],
+    "plz": "99734"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Eichsfeld",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Friedensplatz 8",
+     "37308 Heilbad Heiligenstadt"
+    ],
+    "plz": "37308"
+   }
+  ]
+ },
+ "16062": {
+  "name": "Landkreis Nordhausen",
+  "web": "https://landkreis-nordhausen.de/",
+  "zeit": "2026-11-11 20:05",
+  "impressum": "https://landkreis-nordhausen.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Grimmelallee 23",
+     "99734 Nordhausen"
+    ],
+    "plz": "99734"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Nordhausen",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Grimmelallee 23",
+     "99734 Nordhausen"
+    ],
+    "plz": "99734"
+   }
+  ]
+ },
+ "16063": {
+  "name": "Wartburgkreis",
+  "web": "https://www.wartburgkreis.de/",
+  "zeit": "2026-11-11 20:06",
+  "impressum": "https://www.wartburgkreis.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Erzberger Allee 14",
+     "36433 Bad Salzungen"
+    ],
+    "plz": "36433"
+   },
+   {
+    "zeilen": [
+     "Postfach 11 65",
+     "36421 Bad Salzungen"
+    ],
+    "plz": "36421"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Wartburgkreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Erzberger Allee 14",
+     "36433 Bad Salzungen"
+    ],
+    "plz": "36433"
+   }
+  ]
+ },
+ "16064": {
+  "name": "Unstrut-Hainich-Kreis",
+  "web": "https://www.unstrut-hainich-kreis.de/",
+  "zeit": "2026-11-11 20:06",
+  "impressum": "https://www.unstrut-hainich-kreis.de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Lindenhof 1",
+     "99974 Mühlhausen I Thüringen"
+    ],
+    "plz": "99974"
+   },
+   {
+    "zeilen": [
+     "Postfach 1142",
+     "99961 Mühlhausen I Thüringen"
+    ],
+    "plz": "99961"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Unstrut-Hainich-Kreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Lindenhof 1",
+     "99974 Mühlhausen/Thüringen"
+    ],
+    "plz": "99974"
+   }
+  ]
+ },
+ "16065": {
+  "name": "Kyffhäuserkreis",
+  "web": "https://www.kyffhaeuser.de/",
+  "zeit": "2026-11-11 20:06",
+  "impressum": "https://www.kyffhaeuser.de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Markt 8",
+     "99706 Sondershausen"
+    ],
+    "plz": "99706"
+   },
+   {
+    "zeilen": [
+     "Bochumer Straße 22",
+     "99734 Nordhausen"
+    ],
+    "plz": "99734"
+   },
+   {
+    "zeilen": [
+     "Werner-Seelenbinder-Straße 6",
+     "99096 Erfurt"
+    ],
+    "plz": "99096"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Kyffh%C3%A4userkreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Markt 8",
+     "99706 Sondershausen"
+    ],
+    "plz": "99706"
+   }
+  ]
+ },
+ "16066": {
+  "name": "Landkreis Schmalkalden-Meiningen",
+  "web": "https://www.lra-sm.de/",
+  "zeit": "2026-11-11 20:06",
+  "impressum": "https://www.lra-sm.de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Obertshäuser Platz 1",
+     "98617 Meiningen"
+    ],
+    "plz": "98617"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Schmalkalden-Meiningen",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Obertshäuser Platz 1",
+     "98617 Meiningen"
+    ],
+    "plz": "98617"
+   }
+  ]
+ },
+ "16067": {
+  "name": "Landkreis Gotha",
+  "web": "https://www.landkreis-gotha.de/",
+  "zeit": "2026-11-11 20:06",
+  "impressum": "https://www.landkreis-gotha.de/funktionsmenue/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "18.-März-Straße 50",
+     "99867 Gotha"
+    ],
+    "plz": "99867"
+   },
+   {
+    "zeilen": [
+     "Postfach 100147",
+     "99851 Gotha"
+    ],
+    "plz": "99851"
+   },
+   {
+    "zeilen": [
+     "18.-März-Str. 50",
+     "99867 Gotha"
+    ],
+    "plz": "99867"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Gotha",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "18.-März-Straße 50",
+     "99867 Gotha"
+    ],
+    "plz": "99867"
+   }
+  ]
+ },
+ "16068": {
+  "name": "Landkreis Sömmerda",
+  "web": "https://www.lra-soemmerda.de/",
+  "zeit": "2026-11-11 20:07",
+  "impressum": "https://www.lra-soemmerda.de/?page_id=57",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Bahnhofstraße 9",
+     "99610 Sömmerda"
+    ],
+    "plz": "99610"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_S%C3%B6mmerda",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Bahnhofstraße 9",
+     "99610 Sömmerda"
+    ],
+    "plz": "99610"
+   }
+  ]
+ },
+ "16069": {
+  "name": "Landkreis Hildburghausen",
+  "web": "https://www.landkreis-hildburghausen.de/",
+  "zeit": "2026-11-11 20:07",
+  "impressum": "https://www.landkreis-hildburghausen.de/Schnellnavigation/Impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Wiesenstraße 18",
+     "98646 Hildburghausen"
+    ],
+    "plz": "98646"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Hildburghausen",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Wiesenstraße 18",
+     "98646 Hildburghausen"
+    ],
+    "plz": "98646"
+   }
+  ]
+ },
+ "16070": {
+  "name": "Ilm-Kreis",
+  "web": "https://www.ilm-kreis.de/",
+  "zeit": "2026-11-11 20:07",
+  "impressum": "https://www.ilm-kreis.de/Quicknavigation/Impressum-Datenschutzerkl%C3%A4rung/Datenschutzerkl%C3%A4rung/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Ritterstraße 14",
+     "99310 Arnstadt"
+    ],
+    "plz": "99310"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Ilm-Kreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Ritterstraße 14",
+     "99310 Arnstadt"
+    ],
+    "plz": "99310"
+   }
+  ]
+ },
+ "16071": {
+  "name": "Weimarer Land",
+  "web": "https://weimarerland.de/",
+  "zeit": "2026-11-11 20:07",
+  "fehler": "robots.txt verbietet den Abruf",
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Weimarer_Land",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Bahnhofstraße 28",
+     "99510 Apolda"
+    ],
+    "plz": "99510"
+   }
+  ]
+ },
+ "16072": {
+  "name": "Landkreis Sonneberg",
+  "web": "https://www.kreis-sonneberg.de/",
+  "zeit": "2026-11-11 20:07",
+  "impressum": "https://www.kreis-sonneberg.de/impressum/",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Bahnhofstraße 66",
+     "96515 Sonneberg"
+    ],
+    "plz": "96515"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Sonneberg",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Bahnhofstraße 66",
+     "96515 Sonneberg"
+    ],
+    "plz": "96515"
+   }
+  ]
+ },
+ "16073": {
+  "name": "Saalfeld-Rudolstadt",
+  "web": "https://www.kreis-slf.de/",
+  "zeit": "2026-11-11 20:08",
+  "fehler": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificate has expired (_ssl.c:1032)>",
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Saalfeld-Rudolstadt",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Schloßstraße 24",
+     "07318 Saalfeld/Saale"
+    ],
+    "plz": "07318"
+   }
+  ]
+ },
+ "16074": {
+  "name": "Saale-Holzland-Kreis",
+  "web": "https://www.saaleholzlandkreis.de/",
+  "zeit": "2026-11-11 20:08",
+  "fehler": "robots.txt verbietet den Abruf",
+  "wikipedia": "https://de.wikipedia.org/wiki/Saale-Holzland-Kreis",
+  "wiki_kandidaten": []
+ },
+ "16075": {
+  "name": "Saale-Orla-Kreis",
+  "web": "https://www.saale-orla-kreis.de/",
+  "zeit": "2026-11-11 20:08",
+  "fehler": "robots.txt verbietet den Abruf",
+  "wikipedia": "https://de.wikipedia.org/wiki/Saale-Orla-Kreis",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Oschitzer Straße 4",
+     "07907 Schleiz"
+    ],
+    "plz": "07907"
+   }
+  ]
+ },
+ "16076": {
+  "name": "Landkreis Greiz",
+  "web": "https://www.landkreis-greiz.de/",
+  "zeit": "2026-11-11 20:08",
+  "impressum": "https://www.landkreis-greiz.de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Dr.-Rathenau-Platz 11",
+     "07973 Greiz"
+    ],
+    "plz": "07973"
+   },
+   {
+    "zeilen": [
+     "Jorge-Semprún-Platz 4",
+     "99423 Weimar"
+    ],
+    "plz": "99423"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Greiz",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Dr.-Rathenau-Platz 11",
+     "07973 Greiz"
+    ],
+    "plz": "07973"
+   }
+  ]
+ },
+ "16077": {
+  "name": "Altenburger Land",
+  "web": "https://www.altenburgerland.de/",
+  "zeit": "2026-11-11 20:08",
+  "impressum": "https://www.altenburgerland.de/de/impressum",
+  "kandidaten": [
+   {
+    "zeilen": [
+     "Lindenaustraße 9",
+     "04600 Altenburg"
+    ],
+    "plz": "04600"
+   },
+   {
+    "zeilen": [
+     "Postfach 1165",
+     "04581 Altenburg"
+    ],
+    "plz": "04581"
+   }
+  ],
+  "wikipedia": "https://de.wikipedia.org/wiki/Landkreis_Altenburger_Land",
+  "wiki_kandidaten": [
+   {
+    "zeilen": [
+     "Lindenaustraße 9",
+     "04600 Altenburg"
+    ],
+    "plz": "04600"
+   }
+  ]
+ }
+}

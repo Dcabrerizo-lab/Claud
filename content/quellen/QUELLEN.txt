@@ -1,6 +1,6 @@
 # Quellen für die Daten der App. Format: Dateiname  URL
-# Änderungen an dieser Datei lösen den Abruf automatisch aus (nur neue oder fehlende Quellen; alle neu: Knopfdruck mit "alle").
-# Der Workflow "Quellen abrufen" (.github/workflows/quellen.yml) lädt jede Datei nach content/quellen/roh/
+# Abruf von Hand auf dem eigenen Rechner: python3 tools/quellen-abrufen.py [--alle] (kein GitHub-Workflow mehr).
+# Das Skript lädt jede Datei nach content/quellen/roh/
 # und schreibt Abrufdatum und Prüfsumme nach content/quellen/abruf.json. Daraus erzeugt tools/build-*.js die App-Daten.
 # Seiten, die automatische Abrufe ablehnen (z. B. ZBFS), stehen nicht hier; deren Angaben sind von Hand
 # aus amtlichen Dokumenten übernommen und in content/behoerden-bayern.json mit Quelle belegt.
@@ -479,3 +479,33 @@ bp-fk-nord.html                 https://www.bayernportal.de/dokumente/behoerde/5
 bp-fk-schwandorf.html           https://www.bayernportal.de/dokumente/behoerde/5719945960116
 bp-fk-schwandorf-geb.html       https://www.bayernportal.de/dokumente/behoerde/5719945960116/zustaendigkeitsgebiet
 bp-fk-regensburg.html           https://www.bayernportal.de/dokumente/behoerde/5703168183116
+
+# Gesetzestexte für die Rechenregeln (buzer.de: aktuelle Fassung; gesetze-im-internet.de lehnt den automatischen Abruf ab)
+# SGB XII: Einkommen (Werkstatt, Erwerbstätige), Unterkunft bei Eltern / besondere Wohnform, Mehrbedarfe, Regelbedarfsstufen
+sgb12-82.html                   https://www.buzer.de/82_SGB_XII.htm
+sgb12-42a.html                  https://www.buzer.de/42a_SGB_XII.htm
+sgb12-42b.html                  https://www.buzer.de/42b_SGB_XII.htm
+sgb12-30.html                   https://www.buzer.de/30_SGB_XII.htm
+sgb12-41.html                   https://www.buzer.de/41_SGB_XII.htm
+sgb12-43.html                   https://www.buzer.de/43_SGB_XII.htm
+sgb12-82a.html                  https://www.buzer.de/82a_SGB_XII.htm
+sgb12-90.html                   https://www.buzer.de/90_SGB_XII.htm
+sgb12-anlage.html               https://www.buzer.de/Anlage_SGB_XII.htm
+# Werkstatt: Arbeitsförderungsgeld, Arbeitsentgelt; Sachbezugswert Mittagessen
+sgb9-59.html                    https://www.buzer.de/59_SGB_IX.htm
+sgb9-221.html                   https://www.buzer.de/221_SGB_IX.htm
+svev-2.html                     https://www.buzer.de/2_SvEV.htm
+# Rente wegen Erwerbsminderung (Wartezeit 20 Jahre bei Werkstatt), Grundsicherung SGB II, Kinderzuschlag, Wohngeld, ALG I, Krankengeld, Elterngeld
+sgb6-43.html                    https://www.buzer.de/43_SGB_VI.htm
+sgb2-11b.html                   https://www.buzer.de/11b_SGB_II.htm
+sgb2-21.html                    https://www.buzer.de/21_SGB_II.htm
+bkgg-6a.html                    https://www.buzer.de/6a_BKGG.htm
+wogg-14.html                    https://www.buzer.de/14_WoGG.htm
+wogg-16.html                    https://www.buzer.de/16_WoGG.htm
+wogg-17.html                    https://www.buzer.de/17_WoGG.htm
+sgb3-147.html                   https://www.buzer.de/147_SGB_III.htm
+sgb3-149.html                   https://www.buzer.de/149_SGB_III.htm
+sgb5-47.html                    https://www.buzer.de/47_SGB_V.htm
+sgb5-48.html                    https://www.buzer.de/48_SGB_V.htm
+beeg-10.html                    https://www.buzer.de/10_BEEG.htm
+uvg-2.html                      https://www.buzer.de/2_UVG.htm

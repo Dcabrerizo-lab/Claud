@@ -1,12 +1,13 @@
 // Strenge Tests: Handrechnungen (Golden Cases), Eigenschaften über Zufallshaushalte, Müll-Eingaben, Texte
 const R = require('./rules-de.js');
 const I18N = require('../dist/i18n.js');
+const KARTEN = require('./karten.js');
 let fails = 0, passes = 0;
 const check = (n, c, x) => { if (!c) { fails++; console.log('FAIL', n, x === undefined ? '' : x); } else passes++; };
-const base = { adults: 1, kids: 0, young: 0, brutto: 0, brutto2: '', netto: 0, miete: 600, mietstufe: '3', vermoegen: 2000, alter: false, erwerbsgemindert: false, behinderung: false, kinder12: false, unterhaltFehlt: false, alterGruppe: '31-40', ausbildung: '', pflegegrad: '', nichtArbeit: false, bezug: {} };
+const base = { adults: 1, kids: 0, young: 0, brutto: 0, brutto2: '', netto: 0, miete: 600, mietstufe: '3', vermoegen: 2000, alter: false, erwerbsgemindert: false, behinderung: false, kinder12: false, unterhaltFehlt: false, alterGruppe: '30-39', ausbildung: '', pflegegrad: '', nichtArbeit: false, bezug: {} };
 const ev = (o) => R.evaluate({ ...base, ...o, bezug: { ...(o && o.bezug) } });
 const lv = (o, id) => ev(o).results.find((r) => r.id === id).level;
-const ID = ['kindergeld', 'wohngeld', 'kiz', 'ggeld', 'but', 'uvg', 'gsa', 'bafoeg', 'pflege', 'kgBeh', 'emrente', 'eingl', 'pausch', 'ausweis', 'blindengeld', 'pflegeplus', 'arbeit', 'rundfunk', 'zuzahl', 'bab', 'wbs'];
+const ID = KARTEN;
 
 // ---------- 1. Freibetrag § 11b SGB II (von Hand) ----------
 [[0, 0, 0], [50, 50, 0], [100, 100, 0], [300, 140, 0], [520, 184, 0], [800, 268, 0], [1000, 328, 0], [1200, 348, 0], [1500, 348, 0], [2600, 348, 0]].forEach(([b, f]) => check('Freibetrag ohne Kind ' + b, Math.abs(R.sgb2Freibetrag(b, false) - f) < 1e-9, R.sgb2Freibetrag(b, false)));
@@ -31,11 +32,11 @@ G('GG: 1500 brutto, Lücke 311 → ja', { brutto: 1500, netto: 1200 }, 'ggeld', 
 G('GG: ohne Einkommen → ja', { miete: 500 }, 'ggeld', 'ja');
 G('GG: Vermögen 10001 > 10000 → nein', { vermoegen: 10001 }, 'ggeld', 'nein');
 G('GG: Vermögen 10000 → ja', { vermoegen: 10000 }, 'ggeld', 'ja');
-G('GG: unter 31, Vermögen 5001 → nein', { alterGruppe: '<31', vermoegen: 5001 }, 'ggeld', 'nein');
-G('GG: unter 31, Vermögen 5000 → ja', { alterGruppe: '<31', vermoegen: 5000 }, 'ggeld', 'ja');
-G('GG: ab 51 Vermögen 20000 → ja', { alterGruppe: '51+', vermoegen: 20000 }, 'ggeld', 'ja');
-G('GG: Paar 2×51+ Vermögen 40000 → ja, 40001 → nein', { adults: 2, alterGruppe: '51+', vermoegen: 40000 }, 'ggeld', 'ja');
-G('GG: Paar 2×51+ Vermögen 40001 → nein', { adults: 2, alterGruppe: '51+', vermoegen: 40001 }, 'ggeld', 'nein');
+G('GG: unter 30, Vermögen 5001 → nein', { alterGruppe: '<30', vermoegen: 5001 }, 'ggeld', 'nein');
+G('GG: unter 30, Vermögen 5000 → ja', { alterGruppe: '<30', vermoegen: 5000 }, 'ggeld', 'ja');
+G('GG: ab 50 Vermögen 20000 → ja', { alterGruppe: '50+', vermoegen: 20000 }, 'ggeld', 'ja');
+G('GG: Paar 2×51+ Vermögen 40000 → ja, 40001 → nein', { adults: 2, alterGruppe: '50+', vermoegen: 40000 }, 'ggeld', 'ja');
+G('GG: Paar 2×51+ Vermögen 40001 → nein', { adults: 2, alterGruppe: '50+', vermoegen: 40001 }, 'ggeld', 'nein');
 G('GG: Paar zwei Verdiener 1500+1500: Einkommen 1604, Bedarf 1812 → ja', { adults: 2, brutto: 3000, brutto2: 1500, netto: 2300, miete: 800 }, 'ggeld', 'ja');
 G('GG: gleiches Paar, ein Verdiener gerechnet: Einkommen 1952 → nein', { adults: 2, brutto: 3000, netto: 2300, miete: 800 }, 'ggeld', 'nein');
 G('GG: Paar mit 2 Kindern, Einkommen 2190, Bedarf 2742 → ja', { adults: 2, kids: 2, brutto: 2600, netto: 2050, miete: 950 }, 'ggeld', 'ja');
@@ -66,9 +67,9 @@ G('KiZ: 3 Personen, 70.001 → nein', { adults: 2, kids: 1, brutto: 2000, netto:
 G('KiZ: 4 Personen, 85.001 → nein', { adults: 2, kids: 2, brutto: 2600, netto: 2050, vermoegen: 85001 }, 'kiz', 'nein');
 G('KiZ: 4 Personen, 85.000 → ja', { adults: 2, kids: 2, brutto: 2600, netto: 2050, vermoegen: 85000 }, 'kiz', 'ja');
 // Grundsicherung im Alter
-G('GSA: Lücke 163 → ja', { alter: true, netto: 880, miete: 480 }, 'gsa', 'ja');
-G('GSA: Einkommen knapp darüber (Lücke -57) → vielleicht', { alter: true, netto: 1100, miete: 480 }, 'gsa', 'vielleicht');
-G('GSA: Einkommen klar darüber → nein', { alter: true, netto: 1200, miete: 480 }, 'gsa', 'nein');
+G('GSA: Lücke 163 → ja', { alter: true, art1: 'rente', netto: 880, miete: 480 }, 'gsa', 'ja');
+G('GSA: Einkommen knapp darüber (Lücke -57) → vielleicht', { alter: true, art1: 'rente', netto: 1100, miete: 480 }, 'gsa', 'vielleicht');
+G('GSA: Einkommen klar darüber → nein', { alter: true, art1: 'rente', netto: 1200, miete: 480 }, 'gsa', 'nein');
 G('GSA: Vermögen 10001 → nein', { alter: true, netto: 500, vermoegen: 10001 }, 'gsa', 'nein');
 G('GSA: Paar mit einem Kind: 20.500 → ja, 20.501 → nein', { alter: true, adults: 2, kids: 1, netto: 500, vermoegen: 20500 }, 'gsa', 'ja');
 G('GSA: Paar mit einem Kind: 20.501 → nein', { alter: true, adults: 2, kids: 1, netto: 500, vermoegen: 20501 }, 'gsa', 'nein');
@@ -87,12 +88,12 @@ G('WG: Obergrenze 2182 → vielleicht', { brutto: 2182, netto: 1700, miete: 700 
 G('WG: 2184 → nein', { brutto: 2184, netto: 1700, miete: 700 }, 'wohngeld', 'nein');
 G('WG: Behinderung 1800: 1800−187,5 = 1612,5 → ja', { brutto: 1800, netto: 1400, behinderung: true }, 'wohngeld', 'ja');
 G('WG: ohne Behinderung 1800 → vielleicht', { brutto: 1800, netto: 1400 }, 'wohngeld', 'vielleicht');
-G('WG: Alleinerziehend 1 Kind 2350: 2350−137,5 = 2212,5 ≤ 2264 → ja', { kids: 1, brutto: 2350, netto: 1900, miete: 700, unterhaltFehlt: true }, 'wohngeld', 'ja');
+G('WG: Alleinerziehend 1 Kind 2350: (2350·0,9−110 = 2005 ≤ 2264·0,9) → ja', { kids: 1, brutto: 2350, netto: 1900, miete: 700 }, 'wohngeld', 'ja');
 // Alleinerziehende: Freibetrag 110 €/Monat nur EINMAL (§ 17 Nr. 3 WoGG), nicht je Kind. 3 Personen, Stufe III, Höchstmiete: Grenze 2832 (10 % Abzug)
 { const lim = R.limits(3, 4)[0]; // Alleinerziehend mit 3 Kindern = 4 Personen
-  const kb = { kids: 3, unterhaltFehlt: true, miete: 1500, netto: 3000 };
-  G('WG: Alleinerziehend 3 Kinder: Freibetrag nur einmal (137,5 brutto-Äquivalent), knapp über Grenze → vielleicht', { ...kb, brutto: Math.floor(lim + 137.5 + 20) }, 'wohngeld', 'vielleicht');
-  G('WG: Alleinerziehend 3 Kinder: einmaliger Freibetrag, knapp darunter → ja', { ...kb, brutto: Math.floor(lim + 137.5 - 5) }, 'wohngeld', 'ja'); }
+  const kb = { kids: 3, miete: 1500, netto: 3000 };
+  G('WG: Alleinerziehend 3 Kinder: Freibetrag nur einmal (110 € = 122,2 € brutto bei 10 % Abzug), knapp über Grenze → vielleicht', { ...kb, brutto: Math.floor(lim + 122.2 + 20) }, 'wohngeld', 'vielleicht');
+  G('WG: Alleinerziehend 3 Kinder: einmaliger Freibetrag, knapp darunter → ja', { ...kb, brutto: Math.floor(lim + 122.2 - 5) }, 'wohngeld', 'ja'); }
 G('WG: Vermögen 1 Person 60001 → nein', { brutto: 1000, netto: 900, vermoegen: 60001 }, 'wohngeld', 'nein');
 G('WG: Vermögen 1 Person 60000 → ja', { brutto: 1000, netto: 900, miete: 300, vermoegen: 60000 }, 'wohngeld', 'ja');
 G('WG: Vermögen 2 Personen 90000 ok', { adults: 2, brutto: 1500, netto: 1300, vermoegen: 90000 }, 'wohngeld', 'ja');
@@ -134,9 +135,9 @@ G('BAföG Kind: Paar 4000 → nein', { adults: 2, kids: 1, ausbildung: 'kind', n
 G('BAföG Kind: allein 1600 → ja', { kids: 1, ausbildung: 'kind', netto: 1600 }, 'bafoeg', 'ja');
 G('BAföG Kind: allein 1700 → vielleicht', { kids: 1, ausbildung: 'kind', netto: 1700 }, 'bafoeg', 'vielleicht');
 G('BAföG Kind: zwei Kinder +770: 2460 → ja', { kids: 2, ausbildung: 'kind', netto: 2460 }, 'bafoeg', 'ja');
-G('BAföG ich: ab 51 → nein', { ausbildung: 'ich', alterGruppe: '51+' }, 'bafoeg', 'nein');
-G('BAföG ich: unter 31 Vermögen 15001 → nein', { ausbildung: 'ich', alterGruppe: '<31', vermoegen: 15001 }, 'bafoeg', 'nein');
-G('BAföG ich: unter 31 Vermögen 15000 → vielleicht', { ausbildung: 'ich', alterGruppe: '<31', vermoegen: 15000 }, 'bafoeg', 'vielleicht');
+G('BAföG ich: ab 50 → nein', { ausbildung: 'ich', alterGruppe: '50+' }, 'bafoeg', 'nein');
+G('BAföG ich: unter 30 Vermögen 15001 → nein', { ausbildung: 'ich', alterGruppe: '<30', vermoegen: 15001 }, 'bafoeg', 'nein');
+G('BAföG ich: unter 30 Vermögen 15000 → vielleicht', { ausbildung: 'ich', alterGruppe: '<30', vermoegen: 15000 }, 'bafoeg', 'vielleicht');
 G('BAföG: keine Ausbildung → nein', {}, 'bafoeg', 'nein');
 // Pflege
 G('Pflege: Pflegegrad 3 → ja', { pflegegrad: '3' }, 'pflege', 'ja');
@@ -162,7 +163,7 @@ const randHH = () => {
     adults, kids: pick([0, 0, 1, 2, 3, 5]), young: pick([0, 0, 0, 1, 2]), brutto, brutto2: adults === 2 && rnd() < 0.5 ? Math.round(rnd() * brutto / 10) * 10 : '',
     netto: rnd() < 0.2 ? '' : Math.round(brutto * (0.6 + rnd() * 0.3)), miete: Math.round(rnd() * 1800 / 10) * 10, mietstufe: pick(['', '1', '2', '3', '4', '5', '6', '7']),
     vermoegen: pick([0, 500, 3000, 9000, 15000, 25000, 70000, 150000]), alter: rnd() < 0.15, erwerbsgemindert: rnd() < 0.1, behinderung: rnd() < 0.15, kinder12: rnd() < 0.3, unterhaltFehlt: rnd() < 0.3,
-    alterGruppe: pick(['', '<31', '31-40', '41-50', '51+']), ausbildung: pick(['', '', 'kind', 'ich']), pflegegrad: pick(['', '', '', 'antrag', '1', '2', '3', '4', '5']), nichtArbeit: rnd() < 0.2,
+    alterGruppe: pick(['', '<30', '30-39', '40-49', '50+']), ausbildung: pick(['', '', 'kind', 'ich']), pflegegrad: pick(['', '', '', 'antrag', '1', '2', '3', '4', '5']), nichtArbeit: rnd() < 0.2,
     bezug: { grundsicherungsgeld: rnd() < 0.08, sozialamt: rnd() < 0.05, wohngeld: rnd() < 0.05, kiz: rnd() < 0.05, kindergeld: rnd() < 0.1 }
   };
 };
@@ -181,7 +182,7 @@ for (let i = 0; i < N; i++) {
   try { out = R.evaluate(o); } catch (e) { flag('Absturz: ' + e.message, o); continue; }
   if (JSON.stringify(o) !== snap) flag('Eingabe verändert', o);
   const ids = out.results.map((r) => r.id).sort().join();
-  if (ids !== ID.slice().sort().join()) flag('Nicht genau 21 Ergebnisse', o);
+  if (ids !== ID.slice().sort().join()) flag('Nicht genau ' + KARTEN.length + ' Ergebnisse', o);
   if (!out.results.every((r) => ['ja', 'vielleicht', 'nein', 'na'].includes(r.level) && r.name && r.steps)) flag('Ungültiges Ergebnis', o);
   const sorted = out.results.every((r, j, a) => j === 0 || order[a[j - 1].level] <= order[r.level]);
   if (!sorted) flag('Sortierung', o);
@@ -198,7 +199,8 @@ for (let i = 0; i < N; i++) {
   if (keinKind && (g('kiz') !== 'nein' || g('but') !== 'nein')) flag('Kinderleistungen ohne Kind', o);
   if (keinKind && !b.kindergeld && g('kindergeld') !== 'nein') flag('Kindergeld ohne Kind', o);
   if (o.kids === 0 && g('uvg') !== 'nein') flag('UVG ohne Kind', o);
-  if ((o.alter || o.erwerbsgemindert) && g('ggeld') !== 'nein' && g('ggeld') !== 'na') flag('GG trotz Alter/Erwerbsminderung', o);
+  // Ausnahme: Paar mit Kindern, die andere Person kann erwerbsfähig sein (gemischte Bedarfsgemeinschaft) -> höchstens „möglich“
+  if ((o.alter || o.erwerbsgemindert) && g('ggeld') !== 'nein' && g('ggeld') !== 'na' && !(o.adults === 2 && o.kids + o.young > 0 && g('ggeld') === 'vielleicht')) flag('GG trotz Alter/Erwerbsminderung', o);
   if (!o.alter && !o.erwerbsgemindert && g('gsa') !== 'nein') flag('GSA ohne Voraussetzung', o);
   if (!o.ausbildung && g('bafoeg') !== 'nein') flag('BAföG ohne Ausbildung', o);
   if (!['1', '2', '3', '4', '5', 'antrag'].includes(o.pflegegrad) && g('pflege') !== 'nein') flag('Pflege ohne Pflegegrad', o);
@@ -232,12 +234,12 @@ const junk = [{}, { brutto: 'abc' }, { brutto: -500, netto: -1 }, { brutto: 1e12
   { adults: 5 }, { adults: '2' }, { kids: -3 }, { kids: 99, young: 99 }, { kids: 1.7 }, { mietstufe: '9' }, { mietstufe: 'abc' }, { mietstufe: 0 }, { mietstufe: 8 }, { alterGruppe: 'xyz' }, { alterGruppe: null }, { pflegegrad: '9' }, { pflegegrad: 3 }, { bezug: null }, { bezug: undefined }, { ausbildung: 'quatsch' }, { brutto2: 'x', adults: 2 }, { brutto2: -5, adults: 2 }, { brutto2: 1e9, adults: 2, brutto: 100 }];
 junk.forEach((j, i) => {
   let out, err = null; try { out = R.evaluate({ ...j }); } catch (e) { err = e; }
-  check('Müll-Eingabe ' + i + ' ' + JSON.stringify(j) + ' ohne Absturz', !err && out && out.results.length === 21, err && err.message);
+  check('Müll-Eingabe ' + i + ' ' + JSON.stringify(j) + ' ohne Absturz', !err && out && out.results.length === KARTEN.length, err && err.message);
   if (out) check('Müll-Eingabe ' + i + ': keine NaN/undefined in Parametern', textKeys(out).every(([k, p]) => !p || Object.values(p).every((v) => !/NaN|undefined|Infinity/.test(String(v)))), JSON.stringify(textKeys(out).filter(([k, p]) => p && Object.values(p).some((v) => /NaN|undefined|Infinity/.test(String(v))))));
 });
 check('Deutsches Dezimalkomma wird gelesen (1.234,5 zählt nicht als 1,234)', true); // dokumentiert; Eingabe kommt aus type=number, dort gilt Punkt
 check('Komma-Dezimal 1500,5 → 1500,5', R.derive({ ...base, brutto: '1500,5' }).brutto === 1500.5);
-check('Haushaltsgröße 12 und mehr wird gedeckelt', R.evaluate({ ...base, adults: 2, kids: 8, young: 8, brutto: 1000, netto: 900 }).results.length === 21);
+check('Haushaltsgröße 12 und mehr wird gedeckelt', R.evaluate({ ...base, adults: 2, kids: 8, young: 8, brutto: 1000, netto: 900 }).results.length === KARTEN.length);
 check('Determinismus', JSON.stringify(ev({ brutto: 1800, netto: 1400 })) === JSON.stringify(ev({ brutto: 1800, netto: 1400 })));
 
 // ---------- 6. Tabelle Wohngeld ----------
