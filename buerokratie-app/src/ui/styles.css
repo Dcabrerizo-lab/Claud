@@ -53,6 +53,10 @@ select.lang { min-height: 40px; padding: 0 10px; border-radius: 999px; font: inh
 .field { display: grid; gap: 6px; margin-bottom: 16px; }
 .field > label { font-weight: 700; font-size: .95em; overflow-wrap: anywhere; }
 .hint { font-size: .85em; color: var(--muted); }
+.field > .lab { font-weight: 700; font-size: .95em; }
+.filepick .btn { justify-self: start; cursor: pointer; }
+.filepick input:focus-visible + label { outline: 3px solid var(--focus); outline-offset: 2px; }
+.filepick .hint { overflow-wrap: anywhere; }
 input, select, textarea, button { max-width: 100%; }
 input, select { min-width: 0; font: inherit; text-overflow: ellipsis; color: var(--ink); background: var(--surface); width: 100%; min-height: 48px; padding: 8px 12px;
   border: 2px solid var(--line); border-radius: 10px; }

@@ -27,6 +27,11 @@ for (const v of VARIANTS) {
   const { ctx, page, problems, external } = await openApp(browser, { colorScheme: v.scheme, viewport: v.vp, locale: v.lang === 'de' ? 'de-DE' : 'en-GB' });
   if (v.big) { await page.locator('#big').click(); }
   await audit(page, label + ' Willkommen');
+  await page.locator('#have-backup').click();
+  await audit(page, label + ' Sicherung einspielen');
+  await page.locator('#mode').click();
+  await audit(page, label + ' Sicherung mit Code');
+  await page.locator('#back').click();
   await page.locator('#start').click();
   await audit(page, label + ' Passphrase');
   await page.locator('#p1').fill('kurz'); await page.locator('#go').click();
@@ -45,7 +50,8 @@ for (const v of VARIANTS) {
   await openAllSections(page);
   const plz = page.locator('#f-adresse-plz'); await plz.fill('1'); await plz.press('Tab');
   await page.locator('#f-adresse-plz-e').filter({ hasText: /./ }).waitFor();
-  await audit(page, label + ' Maske (alle Bereiche offen, mit Fehler)');
+  await page.locator('#due').waitFor(); // reminder: there is content but no backup
+  await audit(page, label + ' Maske (alle Bereiche offen, mit Fehler, Erinnerung)');
   await page.locator('#lock').click();
   await audit(page, label + ' Entsperren');
   await page.locator('#forgot').click();
@@ -76,6 +82,6 @@ for (const v of VARIANTS) {
 }
 
 await browser.close();
-console.log(`${browserName}: ${checks} Prüfungen (${VARIANTS.length} Varianten × 7 Bildschirme + Tastatur)`);
+console.log(`${browserName}: ${checks} Prüfungen (${VARIANTS.length} Varianten × 9 Bildschirme + Tastatur)`);
 if (failures.length) { console.error([...new Set(failures)].join('\n')); process.exit(1); }
 console.log('Barrierefreiheit, Layout und Tastaturbedienung: keine Beanstandungen.');

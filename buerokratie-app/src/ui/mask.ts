@@ -1,10 +1,10 @@
 // Master data form, generated from the field catalogue. Saves each field when it is changed.
 import { ValueError, type Catalog, type FieldDef, type Value } from '../core/catalog.js';
-import type { ModuleAccess } from '../core/vault.js';
+import { UI_MODULE, type ModuleAccess } from '../core/vault.js';
 import { t, getLang } from './i18n.js';
 
 /** The core UI is itself a module: it may read and write everything. */
-export const STAMMDATEN_MODULE = { id: 'stammdaten', name: 'Stammdaten', reads: ['*'], writes: ['*'] };
+export const STAMMDATEN_MODULE = { id: UI_MODULE, name: 'Stammdaten', reads: ['*'], writes: ['*'] };
 
 export const SECTIONS = ['person', 'adresse', 'kontakt', 'haushalt', 'wohnen', 'einkommen', 'vermoegen', 'gesundheit', 'bank'];
 /** Field that is asked first when adding a list entry (as big buttons). */

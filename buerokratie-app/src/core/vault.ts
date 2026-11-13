@@ -9,6 +9,50 @@ import type { VaultStorage } from './storage.js';
 
 export const FORMAT = 'stammdaten-tresor';
 const DATA_CONTEXT = 'stammdaten-tresor/data/v1';
+export const BACKUP_FORMAT = 'stammdaten-tresor-sicherung';
+/** Remind to back up when changes are older than this many days without a backup. */
+export const BACKUP_REMIND_DAYS = 30;
+/** Module id of the app's own UI (its settings do not count as content). */
+export const UI_MODULE = 'stammdaten';
+
+export interface Backup { format: typeof BACKUP_FORMAT; version: 1; created: string; meta: Meta; data: Sealed }
+
+export class BackupError extends Error {
+  constructor(readonly code: 'keine-sicherung' | 'neuere-version' | 'beschaedigt' | 'zu-gross') {
+    super({ 'keine-sicherung': 'Das ist keine Sicherungsdatei dieser App', 'neuere-version': 'Die Sicherung stammt aus einer neueren App-Version',
+      beschaedigt: 'Die Sicherungsdatei ist beschädigt', 'zu-gross': 'Die Datei ist zu groß für eine Sicherung' }[code]);
+    this.name = 'BackupError';
+  }
+}
+
+export const MAX_BACKUP_BYTES = 20 * 1024 * 1024;
+const isB64 = (v: unknown) => typeof v === 'string' && v.length > 0 && v.length < 30_000_000 && /^[A-Za-z0-9+/]+={0,2}$/.test(v);
+
+/**
+ * Strict check of a backup file BEFORE any decryption. Also limits the key-derivation parameters:
+ * a manipulated file must not be able to freeze the app with absurd memory or iteration counts.
+ */
+export function parseBackup(text: string): Backup {
+  if (text.length > MAX_BACKUP_BYTES) throw new BackupError('zu-gross');
+  let b: any;
+  try { b = JSON.parse(text); } catch { throw new BackupError('keine-sicherung'); }
+  if (!b || typeof b !== 'object' || b.format !== BACKUP_FORMAT) throw new BackupError('keine-sicherung');
+  if (typeof b.version !== 'number' || b.version > 1) throw new BackupError('neuere-version');
+  if (b.version !== 1) throw new BackupError('keine-sicherung');
+  const m = b.meta, d = b.data;
+  const wrappedOk = (w: any) => w && isB64(w.iv) && isB64(w.data) && kdfOk(w.kdf);
+  if (!m || m.format !== FORMAT || m.version !== 1 || typeof m.created !== 'string' || !wrappedOk(m.passphrase) || !wrappedOk(m.recovery)
+    || !d || !isB64(d.iv) || !isB64(d.data) || typeof b.created !== 'string') throw new BackupError('beschaedigt');
+  return { format: BACKUP_FORMAT, version: 1, created: b.created, meta: { format: FORMAT, version: 1, created: m.created, passphrase: m.passphrase, recovery: m.recovery }, data: { iv: d.iv, data: d.data } };
+}
+
+function kdfOk(k: any): boolean {
+  if (!k || !isB64(k.salt)) return false;
+  const int = (v: unknown, min: number, max: number) => Number.isInteger(v) && (v as number) >= min && (v as number) <= max;
+  if (k.alg === 'argon2id') return int(k.memKiB, 8, 1024 * 1024) && int(k.iterations, 1, 50) && int(k.parallelism, 1, 16);
+  if (k.alg === 'pbkdf2-sha256') return int(k.iterations, 1000, 10_000_000);
+  return false;
+}
 
 export interface Meta {
   format: typeof FORMAT;
@@ -23,6 +67,9 @@ export interface VaultData {
   single: Record<string, Record<string, Value>>;       // group → field → value
   lists: Record<string, Record<string, Value>[]>;      // group → entries → field → value
   lastBackup?: string;
+  /** Counts content changes; compared with `backupRevision` for the backup reminder (clock-independent). */
+  revision?: number;
+  backupRevision?: number;
   /** Extension point for later modules (saved form templates, deadlines …), keyed by module id. */
   moduleData: Record<string, unknown>;
 }
@@ -35,6 +82,9 @@ export interface ModuleManifest {
   /** Keys the module may write (same patterns). */
   writes: string[];
 }
+
+/** The vault was replaced in another window (backup restored there): this window must unlock again. */
+export class ReplacedError extends Error { constructor() { super('Der Tresor wurde in einem anderen Fenster ersetzt. Bitte neu öffnen.'); this.name = 'ReplacedError'; } }
 
 export class LockedError extends Error { constructor() { super('Tresor ist gesperrt'); this.name = 'LockedError'; } }
 export class AccessError extends Error {
@@ -144,7 +194,7 @@ export class Vault {
       const dek = this.dek;
       const current = await this.storage.get<Sealed>('data');
       if (!current || current.iv === this.dataIv) return false;
-      const data = await open<VaultData>(dek, current, DATA_CONTEXT);
+      const data = await open<VaultData>(dek, current, DATA_CONTEXT).catch(() => { throw new ReplacedError(); });
       if (!this.data) return false;
       this.data = data; this.dataIv = current.iv;
       return true;
@@ -187,6 +237,7 @@ export class Vault {
     // apply list entries in index order, so a batch may create entries 0, 1, 2 … in any key order
     const sorted = [...entries].sort((x, y) => (x[0].index ?? 0) - (y[0].index ?? 0));
     await this.commit((d) => {
+      d.revision = (d.revision ?? 0) + 1;
       for (const [p, key, v] of sorted) {
         if (p.index === undefined) {
           const g = (d.single[p.group] ??= {});
@@ -208,6 +259,7 @@ export class Vault {
   /** @internal */ async removeListEntry(group: string, index: number, by: string): Promise<void> {
     if (!Number.isInteger(index) || index < 0 || index >= this.listLength(group)) return;
     await this.commit((d) => {
+      d.revision = (d.revision ?? 0) + 1;
       d.lists[group].splice(index, 1);
       // references to later household entries (e.g. income "wer") shift down
       if (group === 'haushalt') for (const inc of d.lists.einkommen ?? []) {
@@ -219,10 +271,61 @@ export class Vault {
   }
 
   /** @internal */ moduleState(id: string): unknown { return structuredClone(this.content().moduleData[id]); }
-  /** @internal */ async setModuleState(id: string, v: unknown): Promise<void> { await this.commit((d) => { d.moduleData[id] = structuredClone(v); }); }
+  /** @internal */ async setModuleState(id: string, v: unknown): Promise<void> {
+    await this.commit((d) => { d.moduleData[id] = structuredClone(v); if (id !== UI_MODULE) d.revision = (d.revision ?? 0) + 1; });
+  }
 
   get lastBackup(): string | undefined { return this.content().lastBackup; }
-  async markBackup(at = new Date().toISOString()): Promise<void> { await this.commit((d) => { d.lastBackup = at; }); }
+  /** True if content changed since the last backup (or there never was one). */
+  get changedSinceBackup(): boolean { const d = this.content(); return (d.revision ?? 0) > (d.backupRevision ?? -1); }
+  /** True if any master data value or module data (other than UI settings) exists. */
+  get hasContent(): boolean {
+    const d = this.content();
+    return Object.values(d.single).some((g) => Object.keys(g).length > 0) || Object.values(d.lists).some((l) => l.length > 0)
+      || Object.keys(d.moduleData).some((k) => k !== UI_MODULE);
+  }
+
+  /**
+   * Backup reminder: never backed up although there is content, or content changed since the last backup
+   * and that backup is older than `days`.
+   */
+  backupDue(days = BACKUP_REMIND_DAYS, now = Date.now()): 'nie' | 'alt' | false {
+    if (!this.hasContent) return false;
+    const last = this.lastBackup;
+    if (!last) return 'nie';
+    return this.changedSinceBackup && now - Date.parse(last) > days * 86_400_000 ? 'alt' : false;
+  }
+
+  /**
+   * Encrypted backup of everything (same encryption as the vault; opening it needs the passphrase or the
+   * recovery code valid at this moment). Records the backup time first, so the file contains it too.
+   */
+  async exportBackup(): Promise<Backup> {
+    await this.markBackup();
+    return this.serial(async () => {
+      this.key();
+      const meta = await loadMeta(this.storage);
+      const data = await this.storage.get<Sealed>('data');
+      if (!data) throw new Error('Tresordaten fehlen');
+      return { format: BACKUP_FORMAT, version: 1, created: new Date().toISOString(), meta, data };
+    });
+  }
+
+  /**
+   * Restores a backup: checks the secret and the data completely, then replaces everything on this device
+   * in one step. With `recoveryCode`, `newPassphrase` becomes the passphrase afterwards.
+   */
+  static async restore(storage: VaultStorage, catalog: Catalog, backup: Backup, secret: string, opts: { recoveryCode?: boolean; newPassphrase?: string } = {}): Promise<Vault> {
+    if (opts.recoveryCode) checkPassphrase(opts.newPassphrase ?? '');
+    const dek = await unwrapKey(opts.recoveryCode ? backup.meta.recovery : backup.meta.passphrase, opts.recoveryCode ? normalizeRecoveryCode(secret) : secret);
+    let data: VaultData;
+    try { data = await open<VaultData>(dek, backup.data, DATA_CONTEXT); } catch { throw new BackupError('beschaedigt'); }
+    await storage.replaceAll({ meta: backup.meta, data: backup.data });
+    const vault = new Vault(storage, catalog, backup.meta, dek, data, backup.data.iv);
+    if (opts.recoveryCode) await vault.changePassphrase(opts.newPassphrase!);
+    return vault;
+  }
+  async markBackup(at = new Date().toISOString()): Promise<void> { await this.commit((d) => { d.lastBackup = at; d.backupRevision = d.revision ?? 0; }); }
 
   private key(): CryptoKey { if (!this.dek) throw new LockedError(); return this.dek; }
   private content(): VaultData { if (!this.data) throw new LockedError(); return this.data; }
@@ -248,7 +351,10 @@ export class Vault {
         const current = await this.storage.get<Sealed>('data');
         if (current === undefined && this.dataIv !== undefined) throw new Error('Der Tresor wurde in einem anderen Fenster gelöscht');
         let external = false;
-        if (current && current.iv !== this.dataIv) { base = await open<VaultData>(dek, current, DATA_CONTEXT); external = true; } // another tab saved
+        if (current && current.iv !== this.dataIv) { // another tab saved (or replaced the whole vault)
+          base = await open<VaultData>(dek, current, DATA_CONTEXT).catch(() => { throw new ReplacedError(); });
+          external = true;
+        }
         const next = structuredClone(base);
         mutate(next);
         const sealed = await seal(dek, next, DATA_CONTEXT);

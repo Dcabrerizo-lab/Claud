@@ -36,7 +36,7 @@ jobs:
       - name: Browsertests in Firefox und WebKit (Safari)
         run: |
           npx playwright install --with-deps firefox webkit
-          for b in firefox webkit; do BROWSER=$b node test/e2e/app.e2e.mjs && BROWSER=$b node test/e2e/robust.e2e.mjs && BROWSER=$b node test/e2e/a11y.e2e.mjs && BROWSER=$b SESSIONS=8 node test/e2e/fuzz.e2e.mjs; done
+          for b in firefox webkit; do BROWSER=$b node test/e2e/app.e2e.mjs && BROWSER=$b node test/e2e/robust.e2e.mjs && BROWSER=$b node test/e2e/backup.e2e.mjs && BROWSER=$b node test/e2e/a11y.e2e.mjs && BROWSER=$b SESSIONS=8 node test/e2e/fuzz.e2e.mjs; done
       - name: App als einzelne HTML-Datei
         uses: actions/upload-artifact@v4
         with:

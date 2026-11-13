@@ -9,7 +9,8 @@ import './styles.css';
 import catalogData from '../../data/feldkatalog.json';
 import { Catalog, type CatalogData } from '../core/catalog.js';
 import { IndexedDbStorage } from '../core/storage.js';
-import { Vault, MIN_PASSPHRASE } from '../core/vault.js';
+import { Vault, MIN_PASSPHRASE, parseBackup, BackupError, ReplacedError, MAX_BACKUP_BYTES, type Backup } from '../core/vault.js';
+import { saveTextFile, backupFileName } from './files.js';
 import { WrongSecretError } from '../core/crypto.js';
 import { t, setLang, detectLang, getLang, LANGS, DICTS } from './i18n.js';
 import { Mask, STAMMDATEN_MODULE, esc } from './mask.js';
@@ -26,7 +27,12 @@ let mask: Mask | null = null;
 let offChange: (() => void) | null = null;
 /** Other windows/tabs of the app on this device: tell each other when something was saved. */
 const channel = typeof BroadcastChannel === 'function' ? new BroadcastChannel('stammdaten-tresor') : null;
-if (channel) channel.onmessage = async () => { if (vault && !vault.locked) await vault.refresh().catch(() => false); };
+if (channel) channel.onmessage = async (e) => {
+  if (!vault || vault.locked) return;
+  if (e.data === 'replaced') return lock('main.replaced');                 // a backup was restored in another window
+  await vault.refresh().catch((err) => { if (err instanceof ReplacedError) lock('main.replaced'); });
+};
+const fmtDate = (iso: string) => new Date(iso).toLocaleDateString(getLang() === 'de' ? 'de-DE' : 'en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
 const stammdaten = () => vault!.module(STAMMDATEN_MODULE);
 interface UiState { recoveryConfirmed?: boolean }
 let big = false;
@@ -86,8 +92,10 @@ function strength(p: string): string {
 function welcome() {
   app.innerHTML = shell(`<section class="card"><h1>${esc(t('welcome.h'))}</h1>
     <p>${esc(t('welcome.p1'))}</p><p>${esc(t('welcome.p2'))}</p>
-    <div class="btns"><button type="button" class="btn block" id="start">${esc(t('welcome.start'))}</button></div></section>`);
+    <div class="btns"><button type="button" class="btn block" id="start">${esc(t('welcome.start'))}</button>
+    <button type="button" class="btn secondary block" id="have-backup">${esc(t('welcome.restore'))}</button></div></section>`);
   document.getElementById('start')!.addEventListener('click', () => show(setup));
+  document.getElementById('have-backup')!.addEventListener('click', () => show(() => restore(false)));
 }
 
 function setup() {
@@ -207,13 +215,21 @@ let toastTimer: ReturnType<typeof setTimeout>;
 
 function main(notice?: string) {
   if (!vault || vault.locked) return show(() => unlock());
+  const due = vault.backupDue();
+  const last = vault.lastBackup;
   app.innerHTML = shell(`<h1>${esc(t('app.title'))}</h1><p class="lead">${esc(t('app.tagline'))}</p>
-    ${notice ? `<p class="msg ok" role="status">${esc(t(notice))}</p>` : ''}<div id="mask"></div>
+    ${notice ? `<p class="msg ok" role="status" id="notice">${esc(notice.includes(' ') ? notice : t(notice))}</p>` : ''}
+    <div id="due-slot">${dueBanner(due)}</div>
+    <div id="mask"></div>
+    <section class="card" id="backup"><h2>${esc(t('backup.h'))}</h2><p class="lead">${esc(t('backup.p'))}</p>
+      <p><strong id="backup-last">${esc(last ? t('backup.last', { date: fmtDate(last) }) : t('backup.never'))}</strong></p>
+      <div class="btns"><button type="button" class="btn" id="backup-save">${esc(t('backup.save'))}</button>
+      <button type="button" class="btn secondary" id="backup-restore">${esc(t('backup.restore'))}</button></div></section>
     <section class="card"><h2>${esc(t('sec.h'))}</h2><div class="btns">
       <button type="button" class="btn secondary" id="newcode">${esc(t('sec.code'))}</button>
       <button type="button" class="btn secondary" id="chpass">${esc(t('sec.pass'))}</button></div></section>`, { lockable: true });
   const v = vault;
-  mask = new Mask(document.getElementById('mask')!, stammdaten(), catalog, () => toast(t('main.saved')));
+  mask = new Mask(document.getElementById('mask')!, stammdaten(), catalog, () => { toast(t('main.saved')); updateDue(); });
   offChange?.();
   offChange = v.onChange((keys, by) => {
     if (by !== 'extern') channel?.postMessage('changed');   // tell other windows
@@ -226,8 +242,95 @@ function main(notice?: string) {
     show(() => recovery(code));
   });
   document.getElementById('chpass')!.addEventListener('click', () => show(changePass));
+  const save = async () => {
+    const b = await v.exportBackup();
+    const name = await saveTextFile(backupFileName(), JSON.stringify(b));
+    show(() => main(t('backup.saved', { name })));
+  };
+  document.getElementById('backup-save')!.addEventListener('click', save);
+  // the reminder can appear later (after the first saved value), so bind via the container
+  document.getElementById('due-slot')!.addEventListener('click', (e) => { if ((e.target as HTMLElement).id === 'backup-now') save(); });
+  document.getElementById('backup-restore')!.addEventListener('click', () => { if (confirm(t('restore.confirm'))) show(() => restore(true)); });
   // render only after pending saves are stored (e.g. language switch right after typing)
   v.idle().then(() => mask?.render());
+}
+
+/** Restore a backup: on a new device (replace = false) or instead of the current data (replace = true). */
+function restore(replace: boolean) {
+  app.innerHTML = shell(`<section class="card"><h1>${esc(t('restore.h'))}</h1><p class="lead">${esc(t('restore.p'))}</p>
+    <div class="msg" id="msg" role="alert"></div>
+    <form id="f" novalidate>
+      <div class="field filepick"><span class="lab" id="file-lab">${esc(t('restore.file'))}</span>
+        <input id="file" class="sr" type="file" accept=".json,application/json" aria-labelledby="file-lab file-btn" aria-describedby="file-info">
+        <label for="file" class="btn secondary" id="file-btn">📂 ${esc(t('restore.pick'))}</label>
+        <span class="hint" id="file-info" aria-live="polite"></span></div>
+      <div id="with-pass">${pwField('p', t('setup.pass'), 'current-password')}</div>
+      <div id="with-code" hidden><div class="field"><label for="code">${esc(t('forgot.code'))}</label>
+        <input id="code" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX-XXXX-XXXX-XXXX"></div>
+        ${pwField('p1', t('forgot.new'), 'new-password')}${pwField('p2', t('setup.pass2'), 'new-password')}</div>
+      <button type="button" class="link" id="mode">${esc(t('restore.withcode'))}</button>
+      <div class="btns"><button class="btn block" id="go">${esc(t('restore.go'))}</button></div></form>
+    <button type="button" class="link" id="back">${esc(t('back'))}</button></section>`, { lockable: replace });
+  bindToggles();
+  let backup: Backup | null = null;
+  let withCode = false;
+  const file = document.getElementById('file') as HTMLInputElement, info = document.getElementById('file-info')!;
+  file.addEventListener('change', async () => {
+    backup = null; info.textContent = ''; msg('', 'bad');
+    const f = file.files?.[0];
+    if (!f) return;
+    try {
+      if (f.size > MAX_BACKUP_BYTES) throw new BackupError('zu-gross');
+      info.textContent = f.name;
+      backup = parseBackup(await f.text());
+      info.textContent = `${f.name} – ${t('restore.from', { date: fmtDate(backup.created) })}`;
+    } catch (e) { msg(e instanceof BackupError ? t('err.backup.' + e.code) : t('err.backup.keine-sicherung')); }
+  });
+  document.getElementById('mode')!.addEventListener('click', (e) => {
+    withCode = !withCode;
+    document.getElementById('with-pass')!.hidden = withCode;
+    document.getElementById('with-code')!.hidden = !withCode;
+    (e.target as HTMLElement).textContent = t(withCode ? 'restore.withpass' : 'restore.withcode');
+  });
+  document.getElementById('back')!.addEventListener('click', () => show(replace ? main : welcome));
+  document.getElementById('f')!.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!backup) return msg(file.files?.length ? t('err.backup.keine-sicherung') : t('restore.nofile'));
+    if (withCode) {
+      if ([...val('p1')].length < MIN_PASSPHRASE) return msg(t('pass.short'));
+      if (val('p1') !== val('p2')) return msg(t('pass.mismatch'));
+    }
+    const go = document.getElementById('go') as HTMLButtonElement;
+    go.disabled = true; go.textContent = t('restore.busy');
+    try {
+      const old = replace ? vault : null;
+      await old?.idle().catch(() => undefined);
+      // restore checks passphrase and file completely before replacing anything; on error the old vault stays open
+      const restored = withCode
+        ? await Vault.restore(storage, catalog, backup, val('code'), { recoveryCode: true, newPassphrase: val('p1') })
+        : await Vault.restore(storage, catalog, backup, val('p'));
+      if (old) { offChange?.(); offChange = null; mask = null; old.lock(); }
+      vault = restored;
+      channel?.postMessage('replaced');
+      IndexedDbStorage.persist();
+      if (withCode) await stammdaten().setState({ ...stammdaten().getState<UiState>(), recoveryConfirmed: true });
+      show(() => main('restore.done'));
+    } catch (err) {
+      go.disabled = false; go.textContent = t('restore.go');
+      msg(err instanceof WrongSecretError ? t(withCode ? 'restore.wrongcode' : 'restore.wrong') : err instanceof BackupError ? t('err.backup.' + err.code) : t('err.storage'));
+    }
+  });
+}
+
+function dueBanner(due: 'nie' | 'alt' | false): string {
+  return due ? `<div class="msg warn" id="due"><p>${esc(t('backup.due.' + due))}</p><button type="button" class="btn" id="backup-now">${esc(t('backup.now'))}</button></div>` : '';
+}
+/** Shows or hides the backup reminder after each save, without redrawing the form. */
+function updateDue() {
+  const slot = document.getElementById('due-slot');
+  if (!slot || !vault || vault.locked) return;
+  const due = vault.backupDue();
+  if ((document.getElementById('due') ? 'x' : '') !== (due ? 'x' : '')) slot.innerHTML = dueBanner(due);
 }
 
 function changePass() {

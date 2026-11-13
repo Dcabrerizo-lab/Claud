@@ -11,6 +11,8 @@ export interface VaultStorage {
    * Lets several open windows/tabs share one vault without overwriting each other's changes.
    */
   setIf(key: string, matches: (current: unknown) => boolean, value: unknown): Promise<boolean>;
+  /** Replaces ALL records at once (restoring a backup): either everything is replaced or nothing. */
+  replaceAll(records: Record<string, unknown>): Promise<void>;
 }
 
 /** For tests and for "try without saving". */
@@ -26,6 +28,11 @@ export class MemoryStorage implements VaultStorage {
     if (!matches(cur === undefined ? undefined : JSON.parse(cur))) return false;
     this.map.set(key, JSON.stringify(value));
     return true;
+  }
+  async replaceAll(records: Record<string, unknown>) {
+    const next = new Map(Object.entries(records).map(([k, v]) => [k, JSON.stringify(v)]));
+    this.map.clear();
+    for (const [k, v] of next) this.map.set(k, v);
   }
 }
 
@@ -73,6 +80,19 @@ export class IndexedDbStorage implements VaultStorage {
       const get = store.get(key);
       get.onsuccess = () => { if (matches(get.result)) { ok = true; store.put(value, key); } };
       t.oncomplete = () => resolve(ok);
+      t.onerror = () => reject(t.error);
+      t.onabort = () => reject(t.error);
+    });
+  }
+
+  async replaceAll(records: Record<string, unknown>): Promise<void> {
+    const db = await this.open();
+    return new Promise<void>((resolve, reject) => {
+      const t = db.transaction('records', 'readwrite');
+      const store = t.objectStore('records');
+      store.clear();
+      for (const [k, v] of Object.entries(records)) store.put(v, k);
+      t.oncomplete = () => resolve();
       t.onerror = () => reject(t.error);
       t.onabort = () => reject(t.error);
     });
