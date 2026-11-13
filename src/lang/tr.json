@@ -918,5 +918,15 @@
   "t.zuk.ueberbruecken": "İlk ödeme gelene kadar Grundsicherungsgeld aradaki zamanı köprüleyebilir. İki başvuruyu da hemen yap.",
   "z.zuk.alg": "Önce Arbeitslosengeld için başvur: Grundsicherungsgeld’den önce gelir ve Grundsicherungsgeld, Wohngeld ve Kinderzuschlag’da gelir sayılır. Kartlar o zaman neyin değişeceğini gösterir.",
   "z.zuk.kg": "Krankengeld, Grundsicherungsgeld’den önce gelir ve Grundsicherungsgeld, Wohngeld ve Kinderzuschlag’da gelir sayılır. Kartlar o zaman neyin değişeceğini gösterir.",
-  "z.zuk.eg": "Doğumdan sonra Elterngeld için zamanında başvur: 300 € üzeri Grundsicherungsgeld, Wohngeld ve Kinderzuschlag’da gelir sayılır. Kartlar o zaman neyin değişeceğini gösterir."
+  "z.zuk.eg": "Doğumdan sonra Elterngeld için zamanında başvur: 300 € üzeri Grundsicherungsgeld, Wohngeld ve Kinderzuschlag’da gelir sayılır. Kartlar o zaman neyin değişeceğini gösterir.",
+  "t.kg.antraglos": "2027’den itibaren yeni: Familienkasse tüm bilgilere sahipse Kindergeld’i adım adım başvurusuz da öder. 2027 baharından itibaren zaten Kindergeld alan aileler için, muhtemelen 2027 sonundan itibaren ilk çocuk için de. O zamana kadar başvuru yap.",
+  "t.plan.kg": "2027’den itibaren planlanan: çocuk başına {b} Kindergeld. Kasım 2026 itibarıyla kanun taslağı, henüz kabul edilmedi. Uygulama bugünkü tutarla hesaplar.",
+  "t.plan.kiz": "2027’den itibaren planlanan: Kinderzuschlag’daki çocuk başına 25 € acil ek (Sofortzuschlag) kaldırılacak. Kasım 2026 itibarıyla taslak, henüz kabul edilmedi. 2027 üst tutarını Familienkasse yıl başında belirler.",
+  "t.plan.uvg": "2027’den itibaren planlanan: Unterhaltsvorschuss 18. yerine yalnızca 16. doğum gününe kadar. Kasım 2026 itibarıyla taslak, henüz kabul edilmedi.",
+  "t.plan.wg": "2027’den itibaren planlanan: Wohngeld kısılacak, örneğin daha küçük bir ısınma gideri payıyla. Kasım 2026 itibarıyla kanun taslağı, henüz kabul edilmedi. Onaylanmış Wohngeld onay süresinin sonuna kadar eski tutarda devam edecek.",
+  "t.plan.wgDez": "İpucu: Hakkı olan, başvuruyu en iyisi 2026’da yapar.",
+  "t.plan.pflege": "2027’den itibaren planlanan: ayda {a} (bakım derecesi 2), {b} (3), {c} (4) ve {d} (5) Pflegegeld. Entlastungsbetrag yeni bir bütçeye dönüştürülecek. Kasım 2026 itibarıyla kabine taslağı, henüz kabul edilmedi.",
+  "t.plan.regel": "2027 için henüz yeni bir Regelsatz kararlaştırılmadı. Aynı kalması bekleniyor (yalnız yaşayanlar için {rs}).",
+  "t.plan.krank": "2027’den itibaren sağlık sigortası prim tavanı ayda {bbg} olacak (Bundesrat onayı bekleniyor, Kasım 2026). Krankengeld o zaman günde en fazla {max} olur.",
+  "t.plan.gfb": "2027 için planlanan: yılda {gfb} temel muafiyet (Grundfreibetrag). Kasım 2026 itibarıyla kanun taslağı, henüz kabul edilmedi."
 }

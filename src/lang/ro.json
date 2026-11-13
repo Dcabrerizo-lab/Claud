@@ -918,5 +918,15 @@
   "t.zuk.ueberbruecken": "Până vine prima plată, Grundsicherungsgeld poate acoperi perioada. Depune imediat ambele cereri.",
   "z.zuk.alg": "Cere mai întâi Arbeitslosengeld: are prioritate față de Grundsicherungsgeld și contează ca venit la Grundsicherungsgeld, Wohngeld și Kinderzuschlag. Cardurile arată ce se schimbă atunci.",
   "z.zuk.kg": "Krankengeld are prioritate față de Grundsicherungsgeld și contează ca venit la Grundsicherungsgeld, Wohngeld și Kinderzuschlag. Cardurile arată ce se schimbă atunci.",
-  "z.zuk.eg": "Cere la timp Elterngeld după naștere: peste 300 € contează ca venit la Grundsicherungsgeld, Wohngeld și Kinderzuschlag. Cardurile arată ce se schimbă atunci."
+  "z.zuk.eg": "Cere la timp Elterngeld după naștere: peste 300 € contează ca venit la Grundsicherungsgeld, Wohngeld și Kinderzuschlag. Cardurile arată ce se schimbă atunci.",
+  "t.kg.antraglos": "Nou din 2027: Familienkasse plătește treptat Kindergeld și fără cerere, dacă are toate datele. Din primăvara lui 2027 pentru familiile care primesc deja Kindergeld, probabil de la sfârșitul lui 2027 și pentru primul copil. Până atunci depune cererea.",
+  "t.plan.kg": "Planificat din 2027: Kindergeld {b} pentru fiecare copil. Proiect de lege, situația din noiembrie 2026, încă neadoptat. Aplicația calculează cu suma de azi.",
+  "t.plan.kiz": "Planificat din 2027: suplimentul imediat (Sofortzuschlag) de 25 € pe copil din Kinderzuschlag urmează să dispară. Proiect, situația din noiembrie 2026, încă neadoptat. Suma maximă pentru 2027 o stabilește Familienkasse la schimbarea anului.",
+  "t.plan.uvg": "Planificat din 2027: Unterhaltsvorschuss doar până la împlinirea a 16 ani în loc de 18. Proiect, situația din noiembrie 2026, încă neadoptat.",
+  "t.plan.wg": "Planificat din 2027: Wohngeld urmează să fie redus, de exemplu printr-o componentă mai mică pentru încălzire. Proiect de lege, situația din noiembrie 2026, încă neadoptat. Wohngeld deja aprobat ar urma să continue în vechea sumă până la sfârșitul perioadei de aprobare.",
+  "t.plan.wgDez": "Sfat: dacă ai drept, cel mai bine depui cererea încă din 2026.",
+  "t.plan.pflege": "Planificat din 2027: Pflegegeld {a} (gradul de îngrijire 2), {b} (3), {c} (4) și {d} (5) pe lună. Entlastungsbetrag urmează să fie transformat într-un buget nou. Proiect al guvernului, situația din noiembrie 2026, încă neadoptat.",
+  "t.plan.regel": "Pentru 2027 nu s-a stabilit încă un nou Regelsatz. Se așteaptă să rămână la fel ({rs} pentru persoane singure).",
+  "t.plan.krank": "Din 2027 plafonul de contribuții la asigurarea de sănătate urmează să crească la {bbg} pe lună (aprobarea Bundesrat e în așteptare, noiembrie 2026). Krankengeld va fi atunci cel mult {max} pe zi.",
+  "t.plan.gfb": "Planificat pentru 2027: suma scutită de bază (Grundfreibetrag) {gfb} pe an. Proiect de lege, situația din noiembrie 2026, încă neadoptat."
 }

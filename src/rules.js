@@ -1232,6 +1232,27 @@ const Rules = (function () {
     return { id: jetzt.id, level, hl: level === jetzt.level ? jetzt.hl : level, tx };
   }
 
+  // Änderungen 2027 (Stand 13. November 2026). Beschlossen und eingerechnet: Minijob-Grenze 633 €, Kinderkrankentage 10/20,
+  // antragsloses Kindergeld (Gesetz vom Bundesrat am 25.9.2026 gebilligt, Hinweis). Nur geplant und deshalb NICHT eingerechnet,
+  // sondern als Hinweis auf der Karte: Kindergeld 267 €, Wegfall des Sofortzuschlags beim Kinderzuschlag, Unterhaltsvorschuss bis 16,
+  // Wohngeld-Kürzung (BT-Drs. 21/8284, Bestandsschutz für Bewilligtes), Pflegegeld 380/630/890/1.080 €, Regelsatz (Nullrunde erwartet),
+  // Beitragsbemessungsgrenze KV 6.375 € (Krankengeld höchstens 148,75 € je Tag), Grundfreibetrag 12.564 €.
+  const PLAN = { stand: '11/2026', kg: 267, pflege: [380, 630, 890, 1080], bbgKv: 6375, kgHoechst: 148.75, gfb: 12564 };
+  function plan2027(h, results) {
+    const offen = (r) => r.level === 'ja' || r.level === 'vielleicht' || r.level === 'na';
+    results.forEach(function (r) {
+      const add = (x) => { r.tx = r.tx.concat(x); };
+      if (r.id === 'kindergeld' && offen(r)) add([['kg.antraglos'], ['plan.kg', { b: eur(PLAN.kg) }]]);
+      else if (r.id === 'kiz' && offen(r)) add([['plan.kiz']]);
+      else if (r.id === 'uvg' && offen(r)) add([['plan.uvg']]);
+      else if (r.id === 'wohngeld' && offen(r)) add([['plan.wg']].concat(h.heute < 2027 && r.level !== 'na' ? [['plan.wgDez']] : []));
+      else if (r.id === 'pflege' && offen(r) && (h.pflegegrad >= 2 || h.pflegeAntrag)) add([['plan.pflege', { a: eur(PLAN.pflege[0]), b: eur(PLAN.pflege[1]), c: eur(PLAN.pflege[2]), d: eur(PLAN.pflege[3]) }]]);
+      else if ((r.id === 'ggeld' || r.id === 'gsa') && offen(r)) add([['plan.regel', { rs: eur(R.regelbedarf.alleinstehend) }]]);
+      else if (r.id === 'krankengeld' && offen(r) && h.lohnVorher > R.krank.bbg) add([['plan.krank', { bbg: eur(PLAN.bbgKv), max: eur2(PLAN.kgHoechst) }]]);
+      else if (r.id === 'kgBeh' && offen(r)) add([['plan.gfb', { gfb: eur(PLAN.gfb) }]]);
+    });
+  }
+
   function evaluate(inp) {
     const h = derive(inp);
     const kg = kindergeld(h);
@@ -1250,6 +1271,7 @@ const Rules = (function () {
       a1, krg, eg, mutterschaftsgeld(h), kinderkrankengeld(h), hilfeZurPflege(h), landespflegegeld(h), asylbewerber(h), kindergeldBeh(h), erwerbsminderungsrente(h), schwerbRente(h), eingliederungshilfe(h), pauschbetrag(h), ausweis(h), blindengeld(h), blindenhilfe(h),
       pflegeplus(h), budgetArbeit(h), rundfunk(h, gg, gsa), zuzahlung(h), bab(h), wbs(h)].map(angabeFehlt(h)).map((x, i) => ({ ...x, name: NAMES[x.id], order: i, steps: STEPS[x.id] }));
     uzHinweise(h, results);
+    plan2027(h, results);
     const sorted = results.slice().sort((a, b) => ORDER[a.level] - ORDER[b.level] || a.order - b.order);
     const zus = zusammenspiel(h, results);
     if (zk) zus.splice(zus.length - (zus.length && zus[zus.length - 1][0] === 'z.stichtag' ? 1 : 0), 0, ['z.zuk.' + zk.quelle]);

@@ -918,5 +918,15 @@
   "t.zuk.ueberbruecken": "Do pierwszej wypłaty Grundsicherungsgeld może pomóc przetrwać ten czas. Złóż od razu oba wnioski.",
   "z.zuk.alg": "Najpierw złóż wniosek o Arbeitslosengeld: ma pierwszeństwo przed Grundsicherungsgeld i liczy się jako dochód przy Grundsicherungsgeld, Wohngeld i Kinderzuschlag. Karty pokazują, co się wtedy zmieni.",
   "z.zuk.kg": "Krankengeld ma pierwszeństwo przed Grundsicherungsgeld i liczy się jako dochód przy Grundsicherungsgeld, Wohngeld i Kinderzuschlag. Karty pokazują, co się wtedy zmieni.",
-  "z.zuk.eg": "Złóż wniosek o Elterngeld w porę po porodzie: powyżej 300 € liczy się jako dochód przy Grundsicherungsgeld, Wohngeld i Kinderzuschlag. Karty pokazują, co się wtedy zmieni."
+  "z.zuk.eg": "Złóż wniosek o Elterngeld w porę po porodzie: powyżej 300 € liczy się jako dochód przy Grundsicherungsgeld, Wohngeld i Kinderzuschlag. Karty pokazują, co się wtedy zmieni.",
+  "t.kg.antraglos": "Nowość od 2027: Familienkasse stopniowo wypłaca Kindergeld także bez wniosku, jeśli ma wszystkie dane. Od wiosny 2027 dla rodzin, które już dostają Kindergeld, prawdopodobnie od końca 2027 także na pierwsze dziecko. Do tego czasu złóż wniosek.",
+  "t.plan.kg": "Planowane od 2027: Kindergeld {b} na dziecko. Projekt ustawy, stan na listopad 2026, jeszcze nieuchwalony. Aplikacja liczy według dzisiejszej kwoty.",
+  "t.plan.kiz": "Planowane od 2027: dodatek natychmiastowy (Sofortzuschlag) 25 € na dziecko w Kinderzuschlag ma zostać zniesiony. Projekt, stan na listopad 2026, jeszcze nieuchwalony. Kwotę maksymalną na 2027 Familienkasse ustali na przełomie roku.",
+  "t.plan.uvg": "Planowane od 2027: Unterhaltsvorschuss tylko do 16. zamiast do 18. urodzin. Projekt, stan na listopad 2026, jeszcze nieuchwalony.",
+  "t.plan.wg": "Planowane od 2027: Wohngeld ma zostać obniżony, na przykład przez mniejszy składnik na ogrzewanie. Projekt ustawy, stan na listopad 2026, jeszcze nieuchwalony. Przyznany już Wohngeld ma być wypłacany w dotychczasowej wysokości do końca okresu przyznania.",
+  "t.plan.wgDez": "Wskazówka: jeśli masz prawo, najlepiej złóż wniosek jeszcze w 2026.",
+  "t.plan.pflege": "Planowane od 2027: Pflegegeld {a} (stopień opieki 2), {b} (3), {c} (4) i {d} (5) miesięcznie. Entlastungsbetrag ma zostać przekształcony w nowy budżet. Projekt rządowy, stan na listopad 2026, jeszcze nieuchwalony.",
+  "t.plan.regel": "Nowy Regelsatz na 2027 nie został jeszcze ustalony. Oczekuje się, że pozostanie bez zmian ({rs} dla osób samotnych).",
+  "t.plan.krank": "Od 2027 próg naliczania składek na ubezpieczenie zdrowotne ma wzrosnąć do {bbg} miesięcznie (zgoda Bundesrat oczekiwana, listopad 2026). Krankengeld wyniesie wtedy najwyżej {max} dziennie.",
+  "t.plan.gfb": "Planowane na 2027: kwota wolna od podatku (Grundfreibetrag) {gfb} rocznie. Projekt ustawy, stan na listopad 2026, jeszcze nieuchwalony."
 }

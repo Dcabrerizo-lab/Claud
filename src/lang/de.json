@@ -918,5 +918,15 @@
   "t.zuk.ueberbruecken": "Bis die erste Zahlung kommt, kann Grundsicherungsgeld die Zeit überbrücken. Stelle beide Anträge gleich.",
   "z.zuk.alg": "Arbeitslosengeld zuerst beantragen: Es geht dem Grundsicherungsgeld vor und zählt beim Grundsicherungsgeld, Wohngeld und Kinderzuschlag als Einkommen. Die Karten zeigen, was sich dann ändert.",
   "z.zuk.kg": "Krankengeld geht dem Grundsicherungsgeld vor und zählt beim Grundsicherungsgeld, Wohngeld und Kinderzuschlag als Einkommen. Die Karten zeigen, was sich dann ändert.",
-  "z.zuk.eg": "Elterngeld nach der Geburt rechtzeitig beantragen: Über 300 € zählt es beim Grundsicherungsgeld, Wohngeld und Kinderzuschlag als Einkommen. Die Karten zeigen, was sich dann ändert."
+  "z.zuk.eg": "Elterngeld nach der Geburt rechtzeitig beantragen: Über 300 € zählt es beim Grundsicherungsgeld, Wohngeld und Kinderzuschlag als Einkommen. Die Karten zeigen, was sich dann ändert.",
+  "t.kg.antraglos": "Neu ab 2027: Die Familienkasse zahlt Kindergeld schrittweise auch ohne Antrag, wenn ihr alle Daten vorliegen. Ab Frühjahr 2027 für Familien, die schon Kindergeld bekommen, voraussichtlich ab Ende 2027 auch beim ersten Kind. Bis dahin den Antrag stellen.",
+  "t.plan.kg": "Geplant ab 2027: Kindergeld {b} je Kind. Gesetzentwurf, Stand November 2026, noch nicht beschlossen. Die App rechnet mit dem heutigen Betrag.",
+  "t.plan.kiz": "Geplant ab 2027: Der Sofortzuschlag von 25 € je Kind im Kinderzuschlag soll wegfallen. Entwurf, Stand November 2026, noch nicht beschlossen. Den Höchstbetrag 2027 legt die Familienkasse zum Jahreswechsel fest.",
+  "t.plan.uvg": "Geplant ab 2027: Unterhaltsvorschuss nur noch bis zum 16. statt bis zum 18. Geburtstag. Entwurf, Stand November 2026, noch nicht beschlossen.",
+  "t.plan.wg": "Geplant ab 2027: Das Wohngeld soll gekürzt werden, zum Beispiel durch eine kleinere Heizkostenkomponente. Gesetzentwurf, Stand November 2026, noch nicht beschlossen. Schon bewilligtes Wohngeld soll bis zum Ende des Bewilligungszeitraums in alter Höhe weiterlaufen.",
+  "t.plan.wgDez": "Tipp: Wer Anspruch hat, stellt den Antrag am besten noch 2026.",
+  "t.plan.pflege": "Geplant ab 2027: Pflegegeld {a} (Pflegegrad 2), {b} (3), {c} (4) und {d} (5) im Monat. Der Entlastungsbetrag soll in ein neues Budget umgebaut werden. Kabinettsentwurf, Stand November 2026, noch nicht beschlossen.",
+  "t.plan.regel": "Für 2027 ist noch kein neuer Regelsatz beschlossen. Erwartet wird, dass er gleich bleibt ({rs} für Alleinstehende).",
+  "t.plan.krank": "Ab 2027 soll die Beitragsbemessungsgrenze der Krankenversicherung auf {bbg} im Monat steigen (Zustimmung des Bundesrats steht aus, Stand November 2026). Das Krankengeld beträgt dann höchstens {max} am Tag.",
+  "t.plan.gfb": "Geplant für 2027: Grundfreibetrag {gfb} im Jahr. Gesetzentwurf, Stand November 2026, noch nicht beschlossen."
 }

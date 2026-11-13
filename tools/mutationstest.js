@@ -9,6 +9,8 @@ const { execSync } = require('child_process');
 const ROOT = path.join(__dirname, '..');
 // [Beschreibung, Original, Fehler]
 const M = [
+  ['2027: Wohngeld-Tipp auch nach dem Jahreswechsel', "h.heute < 2027 && r.level !== 'na' ? [['plan.wgDez']]", "r.level !== 'na' ? [['plan.wgDez']]"],
+  ['2027: Pflegegeld-Hinweis auch ohne Pflegegrad', "offen(r) && (h.pflegegrad >= 2 || h.pflegeAntrag)) add([['plan.pflege'", "offen(r)) add([['plan.pflege'"],
   ['Künftige Leistung: keine zweite Rechnung', '    if (zk) { wg = mitZukunft(', '    if (false) { wg = mitZukunft('],
   ['Künftige Leistung: Elterngeld auch bei Paaren', "h.baby === 'bald' && h.adults === 1 && h.egVor != null", "h.baby === 'bald' && h.egVor != null"],
   ['Künftige Leistung: Lohn bleibt zusätzlich', 'netto: Math.max(0, h.netto - netto1) + betrag, aus1: true', 'netto: h.netto + betrag, aus1: true'],

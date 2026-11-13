@@ -467,5 +467,15 @@ ck('[zuk-einkommen] Bekommt die Leistung schon (Einkommensart Arbeitslosengeld):
 ck('[zuk-einkommen] Grundsicherungsgeld fällt danach weg: Hinweis aufs Überbrücken bis zur ersten Zahlung',
   K({ ...zAlg, lohnVorher: 4500 }, 'ggeld').includes('zuk.nein') && K({ ...zAlg, lohnVorher: 4500 }, 'ggeld').includes('zuk.ueberbruecken') && L({ ...zAlg, lohnVorher: 4500 }, 'ggeld') === 'vielleicht');
 
+// Änderungen 2027 (Stand November 2026): Beschlossenes als Hinweis/Rechnung, Geplantes nur als Hinweis, nicht eingerechnet
+const pk = (o, id) => K(o, id);
+const p2 = { kids: 2, brutto: 1800, miete: 850, mietstufe: 3, unterhaltFehlt: true };
+ck('[plan-2027] Kindergeld: Hinweis antragsloses Kindergeld (beschlossen) und geplante 267 €; gerechnet wird weiter mit 259 €', pk(p2, 'kindergeld').includes('kg.antraglos') && res(p2).m.kindergeld.tx.some((t) => t[0] === 'plan.kg' && t[1].b === E(267)) && P(p2, 'kindergeld', 'kg') === E(259));
+ck('[plan-2027] Kinderzuschlag, Unterhaltsvorschuss, Wohngeld: Hinweis auf geplante Änderungen nur bei „wahrscheinlich“ oder „möglich“', pk(p2, 'uvg').includes('plan.uvg') && pk({ ...p2, unterhaltFehlt: false }, 'uvg').every((k) => k !== 'plan.uvg') && (L(p2, 'kiz') === 'nein' || pk(p2, 'kiz').includes('plan.kiz')) && (L(p2, 'wohngeld') === 'nein' || pk(p2, 'wohngeld').includes('plan.wg')));
+ck('[plan-2027] Wohngeld: Tipp „Antrag noch 2026“ nur vor dem Jahreswechsel', pk({ ...f1, heute: 2026.9 }, 'wohngeld').includes('plan.wgDez') && !pk({ ...f1, heute: 2027.05 }, 'wohngeld').includes('plan.wgDez') && pk({ ...f1, heute: 2027.05 }, 'wohngeld').includes('plan.wg'));
+ck('[plan-2027] Pflegegeld: geplante Beträge 380/630/890/1.080 € nur ab Pflegegrad 2', res({ pflegegrad: 3 }).m.pflege.tx.some((t) => t[0] === 'plan.pflege' && t[1].a === E(380) && t[1].d === E(1080)) && !pk({ pflegegrad: 1 }, 'pflege').includes('plan.pflege'));
+ck('[plan-2027] Regelsatz: Hinweis „2027 noch nicht beschlossen, erwartet 563 €“ bei Grundsicherungsgeld und Grundsicherung im Alter', pk(f1, 'ggeld').includes('plan.regel') && pk(f2, 'gsa').includes('plan.regel'));
+ck('[plan-2027] Krankengeld: Hinweis auf die neue Beitragsbemessungsgrenze nur bei Lohn über 5.812,50 €', pk({ arbeitSit: 'krank', krankWochen: 'laeuft', lohnVorher: 7000 }, 'krankengeld').includes('plan.krank') && !pk({ arbeitSit: 'krank', krankWochen: 'laeuft', lohnVorher: 3000 }, 'krankengeld').includes('plan.krank'));
+
 console.log(fails ? '\n' + fails + ' von ' + n + ' FEHLGESCHLAGEN' : '\nFall-Tests bestanden: ' + n + ' Prüfungen');
 process.exit(fails ? 1 : 0);

@@ -918,5 +918,15 @@
   "t.zuk.ueberbruecken": "Until the first payment arrives, Grundsicherungsgeld can bridge the gap. Submit both applications right away.",
   "z.zuk.alg": "Apply for Arbeitslosengeld first: it takes priority over Grundsicherungsgeld and counts as income for Grundsicherungsgeld, Wohngeld and Kinderzuschlag. The cards show what changes then.",
   "z.zuk.kg": "Krankengeld takes priority over Grundsicherungsgeld and counts as income for Grundsicherungsgeld, Wohngeld and Kinderzuschlag. The cards show what changes then.",
-  "z.zuk.eg": "Apply for Elterngeld in time after the birth: above 300 € it counts as income for Grundsicherungsgeld, Wohngeld and Kinderzuschlag. The cards show what changes then."
+  "z.zuk.eg": "Apply for Elterngeld in time after the birth: above 300 € it counts as income for Grundsicherungsgeld, Wohngeld and Kinderzuschlag. The cards show what changes then.",
+  "t.kg.antraglos": "New from 2027: the Familienkasse gradually pays Kindergeld without an application if it has all the data. From spring 2027 for families who already receive Kindergeld, probably from the end of 2027 also for the first child. Until then, apply.",
+  "t.plan.kg": "Planned from 2027: Kindergeld {b} per child. Draft law, as of November 2026, not yet passed. The app calculates with today’s amount.",
+  "t.plan.kiz": "Planned from 2027: the immediate supplement (Sofortzuschlag) of 25 € per child in the Kinderzuschlag is to be abolished. Draft, as of November 2026, not yet passed. The Familienkasse sets the 2027 maximum at the turn of the year.",
+  "t.plan.uvg": "Planned from 2027: Unterhaltsvorschuss only up to the 16th instead of the 18th birthday. Draft, as of November 2026, not yet passed.",
+  "t.plan.wg": "Planned from 2027: Wohngeld is to be cut, for example through a smaller heating cost component. Draft law, as of November 2026, not yet passed. Wohngeld already granted is to continue at the old amount until the end of the approval period.",
+  "t.plan.wgDez": "Tip: if you are entitled, it is best to apply in 2026.",
+  "t.plan.pflege": "Planned from 2027: Pflegegeld {a} (care level 2), {b} (3), {c} (4) and {d} (5) per month. The relief amount (Entlastungsbetrag) is to be turned into a new budget. Cabinet draft, as of November 2026, not yet passed.",
+  "t.plan.regel": "No new standard rate (Regelsatz) has been decided for 2027 yet. It is expected to stay the same ({rs} for single people).",
+  "t.plan.krank": "From 2027 the contribution ceiling of health insurance is to rise to {bbg} per month (Bundesrat approval pending, as of November 2026). Krankengeld is then at most {max} per day.",
+  "t.plan.gfb": "Planned for 2027: basic tax-free allowance {gfb} per year. Draft law, as of November 2026, not yet passed."
 }

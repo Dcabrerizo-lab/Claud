@@ -45,17 +45,25 @@ Eine Prüfung durch eine Sozialberatung oder eine Fachanwältin ersetzt dieser B
 - **Version 96** (App-Datei 95) enthält alle Korrekturen dieses Tages.
 - **Nicht umgesetzt:** Abgleich mit den amtlichen Rechnern (Netzfreigabe nötig, siehe ABGLEICH.md) und ein automatischer Wächter für Gesetzesänderungen (automatische Abrufe über GitHub sind bewusst abgeschaltet).
 
-## Offen für 2027 (Stand 11. November 2026, noch nicht beschlossen)
+## Änderungen 2027 (Stand 13. November 2026)
 
-Diese Werte stehen erst im Entwurf und sind deshalb nicht eingebaut. Ab dem 1.1.2027 zeigt die App ohnehin einen Hinweis, dass die Regeln geprüft werden müssen. Am 1. Dezember 2026 ist eine erneute Prüfung eingeplant.
+**Beschlossen und in der App:** Minijob-Grenze 633 € und Kinderkrankentage 10 / 20 je Kind (die App schaltet am 1.1.2027 selbst um); antragsloses Kindergeld ab 2027 (Bundesrat 25.9.2026) als Hinweis auf der Kindergeld-Karte.
 
-| Wert | Stand | Was die App 2027 rechnet |
-|---|---|---|
-| Regelsätze (Grundsicherungsgeld, Sozialhilfe) | Haushaltsbegleitgesetz 2027 im Verfahren, Nullrunde wahrscheinlich | 563 € usw. (Werte 2026) |
-| Kindergeld | Einkommensteuerreformgesetz 2027 im Bundestag, geplant 267 € | 259 € |
-| Pflegegeld | Pflegeneuordnungsgesetz als Kabinettsentwurf, Beträge in den Quellen uneinheitlich | 347 / 599 / 800 / 990 € |
-| Beitragsbemessungsgrenze KV (Höchstbetrag Kranken- und Kinderkrankengeld) | Kabinett: 6.375 € im Monat, Bundesrat fehlt | 5.812,50 € (Höchstbetrag 135,63 € je Tag) |
-| Kinderkrankentage | Sonderregel endet laut Gesetz am 31.12.2026, Verlängerung wird diskutiert | 10 / 20 Tage (Gesetzeslage) |
+**Nur geplant, deshalb nicht eingerechnet, aber als deutlich markierter Hinweis auf der Karte („Geplant ab 2027 … noch nicht beschlossen“):**
+
+| Wert | Stand | Was die App rechnet | Hinweis auf der Karte |
+|---|---|---|---|
+| Regelsätze | Kein Beschluss, Nullrunde erwartet | 563 € usw. | Grundsicherungsgeld, Grundsicherung im Alter |
+| Kindergeld 267 € | Einkommensteuerreformgesetz 2027, Bundestag | 259 € | Kindergeld |
+| Grundfreibetrag 12.564 € | dasselbe Gesetz | 12.348 € | Kindergeld für erwachsene Kinder mit Behinderung |
+| Kinderzuschlag ohne Sofortzuschlag (25 €) | Haushaltsbegleitgesetz 2027, Entwurf | 297 € | Kinderzuschlag |
+| Unterhaltsvorschuss bis 16 statt 18 | Haushaltsentwurf | bis 18 | Unterhaltsvorschuss |
+| Mindestunterhalt / Unterhaltsvorschuss-Beträge 2027 | Verordnung fehlt noch | 227 / 299 / 394 € | – |
+| Wohngeld-Kürzung (BT-Drs. 21/8284) | Bundestag, Anhörung 4.11.2026 | Werte 2026 | Wohngeld, dazu bis Jahresende „Antrag noch 2026 stellen“ (Bestandsschutz laut Entwurf) |
+| Pflegegeld 380 / 630 / 890 / 1.080 € | Kabinettsentwurf 30.9.2026 | 347 / 599 / 800 / 990 € | Pflegegeld (ab Pflegegrad 2) |
+| Beitragsbemessungsgrenze KV 6.375 € | Verordnung, Bundesrat fehlt | 5.812,50 € (Krankengeld höchstens 135,63 € je Tag) | Krankengeld bei Lohn über 5.812,50 € |
+
+Ab dem 1.1.2027 zeigt die App zusätzlich ihren Hinweis, dass die Regeln geprüft werden müssen. Am 1. Dezember 2026 ist die nächste Prüfung eingeplant; was dann beschlossen ist, wird eingerechnet.
 
 ## Nachtarbeit 10./11. November 2026
 

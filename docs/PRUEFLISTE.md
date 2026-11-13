@@ -19,6 +19,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
+| 2027: Regelsatz noch nicht beschlossen, Nullrunde erwartet: Hinweis, gerechnet wird mit 563 € | ✓ | `plan-2027` |
 | Regelbedarfe 2026: 563 / 506 / 451 / 390 € (§ 20, § 23) | ✓ | `gg-regel` |
 | Freibetrag für Erwerbstätige (§ 11b Abs. 2, 3): 100 € frei, 20 % bis 520 €, 30 % bis 1.000 €, 10 % bis 1.200 € (mit Kind 1.500 €) | ✓ | `gg-ewt` |
 | Freibetrag nur für Einkommen aus Arbeit, nicht für Rente, Arbeitslosengeld, Krankengeld, Elterngeld | ✓ | `gg-ewt-art` |
@@ -72,6 +73,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
+| 2027: geplante Kürzung (BT-Drs. 21/8284) nur als Hinweis; Tipp „Antrag noch 2026“ wegen Bestandsschutz nur vor dem Jahreswechsel | ✓ | `plan-2027` |
 | Formel, Höchstbeträge, Klima- und Heizkomponente (§§ 12, 19), Pauschalabzug je Einkommensart (§ 16) | ✓ | `wg-formel` |
 | Freibetrag 1.800 € je schwerbehinderter Person (GdB 100 oder Schwerbehinderung mit Pflege, § 17 Nr. 1) | ✓ | `wg-schwerb` |
 | Freibetrag Alleinerziehende 1.320 € (§ 17 Nr. 3) | ✓ | `wg-ae` |
@@ -91,6 +93,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
+| 2027: geplanter Wegfall des Sofortzuschlags (25 €) nur als Hinweis, noch nicht eingerechnet | ✓ | `plan-2027` |
 | Höchstbetrag, Mindesteinkommen, 45 % Minderung, Vermögen; Einkommen der Eltern nach § 11b SGB II; Mehrbedarf Alleinerziehende | ✓ | `kiz-formel` |
 | Mehrbedarfe der Eltern im Bedarf der Eltern (Schwangerschaft, Warmwasser, 35 % Teilhabe) | ✓ | `kiz-mehr` |
 | Vermögensgrenze 40.000 € für die erste, 15.000 € je weitere Person (§ 6a Abs. 3 BKGG, bleibt trotz Grundsicherungsreform) | ✓ | `kiz-verm` |
@@ -103,6 +106,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
+| 2027: antragsloses Kindergeld (Gesetz, Bundesrat 25.9.2026) als Hinweis; geplante 267 € nur als Hinweis, gerechnet wird mit 259 € | ✓ | `plan-2027` |
 | 259 € je Kind und Monat (2026); bis 18, bis 25 in Ausbildung oder Studium (§ 32 Abs. 4 Nr. 2) | ✓ | `kg-betrag` |
 | Bis 21 arbeitslos gemeldet, bis 25 Freiwilligendienst, Ausbildungsplatzsuche, Übergangszeit bis 4 Monate; nach erster Ausbildung höchstens 20 Stunden Arbeit (§ 32 Abs. 4) | ◐ | `kg-mehr` |
 | Ausländer: nur mit bestimmten Aufenthaltstiteln (§ 62 Abs. 2) | ◐ | `kg-asyl` |
@@ -132,6 +136,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
+| 2027: geplante Altersgrenze 16 statt 18 nur als Hinweis, noch nicht eingerechnet | ✓ | `plan-2027` |
 | Beträge je Altersstufe 0–5 / 6–11 / 12–17 (nach Abzug des Kindergeldes) | ✓ | `uvg-betrag` |
 | Gezahlter Unterhalt wird angerechnet (§ 2 Abs. 3) | ✓ | `uvg-anrechnung` |
 | Ab 12 Jahren: kein Grundsicherungsgeld des Kindes oder Elternteil mit mindestens 600 € brutto (§ 1 Abs. 1a) | ◐ | `uvg-ab12` |
@@ -161,6 +166,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
+| 2027: geplantes Pflegegeld 380 / 630 / 890 / 1.080 € nur als Hinweis (ab Pflegegrad 2), gerechnet wird mit den Beträgen 2026 | ✓ | `plan-2027` |
 | Pflegegeld, Entlastungsbetrag | ✓ | `pfl-geld` |
 | Verhinderungspflege, Kurzzeitpflege (Entlastungsbudget 3.539 €), Pflegehilfsmittel, Wohnumfeld | ✓ | `pfl-plus` |
 | Pflegesachleistung und Kombinationsleistung (§§ 36, 38), Tages- und Nachtpflege (§ 41) | ✓ | `pfl-sach` |
@@ -262,6 +268,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
+| 2027: Beitragsbemessungsgrenze 6.375 € (Verordnung, Bundesrat ausstehend) als Hinweis bei hohem Lohn; Krankengeld dann höchstens 148,75 € je Tag | ✓ | `plan-2027` |
 | Krankengeld 70 % brutto, höchstens 90 % netto, Beitragsbemessungsgrenze (§ 47) | ✓ | `kv-kg` |
 | Lohnfortzahlung 6 Wochen, Krankengeld bis 78 Wochen (§ 48) | ◐ | `kv-78` |
 | Minijob ohne Krankengeld | ✓ | `kv-minijob` |
