@@ -1,0 +1,259 @@
+{
+ "scale": 3,
+ "forms": {
+  "test-a-wohnen": [
+   {
+    "name": "Antragsteller.Name",
+    "type": "Tx",
+    "x": 658.5,
+    "y": 244.5,
+    "w": 903,
+    "h": 63
+   },
+   {
+    "name": "Antragsteller.Vorname",
+    "type": "Tx",
+    "x": 658.5,
+    "y": 340.5,
+    "w": 903,
+    "h": 63
+   },
+   {
+    "name": "Antragsteller.Geburtsdatum",
+    "type": "Tx",
+    "x": 658.5,
+    "y": 436.5,
+    "w": 483,
+    "h": 63
+   },
+   {
+    "name": "Straße_Hausnummer",
+    "type": "Tx",
+    "x": 658.5,
+    "y": 532.5,
+    "w": 903,
+    "h": 63
+   },
+   {
+    "name": "PLZ",
+    "type": "Tx",
+    "x": 658.5,
+    "y": 628.5,
+    "w": 243,
+    "h": 63
+   },
+   {
+    "name": "Ort",
+    "type": "Tx",
+    "x": 658.5,
+    "y": 724.5,
+    "w": 903,
+    "h": 63
+   },
+   {
+    "name": "Kaltmiete",
+    "type": "Tx",
+    "x": 658.5,
+    "y": 820.5,
+    "w": 303,
+    "h": 63
+   },
+   {
+    "name": "Bemerkungen",
+    "type": "Tx",
+    "x": 658.5,
+    "y": 916.5,
+    "w": 903,
+    "h": 63
+   },
+   {
+    "name": "Mieter",
+    "type": "Btn",
+    "x": 658.5,
+    "y": 1030.5,
+    "w": 45,
+    "h": 45
+   },
+   {
+    "name": "Familienstand",
+    "type": "Btn",
+    "x": 658.5,
+    "y": 1126.5,
+    "w": 45,
+    "h": 45
+   },
+   {
+    "name": "Familienstand",
+    "type": "Btn",
+    "x": 898.5,
+    "y": 1126.5,
+    "w": 45,
+    "h": 45
+   },
+   {
+    "name": "Familienstand",
+    "type": "Btn",
+    "x": 1138.5,
+    "y": 1126.5,
+    "w": 45,
+    "h": 45
+   },
+   {
+    "name": "Familienstand",
+    "type": "Btn",
+    "x": 1378.5,
+    "y": 1126.5,
+    "w": 45,
+    "h": 45
+   },
+   {
+    "name": "Aktenzeichen",
+    "type": "Tx",
+    "x": 658.5,
+    "y": 1204.5,
+    "w": 603,
+    "h": 63
+   }
+  ],
+  "test-b-familie": [
+   {
+    "name": "txtName",
+    "type": "Tx",
+    "x": 658.5,
+    "y": 244.5,
+    "w": 783,
+    "h": 63
+   },
+   {
+    "name": "txtGebDat",
+    "type": "Tx",
+    "x": 658.5,
+    "y": 334.5,
+    "w": 363,
+    "h": 63
+   },
+   {
+    "name": "Staatsangehörigkeit",
+    "type": "Ch",
+    "x": 658.5,
+    "y": 424.5,
+    "w": 483,
+    "h": 63
+   },
+   {
+    "name": "Beruf",
+    "type": "Ch",
+    "x": 658.5,
+    "y": 514.5,
+    "w": 483,
+    "h": 63
+   },
+   {
+    "name": "IBAN",
+    "type": "Tx",
+    "x": 658.5,
+    "y": 604.5,
+    "w": 903,
+    "h": 63
+   },
+   {
+    "name": "Kind1_Name",
+    "type": "Tx",
+    "x": 658.5,
+    "y": 694.5,
+    "w": 783,
+    "h": 63
+   },
+   {
+    "name": "Kind1_GebDat",
+    "type": "Tx",
+    "x": 658.5,
+    "y": 784.5,
+    "w": 363,
+    "h": 63
+   },
+   {
+    "name": "Kind2_Name",
+    "type": "Tx",
+    "x": 658.5,
+    "y": 874.5,
+    "w": 783,
+    "h": 63
+   },
+   {
+    "name": "Kind2_GebDat",
+    "type": "Tx",
+    "x": 658.5,
+    "y": 964.5,
+    "w": 363,
+    "h": 63
+   },
+   {
+    "name": "Kind3_Name",
+    "type": "Tx",
+    "x": 658.5,
+    "y": 1054.5,
+    "w": 783,
+    "h": 63
+   },
+   {
+    "name": "Kind3_GebDat",
+    "type": "Tx",
+    "x": 658.5,
+    "y": 1144.5,
+    "w": 363,
+    "h": 63
+   }
+  ],
+  "test-c-bildung": [
+   {
+    "name": "Name",
+    "type": "Tx",
+    "x": 658.5,
+    "y": 244.5,
+    "w": 783,
+    "h": 63
+   },
+   {
+    "name": "Schule",
+    "type": "Tx",
+    "x": 658.5,
+    "y": 334.5,
+    "w": 783,
+    "h": 63
+   },
+   {
+    "name": "Klasse",
+    "type": "Tx",
+    "x": 658.5,
+    "y": 424.5,
+    "w": 783,
+    "h": 63
+   },
+   {
+    "name": "Mittagessen",
+    "type": "Btn",
+    "x": 658.5,
+    "y": 532.5,
+    "w": 45,
+    "h": 45
+   },
+   {
+    "name": "Ausflug",
+    "type": "Btn",
+    "x": 658.5,
+    "y": 610.5,
+    "w": 45,
+    "h": 45
+   },
+   {
+    "name": "Nachhilfe",
+    "type": "Btn",
+    "x": 658.5,
+    "y": 688.5,
+    "w": 45,
+    "h": 45
+   }
+  ]
+ }
+}

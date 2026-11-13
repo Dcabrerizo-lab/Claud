@@ -23,7 +23,7 @@ Hinweis: Das Repo `Dcabrerizo-lab/Leistungslotse` enthält nur eine einzelne `in
 
 1. **„Einmalkauf“ vs. „9,90 € pro Formular“.** Bei Google Play ist ein Einmalkauf ein fester Preis für die App. 9,90 € pro Formular wäre ein In-App-Kauf pro Formular. Das wirkt doch auf die Technik: Abrechnung über Google Play Billing, Zählen der Formulare, Freischalten offline. Bitte entscheiden.
 2. **„Erklärt beliebige Formulare in der Sprache des Nutzers“ vs. „nur amtliche Quellen“ und „keine KI“.** Für ein beliebiges hochgeladenes Formular gibt es keine amtliche Übersetzung. Ohne KI kann die App nur die Felder erklären, die sie dem Feldkatalog zuordnen konnte, mit den Katalogtexten. Nicht zugeordnete Felder bleiben deutsch. Das ist ehrlich und machbar, sollte aber so im Produkttext stehen.
-3. **„Beliebige Formulare“ vs. „keine OCR im MVP“.** Es gehen nur PDFs mit echten Formularfeldern (AcroForm). Flache PDFs, Scans, reine XFA-Formulare und verschlüsselte PDFs gehen nicht. Wie hoch der Anteil bei amtlichen Anträgen ist, zeigt erst der Test mit echten Formularen.
+3. **„Beliebige Formulare“ vs. „keine OCR im MVP“.** ~~Es gehen nur PDFs mit echten Formularfeldern.~~ **Entschieden am 13.11.2026:** Papierformulare per Foto kommen in den MVP, als Abschreibhilfe und als ausgefülltes PDF (siehe `plan.md`, `spike-m0b.md`). Reine XFA-Formulare und verschlüsselte PDFs lassen sich weiterhin über den Foto-Weg bearbeiten (ausdrucken, fotografieren).
 4. **Leistungs-Lotse hat schon Kamera-Scan mit Texterkennung.** Laut CLAUDE.md gehört OCR nicht in den MVP. Das ist kein Problem, nur ein Hinweis: Das spätere Brief-Scanner-Modul kann den vorhandenen Code übernehmen.
 
 ## 3. Annahmen, die ich prüfen würde

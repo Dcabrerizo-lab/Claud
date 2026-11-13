@@ -1,4 +1,4 @@
-// Renders page 1 of every PDF in spike/m0/out/ with pdf.js (as the app preview will) into PNGs.
+// Renders page 1 of every PDF in spike/m0/out/ (or the folder given as argument) with pdf.js (as the app preview will) into PNGs.
 // Shows the field appearance streams, i.e. what a viewer/printer actually displays.
 import { chromium } from 'playwright';
 import { readdirSync, readFileSync } from 'node:fs';
@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
 
 const dir = fileURLToPath(new URL('.', import.meta.url));
-const out = join(dir, 'out');
+const out = process.argv[2] ? join(process.cwd(), process.argv[2]) : join(dir, 'out');
 const pdfjs = fileURLToPath(new URL('../../node_modules/pdfjs-dist/build/', import.meta.url));
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 900, height: 1200 } });

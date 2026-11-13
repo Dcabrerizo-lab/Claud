@@ -7,16 +7,21 @@
     "typecheck": "tsc --noEmit",
     "spike:fixtures": "tsx spike/m0/make-fixtures.ts",
     "spike": "tsx spike/m0/run.ts",
-    "spike:render": "node spike/m0/render.mjs"
+    "spike:render": "node spike/m0/render.mjs",
+    "spike:photos": "node spike/m0b/make-photos.mjs",
+    "spike:scan": "tsx spike/m0b/run.ts"
   },
   "devDependencies": {
     "@expo-google-fonts/noto-sans": "^0.4.2",
     "@expo-google-fonts/noto-sans-arabic": "^0.4.3",
     "@pdf-lib/fontkit": "^1.1.1",
+    "@tesseract.js-data/deu": "^1.0.0",
     "@types/node": "^26.6.6",
+    "jpeg-js": "^0.4.4",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^4.10.38",
     "playwright": "1.63.0",
+    "tesseract.js": "^7.0.0",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2",
     "vitest": "^5.1.0"

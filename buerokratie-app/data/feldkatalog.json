@@ -1,0 +1,20 @@
+{
+  "_hinweis": "Spike-Ausschnitt des Feldkatalogs (M0b). Synonyme sind Formularbeschriftungen, keine Rechtstexte. Vollständiger Katalog mit 8 Sprachen folgt in M2/M4.",
+  "stand": "2026-11",
+  "felder": [
+    { "key": "person.nachname", "typ": "text", "de": "Familienname", "synonyme": { "de": ["Familienname", "Nachname", "Name"] } },
+    { "key": "person.vorname", "typ": "text", "de": "Vorname", "synonyme": { "de": ["Vorname(n)", "Vornamen", "Vorname", "Rufname"] } },
+    { "key": "person.name_vorname", "typ": "text", "de": "Name, Vorname", "abgeleitet": "{person.nachname}, {person.vorname}", "synonyme": { "de": ["Name, Vorname", "Familienname, Vorname", "Name und Vorname"] } },
+    { "key": "person.geburtsdatum", "typ": "datum", "de": "Geburtsdatum", "synonyme": { "de": ["Geburtsdatum", "geboren am", "Geb.-Datum"] } },
+    { "key": "person.staatsangehoerigkeit", "typ": "text", "de": "Staatsangehörigkeit", "synonyme": { "de": ["Staatsangehörigkeit", "Nationalität"] } },
+    { "key": "adresse.strasse_hausnr", "typ": "text", "de": "Straße, Hausnummer", "synonyme": { "de": ["Straße, Hausnummer", "Straße und Hausnummer", "Straße/Hausnr.", "Straße"] } },
+    { "key": "adresse.plz", "typ": "text", "de": "Postleitzahl", "synonyme": { "de": ["Postleitzahl", "PLZ"] } },
+    { "key": "adresse.ort", "typ": "text", "de": "Wohnort", "synonyme": { "de": ["Wohnort", "Ort"] } },
+    { "key": "wohnen.kaltmiete", "typ": "betrag", "de": "Kaltmiete", "synonyme": { "de": ["Miete ohne Heiz- und Nebenkosten", "Nettokaltmiete", "Kaltmiete", "Grundmiete"] } },
+    { "key": "bank.iban", "typ": "text", "de": "IBAN", "synonyme": { "de": ["IBAN"] } },
+    { "key": "kind.name_vorname", "typ": "text", "de": "Name des Kindes", "liste": "kinder", "synonyme": { "de": ["Name des Kindes", "Name, Vorname"] } },
+    { "key": "kind.geburtsdatum", "typ": "datum", "de": "Geburtsdatum des Kindes", "liste": "kinder", "synonyme": { "de": ["Geburtsdatum"] } },
+    { "key": "kind.schule", "typ": "text", "de": "Schule / Kita", "liste": "kinder", "synonyme": { "de": ["Schule / Kita", "Name der Schule", "Schule", "Kita"] } },
+    { "key": "kind.klasse", "typ": "text", "de": "Klasse", "liste": "kinder", "synonyme": { "de": ["Klasse", "Jahrgangsstufe"] } }
+  ]
+}
