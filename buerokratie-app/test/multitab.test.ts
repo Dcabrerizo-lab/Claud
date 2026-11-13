@@ -145,3 +145,25 @@ describe('IndexedDB: Transaktionsfehler kommen als Fehler an', () => {
     await expect(s.setIf('a', () => true, 1)).rejects.toThrow('Transaktion ' + kind);
   });
 });
+
+describe('Meldungen beim Zusammenführen (aus Mutationstests)', () => {
+  it('Fenster B speichert über Änderungen von A hinweg und meldet „alles neu laden“', async () => {
+    const storage = new MemoryStorage();
+    const [a, b] = await tabs(storage, 2);
+    const events: string[][] = [];
+    b.module({ id: 'x', reads: ['person.*'], writes: [] }).onChange((k) => events.push(k));
+    await a.module(ALL).write('person.vorname', 'Ida');
+    await b.module(ALL).write('person.nachname', 'Kaya');
+    expect(events).toEqual([['*'], ['person.nachname']]); // first "reload everything", then the own change
+  });
+  it('Entfernen eines Eintrags erreicht Module, die irgendein Feld der Liste lesen', async () => {
+    const storage = new MemoryStorage();
+    const [a] = await tabs(storage, 1);
+    await a.module(ALL).write('haushalt[0].vorname', 'A');
+    const seen: string[][] = [];
+    a.module({ id: 'y', reads: ['person.*', 'haushalt[].vorname'], writes: [] }).onChange((k) => seen.push(k));
+    a.module({ id: 'z', reads: ['person.*'], writes: [] }).onChange((k) => seen.push(['z', ...k]));
+    await a.module(ALL).remove('haushalt', 0);
+    expect(seen).toEqual([['haushalt[0]']]);
+  });
+});

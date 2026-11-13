@@ -2,7 +2,7 @@
 
 Offline-App mit verschlüsseltem Stammdatentresor, die PDF-Formulare und fotografierte Papierformulare ausfüllt. Auftrag: siehe CLAUDE.md von David Cabrerizo.
 
-**Stand: M1 (Tresor und Stammdaten-Maske) fertig; Spikes M0 (PDF) und M0b (Foto) abgeschlossen.** Der Code liegt vorerst in diesem Unterordner des Leistungs-Lotse-Repos und ist unabhängig davon (eigene `package.json`).
+**Stand: M1 (Tresor und Stammdaten-Maske) und M3 (Sicherung) fertig; Spikes M0 (PDF) und M0b (Foto) abgeschlossen.** Der Code liegt vorerst in diesem Unterordner des Leistungs-Lotse-Repos und ist unabhängig davon (eigene `package.json`).
 
 | Pfad | Inhalt |
 |---|---|
@@ -18,6 +18,7 @@ Offline-App mit verschlüsseltem Stammdatentresor, die PDF-Formulare und fotogra
 | `docs/spike-m0.md` | **Ergebnis M0**: was pdf-lib kann und wo es scheitert |
 | `docs/spike-m0b.md` | **Ergebnis M0b**: Papierformulare per Foto (Abschreibhilfe und ausgefülltes PDF) |
 | `docs/m1-tresor.md` | **Ergebnis M1** |
+| `docs/m3-sicherung.md` | **Ergebnis M3** (Sicherung) |
 | `docs/testbericht.md` | **Testbericht**: Prüfebenen, gefundene und behobene Fehler, was noch fehlt |
 | `docs/entscheidungen.md` | technische Entscheidungen mit Begründung |
 | `docs/plan.md` | fortgeschriebener Plan mit Davids Entscheidungen |

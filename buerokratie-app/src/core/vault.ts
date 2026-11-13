@@ -37,7 +37,8 @@ export function parseBackup(text: string): Backup {
   let b: any;
   try { b = JSON.parse(text); } catch { throw new BackupError('keine-sicherung'); }
   if (!b || typeof b !== 'object' || b.format !== BACKUP_FORMAT) throw new BackupError('keine-sicherung');
-  if (typeof b.version !== 'number' || b.version > 1) throw new BackupError('neuere-version');
+  if (typeof b.version !== 'number') throw new BackupError('keine-sicherung');
+  if (b.version > 1) throw new BackupError('neuere-version');
   if (b.version !== 1) throw new BackupError('keine-sicherung');
   const m = b.meta, d = b.data;
   const wrappedOk = (w: any) => w && isB64(w.iv) && isB64(w.data) && kdfOk(w.kdf);

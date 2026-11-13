@@ -44,6 +44,6 @@ Ist ein Punkt nicht erreichbar, bleibt der Foto-Weg draußen, und der MVP umfass
 - **M0b Foto-Spike** ✔ (`spike-m0b.md`), Freigabe offen (siehe oben)
 - **M1 Tresor** ✔ (`m1-tresor.md`): Passphrase plus Wiederherstellungscode, Sperren/Entsperren, Stammdaten-Maske, Modul-Schnittstelle
 - **M2 Zuordnung und Ausfüllen:** PDF-Weg; Foto-Weg nur nach Freigabe, mit gemeinsamer Bestätigungsansicht. Für Fotos: Kästchen verschieben und Beschriftung von Hand wählen. Vorlagen merken (bei Fotos über einen Layout-Fingerabdruck)
-- **M3 Backup** (unverändert)
+- **M3 Sicherung** ✔ (`m3-sicherung.md`): verschlüsselter Export/Import, Einspielen mit Passphrase oder Wiederherstellungscode, Erinnerung
 - **M4 Mehrsprachigkeit** (unverändert)
 - danach: Android-Build für den geschlossenen Test, weitere Module

@@ -1,10 +1,10 @@
 # Testbericht
 
-Stand: 13.11.2026 · Abdeckung Kern: 100 % Zeilen, 98,9 % Verzweigungen · geprüft: Kern (Tresor, Verschlüsselung, Speicher, Feldkatalog, Module) und Oberfläche (M1)
+Stand: 13.11.2026 (inkl. M3 Sicherung) · Abdeckung Kern: 100 % Zeilen, 98,9 % Verzweigungen · geprüft: Kern (Tresor, Verschlüsselung, Speicher, Feldkatalog, Module) und Oberfläche (M1)
 
 ## Kurzfassung
 
-Der Kern und die Oberfläche wurden auf sieben Ebenen geprüft, mit insgesamt mehreren Millionen automatisch erzeugten Testfällen. Dabei wurden **13 echte Fehler und Schwachstellen gefunden und behoben** (Liste unten). Kein Test ist zum Bestehen abgeschwächt oder abgeschaltet worden.
+Der Kern und die Oberfläche wurden auf sieben Ebenen geprüft, mit insgesamt mehreren Millionen automatisch erzeugten Testfällen. Dabei wurden **16 echte Fehler und Schwachstellen gefunden und behoben** (Liste unten). Kein Test ist zum Bestehen abgeschwächt oder abgeschaltet worden.
 
 Was **nicht** geprüft werden konnte, steht am Ende. Das betrifft vor allem echte Handys und echte Formulare. Diese Punkte gehören vor eine Veröffentlichung.
 
@@ -12,13 +12,13 @@ Was **nicht** geprüft werden konnte, steht am Ende. Das betrifft vor allem echt
 
 | Ebene | Was | Umfang (großer Lauf) | Ergebnis |
 |---|---|---|---|
-| 1. Beispieltests | Abläufe, Abnahmekriterien, Fehlermeldungen | 172 Tests | ✔ |
+| 1. Beispieltests | Abläufe, Abnahmekriterien, Fehlermeldungen (inkl. Sicherung) | 197 Tests | ✔ |
 | 2. Vollständige Prüfung | jedes Datum 1900–2100 in 4 Schreibweisen; alle Tag/Monat-Kombinationen 0–39 × 0–19 | 293 656 + 6 400 Fälle | ✔ |
 | 3. Eigenschaftsbasiert (Zufallseingaben) | IBAN (gültige, Tippfehler, Zahlendreher), Beträge, jedes Katalogfeld mit beliebigem Text inkl. Steuerzeichen und Emoji, Verschlüsselung beliebiger Daten, Bitfehler, Passphrasen in allen Schriften | 300 000 IBAN-Fälle; je Eigenschaft bis 200 000 Fälle (`FC_RUNS=50000`) | ✔ |
 | 4. Modellbasiert | zufällige Bedienfolgen (Schreiben, Löschen, Hinzufügen, Entfernen, Sperren, Passphrase-Wechsel, Moduldaten), nach **jedem** Schritt Vergleich mit einem Referenzmodell; zusätzlich 2–4 gleichzeitig geöffnete Fenster | 2 000 Folgen mit Ø 31 Schritten (≈ 62 000 Schritte) + 2 000 Mehrfenster-Abläufe | ✔ |
 | 5. Fehlereinspeisung | Speicher voll mitten im Speichern, Absturz beim Einrichten, Sperren während des Speicherns, 300 gleichzeitige Änderungen, Tresor in anderem Fenster gelöscht | je hunderte Durchläufe | ✔ |
 | 6. Mutationstests | Stryker baut automatisch ≈ 1 040 kleine Fehler in den Kern ein und prüft, ob die Tests sie finden | Mutationswert **73 % → 92–93 %** | siehe unten |
-| 7. Oberfläche im Browser | kompletter Ablauf; Robustheit (2 Fenster, Doppeltippen, Sperren/Schließen direkt nach dem Tippen, Code nie bestätigt); Barrierefreiheit (axe-core, WCAG 2.1 AA) in 32 Varianten (hell/dunkel, normale/große Schrift, de/en, 280–1280 px) × 7 Bildschirme; Tastaturbedienung; Zufallseingaben mit feindlichen Werten (`<script>`, SQL, RTL-Zeichen, 201 Zeichen) und Vergleich nach Neuladen | 12 + 8 + 225 Prüfungen; 60 Sitzungen mit 1 756 Feldeingaben | ✔ Chromium, Firefox und WebKit (Safari-Engine, in der CI) |
+| 7. Oberfläche im Browser | kompletter Ablauf; Robustheit (2 Fenster, Doppeltippen, Sperren/Schließen direkt nach dem Tippen, Code nie bestätigt); Sicherung (Herunterladen, Einspielen auf neuem Gerät mit Passphrase und Code, Ersetzen mit 2 Fenstern, fremde/neuere/kaputte Dateien); Barrierefreiheit (axe-core, WCAG 2.1 AA) in 32 Varianten (hell/dunkel, normale/große Schrift, de/en, 280–1280 px) × 9 Bildschirme; Tastaturbedienung; Zufallseingaben mit feindlichen Werten (`<script>`, SQL, RTL-Zeichen, 201 Zeichen) und Vergleich nach Neuladen | 12 + 8 + 6 + 289 Prüfungen; 60 Sitzungen mit 1 756 Feldeingaben | ✔ Chromium, Firefox und WebKit (Safari-Engine, in der CI) |
 
 Zusätzlich gibt es **Referenzwerte**: Argon2id und PBKDF2 liefern exakt dieselben Schlüssel wie die unabhängigen Referenzimplementierungen (argon2-cffi/C-Referenz, Python hashlib). Ein Austausch des Verfahrens würde also sofort auffallen.
 
@@ -41,6 +41,9 @@ Zusätzlich gibt es **Referenzwerte**: Argon2id und PBKDF2 liefern exakt dieselb
 | 11 | Safari/WebKit: seitliches Scrollen auf kleinen Handys, Kontrast der „Gespeichert“-Meldung | CI mit WebKit | schlechtere Bedienbarkeit auf iPhones |
 | 12 | Hinweis „Keine Rechtsberatung“ außerhalb eines Seitenbereichs | axe-core | für Screenreader schwerer auffindbar |
 | 13 | Abgleich zwischen Fenstern, der genau beim Sperren eintrifft, warf einen Fehler | Mutationstest | Fehlermeldung in der Konsole |
+| 14 | Sicherung und Änderung in derselben Millisekunde: Änderung galt als gesichert | Backup-Test | Erinnerung bliebe aus |
+| 15 | Erinnerung erschien erst beim nächsten Öffnen, nicht nach der ersten Angabe | Browsertest/Durchsicht | Nutzer erfährt zu spät, dass er sichern sollte |
+| 16 | Sicherungsdatei mit Version als Text bekam die Meldung „neuere Version“ | Mutationstest | irreführende Meldung |
 
 Außerdem wurde toter Code entfernt (ein nie gelesenes Änderungsprotokoll), und doppelte Prüfungen wurden vereinfacht.
 
@@ -62,7 +65,7 @@ Alle anderen Funde aus den Mutationstests wurden mit gezielten Tests geschlossen
 4. **Nutzertest mit der Zielgruppe:** Verständlichkeit der Texte, besonders für Menschen mit wenig Deutsch.
 5. **Übersetzungen** (tr, ar, ru, uk, pl, ro) gibt es noch nicht. Arabisch (RTL) ist darum noch nicht geprüft.
 6. **PDF-Ausfüllen und Foto-Weg** sind noch Spikes (M0, M0b), keine Produktfunktion. Sie werden vor der Freigabe genauso getestet.
-7. **Backup** (M3) fehlt noch. Ohne Backup kann ein Datenverlust durch den Browser (Speicher geleert) alles kosten.
+7. **Sicherung auf Android/iOS** (Teilen-Menü) erst mit dem Capacitor-Projekt auf echten Geräten prüfbar.
 
 ## Selbst ausführen
 

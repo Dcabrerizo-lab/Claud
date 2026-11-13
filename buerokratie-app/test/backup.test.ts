@@ -225,3 +225,84 @@ describe('Erinnerung an die Sicherung', () => {
     expect(last <= vault.lastBackup!).toBe(true);
   });
 });
+
+describe('Dateiprüfung: jede Bedingung einzeln (aus Mutationstests)', () => {
+  let ok: any;
+  const code = (b: unknown) => { try { parseBackup(typeof b === 'string' ? b : JSON.stringify(b)); return 'ok'; } catch (e) { return (e as BackupError).code; } };
+  it('Grundgerüst', async () => {
+    ok = JSON.parse(toFile(await (await filled()).vault.exportBackup()));
+    expect(code('5')).toBe('keine-sicherung');
+    expect(code('"text"')).toBe('keine-sicherung');
+    expect(code({ ...ok, version: '1' })).toBe('keine-sicherung');
+    expect(code({ ...ok, version: 1.5 })).toBe('neuere-version');
+    expect(code({ ...ok, meta: null })).toBe('beschaedigt');
+    expect(code({ ...ok, meta: { ...ok.meta, format: 'x' } })).toBe('beschaedigt');
+    expect(code({ ...ok, meta: { ...ok.meta, version: 2 } })).toBe('beschaedigt');
+    expect(code({ ...ok, meta: { ...ok.meta, created: 1 } })).toBe('beschaedigt');
+    expect(code({ ...ok, data: null })).toBe('beschaedigt');
+    expect(code({ ...ok, data: { ...ok.data, iv: '' } })).toBe('beschaedigt');
+    expect(code({ ...ok, data: { ...ok.data, iv: 5 } })).toBe('beschaedigt');
+    expect(code({ ...ok, data: { ...ok.data, data: 'x' + ok.data.data + '!' } })).toBe('beschaedigt');
+    expect(code({ ...ok, data: { ...ok.data, data: '!' + ok.data.data } })).toBe('beschaedigt');
+    expect(code({ ...ok, meta: { ...ok.meta, passphrase: { ...ok.meta.passphrase, iv: undefined } } })).toBe('beschaedigt');
+    expect(code({ ...ok, meta: { ...ok.meta, recovery: { ...ok.meta.recovery, data: '' } } })).toBe('beschaedigt');
+    expect(code({ ...ok, meta: { ...ok.meta, passphrase: { ...ok.meta.passphrase, kdf: { ...ok.meta.passphrase.kdf, salt: undefined } } } })).toBe('beschaedigt');
+    expect(code({ ...ok, meta: { ...ok.meta, passphrase: { ...ok.meta.passphrase, kdf: null } } })).toBe('beschaedigt');
+    const big = JSON.stringify(ok);
+    expect(code(big + ' '.repeat(MAX_BACKUP_BYTES - big.length))).toBe('ok'); // exactly at the limit
+  });
+  it('Grenzen der Schlüsselparameter exakt', async () => {
+    ok ??= JSON.parse(toFile(await (await filled()).vault.exportBackup()));
+    const salt = ok.meta.passphrase.kdf.salt;
+    const withKdf = (kdf: object) => code({ ...ok, meta: { ...ok.meta, passphrase: { ...ok.meta.passphrase, kdf } } });
+    const a = (memKiB: number, iterations: number, parallelism: number) => withKdf({ alg: 'argon2id', salt, memKiB, iterations, parallelism });
+    expect(a(8, 1, 1)).toBe('ok'); expect(a(7, 1, 1)).toBe('beschaedigt');
+    expect(a(1048576, 50, 16)).toBe('ok'); expect(a(1048577, 1, 1)).toBe('beschaedigt');
+    expect(a(8, 0, 1)).toBe('beschaedigt'); expect(a(8, 51, 1)).toBe('beschaedigt');
+    expect(a(8, 1, 17)).toBe('beschaedigt');
+    const p = (iterations: number) => withKdf({ alg: 'pbkdf2-sha256', salt, iterations });
+    expect(p(1000)).toBe('ok'); expect(p(999)).toBe('beschaedigt');
+    expect(p(10_000_000)).toBe('ok'); expect(p(10_000_001)).toBe('beschaedigt');
+    expect(withKdf({ alg: 'pbkdf2-sha256', salt, iterations: 600000, memKiB: 1e12 })).toBe('ok'); // irrelevant fields are ignored, not used
+  });
+});
+
+describe('Sicherung: weitere Randfälle (aus Mutationstests)', () => {
+  const DAY = 86_400_000;
+  it('zu kurze neue Passphrase beim Einspielen mit Code: Gerät bleibt unverändert', async () => {
+    const { vault, recoveryCode } = await filled();
+    const file = toFile(await vault.exportBackup());
+    const target = await filled(new MemoryStorage());
+    const before = [...target.storage.map.entries()];
+    await expect(Vault.restore(target.storage, catalog, parseBackup(file), 'FALSCH-CODE', { recoveryCode: true, newPassphrase: 'kurz' })).rejects.toThrow(/mindestens 8/);
+    await expect(Vault.restore(target.storage, catalog, parseBackup(file), recoveryCode, { recoveryCode: true })).rejects.toThrow(/mindestens 8/);
+    expect([...target.storage.map.entries()]).toEqual(before);
+  });
+  it('Inhalt: geleerte Felder und entfernte Einträge zählen nicht; Moduldaten anderer Module schon', async () => {
+    const s = new MemoryStorage();
+    const { vault } = await Vault.create(s, catalog, PASS, FAST);
+    const m = vault.module(ALL);
+    await m.write('person.vorname', 'A'); await m.write('person.vorname', '');
+    expect(vault.hasContent).toBe(false);
+    await m.write('haushalt[0].vorname', 'B'); await m.remove('haushalt', 0);
+    expect(vault.hasContent).toBe(false);
+    await m.setState({ recoveryConfirmed: true });
+    await vault.module({ id: 'fristen', reads: [], writes: [] }).setState({ x: 1 });
+    expect(vault.hasContent).toBe(true);
+  });
+  it('Moduldaten-Änderung gilt als ungesichert, UI-Einstellung nicht; Grenze genau 30 Tage', async () => {
+    const { vault } = await filled();
+    await vault.exportBackup();
+    expect(vault.changedSinceBackup).toBe(false);
+    await vault.module({ id: 'fristen', reads: [], writes: [] }).setState({ x: 2 });
+    expect(vault.changedSinceBackup).toBe(true);
+    const t0 = Date.parse(vault.lastBackup!);
+    expect(vault.backupDue(30, t0 + 30 * DAY)).toBe(false);
+    expect(vault.backupDue(30, t0 + 30 * DAY + 1)).toBe('alt');
+  });
+  it('Sicherung ohne Datensatz auf dem Gerät: klare Meldung', async () => {
+    const { storage, vault } = await filled();
+    await storage.delete('data');
+    await expect(vault.exportBackup()).rejects.toThrow(/fehlen|gelöscht/);
+  });
+});
