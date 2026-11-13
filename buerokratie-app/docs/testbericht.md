@@ -1,6 +1,6 @@
 # Testbericht
 
-Stand: 13.11.2026 · geprüft: Kern (Tresor, Verschlüsselung, Speicher, Feldkatalog, Module) und Oberfläche (M1)
+Stand: 13.11.2026 · Abdeckung Kern: 100 % Zeilen, 98,9 % Verzweigungen · geprüft: Kern (Tresor, Verschlüsselung, Speicher, Feldkatalog, Module) und Oberfläche (M1)
 
 ## Kurzfassung
 
@@ -18,7 +18,7 @@ Was **nicht** geprüft werden konnte, steht am Ende. Das betrifft vor allem echt
 | 4. Modellbasiert | zufällige Bedienfolgen (Schreiben, Löschen, Hinzufügen, Entfernen, Sperren, Passphrase-Wechsel, Moduldaten), nach **jedem** Schritt Vergleich mit einem Referenzmodell; zusätzlich 2–4 gleichzeitig geöffnete Fenster | 2 000 Folgen mit Ø 31 Schritten (≈ 62 000 Schritte) + 2 000 Mehrfenster-Abläufe | ✔ |
 | 5. Fehlereinspeisung | Speicher voll mitten im Speichern, Absturz beim Einrichten, Sperren während des Speicherns, 300 gleichzeitige Änderungen, Tresor in anderem Fenster gelöscht | je hunderte Durchläufe | ✔ |
 | 6. Mutationstests | Stryker baut automatisch ≈ 1 040 kleine Fehler in den Kern ein und prüft, ob die Tests sie finden | Mutationswert **73 % → 92–93 %** | siehe unten |
-| 7. Oberfläche im Browser | kompletter Ablauf; Robustheit (2 Fenster, Doppeltippen, Sperren/Schließen direkt nach dem Tippen, Code nie bestätigt); Barrierefreiheit (axe-core, WCAG 2.1 AA) in 32 Varianten (hell/dunkel, normale/große Schrift, de/en, 280–1280 px) × 7 Bildschirme; Tastaturbedienung; Zufallseingaben mit feindlichen Werten (`<script>`, SQL, RTL-Zeichen, 201 Zeichen) und Vergleich nach Neuladen | 12 + 8 + 225 Prüfungen; 60 Sitzungen mit 1 756 Feldeingaben | ✔ Chromium und Firefox · WebKit: Ablauf und Robustheit ✔, Layout-Korrektur siehe Fund 11 |
+| 7. Oberfläche im Browser | kompletter Ablauf; Robustheit (2 Fenster, Doppeltippen, Sperren/Schließen direkt nach dem Tippen, Code nie bestätigt); Barrierefreiheit (axe-core, WCAG 2.1 AA) in 32 Varianten (hell/dunkel, normale/große Schrift, de/en, 280–1280 px) × 7 Bildschirme; Tastaturbedienung; Zufallseingaben mit feindlichen Werten (`<script>`, SQL, RTL-Zeichen, 201 Zeichen) und Vergleich nach Neuladen | 12 + 8 + 225 Prüfungen; 60 Sitzungen mit 1 756 Feldeingaben | ✔ Chromium, Firefox und WebKit (Safari-Engine, in der CI) |
 
 Zusätzlich gibt es **Referenzwerte**: Argon2id und PBKDF2 liefern exakt dieselben Schlüssel wie die unabhängigen Referenzimplementierungen (argon2-cffi/C-Referenz, Python hashlib). Ein Austausch des Verfahrens würde also sofort auffallen.
 
