@@ -9,7 +9,8 @@
     "spike": "tsx spike/m0/run.ts",
     "spike:render": "node spike/m0/render.mjs",
     "spike:photos": "node spike/m0b/make-photos.mjs",
-    "spike:scan": "tsx spike/m0b/run.ts"
+    "spike:scan": "tsx spike/m0b/run.ts",
+    "test:offline": "node spike/m0b/offline-browser.mjs && WORKER_CSP=1 node spike/m0b/offline-browser.mjs"
   },
   "devDependencies": {
     "@expo-google-fonts/noto-sans": "^0.4.2",

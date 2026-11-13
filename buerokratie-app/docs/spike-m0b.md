@@ -59,6 +59,22 @@ Echte Fotos fehlen noch. Darum habe ich die drei synthetischen Testformulare aus
 | Senkrechte Ränder sind in unscharfen JPEGs löchrig, die Höhe wurde unterschätzt | Höhe über die waagerechten Kanten im Kästchen messen (Median an 3 Stellen) |
 | Schatten und ungleiches Licht | Tinte relativ zur örtlichen Papierhelligkeit bestimmen, nicht mit festem Schwellwert |
 
+## Offline-Nachweis im Browser (`npm run test:offline`)
+
+Chromium mit gesperrtem Netz: Jede Anfrage außerhalb der lokalen App wird blockiert und gezählt. Die Seite läuft unter der Sicherheitsregel (CSP) der App.
+
+| Sicherheitsregel | Texterkennung | Netzaufrufe nach außen |
+|---|---|---|
+| `connect-src 'none'` (CLAUDE.md), nur auf der Seite (wie `<meta>` in der App) | läuft, 7/7 Beschriftungen, ca. 1,3–1,7 s | **0** |
+| `connect-src 'none'`, auch auf dem Hintergrund-Thread der Texterkennung | **hängt** (Thread darf die eigenen Sprachdaten nicht laden) | 0 |
+| `connect-src 'self'` (nur eigene App-Dateien) | läuft in beiden Fällen, 7/7, ca. 1,3 s | **0** |
+
+**Folgen:**
+- Offline klappt die Texterkennung im Browser. Kein einziger Aufruf verlässt das Gerät.
+- Mit `connect-src 'none'` darf die App nicht einmal ihre *eigenen* Dateien per `fetch` laden. Das Foto muss als Bild übergeben werden (gelöst), und die Sprachdaten lädt der Hintergrund-Thread nur, weil eine `<meta>`-CSP dort nicht greift. Das ist ein Schlupfloch, kein sauberer Zustand.
+- **Vorschlag:** `connect-src 'self'`. Das heißt: nur Dateien der App selbst, nichts aus dem Internet. In der Android-App ist „self“ der lokale App-Inhalt auf dem Gerät. Der Nachweis „kein Aufruf nach außen“ erfolgt per Test (wie oben), nicht allein über die CSP. Entscheidung bei David, weil das den Wortlaut von Produktprinzip 1 ändert.
+- **Nicht gemessen:** Geschwindigkeit auf einem Handy. Die CPU-Drosselung im Testbrowser wirkt nicht auf den Hintergrund-Thread, darum gibt es hier keine Handy-Zahlen. Das geht nur auf einem echten Gerät.
+
 ## Größe für die App
 
 - Texterkennung (WebAssembly) ≈ 2,9 MB. Deutsche Sprachdatei: 7,1 MB (genau) oder 1,3 MB (schnell). Auf diesen Testfotos liefern beide **dasselbe Ergebnis**. Mit echten Fotos vergleiche ich erneut. Für die Android-App entfällt das, wenn ML Kit genutzt wird.
