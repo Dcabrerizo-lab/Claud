@@ -5,6 +5,7 @@ name: Großer Abgleich Elterngeld
 
 on:
   push:
+    branches-ignore: ['main']   # nur auf Arbeitszweigen (schreibt Testfälle in den Zweig)
     paths: ['tools/amtliche-rechner/gross-auftrag-elterngeld.txt']
   workflow_dispatch:
 

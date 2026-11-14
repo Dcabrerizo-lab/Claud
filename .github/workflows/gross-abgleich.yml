@@ -5,6 +5,7 @@ name: Großer Abgleich amtliche Rechner
 
 on:
   push:
+    branches-ignore: ['main']   # nur auf Arbeitszweigen (schreibt Testfälle in den Zweig)
     paths: ['tools/amtliche-rechner/gross-auftrag.txt']
   workflow_dispatch:
 
