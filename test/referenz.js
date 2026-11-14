@@ -375,7 +375,8 @@ function krankengeld(e) {
 
 // ---------- Elterngeld (§ 2 BEEG, wörtlich: 0,1 Prozentpunkte je volle 2 € Abstand) ----------
 function elterngeld(nettoVorher) {
-  const n = Math.max(0, nettoVorher);
+  // § 2c Abs. 1 BEEG: Elterngeld-Netto = Netto minus 1/12 des Arbeitnehmer-Pauschbetrags (1.000 €), wie der Elterngeldrechner des Bundes
+  const n = Math.max(0, nettoVorher - 1000 / 12);
   let prozent = 67;
   if (n < 1000) prozent = Math.min(100, 67 + Math.floor((1000 - n) / 2) * 0.1);
   if (n > 1200) prozent = Math.max(65, 67 - Math.floor((n - 1200) / 2) * 0.1);

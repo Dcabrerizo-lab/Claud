@@ -41,7 +41,7 @@ Rechenregeln stichprobenartig prüfen.
 - **Rechenregeln in Kurzform:** in der App unter „Rechenregeln“ (Tabelle) und im Code `src/rules.js` mit Paragrafen in Kommentaren.
 - **Werte 2026 und Stand 2027:** `docs/PRUEFBERICHT.md`, Abschnitt „Änderungen 2027“: Beschlossenes ist eingerechnet,
   Entwürfe stehen nur als gekennzeichneter Hinweis auf der Karte.
-- **Abgleich mit amtlichen Rechnern:** Wohngeld: 60 Haushalte im Wohngeldrechner des Bundesbauministeriums nachgerechnet, alle gleich (Test `test/test-amtlich.js`, Werkzeug `tools/amtliche-rechner/`). Dabei gefunden und behoben: fehlende Werbungskostenpauschale, fehlende Mindestwerte der Anlage 3 WoGG.
+- **Abgleich mit amtlichen Rechnern:** Wohngeld: 60 Haushalte im Wohngeldrechner des Bundesbauministeriums nachgerechnet, alle gleich (Test `test/test-amtlich.js`, Werkzeug `tools/amtliche-rechner/`). Dabei gefunden und behoben: fehlende Werbungskostenpauschale, fehlende Mindestwerte der Anlage 3 WoGG. Elterngeld: 33 Einkommen im Elterngeldrechner des Familienportals, alle gleich; dabei gefunden: Pauschbetrag nach § 2c BEEG fehlte.
 - **Musterfälle zum Nachrechnen:** `docs/Musterfaelle-Abgleich.csv` (für die amtlichen Rechner) und die Fall-Tests
   `test/test-faelle.js` (rund 280 Fälle mit Erwartung aus dem Gesetz).
 

@@ -317,6 +317,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Regel | Status | Test |
 |---|---|---|
 | Basiselterngeld 67 %, Ersatzrate bis 100 % unter 1.000 €, bis 65 % über 1.200 € (§ 2 Abs. 2); mindestens 300 €, höchstens 1.800 €; ElterngeldPlus halb so hoch, doppelt so lange (§ 4a); bis zu 14 Monate (§ 4) | ✓ | `eg-satz` |
+| Elterngeld-Netto: Netto minus ein Zwölftel des Arbeitnehmer-Pauschbetrags (§ 2c Abs. 1 BEEG, 83,33 €); 33 Einkommen gleich wie der Elterngeldrechner des Bundes | ✓ | `amtlich-elterngeld` |
 | Einkommensgrenze 175.000 € zu versteuerndes Einkommen (§ 1 Abs. 8); Mutterschaftsgeld wird angerechnet (§ 3) | ◐ | `eg-hinweise` |
 | Ausländer: Anspruch abhängig vom Aufenthaltstitel (§ 1 Abs. 7) | ◐ | `eg-asyl` |
 | Geschwisterbonus, Mehrlingszuschlag (§ 2a) | ○ (Anzahl und Alter der Geschwister werden nicht abgefragt; Spanne reicht bis 1.800 €) | |

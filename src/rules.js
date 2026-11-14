@@ -69,7 +69,8 @@ const Rules = (function () {
     // Elterngeld (§ 2 BEEG): 67 % des Nettos vor der Geburt (65 % ab 1.240 €, bis 100 % bei kleinem Einkommen), 300 bis 1.800 €;
     // ElterngeldPlus die Hälfte für doppelt so lange; Basiselterngeld 12 Monate, mit Partnermonaten oder alleinerziehend 14;
     // kein Anspruch über 175.000 € zu versteuerndem Einkommen der Eltern (Geburten ab 1.4.2025, § 1 Abs. 8 BEEG)
-    eg: { min: 300, max: 1800, satz: 0.67, satzHoch: 0.65, grenzeUnten: 1000, grenzeOben: 1200, monate: 12, partner: 2, einkommenGrenze: 175000 },
+    // pausch: ein Zwölftel des Arbeitnehmer-Pauschbetrags (§ 2c Abs. 1 BEEG), wie im Elterngeldrechner des Bundes (1.000 € / 12)
+    eg: { pausch: 1000 / 12, min: 300, max: 1800, satz: 0.67, satzHoch: 0.65, grenzeUnten: 1000, grenzeOben: 1200, monate: 12, partner: 2, einkommenGrenze: 175000 },
     // Hilfe zur Pflege (§§ 61 ff., 85 SGB XII): Einkommensgrenze 2 × RS1 + Wohnkosten + 70 % RS1 je weiterer Person; Vermögen 10.000 € je Erwachsenem
     hzp: { grund: 2, familie: 0.7 },
     // Blindenhilfe (§ 72 SGB XII): gleiche Einkommensgrenze wie Hilfe zur Pflege (§ 85); vom Einkommen über der Grenze
@@ -873,8 +874,10 @@ const Rules = (function () {
   }
 
   // Elterngeld (BEEG)
-  function elterngeldBerechnen(n) {
+  function elterngeldBerechnen(netto) {
     const E = R.eg;
+    // Elterngeld-Netto: vom Netto noch ein Zwölftel des Arbeitnehmer-Pauschbetrags ab (§ 2c Abs. 1 BEEG; so rechnet der Elterngeldrechner des Bundes)
+    const n = Math.max(0, netto - E.pausch);
     let q = E.satz;
     // § 2 Abs. 2 BEEG: 0,1 Prozentpunkte für je (volle) 2 € Abstand zur Grenze
     if (n < E.grenzeUnten) q = Math.min(1, E.satz + Math.floor((E.grenzeUnten - n) / 2) * 0.001);

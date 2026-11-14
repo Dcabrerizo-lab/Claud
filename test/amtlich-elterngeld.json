@@ -1,0 +1,137 @@
+{
+ "quelle": "Elterngeld-Schnellrechner im Familienportal des Bundes (familienportal.de), abgefragt am 14.11.2026; ein Kind, ohne Geschwisterbonus, ohne Einkommen nach der Geburt",
+ "faelle": [
+  {
+   "vorher": 0,
+   "amtlich": 300
+  },
+  {
+   "vorher": 50,
+   "amtlich": 300
+  },
+  {
+   "vorher": 200,
+   "amtlich": 300
+  },
+  {
+   "vorher": 350,
+   "amtlich": 300
+  },
+  {
+   "vorher": 600,
+   "amtlich": 470.69
+  },
+  {
+   "vorher": 800,
+   "amtlich": 581.22
+  },
+  {
+   "vorher": 950,
+   "amtlich": 637.87
+  },
+  {
+   "vorher": 999,
+   "amtlich": 651.96
+  },
+  {
+   "vorher": 1000,
+   "amtlich": 651.75
+  },
+  {
+   "vorher": 1001,
+   "amtlich": 652.46
+  },
+  {
+   "vorher": 1050,
+   "amtlich": 663.14
+  },
+  {
+   "vorher": 1083,
+   "amtlich": 669.78
+  },
+  {
+   "vorher": 1084,
+   "amtlich": 670.45
+  },
+  {
+   "vorher": 1100,
+   "amtlich": 681.17
+  },
+  {
+   "vorher": 1150,
+   "amtlich": 714.67
+  },
+  {
+   "vorher": 1199,
+   "amtlich": 747.5
+  },
+  {
+   "vorher": 1200,
+   "amtlich": 748.17
+  },
+  {
+   "vorher": 1240,
+   "amtlich": 774.97
+  },
+  {
+   "vorher": 1283,
+   "amtlich": 803.78
+  },
+  {
+   "vorher": 1284,
+   "amtlich": 804.45
+  },
+  {
+   "vorher": 1300,
+   "amtlich": 805.44
+  },
+  {
+   "vorher": 1323,
+   "amtlich": 807.03
+  },
+  {
+   "vorher": 1324,
+   "amtlich": 806.44
+  },
+  {
+   "vorher": 1325,
+   "amtlich": 807.09
+  },
+  {
+   "vorher": 1400,
+   "amtlich": 855.84
+  },
+  {
+   "vorher": 1800,
+   "amtlich": 1115.84
+  },
+  {
+   "vorher": 2200,
+   "amtlich": 1375.84
+  },
+  {
+   "vorher": 2500,
+   "amtlich": 1570.84
+  },
+  {
+   "vorher": 2850,
+   "amtlich": 1798.34
+  },
+  {
+   "vorher": 2851,
+   "amtlich": 1798.99
+  },
+  {
+   "vorher": 2852,
+   "amtlich": 1799.64
+  },
+  {
+   "vorher": 2900,
+   "amtlich": 1800
+  },
+  {
+   "vorher": 3000,
+   "amtlich": 1800
+  }
+ ]
+}

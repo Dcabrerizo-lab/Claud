@@ -245,10 +245,11 @@ const wgr = { art1: 'rente', brutto: 1400, netto: 1250, miete: 650, mietstufe: 4
 ck('[wg-grundrente] Wohngeld: Grundrentenfreibetrag (§ 17a WoGG) wirkt', JSON.stringify(res(wgr).m.wohngeld.tx) !== JSON.stringify(res({ ...wgr, grundrente33: true }).m.wohngeld.tx));
 
 // ---------- Elterngeld (§ 2 BEEG), Hilfe zur Pflege (§ 85 SGB XII), Asylbewerberleistungen ----------
-// Basiselterngeld: 67 %; unter 1.000 € +0,1 Punkte je 2 € (bis 100 %), über 1.200 € -0,1 Punkte je 2 € (bis 65 %); 300 bis 1.800 €
+// Basiselterngeld: vom Netto erst 83,33 € ab (§ 2c BEEG), dann 67 %; unter 1.000 € +0,1 Punkte je 2 € (bis 100 %), über 1.200 € -0,1 Punkte je 2 € (bis 65 %); 300 bis 1.800 €
+// Erwartungen = Elterngeldrechner des Bundes (familienportal.de, 14.11.2026)
 const egB = (vor) => T({ baby: 'bald', egVor: vor, miete: 500, gebJahr: 1995, heute: 2026.8 }, 'elterngeld', 'eg.ja');
-[[0, 300], [500, 460], [900, 648], [1100, 737], [1500, 975], [3000, 1800]].forEach(([vor, soll]) => {
-  ck('[eg-satz] Elterngeld bei ' + vor + ' € netto vorher: ' + soll + ' €', egB(vor) && egB(vor).basis === E(soll) && egB(vor).plus === E(soll / 2) && egB(vor).monate === 14, egB(vor));
+[[0, 300], [500, 400], [900, 621], [1100, 681], [1500, 921], [3000, 1800]].forEach(([vor, soll]) => {
+  ck('[eg-satz] Elterngeld bei ' + vor + ' € netto vorher: ' + soll + ' €', egB(vor) && egB(vor).basis === E(soll) && [E(Math.floor(soll / 2)), E(Math.ceil(soll / 2))].includes(egB(vor).plus) && egB(vor).monate === 14, egB(vor));
 });
 ck('Elterngeld ohne Kind: nein; ohne Betrag: möglich mit Spanne', L({ miete: 500 }, 'elterngeld') === 'nein' && L({ baby: 'da', miete: 500 }, 'elterngeld') === 'vielleicht' && K({ baby: 'da', miete: 500 }, 'elterngeld')[0] === 'eg.ohneBetrag');
 ck('Elterngeld schon bezogen: na', L({ baby: 'da', einkommen: [{ art: 'eg', b: 400 }], miete: 500 }, 'elterngeld') === 'na');
@@ -473,9 +474,9 @@ const zKg = { kids: 1, art1: 'lohn', brutto: 2500, netto: 1800, miete: 700, miet
 ck('[zuk-einkommen] Krankgeschrieben (Lohnfortzahlung): Krankengeld 1.300 € ersetzt den Lohn, Grundsicherungsgeld danach wahrscheinlich -> „möglich“, Kinderzuschlag höher',
   L({ ...zKg, arbeitSit: '' }, 'ggeld') !== 'ja' && L(zKg, 'ggeld') === 'vielleicht' && ZR(zKg, 'ggeld').tx.some((t) => t[0] === 'zuk.kg' && t[1].a === E(1300)) && K(zKg, 'ggeld').includes('zuk.ohneLohn') && K(zKg, 'kiz').includes('zuk.betragEins'));
 const zEg = { art1: 'lohn', brutto: 2350, netto: 1600, miete: 650, mietstufe: 3, vermoegen: 1000, baby: 'bald', egVor: 1600 };
-// Elterngeld: 1.600 € Netto -> 67 % - 0,1 Punkte je 2 € über 1.200 € = 47 % -> Untergrenze 65 %: 1.040 €
-ck('[zuk-einkommen] Baby kommt bald (alleinstehend): Elterngeld 1.040 € statt Lohn, Wohngeld danach wahrscheinlich',
-  ZR(zEg, 'wohngeld').tx.some((t) => t[0] === 'zuk.eg' && t[1].a === E(1040)) && L({ ...zEg, baby: '' }, 'wohngeld') === 'nein' && L(zEg, 'wohngeld') === 'vielleicht' && K(zEg, 'wohngeld').includes('zuk.ja'));
+// Elterngeld: 1.600 € Netto - 83,33 € (§ 2c BEEG) = 1.516,67 € -> Untergrenze 65 %: 986 € (wie Elterngeldrechner des Bundes)
+ck('[zuk-einkommen] Baby kommt bald (alleinstehend): Elterngeld rund 990 € statt Lohn, Wohngeld danach wahrscheinlich',
+  ZR(zEg, 'wohngeld').tx.some((t) => t[0] === 'zuk.eg' && t[1].a === E(990)) && L({ ...zEg, baby: '' }, 'wohngeld') === 'nein' && L(zEg, 'wohngeld') === 'vielleicht' && K(zEg, 'wohngeld').includes('zuk.ja'));
 ck('[zuk-einkommen] Elterngeld bei Paaren: offen, wer es bekommt -> keine zweite Rechnung', !Z({ ...zEg, adults: 2, art2: 'lohn', brutto: 4000, brutto2: 1800, netto: 2900 }).zusammen.some((a) => a[0] === 'z.zuk.eg'));
 ck('[zuk-einkommen] Bekommt die Leistung schon (Einkommensart Arbeitslosengeld): keine zweite Rechnung', !Z({ ...zAlg, art1: 'alg', brutto: 1200, netto: 1200 }).zusammen.some((a) => /^z\.zuk/.test(a[0])));
 ck('[zuk-einkommen] Grundsicherungsgeld fällt danach weg: Hinweis aufs Überbrücken bis zur ersten Zahlung',
