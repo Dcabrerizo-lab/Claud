@@ -194,19 +194,21 @@ const Formulare = (function () {
     if (kgOk && !(s.bezug || {}).kindergeld) link('kg1', 'Antrag auf Kindergeld (KG 1)', 'Bei der Familienkasse; online mit BundID ganz ohne Papier', FK + '/formulare-kindergeld', [
       'Zum Antrag gehört für jedes Kind eine „Anlage Kind“ (KG 1-AnK)',
       'Steuerliche Identifikationsnummer von dir und von jedem Kind (steht im Brief vom Bundeszentralamt für Steuern) ist Pflicht',
-      'Angaben zur Partnerin oder zum Partner bzw. zum anderen Elternteil im Haushalt, Bankverbindung (IBAN)'].concat(
+      'Angaben zur Partnerin oder zum Partner bzw. zum anderen Elternteil im Haushalt, Bankverbindung (IBAN)',
+      'Für ein Pflegekind zusätzlich die Erklärung für ein Pflegekind (KG 12a); alle Vordrucke stehen auf derselben Seite'].concat(
       s.aufenthalt === 'eu' ? ['Staatsangehörigkeit eines anderen EU-Landes: zusätzlich die „Anlage EU“ (KG 1-AnEU); wohnt oder arbeitet jemand im Ausland, auch die „Anlage Ausland“ (KG 51)'] : s.aufenthalt ? ['Staatsangehörigkeit außerhalb der EU: Aufenthaltstitel beilegen'] : [],
       ['Kindergeld gibt es rückwirkend nur für 6 Monate: Antrag bald stellen']));
-    if ((s.young | 0) > 0 && (kgOk || kgNa)) link('kg18', 'Nachweise für Kinder ab 18', 'Die Familienkasse verlangt ab dem 18. Geburtstag Nachweise; die Vordrucke stehen auf derselben Seite unter „Kindergeld ab 18“', FK + '/formulare-kindergeld', [
+    if ((s.young | 0) > 0 && (kgOk || kgNa)) link('kg18', 'Nachweise für Kinder ab 18', 'Die Familienkasse verlangt ab dem 18. Geburtstag Nachweise; die Vordrucke stehen auf ihrer Seite „Kindergeld ab 18“', FK + '/formulare-kindergeld-ab-18', [
       'Schule: Schulbescheinigung (KG 5a), füllt die Schule aus',
       'Studium: Erklärung zur Hochschulausbildung (KG 7e) mit Immatrikulationsbescheinigung',
       'Ausbildung im Betrieb: Erklärung zum Ausbildungsverhältnis mit Ausbildungsvertrag',
-      'Nur falls zutreffend: Erklärung für ein Kind ohne Ausbildungsplatz, Erklärung zum Praktikum (KG 10), Erklärung zu den Verhältnissen eines volljährigen Kindes (KG 5d, z. B. bei einer zweiten Ausbildung; Arbeit höchstens 20 Stunden in der Woche)']);
-    if (ok(R('kgBeh'))) link('kg4', 'Kindergeld für ein erwachsenes Kind mit Behinderung', 'Vordrucke der Familienkasse (Kindergeld ab 18, Behinderung)', FK + '/formulare-kindergeld', [
+      'Nur falls zutreffend: Kind ohne Ausbildungs- oder Arbeitsplatz (KG 11a, bis 21 arbeitsuchend gemeldet bzw. bis 25 Ausbildungsplatz suchend), Praktikum (KG 10), Ausbildung bei der Bundeswehr (KG 15), erkranktes Kind (KG 9a), Verhältnisse eines volljährigen Kindes (KG 5d, z. B. bei einer zweiten Ausbildung; Arbeit höchstens 20 Stunden in der Woche)']);
+    if (ok(R('kgBeh'))) link('kg4', 'Kindergeld für ein erwachsenes Kind mit Behinderung', 'Vordrucke der Familienkasse für erwachsene Kinder mit Behinderung', FK + '/formulare-erwachsene-mit-behinderungen', [
       'Erklärung zu den Verhältnissen eines volljährigen Kindes mit Behinderung (KG 4e) und zum verfügbaren Nettoeinkommen des Kindes (KG 4f)',
       'Ärztlicher Nachweis: das Wort „Behinderung“, seit wann sie besteht und wie sie sich auf die Erwerbsfähigkeit auswirkt (gilt höchstens 1 Jahr); dafür gibt es Vordrucke der Familienkasse',
       'Schwerbehindertenausweis oder Feststellungsbescheid in Kopie'].concat(s.pflegegrad ? ['Mit Pflegegrad: ärztliche Bescheinigung über erforderliche Betreuungsleistungen (zusätzlicher Freibetrag), Pflegegrad-Bescheid'] : [],
-      ['Ist das Kind verheiratet: Erklärung zum Nettoeinkommen des Ehepartners (KG 4g)']));
+      ['Ist das Kind verheiratet: Erklärung zum Nettoeinkommen des Ehepartners (KG 4g)',
+       'Lebt das Kind nicht bei dir oder zahlst du keinen Unterhalt: Das Kindergeld kann an das Kind selbst oder an das Sozialamt gehen (Abzweigung, Antrag KG 11e auf der Seite „Kindergeld ab 18“)']));
     // Grundsicherung im Alter und bei Erwerbsminderung (Sozialamt)
     if (ok(R('gsa')) && !(s.bezug || {}).sozialamt) {
       leer('gsa', 'sgb12-grundsicherung.pdf', 'Antrag auf Grundsicherung im Alter und bei Erwerbsminderung (SGB XII)', 'Muster des Deutschen Vereins (Stand 27.4.2023); viele Sozialämter haben einen eigenen Vordruck, der Antrag gilt aber in jeder Form', [
