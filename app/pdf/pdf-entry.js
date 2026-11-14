@@ -104,7 +104,7 @@ function sichtbar(g) {
 async function fillForms({ forms, katalog, loadFile }) {
   const out = [];
   const zaehler = {};
-  for (const f of forms || []) {
+  for (const f of (forms || []).filter((x) => x.art !== 'hinweis')) { // „hinweis“: kein PDF, nur Text in der Mappe
     const bytes = await loadFile(f.datei);
     let res = bytes, gesetzt = 0;
     const kat = (katalog || {})[f.datei];

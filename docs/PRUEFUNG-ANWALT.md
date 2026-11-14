@@ -73,7 +73,10 @@ Browsern. Grenze: Alle Tests prüfen gegen das eigene Verständnis des Gesetzes.
 
 ## 7. Ausfüllhilfe mit amtlichen Formularen
 - Mitgeliefert: Hauptantrag und Anlagen des Jobcenters (Stand 10/2026), Einkommensbescheinigung (04/2025), Mietbescheinigung,
-  Antrag auf Kinderzuschlag (KiZ 1), Muster-Vordruck Wohngeld (Mietzuschuss). Ordner `content/formulare/`.
+  Antrag auf Kinderzuschlag (KiZ 1), Muster-Vordruck Wohngeld (Mietzuschuss), Wohnberechtigungsschein mit Landesvordruck für
+  Bayern (Stand 04/2026), Berlin, Brandenburg (amtlicher Vordruck nach Erlass, Amtsblatt 5/2020) und Hamburg; für Bremen,
+  Rheinland-Pfalz und Saarland nur Fundstelle (Server lassen keinen automatischen Abruf zu); in den übrigen 9 Ländern gibt die
+  Stadt oder Gemeinde den Vordruck heraus. Ordner `content/formulare/`.
 - Auswahl nach dem Anforderungskatalog des Jobcenters (`src/formulare.js`): z. B. Anlage KI je Kind unter 15, WEP für Partner
   und Kinder ab 15, UH3 bei Alleinerziehenden, EKS und SV bei Selbstständigen, MEB bei kostenaufwändiger Ernährung.
 - Vorausgefüllt wird nur, was aus den Angaben sicher folgt: Name, Geburtsdatum, Anschrift, Telefon und Ja/Nein-Fragen

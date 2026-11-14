@@ -4789,5 +4789,2039 @@
   "stand": "",
   "titel": "Antrag auf Kinderzuschlag (KiZ 1)",
   "xfa": true
+ },
+ "wbs-BB.pdf": {
+  "felder": {
+   "1": {
+    "typ": "text"
+   },
+   "1006": {
+    "typ": "check"
+   },
+   "1007": {
+    "typ": "check"
+   },
+   "1007a": {
+    "typ": "check"
+   },
+   "1047": {
+    "typ": "text"
+   },
+   "1047a": {
+    "typ": "text"
+   },
+   "1048": {
+    "typ": "text"
+   },
+   "1048b": {
+    "typ": "text"
+   },
+   "11": {
+    "typ": "text"
+   },
+   "2": {
+    "typ": "text"
+   },
+   "2003": {
+    "typ": "check"
+   },
+   "2004": {
+    "typ": "check"
+   },
+   "2004a": {
+    "typ": "check"
+   },
+   "2012": {
+    "typ": "check"
+   },
+   "2013": {
+    "typ": "check"
+   },
+   "2013a": {
+    "typ": "check"
+   },
+   "2021": {
+    "typ": "check"
+   },
+   "2022": {
+    "typ": "check"
+   },
+   "2022a": {
+    "typ": "check"
+   },
+   "2030": {
+    "typ": "check"
+   },
+   "2031": {
+    "typ": "check"
+   },
+   "2031a": {
+    "typ": "check"
+   },
+   "2039": {
+    "typ": "check"
+   },
+   "2040": {
+    "typ": "check"
+   },
+   "2040a": {
+    "typ": "check"
+   },
+   "2048": {
+    "typ": "check"
+   },
+   "2049": {
+    "typ": "check"
+   },
+   "2049a": {
+    "typ": "check"
+   },
+   "2Familienname Vornamen": {
+    "typ": "text"
+   },
+   "2Familienname Vornamen_10": {
+    "typ": "text"
+   },
+   "2Familienname Vornamen_11": {
+    "typ": "text"
+   },
+   "2Familienname Vornamen_12": {
+    "typ": "text"
+   },
+   "2Familienname Vornamen_13": {
+    "typ": "text"
+   },
+   "2Familienname Vornamen_14": {
+    "typ": "text"
+   },
+   "2Familienname Vornamen_15": {
+    "typ": "text"
+   },
+   "2Familienname Vornamen_16": {
+    "typ": "text"
+   },
+   "2Familienname Vornamen_17": {
+    "typ": "text"
+   },
+   "2Familienname Vornamen_18": {
+    "typ": "text"
+   },
+   "2Familienname Vornamen_19": {
+    "typ": "text"
+   },
+   "2Familienname Vornamen_2": {
+    "typ": "text"
+   },
+   "2Familienname Vornamen_20": {
+    "typ": "text"
+   },
+   "2Familienname Vornamen_21": {
+    "typ": "text"
+   },
+   "2Familienname Vornamen_22": {
+    "typ": "text"
+   },
+   "2Familienname Vornamen_23": {
+    "typ": "text"
+   },
+   "2Familienname Vornamen_24": {
+    "typ": "text"
+   },
+   "2Familienname Vornamen_3": {
+    "typ": "text"
+   },
+   "2Familienname Vornamen_4": {
+    "typ": "text"
+   },
+   "2Familienname Vornamen_5": {
+    "typ": "text"
+   },
+   "2Familienname Vornamen_6": {
+    "typ": "text"
+   },
+   "2Familienname Vornamen_7": {
+    "typ": "text"
+   },
+   "2Familienname Vornamen_8": {
+    "typ": "text"
+   },
+   "2Familienname Vornamen_9": {
+    "typ": "text"
+   },
+   "3": {
+    "typ": "text"
+   },
+   "3000": {
+    "typ": "text"
+   },
+   "3000_1": {
+    "typ": "text"
+   },
+   "3000_2": {
+    "typ": "text"
+   },
+   "3000_3": {
+    "typ": "text"
+   },
+   "3000_4": {
+    "typ": "text"
+   },
+   "3000_5": {
+    "typ": "text"
+   },
+   "3Familienname Vornamen": {
+    "typ": "text"
+   },
+   "3Familienname Vornamen_10": {
+    "typ": "text"
+   },
+   "3Familienname Vornamen_11": {
+    "typ": "text"
+   },
+   "3Familienname Vornamen_12": {
+    "typ": "text"
+   },
+   "3Familienname Vornamen_13": {
+    "typ": "text"
+   },
+   "3Familienname Vornamen_14": {
+    "typ": "text"
+   },
+   "3Familienname Vornamen_15": {
+    "typ": "text"
+   },
+   "3Familienname Vornamen_16": {
+    "typ": "text"
+   },
+   "3Familienname Vornamen_17": {
+    "typ": "text"
+   },
+   "3Familienname Vornamen_18": {
+    "typ": "text"
+   },
+   "3Familienname Vornamen_19": {
+    "typ": "text"
+   },
+   "3Familienname Vornamen_2": {
+    "typ": "text"
+   },
+   "3Familienname Vornamen_20": {
+    "typ": "text"
+   },
+   "3Familienname Vornamen_21": {
+    "typ": "text"
+   },
+   "3Familienname Vornamen_22": {
+    "typ": "text"
+   },
+   "3Familienname Vornamen_23": {
+    "typ": "text"
+   },
+   "3Familienname Vornamen_24": {
+    "typ": "text"
+   },
+   "3Familienname Vornamen_3": {
+    "typ": "text"
+   },
+   "3Familienname Vornamen_4": {
+    "typ": "text"
+   },
+   "3Familienname Vornamen_5": {
+    "typ": "text"
+   },
+   "3Familienname Vornamen_6": {
+    "typ": "text"
+   },
+   "3Familienname Vornamen_7": {
+    "typ": "text"
+   },
+   "3Familienname Vornamen_8": {
+    "typ": "text"
+   },
+   "3Familienname Vornamen_9": {
+    "typ": "text"
+   },
+   "4": {
+    "typ": "text"
+   },
+   "4052": {
+    "typ": "text"
+   },
+   "5": {
+    "typ": "text"
+   },
+   "5006": {
+    "typ": "text"
+   },
+   "5011": {
+    "typ": "text"
+   },
+   "6": {
+    "typ": "text"
+   },
+   "6023": {
+    "typ": "check"
+   },
+   "6023_1": {
+    "typ": "check"
+   },
+   "6024": {
+    "typ": "check"
+   },
+   "6025": {
+    "typ": "check"
+   },
+   "6026": {
+    "typ": "check"
+   },
+   "6027": {
+    "typ": "check"
+   },
+   "6028": {
+    "typ": "check"
+   },
+   "6029": {
+    "typ": "check"
+   },
+   "6030": {
+    "typ": "check"
+   },
+   "6031": {
+    "typ": "check"
+   },
+   "6032": {
+    "typ": "check"
+   },
+   "6033": {
+    "typ": "check"
+   },
+   "6033_1": {
+    "typ": "check"
+   },
+   "6034": {
+    "typ": "check"
+   },
+   "6037": {
+    "typ": "text"
+   },
+   "7": {
+    "typ": "text"
+   },
+   "8": {
+    "typ": "text"
+   },
+   "9": {
+    "typ": "text"
+   },
+   "Alleinstehende": {
+    "typ": "check"
+   },
+   "Anschrift der Behörde": {
+    "typ": "text"
+   },
+   "Anzahl": {
+    "typ": "text"
+   },
+   "Anzahl der in der Wohnung lebenden Personen": {
+    "typ": "text"
+   },
+   "Arbeitnehmerin": {
+    "typ": "check"
+   },
+   "Arbeitslosengeld I": {
+    "typ": "check"
+   },
+   "Arbeitslosengeld II": {
+    "typ": "check"
+   },
+   "Ausstattung mit": {
+    "typ": "check"
+   },
+   "Ausstattung mit2": {
+    "typ": "check"
+   },
+   "Azubi": {
+    "typ": "check"
+   },
+   "Beamter": {
+    "typ": "check"
+   },
+   "Begründung für 61 62 und 63 1": {
+    "typ": "text"
+   },
+   "Begründung für 61 62 und 63 2": {
+    "typ": "text"
+   },
+   "D": {
+    "typ": "check"
+   },
+   "D_2": {
+    "typ": "check"
+   },
+   "Dat": {
+    "typ": "text"
+   },
+   "Datum der Antragstellung": {
+    "typ": "text"
+   },
+   "Datum82": {
+    "typ": "text"
+   },
+   "Datum83": {
+    "typ": "text"
+   },
+   "Datum83_2": {
+    "typ": "text"
+   },
+   "Datum84": {
+    "typ": "text"
+   },
+   "Datum84_2": {
+    "typ": "text"
+   },
+   "Derzeit ausgeübte Tätigkeit": {
+    "typ": "text"
+   },
+   "EMail  freiwillige Angabe": {
+    "typ": "text"
+   },
+   "Eingangsdatum": {
+    "typ": "text"
+   },
+   "Elterngeld": {
+    "typ": "check"
+   },
+   "Euro": {
+    "typ": "text"
+   },
+   "Euro83": {
+    "typ": "text"
+   },
+   "Euro83_2": {
+    "typ": "text"
+   },
+   "Euro85": {
+    "typ": "text"
+   },
+   "Euro85_2": {
+    "typ": "text"
+   },
+   "Euro85_3": {
+    "typ": "text"
+   },
+   "Euro85_4": {
+    "typ": "text"
+   },
+   "EuroRow1": {
+    "typ": "text"
+   },
+   "EuroRow2": {
+    "typ": "text"
+   },
+   "Familie": {
+    "typ": "check"
+   },
+   "Familienname Vornamen ggf Geburtsname1": {
+    "typ": "text"
+   },
+   "Familienname Vornamen ggf Geburtsname2": {
+    "typ": "text"
+   },
+   "Familienname Vornamen ggf Geburtsname3": {
+    "typ": "text"
+   },
+   "Familienname Vornamen ggf Geburtsname4": {
+    "typ": "text"
+   },
+   "Familienname Vornamen ggf Geburtsname5": {
+    "typ": "text"
+   },
+   "Familienname Vornamen ggf Geburtsname6": {
+    "typ": "text"
+   },
+   "Familienstand1": {
+    "typ": "text"
+   },
+   "Familienstand2": {
+    "typ": "text"
+   },
+   "Familienstand3": {
+    "typ": "text"
+   },
+   "Familienstand4": {
+    "typ": "text"
+   },
+   "Familienstand5": {
+    "typ": "text"
+   },
+   "Familienstand6": {
+    "typ": "text"
+   },
+   "Geburtsdatum": {
+    "typ": "text"
+   },
+   "Geburtsdatum Geburtsort1": {
+    "typ": "text"
+   },
+   "Geburtsdatum Geburtsort2": {
+    "typ": "text"
+   },
+   "Geburtsdatum Geburtsort3": {
+    "typ": "text"
+   },
+   "Geburtsdatum Geburtsort4": {
+    "typ": "text"
+   },
+   "Geburtsdatum Geburtsort5": {
+    "typ": "text"
+   },
+   "Geburtsdatum Geburtsort6": {
+    "typ": "text"
+   },
+   "Grund der VerringerungErhöhung84": {
+    "typ": "text"
+   },
+   "Grund der VerringerungErhöhung84_2": {
+    "typ": "text"
+   },
+   "Grundsicherung oder Hilfe zum Lebensunterhalt nach SGB XII": {
+    "typ": "check"
+   },
+   "Hauptmieterin": {
+    "typ": "check"
+   },
+   "J": {
+    "typ": "check"
+   },
+   "JA1": {
+    "typ": "check"
+   },
+   "JA10": {
+    "typ": "check"
+   },
+   "JA11": {
+    "typ": "check"
+   },
+   "JA12": {
+    "typ": "check"
+   },
+   "JA13": {
+    "typ": "check"
+   },
+   "JA14": {
+    "typ": "check"
+   },
+   "JA15": {
+    "typ": "check"
+   },
+   "JA16": {
+    "typ": "check"
+   },
+   "JA17": {
+    "typ": "check"
+   },
+   "JA18": {
+    "typ": "check"
+   },
+   "JA2": {
+    "typ": "check"
+   },
+   "JA3": {
+    "typ": "check"
+   },
+   "JA4": {
+    "typ": "check"
+   },
+   "JA5": {
+    "typ": "check"
+   },
+   "JA6": {
+    "typ": "check"
+   },
+   "JA7": {
+    "typ": "check"
+   },
+   "JA8": {
+    "typ": "check"
+   },
+   "JA9": {
+    "typ": "check"
+   },
+   "Kaltmiete": {
+    "typ": "text"
+   },
+   "Kaltmiete_2": {
+    "typ": "text"
+   },
+   "Kinderbetreuungskosten je Kind in Euro86": {
+    "typ": "text"
+   },
+   "Leistungen der Ausbildungsförderung BAföG SGB III": {
+    "typ": "check"
+   },
+   "Leistungen der ergänzenden Hilfe zum Lebensunterhalt nach Bundesversorgungsgesetz": {
+    "typ": "check"
+   },
+   "Leistungen nach Asylbewerberleistungsgesetz": {
+    "typ": "check"
+   },
+   "N": {
+    "typ": "check"
+   },
+   "NEIN1": {
+    "typ": "check"
+   },
+   "NEIN10": {
+    "typ": "check"
+   },
+   "NEIN11": {
+    "typ": "check"
+   },
+   "NEIN12": {
+    "typ": "check"
+   },
+   "NEIN13": {
+    "typ": "check"
+   },
+   "NEIN14": {
+    "typ": "check"
+   },
+   "NEIN15": {
+    "typ": "check"
+   },
+   "NEIN16": {
+    "typ": "check"
+   },
+   "NEIN17": {
+    "typ": "check"
+   },
+   "NEIN18": {
+    "typ": "check"
+   },
+   "NEIN2": {
+    "typ": "check"
+   },
+   "NEIN3": {
+    "typ": "check"
+   },
+   "NEIN4": {
+    "typ": "check"
+   },
+   "NEIN5": {
+    "typ": "check"
+   },
+   "NEIN6": {
+    "typ": "check"
+   },
+   "NEIN7": {
+    "typ": "check"
+   },
+   "NEIN8": {
+    "typ": "check"
+   },
+   "NEIN9": {
+    "typ": "check"
+   },
+   "Name Vorname des Kindesder Kinder86": {
+    "typ": "text"
+   },
+   "Name Vorname82": {
+    "typ": "text"
+   },
+   "Name Vorname82_2": {
+    "typ": "text"
+   },
+   "Name Vorname83": {
+    "typ": "text"
+   },
+   "Name Vorname83_2": {
+    "typ": "text"
+   },
+   "Name Vorname85": {
+    "typ": "text"
+   },
+   "Name Vorname85_2": {
+    "typ": "text"
+   },
+   "Name Vorname85_3": {
+    "typ": "text"
+   },
+   "Name Vorname85_4": {
+    "typ": "text"
+   },
+   "Name VornameDatum der Ausstellung": {
+    "typ": "text"
+   },
+   "Name VornameDatum der Ausstellung_2": {
+    "typ": "text"
+   },
+   "Name VornameDatum der Ausstellung_3": {
+    "typ": "text"
+   },
+   "Name VornameRow1": {
+    "typ": "text"
+   },
+   "Name VornameRow1_2": {
+    "typ": "text"
+   },
+   "Name VornameRow2": {
+    "typ": "text"
+   },
+   "Name VornameRow2_2": {
+    "typ": "text"
+   },
+   "Name Vorname_2": {
+    "typ": "text"
+   },
+   "Name Vorname_3": {
+    "typ": "text"
+   },
+   "Name Vorname_4": {
+    "typ": "text"
+   },
+   "PLZ Ort": {
+    "typ": "text"
+   },
+   "Person Nr nach Nr 4 Spalte 184": {
+    "typ": "text"
+   },
+   "Person Nr nach Nr 4 Spalte 184_2": {
+    "typ": "text"
+   },
+   "Raumbedarf von zusätzlich ca": {
+    "typ": "text"
+   },
+   "Rente": {
+    "typ": "check"
+   },
+   "Rentnerin oder": {
+    "typ": "check"
+   },
+   "Selbstständiger": {
+    "typ": "check"
+   },
+   "Sozialgeld nach SGB II": {
+    "typ": "check"
+   },
+   "Staatsangehörigkeit": {
+    "typ": "text"
+   },
+   "StaatsangehörigkeitQQ weiblich QQ männlich QQ divers": {
+    "typ": "text"
+   },
+   "StaatsangehörigkeitQQ weiblich QQ männlich QQ divers_2": {
+    "typ": "text"
+   },
+   "StaatsangehörigkeitQQ weiblich QQ männlich QQ divers_3": {
+    "typ": "text"
+   },
+   "StaatsangehörigkeitQQ weiblich QQ männlich QQ divers_4": {
+    "typ": "text"
+   },
+   "StaatsangehörigkeitQQ weiblich QQ männlich QQ divers_5": {
+    "typ": "text"
+   },
+   "StaatsangehörigkeitQQ weiblich QQ männlich QQ divers_6": {
+    "typ": "text"
+   },
+   "Straße HausNr PLZ Ort Gebäudeteil Stockwerk": {
+    "typ": "text"
+   },
+   "Studentin oder Auszubildender": {
+    "typ": "check"
+   },
+   "Telefonnummer  freiwillige Angabe": {
+    "typ": "text"
+   },
+   "Unterhaltsvorschuss": {
+    "typ": "check"
+   },
+   "Untermieterin": {
+    "typ": "check"
+   },
+   "Verwandt": {
+    "typ": "text"
+   },
+   "Verwandt1": {
+    "typ": "text"
+   },
+   "Verwandt2": {
+    "typ": "text"
+   },
+   "Veränderter zukünftiger Betrag der Einnahmen84": {
+    "typ": "text"
+   },
+   "Veränderter zukünftiger Betrag der Einnahmen84_2": {
+    "typ": "text"
+   },
+   "Warmmiete": {
+    "typ": "text"
+   },
+   "Warmmiete_2": {
+    "typ": "text"
+   },
+   "Wenn ja wer": {
+    "typ": "text"
+   },
+   "Wenn ja wer_1": {
+    "typ": "text"
+   },
+   "Wenn ja wer_2": {
+    "typ": "text"
+   },
+   "Wohnanschrift": {
+    "typ": "text"
+   },
+   "Wohnanschrift_2": {
+    "typ": "text"
+   },
+   "Wohnanschrift_3": {
+    "typ": "text"
+   },
+   "Wohnheim": {
+    "typ": "check"
+   },
+   "Z": {
+    "typ": "check"
+   },
+   "Z_2": {
+    "typ": "check"
+   },
+   "_pers": {
+    "typ": "text"
+   },
+   "_pers0": {
+    "typ": "text"
+   },
+   "_pers1": {
+    "typ": "text"
+   },
+   "_pers2": {
+    "typ": "text"
+   },
+   "_pers3": {
+    "typ": "text"
+   },
+   "_pers4": {
+    "typ": "text"
+   },
+   "_pers5": {
+    "typ": "text"
+   },
+   "_pers6": {
+    "typ": "text"
+   },
+   "_pers7": {
+    "typ": "text"
+   },
+   "_pers8": {
+    "typ": "text"
+   },
+   "_pers9": {
+    "typ": "text"
+   },
+   "_persa": {
+    "typ": "text"
+   },
+   "_ref": {
+    "typ": "text"
+   },
+   "arbeitslos": {
+    "typ": "check"
+   },
+   "aus sonstigen Gründen nicht erwerbstätig": {
+    "typ": "check"
+   },
+   "bei den Eltern": {
+    "typ": "check"
+   },
+   "derzeitige Wohnanschrift Straße Hausnummer": {
+    "typ": "text"
+   },
+   "eingetragene Lebenspartnerschaft": {
+    "typ": "check"
+   },
+   "genossenschaftlich": {
+    "typ": "check"
+   },
+   "geschieden": {
+    "typ": "check"
+   },
+   "getrennt lebend": {
+    "typ": "check"
+   },
+   "ggf Vermieter Name Anschrift": {
+    "typ": "text"
+   },
+   "in og Wohnung": {
+    "typ": "check"
+   },
+   "ja": {
+    "typ": "check"
+   },
+   "ja bitte begründen": {
+    "typ": "check"
+   },
+   "ja bitte begründen_2": {
+    "typ": "check"
+   },
+   "ja bitte begründen_3": {
+    "typ": "check"
+   },
+   "ja_10": {
+    "typ": "check"
+   },
+   "ja_11": {
+    "typ": "check"
+   },
+   "ja_12": {
+    "typ": "check"
+   },
+   "ja_13": {
+    "typ": "check"
+   },
+   "ja_14": {
+    "typ": "check"
+   },
+   "ja_15": {
+    "typ": "check"
+   },
+   "ja_16": {
+    "typ": "check"
+   },
+   "ja_17": {
+    "typ": "check"
+   },
+   "ja_18": {
+    "typ": "check"
+   },
+   "ja_19": {
+    "typ": "check"
+   },
+   "ja_2": {
+    "typ": "check"
+   },
+   "ja_20": {
+    "typ": "check"
+   },
+   "ja_21": {
+    "typ": "check"
+   },
+   "ja_22": {
+    "typ": "check"
+   },
+   "ja_23": {
+    "typ": "check"
+   },
+   "ja_24": {
+    "typ": "check"
+   },
+   "ja_25": {
+    "typ": "check"
+   },
+   "ja_26": {
+    "typ": "check"
+   },
+   "ja_27": {
+    "typ": "check"
+   },
+   "ja_28": {
+    "typ": "check"
+   },
+   "ja_29": {
+    "typ": "check"
+   },
+   "ja_3": {
+    "typ": "check"
+   },
+   "ja_30": {
+    "typ": "check"
+   },
+   "ja_31": {
+    "typ": "check"
+   },
+   "ja_32": {
+    "typ": "check"
+   },
+   "ja_33": {
+    "typ": "check"
+   },
+   "ja_34": {
+    "typ": "check"
+   },
+   "ja_35": {
+    "typ": "check"
+   },
+   "ja_4": {
+    "typ": "check"
+   },
+   "ja_5": {
+    "typ": "check"
+   },
+   "ja_6": {
+    "typ": "check"
+   },
+   "ja_7": {
+    "typ": "check"
+   },
+   "ja_8": {
+    "typ": "check"
+   },
+   "ja_9": {
+    "typ": "check"
+   },
+   "kommunal": {
+    "typ": "check"
+   },
+   "kommunale Wohnungsgesellschaft": {
+    "typ": "check"
+   },
+   "ledig": {
+    "typ": "check"
+   },
+   "lfd Nr": {
+    "typ": "text"
+   },
+   "lfd Nr_2": {
+    "typ": "text"
+   },
+   "lfd Nr_3": {
+    "typ": "text"
+   },
+   "lfd Nr_4": {
+    "typ": "text"
+   },
+   "lfd Nr_5": {
+    "typ": "text"
+   },
+   "lfd Nr_6": {
+    "typ": "text"
+   },
+   "lfd Nr_7": {
+    "typ": "text"
+   },
+   "lfd Nr_8": {
+    "typ": "text"
+   },
+   "m2 wird voraussichtlich bis": {
+    "typ": "text"
+   },
+   "mit einem Grad der Behinderung von": {
+    "typ": "check"
+   },
+   "nein": {
+    "typ": "check"
+   },
+   "nein_10": {
+    "typ": "check"
+   },
+   "nein_11": {
+    "typ": "check"
+   },
+   "nein_12": {
+    "typ": "check"
+   },
+   "nein_13": {
+    "typ": "check"
+   },
+   "nein_14": {
+    "typ": "check"
+   },
+   "nein_15": {
+    "typ": "check"
+   },
+   "nein_16": {
+    "typ": "check"
+   },
+   "nein_17": {
+    "typ": "check"
+   },
+   "nein_18": {
+    "typ": "check"
+   },
+   "nein_19": {
+    "typ": "check"
+   },
+   "nein_2": {
+    "typ": "check"
+   },
+   "nein_20": {
+    "typ": "check"
+   },
+   "nein_21": {
+    "typ": "check"
+   },
+   "nein_22": {
+    "typ": "check"
+   },
+   "nein_23": {
+    "typ": "check"
+   },
+   "nein_24": {
+    "typ": "check"
+   },
+   "nein_25": {
+    "typ": "check"
+   },
+   "nein_26": {
+    "typ": "check"
+   },
+   "nein_27": {
+    "typ": "check"
+   },
+   "nein_28": {
+    "typ": "check"
+   },
+   "nein_29": {
+    "typ": "check"
+   },
+   "nein_3": {
+    "typ": "check"
+   },
+   "nein_30": {
+    "typ": "check"
+   },
+   "nein_31": {
+    "typ": "check"
+   },
+   "nein_32": {
+    "typ": "check"
+   },
+   "nein_33": {
+    "typ": "check"
+   },
+   "nein_34": {
+    "typ": "check"
+   },
+   "nein_35": {
+    "typ": "check"
+   },
+   "nein_36": {
+    "typ": "check"
+   },
+   "nein_37": {
+    "typ": "check"
+   },
+   "nein_38": {
+    "typ": "check"
+   },
+   "nein_4": {
+    "typ": "check"
+   },
+   "nein_5": {
+    "typ": "check"
+   },
+   "nein_6": {
+    "typ": "check"
+   },
+   "nein_7": {
+    "typ": "check"
+   },
+   "nein_8": {
+    "typ": "check"
+   },
+   "nein_9": {
+    "typ": "check"
+   },
+   "nichteheliche Lebensgemeinschaft": {
+    "typ": "check"
+   },
+   "privat": {
+    "typ": "check"
+   },
+   "schwangere Frau": {
+    "typ": "check"
+   },
+   "sonstiges": {
+    "typ": "text"
+   },
+   "undefi": {
+    "typ": "check"
+   },
+   "undefi1": {
+    "typ": "check"
+   },
+   "undefined_3": {
+    "typ": "text"
+   },
+   "undefined_5": {
+    "typ": "text"
+   },
+   "undefined_7": {
+    "typ": "text"
+   },
+   "undefined_8": {
+    "typ": "text"
+   },
+   "undefined_9": {
+    "typ": "text"
+   },
+   "verheiratet": {
+    "typ": "check"
+   },
+   "verwitwet": {
+    "typ": "check"
+   },
+   "z Zt ausgeübte TätigkeitQQ weiblich QQ männlich QQ divers": {
+    "typ": "text"
+   },
+   "z Zt ausgeübte TätigkeitQQ weiblich QQ männlich QQ divers_2": {
+    "typ": "text"
+   },
+   "z Zt ausgeübte TätigkeitQQ weiblich QQ männlich QQ divers_3": {
+    "typ": "text"
+   },
+   "z Zt ausgeübte TätigkeitQQ weiblich QQ männlich QQ divers_4": {
+    "typ": "text"
+   },
+   "z Zt ausgeübte TätigkeitQQ weiblich QQ männlich QQ divers_5": {
+    "typ": "text"
+   },
+   "z Zt ausgeübte TätigkeitQQ weiblich QQ männlich QQ divers_6": {
+    "typ": "text"
+   },
+   "ältere Menschen": {
+    "typ": "check"
+   }
+  },
+  "geschuetzt": false,
+  "seiten": 6,
+  "stand": "",
+  "titel": "wbs-BB.pdf",
+  "xfa": false
+ },
+ "wbs-BE.pdf": {
+  "felder": {
+   "Antragsnummer": {
+    "typ": "text"
+   },
+   "Anzahl Zimmer 1": {
+    "typ": "text"
+   },
+   "Anzahl Zimmer 2": {
+    "typ": "text"
+   },
+   "Datum 1": {
+    "typ": "text"
+   },
+   "Datum 2": {
+    "typ": "text"
+   },
+   "Datum 4": {
+    "typ": "text"
+   },
+   "Eingangsstempel": {
+    "typ": "text"
+   },
+   "Etage 1": {
+    "typ": "text"
+   },
+   "Etage 2": {
+    "typ": "text"
+   },
+   "Familienstand 1": {
+    "typ": "text"
+   },
+   "Familienstand 2": {
+    "typ": "text"
+   },
+   "Familienstand 3": {
+    "typ": "text"
+   },
+   "Familienstand 4": {
+    "typ": "text"
+   },
+   "Familienstand 5": {
+    "typ": "text"
+   },
+   "Familienstand 6": {
+    "typ": "text"
+   },
+   "Geburtsdatum 1": {
+    "typ": "text"
+   },
+   "Geburtsdatum 2": {
+    "typ": "text"
+   },
+   "Geburtsdatum 3": {
+    "typ": "text"
+   },
+   "Geburtsdatum 4": {
+    "typ": "text"
+   },
+   "Geburtsdatum 5": {
+    "typ": "text"
+   },
+   "Geburtsdatum 6": {
+    "typ": "text"
+   },
+   "Grad der Behinderung 1": {
+    "typ": "text"
+   },
+   "Grad der Behinderung 2": {
+    "typ": "text"
+   },
+   "Kontrollkästche100": {
+    "typ": "check"
+   },
+   "Kontrollkästche99": {
+    "typ": "check"
+   },
+   "Kontrollkästchen1": {
+    "typ": "check"
+   },
+   "Kontrollkästchen11": {
+    "typ": "check"
+   },
+   "Kontrollkästchen13": {
+    "typ": "check"
+   },
+   "Kontrollkästchen15": {
+    "typ": "check"
+   },
+   "Kontrollkästchen16": {
+    "typ": "check"
+   },
+   "Kontrollkästchen17": {
+    "typ": "check"
+   },
+   "Kontrollkästchen18": {
+    "typ": "check"
+   },
+   "Kontrollkästchen19": {
+    "typ": "check"
+   },
+   "Kontrollkästchen2": {
+    "typ": "check"
+   },
+   "Kontrollkästchen20": {
+    "typ": "check"
+   },
+   "Kontrollkästchen21": {
+    "typ": "check"
+   },
+   "Kontrollkästchen22": {
+    "typ": "check"
+   },
+   "Kontrollkästchen23": {
+    "typ": "check"
+   },
+   "Kontrollkästchen24": {
+    "typ": "check"
+   },
+   "Kontrollkästchen25": {
+    "typ": "check"
+   },
+   "Kontrollkästchen26": {
+    "typ": "check"
+   },
+   "Kontrollkästchen27": {
+    "typ": "check"
+   },
+   "Kontrollkästchen28": {
+    "typ": "check"
+   },
+   "Kontrollkästchen29": {
+    "typ": "check"
+   },
+   "Kontrollkästchen3": {
+    "typ": "check"
+   },
+   "Kontrollkästchen30": {
+    "typ": "check"
+   },
+   "Kontrollkästchen31": {
+    "typ": "check"
+   },
+   "Kontrollkästchen32": {
+    "typ": "check"
+   },
+   "Kontrollkästchen33": {
+    "typ": "check"
+   },
+   "Kontrollkästchen36": {
+    "typ": "check"
+   },
+   "Kontrollkästchen37": {
+    "typ": "check"
+   },
+   "Kontrollkästchen38": {
+    "typ": "check"
+   },
+   "Kontrollkästchen39": {
+    "typ": "check"
+   },
+   "Kontrollkästchen4": {
+    "typ": "check"
+   },
+   "Kontrollkästchen43": {
+    "typ": "check"
+   },
+   "Kontrollkästchen5": {
+    "typ": "check"
+   },
+   "Kontrollkästchen50": {
+    "typ": "check"
+   },
+   "Kontrollkästchen51": {
+    "typ": "check"
+   },
+   "Kontrollkästchen52": {
+    "typ": "check"
+   },
+   "Kontrollkästchen6": {
+    "typ": "check"
+   },
+   "Kontrollkästchen60": {
+    "typ": "check"
+   },
+   "Kontrollkästchen61": {
+    "typ": "check"
+   },
+   "Kontrollkästchen7": {
+    "typ": "check"
+   },
+   "Kontrollkästchen70": {
+    "typ": "check"
+   },
+   "Kontrollkästchen72": {
+    "typ": "check"
+   },
+   "Kontrollkästchen73": {
+    "typ": "check"
+   },
+   "Kontrollkästchen74": {
+    "typ": "check"
+   },
+   "Kontrollkästchen75": {
+    "typ": "check"
+   },
+   "Kontrollkästchen76": {
+    "typ": "check"
+   },
+   "Kontrollkästchen77": {
+    "typ": "check"
+   },
+   "Kontrollkästchen8": {
+    "typ": "check"
+   },
+   "Kontrollkästchen9": {
+    "typ": "check"
+   },
+   "Kontrollkästchen94": {
+    "typ": "check"
+   },
+   "Kontrollkästchen95": {
+    "typ": "check"
+   },
+   "Kontrollkästchen96": {
+    "typ": "check"
+   },
+   "Kontrollkästchen97": {
+    "typ": "check"
+   },
+   "Kontrollkästchen98": {
+    "typ": "check"
+   },
+   "Kontrollkästchen99": {
+    "typ": "check"
+   },
+   "Name Hauptmieter 1": {
+    "typ": "text"
+   },
+   "Name Hauptmieter 2": {
+    "typ": "text"
+   },
+   "Name, Vorname 1": {
+    "typ": "text"
+   },
+   "Name, Vorname 2": {
+    "typ": "text"
+   },
+   "Name, Vorname 3": {
+    "typ": "text"
+   },
+   "Name, Vorname/ ggf": {
+    "typ": "None"
+   },
+   "Name, Vorname/ ggf. Geburtsname 1": {
+    "typ": "text"
+   },
+   "Name, Vorname/ ggf. Geburtsname 2": {
+    "typ": "text"
+   },
+   "Name, Vorname/ ggf. Geburtsname 3": {
+    "typ": "text"
+   },
+   "Name, Vorname/ ggf. Geburtsname 4": {
+    "typ": "text"
+   },
+   "Name, Vorname/ ggf. Geburtsname 5": {
+    "typ": "text"
+   },
+   "Name, Vorname/ ggf. Geburtsname 6": {
+    "typ": "text"
+   },
+   "Ort": {
+    "typ": "text"
+   },
+   "PLZ und Ort 1": {
+    "typ": "text"
+   },
+   "PLZ und Ort 2": {
+    "typ": "text"
+   },
+   "PLZ und Ort 3": {
+    "typ": "text"
+   },
+   "Person/(en) 1": {
+    "typ": "text"
+   },
+   "Person/(en) 2": {
+    "typ": "text"
+   },
+   "Staatsangehörigkeit 1": {
+    "typ": "text"
+   },
+   "Staatsangehörigkeit 2": {
+    "typ": "text"
+   },
+   "Staatsangehörigkeit 3": {
+    "typ": "text"
+   },
+   "Staatsangehörigkeit 4": {
+    "typ": "text"
+   },
+   "Staatsangehörigkeit 5": {
+    "typ": "text"
+   },
+   "Staatsangehörigkeit 6": {
+    "typ": "text"
+   },
+   "Straße 1": {
+    "typ": "text"
+   },
+   "Straße 2": {
+    "typ": "text"
+   },
+   "Straße 3": {
+    "typ": "text"
+   },
+   "Telefon-Nummer": {
+    "typ": "text"
+   },
+   "Text3": {
+    "typ": "text"
+   },
+   "Text4": {
+    "typ": "text"
+   },
+   "Text5": {
+    "typ": "text"
+   },
+   "Text6": {
+    "typ": "text"
+   },
+   "Unterschrift 1": {
+    "typ": "text"
+   },
+   "Unterschrift 2": {
+    "typ": "text"
+   },
+   "Unterschrift 3": {
+    "typ": "text"
+   },
+   "Unterschrift 4": {
+    "typ": "text"
+   },
+   "Verwandtschaftsverhältnis zur antragstellenden Person 1": {
+    "typ": "text"
+   },
+   "Verwandtschaftsverhältnis zur antragstellenden Person 2": {
+    "typ": "text"
+   },
+   "Verwandtschaftsverhältnis zur antragstellenden Person 3": {
+    "typ": "text"
+   },
+   "Verwandtschaftsverhältnis zur antragstellenden Person 4": {
+    "typ": "text"
+   },
+   "Verwandtschaftsverhältnis zur antragstellenden Person 5": {
+    "typ": "text"
+   },
+   "Verwandtschaftsverhältnis zur antragstellenden Person 6": {
+    "typ": "text"
+   },
+   "m² Wohnfläche 1": {
+    "typ": "text"
+   },
+   "m² Wohnfläche 2": {
+    "typ": "text"
+   },
+   "seit (Datum) 1": {
+    "typ": "text"
+   },
+   "seit (Datum) 2": {
+    "typ": "text"
+   },
+   "seit (Datum) 3": {
+    "typ": "text"
+   },
+   "seit (Datum) 4": {
+    "typ": "text"
+   },
+   "seit (Datum) 5": {
+    "typ": "text"
+   },
+   "seit (Datum) 6": {
+    "typ": "text"
+   }
+  },
+  "geschuetzt": false,
+  "seiten": 7,
+  "stand": "",
+  "titel": "Antrag auf einen Wohnberechtigungsschein (WBS)",
+  "xfa": false
+ },
+ "wbs-BY.pdf": {
+  "felder": {
+   "1_Angemeldet seit": {
+    "typ": "text"
+   },
+   "1_Anschrift": {
+    "typ": "text"
+   },
+   "1_Geburtsdatum": {
+    "typ": "text"
+   },
+   "1_Ja_nein": {
+    "typ": "check"
+   },
+   "1_Miete € je m² Wflmtl": {
+    "typ": "text"
+   },
+   "1_Name Vorname": {
+    "typ": "text"
+   },
+   "1_Staatsangehörigkeit": {
+    "typ": "text"
+   },
+   "1_Telefon": {
+    "typ": "text"
+   },
+   "1_Wohnfläche m²": {
+    "typ": "text"
+   },
+   "1_Zahl der Wohnräume": {
+    "typ": "text"
+   },
+   "2_1_2_Beziehung zum Antragsteller z B Ehegatte Partner": {
+    "typ": "text"
+   },
+   "2_1_2_Geburtsdatum": {
+    "typ": "text"
+   },
+   "2_1_2_Vorname ggf abweichender Familienname": {
+    "typ": "text"
+   },
+   "2_1_Beziehung zum Antragsteller z B Ehegatte Partner": {
+    "typ": "text"
+   },
+   "2_1_Geburtsdatum": {
+    "typ": "text"
+   },
+   "2_1_Vorname ggf abweichender Familienname": {
+    "typ": "text"
+   },
+   "2_2_2_Beziehung zum Antragsteller z B Ehegatte Partner": {
+    "typ": "text"
+   },
+   "2_2_2_Geburtsdatum": {
+    "typ": "text"
+   },
+   "2_2_2_Vorname ggf abweichender Familienname": {
+    "typ": "text"
+   },
+   "2_2_Beziehung zum Antragsteller z B Ehegatte Partner": {
+    "typ": "text"
+   },
+   "2_2_Geburtsdatum": {
+    "typ": "text"
+   },
+   "2_2_Vorname ggf abweichender Familienname": {
+    "typ": "text"
+   },
+   "2_3_2_Beziehung zum Antragsteller z B Ehegatte Partner": {
+    "typ": "text"
+   },
+   "2_3_2_GeburtsdatumRow": {
+    "typ": "text"
+   },
+   "2_3_2_Vorname ggf abweichender Familienname": {
+    "typ": "text"
+   },
+   "2_3_Beziehung zum Antragsteller z B Ehegatte Partner": {
+    "typ": "text"
+   },
+   "2_3_Geburtsdatum": {
+    "typ": "text"
+   },
+   "2_3_Vorname ggf abweichender Familienname": {
+    "typ": "text"
+   },
+   "2_4_2_Beziehung zum Antragsteller z B Ehegatte Partner": {
+    "typ": "text"
+   },
+   "2_4_2_Geburtsdatum": {
+    "typ": "text"
+   },
+   "2_4_2_Vorname ggf abweichender Familienname": {
+    "typ": "text"
+   },
+   "2_4_Beziehung zum Antragsteller z B Ehegatte Partner": {
+    "typ": "text"
+   },
+   "2_4_Geburtsdatum": {
+    "typ": "text"
+   },
+   "2_4_Vorname ggf abweichender Familienname": {
+    "typ": "text"
+   },
+   "3_Miete € je m² Wflmtl": {
+    "typ": "text"
+   },
+   "3_Nein_ja": {
+    "typ": "check"
+   },
+   "3_Ort Straße HausNr Stockwerk": {
+    "typ": "text"
+   },
+   "3_Vermieter_Anschrift": {
+    "typ": "text"
+   },
+   "3_Wohnfläche m²": {
+    "typ": "text"
+   },
+   "3_Zahl der Wohnräume": {
+    "typ": "text"
+   },
+   "5_1_Begründung": {
+    "typ": "text"
+   },
+   "6_1_Begründung": {
+    "typ": "text"
+   },
+   "7_1_Begründung": {
+    "typ": "text"
+   },
+   "8_Ja_nein": {
+    "typ": "check"
+   },
+   "8_Nebenwohnsitz_in": {
+    "typ": "text"
+   },
+   "8_Nebenwohnsitz_seit": {
+    "typ": "text"
+   },
+   "8_Wohneigentum_in": {
+    "typ": "text"
+   },
+   "8_Wohneigentum_seit": {
+    "typ": "text"
+   },
+   "Allein erziehende Personen": {
+    "typ": "check"
+   },
+   "Anlagen": {
+    "typ": "text"
+   },
+   "Datuum Beginn": {
+    "typ": "text"
+   },
+   "Drucken": {
+    "typ": "check"
+   },
+   "Ehepaare_Lebenspartner": {
+    "typ": "check"
+   },
+   "Erteilung_Wohnberechtigungsschein": {
+    "typ": "check"
+   },
+   "Familien  Haushalte mit mindestens 3 Kindern": {
+    "typ": "check"
+   },
+   "Formular zurücksetzen": {
+    "typ": "check"
+   },
+   "Menschen mit einem Grad der Behinderung von 50 und mehr": {
+    "typ": "check"
+   },
+   "Ort Datum": {
+    "typ": "text"
+   },
+   "Schwangere Frauen": {
+    "typ": "check"
+   },
+   "Sonstige Familien  Haushalte mit Kindern": {
+    "typ": "check"
+   },
+   "Sonstige Wohnungssuchende": {
+    "typ": "check"
+   },
+   "Unterschrift": {
+    "typ": "text"
+   },
+   "Ältere Menschen 60 Jahre und älter": {
+    "typ": "check"
+   }
+  },
+  "geschuetzt": true,
+  "seiten": 2,
+  "stand": "",
+  "titel": "Wohnberechtigungsschein WBS I",
+  "xfa": false
+ },
+ "wbs-HH.pdf": {
+  "felder": {
+   " Geburtsdatum eintragen": {
+    "typ": "text"
+   },
+   " Name eintragen": {
+    "typ": "text"
+   },
+   " Telefon freiwillig eintragen": {
+    "typ": "text"
+   },
+   "(Ehe-)PartnerIn Datum der Ausstellung": {
+    "typ": "text"
+   },
+   "(Ehe-)PartnerIn bis Datum": {
+    "typ": "text"
+   },
+   "1 Mitantragsteller ": {
+    "typ": "text"
+   },
+   "1 Mitantragsteller Datum der Ausstellung": {
+    "typ": "text"
+   },
+   "1 Mitantragsteller bis Datum": {
+    "typ": "text"
+   },
+   "2": {
+    "typ": "None"
+   },
+   "2 Mitantragsteller ": {
+    "typ": "text"
+   },
+   "2 Mitantragsteller Datum der Ausstellung": {
+    "typ": "text"
+   },
+   "2 Mitantragsteller bis Datum": {
+    "typ": "text"
+   },
+   "2.2 Geburtsdatum eintragen": {
+    "typ": "text"
+   },
+   "2.2 Stellung zum Antragsteller": {
+    "typ": "text"
+   },
+   "2.2 weitere Personen eintragen": {
+    "typ": "text"
+   },
+   "2.3 Geburtsdatum eintragen": {
+    "typ": "text"
+   },
+   "2.3 Stellung zum Antragsteller": {
+    "typ": "text"
+   },
+   "2.3 weitere Personen eintragen": {
+    "typ": "text"
+   },
+   "2.4 Geburtsdatum eintragen": {
+    "typ": "text"
+   },
+   "2.4 Stellung zum Antragsteller": {
+    "typ": "text"
+   },
+   "2.4 weitere Personen eintragen": {
+    "typ": "text"
+   },
+   "2.5 Geburtsdatum eintragen": {
+    "typ": "text"
+   },
+   "2.5 Stellung zum Antragsteller": {
+    "typ": "text"
+   },
+   "2.5 weitere Personen eintragen": {
+    "typ": "text"
+   },
+   "2.6 Geburtsdatum eintragen": {
+    "typ": "text"
+   },
+   "2.6 Stellung zum Antragsteller": {
+    "typ": "text"
+   },
+   "2.6 weitere Personen eintragen": {
+    "typ": "text"
+   },
+   "2.7 Geburtsdatum eintragen": {
+    "typ": "text"
+   },
+   "2.7 Stellung zum Antragsteller": {
+    "typ": "text"
+   },
+   "2.7 weitere Personen eintragen": {
+    "typ": "text"
+   },
+   "AktuellDatum": {
+    "typ": "text"
+   },
+   "Antragsteller Datum der Ausstellung": {
+    "typ": "text"
+   },
+   "Antragsteller bis Datum": {
+    "typ": "text"
+   },
+   "Aufenthaltserlaubnis": {
+    "typ": "check"
+   },
+   "Aufenthaltserlaubnis Antragsteller": {
+    "typ": "check"
+   },
+   "Aufenthaltserlaubnis Mitantragsteller": {
+    "typ": "check"
+   },
+   "Bezirksamt eintragen": {
+    "typ": "text"
+   },
+   "Datum der Ausstellung": {
+    "typ": "text"
+   },
+   "Drucken": {
+    "typ": "check"
+   },
+   "Eigenes Einkommen 2": {
+    "typ": "None"
+   },
+   "Eigenes Einkommen 2.2": {
+    "typ": "check"
+   },
+   "Eigenes Einkommen 2.3": {
+    "typ": "check"
+   },
+   "Eigenes Einkommen 2.4": {
+    "typ": "check"
+   },
+   "Eigenes Einkommen 2.5": {
+    "typ": "check"
+   },
+   "Eigenes Einkommen 2.6": {
+    "typ": "check"
+   },
+   "Eigenes Einkommen 2.7": {
+    "typ": "check"
+   },
+   "Eigenes Einkommen Antragsteller": {
+    "typ": "check"
+   },
+   "Ergänzende Bemerkungen": {
+    "typ": "text"
+   },
+   "Familienstand": {
+    "typ": "check"
+   },
+   "Geschlecht": {
+    "typ": "check"
+   },
+   "Ggf": {
+    "typ": "None"
+   },
+   "Ggf Postanschrift Postleitzahl und Ort": {
+    "typ": "text"
+   },
+   "Ggf. Postanschrift Straße und Hausnummer": {
+    "typ": "text"
+   },
+   "Grad der Behinderung": {
+    "typ": "text"
+   },
+   "Merkzeichen": {
+    "typ": "text"
+   },
+   "Mitantragsteller Nr": {
+    "typ": "text"
+   },
+   "Nationalität (Ehe-)Partner oder (Ehe-)Partnerin": {
+    "typ": "text"
+   },
+   "Nationalität Antragsteller": {
+    "typ": "text"
+   },
+   "Nationalität Mitantragsteller Nr": {
+    "typ": "None"
+   },
+   "Nationalität Mitantragsteller Nr. ": {
+    "typ": "text"
+   },
+   "Niederlassungserlaubnis": {
+    "typ": "check"
+   },
+   "Niederlassungserlaubnis Antragsteller": {
+    "typ": "check"
+   },
+   "Niederlassungserlaubnis Mitantragsteller": {
+    "typ": "check"
+   },
+   "Postleitzahl und Ort eintragen": {
+    "typ": "text"
+   },
+   "Schwerbehinderung": {
+    "typ": "check"
+   },
+   "Schwerbehinderung Antragsteller": {
+    "typ": "check"
+   },
+   "Schwerbehinderung Mitantragsteller": {
+    "typ": "check"
+   },
+   "Seit Datum": {
+    "typ": "text"
+   },
+   "Speichern": {
+    "typ": "check"
+   },
+   "Straße und Hausnummer eintragen": {
+    "typ": "text"
+   },
+   "Vorname eintragen ": {
+    "typ": "text"
+   },
+   "Wohnungs- oder Hauseigentümer": {
+    "typ": "check"
+   },
+   "barrierefreien Wohnraun": {
+    "typ": "check"
+   },
+   "barrierefreier Wohnraum Antragsteller": {
+    "typ": "check"
+   },
+   "barrierefreier Wohnraum Mitantragsteller": {
+    "typ": "check"
+   },
+   "befristete Aufenthaltserlaubnis": {
+    "typ": "check"
+   },
+   "in den letzten 24 Monaten": {
+    "typ": "check"
+   },
+   "unbefristete Aufenthaltsgenehmigung": {
+    "typ": "check"
+   }
+  },
+  "geschuetzt": true,
+  "seiten": 2,
+  "stand": "",
+  "titel": "Antrag; auf eine Wohnberechtigungsbescheinigung",
+  "xfa": false
  }
 }

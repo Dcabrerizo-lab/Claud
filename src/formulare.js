@@ -175,6 +175,16 @@ const Formulare = (function () {
     if (ok(R('kiz')) && !(s.bezug || {}).kiz) add('kiz', 'kiz1-antrag_ba036540.pdf', 'Antrag auf Kinderzuschlag (KiZ 1)', 'Für die Familienkasse; zum Ausfüllen in einer PDF-App, einfacher geht es online mit BundID', {}, 'leer');
     // Wohngeld: Vordruck ohne Formularfelder (Muster; die Wohngeldstelle kann einen eigenen Vordruck verlangen)
     if (ok(R('wohngeld')) && !(s.bezug || {}).wohngeld) add('wg', '35_mz_antrag.pdf', 'Antrag auf Wohngeld (Mietzuschuss)', 'Muster-Vordruck zum Ausdrucken; manche Wohngeldstellen haben einen eigenen Vordruck', {}, 'leer');
+    // Wohnberechtigungsschein: Landesvordruck, wo das Land einen hat; sonst gibt ihn die Stadt oder Gemeinde heraus
+    if (ok(R('wbs'))) {
+      const bl = s.bundesland || '';
+      const WBS = { BY: ['wbs-BY.pdf', 'Bayern, Stand April 2026; in München gilt ein eigenes Verfahren (SOWON)'], BE: ['wbs-BE.pdf', 'Berlin'],
+        BB: ['wbs-BB.pdf', 'Brandenburg, amtlicher Landesvordruck'], HH: ['wbs-HH.pdf', 'Hamburg, an das Bezirksamt'] };
+      const LINK = { HB: 'bau.bremen.de (Wohnberechtigungsschein)', RP: 'rp.egovernor.de bzw. die Verbandsgemeinde- oder Stadtverwaltung', SL: 'saarland.de (Soziale Wohnraumförderung)' };
+      if (WBS[bl]) add('wbs', WBS[bl][0], 'Antrag auf Wohnberechtigungsschein', WBS[bl][1] + '; dazu je Person mit Einkommen eine Einkommenserklärung', {}, 'leer');
+      else if (LINK[bl]) add('wbs', '', 'Antrag auf Wohnberechtigungsschein', 'Landesvordruck zum Herunterladen: ' + LINK[bl], {}, 'hinweis');
+      else add('wbs', '', 'Antrag auf Wohnberechtigungsschein', bl ? 'In diesem Land gibt die Stadt oder Gemeinde einen eigenen Vordruck heraus (Wohnungsamt oder Bauamt)' : 'Gib dein Bundesland oder deine Postleitzahl an; manche Länder haben einen Landesvordruck, sonst gibt ihn die Stadt oder Gemeinde heraus', {}, 'hinweis');
+    }
     return liste;
   }
 

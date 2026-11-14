@@ -65,8 +65,19 @@ if (kz) alle.push(kz);
 ck('Bereits Kinderzuschlag: kein KiZ-Antrag', !F.plan(Object.assign({}, kizFall, { bezug: { kindergeld: true, kiz: true } }), PERSON, R.evaluate(kizFall).results).some((x) => x.id === 'kiz'));
 ck('Ohne gewählte Leistungen: keine Formulare', F.plan(kizFall, PERSON, []).length === 0);
 
+// Wohnberechtigungsschein je Land: Landesvordruck (BY, BE, BB, HH), Hinweis mit Fundstelle (HB, RP, SL), sonst Stadt/Gemeinde
+const wbsFall = { adults: 1, ek1Art: 'lohn', ek1Brutto: 1500, ek1Netto: 1150, miete: 500, mietstufe: '3', vermoegen: 100 };
+const wbsRes = [{ id: 'wbs', level: 'ja' }];
+const wbsFuer = (bl) => F.plan(Object.assign({}, wbsFall, { bundesland: bl }), PERSON, wbsRes).find((x) => x.id === 'wbs');
+['BY', 'BE', 'BB', 'HH'].forEach((bl) => { const w = wbsFuer(bl); ck('WBS ' + bl + ': Landesvordruck wbs-' + bl + '.pdf als unveränderter Vordruck', !!w && w.datei === 'wbs-' + bl + '.pdf' && w.art === 'leer', JSON.stringify(w)); if (w) alle.push(w); });
+['HB', 'RP', 'SL'].forEach((bl) => { const w = wbsFuer(bl); ck('WBS ' + bl + ': Hinweis mit Fundstelle des Landesvordrucks', !!w && w.art === 'hinweis' && /Landesvordruck/.test(w.warum), JSON.stringify(w)); });
+['BW', 'HE', 'MV', 'NI', 'NW', 'SN', 'ST', 'SH', 'TH'].forEach((bl) => { const w = wbsFuer(bl); ck('WBS ' + bl + ': Hinweis auf Vordruck der Stadt oder Gemeinde', !!w && w.art === 'hinweis' && /Stadt oder Gemeinde/.test(w.warum), JSON.stringify(w)); });
+ck('WBS ohne Bundesland: Hinweis, Land anzugeben', /Bundesland/.test(wbsFuer('').warum));
+ck('Kein WBS ohne passendes Ergebnis', !F.plan(wbsFall, PERSON, [{ id: 'wbs', level: 'nein' }]).some((x) => x.id === 'wbs'));
+
 // Zuordnung gegen den Katalog
 alle.forEach((fo) => {
+  if (fo.art === 'hinweis') return;
   ck(fo.id + ': Datei vorhanden', fs.existsSync(path.join(DIR, fo.datei)), fo.datei);
   const kat = K[fo.datei];
   if (kat && kat.geschuetzt) ck(fo.id + ': vom Herausgeber geschütztes PDF wird nicht verändert (leerer Vordruck)', fo.art === 'leer');
@@ -107,12 +118,13 @@ ck('Unterlagen Selbstständige mit Eigentum und Auto: EKS, Grundbuch, Fahrzeugsc
   const log = console.log;
   console.log = (...a) => { if (!/Trying to parse invalid object|Invalid object ref/.test(a.join(' '))) log(...a); };
   const loadFile = async (d) => new Uint8Array(fs.readFileSync(path.join(DIR, d)));
+  const mitPdf = alle.filter((x) => x.art !== 'hinweis');
   const res = await fill({ forms: alle, katalog: K, loadFile });
-  ck('Für jedes Formular eine Datei', res.length === alle.length, res.length + ' / ' + alle.length);
+  ck('Für jedes Formular eine Datei, keine für reine Hinweise', res.length === mitPdf.length, res.length + ' / ' + mitPdf.length);
   ck('Dateinamen eindeutig', new Set(res.map((r) => r.name)).size === res.length, res.map((r) => r.name).join(' '));
   let geprueft = 0;
   for (let i = 0; i < res.length; i++) {
-    const fo = alle[i], r = res[i];
+    const fo = mitPdf[i], r = res[i];
     if (fo.art === 'leer') { ck(fo.id + ': leerer Vordruck unverändert', Buffer.compare(Buffer.from(r.bytes), fs.readFileSync(path.join(DIR, fo.datei))) === 0); continue; }
     const doc = await PDFDocument.load(r.bytes);
     const kat = K[fo.datei], form = doc.getForm();
