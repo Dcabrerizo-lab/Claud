@@ -9,6 +9,8 @@ Stand: 13.11.2026. Grundlage ist die CLAUDE.md, hier mit Davids Entscheidungen s
 | 13.11.2026 | Formulare kommen oft auf Papier. **Beide Wege** sollen möglich sein: Abschreibhilfe und ausgefülltes Formular aus dem Foto | Neuer Spike M0b |
 | 13.11.2026 | Der Foto-Weg kommt **nur in die App, wenn er offline zuverlässig funktioniert** | Freigabe-Bedingung unten. Bis dahin bleibt der Foto-Weg ein getrenntes Modul hinter einem Schalter, der MVP hängt nicht davon ab |
 
+| 14.11.2026 | **SoLo bleibt eine eigenständige App** | Tresor als eigene App; SoLo-Rechenkern wird mitgenutzt, nicht kopiert; Verbindung nur optional (E13) |
+
 ## Freigabe-Bedingung Foto-Weg (Vorschlag, von David zu bestätigen)
 
 Der Foto-Weg geht in die App, wenn **alle** Punkte erfüllt und per Test belegt sind:

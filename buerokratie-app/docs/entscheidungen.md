@@ -45,3 +45,10 @@ Vorerst `buerokratie-app/` neben dem Lotsen im selben Repo. Das erleichtert das 
 
 ## E12 Nur in sicheren Kontexten
 Ohne `https://` (oder Datei bzw. installierte App) gibt der Browser keine Verschlüsselung frei. Die App läuft dann bewusst nicht und erklärt, warum. Einrichtungen stellen sie per https bereit oder verteilen die Datei.
+
+## E13 SoLo bleibt eine eigenständige App (Vorgabe David, 14.11.2026)
+SoLo – Sozialleistungslotse (`com.Sozialleistungslotse`, 31 Leistungen) bleibt als einzelne App in Google Play und im App Store, mit eigenem Store-Eintrag und eigenen Updates. Daraus folgt:
+- SoLo darf **nie vom Tresor abhängen**. Ohne Tresor funktioniert SoLo genau wie bisher.
+- Der Tresor ist eine **eigene App** mit eigener App-Kennung. Er kann den Anspruchs-Check von SoLo als Modul anbieten. Dafür wird SoLos Rechenkern (`src/rules.js` und Fachdaten) **mitgenutzt, nicht kopiert**, damit beide denselben Rechtsstand haben.
+- Eine Verbindung zwischen den Apps (Angaben aus dem Tresor in SoLo übernehmen) ist **optional** und braucht immer die Bestätigung des Nutzers.
+- Eine neue SoLo-Version darf nicht auf den Tresor warten, und umgekehrt.
