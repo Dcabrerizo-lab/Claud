@@ -981,5 +981,7 @@
   "f.formsAppLeer": "Te formularze pasują do twoich danych. Wypełniasz je w aplikacji PDF lub na papierze.",
   "f.formsShareLeer": "Udostępnij formularze",
   "f.formsLink": "Do formularza urzędowego (internet)",
-  "t.kiz.mitWg": "Dodatek na dziecko (Kinderzuschlag, do {max} na dziecko) pozwoli obyć się bez zasiłku podstawowego (Grundsicherungsgeld) tylko razem z dodatkiem mieszkaniowym (Wohngeld). Złóż wnioski o oba; Familienkasse sprawdzi je razem."
+  "t.kiz.mitWg": "Dodatek na dziecko (Kinderzuschlag, do {max} na dziecko) pozwoli obyć się bez zasiłku podstawowego (Grundsicherungsgeld) tylko razem z dodatkiem mieszkaniowym (Wohngeld). Złóż wnioski o oba; Familienkasse sprawdzi je razem.",
+  "heiz.label": "W tym koszty ogrzewania miesięcznie (opcjonalnie)",
+  "heiz.hint": "Zaliczka na ogrzewanie, podana w umowie najmu lub w rozliczeniu kosztów dodatkowych. Dzięki temu SoLo dokładniej obliczy dodatek mieszkaniowy (Wohngeld); bez niej szacuje ostrożnie."
 }

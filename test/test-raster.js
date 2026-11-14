@@ -33,6 +33,7 @@ function haushaltZufall(i) {
     art1: p1.art, art2: p2 ? p2.art : '',
     brutto: p1.b + (p2 ? p2.b : 0), brutto2: p2 ? p2.b : '', netto: p1.n + (p2 ? p2.n : 0),
     miete: pick([0, geld(400, 10) + 200, geld(1200, 10) + 300, geld(2000, 10) + 500]),
+    heizkosten: pick(['', '', '', geld(250, 10), geld(150, 10) + 30, 5000]),
     mietstufe: pick(['', '1', '2', '3', '4', '5', '6', '7']),
     vermoegen: pick([0, geld(9000, 100), geld(30000, 500), geld(120000, 1000), 5000, 10000, 15000, 20000, 55000, 70000]),
     unterhalt: kids + young > 0 && rnd() < 0.3 ? geld(900, 10) : '',

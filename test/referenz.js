@@ -187,7 +187,8 @@ const wg = (n, M, Y) => { const i = Math.min(n, 12) - 1, [a, b, c] = ABC[i]; M =
 // Werbungskosten-Pauschbetrag (§ 9a EStG) beim Wohngeld: Arbeit (auch Werkstatt) 1.230 €, Rente 102 € im Jahr; nicht bei Selbstständigen
 const werbung = (x) => Math.min(x.brutto, x.selbst ? 0 : x.art === 'lohn' || x.art === 'wfbm' ? 1230 / 12 : x.art === 'rente' ? 102 / 12 : 0);
 function yGrenze(n, M) { let lo = 0, hi = 30000; for (let i = 0; i < 80; i++) { const m = (lo + hi) / 2; if (wg(n, M, m) > 0) lo = m; else hi = m; } return lo; }
-const mieteWG = (st, n, warm, faktor) => Math.min(faktor * Math.max(0, warm - heiz(n)), hoechst(st, n)) + heiz(n);
+// Bruttokaltmiete = Warmmiete minus angegebene Heizkosten (sonst Heizkostenkomponente als Näherung), höchstens Höchstbetrag; dazu die Heizkostenkomponente
+const mieteWG = (st, n, warm, faktor, hk) => Math.min(faktor * Math.max(0, warm - (hk > 0 && hk < warm ? hk : heiz(n))), hoechst(st, n)) + heiz(n);
 const ABZUG = { lohn: [0.1, 0.3], rente: [0.1, 0.2], kg: [0.1, 0.2], alg: [0, 0], eg: [0, 0], wfbm: [0, 0.1], ohne: [0, 0] };
 // Auf schon ausgezahlte Beträge (Beiträge sind abgezogen) nur noch ein kleiner Abzug (Konvention der App für ausgezahlte Beträge)
 const ABZUG_AUSZ = { lohn: [0, 0.12], rente: [0, 0.06], kg: [0, 0.06], alg: [0, 0], eg: [0, 0], wfbm: [0, 0.05], ohne: [0, 0] };
@@ -203,7 +204,8 @@ function wohngeld(h) {
   if (h.miete <= 0) return { level: 'nein' };
   const st = [1, 2, 3, 4, 5, 6, 7].indexOf(Number(e.mietstufe)) >= 0 ? Number(e.mietstufe) : null;
   const n = Math.min(h.personen, 12);
-  const yMaxLo = yGrenze(n, mieteWG(st || 1, n, h.miete, 0.9)), yMaxHi = yGrenze(n, mieteWG(st || 7, n, h.miete, 1));
+  const hk = zahl(e.heizkosten);
+  const yMaxLo = yGrenze(n, mieteWG(st || 1, n, h.miete, hk > 0 && hk < h.miete ? 1 : 0.9, hk)), yMaxHi = yGrenze(n, mieteWG(st || 7, n, h.miete, 1, hk));
   // § 17 WoGG: Freibeträge (Behinderung: GdB 100 oder GdB >= 50 mit Pflegegrad; Alleinerziehende 110 € im Monat)
   const gdb = e.gdb === 'H' ? 100 : Number(e.gdb) || (e.behinderung ? 100 : 0);
   const pg = ['1', '2', '3', '4', '5'].indexOf(String(e.pflegegrad)) >= 0;
@@ -221,7 +223,7 @@ function wohngeld(h) {
   const mittel = h.netto + h.kinder * KG + h.unterhalt + h.uvg + h.kindEink - h.uz;
   if (mittel < 0.8 * (h.regel + h.miete + h.mehrAE)) level = 'vielleicht'; // App: ohne weitere Mehrbedarfe
   let betrag = null;
-  if (st) { const M = mieteWG(st, n, h.miete, 1); betrag = [Math.max(0, runde10(wg(n, M, yPess))), Math.max(0, runde10(wg(n, M, yOpt)))]; }
+  if (st) { const M = mieteWG(st, n, h.miete, 1, hk); betrag = [Math.max(0, runde10(wg(n, M, yPess))), Math.max(0, runde10(wg(n, M, yOpt)))]; }
   return { level, yPess, yOpt, betrag };
 }
 

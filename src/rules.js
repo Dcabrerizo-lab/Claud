@@ -208,10 +208,12 @@ const Rules = (function () {
   // Die Miete M, mit der Wohngeld rechnet: Bruttokaltmiete (bis zur Höchstmiete) plus Heizkostenkomponente.
   // Die Warmmiete dient als Näherung: Wohngeld ersetzt die Heizkosten durch die Pauschale.
   // factor < 1 rechnet vorsichtig. Ohne Mietangabe gilt die Höchstmiete.
-  function wgMiete(stufe, n, warm, factor) {
+  // heizIst: angegebene Heizkosten; ohne Angabe wird die Heizkostenkomponente als Näherung abgezogen
+  function wgMiete(stufe, n, warm, factor, heizIst) {
     const heiz = wgHeiz(n), cap = wgCap(stufe, n);
     if (!(warm > 0)) return cap + heiz;
-    return Math.min(factor * Math.max(0, warm - heiz), cap) + heiz;
+    const kalt = Math.max(0, warm - (heizIst > 0 && heizIst < warm ? heizIst : heiz));
+    return Math.min(factor * kalt, cap) + heiz;
   }
   // Brutto-Einkommensgrenzen bei Höchstmiete: [bei 10 % pauschalem Abzug, bei 30 % pauschalem Abzug]
   function limits(stufe, n) {
@@ -334,6 +336,8 @@ const Rules = (function () {
       baby: inp.baby === 'bald' || inp.baby === 'da' ? inp.baby : '', egVor: blank(inp.egVor) ? null : num(inp.egVor), asyl: inp.aufenthalt === 'asyl',
       wohnform: inp.wohnform === 'eltern' || inp.wohnform === 'heim' ? inp.wohnform : '', wfbmEssen: !!inp.wfbmEssen,
       mieteGegeben: !blank(inp.miete) && num(inp.miete) > 0,
+      // Heizkosten (freiwillig): nur gültig, wenn kleiner als die Warmmiete
+      heizkosten: num(inp.heizkosten) > 0 && num(inp.heizkosten) < num(inp.miete) ? num(inp.heizkosten) : 0,
       arbeitSit: inp.arbeitSit === 'arbeitslos' || inp.arbeitSit === 'krank' ? inp.arbeitSit : '',
       algZeit: !!inp.algZeit, algMonate: [12, 16, 20, 24, 30, 36, 48].indexOf(Number(inp.algMonate)) >= 0 ? Number(inp.algMonate) : 0,
       krankWochen: ['unter6', 'laeuft', 'ende'].indexOf(inp.krankWochen) >= 0 ? inp.krankWochen : '',
@@ -495,8 +499,8 @@ const Rules = (function () {
     const stufen = h.stufe ? [h.stufe, h.stufe] : [1, 7];
     // Höchstes Einkommen Y (nach Pauschalabzug und Freibeträgen) mit der tatsächlichen Miete (Formel § 19 WoGG):
     // vorsichtig für "wahrscheinlich" mit 90 % der Bruttokaltmiete, für "möglich" mit 100 %
-    const yMaxLo = wgYmax(h.persons, wgMiete(stufen[0], h.persons, h.miete, 0.9));
-    const yMaxHi = wgYmax(h.persons, wgMiete(stufen[1], h.persons, h.miete, 1));
+    const yMaxLo = wgYmax(h.persons, wgMiete(stufen[0], h.persons, h.miete, h.heizkosten ? 1 : 0.9, h.heizkosten));
+    const yMaxHi = wgYmax(h.persons, wgMiete(stufen[1], h.persons, h.miete, 1, h.heizkosten));
     // Pauschalabzug je Person und Einkommensart (§ 16 WoGG): Lohn 10-30 %, Rente und Krankengeld 10-20 %, ALG I und Elterngeld 0 %
     const pers = h.pers || [['lohn', h.brutto]];
     let sumB = 0, yA = 0, yB = 0;
@@ -542,7 +546,7 @@ const Rules = (function () {
     let tx = [[level === 'ja' ? 'wohngeld.ja' : 'wohngeld.vielleicht'], grenze].concat(unb);
     // Grobe Höhe (nur mit bekannter Mietenstufe): Formel § 19 WoGG mit dem Einkommen bei kleinem und großem Abzug
     if (h.stufe) {
-      const M = wgMiete(h.stufe, h.persons, h.miete, 1);
+      const M = wgMiete(h.stufe, h.persons, h.miete, 1, h.heizkosten);
       const a = Math.max(0, r10(wgBetrag(h.persons, M, yPess))), b = Math.max(0, r10(wgBetrag(h.persons, M, yOpt)));
       if (b >= 10) tx.push(a >= 10 && a < b ? ['schaetz.spanne', { a: eur(a), b: eur(b) }] : a >= 10 ? ['schaetz.eins', { a: eur(a) }] : ['schaetz.bis', { b: eur(b) }]);
     }

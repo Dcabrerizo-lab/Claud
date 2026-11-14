@@ -61,7 +61,7 @@
   function save() { clearTimeout(saveTimer); saveTimer = setTimeout(flush, 300); }
   function smooth() { return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'; }
   function blankState() {
-    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', kindEink: '', ek1bArt: '', ek1bBetrag: '', baby: '', egVor: '', aufenthalt: '', miete: '', mietstufe: '', plz: '', plzPick: '', bundesland: '', vermoegen: '', gebJahr: '', arbeitSit: '', algMonate: '', krankWochen: '', lohnVorher: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', uzBetrag: '', uzAn: '', uzTitel: false, wohnart: '', hhAndere: '', autoWert: '', autoBraucht: false, euArbeit: '', euJahre: '', bezug: {} };
+    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', kindEink: '', ek1bArt: '', ek1bBetrag: '', baby: '', egVor: '', aufenthalt: '', miete: '', heizkosten: '', mietstufe: '', plz: '', plzPick: '', bundesland: '', vermoegen: '', gebJahr: '', arbeitSit: '', algMonate: '', krankWochen: '', lohnVorher: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', uzBetrag: '', uzAn: '', uzTitel: false, wohnart: '', hhAndere: '', autoWert: '', autoBraucht: false, euArbeit: '', euJahre: '', bezug: {} };
   }
 
   function detect() {
@@ -401,7 +401,7 @@
 
   var CHECKS = ['mzG', 'mzGl', 'algZeit', 'grundrente33', 'wfbmEssen', 'teilhabe', 'schwanger', 'ernaehrung', 'warmwasser', 'kinder12', 'unterhaltFehlt', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt', 'uzTitel', 'autoBraucht'];
   var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'ek1bArt', 'bhWeitere', 'baby', 'aufenthalt', 'arbeitSit', 'algMonate', 'krankWochen', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd', 'uzAn', 'wohnart', 'hhAndere', 'euArbeit', 'euJahre'];
-  var NUMS = ['miete', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'kindEink', 'lohnVorher', 'ek1bBetrag', 'egVor', 'vermoegen', 'uzBetrag', 'autoWert'];
+  var NUMS = ['miete', 'heizkosten', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'kindEink', 'lohnVorher', 'ek1bBetrag', 'egVor', 'vermoegen', 'uzBetrag', 'autoWert'];
   var BEZUG = ['grundsicherungsgeld', 'sozialamt', 'wohngeld', 'kiz', 'kindergeld'];
 
   function writeForm() {
@@ -775,7 +775,7 @@
     L.push('', 'Haushalt: ' + haushaltZeile());
     if (s.wohnform === 'heim') L.push('Wohnkosten: laut Wohn- und Betreuungsvertrag des Wohnheims (Betrag liegt dem Vertrag bei)');
     else if (s.wohnform === 'eltern' && !s.miete) L.push('Wohnt bei den Eltern, zahlt keine Miete');
-    else L.push('Warmmiete im Monat: ' + money(s.miete) + (s.mietstufe ? ' (Mietenstufe ' + Rules.roman(Number(s.mietstufe)) + ')' : ''));
+    else L.push('Warmmiete im Monat: ' + money(s.miete) + (s.mietstufe ? ' (Mietenstufe ' + Rules.roman(Number(s.mietstufe)) + ')' : '') + (Number(String(s.heizkosten).replace(',', '.')) > 0 ? ', davon Heizkosten ' + money(s.heizkosten) : ''));
     var ARTDE = { lohn: 'Lohn oder Gehalt', rente: 'Rente oder Pension', alg: 'Arbeitslosengeld I', kg: 'Krankengeld', eg: 'Elterngeld', selbst: 'Gewinn aus selbstständiger Arbeit', wfbm: 'Lohn aus der Werkstatt für behinderte Menschen', ohne: 'kein Einkommen' };
     var ekZeile = function (i, wer) {
       var art = s['ek' + i + 'Art'];

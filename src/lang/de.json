@@ -981,5 +981,7 @@
   "f.formsAppLeer": "Diese Vordrucke passen zu deinen Angaben. Du füllst sie in einer PDF-App oder auf Papier aus.",
   "f.formsShareLeer": "Formulare teilen",
   "f.formsLink": "Zum amtlichen Formular (Internet)",
-  "t.kiz.mitWg": "Kinderzuschlag (bis {max} je Kind) hilft dir nur zusammen mit Wohngeld, ohne Grundsicherungsgeld auszukommen. Beantrage beides; die Familienkasse prüft das zusammen."
+  "t.kiz.mitWg": "Kinderzuschlag (bis {max} je Kind) hilft dir nur zusammen mit Wohngeld, ohne Grundsicherungsgeld auszukommen. Beantrage beides; die Familienkasse prüft das zusammen.",
+  "heiz.label": "Davon Heizkosten im Monat (freiwillig)",
+  "heiz.hint": "Abschlag für Heizung, steht im Mietvertrag oder in der Nebenkostenabrechnung. Damit rechnet SoLo das Wohngeld genauer; ohne Angabe wird vorsichtig geschätzt."
 }

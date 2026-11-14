@@ -244,6 +244,12 @@ ck('[st-fahrt] [sb-frei] [sb-park] Ausweis aG: frei fahren, Parkausweis, 4.500 �
 const wgr = { art1: 'rente', brutto: 1400, netto: 1250, miete: 650, mietstufe: 4, vermoegen: 0, gebJahr: 1955, heute: 2026.8 };
 ck('[wg-grundrente] Wohngeld: Grundrentenfreibetrag (§ 17a WoGG) wirkt', JSON.stringify(res(wgr).m.wohngeld.tx) !== JSON.stringify(res({ ...wgr, grundrente33: true }).m.wohngeld.tx));
 
+// Heizkosten (freiwillig): Wohngeld rechnet mit der Bruttokaltmiete = Warmmiete minus Heizkosten (ohne Angabe: Heizkostenkomponente)
+// 1 Person, Stufe III, 500 € warm, 1.200 € Lohn: mit 60 € Heizung Kaltmiete 440 € -> M = 440 + 110,40; Y = (1.200 - 102,50) x 0,7 -> 340 € (wie amtlicher Rechner)
+{ const hk = (h) => T({ art1: 'lohn', brutto: 1200, netto: 900, miete: 500, mietstufe: 3, vermoegen: 0, heizkosten: h }, 'wohngeld', 'schaetz.spanne');
+  ck('[wg-heiz] Wohngeld mit angegebenen Heizkosten genauer: 60 € Heizung -> bis 340 €, ohne Angabe bis 300 €, 200 € Heizung -> bis 230 €; Unsinn (Heizung über Miete) wird ignoriert',
+    hk(60).b === E(340) && hk('').b === E(300) && hk(200).b === E(230) && hk(5000).b === E(300), [hk(60), hk(''), hk(200), hk(5000)].map((x) => x && x.b).join(' / ')); }
+
 // ---------- Elterngeld (§ 2 BEEG), Hilfe zur Pflege (§ 85 SGB XII), Asylbewerberleistungen ----------
 // Basiselterngeld: vom Netto erst 83,33 € ab (§ 2c BEEG), dann 67 %; unter 1.000 € +0,1 Punkte je 2 € (bis 100 %), über 1.200 € -0,1 Punkte je 2 € (bis 65 %); 300 bis 1.800 €
 // Erwartungen = Elterngeldrechner des Bundes (familienportal.de, 14.11.2026)
