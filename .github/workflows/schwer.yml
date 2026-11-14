@@ -87,6 +87,9 @@ jobs:
       - name: Kleine Handys und große Schrift (320 px, Systemschrift 200 %)
         env: { BROWSER: '${{ matrix.browser }}' }
         run: node test/e2e-klein.js
+      - name: Zufalls-Klicktest (2.000 zufällige Bedienschritte)
+        env: { BROWSER: '${{ matrix.browser }}', ZUFALL_SEED: '${{ github.run_number }}' }
+        run: node test/e2e-zufall.js 2000
 
   android-geraete:
     name: Android-Emulator API ${{ matrix.api }}
