@@ -131,6 +131,8 @@ const Rules = (function () {
     },
     // Freibetrag beim Wohngeld für eigenes Einkommen von Kindern (16 bis 24 Jahre): 1.200 € im Jahr (§ 17 Nr. 4 WoGG)
     wgKindFrei: 100,
+    // Werbungskosten-Pauschbeträge im Jahr (§ 9a Satz 1 Nr. 1 und 3 EStG), beim Wohngeld vom Einkommen abgezogen (§ 14 Abs. 1 WoGG)
+    wgWerbung: { lohn: 1230, rente: 102 },
     // Pauschalabzug beim Wohngeld (§ 16 WoGG) je Einkommensart: [kleinster, größter] üblicher Abzug
     wgAbzug: { lohn: [0.1, 0.3], rente: [0.1, 0.2], kg: [0.1, 0.2], alg: [0, 0], eg: [0, 0], wfbm: [0, 0.1], ohne: [0, 0] },
     // Wenn nur die Auszahlung bekannt ist: Rente netto ≈ 0,89 × Brutto, also 90 % (bzw. 80 %) Brutto ≈ 100 % (bzw. 94 %) der Auszahlung; Lohn netto 70-80 %
@@ -190,8 +192,11 @@ const Rules = (function () {
   }
   // Höchstes anrechenbares Monatseinkommen Y (nach Pauschalabzug), bei dem bei Miete M noch Wohngeld > 0 bleibt
   // Wohngeld im Monat nach § 19 Abs. 1 WoGG
+  // Anlage 3 WoGG (Fassung ab 1.1.2025): Liegen M oder Y unter diesen Werten, wird mit ihnen gerechnet
+  const WG_MMIN = [54, 67, 79, 92, 103, 103, 115, 128, 140, 152, 187, 298], WG_YMIN = [396, 679, 906, 1132, 1358, 1585, 1811, 2037, 2264, 2490, 2717, 2943];
   function wgBetrag(n, M, Y) {
     const [a, b, c] = WGF[wgIdx(n)];
+    M = Math.max(M, WG_MMIN[wgIdx(n)]); Y = Math.max(Y, WG_YMIN[wgIdx(n)]);
     return 1.15 * (M - (a + b * M + c * Y) * Y);
   }
   function wgYmax(n, M) {
@@ -249,7 +254,7 @@ const Rules = (function () {
     const selbst1 = inp.art1 === 'selbst' || (Array.isArray(inp.einkommen) && inp.einkommen.some((x) => x && x.art === 'selbst'));
     const liste = Array.isArray(inp.einkommen) ? inp.einkommen.filter((x) => x && ARTEN.indexOf(aSel(x.art)) >= 0).map((x) => {
       const nurAus = blank(x.n);
-      return [aSel(x.art), num(x.b), nurAus ? num(x.b) : num(x.n), nurAus];
+      return [aSel(x.art), num(x.b), nurAus ? num(x.b) : num(x.n), nurAus, x.art === 'selbst'];
     }) : null;
     const brutto = liste ? liste.reduce((a, x) => a + x[1], 0) : num(inp.brutto);
     const brutto2 = adults === 2 && !liste ? Math.min(num(inp.brutto2), brutto) : 0;
@@ -271,7 +276,7 @@ const Rules = (function () {
     // Arbeitslosengeld, Krankengeld, Elterngeld und Werkstattlohn fragt die App als ausgezahlten Betrag ab (laut Bescheid/Lohnzettel):
     // beim Wohngeld dann nur der kleine Abzug für ausgezahlte Beträge, wie in der einfachen Version (§ 16 WoGG)
     const AUSZ = { alg: 1, kg: 1, eg: 1, wfbm: 1 };
-    const pers = liste ? (liste.length ? liste : [['ohne', 0]]) : adults === 2 ? [[art1, brutto - brutto2, 0, !!inp.aus1 || !!AUSZ[art1]], [art2, brutto2, 0, !!AUSZ[art2]]] : [[art1, brutto, 0, !!inp.aus1 || !!AUSZ[art1]]];
+    const pers = liste ? (liste.length ? liste : [['ohne', 0]]) : adults === 2 ? [[art1, brutto - brutto2, 0, !!inp.aus1 || !!AUSZ[art1], inp.art1 === 'selbst'], [art2, brutto2, 0, !!AUSZ[art2], inp.art2 === 'selbst']] : [[art1, brutto, 0, !!inp.aus1 || !!AUSZ[art1], inp.art1 === 'selbst']];
     const sumIf = (f) => pers.reduce((a, x) => a + f(x[0], x[1]), 0);
     // Unterhalt, den die Person selbst an andere zahlt (Kinder, die nicht im Haushalt leben, frühere Partner), im Monat.
     // Grundsicherungsgeld und Kinderzuschlag: abgezogen, soweit festgelegt (Unterhaltstitel, Jugendamtsurkunde, notarielle
@@ -496,14 +501,19 @@ const Rules = (function () {
     let sumB = 0, yA = 0, yB = 0;
     // Nur der ausgezahlte Betrag bekannt: Steuern und Beiträge sind schon abgezogen, das Brutto nach § 16-Abzug liegt nahe daran
     // Elterngeld bis 300 € je Person ist gar kein Einkommen (§ 10 Abs. 1 BEEG): nur der Teil darüber zählt, mit Pauschalabzug
+    // Werbungskosten-Pauschbetrag (§ 14 Abs. 1 WoGG i. V. m. § 9a EStG): Lohn und Werkstattlohn 1.230 €, Renten 102 € im Jahr.
+    // Nicht bei Selbstständigen (Gewinn ist schon nach Betriebsausgaben) und nicht bei Lohnersatzleistungen.
+    let wkSum = 0;
     pers.forEach(function (x) {
       const ab = (x[3] ? R.wgAbzugAuszahlung[x[0]] : R.wgAbzug[x[0]]) || R.wgAbzug.lohn;
-      const zaehlt = x[0] === 'eg' ? Math.max(0, x[1] - R.elterngeldFrei) : x[1];
+      const wk = x[4] ? 0 : x[0] === 'lohn' || x[0] === 'wfbm' ? R.wgWerbung.lohn / 12 : x[0] === 'rente' ? R.wgWerbung.rente / 12 : 0;
+      const wkHier = Math.min(wk, x[1]); wkSum += wkHier;
+      const zaehlt = x[0] === 'eg' ? Math.max(0, x[1] - R.elterngeldFrei) : x[1] - wkHier;
       sumB += zaehlt; yA += zaehlt * (1 - ab[0]); yB += zaehlt * (1 - ab[1]);
     });
     const wA = sumB > 0 ? yA / sumB : 0.9, wB = sumB > 0 ? yB / sumB : 0.7;
-    // Anzeige als Grenze für das Brutto (bzw. den ausgezahlten Betrag bei ALG I und Elterngeld)
-    const lo = yMaxLo / wA, hi = yMaxHi / wB;
+    // Anzeige als Grenze für das Brutto (bzw. den ausgezahlten Betrag bei ALG I und Elterngeld), Werbungskosten wieder dazu
+    const lo = yMaxLo / wA + wkSum, hi = yMaxHi / wB + wkSum;
 
     let freib = 0;
     // § 17 Nr. 1 WoGG: 1.800 €/Jahr je schwerbehindertem Haushaltsmitglied mit GdB 100, oder GdB unter 100 (ab 50) bei Pflegebedürftigkeit

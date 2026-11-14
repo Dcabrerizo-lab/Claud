@@ -451,7 +451,7 @@ const dz = (o) => { const h = D(o); return [h.uzWGpess, h.uzWGopt, h.uzSGB].join
 ck('[uz-wg] Wohngeld-Höchstbeträge § 18 WoGG: 250 € je Kind, 500 € Ex-Partner; ohne Titel vorsichtig 0, günstig bis Höchstbetrag; mit Titel günstig ganzer Betrag',
   dz({ uzBetrag: 400, uzAn: 'k1', uzTitel: true }) === '250/400/400' && dz({ uzBetrag: 400, uzAn: 'k1' }) === '0/250/0' && dz({ uzBetrag: 600, uzAn: 'ex', uzTitel: true }) === '500/600/600' &&
   dz({ uzBetrag: 1000, uzAn: 'k3' }) === '0/750/0' && dz({ uzBetrag: 900, uzAn: 'exk', uzTitel: true }) === '750/900/900' && dz({ uzBetrag: 400, uzAn: 'k2', uzTitel: true }) === '400/400/400' && dz({ uzBetrag: 400 }) === '0/250/0', [dz({ uzBetrag: 400, uzAn: 'k1', uzTitel: true }), dz({ uzBetrag: 1000, uzAn: 'k3' })]);
-const uzW = { art1: 'lohn', brutto: 1800, netto: 1350, miete: 750, mietstufe: 4 };
+const uzW = { art1: 'lohn', brutto: 1900, netto: 1350, miete: 750, mietstufe: 4 }; // Grenzfall mit Werbungskosten-Pauschbetrag (amtlicher Wohngeldrechner)
 ck('[uz-wg] Wohngeld: 250 € Unterhalt ohne Titel hebt nur die günstige Schätzung (bleibt „möglich“), mit Titel „wahrscheinlich“', L(uzW, 'wohngeld') === 'vielleicht' && L({ ...uzW, uzBetrag: 250, uzAn: 'k1' }, 'wohngeld') === 'vielleicht' && L({ ...uzW, uzBetrag: 250, uzAn: 'k1', uzTitel: true }, 'wohngeld') === 'ja' && K({ ...uzW, uzBetrag: 250, uzAn: 'k1' }, 'wohngeld').includes('uz.wg'));
 ck('[uz-wg] Nach hohem Unterhalt reicht das Geld nicht mehr zum Leben: Hinweis Mindesteinkommen statt Betrag', K({ ...uzW, uzBetrag: 1000, uzAn: 'k1', uzTitel: true }, 'wohngeld').includes('wohngeld.zuNiedrig'));
 const uzG = { alter: true, nichtArbeit: true, brutto: 900, miete: 500, mietstufe: 3 };
@@ -472,7 +472,7 @@ const zKg = { kids: 1, art1: 'lohn', brutto: 2500, netto: 1800, miete: 700, miet
 // Krankengeld: min(70 % brutto, 90 % netto) minus 12,5 % Beiträge: 1.180 bis 1.420 €, Mitte 1.300 €, statt des Lohns
 ck('[zuk-einkommen] Krankgeschrieben (Lohnfortzahlung): Krankengeld 1.300 € ersetzt den Lohn, Grundsicherungsgeld danach wahrscheinlich -> „möglich“, Kinderzuschlag höher',
   L({ ...zKg, arbeitSit: '' }, 'ggeld') !== 'ja' && L(zKg, 'ggeld') === 'vielleicht' && ZR(zKg, 'ggeld').tx.some((t) => t[0] === 'zuk.kg' && t[1].a === E(1300)) && K(zKg, 'ggeld').includes('zuk.ohneLohn') && K(zKg, 'kiz').includes('zuk.betragEins'));
-const zEg = { art1: 'lohn', brutto: 2200, netto: 1600, miete: 650, mietstufe: 3, vermoegen: 1000, baby: 'bald', egVor: 1600 };
+const zEg = { art1: 'lohn', brutto: 2350, netto: 1600, miete: 650, mietstufe: 3, vermoegen: 1000, baby: 'bald', egVor: 1600 };
 // Elterngeld: 1.600 € Netto -> 67 % - 0,1 Punkte je 2 € über 1.200 € = 47 % -> Untergrenze 65 %: 1.040 €
 ck('[zuk-einkommen] Baby kommt bald (alleinstehend): Elterngeld 1.040 € statt Lohn, Wohngeld danach wahrscheinlich',
   ZR(zEg, 'wohngeld').tx.some((t) => t[0] === 'zuk.eg' && t[1].a === E(1040)) && L({ ...zEg, baby: '' }, 'wohngeld') === 'nein' && L(zEg, 'wohngeld') === 'vielleicht' && K(zEg, 'wohngeld').includes('zuk.ja'));

@@ -78,19 +78,19 @@ G('GSA: Paar Vermögen 20001 → nein', { alter: true, adults: 2, netto: 500, ve
 G('GSA: Erwerbsminderung zählt', { erwerbsgemindert: true, netto: 400 }, 'gsa', 'ja');
 G('GSA: weder alt noch erwerbsgemindert → nein', { netto: 400 }, 'gsa', 'nein');
 G('GSA: Bezug → na', { alter: true, bezug: { sozialamt: true } }, 'gsa', 'na');
-// Wohngeld Stufe III: 1 Person Grenzen 1677 / 2155; 2 Personen 2264 / 2910
+// Wohngeld Stufe III, 1 Person, Höchstmiete: Grenzen 1800 / 2285 € brutto (mit Werbungskosten-Pauschbetrag 102,50 €, § 14 WoGG / § 9a EStG; geprüft mit dem amtlichen Wohngeldrechner)
 G('WG: 1600 brutto → ja', { brutto: 1600, netto: 1300 }, 'wohngeld', 'ja');
 G('WG: 1900 brutto → vielleicht', { brutto: 1900, netto: 1500 }, 'wohngeld', 'vielleicht');
-G('WG: 2200 brutto → nein', { brutto: 2200, netto: 1700 }, 'wohngeld', 'nein');
-G('WG: Grenze 1697 (Stufe III, 1 Person, Höchstmiete) → ja', { brutto: 1697, netto: 1300, miete: 700 }, 'wohngeld', 'ja');
-G('WG: 1698 → vielleicht', { brutto: 1698, netto: 1300, miete: 700 }, 'wohngeld', 'vielleicht');
-G('WG: Obergrenze 2182 → vielleicht', { brutto: 2182, netto: 1700, miete: 700 }, 'wohngeld', 'vielleicht');
-G('WG: 2184 → nein', { brutto: 2184, netto: 1700, miete: 700 }, 'wohngeld', 'nein');
+G('WG: 2300 brutto → nein', { brutto: 2300, netto: 1700 }, 'wohngeld', 'nein');
+G('WG: Grenze 1800 (Stufe III, 1 Person, Höchstmiete) → ja', { brutto: 1800, netto: 1300, miete: 700 }, 'wohngeld', 'ja');
+G('WG: 1801 → vielleicht', { brutto: 1801, netto: 1300, miete: 700 }, 'wohngeld', 'vielleicht');
+G('WG: Obergrenze 2285 → vielleicht', { brutto: 2285, netto: 1700, miete: 700 }, 'wohngeld', 'vielleicht');
+G('WG: 2286 → nein', { brutto: 2286, netto: 1700, miete: 700 }, 'wohngeld', 'nein');
 G('WG: Behinderung 1800: 1800−187,5 = 1612,5 → ja', { brutto: 1800, netto: 1400, behinderung: true }, 'wohngeld', 'ja');
 G('WG: ohne Behinderung 1800 → vielleicht', { brutto: 1800, netto: 1400 }, 'wohngeld', 'vielleicht');
 G('WG: Alleinerziehend 1 Kind 2350: (2350·0,9−110 = 2005 ≤ 2264·0,9) → ja', { kids: 1, brutto: 2350, netto: 1900, miete: 700 }, 'wohngeld', 'ja');
 // Alleinerziehende: Freibetrag 110 €/Monat nur EINMAL (§ 17 Nr. 3 WoGG), nicht je Kind. 3 Personen, Stufe III, Höchstmiete: Grenze 2832 (10 % Abzug)
-{ const lim = R.limits(3, 4)[0]; // Alleinerziehend mit 3 Kindern = 4 Personen
+{ const lim = R.limits(3, 4)[0] + 102.5; // plus Werbungskosten-Pauschbetrag // Alleinerziehend mit 3 Kindern = 4 Personen
   const kb = { kids: 3, miete: 1500, netto: 3000 };
   G('WG: Alleinerziehend 3 Kinder: Freibetrag nur einmal (110 € = 122,2 € brutto bei 10 % Abzug), knapp über Grenze → vielleicht', { ...kb, brutto: Math.floor(lim + 122.2 + 20) }, 'wohngeld', 'vielleicht');
   G('WG: Alleinerziehend 3 Kinder: einmaliger Freibetrag, knapp darunter → ja', { ...kb, brutto: Math.floor(lim + 122.2 - 5) }, 'wohngeld', 'ja'); }
@@ -102,8 +102,8 @@ G('WG: Grundsicherungsgeld-Bezug → nein', { brutto: 800, netto: 700, bezug: { 
 G('WG: Mietenstufe unbekannt: hohe Einkommen → nein', { mietstufe: '', brutto: 2400, netto: 1900 }, 'wohngeld', 'nein');
 G('WG: Einkommen deutlich unter Bedarf → nur vielleicht', { brutto: 300, netto: 300 }, 'wohngeld', 'vielleicht');
 // Wohngeld mit tatsächlicher Miete (Formel § 19 WoGG): günstige Miete senkt die Grenze
-G('WG: günstige Miete 300, 1500 brutto: Grenze ca. 1366–1817 → vielleicht', { brutto: 1500, netto: 1200, miete: 300 }, 'wohngeld', 'vielleicht');
-G('WG: günstige Miete 300, 1900 brutto → nein', { brutto: 1900, netto: 1500, miete: 300 }, 'wohngeld', 'nein');
+G('WG: günstige Miete 300, 1500 brutto: Grenze ca. 1486–1919 → vielleicht', { brutto: 1500, netto: 1200, miete: 300 }, 'wohngeld', 'vielleicht');
+G('WG: günstige Miete 300, 2000 brutto → nein', { brutto: 2000, netto: 1500, miete: 300 }, 'wohngeld', 'nein');
 G('WG: günstige Miete 300, 1300 brutto → ja', { brutto: 1300, netto: 1100, miete: 300 }, 'wohngeld', 'ja');
 G('WG: Miete 700 (über Höchstmiete), 1900 brutto → vielleicht', { brutto: 1900, netto: 1500, miete: 700 }, 'wohngeld', 'vielleicht');
 check('Wohngeld-Formel: Grenzeinkommen steigt mit der Miete', R.wgYmax(2, 400) < R.wgYmax(2, 500) && R.wgYmax(2, 500) < R.wgYmax(2, 600));

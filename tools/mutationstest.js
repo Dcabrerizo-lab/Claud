@@ -36,6 +36,8 @@ const M = [
   ['Blindenhilfe: Asyl ohne Hinweis', "if (h.asyl) return mk(id, 'vielleicht', 'vielleicht', [['blh.asyl']]);", ''],
   ['Asyl: Grundsicherungsgeld nicht ausgeschlossen', "    if (h.asyl) return mk(id, 'nein', 'ausschluss', [['ggeld.asyl']]);\n    if (euAusschluss(h)) return mk(id, 'nein', 'ausschluss', [['ggeld.eu']]);", "    if (euAusschluss(h)) return mk(id, 'nein', 'ausschluss', [['ggeld.eu']]);"],
   ['EU-Bürger: Grundsicherungsgeld nicht ausgeschlossen', "    if (euAusschluss(h)) return mk(id, 'nein', 'ausschluss', [['ggeld.eu']]);\n    if (h.alter || h.erwerbsgemindert) {", '    if (h.alter || h.erwerbsgemindert) {'],
+  ['Wohngeld: Mindestwerte Anlage 3 fehlen', '    M = Math.max(M, WG_MMIN[wgIdx(n)]); Y = Math.max(Y, WG_YMIN[wgIdx(n)]);', ''],
+  ['Wohngeld: Werbungskostenpauschale fehlt', '    wgWerbung: { lohn: 1230, rente: 102 },', '    wgWerbung: { lohn: 0, rente: 0 },'],
   // Ausfüllhilfe: Ja/Nein vertauscht, falsches Formular, Name falsch geteilt
   ['Formulare: Alleinerziehend Ja/Nein vertauscht', "ha.rbtnAlleinerziehend = allein ? 'ja' : 'nein';", "ha.rbtnAlleinerziehend = allein ? 'nein' : 'ja';", 'src/formulare.js'],
   ['Formulare: Anlage KDU fehlt bei Miete', "if (miete > 0 || eigen) {", "if (eigen) {", 'src/formulare.js'],
@@ -91,7 +93,7 @@ fs.symlinkSync(path.join(ROOT, 'app', 'node_modules'), path.join(tmp, 'app', 'no
 const DATEI = (m) => m[3] || 'src/rules.js';
 const ORIG = {};
 M.forEach((m) => { ORIG[DATEI(m)] = ORIG[DATEI(m)] || fs.readFileSync(path.join(ROOT, DATEI(m)), 'utf8'); });
-const TESTS = ['test.js', 'test-strict.js', 'test-beh.js', 'test-faelle.js', 'test-raster.js ' + (process.env.MUT_RASTER || 8000), 'test-pruefliste.js', 'test-einfach-gleich.js 3000', 'test-grenzen.js', 'test-formulare.js', 'test-eigenschaften.js ' + (process.env.MUT_EIGEN || 3000)];
+const TESTS = ['test.js', 'test-strict.js', 'test-beh.js', 'test-faelle.js', 'test-raster.js ' + (process.env.MUT_RASTER || 8000), 'test-pruefliste.js', 'test-einfach-gleich.js 3000', 'test-grenzen.js', 'test-formulare.js', 'test-amtlich.js', 'test-eigenschaften.js ' + (process.env.MUT_EIGEN || 3000)];
 const laeuft = () => { try { for (const t of TESTS) execSync('node test/' + t, { cwd: tmp, stdio: 'ignore' }); return true; } catch (e) { return false; } };
 
 let unentdeckt = 0, geprueft = 0;

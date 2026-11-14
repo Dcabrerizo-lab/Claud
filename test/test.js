@@ -109,14 +109,14 @@ check('Unbekannte Mietenstufe ist vorsichtig (Sweep über ' + sweepN + ' Haushal
 const t7b = ev({ kids: 1, brutto: 2100, netto: 1700, miete: 800, vermoegen: 0 });
 check('Hinweis zur unbekannten Mietenstufe', keys(t7b, 'wohngeld').includes('wohngeld.stufeUnbekannt'));
 
-// 5) Vermögen, Freibeträge
+// 5) Vermögen, Freibeträge (Grenzfall 1.860 €: mit Werbungskostenpauschale seit dem Abgleich mit dem amtlichen Wohngeldrechner)
 check('Vermögen über 10.000 €: Grundsicherung im Alter nein', lv(ev({ brutto: 900, netto: 800, miete: 450, mietstufe: 2, alter: true, vermoegen: 15000 }), 'gsa') === 'nein');
 check('Vermögen über 60.000 €: Wohngeld nein', lv(ev({ brutto: 1000, netto: 900, miete: 450, mietstufe: 2, vermoegen: 80000 }), 'wohngeld') === 'nein');
-const nf = ev({ brutto: 1760, netto: 1500, miete: 600, mietstufe: 3, vermoegen: 0 });
+const nf = ev({ brutto: 1860, netto: 1500, miete: 600, mietstufe: 3, vermoegen: 0 });
 check('Freibetrag: ohne Behinderung Grenzbereich', lv(nf, 'wohngeld') === 'vielleicht');
-check('Freibetrag: mit Behinderung besser', lv(ev({ brutto: 1760, netto: 1500, miete: 600, mietstufe: 3, vermoegen: 0, behinderung: true }), 'wohngeld') === 'ja');
+check('Freibetrag: mit Behinderung besser', lv(ev({ brutto: 1860, netto: 1500, miete: 600, mietstufe: 3, vermoegen: 0, behinderung: true }), 'wohngeld') === 'ja');
 // § 17 Nr. 1 WoGG: Pflegegrad allein gibt keinen Freibetrag; GdB 50 bis 99 nur zusammen mit Pflegebedürftigkeit; GdB 100 immer
-const wgL = (o) => lv(ev({ brutto: 1760, netto: 1500, miete: 600, mietstufe: 3, vermoegen: 0, ...o }), 'wohngeld');
+const wgL = (o) => lv(ev({ brutto: 1860, netto: 1500, miete: 600, mietstufe: 3, vermoegen: 0, ...o }), 'wohngeld');
 check('Freibetrag: Pflegegrad allein gibt ihn nicht', wgL({ pflegegrad: '2' }) === wgL({}));
 check('Freibetrag: GdB 50 ohne Pflege gibt ihn nicht', wgL({ gdb: '50' }) === wgL({}));
 check('Freibetrag: GdB 50 mit Pflegegrad besser', wgL({ gdb: '50', pflegegrad: '2' }) === 'ja');
