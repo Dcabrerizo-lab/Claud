@@ -56,11 +56,15 @@ const VERBOTEN = '#mappePrint, #mappeShare, #mappeCopy, #sc-take, #sc-file, #sc-
     try {
       const r = rnd();
       if (r < 0.01) { schritt = 'Neu laden'; await p.reload(); await p.click('#firstOk', { timeout: 500 }).catch(() => {}); }
-      else if (r < 0.03) { const l = pick(['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro']); schritt = 'Sprache ' + l; if (await p.isVisible('#lang')) await p.selectOption('#lang', l); }
+      else if (r < 0.045) { schritt = 'Einfache Version'; if (await p.isVisible('#einfachBtn')) await p.click('#einfachBtn', { timeout: 1000 }); }
+      else if (r < 0.06) { const l = pick(['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro']); schritt = 'Sprache ' + l; if (await p.isVisible('#lang')) await p.selectOption('#lang', l); }
       else {
         const zs = await ziele();
         if (!zs.length) { schritt = 'nichts bedienbar'; fehler.push('Sackgasse: kein bedienbares Element | nach: ' + log.slice(-6).join(' > ')); break; }
-        const z = pick(zs), sel = '[data-zufall="' + z.i + '"]';
+        // In der einfachen Version länger bleiben: „zur ausführlichen Version“ nur selten wählen, sonst bleibt sie kaum geprüft
+        let z = pick(zs);
+        for (let k = 0; k < 5 && z.id === 'es-raus' && rnd() < 0.85; k++) z = pick(zs);
+        const sel = '[data-zufall="' + z.i + '"]';
         if (z.tag === 'select') { const v = pick(z.opts); schritt = 'Auswahl ' + (z.id || '?') + '=' + v; await p.selectOption(sel, v, { timeout: 1000 }); }
         else if (z.tag === 'input' && (z.typ === 'text' || z.typ === 'number' || z.typ === 'tel' || z.typ === '')) { const v = pick(WERTE); schritt = 'Eingabe ' + (z.id || '?') + '="' + v + '"'; await p.fill(sel, v, { timeout: 1000 }); await p.press(sel, 'Tab', { timeout: 1000 }).catch(() => {}); }
         else { schritt = 'Klick ' + z.tag + ' ' + (z.id || '') + ' „' + z.text.trim() + '“'; await p.click(sel, { timeout: 1000 }); }
@@ -80,6 +84,6 @@ const VERBOTEN = '#mappePrint, #mappeShare, #mappeCopy, #sc-take, #sc-file, #sc-
   }
   await b.close();
   if (fehler.length) { console.log('FEHLER Zufalls-Klicktest (Startwert ' + (Number(process.env.ZUFALL_SEED) || 20261114) + '):'); [...new Set(fehler)].slice(0, 5).forEach((f) => console.log('- ' + f)); process.exit(1); }
-  if (!besucht.einfach || !besucht.mappe || !besucht.karten) { console.log('FEHLER Zufalls-Klicktest erreicht nicht alle Bereiche: ' + JSON.stringify(besucht)); process.exit(1); }
+  if (besucht.einfach < SCHRITTE / 20 || !besucht.mappe || !besucht.karten) { console.log('FEHLER Zufalls-Klicktest erreicht nicht alle Bereiche: ' + JSON.stringify(besucht)); process.exit(1); }
   console.log('[zufall-klick] Zufalls-Klicktest bestanden: ' + SCHRITTE + ' zufällige Bedienschritte ohne Skriptfehler, kaputte Anzeige, seitliches Scrollen oder Sackgasse (Schritte in der einfachen Version ' + besucht.einfach + ', mit Ergebniskarten ' + besucht.karten + ', in der Antragsmappe ' + besucht.mappe + ')');
 })().catch((e) => { console.log('ABSTURZ', e.message); process.exit(1); });
