@@ -80,6 +80,22 @@ ck('WBS ohne Landesvordruck: sagt, wo es den Vordruck gibt, plus Ausfüllhilfe',
 ck('WBS ohne Bundesland: Hinweis, Land anzugeben', /Bundesland/.test(wbsFuer('').warum));
 ck('Kein WBS ohne passendes Ergebnis', !F.plan(wbsFall, PERSON, [{ id: 'wbs', level: 'nein' }]).some((x) => x.id === 'wbs'));
 
+// Kindergeld, Kinder ab 18, Kind mit Behinderung, Grundsicherung im Alter
+const ids = (st, res) => F.plan(st, PERSON, res).map((x) => x.id);
+const kgNeu = ids({ adults: 1, kids: 1, bezug: {} }, [{ id: 'kindergeld', level: 'ja' }]);
+ck('Kindergeld noch nicht bezogen: Antrag KG 1 mit Ausfüllhilfe (Anlage Kind, Steuer-ID)', kgNeu.indexOf('kg1') >= 0 && /Anlage Kind/.test(F.plan({ adults: 1, kids: 1, bezug: {} }, PERSON, [{ id: 'kindergeld', level: 'ja' }]).find((x) => x.id === 'kg1').hilfe.join(' ')), kgNeu.join(' '));
+ck('Kindergeld schon bezogen: kein Antrag KG 1', ids({ adults: 1, kids: 1, bezug: { kindergeld: true } }, [{ id: 'kindergeld', level: 'na' }]).indexOf('kg1') < 0);
+ck('EU-Bürger: Anlage Ausland dabei, sonst nicht', ids({ kids: 1, aufenthalt: 'eu', bezug: {} }, [{ id: 'kindergeld', level: 'ja' }]).indexOf('kg51') >= 0 && kgNeu.indexOf('kg51') < 0);
+const jung = ids({ adults: 2, young: 1, bezug: { kindergeld: true } }, [{ id: 'kindergeld', level: 'na' }]);
+ck('Kind von 18 bis 24 in Ausbildung: Schul-, Studien- und Ausbildungsnachweise auch bei laufendem Kindergeld', ['kg5a', 'kg7e', 'kg-ausbildung', 'kg5d'].every((x) => jung.indexOf(x) >= 0) && kgNeu.indexOf('kg5a') < 0, jung.join(' '));
+const beh = ids({ adults: 1, bhPerson: 'erwVor25', pflegegrad: '3', bezug: {} }, [{ id: 'kgBeh', level: 'vielleicht' }]);
+ck('Erwachsenes Kind mit Behinderung: KG 4e, 4f, ärztliche Bescheinigungen; mit Pflegegrad auch Betreuung', ['kg4e', 'kg4f', 'kg4k', 'kg-erwerb', 'kg-betreuung'].every((x) => beh.indexOf(x) >= 0), beh.join(' '));
+ck('Ohne Pflegegrad keine Bescheinigung über Betreuungsleistungen', ids({ adults: 1, bhPerson: 'erwVor25', bezug: {} }, [{ id: 'kgBeh', level: 'ja' }]).indexOf('kg-betreuung') < 0);
+const gsa = F.plan({ adults: 1, bezug: {} }, PERSON, [{ id: 'gsa', level: 'ja' }]).find((x) => x.id === 'gsa');
+ck('Grundsicherung im Alter: SGB-XII-Antrag (Muster) mit Ausfüllhilfe', !!gsa && gsa.art === 'leer' && gsa.hilfe.length >= 4);
+ck('Grundsicherung schon bezogen: kein Antrag', !F.plan({ adults: 1, bezug: { sozialamt: true } }, PERSON, [{ id: 'gsa', level: 'ja' }]).some((x) => x.id === 'gsa'));
+alle.push(...F.plan({ adults: 1, kids: 1, young: 1, aufenthalt: 'eu', bhPerson: 'erwVor25', pflegegrad: '3', bezug: {} }, PERSON, [{ id: 'kindergeld', level: 'ja' }, { id: 'kgBeh', level: 'ja' }, { id: 'gsa', level: 'ja' }]));
+
 // Zuordnung gegen den Katalog
 alle.forEach((fo) => {
   if (fo.art === 'hinweis') return;

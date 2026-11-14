@@ -4448,6 +4448,3873 @@
   "titel": "Arbeitsbescheinigung SGB II",
   "xfa": false
  },
+ "kg-ausbildung.pdf": {
+  "felder": {
+   "topmostSubform[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Angaben-Ausbildung[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Angaben-Ausbildung[0].Geburtsdatum-Pkt-6[3]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Angaben-Ausbildung[0].Geburtsdatum-Pkt-6[4]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Angaben-Kind[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Angaben-Kind[0].Geburtsdatum-Pkt-6[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Angaben-Kind[0].Geburtsdatum-Pkt-6[1]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Angaben-Kind[0].Geburtsdatum-Pkt-6[2]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Ausb-Ende-nein[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Ausb-Ende-nein[0].Geburtsdatum-Pkt-6[5]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Ausb-Ende-nein[0].Geburtsdatum-Pkt-6[6]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Ausb-Ende-nein[0].Ja[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Ausb-Ende[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Ausb-Ende[0].#area[10]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Ausb-Ende[0].#area[10].Ja[5]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Ausb-Ende[0].#area[10].Nein[3]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Ausb-Ende[0].#area[10].seit[2]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Ausb-Ende[0].#area[11]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Ausb-Ende[0].#area[11].Ja[6]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Ausb-Ende[0].#area[11].Nein[4]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Ausb-Ende[0].#area[11].seit[3]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Ausb-Ende[0].#area[8]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Ausb-Ende[0].#area[8].Ja[1]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Ausb-Ende[0].#area[8].Nein[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Ausb-Ende[0].#area[8].seit[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Ausb-Ende[0].#area[8].seit[1]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Ausb-Ende[0].#area[9]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Ausb-Ende[0].#area[9].Ja[3]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Ausb-Ende[0].#area[9].Ja[4]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Ausb-Ende[0].#area[9].Nein[1]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Ausb-Ende[0].#area[9].Nein[2]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Ausb-Ende[0].Ja[2]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Bestätigung[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Bestätigung[0].Datum-1[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Kiopfangaben[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Kiopfangaben[0].#area[2]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Kiopfangaben[0].#area[2].KG-Nr[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Kiopfangaben[0].#area[2].Name_Vorname_KGB[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Kiopfangaben[0].#area[3]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Kiopfangaben[0].#area[3].Telefon[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].#area[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].#area[0].Ja[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].#area[0].Nein[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].#area[0].seit[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].#area[2]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].#area[2].Datum-Unterschrift[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Actionbuttons[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Actionbuttons[0].Alle_Eingaben_löschen[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Actionbuttons[0].Drucken[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Actionbuttons[0].Speichern[0]": {
+    "typ": "check"
+   }
+  },
+  "geschuetzt": true,
+  "seiten": 2,
+  "stand": "",
+  "titel": "Erklärung zum Ausbildungsverhältnis (KG 5b)",
+  "xfa": true
+ },
+ "kg-begleitung.pdf": {
+  "felder": {
+   "topmostSubform[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Actionbuttons[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Actionbuttons[0].Alle_Eingaben_löschen[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Actionbuttons[0].Drucken[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Actionbuttons[0].Speichern[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].Kind-Geburtsdatum[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].Kind-Name[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].Kind-Vorname[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].zu-Pkt-2[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].zu-Pkt-2[0].ja-ab[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].zu-Pkt-2[0].ja-bis[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].zu-Pkt-2[0].ja[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].zu-Pkt-2[0].nein-ab[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].zu-Pkt-2[0].nein-bis[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].zu-Pkt-2[0].nein[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].zu-Pkt-2[0].nicht-möglich[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Kopfzeile[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Kopfzeile[0].KG-Nr[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Kopfzeile[0].Name_Vorname_KGB[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Unterschriftenfeld[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Unterschriftenfeld[0].Datum-1[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Unterschriftenfeld[0].Praxis[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].für-Zeiträume[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].für-Zeiträume[0].Zeitraum-ab[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].für-Zeiträume[0].Zeitraum-bis[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].für-Zeiträume[0].Zeitraum-von[0]": {
+    "typ": "text"
+   }
+  },
+  "geschuetzt": true,
+  "seiten": 1,
+  "stand": "",
+  "titel": "Ärztliche Bescheinigung über die Notwendigkeit der ständigen Begleitung",
+  "xfa": true
+ },
+ "kg-betreuung.pdf": {
+  "felder": {
+   "topmostSubform[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Actionbuttons[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Actionbuttons[0].Alle_Eingaben_löschen[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Actionbuttons[0].Drucken[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Actionbuttons[0].Speichern[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].Kind-Geb\\": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].Kind-Geb\\.dat[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].Kind-Name[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].Kind-Vorname[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Angaben-zu-2[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Angaben-zu-2[0].Betreuungsstunden[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Angaben-zu-2[0].Betreuungsstunden[0].Monat-1[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Angaben-zu-2[0].Betreuungsstunden[0].Monat-2[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Angaben-zu-2[0].Betreuungsstunden[0].Monat-3[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Angaben-zu-2[0].Betreuungsstunden[0].Stunden-1[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Angaben-zu-2[0].Betreuungsstunden[0].Stunden-2[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Angaben-zu-2[0].Betreuungsstunden[0].Stunden-3[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Angaben-zu-2[0].Betreuungsstunden[0].Tag-1[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Angaben-zu-2[0].Betreuungsstunden[0].Tag-2[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Angaben-zu-2[0].Betreuungsstunden[0].Tag-3[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Angaben-zu-2[0].Betreuungsstunden[0].Woche-1[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Angaben-zu-2[0].Betreuungsstunden[0].Woche-2[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Angaben-zu-2[0].Betreuungsstunden[0].Woche-3[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Angaben-zu-2[0].Zeitraum[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Angaben-zu-2[0].Zeitraum[0].ab-1[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Angaben-zu-2[0].Zeitraum[0].ab-2[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Angaben-zu-2[0].Zeitraum[0].ab-3[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Angaben-zu-2[0].Zeitraum[0].bis-1[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Angaben-zu-2[0].Zeitraum[0].bis-2[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Angaben-zu-2[0].Zeitraum[0].bis-3[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Angaben-zu-2[0].Zeitraum[0].von-1[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Angaben-zu-2[0].Zeitraum[0].von-2[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Angaben-zu-2[0].Zeitraum[0].von-3[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Kopfzeile[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Kopfzeile[0].KG-Nr[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Kopfzeile[0].Name_Vorname_KGB[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Unterschriftenfeld[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Unterschriftenfeld[0].Datum-1[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Unterschriftenfeld[0].Praxis[0]": {
+    "typ": "text"
+   }
+  },
+  "geschuetzt": true,
+  "seiten": 2,
+  "stand": "",
+  "titel": "Ärztliche Bescheinigung über unbedingt erforderliche Betreuungsleistungen",
+  "xfa": true
+ },
+ "kg-erwerb.pdf": {
+  "felder": {
+   "topmostSubform[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].#area[2]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].#area[2].für-Zeiträume[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].#area[2].für-Zeiträume[0].Zeitraum-ab[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].#area[2].für-Zeiträume[0].Zeitraum-bis[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].#area[2].für-Zeiträume[0].Zeitraum-von[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].#area[8]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].#area[8].Alle_Eingaben_löschen[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].#area[8].Drucken[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].#area[8].Speichern[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].#area[8].Unterschriftenfeld[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].#area[8].Unterschriftenfeld[0].Datum-1[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].#area[8].Unterschriftenfeld[0].Praxis[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].Kind-Geburtsdatum[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].Kind-Name[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].Kind-Vorname[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].bis-1[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].bis-2[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].ja-ab[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].ja[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].nein-ab[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].nein[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Kopfzeile[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Kopfzeile[0].KG-Nr[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Kopfzeile[0].Name_Vorname_KGB[0]": {
+    "typ": "text"
+   }
+  },
+  "geschuetzt": true,
+  "seiten": 1,
+  "stand": "",
+  "titel": "Ärztliche Bescheinigung zum möglichen Umfang der Erwerbstätigkeit",
+  "xfa": true
+ },
+ "kg-ohneplatz.pdf": {
+  "felder": {
+   "topmostSubform[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Actionbuttons[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Actionbuttons[0].Alle_Eingaben_löschen[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Actionbuttons[0].Drucken[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Actionbuttons[0].Speichern[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].Anschrift-Kind[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].Geburtsdatum[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].Name-Kind[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].Vorname-Kind[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Ausbildungsplatz-ab[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Ausbildungsplatz-bis[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Ausbildungsplatz-von[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Ausbildungsplatz-zum[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Berufsausbildg[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Schulausbildg[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Studium[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-3[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Frage-3[0].Arbeitsentgelt[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-3[0].Arbeitsplatz-ab[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-3[0].Arbeitsplatz-bis[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-3[0].Arbeitsplatz-von[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-3[0].Arbeitsplatz-zum[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-3[0].Beschäftigung-bis[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-3[0].Beschäftigung-von[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-3[0].Beschäftigungsverhältnis[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-3[0].Ja[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-3[0].Nein[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-4[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Frage-4[0].AA[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-4[0].Anschrift-AA-JC[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-4[0].Eigenbemühungen[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-4[0].Erkrankung[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-4[0].JC[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-4[0].Kdnr-AZ[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-4[0].Mutterschutz[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-4[0].nicht-registriert[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-4[0].registriert[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Kopfzeile[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Kopfzeile[0].#area[1]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Kopfzeile[0].#area[1].KG-Nr[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Kopfzeile[0].#area[1].Name_Vorname_KGB[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Telefon[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Unterschriftenzeile-1[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Unterschriftenzeile-1[0].Datum-1[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Unterschriftenzeile-2[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Unterschriftenzeile-2[0].Datum-2[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Bescheinigung-durch[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Bescheinigung-durch[0].AA[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Bescheinigung-durch[0].JC[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].Anmeld-Beratung[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].Anmeld-Beratung[0].DateField1[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].Anmeld-Beratung[0].registriert[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].Aufnahme-Ausbildung[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].Aufnahme-Ausbildung[0].DateField1[8]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].Aufnahme-Ausbildung[0].registriert[5]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].Mutterschutz[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].Sonstiges[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].Zeile-1[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].Zeile-1[0].Kunden-Nr\\": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].Zeile-1[0].Kunden-Nr\\.[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].Zeile-1[0].Name-Kind[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].arbeitsuchend[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].arbeitsuchend[0].DateField1[10]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].arbeitsuchend[0].DateField1[11]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].arbeitsuchend[0].DateField1[9]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].arbeitsuchend[0].registriert[6]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].freiwill-Wehrdienst[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].freiwill-Wehrdienst[0].DateField1[7]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].freiwill-Wehrdienst[0].registriert[4]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].nicht-registriert[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].nicht-vermittelt[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].nicht-vermittelt[0].DateField1[4]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].nicht-vermittelt[0].registriert[2]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].nur-Beratung[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].war-Bewerber[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].war-Bewerber[0].DateField1[5]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].war-Bewerber[0].DateField1[6]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].war-Bewerber[0].registriert[3]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].ÄD[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].ÄD[0].Eignungsabklärung[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].ÄD[0].Eignungsabklärung[0].DateField1[1]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].ÄD[0].Eignungsabklärung[0].registriert[1]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].ÄD[0].MItteilg-Ergebnis-2[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].ÄD[0].MItteilg-Ergebnis-2[0].DateField1[3]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].ÄD[0].Mitteilg-Ergebnis-1[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Kasten-zu-bescheinigen[0].ÄD[0].Mitteilg-Ergebnis-1[0].DateField1[2]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Kopfzeile-S\\": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Kopfzeile-S\\.2[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Kopfzeile-S\\.2[0].KG-Nr[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Kopfzeile-S\\.2[0].Name_Vorname_KGB[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Unterschriftenfeld-S\\": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Unterschriftenfeld-S\\.2[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Unterschriftenfeld-S\\.2[0].Angaben-Bearbeiter[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Unterschriftenfeld-S\\.2[0].Datum-Unterschr-S\\": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Unterschriftenfeld-S\\.2[0].Datum-Unterschr-S\\.2[0]": {
+    "typ": "text"
+   }
+  },
+  "geschuetzt": true,
+  "seiten": 2,
+  "stand": "",
+  "titel": "Erklärung Kind ohne Ausbildungs- oder Arbeitsplatz (KG 11a)",
+  "xfa": true
+ },
+ "kg1.pdf": {
+  "felder": {
+   "topmostSubform[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Actionbuttons[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Actionbuttons[0].Alle_Eingaben_löschen[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Actionbuttons[0].Drucken[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Actionbuttons[0].Speichern[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Punkt-4[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Punkt-4[0].Anschrift-abweichende-Person[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-4[0].Name-abweichende-Person[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-4[0].Vorname-abweichende-Person[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-5[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Punkt-5[0].Tabelle1-Kinder[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Punkt-5[0].Tabelle1-Kinder[0].Zeile1[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Punkt-5[0].Tabelle1-Kinder[0].Zeile1[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-5[0].Tabelle1-Kinder[0].Zeile1[0].Zelle2[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-5[0].Tabelle1-Kinder[0].Zeile1[0].Zelle3[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-5[0].Tabelle1-Kinder[0].Zeile1[0].Zelle4[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-5[0].Tabelle1-Kinder[0].Zeile2[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Punkt-5[0].Tabelle1-Kinder[0].Zeile2[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-5[0].Tabelle1-Kinder[0].Zeile2[0].Zelle2[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-5[0].Tabelle1-Kinder[0].Zeile2[0].Zelle3[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-5[0].Tabelle1-Kinder[0].Zeile2[0].Zelle4[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-5[0].Tabelle1-Kinder[0].Zeile3[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Punkt-5[0].Tabelle1-Kinder[0].Zeile3[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-5[0].Tabelle1-Kinder[0].Zeile3[0].Zelle2[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-5[0].Tabelle1-Kinder[0].Zeile3[0].Zelle3[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-5[0].Tabelle1-Kinder[0].Zeile3[0].Zelle4[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-5[0].Tabelle1-Kinder[0].Zeile4[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Punkt-5[0].Tabelle1-Kinder[0].Zeile4[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-5[0].Tabelle1-Kinder[0].Zeile4[0].Zelle2[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-5[0].Tabelle1-Kinder[0].Zeile4[0].Zelle3[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-5[0].Tabelle1-Kinder[0].Zeile4[0].Zelle4[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-5[0].Tabelle1-Kinder[0].Zeile5[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Punkt-5[0].Tabelle1-Kinder[0].Zeile5[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-5[0].Tabelle1-Kinder[0].Zeile5[0].Zelle2[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-5[0].Tabelle1-Kinder[0].Zeile5[0].Zelle3[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-5[0].Tabelle1-Kinder[0].Zeile5[0].Zelle4[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-6[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Punkt-6[0].Tabelle2-Zählkinder[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Punkt-6[0].Tabelle2-Zählkinder[0].Zeile1[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Punkt-6[0].Tabelle2-Zählkinder[0].Zeile1[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-6[0].Tabelle2-Zählkinder[0].Zeile1[0].Zelle2[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-6[0].Tabelle2-Zählkinder[0].Zeile1[0].Zelle3[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-6[0].Tabelle2-Zählkinder[0].Zeile1[0].Zelle4[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-6[0].Tabelle2-Zählkinder[0].Zeile1[0].Zelle5[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-6[0].Tabelle2-Zählkinder[0].Zeile2[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Punkt-6[0].Tabelle2-Zählkinder[0].Zeile2[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-6[0].Tabelle2-Zählkinder[0].Zeile2[0].Zelle2[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-6[0].Tabelle2-Zählkinder[0].Zeile2[0].Zelle3[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-6[0].Tabelle2-Zählkinder[0].Zeile2[0].Zelle4[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-6[0].Tabelle2-Zählkinder[0].Zeile2[0].Zelle5[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-6[0].Tabelle2-Zählkinder[0].Zeile3[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Punkt-6[0].Tabelle2-Zählkinder[0].Zeile3[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-6[0].Tabelle2-Zählkinder[0].Zeile3[0].Zelle2[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-6[0].Tabelle2-Zählkinder[0].Zeile3[0].Zelle3[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-6[0].Tabelle2-Zählkinder[0].Zeile3[0].Zelle4[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-6[0].Tabelle2-Zählkinder[0].Zeile3[0].Zelle5[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-6[0].Tabelle2-Zählkinder[0].Zeile4[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Punkt-6[0].Tabelle2-Zählkinder[0].Zeile4[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-6[0].Tabelle2-Zählkinder[0].Zeile4[0].Zelle2[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-6[0].Tabelle2-Zählkinder[0].Zeile4[0].Zelle3[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-6[0].Tabelle2-Zählkinder[0].Zeile4[0].Zelle4[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-6[0].Tabelle2-Zählkinder[0].Zeile4[0].Zelle5[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-6[0].Tabelle2-Zählkinder[0].Zeile5[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Punkt-6[0].Tabelle2-Zählkinder[0].Zeile5[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-6[0].Tabelle2-Zählkinder[0].Zeile5[0].Zelle2[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-6[0].Tabelle2-Zählkinder[0].Zeile5[0].Zelle3[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-6[0].Tabelle2-Zählkinder[0].Zeile5[0].Zelle4[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-6[0].Tabelle2-Zählkinder[0].Zeile5[0].Zelle5[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Unterschrift-1[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Unterschrift-1[0].Datum-1[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Unterschrift-2[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Unterschrift-2[0].Datum-2[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Seite1[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Seite1[0].#area[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Seite1[0].#area[0].Kopfzeile[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Seite1[0].#area[0].Kopfzeile[0].#area[3]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Seite1[0].#area[0].Kopfzeile[0].#area[3].Telefon[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Seite1[0].#area[0].Kopfzeile[0].KG-Nr[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Seite1[0].#area[0].Überschrift[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Seite1[0].#area[0].Überschrift[0].Anzahl-Anlagen[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-1[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-1[0].Anschrift-Antragsteller[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-1[0].Familienstand[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-1[0].Familienstand[0].#area[12]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-1[0].Familienstand[0].#area[12].Partner[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-1[0].Familienstand[0].#area[12].aufgehoben[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-1[0].Familienstand[0].#area[12].geschieden[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-1[0].Familienstand[0].#area[12].getrennt[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-1[0].Familienstand[0].#area[12].ledig[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-1[0].Familienstand[0].#area[12].seit[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-1[0].Familienstand[0].#area[12].verheiratet[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-1[0].Familienstand[0].#area[12].verwitwet[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-1[0].Pkt-1-Zeile-1[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-1[0].Pkt-1-Zeile-1[0].Name-Antragsteller[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-1[0].Pkt-1-Zeile-1[0].Titel-Antragsteller[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-1[0].Pkt-1-Zeile-2[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-1[0].Pkt-1-Zeile-2[0].Geburtsname-Antragsteller[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-1[0].Pkt-1-Zeile-2[0].Vorname-Antragsteller[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-1[0].Pkt-1-Zeile-3[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-1[0].Pkt-1-Zeile-3[0].Geburtsdatum-Antragsteller[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-1[0].Pkt-1-Zeile-3[0].Geburtsort-Antragsteller[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-1[0].Pkt-1-Zeile-3[0].Geschlecht-Antragsteller[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-1[0].Pkt-1-Zeile-3[0].Staatsangehörigkeit-Antragsteller[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-1[0].Steuer-ID[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-1[0].Steuer-ID[0].Steuer-ID-1[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-1[0].Steuer-ID[0].Steuer-ID-2[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-1[0].Steuer-ID[0].Steuer-ID-3[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-1[0].Steuer-ID[0].Steuer-ID-4[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-2[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-2[0].#area[15]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-2[0].#area[15].Anschrift-Partner[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-2[0].#area[15].Geburtsdatum-Partner[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-2[0].#area[15].Geburtsname-Partner[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-2[0].#area[15].Geschlecht-Partner[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-2[0].#area[15].Name-Partner[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-2[0].#area[15].Staatsangehörigkeit-Partner[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-2[0].#area[15].Titel-Partner[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-2[0].#area[15].Vorname-Partner[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-2[0].Steuer-ID-2[1]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-2[0].Steuer-ID-2[1].Steuer-ID-2\\": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-2[0].Steuer-ID-2[1].Steuer-ID-2\\.1[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-2[0].Steuer-ID-2[1].Steuer-ID-2\\.2[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-2[0].Steuer-ID-2[1].Steuer-ID-2\\.3[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-2[0].Steuer-ID-2[1].Steuer-ID-2\\.4[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-3[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-3[0].Antragsteller[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-3[0].BIC[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-3[0].Bank[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-3[0].IBAN[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-3[0].Name-Kontoinhaber[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Seite1[0].Punkt-3[0].andere-Person[0]": {
+    "typ": "check"
+   }
+  },
+  "geschuetzt": true,
+  "seiten": 5,
+  "stand": "",
+  "titel": "Antrag auf Kindergeld",
+  "xfa": true
+ },
+ "kg10.pdf": {
+  "felder": {
+   "topmostSubform[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Abschluss[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Abschluss[0].#area[17]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Abschluss[0].#area[17].Datum[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Actionbuttons[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Actionbuttons[0].Alle_Eingaben_löschen[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Actionbuttons[0].Drucken[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Actionbuttons[0].Speichern[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Kopfangaben[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Kopfangaben[0].#area[2]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Kopfangaben[0].#area[2].KG-Nr[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Kopfangaben[0].#area[2].Name_Vorname_KGB[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Kopfangaben[0].Telefon_Rückfrage[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Punkt-1[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Punkt-1[0].#area[5]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Punkt-1[0].#area[5].Familienname_Kind[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Punkt-1[0].#area[5].Geburtsdatum_Kind[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Punkt-1[0].#area[5].Vorname_Kind[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Punkt-2[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Punkt-2[0].#area[11]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Punkt-2[0].#area[11].#area[12]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Punkt-2[0].#area[11].#area[12].Dauer_Ausbildung-Studium[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Punkt-2[0].#area[11].#area[12].Monate[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Punkt-2[0].#area[11].#area[13]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Punkt-2[0].#area[11].#area[13].Praktikum_in_Vertrag_vorgesehen[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Punkt-2[0].#area[11].#area[14]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Punkt-2[0].#area[11].#area[14].Praktikum_weder_empfohlen_vorgesehen[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Punkt-2[0].#area[11].#area[15]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Punkt-2[0].#area[11].#area[15].dient_Berufsorientierung[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Punkt-2[0].#area[8]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Punkt-2[0].#area[8].#area[10]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Punkt-2[0].#area[8].#area[10].Studium_Fachrichtung[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Punkt-2[0].#area[8].#area[9]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Punkt-2[0].#area[8].#area[9].angestrebter_Beruf[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Abschluss[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Abschluss[0].#area[13]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Abschluss[0].#area[13].Adresse_Telefonnummer[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Abschluss[0].#area[13].Datum[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Actionbuttons-S-2[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Actionbuttons-S-2[0].Alle_Eingaben_löschen[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Actionbuttons-S-2[0].Drucken[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Actionbuttons-S-2[0].Speichern-2[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Kopfzeile[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Kopfzeile[0].#area[2]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Kopfzeile[0].#area[2].KG-Nr[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Kopfzeile[0].#area[2].Name_Vorname_KGB[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-1-Praktikant[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Punkt-1-Praktikant[0].Familienname-Praktikant[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-1-Praktikant[0].Geburtsdatum-Praktikant[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-1-Praktikant[0].Vorname-Praktikant[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-2-Praktikum[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Punkt-2-Praktikum[0].#area[10]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Punkt-2-Praktikum[0].#area[10].Angabe_Ausbildungsinhalte[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-2-Praktikum[0].#area[10].Ausbildungsplan[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Punkt-2-Praktikum[0].#area[10].Kenntnisse_Fähigkeiten[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Punkt-2-Praktikum[0].#area[10].Praktikum_nicht_Arbeit[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Punkt-2-Praktikum[0].#area[10].Praktikum_unter_Anleitung[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Punkt-2-Praktikum[0].#area[7]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Punkt-2-Praktikum[0].#area[7].#area[8]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Punkt-2-Praktikum[0].#area[7].#area[8].Praktikumsdauer_bis[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-2-Praktikum[0].#area[7].#area[8].Praktikumsdauer_von[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-2-Praktikum[0].#area[7].#area[9]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Punkt-2-Praktikum[0].#area[7].#area[9].Arbeitszeit[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Punkt-2-Praktikum[0].#area[7].im_Breich[0]": {
+    "typ": "text"
+   }
+  },
+  "geschuetzt": true,
+  "seiten": 2,
+  "stand": "",
+  "titel": "Erklärung für ein Praktikum (KG10)",
+  "xfa": true
+ },
+ "kg4e.pdf": {
+  "felder": {
+   "topmostSubform[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].Familienstand[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].Familienstand[0].#area[8]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].Familienstand[0].#area[8].Partner[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].Familienstand[0].#area[8].aufgehoben[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].Familienstand[0].#area[8].geschieden[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].Familienstand[0].#area[8].getrennt[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].Familienstand[0].#area[8].ledig[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].Familienstand[0].#area[8].seit[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].Familienstand[0].#area[8].verheiratet[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].Familienstand[0].#area[8].verwitwet[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].Kind-Geburtsdatum[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].Kind-Name[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].Kind-Vorname[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].GdB-20-50[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].GdB-50[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Gutachten[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Nachweise-P2[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Nachweise-ohne[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Nachweise-ohne[0].kein-Nachweis-weil[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Nachweise-ohne[0].kein-Nachweis[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Pflegegrad-4-5[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Kopfzeile[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Kopfzeile[0].KG-Nr[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Kopfzeile[0].Name_Vorname_KGB[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Kopfzeile[0].Telefon[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Zweck[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Zweck[0].Zeiträume[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Zweck[0].Zeiträume[0].Zeitraum-ab[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Zweck[0].Zeiträume[0].Zeitraum-bis[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Zweck[0].Zeiträume[0].Zeitraum-von[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Zweck[0].zum-Antrag[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Zweck[0].zur-Überprüfung[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Actionbuttons[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Actionbuttons[0].Alle_Eingaben_löschen[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Actionbuttons[0].Drucken[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Actionbuttons[0].Speichern[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Frage-3[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Frage-3[0].#area[2]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Frage-3[0].#area[2].Nachweise-sonst[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Frage-3[0].#area[2].Sonstige-Nachweise[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Frage-3[0].GdB-50-Ausbildg[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Frage-3[0].Rente[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Frage-3[0].SGBXII[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Frage-3[0].WfB[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Frage-3[0].hilflos[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Frage-4[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Frage-4[0].#area[5]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Frage-4[0].#area[5].Bescheid[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Frage-4[0].#area[5].Rechnung[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Frage-4[0].#area[5].Verfahrensgegenstand[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Frage-4[0].#area[5].angefochten[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Frage-4[0].#area[5].bestandskräftig[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Frage-4[0].Kostenbeitrag[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Frage-4[0].eigene-Wohng-bis[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Frage-4[0].eigene-Wohng-seit[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Frage-4[0].eigene-Wohnung[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Frage-4[0].in-meinem-HH-bid[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Frage-4[0].in-meinem-HH-seit[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Frage-4[0].in-meinem-HH[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Frage-4[0].vollstationär-Anschrift[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Frage-4[0].vollstationär-Einrichtung[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Frage-4[0].vollstationär-bis[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Frage-4[0].vollstationär-seit[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Frage-4[0].vollstationär[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Frage-4[0].vollstätionär-Grund[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Frage-4[0].vollstätionär-Kostenträger[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Unterschriftenfeld[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Unterschriftenfeld[0].Datum-1[0]": {
+    "typ": "text"
+   }
+  },
+  "geschuetzt": true,
+  "seiten": 3,
+  "stand": "",
+  "titel": "Erklärung zu den Verhältnissen eines volljährigen Kindes mit Behinderung",
+  "xfa": true
+ },
+ "kg4f.pdf": {
+  "felder": {
+   "Formular1[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[0].#area[1]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[0].#area[1].Kopfzeile[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[0].#area[1].Kopfzeile[0].KG-Nr[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].#area[1].Kopfzeile[0].Name_Vorname_KGB[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].#area[1].Kopfzeile[0].Telefon[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].#area[1].Vorab-Angaben[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[0].#area[1].Vorab-Angaben[0].#area[4]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[0].#area[1].Vorab-Angaben[0].#area[4].abgelaufendes-Jahr[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].#area[1].Vorab-Angaben[0].#area[4].lfd-Jahr[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].#area[1].Vorab-Angaben[0].zum-Antrag[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].#area[0].#area[1].Vorab-Angaben[0].zur-Überprüfung[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-1[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-1[0].#area[7]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-1[0].#area[7].Kind-Geburtsdatum[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-1[0].#area[7].Kind-Name[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-1[0].#area[7].Kind-Vorname[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-1[0].Familienstand[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-1[0].Familienstand[0].#area[9]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-1[0].Familienstand[0].#area[9].Partner[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-1[0].Familienstand[0].#area[9].aufgehoben[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-1[0].Familienstand[0].#area[9].geschieden[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-1[0].Familienstand[0].#area[9].getrennt[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-1[0].Familienstand[0].#area[9].ledig[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-1[0].Familienstand[0].#area[9].seit[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-1[0].Familienstand[0].#area[9].verheiratet[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-1[0].Familienstand[0].#area[9].verwitwet[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-2[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-2[0].Einnahmen-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-2[0].Einnahmen-keine[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-3[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-3[0].#area[13]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-3[0].#area[13].nichtselbst-Tät-KJ-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-3[0].#area[13].nichtselbst-Tät-KJ-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-3[0].#area[13].nichtselbst-Tät-P-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-3[0].#area[13].nichtselbst-Tät-P-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-3[0].P-3\\": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-3[0].P-3\\.1-Euro-KJ-WK[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-3[0].P-3\\.1-Euro-KJ[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-3[0].P-3\\.1-Euro-P-WK[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-3[0].P-3\\.1-Euro-P[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-3[0].P-3\\.2-Beginn-KJ[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-3[0].P-3\\.2-Beginn-P[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-3[0].P-3\\.2-Euro-KJ-WK[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-3[0].P-3\\.2-Euro-KJ[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-3[0].P-3\\.2-Euro-P-WK[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-3[0].P-3\\.2-Euro-P[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-4[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-4[0].#area[17]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-4[0].#area[17].Rente-Euro-KJ[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-4[0].#area[17].Rente-KJ-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-4[0].#area[17].Rente-KJ-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-4[0].#area[17].Rente-WK-Euro-KJ[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-4[0].#area[17].Rentenbeginn-KJ[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-4[0].#area[18]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-4[0].#area[18].Rente-Euro-P[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-4[0].#area[18].Rente-P-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-4[0].#area[18].Rente-P-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-4[0].#area[18].Rente-WK-Euro-P[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Frage-4[0].#area[18].Rentenbeginn-P[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[0].#area[13]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[0].#area[13].AN-Anteil-Euro-KJ[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].#area[13].AN-Anteil-Euro-P[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].#area[13].Rückerstatt-Euro-KJ[1]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].#area[13].Rückerstatt-Euro-P[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].#area[13].SV-KJ-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].#area[13].SV-KJ-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].#area[13].SV-P-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].#area[13].SV-P-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].#area[9]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[0].#area[9].Frage-9[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[0].#area[9].Frage-9[0].#area[11]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[0].#area[9].Frage-9[0].#area[11].steuerfrei-KJ-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].#area[9].Frage-9[0].#area[11].steuerfrei-KJ-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].#area[9].Frage-9[0].#area[11].steuerfrei-P-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].#area[9].Frage-9[0].#area[11].steuerfrei-P-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].#area[9].Frage-9[0].Abendessen[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].#area[9].Frage-9[0].Frühstück[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].#area[9].Frage-9[0].Mittagessen[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].#area[9].Frage-9[0].beantragte-Leistungen[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].#area[9].Frage-9[0].steuerfrei-Art-1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].#area[9].Frage-9[0].steuerfrei-Art-2[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].#area[9].Frage-9[0].steuerfrei-Euro-KJ-1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].#area[9].Frage-9[0].steuerfrei-Euro-KJ-2[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].#area[9].Frage-9[0].steuerfrei-Euro-P-1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].#area[9].Frage-9[0].steuerfrei-Euro-P-2[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].#area[9].Rückerstatt-Euro-KJ[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Frage-5[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Frage-5[0].Gewinn-Euro-KJ[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Frage-5[0].Gewinn-Euro-P[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Frage-5[0].selbständig-KJ-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Frage-5[0].selbständig-KJ-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Frage-5[0].selbständig-P-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Frage-5[0].selbständig-P-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Frage-6[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Frage-6[0].Miete-KJ-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Frage-6[0].Miete-KJ-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Frage-6[0].Miete-P-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Frage-6[0].Miete-P-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Frage-6[0].Miete-WK-Euro-KJ[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Frage-6[0].Miete-WK-Euro-P[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Frage-6[0].Vermietung-Euro-KJ[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Frage-6[0].Vermietung-Euro-P[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Frage-7[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Frage-7[0].Kapital-Euro-KJ[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Frage-7[0].Kapital-Euro-P[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Frage-7[0].Kapital-KJ-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Frage-7[0].Kapital-KJ-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Frage-7[0].Kapital-P-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Frage-7[0].Kapital-P-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Frage-8[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Frage-8[0].sonstige-Art[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Frage-8[0].sonstige-Euro-KJ[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Frage-8[0].sonstige-Euro-P[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Frage-8[0].sonstige-KJ-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Frage-8[0].sonstige-KJ-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Frage-8[0].sonstige-P-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Frage-8[0].sonstige-P-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Frage-8[0].sonstige-WK-Euro-KJ[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Frage-8[0].sonstige-WK-Euro-P[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-3[0].#area[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Actionbuttons[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Actionbuttons[0].Alle_Eingaben_löschen[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Actionbuttons[0].Drucken[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Actionbuttons[0].Speichern[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-11[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-11[0].Steuern-Euro-KJ[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-11[0].Steuern-Euro-P[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-11[0].Steuern-KJ-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-11[0].Steuern-KJ-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-11[0].Steuern-P-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-11[0].Steuern-P-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-12[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-12[0].Erstatt-Euro-KJ[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-12[0].Erstatt-Euro-P[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-12[0].Erstatt-KJ-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-12[0].Erstatt-KJ-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-12[0].Erstatt-P-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-12[0].Erstatt-P-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-13[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-13[0].#area[7]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-13[0].#area[7].Dritte-Euro-KJ-1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-13[0].#area[7].Dritte-Euro-KJ-2[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-13[0].#area[7].Dritte-KJ-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-13[0].#area[7].Dritte-KJ-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-13[0].#area[8]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-13[0].#area[8].Dritte-Euro-P-1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-13[0].#area[8].Dritte-Euro-P-2[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-13[0].#area[8].Dritte-P-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-13[0].#area[8].Dritte-P-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-13[0].Dritte-Art-1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-13[0].Dritte-Art-2[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-14[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-14[0].#area[11]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-14[0].#area[11].Mehrbedarf-Euro-KJ-1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-14[0].#area[11].Mehrbedarf-Euro-KJ-2[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-14[0].#area[11].Mehrbedarf-Euro-KJ-3[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-14[0].#area[11].Mehrbedarf-Euro-KJ-4[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-14[0].#area[11].Mehrbedarf-KJ-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-14[0].#area[11].Mehrbedarf-KJ-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-14[0].#area[12]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-14[0].#area[12].Mehrbedarf-Euro-P-1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-14[0].#area[12].Mehrbedarf-Euro-P-2[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-14[0].#area[12].Mehrbedarf-Euro-P-3[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-14[0].#area[12].Mehrbedarf-Euro-P-4[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-14[0].#area[12].Mehrbedarf-P-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-14[0].#area[12].Mehrbedarf-P-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-14[0].Mehrbedarf-Art-1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-14[0].Mehrbedarf-Art-2[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-14[0].Mehrbedarf-Art-3[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Frage-14[0].Mehrbedarf-Art-4[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Nachweise[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Nachweise[0].beigefügt[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Nachweise[0].folgende-Nachweise[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Nachweise[0].nachreichen[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Unterschriftenfeld[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Unterschriftenfeld[0].Datum-KGB[0]": {
+    "typ": "text"
+   }
+  },
+  "geschuetzt": true,
+  "seiten": 4,
+  "stand": "",
+  "titel": "Erklärung zum verfügbaren Nettoeinkommen eines volljährigen Kindes mit Behinderung (KG4f)",
+  "xfa": true
+ },
+ "kg4g.pdf": {
+  "felder": {
+   "Formular1[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[0].#area[1]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[0].#area[1].Kopfzeile[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[0].#area[1].Kopfzeile[0].KG-Nr[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].#area[1].Kopfzeile[0].Name_Vorname_KGB[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].#area[1].Kopfzeile[0].Telefon[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].#area[1].Vorab-Angaben[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[0].#area[1].Vorab-Angaben[0].#area[4]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[0].#area[1].Vorab-Angaben[0].#area[4].zum-Antrag[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].#area[0].#area[1].Vorab-Angaben[0].#area[4].zur-Überprüfung[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].#area[0].#area[1].Vorab-Angaben[0].#area[5]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[0].#area[1].Vorab-Angaben[0].#area[5].abgelaufendes-Jahr[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].#area[1].Vorab-Angaben[0].#area[5].lfd-Jahr[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-1[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-1[0].#area[8]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-1[0].#area[8].Kind-Geburtsdatum[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-1[0].#area[8].Kind-Name[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-1[0].#area[8].Kind-Vorname[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-2[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-2[0].#area[11]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-2[0].#area[11].Partner-Geburtsdatum[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-2[0].#area[11].Partner-Name[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-2[0].#area[11].Partner-Vorname[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-3[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-3[0].#area[14]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-3[0].#area[14].Einnahmen-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-3[0].#area[14].Einnahmen-keine[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-4[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-4[0].#area[16]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-4[0].#area[16].nichtselbst-Tät-KJ-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-4[0].#area[16].nichtselbst-Tät-KJ-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-4[0].#area[16].nichtselbst-Tät-P-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-4[0].#area[16].nichtselbst-Tät-P-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-4[0].P-3\\": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-4[0].P-3\\.1-Euro-KJ-WK[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-4[0].P-3\\.1-Euro-KJ[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-4[0].P-3\\.1-Euro-P-WK[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-4[0].P-3\\.1-Euro-P[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-4[0].P-3\\.2-Beginn-KJ[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-4[0].P-3\\.2-Beginn-P[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-4[0].P-3\\.2-Euro-KJ-WK[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-4[0].P-3\\.2-Euro-KJ[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-4[0].P-3\\.2-Euro-P-WK[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-4[0].P-3\\.2-Euro-P[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-5[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-5[0].#area[20]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-5[0].#area[20].Rente-Euro-KJ[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-5[0].#area[20].Rente-KJ-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-5[0].#area[20].Rente-KJ-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-5[0].#area[20].Rente-WK-Euro-KJ[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-5[0].#area[20].Rentenbeginn-KJ[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-5[0].#area[21]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-5[0].#area[21].Rente-Euro-P[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-5[0].#area[21].Rente-P-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-5[0].#area[21].Rente-P-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-5[0].#area[21].Rente-WK-Euro-P[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[0].Punkt-5[0].#area[21].Rentenbeginn-P[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-10[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-10[0].#area[10]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-10[0].#area[10].steuerfrei-KJ-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-10[0].#area[10].steuerfrei-KJ-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-10[0].#area[10].steuerfrei-P-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-10[0].#area[10].steuerfrei-P-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-10[0].#area[12]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-10[0].#area[12].#area[13]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-10[0].#area[12].#area[13].steuerfrei-Art-1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-10[0].#area[12].#area[13].steuerfrei-Euro-KJ-1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-10[0].#area[12].#area[13].steuerfrei-Euro-P-1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-10[0].#area[12].#area[14]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-10[0].#area[12].#area[14].steuerfrei-Art-2[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-10[0].#area[12].#area[14].steuerfrei-Euro-KJ-2[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-10[0].#area[12].#area[14].steuerfrei-Euro-P-2[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-10[0].#area[12].beantragte-Leistungen[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-6[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-6[0].Gewinn-Euro-KJ[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-6[0].Gewinn-Euro-P[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-6[0].selbständig-KJ-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-6[0].selbständig-KJ-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-6[0].selbständig-P-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-6[0].selbständig-P-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-7[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-7[0].Miete-KJ-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-7[0].Miete-KJ-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-7[0].Miete-P-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-7[0].Miete-P-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-7[0].Miete-WK-Euro-KJ[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-7[0].Miete-WK-Euro-P[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-7[0].Vermietung-Euro-KJ[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-7[0].Vermietung-Euro-P[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-8[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-8[0].Kapital-Euro-KJ[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-8[0].Kapital-Euro-P[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-8[0].Kapital-KJ-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-8[0].Kapital-KJ-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-8[0].Kapital-P-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-8[0].Kapital-P-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-9[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-9[0].sonstige-Art[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-9[0].sonstige-Euro-KJ[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-9[0].sonstige-Euro-P[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-9[0].sonstige-KJ-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-9[0].sonstige-KJ-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-9[0].sonstige-P-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-9[0].sonstige-P-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-9[0].sonstige-WK-Euro-KJ[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-9[0].sonstige-WK-Euro-P[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-3[0].#area[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-3[0].#area[0].#area[8]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-3[0].#area[0].#area[8].Actionbuttons[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-3[0].#area[0].#area[8].Actionbuttons[0].Alle_Eingaben_löschen[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].#area[8].Actionbuttons[0].Drucken[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].#area[8].Actionbuttons[0].Speichern[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].#area[8].Unterschriftenfeld[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-3[0].#area[0].#area[8].Unterschriftenfeld[0].Datum-KGB[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Nachweise[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Nachweise[0].beigefügt[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Nachweise[0].folgende-Nachweise[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Nachweise[0].nachreichen[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-11[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-11[0].AN-Anteil-Euro-KJ[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-11[0].AN-Anteil-Euro-P[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-11[0].Rückerstatt-Euro-KJ[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-11[0].Rückerstatt-Euro-P[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-11[0].SV-KJ-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-11[0].SV-KJ-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-11[0].SV-P-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-11[0].SV-P-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-12[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-12[0].Steuern-Euro-KJ[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-12[0].Steuern-Euro-P[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-12[0].Steuern-KJ-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-12[0].Steuern-KJ-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-12[0].Steuern-P-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-12[0].Steuern-P-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-13[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-13[0].Erstatt-Euro-KJ[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-13[0].Erstatt-Euro-P[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-13[0].Erstatt-KJ-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-13[0].Erstatt-KJ-nein[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-13[0].Erstatt-P-ja[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-13[0].Erstatt-P-nein[0]": {
+    "typ": "check"
+   }
+  },
+  "geschuetzt": true,
+  "seiten": 4,
+  "stand": "",
+  "titel": "Erklärung zum verfügbaren Nettoeinkommen eines volljährigen Kindes mit Behinderung (KG4f)",
+  "xfa": true
+ },
+ "kg4k.pdf": {
+  "felder": {
+   "topmostSubform[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Actionbuttons[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Actionbuttons[0].Alle_Eingaben_löschen[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Actionbuttons[0].Drucken[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Actionbuttons[0].Speichern[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Kopfzeile[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Kopfzeile[0].KG-Nr[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Kopfzeile[0].Name_Vorname_KGB[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Punkt-1[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Punkt-1[0].Geburtsdatum[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Punkt-1[0].Name-Kind[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Punkt-1[0].Vorname-Kind[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Punkt-2[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Punkt-2[0].#area[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Punkt-2[0].#area[0].Behind-seit[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Punkt-2[0].#area[0].seit[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Punkt-2[0].Behind-ja[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Punkt-2[0].Behind-nein[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Punkt-2[0].Erwerbsfäh-eingeschränkt[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Punkt-2[0].nicht-vorübergehend[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Unterschriftenfeld[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Unterschriftenfeld[0].Datum-1[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Unterschriftenfeld[0].Praxis[0]": {
+    "typ": "text"
+   }
+  },
+  "geschuetzt": true,
+  "seiten": 1,
+  "stand": "",
+  "titel": "Ärztliche Bescheinigung über das Vorliegen einer Behinderung (KG 4i)",
+  "xfa": true
+ },
+ "kg51.pdf": {
+  "felder": {
+   "Formular1[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[1]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[1].Titel[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[1].Titel[0].Anschrift-Antragsteller[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-1[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-1[0].Anschrift-Antragsteller[1]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-1[0].Geburtsdatum-Pkt-6[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-1[0].Geburtsdatum-Pkt-6[1]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-2[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-2[0].Antragsteller[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-2[0].Antragsteller[1]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-2[0].Tabelle1[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-2[0].Tabelle1[0].Zeile1[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-2[0].Tabelle1[0].Zeile1[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-2[0].Tabelle1[0].Zeile1[0].Zelle2[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-2[0].Tabelle1[0].Zeile1[0].Zelle3[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-2[0].Tabelle1[0].Zeile1[0].Zelle4[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-2[0].Tabelle1[0].Zeile2[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-2[0].Tabelle1[0].Zeile2[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-2[0].Tabelle1[0].Zeile2[0].Zelle2[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-2[0].Tabelle1[0].Zeile2[0].Zelle3[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-2[0].Tabelle1[0].Zeile2[0].Zelle4[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-2[0].Tabelle1[0].Zeile3[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-2[0].Tabelle1[0].Zeile3[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-2[0].Tabelle1[0].Zeile3[0].Zelle2[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-2[0].Tabelle1[0].Zeile3[0].Zelle3[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-2[0].Tabelle1[0].Zeile3[0].Zelle4[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-2[0].Tabelle1[0].Zeile4[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-2[0].Tabelle1[0].Zeile4[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-2[0].Tabelle1[0].Zeile4[0].Zelle2[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-2[0].Tabelle1[0].Zeile4[0].Zelle3[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-2[0].Tabelle1[0].Zeile4[0].Zelle4[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-2[0].Tabelle1[0].Zeile5[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-2[0].Tabelle1[0].Zeile5[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-2[0].Tabelle1[0].Zeile5[0].Zelle2[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-2[0].Tabelle1[0].Zeile5[0].Zelle3[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-2[0].Tabelle1[0].Zeile5[0].Zelle4[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-3[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-3[0].Anschrift-Antragsteller[2]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-3[0].Anschrift-Antragsteller[3]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-3[0].Anschrift-Antragsteller[4]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-3[0].Antragsteller[2]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-3[0].Antragsteller[3]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-3[0].Tabelle2[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-3[0].Tabelle2[0].Zeile1[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-3[0].Tabelle2[0].Zeile1[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-3[0].Tabelle2[0].Zeile1[0].Zelle2[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-3[0].Tabelle2[0].Zeile1[0].Zelle3[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-3[0].Tabelle2[0].Zeile1[0].Zelle4[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-3[0].Tabelle2[0].Zeile1[0].Zelle5[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-3[0].Tabelle2[0].Zeile1[0].Zelle6[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-3[0].Tabelle2[0].Zeile2[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-3[0].Tabelle2[0].Zeile2[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-3[0].Tabelle2[0].Zeile2[0].Zelle2[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-3[0].Tabelle2[0].Zeile2[0].Zelle3[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-3[0].Tabelle2[0].Zeile2[0].Zelle4[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-3[0].Tabelle2[0].Zeile2[0].Zelle5[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-3[0].Tabelle2[0].Zeile2[0].Zelle6[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-3[0].Tabelle2[0].Zeile3[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-3[0].Tabelle2[0].Zeile3[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-3[0].Tabelle2[0].Zeile3[0].Zelle2[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-3[0].Tabelle2[0].Zeile3[0].Zelle3[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-3[0].Tabelle2[0].Zeile3[0].Zelle4[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-3[0].Tabelle2[0].Zeile3[0].Zelle5[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].#area[3].Punkt-3[0].Tabelle2[0].Zeile3[0].Zelle6[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].Kopfzeile[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].Kopfzeile[0].KG-Nr[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].Kopfzeile[0].Name_Vorname_KGB[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-a[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-a[0].Anschrift-Antragsteller[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-a[0].Anschrift-Antragsteller[1]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-a[0].Anschrift-Antragsteller[2]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-a[0].Anschrift-Antragsteller[3]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-a[0].Antragsteller[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-a[0].Antragsteller[1]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-a[0].Geburtsdatum-Pkt-6[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-b[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-b[0].#area[3]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-b[0].#area[3].Antragsteller[4]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-b[0].#area[3].Antragsteller[5]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-b[0].#area[3].Antragsteller[6]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-b[0].#area[3].Antragsteller[7]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-b[0].Anschrift-Antragsteller[4]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-b[0].Anschrift-Antragsteller[5]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-b[0].Anschrift-Antragsteller[6]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-b[0].Anschrift-Antragsteller[7]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-b[0].Anschrift-Antragsteller[8]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-b[0].Antragsteller[2]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-b[0].Antragsteller[3]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-b[0].Geburtsdatum-Pkt-6[1]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-c[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-c[0].#area[5]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-c[0].#area[5].Antragsteller[8]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-c[0].#area[5].Antragsteller[9]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-c[0].Geburtsdatum-Pkt-6[2]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-d[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-d[0].#area[7]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-d[0].#area[7].Antragsteller[10]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-d[0].#area[7].Antragsteller[11]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-d[0].#area[8]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-d[0].#area[8].Antragsteller[12]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-d[0].#area[8].Antragsteller[13]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-d[0].#area[9]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-d[0].#area[9].Anschrift-Antragsteller[10]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-1-d[0].#area[9].Anschrift-Antragsteller[9]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-2[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-2[0].#area[12]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-2[0].#area[12].Anschrift-Antragsteller[11]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-2[0].#area[12].Anschrift-Antragsteller[12]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-2[0].Anschrift-Antragsteller[13]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-2[0].Antragsteller[14]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-2[0].Antragsteller[15]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-2[0].Antragsteller[16]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-2[0].Antragsteller[17]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-2[0].Antragsteller[18]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-2[0].Antragsteller[19]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-2[0].Antragsteller[20]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-2[0].Antragsteller[21]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-2[0].Antragsteller[22]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-2[0].Antragsteller[23]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-2[0].Antragsteller[24]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-2[0].Antragsteller[25]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].#area[0].Punkt-4-2[0].Geburtsdatum-Pkt-6[3]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-3[0].#area[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-4-3[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-4-3[0].#area[2]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-4-3[0].#area[2].Anschrift-Antragsteller[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-4-3[0].#area[2].Anschrift-Antragsteller[1]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-4-3[0].Anschrift-Antragsteller[2]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-4-3[0].Antragsteller[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-4-3[0].Antragsteller[1]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-1[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-1[0].#area[5]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-1[0].#area[5].Anschrift-Antragsteller[3]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-1[0].#area[5].Anschrift-Antragsteller[4]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-1[0].#area[5].Anschrift-Antragsteller[5]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-1[0].#area[5].Anschrift-Antragsteller[6]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-1[0].#area[5].Anschrift-Antragsteller[7]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-1[0].#area[5].Anschrift-Antragsteller[8]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-1[0].#area[5].Anschrift-Antragsteller[9]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-1[0].#area[5].Antragsteller[2]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-1[0].#area[5].Antragsteller[3]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-1[0].#area[5].Geburtsdatum-Pkt-6[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-1[0].#area[6]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-1[0].#area[6].Anschrift-Antragsteller[10]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-1[0].#area[6].Anschrift-Antragsteller[11]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-1[0].#area[6].Anschrift-Antragsteller[12]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-1[0].#area[6].Anschrift-Antragsteller[13]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-1[0].#area[6].Anschrift-Antragsteller[14]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-1[0].#area[6].Anschrift-Antragsteller[15]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-1[0].#area[6].Anschrift-Antragsteller[16]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-1[0].#area[6].Antragsteller[4]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-1[0].#area[6].Antragsteller[5]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-1[0].#area[6].Geburtsdatum-Pkt-6[1]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-2[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-2[0].Antragsteller[6]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-2[0].Antragsteller[7]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-2[0].Geburtsdatum-Pkt-6[2]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-3[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-3[0].#area[11]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-3[0].#area[11].Anschrift-Antragsteller[17]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-3[0].#area[11].Anschrift-Antragsteller[18]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-3[0].#area[12]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-3[0].#area[12].Anschrift-Antragsteller[20]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-3[0].#area[12].Anschrift-Antragsteller[21]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-3[0].#area[12].Anschrift-Antragsteller[22]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-3[0].#area[9]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-3[0].#area[9].Antragsteller[10]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-3[0].#area[9].Antragsteller[11]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-3[0].#area[9].Antragsteller[12]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-3[0].#area[9].Antragsteller[13]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-3[0].#area[9].Antragsteller[14]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-3[0].#area[9].Antragsteller[15]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-3[0].#area[9].Antragsteller[16]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-3[0].#area[9].Antragsteller[17]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-3[0].#area[9].Antragsteller[8]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-3[0].#area[9].Antragsteller[9]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-3[0].Anschrift-Antragsteller[19]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-3[0].Antragsteller[18]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-3[0].#area[0].Punkt-5-3[0].Antragsteller[19]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-4[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-4[0].#area[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-4[0].#area[0].Abschluss[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-4[0].#area[0].Abschluss[0].#area[5]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-4[0].#area[0].Abschluss[0].#area[5].Datum-1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-4[0].#area[0].Abschluss[0].Actionbuttons[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-4[0].#area[0].Abschluss[0].Actionbuttons[0].Alle_Eingaben_löschen[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-4[0].#area[0].Abschluss[0].Actionbuttons[0].Drucken[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-4[0].#area[0].Abschluss[0].Actionbuttons[0].Speichern[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-4[0].#area[0].Punkt-5-4[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-4[0].#area[0].Punkt-5-4[0].#area[2]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-4[0].#area[0].Punkt-5-4[0].#area[2].Anschrift-Antragsteller[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-4[0].#area[0].Punkt-5-4[0].#area[2].Anschrift-Antragsteller[1]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-4[0].#area[0].Punkt-5-4[0].#area[2].Anschrift-Antragsteller[2]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-4[0].#area[0].Punkt-5-4[0].#area[3]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-4[0].#area[0].Punkt-5-4[0].#area[3].Anschrift-Antragsteller[4]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-4[0].#area[0].Punkt-5-4[0].#area[3].Anschrift-Antragsteller[5]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-4[0].#area[0].Punkt-5-4[0].Anschrift-Antragsteller[3]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-4[0].#area[0].Punkt-5-4[0].Antragsteller[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-4[0].#area[0].Punkt-5-4[0].Antragsteller[1]": {
+    "typ": "check"
+   }
+  },
+  "geschuetzt": true,
+  "seiten": 4,
+  "stand": "",
+  "titel": "Anlage Ausland zum Antrag auf deutsches Kindergeld (KG 51)",
+  "xfa": true
+ },
+ "kg5a.pdf": {
+  "felder": {
+   "topmostSubform[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].#area[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].#area[0].Antragsteller[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].#area[0].Antragsteller[1]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].#area[0].Datum-1[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].#area[0].ledig[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].#area[0].ledig[1]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].#area[0].seit[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].#area[0].seit[1]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].#area[0].seit[2]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].#area[0].seit[3]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].#area[0].seit[4]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].#area[0].seit[5]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].#area[0].seit[6]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].#area[0].seit[7]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Alle_Eingaben_löschen[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Drucken[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].KG-Nr[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Name_Vorname_KGB[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Speichern[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Telefon[0]": {
+    "typ": "text"
+   }
+  },
+  "geschuetzt": true,
+  "seiten": 1,
+  "stand": "",
+  "titel": "Kindergeld Schulbescheinigung",
+  "xfa": true
+ },
+ "kg5d.pdf": {
+  "felder": {
+   "topmostSubform[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].#area[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].#area[0].Kopfzeile[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].#area[0].Kopfzeile[0].KG-Nr[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].#area[0].Kopfzeile[0].Name_Vorname_KGB[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].#area[0].Kopfzeile[0].Telefon[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].Kind-Geb\\": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].Kind-Geb\\.datum[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].Kind-Name[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].Kind-Vorname[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].in-meinem-HH[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].nicht-in-meinem-HH[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].nicht-in-meinem-HH[0].nicht-i-m-HH-bei[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].nicht-in-meinem-HH[0].nicht-i-m-HH-seit[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].nicht-in-meinem-HH[0].nicht-i-m-HH[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].vorübergehend[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].vorübergehend[0].vorübergehend-bei[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].vorübergehend[0].vorübergehend-seit[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-1[0].vorübergehend[0].vorübergehend-wg-Ausbildung[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Ausbildung[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Ausbildung[0].Praktikum-sonstige-Ausbild[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Ausbildung[0].Praktikum-sonstige-Ausbild[0].Praktikum-bis[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Ausbildung[0].Praktikum-sonstige-Ausbild[0].Praktikum-von[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Ausbildung[0].Praktikum-sonstige-Ausbild[0].Praktikum[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Ausbildung[0].Praktikum-sonstige-Ausbild[0].Wochenstunden-Praktikum[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Ausbildung[0].Praktikum-sonstige-Ausbild[0].sonstige-Ausbild[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Ausbildung[0].Schule-Beruf-Studium[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Ausbildung[0].Schule-Beruf-Studium[0].Ausbildung-Art[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Ausbildung[0].Schule-Beruf-Studium[0].Schul-Berufsausbild-bis[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Ausbildung[0].Schule-Beruf-Studium[0].Schul-Berufsausbild-von[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Ausbildung[0].Schule-Beruf-Studium[0].Schul-Berufsausbildung[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Ausbildung[0].Schule-Beruf-Studium[0].Wochenstunden-Ausbild[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Ausbildung[0].in-Ausbildung[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Ausbildung[0].in-Ausbildung[0].Berufsziel[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Ausbildung[0].in-Ausbildung[0].in-Ausbild[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Ausbildungsplatzsuche[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Ausbildungsplatzsuche[0].asu-bis[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Ausbildungsplatzsuche[0].asu-von[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Ausbildungsplatzsuche[0].asu[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Ausbildungsplatzsuche[0].welche-Ausbild-Beginn[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].Ausbildungsplatzsuche[0].welche-Ausbild[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].arbeitsuchend[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].arbeitsuchend[0].alo-bis[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].arbeitsuchend[0].alo-von[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Frage-2[0].arbeitsuchend[0].alo[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Zeitraum[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Zeitraum[0].Angaben-ab[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Zeitraum[0].Angaben-bis[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Zeitraum[0].Angaben-von[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Actionbuttons[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Actionbuttons[0].Alle_Eingaben_löschen[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Actionbuttons[0].Drucken[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Actionbuttons[0].Speichern[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Frage-2-Fortsetzung-Teil2[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Frage-2-Fortsetzung-Teil2[0].Freiwilligendienst[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Frage-2-Fortsetzung-Teil2[0].Freiwilligendienst[0].FWD-bis[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Frage-2-Fortsetzung-Teil2[0].Freiwilligendienst[0].FWD-von[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Frage-2-Fortsetzung-Teil2[0].Freiwilligendienst[0].FWD[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Frage-2-Fortsetzung-Teil2[0].Übergangszeit[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Frage-2-Fortsetzung-Teil2[0].Übergangszeit[0].ÜZ-bis[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Frage-2-Fortsetzung-Teil2[0].Übergangszeit[0].ÜZ-von[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Frage-2-Fortsetzung-Teil2[0].Übergangszeit[0].ÜZ[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Frage-2-Fortsetzung[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Frage-2-Fortsetzung[0].Ausbild-beenden[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Frage-2-Fortsetzung[0].Ausbild-beenden[0].beenden-am[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Frage-2-Fortsetzung[0].Ausbild-beenden[0].beenden[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Frage-2-Fortsetzung[0].abgeschlossen[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Frage-2-Fortsetzung[0].abgeschlossen[0].Abschluss[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Frage-2-Fortsetzung[0].abgeschlossen[0].Ausbildungsende-1[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Frage-2-Fortsetzung[0].abgeschlossen[0].Ausbildungsende-2[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Frage-2-Fortsetzung[0].abgeschlossen[0].Berufsabschluss-1[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Frage-2-Fortsetzung[0].abgeschlossen[0].Berufsabschluss-2[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Frage-2-Fortsetzung[0].in-Kürze-abschließen[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Frage-2-Fortsetzung[0].in-Kürze-abschließen[0].Abschluss-in-Kürze-am[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Frage-2-Fortsetzung[0].in-Kürze-abschließen[0].Abschluss-in-Kürze[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Frage-2-Fortsetzung[0].noch-nicht-abgeschlossen[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Frage-2-Fortsetzung[0].noch-nicht-abgeschlossen[0].kein-Abschluss[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Frage-3[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Frage-3[0].Erwerbstätigkeit-ja[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Frage-3[0].Erwerbstätigkeit-ja[0].Erwerbstät-Angaben[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Frage-3[0].Erwerbstätigkeit-ja[0].Erwerbstät-Angaben[0].Zeile1[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Frage-3[0].Erwerbstätigkeit-ja[0].Erwerbstät-Angaben[0].Zeile1[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Frage-3[0].Erwerbstätigkeit-ja[0].Erwerbstät-Angaben[0].Zeile1[0].Zelle2[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Frage-3[0].Erwerbstätigkeit-ja[0].Erwerbstät-Angaben[0].Zeile1[0].Zelle3[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Frage-3[0].Erwerbstätigkeit-ja[0].Erwerbstät-Angaben[0].Zeile1[0].Zelle4[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Frage-3[0].Erwerbstätigkeit-ja[0].Erwerbstät-Angaben[0].Zeile2[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Frage-3[0].Erwerbstätigkeit-ja[0].Erwerbstät-Angaben[0].Zeile2[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Frage-3[0].Erwerbstätigkeit-ja[0].Erwerbstät-Angaben[0].Zeile2[0].Zelle2[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Frage-3[0].Erwerbstätigkeit-ja[0].Erwerbstät-Angaben[0].Zeile2[0].Zelle3[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Frage-3[0].Erwerbstätigkeit-ja[0].Erwerbstät-Angaben[0].Zeile2[0].Zelle4[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Frage-3[0].Erwerbstätigkeit-ja[0].Erwerbstät-Angaben[0].Zeile3[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Frage-3[0].Erwerbstätigkeit-ja[0].Erwerbstät-Angaben[0].Zeile3[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Frage-3[0].Erwerbstätigkeit-ja[0].Erwerbstät-Angaben[0].Zeile3[0].Zelle2[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Frage-3[0].Erwerbstätigkeit-ja[0].Erwerbstät-Angaben[0].Zeile3[0].Zelle3[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Frage-3[0].Erwerbstätigkeit-ja[0].Erwerbstät-Angaben[0].Zeile3[0].Zelle4[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Frage-3[0].Erwerbstätigkeit-ja[0].Erwerbstät[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Frage-3[0].Erwerbstätigkeit-nein[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Frage-3[0].Erwerbstätigkeit-nein[0].Erwerbstät-keine[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page2[0].Frage-4[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Frage-4[0].Folgendes[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page2[0].Unterschriftenfeld[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page2[0].Unterschriftenfeld[0].Datum-KGB[0]": {
+    "typ": "text"
+   }
+  },
+  "geschuetzt": true,
+  "seiten": 3,
+  "stand": "",
+  "titel": "Erklärung zu den Verhältnissen eines volljährigen Kindes (KG5d)",
+  "xfa": true
+ },
+ "kg7e.pdf": {
+  "felder": {
+   "topmostSubform[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Alle_Eingaben_löschen[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Block-1[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Block-1[0].abgeschlossen[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Block-1[0].abgeschlossen[0].Ergebnis-online[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Block-1[0].abgeschlossen[0].Nachweis-Studienende[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Block-1[0].abgeschlossen[0].Prüfungsergebnis-am[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Block-1[0].abgeschlossen[0].Studium-abgeschlossen[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Datum-U1[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Datum-U2[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Drucken[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Ergänzende-Angaben[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Erwerbstätigkeit-ab[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Erwerbstätigkeit-ab[0].Aufnahme-Erwerbstät\\": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Erwerbstätigkeit-ab[0].Aufnahme-Erwerbstät\\.[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Erwerbstätigkeit-ab[0].erwerbstätig-am[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].KG-Nr[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Name_Vorname_KGB[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Punkt-Kind[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].Punkt-Kind[0].Geburtsdatum[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Punkt-Kind[0].Name-Kind[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Punkt-Kind[0].Vorname-Kind[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].Speichern[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].Telefon[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].abgebrochen[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].abgebrochen[0].Abbruch-Datum[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].abgebrochen[0].Studium-abgebrochen[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].dauert-an[0]": {
+    "typ": "None"
+   },
+   "topmostSubform[0].Page1[0].dauert-an[0].Nachweis-beigefügt[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].dauert-an[0].Nachweis-wird-nachgereicht[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].dauert-an[0].Sommersemester-Jahreszahl[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].dauert-an[0].Sommersemester[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].dauert-an[0].Studienende-Datum[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].dauert-an[0].Studium-dauert-an[0]": {
+    "typ": "check"
+   },
+   "topmostSubform[0].Page1[0].dauert-an[0].Wintersemester-Jahreszahl[0]": {
+    "typ": "text"
+   },
+   "topmostSubform[0].Page1[0].dauert-an[0].Wintersemester[0]": {
+    "typ": "check"
+   }
+  },
+  "geschuetzt": true,
+  "seiten": 1,
+  "stand": "",
+  "titel": "Erklärung zur Hochschulausbildung (KG7e)",
+  "xfa": true
+ },
  "kiz1-antrag_ba036540.pdf": {
   "felder": {
    "Formular1[0]": {
@@ -4789,6 +8656,1713 @@
   "stand": "",
   "titel": "Antrag auf Kinderzuschlag (KiZ 1)",
   "xfa": true
+ },
+ "sgb12-grundsicherung.pdf": {
+  "felder": {
+   "1": {
+    "typ": "None"
+   },
+   "1 Person  Beiträge ausländische Rentenkasse": {
+    "typ": "text"
+   },
+   "1 Person Anmerkung Ansprüche aus Erbschaft": {
+    "typ": "text"
+   },
+   "1 Person Anmerkung Ansprüche aus Übertragungsvermögen": {
+    "typ": "text"
+   },
+   "1 Person Anmerkung Haus/ Wohneigentum": {
+    "typ": "text"
+   },
+   "1 Person Anmerkung sonstiger Grundbesitz": {
+    "typ": "text"
+   },
+   "1 Person Antrag OEG am": {
+    "typ": "text"
+   },
+   "1 Person Antrag OEG bei": {
+    "typ": "text"
+   },
+   "1 Person Arbeitsweg Entfernung in km": {
+    "typ": "text"
+   },
+   "1 Person Ausländische Krankenkasse Name und Anschrift": {
+    "typ": "text"
+   },
+   "1 Person Bankguthaben Betrag/Wert": {
+    "typ": "text"
+   },
+   "1 Person Bargeld Betrag/Wert": {
+    "typ": "text"
+   },
+   "1 Person Bestattungsvorsorge fällig am": {
+    "typ": "text"
+   },
+   "1 Person Betrag Bestattungsvorsorge": {
+    "typ": "text"
+   },
+   "1 Person Betrag Kapital- oder Risikolebensversicherungen": {
+    "typ": "text"
+   },
+   "1 Person Betrag sonstige Altersvorsorge": {
+    "typ": "text"
+   },
+   "1 Person Betrag staatl": {
+    "typ": "None"
+   },
+   "1 Person Betrag staatl. geförderte Altersvorsorge": {
+    "typ": "text"
+   },
+   "1 Person Betriebsrente Betrag brutto": {
+    "typ": "text"
+   },
+   "1 Person Betriebsrente Betrag netto": {
+    "typ": "text"
+   },
+   "1 Person Bezeichnung der Forderung": {
+    "typ": "text"
+   },
+   "1 Person Bezeichnung/ Rentenart_Falls ja,": {
+    "typ": "text"
+   },
+   "1 Person Bezeichnung/ Rentenart_Falls ja_2": {
+    "typ": "text"
+   },
+   "1 Person Bezeichnung/ Rentenart_Falls ja_3": {
+    "typ": "text"
+   },
+   "1 Person Datum": {
+    "typ": "text"
+   },
+   "1 Person Einreise am": {
+    "typ": "text"
+   },
+   "1 Person Erwerbstätigkeit während des Aufenthalts im Ausland": {
+    "typ": "text"
+   },
+   "1 Person Falls ja Name und Anschrift der Einrichtung": {
+    "typ": "text"
+   },
+   "1 Person Familienstand": {
+    "typ": "text"
+   },
+   "1 Person Geburtsdatum": {
+    "typ": "text"
+   },
+   "1 Person Geschlecht": {
+    "typ": "text"
+   },
+   "1 Person Höhe der Forderung": {
+    "typ": "text"
+   },
+   "1 Person Höhe des monatlichen Beitrags in EUR": {
+    "typ": "text"
+   },
+   "1 Person KFZ Baujahr": {
+    "typ": "text"
+   },
+   "1 Person KFZ Modell": {
+    "typ": "text"
+   },
+   "1 Person KFZ Typ": {
+    "typ": "text"
+   },
+   "1 Person KV-Mitgliedsnummer": {
+    "typ": "text"
+   },
+   "1 Person Kapital- oder Risikolebensversicherungen aktueller Rückkaufswert": {
+    "typ": "text"
+   },
+   "1 Person Kilometerstand KFZ": {
+    "typ": "text"
+   },
+   "1 Person Leistungen für Kinder (z": {
+    "typ": "None"
+   },
+   "1 Person Leistungen für Kinder (z.B": {
+    "typ": "None"
+   },
+   "1 Person Leistungen für Kinder (z.B. Kindergeld, Kinderzuschlag) monatlicher Betrag": {
+    "typ": "text"
+   },
+   "1 Person Mitglied bis": {
+    "typ": "text"
+   },
+   "1 Person Mitglied seit": {
+    "typ": "text"
+   },
+   "1 Person Mitglied von": {
+    "typ": "text"
+   },
+   "1 Person Monatlicher Betrag Altersvorsorge": {
+    "typ": "text"
+   },
+   "1 Person Monatlicher Betrag AsylbLG in Euro": {
+    "typ": "text"
+   },
+   "1 Person Monatlicher Betrag Aufwendungen Arbeitsmittel": {
+    "typ": "text"
+   },
+   "1 Person Monatlicher Betrag BVG in Euro": {
+    "typ": "text"
+   },
+   "1 Person Monatlicher Betrag Beiträge": {
+    "typ": "text"
+   },
+   "1 Person Monatlicher Betrag Bürgergeld in Euro": {
+    "typ": "text"
+   },
+   "1 Person Monatlicher Betrag Einkommenssteuer": {
+    "typ": "text"
+   },
+   "1 Person Monatlicher Betrag Gewerbe in Euro": {
+    "typ": "text"
+   },
+   "1 Person Monatlicher Betrag Haftpflichtversicherung": {
+    "typ": "text"
+   },
+   "1 Person Monatlicher Betrag Hausratversicherung": {
+    "typ": "text"
+   },
+   "1 Person Monatlicher Betrag Kfz-Haftpflichtversicherung ohne Kasko": {
+    "typ": "text"
+   },
+   "1 Person Monatlicher Betrag Krankenkasse in Euro": {
+    "typ": "text"
+   },
+   "1 Person Monatlicher Betrag Land- und Forst in Euro": {
+    "typ": "text"
+   },
+   "1 Person Monatlicher Betrag Lastenausgleichsamt in Euro": {
+    "typ": "text"
+   },
+   "1 Person Monatlicher Betrag Leistungen Arbeitsförderung": {
+    "typ": "text"
+   },
+   "1 Person Monatlicher Betrag Miete/ Pacht in Euro": {
+    "typ": "text"
+   },
+   "1 Person Monatlicher Betrag Selbständigkeit in Euro": {
+    "typ": "text"
+   },
+   "1 Person Monatlicher Betrag Sozialversicherungsbeiträge": {
+    "typ": "text"
+   },
+   "1 Person Monatlicher Betrag Sterbegeldversicherung": {
+    "typ": "text"
+   },
+   "1 Person Monatlicher Betrag Untervermietung in Euro": {
+    "typ": "text"
+   },
+   "1 Person Monatlicher Betrag WfbM in Euro": {
+    "typ": "text"
+   },
+   "1 Person Monatlicher Betrag Wohngeld in Euro": {
+    "typ": "text"
+   },
+   "1 Person Monatlicher Betrag nichtselbständige Tätigkeit in Euro": {
+    "typ": "text"
+   },
+   "1 Person Monatlicher Betrag öffentl": {
+    "typ": "None"
+   },
+   "1 Person Monatlicher Betrag öffentl. Verkehrsmittel": {
+    "typ": "text"
+   },
+   "1 Person Name": {
+    "typ": "text"
+   },
+   "1 Person Name der Krankenkasse": {
+    "typ": "text"
+   },
+   "1 Person Name der letzten Krankenkasse": {
+    "typ": "text"
+   },
+   "1 Person Rente brutto": {
+    "typ": "text"
+   },
+   "1 Person Rente brutto_2": {
+    "typ": "text"
+   },
+   "1 Person Rente brutto_3": {
+    "typ": "text"
+   },
+   "1 Person Rente netto": {
+    "typ": "text"
+   },
+   "1 Person Rente netto_2": {
+    "typ": "text"
+   },
+   "1 Person Rente netto_3": {
+    "typ": "text"
+   },
+   "1 Person Rentenantrag am": {
+    "typ": "text"
+   },
+   "1 Person Rentenantrag bei": {
+    "typ": "text"
+   },
+   "1 Person Schmuck/Edelmetalle Betrag/Wert": {
+    "typ": "text"
+   },
+   "1 Person Sparguthaben Betrag/Wert": {
+    "typ": "text"
+   },
+   "1 Person Staatsangehörigkeit/ aufenthaltsrechtlicher Status": {
+    "typ": "text"
+   },
+   "1 Person Vermögensübertragung in welcher Höhe": {
+    "typ": "text"
+   },
+   "1 Person Vermögensübertragung wann": {
+    "typ": "text"
+   },
+   "1 Person Versicherungsnummer Rentenantrag": {
+    "typ": "text"
+   },
+   "1 Person Verwandtschaftsverhältnis zu Antragsteller/in 1": {
+    "typ": "text"
+   },
+   "1 Person Verwandtschaftsverhältnis zu Antragsteller/in 2": {
+    "typ": "text"
+   },
+   "1 Person Voll- oder teilstationäre Unterbringung (z": {
+    "typ": "None"
+   },
+   "1 Person Voll- oder teilstationäre Unterbringung (z.B": {
+    "typ": "None"
+   },
+   "1 Person Voll- oder teilstationäre Unterbringung (z.B. WfbM, Tagesstätte)": {
+    "typ": "text"
+   },
+   "1 Person Voraussichtlicher Entbindungstermin": {
+    "typ": "text"
+   },
+   "1 Person Vorname": {
+    "typ": "text"
+   },
+   "1 Person Wertpapiere/ Aktien Betrag/Wert": {
+    "typ": "text"
+   },
+   "1 Person Wohnort des Aufenthalts im Ausland": {
+    "typ": "text"
+   },
+   "1 Person Zeitraum des Aufenthalts im Ausland": {
+    "typ": "text"
+   },
+   "1 Person amtl Kennzeichen KFZ": {
+    "typ": "text"
+   },
+   "1 Person ausländ": {
+    "typ": "None"
+   },
+   "1 Person ausländ. Rente Betrag brutto": {
+    "typ": "text"
+   },
+   "1 Person ausländ. Rente Betrag netto": {
+    "typ": "text"
+   },
+   "1 Person beantragt am": {
+    "typ": "text"
+   },
+   "1 Person ja, gültig bis": {
+    "typ": "text"
+   },
+   "1 Person monatlicher Betrag Ausbildungsförderung": {
+    "typ": "text"
+   },
+   "1 Person monatlicher Betrag Elterngeld": {
+    "typ": "text"
+   },
+   "1 Person monatlicher Betrag Kapitalerträge": {
+    "typ": "text"
+   },
+   "1 Person monatlicher Betrag Leistungen nach anderen SGB": {
+    "typ": "text"
+   },
+   "1 Person monatlicher Betrag Mutterschaftsgeld": {
+    "typ": "text"
+   },
+   "1 Person monatlicher Betrag Unterhalt": {
+    "typ": "text"
+   },
+   "1 Person monatlicher Betrag private geldwerte Ansprüche": {
+    "typ": "text"
+   },
+   "1 Person monatlicher Betrag wird an Kinder weitergegeben": {
+    "typ": "text"
+   },
+   "1 Person sonstige Altersvorsorge fällig am": {
+    "typ": "text"
+   },
+   "1 Person sonstige Einkünfte": {
+    "typ": "text"
+   },
+   "1 Person sonstige Guthaben Betrag/Wert": {
+    "typ": "text"
+   },
+   "1 Person sonstiges Vermögen Betrag/Wert": {
+    "typ": "text"
+   },
+   "1 Person staatl": {
+    "typ": "None"
+   },
+   "1 Person staatl. geförderte Altersvorsorge fällig am": {
+    "typ": "text"
+   },
+   "1 Person §68": {
+    "typ": "None"
+   },
+   "1 Person §68.Verpflichtungserklärung": {
+    "typ": "check"
+   },
+   "1 Person_ Falls ja, welche Person?": {
+    "typ": "text"
+   },
+   "1 Person_Art_der Rente": {
+    "typ": "text"
+   },
+   "1 Person_Elternteil 1": {
+    "typ": "text"
+   },
+   "1 Person_Elternteil 2": {
+    "typ": "text"
+   },
+   "1 Person_Kind 1": {
+    "typ": "text"
+   },
+   "1 Person_Kind 2": {
+    "typ": "text"
+   },
+   "1 Person_weitere Kinder": {
+    "typ": "text"
+   },
+   "1. Person": {
+    "typ": "None"
+   },
+   "1. Person.Auslandsaufenthalt": {
+    "typ": "check"
+   },
+   "1. Person_BürgerIdentifikations Nr/ SteuerID 11stellig": {
+    "typ": "text"
+   },
+   "1. Person_Geburtsdatum und -ort": {
+    "typ": "text"
+   },
+   "1. Person_Ggf Geburtsname": {
+    "typ": "text"
+   },
+   "1. Person_Name": {
+    "typ": "text"
+   },
+   "1. Person_PostabrechnungsNr": {
+    "typ": "text"
+   },
+   "1. Person_Rentenversicherungs Nr": {
+    "typ": "text"
+   },
+   "1. Person_Vorname": {
+    "typ": "text"
+   },
+   "2": {
+    "typ": "None"
+   },
+   "2  Person Antrag OEG am": {
+    "typ": "text"
+   },
+   "2  Person Antrag OEG bei": {
+    "typ": "text"
+   },
+   "2 Person": {
+    "typ": "None"
+   },
+   "2 Person  Beiträge ausländische Rentenkasse": {
+    "typ": "text"
+   },
+   "2 Person Anmerkung Ansprüche aus Erbschaft": {
+    "typ": "text"
+   },
+   "2 Person Anmerkung Ansprüche aus Übertragungsvermögen": {
+    "typ": "text"
+   },
+   "2 Person Anmerkung Haus/ Wohneigentum": {
+    "typ": "text"
+   },
+   "2 Person Anmerkung sonstiger Grundbesitz": {
+    "typ": "text"
+   },
+   "2 Person Arbeitsweg Entfernung in km": {
+    "typ": "text"
+   },
+   "2 Person Ausländische Krankenkasse Name und Anschrift": {
+    "typ": "text"
+   },
+   "2 Person Bankguthaben Betrag/Wert": {
+    "typ": "text"
+   },
+   "2 Person Bargeld Betrag/Wert": {
+    "typ": "text"
+   },
+   "2 Person Bestattungsvorsorge fällig am": {
+    "typ": "text"
+   },
+   "2 Person Betrag Bestattungsvorsorge": {
+    "typ": "text"
+   },
+   "2 Person Betrag Kapital- oder Risikolebensversicherungen": {
+    "typ": "text"
+   },
+   "2 Person Betrag sonstige Altersvorsorge": {
+    "typ": "text"
+   },
+   "2 Person Betrag staatl": {
+    "typ": "None"
+   },
+   "2 Person Betrag staatl. geförderte Altersvorsorge": {
+    "typ": "text"
+   },
+   "2 Person Betriebsrente Betrag brutto": {
+    "typ": "text"
+   },
+   "2 Person Betriebsrente Betrag netto": {
+    "typ": "text"
+   },
+   "2 Person Bezeichnung der Forderung": {
+    "typ": "text"
+   },
+   "2 Person Bezeichnung/ Rentenart_Falls ja": {
+    "typ": "text"
+   },
+   "2 Person Bezeichnung/ Rentenart_Falls ja_2": {
+    "typ": "text"
+   },
+   "2 Person Bezeichnung/ Rentenart_Falls ja_3": {
+    "typ": "text"
+   },
+   "2 Person Datum": {
+    "typ": "text"
+   },
+   "2 Person Einreise am": {
+    "typ": "text"
+   },
+   "2 Person Erwerbstätigkeit während des Aufenthalts im Ausland": {
+    "typ": "text"
+   },
+   "2 Person Falls ja Name und Anschrift der Einrichtun": {
+    "typ": "text"
+   },
+   "2 Person Familienstand": {
+    "typ": "text"
+   },
+   "2 Person Geburtsdatum": {
+    "typ": "text"
+   },
+   "2 Person Geschlecht": {
+    "typ": "text"
+   },
+   "2 Person Höhe der Forderung": {
+    "typ": "text"
+   },
+   "2 Person Höhe des monatlichen Beitrags in EUR": {
+    "typ": "text"
+   },
+   "2 Person KFZ Baujahr": {
+    "typ": "text"
+   },
+   "2 Person KFZ Modell": {
+    "typ": "text"
+   },
+   "2 Person KFZ Typ": {
+    "typ": "text"
+   },
+   "2 Person KV-Mitgliedsnummer": {
+    "typ": "text"
+   },
+   "2 Person Kapital- oder Risikolebensversicherungen aktueller Rückkaufswert": {
+    "typ": "text"
+   },
+   "2 Person Kilometerstand KFZ": {
+    "typ": "text"
+   },
+   "2 Person Leistungen für Kinder (z": {
+    "typ": "None"
+   },
+   "2 Person Leistungen für Kinder (z.B": {
+    "typ": "None"
+   },
+   "2 Person Leistungen für Kinder (z.B. Kindergeld, Kinderzuschlag) monatlicher Betrag": {
+    "typ": "text"
+   },
+   "2 Person Mitglied bis": {
+    "typ": "text"
+   },
+   "2 Person Mitglied seit": {
+    "typ": "text"
+   },
+   "2 Person Mitglied von": {
+    "typ": "text"
+   },
+   "2 Person Monatlicher Betrag Altersvorsorge": {
+    "typ": "text"
+   },
+   "2 Person Monatlicher Betrag AsylbLG in Euro": {
+    "typ": "text"
+   },
+   "2 Person Monatlicher Betrag Aufwendungen Arbeitsmittel": {
+    "typ": "text"
+   },
+   "2 Person Monatlicher Betrag BVG in Euro": {
+    "typ": "text"
+   },
+   "2 Person Monatlicher Betrag Beiträge": {
+    "typ": "text"
+   },
+   "2 Person Monatlicher Betrag Bürgergeld in Euro": {
+    "typ": "text"
+   },
+   "2 Person Monatlicher Betrag Einkommenssteuer": {
+    "typ": "text"
+   },
+   "2 Person Monatlicher Betrag Gewerbe in Euro": {
+    "typ": "text"
+   },
+   "2 Person Monatlicher Betrag Haftpflichtversicherung": {
+    "typ": "text"
+   },
+   "2 Person Monatlicher Betrag Hausratversicherung": {
+    "typ": "text"
+   },
+   "2 Person Monatlicher Betrag Kfz-Haftpflichtversicherung ohne Kasko": {
+    "typ": "text"
+   },
+   "2 Person Monatlicher Betrag Krankenkasse in Euro": {
+    "typ": "text"
+   },
+   "2 Person Monatlicher Betrag Land- und Forst in Euro": {
+    "typ": "text"
+   },
+   "2 Person Monatlicher Betrag Lastenausgleichsamt in Euro": {
+    "typ": "text"
+   },
+   "2 Person Monatlicher Betrag Leistungen Arbeitsförderung": {
+    "typ": "text"
+   },
+   "2 Person Monatlicher Betrag Miete/ Pacht in Euro": {
+    "typ": "text"
+   },
+   "2 Person Monatlicher Betrag Selbständigkeit in Euro": {
+    "typ": "text"
+   },
+   "2 Person Monatlicher Betrag Sozialversicherungsbeiträge": {
+    "typ": "text"
+   },
+   "2 Person Monatlicher Betrag Sterbegeldversicherung": {
+    "typ": "text"
+   },
+   "2 Person Monatlicher Betrag Untervermietung in Euro": {
+    "typ": "text"
+   },
+   "2 Person Monatlicher Betrag WfbM in Euro": {
+    "typ": "text"
+   },
+   "2 Person Monatlicher Betrag Wohngeld in Euro": {
+    "typ": "text"
+   },
+   "2 Person Monatlicher Betrag nichtselbständige Tätigkeit in Euro": {
+    "typ": "text"
+   },
+   "2 Person Monatlicher Betrag öffentl": {
+    "typ": "None"
+   },
+   "2 Person Monatlicher Betrag öffentl. Verkehrsmittel": {
+    "typ": "text"
+   },
+   "2 Person Name": {
+    "typ": "text"
+   },
+   "2 Person Name der Krankenkasse": {
+    "typ": "text"
+   },
+   "2 Person Name der letzten Krankenkasse": {
+    "typ": "text"
+   },
+   "2 Person Rente brutto": {
+    "typ": "text"
+   },
+   "2 Person Rente brutto_2": {
+    "typ": "text"
+   },
+   "2 Person Rente brutto_3": {
+    "typ": "text"
+   },
+   "2 Person Rente netto": {
+    "typ": "text"
+   },
+   "2 Person Rente netto_2": {
+    "typ": "text"
+   },
+   "2 Person Rentenantrag am": {
+    "typ": "text"
+   },
+   "2 Person Rentenantrag bei": {
+    "typ": "text"
+   },
+   "2 Person Schmuck/Edelmetalle Betrag/Wert": {
+    "typ": "text"
+   },
+   "2 Person Sparguthaben Betrag/Wert": {
+    "typ": "text"
+   },
+   "2 Person Staatsangehörigkeit/ aufenthaltsrechtlicher Status": {
+    "typ": "text"
+   },
+   "2 Person Vermögensübertragung in welcher Höhe": {
+    "typ": "text"
+   },
+   "2 Person Vermögensübertragung wann": {
+    "typ": "text"
+   },
+   "2 Person Versicherungsnummer Rentenantrag": {
+    "typ": "text"
+   },
+   "2 Person Verwandtschaftsverhältnis zu Antragsteller/in 1": {
+    "typ": "text"
+   },
+   "2 Person Verwandtschaftsverhältnis zu Antragsteller/in 2": {
+    "typ": "text"
+   },
+   "2 Person Voll- oder teilstationäre Unterbringung (z": {
+    "typ": "None"
+   },
+   "2 Person Voll- oder teilstationäre Unterbringung (z.B": {
+    "typ": "None"
+   },
+   "2 Person Voll- oder teilstationäre Unterbringung (z.B. WfbM, Tagesstätte)": {
+    "typ": "text"
+   },
+   "2 Person Voraussichtlicher Entbindungstermin": {
+    "typ": "text"
+   },
+   "2 Person Vorname": {
+    "typ": "text"
+   },
+   "2 Person Wertpapiere/ Aktien Betrag/Wert": {
+    "typ": "text"
+   },
+   "2 Person Wohnort des Aufenthalts im Ausland": {
+    "typ": "text"
+   },
+   "2 Person Zeitraum des Aufenthalts im Ausland": {
+    "typ": "text"
+   },
+   "2 Person amtl Kennzeichen KFZ": {
+    "typ": "text"
+   },
+   "2 Person ausländ": {
+    "typ": "None"
+   },
+   "2 Person ausländ. Rente Betrag brutto": {
+    "typ": "text"
+   },
+   "2 Person ausländ. Rente Betrag netto": {
+    "typ": "text"
+   },
+   "2 Person ja, gültig bis": {
+    "typ": "text"
+   },
+   "2 Person monatlicher Betrag Ausbildungsförderung": {
+    "typ": "text"
+   },
+   "2 Person monatlicher Betrag Elterngeld": {
+    "typ": "text"
+   },
+   "2 Person monatlicher Betrag Kapitalerträge": {
+    "typ": "text"
+   },
+   "2 Person monatlicher Betrag Leistungen nach anderen SGB": {
+    "typ": "text"
+   },
+   "2 Person monatlicher Betrag Mutterschaftsgeld": {
+    "typ": "text"
+   },
+   "2 Person monatlicher Betrag Unterhalt": {
+    "typ": "text"
+   },
+   "2 Person monatlicher Betrag private geldwerte Ansprüche": {
+    "typ": "text"
+   },
+   "2 Person monatlicher Betrag wird an Kinder weitergegeben": {
+    "typ": "text"
+   },
+   "2 Person sonstige Altersvorsorge fällig am": {
+    "typ": "text"
+   },
+   "2 Person sonstige Einkünfte": {
+    "typ": "text"
+   },
+   "2 Person sonstige Guthaben Betrag/Wert": {
+    "typ": "text"
+   },
+   "2 Person sonstiges Vermögen Betrag/Wert": {
+    "typ": "text"
+   },
+   "2 Person staatl": {
+    "typ": "None"
+   },
+   "2 Person staatl. geförderte Altersvorsorge fällig am": {
+    "typ": "text"
+   },
+   "2 Person §68": {
+    "typ": "None"
+   },
+   "2 Person §68.Verpflichtungserklärung": {
+    "typ": "check"
+   },
+   "2 Person.Auslandsaufenthalt": {
+    "typ": "check"
+   },
+   "2 Person_Anschrift, Straße, HausNr, PLZ Ort (freiwillig: Telefon)": {
+    "typ": "text"
+   },
+   "2 Person_Art_der Rente": {
+    "typ": "text"
+   },
+   "2 Person_Elternteil 1": {
+    "typ": "text"
+   },
+   "2 Person_Elternteil 2": {
+    "typ": "text"
+   },
+   "2 Person_Falls ja, welche Person?": {
+    "typ": "text"
+   },
+   "2 Person_Geburtsdatum und -ort": {
+    "typ": "text"
+   },
+   "2 Person_Kind 1": {
+    "typ": "text"
+   },
+   "2 Person_Kind 2": {
+    "typ": "text"
+   },
+   "2 Person_Mofa": {
+    "typ": "check"
+   },
+   "2 Person_Motorrad": {
+    "typ": "check"
+   },
+   "2 Person_PKW": {
+    "typ": "check"
+   },
+   "2 Person_jährliches Einkommen in EUR des/ der getrenntlebenden/ geschiedenen Ehegatten bzw Partners/ Partnerin": {
+    "typ": "text"
+   },
+   "2 Person_weitere KInder": {
+    "typ": "text"
+   },
+   "2. Person BürgerIdentifikations-Nr/ SteuerID 11stellig": {
+    "typ": "text"
+   },
+   "2. Person Datum der Verpflichtungserklärun": {
+    "typ": "text"
+   },
+   "2. Person Falls ja ab wann und wie lange?": {
+    "typ": "text"
+   },
+   "2. Person Falls ja, wo haben Sie vor der Aufnahme in die Einrichtung gewohnt (gewöhnlicher Aufenthaltsort)": {
+    "typ": "text"
+   },
+   "2. Person Falls ja, wo haben Sie vorher gewohnt (gewöhnlicher Aufenthaltsort)": {
+    "typ": "text"
+   },
+   "2. Person Geburtsdatum und -ort": {
+    "typ": "text"
+   },
+   "2. Person Name": {
+    "typ": "text"
+   },
+   "2. Person Name und Anschrift der bestellten Betreuungsperson": {
+    "typ": "text"
+   },
+   "2. Person PostabrechnungsNr": {
+    "typ": "text"
+   },
+   "2. Person Rentenversicherungs Nr": {
+    "typ": "text"
+   },
+   "2. Person Sonstiger Status:": {
+    "typ": "text"
+   },
+   "2. Person Staatsangehörigkeit": {
+    "typ": "text"
+   },
+   "2. Person Vorname": {
+    "typ": "text"
+   },
+   "2. Person beantragt am": {
+    "typ": "text"
+   },
+   "2. Person bis": {
+    "typ": "text"
+   },
+   "2. Person ggf": {
+    "typ": "None"
+   },
+   "2. Person ggf. Geburtsname": {
+    "typ": "text"
+   },
+   "2. Person seit:": {
+    "typ": "text"
+   },
+   "2. Person von": {
+    "typ": "text"
+   },
+   "2. Person von wem?": {
+    "typ": "text"
+   },
+   "2. Person_Wohnung-Ambulante_Leistungen_wenn ja, wo haben Sie vorher gewohnt (gewöhnlicher Aufenthaltsort)": {
+    "typ": "text"
+   },
+   "3 Person Familienstand": {
+    "typ": "text"
+   },
+   "3 Person Geburtsdatum": {
+    "typ": "text"
+   },
+   "3 Person Geschlecht": {
+    "typ": "text"
+   },
+   "3 Person Name": {
+    "typ": "text"
+   },
+   "3 Person Staatsangehörigkeit/ aufenthaltsrechtlicher Status": {
+    "typ": "text"
+   },
+   "3 Person Verwandtschaftsverhältnis zu Antragsteller/in 1": {
+    "typ": "text"
+   },
+   "3 Person Verwandtschaftsverhältnis zu Antragsteller/in 2": {
+    "typ": "text"
+   },
+   "3 Person Voll- oder teilstationäre Unterbringung (z": {
+    "typ": "None"
+   },
+   "3 Person Voll- oder teilstationäre Unterbringung (z.B": {
+    "typ": "None"
+   },
+   "3 Person Voll- oder teilstationäre Unterbringung (z.B. WfbM, Tagesstätte)": {
+    "typ": "text"
+   },
+   "3 Person Vorname": {
+    "typ": "text"
+   },
+   "4 Person Familienstand": {
+    "typ": "text"
+   },
+   "4 Person Geburtsdatum": {
+    "typ": "text"
+   },
+   "4 Person Geschlecht": {
+    "typ": "text"
+   },
+   "4 Person Name": {
+    "typ": "text"
+   },
+   "4 Person Staatsangehörigkeit/ aufenthaltsrechtlicher Status": {
+    "typ": "text"
+   },
+   "4 Person Verwandtschaftsverhältnis zu Antragsteller/in 1": {
+    "typ": "text"
+   },
+   "4 Person Verwandtschaftsverhältnis zu Antragsteller/in 2": {
+    "typ": "text"
+   },
+   "4 Person Vorname": {
+    "typ": "text"
+   },
+   "4 PersonVoll- oder teilstationäre Unterbringung (z": {
+    "typ": "None"
+   },
+   "4 PersonVoll- oder teilstationäre Unterbringung (z.B": {
+    "typ": "None"
+   },
+   "4 PersonVoll- oder teilstationäre Unterbringung (z.B. WfbM, Tagesstätte)": {
+    "typ": "text"
+   },
+   "Anschrift Straße HausNr PLZ Ort (freiwillig Telefon und EMail-Adresse)": {
+    "typ": "text"
+   },
+   "Anzahl der Personen im Haushalt": {
+    "typ": "text"
+   },
+   "Anzahl der Personen im persönlichen Wohnraum": {
+    "typ": "check"
+   },
+   "Anzahl der Räume": {
+    "typ": "text"
+   },
+   "BIC": {
+    "typ": "text"
+   },
+   "Baujahr des Hauses": {
+    "typ": "text"
+   },
+   "Begründung des Antrags und weitere Hinweise": {
+    "typ": "text"
+   },
+   "Betreuungsperson 1 Person": {
+    "typ": "check"
+   },
+   "Betreuungsperson 2 Person": {
+    "typ": "check"
+   },
+   "Buttowarmmiete_EUR": {
+    "typ": "text"
+   },
+   "Einkommen Antragsteller/in1": {
+    "typ": "check"
+   },
+   "Einkommen Antragsteller/in2": {
+    "typ": "check"
+   },
+   "Energieart": {
+    "typ": "check"
+   },
+   "Energieart_Sonstige": {
+    "typ": "text"
+   },
+   "Erklärung_§37a_SGBXII": {
+    "typ": "check"
+   },
+   "Falls Sie nicht Hauptmieter der Wohnung sind, Name und Anschrift des Hauptmieters": {
+    "typ": "text"
+   },
+   "Fernsehempfang über Kabel": {
+    "typ": "check"
+   },
+   "Gesamtkosten der Unterkunft Bruttokaltmiete_EUR": {
+    "typ": "text"
+   },
+   "Geschlecht Person 1": {
+    "typ": "check"
+   },
+   "Geschlecht Person 2": {
+    "typ": "check"
+   },
+   "Grund 1 Person": {
+    "typ": "text"
+   },
+   "Grund 2 Person": {
+    "typ": "text"
+   },
+   "Grundsicherungsleistungen 1 Person": {
+    "typ": "check"
+   },
+   "Grundsicherungsleistungen 2 Person": {
+    "typ": "check"
+   },
+   "Haushaltsstrom": {
+    "typ": "check"
+   },
+   "Haushaltsstrom_Kosten_EUR": {
+    "typ": "text"
+   },
+   "Heizkosten_EUR": {
+    "typ": "text"
+   },
+   "Hinweise zu Besonderheiten der Einrichtung und zu den Unterkunftskosten": {
+    "typ": "text"
+   },
+   "IBAN": {
+    "typ": "text"
+   },
+   "Informations/Beratungsbedarf": {
+    "typ": "check"
+   },
+   "Kabelfernsehen_Kosten_EUR": {
+    "typ": "text"
+   },
+   "Kaltmiete_EUR": {
+    "typ": "text"
+   },
+   "Kosten_dezentrale_Warmwasseraufbereitung": {
+    "typ": "text"
+   },
+   "Möblierung": {
+    "typ": "check"
+   },
+   "Möblierung_Kosten_EUR": {
+    "typ": "text"
+   },
+   "Name und Sitz des Geldinstituts": {
+    "typ": "text"
+   },
+   "Name, Vorname des Kontoinhabers": {
+    "typ": "text"
+   },
+   "Nebenkosten ohne Heizung_EUR": {
+    "typ": "text"
+   },
+   "P-Konto": {
+    "typ": "check"
+   },
+   "Person 1": {
+    "typ": "None"
+   },
+   "Person 1.Familienstand": {
+    "typ": "check"
+   },
+   "Person 1.Status": {
+    "typ": "check"
+   },
+   "Person 1.Unterhaltsanspruch": {
+    "typ": "check"
+   },
+   "Person 1_Altersvorsorgebeiträge": {
+    "typ": "check"
+   },
+   "Person 1_Ansprüche_aus_Erbschaft": {
+    "typ": "check"
+   },
+   "Person 1_Ansprüche_aus_Übertragsvermögen": {
+    "typ": "check"
+   },
+   "Person 1_Antrag OEG": {
+    "typ": "check"
+   },
+   "Person 1_Art_der_Untervermietung1": {
+    "typ": "check"
+   },
+   "Person 1_Art_der_Untervermietung2": {
+    "typ": "check"
+   },
+   "Person 1_AsylbLG": {
+    "typ": "check"
+   },
+   "Person 1_Aufwendungen_Arbeitsmittel": {
+    "typ": "check"
+   },
+   "Person 1_Ausbildungsförderung": {
+    "typ": "check"
+   },
+   "Person 1_BVG": {
+    "typ": "check"
+   },
+   "Person 1_Bankguthaben": {
+    "typ": "check"
+   },
+   "Person 1_Bargeld": {
+    "typ": "check"
+   },
+   "Person 1_Beiträge": {
+    "typ": "check"
+   },
+   "Person 1_Beiträge_ausländische_Rentenkasse": {
+    "typ": "check"
+   },
+   "Person 1_Bestattungsvorsorge": {
+    "typ": "check"
+   },
+   "Person 1_Betriebsrente": {
+    "typ": "check"
+   },
+   "Person 1_Bürgergeld": {
+    "typ": "check"
+   },
+   "Person 1_Datum der Verpflichtungserklärung": {
+    "typ": "text"
+   },
+   "Person 1_Einkommen_an_Kinder_weitergeleitet": {
+    "typ": "check"
+   },
+   "Person 1_Einnahmen_Untervermietung": {
+    "typ": "check"
+   },
+   "Person 1_Einnahmen_Vermietung/Verpachtung": {
+    "typ": "check"
+   },
+   "Person 1_Elterngeld": {
+    "typ": "check"
+   },
+   "Person 1_Entgelt_WfbM": {
+    "typ": "check"
+   },
+   "Person 1_Falls ja ab wann und wie lange?": {
+    "typ": "text"
+   },
+   "Person 1_Falls ja, wo haben Sie vor der Aufnahme in die Einrichtung gewohnt (gewöhnlicher Aufenthaltsort)": {
+    "typ": "text"
+   },
+   "Person 1_Falls ja, wo haben Sie vorher gewohnt (gewöhnlicher Aufenthaltsort)": {
+    "typ": "text"
+   },
+   "Person 1_Falls ja; Familienname, Vorname des getrennt lebenden oder geschiedenen Ehegatten/ Partners": {
+    "typ": "text"
+   },
+   "Person 1_Forderung/Ansprüche_gegen_Dritte": {
+    "typ": "check"
+   },
+   "Person 1_Gewerbebetrieb": {
+    "typ": "check"
+   },
+   "Person 1_Grundrentenzeiten": {
+    "typ": "check"
+   },
+   "Person 1_Grundrentenzuschlag": {
+    "typ": "check"
+   },
+   "Person 1_Haftpflichtversicherung": {
+    "typ": "check"
+   },
+   "Person 1_Haus_bzw_Wohneigentum": {
+    "typ": "check"
+   },
+   "Person 1_Hausratversicherung": {
+    "typ": "check"
+   },
+   "Person 1_Im_Ausland_erwerbstätig_ohne_Rentenbeiträge": {
+    "typ": "check"
+   },
+   "Person 1_Kapital_oder_Risikolebensversicherungen": {
+    "typ": "check"
+   },
+   "Person 1_Kapitalerträge": {
+    "typ": "check"
+   },
+   "Person 1_Kfz-Haftpflichtversicherung": {
+    "typ": "check"
+   },
+   "Person 1_Kosten_ÖPNV": {
+    "typ": "check"
+   },
+   "Person 1_Kraftfahrzeug": {
+    "typ": "check"
+   },
+   "Person 1_Kranken-und_Pflegeversicherung": {
+    "typ": "check"
+   },
+   "Person 1_Land-und_Forstwirtschaft": {
+    "typ": "check"
+   },
+   "Person 1_Leistungen_Krankenkasse": {
+    "typ": "check"
+   },
+   "Person 1_Leistungen_Lastenausgleichsamt": {
+    "typ": "check"
+   },
+   "Person 1_Leistungen_anderer_SGB": {
+    "typ": "check"
+   },
+   "Person 1_Leistungen_aus_Arbeitsförderung": {
+    "typ": "check"
+   },
+   "Person 1_Leistungen_für_Kinder": {
+    "typ": "check"
+   },
+   "Person 1_Leistungen_für_Kinder_weitergeleitet": {
+    "typ": "check"
+   },
+   "Person 1_Minderjährig_außerhalb_elterlicher_Haushalt_2_Monate": {
+    "typ": "check"
+   },
+   "Person 1_Mittagessen_WfbM_SGBIX": {
+    "typ": "check"
+   },
+   "Person 1_Mutterschaftsgeld": {
+    "typ": "check"
+   },
+   "Person 1_Rente beantragt": {
+    "typ": "check"
+   },
+   "Person 1_Renten/Pensionszahlungen": {
+    "typ": "check"
+   },
+   "Person 1_Schmuck/Edelmetalle": {
+    "typ": "check"
+   },
+   "Person 1_Schwangerschaft": {
+    "typ": "check"
+   },
+   "Person 1_Schwerbehindertenausweis": {
+    "typ": "check"
+   },
+   "Person 1_Schwerbehindertenausweis_Merkzeichen": {
+    "typ": "check"
+   },
+   "Person 1_Selbständige_Tätigkeit": {
+    "typ": "check"
+   },
+   "Person 1_Sonstiger Status:": {
+    "typ": "text"
+   },
+   "Person 1_Sonstiger_Grundbesitz": {
+    "typ": "check"
+   },
+   "Person 1_Sonstiges_Vermögen": {
+    "typ": "check"
+   },
+   "Person 1_Sozialversicherungsbeiträge": {
+    "typ": "check"
+   },
+   "Person 1_Sparguthaben": {
+    "typ": "check"
+   },
+   "Person 1_Staatl": {
+    "typ": "None"
+   },
+   "Person 1_Staatl._geförderte_Altersvorsorge": {
+    "typ": "check"
+   },
+   "Person 1_Staatsangehörigkeit": {
+    "typ": "text"
+   },
+   "Person 1_Sterbegeldversicherung": {
+    "typ": "check"
+   },
+   "Person 1_Steuern_auf_Einkommen": {
+    "typ": "check"
+   },
+   "Person 1_Unterhalt": {
+    "typ": "check"
+   },
+   "Person 1_Vermögensübertragung": {
+    "typ": "check"
+   },
+   "Person 1_Wertpapiere/Aktien": {
+    "typ": "check"
+   },
+   "Person 1_Wohngeld/Lastenzuschuss": {
+    "typ": "check"
+   },
+   "Person 1_Wohnung-Ambulante_Leistungen_wenn ja, wo haben Sie vorher gewohnt (gewöhnlicher Aufenthaltsort)": {
+    "typ": "text"
+   },
+   "Person 1__Anschrift, Straße, HausNr, PLZ Ort (freiwillig: Telefon)": {
+    "typ": "text"
+   },
+   "Person 1__Geburtsdatum und -ort": {
+    "typ": "text"
+   },
+   "Person 1__Name und Anschrift der bestellten Betreuungsperson": {
+    "typ": "text"
+   },
+   "Person 1_ausländische_Rente/Pension": {
+    "typ": "check"
+   },
+   "Person 1_bis": {
+    "typ": "text"
+   },
+   "Person 1_freiwilliger_Beitrag_gesetzl": {
+    "typ": "None"
+   },
+   "Person 1_freiwilliger_Beitrag_gesetzl._Altersvorsorge": {
+    "typ": "check"
+   },
+   "Person 1_geldwerte_Ansprüche": {
+    "typ": "check"
+   },
+   "Person 1_jährliches Einkommen in EUR des/ der getrenntlebenden/ geschiedenen Ehegatten bzw Partners/ Partnerin": {
+    "typ": "text"
+   },
+   "Person 1_kostenaufwändige_Ernährung": {
+    "typ": "check"
+   },
+   "Person 1_nichtselbständige_Tätigkeit": {
+    "typ": "check"
+   },
+   "Person 1_seit:": {
+    "typ": "text"
+   },
+   "Person 1_sonstige_Altersvorsorge": {
+    "typ": "check"
+   },
+   "Person 1_sonstige_Einkünfte": {
+    "typ": "check"
+   },
+   "Person 1_sonstige_Guthaben": {
+    "typ": "check"
+   },
+   "Person 1_stationäre_Einrichtung_letzte_2_Monate": {
+    "typ": "check"
+   },
+   "Person 1_von": {
+    "typ": "text"
+   },
+   "Person 1_von wem?": {
+    "typ": "text"
+   },
+   "Person 2": {
+    "typ": "None"
+   },
+   "Person 2.Familienstand": {
+    "typ": "check"
+   },
+   "Person 2.Status": {
+    "typ": "check"
+   },
+   "Person 2.Unterhaltsanspruch": {
+    "typ": "check"
+   },
+   "Person 2.Zuordnung": {
+    "typ": "check"
+   },
+   "Person 2_Altersvorsorgebeiträge": {
+    "typ": "check"
+   },
+   "Person 2_Ansprüche_aus_Erbschaft": {
+    "typ": "check"
+   },
+   "Person 2_Ansprüche_aus_Übertragsvermögen": {
+    "typ": "check"
+   },
+   "Person 2_Antrag OEG": {
+    "typ": "check"
+   },
+   "Person 2_Art_der_Untervermietung1": {
+    "typ": "check"
+   },
+   "Person 2_Art_der_Untervermietung2": {
+    "typ": "check"
+   },
+   "Person 2_AsylbLG": {
+    "typ": "check"
+   },
+   "Person 2_Aufwendungen_Arbeitsmittel": {
+    "typ": "check"
+   },
+   "Person 2_Ausbildungsförderung": {
+    "typ": "check"
+   },
+   "Person 2_BVG": {
+    "typ": "check"
+   },
+   "Person 2_Bankguthaben": {
+    "typ": "check"
+   },
+   "Person 2_Bargeld": {
+    "typ": "check"
+   },
+   "Person 2_Beiträge": {
+    "typ": "check"
+   },
+   "Person 2_Beiträge_ausländische_Rentenkasse": {
+    "typ": "check"
+   },
+   "Person 2_Bestattungsvorsorge": {
+    "typ": "check"
+   },
+   "Person 2_Betriebsrente": {
+    "typ": "check"
+   },
+   "Person 2_Bürgergeld": {
+    "typ": "check"
+   },
+   "Person 2_Einkommen_an_Kinder_weitergeleitet": {
+    "typ": "check"
+   },
+   "Person 2_Einnahmen_Untervermietung": {
+    "typ": "check"
+   },
+   "Person 2_Einnahmen_Vermietung/Verpachtung": {
+    "typ": "check"
+   },
+   "Person 2_Elterngeld": {
+    "typ": "check"
+   },
+   "Person 2_Entgelt_WfbM": {
+    "typ": "check"
+   },
+   "Person 2_Falls ja; Familienname, Vorname des getrennt lebenden oder geschiedenen Ehegatten/ Partners": {
+    "typ": "text"
+   },
+   "Person 2_Forderung/Ansprüche_gegen_Dritte": {
+    "typ": "check"
+   },
+   "Person 2_Gewerbebetrieb": {
+    "typ": "check"
+   },
+   "Person 2_Grundrentenzeiten": {
+    "typ": "check"
+   },
+   "Person 2_Grundrentenzuschlag": {
+    "typ": "check"
+   },
+   "Person 2_Haftpflichtversicherung": {
+    "typ": "check"
+   },
+   "Person 2_Haus_bzw_Wohneigentum": {
+    "typ": "check"
+   },
+   "Person 2_Hausratversicherung": {
+    "typ": "check"
+   },
+   "Person 2_Im_Ausland_erwerbstätig_ohne_Rentenbeiträge": {
+    "typ": "check"
+   },
+   "Person 2_Kapital_oder_Risikolebensversicherungen": {
+    "typ": "check"
+   },
+   "Person 2_Kapitalerträge": {
+    "typ": "check"
+   },
+   "Person 2_Kfz-Haftpflichtversicherung": {
+    "typ": "check"
+   },
+   "Person 2_Kosten_ÖPNV": {
+    "typ": "check"
+   },
+   "Person 2_Kraftfahrzeug": {
+    "typ": "check"
+   },
+   "Person 2_Kranken-und_Pflegeversicherung": {
+    "typ": "check"
+   },
+   "Person 2_Land-und_Forstwirtschaft": {
+    "typ": "check"
+   },
+   "Person 2_Leistungen_Krankenkasse": {
+    "typ": "check"
+   },
+   "Person 2_Leistungen_Lastenausgleichsamt": {
+    "typ": "check"
+   },
+   "Person 2_Leistungen_anderer_SGB": {
+    "typ": "check"
+   },
+   "Person 2_Leistungen_aus_Arbeitsförderung": {
+    "typ": "check"
+   },
+   "Person 2_Leistungen_für_Kinder": {
+    "typ": "check"
+   },
+   "Person 2_Leistungen_für_Kinder_weitergeleitet": {
+    "typ": "check"
+   },
+   "Person 2_Minderjährig_außerhalb_elterlicher_Haushalt_2_Monate": {
+    "typ": "check"
+   },
+   "Person 2_Mittagessen_WfbM_SGBIX": {
+    "typ": "check"
+   },
+   "Person 2_Mutterschaftsgeld": {
+    "typ": "check"
+   },
+   "Person 2_Rente beantragt": {
+    "typ": "check"
+   },
+   "Person 2_Renten/Pensionszahlungen": {
+    "typ": "check"
+   },
+   "Person 2_Schmuck/Edelmetalle": {
+    "typ": "check"
+   },
+   "Person 2_Schwangerschaft": {
+    "typ": "check"
+   },
+   "Person 2_Schwerbehindertenausweis": {
+    "typ": "check"
+   },
+   "Person 2_Schwerbehindertenausweis_Merkzeichen": {
+    "typ": "check"
+   },
+   "Person 2_Selbständige_Tätigkeit": {
+    "typ": "check"
+   },
+   "Person 2_Sonstiger_Grundbesitz": {
+    "typ": "check"
+   },
+   "Person 2_Sonstiges_Vermögen": {
+    "typ": "check"
+   },
+   "Person 2_Sozialversicherungsbeiträge": {
+    "typ": "check"
+   },
+   "Person 2_Sparguthaben": {
+    "typ": "check"
+   },
+   "Person 2_Staatl": {
+    "typ": "None"
+   },
+   "Person 2_Staatl._geförderte_Altersvorsorge": {
+    "typ": "check"
+   },
+   "Person 2_Sterbegeldversicherung": {
+    "typ": "check"
+   },
+   "Person 2_Steuern_auf_Einkommen": {
+    "typ": "check"
+   },
+   "Person 2_Unterhalt": {
+    "typ": "check"
+   },
+   "Person 2_Vermögensübertragung": {
+    "typ": "check"
+   },
+   "Person 2_Wertpapiere/Aktien": {
+    "typ": "check"
+   },
+   "Person 2_Wohngeld/Lastenzuschuss": {
+    "typ": "check"
+   },
+   "Person 2_ausländische_Rente/Pension": {
+    "typ": "check"
+   },
+   "Person 2_freiwilliger_Beitrag_gesetzl": {
+    "typ": "None"
+   },
+   "Person 2_freiwilliger_Beitrag_gesetzl._Altersvorsorge": {
+    "typ": "check"
+   },
+   "Person 2_geldwerte_Ansprüche": {
+    "typ": "check"
+   },
+   "Person 2_kostenaufwändige_Ernährung": {
+    "typ": "check"
+   },
+   "Person 2_nichtselbständige_Tätigkeit": {
+    "typ": "check"
+   },
+   "Person 2_sonstige_Altersvorsorge": {
+    "typ": "check"
+   },
+   "Person 2_sonstige_Einkünfte": {
+    "typ": "check"
+   },
+   "Person 2_sonstige_Guthaben": {
+    "typ": "check"
+   },
+   "Person 2_stationäre_Einrichtung_letzte_2_Monate": {
+    "typ": "check"
+   },
+   "Person1_Auslandsaufenthalt": {
+    "typ": "check"
+   },
+   "Person1_Teilhabeleistungen_Bildung_SGBIX": {
+    "typ": "check"
+   },
+   "Person1_ausländische_Krankenversicherung": {
+    "typ": "check"
+   },
+   "Person2_Auslandsaufenthalt": {
+    "typ": "check"
+   },
+   "Person2_Teilhabeleistungen_Bildung_SGBIX": {
+    "typ": "check"
+   },
+   "Person2_ausländische_Krankenversicherung": {
+    "typ": "check"
+   },
+   "Person_1_Mofa": {
+    "typ": "check"
+   },
+   "Person_1_Motorrad": {
+    "typ": "check"
+   },
+   "Person_1_PKW": {
+    "typ": "check"
+   },
+   "Schönheitsreparaturen": {
+    "typ": "check"
+   },
+   "Schönheitsreparaturen_Kosten_EUR": {
+    "typ": "text"
+   },
+   "Tage pro Woche": {
+    "typ": "check"
+   },
+   "Tage pro Woche_2": {
+    "typ": "check"
+   },
+   "Unterkunft": {
+    "typ": "check"
+   },
+   "Vollmacht": {
+    "typ": "check"
+   },
+   "Warmwasser_Kosten_EUR": {
+    "typ": "text"
+   },
+   "Warmwasser_zentral": {
+    "typ": "check"
+   },
+   "Warmwasserbereitung": {
+    "typ": "check"
+   },
+   "Wohnfläche qm": {
+    "typ": "text"
+   },
+   "Wohnform und Leistungen 1 Person": {
+    "typ": "check"
+   },
+   "Wohnform und Leistungen 2 Person": {
+    "typ": "check"
+   },
+   "Wohngemeinschaft": {
+    "typ": "check"
+   },
+   "Zuschlag Gebühren Kommunikation/ Rundfunk/ Fernsehen/ Internet": {
+    "typ": "check"
+   },
+   "Zuschlag Haushaltsstrom": {
+    "typ": "check"
+   },
+   "Zuschlag Möblierung": {
+    "typ": "check"
+   },
+   "Zuschlag Wohn- und Wohnnebenkosten": {
+    "typ": "check"
+   },
+   "Zuschlag für Haushaltsstrom, Instandhaltung usw": {
+    "typ": "None"
+   },
+   "Zuschlag für Haushaltsstrom, Instandhaltung usw._EUR": {
+    "typ": "text"
+   },
+   "Zuschlag für Wohn- und Wohnnebenkosten_EUR": {
+    "typ": "text"
+   },
+   "Zuschlag_Gebühren_Kommunikation, Rundfunk, Fernsehen, Internet_EUR": {
+    "typ": "text"
+   },
+   "Zuschlag_Möblierung_Höhe_EUR": {
+    "typ": "text"
+   },
+   "Zuschläge_EUR": {
+    "typ": "text"
+   },
+   "alleinerziehend": {
+    "typ": "check"
+   },
+   "besondere Wohnform 1 Person": {
+    "typ": "check"
+   },
+   "besondere Wohnform 2 Person": {
+    "typ": "check"
+   },
+   "davon Grundmiete_EUR": {
+    "typ": "text"
+   },
+   "dezentrale Wasserversorgung Abschlag EUR": {
+    "typ": "text"
+   },
+   "separate Messeinrichtung für dezentrale Wamwasseraufbereitung": {
+    "typ": "check"
+   },
+   "separate_Messeinrichtung_dezentrale_Wasserversorgung": {
+    "typ": "check"
+   },
+   "stationäre Einrichtung 1 Person": {
+    "typ": "check"
+   },
+   "stationäre Einrichtung 2 Person": {
+    "typ": "check"
+   }
+  },
+  "geschuetzt": false,
+  "seiten": 22,
+  "stand": "",
+  "titel": "Antrag auf Grundsicherung SGB XII",
+  "xfa": false
  },
  "wbs-BB.pdf": {
   "felder": {
