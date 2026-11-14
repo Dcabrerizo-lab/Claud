@@ -1,0 +1,210 @@
+// Ausfüllhilfe für die amtlichen Formulare (Jobcenter: Hauptantrag und Anlagen; Familienkasse: Kinderzuschlag; Wohngeld).
+// Wählt die Formulare, die zu den Angaben passen (nach dem Anforderungskatalog des Jobcenters), und füllt vor, was SoLo weiß.
+// Alles andere bleibt leer. Ja/Nein-Fragen werden als 'ja'/'nein' angegeben; welcher Wert im PDF „Ja“ bedeutet, steht im
+// geprüften Katalog content/formulare/katalog.json (tools/formulare-pruefen.py) und wird beim Füllen nachgeschlagen.
+// Läuft in der App und in Node (Tests). Keine Abhängigkeiten.
+const Formulare = (function () {
+  const ok = (r) => !!r && (r.level === 'ja' || r.level === 'vielleicht' || r.level === 'na');
+  const n = (v) => { const x = Number(String(v == null ? '' : v).replace(',', '.')); return isFinite(x) && x > 0 ? x : 0; };
+  const geld = (v) => String(Math.round(n(v)));
+
+  // „Maria Muster“ -> Vorname „Maria“, Nachname „Muster“; „Muster, Maria“ -> ebenso
+  function teileName(s) {
+    const t = String(s || '').trim().replace(/\s+/g, ' ');
+    if (!t) return { vor: '', nach: '' };
+    if (t.indexOf(',') > 0) { const [a, b] = t.split(','); return { vor: b.trim(), nach: a.trim() }; }
+    const w = t.split(' ');
+    return w.length === 1 ? { vor: '', nach: w[0] } : { vor: w.slice(0, -1).join(' '), nach: w[w.length - 1] };
+  }
+  // „Hauptstr. 1a“ -> Straße „Hauptstr.“, Hausnummer „1a“
+  function teileStrasse(s) {
+    const t = String(s || '').trim().replace(/\s+/g, ' ');
+    const m = t.match(/^(.*\S)\s+(\d+\s?[a-zA-Z]?(?:\s?[-–/]\s?\d+\s?[a-zA-Z]?)?)$/);
+    return m ? { str: m[1], nr: m[2].replace(/\s/g, '') } : { str: t, nr: '' };
+  }
+  // „91054 Erlangen“ -> PLZ und Ort
+  function teileOrt(s) {
+    const t = String(s || '').trim().replace(/\s+/g, ' ');
+    const m = t.match(/^(\d{5})\s+(.+)$/);
+    return m ? { plz: m[1], ort: m[2] } : { plz: '', ort: t };
+  }
+
+  // Kopf der Jobcenter-Formulare (antragstellende Person) und Abschnitt B (Person, für die die Anlage ist)
+  function kopf(p, praefix) {
+    const nm = teileName(p.name), v = {};
+    const a = praefix || 'txtfPerson', d = praefix === 'txtfAnlPerson' ? 'dateAnlPersonGebDatum' : 'datePersonGebDatum';
+    if (nm.vor) v[a + 'Vorname'] = nm.vor;
+    if (nm.nach) v[a + 'Nachname'] = nm.nach;
+    if (p.geb) v[d] = String(p.geb).trim();
+    return v;
+  }
+  function selbe(p, praefix) {
+    const nm = teileName(p.name), v = {};
+    const a = praefix || 'txtfBG', d = praefix === 'txtfAnlBG' ? 'dateAnlBGGebDatum' : 'dateBGGebDatum';
+    if (nm.vor) v[a + 'Vorname'] = nm.vor;
+    if (nm.nach) v[a + 'Nachname'] = nm.nach;
+    if (p.geb) v[d] = String(p.geb).trim();
+    return v;
+  }
+  function anschrift(p) {
+    const s = teileStrasse(p.strasse), o = teileOrt(p.ort), v = {};
+    if (s.str) v.txtfPersonStr = s.str;
+    if (s.nr) v.txtfPersonHausNr = s.nr;
+    if (o.plz) v.txtfPersonPlz = o.plz;
+    if (o.ort) v.txtfPersonOrt = o.ort;
+    return v;
+  }
+
+  // Einkommensarten der antragstellenden Person (erste Person, dazu ein weiteres Einkommen bei Alleinstehenden)
+  // (einfache Version: Einkommensliste)
+  function arten(s) {
+    if (Array.isArray(s.einkommen)) return s.einkommen.map((e) => e && e.art).filter(Boolean);
+    return [s.ek1Art || s.art1, s.adults === 1 ? s.ek1bArt : ''].filter(Boolean);
+  }
+  const istSelbst = (s) => arten(s).indexOf('selbst') >= 0 || s.ek2Art === 'selbst';
+
+  // Die Formulare für die Angaben. s: Angaben (state), p: Person (Antragsmappe), results: Ergebnis der Regeln
+  function plan(s, p, results) {
+    s = s || {}; p = p || {};
+    const R = (id) => (results || []).find((x) => x.id === id);
+    const liste = [];
+    const add = (id, datei, titel, warum, werte, art) => liste.push({ id, datei, titel, warum, werte: werte || {}, art: art || 'fuellen' });
+    const a = arten(s), kids = s.kids | 0, young = s.young | 0, erw = s.adults === 2 ? 2 : 1;
+    const miete = n(s.miete), eigen = s.wohnart === 'eigentum';
+    const allein = erw === 1 && kids > 0;
+    const selbst = istSelbst(s);
+    const k = kopf(p);
+
+    if (ok(R('ggeld'))) {
+      // Hauptantrag
+      const ha = Object.assign({}, k, anschrift(p));
+      if (p.tel) ha.txtfPersonTel = String(p.tel).trim();
+      ha.chbxBUEGSofort = true;
+      const em = s.emStd === 'unter3' || !!s.wfbm || a.indexOf('wfbm') >= 0;
+      ha.rtbnErwerbsfaehig = em ? 'nein' : 'ja';
+      ha.rbtnAlleinerziehend = allein ? 'ja' : 'nein';
+      ha.rbtnSchwanger = s.schwanger ? 'ja' : 'nein';
+      ha.rbtnSchueler = s.ausbildung === 'ich' ? 'ja' : 'nein';
+      ha.rbtnAsylbLG = s.aufenthalt === 'asyl' ? 'ja' : 'nein';
+      ha.rbtnMEB = s.ernaehrung ? 'ja' : 'nein';
+      if (s.bhPerson === 'ich') { ha.rbtnBehinderung = 'ja'; ha.rbtnLeistungTeilhabe = s.teilhabe ? 'ja' : 'nein'; }
+      else if (!s.bhPerson) ha.rbtnBehinderung = 'nein';
+      if ((s.bezug || {}).grundsicherungsgeld || (s.bezug || {}).sozialamt) ha.rbtnBUEG = 'ja';
+      ha.rbtnSelbstaendig = selbst ? 'ja' : 'nein';
+      const ersatz = a.filter((x) => x === 'alg' || x === 'kg' || x === 'eg');
+      ha.rbtnEntgeltersatz = ersatz.length ? 'ja' : 'nein';
+      if (ersatz.length) ha.txtfEntgeltersatz = ersatz.map((x) => ({ alg: 'Arbeitslosengeld', kg: 'Krankengeld', eg: 'Elterngeld' })[x]).join(', ');
+      const andere = { chbxLeistungWohngeld: ok(R('wohngeld')) && !(s.bezug || {}).wohngeld, chbxLeistungArbeitslosengeld: ok(R('alg1')) && a.indexOf('alg') < 0,
+        chbxLeistungKRG: ok(R('krankengeld')) && a.indexOf('kg') < 0, chbxLeistungKG: kids + young > 0 && !(s.bezug || {}).kindergeld,
+        chbxLeistungKIZ: ok(R('kiz')) && !(s.bezug || {}).kiz, chbxLeistungBafoeg: ok(R('bafoeg')), chbxLeistungBAB: ok(R('bab')), chbxLeistungRente: ok(R('emrente')) || ok(R('srente')) };
+      const welche = Object.keys(andere).filter((x) => andere[x]);
+      ha.rbtnLeistungAndere = welche.length ? 'ja' : 'nein';
+      welche.forEach((x) => { ha[x] = true; });
+      const alleinWohnen = erw === 1 && kids + young === 0 && !s.hhAndere && s.wohnform !== 'eltern';
+      ha.rbtnWohnsituation = alleinWohnen ? 'ja' : 'nein';
+      if (erw === 2) ha.chbxWohnenEhegatte = true;
+      if (kids > (s.kids14 | 0)) ha.chbxWohnenKindU15 = true;
+      if ((s.kids14 | 0) > 0 || young > 0) ha.chbxWohnenKind = true;
+      if (s.wohnform === 'eltern') ha.chbxWohnenEltern = true;
+      if (s.hhAndere === 'verwandte') ha.chbxWohnenVerwandte = true;
+      if (s.hhAndere === 'wg') ha.chbxWohnenSonstige = true;
+      ha.rbtnBedarfUnterkunft = miete > 0 ? 'ja' : 'nein';
+      add('ha', 'antrag-sgb2_ba147846.pdf', 'Hauptantrag (HA)', 'Antrag auf Grundsicherungsgeld', ha);
+
+      // Anlage EK: Einkommen der antragstellenden Person
+      const ek = Object.assign({}, k, selbe(p));
+      ek.rbtnEinkommen = a.indexOf('lohn') >= 0 ? 'ja' : 'nein';
+      ek.rbtnEinkommenFreiberuflich = selbst ? 'ja' : 'nein';
+      const ein = { chbxEinnahmeWohngeld: !!(s.bezug || {}).wohngeld, chbxEinnahmeArbeitslosengeld: a.indexOf('alg') >= 0, chbxEinnahmeKrankengeld: a.indexOf('kg') >= 0,
+        chbxEinnahmeElterngeld: a.indexOf('eg') >= 0, chbxEinnahmeKindergeld: kids + young > 0 && !!(s.bezug || {}).kindergeld, chbxEinnahmeKinderzuschlag: !!(s.bezug || {}).kiz,
+        chbxEinnahmeRenten: a.indexOf('rente') >= 0, chbxEinnahmeSozialhilfe: !!(s.bezug || {}).sozialamt };
+      const hat = Object.keys(ein).filter((x) => ein[x]);
+      hat.forEach((x) => { ek[x] = true; });
+      if (!hat.length && a.indexOf('lohn') < 0 && !selbst && a.indexOf('wfbm') < 0) ek.chbxEinnahmeKeine = true;
+      if (a.indexOf('wfbm') >= 0) { ek.chbxEinnahmeSonstige = true; ek.txtfEinnahmeSonstige = 'Lohn aus der Werkstatt für behinderte Menschen'; }
+      ek.rbtnUnterhaltszahlung = n(s.uzBetrag) > 0 ? 'ja' : 'nein';
+      if (n(s.autoWert) > 0) ek.chbxVersicherungKfz = true;
+      add('ek', 'anlageek_ba013053.pdf', 'Anlage EK', 'Einkommen (für jede Person ab 15 Jahren eine eigene Anlage EK)', ek);
+
+      // Anlage KDU: Unterkunft und Heizung
+      if (miete > 0 || eigen) {
+        const kdu = Object.assign({}, k, anschrift(p));
+        kdu.numfUnterkunftAnzahlPersonen = String(erw + kids + young);
+        if (eigen) kdu.chbxWohnenEigentum = true; else kdu.chbxWohnenMiete = true;
+        if (s.warmwasser) kdu.chbxWasserDezentral = true;
+        add('kdu', 'anlagekdu_ba013056.pdf', 'Anlage KDU', 'Kosten für Unterkunft und Heizung' + (miete > 0 ? ' (laut SoLo zusammen ' + geld(miete) + ' € im Monat: bitte nach Grundmiete, Nebenkosten und Heizkosten aufteilen)' : ''), kdu);
+      }
+      // Anlage VM: Vermögen
+      const vm = Object.assign({}, k);
+      vm.rbtnBGImmobBewohnt = eigen ? 'ja' : 'nein';
+      vm.rbtnBGKfZ = n(s.autoWert) > 0 ? 'ja' : 'nein';
+      if (n(s.autoWert) > 0) vm.numfKfZWertZ1 = geld(s.autoWert);
+      add('vm', 'anlagevm_ba013070.pdf', 'Anlage VM', 'Vermögen (Konten, Wertgegenstände, Auto, Immobilien)', vm);
+      // Weitere Personen
+      if (erw === 2) {
+        add('wep', 'anlagewep_ba013071.pdf', 'Anlage WEP', 'Für die Partnerin oder den Partner', Object.assign({}, k));
+        add('ek2', 'anlageek_ba013053.pdf', 'Anlage EK (Partner)', 'Einkommen der Partnerin oder des Partners', Object.assign({}, k));
+        add('ve', 'anlageve_ba013069.pdf', 'Anlage VE', 'Nur wenn ihr nicht verheiratet seid: Fragen zur Partnerschaft', Object.assign({}, k));
+      }
+      for (let i = 0; i < young; i++) add('wep-' + i, 'anlagewep_ba013071.pdf', 'Anlage WEP (Kind ab 15)', 'Für jedes Kind ab 15 Jahren', Object.assign({}, k));
+      for (let i = 0; i < kids; i++) {
+        const ki = Object.assign({}, k);
+        if (allein) ki.rbtnBGElternAusserhalb = 'ja';
+        add('ki-' + i, 'anlageki_ba013057.pdf', 'Anlage KI (Kind ' + (i + 1) + ')', 'Für jedes Kind unter 15 Jahren (Kinder von 15 bis 17 Jahren: Anlage WEP)', ki);
+      }
+      if (allein) {
+        const uh = Object.assign({}, k);
+        uh.rbtnUH = n(s.unterhalt) > 0 ? 'ja' : 'nein';
+        if (n(s.unterhalt) > 0) uh.numfUHZahlung = geld(s.unterhalt);
+        add('uh3', 'anlageuh3_ba013067.pdf', 'Anlage UH3', 'Unterhalt für die Kinder vom anderen Elternteil (für jedes Kind eine eigene Anlage)', uh);
+      }
+      if (s.schwanger && erw === 1) add('uh2', 'anlageuh2_ba013066.pdf', 'Anlage UH2', 'Schwangerschaft, wenn du nicht verheiratet bist', Object.assign({}, k, selbe(p)));
+      if (s.ernaehrung) add('meb', 'anlagemeb_ba013060.pdf', 'Anlage MEB', 'Mehrbedarf für kostenaufwändige Ernährung (Seite 3 und 4 füllt die Ärztin oder der Arzt aus)',
+        Object.assign({}, kopf(p, 'txtfAnlPerson'), selbe(p, 'txtfAnlBG'), { chbxAnlBGMehrbedarfErstmalig: true }));
+      if (s.hhAndere === 'verwandte') add('hg', 'anlagehg_ba013055.pdf', 'Anlage HG', 'Verwandte in derselben Wohnung (Haushaltsgemeinschaft)', Object.assign({}, k));
+      if (selbst) {
+        add('eks', 'AnlageEKS_ba013054.pdf', 'Anlage EKS', 'Einkommen aus Selbstständigkeit (Einnahmen und Ausgaben, vorläufig)', Object.assign({}, k));
+        add('sv', 'anlagesv_ba013063.pdf', 'Anlage SV', 'Kranken- und Pflegeversicherung bei Selbstständigkeit', Object.assign({}, k, selbe(p), { rbtnSelbstaendig: 'ja' }));
+      }
+      // Vordrucke für Dritte
+      if (a.indexOf('lohn') >= 0) add('ab', 'dok_ba033945.pdf', 'Einkommensbescheinigung', 'Füllt der Arbeitgeber aus', {}, 'leer');
+      if (miete > 0 && !eigen) add('mb', 'Mietbescheinigung_1.pdf', 'Mietbescheinigung', 'Füllt die Vermieterin oder der Vermieter aus, wenn kein Mietvertrag vorliegt', {}, 'leer');
+    }
+    // Kinderzuschlag (Familienkasse): Das PDF ist vom Herausgeber geschützt (Ausfüllen erlaubt, Verändern nicht). SoLo verändert es
+    // deshalb nicht und gibt es als leeren Vordruck mit; Ausfüllen geht in jeder PDF-App oder online mit BundID.
+    if (ok(R('kiz')) && !(s.bezug || {}).kiz) add('kiz', 'kiz1-antrag_ba036540.pdf', 'Antrag auf Kinderzuschlag (KiZ 1)', 'Für die Familienkasse; zum Ausfüllen in einer PDF-App, einfacher geht es online mit BundID', {}, 'leer');
+    // Wohngeld: Vordruck ohne Formularfelder (Muster; die Wohngeldstelle kann einen eigenen Vordruck verlangen)
+    if (ok(R('wohngeld')) && !(s.bezug || {}).wohngeld) add('wg', '35_mz_antrag.pdf', 'Antrag auf Wohngeld (Mietzuschuss)', 'Muster-Vordruck zum Ausdrucken; manche Wohngeldstellen haben einen eigenen Vordruck', {}, 'leer');
+    return liste;
+  }
+
+  // Unterlagen nach dem Anforderungskatalog des Jobcenters, nur die zu den Angaben passenden
+  function unterlagen(s) {
+    s = s || {};
+    const u = ['Personalausweis oder Pass; bei Menschen aus anderen Ländern der Aufenthaltstitel',
+      'Kontoauszüge der letzten 3 Monate von allen Konten (auch PayPal)'];
+    const a = arten(s), miete = n(s.miete), eigen = s.wohnart === 'eigentum';
+    if ((s.kids | 0) > 0) u.push('Geburtsurkunden oder Kinderausweise der Kinder bis 15 Jahre; Schulbescheinigungen ab 15 Jahren');
+    if (miete > 0 && !eigen) u.push('Mietvertrag oder Mietbescheinigung; Nachweis über Nebenkosten und Heizkosten, wenn nicht im Mietvertrag');
+    if (eigen) u.push('Kaufvertrag oder Grundbuchauszug, Darlehensverträge, Nachweis der Schuldzinsen (Zins und Tilgung getrennt), Nachweise über Heizkosten und Nebenkosten (Grundsteuer, Wasser, Müll, Versicherung)');
+    if (a.indexOf('lohn') >= 0) u.push('Arbeitsvertrag und Lohnabrechnungen der letzten 6 Monate (oder Einkommensbescheinigung vom Arbeitgeber)');
+    if (istSelbst(s)) u.push('Anlage EKS mit Einnahmen und Ausgaben, letzter Steuerbescheid, betriebliche Kontoauszüge');
+    if (a.indexOf('rente') >= 0) u.push('Rentenbescheid');
+    if (a.indexOf('alg') >= 0) u.push('Bescheid über Arbeitslosengeld');
+    if (a.indexOf('kg') >= 0) u.push('Bescheid über Krankengeld');
+    if (a.indexOf('eg') >= 0) u.push('Elterngeldbescheid');
+    if ((s.bezug || {}).kindergeld || (s.kids | 0) > 0) u.push('Kindergeldbescheid' + ((s.bezug || {}).kiz ? ' und Bescheid über Kinderzuschlag' : ''));
+    if ((s.bezug || {}).wohngeld) u.push('Wohngeldbescheid');
+    if (n(s.unterhalt) > 0 || s.unterhaltFehlt) u.push('Unterhaltstitel oder Nachweis über Unterhalt bzw. Unterhaltsvorschuss');
+    if (n(s.uzBetrag) > 0) u.push('Nachweis über den Unterhalt, den du zahlst (Urteil, Jugendamtsurkunde oder Vereinbarung, Kontoauszüge)');
+    if (n(s.autoWert) > 0) u.push('Fahrzeugschein und Nachweis der Kfz-Versicherung');
+    if (n(s.vermoegen) > 0) u.push('Nachweise über Sparbücher, Wertpapiere, Lebens- und Rentenversicherungen (Rückkaufswert), Bausparverträge');
+    if (s.gdb || s.bhPerson) u.push('Schwerbehindertenausweis bzw. Feststellungsbescheid');
+    if (s.ausbildung === 'ich') u.push('Immatrikulations- oder Schulbescheinigung bzw. Ausbildungsvertrag; BAföG- oder BAB-Bescheid (auch Ablehnung)');
+    if (s.schwanger) u.push('Mutterpass (Seite mit dem Entbindungstermin)');
+    return u;
+  }
+
+  return { plan, unterlagen, teileName, teileStrasse, teileOrt };
+})();
+if (typeof module !== 'undefined') module.exports = Formulare;

@@ -1,4 +1,4 @@
-// Mutationstest: baut absichtlich Fehler in die Regeln ein (src/rules.js) und prüft, dass die Tests jeden davon finden.
+// Mutationstest: baut absichtlich Fehler in die Regeln ein (src/rules.js, auch Ausfüllhilfe src/formulare.js und app/pdf) und prüft, dass die Tests jeden davon finden.
 // Ein Fehler, den kein Test bemerkt, zeigt eine Lücke in den Tests. Aufruf: npm run test:mutation
 'use strict';
 const fs = require('fs');
@@ -34,7 +34,13 @@ const M = [
   ['Blindenhilfe auch bei Sehbehinderung', "if (h.blind !== 'blind') return mk(id, 'nein'", "if (!h.blind) return mk(id, 'nein'"],
   ['Blindenhilfe: 60 % statt 40 %', 'blh: { einsatzUeber: 0.4 }', 'blh: { einsatzUeber: 0.6 }'],
   ['Blindenhilfe: Asyl ohne Hinweis', "if (h.asyl) return mk(id, 'vielleicht', 'vielleicht', [['blh.asyl']]);", ''],
-  ['Asyl: Grundsicherungsgeld nicht ausgeschlossen', "    if (h.asyl) return mk(id, 'nein', 'ausschluss', [['ggeld.asyl']]);\n    if (h.alter || h.erwerbsgemindert) {", '    if (h.alter || h.erwerbsgemindert) {'],
+  ['Asyl: Grundsicherungsgeld nicht ausgeschlossen', "    if (h.asyl) return mk(id, 'nein', 'ausschluss', [['ggeld.asyl']]);\n    if (euAusschluss(h)) return mk(id, 'nein', 'ausschluss', [['ggeld.eu']]);", "    if (euAusschluss(h)) return mk(id, 'nein', 'ausschluss', [['ggeld.eu']]);"],
+  ['EU-Bürger: Grundsicherungsgeld nicht ausgeschlossen', "    if (euAusschluss(h)) return mk(id, 'nein', 'ausschluss', [['ggeld.eu']]);\n    if (h.alter || h.erwerbsgemindert) {", '    if (h.alter || h.erwerbsgemindert) {'],
+  // Ausfüllhilfe: Ja/Nein vertauscht, falsches Formular, Name falsch geteilt
+  ['Formulare: Alleinerziehend Ja/Nein vertauscht', "ha.rbtnAlleinerziehend = allein ? 'ja' : 'nein';", "ha.rbtnAlleinerziehend = allein ? 'nein' : 'ja';", 'src/formulare.js'],
+  ['Formulare: Anlage KDU fehlt bei Miete', "if (miete > 0 || eigen) {", "if (eigen) {", 'src/formulare.js'],
+  ['Formulare: Vorname und Nachname vertauscht', "w.length === 1 ? { vor: '', nach: w[0] } : { vor: w.slice(0, -1).join(' '), nach: w[w.length - 1] }", "w.length === 1 ? { vor: '', nach: w[0] } : { nach: w.slice(0, -1).join(' '), vor: w[w.length - 1] }", 'src/formulare.js'],
+  ['Formulare: Optionsliste nicht beachtet', "const opt = opts.indexOf(k[v]) >= 0 ? k[v] :", "const opt = true ? k[v] :", 'app/pdf/pdf-entry.js'],
   ['Asyl: Grundsicherung im Alter nicht ausgeschlossen', "    if (h.asyl) return mk(id, 'nein', 'ausschluss', [['ggeld.asyl']]);\n    if (!h.alter && !h.erwerbsgemindert && !h.alterGrenz)", '    if (!h.alter && !h.erwerbsgemindert && !h.alterGrenz)'],
   ['Asyl: Wohngeld nicht ausgeschlossen', "if (h.asyl) return mk(id, 'nein', 'ausschluss', [['wohngeld.asyl']]);", ''],
   ['Asyl: Kinderzuschlag nicht ausgeschlossen', "if (h.asyl) return mk(id, 'nein', 'ausschluss', [['kiz.asyl']]);", ''],
@@ -77,18 +83,26 @@ for (const f of ['site', 'datenschutz.html', 'README.md', 'app/capacitor.config.
   fs.mkdirSync(path.dirname(path.join(tmp, f)), { recursive: true });
   fs.cpSync(path.join(ROOT, f), path.join(tmp, f), { recursive: true });
 }
-const orig = fs.readFileSync(path.join(ROOT, 'src', 'rules.js'), 'utf8');
-const TESTS = ['test.js', 'test-strict.js', 'test-beh.js', 'test-faelle.js', 'test-raster.js ' + (process.env.MUT_RASTER || 8000), 'test-pruefliste.js', 'test-einfach-gleich.js 3000', 'test-grenzen.js', 'test-eigenschaften.js ' + (process.env.MUT_EIGEN || 3000)];
+// Ausfüllhilfe: Formulare, PDF-Modul und die PDF-Bibliotheken (verlinkt, nicht kopiert)
+fs.cpSync(path.join(ROOT, 'content', 'formulare'), path.join(tmp, 'content', 'formulare'), { recursive: true });
+fs.cpSync(path.join(ROOT, 'app', 'pdf'), path.join(tmp, 'app', 'pdf'), { recursive: true });
+fs.symlinkSync(path.join(ROOT, 'app', 'node_modules'), path.join(tmp, 'app', 'node_modules'));
+// Mutation: [Name, alt, neu, Datei (Standard src/rules.js)]
+const DATEI = (m) => m[3] || 'src/rules.js';
+const ORIG = {};
+M.forEach((m) => { ORIG[DATEI(m)] = ORIG[DATEI(m)] || fs.readFileSync(path.join(ROOT, DATEI(m)), 'utf8'); });
+const TESTS = ['test.js', 'test-strict.js', 'test-beh.js', 'test-faelle.js', 'test-raster.js ' + (process.env.MUT_RASTER || 8000), 'test-pruefliste.js', 'test-einfach-gleich.js 3000', 'test-grenzen.js', 'test-formulare.js', 'test-eigenschaften.js ' + (process.env.MUT_EIGEN || 3000)];
 const laeuft = () => { try { for (const t of TESTS) execSync('node test/' + t, { cwd: tmp, stdio: 'ignore' }); return true; } catch (e) { return false; } };
 
 let unentdeckt = 0, geprueft = 0;
-for (const [name, alt, neu] of M) {
+for (const m of M) {
+  const [name, alt, neu] = m, datei = DATEI(m), orig = ORIG[datei];
   if (orig.split(alt).length !== 2) { console.log('UNGÜLTIG (Stelle nicht genau einmal gefunden): ' + name); unentdeckt++; continue; }
-  fs.writeFileSync(path.join(tmp, 'src', 'rules.js'), orig.replace(alt, neu));
+  fs.writeFileSync(path.join(tmp, datei), orig.replace(alt, neu));
   geprueft++;
   if (laeuft()) { unentdeckt++; console.log('NICHT ENTDECKT: ' + name); } else console.log('entdeckt: ' + name);
+  fs.writeFileSync(path.join(tmp, datei), orig);
 }
-fs.writeFileSync(path.join(tmp, 'src', 'rules.js'), orig);
 const sauber = laeuft();
 fs.rmSync(tmp, { recursive: true, force: true });
 if (!sauber) { console.log('Ohne Fehler laufen die Tests nicht durch – erst npm test reparieren.'); process.exit(1); }

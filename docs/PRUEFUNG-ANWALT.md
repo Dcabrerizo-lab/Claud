@@ -27,7 +27,11 @@ Rechenregeln stichprobenartig prüfen.
 6. **Impressum, Verbraucherrecht, Barrierefreiheit:** Impressum nach § 5 DDG; Pflichten nach dem
    Barrierefreiheitsstärkungsgesetz (die App ist nach WCAG 2.1 AA automatisiert geprüft); Werbeaussagen im Store
    („31 Leistungen“, „offline“).
-7. **Zuständige Stellen und Anschriften:** Anschriften stammen aus Impressen und Wikipedia, mit Quelle und Datum und dem Hinweis,
+7. **Amtliche Formulare (Ausfüllhilfe, Abschnitt 8):** Darf die App die Formulare der Bundesagentur für Arbeit (Jobcenter,
+   Familienkasse) und den Wohngeld-Vordruck mitliefern und vorausfüllen (§ 5 UrhG amtliche Werke; Nutzungsbedingungen der BA)?
+   Haftung, wenn eine vorausgefüllte Ja/Nein-Antwort nicht stimmt (Hinweis: „Prüfe jedes vorausgefüllte Feld, bevor du
+   unterschreibst“)? Pflicht, neue Formularstände nachzuliefern?
+8. **Zuständige Stellen und Anschriften:** Anschriften stammen aus Impressen und Wikipedia, mit Quelle und Datum und dem Hinweis,
    vor dem Absenden zu prüfen. Ausreichend?
 
 ## 3. Fachliche Prüfung der Rechenregeln
@@ -67,6 +71,20 @@ Unabhängige Referenzrechnung (3 Millionen Zufallshaushalte), Prüfung Anzeige =
 Mutationstest (absichtlich eingebaute Fehler müssen gefunden werden), Tests auf echten Android-Geräten im Emulator und in drei
 Browsern. Grenze: Alle Tests prüfen gegen das eigene Verständnis des Gesetzes. Deshalb ist diese fachliche Prüfung nötig.
 
-## 7. Bitte um Rückmeldung
+## 7. Ausfüllhilfe mit amtlichen Formularen
+- Mitgeliefert: Hauptantrag und Anlagen des Jobcenters (Stand 10/2026), Einkommensbescheinigung (04/2025), Mietbescheinigung,
+  Antrag auf Kinderzuschlag (KiZ 1), Muster-Vordruck Wohngeld (Mietzuschuss). Ordner `content/formulare/`.
+- Auswahl nach dem Anforderungskatalog des Jobcenters (`src/formulare.js`): z. B. Anlage KI je Kind unter 15, WEP für Partner
+  und Kinder ab 15, UH3 bei Alleinerziehenden, EKS und SV bei Selbstständigen, MEB bei kostenaufwändiger Ernährung.
+- Vorausgefüllt wird nur, was aus den Angaben sicher folgt: Name, Geburtsdatum, Anschrift, Telefon und Ja/Nein-Fragen
+  (z. B. alleinerziehend, schwanger, selbstständig, Miete). Beträge in der Anlage KDU bleiben leer (SoLo kennt nur die Summe).
+- Welcher Knopf „Ja“ und welcher „Nein“ ist, wurde für jede Frage aus der Lage der Beschriftung im PDF bestimmt
+  (`tools/formulare-pruefen.py`, 181 von 182 Fragen eindeutig; die unklare wird nie gesetzt) und im Test nach dem Füllen
+  zurückgelesen, zusätzlich mit einem zweiten PDF-Programm.
+- Kinderzuschlag- und Wohngeld-Vordruck sind vom Herausgeber gegen Veränderung geschützt (Ausfüllen erlaubt). SoLo verändert sie
+  nicht und gibt sie als leeren Vordruck weiter.
+- Die Formulare bleiben ausfüllbar; die Person ergänzt, prüft und unterschreibt selbst. Nichts wird an eine Stelle gesendet.
+
+## 8. Bitte um Rückmeldung
 Je Punkt aus Abschnitt 2: Risiko (gering / mittel / hoch) und empfohlene Änderung. Für Abschnitt 3: jede Regel, die fehlt
 oder falsch ist, mit Fundstelle.

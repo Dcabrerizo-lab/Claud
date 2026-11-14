@@ -3,8 +3,12 @@
 //   window.LotsePdf.buildPdf({ pages, title, loadFont }) -> Promise<Uint8Array>
 //   pages:    [{ blocks: [{ t: 'pre' | 'h' | 'p' | 'li' | 'small', text }] }]
 //   loadFont: (dateiname) -> Promise<Uint8Array>, Dateien liegen in www/fonts/pdf/
+//   window.LotsePdf.fillForms({ forms, katalog, loadFile }) -> Promise<[{ datei, name, bytes }]>
+//   forms:    aus Formulare.plan (src/formulare.js): [{ id, datei, titel, werte, art }]; werte: Text, true (Haken), 'ja'/'nein'
+//   katalog:  content/formulare/katalog.json (welcher Zustand im PDF „Ja“ bzw. „Nein“ ist)
+//   loadFile: (dateiname) -> Promise<Uint8Array>, Dateien liegen in www/formulare/
 // Schrift: Noto Sans (Latein, Kyrillisch, Griechisch). Arabisch setzt die App nicht ins PDF (src/app.js, pdfPages).
-import { PDFDocument, rgb } from 'pdf-lib';
+import { PDFDocument, PDFName, rgb } from 'pdf-lib';
 import fontkit from '@pdf-lib/fontkit';
 
 const A4 = [595.28, 841.89];
@@ -89,6 +93,55 @@ async function buildPdf({ pages, title, loadFont }) {
   return doc.save();
 }
 
-const api = { buildPdf };
+// Zustand, den die Ja/Nein-Gruppe gerade sichtbar zeigt (Name des eingeschalteten Knopfs), sonst null
+function sichtbar(g) {
+  const an = g.acroField.getWidgets().map((w) => w.getAppearanceState()).filter((x) => x && x.toString() !== '/Off');
+  return an.length === 1 ? an[0].toString().replace(/^\//, '') : null;
+}
+
+// Amtliche Formulare vorausfüllen. Die Felder bleiben ausfüllbar (nicht „flach“), damit man am Gerät weiterschreiben kann.
+// Nicht zugeordnete oder unklare Felder werden übersprungen (nie raten). Rückgabe je Formular, auch für leere Vordrucke.
+async function fillForms({ forms, katalog, loadFile }) {
+  const out = [];
+  const zaehler = {};
+  for (const f of forms || []) {
+    const bytes = await loadFile(f.datei);
+    let res = bytes, gesetzt = 0;
+    const kat = (katalog || {})[f.datei];
+    const werte = Object.keys(f.werte || {});
+    if (kat && werte.length && f.art !== 'leer') {
+      const doc = await PDFDocument.load(bytes, { updateMetadata: false });
+      const form = doc.getForm();
+      if (kat.xfa) form.deleteXFA(); // sonst zeigen Programme mit XFA die alten, leeren Daten
+      for (const name of werte) {
+        const v = f.werte[name], k = kat.felder[name];
+        if (!k || v === '' || v == null) continue;
+        try {
+          if (k.typ === 'text' && typeof v === 'string') { form.getTextField(name).setText(v); gesetzt++; }
+          else if (k.typ === 'check' && v === true) { form.getCheckBox(name).check(); gesetzt++; }
+          else if (k.typ === 'radio' && (v === 'ja' || v === 'nein') && !k.unklar && k[v]) {
+            // Katalog: sichtbarer Zustand des Knopfs (z. B. „0“). Hat die Gruppe eine Optionsliste (/Opt), ist der Zustand ihr Index.
+            const g = form.getRadioGroup(name), opts = g.getOptions();
+            const opt = opts.indexOf(k[v]) >= 0 ? k[v] : /^\d+$/.test(k[v]) && g.acroField.dict.has(PDFName.of('Opt')) ? opts[Number(k[v])] : undefined;
+            if (opt === undefined) continue;
+            g.select(opt);
+            if (sichtbar(g) !== k[v]) continue; // anders gelandet als gemeint: nicht als gesetzt zählen
+            gesetzt++;
+          }
+        } catch (e) { /* Feld anders als im Katalog: auslassen */ }
+      }
+      form.updateFieldAppearances();
+      // Anzeige der Werte auch in einfachen Betrachtern
+      try { form.acroForm.dict.set(PDFName.of('NeedAppearances'), doc.context.obj(true)); } catch (e) {}
+      res = await doc.save();
+    }
+    const basis = f.titel.replace(/[^A-Za-z0-9ÄÖÜäöüß]+/g, '-').replace(/^-+|-+$/g, '');
+    zaehler[basis] = (zaehler[basis] || 0) + 1;
+    out.push({ datei: f.datei, name: basis + (zaehler[basis] > 1 ? '-' + zaehler[basis] : '') + '.pdf', bytes: res, gesetzt });
+  }
+  return out;
+}
+
+const api = { buildPdf, fillForms, sichtbar };
 if (typeof window !== 'undefined') window.LotsePdf = api;
 export default api;

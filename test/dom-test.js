@@ -168,7 +168,10 @@ set('p-name', 'Maria Beispiel'); set('p-geb', '01.02.1985'); set('p-strasse', 'H
 d.getElementById('mappeMake').click();
 check('Mappe öffnet sich und ersetzt die Seite', d.getElementById('mappe').hidden === false && d.getElementById('app').classList.contains('pm'));
 const pages = [...d.querySelectorAll('#mappeBody .page')];
-check('Mappe enthält zwei Briefe, ein Angabenblatt und die Unterlagenliste', pages.length === 4, pages.length);
+check('Mappe enthält zwei Briefe, ein Angabenblatt, die Unterlagenliste und die amtlichen Formulare', pages.length === 5, pages.length);
+const formSeite = d.querySelector('#mappeBody .forms');
+check('Amtliche Formulare: Wohngeld-Vordruck genannt, Hinweis für die Web-Version, kein App-Knopf', !!formSeite && /Antrag auf Wohngeld \(Mietzuschuss\)/.test(formSeite.textContent) && formSeite.textContent.indexOf(I18N.de['f.formsWeb']) >= 0 && !d.getElementById('formsShare'), formSeite && formSeite.textContent.slice(0, 200));
+check('Amtliche Formulare: ohne Jobcenter keine Jobcenter-Unterlagenliste', !!formSeite && formSeite.textContent.indexOf(I18N.de['f.formsUnt']) < 0);
 const txt = pages.map((p) => p.textContent).join('\n');
 // Anschrift „91056 Erlangen“ liefert den Wohnort (kein PLZ-Feld ausgefüllt): Empfänger ist die Stadt Erlangen
 check('Brief: Absender, Empfänger (aus der PLZ der Anschrift) und Betreff', /Maria Beispiel/.test(txt) && /Hauptstraße 1/.test(txt) && /Stadt Erlangen\nWohngeldstelle\nRathausplatz 1\n91052 Erlangen/.test(txt) && /Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle/.test(txt) && /Betreff: Antrag auf Wohngeld/.test(txt) && /Betreff: Antrag auf Unterhaltsvorschuss/.test(txt));

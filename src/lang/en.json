@@ -970,5 +970,14 @@
   "t.wg.anteil": "In a shared flat only your own share of the rent counts. Flatmates are not part of your household.",
   "t.auto.hoch": "A car is protected if it is reasonable. With a value above about {wert} the Jobcenter checks more closely. That is why only “possible”.",
   "t.auto.sgb12": "The car ({wert}) counts as assets here, unless it is needed because of a disability or for work.",
-  "t.selbst.hinweis": "For self-employed people the office first estimates income provisionally and settles the exact amount later. Keep records of income and expenses ready."
+  "t.selbst.hinweis": "For self-employed people the office first estimates income provisionally and settles the exact amount later. Keep records of income and expenses ready.",
+  "f.forms": "Official forms",
+  "f.formsApp": "These forms match your answers. SoLo fills in your name, address and the yes/no questions that follow from your answers. You fill in everything else yourself.",
+  "f.formsWeb": "These forms match your answers. In the app, SoLo fills them in for you. Here you can get them from the responsible office or its website.",
+  "f.formsShare": "Share pre-filled forms",
+  "f.formsLeer": "blank form",
+  "f.formsCheck": "Check every pre-filled field before you sign. You are responsible for the information.",
+  "f.formsUnt": "Documents for the Jobcenter",
+  "f.formsAppLeer": "These forms match your answers. You fill them in using a PDF app or on paper.",
+  "f.formsShareLeer": "Share forms"
 }

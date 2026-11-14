@@ -970,5 +970,14 @@
   "t.wg.anteil": "Ortak evde yalnızca kiradaki kendi payın sayılır. Ev arkadaşları hanene dahil değildir.",
   "t.auto.hoch": "Uygun olan bir araba korunur. Değeri yaklaşık {wert} üzerindeyse Jobcenter daha ayrıntılı inceler. Bu yüzden yalnızca „mümkün“.",
   "t.auto.sgb12": "Araba ({wert}) burada varlığa sayılır, engellilik nedeniyle veya iş için gerekmiyorsa.",
-  "t.selbst.hinweis": "Serbest meslek sahiplerinde kurum geliri önce geçici olarak tahmin eder ve sonra kesin hesaplar. Gelir ve giderlerini hazır tut."
+  "t.selbst.hinweis": "Serbest meslek sahiplerinde kurum geliri önce geçici olarak tahmin eder ve sonra kesin hesaplar. Gelir ve giderlerini hazır tut.",
+  "f.forms": "Resmî formlar",
+  "f.formsApp": "Bu formlar bilgilerinize uygundur. SoLo adınızı, adresinizi ve bilgilerinizden çıkan evet/hayır sorularını doldurur. Gerisini kendiniz doldurursunuz.",
+  "f.formsWeb": "Bu formlar bilgilerinize uygundur. Uygulamada SoLo bunları önceden doldurur. Burada formları yetkili kurumdan veya internet sitesinden alabilirsiniz.",
+  "f.formsShare": "Doldurulmuş formları paylaş",
+  "f.formsLeer": "boş form",
+  "f.formsCheck": "İmzalamadan önce doldurulmuş her alanı kontrol edin. Bilgilerden siz sorumlusunuz.",
+  "f.formsUnt": "Jobcenter için belgeler",
+  "f.formsAppLeer": "Bu formlar bilgilerinize uygundur. Onları bir PDF uygulamasında veya kâğıt üzerinde doldurursunuz.",
+  "f.formsShareLeer": "Formları paylaş"
 }

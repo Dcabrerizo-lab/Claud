@@ -970,5 +970,14 @@
   "t.wg.anteil": "We wspólnym mieszkaniu liczy się tylko twoja część czynszu. Współlokatorzy nie należą do twojego gospodarstwa domowego.",
   "t.auto.hoch": "Samochód jest chroniony, jeśli jest odpowiedni. Przy wartości powyżej około {wert} Jobcenter sprawdza dokładniej. Dlatego tylko „możliwe”.",
   "t.auto.sgb12": "Samochód ({wert}) liczy się tu do majątku, chyba że jest potrzebny z powodu niepełnosprawności lub do pracy.",
-  "t.selbst.hinweis": "Przy działalności własnej urząd najpierw tymczasowo szacuje dochód, a później rozlicza go dokładnie. Przygotuj dane o przychodach i wydatkach."
+  "t.selbst.hinweis": "Przy działalności własnej urząd najpierw tymczasowo szacuje dochód, a później rozlicza go dokładnie. Przygotuj dane o przychodach i wydatkach.",
+  "f.forms": "Formularze urzędowe",
+  "f.formsApp": "Te formularze pasują do twoich danych. SoLo wpisuje imię i nazwisko, adres oraz odpowiedzi tak/nie wynikające z twoich danych. Resztę wypełniasz sam(a).",
+  "f.formsWeb": "Te formularze pasują do twoich danych. W aplikacji SoLo wypełnia je wstępnie. Tutaj otrzymasz je w odpowiednim urzędzie lub na jego stronie internetowej.",
+  "f.formsShare": "Udostępnij wypełnione formularze",
+  "f.formsLeer": "pusty formularz",
+  "f.formsCheck": "Sprawdź każde wypełnione pole przed podpisaniem. Odpowiadasz za podane dane.",
+  "f.formsUnt": "Dokumenty dla Jobcenter",
+  "f.formsAppLeer": "Te formularze pasują do twoich danych. Wypełniasz je w aplikacji PDF lub na papierze.",
+  "f.formsShareLeer": "Udostępnij formularze"
 }

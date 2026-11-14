@@ -970,5 +970,14 @@
   "t.wg.anteil": "Într-o locuință comună contează doar partea ta din chirie. Colegii de locuință nu fac parte din gospodăria ta.",
   "t.auto.hoch": "O mașină este protejată dacă este adecvată. La o valoare peste circa {wert}, Jobcenter verifică mai atent. De aceea doar „posibil”.",
   "t.auto.sgb12": "Mașina ({wert}) contează aici la avere, cu excepția cazului în care este necesară din cauza unei dizabilități sau pentru muncă.",
-  "t.selbst.hinweis": "La activitate independentă, autoritatea estimează mai întâi venitul provizoriu și îl calculează exact mai târziu. Pregătește datele despre încasări și cheltuieli."
+  "t.selbst.hinweis": "La activitate independentă, autoritatea estimează mai întâi venitul provizoriu și îl calculează exact mai târziu. Pregătește datele despre încasări și cheltuieli.",
+  "f.forms": "Formulare oficiale",
+  "f.formsApp": "Aceste formulare se potrivesc cu datele tale. SoLo completează numele, adresa și întrebările da/nu care rezultă din datele tale. Restul completezi tu.",
+  "f.formsWeb": "Aceste formulare se potrivesc cu datele tale. În aplicație, SoLo le completează în avans. Aici le primești de la instituția competentă sau de pe site-ul ei.",
+  "f.formsShare": "Trimite formularele completate",
+  "f.formsLeer": "formular gol",
+  "f.formsCheck": "Verifică fiecare câmp completat înainte să semnezi. Tu răspunzi pentru date.",
+  "f.formsUnt": "Documente pentru Jobcenter",
+  "f.formsAppLeer": "Aceste formulare se potrivesc cu datele tale. Le completezi într-o aplicație PDF sau pe hârtie.",
+  "f.formsShareLeer": "Trimite formularele"
 }

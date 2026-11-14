@@ -26,7 +26,7 @@ const MOCK = () => {
       },
       Share: { share: log('Share.share') },
       Filesystem: {
-        writeFile: (o) => { calls.push(['Filesystem.writeFile', { path: o.path, directory: o.directory, size: o.data.length }]); window.__pdf = o.data; return Promise.resolve({ uri: 'file:///cache/' + o.path }); },
+        writeFile: (o) => { calls.push(['Filesystem.writeFile', { path: o.path, directory: o.directory, size: o.data.length }]); window.__pdf = o.data; (window.__files = window.__files || {})[o.path] = o.data; return Promise.resolve({ uri: 'file:///cache/' + o.path }); },
         deleteFile: log('Filesystem.deleteFile')
       },
       Clipboard: { write: log('Clipboard.write') },
@@ -89,6 +89,8 @@ const MOCK = () => {
   ok('Wohngeld-Karte nennt Landratsamt Erlangen-Höchstadt mit Anschrift', /Landratsamt Erlangen-Höchstadt, Wohngeldstelle/.test(beh) && /Nägelsbachstraße 1/.test(beh) && /91052 Erlangen/.test(beh), beh);
 
   // Antragsmappe
+  // Grundsicherungsgeld zusätzlich wählen (falls angeboten), damit die vorausgefüllten Jobcenter-Formulare mitgeprüft werden
+  const mitGG = await p.evaluate(() => { const cb = document.querySelector('[data-pick="ggeld"]'); if (!cb) return false; cb.checked = true; cb.dispatchEvent(new Event('change', { bubbles: true })); return true; });
   await p.click('#mappeMake'); ok('Mappe öffnet', await p.isVisible('#mappe'));
   const brief = await p.inputValue('#mappeText');
   ok('Anschreiben Wohngeld: Empfänger mit Anschrift', /Landratsamt Erlangen-Höchstadt\nWohngeldstelle\nNägelsbachstraße 1\n91052 Erlangen/.test(brief), brief.slice(0, 300));
@@ -116,6 +118,28 @@ const MOCK = () => {
     ok('PDF auch in Sprache ' + l, !!(await p.evaluate(() => window.__pdf)), await p.textContent('#copyMsg'));
   }
   await p.evaluate(() => { const s = document.getElementById('lang'); s.value = 'de'; s.dispatchEvent(new Event('change', { bubbles: true })); });
+  // Amtliche Formulare: vorausgefüllt als PDF-Dateien teilen
+  ok('Amtliche Formulare in der Mappe mit Knopf', await p.isVisible('#formsShare'));
+  const vorher = (await calls('Share.share')).length;
+  await p.evaluate(() => { window.__files = {}; });
+  await p.click('#formsShare');
+  await p.waitForFunction((n) => window.__calls.filter((c) => c[0] === 'Share.share').length > n, vorher, { timeout: 30000 }).catch(() => {});
+  const formShare = (await calls('Share.share')).slice(vorher).find((o) => o.files);
+  const dateien = await p.evaluate(() => window.__files || {});
+  ok('Formulare werden als PDF-Dateien geteilt', !!formShare && formShare.files.length >= 1 && formShare.files.length === Object.keys(dateien).length && formShare.files.every((f) => /\.pdf$/.test(f)), JSON.stringify(formShare) + ' ' + (await p.textContent('#formsMsg')));
+  let gefuellt = 0;
+  for (const [name, data] of Object.entries(dateien)) {
+    const buf = Buffer.from(data, 'base64');
+    ok('Formular ' + name + ' ist ein PDF', buf.slice(0, 5).toString() === '%PDF-' && buf.length > 10000, buf.length);
+    if (/\/Encrypt/.test(buf.toString('latin1'))) continue; // vom Herausgeber geschützt: unverändert weitergegeben
+    const doc = await PDFDocument.load(buf);
+    ok('Formular ' + name + ' lässt sich öffnen', doc.getPageCount() > 0);
+    if (/Hauptantrag/.test(name)) { ok('Hauptantrag: Vorname aus der Mappe eingetragen', doc.getForm().getTextField('txtfPersonVorname').getText() === 'Maria'); gefuellt++; }
+  }
+  const geloescht = (await calls('Filesystem.deleteFile')).map((o) => o.path);
+  ok('Formular-Dateien nach dem Teilen aus dem Cache gelöscht', Object.keys(dateien).every((n) => geloescht.indexOf(n) >= 0), geloescht.join(' '));
+  if (mitGG) ok('Mit Grundsicherungsgeld: Hauptantrag vorausgefüllt geprüft', gefuellt === 1);
+  console.log('  (Formulare geteilt: ' + Object.keys(dateien).join(', ') + (gefuellt ? '; Hauptantrag geprüft' : '') + ')');
   await p.screenshot({ path: path.join(require('os').tmpdir(), 'app-mappe.png') });
   await p.click('#mappeClose');
 

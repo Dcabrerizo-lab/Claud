@@ -815,12 +815,53 @@
       return '<h3>' + esc(r.name) + (lang === 'de' ? '' : ' (' + esc(t('n.' + r.id)) + ')') + '</h3>' +
         '<p>' + esc(t(s.wo)) + '</p>' + listItems(s.u.map(function (k) { return t(k); })) + '<p class="tip">' + esc(t(s.tip)) + '</p>';
     }).join('') + '</article>';
+    html += formsHtml();
     $('mappeBody').innerHTML = html;
+    var fb = $('formsShare');
+    if (fb) fb.addEventListener('click', shareForms);
     // Hinweis, wenn Anschreiben ohne Empfänger-Anschrift bleiben, weil der Wohnort fehlt (Anschriften gibt es für Bayern)
     var ohneOrt = Behoerden.available() && !aktAgs() && (!state.bundesland || state.bundesland === 'BY') &&
       ids.some(function (r) { return Behoerden.brauchtKreis(r.id); });
     $('mappeAdrNote').hidden = !ohneOrt;
     $('mappeText').value = ids.map(function (r) { return letterText(r.id); }).concat([sheetText()]).join('\n\n----------------------------------------\n\n');
+  }
+
+  // ----- Amtliche Formulare (Ausfüllhilfe): passende Formulare nach den gewählten Leistungen, in der App vorausgefüllt -----
+  function formPlan() {
+    if (typeof Formulare === 'undefined') return [];
+    return Formulare.plan(state, person, pickedIds());
+  }
+  function formsHtml() {
+    var fp = formPlan();
+    if (!fp.length) return '';
+    var jc = fp.some(function (f) { return f.datei.indexOf('ba01') >= 0 || f.id === 'ha'; });
+    var leer = fp.every(function (f) { return f.art === 'leer'; }); // nur Vordrucke ohne Vorausfüllung (z. B. Wohngeld, Kinderzuschlag)
+    var h = '<article class="page docs forms"><h3>' + esc(t('f.forms')) + '</h3><p>' + esc(t(!NATIVE ? 'f.formsWeb' : leer ? 'f.formsAppLeer' : 'f.formsApp')) + '</p>';
+    if (NATIVE) h += '<div class="btns no-print"><button type="button" class="btn" id="formsShare">' + esc(t(leer ? 'f.formsShareLeer' : 'f.formsShare')) + '</button></div><p class="msg" id="formsMsg" role="status"></p>';
+    h += '<ul lang="de" dir="ltr">' + fp.map(function (f) {
+      return '<li><strong>' + esc(f.titel) + '</strong> – ' + esc(f.warum) + (f.art === 'leer' ? ' (' + esc(t('f.formsLeer')) + ')' : '') + '</li>';
+    }).join('') + '</ul><p class="tip">' + esc(t('f.formsCheck')) + '</p>';
+    if (jc) h += '<h3>' + esc(t('f.formsUnt')) + '</h3>' + '<div lang="de" dir="ltr">' + listItems(Formulare.unterlagen(state)) + '</div>';
+    return h + '</article>';
+  }
+  function shareForms() {
+    var fs = plug('Filesystem'), sh = plug('Share'), msg = $('formsMsg');
+    msg.textContent = t('f.pdfWorking');
+    if (!fs || !sh) { msg.textContent = t('f.pdfFail'); return; }
+    var fp = formPlan(), geschrieben = [];
+    var lade = function (n) { return fetch('formulare/' + n).then(function (r) { if (!r.ok) throw new Error(n); return r.arrayBuffer(); }).then(function (b) { return new Uint8Array(b); }); };
+    Promise.all([loadPdfLib(), fetch('formulare/katalog.json').then(function (r) { return r.json(); })]).then(function (x) {
+      return x[0].fillForms({ forms: fp, katalog: x[1], loadFile: lade });
+    }).then(function (liste) {
+      return liste.reduce(function (p, f) {
+        return p.then(function () { return fs.writeFile({ path: f.name, data: toBase64(f.bytes), directory: 'CACHE' }).then(function (r) { geschrieben.push({ name: f.name, uri: r.uri }); }); });
+      }, Promise.resolve());
+    }).then(function () {
+      return sh.share({ title: t('f.forms'), files: geschrieben.map(function (g) { return g.uri; }) }).then(function () {}, function () {});
+    }).then(function () {
+      msg.textContent = '';
+      geschrieben.forEach(function (g) { fs.deleteFile({ path: g.name, directory: 'CACHE' }).catch(function () {}); });
+    }).catch(function () { msg.textContent = t('f.pdfFail'); });
   }
 
   function openMappe() {

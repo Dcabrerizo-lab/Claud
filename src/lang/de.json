@@ -970,5 +970,14 @@
   "t.wg.anteil": "In einer Wohngemeinschaft zählt nur dein eigener Anteil an der Miete. Mitbewohner gehören nicht zu deinem Haushalt.",
   "t.auto.hoch": "Ein Auto ist geschützt, wenn es angemessen ist. Bei einem Wert über etwa {wert} prüft das Jobcenter genauer. Deshalb nur „möglich“.",
   "t.auto.sgb12": "Das Auto ({wert}) zählt hier zum Vermögen, außer es wird wegen einer Behinderung oder für die Arbeit gebraucht.",
-  "t.selbst.hinweis": "Bei Selbstständigen schätzt die Stelle das Einkommen zuerst vorläufig und rechnet später genau ab. Halte Einnahmen und Ausgaben bereit."
+  "t.selbst.hinweis": "Bei Selbstständigen schätzt die Stelle das Einkommen zuerst vorläufig und rechnet später genau ab. Halte Einnahmen und Ausgaben bereit.",
+  "f.forms": "Amtliche Formulare",
+  "f.formsApp": "Diese Formulare passen zu deinen Angaben. SoLo füllt Name, Anschrift und die Ja/Nein-Fragen vor, die sich aus deinen Angaben ergeben. Alles andere trägst du selbst ein.",
+  "f.formsWeb": "Diese Formulare passen zu deinen Angaben. In der App füllt SoLo sie vor. Hier bekommst du sie bei der zuständigen Stelle oder auf ihrer Internetseite.",
+  "f.formsShare": "Formulare vorausgefüllt teilen",
+  "f.formsLeer": "leerer Vordruck",
+  "f.formsCheck": "Prüfe jedes vorausgefüllte Feld, bevor du unterschreibst. Du bist für die Angaben verantwortlich.",
+  "f.formsUnt": "Unterlagen für das Jobcenter",
+  "f.formsAppLeer": "Diese Vordrucke passen zu deinen Angaben. Du füllst sie in einer PDF-App oder auf Papier aus.",
+  "f.formsShareLeer": "Formulare teilen"
 }

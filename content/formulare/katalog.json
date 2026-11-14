@@ -1,0 +1,4793 @@
+{
+ "35_mz_antrag.pdf": {
+  "felder": {},
+  "geschuetzt": true,
+  "seiten": 8,
+  "stand": "",
+  "titel": "Antrag auf Wohngeld - Mietzuschuss",
+  "xfa": false
+ },
+ "AnlageEKS_ba013054.pdf": {
+  "felder": {
+   "chbxAngabenZeitAbschl": {
+    "typ": "check"
+   },
+   "chbxAngabenZeitVorl": {
+    "typ": "check"
+   },
+   "chbxTaetigkeitAngabenAbschl": {
+    "typ": "check"
+   },
+   "chbxTaetigkeitAngabenVorl": {
+    "typ": "check"
+   },
+   "dateBewilligungszeitraumBis": {
+    "typ": "text"
+   },
+   "dateBewilligungszeitraumVon": {
+    "typ": "text"
+   },
+   "dateDritteGebDatum": {
+    "typ": "text"
+   },
+   "dateEinstellung": {
+    "typ": "text"
+   },
+   "dateGeldeingang": {
+    "typ": "text"
+   },
+   "datePersonGebDatum": {
+    "typ": "text"
+   },
+   "dateRueckzahlungBeginn": {
+    "typ": "text"
+   },
+   "dateTaetigkeitBeginn": {
+    "typ": "text"
+   },
+   "dateTaetigkeitEnde": {
+    "typ": "text"
+   },
+   "dateUnterschriftBetreuer": {
+    "typ": "text"
+   },
+   "dateUnterschriftPerson": {
+    "typ": "text"
+   },
+   "dateUnterschriftSelbststaendigePerson": {
+    "typ": "text"
+   },
+   "numfAnzahlBeschaeftigte": {
+    "typ": "text"
+   },
+   "numfAnzahlRaume": {
+    "typ": "text"
+   },
+   "numfAnzahlWeiteresPersonal": {
+    "typ": "text"
+   },
+   "numfArbeitstageMehraufwandVerpflegung": {
+    "typ": "text"
+   },
+   "numfDarlehenBetriebsausgabenHoehe": {
+    "typ": "text"
+   },
+   "numfDarlehenHoehe": {
+    "typ": "text"
+   },
+   "numfFlaeche": {
+    "typ": "text"
+   },
+   "numfKilometerBetrieblich": {
+    "typ": "text"
+   },
+   "numfKilometerPrivat": {
+    "typ": "text"
+   },
+   "numfStreckeArbeitstage": {
+    "typ": "text"
+   },
+   "numfStreckeWohnungBetrieb": {
+    "typ": "text"
+   },
+   "numfTabA_Z2_S2": {
+    "typ": "text"
+   },
+   "numfTabA_Z2_S3": {
+    "typ": "text"
+   },
+   "numfTabA_Z2_S4": {
+    "typ": "text"
+   },
+   "numfTabA_Z2_S5": {
+    "typ": "text"
+   },
+   "numfTabA_Z2_S6": {
+    "typ": "text"
+   },
+   "numfTabA_Z2_S7": {
+    "typ": "text"
+   },
+   "numfTabA_Z3_S2": {
+    "typ": "text"
+   },
+   "numfTabA_Z3_S3": {
+    "typ": "text"
+   },
+   "numfTabA_Z3_S4": {
+    "typ": "text"
+   },
+   "numfTabA_Z3_S5": {
+    "typ": "text"
+   },
+   "numfTabA_Z3_S6": {
+    "typ": "text"
+   },
+   "numfTabA_Z3_S7": {
+    "typ": "text"
+   },
+   "numfTabA_Z4_S2": {
+    "typ": "text"
+   },
+   "numfTabA_Z4_S3": {
+    "typ": "text"
+   },
+   "numfTabA_Z4_S4": {
+    "typ": "text"
+   },
+   "numfTabA_Z4_S5": {
+    "typ": "text"
+   },
+   "numfTabA_Z4_S6": {
+    "typ": "text"
+   },
+   "numfTabA_Z4_S7": {
+    "typ": "text"
+   },
+   "numfTabA_Z5_S2": {
+    "typ": "text"
+   },
+   "numfTabA_Z5_S3": {
+    "typ": "text"
+   },
+   "numfTabA_Z5_S4": {
+    "typ": "text"
+   },
+   "numfTabA_Z5_S5": {
+    "typ": "text"
+   },
+   "numfTabA_Z5_S6": {
+    "typ": "text"
+   },
+   "numfTabA_Z5_S7": {
+    "typ": "text"
+   },
+   "numfTabA_Z6_S2": {
+    "typ": "text"
+   },
+   "numfTabA_Z6_S3": {
+    "typ": "text"
+   },
+   "numfTabA_Z6_S4": {
+    "typ": "text"
+   },
+   "numfTabA_Z6_S5": {
+    "typ": "text"
+   },
+   "numfTabA_Z6_S6": {
+    "typ": "text"
+   },
+   "numfTabA_Z6_S7": {
+    "typ": "text"
+   },
+   "numfTabA_Z7_S2": {
+    "typ": "text"
+   },
+   "numfTabA_Z7_S3": {
+    "typ": "text"
+   },
+   "numfTabA_Z7_S4": {
+    "typ": "text"
+   },
+   "numfTabA_Z7_S5": {
+    "typ": "text"
+   },
+   "numfTabA_Z7_S6": {
+    "typ": "text"
+   },
+   "numfTabA_Z7_S7": {
+    "typ": "text"
+   },
+   "numfTabA_Z8_S2": {
+    "typ": "text"
+   },
+   "numfTabA_Z8_S3": {
+    "typ": "text"
+   },
+   "numfTabA_Z8_S4": {
+    "typ": "text"
+   },
+   "numfTabA_Z8_S5": {
+    "typ": "text"
+   },
+   "numfTabA_Z8_S6": {
+    "typ": "text"
+   },
+   "numfTabA_Z8_S7": {
+    "typ": "text"
+   },
+   "numfTabA_Z9_S2": {
+    "typ": "text"
+   },
+   "numfTabA_Z9_S3": {
+    "typ": "text"
+   },
+   "numfTabA_Z9_S4": {
+    "typ": "text"
+   },
+   "numfTabA_Z9_S5": {
+    "typ": "text"
+   },
+   "numfTabA_Z9_S6": {
+    "typ": "text"
+   },
+   "numfTabA_Z9_S7": {
+    "typ": "text"
+   },
+   "numfTabB1_Z10_S2": {
+    "typ": "text"
+   },
+   "numfTabB1_Z10_S3": {
+    "typ": "text"
+   },
+   "numfTabB1_Z10_S4": {
+    "typ": "text"
+   },
+   "numfTabB1_Z10_S5": {
+    "typ": "text"
+   },
+   "numfTabB1_Z10_S6": {
+    "typ": "text"
+   },
+   "numfTabB1_Z10_S7": {
+    "typ": "text"
+   },
+   "numfTabB1_Z2_S2": {
+    "typ": "text"
+   },
+   "numfTabB1_Z2_S3": {
+    "typ": "text"
+   },
+   "numfTabB1_Z2_S4": {
+    "typ": "text"
+   },
+   "numfTabB1_Z2_S5": {
+    "typ": "text"
+   },
+   "numfTabB1_Z2_S6": {
+    "typ": "text"
+   },
+   "numfTabB1_Z2_S7": {
+    "typ": "text"
+   },
+   "numfTabB1_Z3_S2": {
+    "typ": "text"
+   },
+   "numfTabB1_Z3_S3": {
+    "typ": "text"
+   },
+   "numfTabB1_Z3_S4": {
+    "typ": "text"
+   },
+   "numfTabB1_Z3_S5": {
+    "typ": "text"
+   },
+   "numfTabB1_Z3_S6": {
+    "typ": "text"
+   },
+   "numfTabB1_Z3_S7": {
+    "typ": "text"
+   },
+   "numfTabB1_Z4_S2": {
+    "typ": "text"
+   },
+   "numfTabB1_Z4_S3": {
+    "typ": "text"
+   },
+   "numfTabB1_Z4_S4": {
+    "typ": "text"
+   },
+   "numfTabB1_Z4_S5": {
+    "typ": "text"
+   },
+   "numfTabB1_Z4_S6": {
+    "typ": "text"
+   },
+   "numfTabB1_Z4_S7": {
+    "typ": "text"
+   },
+   "numfTabB1_Z5_S2": {
+    "typ": "text"
+   },
+   "numfTabB1_Z5_S3": {
+    "typ": "text"
+   },
+   "numfTabB1_Z5_S4": {
+    "typ": "text"
+   },
+   "numfTabB1_Z5_S5": {
+    "typ": "text"
+   },
+   "numfTabB1_Z5_S6": {
+    "typ": "text"
+   },
+   "numfTabB1_Z5_S7": {
+    "typ": "text"
+   },
+   "numfTabB1_Z6_S2": {
+    "typ": "text"
+   },
+   "numfTabB1_Z6_S3": {
+    "typ": "text"
+   },
+   "numfTabB1_Z6_S4": {
+    "typ": "text"
+   },
+   "numfTabB1_Z6_S5": {
+    "typ": "text"
+   },
+   "numfTabB1_Z6_S6": {
+    "typ": "text"
+   },
+   "numfTabB1_Z6_S7": {
+    "typ": "text"
+   },
+   "numfTabB1_Z7_S2": {
+    "typ": "text"
+   },
+   "numfTabB1_Z7_S3": {
+    "typ": "text"
+   },
+   "numfTabB1_Z7_S4": {
+    "typ": "text"
+   },
+   "numfTabB1_Z7_S5": {
+    "typ": "text"
+   },
+   "numfTabB1_Z7_S6": {
+    "typ": "text"
+   },
+   "numfTabB1_Z7_S7": {
+    "typ": "text"
+   },
+   "numfTabB1_Z8_S2": {
+    "typ": "text"
+   },
+   "numfTabB1_Z8_S3": {
+    "typ": "text"
+   },
+   "numfTabB1_Z8_S4": {
+    "typ": "text"
+   },
+   "numfTabB1_Z8_S5": {
+    "typ": "text"
+   },
+   "numfTabB1_Z8_S6": {
+    "typ": "text"
+   },
+   "numfTabB1_Z8_S7": {
+    "typ": "text"
+   },
+   "numfTabB1_Z9_S2": {
+    "typ": "text"
+   },
+   "numfTabB1_Z9_S3": {
+    "typ": "text"
+   },
+   "numfTabB1_Z9_S4": {
+    "typ": "text"
+   },
+   "numfTabB1_Z9_S5": {
+    "typ": "text"
+   },
+   "numfTabB1_Z9_S6": {
+    "typ": "text"
+   },
+   "numfTabB1_Z9_S7": {
+    "typ": "text"
+   },
+   "numfTabB2_Z10_S2": {
+    "typ": "text"
+   },
+   "numfTabB2_Z10_S3": {
+    "typ": "text"
+   },
+   "numfTabB2_Z10_S4": {
+    "typ": "text"
+   },
+   "numfTabB2_Z10_S5": {
+    "typ": "text"
+   },
+   "numfTabB2_Z10_S6": {
+    "typ": "text"
+   },
+   "numfTabB2_Z10_S7": {
+    "typ": "text"
+   },
+   "numfTabB2_Z11_S2": {
+    "typ": "text"
+   },
+   "numfTabB2_Z11_S3": {
+    "typ": "text"
+   },
+   "numfTabB2_Z11_S4": {
+    "typ": "text"
+   },
+   "numfTabB2_Z11_S5": {
+    "typ": "text"
+   },
+   "numfTabB2_Z11_S6": {
+    "typ": "text"
+   },
+   "numfTabB2_Z11_S7": {
+    "typ": "text"
+   },
+   "numfTabB2_Z12_S2": {
+    "typ": "text"
+   },
+   "numfTabB2_Z12_S3": {
+    "typ": "text"
+   },
+   "numfTabB2_Z12_S4": {
+    "typ": "text"
+   },
+   "numfTabB2_Z12_S5": {
+    "typ": "text"
+   },
+   "numfTabB2_Z12_S6": {
+    "typ": "text"
+   },
+   "numfTabB2_Z12_S7": {
+    "typ": "text"
+   },
+   "numfTabB2_Z13_S2": {
+    "typ": "text"
+   },
+   "numfTabB2_Z13_S3": {
+    "typ": "text"
+   },
+   "numfTabB2_Z13_S4": {
+    "typ": "text"
+   },
+   "numfTabB2_Z13_S5": {
+    "typ": "text"
+   },
+   "numfTabB2_Z13_S6": {
+    "typ": "text"
+   },
+   "numfTabB2_Z13_S7": {
+    "typ": "text"
+   },
+   "numfTabB2_Z14_S2": {
+    "typ": "text"
+   },
+   "numfTabB2_Z14_S3": {
+    "typ": "text"
+   },
+   "numfTabB2_Z14_S4": {
+    "typ": "text"
+   },
+   "numfTabB2_Z14_S5": {
+    "typ": "text"
+   },
+   "numfTabB2_Z14_S6": {
+    "typ": "text"
+   },
+   "numfTabB2_Z14_S7": {
+    "typ": "text"
+   },
+   "numfTabB2_Z15_S2": {
+    "typ": "text"
+   },
+   "numfTabB2_Z15_S3": {
+    "typ": "text"
+   },
+   "numfTabB2_Z15_S4": {
+    "typ": "text"
+   },
+   "numfTabB2_Z15_S5": {
+    "typ": "text"
+   },
+   "numfTabB2_Z15_S6": {
+    "typ": "text"
+   },
+   "numfTabB2_Z15_S7": {
+    "typ": "text"
+   },
+   "numfTabB2_Z2_S2": {
+    "typ": "text"
+   },
+   "numfTabB2_Z2_S3": {
+    "typ": "text"
+   },
+   "numfTabB2_Z2_S4": {
+    "typ": "text"
+   },
+   "numfTabB2_Z2_S5": {
+    "typ": "text"
+   },
+   "numfTabB2_Z2_S6": {
+    "typ": "text"
+   },
+   "numfTabB2_Z2_S7": {
+    "typ": "text"
+   },
+   "numfTabB2_Z3_S2": {
+    "typ": "text"
+   },
+   "numfTabB2_Z3_S3": {
+    "typ": "text"
+   },
+   "numfTabB2_Z3_S4": {
+    "typ": "text"
+   },
+   "numfTabB2_Z3_S5": {
+    "typ": "text"
+   },
+   "numfTabB2_Z3_S6": {
+    "typ": "text"
+   },
+   "numfTabB2_Z3_S7": {
+    "typ": "text"
+   },
+   "numfTabB2_Z4_S2": {
+    "typ": "text"
+   },
+   "numfTabB2_Z4_S3": {
+    "typ": "text"
+   },
+   "numfTabB2_Z4_S4": {
+    "typ": "text"
+   },
+   "numfTabB2_Z4_S5": {
+    "typ": "text"
+   },
+   "numfTabB2_Z4_S6": {
+    "typ": "text"
+   },
+   "numfTabB2_Z4_S7": {
+    "typ": "text"
+   },
+   "numfTabB2_Z5_S2": {
+    "typ": "text"
+   },
+   "numfTabB2_Z5_S3": {
+    "typ": "text"
+   },
+   "numfTabB2_Z5_S4": {
+    "typ": "text"
+   },
+   "numfTabB2_Z5_S5": {
+    "typ": "text"
+   },
+   "numfTabB2_Z5_S6": {
+    "typ": "text"
+   },
+   "numfTabB2_Z5_S7": {
+    "typ": "text"
+   },
+   "numfTabB2_Z6_S2": {
+    "typ": "text"
+   },
+   "numfTabB2_Z6_S3": {
+    "typ": "text"
+   },
+   "numfTabB2_Z6_S4": {
+    "typ": "text"
+   },
+   "numfTabB2_Z6_S5": {
+    "typ": "text"
+   },
+   "numfTabB2_Z6_S6": {
+    "typ": "text"
+   },
+   "numfTabB2_Z6_S7": {
+    "typ": "text"
+   },
+   "numfTabB2_Z7_S2": {
+    "typ": "text"
+   },
+   "numfTabB2_Z7_S3": {
+    "typ": "text"
+   },
+   "numfTabB2_Z7_S4": {
+    "typ": "text"
+   },
+   "numfTabB2_Z7_S5": {
+    "typ": "text"
+   },
+   "numfTabB2_Z7_S6": {
+    "typ": "text"
+   },
+   "numfTabB2_Z7_S7": {
+    "typ": "text"
+   },
+   "numfTabB2_Z8_S2": {
+    "typ": "text"
+   },
+   "numfTabB2_Z8_S3": {
+    "typ": "text"
+   },
+   "numfTabB2_Z8_S4": {
+    "typ": "text"
+   },
+   "numfTabB2_Z8_S5": {
+    "typ": "text"
+   },
+   "numfTabB2_Z8_S6": {
+    "typ": "text"
+   },
+   "numfTabB2_Z8_S7": {
+    "typ": "text"
+   },
+   "numfTabB2_Z9_S2": {
+    "typ": "text"
+   },
+   "numfTabB2_Z9_S3": {
+    "typ": "text"
+   },
+   "numfTabB2_Z9_S4": {
+    "typ": "text"
+   },
+   "numfTabB2_Z9_S5": {
+    "typ": "text"
+   },
+   "numfTabB2_Z9_S6": {
+    "typ": "text"
+   },
+   "numfTabB2_Z9_S7": {
+    "typ": "text"
+   },
+   "numfTabB3_Z10_S2": {
+    "typ": "text"
+   },
+   "numfTabB3_Z10_S3": {
+    "typ": "text"
+   },
+   "numfTabB3_Z10_S4": {
+    "typ": "text"
+   },
+   "numfTabB3_Z10_S5": {
+    "typ": "text"
+   },
+   "numfTabB3_Z10_S6": {
+    "typ": "text"
+   },
+   "numfTabB3_Z10_S7": {
+    "typ": "text"
+   },
+   "numfTabB3_Z11_S2": {
+    "typ": "text"
+   },
+   "numfTabB3_Z11_S3": {
+    "typ": "text"
+   },
+   "numfTabB3_Z11_S4": {
+    "typ": "text"
+   },
+   "numfTabB3_Z11_S5": {
+    "typ": "text"
+   },
+   "numfTabB3_Z11_S6": {
+    "typ": "text"
+   },
+   "numfTabB3_Z11_S7": {
+    "typ": "text"
+   },
+   "numfTabB3_Z12_S2": {
+    "typ": "text"
+   },
+   "numfTabB3_Z12_S3": {
+    "typ": "text"
+   },
+   "numfTabB3_Z12_S4": {
+    "typ": "text"
+   },
+   "numfTabB3_Z12_S5": {
+    "typ": "text"
+   },
+   "numfTabB3_Z12_S6": {
+    "typ": "text"
+   },
+   "numfTabB3_Z12_S7": {
+    "typ": "text"
+   },
+   "numfTabB3_Z13_S2": {
+    "typ": "text"
+   },
+   "numfTabB3_Z13_S3": {
+    "typ": "text"
+   },
+   "numfTabB3_Z13_S4": {
+    "typ": "text"
+   },
+   "numfTabB3_Z13_S5": {
+    "typ": "text"
+   },
+   "numfTabB3_Z13_S6": {
+    "typ": "text"
+   },
+   "numfTabB3_Z13_S7": {
+    "typ": "text"
+   },
+   "numfTabB3_Z14_S2": {
+    "typ": "text"
+   },
+   "numfTabB3_Z14_S3": {
+    "typ": "text"
+   },
+   "numfTabB3_Z14_S4": {
+    "typ": "text"
+   },
+   "numfTabB3_Z14_S5": {
+    "typ": "text"
+   },
+   "numfTabB3_Z14_S6": {
+    "typ": "text"
+   },
+   "numfTabB3_Z14_S7": {
+    "typ": "text"
+   },
+   "numfTabB3_Z15_S2": {
+    "typ": "text"
+   },
+   "numfTabB3_Z15_S3": {
+    "typ": "text"
+   },
+   "numfTabB3_Z15_S4": {
+    "typ": "text"
+   },
+   "numfTabB3_Z15_S5": {
+    "typ": "text"
+   },
+   "numfTabB3_Z15_S6": {
+    "typ": "text"
+   },
+   "numfTabB3_Z15_S7": {
+    "typ": "text"
+   },
+   "numfTabB3_Z16_S2": {
+    "typ": "text"
+   },
+   "numfTabB3_Z16_S3": {
+    "typ": "text"
+   },
+   "numfTabB3_Z16_S4": {
+    "typ": "text"
+   },
+   "numfTabB3_Z16_S5": {
+    "typ": "text"
+   },
+   "numfTabB3_Z16_S6": {
+    "typ": "text"
+   },
+   "numfTabB3_Z16_S7": {
+    "typ": "text"
+   },
+   "numfTabB3_Z2_S2": {
+    "typ": "text"
+   },
+   "numfTabB3_Z2_S3": {
+    "typ": "text"
+   },
+   "numfTabB3_Z2_S4": {
+    "typ": "text"
+   },
+   "numfTabB3_Z2_S5": {
+    "typ": "text"
+   },
+   "numfTabB3_Z2_S6": {
+    "typ": "text"
+   },
+   "numfTabB3_Z2_S7": {
+    "typ": "text"
+   },
+   "numfTabB3_Z3_S2": {
+    "typ": "text"
+   },
+   "numfTabB3_Z3_S3": {
+    "typ": "text"
+   },
+   "numfTabB3_Z3_S4": {
+    "typ": "text"
+   },
+   "numfTabB3_Z3_S5": {
+    "typ": "text"
+   },
+   "numfTabB3_Z3_S6": {
+    "typ": "text"
+   },
+   "numfTabB3_Z3_S7": {
+    "typ": "text"
+   },
+   "numfTabB3_Z4_S2": {
+    "typ": "text"
+   },
+   "numfTabB3_Z4_S3": {
+    "typ": "text"
+   },
+   "numfTabB3_Z4_S4": {
+    "typ": "text"
+   },
+   "numfTabB3_Z4_S5": {
+    "typ": "text"
+   },
+   "numfTabB3_Z4_S6": {
+    "typ": "text"
+   },
+   "numfTabB3_Z4_S7": {
+    "typ": "text"
+   },
+   "numfTabB3_Z5_S2": {
+    "typ": "text"
+   },
+   "numfTabB3_Z5_S3": {
+    "typ": "text"
+   },
+   "numfTabB3_Z5_S4": {
+    "typ": "text"
+   },
+   "numfTabB3_Z5_S5": {
+    "typ": "text"
+   },
+   "numfTabB3_Z5_S6": {
+    "typ": "text"
+   },
+   "numfTabB3_Z5_S7": {
+    "typ": "text"
+   },
+   "numfTabB3_Z6_S2": {
+    "typ": "text"
+   },
+   "numfTabB3_Z6_S3": {
+    "typ": "text"
+   },
+   "numfTabB3_Z6_S4": {
+    "typ": "text"
+   },
+   "numfTabB3_Z6_S5": {
+    "typ": "text"
+   },
+   "numfTabB3_Z6_S6": {
+    "typ": "text"
+   },
+   "numfTabB3_Z6_S7": {
+    "typ": "text"
+   },
+   "numfTabB3_Z7_S2": {
+    "typ": "text"
+   },
+   "numfTabB3_Z7_S3": {
+    "typ": "text"
+   },
+   "numfTabB3_Z7_S4": {
+    "typ": "text"
+   },
+   "numfTabB3_Z7_S5": {
+    "typ": "text"
+   },
+   "numfTabB3_Z7_S6": {
+    "typ": "text"
+   },
+   "numfTabB3_Z7_S7": {
+    "typ": "text"
+   },
+   "numfTabB3_Z8_S2": {
+    "typ": "text"
+   },
+   "numfTabB3_Z8_S3": {
+    "typ": "text"
+   },
+   "numfTabB3_Z8_S4": {
+    "typ": "text"
+   },
+   "numfTabB3_Z8_S5": {
+    "typ": "text"
+   },
+   "numfTabB3_Z8_S6": {
+    "typ": "text"
+   },
+   "numfTabB3_Z8_S7": {
+    "typ": "text"
+   },
+   "numfTabB3_Z9_S2": {
+    "typ": "text"
+   },
+   "numfTabB3_Z9_S3": {
+    "typ": "text"
+   },
+   "numfTabB3_Z9_S4": {
+    "typ": "text"
+   },
+   "numfTabB3_Z9_S5": {
+    "typ": "text"
+   },
+   "numfTabB3_Z9_S6": {
+    "typ": "text"
+   },
+   "numfTabB3_Z9_S7": {
+    "typ": "text"
+   },
+   "numfTabC_Z10_S2": {
+    "typ": "text"
+   },
+   "numfTabC_Z11_S2": {
+    "typ": "text"
+   },
+   "numfTabC_Z2_S2": {
+    "typ": "text"
+   },
+   "numfTabC_Z3_S2": {
+    "typ": "text"
+   },
+   "numfTabC_Z4_S2": {
+    "typ": "text"
+   },
+   "numfTabC_Z5_S2": {
+    "typ": "text"
+   },
+   "numfTabC_Z6_S2": {
+    "typ": "text"
+   },
+   "numfTabC_Z7_S2": {
+    "typ": "text"
+   },
+   "numfTabC_Z8_S2": {
+    "typ": "text"
+   },
+   "numfTabC_Z9_S2": {
+    "typ": "text"
+   },
+   "numfTilgungsrateMonatlich": {
+    "typ": "text"
+   },
+   "rbtnDritteAusgabenFahrt": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnDritteKindNichtWohnhaft": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnDritteMehraufwandVerpflegung": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnDritteUnterhalt": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnTaetigkeitDarlehen": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnTaetigkeitPersonal": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnTaetigkeitProdukte": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnTaetigkeitUStpflicht": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnTaetigkeitWeiteresPersonal": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnTaetigkeitWohnstaette": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnTaetigkeitZuschuessBeantragt": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnTaetigkeitZuschuesse": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "txtAreaTabB1Anmerkungen": {
+    "typ": "text"
+   },
+   "txtAreaTabB3Anmerkungen": {
+    "typ": "text"
+   },
+   "txtAreaTabaAnmerkungen\r": {
+    "typ": "text"
+   },
+   "txtfBGNr": {
+    "typ": "text"
+   },
+   "txtfDarlehenBetriebsausgaben": {
+    "typ": "text"
+   },
+   "txtfDritteNachname": {
+    "typ": "text"
+   },
+   "txtfDritteVorname": {
+    "typ": "text"
+   },
+   "txtfPersonNachname": {
+    "typ": "text"
+   },
+   "txtfPersonVorname": {
+    "typ": "text"
+   },
+   "txtfTabC_Z10_S3": {
+    "typ": "text"
+   },
+   "txtfTabC_Z11_S3": {
+    "typ": "text"
+   },
+   "txtfTabC_Z2_S3": {
+    "typ": "text"
+   },
+   "txtfTabC_Z3_S3": {
+    "typ": "text"
+   },
+   "txtfTabC_Z4_S3": {
+    "typ": "text"
+   },
+   "txtfTabC_Z5_S3": {
+    "typ": "text"
+   },
+   "txtfTabC_Z6_S3": {
+    "typ": "text"
+   },
+   "txtfTabC_Z7_S3": {
+    "typ": "text"
+   },
+   "txtfTabC_Z8_S3": {
+    "typ": "text"
+   },
+   "txtfTabC_Z9_S3": {
+    "typ": "text"
+   },
+   "txtfTab_Z1_S2": {
+    "typ": "text"
+   },
+   "txtfTab_Z1_S3": {
+    "typ": "text"
+   },
+   "txtfTab_Z1_S4": {
+    "typ": "text"
+   },
+   "txtfTab_Z1_S5": {
+    "typ": "text"
+   },
+   "txtfTab_Z1_S6": {
+    "typ": "text"
+   },
+   "txtfTab_Z1_S7": {
+    "typ": "text"
+   },
+   "txtfTaetigkeitFirmenname": {
+    "typ": "text"
+   },
+   "txtfTaetigkeitGewerbe": {
+    "typ": "text"
+   },
+   "txtfTaetigkeitHausnr": {
+    "typ": "text"
+   },
+   "txtfTaetigkeitOrt": {
+    "typ": "text"
+   },
+   "txtfTaetigkeitPlz": {
+    "typ": "text"
+   },
+   "txtfTaetigkeitRechtsform": {
+    "typ": "text"
+   },
+   "txtfTaetigkeitStr": {
+    "typ": "text"
+   }
+  },
+  "geschuetzt": false,
+  "seiten": 9,
+  "stand": "10/2026",
+  "titel": "Anlage EKS",
+  "xfa": false
+ },
+ "Mietbescheinigung_1.pdf": {
+  "felder": {},
+  "geschuetzt": false,
+  "seiten": 1,
+  "stand": "",
+  "titel": "Mietbescheinigung_1.pdf",
+  "xfa": false
+ },
+ "anlageek_ba013053.pdf": {
+  "felder": {
+   "chbxArbeitsstaetteFahrtKFZ": {
+    "typ": "check"
+   },
+   "chbxArbeitsstaetteFahrtOeffis": {
+    "typ": "check"
+   },
+   "chbxArbeitsstaetteFahrtSonstiges": {
+    "typ": "check"
+   },
+   "chbxEinkommenFolgemonat": {
+    "typ": "check"
+   },
+   "chbxEinkommenMonat": {
+    "typ": "check"
+   },
+   "chbxEinnahmeArbeitslosengeld": {
+    "typ": "check"
+   },
+   "chbxEinnahmeAusbildungsgeld": {
+    "typ": "check"
+   },
+   "chbxEinnahmeBAB": {
+    "typ": "check"
+   },
+   "chbxEinnahmeBAfoeG": {
+    "typ": "check"
+   },
+   "chbxEinnahmeDigital": {
+    "typ": "check"
+   },
+   "chbxEinnahmeElterngeld": {
+    "typ": "check"
+   },
+   "chbxEinnahmeInsolvenzgeld": {
+    "typ": "check"
+   },
+   "chbxEinnahmeKeine": {
+    "typ": "check"
+   },
+   "chbxEinnahmeKindergeld": {
+    "typ": "check"
+   },
+   "chbxEinnahmeKinderzuschlag": {
+    "typ": "check"
+   },
+   "chbxEinnahmeKrankengeld": {
+    "typ": "check"
+   },
+   "chbxEinnahmeKurzarbeitergeld": {
+    "typ": "check"
+   },
+   "chbxEinnahmeRenten": {
+    "typ": "check"
+   },
+   "chbxEinnahmeSachbezuege": {
+    "typ": "check"
+   },
+   "chbxEinnahmeSonstige": {
+    "typ": "check"
+   },
+   "chbxEinnahmeSozialhilfe": {
+    "typ": "check"
+   },
+   "chbxEinnahmeUnterhalt": {
+    "typ": "check"
+   },
+   "chbxEinnahmeUnterhaltsvorschuss": {
+    "typ": "check"
+   },
+   "chbxEinnahmeVermietung": {
+    "typ": "check"
+   },
+   "chbxEinnahmeWohngeld": {
+    "typ": "check"
+   },
+   "chbxEinnahmeÜbergangsgeld": {
+    "typ": "check"
+   },
+   "chbxVersicherungAltersvorsorge": {
+    "typ": "check"
+   },
+   "chbxVersicherungGesetzlich": {
+    "typ": "check"
+   },
+   "chbxVersicherungKfz": {
+    "typ": "check"
+   },
+   "chbxVersicherungPrivat": {
+    "typ": "check"
+   },
+   "chbxWeitereEinkommenFolgemonat": {
+    "typ": "check"
+   },
+   "chbxWeitereEinkommenMonat": {
+    "typ": "check"
+   },
+   "dateBGGebDatum": {
+    "typ": "text"
+   },
+   "datePersonGebDatum": {
+    "typ": "text"
+   },
+   "dateUnterschriftBetreuer": {
+    "typ": "text"
+   },
+   "dateUnterschriftPerson": {
+    "typ": "text"
+   },
+   "numfArbeitsstaetteFahrtWoche": {
+    "typ": "text"
+   },
+   "numfArbeitsstaetteStrecke": {
+    "typ": "text"
+   },
+   "rbtnAufwandEhrenamtlich": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnAusbildungsfoerderung": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnAusgabe": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnAusgabeFahrt": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnEinkommen": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnEinkommenFreiberuflich": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnFahrkostenZuschuss": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnKind": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnUnterhaltszahlung": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "txtfAG2HausNr": {
+    "typ": "text"
+   },
+   "txtfAG2Name": {
+    "typ": "text"
+   },
+   "txtfAG2Ort": {
+    "typ": "text"
+   },
+   "txtfAG2Plz": {
+    "typ": "text"
+   },
+   "txtfAG2Str": {
+    "typ": "text"
+   },
+   "txtfAGHausNr": {
+    "typ": "text"
+   },
+   "txtfAGName": {
+    "typ": "text"
+   },
+   "txtfAGOrt": {
+    "typ": "text"
+   },
+   "txtfAGPlz": {
+    "typ": "text"
+   },
+   "txtfAGStr": {
+    "typ": "text"
+   },
+   "txtfArbeitsstaetteFahrtSonstiges": {
+    "typ": "text"
+   },
+   "txtfArbeitsstaetteHausNr": {
+    "typ": "text"
+   },
+   "txtfArbeitsstaetteOrt": {
+    "typ": "text"
+   },
+   "txtfArbeitsstaettePlz": {
+    "typ": "text"
+   },
+   "txtfArbeitsstaetteStr": {
+    "typ": "text"
+   },
+   "txtfBGNachname": {
+    "typ": "text"
+   },
+   "txtfBGNr": {
+    "typ": "text"
+   },
+   "txtfBGVorname": {
+    "typ": "text"
+   },
+   "txtfEinnahmeSonstige": {
+    "typ": "text"
+   },
+   "txtfPersonNachname": {
+    "typ": "text"
+   },
+   "txtfPersonVorname": {
+    "typ": "text"
+   }
+  },
+  "geschuetzt": false,
+  "seiten": 4,
+  "stand": "10/2026",
+  "titel": "Anlage EK",
+  "xfa": false
+ },
+ "anlagehg_ba013055.pdf": {
+  "felder": {
+   "datePersonGebDatum": {
+    "typ": "text"
+   },
+   "dateUnterschriftBetreuer": {
+    "typ": "text"
+   },
+   "dateUnterschriftPerson": {
+    "typ": "text"
+   },
+   "numfUnterkunftGesamtzahlung": {
+    "typ": "text"
+   },
+   "numfUnterkunftKosten": {
+    "typ": "text"
+   },
+   "numfUnterkunftKostenBeteiligung": {
+    "typ": "text"
+   },
+   "numfUnterstuetzung": {
+    "typ": "text"
+   },
+   "rbtnBGUnterkunftKostenlos": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnUnterkunftEigentuemer": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnUnterkunftKostenlos": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnUnterstuetzung": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "txtfBGNachname": {
+    "typ": "text"
+   },
+   "txtfBGNr": {
+    "typ": "text"
+   },
+   "txtfBGVorname": {
+    "typ": "text"
+   },
+   "txtfDritteNachname": {
+    "typ": "text"
+   },
+   "txtfDritteVorname": {
+    "typ": "text"
+   },
+   "txtfPersonNachname": {
+    "typ": "text"
+   },
+   "txtfPersonVorname": {
+    "typ": "text"
+   },
+   "txtfUnterstuetzterNachname": {
+    "typ": "text"
+   },
+   "txtfUnterstuetzterVorname": {
+    "typ": "text"
+   },
+   "txtfVerwandschaftsverhaeltnis": {
+    "typ": "text"
+   },
+   "txtfZahlungsrhythmus": {
+    "typ": "text"
+   }
+  },
+  "geschuetzt": false,
+  "seiten": 2,
+  "stand": "10/2026",
+  "titel": "Anlage HG",
+  "xfa": false
+ },
+ "anlagekdu_ba013056.pdf": {
+  "felder": {
+   "chbxBedarfGrundmiete": {
+    "typ": "check"
+   },
+   "chbxBedarfHeizkosten": {
+    "typ": "check"
+   },
+   "chbxBedarfNebenkosten": {
+    "typ": "check"
+   },
+   "chbxBedarfPauschalmiete": {
+    "typ": "check"
+   },
+   "chbxBedarfSonstiges": {
+    "typ": "check"
+   },
+   "chbxEigentumAbwasser": {
+    "typ": "check"
+   },
+   "chbxEigentumGrundsteuern": {
+    "typ": "check"
+   },
+   "chbxEigentumHeizkosten": {
+    "typ": "check"
+   },
+   "chbxEigentumMuell": {
+    "typ": "check"
+   },
+   "chbxEigentumSchornstein": {
+    "typ": "check"
+   },
+   "chbxEigentumSchuldzinsen": {
+    "typ": "check"
+   },
+   "chbxEigentumSonstiges": {
+    "typ": "check"
+   },
+   "chbxEigentumStrassenreinigung": {
+    "typ": "check"
+   },
+   "chbxEigentumVersicherung": {
+    "typ": "check"
+   },
+   "chbxEigentumWartung": {
+    "typ": "check"
+   },
+   "chbxEigentumWasser": {
+    "typ": "check"
+   },
+   "chbxEnergiequellenFernwaerme": {
+    "typ": "check"
+   },
+   "chbxEnergiequellenGas": {
+    "typ": "check"
+   },
+   "chbxEnergiequellenHolz": {
+    "typ": "check"
+   },
+   "chbxEnergiequellenOel": {
+    "typ": "check"
+   },
+   "chbxEnergiequellenSonstiges": {
+    "typ": "check"
+   },
+   "chbxEnergiequellenStrom": {
+    "typ": "check"
+   },
+   "chbxHeizungsartEinzelofen": {
+    "typ": "check"
+   },
+   "chbxHeizungsartNachtspeicherofen": {
+    "typ": "check"
+   },
+   "chbxHeizungsartZentralheizung": {
+    "typ": "check"
+   },
+   "chbxKochenGas": {
+    "typ": "check"
+   },
+   "chbxKochenSonstiges": {
+    "typ": "check"
+   },
+   "chbxKochenStrom": {
+    "typ": "check"
+   },
+   "chbxWarmwasserGas": {
+    "typ": "check"
+   },
+   "chbxWarmwasserHeizoel": {
+    "typ": "check"
+   },
+   "chbxWarmwasserHolz": {
+    "typ": "check"
+   },
+   "chbxWarmwasserKohle": {
+    "typ": "check"
+   },
+   "chbxWarmwasserSonstiges": {
+    "typ": "check"
+   },
+   "chbxWarmwasserStrom": {
+    "typ": "check"
+   },
+   "chbxWasserDezentral": {
+    "typ": "check"
+   },
+   "chbxWasserZentral": {
+    "typ": "check"
+   },
+   "chbxWohnenEigentum": {
+    "typ": "check"
+   },
+   "chbxWohnenMiete": {
+    "typ": "check"
+   },
+   "datePersonGebDatum": {
+    "typ": "text"
+   },
+   "dateUnterschriftBetreuer": {
+    "typ": "text"
+   },
+   "dateUnterschriftPerson": {
+    "typ": "text"
+   },
+   "numfBedarfGrundmiete": {
+    "typ": "text"
+   },
+   "numfBedarfHeizkosten": {
+    "typ": "text"
+   },
+   "numfBedarfNebenkosten": {
+    "typ": "text"
+   },
+   "numfBedarfPauschalmiete": {
+    "typ": "text"
+   },
+   "numfBedarfSonstiges": {
+    "typ": "text"
+   },
+   "numfUnterkunftAnzahlBad": {
+    "typ": "text"
+   },
+   "numfUnterkunftAnzahlKueche": {
+    "typ": "text"
+   },
+   "numfUnterkunftAnzahlPersonen": {
+    "typ": "text"
+   },
+   "numfUnterkunftAnzahlRaum": {
+    "typ": "text"
+   },
+   "numfUnterkunftGesamt": {
+    "typ": "text"
+   },
+   "numfUnterkunftGewerbe": {
+    "typ": "text"
+   },
+   "numfUnterkunftLeer": {
+    "typ": "text"
+   },
+   "numfUnterkunftSelbst": {
+    "typ": "text"
+   },
+   "numfUnterkunftVermietet": {
+    "typ": "text"
+   },
+   "numfWohneinheitAnzahl": {
+    "typ": "text"
+   },
+   "rbtnBrenstoff": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnMieteDirekt": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnWohneinheit": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "txtfBGNr": {
+    "typ": "text"
+   },
+   "txtfEigentumSonstige": {
+    "typ": "text"
+   },
+   "txtfEnergiequellenSonstiges": {
+    "typ": "text"
+   },
+   "txtfKochenSonstiges": {
+    "typ": "text"
+   },
+   "txtfPersonHausNr": {
+    "typ": "text"
+   },
+   "txtfPersonNachname": {
+    "typ": "text"
+   },
+   "txtfPersonOrt": {
+    "typ": "text"
+   },
+   "txtfPersonPlz": {
+    "typ": "text"
+   },
+   "txtfPersonStr": {
+    "typ": "text"
+   },
+   "txtfPersonVorname": {
+    "typ": "text"
+   },
+   "txtfUnterkunftBaujahr": {
+    "typ": "text"
+   },
+   "txtfVermieterHausNr": {
+    "typ": "text"
+   },
+   "txtfVermieterIBAN": {
+    "typ": "text"
+   },
+   "txtfVermieterName": {
+    "typ": "text"
+   },
+   "txtfVermieterOrt": {
+    "typ": "text"
+   },
+   "txtfVermieterPlz": {
+    "typ": "text"
+   },
+   "txtfVermieterStr": {
+    "typ": "text"
+   },
+   "txtfWarmwasserSonstiges": {
+    "typ": "text"
+   }
+  },
+  "geschuetzt": false,
+  "seiten": 3,
+  "stand": "10/2026",
+  "titel": "Anlage KDU",
+  "xfa": false
+ },
+ "anlageki_ba013057.pdf": {
+  "felder": {
+   "chbxBeziehungAdoptiv": {
+    "typ": "check"
+   },
+   "chbxBeziehungBruder": {
+    "typ": "check"
+   },
+   "chbxBeziehungPartner": {
+    "typ": "check"
+   },
+   "chbxBeziehungSonstiges": {
+    "typ": "check"
+   },
+   "chbxKindDivers": {
+    "typ": "check"
+   },
+   "chbxKindKeine": {
+    "typ": "check"
+   },
+   "chbxKindMaennlich": {
+    "typ": "check"
+   },
+   "chbxKindRVBeantragt": {
+    "typ": "check"
+   },
+   "chbxKindRVKeine": {
+    "typ": "check"
+   },
+   "chbxKindRVVorhanden": {
+    "typ": "check"
+   },
+   "chbxKindWeiblich": {
+    "typ": "check"
+   },
+   "dateAsylbLG": {
+    "typ": "text"
+   },
+   "dateEinreise": {
+    "typ": "text"
+   },
+   "dateEinschulung": {
+    "typ": "text"
+   },
+   "dateEntbindung": {
+    "typ": "text"
+   },
+   "dateKindGebDatum": {
+    "typ": "text"
+   },
+   "dateLeistungBis": {
+    "typ": "text"
+   },
+   "dateLeistungVon": {
+    "typ": "text"
+   },
+   "datePersonGebDatum": {
+    "typ": "text"
+   },
+   "dateStationaerBis": {
+    "typ": "text"
+   },
+   "dateStationaerVon": {
+    "typ": "text"
+   },
+   "dateUnterschriftBetreuer": {
+    "typ": "text"
+   },
+   "dateUnterschriftPerson": {
+    "typ": "text"
+   },
+   "numfStIDNr": {
+    "typ": "text"
+   },
+   "rbtnAnspruchDritte": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnAsylbLG": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnAufenthalt": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnBB": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnBGElternAusserhalb": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnBUEG": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnEinnahmen": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnElternHaushalt": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnKVPV": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnKindVormund": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnKostenBuecher": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnKostenUebernahme": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnMEB": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnPKV": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnSchadenDritte": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnSchueler": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnSchulbedarf": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnSchwanger": {
+    "ja": "ja",
+    "nein": "nein",
+    "typ": "radio"
+   },
+   "rbtnStationaer": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "txtfAZRNr": {
+    "typ": "text"
+   },
+   "txtfBGNr": {
+    "typ": "text"
+   },
+   "txtfKV": {
+    "typ": "text"
+   },
+   "txtfKindGebLand": {
+    "typ": "text"
+   },
+   "txtfKindGebName": {
+    "typ": "text"
+   },
+   "txtfKindGebOrt": {
+    "typ": "text"
+   },
+   "txtfKindNachname": {
+    "typ": "text"
+   },
+   "txtfKindRVNr": {
+    "typ": "text"
+   },
+   "txtfKindStaatsangehoerigkeit": {
+    "typ": "text"
+   },
+   "txtfKindVorname": {
+    "typ": "text"
+   },
+   "txtfLeistungArt": {
+    "typ": "text"
+   },
+   "txtfNatIDNr": {
+    "typ": "text"
+   },
+   "txtfPersonNachname": {
+    "typ": "text"
+   },
+   "txtfPersonVorname": {
+    "typ": "text"
+   },
+   "txtfStationaerArt": {
+    "typ": "text"
+   },
+   "txtfTraegerHausNr": {
+    "typ": "text"
+   },
+   "txtfTraegerName": {
+    "typ": "text"
+   },
+   "txtfTraegerOrt": {
+    "typ": "text"
+   },
+   "txtfTraegerPlz": {
+    "typ": "text"
+   },
+   "txtfTraegerStr": {
+    "typ": "text"
+   }
+  },
+  "geschuetzt": false,
+  "seiten": 5,
+  "stand": "10/2026",
+  "titel": "Anlage KI",
+  "xfa": false
+ },
+ "anlagemeb_ba013060.pdf": {
+  "felder": {
+   "chbxAeBMangelernaehrung": {
+    "typ": "check"
+   },
+   "chbxAeBMukoviszidose": {
+    "typ": "check"
+   },
+   "chbxAeBNiereninsuff": {
+    "typ": "check"
+   },
+   "chbxAeBSchluckstoerung": {
+    "typ": "check"
+   },
+   "chbxAeBSonstigeErkr": {
+    "typ": "check"
+   },
+   "chbxAeBZoeliakie": {
+    "typ": "check"
+   },
+   "chbxAnlBGMehrbedarfErneut": {
+    "typ": "check"
+   },
+   "chbxAnlBGMehrbedarfErstmalig": {
+    "typ": "check"
+   },
+   "dateAeBPatGebDatum": {
+    "typ": "text"
+   },
+   "dateAeBUnterschriftArzt": {
+    "typ": "text"
+   },
+   "dateAeBUnterschriftPatient": {
+    "typ": "text"
+   },
+   "dateAeBVerordnungBis": {
+    "typ": "text"
+   },
+   "dateAeBVerordnungVon": {
+    "typ": "text"
+   },
+   "dateAnlBGGebDatum": {
+    "typ": "text"
+   },
+   "dateAnlPersonGebDatum": {
+    "typ": "text"
+   },
+   "dateAnlUnterschriftBetreuer": {
+    "typ": "text"
+   },
+   "dateAnlUnterschriftPerson": {
+    "typ": "text"
+   },
+   "rbtnAeBErhoehterBedarf": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnAeBKriterienErfuellt": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnAeBNachuntersuchung": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "txtfAeBArztAnrede": {
+    "typ": "text"
+   },
+   "txtfAeBArztHausNr": {
+    "typ": "text"
+   },
+   "txtfAeBArztNachname": {
+    "typ": "text"
+   },
+   "txtfAeBArztOrt": {
+    "typ": "text"
+   },
+   "txtfAeBArztPlz": {
+    "typ": "text"
+   },
+   "txtfAeBArztStr": {
+    "typ": "text"
+   },
+   "txtfAeBArztVorname": {
+    "typ": "text"
+   },
+   "txtfAeBErkrankungArt": {
+    "typ": "text"
+   },
+   "txtfAeBGruendeNachuntersuchung": {
+    "typ": "text"
+   },
+   "txtfAeBGruendeVerordnung": {
+    "typ": "text"
+   },
+   "txtfAeBKostform": {
+    "typ": "text"
+   },
+   "txtfAeBPatNachname": {
+    "typ": "text"
+   },
+   "txtfAeBPatVorname": {
+    "typ": "text"
+   },
+   "txtfAnlBGNachname": {
+    "typ": "text"
+   },
+   "txtfAnlBGNr": {
+    "typ": "text"
+   },
+   "txtfAnlBGVorname": {
+    "typ": "text"
+   },
+   "txtfAnlPersonNachname": {
+    "typ": "text"
+   },
+   "txtfAnlPersonVorname": {
+    "typ": "text"
+   }
+  },
+  "geschuetzt": false,
+  "seiten": 4,
+  "stand": "10/2026",
+  "titel": "Anlage MEB",
+  "xfa": false
+ },
+ "anlagesv_ba013063.pdf": {
+  "felder": {
+   "dateBGGebDatum": {
+    "typ": "text"
+   },
+   "datePersonGebDatum": {
+    "typ": "text"
+   },
+   "dateUnterschriftBetreuer": {
+    "typ": "text"
+   },
+   "dateUnterschriftPerson": {
+    "typ": "text"
+   },
+   "rbtnBeihilfe": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnKVPVZuschuss": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnPKV": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnSelbstaendig": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnVersFrei": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "txtfBGNachname": {
+    "typ": "text"
+   },
+   "txtfBGNr": {
+    "typ": "text"
+   },
+   "txtfBGVorname": {
+    "typ": "text"
+   },
+   "txtfPersonNachname": {
+    "typ": "text"
+   },
+   "txtfPersonVorname": {
+    "typ": "text"
+   }
+  },
+  "geschuetzt": false,
+  "seiten": 2,
+  "stand": "10/2026",
+  "titel": "Anlage SV",
+  "xfa": false
+ },
+ "anlageuh1_ba013065.pdf": {
+  "felder": {
+   "chbxUHBEheVerstorben": {
+    "typ": "check"
+   },
+   "chbxUHBScheidung": {
+    "typ": "check"
+   },
+   "chbxUHBScheidungAntrag": {
+    "typ": "check"
+   },
+   "chbxUHBVerheiratet": {
+    "typ": "check"
+   },
+   "chbxVertretungBetreuer": {
+    "typ": "check"
+   },
+   "chbxVertretungRechtsanwalt": {
+    "typ": "check"
+   },
+   "chbxVertretungSonstigeStelle": {
+    "typ": "check"
+   },
+   "dataUHBEheGebDatum": {
+    "typ": "text"
+   },
+   "datePersonGebDatum": {
+    "typ": "text"
+   },
+   "dateUHBGebDatum": {
+    "typ": "text"
+   },
+   "dateUHBGetrennt": {
+    "typ": "text"
+   },
+   "dateUHBScheidung": {
+    "typ": "text"
+   },
+   "dateUHBScheidungAntrag": {
+    "typ": "text"
+   },
+   "dateUHBVerheiratet": {
+    "typ": "text"
+   },
+   "dateUnterschriftBetreuer": {
+    "typ": "text"
+   },
+   "dateUnterschriftPerson": {
+    "typ": "text"
+   },
+   "numfUHZahlung": {
+    "typ": "text"
+   },
+   "numfUHZahlungVereinbart": {
+    "typ": "text"
+   },
+   "rbtnUH": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnUHVereinbarung": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnVertretung": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "txtareaSonstiges": {
+    "typ": "text"
+   },
+   "txtareaUHBEheAnschrift": {
+    "typ": "text"
+   },
+   "txtfBGNr": {
+    "typ": "text"
+   },
+   "txtfPersonNachname": {
+    "typ": "text"
+   },
+   "txtfPersonVorname": {
+    "typ": "text"
+   },
+   "txtfUHBEheGebName": {
+    "typ": "text"
+   },
+   "txtfUHBEheHausNr": {
+    "typ": "text"
+   },
+   "txtfUHBEheLand": {
+    "typ": "text"
+   },
+   "txtfUHBEheNachname": {
+    "typ": "text"
+   },
+   "txtfUHBEheOrt": {
+    "typ": "text"
+   },
+   "txtfUHBEhePlz": {
+    "typ": "text"
+   },
+   "txtfUHBEheStr": {
+    "typ": "text"
+   },
+   "txtfUHBEheVorname": {
+    "typ": "text"
+   },
+   "txtfUHBNachname": {
+    "typ": "text"
+   },
+   "txtfUHBVorname": {
+    "typ": "text"
+   },
+   "txtfVertretungHausNr": {
+    "typ": "text"
+   },
+   "txtfVertretungName": {
+    "typ": "text"
+   },
+   "txtfVertretungOrt": {
+    "typ": "text"
+   },
+   "txtfVertretungPlz": {
+    "typ": "text"
+   },
+   "txtfVertretungStr": {
+    "typ": "text"
+   }
+  },
+  "geschuetzt": false,
+  "seiten": 3,
+  "stand": "10/2026",
+  "titel": "Anlage UH1",
+  "xfa": false
+ },
+ "anlageuh2_ba013066.pdf": {
+  "felder": {
+   "chbxKindsvaterBekannt": {
+    "typ": "check"
+   },
+   "chbxKindsvaterUnbekannt": {
+    "typ": "check"
+   },
+   "chbxKindsvaterVerstorben": {
+    "typ": "check"
+   },
+   "chbxUHAusstattung": {
+    "typ": "check"
+   },
+   "chbxUHBarunterhalt": {
+    "typ": "check"
+   },
+   "chbxUHBekleidung": {
+    "typ": "check"
+   },
+   "chbxVertretungBetreuer": {
+    "typ": "check"
+   },
+   "chbxVertretungJugendamt": {
+    "typ": "check"
+   },
+   "chbxVertretungRechtsanwalt": {
+    "typ": "check"
+   },
+   "chbxVertretungSonstigeStelle": {
+    "typ": "check"
+   },
+   "dateBGEntbindung": {
+    "typ": "text"
+   },
+   "dateBGGebDatum": {
+    "typ": "text"
+   },
+   "dateKindsvaterGebDatum": {
+    "typ": "text"
+   },
+   "datePersonGebDatum": {
+    "typ": "text"
+   },
+   "dateUnterschriftBetreuer": {
+    "typ": "text"
+   },
+   "dateUnterschriftPerson": {
+    "typ": "text"
+   },
+   "dateVaterschaft": {
+    "typ": "text"
+   },
+   "numfUHBarunterhalt": {
+    "typ": "text"
+   },
+   "rbtnUH": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnVaterschaft": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnVertretung": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "txtareaKindsvaterAnschrift": {
+    "typ": "text"
+   },
+   "txtareaSonstigeMitteilungen": {
+    "typ": "text"
+   },
+   "txtfBGNachname": {
+    "typ": "text"
+   },
+   "txtfBGNr": {
+    "typ": "text"
+   },
+   "txtfBGVorname": {
+    "typ": "text"
+   },
+   "txtfKindsvaterGebName": {
+    "typ": "text"
+   },
+   "txtfKindsvaterHausNr": {
+    "typ": "text"
+   },
+   "txtfKindsvaterLand": {
+    "typ": "text"
+   },
+   "txtfKindsvaterNachname": {
+    "typ": "text"
+   },
+   "txtfKindsvaterOrt": {
+    "typ": "text"
+   },
+   "txtfKindsvaterPlz": {
+    "typ": "text"
+   },
+   "txtfKindsvaterStr": {
+    "typ": "text"
+   },
+   "txtfKindsvaterVorname": {
+    "typ": "text"
+   },
+   "txtfPersonNachname": {
+    "typ": "text"
+   },
+   "txtfPersonVorname": {
+    "typ": "text"
+   },
+   "txtfVertretungHausNr": {
+    "typ": "text"
+   },
+   "txtfVertretungName": {
+    "typ": "text"
+   },
+   "txtfVertretungOrt": {
+    "typ": "text"
+   },
+   "txtfVertretungPlz": {
+    "typ": "text"
+   },
+   "txtfVertretungStr": {
+    "typ": "text"
+   }
+  },
+  "geschuetzt": false,
+  "seiten": 3,
+  "stand": "10/2026",
+  "titel": "Anlage UH2",
+  "xfa": false
+ },
+ "anlageuh3_ba013067.pdf": {
+  "felder": {
+   "chbxEltern2Bekannt": {
+    "typ": "check"
+   },
+   "chbxEltern2Unbekannt": {
+    "typ": "check"
+   },
+   "chbxEltern2Verstorben": {
+    "typ": "check"
+   },
+   "chbxElternBekannt": {
+    "typ": "check"
+   },
+   "chbxElternUnbekannt": {
+    "typ": "check"
+   },
+   "chbxElternVerstorben": {
+    "typ": "check"
+   },
+   "chbxVertretungBetreuer": {
+    "typ": "check"
+   },
+   "chbxVertretungJugendamt": {
+    "typ": "check"
+   },
+   "chbxVertretungRechtsanwalt": {
+    "typ": "check"
+   },
+   "chbxVertretungSonstigeStelle": {
+    "typ": "check"
+   },
+   "dateEltern2GebDatum": {
+    "typ": "text"
+   },
+   "dateElternGebDatum": {
+    "typ": "text"
+   },
+   "datePersonGebDatum": {
+    "typ": "text"
+   },
+   "dateUHBGebDatum": {
+    "typ": "text"
+   },
+   "dateUHBVaterschaft": {
+    "typ": "text"
+   },
+   "dateUnterschriftBetreuer": {
+    "typ": "text"
+   },
+   "dateUnterschriftPerson": {
+    "typ": "text"
+   },
+   "numfUHZahlung": {
+    "typ": "text"
+   },
+   "numfUHZahlungVereinbart": {
+    "typ": "text"
+   },
+   "rbtnAusbildung": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnBerufsausbildung": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnUH": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnUHBElternVerheiratet": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnUHBVaterschaft": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnUHBVerfahren": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnUHVS": {
+    "ja": "ja, fuegen Sie Nachweise bei, zum Beispiel Bescheid des Jugendamts - weiter mit Abschnitt H",
+    "nein": "nein",
+    "typ": "radio"
+   },
+   "rbtnUHVSBeantragt": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnUHVSEingestellt": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnUHVereinbarung": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnVertretung": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnWechselmodell": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "txtareaEltern2Anschrift": {
+    "typ": "text"
+   },
+   "txtareaElternAnschrift": {
+    "typ": "text"
+   },
+   "txtareaSonstiges": {
+    "typ": "text"
+   },
+   "txtfAusbildungBeginn": {
+    "typ": "text"
+   },
+   "txtfAusbildungsberuf": {
+    "typ": "text"
+   },
+   "txtfBGNr": {
+    "typ": "text"
+   },
+   "txtfEltern2GebName": {
+    "typ": "text"
+   },
+   "txtfEltern2HausNr": {
+    "typ": "text"
+   },
+   "txtfEltern2Land": {
+    "typ": "text"
+   },
+   "txtfEltern2Nachname": {
+    "typ": "text"
+   },
+   "txtfEltern2Ort": {
+    "typ": "text"
+   },
+   "txtfEltern2Plz": {
+    "typ": "text"
+   },
+   "txtfEltern2Str": {
+    "typ": "text"
+   },
+   "txtfEltern2Vorname": {
+    "typ": "text"
+   },
+   "txtfElternGebName": {
+    "typ": "text"
+   },
+   "txtfElternHausNr": {
+    "typ": "text"
+   },
+   "txtfElternLand": {
+    "typ": "text"
+   },
+   "txtfElternNachname": {
+    "typ": "text"
+   },
+   "txtfElternOrt": {
+    "typ": "text"
+   },
+   "txtfElternPlz": {
+    "typ": "text"
+   },
+   "txtfElternStr": {
+    "typ": "text"
+   },
+   "txtfElternVorname": {
+    "typ": "text"
+   },
+   "txtfPersonNachname": {
+    "typ": "text"
+   },
+   "txtfPersonVorname": {
+    "typ": "text"
+   },
+   "txtfSchuleEnde": {
+    "typ": "text"
+   },
+   "txtfSchuleName": {
+    "typ": "text"
+   },
+   "txtfUHBNachname": {
+    "typ": "text"
+   },
+   "txtfUHBVerfahrenGericht": {
+    "typ": "text"
+   },
+   "txtfUHBVerfahrenJugendamt": {
+    "typ": "text"
+   },
+   "txtfUHBVorname": {
+    "typ": "text"
+   },
+   "txtfVertretungHausNr": {
+    "typ": "text"
+   },
+   "txtfVertretungName": {
+    "typ": "text"
+   },
+   "txtfVertretungOrt": {
+    "typ": "text"
+   },
+   "txtfVertretungPlz": {
+    "typ": "text"
+   },
+   "txtfVertretungStr": {
+    "typ": "text"
+   }
+  },
+  "geschuetzt": false,
+  "seiten": 4,
+  "stand": "10/2026",
+  "titel": "Anlage UH3",
+  "xfa": false
+ },
+ "anlageve_ba013069.pdf": {
+  "felder": {
+   "datePersonGebDatum": {
+    "typ": "text"
+   },
+   "dateUnterschriftBetreuer": {
+    "typ": "text"
+   },
+   "dateUnterschriftPerson": {
+    "typ": "text"
+   },
+   "dateVerwandterGebDatum": {
+    "typ": "text"
+   },
+   "rbtnAngehoeriger": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnGemeinsamesKind": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnGleicherHaushalt": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnPartner": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnVermoegen": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "txtfBGNr": {
+    "typ": "text"
+   },
+   "txtfEinstehensgemeinschaft": {
+    "typ": "text"
+   },
+   "txtfPersonNachname": {
+    "typ": "text"
+   },
+   "txtfPersonVorname": {
+    "typ": "text"
+   },
+   "txtfVerwandterNachname": {
+    "typ": "text"
+   },
+   "txtfVerwandterVorname": {
+    "typ": "text"
+   }
+  },
+  "geschuetzt": false,
+  "seiten": 2,
+  "stand": "10/2026",
+  "titel": "Anlage VE",
+  "xfa": false
+ },
+ "anlagevm_ba013070.pdf": {
+  "felder": {
+   "dateKfZBaujahrZ1": {
+    "typ": "text"
+   },
+   "dateKfZBaujahrZ2": {
+    "typ": "text"
+   },
+   "dateKfZBaujahrZ3": {
+    "typ": "text"
+   },
+   "dateKfZBaujahrZ4": {
+    "typ": "text"
+   },
+   "dateKfZBaujahrZ5": {
+    "typ": "text"
+   },
+   "dateKfZBaujahrZ6": {
+    "typ": "text"
+   },
+   "datePersonGebDatum": {
+    "typ": "text"
+   },
+   "dateUnterschriftBetreuer": {
+    "typ": "text"
+   },
+   "dateUnterschriftPerson": {
+    "typ": "text"
+   },
+   "numfAltersvorsorgeWertZ1": {
+    "typ": "text"
+   },
+   "numfAltersvorsorgeWertZ2": {
+    "typ": "text"
+   },
+   "numfAltersvorsorgeWertZ3": {
+    "typ": "text"
+   },
+   "numfAltersvorsorgeWertZ4": {
+    "typ": "text"
+   },
+   "numfAltersvorsorgeWertZ5": {
+    "typ": "text"
+   },
+   "numfBGGrundWert": {
+    "typ": "text"
+   },
+   "numfBGImmobWert": {
+    "typ": "text"
+   },
+   "numfBGlGrundAntei": {
+    "typ": "text"
+   },
+   "numfBGlImmobAntei": {
+    "typ": "text"
+   },
+   "numfBargeldGesamtZ1": {
+    "typ": "text"
+   },
+   "numfBargeldGesamtZ2": {
+    "typ": "text"
+   },
+   "numfBargeldGesamtZ3": {
+    "typ": "text"
+   },
+   "numfBargeldGesamtZ4": {
+    "typ": "text"
+   },
+   "numfBargeldGesamtZ5": {
+    "typ": "text"
+   },
+   "numfBargeldGesamtZ6": {
+    "typ": "text"
+   },
+   "numfBargeldGesamtZ7": {
+    "typ": "text"
+   },
+   "numfBausparStandZ1": {
+    "typ": "text"
+   },
+   "numfBausparStandZ2": {
+    "typ": "text"
+   },
+   "numfBausparStandZ3": {
+    "typ": "text"
+   },
+   "numfBausparStandZ4": {
+    "typ": "text"
+   },
+   "numfBausparStandZ5": {
+    "typ": "text"
+   },
+   "numfKfZKmStandZ1": {
+    "typ": "text"
+   },
+   "numfKfZKmStandZ2": {
+    "typ": "text"
+   },
+   "numfKfZKmStandZ3": {
+    "typ": "text"
+   },
+   "numfKfZKmStandZ4": {
+    "typ": "text"
+   },
+   "numfKfZKmStandZ5": {
+    "typ": "text"
+   },
+   "numfKfZKmStandZ6": {
+    "typ": "text"
+   },
+   "numfKfZWertZ1": {
+    "typ": "text"
+   },
+   "numfKfZWertZ2": {
+    "typ": "text"
+   },
+   "numfKfZWertZ3": {
+    "typ": "text"
+   },
+   "numfKfZWertZ4": {
+    "typ": "text"
+   },
+   "numfKfZWertZ5": {
+    "typ": "text"
+   },
+   "numfKfZWertZ6": {
+    "typ": "text"
+   },
+   "numfKontoStandZ1": {
+    "typ": "text"
+   },
+   "numfKontoStandZ10": {
+    "typ": "text"
+   },
+   "numfKontoStandZ2": {
+    "typ": "text"
+   },
+   "numfKontoStandZ3": {
+    "typ": "text"
+   },
+   "numfKontoStandZ4": {
+    "typ": "text"
+   },
+   "numfKontoStandZ5": {
+    "typ": "text"
+   },
+   "numfKontoStandZ6": {
+    "typ": "text"
+   },
+   "numfKontoStandZ7": {
+    "typ": "text"
+   },
+   "numfKontoStandZ8": {
+    "typ": "text"
+   },
+   "numfKontoStandZ9": {
+    "typ": "text"
+   },
+   "numfSchenkungWert": {
+    "typ": "text"
+   },
+   "numfSelbstaendigJahre": {
+    "typ": "text"
+   },
+   "numfSparBriefWertZ1": {
+    "typ": "text"
+   },
+   "numfSparBriefWertZ2": {
+    "typ": "text"
+   },
+   "numfSparBriefWertZ3": {
+    "typ": "text"
+   },
+   "numfSparBriefWertZ4": {
+    "typ": "text"
+   },
+   "numfSparBriefWertZ5": {
+    "typ": "text"
+   },
+   "numfSparEinlageStandZ1": {
+    "typ": "text"
+   },
+   "numfSparEinlageStandZ2": {
+    "typ": "text"
+   },
+   "numfSparEinlageStandZ3": {
+    "typ": "text"
+   },
+   "numfSparEinlageStandZ4": {
+    "typ": "text"
+   },
+   "numfSparEinlageStandZ5": {
+    "typ": "text"
+   },
+   "numfSparEinlageStandZ6": {
+    "typ": "text"
+   },
+   "numfSparEinlageStandZ7": {
+    "typ": "text"
+   },
+   "numfSparEinlageStandZ8": {
+    "typ": "text"
+   },
+   "numfVermoegenWertZ1": {
+    "typ": "text"
+   },
+   "numfVermoegenWertZ2": {
+    "typ": "text"
+   },
+   "numfVermoegenWertZ3": {
+    "typ": "text"
+   },
+   "numfVersicherungWertZ1": {
+    "typ": "text"
+   },
+   "numfVersicherungWertZ2": {
+    "typ": "text"
+   },
+   "numfVersicherungWertZ3": {
+    "typ": "text"
+   },
+   "numfVersicherungWertZ4": {
+    "typ": "text"
+   },
+   "rbtnAltersvorsorge": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnBGGrund": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnBGImmobBewohnt": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnBGImmobWeitere": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnBGKfZ": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnBargeld": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnBauspar": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnKonto": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnSchenkung": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnSelbstaendig": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnSelbstaendigGRV": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnSelbstaendigRVPflicht": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnSparBrief": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnSparEinlagen": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnVermoegen": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnVersicherung": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "txtfAltersvorsorgeNameZ1": {
+    "typ": "text"
+   },
+   "txtfAltersvorsorgeNameZ2": {
+    "typ": "text"
+   },
+   "txtfAltersvorsorgeNameZ3": {
+    "typ": "text"
+   },
+   "txtfAltersvorsorgeNameZ4": {
+    "typ": "text"
+   },
+   "txtfAltersvorsorgeNameZ5": {
+    "typ": "text"
+   },
+   "txtfAltersvorsorgeVermoegenArtZ1": {
+    "typ": "text"
+   },
+   "txtfAltersvorsorgeVermoegenArtZ2": {
+    "typ": "text"
+   },
+   "txtfAltersvorsorgeVermoegenArtZ3": {
+    "typ": "text"
+   },
+   "txtfAltersvorsorgeVermoegenArtZ4": {
+    "typ": "text"
+   },
+   "txtfAltersvorsorgeVermoegenArtZ5": {
+    "typ": "text"
+   },
+   "txtfBGNr": {
+    "typ": "text"
+   },
+   "txtfBGSchenkungArt": {
+    "typ": "text"
+   },
+   "txtfBGSchenkungName": {
+    "typ": "text"
+   },
+   "txtfBargeldNameZ1": {
+    "typ": "text"
+   },
+   "txtfBargeldNameZ2": {
+    "typ": "text"
+   },
+   "txtfBargeldNameZ3": {
+    "typ": "text"
+   },
+   "txtfBargeldNameZ4": {
+    "typ": "text"
+   },
+   "txtfBargeldNameZ5": {
+    "typ": "text"
+   },
+   "txtfBargeldNameZ6": {
+    "typ": "text"
+   },
+   "txtfBargeldNameZ7": {
+    "typ": "text"
+   },
+   "txtfBausparKontoZ1": {
+    "typ": "text"
+   },
+   "txtfBausparKontoZ2": {
+    "typ": "text"
+   },
+   "txtfBausparKontoZ3": {
+    "typ": "text"
+   },
+   "txtfBausparKontoZ4": {
+    "typ": "text"
+   },
+   "txtfBausparKontoZ5": {
+    "typ": "text"
+   },
+   "txtfBausparNameZ1": {
+    "typ": "text"
+   },
+   "txtfBausparNameZ2": {
+    "typ": "text"
+   },
+   "txtfBausparNameZ3": {
+    "typ": "text"
+   },
+   "txtfBausparNameZ4": {
+    "typ": "text"
+   },
+   "txtfBausparNameZ5": {
+    "typ": "text"
+   },
+   "txtfKfZModellZ1": {
+    "typ": "text"
+   },
+   "txtfKfZModellZ2": {
+    "typ": "text"
+   },
+   "txtfKfZModellZ3": {
+    "typ": "text"
+   },
+   "txtfKfZModellZ4": {
+    "typ": "text"
+   },
+   "txtfKfZModellZ5": {
+    "typ": "text"
+   },
+   "txtfKfZModellZ6": {
+    "typ": "text"
+   },
+   "txtfKfZNameZ1": {
+    "typ": "text"
+   },
+   "txtfKfZNameZ2": {
+    "typ": "text"
+   },
+   "txtfKfZNameZ3": {
+    "typ": "text"
+   },
+   "txtfKfZNameZ4": {
+    "typ": "text"
+   },
+   "txtfKfZNameZ5": {
+    "typ": "text"
+   },
+   "txtfKfZNameZ6": {
+    "typ": "text"
+   },
+   "txtfKontoNameZ1": {
+    "typ": "text"
+   },
+   "txtfKontoNameZ10": {
+    "typ": "text"
+   },
+   "txtfKontoNameZ2": {
+    "typ": "text"
+   },
+   "txtfKontoNameZ3": {
+    "typ": "text"
+   },
+   "txtfKontoNameZ4": {
+    "typ": "text"
+   },
+   "txtfKontoNameZ5": {
+    "typ": "text"
+   },
+   "txtfKontoNameZ6": {
+    "typ": "text"
+   },
+   "txtfKontoNameZ7": {
+    "typ": "text"
+   },
+   "txtfKontoNameZ8": {
+    "typ": "text"
+   },
+   "txtfKontoNameZ9": {
+    "typ": "text"
+   },
+   "txtfKontoNrZ1": {
+    "typ": "text"
+   },
+   "txtfKontoNrZ10": {
+    "typ": "text"
+   },
+   "txtfKontoNrZ2": {
+    "typ": "text"
+   },
+   "txtfKontoNrZ3": {
+    "typ": "text"
+   },
+   "txtfKontoNrZ4": {
+    "typ": "text"
+   },
+   "txtfKontoNrZ5": {
+    "typ": "text"
+   },
+   "txtfKontoNrZ6": {
+    "typ": "text"
+   },
+   "txtfKontoNrZ7": {
+    "typ": "text"
+   },
+   "txtfKontoNrZ8": {
+    "typ": "text"
+   },
+   "txtfKontoNrZ9": {
+    "typ": "text"
+   },
+   "txtfPersonNachname": {
+    "typ": "text"
+   },
+   "txtfPersonVorname": {
+    "typ": "text"
+   },
+   "txtfSelbstaendigName": {
+    "typ": "text"
+   },
+   "txtfSelbstaendigVermoegen": {
+    "typ": "text"
+   },
+   "txtfSparBriefKontoNrZ1": {
+    "typ": "text"
+   },
+   "txtfSparBriefKontoNrZ2": {
+    "typ": "text"
+   },
+   "txtfSparBriefKontoNrZ3": {
+    "typ": "text"
+   },
+   "txtfSparBriefKontoNrZ4": {
+    "typ": "text"
+   },
+   "txtfSparBriefKontoNrZ5": {
+    "typ": "text"
+   },
+   "txtfSparBriefNameZ1": {
+    "typ": "text"
+   },
+   "txtfSparBriefNameZ2": {
+    "typ": "text"
+   },
+   "txtfSparBriefNameZ3": {
+    "typ": "text"
+   },
+   "txtfSparBriefNameZ4": {
+    "typ": "text"
+   },
+   "txtfSparBriefNameZ5": {
+    "typ": "text"
+   },
+   "txtfSparEinlageKontoNrZ1": {
+    "typ": "text"
+   },
+   "txtfSparEinlageKontoNrZ2": {
+    "typ": "text"
+   },
+   "txtfSparEinlageKontoNrZ3": {
+    "typ": "text"
+   },
+   "txtfSparEinlageKontoNrZ4": {
+    "typ": "text"
+   },
+   "txtfSparEinlageKontoNrZ5": {
+    "typ": "text"
+   },
+   "txtfSparEinlageKontoNrZ6": {
+    "typ": "text"
+   },
+   "txtfSparEinlageKontoNrZ7": {
+    "typ": "text"
+   },
+   "txtfSparEinlageKontoNrZ8": {
+    "typ": "text"
+   },
+   "txtfSparEinlageNameZ1": {
+    "typ": "text"
+   },
+   "txtfSparEinlageNameZ2": {
+    "typ": "text"
+   },
+   "txtfSparEinlageNameZ3": {
+    "typ": "text"
+   },
+   "txtfSparEinlageNameZ4": {
+    "typ": "text"
+   },
+   "txtfSparEinlageNameZ5": {
+    "typ": "text"
+   },
+   "txtfSparEinlageNameZ6": {
+    "typ": "text"
+   },
+   "txtfSparEinlageNameZ7": {
+    "typ": "text"
+   },
+   "txtfSparEinlageNameZ8": {
+    "typ": "text"
+   },
+   "txtfVermoegenArtZ1": {
+    "typ": "text"
+   },
+   "txtfVermoegenArtZ2": {
+    "typ": "text"
+   },
+   "txtfVermoegenArtZ3": {
+    "typ": "text"
+   },
+   "txtfVermoegenNameZ1": {
+    "typ": "text"
+   },
+   "txtfVermoegenNameZ2": {
+    "typ": "text"
+   },
+   "txtfVermoegenNameZ3": {
+    "typ": "text"
+   },
+   "txtfVersicherungArtZ1": {
+    "typ": "text"
+   },
+   "txtfVersicherungArtZ2": {
+    "typ": "text"
+   },
+   "txtfVersicherungArtZ3": {
+    "typ": "text"
+   },
+   "txtfVersicherungArtZ4": {
+    "typ": "text"
+   },
+   "txtfVersicherungNameZ1": {
+    "typ": "text"
+   },
+   "txtfVersicherungNameZ2": {
+    "typ": "text"
+   },
+   "txtfVersicherungNameZ3": {
+    "typ": "text"
+   },
+   "txtfVersicherungNameZ4": {
+    "typ": "text"
+   }
+  },
+  "geschuetzt": false,
+  "seiten": 6,
+  "stand": "10/2026",
+  "titel": "Anlage VM",
+  "xfa": false
+ },
+ "anlagewep_ba013071.pdf": {
+  "felder": {
+   "chbxAdoptiv": {
+    "typ": "check"
+   },
+   "chbxBGDivers": {
+    "typ": "check"
+   },
+   "chbxBGKeine": {
+    "typ": "check"
+   },
+   "chbxBGMaennlich": {
+    "typ": "check"
+   },
+   "chbxBGRVBeantragt": {
+    "typ": "check"
+   },
+   "chbxBGRVKeine": {
+    "typ": "check"
+   },
+   "chbxBGRVVorhanden": {
+    "typ": "check"
+   },
+   "chbxBGWeiblich": {
+    "typ": "check"
+   },
+   "chbxEhegatte": {
+    "typ": "check"
+   },
+   "chbxFamStandAufgehoben": {
+    "typ": "check"
+   },
+   "chbxFamStandEingetragen": {
+    "typ": "check"
+   },
+   "chbxFamStandGeschieden": {
+    "typ": "check"
+   },
+   "chbxFamStandGetrennt": {
+    "typ": "check"
+   },
+   "chbxFamStandLedig": {
+    "typ": "check"
+   },
+   "chbxFamStandVerheiratet": {
+    "typ": "check"
+   },
+   "chbxFamStandVerwitwet": {
+    "typ": "check"
+   },
+   "chbxLeistungArbeitslosengeld": {
+    "typ": "check"
+   },
+   "chbxLeistungBAB": {
+    "typ": "check"
+   },
+   "chbxLeistungBafoeg": {
+    "typ": "check"
+   },
+   "chbxLeistungKG": {
+    "typ": "check"
+   },
+   "chbxLeistungKIZ": {
+    "typ": "check"
+   },
+   "chbxLeistungKRG": {
+    "typ": "check"
+   },
+   "chbxLeistungRente": {
+    "typ": "check"
+   },
+   "chbxLeistungSonstiges": {
+    "typ": "check"
+   },
+   "chbxLeistungWohngeld": {
+    "typ": "check"
+   },
+   "chbxPartner": {
+    "typ": "check"
+   },
+   "chbxSonstige": {
+    "typ": "check"
+   },
+   "chbxVerwandt": {
+    "typ": "check"
+   },
+   "dateAsylbLG": {
+    "typ": "text"
+   },
+   "dateBGGebDatum": {
+    "typ": "text"
+   },
+   "dateBeschaeftigt2Von": {
+    "typ": "text"
+   },
+   "dateBeschaeftigtBis": {
+    "typ": "text"
+   },
+   "dateBeschaeftigtV2Bis": {
+    "typ": "text"
+   },
+   "dateBeschaeftigtVon": {
+    "typ": "text"
+   },
+   "dateEinreise": {
+    "typ": "text"
+   },
+   "dateEntbindung": {
+    "typ": "text"
+   },
+   "dateEntgeltersatzBis": {
+    "typ": "text"
+   },
+   "dateEntgeltersatzVon": {
+    "typ": "text"
+   },
+   "dateGetrennt": {
+    "typ": "text"
+   },
+   "dateLeistungBis": {
+    "typ": "text"
+   },
+   "dateLeistungVon": {
+    "typ": "text"
+   },
+   "datePersonGebDatum": {
+    "typ": "text"
+   },
+   "dateStationaerBis": {
+    "typ": "text"
+   },
+   "dateStationaerVon": {
+    "typ": "text"
+   },
+   "dateUnterschriftBetreuer": {
+    "typ": "text"
+   },
+   "dateUnterschriftPerson": {
+    "typ": "text"
+   },
+   "numfStIDNr": {
+    "typ": "text"
+   },
+   "rbtnAngestellt": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnAnspruchDritte": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnAsylbLG": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnAufenthalt": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnAusbildungUnterkunft": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnBB": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnBGBetreuer": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnBGElternAusserhalb": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnBUEG": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnBehinderung": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnElternHaushalt": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnEntgeltersatz": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnErwerbsfaehig": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnKVPV": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnKostenBuecher": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnKostenUebernahme": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnLeistungAndere": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnLeistungTeilhabe": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnLohnanspruch": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnMEB": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnMEBBehinderung": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnPKV": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnPflege": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnSchadenDritte": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnSchueler": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnSchwanger": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnSelbstaendig": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnStationaer": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnWehrdienst": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "txtareaLebensunterhalt": {
+    "typ": "text"
+   },
+   "txtfAGHausNr": {
+    "typ": "text"
+   },
+   "txtfAGName": {
+    "typ": "text"
+   },
+   "txtfAGOrt": {
+    "typ": "text"
+   },
+   "txtfAGPlz": {
+    "typ": "text"
+   },
+   "txtfAGStr": {
+    "typ": "text"
+   },
+   "txtfAZRNr": {
+    "typ": "text"
+   },
+   "txtfBGGebLand": {
+    "typ": "text"
+   },
+   "txtfBGGebName": {
+    "typ": "text"
+   },
+   "txtfBGGebOrt": {
+    "typ": "text"
+   },
+   "txtfBGNachname": {
+    "typ": "text"
+   },
+   "txtfBGNr": {
+    "typ": "text"
+   },
+   "txtfBGRVNr": {
+    "typ": "text"
+   },
+   "txtfBGStaatsangehoerigkeit": {
+    "typ": "text"
+   },
+   "txtfBGVorname": {
+    "typ": "text"
+   },
+   "txtfEntgeltersatz": {
+    "typ": "text"
+   },
+   "txtfKV": {
+    "typ": "text"
+   },
+   "txtfLeistungArt": {
+    "typ": "text"
+   },
+   "txtfLeistungSonstiges": {
+    "typ": "text"
+   },
+   "txtfNatIDNr": {
+    "typ": "text"
+   },
+   "txtfPersonNachname": {
+    "typ": "text"
+   },
+   "txtfPersonVorname": {
+    "typ": "text"
+   },
+   "txtfStationaerArt": {
+    "typ": "text"
+   },
+   "txtfTraegerHausNr": {
+    "typ": "text"
+   },
+   "txtfTraegerName": {
+    "typ": "text"
+   },
+   "txtfTraegerOrt": {
+    "typ": "text"
+   },
+   "txtfTraegerPlz": {
+    "typ": "text"
+   },
+   "txtfTraegerStr": {
+    "typ": "text"
+   }
+  },
+  "geschuetzt": false,
+  "seiten": 7,
+  "stand": "10/2026",
+  "titel": "Anlage WEP",
+  "xfa": false
+ },
+ "antrag-sgb2_ba147846.pdf": {
+  "felder": {
+   "chbxBUEGSofort": {
+    "typ": "check"
+   },
+   "chbxBUEGSpaeter": {
+    "typ": "check"
+   },
+   "chbxDivers": {
+    "typ": "check"
+   },
+   "chbxFamStandAufgehoben": {
+    "typ": "check"
+   },
+   "chbxFamStandEingetragen": {
+    "typ": "check"
+   },
+   "chbxFamStandGeschieden": {
+    "typ": "check"
+   },
+   "chbxFamStandGetrennt": {
+    "typ": "check"
+   },
+   "chbxFamStandLedig": {
+    "typ": "check"
+   },
+   "chbxFamStandVerheiratet": {
+    "typ": "check"
+   },
+   "chbxFamStandVerwitwet": {
+    "typ": "check"
+   },
+   "chbxKeineAngabe": {
+    "typ": "check"
+   },
+   "chbxLeistungArbeitslosengeld": {
+    "typ": "check"
+   },
+   "chbxLeistungBAB": {
+    "typ": "check"
+   },
+   "chbxLeistungBafoeg": {
+    "typ": "check"
+   },
+   "chbxLeistungKG": {
+    "typ": "check"
+   },
+   "chbxLeistungKIZ": {
+    "typ": "check"
+   },
+   "chbxLeistungKRG": {
+    "typ": "check"
+   },
+   "chbxLeistungRente": {
+    "typ": "check"
+   },
+   "chbxLeistungSonstiges": {
+    "typ": "check"
+   },
+   "chbxLeistungWohngeld": {
+    "typ": "check"
+   },
+   "chbxMaennlich": {
+    "typ": "check"
+   },
+   "chbxRVNrBeantragt": {
+    "typ": "check"
+   },
+   "chbxRVNrKeine": {
+    "typ": "check"
+   },
+   "chbxRVNrVorhanden": {
+    "typ": "check"
+   },
+   "chbxWeiblich": {
+    "typ": "check"
+   },
+   "chbxWohnenEhegatte": {
+    "typ": "check"
+   },
+   "chbxWohnenEltern": {
+    "typ": "check"
+   },
+   "chbxWohnenKind": {
+    "typ": "check"
+   },
+   "chbxWohnenKindU15": {
+    "typ": "check"
+   },
+   "chbxWohnenSonstige": {
+    "typ": "check"
+   },
+   "chbxWohnenVerwandte": {
+    "typ": "check"
+   },
+   "dateAsylbLG": {
+    "typ": "text"
+   },
+   "dateBUEGSpaeter": {
+    "typ": "text"
+   },
+   "dateBeschaeftigt2Bis": {
+    "typ": "text"
+   },
+   "dateBeschaeftigt2Von": {
+    "typ": "text"
+   },
+   "dateBeschaeftigtBis": {
+    "typ": "text"
+   },
+   "dateBeschaeftigtVon": {
+    "typ": "text"
+   },
+   "dateEinreise": {
+    "typ": "text"
+   },
+   "dateEntbindung": {
+    "typ": "text"
+   },
+   "dateEntgeltersatzBis": {
+    "typ": "text"
+   },
+   "dateEntgeltersatzVon": {
+    "typ": "text"
+   },
+   "dateGetrennt": {
+    "typ": "text"
+   },
+   "dateLeistungBis": {
+    "typ": "text"
+   },
+   "dateLeistungVon": {
+    "typ": "text"
+   },
+   "datePersonGebDatum": {
+    "typ": "text"
+   },
+   "dateStationaerBis": {
+    "typ": "text"
+   },
+   "dateStationaerVon": {
+    "typ": "text"
+   },
+   "dateUnterschriftBetreuer": {
+    "typ": "text"
+   },
+   "dateUnterschriftPerson": {
+    "typ": "text"
+   },
+   "numfStIDNr": {
+    "typ": "text"
+   },
+   "rbtnAlleinerziehend": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnAngestellt": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnAnspruchDritte": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnAsylbLG": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnAufenthalt": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnAusbildungUneterkunft": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnBB": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnBUEG": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnBedarfUnterkunft": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnBehinderung": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnBetreuer": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnElternAusserhalb": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnEntgeltersatz": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnKVPV": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnKostenBuecher": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnKostenUebernahme": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnLeistungAndere": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnLeistungTeilhabe": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnLohnanspruch": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnMEB": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnPKV": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnPflege": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnSchadenDritte": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnSchueler": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnSchwanger": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnSelbstaendig": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnStationaer": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnWehrdienst": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnWohnsituation": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnWohnsitz": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rtbnErwerbsfaehig": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "txtareaKontoGrund": {
+    "typ": "text"
+   },
+   "txtareaLebensunterhalt": {
+    "typ": "text"
+   },
+   "txtareaWohnhaft": {
+    "typ": "text"
+   },
+   "txtfAGHausNr": {
+    "typ": "text"
+   },
+   "txtfAGName": {
+    "typ": "text"
+   },
+   "txtfAGOrt": {
+    "typ": "text"
+   },
+   "txtfAGPlz": {
+    "typ": "text"
+   },
+   "txtfAGStr": {
+    "typ": "text"
+   },
+   "txtfAZRNr": {
+    "typ": "text"
+   },
+   "txtfEntgeltersatz": {
+    "typ": "text"
+   },
+   "txtfKV": {
+    "typ": "text"
+   },
+   "txtfKonto": {
+    "typ": "text"
+   },
+   "txtfKontoIBAN": {
+    "typ": "text"
+   },
+   "txtfLeistungArt": {
+    "typ": "text"
+   },
+   "txtfLeistungSonstiges": {
+    "typ": "text"
+   },
+   "txtfNatIDNr": {
+    "typ": "text"
+   },
+   "txtfPersonGebLand": {
+    "typ": "text"
+   },
+   "txtfPersonGebName": {
+    "typ": "text"
+   },
+   "txtfPersonGebOrt": {
+    "typ": "text"
+   },
+   "txtfPersonHausNr": {
+    "typ": "text"
+   },
+   "txtfPersonNachname": {
+    "typ": "text"
+   },
+   "txtfPersonOrt": {
+    "typ": "text"
+   },
+   "txtfPersonPlz": {
+    "typ": "text"
+   },
+   "txtfPersonPostfach": {
+    "typ": "text"
+   },
+   "txtfPersonStaat": {
+    "typ": "text"
+   },
+   "txtfPersonStr": {
+    "typ": "text"
+   },
+   "txtfPersonTel": {
+    "typ": "text"
+   },
+   "txtfPersonVorname": {
+    "typ": "text"
+   },
+   "txtfRVNr": {
+    "typ": "text"
+   },
+   "txtfStationaerArt": {
+    "typ": "text"
+   },
+   "txtfTraegerHausNr": {
+    "typ": "text"
+   },
+   "txtfTraegerName": {
+    "typ": "text"
+   },
+   "txtfTraegerOrt": {
+    "typ": "text"
+   },
+   "txtfTraegerPlz": {
+    "typ": "text"
+   },
+   "txtfTraegerStr": {
+    "typ": "text"
+   }
+  },
+  "geschuetzt": false,
+  "seiten": 8,
+  "stand": "10/2026",
+  "titel": "Hauptantrag HA",
+  "xfa": false
+ },
+ "dok_ba033945.pdf": {
+  "felder": {
+   "chbxGrundKuendigungBetriebsbedingt": {
+    "typ": "check"
+   },
+   "chbxGrundKuendigungVertragswidrig": {
+    "typ": "check"
+   },
+   "chbxKuendigungDurchWenAG": {
+    "typ": "check"
+   },
+   "chbxKuendigungDurchWenAHV": {
+    "typ": "check"
+   },
+   "chbxKuendigungDurchWenAN": {
+    "typ": "check"
+   },
+   "chbxKuendigungDurchWenTV": {
+    "typ": "check"
+   },
+   "chbxZeitpunktKuendigungsfrist15DesMonats": {
+    "typ": "check"
+   },
+   "chbxZeitpunktKuendigungsfristEndeHalbjahr": {
+    "typ": "check"
+   },
+   "chbxZeitpunktKuendigungsfristEndeVierteljahr": {
+    "typ": "check"
+   },
+   "chbxZeitpunktKuendigungsfristEndeWoche": {
+    "typ": "check"
+   },
+   "chbxZeitpunktKuendigungsfristJahresschluss": {
+    "typ": "check"
+   },
+   "chbxZeitpunktKuendigungsfristMonatsende": {
+    "typ": "check"
+   },
+   "chbxZeitpunktKuendigungsfristOhneFestesEnde": {
+    "typ": "check"
+   },
+   "dateAbmahnung": {
+    "typ": "text"
+   },
+   "dateArbeitsentgeltWeitergezahlt": {
+    "typ": "text"
+   },
+   "dateArbeitsverhaeltnisBefristung": {
+    "typ": "text"
+   },
+   "dateArbeitsvertragAbschluss": {
+    "typ": "text"
+   },
+   "dateArbeitsvertragVerlaengerungBis": {
+    "typ": "text"
+   },
+   "dateArbeitsvertragVerlaengerungWann": {
+    "typ": "text"
+   },
+   "dateBeschaeftigungBis": {
+    "typ": "text"
+   },
+   "dateBeschaeftigungEnde": {
+    "typ": "text"
+   },
+   "dateBeschaeftigungKuendigungAm": {
+    "typ": "text"
+   },
+   "dateBeschaeftigungKuendigungZum": {
+    "typ": "text"
+   },
+   "dateBeschaeftigungVon": {
+    "typ": "text"
+   },
+   "dateFreistellung": {
+    "typ": "text"
+   },
+   "dateHoeheVorruhestandsleistung": {
+    "typ": "text"
+   },
+   "dateKuendigungAm": {
+    "typ": "text"
+   },
+   "dateKuendigungZum": {
+    "typ": "text"
+   },
+   "dateUnterschriftAG": {
+    "typ": "text"
+   },
+   "dateUrlaub": {
+    "typ": "text"
+   },
+   "numfDauerBetriebszugehoerigkeit": {
+    "typ": "text"
+   },
+   "numfHoeheVorruhestandsleistung": {
+    "typ": "text"
+   },
+   "numfKuendigungsfristKalendertage": {
+    "typ": "text"
+   },
+   "numfKuendigungsfristMonate": {
+    "typ": "text"
+   },
+   "numfKuendigungsfristWerktage": {
+    "typ": "text"
+   },
+   "numfKuendigungsfristWochen": {
+    "typ": "text"
+   },
+   "numfLeistungBrutto": {
+    "typ": "text"
+   },
+   "rbtnAbfindung": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnAbfindungAnteilMonatsentgelt": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnAbfindungKuendigungAG": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnArbeitsentgeltWeitergezahlt": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnArbeitsverhaeltnisBefristet": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnArbeitsvertragVerlaengert": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnBefristungSchriftlich": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnBefristungWeiterbeschaeftigung": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnFreistellungEinvernehmlich": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnHaetteAGGekuendigt": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnKuendigungAusgeschlossen": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnKuendigungBetriebsbedingt": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnKuendigungSchriftlich": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnKuendigungWichtigerGrund": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnKuendigungZeitlichUnbegrAusgeschl": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnKuendigungsschutzklage": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnLeistungenBeendigung": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio",
+    "unklar": true
+   },
+   "rbtnOrdentlicheKuendigungZulaessig": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnSozialauswahl": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnSozialauswahlEntfallen": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnSozialauswahlGeprueft": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnUnwiderFreistellung": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnUrlaubsabgeltung": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnVerhaltenAbmahnung": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnVertragswidrigesVerhalten": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnVoraussetzungFristgebundKuendigung": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnVorruhestandsleistung": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "rbtnZusaetzlicheVereinbarung": {
+    "ja": "0",
+    "nein": "1",
+    "typ": "radio"
+   },
+   "txtfAGAnsprechEntgelt": {
+    "typ": "text"
+   },
+   "txtfAGAnsprechEntgeltTel": {
+    "typ": "text"
+   },
+   "txtfAGAnsprechPersonal": {
+    "typ": "text"
+   },
+   "txtfAGAnsprechPersonalTel": {
+    "typ": "text"
+   },
+   "txtfAGBetriebNr": {
+    "typ": "text"
+   },
+   "txtfAGHausnr": {
+    "typ": "text"
+   },
+   "txtfAGName": {
+    "typ": "text"
+   },
+   "txtfAGPlz": {
+    "typ": "text"
+   },
+   "txtfAGStr": {
+    "typ": "text"
+   },
+   "txtfANBeschaeftigtAls": {
+    "typ": "text"
+   },
+   "txtfANBeschaeftigungsort": {
+    "typ": "text"
+   },
+   "txtfANHausnr": {
+    "typ": "text"
+   },
+   "txtfANNachname": {
+    "typ": "text"
+   },
+   "txtfANOrt": {
+    "typ": "text"
+   },
+   "txtfANPlz": {
+    "typ": "text"
+   },
+   "txtfANPostfach": {
+    "typ": "text"
+   },
+   "txtfANStr": {
+    "typ": "text"
+   },
+   "txtfANVorname": {
+    "typ": "text"
+   },
+   "txtfANWohnhaft": {
+    "typ": "text"
+   },
+   "txtfBGNr": {
+    "typ": "text"
+   },
+   "txtfDST": {
+    "typ": "text"
+   },
+   "txtfKdNr": {
+    "typ": "text"
+   },
+   "txtfKuendigungZustellung": {
+    "typ": "text"
+   },
+   "txtfLeistungenBeendigung": {
+    "typ": "text"
+   },
+   "txtfOrt": {
+    "typ": "text"
+   },
+   "txtfSozialauswahlAAPruefung": {
+    "typ": "text"
+   },
+   "txtfTeam": {
+    "typ": "text"
+   }
+  },
+  "geschuetzt": false,
+  "seiten": 6,
+  "stand": "04/2025",
+  "titel": "Arbeitsbescheinigung SGB II",
+  "xfa": false
+ },
+ "kiz1-antrag_ba036540.pdf": {
+  "felder": {
+   "Formular1[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].Frage-1[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].Frage-1[0].Anschrift[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].Frage-1[0].Fam-stand-seit[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].Frage-1[0].Geburtsdatum-KGB[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].Frage-1[0].Geschlecht[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].Frage-1[0].Name-KGB[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].Frage-1[0].Staatsangeh-KGB[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].Frage-1[0].Telefonnr[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].Frage-1[0].Titel-KGB[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].Frage-1[0].abweichenderGeburtsname[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].Frage-1[0].geschieden[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].Frage-1[0].getrennt-lebend[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].Frage-1[0].ledig[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].Frage-1[0].verheiratet[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].Frage-1[0].verwitwet[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-1[0].Frage-2[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].Frage-2[0].Geburtsdatum-Partner[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].Frage-2[0].Name-Partner[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].Frage-2[0].Staatsangeh-Partner[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].Frage-3[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].Frage-3[0].BIC[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].Frage-3[0].IBAN[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].Frage-3[0].Kontoinhaber[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].Frage-4[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].Frage-4[0].Kindertabelle-P-4[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].Frage-4[0].Kindertabelle-P-4[0].Zeile1[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].Frage-4[0].Kindertabelle-P-4[0].Zeile1[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].Frage-4[0].Kindertabelle-P-4[0].Zeile1[0].Zelle2[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].Frage-4[0].Kindertabelle-P-4[0].Zeile2[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].Frage-4[0].Kindertabelle-P-4[0].Zeile2[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].Frage-4[0].Kindertabelle-P-4[0].Zeile2[0].Zelle2[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].Frage-4[0].Kindertabelle-P-4[0].Zeile3[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].Frage-4[0].Kindertabelle-P-4[0].Zeile3[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].Frage-4[0].Kindertabelle-P-4[0].Zeile3[0].Zelle2[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].Frage-4[0].Kindertabelle-P-4[0].Zeile4[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].Frage-4[0].Kindertabelle-P-4[0].Zeile4[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].Frage-4[0].Kindertabelle-P-4[0].Zeile4[0].Zelle2[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].Frage-4[0].Kindertabelle-P-4[0].Zeile5[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].Frage-4[0].Kindertabelle-P-4[0].Zeile5[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].Frage-4[0].Kindertabelle-P-4[0].Zeile5[0].Zelle2[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].Frage-4[0].Kindertabelle-P-4[0].Zeile6[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].Frage-4[0].Kindertabelle-P-4[0].Zeile6[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].Frage-4[0].Kindertabelle-P-4[0].Zeile6[0].Zelle2[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].Kopfzeile[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].Kopfzeile[0].#area[2]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-1[0].Kopfzeile[0].#area[2].KG-Nr[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-1[0].Kopfzeile[0].#area[2].Name_Vorname_KGB[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[3]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[3].Datum\\": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[3].Datum\\.Antrag\\": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].#area[3].Datum\\.Antrag\\.0[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].#area[3].KG-Nr-zweiter-Antragsteller[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].Actionbuttons[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].Actionbuttons[0].Alle_Eingaben_löschen[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].Actionbuttons[0].Drucken[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].Actionbuttons[0].Speichern[0]": {
+    "typ": "check"
+   },
+   "Formular1[0].Seite-2[0].Frage-5[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].Frage-5[0].Kindertabelle-P-5[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].Frage-5[0].Kindertabelle-P-5[0].Zeile1[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].Frage-5[0].Kindertabelle-P-5[0].Zeile1[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].Frage-5[0].Kindertabelle-P-5[0].Zeile1[0].Zelle3[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].Frage-5[0].Kindertabelle-P-5[0].Zeile2[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].Frage-5[0].Kindertabelle-P-5[0].Zeile2[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].Frage-5[0].Kindertabelle-P-5[0].Zeile2[0].Zelle1[1]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].Frage-5[0].Kindertabelle-P-5[0].Zeile3[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].Frage-5[0].Kindertabelle-P-5[0].Zeile3[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].Frage-5[0].Kindertabelle-P-5[0].Zeile3[0].Zelle3[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].Frage-6[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].Frage-6[0].Kindertabelle-P-6[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].Frage-6[0].Kindertabelle-P-6[0].Zeile1[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].Frage-6[0].Kindertabelle-P-6[0].Zeile1[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].Frage-6[0].Kindertabelle-P-6[0].Zeile1[0].Zelle2[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].Frage-6[0].Kindertabelle-P-6[0].Zeile1[0].Zelle3[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].Frage-6[0].Kindertabelle-P-6[0].Zeile2[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].Frage-6[0].Kindertabelle-P-6[0].Zeile2[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].Frage-6[0].Kindertabelle-P-6[0].Zeile2[0].Zelle2[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].Frage-6[0].Kindertabelle-P-6[0].Zeile2[0].Zelle3[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].Frage-6[0].Kindertabelle-P-6[0].Zeile3[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].Frage-6[0].Kindertabelle-P-6[0].Zeile3[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].Frage-6[0].Kindertabelle-P-6[0].Zeile3[0].Zelle2[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].Frage-6[0].Kindertabelle-P-6[0].Zeile3[0].Zelle3[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].Frage-7[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].Frage-7[0].Tabelle-P-7[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].Frage-7[0].Tabelle-P-7[0].Zeile1[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].Frage-7[0].Tabelle-P-7[0].Zeile1[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].Frage-7[0].Tabelle-P-7[0].Zeile1[0].Zelle2[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].Frage-7[0].Tabelle-P-7[0].Zeile1[0].Zelle3[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].Frage-7[0].Tabelle-P-7[0].Zeile1[0].Zelle4[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].Frage-7[0].Tabelle-P-7[0].Zeile2[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].Frage-7[0].Tabelle-P-7[0].Zeile2[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].Frage-7[0].Tabelle-P-7[0].Zeile2[0].Zelle2[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].Frage-7[0].Tabelle-P-7[0].Zeile2[0].Zelle3[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].Frage-7[0].Tabelle-P-7[0].Zeile2[0].Zelle4[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].Frage-7[0].Tabelle-P-7[0].Zeile3[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].Frage-7[0].Tabelle-P-7[0].Zeile3[0].#field[2]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].Frage-7[0].Tabelle-P-7[0].Zeile3[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].Frage-7[0].Tabelle-P-7[0].Zeile3[0].Zelle2[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].Frage-7[0].Tabelle-P-7[0].Zeile3[0].Zelle4[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].Frage-7[0].Tabelle-P-7[0].Zeile4[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].Frage-7[0].Tabelle-P-7[0].Zeile4[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].Frage-7[0].Tabelle-P-7[0].Zeile4[0].Zelle2[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].Frage-7[0].Tabelle-P-7[0].Zeile4[0].Zelle3[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].Frage-7[0].Tabelle-P-7[0].Zeile4[0].Zelle4[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].Frage-7[0].Tabelle-P-7[0].Zeile5[0]": {
+    "typ": "None"
+   },
+   "Formular1[0].Seite-2[0].Frage-7[0].Tabelle-P-7[0].Zeile5[0].Zelle1[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].Frage-7[0].Tabelle-P-7[0].Zeile5[0].Zelle2[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].Frage-7[0].Tabelle-P-7[0].Zeile5[0].Zelle3[0]": {
+    "typ": "text"
+   },
+   "Formular1[0].Seite-2[0].Frage-7[0].Tabelle-P-7[0].Zeile5[0].Zelle4[0]": {
+    "typ": "text"
+   }
+  },
+  "geschuetzt": true,
+  "seiten": 3,
+  "stand": "",
+  "titel": "Antrag auf Kinderzuschlag (KiZ 1)",
+  "xfa": true
+ }
+}
