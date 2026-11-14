@@ -6581,6 +6581,660 @@
   "titel": "Wohnberechtigungsschein WBS I",
   "xfa": false
  },
+ "wbs-HB-anlage1.pdf": {
+  "felder": {
+   "Ab wann": {
+    "typ": "text"
+   },
+   "Aktueller Verkehrswert": {
+    "typ": "text"
+   },
+   "Grund der Änderung": {
+    "typ": "text"
+   },
+   "Höhe": {
+    "typ": "text"
+   },
+   "Ja": {
+    "typ": "check"
+   },
+   "Ja_1": {
+    "typ": "check"
+   },
+   "Ja_10": {
+    "typ": "check"
+   },
+   "Ja_11": {
+    "typ": "check"
+   },
+   "Ja_12": {
+    "typ": "check"
+   },
+   "Ja_13": {
+    "typ": "check"
+   },
+   "Ja_14": {
+    "typ": "check"
+   },
+   "Ja_15": {
+    "typ": "check"
+   },
+   "Ja_16": {
+    "typ": "check"
+   },
+   "Ja_2": {
+    "typ": "check"
+   },
+   "Ja_3": {
+    "typ": "check"
+   },
+   "Ja_4": {
+    "typ": "check"
+   },
+   "Ja_5": {
+    "typ": "check"
+   },
+   "Ja_6": {
+    "typ": "check"
+   },
+   "Ja_7": {
+    "typ": "check"
+   },
+   "Ja_8": {
+    "typ": "check"
+   },
+   "Ja_9": {
+    "typ": "check"
+   },
+   "Mein Anteil an der Immobilie beträgt": {
+    "typ": "text"
+   },
+   "Name": {
+    "typ": "text"
+   },
+   "Name_1": {
+    "typ": "text"
+   },
+   "Nein": {
+    "typ": "check"
+   },
+   "Nein_1": {
+    "typ": "check"
+   },
+   "Nein_10": {
+    "typ": "check"
+   },
+   "Nein_11": {
+    "typ": "check"
+   },
+   "Nein_12": {
+    "typ": "check"
+   },
+   "Nein_13": {
+    "typ": "check"
+   },
+   "Nein_14": {
+    "typ": "check"
+   },
+   "Nein_15": {
+    "typ": "check"
+   },
+   "Nein_16": {
+    "typ": "check"
+   },
+   "Nein_2": {
+    "typ": "check"
+   },
+   "Nein_3": {
+    "typ": "check"
+   },
+   "Nein_4": {
+    "typ": "check"
+   },
+   "Nein_5": {
+    "typ": "check"
+   },
+   "Nein_6": {
+    "typ": "check"
+   },
+   "Nein_7": {
+    "typ": "check"
+   },
+   "Nein_8": {
+    "typ": "check"
+   },
+   "Nein_9": {
+    "typ": "check"
+   },
+   "Ort,Datum": {
+    "typ": "text"
+   },
+   "Pflegeversicherung bzw Beiträge zur privaten Kranken- und": {
+    "typ": "check"
+   },
+   "Pflichtbeiträge zur Rentenversicherung": {
+    "typ": "check"
+   },
+   "Pflichtbeiträge zur gesetzlichen": {
+    "typ": "check"
+   },
+   "Steuern von Einkommen": {
+    "typ": "check"
+   },
+   "TextField": {
+    "typ": "text"
+   },
+   "TextField_1": {
+    "typ": "text"
+   },
+   "TextField_3": {
+    "typ": "text"
+   },
+   "Unterschrift": {
+    "typ": "text"
+   },
+   "VermietungVerpachtung": {
+    "typ": "text"
+   },
+   "Vorname": {
+    "typ": "text"
+   },
+   "Vorname_1": {
+    "typ": "text"
+   },
+   "Zeitraum": {
+    "typ": "text"
+   },
+   "Zeitraum_1": {
+    "typ": "text"
+   },
+   "Zeitraum_10": {
+    "typ": "text"
+   },
+   "Zeitraum_11": {
+    "typ": "text"
+   },
+   "Zeitraum_12": {
+    "typ": "text"
+   },
+   "Zeitraum_2": {
+    "typ": "text"
+   },
+   "Zeitraum_3": {
+    "typ": "text"
+   },
+   "Zeitraum_4": {
+    "typ": "text"
+   },
+   "Zeitraum_5": {
+    "typ": "text"
+   },
+   "Zeitraum_6": {
+    "typ": "text"
+   },
+   "Zeitraum_7": {
+    "typ": "text"
+   },
+   "Zeitraum_8": {
+    "typ": "text"
+   },
+   "Zeitraum_9": {
+    "typ": "text"
+   },
+   "die Werbungskostenpauschale in Höhe von 1230 Euro bei Arbeitseinkommen bzw 102 Euro bei Renten": {
+    "typ": "check"
+   },
+   "erhöhen  verringern": {
+    "typ": "check"
+   },
+   "erhöhte Werbungskosten in Höhe von": {
+    "typ": "check"
+   },
+   "freiwillig Beiträge zur Rentenversicherung": {
+    "typ": "check"
+   },
+   "nicht verändern": {
+    "typ": "check"
+   }
+  },
+  "geschuetzt": false,
+  "seiten": 2,
+  "stand": "",
+  "titel": "wbs-HB-anlage1.pdf",
+  "xfa": false
+ },
+ "wbs-HB.pdf": {
+  "felder": {
+   "Ankerkung2": {
+    "typ": "text"
+   },
+   "Ankerkung3": {
+    "typ": "text"
+   },
+   "Ankerkung4": {
+    "typ": "text"
+   },
+   "Anmerkung1": {
+    "typ": "text"
+   },
+   "Antragstellerin": {
+    "typ": "text"
+   },
+   "Antragstellerin_1": {
+    "typ": "text"
+   },
+   "Begründung_1": {
+    "typ": "text"
+   },
+   "Begründung_2": {
+    "typ": "text"
+   },
+   "Begründung_3": {
+    "typ": "text"
+   },
+   "Bei Alleinerziehenden Zum künftigen Haushalt gehören": {
+    "typ": "text"
+   },
+   "Bei Ausländerinnen Aufenthaltserlaubnis bis": {
+    "typ": "text"
+   },
+   "CheckBox": {
+    "typ": "check"
+   },
+   "CheckBox_1": {
+    "typ": "check"
+   },
+   "CheckBox_2": {
+    "typ": "check"
+   },
+   "CheckBox_3": {
+    "typ": "check"
+   },
+   "CheckBox_4": {
+    "typ": "check"
+   },
+   "CheckBox_5": {
+    "typ": "check"
+   },
+   "CheckBox_6": {
+    "typ": "check"
+   },
+   "GdB": {
+    "typ": "text"
+   },
+   "GdB_1": {
+    "typ": "text"
+   },
+   "Geburtsdatum": {
+    "typ": "text"
+   },
+   "Ja": {
+    "typ": "check"
+   },
+   "Ja_1": {
+    "typ": "check"
+   },
+   "Ja_10": {
+    "typ": "check"
+   },
+   "Ja_11": {
+    "typ": "check"
+   },
+   "Ja_12": {
+    "typ": "check"
+   },
+   "Ja_13": {
+    "typ": "check"
+   },
+   "Ja_14": {
+    "typ": "check"
+   },
+   "Ja_2": {
+    "typ": "check"
+   },
+   "Ja_3": {
+    "typ": "check"
+   },
+   "Ja_4": {
+    "typ": "check"
+   },
+   "Ja_5": {
+    "typ": "check"
+   },
+   "Ja_6": {
+    "typ": "check"
+   },
+   "Ja_7": {
+    "typ": "check"
+   },
+   "Ja_8": {
+    "typ": "check"
+   },
+   "Ja_9": {
+    "typ": "check"
+   },
+   "Merkzeichen „H“": {
+    "typ": "check"
+   },
+   "Merkzeichen „H“_1": {
+    "typ": "check"
+   },
+   "Name": {
+    "typ": "text"
+   },
+   "Name Vorname": {
+    "typ": "text"
+   },
+   "Name Vorname_1": {
+    "typ": "text"
+   },
+   "Nein": {
+    "typ": "check"
+   },
+   "Nein_1": {
+    "typ": "check"
+   },
+   "Nein_2": {
+    "typ": "check"
+   },
+   "Nein_3": {
+    "typ": "check"
+   },
+   "Nein_4": {
+    "typ": "check"
+   },
+   "Nein_5": {
+    "typ": "check"
+   },
+   "Nein_6": {
+    "typ": "check"
+   },
+   "Nein_7": {
+    "typ": "check"
+   },
+   "Nein_8": {
+    "typ": "check"
+   },
+   "Ort, Datum": {
+    "typ": "text"
+   },
+   "PLZ Ort": {
+    "typ": "text"
+   },
+   "PLZ Ort_1": {
+    "typ": "text"
+   },
+   "Staatsangehörigkeit": {
+    "typ": "text"
+   },
+   "Straße Hausnummer": {
+    "typ": "text"
+   },
+   "Straße Hausnummer_1": {
+    "typ": "text"
+   },
+   "Text10": {
+    "typ": "text"
+   },
+   "Text11": {
+    "typ": "text"
+   },
+   "Text12": {
+    "typ": "text"
+   },
+   "Text13": {
+    "typ": "text"
+   },
+   "Text14": {
+    "typ": "text"
+   },
+   "Text15": {
+    "typ": "text"
+   },
+   "Text16": {
+    "typ": "text"
+   },
+   "Text17": {
+    "typ": "text"
+   },
+   "Text18": {
+    "typ": "text"
+   },
+   "Text19": {
+    "typ": "text"
+   },
+   "Text20": {
+    "typ": "text"
+   },
+   "Text21": {
+    "typ": "text"
+   },
+   "Text22": {
+    "typ": "text"
+   },
+   "Text23": {
+    "typ": "text"
+   },
+   "Text24": {
+    "typ": "text"
+   },
+   "Text25": {
+    "typ": "text"
+   },
+   "Text26": {
+    "typ": "text"
+   },
+   "Text27": {
+    "typ": "text"
+   },
+   "Text28": {
+    "typ": "text"
+   },
+   "Text29": {
+    "typ": "text"
+   },
+   "Text3": {
+    "typ": "text"
+   },
+   "Text30": {
+    "typ": "text"
+   },
+   "Text31": {
+    "typ": "text"
+   },
+   "Text32": {
+    "typ": "text"
+   },
+   "Text33": {
+    "typ": "text"
+   },
+   "Text34": {
+    "typ": "text"
+   },
+   "Text35": {
+    "typ": "text"
+   },
+   "Text36": {
+    "typ": "text"
+   },
+   "Text37": {
+    "typ": "text"
+   },
+   "Text38": {
+    "typ": "text"
+   },
+   "Text4": {
+    "typ": "text"
+   },
+   "Text5": {
+    "typ": "text"
+   },
+   "Text6": {
+    "typ": "text"
+   },
+   "Text7": {
+    "typ": "text"
+   },
+   "Text8": {
+    "typ": "text"
+   },
+   "Text9": {
+    "typ": "text"
+   },
+   "TextField": {
+    "typ": "text"
+   },
+   "TextField_1": {
+    "typ": "text"
+   },
+   "TextField_4": {
+    "typ": "text"
+   },
+   "TextField_5": {
+    "typ": "text"
+   },
+   "Unterschrift": {
+    "typ": "text"
+   },
+   "Vorliegen des Pflegegrades": {
+    "typ": "check"
+   },
+   "Vorliegen des Pflegegrades_1": {
+    "typ": "check"
+   },
+   "Vorname": {
+    "typ": "text"
+   },
+   "Weitere Unterschrift 1": {
+    "typ": "text"
+   },
+   "Weitere Unterschrift 2": {
+    "typ": "text"
+   },
+   "a": {
+    "typ": "text"
+   },
+   "a_1": {
+    "typ": "text"
+   },
+   "a_2": {
+    "typ": "text"
+   },
+   "a_3": {
+    "typ": "text"
+   },
+   "als Hauptmieterin  Untermieterin": {
+    "typ": "check"
+   },
+   "als Mit-Eigentümerin": {
+    "typ": "check"
+   },
+   "bei  co": {
+    "typ": "text"
+   },
+   "bei  co_1": {
+    "typ": "text"
+   },
+   "d": {
+    "typ": "check"
+   },
+   "d_1": {
+    "typ": "check"
+   },
+   "d_2": {
+    "typ": "check"
+   },
+   "d_3": {
+    "typ": "check"
+   },
+   "d_4": {
+    "typ": "check"
+   },
+   "d_5": {
+    "typ": "check"
+   },
+   "d_6": {
+    "typ": "check"
+   },
+   "dauernd getrennt lebend": {
+    "typ": "check"
+   },
+   "für eine geförderte Eigentumsmaßnahme im Land Bremen": {
+    "typ": "check"
+   },
+   "geschieden": {
+    "typ": "check"
+   },
+   "ledig": {
+    "typ": "check"
+   },
+   "m": {
+    "typ": "check"
+   },
+   "m_1": {
+    "typ": "check"
+   },
+   "m_2": {
+    "typ": "check"
+   },
+   "m_3": {
+    "typ": "check"
+   },
+   "m_4": {
+    "typ": "check"
+   },
+   "m_5": {
+    "typ": "check"
+   },
+   "m_6": {
+    "typ": "check"
+   },
+   "mit den Eltern die die Wohnung weiterhin nutzen werden": {
+    "typ": "check"
+   },
+   "verheiratet  eingetragene Lebenspartnerschaft seit": {
+    "typ": "check"
+   },
+   "verwitwet": {
+    "typ": "check"
+   },
+   "w": {
+    "typ": "check"
+   },
+   "w_1": {
+    "typ": "check"
+   },
+   "w_2": {
+    "typ": "check"
+   },
+   "w_3": {
+    "typ": "check"
+   },
+   "w_4": {
+    "typ": "check"
+   },
+   "w_5": {
+    "typ": "check"
+   },
+   "w_6": {
+    "typ": "check"
+   },
+   "zum Bezug einer geförderten Mietwohnung im Land Bremen": {
+    "typ": "check"
+   },
+   "→ Bei Nicht-EU-Bürgerinnen Bitte Aufenthaltserlaubnis in Kopie beifügen": {
+    "typ": "text"
+   },
+   "→ Bei Nicht-EU-Bürgerinnen Bitte Aufenthaltserlaubnis in Kopie beifügen_1": {
+    "typ": "text"
+   }
+  },
+  "geschuetzt": false,
+  "seiten": 4,
+  "stand": "",
+  "titel": "wbs-HB.pdf",
+  "xfa": false
+ },
  "wbs-HH.pdf": {
   "felder": {
    " Geburtsdatum eintragen": {
@@ -6822,6 +7476,1341 @@
   "seiten": 2,
   "stand": "",
   "titel": "Antrag; auf eine Wohnberechtigungsbescheinigung",
+  "xfa": false
+ },
+ "wbs-RP.pdf": {
+  "felder": {
+   "Arbeitgeber1": {
+    "typ": "text"
+   },
+   "Arbeitgeber2": {
+    "typ": "text"
+   },
+   "Arbeitgeber3": {
+    "typ": "text"
+   },
+   "Arbeitgeber4": {
+    "typ": "text"
+   },
+   "Arbeitgeber5": {
+    "typ": "text"
+   },
+   "Art1": {
+    "typ": "text"
+   },
+   "Art10": {
+    "typ": "text"
+   },
+   "Art11": {
+    "typ": "text"
+   },
+   "Art2": {
+    "typ": "text"
+   },
+   "Art3": {
+    "typ": "text"
+   },
+   "Aufenthaltserlaubnis bis": {
+    "typ": "text"
+   },
+   "Aufenthaltserlaubnis1": {
+    "typ": "text"
+   },
+   "Aufenthaltserlaubnis2": {
+    "typ": "text"
+   },
+   "Aufenthaltserlaubnis3": {
+    "typ": "text"
+   },
+   "Aufenthaltserlaubnis4": {
+    "typ": "text"
+   },
+   "Aufenthaltserlaubnis5": {
+    "typ": "text"
+   },
+   "Aufenthaltserlaubnis6": {
+    "typ": "text"
+   },
+   "Aufenthaltserlaubnis7": {
+    "typ": "text"
+   },
+   "AusweisNr1": {
+    "typ": "text"
+   },
+   "AusweisNr2": {
+    "typ": "text"
+   },
+   "BescheidVersorgungsamt1": {
+    "typ": "text"
+   },
+   "BescheidVersorgungsamt2": {
+    "typ": "text"
+   },
+   "Bescheidvom1": {
+    "typ": "text"
+   },
+   "Bescheidvom2": {
+    "typ": "text"
+   },
+   "Check Box1": {
+    "typ": "check"
+   },
+   "Check Box10": {
+    "typ": "check"
+   },
+   "Check Box11": {
+    "typ": "check"
+   },
+   "Check Box12": {
+    "typ": "check"
+   },
+   "Check Box13": {
+    "typ": "check"
+   },
+   "Check Box14": {
+    "typ": "check"
+   },
+   "Check Box15": {
+    "typ": "check"
+   },
+   "Check Box16": {
+    "typ": "check"
+   },
+   "Check Box2": {
+    "typ": "check"
+   },
+   "Check Box20": {
+    "typ": "check"
+   },
+   "Check Box21": {
+    "typ": "check"
+   },
+   "Check Box30": {
+    "typ": "check"
+   },
+   "Check Box4": {
+    "typ": "check"
+   },
+   "Check Box50": {
+    "typ": "check"
+   },
+   "Check Box51": {
+    "typ": "check"
+   },
+   "Check Box52": {
+    "typ": "check"
+   },
+   "Check Box6": {
+    "typ": "check"
+   },
+   "Check Box60": {
+    "typ": "check"
+   },
+   "Check Box61": {
+    "typ": "check"
+   },
+   "Check Box62": {
+    "typ": "check"
+   },
+   "Check Box63": {
+    "typ": "check"
+   },
+   "Check Box8": {
+    "typ": "check"
+   },
+   "Check Box9": {
+    "typ": "check"
+   },
+   "Checkbox 3": {
+    "typ": "check"
+   },
+   "Erhalten Sie bei dieser Arbeit Sonderzahlungen WeihnachtsUrlaubsgeld": {
+    "typ": "text"
+   },
+   "Falls ja bitte kurz erläutern": {
+    "typ": "text"
+   },
+   "Falls ja von wem und wie": {
+    "typ": "text"
+   },
+   "Familienname": {
+    "typ": "text"
+   },
+   "Familienstand ledig verheiratet geschieden verwitwet": {
+    "typ": "text"
+   },
+   "Familienstand1": {
+    "typ": "text"
+   },
+   "Familienstand2": {
+    "typ": "text"
+   },
+   "Familienstand3": {
+    "typ": "text"
+   },
+   "Familienstand4": {
+    "typ": "text"
+   },
+   "Familienstand5": {
+    "typ": "text"
+   },
+   "Familienstand6": {
+    "typ": "text"
+   },
+   "Familienstand7": {
+    "typ": "text"
+   },
+   "GBD1": {
+    "typ": "text"
+   },
+   "GBD2": {
+    "typ": "text"
+   },
+   "Geb Datum": {
+    "typ": "text"
+   },
+   "GradBehinderung1": {
+    "typ": "text"
+   },
+   "GradBehinderung2": {
+    "typ": "text"
+   },
+   "Höhe/Monat10": {
+    "typ": "text"
+   },
+   "Höhe/Monat11": {
+    "typ": "text"
+   },
+   "Höhe/Monat40": {
+    "typ": "text"
+   },
+   "Höhe/Monat41": {
+    "typ": "text"
+   },
+   "Höhe1": {
+    "typ": "text"
+   },
+   "Höhe2": {
+    "typ": "text"
+   },
+   "Höhe3": {
+    "typ": "text"
+   },
+   "HöheproMonat1": {
+    "typ": "text"
+   },
+   "HöheproMonat2": {
+    "typ": "text"
+   },
+   "HöheproMonat3": {
+    "typ": "text"
+   },
+   "HöheproMonat4": {
+    "typ": "text"
+   },
+   "HöheproMonat5": {
+    "typ": "text"
+   },
+   "Ichmein Haushalt verfügen aktuell über keinerlei Einkommen": {
+    "typ": "text"
+   },
+   "InwelchemZeitraum1": {
+    "typ": "text"
+   },
+   "InwelchemZeitraum2": {
+    "typ": "text"
+   },
+   "InwelchemZeitraum3": {
+    "typ": "text"
+   },
+   "InwelchemZeitraum4": {
+    "typ": "text"
+   },
+   "InwelchemZeitraum5": {
+    "typ": "text"
+   },
+   "KK1": {
+    "typ": "text"
+   },
+   "KK2": {
+    "typ": "text"
+   },
+   "Koblenz den": {
+    "typ": "text"
+   },
+   "Koblenz den_2": {
+    "typ": "text"
+   },
+   "LezterJahresgewinn1": {
+    "typ": "text"
+   },
+   "Nachname Vorname Geburts datum Familien stand led verh gesch verw Verhältnis zum Antragsteller Staatsan gehörigkeit Aufenthalts Erlaubnis bisRow1": {
+    "typ": "text"
+   },
+   "Nachname Vorname Geburts datum Familien stand led verh gesch verw Verhältnis zum Antragsteller Staatsan gehörigkeit Aufenthalts Erlaubnis bisRow2": {
+    "typ": "text"
+   },
+   "Nachname Vorname Geburts datum Familien stand led verh gesch verw Verhältnis zum Antragsteller Staatsan gehörigkeit Aufenthalts Erlaubnis bisRow3": {
+    "typ": "text"
+   },
+   "Nachname Vorname Geburts datum Familien stand led verh gesch verw Verhältnis zum Antragsteller Staatsan gehörigkeit Aufenthalts Erlaubnis bisRow4": {
+    "typ": "text"
+   },
+   "Nachname Vorname Geburts datum Familien stand led verh gesch verw Verhältnis zum Antragsteller Staatsan gehörigkeit Aufenthalts Erlaubnis bisRow5": {
+    "typ": "text"
+   },
+   "Nachname Vorname Geburts datum Familien stand led verh gesch verw Verhältnis zum Antragsteller Staatsan gehörigkeit Aufenthalts Erlaubnis bisRow6": {
+    "typ": "text"
+   },
+   "Nachname Vorname Geburts datum Familien stand led verh gesch verw Verhältnis zum Antragsteller Staatsan gehörigkeit Aufenthalts Erlaubnis bisRow7": {
+    "typ": "text"
+   },
+   "Nachname Vorname Geburts datum Familien stand led verh gesch verw Verhältnis zum Antragsteller Staatsan gehörigkeit Aufenthalts Erlaubnis bisRow7_2": {
+    "typ": "text"
+   },
+   "Nachname Vorname Geburts datum Familien stand led verh gesch verw Verhältnis zum Antragsteller Staatsan gehörigkeit Aufenthalts Erlaubnis bisRow7_3": {
+    "typ": "text"
+   },
+   "Nachname Vorname Geburts datum Familien stand led verh gesch verw Verhältnis zum Antragsteller Staatsan gehörigkeit Aufenthalts Erlaubnis bisRow7_4": {
+    "typ": "text"
+   },
+   "Nachname Vorname Geburts datum Familien stand led verh gesch verw Verhältnis zum Antragsteller Staatsan gehörigkeit Aufenthalts Erlaubnis bisRow7_5": {
+    "typ": "text"
+   },
+   "Nachname Vorname Geburts datum Familien stand led verh gesch verw Verhältnis zum Antragsteller Staatsan gehörigkeit Aufenthalts Erlaubnis bisRow7_6": {
+    "typ": "text"
+   },
+   "Nachname Vorname Geburts datum Familien stand led verh gesch verw Verhältnis zum Antragsteller Staatsan gehörigkeit Aufenthalts Erlaubnis bisRow7_7": {
+    "typ": "text"
+   },
+   "Nachname Vorname Geburts datum Familien stand led verh gesch verw Verhältnis zum Antragsteller Staatsan gehörigkeit Aufenthalts Erlaubnis bisRow7_8": {
+    "typ": "text"
+   },
+   "Name Arbeitgeber Seit wann Höhe pro Monat BruttoRow1": {
+    "typ": "text"
+   },
+   "Name Arbeitgeber Seit wann Höhe pro Monat BruttoRow2": {
+    "typ": "text"
+   },
+   "Name Arbeitgeber Seit wann Höhe pro Monat BruttoRow3": {
+    "typ": "text"
+   },
+   "Name Arbeitgeber Seit wann Höhe pro Monat BruttoRow4": {
+    "typ": "text"
+   },
+   "Name Arbeitgeber Seit wann Höhe pro Monat BruttoRow5": {
+    "typ": "text"
+   },
+   "Name Art Höhe bei mehreren Konten Summe zusammenfassenRow1": {
+    "typ": "text"
+   },
+   "Name Art Höhe bei mehreren Konten Summe zusammenfassenRow2": {
+    "typ": "text"
+   },
+   "Name Art Höhe bei mehreren Konten Summe zusammenfassenRow3": {
+    "typ": "text"
+   },
+   "Name Art HöheMonatRow1": {
+    "typ": "text"
+   },
+   "Name Art HöheMonatRow2": {
+    "typ": "text"
+   },
+   "Name Geburtsdatum HöheMonatRow1": {
+    "typ": "text"
+   },
+   "Name Geburtsdatum HöheMonatRow2": {
+    "typ": "text"
+   },
+   "Name Grad der Behinderung Ausweis Nr Bescheid Versorgungsamt vomRow1": {
+    "typ": "text"
+   },
+   "Name Grad der Behinderung Ausweis Nr Bescheid Versorgungsamt vomRow2": {
+    "typ": "text"
+   },
+   "Name Pflegegrad Krankenkasse Bescheid vomRow1": {
+    "typ": "text"
+   },
+   "Name Pflegegrad Krankenkasse Bescheid vomRow2": {
+    "typ": "text"
+   },
+   "Name Seit wann Letzter JahresgewinnRow1": {
+    "typ": "text"
+   },
+   "Name Seit wann Letzter JahresgewinnRow2": {
+    "typ": "text"
+   },
+   "Name Was In welcher HöheRow1": {
+    "typ": "text"
+   },
+   "Name Was In welcher HöheRow2": {
+    "typ": "text"
+   },
+   "Name Was In welcher HöheRow2_2": {
+    "typ": "text"
+   },
+   "Name Was In welcher HöheRow2_3": {
+    "typ": "text"
+   },
+   "Name Was Seit wann  in welchem ZeitraumRow1": {
+    "typ": "text"
+   },
+   "Name Was Seit wann  in welchem ZeitraumRow2": {
+    "typ": "text"
+   },
+   "Name Was Seit wann  in welchem ZeitraumRow3": {
+    "typ": "text"
+   },
+   "Name Was Seit wann  in welchem ZeitraumRow4": {
+    "typ": "text"
+   },
+   "Name Was Seit wann  in welchem ZeitraumRow5": {
+    "typ": "text"
+   },
+   "PLZ": {
+    "typ": "text"
+   },
+   "Pflegegrad1": {
+    "typ": "text"
+   },
+   "Pflegegrad3": {
+    "typ": "text"
+   },
+   "Seitwann1": {
+    "typ": "text"
+   },
+   "Seitwann2": {
+    "typ": "text"
+   },
+   "Seitwann3": {
+    "typ": "text"
+   },
+   "Seitwann4": {
+    "typ": "text"
+   },
+   "Seitwann5": {
+    "typ": "text"
+   },
+   "Staatsangehörigkeit2": {
+    "typ": "text"
+   },
+   "Staatsangehörigkeiten": {
+    "typ": "text"
+   },
+   "Staatsanghörigkeit1": {
+    "typ": "text"
+   },
+   "Staatsanghörigkeit3": {
+    "typ": "text"
+   },
+   "Staatsanghörigkeit4": {
+    "typ": "text"
+   },
+   "Staatsanghörigkeit5": {
+    "typ": "text"
+   },
+   "Staatsanghörigkeit6": {
+    "typ": "text"
+   },
+   "Staatsanghörigkeit7": {
+    "typ": "text"
+   },
+   "StraßeHsNr": {
+    "typ": "text"
+   },
+   "Text2": {
+    "typ": "text"
+   },
+   "Text3": {
+    "typ": "text"
+   },
+   "Verhältnis3": {
+    "typ": "text"
+   },
+   "Verhätnis1": {
+    "typ": "text"
+   },
+   "Verhätnis2": {
+    "typ": "text"
+   },
+   "Verhätnis4": {
+    "typ": "text"
+   },
+   "Verhätnis5": {
+    "typ": "text"
+   },
+   "Verhätnis6": {
+    "typ": "text"
+   },
+   "Verhätnis7": {
+    "typ": "text"
+   },
+   "Vorname": {
+    "typ": "text"
+   },
+   "Wann1": {
+    "typ": "text"
+   },
+   "Wann2": {
+    "typ": "text"
+   },
+   "Was1": {
+    "typ": "text"
+   },
+   "Was2": {
+    "typ": "text"
+   },
+   "Was3": {
+    "typ": "text"
+   },
+   "Was4": {
+    "typ": "text"
+   },
+   "Was5": {
+    "typ": "text"
+   },
+   "Wohnberechtigungsschein WBS": {
+    "typ": "text"
+   },
+   "Wohnort": {
+    "typ": "text"
+   },
+   "fill_1": {
+    "typ": "text"
+   },
+   "fill_2": {
+    "typ": "text"
+   },
+   "fill_2_2": {
+    "typ": "text"
+   },
+   "fill_3": {
+    "typ": "text"
+   },
+   "fill_4": {
+    "typ": "text"
+   },
+   "telefonische Erreichbarkeit o EMail": {
+    "typ": "text"
+   },
+   "undefined_2": {
+    "typ": "text"
+   }
+  },
+  "geschuetzt": false,
+  "seiten": 5,
+  "stand": "",
+  "titel": "Microsoft Word - Antrag WBS 2026 mit Anlage Mai.docx",
+  "xfa": false
+ },
+ "wbs-SL.pdf": {
+  "felder": {
+   ".HM1_Name": {
+    "typ": "text"
+   },
+   ".HM1_Vorname": {
+    "typ": "text"
+   },
+   ".HM2_Name": {
+    "typ": "text"
+   },
+   ".HM2_Vorname": {
+    "typ": "text"
+   },
+   ".HM3_Name": {
+    "typ": "text"
+   },
+   ".HM3_Vorname": {
+    "typ": "text"
+   },
+   ".HM4_Name": {
+    "typ": "text"
+   },
+   ".HM4_Vorname": {
+    "typ": "text"
+   },
+   "AS_Abgaben_Rente": {
+    "typ": "check"
+   },
+   "AS_Abgaben_Steuern": {
+    "typ": "check"
+   },
+   "AS_Abgaben_Versicherung": {
+    "typ": "check"
+   },
+   "AS_Adresszusatz": {
+    "typ": "text"
+   },
+   "AS_Einnahme1_Art": {
+    "typ": "text"
+   },
+   "AS_Einnahme1_Betrag": {
+    "typ": "text"
+   },
+   "AS_Einnahme1_Turnus": {
+    "typ": "/Ch"
+   },
+   "AS_Einnahme2_Art": {
+    "typ": "text"
+   },
+   "AS_Einnahme2_Betrag": {
+    "typ": "text"
+   },
+   "AS_Einnahme2_Turnus": {
+    "typ": "/Ch"
+   },
+   "AS_Einnahme3_Art": {
+    "typ": "text"
+   },
+   "AS_Einnahme3_Betrag": {
+    "typ": "text"
+   },
+   "AS_Einnahme3_Turnus": {
+    "typ": "/Ch"
+   },
+   "AS_Einnahme4_Art": {
+    "typ": "text"
+   },
+   "AS_Einnahme4_Betrag": {
+    "typ": "text"
+   },
+   "AS_Einnahme4_Turnus": {
+    "typ": "/Ch"
+   },
+   "AS_Erwerbsstatus": {
+    "typ": "check"
+   },
+   "AS_Familienstand": {
+    "typ": "check"
+   },
+   "AS_GebDatum": {
+    "typ": "text"
+   },
+   "AS_Geschlecht": {
+    "typ": "check"
+   },
+   "AS_Grad der Schwerbehinderung": {
+    "typ": "text"
+   },
+   "AS_HausNr": {
+    "typ": "text"
+   },
+   "AS_Mail": {
+    "typ": "text"
+   },
+   "AS_Name": {
+    "typ": "text"
+   },
+   "AS_Ort": {
+    "typ": "text"
+   },
+   "AS_PLZ": {
+    "typ": "text"
+   },
+   "AS_Pflegegrad": {
+    "typ": "text"
+   },
+   "AS_Schwerbehinderung": {
+    "typ": "check"
+   },
+   "AS_Staat": {
+    "typ": "text"
+   },
+   "AS_Strasse": {
+    "typ": "text"
+   },
+   "AS_Telefon": {
+    "typ": "text"
+   },
+   "AS_Vorname": {
+    "typ": "text"
+   },
+   "Abfrage_VertreterIn": {
+    "typ": "check"
+   },
+   "Anlagen_Bemerkungen": {
+    "typ": "text"
+   },
+   "Anlagen_a1": {
+    "typ": "check"
+   },
+   "Anlagen_a12": {
+    "typ": "check"
+   },
+   "Anlagen_a2": {
+    "typ": "check"
+   },
+   "Anlagen_b1": {
+    "typ": "check"
+   },
+   "Anlagen_b10": {
+    "typ": "check"
+   },
+   "Anlagen_b11": {
+    "typ": "check"
+   },
+   "Anlagen_b13": {
+    "typ": "check"
+   },
+   "Anlagen_b14": {
+    "typ": "check"
+   },
+   "Anlagen_b14_Sonstige Nachweise": {
+    "typ": "text"
+   },
+   "Anlagen_b2": {
+    "typ": "check"
+   },
+   "Anlagen_b3": {
+    "typ": "check"
+   },
+   "Anlagen_b4": {
+    "typ": "check"
+   },
+   "Anlagen_b5": {
+    "typ": "check"
+   },
+   "Anlagen_b6": {
+    "typ": "check"
+   },
+   "Anlagen_b7": {
+    "typ": "check"
+   },
+   "Anlagen_b8": {
+    "typ": "check"
+   },
+   "Anlagen_b9": {
+    "typ": "check"
+   },
+   "Anlagen_c1": {
+    "typ": "check"
+   },
+   "Anlagen_c2": {
+    "typ": "check"
+   },
+   "Anlagen_c3": {
+    "typ": "check"
+   },
+   "Anlagen_c4": {
+    "typ": "check"
+   },
+   "Anlagen_c5": {
+    "typ": "check"
+   },
+   "Anlagen_c6": {
+    "typ": "check"
+   },
+   "Anlagen_c7": {
+    "typ": "check"
+   },
+   "Anlagen_c7_Sonstige Nachweise": {
+    "typ": "text"
+   },
+   "BegruendungMehrbedarf": {
+    "typ": "text"
+   },
+   "EinmaligeEinnahmen": {
+    "typ": "check"
+   },
+   "Einnahmeaenderung_JaErhoehen": {
+    "typ": "check"
+   },
+   "Einnahmeaenderung_JaVerringern": {
+    "typ": "check"
+   },
+   "Einnahmeaenderung_Nein": {
+    "typ": "check"
+   },
+   "Erklaerung_OrtDatum": {
+    "typ": "text"
+   },
+   "HM1_Abgaben_Rente": {
+    "typ": "check"
+   },
+   "HM1_Abgaben_Steuern": {
+    "typ": "check"
+   },
+   "HM1_Abgaben_Versicherung": {
+    "typ": "check"
+   },
+   "HM1_Einnahme1_Art": {
+    "typ": "text"
+   },
+   "HM1_Einnahme1_Betrag": {
+    "typ": "text"
+   },
+   "HM1_Einnahme1_Turnus": {
+    "typ": "/Ch"
+   },
+   "HM1_Einnahme2_Art": {
+    "typ": "text"
+   },
+   "HM1_Einnahme2_Betrag": {
+    "typ": "text"
+   },
+   "HM1_Einnahme2_Turnus": {
+    "typ": "/Ch"
+   },
+   "HM1_Einnahme3_Art": {
+    "typ": "text"
+   },
+   "HM1_Einnahme3_Betrag": {
+    "typ": "text"
+   },
+   "HM1_Einnahme3_Turnus": {
+    "typ": "/Ch"
+   },
+   "HM1_Einnahme4_Art": {
+    "typ": "text"
+   },
+   "HM1_Einnahme4_Betrag": {
+    "typ": "text"
+   },
+   "HM1_Einnahme4_Turnus": {
+    "typ": "/Ch"
+   },
+   "HM1_Erwerbsstatus": {
+    "typ": "check"
+   },
+   "HM1_Familienstand": {
+    "typ": "check"
+   },
+   "HM1_Geburtsdatum": {
+    "typ": "text"
+   },
+   "HM1_Geschlecht": {
+    "typ": "check"
+   },
+   "HM1_Pflegegrad": {
+    "typ": "text"
+   },
+   "HM1_Schwerbehinderung": {
+    "typ": "check"
+   },
+   "HM1_SchwerbehinderungGrad": {
+    "typ": "text"
+   },
+   "HM1_Staat": {
+    "typ": "text"
+   },
+   "HM1_Verhaeltnis": {
+    "typ": "check"
+   },
+   "HM1_Verhaeltnis_verwandt": {
+    "typ": "text"
+   },
+   "HM1_sonstigesVerhaeltnis": {
+    "typ": "text"
+   },
+   "HM2_Abgaben_Rente": {
+    "typ": "check"
+   },
+   "HM2_Abgaben_Steuern": {
+    "typ": "check"
+   },
+   "HM2_Abgaben_Versicherung": {
+    "typ": "check"
+   },
+   "HM2_Einnahme1_Art": {
+    "typ": "text"
+   },
+   "HM2_Einnahme1_Betrag": {
+    "typ": "text"
+   },
+   "HM2_Einnahme1_Turnus": {
+    "typ": "/Ch"
+   },
+   "HM2_Einnahme2_Art": {
+    "typ": "text"
+   },
+   "HM2_Einnahme2_Betrag": {
+    "typ": "text"
+   },
+   "HM2_Einnahme2_Turnus": {
+    "typ": "/Ch"
+   },
+   "HM2_Einnahme3_Art": {
+    "typ": "text"
+   },
+   "HM2_Einnahme3_Betrag": {
+    "typ": "text"
+   },
+   "HM2_Einnahme3_Turnus": {
+    "typ": "/Ch"
+   },
+   "HM2_Einnahme4_Art": {
+    "typ": "text"
+   },
+   "HM2_Einnahme4_Betrag": {
+    "typ": "text"
+   },
+   "HM2_Einnahme4_Turnus": {
+    "typ": "/Ch"
+   },
+   "HM2_Erwerbsstatus": {
+    "typ": "check"
+   },
+   "HM2_Familienstand": {
+    "typ": "check"
+   },
+   "HM2_Geburtsdatum": {
+    "typ": "text"
+   },
+   "HM2_Geschlecht": {
+    "typ": "check"
+   },
+   "HM2_Pflegegrad": {
+    "typ": "text"
+   },
+   "HM2_Schwerbehinderung": {
+    "typ": "check"
+   },
+   "HM2_SchwerbehinderungGrad": {
+    "typ": "text"
+   },
+   "HM2_Staat": {
+    "typ": "text"
+   },
+   "HM2_Verhaeltnis": {
+    "typ": "check"
+   },
+   "HM2_Verhaeltnis_verwandt": {
+    "typ": "text"
+   },
+   "HM2_sonstigesVerhaeltnis": {
+    "typ": "text"
+   },
+   "HM3_Abgaben_Rente": {
+    "typ": "check"
+   },
+   "HM3_Abgaben_Steuern": {
+    "typ": "check"
+   },
+   "HM3_Abgaben_Versicherung": {
+    "typ": "check"
+   },
+   "HM3_Einnahme1_Art": {
+    "typ": "text"
+   },
+   "HM3_Einnahme1_Betrag": {
+    "typ": "text"
+   },
+   "HM3_Einnahme1_Turnus": {
+    "typ": "/Ch"
+   },
+   "HM3_Einnahme2_Art": {
+    "typ": "text"
+   },
+   "HM3_Einnahme2_Betrag": {
+    "typ": "text"
+   },
+   "HM3_Einnahme2_Turnus": {
+    "typ": "/Ch"
+   },
+   "HM3_Einnahme3_Art": {
+    "typ": "text"
+   },
+   "HM3_Einnahme3_Betrag": {
+    "typ": "text"
+   },
+   "HM3_Einnahme3_Turnus": {
+    "typ": "/Ch"
+   },
+   "HM3_Einnahme4_Art": {
+    "typ": "text"
+   },
+   "HM3_Einnahme4_Betrag": {
+    "typ": "text"
+   },
+   "HM3_Einnahme4_Turnus": {
+    "typ": "/Ch"
+   },
+   "HM3_Erwerbsstatus": {
+    "typ": "check"
+   },
+   "HM3_Familienstand": {
+    "typ": "check"
+   },
+   "HM3_Geburtsdatum": {
+    "typ": "text"
+   },
+   "HM3_Geschlecht": {
+    "typ": "check"
+   },
+   "HM3_Pflegegrad": {
+    "typ": "text"
+   },
+   "HM3_Schwerbehinderung": {
+    "typ": "check"
+   },
+   "HM3_SchwerbehinderungGrad": {
+    "typ": "text"
+   },
+   "HM3_Staat": {
+    "typ": "text"
+   },
+   "HM3_Verhaeltnis": {
+    "typ": "check"
+   },
+   "HM3_Verhaeltnis_verwandt": {
+    "typ": "text"
+   },
+   "HM3_sonstigesVerhaeltnis": {
+    "typ": "text"
+   },
+   "HM4_Abgaben_Rente": {
+    "typ": "check"
+   },
+   "HM4_Abgaben_Steuern": {
+    "typ": "check"
+   },
+   "HM4_Abgaben_Versicherung": {
+    "typ": "check"
+   },
+   "HM4_Einnahme1_Art": {
+    "typ": "text"
+   },
+   "HM4_Einnahme1_Betrag": {
+    "typ": "text"
+   },
+   "HM4_Einnahme1_Turnus": {
+    "typ": "/Ch"
+   },
+   "HM4_Einnahme2_Art": {
+    "typ": "text"
+   },
+   "HM4_Einnahme2_Betrag": {
+    "typ": "text"
+   },
+   "HM4_Einnahme2_Turnus": {
+    "typ": "/Ch"
+   },
+   "HM4_Einnahme3_Art": {
+    "typ": "text"
+   },
+   "HM4_Einnahme3_Betrag": {
+    "typ": "text"
+   },
+   "HM4_Einnahme3_Turnus": {
+    "typ": "/Ch"
+   },
+   "HM4_Einnahme4_Art": {
+    "typ": "text"
+   },
+   "HM4_Einnahme4_Betrag": {
+    "typ": "text"
+   },
+   "HM4_Einnahme4_Turnus": {
+    "typ": "/Ch"
+   },
+   "HM4_Erwerbsstatus": {
+    "typ": "check"
+   },
+   "HM4_Familienstand": {
+    "typ": "check"
+   },
+   "HM4_Geburtsdatum": {
+    "typ": "text"
+   },
+   "HM4_Pflegegrad": {
+    "typ": "text"
+   },
+   "HM4_Schwerbehinderung": {
+    "typ": "check"
+   },
+   "HM4_SchwerbehinderungGrad": {
+    "typ": "text"
+   },
+   "HM4_Staat": {
+    "typ": "text"
+   },
+   "Mehrbedarf": {
+    "typ": "check"
+   },
+   "Unterhalt": {
+    "typ": "check"
+   },
+   "Unterhalt Empfaenger_P1_Ort": {
+    "typ": "text"
+   },
+   "UnterhaltEmpfaenger_P1_Adresszusatz": {
+    "typ": "text"
+   },
+   "UnterhaltEmpfaenger_P1_Beziehung": {
+    "typ": "text"
+   },
+   "UnterhaltEmpfaenger_P1_Geburtsdatum": {
+    "typ": "text"
+   },
+   "UnterhaltEmpfaenger_P1_Hausnummer": {
+    "typ": "text"
+   },
+   "UnterhaltEmpfaenger_P1_Hoehe": {
+    "typ": "text"
+   },
+   "UnterhaltEmpfaenger_P1_Name": {
+    "typ": "text"
+   },
+   "UnterhaltEmpfaenger_P1_PLZ": {
+    "typ": "text"
+   },
+   "UnterhaltEmpfaenger_P1_Strasse": {
+    "typ": "text"
+   },
+   "UnterhaltEmpfaenger_P1_Vorname": {
+    "typ": "text"
+   },
+   "UnterhaltEmpfaenger_P2_Adresszusatz": {
+    "typ": "text"
+   },
+   "UnterhaltEmpfaenger_P2_Beziehung": {
+    "typ": "text"
+   },
+   "UnterhaltEmpfaenger_P2_Geburtsdatum": {
+    "typ": "text"
+   },
+   "UnterhaltEmpfaenger_P2_Hausnummer": {
+    "typ": "text"
+   },
+   "UnterhaltEmpfaenger_P2_Hoehe": {
+    "typ": "text"
+   },
+   "UnterhaltEmpfaenger_P2_Name": {
+    "typ": "text"
+   },
+   "UnterhaltEmpfaenger_P2_Ort": {
+    "typ": "text"
+   },
+   "UnterhaltEmpfaenger_P2_PLZ": {
+    "typ": "text"
+   },
+   "UnterhaltEmpfaenger_P2_Strasse": {
+    "typ": "text"
+   },
+   "UnterhaltEmpfaenger_P2_Vorname": {
+    "typ": "text"
+   },
+   "UnterhaltEmpfaenger_P3_Adresszusatz": {
+    "typ": "text"
+   },
+   "UnterhaltEmpfaenger_P3_Beziehung": {
+    "typ": "text"
+   },
+   "UnterhaltEmpfaenger_P3_Geburtsdatum": {
+    "typ": "text"
+   },
+   "UnterhaltEmpfaenger_P3_Hausnummer": {
+    "typ": "text"
+   },
+   "UnterhaltEmpfaenger_P3_Hoehe": {
+    "typ": "text"
+   },
+   "UnterhaltEmpfaenger_P3_Name": {
+    "typ": "text"
+   },
+   "UnterhaltEmpfaenger_P3_Ort": {
+    "typ": "text"
+   },
+   "UnterhaltEmpfaenger_P3_PLZ": {
+    "typ": "text"
+   },
+   "UnterhaltEmpfaenger_P3_Strasse": {
+    "typ": "text"
+   },
+   "UnterhaltEmpfaenger_P3_Vorname": {
+    "typ": "text"
+   },
+   "Unterhalt_P1_Name": {
+    "typ": "text"
+   },
+   "Unterhalt_P1_Vorname": {
+    "typ": "text"
+   },
+   "Unterhalt_P2_Name": {
+    "typ": "text"
+   },
+   "Unterhalt_P2_Vorname": {
+    "typ": "text"
+   },
+   "Unterhalt_P3_Name": {
+    "typ": "text"
+   },
+   "Unterhalt_P3_Vorname": {
+    "typ": "text"
+   },
+   "Vermoegen": {
+    "typ": "check"
+   },
+   "Vermoegen1": {
+    "typ": "check"
+   },
+   "Vermoegen2": {
+    "typ": "check"
+   },
+   "Vermoegen3": {
+    "typ": "check"
+   },
+   "Vermoegen4": {
+    "typ": "check"
+   },
+   "Vermoegen_Geldvermoegen": {
+    "typ": "text"
+   },
+   "Vermoegen_Immobilien": {
+    "typ": "text"
+   },
+   "Vermoegen_Sonstiges": {
+    "typ": "text"
+   },
+   "Vermoegen_Wertgegenstaende": {
+    "typ": "text"
+   },
+   "Vertreter_Adresszusatz": {
+    "typ": "text"
+   },
+   "Vertreter_EMail": {
+    "typ": "text"
+   },
+   "Vertreter_Hausnummer": {
+    "typ": "text"
+   },
+   "Vertreter_Name": {
+    "typ": "text"
+   },
+   "Vertreter_Ort": {
+    "typ": "text"
+   },
+   "Vertreter_PLZ": {
+    "typ": "text"
+   },
+   "Vertreter_Strasse": {
+    "typ": "text"
+   },
+   "Vertreter_Telefonnummer": {
+    "typ": "text"
+   },
+   "Vertreter_Vorname": {
+    "typ": "text"
+   },
+   "Werbungskosten": {
+    "typ": "check"
+   },
+   "Werbungskosten_P1_Ausgaben": {
+    "typ": "text"
+   },
+   "Werbungskosten_P1_Name": {
+    "typ": "text"
+   },
+   "Werbungskosten_P1_Vorname": {
+    "typ": "text"
+   },
+   "Werbungskosten_P2_Ausgaben": {
+    "typ": "text"
+   },
+   "Werbungskosten_P2_Name": {
+    "typ": "text"
+   },
+   "Werbungskosten_P2_Vorname": {
+    "typ": "text"
+   },
+   "einmaligeAenderung_P1_Art": {
+    "typ": "text"
+   },
+   "einmaligeAenderung_P1_Einnahme": {
+    "typ": "text"
+   },
+   "einmaligeAenderung_P1_Grund": {
+    "typ": "text"
+   },
+   "einmaligeAenderung_P1_Name": {
+    "typ": "text"
+   },
+   "einmaligeAenderung_P1_Turnus": {
+    "typ": "/Ch"
+   },
+   "einmaligeAenderung_P1_Vorname": {
+    "typ": "text"
+   },
+   "einmaligeAenderung_P1_Zeitpunkt": {
+    "typ": "text"
+   },
+   "einmaligeAenderung_P2_Art": {
+    "typ": "text"
+   },
+   "einmaligeAenderung_P2_Einnahme": {
+    "typ": "text"
+   },
+   "einmaligeAenderung_P2_Grund": {
+    "typ": "text"
+   },
+   "einmaligeAenderung_P2_Name": {
+    "typ": "text"
+   },
+   "einmaligeAenderung_P2_Turnus": {
+    "typ": "/Ch"
+   },
+   "einmaligeAenderung_P2_Vorname": {
+    "typ": "text"
+   },
+   "einmaligeAenderung_P2_Zeitpunkt": {
+    "typ": "text"
+   },
+   "einmaligeAenderung_P3_Art": {
+    "typ": "text"
+   },
+   "einmaligeAenderung_P3_Einnahme": {
+    "typ": "text"
+   },
+   "einmaligeAenderung_P3_Grund": {
+    "typ": "text"
+   },
+   "einmaligeAenderung_P3_Name": {
+    "typ": "text"
+   },
+   "einmaligeAenderung_P3_Turnus": {
+    "typ": "/Ch"
+   },
+   "einmaligeAenderung_P3_Vorname": {
+    "typ": "text"
+   },
+   "einmaligeAenderung_P3_Zeitpunkt": {
+    "typ": "text"
+   },
+   "einmaligeEinnahmen_P1_Art": {
+    "typ": "text"
+   },
+   "einmaligeEinnahmen_P1_Betrag": {
+    "typ": "text"
+   },
+   "einmaligeEinnahmen_P1_Datum": {
+    "typ": "text"
+   },
+   "einmaligeEinnahmen_P1_Name": {
+    "typ": "text"
+   },
+   "einmaligeEinnahmen_P1_Vorname": {
+    "typ": "text"
+   },
+   "einmaligeEinnahmen_P2_Art": {
+    "typ": "text"
+   },
+   "einmaligeEinnahmen_P2_Betrag": {
+    "typ": "text"
+   },
+   "einmaligeEinnahmen_P2_Datum": {
+    "typ": "text"
+   },
+   "einmaligeEinnahmen_P2_Name": {
+    "typ": "text"
+   },
+   "einmaligeEinnahmen_P2_Vorname": {
+    "typ": "text"
+   }
+  },
+  "geschuetzt": false,
+  "seiten": 13,
+  "stand": "",
+  "titel": "Antrag auf Erteilung eines Wohnberechtigungsscheins",
   "xfa": false
  }
 }

@@ -175,17 +175,43 @@ const Formulare = (function () {
     if (ok(R('kiz')) && !(s.bezug || {}).kiz) add('kiz', 'kiz1-antrag_ba036540.pdf', 'Antrag auf Kinderzuschlag (KiZ 1)', 'Für die Familienkasse; zum Ausfüllen in einer PDF-App, einfacher geht es online mit BundID', {}, 'leer');
     // Wohngeld: Vordruck ohne Formularfelder (Muster; die Wohngeldstelle kann einen eigenen Vordruck verlangen)
     if (ok(R('wohngeld')) && !(s.bezug || {}).wohngeld) add('wg', '35_mz_antrag.pdf', 'Antrag auf Wohngeld (Mietzuschuss)', 'Muster-Vordruck zum Ausdrucken; manche Wohngeldstellen haben einen eigenen Vordruck', {}, 'leer');
-    // Wohnberechtigungsschein: Landesvordruck, wo das Land einen hat; sonst gibt ihn die Stadt oder Gemeinde heraus
+    // Wohnberechtigungsschein: SoLo füllt nichts aus. Es gibt den leeren Landesvordruck mit Ausfüllhilfe, sonst die Fundstelle.
     if (ok(R('wbs'))) {
       const bl = s.bundesland || '';
       const WBS = { BY: ['wbs-BY.pdf', 'Bayern, Stand April 2026; in München gilt ein eigenes Verfahren (SOWON)'], BE: ['wbs-BE.pdf', 'Berlin'],
-        BB: ['wbs-BB.pdf', 'Brandenburg, amtlicher Landesvordruck'], HH: ['wbs-HH.pdf', 'Hamburg, an das Bezirksamt'] };
-      const LINK = { HB: 'bau.bremen.de (Wohnberechtigungsschein)', RP: 'rp.egovernor.de bzw. die Verbandsgemeinde- oder Stadtverwaltung', SL: 'saarland.de (Soziale Wohnraumförderung)' };
-      if (WBS[bl]) add('wbs', WBS[bl][0], 'Antrag auf Wohnberechtigungsschein', WBS[bl][1] + '; dazu je Person mit Einkommen eine Einkommenserklärung', {}, 'leer');
-      else if (LINK[bl]) add('wbs', '', 'Antrag auf Wohnberechtigungsschein', 'Landesvordruck zum Herunterladen: ' + LINK[bl], {}, 'hinweis');
-      else add('wbs', '', 'Antrag auf Wohnberechtigungsschein', bl ? 'In diesem Land gibt die Stadt oder Gemeinde einen eigenen Vordruck heraus (Wohnungsamt oder Bauamt)' : 'Gib dein Bundesland oder deine Postleitzahl an; manche Länder haben einen Landesvordruck, sonst gibt ihn die Stadt oder Gemeinde heraus', {}, 'hinweis');
+        BB: ['wbs-BB.pdf', 'Brandenburg, amtlicher Landesvordruck'], HH: ['wbs-HH.pdf', 'Hamburg, an das Bezirksamt'],
+        HB: ['wbs-HB.pdf', 'Bremen, an die Senatorin für Bau, Mobilität und Stadtentwicklung'], RP: ['wbs-RP.pdf', 'Rheinland-Pfalz, Landesvordruck 2026'],
+        SL: ['wbs-SL.pdf', 'Saarland, Stand 1.9.2025, an das Ministerium für Inneres, Bauen und Sport'] };
+      const hilfe = wbsHilfe(s, a);
+      if (WBS[bl]) {
+        add('wbs', WBS[bl][0], 'Antrag auf Wohnberechtigungsschein', WBS[bl][1] + '; dazu je Person mit Einkommen eine Einkommenserklärung', {}, 'leer');
+        liste[liste.length - 1].hilfe = hilfe;
+        if (bl === 'HB') add('wbs-ek', 'wbs-HB-anlage1.pdf', 'Einkommens- und Vermögenserklärung (Anlage 1)', 'Für jede Person im Haushalt mit eigenem Einkommen eine eigene Erklärung', {}, 'leer');
+      } else {
+        add('wbs', '', 'Antrag auf Wohnberechtigungsschein', bl
+          ? 'In diesem Land gibt es keinen einheitlichen Landesvordruck. Du bekommst ihn beim Wohnungsamt (in kleineren Orten beim Bauamt oder Bürgerbüro) deiner Stadt oder Gemeinde, meist auch auf deren Internetseite unter „Wohnberechtigungsschein“'
+          : 'Gib dein Bundesland oder deine Postleitzahl an; manche Länder haben einen Landesvordruck, sonst gibt ihn die Stadt oder Gemeinde heraus', {}, 'hinweis');
+        liste[liste.length - 1].hilfe = hilfe;
+      }
     }
     return liste;
+  }
+
+  // Ausfüllhilfe für den WBS-Antrag: was in die Felder gehört, mit SoLos Angaben als Anhaltspunkt (nichts wird eingetragen)
+  function wbsHilfe(s, a) {
+    const erw = s.adults === 2 ? 2 : 1, kids = (s.kids | 0) + (s.young | 0), pers = erw + kids;
+    const h = ['Haushalt: alle Personen, die mit dir einziehen, mit Geburtsdatum (laut deinen Angaben ' + pers + (pers === 1 ? ' Person' : ' Personen') + (kids ? ', davon ' + kids + (kids === 1 ? ' Kind' : ' Kinder') : '') + ')'];
+    const tsd = (x) => String(Math.round(x)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    const ek = (art, b) => art && art !== 'ohne' && n(b) > 0 ? tsd(n(b) * 12) + ' € brutto im Jahr' : '';
+    const e1 = ek(s.ek1Art || s.art1, s.ek1Brutto || s.brutto), e2 = erw === 2 ? ek(s.ek2Art, s.ek2Brutto) : '';
+    h.push('Einkommen: das Einkommen der letzten 12 Monate bzw. das erwartete der nächsten 12 Monate, für jede Person eine Einkommenserklärung' + (e1 ? ' (du laut deinen Angaben etwa ' + e1 + (e2 ? ', Partner/in etwa ' + e2 : '') + ')' : ''));
+    h.push('Abzüge macht das Amt: Werbungskosten (mindestens 1.230 € bei Arbeit, 102 € bei Rente) und je 10 % für Steuern, Kranken- und Rentenversicherung, wenn du sie zahlst');
+    if (s.gdb || s.bhPerson || s.pflegegrad) h.push('Schwerbehinderung oder Pflegegrad angeben und Nachweis beilegen: dafür gibt es Freibeträge');
+    if (n(s.uzBetrag) > 0) h.push('Unterhalt, den du zahlst, angeben und Titel oder Vereinbarung beilegen: er wird abgezogen');
+    if (s.schwanger) h.push('Schwangerschaft angeben (Mutterpass): das erwartete Kind zählt mit');
+    if (s.adults === 2) h.push('Seid ihr unter 40 und weniger als 5 Jahre verheiratet oder verpartnert? Das angeben: dafür gibt es in vielen Ländern einen Freibetrag');
+    h.push('Beilegen: Personalausweis, Einkommensnachweise (Lohnabrechnungen, Rentenbescheid, Bescheide), bei Kindern Kindergeldbescheid; alle Erwachsenen unterschreiben');
+    return h;
   }
 
   // Unterlagen nach dem Anforderungskatalog des Jobcenters, nur die zu den Angaben passenden
