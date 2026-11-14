@@ -11,7 +11,7 @@
     "build:data": "node tools/build-plz-data.js && node tools/build-behoerden.js",
     "build:app": "node scripts/build-app.js && cd app && npx cap sync",
     "test": "npm run build:web && npm run test:rules && npm run test:dom",
-    "test:rules": "node test/test.js && node test/test-strict.js && node test/test-beh.js && node test/test-faelle.js && node test/test-plz.js && node test/test-behoerden.js && node test/test-raster.js && node test/test-pruefliste.js && node test/test-eigenschaften.js && HEUTE=2027.05 node test/test-eigenschaften.js 8000 && node test/test-sprachen-zahlen.js && node test/test-einfach-gleich.js && node test/test-feste-zahlen.js && node test/test-eingaben.js && node test/test-grenzen.js && node test/test-formulare.js && node test/test-amtlich.js",
+    "test:rules": "node test/test.js && node test/test-strict.js && node test/test-beh.js && node test/test-faelle.js && node test/test-plz.js && node test/test-behoerden.js && node test/test-raster.js && node test/test-pruefliste.js && node test/test-eigenschaften.js && HEUTE=2027.05 node test/test-eigenschaften.js 8000 && node test/test-sprachen-zahlen.js && node test/test-einfach-gleich.js && node test/test-feste-zahlen.js && node test/test-eingaben.js && node test/test-grenzen.js && node test/test-formulare.js && node test/test-amtlich.js && node test/test-mutationen.js",
     "test:dom": "node test/dom-test.js && node test/test-jahreswechsel.js && node test/test-sicherheit.js && node test/test-anzeige.js && node test/test-altstaende.js",
     "test:e2e": "npm run build:web && node test/e2e-beh.js && node test/e2e-einfach.js && node test/e2e-klein.js && node test/e2e-zufall.js 400 && node test/a11y.js",
     "test:app": "node scripts/build-app.js && node test/app-test.js",
