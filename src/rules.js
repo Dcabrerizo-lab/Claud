@@ -96,17 +96,38 @@ const Rules = (function () {
     famgeld: { betrag: 250, ab3: 300, krippe: 100 },
     // Wohnberechtigungsschein, Bundeswerte § 9 Abs. 2 WoFG (Untergrenze; die Länder legen eigene, meist höhere Grenzen fest)
     wbsBund: { ein: 12000, zwei: 18000, weitere: 4100, kind: 500 },
-    // Landesgrenzen für den WBS, wo belegt (Jahreseinkommen; Stand 11/2026). hoch: höchste Stufe (Faktor) für eingeschränkte/erhöhte Scheine.
-    //  NW: § 13 WFNG NRW, Werte ab 1.1.2025 (Städte Köln, Bonn, Münster), Gruppe B bis +40 %
-    //  HE: HWoFG, Werte laut Verwaltungsportal Hessen und Landkreis
-    //  BE: Bundeswerte +40 % (WBS 140), erhöhte Stufe WBS 180 (+80 %) laut berlin.de
-    //  HB: Bundeswerte +10 % (uneingeschränkter Schein), eingeschränkt bis +60 % (Senatorin für Bau)
-    // Ältere (niedrigere) Werte bleiben auf der sicheren Seite: „wahrscheinlich“ nur, wenn das Brutto darunter liegt.
+    // Landesgrenzen für den WBS (Jahres-Gesamteinkommen; geprüft 11/2026 an amtlichen Quellen, siehe docs/WBS-GRENZEN.md).
+    // hoch: höchste Stufe (Faktor) für eingeschränkte/erhöhte Scheine; rund: Grenze auf volle 100 € aufrunden; plus1/plus2: Zuschlag
+    // für Ein- und Zweipersonenhaushalte (Schleswig-Holstein). Ohne Eintrag (Saarland): Bundeswerte als sichere Untergrenze.
+    //  BW: Erlass MLW 1.12.2025, Bezugsgröße 71.000 € - 15 % = 60.350 € für 1-2 Personen, +9.000 € ab der 3. Person
+    //  BE: Bundeswerte +40 % (WBS 140); erhöhte Stufen WBS 180 und WBS 220 (berlin.de)
+    //  BB: § 22 BbgWoFG, Bekanntmachung MIL 6.6.2023 (Amtsblatt 28/2023), ab 1.1.2024; Kind +2.000 € (§ 22 Abs. 4)
+    //  HB: Bundeswerte +10 % (uneingeschränkter Schein), eingeschränkt bis +60 % (Senatorin für Bau, Erläuterungen zum Antrag)
+    //  HH: § 8 HmbWoFG (wie Bund) +60 % im 1. Förderweg, bis +140 % im 3. Förderweg (hamburg.de)
+    //  HE: § 5 HWoFG, ab 1.1.2026 (Hessisches Wirtschaftsministerium)
+    //  MV: Einkommensgrenzenverordnung MV, 1. Förderweg (2. Förderweg 27.000 € allein), laut Hansestadt Rostock 7/2026
+    //  NI: § 3 Abs. 2 NWoFG ab 1.3.2025 (Kind +3.750 €)
+    //  NW: § 13 WFNG NRW mit Einkommenserlass Wohnen (MB.NRW 2025 Nr. 88, 2026 Nr. 82), Gruppe B bis +40 %
+    //  RP: § 13 LWoFG, Bekanntmachung FM 12.12.2025, ab 1.1.2026, aufgerundet auf 100 €; „speziell“ bis +60 %
+    //  SH: § 8 SHWoFG mit § 7 Abs. 2, § 9 Abs. 2 SHWoFG-DVO, Dynamisierung ab 1.1.2025; 2./3. Förderweg +20 %/+40 %
+    //  SN: Sächsische Einkommensgrenzen-Verordnung vom 2.12.2025, ab 1.1.2026
+    //  ST: Bundeswerte (§ 9 WoFG), je nach Landesprogramm +20 %
+    //  TH: § 10 ThürWoFG; Richtlinie bis +40 %
     wbsLand: {
-      NW: { ein: 23540, zwei: 28350, weitere: 6530, kind: 860, hoch: 1.4, stand: '1/2025' },
-      HE: { ein: 18166, zwei: 27561, weitere: 6265, kind: 833, hoch: 0, stand: '2026' },
-      BE: { ein: 16800, zwei: 25200, weitere: 5740, kind: 700, hoch: 1.8 / 1.4, stand: '2026' },
+      BW: { ein: 60350, zwei: 60350, weitere: 9000, kind: 0, hoch: 0, stand: '1.12.2025' },
+      BE: { ein: 16800, zwei: 25200, weitere: 5740, kind: 700, hoch: 2.2 / 1.4, stand: '2026' },
+      BB: { ein: 18500, zwei: 26000, weitere: 5800, kind: 2000, hoch: 0, stand: '1.1.2024' },
       HB: { ein: 13200, zwei: 19800, weitere: 4510, kind: 550, hoch: 1.6 / 1.1, stand: '2026' },
+      HH: { ein: 19200, zwei: 28800, weitere: 6560, kind: 800, hoch: 2.4 / 1.6, stand: '2026' },
+      HE: { ein: 20146, zwei: 30565, weitere: 6948, kind: 924, hoch: 0, stand: '1.1.2026' },
+      MV: { ein: 25800, zwei: 38700, weitere: 8800, kind: 1500, hoch: 27000 / 25800, stand: '7/2026' },
+      NI: { ein: 21250, zwei: 28750, weitere: 3750, kind: 3750, hoch: 0, stand: '1.3.2025' },
+      NW: { ein: 23540, zwei: 28350, weitere: 6530, kind: 860, hoch: 1.4, stand: '1.1.2025' },
+      RP: { ein: 19998.91, zwei: 28665.10, weitere: 6666.31, kind: 1333.25, rund: 100, hoch: 1.6, stand: '1.1.2026' },
+      SH: { ein: 19945.94, zwei: 29918.91, weitere: 6925.68, kind: 831.08, rund: 100, plus1: 3000, plus2: 2000, hoch: 1.4, stand: '1.1.2025' },
+      SN: { ein: 20520, zwei: 30780, weitere: 7011, kind: 855, hoch: 0, stand: '1.1.2026' },
+      ST: { ein: 12000, zwei: 18000, weitere: 4100, kind: 500, hoch: 1.2, stand: '2026' },
+      TH: { ein: 14400, zwei: 21600, weitere: 5000, kind: 1000, hoch: 1.4, stand: '2026' },
     },
     // Freibetrag beim Wohngeld für eigenes Einkommen von Kindern (16 bis 24 Jahre): 1.200 € im Jahr (§ 17 Nr. 4 WoGG)
     wgKindFrei: 100,
@@ -1086,14 +1107,20 @@ const Rules = (function () {
     // Das Brutto ist nie kleiner als das maßgebliche Gesamteinkommen; liegt es unter der Bundesgrenze, ist der WBS wahrscheinlich.
     if (h.land && h.land !== 'BY') {
       const jahr = (h.brutto + (h.kindEink || 0)) * 12;
-      const gr = (w) => (h.persons <= 1 ? w.ein : w.zwei + (h.persons - 2) * w.weitere) + h.children * w.kind;
+      const gr = (w) => {
+        let g = (h.persons <= 1 ? w.ein : w.zwei + (h.persons - 2) * w.weitere) + h.children * w.kind;
+        if (w.plus1 && h.persons <= 1) g += w.plus1; else if (w.plus2 && h.persons === 2) g += w.plus2;
+        return w.rund ? Math.ceil(Math.round(g * 100) / 100 / w.rund) * w.rund : g;
+      };
       const L = R.wbsLand[h.land];
       if (L) {
         const grenze = gr(L), land = BL_NAME[h.land];
         if (jahr <= grenze) return mk(id, 'ja', 'ja', [['wbs.landGrenze', { land, grenze: eur(grenze), stand: L.stand }], ['wbs.landStelle']]);
-        // Höchstens 30 % Abzüge (§ 16 WoFG und Landesrecht); darüber hinaus auch nicht mit der höchsten Landesstufe
-        // 5 % Reserve, weil die Länder ihre Grenzen jährlich erhöhen (ältere Werte dürfen kein falsches „nein“ ergeben)
-        if (L.hoch && jahr * (1 - R.wbs.maxAbzug) > grenze * L.hoch * 1.05) return mk(id, 'nein', 'einkoHoch', [['wbs.landHoch', { land, grenze: eur(grenze * L.hoch) }]]);
+        // Höchstens 30 % Abzüge (§ 23 WoFG und Landesrecht), dazu Freibeträge (Schwerbehinderung) und gezahlter Unterhalt (§ 24 WoFG);
+        // darüber hinaus auch nicht mit der höchsten Landesstufe. 5 % Reserve, weil die Länder ihre Grenzen fortschreiben.
+        const gdL = gdbNum(h), pgL = h.pflegegrad > 0;
+        const freiL = (gdL === 100 || (gdL >= 80 && pgL) ? R.wbs.schwerbFreiHoch : gdL >= 50 && pgL ? R.wbs.schwerbFreiPflege : 0) + (h.bhWeitere || 0) * R.wbs.schwerbFreiPflege + (h.uzBetrag || 0) * 12;
+        if (L.hoch && jahr * (1 - R.wbs.maxAbzug) - freiL > grenze * L.hoch * 1.05) return mk(id, 'nein', 'einkoHoch', [['wbs.landHoch', { land, grenze: eur(grenze * L.hoch) }]]);
         return mk(id, 'vielleicht', 'vielleicht', [['wbs.landUeber', { land, grenze: eur(grenze), stand: L.stand }], ['wbs.landStelle']]);
       }
       const bund = gr(R.wbsBund);

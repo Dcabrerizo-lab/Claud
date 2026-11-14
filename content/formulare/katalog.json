@@ -6383,6 +6383,14 @@
   "titel": "Antrag auf einen Wohnberechtigungsschein (WBS)",
   "xfa": false
  },
+ "wbs-BW.pdf": {
+  "felder": {},
+  "geschuetzt": false,
+  "seiten": 5,
+  "stand": "",
+  "titel": "Vordruck - Antrag auf einen Wohnungsberechtigungsschein Anlage 4",
+  "xfa": false
+ },
  "wbs-BY.pdf": {
   "felder": {
    "1_Angemeldet seit": {

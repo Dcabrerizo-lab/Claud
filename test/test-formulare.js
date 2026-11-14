@@ -69,10 +69,10 @@ ck('Ohne gewählte Leistungen: keine Formulare', F.plan(kizFall, PERSON, []).len
 const wbsFall = { adults: 1, ek1Art: 'lohn', ek1Brutto: 1500, ek1Netto: 1150, miete: 500, mietstufe: '3', vermoegen: 100 };
 const wbsRes = [{ id: 'wbs', level: 'ja' }];
 const wbsFuer = (bl) => F.plan(Object.assign({}, wbsFall, { bundesland: bl }), PERSON, wbsRes).find((x) => x.id === 'wbs');
-['BY', 'BE', 'BB', 'HH', 'HB', 'RP', 'SL'].forEach((bl) => { const w = wbsFuer(bl); ck('WBS ' + bl + ': Landesvordruck wbs-' + bl + '.pdf als unveränderter Vordruck', !!w && w.datei === 'wbs-' + bl + '.pdf' && w.art === 'leer', JSON.stringify(w)); if (w) alle.push(w); });
+['BW', 'BY', 'BE', 'BB', 'HH', 'HB', 'RP', 'SL'].forEach((bl) => { const w = wbsFuer(bl); ck('WBS ' + bl + ': Landesvordruck wbs-' + bl + '.pdf als unveränderter Vordruck', !!w && w.datei === 'wbs-' + bl + '.pdf' && w.art === 'leer', JSON.stringify(w)); if (w) alle.push(w); });
 ck('WBS Bremen: Einkommens- und Vermögenserklärung dabei', F.plan(Object.assign({}, wbsFall, { bundesland: 'HB' }), PERSON, wbsRes).some((x) => x.datei === 'wbs-HB-anlage1.pdf'));
 alle.push(F.plan(Object.assign({}, wbsFall, { bundesland: 'HB' }), PERSON, wbsRes).find((x) => x.id === 'wbs-ek'));
-['BW', 'HE', 'MV', 'NI', 'NW', 'SN', 'ST', 'SH', 'TH'].forEach((bl) => { const w = wbsFuer(bl); ck('WBS ' + bl + ': Hinweis auf Vordruck der Stadt oder Gemeinde', !!w && w.art === 'hinweis' && /Stadt oder Gemeinde/.test(w.warum) && /Wohnungsamt/.test(w.warum), JSON.stringify(w)); });
+['HE', 'MV', 'NI', 'NW', 'SN', 'ST', 'SH', 'TH'].forEach((bl) => { const w = wbsFuer(bl); ck('WBS ' + bl + ': Hinweis auf Vordruck der Stadt oder Gemeinde', !!w && w.art === 'hinweis' && /Stadt oder Gemeinde/.test(w.warum) && /Wohnungsamt/.test(w.warum), JSON.stringify(w)); });
 const hb = wbsFuer('BY');
 ck('WBS: Landesvordruck wird nicht ausgefüllt, aber mit Ausfüllhilfe', Object.keys(hb.werte).length === 0 && Array.isArray(hb.hilfe) && hb.hilfe.length >= 4 && /1 Person/.test(hb.hilfe[0]) && /18\.000 € brutto im Jahr/.test(hb.hilfe.join(' ')), JSON.stringify(hb.hilfe));
 const hn = wbsFuer('NW');

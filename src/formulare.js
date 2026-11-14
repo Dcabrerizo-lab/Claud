@@ -178,7 +178,7 @@ const Formulare = (function () {
     // Wohnberechtigungsschein: SoLo füllt nichts aus. Es gibt den leeren Landesvordruck mit Ausfüllhilfe, sonst die Fundstelle.
     if (ok(R('wbs'))) {
       const bl = s.bundesland || '';
-      const WBS = { BY: ['wbs-BY.pdf', 'Bayern, Stand April 2026; in München gilt ein eigenes Verfahren (SOWON)'], BE: ['wbs-BE.pdf', 'Berlin'],
+      const WBS = { BW: ['wbs-BW.pdf', 'Baden-Württemberg, Landesvordruck (Anlage 4) des Ministeriums für Landesentwicklung und Wohnen'], BY: ['wbs-BY.pdf', 'Bayern, Stand April 2026; in München gilt ein eigenes Verfahren (SOWON)'], BE: ['wbs-BE.pdf', 'Berlin'],
         BB: ['wbs-BB.pdf', 'Brandenburg, amtlicher Landesvordruck'], HH: ['wbs-HH.pdf', 'Hamburg, an das Bezirksamt'],
         HB: ['wbs-HB.pdf', 'Bremen, an die Senatorin für Bau, Mobilität und Stadtentwicklung'], RP: ['wbs-RP.pdf', 'Rheinland-Pfalz, Landesvordruck 2026'],
         SL: ['wbs-SL.pdf', 'Saarland, Stand 1.9.2025, an das Ministerium für Inneres, Bauen und Sport'] };

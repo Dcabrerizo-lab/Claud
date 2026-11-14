@@ -306,8 +306,8 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 |---|---|---|
 | Einkommensgrenzen nach Haushaltsgröße und Kindern; höhere Grenzen per Gebietsverordnung | ✓ | `wbs-grenze` |
 | Freibetrag Schwerbehinderte nach § 24 WoFG (4.500 € / 2.100 €) | ✓ | `wbs-schwerb` |
-| Andere Länder: unter den Bundeswerten (§ 9 Abs. 2 WoFG: 12.000 / 18.000 €, + 4.100 € je weitere Person, + 500 € je Kind) „wahrscheinlich“, sonst „möglich“ mit Hinweis auf die Landesgrenzen | ◐ | `wbs-land` |
-| Landesgrenzen, wo belegt: Nordrhein-Westfalen 23.540 / 28.350 € (+6.530 je weitere Person, +860 je Kind; Gruppe B bis +40 %), Hessen 18.166 / 27.561 € (+6.265, +833), Berlin WBS 140 (Bund +40 %, bis WBS 180), Bremen Bund +10 % (eingeschränkt bis +60 %); „nein“ nur über der höchsten Stufe nach 30 % Abzug mit 5 % Reserve; übrige Länder Bundesgrenze | ✓ | `wbs-land-grenze` |
+| Länder ohne belegte Landesgrenze (Saarland): unter den Bundeswerten (§ 9 Abs. 2 WoFG: 12.000 / 18.000 €, + 4.100 € je weitere Person, + 500 € je Kind) „wahrscheinlich“, sonst „möglich“ | ◐ | `wbs-land` |
+| Landesgrenzen aller übrigen 15 Länder nach amtlichen Quellen (Tabelle `docs/WBS-GRENZEN.md`), mit Aufrundung (RP, SH) und Zuschlag für 1-2 Personen (SH); auf den Euro geprüft; „nein“ nur über der höchsten Stufe nach 30 % Abzug, Freibeträgen und gezahltem Unterhalt mit 5 % Reserve | ✓ | `wbs-land-grenze` |
 | Genaue Einkommensgrenzen der anderen 15 Länder | ○ (Quellen widersprüchlich; Annahme: kein Land liegt unter den Bundeswerten, bitte bestätigen) | |
 
 ## Elterngeld (BEEG)
