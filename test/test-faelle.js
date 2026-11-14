@@ -479,5 +479,33 @@ ck('[plan-2027] Krankengeld: Hinweis auf die neue Beitragsbemessungsgrenze nur b
 
 ck('[verfahren] Hinweise „nicht eingerechnet“ (bei Leistungen mit Einkommensprüfung) und „Widerspruch, Überprüfungsantrag, Beratung“ (bei jedem Ergebnis)', res(f1).z.includes('z.grenzen') && res(f1).z.includes('z.verfahren') && !R.evaluate({ ...base, adults: 1, brutto: 9000, netto: 6000, miete: 400, vermoegen: 900000, gebJahr: 1990 }).zusammen.some((a) => a[0] === 'z.grenzen'));
 
+// Bisher nicht Eingerechnetes (selbstständig, Eigentum, Auto, weitere Erwachsene, angemessene Miete, EU)
+const bz = { art1: 'lohn', brutto: 900, netto: 750, miete: 600, mietstufe: 3, vermoegen: 1000, gebJahr: 1985 };
+ck('[selbst] Selbstständige: Gewinn wie Lohn (gleiche Einstufung und gleicher Betrag beim Grundsicherungsgeld), Hinweis auf vorläufige Bewilligung',
+  JSON.stringify(res({ ...bz, art1: 'selbst' }).m.ggeld.tx.filter((t) => t[0] !== 'selbst.hinweis')) === JSON.stringify(res(bz).m.ggeld.tx) && K({ ...bz, art1: 'selbst' }, 'ggeld').includes('selbst.hinweis'));
+ck('[selbst] Selbstständige: Arbeitslosengeld nur mit freiwilliger Versicherung, Krankengeld nur mit Wahltarif („möglich“)',
+  L({ ...bz, art1: 'selbst', arbeitSit: 'arbeitslos', algZeit: true, lohnVorher: 2500 }, 'alg1') === 'vielleicht' && K({ ...bz, art1: 'selbst', arbeitSit: 'arbeitslos', algZeit: true, lohnVorher: 2500 }, 'alg1').includes('alg1.selbst') &&
+  L({ ...bz, art1: 'selbst', arbeitSit: 'krank', krankWochen: 'laeuft', lohnVorher: 2500 }, 'krankengeld') === 'vielleicht' && L({ ...bz, arbeitSit: 'krank', krankWochen: 'laeuft', lohnVorher: 2500 }, 'krankengeld') === 'ja');
+ck('[eigentum] Eigentum: Grundsicherungsgeld nur „möglich“ (Tilgung meist nicht übernommen), Wohngeld als Lastenzuschuss „möglich“, keine Mietobergrenze',
+  L(bz, 'ggeld') === 'ja' && L({ ...bz, wohnart: 'eigentum' }, 'ggeld') === 'vielleicht' && K({ ...bz, wohnart: 'eigentum' }, 'ggeld').includes('kdu.eigentum') &&
+  K({ ...bz, wohnart: 'eigentum', brutto: 1900, netto: 1450, miete: 700 }, 'wohngeld').includes('wohngeld.lasten') && !K({ ...bz, wohnart: 'eigentum', miete: 3000 }, 'ggeld').includes('kdu.hoch'));
+ck('[auto] Auto: im SGB II geschützt, über 15.000 € nur „möglich“; gebraucht (Behinderung/Arbeit) ohne Einschränkung',
+  L({ ...bz, autoWert: 9000 }, 'ggeld') === 'ja' && L({ ...bz, autoWert: 20000 }, 'ggeld') === 'vielleicht' && K({ ...bz, autoWert: 20000 }, 'ggeld').includes('auto.hoch') && L({ ...bz, autoWert: 20000, autoBraucht: true }, 'ggeld') === 'ja');
+ck('[auto] Auto zählt bei der Grundsicherung im Alter zum Vermögen (5.000 € + Auto 8.000 € > 10.000 €), außer es wird gebraucht',
+  L(f2, 'gsa') === 'ja' && L({ ...f2, autoWert: 8000 }, 'gsa') === 'nein' && K({ ...f2, autoWert: 8000 }, 'gsa').includes('auto.sgb12') && L({ ...f2, autoWert: 8000, autoBraucht: true }, 'gsa') === 'ja');
+ck('[auto] BAföG: Auto zählt zum Vermögen (10.000 € + Auto 6.000 € über 15.000 € Freibetrag unter 30)',
+  L({ ausbildung: 'ich', gebJahr: 2004, vermoegen: 10000, brutto: 0, netto: 0, miete: 400 }, 'bafoeg') !== 'nein' && L({ ausbildung: 'ich', gebJahr: 2004, vermoegen: 10000, autoWert: 6000, brutto: 0, netto: 0, miete: 400 }, 'bafoeg') === 'nein');
+ck('[hh-andere] Verwandte in der Wohnung: Vermutung der Unterstützung (§ 9 Abs. 5 SGB II) und Wohngeld-Haushalt -> nur „möglich“; WG: Hinweis eigener Mietanteil',
+  L({ ...bz, hhAndere: 'verwandte' }, 'ggeld') === 'vielleicht' && K({ ...bz, hhAndere: 'verwandte' }, 'ggeld').includes('ggeld.verwandte') && L({ ...bz, hhAndere: 'wg' }, 'ggeld') === 'ja' && K({ ...bz, hhAndere: 'wg' }, 'ggeld').includes('wg.anteil'));
+// Angemessene Unterkunftskosten: 1 Person, Mietenstufe III: (456 € + 19,20 € Klima) × 1,1 + 110,40 € Heizung = 633,12 € -> etwa 630 €
+const kd = { art1: 'alg', brutto: 1600, netto: 1600, miete: 1500, mietstufe: 3, vermoegen: 1000, gebJahr: 1985 };
+ck('[kdu-grenze] Miete über der Angemessenheitsgrenze: Hinweis mit Grenze (etwa 630 €); jetzt wahrscheinlich, mit der Grenze nicht -> „möglich“',
+  res(kd).m.ggeld.tx.some((t) => t[0] === 'kdu.hoch' && t[1].grenze === E(630)) && L(kd, 'ggeld') === 'vielleicht' && !K({ ...kd, miete: 600 }, 'ggeld').includes('kdu.hoch') && !K({ ...kd, mietstufe: '' }, 'ggeld').includes('kdu.hoch'));
+const eu = { art1: 'ohne', brutto: 0, netto: 0, miete: 500, mietstufe: 3, vermoegen: 500, gebJahr: 1990, aufenthalt: 'eu', euArbeit: 'nein', euJahre: 'unter5' };
+ck('[eu] EU-Bürger ohne Arbeit, unter 5 Jahren: kein Grundsicherungsgeld (§ 7 SGB II); mit Arbeit, nach 5 Jahren oder mit Lohn kein Ausschluss',
+  L(eu, 'ggeld') === 'nein' && K(eu, 'ggeld').includes('ggeld.eu') && L({ ...eu, euArbeit: 'ja' }, 'ggeld') !== 'nein' && L({ ...eu, euJahre: 'ab5' }, 'ggeld') !== 'nein' && L({ ...eu, art1: 'lohn', brutto: 400, netto: 400 }, 'ggeld') !== 'nein');
+ck('[eu] EU-Bürger: Grundsicherung im Alter ausgeschlossen (§ 23 SGB XII) unter denselben Bedingungen; Kindergeld-Hinweis auf die ersten 3 Monate',
+  L({ ...f2, aufenthalt: 'eu', euArbeit: 'nein', euJahre: 'unter5' }, 'gsa') === 'nein' && L({ ...f2, aufenthalt: 'eu', euArbeit: 'nein', euJahre: 'ab5' }, 'gsa') === 'ja' && K({ ...f1, aufenthalt: 'eu' }, 'kindergeld').includes('kg.eu'));
+
 console.log(fails ? '\n' + fails + ' von ' + n + ' FEHLGESCHLAGEN' : '\nFall-Tests bestanden: ' + n + ' Prüfungen');
 process.exit(fails ? 1 : 0);

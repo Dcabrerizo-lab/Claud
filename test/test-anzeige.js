@@ -32,7 +32,7 @@ const geld = (max, schritt) => Math.round(rnd() * max / schritt) * schritt;
 function haushalt() {
   const adults = rnd() < 0.6 ? 1 : 2, kids = pick([0, 0, 1, 2, 3]), young = pick([0, 0, 0, 1]);
   const kidsU6 = kids ? Math.floor(rnd() * (kids + 1)) : 0;
-  const art = () => pick(['lohn', 'lohn', 'rente', 'alg', 'kg', 'eg', 'wfbm', 'ohne']);
+  const art = () => pick(['lohn', 'lohn', 'rente', 'alg', 'kg', 'eg', 'wfbm', 'ohne', 'selbst']);
   const ek1Art = art(), ek2Art = adults === 2 ? art() : '';
   const b1 = ek1Art === 'ohne' ? '' : geld(4500, 10), b2 = ek2Art && ek2Art !== 'ohne' ? geld(3000, 10) : '';
   const netto = (b) => (b === '' ? '' : (rnd() < 0.3 ? '' : Math.round(b * (0.6 + rnd() * 0.25))));
@@ -47,11 +47,13 @@ function haushalt() {
     uzBetrag: rnd() < 0.15 ? geld(900, 10) : '', uzAn: pick(['', 'k1', 'k2', 'ex', 'exk']), uzTitel: rnd() < 0.5,
     arbeitSit: pick(['', '', '', 'arbeitslos', 'krank']), algZeit: rnd() < 0.7, algMonate: pick(['', '12', '24', '36']),
     krankWochen: pick(['', 'unter6', 'laeuft', 'ende']), lohnVorher: pick(['', 1500, 2800, 4500, 7000]),
-    baby: pick(['', '', '', 'bald', 'da']), egVor: pick(['', 0, 900, 2000]), aufenthalt: rnd() < 0.05 ? 'asyl' : '',
+    baby: pick(['', '', '', 'bald', 'da']), egVor: pick(['', 0, 900, 2000]), aufenthalt: rnd() < 0.05 ? 'asyl' : rnd() < 0.08 ? 'eu' : '',
     ausbildung: pick(['', '', '', 'ich', 'kind', 'kindBetrieb']), pflegegrad: pick(['', '', '', 'antrag', '1', '2', '3', '5']),
     bhPerson: pick(['', '', '', 'ich', 'minder', 'erwVor25', 'erwNach25']), gdb: pick(['', '', '50', '80', '100', 'antrag']),
     blind: pick(['', '', '', '', 'blind', 'hoch']), emStd: pick(['', '', '', 'unter3', '3bis6', 'unklar']),
     schwanger: rnd() < 0.05, warmwasser: rnd() < 0.1,
+    wohnart: rnd() < 0.1 ? 'eigentum' : '', hhAndere: pick(['', '', '', 'wg', 'verwandte']), autoWert: pick(['', '', 7000, 20000]), autoBraucht: rnd() < 0.3,
+    euArbeit: pick(['', 'ja', 'nein']), euJahre: pick(['', 'unter5', 'ab5']),
     bezug: rnd() < 0.15 ? { [pick(['grundsicherungsgeld', 'sozialamt', 'wohngeld', 'kiz', 'kindergeld'])]: true } : {}
   };
 }

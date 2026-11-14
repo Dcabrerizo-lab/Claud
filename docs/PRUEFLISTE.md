@@ -19,6 +19,12 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
+| Angemessene Unterkunftskosten (§ 22 SGB II): Orientierung WoGG-Höchstbetrag + 10 % plus Heizkostenkomponente (Rechtsprechung ohne schlüssiges Konzept); darüber zusätzlich mit der Grenze gerechnet, Einstufung aus beiden, Hinweis | ◐ | `kdu-grenze` |
+| Selbstständige: Gewinn wie Einkommen aus Arbeit (§ 11b Abs. 3), Hinweis auf vorläufige Bewilligung (§ 41a) | ✓ | `selbst` |
+| Selbst bewohntes Eigentum: geschützt (§ 12), Unterkunftskosten ohne Tilgung -> nur „möglich“ | ◐ | `eigentum` |
+| Angemessenes Auto geschützt (§ 12); über 15.000 € (bisherige Weisungslage) nur „möglich“ | ◐ | `auto` |
+| Verwandte in der Wohnung: Vermutung der Unterstützung (§ 9 Abs. 5) -> nur „möglich“; WG: eigener Mietanteil | ◐ | `hh-andere` |
+| EU-Staatsangehörige ohne Arbeit, unter 5 Jahren: Leistungsausschluss (§ 7 Abs. 1 Satz 2 und 4) | ✓ | `eu` |
 | 2027: Regelsatz noch nicht beschlossen, Nullrunde erwartet: Hinweis, gerechnet wird mit 563 € | ✓ | `plan-2027` |
 | Regelbedarfe 2026: 563 / 506 / 451 / 390 € (§ 20, § 23) | ✓ | `gg-regel` |
 | Freibetrag für Erwerbstätige (§ 11b Abs. 2, 3): 100 € frei, 20 % bis 520 €, 30 % bis 1.000 €, 10 % bis 1.200 € (mit Kind 1.500 €) | ✓ | `gg-ewt` |
@@ -50,6 +56,9 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
+| Angemessene Unterkunftskosten (§ 35 SGB XII) wie beim Grundsicherungsgeld | ◐ | `kdu-grenze` |
+| Auto zählt zum Vermögen, außer es wird wegen Behinderung oder für die Arbeit gebraucht (§ 90) | ◐ | `auto` |
+| EU-Staatsangehörige: Ausschluss wie § 7 SGB II (§ 23 Abs. 3 SGB XII) | ✓ | `eu` |
 | Voraussetzung Rentenalter oder dauerhaft volle Erwerbsminderung (§ 41) | ✓ | `gsa-voraus` |
 | Freibetrag Erwerbstätige 30 %, höchstens 50 % RS1 (§ 82 Abs. 3 Satz 1) | ✓ | `gsa-ewt` |
 | Selbst gezahlter Unterhalt: in der Regel kein Abzug (§ 82 SGB XII kennt ihn nicht), Hinweis auf Selbstbehalt | ◐ | `uz-gsa` |
@@ -73,6 +82,8 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
+| Eigentum: Lastenzuschuss, Belastung nach § 10 WoGG nicht genau gerechnet -> nur „möglich“ | ◐ | `eigentum` |
+| Verwandte in derselben Wohnung zählen meist zum Haushalt (§ 5) -> nur „möglich“ | ◐ | `hh-andere` |
 | Ausgezahlte Beträge (Arbeitslosengeld, Krankengeld, Elterngeld, Werkstattlohn) nur mit dem kleinen Abzug für Auszahlungen, in einfacher und ausführlicher Version gleich (§ 16 WoGG) | ✓ | `einfach-gleich` |
 | 2027: geplante Kürzung (BT-Drs. 21/8284) nur als Hinweis; Tipp „Antrag noch 2026“ wegen Bestandsschutz nur vor dem Jahreswechsel | ✓ | `plan-2027` |
 | Formel, Höchstbeträge, Klima- und Heizkomponente (§§ 12, 19), Pauschalabzug je Einkommensart (§ 16) | ✓ | `wg-formel` |
@@ -148,6 +159,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
+| Auto zählt zum Vermögen (§ 27) | ✓ | `auto` |
 | Elternfreibeträge (§ 25) und Grenzbereich | ✓ | `bafoeg-eltern` |
 | Höhe der Elternfreibeträge 2026: 2.540 € (verheiratet), 1.690 € (je Elternteil sonst), 770 € je weiteres Kind | ✓ (mehrere Quellen übereinstimmend; Änderung erst zum Sommersemester 2027 geplant, nur Wohnpauschale) | `bafoeg-eltern` |
 | Vermögensfreibetrag 15.000 € bis zum 30. Geburtstag, danach 45.000 € (§ 29) | ✓ | `bafoeg-verm` |
@@ -256,6 +268,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
+| Selbstständige nur mit freiwilliger Arbeitslosenversicherung (§ 28a) | ◐ | `selbst` |
 | Anwartschaft 12 Monate in 30 Monaten (§§ 142, 143); Minijob zählt nicht (§ 27 Abs. 2) | ✓ | `alg-anwart` |
 | 60 %, mit Kind 67 % des pauschalierten Nettos (§ 149), Beitragsbemessungsgrenze (§ 341) | ✓ | `alg-satz` |
 | Anspruchsdauer nach Versicherungszeit und Alter (§ 147) | ✓ | `alg-dauer` |

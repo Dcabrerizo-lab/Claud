@@ -41,8 +41,10 @@ function zufall() {
     pflegegrad: pick(['', '', '', '1', '2', '3', '4', '5']),
     bhPerson: pick(['', '', 'erwNach25', 'erwVor25', 'minder']), gdb: pick(['', '30', '50', '60', '80', '100', 'H']),
     blind: pick(['', '', '', 'blind', 'hoch']), mzG: rnd() < 0.2,
-    ausbildung: pick(['', '', '', 'ich', 'kind']), aufenthalt: rnd() < 0.08 ? 'asyl' : '',
+    ausbildung: pick(['', '', '', 'ich', 'kind']), aufenthalt: rnd() < 0.08 ? 'asyl' : rnd() < 0.08 ? 'eu' : '',
     baby: pick(['', '', '', 'da', 'bald']), egVor: pick(['', 0, 900, 2000]),
+    wohnart: rnd() < 0.1 ? 'eigentum' : '', hhAndere: pick(['', '', '', 'wg', 'verwandte']), autoWert: pick(['', '', 7000, 20000]), autoBraucht: rnd() < 0.3,
+    euArbeit: pick(['', 'ja', 'nein']), euJahre: pick(['', 'unter5', 'ab5']),
     arbeitSit: pick(['', '', '', 'arbeitslos', 'krank']), algZeit: rnd() < 0.7, krankWochen: pick(['', 'unter6', 'laeuft', 'ende']), lohnVorher: pick(['', 1500, 2800, 4500]),
     bundesland: pick(['', 'BY', 'BY', 'NW']), bezug: {}
   };

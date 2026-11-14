@@ -491,6 +491,16 @@
               <select id="aufenthalt"></select>
               <span class="hint" data-t="aufenthalt.hint"></span>
             </div>
+            <div class="subbox cond-eu" hidden>
+              <div class="field">
+                <label for="euArbeit" data-t="eu.arbeit.label"></label>
+                <select id="euArbeit"></select>
+              </div>
+              <div class="field">
+                <label for="euJahre" data-t="eu.jahre.label"></label>
+                <select id="euJahre"></select>
+              </div>
+            </div>
           </fieldset>
 
           <fieldset>
@@ -585,11 +595,20 @@
           <fieldset>
             <legend data-t="lg.wohnen"></legend>
             <div class="field">
-              <label for="miete" data-t="miete.label"></label>
+              <label for="wohnart" data-t="wohnart.label"></label>
+              <select id="wohnart"></select>
+            </div>
+            <div class="field">
+              <label for="miete" id="mieteLab" data-t="miete.label"></label>
               <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="miete"><span aria-hidden="true">€</span></div>
-              <span class="hint" data-t="miete.hint"></span>
+              <span class="hint" id="mieteHint" data-t="miete.hint"></span>
               <p class="warn" id="mieteWarn" hidden></p>
               <label class="check"><input type="checkbox" id="warmwasser"><span data-t="cb.warmwasser"></span></label>
+            </div>
+            <div class="field">
+              <label for="hhAndere" data-t="hh.label"></label>
+              <select id="hhAndere"></select>
+              <span class="hint" data-t="hh.hint"></span>
             </div>
             <div class="field" id="plzField" hidden>
               <label for="plz" data-t="plz.label"></label>
@@ -689,6 +708,14 @@
               <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="vermoegen"><span aria-hidden="true">€</span></div>
               <span class="hint" data-t="verm.hint"></span>
             </div>
+            <div class="field">
+              <label for="autoWert" data-t="auto.label"></label>
+              <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="autoWert"><span aria-hidden="true">€</span></div>
+              <span class="hint" data-t="auto.hint"></span>
+            </div>
+            <div class="subbox cond-auto" hidden>
+              <label class="check"><input type="checkbox" id="autoBraucht"><span data-t="cb.autoBraucht"></span></label>
+            </div>
           </fieldset>
 
           <fieldset>
@@ -774,6 +801,9 @@
                     <tr><th>Bildung und Teilhabe</th><td>Anspruch bei Bezug von Grundsicherung, Sozialhilfe, Wohngeld oder Kinderzuschlag (§ 6b BKGG, § 28 SGB II). Schulbedarf 195 € im Jahr, Teilhabe 15 € im Monat.</td></tr>
                     <tr><th>Unterhaltsvorschuss</th><td>227 € (bis 5 Jahre), 299 € (6 bis 11) und 394 € (12 bis 17) im Monat, jeweils Mindestunterhalt abzüglich Kindergeld (UVG). Voraussetzung: Kind unter 18, alleinerziehender Elternteil, Unterhalt fehlt. Ab 12 Jahren: Kind nicht im SGB-II-Bezug oder Elternteil mit mindestens 600 € brutto.</td></tr>
                     <tr><th>Unterhalt für Kinder</th><td>Gezahlter Unterhalt wird beim Unterhaltsvorschuss angerechnet (§ 2 Abs. 3 UVG). Beim Kinderzuschlag mindert er als Einkommen der Kinder den Zuschlag um 45 % (§ 6a Abs. 3 BKGG). Beim Wohngeld zählt er als Einkommen, ohne Pauschalabzug (§§ 14, 16 WoGG). Beim Grundsicherungsgeld und bei der Grundsicherung im Alter zählt er als Einkommen der Kinder, aber nur bis zu ihrem eigenen Bedarf.</td></tr>
+                    <tr><th>Angemessene Miete</th><td>Jede Stadt legt selbst fest, welche Wohnkosten das Jobcenter oder Sozialamt übernimmt. Ohne örtliches Konzept setzen Gerichte die Höchstbeträge des Wohngeldes plus 10 % an; die App nimmt das mit der Heizkostenkomponente als Orientierung. Liegt die Miete darüber, rechnet die App zusätzlich mit der Grenze; sind beide Ergebnisse verschieden, gilt „möglich“ (§ 22 SGB II, § 35 SGB XII).</td></tr>
+                    <tr><th>Selbstständig, Eigentum, Auto</th><td>Gewinn zählt wie Einkommen aus Arbeit (Freibetrag § 11b SGB II, § 82 SGB XII); Arbeitslosengeld und Krankengeld nur mit freiwilliger Versicherung bzw. Wahltarif. Selbst bewohntes Eigentum zählt nicht zum Vermögen; Grundsicherung und Wohngeld (Lastenzuschuss) dann nur „möglich“, weil die Tilgung meist nicht übernommen und die Belastung nach § 10 WoGG gerechnet wird. Ein angemessenes Auto ist beim Grundsicherungsgeld geschützt (über 15.000 € nur „möglich“); bei der Grundsicherung im Alter und beim BAföG zählt es zum Vermögen, außer es wird wegen einer Behinderung oder für die Arbeit gebraucht.</td></tr>
+                    <tr><th>Weitere Erwachsene, EU-Bürger</th><td>In einer WG zählt nur der eigene Mietanteil. Wohnen Verwandte mit, vermutet das Jobcenter Unterstützung (§ 9 Abs. 5 SGB II) und beim Wohngeld zählen sie meist zum Haushalt: dann nur „möglich“. Menschen aus anderen EU-Ländern ohne Arbeit in Deutschland sind in den ersten 5 Jahren vom Grundsicherungsgeld und von der Sozialhilfe ausgeschlossen (§ 7 SGB II, § 23 SGB XII).</td></tr>
                     <tr><th>Neue Leistungen als Einkommen</th><td>Schätzt die App Arbeitslosengeld, Krankengeld oder (bei Alleinstehenden vor der Geburt) Elterngeld, rechnet sie Grundsicherungsgeld, Wohngeld und Kinderzuschlag ein zweites Mal: so, als würde die neue Leistung schon gezahlt (statt des bisherigen Lohns, mit der Mitte der geschätzten Spanne; Elterngeld bis 300 € frei). Sind beide Ergebnisse gleich, bleibt die Einstufung, sonst gilt „möglich“. Diese Leistungen gehen vor (§ 12a SGB II), Grundsicherungsgeld kann bis zur ersten Zahlung überbrücken.</td></tr>
                     <tr><th>Unterhalt, den du zahlst</th><td>Grundsicherungsgeld und Kinderzuschlag: Abzug vom Einkommen, wenn der Betrag festgelegt ist (Urteil oder Beschluss, Jugendamtsurkunde, Notarvertrag) und wirklich gezahlt wird (§ 11b Abs. 1 Satz 1 Nr. 7 SGB II). Wohngeld: Abzug in der Regel bis 250 € im Monat je Kind und 500 € für frühere Partner (§ 18 WoGG); ohne festgelegten Betrag rechnet die App den Abzug nur für „möglich“, mit festgelegtem Betrag für „möglich“ den ganzen Betrag. Grundsicherung im Alter: in der Regel kein Abzug (§ 82 SGB XII).</td></tr>
                     <tr><th>Grundsicherung im Alter und bei voller Erwerbsminderung</th><td>Regelsatz 563 € (Alleinstehende) und 506 € je Partner plus Miete, abzüglich Einkommen (§§ 41 ff. SGB XII). Schonvermögen 10.000 € je volljähriger Person plus 500 € je unterhaltener Person (Barbetrag-Verordnung zu § 90 SGB XII).</td></tr>

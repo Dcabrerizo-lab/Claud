@@ -49,10 +49,16 @@ Rechenregeln stichprobenartig prüfen.
   Antrag früh stellen (Stichtag).
 - Je Karte: grobe Schätzung, Grenzbereich, Hinweise auf Sonderfälle; Übersetzungen mit dem Hinweis, dass der deutsche Text gilt.
 
-## 5. Bekannte Grenzen (bewusst so gelöst)
-- Angemessenheit der Wohnkosten (örtliche Richtlinien) wird nicht geprüft; es wird mit der tatsächlichen Miete gerechnet.
-- Keine Selbstständigen, kein Wohneigentum/Auto beim Vermögen, keine Haushaltsgemeinschaft mit Dritten (§ 9 Abs. 5 SGB II),
-  keine Leistungsausschlüsse für EU-Bürger, kein schwankendes Einkommen (Durchschnitt, Zufluss).
+## 5. Bekannte Grenzen und Näherungen (bitte besonders prüfen)
+- Angemessene Wohnkosten: Orientierung WoGG-Höchstbetrag + 10 % plus Heizkostenkomponente (Rechtsprechung ohne schlüssiges
+  Konzept), nicht die örtliche Richtlinie. Darüber rechnet die App zusätzlich mit der Grenze und zeigt „möglich“.
+- Selbstständige: Gewinn wie Erwerbseinkommen; keine Prüfung der vorläufigen Bewilligung (§ 41a SGB II).
+- Eigentum: Grundsicherung und Lastenzuschuss nur als „möglich“ (Tilgung, Belastung nach § 10 WoGG nicht gerechnet).
+- Auto: Grenze 15.000 € nach der Weisungslage bis 2026 als Prüfgrenze; nach der Reform 2026 nicht am Gesetzestext geprüft.
+- Verwandte in der Wohnung (§ 9 Abs. 5 SGB II, § 5 WoGG): nur Hinweis und „möglich“, kein Einkommen der Verwandten.
+- EU-Bürger: Ausschluss ohne Arbeit unter 5 Jahren (§ 7 SGB II, § 23 SGB XII) vereinfacht (Arbeitnehmerstatus, Verlust des
+  Freizügigkeitsrechts, Überbrückungsleistungen nicht im Einzelnen).
+- Kein schwankendes Einkommen (Durchschnitt, Zufluss).
 - Landesrecht außerhalb Bayerns teilweise nur als Spanne oder Hinweis (Landesblindengeld, Wohnberechtigungsschein).
 - Schätzungen beruhen auf Pauschalen (z. B. Abzüge beim Wohngeld, Kinderzuschlag-Wohnkostenanteil).
 

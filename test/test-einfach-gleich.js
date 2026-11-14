@@ -11,9 +11,9 @@ const geld = (max) => Math.round(rnd() * max / 10) * 10;
 const fehler = {};
 let n = 0;
 for (let i = 0; i < N; i++) {
-  const art = pick(['lohn', 'lohn', 'rente', 'rente', 'alg', 'kg', 'eg', 'wfbm']);
+  const art = pick(['lohn', 'lohn', 'rente', 'rente', 'alg', 'kg', 'eg', 'wfbm', 'selbst']);
   const b = geld(3500);
-  const mitN = art === 'lohn' || art === 'rente';
+  const mitN = art === 'lohn' || art === 'rente' || art === 'selbst';
   const nt = mitN ? Math.round(b * (0.62 + rnd() * 0.3)) : b;
   const basis = {
     adults: 1, kids: pick([0, 0, 1, 2]), young: 0, kidsU6: 0, kids14: 0,

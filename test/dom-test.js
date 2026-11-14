@@ -289,6 +289,22 @@ setTimeout(() => {
   check('Unterhalt (gezahlt): mit Betrag erscheinen „An wen“ (6 Auswahlen) und „Betrag festgelegt“', !uzBox().hidden && d.getElementById('uzAn').options.length === 6 && d.getElementById('uzTitel').checked);
   setNum('uzBetrag', '');
   check('Unterhalt (gezahlt): Betrag gelöscht -> Zusatzfragen verborgen und zurückgesetzt', uzBox().hidden && d.getElementById('uzAn').value === '' && !d.getElementById('uzTitel').checked);
+  // Neue Fragen: EU-Staatsangehörigkeit, Auto, Wohneigentum, weitere Erwachsene, Selbstständigkeit
+  const vis = (sel) => !d.querySelector(sel).hidden;
+  check('Neue Fragen beschriftet (Wohnart, weitere Erwachsene, Auto, EU-Arbeit, EU-Jahre)', ['wohnart', 'hhAndere', 'autoWert', 'euArbeit', 'euJahre'].every((id) => !!d.querySelector('label[for="' + id + '"]')));
+  setSel('aufenthalt', 'eu');
+  check('EU: Fragen zu Arbeit und Aufenthaltsdauer erscheinen', vis('.cond-eu') && d.getElementById('euJahre').options.length === 3);
+  setSel('euArbeit', 'nein'); setSel('aufenthalt', '');
+  check('EU abgewählt: Zusatzfragen verborgen und zurückgesetzt', !vis('.cond-eu') && d.getElementById('euArbeit').value === '');
+  setNum('autoWert', '12000');
+  check('Auto mit Wert: Haken „wird gebraucht“ erscheint', vis('.cond-auto'));
+  setNum('autoWert', '');
+  check('Auto ohne Wert: Haken verborgen', !vis('.cond-auto'));
+  setSel('wohnart', 'eigentum');
+  check('Eigentum: Feld heißt „Kosten fürs Wohnen“', d.getElementById('mieteLab').textContent === I18N.de['miete.label.eigen']);
+  setSel('wohnart', '');
+  check('Miete: Feld heißt wieder „Miete“', d.getElementById('mieteLab').textContent === I18N.de['miete.label']);
+  check('Einkommensart „Selbstständig“ wählbar', [...d.getElementById('ek1Art').options].some((o) => o.value === 'selbst'));
   check('Keine Skriptfehler im gesamten Test', errors.length === 0, errors.join('; '));
   console.log(fails ? '\n' + fails + ' FEHLER' : '\nAlle DOM-Tests bestanden');
   process.exit(fails ? 1 : 0);

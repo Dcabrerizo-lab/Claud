@@ -51,19 +51,24 @@ const VERBOTEN = '#mappePrint, #mappeShare, #mappeCopy, #sc-take, #sc-file, #sc-
   }, VERBOTEN);
 
   const besucht = { einfach: 0, ausfuehrlich: 0, mappe: 0, karten: 0 };
+  let imEinfach = false;
   for (let s = 0; s < SCHRITTE; s++) {
     let schritt = '';
     try {
       const r = rnd();
-      if (r < 0.01) { schritt = 'Neu laden'; await p.reload(); await p.click('#firstOk', { timeout: 500 }).catch(() => {}); }
-      else if (r < 0.045) { schritt = 'Einfache Version'; if (await p.isVisible('#einfachBtn')) await p.click('#einfachBtn', { timeout: 1000 }); }
+      // Feste Besuche, damit jeder Lauf sicher alle Bereiche prüft: einfache Version und Antragsmappe
+      if (s % 200 === 50 && !imEinfach) { schritt = 'Einfache Version (fest)'; if (await p.isVisible('#einfachBtn')) await p.click('#einfachBtn', { timeout: 1000 }); }
+      else if (s % 200 === 150) { schritt = 'Antragsmappe (fest)'; if (await p.isVisible('#es-raus')) await p.click('#es-raus', { timeout: 1000 }); if (await p.isVisible('#mappeClose')) await p.click('#mappeClose', { timeout: 1000 }); if (await p.isVisible('#mappeMake')) await p.click('#mappeMake', { timeout: 1000 }); }
+      else if (r < 0.01) { schritt = 'Neu laden'; await p.reload(); await p.click('#firstOk', { timeout: 500 }).catch(() => {}); }
+      else if (r < 0.045 && !imEinfach) { schritt = 'Einfache Version'; if (await p.isVisible('#einfachBtn')) await p.click('#einfachBtn', { timeout: 1000 }); }
+      else if (r < 0.055) { schritt = 'Antragsmappe'; if (await p.isVisible('#mappeMake')) await p.click('#mappeMake', { timeout: 1000 }); }
       else if (r < 0.06) { const l = pick(['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro']); schritt = 'Sprache ' + l; if (await p.isVisible('#lang')) await p.selectOption('#lang', l); }
       else {
         const zs = await ziele();
         if (!zs.length) { schritt = 'nichts bedienbar'; fehler.push('Sackgasse: kein bedienbares Element | nach: ' + log.slice(-6).join(' > ')); break; }
         // In der einfachen Version länger bleiben: „zur ausführlichen Version“ nur selten wählen, sonst bleibt sie kaum geprüft
         let z = pick(zs);
-        for (let k = 0; k < 5 && z.id === 'es-raus' && rnd() < 0.85; k++) z = pick(zs);
+        for (let k = 0; k < 5 && imEinfach && (z.id === 'es-raus' || z.id === 'einfachBtn') && rnd() < 0.85; k++) z = pick(zs);
         const sel = '[data-zufall="' + z.i + '"]';
         if (z.tag === 'select') { const v = pick(z.opts); schritt = 'Auswahl ' + (z.id || '?') + '=' + v; await p.selectOption(sel, v, { timeout: 1000 }); }
         else if (z.tag === 'input' && (z.typ === 'text' || z.typ === 'number' || z.typ === 'tel' || z.typ === '')) { const v = pick(WERTE); schritt = 'Eingabe ' + (z.id || '?') + '="' + v + '"'; await p.fill(sel, v, { timeout: 1000 }); await p.press(sel, 'Tab', { timeout: 1000 }).catch(() => {}); }
@@ -73,6 +78,8 @@ const VERBOTEN = '#mappePrint, #mappeShare, #mappeCopy, #sc-take, #sc-file, #sc-
     log.push(schritt);
     await p.waitForTimeout(20);
     const z = await zustand();
+    if (process.env.ZUFALL_DEBUG && z.esModus !== imEinfach) console.log(s, z.esModus ? 'rein' : 'raus', schritt);
+    imEinfach = z.esModus;
     if (z.esModus) besucht.einfach++; else besucht.ausfuehrlich++;
     if (z.mappe) besucht.mappe++;
     if (z.karten > 1) besucht.karten++;
