@@ -36,8 +36,11 @@ function haushalt(e) {
   const netto = nettoAngabe ? zahl(e.netto) : brutto * 0.8;
   const arten = ['lohn', 'rente', 'alg', 'kg', 'eg', 'wfbm', 'ohne'];
   const art = (a, alt) => (arten.indexOf(a) >= 0 ? a : (alt ? 'rente' : 'lohn'));
-  const p = [{ art: art(e.art1, e.nichtArbeit), brutto: brutto - brutto2, aus: !!e.aus1 }]; // aus: Betrag ist schon ausgezahlt (künftige Leistung)
-  if (erwachsene === 2) p.push({ art: art(e.art2, e.nichtArbeit2), brutto: brutto2 });
+  // aus: Betrag ist schon ausgezahlt. Die App fragt ALG, Krankengeld, Elterngeld und Werkstattlohn als Auszahlung ab (und eine künftige Leistung)
+  const ausgezahlt = (a) => ['alg', 'kg', 'eg', 'wfbm'].indexOf(a) >= 0;
+  const p = [{ art: art(e.art1, e.nichtArbeit), brutto: brutto - brutto2 }];
+  p[0].aus = !!e.aus1 || ausgezahlt(p[0].art);
+  if (erwachsene === 2) { const a2 = art(e.art2, e.nichtArbeit2); p.push({ art: a2, brutto: brutto2, aus: ausgezahlt(a2) }); }
   // Alter
   const jahr = Number(e.gebJahr) | 0;
   const heute = e.heute ? Number(e.heute) : new Date().getFullYear() + new Date().getMonth() / 12;

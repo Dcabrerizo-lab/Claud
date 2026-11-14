@@ -17,13 +17,17 @@ const Fmt = (function () {
   // Betrag aus einer Eingabe lesen: „1.234,50“, „1234,5“, „780 €“, „780 warm“, „2,050.50“ (englisch). Ungültig oder negativ: ''.
   function parse(v) {
     var raw = String(v == null ? '' : v);
-    if (/-\s*\d/.test(raw)) return '';
+    // Minus in allen Schreibweisen (auch typografisch, wie manche Handy-Tastaturen es setzen): negativ = ungültig
+    if (/[-\u2212\u2013\u2012]\s*\d/.test(raw)) return '';
     var s = raw.replace(/[^\d.,]/g, '');
     if (!s) return '';
-    if (s.indexOf(',') >= 0 && s.indexOf('.') >= 0 && s.lastIndexOf('.') > s.lastIndexOf(',')) s = s.replace(/,/g, '');
-    else if (s.indexOf(',') >= 0) s = s.replace(/\./g, '').replace(',', '.').replace(/,/g, '');
+    // Englisch „2,050.50“: Komma als Tausender, Punkt als Dezimalzeichen
+    if (s.indexOf(',') >= 0 && s.indexOf('.') >= 0 && s.lastIndexOf('.') > s.lastIndexOf(',')) { if (!/^\d{1,3}(,\d{3})*\.\d{1,2}$/.test(s)) return ''; s = s.replace(/,/g, ''); }
+    // Deutsch „1.234,56“: Punkte nur als Tausendergruppen vor dem Komma, höchstens zwei Nachkommastellen
+    else if (s.indexOf(',') >= 0) { if (!/^(\d+|\d{1,3}(\.\d{3})+),\d{0,2}$/.test(s)) return ''; s = s.replace(/\./g, '').replace(',', '.'); }
     else if (/^\d{1,3}(\.\d{3})+$/.test(s)) s = s.replace(/\./g, '');
-    else if (!/^\d*\.\d{1,2}$/.test(s)) s = s.replace(/\./g, '');
+    // Sonst ein Punkt als Dezimalzeichen („950.50“); alles andere (z. B. ein Datum „12.5.2026“) ist kein Betrag
+    else if (s.indexOf('.') >= 0 && !/^\d*\.\d{1,2}$/.test(s)) return '';
     var n = Number(s);
     return isFinite(n) && n >= 0 ? n : '';
   }

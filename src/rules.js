@@ -240,7 +240,10 @@ const Rules = (function () {
     // Einkommensart je erwachsener Person (lohn, rente, alg, kg, eg = Elterngeld, ohne). Ältere Speicherstände: aus den Haken.
     const art1 = liste ? (liste.some((x) => x[0] === 'lohn') ? 'lohn' : liste.length ? liste[0][0] : 'ohne') : ARTEN.indexOf(inp.art1) >= 0 ? inp.art1 : (inp.nichtArbeit ? 'rente' : 'lohn');
     const art2 = ARTEN.indexOf(inp.art2) >= 0 ? inp.art2 : (inp.nichtArbeit2 ? 'rente' : 'lohn');
-    const pers = liste ? (liste.length ? liste : [['ohne', 0]]) : adults === 2 ? [[art1, brutto - brutto2, 0, !!inp.aus1], [art2, brutto2]] : [[art1, brutto, 0, !!inp.aus1]];
+    // Arbeitslosengeld, Krankengeld, Elterngeld und Werkstattlohn fragt die App als ausgezahlten Betrag ab (laut Bescheid/Lohnzettel):
+    // beim Wohngeld dann nur der kleine Abzug für ausgezahlte Beträge, wie in der einfachen Version (§ 16 WoGG)
+    const AUSZ = { alg: 1, kg: 1, eg: 1, wfbm: 1 };
+    const pers = liste ? (liste.length ? liste : [['ohne', 0]]) : adults === 2 ? [[art1, brutto - brutto2, 0, !!inp.aus1 || !!AUSZ[art1]], [art2, brutto2, 0, !!AUSZ[art2]]] : [[art1, brutto, 0, !!inp.aus1 || !!AUSZ[art1]]];
     const sumIf = (f) => pers.reduce((a, x) => a + f(x[0], x[1]), 0);
     // Unterhalt, den die Person selbst an andere zahlt (Kinder, die nicht im Haushalt leben, frühere Partner), im Monat.
     // Grundsicherungsgeld und Kinderzuschlag: abgezogen, soweit festgelegt (Unterhaltstitel, Jugendamtsurkunde, notarielle

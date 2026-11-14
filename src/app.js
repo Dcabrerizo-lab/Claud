@@ -1389,6 +1389,15 @@
     try { var d = v ? JSON.parse(v) : null; if (d && d.es) { es = Object.assign(esLeer(), d.es); if (d.an) esUmschalten(true); } } catch (e) {}
   });
   Store.get('lotse.ack', function (v) { $('firstNotice').hidden = !!v; });
+  // Nur für automatische Tests (test/test-anzeige.js): Angaben wie beim Laden eines Speicherstands setzen und das Ergebnis lesen.
+  // In der App und im Browser ist window.__SOLO_TEST__ nie gesetzt, dann gibt es diese Schnittstelle nicht.
+  if (window.__SOLO_TEST__) window.__solo = {
+    set: function (s) { state = Object.assign(blankState(), migriereEinkommen(migriereFragen(JSON.parse(JSON.stringify(s))))); state.bezug = s.bezug || {}; started = true; edited = true; writeForm(); buildSelects(); render(); },
+    lang: function (c) { setLang(c); },
+    eval: function () { return Rules.evaluate(state); },
+    speichern: function () { flush(); },
+    state: function () { return state; }
+  };
   Store.get('lotse.state', function (v) {
     if (!v) return;
     try {
