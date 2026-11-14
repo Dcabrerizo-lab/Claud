@@ -6,7 +6,7 @@
 const fs = require('fs'), path = require('path');
 const R = require('../../src/rules.js');
 const dir = process.argv[2]; const FIX = process.argv.includes('--fixtures');
-const lies = (art) => fs.readdirSync(dir, { recursive: true }).filter((n) => new RegExp('gross-' + art + '-\\d+\\.json$').test(n))
+const lies = (art) => fs.readdirSync(dir, { recursive: true }).filter((n) => new RegExp('gross-' + art + '(-\\d+)?\\.json$').test(n))
   .flatMap((n) => JSON.parse(fs.readFileSync(path.join(dir, n), 'utf8'))).sort((a, b) => a.i - b.i);
 function wg(f) {
   const inp = { adults: f.adults, kids: f.kids, kidsU6: 0, art1: f.art, art2: f.art, brutto: f.b1 + f.b2, brutto2: f.b2, netto: 9000, miete: f.warm, mietstufe: String(f.stufe), vermoegen: 0, gebJahr: f.art === 'rente' ? 1955 : 1985, bezug: {}, heute: 2026.9 };

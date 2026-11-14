@@ -244,6 +244,12 @@ ck('[st-fahrt] [sb-frei] [sb-park] Ausweis aG: frei fahren, Parkausweis, 4.500 �
 const wgr = { art1: 'rente', brutto: 1400, netto: 1250, miete: 650, mietstufe: 4, vermoegen: 0, gebJahr: 1955, heute: 2026.8 };
 ck('[wg-grundrente] Wohngeld: Grundrentenfreibetrag (§ 17a WoGG) wirkt', JSON.stringify(res(wgr).m.wohngeld.tx) !== JSON.stringify(res({ ...wgr, grundrente33: true }).m.wohngeld.tx));
 
+// Mehrbedarf Alleinerziehende 36 % gilt für Kinder unter 7, gefragt wird nach Kindern unter 6: ein Kind von 6 bis 13 kann noch 6 sein.
+// Fall aus dem großen Abgleich mit dem KiZ-Lotsen (Kind 6 Jahre, 3.250 € brutto, 770 € warm: Lotse „Aussicht auf Erfolg“).
+{ const f = { adults: 1, kids: 1, kidsU6: 0, kids14: 0, art1: 'lohn', brutto: 3250, netto: 2275, miete: 770, mietstufe: 3, vermoegen: 0, bezug: { kindergeld: true } };
+  ck('[kiz-ae7] Kinderzuschlag: Kind evtl. erst 6 (36 % Mehrbedarf) -> „möglich“ statt „eher nicht“; mit Kind ab 14 bleibt „eher nicht“',
+    L(f, 'kiz') === 'vielleicht' && K(f, 'kiz').includes('kiz.ae7') && L({ ...f, kids14: 1 }, 'kiz') === 'nein' && L({ ...f, kidsU6: 1 }, 'kiz') !== 'nein', [L(f, 'kiz'), L({ ...f, kids14: 1 }, 'kiz'), L({ ...f, kidsU6: 1 }, 'kiz')].join(' ')); }
+
 // Heizkosten (freiwillig): Wohngeld rechnet mit der Bruttokaltmiete = Warmmiete minus Heizkosten (ohne Angabe: Heizkostenkomponente)
 // 1 Person, Stufe III, 500 € warm, 1.200 € Lohn: mit 60 € Heizung Kaltmiete 440 € -> M = 440 + 110,40; Y = (1.200 - 102,50) x 0,7 -> 340 € (wie amtlicher Rechner)
 { const hk = (h) => T({ art1: 'lohn', brutto: 1200, netto: 900, miete: 500, mietstufe: 3, vermoegen: 0, heizkosten: h }, 'wohngeld', 'schaetz.spanne');

@@ -1008,5 +1008,6 @@
   "fb.h": "Bir sonuç kararınızla (Bescheid) uyuşmuyor mu?",
   "fb.text": "SoLo'yu daha doğru hale getirmeye yardım edin: düğme, SoLo sonucunuzla sağlayıcıya bir e-posta açar. Kararınızda (Bescheid) ne yazdığını ekleyin.",
   "fb.btn": "E-posta ile geri bildirim",
-  "fb.hint": "E-postada yalnızca uygulama sürümü ve değerlendirmeler bulunur. Anketteki yanıtlarınız eklenmez. Lütfen ad, adres, dosya numarası (Aktenzeichen) veya karar fotoğrafı göndermeyin. E-postayı kendiniz göndermedikçe hiçbir şey gönderilmez."
+  "fb.hint": "E-postada yalnızca uygulama sürümü ve değerlendirmeler bulunur. Anketteki yanıtlarınız eklenmez. Lütfen ad, adres, dosya numarası (Aktenzeichen) veya karar fotoğrafı göndermeyin. E-postayı kendiniz göndermedikçe hiçbir şey gönderilmez.",
+  "t.kiz.ae7": "Bir çocuk henüz 7 yaşında değilse, çocuk ek ödeneğinde (Kinderzuschlag) yalnız ebeveynler için daha yüksek ek ihtiyaç (Mehrbedarf für Alleinerziehende, %36) hesaba katılır. O zaman Kinderzuschlag kalabilir. Başvur; Familienkasse tam yaşla hesaplar."
 }

@@ -49,6 +49,8 @@ jobs:
     needs: abfragen
     if: always()
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -57,7 +59,18 @@ jobs:
       - uses: actions/download-artifact@v4
         with: { path: ergebnis, pattern: 'gross-*' }
       - name: SoLo gegen amtliche Ergebnisse
-        run: node tools/amtliche-rechner/gross-auswerten.js ergebnis | tee auswertung.txt
+        shell: bash
+        run: node tools/amtliche-rechner/gross-auswerten.js ergebnis --fixtures | tee auswertung.txt
+      # Die amtlichen Ergebnisse als feste Testfälle (test/amtlich-gross-*.json) in den Zweig schreiben, auch wenn es Abweichungen gibt
+      - name: Testfälle speichern
+        if: always()
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add test/amtlich-gross-*.json
+          git diff --cached --quiet && exit 0
+          git commit -m "Amtliche Ergebnisse aus dem großen Abgleich als feste Testfälle ($(tr -d '\n' < auswertung.txt | cut -c1-200))"
+          for i in 1 2 3 4; do git pull --rebase -q origin "$GITHUB_REF_NAME" && git push -q origin "HEAD:$GITHUB_REF_NAME" && exit 0; sleep $((i*5)); done; exit 1
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: gross-ergebnis, path: 'ergebnis/**' }

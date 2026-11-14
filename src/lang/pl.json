@@ -1008,5 +1008,6 @@
   "fb.h": "Wynik nie zgadza się z decyzją (Bescheid)?",
   "fb.text": "Pomóż ulepszyć SoLo: przycisk otwiera e-mail do dostawcy z Twoim wynikiem w SoLo. Dopisz, co jest w Twojej decyzji (Bescheid).",
   "fb.btn": "Opinia e-mailem",
-  "fb.hint": "E-mail zawiera tylko wersję aplikacji i oceny. Twoje odpowiedzi z kwestionariusza nie są dodawane. Nie wysyłaj nazwisk, adresów, sygnatur (Aktenzeichen) ani zdjęć decyzji. Nic nie zostanie wysłane, dopóki sam nie wyślesz e-maila."
+  "fb.hint": "E-mail zawiera tylko wersję aplikacji i oceny. Twoje odpowiedzi z kwestionariusza nie są dodawane. Nie wysyłaj nazwisk, adresów, sygnatur (Aktenzeichen) ani zdjęć decyzji. Nic nie zostanie wysłane, dopóki sam nie wyślesz e-maila.",
+  "t.kiz.ae7": "Jeśli dziecko nie ma jeszcze 7 lat, przy dodatku na dziecko (Kinderzuschlag) liczy się wyższe zapotrzebowanie dodatkowe dla samotnych rodziców (Mehrbedarf für Alleinerziehende, 36 %). Wtedy może zostać część Kinderzuschlag. Złóż wniosek; kasa rodzinna (Familienkasse) liczy według dokładnego wieku."
 }

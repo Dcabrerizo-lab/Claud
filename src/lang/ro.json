@@ -1008,5 +1008,6 @@
   "fb.h": "Un rezultat nu se potrivește cu decizia (Bescheid)?",
   "fb.text": "Ajută la îmbunătățirea SoLo: butonul deschide un e-mail către furnizor cu rezultatul tău din SoLo. Adaugă ce scrie în decizia ta (Bescheid).",
   "fb.btn": "Feedback prin e-mail",
-  "fb.hint": "E-mailul conține doar versiunea aplicației și evaluările. Răspunsurile tale din chestionar nu sunt incluse. Te rugăm să nu trimiți nume, adrese, numere de dosar (Aktenzeichen) sau fotografii ale deciziilor. Nu se trimite nimic decât dacă trimiți tu e-mailul."
+  "fb.hint": "E-mailul conține doar versiunea aplicației și evaluările. Răspunsurile tale din chestionar nu sunt incluse. Te rugăm să nu trimiți nume, adrese, numere de dosar (Aktenzeichen) sau fotografii ale deciziilor. Nu se trimite nimic decât dacă trimiți tu e-mailul.",
+  "t.kiz.ae7": "Dacă un copil nu are încă 7 ani, la suplimentul pentru copii (Kinderzuschlag) se ia în calcul o nevoie suplimentară mai mare pentru părinții singuri (Mehrbedarf für Alleinerziehende, 36 %). Atunci poate rămâne un Kinderzuschlag. Depune cererea; casa pentru familii (Familienkasse) calculează cu vârsta exactă."
 }

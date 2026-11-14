@@ -303,13 +303,17 @@ const Rules = (function () {
       uvgEst = Math.max(0, kidsU6 * R.uvg.bis5 + mitte * R.uvg.bis11 + (ab12raus ? 0 : kids14 * R.uvg.bis17) - unterhalt);
     }
     // Mehrbedarf für Alleinerziehende: 36 % bei einem Kind unter 7 oder 2-3 Kindern unter 16, sonst 12 % je Kind, höchstens 60 %
-    let mehrAE = 0;
+    let mehrAE = 0, mehrAEhoch = 0;
     if (adults === 1 && kids > 0) {
       const unter16 = kids - kids14; // sicher unter 16 (14- bis 17-Jährige ungewiss)
       let p = R.mehr.aeJeKind * kids;
       if (kidsU6 >= 1 || (unter16 >= 2 && unter16 <= 3)) p = Math.max(p, R.mehr.ae36);
       mehrAE = Math.min(p, R.mehr.aeMax) * R.regelbedarf.alleinstehend;
+      // Gefragt wird nur nach Kindern unter 6. Ein Kind von 6 bis 13 kann noch 6 sein (36 % gelten bis unter 7):
+      // für „eher nicht“ rechnet SoLo deshalb auch mit 36 % (mehrAEhoch), damit kein Anspruch fälschlich verneint wird.
+      if (kidsU6 === 0 && kids - kids14 >= 1 && p < R.mehr.ae36) mehrAEhoch = Math.min(R.mehr.ae36, R.mehr.aeMax) * R.regelbedarf.alleinstehend;
     }
+    if (!mehrAEhoch) mehrAEhoch = mehrAE;
     // Regelaltersgrenze aus dem Geburtsjahr der ältesten erwachsenen Person: sicher erreicht, oder je nach Geburtsmonat (grenz)
     const jahr = Number(inp.gebJahr) | 0;
     const heute = inp.heute ? Number(inp.heute) : (new Date().getFullYear() + new Date().getMonth() / 12);
@@ -330,7 +334,7 @@ const Rules = (function () {
       autoWert: num(inp.autoWert), autoBraucht: !!inp.autoBraucht,
       hhAndere: inp.hhAndere === 'wg' || inp.hhAndere === 'verwandte' ? inp.hhAndere : '',
       eu: inp.aufenthalt === 'eu', euArbeit: inp.euArbeit === 'ja', euJahre5: inp.euJahre === 'ab5',
-      art1, art2, pers, liste: !!liste, kindEink, uvgEst, kindZahl: unterhalt + uvgEst, mehrAE, alterGrenz,
+      art1, art2, pers, liste: !!liste, kindEink, uvgEst, kindZahl: unterhalt + uvgEst, mehrAE, mehrAEhoch, alterGrenz,
       egFreiSGB: sumIf((a, b) => a === 'eg' && b > R.elterngeldFrei ? R.elterngeldFrei : 0),
       vPausch: sumIf((a, b) => a !== 'lohn' && a !== 'ohne' && b > 0 ? R.versPauschale : 0),
       mzG: !!inp.mzG, mzGl: !!inp.mzGl || !!(inp.mz && inp.mz.Gl), mzRF: !!(inp.mz && inp.mz.RF), mzAG: !!(inp.mz && inp.mz.aG), wfbmJahre: num(inp.wfbmJahre), grundrente33: !!inp.grundrente33, bhEinkHoch: !!inp.bhEinkHoch, teilhabe: !!inp.teilhabe, bhWeitere: Math.min(4, Math.max(0, inp.bhWeitere | 0)), schwanger: !!inp.schwanger, ernaehrung: !!inp.ernaehrung, warmwasser: !!inp.warmwasser, gebJahr: jahr,
@@ -593,7 +597,12 @@ const Rules = (function () {
     const est = Math.max(0, gmax - R.kiz.anrechnung * Math.max(0, elternEinkSGB2(h) - bemessung) - R.kiz.anrechnung * kindAnr);
     const gesamtBedarf = h.regel + h.miete + (h.mehrAE || 0) + maK.fest + mbK.fest;
 
-    if (est <= 0) return mk(id, 'nein', 'einkoHoch', [['kiz.zuHoch']]);
+    if (est <= 0) {
+      // Kind vielleicht erst 6 Jahre (Mehrbedarf 36 % statt 12 %): dann ist Kinderzuschlag möglich
+      const estHoch = Math.max(0, gmax - R.kiz.anrechnung * Math.max(0, elternEinkSGB2(h) - (bemessung - (h.mehrAE || 0) + (h.mehrAEhoch || 0))) - R.kiz.anrechnung * kindAnr);
+      if (estHoch > 0) return mk(id, 'vielleicht', 'vielleicht', [['kiz.ae7']]);
+      return mk(id, 'nein', 'einkoHoch', [['kiz.zuHoch']]);
+    }
     // Hilfebedürftigkeit muss mit dem Kinderzuschlag enden (§ 6a Abs. 1 Nr. 3 BKGG): bereinigtes Einkommen nach SGB II (mit Freibetrag
     // für Arbeit) plus Kindergeld, Einkommen der Kinder und geschätzter Kinderzuschlag; der Puffer steht für ein mögliches Wohngeld.
     // (Abgleich mit dem KiZ-Lotsen der Familienkasse: bisher mit vollem Netto zu optimistisch.)
@@ -642,7 +651,7 @@ const Rules = (function () {
       h.bhPerson === 'erwVor25' && h.erwerbsgemindert ? [['ggeld.kindGsa']] : [], ma.tx, h.schwanger ? [['mehr.erstausstattung']] : [],
       h.kids > 0 && h.land && h.land !== 'BY' ? [['ggeld.schulbuch']] : [], h.miete > 0 ? [['kdu.angemessen']] : []);
     if (luecke >= R.grundsicherung.sicherAb) return mk(id, 'ja', 'ja', bedarfTx('ja', bedarf).concat([['schaetz.eins', { a: eur(r10(luecke)) }]], behTx));
-    if (luecke > -(R.grundsicherung.knappPuffer + mb.offen)) return mk(id, 'vielleicht', 'vielleicht', bedarfTx('vielleicht', bedarf).concat(behTx));
+    if (luecke > -(R.grundsicherung.knappPuffer + mb.offen + (h.mehrAEhoch || 0) - (h.mehrAE || 0))) return mk(id, 'vielleicht', 'vielleicht', bedarfTx('vielleicht', bedarf).concat(behTx));
     return mk(id, 'nein', 'einkoHoch', bedarfTx('nein', bedarf));
   }
 

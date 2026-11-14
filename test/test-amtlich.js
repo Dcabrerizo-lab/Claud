@@ -35,4 +35,10 @@ KZ.faelle.forEach((x) => {
   n++; if (!ok) { fails++; console.log('FAIL [amtlich-kiz] ' + JSON.stringify(f) + ' SoLo ' + k.level + ' (' + k.hl + '), KiZ-Lotse ' + x.lotse); }
 });
 console.log(fails ? fails + ' von ' + n + ' FEHLGESCHLAGEN' : '[amtlich-wohngeld] [amtlich-elterngeld] [amtlich-kiz] Abgleich mit amtlichen Rechnern bestanden: Wohngeld ' + nWg + ' Haushalte auf 10 € gleich, Elterngeld ' + nEg + ' Einkommen auf den Euro gleich, Kinderzuschlag ' + (n - nWg - nEg) + ' Familien ohne Widerspruch zum KiZ-Lotsen');
+// Großer Abgleich (tools/amtliche-rechner/gross.js auf GitHub): 3.000 Wohngeld-Haushalte, 300 Familien, 1.000 Elterngeld-Einkommen,
+// gespeichert in test/amtlich-gross-*.json und mit denselben Regeln geprüft
+if (require('fs').readdirSync(__dirname).some((d) => /^amtlich-gross-/.test(d))) {
+  try { console.log(require('child_process').execFileSync(process.execPath, [require('path').join(__dirname, '../tools/amtliche-rechner/gross-auswerten.js'), __dirname], { encoding: 'utf8' }).trim().replace(/^/gm, '[amtlich-gross] ')); }
+  catch (e) { fails++; console.log(String(e.stdout || e.message).trim().replace(/^/gm, 'FAIL [amtlich-gross] ')); }
+}
 process.exit(fails ? 1 : 0);

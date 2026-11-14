@@ -1008,5 +1008,6 @@
   "fb.h": "Passt ein Ergebnis nicht zu deinem Bescheid?",
   "fb.text": "Dann hilf mit, SoLo genauer zu machen: Der Knopf öffnet eine E-Mail an den Anbieter mit deinem Ergebnis in SoLo. Ergänze, was in deinem Bescheid steht.",
   "fb.btn": "Rückmeldung per E-Mail",
-  "fb.hint": "In der E-Mail stehen nur die App-Version und die Einstufungen. Deine Angaben aus dem Fragebogen werden nicht eingefügt. Bitte keine Namen, Anschriften, Aktenzeichen oder Fotos von Bescheiden senden. Gesendet wird nur, wenn du die E-Mail selbst abschickst."
+  "fb.hint": "In der E-Mail stehen nur die App-Version und die Einstufungen. Deine Angaben aus dem Fragebogen werden nicht eingefügt. Bitte keine Namen, Anschriften, Aktenzeichen oder Fotos von Bescheiden senden. Gesendet wird nur, wenn du die E-Mail selbst abschickst.",
+  "t.kiz.ae7": "Ist ein Kind noch keine 7 Jahre alt, zählt beim Kinderzuschlag ein höherer Mehrbedarf für Alleinerziehende (36 %). Dann kann Kinderzuschlag übrig bleiben. Beantrage ihn, die Familienkasse rechnet mit dem genauen Alter."
 }
