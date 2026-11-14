@@ -983,5 +983,7 @@
   "f.formsLink": "Zum amtlichen Formular (Internet)",
   "t.kiz.mitWg": "Kinderzuschlag (bis {max} je Kind) hilft dir nur zusammen mit Wohngeld, ohne Grundsicherungsgeld auszukommen. Beantrage beides; die Familienkasse prüft das zusammen.",
   "heiz.label": "Davon Heizkosten im Monat (freiwillig)",
-  "heiz.hint": "Abschlag für Heizung, steht im Mietvertrag oder in der Nebenkostenabrechnung. Damit rechnet SoLo das Wohngeld genauer; ohne Angabe wird vorsichtig geschätzt."
+  "heiz.hint": "Abschlag für Heizung, steht im Mietvertrag oder in der Nebenkostenabrechnung. Damit rechnet SoLo das Wohngeld genauer; ohne Angabe wird vorsichtig geschätzt.",
+  "t.eg.geschwister": "Darin ist der Geschwisterbonus enthalten: 10 % mehr, mindestens {min}, weil weitere kleine Kinder im Haushalt leben.",
+  "t.eg.geschwisterVielleicht": "Ist das ältere Kind noch keine 3 Jahre alt, gibt es 10 % mehr, mindestens {min} (Geschwisterbonus)."
 }

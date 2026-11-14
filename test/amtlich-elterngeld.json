@@ -1,5 +1,5 @@
 {
- "quelle": "Elterngeld-Schnellrechner im Familienportal des Bundes (familienportal.de), abgefragt am 14.11.2026; ein Kind, ohne Geschwisterbonus, ohne Einkommen nach der Geburt",
+ "quelle": "Elterngeld-Schnellrechner im Familienportal des Bundes (familienportal.de), abgefragt am 14.11.2026; ein Kind, ohne Geschwisterbonus, ohne Einkommen nach der Geburt; Fälle mit geschwister: Geschwisterbonus (Kind unter 3 bzw. zwei unter 6)",
  "faelle": [
   {
    "vorher": 0,
@@ -132,6 +132,36 @@
   {
    "vorher": 3000,
    "amtlich": 1800
+  },
+  {
+   "vorher": 0,
+   "geschwister": true,
+   "amtlich": 375
+  },
+  {
+   "vorher": 400,
+   "geschwister": true,
+   "amtlich": 391.67
+  },
+  {
+   "vorher": 800,
+   "geschwister": true,
+   "amtlich": 656.22
+  },
+  {
+   "vorher": 1600,
+   "geschwister": true,
+   "amtlich": 1084.42
+  },
+  {
+   "vorher": 2500,
+   "geschwister": true,
+   "amtlich": 1727.92
+  },
+  {
+   "vorher": 3200,
+   "geschwister": true,
+   "amtlich": 1980
   }
  ]
 }

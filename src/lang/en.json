@@ -983,5 +983,7 @@
   "f.formsLink": "Go to the official form (internet)",
   "t.kiz.mitWg": "Child supplement (Kinderzuschlag, up to {max} per child) only gets you off basic income support (Grundsicherungsgeld) together with housing benefit (Wohngeld). Apply for both; the family benefits office (Familienkasse) checks them together.",
   "heiz.label": "Of which heating costs per month (optional)",
-  "heiz.hint": "Heating payment, shown in your rental contract or utility statement. SoLo then calculates housing benefit (Wohngeld) more precisely; without it, a cautious estimate is used."
+  "heiz.hint": "Heating payment, shown in your rental contract or utility statement. SoLo then calculates housing benefit (Wohngeld) more precisely; without it, a cautious estimate is used.",
+  "t.eg.geschwister": "This includes the sibling bonus (Geschwisterbonus): 10 % more, at least {min}, because other small children live in the household.",
+  "t.eg.geschwisterVielleicht": "If the older child is not yet 3 years old, you get 10 % more, at least {min} (sibling bonus, Geschwisterbonus)."
 }

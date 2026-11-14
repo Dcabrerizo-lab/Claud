@@ -19,7 +19,7 @@ const nWg = n;
 // Elterngeld: 33 Einkommen aus dem Elterngeldrechner des Familienportals (Basiselterngeld, auf den Euro)
 const EG = require('./amtlich-elterngeld.json');
 EG.faelle.forEach((x) => {
-  const e = R.evaluate({ baby: 'bald', egVor: x.vorher, art1: 'lohn', brutto: 2000, netto: 1500, heute: 2026.9 }).results.find((r) => r.id === 'elterngeld');
+  const e = R.evaluate({ baby: 'bald', egVor: x.vorher, art1: 'lohn', brutto: 2000, netto: 1500, heute: 2026.9, kids: x.geschwister ? 2 : 0, kidsU6: x.geschwister ? 2 : 0 }).results.find((r) => r.id === 'elterngeld');
   const solo = e.tx[0][1].basis.eur;
   n++; if (Math.abs(solo - x.amtlich) > 0.5) { fails++; console.log('FAIL [amtlich-elterngeld] Netto vorher ' + x.vorher + ' €: SoLo ' + solo + ' €, amtlich ' + x.amtlich + ' €'); }
 });

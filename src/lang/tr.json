@@ -983,5 +983,7 @@
   "f.formsLink": "Resmî forma git (internet)",
   "t.kiz.mitWg": "Çocuk ek ödeneği (Kinderzuschlag, çocuk başına en fazla {max}) yalnızca konut yardımıyla (Wohngeld) birlikte temel güvence ödeneğine (Grundsicherungsgeld) ihtiyaç duymamanı sağlar. İkisine de başvur; Familienkasse bunları birlikte inceler.",
   "heiz.label": "Bunun aylık ısınma gideri (isteğe bağlı)",
-  "heiz.hint": "Isınma avansı, kira sözleşmesinde veya yan gider hesabında yazar. Böylece SoLo konut yardımını (Wohngeld) daha doğru hesaplar; girilmezse ihtiyatlı tahmin edilir."
+  "heiz.hint": "Isınma avansı, kira sözleşmesinde veya yan gider hesabında yazar. Böylece SoLo konut yardımını (Wohngeld) daha doğru hesaplar; girilmezse ihtiyatlı tahmin edilir.",
+  "t.eg.geschwister": "Buna kardeş bonusu (Geschwisterbonus) dahildir: hanede başka küçük çocuklar yaşadığı için %10 daha fazla, en az {min}.",
+  "t.eg.geschwisterVielleicht": "Büyük çocuk henüz 3 yaşında değilse %10 daha fazla, en az {min} alırsın (kardeş bonusu, Geschwisterbonus)."
 }

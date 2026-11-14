@@ -379,13 +379,14 @@ function krankengeld(e) {
 
 
 // ---------- Elterngeld (§ 2 BEEG, wörtlich: 0,1 Prozentpunkte je volle 2 € Abstand) ----------
-function elterngeld(nettoVorher) {
+function elterngeld(nettoVorher, geschwister) {
   // § 2c Abs. 1 BEEG: Elterngeld-Netto = Netto minus 1/12 des Arbeitnehmer-Pauschbetrags (1.000 €), wie der Elterngeldrechner des Bundes
   const n = Math.max(0, nettoVorher - 1000 / 12);
   let prozent = 67;
   if (n < 1000) prozent = Math.min(100, 67 + Math.floor((1000 - n) / 2) * 0.1);
   if (n > 1200) prozent = Math.max(65, 67 - Math.floor((n - 1200) / 2) * 0.1);
-  const basis = Math.min(1800, Math.max(300, n * prozent / 100));
+  let basis = Math.min(1800, Math.max(300, n * prozent / 100));
+  if (geschwister >= 2) basis = basis + Math.max(75, basis / 10); // § 2a BEEG Geschwisterbonus (zwei Kinder unter 6)
   return { basis, plus: basis / 2, monate: 14 };
 }
 // ---------- Einkommensgrenze § 85 SGB XII (Hilfe zur Pflege, Blindenhilfe) und Schonvermögen ----------
@@ -408,7 +409,7 @@ function kuenftig(e) {
   const a = arbeitslosengeld(e), k = krankengeld(e);
   if (a.level === 'ja' && e.arbeitSit === 'arbeitslos' && a.spanne) { art = 'alg'; betrag = (a.spanne[0] + a.spanne[1]) / 2; }
   else if ((k.level === 'ja' || k.level === 'vielleicht') && (e.krankWochen === 'unter6' || e.krankWochen === 'laeuft') && k.spanne) { art = 'kg'; betrag = (k.spanne[0] + k.spanne[1]) / 2; }
-  else if (e.baby === 'bald' && h.erwachsene === 1 && !leer(e.egVor)) { art = 'eg'; betrag = runde10(elterngeld(zahl(e.egVor)).basis); }
+  else if (e.baby === 'bald' && h.erwachsene === 1 && !leer(e.egVor)) { art = 'eg'; betrag = runde10(elterngeld(zahl(e.egVor), Math.min(Math.max(0, e.kidsU6 | 0), Math.max(0, e.kids | 0))).basis); }
   if (!art || !(betrag > 0)) return null;
   const lohn1 = h.brutto - h.brutto2;
   const netto1 = h.erwachsene === 1 ? h.netto : h.brutto > 0 ? h.netto * lohn1 / h.brutto : 0;

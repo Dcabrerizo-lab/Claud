@@ -70,7 +70,7 @@ const Rules = (function () {
     // ElterngeldPlus die Hälfte für doppelt so lange; Basiselterngeld 12 Monate, mit Partnermonaten oder alleinerziehend 14;
     // kein Anspruch über 175.000 € zu versteuerndem Einkommen der Eltern (Geburten ab 1.4.2025, § 1 Abs. 8 BEEG)
     // pausch: ein Zwölftel des Arbeitnehmer-Pauschbetrags (§ 2c Abs. 1 BEEG), wie im Elterngeldrechner des Bundes (1.000 € / 12)
-    eg: { pausch: 1000 / 12, min: 300, max: 1800, satz: 0.67, satzHoch: 0.65, grenzeUnten: 1000, grenzeOben: 1200, monate: 12, partner: 2, einkommenGrenze: 175000 },
+    eg: { pausch: 1000 / 12, bonus: 0.1, bonusMin: 75, min: 300, max: 1800, satz: 0.67, satzHoch: 0.65, grenzeUnten: 1000, grenzeOben: 1200, monate: 12, partner: 2, einkommenGrenze: 175000 },
     // Hilfe zur Pflege (§§ 61 ff., 85 SGB XII): Einkommensgrenze 2 × RS1 + Wohnkosten + 70 % RS1 je weiterer Person; Vermögen 10.000 € je Erwachsenem
     hzp: { grund: 2, familie: 0.7 },
     // Blindenhilfe (§ 72 SGB XII): gleiche Einkommensgrenze wie Hilfe zur Pflege (§ 85); vom Einkommen über der Grenze
@@ -903,8 +903,14 @@ const Rules = (function () {
     const tx = [];
     if (h.egVor == null) tx.push(['eg.ohneBetrag', { min: eur(R.eg.min), max: eur(R.eg.max) }]);
     else {
-      const basis = elterngeldBerechnen(h.egVor);
+      // Geschwisterbonus (§ 2a Abs. 1 BEEG): 10 %, mindestens 75 €, wenn im Haushalt ein weiteres Kind unter 3 oder zwei unter 6 leben.
+      // SoLo kennt nur Kinder unter 6: zwei oder mehr sicher, eines nur als Hinweis (ob es unter 3 ist, weiß SoLo nicht).
+      const geschw = h.baby === 'bald' ? h.kidsU6 : Math.max(0, h.kidsU6 - 1);
+      let basis = elterngeldBerechnen(h.egVor);
+      if (geschw >= 2) basis += Math.max(R.eg.bonusMin, basis * R.eg.bonus);
       tx.push(['eg.ja', { basis: eur(basis), plus: eur(basis / 2), monate }], ['schaetz.eins', { a: eur(r10(basis)) }]);
+      if (geschw >= 2) tx.push(['eg.geschwister', { min: eur(R.eg.bonusMin) }]);
+      else if (geschw === 1) tx.push(['eg.geschwisterVielleicht', { min: eur(R.eg.bonusMin) }]);
     }
     tx.push(['eg.mutterschaft'], ['eg.grenze', { grenze: eur(R.eg.einkommenGrenze) }]);
     return mk(id, h.egVor == null ? 'vielleicht' : 'ja', h.egVor == null ? 'vielleicht' : 'ja', tx);
