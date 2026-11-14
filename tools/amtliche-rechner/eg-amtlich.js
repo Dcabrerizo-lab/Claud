@@ -1,5 +1,5 @@
 const { chromium } = require('playwright');
-async function open() { const b = await chromium.launch({ proxy: { server: process.env.HTTPS_PROXY } }); const p = await b.newPage({ viewport: { width: 1280, height: 1000 } });
+async function open() { const b = await chromium.launch(process.env.HTTPS_PROXY ? { proxy: { server: process.env.HTTPS_PROXY } } : {}); const p = await b.newPage({ viewport: { width: 1280, height: 1000 } });
   await p.goto('https://familienportal.de/familienportal/rechner-antraege/elterngeldrechner', { timeout: 60000 }); await p.click('text=Alle ablehnen').catch(() => {}); await p.waitForTimeout(500); return { b, p }; }
 async function rechne(p, f) {
   await p.goto('https://familienportal.de/familienportal/rechner-antraege/elterngeldrechner', { timeout: 60000 }); await p.click('text=Alle ablehnen', { timeout: 3000 }).catch(() => {}); await p.waitForTimeout(300);

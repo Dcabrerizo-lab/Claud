@@ -28,7 +28,7 @@ async function rechne(p, f) {
   const fehler = await p.$$eval('.c-form__error, .error, [class*=error]', (e) => e.map((x) => x.textContent.trim()).filter(Boolean).join(' | ')).catch(() => '');
   return { r, fehler };
 }
-module.exports = { rechne, open: async () => { const b = await chromium.launch({ proxy: { server: process.env.HTTPS_PROXY } }); return { b, p: await b.newPage() }; } };
+module.exports = { rechne, open: async () => { const b = await chromium.launch(process.env.HTTPS_PROXY ? { proxy: { server: process.env.HTTPS_PROXY } } : {}); return { b, p: await b.newPage() }; } };
 if (require.main === module) (async () => {
   const { b, p } = await module.exports.open();
   console.log(JSON.stringify(await rechne(p, { miete: 500, stufe: 3, mitglieder: [{ ek: 1200, wk: 102.5, steuer: true, kv: true, rv: true }] })));

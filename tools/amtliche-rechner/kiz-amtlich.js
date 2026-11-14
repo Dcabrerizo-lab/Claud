@@ -1,6 +1,6 @@
 // Bedient den KiZ-Lotsen der Familienkasse. f: { alter: [Jahre je Kind], partner, brutto, netto, pBrutto, pNetto, miete }
 const { chromium } = require('playwright');
-async function open() { const b = await chromium.launch({ proxy: { server: process.env.HTTPS_PROXY } }); return { b, p: await b.newPage({ viewport: { width: 1280, height: 1000 } }) }; }
+async function open() { const b = await chromium.launch(process.env.HTTPS_PROXY ? { proxy: { server: process.env.HTTPS_PROXY } } : {}); return { b, p: await b.newPage({ viewport: { width: 1280, height: 1000 } }) }; }
 async function rechne(p, f) {
   await p.goto('https://web.arbeitsagentur.de/kiz/lotse', { timeout: 60000 }); await p.waitForTimeout(2000);
   await p.click('#btn-start'); await p.waitForTimeout(1200);
