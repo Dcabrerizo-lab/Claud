@@ -1,0 +1,73 @@
+# Großer Abgleich mit den amtlichen Rechnern: 3.000 Wohngeld-Haushalte (Wohngeldrechner BMWSB) und 300 Familien (KiZ-Lotse).
+# Startet, wenn tools/amtliche-rechner/gross-auftrag.txt geändert wird (auch auf Arbeitszweigen), oder von Hand.
+# Die Fälle werden auf 20 Rechner verteilt. Ergebnis: Artefakt "gross-ergebnis" und Auswertung im letzten Schritt.
+name: Großer Abgleich amtliche Rechner
+
+on:
+  push:
+    paths: ['tools/amtliche-rechner/gross-auftrag.txt']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  abfragen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { art: wohngeld, n: 3000, teile: 15, teil: 0 }
+          - { art: wohngeld, n: 3000, teile: 15, teil: 1 }
+          - { art: wohngeld, n: 3000, teile: 15, teil: 2 }
+          - { art: wohngeld, n: 3000, teile: 15, teil: 3 }
+          - { art: wohngeld, n: 3000, teile: 15, teil: 4 }
+          - { art: wohngeld, n: 3000, teile: 15, teil: 5 }
+          - { art: wohngeld, n: 3000, teile: 15, teil: 6 }
+          - { art: wohngeld, n: 3000, teile: 15, teil: 7 }
+          - { art: wohngeld, n: 3000, teile: 15, teil: 8 }
+          - { art: wohngeld, n: 3000, teile: 15, teil: 9 }
+          - { art: wohngeld, n: 3000, teile: 15, teil: 10 }
+          - { art: wohngeld, n: 3000, teile: 15, teil: 11 }
+          - { art: wohngeld, n: 3000, teile: 15, teil: 12 }
+          - { art: wohngeld, n: 3000, teile: 15, teil: 13 }
+          - { art: wohngeld, n: 3000, teile: 15, teil: 14 }
+          - { art: kiz, n: 300, teile: 5, teil: 0 }
+          - { art: kiz, n: 300, teile: 5, teil: 1 }
+          - { art: kiz, n: 300, teile: 5, teil: 2 }
+          - { art: kiz, n: 300, teile: 5, teil: 3 }
+          - { art: kiz, n: 300, teile: 5, teil: 4 }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - name: Browser installieren (bis zu 3 Versuche)
+        run: for i in 1 2 3; do timeout 300 npx playwright install --with-deps chromium && exit 0; echo "Versuch $i fehlgeschlagen"; sleep 20; done; exit 1
+      - name: Amtlichen Rechner abfragen
+        run: node tools/amtliche-rechner/gross.js ${{ matrix.art }} ${{ matrix.n }} ${{ matrix.teil }} ${{ matrix.teile }} gross-${{ matrix.art }}-${{ matrix.teil }}.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gross-${{ matrix.art }}-${{ matrix.teil }}
+          path: gross-${{ matrix.art }}-${{ matrix.teil }}.json
+          if-no-files-found: warn
+
+  auswerten:
+    needs: abfragen
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - uses: actions/download-artifact@v4
+        with: { path: ergebnis, pattern: 'gross-*' }
+      - name: SoLo gegen amtliche Ergebnisse
+        run: node tools/amtliche-rechner/gross-auswerten.js ergebnis | tee auswertung.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: gross-ergebnis, path: 'ergebnis/**' }
