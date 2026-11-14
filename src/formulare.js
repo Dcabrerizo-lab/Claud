@@ -287,6 +287,41 @@ const Formulare = (function () {
     return u;
   }
 
-  return { plan, unterlagen, teileName, teileStrasse, teileOrt };
+  // Fristen für den Kalender (offline): je gewählter Leistung ein Termin mit Hinweis. heute: Date; tr: Übersetzungsfunktion (Schlüssel -> Text).
+  // Tage ab heute; Bewilligungszeiträume: Wohngeld meist 12 Monate (§ 25 WoGG), Kinderzuschlag 6 Monate (§ 6a Abs. 7 BKGG),
+  // Grundsicherungsgeld 12 Monate (§ 41 SGB II), Grundsicherung im Alter 12 Monate (§ 44 SGB XII), Wohnberechtigungsschein 1 Jahr.
+  const FRISTEN = {
+    kindergeld: [[3, 'ics.kg']], kiz: [[3, 'ics.antrag'], [150, 'ics.kiz']], wohngeld: [[3, 'ics.antrag'], [305, 'ics.wg']],
+    ggeld: [[3, 'ics.antrag'], [335, 'ics.gg']], gsa: [[3, 'ics.antrag'], [335, 'ics.gsa']], wbs: [[335, 'ics.wbs']],
+    elterngeld: [[14, 'ics.eg']], uvg: [[3, 'ics.antrag']], but: [[3, 'ics.antrag']], pflege: [[3, 'ics.antrag']]
+  };
+  function fristen(results, heute, tr, name) {
+    const out = [];
+    (results || []).forEach((r) => (FRISTEN[r.id] || []).forEach(([tage, key]) => {
+      const d = new Date(heute.getTime()); d.setDate(d.getDate() + tage);
+      out.push({ id: r.id + '-' + tage, datum: d, titel: name(r.id) + ': ' + tr(key + '.t'), text: tr(key) });
+    }));
+    return out.sort((a, b) => a.datum - b.datum);
+  }
+  // Kalenderdatei (RFC 5545): ganztägige Termine mit Erinnerung am Vortag um 9 Uhr
+  function ics(termine, jetzt) {
+    const z = (n) => String(n).padStart(2, '0');
+    const tag = (d) => d.getFullYear() + z(d.getMonth() + 1) + z(d.getDate());
+    const stamp = jetzt.getUTCFullYear() + z(jetzt.getUTCMonth() + 1) + z(jetzt.getUTCDate()) + 'T' + z(jetzt.getUTCHours()) + z(jetzt.getUTCMinutes()) + '00Z';
+    const esc = (t) => String(t).replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
+    // Zeilen nach höchstens 75 Byte falten (RFC 5545), Folgezeilen beginnen mit einem Leerzeichen; Zeichen werden nie zerteilt
+    const bytes = (c) => { const n = c.codePointAt(0); return n < 0x80 ? 1 : n < 0x800 ? 2 : n < 0x10000 ? 3 : 4; };
+    const falte = (l) => { const o = []; let cur = '', b = 0; for (const c of l) { const n = bytes(c); if (b + n > 75) { o.push(cur); cur = ' '; b = 1; } cur += c; b += n; } o.push(cur); return o.join('\r\n'); };
+    const L = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//SoLo Sozialleistungslotse//DE', 'CALSCALE:GREGORIAN'];
+    termine.forEach((t) => {
+      const ende = new Date(t.datum.getTime()); ende.setDate(ende.getDate() + 1);
+      L.push('BEGIN:VEVENT', 'UID:' + t.id + '-' + tag(t.datum) + '@sozialleistungslotse', 'DTSTAMP:' + stamp, 'DTSTART;VALUE=DATE:' + tag(t.datum), 'DTEND;VALUE=DATE:' + tag(ende),
+        'SUMMARY:' + esc(t.titel), 'DESCRIPTION:' + esc(t.text), 'BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:' + esc(t.titel), 'TRIGGER:-PT15H', 'END:VALARM', 'END:VEVENT');
+    });
+    L.push('END:VCALENDAR');
+    return L.map(falte).join('\r\n') + '\r\n';
+  }
+
+  return { plan, unterlagen, teileName, teileStrasse, teileOrt, fristen, ics };
 })();
 if (typeof module !== 'undefined') module.exports = Formulare;

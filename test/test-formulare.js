@@ -97,6 +97,22 @@ ck('Grundsicherung im Alter: SGB-XII-Antrag (Muster) mit Ausfüllhilfe', !!gsa &
 ck('Grundsicherung schon bezogen: kein Antrag', !F.plan({ adults: 1, bezug: { sozialamt: true } }, PERSON, [{ id: 'gsa', level: 'ja' }]).some((x) => x.id === 'gsa'));
 alle.push(...F.plan({ adults: 1, kids: 1, young: 1, aufenthalt: 'eu', bhPerson: 'erwVor25', pflegegrad: '3', bezug: {} }, PERSON, [{ id: 'kindergeld', level: 'ja' }, { id: 'kgBeh', level: 'ja' }, { id: 'gsa', level: 'ja' }]));
 
+// Fristen und Kalenderdatei
+{
+  const heute = new Date(2026, 10, 14);
+  const fr = F.fristen([{ id: 'wohngeld' }, { id: 'kiz' }, { id: 'kindergeld' }, { id: 'wbs' }, { id: 'ausweis' }], heute, (k) => k, (id) => id);
+  const tag = (x) => x.datum.toISOString().slice(0, 10);
+  const find = (id) => fr.find((x) => x.id === id);
+  ck('Fristen: Antrag in 3 Tagen, Kinderzuschlag nach 150 Tagen neu, Wohngeld nach 305 Tagen weiter, WBS nach 335 Tagen; ohne Frist (Ausweis) nichts',
+    find('wohngeld-3') && find('kiz-150') && find('wohngeld-305') && find('wbs-335') && !fr.some((x) => /^ausweis/.test(x.id)) && tag(find('kiz-150')) === '2027-04-13', fr.map((x) => x.id + ' ' + tag(x)).join(', '));
+  ck('Fristen nach Datum sortiert', fr.every((x, i) => i === 0 || fr[i - 1].datum <= x.datum));
+  const txt = F.ics([{ id: 'wohngeld-3', datum: new Date(2026, 10, 17), titel: 'Wohngeld: Antrag, jetzt; bald', text: 'Zeile 1\nZeile 2 ' + 'äöü'.repeat(40) }], new Date(Date.UTC(2026, 10, 14, 12, 0)));
+  const zeilen = txt.split('\r\n');
+  ck('Kalenderdatei: Rahmen, ganztägiger Termin, Erinnerung, CRLF', zeilen[0] === 'BEGIN:VCALENDAR' && zeilen.includes('DTSTART;VALUE=DATE:20261117') && zeilen.includes('DTEND;VALUE=DATE:20261118') && zeilen.includes('BEGIN:VALARM') && txt.endsWith('END:VCALENDAR\r\n') && !/[^\r]\n/.test(txt));
+  ck('Kalenderdatei: Komma, Semikolon und Zeilenumbruch maskiert', txt.includes('SUMMARY:Wohngeld: Antrag\\, jetzt\\; bald') && txt.includes('Zeile 1\\nZeile 2'));
+  ck('Kalenderdatei: keine Zeile länger als 75 Byte (RFC 5545)', zeilen.every((z) => Buffer.byteLength(z, 'utf8') <= 75), zeilen.map((z) => Buffer.byteLength(z, 'utf8')).join(','));
+}
+
 // Zuordnung gegen den Katalog
 alle.forEach((fo) => {
   if (fo.art === 'link') { ck(fo.id + ': Link auf amtliche Seite (https, Bund/Land)', /^https:\/\/(www\.arbeitsagentur\.de|www\.stmb\.bayern\.de|www\.hamburg\.de)\//.test(fo.url) && Array.isArray(fo.hilfe) && fo.hilfe.length >= 3, fo.url); return; }

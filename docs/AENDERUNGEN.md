@@ -2,6 +2,12 @@
 
 Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss steigen). Die Versionsnummer kommt aus dem Build.
 
+## 1.2.0 (in Arbeit)
+- Wohngeld genauer: freiwilliges Feld für die Heizkosten (Bruttokaltmiete statt Schätzung)
+- Elterngeld: Geschwisterbonus (10 %, mindestens 75 €) wird eingerechnet
+- Fristen in den Kalender: Antrag, Weiterbewilligung und Ablauf als Kalenderdatei (offline)
+- Kinderzuschlag, Kindergeld-Formulare: genauere Links und Ausfüllhilfe
+
 ## 1.1.0 (ab Versionsnummer 133, November 2026)
 - Neu gerechnet statt nur erwähnt: Selbstständige (eigene Einkommensart), Wohneigentum, Auto, Mitbewohner und Verwandte in der Wohnung, angemessene Miete (Grenze nach Wohngeld-Höchstbeträgen plus 10 %), EU-Bürger (Leistungsausschluss ohne Arbeit)
 - Ausfüllhilfe mit den amtlichen Formularen: SoLo sucht zu den gewählten Leistungen die passenden Formulare (Jobcenter: Hauptantrag und Anlagen EK, KDU, VM, KI, WEP, VE, UH2, UH3, MEB, HG, EKS, SV; Einkommens- und Mietbescheinigung; Kinderzuschlag; Wohngeld; Wohnberechtigungsschein: Landesvordruck mit Ausfüllhilfe für 6 Länder, Link für Bayern und Hamburg, sonst Hinweis, wo es ihn gibt)

@@ -140,6 +140,14 @@ const MOCK = () => {
   ok('Formular-Dateien nach dem Teilen aus dem Cache gelöscht', Object.keys(dateien).every((n) => geloescht.indexOf(n) >= 0), geloescht.join(' '));
   if (mitGG) ok('Mit Grundsicherungsgeld: Hauptantrag vorausgefüllt geprüft', gefuellt === 1);
   console.log('  (Formulare geteilt: ' + Object.keys(dateien).join(', ') + (gefuellt ? '; Hauptantrag geprüft' : '') + ')');
+  // Fristen in den Kalender: Datei SoLo-Fristen.ics schreiben und über den Teilen-Dialog anbieten
+  const vorIcs = (await calls('Share.share')).length;
+  await p.evaluate(() => { window.__files = {}; });
+  await p.click('#mappeIcs');
+  await p.waitForFunction((n) => window.__calls.filter((c) => c[0] === 'Share.share').length > n, vorIcs, { timeout: 10000 }).catch(() => {});
+  const icsDatei = await p.evaluate(() => (window.__files || {})['SoLo-Fristen.ics'] || '');
+  const icsShare = (await calls('Share.share')).slice(vorIcs).find((o) => o.files);
+  ok('Fristen: Kalenderdatei mit Terminen geschrieben und geteilt', /BEGIN:VCALENDAR/.test(icsDatei) && /BEGIN:VEVENT/.test(icsDatei) && !!icsShare && /SoLo-Fristen\.ics$/.test(icsShare.files[0]), icsDatei.slice(0, 80));
   await p.screenshot({ path: path.join(require('os').tmpdir(), 'app-mappe.png') });
   await p.click('#mappeClose');
 

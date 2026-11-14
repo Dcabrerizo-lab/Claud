@@ -506,6 +506,7 @@
       try { window.print(); } catch (e) { $('copyMsg').textContent = ''; }
     });
     $('mappeCopy').addEventListener('click', copyMappe);
+    $('mappeIcs').addEventListener('click', fristenKalender);
     $('clearBtn').addEventListener('click', function () {
       state = blankState(); person = { name: '', geb: '', strasse: '', ort: '', tel: '' }; picked = {}; pickedUser = {}; started = false;
       ['p-name', 'p-geb', 'p-strasse', 'p-ort', 'p-tel'].forEach(function (id) { $(id).value = ''; });
@@ -930,6 +931,32 @@
       msg.textContent = lang === 'ar' ? t('f.pdfArNote') : '';
       return fs.deleteFile({ path: name, directory: 'CACHE' }).catch(function () {});
     }).catch(function () { msg.textContent = t('f.pdfFail'); });
+  }
+
+  // Fristen der gewählten Leistungen als Kalenderdatei (.ics): App über den Teilen-Dialog, Web als Download. Alles offline.
+  function fristenKalender() {
+    var ids = pickedIds(), msg = $('copyMsg');
+    if (typeof Formulare === 'undefined') return;
+    var liste = Formulare.fristen(ids, new Date(), function (k) { return t(k); }, function (id) {
+      var r = ids.filter(function (x) { return x.id === id; })[0] || { name: id };
+      return lang === 'de' ? r.name : t('n.' + id) + ' (' + r.name + ')';
+    });
+    if (!liste.length) { msg.textContent = t('f.icsNone'); return; }
+    var text = Formulare.ics(liste, new Date()), name = 'SoLo-Fristen.ics';
+    var fs = plug('Filesystem'), sh = plug('Share');
+    if (NATIVE && fs && sh) {
+      fs.writeFile({ path: name, data: text, directory: 'CACHE', encoding: 'utf8' }).then(function (r) {
+        return sh.share({ title: t('f.ics'), files: [r.uri] }).then(function () {}, function () {});
+      }).then(function () { msg.textContent = t('f.icsDone'); fs.deleteFile({ path: name, directory: 'CACHE' }).catch(function () {}); })
+        .catch(function () { msg.textContent = t('f.pdfFail'); });
+      return;
+    }
+    try {
+      var url = URL.createObjectURL(new Blob([text], { type: 'text/calendar;charset=utf-8' }));
+      var a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click();
+      setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 1000);
+      msg.textContent = t('f.icsDone');
+    } catch (e) { msg.textContent = t('f.pdfFail'); }
   }
 
   function copyMappe() {
