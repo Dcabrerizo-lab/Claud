@@ -18,7 +18,7 @@ async function rechne(p, f) {
     await box('grundsicherung', false); await box('partnerVorhanden', f.partner); await box('wohngeldBezug', false);
     if (ids.includes('antragstellerEinkommen_brutto')) { await fill('antragstellerEinkommen_brutto', f.brutto); await fill('antragstellerEinkommen_netto', f.netto); await fill('antragstellerEinkommen_sonstiges', 0); }
     if (ids.includes('partnerEinkommen_brutto')) { await fill('partnerEinkommen_brutto', f.pBrutto || 0); await fill('partnerEinkommen_netto', f.pNetto || 0); await fill('partnerEinkommen_sonstiges', 0); }
-    if (ids.includes('kindEinkommen_brutto')) { await fill('kindEinkommen_brutto', 0); await fill('kindEinkommen_netto', 0); await fill('kindEinkommen_sonstiges', 0); await box('kindbeziehtKG', true); }
+    if (ids.includes('kindEinkommen_brutto')) { await fill('kindEinkommen_brutto', 0); await fill('kindEinkommen_netto', 0); await fill('kindEinkommen_sonstiges', f.uh || 0); await box('kindbeziehtKG', true); }
     await fill('antragstellerAusgaben_miete', f.miete);
     const unbekannt = ids.filter((x) => !/^(kinderAnzahl|kindAlter_|grundsicherung|partnerVorhanden|wohngeldBezug|antragsteller|partnerEinkommen|kindEinkommen|kindbeziehtKG|star-rating)/.test(x));
     if (unbekannt.length) return 'UNBEKANNTE FELDER: ' + unbekannt.join(',') + ' | ' + txt.replace(/\s+/g, ' ').slice(0, 300);
