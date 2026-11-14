@@ -77,7 +77,7 @@ for (let i = 0; i < N; i++) {
       if (betrag(a[id]) !== null && betrag(b[id]) !== null && betrag(b[id]) > betrag(a[id]) + 10) melde('Mehr Einkommen, mehr Geld: ' + id, e, [betrag(a[id]), betrag(b[id])]);
     }
     for (const id of ['wohngeld', 'kiz']) {
-      const unten = (x) => /einkoNiedrig|minEink/.test(x.hl);
+      const unten = (x) => /einkoNiedrig|minEink/.test(x.hl) || (x.tx || []).some((t) => t[0] === 'kiz.mitWg'); // untere Grenze: erst genug Einkommen macht die Leistung möglich
       if (!unten(a[id]) && !unten(b[id]) && betrag(a[id]) !== null && betrag(b[id]) !== null && betrag(b[id]) > betrag(a[id]) + 10) melde('Mehr Einkommen, mehr Geld: ' + id, e, [betrag(a[id]), betrag(b[id])]);
       if (!unten(a[id]) && !unten(b[id]) && RANG[b[id].level] > RANG[a[id].level] && a[id].level !== 'na') melde('Mehr Einkommen, bessere Einstufung: ' + id, e, [a[id].level, b[id].level]);
     }
