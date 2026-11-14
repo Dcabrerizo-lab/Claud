@@ -181,6 +181,12 @@ check('Angabenblatt enthält Haushalt, Miete, Einkommen', /Angabenblatt/.test(tx
 check('Angabenblatt nennt Selbstauskunft-Hinweis', /Selbstauskunft/.test(txt));
 check('Leere Felder werden zu Strichen statt "undefined"', !/undefined|null/.test(txt));
 check('Kopiertext enthält Briefe und Angabenblatt', /Betreff: Antrag auf Wohngeld/.test(d.getElementById('mappeText').value) && /Angabenblatt/.test(d.getElementById('mappeText').value));
+// Rückmeldung „Ergebnis passt nicht“: E-Mail-Entwurf mit Version und Einstufungen, ohne Angaben aus dem Fragebogen
+{
+  const fb = d.getElementById('feedback'), href = decodeURIComponent(d.getElementById('feedbackMail').getAttribute('href') || '');
+  check('Rückmeldung: Knopf sichtbar, E-Mail an Kontaktadresse mit Betreff, Version und Einstufungen', !fb.hidden && /^mailto:d\.cabrerizo@gmx\.de\?subject=SoLo: Ergebnis passt nicht/.test(href) && href.indexOf('SoLo ' + require('../package.json').version) >= 0 && /Wohngeld: (Wahrscheinlich|Möglich)/.test(href), href.slice(0, 300));
+  check('Rückmeldung: keine persönlichen Angaben (Name, Anschrift, Geburtsdatum, Einkommen, Miete) in der E-Mail', !/Maria|Beispiel|Hauptstraße|Erlangen|1985|2\.?200|1\.?750|950/.test(href), href);
+}
 d.getElementById('mappeCopy').click();
 setTimeout(() => {
   // Fristen in den Kalender (Web: Download einer .ics-Datei)

@@ -1004,5 +1004,9 @@
   "ics.wbs.t": "läuft bald ab",
   "ics.wbs": "Der Wohnberechtigungsschein gilt meist ein Jahr. Bei Bedarf rechtzeitig neu beantragen.",
   "ics.eg.t": "Antrag vorbereiten",
-  "ics.eg": "Elterngeld nach der Geburt innerhalb von 3 Monaten beantragen: Rückwirkend gibt es nur 3 Monate. Geburtsurkunde und Einkommensnachweise bereitlegen."
+  "ics.eg": "Elterngeld nach der Geburt innerhalb von 3 Monaten beantragen: Rückwirkend gibt es nur 3 Monate. Geburtsurkunde und Einkommensnachweise bereitlegen.",
+  "fb.h": "Passt ein Ergebnis nicht zu deinem Bescheid?",
+  "fb.text": "Dann hilf mit, SoLo genauer zu machen: Der Knopf öffnet eine E-Mail an den Anbieter mit deinem Ergebnis in SoLo. Ergänze, was in deinem Bescheid steht.",
+  "fb.btn": "Rückmeldung per E-Mail",
+  "fb.hint": "In der E-Mail stehen nur die App-Version und die Einstufungen. Deine Angaben aus dem Fragebogen werden nicht eingefügt. Bitte keine Namen, Anschriften, Aktenzeichen oder Fotos von Bescheiden senden. Gesendet wird nur, wenn du die E-Mail selbst abschickst."
 }

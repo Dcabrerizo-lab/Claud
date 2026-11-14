@@ -68,7 +68,7 @@ jobs:
             -authenticationKeyPath "$RUNNER_TEMP/key/AuthKey.p8" -authenticationKeyID "$KEYID" -authenticationKeyIssuerID "$ISSUER" \
             DEVELOPMENT_TEAM="$TEAM" CODE_SIGN_STYLE=Automatic \
             CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
-            CURRENT_PROJECT_VERSION="${{ inputs.build }}" MARKETING_VERSION=1.0.0 \
+            CURRENT_PROJECT_VERSION="${{ inputs.build }}" MARKETING_VERSION="$(node -p "require('../../../package.json').version")" \
             archive | tail -80
           exit ${PIPESTATUS[0]}
       - name: Hochladen zu App Store Connect

@@ -317,6 +317,7 @@
     padding: 28px 32px; font-family: Georgia, 'Times New Roman', serif; font-size: 1rem; line-height: 1.55;
   }
   .page h3 { font-family: var(--font-display); font-size: 1.1em; margin-bottom: 12px; color: #111; }
+  .page a, .page a:visited { color: #0b3d91; }
   .page pre { margin: 0; white-space: pre-wrap; font: inherit; direction: ltr; text-align: left; }
   .page.docs { font-family: var(--font-body); }
   .page.docs ul { margin: 4px 0 12px; padding-inline-start: 20px; }
@@ -745,6 +746,12 @@
         <nav id="overview" class="overview" hidden></nav>
         <div id="together"></div>
         <div id="cards" class="results"></div>
+        <section class="feedback" id="feedback" hidden aria-labelledby="h-feedback">
+          <h3 id="h-feedback" data-t="fb.h"></h3>
+          <p data-t="fb.text"></p>
+          <div class="btns"><a class="btn ghost" id="feedbackMail" href="#" data-t="fb.btn"></a></div>
+          <p class="small" data-t="fb.hint"></p>
+        </section>
 
         <section class="helper" id="helper" aria-labelledby="h-helper">
           <h2 id="h-helper" data-t="f.h"></h2>
@@ -858,6 +865,7 @@
         <li><strong>Foto des Formulars (nur App):</strong> Die Texterkennung läuft auf deinem Gerät. Das Foto wird nicht gesendet und nach dem Lesen gelöscht.</li>
         <li><strong>Löschen:</strong> Mit der Schaltfläche „Alle Angaben löschen“ im Formular werden die gespeicherten Eingaben entfernt. Beim Deinstallieren der App werden alle Daten gelöscht.</li>
         <li><strong>Antragsmappe:</strong> Wenn du die Mappe teilst oder kopierst, entscheidest du, wohin sie geht. Die App sendet sie nirgendwohin.</li>
+        <li><strong>Rückmeldung per E-Mail:</strong> Der Knopf unter den Ergebnissen öffnet nur einen Entwurf in deinem E-Mail-Programm, mit App-Version und Einstufungen, ohne deine Angaben aus dem Formular. Gesendet wird erst, wenn du selbst auf Senden tippst. Ich nutze die Nachricht nur zur Prüfung der Berechnung und lösche sie spätestens nach 12 Monaten.</li>
       </ul>
       <p id="legalWeb">Nur Web-Version: Sie lädt beim Öffnen nichts aus dem Internet nach, auch keine Schriften. Die optionale Texterkennung lädt Programmteile von cdnjs und jsDelivr nach; das Foto selbst bleibt auf deinem Gerät. Der optionale Scan mit Claude sendet das Bild nur nach deiner ausdrücklichen Zustimmung an Anthropic.</p>
       <p class="small"><strong>Auswertung mit Claude (nur Web-Version innerhalb von Claude):</strong> Wird die Web-Version als Seite in Claude (claude.ai, Anthropic PBC, USA) geöffnet, gibt es zusätzlich die Möglichkeit, ein Foto mit Claude auswerten zu lassen. Das Foto wird nur gesendet, wenn du das Häkchen zur Einwilligung setzt und auf „Mit Claude auswerten“ tippst (Art. 6 Abs. 1 Buchst. a und Art. 9 Abs. 2 Buchst. a DSGVO, weil Unterlagen Gesundheitsdaten enthalten können). Es wird dann an Anthropic in die USA übermittelt und dort nach den Datenschutzbestimmungen von Anthropic verarbeitet. Die Einwilligung ist freiwillig und gilt nur für dieses eine Foto. In der App für Android und iOS gibt es diese Funktion nicht.</p>

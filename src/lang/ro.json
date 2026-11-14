@@ -1004,5 +1004,9 @@
   "ics.wbs.t": "expiră curând",
   "ics.wbs": "Certificatul de drept la locuință socială (Wohnberechtigungsschein) este valabil de obicei un an. Dacă e nevoie, depune din nou cererea la timp.",
   "ics.eg.t": "pregătește cererea",
-  "ics.eg": "Depune cererea pentru alocația parentală (Elterngeld) în 3 luni după naștere: retroactiv se plătesc doar 3 luni. Pregătește certificatul de naștere și dovezile de venit."
+  "ics.eg": "Depune cererea pentru alocația parentală (Elterngeld) în 3 luni după naștere: retroactiv se plătesc doar 3 luni. Pregătește certificatul de naștere și dovezile de venit.",
+  "fb.h": "Un rezultat nu se potrivește cu decizia (Bescheid)?",
+  "fb.text": "Ajută la îmbunătățirea SoLo: butonul deschide un e-mail către furnizor cu rezultatul tău din SoLo. Adaugă ce scrie în decizia ta (Bescheid).",
+  "fb.btn": "Feedback prin e-mail",
+  "fb.hint": "E-mailul conține doar versiunea aplicației și evaluările. Răspunsurile tale din chestionar nu sunt incluse. Te rugăm să nu trimiți nume, adrese, numere de dosar (Aktenzeichen) sau fotografii ale deciziilor. Nu se trimite nimic decât dacă trimiți tu e-mailul."
 }

@@ -570,6 +570,18 @@
   // ----- Ergebnis -----
   function listItems(a) { return '<ul>' + a.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>'; }
 
+  // Rückmeldung „Ergebnis passt nicht zu meinem Bescheid“: E-Mail-Entwurf an die Kontaktadresse aus dem Impressum.
+  // Enthält nur App-Version und die Einstufungen (auf Deutsch), keine Angaben aus dem Fragebogen. Gesendet wird nur, wenn die Person es selbst tut.
+  var KONTAKT = 'd.cabrerizo@gmx.de', APPVERSION = '/*VERSION*/';
+  function tDe(k, p) { var l = lang; lang = 'de'; try { return t(k, p); } finally { lang = l; } }
+  function feedbackMail(results) {
+    var z = results.filter(function (r) { return r.level === 'ja' || r.level === 'vielleicht'; }).slice(0, 25)
+      .map(function (r) { return '- ' + r.name + ': ' + tDe('lvl.' + r.level) + ' (' + tDe('h.' + r.hl) + ')'; });
+    var body = 'SoLo ' + APPVERSION + ', Sprache ' + lang + ', Datum ' + today() + '\n\nErgebnis in SoLo:\n' + (z.length ? z.join('\n') : '- keine Leistung wahrscheinlich oder möglich') +
+      '\n\nWas steht in meinem Bescheid? (Leistung, Betrag, ab welchem Monat):\n\n\nWas ich in SoLo angegeben habe (freiwillig, ohne Namen und Anschrift):\n\n';
+    return 'mailto:' + KONTAKT + '?subject=' + encodeURIComponent('SoLo: Ergebnis passt nicht zu meinem Bescheid') + '&body=' + encodeURIComponent(body);
+  }
+
   function resultText(r) { return r.tx.map(function (x) { return t('t.' + x[0], x[1]); }).join(' '); }
 
   function card(r) {
@@ -618,7 +630,7 @@
       $('count').textContent = t('c.leer'); $('jumpText').textContent = t('c.leer');
       $('overview').hidden = true; $('together').innerHTML = '';
       $('cards').innerHTML = '<div class="card startcard"><h3>' + esc(t('start.h')) + '</h3>' + listItems([t('start.1'), t('start.2'), t('start.3')]) + '</div>';
-      $('helper').hidden = true; $('legende').hidden = true;
+      $('helper').hidden = true; $('legende').hidden = true; $('feedback').hidden = true;
       return;
     }
     $('helper').hidden = false; $('legende').hidden = false;
@@ -655,6 +667,7 @@
     document.querySelectorAll('.cond-kids').forEach(function (el) { el.hidden = state.kids === 0; });
     document.querySelectorAll('.cond-adults2').forEach(function (el) { el.hidden = state.adults !== 2; });
     renderPick(out.results);
+    $('feedback').hidden = false; $('feedbackMail').setAttribute('href', feedbackMail(out.results));
   }
 
   // ----- Ausfüllhilfe: Antragsmappe (Brief und Angabenblatt auf Deutsch) -----

@@ -1004,5 +1004,9 @@
   "ics.wbs.t": "wkrótce wygasa",
   "ics.wbs": "Zaświadczenie uprawniające do mieszkania socjalnego (Wohnberechtigungsschein) jest zwykle ważne rok. W razie potrzeby złóż wniosek ponownie.",
   "ics.eg.t": "przygotować wniosek",
-  "ics.eg": "Złóż wniosek o zasiłek rodzicielski (Elterngeld) w ciągu 3 miesięcy po porodzie: wstecz płaci się tylko za 3 miesiące. Przygotuj akt urodzenia i dowody dochodów."
+  "ics.eg": "Złóż wniosek o zasiłek rodzicielski (Elterngeld) w ciągu 3 miesięcy po porodzie: wstecz płaci się tylko za 3 miesiące. Przygotuj akt urodzenia i dowody dochodów.",
+  "fb.h": "Wynik nie zgadza się z decyzją (Bescheid)?",
+  "fb.text": "Pomóż ulepszyć SoLo: przycisk otwiera e-mail do dostawcy z Twoim wynikiem w SoLo. Dopisz, co jest w Twojej decyzji (Bescheid).",
+  "fb.btn": "Opinia e-mailem",
+  "fb.hint": "E-mail zawiera tylko wersję aplikacji i oceny. Twoje odpowiedzi z kwestionariusza nie są dodawane. Nie wysyłaj nazwisk, adresów, sygnatur (Aktenzeichen) ani zdjęć decyzji. Nic nie zostanie wysłane, dopóki sam nie wyślesz e-maila."
 }

@@ -1004,5 +1004,9 @@
   "ics.wbs.t": "expires soon",
   "ics.wbs": "The housing entitlement certificate (Wohnberechtigungsschein) is usually valid for one year. Apply again in good time if needed.",
   "ics.eg.t": "prepare the application",
-  "ics.eg": "Apply for parental allowance (Elterngeld) within 3 months after the birth: it is only paid back for 3 months. Have the birth certificate and proof of income ready."
+  "ics.eg": "Apply for parental allowance (Elterngeld) within 3 months after the birth: it is only paid back for 3 months. Have the birth certificate and proof of income ready.",
+  "fb.h": "Does a result not match your decision letter (Bescheid)?",
+  "fb.text": "Help make SoLo more accurate: the button opens an e-mail to the provider with your SoLo result. Add what your decision letter (Bescheid) says.",
+  "fb.btn": "Feedback by e-mail",
+  "fb.hint": "The e-mail only contains the app version and the ratings. Your answers from the questionnaire are not included. Please do not send names, addresses, file numbers (Aktenzeichen) or photos of decision letters. Nothing is sent unless you send the e-mail yourself."
 }

@@ -1004,5 +1004,9 @@
   "ics.wbs.t": "yakında sona eriyor",
   "ics.wbs": "Konut hakkı belgesi (Wohnberechtigungsschein) genellikle bir yıl geçerlidir. Gerekirse zamanında yeniden başvur.",
   "ics.eg.t": "başvuruyu hazırla",
-  "ics.eg": "Ebeveyn parasına (Elterngeld) doğumdan sonra 3 ay içinde başvur: geriye dönük yalnızca 3 ay ödenir. Doğum belgesini ve gelir belgelerini hazırla."
+  "ics.eg": "Ebeveyn parasına (Elterngeld) doğumdan sonra 3 ay içinde başvur: geriye dönük yalnızca 3 ay ödenir. Doğum belgesini ve gelir belgelerini hazırla.",
+  "fb.h": "Bir sonuç kararınızla (Bescheid) uyuşmuyor mu?",
+  "fb.text": "SoLo'yu daha doğru hale getirmeye yardım edin: düğme, SoLo sonucunuzla sağlayıcıya bir e-posta açar. Kararınızda (Bescheid) ne yazdığını ekleyin.",
+  "fb.btn": "E-posta ile geri bildirim",
+  "fb.hint": "E-postada yalnızca uygulama sürümü ve değerlendirmeler bulunur. Anketteki yanıtlarınız eklenmez. Lütfen ad, adres, dosya numarası (Aktenzeichen) veya karar fotoğrafı göndermeyin. E-postayı kendiniz göndermedikçe hiçbir şey gönderilmez."
 }

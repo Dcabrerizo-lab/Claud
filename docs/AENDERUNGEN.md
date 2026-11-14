@@ -7,6 +7,8 @@ Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss ste
 - Elterngeld: Geschwisterbonus (10 %, mindestens 75 €) wird eingerechnet
 - Fristen in den Kalender: Antrag, Weiterbewilligung und Ablauf als Kalenderdatei (offline)
 - Kinderzuschlag, Kindergeld-Formulare: genauere Links und Ausfüllhilfe
+- Rückmeldung per E-Mail unter den Ergebnissen („Passt ein Ergebnis nicht zu deinem Bescheid?“): Entwurf mit App-Version und Einstufungen, ohne Angaben aus dem Fragebogen
+- Antragsmappe im dunklen Modus: Formular-Links wieder gut lesbar
 
 ## 1.1.0 (ab Versionsnummer 133, November 2026)
 - Neu gerechnet statt nur erwähnt: Selbstständige (eigene Einkommensart), Wohneigentum, Auto, Mitbewohner und Verwandte in der Wohnung, angemessene Miete (Grenze nach Wohngeld-Höchstbeträgen plus 10 %), EU-Bürger (Leistungsausschluss ohne Arbeit)
