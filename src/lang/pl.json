@@ -413,7 +413,7 @@
   "t.fehlt.einkommen": "Wpisz miesięczny dochód brutto gospodarstwa (0, jeśli go nie ma). Dopiero wtedy można ocenić to świadczenie.",
   "t.fehlt.vermoegen": "Wpisz majątek (oszczędności), 0 jeśli go nie masz.",
   "t.fehlt.miete": "Wpisz czynsz, 0 jeśli go nie płacisz.",
-  "first.text": "SoLo daje orientację. To nie jest porada prawna i nie zastępuje decyzji urzędowej. O prawie do świadczenia zawsze decyduje właściwy urząd.",
+  "first.text": "SoLo daje ogólną orientację na podstawie twoich danych i uproszczonych zasad. SoLo nie jest poradą prawną i nie ocenia prawnie pojedynczego przypadku. O twoim prawie zawsze decyduje właściwy urząd. W razie pytań pomogą bezpłatne poradnie socjalne.",
   "first.ok": "Rozumiem",
   "clear.btn": "Usuń wszystkie dane",
   "clear.done": "Usunięto. Formularz jest pusty.",
@@ -928,5 +928,7 @@
   "t.plan.pflege": "Planowane od 2027: Pflegegeld {a} (stopień opieki 2), {b} (3), {c} (4) i {d} (5) miesięcznie. Entlastungsbetrag ma zostać przekształcony w nowy budżet. Projekt rządowy, stan na listopad 2026, jeszcze nieuchwalony.",
   "t.plan.regel": "Nowy Regelsatz na 2027 nie został jeszcze ustalony. Oczekuje się, że pozostanie bez zmian ({rs} dla osób samotnych).",
   "t.plan.krank": "Od 2027 próg naliczania składek na ubezpieczenie zdrowotne ma wzrosnąć do {bbg} miesięcznie (zgoda Bundesrat oczekiwana, listopad 2026). Krankengeld wyniesie wtedy najwyżej {max} dziennie.",
-  "t.plan.gfb": "Planowane na 2027: kwota wolna od podatku (Grundfreibetrag) {gfb} rocznie. Projekt ustawy, stan na listopad 2026, jeszcze nieuchwalony."
+  "t.plan.gfb": "Planowane na 2027: kwota wolna od podatku (Grundfreibetrag) {gfb} rocznie. Projekt ustawy, stan na listopad 2026, jeszcze nieuchwalony.",
+  "z.grenzen": "Nieuwzględnione: dochód z działalności na własny rachunek, własne mieszkanie i samochód w majątku, współlokatorzy lub krewni w gospodarstwie, czy czynsz uznaje się za odpowiedni, oraz szczególne zasady dla osób z innych krajów UE. Jeśli coś z tego dotyczy ciebie, skorzystaj z porady, na przykład bezpłatnie w poradni socjalnej miasta lub organizacji charytatywnych.",
+  "z.verfahren": "Po złożeniu wniosku: od decyzji możesz wnieść sprzeciw (Widerspruch) w ciągu jednego miesiąca (§ 84 SGG). Jeśli starsza decyzja jest błędna, pomoże wniosek o ponowną kontrolę (Überprüfungsantrag) (§ 44 SGB X); wstecz pieniądze są wypłacane tylko za ograniczony czas. Urzędy muszą udzielić ci porady (§ 14 SGB I). Wniosek złożony w niewłaściwym urzędzie zostaje przekazany i nadal obowiązuje (§ 16 SGB I)."
 }

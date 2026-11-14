@@ -413,7 +413,7 @@
   "t.fehlt.einkommen": "Enter the household’s monthly gross income (0 if there is none). Only then can this benefit be assessed.",
   "t.fehlt.vermoegen": "Enter your assets (savings), 0 if you have none.",
   "t.fehlt.miete": "Enter your rent, 0 if you pay none.",
-  "first.text": "SoLo gives guidance. It is not legal advice and does not replace an official decision. The responsible office always decides on your entitlement.",
+  "first.text": "SoLo gives general guidance based on your information and simplified rules. SoLo is not legal advice and does not legally assess an individual case. The responsible office always decides on your entitlement. Free social counselling services can help with questions.",
   "first.ok": "Understood",
   "clear.btn": "Delete all entries",
   "clear.done": "Deleted. The form is empty.",
@@ -928,5 +928,7 @@
   "t.plan.pflege": "Planned from 2027: Pflegegeld {a} (care level 2), {b} (3), {c} (4) and {d} (5) per month. The relief amount (Entlastungsbetrag) is to be turned into a new budget. Cabinet draft, as of November 2026, not yet passed.",
   "t.plan.regel": "No new standard rate (Regelsatz) has been decided for 2027 yet. It is expected to stay the same ({rs} for single people).",
   "t.plan.krank": "From 2027 the contribution ceiling of health insurance is to rise to {bbg} per month (Bundesrat approval pending, as of November 2026). Krankengeld is then at most {max} per day.",
-  "t.plan.gfb": "Planned for 2027: basic tax-free allowance {gfb} per year. Draft law, as of November 2026, not yet passed."
+  "t.plan.gfb": "Planned for 2027: basic tax-free allowance {gfb} per year. Draft law, as of November 2026, not yet passed.",
+  "z.grenzen": "Not included: income from self-employment, owner-occupied property and a car in your assets, flatmates or relatives in the household, whether your rent counts as reasonable, and special rules for people from other EU countries. If any of this applies to you, get advice, for example free of charge from a social counselling service of your city or a welfare organisation.",
+  "z.verfahren": "After applying: you can lodge an objection (Widerspruch) against a decision within one month (§ 84 SGG). If an older decision is wrong, a review request (Überprüfungsantrag) helps (§ 44 SGB X); back payments are then only made for a limited period. The offices must advise you (§ 14 SGB I). An application made at the wrong office is forwarded and still counts (§ 16 SGB I)."
 }

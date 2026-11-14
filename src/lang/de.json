@@ -413,7 +413,7 @@
   "t.fehlt.einkommen": "Trage das monatliche Bruttoeinkommen des Haushalts ein (0, wenn es keins gibt). Erst dann kann die Leistung eingeschätzt werden.",
   "t.fehlt.vermoegen": "Trage das Vermögen (Erspartes) ein, 0 wenn du keins hast.",
   "t.fehlt.miete": "Trage die Miete ein, 0 wenn du keine zahlst.",
-  "first.text": "SoLo gibt eine Orientierung. SoLo ist keine Rechtsberatung und ersetzt keinen Bescheid. Über deinen Anspruch entscheidet immer die zuständige Stelle.",
+  "first.text": "SoLo gibt eine allgemeine Orientierung nach deinen Angaben und vereinfachten Regeln. SoLo ist keine Rechtsberatung und prüft keinen Einzelfall rechtlich. Über deinen Anspruch entscheidet immer die zuständige Stelle. Bei Fragen helfen kostenlose Sozialberatungen.",
   "first.ok": "Verstanden",
   "clear.btn": "Alle Angaben löschen",
   "clear.done": "Gelöscht. Das Formular ist leer.",
@@ -928,5 +928,7 @@
   "t.plan.pflege": "Geplant ab 2027: Pflegegeld {a} (Pflegegrad 2), {b} (3), {c} (4) und {d} (5) im Monat. Der Entlastungsbetrag soll in ein neues Budget umgebaut werden. Kabinettsentwurf, Stand November 2026, noch nicht beschlossen.",
   "t.plan.regel": "Für 2027 ist noch kein neuer Regelsatz beschlossen. Erwartet wird, dass er gleich bleibt ({rs} für Alleinstehende).",
   "t.plan.krank": "Ab 2027 soll die Beitragsbemessungsgrenze der Krankenversicherung auf {bbg} im Monat steigen (Zustimmung des Bundesrats steht aus, Stand November 2026). Das Krankengeld beträgt dann höchstens {max} am Tag.",
-  "t.plan.gfb": "Geplant für 2027: Grundfreibetrag {gfb} im Jahr. Gesetzentwurf, Stand November 2026, noch nicht beschlossen."
+  "t.plan.gfb": "Geplant für 2027: Grundfreibetrag {gfb} im Jahr. Gesetzentwurf, Stand November 2026, noch nicht beschlossen.",
+  "z.grenzen": "Nicht eingerechnet: Einkommen aus Selbstständigkeit, Wohneigentum und Auto beim Vermögen, Mitbewohner oder Verwandte im Haushalt, ob die Miete als angemessen gilt, und besondere Regeln für Menschen aus anderen EU-Ländern. Trifft etwas davon zu, lass dich beraten, zum Beispiel kostenlos bei einer Sozialberatung der Stadt oder der Wohlfahrtsverbände.",
+  "z.verfahren": "Nach dem Antrag: Gegen einen Bescheid kannst du innerhalb eines Monats Widerspruch einlegen (§ 84 SGG). Ist ein älterer Bescheid falsch, hilft ein Überprüfungsantrag (§ 44 SGB X); rückwirkend gibt es dann Geld nur für eine begrenzte Zeit. Die Ämter müssen dich beraten (§ 14 SGB I). Ein Antrag bei der falschen Stelle wird weitergeleitet und gilt trotzdem (§ 16 SGB I)."
 }

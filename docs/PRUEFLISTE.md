@@ -367,3 +367,4 @@ Damit niemand denkt, die App decke alles ab:
 | Grenzwerte auf den Euro genau (−1 € / Grenze / +1 €): Schonvermögen, Mindesteinkommen, Minijob 2026 und 2027, Einkommensgrenze § 85 SGB XII, Stufen des Freibetrags für Arbeit | ✓ | `grenzen` |
 | Zufalls-Klicktest: tausende zufällige Bedienschritte (Felder, Auswahlen, Sprache, Schriftgröße, einfache/ausführliche Version, Antragsmappe, Neuladen) ohne Skriptfehler, kaputte Anzeige, seitliches Scrollen oder Sackgasse | ✓ | `zufall-klick` |
 | Alte Speicherstände aus allen Ausbaustufen (und der einfachen Version) laden richtig und ergeben dasselbe Ergebnis wie im heutigen Format | ✓ | `altstaende` |
+| Hinweise auf der Ergebnisseite: was SoLo nicht einrechnet (Selbstständigkeit, Wohneigentum, Auto, Mitbewohner, angemessene Miete, EU-Bürger) und das Verfahren danach (Widerspruch § 84 SGG, Überprüfungsantrag § 44 SGB X, Beratung § 14 SGB I, Weiterleitung § 16 SGB I) | ✓ | `verfahren` |

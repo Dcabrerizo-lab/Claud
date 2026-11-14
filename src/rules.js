@@ -1095,6 +1095,9 @@ const Rules = (function () {
     if (ok(g('gsa')) && ok(g('wohngeld'))) out.push(['z.gsaWg']);
     if (!h.bezug.grundsicherungsgeld && !h.bezug.sozialamt && ok(g('ggeld')) && (ok(g('wohngeld')) || ok(g('kiz')))) out.push(['z.ggVsWg']);
     if (g('kindergeld').level === 'ja' && ok(g('kiz'))) out.push(['z.kgZuerst']);
+    // Was SoLo nicht einrechnet (bei den Leistungen mit Einkommens- und Vermögensprüfung), und wie es nach dem Antrag weitergeht
+    if (['ggeld', 'gsa', 'wohngeld', 'kiz'].some((id) => ok(g(id)))) out.push(['z.grenzen']);
+    if (r.some(ok)) out.push(['z.verfahren']);
     if (r.some(ok)) out.push(['z.stichtag']);
     if (r.every((x) => x.level === 'nein' || x.level === 'na')) out.push(['z.keine']);
     return out;
@@ -1277,7 +1280,8 @@ const Rules = (function () {
     plan2027(h, results);
     const sorted = results.slice().sort((a, b) => ORDER[a.level] - ORDER[b.level] || a.order - b.order);
     const zus = zusammenspiel(h, results);
-    if (zk) zus.splice(zus.length - (zus.length && zus[zus.length - 1][0] === 'z.stichtag' ? 1 : 0), 0, ['z.zuk.' + zk.quelle]);
+    // Hinweis zur vorrangigen Leistung vor den allgemeinen Hinweisen (nicht eingerechnet, Verfahren, Stichtag)
+    if (zk) { const i = zus.findIndex((z) => ['z.grenzen', 'z.verfahren', 'z.stichtag'].indexOf(z[0]) >= 0); zus.splice(i < 0 ? zus.length : i, 0, ['z.zuk.' + zk.quelle]); }
     return { h, results: sorted, zusammen: zus };
   }
 

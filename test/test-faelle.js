@@ -451,7 +451,7 @@ const zAlg = { art1: 'ohne', miete: 600, mietstufe: 3, vermoegen: 1000, arbeitSi
 // Arbeitslosengeld: 3.000 € brutto, Netto 60-72 %, 60 % davon: 1.080 bis 1.300 €, Mitte 1.190 €; danach 1.190 - 30 € Pauschale = 1.160 € gegen Bedarf 1.163 €
 ck('[zuk-einkommen] Arbeitslos ohne Einkommen: Grundsicherungsgeld jetzt wahrscheinlich, mit 1.190 € Arbeitslosengeld nur noch knapp -> „möglich“ mit Hinweis',
   L({ ...zAlg, arbeitSit: '' }, 'ggeld') === 'ja' && L(zAlg, 'ggeld') === 'vielleicht' && ZR(zAlg, 'ggeld').tx.some((t) => t[0] === 'zuk.alg' && t[1].a === E(1190)) && K(zAlg, 'ggeld').includes('bedarfJa') && K(zAlg, 'ggeld').includes('zuk.vielleicht'));
-ck('[zuk-einkommen] Hinweis „Arbeitslosengeld zuerst beantragen“ auf der Ergebnisseite, vor dem Stichtag-Hinweis', Z(zAlg).zusammen.map((a) => a[0]).join() === 'z.ggVsWg,z.zuk.alg,z.stichtag');
+ck('[zuk-einkommen] Hinweis „Arbeitslosengeld zuerst beantragen“ auf der Ergebnisseite, vor dem Stichtag-Hinweis', Z(zAlg).zusammen.map((a) => a[0]).join() === 'z.ggVsWg,z.zuk.alg,z.grenzen,z.verfahren,z.stichtag');
 ck('[zuk-einkommen] Wohngeld: ohne Einkommen nur „möglich“ (Mindesteinkommen), mit Arbeitslosengeld danach wahrscheinlich, Betrag dazu', K(zAlg, 'wohngeld').includes('zuk.ja') && K(zAlg, 'wohngeld').includes('zuk.betragEins'));
 ck('[zuk-einkommen] Ohne Kinder kein Kinderzuschlag, auch kein Hinweis', L(zAlg, 'kiz') === 'nein' && !K(zAlg, 'kiz').some((k) => /^zuk\./.test(k)));
 const zKg = { kids: 1, art1: 'lohn', brutto: 2500, netto: 1800, miete: 700, mietstufe: 4, vermoegen: 1000, arbeitSit: 'krank', krankWochen: 'unter6', lohnVorher: 2500 };
@@ -476,6 +476,8 @@ ck('[plan-2027] Wohngeld: Tipp „Antrag noch 2026“ nur vor dem Jahreswechsel'
 ck('[plan-2027] Pflegegeld: geplante Beträge 380/630/890/1.080 € nur ab Pflegegrad 2', res({ pflegegrad: 3 }).m.pflege.tx.some((t) => t[0] === 'plan.pflege' && t[1].a === E(380) && t[1].d === E(1080)) && !pk({ pflegegrad: 1 }, 'pflege').includes('plan.pflege'));
 ck('[plan-2027] Regelsatz: Hinweis „2027 noch nicht beschlossen, erwartet 563 €“ bei Grundsicherungsgeld und Grundsicherung im Alter', pk(f1, 'ggeld').includes('plan.regel') && pk(f2, 'gsa').includes('plan.regel'));
 ck('[plan-2027] Krankengeld: Hinweis auf die neue Beitragsbemessungsgrenze nur bei Lohn über 5.812,50 €', pk({ arbeitSit: 'krank', krankWochen: 'laeuft', lohnVorher: 7000 }, 'krankengeld').includes('plan.krank') && !pk({ arbeitSit: 'krank', krankWochen: 'laeuft', lohnVorher: 3000 }, 'krankengeld').includes('plan.krank'));
+
+ck('[verfahren] Hinweise „nicht eingerechnet“ (bei Leistungen mit Einkommensprüfung) und „Widerspruch, Überprüfungsantrag, Beratung“ (bei jedem Ergebnis)', res(f1).z.includes('z.grenzen') && res(f1).z.includes('z.verfahren') && !R.evaluate({ ...base, adults: 1, brutto: 9000, netto: 6000, miete: 400, vermoegen: 900000, gebJahr: 1990 }).zusammen.some((a) => a[0] === 'z.grenzen'));
 
 console.log(fails ? '\n' + fails + ' von ' + n + ' FEHLGESCHLAGEN' : '\nFall-Tests bestanden: ' + n + ' Prüfungen');
 process.exit(fails ? 1 : 0);
