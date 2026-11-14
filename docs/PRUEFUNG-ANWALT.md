@@ -72,11 +72,13 @@ Mutationstest (absichtlich eingebaute Fehler müssen gefunden werden), Tests auf
 Browsern. Grenze: Alle Tests prüfen gegen das eigene Verständnis des Gesetzes. Deshalb ist diese fachliche Prüfung nötig.
 
 ## 7. Ausfüllhilfe mit amtlichen Formularen
-- Mitgeliefert: Hauptantrag und Anlagen des Jobcenters (Stand 10/2026), Einkommensbescheinigung (04/2025), Mietbescheinigung,
-  Antrag auf Kinderzuschlag (KiZ 1), Muster-Vordruck Wohngeld (Mietzuschuss), Wohnberechtigungsschein mit Landesvordruck für
-  Baden-Württemberg, Bayern (Stand 04/2026), Berlin, Brandenburg (amtlicher Vordruck nach Erlass, Amtsblatt 5/2020), Bremen,
-  Hamburg, Rheinland-Pfalz und Saarland, jeweils unausgefüllt mit Ausfüllhilfe; in den übrigen 8 Ländern Hinweis, wo die Stadt oder
-  Gemeinde den Vordruck ausgibt. Einkommensgrenzen aller Länder: `docs/WBS-GRENZEN.md`. Ordner `content/formulare/`.
+- Mitgeliefert (nur ungeschützte Vordrucke): Hauptantrag und Anlagen des Jobcenters (Stand 10/2026, vorausgefüllt),
+  Einkommensbescheinigung (04/2025), Mietbescheinigung, WBS-Landesvordrucke Baden-Württemberg, Berlin, Brandenburg, Bremen,
+  Rheinland-Pfalz, Saarland (unausgefüllt mit Ausfüllhilfe), Grundsicherung im Alter (Muster Deutscher Verein). Ordner `content/formulare/`.
+- Vom Herausgeber geschützte Vordrucke (Familienkasse: Kindergeld, Kinderzuschlag; Wohngeld Bayern; WBS Bayern und Hamburg) werden
+  nicht mitgeliefert, sondern als Link auf die amtliche Formularseite mit Ausfüllhilfe (Anlagen, Nachweise, Fristen). Grund: sie ändern
+  sich häufig und dürfen nicht verändert werden; ein veralteter Vordruck in der App würde schaden. Ein Test meldet jedes mitgelieferte
+  Formular, dessen Stand älter als 2 Jahre ist.
 - Auswahl nach dem Anforderungskatalog des Jobcenters (`src/formulare.js`): z. B. Anlage KI je Kind unter 15, WEP für Partner
   und Kinder ab 15, UH3 bei Alleinerziehenden, EKS und SV bei Selbstständigen, MEB bei kostenaufwändiger Ernährung.
 - Vorausgefüllt wird nur, was aus den Angaben sicher folgt: Name, Geburtsdatum, Anschrift, Telefon und Ja/Nein-Fragen
@@ -84,8 +86,6 @@ Browsern. Grenze: Alle Tests prüfen gegen das eigene Verständnis des Gesetzes.
 - Welcher Knopf „Ja“ und welcher „Nein“ ist, wurde für jede Frage aus der Lage der Beschriftung im PDF bestimmt
   (`tools/formulare-pruefen.py`, 181 von 182 Fragen eindeutig; die unklare wird nie gesetzt) und im Test nach dem Füllen
   zurückgelesen, zusätzlich mit einem zweiten PDF-Programm.
-- Kinderzuschlag- und Wohngeld-Vordruck sind vom Herausgeber gegen Veränderung geschützt (Ausfüllen erlaubt). SoLo verändert sie
-  nicht und gibt sie als leeren Vordruck weiter.
 - Die Formulare bleiben ausfüllbar; die Person ergänzt, prüft und unterschreibt selbst. Nichts wird an eine Stelle gesendet.
 
 ## 8. Bitte um Rückmeldung

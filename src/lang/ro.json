@@ -979,5 +979,6 @@
   "f.formsCheck": "Verifică fiecare câmp completat înainte să semnezi. Tu răspunzi pentru date.",
   "f.formsUnt": "Documente pentru Jobcenter",
   "f.formsAppLeer": "Aceste formulare se potrivesc cu datele tale. Le completezi într-o aplicație PDF sau pe hârtie.",
-  "f.formsShareLeer": "Trimite formularele"
+  "f.formsShareLeer": "Trimite formularele",
+  "f.formsLink": "La formularul oficial (internet)"
 }

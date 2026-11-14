@@ -836,11 +836,11 @@
     if (!fp.length) return '';
     var jc = fp.some(function (f) { return f.datei.indexOf('ba01') >= 0 || f.id === 'ha'; });
     var leer = fp.every(function (f) { return f.art !== 'fuellen'; });
-    var mitDatei = fp.some(function (f) { return f.art !== 'hinweis'; }); // nur Vordrucke ohne Vorausfüllung (z. B. Wohngeld, Kinderzuschlag)
+    var mitDatei = fp.some(function (f) { return !!f.datei; }); // nur Vordrucke ohne Vorausfüllung (z. B. Wohngeld, Kinderzuschlag)
     var h = '<article class="page docs forms"><h3>' + esc(t('f.forms')) + '</h3><p>' + esc(t(!NATIVE ? 'f.formsWeb' : leer ? 'f.formsAppLeer' : 'f.formsApp')) + '</p>';
     if (NATIVE && mitDatei) h += '<div class="btns no-print"><button type="button" class="btn" id="formsShare">' + esc(t(leer ? 'f.formsShareLeer' : 'f.formsShare')) + '</button></div><p class="msg" id="formsMsg" role="status"></p>';
     h += '<ul lang="de" dir="ltr">' + fp.map(function (f) {
-      return '<li><strong>' + esc(f.titel) + '</strong> – ' + esc(f.warum) + (f.art === 'leer' ? ' (' + esc(t('f.formsLeer')) + ')' : '') + (f.hilfe ? '<br><em>Ausfüllhilfe:</em>' + listItems(f.hilfe) : '') + '</li>';
+      return '<li><strong>' + esc(f.titel) + '</strong> – ' + esc(f.warum) + (f.art === 'leer' ? ' (' + esc(t('f.formsLeer')) + ')' : '') + (f.url ? '<br><a href="' + esc(f.url) + '" target="_blank" rel="noopener">' + esc(t('f.formsLink')) + '</a>' : '') + (f.hilfe ? '<br><em>Ausfüllhilfe:</em>' + listItems(f.hilfe) : '') + '</li>';
     }).join('') + '</ul><p class="tip">' + esc(t('f.formsCheck')) + '</p>';
     if (jc) h += '<h3>' + esc(t('f.formsUnt')) + '</h3>' + '<div lang="de" dir="ltr">' + listItems(Formulare.unterlagen(state)) + '</div>';
     return h + '</article>';

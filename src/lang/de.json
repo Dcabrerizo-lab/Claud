@@ -979,5 +979,6 @@
   "f.formsCheck": "Prüfe jedes vorausgefüllte Feld, bevor du unterschreibst. Du bist für die Angaben verantwortlich.",
   "f.formsUnt": "Unterlagen für das Jobcenter",
   "f.formsAppLeer": "Diese Vordrucke passen zu deinen Angaben. Du füllst sie in einer PDF-App oder auf Papier aus.",
-  "f.formsShareLeer": "Formulare teilen"
+  "f.formsShareLeer": "Formulare teilen",
+  "f.formsLink": "Zum amtlichen Formular (Internet)"
 }

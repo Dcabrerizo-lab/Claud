@@ -68,6 +68,9 @@ const Formulare = (function () {
     s = s || {}; p = p || {};
     const R = (id) => (results || []).find((x) => x.id === id);
     const liste = [];
+    const leer = (id, datei, titel, warum, hilfe) => { liste.push({ id, datei, titel, warum, werte: {}, art: 'leer', hilfe: hilfe || null }); };
+    const link = (id, titel, warum, url, hilfe) => { liste.push({ id, datei: '', titel, warum, werte: {}, art: 'link', url, hilfe: hilfe || null }); };
+    const FK = 'https://www.arbeitsagentur.de/familie-und-kinder/downloads-familie-und-kinder';
     const add = (id, datei, titel, warum, werte, art) => liste.push({ id, datei, titel, warum, werte: werte || {}, art: art || 'fuellen' });
     const a = arten(s), kids = s.kids | 0, young = s.young | 0, erw = s.adults === 2 ? 2 : 1;
     const miete = n(s.miete), eigen = s.wohnart === 'eigentum';
@@ -170,45 +173,40 @@ const Formulare = (function () {
       if (a.indexOf('lohn') >= 0) add('ab', 'dok_ba033945.pdf', 'Einkommensbescheinigung', 'Füllt der Arbeitgeber aus', {}, 'leer');
       if (miete > 0 && !eigen) add('mb', 'Mietbescheinigung_1.pdf', 'Mietbescheinigung', 'Füllt die Vermieterin oder der Vermieter aus, wenn kein Mietvertrag vorliegt', {}, 'leer');
     }
-    // Kinderzuschlag (Familienkasse): Das PDF ist vom Herausgeber geschützt (Ausfüllen erlaubt, Verändern nicht). SoLo verändert es
-    // deshalb nicht und gibt es als leeren Vordruck mit; Ausfüllen geht in jeder PDF-App oder online mit BundID.
-    if (ok(R('kiz')) && !(s.bezug || {}).kiz) add('kiz', 'kiz1-antrag_ba036540.pdf', 'Antrag auf Kinderzuschlag (KiZ 1)', 'Für die Familienkasse; zum Ausfüllen in einer PDF-App, einfacher geht es online mit BundID', {}, 'leer');
-    // Wohngeld: Vordruck ohne Formularfelder (Muster; die Wohngeldstelle kann einen eigenen Vordruck verlangen)
-    if (ok(R('wohngeld')) && !(s.bezug || {}).wohngeld) add('wg', '35_mz_antrag.pdf', 'Antrag auf Wohngeld (Mietzuschuss)', 'Muster-Vordruck zum Ausdrucken; manche Wohngeldstellen haben einen eigenen Vordruck', {}, 'leer');
-    // Kindergeld (Familienkasse): Vordrucke sind vom Herausgeber geschützt; SoLo gibt sie unverändert mit Ausfüllhilfe weiter.
+    // Kinderzuschlag (Familienkasse): Vordrucke sind vom Herausgeber geschützt und ändern sich oft. Link auf die amtliche Formularseite.
+    if (ok(R('kiz')) && !(s.bezug || {}).kiz) link('kiz', 'Antrag auf Kinderzuschlag (KiZ 1)', 'Bei der Familienkasse; am einfachsten online (mit BundID ganz ohne Papier)', FK + '/formulare-kinderzuschlag', [
+      'Zum Antrag gehören: je Kind die „Anlage Kind“ (KiZ 1-AnK) und die „Anlage zur antragstellenden Person und Partner“ (KiZ 1-AnA)',
+      'Einkommensnachweise der letzten 6 Monate (Lohnabrechnungen), Mietvertrag und Nebenkostenabrechnung, Kindergeld- und Unterhaltsnachweise',
+      'Kinderzuschlag gibt es erst ab dem Monat des Antrags und jeweils für 6 Monate: früh stellen',
+      'Vorher prüfen geht mit dem KiZ-Lotsen der Familienkasse']);
+    // Wohngeld: jedes Land hat eigene Vordrucke; Bayern verlinkt, sonst Hinweis auf die Wohngeldstelle
+    if (ok(R('wohngeld')) && !(s.bezug || {}).wohngeld) {
+      const wgHilfe = ['Mietvertrag und Mietbescheinigung bzw. Nachweis der Miete, Nebenkosten und Heizkosten',
+        'Einkommensnachweise aller Personen im Haushalt (Lohnabrechnungen der letzten 12 Monate, Rentenbescheid, Bescheide über Arbeitslosengeld, Elterngeld usw.)',
+        'Personalausweis; bei Kindern Kindergeldbescheid; bei Schwerbehinderung den Ausweis (Freibetrag)',
+        'Wohngeld gibt es ab dem Monat des Antrags: früh stellen, Unterlagen können nachgereicht werden'];
+      const by = !s.bundesland || s.bundesland === 'BY';
+      if (by) link('wg', 'Antrag auf Wohngeld (Mietzuschuss)', 'Bayern: Vordruck des Staatsministeriums oder online über das BayernPortal; abgeben bei der Wohngeldstelle (Landratsamt oder kreisfreie Stadt)', 'https://www.stmb.bayern.de/wohnen/wohnraum_nutzen/wohngeld/index.php', wgHilfe);
+      else { add('wg', '', 'Antrag auf Wohngeld (Mietzuschuss)', 'Den Vordruck gibt es bei der Wohngeldstelle deiner Stadt oder deines Landkreises und meist auf deren Internetseite; viele Länder haben einen Online-Antrag', {}, 'hinweis'); liste[liste.length - 1].hilfe = wgHilfe; }
+    }
+    // Kindergeld (Familienkasse): Vordrucke sind vom Herausgeber geschützt und ändern sich oft. Link auf die amtliche Formularseite.
     const kgOk = ok(R('kindergeld')), kgNa = (R('kindergeld') || {}).level === 'na';
-    const leer = (id, datei, titel, warum, hilfe) => { add(id, datei, titel, warum, {}, 'leer'); if (hilfe) liste[liste.length - 1].hilfe = hilfe; };
-    if (kgOk && !(s.bezug || {}).kindergeld) {
-      leer('kg1', 'kg1.pdf', 'Antrag auf Kindergeld (KG 1)', 'An die Familienkasse; einfacher online mit BundID unter familienkasse.de', [
-        'Für jedes Kind eine „Anlage Kind“ beilegen (gibt es bei der Familienkasse und online, nicht in SoLo enthalten)',
-        'Steuerliche Identifikationsnummer von dir und von jedem Kind (steht im Brief vom Bundeszentralamt für Steuern) ist Pflicht',
-        'Angaben zur Partnerin oder zum Partner bzw. zum anderen Elternteil im Haushalt, Bankverbindung (IBAN)',
-        'Staatsangehörigkeit nicht deutsch: aus der EU zusätzlich die „Anlage EU“, sonst Aufenthaltstitel beilegen',
-        'Kindergeld gibt es rückwirkend nur für 6 Monate: Antrag bald stellen'].concat((s.young | 0) > 0 ? ['Für Kinder ab 18: Nachweis über Schule, Studium oder Ausbildung beilegen (siehe die Vordrucke unten)'] : []));
-      if (s.aufenthalt === 'eu') leer('kg51', 'kg51.pdf', 'Anlage Ausland (KG 51)', 'Nur wenn ein Elternteil oder ein Kind im Ausland wohnt oder arbeitet oder Leistungen aus dem Ausland bezieht');
-    }
-    // Kinder von 18 bis 24 in Ausbildung: Nachweise, die die Familienkasse ab dem 18. Geburtstag verlangt
-    if ((s.young | 0) > 0 && (kgOk || kgNa)) {
-      leer('kg5a', 'kg5a.pdf', 'Schulbescheinigung (KG 5a)', 'Für ein Kind, das zur Schule geht; füllt die Schule aus');
-      leer('kg7e', 'kg7e.pdf', 'Erklärung zur Hochschulausbildung (KG 7e)', 'Für ein Kind im Studium; mit Immatrikulationsbescheinigung');
-      leer('kg-ausbildung', 'kg-ausbildung.pdf', 'Erklärung zum Ausbildungsverhältnis', 'Für ein Kind in betrieblicher Ausbildung; mit Ausbildungsvertrag');
-      leer('kg5d', 'kg5d.pdf', 'Erklärung zu den Verhältnissen eines volljährigen Kindes (KG 5d)', 'Wenn die Familienkasse danach fragt, z. B. bei einer zweiten Ausbildung oder Arbeit neben dem Studium (höchstens 20 Stunden in der Woche)');
-      leer('kg-ohneplatz', 'kg-ohneplatz.pdf', 'Erklärung für ein volljähriges Kind ohne Ausbildungsplatz', 'Nur falls das Kind einen Ausbildungsplatz sucht');
-      leer('kg10', 'kg10.pdf', 'Erklärung zum Praktikum (KG 10)', 'Nur falls das Kind ein Praktikum macht');
-    }
-    // Volljähriges Kind mit Behinderung (Behinderung vor dem 25. Geburtstag)
-    if (ok(R('kgBeh'))) {
-      leer('kg4e', 'kg4e.pdf', 'Erklärung zu den Verhältnissen eines volljährigen Kindes mit Behinderung (KG 4e)', 'Zum Kindergeld für ein erwachsenes Kind mit Behinderung', [
-        'Ärztlicher Nachweis muss enthalten: das Wort „Behinderung“, seit wann sie besteht und wie sie sich auf die Erwerbsfähigkeit auswirkt; er gilt höchstens 1 Jahr',
-        'Schwerbehindertenausweis oder Feststellungsbescheid in Kopie beilegen',
-        'Einkommen des Kindes (Lohn, Werkstattlohn, Rente, Grundsicherung) in der Erklärung zum Nettoeinkommen (KG 4f) angeben']);
-      leer('kg4f', 'kg4f.pdf', 'Erklärung zum verfügbaren Nettoeinkommen des Kindes (KG 4f)', 'Damit die Familienkasse prüfen kann, ob sich das Kind selbst unterhalten kann');
-      leer('kg4k', 'kg4k.pdf', 'Ärztliche Bescheinigung über das Vorliegen einer Behinderung', 'Füllt die Ärztin oder der Arzt aus, wenn kein Schwerbehindertenausweis vorliegt oder er nicht reicht');
-      leer('kg-erwerb', 'kg-erwerb.pdf', 'Ärztliche Bescheinigung zum möglichen Umfang der Erwerbstätigkeit', 'Füllt die Ärztin oder der Arzt aus');
-      if (s.pflegegrad) leer('kg-betreuung', 'kg-betreuung.pdf', 'Ärztliche Bescheinigung über erforderliche Betreuungsleistungen', 'Bei Pflege- oder Betreuungsbedarf; dafür gibt es einen zusätzlichen Freibetrag');
-      leer('kg-begleitung', 'kg-begleitung.pdf', 'Ärztliche Bescheinigung über die Notwendigkeit ständiger Begleitung', 'Nur falls das Kind ständig begleitet werden muss (z. B. Merkzeichen B)');
-      leer('kg4g', 'kg4g.pdf', 'Erklärung zum Nettoeinkommen des Ehepartners des Kindes (KG 4g)', 'Nur falls das Kind verheiratet ist oder in eingetragener Lebenspartnerschaft lebt');
-    }
+    if (kgOk && !(s.bezug || {}).kindergeld) link('kg1', 'Antrag auf Kindergeld (KG 1)', 'Bei der Familienkasse; online mit BundID ganz ohne Papier', FK + '/formulare-kindergeld', [
+      'Zum Antrag gehört für jedes Kind eine „Anlage Kind“ (KG 1-AnK)',
+      'Steuerliche Identifikationsnummer von dir und von jedem Kind (steht im Brief vom Bundeszentralamt für Steuern) ist Pflicht',
+      'Angaben zur Partnerin oder zum Partner bzw. zum anderen Elternteil im Haushalt, Bankverbindung (IBAN)'].concat(
+      s.aufenthalt === 'eu' ? ['Staatsangehörigkeit eines anderen EU-Landes: zusätzlich die „Anlage EU“ (KG 1-AnEU); wohnt oder arbeitet jemand im Ausland, auch die „Anlage Ausland“ (KG 51)'] : s.aufenthalt ? ['Staatsangehörigkeit außerhalb der EU: Aufenthaltstitel beilegen'] : [],
+      ['Kindergeld gibt es rückwirkend nur für 6 Monate: Antrag bald stellen']));
+    if ((s.young | 0) > 0 && (kgOk || kgNa)) link('kg18', 'Nachweise für Kinder ab 18', 'Die Familienkasse verlangt ab dem 18. Geburtstag Nachweise; die Vordrucke stehen auf derselben Seite unter „Kindergeld ab 18“', FK + '/formulare-kindergeld', [
+      'Schule: Schulbescheinigung (KG 5a), füllt die Schule aus',
+      'Studium: Erklärung zur Hochschulausbildung (KG 7e) mit Immatrikulationsbescheinigung',
+      'Ausbildung im Betrieb: Erklärung zum Ausbildungsverhältnis mit Ausbildungsvertrag',
+      'Nur falls zutreffend: Erklärung für ein Kind ohne Ausbildungsplatz, Erklärung zum Praktikum (KG 10), Erklärung zu den Verhältnissen eines volljährigen Kindes (KG 5d, z. B. bei einer zweiten Ausbildung; Arbeit höchstens 20 Stunden in der Woche)']);
+    if (ok(R('kgBeh'))) link('kg4', 'Kindergeld für ein erwachsenes Kind mit Behinderung', 'Vordrucke der Familienkasse (Kindergeld ab 18, Behinderung)', FK + '/formulare-kindergeld', [
+      'Erklärung zu den Verhältnissen eines volljährigen Kindes mit Behinderung (KG 4e) und zum verfügbaren Nettoeinkommen des Kindes (KG 4f)',
+      'Ärztlicher Nachweis: das Wort „Behinderung“, seit wann sie besteht und wie sie sich auf die Erwerbsfähigkeit auswirkt (gilt höchstens 1 Jahr); dafür gibt es Vordrucke der Familienkasse',
+      'Schwerbehindertenausweis oder Feststellungsbescheid in Kopie'].concat(s.pflegegrad ? ['Mit Pflegegrad: ärztliche Bescheinigung über erforderliche Betreuungsleistungen (zusätzlicher Freibetrag), Pflegegrad-Bescheid'] : [],
+      ['Ist das Kind verheiratet: Erklärung zum Nettoeinkommen des Ehepartners (KG 4g)']));
     // Grundsicherung im Alter und bei Erwerbsminderung (Sozialamt)
     if (ok(R('gsa')) && !(s.bezug || {}).sozialamt) {
       leer('gsa', 'sgb12-grundsicherung.pdf', 'Antrag auf Grundsicherung im Alter und bei Erwerbsminderung (SGB XII)', 'Muster des Deutschen Vereins (Stand 27.4.2023); viele Sozialämter haben einen eigenen Vordruck, der Antrag gilt aber in jeder Form', [
@@ -221,12 +219,15 @@ const Formulare = (function () {
     // Wohnberechtigungsschein: SoLo füllt nichts aus. Es gibt den leeren Landesvordruck mit Ausfüllhilfe, sonst die Fundstelle.
     if (ok(R('wbs'))) {
       const bl = s.bundesland || '';
-      const WBS = { BW: ['wbs-BW.pdf', 'Baden-Württemberg, Landesvordruck (Anlage 4) des Ministeriums für Landesentwicklung und Wohnen'], BY: ['wbs-BY.pdf', 'Bayern, Stand April 2026; in München gilt ein eigenes Verfahren (SOWON)'], BE: ['wbs-BE.pdf', 'Berlin'],
-        BB: ['wbs-BB.pdf', 'Brandenburg, amtlicher Landesvordruck'], HH: ['wbs-HH.pdf', 'Hamburg, an das Bezirksamt'],
+      const WBSLINK = { BY: ['https://www.stmb.bayern.de/wohnen/wohnberechtigungundrecht/index.php', 'Bayern: Vordruck WBS I des Staatsministeriums; in München gilt ein eigenes Verfahren (SOWON)'],
+        HH: ['https://www.hamburg.de/service/info/11268748/n0/', 'Hamburg: Antrag beim Bezirksamt, auch online'] };
+      const WBS = { BW: ['wbs-BW.pdf', 'Baden-Württemberg, Landesvordruck (Anlage 4) des Ministeriums für Landesentwicklung und Wohnen'], BE: ['wbs-BE.pdf', 'Berlin'],
+        BB: ['wbs-BB.pdf', 'Brandenburg, amtlicher Landesvordruck'],
         HB: ['wbs-HB.pdf', 'Bremen, an die Senatorin für Bau, Mobilität und Stadtentwicklung'], RP: ['wbs-RP.pdf', 'Rheinland-Pfalz, Landesvordruck 2026'],
         SL: ['wbs-SL.pdf', 'Saarland, Stand 1.9.2025, an das Ministerium für Inneres, Bauen und Sport'] };
       const hilfe = wbsHilfe(s, a);
-      if (WBS[bl]) {
+      if (WBSLINK[bl]) link('wbs', 'Antrag auf Wohnberechtigungsschein', WBSLINK[bl][1], WBSLINK[bl][0], hilfe);
+      else if (WBS[bl]) {
         add('wbs', WBS[bl][0], 'Antrag auf Wohnberechtigungsschein', WBS[bl][1] + '; dazu je Person mit Einkommen eine Einkommenserklärung', {}, 'leer');
         liste[liste.length - 1].hilfe = hilfe;
         if (bl === 'HB') add('wbs-ek', 'wbs-HB-anlage1.pdf', 'Einkommens- und Vermögenserklärung (Anlage 1)', 'Für jede Person im Haushalt mit eigenem Einkommen eine eigene Erklärung', {}, 'leer');

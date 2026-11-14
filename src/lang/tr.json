@@ -979,5 +979,6 @@
   "f.formsCheck": "İmzalamadan önce doldurulmuş her alanı kontrol edin. Bilgilerden siz sorumlusunuz.",
   "f.formsUnt": "Jobcenter için belgeler",
   "f.formsAppLeer": "Bu formlar bilgilerinize uygundur. Onları bir PDF uygulamasında veya kâğıt üzerinde doldurursunuz.",
-  "f.formsShareLeer": "Formları paylaş"
+  "f.formsShareLeer": "Formları paylaş",
+  "f.formsLink": "Resmî forma git (internet)"
 }

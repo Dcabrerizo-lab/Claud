@@ -979,5 +979,6 @@
   "f.formsCheck": "Check every pre-filled field before you sign. You are responsible for the information.",
   "f.formsUnt": "Documents for the Jobcenter",
   "f.formsAppLeer": "These forms match your answers. You fill them in using a PDF app or on paper.",
-  "f.formsShareLeer": "Share forms"
+  "f.formsShareLeer": "Share forms",
+  "f.formsLink": "Go to the official form (internet)"
 }

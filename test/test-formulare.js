@@ -60,7 +60,7 @@ ck('Rentnerin: Wohngeld-Vordruck dabei', rente.some((x) => x.id === 'wg'), rente
 const kizFall = { adults: 2, kids: 2, kidsU6: 1, ek1Art: 'lohn', ek1Brutto: 2600, ek1Netto: 1900, miete: 900, mietstufe: '3', vermoegen: 1000, bezug: { kindergeld: true } };
 const kizPlan = F.plan(kizFall, PERSON, R.evaluate(kizFall).results);
 const kz = kizPlan.find((x) => x.id === 'kiz');
-ck('Familie mit Lohn: Kinderzuschlag-Antrag als unveränderter Vordruck dabei', !!kz && kz.art === 'leer', kizPlan.map((x) => x.id).join(' ') + ' | kiz=' + (R.evaluate(kizFall).results.find((r) => r.id === 'kiz') || {}).level);
+ck('Familie mit Lohn: Kinderzuschlag als Link auf die Formularseite der Familienkasse mit Ausfüllhilfe (Anlage Kind)', !!kz && kz.art === 'link' && /formulare-kinderzuschlag/.test(kz.url) && /Anlage Kind/.test(kz.hilfe.join(' ')), kizPlan.map((x) => x.id).join(' ') + ' | kiz=' + (R.evaluate(kizFall).results.find((r) => r.id === 'kiz') || {}).level);
 if (kz) alle.push(kz);
 ck('Bereits Kinderzuschlag: kein KiZ-Antrag', !F.plan(Object.assign({}, kizFall, { bezug: { kindergeld: true, kiz: true } }), PERSON, R.evaluate(kizFall).results).some((x) => x.id === 'kiz'));
 ck('Ohne gewählte Leistungen: keine Formulare', F.plan(kizFall, PERSON, []).length === 0);
@@ -69,7 +69,8 @@ ck('Ohne gewählte Leistungen: keine Formulare', F.plan(kizFall, PERSON, []).len
 const wbsFall = { adults: 1, ek1Art: 'lohn', ek1Brutto: 1500, ek1Netto: 1150, miete: 500, mietstufe: '3', vermoegen: 100 };
 const wbsRes = [{ id: 'wbs', level: 'ja' }];
 const wbsFuer = (bl) => F.plan(Object.assign({}, wbsFall, { bundesland: bl }), PERSON, wbsRes).find((x) => x.id === 'wbs');
-['BW', 'BY', 'BE', 'BB', 'HH', 'HB', 'RP', 'SL'].forEach((bl) => { const w = wbsFuer(bl); ck('WBS ' + bl + ': Landesvordruck wbs-' + bl + '.pdf als unveränderter Vordruck', !!w && w.datei === 'wbs-' + bl + '.pdf' && w.art === 'leer', JSON.stringify(w)); if (w) alle.push(w); });
+['BW', 'BE', 'BB', 'HB', 'RP', 'SL'].forEach((bl) => { const w = wbsFuer(bl); ck('WBS ' + bl + ': Landesvordruck wbs-' + bl + '.pdf als unveränderter Vordruck', !!w && w.datei === 'wbs-' + bl + '.pdf' && w.art === 'leer', JSON.stringify(w)); if (w) alle.push(w); });
+[['BY', 'stmb.bayern.de'], ['HH', 'hamburg.de']].forEach(([bl, dom]) => { const w = wbsFuer(bl); ck('WBS ' + bl + ': geschützter Landesvordruck als Link auf die amtliche Seite mit Ausfüllhilfe', !!w && w.art === 'link' && w.url.indexOf(dom) > 0 && w.hilfe.length >= 4, JSON.stringify(w)); });
 ck('WBS Bremen: Einkommens- und Vermögenserklärung dabei', F.plan(Object.assign({}, wbsFall, { bundesland: 'HB' }), PERSON, wbsRes).some((x) => x.datei === 'wbs-HB-anlage1.pdf'));
 alle.push(F.plan(Object.assign({}, wbsFall, { bundesland: 'HB' }), PERSON, wbsRes).find((x) => x.id === 'wbs-ek'));
 ['HE', 'MV', 'NI', 'NW', 'SN', 'ST', 'SH', 'TH'].forEach((bl) => { const w = wbsFuer(bl); ck('WBS ' + bl + ': Hinweis auf Vordruck der Stadt oder Gemeinde', !!w && w.art === 'hinweis' && /Stadt oder Gemeinde/.test(w.warum) && /Wohnungsamt/.test(w.warum), JSON.stringify(w)); });
@@ -85,12 +86,12 @@ const ids = (st, res) => F.plan(st, PERSON, res).map((x) => x.id);
 const kgNeu = ids({ adults: 1, kids: 1, bezug: {} }, [{ id: 'kindergeld', level: 'ja' }]);
 ck('Kindergeld noch nicht bezogen: Antrag KG 1 mit Ausfüllhilfe (Anlage Kind, Steuer-ID)', kgNeu.indexOf('kg1') >= 0 && /Anlage Kind/.test(F.plan({ adults: 1, kids: 1, bezug: {} }, PERSON, [{ id: 'kindergeld', level: 'ja' }]).find((x) => x.id === 'kg1').hilfe.join(' ')), kgNeu.join(' '));
 ck('Kindergeld schon bezogen: kein Antrag KG 1', ids({ adults: 1, kids: 1, bezug: { kindergeld: true } }, [{ id: 'kindergeld', level: 'na' }]).indexOf('kg1') < 0);
-ck('EU-Bürger: Anlage Ausland dabei, sonst nicht', ids({ kids: 1, aufenthalt: 'eu', bezug: {} }, [{ id: 'kindergeld', level: 'ja' }]).indexOf('kg51') >= 0 && kgNeu.indexOf('kg51') < 0);
-const jung = ids({ adults: 2, young: 1, bezug: { kindergeld: true } }, [{ id: 'kindergeld', level: 'na' }]);
-ck('Kind von 18 bis 24 in Ausbildung: Schul-, Studien- und Ausbildungsnachweise auch bei laufendem Kindergeld', ['kg5a', 'kg7e', 'kg-ausbildung', 'kg5d'].every((x) => jung.indexOf(x) >= 0) && kgNeu.indexOf('kg5a') < 0, jung.join(' '));
-const beh = ids({ adults: 1, bhPerson: 'erwVor25', pflegegrad: '3', bezug: {} }, [{ id: 'kgBeh', level: 'vielleicht' }]);
-ck('Erwachsenes Kind mit Behinderung: KG 4e, 4f, ärztliche Bescheinigungen; mit Pflegegrad auch Betreuung', ['kg4e', 'kg4f', 'kg4k', 'kg-erwerb', 'kg-betreuung'].every((x) => beh.indexOf(x) >= 0), beh.join(' '));
-ck('Ohne Pflegegrad keine Bescheinigung über Betreuungsleistungen', ids({ adults: 1, bhPerson: 'erwVor25', bezug: {} }, [{ id: 'kgBeh', level: 'ja' }]).indexOf('kg-betreuung') < 0);
+const kg1 = (st) => F.plan(st, PERSON, [{ id: 'kindergeld', level: 'ja' }]).find((x) => x.id === 'kg1');
+ck('EU-Bürger: Ausfüllhilfe nennt Anlage EU und Anlage Ausland, sonst nicht', /Anlage EU/.test(kg1({ kids: 1, aufenthalt: 'eu', bezug: {} }).hilfe.join(' ')) && !/Anlage EU/.test(kg1({ kids: 1, bezug: {} }).hilfe.join(' ')));
+const jung = F.plan({ adults: 2, young: 1, bezug: { kindergeld: true } }, PERSON, [{ id: 'kindergeld', level: 'na' }]).find((x) => x.id === 'kg18');
+ck('Kind von 18 bis 24 in Ausbildung: Nachweise (Schule, Studium, Ausbildung) auch bei laufendem Kindergeld', !!jung && /KG 5a/.test(jung.hilfe.join(' ')) && /KG 7e/.test(jung.hilfe.join(' ')) && !ids({ adults: 1, kids: 1, bezug: {} }, [{ id: 'kindergeld', level: 'ja' }]).includes('kg18'));
+const beh = (pg) => F.plan({ adults: 1, bhPerson: 'erwVor25', pflegegrad: pg, bezug: {} }, PERSON, [{ id: 'kgBeh', level: 'vielleicht' }]).find((x) => x.id === 'kg4');
+ck('Erwachsenes Kind mit Behinderung: KG 4e, 4f, ärztlicher Nachweis; Betreuung nur mit Pflegegrad', /KG 4e/.test(beh('3').hilfe.join(' ')) && /Betreuungsleistungen/.test(beh('3').hilfe.join(' ')) && !/Betreuungsleistungen/.test(beh('').hilfe.join(' ')));
 const gsa = F.plan({ adults: 1, bezug: {} }, PERSON, [{ id: 'gsa', level: 'ja' }]).find((x) => x.id === 'gsa');
 ck('Grundsicherung im Alter: SGB-XII-Antrag (Muster) mit Ausfüllhilfe', !!gsa && gsa.art === 'leer' && gsa.hilfe.length >= 4);
 ck('Grundsicherung schon bezogen: kein Antrag', !F.plan({ adults: 1, bezug: { sozialamt: true } }, PERSON, [{ id: 'gsa', level: 'ja' }]).some((x) => x.id === 'gsa'));
@@ -98,6 +99,7 @@ alle.push(...F.plan({ adults: 1, kids: 1, young: 1, aufenthalt: 'eu', bhPerson: 
 
 // Zuordnung gegen den Katalog
 alle.forEach((fo) => {
+  if (fo.art === 'link') { ck(fo.id + ': Link auf amtliche Seite (https, Bund/Land)', /^https:\/\/(www\.arbeitsagentur\.de|www\.stmb\.bayern\.de|www\.hamburg\.de)\//.test(fo.url) && Array.isArray(fo.hilfe) && fo.hilfe.length >= 3, fo.url); return; }
   if (fo.art === 'hinweis') return;
   ck(fo.id + ': Datei vorhanden', fs.existsSync(path.join(DIR, fo.datei)), fo.datei);
   const kat = K[fo.datei];
@@ -119,6 +121,11 @@ alle.forEach((fo) => {
 const pdfs = fs.readdirSync(DIR).filter((x) => x.endsWith('.pdf')).sort();
 ck('Katalog enthält alle Formulare im Ordner', JSON.stringify(pdfs) === JSON.stringify(Object.keys(K).sort()), pdfs.length + ' / ' + Object.keys(K).length);
 
+// Kein mitgeliefertes Formular älter als 2 Jahre (Stand laut Formular); sonst bei der Jahresprüfung erneuern
+const heute = process.env.HEUTE ? Number(process.env.HEUTE) : new Date().getFullYear() + new Date().getMonth() / 12;
+Object.keys(K).forEach((d) => { const m = String(K[d].stand || '').match(/^(\d{2})\/(\d{4})$/); if (m) ck('Formular ' + d + ' (Stand ' + K[d].stand + ') ist höchstens 2 Jahre alt, sonst neue Fassung holen', heute - (Number(m[2]) + (Number(m[1]) - 1) / 12) <= 2, K[d].stand); });
+ck('Keine vom Herausgeber geschützten PDFs mehr in der App (dafür Link)', Object.keys(K).every((d) => !K[d].geschuetzt), Object.keys(K).filter((d) => K[d].geschuetzt).join(' '));
+
 // Unterlagen
 const u1 = F.unterlagen(FAELLE[0].s).join(' | '), u2 = F.unterlagen(FAELLE[1].s).join(' | ');
 ck('Unterlagen Alleinerziehende: Mietvertrag, Lohnabrechnungen, Geburtsurkunden, Unterhalt', /Mietvertrag/.test(u1) && /Lohnabrechnungen/.test(u1) && /Geburtsurkunden/.test(u1) && /Unterhalt/.test(u1), u1);
@@ -139,7 +146,7 @@ ck('Unterlagen Selbstständige mit Eigentum und Auto: EKS, Grundbuch, Fahrzeugsc
   const log = console.log;
   console.log = (...a) => { if (!/Trying to parse invalid object|Invalid object ref/.test(a.join(' '))) log(...a); };
   const loadFile = async (d) => new Uint8Array(fs.readFileSync(path.join(DIR, d)));
-  const mitPdf = alle.filter((x) => x.art !== 'hinweis');
+  const mitPdf = alle.filter((x) => x.datei && (x.art === 'fuellen' || x.art === 'leer'));
   const res = await fill({ forms: alle, katalog: K, loadFile });
   ck('Für jedes Formular eine Datei, keine für reine Hinweise', res.length === mitPdf.length, res.length + ' / ' + mitPdf.length);
   ck('Dateinamen eindeutig', new Set(res.map((r) => r.name)).size === res.length, res.map((r) => r.name).join(' '));

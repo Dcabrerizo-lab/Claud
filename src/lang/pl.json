@@ -979,5 +979,6 @@
   "f.formsCheck": "Sprawdź każde wypełnione pole przed podpisaniem. Odpowiadasz za podane dane.",
   "f.formsUnt": "Dokumenty dla Jobcenter",
   "f.formsAppLeer": "Te formularze pasują do twoich danych. Wypełniasz je w aplikacji PDF lub na papierze.",
-  "f.formsShareLeer": "Udostępnij formularze"
+  "f.formsShareLeer": "Udostępnij formularze",
+  "f.formsLink": "Do formularza urzędowego (internet)"
 }
