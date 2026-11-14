@@ -980,5 +980,6 @@
   "f.formsUnt": "Documente pentru Jobcenter",
   "f.formsAppLeer": "Aceste formulare se potrivesc cu datele tale. Le completezi într-o aplicație PDF sau pe hârtie.",
   "f.formsShareLeer": "Trimite formularele",
-  "f.formsLink": "La formularul oficial (internet)"
+  "f.formsLink": "La formularul oficial (internet)",
+  "t.kiz.mitWg": "Suplimentul pentru copii (Kinderzuschlag, până la {max} pe copil) te ajută să nu mai ai nevoie de ajutorul de bază (Grundsicherungsgeld) doar împreună cu ajutorul pentru locuință (Wohngeld). Depune cereri pentru ambele; Familienkasse le verifică împreună."
 }

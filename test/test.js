@@ -219,9 +219,9 @@ check('Wohngeld: Netto allein genügt NICHT (Wohngeld rechnet mit Brutto)', get(
       for (const u of [0, 100, 250, 400, 700, 1000, 1500]) {
         const r = ev({ adults, kids, brutto: b, netto: b * 0.8, miete, mietstufe: 3, vermoegen: 0, alter, unterhaltFehlt: true, unterhalt: u });
         // Ausnahme (gesetzlich gewollt): Wohngeld und Kinderzuschlag setzen genug Einkommen zum Leben voraus (hl einkoNiedrig,
-        // § 6a Abs. 1 Nr. 3 BKGG; Plausibilität beim Wohngeld). Dort darf mehr Einkommen die Leistung erst möglich machen.
+        // § 6a Abs. 1 Nr. 3 BKGG, auch „nur zusammen mit Wohngeld“; Plausibilität beim Wohngeld). Dort darf mehr Einkommen die Leistung erst möglich machen.
         const ids = ['wohngeld', 'kiz', 'ggeld', 'gsa', 'uvg'];
-        const niedrig = ids.map((id) => get(r, id).hl === 'einkoNiedrig');
+        const niedrig = ids.map((id) => get(r, id).hl === 'einkoNiedrig' || (get(r, id).tx || []).some((t) => t[0] === 'kiz.mitWg'));
         const now = ids.map((id) => rank[lv(r, id)]);
         if (last && now.some((v, i) => v < last.v[i] && !niedrig[i] && !last.niedrig[i])) bad.push([adults, kids, b, miete, alter, u].join('/'));
         last = { v: now, niedrig };

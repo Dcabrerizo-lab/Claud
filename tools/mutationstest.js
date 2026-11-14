@@ -39,6 +39,7 @@ const M = [
   ['Wohngeld: Mindestwerte Anlage 3 fehlen', '    M = Math.max(M, WG_MMIN[wgIdx(n)]); Y = Math.max(Y, WG_YMIN[wgIdx(n)]);', ''],
   ['Wohngeld: Werbungskostenpauschale fehlt', '    wgWerbung: { lohn: 1230, rente: 102 },', '    wgWerbung: { lohn: 0, rente: 0 },'],
   ['Elterngeld: Pauschbetrag § 2c BEEG fehlt', '    const n = Math.max(0, netto - E.pausch);', '    const n = Math.max(0, netto);'],
+  ['Kinderzuschlag: Hilfebedürftigkeit mit vollem Netto statt bereinigtem Einkommen', '    const mitKiz = elternEinkSGB2(h) + h.children * R.kindergeld', '    const mitKiz = h.netto + 0 * h.children * R.kindergeld'],
   // Ausfüllhilfe: Ja/Nein vertauscht, falsches Formular, Name falsch geteilt
   ['Formulare: Alleinerziehend Ja/Nein vertauscht', "ha.rbtnAlleinerziehend = allein ? 'ja' : 'nein';", "ha.rbtnAlleinerziehend = allein ? 'nein' : 'ja';", 'src/formulare.js'],
   ['Formulare: Anlage KDU fehlt bei Miete', "if (miete > 0 || eigen) {", "if (eigen) {", 'src/formulare.js'],

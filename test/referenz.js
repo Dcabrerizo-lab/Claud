@@ -241,7 +241,10 @@ function kinderzuschlag(h) {
   const kindAnr = h.unterhalt + h.uvg + Math.max(0, h.kindEink - h.mini);
   const kiz = Math.max(0, max - 0.45 * Math.max(0, elternEinkommenSGB2(h) - bedarfEltern) - 0.45 * kindAnr);
   if (kiz <= 0) return { level: 'nein' };
-  if (h.netto - (h.uzFest ? h.uz : 0) + h.unterhalt + h.uvg + h.kindEink + max + 300 < h.regel + h.miete + h.mehrAE + ms.sicher + bm.sicher) return { level: 'vielleicht', kiz };
+  // § 6a Abs. 1 Nr. 3 BKGG: mit dem Kinderzuschlag nicht mehr hilfebedürftig (bereinigtes Einkommen, Kindergeld, Kinderzuschlag, 300 € für ein mögliches Wohngeld)
+  const mitKiz = elternEinkommenSGB2(h) + (h.kinder + h.jung) * KG + h.unterhalt + h.uvg + h.kindEink + kiz, bedarfAlle = h.regel + h.miete + h.mehrAE + ms.sicher + bm.sicher;
+  if (mitKiz + 300 < bedarfAlle) return { level: 'vielleicht', kiz };
+  if (mitKiz < bedarfAlle) return { level: 'vielleicht', kiz, mitWg: true }; // nur zusammen mit Wohngeld
   return { level: kiz >= 60 ? 'ja' : 'vielleicht', kiz };
 }
 

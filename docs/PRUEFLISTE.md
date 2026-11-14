@@ -108,6 +108,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 |---|---|---|
 | 2027: geplanter Wegfall des Sofortzuschlags (25 €) nur als Hinweis, noch nicht eingerechnet | ✓ | `plan-2027` |
 | Höchstbetrag, Mindesteinkommen, 45 % Minderung, Vermögen; Einkommen der Eltern nach § 11b SGB II; Mehrbedarf Alleinerziehende | ✓ | `kiz-formel` |
+| Kinderzuschlag muss Hilfebedürftigkeit beenden (§ 6a Abs. 1 Nr. 3 BKGG): bereinigtes Einkommen + Kindergeld + Kinderzuschlag; reicht es nur mit Wohngeld: „möglich“, beides beantragen; 40 Familien ohne Widerspruch zum KiZ-Lotsen | ✓ | `amtlich-kiz` |
 | Mehrbedarfe der Eltern im Bedarf der Eltern (Schwangerschaft, Warmwasser, 35 % Teilhabe) | ✓ | `kiz-mehr` |
 | Vermögensgrenze 40.000 € für die erste, 15.000 € je weitere Person (§ 6a Abs. 3 BKGG, bleibt trotz Grundsicherungsreform) | ✓ | `kiz-verm` |
 | Ausschluss bei Asylbewerberleistungen (kein Kindergeld) | ✓ | `asyl-ausschluss` |

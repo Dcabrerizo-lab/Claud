@@ -1,0 +1,642 @@
+{
+ "quelle": "KiZ-Lotse der Familienkasse (web.arbeitsagentur.de/kiz/lotse), abgefragt am 14.11.2026; Lohn, Partner ohne Einkommen, Kindergeld für alle Kinder, kein Wohngeld",
+ "faelle": [
+  {
+   "f": {
+    "alter": [
+     3
+    ],
+    "partner": true,
+    "brutto": 670,
+    "netto": 536,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 1030
+   },
+   "amtlich": "Leider haben Sie keinen Anspruch auf Kinderzuschlag, weil ihr Einkommen die Mindesteinkommensgrenze nicht erreicht. Wer seinen eigenen Lebensunterhalt nicht aus",
+   "lotse": "nein"
+  },
+  {
+   "f": {
+    "alter": [
+     2
+    ],
+    "partner": false,
+    "brutto": 1750,
+    "netto": 1225,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 1340
+   },
+   "amtlich": "Leider kann auch mit der Zahlung von Kinderzuschlag die Hilfebedürftigkeit Ihrer Familie im Sinne der Vorschriften über das Grundsicherungsgeld nicht vermieden ",
+   "lotse": "nein"
+  },
+  {
+   "f": {
+    "alter": [
+     7,
+     12
+    ],
+    "partner": true,
+    "brutto": 3610,
+    "netto": 2527,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 1260
+   },
+   "amtlich": "Ihr Antrag auf Kinderzuschlag hätte voraussichtlich Aussicht auf Erfolg!",
+   "lotse": "ja"
+  },
+  {
+   "f": {
+    "alter": [
+     10
+    ],
+    "partner": true,
+    "brutto": 1330,
+    "netto": 931,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 1000
+   },
+   "amtlich": "Leider kann auch mit der Zahlung von Kinderzuschlag die Hilfebedürftigkeit Ihrer Familie im Sinne der Vorschriften über das Grundsicherungsgeld nicht vermieden ",
+   "lotse": "nein"
+  },
+  {
+   "f": {
+    "alter": [
+     16
+    ],
+    "partner": true,
+    "brutto": 3030,
+    "netto": 2121,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 1220
+   },
+   "amtlich": "Leider kann auch mit der Zahlung von Kinderzuschlag die Hilfebedürftigkeit Ihrer Familie im Sinne der Vorschriften über das Grundsicherungsgeld nicht vermieden ",
+   "lotse": "nein"
+  },
+  {
+   "f": {
+    "alter": [
+     5
+    ],
+    "partner": true,
+    "brutto": 3500,
+    "netto": 2450,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 1250
+   },
+   "amtlich": "Ihr Antrag auf Kinderzuschlag hätte voraussichtlich Aussicht auf Erfolg!",
+   "lotse": "ja"
+  },
+  {
+   "f": {
+    "alter": [
+     16,
+     6
+    ],
+    "partner": true,
+    "brutto": 1990,
+    "netto": 1393,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 890
+   },
+   "amtlich": "Leider kann auch mit der Zahlung von Kinderzuschlag die Hilfebedürftigkeit Ihrer Familie im Sinne der Vorschriften über das Grundsicherungsgeld nicht vermieden ",
+   "lotse": "nein"
+  },
+  {
+   "f": {
+    "alter": [
+     8,
+     3
+    ],
+    "partner": true,
+    "brutto": 3520,
+    "netto": 2464,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 1200
+   },
+   "amtlich": "Ihr Antrag auf Kinderzuschlag hätte voraussichtlich Aussicht auf Erfolg!",
+   "lotse": "ja"
+  },
+  {
+   "f": {
+    "alter": [
+     13,
+     15
+    ],
+    "partner": true,
+    "brutto": 860,
+    "netto": 688,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 1320
+   },
+   "amtlich": "Leider haben Sie keinen Anspruch auf Kinderzuschlag, weil ihr Einkommen die Mindesteinkommensgrenze nicht erreicht. Wer seinen eigenen Lebensunterhalt nicht aus",
+   "lotse": "nein"
+  },
+  {
+   "f": {
+    "alter": [
+     11,
+     3
+    ],
+    "partner": false,
+    "brutto": 1270,
+    "netto": 1016,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 880
+   },
+   "amtlich": "Leider kann auch mit der Zahlung von Kinderzuschlag die Hilfebedürftigkeit Ihrer Familie im Sinne der Vorschriften über das Grundsicherungsgeld nicht vermieden ",
+   "lotse": "nein"
+  },
+  {
+   "f": {
+    "alter": [
+     10,
+     6,
+     15
+    ],
+    "partner": true,
+    "brutto": 3510,
+    "netto": 2457,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 1230
+   },
+   "amtlich": "Ihr Antrag auf Kinderzuschlag hätte voraussichtlich Aussicht auf Erfolg!",
+   "lotse": "ja"
+  },
+  {
+   "f": {
+    "alter": [
+     10,
+     2,
+     8
+    ],
+    "partner": false,
+    "brutto": 3760,
+    "netto": 2632,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 520
+   },
+   "amtlich": "Ihr Antrag auf Kinderzuschlag hätte voraussichtlich Aussicht auf Erfolg!",
+   "lotse": "ja"
+  },
+  {
+   "f": {
+    "alter": [
+     9,
+     2
+    ],
+    "partner": true,
+    "brutto": 3550,
+    "netto": 2485,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 930
+   },
+   "amtlich": "Ihr Antrag auf Kinderzuschlag hätte voraussichtlich Aussicht auf Erfolg!",
+   "lotse": "ja"
+  },
+  {
+   "f": {
+    "alter": [
+     0
+    ],
+    "partner": false,
+    "brutto": 760,
+    "netto": 608,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 510
+   },
+   "amtlich": "Leider kann auch mit der Zahlung von Kinderzuschlag die Hilfebedürftigkeit Ihrer Familie im Sinne der Vorschriften über das Grundsicherungsgeld nicht vermieden ",
+   "lotse": "nein"
+  },
+  {
+   "f": {
+    "alter": [
+     13,
+     13,
+     4
+    ],
+    "partner": true,
+    "brutto": 710,
+    "netto": 568,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 710
+   },
+   "amtlich": "Leider haben Sie keinen Anspruch auf Kinderzuschlag, weil ihr Einkommen die Mindesteinkommensgrenze nicht erreicht. Wer seinen eigenen Lebensunterhalt nicht aus",
+   "lotse": "nein"
+  },
+  {
+   "f": {
+    "alter": [
+     9,
+     6,
+     6
+    ],
+    "partner": false,
+    "brutto": 1580,
+    "netto": 1106,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 1200
+   },
+   "amtlich": "Leider kann auch mit der Zahlung von Kinderzuschlag die Hilfebedürftigkeit Ihrer Familie im Sinne der Vorschriften über das Grundsicherungsgeld nicht vermieden ",
+   "lotse": "nein"
+  },
+  {
+   "f": {
+    "alter": [
+     0,
+     9
+    ],
+    "partner": false,
+    "brutto": 2460,
+    "netto": 1722,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 480
+   },
+   "amtlich": "Ihr Antrag auf Kinderzuschlag hätte voraussichtlich Aussicht auf Erfolg!",
+   "lotse": "ja"
+  },
+  {
+   "f": {
+    "alter": [
+     2,
+     0
+    ],
+    "partner": false,
+    "brutto": 4170,
+    "netto": 2919,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 790
+   },
+   "amtlich": "Ihr Antrag auf Kinderzuschlag hätte voraussichtlich Aussicht auf Erfolg!",
+   "lotse": "ja"
+  },
+  {
+   "f": {
+    "alter": [
+     14,
+     6
+    ],
+    "partner": true,
+    "brutto": 3590,
+    "netto": 2513,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 470
+   },
+   "amtlich": "Ihr Antrag auf Kinderzuschlag hätte voraussichtlich Aussicht auf Erfolg!",
+   "lotse": "ja"
+  },
+  {
+   "f": {
+    "alter": [
+     4,
+     12
+    ],
+    "partner": false,
+    "brutto": 1410,
+    "netto": 987,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 840
+   },
+   "amtlich": "Leider kann auch mit der Zahlung von Kinderzuschlag die Hilfebedürftigkeit Ihrer Familie im Sinne der Vorschriften über das Grundsicherungsgeld nicht vermieden ",
+   "lotse": "nein"
+  },
+  {
+   "f": {
+    "alter": [
+     7
+    ],
+    "partner": false,
+    "brutto": 920,
+    "netto": 736,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 910
+   },
+   "amtlich": "Leider kann auch mit der Zahlung von Kinderzuschlag die Hilfebedürftigkeit Ihrer Familie im Sinne der Vorschriften über das Grundsicherungsgeld nicht vermieden ",
+   "lotse": "nein"
+  },
+  {
+   "f": {
+    "alter": [
+     4,
+     11,
+     16
+    ],
+    "partner": false,
+    "brutto": 2410,
+    "netto": 1687,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 980
+   },
+   "amtlich": "Ihr Antrag auf Kinderzuschlag hätte voraussichtlich Aussicht auf Erfolg!",
+   "lotse": "ja"
+  },
+  {
+   "f": {
+    "alter": [
+     12,
+     11,
+     15
+    ],
+    "partner": false,
+    "brutto": 620,
+    "netto": 496,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 1220
+   },
+   "amtlich": "Leider kann auch mit der Zahlung von Kinderzuschlag die Hilfebedürftigkeit Ihrer Familie im Sinne der Vorschriften über das Grundsicherungsgeld nicht vermieden ",
+   "lotse": "nein"
+  },
+  {
+   "f": {
+    "alter": [
+     4
+    ],
+    "partner": true,
+    "brutto": 3440,
+    "netto": 2408,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 850
+   },
+   "amtlich": "Ihr Antrag auf Kinderzuschlag hätte voraussichtlich Aussicht auf Erfolg!",
+   "lotse": "ja"
+  },
+  {
+   "f": {
+    "alter": [
+     1,
+     6,
+     12
+    ],
+    "partner": true,
+    "brutto": 1630,
+    "netto": 1141,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 1220
+   },
+   "amtlich": "Leider kann auch mit der Zahlung von Kinderzuschlag die Hilfebedürftigkeit Ihrer Familie im Sinne der Vorschriften über das Grundsicherungsgeld nicht vermieden ",
+   "lotse": "nein"
+  },
+  {
+   "f": {
+    "alter": [
+     12
+    ],
+    "partner": true,
+    "brutto": 1120,
+    "netto": 896,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 1130
+   },
+   "amtlich": "Leider kann auch mit der Zahlung von Kinderzuschlag die Hilfebedürftigkeit Ihrer Familie im Sinne der Vorschriften über das Grundsicherungsgeld nicht vermieden ",
+   "lotse": "nein"
+  },
+  {
+   "f": {
+    "alter": [
+     3,
+     7,
+     13
+    ],
+    "partner": false,
+    "brutto": 700,
+    "netto": 560,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 1290
+   },
+   "amtlich": "Leider kann auch mit der Zahlung von Kinderzuschlag die Hilfebedürftigkeit Ihrer Familie im Sinne der Vorschriften über das Grundsicherungsgeld nicht vermieden ",
+   "lotse": "nein"
+  },
+  {
+   "f": {
+    "alter": [
+     4
+    ],
+    "partner": false,
+    "brutto": 740,
+    "netto": 592,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 1130
+   },
+   "amtlich": "Leider kann auch mit der Zahlung von Kinderzuschlag die Hilfebedürftigkeit Ihrer Familie im Sinne der Vorschriften über das Grundsicherungsgeld nicht vermieden ",
+   "lotse": "nein"
+  },
+  {
+   "f": {
+    "alter": [
+     2,
+     13
+    ],
+    "partner": false,
+    "brutto": 2770,
+    "netto": 1939,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 1170
+   },
+   "amtlich": "Ihr Antrag auf Kinderzuschlag hätte voraussichtlich Aussicht auf Erfolg!",
+   "lotse": "ja"
+  },
+  {
+   "f": {
+    "alter": [
+     15
+    ],
+    "partner": true,
+    "brutto": 1770,
+    "netto": 1239,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 510
+   },
+   "amtlich": "Leider kann auch mit der Zahlung von Kinderzuschlag die Hilfebedürftigkeit Ihrer Familie im Sinne der Vorschriften über das Grundsicherungsgeld nicht vermieden ",
+   "lotse": "nein"
+  },
+  {
+   "f": {
+    "alter": [
+     11,
+     13
+    ],
+    "partner": true,
+    "brutto": 820,
+    "netto": 656,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 1190
+   },
+   "amtlich": "Leider haben Sie keinen Anspruch auf Kinderzuschlag, weil ihr Einkommen die Mindesteinkommensgrenze nicht erreicht. Wer seinen eigenen Lebensunterhalt nicht aus",
+   "lotse": "nein"
+  },
+  {
+   "f": {
+    "alter": [
+     13
+    ],
+    "partner": true,
+    "brutto": 3770,
+    "netto": 2639,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 780
+   },
+   "amtlich": "Ihr Antrag auf Kinderzuschlag hätte voraussichtlich Aussicht auf Erfolg!",
+   "lotse": "ja"
+  },
+  {
+   "f": {
+    "alter": [
+     13
+    ],
+    "partner": false,
+    "brutto": 2830,
+    "netto": 1981,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 1090
+   },
+   "amtlich": "Ihr Antrag auf Kinderzuschlag hätte voraussichtlich Aussicht auf Erfolg!",
+   "lotse": "ja"
+  },
+  {
+   "f": {
+    "alter": [
+     14,
+     8
+    ],
+    "partner": true,
+    "brutto": 580,
+    "netto": 464,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 1180
+   },
+   "amtlich": "Leider haben Sie keinen Anspruch auf Kinderzuschlag, weil ihr Einkommen die Mindesteinkommensgrenze nicht erreicht. Wer seinen eigenen Lebensunterhalt nicht aus",
+   "lotse": "nein"
+  },
+  {
+   "f": {
+    "alter": [
+     13,
+     0,
+     8
+    ],
+    "partner": true,
+    "brutto": 760,
+    "netto": 608,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 1030
+   },
+   "amtlich": "Leider haben Sie keinen Anspruch auf Kinderzuschlag, weil ihr Einkommen die Mindesteinkommensgrenze nicht erreicht. Wer seinen eigenen Lebensunterhalt nicht aus",
+   "lotse": "nein"
+  },
+  {
+   "f": {
+    "alter": [
+     5,
+     15,
+     9
+    ],
+    "partner": false,
+    "brutto": 3100,
+    "netto": 2170,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 1180
+   },
+   "amtlich": "Ihr Antrag auf Kinderzuschlag hätte voraussichtlich Aussicht auf Erfolg!",
+   "lotse": "ja"
+  },
+  {
+   "f": {
+    "alter": [
+     0,
+     4
+    ],
+    "partner": false,
+    "brutto": 1310,
+    "netto": 917,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 930
+   },
+   "amtlich": "Leider kann auch mit der Zahlung von Kinderzuschlag die Hilfebedürftigkeit Ihrer Familie im Sinne der Vorschriften über das Grundsicherungsgeld nicht vermieden ",
+   "lotse": "nein"
+  },
+  {
+   "f": {
+    "alter": [
+     14,
+     8
+    ],
+    "partner": true,
+    "brutto": 1580,
+    "netto": 1106,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 580
+   },
+   "amtlich": "Leider kann auch mit der Zahlung von Kinderzuschlag die Hilfebedürftigkeit Ihrer Familie im Sinne der Vorschriften über das Grundsicherungsgeld nicht vermieden ",
+   "lotse": "nein"
+  },
+  {
+   "f": {
+    "alter": [
+     11
+    ],
+    "partner": true,
+    "brutto": 2320,
+    "netto": 1624,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 650
+   },
+   "amtlich": "Leider kann auch mit der Zahlung von Kinderzuschlag die Hilfebedürftigkeit Ihrer Familie im Sinne der Vorschriften über das Grundsicherungsgeld nicht vermieden ",
+   "lotse": "nein"
+  },
+  {
+   "f": {
+    "alter": [
+     16,
+     12,
+     2
+    ],
+    "partner": false,
+    "brutto": 670,
+    "netto": 536,
+    "pBrutto": 0,
+    "pNetto": 0,
+    "miete": 530
+   },
+   "amtlich": "Leider kann auch mit der Zahlung von Kinderzuschlag die Hilfebedürftigkeit Ihrer Familie im Sinne der Vorschriften über das Grundsicherungsgeld nicht vermieden ",
+   "lotse": "nein"
+  }
+ ]
+}

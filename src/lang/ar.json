@@ -980,5 +980,6 @@
   "f.formsUnt": "المستندات لمركز العمل (Jobcenter)",
   "f.formsAppLeer": "هذه النماذج تناسب بياناتك. تملؤها في تطبيق PDF أو على الورق.",
   "f.formsShareLeer": "مشاركة النماذج",
-  "f.formsLink": "إلى النموذج الرسمي (إنترنت)"
+  "f.formsLink": "إلى النموذج الرسمي (إنترنت)",
+  "t.kiz.mitWg": "علاوة الطفل (Kinderzuschlag، حتى {max} لكل طفل) تكفيك للاستغناء عن معونة الضمان الأساسي (Grundsicherungsgeld) فقط مع إعانة السكن (Wohngeld). قدّم طلبًا للاثنين؛ تفحص Familienkasse ذلك معًا."
 }

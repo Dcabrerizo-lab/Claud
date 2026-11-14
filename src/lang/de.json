@@ -980,5 +980,6 @@
   "f.formsUnt": "Unterlagen für das Jobcenter",
   "f.formsAppLeer": "Diese Vordrucke passen zu deinen Angaben. Du füllst sie in einer PDF-App oder auf Papier aus.",
   "f.formsShareLeer": "Formulare teilen",
-  "f.formsLink": "Zum amtlichen Formular (Internet)"
+  "f.formsLink": "Zum amtlichen Formular (Internet)",
+  "t.kiz.mitWg": "Kinderzuschlag (bis {max} je Kind) hilft dir nur zusammen mit Wohngeld, ohne Grundsicherungsgeld auszukommen. Beantrage beides; die Familienkasse prüft das zusammen."
 }

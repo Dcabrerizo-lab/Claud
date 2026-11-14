@@ -980,5 +980,6 @@
   "f.formsUnt": "Jobcenter için belgeler",
   "f.formsAppLeer": "Bu formlar bilgilerinize uygundur. Onları bir PDF uygulamasında veya kâğıt üzerinde doldurursunuz.",
   "f.formsShareLeer": "Formları paylaş",
-  "f.formsLink": "Resmî forma git (internet)"
+  "f.formsLink": "Resmî forma git (internet)",
+  "t.kiz.mitWg": "Çocuk ek ödeneği (Kinderzuschlag, çocuk başına en fazla {max}) yalnızca konut yardımıyla (Wohngeld) birlikte temel güvence ödeneğine (Grundsicherungsgeld) ihtiyaç duymamanı sağlar. İkisine de başvur; Familienkasse bunları birlikte inceler."
 }

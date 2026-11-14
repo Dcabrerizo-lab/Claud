@@ -23,5 +23,16 @@ EG.faelle.forEach((x) => {
   const solo = e.tx[0][1].basis.eur;
   n++; if (Math.abs(solo - x.amtlich) > 0.5) { fails++; console.log('FAIL [amtlich-elterngeld] Netto vorher ' + x.vorher + ' €: SoLo ' + solo + ' €, amtlich ' + x.amtlich + ' €'); }
 });
-console.log(fails ? fails + ' von ' + n + ' FEHLGESCHLAGEN' : '[amtlich-wohngeld] [amtlich-elterngeld] Abgleich mit amtlichen Rechnern bestanden: Wohngeld ' + nWg + ' Haushalte auf 10 € gleich, Elterngeld ' + (n - nWg) + ' Einkommen auf den Euro gleich');
+const nEg = n - nWg;
+// Kinderzuschlag: 40 Familien im KiZ-Lotsen der Familienkasse (nur Anspruch ja/nein). Lotse „Anspruch“: SoLo nie „eher nicht“;
+// Lotse „kein Anspruch“: SoLo nie „wahrscheinlich“ (dazwischen „möglich“ mit Grund).
+const KZ = require('./amtlich-kiz.json');
+KZ.faelle.forEach((x) => {
+  const f = x.f;
+  const inp = { adults: f.partner ? 2 : 1, kids: f.alter.length, kidsU6: f.alter.filter((v) => v < 6).length, kids14: f.alter.filter((v) => v >= 14).length, art1: 'lohn', art2: 'ohne', brutto: f.brutto, netto: f.netto, miete: f.miete, mietstufe: '3', vermoegen: 0, gebJahr: 1988, bezug: { kindergeld: true }, heute: 2026.9 };
+  const k = R.evaluate(inp).results.find((r) => r.id === 'kiz');
+  const ok = x.lotse === 'ja' ? k.level !== 'nein' : k.level !== 'ja';
+  n++; if (!ok) { fails++; console.log('FAIL [amtlich-kiz] ' + JSON.stringify(f) + ' SoLo ' + k.level + ' (' + k.hl + '), KiZ-Lotse ' + x.lotse); }
+});
+console.log(fails ? fails + ' von ' + n + ' FEHLGESCHLAGEN' : '[amtlich-wohngeld] [amtlich-elterngeld] [amtlich-kiz] Abgleich mit amtlichen Rechnern bestanden: Wohngeld ' + nWg + ' Haushalte auf 10 € gleich, Elterngeld ' + nEg + ' Einkommen auf den Euro gleich, Kinderzuschlag ' + (n - nWg - nEg) + ' Familien ohne Widerspruch zum KiZ-Lotsen');
 process.exit(fails ? 1 : 0);

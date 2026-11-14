@@ -980,5 +980,6 @@
   "f.formsUnt": "Dokumenty dla Jobcenter",
   "f.formsAppLeer": "Te formularze pasują do twoich danych. Wypełniasz je w aplikacji PDF lub na papierze.",
   "f.formsShareLeer": "Udostępnij formularze",
-  "f.formsLink": "Do formularza urzędowego (internet)"
+  "f.formsLink": "Do formularza urzędowego (internet)",
+  "t.kiz.mitWg": "Dodatek na dziecko (Kinderzuschlag, do {max} na dziecko) pozwoli obyć się bez zasiłku podstawowego (Grundsicherungsgeld) tylko razem z dodatkiem mieszkaniowym (Wohngeld). Złóż wnioski o oba; Familienkasse sprawdzi je razem."
 }

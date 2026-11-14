@@ -587,7 +587,13 @@ const Rules = (function () {
     const gesamtBedarf = h.regel + h.miete + (h.mehrAE || 0) + maK.fest + mbK.fest;
 
     if (est <= 0) return mk(id, 'nein', 'einkoHoch', [['kiz.zuHoch']]);
-    if (h.netto - (h.uzSGB || 0) + (h.kindZahl || 0) + (h.kindEink || 0) + gmax + R.kiz.puffer < gesamtBedarf) return mk(id, 'vielleicht', 'einkoNiedrig', [['kiz.zuNiedrig']]);
+    // Hilfebedürftigkeit muss mit dem Kinderzuschlag enden (§ 6a Abs. 1 Nr. 3 BKGG): bereinigtes Einkommen nach SGB II (mit Freibetrag
+    // für Arbeit) plus Kindergeld, Einkommen der Kinder und geschätzter Kinderzuschlag; der Puffer steht für ein mögliches Wohngeld.
+    // (Abgleich mit dem KiZ-Lotsen der Familienkasse: bisher mit vollem Netto zu optimistisch.)
+    const mitKiz = elternEinkSGB2(h) + h.children * R.kindergeld + (h.kindZahl || 0) + (h.kindEink || 0) + est;
+    if (mitKiz + R.kiz.puffer < gesamtBedarf) return mk(id, 'vielleicht', 'einkoNiedrig', [['kiz.zuNiedrig']]);
+    // Reicht es nur mit zusätzlichem Wohngeld, ist der Kinderzuschlag offen: beides beantragen
+    if (mitKiz < gesamtBedarf) return mk(id, 'vielleicht', 'vielleicht', [['kiz.mitWg', { max: eur(R.kiz.max) }], ['schaetz.eins', { a: eur(Math.max(10, r10(est))) }]]);
     const sch = ['schaetz.eins', { a: eur(Math.max(10, r10(est))) }];
     if (est >= R.kiz.ampelGruenAb) return mk(id, 'ja', 'ja', [['kiz.ja', { max: eur(R.kiz.max) }], sch]);
     return mk(id, 'vielleicht', 'vielleicht', [['kiz.rand', { max: eur(R.kiz.max) }], sch]);

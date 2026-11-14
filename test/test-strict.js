@@ -61,8 +61,9 @@ G('GG: Alleinerziehend 31–40 mit 1 Kind: 15.001 → nein', { kids: 1, vermoege
 G('GG: Paar 31–40 mit 2 Kindern: Grenze 30.000 → ja', { adults: 2, kids: 2, vermoegen: 30000 }, 'ggeld', 'ja');
 G('GG: Paar 31–40 mit 2 Kindern: 30.001 → nein', { adults: 2, kids: 2, vermoegen: 30001 }, 'ggeld', 'nein');
 // Kinderzuschlag Vermögen (Familienkasse): 2 Personen 55.000, 3 Personen 70.000, +15.000 je weiteres Kind
-G('KiZ: 2 Personen, 55.000 → möglich', { kids: 1, brutto: 1500, netto: 1200, vermoegen: 55000 }, 'kiz', 'ja');
-G('KiZ: 2 Personen, 55.001 → nein', { kids: 1, brutto: 1500, netto: 1200, vermoegen: 55001 }, 'kiz', 'nein');
+G('KiZ: 2 Personen, 55.000 → ja', { kids: 1, brutto: 2000, netto: 1450, vermoegen: 55000 }, 'kiz', 'ja');
+G('KiZ: 2 Personen, 55.001 → nein', { kids: 1, brutto: 2000, netto: 1450, vermoegen: 55001 }, 'kiz', 'nein');
+G('KiZ: allein mit Kind, 1.500 € brutto, 600 € Miete: reicht nur mit Wohngeld → möglich (wie KiZ-Lotse ohne Wohngeld: hilfebedürftig)', { kids: 1, brutto: 1500, netto: 1200 }, 'kiz', 'vielleicht');
 G('KiZ: 3 Personen, 70.001 → nein', { adults: 2, kids: 1, brutto: 2000, netto: 1700, vermoegen: 70001 }, 'kiz', 'nein');
 G('KiZ: 4 Personen, 85.001 → nein', { adults: 2, kids: 2, brutto: 2600, netto: 2050, vermoegen: 85001 }, 'kiz', 'nein');
 G('KiZ: 4 Personen, 85.000 → ja', { adults: 2, kids: 2, brutto: 2600, netto: 2050, vermoegen: 85000 }, 'kiz', 'ja');

@@ -980,5 +980,6 @@
   "f.formsUnt": "Documents for the Jobcenter",
   "f.formsAppLeer": "These forms match your answers. You fill them in using a PDF app or on paper.",
   "f.formsShareLeer": "Share forms",
-  "f.formsLink": "Go to the official form (internet)"
+  "f.formsLink": "Go to the official form (internet)",
+  "t.kiz.mitWg": "Child supplement (Kinderzuschlag, up to {max} per child) only gets you off basic income support (Grundsicherungsgeld) together with housing benefit (Wohngeld). Apply for both; the family benefits office (Familienkasse) checks them together."
 }
