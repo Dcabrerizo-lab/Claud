@@ -136,3 +136,14 @@ Ergänzend zeigt `docs/PRUEFLISTE.md` vom Gesetz her für jede Regel, ob die App
   - Browser: ausführliche Version, einfache Version (49 Prüfungen) und App mit nachgeahmten Plugins.
   - Barrierefreiheit: axe-core, WCAG 2.1 AA, hell und dunkel.
 - **Wartbarkeit:** `src/app.js` ist groß (rund 1.400 Zeilen). Eine Aufteilung in Module (Formular, Ergebnis, Mappe, einfache Version, Scan) wäre der nächste Schritt, sobald weitere Funktionen dazukommen.
+
+## Amtliche Rechenbeispiele der Bundesagentur (14.11.2026)
+
+`test/test-ba-beispiele.js` prüft 34 Werte aus den Fachlichen Weisungen §§ 11-11b SGB II (Stand 24.10.2024) und den
+Durchführungsanweisungen Kinderzuschlag (DA-KiZ, Stand 20.02.2026): Erwerbstätigenfreibetrag (Beispiele 1.450 €, 250 €, 1.600 €,
+alle Stufengrenzen), Wohnanteil der Eltern (ganze Tabelle, Beispiele 800 € und Familie R.), Anrechnung des Kindesunterhalts mit 45 %.
+Fund: Der Wohnanteil war bisher eine Näherung (Alleinerziehende bis 1 Prozentpunkt daneben), jetzt exakt die amtliche Tabelle.
+
+Bekannte, bewusst vorsichtige Abweichung: Beim Grundsicherungsgeld lässt SoLo Elterngeld bis 300 € nur frei, wenn das Elterngeld
+über 300 € liegt. Das Gesetz (§ 10 Abs. 5 BEEG) lässt auch beim Mindestbetrag so viel frei, wie vor der Geburt verdient wurde
+(FW-Beispiel: 250 € frei). SoLo zählt hier also eher zu viel Einkommen und nennt eher zu wenig Grundsicherungsgeld, nie zu viel.

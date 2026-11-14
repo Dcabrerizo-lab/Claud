@@ -452,7 +452,7 @@ const uzA = { art1: 'lohn', brutto: 1500, netto: 1150, miete: 600 }; // Freibetr
 ck('[uz-sgb2] Festgelegter Unterhalt (300 €) wird beim Grundsicherungsgeld voll abgezogen: Lücke 361 € -> 661 €', S(uzA, 'ggeld') === 360 && S({ ...uzA, uzBetrag: 300, uzAn: 'k1', uzTitel: true }, 'ggeld') === 660 && K({ ...uzA, uzBetrag: 300, uzAn: 'k1', uzTitel: true }, 'ggeld').includes('uz.sgb2Titel'));
 ck('[uz-sgb2] Ohne festgelegten Betrag kein Abzug, aber Hinweis auf Jugendamtsurkunde', S({ ...uzA, uzBetrag: 300, uzAn: 'k1' }, 'ggeld') === 360 && K({ ...uzA, uzBetrag: 300, uzAn: 'k1' }, 'ggeld').includes('uz.sgb2Ohne'));
 const uzK = { adults: 2, kids: 1, art1: 'lohn', brutto: 3000, netto: 2300, miete: 900, mietstufe: 3 };
-ck('[uz-sgb2] Kinderzuschlag: festgelegter Unterhalt mindert das Einkommen der Eltern (230 € -> Höchstbetrag 297 €)', S(uzK, 'kiz') === 230 && S({ ...uzK, uzBetrag: 300, uzAn: 'k1', uzTitel: true }, 'kiz') === 300 && S({ ...uzK, uzBetrag: 300, uzAn: 'k1' }, 'kiz') === 230);
+ck('[uz-sgb2] Kinderzuschlag: festgelegter Unterhalt mindert das Einkommen der Eltern (220 € -> Höchstbetrag 297 €; Wohnanteil nach DA-KiZ-Tabelle 83 %)', S(uzK, 'kiz') === 220 && S({ ...uzK, uzBetrag: 300, uzAn: 'k1', uzTitel: true }, 'kiz') === 300 && S({ ...uzK, uzBetrag: 300, uzAn: 'k1' }, 'kiz') === 220);
 const D = (o) => R.derive({ ...base, ...o });
 const dz = (o) => { const h = D(o); return [h.uzWGpess, h.uzWGopt, h.uzSGB].join('/'); };
 ck('[uz-wg] Wohngeld-Höchstbeträge § 18 WoGG: 250 € je Kind, 500 € Ex-Partner; ohne Titel vorsichtig 0, günstig bis Höchstbetrag; mit Titel günstig ganzer Betrag',

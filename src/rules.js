@@ -13,9 +13,10 @@ const Rules = (function () {
     // RBSFV 2026, Anlage zu § 28 SGB XII: Stufe 1 563, Stufe 2 506, Stufe 3 451, Stufe 4 (14-17) 471, Stufe 5 (6-13) 390, Stufe 6 (0-5) 357
     regelbedarf: { alleinstehend: 563, partner: 506, kind0: 357, kind: 390, kind14: 471, jungErwachsener: 451 },
     kindergeld: 259,
-    // Wohnkostenanteil der Eltern (§ 6a Abs. 5 BKGG, Existenzminimumbericht): Näherung über ein Gewicht je Kind,
-    // Alleinerziehende ca. 77 % / 63 % / 53 % bei 1 / 2 / 3 Kindern, Paare ca. 83 % / 71 % / 62 %
-    kiz: { vermZwei: 55000, vermDrei: 70000, vermJeWeiteres: 15000, max: 297, minAlleinerziehend: 600, minPaar: 900, anrechnung: 0.45, gewichtKindAllein: 0.29, gewichtKindPaar: 0.4, puffer: 300, ampelGruenAb: 60 },
+    // Wohnkostenanteil der Eltern (§ 6a Abs. 5 BKGG): Tabelle der Familienkasse nach dem Existenzminimumbericht
+    // (DA-KiZ C.3.1.2, Stand 20.02.2026), Index = Zahl der Kinder 1-10; ab 10 Kindern gilt der Wert für 10
+    kiz: { vermZwei: 55000, vermDrei: 70000, vermJeWeiteres: 15000, max: 297, minAlleinerziehend: 600, minPaar: 900, anrechnung: 0.45, puffer: 300, ampelGruenAb: 60,
+      wohnAllein: [1, 0.77, 0.63, 0.53, 0.46, 0.40, 0.36, 0.33, 0.30, 0.27, 0.25], wohnPaar: [1, 0.83, 0.71, 0.62, 0.55, 0.50, 0.45, 0.41, 0.38, 0.35, 0.33] },
     wohngeld: {
       // Keine Beträge im Gesetzestext (§ 21 Nr. 3 WoGG: nur "erhebliches Vermögen"); die Beträge sind die Regelvermutung der Verwaltungsvorschrift (nur Sekundärquellen)
       vermoegenErste: 60000,
@@ -372,6 +373,9 @@ const Rules = (function () {
     };
   }
 
+  // Wohnkostenanteil der Eltern beim Kinderzuschlag (Tabelle DA-KiZ C.3.1.2)
+  function kizWohnanteil(adults, kinder) { const t = adults === 1 ? R.kiz.wohnAllein : R.kiz.wohnPaar; return t[Math.min(Math.max(kinder, 0), 10)]; }
+
   // Freibetrag auf Erwerbseinkommen beim Grundsicherungsgeld (§ 11b SGB II) für EINE Person:
   // 100 € frei, 20 % von 100 bis 520 €, 30 % von 520 bis 1.000 €, 10 % von 1.000 bis 1.200 €
   // (bis 1.500 €, wenn ein minderjähriges Kind im Haushalt lebt).
@@ -578,8 +582,7 @@ const Rules = (function () {
     if (h.brutto < minEink) return mk(id, 'nein', 'minEink', [['kiz.minEink', { min: eur(minEink) }]]);
 
     const gmax = R.kiz.max * h.children;
-    const gewicht = h.adults === 1 ? R.kiz.gewichtKindAllein : R.kiz.gewichtKindPaar;
-    const elternAnteil = h.adults / (h.adults + gewicht * h.children);
+    const elternAnteil = kizWohnanteil(h.adults, h.children);
     // Mehrbedarfe der Eltern gehören zum Bedarf der Eltern (Schwangerschaft, Warmwasser, 35 % bei Teilhabe am Arbeitsleben)
     const maK = mehrAllg(h, false), mbK = mehrBehSGB2(h);
     const mehrEltern = maK.eltern + (h.bhPerson === 'erwNach25' ? mbK.fest : 0);
@@ -1402,7 +1405,7 @@ const Rules = (function () {
     return { h, results: sorted, zusammen: zus };
   }
 
-  return { evaluate, RULES: R, WG, limits, wgYmax, wgMiete, wgCap, wgHeiz, roman, sgb2Freibetrag, haushaltsFreibetrag, derive, NAMES, STEPS, ZUST_LAND, zustLand };
+  return { evaluate, RULES: R, WG, limits, wgYmax, wgMiete, wgCap, wgHeiz, roman, sgb2Freibetrag, kizWohnanteil, haushaltsFreibetrag, derive, NAMES, STEPS, ZUST_LAND, zustLand };
 })();
 
 if (typeof module !== 'undefined') module.exports = Rules;

@@ -9,6 +9,8 @@ Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss ste
 - Kinderzuschlag, Kindergeld-Formulare: genauere Links und Ausfüllhilfe
 - Rückmeldung per E-Mail unter den Ergebnissen („Passt ein Ergebnis nicht zu deinem Bescheid?“): Entwurf mit App-Version und Einstufungen, ohne Angaben aus dem Fragebogen
 - Antragsmappe im dunklen Modus: Formular-Links wieder gut lesbar
+- Kinderzuschlag genauer: Wohnanteil der Eltern jetzt exakt nach der Tabelle der Familienkasse (DA-KiZ, Stand 20.02.2026) statt Näherung (Abweichung bisher bis 1 Prozentpunkt)
+- Neue feste Tests mit den amtlichen Rechenbeispielen der Bundesagentur (Fachliche Weisungen §§ 11-11b SGB II, DA-KiZ)
 
 ## 1.1.0 (ab Versionsnummer 133, November 2026)
 - Neu gerechnet statt nur erwähnt: Selbstständige (eigene Einkommensart), Wohneigentum, Auto, Mitbewohner und Verwandte in der Wohnung, angemessene Miete (Grenze nach Wohngeld-Höchstbeträgen plus 10 %), EU-Bürger (Leistungsausschluss ohne Arbeit)

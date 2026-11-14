@@ -237,7 +237,8 @@ function kinderzuschlag(h) {
   if (h.vermoegen > vermGrenze) return { level: 'nein' };
   if (h.brutto < (h.erwachsene === 2 ? 900 : 600)) return { level: 'nein' };
   const max = 297 * h.kids;
-  const anteilEltern = h.erwachsene / (h.erwachsene + (h.erwachsene === 1 ? 0.29 : 0.4) * h.kids);
+  // Wohnanteil der Eltern: Tabelle DA-KiZ C.3.1.2 (Stand 20.02.2026)
+  const anteilEltern = (h.erwachsene === 1 ? [1, 77, 63, 53, 46, 40, 36, 33, 30, 27, 25] : [1, 83, 71, 62, 55, 50, 45, 41, 38, 35, 33])[Math.min(h.kids, 10)] / (h.kids ? 100 : 1);
   const ms = mehrSonst(h), bm = behMehrSGB2(h);
   const bedarfEltern = h.regelEltern + h.mehrAE + ms.eltern + (h.e.bhPerson === 'erwNach25' ? bm.sicher : 0) + h.miete * anteilEltern;
   const kindAnr = h.unterhalt + h.uvg + Math.max(0, h.kindEink - h.mini);
