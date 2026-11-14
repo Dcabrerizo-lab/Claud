@@ -38,6 +38,11 @@ jobs:
       - run: npm ci
         working-directory: app
       - run: npm run build:app
+      - name: Nur der Sozialleistungslotse (Bundle-ID prüfen)
+        run: |
+          ids=$(grep -o 'PRODUCT_BUNDLE_IDENTIFIER = [^;]*' app/ios/App/App.xcodeproj/project.pbxproj | sort -u)
+          echo "$ids"
+          if [ "$ids" != "PRODUCT_BUNDLE_IDENTIFIER = com.Sozialleistungslotse" ]; then echo "::error::Falsche Bundle-ID – hier wird nur SoLo (com.Sozialleistungslotse) hochgeladen"; exit 1; fi
       - name: API-Schlüssel ablegen
         env:
           P8: ${{ secrets.APPSTORE_KEY_P8 }}

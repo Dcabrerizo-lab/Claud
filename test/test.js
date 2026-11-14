@@ -286,6 +286,16 @@ check('Arabisch läuft rechts nach links, alle anderen links nach rechts', I18N.
   check('Leichte Sprache: lange Wörter mit Bindestrich gegliedert', wort.length === 0, wort.join(', '));
 }
 
+// Nur der Sozialleistungslotse: Paketname (Android) und Bundle-ID (iOS) sind überall com.Sozialleistungslotse
+{
+  const fsy = require('fs'), py = require('path'), R0 = py.join(__dirname, '..');
+  const lies = (f) => fsy.readFileSync(py.join(R0, f), 'utf8');
+  const ID = 'com.Sozialleistungslotse';
+  const gradle = (lies('app/android/app/build.gradle').match(/applicationId\s+"([^"]+)"/) || [])[1];
+  const cap = JSON.parse(lies('app/capacitor.config.json')).appId;
+  const ios = [...lies('app/ios/App/App.xcodeproj/project.pbxproj').matchAll(/PRODUCT_BUNDLE_IDENTIFIER = ([^;]+);/g)].map((m) => m[1].trim());
+  check('Nur SoLo: Android-Paketname, Capacitor-ID und iOS-Bundle-ID sind ' + ID, gradle === ID && cap === ID && ios.length > 0 && ios.every((x) => x === ID), [gradle, cap, ios.join(',')].join(' / '));
+}
 // Die Webseite zum Hochladen (site/) enthält dieselbe Datenschutzerklärung wie das Projekt
 {
   const fsx = require('fs'), px = require('path');
