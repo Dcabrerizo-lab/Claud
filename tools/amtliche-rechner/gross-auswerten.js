@@ -29,7 +29,9 @@ if (K.length) {
   let ja = 0, nein = 0, offen = 0; const wider = [];
   for (const x of K) {
     if (x.amtlich === null) { offen++; continue; }
-    const s = kiz(x.f); x.amtlich === 'ja' ? ja++ : nein++;
+    // Der KiZ-Lotse berücksichtigt Einkommen der Kinder nicht (geprüft 14.11.2026: selbst 2.000 € Unterhalt oder Lohn eines
+    // 7-Jährigen ändern sein Ergebnis nicht). SoLo rechnet es nach § 6a Abs. 3 BKGG zu 45 % an; verglichen wird daher ohne Unterhalt.
+    const s = kiz(Object.assign({}, x.f, { uh: 0 })); x.amtlich === 'ja' ? ja++ : nein++;
     if ((x.amtlich === 'ja' && s === 'nein') || (x.amtlich === 'nein' && s === 'ja')) wider.push({ i: x.i, f: x.f, solo: s, amtlich: x.amtlich });
   }
   console.log('KiZ: ' + K.length + ' Familien (Lotse ja ' + ja + ', nein ' + nein + ', ohne Ergebnis ' + offen + '), WIDERSPRÜCHE ' + wider.length);

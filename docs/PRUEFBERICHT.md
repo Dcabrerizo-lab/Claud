@@ -147,3 +147,17 @@ Fund: Der Wohnanteil war bisher eine Näherung (Alleinerziehende bis 1 Prozentpu
 Bekannte, bewusst vorsichtige Abweichung: Beim Grundsicherungsgeld lässt SoLo Elterngeld bis 300 € nur frei, wenn das Elterngeld
 über 300 € liegt. Das Gesetz (§ 10 Abs. 5 BEEG) lässt auch beim Mindestbetrag so viel frei, wie vor der Geburt verdient wurde
 (FW-Beispiel: 250 € frei). SoLo zählt hier also eher zu viel Einkommen und nennt eher zu wenig Grundsicherungsgeld, nie zu viel.
+
+## Großer und schwerer Abgleich mit amtlichen Rechnern (14.11.2026)
+
+Auf GitHub automatisch abgefragt, Ergebnisse als feste Testfälle in `test/amtlich-gross-*.json` (geprüft von `test/test-amtlich.js`):
+
+| Rechner | Fälle | Ergebnis |
+|---|---|---|
+| Wohngeldrechner BMWSB | 7.000 Haushalte (3.000 einfach, 3.000 schwer: bis 8 Personen, Heizkosten, Renten-Paare, Alleinerziehende; 1.000 genau an SoLos Einstufungsgrenzen) | 6.776 auf 10 € gleich, 0 abweichend; 224 knapp an der Grenze „möglich“ ohne Betrag, amtlich 0 € (vorsichtig, nie fälschlich „eher nicht“) |
+| KiZ-Lotse Familienkasse | 3.800 Familien (Partner-Einkommen, Unterhalt, Kinder 5/6/7 und 13/14 Jahre, bis 6 Kinder, Grenzfälle) | 0 Widersprüche |
+| Elterngeldrechner Familienportal | 1.000 Einkommen (30 % mit Geschwisterbonus) | alle auf den Cent gleich |
+
+Gefundene und behobene Fehler: Kind von 6 Jahren (Mehrbedarf Alleinerziehende 36 % bis unter 7), Wohnanteil der Eltern beim Kinderzuschlag (amtliche Tabelle statt Näherung).
+Einschränkung des KiZ-Lotsen: Er berücksichtigt Einkommen der Kinder nicht (2.000 € Unterhalt oder Lohn ohne Wirkung). SoLo rechnet es nach § 6a Abs. 3 BKGG zu 45 % an (DA-KiZ-Beispiele in `test/test-ba-beispiele.js`); im Abgleich wird dafür ohne Unterhalt verglichen. Mit Unterhalt wären es 122 Fälle, in denen SoLo gesetzeskonform vorsichtiger ist als der Lotse.
+Statistisch (Dreierregel, 95 %): Fehlerrate beim Wohngeldbetrag unter 0,05 %, beim Elterngeld unter 0,3 %, falsches Ja/Nein beim Kinderzuschlag unter 0,08 %.
