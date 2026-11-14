@@ -47,6 +47,20 @@ FAELLE.forEach((f) => {
   ck('[altstaende] ' + f.name + ': Name in der Antragsmappe übernommen', s.d.getElementById('p-name').value === 'Test');
 });
 
+// Antragsmappe mit jeder Einkommensart (auch später ergänzten wie „selbstständig“): kein „undefined“ im Angabenblatt
+{
+  const probe = seite({ 'lotse.ack': '1' });
+  const arten = [...probe.d.getElementById('ek1Art').options].map((o) => o.value).filter(Boolean);
+  ck('[altstaende] Einkommensarten gefunden', arten.length >= 8, arten.join(' '));
+  arten.forEach((art) => {
+    const m = seite({ 'lotse.state': JSON.stringify({ s: { adults: 2, kids: 1, ek1Art: art, ek1Brutto: 1500, ek1Netto: 1100, ek2Art: art, ek2Brutto: 900, ek2Netto: 700, miete: 700, mietstufe: '3', vermoegen: 100, bezug: {} }, p: { name: 'Test' }, e: true }), 'lotse.ack': '1' });
+    m.d.querySelectorAll('[data-pick]').forEach((cb) => { cb.checked = true; cb.dispatchEvent(new m.w.Event('change', { bubbles: true })); });
+    m.d.getElementById('mappeMake').click();
+    const txt = m.d.getElementById('mappeBody').textContent;
+    ck('[altstaende] Antragsmappe mit Einkommensart „' + art + '“ ohne kaputte Anzeige', !m.d.getElementById('mappe').hidden && !/\bundefined\b|\bNaN\b|\{[a-z]\w*\}/.test(txt) && m.errors.length === 0, (txt.match(/.{40}undefined.{20}/) || [m.errors.join(' | ')])[0]);
+  });
+}
+
 // Einfache Version: älterer Speicherstand (ohne die später ergänzten Fragen zu Werkstattjahren und PLZ) öffnet direkt die einfache Version
 const esAlt = { schritt: 99, geb: '1985', wohnen: 'allein', mieteJa: '', miete: '450', arbeit: 'werkstatt', lohn: '280', essen: 'ja', em: '', renteJa: 'nein', rente: '', ausweis: 'ja', gdb: '100', mz: { G: true }, kind: 'ja', pflege: 'nein', schon: {}, erspart: 'wenig' };
 const e = seite({ 'lotse.einfach': JSON.stringify({ es: esAlt, an: true }), 'lotse.ack': '1' });
@@ -54,5 +68,5 @@ ck('[altstaende] Einfache Version, älterer Speicherstand: lädt ohne Skriptfehl
 const esText = [...e.d.querySelectorAll('.es-karte, .es-h, .es-lvl')].map((x) => x.textContent).join('\n');
 ck('[altstaende] Einfache Version, älterer Speicherstand: zeigt Ergebnis ohne kaputte Anzeige', e.d.querySelectorAll('.es-karte').length > 0 && !/\bNaN\b|\bundefined\b|\{[a-z]\w*\}/.test(esText), e.d.querySelectorAll('.es-karte').length);
 
-console.log(fails ? '\n' + fails + ' von ' + n + ' FEHLGESCHLAGEN' : '\nAltstand-Test bestanden: ' + n + ' Prüfungen (Speicherstände aus 4 Ausbaustufen und der einfachen Version)');
+console.log(fails ? '\n' + fails + ' von ' + n + ' FEHLGESCHLAGEN' : '\nAltstand-Test bestanden: ' + n + ' Prüfungen (Speicherstände aus 4 Ausbaustufen und der einfachen Version, Antragsmappe mit jeder Einkommensart)');
 process.exit(fails ? 1 : 0);
