@@ -5,12 +5,15 @@
 const fs = require('fs');
 const [art, NS, TS, TT, OUT] = process.argv.slice(2);
 const N = Number(NS) || 100, TEIL = Number(TS) || 0, TEILE = Number(TT) || 1;
-let seed = art === 'kiz' ? 2027 : 31337; const rnd = () => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; };
+let seed = art === 'kiz' ? 2027 : art === 'elterngeld' ? 777 : 31337; const rnd = () => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; };
 const pick = (a) => a[Math.floor(rnd() * a.length)];
 const HEIZ = [110.4, 142.6, 170.2, 197.8, 225.4];
 const faelle = [];
 for (let i = 0; i < N; i++) {
-  if (art === 'kiz') {
+  if (art === 'elterngeld') {
+    const r = rnd(), vorher = r < 0.1 ? Math.floor(rnd() * 1000) : r < 0.9 ? 1000 + Math.floor(rnd() * 2000) : 3000 + Math.floor(rnd() * 3000);
+    faelle.push(rnd() < 0.3 ? { vorher, geschwister: true } : { vorher });
+  } else if (art === 'kiz') {
     const partner = rnd() < 0.55, nk = pick([1, 1, 2, 2, 3, 4]);
     const alter = Array.from({ length: nk }, () => Math.floor(rnd() * 18));
     const brutto = Math.round((900 + rnd() * 3600) / 10) * 10, netto = Math.round(brutto * (brutto < 1300 ? 0.8 : 0.7));
@@ -23,13 +26,16 @@ for (let i = 0; i < N; i++) {
   }
 }
 (async () => {
-  const A = require(art === 'kiz' ? './kiz-amtlich.js' : './wg-amtlich.js');
+  const A = require(art === 'kiz' ? './kiz-amtlich.js' : art === 'elterngeld' ? './eg-amtlich.js' : './wg-amtlich.js');
   let { b, p } = await A.open(); const out = [];
   for (let i = TEIL; i < faelle.length; i += TEILE) {
     const f = faelle[i]; let amtlich = null;
     for (let versuch = 0; versuch < 3 && amtlich === null; versuch++) {
       try {
-        if (art === 'kiz') {
+        if (art === 'elterngeld') {
+          const m = String(await A.rechne(p, f)).split('||').pop().match(/([\d.]+,\d\d) €/);
+          amtlich = m ? Number(m[1].replace(/\./g, '').replace(',', '.')) : null;
+        } else if (art === 'kiz') {
           const t = await A.rechne(p, f);
           const pos = /Aussicht auf Erfolg|Anspruch auf Kinderzuschlag haben/.test(t) && !/keinen Anspruch/.test(t), neg = /keinen Anspruch/.test(t);
           amtlich = pos ? 'ja' : neg ? 'nein' : null; if (amtlich === null) f.text = String(t).slice(0, 200);

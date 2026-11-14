@@ -1,0 +1,63 @@
+# Großer Abgleich Elterngeld: 1.000 Einkommen im Elterngeldrechner des Familienportals (davon etwa 30 % mit Geschwisterbonus).
+# Startet, wenn tools/amtliche-rechner/gross-auftrag-elterngeld.txt geändert wird (auch auf Arbeitszweigen), oder von Hand.
+# Die Fälle werden auf 10 Rechner verteilt. Ergebnis: Artefakt "gross-ergebnis" und Auswertung im letzten Schritt.
+name: Großer Abgleich Elterngeld
+
+on:
+  push:
+    paths: ['tools/amtliche-rechner/gross-auftrag-elterngeld.txt']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  abfragen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { art: elterngeld, n: 1000, teile: 10, teil: 0 }
+          - { art: elterngeld, n: 1000, teile: 10, teil: 1 }
+          - { art: elterngeld, n: 1000, teile: 10, teil: 2 }
+          - { art: elterngeld, n: 1000, teile: 10, teil: 3 }
+          - { art: elterngeld, n: 1000, teile: 10, teil: 4 }
+          - { art: elterngeld, n: 1000, teile: 10, teil: 5 }
+          - { art: elterngeld, n: 1000, teile: 10, teil: 6 }
+          - { art: elterngeld, n: 1000, teile: 10, teil: 7 }
+          - { art: elterngeld, n: 1000, teile: 10, teil: 8 }
+          - { art: elterngeld, n: 1000, teile: 10, teil: 9 }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - name: Browser installieren (bis zu 3 Versuche)
+        run: for i in 1 2 3; do timeout 300 npx playwright install --with-deps chromium && exit 0; echo "Versuch $i fehlgeschlagen"; sleep 20; done; exit 1
+      - name: Amtlichen Rechner abfragen
+        run: node tools/amtliche-rechner/gross.js ${{ matrix.art }} ${{ matrix.n }} ${{ matrix.teil }} ${{ matrix.teile }} gross-${{ matrix.art }}-${{ matrix.teil }}.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gross-${{ matrix.art }}-${{ matrix.teil }}
+          path: gross-${{ matrix.art }}-${{ matrix.teil }}.json
+          if-no-files-found: warn
+
+  auswerten:
+    needs: abfragen
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - uses: actions/download-artifact@v4
+        with: { path: ergebnis, pattern: 'gross-*' }
+      - name: SoLo gegen amtliche Ergebnisse
+        run: node tools/amtliche-rechner/gross-auswerten.js ergebnis | tee auswertung.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: gross-ergebnis, path: 'ergebnis/**' }

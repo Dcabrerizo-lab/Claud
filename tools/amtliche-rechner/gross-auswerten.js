@@ -48,4 +48,18 @@ if (K.length) {
   fehler += wider.length;
   if (FIX) fs.writeFileSync(path.join(__dirname, '../../test/amtlich-gross-kiz.json'), JSON.stringify(K.filter((x) => x.amtlich !== null).map((x) => ({ f: x.f, amtlich: x.amtlich }))));
 }
+const E = lies('elterngeld');
+if (E.length) {
+  let gleich = 0, offen = 0; const anders = [];
+  for (const x of E) {
+    if (x.amtlich === null) { offen++; continue; }
+    const e = R.evaluate({ baby: 'bald', egVor: x.f.vorher, art1: 'lohn', brutto: 2000, netto: 1500, heute: 2026.9, kids: x.f.geschwister ? 2 : 0, kidsU6: x.f.geschwister ? 2 : 0 }).results.find((r) => r.id === 'elterngeld');
+    const solo = e.tx[0][1].basis.eur;
+    if (Math.abs(solo - x.amtlich) <= 0.5) gleich++; else anders.push({ i: x.i, f: x.f, solo, amtlich: x.amtlich });
+  }
+  console.log('Elterngeld: ' + E.length + ' Fälle, gleich ' + gleich + ', ANDERS ' + anders.length + ', amtlich ohne Ergebnis ' + offen);
+  anders.slice(0, 40).forEach((a) => console.log('  ANDERS ' + JSON.stringify(a)));
+  fehler += anders.length;
+  if (FIX) fs.writeFileSync(path.join(__dirname, '../../test/amtlich-gross-elterngeld.json'), JSON.stringify(E.filter((x) => x.amtlich !== null).map((x) => ({ f: x.f, amtlich: x.amtlich }))));
+}
 process.exit(fehler ? 1 : 0);
