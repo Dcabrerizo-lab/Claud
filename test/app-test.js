@@ -32,6 +32,10 @@ const MOCK = () => {
       Clipboard: { write: log('Clipboard.write') },
       Browser: { open: log('Browser.open') },
       Camera: { getPhoto: (o) => { calls.push(['Camera.getPhoto', o]); return Promise.resolve({ path: 'file:///cache/foto.jpg', webPath: 'http://localhost/_capacitor_file_/cache/foto.jpg' }); } },
+      PdfAusgabe: {
+        drucken: (o) => { calls.push(['PdfAusgabe.drucken', { name: o.name, size: o.data.length }]); window.__druck = o.data; return Promise.resolve(); },
+        speichern: (o) => { calls.push(['PdfAusgabe.speichern', { name: o.name, size: o.data.length }]); window.__gespeichert = o.data; return Promise.resolve({ ort: 'Download', name: o.name }); }
+      },
       TextRecognition: { recognize: (o) => { calls.push(['TextRecognition.recognize', o]); return Promise.resolve({ lines: ['Antrag auf Wohngeld', 'Name, Vorname', 'Geburtsdatum', 'IBAN', 'Ort, Datum, Unterschrift'] }); } }
     }
   };
@@ -109,6 +113,16 @@ const MOCK = () => {
     ok('PDF ist gültig und hat Briefe, Angabenblatt und Unterlagenliste (>= 3 Seiten)', bytes.slice(0, 5).toString() === '%PDF-' && doc.getPageCount() >= 3, doc.getPageCount());
     ok('PDF-Datei wird nach dem Teilen aus dem Cache gelöscht', (await calls('Filesystem.deleteFile')).some((o) => o.path === 'Antragsmappe.pdf'));
   } else ok('PDF erzeugt', false, await p.textContent('#copyMsg'));
+  // Android: Drucken (Druckdialog des Systems) und Speichern (Ordner Downloads) über das native Plugin PdfAusgabe
+  ok('Android: Knöpfe Drucken und PDF speichern sichtbar', (await p.isVisible('#mappeDruck')) && (await p.isVisible('#mappeSpeichern')));
+  await p.click('#mappeDruck');
+  await p.waitForFunction(() => !!window.__druck, null, { timeout: 15000 }).catch(() => {});
+  const druck = Buffer.from(await p.evaluate(() => window.__druck || ''), 'base64');
+  ok('Drucken: gültiges PDF an den Druckdialog übergeben', druck.slice(0, 5).toString() === '%PDF-' && (await PDFDocument.load(druck)).getPageCount() >= 3, await p.textContent('#copyMsg'));
+  await p.click('#mappeSpeichern');
+  await p.waitForFunction(() => !!window.__gespeichert, null, { timeout: 15000 }).catch(() => {});
+  const gesp = Buffer.from(await p.evaluate(() => window.__gespeichert || ''), 'base64');
+  ok('Speichern: gültiges PDF gespeichert, Meldung nennt den Ordner Downloads', gesp.slice(0, 5).toString() === '%PDF-' && /Downloads/.test(await p.textContent('#copyMsg')), await p.textContent('#copyMsg'));
   // PDF auch auf Russisch (Kyrillisch) und Arabisch (Unterlagenliste bleibt deutsch)
   for (const l of ['ru', 'ar']) {
     await p.evaluate(() => { window.__pdf = ''; });
@@ -140,14 +154,6 @@ const MOCK = () => {
   ok('Formular-Dateien nach dem Teilen aus dem Cache gelöscht', Object.keys(dateien).every((n) => geloescht.indexOf(n) >= 0), geloescht.join(' '));
   if (mitGG) ok('Mit Grundsicherungsgeld: Hauptantrag vorausgefüllt geprüft', gefuellt === 1);
   console.log('  (Formulare geteilt: ' + Object.keys(dateien).join(', ') + (gefuellt ? '; Hauptantrag geprüft' : '') + ')');
-  // Fristen in den Kalender: Datei SoLo-Fristen.ics schreiben und über den Teilen-Dialog anbieten
-  const vorIcs = (await calls('Share.share')).length;
-  await p.evaluate(() => { window.__files = {}; });
-  await p.click('#mappeIcs');
-  await p.waitForFunction((n) => window.__calls.filter((c) => c[0] === 'Share.share').length > n, vorIcs, { timeout: 10000 }).catch(() => {});
-  const icsDatei = await p.evaluate(() => (window.__files || {})['SoLo-Fristen.ics'] || '');
-  const icsShare = (await calls('Share.share')).slice(vorIcs).find((o) => o.files);
-  ok('Fristen: Kalenderdatei mit Terminen geschrieben und geteilt', /BEGIN:VCALENDAR/.test(icsDatei) && /BEGIN:VEVENT/.test(icsDatei) && !!icsShare && /SoLo-Fristen\.ics$/.test(icsShare.files[0]), icsDatei.slice(0, 80));
   await p.screenshot({ path: path.join(require('os').tmpdir(), 'app-mappe.png') });
   await p.click('#mappeClose');
 

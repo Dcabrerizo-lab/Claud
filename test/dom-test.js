@@ -190,10 +190,6 @@ check('Druck: feste Briefränder (DIN 5008) per @page, unabhängig vom Browser',
 }
 d.getElementById('mappeCopy').click();
 setTimeout(() => {
-  // Fristen in den Kalender (Web: Download einer .ics-Datei)
-  let blob = null; w.URL.createObjectURL = (b) => { blob = b; return 'blob:solo'; }; w.URL.revokeObjectURL = () => {};
-  d.getElementById('mappeIcs').click();
-  check('Fristen in den Kalender: Kalenderdatei erzeugt und Hinweis gezeigt', !!blob && blob.size > 200 && /calendar/.test(blob.type) && d.getElementById('copyMsg').textContent === I18N.de['f.icsDone'], d.getElementById('copyMsg').textContent);
   check('Kopieren meldet Ergebnis oder zeigt Ersatzfeld', d.getElementById('copyMsg').textContent.length > 0 || d.getElementById('mappeText').hidden === false);
   // Sprache in der Mappe
   setLang('en');

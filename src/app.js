@@ -493,6 +493,12 @@
     });
     $('mappeClose').addEventListener('click', closeMappe);
     if (NATIVE) { $('mappePrint').setAttribute('data-t', 'f.pdf'); $('mappePrint').textContent = t('f.pdf'); $('mappeShare').hidden = false; }
+    // Android: eigene Knöpfe zum Drucken und Speichern (dort bietet der Teilen-Dialog das nicht auf jedem Gerät an; iPhone: im Teilen-Dialog enthalten)
+    if (NATIVE && plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios')) {
+      $('mappeDruck').hidden = false; $('mappeSpeichern').hidden = false; $('mappePrint').classList.add('ghost');
+      $('mappeDruck').addEventListener('click', function () { pdfAusgabe('drucken'); });
+      $('mappeSpeichern').addEventListener('click', function () { pdfAusgabe('speichern'); });
+    }
     else if (navigator.share) $('mappeShare').hidden = false; // Web: Teilen-Dialog des Handys (z. B. an die Betreuerin per E-Mail oder Messenger)
     $('mappeShare').addEventListener('click', function () {
       var sh = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Share;
@@ -506,7 +512,6 @@
       try { window.print(); } catch (e) { $('copyMsg').textContent = ''; }
     });
     $('mappeCopy').addEventListener('click', copyMappe);
-    $('mappeIcs').addEventListener('click', fristenKalender);
     $('clearBtn').addEventListener('click', function () {
       state = blankState(); person = { name: '', geb: '', strasse: '', ort: '', tel: '' }; picked = {}; pickedUser = {}; started = false;
       ['p-name', 'p-geb', 'p-strasse', 'p-ort', 'p-tel'].forEach(function (id) { $(id).value = ''; });
@@ -929,6 +934,25 @@
     for (var i = 0; i < bytes.length; i += n) s += String.fromCharCode.apply(null, bytes.subarray(i, i + n));
     return btoa(s);
   }
+  // PDF der Mappe bauen (Briefe, Angabenblatt, Unterlagenliste) und als Base64 liefern
+  function mappePdfBase64() {
+    return loadPdfLib().then(function (L) {
+      return L.buildPdf({ pages: pdfPages(), title: 'Antragsmappe', loadFont: function (n) { return fetch('fonts/pdf/' + n).then(function (r) { return r.arrayBuffer(); }).then(function (b) { return new Uint8Array(b); }); } });
+    }).then(toBase64);
+  }
+  // Android: Druckdialog des Systems oder Speichern im Ordner Downloads (natives Plugin PdfAusgabe)
+  function pdfAusgabe(art) {
+    var pa = plug('PdfAusgabe'), msg = $('copyMsg');
+    if (!pa) { msg.textContent = t('f.pdfFail'); return; }
+    msg.textContent = t('f.pdfWorking');
+    mappePdfBase64().then(function (b64) {
+      return pa[art]({ data: b64, name: 'Antragsmappe.pdf' });
+    }).then(function (r) {
+      msg.textContent = art === 'drucken' ? (lang === 'ar' ? t('f.pdfArNote') : '') : (r && r.ort === 'Download' ? t('f.gespeichert', { name: r.name || 'Antragsmappe.pdf' }) : t('f.gespeichertWahl'));
+    }, function (e) {
+      msg.textContent = /abgebrochen/.test(String(e && e.message || e)) ? '' : t('f.pdfFail');
+    });
+  }
   function sharePdf() {
     var fs = plug('Filesystem'), sh = plug('Share');
     var msg = $('copyMsg'); msg.textContent = t('f.pdfWorking');
@@ -944,32 +968,6 @@
       msg.textContent = lang === 'ar' ? t('f.pdfArNote') : '';
       return fs.deleteFile({ path: name, directory: 'CACHE' }).catch(function () {});
     }).catch(function () { msg.textContent = t('f.pdfFail'); });
-  }
-
-  // Fristen der gewählten Leistungen als Kalenderdatei (.ics): App über den Teilen-Dialog, Web als Download. Alles offline.
-  function fristenKalender() {
-    var ids = pickedIds(), msg = $('copyMsg');
-    if (typeof Formulare === 'undefined') return;
-    var liste = Formulare.fristen(ids, new Date(), function (k) { return t(k); }, function (id) {
-      var r = ids.filter(function (x) { return x.id === id; })[0] || { name: id };
-      return lang === 'de' ? r.name : t('n.' + id) + ' (' + r.name + ')';
-    });
-    if (!liste.length) { msg.textContent = t('f.icsNone'); return; }
-    var text = Formulare.ics(liste, new Date()), name = 'SoLo-Fristen.ics';
-    var fs = plug('Filesystem'), sh = plug('Share');
-    if (NATIVE && fs && sh) {
-      fs.writeFile({ path: name, data: text, directory: 'CACHE', encoding: 'utf8' }).then(function (r) {
-        return sh.share({ title: t('f.ics'), files: [r.uri] }).then(function () {}, function () {});
-      }).then(function () { msg.textContent = t('f.icsDone'); fs.deleteFile({ path: name, directory: 'CACHE' }).catch(function () {}); })
-        .catch(function () { msg.textContent = t('f.pdfFail'); });
-      return;
-    }
-    try {
-      var url = URL.createObjectURL(new Blob([text], { type: 'text/calendar;charset=utf-8' }));
-      var a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click();
-      setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 1000);
-      msg.textContent = t('f.icsDone');
-    } catch (e) { msg.textContent = t('f.pdfFail'); }
   }
 
   function copyMappe() {
