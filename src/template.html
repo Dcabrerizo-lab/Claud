@@ -325,6 +325,8 @@
   #mappeText { width: 100%; min-height: 160px; padding: 10px; font: inherit; font-size: 0.9em; direction: ltr; }
   .app.pm .top, .app.pm .notices, .app.pm .cols, .app.pm .foot, .app.pm .jump, .app.pm .first, .app.pm .einfach { display: none !important; }
 
+  /* Briefränder nach DIN 5008 (links 25 mm, sonst 20 mm), unabhängig von den Randeinstellungen des Browsers */
+  @page { size: A4; margin: 20mm 20mm 20mm 25mm; }
   @media print {
     body { background: #fff; }
     .app.pm .no-print { display: none !important; }

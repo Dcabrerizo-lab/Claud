@@ -181,6 +181,7 @@ check('Angabenblatt enthält Haushalt, Miete, Einkommen', /Angabenblatt/.test(tx
 check('Angabenblatt nennt Selbstauskunft-Hinweis', /Selbstauskunft/.test(txt));
 check('Leere Felder werden zu Strichen statt "undefined"', !/undefined|null/.test(txt));
 check('Kopiertext enthält Briefe und Angabenblatt', /Betreff: Antrag auf Wohngeld/.test(d.getElementById('mappeText').value) && /Angabenblatt/.test(d.getElementById('mappeText').value));
+check('Druck: feste Briefränder (DIN 5008) per @page, unabhängig vom Browser', /@page\s*\{[^}]*size:\s*A4[^}]*margin:\s*20mm 20mm 20mm 25mm/.test(d.documentElement.innerHTML));
 // Rückmeldung „Ergebnis passt nicht“: E-Mail-Entwurf mit Version und Einstufungen, ohne Angaben aus dem Fragebogen
 {
   const fb = d.getElementById('feedback'), href = decodeURIComponent(d.getElementById('feedbackMail').getAttribute('href') || '');
