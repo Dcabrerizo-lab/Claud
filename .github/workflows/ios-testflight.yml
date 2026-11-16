@@ -11,6 +11,12 @@ on:
         description: 'Build-Nummer (muss bei jedem Hochladen größer werden, z. B. 110)'
         required: true
         default: '110'
+      rechner:
+        description: 'Mac-Rechner (macos-26; wenn dort lange Wartezeit: macos-15 mit Xcode 26)'
+        required: false
+        default: 'macos-26'
+        type: choice
+        options: ['macos-26', 'macos-15']
 
 permissions:
   contents: read
@@ -18,7 +24,7 @@ permissions:
 jobs:
   testflight:
     # Apple verlangt seit 2026 das iOS-26-SDK (Xcode 26) für Uploads
-    runs-on: macos-26
+    runs-on: ${{ inputs.rechner || 'macos-26' }}
     timeout-minutes: 60
     env:
       ISSUER: ${{ secrets.APPSTORE_ISSUER_ID }}
