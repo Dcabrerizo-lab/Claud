@@ -38,7 +38,7 @@ jobs:
           if [ -z "$X" ]; then echo "::error::Kein Xcode 26 auf diesem Runner"; ls -d /Applications/Xcode*.app; exit 1; fi
           sudo xcode-select -s "$X/Contents/Developer"
           xcodebuild -version
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v4
         with: { node-version: 22, cache: npm, cache-dependency-path: app/package-lock.json }
       - run: npm ci

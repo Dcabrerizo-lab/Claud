@@ -24,7 +24,7 @@ jobs:
       matrix:
         include: [{"art": "wg2", "n": 3000, "teile": 15, "teil": 0}, {"art": "wg2", "n": 3000, "teile": 15, "teil": 1}, {"art": "wg2", "n": 3000, "teile": 15, "teil": 2}, {"art": "wg2", "n": 3000, "teile": 15, "teil": 3}, {"art": "wg2", "n": 3000, "teile": 15, "teil": 4}, {"art": "wg2", "n": 3000, "teile": 15, "teil": 5}, {"art": "wg2", "n": 3000, "teile": 15, "teil": 6}, {"art": "wg2", "n": 3000, "teile": 15, "teil": 7}, {"art": "wg2", "n": 3000, "teile": 15, "teil": 8}, {"art": "wg2", "n": 3000, "teile": 15, "teil": 9}, {"art": "wg2", "n": 3000, "teile": 15, "teil": 10}, {"art": "wg2", "n": 3000, "teile": 15, "teil": 11}, {"art": "wg2", "n": 3000, "teile": 15, "teil": 12}, {"art": "wg2", "n": 3000, "teile": 15, "teil": 13}, {"art": "wg2", "n": 3000, "teile": 15, "teil": 14}, {"art": "wggrenz", "n": 1000, "teile": 5, "teil": 0}, {"art": "wggrenz", "n": 1000, "teile": 5, "teil": 1}, {"art": "wggrenz", "n": 1000, "teile": 5, "teil": 2}, {"art": "wggrenz", "n": 1000, "teile": 5, "teil": 3}, {"art": "wggrenz", "n": 1000, "teile": 5, "teil": 4}, {"art": "kiz2", "n": 3000, "teile": 30, "teil": 0}, {"art": "kiz2", "n": 3000, "teile": 30, "teil": 1}, {"art": "kiz2", "n": 3000, "teile": 30, "teil": 2}, {"art": "kiz2", "n": 3000, "teile": 30, "teil": 3}, {"art": "kiz2", "n": 3000, "teile": 30, "teil": 4}, {"art": "kiz2", "n": 3000, "teile": 30, "teil": 5}, {"art": "kiz2", "n": 3000, "teile": 30, "teil": 6}, {"art": "kiz2", "n": 3000, "teile": 30, "teil": 7}, {"art": "kiz2", "n": 3000, "teile": 30, "teil": 8}, {"art": "kiz2", "n": 3000, "teile": 30, "teil": 9}, {"art": "kiz2", "n": 3000, "teile": 30, "teil": 10}, {"art": "kiz2", "n": 3000, "teile": 30, "teil": 11}, {"art": "kiz2", "n": 3000, "teile": 30, "teil": 12}, {"art": "kiz2", "n": 3000, "teile": 30, "teil": 13}, {"art": "kiz2", "n": 3000, "teile": 30, "teil": 14}, {"art": "kiz2", "n": 3000, "teile": 30, "teil": 15}, {"art": "kiz2", "n": 3000, "teile": 30, "teil": 16}, {"art": "kiz2", "n": 3000, "teile": 30, "teil": 17}, {"art": "kiz2", "n": 3000, "teile": 30, "teil": 18}, {"art": "kiz2", "n": 3000, "teile": 30, "teil": 19}, {"art": "kiz2", "n": 3000, "teile": 30, "teil": 20}, {"art": "kiz2", "n": 3000, "teile": 30, "teil": 21}, {"art": "kiz2", "n": 3000, "teile": 30, "teil": 22}, {"art": "kiz2", "n": 3000, "teile": 30, "teil": 23}, {"art": "kiz2", "n": 3000, "teile": 30, "teil": 24}, {"art": "kiz2", "n": 3000, "teile": 30, "teil": 25}, {"art": "kiz2", "n": 3000, "teile": 30, "teil": 26}, {"art": "kiz2", "n": 3000, "teile": 30, "teil": 27}, {"art": "kiz2", "n": 3000, "teile": 30, "teil": 28}, {"art": "kiz2", "n": 3000, "teile": 30, "teil": 29}, {"art": "kizgrenz", "n": 500, "teile": 5, "teil": 0}, {"art": "kizgrenz", "n": 500, "teile": 5, "teil": 1}, {"art": "kizgrenz", "n": 500, "teile": 5, "teil": 2}, {"art": "kizgrenz", "n": 500, "teile": 5, "teil": 3}, {"art": "kizgrenz", "n": 500, "teile": 5, "teil": 4}]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v4
         with: { node-version: 22, cache: npm }
       - run: npm ci
@@ -46,7 +46,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v4
         with: { node-version: 22, cache: npm }
       - run: npm ci
