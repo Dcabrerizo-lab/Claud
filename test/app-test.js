@@ -100,9 +100,8 @@ const MOCK = () => {
   const brief = await p.inputValue('#mappeText');
   ok('Anschreiben Wohngeld: Empfänger mit Anschrift', /Landratsamt Erlangen-Höchstadt\nWohngeldstelle\nNägelsbachstraße 1\n91052 Erlangen/.test(brief), brief.slice(0, 300));
   ok('Anschreiben Kindergeld: Familienkasse Bayern Nord, Postanschrift', /Familienkasse Bayern Nord\n90316 Nürnberg/.test(brief), brief.slice(0, 300));
-  ok('PDF-Knopf statt Drucken, Teilen sichtbar', (await p.textContent('#mappePrint')).includes('PDF') && (await p.isVisible('#mappeShare')));
-  await p.click('#mappeShare');
-  ok('Teilen übergibt die Mappe als Text', (await calls('Share.share')).some((o) => /Maria Muster/.test(o.text || '')));
+  ok('Knöpfe einzeln: PDF teilen, kein doppelter Knopf „Teilen oder speichern“', (await p.textContent('#mappePrint')).includes('PDF') && !(await p.isVisible('#mappeShare')));
+  ok('Keine Doppelbeschriftung „oder“ auf den Mappe-Knöpfen', !(await p.evaluate(() => [...document.querySelectorAll('#mappe .btns button')].filter((b) => !b.hidden).some((b) => / oder | or /.test(b.textContent)))));
   await p.click('#mappePrint');
   await p.waitForFunction(() => window.__calls.some((c) => c[0] === 'Share.share' && c[1].files), null, { timeout: 15000 }).catch(() => {});
   const shared = (await calls('Share.share')).find((o) => o.files);

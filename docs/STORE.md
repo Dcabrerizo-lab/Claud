@@ -68,7 +68,7 @@ Alles muss zur [Datenschutzerklärung](../datenschutz.html) passen. Bei Änderun
 - **Exportkontrolle:** In `Info.plist` ist `ITSAppUsesNonExemptEncryption = false` gesetzt (nur Standard-Verschlüsselung des Systems).
 - **Kamera:** Begründung steht in `Info.plist` (`NSCameraUsageDescription`).
 - **Review-Hinweis an Apple** (App Review Information → Notes):
-  > Die App läuft vollständig offline und benötigt kein Konto. Zum Testen: oben ein Beispiel wählen („Alleinerziehend …“), Ergebnisse ansehen, unten „Antragsmappe erstellen“ → „Als PDF teilen“. „Formular fotografieren“ nutzt die Kamera und erkennt Text auf dem Gerät (Apple Vision).
+  > Die App läuft vollständig offline und benötigt kein Konto. Zum Testen: oben ein Beispiel wählen („Alleinerziehend …“), Ergebnisse ansehen, unten „Antragsmappe erstellen“ → „PDF teilen“. „Formular fotografieren“ nutzt die Kamera und erkennt Text auf dem Gerät (Apple Vision).
 
 ## Screenshots
 

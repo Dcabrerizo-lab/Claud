@@ -492,14 +492,15 @@
       openMappe();
     });
     $('mappeClose').addEventListener('click', closeMappe);
-    if (NATIVE) { $('mappePrint').setAttribute('data-t', 'f.pdf'); $('mappePrint').textContent = t('f.pdf'); $('mappeShare').hidden = false; }
+    // App: „PDF teilen“ (auf dem iPhone mit Drucken und In Dateien sichern im Teilen-Dialog); kein zweiter, doppelter Teilen-Knopf
+    if (NATIVE) { $('mappePrint').setAttribute('data-t', 'f.pdf'); $('mappePrint').textContent = t('f.pdf'); }
     // Android: eigene Knöpfe zum Drucken und Speichern (dort bietet der Teilen-Dialog das nicht auf jedem Gerät an; iPhone: im Teilen-Dialog enthalten)
     if (NATIVE && plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios')) {
       $('mappeDruck').hidden = false; $('mappeSpeichern').hidden = false; $('mappePrint').classList.add('ghost');
       $('mappeDruck').addEventListener('click', function () { pdfAusgabe('drucken'); });
       $('mappeSpeichern').addEventListener('click', function () { pdfAusgabe('speichern'); });
     }
-    else if (navigator.share) $('mappeShare').hidden = false; // Web: Teilen-Dialog des Handys (z. B. an die Betreuerin per E-Mail oder Messenger)
+    if (!NATIVE && navigator.share) $('mappeShare').hidden = false; // Web: Teilen-Dialog des Handys (z. B. an die Betreuerin per E-Mail oder Messenger)
     $('mappeShare').addEventListener('click', function () {
       var sh = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Share;
       var txt = $('mappeText').value;

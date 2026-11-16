@@ -13,7 +13,7 @@ SoLo – Sozialleistungslotse ("social benefits guide") helps people in Germany 
 Target audience: residents of Germany, including low-income families, single parents, pensioners, people with disabilities and their caregivers. 8 languages (German, English, Turkish, Arabic, Ukrainian, Russian, Polish, Romanian) and an easy-language mode.
 
 3. HOW TO USE / ACCESS
-No login, no setup, no sample files needed. Open the app, tap one of the example households under "Beispiel laden" (e.g. "Alleinerziehend, 2 Kinder") or answer the questions; results update immediately below. Tap "Antragsmappe erstellen" to create the application folder, then "Als PDF teilen" (share sheet with Print / Save to Files). The optional photo scan of a paper form uses the camera or photo library; text recognition runs on the device (Apple Vision).
+No login, no setup, no sample files needed. Open the app, tap one of the example households under "Beispiel laden" (e.g. "Alleinerziehend, 2 Kinder") or answer the questions; results update immediately below. Tap "Antragsmappe erstellen" to create the application folder, then "PDF teilen" (share sheet with Print / Save to Files). The optional photo scan of a paper form uses the camera or photo library; text recognition runs on the device (Apple Vision).
 
 4. EXTERNAL SERVICES
 None. The app works completely offline. All calculations run on the device. No server, no analytics, no tracking, no ads, no AI services, no payment processor (paid upfront via the App Store, no in-app purchases). Links to official government websites (forms, information) open in the browser only when the user taps them.
