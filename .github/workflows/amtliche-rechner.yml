@@ -1,0 +1,29 @@
+# Monatliche Prüfung gegen die amtlichen Rechner (Wohngeldrechner des BMWSB, Elterngeldrechner im Familienportal, KiZ-Lotse).
+# Die gespeicherten Vergleichsfälle werden erneut abgefragt. Ändert eine Behörde Werte oder Regeln (z. B. zum 1. Januar),
+# schlägt der Lauf fehl und GitHub benachrichtigt den Inhaber per E-Mail. Dann SoLo anpassen und test/amtlich-*.json neu erzeugen.
+name: Amtliche Rechner
+
+on:
+  schedule:
+    - cron: '17 5 3 * *'   # am 3. jedes Monats
+    - cron: '17 6 2 1 *'   # zusätzlich am 2. Januar (neue Werte zum Jahreswechsel)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pruefen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - name: Browser installieren (bis zu 3 Versuche)
+        run: for i in 1 2 3; do timeout 300 npx playwright install --with-deps chromium && exit 0; echo "Versuch $i fehlgeschlagen"; sleep 20; done; exit 1
+      - name: SoLo-Regeln gegen gespeicherte amtliche Ergebnisse (ohne Internet)
+        run: node test/test-amtlich.js
+      - name: Amtliche Rechner heute gleich wie gespeichert?
+        run: node tools/amtliche-rechner/live-pruefen.js alle

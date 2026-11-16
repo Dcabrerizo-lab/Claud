@@ -61,7 +61,7 @@
   function save() { clearTimeout(saveTimer); saveTimer = setTimeout(flush, 300); }
   function smooth() { return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'; }
   function blankState() {
-    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', kindEink: '', ek1bArt: '', ek1bBetrag: '', baby: '', egVor: '', aufenthalt: '', miete: '', mietstufe: '', plz: '', plzPick: '', bundesland: '', vermoegen: '', gebJahr: '', arbeitSit: '', algMonate: '', krankWochen: '', lohnVorher: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', uzBetrag: '', uzAn: '', uzTitel: false, bezug: {} };
+    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', kindEink: '', ek1bArt: '', ek1bBetrag: '', baby: '', egVor: '', aufenthalt: '', miete: '', heizkosten: '', mietstufe: '', plz: '', plzPick: '', bundesland: '', vermoegen: '', gebJahr: '', arbeitSit: '', algMonate: '', krankWochen: '', lohnVorher: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', uzBetrag: '', uzAn: '', uzTitel: false, wohnart: '', hhAndere: '', autoWert: '', autoBraucht: false, euArbeit: '', euJahre: '', bezug: {} };
   }
 
   function detect() {
@@ -153,6 +153,12 @@
     if (state.ausbildung !== 'ich') reset(['babBetrieb', 'babWohnt']);
     var ohneUz = !(Number(state.uzBetrag) > 0);
     if (ohneUz) reset(['uzAn', 'uzTitel']);
+    if (state.aufenthalt !== 'eu') reset(['euArbeit', 'euJahre']);
+    if (!(Number(state.autoWert) > 0)) reset(['autoBraucht']);
+    // Eigentum: Feld „Miete“ wird zu „Kosten fürs Wohnen“ (Kredit, Nebenkosten, Heizung)
+    var eig = state.wohnart === 'eigentum';
+    $('mieteLab').setAttribute('data-t', eig ? 'miete.label.eigen' : 'miete.label'); $('mieteLab').textContent = t(eig ? 'miete.label.eigen' : 'miete.label');
+    $('mieteHint').setAttribute('data-t', eig ? 'miete.hint.eigen' : 'miete.hint'); $('mieteHint').textContent = t(eig ? 'miete.hint.eigen' : 'miete.hint');
     var show = function (sel, on) { document.querySelectorAll(sel).forEach(function (el) { el.hidden = !on; }); };
     show('.cond-bh', !!state.bhPerson);
     show('.cond-bh25', state.bhPerson === 'erwVor25');
@@ -168,6 +174,8 @@
     show('.cond-job', !!state.arbeitSit);
     show('.cond-ausbich', state.ausbildung === 'ich');
     show('.cond-uz', !ohneUz);
+    show('.cond-eu', state.aufenthalt === 'eu');
+    show('.cond-auto', Number(state.autoWert) > 0);
   }
   // Frühere Fragen (Haken „Grad der Behinderung 100“ und „voll erwerbsgemindert“) in die neuen Fragen übernehmen
   function migriereFragen(s) {
@@ -189,12 +197,12 @@
     var leer = function (v) { return v === '' || v == null; };
     if (!art) return { gesetzt: false, b: '', n: '', arbeit: true, art: '' };
     if (art === 'ohne') return { gesetzt: true, b: 0, n: 0, arbeit: false, art: art };
-    var mitBrutto = art === 'lohn' || art === 'rente';
+    var mitBrutto = art === 'lohn' || art === 'rente' || art === 'selbst';
     var nn = leer(n) ? '' : Number(n), bb = mitBrutto ? (leer(b) ? '' : Number(b)) : nn, geschaetzt = false;
     if (mitBrutto && bb === '' && nn !== '' && nn > 0) {
       bb = Math.round(art === 'rente' ? nn / 0.89 : nn <= 603 ? nn : nn / 0.7); geschaetzt = true;
     }
-    return { gesetzt: true, b: bb, n: nn, arbeit: art === 'lohn', art: art, geschaetzt: geschaetzt };
+    return { gesetzt: true, b: bb, n: nn, arbeit: art === 'lohn' || art === 'selbst', art: art, geschaetzt: geschaetzt };
   }
   function syncEinkommen() {
     var p1 = ekPerson(1), p2 = state.adults === 2 ? ekPerson(2) : { gesetzt: false, b: '', n: '', arbeit: true };
@@ -208,7 +216,7 @@
     // Allein: ein zweites Einkommen derselben Person (z. B. Werkstattlohn und Rente) als Liste für die Regeln
     var b2 = state.ek1bBetrag === '' || state.ek1bBetrag == null ? 0 : Number(state.ek1bBetrag);
     if (state.adults === 1 && state.ek1bArt && b2 > 0 && p1.gesetzt) {
-      var mitN = p1.art === 'lohn' || p1.art === 'rente';
+      var mitN = p1.art === 'lohn' || p1.art === 'rente' || p1.art === 'selbst';
       state.einkommen = [mitN ? { art: p1.art, b: p1.b === '' ? 0 : p1.b, n: p1.n === '' ? (p1.b === '' ? 0 : p1.b * 0.8) : p1.n } : { art: p1.art, b: p1.b === '' ? 0 : p1.b }, { art: state.ek1bArt, b: b2 }];
     } else delete state.einkommen;
     state.ek1Geschaetzt = !!p1.geschaetzt; state.ek2Geschaetzt = !!p2.geschaetzt;
@@ -217,13 +225,13 @@
   function ekFelder() {
     [1, 2].forEach(function (i) {
       var art = state['ek' + i + 'Art'];
-      var mitBrutto = art === 'lohn' || art === 'rente';
+      var mitBrutto = art === 'lohn' || art === 'rente' || art === 'selbst';
       $('ek' + i + 'BruttoF').hidden = !mitBrutto;
       $('ek' + i + 'NettoF').hidden = !art || art === 'ohne';
-      $('ek' + i + 'BruttoHint').textContent = art === 'rente' ? t('ek.brutto.hint.rente') : t('ek.brutto.hint.lohn');
+      $('ek' + i + 'BruttoHint').textContent = art === 'rente' ? t('ek.brutto.hint.rente') : art === 'selbst' ? t('ek.brutto.hint.selbst') : t('ek.brutto.hint.lohn');
       var bescheid = art === 'alg' || art === 'kg' || art === 'eg' || art === 'wfbm';
-      $('ek' + i + 'NettoLab').textContent = bescheid ? t(art === 'kg' ? 'ek.betrag.kg' : 'ek.betrag') : t('ek.netto');
-      $('ek' + i + 'NettoHint').textContent = bescheid ? t('ek.betrag.hint.' + art) : t('ek.netto.hint');
+      $('ek' + i + 'NettoLab').textContent = bescheid ? t(art === 'kg' ? 'ek.betrag.kg' : 'ek.betrag') : art === 'selbst' ? t('ek.netto.selbst') : t('ek.netto');
+      $('ek' + i + 'NettoHint').textContent = bescheid ? t('ek.betrag.hint.' + art) : art === 'selbst' ? t('ek.netto.hint.selbst') : t('ek.netto.hint');
       // Plausibilität: Netto größer als Brutto ist fast immer ein Tippfehler; sehr kleine oder sehr große Beträge nachfragen
       var bb = state['ek' + i + 'Brutto'], nn = state['ek' + i + 'Netto'];
       var w = '';
@@ -311,7 +319,7 @@
   function buildSelects() {
     var st = [['', t('stufe.unbekannt')]];
     for (var i = 1; i <= 7; i++) st.push([String(i), t('stufe.n', { n: Rules.roman(i) })]);
-    var ek = [['', t('ek.art.0')], ['lohn', t('ek.art.lohn')], ['rente', t('ek.art.rente')], ['alg', t('ek.art.alg')], ['kg', t('ek.art.kg')], ['eg', t('ek.art.eg')], ['wfbm', t('ek.art.wfbm')], ['ohne', t('ek.art.ohne')]];
+    var ek = [['', t('ek.art.0')], ['lohn', t('ek.art.lohn')], ['selbst', t('ek.art.selbst')], ['rente', t('ek.art.rente')], ['alg', t('ek.art.alg')], ['kg', t('ek.art.kg')], ['eg', t('ek.art.eg')], ['wfbm', t('ek.art.wfbm')], ['ohne', t('ek.art.ohne')]];
     fillSelect('ek1Art', ek, state.ek1Art);
     fillSelect('ek2Art', ek, state.ek2Art);
     fillSelect('ek1bArt', [['', t('ek.weiteres.0')]].concat(ek.slice(1).filter(function (x) { return x[0] !== 'ohne'; })), state.ek1bArt);
@@ -331,7 +339,11 @@
     gd.push(['antrag', t('bh.gdb.antrag')]);
     fillSelect('gdb', gd, state.gdb);
     fillSelect('baby', [['', t('baby.0')], ['bald', t('baby.bald')], ['da', t('baby.da')]], state.baby);
-    fillSelect('aufenthalt', [['', t('aufenthalt.0')], ['asyl', t('aufenthalt.asyl')]], state.aufenthalt);
+    fillSelect('aufenthalt', [['', t('aufenthalt.0')], ['eu', t('aufenthalt.eu')], ['asyl', t('aufenthalt.asyl')]], state.aufenthalt);
+    fillSelect('euArbeit', [['', t('eu.arbeit.0')], ['ja', t('eu.arbeit.ja')], ['nein', t('eu.arbeit.nein')]], state.euArbeit);
+    fillSelect('euJahre', [['', t('eu.jahre.0')], ['unter5', t('eu.jahre.unter5')], ['ab5', t('eu.jahre.ab5')]], state.euJahre);
+    fillSelect('wohnart', [['', t('wohnart.miete')], ['eigentum', t('wohnart.eigen')]], state.wohnart);
+    fillSelect('hhAndere', [['', t('hh.0')], ['wg', t('hh.wg')], ['verwandte', t('hh.verwandte')]], state.hhAndere);
     fillSelect('bhWeitere', [['', t('bhWeitere.0')], ['1', '1'], ['2', '2'], ['3', '3']], state.bhWeitere);
     fillSelect('blind', [['', t('bh.blind.0')], ['blind', t('bh.blind.blind')], ['hoch', t('bh.blind.hoch')]], state.blind);
     fillSelect('uzAn', [['', t('uz.an.0')], ['k1', t('uz.an.k1')], ['k2', t('uz.an.k2')], ['k3', t('uz.an.k3')], ['ex', t('uz.an.ex')], ['exk', t('uz.an.exk')]], state.uzAn);
@@ -387,9 +399,9 @@
     pr.appendChild(b);
   });
 
-  var CHECKS = ['mzG', 'mzGl', 'algZeit', 'grundrente33', 'wfbmEssen', 'teilhabe', 'schwanger', 'ernaehrung', 'warmwasser', 'kinder12', 'unterhaltFehlt', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt', 'uzTitel'];
-  var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'ek1bArt', 'bhWeitere', 'baby', 'aufenthalt', 'arbeitSit', 'algMonate', 'krankWochen', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd', 'uzAn'];
-  var NUMS = ['miete', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'kindEink', 'lohnVorher', 'ek1bBetrag', 'egVor', 'vermoegen', 'uzBetrag'];
+  var CHECKS = ['mzG', 'mzGl', 'algZeit', 'grundrente33', 'wfbmEssen', 'teilhabe', 'schwanger', 'ernaehrung', 'warmwasser', 'kinder12', 'unterhaltFehlt', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt', 'uzTitel', 'autoBraucht'];
+  var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'ek1bArt', 'bhWeitere', 'baby', 'aufenthalt', 'arbeitSit', 'algMonate', 'krankWochen', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd', 'uzAn', 'wohnart', 'hhAndere', 'euArbeit', 'euJahre'];
+  var NUMS = ['miete', 'heizkosten', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'kindEink', 'lohnVorher', 'ek1bBetrag', 'egVor', 'vermoegen', 'uzBetrag', 'autoWert'];
   var BEZUG = ['grundsicherungsgeld', 'sozialamt', 'wohngeld', 'kiz', 'kindergeld'];
 
   function writeForm() {
@@ -481,6 +493,12 @@
     });
     $('mappeClose').addEventListener('click', closeMappe);
     if (NATIVE) { $('mappePrint').setAttribute('data-t', 'f.pdf'); $('mappePrint').textContent = t('f.pdf'); $('mappeShare').hidden = false; }
+    // Android: eigene Knöpfe zum Drucken und Speichern (dort bietet der Teilen-Dialog das nicht auf jedem Gerät an; iPhone: im Teilen-Dialog enthalten)
+    if (NATIVE && plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios')) {
+      $('mappeDruck').hidden = false; $('mappeSpeichern').hidden = false; $('mappePrint').classList.add('ghost');
+      $('mappeDruck').addEventListener('click', function () { pdfAusgabe('drucken'); });
+      $('mappeSpeichern').addEventListener('click', function () { pdfAusgabe('speichern'); });
+    }
     else if (navigator.share) $('mappeShare').hidden = false; // Web: Teilen-Dialog des Handys (z. B. an die Betreuerin per E-Mail oder Messenger)
     $('mappeShare').addEventListener('click', function () {
       var sh = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Share;
@@ -503,6 +521,8 @@
       writeForm(); buildSelects(); render();
       $('clearMsg').textContent = t('clear.done');
     });
+    // Anbieter im Impressum: iPhone-App über das Apple-Konto von Natascha Cabrerizo y Polo, Android und Web: David Cabrerizo
+    if (NATIVE && window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') $('anbieterName').textContent = 'Natascha Cabrerizo y Polo';
     $('legalBtn').addEventListener('click', openLegal);
     $('legalClose').addEventListener('click', closeLegal);
     $('firstOk').addEventListener('click', function () { $('firstNotice').hidden = true; Store.set('lotse.ack', '1'); });
@@ -557,6 +577,18 @@
   // ----- Ergebnis -----
   function listItems(a) { return '<ul>' + a.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>'; }
 
+  // Rückmeldung „Ergebnis passt nicht zu meinem Bescheid“: E-Mail-Entwurf an die Kontaktadresse aus dem Impressum.
+  // Enthält nur App-Version und die Einstufungen (auf Deutsch), keine Angaben aus dem Fragebogen. Gesendet wird nur, wenn die Person es selbst tut.
+  var KONTAKT = 'd.cabrerizo@gmx.de', APPVERSION = '/*VERSION*/';
+  function tDe(k, p) { var l = lang; lang = 'de'; try { return t(k, p); } finally { lang = l; } }
+  function feedbackMail(results) {
+    var z = results.filter(function (r) { return r.level === 'ja' || r.level === 'vielleicht'; }).slice(0, 25)
+      .map(function (r) { return '- ' + r.name + ': ' + tDe('lvl.' + r.level) + ' (' + tDe('h.' + r.hl) + ')'; });
+    var body = 'SoLo ' + APPVERSION + ', Sprache ' + lang + ', Datum ' + today() + '\n\nErgebnis in SoLo:\n' + (z.length ? z.join('\n') : '- keine Leistung wahrscheinlich oder möglich') +
+      '\n\nWas steht in meinem Bescheid? (Leistung, Betrag, ab welchem Monat):\n\n\nWas ich in SoLo angegeben habe (freiwillig, ohne Namen und Anschrift):\n\n';
+    return 'mailto:' + KONTAKT + '?subject=' + encodeURIComponent('SoLo: Ergebnis passt nicht zu meinem Bescheid') + '&body=' + encodeURIComponent(body);
+  }
+
   function resultText(r) { return r.tx.map(function (x) { return t('t.' + x[0], x[1]); }).join(' '); }
 
   function card(r) {
@@ -605,7 +637,7 @@
       $('count').textContent = t('c.leer'); $('jumpText').textContent = t('c.leer');
       $('overview').hidden = true; $('together').innerHTML = '';
       $('cards').innerHTML = '<div class="card startcard"><h3>' + esc(t('start.h')) + '</h3>' + listItems([t('start.1'), t('start.2'), t('start.3')]) + '</div>';
-      $('helper').hidden = true; $('legende').hidden = true;
+      $('helper').hidden = true; $('legende').hidden = true; $('feedback').hidden = true;
       return;
     }
     $('helper').hidden = false; $('legende').hidden = false;
@@ -642,6 +674,7 @@
     document.querySelectorAll('.cond-kids').forEach(function (el) { el.hidden = state.kids === 0; });
     document.querySelectorAll('.cond-adults2').forEach(function (el) { el.hidden = state.adults !== 2; });
     renderPick(out.results);
+    $('feedback').hidden = false; $('feedbackMail').setAttribute('href', feedbackMail(out.results));
   }
 
   // ----- Ausfüllhilfe: Antragsmappe (Brief und Angabenblatt auf Deutsch) -----
@@ -734,6 +767,12 @@
     if (s.arbeitSit === 'krank') b.push('Krankgeschrieben' + (s.krankWochen === 'unter6' ? ', unter 6 Wochen' : s.krankWochen === 'laeuft' ? ', Krankengeld läuft' : s.krankWochen === 'ende' ? ', Krankengeld endet bald oder ist ausgelaufen' : ''));
     if (s.lohnVorher) b.push('Letztes Bruttoarbeitsentgelt: ' + money(s.lohnVorher) + ' im Monat');
     if (s.kindEink) b.push('Eigenes Einkommen der Kinder: ' + money(s.kindEink) + ' im Monat');
+    if (s.wohnart === 'eigentum') b.push('Wohnt im eigenen Haus oder in der eigenen Wohnung');
+    if (s.hhAndere === 'wg') b.push('Wohngemeinschaft: Miete ist der eigene Anteil');
+    if (s.hhAndere === 'verwandte') b.push('Weitere Verwandte wohnen in derselben Wohnung');
+    if (s.autoWert) b.push('Auto im Wert von etwa ' + money(s.autoWert) + (s.autoBraucht ? ' (wegen Behinderung oder für die Arbeit nötig)' : ''));
+    if (s.aufenthalt === 'eu') b.push('Staatsangehörigkeit eines anderen EU-Landes' + (s.euArbeit === 'ja' ? ', arbeitet oder hat in Deutschland gearbeitet' : s.euArbeit === 'nein' ? ', bisher keine Arbeit in Deutschland' : '') + (s.euJahre === 'ab5' ? ', seit mindestens 5 Jahren in Deutschland' : s.euJahre === 'unter5' ? ', seit weniger als 5 Jahren in Deutschland' : ''));
+    if (s.ek1Art === 'selbst' || s.ek2Art === 'selbst') b.push('Selbstständig (Einkommen = Gewinn)');
     if (s.uzBetrag) b.push('Zahlt Unterhalt: ' + money(s.uzBetrag) + ' im Monat' + ({ k1: ' an 1 Kind', k2: ' an 2 Kinder', k3: ' an 3 oder mehr Kinder', ex: ' an frühere Partnerin oder früheren Partner', exk: ' an frühere Partner und Kinder' }[s.uzAn] || '') + (s.uzTitel ? ', Betrag festgelegt (Urteil, Jugendamtsurkunde oder Notarvertrag)' : ''));
     if (s.blind === 'blind') b.push('blind');
     if (s.blind === 'hoch') b.push('hochgradig sehbehindert');
@@ -757,14 +796,14 @@
     L.push('', 'Haushalt: ' + haushaltZeile());
     if (s.wohnform === 'heim') L.push('Wohnkosten: laut Wohn- und Betreuungsvertrag des Wohnheims (Betrag liegt dem Vertrag bei)');
     else if (s.wohnform === 'eltern' && !s.miete) L.push('Wohnt bei den Eltern, zahlt keine Miete');
-    else L.push('Warmmiete im Monat: ' + money(s.miete) + (s.mietstufe ? ' (Mietenstufe ' + Rules.roman(Number(s.mietstufe)) + ')' : ''));
-    var ARTDE = { lohn: 'Lohn oder Gehalt', rente: 'Rente oder Pension', alg: 'Arbeitslosengeld I', kg: 'Krankengeld', eg: 'Elterngeld', wfbm: 'Lohn aus der Werkstatt für behinderte Menschen', ohne: 'kein Einkommen' };
+    else L.push('Warmmiete im Monat: ' + money(s.miete) + (s.mietstufe ? ' (Mietenstufe ' + Rules.roman(Number(s.mietstufe)) + ')' : '') + (Number(String(s.heizkosten).replace(',', '.')) > 0 ? ', davon Heizkosten ' + money(s.heizkosten) : ''));
+    var ARTDE = { lohn: 'Lohn oder Gehalt', rente: 'Rente oder Pension', alg: 'Arbeitslosengeld I', kg: 'Krankengeld', eg: 'Elterngeld', selbst: 'Gewinn aus selbstständiger Arbeit', wfbm: 'Lohn aus der Werkstatt für behinderte Menschen', ohne: 'kein Einkommen' };
     var ekZeile = function (i, wer) {
       var art = s['ek' + i + 'Art'];
       if (!art) return wer + ': nicht angegeben';
       if (art === 'ohne') return wer + ': kein Einkommen';
       var teile = [];
-      if ((art === 'lohn' || art === 'rente') && !blankVal(s['ek' + i + 'Brutto'])) teile.push('brutto ' + money(s['ek' + i + 'Brutto']));
+      if ((art === 'lohn' || art === 'rente' || art === 'selbst') && !blankVal(s['ek' + i + 'Brutto'])) teile.push('brutto ' + money(s['ek' + i + 'Brutto']));
       if (!blankVal(s['ek' + i + 'Netto'])) teile.push((art === 'alg' || art === 'kg' || art === 'eg' || art === 'wfbm' ? '' : 'netto ') + money(s['ek' + i + 'Netto']));
       return wer + ': ' + ARTDE[art] + (teile.length ? ', ' + teile.join(', ') + ' im Monat' : '');
     };
@@ -797,12 +836,54 @@
       return '<h3>' + esc(r.name) + (lang === 'de' ? '' : ' (' + esc(t('n.' + r.id)) + ')') + '</h3>' +
         '<p>' + esc(t(s.wo)) + '</p>' + listItems(s.u.map(function (k) { return t(k); })) + '<p class="tip">' + esc(t(s.tip)) + '</p>';
     }).join('') + '</article>';
+    html += formsHtml();
     $('mappeBody').innerHTML = html;
+    var fb = $('formsShare');
+    if (fb) fb.addEventListener('click', shareForms);
     // Hinweis, wenn Anschreiben ohne Empfänger-Anschrift bleiben, weil der Wohnort fehlt (Anschriften gibt es für Bayern)
     var ohneOrt = Behoerden.available() && !aktAgs() && (!state.bundesland || state.bundesland === 'BY') &&
       ids.some(function (r) { return Behoerden.brauchtKreis(r.id); });
     $('mappeAdrNote').hidden = !ohneOrt;
     $('mappeText').value = ids.map(function (r) { return letterText(r.id); }).concat([sheetText()]).join('\n\n----------------------------------------\n\n');
+  }
+
+  // ----- Amtliche Formulare (Ausfüllhilfe): passende Formulare nach den gewählten Leistungen, in der App vorausgefüllt -----
+  function formPlan() {
+    if (typeof Formulare === 'undefined') return [];
+    return Formulare.plan(state, person, pickedIds());
+  }
+  function formsHtml() {
+    var fp = formPlan();
+    if (!fp.length) return '';
+    var jc = fp.some(function (f) { return f.datei.indexOf('ba01') >= 0 || f.id === 'ha'; });
+    var leer = fp.every(function (f) { return f.art !== 'fuellen'; });
+    var mitDatei = fp.some(function (f) { return !!f.datei; }); // nur Vordrucke ohne Vorausfüllung (z. B. Wohngeld, Kinderzuschlag)
+    var h = '<article class="page docs forms"><h3>' + esc(t('f.forms')) + '</h3><p>' + esc(t(!NATIVE ? 'f.formsWeb' : leer ? 'f.formsAppLeer' : 'f.formsApp')) + '</p>';
+    if (NATIVE && mitDatei) h += '<div class="btns no-print"><button type="button" class="btn" id="formsShare">' + esc(t(leer ? 'f.formsShareLeer' : 'f.formsShare')) + '</button></div><p class="msg" id="formsMsg" role="status"></p>';
+    h += '<ul lang="de" dir="ltr">' + fp.map(function (f) {
+      return '<li><strong>' + esc(f.titel) + '</strong> – ' + esc(f.warum) + (f.art === 'leer' ? ' (' + esc(t('f.formsLeer')) + ')' : '') + (f.url ? '<br><a href="' + esc(f.url) + '" target="_blank" rel="noopener">' + esc(t('f.formsLink')) + '</a>' : '') + (f.hilfe ? '<br><em>Ausfüllhilfe:</em>' + listItems(f.hilfe) : '') + '</li>';
+    }).join('') + '</ul><p class="tip">' + esc(t('f.formsCheck')) + '</p>';
+    if (jc) h += '<h3>' + esc(t('f.formsUnt')) + '</h3>' + '<div lang="de" dir="ltr">' + listItems(Formulare.unterlagen(state)) + '</div>';
+    return h + '</article>';
+  }
+  function shareForms() {
+    var fs = plug('Filesystem'), sh = plug('Share'), msg = $('formsMsg');
+    msg.textContent = t('f.pdfWorking');
+    if (!fs || !sh) { msg.textContent = t('f.pdfFail'); return; }
+    var fp = formPlan(), geschrieben = [];
+    var lade = function (n) { return fetch('formulare/' + n).then(function (r) { if (!r.ok) throw new Error(n); return r.arrayBuffer(); }).then(function (b) { return new Uint8Array(b); }); };
+    Promise.all([loadPdfLib(), fetch('formulare/katalog.json').then(function (r) { return r.json(); })]).then(function (x) {
+      return x[0].fillForms({ forms: fp, katalog: x[1], loadFile: lade });
+    }).then(function (liste) {
+      return liste.reduce(function (p, f) {
+        return p.then(function () { return fs.writeFile({ path: f.name, data: toBase64(f.bytes), directory: 'CACHE' }).then(function (r) { geschrieben.push({ name: f.name, uri: r.uri }); }); });
+      }, Promise.resolve());
+    }).then(function () {
+      return sh.share({ title: t('f.forms'), files: geschrieben.map(function (g) { return g.uri; }) }).then(function () {}, function () {});
+    }).then(function () {
+      msg.textContent = '';
+      geschrieben.forEach(function (g) { fs.deleteFile({ path: g.name, directory: 'CACHE' }).catch(function () {}); });
+    }).catch(function () { msg.textContent = t('f.pdfFail'); });
   }
 
   function openMappe() {
@@ -854,6 +935,25 @@
     var s = '', n = 0x8000;
     for (var i = 0; i < bytes.length; i += n) s += String.fromCharCode.apply(null, bytes.subarray(i, i + n));
     return btoa(s);
+  }
+  // PDF der Mappe bauen (Briefe, Angabenblatt, Unterlagenliste) und als Base64 liefern
+  function mappePdfBase64() {
+    return loadPdfLib().then(function (L) {
+      return L.buildPdf({ pages: pdfPages(), title: 'Antragsmappe', loadFont: function (n) { return fetch('fonts/pdf/' + n).then(function (r) { return r.arrayBuffer(); }).then(function (b) { return new Uint8Array(b); }); } });
+    }).then(toBase64);
+  }
+  // Android: Druckdialog des Systems oder Speichern im Ordner Downloads (natives Plugin PdfAusgabe)
+  function pdfAusgabe(art) {
+    var pa = plug('PdfAusgabe'), msg = $('copyMsg');
+    if (!pa) { msg.textContent = t('f.pdfFail'); return; }
+    msg.textContent = t('f.pdfWorking');
+    mappePdfBase64().then(function (b64) {
+      return pa[art]({ data: b64, name: 'Antragsmappe.pdf' });
+    }).then(function (r) {
+      msg.textContent = art === 'drucken' ? (lang === 'ar' ? t('f.pdfArNote') : '') : (r && r.ort === 'Download' ? t('f.gespeichert', { name: r.name || 'Antragsmappe.pdf' }) : t('f.gespeichertWahl'));
+    }, function (e) {
+      msg.textContent = /abgebrochen/.test(String(e && e.message || e)) ? '' : t('f.pdfFail');
+    });
   }
   function sharePdf() {
     var fs = plug('Filesystem'), sh = plug('Share');
@@ -1389,6 +1489,15 @@
     try { var d = v ? JSON.parse(v) : null; if (d && d.es) { es = Object.assign(esLeer(), d.es); if (d.an) esUmschalten(true); } } catch (e) {}
   });
   Store.get('lotse.ack', function (v) { $('firstNotice').hidden = !!v; });
+  // Nur für automatische Tests (test/test-anzeige.js): Angaben wie beim Laden eines Speicherstands setzen und das Ergebnis lesen.
+  // In der App und im Browser ist window.__SOLO_TEST__ nie gesetzt, dann gibt es diese Schnittstelle nicht.
+  if (window.__SOLO_TEST__) window.__solo = {
+    set: function (s) { state = Object.assign(blankState(), migriereEinkommen(migriereFragen(JSON.parse(JSON.stringify(s))))); state.bezug = s.bezug || {}; started = true; edited = true; writeForm(); buildSelects(); render(); },
+    lang: function (c) { setLang(c); },
+    eval: function () { return Rules.evaluate(state); },
+    speichern: function () { flush(); },
+    state: function () { return state; }
+  };
   Store.get('lotse.state', function (v) {
     if (!v) return;
     try {

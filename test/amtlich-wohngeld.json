@@ -1,0 +1,785 @@
+{
+ "quelle": "Wohngeldrechner des BMWSB (www.bmwsb.bund.de), abgefragt am 14.11.2026; Bruttokaltmiete = Warmmiete minus Heizkostenkomponente, Werbungskosten-Pauschbetrag, Pauschalabzug Lohn 30 %, Rente 20 %",
+ "faelle": [
+  {
+   "f": {
+    "adults": 2,
+    "kids": 0,
+    "art": "rente",
+    "persons": 2,
+    "stufe": 5,
+    "b1": 740,
+    "b2": 880,
+    "warm": 550
+   },
+   "amtlich": 241
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 0,
+    "art": "lohn",
+    "persons": 1,
+    "stufe": 5,
+    "b1": 970,
+    "b2": 0,
+    "warm": 850
+   },
+   "amtlich": 518
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 2,
+    "art": "rente",
+    "persons": 3,
+    "stufe": 2,
+    "b1": 990,
+    "b2": 0,
+    "warm": 550
+   },
+   "amtlich": 421
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 2,
+    "art": "lohn",
+    "persons": 3,
+    "stufe": 6,
+    "b1": 3000,
+    "b2": 0,
+    "warm": 1310
+   },
+   "amtlich": 403
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 1,
+    "art": "lohn",
+    "persons": 2,
+    "stufe": 6,
+    "b1": 1040,
+    "b2": 0,
+    "warm": 1020
+   },
+   "amtlich": 755
+  },
+  {
+   "f": {
+    "adults": 2,
+    "kids": 3,
+    "art": "lohn",
+    "persons": 5,
+    "stufe": 6,
+    "b1": 2220,
+    "b2": 860,
+    "warm": 1230
+   },
+   "amtlich": 791
+  },
+  {
+   "f": {
+    "adults": 2,
+    "kids": 0,
+    "art": "lohn",
+    "persons": 2,
+    "stufe": 3,
+    "b1": 2170,
+    "b2": 410,
+    "warm": 470
+   },
+   "amtlich": 65
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 2,
+    "art": "lohn",
+    "persons": 3,
+    "stufe": 5,
+    "b1": 1750,
+    "b2": 0,
+    "warm": 840
+   },
+   "amtlich": 617
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 2,
+    "art": "lohn",
+    "persons": 3,
+    "stufe": 2,
+    "b1": 2910,
+    "b2": 0,
+    "warm": 1290
+   },
+   "amtlich": 275
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 3,
+    "art": "rente",
+    "persons": 4,
+    "stufe": 4,
+    "b1": 770,
+    "b2": 0,
+    "warm": 1180
+   },
+   "amtlich": 908
+  },
+  {
+   "f": {
+    "adults": 2,
+    "kids": 2,
+    "art": "lohn",
+    "persons": 4,
+    "stufe": 5,
+    "b1": 2830,
+    "b2": 1460,
+    "warm": 1160
+   },
+   "amtlich": 310
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 0,
+    "art": "lohn",
+    "persons": 1,
+    "stufe": 7,
+    "b1": 1900,
+    "b2": 0,
+    "warm": 1260
+   },
+   "amtlich": 235
+  },
+  {
+   "f": {
+    "adults": 2,
+    "kids": 1,
+    "art": "lohn",
+    "persons": 3,
+    "stufe": 1,
+    "b1": 2060,
+    "b2": 740,
+    "warm": 760
+   },
+   "amtlich": 255
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 3,
+    "art": "lohn",
+    "persons": 4,
+    "stufe": 4,
+    "b1": 1090,
+    "b2": 0,
+    "warm": 730
+   },
+   "amtlich": 595
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 1,
+    "art": "lohn",
+    "persons": 2,
+    "stufe": 4,
+    "b1": 2460,
+    "b2": 0,
+    "warm": 1210
+   },
+   "amtlich": 271
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 2,
+    "art": "lohn",
+    "persons": 3,
+    "stufe": 5,
+    "b1": 1430,
+    "b2": 0,
+    "warm": 630
+   },
+   "amtlich": 489
+  },
+  {
+   "f": {
+    "adults": 2,
+    "kids": 1,
+    "art": "rente",
+    "persons": 3,
+    "stufe": 2,
+    "b1": 1200,
+    "b2": 1550,
+    "warm": 690
+   },
+   "amtlich": 102
+  },
+  {
+   "f": {
+    "adults": 2,
+    "kids": 1,
+    "art": "lohn",
+    "persons": 3,
+    "stufe": 4,
+    "b1": 1070,
+    "b2": 0,
+    "warm": 880
+   },
+   "amtlich": 701
+  },
+  {
+   "f": {
+    "adults": 2,
+    "kids": 0,
+    "art": "lohn",
+    "persons": 2,
+    "stufe": 1,
+    "b1": 2930,
+    "b2": 1830,
+    "warm": 1010
+   },
+   "amtlich": 0
+  },
+  {
+   "f": {
+    "adults": 2,
+    "kids": 1,
+    "art": "rente",
+    "persons": 3,
+    "stufe": 2,
+    "b1": 770,
+    "b2": 0,
+    "warm": 1420
+   },
+   "amtlich": 622
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 1,
+    "art": "lohn",
+    "persons": 2,
+    "stufe": 5,
+    "b1": 2450,
+    "b2": 0,
+    "warm": 770
+   },
+   "amtlich": 265
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 1,
+    "art": "rente",
+    "persons": 2,
+    "stufe": 2,
+    "b1": 760,
+    "b2": 0,
+    "warm": 870
+   },
+   "amtlich": 536
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 2,
+    "art": "lohn",
+    "persons": 3,
+    "stufe": 4,
+    "b1": 1480,
+    "b2": 0,
+    "warm": 1260
+   },
+   "amtlich": 749
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 2,
+    "art": "rente",
+    "persons": 3,
+    "stufe": 3,
+    "b1": 1060,
+    "b2": 0,
+    "warm": 1170
+   },
+   "amtlich": 681
+  },
+  {
+   "f": {
+    "adults": 2,
+    "kids": 0,
+    "art": "lohn",
+    "persons": 2,
+    "stufe": 7,
+    "b1": 2410,
+    "b2": 0,
+    "warm": 1320
+   },
+   "amtlich": 333
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 2,
+    "art": "lohn",
+    "persons": 3,
+    "stufe": 4,
+    "b1": 1190,
+    "b2": 0,
+    "warm": 1140
+   },
+   "amtlich": 749
+  },
+  {
+   "f": {
+    "adults": 2,
+    "kids": 2,
+    "art": "lohn",
+    "persons": 4,
+    "stufe": 6,
+    "b1": 2840,
+    "b2": 470,
+    "warm": 960
+   },
+   "amtlich": 464
+  },
+  {
+   "f": {
+    "adults": 2,
+    "kids": 3,
+    "art": "rente",
+    "persons": 5,
+    "stufe": 1,
+    "b1": 1620,
+    "b2": 0,
+    "warm": 1070
+   },
+   "amtlich": 780
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 0,
+    "art": "rente",
+    "persons": 1,
+    "stufe": 4,
+    "b1": 1760,
+    "b2": 0,
+    "warm": 1290
+   },
+   "amtlich": 85
+  },
+  {
+   "f": {
+    "adults": 2,
+    "kids": 0,
+    "art": "lohn",
+    "persons": 2,
+    "stufe": 6,
+    "b1": 1520,
+    "b2": 0,
+    "warm": 1310
+   },
+   "amtlich": 609
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 1,
+    "art": "lohn",
+    "persons": 2,
+    "stufe": 2,
+    "b1": 1100,
+    "b2": 0,
+    "warm": 760
+   },
+   "amtlich": 536
+  },
+  {
+   "f": {
+    "adults": 2,
+    "kids": 1,
+    "art": "lohn",
+    "persons": 3,
+    "stufe": 2,
+    "b1": 1870,
+    "b2": 0,
+    "warm": 1230
+   },
+   "amtlich": 507
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 2,
+    "art": "lohn",
+    "persons": 3,
+    "stufe": 3,
+    "b1": 2050,
+    "b2": 0,
+    "warm": 1030
+   },
+   "amtlich": 552
+  },
+  {
+   "f": {
+    "adults": 2,
+    "kids": 2,
+    "art": "lohn",
+    "persons": 4,
+    "stufe": 5,
+    "b1": 3220,
+    "b2": 0,
+    "warm": 1280
+   },
+   "amtlich": 594
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 3,
+    "art": "lohn",
+    "persons": 4,
+    "stufe": 5,
+    "b1": 2000,
+    "b2": 0,
+    "warm": 660
+   },
+   "amtlich": 515
+  },
+  {
+   "f": {
+    "adults": 2,
+    "kids": 2,
+    "art": "lohn",
+    "persons": 4,
+    "stufe": 2,
+    "b1": 2590,
+    "b2": 0,
+    "warm": 1480
+   },
+   "amtlich": 577
+  },
+  {
+   "f": {
+    "adults": 2,
+    "kids": 1,
+    "art": "lohn",
+    "persons": 3,
+    "stufe": 6,
+    "b1": 3420,
+    "b2": 0,
+    "warm": 1250
+   },
+   "amtlich": 198
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 3,
+    "art": "lohn",
+    "persons": 4,
+    "stufe": 6,
+    "b1": 1110,
+    "b2": 0,
+    "warm": 1080
+   },
+   "amtlich": 899
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 0,
+    "art": "rente",
+    "persons": 1,
+    "stufe": 6,
+    "b1": 710,
+    "b2": 0,
+    "warm": 470
+   },
+   "amtlich": 354
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 1,
+    "art": "lohn",
+    "persons": 2,
+    "stufe": 6,
+    "b1": 1950,
+    "b2": 0,
+    "warm": 770
+   },
+   "amtlich": 421
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 1,
+    "art": "lohn",
+    "persons": 2,
+    "stufe": 3,
+    "b1": 2640,
+    "b2": 0,
+    "warm": 1080
+   },
+   "amtlich": 180
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 3,
+    "art": "lohn",
+    "persons": 4,
+    "stufe": 7,
+    "b1": 3020,
+    "b2": 0,
+    "warm": 1440
+   },
+   "amtlich": 820
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 0,
+    "art": "lohn",
+    "persons": 1,
+    "stufe": 3,
+    "b1": 2380,
+    "b2": 0,
+    "warm": 1120
+   },
+   "amtlich": 0
+  },
+  {
+   "f": {
+    "adults": 2,
+    "kids": 1,
+    "art": "rente",
+    "persons": 3,
+    "stufe": 3,
+    "b1": 860,
+    "b2": 0,
+    "warm": 1420
+   },
+   "amtlich": 681
+  },
+  {
+   "f": {
+    "adults": 2,
+    "kids": 2,
+    "art": "lohn",
+    "persons": 4,
+    "stufe": 4,
+    "b1": 3000,
+    "b2": 0,
+    "warm": 730
+   },
+   "amtlich": 365
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 2,
+    "art": "rente",
+    "persons": 3,
+    "stufe": 5,
+    "b1": 1510,
+    "b2": 0,
+    "warm": 770
+   },
+   "amtlich": 545
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 3,
+    "art": "lohn",
+    "persons": 4,
+    "stufe": 7,
+    "b1": 2580,
+    "b2": 0,
+    "warm": 1410
+   },
+   "amtlich": 951
+  },
+  {
+   "f": {
+    "adults": 2,
+    "kids": 0,
+    "art": "lohn",
+    "persons": 2,
+    "stufe": 6,
+    "b1": 1190,
+    "b2": 0,
+    "warm": 1070
+   },
+   "amtlich": 717
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 1,
+    "art": "lohn",
+    "persons": 2,
+    "stufe": 7,
+    "b1": 960,
+    "b2": 0,
+    "warm": 600
+   },
+   "amtlich": 483
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 2,
+    "art": "lohn",
+    "persons": 3,
+    "stufe": 5,
+    "b1": 2190,
+    "b2": 0,
+    "warm": 1230
+   },
+   "amtlich": 620
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 3,
+    "art": "lohn",
+    "persons": 4,
+    "stufe": 4,
+    "b1": 1800,
+    "b2": 0,
+    "warm": 750
+   },
+   "amtlich": 612
+  },
+  {
+   "f": {
+    "adults": 2,
+    "kids": 3,
+    "art": "lohn",
+    "persons": 5,
+    "stufe": 6,
+    "b1": 1290,
+    "b2": 0,
+    "warm": 1330
+   },
+   "amtlich": 1097
+  },
+  {
+   "f": {
+    "adults": 2,
+    "kids": 0,
+    "art": "rente",
+    "persons": 2,
+    "stufe": 4,
+    "b1": 960,
+    "b2": 0,
+    "warm": 1330
+   },
+   "amtlich": 612
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 0,
+    "art": "lohn",
+    "persons": 1,
+    "stufe": 4,
+    "b1": 2710,
+    "b2": 0,
+    "warm": 970
+   },
+   "amtlich": 0
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 3,
+    "art": "rente",
+    "persons": 4,
+    "stufe": 3,
+    "b1": 820,
+    "b2": 0,
+    "warm": 1190
+   },
+   "amtlich": 828
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 0,
+    "art": "lohn",
+    "persons": 1,
+    "stufe": 1,
+    "b1": 3450,
+    "b2": 0,
+    "warm": 1050
+   },
+   "amtlich": 0
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 3,
+    "art": "lohn",
+    "persons": 4,
+    "stufe": 4,
+    "b1": 1480,
+    "b2": 0,
+    "warm": 1040
+   },
+   "amtlich": 864
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 3,
+    "art": "lohn",
+    "persons": 4,
+    "stufe": 6,
+    "b1": 3120,
+    "b2": 0,
+    "warm": 700
+   },
+   "amtlich": 352
+  },
+  {
+   "f": {
+    "adults": 2,
+    "kids": 1,
+    "art": "rente",
+    "persons": 3,
+    "stufe": 5,
+    "b1": 1570,
+    "b2": 0,
+    "warm": 1010
+   },
+   "amtlich": 665
+  },
+  {
+   "f": {
+    "adults": 1,
+    "kids": 3,
+    "art": "lohn",
+    "persons": 4,
+    "stufe": 6,
+    "b1": 1190,
+    "b2": 0,
+    "warm": 1490
+   },
+   "amtlich": 1062
+  }
+ ]
+}

@@ -1,0 +1,44 @@
+// Abgleich mit amtlichen Rechnern: feste Ergebnisse, einmal online abgefragt (tools/amtliche-rechner/), hier ohne Internet geprüft.
+// Elterngeld: 33 Einkommen aus dem Elterngeldrechner des Bundes (Familienportal), auf den Euro.
+// Wohngeld: 60 Haushalte aus dem Wohngeldrechner des Bundesbauministeriums. SoLos obere Schätzung (voller Pauschalabzug) muss
+// auf 10 € gerundet dem amtlichen Ergebnis entsprechen. Findet Fehler, die eigene Tests nicht sehen (falsch verstandene Regeln).
+const R = require('../src/rules.js');
+const W = require('./amtlich-wohngeld.json');
+let n = 0, fails = 0;
+W.faelle.forEach((x) => {
+  const f = x.f;
+  const inp = { adults: f.adults, kids: f.kids, kidsU6: 0, art1: f.art, art2: f.art, brutto: f.b1 + f.b2, brutto2: f.b2, netto: 9000, miete: f.warm, mietstufe: String(f.stufe), vermoegen: 0, gebJahr: f.art === 'rente' ? 1955 : 1985, bezug: {}, heute: 2026.9 };
+  const w = R.evaluate(inp).results.find((r) => r.id === 'wohngeld');
+  const sp = w.tx.find((t) => /^schaetz\./.test(t[0]));
+  const solo = !sp ? 0 : sp[1].b ? sp[1].b.eur : sp[1].a.eur;
+  const amt10 = Math.round(x.amtlich / 10) * 10;
+  const ok = w.level === 'nein' ? x.amtlich < 10 : Math.abs(solo - amt10) <= 10;
+  n++; if (!ok) { fails++; console.log('FAIL [amtlich-wohngeld] ' + JSON.stringify(f) + ' SoLo ' + w.level + ' ' + solo + ' €, amtlich ' + x.amtlich + ' €'); }
+});
+const nWg = n;
+// Elterngeld: 33 Einkommen aus dem Elterngeldrechner des Familienportals (Basiselterngeld, auf den Euro)
+const EG = require('./amtlich-elterngeld.json');
+EG.faelle.forEach((x) => {
+  const e = R.evaluate({ baby: 'bald', egVor: x.vorher, art1: 'lohn', brutto: 2000, netto: 1500, heute: 2026.9, kids: x.geschwister ? 2 : 0, kidsU6: x.geschwister ? 2 : 0 }).results.find((r) => r.id === 'elterngeld');
+  const solo = e.tx[0][1].basis.eur;
+  n++; if (Math.abs(solo - x.amtlich) > 0.5) { fails++; console.log('FAIL [amtlich-elterngeld] Netto vorher ' + x.vorher + ' €: SoLo ' + solo + ' €, amtlich ' + x.amtlich + ' €'); }
+});
+const nEg = n - nWg;
+// Kinderzuschlag: 40 Familien im KiZ-Lotsen der Familienkasse (nur Anspruch ja/nein). Lotse „Anspruch“: SoLo nie „eher nicht“;
+// Lotse „kein Anspruch“: SoLo nie „wahrscheinlich“ (dazwischen „möglich“ mit Grund).
+const KZ = require('./amtlich-kiz.json');
+KZ.faelle.forEach((x) => {
+  const f = x.f;
+  const inp = { adults: f.partner ? 2 : 1, kids: f.alter.length, kidsU6: f.alter.filter((v) => v < 6).length, kids14: f.alter.filter((v) => v >= 14).length, art1: 'lohn', art2: 'ohne', brutto: f.brutto, netto: f.netto, miete: f.miete, mietstufe: '3', vermoegen: 0, gebJahr: 1988, bezug: { kindergeld: true }, heute: 2026.9 };
+  const k = R.evaluate(inp).results.find((r) => r.id === 'kiz');
+  const ok = x.lotse === 'ja' ? k.level !== 'nein' : k.level !== 'ja';
+  n++; if (!ok) { fails++; console.log('FAIL [amtlich-kiz] ' + JSON.stringify(f) + ' SoLo ' + k.level + ' (' + k.hl + '), KiZ-Lotse ' + x.lotse); }
+});
+console.log(fails ? fails + ' von ' + n + ' FEHLGESCHLAGEN' : '[amtlich-wohngeld] [amtlich-elterngeld] [amtlich-kiz] Abgleich mit amtlichen Rechnern bestanden: Wohngeld ' + nWg + ' Haushalte auf 10 € gleich, Elterngeld ' + nEg + ' Einkommen auf den Euro gleich, Kinderzuschlag ' + (n - nWg - nEg) + ' Familien ohne Widerspruch zum KiZ-Lotsen');
+// Großer Abgleich (tools/amtliche-rechner/gross.js auf GitHub): 3.000 Wohngeld-Haushalte, 300 Familien, 1.000 Elterngeld-Einkommen,
+// gespeichert in test/amtlich-gross-*.json und mit denselben Regeln geprüft
+if (require('fs').readdirSync(__dirname).some((d) => /^amtlich-gross-/.test(d))) {
+  try { console.log(require('child_process').execFileSync(process.execPath, [require('path').join(__dirname, '../tools/amtliche-rechner/gross-auswerten.js'), __dirname], { encoding: 'utf8' }).trim().replace(/^/gm, '[amtlich-gross] ')); }
+  catch (e) { fails++; console.log(String(e.stdout || e.message).trim().replace(/^/gm, 'FAIL [amtlich-gross] ')); }
+}
+process.exit(fails ? 1 : 0);

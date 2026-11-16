@@ -35,9 +35,13 @@ function haushalt(e) {
   const nettoAngabe = !leer(e.netto) && zahl(e.netto) > 0;
   const netto = nettoAngabe ? zahl(e.netto) : brutto * 0.8;
   const arten = ['lohn', 'rente', 'alg', 'kg', 'eg', 'wfbm', 'ohne'];
-  const art = (a, alt) => (arten.indexOf(a) >= 0 ? a : (alt ? 'rente' : 'lohn'));
-  const p = [{ art: art(e.art1, e.nichtArbeit), brutto: brutto - brutto2, aus: !!e.aus1 }]; // aus: Betrag ist schon ausgezahlt (künftige Leistung)
-  if (erwachsene === 2) p.push({ art: art(e.art2, e.nichtArbeit2), brutto: brutto2 });
+  // Selbstständige: Gewinn wie Einkommen aus Arbeit (Freibetrag § 11b Abs. 3 SGB II, Pauschalabzug beim Wohngeld wie Lohn)
+  const art = (a, alt) => (a === 'selbst' ? 'lohn' : arten.indexOf(a) >= 0 ? a : (alt ? 'rente' : 'lohn'));
+  // aus: Betrag ist schon ausgezahlt. Die App fragt ALG, Krankengeld, Elterngeld und Werkstattlohn als Auszahlung ab (und eine künftige Leistung)
+  const ausgezahlt = (a) => ['alg', 'kg', 'eg', 'wfbm'].indexOf(a) >= 0;
+  const p = [{ art: art(e.art1, e.nichtArbeit), brutto: brutto - brutto2 }];
+  p[0].aus = !!e.aus1 || ausgezahlt(p[0].art); p[0].selbst = e.art1 === 'selbst';
+  if (erwachsene === 2) { const a2 = art(e.art2, e.nichtArbeit2); p.push({ art: a2, brutto: brutto2, aus: ausgezahlt(a2), selbst: e.art2 === 'selbst' }); }
   // Alter
   const jahr = Number(e.gebJahr) | 0;
   const heute = e.heute ? Number(e.heute) : new Date().getFullYear() + new Date().getMonth() / 12;
@@ -132,7 +136,23 @@ function behMehrSGB2(h) {
   return { sicher, moeglich };
 }
 
+// EU-Staatsangehörige ohne Arbeit (auch keine selbstständige), weniger als 5 Jahre in Deutschland: ausgeschlossen (§ 7 SGB II, § 23 SGB XII)
+function euAus(h) {
+  const e = h.e;
+  const selbst = e.art1 === 'selbst' || (h.erwachsene === 2 && e.art2 === 'selbst');
+  return e.aufenthalt === 'eu' && e.euJahre !== 'ab5' && e.euArbeit !== 'ja' && !selbst && !(h.p[0].art === 'lohn' && h.brutto > 0);
+}
+// Besondere Lagen: „wahrscheinlich“ wird „möglich“ (Eigentum, Verwandte in der Wohnung, teures Auto)
+function kappe(e, id, level) {
+  if (level !== 'ja') return level;
+  const eig = e.wohnart === 'eigentum', verw = e.hhAndere === 'verwandte', auto = (Number(e.autoWert) || 0) > 15000 && !e.autoBraucht;
+  if (eig && (id === 'ggeld' || id === 'gsa' || id === 'wohngeld')) return 'vielleicht';
+  if (verw && (id === 'ggeld' || id === 'wohngeld')) return 'vielleicht';
+  if (auto && (id === 'ggeld' || id === 'kiz')) return 'vielleicht';
+  return level;
+}
 function grundsicherungsgeld(h) {
+  if (euAus(h)) return { level: 'nein' };
   if (h.rente || h.em) return { level: h.erwachsene === 2 && h.kids > 0 && !h.bezug.grundsicherungsgeld ? 'vielleicht' : 'nein' };
   const b = h.bezug;
   if (b.grundsicherungsgeld) return { level: 'na' };
@@ -161,9 +181,14 @@ const ABC = [[0.04, 4.797e-4, 4.08e-5], [0.03, 3.571e-4, 3.04e-5], [0.02, 2.917e
 const proPerson = (tab, n, spalte) => { const k = Math.min(n, 12); return k <= 5 ? (spalte == null ? tab[k - 1] : tab[k - 1][spalte]) : (spalte == null ? tab[4] + (k - 5) * tab[5] : tab[4][spalte] + (k - 5) * tab[5][spalte]); };
 const hoechst = (st, n) => proPerson(HB, n, st - 1) + proPerson(KLIMA, n);
 const heiz = (n) => proPerson(HEIZ, n);
-const wg = (n, M, Y) => { const [a, b, c] = ABC[Math.min(n, 12) - 1]; return 1.15 * (M - (a + b * M + c * Y) * Y); };
+// Anlage 3 WoGG (ab 1.1.2025): M und Y mindestens in dieser Höhe
+const MMIN = [54, 67, 79, 92, 103, 103, 115, 128, 140, 152, 187, 298], YMIN = [396, 679, 906, 1132, 1358, 1585, 1811, 2037, 2264, 2490, 2717, 2943];
+const wg = (n, M, Y) => { const i = Math.min(n, 12) - 1, [a, b, c] = ABC[i]; M = Math.max(M, MMIN[i]); Y = Math.max(Y, YMIN[i]); return 1.15 * (M - (a + b * M + c * Y) * Y); };
+// Werbungskosten-Pauschbetrag (§ 9a EStG) beim Wohngeld: Arbeit (auch Werkstatt) 1.230 €, Rente 102 € im Jahr; nicht bei Selbstständigen
+const werbung = (x) => Math.min(x.brutto, x.selbst ? 0 : x.art === 'lohn' || x.art === 'wfbm' ? 1230 / 12 : x.art === 'rente' ? 102 / 12 : 0);
 function yGrenze(n, M) { let lo = 0, hi = 30000; for (let i = 0; i < 80; i++) { const m = (lo + hi) / 2; if (wg(n, M, m) > 0) lo = m; else hi = m; } return lo; }
-const mieteWG = (st, n, warm, faktor) => Math.min(faktor * Math.max(0, warm - heiz(n)), hoechst(st, n)) + heiz(n);
+// Bruttokaltmiete = Warmmiete minus angegebene Heizkosten (sonst Heizkostenkomponente als Näherung), höchstens Höchstbetrag; dazu die Heizkostenkomponente
+const mieteWG = (st, n, warm, faktor, hk) => Math.min(faktor * Math.max(0, warm - (hk > 0 && hk < warm ? hk : heiz(n))), hoechst(st, n)) + heiz(n);
 const ABZUG = { lohn: [0.1, 0.3], rente: [0.1, 0.2], kg: [0.1, 0.2], alg: [0, 0], eg: [0, 0], wfbm: [0, 0.1], ohne: [0, 0] };
 // Auf schon ausgezahlte Beträge (Beiträge sind abgezogen) nur noch ein kleiner Abzug (Konvention der App für ausgezahlte Beträge)
 const ABZUG_AUSZ = { lohn: [0, 0.12], rente: [0, 0.06], kg: [0, 0.06], alg: [0, 0], eg: [0, 0], wfbm: [0, 0.05], ohne: [0, 0] };
@@ -179,7 +204,8 @@ function wohngeld(h) {
   if (h.miete <= 0) return { level: 'nein' };
   const st = [1, 2, 3, 4, 5, 6, 7].indexOf(Number(e.mietstufe)) >= 0 ? Number(e.mietstufe) : null;
   const n = Math.min(h.personen, 12);
-  const yMaxLo = yGrenze(n, mieteWG(st || 1, n, h.miete, 0.9)), yMaxHi = yGrenze(n, mieteWG(st || 7, n, h.miete, 1));
+  const hk = zahl(e.heizkosten);
+  const yMaxLo = yGrenze(n, mieteWG(st || 1, n, h.miete, hk > 0 && hk < h.miete ? 1 : 0.9, hk)), yMaxHi = yGrenze(n, mieteWG(st || 7, n, h.miete, 1, hk));
   // § 17 WoGG: Freibeträge (Behinderung: GdB 100 oder GdB >= 50 mit Pflegegrad; Alleinerziehende 110 € im Monat)
   const gdb = e.gdb === 'H' ? 100 : Number(e.gdb) || (e.behinderung ? 100 : 0);
   const pg = ['1', '2', '3', '4', '5'].indexOf(String(e.pflegegrad)) >= 0;
@@ -190,14 +216,14 @@ function wohngeld(h) {
   frei += e.grundrente33 ? h.p.filter((x) => x.art === 'rente').reduce((a, x) => a + Math.min(100 + 0.3 * Math.max(0, x.brutto - 100), 0.5 * RB[1]), 0) : 0;
   const plus = h.unterhalt + h.uvg + Math.max(0, h.kindEink - 100);
   const uzVorsichtig = h.uzFest ? Math.min(h.uz, h.uzDeckel) : 0, uzGuenstig = h.uzFest ? h.uz : Math.min(h.uz, h.uzDeckel);
-  const yPess = Math.max(0, h.p.reduce((s, x) => s + x.brutto * (1 - abzugAus(x, 0)), 0) + plus - frei - uzVorsichtig);
-  const yOpt = Math.max(0, h.p.reduce((s, x) => s + x.brutto * (1 - abzugAus(x, 1)), 0) + plus - frei - uzGuenstig);
+  const yPess = Math.max(0, h.p.reduce((s, x) => s + (x.brutto - werbung(x)) * (1 - abzugAus(x, 0)), 0) + plus - frei - uzVorsichtig);
+  const yOpt = Math.max(0, h.p.reduce((s, x) => s + (x.brutto - werbung(x)) * (1 - abzugAus(x, 1)), 0) + plus - frei - uzGuenstig);
   if (yOpt > yMaxHi) return { level: 'nein' };
   let level = yPess <= yMaxLo ? 'ja' : 'vielleicht';
   const mittel = h.netto + h.kinder * KG + h.unterhalt + h.uvg + h.kindEink - h.uz;
   if (mittel < 0.8 * (h.regel + h.miete + h.mehrAE)) level = 'vielleicht'; // App: ohne weitere Mehrbedarfe
   let betrag = null;
-  if (st) { const M = mieteWG(st, n, h.miete, 1); betrag = [Math.max(0, runde10(wg(n, M, yPess))), Math.max(0, runde10(wg(n, M, yOpt)))]; }
+  if (st) { const M = mieteWG(st, n, h.miete, 1, hk); betrag = [Math.max(0, runde10(wg(n, M, yPess))), Math.max(0, runde10(wg(n, M, yOpt)))]; }
   return { level, yPess, yOpt, betrag };
 }
 
@@ -211,13 +237,17 @@ function kinderzuschlag(h) {
   if (h.vermoegen > vermGrenze) return { level: 'nein' };
   if (h.brutto < (h.erwachsene === 2 ? 900 : 600)) return { level: 'nein' };
   const max = 297 * h.kids;
-  const anteilEltern = h.erwachsene / (h.erwachsene + (h.erwachsene === 1 ? 0.29 : 0.4) * h.kids);
+  // Wohnanteil der Eltern: Tabelle DA-KiZ C.3.1.2 (Stand 20.02.2026)
+  const anteilEltern = (h.erwachsene === 1 ? [1, 77, 63, 53, 46, 40, 36, 33, 30, 27, 25] : [1, 83, 71, 62, 55, 50, 45, 41, 38, 35, 33])[Math.min(h.kids, 10)] / (h.kids ? 100 : 1);
   const ms = mehrSonst(h), bm = behMehrSGB2(h);
   const bedarfEltern = h.regelEltern + h.mehrAE + ms.eltern + (h.e.bhPerson === 'erwNach25' ? bm.sicher : 0) + h.miete * anteilEltern;
   const kindAnr = h.unterhalt + h.uvg + Math.max(0, h.kindEink - h.mini);
   const kiz = Math.max(0, max - 0.45 * Math.max(0, elternEinkommenSGB2(h) - bedarfEltern) - 0.45 * kindAnr);
   if (kiz <= 0) return { level: 'nein' };
-  if (h.netto - (h.uzFest ? h.uz : 0) + h.unterhalt + h.uvg + h.kindEink + max + 300 < h.regel + h.miete + h.mehrAE + ms.sicher + bm.sicher) return { level: 'vielleicht', kiz };
+  // § 6a Abs. 1 Nr. 3 BKGG: mit dem Kinderzuschlag nicht mehr hilfebedürftig (bereinigtes Einkommen, Kindergeld, Kinderzuschlag, 300 € für ein mögliches Wohngeld)
+  const mitKiz = elternEinkommenSGB2(h) + (h.kinder + h.jung) * KG + h.unterhalt + h.uvg + h.kindEink + kiz, bedarfAlle = h.regel + h.miete + h.mehrAE + ms.sicher + bm.sicher;
+  if (mitKiz + 300 < bedarfAlle) return { level: 'vielleicht', kiz };
+  if (mitKiz < bedarfAlle) return { level: 'vielleicht', kiz, mitWg: true }; // nur zusammen mit Wohngeld
   return { level: kiz >= 60 ? 'ja' : 'vielleicht', kiz };
 }
 
@@ -247,10 +277,13 @@ function grundsicherungAlter(e) {
   if (Array.isArray(e.einkommen)) { const s = e.einkommen.reduce((a, x) => a + zahl(x.b), 0); h.brutto = s; h.netto = e.einkommen.reduce((a, x) => a + (leer(x.n) ? zahl(x.b) : zahl(x.n)), 0); h.p = [{ art: e.einkommen.length ? e.einkommen[0].art : 'ohne', brutto: s }]; }
   const em = h.em;
   if (!h.rente && !em && !h.grenz) return { level: 'nein' };
+  if (euAus(h)) return { level: 'nein' };
   if (h.bezug.sozialamt) return { level: 'na' };
   if (h.bezug.grundsicherungsgeld) return { level: 'nein' };
   const wf = e.wohnform === 'eltern' || e.wohnform === 'heim' ? e.wohnform : '';
-  if (h.vermoegen > (wf ? 10000 : 10000 * h.erwachsene + 500 * h.kids)) return { level: 'nein' };
+  // Auto zählt im SGB XII zum Vermögen, außer es wird wegen Behinderung oder für die Arbeit gebraucht
+  const auto = e.autoBraucht || e.mzG || (e.mz && e.mz.aG) ? 0 : zahl(e.autoWert);
+  if (h.vermoegen + auto > (wf ? 10000 : 10000 * h.erwachsene + 500 * h.kids)) return { level: 'nein' };
   const regelPerson = wf === 'heim' || (h.erwachsene === 2 && !wf) ? RB[2] : RB[1];
   const g = e.mzG ? 0.17 * regelPerson : 0;
   const rpB = regelSatzBehindert(h), teil = !!e.teilhabe && !e.wfbm;
@@ -301,7 +334,7 @@ function bafoeg(e) {
   }
   if (h.gruppe === '50+') return { level: 'nein' };
   if (h.gruppe === '40-49' && !(h.jahre && h.jahre < 45)) return { level: 'vielleicht' };
-  if (h.vermoegen > (h.gruppe === '<30' ? 15000 : 45000)) return { level: 'nein' };
+  if (h.vermoegen + zahl(h.e.autoWert) > (h.gruppe === '<30' ? 15000 : 45000)) return { level: 'nein' };
   return { level: 'vielleicht' };
 }
 
@@ -313,6 +346,8 @@ function arbeitslosengeld(e) {
   if (e.arbeitSit === 'krank' && e.krankWochen === 'ende') return { level: 'vielleicht' };
   if (e.arbeitSit !== 'arbeitslos') return { level: 'nein' };
   if (h.rente) return { level: 'nein' };
+  // Selbstständige nur mit freiwilliger Arbeitslosenversicherung (§ 28a SGB III)
+  if (e.art1 === 'selbst' || (h.erwachsene === 2 && e.art2 === 'selbst')) return { level: 'vielleicht' };
   if (!e.algZeit) return { level: 'vielleicht' };
   if (zahl(e.lohnVorher) > 0 && zahl(e.lohnVorher) <= minijobAm(e.heute ? Number(e.heute) : 0)) return { level: 'vielleicht', spanne: null };
   const satz = h.kids > 0 ? 67 : 60;
@@ -335,6 +370,8 @@ function krankengeld(e) {
   if (h.p.some((x) => x.art === 'kg')) return { level: 'na' };
   if (e.arbeitSit !== 'krank') return { level: 'nein' };
   if (e.krankWochen === 'ende') return { level: 'nein' };
+  // Selbstständige nur mit Wahlerklärung oder Wahltarif (§ 44 Abs. 2, § 53 Abs. 6 SGB V)
+  if (e.art1 === 'selbst' || ((e.adults === 2) && e.art2 === 'selbst')) return { level: 'vielleicht', spanne: null };
   if (zahl(e.lohnVorher) > 0 && zahl(e.lohnVorher) <= minijobAm(e.heute ? Number(e.heute) : 0)) return { level: 'nein', spanne: null };
   const lohn = Math.min(zahl(e.lohnVorher), 5812.5);
   const kg = (q) => runde10(Math.min(0.7 * lohn, 0.9 * lohn * q) * 0.875);
@@ -343,12 +380,14 @@ function krankengeld(e) {
 
 
 // ---------- Elterngeld (§ 2 BEEG, wörtlich: 0,1 Prozentpunkte je volle 2 € Abstand) ----------
-function elterngeld(nettoVorher) {
-  const n = Math.max(0, nettoVorher);
+function elterngeld(nettoVorher, geschwister) {
+  // § 2c Abs. 1 BEEG: Elterngeld-Netto = Netto minus 1/12 des Arbeitnehmer-Pauschbetrags (1.000 €), wie der Elterngeldrechner des Bundes
+  const n = Math.max(0, nettoVorher - 1000 / 12);
   let prozent = 67;
   if (n < 1000) prozent = Math.min(100, 67 + Math.floor((1000 - n) / 2) * 0.1);
   if (n > 1200) prozent = Math.max(65, 67 - Math.floor((n - 1200) / 2) * 0.1);
-  const basis = Math.min(1800, Math.max(300, n * prozent / 100));
+  let basis = Math.min(1800, Math.max(300, n * prozent / 100));
+  if (geschwister >= 2) basis = basis + Math.max(75, basis / 10); // § 2a BEEG Geschwisterbonus (zwei Kinder unter 6)
   return { basis, plus: basis / 2, monate: 14 };
 }
 // ---------- Einkommensgrenze § 85 SGB XII (Hilfe zur Pflege, Blindenhilfe) und Schonvermögen ----------
@@ -371,7 +410,7 @@ function kuenftig(e) {
   const a = arbeitslosengeld(e), k = krankengeld(e);
   if (a.level === 'ja' && e.arbeitSit === 'arbeitslos' && a.spanne) { art = 'alg'; betrag = (a.spanne[0] + a.spanne[1]) / 2; }
   else if ((k.level === 'ja' || k.level === 'vielleicht') && (e.krankWochen === 'unter6' || e.krankWochen === 'laeuft') && k.spanne) { art = 'kg'; betrag = (k.spanne[0] + k.spanne[1]) / 2; }
-  else if (e.baby === 'bald' && h.erwachsene === 1 && !leer(e.egVor)) { art = 'eg'; betrag = runde10(elterngeld(zahl(e.egVor)).basis); }
+  else if (e.baby === 'bald' && h.erwachsene === 1 && !leer(e.egVor)) { art = 'eg'; betrag = runde10(elterngeld(zahl(e.egVor), Math.min(Math.max(0, e.kidsU6 | 0), Math.max(0, e.kids | 0))).basis); }
   if (!art || !(betrag > 0)) return null;
   const lohn1 = h.brutto - h.brutto2;
   const netto1 = h.erwachsene === 1 ? h.netto : h.brutto > 0 ? h.netto * lohn1 / h.brutto : 0;
@@ -380,4 +419,13 @@ function kuenftig(e) {
 // Einstufung aus jetzt und künftig: gleich bleibt, sonst „möglich“
 const zusammen = (jetzt, dann) => (jetzt === 'na' ? 'na' : jetzt === dann ? jetzt : 'vielleicht');
 
-module.exports = { kuenftig, zusammen, elterngeld, grenze85, schon90, ASYL_NEIN, haushalt, grundsicherungsgeld, wohngeld, kinderzuschlag, grundsicherungAlter, unterhaltsvorschuss, bafoeg, arbeitslosengeld, krankengeld, regelaltersgrenze, freibetragArbeit, RB };
+// ---------- Angemessene Unterkunftskosten (§ 22 SGB II, § 35 SGB XII): Orientierung WoGG-Höchstbetrag + 10 % plus Heizkosten ----------
+// Ohne bekannte Mietenstufe, bei Eigentum, bei den Eltern oder im Wohnheim keine Prüfung
+function kduGrenze(e) {
+  const st = [1, 2, 3, 4, 5, 6, 7].indexOf(Number(e.mietstufe)) >= 0 ? Number(e.mietstufe) : null;
+  if (!st || e.wohnart === 'eigentum' || e.wohnform === 'eltern' || e.wohnform === 'heim') return null;
+  const n = Math.min((e.adults === 2 ? 2 : 1) + Math.max(0, e.kids | 0) + Math.max(0, e.young | 0), 12);
+  return hoechst(st, n) * 1.1 + heiz(n);
+}
+
+module.exports = { kappe, euAus, kduGrenze, kuenftig, zusammen, elterngeld, grenze85, schon90, ASYL_NEIN, haushalt, grundsicherungsgeld, wohngeld, kinderzuschlag, grundsicherungAlter, unterhaltsvorschuss, bafoeg, arbeitslosengeld, krankengeld, regelaltersgrenze, freibetragArbeit, RB };

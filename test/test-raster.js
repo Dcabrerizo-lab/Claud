@@ -12,7 +12,7 @@ const rnd = () => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed
 const pick = (a) => a[Math.floor(rnd() * a.length)];
 const geld = (max, schritt) => Math.round(rnd() * max / schritt) * schritt;
 
-const ARTEN = ['lohn', 'rente', 'alg', 'kg', 'eg', 'wfbm', 'ohne'];
+const ARTEN = ['lohn', 'rente', 'alg', 'kg', 'eg', 'wfbm', 'ohne', 'selbst'];
 // Wie die App (syncEinkommen): Einkommen je Person -> brutto (Summe), brutto2, netto (Summe), art1, art2
 function haushaltZufall(i) {
   const adults = rnd() < 0.5 ? 1 : 2;
@@ -24,7 +24,7 @@ function haushaltZufall(i) {
     const art = pick(ARTEN);
     if (art === 'ohne') return { art, b: 0, n: 0 };
     const b = art === 'wfbm' ? pick([52, 150, 250, 400]) : art === 'lohn' ? pick([geld(600, 1), geld(2500, 10), geld(6000, 50), 603, 1000, 1200, 1500]) : geld(art === 'eg' ? 1800 : 2600, 10);
-    const n = art === 'lohn' || art === 'rente' ? Math.round(b * (0.6 + rnd() * 0.3)) : b;
+    const n = art === 'lohn' || art === 'rente' || art === 'selbst' ? Math.round(b * (0.6 + rnd() * 0.3)) : b;
     return { art, b, n };
   };
   const p1 = person(), p2 = adults === 2 ? person() : null;
@@ -33,6 +33,7 @@ function haushaltZufall(i) {
     art1: p1.art, art2: p2 ? p2.art : '',
     brutto: p1.b + (p2 ? p2.b : 0), brutto2: p2 ? p2.b : '', netto: p1.n + (p2 ? p2.n : 0),
     miete: pick([0, geld(400, 10) + 200, geld(1200, 10) + 300, geld(2000, 10) + 500]),
+    heizkosten: pick(['', '', '', geld(250, 10), geld(150, 10) + 30, 5000]),
     mietstufe: pick(['', '1', '2', '3', '4', '5', '6', '7']),
     vermoegen: pick([0, geld(9000, 100), geld(30000, 500), geld(120000, 1000), 5000, 10000, 15000, 20000, 55000, 70000]),
     unterhalt: kids + young > 0 && rnd() < 0.3 ? geld(900, 10) : '',
@@ -53,6 +54,9 @@ function haushaltZufall(i) {
     arbeitSit: pick(['', '', 'arbeitslos', 'krank']), algZeit: rnd() < 0.6, algMonate: pick(['', 12, 16, 20, 24, 30, 36, 48]),
     baby: pick(['', '', '', 'bald', 'da']), egVor: pick(['', 0, 900, 1600, 2500]),
     krankWochen: pick(['', 'unter6', 'laeuft', 'ende']), lohnVorher: pick(['', geld(4000, 10), 9000, 6000]),
+    wohnart: rnd() < 0.1 ? 'eigentum' : '', hhAndere: pick(['', '', '', '', 'wg', 'verwandte']),
+    autoWert: pick(['', '', 0, 6000, 14000, 16000, 40000]), autoBraucht: rnd() < 0.3,
+    aufenthalt: rnd() < 0.1 ? 'eu' : '', euArbeit: pick(['', 'ja', 'nein']), euJahre: pick(['', 'unter5', 'ab5']),
         bezug: { grundsicherungsgeld: rnd() < 0.05, sozialamt: rnd() < 0.03, wohngeld: rnd() < 0.05, kiz: rnd() < 0.05, kindergeld: rnd() < 0.4 }
   };
   return e;
@@ -60,6 +64,7 @@ function haushaltZufall(i) {
 
 const fehler = {};
 let n = 0;
+let kduZahl = 0; // Haushalte mit Miete über der Angemessenheitsgrenze
 const zukZahl = {}; // Haushalte mit künftiger vorrangiger Leistung (Arbeitslosengeld, Krankengeld, Elterngeld)
 const melde = (art, e, info) => { fehler[art] = fehler[art] || { anzahl: 0, beispiel: null }; fehler[art].anzahl++; if (!fehler[art].beispiel) fehler[art].beispiel = { e, info }; };
 const zahlAus = (r, key, feld) => { const x = r.tx.find((t) => t[0] === key); return x && x[1] && x[1][feld] ? x[1][feld].eur : null; };
@@ -76,6 +81,10 @@ function pruefe(e) {
   // Grundsicherungsgeld
   const gg0 = Ref.grundsicherungsgeld(h);
   const gg = { ...gg0, level: lev(gg0, Ref.grundsicherungsgeld) };
+  // Miete über der Angemessenheitsgrenze: zusätzlich mit der Grenze gerechnet, Einstufung aus beiden
+  const kduG = Ref.kduGrenze(e);
+  if (kduG && (Number(e.miete) || 0) > kduG) { gg.level = Ref.zusammen(gg.level, Ref.grundsicherungsgeld(Ref.haushalt({ ...e, miete: kduG })).level); kduZahl++; }
+  gg.level = Ref.kappe(e, 'ggeld', gg.level);
   if (e2) {
     const g2 = Ref.grundsicherungsgeld(h2), s2 = zahlAus(r.ggeld, 'zuk.betragEins', 'a');
     if (gg0.level !== 'na' && !(gg0.level === 'nein' && g2.level === 'nein') && g2.level === 'ja' && s2 !== Math.round(g2.luecke / 10) * 10) melde('Grundsicherungsgeld: Betrag nach der neuen Leistung', e, { app: s2, ref: g2.luecke });
@@ -89,7 +98,7 @@ function pruefe(e) {
   }
   // Wohngeld
   const w0 = Ref.wohngeld(h);
-  const w = { ...w0, level: lev(w0, Ref.wohngeld) };
+  const w = { ...w0, level: Ref.kappe(e, 'wohngeld', lev(w0, Ref.wohngeld)) };
   if (r.wohngeld.level !== w.level) melde('Wohngeld: Einstufung', e, { app: r.wohngeld.level, ref: w.level, yPess: w.yPess, yOpt: w.yOpt });
   else if (w.betrag && r.wohngeld.hl !== 'einkoNiedrig' && w0.level !== 'nein' && w0.level !== 'na') {
     const a = zahlAus(r.wohngeld, 'schaetz.spanne', 'a') ?? zahlAus(r.wohngeld, 'schaetz.eins', 'a');
@@ -101,7 +110,7 @@ function pruefe(e) {
   }
   // Kinderzuschlag
   const k0 = Ref.kinderzuschlag(h);
-  const k = { ...k0, level: lev(k0, Ref.kinderzuschlag) };
+  const k = { ...k0, level: Ref.kappe(e, 'kiz', lev(k0, Ref.kinderzuschlag)) };
   if (r.kiz.level !== k.level) melde('Kinderzuschlag: Einstufung', e, { app: r.kiz.level, ref: k.level, kiz: k.kiz });
   else if (k0.kiz != null && (k0.level === 'ja' || (k0.level === 'vielleicht' && r.kiz.hl !== 'einkoNiedrig'))) {
     const s = zahlAus(r.kiz, 'schaetz.eins', 'a');
@@ -134,7 +143,10 @@ function pruefe(e) {
 }
 
 function vergleicheGSA(e, r) {
-  const g = Ref.grundsicherungAlter(e);
+  const g = { ...Ref.grundsicherungAlter(e) };
+  const kduG = Ref.kduGrenze(e);
+  if (kduG && (Number(e.miete) || 0) > kduG) g.level = Ref.zusammen(g.level, Ref.grundsicherungAlter({ ...e, miete: kduG }).level);
+  g.level = Ref.kappe(e, 'gsa', g.level);
   if (r.gsa.level !== g.level) melde('Grundsicherung im Alter: Einstufung', e, { app: r.gsa.level, ref: g.level, ref2: g });
   else if (g.bedarf != null && r.gsa.tx[0][1] && r.gsa.tx[0][1].bedarf) {
     if (r.gsa.tx[0][1].bedarf.eur !== Math.round(g.bedarf)) melde('Grundsicherung im Alter: Bedarf', e, { app: r.gsa.tx[0][1].bedarf.eur, ref: g.bedarf });
@@ -232,7 +244,7 @@ for (let i = 0; i < 20000; i++) {
   schwelle++; n++;
   const r = {}; Rules.evaluate(e).results.forEach((x) => { r[x.id] = x; });
   for (const id of ['hzp', 'blh']) {
-    const verm = (Number(e.vermoegen) || 0) > Ref.schon90(e);
+    const verm = (Number(e.vermoegen) || 0) + (e.autoBraucht || e.mzG ? 0 : Number(e.autoWert) || 0) > Ref.schon90(e);
     const app = r[id];
     if (verm) { if (app.level !== 'nein') melde(id + ': Vermögen', e, { app: app.level }); continue; }
     const g = Ref.grenze85(e);
@@ -253,4 +265,6 @@ if (arten.length) {
 const zukMin = Math.max(10, Math.round(N / 300)); // je Leistung mindestens rund 0,3 % der Zufallshaushalte (bei 60.000: 200)
 if (!((zukZahl.alg || 0) >= zukMin && (zukZahl.kg || 0) >= zukMin && (zukZahl.eg || 0) >= zukMin)) { console.log('Zu wenige Haushalte mit künftiger Leistung im Raster:', JSON.stringify(zukZahl)); process.exit(1); }
 console.log('[zuk-einkommen] Künftige vorrangige Leistung als Einkommen geprüft: ' + JSON.stringify(zukZahl));
+if (kduZahl < Math.max(10, N / 300)) { console.log('Zu wenige Haushalte mit Miete über der Angemessenheitsgrenze: ' + kduZahl); process.exit(1); }
+console.log('[kdu-grenze] Miete über der Angemessenheitsgrenze geprüft: ' + kduZahl + ' Haushalte');
 console.log('[wg-formel] [wg-ae] [kiz-formel] [eg-satz] [hzp-grenze] [blh-grenze] [asyl-ausschluss] Raster-Test bestanden: ' + n + ' Haushalte (davon ' + raster + ' als vollständiges Raster für Werkstatt-Beschäftigte, ' + schwelle + ' im Schwellen-Raster), App und unabhängige Referenz stimmen überein (Grundsicherungsgeld, Grundsicherung im Alter und bei Erwerbsminderung mit Werkstattlohn und Wohnform, Wohngeld, Kinderzuschlag, Unterhaltsvorschuss, BAföG, Arbeitslosengeld I, Krankengeld, Elterngeld, Hilfe zur Pflege, Blindenhilfe, Ausschlüsse bei Asyl: Einstufung und Beträge).');

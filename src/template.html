@@ -317,6 +317,7 @@
     padding: 28px 32px; font-family: Georgia, 'Times New Roman', serif; font-size: 1rem; line-height: 1.55;
   }
   .page h3 { font-family: var(--font-display); font-size: 1.1em; margin-bottom: 12px; color: #111; }
+  .page a, .page a:visited { color: #0b3d91; }
   .page pre { margin: 0; white-space: pre-wrap; font: inherit; direction: ltr; text-align: left; }
   .page.docs { font-family: var(--font-body); }
   .page.docs ul { margin: 4px 0 12px; padding-inline-start: 20px; }
@@ -324,6 +325,8 @@
   #mappeText { width: 100%; min-height: 160px; padding: 10px; font: inherit; font-size: 0.9em; direction: ltr; }
   .app.pm .top, .app.pm .notices, .app.pm .cols, .app.pm .foot, .app.pm .jump, .app.pm .first, .app.pm .einfach { display: none !important; }
 
+  /* Briefränder nach DIN 5008 (links 25 mm, sonst 20 mm), unabhängig von den Randeinstellungen des Browsers */
+  @page { size: A4; margin: 20mm 20mm 20mm 25mm; }
   @media print {
     body { background: #fff; }
     .app.pm .no-print { display: none !important; }
@@ -491,6 +494,16 @@
               <select id="aufenthalt"></select>
               <span class="hint" data-t="aufenthalt.hint"></span>
             </div>
+            <div class="subbox cond-eu" hidden>
+              <div class="field">
+                <label for="euArbeit" data-t="eu.arbeit.label"></label>
+                <select id="euArbeit"></select>
+              </div>
+              <div class="field">
+                <label for="euJahre" data-t="eu.jahre.label"></label>
+                <select id="euJahre"></select>
+              </div>
+            </div>
           </fieldset>
 
           <fieldset>
@@ -585,11 +598,25 @@
           <fieldset>
             <legend data-t="lg.wohnen"></legend>
             <div class="field">
-              <label for="miete" data-t="miete.label"></label>
+              <label for="wohnart" data-t="wohnart.label"></label>
+              <select id="wohnart"></select>
+            </div>
+            <div class="field">
+              <label for="miete" id="mieteLab" data-t="miete.label"></label>
               <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="miete"><span aria-hidden="true">€</span></div>
-              <span class="hint" data-t="miete.hint"></span>
+              <span class="hint" id="mieteHint" data-t="miete.hint"></span>
               <p class="warn" id="mieteWarn" hidden></p>
+            </div>
+            <div class="field">
+              <label for="heizkosten" data-t="heiz.label"></label>
+              <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="heizkosten"><span aria-hidden="true">€</span></div>
+              <span class="hint" data-t="heiz.hint"></span>
               <label class="check"><input type="checkbox" id="warmwasser"><span data-t="cb.warmwasser"></span></label>
+            </div>
+            <div class="field">
+              <label for="hhAndere" data-t="hh.label"></label>
+              <select id="hhAndere"></select>
+              <span class="hint" data-t="hh.hint"></span>
             </div>
             <div class="field" id="plzField" hidden>
               <label for="plz" data-t="plz.label"></label>
@@ -689,6 +716,14 @@
               <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="vermoegen"><span aria-hidden="true">€</span></div>
               <span class="hint" data-t="verm.hint"></span>
             </div>
+            <div class="field">
+              <label for="autoWert" data-t="auto.label"></label>
+              <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="autoWert"><span aria-hidden="true">€</span></div>
+              <span class="hint" data-t="auto.hint"></span>
+            </div>
+            <div class="subbox cond-auto" hidden>
+              <label class="check"><input type="checkbox" id="autoBraucht"><span data-t="cb.autoBraucht"></span></label>
+            </div>
           </fieldset>
 
           <fieldset>
@@ -713,6 +748,12 @@
         <nav id="overview" class="overview" hidden></nav>
         <div id="together"></div>
         <div id="cards" class="results"></div>
+        <section class="feedback" id="feedback" hidden aria-labelledby="h-feedback">
+          <h3 id="h-feedback" data-t="fb.h"></h3>
+          <p data-t="fb.text"></p>
+          <div class="btns"><a class="btn ghost" id="feedbackMail" href="#" data-t="fb.btn"></a></div>
+          <p class="small" data-t="fb.hint"></p>
+        </section>
 
         <section class="helper" id="helper" aria-labelledby="h-helper">
           <h2 id="h-helper" data-t="f.h"></h2>
@@ -774,6 +815,9 @@
                     <tr><th>Bildung und Teilhabe</th><td>Anspruch bei Bezug von Grundsicherung, Sozialhilfe, Wohngeld oder Kinderzuschlag (§ 6b BKGG, § 28 SGB II). Schulbedarf 195 € im Jahr, Teilhabe 15 € im Monat.</td></tr>
                     <tr><th>Unterhaltsvorschuss</th><td>227 € (bis 5 Jahre), 299 € (6 bis 11) und 394 € (12 bis 17) im Monat, jeweils Mindestunterhalt abzüglich Kindergeld (UVG). Voraussetzung: Kind unter 18, alleinerziehender Elternteil, Unterhalt fehlt. Ab 12 Jahren: Kind nicht im SGB-II-Bezug oder Elternteil mit mindestens 600 € brutto.</td></tr>
                     <tr><th>Unterhalt für Kinder</th><td>Gezahlter Unterhalt wird beim Unterhaltsvorschuss angerechnet (§ 2 Abs. 3 UVG). Beim Kinderzuschlag mindert er als Einkommen der Kinder den Zuschlag um 45 % (§ 6a Abs. 3 BKGG). Beim Wohngeld zählt er als Einkommen, ohne Pauschalabzug (§§ 14, 16 WoGG). Beim Grundsicherungsgeld und bei der Grundsicherung im Alter zählt er als Einkommen der Kinder, aber nur bis zu ihrem eigenen Bedarf.</td></tr>
+                    <tr><th>Angemessene Miete</th><td>Jede Stadt legt selbst fest, welche Wohnkosten das Jobcenter oder Sozialamt übernimmt. Ohne örtliches Konzept setzen Gerichte die Höchstbeträge des Wohngeldes plus 10 % an; die App nimmt das mit der Heizkostenkomponente als Orientierung. Liegt die Miete darüber, rechnet die App zusätzlich mit der Grenze; sind beide Ergebnisse verschieden, gilt „möglich“ (§ 22 SGB II, § 35 SGB XII).</td></tr>
+                    <tr><th>Selbstständig, Eigentum, Auto</th><td>Gewinn zählt wie Einkommen aus Arbeit (Freibetrag § 11b SGB II, § 82 SGB XII); Arbeitslosengeld und Krankengeld nur mit freiwilliger Versicherung bzw. Wahltarif. Selbst bewohntes Eigentum zählt nicht zum Vermögen; Grundsicherung und Wohngeld (Lastenzuschuss) dann nur „möglich“, weil die Tilgung meist nicht übernommen und die Belastung nach § 10 WoGG gerechnet wird. Ein angemessenes Auto ist beim Grundsicherungsgeld geschützt (über 15.000 € nur „möglich“); bei der Grundsicherung im Alter und beim BAföG zählt es zum Vermögen, außer es wird wegen einer Behinderung oder für die Arbeit gebraucht.</td></tr>
+                    <tr><th>Weitere Erwachsene, EU-Bürger</th><td>In einer WG zählt nur der eigene Mietanteil. Wohnen Verwandte mit, vermutet das Jobcenter Unterstützung (§ 9 Abs. 5 SGB II) und beim Wohngeld zählen sie meist zum Haushalt: dann nur „möglich“. Menschen aus anderen EU-Ländern ohne Arbeit in Deutschland sind in den ersten 5 Jahren vom Grundsicherungsgeld und von der Sozialhilfe ausgeschlossen (§ 7 SGB II, § 23 SGB XII).</td></tr>
                     <tr><th>Neue Leistungen als Einkommen</th><td>Schätzt die App Arbeitslosengeld, Krankengeld oder (bei Alleinstehenden vor der Geburt) Elterngeld, rechnet sie Grundsicherungsgeld, Wohngeld und Kinderzuschlag ein zweites Mal: so, als würde die neue Leistung schon gezahlt (statt des bisherigen Lohns, mit der Mitte der geschätzten Spanne; Elterngeld bis 300 € frei). Sind beide Ergebnisse gleich, bleibt die Einstufung, sonst gilt „möglich“. Diese Leistungen gehen vor (§ 12a SGB II), Grundsicherungsgeld kann bis zur ersten Zahlung überbrücken.</td></tr>
                     <tr><th>Unterhalt, den du zahlst</th><td>Grundsicherungsgeld und Kinderzuschlag: Abzug vom Einkommen, wenn der Betrag festgelegt ist (Urteil oder Beschluss, Jugendamtsurkunde, Notarvertrag) und wirklich gezahlt wird (§ 11b Abs. 1 Satz 1 Nr. 7 SGB II). Wohngeld: Abzug in der Regel bis 250 € im Monat je Kind und 500 € für frühere Partner (§ 18 WoGG); ohne festgelegten Betrag rechnet die App den Abzug nur für „möglich“, mit festgelegtem Betrag für „möglich“ den ganzen Betrag. Grundsicherung im Alter: in der Regel kein Abzug (§ 82 SGB XII).</td></tr>
                     <tr><th>Grundsicherung im Alter und bei voller Erwerbsminderung</th><td>Regelsatz 563 € (Alleinstehende) und 506 € je Partner plus Miete, abzüglich Einkommen (§§ 41 ff. SGB XII). Schonvermögen 10.000 € je volljähriger Person plus 500 € je unterhaltener Person (Barbetrag-Verordnung zu § 90 SGB XII).</td></tr>
@@ -815,7 +859,7 @@
       <div lang="de" dir="ltr">
       <h2 id="h-legal">Impressum, Datenschutz, Lizenzen</h2>
       <h3>Impressum (§ 5 DDG)</h3>
-      <p><strong>Anbieter:</strong> David Cabrerizo (SoLo – Sozialleistungslotse)<br>Haagstraße 33<br>90542 Eckental<br>E-Mail: d.cabrerizo@gmx.de</p>
+      <p><strong>Anbieter:</strong> <span id="anbieterName">David Cabrerizo</span> (SoLo – Sozialleistungslotse)<br>Haagstraße 33<br>90542 Eckental<br>E-Mail: d.cabrerizo@gmx.de</p>
       <h3>Datenschutz</h3>
       <p>SoLo rechnet vollständig auf deinem Gerät. Es gibt keine Konten, keine Tracker und keine Werbung. Deine Angaben werden nicht an einen Server gesendet.</p>
       <ul>
@@ -823,18 +867,22 @@
         <li><strong>Foto des Formulars (nur App):</strong> Die Texterkennung läuft auf deinem Gerät. Das Foto wird nicht gesendet und nach dem Lesen gelöscht.</li>
         <li><strong>Löschen:</strong> Mit der Schaltfläche „Alle Angaben löschen“ im Formular werden die gespeicherten Eingaben entfernt. Beim Deinstallieren der App werden alle Daten gelöscht.</li>
         <li><strong>Antragsmappe:</strong> Wenn du die Mappe teilst oder kopierst, entscheidest du, wohin sie geht. Die App sendet sie nirgendwohin.</li>
+        <li><strong>Rückmeldung per E-Mail:</strong> Der Knopf unter den Ergebnissen öffnet nur einen Entwurf in deinem E-Mail-Programm, mit App-Version und Einstufungen, ohne deine Angaben aus dem Formular. Gesendet wird erst, wenn du selbst auf Senden tippst. Ich nutze die Nachricht nur zur Prüfung der Berechnung und lösche sie spätestens nach 12 Monaten.</li>
       </ul>
       <p id="legalWeb">Nur Web-Version: Sie lädt beim Öffnen nichts aus dem Internet nach, auch keine Schriften. Die optionale Texterkennung lädt Programmteile von cdnjs und jsDelivr nach; das Foto selbst bleibt auf deinem Gerät. Der optionale Scan mit Claude sendet das Bild nur nach deiner ausdrücklichen Zustimmung an Anthropic.</p>
+      <p class="small"><strong>Auswertung mit Claude (nur Web-Version innerhalb von Claude):</strong> Wird die Web-Version als Seite in Claude (claude.ai, Anthropic PBC, USA) geöffnet, gibt es zusätzlich die Möglichkeit, ein Foto mit Claude auswerten zu lassen. Das Foto wird nur gesendet, wenn du das Häkchen zur Einwilligung setzt und auf „Mit Claude auswerten“ tippst (Art. 6 Abs. 1 Buchst. a und Art. 9 Abs. 2 Buchst. a DSGVO, weil Unterlagen Gesundheitsdaten enthalten können). Es wird dann an Anthropic in die USA übermittelt und dort nach den Datenschutzbestimmungen von Anthropic verarbeitet. Die Einwilligung ist freiwillig und gilt nur für dieses eine Foto. In der App für Android und iOS gibt es diese Funktion nicht.</p>
       <h3>Lizenzen</h3>
       <ul>
         <li>Atkinson Hyperlegible und Schibsted Grotesk: SIL Open Font License 1.1</li>
         <li>Noto Sans (PDF-Erzeugung): SIL Open Font License 1.1</li>
         <li>Capacitor und seine Plugins, pdf-lib: MIT-Lizenz</li>
         <li>Texterkennung Android: Google ML Kit (Nutzungsbedingungen von Google)</li>
+        <li>Texterkennung Web-Version: Tesseract.js und Sprachdaten (Apache-Lizenz 2.0)</li>
+        <li>Websites der Behörden außerhalb Bayerns: Wikidata (CC0); Anschriften aus den Impressen der Behörden und aus Wikipedia (Quelle steht jeweils bei der Anschrift)</li>
         <li>Zuordnung Postleitzahl zu Ort: GeoNames (geonames.org), CC BY 4.0. Mietenstufen: Anlage zur Wohngeldverordnung (amtliches Werk)</li>
       </ul>
       <h3>Hinweis</h3>
-      <p>SoLo ist eine Orientierung. SoLo ist keine Rechtsberatung und ersetzt keinen Bescheid. Über deinen Anspruch entscheidet immer die zuständige Stelle.</p>
+      <p>SoLo gibt eine allgemeine Orientierung nach deinen Angaben und vereinfachten Regeln. SoLo ist keine Rechtsberatung (Rechtsdienstleistungsgesetz) und prüft keinen Einzelfall rechtlich. Die Ergebnisse sind Schätzungen ohne Gewähr; maßgeblich ist allein der Bescheid der zuständigen Stelle. Bei Fragen helfen kostenlose Sozialberatungen, zum Beispiel der Stadt oder der Wohlfahrtsverbände.</p>
       </div>
     </section>
 
@@ -845,6 +893,8 @@
         <p class="notice info" data-t="f.stichtag"></p>
         <p class="notice" id="mappeAdrNote" data-t="f.adrFehlt" hidden></p>
         <div class="btns">
+          <button type="button" class="btn" id="mappeDruck" data-t="f.druck" hidden></button>
+          <button type="button" class="btn ghost" id="mappeSpeichern" data-t="f.speichern" hidden></button>
           <button type="button" class="btn" id="mappePrint" data-t="f.print"></button>
           <button type="button" class="btn ghost" id="mappeCopy" data-t="f.copy"></button>
           <button type="button" class="btn ghost" id="mappeShare" data-t="f.share" hidden></button>
@@ -879,6 +929,9 @@ Plz.init(/*PLZDATA*/null);
 <script>
 /*BEHOERDEN*/
 Behoerden.init(/*BEHOERDENDATA*/null);
+</script>
+<script>
+/*FORMULARE*/
 </script>
 <script>
 /*APP*/

@@ -69,6 +69,11 @@ const NOTO = path.join(MODS, '@expo-google-fonts', 'noto-sans');
 fs.copyFileSync(need(path.join(NOTO, '400Regular', 'NotoSans_400Regular.ttf')), path.join(WWW, 'fonts', 'pdf', 'NotoSans-Regular.ttf'));
 fs.copyFileSync(need(path.join(NOTO, '700Bold', 'NotoSans_700Bold.ttf')), path.join(WWW, 'fonts', 'pdf', 'NotoSans-Bold.ttf'));
 
+// Amtliche Formulare für die Ausfüllhilfe (Jobcenter, Familienkasse, Wohngeld) mit geprüftem Feldkatalog
+const FORM = path.join(__dirname, '..', 'content', 'formulare');
+fs.mkdirSync(path.join(WWW, 'formulare'), { recursive: true });
+fs.readdirSync(FORM).filter((f) => /\.(pdf|json)$/.test(f)).forEach((f) => fs.copyFileSync(path.join(FORM, f), path.join(WWW, 'formulare', f)));
+
 // PDF-Modul bündeln (pdf-lib + fontkit, MIT)
 require(need(path.join(MODS, 'esbuild'))).buildSync({
   entryPoints: [path.join(APP, 'pdf', 'pdf-entry.js')],

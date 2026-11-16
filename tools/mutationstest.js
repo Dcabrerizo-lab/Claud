@@ -1,4 +1,4 @@
-// Mutationstest: baut absichtlich Fehler in die Regeln ein (src/rules.js) und prüft, dass die Tests jeden davon finden.
+// Mutationstest: baut absichtlich Fehler in die Regeln ein (src/rules.js, auch Ausfüllhilfe src/formulare.js und app/pdf) und prüft, dass die Tests jeden davon finden.
 // Ein Fehler, den kein Test bemerkt, zeigt eine Lücke in den Tests. Aufruf: npm run test:mutation
 'use strict';
 const fs = require('fs');
@@ -9,6 +9,13 @@ const { execSync } = require('child_process');
 const ROOT = path.join(__dirname, '..');
 // [Beschreibung, Original, Fehler]
 const M = [
+  ['Miete: Angemessenheitsgrenze 20 % statt 10 %', 'wgCap(h.stufe, h.persons) * 1.1 + wgHeiz(h.persons)', 'wgCap(h.stufe, h.persons) * 1.2 + wgHeiz(h.persons)'],
+  ['EU: Ausschluss auch nach 5 Jahren', 'h.eu && !h.euJahre5 && !h.euArbeit', 'h.eu && !h.euArbeit'],
+  ['Auto: zählt im SGB XII nicht zum Vermögen', "const vermSGB12 = (h) => h.vermoegen + (h.autoBraucht || h.mzG || h.mzAG ? 0 : (h.autoWert || 0));", "const vermSGB12 = (h) => h.vermoegen;"],
+  ['Eigentum: Grundsicherungsgeld ohne Einschränkung', "if (h.eigentum && (id === 'ggeld' || id === 'gsa')) { kappe(r); zu(r, 'kdu.eigentum'); }", "if (h.eigentum && (id === 'ggeld' || id === 'gsa')) { zu(r, 'kdu.eigentum'); }"],
+  ['Grenze: Schonvermögen schon genau auf der Grenze verbraucht', "if (h.vermoegen > schon) return mk(id, 'nein', 'vermHoch', [['ggeld.verm'", "if (h.vermoegen >= schon) return mk(id, 'nein', 'vermHoch', [['ggeld.verm'"],
+  ['Grenze: Mindesteinkommen Kinderzuschlag genau auf der Grenze nicht erreicht', 'if (h.brutto < minEink)', 'if (h.brutto <= minEink)'],
+  ['Wohngeld: ausgezahlte Beträge der ausführlichen Version wie Brutto behandelt', 'const AUSZ = { alg: 1, kg: 1, eg: 1, wfbm: 1 };', 'const AUSZ = {};'],
   ['2027: Wohngeld-Tipp auch nach dem Jahreswechsel', "h.heute < 2027 && r.level !== 'na' ? [['plan.wgDez']]", "r.level !== 'na' ? [['plan.wgDez']]"],
   ['2027: Pflegegeld-Hinweis auch ohne Pflegegrad', "offen(r) && (h.pflegegrad >= 2 || h.pflegeAntrag)) add([['plan.pflege'", "offen(r)) add([['plan.pflege'"],
   ['Künftige Leistung: keine zweite Rechnung', '    if (zk) { wg = mitZukunft(', '    if (false) { wg = mitZukunft('],
@@ -27,7 +34,20 @@ const M = [
   ['Blindenhilfe auch bei Sehbehinderung', "if (h.blind !== 'blind') return mk(id, 'nein'", "if (!h.blind) return mk(id, 'nein'"],
   ['Blindenhilfe: 60 % statt 40 %', 'blh: { einsatzUeber: 0.4 }', 'blh: { einsatzUeber: 0.6 }'],
   ['Blindenhilfe: Asyl ohne Hinweis', "if (h.asyl) return mk(id, 'vielleicht', 'vielleicht', [['blh.asyl']]);", ''],
-  ['Asyl: Grundsicherungsgeld nicht ausgeschlossen', "    if (h.asyl) return mk(id, 'nein', 'ausschluss', [['ggeld.asyl']]);\n    if (h.alter || h.erwerbsgemindert) {", '    if (h.alter || h.erwerbsgemindert) {'],
+  ['Asyl: Grundsicherungsgeld nicht ausgeschlossen', "    if (h.asyl) return mk(id, 'nein', 'ausschluss', [['ggeld.asyl']]);\n    if (euAusschluss(h)) return mk(id, 'nein', 'ausschluss', [['ggeld.eu']]);", "    if (euAusschluss(h)) return mk(id, 'nein', 'ausschluss', [['ggeld.eu']]);"],
+  ['EU-Bürger: Grundsicherungsgeld nicht ausgeschlossen', "    if (euAusschluss(h)) return mk(id, 'nein', 'ausschluss', [['ggeld.eu']]);\n    if (h.alter || h.erwerbsgemindert) {", '    if (h.alter || h.erwerbsgemindert) {'],
+  ['KiZ: Wohnanteil Paar 2 Kinder 71,4 statt 71 %', 'wohnPaar: [1, 0.83, 0.71,', 'wohnPaar: [1, 0.83, 0.714,'],
+  ['Bürgergeld: Freibetragsstufe 20 % fehlt', 'if (b > 100) f += 0.2 * (Math.min(b, 520) - 100);', ''],
+  ['KiZ: Kind evtl. 6 Jahre nicht beachtet', "      if (estHoch > 0) return mk(id, 'vielleicht', 'vielleicht', [['kiz.ae7']]);", ''],
+  ['Wohngeld: Mindestwerte Anlage 3 fehlen', '    M = Math.max(M, WG_MMIN[wgIdx(n)]); Y = Math.max(Y, WG_YMIN[wgIdx(n)]);', ''],
+  ['Wohngeld: Werbungskostenpauschale fehlt', '    wgWerbung: { lohn: 1230, rente: 102 },', '    wgWerbung: { lohn: 0, rente: 0 },'],
+  ['Elterngeld: Pauschbetrag § 2c BEEG fehlt', '    const n = Math.max(0, netto - E.pausch);', '    const n = Math.max(0, netto);'],
+  ['Kinderzuschlag: Hilfebedürftigkeit mit vollem Netto statt bereinigtem Einkommen', '    const mitKiz = elternEinkSGB2(h) + h.children * R.kindergeld', '    const mitKiz = h.netto + 0 * h.children * R.kindergeld'],
+  // Ausfüllhilfe: Ja/Nein vertauscht, falsches Formular, Name falsch geteilt
+  ['Formulare: Alleinerziehend Ja/Nein vertauscht', "ha.rbtnAlleinerziehend = allein ? 'ja' : 'nein';", "ha.rbtnAlleinerziehend = allein ? 'nein' : 'ja';", 'src/formulare.js'],
+  ['Formulare: Anlage KDU fehlt bei Miete', "if (miete > 0 || eigen) {", "if (eigen) {", 'src/formulare.js'],
+  ['Formulare: Vorname und Nachname vertauscht', "w.length === 1 ? { vor: '', nach: w[0] } : { vor: w.slice(0, -1).join(' '), nach: w[w.length - 1] }", "w.length === 1 ? { vor: '', nach: w[0] } : { nach: w.slice(0, -1).join(' '), vor: w[w.length - 1] }", 'src/formulare.js'],
+  ['Formulare: Optionsliste nicht beachtet', "const opt = opts.indexOf(k[v]) >= 0 ? k[v] :", "const opt = true ? k[v] :", 'app/pdf/pdf-entry.js'],
   ['Asyl: Grundsicherung im Alter nicht ausgeschlossen', "    if (h.asyl) return mk(id, 'nein', 'ausschluss', [['ggeld.asyl']]);\n    if (!h.alter && !h.erwerbsgemindert && !h.alterGrenz)", '    if (!h.alter && !h.erwerbsgemindert && !h.alterGrenz)'],
   ['Asyl: Wohngeld nicht ausgeschlossen', "if (h.asyl) return mk(id, 'nein', 'ausschluss', [['wohngeld.asyl']]);", ''],
   ['Asyl: Kinderzuschlag nicht ausgeschlossen', "if (h.asyl) return mk(id, 'nein', 'ausschluss', [['kiz.asyl']]);", ''],
@@ -49,7 +69,7 @@ const M = [
   ['ALG I: Sperrzeit 8 statt 12 Wochen', 'sperrWochen: 12', 'sperrWochen: 8'],
   ['ALG I: Nebeneinkommen 100 statt 165 €', 'nebenFrei: 165', 'nebenFrei: 100'],
   ['Kindergeld: Hinweis 21/25 fehlt', "[['kindergeld.ja', { kg: eur(R.kindergeld) }], ['kindergeld.mehr']]", "[['kindergeld.ja', { kg: eur(R.kindergeld) }]]"],
-  ['Wohngeld: Elterngeld 300 € zählt doch', "const zaehlt = x[0] === 'eg' ? Math.max(0, x[1] - R.elterngeldFrei) : x[1];", 'const zaehlt = x[1];'],
+  ['Wohngeld: Elterngeld 300 € zählt doch', "const zaehlt = x[0] === 'eg' ? Math.max(0, x[1] - R.elterngeldFrei) : x[1] - wkHier;", 'const zaehlt = x[1] - wkHier;'],
   ['Wohngeld: Freibetrag Alleinerziehende fehlt', 'if (h.alleinerz) freib += R.wohngeld.freibetragAlleinerzMonat;', ''],
   ['Wohngeld: Freibetrag Kindereinkommen fehlt', 'wgKindFrei: 100', 'wgKindFrei: 0'],
   ['Grundsicherung: Grundrentenfreibetrag ohne Deckel', 'R.grundrente.max * rs1);', 'R.grundrente.max * rs1 * 2);'],
@@ -64,24 +84,32 @@ const M = [
 ];
 
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'mut-'));
-for (const d of ['src', 'test', 'docs', 'dist']) fs.cpSync(path.join(ROOT, d), path.join(tmp, d), { recursive: true });
+for (const d of ['src', 'test', 'docs', 'dist', 'tools/amtliche-rechner']) fs.cpSync(path.join(ROOT, d), path.join(tmp, d), { recursive: true });
 // Einzelne Dateien, die die Tests zusätzlich lesen (Name der App, Webseite)
-for (const f of ['site', 'datenschutz.html', 'README.md', 'app/capacitor.config.json', 'app/android/app/src/main/res/values/strings.xml', 'app/android/app/build.gradle', 'app/ios/App/App/Info.plist']) {
+for (const f of ['site', 'datenschutz.html', 'README.md', 'app/capacitor.config.json', 'app/android/app/src/main/res/values/strings.xml', 'app/android/app/build.gradle', 'app/ios/App/App/Info.plist', 'app/ios/App/App.xcodeproj/project.pbxproj']) {
   fs.mkdirSync(path.dirname(path.join(tmp, f)), { recursive: true });
   fs.cpSync(path.join(ROOT, f), path.join(tmp, f), { recursive: true });
 }
-const orig = fs.readFileSync(path.join(ROOT, 'src', 'rules.js'), 'utf8');
-const TESTS = ['test.js', 'test-strict.js', 'test-beh.js', 'test-faelle.js', 'test-raster.js ' + (process.env.MUT_RASTER || 8000), 'test-pruefliste.js', 'test-eigenschaften.js ' + (process.env.MUT_EIGEN || 3000)];
+// Ausfüllhilfe: Formulare, PDF-Modul und die PDF-Bibliotheken (verlinkt, nicht kopiert)
+fs.cpSync(path.join(ROOT, 'content', 'formulare'), path.join(tmp, 'content', 'formulare'), { recursive: true });
+fs.cpSync(path.join(ROOT, 'app', 'pdf'), path.join(tmp, 'app', 'pdf'), { recursive: true });
+fs.symlinkSync(path.join(ROOT, 'app', 'node_modules'), path.join(tmp, 'app', 'node_modules'));
+// Mutation: [Name, alt, neu, Datei (Standard src/rules.js)]
+const DATEI = (m) => m[3] || 'src/rules.js';
+const ORIG = {};
+M.forEach((m) => { ORIG[DATEI(m)] = ORIG[DATEI(m)] || fs.readFileSync(path.join(ROOT, DATEI(m)), 'utf8'); });
+const TESTS = ['test.js', 'test-strict.js', 'test-beh.js', 'test-faelle.js', 'test-raster.js ' + (process.env.MUT_RASTER || 8000), 'test-pruefliste.js', 'test-einfach-gleich.js 3000', 'test-grenzen.js', 'test-formulare.js', 'test-amtlich.js', 'test-ba-beispiele.js', 'test-eigenschaften.js ' + (process.env.MUT_EIGEN || 3000)];
 const laeuft = () => { try { for (const t of TESTS) execSync('node test/' + t, { cwd: tmp, stdio: 'ignore' }); return true; } catch (e) { return false; } };
 
 let unentdeckt = 0, geprueft = 0;
-for (const [name, alt, neu] of M) {
+for (const m of M) {
+  const [name, alt, neu] = m, datei = DATEI(m), orig = ORIG[datei];
   if (orig.split(alt).length !== 2) { console.log('UNGÜLTIG (Stelle nicht genau einmal gefunden): ' + name); unentdeckt++; continue; }
-  fs.writeFileSync(path.join(tmp, 'src', 'rules.js'), orig.replace(alt, neu));
+  fs.writeFileSync(path.join(tmp, datei), orig.replace(alt, neu));
   geprueft++;
   if (laeuft()) { unentdeckt++; console.log('NICHT ENTDECKT: ' + name); } else console.log('entdeckt: ' + name);
+  fs.writeFileSync(path.join(tmp, datei), orig);
 }
-fs.writeFileSync(path.join(tmp, 'src', 'rules.js'), orig);
 const sauber = laeuft();
 fs.rmSync(tmp, { recursive: true, force: true });
 if (!sauber) { console.log('Ohne Fehler laufen die Tests nicht durch – erst npm test reparieren.'); process.exit(1); }

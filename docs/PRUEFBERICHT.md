@@ -94,6 +94,7 @@ Bei der Durchsicht vom Gesetz her gefunden und behoben:
 
 Weitere Tests (laufen ebenfalls bei jedem `npm test`):
 - **Eigenschaftstest** (`test/test-eigenschaften.js`, 15.000 Zufallshaushalte): Mehr Einkommen bringt nie mehr Grundsicherungsgeld, Grundsicherung, Wohngeld oder Kinderzuschlag; ein Kind mehr erhöht immer den Bedarf; mehr Miete senkt nie Bedarf oder Wohngeld; mehr Vermögen verbessert nie eine Einstufung; ein höherer GdB oder Pflegegrad bringt nie weniger. Dazu Widerspruchsfreiheit zwischen den Karten (z. B. Grundsicherungsgeld wahrscheinlich, dann auch Bildung und Teilhabe; kein Betrag bei „unwahrscheinlich“). Mit 6 eingebauten Fehlern geprüft, alle erkannt.
+- **Ausfüllhilfe** (`test/test-formulare.js`, `test/app-test.js`): Auswahl der amtlichen Formulare in Musterfällen; jede Zuordnung zeigt auf ein vorhandenes Feld mit richtigem Typ; Formulare werden gefüllt und zurückgelesen (191 Felder, Ja/Nein am sichtbaren Knopf geprüft); geschützte Vordrucke bleiben unverändert; in der App werden die Dateien geteilt und danach gelöscht. Neue Formularstände: `python3 tools/formulare-pruefen.py` erzeugt den Katalog neu, der Test zeigt jede Abweichung.
 - **Jahreswechsel** (`test/test-jahreswechsel.js`): am 31.12.2026 kein Hinweis, ab 1.1.2027 deutlicher Hinweis auf veraltete Regeln, App läuft weiter; Rentenalter verschiebt sich mit dem Datum.
 - **Datenschutz**: Die Web-Version ruft während der ganzen Nutzung keinen Server auf (geprüft im Browser). Dabei gefunden: Sie lud bisher Schriften von Google Fonts (IP-Adresse an Google, vgl. LG München I, Urteil vom 20.1.2022). Behoben: Die Web-Version nutzt jetzt die Schriften des Geräts, die App bringt ihre Schriften als Dateien mit.
 - **Sicherheit** (`test/test-sicherheit.js`): Schadcode in Name, Anschrift, Telefon und in manipulierten gespeicherten Angaben (auch der einfachen Version) wird nie als HTML oder Skript ausgeführt. Gegenprobe: Ohne die Maskierung schlägt der Test sofort an.
@@ -135,3 +136,28 @@ Ergänzend zeigt `docs/PRUEFLISTE.md` vom Gesetz her für jede Regel, ob die App
   - Browser: ausführliche Version, einfache Version (49 Prüfungen) und App mit nachgeahmten Plugins.
   - Barrierefreiheit: axe-core, WCAG 2.1 AA, hell und dunkel.
 - **Wartbarkeit:** `src/app.js` ist groß (rund 1.400 Zeilen). Eine Aufteilung in Module (Formular, Ergebnis, Mappe, einfache Version, Scan) wäre der nächste Schritt, sobald weitere Funktionen dazukommen.
+
+## Amtliche Rechenbeispiele der Bundesagentur (14.11.2026)
+
+`test/test-ba-beispiele.js` prüft 34 Werte aus den Fachlichen Weisungen §§ 11-11b SGB II (Stand 24.10.2024) und den
+Durchführungsanweisungen Kinderzuschlag (DA-KiZ, Stand 20.02.2026): Erwerbstätigenfreibetrag (Beispiele 1.450 €, 250 €, 1.600 €,
+alle Stufengrenzen), Wohnanteil der Eltern (ganze Tabelle, Beispiele 800 € und Familie R.), Anrechnung des Kindesunterhalts mit 45 %.
+Fund: Der Wohnanteil war bisher eine Näherung (Alleinerziehende bis 1 Prozentpunkt daneben), jetzt exakt die amtliche Tabelle.
+
+Bekannte, bewusst vorsichtige Abweichung: Beim Grundsicherungsgeld lässt SoLo Elterngeld bis 300 € nur frei, wenn das Elterngeld
+über 300 € liegt. Das Gesetz (§ 10 Abs. 5 BEEG) lässt auch beim Mindestbetrag so viel frei, wie vor der Geburt verdient wurde
+(FW-Beispiel: 250 € frei). SoLo zählt hier also eher zu viel Einkommen und nennt eher zu wenig Grundsicherungsgeld, nie zu viel.
+
+## Großer und schwerer Abgleich mit amtlichen Rechnern (14.11.2026)
+
+Auf GitHub automatisch abgefragt, Ergebnisse als feste Testfälle in `test/amtlich-gross-*.json` (geprüft von `test/test-amtlich.js`):
+
+| Rechner | Fälle | Ergebnis |
+|---|---|---|
+| Wohngeldrechner BMWSB | 7.000 Haushalte (3.000 einfach, 3.000 schwer: bis 8 Personen, Heizkosten, Renten-Paare, Alleinerziehende; 1.000 genau an SoLos Einstufungsgrenzen) | 6.776 auf 10 € gleich, 0 abweichend; 224 knapp an der Grenze „möglich“ ohne Betrag, amtlich 0 € (vorsichtig, nie fälschlich „eher nicht“) |
+| KiZ-Lotse Familienkasse | 3.800 Familien (Partner-Einkommen, Unterhalt, Kinder 5/6/7 und 13/14 Jahre, bis 6 Kinder, Grenzfälle) | 0 Widersprüche |
+| Elterngeldrechner Familienportal | 1.000 Einkommen (30 % mit Geschwisterbonus) | alle auf den Cent gleich |
+
+Gefundene und behobene Fehler: Kind von 6 Jahren (Mehrbedarf Alleinerziehende 36 % bis unter 7), Wohnanteil der Eltern beim Kinderzuschlag (amtliche Tabelle statt Näherung).
+Einschränkung des KiZ-Lotsen: Er berücksichtigt Einkommen der Kinder nicht (2.000 € Unterhalt oder Lohn ohne Wirkung). SoLo rechnet es nach § 6a Abs. 3 BKGG zu 45 % an (DA-KiZ-Beispiele in `test/test-ba-beispiele.js`); im Abgleich wird dafür ohne Unterhalt verglichen. Mit Unterhalt wären es 122 Fälle, in denen SoLo gesetzeskonform vorsichtiger ist als der Lotse.
+Statistisch (Dreierregel, 95 %): Fehlerrate beim Wohngeldbetrag unter 0,05 %, beim Elterngeld unter 0,3 %, falsches Ja/Nein beim Kinderzuschlag unter 0,08 %.

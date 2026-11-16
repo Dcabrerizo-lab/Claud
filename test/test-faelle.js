@@ -244,11 +244,24 @@ ck('[st-fahrt] [sb-frei] [sb-park] Ausweis aG: frei fahren, Parkausweis, 4.500 �
 const wgr = { art1: 'rente', brutto: 1400, netto: 1250, miete: 650, mietstufe: 4, vermoegen: 0, gebJahr: 1955, heute: 2026.8 };
 ck('[wg-grundrente] Wohngeld: Grundrentenfreibetrag (§ 17a WoGG) wirkt', JSON.stringify(res(wgr).m.wohngeld.tx) !== JSON.stringify(res({ ...wgr, grundrente33: true }).m.wohngeld.tx));
 
+// Mehrbedarf Alleinerziehende 36 % gilt für Kinder unter 7, gefragt wird nach Kindern unter 6: ein Kind von 6 bis 13 kann noch 6 sein.
+// Fall aus dem großen Abgleich mit dem KiZ-Lotsen (Kind 6 Jahre, 3.250 € brutto, 770 € warm: Lotse „Aussicht auf Erfolg“).
+{ const f = { adults: 1, kids: 1, kidsU6: 0, kids14: 0, art1: 'lohn', brutto: 3250, netto: 2275, miete: 770, mietstufe: 3, vermoegen: 0, bezug: { kindergeld: true } };
+  ck('[kiz-ae7] Kinderzuschlag: Kind evtl. erst 6 (36 % Mehrbedarf) -> „möglich“ statt „eher nicht“; mit Kind ab 14 bleibt „eher nicht“',
+    L(f, 'kiz') === 'vielleicht' && K(f, 'kiz').includes('kiz.ae7') && L({ ...f, kids14: 1 }, 'kiz') === 'nein' && L({ ...f, kidsU6: 1 }, 'kiz') !== 'nein', [L(f, 'kiz'), L({ ...f, kids14: 1 }, 'kiz'), L({ ...f, kidsU6: 1 }, 'kiz')].join(' ')); }
+
+// Heizkosten (freiwillig): Wohngeld rechnet mit der Bruttokaltmiete = Warmmiete minus Heizkosten (ohne Angabe: Heizkostenkomponente)
+// 1 Person, Stufe III, 500 € warm, 1.200 € Lohn: mit 60 € Heizung Kaltmiete 440 € -> M = 440 + 110,40; Y = (1.200 - 102,50) x 0,7 -> 340 € (wie amtlicher Rechner)
+{ const hk = (h) => T({ art1: 'lohn', brutto: 1200, netto: 900, miete: 500, mietstufe: 3, vermoegen: 0, heizkosten: h }, 'wohngeld', 'schaetz.spanne');
+  ck('[wg-heiz] Wohngeld mit angegebenen Heizkosten genauer: 60 € Heizung -> bis 340 €, ohne Angabe bis 300 €, 200 € Heizung -> bis 230 €; Unsinn (Heizung über Miete) wird ignoriert',
+    hk(60).b === E(340) && hk('').b === E(300) && hk(200).b === E(230) && hk(5000).b === E(300), [hk(60), hk(''), hk(200), hk(5000)].map((x) => x && x.b).join(' / ')); }
+
 // ---------- Elterngeld (§ 2 BEEG), Hilfe zur Pflege (§ 85 SGB XII), Asylbewerberleistungen ----------
-// Basiselterngeld: 67 %; unter 1.000 € +0,1 Punkte je 2 € (bis 100 %), über 1.200 € -0,1 Punkte je 2 € (bis 65 %); 300 bis 1.800 €
+// Basiselterngeld: vom Netto erst 83,33 € ab (§ 2c BEEG), dann 67 %; unter 1.000 € +0,1 Punkte je 2 € (bis 100 %), über 1.200 € -0,1 Punkte je 2 € (bis 65 %); 300 bis 1.800 €
+// Erwartungen = Elterngeldrechner des Bundes (familienportal.de, 14.11.2026)
 const egB = (vor) => T({ baby: 'bald', egVor: vor, miete: 500, gebJahr: 1995, heute: 2026.8 }, 'elterngeld', 'eg.ja');
-[[0, 300], [500, 460], [900, 648], [1100, 737], [1500, 975], [3000, 1800]].forEach(([vor, soll]) => {
-  ck('[eg-satz] Elterngeld bei ' + vor + ' € netto vorher: ' + soll + ' €', egB(vor) && egB(vor).basis === E(soll) && egB(vor).plus === E(soll / 2) && egB(vor).monate === 14, egB(vor));
+[[0, 300], [500, 400], [900, 621], [1100, 681], [1500, 921], [3000, 1800]].forEach(([vor, soll]) => {
+  ck('[eg-satz] Elterngeld bei ' + vor + ' € netto vorher: ' + soll + ' €', egB(vor) && egB(vor).basis === E(soll) && [E(Math.floor(soll / 2)), E(Math.ceil(soll / 2))].includes(egB(vor).plus) && egB(vor).monate === 14, egB(vor));
 });
 ck('Elterngeld ohne Kind: nein; ohne Betrag: möglich mit Spanne', L({ miete: 500 }, 'elterngeld') === 'nein' && L({ baby: 'da', miete: 500 }, 'elterngeld') === 'vielleicht' && K({ baby: 'da', miete: 500 }, 'elterngeld')[0] === 'eg.ohneBetrag');
 ck('Elterngeld schon bezogen: na', L({ baby: 'da', einkommen: [{ art: 'eg', b: 400 }], miete: 500 }, 'elterngeld') === 'na');
@@ -380,15 +393,29 @@ ck('[rf-rf] Merkzeichen RF: Ermäßigung möglich', K({ mz: { RF: true }, gdb: '
 // Wohnberechtigungsschein
 ck('[wbs-schwerb] WBS: Freibetrag Schwerbehinderte verbessert die Einstufung (2.200 € brutto: Gebietsgrenze -> Grenzbereich)', L({ art1: 'lohn', brutto: 2200, netto: 1600 }, 'wbs') === 'vielleicht' && K({ art1: 'lohn', brutto: 2200, netto: 1600 }, 'wbs')[0] === 'wbs.gebiet' && K({ art1: 'lohn', brutto: 2200, netto: 1600, gdb: '100', bhPerson: 'erwNach25' }, 'wbs')[0] === 'wbs.rand');
 // Bundeswerte § 9 Abs. 2 WoFG: 12.000 € (1 Person), 18.000 € (2), + 4.100 € je weitere Person, + 500 € je Kind
-ck('[wbs-land] WBS in anderen Ländern: unter der Bundesgrenze wahrscheinlich (allein 900 € x 12 = 10.800 < 12.000), darüber nur möglich', L({ art1: 'lohn', brutto: 900, netto: 750, bundesland: 'ST' }, 'wbs') === 'ja' && T({ art1: 'lohn', brutto: 900, netto: 750, bundesland: 'ST' }, 'wbs', 'wbs.landJa').grenze === E(12000) && L({ art1: 'lohn', brutto: 1100, netto: 880, bundesland: 'ST' }, 'wbs') === 'vielleicht' && K({ art1: 'lohn', brutto: 1100, netto: 880, bundesland: 'ST' }, 'wbs')[0] === 'wbs.landEigen');
-ck('[wbs-land-grenze] WBS mit Landesgrenze: NRW allein 23.540 € (1.900 € x 12 darunter -> wahrscheinlich, 2.500 € -> möglich, 4.500 € -> nein), Hessen 18.166 €, Berlin Paar mit Kind 31.640 €, Bremen allein 13.200 €',
-  T({ art1: 'lohn', brutto: 1900, netto: 1400, bundesland: 'NW' }, 'wbs', 'wbs.landGrenze').grenze === '23.540 €' && L({ art1: 'lohn', brutto: 1900, netto: 1400, bundesland: 'NW' }, 'wbs') === 'ja' &&
-  L({ art1: 'lohn', brutto: 2500, netto: 1800, bundesland: 'NW' }, 'wbs') === 'vielleicht' && L({ art1: 'lohn', brutto: 4500, netto: 2800, bundesland: 'NW' }, 'wbs') === 'nein' &&
-  T({ art1: 'lohn', brutto: 1000, netto: 800, bundesland: 'HE' }, 'wbs', 'wbs.landGrenze').grenze === '18.166 €' && L({ art1: 'lohn', brutto: 6000, netto: 3500, bundesland: 'HE' }, 'wbs') === 'vielleicht' &&
-  T({ adults: 2, kids: 1, art1: 'lohn', brutto: 2200, netto: 1700, bundesland: 'BE' }, 'wbs', 'wbs.landGrenze').grenze === '31.640 €' &&
-  T({ art1: 'lohn', brutto: 1000, netto: 800, bundesland: 'HB' }, 'wbs', 'wbs.landGrenze').grenze === '13.200 €');
-ck('[wbs-land-grenze] Kein falsches „nein“ knapp über der älteren Landesgrenze (NRW, 3.950 € brutto: 5 % Reserve)', L({ art1: 'lohn', brutto: 3950, netto: 2600, bundesland: 'NW' }, 'wbs') === 'vielleicht');
-ck('[wbs-land] Bundesgrenze Paar mit 2 Kindern: 18.000 + 2 x 4.100 + 2 x 500 = 27.200 €', T({ adults: 2, kids: 2, art1: 'lohn', brutto: 2000, netto: 1500, bundesland: 'SN' }, 'wbs', 'wbs.landJa').grenze === E(27200));
+ck('[wbs-land] WBS ohne belegte Landesgrenze (Saarland): unter der Bundesgrenze wahrscheinlich (allein 900 € x 12 = 10.800 < 12.000), darüber nur möglich', L({ art1: 'lohn', brutto: 900, netto: 750, bundesland: 'SL' }, 'wbs') === 'ja' && T({ art1: 'lohn', brutto: 900, netto: 750, bundesland: 'SL' }, 'wbs', 'wbs.landJa').grenze === E(12000) && L({ art1: 'lohn', brutto: 1100, netto: 880, bundesland: 'SL' }, 'wbs') === 'vielleicht' && K({ art1: 'lohn', brutto: 1100, netto: 880, bundesland: 'SL' }, 'wbs')[0] === 'wbs.landEigen');
+ck('[wbs-land] Bundesgrenze Paar mit 2 Kindern (Saarland): 18.000 + 2 x 4.100 + 2 x 500 = 27.200 €', T({ adults: 2, kids: 2, art1: 'lohn', brutto: 2000, netto: 1500, bundesland: 'SL' }, 'wbs', 'wbs.landJa').grenze === E(27200));
+// Landesgrenzen aller Länder (amtliche Quellen 11/2026, docs/WBS-GRENZEN.md): allein, Paar, Paar mit 2 Kindern
+const WBSL = {
+  BW: [60350, 60350, 78350], BE: [16800, 25200, 38080], BB: [18500, 26000, 41600], HB: [13200, 19800, 29920], HH: [19200, 28800, 43520],
+  HE: [20146, 30565, 46309], MV: [25800, 38700, 59300], NI: [21250, 28750, 43750], NW: [23540, 28350, 43130], RP: [20000, 28700, 44700],
+  SH: [23000, 32000, 45500], SN: [20520, 30780, 46512], ST: [12000, 18000, 27200], TH: [14400, 21600, 33600]
+};
+Object.keys(WBSL).forEach((bl) => {
+  const [g1, g2, g4] = WBSL[bl];
+  const gr = (o) => { const r = T(Object.assign({ art1: 'lohn', brutto: 1, netto: 1, bundesland: bl }, o), 'wbs', 'wbs.landGrenze'); return r && r.grenze; };
+  ck('[wbs-land-grenze] ' + bl + ': Landesgrenze allein ' + g1 + ' €, Paar ' + g2 + ' €, Paar mit 2 Kindern ' + g4 + ' €',
+    gr({}) === E(g1) && gr({ adults: 2 }) === E(g2) && gr({ adults: 2, kids: 2 }) === E(g4), [gr({}), gr({ adults: 2 }), gr({ adults: 2, kids: 2 })].map((x) => x && x.eur).join(' / '));
+  // Auf den Euro: genau an der Grenze wahrscheinlich, 1 € darüber nicht mehr „wahrscheinlich“
+  const j = (jahr) => L({ art1: 'lohn', brutto: jahr / 12, netto: 1, bundesland: bl }, 'wbs');
+  ck('[wbs-land-grenze] ' + bl + ': genau an der Grenze wahrscheinlich, 12 € im Jahr darüber nur möglich', j(g1) === 'ja' && j(g1 + 12) === 'vielleicht', j(g1) + ' ' + j(g1 + 12));
+});
+ck('[wbs-land-grenze] Schleswig-Holstein Alleinerziehende mit 1 Kind 32.800 € (Tabelle Dynamisierungserlass 2025)', T({ kids: 1, art1: 'lohn', brutto: 1, netto: 1, bundesland: 'SH' }, 'wbs', 'wbs.landGrenze').grenze === E(32800));
+ck('[wbs-land-grenze] Kein falsches „nein“: Schwerbehinderung und gezahlter Unterhalt werden vor dem „nein“ abgezogen (NRW, 4.200 € brutto)',
+  L({ art1: 'lohn', brutto: 4200, netto: 2700, bundesland: 'NW' }, 'wbs') === 'nein' && L({ art1: 'lohn', brutto: 4200, netto: 2700, bundesland: 'NW', gdb: '100', bhPerson: 'ich' }, 'wbs') === 'vielleicht' &&
+  L({ art1: 'lohn', brutto: 4200, netto: 2700, bundesland: 'NW', uzBetrag: 400, uzAn: 'k1', uzTitel: true }, 'wbs') === 'vielleicht');
+ck('[wbs-land-grenze] Kein falsches „nein“ knapp über der Landesgrenze (NRW, 3.950 € brutto: 5 % Reserve)', L({ art1: 'lohn', brutto: 3950, netto: 2600, bundesland: 'NW' }, 'wbs') === 'vielleicht');
+
 // Elterngeld
 ck('[eg-hinweise] Elterngeld: Hinweise Mutterschaftsgeld und Einkommensgrenze 175.000 €', K({ baby: 'da', egVor: 1500 }, 'elterngeld').includes('eg.mutterschaft') && T({ baby: 'da', egVor: 1500 }, 'elterngeld', 'eg.grenze').grenze === E(175000));
 
@@ -400,7 +427,7 @@ ck('[gg-studium] Studium mit 44: kein Grundsicherungsgeld (BAföG-Alter); mit 46
 ck('[bafoeg-alter] BAföG mit 44 normal geprüft, mit 46 nur möglich (Altersgrenze 45), mit 50 nein', K({ ausbildung: 'ich', gebJahr: 1982, heute: 2026.8 }, 'bafoeg')[0] === 'bafoeg.ich' && K({ ausbildung: 'ich', gebJahr: 1980, heute: 2026.8 }, 'bafoeg')[0] === 'bafoeg.alter' && L({ ausbildung: 'ich', gebJahr: 1976, heute: 2026.8 }, 'bafoeg') === 'nein');
 ck('[gg-verm] Alte gespeicherte Altersgruppen werden übernommen', L(ohne({ miete: 400, vermoegen: 6000, alterGruppe: '<31' }), 'ggeld') === 'nein' && L(ohne({ miete: 400, vermoegen: 15000, alterGruppe: '51+' }), 'ggeld') !== 'nein');
 
-ck('[kiz-verm] Kinderzuschlag: Vermögen 55.000 € bei 2 Personen erlaubt (40.000 + 15.000), 55.001 € nicht', L({ kids: 1, art1: 'lohn', brutto: 1800, netto: 1350, miete: 700, mietstufe: '3', vermoegen: 55000 }, 'kiz') === 'ja' && K({ kids: 1, art1: 'lohn', brutto: 1800, netto: 1350, miete: 700, mietstufe: '3', vermoegen: 55001 }, 'kiz')[0] === 'kiz.verm');
+ck('[kiz-verm] Kinderzuschlag: Vermögen 55.000 € bei 2 Personen erlaubt (40.000 + 15.000), 55.001 € nicht', L({ kids: 1, art1: 'lohn', brutto: 2200, netto: 1580, miete: 700, mietstufe: '3', vermoegen: 55000 }, 'kiz') === 'ja' && K({ kids: 1, art1: 'lohn', brutto: 2200, netto: 1580, miete: 700, mietstufe: '3', vermoegen: 55001 }, 'kiz')[0] === 'kiz.verm');
 // ---------- Landesleistungen (Phase 2) ----------
 ck('[lpg-ja] Bayerisches Landespflegegeld: Pflegegrad 2 in Bayern 500 € im Jahr, mit Hinweis auf den Antrag beim Landesamt', L({ pflegegrad: '2', bundesland: 'BY' }, 'lpg') === 'ja' && T({ pflegegrad: '2', bundesland: 'BY' }, 'lpg', 'lpg.ja').betrag === E(500) && K({ pflegegrad: '4' }, 'lpg').includes('lpg.antrag'));
 ck('[lpg-voraus] Landespflegegeld: Pflegegrad 1 nein, laufender Antrag möglich, außerhalb Bayerns nein', L({ pflegegrad: '1', bundesland: 'BY' }, 'lpg') === 'nein' && L({ pflegegrad: 'antrag', bundesland: 'BY' }, 'lpg') === 'vielleicht' && L({ pflegegrad: '3', bundesland: 'NW' }, 'lpg') === 'nein' && K({ pflegegrad: '3', bundesland: 'NW' }, 'lpg')[0] === 'lpg.land');
@@ -431,13 +458,13 @@ const uzA = { art1: 'lohn', brutto: 1500, netto: 1150, miete: 600 }; // Freibetr
 ck('[uz-sgb2] Festgelegter Unterhalt (300 €) wird beim Grundsicherungsgeld voll abgezogen: Lücke 361 € -> 661 €', S(uzA, 'ggeld') === 360 && S({ ...uzA, uzBetrag: 300, uzAn: 'k1', uzTitel: true }, 'ggeld') === 660 && K({ ...uzA, uzBetrag: 300, uzAn: 'k1', uzTitel: true }, 'ggeld').includes('uz.sgb2Titel'));
 ck('[uz-sgb2] Ohne festgelegten Betrag kein Abzug, aber Hinweis auf Jugendamtsurkunde', S({ ...uzA, uzBetrag: 300, uzAn: 'k1' }, 'ggeld') === 360 && K({ ...uzA, uzBetrag: 300, uzAn: 'k1' }, 'ggeld').includes('uz.sgb2Ohne'));
 const uzK = { adults: 2, kids: 1, art1: 'lohn', brutto: 3000, netto: 2300, miete: 900, mietstufe: 3 };
-ck('[uz-sgb2] Kinderzuschlag: festgelegter Unterhalt mindert das Einkommen der Eltern (230 € -> Höchstbetrag 297 €)', S(uzK, 'kiz') === 230 && S({ ...uzK, uzBetrag: 300, uzAn: 'k1', uzTitel: true }, 'kiz') === 300 && S({ ...uzK, uzBetrag: 300, uzAn: 'k1' }, 'kiz') === 230);
+ck('[uz-sgb2] Kinderzuschlag: festgelegter Unterhalt mindert das Einkommen der Eltern (220 € -> Höchstbetrag 297 €; Wohnanteil nach DA-KiZ-Tabelle 83 %)', S(uzK, 'kiz') === 220 && S({ ...uzK, uzBetrag: 300, uzAn: 'k1', uzTitel: true }, 'kiz') === 300 && S({ ...uzK, uzBetrag: 300, uzAn: 'k1' }, 'kiz') === 220);
 const D = (o) => R.derive({ ...base, ...o });
 const dz = (o) => { const h = D(o); return [h.uzWGpess, h.uzWGopt, h.uzSGB].join('/'); };
 ck('[uz-wg] Wohngeld-Höchstbeträge § 18 WoGG: 250 € je Kind, 500 € Ex-Partner; ohne Titel vorsichtig 0, günstig bis Höchstbetrag; mit Titel günstig ganzer Betrag',
   dz({ uzBetrag: 400, uzAn: 'k1', uzTitel: true }) === '250/400/400' && dz({ uzBetrag: 400, uzAn: 'k1' }) === '0/250/0' && dz({ uzBetrag: 600, uzAn: 'ex', uzTitel: true }) === '500/600/600' &&
   dz({ uzBetrag: 1000, uzAn: 'k3' }) === '0/750/0' && dz({ uzBetrag: 900, uzAn: 'exk', uzTitel: true }) === '750/900/900' && dz({ uzBetrag: 400, uzAn: 'k2', uzTitel: true }) === '400/400/400' && dz({ uzBetrag: 400 }) === '0/250/0', [dz({ uzBetrag: 400, uzAn: 'k1', uzTitel: true }), dz({ uzBetrag: 1000, uzAn: 'k3' })]);
-const uzW = { art1: 'lohn', brutto: 1800, netto: 1350, miete: 750, mietstufe: 4 };
+const uzW = { art1: 'lohn', brutto: 1900, netto: 1350, miete: 750, mietstufe: 4 }; // Grenzfall mit Werbungskosten-Pauschbetrag (amtlicher Wohngeldrechner)
 ck('[uz-wg] Wohngeld: 250 € Unterhalt ohne Titel hebt nur die günstige Schätzung (bleibt „möglich“), mit Titel „wahrscheinlich“', L(uzW, 'wohngeld') === 'vielleicht' && L({ ...uzW, uzBetrag: 250, uzAn: 'k1' }, 'wohngeld') === 'vielleicht' && L({ ...uzW, uzBetrag: 250, uzAn: 'k1', uzTitel: true }, 'wohngeld') === 'ja' && K({ ...uzW, uzBetrag: 250, uzAn: 'k1' }, 'wohngeld').includes('uz.wg'));
 ck('[uz-wg] Nach hohem Unterhalt reicht das Geld nicht mehr zum Leben: Hinweis Mindesteinkommen statt Betrag', K({ ...uzW, uzBetrag: 1000, uzAn: 'k1', uzTitel: true }, 'wohngeld').includes('wohngeld.zuNiedrig'));
 const uzG = { alter: true, nichtArbeit: true, brutto: 900, miete: 500, mietstufe: 3 };
@@ -451,17 +478,17 @@ const zAlg = { art1: 'ohne', miete: 600, mietstufe: 3, vermoegen: 1000, arbeitSi
 // Arbeitslosengeld: 3.000 € brutto, Netto 60-72 %, 60 % davon: 1.080 bis 1.300 €, Mitte 1.190 €; danach 1.190 - 30 € Pauschale = 1.160 € gegen Bedarf 1.163 €
 ck('[zuk-einkommen] Arbeitslos ohne Einkommen: Grundsicherungsgeld jetzt wahrscheinlich, mit 1.190 € Arbeitslosengeld nur noch knapp -> „möglich“ mit Hinweis',
   L({ ...zAlg, arbeitSit: '' }, 'ggeld') === 'ja' && L(zAlg, 'ggeld') === 'vielleicht' && ZR(zAlg, 'ggeld').tx.some((t) => t[0] === 'zuk.alg' && t[1].a === E(1190)) && K(zAlg, 'ggeld').includes('bedarfJa') && K(zAlg, 'ggeld').includes('zuk.vielleicht'));
-ck('[zuk-einkommen] Hinweis „Arbeitslosengeld zuerst beantragen“ auf der Ergebnisseite, vor dem Stichtag-Hinweis', Z(zAlg).zusammen.map((a) => a[0]).join() === 'z.ggVsWg,z.zuk.alg,z.stichtag');
+ck('[zuk-einkommen] Hinweis „Arbeitslosengeld zuerst beantragen“ auf der Ergebnisseite, vor dem Stichtag-Hinweis', Z(zAlg).zusammen.map((a) => a[0]).join() === 'z.ggVsWg,z.zuk.alg,z.grenzen,z.verfahren,z.stichtag');
 ck('[zuk-einkommen] Wohngeld: ohne Einkommen nur „möglich“ (Mindesteinkommen), mit Arbeitslosengeld danach wahrscheinlich, Betrag dazu', K(zAlg, 'wohngeld').includes('zuk.ja') && K(zAlg, 'wohngeld').includes('zuk.betragEins'));
 ck('[zuk-einkommen] Ohne Kinder kein Kinderzuschlag, auch kein Hinweis', L(zAlg, 'kiz') === 'nein' && !K(zAlg, 'kiz').some((k) => /^zuk\./.test(k)));
 const zKg = { kids: 1, art1: 'lohn', brutto: 2500, netto: 1800, miete: 700, mietstufe: 4, vermoegen: 1000, arbeitSit: 'krank', krankWochen: 'unter6', lohnVorher: 2500 };
 // Krankengeld: min(70 % brutto, 90 % netto) minus 12,5 % Beiträge: 1.180 bis 1.420 €, Mitte 1.300 €, statt des Lohns
 ck('[zuk-einkommen] Krankgeschrieben (Lohnfortzahlung): Krankengeld 1.300 € ersetzt den Lohn, Grundsicherungsgeld danach wahrscheinlich -> „möglich“, Kinderzuschlag höher',
   L({ ...zKg, arbeitSit: '' }, 'ggeld') !== 'ja' && L(zKg, 'ggeld') === 'vielleicht' && ZR(zKg, 'ggeld').tx.some((t) => t[0] === 'zuk.kg' && t[1].a === E(1300)) && K(zKg, 'ggeld').includes('zuk.ohneLohn') && K(zKg, 'kiz').includes('zuk.betragEins'));
-const zEg = { art1: 'lohn', brutto: 2200, netto: 1600, miete: 650, mietstufe: 3, vermoegen: 1000, baby: 'bald', egVor: 1600 };
-// Elterngeld: 1.600 € Netto -> 67 % - 0,1 Punkte je 2 € über 1.200 € = 47 % -> Untergrenze 65 %: 1.040 €
-ck('[zuk-einkommen] Baby kommt bald (alleinstehend): Elterngeld 1.040 € statt Lohn, Wohngeld danach wahrscheinlich',
-  ZR(zEg, 'wohngeld').tx.some((t) => t[0] === 'zuk.eg' && t[1].a === E(1040)) && L({ ...zEg, baby: '' }, 'wohngeld') === 'nein' && L(zEg, 'wohngeld') === 'vielleicht' && K(zEg, 'wohngeld').includes('zuk.ja'));
+const zEg = { art1: 'lohn', brutto: 2350, netto: 1600, miete: 650, mietstufe: 3, vermoegen: 1000, baby: 'bald', egVor: 1600 };
+// Elterngeld: 1.600 € Netto - 83,33 € (§ 2c BEEG) = 1.516,67 € -> Untergrenze 65 %: 986 € (wie Elterngeldrechner des Bundes)
+ck('[zuk-einkommen] Baby kommt bald (alleinstehend): Elterngeld rund 990 € statt Lohn, Wohngeld danach wahrscheinlich',
+  ZR(zEg, 'wohngeld').tx.some((t) => t[0] === 'zuk.eg' && t[1].a === E(990)) && L({ ...zEg, baby: '' }, 'wohngeld') === 'nein' && L(zEg, 'wohngeld') === 'vielleicht' && K(zEg, 'wohngeld').includes('zuk.ja'));
 ck('[zuk-einkommen] Elterngeld bei Paaren: offen, wer es bekommt -> keine zweite Rechnung', !Z({ ...zEg, adults: 2, art2: 'lohn', brutto: 4000, brutto2: 1800, netto: 2900 }).zusammen.some((a) => a[0] === 'z.zuk.eg'));
 ck('[zuk-einkommen] Bekommt die Leistung schon (Einkommensart Arbeitslosengeld): keine zweite Rechnung', !Z({ ...zAlg, art1: 'alg', brutto: 1200, netto: 1200 }).zusammen.some((a) => /^z\.zuk/.test(a[0])));
 ck('[zuk-einkommen] Grundsicherungsgeld fällt danach weg: Hinweis aufs Überbrücken bis zur ersten Zahlung',
@@ -476,6 +503,36 @@ ck('[plan-2027] Wohngeld: Tipp „Antrag noch 2026“ nur vor dem Jahreswechsel'
 ck('[plan-2027] Pflegegeld: geplante Beträge 380/630/890/1.080 € nur ab Pflegegrad 2', res({ pflegegrad: 3 }).m.pflege.tx.some((t) => t[0] === 'plan.pflege' && t[1].a === E(380) && t[1].d === E(1080)) && !pk({ pflegegrad: 1 }, 'pflege').includes('plan.pflege'));
 ck('[plan-2027] Regelsatz: Hinweis „2027 noch nicht beschlossen, erwartet 563 €“ bei Grundsicherungsgeld und Grundsicherung im Alter', pk(f1, 'ggeld').includes('plan.regel') && pk(f2, 'gsa').includes('plan.regel'));
 ck('[plan-2027] Krankengeld: Hinweis auf die neue Beitragsbemessungsgrenze nur bei Lohn über 5.812,50 €', pk({ arbeitSit: 'krank', krankWochen: 'laeuft', lohnVorher: 7000 }, 'krankengeld').includes('plan.krank') && !pk({ arbeitSit: 'krank', krankWochen: 'laeuft', lohnVorher: 3000 }, 'krankengeld').includes('plan.krank'));
+
+ck('[verfahren] Hinweise „nicht eingerechnet“ (bei Leistungen mit Einkommensprüfung) und „Widerspruch, Überprüfungsantrag, Beratung“ (bei jedem Ergebnis)', res(f1).z.includes('z.grenzen') && res(f1).z.includes('z.verfahren') && !R.evaluate({ ...base, adults: 1, brutto: 9000, netto: 6000, miete: 400, vermoegen: 900000, gebJahr: 1990 }).zusammen.some((a) => a[0] === 'z.grenzen'));
+
+// Bisher nicht Eingerechnetes (selbstständig, Eigentum, Auto, weitere Erwachsene, angemessene Miete, EU)
+const bz = { art1: 'lohn', brutto: 900, netto: 750, miete: 600, mietstufe: 3, vermoegen: 1000, gebJahr: 1985 };
+ck('[selbst] Selbstständige: Gewinn wie Lohn (gleiche Einstufung und gleicher Betrag beim Grundsicherungsgeld), Hinweis auf vorläufige Bewilligung',
+  JSON.stringify(res({ ...bz, art1: 'selbst' }).m.ggeld.tx.filter((t) => t[0] !== 'selbst.hinweis')) === JSON.stringify(res(bz).m.ggeld.tx) && K({ ...bz, art1: 'selbst' }, 'ggeld').includes('selbst.hinweis'));
+ck('[selbst] Selbstständige: Arbeitslosengeld nur mit freiwilliger Versicherung, Krankengeld nur mit Wahltarif („möglich“)',
+  L({ ...bz, art1: 'selbst', arbeitSit: 'arbeitslos', algZeit: true, lohnVorher: 2500 }, 'alg1') === 'vielleicht' && K({ ...bz, art1: 'selbst', arbeitSit: 'arbeitslos', algZeit: true, lohnVorher: 2500 }, 'alg1').includes('alg1.selbst') &&
+  L({ ...bz, art1: 'selbst', arbeitSit: 'krank', krankWochen: 'laeuft', lohnVorher: 2500 }, 'krankengeld') === 'vielleicht' && L({ ...bz, arbeitSit: 'krank', krankWochen: 'laeuft', lohnVorher: 2500 }, 'krankengeld') === 'ja');
+ck('[eigentum] Eigentum: Grundsicherungsgeld nur „möglich“ (Tilgung meist nicht übernommen), Wohngeld als Lastenzuschuss „möglich“, keine Mietobergrenze',
+  L(bz, 'ggeld') === 'ja' && L({ ...bz, wohnart: 'eigentum' }, 'ggeld') === 'vielleicht' && K({ ...bz, wohnart: 'eigentum' }, 'ggeld').includes('kdu.eigentum') &&
+  K({ ...bz, wohnart: 'eigentum', brutto: 1900, netto: 1450, miete: 700 }, 'wohngeld').includes('wohngeld.lasten') && !K({ ...bz, wohnart: 'eigentum', miete: 3000 }, 'ggeld').includes('kdu.hoch'));
+ck('[auto] Auto: im SGB II geschützt, über 15.000 € nur „möglich“; gebraucht (Behinderung/Arbeit) ohne Einschränkung',
+  L({ ...bz, autoWert: 9000 }, 'ggeld') === 'ja' && L({ ...bz, autoWert: 20000 }, 'ggeld') === 'vielleicht' && K({ ...bz, autoWert: 20000 }, 'ggeld').includes('auto.hoch') && L({ ...bz, autoWert: 20000, autoBraucht: true }, 'ggeld') === 'ja');
+ck('[auto] Auto zählt bei der Grundsicherung im Alter zum Vermögen (5.000 € + Auto 8.000 € > 10.000 €), außer es wird gebraucht',
+  L(f2, 'gsa') === 'ja' && L({ ...f2, autoWert: 8000 }, 'gsa') === 'nein' && K({ ...f2, autoWert: 8000 }, 'gsa').includes('auto.sgb12') && L({ ...f2, autoWert: 8000, autoBraucht: true }, 'gsa') === 'ja');
+ck('[auto] BAföG: Auto zählt zum Vermögen (10.000 € + Auto 6.000 € über 15.000 € Freibetrag unter 30)',
+  L({ ausbildung: 'ich', gebJahr: 2004, vermoegen: 10000, brutto: 0, netto: 0, miete: 400 }, 'bafoeg') !== 'nein' && L({ ausbildung: 'ich', gebJahr: 2004, vermoegen: 10000, autoWert: 6000, brutto: 0, netto: 0, miete: 400 }, 'bafoeg') === 'nein');
+ck('[hh-andere] Verwandte in der Wohnung: Vermutung der Unterstützung (§ 9 Abs. 5 SGB II) und Wohngeld-Haushalt -> nur „möglich“; WG: Hinweis eigener Mietanteil',
+  L({ ...bz, hhAndere: 'verwandte' }, 'ggeld') === 'vielleicht' && K({ ...bz, hhAndere: 'verwandte' }, 'ggeld').includes('ggeld.verwandte') && L({ ...bz, hhAndere: 'wg' }, 'ggeld') === 'ja' && K({ ...bz, hhAndere: 'wg' }, 'ggeld').includes('wg.anteil'));
+// Angemessene Unterkunftskosten: 1 Person, Mietenstufe III: (456 € + 19,20 € Klima) × 1,1 + 110,40 € Heizung = 633,12 € -> etwa 630 €
+const kd = { art1: 'alg', brutto: 1600, netto: 1600, miete: 1500, mietstufe: 3, vermoegen: 1000, gebJahr: 1985 };
+ck('[kdu-grenze] Miete über der Angemessenheitsgrenze: Hinweis mit Grenze (etwa 630 €); jetzt wahrscheinlich, mit der Grenze nicht -> „möglich“',
+  res(kd).m.ggeld.tx.some((t) => t[0] === 'kdu.hoch' && t[1].grenze === E(630)) && L(kd, 'ggeld') === 'vielleicht' && !K({ ...kd, miete: 600 }, 'ggeld').includes('kdu.hoch') && !K({ ...kd, mietstufe: '' }, 'ggeld').includes('kdu.hoch'));
+const eu = { art1: 'ohne', brutto: 0, netto: 0, miete: 500, mietstufe: 3, vermoegen: 500, gebJahr: 1990, aufenthalt: 'eu', euArbeit: 'nein', euJahre: 'unter5' };
+ck('[eu] EU-Bürger ohne Arbeit, unter 5 Jahren: kein Grundsicherungsgeld (§ 7 SGB II); mit Arbeit, nach 5 Jahren oder mit Lohn kein Ausschluss',
+  L(eu, 'ggeld') === 'nein' && K(eu, 'ggeld').includes('ggeld.eu') && L({ ...eu, euArbeit: 'ja' }, 'ggeld') !== 'nein' && L({ ...eu, euJahre: 'ab5' }, 'ggeld') !== 'nein' && L({ ...eu, art1: 'lohn', brutto: 400, netto: 400 }, 'ggeld') !== 'nein');
+ck('[eu] EU-Bürger: Grundsicherung im Alter ausgeschlossen (§ 23 SGB XII) unter denselben Bedingungen; Kindergeld-Hinweis auf die ersten 3 Monate',
+  L({ ...f2, aufenthalt: 'eu', euArbeit: 'nein', euJahre: 'unter5' }, 'gsa') === 'nein' && L({ ...f2, aufenthalt: 'eu', euArbeit: 'nein', euJahre: 'ab5' }, 'gsa') === 'ja' && K({ ...f1, aufenthalt: 'eu' }, 'kindergeld').includes('kg.eu'));
 
 console.log(fails ? '\n' + fails + ' von ' + n + ' FEHLGESCHLAGEN' : '\nFall-Tests bestanden: ' + n + ' Prüfungen');
 process.exit(fails ? 1 : 0);

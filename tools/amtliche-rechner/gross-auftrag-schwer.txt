@@ -1,0 +1,1 @@
+Auftrag 1: wg2 3000, wggrenz 1000, kiz2 3000, kizgrenz 500, Stand 2026-11-14

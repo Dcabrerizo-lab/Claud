@@ -18,6 +18,7 @@ const MOCK = () => {
   const log = (name) => (o) => { calls.push([name, o]); return Promise.resolve({}); };
   const store = {};
   window.Capacitor = {
+    getPlatform: () => window.__platform || 'android',
     Plugins: {
       Preferences: {
         get: (o) => { calls.push(['Preferences.get', o]); return Promise.resolve({ value: o.key in store ? store[o.key] : null }); },
@@ -26,12 +27,16 @@ const MOCK = () => {
       },
       Share: { share: log('Share.share') },
       Filesystem: {
-        writeFile: (o) => { calls.push(['Filesystem.writeFile', { path: o.path, directory: o.directory, size: o.data.length }]); window.__pdf = o.data; return Promise.resolve({ uri: 'file:///cache/' + o.path }); },
+        writeFile: (o) => { calls.push(['Filesystem.writeFile', { path: o.path, directory: o.directory, size: o.data.length }]); window.__pdf = o.data; (window.__files = window.__files || {})[o.path] = o.data; return Promise.resolve({ uri: 'file:///cache/' + o.path }); },
         deleteFile: log('Filesystem.deleteFile')
       },
       Clipboard: { write: log('Clipboard.write') },
       Browser: { open: log('Browser.open') },
       Camera: { getPhoto: (o) => { calls.push(['Camera.getPhoto', o]); return Promise.resolve({ path: 'file:///cache/foto.jpg', webPath: 'http://localhost/_capacitor_file_/cache/foto.jpg' }); } },
+      PdfAusgabe: {
+        drucken: (o) => { calls.push(['PdfAusgabe.drucken', { name: o.name, size: o.data.length }]); window.__druck = o.data; return Promise.resolve(); },
+        speichern: (o) => { calls.push(['PdfAusgabe.speichern', { name: o.name, size: o.data.length }]); window.__gespeichert = o.data; return Promise.resolve({ ort: 'Download', name: o.name }); }
+      },
       TextRecognition: { recognize: (o) => { calls.push(['TextRecognition.recognize', o]); return Promise.resolve({ lines: ['Antrag auf Wohngeld', 'Name, Vorname', 'Geburtsdatum', 'IBAN', 'Ort, Datum, Unterschrift'] }); } }
     }
   };
@@ -89,6 +94,8 @@ const MOCK = () => {
   ok('Wohngeld-Karte nennt Landratsamt Erlangen-Höchstadt mit Anschrift', /Landratsamt Erlangen-Höchstadt, Wohngeldstelle/.test(beh) && /Nägelsbachstraße 1/.test(beh) && /91052 Erlangen/.test(beh), beh);
 
   // Antragsmappe
+  // Grundsicherungsgeld zusätzlich wählen (falls angeboten), damit die vorausgefüllten Jobcenter-Formulare mitgeprüft werden
+  const mitGG = await p.evaluate(() => { const cb = document.querySelector('[data-pick="ggeld"]'); if (!cb) return false; cb.checked = true; cb.dispatchEvent(new Event('change', { bubbles: true })); return true; });
   await p.click('#mappeMake'); ok('Mappe öffnet', await p.isVisible('#mappe'));
   const brief = await p.inputValue('#mappeText');
   ok('Anschreiben Wohngeld: Empfänger mit Anschrift', /Landratsamt Erlangen-Höchstadt\nWohngeldstelle\nNägelsbachstraße 1\n91052 Erlangen/.test(brief), brief.slice(0, 300));
@@ -107,6 +114,16 @@ const MOCK = () => {
     ok('PDF ist gültig und hat Briefe, Angabenblatt und Unterlagenliste (>= 3 Seiten)', bytes.slice(0, 5).toString() === '%PDF-' && doc.getPageCount() >= 3, doc.getPageCount());
     ok('PDF-Datei wird nach dem Teilen aus dem Cache gelöscht', (await calls('Filesystem.deleteFile')).some((o) => o.path === 'Antragsmappe.pdf'));
   } else ok('PDF erzeugt', false, await p.textContent('#copyMsg'));
+  // Android: Drucken (Druckdialog des Systems) und Speichern (Ordner Downloads) über das native Plugin PdfAusgabe
+  ok('Android: Knöpfe Drucken und PDF speichern sichtbar', (await p.isVisible('#mappeDruck')) && (await p.isVisible('#mappeSpeichern')));
+  await p.click('#mappeDruck');
+  await p.waitForFunction(() => !!window.__druck, null, { timeout: 15000 }).catch(() => {});
+  const druck = Buffer.from(await p.evaluate(() => window.__druck || ''), 'base64');
+  ok('Drucken: gültiges PDF an den Druckdialog übergeben', druck.slice(0, 5).toString() === '%PDF-' && (await PDFDocument.load(druck)).getPageCount() >= 3, await p.textContent('#copyMsg'));
+  await p.click('#mappeSpeichern');
+  await p.waitForFunction(() => !!window.__gespeichert, null, { timeout: 15000 }).catch(() => {});
+  const gesp = Buffer.from(await p.evaluate(() => window.__gespeichert || ''), 'base64');
+  ok('Speichern: gültiges PDF gespeichert, Meldung nennt den Ordner Downloads', gesp.slice(0, 5).toString() === '%PDF-' && /Downloads/.test(await p.textContent('#copyMsg')), await p.textContent('#copyMsg'));
   // PDF auch auf Russisch (Kyrillisch) und Arabisch (Unterlagenliste bleibt deutsch)
   for (const l of ['ru', 'ar']) {
     await p.evaluate(() => { window.__pdf = ''; });
@@ -116,6 +133,28 @@ const MOCK = () => {
     ok('PDF auch in Sprache ' + l, !!(await p.evaluate(() => window.__pdf)), await p.textContent('#copyMsg'));
   }
   await p.evaluate(() => { const s = document.getElementById('lang'); s.value = 'de'; s.dispatchEvent(new Event('change', { bubbles: true })); });
+  // Amtliche Formulare: vorausgefüllt als PDF-Dateien teilen
+  ok('Amtliche Formulare in der Mappe mit Knopf', await p.isVisible('#formsShare'));
+  const vorher = (await calls('Share.share')).length;
+  await p.evaluate(() => { window.__files = {}; });
+  await p.click('#formsShare');
+  await p.waitForFunction((n) => window.__calls.filter((c) => c[0] === 'Share.share').length > n, vorher, { timeout: 30000 }).catch(() => {});
+  const formShare = (await calls('Share.share')).slice(vorher).find((o) => o.files);
+  const dateien = await p.evaluate(() => window.__files || {});
+  ok('Formulare werden als PDF-Dateien geteilt', !!formShare && formShare.files.length >= 1 && formShare.files.length === Object.keys(dateien).length && formShare.files.every((f) => /\.pdf$/.test(f)), JSON.stringify(formShare) + ' ' + (await p.textContent('#formsMsg')));
+  let gefuellt = 0;
+  for (const [name, data] of Object.entries(dateien)) {
+    const buf = Buffer.from(data, 'base64');
+    ok('Formular ' + name + ' ist ein PDF', buf.slice(0, 5).toString() === '%PDF-' && buf.length > 10000, buf.length);
+    if (/\/Encrypt/.test(buf.toString('latin1'))) continue; // vom Herausgeber geschützt: unverändert weitergegeben
+    const doc = await PDFDocument.load(buf);
+    ok('Formular ' + name + ' lässt sich öffnen', doc.getPageCount() > 0);
+    if (/Hauptantrag/.test(name)) { ok('Hauptantrag: Vorname aus der Mappe eingetragen', doc.getForm().getTextField('txtfPersonVorname').getText() === 'Maria'); gefuellt++; }
+  }
+  const geloescht = (await calls('Filesystem.deleteFile')).map((o) => o.path);
+  ok('Formular-Dateien nach dem Teilen aus dem Cache gelöscht', Object.keys(dateien).every((n) => geloescht.indexOf(n) >= 0), geloescht.join(' '));
+  if (mitGG) ok('Mit Grundsicherungsgeld: Hauptantrag vorausgefüllt geprüft', gefuellt === 1);
+  console.log('  (Formulare geteilt: ' + Object.keys(dateien).join(', ') + (gefuellt ? '; Hauptantrag geprüft' : '') + ')');
   await p.screenshot({ path: path.join(require('os').tmpdir(), 'app-mappe.png') });
   await p.click('#mappeClose');
 
@@ -149,6 +188,18 @@ const MOCK = () => {
   ok('Nur lokale Anfragen (kein Netz)', net.length === 0, net.join(','));
   ok('Keine CSP-Verstöße', csp.length === 0, csp.join('|'));
   ok('Keine Skriptfehler', errs.length === 0, errs.join('|'));
+
+  // Impressum je Plattform: Android David Cabrerizo, iPhone Natascha Cabrerizo y Polo (Apple-Konto); iPhone ohne Android-Knöpfe
+  const anbieter = () => p.evaluate(() => document.getElementById('anbieterName').textContent);
+  ok('Android: Anbieter im Impressum David Cabrerizo', (await anbieter()) === 'David Cabrerizo', await anbieter());
+  const ctxI = await b.newContext({ viewport: { width: 390, height: 844 }, locale: 'de-DE', serviceWorkers: 'block' });
+  await ctxI.addInitScript(() => { window.__platform = 'ios'; }); await ctxI.addInitScript(MOCK);
+  const pi = await ctxI.newPage(); await pi.goto(origin + '/index.html'); await pi.waitForTimeout(400);
+  const legalI = await pi.evaluate(() => document.getElementById('legal').textContent);
+  ok('iPhone: Anbieter im Impressum Natascha Cabrerizo y Polo, nicht David', /Anbieter: Natascha Cabrerizo y Polo/.test(legalI.replace(/\s+/g, ' ')) && !/David/.test(legalI), legalI.slice(0, 200));
+  await pi.click('#p1'); await pi.fill('#p-name', 'Test'); await pi.evaluate(() => document.getElementById('mappeMake').click()); await pi.waitForTimeout(300);
+  ok('iPhone: keine Android-Knöpfe Drucken/Speichern, PDF teilen vorhanden', !(await pi.isVisible('#mappeDruck')) && !(await pi.isVisible('#mappeSpeichern')) && (await pi.isVisible('#mappePrint')));
+  await ctxI.close();
 
   await b.close(); server.close();
   console.log(out.join('\n'));

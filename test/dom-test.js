@@ -168,7 +168,10 @@ set('p-name', 'Maria Beispiel'); set('p-geb', '01.02.1985'); set('p-strasse', 'H
 d.getElementById('mappeMake').click();
 check('Mappe öffnet sich und ersetzt die Seite', d.getElementById('mappe').hidden === false && d.getElementById('app').classList.contains('pm'));
 const pages = [...d.querySelectorAll('#mappeBody .page')];
-check('Mappe enthält zwei Briefe, ein Angabenblatt und die Unterlagenliste', pages.length === 4, pages.length);
+check('Mappe enthält zwei Briefe, ein Angabenblatt, die Unterlagenliste und die amtlichen Formulare', pages.length === 5, pages.length);
+const formSeite = d.querySelector('#mappeBody .forms');
+check('Amtliche Formulare: Wohngeld-Vordruck genannt, Hinweis für die Web-Version, kein App-Knopf', !!formSeite && /Antrag auf Wohngeld \(Mietzuschuss\)/.test(formSeite.textContent) && formSeite.textContent.indexOf(I18N.de['f.formsWeb']) >= 0 && !d.getElementById('formsShare'), formSeite && formSeite.textContent.slice(0, 200));
+check('Amtliche Formulare: ohne Jobcenter keine Jobcenter-Unterlagenliste', !!formSeite && formSeite.textContent.indexOf(I18N.de['f.formsUnt']) < 0);
 const txt = pages.map((p) => p.textContent).join('\n');
 // Anschrift „91056 Erlangen“ liefert den Wohnort (kein PLZ-Feld ausgefüllt): Empfänger ist die Stadt Erlangen
 check('Brief: Absender, Empfänger (aus der PLZ der Anschrift) und Betreff', /Maria Beispiel/.test(txt) && /Hauptstraße 1/.test(txt) && /Stadt Erlangen\nWohngeldstelle\nRathausplatz 1\n91052 Erlangen/.test(txt) && /Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle/.test(txt) && /Betreff: Antrag auf Wohngeld/.test(txt) && /Betreff: Antrag auf Unterhaltsvorschuss/.test(txt));
@@ -178,6 +181,14 @@ check('Angabenblatt enthält Haushalt, Miete, Einkommen', /Angabenblatt/.test(tx
 check('Angabenblatt nennt Selbstauskunft-Hinweis', /Selbstauskunft/.test(txt));
 check('Leere Felder werden zu Strichen statt "undefined"', !/undefined|null/.test(txt));
 check('Kopiertext enthält Briefe und Angabenblatt', /Betreff: Antrag auf Wohngeld/.test(d.getElementById('mappeText').value) && /Angabenblatt/.test(d.getElementById('mappeText').value));
+check('Web-Version: Anbieter im Impressum David Cabrerizo', d.getElementById('anbieterName').textContent === 'David Cabrerizo');
+check('Druck: feste Briefränder (DIN 5008) per @page, unabhängig vom Browser', /@page\s*\{[^}]*size:\s*A4[^}]*margin:\s*20mm 20mm 20mm 25mm/.test(d.documentElement.innerHTML));
+// Rückmeldung „Ergebnis passt nicht“: E-Mail-Entwurf mit Version und Einstufungen, ohne Angaben aus dem Fragebogen
+{
+  const fb = d.getElementById('feedback'), href = decodeURIComponent(d.getElementById('feedbackMail').getAttribute('href') || '');
+  check('Rückmeldung: Knopf sichtbar, E-Mail an Kontaktadresse mit Betreff, Version und Einstufungen', !fb.hidden && /^mailto:d\.cabrerizo@gmx\.de\?subject=SoLo: Ergebnis passt nicht/.test(href) && href.indexOf('SoLo ' + require('../package.json').version) >= 0 && /Wohngeld: (Wahrscheinlich|Möglich)/.test(href), href.slice(0, 300));
+  check('Rückmeldung: keine persönlichen Angaben (Name, Anschrift, Geburtsdatum, Einkommen, Miete) in der E-Mail', !/Maria|Beispiel|Hauptstraße|Erlangen|1985|2\.?200|1\.?750|950/.test(href), href);
+}
 d.getElementById('mappeCopy').click();
 setTimeout(() => {
   check('Kopieren meldet Ergebnis oder zeigt Ersatzfeld', d.getElementById('copyMsg').textContent.length > 0 || d.getElementById('mappeText').hidden === false);
@@ -289,6 +300,22 @@ setTimeout(() => {
   check('Unterhalt (gezahlt): mit Betrag erscheinen „An wen“ (6 Auswahlen) und „Betrag festgelegt“', !uzBox().hidden && d.getElementById('uzAn').options.length === 6 && d.getElementById('uzTitel').checked);
   setNum('uzBetrag', '');
   check('Unterhalt (gezahlt): Betrag gelöscht -> Zusatzfragen verborgen und zurückgesetzt', uzBox().hidden && d.getElementById('uzAn').value === '' && !d.getElementById('uzTitel').checked);
+  // Neue Fragen: EU-Staatsangehörigkeit, Auto, Wohneigentum, weitere Erwachsene, Selbstständigkeit
+  const vis = (sel) => !d.querySelector(sel).hidden;
+  check('Neue Fragen beschriftet (Wohnart, weitere Erwachsene, Auto, EU-Arbeit, EU-Jahre)', ['wohnart', 'hhAndere', 'autoWert', 'euArbeit', 'euJahre'].every((id) => !!d.querySelector('label[for="' + id + '"]')));
+  setSel('aufenthalt', 'eu');
+  check('EU: Fragen zu Arbeit und Aufenthaltsdauer erscheinen', vis('.cond-eu') && d.getElementById('euJahre').options.length === 3);
+  setSel('euArbeit', 'nein'); setSel('aufenthalt', '');
+  check('EU abgewählt: Zusatzfragen verborgen und zurückgesetzt', !vis('.cond-eu') && d.getElementById('euArbeit').value === '');
+  setNum('autoWert', '12000');
+  check('Auto mit Wert: Haken „wird gebraucht“ erscheint', vis('.cond-auto'));
+  setNum('autoWert', '');
+  check('Auto ohne Wert: Haken verborgen', !vis('.cond-auto'));
+  setSel('wohnart', 'eigentum');
+  check('Eigentum: Feld heißt „Kosten fürs Wohnen“', d.getElementById('mieteLab').textContent === I18N.de['miete.label.eigen']);
+  setSel('wohnart', '');
+  check('Miete: Feld heißt wieder „Miete“', d.getElementById('mieteLab').textContent === I18N.de['miete.label']);
+  check('Einkommensart „Selbstständig“ wählbar', [...d.getElementById('ek1Art').options].some((o) => o.value === 'selbst'));
   check('Keine Skriptfehler im gesamten Test', errors.length === 0, errors.join('; '));
   console.log(fails ? '\n' + fails + ' FEHLER' : '\nAlle DOM-Tests bestanden');
   process.exit(fails ? 1 : 0);

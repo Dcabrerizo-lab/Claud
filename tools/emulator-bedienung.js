@@ -51,6 +51,34 @@ const warte = (ms) => new Promise((r) => setTimeout(r, ms));
     adb('shell input keyevent 4'); await warte(1500);
     const msg2 = await p.evaluate(() => document.getElementById('copyMsg').textContent).catch(() => '');
     ok('Keine Fehlermeldung beim PDF', !/nicht|fehl/i.test(msg2), msg2);
+    // Android: Drucken öffnet den Druckdialog des Systems (Druckspooler), Speichern legt das PDF in Downloads ab
+    const sdk = Number(adb('shell getprop ro.build.version.sdk').trim());
+    const oben = () => (adb('shell dumpsys activity activities').match(/(mResumedActivity|topResumedActivity|ResumedActivity).*/g) || []).join(' ');
+    ok('Knöpfe Drucken und PDF speichern sichtbar', await p.evaluate(() => !document.getElementById('mappeDruck').hidden && !document.getElementById('mappeSpeichern').hidden));
+    await p.evaluate(() => document.getElementById('mappeDruck').click());
+    let druck = false;
+    for (let i = 0; i < 30 && !druck; i++) { await warte(1000); druck = /printspooler|PrintActivity/i.test(oben()); }
+    ok('Drucken: Druckdialog des Systems geöffnet', druck, oben().slice(0, 300));
+    try { adb('exec-out screencap -p > emulator-drucken.png'); } catch (e) {}
+    adb('shell input keyevent 4'); await warte(2000);
+    if (/printspooler/i.test(oben())) { adb('shell input keyevent 4'); await warte(1500); }
+    await p.evaluate(() => { document.getElementById('copyMsg').textContent = ''; document.getElementById('mappeSpeichern').click(); });
+    if (sdk >= 29) {
+      let msgS = '';
+      for (let i = 0; i < 30 && !/Download/.test(msgS); i++) { await warte(1000); msgS = await p.evaluate(() => document.getElementById('copyMsg').textContent).catch(() => ''); }
+      const liste = adb('shell ls -l /sdcard/Download/');
+      ok('Speichern: Meldung nennt den Ordner Downloads', /Download/.test(msgS), msgS);
+      ok('Speichern: Antragsmappe.pdf liegt in Downloads (Android ' + sdk + ')', /Antragsmappe.*\.pdf/.test(liste), liste.slice(0, 300));
+      const kopf = adb('shell "head -c 5 /sdcard/Download/Antragsmappe.pdf"');
+      ok('Speichern: Datei ist ein PDF', /%PDF-/.test(kopf), kopf);
+    } else {
+      let wahl = false;
+      for (let i = 0; i < 30 && !wahl; i++) { await warte(1000); wahl = /documentsui|DocumentsActivity|CreateDocument/i.test(oben()); }
+      ok('Speichern (Android ' + sdk + '): „Speichern unter“ des Systems geöffnet', wahl, oben().slice(0, 300));
+      adb('shell input keyevent 4'); await warte(1500);
+      const msgA = await p.evaluate(() => document.getElementById('copyMsg').textContent).catch(() => '');
+      ok('Speichern abgebrochen: keine Fehlermeldung', !/nicht|fehl/i.test(msgA), msgA);
+    }
     await p.evaluate(() => document.getElementById('mappeClose').click());
   } else {
     await warte(1000);

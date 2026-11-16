@@ -109,14 +109,14 @@ check('Unbekannte Mietenstufe ist vorsichtig (Sweep über ' + sweepN + ' Haushal
 const t7b = ev({ kids: 1, brutto: 2100, netto: 1700, miete: 800, vermoegen: 0 });
 check('Hinweis zur unbekannten Mietenstufe', keys(t7b, 'wohngeld').includes('wohngeld.stufeUnbekannt'));
 
-// 5) Vermögen, Freibeträge
+// 5) Vermögen, Freibeträge (Grenzfall 1.860 €: mit Werbungskostenpauschale seit dem Abgleich mit dem amtlichen Wohngeldrechner)
 check('Vermögen über 10.000 €: Grundsicherung im Alter nein', lv(ev({ brutto: 900, netto: 800, miete: 450, mietstufe: 2, alter: true, vermoegen: 15000 }), 'gsa') === 'nein');
 check('Vermögen über 60.000 €: Wohngeld nein', lv(ev({ brutto: 1000, netto: 900, miete: 450, mietstufe: 2, vermoegen: 80000 }), 'wohngeld') === 'nein');
-const nf = ev({ brutto: 1760, netto: 1500, miete: 600, mietstufe: 3, vermoegen: 0 });
+const nf = ev({ brutto: 1860, netto: 1500, miete: 600, mietstufe: 3, vermoegen: 0 });
 check('Freibetrag: ohne Behinderung Grenzbereich', lv(nf, 'wohngeld') === 'vielleicht');
-check('Freibetrag: mit Behinderung besser', lv(ev({ brutto: 1760, netto: 1500, miete: 600, mietstufe: 3, vermoegen: 0, behinderung: true }), 'wohngeld') === 'ja');
+check('Freibetrag: mit Behinderung besser', lv(ev({ brutto: 1860, netto: 1500, miete: 600, mietstufe: 3, vermoegen: 0, behinderung: true }), 'wohngeld') === 'ja');
 // § 17 Nr. 1 WoGG: Pflegegrad allein gibt keinen Freibetrag; GdB 50 bis 99 nur zusammen mit Pflegebedürftigkeit; GdB 100 immer
-const wgL = (o) => lv(ev({ brutto: 1760, netto: 1500, miete: 600, mietstufe: 3, vermoegen: 0, ...o }), 'wohngeld');
+const wgL = (o) => lv(ev({ brutto: 1860, netto: 1500, miete: 600, mietstufe: 3, vermoegen: 0, ...o }), 'wohngeld');
 check('Freibetrag: Pflegegrad allein gibt ihn nicht', wgL({ pflegegrad: '2' }) === wgL({}));
 check('Freibetrag: GdB 50 ohne Pflege gibt ihn nicht', wgL({ gdb: '50' }) === wgL({}));
 check('Freibetrag: GdB 50 mit Pflegegrad besser', wgL({ gdb: '50', pflegegrad: '2' }) === 'ja');
@@ -219,9 +219,9 @@ check('Wohngeld: Netto allein genügt NICHT (Wohngeld rechnet mit Brutto)', get(
       for (const u of [0, 100, 250, 400, 700, 1000, 1500]) {
         const r = ev({ adults, kids, brutto: b, netto: b * 0.8, miete, mietstufe: 3, vermoegen: 0, alter, unterhaltFehlt: true, unterhalt: u });
         // Ausnahme (gesetzlich gewollt): Wohngeld und Kinderzuschlag setzen genug Einkommen zum Leben voraus (hl einkoNiedrig,
-        // § 6a Abs. 1 Nr. 3 BKGG; Plausibilität beim Wohngeld). Dort darf mehr Einkommen die Leistung erst möglich machen.
+        // § 6a Abs. 1 Nr. 3 BKGG, auch „nur zusammen mit Wohngeld“; Plausibilität beim Wohngeld). Dort darf mehr Einkommen die Leistung erst möglich machen.
         const ids = ['wohngeld', 'kiz', 'ggeld', 'gsa', 'uvg'];
-        const niedrig = ids.map((id) => get(r, id).hl === 'einkoNiedrig');
+        const niedrig = ids.map((id) => get(r, id).hl === 'einkoNiedrig' || (get(r, id).tx || []).some((t) => t[0] === 'kiz.mitWg'));
         const now = ids.map((id) => rank[lv(r, id)]);
         if (last && now.some((v, i) => v < last.v[i] && !niedrig[i] && !last.niedrig[i])) bad.push([adults, kids, b, miete, alter, u].join('/'));
         last = { v: now, niedrig };
@@ -286,6 +286,16 @@ check('Arabisch läuft rechts nach links, alle anderen links nach rechts', I18N.
   check('Leichte Sprache: lange Wörter mit Bindestrich gegliedert', wort.length === 0, wort.join(', '));
 }
 
+// Nur der Sozialleistungslotse: Paketname (Android) und Bundle-ID (iOS) sind überall com.Sozialleistungslotse
+{
+  const fsy = require('fs'), py = require('path'), R0 = py.join(__dirname, '..');
+  const lies = (f) => fsy.readFileSync(py.join(R0, f), 'utf8');
+  const ID = 'com.Sozialleistungslotse';
+  const gradle = (lies('app/android/app/build.gradle').match(/applicationId\s+"([^"]+)"/) || [])[1];
+  const cap = JSON.parse(lies('app/capacitor.config.json')).appId;
+  const ios = [...lies('app/ios/App/App.xcodeproj/project.pbxproj').matchAll(/PRODUCT_BUNDLE_IDENTIFIER = ([^;]+);/g)].map((m) => m[1].trim());
+  check('Nur SoLo: Android-Paketname, Capacitor-ID und iOS-Bundle-ID sind ' + ID, gradle === ID && cap === ID && ios.length > 0 && ios.every((x) => x === ID), [gradle, cap, ios.join(',')].join(' / '));
+}
 // Die Webseite zum Hochladen (site/) enthält dieselbe Datenschutzerklärung wie das Projekt
 {
   const fsx = require('fs'), px = require('path');
