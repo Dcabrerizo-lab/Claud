@@ -26,15 +26,64 @@ The app provides general information and estimates, not legal advice; this is st
 
 ---
 
-## Schritt-für-Schritt
+## Was Apple verlangt hat und wo es erledigt wird
 
-1. **Bildschirmvideo aufnehmen (iPhone, aktuelles iOS):**
-   - Einstellungen → Kontrollzentrum → „Bildschirmaufnahme“ hinzufügen.
-   - SoLo vorher ganz schließen (von unten wischen, App wegschieben).
-   - Kontrollzentrum öffnen → Aufnahme-Knopf → 3 Sekunden warten.
-   - SoLo öffnen (das Video muss mit dem Start der App beginnen).
-   - Zeigen: Hinweisfenster mit „Verstanden“ bestätigen → unter „Beispiel laden“ auf „Alleinerziehend, 2 Kinder“ tippen → nach unten scrollen, Ergebnisse und eine Karte aufklappen → Name eintragen → „Antragsmappe erstellen“ → „Als PDF teilen“ → im Teilen-Dialog „Drucken“ und „In Dateien sichern“ kurz zeigen, dann abbrechen → Mappe schließen → Sprache auf Englisch umstellen → den Bereich „Antrag scannen: Felder erklärt“ kurz zeigen.
-   - Etwa 1 bis 2 Minuten. Aufnahme über das rote Symbol oben beenden. Das Video liegt in „Fotos“.
-2. **Text einfügen:** App Store Connect öffnen → deine App → die Version „1.2.0“ → ganz unten „App-Review-Informationen“ → in „Notizen“ den Text oben einfügen → „Sichern“.
-3. **Video schicken:** In App Store Connect → „App Review“ (bzw. die Nachricht von Apple) → „Antworten“ → Video als Anhang hochladen (über die App „App Store Connect“ auf dem iPhone geht das direkt aus „Fotos“). Kurz dazuschreiben: „The requested information is in the App Review notes; the screen recording is attached.“
-4. **Erneut einreichen:** Bei der Version „Zur Prüfung einreichen“ antippen. Falls ein neuer Build gewünscht ist: Build 136 (schon bei TestFlight) auswählen.
+| Apple-Punkt | Erledigt durch |
+|---|---|
+| 1. Bildschirmvideo vom echten iPhone, beginnt mit App-Start | dein Video, Schritt 6 |
+| 2. Zweck und Zielgruppe | Notizen, Abschnitt 2 |
+| 3. Bedienung, Zugangsdaten, Beispieldateien | Notizen, Abschnitt 3 (kein Login nötig) |
+| 4. Externe Dienste | Notizen, Abschnitt 4 (keine) |
+| 5. Regionale Unterschiede | Notizen, Abschnitt 5 |
+| 6. Regulierter Bereich, fremdes Material | Notizen, Abschnitt 6 |
+| Guideline 2.1 Fehler/Abstürze | Build 137, auf echtem Gerät per TestFlight geprüft (Schritt 1) |
+| Guideline 2.1 Zugang | „Anmeldung erforderlich“ aus (Schritt 5) |
+| Guideline 2.3.3 Bildschirmfotos | echte App-Bildschirme aus `store-bilder/ios-6.9` und `ios-6.5` (Schritt 4) |
+| Guideline 3.1.1 In-App-Käufe | keine; Preis 1,49 € einmalig (Schritt 3) |
+| Guideline 3.2 andere Geschäftsmodelle | nicht betroffen (öffentliche App für alle) |
+| Name Verkäufer ≠ Anbieter | Build 137 + Datenschutz-iOS + Copyright (Schritte 2, 4, 7) |
+
+## Schritt für Schritt (App Store Connect am PC, Konto von Natascha)
+
+**1. Build 137 auf dem iPhone testen**
+- TestFlight-App öffnen → SoLo → Build 137 installieren → einmal durchtippen.
+- Impressum (unten „Impressum, Datenschutz, Lizenzen“): Anbieter muss „Natascha Cabrerizo y Polo“ sein.
+
+**2. Datenschutz**
+- Links „App-Datenschutz“ → bei „Datenschutzrichtlinie“ auf „Bearbeiten“ →
+  `https://dcabrerizo-lab.github.io/Claud/datenschutz-ios.html` → „Sichern“.
+- Datenerfassung: „Nein, wir erfassen keine Daten“ → falls geändert „Veröffentlichen“.
+- Vorher die Adresse im Browser öffnen und prüfen, dass „Verantwortlich: Natascha Cabrerizo y Polo“ dasteht.
+
+**3. Preis**
+- Links „Preise und Verfügbarkeit“ → 1,49 € (bzw. die passende Preisstufe) → Verfügbarkeit: Deutschland (oder alle Länder) → „Sichern“.
+- „Business“ (Startseite) → Vertrag „Kostenpflichtige Apps“ muss „Aktiv“ sein, sonst Bank und Steuer ergänzen.
+
+**4. Version 1.2.0: Texte und Bilder**
+- Links unter „iOS-App“ auf „1.2.0“.
+- Bildschirmfotos: 6,9-Zoll-Fotos aus `SoLo-iOS/…/store-bilder/ios-6.9` (oder aus dem Projekt `store-bilder/ios-6.9`), 6,5 Zoll aus `ios-6.5`.
+- Beschreibung, Stichwörter, Werbetext aus `Store-Texte.md` (ohne Kalender/Fristen).
+- Support-URL: `https://dcabrerizo-lab.github.io/Claud/`
+- Copyright: `2026 Natascha Cabrerizo y Polo`
+
+**5. App-Review-Informationen (gleiche Seite, weiter unten)**
+- „Anmeldung erforderlich“: Häkchen entfernen.
+- Kontakt: Natascha (oder David als technischer Kontakt), Telefon, E-Mail.
+- „Notizen“: den englischen Text oben (zwischen den ersten beiden Linien) einfügen.
+
+**6. Video**
+- „Anhang“ in den App-Review-Informationen: Video hochladen.
+- Klappt das nicht: in Schritt 9 an die Antwort anhängen (App „App Store Connect“ auf dem iPhone).
+
+**7. Build**
+- Abschnitt „Build“: alten Build (134/135/136) mit dem Minus entfernen → „+“ → **137** → „Fertig“.
+- Exportkonformität: „Keine / nur Standardverschlüsselung“.
+
+**8. Altersfreigabe** (falls noch offen)
+- „Altersfreigabe“ → alle Fragen „Keine“ → ergibt 4+.
+
+**9. Antworten und einreichen**
+- Oben „Sichern“.
+- Meldung „App Review“ öffnen → „Antworten“ → Video anhängen (falls nicht in Schritt 6) →
+  „Thank you. The requested information has been added to the App Review notes, and the screen recording is attached. The seller (account holder) is now named as the provider in the app's imprint and in the privacy policy (build 137).“ → „Senden“.
+- Version 1.2.0 → „Zur Prüfung hinzufügen“ / „Zur Prüfung einreichen“.
