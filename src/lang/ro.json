@@ -991,5 +991,8 @@
   "f.gespeichert": "Salvat în dosarul „Downloads”: {name}",
   "f.gespeichertWahl": "Salvat.",
   "beh.wgWeiter": "În unele landuri, de alocația pentru locuință (Wohngeld) se ocupă orașul sau comuna. Cererea depusă la district (Landkreis) este valabilă și va fi transmisă (§ 16 SGB I).",
-  "f.formsBrief": "Cererea informală (formloser Antrag) pentru aceasta o găsești în acest dosar."
+  "f.formsBrief": "Cererea informală (formloser Antrag) pentru aceasta o găsești în acest dosar.",
+  "t.wbs.stufe": "{name}: venit de până la aproximativ {grenze} pe an.",
+  "t.wbs.stufeDu": "Cu venitul tău brut îndeplinești probabil nivelul {name}. Astfel ai acces și la locuințele nivelurilor superioare.",
+  "t.wbs.stufeVielleicht": "După deducerile oficiului pentru locuințe (Wohnungsamt, până la 30 %) poate ajunge pentru nivelul {name}."
 }

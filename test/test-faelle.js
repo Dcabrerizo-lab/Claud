@@ -250,6 +250,17 @@ ck('[wg-grundrente] Wohngeld: Grundrentenfreibetrag (§ 17a WoGG) wirkt', JSON.s
   ck('[kiz-ae7] Kinderzuschlag: Kind evtl. erst 6 (36 % Mehrbedarf) -> „möglich“ statt „eher nicht“; mit Kind ab 14 bleibt „eher nicht“',
     L(f, 'kiz') === 'vielleicht' && K(f, 'kiz').includes('kiz.ae7') && L({ ...f, kids14: 1 }, 'kiz') === 'nein' && L({ ...f, kidsU6: 1 }, 'kiz') !== 'nein', [L(f, 'kiz'), L({ ...f, kids14: 1 }, 'kiz'), L({ ...f, kidsU6: 1 }, 'kiz')].join(' ')); }
 
+// WBS-Stufen je Land: Liste mit Grenzen, erreichte Stufe nach Brutto, sonst nach Abzügen; höchste Stufe = Grenze für „eher nicht“
+{ const W = (bl, b) => R.evaluate({ adults: 1, art1: 'lohn', brutto: b, netto: Math.round(b * 0.7), miete: 600, bundesland: bl, heute: 2026.9 }).results.find((x) => x.id === 'wbs');
+  const st = (r) => r.tx.filter((t) => /^wbs\.stufe/.test(t[0])).map((t) => t[0].replace('wbs.', '') + ':' + t[1].name + (t[1].grenze ? '=' + String(t[1].grenze.eur !== undefined ? t[1].grenze.eur : t[1].grenze).replace(/\D/g, '') : '')).join(' ');
+  ck('[wbs-stufen] Berlin: WBS 140/180/220 mit 16.800/21.600/26.400 €; 1.500 € brutto -> WBS 180, 2.000 € -> WBS 220, 2.500 € -> nach Abzügen WBS 180',
+    st(W('BE', 1500)) === 'stufe:WBS 140=16800 stufe:WBS 180=21600 stufe:WBS 220=26400 stufeDu:WBS 180' && /stufeDu:WBS 220/.test(st(W('BE', 2000))) && /stufeVielleicht:WBS 180/.test(st(W('BE', 2500))), st(W('BE', 1500)));
+  ck('[wbs-stufen] Hamburg 1./2./3. Förderweg 19.200/24.000/28.800 €, NRW Gruppe A/B, MV 2. Förderweg 27.000 €',
+    /1\. Förderweg=19200 stufe:2\. Förderweg=24000 stufe:3\. Förderweg=28800/.test(st(W('HH', 1000))) && /Einkommensgruppe B=32960/.test(st(W('NW', 1000))) && /2\. Förderweg=27000/.test(st(W('MV', 1000))), st(W('HH', 1000)));
+  ck('[wbs-stufen] Unter der Grundgrenze: niedrigste Stufe; Länder mit nur einer Grenze ohne Stufenliste; „eher nicht“ ohne Stufen',
+    /stufeDu:WBS 140/.test(st(W('BE', 1000))) && st(W('HE', 1000)) === '' && st(W('BE', 9000)) === '' && W('BE', 9000).level === 'nein', [st(W('BE', 1000)), st(W('HE', 1000)), W('BE', 9000).level].join(' | '));
+  ck('[wbs-stufen] Höchste Stufe jedes Landes = Faktor „hoch“ (Grenze für „eher nicht“)', Object.keys(R.RULES.wbsStufen).every((bl) => { const S = R.RULES.wbsStufen[bl], L = R.RULES.wbsLand[bl]; const f = S[S.length - 1][1]; return Math.abs((typeof f === 'number' ? f : f.ein / L.ein) - L.hoch) < 0.001 && S[0][1] === 1; })); }
+
 // Heizkosten (freiwillig): Wohngeld rechnet mit der Bruttokaltmiete = Warmmiete minus Heizkosten (ohne Angabe: Heizkostenkomponente)
 // 1 Person, Stufe III, 500 € warm, 1.200 € Lohn: mit 60 € Heizung Kaltmiete 440 € -> M = 440 + 110,40; Y = (1.200 - 102,50) x 0,7 -> 340 € (wie amtlicher Rechner)
 { const hk = (h) => T({ art1: 'lohn', brutto: 1200, netto: 900, miete: 500, mietstufe: 3, vermoegen: 0, heizkosten: h }, 'wohngeld', 'schaetz.spanne');

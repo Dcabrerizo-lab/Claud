@@ -991,5 +991,8 @@
   "f.gespeichert": "Saved in the “Downloads” folder: {name}",
   "f.gespeichertWahl": "Saved.",
   "beh.wgWeiter": "In some states the city or municipality handles housing benefit (Wohngeld). An application to the district (Landkreis) still counts and is forwarded (§ 16 SGB I).",
-  "f.formsBrief": "You find the informal application (formloser Antrag) for it in this folder."
+  "f.formsBrief": "You find the informal application (formloser Antrag) for it in this folder.",
+  "t.wbs.stufe": "{name}: income up to about {grenze} a year.",
+  "t.wbs.stufeDu": "With your gross income you probably meet the level {name}. That also gives you access to flats of the higher levels.",
+  "t.wbs.stufeVielleicht": "After the deductions of the housing office (Wohnungsamt, up to 30 %) it may be enough for the level {name}."
 }

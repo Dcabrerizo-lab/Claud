@@ -39,6 +39,8 @@ const M = [
   ['KiZ: Wohnanteil Paar 2 Kinder 71,4 statt 71 %', 'wohnPaar: [1, 0.83, 0.71,', 'wohnPaar: [1, 0.83, 0.714,'],
   ['Bürgergeld: Freibetragsstufe 20 % fehlt', 'if (b > 100) f += 0.2 * (Math.min(b, 520) - 100);', ''],
   ['KiZ: Kind evtl. 6 Jahre nicht beachtet', "      if (estHoch > 0) return mk(id, 'vielleicht', 'vielleicht', [['kiz.ae7']]);", ''],
+  ['WBS: Berlin WBS 180 falsch (1,6 statt 1,8)', "['WBS 180', 1.8 / 1.4]", "['WBS 180', 1.6 / 1.4]"],
+  ['WBS: erreichte Stufe nach Abzügen statt nach Brutto', 'const du = ST.find((x) => jahr <= gS(x[1]))', 'const du = ST.find((x) => nachAbzug <= gS(x[1]))'],
   ['Wohngeld: Mindestwerte Anlage 3 fehlen', '    M = Math.max(M, WG_MMIN[wgIdx(n)]); Y = Math.max(Y, WG_YMIN[wgIdx(n)]);', ''],
   ['Wohngeld: Werbungskostenpauschale fehlt', '    wgWerbung: { lohn: 1230, rente: 102 },', '    wgWerbung: { lohn: 0, rente: 0 },'],
   ['Elterngeld: Pauschbetrag § 2c BEEG fehlt', '    const n = Math.max(0, netto - E.pausch);', '    const n = Math.max(0, netto);'],

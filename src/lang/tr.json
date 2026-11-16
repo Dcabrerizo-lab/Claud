@@ -991,5 +991,8 @@
   "f.gespeichert": "“Downloads” klasörüne kaydedildi: {name}",
   "f.gespeichertWahl": "Kaydedildi.",
   "beh.wgWeiter": "Bazı eyaletlerde konut yardımından (Wohngeld) şehir veya belediye sorumludur. İlçeye (Landkreis) yapılan başvuru da geçerlidir ve iletilir (§ 16 SGB I).",
-  "f.formsBrief": "Bunun için resmî olmayan başvuruyu (formloser Antrag) bu dosyada bulursun."
+  "f.formsBrief": "Bunun için resmî olmayan başvuruyu (formloser Antrag) bu dosyada bulursun.",
+  "t.wbs.stufe": "{name}: yılda yaklaşık {grenze} gelire kadar.",
+  "t.wbs.stufeDu": "Brüt gelirinle muhtemelen {name} seviyesini karşılıyorsun. Böylece daha yüksek seviyelerin dairelerine de erişebilirsin.",
+  "t.wbs.stufeVielleicht": "Konut dairesinin (Wohnungsamt) kesintilerinden sonra (en fazla %30) {name} seviyesi için yetebilir."
 }

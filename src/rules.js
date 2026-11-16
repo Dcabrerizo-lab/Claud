@@ -131,6 +131,19 @@ const Rules = (function () {
       ST: { ein: 12000, zwei: 18000, weitere: 4100, kind: 500, hoch: 1.2, stand: '2026' },
       TH: { ein: 14400, zwei: 21600, weitere: 5000, kind: 1000, hoch: 1.4, stand: '2026' },
     },
+    // WBS-Stufen je Land (gleiche Quellen wie wbsLand, docs/WBS-GRENZEN.md): [Name, Faktor auf die Landesgrenze oder eigene Werte].
+    // Wohnungen werden für eine Stufe gefördert; wer eine niedrigere Stufe erfüllt, kommt auch an Wohnungen der höheren Stufen.
+    wbsStufen: {
+      BE: [['WBS 140', 1], ['WBS 180', 1.8 / 1.4], ['WBS 220', 2.2 / 1.4]],
+      HB: [['uneingeschränkter WBS', 1], ['eingeschränkter WBS', 1.6 / 1.1]],
+      HH: [['1. Förderweg', 1], ['2. Förderweg', 2 / 1.6], ['3. Förderweg', 2.4 / 1.6]],
+      MV: [['1. Förderweg', 1], ['2. Förderweg', { ein: 27000, zwei: 40500, weitere: 9200, kind: 1500 }]],
+      NW: [['Einkommensgruppe A', 1], ['Einkommensgruppe B', 1.4]],
+      RP: [['allgemeine Grenze', 1], ['erhöhte Grenze („speziell“)', 1.6]],
+      SH: [['1. Förderweg', 1], ['2. Förderweg', 1.2], ['3. Förderweg', 1.4]],
+      ST: [['allgemeine Grenze', 1], ['Landesprogramme', 1.2]],
+      TH: [['allgemeine Grenze', 1], ['Förderrichtlinie', 1.4]]
+    },
     // Freibetrag beim Wohngeld für eigenes Einkommen von Kindern (16 bis 24 Jahre): 1.200 € im Jahr (§ 17 Nr. 4 WoGG)
     wgKindFrei: 100,
     // Werbungskosten-Pauschbeträge im Jahr (§ 9a Satz 1 Nr. 1 und 3 EStG), beim Wohngeld vom Einkommen abgezogen (§ 14 Abs. 1 WoGG)
@@ -1156,13 +1169,25 @@ const Rules = (function () {
       const L = R.wbsLand[h.land];
       if (L) {
         const grenze = gr(L), land = BL_NAME[h.land];
-        if (jahr <= grenze) return mk(id, 'ja', 'ja', [['wbs.landGrenze', { land, grenze: eur(grenze), stand: L.stand }], ['wbs.landStelle']]);
+        // Stufen: jede mit ihrer Grenze; welche erfüllt das Brutto (sicher), welche vielleicht nach den Abzügen des Amts
+        const ST = R.wbsStufen[h.land] || [];
+        const gS = (f) => (typeof f === 'number' ? grenze * f : gr(Object.assign({}, L, f, { rund: 0, plus1: 0, plus2: 0 })));
+        const stufenTx = (sicher) => {
+          if (!ST.length) return [];
+          const liste = ST.map((x) => ['wbs.stufe', { name: x[0], grenze: eur(r10(gS(x[1]))) }]);
+          const nachAbzug = jahr * (1 - R.wbs.maxAbzug) - freiS;
+          const du = ST.find((x) => jahr <= gS(x[1])), vl = ST.find((x) => nachAbzug <= gS(x[1]));
+          return liste.concat(du ? [['wbs.stufeDu', { name: du[0] }]] : vl ? [['wbs.stufeVielleicht', { name: vl[0] }]] : []);
+        };
+        const gdS = gdbNum(h), pgS = h.pflegegrad > 0;
+        const freiS = (gdS === 100 || (gdS >= 80 && pgS) ? R.wbs.schwerbFreiHoch : gdS >= 50 && pgS ? R.wbs.schwerbFreiPflege : 0) + (h.bhWeitere || 0) * R.wbs.schwerbFreiPflege + (h.uzBetrag || 0) * 12;
+        if (jahr <= grenze) return mk(id, 'ja', 'ja', [['wbs.landGrenze', { land, grenze: eur(grenze), stand: L.stand }]].concat(stufenTx(), [['wbs.landStelle']]));
         // Höchstens 30 % Abzüge (§ 23 WoFG und Landesrecht), dazu Freibeträge (Schwerbehinderung) und gezahlter Unterhalt (§ 24 WoFG);
         // darüber hinaus auch nicht mit der höchsten Landesstufe. 5 % Reserve, weil die Länder ihre Grenzen fortschreiben.
         const gdL = gdbNum(h), pgL = h.pflegegrad > 0;
         const freiL = (gdL === 100 || (gdL >= 80 && pgL) ? R.wbs.schwerbFreiHoch : gdL >= 50 && pgL ? R.wbs.schwerbFreiPflege : 0) + (h.bhWeitere || 0) * R.wbs.schwerbFreiPflege + (h.uzBetrag || 0) * 12;
         if (L.hoch && jahr * (1 - R.wbs.maxAbzug) - freiL > grenze * L.hoch * 1.05) return mk(id, 'nein', 'einkoHoch', [['wbs.landHoch', { land, grenze: eur(grenze * L.hoch) }]]);
-        return mk(id, 'vielleicht', 'vielleicht', [['wbs.landUeber', { land, grenze: eur(grenze), stand: L.stand }], ['wbs.landStelle']]);
+        return mk(id, 'vielleicht', 'vielleicht', [['wbs.landUeber', { land, grenze: eur(grenze), stand: L.stand }]].concat(stufenTx(), [['wbs.landStelle']]));
       }
       const bund = gr(R.wbsBund);
       return jahr <= bund ? mk(id, 'ja', 'ja', [['wbs.landJa', { grenze: eur(bund) }], ['wbs.landStelle']]) : mk(id, 'vielleicht', 'vielleicht', [['wbs.landEigen'], ['wbs.landStelle']]);

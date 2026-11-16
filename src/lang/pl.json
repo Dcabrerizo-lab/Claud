@@ -991,5 +991,8 @@
   "f.gespeichert": "Zapisano w folderze „Downloads”: {name}",
   "f.gespeichertWahl": "Zapisano.",
   "beh.wgWeiter": "W niektórych krajach związkowych dodatkiem mieszkaniowym (Wohngeld) zajmuje się miasto lub gmina. Wniosek złożony w powiecie (Landkreis) też się liczy i zostanie przekazany (§ 16 SGB I).",
-  "f.formsBrief": "Nieformalny wniosek (formloser Antrag) znajdziesz w tej teczce."
+  "f.formsBrief": "Nieformalny wniosek (formloser Antrag) znajdziesz w tej teczce.",
+  "t.wbs.stufe": "{name}: dochód do około {grenze} rocznie.",
+  "t.wbs.stufeDu": "Przy swoim dochodzie brutto prawdopodobnie spełniasz poziom {name}. Dzięki temu masz też dostęp do mieszkań wyższych poziomów.",
+  "t.wbs.stufeVielleicht": "Po odliczeniach urzędu mieszkaniowego (Wohnungsamt, do 30 %) może wystarczyć na poziom {name}."
 }

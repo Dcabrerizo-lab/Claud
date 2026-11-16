@@ -991,5 +991,8 @@
   "f.gespeichert": "Gespeichert im Ordner „Downloads“: {name}",
   "f.gespeichertWahl": "Gespeichert.",
   "beh.wgWeiter": "In manchen Ländern ist für Wohngeld die Stadt oder Gemeinde zuständig. Der Antrag gilt auch beim Landkreis als gestellt und wird weitergeleitet (§ 16 SGB I).",
-  "f.formsBrief": "Den formlosen Antrag dafür findest du in dieser Mappe."
+  "f.formsBrief": "Den formlosen Antrag dafür findest du in dieser Mappe.",
+  "t.wbs.stufe": "{name}: Einkommen bis etwa {grenze} im Jahr.",
+  "t.wbs.stufeDu": "Mit deinem Bruttoeinkommen erfüllst du wahrscheinlich die Stufe {name}. Damit kommst du auch an Wohnungen der höheren Stufen.",
+  "t.wbs.stufeVielleicht": "Nach den Abzügen des Wohnungsamts (bis zu 30 %) kann es für die Stufe {name} reichen."
 }

@@ -991,5 +991,8 @@
   "f.gespeichert": "تم الحفظ في مجلد «Downloads»: {name}",
   "f.gespeichertWahl": "تم الحفظ.",
   "beh.wgWeiter": "في بعض الولايات تكون المدينة أو البلدية مسؤولة عن إعانة السكن (Wohngeld). ويُعتبر الطلب المقدَّم إلى الدائرة (Landkreis) مقدَّمًا ويُحال (§ 16 SGB I).",
-  "f.formsBrief": "تجد الطلب غير الرسمي (formloser Antrag) لذلك في هذا الملف."
+  "f.formsBrief": "تجد الطلب غير الرسمي (formloser Antrag) لذلك في هذا الملف.",
+  "t.wbs.stufe": "{name}: دخل حتى نحو {grenze} في السنة.",
+  "t.wbs.stufeDu": "بدخلك الإجمالي تستوفي على الأرجح مستوى {name}. وبذلك يمكنك أيضًا الحصول على شقق المستويات الأعلى.",
+  "t.wbs.stufeVielleicht": "بعد خصومات مكتب الإسكان (Wohnungsamt، حتى 30 %) قد يكفي لمستوى {name}."
 }
