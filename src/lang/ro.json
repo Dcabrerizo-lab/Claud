@@ -990,5 +990,6 @@
   "f.speichern": "Salvează PDF",
   "f.gespeichert": "Salvat în dosarul „Downloads”: {name}",
   "f.gespeichertWahl": "Salvat.",
-  "beh.wgWeiter": "În unele landuri, de alocația pentru locuință (Wohngeld) se ocupă orașul sau comuna. Cererea depusă la district (Landkreis) este valabilă și va fi transmisă (§ 16 SGB I)."
+  "beh.wgWeiter": "În unele landuri, de alocația pentru locuință (Wohngeld) se ocupă orașul sau comuna. Cererea depusă la district (Landkreis) este valabilă și va fi transmisă (§ 16 SGB I).",
+  "f.formsBrief": "Cererea informală (formloser Antrag) pentru aceasta o găsești în acest dosar."
 }

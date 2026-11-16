@@ -990,5 +990,6 @@
   "f.speichern": "PDF kaydet",
   "f.gespeichert": "“Downloads” klasörüne kaydedildi: {name}",
   "f.gespeichertWahl": "Kaydedildi.",
-  "beh.wgWeiter": "Bazı eyaletlerde konut yardımından (Wohngeld) şehir veya belediye sorumludur. İlçeye (Landkreis) yapılan başvuru da geçerlidir ve iletilir (§ 16 SGB I)."
+  "beh.wgWeiter": "Bazı eyaletlerde konut yardımından (Wohngeld) şehir veya belediye sorumludur. İlçeye (Landkreis) yapılan başvuru da geçerlidir ve iletilir (§ 16 SGB I).",
+  "f.formsBrief": "Bunun için resmî olmayan başvuruyu (formloser Antrag) bu dosyada bulursun."
 }

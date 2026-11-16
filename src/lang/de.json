@@ -990,5 +990,6 @@
   "f.speichern": "PDF speichern",
   "f.gespeichert": "Gespeichert im Ordner „Downloads“: {name}",
   "f.gespeichertWahl": "Gespeichert.",
-  "beh.wgWeiter": "In manchen Ländern ist für Wohngeld die Stadt oder Gemeinde zuständig. Der Antrag gilt auch beim Landkreis als gestellt und wird weitergeleitet (§ 16 SGB I)."
+  "beh.wgWeiter": "In manchen Ländern ist für Wohngeld die Stadt oder Gemeinde zuständig. Der Antrag gilt auch beim Landkreis als gestellt und wird weitergeleitet (§ 16 SGB I).",
+  "f.formsBrief": "Den formlosen Antrag dafür findest du in dieser Mappe."
 }

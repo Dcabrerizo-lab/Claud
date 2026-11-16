@@ -864,9 +864,13 @@
     var fp = formPlan();
     if (!fp.length) return '';
     var jc = fp.some(function (f) { return f.id === 'ggeld'; });
+    // Leistungen ohne Formular-Link: Der formlose Antrag steht weiter oben in der Mappe
+    var HINWEIS_FUER = { gsa: 'gsa', wg: 'wohngeld', wbs: 'wbs' }, briefe = {};
+    briefIds().forEach(function (r) { briefe[r.id] = true; });
     var h = '<article class="page docs forms"><h3>' + esc(t('f.forms')) + '</h3><p>' + esc(t('f.formsWeb')) + '</p>';
     h += '<ul lang="de" dir="ltr">' + fp.map(function (f) {
-      return '<li><strong>' + esc(f.titel) + '</strong> – ' + esc(f.warum) + (f.url ? '<br><a href="' + esc(f.url) + '" target="_blank" rel="noopener">' + esc(t('f.formsLink')) + '</a>' : '') + (f.hilfe ? '<br><em>Ausfüllhilfe:</em>' + listItems(f.hilfe) : '') + '</li>';
+      var brief = f.art === 'hinweis' && briefe[HINWEIS_FUER[f.id]] ? (/[.!?]$/.test(f.warum) ? '' : '.') + ' <strong>' + esc(t('f.formsBrief')) + '</strong>' : '';
+      return '<li><strong>' + esc(f.titel) + '</strong> – ' + esc(f.warum) + brief + (f.url ? '<br><a href="' + esc(f.url) + '" target="_blank" rel="noopener">' + esc(t('f.formsLink')) + '</a>' : '') + (f.hilfe ? '<br><em>Ausfüllhilfe:</em>' + listItems(f.hilfe) : '') + '</li>';
     }).join('') + '</ul><p class="tip">' + esc(t('f.formsCheck')) + '</p>';
     if (jc) h += '<h3>' + esc(t('f.formsUnt')) + '</h3>' + '<div lang="de" dir="ltr">' + listItems(Formulare.unterlagen(state)) + '</div>';
     return h + '</article>';

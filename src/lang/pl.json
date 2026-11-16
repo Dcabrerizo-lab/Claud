@@ -990,5 +990,6 @@
   "f.speichern": "Zapisz PDF",
   "f.gespeichert": "Zapisano w folderze „Downloads”: {name}",
   "f.gespeichertWahl": "Zapisano.",
-  "beh.wgWeiter": "W niektórych krajach związkowych dodatkiem mieszkaniowym (Wohngeld) zajmuje się miasto lub gmina. Wniosek złożony w powiecie (Landkreis) też się liczy i zostanie przekazany (§ 16 SGB I)."
+  "beh.wgWeiter": "W niektórych krajach związkowych dodatkiem mieszkaniowym (Wohngeld) zajmuje się miasto lub gmina. Wniosek złożony w powiecie (Landkreis) też się liczy i zostanie przekazany (§ 16 SGB I).",
+  "f.formsBrief": "Nieformalny wniosek (formloser Antrag) znajdziesz w tej teczce."
 }
