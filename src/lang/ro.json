@@ -95,7 +95,7 @@
   "f.copied": "Copiat.",
   "f.copyFail": "Copierea nu a mers. Selectează textul de mai jos și copiază-l manual.",
   "f.deNote": "Scrisoarea și fișa cu date sunt în germană, pentru că autoritățile au nevoie de ele așa. Le poți depune sau trimite neschimbate.",
-  "f.stichtag": "La multe prestații, o cerere în formă liberă asigură luna de început. Formularul oficial îl trimiți ulterior.",
+  "f.stichtag": "Dacă există un formular oficial (amtliches Formular), găsești linkul mai jos. Pentru celelalte prestații, dosarul conține o cerere informală (formloser Antrag): contează ca cerere și asigură luna în care ajunge.",
   "f.docs": "Documente pentru această prestație",
   "f.mappe": "Dosarul tău de cerere",
   "f.close": "Închide dosarul",
@@ -972,14 +972,9 @@
   "t.auto.sgb12": "Mașina ({wert}) contează aici la avere, cu excepția cazului în care este necesară din cauza unei dizabilități sau pentru muncă.",
   "t.selbst.hinweis": "La activitate independentă, autoritatea estimează mai întâi venitul provizoriu și îl calculează exact mai târziu. Pregătește datele despre încasări și cheltuieli.",
   "f.forms": "Formulare oficiale",
-  "f.formsApp": "Aceste formulare se potrivesc cu datele tale. SoLo completează numele, adresa și întrebările da/nu care rezultă din datele tale. Restul completezi tu.",
-  "f.formsWeb": "Aceste formulare se potrivesc cu datele tale. În aplicație, SoLo le completează în avans. Aici le primești de la instituția competentă sau de pe site-ul ei.",
-  "f.formsShare": "Trimite formularele completate",
-  "f.formsLeer": "formular gol",
-  "f.formsCheck": "Verifică fiecare câmp completat înainte să semnezi. Tu răspunzi pentru date.",
+  "f.formsWeb": "Aceste cereri se potrivesc cu răspunsurile tale. Linkurile duc la formularele oficiale (amtliche Formulare); SoLo nu completează nimic. Ajutorul de completare spune ce se scrie unde.",
+  "f.formsCheck": "Linkurile duc la site-uri oficiale. Folosește acolo formularul actual; ești responsabil pentru datele tale.",
   "f.formsUnt": "Documente pentru Jobcenter",
-  "f.formsAppLeer": "Aceste formulare se potrivesc cu datele tale. Le completezi într-o aplicație PDF sau pe hârtie.",
-  "f.formsShareLeer": "Trimite formularele",
   "f.formsLink": "La formularul oficial (internet)",
   "t.kiz.mitWg": "Suplimentul pentru copii (Kinderzuschlag, până la {max} pe copil) te ajută să nu mai ai nevoie de ajutorul de bază (Grundsicherungsgeld) doar împreună cu ajutorul pentru locuință (Wohngeld). Depune cereri pentru ambele; Familienkasse le verifică împreună.",
   "heiz.label": "Din care costuri de încălzire pe lună (opțional)",
@@ -994,5 +989,6 @@
   "f.druck": "Tipărește",
   "f.speichern": "Salvează PDF",
   "f.gespeichert": "Salvat în dosarul „Downloads”: {name}",
-  "f.gespeichertWahl": "Salvat."
+  "f.gespeichertWahl": "Salvat.",
+  "beh.wgWeiter": "În unele landuri, de alocația pentru locuință (Wohngeld) se ocupă orașul sau comuna. Cererea depusă la district (Landkreis) este valabilă și va fi transmisă (§ 16 SGB I)."
 }

@@ -43,11 +43,9 @@ const M = [
   ['Wohngeld: Werbungskostenpauschale fehlt', '    wgWerbung: { lohn: 1230, rente: 102 },', '    wgWerbung: { lohn: 0, rente: 0 },'],
   ['Elterngeld: Pauschbetrag § 2c BEEG fehlt', '    const n = Math.max(0, netto - E.pausch);', '    const n = Math.max(0, netto);'],
   ['Kinderzuschlag: Hilfebedürftigkeit mit vollem Netto statt bereinigtem Einkommen', '    const mitKiz = elternEinkSGB2(h) + h.children * R.kindergeld', '    const mitKiz = h.netto + 0 * h.children * R.kindergeld'],
-  // Ausfüllhilfe: Ja/Nein vertauscht, falsches Formular, Name falsch geteilt
-  ['Formulare: Alleinerziehend Ja/Nein vertauscht', "ha.rbtnAlleinerziehend = allein ? 'ja' : 'nein';", "ha.rbtnAlleinerziehend = allein ? 'nein' : 'ja';", 'src/formulare.js'],
-  ['Formulare: Anlage KDU fehlt bei Miete', "if (miete > 0 || eigen) {", "if (eigen) {", 'src/formulare.js'],
+  // Ausfüllhilfe: falsche Anlage, Name falsch geteilt
+  ['Formulare: Anlage KDU fehlt bei Miete', "if (miete > 0 || eigen) anl.push('Anlage KDU", "if (eigen) anl.push('Anlage KDU", 'src/formulare.js'],
   ['Formulare: Vorname und Nachname vertauscht', "w.length === 1 ? { vor: '', nach: w[0] } : { vor: w.slice(0, -1).join(' '), nach: w[w.length - 1] }", "w.length === 1 ? { vor: '', nach: w[0] } : { nach: w.slice(0, -1).join(' '), vor: w[w.length - 1] }", 'src/formulare.js'],
-  ['Formulare: Optionsliste nicht beachtet', "const opt = opts.indexOf(k[v]) >= 0 ? k[v] :", "const opt = true ? k[v] :", 'app/pdf/pdf-entry.js'],
   ['Asyl: Grundsicherung im Alter nicht ausgeschlossen', "    if (h.asyl) return mk(id, 'nein', 'ausschluss', [['ggeld.asyl']]);\n    if (!h.alter && !h.erwerbsgemindert && !h.alterGrenz)", '    if (!h.alter && !h.erwerbsgemindert && !h.alterGrenz)'],
   ['Asyl: Wohngeld nicht ausgeschlossen', "if (h.asyl) return mk(id, 'nein', 'ausschluss', [['wohngeld.asyl']]);", ''],
   ['Asyl: Kinderzuschlag nicht ausgeschlossen', "if (h.asyl) return mk(id, 'nein', 'ausschluss', [['kiz.asyl']]);", ''],
@@ -91,7 +89,6 @@ for (const f of ['site', 'datenschutz.html', 'README.md', 'app/capacitor.config.
   fs.cpSync(path.join(ROOT, f), path.join(tmp, f), { recursive: true });
 }
 // Ausfüllhilfe: Formulare, PDF-Modul und die PDF-Bibliotheken (verlinkt, nicht kopiert)
-fs.cpSync(path.join(ROOT, 'content', 'formulare'), path.join(tmp, 'content', 'formulare'), { recursive: true });
 fs.cpSync(path.join(ROOT, 'app', 'pdf'), path.join(tmp, 'app', 'pdf'), { recursive: true });
 fs.symlinkSync(path.join(ROOT, 'app', 'node_modules'), path.join(tmp, 'app', 'node_modules'));
 // Mutation: [Name, alt, neu, Datei (Standard src/rules.js)]

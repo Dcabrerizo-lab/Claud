@@ -98,8 +98,9 @@ const MOCK = () => {
   const mitGG = await p.evaluate(() => { const cb = document.querySelector('[data-pick="ggeld"]'); if (!cb) return false; cb.checked = true; cb.dispatchEvent(new Event('change', { bubbles: true })); return true; });
   await p.click('#mappeMake'); ok('Mappe öffnet', await p.isVisible('#mappe'));
   const brief = await p.inputValue('#mappeText');
-  ok('Anschreiben Wohngeld: Empfänger mit Anschrift', /Landratsamt Erlangen-Höchstadt\nWohngeldstelle\nNägelsbachstraße 1\n91052 Erlangen/.test(brief), brief.slice(0, 300));
-  ok('Anschreiben Kindergeld: Familienkasse Bayern Nord, Postanschrift', /Familienkasse Bayern Nord\n90316 Nürnberg/.test(brief), brief.slice(0, 300));
+  ok('Entweder Formular oder formlos: kein formloser Brief für Wohngeld (Bayern) und Kindergeld, weil es den Formular-Link gibt', !/Betreff: Antrag auf Wohngeld/.test(brief) && !/Betreff: Antrag auf Kindergeld/.test(brief), brief.slice(0, 300));
+  const links = await p.$$eval('#mappeBody .forms a[href]', (e) => e.map((x) => x.getAttribute('href')));
+  ok('Formular-Links für Wohngeld (Bayern) und Kindergeld in der Mappe', links.some((u) => /stmb\.bayern\.de/.test(u)) && links.some((u) => /formulare-kindergeld/.test(u)), links.join(' '));
   ok('Knöpfe einzeln: PDF teilen, kein doppelter Knopf „Teilen oder speichern“', (await p.textContent('#mappePrint')).includes('PDF') && !(await p.isVisible('#mappeShare')));
   ok('Keine Doppelbeschriftung „oder“ auf den Mappe-Knöpfen', !(await p.evaluate(() => [...document.querySelectorAll('#mappe .btns button')].filter((b) => !b.hidden).some((b) => / oder | or /.test(b.textContent)))));
   await p.click('#mappePrint');
@@ -132,28 +133,9 @@ const MOCK = () => {
     ok('PDF auch in Sprache ' + l, !!(await p.evaluate(() => window.__pdf)), await p.textContent('#copyMsg'));
   }
   await p.evaluate(() => { const s = document.getElementById('lang'); s.value = 'de'; s.dispatchEvent(new Event('change', { bubbles: true })); });
-  // Amtliche Formulare: vorausgefüllt als PDF-Dateien teilen
-  ok('Amtliche Formulare in der Mappe mit Knopf', await p.isVisible('#formsShare'));
-  const vorher = (await calls('Share.share')).length;
-  await p.evaluate(() => { window.__files = {}; });
-  await p.click('#formsShare');
-  await p.waitForFunction((n) => window.__calls.filter((c) => c[0] === 'Share.share').length > n, vorher, { timeout: 30000 }).catch(() => {});
-  const formShare = (await calls('Share.share')).slice(vorher).find((o) => o.files);
-  const dateien = await p.evaluate(() => window.__files || {});
-  ok('Formulare werden als PDF-Dateien geteilt', !!formShare && formShare.files.length >= 1 && formShare.files.length === Object.keys(dateien).length && formShare.files.every((f) => /\.pdf$/.test(f)), JSON.stringify(formShare) + ' ' + (await p.textContent('#formsMsg')));
-  let gefuellt = 0;
-  for (const [name, data] of Object.entries(dateien)) {
-    const buf = Buffer.from(data, 'base64');
-    ok('Formular ' + name + ' ist ein PDF', buf.slice(0, 5).toString() === '%PDF-' && buf.length > 10000, buf.length);
-    if (/\/Encrypt/.test(buf.toString('latin1'))) continue; // vom Herausgeber geschützt: unverändert weitergegeben
-    const doc = await PDFDocument.load(buf);
-    ok('Formular ' + name + ' lässt sich öffnen', doc.getPageCount() > 0);
-    if (/Hauptantrag/.test(name)) { ok('Hauptantrag: Vorname aus der Mappe eingetragen', doc.getForm().getTextField('txtfPersonVorname').getText() === 'Maria'); gefuellt++; }
-  }
-  const geloescht = (await calls('Filesystem.deleteFile')).map((o) => o.path);
-  ok('Formular-Dateien nach dem Teilen aus dem Cache gelöscht', Object.keys(dateien).every((n) => geloescht.indexOf(n) >= 0), geloescht.join(' '));
-  if (mitGG) ok('Mit Grundsicherungsgeld: Hauptantrag vorausgefüllt geprüft', gefuellt === 1);
-  console.log('  (Formulare geteilt: ' + Object.keys(dateien).join(', ') + (gefuellt ? '; Hauptantrag geprüft' : '') + ')');
+  // Amtliche Formulare: nur Links, kein Ausfüllen und Teilen von Vordrucken mehr
+  ok('Kein Knopf zum Ausfüllen von Formularen, keine Formular-Dateien in der App', (await p.locator('#formsShare').count()) === 0 && !fs.existsSync(path.join(WWW, 'formulare')));
+  if (mitGG) ok('Mit Grundsicherungsgeld: Link auf die Formularseite der Bundesagentur, kein formloser Jobcenter-Brief', links.length >= 0 && (await p.$$eval('#mappeBody .forms a[href]', (e) => e.some((x) => /downloads-arbeitslos-arbeit-finden/.test(x.href)))) && !/Betreff: Antrag auf Grundsicherungsgeld/.test(await p.inputValue('#mappeText')));
   await p.screenshot({ path: path.join(require('os').tmpdir(), 'app-mappe.png') });
   await p.click('#mappeClose');
 
@@ -176,7 +158,7 @@ const MOCK = () => {
   ok('PLZ aus der Anschrift: Karte nennt die zuständige Stelle', /Familienkasse Bayern Nord/.test(await p.textContent('#c-kindergeld')));
   await p.click('#mappeMake');
   const brief2 = await p.inputValue('#mappeText');
-  ok('PLZ aus der Anschrift: Anschreiben an Familienkasse Bayern Nord mit Postanschrift', /Familienkasse Bayern Nord\n90316 Nürnberg/.test(brief2), brief2.slice(0, 250));
+  ok('PLZ aus der Anschrift: Mappe übernimmt den Wohnort; Kindergeld über den Formular-Link statt formlosem Brief', /90542 Eckental/.test(brief2) && !/Betreff: Antrag auf Kindergeld/.test(brief2), brief2.slice(0, 250));
   ok('PLZ aus der Anschrift: kein Hinweis auf fehlende PLZ', !(await p.isVisible('#mappeAdrNote')));
   await p.click('#mappeClose');
   // Mehrere Orte unter einer PLZ: Ortsname aus der Anschrift entscheidet (84032: Altdorf im Lkr. Landshut oder Stadt Landshut)

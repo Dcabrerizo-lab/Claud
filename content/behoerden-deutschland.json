@@ -1006,7 +1006,14 @@
    "name": "Saale-Holzland-Kreis",
    "web": "https://www.saaleholzlandkreis.de/",
    "typ": "kreis",
-   "wiki": "Saale-Holzland-Kreis"
+   "wiki": "Saale-Holzland-Kreis",
+   "anschrift": [
+    "Im Schloß",
+    "07607 Eisenberg"
+   ],
+   "quelle": "https://www.saaleholzlandkreis.de/fileadmin/user_upload/PDF/2026_PDF/DSGVO_13_Erlaeuterung.pdf",
+   "quelleArt": "impressum",
+   "stand": "16.11.2026"
   },
   "16075": {
    "name": "Saale-Orla-Kreis",

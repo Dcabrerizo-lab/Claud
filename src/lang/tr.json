@@ -95,7 +95,7 @@
   "f.copied": "Kopyalandı.",
   "f.copyFail": "Kopyalama olmadı. Aşağıdaki metni seçip elle kopyalayın.",
   "f.deNote": "Mektup ve bilgi sayfası Almanca, çünkü daireler böyle istiyor. Bunları olduğu gibi teslim edebilir veya gönderebilirsiniz.",
-  "f.stichtag": "Birçok yardımda serbest biçimli başvuru başlangıç ayını güvence altına alır. Resmi formu sonradan teslim edersiniz.",
+  "f.stichtag": "Resmî bir form (amtliches Formular) varsa bağlantısını aşağıda bulursun. Diğer yardımlar için dosyada resmî olmayan bir başvuru (formloser Antrag) var: Başvuru sayılır ve ulaştığı ayı güvenceye alır.",
   "f.docs": "Bu yardım için belgeler",
   "f.mappe": "Başvuru dosyanız",
   "f.close": "Dosyayı kapat",
@@ -972,14 +972,9 @@
   "t.auto.sgb12": "Araba ({wert}) burada varlığa sayılır, engellilik nedeniyle veya iş için gerekmiyorsa.",
   "t.selbst.hinweis": "Serbest meslek sahiplerinde kurum geliri önce geçici olarak tahmin eder ve sonra kesin hesaplar. Gelir ve giderlerini hazır tut.",
   "f.forms": "Resmî formlar",
-  "f.formsApp": "Bu formlar bilgilerinize uygundur. SoLo adınızı, adresinizi ve bilgilerinizden çıkan evet/hayır sorularını doldurur. Gerisini kendiniz doldurursunuz.",
-  "f.formsWeb": "Bu formlar bilgilerinize uygundur. Uygulamada SoLo bunları önceden doldurur. Burada formları yetkili kurumdan veya internet sitesinden alabilirsiniz.",
-  "f.formsShare": "Doldurulmuş formları paylaş",
-  "f.formsLeer": "boş form",
-  "f.formsCheck": "İmzalamadan önce doldurulmuş her alanı kontrol edin. Bilgilerden siz sorumlusunuz.",
+  "f.formsWeb": "Bu başvurular yanıtlarına uygun. Bağlantılar resmî formlara (amtliche Formulare) götürür; SoLo hiçbir şeyi doldurmaz. Doldurma yardımı neyin nereye yazılacağını söyler.",
+  "f.formsCheck": "Bağlantılar resmî sayfalara götürür. Oradaki güncel formu kullan; verdiğin bilgilerden sen sorumlusun.",
   "f.formsUnt": "Jobcenter için belgeler",
-  "f.formsAppLeer": "Bu formlar bilgilerinize uygundur. Onları bir PDF uygulamasında veya kâğıt üzerinde doldurursunuz.",
-  "f.formsShareLeer": "Formları paylaş",
   "f.formsLink": "Resmî forma git (internet)",
   "t.kiz.mitWg": "Çocuk ek ödeneği (Kinderzuschlag, çocuk başına en fazla {max}) yalnızca konut yardımıyla (Wohngeld) birlikte temel güvence ödeneğine (Grundsicherungsgeld) ihtiyaç duymamanı sağlar. İkisine de başvur; Familienkasse bunları birlikte inceler.",
   "heiz.label": "Bunun aylık ısınma gideri (isteğe bağlı)",
@@ -994,5 +989,6 @@
   "f.druck": "Yazdır",
   "f.speichern": "PDF kaydet",
   "f.gespeichert": "“Downloads” klasörüne kaydedildi: {name}",
-  "f.gespeichertWahl": "Kaydedildi."
+  "f.gespeichertWahl": "Kaydedildi.",
+  "beh.wgWeiter": "Bazı eyaletlerde konut yardımından (Wohngeld) şehir veya belediye sorumludur. İlçeye (Landkreis) yapılan başvuru da geçerlidir ve iletilir (§ 16 SGB I)."
 }

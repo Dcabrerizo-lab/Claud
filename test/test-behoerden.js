@@ -24,9 +24,11 @@ check('[beh-de] Köln (kreisfreie Stadt): Wohngeld, Grundsicherung, Unterhaltsvo
   check('[beh-de] Alle Anschriften außerhalb Bayerns sauber, mit Quelle und Abrufdatum, PLZ im Bundesland der Behörde', schlecht.length === 0, schlecht.slice(0, 5).map(([a, e]) => a + ' ' + e.anschrift.join(', ')).join(' | '));
   check('[beh-de] Mindestens 290 von 302 Stellen außerhalb Bayerns mit Anschrift', Object.values(DE.kreise).filter((e) => e.anschrift).length >= 290);
 }
-check('[beh-de] Landkreis (Kreis Mettmann): nur Grundsicherung im Alter, kein Wohngeld und kein Jugendamt (liegen teils bei Gemeinden)', bd('gsa', '05158').name === 'Kreis Mettmann' && bd('wohngeld', '05158') === null && bd('uvg', '05158') === null);
+check('[beh-de] Landkreis (Kreis Mettmann): Grundsicherung im Alter und Wohngeld mit Anschrift (Wohngeld mit Hinweis auf Weiterleitung, § 16 SGB I), kein Jugendamt', bd('gsa', '05158').name === 'Kreis Mettmann' && bd('wohngeld', '05158').name === 'Kreis Mettmann' && bd('wohngeld', '05158').weiter === true && !!bd('wohngeld', '05158').anschrift && bd('uvg', '05158') === null);
+check('[beh-de] Kreisfreie Stadt: Wohngeld ohne Weiterleitungs-Hinweis', bd('wohngeld', '14713').weiter === false);
+check('[beh-de] Jeder Landkreis außerhalb Bayerns hat für Wohngeld eine Anschrift', Object.keys(require('../content/behoerden-deutschland.json').kreise).every((k) => { const b = bd('wohngeld', k); return b && b.anschrift && b.anschrift.length >= 2 && /^\d{5} /.test(b.anschrift[b.anschrift.length - 1]); }));
 check('[beh-de] Berlin und Hamburg: keine Stadt-Angabe (dort die Bezirksämter)', bd('wohngeld', '11000') === null && bd('wohngeld', '02000') === null);
-check('[beh-de] Landkreis und Stadt Leipzig getrennt', bd('wohngeld', '14713').name === 'Stadt Leipzig' && bd('wohngeld', '14729') === null && bd('gsa', '14729').name === 'Landkreis Leipzig');
+check('[beh-de] Landkreis und Stadt Leipzig getrennt', bd('wohngeld', '14713').name === 'Stadt Leipzig' && bd('wohngeld', '14729').name === 'Landkreis Leipzig' && bd('gsa', '14729').name === 'Landkreis Leipzig');
 check('[beh-de] Alle Kreise außerhalb Bayerns (außer Berlin, Hamburg) mit Website, 79 kreisfreie Städte', P.kreise.filter((k) => !/^(09|11|02)/.test(k.ags)).every((k) => DE.kreise[k.ags] && /^https?:\/\//.test(DE.kreise[k.ags].web)) && Object.values(DE.kreise).filter((e) => e.typ === 'stadt').length === 79);
 { // Anschrift aus dem Handy-Abruf (nur Beispiel im Speicher): erscheint mit Stand
   const D2 = JSON.parse(JSON.stringify(D)); D2.de.kreise['05315'] = Object.assign({}, D2.de.kreise['05315'], { anschrift: ['Beispielplatz 1', '50667 Köln'], stand: '11.11.2026', quelle: 'https://example.org/impressum' });

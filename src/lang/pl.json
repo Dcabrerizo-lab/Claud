@@ -95,7 +95,7 @@
   "f.copied": "Skopiowano.",
   "f.copyFail": "Kopiowanie się nie udało. Zaznacz tekst poniżej i skopiuj go ręcznie.",
   "f.deNote": "List i arkusz z danymi są po niemiecku, ponieważ urzędy tego wymagają. Możesz je złożyć lub wysłać bez zmian.",
-  "f.stichtag": "Przy wielu świadczeniach wniosek w formie swobodnej zabezpiecza miesiąc początkowy. Oficjalny formularz dosyłasz później.",
+  "f.stichtag": "Jeśli istnieje oficjalny formularz (amtliches Formular), link znajdziesz poniżej. Dla pozostałych świadczeń teczka zawiera nieformalny wniosek (formloser Antrag): liczy się jako wniosek i zabezpiecza miesiąc, w którym wpłynie.",
   "f.docs": "Dokumenty do tego świadczenia",
   "f.mappe": "Twoja teczka wniosku",
   "f.close": "Zamknij teczkę",
@@ -972,14 +972,9 @@
   "t.auto.sgb12": "Samochód ({wert}) liczy się tu do majątku, chyba że jest potrzebny z powodu niepełnosprawności lub do pracy.",
   "t.selbst.hinweis": "Przy działalności własnej urząd najpierw tymczasowo szacuje dochód, a później rozlicza go dokładnie. Przygotuj dane o przychodach i wydatkach.",
   "f.forms": "Formularze urzędowe",
-  "f.formsApp": "Te formularze pasują do twoich danych. SoLo wpisuje imię i nazwisko, adres oraz odpowiedzi tak/nie wynikające z twoich danych. Resztę wypełniasz sam(a).",
-  "f.formsWeb": "Te formularze pasują do twoich danych. W aplikacji SoLo wypełnia je wstępnie. Tutaj otrzymasz je w odpowiednim urzędzie lub na jego stronie internetowej.",
-  "f.formsShare": "Udostępnij wypełnione formularze",
-  "f.formsLeer": "pusty formularz",
-  "f.formsCheck": "Sprawdź każde wypełnione pole przed podpisaniem. Odpowiadasz za podane dane.",
+  "f.formsWeb": "Te wnioski pasują do Twoich odpowiedzi. Linki prowadzą do oficjalnych formularzy (amtliche Formulare); SoLo niczego nie wypełnia. Pomoc w wypełnianiu mówi, co gdzie wpisać.",
+  "f.formsCheck": "Linki prowadzą do oficjalnych stron. Użyj tam aktualnego formularza; odpowiadasz za podane dane.",
   "f.formsUnt": "Dokumenty dla Jobcenter",
-  "f.formsAppLeer": "Te formularze pasują do twoich danych. Wypełniasz je w aplikacji PDF lub na papierze.",
-  "f.formsShareLeer": "Udostępnij formularze",
   "f.formsLink": "Do formularza urzędowego (internet)",
   "t.kiz.mitWg": "Dodatek na dziecko (Kinderzuschlag, do {max} na dziecko) pozwoli obyć się bez zasiłku podstawowego (Grundsicherungsgeld) tylko razem z dodatkiem mieszkaniowym (Wohngeld). Złóż wnioski o oba; Familienkasse sprawdzi je razem.",
   "heiz.label": "W tym koszty ogrzewania miesięcznie (opcjonalnie)",
@@ -994,5 +989,6 @@
   "f.druck": "Drukuj",
   "f.speichern": "Zapisz PDF",
   "f.gespeichert": "Zapisano w folderze „Downloads”: {name}",
-  "f.gespeichertWahl": "Zapisano."
+  "f.gespeichertWahl": "Zapisano.",
+  "beh.wgWeiter": "W niektórych krajach związkowych dodatkiem mieszkaniowym (Wohngeld) zajmuje się miasto lub gmina. Wniosek złożony w powiecie (Landkreis) też się liczy i zostanie przekazany (§ 16 SGB I)."
 }

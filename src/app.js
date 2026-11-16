@@ -313,6 +313,7 @@
       '<div class="zust behoerde" lang="de" dir="ltr"><p><strong>' + esc(t('beh.stelle')) + '</strong></p><address>' + lines.map(esc).join('<br>') + '</address>' +
       (b.haus ? '<p class="small"><bdi>' + esc(t('beh.besuch')) + '</bdi> ' + esc(b.haus.join(', ')) + '</p>' : '') +
       (b.web ? '<p><a href="' + esc(b.web) + '" target="_blank" rel="noopener">' + esc(t('beh.web')) + '</a></p>' : '') + '</div>' +
+      (b.weiter ? '<p class="small">' + esc(t('beh.wgWeiter')) + '</p>' : '') +
       '<p class="small">' + esc(b.anschrift ? (b.quelleArt === 'wikipedia' ? t('beh.pruefenWiki', { stand: b.stand || '' }) : b.stand ? t('beh.pruefen', { stand: b.stand }) : t('beh.pruefenKurz')) : t('beh.ohneAdr')) + '</p>';
   }
 
@@ -825,10 +826,18 @@
     return (lastOut ? lastOut.results : []).filter(function (r) { return picked[r.id]; });
   }
 
+  // Entweder amtliches Formular oder formloser Antrag: Gibt es für eine Leistung einen geprüften Link zum amtlichen Formular,
+  // erstellt SoLo keinen formlosen Brief dafür; nur Leistungen ohne Formular-Link bekommen den formlosen Antrag.
+  var LINK_FUER = { ggeld: 'ggeld', kiz: 'kiz', kg1: 'kindergeld', kg4: 'kgBeh', wg: 'wohngeld', wbs: 'wbs' };
+  function briefIds() {
+    var mitLink = {};
+    formPlan().forEach(function (f) { if (f.art === 'link' && LINK_FUER[f.id]) mitLink[LINK_FUER[f.id]] = true; });
+    return pickedIds().filter(function (r) { return !mitLink[r.id]; });
+  }
   function buildMappe() {
-    var ids = pickedIds();
+    var ids = pickedIds(), briefe = briefIds();
     var html = '';
-    ids.forEach(function (r) {
+    briefe.forEach(function (r) {
       html += '<article class="page" lang="de" dir="ltr"><pre>' + esc(letterText(r.id)) + '</pre></article>';
     });
     html += '<article class="page" lang="de" dir="ltr"><pre>' + esc(sheetText()) + '</pre></article>';
@@ -839,16 +848,14 @@
     }).join('') + '</article>';
     html += formsHtml();
     $('mappeBody').innerHTML = html;
-    var fb = $('formsShare');
-    if (fb) fb.addEventListener('click', shareForms);
     // Hinweis, wenn Anschreiben ohne Empfänger-Anschrift bleiben, weil der Wohnort fehlt (Anschriften gibt es für Bayern)
     var ohneOrt = Behoerden.available() && !aktAgs() && (!state.bundesland || state.bundesland === 'BY') &&
       ids.some(function (r) { return Behoerden.brauchtKreis(r.id); });
     $('mappeAdrNote').hidden = !ohneOrt;
-    $('mappeText').value = ids.map(function (r) { return letterText(r.id); }).concat([sheetText()]).join('\n\n----------------------------------------\n\n');
+    $('mappeText').value = briefe.map(function (r) { return letterText(r.id); }).concat([sheetText()]).join('\n\n----------------------------------------\n\n');
   }
 
-  // ----- Amtliche Formulare (Ausfüllhilfe): passende Formulare nach den gewählten Leistungen, in der App vorausgefüllt -----
+  // ----- Amtliche Formulare: Links auf die amtlichen Seiten mit Ausfüllhilfe (SoLo füllt nichts aus) -----
   function formPlan() {
     if (typeof Formulare === 'undefined') return [];
     return Formulare.plan(state, person, pickedIds());
@@ -856,35 +863,13 @@
   function formsHtml() {
     var fp = formPlan();
     if (!fp.length) return '';
-    var jc = fp.some(function (f) { return f.datei.indexOf('ba01') >= 0 || f.id === 'ha'; });
-    var leer = fp.every(function (f) { return f.art !== 'fuellen'; });
-    var mitDatei = fp.some(function (f) { return !!f.datei; }); // nur Vordrucke ohne Vorausfüllung (z. B. Wohngeld, Kinderzuschlag)
-    var h = '<article class="page docs forms"><h3>' + esc(t('f.forms')) + '</h3><p>' + esc(t(!NATIVE ? 'f.formsWeb' : leer ? 'f.formsAppLeer' : 'f.formsApp')) + '</p>';
-    if (NATIVE && mitDatei) h += '<div class="btns no-print"><button type="button" class="btn" id="formsShare">' + esc(t(leer ? 'f.formsShareLeer' : 'f.formsShare')) + '</button></div><p class="msg" id="formsMsg" role="status"></p>';
+    var jc = fp.some(function (f) { return f.id === 'ggeld'; });
+    var h = '<article class="page docs forms"><h3>' + esc(t('f.forms')) + '</h3><p>' + esc(t('f.formsWeb')) + '</p>';
     h += '<ul lang="de" dir="ltr">' + fp.map(function (f) {
-      return '<li><strong>' + esc(f.titel) + '</strong> – ' + esc(f.warum) + (f.art === 'leer' ? ' (' + esc(t('f.formsLeer')) + ')' : '') + (f.url ? '<br><a href="' + esc(f.url) + '" target="_blank" rel="noopener">' + esc(t('f.formsLink')) + '</a>' : '') + (f.hilfe ? '<br><em>Ausfüllhilfe:</em>' + listItems(f.hilfe) : '') + '</li>';
+      return '<li><strong>' + esc(f.titel) + '</strong> – ' + esc(f.warum) + (f.url ? '<br><a href="' + esc(f.url) + '" target="_blank" rel="noopener">' + esc(t('f.formsLink')) + '</a>' : '') + (f.hilfe ? '<br><em>Ausfüllhilfe:</em>' + listItems(f.hilfe) : '') + '</li>';
     }).join('') + '</ul><p class="tip">' + esc(t('f.formsCheck')) + '</p>';
     if (jc) h += '<h3>' + esc(t('f.formsUnt')) + '</h3>' + '<div lang="de" dir="ltr">' + listItems(Formulare.unterlagen(state)) + '</div>';
     return h + '</article>';
-  }
-  function shareForms() {
-    var fs = plug('Filesystem'), sh = plug('Share'), msg = $('formsMsg');
-    msg.textContent = t('f.pdfWorking');
-    if (!fs || !sh) { msg.textContent = t('f.pdfFail'); return; }
-    var fp = formPlan(), geschrieben = [];
-    var lade = function (n) { return fetch('formulare/' + n).then(function (r) { if (!r.ok) throw new Error(n); return r.arrayBuffer(); }).then(function (b) { return new Uint8Array(b); }); };
-    Promise.all([loadPdfLib(), fetch('formulare/katalog.json').then(function (r) { return r.json(); })]).then(function (x) {
-      return x[0].fillForms({ forms: fp, katalog: x[1], loadFile: lade });
-    }).then(function (liste) {
-      return liste.reduce(function (p, f) {
-        return p.then(function () { return fs.writeFile({ path: f.name, data: toBase64(f.bytes), directory: 'CACHE' }).then(function (r) { geschrieben.push({ name: f.name, uri: r.uri }); }); });
-      }, Promise.resolve());
-    }).then(function () {
-      return sh.share({ title: t('f.forms'), files: geschrieben.map(function (g) { return g.uri; }) }).then(function () {}, function () {});
-    }).then(function () {
-      msg.textContent = '';
-      geschrieben.forEach(function (g) { fs.deleteFile({ path: g.name, directory: 'CACHE' }).catch(function () {}); });
-    }).catch(function () { msg.textContent = t('f.pdfFail'); });
   }
 
   function openMappe() {
@@ -916,7 +901,7 @@
   function pdfPages() {
     // Briefe und Angabenblatt sind deutsch. Die Unterlagenliste folgt der Sprache; Arabisch kann pdf-lib nicht setzen, dort bleibt sie deutsch.
     var pdfLang = lang === 'ar' ? 'de' : lang, saved = lang;
-    var pages = pickedIds().map(function (r) { return { blocks: [{ t: 'pre', text: letterText(r.id) }] }; });
+    var pages = briefIds().map(function (r) { return { blocks: [{ t: 'pre', text: letterText(r.id) }] }; });
     pages.push({ blocks: [{ t: 'pre', text: sheetText() }] });
     lang = pdfLang;
     try {

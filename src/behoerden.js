@@ -51,12 +51,15 @@ const Behoerden = (function () {
     if (!D || !has(ZUST, id)) return null;
     var z = ZUST[id];
     if (z.typ === 'fest') return stelle(D.fest && D.fest[z.key], '');
-    // Außerhalb Bayerns (Daten „de“, ohne Anschrift): kreisfreie Städte für alle Leistungen der Kreisebene,
-    // Landkreise nur für die Grundsicherung im Alter (Wohngeld und Jugendamt liegen dort teils bei Gemeinden)
+    // Außerhalb Bayerns (Daten „de“): kreisfreie Städte für alle Leistungen der Kreisebene, Landkreise für die Grundsicherung
+    // im Alter und für Wohngeld. Wohngeld liegt in manchen Ländern bei Städten oder Gemeinden; dann gilt der Antrag beim Kreis
+    // trotzdem als gestellt und wird weitergeleitet (§ 16 Abs. 2 SGB I) – daher Anschrift des Kreises mit Hinweis (weiter).
+    // Jugendamt (Unterhaltsvorschuss) und Bildung und Teilhabe bleiben ohne Anschrift (teils eigene Ämter großer Städte).
     if (ags && !has(D.kreise, ags) && D.de && has(D.de.kreise, ags)) {
       var e = D.de.kreise[ags];
-      if (z.typ !== 'kreis' || (e.typ !== 'stadt' && id !== 'gsa')) return null;
-      return { name: e.name, abt: z.abt, anschrift: e.anschrift || null, haus: null, web: e.web || '', quelle: e.quelle || 'Wikidata', quelleArt: e.quelleArt || '', stand: e.stand || '' };
+      if (z.typ !== 'kreis' || (e.typ !== 'stadt' && id !== 'gsa' && id !== 'wohngeld')) return null;
+      return { name: e.name, abt: z.abt, anschrift: e.anschrift || null, haus: null, web: e.web || '', quelle: e.quelle || 'Wikidata', quelleArt: e.quelleArt || '', stand: e.stand || '',
+        weiter: id === 'wohngeld' && e.typ !== 'stadt' };
     }
     if (!ags || !has(D.kreise, ags)) return null;
     var rb = String(ags).slice(0, 3);
