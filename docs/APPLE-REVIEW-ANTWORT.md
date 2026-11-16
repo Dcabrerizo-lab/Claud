@@ -36,17 +36,17 @@ The app provides general information and estimates, not legal advice; this is st
 | 4. Externe Dienste | Notizen, Abschnitt 4 (keine) |
 | 5. Regionale Unterschiede | Notizen, Abschnitt 5 |
 | 6. Regulierter Bereich, fremdes Material | Notizen, Abschnitt 6 |
-| Guideline 2.1 Fehler/Abstürze | Build 137, auf echtem Gerät per TestFlight geprüft (Schritt 1) |
+| Guideline 2.1 Fehler/Abstürze | Build 140, auf echtem Gerät per TestFlight geprüft (Schritt 1) |
 | Guideline 2.1 Zugang | „Anmeldung erforderlich“ aus (Schritt 5) |
 | Guideline 2.3.3 Bildschirmfotos | echte App-Bildschirme aus `store-bilder/ios-6.9` und `ios-6.5` (Schritt 4) |
 | Guideline 3.1.1 In-App-Käufe | keine; Preis 1,49 € einmalig (Schritt 3) |
 | Guideline 3.2 andere Geschäftsmodelle | nicht betroffen (öffentliche App für alle) |
-| Name Verkäufer ≠ Anbieter | Build 137 + Datenschutz-iOS + Copyright (Schritte 2, 4, 7) |
+| Name Verkäufer ≠ Anbieter | Build 140 + Datenschutz-iOS + Copyright (Schritte 2, 4, 7) |
 
 ## Schritt für Schritt (App Store Connect am PC, Konto von Natascha)
 
-**1. Build 137 auf dem iPhone testen**
-- TestFlight-App öffnen → SoLo → Build 137 installieren → einmal durchtippen.
+**1. Build 140 auf dem iPhone testen**
+- TestFlight-App öffnen → SoLo → Build 140 installieren → einmal durchtippen.
 - Impressum (unten „Impressum, Datenschutz, Lizenzen“): Anbieter muss „Natascha Cabrerizo y Polo“ sein.
 
 **2. Datenschutz**
@@ -76,7 +76,7 @@ The app provides general information and estimates, not legal advice; this is st
 - Klappt das nicht: in Schritt 9 an die Antwort anhängen (App „App Store Connect“ auf dem iPhone).
 
 **7. Build**
-- Abschnitt „Build“: alten Build (134/135/136) mit dem Minus entfernen → „+“ → **137** → „Fertig“.
+- Abschnitt „Build“: alten Build (z. B. 1.0.0 Build 1) mit dem Minus entfernen → „+“ → **140** → „Fertig“.
 - Exportkonformität: „Keine / nur Standardverschlüsselung“.
 
 **8. Altersfreigabe** (falls noch offen)
@@ -85,5 +85,5 @@ The app provides general information and estimates, not legal advice; this is st
 **9. Antworten und einreichen**
 - Oben „Sichern“.
 - Meldung „App Review“ öffnen → „Antworten“ → Video anhängen (falls nicht in Schritt 6) →
-  „Thank you. The requested information has been added to the App Review notes, and the screen recording is attached. The seller (account holder) is now named as the provider in the app's imprint and in the privacy policy (build 137).“ → „Senden“.
+  „Thank you. The requested information has been added to the App Review notes, and the screen recording is attached. The seller (account holder) is now named as the provider in the app's imprint and in the privacy policy (build 140).“ → „Senden“.
 - Version 1.2.0 → „Zur Prüfung hinzufügen“ / „Zur Prüfung einreichen“.
