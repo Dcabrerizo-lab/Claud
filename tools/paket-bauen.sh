@@ -47,7 +47,7 @@ cp "$APK" "$P/1-App-zum-Installieren/SoLo-Android.apk"
 cp dist/sozialleistungslotse.html "$P/1-App-zum-Installieren/SoLo-Web.html"
 cp "$AAB" "$P/2-Google-Play/SoLo-PlayStore.aab"
 cp "$AAB" "$ROOT/SoLo-PlayStore-$VC.aab"
-cp datenschutz.html "$P/2-Google-Play/datenschutz.html"; cp datenschutz.html "$I/3-Texte/datenschutz.html"
+cp datenschutz.html "$P/2-Google-Play/datenschutz.html"; cp datenschutz-ios.html "$I/3-Texte/datenschutz-ios.html"
 [ -f docs/STORE.md ] && cp docs/STORE.md "$P/2-Google-Play/Store-Texte.md" && cp docs/STORE.md "$I/3-Texte/Store-Texte.md"
 for d in AENDERUNGEN PRUEFUNG-ANWALT WBS-GRENZEN ABGLEICH-SOZIALPLATTFORM BESCHEID-VERGLEICH PRUEFLISTE PRUEFBERICHT; do
   [ -f "docs/$d.md" ] && cp "docs/$d.md" "$P/4-Unterlagen/$d.md"; done

@@ -18,6 +18,7 @@ const MOCK = () => {
   const log = (name) => (o) => { calls.push([name, o]); return Promise.resolve({}); };
   const store = {};
   window.Capacitor = {
+    getPlatform: () => window.__platform || 'android',
     Plugins: {
       Preferences: {
         get: (o) => { calls.push(['Preferences.get', o]); return Promise.resolve({ value: o.key in store ? store[o.key] : null }); },
@@ -187,6 +188,18 @@ const MOCK = () => {
   ok('Nur lokale Anfragen (kein Netz)', net.length === 0, net.join(','));
   ok('Keine CSP-Verstöße', csp.length === 0, csp.join('|'));
   ok('Keine Skriptfehler', errs.length === 0, errs.join('|'));
+
+  // Impressum je Plattform: Android David Cabrerizo, iPhone Natascha Cabrerizo y Polo (Apple-Konto); iPhone ohne Android-Knöpfe
+  const anbieter = () => p.evaluate(() => document.getElementById('anbieterName').textContent);
+  ok('Android: Anbieter im Impressum David Cabrerizo', (await anbieter()) === 'David Cabrerizo', await anbieter());
+  const ctxI = await b.newContext({ viewport: { width: 390, height: 844 }, locale: 'de-DE', serviceWorkers: 'block' });
+  await ctxI.addInitScript(() => { window.__platform = 'ios'; }); await ctxI.addInitScript(MOCK);
+  const pi = await ctxI.newPage(); await pi.goto(origin + '/index.html'); await pi.waitForTimeout(400);
+  const legalI = await pi.evaluate(() => document.getElementById('legal').textContent);
+  ok('iPhone: Anbieter im Impressum Natascha Cabrerizo y Polo, nicht David', /Anbieter: Natascha Cabrerizo y Polo/.test(legalI.replace(/\s+/g, ' ')) && !/David/.test(legalI), legalI.slice(0, 200));
+  await pi.click('#p1'); await pi.fill('#p-name', 'Test'); await pi.evaluate(() => document.getElementById('mappeMake').click()); await pi.waitForTimeout(300);
+  ok('iPhone: keine Android-Knöpfe Drucken/Speichern, PDF teilen vorhanden', !(await pi.isVisible('#mappeDruck')) && !(await pi.isVisible('#mappeSpeichern')) && (await pi.isVisible('#mappePrint')));
+  await ctxI.close();
 
   await b.close(); server.close();
   console.log(out.join('\n'));

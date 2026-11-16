@@ -521,6 +521,8 @@
       writeForm(); buildSelects(); render();
       $('clearMsg').textContent = t('clear.done');
     });
+    // Anbieter im Impressum: iPhone-App über das Apple-Konto von Natascha Cabrerizo y Polo, Android und Web: David Cabrerizo
+    if (NATIVE && window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') $('anbieterName').textContent = 'Natascha Cabrerizo y Polo';
     $('legalBtn').addEventListener('click', openLegal);
     $('legalClose').addEventListener('click', closeLegal);
     $('firstOk').addEventListener('click', function () { $('firstNotice').hidden = true; Store.set('lotse.ack', '1'); });
