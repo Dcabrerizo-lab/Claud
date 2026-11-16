@@ -1,0 +1,13 @@
+{
+ "daten": {
+  "v": 1,
+  "id": "DEMO-0001",
+  "stelle": "Demo-Beratungsstelle (nur zum Ausprobieren)",
+  "plaetze": 3,
+  "ab": "2026-11-01",
+  "bis": "2027-12-31",
+  "ausgestellt": "2026-11-16",
+  "demo": true
+ },
+ "sig": "qfaZCPbwaLHXEdnmfXlUulKzIHcaKDkhELfhOu4pos3bfHjCjHGQ1OXFXwlaJ07VLvtxXeUDkHwze_zBySEFlg"
+}

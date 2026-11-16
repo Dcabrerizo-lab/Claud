@@ -1,0 +1,203 @@
+<title>SoLo Prüfpaket – Vorschau</title>
+<style>
+  /* Vorschau der Erweiterungen: gleiche Farbwelt wie SoLo, eigene Seite, nicht Teil der App 1.2.0 */
+  :root { --bg: #f3f5fa; --surface: #fff; --ink: #18202e; --muted: #556075; --line: #d5dbe7; --accent: #2b4a9b; --accent-ink: #fff; --ok: #1d6b3d; --ok-bg: #e3f3e8; --warn: #8a4b00; --warn-bg: #fdf0dc; --bad: #a3261f; --bad-bg: #fbe5e3; --focus: #f2b705; --r: 12px; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #12161f; --surface: #1b2130; --ink: #e9edf5; --muted: #a8b2c6; --line: #323b50; --accent: #8fb0ff; --accent-ink: #0d1424; --ok: #7fd6a0; --ok-bg: #173225; --warn: #f3c27a; --warn-bg: #3a2c14; --bad: #ff9c94; --bad-bg: #3d1c1a; color-scheme: dark; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 1rem/1.5 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 20px max(16px, env(safe-area-inset-right, 0px)) 60px max(16px, env(safe-area-inset-left, 0px)); }
+  h1 { font-size: 1.6rem; margin: 0 0 4px; } h2 { font-size: 1.25rem; margin: 0 0 12px; } h3 { font-size: 1.05rem; margin: 0 0 8px; }
+  p { margin: 0 0 10px; } .muted { color: var(--muted); } .small { font-size: .9em; }
+  .note { background: var(--warn-bg); color: var(--ink); border: 1px solid var(--line); border-radius: var(--r); padding: 10px 14px; margin: 12px 0 18px; }
+  nav[role="tablist"] { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; }
+  nav button, .btn { min-height: 44px; padding: 8px 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+  nav button[aria-selected="true"], .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; margin: 0 0 16px; min-width: 0; }
+  fieldset { border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; margin: 0 0 14px; min-width: 0; }
+  legend { font-weight: 700; padding: 0 6px; }
+  .row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 240px); gap: 8px 12px; align-items: center; padding: 6px 0; border-top: 1px solid var(--line); }
+  .row:first-of-type { border-top: 0; }
+  .row label { min-width: 0; } .row .amt { display: block; font-size: .82em; color: var(--muted); }
+  select, input[type="number"], input[type="text"], input[type="date"], textarea { width: 100%; min-height: 44px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink); font: inherit; }
+  textarea { min-height: 120px; resize: vertical; }
+  input[type="file"] { width: 100%; min-height: 44px; padding: 8px 0; font: inherit; color: var(--ink); }
+  #bs-personen input[type="number"] { min-width: 76px; }
+  .check { display: flex; gap: 10px; align-items: center; min-height: 44px; }
+  .check input { width: 22px; height: 22px; accent-color: var(--accent); }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px 14px; }
+  .freq { display: grid; grid-template-columns: minmax(0, 1fr) repeat(3, minmax(64px, 90px)); gap: 6px 8px; align-items: center; padding: 6px 0; border-top: 1px solid var(--line); }
+  .freq.kopf { border-top: 0; font-size: .85em; color: var(--muted); }
+  .ergebnis { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 2; }
+  .big { font-size: 1.5rem; font-weight: 700; }
+  .pill { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: .88em; font-weight: 600; }
+  .pill.passt { background: var(--ok-bg); color: var(--ok); } .pill.zuWenig { background: var(--bad-bg); color: var(--bad); } .pill.pruefen, .pill.zuViel { background: var(--warn-bg); color: var(--warn); } .pill.fehlt { background: var(--bg); color: var(--muted); }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th, td { text-align: left; padding: 8px 6px; border-top: 1px solid var(--line); vertical-align: top; }
+  td.z, th.z { text-align: right; white-space: nowrap; }
+  .tablewrap { overflow-x: auto; position: relative; } /* hält auch unsichtbare Beschriftungen (.vh) in der Tabelle */
+  .opt { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin: 8px 0; }
+  .btns { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+  details > summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  @media (max-width: 640px) { .row { grid-template-columns: 1fr; } .freq { grid-template-columns: minmax(0, 1fr) repeat(3, 64px); } .ergebnis { position: static; } }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>SoLo Prüfpaket</h1>
+    <p class="muted">Vorschau der Erweiterungen: Pflegegutachten prüfen, Bescheid prüfen, Fristen, Profi-Lizenz</p>
+  </header>
+  <main>
+  <p class="note" role="note"><strong>Vorschau, nicht Teil der App.</strong> Diese Seite zeigt die neuen Bausteine getrennt von SoLo 1.2.0. Alles wird nur auf diesem Gerät gerechnet, nichts wird gesendet. Keine Rechtsberatung: Jede Begründung bitte selbst prüfen.</p>
+
+  <nav role="tablist" aria-label="Bausteine">
+    <button type="button" role="tab" id="tab-pflege" aria-controls="p-pflege" aria-selected="true">Pflegegutachten</button>
+    <button type="button" role="tab" id="tab-bescheid" aria-controls="p-bescheid" aria-selected="false" tabindex="-1">Bescheid Grundsicherungsgeld</button>
+    <button type="button" role="tab" id="tab-fristen" aria-controls="p-fristen" aria-selected="false" tabindex="-1">Fristen</button>
+    <button type="button" role="tab" id="tab-lizenz" aria-controls="p-lizenz" aria-selected="false" tabindex="-1">Profi-Lizenz</button>
+  </nav>
+
+  <!-- Pflegegutachten -->
+  <section id="p-pflege" role="tabpanel" aria-labelledby="tab-pflege">
+    <div class="card">
+      <h2>Pflegegutachten prüfen</h2>
+      <p>Trage die Bewertungen aus dem Gutachten des Medizinischen Dienstes ein, oder füge den Text des Gutachtens ein. SoLo rechnet die Punkte nach § 15 SGB XI nach und zeigt, wo es knapp ist.</p>
+      <label for="pf-text">Text aus dem Gutachten (aus einem PDF kopiert oder vom Foto erkannt)</label>
+      <textarea id="pf-text" placeholder="z. B. 1.1 Positionswechsel im Bett  überwiegend selbständig …"></textarea>
+      <div class="btns"><button type="button" class="btn primary" id="pf-lesen">Text lesen</button><button type="button" class="btn" id="pf-beispiel">Beispiel laden</button><button type="button" class="btn" id="pf-leeren">Alles leeren</button></div>
+      <p class="msg small" id="pf-msg" role="status"></p>
+    </div>
+    <div class="card ergebnis" id="pf-erg" aria-live="polite"></div>
+    <form id="pf-form" onsubmit="return false">
+      <fieldset><legend>Angaben aus Gutachten und Bescheid</legend>
+        <div class="grid2">
+          <div><label for="pf-pgb">Pflegegrad laut Bescheid</label><select id="pf-pgb"><option value="">nicht bekannt</option><option value="0">kein Pflegegrad</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+          <label class="check"><input type="checkbox" id="pf-harn"> Harn: überwiegend oder vollständig inkontinent, oder Katheter/Urostoma</label>
+          <label class="check"><input type="checkbox" id="pf-stuhl"> Stuhl: überwiegend oder vollständig inkontinent, oder Stoma</label>
+          <label class="check"><input type="checkbox" id="pf-kind"> Kind (unter 18 Jahren)</label>
+        </div>
+      </fieldset>
+      <div id="pf-module"></div>
+    </form>
+    <div class="card" id="pf-wid">
+      <h2>Widerspruch vorbereiten</h2>
+      <p>Wähle die Kriterien, die im Gutachten zu niedrig bewertet sind, und beschreibe in eigenen Worten, wie es im Alltag wirklich ist. Nur was stimmt, gehört in den Widerspruch.</p>
+      <div id="pf-wid-liste"></div>
+      <div class="btns"><button type="button" class="btn" id="pf-wid-plus">Kriterium hinzufügen</button></div>
+      <div class="grid2">
+        <div><label for="pf-name">Dein Name (oder der der gepflegten Person)</label><input type="text" id="pf-name" autocomplete="name"></div>
+        <div><label for="pf-anschrift">Straße und Hausnummer</label><input type="text" id="pf-anschrift"></div>
+        <div><label for="pf-ort">PLZ und Ort</label><input type="text" id="pf-ort"></div>
+        <div><label for="pf-kasse">Pflegekasse</label><input type="text" id="pf-kasse"></div>
+        <div><label for="pf-vnr">Versichertennummer</label><input type="text" id="pf-vnr"></div>
+        <div><label for="pf-datum">Datum des Bescheids</label><input type="date" id="pf-datum"></div>
+      </div>
+      <div class="btns"><button type="button" class="btn primary" id="pf-wid-mach">Widerspruch erstellen</button></div>
+      <p class="small" id="pf-frist" role="status"></p>
+      <label for="pf-wid-text" class="vh">Text des Widerspruchs</label>
+      <textarea id="pf-wid-text" rows="18" readonly hidden></textarea>
+      <div class="btns"><button type="button" class="btn" id="pf-wid-copy" hidden>Text kopieren</button></div>
+      <p class="small" id="pf-copy-msg" role="status"></p>
+    </div>
+  </section>
+
+  <!-- Bescheid Grundsicherungsgeld -->
+  <section id="p-bescheid" role="tabpanel" aria-labelledby="tab-bescheid" hidden>
+    <div class="card">
+      <h2>Bescheid Grundsicherungsgeld prüfen</h2>
+      <p>Trage die Personen der Bedarfsgemeinschaft und die Beträge aus dem Bescheid für einen Monat ein. SoLo rechnet mit denselben Regeln wie die App nach und zeigt Abweichungen.</p>
+      <div class="btns"><button type="button" class="btn" id="bs-beispiel">Beispiel laden</button></div>
+    </div>
+    <form id="bs-form" onsubmit="return false">
+      <fieldset><legend>Personen</legend>
+        <div class="tablewrap" tabindex="0" role="region" aria-label="Personen der Bedarfsgemeinschaft"><table><thead><tr><th>Person</th><th>Alter</th><th>Lohn brutto</th><th>Lohn netto</th><th>anderes Einkommen</th><th>schwanger</th><th><span class="vh">Entfernen</span></th></tr></thead><tbody id="bs-personen"></tbody></table></div>
+        <div class="btns"><button type="button" class="btn" id="bs-erw">Erwachsene Person hinzufügen</button><button type="button" class="btn" id="bs-kind">Kind hinzufügen</button></div>
+        <label class="check"><input type="checkbox" id="bs-ww"> Warmwasser wird in der Wohnung erzeugt (Durchlauferhitzer, Boiler)</label>
+      </fieldset>
+      <fieldset><legend>Miete im Monat</legend>
+        <div class="grid2">
+          <div><label for="bs-miete">Miete mit Nebenkosten (ohne Heizung)</label><input type="number" id="bs-miete" min="0" step="0.01" inputmode="decimal"></div>
+          <div><label for="bs-heiz">Heizkosten</label><input type="number" id="bs-heiz" min="0" step="0.01" inputmode="decimal"></div>
+        </div>
+      </fieldset>
+      <fieldset><legend>Beträge im Bescheid (Monat, ganze Bedarfsgemeinschaft)</legend>
+        <div class="grid2">
+          <div><label for="bs-b-regel">Regelbedarfe zusammen</label><input type="number" id="bs-b-regel" step="0.01" inputmode="decimal"></div>
+          <div><label for="bs-b-ae">Mehrbedarf Alleinerziehende</label><input type="number" id="bs-b-ae" step="0.01" inputmode="decimal"></div>
+          <div><label for="bs-b-schw">Mehrbedarf Schwangerschaft</label><input type="number" id="bs-b-schw" step="0.01" inputmode="decimal"></div>
+          <div><label for="bs-b-ww">Mehrbedarf Warmwasser</label><input type="number" id="bs-b-ww" step="0.01" inputmode="decimal"></div>
+          <div><label for="bs-b-kdu">Unterkunft und Heizung anerkannt</label><input type="number" id="bs-b-kdu" step="0.01" inputmode="decimal"></div>
+          <div><label for="bs-b-eink">Angerechnetes Einkommen (ohne Kindergeld)</label><input type="number" id="bs-b-eink" step="0.01" inputmode="decimal"></div>
+          <div><label for="bs-b-kg">Angerechnetes Kindergeld</label><input type="number" id="bs-b-kg" step="0.01" inputmode="decimal"></div>
+          <div><label for="bs-b-zahl">Zahlbetrag</label><input type="number" id="bs-b-zahl" step="0.01" inputmode="decimal"></div>
+        </div>
+      </fieldset>
+    </form>
+    <div class="card" id="bs-erg" aria-live="polite"></div>
+    <div class="card">
+      <h2>Widerspruch vorbereiten</h2>
+      <div class="grid2">
+        <div><label for="bs-name">Name</label><input type="text" id="bs-name" autocomplete="name"></div>
+        <div><label for="bs-anschrift">Straße und Hausnummer</label><input type="text" id="bs-anschrift"></div>
+        <div><label for="bs-ort">PLZ und Ort</label><input type="text" id="bs-ort"></div>
+        <div><label for="bs-jc">Jobcenter</label><input type="text" id="bs-jc"></div>
+        <div><label for="bs-bg">Nummer der Bedarfsgemeinschaft</label><input type="text" id="bs-bg"></div>
+        <div><label for="bs-datum">Datum des Bescheids</label><input type="date" id="bs-datum"></div>
+      </div>
+      <div class="btns"><button type="button" class="btn primary" id="bs-wid-mach">Widerspruch erstellen</button></div>
+      <p class="small" id="bs-frist" role="status"></p>
+      <label for="bs-wid-text" class="vh">Text des Widerspruchs</label>
+      <textarea id="bs-wid-text" rows="18" readonly hidden></textarea>
+      <div class="btns"><button type="button" class="btn" id="bs-wid-copy" hidden>Text kopieren</button></div>
+      <p class="small" id="bs-copy-msg" role="status"></p>
+    </div>
+  </section>
+
+  <!-- Fristen -->
+  <section id="p-fristen" role="tabpanel" aria-labelledby="tab-fristen" hidden>
+    <div class="card">
+      <h2>Widerspruchsfrist</h2>
+      <div class="grid2">
+        <div><label for="fr-datum">Datum des Bescheids (kam per Post)</label><input type="date" id="fr-datum"></div>
+        <div><label for="fr-zugang">Oder: Tag der persönlichen Übergabe</label><input type="date" id="fr-zugang"></div>
+      </div>
+      <p id="fr-erg" aria-live="polite"></p>
+    </div>
+    <div class="card">
+      <h2>Erinnerung an den Folgeantrag</h2>
+      <div class="grid2">
+        <div><label for="er-leistung">Leistung</label><select id="er-leistung"><option value="sgb2">Grundsicherungsgeld</option><option value="wohngeld">Wohngeld</option><option value="kiz">Kinderzuschlag</option></select></div>
+        <div><label for="er-ende">Bewilligt bis</label><input type="date" id="er-ende"></div>
+      </div>
+      <p id="er-erg" aria-live="polite"></p>
+      <p class="small muted">In der App würde SoLo an diesem Tag eine Mitteilung auf dem Handy zeigen, ohne Server.</p>
+    </div>
+  </section>
+
+  <!-- Profi-Lizenz -->
+  <section id="p-lizenz" role="tabpanel" aria-labelledby="tab-lizenz" hidden>
+    <div class="card">
+      <h2>Profi-Lizenz prüfen</h2>
+      <p>Beratungsstellen bekommen eine Lizenzdatei. SoLo prüft sie ohne Internet mit einer digitalen Signatur. Name der Stelle und Laufzeit können nicht verändert werden.</p>
+      <label for="li-datei">Lizenzdatei öffnen</label>
+      <input type="file" id="li-datei" accept=".json,application/json">
+      <div class="btns"><button type="button" class="btn" id="li-demo">Demo-Lizenz laden</button></div>
+      <div id="li-erg" aria-live="polite"></div>
+    </div>
+  </section>
+  </main>
+</div>
+<script>
+/*RULES*/
+/*PFLEGE*/
+/*IMPORT*/
+/*BESCHEID*/
+/*FRISTEN*/
+/*WIDERSPRUCH*/
+/*LIZENZ*/
+const LIZENZ_SCHLUESSEL = /*SCHLUESSEL*/null;
+const DEMO_LIZENZ = /*DEMOLIZENZ*/null;
+/*VORSCHAU*/
+</script>
