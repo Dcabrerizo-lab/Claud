@@ -12,11 +12,11 @@ on:
         required: true
         default: '110'
       rechner:
-        description: 'Mac-Rechner (macos-26; wenn dort lange Wartezeit: macos-15 mit Xcode 26)'
+        description: 'Mac-Rechner (macos-26; bei langer Wartezeit macos-15 oder macos-15-intel, beide mit Xcode 26)'
         required: false
         default: 'macos-26'
         type: choice
-        options: ['macos-26', 'macos-15']
+        options: ['macos-26', 'macos-15', 'macos-15-intel']
 
 permissions:
   contents: read
