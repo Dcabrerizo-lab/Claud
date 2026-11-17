@@ -32,12 +32,25 @@ const ok = (name, c, info) => { n++; console.log((c ? 'ok   ' : 'FEHLER ') + nam
     await p.click('#pf-beispiel');
     const { anzeige, erwartet } = await p.evaluate(() => {
       const im = PflegeImport.lies(document.getElementById('pf-text').value, Pflege);
-      const r = Pflege.rechne({ stufen: im.stufen, m5: { '5.16': 0 }, inkontinenz: { harn: false, stuhl: false }, pgBescheid: im.pgBescheid });
-      return { anzeige: document.querySelector('#pf-erg .big').textContent, erwartet: `${String(r.gesamt).replace('.', ',')} Punkte → Pflegegrad ${r.pg || 'keiner'}` };
+      const r = Pflege.rechne({ stufen: im.stufen, m5: { '5.16': 0 }, inkontinenz: { harn: false, stuhl: false }, pgBescheid: im.pgBescheid, alterJahre: 82 });
+      return { anzeige: document.querySelector('#pf-erg .big').textContent + document.querySelector('#pf-erg .big + .muted').textContent, erwartet: `${r.pg ? 'Pflegegrad ' + r.pg : 'Kein Pflegegrad'} · ${String(r.gesamt).replace('.', ',')} von 100 Punkten` };
     });
     ok(`${schema}: Pflege-Anzeige = Rechnung (${anzeige})`, anzeige === erwartet, { anzeige, erwartet });
+    ok(`${schema}: Erklärung sichtbar mit Alltagsbedeutung`, await p.isVisible('#pf-erkl') && /schafft die Person/.test(await p.textContent('#pf-erkl')));
+    ok(`${schema}: Auswahl zeigt Alltagssprache`, /\(schafft es meistens allein\)/.test(await p.textContent('#pf-1\\.1')));
+    ok(`${schema}: Erwachsene ohne Kinder-Hinweis`, !/gesunden Kindern/.test(await p.textContent('#pf-erg')));
+    await p.fill('#pf-alter', '1');
+    ok(`${schema}: unter 2 Jahren erscheint Monatsfeld`, await p.isVisible('#pf-monate'));
+    await p.fill('#pf-monate', '10');
+    ok(`${schema}: Säugling: Sonderregel erklärt`, /eine Stufe höher/.test(await p.textContent('#pf-erg')));
+    ok(`${schema}: Kind: Frühförderung sichtbar`, await p.isVisible('#pf-zeile-5K'));
+    await p.fill('#pf-monate', ''); await p.fill('#pf-alter', '9');
+    ok(`${schema}: Kind 9 Jahre: Vergleich mit gesunden Kindern`, /gesunden Kindern/.test(await p.textContent('#pf-erg')) && !(await p.isVisible('#pf-monate')));
+    await p.fill('#pf-alter', '');
+    ok(`${schema}: ohne Alter Hinweis`, /Alter der gepflegten Person eintragen/.test(await p.textContent('#pf-erg')));
+    await p.fill('#pf-alter', '82');
     ok(`${schema}: Meldung über erkannte Bewertungen`, /von \d+ Bewertungen erkannt/.test(await p.textContent('#pf-msg')));
-    ok(`${schema}: Bescheid-Vergleich angezeigt`, (await p.locator('#pf-erg .pill').count()) >= 1);
+    ok(`${schema}: Bescheid-Vergleich angezeigt`, /Pflegegrad im Bescheid/.test(await p.textContent('#pf-erg')));
     await axe('Pflege mit Ergebnis');
     const uebern = p.locator('#pf-erg .opt button').first();
     if (await uebern.count()) { await uebern.click(); ok(`${schema}: Kombination in Widerspruch übernommen`, (await p.locator('#pf-wid-liste .opt').count()) >= 1); }

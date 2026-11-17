@@ -331,7 +331,7 @@ const Pflege = (function () {
       const mo = res.module[m];
       const kopf = { modul: m, kurz: MODUL[m].kurz, name: MODUL[m].name, leicht: MODUL[m].leicht, summe: mo.summe, bereich: mo.bereichName, gewichtet: mo.gewichtet,
         zaehlt: m === 2 || m === 3 ? res.zaehlt23 === m : true, kriterien: [] };
-      kopf.satz = `${MODUL[m].kurz}: ${mo.summe} ${mo.summe === 1 ? 'Punkt' : 'Punkte'}. Das gilt als ${mo.bereichName} Beeinträchtigung und bringt ${fmt(mo.gewichtet)} von ${fmt(ANLAGE2[m].gew[4])} möglichen Punkten.` +
+      kopf.satz = `${mo.summe} ${mo.summe === 1 ? 'Punkt' : 'Punkte'}. Das gilt als ${mo.bereichName} Beeinträchtigung und bringt ${fmt(mo.gewichtet)} von ${fmt(ANLAGE2[m].gew[4])} möglichen Punkten.` +
         (m === 2 || m === 3 ? (kopf.zaehlt ? ' Von den Bereichen „Verstehen“ und „Verhalten“ zählt nur der höhere, hier dieser.' : ' Zählt nicht, weil der Bereich „' + MODUL[m === 2 ? 3 : 2].kurz + '“ höher ist. Es zählt nur der höhere von beiden.') : '');
       if (m === 5) {
         const t = mo.teile, i = mo.info;

@@ -15,7 +15,9 @@
     "test:dom": "node test/dom-test.js && node test/test-jahreswechsel.js && node test/test-sicherheit.js && node test/test-anzeige.js && node test/test-altstaende.js",
     "test:e2e": "npm run build:web && node test/e2e-beh.js && node test/e2e-einfach.js && node test/e2e-klein.js && node test/e2e-zufall.js 400 && node test/a11y.js",
     "test:app": "node scripts/build-app.js && node test/app-test.js",
-    "test:mutation": "npm run build:web && node tools/mutationstest.js"
+    "test:mutation": "npm run build:web && node tools/mutationstest.js",
+    "build:erweiterungen": "node scripts/build-erweiterungen.js",
+    "test:erweiterungen": "node test/erweiterungen/test-pflege.js && node test/erweiterungen/test-bescheid.js && node test/erweiterungen/test-lizenz.js && node test/erweiterungen/e2e-vorschau.js"
   },
   "devDependencies": {
     "axe-core": "^4.10.3",

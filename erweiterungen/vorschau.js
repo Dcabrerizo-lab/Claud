@@ -35,24 +35,26 @@
   function baueModule() {
     const box = $('pf-module');
     for (const m of [1, 2, 3, 4, 5, 6]) {
-      const fs = h('fieldset', {}, h('legend', { text: `Modul ${m}: ${P.MODUL[m].name}` }), h('p', { class: 'small muted', text: `${P.MODUL[m].leicht}. Gewichtung ${P.MODUL[m].gewicht}.` }));
+      const fs = h('fieldset', {}, h('legend', { text: `Bereich ${m}: ${P.MODUL[m].kurz}` }), h('p', { class: 'small muted', text: `Im Gutachten: „${P.MODUL[m].name}“. ${P.MODUL[m].leicht}. Gewichtung ${P.MODUL[m].gewicht}.` }));
       if (m === 5) {
-        fs.append(h('div', { class: 'freq kopf' }, h('span', { text: 'Hilfe, die nicht selbst erledigt werden kann' }), h('span', { text: 'pro Tag' }), h('span', { text: 'pro Woche' }), h('span', { text: 'pro Monat' })));
+        fs.append(h('p', { class: 'small', text: 'Trage ein, wie oft jemand helfen muss, weil die Person es nicht selbst kann. Was sie selbst schafft, zählt nicht.' }));
+        fs.append(h('div', { class: 'freq kopf' }, h('span', { text: 'Hilfe' }), h('span', { text: 'pro Tag' }), h('span', { text: 'pro Woche' }), h('span', { text: 'pro Monat' })));
         for (const [id, name, leicht] of P.M5A.concat(P.M5B)) {
           fs.append(h('div', { class: 'freq' }, h('span', {}, `${id} ${leicht}`, h('span', { class: 'amt', text: name })),
             ...['tag', 'woche', 'monat'].map((x) => h('input', { type: 'number', min: '0', step: '1', inputmode: 'numeric', id: `pf-${id}-${x}`, 'aria-label': `${id} ${leicht}: Anzahl ${x === 'tag' ? 'pro Tag' : x === 'woche' ? 'pro Woche' : 'pro Monat'}` }))));
         }
         for (const [id, name, leicht] of P.M5C) {
           const ist512 = id === '5.12';
-          fs.append(h('div', { class: 'freq', 'data-kind': id === '5.K' ? '1' : null }, h('span', {}, `${id} ${leicht}`, h('span', { class: 'amt', text: name })),
+          fs.append(h('div', { class: 'freq', id: id === '5.K' ? 'pf-zeile-5K' : null, hidden: id === '5.K' }, h('span', {}, `${id} ${leicht}`, h('span', { class: 'amt', text: name })),
             ist512 ? h('label', { class: 'check' }, h('input', { type: 'checkbox', id: 'pf-5.12-taeglich' }), 'täglich') : h('span', {}),
             ...['woche', 'monat'].map((x) => h('input', { type: 'number', min: '0', step: '1', inputmode: 'numeric', id: `pf-${id}-${x}`, 'aria-label': `${id} ${leicht}: Anzahl pro ${x === 'woche' ? 'Woche' : 'Monat'}` }))));
         }
-        const sel = h('select', { id: 'pf-5.16' }, P.SKALA.sel.stufen.map((s, i) => h('option', { value: i, text: s })));
-        fs.append(h('div', { class: 'row' }, h('label', { for: 'pf-5.16' }, '5.16 Diät und ärztliche Vorschriften einhalten', h('span', { class: 'amt', text: 'Einhaltung einer Diät und anderer krankheits- oder therapiebedingter Verhaltensvorschriften' })), sel));
+        const sel = h('select', { id: 'pf-5.16' }, P.SKALA.sel.stufen.map((s, i) => h('option', { value: i, text: `${s} (${P.SKALA.sel.kurz[i]})` })));
+        fs.append(h('div', { class: 'row' }, h('label', { for: 'pf-5.16' }, '5.16 Diät und ärztliche Anweisungen einhalten', h('span', { class: 'amt', text: 'Einhaltung einer Diät und anderer krankheits- oder therapiebedingter Verhaltensvorschriften' })), sel));
       } else {
         for (const k of P.KRITERIEN.filter((x) => x.m === m)) {
-          const sel = h('select', { id: 'pf-' + k.id }, h('option', { value: '', text: '– nicht eingetragen –' }), P.SKALA[k.s].stufen.map((s, i) => h('option', { value: i, text: s })));
+          const sk = P.SKALA[k.s];
+          const sel = h('select', { id: 'pf-' + k.id }, h('option', { value: '', text: '– nicht eingetragen –' }), sk.stufen.map((s, i) => h('option', { value: i, text: `${s} (${sk.kurz[i]})` })));
           fs.append(h('div', { class: 'row' }, h('label', { for: 'pf-' + k.id }, `${k.id} ${k.leicht}`, h('span', { class: 'amt', text: k.name + (k.faktor ? ` (zählt ${k.faktor}-fach)` : '') })), sel));
         }
       }
@@ -66,7 +68,7 @@
     for (const [id] of P.M5A.concat(P.M5B)) m5[id] = { tag: $(`pf-${id}-tag`).value, woche: $(`pf-${id}-woche`).value, monat: $(`pf-${id}-monat`).value };
     for (const [id] of P.M5C) m5[id] = { woche: $(`pf-${id}-woche`).value, monat: $(`pf-${id}-monat`).value, taeglich: id === '5.12' && $('pf-5.12-taeglich').checked };
     m5['5.16'] = +$('pf-5.16').value;
-    return { stufen, m5, inkontinenz: { harn: $('pf-harn').checked, stuhl: $('pf-stuhl').checked }, kind: $('pf-kind').checked, pgBescheid: $('pf-pgb').value };
+    return { stufen, m5, inkontinenz: { harn: $('pf-harn').checked, stuhl: $('pf-stuhl').checked }, alterJahre: $('pf-alter').value, alterMonate: $('pf-monate').value, pgBescheid: $('pf-pgb').value };
   }
   function setzePflege(g) {
     for (const k of P.KRITERIEN) $('pf-' + k.id).value = g.stufen && g.stufen[k.id] != null ? g.stufen[k.id] : '';
@@ -80,42 +82,61 @@
   }
   function weg(w) {
     if (w.id.startsWith('M5')) {
-      const t = { a: 'Medikamente, Spritzen, Messungen oder Hilfsmittel', b: 'Wundversorgung, Stoma, Katheter oder Therapie zu Hause', c: 'Arztbesuche oder aufwendige Behandlungen', d: 'Diät oder ärztliche Vorschriften' }[w.id.slice(2)];
-      return `Modul 5: mehr Hilfe bei ${t}, als im Gutachten steht`;
+      const t = { a: 'Medikamente, Spritzen, Messen oder Hilfsmittel', b: 'Wunden, Stoma, Katheter oder Übungen zu Hause', c: 'Arztbesuchen oder aufwendigen Behandlungen', d: 'Diät oder ärztlichen Anweisungen' }[w.id.slice(2)];
+      return `Umgang mit Krankheit: öfter Hilfe bei ${t}, als im Gutachten steht`;
     }
-    const k = P.kriterium(w.id), sk = P.SKALA[k.s].stufen, ist = +($('pf-' + k.id).value || 0);
-    return `${k.id} ${k.leicht}: „${sk[w.nach]}“ statt „${sk[ist]}“`;
+    const k = P.kriterium(w.id), sk = P.SKALA[k.s], ist = +($('pf-' + k.id).value || 0);
+    return `${k.leicht}: „${sk.kurz[w.nach]}“ statt „${sk.kurz[ist]}“`;
+  }
+  // Punkteleiste 0–100 mit den Grenzen der Pflegegrade (Text steht zusätzlich daneben, die Leiste ist Schmuck)
+  function leiste(gesamt) {
+    const bar = h('div', { class: 'bar', 'aria-hidden': 'true' }, h('div', { class: 'fill', style: `width:${Math.min(100, gesamt)}%` }));
+    P.GRAD_AB.forEach((x, i) => bar.append(h('div', { class: 'mark', style: `left:${x}%` }, h('span', { text: `PG ${i + 1}` }))));
+    return bar;
   }
   function zeigePflege() {
     const g = lesePflege(), r = P.rechne(g), box = $('pf-erg');
+    $('pf-monate-box').hidden = !(g.alterJahre !== '' && +g.alterJahre < 2);
+    $('pf-zeile-5K').hidden = !r.kind;
     box.replaceChildren();
-    const geld = P.geld(r.pg, Rules);
-    box.append(h('h2', { text: 'Ergebnis der Nachrechnung' }),
-      h('p', {}, h('span', { class: 'big', text: `${zahl(r.gesamt)} Punkte → Pflegegrad ${r.pg || 'keiner'}` })),
-      h('p', { class: 'small', text: `Mobilität ${zahl(r.module[1].gewichtet)} · Verstehen/Verhalten ${zahl(r.m23)} (Modul ${r.zaehlt23} zählt) · Selbstversorgung ${zahl(r.module[4].gewichtet)} · Krankheit und Therapie ${zahl(r.module[5].gewichtet)} · Alltag ${zahl(r.module[6].gewichtet)}` }));
-    if (r.bescheid) {
-      box.append(h('p', {}, r.bescheid.passt ? h('span', { class: 'pill passt', text: `Passt zum Bescheid (Pflegegrad ${r.bescheid.pg})` })
-        : h('span', { class: 'pill zuWenig', text: r.bescheid.abweichung > 0 ? `Nach diesen Punkten Pflegegrad ${r.pg}, im Bescheid nur ${r.bescheid.pg}: Rechenfehler oder andere Angaben, bitte genau vergleichen` : `Im Bescheid Pflegegrad ${r.bescheid.pg}, nach diesen Punkten ${r.pg}: Angaben bitte prüfen` })));
+    box.append(h('h2', { text: 'Ergebnis: das sagt das Gutachten' }),
+      h('p', {}, h('span', { class: 'big', text: r.pg ? `Pflegegrad ${r.pg}` : 'Kein Pflegegrad' }), h('span', { class: 'muted', text: ` · ${zahl(r.gesamt)} von 100 Punkten` })),
+      leiste(r.gesamt));
+    for (const satz of P.zusammenfassung(g, r, Rules)) box.append(h('p', { text: satz }));
+    // Bereiche als kleine Tabelle
+    const tb = h('tbody', {}, [1, 2, 3, 4, 5, 6].map((m) => { const mo = r.module[m], zaehlt = !(m === 2 || m === 3) || r.zaehlt23 === m; return h('tr', {}, h('td', { text: P.MODUL[m].kurz }), h('td', { text: mo.bereichName }), h('td', { class: 'z', text: zaehlt ? `${zahl(mo.gewichtet)} / ${zahl(P.ANLAGE2[m].gew[4])}` : 'zählt nicht' })); }));
+    box.append(h('div', { class: 'tablewrap', tabindex: '0', role: 'region', 'aria-label': 'Punkte je Bereich' }, h('table', { class: 'modtab' }, h('thead', {}, h('tr', {}, h('th', { text: 'Bereich' }), h('th', { text: 'Einstufung' }), h('th', { class: 'z', text: 'Punkte' }))), tb)));
+    if (r.fehltBisNaechster != null && !r.besonders && r.hebel.moeglich) {
+      const jetzt = P.geld(r.pg, Rules), naechst = P.geld(r.naechsterPg, Rules);
+      box.append(h('h3', { text: `Was für Pflegegrad ${r.naechsterPg} fehlt` }));
+      if (naechst.pflegegeld > jetzt.pflegegeld) box.append(h('p', { text: `Pflegegrad ${r.naechsterPg} brächte ${eur(naechst.pflegegeld - jetzt.pflegegeld)} mehr Pflegegeld im Monat.` }));
+      box.append(h('p', { text: r.grenzfall ? 'Es ist knapp. Schon diese Änderungen würden reichen, wenn sie im Alltag wirklich so sind:' : 'Dafür müsste sich einiges ändern, zum Beispiel:' }));
+      r.hebel.optionen.slice(0, 3).forEach((o, i) => {
+        const btn = o.wege.every((w) => !w.id.startsWith('M5')) ? h('button', { type: 'button', class: 'btn', onclick: () => { o.wege.forEach((w) => fuegeWiderspruchHinzu(w.id, w.nach)); $('pf-wid').scrollIntoView({ block: 'start' }); } }, 'Für den Widerspruch übernehmen') : null;
+        box.append(h('div', { class: 'opt' }, h('strong', { text: `Möglichkeit ${i + 1}: ${o.schritte === 1 ? 'eine Bewertung' : o.schritte + ' Bewertungen'} anders` }), h('ul', {}, o.wege.map((w) => h('li', { text: weg(w) }))), btn));
+      });
+      box.append(h('p', { class: 'small muted', text: 'Nur übernehmen, was im Alltag wirklich so ist. Ob eine Bewertung stimmt, wissen nur du und die gepflegte Person.' }));
     }
-    if (r.pg >= 1) box.append(h('p', { class: 'small', text: `Pflegegrad ${r.pg}: Pflegegeld ${eur(geld.pflegegeld)} im Monat, Entlastungsbetrag ${eur(geld.entlastung)}.` }));
-    if (r.fehltBisNaechster != null) {
-      const naechst = P.geld(r.naechsterPg, Rules);
-      box.append(h('p', {}, h('strong', { text: `Bis Pflegegrad ${r.naechsterPg} fehlen ${zahl(r.fehltBisNaechster)} Punkte.` }), naechst.pflegegeld > geld.pflegegeld ? ` Das wären ${eur(naechst.pflegegeld - geld.pflegegeld)} mehr Pflegegeld im Monat.` : ''));
-      if (r.hebel.moeglich) {
-        box.append(h('p', { text: r.grenzfall ? 'Es ist knapp. Diese Bewertungen würden schon reichen, wenn sie in Wirklichkeit zutreffen:' : 'Für den nächsten Pflegegrad müsste sich mehr ändern, zum Beispiel:' }));
-        r.hebel.optionen.slice(0, 3).forEach((o, i) => {
-          const ul = h('ul', {}, o.wege.map((w) => h('li', { text: weg(w) })));
-          const btn = o.wege.every((w) => !w.id.startsWith('M5')) ? h('button', { type: 'button', class: 'btn', onclick: () => { o.wege.forEach((w) => fuegeWiderspruchHinzu(w.id, w.nach)); $('pf-wid').scrollIntoView({ block: 'start' }); } }, 'Für den Widerspruch übernehmen') : null;
-          box.append(h('div', { class: 'opt' }, h('strong', { text: `Möglichkeit ${i + 1}: ${o.schritte} ${o.schritte === 1 ? 'Stufe' : 'Stufen'} anders` }), ul, btn));
-        });
-        box.append(h('p', { class: 'small muted', text: 'Nur übernehmen, was im Alltag wirklich so ist. Ob eine Bewertung stimmt, weißt nur du.' }));
-      }
-    }
-    const det = h('details', {}, h('summary', { text: 'Erklärung aller Bewertungen in einfachen Worten' }));
+    box.append(h('details', {}, h('summary', { text: 'So rechnet die Pflegekasse' }), h('ul', {}, P.SO_GEHTS.map((t) => h('li', { text: t })))));
+    zeigeErklaerung(g, r);
+  }
+  // Das Gutachten einfach erklärt: jede eingetragene Bewertung mit ihrer Bedeutung im Alltag
+  function zeigeErklaerung(g, r) {
+    const box = $('pf-erkl'); box.replaceChildren();
+    box.append(h('h2', { text: 'Das Gutachten einfach erklärt' }), h('p', { class: 'small muted', text: 'Hier steht jede Bewertung aus dem Gutachten mit dem, was sie im Alltag bedeutet. Stimmt etwas nicht mit dem Alltag überein, ist das ein Grund für einen Widerspruch.' }));
+    let leer = true;
     for (const z of P.erklaerung(g, r)) {
-      det.append(h('h3', { text: `Modul ${z.modul}: ${z.leicht}` }), h('p', { class: 'small', text: `${z.summe} Punkte = ${z.bereich} Beeinträchtigung → ${zahl(z.gewichtet)} gewichtete Punkte${z.zaehlt ? '' : ' (zählt nicht, Modul 2 und 3: nur der höhere Wert)'}` }), h('ul', {}, z.kriterien.map((k) => h('li', { class: 'small', text: k.text }))));
+      const sek = h('section', { 'aria-labelledby': `erk-${z.modul}` }, h('h3', { id: `erk-${z.modul}`, text: `${z.modul}. ${z.kurz}` }), h('p', { class: 'small', text: z.satz }));
+      const eintraege = z.modul === 5 ? z.kriterien.filter((k) => k.punkte > 0) : z.kriterien;
+      for (const k of eintraege) {
+        leer = false;
+        sek.append(h('div', { class: 'krit' }, h('span', { class: 'pkt', text: `${k.punkte} ${k.punkte === 1 ? 'Punkt' : 'Punkte'}` }), h('strong', { text: k.titel }),
+          k.stufe ? h('span', { class: 'stufe', text: `Im Gutachten: „${k.stufe}“` }) : null, h('p', { text: k.bedeutung })));
+      }
+      if (!eintraege.length) sek.append(h('p', { class: 'small muted', text: z.modul === 5 ? 'Keine Hilfe eingetragen.' : 'Noch keine Bewertung eingetragen.' }));
+      box.append(sek);
     }
-    box.append(det);
+    box.hidden = leer;
   }
   // Widerspruch Pflege: Liste der Kriterien
   function fuegeWiderspruchHinzu(id, soll) {
@@ -124,7 +145,7 @@
     const n = liste.children.length + 1;
     const wahl = h('select', { id: `pw-k-${n}`, 'aria-label': `Kriterium ${n}` }, P.KRITERIEN.filter((k) => k.s !== 'sonde').map((k) => h('option', { value: k.id, text: `${k.id} ${k.leicht}`, selected: k.id === id })));
     const sollSel = h('select', { id: `pw-s-${n}` });
-    const fuellen = () => { const k = P.kriterium(wahl.value); sollSel.replaceChildren(...P.SKALA[k.s].stufen.map((s, i) => h('option', { value: i, text: s, selected: soll != null && i === soll }))); };
+    const fuellen = () => { const k = P.kriterium(wahl.value); sollSel.replaceChildren(...P.SKALA[k.s].stufen.map((s, i) => h('option', { value: i, text: `${s} (${P.SKALA[k.s].kurz[i]})`, selected: soll != null && i === soll }))); };
     wahl.addEventListener('change', () => { soll = null; fuellen(); });
     fuellen();
     const alltag = h('textarea', { id: `pw-a-${n}`, rows: '3', placeholder: 'Wie ist es im Alltag wirklich? z. B. „Sie kann nicht allein in die Dusche steigen und braucht jedes Mal Hilfe beim Abtrocknen.“' });
@@ -236,8 +257,10 @@ Ergebnis: Pflegegrad 2`;
 
   // ---------------- Start ----------------
   baueModule();
-  $('pf-form').addEventListener('input', zeigePflege);
-  $('pf-form').addEventListener('change', zeigePflege);
+  // Neu rechnen beim Tippen („input“). „change“ nur für Auswahl und Häkchen: Bei Zahlenfeldern kommt „change“ erst beim Verlassen des Feldes,
+  // also oft beim Tippen auf einen Knopf im Ergebnis – die Neuberechnung würde den Knopf ersetzen, bevor der Klick ankommt.
+  const nurAuswahl = (fn) => (e) => { if (!e.target.matches('input[type="number"], input[type="text"], input[type="date"], textarea')) fn(); };
+  for (const f of ['pf-form', 'pf-form2']) { $(f).addEventListener('input', zeigePflege); $(f).addEventListener('change', nurAuswahl(zeigePflege)); }
   $('pf-lesen').addEventListener('click', () => {
     const t = $('pf-text').value;
     if (!t.trim()) { $('pf-msg').textContent = 'Bitte zuerst Text einfügen.'; return; }
@@ -246,8 +269,8 @@ Ergebnis: Pflegegrad 2`;
     $('pf-msg').textContent = `${im.gefunden.length} von ${P.KRITERIEN.length} Bewertungen erkannt${im.pgBescheid ? `, Pflegegrad ${im.pgBescheid} im Text gefunden` : ''}. Bitte jede Zahl mit dem Gutachten vergleichen und korrigieren.`;
     zeigePflege();
   });
-  $('pf-beispiel').addEventListener('click', () => { $('pf-text').value = BEISPIEL_GUTACHTEN; $('pf-lesen').click(); });
-  $('pf-leeren').addEventListener('click', () => { $('pf-form').reset(); $('pf-text').value = ''; $('pf-msg').textContent = ''; for (const el of document.querySelectorAll('#pf-module input')) { if (el.type === 'checkbox') el.checked = false; else el.value = ''; } zeigePflege(); });
+  $('pf-beispiel').addEventListener('click', () => { $('pf-alter').value = 82; $('pf-text').value = BEISPIEL_GUTACHTEN; $('pf-lesen').click(); });
+  $('pf-leeren').addEventListener('click', () => { $('pf-form').reset(); $('pf-form2').reset(); $('pf-text').value = ''; $('pf-msg').textContent = ''; for (const el of document.querySelectorAll('#pf-module input')) { if (el.type === 'checkbox') el.checked = false; else el.value = ''; } zeigePflege(); });
   $('pf-wid-plus').addEventListener('click', () => fuegeWiderspruchHinzu(null, null));
   $('pf-wid-mach').addEventListener('click', machePflegeWiderspruch);
   $('pf-wid-copy').addEventListener('click', () => kopiere($('pf-wid-text'), $('pf-copy-msg')));
@@ -256,7 +279,7 @@ Ergebnis: Pflegegrad 2`;
   $('bs-erw').addEventListener('click', () => { personZeile('erw'); zeigeBescheid(); });
   $('bs-kind').addEventListener('click', () => { personZeile('kind'); zeigeBescheid(); });
   $('bs-form').addEventListener('input', zeigeBescheid);
-  $('bs-form').addEventListener('change', zeigeBescheid);
+  $('bs-form').addEventListener('change', nurAuswahl(zeigeBescheid));
   $('bs-beispiel').addEventListener('click', () => {
     $('bs-personen').replaceChildren();
     personZeile('erw', { alter: 34, brutto: 1000, netto: 800 }); personZeile('kind', { alter: 4 }); personZeile('kind', { alter: 9 });

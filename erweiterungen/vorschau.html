@@ -36,6 +36,16 @@
   th, td { text-align: left; padding: 8px 6px; border-top: 1px solid var(--line); vertical-align: top; }
   td.z, th.z { text-align: right; white-space: nowrap; }
   .tablewrap { overflow-x: auto; position: relative; } /* hält auch unsichtbare Beschriftungen (.vh) in der Tabelle */
+  .bar { position: relative; height: 18px; border-radius: 999px; background: var(--bg); border: 1px solid var(--line); margin: 28px 0 8px; }
+  .bar .fill { position: absolute; inset: 0 auto 0 0; border-radius: 999px; background: var(--accent); }
+  .bar .mark { position: absolute; top: -6px; bottom: -6px; width: 2px; background: var(--ink); }
+  .bar .mark span { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: .78em; color: var(--muted); white-space: nowrap; }
+  .modtab { font-size: .94em; } .modtab th, .modtab td { padding: 8px 4px; }
+  .krit { padding: 10px 0; border-top: 1px solid var(--line); }
+  .krit:first-of-type { border-top: 0; }
+  .krit .stufe { display: block; color: var(--muted); font-size: .92em; margin: 2px 0 4px; }
+  .krit p { margin: 0; }
+  .krit .pkt { float: right; margin-left: 10px; font-variant-numeric: tabular-nums; color: var(--muted); }
   .opt { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin: 8px 0; }
   .btns { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
   details > summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
@@ -69,14 +79,23 @@
       <div class="btns"><button type="button" class="btn primary" id="pf-lesen">Text lesen</button><button type="button" class="btn" id="pf-beispiel">Beispiel laden</button><button type="button" class="btn" id="pf-leeren">Alles leeren</button></div>
       <p class="msg small" id="pf-msg" role="status"></p>
     </div>
-    <div class="card ergebnis" id="pf-erg" aria-live="polite"></div>
     <form id="pf-form" onsubmit="return false">
+      <fieldset><legend>Wer wird gepflegt?</legend>
+        <div class="grid2">
+          <div><label for="pf-alter">Alter der gepflegten Person (Jahre)</label><input type="number" id="pf-alter" min="0" max="120" step="1" inputmode="numeric" aria-describedby="pf-alter-hilfe"></div>
+          <div id="pf-monate-box" hidden><label for="pf-monate">Alter in Monaten (bei Kindern unter 2 Jahren)</label><input type="number" id="pf-monate" min="0" max="23" step="1" inputmode="numeric"></div>
+        </div>
+        <p class="small muted" id="pf-alter-hilfe">Das Alter ist wichtig: Bei Kindern vergleicht der Gutachter mit gesunden Kindern im gleichen Alter, und bis 18 Monate gelten Sonderregeln.</p>
+      </fieldset>
+    </form>
+    <div class="card ergebnis" id="pf-erg" aria-live="polite"></div>
+    <div class="card" id="pf-erkl"></div>
+    <form id="pf-form2" onsubmit="return false">
       <fieldset><legend>Angaben aus Gutachten und Bescheid</legend>
         <div class="grid2">
           <div><label for="pf-pgb">Pflegegrad laut Bescheid</label><select id="pf-pgb"><option value="">nicht bekannt</option><option value="0">kein Pflegegrad</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
           <label class="check"><input type="checkbox" id="pf-harn"> Harn: überwiegend oder vollständig inkontinent, oder Katheter/Urostoma</label>
           <label class="check"><input type="checkbox" id="pf-stuhl"> Stuhl: überwiegend oder vollständig inkontinent, oder Stoma</label>
-          <label class="check"><input type="checkbox" id="pf-kind"> Kind (unter 18 Jahren)</label>
         </div>
       </fieldset>
       <div id="pf-module"></div>
