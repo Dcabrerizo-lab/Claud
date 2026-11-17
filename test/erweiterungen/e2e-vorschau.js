@@ -92,6 +92,19 @@ const ok = (name, c, info) => { n++; console.log((c ? 'ok   ' : 'FEHLER ') + nam
     await p.fill('#wg-datum', '2026-11-16');
     await p.click('#wg-wid-mach');
     ok(`${schema}: Wohngeld-Widerspruch`, /Widerspruch gegen den Wohngeldbescheid vom 16\.11\.2026/.test(await p.inputValue('#wg-wid-text')));
+    // Kinderzuschlag
+    await p.click('#tab-kiz');
+    ok(`${schema}: Kinderzuschlag ohne Kinder: Hinweis`, /Kinder eintragen/.test(await p.textContent('#kz-erg')));
+    await p.click('#kz-beispiel');
+    ok(`${schema}: Kinderzuschlag-Beispiel 112,05 € zu wenig`, (await p.textContent('#kz-erg .big')).includes('112,05 €'), await p.textContent('#kz-erg .big'));
+    ok(`${schema}: Kinderzuschlag: Freibetrag als Grund`, /Freibetrag/.test(await p.textContent('#kz-erg')));
+    await axe('Kinderzuschlag mit Ergebnis');
+    await p.selectOption('#kz-zahl', '1');
+    ok(`${schema}: ein Elternteil blendet Felder für Elternteil 2 aus`, !(await p.isVisible('#kz-b2')));
+    await p.selectOption('#kz-zahl', '2');
+    await p.fill('#kz-datum', '2026-11-16');
+    await p.click('#kz-wid-mach');
+    ok(`${schema}: Kinderzuschlag-Widerspruch`, /Widerspruch gegen den Bescheid über den Kinderzuschlag vom 16\.11\.2026/.test(await p.inputValue('#kz-wid-text')) && /Familienkasse/.test(await p.inputValue('#kz-wid-text')));
     // Fristen
     await p.click('#tab-fristen');
     await p.fill('#fr-datum', '2026-11-16');

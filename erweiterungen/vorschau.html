@@ -66,6 +66,7 @@
     <button type="button" role="tab" id="tab-pflege" aria-controls="p-pflege" aria-selected="true">Pflegegutachten</button>
     <button type="button" role="tab" id="tab-bescheid" aria-controls="p-bescheid" aria-selected="false" tabindex="-1">Bescheid Grundsicherungsgeld</button>
     <button type="button" role="tab" id="tab-wg" aria-controls="p-wg" aria-selected="false" tabindex="-1">Bescheid Wohngeld</button>
+    <button type="button" role="tab" id="tab-kiz" aria-controls="p-kiz" aria-selected="false" tabindex="-1">Bescheid Kinderzuschlag</button>
     <button type="button" role="tab" id="tab-fristen" aria-controls="p-fristen" aria-selected="false" tabindex="-1">Fristen</button>
     <button type="button" role="tab" id="tab-lizenz" aria-controls="p-lizenz" aria-selected="false" tabindex="-1">Profi-Lizenz</button>
   </nav>
@@ -229,6 +230,55 @@
     </div>
   </section>
 
+  <!-- Bescheid Kinderzuschlag -->
+  <section id="p-kiz" role="tabpanel" aria-labelledby="tab-kiz" hidden>
+    <div class="card">
+      <h2>Bescheid Kinderzuschlag prüfen</h2>
+      <p>Trage die Durchschnittsbeträge der letzten sechs Monate vor dem Antrag ein. Mit diesem Zeitraum rechnet auch die Familienkasse. SoLo rechnet mit denselben Regeln wie die App nach.</p>
+      <div class="btns"><button type="button" class="btn" id="kz-beispiel">Beispiel laden</button></div>
+    </div>
+    <form id="kz-form" onsubmit="return false">
+      <fieldset><legend>Eltern (Monat)</legend>
+        <div class="grid2">
+          <div><label for="kz-zahl">Eltern im Haushalt</label><select id="kz-zahl"><option value="1">ein Elternteil (alleinerziehend)</option><option value="2" selected>zwei Eltern</option></select></div>
+          <div><label for="kz-wohn">Miete mit Heizung</label><input type="number" id="kz-wohn" min="0" step="0.01" inputmode="decimal"></div>
+          <div><label for="kz-b1">Lohn brutto Elternteil 1</label><input type="number" id="kz-b1" min="0" step="0.01" inputmode="decimal"></div>
+          <div><label for="kz-n1">Lohn netto Elternteil 1</label><input type="number" id="kz-n1" min="0" step="0.01" inputmode="decimal"></div>
+          <div class="kz-zwei"><label for="kz-b2">Lohn brutto Elternteil 2</label><input type="number" id="kz-b2" min="0" step="0.01" inputmode="decimal"></div>
+          <div class="kz-zwei"><label for="kz-n2">Lohn netto Elternteil 2</label><input type="number" id="kz-n2" min="0" step="0.01" inputmode="decimal"></div>
+        </div>
+      </fieldset>
+      <fieldset><legend>Kinder</legend>
+        <div class="tablewrap" tabindex="0" role="region" aria-label="Kinder"><table><thead><tr><th>Alter</th><th>Unterhalt oder Unterhaltsvorschuss</th><th>eigenes Einkommen</th><th><span class="vh">Entfernen</span></th></tr></thead><tbody id="kz-kinder"></tbody></table></div>
+        <div class="btns"><button type="button" class="btn" id="kz-plus">Kind hinzufügen</button></div>
+      </fieldset>
+      <fieldset><legend>Beträge im Bescheid (Monat)</legend>
+        <div class="grid2">
+          <div><label for="kz-b-bedarf">Bedarf der Eltern</label><input type="number" id="kz-b-bedarf" step="0.01" inputmode="decimal"></div>
+          <div><label for="kz-b-eink">Einkommen der Eltern</label><input type="number" id="kz-b-eink" step="0.01" inputmode="decimal"></div>
+          <div><label for="kz-b-kiz">Kinderzuschlag aller Kinder zusammen</label><input type="number" id="kz-b-kiz" step="0.01" inputmode="decimal"></div>
+        </div>
+      </fieldset>
+    </form>
+    <div class="card" id="kz-erg" aria-live="polite"></div>
+    <div class="card">
+      <h2>Widerspruch vorbereiten</h2>
+      <div class="grid2">
+        <div><label for="kz-name">Name</label><input type="text" id="kz-name" autocomplete="name"></div>
+        <div><label for="kz-anschrift">Straße und Hausnummer</label><input type="text" id="kz-anschrift"></div>
+        <div><label for="kz-ort">PLZ und Ort</label><input type="text" id="kz-ort"></div>
+        <div><label for="kz-kgnr">Kindergeldnummer</label><input type="text" id="kz-kgnr"></div>
+        <div><label for="kz-datum">Datum des Bescheids</label><input type="date" id="kz-datum"></div>
+      </div>
+      <div class="btns"><button type="button" class="btn primary" id="kz-wid-mach">Widerspruch erstellen</button></div>
+      <p class="small" id="kz-frist" role="status"></p>
+      <label for="kz-wid-text" class="vh">Text des Widerspruchs</label>
+      <textarea id="kz-wid-text" rows="18" readonly hidden></textarea>
+      <div class="btns"><button type="button" class="btn" id="kz-wid-copy" hidden>Text kopieren</button></div>
+      <p class="small" id="kz-copy-msg" role="status"></p>
+    </div>
+  </section>
+
   <!-- Fristen -->
   <section id="p-fristen" role="tabpanel" aria-labelledby="tab-fristen" hidden>
     <div class="card">
@@ -269,6 +319,7 @@
 /*IMPORT*/
 /*BESCHEID*/
 /*BESCHEIDWG*/
+/*BESCHEIDKIZ*/
 /*FRISTEN*/
 /*WIDERSPRUCH*/
 /*LIZENZ*/

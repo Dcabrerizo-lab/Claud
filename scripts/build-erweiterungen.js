@@ -10,7 +10,7 @@ function render() {
   const json = (f) => JSON.stringify(JSON.parse(E(f)));
   const teile = {
     RULES: fs.readFileSync(path.join(ROOT, 'src', 'rules.js'), 'utf8'),
-    PFLEGE: E('pflege.js'), IMPORT: E('pflege-import.js'), BESCHEID: E('bescheid-sgb2.js'), BESCHEIDWG: E('bescheid-wg.js'), FRISTEN: E('fristen.js'), WIDERSPRUCH: E('widerspruch.js'), LIZENZ: E('lizenz.js'),
+    PFLEGE: E('pflege.js'), IMPORT: E('pflege-import.js'), BESCHEID: E('bescheid-sgb2.js'), BESCHEIDWG: E('bescheid-wg.js'), BESCHEIDKIZ: E('bescheid-kiz.js'), FRISTEN: E('fristen.js'), WIDERSPRUCH: E('widerspruch.js'), LIZENZ: E('lizenz.js'),
     VORSCHAU: E('vorschau.js')
   };
   let html = E('vorschau.html');
@@ -20,7 +20,7 @@ function render() {
     html = html.replace(marke, () => v + '\n');
   }
   html = html.replace('/*SCHLUESSEL*/null', () => json('lizenz-schluessel.json')).replace('/*DEMOLIZENZ*/null', () => json('demo-lizenz.json'));
-  const rest = html.match(/\/\*(RULES|PFLEGE|IMPORT|BESCHEID|BESCHEIDWG|FRISTEN|WIDERSPRUCH|LIZENZ|VORSCHAU|SCHLUESSEL|DEMOLIZENZ)\*\//);
+  const rest = html.match(/\/\*(RULES|PFLEGE|IMPORT|BESCHEID|BESCHEIDWG|BESCHEIDKIZ|FRISTEN|WIDERSPRUCH|LIZENZ|VORSCHAU|SCHLUESSEL|DEMOLIZENZ)\*\//);
   if (rest) throw new Error('Platzhalter nicht ersetzt: ' + rest[0]);
   // Titel und Stile gehören in den Kopf
   const kopf = [];

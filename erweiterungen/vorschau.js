@@ -286,6 +286,48 @@ Ergebnis: Pflegegrad 2`;
     $('wg-frist').textContent = (r.gruende.length ? '' : 'Es wurde kein Grund gefunden; der Widerspruch hat noch keine Begründung. ') + ($('wg-datum').value ? fristText($('wg-datum').value) : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.');
   }
 
+  // ---------------- Bescheid Kinderzuschlag ----------------
+  let kz = 0;
+  function kzKind(w) {
+    kz++; const n = kz; w = w || {};
+    const tr = h('tr', {},
+      h('td', {}, h('input', { type: 'number', min: '0', max: '24', step: '1', inputmode: 'numeric', id: `kk-a-${n}`, 'aria-label': `Kind ${n}: Alter`, value: w.alter != null ? w.alter : '' })),
+      h('td', {}, h('input', { type: 'number', min: '0', step: '0.01', inputmode: 'decimal', id: `kk-u-${n}`, 'aria-label': `Kind ${n}: Unterhalt oder Unterhaltsvorschuss im Monat`, value: w.unterhalt || '' })),
+      h('td', {}, h('input', { type: 'number', min: '0', step: '0.01', inputmode: 'decimal', id: `kk-e-${n}`, 'aria-label': `Kind ${n}: eigenes Einkommen im Monat`, value: w.eigenes || '' })),
+      h('td', {}, h('button', { type: 'button', class: 'btn', 'aria-label': `Kind ${n} entfernen`, onclick: () => { tr.remove(); zeigeKiZ(); } }, '×')));
+    $('kz-kinder').append(tr);
+  }
+  function leseKiZ() {
+    const zwei = $('kz-zahl').value === '2';
+    const eltern = [{ brutto: +$('kz-b1').value || 0, netto: +$('kz-n1').value || 0 }];
+    if (zwei) eltern.push({ brutto: +$('kz-b2').value || 0, netto: +$('kz-n2').value || 0 });
+    const kinder = [...$('kz-kinder').children].map((tr) => { const i = tr.querySelectorAll('input'); return { alter: i[0].value === '' ? 5 : +i[0].value, unterhalt: +i[1].value || 0, eigenes: +i[2].value || 0 }; });
+    return { eltern, kinder, wohnkosten: +$('kz-wohn').value || 0, bescheid: { bedarf: wert('kz-b-bedarf'), einkommen: wert('kz-b-eink'), kiz: wert('kz-b-kiz') } };
+  }
+  function zeigeKiZ() {
+    for (const el of document.querySelectorAll('.kz-zwei')) el.hidden = $('kz-zahl').value !== '2';
+    const box = $('kz-erg'); box.replaceChildren();
+    const e = leseKiZ();
+    if (!e.kinder.length) { box.append(h('p', { text: 'Bitte zuerst die Kinder eintragen.' })); return; }
+    const r = BescheidKiZ.pruefe(e, Rules), q = r.rechnung;
+    box.append(h('h2', { text: 'Ergebnis' }),
+      h('p', {}, h('span', { class: 'big', text: r.posten.length ? (r.zuWenigImMonat > 0 ? `Vermutlich ${eur(r.zuWenigImMonat)} Kinderzuschlag im Monat zu wenig` : r.gruende.length ? 'Abweichung gefunden, bitte prüfen' : 'Keine Abweichung zu deinen Lasten gefunden') : `Nach SoLo: ${eur(q.kiz)} Kinderzuschlag im Monat` })),
+      h('p', { class: 'small', text: `Nach SoLo: Bedarf der Eltern ${eur(q.bedarf)}, anzurechnendes Einkommen der Eltern ${eur(q.einkEltern)}, Kinderzuschlag ${eur(q.kiz)} (höchstens ${eur(q.max)} je Kind).` }));
+    r.hinweise.forEach((t) => box.append(h('p', { class: 'note', text: t })));
+    if (r.posten.length) {
+      const tb = h('tbody', {}, r.posten.map((p) => h('tr', {}, h('td', {}, p.name), h('td', { class: 'z', text: eur(p.erwartet) }), h('td', { class: 'z', text: eur(p.bescheid) }), h('td', {}, h('span', { class: 'pill ' + p.wirkung, text: WIRK[p.wirkung] })))));
+      box.append(h('div', { class: 'tablewrap', tabindex: '0', role: 'region', 'aria-label': 'Vergleich Kinderzuschlag' }, h('table', {}, h('thead', {}, h('tr', {}, h('th', { text: 'Posten' }), h('th', { class: 'z', text: 'nach SoLo' }), h('th', { class: 'z', text: 'im Bescheid' }), h('th', { text: 'Bewertung' }))), tb)));
+    }
+    r.gruende.forEach((g) => box.append(h('p', { class: 'small' }, h('strong', { text: g.name + ': ' }), g.grund)));
+    box.append(h('p', { class: 'small muted', text: r.grenzen }));
+  }
+  function macheKiZWiderspruch() {
+    const r = BescheidKiZ.pruefe(leseKiZ(), Rules);
+    const t = Widerspruch.text({ art: 'kiz', absender: { name: $('kz-name').value.trim(), strasse: $('kz-anschrift').value.trim(), ort: $('kz-ort').value.trim() }, stelle: { name: 'Familienkasse der Bundesagentur für Arbeit' }, bescheidDatum: $('kz-datum').value, zeichen: $('kz-kgnr').value.trim(), heute: heute(), punkte: Widerspruch.punkteSGB2(r) });
+    $('kz-wid-text').value = t; $('kz-wid-text').hidden = false; $('kz-wid-copy').hidden = false;
+    $('kz-frist').textContent = (r.gruende.length ? '' : 'Es wurde kein Grund gefunden; der Widerspruch hat noch keine Begründung. ') + ($('kz-datum').value ? fristText($('kz-datum').value) : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.');
+  }
+
   // ---------------- Fristen ----------------
   function zeigeFristen() {
     const d = $('fr-datum').value, z = $('fr-zugang').value;
@@ -354,6 +396,19 @@ Ergebnis: Pflegegrad 2`;
   $('wg-wid-mach').addEventListener('click', macheWGWiderspruch);
   $('wg-wid-copy').addEventListener('click', () => kopiere($('wg-wid-text'), $('wg-copy-msg')));
   wgZeile(); zeigeWG();
+
+  $('kz-plus').addEventListener('click', () => { kzKind(); zeigeKiZ(); });
+  $('kz-form').addEventListener('input', zeigeKiZ);
+  $('kz-form').addEventListener('change', nurAuswahl(zeigeKiZ));
+  $('kz-beispiel').addEventListener('click', () => {
+    $('kz-kinder').replaceChildren(); kzKind({ alter: 5 }); kzKind({ alter: 9 });
+    $('kz-zahl').value = '2'; $('kz-wohn').value = 900; $('kz-b1').value = 2500; $('kz-n1').value = 1900; $('kz-b2').value = ''; $('kz-n2').value = '';
+    $('kz-b-bedarf').value = 1651; $('kz-b-eink').value = 1900; $('kz-b-kiz').value = 481.95;
+    zeigeKiZ();
+  });
+  $('kz-wid-mach').addEventListener('click', macheKiZWiderspruch);
+  $('kz-wid-copy').addEventListener('click', () => kopiere($('kz-wid-text'), $('kz-copy-msg')));
+  zeigeKiZ();
 
   for (const id of ['fr-datum', 'fr-zugang', 'er-leistung', 'er-ende']) $(id).addEventListener('input', zeigeFristen);
   $('li-demo').addEventListener('click', () => zeigeLizenz(DEMO_LIZENZ));
