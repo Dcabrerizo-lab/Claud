@@ -1,17 +1,33 @@
-// Store-Bilder erzeugen: zuerst npm run build:web, dann node tools/store-bilder.js (Ergebnis in store-bilder/)
-// Rohe Aufnahmen der App (Version mit Startseite, Leistungen und Brief prüfen), dann mit Überschrift in die Store-Formate gesetzt.
+// Store-Bilder erzeugen: zuerst npm run build:app, dann node tools/store-bilder.js (Ergebnis in store-bilder/)
+// Rohe Aufnahmen der Store-App (app/www, mit nachgeahmten Capacitor-Plugins), damit die Knöpfe der App zu sehen sind
+// (Antragsmappe: Android Drucken, PDF speichern, PDF teilen; iPhone PDF teilen). Danach mit Überschrift in die Store-Formate gesetzt.
 // Logo: tools/logo/brief-siegel.svg. Farbe der Bilder passend zum Logo (Tintenblau mit Gold).
 const { chromium } = require('playwright');
 const fs = require('fs');
 const path = require('path');
 const D = path.join(__dirname, '..', 'store-bilder') + '/'; fs.mkdirSync(D, { recursive: true });
-const APP = 'file://' + path.join(__dirname, '..', 'dist', 'sozialleistungslotse.html');
+const http = require('http');
+const WWW = path.join(__dirname, '..', 'app', 'www');
+// Nachgeahmte Plugins wie in test/app-test.js; die Plattform bestimmt, welche Knöpfe die App zeigt
+const MOCK = (pl) => { const st = {}; const ok = () => Promise.resolve({});
+  window.Capacitor = { getPlatform: () => pl, isNativePlatform: () => true, Plugins: {
+    Preferences: { get: (o) => Promise.resolve({ value: o.key in st ? st[o.key] : null }), set: (o) => { st[o.key] = o.value; return Promise.resolve(); }, remove: (o) => { delete st[o.key]; return Promise.resolve(); } },
+    Share: { share: ok }, Filesystem: { writeFile: () => Promise.resolve({ uri: 'file:///x' }), deleteFile: ok }, PdfAusgabe: { drucken: ok, speichern: ok } } }; };
 const LOGO = fs.readFileSync(path.join(__dirname, 'logo', 'brief-siegel.svg'), 'utf8');
 const VERLAUF = 'linear-gradient(160deg,#2d3d85,#161f4a)';
 (async () => {
+  if (!fs.existsSync(path.join(WWW, 'index.html'))) throw new Error('app/www fehlt: zuerst npm run build:app');
+  const srv = http.createServer((q, r) => { const u = decodeURIComponent(q.url.split(/[?#]/)[0]); const f = path.join(WWW, u === '/' ? 'index.html' : u);
+    if (!f.startsWith(WWW)) { r.writeHead(403); r.end(); return; }
+    fs.readFile(f, (e, d) => { if (e) { r.writeHead(404); r.end(); return; } r.writeHead(200, { 'Content-Type': f.endsWith('.html') ? 'text/html; charset=utf-8' : f.endsWith('.js') || f.endsWith('.mjs') ? 'text/javascript' : f.endsWith('.woff2') ? 'font/woff2' : 'application/octet-stream' }); r.end(d); }); }).listen(0);
+  const APP = 'http://localhost:' + srv.address().port + '/index.html';
   const b = await chromium.launch();
-  const ctx = await b.newContext({ viewport: { width: 390, height: 760 }, deviceScaleFactor: 3, locale: 'de-DE' });
-  const p = await ctx.newPage();
+  const neu = async (pl) => { const c = await b.newContext({ viewport: { width: 390, height: 760 }, deviceScaleFactor: 3, locale: 'de-DE' }); await c.addInitScript(MOCK, pl); return c.newPage(); };
+  // iPhone: Antragsmappe mit „PDF teilen“ (Drucken und Sichern stecken im Teilen-Dialog)
+  { const pi = await neu('ios'); await pi.goto(APP + '#leistungen'); await pi.click('#firstOk').catch(() => {}); await pi.click('#p1'); await pi.fill('#p-name', 'Maria Muster');
+    await pi.fill('#p-strasse', 'Hauptstr. 1'); await pi.fill('#p-ort', '91054 Erlangen'); await pi.press('#p-ort', 'Tab'); await pi.waitForTimeout(300);
+    await pi.click('#mappeMake'); await pi.evaluate(() => window.scrollTo(0, 0)); await pi.waitForTimeout(300); await pi.screenshot({ path: D + 'roh-6-mappe-ios.png' }); await pi.context().close(); }
+  const p = await neu('android');
   const roh = async (name, fn) => { await fn(); await p.waitForTimeout(300); await p.screenshot({ path: D + 'roh-' + name + '.png' }); };
   const zu = async (sel, off = 0) => p.evaluate(([s, o]) => { const e = document.querySelector(s); window.scrollTo(0, e.getBoundingClientRect().top + window.scrollY - o); }, [sel, off]);
   const oben = () => p.evaluate(() => window.scrollTo(0, 0));
@@ -57,7 +73,8 @@ const VERLAUF = 'linear-gradient(160deg,#2d3d85,#161f4a)';
   for (const [fmt, w, h] of FORMATE) {
     fs.rmSync(D + fmt, { recursive: true, force: true }); fs.mkdirSync(D + fmt, { recursive: true });
     for (const [n, titel, unter] of MOTIVE) {
-      const img = 'data:image/png;base64,' + fs.readFileSync(D + 'roh-' + n + '.png').toString('base64');
+      const roh = fmt.startsWith('ios') && fs.existsSync(D + 'roh-' + n + '-ios.png') ? 'roh-' + n + '-ios.png' : 'roh-' + n + '.png';
+      const img = 'data:image/png;base64,' + fs.readFileSync(D + roh).toString('base64');
       await p2.setViewportSize({ width: w, height: h });
       await p2.setContent(`<html><body style="margin:0;width:${w}px;height:${h}px;background:${VERLAUF};font-family:system-ui,sans-serif;color:#fff;overflow:hidden;display:flex;flex-direction:column;align-items:center">
         <div style="padding:${h * 0.045}px ${w * 0.07}px ${h * 0.025}px;text-align:center"><div style="font-size:${w * 0.072}px;font-weight:800;line-height:1.15">${titel}</div>
@@ -84,7 +101,7 @@ const VERLAUF = 'linear-gradient(160deg,#2d3d85,#161f4a)';
     <div style="font-size:24px;margin-top:16px;opacity:.9">Offline · ohne Anmeldung · in 8 Sprachen</div></div></body></html>`);
   await p2.waitForTimeout(100);
   await p2.screenshot({ path: D + 'play-werbegrafik-1024x500.png' });
-  await b.close();
+  await b.close(); srv.close();
   console.log('fertig');
 })().catch((e) => { console.log('FEHLER', e.message); process.exit(1); });
 
