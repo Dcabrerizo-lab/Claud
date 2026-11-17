@@ -14,6 +14,19 @@ Version 1.3.1, Build 142. Gegenüber 1.3.0 (Build 141): ohne den Bereich „Fris
 
 Gleicher Text wie bei Google Play, Deutsch und Englisch.
 
+## App Store (App Store Connect → App → Version 1.3.1)
+
+| Feld | Text |
+|---|---|
+| Name | SoLo – Sozialleistungslotse |
+| Untertitel (30) | Hilfen finden, Briefe prüfen |
+| Werbetext (170) | Welche Hilfen stehen dir zu? Prüfe 31 Sozialleistungen in zwei Minuten und lass Bescheide vom Amt nachrechnen. Offline, ohne Anmeldung, in 8 Sprachen. |
+| Stichwörter (100) | Wohngeld,Bürgergeld,Grundsicherung,Kinderzuschlag,Bescheid,Widerspruch,Pflegegrad,Sozialhilfe,Antrag |
+| Beschreibung | wie bei Google Play, aus `docs/STORE.md` |
+| Neuerungen | Text „Was ist neu“ oben |
+| Screenshots | 6,9 Zoll (1320 × 2868) und 6,5 Zoll (1242 × 2688), je 7 Bilder |
+| Review-Hinweis | aus `docs/STORE.md`, Abschnitt Apple |
+
 ## TestFlight: „Was testen“
 
 > Bitte probiere die Bereiche unten in der Leiste:

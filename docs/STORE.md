@@ -8,7 +8,9 @@ Alles muss zur [Datenschutzerklärung](../datenschutz.html) passen. Bei Änderun
 | Feld | Wert |
 |---|---|
 | App-Name | SoLo – Sozialleistungslotse (27 Zeichen) |
-| Untertitel (iOS, max. 30 Zeichen) | Sozialleistungen schnell prüfen |
+| Untertitel (iOS, max. 30 Zeichen) | Hilfen finden, Briefe prüfen |
+| Werbetext (iOS, max. 170 Zeichen) | Welche Hilfen stehen dir zu? Prüfe 31 Sozialleistungen in zwei Minuten und lass Bescheide vom Amt nachrechnen. Offline, ohne Anmeldung, in 8 Sprachen. |
+| Stichwörter (iOS, max. 100 Zeichen) | `Wohngeld,Bürgergeld,Grundsicherung,Kinderzuschlag,Bescheid,Widerspruch,Pflegegrad,Sozialhilfe,Antrag` |
 | Kategorie | Play: *Finanzen* · iOS: *Finanzen* (Zweitkategorie *Dienstprogramme*) |
 | Altersfreigabe | Ab 0 / 4+ (keine kritischen Inhalte) |
 | Preis | 1,49 € einmalig (Play Console: „Mit Google Play monetarisieren“), keine In-App-Käufe, keine Werbung, kein Abo. Tester bekommen Gutscheincodes. |
@@ -71,12 +73,12 @@ Alles muss zur [Datenschutzerklärung](../datenschutz.html) passen. Bei Änderun
 - **Exportkontrolle:** In `Info.plist` ist `ITSAppUsesNonExemptEncryption = false` gesetzt (nur Standard-Verschlüsselung des Systems).
 - **Kamera:** Begründung steht in `Info.plist` (`NSCameraUsageDescription`).
 - **Review-Hinweis an Apple** (App Review Information → Notes):
-  > Die App läuft vollständig offline und benötigt kein Konto. Zum Testen: oben ein Beispiel wählen („Alleinerziehend …“), Ergebnisse ansehen, unten „Antragsmappe erstellen“ → „PDF teilen“. „Formular fotografieren“ nutzt die Kamera und erkennt Text auf dem Gerät (Apple Vision).
+  > Die App läuft vollständig offline und benötigt kein Konto. Zum Testen: auf der Startseite „Welche Hilfen stehen mir zu?“ tippen, oben ein Beispiel wählen („Alleinerziehend …“), Ergebnisse ansehen, unten „Antragsmappe erstellen“ → „PDF teilen“. Unten in der Leiste „Brief prüfen“ → eine Kachel (z. B. „Jobcenter“) → „Beispiel laden“ zeigt die Prüfung eines Bescheids. „Formular fotografieren“ nutzt die Kamera und erkennt Text auf dem Gerät (Apple Vision).
 
 ## Screenshots
 
 Benötigt: Play mindestens 2 Handy-Screenshots und eine Werbegrafik (1024 × 500); iOS 6,9″ (1320 × 2868) und 6,5″ (1242 × 2688), optional iPad.
-Fertige Bilder (7 Motive in allen drei Formaten, Werbegrafik, Symbol 512 × 512) entstehen mit `node tools/store-bilder.js` nach `store-bilder/`.
+Fertige Bilder (7 Motive in allen drei Formaten, Werbegrafik, Symbol 512 × 512, Logo 1024 × 1024) entstehen mit `node tools/store-bilder.js` nach `store-bilder/`.
 Ursprünglicher Vorschlag für die Motive:
 
 1. Fragebogen mit Beispiel: „In zwei Minuten zum Überblick“
