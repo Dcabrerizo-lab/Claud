@@ -16,9 +16,9 @@ const Widerspruch = (function () {
     z.push('');
     z.push(`${a.ort ? a.ort.replace(/^\d{5}\s*/, '') + ', ' : ''}${de(w.heute)}`);
     z.push('');
-    const was = w.art === 'pflege' ? 'Bescheid über die Feststellung des Pflegegrades' : 'Bescheid über Leistungen zur Sicherung des Lebensunterhalts (Grundsicherungsgeld)';
+    const was = { pflege: 'Bescheid über die Feststellung des Pflegegrades', wohngeld: 'Wohngeldbescheid', kiz: 'Bescheid über den Kinderzuschlag' }[w.art] || 'Bescheid über Leistungen zur Sicherung des Lebensunterhalts (Grundsicherungsgeld)';
     z.push(`Widerspruch gegen den ${was} vom ${de(w.bescheidDatum)}`);
-    if (w.zeichen) z.push(w.art === 'pflege' ? `Versichertennummer: ${w.zeichen}` : `Nummer der Bedarfsgemeinschaft / Aktenzeichen: ${w.zeichen}`);
+    if (w.zeichen) z.push(({ pflege: 'Versichertennummer', wohngeld: 'Wohngeldnummer / Aktenzeichen', kiz: 'Kindergeldnummer' }[w.art] || 'Nummer der Bedarfsgemeinschaft / Aktenzeichen') + ': ' + w.zeichen);
     z.push('');
     z.push('Sehr geehrte Damen und Herren,');
     z.push('');
@@ -92,7 +92,7 @@ const Widerspruch = (function () {
     });
   }
 
-  // Begründungs-Punkte aus dem Bescheid-Check
+  // Begründungs-Punkte aus einem Bescheid-Check (Grundsicherungsgeld, Wohngeld, Kinderzuschlag: gleiche Form)
   function punkteSGB2(res) {
     return res.gruende.map((p) => `${p.name} (${p.recht}): ${p.grund}`);
   }

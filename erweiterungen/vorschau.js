@@ -247,6 +247,45 @@ Ergebnis: Pflegegrad 2`;
     $('bs-frist').textContent = (r.gruende.length ? '' : 'Es wurde kein Grund gefunden; der Widerspruch hat noch keine Begründung. ') + ($('bs-datum').value ? fristText($('bs-datum').value) : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.');
   }
 
+  // ---------------- Bescheid Wohngeld ----------------
+  let wz = 0;
+  const ARTEN = [['lohn', 'Lohn'], ['rente', 'Rente'], ['alg', 'Arbeitslosengeld I'], ['eg', 'Elterngeld'], ['ohne', 'nur Unterhalt / kein Einkommen']];
+  function wgZeile(w) {
+    wz++; const n = wz; w = w || {};
+    const art = h('select', { id: `wm-art-${n}`, 'aria-label': `Einkommen ${n}: Art` }, ARTEN.map(([v, t]) => h('option', { value: v, text: t, selected: v === (w.art || 'lohn') })));
+    const abz = h('select', { id: `wm-abz-${n}`, 'aria-label': `Einkommen ${n}: Pauschalabzug` }, [0, 10, 20, 30].map((p) => h('option', { value: p, text: p + ' %', selected: p === (w.abzug != null ? w.abzug : 30) })));
+    const tr = h('tr', {}, h('td', {}, art),
+      h('td', {}, h('input', { type: 'number', min: '0', step: '0.01', inputmode: 'decimal', id: `wm-b-${n}`, 'aria-label': `Einkommen ${n}: brutto im Monat`, value: w.brutto || '' })),
+      h('td', {}, abz),
+      h('td', {}, h('input', { type: 'number', min: '0', step: '0.01', inputmode: 'decimal', id: `wm-u-${n}`, 'aria-label': `Einkommen ${n}: Unterhalt im Monat`, value: w.unterhalt || '' })),
+      h('td', {}, h('button', { type: 'button', class: 'btn', 'aria-label': `Einkommen ${n} entfernen`, onclick: () => { tr.remove(); zeigeWG(); } }, '×')));
+    $('wg-mitglieder').append(tr);
+  }
+  function leseWG() {
+    const mitglieder = [...$('wg-mitglieder').children].map((tr) => { const s = tr.querySelectorAll('select'), i = tr.querySelectorAll('input'); return { art: s[0].value, abzug: +s[1].value, brutto: +i[0].value || 0, unterhalt: +i[1].value || 0 }; });
+    return { personen: +$('wg-n').value || 1, stufe: +$('wg-stufe').value, bruttokalt: +$('wg-kalt').value || 0, schwerbehindert: +$('wg-sb').value || 0, alleinerziehend: $('wg-ae').checked, mitglieder,
+      bescheid: { miete: wert('wg-b-miete'), einkommen: wert('wg-b-eink'), wohngeld: wert('wg-b-wg') } };
+  }
+  function zeigeWG() {
+    const box = $('wg-erg'); box.replaceChildren();
+    const r = BescheidWG.pruefe(leseWG(), Rules);
+    box.append(h('h2', { text: 'Ergebnis' }),
+      h('p', {}, h('span', { class: 'big', text: r.posten.length ? (r.zuWenigImMonat > 0 ? `Vermutlich ${eur(r.zuWenigImMonat)} Wohngeld im Monat zu wenig` : r.gruende.length ? 'Abweichung gefunden, bitte prüfen' : 'Keine Abweichung zu deinen Lasten gefunden') : `Nach SoLo: ${eur(r.rechnung.wohngeld)} Wohngeld im Monat` })),
+      h('p', { class: 'small', text: `Nach SoLo: Miete ${eur(r.rechnung.miete)} (Höchstbetrag ${eur(r.rechnung.hoechstbetrag)} plus Heizkostenkomponente ${eur(r.rechnung.heizkomponente)}), Einkommen ${eur(r.rechnung.einkommen)}, Wohngeld ${eur(r.rechnung.wohngeld)}.` }));
+    if (r.posten.length) {
+      const tb = h('tbody', {}, r.posten.map((p) => h('tr', {}, h('td', {}, p.name), h('td', { class: 'z', text: eur(p.erwartet) }), h('td', { class: 'z', text: eur(p.bescheid) }), h('td', {}, h('span', { class: 'pill ' + p.wirkung, text: WIRK[p.wirkung] })))));
+      box.append(h('div', { class: 'tablewrap', tabindex: '0', role: 'region', 'aria-label': 'Vergleich Wohngeld' }, h('table', {}, h('thead', {}, h('tr', {}, h('th', { text: 'Posten' }), h('th', { class: 'z', text: 'nach SoLo' }), h('th', { class: 'z', text: 'im Bescheid' }), h('th', { text: 'Bewertung' }))), tb)));
+    }
+    r.gruende.forEach((g) => box.append(h('p', { class: 'small' }, h('strong', { text: g.name + ': ' }), g.grund)));
+    box.append(h('p', { class: 'small muted', text: r.grenzen }));
+  }
+  function macheWGWiderspruch() {
+    const r = BescheidWG.pruefe(leseWG(), Rules);
+    const t = Widerspruch.text({ art: 'wohngeld', absender: { name: $('wg-name').value.trim(), strasse: $('wg-anschrift').value.trim(), ort: $('wg-ort').value.trim() }, stelle: { name: $('wg-stelle').value.trim() }, bescheidDatum: $('wg-datum').value, zeichen: $('wg-az').value.trim(), heute: heute(), punkte: Widerspruch.punkteSGB2(r) });
+    $('wg-wid-text').value = t; $('wg-wid-text').hidden = false; $('wg-wid-copy').hidden = false;
+    $('wg-frist').textContent = (r.gruende.length ? '' : 'Es wurde kein Grund gefunden; der Widerspruch hat noch keine Begründung. ') + ($('wg-datum').value ? fristText($('wg-datum').value) : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.');
+  }
+
   // ---------------- Fristen ----------------
   function zeigeFristen() {
     const d = $('fr-datum').value, z = $('fr-zugang').value;
@@ -302,6 +341,19 @@ Ergebnis: Pflegegrad 2`;
   $('bs-wid-mach').addEventListener('click', macheBescheidWiderspruch);
   $('bs-wid-copy').addEventListener('click', () => kopiere($('bs-wid-text'), $('bs-copy-msg')));
   personZeile('erw'); zeigeBescheid();
+
+  $('wg-plus').addEventListener('click', () => { wgZeile(); zeigeWG(); });
+  $('wg-form').addEventListener('input', zeigeWG);
+  $('wg-form').addEventListener('change', nurAuswahl(zeigeWG));
+  $('wg-beispiel').addEventListener('click', () => {
+    $('wg-mitglieder').replaceChildren(); wgZeile({ art: 'lohn', brutto: 2600, abzug: 30 });
+    $('wg-n').value = 4; $('wg-stufe').value = 4; $('wg-kalt').value = 800; $('wg-sb').value = 0; $('wg-ae').checked = false;
+    $('wg-b-miete').value = 800; $('wg-b-eink').value = 1748.25; $('wg-b-wg').value = BescheidWG.ausBescheid(4, 800, 1748.25, Rules);
+    zeigeWG();
+  });
+  $('wg-wid-mach').addEventListener('click', macheWGWiderspruch);
+  $('wg-wid-copy').addEventListener('click', () => kopiere($('wg-wid-text'), $('wg-copy-msg')));
+  wgZeile(); zeigeWG();
 
   for (const id of ['fr-datum', 'fr-zugang', 'er-leistung', 'er-ende']) $(id).addEventListener('input', zeigeFristen);
   $('li-demo').addEventListener('click', () => zeigeLizenz(DEMO_LIZENZ));

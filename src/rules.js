@@ -1439,7 +1439,7 @@ const Rules = (function () {
     return { h, results: sorted, zusammen: zus };
   }
 
-  return { evaluate, RULES: R, WG, limits, wgYmax, wgMiete, wgCap, wgHeiz, roman, sgb2Freibetrag, kizWohnanteil, haushaltsFreibetrag, derive, NAMES, STEPS, ZUST_LAND, zustLand };
+  return { evaluate, RULES: R, WG, limits, wgYmax, wgMiete, wgCap, wgHeiz, wgBetrag, roman, sgb2Freibetrag, kizWohnanteil, haushaltsFreibetrag, derive, NAMES, STEPS, ZUST_LAND, zustLand };
 })();
 
 if (typeof module !== 'undefined') module.exports = Rules;

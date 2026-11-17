@@ -17,7 +17,7 @@
     "test:app": "node scripts/build-app.js && node test/app-test.js",
     "test:mutation": "npm run build:web && node tools/mutationstest.js",
     "build:erweiterungen": "node scripts/build-erweiterungen.js",
-    "test:erweiterungen": "node test/erweiterungen/test-pflege.js && node test/erweiterungen/test-bescheid.js && node test/erweiterungen/test-lizenz.js && node test/erweiterungen/e2e-vorschau.js"
+    "test:erweiterungen": "node test/erweiterungen/test-pflege.js && node test/erweiterungen/test-bescheid.js && node test/erweiterungen/test-wohngeld.js && node test/erweiterungen/test-lizenz.js && node test/erweiterungen/e2e-vorschau.js"
   },
   "devDependencies": {
     "axe-core": "^4.10.3",

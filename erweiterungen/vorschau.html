@@ -65,6 +65,7 @@
   <nav role="tablist" aria-label="Bausteine">
     <button type="button" role="tab" id="tab-pflege" aria-controls="p-pflege" aria-selected="true">Pflegegutachten</button>
     <button type="button" role="tab" id="tab-bescheid" aria-controls="p-bescheid" aria-selected="false" tabindex="-1">Bescheid Grundsicherungsgeld</button>
+    <button type="button" role="tab" id="tab-wg" aria-controls="p-wg" aria-selected="false" tabindex="-1">Bescheid Wohngeld</button>
     <button type="button" role="tab" id="tab-fristen" aria-controls="p-fristen" aria-selected="false" tabindex="-1">Fristen</button>
     <button type="button" role="tab" id="tab-lizenz" aria-controls="p-lizenz" aria-selected="false" tabindex="-1">Profi-Lizenz</button>
   </nav>
@@ -178,6 +179,56 @@
     </div>
   </section>
 
+  <!-- Bescheid Wohngeld -->
+  <section id="p-wg" role="tabpanel" aria-labelledby="tab-wg" hidden>
+    <div class="card">
+      <h2>Wohngeldbescheid prüfen</h2>
+      <p>Trage die Angaben aus dem Wohngeldbescheid ein (Beträge im Monat). SoLo rechnet nach dem Wohngeldgesetz nach. Die Rechnung trifft den amtlichen Wohngeldrechner auf höchstens 1 € genau.</p>
+      <div class="btns"><button type="button" class="btn" id="wg-beispiel">Beispiel laden</button></div>
+    </div>
+    <form id="wg-form" onsubmit="return false">
+      <fieldset><legend>Haushalt und Miete</legend>
+        <div class="grid2">
+          <div><label for="wg-n">Personen im Haushalt</label><input type="number" id="wg-n" min="1" max="12" step="1" inputmode="numeric" value="1"></div>
+          <div><label for="wg-stufe">Mietenstufe (steht im Bescheid)</label><select id="wg-stufe"><option value="1">I</option><option value="2">II</option><option value="3" selected>III</option><option value="4">IV</option><option value="5">V</option><option value="6">VI</option><option value="7">VII</option></select></div>
+          <div><label for="wg-kalt">Miete mit Nebenkosten, ohne Heizung</label><input type="number" id="wg-kalt" min="0" step="0.01" inputmode="decimal"></div>
+          <div><label for="wg-sb">Personen mit Schwerbehinderung (GdB 100, oder ab 50 mit Pflegegrad)</label><input type="number" id="wg-sb" min="0" max="12" step="1" inputmode="numeric" value="0"></div>
+        </div>
+        <label class="check"><input type="checkbox" id="wg-ae"> Alleinerziehend mit Kind unter 18</label>
+      </fieldset>
+      <fieldset><legend>Einkommen im Monat</legend>
+        <div class="tablewrap" tabindex="0" role="region" aria-label="Einkommen der Haushaltsmitglieder"><table><thead><tr><th>Art</th><th>brutto</th><th>Pauschalabzug</th><th>Unterhalt</th><th><span class="vh">Entfernen</span></th></tr></thead><tbody id="wg-mitglieder"></tbody></table></div>
+        <div class="btns"><button type="button" class="btn" id="wg-plus">Einkommen hinzufügen</button></div>
+        <p class="small muted">Pauschalabzug: je 10 % für Steuern, Kranken- und Pflegeversicherung, Rentenversicherung. Bei normalem Lohn meist 30 %, bei Rente meist 10 oder 20 %.</p>
+      </fieldset>
+      <fieldset><legend>Beträge im Bescheid (Monat)</legend>
+        <div class="grid2">
+          <div><label for="wg-b-miete">Zu berücksichtigende Miete</label><input type="number" id="wg-b-miete" step="0.01" inputmode="decimal"></div>
+          <div><label for="wg-b-eink">Gesamteinkommen</label><input type="number" id="wg-b-eink" step="0.01" inputmode="decimal"></div>
+          <div><label for="wg-b-wg">Wohngeld</label><input type="number" id="wg-b-wg" step="1" inputmode="numeric"></div>
+        </div>
+      </fieldset>
+    </form>
+    <div class="card" id="wg-erg" aria-live="polite"></div>
+    <div class="card">
+      <h2>Widerspruch vorbereiten</h2>
+      <div class="grid2">
+        <div><label for="wg-name">Name</label><input type="text" id="wg-name" autocomplete="name"></div>
+        <div><label for="wg-anschrift">Straße und Hausnummer</label><input type="text" id="wg-anschrift"></div>
+        <div><label for="wg-ort">PLZ und Ort</label><input type="text" id="wg-ort"></div>
+        <div><label for="wg-stelle">Wohngeldstelle</label><input type="text" id="wg-stelle"></div>
+        <div><label for="wg-az">Wohngeldnummer / Aktenzeichen</label><input type="text" id="wg-az"></div>
+        <div><label for="wg-datum">Datum des Bescheids</label><input type="date" id="wg-datum"></div>
+      </div>
+      <div class="btns"><button type="button" class="btn primary" id="wg-wid-mach">Widerspruch erstellen</button></div>
+      <p class="small" id="wg-frist" role="status"></p>
+      <label for="wg-wid-text" class="vh">Text des Widerspruchs</label>
+      <textarea id="wg-wid-text" rows="18" readonly hidden></textarea>
+      <div class="btns"><button type="button" class="btn" id="wg-wid-copy" hidden>Text kopieren</button></div>
+      <p class="small" id="wg-copy-msg" role="status"></p>
+    </div>
+  </section>
+
   <!-- Fristen -->
   <section id="p-fristen" role="tabpanel" aria-labelledby="tab-fristen" hidden>
     <div class="card">
@@ -217,6 +268,7 @@
 /*PFLEGE*/
 /*IMPORT*/
 /*BESCHEID*/
+/*BESCHEIDWG*/
 /*FRISTEN*/
 /*WIDERSPRUCH*/
 /*LIZENZ*/

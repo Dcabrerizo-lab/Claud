@@ -81,6 +81,17 @@ const ok = (name, c, info) => { n++; console.log((c ? 'ok   ' : 'FEHLER ') + nam
     ok(`${schema}: Bescheid-Widerspruch mit beiden Gründen`, /Mehrbedarf für Alleinerziehende/.test(bt) && /Angerechnetes Einkommen/.test(bt));
     await p.click('[aria-label="Person 2 entfernen"], #bs-personen tr:nth-child(2) button');
     ok(`${schema}: Person entfernen rechnet neu`, !(await p.textContent('#bs-erg')).includes('163,12'));
+    // Wohngeld
+    await p.click('#tab-wg');
+    await p.click('#wg-beispiel');
+    const wgBig = await p.textContent('#wg-erg .big');
+    const wgSoll = await p.evaluate(() => { const r = BescheidWG.pruefe({ personen: 4, stufe: 4, bruttokalt: 800, mitglieder: [{ art: 'lohn', brutto: 2600, abzug: 30 }], bescheid: { miete: 800, einkommen: 1748.25, wohngeld: BescheidWG.ausBescheid(4, 800, 1748.25, Rules) } }, Rules); return r.zuWenigImMonat; });
+    ok(`${schema}: Wohngeld-Beispiel: Anzeige = Rechnung (${wgBig})`, wgSoll > 0 && wgBig.includes(String(wgSoll).replace('.', ',')), { wgBig, wgSoll });
+    ok(`${schema}: Wohngeld: Heizkostenkomponente als Grund`, /Heizkostenkomponente/.test(await p.textContent('#wg-erg')));
+    await axe('Wohngeld mit Ergebnis');
+    await p.fill('#wg-datum', '2026-11-16');
+    await p.click('#wg-wid-mach');
+    ok(`${schema}: Wohngeld-Widerspruch`, /Widerspruch gegen den Wohngeldbescheid vom 16\.11\.2026/.test(await p.inputValue('#wg-wid-text')));
     // Fristen
     await p.click('#tab-fristen');
     await p.fill('#fr-datum', '2026-11-16');
