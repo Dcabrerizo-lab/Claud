@@ -357,6 +357,45 @@ Ergebnis: Pflegegrad 2`;
     $('kz-frist').textContent = (r.gruende.length ? '' : 'Es wurde kein Grund gefunden; der Widerspruch hat noch keine Begründung. ') + ($('kz-datum').value ? fristText($('kz-datum').value) : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.');
   }
 
+  // ---------------- Nebenkosten ----------------
+  let nz = 0;
+  function nkZeile(w) {
+    nz++; const n = nz; w = w || {};
+    const tr = h('tr', {},
+      h('td', {}, h('input', { type: 'text', id: `np-b-${n}`, 'aria-label': `Posten ${n}: Bezeichnung`, value: w.bez || '' })),
+      h('td', {}, h('input', { type: 'number', min: '0', step: '0.01', inputmode: 'decimal', id: `np-g-${n}`, 'aria-label': `Posten ${n}: Kosten für das ganze Haus`, value: w.gesamt || '' })),
+      h('td', {}, h('input', { type: 'number', min: '0', step: '0.01', inputmode: 'decimal', id: `np-a-${n}`, 'aria-label': `Posten ${n}: mein Anteil`, value: w.anteil || '' })),
+      h('td', {}, h('label', { class: 'check' }, h('input', { type: 'checkbox', id: `np-f-${n}`, 'aria-label': `Posten ${n}: nach Wohnfläche verteilt`, checked: !!w.flaeche }))),
+      h('td', {}, h('button', { type: 'button', class: 'btn', 'aria-label': `Posten ${n} entfernen`, onclick: () => { tr.remove(); zeigeNK(); } }, '×')));
+    $('nk-posten').append(tr);
+  }
+  function leseNK() {
+    const posten = [...$('nk-posten').children].map((tr) => { const i = tr.querySelectorAll('input'); return { bez: i[0].value.trim(), gesamt: +i[1].value || 0, anteil: +i[2].value || 0, flaeche: i[3].checked }; });
+    return { von: $('nk-von').value, bis: $('nk-bis').value, zugang: $('nk-zugang').value, vorauszahlungen: +$('nk-voraus').value || 0, wohnflaeche: +$('nk-wfl').value || 0, gesamtflaeche: +$('nk-gfl').value || 0, posten,
+      heiz: { anteil: +$('nk-heiz').value || 0, verbrauchProzent: $('nk-verbr').value }, co2: { kosten: +$('nk-co2').value || 0, kgJeQm: $('nk-kg').value, vermieterAbgezogen: $('nk-co2ab').checked }, co2Fehlt: $('nk-co2fehlt').checked };
+  }
+  const NKW = { ok: ['passt', 'umlagefähig'], nicht: ['zuWenig', 'nicht umlagefähig'], pruefen: ['pruefen', 'bitte prüfen'], unbekannt: ['pruefen', 'unbekannt'] };
+  function zeigeNK() {
+    const box = $('nk-erg'); box.replaceChildren();
+    const a = leseNK(), r = Nebenkosten.pruefe(a);
+    const leist = $('nk-leist').value;
+    box.append(h('h2', { text: 'Ergebnis' }));
+    if (!r.posten.length) { box.append(h('p', { text: 'Bitte die Posten der Abrechnung eintragen.' })); return; }
+    const titel = r.ergebnis > 0 ? `Laut Abrechnung ${eur(r.ergebnis)} Nachzahlung` : `Laut Abrechnung ${eur(-r.ergebnis)} Guthaben`;
+    box.append(h('p', {}, h('span', { class: 'big', text: titel })));
+    if (r.strittig > 0) box.append(h('p', {}, h('strong', { text: `${eur(r.strittig)} sind strittig. ` }), r.korrigiert > 0 ? `Ohne sie bleiben ${eur(r.korrigiert)} Nachzahlung.` : `Ohne sie ergibt sich ${eur(-r.korrigiert)} Guthaben.`));
+    r.hinweise.forEach((t) => box.append(h('p', { class: 'note', text: t })));
+    if (r.fristen) box.append(h('p', { class: 'small', text: `Die Abrechnung musste bis ${de(r.fristen.abrechnungBis)} da sein.${r.fristen.einwendungBis ? ` Einwände sind bis ${de(r.fristen.einwendungBis)} möglich.` : ''}` }));
+    if (r.befunde.length) box.append(h('h3', { text: 'Was auffällt' }), h('ul', {}, r.befunde.map((b) => h('li', {}, h('span', { class: 'pill ' + (b.schwere === 'fehler' ? 'zuWenig' : 'pruefen'), text: b.schwere === 'fehler' ? 'Fehler' : 'prüfen' }), ' ', b.text))));
+    else box.append(h('p', { text: 'Keine Auffälligkeiten nach den geprüften Regeln.' }));
+    const tb = h('tbody', {}, r.posten.map((p) => h('tr', {}, h('td', {}, p.bez || '–', p.art ? h('span', { class: 'amt small muted', text: ' ' + p.art }) : null), h('td', { class: 'z', text: eur(p.anteil) }), h('td', {}, h('span', { class: 'pill ' + NKW[p.status][0], text: NKW[p.status][1] })))));
+    box.append(h('div', { class: 'tablewrap', tabindex: '0', role: 'region', 'aria-label': 'Posten mit Bewertung' }, h('table', {}, h('thead', {}, h('tr', {}, h('th', { text: 'Posten' }), h('th', { class: 'z', text: 'Anteil' }), h('th', { text: 'Bewertung' }))), tb)));
+    if (leist === 'sgb2' || leist === 'gsa') box.append(h('p', { class: 'note', text: r.ergebnis > 0 ? `Eine Nachzahlung muss in der Regel das ${leist === 'gsa' ? 'Sozialamt' : 'Jobcenter'} übernehmen, wenn die Miete angemessen ist. Den Antrag bitte sofort stellen, spätestens im Monat, in dem die Nachzahlung fällig ist. Strittige Posten erst mit dem Vermieter klären.` : `Ein Guthaben wird vom ${leist === 'gsa' ? 'Sozialamt' : 'Jobcenter'} im Monat nach der Gutschrift mit den Kosten der Unterkunft verrechnet (§ 22 Abs. 3 SGB II bzw. entsprechend im SGB XII). Bitte die Abrechnung dort vorlegen.` }));
+    if (leist === 'wohngeld') box.append(h('p', { class: 'note', text: 'Steigen die Vorauszahlungen deutlich, kann ein Antrag auf Erhöhung des Wohngeldes sinnvoll sein. Die Wohngeldstelle prüft das.' }));
+    box.append(h('p', { class: 'small muted', text: r.grenzen }));
+  }
+  function nkText(t, info) { $('nk-text').value = t; $('nk-text').hidden = false; $('nk-copy').hidden = false; $('nk-info').textContent = info; }
+
   // ---------------- Fristen ----------------
   function zeigeFristen() {
     const d = $('fr-datum').value, z = $('fr-zugang').value;
@@ -450,6 +489,31 @@ Ergebnis: Pflegegrad 2`;
   $('kz-wid-mach').addEventListener('click', macheKiZWiderspruch);
   $('kz-wid-copy').addEventListener('click', () => kopiere($('kz-wid-text'), $('kz-copy-msg')));
   zeigeKiZ();
+
+  $('nk-plus').addEventListener('click', () => { nkZeile(); zeigeNK(); });
+  $('nk-form').addEventListener('input', zeigeNK);
+  $('nk-form').addEventListener('change', nurAuswahl(zeigeNK));
+  $('nk-beispiel').addEventListener('click', () => {
+    $('nk-form').reset(); $('nk-posten').replaceChildren();
+    [{ bez: 'Grundsteuer', gesamt: 2400, anteil: 240, flaeche: true }, { bez: 'Müllabfuhr', gesamt: 1800, anteil: 200, flaeche: true }, { bez: 'Heizkosten', anteil: 900 }, { bez: 'Hausmeister', gesamt: 3000, anteil: 300, flaeche: true },
+      { bez: 'Verwaltungskosten', anteil: 180 }, { bez: 'Reparatur Haustür', anteil: 95 }, { bez: 'Rauchmelder Wartung', anteil: 20 }].forEach(nkZeile);
+    const v = { 'nk-von': '2025-01-01', 'nk-bis': '2025-12-31', 'nk-zugang': '2026-06-10', 'nk-voraus': 1800, 'nk-wfl': 60, 'nk-gfl': 600, 'nk-heiz': 900, 'nk-verbr': 70, 'nk-co2': 120, 'nk-kg': 30 };
+    for (const [k, x] of Object.entries(v)) $(k).value = x;
+    $('nk-leist').value = 'sgb2';
+    zeigeNK();
+  });
+  $('nk-ew-mach').addEventListener('click', () => {
+    const a = leseNK(), r = Nebenkosten.pruefe(a);
+    nkText(Nebenkosten.einwendungen({ absender: { name: $('nk-name').value.trim(), strasse: $('nk-anschrift').value.trim(), ort: $('nk-ort').value.trim() }, vermieter: { name: $('nk-verm').value.trim() }, von: a.von, bis: a.bis, heute: heute(), pruefenMit: $('nk-mitpruefen').checked }, r),
+      r.fristen && r.fristen.einwendungBis ? `Einwände bitte bis spätestens ${de(r.fristen.einwendungBis)} schicken, am besten per Einwurf-Einschreiben.` : 'Einwände sind bis 12 Monate nach Erhalt der Abrechnung möglich.');
+  });
+  $('nk-au-mach').addEventListener('click', () => {
+    const a = leseNK(), r = Nebenkosten.pruefe(a), leist = $('nk-leist').value === 'gsa' ? 'gsa' : 'sgb2';
+    nkText(Nebenkosten.antragUebernahme({ absender: { name: $('nk-name').value.trim(), strasse: $('nk-anschrift').value.trim(), ort: $('nk-ort').value.trim() }, stelle: { name: $('nk-stelle').value.trim() }, von: a.von, bis: a.bis, heute: heute(), faellig: $('nk-faellig').value, leistung: leist }, r),
+      r.ergebnis > 0 ? 'Bitte sofort abgeben, spätestens im Monat der Fälligkeit, mit einer Kopie der Abrechnung.' : 'Laut Abrechnung gibt es keine Nachzahlung. Ein Guthaben bitte trotzdem beim Amt vorlegen.');
+  });
+  $('nk-copy').addEventListener('click', () => kopiere($('nk-text'), $('nk-copy-msg')));
+  nkZeile(); zeigeNK();
 
   for (const id of ['fr-datum', 'fr-zugang', 'er-leistung', 'er-ende']) $(id).addEventListener('input', zeigeFristen);
   $('li-demo').addEventListener('click', () => zeigeLizenz(DEMO_LIZENZ));

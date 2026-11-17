@@ -117,6 +117,17 @@ const ok = (name, c, info) => { n++; console.log((c ? 'ok   ' : 'FEHLER ') + nam
     await p.fill('#kz-datum', '2026-11-16');
     await p.click('#kz-wid-mach');
     ok(`${schema}: Kinderzuschlag-Widerspruch`, /Widerspruch gegen den Bescheid über den Kinderzuschlag vom 16\.11\.2026/.test(await p.inputValue('#kz-wid-text')) && /Familienkasse/.test(await p.inputValue('#kz-wid-text')));
+    // Nebenkosten
+    await p.click('#tab-nk');
+    await p.click('#nk-beispiel');
+    const nkT = await p.textContent('#nk-erg');
+    ok(`${schema}: Nebenkosten: Nachzahlung 135, strittig 343, Guthaben 208`, /135,00 € Nachzahlung/.test(nkT) && /343,00 € sind strittig/.test(nkT) && /208,00 € Guthaben/.test(nkT), nkT.slice(0, 300));
+    ok(`${schema}: Nebenkosten: Verwaltung und CO₂ beanstandet, Jobcenter-Hinweis`, /Verwaltungskosten/.test(nkT) && /CO₂/.test(nkT) && /Jobcenter übernehmen/.test(nkT));
+    await axe('Nebenkosten mit Ergebnis');
+    await p.click('#nk-ew-mach');
+    ok(`${schema}: Einwände an den Vermieter`, /Betriebskostenabrechnung für den Zeitraum 01\.01\.2025 bis 31\.12\.2025/.test(await p.inputValue('#nk-text')) && /30\.06\.2027/.test(await p.textContent('#nk-info')));
+    await p.click('#nk-au-mach');
+    ok(`${schema}: Antrag an das Jobcenter`, /§ 22 Abs\. 1 SGB II/.test(await p.inputValue('#nk-text')));
     // Fristen
     await p.click('#tab-fristen');
     await p.fill('#fr-datum', '2026-11-16');

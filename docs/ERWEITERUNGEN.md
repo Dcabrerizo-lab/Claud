@@ -22,6 +22,7 @@ Die Vorschau ist eine einzelne HTML-Datei. Sie läuft offline im Browser, am Han
 | `bescheid-gsa.js` | Bescheid Grundsicherung im Alter und bei Erwerbsminderung nachrechnen, auch mit dem Freibetrag für Betriebs-, Riester- und private Renten (fehlt in der App) | §§ 27a, 30, 35, 42a, 82, 82a SGB XII |
 | `bescheid-wg.js` | Wohngeldbescheid nachrechnen (Miete, Einkommen, Formel); gegen den amtlichen Wohngeldrechner geprüft | §§ 11–17, 19, 21 WoGG |
 | `bescheid-kiz.js` | Bescheid Kinderzuschlag nachrechnen (Bedarf der Eltern, Einkommen, 45 % Anrechnung) | § 6a BKGG |
+| `nebenkosten.js` | Nebenkostenabrechnung prüfen: Fristen, nicht umlagefähige Posten, Verteilung nach Fläche, Heizkosten, CO₂-Aufteilung; Einwände an den Vermieter und Antrag auf Übernahme der Nachzahlung beim Jobcenter oder Sozialamt | § 556, § 556a, § 259 BGB; §§ 1, 2 BetrKV; §§ 7, 12 HeizkostenV; CO2KostAufG; § 22 SGB II, § 35 SGB XII |
 | `fristen.js` | Widerspruchsfrist (frühester möglicher Tag) und Erinnerung an Folgeanträge | § 37 Abs. 2 SGB X, §§ 64, 66, 84 SGG |
 | `widerspruch.js` | Widerspruch (Grundsicherungsgeld, Wohngeld, Kinderzuschlag, Pflege) und Antrag auf Höherstufung des Pflegegrades; der Nutzer prüft und unterschreibt | Dokumentvorlage (vgl. BGH I ZR 113/20); Höherstufung § 33 SGB XI, § 48 SGB X |
 | `lizenz.js` | Profi-Lizenz für Beratungsstellen, offline per Signatur geprüft | – |
@@ -71,10 +72,11 @@ Das Alter wird abgefragt (Jahre, bei Kindern unter 2 Jahren zusätzlich Monate):
 | `test-pflege.js` | 5.704: alle Punktbereiche der Anlage 2, alle Gewichte, Modul 5 an jeder Grenze, Alter, Verständlichkeit, 600 Zufallsfälle |
 | `test-bescheid.js` | 72: durchgerechnete Beispiele, Mehrbedarfe, Freibeträge, Fristen, Widerspruch, Höherstufung, Gutachten-Import |
 | `test-gsa.js` | 21 und 1.347 Rentner: gleicher Betrag wie die App |
+| `test-nebenkosten.js` | 75: Einordnung von 39 typischen Posten, Fristen, CO₂-Stufen, ganze Abrechnung, beide Schreiben |
 | `test-wohngeld.js` | 21 und 7.060 Ergebnisse des amtlichen Wohngeldrechners: höchstens 1 € Abweichung, 91 % auf den Euro genau |
 | `test-kiz.js` | 17 und 1.054 Zufallsfamilien: gleicher Betrag wie die App |
 | `test-lizenz.js` | 27: Fälschungen, Ablauf, kein privater Schlüssel im Repository, Werkzeuge |
-| `e2e-vorschau.js` | 131: Browser hell und dunkel, Anzeige = Rechnung, Alter, eingeschleuster Code, axe WCAG 2.2 AA, Tippflächen 44 px, 320 px |
+| `e2e-vorschau.js` | 145: Browser hell und dunkel, Anzeige = Rechnung, Alter, eingeschleuster Code, axe WCAG 2.2 AA, Tippflächen 44 px, 320 px |
 
 Zu den 600 Zufallsfällen in `test-pflege.js`: Jede vorgeschlagene Grenzfall-Kombination wird nachgerechnet, ob sie den nächsten Pflegegrad wirklich erreicht. Außerdem wird geprüft, dass es keine kürzere Kombination gibt.
 

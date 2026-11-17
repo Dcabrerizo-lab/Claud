@@ -68,6 +68,7 @@
     <button type="button" role="tab" id="tab-gsa" aria-controls="p-gsa" aria-selected="false" tabindex="-1">Bescheid Grundsicherung im Alter</button>
     <button type="button" role="tab" id="tab-wg" aria-controls="p-wg" aria-selected="false" tabindex="-1">Bescheid Wohngeld</button>
     <button type="button" role="tab" id="tab-kiz" aria-controls="p-kiz" aria-selected="false" tabindex="-1">Bescheid Kinderzuschlag</button>
+    <button type="button" role="tab" id="tab-nk" aria-controls="p-nk" aria-selected="false" tabindex="-1">Nebenkosten</button>
     <button type="button" role="tab" id="tab-fristen" aria-controls="p-fristen" aria-selected="false" tabindex="-1">Fristen</button>
     <button type="button" role="tab" id="tab-lizenz" aria-controls="p-lizenz" aria-selected="false" tabindex="-1">Profi-Lizenz</button>
   </nav>
@@ -349,6 +350,63 @@
     </div>
   </section>
 
+  <!-- Nebenkosten -->
+  <section id="p-nk" role="tabpanel" aria-labelledby="tab-nk" hidden>
+    <div class="card">
+      <h2>Nebenkostenabrechnung prüfen</h2>
+      <p>SoLo prüft Fristen, nicht umlagefähige Posten, die Verteilung nach Wohnfläche, Heizkosten und CO₂-Kosten. Ob ein Betrag zu hoch ist, kann SoLo nicht entscheiden.</p>
+      <div class="btns"><button type="button" class="btn" id="nk-beispiel">Beispiel laden</button></div>
+    </div>
+    <form id="nk-form" onsubmit="return false">
+      <fieldset><legend>Abrechnung</legend>
+        <div class="grid2">
+          <div><label for="nk-von">Abrechnungszeitraum von</label><input type="date" id="nk-von"></div>
+          <div><label for="nk-bis">bis</label><input type="date" id="nk-bis"></div>
+          <div><label for="nk-zugang">Abrechnung erhalten am</label><input type="date" id="nk-zugang"></div>
+          <div><label for="nk-voraus">Meine Vorauszahlungen im Zeitraum</label><input type="number" id="nk-voraus" min="0" step="0.01" inputmode="decimal"></div>
+          <div><label for="nk-wfl">Meine Wohnfläche (m²)</label><input type="number" id="nk-wfl" min="0" step="0.01" inputmode="decimal"></div>
+          <div><label for="nk-gfl">Gesamtfläche des Hauses (m²)</label><input type="number" id="nk-gfl" min="0" step="0.01" inputmode="decimal"></div>
+        </div>
+      </fieldset>
+      <fieldset><legend>Posten</legend>
+        <div class="tablewrap" tabindex="0" role="region" aria-label="Posten der Abrechnung"><table><thead><tr><th>Bezeichnung</th><th>Kosten Haus</th><th>Mein Anteil</th><th>nach Fläche</th><th><span class="vh">Entfernen</span></th></tr></thead><tbody id="nk-posten"></tbody></table></div>
+        <div class="btns"><button type="button" class="btn" id="nk-plus">Posten hinzufügen</button></div>
+      </fieldset>
+      <fieldset><legend>Heizung und CO₂</legend>
+        <div class="grid2">
+          <div><label for="nk-heiz">Mein Anteil Heizkosten</label><input type="number" id="nk-heiz" min="0" step="0.01" inputmode="decimal"></div>
+          <div><label for="nk-verbr">Davon nach Verbrauch (%)</label><input type="number" id="nk-verbr" min="0" max="100" step="1" inputmode="numeric"></div>
+          <div><label for="nk-co2">CO₂-Kosten (mein Anteil vor Aufteilung)</label><input type="number" id="nk-co2" min="0" step="0.01" inputmode="decimal"></div>
+          <div><label for="nk-kg">CO₂ je m² und Jahr (kg, steht in der Abrechnung)</label><input type="number" id="nk-kg" min="0" step="0.1" inputmode="decimal"></div>
+        </div>
+        <label class="check"><input type="checkbox" id="nk-co2ab"> Der Anteil des Vermieters an den CO₂-Kosten ist schon abgezogen</label>
+        <label class="check"><input type="checkbox" id="nk-co2fehlt"> Die Abrechnung nennt gar keine CO₂-Kosten (Heizung mit Gas oder Öl)</label>
+      </fieldset>
+      <fieldset><legend>Leistungen</legend>
+        <div><label for="nk-leist">Bekommst du Leistungen für die Miete?</label><select id="nk-leist"><option value="">nein</option><option value="sgb2">Grundsicherungsgeld (Jobcenter)</option><option value="gsa">Grundsicherung im Alter oder bei Erwerbsminderung (Sozialamt)</option><option value="wohngeld">Wohngeld</option></select></div>
+      </fieldset>
+    </form>
+    <div class="card" id="nk-erg" aria-live="polite"></div>
+    <div class="card">
+      <h2>Schreiben erstellen</h2>
+      <div class="grid2">
+        <div><label for="nk-name">Dein Name</label><input type="text" id="nk-name" autocomplete="name"></div>
+        <div><label for="nk-anschrift">Straße und Hausnummer</label><input type="text" id="nk-anschrift"></div>
+        <div><label for="nk-ort">PLZ und Ort</label><input type="text" id="nk-ort"></div>
+        <div><label for="nk-verm">Vermieter oder Hausverwaltung</label><input type="text" id="nk-verm"></div>
+        <div><label for="nk-stelle">Jobcenter oder Sozialamt</label><input type="text" id="nk-stelle"></div>
+        <div><label for="nk-faellig">Nachzahlung fällig am</label><input type="date" id="nk-faellig"></div>
+      </div>
+      <label class="check"><input type="checkbox" id="nk-mitpruefen"> Auch die Posten „bitte prüfen“ in die Einwände aufnehmen</label>
+      <div class="btns"><button type="button" class="btn primary" id="nk-ew-mach">Einwände an den Vermieter</button><button type="button" class="btn" id="nk-au-mach">Antrag an Jobcenter oder Sozialamt</button></div>
+      <p class="small" id="nk-info" role="status"></p>
+      <label for="nk-text" class="vh">Text des Schreibens</label>
+      <textarea id="nk-text" rows="18" readonly hidden></textarea>
+      <div class="btns"><button type="button" class="btn" id="nk-copy" hidden>Text kopieren</button></div>
+      <p class="small" id="nk-copy-msg" role="status"></p>
+    </div>
+  </section>
+
   <!-- Fristen -->
   <section id="p-fristen" role="tabpanel" aria-labelledby="tab-fristen" hidden>
     <div class="card">
@@ -394,6 +452,7 @@
 /*FRISTEN*/
 /*WIDERSPRUCH*/
 /*LIZENZ*/
+/*NEBENKOSTEN*/
 const LIZENZ_SCHLUESSEL = /*SCHLUESSEL*/null;
 const DEMO_LIZENZ = /*DEMOLIZENZ*/null;
 /*VORSCHAU*/
