@@ -731,6 +731,8 @@
   "ek.weiteres.betrag": "Aylık tutar (ödenen)",
   "ek.weiteres.0": "Hayır, sadece bir tane",
   "cb.grundrente33": "Çalışmadan (atölye dahil), çocuk yetiştirmeden veya bakımdan en az 33 yıl emeklilik primi",
+  "ek.zusatzRente": "Bunun içinde işyeri emekliliği, Riester emekliliği veya özel emeklilik (aylık net)",
+  "ek.zusatzRente.hint": "Sadece yukarıdaki emeklilikte böyle bir emeklilik varsa doldurun. Grundsicherung im Alter’de bunun 100 € ve kalanın %30'u muaf kalır, en fazla 281,50 €.",
   "cb.wfbmEssen": "Atölyede öğle yemeği yiyor (ek ihtiyaç)",
   "es.a.ab33": "33 yıl veya daha fazla",
   "es.tipp.wgOderGsa": "Wohngeld ve Grundsicherung birlikte alınamaz. Senin için hangisinin daha iyi olduğunu Sozialamt'a sor. Grundsicherung ile otobüs ve tren (G ile) ve yayın ücreti çoğu zaman ücretsizdir.",

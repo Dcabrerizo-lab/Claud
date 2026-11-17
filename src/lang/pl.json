@@ -731,6 +731,8 @@
   "ek.weiteres.betrag": "Kwota miesięcznie (wypłacana)",
   "ek.weiteres.0": "Nie, tylko jeden",
   "cb.grundrente33": "Co najmniej 33 lata składek emerytalnych z pracy (także w warsztacie), wychowania dzieci lub opieki",
+  "ek.zusatzRente": "W tym emerytura zakładowa, emerytura Riester lub prywatna (netto miesięcznie)",
+  "ek.zusatzRente.hint": "Wypełnij tylko, jeśli emerytura powyżej zawiera taką emeryturę. Przy Grundsicherung im Alter wolne pozostaje 100 € i 30% reszty, najwyżej 281,50 €.",
   "cb.wfbmEssen": "Je obiad w warsztacie (dodatek)",
   "es.a.ab33": "33 lata lub dłużej",
   "es.tipp.wgOderGsa": "Wohngeld i Grundsicherung nie można łączyć. Zapytaj w Sozialamt, co jest dla ciebie lepsze. Przy Grundsicherung autobus i pociąg (z G) oraz abonament RTV są często bezpłatne.",

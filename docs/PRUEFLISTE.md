@@ -64,6 +64,8 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Selbst gezahlter Unterhalt: in der Regel kein Abzug (§ 82 SGB XII kennt ihn nicht), Hinweis auf Selbstbehalt | ◐ | `uz-gsa` |
 | Werkstattlohn: Arbeitsförderungsgeld frei, 1/8 RS1 + 50 % frei (§ 82 Abs. 2 Nr. 5, Abs. 3 Satz 2) | ✓ | `gsa-wfbm` |
 | Grundrentenfreibetrag (§ 82a) | ✓ | `gsa-grundrente` |
+| Freibetrag für Betriebs-, Riester- und private Rente (§ 82 Abs. 4), Grundrentenfreibetrag nur auf die gesetzliche Rente | ✓ | `gsa-zusatzrente` |
+| Grundrentenfreibetrag höchstens so hoch wie die Rente | ✓ | `gsa-grundrente-klein` |
 | Mehrbedarf G 17 % (§ 30 Abs. 1) | ✓ | `gsa-mb-g` |
 | Mehrbedarf Alleinerziehende (§ 30 Abs. 3) | ✓ | `gsa-mb-ae` |
 | Mehrbedarf 35 % bei Eingliederungshilfe für Schule oder Ausbildung (§ 30 Abs. 4), nicht neben G | ✓ | `gsa-mb-teilhabe` |

@@ -731,6 +731,8 @@
   "ek.weiteres.betrag": "Suma pe lună (ce primești)",
   "ek.weiteres.0": "Nu, doar unul",
   "cb.grundrente33": "Cel puțin 33 de ani de contribuții la pensie din muncă (și în atelier), creșterea copiilor sau îngrijire",
+  "ek.zusatzRente": "Din care pensie ocupațională, pensie Riester sau pensie privată (net pe lună)",
+  "ek.zusatzRente.hint": "Completați doar dacă pensia de mai sus include o astfel de pensie. La Grundsicherung im Alter rămân libere 100 € și 30% din rest, cel mult 281,50 €.",
   "cb.wfbmEssen": "Mănâncă la prânz în atelier (necesar suplimentar)",
   "es.a.ab33": "33 de ani sau mai mult",
   "es.tipp.wgOderGsa": "Wohngeld și Grundsicherung nu se pot primi împreună. Întreabă la Sozialamt ce e mai bine pentru tine. Cu Grundsicherung, autobuzul și trenul (cu G) și taxa radio-TV sunt adesea gratuite.",

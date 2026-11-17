@@ -731,6 +731,8 @@
   "ek.weiteres.betrag": "Betrag im Monat (was ankommt)",
   "ek.weiteres.0": "Nein, nur eins",
   "cb.grundrente33": "Mindestens 33 Jahre Rentenbeiträge aus Arbeit (auch Werkstatt), Kindererziehung oder Pflege",
+  "ek.zusatzRente": "Davon Betriebsrente, Riester-Rente oder private Rente (netto im Monat)",
+  "ek.zusatzRente.hint": "Nur ausfüllen, wenn in der Rente oben eine solche Rente enthalten ist. Bei der Grundsicherung im Alter bleiben davon 100 € und 30 % des Rests frei, höchstens 281,50 €.",
   "cb.wfbmEssen": "Isst in der Werkstatt zu Mittag (dafür gibt es Mehrbedarf)",
   "es.a.ab33": "33 Jahre oder länger",
   "es.tipp.wgOderGsa": "Wohngeld und Grundsicherung gibt es nicht zusammen. Frag beim Sozialamt, was für dich besser ist. Mit Grundsicherung sind Bus und Bahn (mit G) und der Rundfunkbeitrag oft kostenlos.",

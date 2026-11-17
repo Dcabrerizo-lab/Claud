@@ -325,6 +325,16 @@ ck('[gg-alter] Rentenalter oder volle Erwerbsminderung: Sozialamt zuständig', r
 ck('[gsa-voraus] Ohne Rentenalter und ohne volle Erwerbsminderung: keine Grundsicherung im Alter', L({ miete: 450 }, 'gsa') === 'nein' && K({ miete: 450 }, 'gsa')[0] === 'gsa.voraus');
 // Rente 900, Miete 450: ohne Freibetrag 1.013 - 900 = 113; mit § 82a: 100 + 30 % von 800 = 340, höchstens 281,50 -> 394,50
 ck('[gsa-grundrente] Grundrentenfreibetrag höchstens 281,50 €: etwa 110 € -> etwa 390 €', A({ alter: true, art1: 'rente', brutto: 900, netto: 900, miete: 450 }, 'gsa') === E(110) && A({ alter: true, art1: 'rente', brutto: 900, netto: 900, miete: 450, grundrente33: true }, 'gsa') === E(390));
+// § 82 Abs. 4 SGB XII: Betriebs-, Riester- oder private Rente (in der Rente enthalten): 100 € + 30 % des Rests frei, höchstens 281,50 €;
+// der Grundrentenfreibetrag (§ 82a) gilt nur für den gesetzlichen Teil. Bedarf 563 + 450 = 1.013 €, Rente 900 € netto.
+const zr = { alter: true, art1: 'rente', brutto: 1000, netto: 900, miete: 450 };
+ck('[gsa-zusatzrente] 150 € Betriebsrente: 115 € frei, etwa 230 € statt 110 €', A({ ...zr, zusatzRente: 150 }, 'gsa') === E(230));
+ck('[gsa-zusatzrente] 80 € Riester-Rente: ganz frei, etwa 190 €', A({ ...zr, zusatzRente: 80 }, 'gsa') === E(190));
+ck('[gsa-zusatzrente] 900 € Betriebsrente: höchstens 281,50 € frei, etwa 390 €', A({ ...zr, zusatzRente: 900 }, 'gsa') === E(390));
+ck('[gsa-zusatzrente] mit Grundrente: 281,50 € auf 750 € gesetzliche Rente + 115 €, etwa 510 €', A({ ...zr, zusatzRente: 150, grundrente33: true }, 'gsa') === E(510));
+ck('[gsa-zusatzrente] mehr als die Rente eingetragen: nur bis zur Rente', A({ ...zr, zusatzRente: 5000 }, 'gsa') === A({ ...zr, zusatzRente: 900 }, 'gsa'));
+ck('[gsa-zusatzrente] ohne Rente wirkungslos', A({ alter: true, art1: 'lohn', brutto: 1000, netto: 900, miete: 450 }, 'gsa') === A({ alter: true, art1: 'lohn', brutto: 1000, netto: 900, miete: 450, zusatzRente: 150 }, 'gsa'));
+ck('[gsa-grundrente-klein] Rente 60 € mit Grundrente zählt wie kein Einkommen (Freibetrag höchstens so hoch wie die Rente)', A({ alter: true, art1: 'rente', brutto: 60, netto: 60, grundrente33: true, miete: 450 }, 'gsa') === A({ alter: true, art1: 'ohne', miete: 450 }, 'gsa'), [A({ alter: true, art1: 'rente', brutto: 60, netto: 60, grundrente33: true, miete: 450 }, 'gsa'), A({ alter: true, art1: 'ohne', miete: 450 }, 'gsa')]);
 ck('[gsa-mb-ae] Voll erwerbsgemindert, alleinerziehend: Mehrbedarf mindestens 12 % (563 + 390 + 600 + 67,56)', P({ erwerbsgemindert: true, kids: 1, miete: 600 }, 'gsa', 'bedarf') === E(563 + 390 + 600 + 0.12 * 563));
 ck('[gsa-pflegegeld] Pflegegeld ist kein Einkommen: Pflegegrad ändert die Grundsicherung nicht', A({ alter: true, art1: 'rente', brutto: 700, netto: 700, miete: 450 }, 'gsa') === A({ alter: true, art1: 'rente', brutto: 700, netto: 700, miete: 450, pflegegrad: '3' }, 'gsa'));
 ck('[gsa-schwanger] Schwangerschaft: 563 + 450 + 95,71', P({ erwerbsgemindert: true, miete: 450, schwanger: true }, 'gsa', 'bedarf') === E(563 + 450 + 0.17 * 563));

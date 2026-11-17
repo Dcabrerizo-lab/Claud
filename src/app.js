@@ -61,7 +61,7 @@
   function save() { clearTimeout(saveTimer); saveTimer = setTimeout(flush, 300); }
   function smooth() { return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'; }
   function blankState() {
-    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', kindEink: '', ek1bArt: '', ek1bBetrag: '', baby: '', egVor: '', aufenthalt: '', miete: '', heizkosten: '', mietstufe: '', plz: '', plzPick: '', bundesland: '', vermoegen: '', gebJahr: '', arbeitSit: '', algMonate: '', krankWochen: '', lohnVorher: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', uzBetrag: '', uzAn: '', uzTitel: false, wohnart: '', hhAndere: '', autoWert: '', autoBraucht: false, euArbeit: '', euJahre: '', bezug: {} };
+    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', kindEink: '', ek1bArt: '', ek1bBetrag: '', zusatzRente: '', baby: '', egVor: '', aufenthalt: '', miete: '', heizkosten: '', mietstufe: '', plz: '', plzPick: '', bundesland: '', vermoegen: '', gebJahr: '', arbeitSit: '', algMonate: '', krankWochen: '', lohnVorher: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', uzBetrag: '', uzAn: '', uzTitel: false, wohnart: '', hhAndere: '', autoWert: '', autoBraucht: false, euArbeit: '', euJahre: '', bezug: {} };
   }
 
   function detect() {
@@ -146,7 +146,7 @@
     if (state.arbeitSit !== 'arbeitslos') reset(['algZeit', 'algMonate']);
     if (state.adults !== 1 || !state.ek1Art || state.ek1Art === 'ohne') reset(['ek1bArt', 'ek1bBetrag']);
     if (!state.ek1bArt) reset(['ek1bBetrag']);
-    if (!(state.ek1Art === 'rente' || state.ek2Art === 'rente' || state.ek1bArt === 'rente')) reset(['grundrente33']);
+    if (!(state.ek1Art === 'rente' || state.ek2Art === 'rente' || state.ek1bArt === 'rente')) reset(['grundrente33', 'zusatzRente']);
     if (!(state.wfbm || state.ek1Art === 'wfbm' || state.ek1bArt === 'wfbm')) reset(['wfbmEssen']);
     if (state.arbeitSit !== 'krank') reset(['krankWochen']);
     if (!state.arbeitSit) reset(['lohnVorher']);
@@ -402,7 +402,7 @@
 
   var CHECKS = ['mzG', 'mzGl', 'algZeit', 'grundrente33', 'wfbmEssen', 'teilhabe', 'schwanger', 'ernaehrung', 'warmwasser', 'kinder12', 'unterhaltFehlt', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt', 'uzTitel', 'autoBraucht'];
   var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'ek1bArt', 'bhWeitere', 'baby', 'aufenthalt', 'arbeitSit', 'algMonate', 'krankWochen', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd', 'uzAn', 'wohnart', 'hhAndere', 'euArbeit', 'euJahre'];
-  var NUMS = ['miete', 'heizkosten', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'kindEink', 'lohnVorher', 'ek1bBetrag', 'egVor', 'vermoegen', 'uzBetrag', 'autoWert'];
+  var NUMS = ['miete', 'heizkosten', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'kindEink', 'lohnVorher', 'ek1bBetrag', 'egVor', 'vermoegen', 'uzBetrag', 'autoWert', 'zusatzRente'];
   var BEZUG = ['grundsicherungsgeld', 'sozialamt', 'wohngeld', 'kiz', 'kindergeld'];
 
   function writeForm() {
@@ -812,6 +812,7 @@
     if (Array.isArray(s.einkommen)) L.push('Einkommen: ' + (s.einkommen.length ? s.einkommen.map(function (x) { return ARTDE[x.art] + ' ' + money(x.b); }).join(', ') + ' im Monat' : 'kein Einkommen'));
     else L.push(ekZeile(1, s.adults === 2 ? 'Einkommen (ich)' : 'Einkommen'));
     if (s.adults === 2) L.push(ekZeile(2, 'Einkommen (Partner/in)'));
+    if (Number(s.zusatzRente) > 0) L.push('Davon Betriebsrente, Riester-Rente oder private Rente: ' + money(s.zusatzRente) + ' im Monat (Freibetrag nach § 82 Abs. 4 SGB XII)');
     if ((s.kids || s.young) && s.unterhalt !== '' && s.unterhalt != null && Number(s.unterhalt) > 0) L.push('Unterhalt für die Kinder im Monat (vom anderen Elternteil): ' + money(s.unterhalt));
     L.push('Erspartes und Geldvermögen: ' + money(s.vermoegen));
     L.push('Besonderheiten: ' + (besond().length ? besond().join('; ') : 'keine'));

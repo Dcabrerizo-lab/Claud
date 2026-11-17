@@ -154,6 +154,9 @@ const Rules = (function () {
     wgAbzugAuszahlung: { lohn: [0, 0.12], rente: [0, 0.06], kg: [0, 0.06], alg: [0, 0], eg: [0, 0], wfbm: [0, 0.05], ohne: [0, 0] },
     // Grundrentenfreibetrag (§ 82a SGB XII): bei 33 Jahren Grundrentenzeiten bleiben von der Rente 100 € und 30 % des Rests frei, höchstens 50 % der Regelbedarfsstufe 1
     grundrente: { sockel: 100, quote: 0.3, max: 0.5 },
+    // Zusätzliche Altersvorsorge (Betriebsrente, Riester-Rente, private Rente), § 82 Abs. 4 SGB XII: 100 € frei und 30 % des Rests,
+    // höchstens 50 % der Regelbedarfsstufe 1 (gilt für die Grundsicherung im Alter und bei Erwerbsminderung, nicht für das Grundsicherungsgeld)
+    vorsorge: { sockel: 100, quote: 0.3, max: 0.5 },
     // Regelaltersgrenze (§ 235 SGB VI) in Monaten über 65, je Geburtsjahr 1947..1963; ab 1964: 67 Jahre
     rag: { 1947: 1, 1948: 2, 1949: 3, 1950: 4, 1951: 5, 1952: 6, 1953: 7, 1954: 8, 1955: 9, 1956: 10, 1957: 11, 1958: 12, 1959: 14, 1960: 16, 1961: 18, 1962: 20, 1963: 22 },
     uvg: { bis5: 227, bis11: 299, bis17: 394, min12: 600 },
@@ -350,7 +353,7 @@ const Rules = (function () {
       art1, art2, pers, liste: !!liste, kindEink, uvgEst, kindZahl: unterhalt + uvgEst, mehrAE, mehrAEhoch, alterGrenz,
       egFreiSGB: sumIf((a, b) => a === 'eg' && b > R.elterngeldFrei ? R.elterngeldFrei : 0),
       vPausch: sumIf((a, b) => a !== 'lohn' && a !== 'ohne' && b > 0 ? R.versPauschale : 0),
-      mzG: !!inp.mzG, mzGl: !!inp.mzGl || !!(inp.mz && inp.mz.Gl), mzRF: !!(inp.mz && inp.mz.RF), mzAG: !!(inp.mz && inp.mz.aG), wfbmJahre: num(inp.wfbmJahre), grundrente33: !!inp.grundrente33, bhEinkHoch: !!inp.bhEinkHoch, teilhabe: !!inp.teilhabe, bhWeitere: Math.min(4, Math.max(0, inp.bhWeitere | 0)), schwanger: !!inp.schwanger, ernaehrung: !!inp.ernaehrung, warmwasser: !!inp.warmwasser, gebJahr: jahr,
+      mzG: !!inp.mzG, mzGl: !!inp.mzGl || !!(inp.mz && inp.mz.Gl), mzRF: !!(inp.mz && inp.mz.RF), mzAG: !!(inp.mz && inp.mz.aG), wfbmJahre: num(inp.wfbmJahre), grundrente33: !!inp.grundrente33, zusatzRente: num(inp.zusatzRente), bhEinkHoch: !!inp.bhEinkHoch, teilhabe: !!inp.teilhabe, bhWeitere: Math.min(4, Math.max(0, inp.bhWeitere | 0)), schwanger: !!inp.schwanger, ernaehrung: !!inp.ernaehrung, warmwasser: !!inp.warmwasser, gebJahr: jahr,
       baby: inp.baby === 'bald' || inp.baby === 'da' ? inp.baby : '', egVor: blank(inp.egVor) ? null : num(inp.egVor), asyl: inp.aufenthalt === 'asyl',
       wohnform: inp.wohnform === 'eltern' || inp.wohnform === 'heim' ? inp.wohnform : '', wfbmEssen: !!inp.wfbmEssen,
       mieteGegeben: !blank(inp.miete) && num(inp.miete) > 0,
@@ -551,7 +554,9 @@ const Rules = (function () {
     // Unterhalt und Unterhaltsvorschuss der Kinder zählen als Einkommen (§ 14 WoGG), ohne Pauschalabzug; eigenes Einkommen
     // der Kinder mit Freibetrag (§ 17 Nr. 4 WoGG); Elterngeld bis 300 € frei (§ 10 Abs. 1 BEEG); Freibeträge nach § 17 WoGG.
     // § 17a WoGG: Grundrentenfreibetrag bei 33 Jahren Grundrentenzeiten (100 € + 30 % des Rests, höchstens 50 % RS1)
-    const grFrei = h.grundrente33 ? pers.filter((x) => x[0] === 'rente').reduce((a, x) => a + Math.min(R.grundrente.sockel + R.grundrente.quote * Math.max(0, x[1] - R.grundrente.sockel), R.grundrente.max * R.regelbedarf.alleinstehend), 0) : 0;
+    // Betriebs-, Riester- oder private Rente zählt beim Wohngeld wie Rente, bekommt aber keinen Grundrentenfreibetrag
+    const zusWG = zusatzVerteilt(h, pers.map((x) => x[1]));
+    const grFrei = h.grundrente33 ? pers.reduce((a, x, i) => a + (x[0] === 'rente' ? Math.min(R.grundrente.sockel + R.grundrente.quote * Math.max(0, x[1] - zusWG[i] - R.grundrente.sockel), R.grundrente.max * R.regelbedarf.alleinstehend) : 0), 0) : 0;
     const extra = (h.kindZahl || 0) + Math.max(0, (h.kindEink || 0) - R.wgKindFrei) - freib - grFrei;
     const yPess = Math.max(0, yA + extra - (h.uzWGpess || 0)), yOpt = Math.max(0, yB + extra - (h.uzWGopt || 0));
 
@@ -711,15 +716,25 @@ const Rules = (function () {
   // ---------------------------------------------------------------
   // Grundsicherung im Alter und bei Erwerbsminderung (SGB XII)
   // ---------------------------------------------------------------
+  // Betriebs-, Riester- oder private Rente („davon“ in der Rente enthalten): auf die Renten der Personen der Reihe nach verteilt,
+  // höchstens bis zur Höhe der jeweiligen Rente. Ergebnis je Eintrag in pers: Anteil der zusätzlichen Altersvorsorge.
+  function zusatzVerteilt(h, betraege) {
+    let rest = h.zusatzRente || 0;
+    return betraege.map((b, i) => { if (!(h.pers || [['lohn']])[i] || (h.pers || [])[i][0] !== 'rente') return 0; const t = Math.min(rest, Math.max(0, b)); rest -= t; return t; });
+  }
+  const freiStaffel = (x, p, rs1) => (x > 0 ? Math.min(p.sockel + p.quote * Math.max(0, x - p.sockel), p.max * rs1, x) : 0);
+
   // Einkommen für die Grundsicherung nach dem SGB XII je Einkommen der Person(en) (§ 82 SGB XII)
   function gsaEinkommen(h) {
     const pers = h.pers || [['lohn', h.brutto]];
     const sumB = pers.reduce((a, x) => a + x[1], 0);
     const rs1 = R.regelbedarf.alleinstehend;
-    return pers.reduce((a, x) => {
+    // Netto je Einkommen: in der ausführlichen Version anteilig aus dem Haushaltsnetto
+    const nettos = pers.map((x) => (h.liste ? x[2] : sumB > 0 ? h.netto * x[1] / sumB : h.netto / pers.length));
+    const zus = zusatzVerteilt(h, nettos);
+    return pers.reduce((a, x, i) => {
       const art = x[0], b = x[1];
-      // Netto dieses Einkommens: in der ausführlichen Version anteilig aus dem Haushaltsnetto
-      const n = h.liste ? x[2] : sumB > 0 ? h.netto * b / sumB : h.netto / pers.length;
+      const n = nettos[i];
       if (art === 'wfbm') {
         const e = Math.max(0, n - R.wfbm.afoeg);
         const frei = Math.min(e, R.wfbm.achtel * rs1 + R.wfbm.rest * Math.max(0, e - R.wfbm.achtel * rs1));
@@ -727,7 +742,8 @@ const Rules = (function () {
       }
       if (art === 'lohn') return a + n - Math.min(R.gsaArbeit.quote * n, R.gsaArbeit.max * rs1);
       if (art === 'eg') return a + Math.max(0, n - (b > R.elterngeldFrei ? R.elterngeldFrei : 0));
-      if (art === 'rente' && h.grundrente33) return a + n - Math.min(R.grundrente.sockel + R.grundrente.quote * Math.max(0, n - R.grundrente.sockel), R.grundrente.max * rs1);
+      // Rente: Grundrentenfreibetrag nur auf die gesetzliche Rente (§ 82a), Freibetrag für zusätzliche Altersvorsorge auf Betriebs-, Riester- oder private Rente (§ 82 Abs. 4)
+      if (art === 'rente') { const z = zus[i], gesetzlich = n - z; return a + n - (h.grundrente33 ? freiStaffel(gesetzlich, R.grundrente, rs1) : 0) - freiStaffel(z, R.vorsorge, rs1); }
       if (art === 'ohne') return a;
       return a + n;
     }, 0);

@@ -731,6 +731,8 @@
   "ek.weiteres.betrag": "Amount per month (paid out)",
   "ek.weiteres.0": "No, only one",
   "cb.grundrente33": "At least 33 years of pension contributions from work (also a workshop), child-raising or care",
+  "ek.zusatzRente": "Of which company pension, Riester pension or private pension (net per month)",
+  "ek.zusatzRente.hint": "Only fill in if the pension above includes such a pension. For Grundsicherung im Alter, €100 plus 30% of the rest stays free, at most €281.50.",
   "cb.wfbmEssen": "Eats lunch at the workshop (extra allowance)",
   "es.a.ab33": "33 years or more",
   "es.tipp.wgOderGsa": "Wohngeld and Grundsicherung cannot be combined. Ask the Sozialamt which is better for you. With Grundsicherung, bus and train (with G) and the broadcasting fee are often free.",
