@@ -1,4 +1,4 @@
-// Barrierefreiheit (axe-core, WCAG 2.2 AA + Best Practice; Tippflächen mind. 44 px nach Apple/Google): Startseite, Brief prüfen, Fristen, ausführliche Version (leer, mit Beispiel, Arabisch), Antragsmappe, einfache Version
+// Barrierefreiheit (axe-core, WCAG 2.2 AA + Best Practice; Tippflächen mind. 44 px nach Apple/Google): Startseite, Brief prüfen, ausführliche Version (leer, mit Beispiel, Arabisch), Antragsmappe, einfache Version
 const { chromium } = require('playwright');
 const axePfad = require.resolve('axe-core/axe.min.js');
 const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html');
@@ -30,8 +30,6 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
     await p.click('#goBriefe'); await pruefe('Brief prüfen');
     await p.click('#brief-pk'); await p.click('#pf-beispiel'); await pruefe('Brief prüfen: Pflegegutachten');
     await p.click('#briefZurueck'); await p.click('#brief-vm'); await pruefe('Brief prüfen: Nebenkosten'); await p.click('#briefZurueck');
-    await p.click('#appnav [data-ansicht=fristen]'); await p.click('#fristNeu summary');
-    await p.fill('#fristTitel', 'Widerspruch'); await p.fill('#fristDatum', '2099-01-15'); await p.click('#fristAdd'); await pruefe('Fristen mit Eintrag');
     await p.click('#appnav [data-ansicht=leistungen]');
     await pruefe('Leistungen (leer)');
     await p.click('#p1'); await pruefe('Beispiel 1 mit Ergebnis');

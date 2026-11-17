@@ -67,13 +67,12 @@ const MOCK = () => {
   await p.goto(origin + '/index.html');
   await p.waitForTimeout(400);
   ok('Keine Skriptfehler beim Start', errs.length === 0, errs.join('|'));
-  ok('Start: Startseite mit den vier Bereichen', await p.isVisible('#v-start') && (await p.locator('#appnav button').count()) === 4);
-  // Fristen über den nativen Speicher (Preferences), Prüfpaket läuft unter der CSP der App
+  ok('Start: Startseite mit den drei Bereichen', await p.isVisible('#v-start') && (await p.locator('#appnav button').count()) === 3);
+  ok('Alte Fristen werden über Preferences gelöscht', (await calls('Preferences.remove')).some((c) => c.key === 'lotse.fristen'));
+  // Prüfpaket läuft unter der CSP der App
   await p.click('#appnav [data-ansicht=briefe]'); await p.click('#brief-jc'); await p.click('#p-bescheid >> text=Beispiel laden');
   ok('Brief prüfen rechnet in der App', ((await p.textContent('#p-bescheid')) || '').includes('€'));
-  await p.click('#appnav [data-ansicht=fristen]'); await p.click('#fristNeu summary'); await p.fill('#fristTitel', 'Test'); await p.fill('#fristDatum', '2099-01-01'); await p.click('#fristAdd');
-  ok('Fristen werden über Preferences gespeichert', (await calls('Preferences.set')).some((c) => c.key === 'lotse.fristen' && c.value.includes('Test')));
-  await p.click('#fristListe .frist button');
+  ok('Keine Fristen über Preferences gespeichert', !(await calls('Preferences.set')).some((c) => c.key === 'lotse.fristen'));
   await p.click('#appnav [data-ansicht=leistungen]');
   ok('Gespeicherte Daten werden über Preferences gelesen', (await calls('Preferences.get')).length > 0);
   ok('Erster Start: Anleitung statt Beispielwerte', (await p.locator('#cards .startcard').count()) === 1 && (await p.inputValue('#ek1Brutto')) === '');

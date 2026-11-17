@@ -1,7 +1,7 @@
 # SoLo Prüfpaket – Erweiterungen (getrennt von der App)
 
 Stand: 17.11.2026. Die Bausteine liegen im Ordner `erweiterungen/` und haben eigene Tests. Seit dem neuen Aufbau (nach Build 140)
-sind die Prüfungen **in der App eingebaut**, im Bereich „Brief prüfen“; die Widerspruchsfristen gehen in den Bereich „Fristen“.
+sind die Prüfungen **in der App eingebaut**, im Bereich „Brief prüfen“ (die Widerspruchsfrist steht beim jeweiligen Schreiben; einen eigenen Bereich „Fristen“ gibt es seit Build 142 nicht mehr).
 Eine Quelle für beides: `scripts/build.js` übernimmt die Abschnitte aus `vorschau.html` (Stile auf `.pp` beschränkt) und die
 Bausteine samt `vorschau.js`. Nicht in der App: Profi-Lizenz (kommt mit dem Kauf im Store). Getestet in `test/e2e-briefe.js` und `test/a11y.js`.
 

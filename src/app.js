@@ -1490,10 +1490,10 @@
     speichern: function () { flush(); },
     state: function () { return state; }
   };
-  // ----- Bereiche: Start, Leistungen (Leistungscheck), Brief prüfen, Fristen -----
-  // Beim Öffnen die Startseite; „#leistungen“, „#briefe“, „#fristen“ öffnen den Bereich direkt (Links, Tests).
-  var ANSICHTEN = ['start', 'leistungen', 'briefe', 'fristen'];
-  var aktAnsicht = 'leistungen', fristen = [];
+  // ----- Bereiche: Start, Leistungen (Leistungscheck), Brief prüfen -----
+  // Beim Öffnen die Startseite; „#leistungen“ und „#briefe“ öffnen den Bereich direkt (Links, Tests).
+  var ANSICHTEN = ['start', 'leistungen', 'briefe'];
+  var aktAnsicht = 'leistungen';
   var BRIEFE = [
     ['jc', 'briefe.jobcenter', 'briefe.jobcenter.t', '<path d="M4 20V9l8-5 8 5v11"/><path d="M9 20v-6h6v6M3 20h18"/>'],
     ['sa', 'briefe.sozialamt', 'briefe.sozialamt.t', '<circle cx="12" cy="7" r="3"/><path d="M5 20c1-4 4-6 7-6s6 2 7 6"/>'],
@@ -1512,42 +1512,8 @@
     bereicheText();
     if (fokus) { window.scrollTo(0, 0); var h = $('v-' + a).querySelector('h2'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); } }
   }
-  function heuteIso() { var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
-  function tageBis(iso) { var a = heuteIso().split('-').map(Number), b = String(iso).split('-').map(Number); return Math.round((Date.UTC(b[0], b[1] - 1, b[2]) - Date.UTC(a[0], a[1] - 1, a[2])) / 864e5); }
-  function datumText(iso) { var b = String(iso).split('-').map(Number); try { return new Date(b[0], b[1] - 1, b[2]).toLocaleDateString(lang, { day: '2-digit', month: '2-digit', year: 'numeric' }); } catch (e) { return iso; } }
-  function fristSpeichern() { Store.set('lotse.fristen', JSON.stringify(fristen)); }
-  function fristKarte(f, loeschbar) {
-    var n = tageBis(f.datum);
-    var el = document.createElement('div');
-    el.className = 'frist' + (n < 0 ? ' vorbei' : n <= 14 ? ' nah' : '');
-    var tage = document.createElement('span'); tage.className = 'frist-tage';
-    tage.textContent = n < 0 ? '!' : String(n);
-    var klein = document.createElement('small'); klein.textContent = n < 0 ? t('fristen.vorbei') : n === 1 ? t('fristen.tag') : t('fristen.tage'); tage.appendChild(klein);
-    var txt = document.createElement('span'); txt.className = 'frist-txt';
-    var b = document.createElement('b'); b.textContent = f.titel; txt.appendChild(b);
-    txt.appendChild(document.createTextNode(t('fristen.bis', { datum: datumText(f.datum) })));
-    el.appendChild(tage); el.appendChild(txt);
-    if (loeschbar) {
-      var x = document.createElement('button'); x.type = 'button'; x.className = 'btn ghost'; x.textContent = t('fristen.erledigt');
-      x.setAttribute('aria-label', t('fristen.erledigt') + ': ' + f.titel);
-      x.addEventListener('click', function () { fristen = fristen.filter(function (y) { return y !== f; }); fristSpeichern(); bereicheText(); $('fristNeu').querySelector('summary').focus(); });
-      el.appendChild(x);
-    }
-    return el;
-  }
-  function fristenSortiert() { return fristen.slice().sort(function (a, b) { return a.datum < b.datum ? -1 : a.datum > b.datum ? 1 : 0; }); }
   function bereicheText() {
-    if (!$('v-start') || !fristen) return;
-    var sort = fristenSortiert(), offen = sort.filter(function (f) { return tageBis(f.datum) >= 0; });
-    $('navPunkt').hidden = !sort.some(function (f) { return tageBis(f.datum) <= 14; });
-    var sf = $('startFristen'); sf.textContent = '';
-    if (offen.length) {
-      var h = document.createElement('h3'); h.className = 'abschnitt'; h.textContent = t('home.naechstes'); sf.appendChild(h);
-      offen.slice(0, 2).forEach(function (f) { sf.appendChild(fristKarte(f, false)); });
-    }
-    var fl = $('fristListe'); fl.textContent = '';
-    if (!sort.length) { var p = document.createElement('p'); p.className = 'muted'; p.textContent = t('fristen.leer'); fl.appendChild(p); }
-    sort.forEach(function (f) { fl.appendChild(fristKarte(f, true)); });
+    if (!$('v-start') || !BRIEFE) return; // applyLang läuft schon vor dieser Stelle
     var bk = $('briefKacheln');
     if (!bk.children.length) BRIEFE.forEach(function (x) {
       var k = document.createElement('button'); k.type = 'button'; k.className = 'kachel'; k.id = 'brief-' + x[0];
@@ -1568,13 +1534,6 @@
     var h = teil && $(teil).querySelector('h2'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
   }
   $('briefZurueck').addEventListener('click', function () { var war = null; document.querySelectorAll('#checkBox .pp-teil').forEach(function (s) { if (!s.hidden) war = s.id; }); briefOeffnen(null); for (var k in BRIEF_TEIL) if (BRIEF_TEIL[k] === war) $('brief-' + k).focus(); });
-  // Frist aus anderen Teilen der App eintragen (Prüfpaket): gleiche Frist nicht doppelt
-  function fristEintragen(f) {
-    if (!f || !f.titel || !/^\d{4}-\d{2}-\d{2}$/.test(f.datum || '')) return;
-    if (fristen.some(function (y) { return y.titel === f.titel && y.datum === f.datum; })) return;
-    fristen.push({ titel: String(f.titel).slice(0, 140), datum: f.datum, quelle: f.quelle || '' }); fristSpeichern(); bereicheText();
-  }
-  window.SoLoFristen = { eintragen: fristEintragen };
   document.querySelectorAll('#appnav button').forEach(function (b) { b.addEventListener('click', function () {
     var a = b.getAttribute('data-ansicht');
     if (a === 'briefe' && aktAnsicht === 'briefe' && !$('checkBox').hidden) { briefOeffnen(null); $('h-briefe') && $('h-briefe').focus(); return; } // nochmal tippen: zurück zur Auswahl
@@ -1582,14 +1541,8 @@
   }); });
   $('goLeistungen').addEventListener('click', function () { zeigeAnsicht('leistungen', true); });
   $('goBriefe').addEventListener('click', function () { zeigeAnsicht('briefe', true); });
-  $('fristAdd').addEventListener('click', function () {
-    var ti = $('fristTitel').value.trim(), da = $('fristDatum').value;
-    if (!ti || !/^\d{4}-\d{2}-\d{2}$/.test(da)) { $('fristMsg').textContent = t('fristen.fehlt'); return; }
-    fristEintragen({ titel: ti, datum: da, quelle: 'eigen' });
-    $('fristTitel').value = ''; $('fristDatum').value = ''; $('fristMsg').textContent = t('fristen.gespeichert');
-  });
   window.addEventListener('hashchange', function () { var a = location.hash.slice(1); if (ANSICHTEN.indexOf(a) >= 0 && a !== aktAnsicht) zeigeAnsicht(a, true); });
-  Store.get('lotse.fristen', function (v) { try { var d = v ? JSON.parse(v) : []; if (Array.isArray(d)) fristen = d.filter(function (f) { return f && typeof f.titel === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(f.datum || ''); }); } catch (e) {} bereicheText(); });
+  Store.remove('lotse.fristen'); // Fristen aus 1.3.0 (Build 141) gibt es nicht mehr: gespeicherte Einträge vom Gerät löschen
   zeigeAnsicht((function () { var a = (location.hash || '').slice(1); return ANSICHTEN.indexOf(a) >= 0 ? a : 'start'; })());
 
   Store.get('lotse.state', function (v) {

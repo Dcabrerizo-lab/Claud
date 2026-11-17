@@ -1,5 +1,5 @@
 // Store-Bilder erzeugen: zuerst npm run build:web, dann node tools/store-bilder.js (Ergebnis in store-bilder/)
-// Rohe Aufnahmen der App (Version mit Startseite, Brief prüfen und Fristen), dann mit Überschrift in die Store-Formate gesetzt.
+// Rohe Aufnahmen der App (Version mit Startseite, Leistungen und Brief prüfen), dann mit Überschrift in die Store-Formate gesetzt.
 // Logo: tools/logo/brief-siegel.svg. Farbe der Bilder passend zum Logo (Tintenblau mit Gold).
 const { chromium } = require('playwright');
 const fs = require('fs');
@@ -16,16 +16,8 @@ const VERLAUF = 'linear-gradient(160deg,#2d3d85,#161f4a)';
   const zu = async (sel, off = 0) => p.evaluate(([s, o]) => { const e = document.querySelector(s); window.scrollTo(0, e.getBoundingClientRect().top + window.scrollY - o); }, [sel, off]);
   const oben = () => p.evaluate(() => window.scrollTo(0, 0));
 
-  // Beispielfall mit Fristen, damit Startseite und Fristen nicht leer sind
-  await p.goto(APP + '#briefe');
-  await p.click('#brief-pk'); await p.fill('#pf-datum', isoIn(-5)); await p.click('#pf-wid-mach');
-  await p.click('#briefZurueck'); await p.click('#brief-vm'); await p.click('#p-nk >> text=Beispiel laden'); await p.click('#nk-ew-mach');
-  await p.click('#briefZurueck');
-  await p.click('#appnav [data-ansicht=fristen]'); await p.click('#fristNeu summary');
-  await p.fill('#fristTitel', 'Unterlagen ans Jobcenter'); await p.fill('#fristDatum', isoIn(9)); await p.click('#fristAdd');
-  await p.click('#fristNeu summary');
-
-  await roh('1-start', async () => { await p.click('#appnav [data-ansicht=start]'); await zu('#einfachBtn', 10); });
+  await p.goto(APP);
+  await roh('1-start', async () => { await p.click('#appnav [data-ansicht=start]'); await oben(); });
   // Leistungscheck mit Beispiel
   await p.click('#appnav [data-ansicht=leistungen]');
   await p.click('#firstOk').catch(() => {});
@@ -40,7 +32,6 @@ const VERLAUF = 'linear-gradient(160deg,#2d3d85,#161f4a)';
     await zu('#bs-erg', 10);
   });
   await p.click('#briefZurueck');
-  await roh('5-fristen', async () => { await p.click('#appnav [data-ansicht=fristen]'); await zu('#h-fristen', 14); });
   await p.click('#appnav [data-ansicht=leistungen]');
   await roh('6-mappe', async () => { await p.click('#mappeMake'); await oben(); });
   await p.click('#mappeClose');
@@ -58,7 +49,6 @@ const VERLAUF = 'linear-gradient(160deg,#2d3d85,#161f4a)';
     ['2-ergebnis', require('../test/karten.js').length + ' Leistungen geprüft', 'Mit grober Höhe und klarer Einschätzung'],
     ['3-brief', 'Brief vom Amt bekommen?', 'Jobcenter, Sozialamt, Wohngeld, Pflegekasse, Vermieter'],
     ['4-bescheid', 'Bescheid nachgerechnet', 'Abweichungen mit Paragraf, Widerspruch in Minuten'],
-    ['5-fristen', 'Keine Frist verpassen', 'Die App zählt die Tage für dich'],
     ['6-mappe', 'Anträge fertig zum Abschicken', 'Formlose Anträge und Angabenblatt als PDF'],
     ['7-einfach', 'Auch in einfacher Sprache', 'Eine Frage pro Bildschirm, große Knöpfe, Vorlesen'],
     ['8-sprachen', 'In 8 Sprachen', 'Amtsbegriffe bleiben deutsch, damit du sie wiedererkennst']];
@@ -89,8 +79,8 @@ const VERLAUF = 'linear-gradient(160deg,#2d3d85,#161f4a)';
   await p2.setViewportSize({ width: 1024, height: 500 });
   await p2.setContent(`<html><body style="margin:0;width:1024px;height:500px;background:linear-gradient(135deg,#2d3d85,#161f4a);font-family:system-ui,sans-serif;color:#fff;display:flex;align-items:center;gap:52px;padding:0 76px;box-sizing:border-box">
     <img src="${logoImg}" style="width:210px;height:210px;border-radius:46px;box-shadow:0 14px 40px rgba(0,0,0,.35)">
-    <div><div style="font-size:70px;font-weight:800;letter-spacing:-1px">SoLo</div>
-    <div style="font-size:36px;font-weight:700;margin-top:6px;line-height:1.25">Hilfen finden.<br>Briefe prüfen.<br><span style="color:#f2b233">Fristen behalten.</span></div>
+    <div><div style="font-size:66px;font-weight:800;letter-spacing:-1px;line-height:1">SoLo</div><div style="font-size:26px;font-weight:600;opacity:.85;margin-top:4px">Sozialleistungslotse</div>
+    <div style="font-size:34px;font-weight:700;margin-top:16px;line-height:1.25">Hilfen finden.<br>Briefe prüfen.<br><span style="color:#f2b233">Anträge schreiben.</span></div>
     <div style="font-size:24px;margin-top:16px;opacity:.9">Offline · ohne Anmeldung · in 8 Sprachen</div></div></body></html>`);
   await p2.waitForTimeout(100);
   await p2.screenshot({ path: D + 'play-werbegrafik-1024x500.png' });
