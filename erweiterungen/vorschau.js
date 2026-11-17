@@ -247,6 +247,35 @@ Ergebnis: Pflegegrad 2`;
     $('bs-frist').textContent = (r.gruende.length ? '' : 'Es wurde kein Grund gefunden; der Widerspruch hat noch keine Begründung. ') + ($('bs-datum').value ? fristText($('bs-datum').value) : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.');
   }
 
+  // ---------------- Bescheid Grundsicherung im Alter ----------------
+  function leseGSA() {
+    const zwei = $('ga-zahl').value === '2';
+    const person = (i) => ({ renteNetto: +$('ga-rente' + i).value || 0, zusatzRente: +$('ga-zus' + i).value || 0, lohnNetto: +$('ga-lohn' + i).value || 0, sonstiges: +$('ga-sonst' + i).value || 0, versicherungen: +$('ga-vers' + i).value || 0, grundrente33: $('ga-gr' + i).checked, mzG: $('ga-g' + i).checked });
+    return { personen: zwei ? [person(1), person(2)] : [person(1)], warmwasserDezentral: $('ga-ww').checked, miete: { tatsaechlich: wert('ga-miete'), heizung: wert('ga-heiz') },
+      bescheid: { regel: wert('ga-b-regel'), mehrG: wert('ga-b-g'), mehrWW: wert('ga-b-ww'), kdu: wert('ga-b-kdu'), einkommen: wert('ga-b-eink'), zahlbetrag: wert('ga-b-zahl') } };
+  }
+  function zeigeGSA() {
+    $('ga-p2').hidden = $('ga-zahl').value !== '2';
+    const box = $('ga-erg'); box.replaceChildren();
+    const r = BescheidGSA.pruefe(leseGSA(), Rules);
+    box.append(h('h2', { text: 'Ergebnis' }),
+      h('p', {}, h('span', { class: 'big', text: r.posten.length ? (r.zuWenigImMonat > 0 ? `Vermutlich ${eur(r.zuWenigImMonat)} im Monat zu wenig` : r.gruende.length ? 'Bitte prüfen' : 'Keine Abweichung zu deinen Lasten gefunden') : `Nach SoLo: ${eur(r.erwartet.zahlbetrag)} Grundsicherung im Monat` })),
+      h('p', { class: 'small', text: `Nach SoLo: Bedarf ${eur(r.erwartet.bedarf)}, anzurechnendes Einkommen ${eur(r.erwartet.einkommen)}, Zahlbetrag ${eur(r.erwartet.zahlbetrag)}.` }));
+    if (r.posten.length) {
+      const tb = h('tbody', {}, r.posten.map((p) => h('tr', {}, h('td', {}, p.name), h('td', { class: 'z', text: eur(p.erwartet) }), h('td', { class: 'z', text: eur(p.bescheid) }), h('td', {}, h('span', { class: 'pill ' + p.wirkung, text: WIRK[p.wirkung] })))));
+      box.append(h('div', { class: 'tablewrap', tabindex: '0', role: 'region', 'aria-label': 'Vergleich Grundsicherung im Alter' }, h('table', {}, h('thead', {}, h('tr', {}, h('th', { text: 'Posten' }), h('th', { class: 'z', text: 'nach SoLo' }), h('th', { class: 'z', text: 'im Bescheid' }), h('th', { text: 'Bewertung' }))), tb)));
+    }
+    if (r.zahlbetrag) box.append(h('p', { class: 'small', text: `Zahlbetrag nach SoLo ${eur(r.zahlbetrag.erwartet)}, im Bescheid ${eur(r.zahlbetrag.bescheid)}.` }));
+    r.gruende.forEach((g) => box.append(h('p', { class: 'small' }, h('strong', { text: g.name + ': ' }), g.grund)));
+    box.append(h('p', { class: 'small muted', text: r.grenzen }));
+  }
+  function macheGSAWiderspruch() {
+    const r = BescheidGSA.pruefe(leseGSA(), Rules);
+    const t = Widerspruch.text({ art: 'gsa', absender: { name: $('ga-name').value.trim(), strasse: $('ga-anschrift').value.trim(), ort: $('ga-ort').value.trim() }, stelle: { name: $('ga-stelle').value.trim() }, bescheidDatum: $('ga-datum').value, zeichen: $('ga-az').value.trim(), heute: heute(), punkte: Widerspruch.punkteSGB2(r), akteneinsicht: r.gruende.some((g) => g.key === 'kdu') });
+    $('ga-wid-text').value = t; $('ga-wid-text').hidden = false; $('ga-wid-copy').hidden = false;
+    $('ga-frist').textContent = (r.gruende.length ? '' : 'Es wurde kein Grund gefunden; der Widerspruch hat noch keine Begründung. ') + ($('ga-datum').value ? fristText($('ga-datum').value) : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.');
+  }
+
   // ---------------- Bescheid Wohngeld ----------------
   let wz = 0;
   const ARTEN = [['lohn', 'Lohn'], ['rente', 'Rente'], ['alg', 'Arbeitslosengeld I'], ['eg', 'Elterngeld'], ['ohne', 'nur Unterhalt / kein Einkommen']];
@@ -383,6 +412,18 @@ Ergebnis: Pflegegrad 2`;
   $('bs-wid-mach').addEventListener('click', macheBescheidWiderspruch);
   $('bs-wid-copy').addEventListener('click', () => kopiere($('bs-wid-text'), $('bs-copy-msg')));
   personZeile('erw'); zeigeBescheid();
+
+  $('ga-form').addEventListener('input', zeigeGSA);
+  $('ga-form').addEventListener('change', nurAuswahl(zeigeGSA));
+  $('ga-beispiel').addEventListener('click', () => {
+    $('ga-form').reset();
+    $('ga-zahl').value = '1'; $('ga-miete').value = 450; $('ga-heiz').value = 70; $('ga-rente1').value = 900; $('ga-zus1').value = 150; $('ga-gr1').checked = true; $('ga-g1').checked = true;
+    $('ga-b-regel').value = 563; $('ga-b-g').value = 0; $('ga-b-kdu').value = 520; $('ga-b-eink').value = 1050; $('ga-b-zahl').value = 33;
+    zeigeGSA();
+  });
+  $('ga-wid-mach').addEventListener('click', macheGSAWiderspruch);
+  $('ga-wid-copy').addEventListener('click', () => kopiere($('ga-wid-text'), $('ga-copy-msg')));
+  zeigeGSA();
 
   $('wg-plus').addEventListener('click', () => { wgZeile(); zeigeWG(); });
   $('wg-form').addEventListener('input', zeigeWG);

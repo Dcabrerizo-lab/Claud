@@ -81,6 +81,18 @@ const ok = (name, c, info) => { n++; console.log((c ? 'ok   ' : 'FEHLER ') + nam
     ok(`${schema}: Bescheid-Widerspruch mit beiden Gründen`, /Mehrbedarf für Alleinerziehende/.test(bt) && /Angerechnetes Einkommen/.test(bt));
     await p.click('[aria-label="Person 2 entfernen"], #bs-personen tr:nth-child(2) button');
     ok(`${schema}: Person entfernen rechnet neu`, !(await p.textContent('#bs-erg')).includes('163,12'));
+    // Grundsicherung im Alter
+    await p.click('#tab-gsa');
+    await p.click('#ga-beispiel');
+    ok(`${schema}: Grundsicherung im Alter: 492,21 € zu wenig`, (await p.textContent('#ga-erg .big')).includes('492,21 €'), await p.textContent('#ga-erg .big'));
+    ok(`${schema}: Grundsicherung im Alter: Betriebsrenten-Freibetrag als Grund`, /Betriebs-, Riester- oder private Rente/.test(await p.textContent('#ga-erg')));
+    await axe('Grundsicherung im Alter mit Ergebnis');
+    await p.selectOption('#ga-zahl', '2');
+    ok(`${schema}: Paar zeigt Person 2`, await p.isVisible('#ga-rente2'));
+    await p.selectOption('#ga-zahl', '1');
+    await p.fill('#ga-datum', '2026-11-16');
+    await p.click('#ga-wid-mach');
+    ok(`${schema}: Widerspruch Grundsicherung im Alter`, /Grundsicherung im Alter und bei Erwerbsminderung vom 16\.11\.2026/.test(await p.inputValue('#ga-wid-text')));
     // Wohngeld
     await p.click('#tab-wg');
     await p.click('#wg-beispiel');

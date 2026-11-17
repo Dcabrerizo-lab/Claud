@@ -65,6 +65,7 @@
   <nav role="tablist" aria-label="Bausteine">
     <button type="button" role="tab" id="tab-pflege" aria-controls="p-pflege" aria-selected="true">Pflegegutachten</button>
     <button type="button" role="tab" id="tab-bescheid" aria-controls="p-bescheid" aria-selected="false" tabindex="-1">Bescheid Grundsicherungsgeld</button>
+    <button type="button" role="tab" id="tab-gsa" aria-controls="p-gsa" aria-selected="false" tabindex="-1">Bescheid Grundsicherung im Alter</button>
     <button type="button" role="tab" id="tab-wg" aria-controls="p-wg" aria-selected="false" tabindex="-1">Bescheid Wohngeld</button>
     <button type="button" role="tab" id="tab-kiz" aria-controls="p-kiz" aria-selected="false" tabindex="-1">Bescheid Kinderzuschlag</button>
     <button type="button" role="tab" id="tab-fristen" aria-controls="p-fristen" aria-selected="false" tabindex="-1">Fristen</button>
@@ -177,6 +178,75 @@
       <textarea id="bs-wid-text" rows="18" readonly hidden></textarea>
       <div class="btns"><button type="button" class="btn" id="bs-wid-copy" hidden>Text kopieren</button></div>
       <p class="small" id="bs-copy-msg" role="status"></p>
+    </div>
+  </section>
+
+  <!-- Bescheid Grundsicherung im Alter -->
+  <section id="p-gsa" role="tabpanel" aria-labelledby="tab-gsa" hidden>
+    <div class="card">
+      <h2>Bescheid Grundsicherung im Alter prüfen</h2>
+      <p>Für Grundsicherung im Alter und bei Erwerbsminderung vom Sozialamt. Trage die Beträge für einen Monat ein. SoLo rechnet mit denselben Regeln wie die App nach, dazu mit dem Freibetrag für Betriebs-, Riester- und private Renten.</p>
+      <div class="btns"><button type="button" class="btn" id="ga-beispiel">Beispiel laden</button></div>
+    </div>
+    <form id="ga-form" onsubmit="return false">
+      <fieldset><legend>Haushalt und Miete</legend>
+        <div class="grid2">
+          <div><label for="ga-zahl">Wer lebt zusammen?</label><select id="ga-zahl"><option value="1">alleinstehend</option><option value="2">Ehepaar oder Paar</option></select></div>
+          <div><label for="ga-miete">Miete mit Nebenkosten (ohne Heizung)</label><input type="number" id="ga-miete" min="0" step="0.01" inputmode="decimal"></div>
+          <div><label for="ga-heiz">Heizkosten</label><input type="number" id="ga-heiz" min="0" step="0.01" inputmode="decimal"></div>
+        </div>
+        <label class="check"><input type="checkbox" id="ga-ww"> Warmwasser wird in der Wohnung erzeugt (Durchlauferhitzer, Boiler)</label>
+      </fieldset>
+      <fieldset id="ga-p1"><legend>Person 1</legend>
+        <div class="grid2">
+          <div><label for="ga-rente1">Gesetzliche Rente (nach Kranken- und Pflegeversicherung)</label><input type="number" id="ga-rente1" min="0" step="0.01" inputmode="decimal"></div>
+          <div><label for="ga-zus1">Betriebsrente, Riester-Rente oder private Rente</label><input type="number" id="ga-zus1" min="0" step="0.01" inputmode="decimal"></div>
+          <div><label for="ga-lohn1">Lohn netto (z. B. Minijob)</label><input type="number" id="ga-lohn1" min="0" step="0.01" inputmode="decimal"></div>
+          <div><label for="ga-sonst1">Anderes Einkommen</label><input type="number" id="ga-sonst1" min="0" step="0.01" inputmode="decimal"></div>
+          <div><label for="ga-vers1">Versicherungsbeiträge (z. B. Haftpflicht, Hausrat)</label><input type="number" id="ga-vers1" min="0" step="0.01" inputmode="decimal"></div>
+        </div>
+        <label class="check"><input type="checkbox" id="ga-gr1"> Mindestens 33 Jahre Grundrentenzeiten (Grundrentenzuschlag im Rentenbescheid)</label>
+        <label class="check"><input type="checkbox" id="ga-g1"> Merkzeichen G im Schwerbehindertenausweis</label>
+      </fieldset>
+      <fieldset id="ga-p2" hidden><legend>Person 2 (Ehe- oder Lebenspartner)</legend>
+        <div class="grid2">
+          <div><label for="ga-rente2">Gesetzliche Rente (nach Kranken- und Pflegeversicherung)</label><input type="number" id="ga-rente2" min="0" step="0.01" inputmode="decimal"></div>
+          <div><label for="ga-zus2">Betriebsrente, Riester-Rente oder private Rente</label><input type="number" id="ga-zus2" min="0" step="0.01" inputmode="decimal"></div>
+          <div><label for="ga-lohn2">Lohn netto (z. B. Minijob)</label><input type="number" id="ga-lohn2" min="0" step="0.01" inputmode="decimal"></div>
+          <div><label for="ga-sonst2">Anderes Einkommen</label><input type="number" id="ga-sonst2" min="0" step="0.01" inputmode="decimal"></div>
+          <div><label for="ga-vers2">Versicherungsbeiträge (z. B. Haftpflicht, Hausrat)</label><input type="number" id="ga-vers2" min="0" step="0.01" inputmode="decimal"></div>
+        </div>
+        <label class="check"><input type="checkbox" id="ga-gr2"> Mindestens 33 Jahre Grundrentenzeiten (Grundrentenzuschlag im Rentenbescheid)</label>
+        <label class="check"><input type="checkbox" id="ga-g2"> Merkzeichen G im Schwerbehindertenausweis</label>
+      </fieldset>
+      <fieldset><legend>Beträge im Bescheid (Monat)</legend>
+        <div class="grid2">
+          <div><label for="ga-b-regel">Regelbedarf zusammen</label><input type="number" id="ga-b-regel" step="0.01" inputmode="decimal"></div>
+          <div><label for="ga-b-g">Mehrbedarf Merkzeichen G</label><input type="number" id="ga-b-g" step="0.01" inputmode="decimal"></div>
+          <div><label for="ga-b-ww">Mehrbedarf Warmwasser</label><input type="number" id="ga-b-ww" step="0.01" inputmode="decimal"></div>
+          <div><label for="ga-b-kdu">Unterkunft und Heizung anerkannt</label><input type="number" id="ga-b-kdu" step="0.01" inputmode="decimal"></div>
+          <div><label for="ga-b-eink">Angerechnetes Einkommen</label><input type="number" id="ga-b-eink" step="0.01" inputmode="decimal"></div>
+          <div><label for="ga-b-zahl">Zahlbetrag</label><input type="number" id="ga-b-zahl" step="0.01" inputmode="decimal"></div>
+        </div>
+      </fieldset>
+    </form>
+    <div class="card" id="ga-erg" aria-live="polite"></div>
+    <div class="card">
+      <h2>Widerspruch vorbereiten</h2>
+      <div class="grid2">
+        <div><label for="ga-name">Name</label><input type="text" id="ga-name" autocomplete="name"></div>
+        <div><label for="ga-anschrift">Straße und Hausnummer</label><input type="text" id="ga-anschrift"></div>
+        <div><label for="ga-ort">PLZ und Ort</label><input type="text" id="ga-ort"></div>
+        <div><label for="ga-stelle">Sozialamt</label><input type="text" id="ga-stelle"></div>
+        <div><label for="ga-az">Aktenzeichen</label><input type="text" id="ga-az"></div>
+        <div><label for="ga-datum">Datum des Bescheids</label><input type="date" id="ga-datum"></div>
+      </div>
+      <div class="btns"><button type="button" class="btn primary" id="ga-wid-mach">Widerspruch erstellen</button></div>
+      <p class="small" id="ga-frist" role="status"></p>
+      <label for="ga-wid-text" class="vh">Text des Widerspruchs</label>
+      <textarea id="ga-wid-text" rows="18" readonly hidden></textarea>
+      <div class="btns"><button type="button" class="btn" id="ga-wid-copy" hidden>Text kopieren</button></div>
+      <p class="small" id="ga-copy-msg" role="status"></p>
     </div>
   </section>
 
@@ -318,6 +388,7 @@
 /*PFLEGE*/
 /*IMPORT*/
 /*BESCHEID*/
+/*BESCHEIDGSA*/
 /*BESCHEIDWG*/
 /*BESCHEIDKIZ*/
 /*FRISTEN*/

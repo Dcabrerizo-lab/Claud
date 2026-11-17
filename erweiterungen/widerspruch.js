@@ -16,9 +16,9 @@ const Widerspruch = (function () {
     z.push('');
     z.push(`${a.ort ? a.ort.replace(/^\d{5}\s*/, '') + ', ' : ''}${de(w.heute)}`);
     z.push('');
-    const was = { pflege: 'Bescheid über die Feststellung des Pflegegrades', wohngeld: 'Wohngeldbescheid', kiz: 'Bescheid über den Kinderzuschlag' }[w.art] || 'Bescheid über Leistungen zur Sicherung des Lebensunterhalts (Grundsicherungsgeld)';
+    const was = { pflege: 'Bescheid über die Feststellung des Pflegegrades', wohngeld: 'Wohngeldbescheid', kiz: 'Bescheid über den Kinderzuschlag', gsa: 'Bescheid über Leistungen der Grundsicherung im Alter und bei Erwerbsminderung' }[w.art] || 'Bescheid über Leistungen zur Sicherung des Lebensunterhalts (Grundsicherungsgeld)';
     z.push(`Widerspruch gegen den ${was} vom ${de(w.bescheidDatum)}`);
-    if (w.zeichen) z.push(({ pflege: 'Versichertennummer', wohngeld: 'Wohngeldnummer / Aktenzeichen', kiz: 'Kindergeldnummer' }[w.art] || 'Nummer der Bedarfsgemeinschaft / Aktenzeichen') + ': ' + w.zeichen);
+    if (w.zeichen) z.push(({ pflege: 'Versichertennummer', wohngeld: 'Wohngeldnummer / Aktenzeichen', kiz: 'Kindergeldnummer', gsa: 'Aktenzeichen' }[w.art] || 'Nummer der Bedarfsgemeinschaft / Aktenzeichen') + ': ' + w.zeichen);
     z.push('');
     z.push('Sehr geehrte Damen und Herren,');
     z.push('');
