@@ -1036,5 +1036,9 @@
   "fristen.bis": "son tarih {datum}",
   "fristen.erledigt": "Tamamlandı",
   "fristen.fehlt": "Lütfen metin ve tarih girin.",
-  "fristen.gespeichert": "Süre kaydedildi."
+  "fristen.gespeichert": "Süre kaydedildi.",
+  "briefe.zurueck": "← Başka mektup",
+  "briefe.nurDeutsch": "Bu kontrol şu anda yalnızca Almanca. Çeviriler gelecek.",
+  "briefe.hinweis": "Her şey yalnızca bu cihazda hesaplanır. Hukuki danışmanlık değildir: Lütfen her gerekçeyi kendiniz kontrol edin ve emin değilseniz bir danışma merkezine sorun.",
+  "fristen.rechner": "Süreyi hesapla"
 }

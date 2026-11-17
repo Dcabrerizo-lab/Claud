@@ -1036,5 +1036,9 @@
   "fristen.bis": "bis {datum}",
   "fristen.erledigt": "Erledigt",
   "fristen.fehlt": "Bitte Text und Datum eintragen.",
-  "fristen.gespeichert": "Frist gespeichert."
+  "fristen.gespeichert": "Frist gespeichert.",
+  "briefe.zurueck": "← Anderer Brief",
+  "briefe.nurDeutsch": "Diese Prüfung gibt es zurzeit nur auf Deutsch. Übersetzungen folgen.",
+  "briefe.hinweis": "Alles wird nur auf diesem Gerät gerechnet. Keine Rechtsberatung: Bitte jede Begründung selbst prüfen und im Zweifel eine Beratungsstelle fragen.",
+  "fristen.rechner": "Frist ausrechnen"
 }

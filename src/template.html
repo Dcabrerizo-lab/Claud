@@ -440,6 +440,11 @@
   .jump { background: color-mix(in srgb, var(--surface) 88%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-top: 1px solid var(--line); box-shadow: 0 -4px 16px rgba(19, 32, 43, .06); }
   .jump button { border-radius: 999px; padding-inline: 22px; box-shadow: var(--shadow-s); }
   @media (prefers-reduced-motion: reduce) { .chip, input, select { transition: none; } .chip:active { transform: none; } }
+  /* Brief prüfen: Prüfpaket (Stile aus erweiterungen/vorschau.html, auf .pp beschränkt) */
+  .pp-kopf { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 0 0 14px; }
+  .pp-kopf .btn { flex: none; }
+  .pp-hinweis { background: var(--warn-bg); border-radius: 12px; padding: 10px 14px; margin: 0 0 14px; }
+/*PPSTIL*/
 </style>
 
 <div class="app" id="app" lang="de" dir="ltr">
@@ -472,9 +477,14 @@
     <!-- Brief prüfen: nach Absender -->
     <section id="v-briefe" class="ansicht" aria-labelledby="h-briefe" hidden>
       <h2 id="h-briefe" class="ans-h" data-t="briefe.h"></h2>
-      <p class="muted" data-t="briefe.t"></p>
+      <p id="briefeIntro" class="muted" data-t="briefe.t"></p>
       <div class="kacheln" id="briefKacheln"></div>
-      <div id="checkBox" hidden></div>
+      <div id="checkBox" class="pp" hidden>
+        <div class="pp-kopf"><button type="button" class="btn ghost" id="briefZurueck" data-t="briefe.zurueck"></button></div>
+        <p class="pp-hinweis small" id="ppNurDe" data-t="briefe.nurDeutsch" hidden></p>
+        <p class="small muted" data-t="briefe.hinweis"></p>
+<!--PRUEFPAKET-->
+      </div>
     </section>
 
     <!-- Fristen -->
@@ -490,6 +500,10 @@
           <button type="button" class="btn" id="fristAdd" data-t="fristen.add"></button>
           <p class="msg" id="fristMsg" role="status"></p>
         </div>
+      </details>
+      <details class="optblock pp" id="fristRechner">
+        <summary data-t="fristen.rechner"></summary>
+<!--PRUEFFRISTEN-->
       </details>
     </section>
 
@@ -1035,6 +1049,9 @@ Behoerden.init(/*BEHOERDENDATA*/null);
 </script>
 <script>
 /*FORMULARE*/
+</script>
+<script>
+/*PRUEFPAKET*/
 </script>
 <script>
 /*APP*/

@@ -1,7 +1,9 @@
 # SoLo Prüfpaket – Erweiterungen (getrennt von der App)
 
-Stand: 17.11.2026. Diese Bausteine sind **nicht** in SoLo 1.2.0 eingebaut. Sie liegen im Ordner `erweiterungen/`, haben einen
-eigenen Build und eigene Tests. `npm test` und die App-Pakete bleiben unverändert.
+Stand: 17.11.2026. Die Bausteine liegen im Ordner `erweiterungen/` und haben eigene Tests. Seit dem neuen Aufbau (nach Build 140)
+sind die Prüfungen **in der App eingebaut**, im Bereich „Brief prüfen“; die Widerspruchsfristen gehen in den Bereich „Fristen“.
+Eine Quelle für beides: `scripts/build.js` übernimmt die Abschnitte aus `vorschau.html` (Stile auf `.pp` beschränkt) und die
+Bausteine samt `vorschau.js`. Nicht in der App: Profi-Lizenz (kommt mit dem Kauf im Store). Getestet in `test/e2e-briefe.js` und `test/a11y.js`.
 
 ## Ausprobieren
 

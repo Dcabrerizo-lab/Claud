@@ -1,4 +1,5 @@
-// Oberfläche der Vorschau (erweiterungen/vorschau.html). Nicht Teil der App 1.2.0.
+// Oberfläche des Prüfpakets: in der Vorschau (erweiterungen/vorschau.html) und in der App unter „Brief prüfen“ (scripts/build.js).
+// In der App gibt es keine Reiter und keine Lizenzprüfung; Fristen gehen in die Fristenliste der App (window.SoLoFristen).
 // Alle Ausgaben über textContent bzw. Elemente – nie innerHTML mit Eingaben (Schutz vor eingeschleustem Code).
 (function () {
   'use strict';
@@ -21,7 +22,7 @@
   }
 
   // ---------------- Reiter ----------------
-  const tabs = [...document.querySelectorAll('[role="tab"]')];
+  const tabs = [...document.querySelectorAll('nav[aria-label="Bausteine"] [role="tab"]')];
   function zeige(tab) {
     for (const t of tabs) { const an = t === tab; t.setAttribute('aria-selected', an); t.tabIndex = an ? 0 : -1; $(t.getAttribute('aria-controls')).hidden = !an; }
   }
@@ -173,12 +174,14 @@
       ? Widerspruch.hoeherstufung({ absender, stelle, zeichen: $('pf-vnr').value.trim(), heute: heute(), pgJetzt: ist, seit: $('pf-datum').value, punkte: Widerspruch.punkteHoeher(auswahl, P), arzt: true })
       : Widerspruch.text({ art: 'pflege', absender, stelle, bescheidDatum: $('pf-datum').value, zeichen: $('pf-vnr').value.trim(), heute: heute(), pflege: { pgBescheid: ist, pgZiel: ziel > ist ? ziel : null }, punkte: Widerspruch.punktePflege(auswahl, P), akteneinsicht: true });
     $('pf-wid-text').value = t; $('pf-wid-text').hidden = false; $('pf-wid-copy').hidden = false;
-    let info = hoch ? 'Keine Frist. Mehr Geld gibt es ab dem Monat, in dem der Antrag bei der Pflegekasse eingeht. Deshalb bald abschicken.' : $('pf-datum').value ? fristText($('pf-datum').value) : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.';
+    let info = hoch ? 'Keine Frist. Mehr Geld gibt es ab dem Monat, in dem der Antrag bei der Pflegekasse eingeht. Deshalb bald abschicken.' : $('pf-datum').value ? fristText($('pf-datum').value, 'Widerspruch Pflegekasse') : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.';
     if (auswahl.length && ziel > ist) info = `Mit diesen Änderungen ergäbe sich Pflegegrad ${ziel}. ` + info;
     if (!auswahl.length) info = 'Noch keine Bewertung mit höherer Stufe gewählt. ' + info;
     $('pf-frist').textContent = info;
   }
-  function fristText(datum) { const f = Fristen.widerspruch({ datum }); return `Frist: Der Widerspruch muss spätestens am ${de(f.fristende)} bei der Stelle sein (frühester möglicher Tag).`; }
+  // Frist merken: in der App in die Fristenliste (gleiche Frist nur einmal), in der Vorschau nichts
+  function merke(titel, datum, quelle) { if (window.SoLoFristen && titel && datum) window.SoLoFristen.eintragen({ titel, datum, quelle: quelle || 'pruefpaket' }); }
+  function fristText(datum, titel) { const f = Fristen.widerspruch({ datum }); merke(titel, f.fristende); return `Frist: Der Widerspruch muss spätestens am ${de(f.fristende)} bei der Stelle sein (frühester möglicher Tag).`; }
 
   const BEISPIEL_GUTACHTEN = `1.1 Positionswechsel im Bett überwiegend selbständig
 1.3 Umsetzen überwiegend selbständig
@@ -244,7 +247,7 @@ Ergebnis: Pflegegrad 2`;
     const r = BescheidSGB2.pruefe(leseBescheid(), Rules);
     const t = Widerspruch.text({ art: 'sgb2', absender: { name: $('bs-name').value.trim(), strasse: $('bs-anschrift').value.trim(), ort: $('bs-ort').value.trim() }, stelle: { name: $('bs-jc').value.trim() }, bescheidDatum: $('bs-datum').value, zeichen: $('bs-bg').value.trim(), heute: heute(), punkte: Widerspruch.punkteSGB2(r), akteneinsicht: r.gruende.some((g) => g.key === 'kdu') });
     $('bs-wid-text').value = t; $('bs-wid-text').hidden = false; $('bs-wid-copy').hidden = false;
-    $('bs-frist').textContent = (r.gruende.length ? '' : 'Es wurde kein Grund gefunden; der Widerspruch hat noch keine Begründung. ') + ($('bs-datum').value ? fristText($('bs-datum').value) : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.');
+    $('bs-frist').textContent = (r.gruende.length ? '' : 'Es wurde kein Grund gefunden; der Widerspruch hat noch keine Begründung. ') + ($('bs-datum').value ? fristText($('bs-datum').value, 'Widerspruch Jobcenter') : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.');
   }
 
   // ---------------- Bescheid Grundsicherung im Alter ----------------
@@ -273,7 +276,7 @@ Ergebnis: Pflegegrad 2`;
     const r = BescheidGSA.pruefe(leseGSA(), Rules);
     const t = Widerspruch.text({ art: 'gsa', absender: { name: $('ga-name').value.trim(), strasse: $('ga-anschrift').value.trim(), ort: $('ga-ort').value.trim() }, stelle: { name: $('ga-stelle').value.trim() }, bescheidDatum: $('ga-datum').value, zeichen: $('ga-az').value.trim(), heute: heute(), punkte: Widerspruch.punkteSGB2(r), akteneinsicht: r.gruende.some((g) => g.key === 'kdu') });
     $('ga-wid-text').value = t; $('ga-wid-text').hidden = false; $('ga-wid-copy').hidden = false;
-    $('ga-frist').textContent = (r.gruende.length ? '' : 'Es wurde kein Grund gefunden; der Widerspruch hat noch keine Begründung. ') + ($('ga-datum').value ? fristText($('ga-datum').value) : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.');
+    $('ga-frist').textContent = (r.gruende.length ? '' : 'Es wurde kein Grund gefunden; der Widerspruch hat noch keine Begründung. ') + ($('ga-datum').value ? fristText($('ga-datum').value, 'Widerspruch Sozialamt') : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.');
   }
 
   // ---------------- Bescheid Wohngeld ----------------
@@ -312,7 +315,7 @@ Ergebnis: Pflegegrad 2`;
     const r = BescheidWG.pruefe(leseWG(), Rules);
     const t = Widerspruch.text({ art: 'wohngeld', absender: { name: $('wg-name').value.trim(), strasse: $('wg-anschrift').value.trim(), ort: $('wg-ort').value.trim() }, stelle: { name: $('wg-stelle').value.trim() }, bescheidDatum: $('wg-datum').value, zeichen: $('wg-az').value.trim(), heute: heute(), punkte: Widerspruch.punkteSGB2(r) });
     $('wg-wid-text').value = t; $('wg-wid-text').hidden = false; $('wg-wid-copy').hidden = false;
-    $('wg-frist').textContent = (r.gruende.length ? '' : 'Es wurde kein Grund gefunden; der Widerspruch hat noch keine Begründung. ') + ($('wg-datum').value ? fristText($('wg-datum').value) : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.');
+    $('wg-frist').textContent = (r.gruende.length ? '' : 'Es wurde kein Grund gefunden; der Widerspruch hat noch keine Begründung. ') + ($('wg-datum').value ? fristText($('wg-datum').value, 'Widerspruch Wohngeldstelle') : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.');
   }
 
   // ---------------- Bescheid Kinderzuschlag ----------------
@@ -354,7 +357,7 @@ Ergebnis: Pflegegrad 2`;
     const r = BescheidKiZ.pruefe(leseKiZ(), Rules);
     const t = Widerspruch.text({ art: 'kiz', absender: { name: $('kz-name').value.trim(), strasse: $('kz-anschrift').value.trim(), ort: $('kz-ort').value.trim() }, stelle: { name: 'Familienkasse der Bundesagentur für Arbeit' }, bescheidDatum: $('kz-datum').value, zeichen: $('kz-kgnr').value.trim(), heute: heute(), punkte: Widerspruch.punkteSGB2(r) });
     $('kz-wid-text').value = t; $('kz-wid-text').hidden = false; $('kz-wid-copy').hidden = false;
-    $('kz-frist').textContent = (r.gruende.length ? '' : 'Es wurde kein Grund gefunden; der Widerspruch hat noch keine Begründung. ') + ($('kz-datum').value ? fristText($('kz-datum').value) : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.');
+    $('kz-frist').textContent = (r.gruende.length ? '' : 'Es wurde kein Grund gefunden; der Widerspruch hat noch keine Begründung. ') + ($('kz-datum').value ? fristText($('kz-datum').value, 'Widerspruch Familienkasse') : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.');
   }
 
   // ---------------- Nebenkosten ----------------
@@ -397,11 +400,14 @@ Ergebnis: Pflegegrad 2`;
   function nkText(t, info) { $('nk-text').value = t; $('nk-text').hidden = false; $('nk-copy').hidden = false; $('nk-info').textContent = info; }
 
   // ---------------- Fristen ----------------
+  let frWert = null, erWert = null;
   function zeigeFristen() {
     const d = $('fr-datum').value, z = $('fr-zugang').value;
-    if (d || z) { const f = Fristen.widerspruch(z ? { zugang: z } : { datum: d }); $('fr-erg').textContent = `Bekannt gegeben am ${de(f.bekanntgabe)}. Der Widerspruch muss spätestens am ${de(f.fristende)} bei der Stelle eingegangen sein. ${f.hinweis}`; } else $('fr-erg').textContent = '';
+    frWert = null; erWert = null;
+    if (d || z) { const f = Fristen.widerspruch(z ? { zugang: z } : { datum: d }); frWert = f.fristende; $('fr-erg').textContent = `Bekannt gegeben am ${de(f.bekanntgabe)}. Der Widerspruch muss spätestens am ${de(f.fristende)} bei der Stelle eingegangen sein. ${f.hinweis}`; } else $('fr-erg').textContent = '';
     const e = $('er-ende').value;
-    if (e) { const r = Fristen.erinnerung({ leistung: $('er-leistung').value, ende: e }); $('er-erg').textContent = `Erinnerung am ${de(r.erinnerungAm)}: ${r.text} (${r.stelle})`; } else $('er-erg').textContent = '';
+    if (e) { const r = Fristen.erinnerung({ leistung: $('er-leistung').value, ende: e }); erWert = { datum: r.erinnerungAm, titel: r.text.split('. ')[0].replace(/\.$/, '') }; $('er-erg').textContent = `Erinnerung am ${de(r.erinnerungAm)}: ${r.text} (${r.stelle})`; } else $('er-erg').textContent = '';
+    if ($('fr-merken')) { $('fr-merken').hidden = !(window.SoLoFristen && frWert); $('er-merken').hidden = !(window.SoLoFristen && erWert); }
   }
 
   // ---------------- Lizenz ----------------
@@ -504,6 +510,7 @@ Ergebnis: Pflegegrad 2`;
   });
   $('nk-ew-mach').addEventListener('click', () => {
     const a = leseNK(), r = Nebenkosten.pruefe(a);
+    if (r.fristen && r.fristen.einwendungBis) merke('Einwände Nebenkostenabrechnung', r.fristen.einwendungBis);
     nkText(Nebenkosten.einwendungen({ absender: { name: $('nk-name').value.trim(), strasse: $('nk-anschrift').value.trim(), ort: $('nk-ort').value.trim() }, vermieter: { name: $('nk-verm').value.trim() }, von: a.von, bis: a.bis, heute: heute(), pruefenMit: $('nk-mitpruefen').checked }, r),
       r.fristen && r.fristen.einwendungBis ? `Einwände bitte bis spätestens ${de(r.fristen.einwendungBis)} schicken, am besten per Einwurf-Einschreiben.` : 'Einwände sind bis 12 Monate nach Erhalt der Abrechnung möglich.');
   });
@@ -516,6 +523,12 @@ Ergebnis: Pflegegrad 2`;
   nkZeile(); zeigeNK();
 
   for (const id of ['fr-datum', 'fr-zugang', 'er-leistung', 'er-ende']) $(id).addEventListener('input', zeigeFristen);
-  $('li-demo').addEventListener('click', () => zeigeLizenz(DEMO_LIZENZ));
-  $('li-datei').addEventListener('change', async (e) => { const f = e.target.files && e.target.files[0]; if (f) zeigeLizenz(await f.text()); });
+  if ($('fr-merken')) {
+    $('fr-merken').addEventListener('click', () => { if (frWert) { merke('Widerspruch einlegen', frWert, 'eigen'); $('fr-merken-msg').textContent = 'In deine Fristen übernommen.'; } });
+    $('er-merken').addEventListener('click', () => { if (erWert) { merke(erWert.titel, erWert.datum, 'eigen'); $('fr-merken-msg').textContent = 'In deine Fristen übernommen.'; } });
+  }
+  if ($('li-demo')) {
+    $('li-demo').addEventListener('click', () => zeigeLizenz(DEMO_LIZENZ));
+    $('li-datei').addEventListener('change', async (e) => { const f = e.target.files && e.target.files[0]; if (f) zeigeLizenz(await f.text()); });
+  }
 })();

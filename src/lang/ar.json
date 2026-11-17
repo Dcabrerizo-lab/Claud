@@ -1036,5 +1036,9 @@
   "fristen.bis": "حتى {datum}",
   "fristen.erledigt": "تم",
   "fristen.fehlt": "يرجى إدخال نص وتاريخ.",
-  "fristen.gespeichert": "تم حفظ الموعد."
+  "fristen.gespeichert": "تم حفظ الموعد.",
+  "briefe.zurueck": "→ رسالة أخرى",
+  "briefe.nurDeutsch": "هذا الفحص متاح حاليًا باللغة الألمانية فقط. الترجمات ستأتي لاحقًا.",
+  "briefe.hinweis": "كل شيء يُحسب على هذا الجهاز فقط. ليست استشارة قانونية: يرجى التحقق من كل سبب بنفسك وسؤال مركز استشارة عند الشك.",
+  "fristen.rechner": "حساب الموعد"
 }

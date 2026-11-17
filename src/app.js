@@ -1552,11 +1552,22 @@
     if (!bk.children.length) BRIEFE.forEach(function (x) {
       var k = document.createElement('button'); k.type = 'button'; k.className = 'kachel'; k.id = 'brief-' + x[0];
       k.innerHTML = '<span class="kachel-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + x[3] + '</svg></span><b></b><span class="k-t"></span>';
-      k.addEventListener('click', function () { if (window.Pruefpaket) window.Pruefpaket.oeffne(x[0]); });
+      k.addEventListener('click', function () { briefOeffnen(x[0]); });
       bk.appendChild(k);
     });
     BRIEFE.forEach(function (x) { var k = $('brief-' + x[0]); k.querySelector('b').textContent = t(x[1]); k.querySelector('.k-t').textContent = t(x[2]); });
   }
+  // Brief prüfen: Kachel öffnet den passenden Teil des Prüfpakets (Abschnitte aus erweiterungen/vorschau.html)
+  var BRIEF_TEIL = { jc: 'p-bescheid', sa: 'p-gsa', wg: 'p-wg', fk: 'p-kiz', pk: 'p-pflege', vm: 'p-nk' };
+  function briefOeffnen(art) {
+    var teil = BRIEF_TEIL[art];
+    document.querySelectorAll('#checkBox .pp-teil').forEach(function (s) { s.hidden = s.id !== teil; });
+    $('briefKacheln').hidden = !!teil; $('briefeIntro').hidden = !!teil; $('checkBox').hidden = !teil;
+    $('ppNurDe').hidden = lang === 'de';
+    window.scrollTo(0, 0);
+    var h = teil && $(teil).querySelector('h2'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
+  }
+  $('briefZurueck').addEventListener('click', function () { var war = null; document.querySelectorAll('#checkBox .pp-teil').forEach(function (s) { if (!s.hidden) war = s.id; }); briefOeffnen(null); for (var k in BRIEF_TEIL) if (BRIEF_TEIL[k] === war) $('brief-' + k).focus(); });
   // Frist aus anderen Teilen der App eintragen (Prüfpaket): gleiche Frist nicht doppelt
   function fristEintragen(f) {
     if (!f || !f.titel || !/^\d{4}-\d{2}-\d{2}$/.test(f.datum || '')) return;
@@ -1564,7 +1575,11 @@
     fristen.push({ titel: String(f.titel).slice(0, 140), datum: f.datum, quelle: f.quelle || '' }); fristSpeichern(); bereicheText();
   }
   window.SoLoFristen = { eintragen: fristEintragen };
-  document.querySelectorAll('#appnav button').forEach(function (b) { b.addEventListener('click', function () { zeigeAnsicht(b.getAttribute('data-ansicht'), true); }); });
+  document.querySelectorAll('#appnav button').forEach(function (b) { b.addEventListener('click', function () {
+    var a = b.getAttribute('data-ansicht');
+    if (a === 'briefe' && aktAnsicht === 'briefe' && !$('checkBox').hidden) { briefOeffnen(null); $('h-briefe') && $('h-briefe').focus(); return; } // nochmal tippen: zurück zur Auswahl
+    zeigeAnsicht(a, true);
+  }); });
   $('goLeistungen').addEventListener('click', function () { zeigeAnsicht('leistungen', true); });
   $('goBriefe').addEventListener('click', function () { zeigeAnsicht('briefe', true); });
   $('fristAdd').addEventListener('click', function () {

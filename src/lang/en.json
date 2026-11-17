@@ -1036,5 +1036,9 @@
   "fristen.bis": "by {datum}",
   "fristen.erledigt": "Done",
   "fristen.fehlt": "Please enter a text and a date.",
-  "fristen.gespeichert": "Deadline saved."
+  "fristen.gespeichert": "Deadline saved.",
+  "briefe.zurueck": "← Other letter",
+  "briefe.nurDeutsch": "This check is currently only available in German. Translations will follow.",
+  "briefe.hinweis": "Everything is calculated on this device only. No legal advice: please check every reason yourself and ask an advice centre if in doubt.",
+  "fristen.rechner": "Calculate a deadline"
 }

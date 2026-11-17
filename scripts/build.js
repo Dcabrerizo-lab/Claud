@@ -34,8 +34,53 @@ function jsonData(name) {
   return fs.existsSync(f) ? JSON.stringify(JSON.parse(fs.readFileSync(f, 'utf8'))) : 'null';
 }
 
+// Prüfpaket (Brief prüfen): Abschnitte, Stile und Bausteine aus erweiterungen/ – eine Quelle für App und Vorschau.
+// Die Abschnitte stehen in erweiterungen/vorschau.html; die Stile werden auf .pp beschränkt, damit sie die App nicht verändern.
+const ERW = (f) => fs.readFileSync(path.join(ROOT, 'erweiterungen', f), 'utf8');
+const PP_ABSCHNITTE = ['p-pflege', 'p-bescheid', 'p-gsa', 'p-wg', 'p-kiz', 'p-nk'];
+function ppAbschnitt(html, id) {
+  const a = html.indexOf('<section id="' + id + '"');
+  if (a < 0) throw new Error('Prüfpaket: Abschnitt fehlt: ' + id);
+  const e = html.indexOf('</section>', a);
+  return html.slice(a, e + 10).replace(/ role="tabpanel" aria-labelledby="[^"]*"/, '').replace(/^(<section id="[^"]*")( hidden)?/, '$1 class="pp-teil" hidden');
+}
+// Einfacher Stil-Umschreiber: jede Regel bekommt .pp davor; Seitenregeln (:root, body, *, .wrap, Reiter) entfallen, die App hat eigene
+function ppStile(css) {
+  css = css.replace(/\/\*[\s\S]*?\*\//g, '');
+  const raus = /^(:root|body|\*|\.wrap|h1|nav\b|nav\[|:focus-visible)/;
+  const regel = (sel, body) => {
+    const teile = sel.split(',').map((x) => x.trim()).filter((x) => x && !raus.test(x));
+    return teile.length ? teile.map((x) => '.pp ' + x.replace(/^nav button, /, '')).join(', ') + ' {' + body + '}' : '';
+  };
+  let out = '', i = 0;
+  while (i < css.length) {
+    const auf = css.indexOf('{', i); if (auf < 0) break;
+    const kopf = css.slice(i, auf).trim();
+    if (kopf.startsWith('@media')) {
+      let tiefe = 1, j = auf + 1; while (tiefe && j < css.length) { if (css[j] === '{') tiefe++; else if (css[j] === '}') tiefe--; j++; }
+      const innen = css.slice(auf + 1, j - 1);
+      if (!/prefers-color-scheme/.test(kopf)) { const r = ppStile(innen); if (r.trim()) out += kopf + ' {\n' + r + '}\n'; }
+      i = j; continue;
+    }
+    const zu = css.indexOf('}', auf);
+    const r = regel(kopf, css.slice(auf + 1, zu)); if (r) out += '  ' + r + '\n';
+    i = zu + 1;
+  }
+  return out;
+}
+function pruefpaket() {
+  const html = ERW('vorschau.html');
+  const stil = html.match(/<style>([\s\S]*?)<\/style>/);
+  if (!stil) throw new Error('Prüfpaket: Stile fehlen in vorschau.html');
+  const teile = PP_ABSCHNITTE.map((id) => ppAbschnitt(html, id)).join('\n');
+  const fristen = ppAbschnitt(html, 'p-fristen').replace(' hidden', '');
+  const js = ['pflege.js', 'pflege-import.js', 'bescheid-sgb2.js', 'bescheid-gsa.js', 'bescheid-wg.js', 'bescheid-kiz.js', 'fristen.js', 'widerspruch.js', 'nebenkosten.js', 'vorschau.js'].map(ERW).join('\n');
+  return { teile, fristen, css: ppStile(stil[1]), js };
+}
+
 // opts.native: Store-App (Android/iOS) statt Web
 function render(opts = {}) {
+  const pp = pruefpaket();
   const parts = { rules: read('rules.js'), i18n: i18nSource(), fmt: read('fmt.js'), plz: read('plz.js'), behoerden: read('behoerden.js'), formulare: read('formulare.js'), app: read('app.js') };
   if (opts.native) {
     if (!parts.app.includes('/*NATIVE*/ false')) throw new Error('Marker /*NATIVE*/ fehlt in src/app.js');
@@ -50,8 +95,12 @@ function render(opts = {}) {
     .replace('/*BEHOERDEN*/\n', () => parts.behoerden)
     .replace('/*BEHOERDENDATA*/null', () => (opts.plz === false ? 'null' : behoerdenData()))
     .replace('/*FORMULARE*/\n', () => parts.formulare)
+    .replace('<!--PRUEFPAKET-->', () => pp.teile)
+    .replace('<!--PRUEFFRISTEN-->', () => pp.fristen)
+    .replace('/*PPSTIL*/\n', () => pp.css)
+    .replace('/*PRUEFPAKET*/\n', () => pp.js)
     .replace('/*APP*/\n', () => parts.app.replace("'/*VERSION*/'", () => JSON.stringify(require(path.join(ROOT, 'package.json')).version)));
-  const left = html.match(/\/\*(RULES|I18N|FMT|PLZ|PLZDATA|BEHOERDEN|BEHOERDENDATA|FORMULARE|APP)\*\//);
+  const left = html.match(/\/\*(RULES|I18N|FMT|PLZ|PLZDATA|BEHOERDEN|BEHOERDENDATA|FORMULARE|APP|PPSTIL|PRUEFPAKET)\*\/|<!--PRUEF(PAKET|FRISTEN)-->/);
   if (left) throw new Error('Platzhalter nicht ersetzt: ' + left[0]);
   return { html, i18n: parts.i18n };
 }

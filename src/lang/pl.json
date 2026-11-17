@@ -1036,5 +1036,9 @@
   "fristen.bis": "do {datum}",
   "fristen.erledigt": "Załatwione",
   "fristen.fehlt": "Wpisz tekst i datę.",
-  "fristen.gespeichert": "Termin zapisany."
+  "fristen.gespeichert": "Termin zapisany.",
+  "briefe.zurueck": "← Inne pismo",
+  "briefe.nurDeutsch": "Ta kontrola jest na razie dostępna tylko po niemiecku. Tłumaczenia wkrótce.",
+  "briefe.hinweis": "Wszystko jest liczone tylko na tym urządzeniu. To nie jest porada prawna: sprawdź każde uzasadnienie samodzielnie, a w razie wątpliwości zapytaj w poradni.",
+  "fristen.rechner": "Oblicz termin"
 }
