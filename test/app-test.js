@@ -67,6 +67,14 @@ const MOCK = () => {
   await p.goto(origin + '/index.html');
   await p.waitForTimeout(400);
   ok('Keine Skriptfehler beim Start', errs.length === 0, errs.join('|'));
+  ok('Start: Startseite mit den vier Bereichen', await p.isVisible('#v-start') && (await p.locator('#appnav button').count()) === 4);
+  // Fristen über den nativen Speicher (Preferences), Prüfpaket läuft unter der CSP der App
+  await p.click('#appnav [data-ansicht=briefe]'); await p.click('#brief-jc'); await p.click('#p-bescheid >> text=Beispiel laden');
+  ok('Brief prüfen rechnet in der App', ((await p.textContent('#p-bescheid')) || '').includes('€'));
+  await p.click('#appnav [data-ansicht=fristen]'); await p.click('#fristNeu summary'); await p.fill('#fristTitel', 'Test'); await p.fill('#fristDatum', '2099-01-01'); await p.click('#fristAdd');
+  ok('Fristen werden über Preferences gespeichert', (await calls('Preferences.set')).some((c) => c.key === 'lotse.fristen' && c.value.includes('Test')));
+  await p.click('#fristListe .frist button');
+  await p.click('#appnav [data-ansicht=leistungen]');
   ok('Gespeicherte Daten werden über Preferences gelesen', (await calls('Preferences.get')).length > 0);
   ok('Erster Start: Anleitung statt Beispielwerte', (await p.locator('#cards .startcard').count()) === 1 && (await p.inputValue('#ek1Brutto')) === '');
   await p.click('#p1');
@@ -175,7 +183,7 @@ const MOCK = () => {
   ok('Android: Anbieter im Impressum David Cabrerizo', (await anbieter()) === 'David Cabrerizo', await anbieter());
   const ctxI = await b.newContext({ viewport: { width: 390, height: 844 }, locale: 'de-DE', serviceWorkers: 'block' });
   await ctxI.addInitScript(() => { window.__platform = 'ios'; }); await ctxI.addInitScript(MOCK);
-  const pi = await ctxI.newPage(); await pi.goto(origin + '/index.html'); await pi.waitForTimeout(400);
+  const pi = await ctxI.newPage(); await pi.goto(origin + '/index.html#leistungen'); await pi.waitForTimeout(400);
   const legalI = await pi.evaluate(() => document.getElementById('legal').textContent);
   ok('iPhone: Anbieter im Impressum Natascha Cabrerizo y Polo, nicht David', /Anbieter: Natascha Cabrerizo y Polo/.test(legalI.replace(/\s+/g, ' ')) && !/David/.test(legalI), legalI.slice(0, 200));
   await pi.click('#p1'); await pi.fill('#p-name', 'Test'); await pi.evaluate(() => document.getElementById('mappeMake').click()); await pi.waitForTimeout(300);
