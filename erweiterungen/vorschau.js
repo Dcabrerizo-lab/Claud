@@ -157,16 +157,26 @@
     zeile.dataset.id = wahl.value;
     liste.append(zeile);
   }
+  const pfArt = () => ($('pf-art-h').checked ? 'hoeher' : 'widerspruch');
+  function zeigePfArt() {
+    const hoch = pfArt() === 'hoeher';
+    $('pf-art-text').textContent = hoch ? 'Wähle die Bewertungen, bei denen es seit der letzten Begutachtung schlimmer geworden ist, und beschreibe, was sich verändert hat und seit wann.' : 'Wähle die Bewertungen, die im Gutachten zu niedrig sind, und beschreibe in eigenen Worten, wie es im Alltag wirklich ist. Nur was stimmt, gehört hinein.';
+    $('pf-datum-label').textContent = hoch ? 'Datum der letzten Begutachtung' : 'Datum des Bescheids';
+  }
   function machePflegeWiderspruch() {
-    const g = lesePflege(), r = P.rechne(g);
+    const g = lesePflege(), r = P.rechne(g), hoch = pfArt() === 'hoeher';
     const auswahl = [...$('pf-wid-liste').children].map((z) => { const sel = z.querySelectorAll('select'); const id = sel[0].value; return { id, stufeIst: +(g.stufen[id] || 0), stufeSoll: +sel[1].value, alltag: z.querySelector('textarea').value }; }).filter((x) => x.stufeSoll > x.stufeIst);
     const neu = Object.assign({}, g, { stufen: Object.assign({}, g.stufen) }); auswahl.forEach((x) => { neu.stufen[x.id] = x.stufeSoll; });
-    const ziel = P.rechne(neu).pg;
-    const t = Widerspruch.text({ art: 'pflege', absender: { name: $('pf-name').value.trim(), strasse: $('pf-anschrift').value.trim(), ort: $('pf-ort').value.trim() }, stelle: { name: $('pf-kasse').value.trim() }, bescheidDatum: $('pf-datum').value, zeichen: $('pf-vnr').value.trim(), heute: heute(),
-      pflege: { pgBescheid: r.bescheid ? r.bescheid.pg : r.pg, pgZiel: ziel > (r.bescheid ? r.bescheid.pg : r.pg) ? ziel : null }, punkte: Widerspruch.punktePflege(auswahl, P), akteneinsicht: true });
+    const ziel = P.rechne(neu).pg, ist = r.bescheid ? r.bescheid.pg : r.pg;
+    const absender = { name: $('pf-name').value.trim(), strasse: $('pf-anschrift').value.trim(), ort: $('pf-ort').value.trim() }, stelle = { name: $('pf-kasse').value.trim() };
+    const t = hoch
+      ? Widerspruch.hoeherstufung({ absender, stelle, zeichen: $('pf-vnr').value.trim(), heute: heute(), pgJetzt: ist, seit: $('pf-datum').value, punkte: Widerspruch.punkteHoeher(auswahl, P), arzt: true })
+      : Widerspruch.text({ art: 'pflege', absender, stelle, bescheidDatum: $('pf-datum').value, zeichen: $('pf-vnr').value.trim(), heute: heute(), pflege: { pgBescheid: ist, pgZiel: ziel > ist ? ziel : null }, punkte: Widerspruch.punktePflege(auswahl, P), akteneinsicht: true });
     $('pf-wid-text').value = t; $('pf-wid-text').hidden = false; $('pf-wid-copy').hidden = false;
-    $('pf-frist').textContent = $('pf-datum').value ? fristText($('pf-datum').value) : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.';
-    if (!auswahl.length) $('pf-frist').textContent = 'Noch kein Kriterium mit höherer Bewertung gewählt. ' + $('pf-frist').textContent;
+    let info = hoch ? 'Keine Frist. Mehr Geld gibt es ab dem Monat, in dem der Antrag bei der Pflegekasse eingeht. Deshalb bald abschicken.' : $('pf-datum').value ? fristText($('pf-datum').value) : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.';
+    if (auswahl.length && ziel > ist) info = `Mit diesen Änderungen ergäbe sich Pflegegrad ${ziel}. ` + info;
+    if (!auswahl.length) info = 'Noch keine Bewertung mit höherer Stufe gewählt. ' + info;
+    $('pf-frist').textContent = info;
   }
   function fristText(datum) { const f = Fristen.widerspruch({ datum }); return `Frist: Der Widerspruch muss spätestens am ${de(f.fristende)} bei der Stelle sein (frühester möglicher Tag).`; }
 
@@ -205,7 +215,7 @@ Ergebnis: Pflegegrad 2`;
       h('td', { text: rolle === 'erw' ? 'Erwachsen' : 'Kind' }),
       h('td', {}, h('input', { type: 'number', min: '0', max: '99', id: `bp-alter-${n}`, 'aria-label': `Person ${n}: Alter`, value: werte.alter != null ? werte.alter : '' })),
       ...['brutto', 'netto', 'sonstiges'].map((f) => h('td', {}, h('input', { type: 'number', min: '0', step: '0.01', inputmode: 'decimal', id: `bp-${f}-${n}`, 'aria-label': `Person ${n}: ${f === 'sonstiges' ? 'anderes Einkommen (z. B. Unterhalt, Rente)' : 'Lohn ' + f}`, value: werte[f] || '' }))),
-      h('td', {}, h('input', { type: 'checkbox', id: `bp-schw-${n}`, 'aria-label': `Person ${n}: schwanger ab der 13. Woche`, checked: !!werte.schwanger })),
+      h('td', {}, h('label', { class: 'check' }, h('input', { type: 'checkbox', id: `bp-schw-${n}`, 'aria-label': `Person ${n}: schwanger ab der 13. Woche`, checked: !!werte.schwanger }))),
       h('td', {}, h('button', { type: 'button', class: 'btn', 'aria-label': `Person ${n} entfernen`, onclick: () => { tr.remove(); zeigeBescheid(); } }, '×')));
     $('bs-personen').append(tr);
   }
@@ -273,6 +283,7 @@ Ergebnis: Pflegegrad 2`;
   $('pf-leeren').addEventListener('click', () => { $('pf-form').reset(); $('pf-form2').reset(); $('pf-text').value = ''; $('pf-msg').textContent = ''; for (const el of document.querySelectorAll('#pf-module input')) { if (el.type === 'checkbox') el.checked = false; else el.value = ''; } zeigePflege(); });
   $('pf-wid-plus').addEventListener('click', () => fuegeWiderspruchHinzu(null, null));
   $('pf-wid-mach').addEventListener('click', machePflegeWiderspruch);
+  for (const id of ['pf-art-w', 'pf-art-h']) $(id).addEventListener('change', zeigePfArt);
   $('pf-wid-copy').addEventListener('click', () => kopiere($('pf-wid-text'), $('pf-copy-msg')));
   zeigePflege();
 

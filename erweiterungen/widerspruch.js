@@ -52,6 +52,46 @@ const Widerspruch = (function () {
     return z.join('\n');
   }
 
+  // Antrag auf Höherstufung (Neufeststellung des Pflegegrades), wenn sich der Zustand seit der letzten Begutachtung verschlechtert hat.
+  // Jederzeit möglich, keine Frist; höhere Leistungen ab dem Monat des Antrags (§ 33 Abs. 1 SGB XI, § 48 SGB X).
+  // w = { absender, stelle, zeichen, heute, pgJetzt, seit (Datum der letzten Begutachtung), punkte: [string], arzt: bool }
+  function hoeherstufung(w) {
+    const a = w.absender || {}, s = w.stelle || {};
+    const z = [];
+    z.push([a.name, a.strasse, a.ort].filter(Boolean).join('\n') || '[Name, Anschrift]');
+    z.push('');
+    z.push([s.name, s.strasse, s.ort].filter(Boolean).join('\n') || '[Pflegekasse, Anschrift]');
+    z.push('');
+    z.push(`${a.ort ? a.ort.replace(/^\d{5}\s*/, '') + ', ' : ''}${de(w.heute)}`);
+    z.push('');
+    z.push('Antrag auf Höherstufung des Pflegegrades');
+    if (w.zeichen) z.push(`Versichertennummer: ${w.zeichen}`);
+    z.push('');
+    z.push('Sehr geehrte Damen und Herren,');
+    z.push('');
+    z.push(`derzeit ist Pflegegrad ${w.pgJetzt != null && w.pgJetzt !== '' ? w.pgJetzt : '…'} festgestellt${w.seit ? ` (Begutachtung vom ${de(w.seit)})` : ''}. Seitdem hat sich der Gesundheitszustand deutlich verschlechtert, der Hilfebedarf ist gestiegen. Ich beantrage deshalb die erneute Begutachtung und die Feststellung eines höheren Pflegegrades.`);
+    z.push('');
+    z.push('Folgendes hat sich verändert:');
+    z.push('');
+    (w.punkte || []).forEach((p, i) => { z.push(`${i + 1}. ${p}`); z.push(''); });
+    if (w.arzt) { z.push('Ärztliche Unterlagen zu den Veränderungen füge ich bei bzw. reiche ich nach.'); z.push(''); }
+    z.push('Ich bitte um eine Begutachtung im häuslichen Umfeld und in Anwesenheit der Pflegeperson. Bitte bestätigen Sie mir den Eingang dieses Antrags.');
+    z.push('');
+    z.push('Mit freundlichen Grüßen');
+    z.push('');
+    z.push('');
+    z.push('________________________________');
+    z.push(a.name || '[Unterschrift]');
+    return z.join('\n');
+  }
+  // Punkte für den Höherstufungsantrag: was sich verändert hat (gleiche Auswahl wie beim Widerspruch, andere Formulierung)
+  function punkteHoeher(auswahl, Pflege) {
+    return auswahl.map((x) => {
+      const k = Pflege.kriterium(x.id), sk = Pflege.SKALA[k.s].stufen;
+      return `${k.id} ${k.name}: bei der letzten Begutachtung „${sk[x.stufeIst]}“, heute „${sk[x.stufeSoll]}“. ${x.alltag ? x.alltag.trim() : '[Bitte beschreiben, was sich verändert hat und seit wann.]'}`;
+    });
+  }
+
   // Begründungs-Punkte aus dem Bescheid-Check
   function punkteSGB2(res) {
     return res.gruende.map((p) => `${p.name} (${p.recht}): ${p.grund}`);
@@ -65,6 +105,6 @@ const Widerspruch = (function () {
     });
   }
 
-  return { text, punkteSGB2, punktePflege };
+  return { text, hoeherstufung, punkteSGB2, punktePflege, punkteHoeher };
 })();
 if (typeof module !== 'undefined') module.exports = Widerspruch;

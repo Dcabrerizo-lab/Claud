@@ -87,6 +87,15 @@ const tp = W.text({ art: 'pflege', pflege: { pgBescheid: 2, pgZiel: 3 }, punkte:
 ok('Widerspruch Pflege: Ziel-Pflegegrad', /Pflegegrad 3/.test(tp) && /Duschen und Baden/.test(tp) && /„überwiegend selbständig“, tatsächlich „unselbständig“/.test(tp));
 ok('Widerspruch Pflege: ohne Alltagsbeschreibung Platzhalter', /\[Bitte beschreiben/.test(W.punktePflege([{ id: '1.5', stufeIst: 0, stufeSoll: 2 }], P)[0]));
 
+const hs = W.hoeherstufung({ absender: { name: 'Erika Muster', ort: '90542 Eckental' }, stelle: { name: 'AOK Bayern' }, pgJetzt: 2, seit: '2025-03-10', heute: '2026-11-17', zeichen: 'A123', arzt: true,
+  punkte: W.punkteHoeher([{ id: '1.5', stufeIst: 1, stufeSoll: 3, alltag: 'Seit dem Sturz im Juli kann sie keine Treppe mehr gehen.' }], P) });
+ok('Höherstufung: Betreff', /\nAntrag auf Höherstufung des Pflegegrades\n/.test(hs));
+ok('Höherstufung: jetziger Grad und Datum der Begutachtung', /Pflegegrad 2 festgestellt \(Begutachtung vom 10\.03\.2025\)/.test(hs));
+ok('Höherstufung: Veränderung mit vorher/heute', /bei der letzten Begutachtung „überwiegend selbständig“, heute „unselbständig“\. Seit dem Sturz/.test(hs));
+ok('Höherstufung: kein Wort „Widerspruch“', !/Widerspruch/.test(hs));
+ok('Höherstufung: ärztliche Unterlagen, Hausbesuch, Unterschrift', /Ärztliche Unterlagen/.test(hs) && /häuslichen Umfeld/.test(hs) && /Erika Muster$/.test(hs));
+ok('Höherstufung ohne Beschreibung: Platzhalter', /\[Bitte beschreiben, was sich verändert hat/.test(W.punkteHoeher([{ id: '4.4', stufeIst: 0, stufeSoll: 2 }], P)[0]));
+
 // 6. Gutachten-Text lesen (wie aus Texterkennung: Zeilenumbrüche, Trennungen, Kurzformen)
 const gut = `Modul 1: Mobilität
 1.1 Positionswechsel im Bett selbständig

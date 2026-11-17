@@ -101,8 +101,12 @@
       <div id="pf-module"></div>
     </form>
     <div class="card" id="pf-wid">
-      <h2>Widerspruch vorbereiten</h2>
-      <p>Wähle die Kriterien, die im Gutachten zu niedrig bewertet sind, und beschreibe in eigenen Worten, wie es im Alltag wirklich ist. Nur was stimmt, gehört in den Widerspruch.</p>
+      <h2>Widerspruch oder Höherstufung</h2>
+      <fieldset><legend>Was passt?</legend>
+        <label class="check"><input type="radio" name="pf-art" id="pf-art-w" value="widerspruch" checked> <span><strong>Widerspruch:</strong> Das Gutachten war schon damals falsch. Frist: ein Monat nach dem Bescheid.</span></label>
+        <label class="check"><input type="radio" name="pf-art" id="pf-art-h" value="hoeher"> <span><strong>Höherstufung:</strong> Damals stimmte es, aber seitdem ist es schlimmer geworden. Jederzeit möglich, mehr Geld ab dem Monat des Antrags.</span></label>
+      </fieldset>
+      <p id="pf-art-text">Wähle die Bewertungen, die im Gutachten zu niedrig sind, und beschreibe in eigenen Worten, wie es im Alltag wirklich ist. Nur was stimmt, gehört hinein.</p>
       <div id="pf-wid-liste"></div>
       <div class="btns"><button type="button" class="btn" id="pf-wid-plus">Kriterium hinzufügen</button></div>
       <div class="grid2">
@@ -111,11 +115,11 @@
         <div><label for="pf-ort">PLZ und Ort</label><input type="text" id="pf-ort"></div>
         <div><label for="pf-kasse">Pflegekasse</label><input type="text" id="pf-kasse"></div>
         <div><label for="pf-vnr">Versichertennummer</label><input type="text" id="pf-vnr"></div>
-        <div><label for="pf-datum">Datum des Bescheids</label><input type="date" id="pf-datum"></div>
+        <div><label for="pf-datum" id="pf-datum-label">Datum des Bescheids</label><input type="date" id="pf-datum"></div>
       </div>
-      <div class="btns"><button type="button" class="btn primary" id="pf-wid-mach">Widerspruch erstellen</button></div>
+      <div class="btns"><button type="button" class="btn primary" id="pf-wid-mach">Schreiben erstellen</button></div>
       <p class="small" id="pf-frist" role="status"></p>
-      <label for="pf-wid-text" class="vh">Text des Widerspruchs</label>
+      <label for="pf-wid-text" class="vh">Text des Schreibens</label>
       <textarea id="pf-wid-text" rows="18" readonly hidden></textarea>
       <div class="btns"><button type="button" class="btn" id="pf-wid-copy" hidden>Text kopieren</button></div>
       <p class="small" id="pf-copy-msg" role="status"></p>

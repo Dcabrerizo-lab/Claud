@@ -22,7 +22,7 @@ const ok = (name, c, info) => { n++; console.log((c ? 'ok   ' : 'FEHLER ') + nam
       await p.addScriptTag({ path: axePfad });
       const v = await p.evaluate(async () => (await axe.run(document, { runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice'] } })).violations.map((x) => x.id + ' x' + x.nodes.length + ' ' + x.nodes.slice(0, 2).map((y) => y.target.join(' ')).join(' ; ')));
       ok(`${schema}: axe ${name}`, v.length === 0, v);
-      const klein = await p.evaluate(() => [...document.querySelectorAll('button, select, input:not([type=checkbox]), summary, textarea')].filter((el) => { const r = el.getBoundingClientRect(); return r.width && r.height && !el.closest('[hidden]') && r.height < 43.5; }).map((el) => el.id || el.tagName));
+      const klein = await p.evaluate(() => [...document.querySelectorAll('button, select, input, summary, textarea')].filter((el) => { const t = (el.type === 'checkbox' || el.type === 'radio') && el.closest('label') ? el.closest('label') : el; const r = t.getBoundingClientRect(); return r.width && r.height && !el.closest('[hidden]') && r.height < 43.5; }).map((el) => el.id || el.tagName));
       ok(`${schema}: Tippflächen ${name} mind. 44 px`, klein.length === 0, klein.slice(0, 5));
       const breit = await p.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth);
       ok(`${schema}: ${name} ohne seitliches Scrollen`, breit);
@@ -62,6 +62,13 @@ const ok = (name, c, info) => { n++; console.log((c ? 'ok   ' : 'FEHLER ') + nam
     ok(`${schema}: Pflege-Widerspruch erstellt`, /Widerspruch gegen den Bescheid über die Feststellung des Pflegegrades vom 16\.11\.2026/.test(wt));
     ok(`${schema}: eingeschleuster Code nur als Text`, wt.includes('<img src=x') && !(await p.evaluate(() => window.__x)));
     ok(`${schema}: Frist angezeigt`, /21\.12\.2026/.test(await p.textContent('#pf-frist')));
+    await p.check('#pf-art-h');
+    ok(`${schema}: Höherstufung: Datumsfeld heißt jetzt letzte Begutachtung`, /letzten Begutachtung/.test(await p.textContent('#pf-datum-label')));
+    await p.click('#pf-wid-mach');
+    const ht = await p.inputValue('#pf-wid-text');
+    ok(`${schema}: Höherstufungsantrag erstellt`, /Antrag auf Höherstufung des Pflegegrades/.test(ht) && !/Widerspruch/.test(ht));
+    ok(`${schema}: Höherstufung: Hinweis keine Frist`, /Keine Frist/.test(await p.textContent('#pf-frist')));
+    await p.check('#pf-art-w');
     // Bescheid
     await p.click('#tab-bescheid');
     ok(`${schema}: Reiter wechselt`, await p.isVisible('#p-bescheid') && !(await p.isVisible('#p-pflege')));
