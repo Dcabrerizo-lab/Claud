@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SoLo Aufbau-Entwurf</title>
+<style>
+  /* Entwurf des neuen Aufbaus: gleiche Farben wie SoLo (src/template.html), Handy zuerst; auf dem PC als Handyrahmen in der Mitte */
+  :root {
+    --bg: #eef2f6; --surface: #ffffff; --ink: #13202b; --muted: #54677a; --line: #d3dce5;
+    --accent: #2b4a9b; --accent-ink: #ffffff; --accent-soft: #e6ecf8;
+    --ok: #17643f; --ok-bg: #e2f3ea; --warn: #7a5200; --warn-bg: #fbefcf; --bad: #a1301f; --bad-bg: #fbe5e1;
+    --focus: #1d6fe0; --r: 16px; --shadow: 0 1px 2px rgba(19,32,43,.06), 0 4px 14px rgba(19,32,43,.06);
+    --font: 'Atkinson Hyperlegible', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --font-h: 'Schibsted Grotesk', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --bg: #0e161d; --surface: #16212a; --ink: #e7eef4; --muted: #9bb0c0; --line: #2b3b48;
+    --accent: #9db8ff; --accent-ink: #0e161d; --accent-soft: #1d2b45;
+    --ok: #6fd9a2; --ok-bg: #12301f; --warn: #f2c862; --warn-bg: #35290b; --bad: #ff9a8a; --bad-bg: #3b1a15; --focus: #7db2ff;
+    --shadow: none; color-scheme: dark; } }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body { background: var(--bg); color: var(--ink); font: 1.0625rem/1.5 var(--font); }
+  button { font: inherit; color: inherit; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 8px; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* Handyrahmen nur auf breiten Bildschirmen */
+  .buehne { min-height: 100%; display: flex; justify-content: center; }
+  .handy { width: 100%; max-width: 430px; min-height: 100vh; background: var(--bg); position: relative; display: flex; flex-direction: column; }
+  @media (min-width: 700px) {
+    .buehne { padding: 28px 16px; gap: 32px; align-items: flex-start; }
+    .handy { min-height: 820px; height: 860px; border-radius: 36px; border: 10px solid #1b2733; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,.25); }
+    .notiz { display: block !important; }
+  }
+  .notiz { display: none; max-width: 340px; padding-top: 8px; color: var(--muted); font-size: .95rem; }
+  .notiz h2 { font: 700 1.15rem var(--font-h); color: var(--ink); margin: 0 0 8px; }
+  .notiz li { margin-bottom: 6px; }
+
+  /* Kopf */
+  .kopf { display: flex; align-items: center; gap: 8px; min-height: 56px; padding: calc(8px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 8px max(16px, env(safe-area-inset-left, 0px)); background: var(--bg); position: sticky; top: 0; z-index: 2; }
+  .kopf h1 { font: 700 1.15rem var(--font-h); margin: 0; flex: 1; min-width: 0; }
+  .zurueck { width: 44px; height: 44px; border: 0; background: transparent; border-radius: 12px; display: grid; place-items: center; cursor: pointer; margin-left: -10px; }
+  .logo { display: flex; align-items: center; gap: 10px; font: 800 1.35rem var(--font-h); }
+  .logo svg { width: 34px; height: 34px; }
+
+  .inhalt { flex: 1; overflow-y: auto; padding: 4px max(16px, env(safe-area-inset-right, 0px)) 24px max(16px, env(safe-area-inset-left, 0px)); }
+  .gruss { font: 700 1.6rem/1.2 var(--font-h); margin: 8px 0 4px; text-wrap: balance; }
+  .unter { color: var(--muted); margin: 0 0 18px; }
+  .abschnitt { font: 700 .82rem var(--font); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 22px 0 10px; }
+
+  /* Karten */
+  .karte { background: var(--surface); border-radius: var(--r); box-shadow: var(--shadow); border: 1px solid var(--line); padding: 16px; }
+  .gross { display: flex; gap: 14px; align-items: center; width: 100%; text-align: left; border: 1px solid var(--line); background: var(--surface); border-radius: var(--r); padding: 18px 16px; box-shadow: var(--shadow); cursor: pointer; min-height: 88px; }
+  .gross + .gross { margin-top: 12px; }
+  .gross .sym { width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; flex: none; background: var(--accent-soft); color: var(--accent); }
+  .gross .sym svg { width: 28px; height: 28px; }
+  .gross b { display: block; font: 700 1.1rem var(--font-h); }
+  .gross span.t { color: var(--muted); font-size: .95rem; }
+  .gross .pfeil { margin-left: auto; color: var(--muted); flex: none; }
+  .gross.haupt { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .gross.haupt .sym { background: rgba(255,255,255,.18); color: var(--accent-ink); }
+  .gross.haupt span.t, .gross.haupt .pfeil { color: var(--accent-ink); opacity: .9; }
+
+  .liste { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .kachel { border: 1px solid var(--line); background: var(--surface); border-radius: var(--r); padding: 16px 14px; text-align: left; cursor: pointer; box-shadow: var(--shadow); min-height: 118px; display: flex; flex-direction: column; gap: 8px; }
+  .kachel .sym { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); }
+  .kachel .sym svg { width: 24px; height: 24px; }
+  .kachel b { font: 700 1.02rem/1.25 var(--font-h); }
+  .kachel span { color: var(--muted); font-size: .88rem; line-height: 1.3; }
+
+  .frist { display: flex; gap: 12px; align-items: center; border-radius: var(--r); padding: 14px 16px; background: var(--warn-bg); color: var(--ink); border: 1px solid transparent; width: 100%; text-align: left; cursor: pointer; }
+  .frist .tage { flex: none; width: 58px; height: 58px; border-radius: 14px; background: var(--surface); display: grid; place-items: center; text-align: center; line-height: 1.05; font: 800 1.35rem var(--font-h); color: var(--warn); }
+  .frist .tage small { display: block; font: 600 .7rem var(--font); color: var(--muted); }
+  .frist.ruhig { background: var(--surface); border-color: var(--line); }
+  .frist.ruhig .tage { background: var(--accent-soft); color: var(--accent); }
+  .frist + .frist { margin-top: 10px; }
+
+  /* Ablauf */
+  .schritte { display: flex; gap: 6px; margin: 4px 0 6px; }
+  .schritte i { flex: 1; height: 6px; border-radius: 99px; background: var(--line); }
+  .schritte i.an { background: var(--accent); }
+  .schritt-text { color: var(--muted); font-size: .9rem; margin: 0 0 14px; }
+  .frage { font: 700 1.4rem/1.25 var(--font-h); margin: 6px 0 8px; text-wrap: balance; }
+  .wahl { display: grid; gap: 10px; margin-top: 14px; }
+  .knopf { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 56px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); font-weight: 700; cursor: pointer; padding: 12px 16px; }
+  .knopf.haupt { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .knopf svg { width: 22px; height: 22px; flex: none; }
+  .wert { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 18px 16px; }
+  .wert b { font: 800 1.9rem var(--font-h); font-variant-numeric: tabular-nums; }
+  .uebernommen { display: flex; gap: 10px; align-items: center; padding: 12px 14px; border-radius: 12px; background: var(--ok-bg); color: var(--ok); font-size: .95rem; margin-bottom: 14px; }
+  .uebernommen button { margin-left: auto; border: 0; background: transparent; color: inherit; text-decoration: underline; cursor: pointer; min-height: 44px; }
+  .fuss { padding: 12px max(16px, env(safe-area-inset-right, 0px)) 14px max(16px, env(safe-area-inset-left, 0px)); display: grid; gap: 10px; background: var(--bg); border-top: 1px solid var(--line); }
+
+  /* Ergebnis */
+  .ergebnis-kopf { border-radius: var(--r); padding: 20px 18px; background: var(--bad-bg); color: var(--ink); }
+  .ergebnis-kopf .zahl { font: 800 2.1rem/1.1 var(--font-h); color: var(--bad); font-variant-numeric: tabular-nums; }
+  .punkt { display: flex; gap: 12px; padding: 14px 0; border-top: 1px solid var(--line); }
+  .punkt:first-child { border-top: 0; }
+  .ampel { flex: none; width: 30px; height: 30px; border-radius: 99px; display: grid; place-items: center; }
+  .ampel svg { width: 18px; height: 18px; }
+  .ampel.ok { background: var(--ok-bg); color: var(--ok); } .ampel.bad { background: var(--bad-bg); color: var(--bad); } .ampel.warn { background: var(--warn-bg); color: var(--warn); }
+  .punkt b { display: block; }
+  .punkt span { color: var(--muted); font-size: .93rem; }
+  .punkt .betrag { margin-left: auto; font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .hinweis { color: var(--muted); font-size: .88rem; margin: 14px 2px 0; }
+  .brief { font: .92rem/1.5 ui-monospace, 'SF Mono', Menlo, Consolas, monospace; white-space: pre-wrap; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px; max-height: 300px; overflow: auto; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 99px; background: var(--warn-bg); color: var(--warn); font-weight: 700; font-size: .9rem; }
+
+  /* Leiste unten */
+  .leiste { display: grid; grid-template-columns: repeat(4, 1fr); background: var(--surface); border-top: 1px solid var(--line); padding: 6px max(6px, env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) max(6px, env(safe-area-inset-left, 0px)); }
+  .leiste button { border: 0; background: transparent; display: flex; flex-direction: column; align-items: center; gap: 3px; min-height: 56px; padding: 6px 2px; border-radius: 12px; cursor: pointer; color: var(--muted); font-size: .76rem; font-weight: 700; position: relative; }
+  .leiste button svg { width: 24px; height: 24px; }
+  .leiste button[aria-current="page"] { color: var(--accent); }
+  .leiste button[aria-current="page"]::before { content: ""; position: absolute; top: 2px; width: 40px; height: 32px; border-radius: 99px; background: var(--accent-soft); z-index: -1; }
+  .leiste .punkt-rot { position: absolute; top: 6px; right: calc(50% - 18px); width: 9px; height: 9px; border-radius: 9px; background: var(--bad); }
+  .leiste button { isolation: isolate; }
+  .zeile { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 56px; border-top: 1px solid var(--line); padding: 4px 0; }
+  .zeile:first-child { border-top: 0; }
+  .zeile span { color: var(--muted); }
+  [hidden] { display: none !important; }
+  @media (prefers-reduced-motion: no-preference) { .ansicht { animation: rein .18s ease-out; } @keyframes rein { from { transform: translateY(6px); } } }
+</style>
+</head>
+<body>
+<div class="buehne">
+  <div class="handy" id="handy">
+    <header class="kopf" id="kopf"></header>
+    <main class="inhalt" id="inhalt" tabindex="-1"></main>
+    <div class="fuss" id="fuss" hidden></div>
+    <nav class="leiste" id="leiste" aria-label="Hauptbereiche"></nav>
+  </div>
+  <aside class="notiz" aria-label="Erklärung zum Entwurf">
+    <h2>So ist der Entwurf aufgebaut</h2>
+    <ul>
+      <li><strong>Vier Bereiche unten:</strong> Start, Leistungen (Was steht mir zu?), Brief prüfen, Fristen. Sprache, Leichte Sprache und Impressum unter „Mehr“ oben rechts.</li>
+      <li><strong>Start</strong> zeigt zuerst, was dringend ist (Fristen), dann die zwei Hauptwege.</li>
+      <li><strong>Brief prüfen</strong> fragt „Von wem ist der Brief?“ statt nach Gesetzen.</li>
+      <li><strong>Jeder Check hat dieselben 4 Schritte:</strong> Brief erfassen, Zahlen bestätigen, Ergebnis, Schreiben. Eine Frage pro Bildschirm.</li>
+      <li><strong>Ergebnis</strong> zuerst als ein Satz, dann die Punkte mit Ampel, dann ein Hauptknopf.</li>
+      <li>Nach dem Schreiben steht die <strong>Frist automatisch</strong> unter „Fristen“.</li>
+    </ul>
+    <p>Zum Ausprobieren: Start → „Brief prüfen“ → Jobcenter.</p>
+  </aside>
+</div>
+<script>
+(function () {
+  'use strict';
+  const $ = (id) => document.getElementById(id);
+  // Symbole (einfache Linien, gleiche Strichstärke)
+  const I = {
+    start: '<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>',
+    zusteht: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/><path d="M8.5 11l2 2 3.5-4"/>',
+    brief: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
+    frist: '<circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/>',
+    mehr: '<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>',
+    zurueck: '<path d="M15 5l-7 7 7 7"/>', pfeil: '<path d="M9 5l7 7-7 7"/>',
+    kamera: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
+    pdf: '<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 13h6M9 17h6"/>',
+    tippen: '<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10h.01M11 10h.01M15 10h.01M7 14h10"/>',
+    ok: '<path d="M5 12l5 5 9-10"/>', nein: '<path d="M12 7v6M12 17h.01"/>', warn: '<path d="M12 8v5M12 16.5h.01"/>',
+    jobcenter: '<path d="M4 20V9l8-5 8 5v11"/><path d="M9 20v-6h6v6M3 20h18"/>',
+    sozialamt: '<circle cx="12" cy="7" r="3"/><path d="M5 20c1-4 4-6 7-6s6 2 7 6"/>',
+    wohnung: '<path d="M4 11l8-6 8 6v9H4z"/><path d="M10 20v-5h4v5"/>',
+    familie: '<circle cx="8" cy="8" r="2.5"/><circle cx="16" cy="8" r="2.5"/><circle cx="12" cy="14" r="2"/><path d="M4 20c.5-3 2-5 4-5M20 20c-.5-3-2-5-4-5M9 20c.5-2 1.5-3 3-3s2.5 1 3 3"/>',
+    pflege: '<path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/>',
+    vermieter: '<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/>',
+    kopie: '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>',
+    teilen: '<path d="M12 3v12M7 8l5-5 5 5M5 14v6h14v-6"/>'
+  };
+  const svg = (n, w) => `<svg viewBox="0 0 24 24" width="${w || 24}" height="${w || 24}" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[n]}</svg>`;
+  const LOGO = '<svg viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="14" fill="#2b4a9b"/><circle cx="24" cy="24" r="13" fill="none" stroke="#fff" stroke-width="3.2"/><path d="M18.2 24.4l4 4 7.8-8.2" fill="none" stroke="#7fe0b0" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  // Zustand des Entwurfs (alles erfunden, nur zum Zeigen)
+  const S = { bereich: 'start', verlauf: [], fristen: [{ id: 'nk', titel: 'Nebenkosten: Einwände an den Vermieter', tage: 13, datum: '30.11.2026' }, { id: 'kiz', titel: 'Kinderzuschlag: neuen Antrag stellen', tage: 75, datum: '31.01.2027' }] };
+  const BEREICHE = [['start', 'Start', 'start'], ['zusteht', 'Was steht mir zu?', 'zusteht'], ['brief', 'Brief prüfen', 'brief'], ['fristen', 'Fristen', 'frist']];
+
+  function leiste() {
+    const nah = S.fristen.some((f) => f.tage <= 14);
+    $('leiste').innerHTML = BEREICHE.map(([id, name, sym]) => `<button type="button" data-ziel="${id}" ${S.bereich === id ? 'aria-current="page"' : ''}>${svg(sym)}<span>${name === 'Was steht mir zu?' ? 'Leistungen' : name}</span>${id === 'fristen' && nah ? '<i class="punkt-rot" aria-hidden="true"></i><span class="vh">(eine Frist läuft bald ab)</span>' : ''}</button>`).join('');
+    $('leiste').querySelectorAll('button').forEach((b) => b.addEventListener('click', () => { S.verlauf = []; zeige(b.dataset.ziel); }));
+  }
+  function kopf(titel, zurueck) {
+    $('kopf').innerHTML = zurueck
+      ? `<button type="button" class="zurueck" id="zur" aria-label="Zurück">${svg('zurueck')}</button><h1>${titel}</h1>`
+      : `<div class="logo">${LOGO}<span>SoLo</span></div><span style="flex:1"></span><button type="button" class="zurueck" id="mehrBtn" aria-label="Mehr: Sprache, Leichte Sprache, Impressum">${svg('mehr')}</button>`;
+    if (zurueck) $('zur').addEventListener('click', zurueckGehen);
+    else $('mehrBtn').addEventListener('click', () => { S.verlauf.push(S.bereich); zeige('mehr'); });
+  }
+  function fuss(html) { $('fuss').hidden = !html; $('fuss').innerHTML = html || ''; }
+  function zurueckGehen() { const z = S.verlauf.pop(); zeige(z || 'start', true); }
+  function geh(ziel) { S.verlauf.push(S.bereich); zeige(ziel); }
+
+  const fristKarte = (f) => `<button type="button" class="frist ${f.tage > 14 ? 'ruhig' : ''}" data-geh="fristen"><span class="tage">${f.tage}<small>Tage</small></span><span><b>${f.titel}</b><br><span style="color:var(--muted);font-size:.92rem">bis ${f.datum}</span></span></button>`;
+
+  const ANSICHTEN = {
+    start: () => {
+      kopf(); fuss();
+      const dringend = S.fristen.slice().sort((a, b) => a.tage - b.tage);
+      return `<p class="gruss">Guten Tag!</p><p class="unter">Was möchtest du heute tun?</p>
+        ${dringend.length ? `<h2 class="abschnitt">Als Nächstes</h2>${fristKarte(dringend[0])}` : ''}
+        <h2 class="abschnitt">Was möchtest du tun?</h2>
+        <button type="button" class="gross haupt" data-geh="zusteht"><span class="sym">${svg('zusteht')}</span><span><b>Was steht mir zu?</b><span class="t">Rund 30 Leistungen in wenigen Minuten prüfen</span></span><span class="pfeil">${svg('pfeil')}</span></button>
+        <button type="button" class="gross" data-geh="brief"><span class="sym">${svg('brief')}</span><span><b>Ich habe einen Brief bekommen</b><span class="t">Bescheid, Gutachten oder Abrechnung prüfen</span></span><span class="pfeil">${svg('pfeil')}</span></button>
+        <p class="hinweis">Alles bleibt auf deinem Handy. Nichts wird gesendet.</p>`;
+    },
+    zusteht: () => {
+      kopf(); fuss();
+      return `<p class="gruss">Was steht mir zu?</p><p class="unter">Der bekannte Leistungscheck von SoLo: Fragen beantworten, Ergebnis sehen, Antragsmappe erstellen.</p>
+        <div class="karte"><div class="zeile"><span>Deine Angaben</span><b>zuletzt geändert gestern</b></div><div class="zeile"><span>Ergebnis</span><b style="color:var(--ok)">6 wahrscheinlich · 3 möglich</b></div></div>
+        <div class="wahl"><button type="button" class="knopf haupt">Ergebnis ansehen</button><button type="button" class="knopf">Angaben ändern</button><button type="button" class="knopf">Antragsmappe erstellen</button></div>
+        <p class="hinweis">In diesem Entwurf nur angedeutet. Der Leistungscheck selbst bleibt wie in der heutigen App.</p>`;
+    },
+    brief: () => {
+      kopf(); fuss();
+      const A = [['jobcenter', 'Jobcenter', 'Grundsicherungsgeld'], ['sozialamt', 'Sozialamt', 'Grundsicherung im Alter'], ['wohnung', 'Wohngeldstelle', 'Wohngeld'], ['familie', 'Familienkasse', 'Kinderzuschlag'], ['pflege', 'Pflegekasse', 'Pflegegutachten'], ['vermieter', 'Vermieter', 'Nebenkostenabrechnung']];
+      return `<p class="gruss">Von wem ist der Brief?</p><p class="unter">Wähle den Absender. SoLo prüft dann, ob alles stimmt.</p>
+        <div class="liste">${A.map(([s, n, t]) => `<button type="button" class="kachel" data-geh="${s === 'jobcenter' ? 'jc1' : 'bald'}"><span class="sym">${svg(s)}</span><b>${n}</b><span>${t}</span></button>`).join('')}</div>
+        <p class="hinweis">Nicht dabei? Ein Foto vom Brief hilft: SoLo erkennt den Absender selbst.</p>`;
+    },
+    bald: () => { kopf('Brief prüfen', true); fuss(); return `<p class="frage">In diesem Entwurf ist der Weg über das Jobcenter ausgeführt.</p><p class="unter">Alle anderen Absender laufen genau gleich: vier Schritte, eine Frage pro Bildschirm.</p><div class="wahl"><button type="button" class="knopf haupt" data-geh="jc1">Jobcenter ansehen</button></div>`; },
+    jc1: () => {
+      kopf('Bescheid vom Jobcenter', true);
+      fuss('');
+      return `${schritte(1, 'Brief erfassen')}<p class="frage">Wie möchtest du den Bescheid einlesen?</p><p class="unter">Es reicht die Seite mit dem Berechnungsbogen.</p>
+        <div class="wahl"><button type="button" class="knopf haupt" data-geh="jc2">${svg('kamera')} Foto machen</button><button type="button" class="knopf" data-geh="jc2">${svg('pdf')} PDF öffnen</button><button type="button" class="knopf" data-geh="jc2">${svg('tippen')} Zahlen selbst eintippen</button></div>
+        <p class="hinweis">Das Foto bleibt auf deinem Handy und wird nach dem Lesen gelöscht.</p>`;
+    },
+    jc2: () => {
+      kopf('Bescheid vom Jobcenter', true);
+      fuss(`<button type="button" class="knopf haupt" data-geh="jc3">Stimmt, weiter</button><button type="button" class="knopf">Ändern</button>`);
+      return `${schritte(2, 'Zahlen bestätigen · 3 von 5')}
+        <div class="uebernommen">${svg('ok', 20)} Haushalt aus deinem Leistungscheck übernommen <button type="button">ändern</button></div>
+        <p class="frage">Ist dieser Betrag richtig erkannt?</p><p class="unter">Mehrbedarf für Alleinerziehende, laut Bescheid im Monat:</p>
+        <div class="karte wert"><span>Mehrbedarf</span><b>67,56 €</b></div>
+        <p class="hinweis">Vergleiche die Zahl mit deinem Bescheid. Erst danach rechnet SoLo.</p>`;
+    },
+    jc3: () => {
+      kopf('Ergebnis', true);
+      fuss(`<button type="button" class="knopf haupt" data-geh="jc4">Widerspruch erstellen</button>`);
+      return `${schritte(3, 'Ergebnis')}
+        <div class="ergebnis-kopf"><div>Vermutlich zu wenig</div><div class="zahl">163,12 € im Monat</div><div style="margin-top:6px">Widerspruch bis <strong>21.12.2026</strong> möglich.</div></div>
+        <div class="karte" style="margin-top:14px">
+          <div class="punkt"><span class="ampel bad">${svg('nein', 18)}</span><span><b>Mehrbedarf Alleinerziehende</b><span>36 % statt 12 %, weil ein Kind unter 7 ist</span></span><span class="betrag">+135,12 €</span></div>
+          <div class="punkt"><span class="ampel bad">${svg('nein', 18)}</span><span><b>Einkommen zu hoch angerechnet</b><span>Freibetrag für Arbeit fehlt teilweise</span></span><span class="betrag">+28,00 €</span></div>
+          <div class="punkt"><span class="ampel ok">${svg('ok', 18)}</span><span><b>Regelbedarf</b><span>stimmt</span></span></div>
+          <div class="punkt"><span class="ampel ok">${svg('ok', 18)}</span><span><b>Miete und Heizung</b><span>vollständig übernommen</span></span></div>
+        </div>
+        <p class="hinweis">Keine Rechtsberatung. Bitte jeden Punkt mit deinem Bescheid vergleichen.</p>`;
+    },
+    jc4: () => {
+      kopf('Widerspruch', true);
+      fuss(`<button type="button" class="knopf haupt" id="fertig">${svg('teilen')} Drucken oder teilen</button><button type="button" class="knopf">${svg('kopie')} Text kopieren</button>`);
+      setTimeout(() => $('fertig').addEventListener('click', () => {
+        if (!S.fristen.some((f) => f.id === 'jc')) S.fristen.push({ id: 'jc', titel: 'Widerspruch ans Jobcenter abgeben', tage: 34, datum: '21.12.2026' });
+        S.verlauf = []; zeige('fristen');
+      }));
+      return `${schritte(4, 'Schreiben')}<p class="frage">Dein Widerspruch ist fertig.</p><p class="unter">Name und Anschrift sind schon eingesetzt. Bitte unterschreiben und abgeben.</p>
+        <div class="brief">Widerspruch gegen den Bescheid über Leistungen zur Sicherung des Lebensunterhalts vom 16.11.2026
+
+Sehr geehrte Damen und Herren,
+
+hiermit lege ich Widerspruch ein. Begründung:
+
+1. Mehrbedarf für Alleinerziehende (§ 21 Abs. 3 SGB II): …
+2. Angerechnetes Einkommen (§§ 11, 11b SGB II): …</div>
+        <p class="hinweis"><span class="chip">${svg('frist', 18)} Frist bis 21.12.2026</span><br>Die Frist wird automatisch unter „Fristen“ gespeichert.</p>`;
+    },
+    fristen: () => {
+      kopf(); fuss();
+      const f = S.fristen.slice().sort((a, b) => a.tage - b.tage);
+      return `<p class="gruss">Fristen</p><p class="unter">SoLo erinnert dich rechtzeitig, auch ohne Internet.</p>${f.map(fristKarte).join('')}
+        <div class="wahl"><button type="button" class="knopf">Frist selbst eintragen</button></div>`;
+    },
+    mehr: () => {
+      kopf('Mehr', true); fuss();
+      return `<div class="karte"><div class="zeile"><span>Sprache</span><b>Deutsch</b></div><div class="zeile"><span>Leichte Sprache</span><b>aus</b></div><div class="zeile"><span>Große Schrift</span><b>wie im System</b></div><div class="zeile"><span>Prüfpaket</span><b>freigeschaltet</b></div><div class="zeile"><span>Impressum, Datenschutz</span><b>${svg('pfeil', 20)}</b></div></div>`;
+    }
+  };
+  function schritte(n, text) { return `<div class="schritte" role="img" aria-label="Schritt ${n} von 4">${[1, 2, 3, 4].map((i) => `<i class="${i <= n ? 'an' : ''}"></i>`).join('')}</div><p class="schritt-text">Schritt ${n} von 4: ${text}</p>`; }
+
+  function zeige(ziel) {
+    if (['start', 'zusteht', 'brief', 'fristen'].includes(ziel)) S.bereich = ziel;
+    $('inhalt').innerHTML = `<div class="ansicht">${ANSICHTEN[ziel]()}</div>`;
+    $('inhalt').scrollTop = 0;
+    leiste();
+    document.querySelectorAll('[data-geh]').forEach((b) => b.addEventListener('click', () => geh(b.dataset.geh)));
+    $('inhalt').focus({ preventScroll: true });
+  }
+  zeige('start');
+})();
+</script>
+</body>
+</html>
