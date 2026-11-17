@@ -1,6 +1,6 @@
 # SoLo Prüfpaket – Erweiterungen (getrennt von der App)
 
-Stand: 16.11.2026. Diese Bausteine sind **nicht** in SoLo 1.2.0 eingebaut. Sie liegen im Ordner `erweiterungen/`, haben einen
+Stand: 17.11.2026. Diese Bausteine sind **nicht** in SoLo 1.2.0 eingebaut. Sie liegen im Ordner `erweiterungen/`, haben einen
 eigenen Build und eigene Tests. `npm test` und die App-Pakete bleiben unverändert.
 
 ## Ausprobieren
@@ -19,8 +19,10 @@ Die Vorschau ist eine einzelne HTML-Datei. Sie läuft offline im Browser, am Han
 | `pflege.js` | Pflegegutachten nachrechnen, Grenzfälle finden, jede Bewertung in Alltagssprache erklären, Alter berücksichtigen | § 15 SGB XI mit Anlage 1 und 2 (am Gesetzestext geprüft) |
 | `pflege-import.js` | Bewertungen aus Gutachten-Text lesen (PDF oder Texterkennung); jede Zahl bestätigt der Nutzer | – |
 | `bescheid-sgb2.js` | Bescheid Grundsicherungsgeld mit den App-Regeln vergleichen | §§ 11, 11b, 20, 21, 22 SGB II |
+| `bescheid-wg.js` | Wohngeldbescheid nachrechnen (Miete, Einkommen, Formel); gegen den amtlichen Wohngeldrechner geprüft | §§ 11–17, 19, 21 WoGG |
+| `bescheid-kiz.js` | Bescheid Kinderzuschlag nachrechnen (Bedarf der Eltern, Einkommen, 45 % Anrechnung) | § 6a BKGG |
 | `fristen.js` | Widerspruchsfrist (frühester möglicher Tag) und Erinnerung an Folgeanträge | § 37 Abs. 2 SGB X, §§ 64, 66, 84 SGG |
-| `widerspruch.js` | Sachlicher Widerspruch aus den Funden; der Nutzer prüft und unterschreibt | Dokumentvorlage (vgl. BGH I ZR 113/20) |
+| `widerspruch.js` | Widerspruch (Grundsicherungsgeld, Wohngeld, Kinderzuschlag, Pflege) und Antrag auf Höherstufung des Pflegegrades; der Nutzer prüft und unterschreibt | Dokumentvorlage (vgl. BGH I ZR 113/20); Höherstufung § 33 SGB XI, § 48 SGB X |
 | `lizenz.js` | Profi-Lizenz für Beratungsstellen, offline per Signatur geprüft | – |
 | `vorschau.html`, `vorschau.js` | Oberfläche der Vorschau | – |
 
@@ -66,13 +68,28 @@ Das Alter wird abgefragt (Jahre, bei Kindern unter 2 Jahren zusätzlich Monate):
 | Test | Prüfungen |
 |---|---|
 | `test-pflege.js` | 5.704: alle Punktbereiche der Anlage 2, alle Gewichte, Modul 5 an jeder Grenze, Alter, Verständlichkeit, 600 Zufallsfälle |
-| `test-bescheid.js` | 66: durchgerechnete Beispiele, Mehrbedarfe, Freibeträge, Fristen, Widerspruch, Gutachten-Import |
+| `test-bescheid.js` | 72: durchgerechnete Beispiele, Mehrbedarfe, Freibeträge, Fristen, Widerspruch, Höherstufung, Gutachten-Import |
+| `test-wohngeld.js` | 21 und 7.060 Ergebnisse des amtlichen Wohngeldrechners: höchstens 1 € Abweichung, 91 % auf den Euro genau |
+| `test-kiz.js` | 17 und 1.054 Zufallsfamilien: gleicher Betrag wie die App |
 | `test-lizenz.js` | 27: Fälschungen, Ablauf, kein privater Schlüssel im Repository, Werkzeuge |
-| `e2e-vorschau.js` | 83: Browser hell und dunkel, Anzeige = Rechnung, Alter, eingeschleuster Code, axe WCAG 2.2 AA, Tippflächen 44 px, 320 px |
+| `e2e-vorschau.js` | 117: Browser hell und dunkel, Anzeige = Rechnung, Alter, eingeschleuster Code, axe WCAG 2.2 AA, Tippflächen 44 px, 320 px |
 
 Zu den 600 Zufallsfällen in `test-pflege.js`: Jede vorgeschlagene Grenzfall-Kombination wird nachgerechnet, ob sie den nächsten Pflegegrad wirklich erreicht. Außerdem wird geprüft, dass es keine kürzere Kombination gibt.
 
+### Widerspruch oder Höherstufung (Pflege)
+
+- **Widerspruch:** Das Gutachten war schon damals falsch. Frist ein Monat.
+- **Höherstufung:** Damals stimmte es, seitdem ist es schlimmer geworden. Jederzeit möglich, mehr Geld ab dem Monat des Antrags.
+
+Die Vorschau erklärt den Unterschied und erstellt das passende Schreiben.
+
+### Wohngeld: Genauigkeit
+
+Der amtliche Wohngeldrechner rundet intern anders: Er liegt bei 9 % der Fälle 1 € unter der Formel. SoLo meldet deshalb erst Abweichungen über 1 €.
+
 ## Vor dem Einbau in die App offen
+
+- PDF direkt öffnen. Dafür soll die Bibliothek pdf.js (Mozilla, Apache-Lizenz 2.0) in die Vorschau. Das Installieren braucht deine Freigabe.
 
 - Übersetzungen (bisher nur Deutsch)
 - Dokumentscanner (Apple VisionKit, Google ML Kit) und PDF über „Teilen → SoLo“
