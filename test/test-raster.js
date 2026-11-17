@@ -9,6 +9,9 @@ const Ref = require('./referenz.js');
 const N = Number(process.argv[2]) || 60000;
 let seed = 20261107;
 const rnd = () => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; };
+// Eigener Zufall für die Betriebs-, Riester- oder private Rente, damit die übrigen Fälle unverändert bleiben
+let seedZ = 777001;
+const rndZ = () => { seedZ = (seedZ * 1103515245 + 12345) % 2147483648; return seedZ / 2147483648; };
 const pick = (a) => a[Math.floor(rnd() * a.length)];
 const geld = (max, schritt) => Math.round(rnd() * max / schritt) * schritt;
 
@@ -49,7 +52,7 @@ function haushaltZufall(i) {
     wfbm: rnd() < 0.05,
     gdb: pick(['', '', '', '50', '80', '100', 'H']),
     bhPerson: pick(['', '', 'minder', 'erwVor25', 'erwNach25']), teilhabe: rnd() < 0.25, mzG: rnd() < 0.2, bhWeitere: pick([0, 0, 0, 1, 2]),
-    schwanger: rnd() < 0.1, warmwasser: rnd() < 0.2, ernaehrung: rnd() < 0.1, grundrente33: rnd() < 0.15,
+    schwanger: rnd() < 0.1, warmwasser: rnd() < 0.2, ernaehrung: rnd() < 0.1, grundrente33: rnd() < 0.15, zusatzRente: rndZ() < 0.2 ? Math.round(rndZ() * 400) : '',
     pflegegrad: pick(['', '', '', '2', '3']),
     arbeitSit: pick(['', '', 'arbeitslos', 'krank']), algZeit: rnd() < 0.6, algMonate: pick(['', 12, 16, 20, 24, 30, 36, 48]),
     baby: pick(['', '', '', 'bald', 'da']), egVor: pick(['', 0, 900, 1600, 2500]),
@@ -166,7 +169,7 @@ function personZufall() {
     miete: wf === 'heim' ? '' : pick(['', 0, geld(300, 10), geld(900, 10) + 200]),
     wfbm: rnd() < 0.7, wfbmEssen: rnd() < 0.5, emStd: pick(['', 'unter3', 'unklar']),
     gebJahr: pick([1950, 1958, 1960, 1962, 1970, 1985, 2000]), heute: 2026 + 10 / 12,
-    mzG: rnd() < 0.3, gdb: pick(['', '50', '80', '100', 'H']), bhPerson: pick(['erwNach25', 'erwVor25']), teilhabe: rnd() < 0.3, pflegegrad: pick(['', '2', '3']), grundrente33: rnd() < 0.3,
+    mzG: rnd() < 0.3, gdb: pick(['', '50', '80', '100', 'H']), bhPerson: pick(['erwNach25', 'erwVor25']), teilhabe: rnd() < 0.3, pflegegrad: pick(['', '2', '3']), grundrente33: rnd() < 0.3, zusatzRente: rndZ() < 0.3 ? Math.round(rndZ() * 400) : '',
     vermoegen: pick([0, 5000, 9999, 10001, 20000]), mietstufe: pick(['', '3', '5']), bezug: { sozialamt: rnd() < 0.05 }
   };
 }

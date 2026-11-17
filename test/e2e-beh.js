@@ -8,7 +8,7 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
   const p = await ctx.newPage(); const errs = [];
   const netz = []; p.on('request', (r) => { if (!/^(file|data|blob):/.test(r.url())) netz.push(r.url()); });
   p.on('pageerror', (e) => errs.push(e.message)); p.on('console', (m) => { if (m.type() === 'error' && !/ERR_TUNNEL|ERR_NAME|ERR_INTERNET|fonts.g/.test(m.text())) errs.push(m.text()); });
-  await p.goto('file://' + file);
+  await p.goto('file://' + file + '#leistungen');
   const card = (name) => p.evaluate((nm) => { const c = [...document.querySelectorAll('#cards .card')].find((x) => x.querySelector('h3').textContent === nm); return c ? { pill: c.querySelector('.pill').className.replace('pill ', ''), text: c.querySelector('.body').textContent.replace(/\u00a0/g, ' '), zust: c.querySelector('.zust').textContent } : null; }, name);
   const sel = (id, v) => p.selectOption('#' + id, v);
   const geb = async (v) => { await p.fill('#gebJahr', v); await p.waitForTimeout(250); };
@@ -101,7 +101,8 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
   await p.evaluate(() => document.querySelectorAll('[data-pick]').forEach((x) => { if (!x.checked) x.click(); }));
   await p.click('#mappeMake');
   const txt = await p.inputValue('#mappeText');
-  ['Antrag auf Kindergeld für ein volljähriges Kind mit Behinderung', 'Rente wegen Erwerbsminderung', 'Blindengeld nach dem Bayerischen Blindengeldgesetz', 'Wohnberechtigungsschein', 'Berufsausbildungsbeihilfe', 'Eingliederungshilfe'].forEach((s) => ok('Mappe enthält "' + s + '"', txt.includes(s)));
+  ok('Kindergeld für Kind mit Behinderung: Formular-Link statt formlosem Brief', !txt.includes('Antrag auf Kindergeld für ein volljähriges Kind mit Behinderung') && (await p.$$eval('#mappeBody .forms a[href]', (e) => e.some((x) => /formulare-erwachsene-mit-behinderungen/.test(x.href)))));
+  ['Rente wegen Erwerbsminderung', 'Blindengeld nach dem Bayerischen Blindengeldgesetz', 'Wohnberechtigungsschein', 'Berufsausbildungsbeihilfe', 'Eingliederungshilfe'].forEach((s) => ok('Mappe enthält "' + s + '"', txt.includes(s)));
   ok('Kein Antrag auf Feststellung der Behinderung, wenn der GdB schon feststeht', !txt.includes('Feststellung der Behinderung'));
   ok('Mappe ohne "undefined"', !/undefined|NaN/.test(txt));
   ok('Angabenblatt nennt GdB und Sehbehinderung', /Grad der Behinderung 100/.test(txt) && /hochgradig sehbehindert/.test(txt) && /weniger als 3 Stunden/.test(txt), txt.slice(-700));

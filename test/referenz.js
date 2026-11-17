@@ -212,8 +212,15 @@ function wohngeld(h) {
   let frei = (gdb === 100 || (gdb >= 50 && pg) ? 150 : 0) + (h.erwachsene === 1 && h.kinder > 0 ? 110 : 0);
   frei += Math.min(4, Math.max(0, e.bhWeitere | 0)) * 150; // weitere schwerbehinderte Haushaltsmitglieder
   frei += h.p.reduce((s, x) => s + (x.art === 'eg' ? Math.min(300, x.brutto) : 0), 0);
-  // § 17a WoGG: Grundrentenfreibetrag je Rente
-  frei += e.grundrente33 ? h.p.filter((x) => x.art === 'rente').reduce((a, x) => a + Math.min(100 + 0.3 * Math.max(0, x.brutto - 100), 0.5 * RB[1]), 0) : 0;
+  // § 17a WoGG: Grundrentenfreibetrag je Rente, nur auf die gesetzliche Rente (ohne enthaltene Betriebs-, Riester- oder private Rente)
+  if (e.grundrente33) {
+    let offenWG = zahl(e.zusatzRente);
+    for (const x of h.p) {
+      if (x.art !== 'rente') continue;
+      const davon = Math.min(offenWG, x.brutto); offenWG -= davon;
+      frei += Math.min(100 + 0.3 * Math.max(0, x.brutto - davon - 100), 0.5 * RB[1]);
+    }
+  }
   const plus = h.unterhalt + h.uvg + Math.max(0, h.kindEink - 100);
   const uzVorsichtig = h.uzFest ? Math.min(h.uz, h.uzDeckel) : 0, uzGuenstig = h.uzFest ? h.uz : Math.min(h.uz, h.uzDeckel);
   const yPess = Math.max(0, h.p.reduce((s, x) => s + (x.brutto - werbung(x)) * (1 - abzugAus(x, 0)), 0) + plus - frei - uzVorsichtig);
@@ -228,6 +235,21 @@ function wohngeld(h) {
 }
 
 // ---------- Kinderzuschlag (§ 6a BKGG) ----------
+// § 6a Abs. 6 BKGG: Elterneinkommen über dem Bedarf mindert zu 45 %, soweit es Arbeitseinkommen ist; anderes Einkommen (Rente, ALG I,
+// Krankengeld, Elterngeld) mindert voll. Vorrang: Die Überschreitung wird dem Arbeitseinkommen zugerechnet, solange das andere
+// Einkommen allein den Bedarf nicht übersteigt.
+function minderungElternKiZ(h, bedarf) {
+  const gesamt = elternEinkommenSGB2(h);
+  const s = h.p.reduce((a, x) => a + x.brutto, 0);
+  let anders = 0;
+  h.p.forEach((x) => {
+    const n = s > 0 ? h.netto * x.brutto / s : h.netto / h.p.length;
+    if (['rente', 'alg', 'kg', 'eg'].indexOf(x.art) >= 0) anders += n - 30 * (x.brutto > 0 ? 1 : 0) - (x.art === 'eg' && x.brutto > 300 ? 300 : 0);
+  });
+  anders = Math.min(gesamt, Math.max(0, anders));
+  if (anders <= bedarf) return 0.45 * Math.max(0, gesamt - bedarf);
+  return (anders - bedarf) + 0.45 * (gesamt - anders);
+}
 function kinderzuschlag(h) {
   const b = h.bezug;
   if (h.kids === 0) return { level: 'nein' };
@@ -242,7 +264,7 @@ function kinderzuschlag(h) {
   const ms = mehrSonst(h), bm = behMehrSGB2(h);
   const bedarfEltern = h.regelEltern + h.mehrAE + ms.eltern + (h.e.bhPerson === 'erwNach25' ? bm.sicher : 0) + h.miete * anteilEltern;
   const kindAnr = h.unterhalt + h.uvg + Math.max(0, h.kindEink - h.mini);
-  const kiz = Math.max(0, max - 0.45 * Math.max(0, elternEinkommenSGB2(h) - bedarfEltern) - 0.45 * kindAnr);
+  const kiz = Math.max(0, max - minderungElternKiZ(h, bedarfEltern) - 0.45 * kindAnr);
   if (kiz <= 0) return { level: 'nein' };
   // § 6a Abs. 1 Nr. 3 BKGG: mit dem Kinderzuschlag nicht mehr hilfebedürftig (bereinigtes Einkommen, Kindergeld, Kinderzuschlag, 300 € für ein mögliches Wohngeld)
   const mitKiz = elternEinkommenSGB2(h) + (h.kinder + h.jung) * KG + h.unterhalt + h.uvg + h.kindEink + kiz, bedarfAlle = h.regel + h.miete + h.mehrAE + ms.sicher + bm.sicher;
@@ -263,11 +285,17 @@ function einkommenSGB12(e, h) {
   }
   const rs1 = RB[1];
   let summe = 0;
+  // Betriebs-, Riester- oder private Rente (in der Rente enthalten): § 82 Abs. 4 SGB XII, 100 € + 30 % des Rests, höchstens RS1/2
+  let offen = zahl(e.zusatzRente);
+  const staffel = (x) => (x <= 0 ? 0 : Math.min(x, 100 + 0.3 * Math.max(0, x - 100), 0.5 * rs1));
   for (const x of posten) {
     if (x.art === 'wfbm') { const lohn = Math.max(0, x.n - 52); const frei = Math.min(lohn, rs1 / 8 + 0.5 * Math.max(0, lohn - rs1 / 8)); summe += lohn - frei; }
     else if (x.art === 'lohn') summe += x.n - Math.min(0.3 * x.n, 0.5 * rs1);
     else if (x.art === 'eg') summe += Math.max(0, x.n - ((x.b != null ? x.b : x.n) > 300 ? 300 : 0));
-    else if (x.art === 'rente' && e.grundrente33) summe += x.n - Math.min(100 + 0.3 * Math.max(0, x.n - 100), 0.5 * rs1); // § 82a
+    else if (x.art === 'rente') {
+      const zus = Math.min(offen, Math.max(0, x.n)); offen -= zus;
+      summe += x.n - (e.grundrente33 ? staffel(x.n - zus) : 0) - staffel(zus); // § 82a nur gesetzliche Rente, § 82 Abs. 4 Zusatzrente
+    }
     else if (x.art !== 'ohne') summe += x.n;
   }
   return summe;

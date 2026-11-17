@@ -34,3 +34,23 @@ höchste Stufe bekommen nie „eher nicht“.
 
 Alle Beträge in Euro im Jahr. Fortschreibung: BB 1.1.2028, HE 1.1.2029, SH alle 2 Jahre (nächste 1.1.2027), NW, RP und SN durch
 Bekanntmachung. Bei der Jahresprüfung zum 1.12. diese Tabelle neu prüfen.
+
+## Stufen (seit Version 1.2.0 in der App)
+
+Die App nennt in diesen Ländern alle Stufen mit Grenze und sagt, welche das Bruttoeinkommen voraussichtlich erreicht
+(sonst: welche nach den Abzügen des Amts reichen kann). Werte in `src/rules.js` (`wbsStufen`), Test `wbs-stufen`.
+
+| Land | Stufen (Faktor auf die Landesgrenze) |
+|---|---|
+| Berlin | WBS 140 (1), WBS 180 (180/140), WBS 220 (220/140) |
+| Bremen | uneingeschränkt (1), eingeschränkt (160/110) |
+| Hamburg | 1. Förderweg (1), 2. Förderweg (200/160), 3. Förderweg (240/160) |
+| Mecklenburg-Vorpommern | 1. Förderweg, 2. Förderweg (27.000 / 40.500 / 9.200 €) |
+| Nordrhein-Westfalen | Einkommensgruppe A (1), B (1,4) |
+| Rheinland-Pfalz | allgemein (1), „speziell“ (1,6) |
+| Schleswig-Holstein | 1. Förderweg (1), 2. (1,2), 3. (1,4) |
+| Sachsen-Anhalt | allgemein (1), Landesprogramme (1,2) |
+| Thüringen | allgemein (1), Förderrichtlinie (1,4) |
+
+Wer eine niedrigere Stufe erfüllt, kommt auch an Wohnungen der höheren Stufen. Bayern: allgemeine Grenze und höhere Grenzen in
+Gebieten mit erhöhtem Wohnungsbedarf (Art. 11 BayWoFG), schon bisher in der App.

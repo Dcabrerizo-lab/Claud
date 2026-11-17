@@ -39,15 +39,15 @@ const M = [
   ['KiZ: Wohnanteil Paar 2 Kinder 71,4 statt 71 %', 'wohnPaar: [1, 0.83, 0.71,', 'wohnPaar: [1, 0.83, 0.714,'],
   ['Bürgergeld: Freibetragsstufe 20 % fehlt', 'if (b > 100) f += 0.2 * (Math.min(b, 520) - 100);', ''],
   ['KiZ: Kind evtl. 6 Jahre nicht beachtet', "      if (estHoch > 0) return mk(id, 'vielleicht', 'vielleicht', [['kiz.ae7']]);", ''],
+  ['WBS: Berlin WBS 180 falsch (1,6 statt 1,8)', "['WBS 180', 1.8 / 1.4]", "['WBS 180', 1.6 / 1.4]"],
+  ['WBS: erreichte Stufe nach Abzügen statt nach Brutto', 'const du = ST.find((x) => jahr <= gS(x[1]))', 'const du = ST.find((x) => nachAbzug <= gS(x[1]))'],
   ['Wohngeld: Mindestwerte Anlage 3 fehlen', '    M = Math.max(M, WG_MMIN[wgIdx(n)]); Y = Math.max(Y, WG_YMIN[wgIdx(n)]);', ''],
   ['Wohngeld: Werbungskostenpauschale fehlt', '    wgWerbung: { lohn: 1230, rente: 102 },', '    wgWerbung: { lohn: 0, rente: 0 },'],
   ['Elterngeld: Pauschbetrag § 2c BEEG fehlt', '    const n = Math.max(0, netto - E.pausch);', '    const n = Math.max(0, netto);'],
   ['Kinderzuschlag: Hilfebedürftigkeit mit vollem Netto statt bereinigtem Einkommen', '    const mitKiz = elternEinkSGB2(h) + h.children * R.kindergeld', '    const mitKiz = h.netto + 0 * h.children * R.kindergeld'],
-  // Ausfüllhilfe: Ja/Nein vertauscht, falsches Formular, Name falsch geteilt
-  ['Formulare: Alleinerziehend Ja/Nein vertauscht', "ha.rbtnAlleinerziehend = allein ? 'ja' : 'nein';", "ha.rbtnAlleinerziehend = allein ? 'nein' : 'ja';", 'src/formulare.js'],
-  ['Formulare: Anlage KDU fehlt bei Miete', "if (miete > 0 || eigen) {", "if (eigen) {", 'src/formulare.js'],
+  // Ausfüllhilfe: falsche Anlage, Name falsch geteilt
+  ['Formulare: Anlage KDU fehlt bei Miete', "if (miete > 0 || eigen) anl.push('Anlage KDU", "if (eigen) anl.push('Anlage KDU", 'src/formulare.js'],
   ['Formulare: Vorname und Nachname vertauscht', "w.length === 1 ? { vor: '', nach: w[0] } : { vor: w.slice(0, -1).join(' '), nach: w[w.length - 1] }", "w.length === 1 ? { vor: '', nach: w[0] } : { nach: w.slice(0, -1).join(' '), vor: w[w.length - 1] }", 'src/formulare.js'],
-  ['Formulare: Optionsliste nicht beachtet', "const opt = opts.indexOf(k[v]) >= 0 ? k[v] :", "const opt = true ? k[v] :", 'app/pdf/pdf-entry.js'],
   ['Asyl: Grundsicherung im Alter nicht ausgeschlossen', "    if (h.asyl) return mk(id, 'nein', 'ausschluss', [['ggeld.asyl']]);\n    if (!h.alter && !h.erwerbsgemindert && !h.alterGrenz)", '    if (!h.alter && !h.erwerbsgemindert && !h.alterGrenz)'],
   ['Asyl: Wohngeld nicht ausgeschlossen', "if (h.asyl) return mk(id, 'nein', 'ausschluss', [['wohngeld.asyl']]);", ''],
   ['Asyl: Kinderzuschlag nicht ausgeschlossen', "if (h.asyl) return mk(id, 'nein', 'ausschluss', [['kiz.asyl']]);", ''],
@@ -72,7 +72,13 @@ const M = [
   ['Wohngeld: Elterngeld 300 € zählt doch', "const zaehlt = x[0] === 'eg' ? Math.max(0, x[1] - R.elterngeldFrei) : x[1] - wkHier;", 'const zaehlt = x[1] - wkHier;'],
   ['Wohngeld: Freibetrag Alleinerziehende fehlt', 'if (h.alleinerz) freib += R.wohngeld.freibetragAlleinerzMonat;', ''],
   ['Wohngeld: Freibetrag Kindereinkommen fehlt', 'wgKindFrei: 100', 'wgKindFrei: 0'],
-  ['Grundsicherung: Grundrentenfreibetrag ohne Deckel', 'R.grundrente.max * rs1);', 'R.grundrente.max * rs1 * 2);'],
+  ['Grundsicherung: Grundrentenfreibetrag ohne Deckel', 'freiStaffel(gesetzlich, R.grundrente, rs1)', 'freiStaffel(gesetzlich, { sockel: 100, quote: 0.3, max: 1 }, rs1)'],
+  ['Grundsicherung: Freibetrag für Betriebs-, Riester- oder private Rente fehlt', ' - freiStaffel(z, R.vorsorge, rs1); }', ' - 0; }'],
+  ['Grundsicherung: Grundrentenfreibetrag auch auf die Betriebsrente', 'freiStaffel(gesetzlich, R.grundrente, rs1)', 'freiStaffel(n, R.grundrente, rs1)'],
+  ['Kinderzuschlag: anderes Elterneinkommen nur zu 45 %', 'return andere > bedarf ? andere - bedarf + R.kiz.anrechnung * arbeit : R.kiz.anrechnung * Math.max(0, gesamt - bedarf);', 'return R.kiz.anrechnung * Math.max(0, gesamt - bedarf);'],
+  ['Rundfunk: Befreiung bei Blindenhilfe, Hilfe zur Pflege, BAföG fehlt', "if (okW(w.hzp) || okW(w.blh) || (okW(w.baf) && h.ausbildung === 'ich' && h.wohnform !== 'eltern'))", 'if (false)'],
+  ['Grundsicherungsgeld: Versicherungspauschale neben Lohn', "&& !pers.some((x) => x[0] === 'lohn' && x[1] > 0) ? R.versPauschale : 0)", '? R.versPauschale : 0)'],
+  ['Grundsicherung: Freibetrag größer als die Rente', 'const freiStaffel = (x, p, rs1) => (x > 0 ? Math.min(p.sockel + p.quote * Math.max(0, x - p.sockel), p.max * rs1, x) : 0);', 'const freiStaffel = (x, p, rs1) => (x > 0 ? Math.min(p.sockel + p.quote * Math.max(0, x - p.sockel), p.max * rs1) : 0);'],
   ['Grundsicherungsgeld: Elterngeld 300 € nicht frei', "egFreiSGB: sumIf((a, b) => a === 'eg' && b > R.elterngeldFrei ? R.elterngeldFrei : 0)", "egFreiSGB: sumIf(() => 0)"],
   ['Grundsicherungsgeld: Unterhalt ohne Deckel', 'return Math.min(eink, Math.max(0, kinderBedarf - h.children * R.kindergeld));', 'return eink;'],
   ['Blindengeld: Pflegegrad 2 mit 33 %', '(h.pflegegrad === 2 ? 0.46 : 0.33)', '(h.pflegegrad === 2 ? 0.33 : 0.33)'],
@@ -91,7 +97,6 @@ for (const f of ['site', 'datenschutz.html', 'README.md', 'app/capacitor.config.
   fs.cpSync(path.join(ROOT, f), path.join(tmp, f), { recursive: true });
 }
 // Ausfüllhilfe: Formulare, PDF-Modul und die PDF-Bibliotheken (verlinkt, nicht kopiert)
-fs.cpSync(path.join(ROOT, 'content', 'formulare'), path.join(tmp, 'content', 'formulare'), { recursive: true });
 fs.cpSync(path.join(ROOT, 'app', 'pdf'), path.join(tmp, 'app', 'pdf'), { recursive: true });
 fs.symlinkSync(path.join(ROOT, 'app', 'node_modules'), path.join(tmp, 'app', 'node_modules'));
 // Mutation: [Name, alt, neu, Datei (Standard src/rules.js)]

@@ -1,0 +1,10 @@
+{
+ "demo": true,
+ "hinweis": "Demo-Schlüssel. Der private Teil wurde nach dem Signieren der Demo-Lizenz verworfen. Vor dem Verkauf mit tools/lizenz-schluessel.js einen eigenen Schlüssel erzeugen.",
+ "jwk": {
+  "kty": "EC",
+  "crv": "P-256",
+  "x": "LE3uKRCojOir7SSnbY0rB2gN7XPi0SuzFSGejBhH6Ho",
+  "y": "Ieu2ALhkcNr2AsRq-iN3xsNhVoqiHEXOQ8FR0IKZ5xU"
+ }
+}

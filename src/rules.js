@@ -131,6 +131,19 @@ const Rules = (function () {
       ST: { ein: 12000, zwei: 18000, weitere: 4100, kind: 500, hoch: 1.2, stand: '2026' },
       TH: { ein: 14400, zwei: 21600, weitere: 5000, kind: 1000, hoch: 1.4, stand: '2026' },
     },
+    // WBS-Stufen je Land (gleiche Quellen wie wbsLand, docs/WBS-GRENZEN.md): [Name, Faktor auf die Landesgrenze oder eigene Werte].
+    // Wohnungen werden für eine Stufe gefördert; wer eine niedrigere Stufe erfüllt, kommt auch an Wohnungen der höheren Stufen.
+    wbsStufen: {
+      BE: [['WBS 140', 1], ['WBS 180', 1.8 / 1.4], ['WBS 220', 2.2 / 1.4]],
+      HB: [['uneingeschränkter WBS', 1], ['eingeschränkter WBS', 1.6 / 1.1]],
+      HH: [['1. Förderweg', 1], ['2. Förderweg', 2 / 1.6], ['3. Förderweg', 2.4 / 1.6]],
+      MV: [['1. Förderweg', 1], ['2. Förderweg', { ein: 27000, zwei: 40500, weitere: 9200, kind: 1500 }]],
+      NW: [['Einkommensgruppe A', 1], ['Einkommensgruppe B', 1.4]],
+      RP: [['allgemeine Grenze', 1], ['erhöhte Grenze („speziell“)', 1.6]],
+      SH: [['1. Förderweg', 1], ['2. Förderweg', 1.2], ['3. Förderweg', 1.4]],
+      ST: [['allgemeine Grenze', 1], ['Landesprogramme', 1.2]],
+      TH: [['allgemeine Grenze', 1], ['Förderrichtlinie', 1.4]]
+    },
     // Freibetrag beim Wohngeld für eigenes Einkommen von Kindern (16 bis 24 Jahre): 1.200 € im Jahr (§ 17 Nr. 4 WoGG)
     wgKindFrei: 100,
     // Werbungskosten-Pauschbeträge im Jahr (§ 9a Satz 1 Nr. 1 und 3 EStG), beim Wohngeld vom Einkommen abgezogen (§ 14 Abs. 1 WoGG)
@@ -141,6 +154,9 @@ const Rules = (function () {
     wgAbzugAuszahlung: { lohn: [0, 0.12], rente: [0, 0.06], kg: [0, 0.06], alg: [0, 0], eg: [0, 0], wfbm: [0, 0.05], ohne: [0, 0] },
     // Grundrentenfreibetrag (§ 82a SGB XII): bei 33 Jahren Grundrentenzeiten bleiben von der Rente 100 € und 30 % des Rests frei, höchstens 50 % der Regelbedarfsstufe 1
     grundrente: { sockel: 100, quote: 0.3, max: 0.5 },
+    // Zusätzliche Altersvorsorge (Betriebsrente, Riester-Rente, private Rente), § 82 Abs. 4 SGB XII: 100 € frei und 30 % des Rests,
+    // höchstens 50 % der Regelbedarfsstufe 1 (gilt für die Grundsicherung im Alter und bei Erwerbsminderung, nicht für das Grundsicherungsgeld)
+    vorsorge: { sockel: 100, quote: 0.3, max: 0.5 },
     // Regelaltersgrenze (§ 235 SGB VI) in Monaten über 65, je Geburtsjahr 1947..1963; ab 1964: 67 Jahre
     rag: { 1947: 1, 1948: 2, 1949: 3, 1950: 4, 1951: 5, 1952: 6, 1953: 7, 1954: 8, 1955: 9, 1956: 10, 1957: 11, 1958: 12, 1959: 14, 1960: 16, 1961: 18, 1962: 20, 1963: 22 },
     uvg: { bis5: 227, bis11: 299, bis17: 394, min12: 600 },
@@ -336,8 +352,11 @@ const Rules = (function () {
       eu: inp.aufenthalt === 'eu', euArbeit: inp.euArbeit === 'ja', euJahre5: inp.euJahre === 'ab5',
       art1, art2, pers, liste: !!liste, kindEink, uvgEst, kindZahl: unterhalt + uvgEst, mehrAE, mehrAEhoch, alterGrenz,
       egFreiSGB: sumIf((a, b) => a === 'eg' && b > R.elterngeldFrei ? R.elterngeldFrei : 0),
-      vPausch: sumIf((a, b) => a !== 'lohn' && a !== 'ohne' && b > 0 ? R.versPauschale : 0),
-      mzG: !!inp.mzG, mzGl: !!inp.mzGl || !!(inp.mz && inp.mz.Gl), mzRF: !!(inp.mz && inp.mz.RF), mzAG: !!(inp.mz && inp.mz.aG), wfbmJahre: num(inp.wfbmJahre), grundrente33: !!inp.grundrente33, bhEinkHoch: !!inp.bhEinkHoch, teilhabe: !!inp.teilhabe, bhWeitere: Math.min(4, Math.max(0, inp.bhWeitere | 0)), schwanger: !!inp.schwanger, ernaehrung: !!inp.ernaehrung, warmwasser: !!inp.warmwasser, gebJahr: jahr,
+      // Versicherungspauschale (§ 6 Abs. 1 Nr. 1 Bürgergeld-V) einmal je Person, nicht neben Einkommen aus Arbeit (dort deckt sie der
+      // Grundfreibetrag von 100 € ab, § 11b Abs. 2 SGB II). In der Liste (eine Person mit mehreren Einkommen) also höchstens einmal.
+      vPausch: liste ? (pers.some((x) => x[0] !== 'lohn' && x[0] !== 'ohne' && x[1] > 0) && !pers.some((x) => x[0] === 'lohn' && x[1] > 0) ? R.versPauschale : 0)
+        : sumIf((a, b) => a !== 'lohn' && a !== 'ohne' && b > 0 ? R.versPauschale : 0),
+      mzG: !!inp.mzG, mzGl: !!inp.mzGl || !!(inp.mz && inp.mz.Gl), mzRF: !!(inp.mz && inp.mz.RF), mzAG: !!(inp.mz && inp.mz.aG), wfbmJahre: num(inp.wfbmJahre), grundrente33: !!inp.grundrente33, zusatzRente: num(inp.zusatzRente), bhEinkHoch: !!inp.bhEinkHoch, teilhabe: !!inp.teilhabe, bhWeitere: Math.min(4, Math.max(0, inp.bhWeitere | 0)), schwanger: !!inp.schwanger, ernaehrung: !!inp.ernaehrung, warmwasser: !!inp.warmwasser, gebJahr: jahr,
       baby: inp.baby === 'bald' || inp.baby === 'da' ? inp.baby : '', egVor: blank(inp.egVor) ? null : num(inp.egVor), asyl: inp.aufenthalt === 'asyl',
       wohnform: inp.wohnform === 'eltern' || inp.wohnform === 'heim' ? inp.wohnform : '', wfbmEssen: !!inp.wfbmEssen,
       mieteGegeben: !blank(inp.miete) && num(inp.miete) > 0,
@@ -444,6 +463,19 @@ const Rules = (function () {
   }
   // Einkommen der Eltern nach Abzügen (§ 11b SGB II): Freibetrag für Arbeit, Versicherungspauschale, Elterngeld-Freibetrag
   const elternEinkSGB2 = (h) => Math.max(0, h.netto - haushaltsFreibetrag(h) - (h.egFreiSGB || 0) - (h.vPausch || 0) - (h.uzSGB || 0));
+  // Kinderzuschlag, § 6a Abs. 6 BKGG: Übersteigt das Einkommen der Eltern ihren Bedarf, mindert Einkommen aus Arbeit den Kinderzuschlag
+  // um 45 %, anderes Einkommen (Rente, Arbeitslosengeld I, Krankengeld, Elterngeld) in voller Höhe. Die Überschreitung gilt als durch das
+  // Arbeitseinkommen verursacht, außer das andere Einkommen übersteigt den Bedarf schon allein.
+  function kizMinderungEltern(h, bedarf) {
+    const gesamt = elternEinkSGB2(h);
+    const pers = h.pers || [['lohn', h.brutto]];
+    const sumB = pers.reduce((a, x) => a + x[1], 0);
+    const nettos = pers.map((x) => (h.liste ? x[2] : sumB > 0 ? h.netto * x[1] / sumB : h.netto / pers.length));
+    const andereRoh = pers.reduce((a, x, i) => a + (x[0] === 'lohn' || x[0] === 'wfbm' || x[0] === 'ohne' ? 0 : nettos[i]), 0);
+    const andere = Math.min(gesamt, Math.max(0, andereRoh - (h.egFreiSGB || 0) - (h.vPausch || 0)));
+    const arbeit = gesamt - andere;
+    return andere > bedarf ? andere - bedarf + R.kiz.anrechnung * arbeit : R.kiz.anrechnung * Math.max(0, gesamt - bedarf);
+  }
   // Grobe Schätzung als Betrag, auf 10 € gerundet
   const r10 = (x) => Math.round(x / 10) * 10;
   // EU-Staatsangehörige: Leistungsausschluss, wenn das Aufenthaltsrecht nur aus der Arbeitsuche folgt oder fehlt (§ 7 Abs. 1 Satz 2
@@ -538,7 +570,9 @@ const Rules = (function () {
     // Unterhalt und Unterhaltsvorschuss der Kinder zählen als Einkommen (§ 14 WoGG), ohne Pauschalabzug; eigenes Einkommen
     // der Kinder mit Freibetrag (§ 17 Nr. 4 WoGG); Elterngeld bis 300 € frei (§ 10 Abs. 1 BEEG); Freibeträge nach § 17 WoGG.
     // § 17a WoGG: Grundrentenfreibetrag bei 33 Jahren Grundrentenzeiten (100 € + 30 % des Rests, höchstens 50 % RS1)
-    const grFrei = h.grundrente33 ? pers.filter((x) => x[0] === 'rente').reduce((a, x) => a + Math.min(R.grundrente.sockel + R.grundrente.quote * Math.max(0, x[1] - R.grundrente.sockel), R.grundrente.max * R.regelbedarf.alleinstehend), 0) : 0;
+    // Betriebs-, Riester- oder private Rente zählt beim Wohngeld wie Rente, bekommt aber keinen Grundrentenfreibetrag
+    const zusWG = zusatzVerteilt(h, pers.map((x) => x[1]));
+    const grFrei = h.grundrente33 ? pers.reduce((a, x, i) => a + (x[0] === 'rente' ? Math.min(R.grundrente.sockel + R.grundrente.quote * Math.max(0, x[1] - zusWG[i] - R.grundrente.sockel), R.grundrente.max * R.regelbedarf.alleinstehend) : 0), 0) : 0;
     const extra = (h.kindZahl || 0) + Math.max(0, (h.kindEink || 0) - R.wgKindFrei) - freib - grFrei;
     const yPess = Math.max(0, yA + extra - (h.uzWGpess || 0)), yOpt = Math.max(0, yB + extra - (h.uzWGopt || 0));
 
@@ -594,12 +628,12 @@ const Rules = (function () {
     // Einkommen der Eltern nach § 11b SGB II (Freibetrag für Arbeit usw.); Einkommen der Kinder (Unterhalt, Unterhaltsvorschuss,
     // eigenes Einkommen über der Minijob-Grenze) mindert den Kinderzuschlag um 45 % (§ 6a Abs. 3 und 6 BKGG)
     const kindAnr = (h.kindZahl || 0) + Math.max(0, (h.kindEink || 0) - h.minijob);
-    const est = Math.max(0, gmax - R.kiz.anrechnung * Math.max(0, elternEinkSGB2(h) - bemessung) - R.kiz.anrechnung * kindAnr);
+    const est = Math.max(0, gmax - kizMinderungEltern(h, bemessung) - R.kiz.anrechnung * kindAnr);
     const gesamtBedarf = h.regel + h.miete + (h.mehrAE || 0) + maK.fest + mbK.fest;
 
     if (est <= 0) {
       // Kind vielleicht erst 6 Jahre (Mehrbedarf 36 % statt 12 %): dann ist Kinderzuschlag möglich
-      const estHoch = Math.max(0, gmax - R.kiz.anrechnung * Math.max(0, elternEinkSGB2(h) - (bemessung - (h.mehrAE || 0) + (h.mehrAEhoch || 0))) - R.kiz.anrechnung * kindAnr);
+      const estHoch = Math.max(0, gmax - kizMinderungEltern(h, bemessung - (h.mehrAE || 0) + (h.mehrAEhoch || 0)) - R.kiz.anrechnung * kindAnr);
       if (estHoch > 0) return mk(id, 'vielleicht', 'vielleicht', [['kiz.ae7']]);
       return mk(id, 'nein', 'einkoHoch', [['kiz.zuHoch']]);
     }
@@ -698,15 +732,25 @@ const Rules = (function () {
   // ---------------------------------------------------------------
   // Grundsicherung im Alter und bei Erwerbsminderung (SGB XII)
   // ---------------------------------------------------------------
+  // Betriebs-, Riester- oder private Rente („davon“ in der Rente enthalten): auf die Renten der Personen der Reihe nach verteilt,
+  // höchstens bis zur Höhe der jeweiligen Rente. Ergebnis je Eintrag in pers: Anteil der zusätzlichen Altersvorsorge.
+  function zusatzVerteilt(h, betraege) {
+    let rest = h.zusatzRente || 0;
+    return betraege.map((b, i) => { if (!(h.pers || [['lohn']])[i] || (h.pers || [])[i][0] !== 'rente') return 0; const t = Math.min(rest, Math.max(0, b)); rest -= t; return t; });
+  }
+  const freiStaffel = (x, p, rs1) => (x > 0 ? Math.min(p.sockel + p.quote * Math.max(0, x - p.sockel), p.max * rs1, x) : 0);
+
   // Einkommen für die Grundsicherung nach dem SGB XII je Einkommen der Person(en) (§ 82 SGB XII)
   function gsaEinkommen(h) {
     const pers = h.pers || [['lohn', h.brutto]];
     const sumB = pers.reduce((a, x) => a + x[1], 0);
     const rs1 = R.regelbedarf.alleinstehend;
-    return pers.reduce((a, x) => {
+    // Netto je Einkommen: in der ausführlichen Version anteilig aus dem Haushaltsnetto
+    const nettos = pers.map((x) => (h.liste ? x[2] : sumB > 0 ? h.netto * x[1] / sumB : h.netto / pers.length));
+    const zus = zusatzVerteilt(h, nettos);
+    return pers.reduce((a, x, i) => {
       const art = x[0], b = x[1];
-      // Netto dieses Einkommens: in der ausführlichen Version anteilig aus dem Haushaltsnetto
-      const n = h.liste ? x[2] : sumB > 0 ? h.netto * b / sumB : h.netto / pers.length;
+      const n = nettos[i];
       if (art === 'wfbm') {
         const e = Math.max(0, n - R.wfbm.afoeg);
         const frei = Math.min(e, R.wfbm.achtel * rs1 + R.wfbm.rest * Math.max(0, e - R.wfbm.achtel * rs1));
@@ -714,7 +758,8 @@ const Rules = (function () {
       }
       if (art === 'lohn') return a + n - Math.min(R.gsaArbeit.quote * n, R.gsaArbeit.max * rs1);
       if (art === 'eg') return a + Math.max(0, n - (b > R.elterngeldFrei ? R.elterngeldFrei : 0));
-      if (art === 'rente' && h.grundrente33) return a + n - Math.min(R.grundrente.sockel + R.grundrente.quote * Math.max(0, n - R.grundrente.sockel), R.grundrente.max * rs1);
+      // Rente: Grundrentenfreibetrag nur auf die gesetzliche Rente (§ 82a), Freibetrag für zusätzliche Altersvorsorge auf Betriebs-, Riester- oder private Rente (§ 82 Abs. 4)
+      if (art === 'rente') { const z = zus[i], gesetzlich = n - z; return a + n - (h.grundrente33 ? freiStaffel(gesetzlich, R.grundrente, rs1) : 0) - freiStaffel(z, R.vorsorge, rs1); }
       if (art === 'ohne') return a;
       return a + n;
     }, 0);
@@ -1098,18 +1143,21 @@ const Rules = (function () {
   }
 
   // Befreiung vom Rundfunkbeitrag
-  function rundfunk(h, gg, gsa) {
-    const res = rundfunk0(h, gg, gsa);
+  function rundfunk(h, gg, gsa, weitere) {
+    const res = rundfunk0(h, gg, gsa, weitere || {});
     res.tx.push(['rundfunk.mehr']);
     return res;
   }
-  function rundfunk0(h, gg, gsa) {
+  function rundfunk0(h, gg, gsa, w) {
     const id = 'rundfunk';
     if (h.bezug.grundsicherungsgeld || h.bezug.sozialamt) return mk(id, 'ja', 'ja', [['rundfunk.bezug']]);
     // § 4 Abs. 1 Nr. 4 RBStV: Leistungen nach dem Asylbewerberleistungsgesetz
     if (h.asyl) return mk(id, 'vielleicht', 'butMoeglich', [['rundfunk.asyl']]);
     if (gg.level === 'ja' || gsa.level === 'ja') return mk(id, 'vielleicht', 'butMoeglich', [['rundfunk.folgt']]);
     if (gg.level === 'vielleicht' || gsa.level === 'vielleicht') return mk(id, 'vielleicht', 'butMoeglich', [['rundfunk.haerte']]);
+    // § 4 Abs. 1 RBStV, weitere Befreiungsgründe: Hilfe zur Pflege (SGB XII), Blindenhilfe (§ 72 SGB XII), BAföG nicht bei den Eltern
+    const okW = (r) => r && (r.level === 'ja' || r.level === 'vielleicht');
+    if (okW(w.hzp) || okW(w.blh) || (okW(w.baf) && h.ausbildung === 'ich' && h.wohnform !== 'eltern')) return mk(id, 'vielleicht', 'butMoeglich', [['rundfunk.weitere']].concat(h.mzRF ? [['rundfunk.rf']] : []));
     if (h.mzRF) return mk(id, 'vielleicht', 'vielleicht', [['rundfunk.rf']]);
     return mk(id, 'nein', 'vorausFehlt', [['rundfunk.nein']]);
   }
@@ -1156,13 +1204,25 @@ const Rules = (function () {
       const L = R.wbsLand[h.land];
       if (L) {
         const grenze = gr(L), land = BL_NAME[h.land];
-        if (jahr <= grenze) return mk(id, 'ja', 'ja', [['wbs.landGrenze', { land, grenze: eur(grenze), stand: L.stand }], ['wbs.landStelle']]);
+        // Stufen: jede mit ihrer Grenze; welche erfüllt das Brutto (sicher), welche vielleicht nach den Abzügen des Amts
+        const ST = R.wbsStufen[h.land] || [];
+        const gS = (f) => (typeof f === 'number' ? grenze * f : gr(Object.assign({}, L, f, { rund: 0, plus1: 0, plus2: 0 })));
+        const stufenTx = (sicher) => {
+          if (!ST.length) return [];
+          const liste = ST.map((x) => ['wbs.stufe', { name: x[0], grenze: eur(r10(gS(x[1]))) }]);
+          const nachAbzug = jahr * (1 - R.wbs.maxAbzug) - freiS;
+          const du = ST.find((x) => jahr <= gS(x[1])), vl = ST.find((x) => nachAbzug <= gS(x[1]));
+          return liste.concat(du ? [['wbs.stufeDu', { name: du[0] }]] : vl ? [['wbs.stufeVielleicht', { name: vl[0] }]] : []);
+        };
+        const gdS = gdbNum(h), pgS = h.pflegegrad > 0;
+        const freiS = (gdS === 100 || (gdS >= 80 && pgS) ? R.wbs.schwerbFreiHoch : gdS >= 50 && pgS ? R.wbs.schwerbFreiPflege : 0) + (h.bhWeitere || 0) * R.wbs.schwerbFreiPflege + (h.uzBetrag || 0) * 12;
+        if (jahr <= grenze) return mk(id, 'ja', 'ja', [['wbs.landGrenze', { land, grenze: eur(grenze), stand: L.stand }]].concat(stufenTx(), [['wbs.landStelle']]));
         // Höchstens 30 % Abzüge (§ 23 WoFG und Landesrecht), dazu Freibeträge (Schwerbehinderung) und gezahlter Unterhalt (§ 24 WoFG);
         // darüber hinaus auch nicht mit der höchsten Landesstufe. 5 % Reserve, weil die Länder ihre Grenzen fortschreiben.
         const gdL = gdbNum(h), pgL = h.pflegegrad > 0;
         const freiL = (gdL === 100 || (gdL >= 80 && pgL) ? R.wbs.schwerbFreiHoch : gdL >= 50 && pgL ? R.wbs.schwerbFreiPflege : 0) + (h.bhWeitere || 0) * R.wbs.schwerbFreiPflege + (h.uzBetrag || 0) * 12;
         if (L.hoch && jahr * (1 - R.wbs.maxAbzug) - freiL > grenze * L.hoch * 1.05) return mk(id, 'nein', 'einkoHoch', [['wbs.landHoch', { land, grenze: eur(grenze * L.hoch) }]]);
-        return mk(id, 'vielleicht', 'vielleicht', [['wbs.landUeber', { land, grenze: eur(grenze), stand: L.stand }], ['wbs.landStelle']]);
+        return mk(id, 'vielleicht', 'vielleicht', [['wbs.landUeber', { land, grenze: eur(grenze), stand: L.stand }]].concat(stufenTx(), [['wbs.landStelle']]));
       }
       const bund = gr(R.wbsBund);
       return jahr <= bund ? mk(id, 'ja', 'ja', [['wbs.landJa', { grenze: eur(bund) }], ['wbs.landStelle']]) : mk(id, 'vielleicht', 'vielleicht', [['wbs.landEigen'], ['wbs.landStelle']]);
@@ -1401,9 +1461,10 @@ const Rules = (function () {
     if (kdu && h.miete > kdu) gsa = mitKdu(gsa, grundsicherungAlter(Object.assign({}, h, { miete: kdu })), kdu);
     const baf = bafoeg(h);
     const pf = pflege(h);
+    const hzp = hilfeZurPflege(h), blh = blindenhilfe(h);
     const results = [kg, wg, kz, gg, but, uvg, gsa, baf, pf,
-      a1, krg, eg, mutterschaftsgeld(h), kinderkrankengeld(h), hilfeZurPflege(h), landespflegegeld(h), asylbewerber(h), kindergeldBeh(h), erwerbsminderungsrente(h), schwerbRente(h), eingliederungshilfe(h), pauschbetrag(h), ausweis(h), blindengeld(h), blindenhilfe(h),
-      pflegeplus(h), budgetArbeit(h), rundfunk(h, gg, gsa), zuzahlung(h), bab(h), wbs(h)].map(angabeFehlt(h)).map((x, i) => ({ ...x, name: NAMES[x.id], order: i, steps: STEPS[x.id] }));
+      a1, krg, eg, mutterschaftsgeld(h), kinderkrankengeld(h), hzp, landespflegegeld(h), asylbewerber(h), kindergeldBeh(h), erwerbsminderungsrente(h), schwerbRente(h), eingliederungshilfe(h), pauschbetrag(h), ausweis(h), blindengeld(h), blh,
+      pflegeplus(h), budgetArbeit(h), rundfunk(h, gg, gsa, { hzp, blh, baf }), zuzahlung(h), bab(h), wbs(h)].map(angabeFehlt(h)).map((x, i) => ({ ...x, name: NAMES[x.id], order: i, steps: STEPS[x.id] }));
     uzHinweise(h, results);
     plan2027(h, results);
     besondere(h, results);
@@ -1414,7 +1475,7 @@ const Rules = (function () {
     return { h, results: sorted, zusammen: zus };
   }
 
-  return { evaluate, RULES: R, WG, limits, wgYmax, wgMiete, wgCap, wgHeiz, roman, sgb2Freibetrag, kizWohnanteil, haushaltsFreibetrag, derive, NAMES, STEPS, ZUST_LAND, zustLand };
+  return { evaluate, RULES: R, WG, limits, wgYmax, wgMiete, wgCap, wgHeiz, wgBetrag, roman, sgb2Freibetrag, kizWohnanteil, haushaltsFreibetrag, derive, NAMES, STEPS, ZUST_LAND, zustLand };
 })();
 
 if (typeof module !== 'undefined') module.exports = Rules;

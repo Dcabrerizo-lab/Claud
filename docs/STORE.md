@@ -20,7 +20,7 @@ Alles muss zur [Datenschutzerklärung](../datenschutz.html) passen. Bei Änderun
 
 ## Kurzbeschreibung (Play, max. 80 Zeichen)
 
-> Prüfe in zwei Minuten, welche Sozialleistungen dir zustehen könnten. Offline.
+> Sozialleistungen finden, Bescheide prüfen, Fristen behalten. Offline.
 
 ## Beschreibung (Play und iOS)
 
@@ -28,6 +28,12 @@ Alles muss zur [Datenschutzerklärung](../datenschutz.html) passen. Bei Änderun
 >
 > **Was die App prüft**
 > Kindergeld, Elterngeld, Mutterschaftsgeld, Wohngeld, Kinderzuschlag, Grundsicherungsgeld, Arbeitslosengeld I, Krankengeld, Kinderkrankengeld, Bildung und Teilhabe, Unterhaltsvorschuss, Grundsicherung im Alter und bei Erwerbsminderung, BAföG, Berufsausbildungsbeihilfe, Pflegegeld, Entlastungsbetrag, Verhinderungspflege und Pflegehilfsmittel, Bayerisches Landespflegegeld, Hilfe zur Pflege, Leistungen bei Behinderung (Pauschbetrag, Schwerbehindertenausweis, Eingliederungshilfe, Budget für Arbeit, Erwerbsminderungsrente, Altersrente für schwerbehinderte Menschen), Landesblindengeld, Blindenhilfe, Wohnberechtigungsschein, Befreiung vom Rundfunkbeitrag und von Zuzahlungen, Leistungen nach dem Asylbewerberleistungsgesetz.
+>
+> **Brief vom Amt? Prüfen lassen**
+> Bescheid vom Jobcenter, Sozialamt, von der Wohngeldstelle oder Familienkasse, Pflegegutachten oder Nebenkostenabrechnung: Trage die Zahlen ein, und SoLo rechnet nach, zeigt Abweichungen mit Paragraf und hilft beim Widerspruch, bei der Höherstufung oder bei Einwänden gegen die Abrechnung.
+>
+> **Fristen im Blick**
+> Widerspruchsfristen trägt die App selbst ein und zählt die Tage herunter. Eigene Fristen kannst du dazuschreiben.
 >
 > **Auch in einfacher Sprache**
 > Für Menschen mit Lernschwierigkeiten, zum Beispiel in einer Werkstatt: eine Frage pro Bildschirm, große Knöpfe, Vorlesen. Das Ergebnis zeigt, was du bekommen kannst, wie viel ungefähr und wo du hingehst.
@@ -68,7 +74,7 @@ Alles muss zur [Datenschutzerklärung](../datenschutz.html) passen. Bei Änderun
 - **Exportkontrolle:** In `Info.plist` ist `ITSAppUsesNonExemptEncryption = false` gesetzt (nur Standard-Verschlüsselung des Systems).
 - **Kamera:** Begründung steht in `Info.plist` (`NSCameraUsageDescription`).
 - **Review-Hinweis an Apple** (App Review Information → Notes):
-  > Die App läuft vollständig offline und benötigt kein Konto. Zum Testen: oben ein Beispiel wählen („Alleinerziehend …“), Ergebnisse ansehen, unten „Antragsmappe erstellen“ → „Als PDF teilen“. „Formular fotografieren“ nutzt die Kamera und erkennt Text auf dem Gerät (Apple Vision).
+  > Die App läuft vollständig offline und benötigt kein Konto. Zum Testen: oben ein Beispiel wählen („Alleinerziehend …“), Ergebnisse ansehen, unten „Antragsmappe erstellen“ → „PDF teilen“. „Formular fotografieren“ nutzt die Kamera und erkennt Text auf dem Gerät (Apple Vision).
 
 ## Screenshots
 

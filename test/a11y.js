@@ -1,4 +1,4 @@
-// Barrierefreiheit (axe-core, WCAG 2.1 AA): ausführliche Version (leer, mit Beispiel, Arabisch), Antragsmappe, einfache Version
+// Barrierefreiheit (axe-core, WCAG 2.2 AA + Best Practice; Tippflächen mind. 44 px nach Apple/Google): Startseite, Brief prüfen, Fristen, ausführliche Version (leer, mit Beispiel, Arabisch), Antragsmappe, einfache Version
 const { chromium } = require('playwright');
 const axePfad = require.resolve('axe-core/axe.min.js');
 const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html');
@@ -11,12 +11,29 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
     const pruefe = async (name) => {
       await p.addScriptTag({ path: axePfad });
       const r = await p.evaluate(async () => {
-        const res = await window.axe.run(document, { runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'] } });
+        const res = await window.axe.run(document, { runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice'] } });
         return res.violations.map((v) => ({ id: v.id, impact: v.impact, n: v.nodes.length, beispiel: v.nodes.slice(0, 2).map((x) => x.target.join(' ') + ' | ' + (x.failureSummary || '').split('\n').slice(1, 2).join('')) }));
       });
+      // Tippflächen: jedes Bedienelement mind. 44 x 44 px (Apple HIG 44 pt, Material 48 dp; WCAG 2.5.5); Häkchen zählen mit ihrer Beschriftung, Links im Fließtext sind ausgenommen
+      const klein = await p.evaluate(() => [...document.querySelectorAll('button, a[href], input, select, summary')].filter((el) => {
+        const cs = getComputedStyle(el); const rc = el.getBoundingClientRect();
+        if (!rc.width || !rc.height || cs.visibility === 'hidden' || el.closest('[hidden]')) return false;
+        if (el.type === 'checkbox' || el.type === 'radio') { const l = el.closest('label') || (el.id && document.querySelector('label[for="' + el.id + '"]')); if (l && l.getBoundingClientRect().height >= 44) return false; if (el.closest('.seg')) return false; }
+        if (el.tagName === 'A' && cs.display === 'inline') return false;
+        if (el.closest('#mappeBody')) return false; // Druckseiten
+        return rc.height < 43.5;
+      }).map((el) => (el.id || el.tagName) + ' ' + Math.round(el.getBoundingClientRect().height) + 'px'));
+      if (klein.length) r.push({ id: 'tippflaeche-44', impact: 'serious', n: klein.length, beispiel: klein.slice(0, 5) });
       out.push({ name: schema + ': ' + name, r });
     };
-    await pruefe('Start (leer)');
+    await pruefe('Startseite');
+    await p.click('#goBriefe'); await pruefe('Brief prüfen');
+    await p.click('#brief-pk'); await p.click('#pf-beispiel'); await pruefe('Brief prüfen: Pflegegutachten');
+    await p.click('#briefZurueck'); await p.click('#brief-vm'); await pruefe('Brief prüfen: Nebenkosten'); await p.click('#briefZurueck');
+    await p.click('#appnav [data-ansicht=fristen]'); await p.click('#fristNeu summary');
+    await p.fill('#fristTitel', 'Widerspruch'); await p.fill('#fristDatum', '2099-01-15'); await p.click('#fristAdd'); await pruefe('Fristen mit Eintrag');
+    await p.click('#appnav [data-ansicht=leistungen]');
+    await pruefe('Leistungen (leer)');
     await p.click('#p1'); await pruefe('Beispiel 1 mit Ergebnis');
     await p.selectOption('#lang', 'ar'); await pruefe('Arabisch'); await p.selectOption('#lang', 'de');
     await p.click('#mappeMake'); await pruefe('Antragsmappe'); await p.click('#mappeClose');
@@ -50,6 +67,6 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
     fehler += x.r.length;
     console.log('FAIL ' + x.name); x.r.forEach((v) => console.log('     ' + v.id + ' (' + v.impact + ', ' + v.n + 'x): ' + v.beispiel.join(' || ')));
   });
-  console.log(fehler ? '\n' + fehler + ' Barrierefreiheits-Probleme' : '\nBarrierefreiheit (WCAG 2.1 AA, axe-core): keine Probleme gefunden');
+  console.log(fehler ? '\n' + fehler + ' Barrierefreiheits-Probleme' : '\nBarrierefreiheit (WCAG 2.2 AA, Best Practice, Tippflächen 44 px, axe-core): keine Probleme gefunden');
   process.exit(fehler ? 1 : 0);
 })().catch((e) => { console.log('ABSTURZ', e.message); process.exit(1); });

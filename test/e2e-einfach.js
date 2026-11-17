@@ -23,7 +23,7 @@ const ergebnis = (p) => p.evaluate(() => {
   const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, locale: 'de-DE', deviceScaleFactor: 1 });
   const p = await ctx.newPage(); const errs = [];
   p.on('pageerror', (e) => errs.push(e.message));
-  await p.goto('file://' + file);
+  await p.goto('file://' + file + '#leistungen');
 
   ok('Knopf „Einfache Sprache“ sichtbar', await p.isVisible('#einfachBtn'));
   await p.click('#einfachBtn');
@@ -124,7 +124,7 @@ const ergebnis = (p) => p.evaluate(() => {
   // Veraltete Regeln: ab dem nächsten Stichtag (1.1.2027) ein deutlicher Hinweis
   const c2 = await b.newContext({ locale: 'de-DE' });
   await c2.addInitScript(() => { const D = Date; const fest = new D('2027-02-01T10:00:00').getTime(); window.Date = class extends D { constructor(...a) { super(...(a.length ? a : [fest])); } static now() { return fest; } }; });
-  const p2 = await c2.newPage(); await p2.goto('file://' + file);
+  const p2 = await c2.newPage(); await p2.goto('file://' + file + '#leistungen');
   ok('Ab 2027: Hinweis „Regeln veraltet“ sichtbar', await p2.isVisible('#altNotice') && /aktualisieren/.test(await p2.textContent('#altNotice')));
   await c2.close();
   ok('Keine Skriptfehler', errs.length === 0, errs.join(' | '));

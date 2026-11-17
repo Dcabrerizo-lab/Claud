@@ -61,7 +61,7 @@
   function save() { clearTimeout(saveTimer); saveTimer = setTimeout(flush, 300); }
   function smooth() { return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'; }
   function blankState() {
-    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', kindEink: '', ek1bArt: '', ek1bBetrag: '', baby: '', egVor: '', aufenthalt: '', miete: '', heizkosten: '', mietstufe: '', plz: '', plzPick: '', bundesland: '', vermoegen: '', gebJahr: '', arbeitSit: '', algMonate: '', krankWochen: '', lohnVorher: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', uzBetrag: '', uzAn: '', uzTitel: false, wohnart: '', hhAndere: '', autoWert: '', autoBraucht: false, euArbeit: '', euJahre: '', bezug: {} };
+    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', kindEink: '', ek1bArt: '', ek1bBetrag: '', zusatzRente: '', baby: '', egVor: '', aufenthalt: '', miete: '', heizkosten: '', mietstufe: '', plz: '', plzPick: '', bundesland: '', vermoegen: '', gebJahr: '', arbeitSit: '', algMonate: '', krankWochen: '', lohnVorher: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', uzBetrag: '', uzAn: '', uzTitel: false, wohnart: '', hhAndere: '', autoWert: '', autoBraucht: false, euArbeit: '', euJahre: '', bezug: {} };
   }
 
   function detect() {
@@ -146,7 +146,7 @@
     if (state.arbeitSit !== 'arbeitslos') reset(['algZeit', 'algMonate']);
     if (state.adults !== 1 || !state.ek1Art || state.ek1Art === 'ohne') reset(['ek1bArt', 'ek1bBetrag']);
     if (!state.ek1bArt) reset(['ek1bBetrag']);
-    if (!(state.ek1Art === 'rente' || state.ek2Art === 'rente' || state.ek1bArt === 'rente')) reset(['grundrente33']);
+    if (!(state.ek1Art === 'rente' || state.ek2Art === 'rente' || state.ek1bArt === 'rente')) reset(['grundrente33', 'zusatzRente']);
     if (!(state.wfbm || state.ek1Art === 'wfbm' || state.ek1bArt === 'wfbm')) reset(['wfbmEssen']);
     if (state.arbeitSit !== 'krank') reset(['krankWochen']);
     if (!state.arbeitSit) reset(['lohnVorher']);
@@ -313,6 +313,7 @@
       '<div class="zust behoerde" lang="de" dir="ltr"><p><strong>' + esc(t('beh.stelle')) + '</strong></p><address>' + lines.map(esc).join('<br>') + '</address>' +
       (b.haus ? '<p class="small"><bdi>' + esc(t('beh.besuch')) + '</bdi> ' + esc(b.haus.join(', ')) + '</p>' : '') +
       (b.web ? '<p><a href="' + esc(b.web) + '" target="_blank" rel="noopener">' + esc(t('beh.web')) + '</a></p>' : '') + '</div>' +
+      (b.weiter ? '<p class="small">' + esc(t('beh.wgWeiter')) + '</p>' : '') +
       '<p class="small">' + esc(b.anschrift ? (b.quelleArt === 'wikipedia' ? t('beh.pruefenWiki', { stand: b.stand || '' }) : b.stand ? t('beh.pruefen', { stand: b.stand }) : t('beh.pruefenKurz')) : t('beh.ohneAdr')) + '</p>';
   }
 
@@ -373,6 +374,7 @@
     if (!$('mappe').hidden) buildMappe();
     renderScan();
     if (esModus) esRender();
+    bereicheText();
   }
 
   function regelnVeraltet() { var ab = Rules.RULES.pruefenAb; return !!ab && new Date() >= new Date(ab + 'T00:00:00'); }
@@ -401,7 +403,7 @@
 
   var CHECKS = ['mzG', 'mzGl', 'algZeit', 'grundrente33', 'wfbmEssen', 'teilhabe', 'schwanger', 'ernaehrung', 'warmwasser', 'kinder12', 'unterhaltFehlt', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt', 'uzTitel', 'autoBraucht'];
   var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'ek1bArt', 'bhWeitere', 'baby', 'aufenthalt', 'arbeitSit', 'algMonate', 'krankWochen', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd', 'uzAn', 'wohnart', 'hhAndere', 'euArbeit', 'euJahre'];
-  var NUMS = ['miete', 'heizkosten', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'kindEink', 'lohnVorher', 'ek1bBetrag', 'egVor', 'vermoegen', 'uzBetrag', 'autoWert'];
+  var NUMS = ['miete', 'heizkosten', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'kindEink', 'lohnVorher', 'ek1bBetrag', 'egVor', 'vermoegen', 'uzBetrag', 'autoWert', 'zusatzRente'];
   var BEZUG = ['grundsicherungsgeld', 'sozialamt', 'wohngeld', 'kiz', 'kindergeld'];
 
   function writeForm() {
@@ -492,14 +494,15 @@
       openMappe();
     });
     $('mappeClose').addEventListener('click', closeMappe);
-    if (NATIVE) { $('mappePrint').setAttribute('data-t', 'f.pdf'); $('mappePrint').textContent = t('f.pdf'); $('mappeShare').hidden = false; }
+    // App: „PDF teilen“ (auf dem iPhone mit Drucken und In Dateien sichern im Teilen-Dialog); kein zweiter, doppelter Teilen-Knopf
+    if (NATIVE) { $('mappePrint').setAttribute('data-t', 'f.pdf'); $('mappePrint').textContent = t('f.pdf'); }
     // Android: eigene Knöpfe zum Drucken und Speichern (dort bietet der Teilen-Dialog das nicht auf jedem Gerät an; iPhone: im Teilen-Dialog enthalten)
     if (NATIVE && plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios')) {
       $('mappeDruck').hidden = false; $('mappeSpeichern').hidden = false; $('mappePrint').classList.add('ghost');
       $('mappeDruck').addEventListener('click', function () { pdfAusgabe('drucken'); });
       $('mappeSpeichern').addEventListener('click', function () { pdfAusgabe('speichern'); });
     }
-    else if (navigator.share) $('mappeShare').hidden = false; // Web: Teilen-Dialog des Handys (z. B. an die Betreuerin per E-Mail oder Messenger)
+    if (!NATIVE && navigator.share) $('mappeShare').hidden = false; // Web: Teilen-Dialog des Handys (z. B. an die Betreuerin per E-Mail oder Messenger)
     $('mappeShare').addEventListener('click', function () {
       var sh = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Share;
       var txt = $('mappeText').value;
@@ -522,7 +525,7 @@
       $('clearMsg').textContent = t('clear.done');
     });
     // Anbieter im Impressum: iPhone-App über das Apple-Konto von Natascha Cabrerizo y Polo, Android und Web: David Cabrerizo
-    if (NATIVE && window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') $('anbieterName').textContent = 'Natascha Cabrerizo y Polo';
+    if (NATIVE && window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') { $('anbieterName').textContent = 'Natascha Cabrerizo y Polo'; document.documentElement.classList.add('ios'); }
     $('legalBtn').addEventListener('click', openLegal);
     $('legalClose').addEventListener('click', closeLegal);
     $('firstOk').addEventListener('click', function () { $('firstNotice').hidden = true; Store.set('lotse.ack', '1'); });
@@ -810,6 +813,7 @@
     if (Array.isArray(s.einkommen)) L.push('Einkommen: ' + (s.einkommen.length ? s.einkommen.map(function (x) { return ARTDE[x.art] + ' ' + money(x.b); }).join(', ') + ' im Monat' : 'kein Einkommen'));
     else L.push(ekZeile(1, s.adults === 2 ? 'Einkommen (ich)' : 'Einkommen'));
     if (s.adults === 2) L.push(ekZeile(2, 'Einkommen (Partner/in)'));
+    if (Number(s.zusatzRente) > 0) L.push('Davon Betriebsrente, Riester-Rente oder private Rente: ' + money(s.zusatzRente) + ' im Monat (Freibetrag nach § 82 Abs. 4 SGB XII)');
     if ((s.kids || s.young) && s.unterhalt !== '' && s.unterhalt != null && Number(s.unterhalt) > 0) L.push('Unterhalt für die Kinder im Monat (vom anderen Elternteil): ' + money(s.unterhalt));
     L.push('Erspartes und Geldvermögen: ' + money(s.vermoegen));
     L.push('Besonderheiten: ' + (besond().length ? besond().join('; ') : 'keine'));
@@ -824,10 +828,18 @@
     return (lastOut ? lastOut.results : []).filter(function (r) { return picked[r.id]; });
   }
 
+  // Entweder amtliches Formular oder formloser Antrag: Gibt es für eine Leistung einen geprüften Link zum amtlichen Formular,
+  // erstellt SoLo keinen formlosen Brief dafür; nur Leistungen ohne Formular-Link bekommen den formlosen Antrag.
+  var LINK_FUER = { ggeld: 'ggeld', kiz: 'kiz', kg1: 'kindergeld', kg4: 'kgBeh', wg: 'wohngeld', wbs: 'wbs' };
+  function briefIds() {
+    var mitLink = {};
+    formPlan().forEach(function (f) { if (f.art === 'link' && LINK_FUER[f.id]) mitLink[LINK_FUER[f.id]] = true; });
+    return pickedIds().filter(function (r) { return !mitLink[r.id]; });
+  }
   function buildMappe() {
-    var ids = pickedIds();
+    var ids = pickedIds(), briefe = briefIds();
     var html = '';
-    ids.forEach(function (r) {
+    briefe.forEach(function (r) {
       html += '<article class="page" lang="de" dir="ltr"><pre>' + esc(letterText(r.id)) + '</pre></article>';
     });
     html += '<article class="page" lang="de" dir="ltr"><pre>' + esc(sheetText()) + '</pre></article>';
@@ -838,16 +850,14 @@
     }).join('') + '</article>';
     html += formsHtml();
     $('mappeBody').innerHTML = html;
-    var fb = $('formsShare');
-    if (fb) fb.addEventListener('click', shareForms);
     // Hinweis, wenn Anschreiben ohne Empfänger-Anschrift bleiben, weil der Wohnort fehlt (Anschriften gibt es für Bayern)
     var ohneOrt = Behoerden.available() && !aktAgs() && (!state.bundesland || state.bundesland === 'BY') &&
       ids.some(function (r) { return Behoerden.brauchtKreis(r.id); });
     $('mappeAdrNote').hidden = !ohneOrt;
-    $('mappeText').value = ids.map(function (r) { return letterText(r.id); }).concat([sheetText()]).join('\n\n----------------------------------------\n\n');
+    $('mappeText').value = briefe.map(function (r) { return letterText(r.id); }).concat([sheetText()]).join('\n\n----------------------------------------\n\n');
   }
 
-  // ----- Amtliche Formulare (Ausfüllhilfe): passende Formulare nach den gewählten Leistungen, in der App vorausgefüllt -----
+  // ----- Amtliche Formulare: Links auf die amtlichen Seiten mit Ausfüllhilfe (SoLo füllt nichts aus) -----
   function formPlan() {
     if (typeof Formulare === 'undefined') return [];
     return Formulare.plan(state, person, pickedIds());
@@ -855,35 +865,17 @@
   function formsHtml() {
     var fp = formPlan();
     if (!fp.length) return '';
-    var jc = fp.some(function (f) { return f.datei.indexOf('ba01') >= 0 || f.id === 'ha'; });
-    var leer = fp.every(function (f) { return f.art !== 'fuellen'; });
-    var mitDatei = fp.some(function (f) { return !!f.datei; }); // nur Vordrucke ohne Vorausfüllung (z. B. Wohngeld, Kinderzuschlag)
-    var h = '<article class="page docs forms"><h3>' + esc(t('f.forms')) + '</h3><p>' + esc(t(!NATIVE ? 'f.formsWeb' : leer ? 'f.formsAppLeer' : 'f.formsApp')) + '</p>';
-    if (NATIVE && mitDatei) h += '<div class="btns no-print"><button type="button" class="btn" id="formsShare">' + esc(t(leer ? 'f.formsShareLeer' : 'f.formsShare')) + '</button></div><p class="msg" id="formsMsg" role="status"></p>';
+    var jc = fp.some(function (f) { return f.id === 'ggeld'; });
+    // Leistungen ohne Formular-Link: Der formlose Antrag steht weiter oben in der Mappe
+    var HINWEIS_FUER = { gsa: 'gsa', wg: 'wohngeld', wbs: 'wbs' }, briefe = {};
+    briefIds().forEach(function (r) { briefe[r.id] = true; });
+    var h = '<article class="page docs forms"><h3>' + esc(t('f.forms')) + '</h3><p>' + esc(t('f.formsWeb')) + '</p>';
     h += '<ul lang="de" dir="ltr">' + fp.map(function (f) {
-      return '<li><strong>' + esc(f.titel) + '</strong> – ' + esc(f.warum) + (f.art === 'leer' ? ' (' + esc(t('f.formsLeer')) + ')' : '') + (f.url ? '<br><a href="' + esc(f.url) + '" target="_blank" rel="noopener">' + esc(t('f.formsLink')) + '</a>' : '') + (f.hilfe ? '<br><em>Ausfüllhilfe:</em>' + listItems(f.hilfe) : '') + '</li>';
+      var brief = f.art === 'hinweis' && briefe[HINWEIS_FUER[f.id]] ? (/[.!?]$/.test(f.warum) ? '' : '.') + ' <strong>' + esc(t('f.formsBrief')) + '</strong>' : '';
+      return '<li><strong>' + esc(f.titel) + '</strong> – ' + esc(f.warum) + brief + (f.url ? '<br><a href="' + esc(f.url) + '" target="_blank" rel="noopener">' + esc(t('f.formsLink')) + '</a>' : '') + (f.hilfe ? '<br><em>Ausfüllhilfe:</em>' + listItems(f.hilfe) : '') + '</li>';
     }).join('') + '</ul><p class="tip">' + esc(t('f.formsCheck')) + '</p>';
     if (jc) h += '<h3>' + esc(t('f.formsUnt')) + '</h3>' + '<div lang="de" dir="ltr">' + listItems(Formulare.unterlagen(state)) + '</div>';
     return h + '</article>';
-  }
-  function shareForms() {
-    var fs = plug('Filesystem'), sh = plug('Share'), msg = $('formsMsg');
-    msg.textContent = t('f.pdfWorking');
-    if (!fs || !sh) { msg.textContent = t('f.pdfFail'); return; }
-    var fp = formPlan(), geschrieben = [];
-    var lade = function (n) { return fetch('formulare/' + n).then(function (r) { if (!r.ok) throw new Error(n); return r.arrayBuffer(); }).then(function (b) { return new Uint8Array(b); }); };
-    Promise.all([loadPdfLib(), fetch('formulare/katalog.json').then(function (r) { return r.json(); })]).then(function (x) {
-      return x[0].fillForms({ forms: fp, katalog: x[1], loadFile: lade });
-    }).then(function (liste) {
-      return liste.reduce(function (p, f) {
-        return p.then(function () { return fs.writeFile({ path: f.name, data: toBase64(f.bytes), directory: 'CACHE' }).then(function (r) { geschrieben.push({ name: f.name, uri: r.uri }); }); });
-      }, Promise.resolve());
-    }).then(function () {
-      return sh.share({ title: t('f.forms'), files: geschrieben.map(function (g) { return g.uri; }) }).then(function () {}, function () {});
-    }).then(function () {
-      msg.textContent = '';
-      geschrieben.forEach(function (g) { fs.deleteFile({ path: g.name, directory: 'CACHE' }).catch(function () {}); });
-    }).catch(function () { msg.textContent = t('f.pdfFail'); });
   }
 
   function openMappe() {
@@ -915,7 +907,7 @@
   function pdfPages() {
     // Briefe und Angabenblatt sind deutsch. Die Unterlagenliste folgt der Sprache; Arabisch kann pdf-lib nicht setzen, dort bleibt sie deutsch.
     var pdfLang = lang === 'ar' ? 'de' : lang, saved = lang;
-    var pages = pickedIds().map(function (r) { return { blocks: [{ t: 'pre', text: letterText(r.id) }] }; });
+    var pages = briefIds().map(function (r) { return { blocks: [{ t: 'pre', text: letterText(r.id) }] }; });
     pages.push({ blocks: [{ t: 'pre', text: sheetText() }] });
     lang = pdfLang;
     try {
@@ -1484,7 +1476,7 @@
   applyLang();
   initClaude();
 
-  $('einfachBtn').addEventListener('click', function () { esUmschalten(!esModus); });
+  $('einfachBtn').addEventListener('click', function () { zeigeAnsicht('leistungen'); esUmschalten(!esModus); });
   Store.get('lotse.einfach', function (v) {
     try { var d = v ? JSON.parse(v) : null; if (d && d.es) { es = Object.assign(esLeer(), d.es); if (d.an) esUmschalten(true); } } catch (e) {}
   });
@@ -1498,6 +1490,108 @@
     speichern: function () { flush(); },
     state: function () { return state; }
   };
+  // ----- Bereiche: Start, Leistungen (Leistungscheck), Brief prüfen, Fristen -----
+  // Beim Öffnen die Startseite; „#leistungen“, „#briefe“, „#fristen“ öffnen den Bereich direkt (Links, Tests).
+  var ANSICHTEN = ['start', 'leistungen', 'briefe', 'fristen'];
+  var aktAnsicht = 'leistungen', fristen = [];
+  var BRIEFE = [
+    ['jc', 'briefe.jobcenter', 'briefe.jobcenter.t', '<path d="M4 20V9l8-5 8 5v11"/><path d="M9 20v-6h6v6M3 20h18"/>'],
+    ['sa', 'briefe.sozialamt', 'briefe.sozialamt.t', '<circle cx="12" cy="7" r="3"/><path d="M5 20c1-4 4-6 7-6s6 2 7 6"/>'],
+    ['wg', 'briefe.wohngeld', 'briefe.wohngeld.t', '<path d="M4 11l8-6 8 6v9H4z"/><path d="M10 20v-5h4v5"/>'],
+    ['fk', 'briefe.familienkasse', 'briefe.familienkasse.t', '<circle cx="8" cy="8" r="2.5"/><circle cx="16" cy="8" r="2.5"/><path d="M4 20c.5-3 2-5 4-5M20 20c-.5-3-2-5-4-5M9 20c.5-2 1.5-3 3-3s2.5 1 3 3"/>'],
+    ['pk', 'briefe.pflegekasse', 'briefe.pflegekasse.t', '<path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/>'],
+    ['vm', 'briefe.vermieter', 'briefe.vermieter.t', '<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/>']
+  ];
+  function zeigeAnsicht(a, fokus) {
+    if (ANSICHTEN.indexOf(a) < 0) a = 'start';
+    aktAnsicht = a;
+    ANSICHTEN.forEach(function (x) { $('v-' + x).hidden = x !== a; });
+    $('jump').hidden = a !== 'leistungen' || esModus;
+    document.querySelectorAll('#appnav button').forEach(function (b) { if (b.getAttribute('data-ansicht') === a) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
+    try { if (location.hash !== '#' + a) history.replaceState(null, '', '#' + a); } catch (e) {}
+    bereicheText();
+    if (fokus) { window.scrollTo(0, 0); var h = $('v-' + a).querySelector('h2'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); } }
+  }
+  function heuteIso() { var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+  function tageBis(iso) { var a = heuteIso().split('-').map(Number), b = String(iso).split('-').map(Number); return Math.round((Date.UTC(b[0], b[1] - 1, b[2]) - Date.UTC(a[0], a[1] - 1, a[2])) / 864e5); }
+  function datumText(iso) { var b = String(iso).split('-').map(Number); try { return new Date(b[0], b[1] - 1, b[2]).toLocaleDateString(lang, { day: '2-digit', month: '2-digit', year: 'numeric' }); } catch (e) { return iso; } }
+  function fristSpeichern() { Store.set('lotse.fristen', JSON.stringify(fristen)); }
+  function fristKarte(f, loeschbar) {
+    var n = tageBis(f.datum);
+    var el = document.createElement('div');
+    el.className = 'frist' + (n < 0 ? ' vorbei' : n <= 14 ? ' nah' : '');
+    var tage = document.createElement('span'); tage.className = 'frist-tage';
+    tage.textContent = n < 0 ? '!' : String(n);
+    var klein = document.createElement('small'); klein.textContent = n < 0 ? t('fristen.vorbei') : n === 1 ? t('fristen.tag') : t('fristen.tage'); tage.appendChild(klein);
+    var txt = document.createElement('span'); txt.className = 'frist-txt';
+    var b = document.createElement('b'); b.textContent = f.titel; txt.appendChild(b);
+    txt.appendChild(document.createTextNode(t('fristen.bis', { datum: datumText(f.datum) })));
+    el.appendChild(tage); el.appendChild(txt);
+    if (loeschbar) {
+      var x = document.createElement('button'); x.type = 'button'; x.className = 'btn ghost'; x.textContent = t('fristen.erledigt');
+      x.setAttribute('aria-label', t('fristen.erledigt') + ': ' + f.titel);
+      x.addEventListener('click', function () { fristen = fristen.filter(function (y) { return y !== f; }); fristSpeichern(); bereicheText(); $('fristNeu').querySelector('summary').focus(); });
+      el.appendChild(x);
+    }
+    return el;
+  }
+  function fristenSortiert() { return fristen.slice().sort(function (a, b) { return a.datum < b.datum ? -1 : a.datum > b.datum ? 1 : 0; }); }
+  function bereicheText() {
+    if (!$('v-start') || !fristen) return;
+    var sort = fristenSortiert(), offen = sort.filter(function (f) { return tageBis(f.datum) >= 0; });
+    $('navPunkt').hidden = !sort.some(function (f) { return tageBis(f.datum) <= 14; });
+    var sf = $('startFristen'); sf.textContent = '';
+    if (offen.length) {
+      var h = document.createElement('h3'); h.className = 'abschnitt'; h.textContent = t('home.naechstes'); sf.appendChild(h);
+      offen.slice(0, 2).forEach(function (f) { sf.appendChild(fristKarte(f, false)); });
+    }
+    var fl = $('fristListe'); fl.textContent = '';
+    if (!sort.length) { var p = document.createElement('p'); p.className = 'muted'; p.textContent = t('fristen.leer'); fl.appendChild(p); }
+    sort.forEach(function (f) { fl.appendChild(fristKarte(f, true)); });
+    var bk = $('briefKacheln');
+    if (!bk.children.length) BRIEFE.forEach(function (x) {
+      var k = document.createElement('button'); k.type = 'button'; k.className = 'kachel'; k.id = 'brief-' + x[0];
+      k.innerHTML = '<span class="kachel-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + x[3] + '</svg></span><b></b><span class="k-t"></span>';
+      k.addEventListener('click', function () { briefOeffnen(x[0]); });
+      bk.appendChild(k);
+    });
+    BRIEFE.forEach(function (x) { var k = $('brief-' + x[0]); k.querySelector('b').textContent = t(x[1]); k.querySelector('.k-t').textContent = t(x[2]); });
+  }
+  // Brief prüfen: Kachel öffnet den passenden Teil des Prüfpakets (Abschnitte aus erweiterungen/vorschau.html)
+  var BRIEF_TEIL = { jc: 'p-bescheid', sa: 'p-gsa', wg: 'p-wg', fk: 'p-kiz', pk: 'p-pflege', vm: 'p-nk' };
+  function briefOeffnen(art) {
+    var teil = BRIEF_TEIL[art];
+    document.querySelectorAll('#checkBox .pp-teil').forEach(function (s) { s.hidden = s.id !== teil; });
+    $('briefKacheln').hidden = !!teil; $('briefeIntro').hidden = !!teil; $('checkBox').hidden = !teil;
+    $('ppNurDe').hidden = lang === 'de';
+    window.scrollTo(0, 0);
+    var h = teil && $(teil).querySelector('h2'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
+  }
+  $('briefZurueck').addEventListener('click', function () { var war = null; document.querySelectorAll('#checkBox .pp-teil').forEach(function (s) { if (!s.hidden) war = s.id; }); briefOeffnen(null); for (var k in BRIEF_TEIL) if (BRIEF_TEIL[k] === war) $('brief-' + k).focus(); });
+  // Frist aus anderen Teilen der App eintragen (Prüfpaket): gleiche Frist nicht doppelt
+  function fristEintragen(f) {
+    if (!f || !f.titel || !/^\d{4}-\d{2}-\d{2}$/.test(f.datum || '')) return;
+    if (fristen.some(function (y) { return y.titel === f.titel && y.datum === f.datum; })) return;
+    fristen.push({ titel: String(f.titel).slice(0, 140), datum: f.datum, quelle: f.quelle || '' }); fristSpeichern(); bereicheText();
+  }
+  window.SoLoFristen = { eintragen: fristEintragen };
+  document.querySelectorAll('#appnav button').forEach(function (b) { b.addEventListener('click', function () {
+    var a = b.getAttribute('data-ansicht');
+    if (a === 'briefe' && aktAnsicht === 'briefe' && !$('checkBox').hidden) { briefOeffnen(null); $('h-briefe') && $('h-briefe').focus(); return; } // nochmal tippen: zurück zur Auswahl
+    zeigeAnsicht(a, true);
+  }); });
+  $('goLeistungen').addEventListener('click', function () { zeigeAnsicht('leistungen', true); });
+  $('goBriefe').addEventListener('click', function () { zeigeAnsicht('briefe', true); });
+  $('fristAdd').addEventListener('click', function () {
+    var ti = $('fristTitel').value.trim(), da = $('fristDatum').value;
+    if (!ti || !/^\d{4}-\d{2}-\d{2}$/.test(da)) { $('fristMsg').textContent = t('fristen.fehlt'); return; }
+    fristEintragen({ titel: ti, datum: da, quelle: 'eigen' });
+    $('fristTitel').value = ''; $('fristDatum').value = ''; $('fristMsg').textContent = t('fristen.gespeichert');
+  });
+  window.addEventListener('hashchange', function () { var a = location.hash.slice(1); if (ANSICHTEN.indexOf(a) >= 0 && a !== aktAnsicht) zeigeAnsicht(a, true); });
+  Store.get('lotse.fristen', function (v) { try { var d = v ? JSON.parse(v) : []; if (Array.isArray(d)) fristen = d.filter(function (f) { return f && typeof f.titel === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(f.datum || ''); }); } catch (e) {} bereicheText(); });
+  zeigeAnsicht((function () { var a = (location.hash || '').slice(1); return ANSICHTEN.indexOf(a) >= 0 ? a : 'start'; })());
+
   Store.get('lotse.state', function (v) {
     if (!v) return;
     try {

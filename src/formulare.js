@@ -69,6 +69,7 @@ const Formulare = (function () {
     const R = (id) => (results || []).find((x) => x.id === id);
     const liste = [];
     const leer = (id, datei, titel, warum, hilfe) => { liste.push({ id, datei, titel, warum, werte: {}, art: 'leer', hilfe: hilfe || null }); };
+    const hinweis = (id, titel, warum, hilfe) => { liste.push({ id, datei: '', titel, warum, werte: {}, art: 'hinweis', hilfe: hilfe || null }); };
     const link = (id, titel, warum, url, hilfe) => { liste.push({ id, datei: '', titel, warum, werte: {}, art: 'link', url, hilfe: hilfe || null }); };
     const FK = 'https://www.arbeitsagentur.de/familie-und-kinder/downloads-familie-und-kinder';
     const add = (id, datei, titel, warum, werte, art) => liste.push({ id, datei, titel, warum, werte: werte || {}, art: art || 'fuellen' });
@@ -78,100 +79,25 @@ const Formulare = (function () {
     const selbst = istSelbst(s);
     const k = kopf(p);
 
+    // Grundsicherungsgeld (Jobcenter): keine mitgelieferten Vordrucke mehr, sondern die amtliche Formularseite der Bundesagentur.
+    // Die Ausfüllhilfe nennt die Anlagen, die nach den Angaben gebraucht werden.
     if (ok(R('ggeld'))) {
-      // Hauptantrag
-      const ha = Object.assign({}, k, anschrift(p));
-      if (p.tel) ha.txtfPersonTel = String(p.tel).trim();
-      ha.chbxBUEGSofort = true;
-      const em = s.emStd === 'unter3' || !!s.wfbm || a.indexOf('wfbm') >= 0;
-      ha.rtbnErwerbsfaehig = em ? 'nein' : 'ja';
-      ha.rbtnAlleinerziehend = allein ? 'ja' : 'nein';
-      ha.rbtnSchwanger = s.schwanger ? 'ja' : 'nein';
-      ha.rbtnSchueler = s.ausbildung === 'ich' ? 'ja' : 'nein';
-      ha.rbtnAsylbLG = s.aufenthalt === 'asyl' ? 'ja' : 'nein';
-      ha.rbtnMEB = s.ernaehrung ? 'ja' : 'nein';
-      if (s.bhPerson === 'ich') { ha.rbtnBehinderung = 'ja'; ha.rbtnLeistungTeilhabe = s.teilhabe ? 'ja' : 'nein'; }
-      else if (!s.bhPerson) ha.rbtnBehinderung = 'nein';
-      if ((s.bezug || {}).grundsicherungsgeld || (s.bezug || {}).sozialamt) ha.rbtnBUEG = 'ja';
-      ha.rbtnSelbstaendig = selbst ? 'ja' : 'nein';
-      const ersatz = a.filter((x) => x === 'alg' || x === 'kg' || x === 'eg');
-      ha.rbtnEntgeltersatz = ersatz.length ? 'ja' : 'nein';
-      if (ersatz.length) ha.txtfEntgeltersatz = ersatz.map((x) => ({ alg: 'Arbeitslosengeld', kg: 'Krankengeld', eg: 'Elterngeld' })[x]).join(', ');
-      const andere = { chbxLeistungWohngeld: ok(R('wohngeld')) && !(s.bezug || {}).wohngeld, chbxLeistungArbeitslosengeld: ok(R('alg1')) && a.indexOf('alg') < 0,
-        chbxLeistungKRG: ok(R('krankengeld')) && a.indexOf('kg') < 0, chbxLeistungKG: kids + young > 0 && !(s.bezug || {}).kindergeld,
-        chbxLeistungKIZ: ok(R('kiz')) && !(s.bezug || {}).kiz, chbxLeistungBafoeg: ok(R('bafoeg')), chbxLeistungBAB: ok(R('bab')), chbxLeistungRente: ok(R('emrente')) || ok(R('srente')) };
-      const welche = Object.keys(andere).filter((x) => andere[x]);
-      ha.rbtnLeistungAndere = welche.length ? 'ja' : 'nein';
-      welche.forEach((x) => { ha[x] = true; });
-      const alleinWohnen = erw === 1 && kids + young === 0 && !s.hhAndere && s.wohnform !== 'eltern';
-      ha.rbtnWohnsituation = alleinWohnen ? 'ja' : 'nein';
-      if (erw === 2) ha.chbxWohnenEhegatte = true;
-      if (kids > (s.kids14 | 0)) ha.chbxWohnenKindU15 = true;
-      if ((s.kids14 | 0) > 0 || young > 0) ha.chbxWohnenKind = true;
-      if (s.wohnform === 'eltern') ha.chbxWohnenEltern = true;
-      if (s.hhAndere === 'verwandte') ha.chbxWohnenVerwandte = true;
-      if (s.hhAndere === 'wg') ha.chbxWohnenSonstige = true;
-      ha.rbtnBedarfUnterkunft = miete > 0 ? 'ja' : 'nein';
-      add('ha', 'antrag-sgb2_ba147846.pdf', 'Hauptantrag (HA)', 'Antrag auf Grundsicherungsgeld', ha);
-
-      // Anlage EK: Einkommen der antragstellenden Person
-      const ek = Object.assign({}, k, selbe(p));
-      ek.rbtnEinkommen = a.indexOf('lohn') >= 0 ? 'ja' : 'nein';
-      ek.rbtnEinkommenFreiberuflich = selbst ? 'ja' : 'nein';
-      const ein = { chbxEinnahmeWohngeld: !!(s.bezug || {}).wohngeld, chbxEinnahmeArbeitslosengeld: a.indexOf('alg') >= 0, chbxEinnahmeKrankengeld: a.indexOf('kg') >= 0,
-        chbxEinnahmeElterngeld: a.indexOf('eg') >= 0, chbxEinnahmeKindergeld: kids + young > 0 && !!(s.bezug || {}).kindergeld, chbxEinnahmeKinderzuschlag: !!(s.bezug || {}).kiz,
-        chbxEinnahmeRenten: a.indexOf('rente') >= 0, chbxEinnahmeSozialhilfe: !!(s.bezug || {}).sozialamt };
-      const hat = Object.keys(ein).filter((x) => ein[x]);
-      hat.forEach((x) => { ek[x] = true; });
-      if (!hat.length && a.indexOf('lohn') < 0 && !selbst && a.indexOf('wfbm') < 0) ek.chbxEinnahmeKeine = true;
-      if (a.indexOf('wfbm') >= 0) { ek.chbxEinnahmeSonstige = true; ek.txtfEinnahmeSonstige = 'Lohn aus der Werkstatt für behinderte Menschen'; }
-      ek.rbtnUnterhaltszahlung = n(s.uzBetrag) > 0 ? 'ja' : 'nein';
-      if (n(s.autoWert) > 0) ek.chbxVersicherungKfz = true;
-      add('ek', 'anlageek_ba013053.pdf', 'Anlage EK', 'Einkommen (für jede Person ab 15 Jahren eine eigene Anlage EK)', ek);
-
-      // Anlage KDU: Unterkunft und Heizung
-      if (miete > 0 || eigen) {
-        const kdu = Object.assign({}, k, anschrift(p));
-        kdu.numfUnterkunftAnzahlPersonen = String(erw + kids + young);
-        if (eigen) kdu.chbxWohnenEigentum = true; else kdu.chbxWohnenMiete = true;
-        if (s.warmwasser) kdu.chbxWasserDezentral = true;
-        add('kdu', 'anlagekdu_ba013056.pdf', 'Anlage KDU', 'Kosten für Unterkunft und Heizung' + (miete > 0 ? ' (laut SoLo zusammen ' + geld(miete) + ' € im Monat: bitte nach Grundmiete, Nebenkosten und Heizkosten aufteilen)' : ''), kdu);
-      }
-      // Anlage VM: Vermögen
-      const vm = Object.assign({}, k);
-      vm.rbtnBGImmobBewohnt = eigen ? 'ja' : 'nein';
-      vm.rbtnBGKfZ = n(s.autoWert) > 0 ? 'ja' : 'nein';
-      if (n(s.autoWert) > 0) vm.numfKfZWertZ1 = geld(s.autoWert);
-      add('vm', 'anlagevm_ba013070.pdf', 'Anlage VM', 'Vermögen (Konten, Wertgegenstände, Auto, Immobilien)', vm);
-      // Weitere Personen
-      if (erw === 2) {
-        add('wep', 'anlagewep_ba013071.pdf', 'Anlage WEP', 'Für die Partnerin oder den Partner', Object.assign({}, k));
-        add('ek2', 'anlageek_ba013053.pdf', 'Anlage EK (Partner)', 'Einkommen der Partnerin oder des Partners', Object.assign({}, k));
-        add('ve', 'anlageve_ba013069.pdf', 'Anlage VE', 'Nur wenn ihr nicht verheiratet seid: Fragen zur Partnerschaft', Object.assign({}, k));
-      }
-      for (let i = 0; i < young; i++) add('wep-' + i, 'anlagewep_ba013071.pdf', 'Anlage WEP (Kind ab 15)', 'Für jedes Kind ab 15 Jahren', Object.assign({}, k));
-      for (let i = 0; i < kids; i++) {
-        const ki = Object.assign({}, k);
-        if (allein) ki.rbtnBGElternAusserhalb = 'ja';
-        add('ki-' + i, 'anlageki_ba013057.pdf', 'Anlage KI (Kind ' + (i + 1) + ')', 'Für jedes Kind unter 15 Jahren (Kinder von 15 bis 17 Jahren: Anlage WEP)', ki);
-      }
-      if (allein) {
-        const uh = Object.assign({}, k);
-        uh.rbtnUH = n(s.unterhalt) > 0 ? 'ja' : 'nein';
-        if (n(s.unterhalt) > 0) uh.numfUHZahlung = geld(s.unterhalt);
-        add('uh3', 'anlageuh3_ba013067.pdf', 'Anlage UH3', 'Unterhalt für die Kinder vom anderen Elternteil (für jedes Kind eine eigene Anlage)', uh);
-      }
-      if (s.schwanger && erw === 1) add('uh2', 'anlageuh2_ba013066.pdf', 'Anlage UH2', 'Schwangerschaft, wenn du nicht verheiratet bist', Object.assign({}, k, selbe(p)));
-      if (s.ernaehrung) add('meb', 'anlagemeb_ba013060.pdf', 'Anlage MEB', 'Mehrbedarf für kostenaufwändige Ernährung (Seite 3 und 4 füllt die Ärztin oder der Arzt aus)',
-        Object.assign({}, kopf(p, 'txtfAnlPerson'), selbe(p, 'txtfAnlBG'), { chbxAnlBGMehrbedarfErstmalig: true }));
-      if (s.hhAndere === 'verwandte') add('hg', 'anlagehg_ba013055.pdf', 'Anlage HG', 'Verwandte in derselben Wohnung (Haushaltsgemeinschaft)', Object.assign({}, k));
-      if (selbst) {
-        add('eks', 'AnlageEKS_ba013054.pdf', 'Anlage EKS', 'Einkommen aus Selbstständigkeit (Einnahmen und Ausgaben, vorläufig)', Object.assign({}, k));
-        add('sv', 'anlagesv_ba013063.pdf', 'Anlage SV', 'Kranken- und Pflegeversicherung bei Selbstständigkeit', Object.assign({}, k, selbe(p), { rbtnSelbstaendig: 'ja' }));
-      }
-      // Vordrucke für Dritte
-      if (a.indexOf('lohn') >= 0) add('ab', 'dok_ba033945.pdf', 'Einkommensbescheinigung', 'Füllt der Arbeitgeber aus', {}, 'leer');
-      if (miete > 0 && !eigen) add('mb', 'Mietbescheinigung_1.pdf', 'Mietbescheinigung', 'Füllt die Vermieterin oder der Vermieter aus, wenn kein Mietvertrag vorliegt', {}, 'leer');
+      const anl = ['Hauptantrag (HA)', 'Anlage EK: Einkommen, für jede Person ab 15 Jahren eine eigene'];
+      if (miete > 0 || eigen) anl.push('Anlage KDU: Kosten für Unterkunft und Heizung' + (miete > 0 ? ' (laut SoLo zusammen ' + geld(miete) + ' € im Monat: nach Grundmiete, Nebenkosten und Heizkosten aufteilen)' : ''));
+      anl.push('Anlage VM: Vermögen (Konten, Auto, Immobilien)');
+      if (erw === 2) anl.push('Anlage WEP und eine eigene Anlage EK für die Partnerin oder den Partner; Anlage VE nur, wenn ihr nicht verheiratet seid');
+      if (young > 0) anl.push('Anlage WEP für jedes Kind ab 15 Jahren');
+      if (kids > 0) anl.push('Anlage KI für jedes Kind unter 15 Jahren');
+      if (allein) anl.push('Anlage UH3: Unterhalt für die Kinder vom anderen Elternteil, je Kind eine');
+      if (s.schwanger && erw === 1) anl.push('Anlage UH2: Schwangerschaft, wenn du nicht verheiratet bist');
+      if (s.ernaehrung) anl.push('Anlage MEB: Mehrbedarf für Ernährung (Seite 3 und 4 füllt die Ärztin oder der Arzt aus)');
+      if (s.hhAndere === 'verwandte') anl.push('Anlage HG: Verwandte in derselben Wohnung');
+      if (selbst) anl.push('Anlage EKS (Einnahmen und Ausgaben) und Anlage SV (Kranken- und Pflegeversicherung) für die Selbstständigkeit');
+      if (a.indexOf('lohn') >= 0) anl.push('Einkommensbescheinigung: füllt der Arbeitgeber aus');
+      if (miete > 0 && !eigen) anl.push('Mietbescheinigung: füllt die Vermieterin oder der Vermieter aus, wenn kein Mietvertrag vorliegt');
+      anl.push('Der Antrag ist an keine Form gebunden: online (am einfachsten), persönlich, telefonisch oder schriftlich. Das Geld gibt es ab dem Ersten des Monats, in dem der Antrag eingeht');
+      link('ggeld', 'Antrag auf Grundsicherungsgeld (Hauptantrag und Anlagen)', 'Beim Jobcenter; online über die Online-Services der Bundesagentur oder mit den Vordrucken zum Herunterladen',
+        'https://www.arbeitsagentur.de/arbeitslos-arbeit-finden/downloads-arbeitslos-arbeit-finden', anl);
     }
     // Kinderzuschlag (Familienkasse): Vordrucke sind vom Herausgeber geschützt und ändern sich oft. Link auf die amtliche Formularseite.
     if (ok(R('kiz')) && !(s.bezug || {}).kiz) link('kiz', 'Antrag auf Kinderzuschlag (KiZ 1)', 'Bei der Familienkasse; am einfachsten online (mit BundID ganz ohne Papier)', FK + '/formulare-kinderzuschlag', [
@@ -211,7 +137,7 @@ const Formulare = (function () {
        'Lebt das Kind nicht bei dir oder zahlst du keinen Unterhalt: Das Kindergeld kann an das Kind selbst oder an das Sozialamt gehen (Abzweigung, Antrag KG 11e auf der Seite „Kindergeld ab 18“)']));
     // Grundsicherung im Alter und bei Erwerbsminderung (Sozialamt)
     if (ok(R('gsa')) && !(s.bezug || {}).sozialamt) {
-      leer('gsa', 'sgb12-grundsicherung.pdf', 'Antrag auf Grundsicherung im Alter und bei Erwerbsminderung (SGB XII)', 'Muster des Deutschen Vereins (Stand 27.4.2023); viele Sozialämter haben einen eigenen Vordruck, der Antrag gilt aber in jeder Form', [
+      hinweis('gsa', 'Antrag auf Grundsicherung im Alter und bei Erwerbsminderung (SGB XII)', 'Beim Sozialamt der Stadt oder des Landkreises; viele Sozialämter haben einen eigenen Vordruck auf ihrer Internetseite. Der Antrag gilt aber auch formlos, ein Brief reicht', [
         'Angaben zu dir und zu Personen im Haushalt, Wohnkosten (Mietvertrag, Nebenkosten- und Heizkostenabrechnung)',
         'Einkommen: Rentenbescheid, bei Werkstatt Lohnabrechnung; Vermögen mit Kontoauszügen der letzten 3 Monate (geschützt sind 10.000 €)',
         'Bei Erwerbsminderung: Rentenbescheid oder Bescheid über die volle Erwerbsminderung; bei Werkstatt reicht der Nachweis der Werkstatt',
@@ -221,24 +147,20 @@ const Formulare = (function () {
     // Wohnberechtigungsschein: SoLo füllt nichts aus. Es gibt den leeren Landesvordruck mit Ausfüllhilfe, sonst die Fundstelle.
     if (ok(R('wbs'))) {
       const bl = s.bundesland || '';
-      const WBSLINK = { BY: ['https://www.stmb.bayern.de/wohnen/wohnberechtigungundrecht/index.php', 'Bayern: Vordruck WBS I des Staatsministeriums; in München gilt ein eigenes Verfahren (SOWON)'],
-        HH: ['https://www.hamburg.de/service/info/11268748/n0/', 'Hamburg: Antrag beim Bezirksamt, auch online'] };
-      const WBS = { BW: ['wbs-BW.pdf', 'Baden-Württemberg, Landesvordruck (Anlage 4) des Ministeriums für Landesentwicklung und Wohnen'], BE: ['wbs-BE.pdf', 'Berlin'],
-        BB: ['wbs-BB.pdf', 'Brandenburg, amtlicher Landesvordruck'],
-        HB: ['wbs-HB.pdf', 'Bremen, an die Senatorin für Bau, Mobilität und Stadtentwicklung'], RP: ['wbs-RP.pdf', 'Rheinland-Pfalz, Landesvordruck 2026'],
-        SL: ['wbs-SL.pdf', 'Saarland, Stand 1.9.2025, an das Ministerium für Inneres, Bauen und Sport'] };
+      // Nur geprüfte amtliche Seiten (Abruf 16.11.2026); wo es keine Landesseite gibt oder sie nicht prüfbar ist: Hinweis, wo es den Antrag gibt
+      const WBSLINK = { BY: ['https://www.stmb.bayern.de/wohnen/wohnraum_nutzen/gefoerderte_wohnung_mieten/index.php', 'Bayern: Vordruck WBS I des Staatsministeriums (rechts unter „Formulare“) oder Onlineantrag; in München gilt ein eigenes Verfahren (SOWON)'],
+        HH: ['https://www.hamburg.de/service/info/11268748/n0/', 'Hamburg: Antrag beim Bezirksamt, auch online'],
+        BW: ['https://mlw.baden-wuerttemberg.de/de/bauen-wohnen/wohnungsbau/wohnberechtigung', 'Baden-Württemberg: Informationen und Landesvordruck des Ministeriums für Landesentwicklung und Wohnen; abgeben bei der Stadt oder Gemeinde'],
+        BE: ['https://www.berlin.de/sen/wohnen/wissen-fuer-mieter/berliner-mietratgeber/wohnberechtigungsschein/', 'Berlin: Antrag beim Wohnungsamt des Bezirks, auch online'] };
+      const WBSWO = { BB: 'Brandenburg: Antrag bei der Stadt- oder Amtsverwaltung bzw. der amtsfreien Gemeinde (Wohnungsamt oder Bürgerbüro)',
+        HB: 'Bremen: Antrag bei der Senatorin für Bau, Mobilität und Stadtentwicklung (Referat Wohnungswesen), in Bremerhaven beim Magistrat; Vordruck und Einkommenserklärung auf bau.bremen.de',
+        RP: 'Rheinland-Pfalz: Antrag bei der Stadt-, Verbandsgemeinde- oder Kreisverwaltung deines Wohnorts; dort gibt es den Landesvordruck',
+        SL: 'Saarland: Antrag beim Ministerium für Inneres, Bauen und Sport (Wohnungsbauförderung) bzw. über deine Stadt oder Gemeinde; Vordruck auf saarland.de' };
       const hilfe = wbsHilfe(s, a);
       if (WBSLINK[bl]) link('wbs', 'Antrag auf Wohnberechtigungsschein', WBSLINK[bl][1], WBSLINK[bl][0], hilfe);
-      else if (WBS[bl]) {
-        add('wbs', WBS[bl][0], 'Antrag auf Wohnberechtigungsschein', WBS[bl][1] + '; dazu je Person mit Einkommen eine Einkommenserklärung', {}, 'leer');
-        liste[liste.length - 1].hilfe = hilfe;
-        if (bl === 'HB') add('wbs-ek', 'wbs-HB-anlage1.pdf', 'Einkommens- und Vermögenserklärung (Anlage 1)', 'Für jede Person im Haushalt mit eigenem Einkommen eine eigene Erklärung', {}, 'leer');
-      } else {
-        add('wbs', '', 'Antrag auf Wohnberechtigungsschein', bl
-          ? 'In diesem Land gibt es keinen einheitlichen Landesvordruck. Du bekommst ihn beim Wohnungsamt (in kleineren Orten beim Bauamt oder Bürgerbüro) deiner Stadt oder Gemeinde, meist auch auf deren Internetseite unter „Wohnberechtigungsschein“'
-          : 'Gib dein Bundesland oder deine Postleitzahl an; manche Länder haben einen Landesvordruck, sonst gibt ihn die Stadt oder Gemeinde heraus', {}, 'hinweis');
-        liste[liste.length - 1].hilfe = hilfe;
-      }
+      else hinweis('wbs', 'Antrag auf Wohnberechtigungsschein', WBSWO[bl] || (bl
+        ? 'In diesem Land gibt es keinen einheitlichen Landesvordruck. Du bekommst ihn beim Wohnungsamt (in kleineren Orten beim Bauamt oder Bürgerbüro) deiner Stadt oder Gemeinde, meist auch auf deren Internetseite unter „Wohnberechtigungsschein“'
+        : 'Gib dein Bundesland oder deine Postleitzahl an; dann sagt SoLo, wo es den Antrag gibt'), hilfe);
     }
     return liste;
   }

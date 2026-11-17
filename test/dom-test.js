@@ -168,19 +168,21 @@ set('p-name', 'Maria Beispiel'); set('p-geb', '01.02.1985'); set('p-strasse', 'H
 d.getElementById('mappeMake').click();
 check('Mappe öffnet sich und ersetzt die Seite', d.getElementById('mappe').hidden === false && d.getElementById('app').classList.contains('pm'));
 const pages = [...d.querySelectorAll('#mappeBody .page')];
-check('Mappe enthält zwei Briefe, ein Angabenblatt, die Unterlagenliste und die amtlichen Formulare', pages.length === 5, pages.length);
+check('Entweder Formular oder formlos: Wohngeld hat in Bayern einen Formular-Link, also nur ein Brief (Unterhaltsvorschuss), Angabenblatt, Unterlagenliste, Formulare', pages.length === 4, pages.length);
 const formSeite = d.querySelector('#mappeBody .forms');
-check('Amtliche Formulare: Wohngeld-Vordruck genannt, Hinweis für die Web-Version, kein App-Knopf', !!formSeite && /Antrag auf Wohngeld \(Mietzuschuss\)/.test(formSeite.textContent) && formSeite.textContent.indexOf(I18N.de['f.formsWeb']) >= 0 && !d.getElementById('formsShare'), formSeite && formSeite.textContent.slice(0, 200));
+check('Amtliche Formulare: Wohngeld als Link auf die amtliche Seite, kein Knopf zum Ausfüllen', !!formSeite && /Antrag auf Wohngeld \(Mietzuschuss\)/.test(formSeite.textContent) && !!formSeite.querySelector('a[href*="stmb.bayern.de"]') && formSeite.textContent.indexOf(I18N.de['f.formsWeb']) >= 0 && !d.getElementById('formsShare'), formSeite && formSeite.textContent.slice(0, 200));
+check('Formular-Link und formloser Brief schließen sich aus: beim Link (Wohngeld Bayern) kein Satz „formloser Antrag in dieser Mappe“', !!formSeite && formSeite.textContent.indexOf(I18N.de['f.formsBrief']) < 0);
 check('Amtliche Formulare: ohne Jobcenter keine Jobcenter-Unterlagenliste', !!formSeite && formSeite.textContent.indexOf(I18N.de['f.formsUnt']) < 0);
 const txt = pages.map((p) => p.textContent).join('\n');
 // Anschrift „91056 Erlangen“ liefert den Wohnort (kein PLZ-Feld ausgefüllt): Empfänger ist die Stadt Erlangen
-check('Brief: Absender, Empfänger (aus der PLZ der Anschrift) und Betreff', /Maria Beispiel/.test(txt) && /Hauptstraße 1/.test(txt) && /Stadt Erlangen\nWohngeldstelle\nRathausplatz 1\n91052 Erlangen/.test(txt) && /Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle/.test(txt) && /Betreff: Antrag auf Wohngeld/.test(txt) && /Betreff: Antrag auf Unterhaltsvorschuss/.test(txt));
+check('Brief: Absender, Empfänger (aus der PLZ der Anschrift) und Betreff', /Maria Beispiel/.test(txt) && /Hauptstraße 1/.test(txt) && /Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle/.test(txt) && /Betreff: Antrag auf Unterhaltsvorschuss/.test(txt));
+check('Kein formloser Brief für Wohngeld, weil es den Formular-Link gibt', !/Betreff: Antrag auf Wohngeld/.test(txt));
 check('Brief: bittet um Eingangsbestätigung und Formulare', /bestätigen Sie mir den Eingang/.test(txt) && /Antragsformulare/.test(txt));
 check('Brief auf Deutsch und links nach rechts gesetzt', pages[0].getAttribute('lang') === 'de' && pages[0].getAttribute('dir') === 'ltr');
 check('Angabenblatt enthält Haushalt, Miete, Einkommen', /Angabenblatt/.test(txt) && /Warmmiete im Monat: 950 €/.test(txt) && /Einkommen: Lohn oder Gehalt, brutto 2\.200 €, netto 1\.750 € im Monat/.test(txt) && /Kinder unter 18 Jahren: 2/.test(txt) && /Geburtsdatum: 01\.02\.1985/.test(txt));
 check('Angabenblatt nennt Selbstauskunft-Hinweis', /Selbstauskunft/.test(txt));
 check('Leere Felder werden zu Strichen statt "undefined"', !/undefined|null/.test(txt));
-check('Kopiertext enthält Briefe und Angabenblatt', /Betreff: Antrag auf Wohngeld/.test(d.getElementById('mappeText').value) && /Angabenblatt/.test(d.getElementById('mappeText').value));
+check('Kopiertext enthält Briefe und Angabenblatt', /Betreff: Antrag auf Unterhaltsvorschuss/.test(d.getElementById('mappeText').value) && /Angabenblatt/.test(d.getElementById('mappeText').value));
 check('Web-Version: Anbieter im Impressum David Cabrerizo', d.getElementById('anbieterName').textContent === 'David Cabrerizo');
 check('Druck: feste Briefränder (DIN 5008) per @page, unabhängig vom Browser', /@page\s*\{[^}]*size:\s*A4[^}]*margin:\s*20mm 20mm 20mm 25mm/.test(d.documentElement.innerHTML));
 // Rückmeldung „Ergebnis passt nicht“: E-Mail-Entwurf mit Version und Einstufungen, ohne Angaben aus dem Fragebogen
@@ -196,7 +198,7 @@ setTimeout(() => {
   setLang('en');
   const docs = d.querySelector('#mappeBody .docs');
   check('Mappe wird bei Sprachwechsel neu aufgebaut: Unterlagenliste englisch', /Documents for this benefit/.test(docs.textContent) && /Rental contract or confirmation of rent/.test(docs.textContent), docs.textContent.slice(0, 80));
-  check('Brief bleibt bei Sprachwechsel Deutsch', /Betreff: Antrag auf Wohngeld/.test(d.querySelector('#mappeBody .page').textContent));
+  check('Brief bleibt bei Sprachwechsel Deutsch', /Betreff: Antrag auf Unterhaltsvorschuss/.test(d.querySelector('#mappeBody .page').textContent));
   setLang('ar');
   check('Arabisch: Mappe-Leiste rechts nach links, Brief bleibt links nach rechts', d.getElementById('app').getAttribute('dir') === 'rtl' && d.querySelector('#mappeBody .page').getAttribute('dir') === 'ltr');
   setLang('de');
