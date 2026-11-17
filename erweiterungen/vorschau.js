@@ -527,6 +527,18 @@ Ergebnis: Pflegegrad 2`;
     $('fr-merken').addEventListener('click', () => { if (frWert) { merke('Widerspruch einlegen', frWert, 'eigen'); $('fr-merken-msg').textContent = 'In deine Fristen übernommen.'; } });
     $('er-merken').addEventListener('click', () => { if (erWert) { merke(erWert.titel, erWert.datum, 'eigen'); $('fr-merken-msg').textContent = 'In deine Fristen übernommen.'; } });
   }
+  // Spaltennamen an jede Zelle hängen (für die Blockansicht auf schmalen Bildschirmen); Tabellen entstehen bei jeder Eingabe neu
+  function beschrifte() {
+    for (const t of document.querySelectorAll('section[id^="p-"] .tablewrap table')) {
+      const k = [...t.querySelectorAll('thead th')].map((x) => x.textContent);
+      for (const tr of t.querySelectorAll('tbody tr')) [...tr.children].forEach((td, i) => { if (k[i] && td.getAttribute('data-l') !== k[i]) td.setAttribute('data-l', k[i]); });
+    }
+  }
+  // Nur die Prüfungs-Abschnitte beobachten (nicht den Rest der App) und Änderungen gebündelt verarbeiten
+  let geplant = false;
+  const mo = new MutationObserver(() => { if (!geplant) { geplant = true; setTimeout(() => { geplant = false; beschrifte(); }, 0); } });
+  document.querySelectorAll('section[id^="p-"]').forEach((s) => mo.observe(s, { childList: true, subtree: true }));
+  beschrifte();
   if ($('li-demo')) {
     $('li-demo').addEventListener('click', () => zeigeLizenz(DEMO_LIZENZ));
     $('li-datei').addEventListener('change', async (e) => { const f = e.target.files && e.target.files[0]; if (f) zeigeLizenz(await f.text()); });
