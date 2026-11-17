@@ -1,13 +1,13 @@
 // Store-Bilder erzeugen: zuerst npm run build:web, dann node tools/store-bilder.js (Ergebnis in store-bilder/)
 // Rohe Aufnahmen der App (Version mit Startseite, Brief prüfen und Fristen), dann mit Überschrift in die Store-Formate gesetzt.
-// Logo: tools/logo/sprechblase.svg. Farbe der Bilder passend zum Logo (Petrol).
+// Logo: tools/logo/brief-siegel.svg. Farbe der Bilder passend zum Logo (Tintenblau mit Gold).
 const { chromium } = require('playwright');
 const fs = require('fs');
 const path = require('path');
 const D = path.join(__dirname, '..', 'store-bilder') + '/'; fs.mkdirSync(D, { recursive: true });
 const APP = 'file://' + path.join(__dirname, '..', 'dist', 'sozialleistungslotse.html');
-const LOGO = fs.readFileSync(path.join(__dirname, 'logo', 'sprechblase.svg'), 'utf8');
-const VERLAUF = 'linear-gradient(160deg,#0f7f70,#0a4f47)';
+const LOGO = fs.readFileSync(path.join(__dirname, 'logo', 'brief-siegel.svg'), 'utf8');
+const VERLAUF = 'linear-gradient(160deg,#2d3d85,#161f4a)';
 (async () => {
   const b = await chromium.launch();
   const ctx = await b.newContext({ viewport: { width: 390, height: 760 }, deviceScaleFactor: 3, locale: 'de-DE' });
@@ -87,10 +87,10 @@ const VERLAUF = 'linear-gradient(160deg,#0f7f70,#0a4f47)';
     await p2.screenshot({ path: D + (s === 512 ? 'play-symbol-512.png' : 'logo-1024.png') });
   }
   await p2.setViewportSize({ width: 1024, height: 500 });
-  await p2.setContent(`<html><body style="margin:0;width:1024px;height:500px;background:linear-gradient(135deg,#0f7f70,#0a4f47);font-family:system-ui,sans-serif;color:#fff;display:flex;align-items:center;gap:52px;padding:0 76px;box-sizing:border-box">
+  await p2.setContent(`<html><body style="margin:0;width:1024px;height:500px;background:linear-gradient(135deg,#2d3d85,#161f4a);font-family:system-ui,sans-serif;color:#fff;display:flex;align-items:center;gap:52px;padding:0 76px;box-sizing:border-box">
     <img src="${logoImg}" style="width:210px;height:210px;border-radius:46px;box-shadow:0 14px 40px rgba(0,0,0,.35)">
     <div><div style="font-size:70px;font-weight:800;letter-spacing:-1px">SoLo</div>
-    <div style="font-size:36px;font-weight:700;margin-top:6px;line-height:1.25">Hilfen finden.<br>Briefe prüfen.<br>Fristen behalten.</div>
+    <div style="font-size:36px;font-weight:700;margin-top:6px;line-height:1.25">Hilfen finden.<br>Briefe prüfen.<br><span style="color:#f2b233">Fristen behalten.</span></div>
     <div style="font-size:24px;margin-top:16px;opacity:.9">Offline · ohne Anmeldung · in 8 Sprachen</div></div></body></html>`);
   await p2.waitForTimeout(100);
   await p2.screenshot({ path: D + 'play-werbegrafik-1024x500.png' });

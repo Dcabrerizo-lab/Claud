@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="1024" height="1024">
+  <!-- Logo „Brief mit Siegel“ (Vorschlag 2). Vollflächig ohne Rundung: die Stores runden selbst ab. -->
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2d3d85"/><stop offset="1" stop-color="#1a2456"/></linearGradient></defs>
+  <rect width="100" height="100" fill="url(#g)"/>
+  <rect x="18" y="29" width="56" height="40" rx="7" fill="#fff"/>
+  <path d="M22 34l24 18 24-18" fill="none" stroke="#23306b" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="71" cy="69" r="15.5" fill="#f2b233" stroke="#1f2a5e" stroke-width="4"/>
+  <path d="M63.8 69.5l5 5 9.6-10.6" fill="none" stroke="#1f2a5e" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
