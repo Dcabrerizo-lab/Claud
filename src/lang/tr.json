@@ -425,6 +425,7 @@
   "t.rundfunk.folgt": "Grundsicherung veya Grundsicherungsgeld bağlanırsa, ardından yayın ücretinden muaf tutulabilirsiniz. Aynısı diğer sosyal yardımlar için de geçerli olabilir, örneğin Blindenhilfe.",
   "t.rundfunk.haerte": "Gelirinizin bir sosyal yardımın ihtiyaç sınırını yayın ücretinden daha az aşması halinde özel zor durum (Härtefall) başvurusu yapabilirsiniz.",
   "t.rundfunk.nein": "Bilgilerinize göre muafiyet hakkı yok. Muafiyet esas olarak belirli sosyal yardımların alınması halinde verilir.",
+  "t.rundfunk.weitere": "Verdiğiniz bilgilere göre Rundfunkbeitrag’dan da muaf tutan bir yardım söz konusu olabilir: Hilfe zur Pflege, Blindenhilfe veya ebeveynlerinizle yaşamıyorsanız BAföG. Onaylandıktan sonra kararı Beitragsservice’e gönderin.",
   "t.zuzahl.keine": "Engellilik veya bakım ihtiyacı belirtilmedi.",
   "t.zuzahl.grenze": "İlaç, yardımcı malzeme ve tedavi katkı paylarında, geçim için yıllık brüt gelirin %2’si oranında bir yük sınırı vardır. Sınıra ulaşıldığında Krankenkasse yılın geri kalanı için muafiyet verir. Hanedeki aile bireyleri için muafiyet tutarları vardır.",
   "t.zuzahl.chron": "Ağır kronik hastalarda sınır %1’dir. Örneğin en az GdB 60’a sahip olan ve sürekli tedavi gören kişi bu kapsamdadır. Krankenkasse karar verir. Pflegegrad 3 ile 5 de sayılır.",

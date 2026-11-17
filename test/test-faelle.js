@@ -147,7 +147,10 @@ ck('Thomas: mit 850 € Ausbildungsvergütung keine „wahrscheinliche“ Grunds
 ck('Thomas: Krankengeld schon vorhanden', L(tho, 'krankengeld') === 'na');
 // Elena: ALG I 2.050 + Elterngeld 1.200, 2 Kinder unter 6, München VII, Miete 1.680: Elterngeld nicht wie Lohn
 const ele = { adults: 2, kids: 2, kidsU6: 2, art1: 'alg', art2: 'eg', brutto: 3250, brutto2: 1200, netto: 3250, miete: 1680, mietstufe: 7, vermoegen: 28000, gebJahr: 1990, heute: 2026.8 };
-ck('Elena: Wohngeld und Kinderzuschlag wahrscheinlich, mit Beträgen', L(ele, 'wohngeld') === 'ja' && L(ele, 'kiz') === 'ja' && !!T(ele, 'kiz', 'schaetz.eins') && (!!T(ele, 'wohngeld', 'schaetz.spanne') || !!T(ele, 'wohngeld', 'schaetz.eins')));
+// Elena hat kein Arbeitseinkommen (ALG I und Elterngeld): Über dem Elternbedarf (2 × 506 + 71 % von 1.680 = 2.205 €) wird es voll angerechnet
+// (§ 6a Abs. 6 Satz 4 BKGG), rund 685 € > 594 € Höchstbetrag → kein Kinderzuschlag. Bis 11/2026 rechnete die App fälschlich mit 45 %.
+ck('Elena: Wohngeld wahrscheinlich mit Betrag; Kinderzuschlag nein (anderes Einkommen voll angerechnet); Bildung und Teilhabe über das Wohngeld', L(ele, 'wohngeld') === 'ja' && (!!T(ele, 'wohngeld', 'schaetz.spanne') || !!T(ele, 'wohngeld', 'schaetz.eins')) && L(ele, 'kiz') === 'nein' && L(ele, 'but') === 'ja');
+ck('[kiz-anderes] Elena mit Lohn statt Elterngeld: Kinderzuschlag wieder möglich', L({ ...ele, art2: 'lohn', netto: 3000 }, 'kiz') !== 'nein');
 ck('Elena: Elterngeld bekommt keinen Freibetrag für Arbeit (anders als Lohn)', L(ele, 'ggeld') !== 'ja' || L({ ...ele, art2: 'lohn' }, 'ggeld') === 'ja');
 // Günter: 66 Jahre (geb. 1960, Grenze 66 Jahre 4 Monate → je nach Monat), Rente 1.050, Miete 520, GdB 80 mit G, Pflegegrad 2
 const gue = { art1: 'rente', brutto: 1180, netto: 1050, miete: 520, mietstufe: 4, vermoegen: 900, gebJahr: 1958, heute: 2026.8, bhPerson: 'erwNach25', gdb: '80', mzG: true, pflegegrad: '2' };
@@ -325,6 +328,14 @@ ck('[gg-alter] Rentenalter oder volle Erwerbsminderung: Sozialamt zuständig', r
 ck('[gsa-voraus] Ohne Rentenalter und ohne volle Erwerbsminderung: keine Grundsicherung im Alter', L({ miete: 450 }, 'gsa') === 'nein' && K({ miete: 450 }, 'gsa')[0] === 'gsa.voraus');
 // Rente 900, Miete 450: ohne Freibetrag 1.013 - 900 = 113; mit § 82a: 100 + 30 % von 800 = 340, höchstens 281,50 -> 394,50
 ck('[gsa-grundrente] Grundrentenfreibetrag höchstens 281,50 €: etwa 110 € -> etwa 390 €', A({ alter: true, art1: 'rente', brutto: 900, netto: 900, miete: 450 }, 'gsa') === E(110) && A({ alter: true, art1: 'rente', brutto: 900, netto: 900, miete: 450, grundrente33: true }, 'gsa') === E(390));
+// § 6a Abs. 6 BKGG: anderes Einkommen der Eltern über ihrem Bedarf mindert den Kinderzuschlag voll, Arbeitseinkommen zu 45 %.
+// Paar, Kinder 5 und 9, Wohnkosten 900 €: Bedarf der Eltern 2 × 506 + 71 % von 900 = 1.651 €.
+const kizF = { adults: 2, kids: 2, kidsU6: 1, art2: 'ohne', miete: 900, bezug: { kindergeld: true } };
+ck('[kiz-anderes] Arbeitslosengeld I 1.900 €: 1.870 € (nach 30 € Pauschale) über 1.651 € → 219 € voll angerechnet, etwa 380 € statt 500 €', A({ ...kizF, art1: 'alg', brutto: 1900, netto: 1900 }, 'kiz') === E(380), A({ ...kizF, art1: 'alg', brutto: 1900, netto: 1900 }, 'kiz'));
+ck('[kiz-anderes] Lohn 2.500 € brutto / 1.900 € netto bleibt unter dem Bedarf: voller Kinderzuschlag etwa 590 €', A({ ...kizF, art1: 'lohn', brutto: 2500, netto: 1900 }, 'kiz') === E(590));
+// § 6 Abs. 1 Nr. 1 Bürgergeld-V: Versicherungspauschale nicht zusätzlich zum Grundfreibetrag auf Arbeitseinkommen derselben Person
+ck('[vpausch-person] Rente 720 € + Minijob 300 €: keine 30 € Pauschale neben dem Lohn, Grundsicherungsgeld etwa 180 €', A({ einkommen: [{ art: 'lohn', b: 300, n: 300 }, { art: 'rente', b: 800, n: 720 }], miete: 500, gebJahr: 1975 }, 'ggeld') === E(180), A({ einkommen: [{ art: 'lohn', b: 300, n: 300 }, { art: 'rente', b: 800, n: 720 }], miete: 500, gebJahr: 1975 }, 'ggeld'));
+ck('[vpausch-person] nur Rente 1.020 €: Pauschale 30 € bleibt, etwa 70 €', A({ art1: 'rente', brutto: 1100, netto: 1020, miete: 500, gebJahr: 1975 }, 'ggeld') === E(70));
 // § 82 Abs. 4 SGB XII: Betriebs-, Riester- oder private Rente (in der Rente enthalten): 100 € + 30 % des Rests frei, höchstens 281,50 €;
 // der Grundrentenfreibetrag (§ 82a) gilt nur für den gesetzlichen Teil. Bedarf 563 + 450 = 1.013 €, Rente 900 € netto.
 const zr = { alter: true, art1: 'rente', brutto: 1000, netto: 900, miete: 450 };
@@ -411,6 +422,10 @@ ck('[rf-bezug] Rundfunkbeitrag: Befreiung bei Grundsicherungsgeld', L({ bezug: {
 ck('[rf-asyl] Rundfunkbeitrag: Befreiung bei Asylbewerberleistungen möglich', K({ aufenthalt: 'asyl' }, 'rundfunk')[0] === 'rundfunk.asyl' && L({ aufenthalt: 'asyl' }, 'rundfunk') === 'vielleicht');
 ck('[rf-mehr] Rundfunkbeitrag: Hinweis auf weitere Befreiungen immer dabei', K({}, 'rundfunk').includes('rundfunk.mehr') && K({ bezug: { grundsicherungsgeld: true } }, 'rundfunk').includes('rundfunk.mehr'));
 ck('[rf-rf] Merkzeichen RF: Ermäßigung möglich', K({ mz: { RF: true }, gdb: '80', bhPerson: 'erwNach25', brutto: 3000, netto: 2200, art1: 'lohn', miete: 500 }, 'rundfunk')[0] === 'rundfunk.rf');
+// § 4 Abs. 1 RBStV: Befreiung auch bei Blindenhilfe, Hilfe zur Pflege und BAföG (nicht bei den Eltern)
+ck('[rf-weitere] Blindenhilfe möglich (Grundsicherung nicht): Rundfunkbefreiung möglich', K({ bhPerson: 'erwNach25', blind: 'blind', alter: true, art1: 'rente', brutto: 1500, netto: 1400, miete: 400 }, 'rundfunk')[0] === 'rundfunk.weitere');
+ck('[rf-weitere] BAföG in eigener Wohnung: Rundfunkbefreiung möglich', K({ ausbildung: 'ich', gebJahr: 2004, art1: 'lohn', brutto: 300, netto: 300, miete: 400 }, 'rundfunk')[0] === 'rundfunk.weitere');
+ck('[rf-weitere] BAföG bei den Eltern: keine Befreiung', L({ ausbildung: 'ich', gebJahr: 2004, art1: 'lohn', brutto: 300, netto: 300, miete: 0, wohnform: 'eltern' }, 'rundfunk') === 'nein');
 // Wohnberechtigungsschein
 ck('[wbs-schwerb] WBS: Freibetrag Schwerbehinderte verbessert die Einstufung (2.200 € brutto: Gebietsgrenze -> Grenzbereich)', L({ art1: 'lohn', brutto: 2200, netto: 1600 }, 'wbs') === 'vielleicht' && K({ art1: 'lohn', brutto: 2200, netto: 1600 }, 'wbs')[0] === 'wbs.gebiet' && K({ art1: 'lohn', brutto: 2200, netto: 1600, gdb: '100', bhPerson: 'erwNach25' }, 'wbs')[0] === 'wbs.rand');
 // Bundeswerte § 9 Abs. 2 WoFG: 12.000 € (1 Person), 18.000 € (2), + 4.100 € je weitere Person, + 500 € je Kind

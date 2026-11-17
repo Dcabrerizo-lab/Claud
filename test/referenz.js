@@ -235,6 +235,21 @@ function wohngeld(h) {
 }
 
 // ---------- Kinderzuschlag (§ 6a BKGG) ----------
+// § 6a Abs. 6 BKGG: Elterneinkommen über dem Bedarf mindert zu 45 %, soweit es Arbeitseinkommen ist; anderes Einkommen (Rente, ALG I,
+// Krankengeld, Elterngeld) mindert voll. Vorrang: Die Überschreitung wird dem Arbeitseinkommen zugerechnet, solange das andere
+// Einkommen allein den Bedarf nicht übersteigt.
+function minderungElternKiZ(h, bedarf) {
+  const gesamt = elternEinkommenSGB2(h);
+  const s = h.p.reduce((a, x) => a + x.brutto, 0);
+  let anders = 0;
+  h.p.forEach((x) => {
+    const n = s > 0 ? h.netto * x.brutto / s : h.netto / h.p.length;
+    if (['rente', 'alg', 'kg', 'eg'].indexOf(x.art) >= 0) anders += n - 30 * (x.brutto > 0 ? 1 : 0) - (x.art === 'eg' && x.brutto > 300 ? 300 : 0);
+  });
+  anders = Math.min(gesamt, Math.max(0, anders));
+  if (anders <= bedarf) return 0.45 * Math.max(0, gesamt - bedarf);
+  return (anders - bedarf) + 0.45 * (gesamt - anders);
+}
 function kinderzuschlag(h) {
   const b = h.bezug;
   if (h.kids === 0) return { level: 'nein' };
@@ -249,7 +264,7 @@ function kinderzuschlag(h) {
   const ms = mehrSonst(h), bm = behMehrSGB2(h);
   const bedarfEltern = h.regelEltern + h.mehrAE + ms.eltern + (h.e.bhPerson === 'erwNach25' ? bm.sicher : 0) + h.miete * anteilEltern;
   const kindAnr = h.unterhalt + h.uvg + Math.max(0, h.kindEink - h.mini);
-  const kiz = Math.max(0, max - 0.45 * Math.max(0, elternEinkommenSGB2(h) - bedarfEltern) - 0.45 * kindAnr);
+  const kiz = Math.max(0, max - minderungElternKiZ(h, bedarfEltern) - 0.45 * kindAnr);
   if (kiz <= 0) return { level: 'nein' };
   // § 6a Abs. 1 Nr. 3 BKGG: mit dem Kinderzuschlag nicht mehr hilfebedürftig (bereinigtes Einkommen, Kindergeld, Kinderzuschlag, 300 € für ein mögliches Wohngeld)
   const mitKiz = elternEinkommenSGB2(h) + (h.kinder + h.jung) * KG + h.unterhalt + h.uvg + h.kindEink + kiz, bedarfAlle = h.regel + h.miete + h.mehrAE + ms.sicher + bm.sicher;

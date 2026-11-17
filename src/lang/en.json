@@ -425,6 +425,7 @@
   "t.rundfunk.folgt": "If you are granted Grundsicherung or Grundsicherungsgeld, you can then be exempted from the broadcasting fee. The same can apply to other social benefits, for example blind assistance.",
   "t.rundfunk.haerte": "If your income exceeds the needs threshold of a social benefit by less than the broadcasting fee, you can apply as a special hardship case.",
   "t.rundfunk.nein": "According to your information there is no entitlement to exemption. It is mainly granted when receiving certain social benefits.",
+  "t.rundfunk.weitere": "Based on your answers, a benefit may apply that also exempts you from the Rundfunkbeitrag: Hilfe zur Pflege, Blindenhilfe or BAföG if you do not live with your parents. After it is approved, send the notice to the Beitragsservice.",
   "t.zuzahl.keine": "No disability or need for care was given.",
   "t.zuzahl.grenze": "For co-payments on medicines, aids and treatments there is a limit of 2 % of the annual gross income for living expenses. Once it is reached, the Krankenkasse issues an exemption for the rest of the year. There are allowances for family members in the household.",
   "t.zuzahl.chron": "For people with a serious chronic illness the limit is 1 %. This includes, for example, someone with a GdB of at least 60 who is in continuous treatment. The Krankenkasse decides. Pflegegrad 3 to 5 also counts.",

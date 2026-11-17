@@ -352,7 +352,10 @@ const Rules = (function () {
       eu: inp.aufenthalt === 'eu', euArbeit: inp.euArbeit === 'ja', euJahre5: inp.euJahre === 'ab5',
       art1, art2, pers, liste: !!liste, kindEink, uvgEst, kindZahl: unterhalt + uvgEst, mehrAE, mehrAEhoch, alterGrenz,
       egFreiSGB: sumIf((a, b) => a === 'eg' && b > R.elterngeldFrei ? R.elterngeldFrei : 0),
-      vPausch: sumIf((a, b) => a !== 'lohn' && a !== 'ohne' && b > 0 ? R.versPauschale : 0),
+      // Versicherungspauschale (§ 6 Abs. 1 Nr. 1 Bürgergeld-V) einmal je Person, nicht neben Einkommen aus Arbeit (dort deckt sie der
+      // Grundfreibetrag von 100 € ab, § 11b Abs. 2 SGB II). In der Liste (eine Person mit mehreren Einkommen) also höchstens einmal.
+      vPausch: liste ? (pers.some((x) => x[0] !== 'lohn' && x[0] !== 'ohne' && x[1] > 0) && !pers.some((x) => x[0] === 'lohn' && x[1] > 0) ? R.versPauschale : 0)
+        : sumIf((a, b) => a !== 'lohn' && a !== 'ohne' && b > 0 ? R.versPauschale : 0),
       mzG: !!inp.mzG, mzGl: !!inp.mzGl || !!(inp.mz && inp.mz.Gl), mzRF: !!(inp.mz && inp.mz.RF), mzAG: !!(inp.mz && inp.mz.aG), wfbmJahre: num(inp.wfbmJahre), grundrente33: !!inp.grundrente33, zusatzRente: num(inp.zusatzRente), bhEinkHoch: !!inp.bhEinkHoch, teilhabe: !!inp.teilhabe, bhWeitere: Math.min(4, Math.max(0, inp.bhWeitere | 0)), schwanger: !!inp.schwanger, ernaehrung: !!inp.ernaehrung, warmwasser: !!inp.warmwasser, gebJahr: jahr,
       baby: inp.baby === 'bald' || inp.baby === 'da' ? inp.baby : '', egVor: blank(inp.egVor) ? null : num(inp.egVor), asyl: inp.aufenthalt === 'asyl',
       wohnform: inp.wohnform === 'eltern' || inp.wohnform === 'heim' ? inp.wohnform : '', wfbmEssen: !!inp.wfbmEssen,
@@ -460,6 +463,19 @@ const Rules = (function () {
   }
   // Einkommen der Eltern nach Abzügen (§ 11b SGB II): Freibetrag für Arbeit, Versicherungspauschale, Elterngeld-Freibetrag
   const elternEinkSGB2 = (h) => Math.max(0, h.netto - haushaltsFreibetrag(h) - (h.egFreiSGB || 0) - (h.vPausch || 0) - (h.uzSGB || 0));
+  // Kinderzuschlag, § 6a Abs. 6 BKGG: Übersteigt das Einkommen der Eltern ihren Bedarf, mindert Einkommen aus Arbeit den Kinderzuschlag
+  // um 45 %, anderes Einkommen (Rente, Arbeitslosengeld I, Krankengeld, Elterngeld) in voller Höhe. Die Überschreitung gilt als durch das
+  // Arbeitseinkommen verursacht, außer das andere Einkommen übersteigt den Bedarf schon allein.
+  function kizMinderungEltern(h, bedarf) {
+    const gesamt = elternEinkSGB2(h);
+    const pers = h.pers || [['lohn', h.brutto]];
+    const sumB = pers.reduce((a, x) => a + x[1], 0);
+    const nettos = pers.map((x) => (h.liste ? x[2] : sumB > 0 ? h.netto * x[1] / sumB : h.netto / pers.length));
+    const andereRoh = pers.reduce((a, x, i) => a + (x[0] === 'lohn' || x[0] === 'wfbm' || x[0] === 'ohne' ? 0 : nettos[i]), 0);
+    const andere = Math.min(gesamt, Math.max(0, andereRoh - (h.egFreiSGB || 0) - (h.vPausch || 0)));
+    const arbeit = gesamt - andere;
+    return andere > bedarf ? andere - bedarf + R.kiz.anrechnung * arbeit : R.kiz.anrechnung * Math.max(0, gesamt - bedarf);
+  }
   // Grobe Schätzung als Betrag, auf 10 € gerundet
   const r10 = (x) => Math.round(x / 10) * 10;
   // EU-Staatsangehörige: Leistungsausschluss, wenn das Aufenthaltsrecht nur aus der Arbeitsuche folgt oder fehlt (§ 7 Abs. 1 Satz 2
@@ -612,12 +628,12 @@ const Rules = (function () {
     // Einkommen der Eltern nach § 11b SGB II (Freibetrag für Arbeit usw.); Einkommen der Kinder (Unterhalt, Unterhaltsvorschuss,
     // eigenes Einkommen über der Minijob-Grenze) mindert den Kinderzuschlag um 45 % (§ 6a Abs. 3 und 6 BKGG)
     const kindAnr = (h.kindZahl || 0) + Math.max(0, (h.kindEink || 0) - h.minijob);
-    const est = Math.max(0, gmax - R.kiz.anrechnung * Math.max(0, elternEinkSGB2(h) - bemessung) - R.kiz.anrechnung * kindAnr);
+    const est = Math.max(0, gmax - kizMinderungEltern(h, bemessung) - R.kiz.anrechnung * kindAnr);
     const gesamtBedarf = h.regel + h.miete + (h.mehrAE || 0) + maK.fest + mbK.fest;
 
     if (est <= 0) {
       // Kind vielleicht erst 6 Jahre (Mehrbedarf 36 % statt 12 %): dann ist Kinderzuschlag möglich
-      const estHoch = Math.max(0, gmax - R.kiz.anrechnung * Math.max(0, elternEinkSGB2(h) - (bemessung - (h.mehrAE || 0) + (h.mehrAEhoch || 0))) - R.kiz.anrechnung * kindAnr);
+      const estHoch = Math.max(0, gmax - kizMinderungEltern(h, bemessung - (h.mehrAE || 0) + (h.mehrAEhoch || 0)) - R.kiz.anrechnung * kindAnr);
       if (estHoch > 0) return mk(id, 'vielleicht', 'vielleicht', [['kiz.ae7']]);
       return mk(id, 'nein', 'einkoHoch', [['kiz.zuHoch']]);
     }
@@ -1127,18 +1143,21 @@ const Rules = (function () {
   }
 
   // Befreiung vom Rundfunkbeitrag
-  function rundfunk(h, gg, gsa) {
-    const res = rundfunk0(h, gg, gsa);
+  function rundfunk(h, gg, gsa, weitere) {
+    const res = rundfunk0(h, gg, gsa, weitere || {});
     res.tx.push(['rundfunk.mehr']);
     return res;
   }
-  function rundfunk0(h, gg, gsa) {
+  function rundfunk0(h, gg, gsa, w) {
     const id = 'rundfunk';
     if (h.bezug.grundsicherungsgeld || h.bezug.sozialamt) return mk(id, 'ja', 'ja', [['rundfunk.bezug']]);
     // § 4 Abs. 1 Nr. 4 RBStV: Leistungen nach dem Asylbewerberleistungsgesetz
     if (h.asyl) return mk(id, 'vielleicht', 'butMoeglich', [['rundfunk.asyl']]);
     if (gg.level === 'ja' || gsa.level === 'ja') return mk(id, 'vielleicht', 'butMoeglich', [['rundfunk.folgt']]);
     if (gg.level === 'vielleicht' || gsa.level === 'vielleicht') return mk(id, 'vielleicht', 'butMoeglich', [['rundfunk.haerte']]);
+    // § 4 Abs. 1 RBStV, weitere Befreiungsgründe: Hilfe zur Pflege (SGB XII), Blindenhilfe (§ 72 SGB XII), BAföG nicht bei den Eltern
+    const okW = (r) => r && (r.level === 'ja' || r.level === 'vielleicht');
+    if (okW(w.hzp) || okW(w.blh) || (okW(w.baf) && h.ausbildung === 'ich' && h.wohnform !== 'eltern')) return mk(id, 'vielleicht', 'butMoeglich', [['rundfunk.weitere']].concat(h.mzRF ? [['rundfunk.rf']] : []));
     if (h.mzRF) return mk(id, 'vielleicht', 'vielleicht', [['rundfunk.rf']]);
     return mk(id, 'nein', 'vorausFehlt', [['rundfunk.nein']]);
   }
@@ -1442,9 +1461,10 @@ const Rules = (function () {
     if (kdu && h.miete > kdu) gsa = mitKdu(gsa, grundsicherungAlter(Object.assign({}, h, { miete: kdu })), kdu);
     const baf = bafoeg(h);
     const pf = pflege(h);
+    const hzp = hilfeZurPflege(h), blh = blindenhilfe(h);
     const results = [kg, wg, kz, gg, but, uvg, gsa, baf, pf,
-      a1, krg, eg, mutterschaftsgeld(h), kinderkrankengeld(h), hilfeZurPflege(h), landespflegegeld(h), asylbewerber(h), kindergeldBeh(h), erwerbsminderungsrente(h), schwerbRente(h), eingliederungshilfe(h), pauschbetrag(h), ausweis(h), blindengeld(h), blindenhilfe(h),
-      pflegeplus(h), budgetArbeit(h), rundfunk(h, gg, gsa), zuzahlung(h), bab(h), wbs(h)].map(angabeFehlt(h)).map((x, i) => ({ ...x, name: NAMES[x.id], order: i, steps: STEPS[x.id] }));
+      a1, krg, eg, mutterschaftsgeld(h), kinderkrankengeld(h), hzp, landespflegegeld(h), asylbewerber(h), kindergeldBeh(h), erwerbsminderungsrente(h), schwerbRente(h), eingliederungshilfe(h), pauschbetrag(h), ausweis(h), blindengeld(h), blh,
+      pflegeplus(h), budgetArbeit(h), rundfunk(h, gg, gsa, { hzp, blh, baf }), zuzahlung(h), bab(h), wbs(h)].map(angabeFehlt(h)).map((x, i) => ({ ...x, name: NAMES[x.id], order: i, steps: STEPS[x.id] }));
     uzHinweise(h, results);
     plan2027(h, results);
     besondere(h, results);

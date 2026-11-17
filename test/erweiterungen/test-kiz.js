@@ -24,6 +24,12 @@ ok('Alleinerziehend: Wohnanteil 77 % bei einem Kind', rc.wohnanteil === 0.77);
 ok('Eigenes Einkommen des Kindes bis Minijob-Grenze frei', K.rechne({ eltern: [{ brutto: 1800, netto: 1400 }], kinder: [{ alter: 16, eigenes: R.minijob }], wohnkosten: 700 }, Rules).jeKind[0] === 297);
 ok('Mindesteinkommen Paar 900 €', K.rechne({ eltern: [{ brutto: 800, netto: 700 }, {}], kinder: [{ alter: 3 }], wohnkosten: 600 }, Rules).mindestOk === false);
 ok('Mindesteinkommen Alleinerziehend 600 €', K.rechne({ eltern: [{ brutto: 650, netto: 600 }], kinder: [{ alter: 3 }], wohnkosten: 600 }, Rules).mindestOk === true);
+// § 6a Abs. 6 BKGG: anderes Einkommen über dem Bedarf voll angerechnet (hier: Arbeitslosengeld I 1.900 €, Bedarf 1.651 €)
+const alg = K.rechne({ eltern: [{ sonstiges: 1900 }, {}], kinder: [{ alter: 5 }, { alter: 9 }], wohnkosten: 900 }, Rules);
+ok('ALG I: 1.870 € (nach 30 € Pauschale) − 1.651 € = 219 € voll → 375 €', alg.anderes === 1870 && alg.minderung === 219 && alg.kiz === 375, alg);
+// Gemischt: Lohn 2.400/1.800 € (anrechenbar 1.800 − 378 = 1.422 €) und ALG I 1.000 € (970 €, unter dem Bedarf): 2.392 − 1.651 = 741 € zu 45 % = 333,45 €
+const misch = K.rechne({ eltern: [{ brutto: 2400, netto: 1800 }, { sonstiges: 1000 }], kinder: [{ alter: 5 }, { alter: 9 }], wohnkosten: 900 }, Rules);
+ok('Gemischt, anderes Einkommen unter dem Bedarf: Überschreitung zu 45 % = 333,45 €', misch.arbeit === 1422 && misch.anderes === 970 && misch.minderung === 333.45 && misch.kiz === 260.55, misch);
 ok('Nie negativ', K.rechne({ eltern: [{ brutto: 9000, netto: 6000 }, {}], kinder: [{ alter: 3 }], wohnkosten: 600 }, Rules).kiz === 0);
 
 // 4. Bescheid prüfen

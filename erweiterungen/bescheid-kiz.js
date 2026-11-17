@@ -27,21 +27,24 @@ const BescheidKiZ = (function () {
     const wohnEltern = c2(z(f.wohnkosten) * anteil);
     const bedarf = c2(regel + mehrAE + wohnEltern);
     // Einkommen der Eltern wie beim Grundsicherungsgeld (§ 11b SGB II, Freibetrag mit Kind bis 1.500 €)
-    let einkEltern = 0, brutto = 0;
+    // Arbeitseinkommen und anderes Einkommen (Rente, ALG I, Krankengeld, Elterngeld) getrennt: § 6a Abs. 6 BKGG
+    let arbeit = 0, anderes = 0, brutto = 0;
     for (const e of eltern) {
       const b = z(e.brutto), n = z(e.netto), s = z(e.sonstiges);
-      brutto += b;
-      if (b > 0 || n > 0) einkEltern += Math.max(0, n - Rules.sgb2Freibetrag(b, nk > 0));
-      if (s > 0) einkEltern += Math.max(0, s - (b > 0 ? 0 : 30));
+      brutto += b + s;
+      if (b > 0 || n > 0) arbeit += Math.max(0, n - Rules.sgb2Freibetrag(b, nk > 0));
+      if (s > 0) anderes += Math.max(0, s - (b > 0 ? 0 : 30));
     }
-    einkEltern = c2(einkEltern);
+    const einkEltern = c2(arbeit + anderes);
     const ueber = c2(Math.max(0, einkEltern - bedarf));
+    // Vorrang: Überschreitung gilt als durch Arbeit verursacht (45 %), außer das andere Einkommen übersteigt den Bedarf schon allein (dann voll)
+    const minderung = c2(anderes > bedarf ? anderes - bedarf + R.kiz.anrechnung * arbeit : R.kiz.anrechnung * ueber);
     const minijob = R.minijob;
     const jeKind = kinder.map((k) => { const anr = z(k.unterhalt) + Math.max(0, z(k.eigenes) - minijob); return c2(Math.max(0, R.kiz.max - R.kiz.anrechnung * anr)); });
     const summeKinder = c2(jeKind.reduce((s, x) => s + x, 0));
-    const kiz = c2(Math.max(0, summeKinder - R.kiz.anrechnung * ueber));
+    const kiz = c2(Math.max(0, summeKinder - minderung));
     const minEink = ad === 2 ? R.kiz.minPaar : R.kiz.minAlleinerziehend;
-    return { eltern: ad, kinder: nk, regel, mehrAE, wohnanteil: anteil, wohnEltern, bedarf, einkEltern, ueber, jeKind, summeKinder, kiz, mindestOk: brutto >= minEink, minEink, max: R.kiz.max };
+    return { eltern: ad, kinder: nk, regel, mehrAE, wohnanteil: anteil, wohnEltern, bedarf, einkEltern, arbeit: c2(arbeit), anderes: c2(anderes), minderung, ueber, jeKind, summeKinder, kiz, mindestOk: brutto >= minEink, minEink, max: R.kiz.max };
   }
 
   // e = { ...f, bescheid: { bedarf, einkommen, kiz } } (Monat; kiz = Kinderzuschlag aller Kinder zusammen)
@@ -62,7 +65,7 @@ const BescheidKiZ = (function () {
     if (!leer(b.kiz)) {
       const diff = c2(r.kiz - z(b.kiz)), w = Math.abs(diff) <= TOL ? 'passt' : diff > 0 ? 'zuWenig' : 'zuViel';
       posten.push({ key: 'kiz', name: 'Kinderzuschlag im Monat (alle Kinder)', erwartet: r.kiz, bescheid: z(b.kiz), diff, wirkung: w, recht: '§ 6a Abs. 2, 3, 6 BKGG',
-        grund: w === 'zuWenig' && !posten.some((p) => p.grund) ? `Nach der Rechnung stehen ${eur(r.kiz)} im Monat zu (höchstens ${eur(r.max)} je Kind, gemindert um 45 % des Einkommens der Kinder und um 45 % des Elterneinkommens über dem Bedarf von ${eur(r.bedarf)}). Bewilligt sind ${eur(z(b.kiz))}.` : null });
+        grund: w === 'zuWenig' && !posten.some((p) => p.grund) ? `Nach der Rechnung stehen ${eur(r.kiz)} im Monat zu (höchstens ${eur(r.max)} je Kind, gemindert um 45 % des Einkommens der Kinder und um ${eur(r.minderung)} wegen des Elterneinkommens über dem Bedarf von ${eur(r.bedarf)}: Arbeitseinkommen zählt dabei zu 45 %, anderes Einkommen voll). Bewilligt sind ${eur(z(b.kiz))}.` : null });
     }
     const hinweise = [];
     if (!r.mindestOk) hinweise.push(`Die Eltern brauchen mindestens ${eur(r.minEink)} Bruttoeinkommen im Monat (Mindesteinkommensgrenze). Darunter gibt es keinen Kinderzuschlag.`);
