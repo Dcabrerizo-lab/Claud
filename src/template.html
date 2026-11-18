@@ -252,7 +252,7 @@
   .card.auf > details.karte > summary::-webkit-details-marker { display: none; }
   .card.auf > details.karte > summary .head2 { color: var(--muted); font-weight: 600; }
   .karte-mehr::after { content: attr(data-mehr) " ▾"; color: var(--accent); font-weight: 700; font-size: .9em; }
-  details.karte[open] .karte-mehr::after { content: attr(data-weniger) " ▴"; }
+  details.karte[open] .karte-mehr::after, details.gutwissen[open] .karte-mehr::after { content: attr(data-weniger) " ▴"; }
   .card.auf > details.karte > :not(summary) { margin: 0 18px; }
   .card.auf > details.karte > :last-child { margin-bottom: 16px; }
   .card.auf > details.karte[open] > summary { padding-bottom: 8px; }
@@ -267,7 +267,9 @@
   .ww-regel { margin: 0; }
   .karte-hinweis { background: var(--na-bg); color: var(--ink); border-radius: 8px; padding: 8px 12px; margin: 8px 0 0; }
   .gutwissen { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 4px 18px; }
-  .gutwissen > summary { min-height: 48px; color: var(--ink); }
+  .gutwissen > summary { min-height: 48px; color: var(--ink); display: grid; gap: 4px; padding: 12px 0; list-style: none; cursor: pointer; }
+  .gutwissen > summary::-webkit-details-marker { display: none; }
+  .gw-titel { font-weight: 700; }
   .gutwissen ul { margin: 0 0 12px; padding-inline-start: 20px; display: grid; gap: 8px; }
   .neinbox { border: 1px dashed var(--line); border-radius: 10px; padding: 10px 14px; display: grid; gap: 12px; }
   .neinbox > summary { color: var(--muted); }
