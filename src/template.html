@@ -270,6 +270,14 @@
   .gutwissen > summary::-webkit-details-marker { display: none; }
   .gw-titel { font-weight: 700; }
   .gutwissen ul { margin: 0 0 12px; padding-inline-start: 20px; display: grid; gap: 8px; }
+  #druckBrief { display: none; }
+  @media print {
+    html.druckt-brief body * { visibility: hidden !important; }
+    html.druckt-brief #druckBrief, html.druckt-brief #druckBrief * { visibility: visible !important; }
+    html.druckt-brief #druckBrief { display: block; position: absolute; inset: 0 auto auto 0; width: 100%; white-space: pre-wrap; font: 11pt/1.5 Georgia, 'Times New Roman', serif; color: #000; background: #fff; padding: 0; }
+  }
+  .schreiben-aus { display: grid; gap: 8px; margin-top: 8px; }
+  .schreiben-hinweis { margin: 0; }
   .neinbox { border: 1px dashed var(--line); border-radius: 10px; padding: 10px 14px; display: grid; gap: 12px; }
   .neinbox > summary { color: var(--muted); }
   .neinbox[open] > summary { margin-bottom: 8px; }
@@ -312,6 +320,14 @@
   .sc-foto { gap: 8px; }
   .sc-row:not(.sc-mit) { padding: 6px 12px; gap: 0; }
   .sc-row:not(.sc-mit) .sc-erkl > summary { min-height: 36px; }
+  .sc-vorschau { display: grid; gap: 6px; margin-bottom: 12px; }
+  .sc-bilder { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+  .sc-bild { border: 1px solid var(--line); border-radius: 8px; padding: 0; background: #fff; cursor: zoom-in; flex: none; width: 92px; min-height: 44px; }
+  .sc-bild img { display: block; width: 100%; border-radius: 8px; }
+  .sc-bild.gross { width: 100%; cursor: zoom-out; }
+  .sc-kopie { min-height: 36px; padding: 0 12px; font-size: .85em; }
+  .sc-kopiert { margin: 0; }
+  .sc-kopiert:empty { display: none; }
   .sc-teil { margin: 16px 0 6px; font-size: 1rem; }
   .sc-zahl { font-weight: 700; }
   .sc-erkl { border-top: 0; padding-top: 0; }

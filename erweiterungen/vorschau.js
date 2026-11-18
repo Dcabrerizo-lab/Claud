@@ -18,7 +18,7 @@
   const heute = () => new Date().toISOString().slice(0, 10);
   const de = (s) => { const [y, m, d] = s.split('-'); return `${d}.${m}.${y}`; };
   async function kopiere(textarea, msg) {
-    try { await navigator.clipboard.writeText(textarea.value); msg.textContent = 'Kopiert.'; } catch (e) { textarea.hidden = false; textarea.removeAttribute('readonly'); textarea.select(); msg.textContent = 'Text ist markiert. Bitte mit Strg+C bzw. „Kopieren“ übernehmen.'; textarea.setAttribute('readonly', ''); }
+    try { const cb = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Clipboard; if (cb) await cb.write({ string: textarea.value }); else await navigator.clipboard.writeText(textarea.value); msg.textContent = 'Kopiert. Du kannst den Text jetzt in ein Schreibprogramm oder eine E-Mail einfügen.'; } catch (e) { textarea.hidden = false; textarea.removeAttribute('readonly'); textarea.select(); msg.textContent = 'Text ist markiert. Bitte mit Strg+C bzw. „Kopieren“ übernehmen.'; textarea.setAttribute('readonly', ''); }
   }
 
   // ---------------- Reiter ----------------
@@ -332,6 +332,23 @@ Ergebnis: Pflegegrad 2`;
       bescheid: { regel: wert('bs-b-regel'), mehrAE: wert('bs-b-ae'), mehrSchwanger: wert('bs-b-schw'), mehrWW: wert('bs-b-ww'), kdu: wert('bs-b-kdu'), einkommen: wert('bs-b-eink'), kindergeld: wert('bs-b-kg'), zahlbetrag: wert('bs-b-zahl') } };
   }
   const WIRK = { passt: 'passt', zuWenig: 'zu deinen Lasten', zuViel: 'zu deinen Gunsten', pruefen: 'bitte prüfen', fehlt: 'nicht eingetragen' };
+  // Ergebnis als Karten: je Abweichung eine Karte (Bescheid, nach SoLo, Grund, Paragraf); was passt, steht in einer Zeile;
+  // die vollständige Tabelle zum Aufklappen. Für alle Bescheid-Prüfungen gleich.
+  function abweichungsKarten(box, r, label) {
+    const grundVon = (p) => p.grund || ((r.gruende || []).find((g) => g.key === p.key) || {}).grund || '';
+    const ab = r.posten.filter((p) => p.wirkung === 'zuWenig' || p.wirkung === 'pruefen');
+    for (const p of ab) {
+      box.append(h('div', { class: 'opt abw' },
+        h('div', { class: 'abw-kopf' }, h('strong', { text: p.name }), h('span', { class: 'pill ' + p.wirkung, text: WIRK[p.wirkung] })),
+        h('p', {}, `Im Bescheid: ${p.bescheid == null ? 'nicht eingetragen' : eur(p.bescheid)} · Nach SoLo: ${eur(p.erwartet)}`),
+        grundVon(p) ? h('p', { class: 'small', text: grundVon(p) }) : null,
+        p.recht ? h('p', { class: 'small muted', text: p.recht }) : null));
+    }
+    const ok = r.posten.filter((p) => p.wirkung === 'passt' || p.wirkung === 'zuViel').map((p) => p.name);
+    if (ok.length) box.append(h('p', { class: 'small', text: (ab.length ? 'Passt: ' : 'Alles passt: ') + ok.join(', ') + '.' }));
+    const tb = h('tbody', {}, r.posten.map((p) => h('tr', {}, h('td', {}, p.name, p.recht ? h('span', { class: 'amt small muted', text: ' ' + p.recht }) : null), h('td', { class: 'z', text: eur(p.erwartet) }), h('td', { class: 'z', text: p.bescheid == null ? '–' : eur(p.bescheid) }), h('td', {}, h('span', { class: 'pill ' + p.wirkung, text: WIRK[p.wirkung] })))));
+    box.append(h('details', {}, h('summary', { text: 'Alle Posten im Vergleich' }), h('div', { class: 'tablewrap', tabindex: '0', role: 'region', 'aria-label': label }, h('table', {}, h('thead', {}, h('tr', {}, h('th', { text: 'Posten' }), h('th', { class: 'z', text: 'nach SoLo' }), h('th', { class: 'z', text: 'im Bescheid' }), h('th', { text: 'Bewertung' }))), tb))));
+  }
   function zeigeBescheid() {
     const box = $('bs-erg'); box.replaceChildren();
     const e = leseBescheid();
@@ -340,10 +357,8 @@ Ergebnis: Pflegegrad 2`;
     box.append(h('h2', { text: 'Ergebnis' }));
     r.hinweise.forEach((t) => box.append(h('p', { class: 'note', text: t })));
     box.append(h('p', {}, r.zuWenigImMonat > 0 ? h('span', { class: 'big', text: `Vermutlich ${eur(r.zuWenigImMonat)} im Monat zu wenig` }) : h('span', { class: 'big', text: 'Keine sichere Abweichung zu deinen Lasten gefunden' })));
-    const tb = h('tbody', {}, r.posten.map((p) => h('tr', {}, h('td', {}, p.name, h('span', { class: 'amt small muted', text: ' ' + p.recht })), h('td', { class: 'z', text: eur(p.erwartet) }), h('td', { class: 'z', text: p.bescheid == null ? '–' : eur(p.bescheid) }), h('td', {}, h('span', { class: 'pill ' + p.wirkung, text: WIRK[p.wirkung] })))));
-    box.append(h('div', { class: 'tablewrap', tabindex: '0', role: 'region', 'aria-label': 'Vergleich der Posten' }, h('table', {}, h('thead', {}, h('tr', {}, h('th', { text: 'Posten' }), h('th', { class: 'z', text: 'nach SoLo' }), h('th', { class: 'z', text: 'im Bescheid' }), h('th', { text: 'Bewertung' }))), tb)));
+    abweichungsKarten(box, r, 'Vergleich der Posten');
     if (r.zahlbetrag) box.append(h('p', { class: 'small', text: `Zahlbetrag nach SoLo ${eur(r.zahlbetrag.erwartet)}, im Bescheid ${eur(r.zahlbetrag.bescheid)}.` }));
-    r.gruende.forEach((g) => box.append(h('p', { class: 'small' }, h('strong', { text: g.name + ': ' }), g.grund)));
     box.append(h('p', { class: 'small muted', text: r.grenzen }));
   }
   function macheBescheidWiderspruch() {
@@ -367,12 +382,8 @@ Ergebnis: Pflegegrad 2`;
     box.append(h('h2', { text: 'Ergebnis' }),
       h('p', {}, h('span', { class: 'big', text: r.posten.length ? (r.zuWenigImMonat > 0 ? `Vermutlich ${eur(r.zuWenigImMonat)} im Monat zu wenig` : r.gruende.length ? 'Bitte prüfen' : 'Keine Abweichung zu deinen Lasten gefunden') : `Nach SoLo: ${eur(r.erwartet.zahlbetrag)} Grundsicherung im Monat` })),
       h('p', { class: 'small', text: `Nach SoLo: Bedarf ${eur(r.erwartet.bedarf)}, anzurechnendes Einkommen ${eur(r.erwartet.einkommen)}, Zahlbetrag ${eur(r.erwartet.zahlbetrag)}.` }));
-    if (r.posten.length) {
-      const tb = h('tbody', {}, r.posten.map((p) => h('tr', {}, h('td', {}, p.name), h('td', { class: 'z', text: eur(p.erwartet) }), h('td', { class: 'z', text: eur(p.bescheid) }), h('td', {}, h('span', { class: 'pill ' + p.wirkung, text: WIRK[p.wirkung] })))));
-      box.append(h('div', { class: 'tablewrap', tabindex: '0', role: 'region', 'aria-label': 'Vergleich Grundsicherung im Alter' }, h('table', {}, h('thead', {}, h('tr', {}, h('th', { text: 'Posten' }), h('th', { class: 'z', text: 'nach SoLo' }), h('th', { class: 'z', text: 'im Bescheid' }), h('th', { text: 'Bewertung' }))), tb)));
-    }
+    if (r.posten.length) abweichungsKarten(box, r, 'Vergleich Grundsicherung im Alter');
     if (r.zahlbetrag) box.append(h('p', { class: 'small', text: `Zahlbetrag nach SoLo ${eur(r.zahlbetrag.erwartet)}, im Bescheid ${eur(r.zahlbetrag.bescheid)}.` }));
-    r.gruende.forEach((g) => box.append(h('p', { class: 'small' }, h('strong', { text: g.name + ': ' }), g.grund)));
     box.append(h('p', { class: 'small muted', text: r.grenzen }));
   }
   function macheGSAWiderspruch() {
@@ -407,11 +418,7 @@ Ergebnis: Pflegegrad 2`;
     box.append(h('h2', { text: 'Ergebnis' }),
       h('p', {}, h('span', { class: 'big', text: r.posten.length ? (r.zuWenigImMonat > 0 ? `Vermutlich ${eur(r.zuWenigImMonat)} Wohngeld im Monat zu wenig` : r.gruende.length ? 'Abweichung gefunden, bitte prüfen' : 'Keine Abweichung zu deinen Lasten gefunden') : `Nach SoLo: ${eur(r.rechnung.wohngeld)} Wohngeld im Monat` })),
       h('p', { class: 'small', text: `Nach SoLo: Miete ${eur(r.rechnung.miete)} (Höchstbetrag ${eur(r.rechnung.hoechstbetrag)} plus Heizkostenkomponente ${eur(r.rechnung.heizkomponente)}), Einkommen ${eur(r.rechnung.einkommen)}, Wohngeld ${eur(r.rechnung.wohngeld)}.` }));
-    if (r.posten.length) {
-      const tb = h('tbody', {}, r.posten.map((p) => h('tr', {}, h('td', {}, p.name), h('td', { class: 'z', text: eur(p.erwartet) }), h('td', { class: 'z', text: eur(p.bescheid) }), h('td', {}, h('span', { class: 'pill ' + p.wirkung, text: WIRK[p.wirkung] })))));
-      box.append(h('div', { class: 'tablewrap', tabindex: '0', role: 'region', 'aria-label': 'Vergleich Wohngeld' }, h('table', {}, h('thead', {}, h('tr', {}, h('th', { text: 'Posten' }), h('th', { class: 'z', text: 'nach SoLo' }), h('th', { class: 'z', text: 'im Bescheid' }), h('th', { text: 'Bewertung' }))), tb)));
-    }
-    r.gruende.forEach((g) => box.append(h('p', { class: 'small' }, h('strong', { text: g.name + ': ' }), g.grund)));
+    if (r.posten.length) abweichungsKarten(box, r, 'Vergleich Wohngeld');
     box.append(h('p', { class: 'small muted', text: r.grenzen }));
   }
   function macheWGWiderspruch() {
@@ -449,11 +456,7 @@ Ergebnis: Pflegegrad 2`;
       h('p', {}, h('span', { class: 'big', text: r.posten.length ? (r.zuWenigImMonat > 0 ? `Vermutlich ${eur(r.zuWenigImMonat)} Kinderzuschlag im Monat zu wenig` : r.gruende.length ? 'Abweichung gefunden, bitte prüfen' : 'Keine Abweichung zu deinen Lasten gefunden') : `Nach SoLo: ${eur(q.kiz)} Kinderzuschlag im Monat` })),
       h('p', { class: 'small', text: `Nach SoLo: Bedarf der Eltern ${eur(q.bedarf)}, anzurechnendes Einkommen der Eltern ${eur(q.einkEltern)}, Kinderzuschlag ${eur(q.kiz)} (höchstens ${eur(q.max)} je Kind).` }));
     r.hinweise.forEach((t) => box.append(h('p', { class: 'note', text: t })));
-    if (r.posten.length) {
-      const tb = h('tbody', {}, r.posten.map((p) => h('tr', {}, h('td', {}, p.name), h('td', { class: 'z', text: eur(p.erwartet) }), h('td', { class: 'z', text: eur(p.bescheid) }), h('td', {}, h('span', { class: 'pill ' + p.wirkung, text: WIRK[p.wirkung] })))));
-      box.append(h('div', { class: 'tablewrap', tabindex: '0', role: 'region', 'aria-label': 'Vergleich Kinderzuschlag' }, h('table', {}, h('thead', {}, h('tr', {}, h('th', { text: 'Posten' }), h('th', { class: 'z', text: 'nach SoLo' }), h('th', { class: 'z', text: 'im Bescheid' }), h('th', { text: 'Bewertung' }))), tb)));
-    }
-    r.gruende.forEach((g) => box.append(h('p', { class: 'small' }, h('strong', { text: g.name + ': ' }), g.grund)));
+    if (r.posten.length) abweichungsKarten(box, r, 'Vergleich Kinderzuschlag');
     box.append(h('p', { class: 'small muted', text: r.grenzen }));
   }
   function macheKiZWiderspruch() {
@@ -495,7 +498,7 @@ Ergebnis: Pflegegrad 2`;
     if (r.befunde.length) box.append(h('h3', { text: 'Was auffällt' }), h('ul', {}, r.befunde.map((b) => h('li', {}, h('span', { class: 'pill ' + (b.schwere === 'fehler' ? 'zuWenig' : 'pruefen'), text: b.schwere === 'fehler' ? 'Fehler' : 'prüfen' }), ' ', b.text))));
     else box.append(h('p', { text: 'Keine Auffälligkeiten nach den geprüften Regeln.' }));
     const tb = h('tbody', {}, r.posten.map((p) => h('tr', {}, h('td', {}, p.bez || '–', p.art ? h('span', { class: 'amt small muted', text: ' ' + p.art }) : null), h('td', { class: 'z', text: eur(p.anteil) }), h('td', {}, h('span', { class: 'pill ' + NKW[p.status][0], text: NKW[p.status][1] })))));
-    box.append(h('div', { class: 'tablewrap', tabindex: '0', role: 'region', 'aria-label': 'Posten mit Bewertung' }, h('table', {}, h('thead', {}, h('tr', {}, h('th', { text: 'Posten' }), h('th', { class: 'z', text: 'Anteil' }), h('th', { text: 'Bewertung' }))), tb)));
+    box.append(h('details', {}, h('summary', { text: 'Alle Posten mit Bewertung' }), h('div', { class: 'tablewrap', tabindex: '0', role: 'region', 'aria-label': 'Posten mit Bewertung' }, h('table', {}, h('thead', {}, h('tr', {}, h('th', { text: 'Posten' }), h('th', { class: 'z', text: 'Anteil' }), h('th', { text: 'Bewertung' }))), tb))));
     if (leist === 'sgb2' || leist === 'gsa') box.append(h('p', { class: 'note', text: r.ergebnis > 0 ? `Eine Nachzahlung muss in der Regel das ${leist === 'gsa' ? 'Sozialamt' : 'Jobcenter'} übernehmen, wenn die Miete angemessen ist. Den Antrag bitte sofort stellen, spätestens im Monat, in dem die Nachzahlung fällig ist. Strittige Posten erst mit dem Vermieter klären.` : `Ein Guthaben wird vom ${leist === 'gsa' ? 'Sozialamt' : 'Jobcenter'} im Monat nach der Gutschrift mit den Kosten der Unterkunft verrechnet (§ 22 Abs. 3 SGB II bzw. entsprechend im SGB XII). Bitte die Abrechnung dort vorlegen.` }));
     if (leist === 'wohngeld') box.append(h('p', { class: 'note', text: 'Steigen die Vorauszahlungen deutlich, kann ein Antrag auf Erhöhung des Wohngeldes sinnvoll sein. Die Wohngeldstelle prüft das.' }));
     box.append(h('p', { class: 'small muted', text: r.grenzen }));

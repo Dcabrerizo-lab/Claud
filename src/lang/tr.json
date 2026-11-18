@@ -1069,5 +1069,8 @@
   "sc.summary": "{n} alan, {m} tanesinde kontrolünden bir değer var",
   "sc.abschreiben": "Bunu doğrudan yazabilirsin",
   "sc.selbst.h": "Bunu kendin doldurursun (işaretle)",
-  "sc.was": "Ne demek?"
+  "sc.was": "Ne demek?",
+  "sc.vorschau": "Formun (yalnızca bu cihazda, kaydedilmez). Büyütmek için dokun.",
+  "sc.vorschauGross": "Sayfa {n} büyüt",
+  "sc.kopiert": "Kopyalandı. Şimdi bir çevrimiçi forma veya doldurulabilir bir PDF’ye yapıştırabilirsin."
 }

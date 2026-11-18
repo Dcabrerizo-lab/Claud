@@ -1069,5 +1069,8 @@
   "sc.summary": "{n} pól, w tym {m} z wartością z twojego sprawdzenia",
   "sc.abschreiben": "To możesz od razu przepisać",
   "sc.selbst.h": "To wpisujesz sam (odhaczaj)",
-  "sc.was": "O co chodzi?"
+  "sc.was": "O co chodzi?",
+  "sc.vorschau": "Twój formularz (tylko na tym urządzeniu, nie jest zapisywany). Dotknij, aby powiększyć.",
+  "sc.vorschauGross": "Powiększ stronę {n}",
+  "sc.kopiert": "Skopiowano. Możesz teraz wkleić to do formularza online lub wypełnialnego PDF."
 }

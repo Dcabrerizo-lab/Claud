@@ -47,6 +47,9 @@
   .krit p { margin: 0; }
   .krit .pkt { float: right; margin-left: 10px; font-variant-numeric: tabular-nums; color: var(--muted); }
   .opt { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin: 8px 0; }
+  .abw { display: grid; gap: 4px; }
+  .abw p { margin: 0; }
+  .abw-kopf { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
   .btns { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
   details > summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
   .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
@@ -104,7 +107,7 @@
       </fieldset>
     </form>
     <form id="pf-form2" onsubmit="return false">
-      <fieldset><legend>Angaben aus Gutachten und Bescheid</legend>
+      <fieldset><legend>Das steht in deinem Gutachten und Bescheid</legend>
         <div class="grid2">
           <div><label for="pf-pgb">Pflegegrad laut Bescheid</label><select id="pf-pgb"><option value="">nicht bekannt</option><option value="0">kein Pflegegrad</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
           <label class="check"><input type="checkbox" id="pf-harn"> Harn: überwiegend oder vollständig inkontinent, oder Katheter/Urostoma</label>
@@ -163,7 +166,7 @@
           <div><label for="bs-heiz">Heizkosten</label><input type="number" id="bs-heiz" min="0" step="0.01" inputmode="decimal"></div>
         </div>
       </fieldset>
-      <fieldset><legend>Beträge im Bescheid (Monat, ganze Bedarfsgemeinschaft)</legend>
+      <fieldset><legend>Das steht in deinem Bescheid (Monat, ganze Bedarfsgemeinschaft)</legend>
         <div class="grid2">
           <div><label for="bs-b-regel">Regelbedarfe zusammen</label><input type="number" id="bs-b-regel" step="0.01" inputmode="decimal"></div>
           <div><label for="bs-b-ae">Mehrbedarf Alleinerziehende</label><input type="number" id="bs-b-ae" step="0.01" inputmode="decimal"></div>
@@ -234,7 +237,7 @@
         <label class="check"><input type="checkbox" id="ga-gr2"> Mindestens 33 Jahre Grundrentenzeiten (Grundrentenzuschlag im Rentenbescheid)</label>
         <label class="check"><input type="checkbox" id="ga-g2"> Merkzeichen G im Schwerbehindertenausweis</label>
       </fieldset>
-      <fieldset><legend>Beträge im Bescheid (Monat)</legend>
+      <fieldset><legend>Das steht in deinem Bescheid (Monat)</legend>
         <div class="grid2">
           <div><label for="ga-b-regel">Regelbedarf zusammen</label><input type="number" id="ga-b-regel" step="0.01" inputmode="decimal"></div>
           <div><label for="ga-b-g">Mehrbedarf Merkzeichen G</label><input type="number" id="ga-b-g" step="0.01" inputmode="decimal"></div>
@@ -287,7 +290,7 @@
         <div class="btns"><button type="button" class="btn" id="wg-plus">Einkommen hinzufügen</button></div>
         <p class="small muted">Pauschalabzug: je 10 % für Steuern, Kranken- und Pflegeversicherung, Rentenversicherung. Bei normalem Lohn meist 30 %, bei Rente meist 10 oder 20 %.</p>
       </fieldset>
-      <fieldset><legend>Beträge im Bescheid (Monat)</legend>
+      <fieldset><legend>Das steht in deinem Bescheid (Monat)</legend>
         <div class="grid2">
           <div><label for="wg-b-miete">Zu berücksichtigende Miete</label><input type="number" id="wg-b-miete" step="0.01" inputmode="decimal"></div>
           <div><label for="wg-b-eink">Gesamteinkommen</label><input type="number" id="wg-b-eink" step="0.01" inputmode="decimal"></div>
@@ -337,7 +340,7 @@
         <div class="tablewrap" tabindex="0" role="region" aria-label="Kinder"><table><thead><tr><th>Alter</th><th>Unterhalt oder Unterhaltsvorschuss</th><th>eigenes Einkommen</th><th><span class="vh">Entfernen</span></th></tr></thead><tbody id="kz-kinder"></tbody></table></div>
         <div class="btns"><button type="button" class="btn" id="kz-plus">Kind hinzufügen</button></div>
       </fieldset>
-      <fieldset><legend>Beträge im Bescheid (Monat)</legend>
+      <fieldset><legend>Das steht in deinem Bescheid (Monat)</legend>
         <div class="grid2">
           <div><label for="kz-b-bedarf">Bedarf der Eltern</label><input type="number" id="kz-b-bedarf" step="0.01" inputmode="decimal"></div>
           <div><label for="kz-b-eink">Einkommen der Eltern</label><input type="number" id="kz-b-eink" step="0.01" inputmode="decimal"></div>

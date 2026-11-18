@@ -471,7 +471,7 @@
       var f = $('sc-pdf').files && $('sc-pdf').files[0]; if (!f || scanBusy) return;
       scanBusyOn(true);
       pdfLesen(f, function (i, n) { $('sc-msg').textContent = t('el.pdfSeite', { n: String(i), m: String(n) }); })
-        .then(function (text) { scanBusyOn(false); $('sc-pdf').value = ''; setScanResult(scanFromText(text)); }, function () { scanBusyOn(false); $('sc-pdf').value = ''; scanMsg('el.pdfFehler'); });
+        .then(function (text) { return pdfVorschau(f).then(function (b) { scanBilderSetzen(b); }, function () { scanBilderSetzen([]); }).then(function () { scanBusyOn(false); $('sc-pdf').value = ''; setScanResult(scanFromText(text)); }); }, function () { scanBusyOn(false); $('sc-pdf').value = ''; scanMsg('el.pdfFehler'); });
     });
     if ($('sc-claude')) {
       $('sc-claude').addEventListener('click', function () { runClaude(); });
@@ -1025,6 +1025,71 @@
     }).catch(function () { msg.textContent = t('f.pdfFail'); });
   }
 
+  // ----- Schreiben aus „Brief prüfen“ (Widerspruch, Höherstufung, Einwände) abgeben: wie bei der Antragsmappe als PDF teilen,
+  // drucken oder speichern, dazu ein klarer Hinweis, wie man es einreicht. Die Knöpfe erscheinen, sobald das Schreiben erstellt ist.
+  var SCHREIBEN = [['pf-wid-text', 'pf-wid-copy', 'Schreiben-Pflegekasse', 'amt'], ['bs-wid-text', 'bs-wid-copy', 'Widerspruch-Jobcenter', 'amt'],
+    ['ga-wid-text', 'ga-wid-copy', 'Widerspruch-Sozialamt', 'amt'], ['wg-wid-text', 'wg-wid-copy', 'Widerspruch-Wohngeld', 'amt'],
+    ['kz-wid-text', 'kz-wid-copy', 'Widerspruch-Kinderzuschlag', 'amt'], ['nk-text', 'nk-copy', 'Schreiben-Nebenkosten', 'vermieter']];
+  var ABGEBEN = {
+    amt: 'So geht es weiter: ausdrucken, unterschreiben und vor Ablauf der Frist abgeben, persönlich mit Eingangsstempel auf deiner Kopie oder per Post, am besten als Einwurf-Einschreiben. Eine einfache E-Mail reicht in der Regel nicht.',
+    vermieter: 'So geht es weiter: unterschreiben und dem Vermieter schicken, so dass du den Zugang nachweisen kannst (Einwurf-Einschreiben oder Übergabe gegen Quittung). Behalte eine Kopie.'
+  };
+  function schreibenPdf(text, titel) {
+    return loadPdfLib().then(function (L) {
+      return L.buildPdf({ pages: [{ blocks: [{ t: 'pre', text: text }] }], title: titel, loadFont: function (n) { return fetch('fonts/pdf/' + n).then(function (r) { return r.arrayBuffer(); }).then(function (b) { return new Uint8Array(b); }); } });
+    });
+  }
+  function schreibenAusgeben(ta, titel, art, msg) {
+    var name = titel + '.pdf', text = ta.value;
+    msg.textContent = t('f.pdfWorking');
+    if (art === 'teilen') {
+      var fs = plug('Filesystem'), sh = plug('Share');
+      if (!fs || !sh) { msg.textContent = t('f.pdfFail'); return; }
+      schreibenPdf(text, titel).then(function (bytes) { return fs.writeFile({ path: name, data: toBase64(bytes), directory: 'CACHE' }); })
+        .then(function (r) { return sh.share({ title: titel, files: [r.uri] }).then(function () {}, function () {}); })
+        .then(function () { msg.textContent = ''; return fs.deleteFile({ path: name, directory: 'CACHE' }).catch(function () {}); })
+        .catch(function () { msg.textContent = t('f.pdfFail'); });
+      return;
+    }
+    var pa = plug('PdfAusgabe');
+    if (!pa) { msg.textContent = t('f.pdfFail'); return; }
+    schreibenPdf(text, titel).then(function (bytes) { return pa[art]({ data: toBase64(bytes), name: name }); })
+      .then(function (r) { msg.textContent = art === 'drucken' ? '' : (r && r.ort === 'Download' ? t('f.gespeichert', { name: r.name || name }) : t('f.gespeichertWahl')); },
+        function (e) { msg.textContent = /abgebrochen/.test(String(e && e.message || e)) ? '' : t('f.pdfFail'); });
+  }
+  // Web: nur dieses Schreiben drucken (der Rest der Seite wird beim Drucken ausgeblendet)
+  function schreibenDrucken(text) {
+    var d = $('druckBrief'); if (!d) { d = document.createElement('div'); d.id = 'druckBrief'; document.body.appendChild(d); }
+    d.textContent = text; document.documentElement.classList.add('druckt-brief');
+    var weg = function () { document.documentElement.classList.remove('druckt-brief'); window.removeEventListener('afterprint', weg); };
+    window.addEventListener('afterprint', weg);
+    try { window.print(); } catch (e) {}
+    setTimeout(weg, 60000);
+  }
+  function schreibenKnoepfe() {
+    var android = NATIVE && plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios');
+    SCHREIBEN.forEach(function (x) {
+      var ta = $(x[0]), copy = $(x[1]); if (!ta || !copy) return;
+      var box = document.createElement('div'); box.className = 'schreiben-aus'; box.hidden = true;
+      var btns = document.createElement('div'); btns.className = 'btns';
+      var msg = document.createElement('p'); msg.className = 'small'; msg.setAttribute('role', 'status');
+      var knopf = function (text, haupt, fn) { var b = document.createElement('button'); b.type = 'button'; b.className = 'btn' + (haupt ? ' primary' : ''); b.textContent = text; b.addEventListener('click', fn); btns.appendChild(b); return b; };
+      if (NATIVE) {
+        knopf('Als PDF teilen', true, function () { schreibenAusgeben(ta, x[2], 'teilen', msg); }).setAttribute('data-aus', 'teilen');
+        if (android) { knopf('Drucken', false, function () { schreibenAusgeben(ta, x[2], 'drucken', msg); }); knopf('PDF speichern', false, function () { schreibenAusgeben(ta, x[2], 'speichern', msg); }); }
+      } else {
+        knopf('Drucken', true, function () { schreibenDrucken(ta.value); }).setAttribute('data-aus', 'drucken');
+        if (navigator.share) knopf('Teilen', false, function () { navigator.share({ title: x[2].replace(/-/g, ' '), text: ta.value }).catch(function () {}); });
+      }
+      var hinweis = document.createElement('p'); hinweis.className = 'note schreiben-hinweis'; hinweis.textContent = ABGEBEN[x[3]];
+      box.appendChild(btns); box.appendChild(msg); box.appendChild(hinweis);
+      var reihe = copy.closest('.btns') || copy; reihe.parentNode.insertBefore(box, reihe.nextSibling);
+      // sichtbar, sobald das Schreiben erstellt ist (die Prüfung zeigt dann das Textfeld)
+      new MutationObserver(function () { box.hidden = ta.hidden; }).observe(ta, { attributes: true, attributeFilter: ['hidden'] });
+    });
+  }
+  schreibenKnoepfe();
+
   function copyMappe() {
     var ta = $('mappeText');
     var done = function () { $('copyMsg').textContent = t('f.copied'); ta.hidden = true; };
@@ -1132,10 +1197,11 @@
     var mitZ = zeilen.filter(function (z) { return z.val; }), ohneZ = zeilen.filter(function (z) { return !z.val; });
     var nMit = mitZ.reduce(function (n, z) { return n + (z.f.labels ? z.f.labels.length : 1); }, 0);
     var erkl = function (z) { return z.expl ? '<details class="sc-erkl"><summary>' + esc(t('sc.was')) + '</summary><p>' + (z.known ? '' : '<span class="sc-tag">' + esc(t('sc.claudeHint')) + ': </span>') + esc(z.expl) + '</p></details>' : ''; };
-    el.innerHTML = '<h3>' + esc(t('sc.res')) + '</h3>' + (scanTitel ? '<p class="sc-titel"><span>' + esc(t('sc.form')) + '</span> <bdi lang="de" dir="ltr">' + esc(scanTitel) + '</bdi></p>' : '') +
+    var vorschauHtml = scanBilder.length ? '<div class="sc-vorschau"><p class="small">' + esc(t('sc.vorschau')) + '</p><div class="sc-bilder">' + scanBilder.map(function (u, i) { return '<button type="button" class="sc-bild" data-bild="' + i + '" aria-label="' + esc(t('sc.vorschauGross', { n: i + 1 })) + '"><img src="' + esc(u) + '" alt=""></button>'; }).join('') + '</div></div>' : '';
+    el.innerHTML = vorschauHtml + '<h3>' + esc(t('sc.res')) + '</h3>' + (scanTitel ? '<p class="sc-titel"><span>' + esc(t('sc.form')) + '</span> <bdi lang="de" dir="ltr">' + esc(scanTitel) + '</bdi></p>' : '') +
       '<p class="sc-zahl">' + esc(t('sc.summary', { n: felder, m: nMit })) + '</p>' + (mitWert ? '' : '<p class="hint">' + esc(t('sc.tipp')) + '</p>') +
       (mitZ.length ? '<h4 class="sc-teil">' + esc(t('sc.abschreiben')) + '</h4><ul class="sc-list">' + mitZ.map(function (z) {
-        return '<li class="sc-row sc-mit"><div class="sc-lab" lang="de" dir="ltr">' + z.lab + '</div><div class="sc-val"><bdi lang="de" dir="ltr">' + esc(z.val) + '</bdi><button type="button" class="btn ghost" data-scopy="' + z.i + '">' + esc(t('sc.copy')) + '</button></div>' + erkl(z) + '</li>';
+        return '<li class="sc-row sc-mit"><div class="sc-lab" lang="de" dir="ltr">' + z.lab + '</div><div class="sc-val"><bdi lang="de" dir="ltr">' + esc(z.val) + '</bdi><button type="button" class="btn ghost sc-kopie" data-scopy="' + z.i + '">' + esc(t('sc.copy')) + '</button></div><p class="small sc-kopiert" role="status"></p>' + erkl(z) + '</li>';
       }).join('') + '</ul>' : '') +
       (ohneZ.length ? '<h4 class="sc-teil">' + esc(t('sc.selbst.h')) + '</h4><ul class="sc-list">' + ohneZ.map(function (z) {
         return '<li class="sc-row"><label class="check sc-hak"><input type="checkbox"><span class="sc-lab" lang="de" dir="ltr">' + z.lab + '</span></label>' + erkl(z) + '</li>';
@@ -1143,14 +1209,40 @@
       '<p class="hint">' + esc(t('sc.check')) + '</p>';
     el.querySelectorAll('[data-scopy]').forEach(function (b) {
       b.addEventListener('click', function () {
-        var f = scanFound[Number(b.getAttribute('data-scopy'))];
-        var v = scanValue(f.id);
-        var done = function () { b.textContent = t('sc.copied'); };
-        try { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(v).then(done, function () {}); } catch (e) {}
+        var f = scanFound[Number(b.getAttribute('data-scopy'))], v = scanValue(f.id), hin = b.closest('.sc-row').querySelector('.sc-kopiert');
+        var ok = function () { hin.textContent = t('sc.kopiert'); }, nein = function () { hin.textContent = t('f.copyFail'); };
+        try {
+          var cb = plug('Clipboard'); // App: Zwischenablage über das Plugin, im Browser über navigator.clipboard
+          if (cb) cb.write({ string: v }).then(ok, nein);
+          else if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(v).then(ok, nein);
+          else nein();
+        } catch (e) { nein(); }
       });
     });
+    el.querySelectorAll('[data-bild]').forEach(function (b) { b.addEventListener('click', function () { b.classList.toggle('gross'); }); });
   }
 
+
+  // Vorschau des Formulars (Foto oder PDF-Seiten), nur im Arbeitsspeicher, solange die Kachel offen ist; wird nie gespeichert
+  var scanBilder = [];
+  function scanBilderSetzen(liste) { scanBilder.forEach(function (u) { if (/^blob:/.test(u)) { try { URL.revokeObjectURL(u); } catch (e) {} } }); scanBilder = liste || []; }
+  function pdfVorschau(file) {
+    return ladePdfjs().then(function (L) { return new Response(file).arrayBuffer().then(function (buf) { return L.getDocument({ data: new Uint8Array(buf), isEvalSupported: false }).promise; }); })
+      .then(function (doc) {
+        var n = Math.min(doc.numPages, 4), bilder = [], i = 0;
+        function naechste() {
+          if (i >= n) { try { doc.destroy(); } catch (e) {} return bilder; }
+          i++;
+          return doc.getPage(i).then(function (page) {
+            var v1 = page.getViewport({ scale: 1 }), vp = page.getViewport({ scale: Math.min(1.6, 1000 / v1.width) });
+            var c = document.createElement('canvas'); c.width = Math.ceil(vp.width); c.height = Math.ceil(vp.height);
+            var ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+            return page.render({ canvasContext: ctx, viewport: vp }).promise.then(function () { bilder.push(c.toDataURL('image/jpeg', 0.85)); return naechste(); });
+          });
+        }
+        return naechste();
+      });
+  }
   function setScanResult(list) {
     scanFound = list;
     renderScan();
@@ -1255,12 +1347,13 @@
   function runLocal(text) {
     if (scanBusy) return;
     var txt = $('sc-text') ? $('sc-text').value : '', file = $('sc-file') && $('sc-file').files && $('sc-file').files[0];
-    if (text && txt.trim()) { setScanResult(scanFromText(txt)); return; }
+    if (text && txt.trim()) { scanBilderSetzen([]); setScanResult(scanFromText(txt)); return; }
     if (text && !file) { scanMsg('sc.need'); return; }
     if (!file) { scanMsg('sc.need'); return; }
     scanBusyOn(true); scanMsg('sc.working');
     ocr(file).then(function (text) {
       scanBusyOn(false);
+      try { scanBilderSetzen([URL.createObjectURL(file)]); } catch (e) { scanBilderSetzen([]); }
       setScanResult(scanFromText(text));
     }, function () {
       scanBusyOn(false); scanMsg('sc.ocrFail');
@@ -1280,7 +1373,9 @@
     cam.getPhoto({ source: 'CAMERA', resultType: 'uri', quality: 90, saveToGallery: false, correctOrientation: true }).then(function (ph) {
       path = ph && (ph.path || ph.webPath);
       if (!path) throw new Error('nopath');
-      return rec.recognize({ path: path });
+      var web = ph.webPath;
+      var vorschau = web ? fetch(web).then(function (x) { return x.blob(); }).then(function (b) { return URL.createObjectURL(b); }, function () { return null; }) : Promise.resolve(null);
+      return vorschau.then(function (u) { scanBilderSetzen(u ? [u] : []); return rec.recognize({ path: path }); });
     }).then(function (r) {
       cleanup(); scanBusyOn(false);
       setScanResult(scanFromText(((r && r.lines) || []).join('\n')));
@@ -1835,10 +1930,15 @@
     $('briefKacheln').hidden = !!teil; $('briefeIntro').hidden = !!teil; $('checkBox').hidden = !teil;
     $('ppNurDe').hidden = lang === 'de';
     if (briefArt !== (teil ? art : null)) { $('elMsg').textContent = ''; $('elErg').textContent = ''; }
+    if (!teil) scanBilderSetzen([]);
     briefArt = teil ? art : null; briefKopf();
     $('app').classList.toggle('brief-offen', !!teil); // in einer Kachel Logo und Sprachwahl ausblenden, damit die Wahl oben steht
     // Erst entscheiden (scannen, einfügen oder selbst eingeben), dann erscheint das Formular der Prüfung
-    if (teil && art !== 'af' && !$(teil).dataset.offen) $(teil).classList.add('pp-zu'); // einmal geöffnet bleibt das Formular offen (z. B. nach der Pflege-Einschätzung) // Antragsformular: dort sind Foto und Einfügen selbst die Wahl
+    if (teil && art !== 'af' && !$(teil).dataset.offen) $(teil).classList.add('pp-zu');
+    // Name und Anschrift aus der Ausfüllhilfe übernehmen, damit man sie für das Schreiben nicht noch einmal tippt (nur leere Felder)
+    ['pf', 'bs', 'ga', 'wg', 'kz', 'nk'].forEach(function (k) {
+      [['-name', person.name], ['-anschrift', person.strasse], ['-ort', person.ort]].forEach(function (x) { var el = $(k + x[0]); if (el && !el.value && x[1]) el.value = x[1]; });
+    }); // einmal geöffnet bleibt das Formular offen (z. B. nach der Pflege-Einschätzung) // Antragsformular: dort sind Foto und Einfügen selbst die Wahl
     elPlatz();
     if (art === 'pk' && window.PruefpaketPflege && typeof PflegeAssistent !== 'undefined') window.PruefpaketPflege.eigene(pa.antworten ? PflegeAssistent.eingabe(pa.antworten, null) : null);
     window.scrollTo(0, 0);

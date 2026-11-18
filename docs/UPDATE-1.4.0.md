@@ -1,6 +1,6 @@
 # Update 1.4.0: übersichtlicher, PDF, Pflege
 
-Version 1.4.0, Build 144 (Build 143 enthielt noch „Vorlesen“). Gegenüber 1.3.1 (Build 142). Einzelheiten in `docs/AENDERUNGEN.md`.
+Version 1.4.0, Build 144 (Build 143 enthielt noch „Vorlesen“ und nicht die Änderungen an „Brief prüfen“). Gegenüber 1.3.1 (Build 142). Einzelheiten in `docs/AENDERUNGEN.md`.
 
 ## Was ist neu: Google Play (max. 500 Zeichen)
 

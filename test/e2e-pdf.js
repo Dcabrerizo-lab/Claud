@@ -42,6 +42,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   await p.waitForFunction(() => document.getElementById('sc-out').textContent.length > 20, null, { timeout: 30000 }).catch(() => {});
   const out = await p.textContent('#sc-out');
   ok('Antragsformular aus PDF: Formularname und Felder erklärt', /Erkannt: Antrag auf Wohngeld/.test(out) && /Heizkosten/.test(out) && /Krankenkasse/.test(out), out.slice(0, 300));
+  ok('Antragsformular aus PDF: Vorschau der Seite über der Liste', (await p.locator('#sc-out .sc-vorschau .sc-bild img').count()) >= 1);
   ok('Kein seitliches Scrollen', await p.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth));
   ok('Keine Skriptfehler', fehler.length === 0, fehler);
   await b.close(); fs.rmSync(tmp, { recursive: true, force: true });

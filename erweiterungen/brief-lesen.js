@@ -120,6 +120,10 @@ const BriefLesen = (function () {
       if (gm != null) out.felder[out.art === 'jc' ? 'bs-miete' : 'ga-miete'] = Math.round((gm + (nk || 0)) * 100) / 100;
     }
     if (out.art === 'wg') { const m = String(text).match(/(\d+)\s*(?:zu berücksichtigende )?Haushaltsmitglied/i); if (m) out.felder['wg-n'] = +m[1]; }
+    // Für das Schreiben: Absender (Stelle) und Zeichen aus dem Brief, damit man sie nicht abtippen muss
+    const k = kennungen(z, String(text));
+    const ZIEL = { jc: { stelle: 'bs-jc', bg: 'bs-bg', az: 'bs-bg' }, sa: { stelle: 'ga-stelle', az: 'ga-az' }, wg: { stelle: 'wg-stelle', az: 'wg-az' }, fk: { kg: 'kz-kgnr' }, pk: { stelle: 'pf-kasse', vnr: 'pf-vnr' }, vm: { stelle: 'nk-verm' } }[out.art] || {};
+    for (const [was, id] of Object.entries(ZIEL)) if (k[was] && out.felder[id] == null) out.felder[id] = k[was];
     if (out.art === 'vm') {
       const m = String(text).match(/(?:Abrechnungszeitraum|Zeitraum)\s*:?\s*(?:vom\s*)?(\d{1,2}\.\d{1,2}\.20\d{2})\s*(?:bis|-|–)\s*(\d{1,2}\.\d{1,2}\.20\d{2})/i);
       if (m) { out.felder['nk-von'] = iso(m[1].match(DATUM)); out.felder['nk-bis'] = iso(m[2].match(DATUM)); }
@@ -132,6 +136,19 @@ const BriefLesen = (function () {
       }
     }
     return out;
+  }
+
+  // Kennungen für das Schreiben: Stelle (Briefkopf), Aktenzeichen, Nummer der Bedarfsgemeinschaft, Kindergeldnummer, Versichertennummer
+  function kennungen(z, text) {
+    const k = {};
+    const stelle = z.slice(0, 8).find((l) => /\b(Jobcenter|Landratsamt|Sozialamt|Bezirk|Stadt |Gemeinde|Wohngeld|Familienkasse|Pflegekasse|Krankenkasse|AOK|BKK|IKK|Barmer|DAK|Techniker|Knappschaft|Hausverwaltung|Immobilien|Wohnungs|Verwaltung)/i.test(l) && l.length <= 80 && !/\d{2}\.\d{2}\.\d{4}/.test(l));
+    if (stelle) k.stelle = stelle.trim();
+    const m = (re) => { const x = text.match(re); return x ? x[1].replace(/\s+/g, ' ').trim() : null; };
+    k.bg = m(/(?:BG-Nummer|BG-Nr\.?|Nummer der Bedarfsgemeinschaft|Bedarfsgemeinschaft(?:snummer)?(?:\s*Nr\.?)?)\s*:?\s*(\d{3}\s?[A-Z]?\s?\d{5,8})/i);
+    k.az = m(/(?:Aktenzeichen|Geschäftszeichen|Unser Zeichen|Az\.|Wohngeldnummer)\s*:?\s*([A-Za-z0-9][A-Za-z0-9.\/-]*(?: [A-Za-z0-9.\/-]+){0,3})\s*$/im);
+    k.kg = m(/(?:Kindergeldnummer|Kindergeld-Nr\.?)\s*:?\s*(\d{3}\s?FK\s?\d{4,8})/i);
+    k.vnr = m(/(?:Versichertennummer|Versicherten-Nr\.?|Krankenversichertennummer)\s*:?\s*([A-Z]\d{9})/i);
+    return k;
   }
 
   // Was die App bei Briefen ohne Rechnung sagt

@@ -1069,5 +1069,8 @@
   "sc.summary": "{n} fields, {m} of them with a value from your check",
   "sc.abschreiben": "You can copy this directly",
   "sc.selbst.h": "You fill this in yourself (tick off)",
-  "sc.was": "What does it mean?"
+  "sc.was": "What does it mean?",
+  "sc.vorschau": "Your form (only on this device, not saved). Tap to enlarge.",
+  "sc.vorschauGross": "Enlarge page {n}",
+  "sc.kopiert": "Copied. You can now paste it into an online form or a fillable PDF."
 }

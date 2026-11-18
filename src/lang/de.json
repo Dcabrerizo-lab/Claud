@@ -1036,7 +1036,7 @@
   "el.frist": "Frist im Brief: {frist}",
   "el.erkanntOhne": "Erkannt: {titel}.",
   "el.erkanntPk": "Erkannt: {titel}. Die Bewertungen aus dem Text stehen unten; bitte jede mit dem Gutachten vergleichen.",
-  "el.erkannt": "Erkannt: {titel}. {n} Werte übernommen und gelb markiert: bitte mit dem Brief vergleichen und Fehlendes ergänzen.",
+  "el.erkannt": "Erkannt: {titel}. {n} Werte aus deinem Brief eingetragen (gelb). Bitte mit dem Brief vergleichen und Fehlendes ergänzen.",
   "el.keineWerte": "Erkannt: {titel}. Beträge wurden nicht gefunden; bitte unten selbst eintragen.",
   "el.lese": "Der Brief wird gelesen …",
   "el.fehler": "Der Brief konnte nicht gelesen werden. Versuche ein helleres, gerades Foto oder füge den Text ein.",
@@ -1069,5 +1069,8 @@
   "sc.summary": "{n} Felder, davon {m} mit Wert aus deinem Check",
   "sc.abschreiben": "Das kannst du direkt abschreiben",
   "sc.selbst.h": "Das trägst du selbst ein (zum Abhaken)",
-  "sc.was": "Was ist gemeint?"
+  "sc.was": "Was ist gemeint?",
+  "sc.vorschau": "Dein Formular (nur auf diesem Gerät, wird nicht gespeichert). Antippen zum Vergrößern.",
+  "sc.vorschauGross": "Seite {n} vergrößern",
+  "sc.kopiert": "Kopiert. Du kannst es jetzt in ein Online-Formular oder ein ausfüllbares PDF einfügen."
 }

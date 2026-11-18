@@ -1069,5 +1069,8 @@
   "sc.summary": "{n} câmpuri, dintre care {m} cu valoare din verificarea ta",
   "sc.abschreiben": "Asta poți copia direct",
   "sc.selbst.h": "Asta completezi singur (bifează)",
-  "sc.was": "Ce înseamnă?"
+  "sc.was": "Ce înseamnă?",
+  "sc.vorschau": "Formularul tău (doar pe acest dispozitiv, nu se salvează). Atinge pentru mărire.",
+  "sc.vorschauGross": "Mărește pagina {n}",
+  "sc.kopiert": "Copiat. Acum îl poți lipi într-un formular online sau într-un PDF completabil."
 }

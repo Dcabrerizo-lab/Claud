@@ -67,7 +67,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Markierung ist sichtbar gelb', (await p.evaluate(() => getComputedStyle(document.getElementById('bs-b-kdu')).backgroundColor)) === 'rgb(255, 246, 214)');
   ok('Datum des Bescheids übernommen', (await p.inputValue('#bs-datum')) === '2026-03-12');
   ok('Haushalt aus „Leistungen“: 1 Erwachsener, 2 Kinder', (await p.locator('#bs-personen tr').count()) === 3);
-  ok('Meldung nennt Absender und Zahl der Werte', /Jobcenter.*4 Werte/.test(await p.textContent('#elMsg')), await p.textContent('#elMsg'));
+  ok('Meldung nennt Absender und Zahl der Werte', /Jobcenter.*\d Werte aus deinem Brief/.test(await p.textContent('#elMsg')), await p.textContent('#elMsg'));
   ok('Einlesen sitzt in der geöffneten Prüfung', await p.evaluate(() => document.getElementById('checkBox').contains(document.getElementById('einlesen'))) && /Diesen Brief/.test(await p.textContent('#elScan')));
   await p.click('#briefZurueck');
   // Wohngeld
@@ -98,6 +98,10 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Antragsformular: zusammengehörige Felder in einer Karte', (await p.locator('#sc-out .sc-row:has-text("Heizkosten") .sc-labs li').count()) === 3);
   ok('Mit Leistungscheck: Werte zum Abschreiben (Miete 950 €), kein leeres „0 €“', /Warmmiete im Monat: 950 €/.test(out) && !/(^|[^\d.,])0 €/.test(out), out.slice(0, 900));
   ok('Antragsformular: zwei Teile, Abschreiben mit Kopieren und Liste zum Abhaken', (await p.locator('#sc-out .sc-mit [data-scopy]').count()) >= 1 && (await p.locator('#sc-out .sc-hak input[type=checkbox]').count()) >= 3 && /davon \d+ mit Wert aus deinem Check/.test(out));
+  ok('Eingefügter Text: keine Vorschau', (await p.locator('#sc-out .sc-vorschau').count()) === 0);
+  await p.evaluate(() => { window.__kopie = null; Object.defineProperty(navigator, 'clipboard', { value: { writeText: (v) => { window.__kopie = v; return Promise.resolve(); } }, configurable: true }); });
+  await p.click('#sc-out [data-scopy] >> nth=0'); await p.waitForTimeout(100);
+  ok('Kopieren: Wert in der Zwischenablage und klare Rückmeldung', !!(await p.evaluate(() => window.__kopie)) && /Kopiert\. Du kannst es jetzt in ein Online-Formular/.test(await p.textContent('#sc-out .sc-kopiert >> nth=0')));
   ok('Antragsformular: Erklärung je Feld zum Aufklappen', (await p.locator('#sc-out details.sc-erkl').count()) >= 5);
   ok('Antragsformular: kein seitliches Scrollen', await breit());
   await p.click('#briefZurueck');

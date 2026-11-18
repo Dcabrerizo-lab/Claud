@@ -32,7 +32,7 @@ const MOCK = () => {
       },
       Clipboard: { write: log('Clipboard.write') },
       Browser: { open: log('Browser.open') },
-      Camera: { getPhoto: (o) => { calls.push(['Camera.getPhoto', o]); return Promise.resolve({ path: 'file:///cache/foto.jpg', webPath: 'http://localhost/_capacitor_file_/cache/foto.jpg' }); } },
+      Camera: { getPhoto: (o) => { calls.push(['Camera.getPhoto', o]); return Promise.resolve({ path: 'file:///cache/foto.jpg', webPath: location.origin + '/_capacitor_file_/cache/foto.jpg' }); } },
       PdfAusgabe: {
         drucken: (o) => { calls.push(['PdfAusgabe.drucken', { name: o.name, size: o.data.length }]); window.__druck = o.data; return Promise.resolve(); },
         speichern: (o) => { calls.push(['PdfAusgabe.speichern', { name: o.name, size: o.data.length }]); window.__gespeichert = o.data; return Promise.resolve({ ort: 'Download', name: o.name }); }
@@ -43,7 +43,10 @@ const MOCK = () => {
 };
 
 (async () => {
+  // Wie Capacitor: das aufgenommene Foto liegt unter /_capacitor_file_/ auf demselben Ursprung wie die App (hier ein kleines Testbild)
+  const FOTO = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', 'base64');
   const server = http.createServer((req, res) => {
+    if (req.url.startsWith('/_capacitor_file_/')) { res.writeHead(200, { 'Content-Type': 'image/png' }); res.end(FOTO); return; }
     const f = path.join(WWW, decodeURIComponent(req.url.split('?')[0]).replace(/^\/$/, '/index.html'));
     if (!f.startsWith(WWW) || !fs.existsSync(f)) { res.writeHead(404); res.end(); return; }
     res.writeHead(200, { 'Content-Type': TYPES[path.extname(f)] || 'application/octet-stream' });
@@ -72,6 +75,11 @@ const MOCK = () => {
   // Prüfpaket läuft unter der CSP der App
   await p.click('#appnav [data-ansicht=briefe]'); await p.click('#brief-jc'); await p.click('#elSelbst'); await p.evaluate(() => document.querySelector('#p-bescheid [id$="-beispiel"]').click());
   ok('Brief prüfen rechnet in der App', ((await p.textContent('#p-bescheid')) || '').includes('€'));
+  // Widerspruch als PDF teilen (wie die Antragsmappe), mit Hinweis zur Abgabe
+  await p.click('#bs-wid-mach'); await p.waitForTimeout(200);
+  ok('Widerspruch: Knöpfe und Hinweis zur Abgabe sichtbar', await p.isVisible('#p-bescheid .schreiben-aus [data-aus="teilen"]') && /unterschreiben/.test(await p.textContent('#p-bescheid .schreiben-aus')));
+  await p.click('#p-bescheid .schreiben-aus [data-aus="teilen"]'); await p.waitForTimeout(2500);
+  ok('Widerspruch: PDF geschrieben und geteilt', (await calls('Filesystem.writeFile')).some((o) => o.path === 'Widerspruch-Jobcenter.pdf') && (await calls('Share.share')).length >= 1);
   ok('Keine Fristen über Preferences gespeichert', !(await calls('Preferences.set')).some((c) => c.key === 'lotse.fristen'));
   await p.click('#appnav [data-ansicht=leistungen]');
   ok('Gespeicherte Daten werden über Preferences gelesen', (await calls('Preferences.get')).length > 0);
@@ -96,6 +104,7 @@ const MOCK = () => {
   ok('Scan: Kamera ohne Galerie-Speicherung aufgerufen', (await calls('Camera.getPhoto')).some((o) => o.saveToGallery === false && o.source === 'CAMERA'));
   ok('Scan: Texterkennung mit Fotopfad', (await calls('TextRecognition.recognize')).some((o) => /foto\.jpg$/.test(o.path)));
   ok('Scan: Felder erkannt, Name vorausgefüllt', (await p.locator('#sc-out .sc-row').count()) >= 3 && /Maria Muster/.test(await p.textContent('#sc-out')));
+  ok('Scan: Vorschau des Fotos über der Liste (nur im Arbeitsspeicher)', (await p.locator('#sc-out .sc-vorschau img').count()) === 1 && /^blob:/.test(await p.getAttribute('#sc-out .sc-vorschau img', 'src')));
   ok('Scan: Foto danach gelöscht', (await calls('Filesystem.deleteFile')).some((o) => /foto\.jpg$/.test(o.path)));
   // Eingescanntes PDF (nur Bild, kein Text): pdf.js aus der App (offline) macht ein Seitenbild, die Texterkennung des Geräts liest es,
   // das Seitenbild wird danach aus dem Cache gelöscht
@@ -144,8 +153,8 @@ const MOCK = () => {
   ok('Knöpfe einzeln: PDF teilen, kein doppelter Knopf „Teilen oder speichern“', (await p.textContent('#mappePrint')).includes('PDF') && !(await p.isVisible('#mappeShare')));
   ok('Keine Doppelbeschriftung „oder“ auf den Mappe-Knöpfen', !(await p.evaluate(() => [...document.querySelectorAll('#mappe .btns button')].filter((b) => !b.hidden).some((b) => / oder | or /.test(b.textContent)))));
   await p.click('#mappePrint');
-  await p.waitForFunction(() => window.__calls.some((c) => c[0] === 'Share.share' && c[1].files), null, { timeout: 15000 }).catch(() => {});
-  const shared = (await calls('Share.share')).find((o) => o.files);
+  await p.waitForFunction(() => window.__calls.some((c) => c[0] === 'Share.share' && c[1].files && /Antragsmappe/.test(c[1].files[0])), null, { timeout: 15000 }).catch(() => {});
+  const shared = (await calls('Share.share')).find((o) => o.files && /Antragsmappe/.test(o.files[0]));
   ok('PDF wird erzeugt, gespeichert und geteilt', !!shared && /Antragsmappe\.pdf$/.test(shared.files[0]), JSON.stringify(await p.evaluate(() => window.__calls.slice(-4))) + ' ' + (await p.textContent('#copyMsg')));
   const b64 = await p.evaluate(() => window.__pdf || '');
   if (b64) {
