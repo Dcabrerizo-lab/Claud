@@ -618,6 +618,28 @@
       zustHtml(r) + steps + '</article>';
   }
 
+  // Reihenfolge: zuerst alles, was für diese Person zutrifft (wie von Rules.evaluate sortiert: wahrscheinlich, dann möglich),
+  // egal ob häufige oder seltene Leistung. Bei den unpassenden stehen die Leistungen, die viele Haushalte betreffen, offen;
+  // unpassende Leistungen für besondere Lagen (Behinderung, Rente, Ausbildung, Asyl …) sind als eine Zeile zusammengefasst.
+  // Gerechnet wird alles gleich, es ändert sich nur die Anzeige.
+  var KERN = ['ggeld', 'gsa', 'wohngeld', 'kiz', 'but', 'pflege', 'pflegeplus', 'uvg', 'rundfunk', 'kindergeld', 'elterngeld'];
+  function istKern(r) { return KERN.indexOf(r.id) >= 0; }
+  function kartenReihe(results) {
+    var bad = results.filter(function (r) { return r.level === 'nein'; });
+    return {
+      passt: results.filter(function (r) { return r.level !== 'nein'; }),
+      neinKern: bad.filter(istKern), neinSpez: bad.filter(function (r) { return !istKern(r); })
+    };
+  }
+  function kartenHtml(results) {
+    var k = kartenReihe(results), nein = k.neinKern.length + k.neinSpez.length;
+    return k.passt.map(card).join('') + (nein
+      ? '<details class="neinbox"><summary>' + esc(t('nein.sum', { n: nein })) + '</summary>' + k.neinKern.map(card).join('') +
+        (k.neinSpez.length ? '<details class="spezbox"><summary>' + esc(t('nein.spezial', { n: k.neinSpez.length })) + '</summary>' + k.neinSpez.map(card).join('') + '</details>' : '') +
+        '</details>'
+      : '');
+  }
+
   function renderPick(results) {
     // Keine Briefe für Dinge, die schon da sind: Pflegegrad festgestellt, Grad der Behinderung festgestellt oder beantragt
     var schonDa = function (id) { return (id === 'pflege' && state.pflegegrad && state.pflegegrad !== 'antrag') || (id === 'ausweis' && !!state.gdb); };
@@ -659,17 +681,15 @@
     var summary = parts.length ? parts.join(' · ') : t('c.none');
     $('count').textContent = summary;
     $('jumpText').textContent = summary;
-    var good = out.results.filter(function (r) { return r.level !== 'nein'; });
-    var bad = out.results.filter(function (r) { return r.level === 'nein'; });
-    var openIds = {}, neinOpen = false;
+    var openIds = {}, neinOpen = false, spezOpen = false;
     document.querySelectorAll('#cards details[open]').forEach(function (d) {
       var a = d.closest('article');
-      if (a) openIds[a.id] = true; else if (d.classList.contains('neinbox')) neinOpen = true;
+      if (a) openIds[a.id] = true; else if (d.classList.contains('spezbox')) spezOpen = true; else if (d.classList.contains('neinbox')) neinOpen = true;
     });
-    $('cards').innerHTML = good.map(card).join('') +
-      (bad.length ? '<details class="neinbox"><summary>' + esc(t('nein.sum', { n: bad.length })) + '</summary>' + bad.map(card).join('') + '</details>' : '');
+    $('cards').innerHTML = kartenHtml(out.results);
     Object.keys(openIds).forEach(function (id) { var d = document.querySelector('#' + id + ' details'); if (d) d.open = true; });
     if (neinOpen) { var nb = document.querySelector('#cards .neinbox'); if (nb) nb.open = true; }
+    if (spezOpen) { var sb = document.querySelector('#cards .spezbox'); if (sb) sb.open = true; }
     var ov = out.results.filter(function (r) { return r.level === 'ja' || r.level === 'vielleicht'; });
     $('overview').hidden = ov.length < 3;
     $('overview').setAttribute('aria-label', t('ov.label'));
@@ -1494,7 +1514,8 @@
     lang: function (c) { setLang(c); },
     eval: function () { return Rules.evaluate(state); },
     speichern: function () { flush(); },
-    state: function () { return state; }
+    state: function () { return state; },
+    reihe: function (results) { var k = kartenReihe(results); return k.passt.concat(k.neinKern, k.neinSpez).map(function (r) { return r.id; }); }
   };
   // ----- Bereiche: Start, Leistungen (Leistungscheck), Brief prüfen -----
   // Beim Öffnen die Startseite; „#leistungen“ und „#briefe“ öffnen den Bereich direkt (Links, Tests).

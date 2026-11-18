@@ -71,6 +71,7 @@
   "steps.tips": "Bine de știut",
   "steps.note": "Lista exactă ți-o spune autoritatea competentă.",
   "nein.sum": "Probabil nu se potrivește ({n})",
+  "nein.spezial": "În plus {n} prestații pentru situații speciale: niciuna nu se potrivește răspunsurilor tale",
   "beachten": "La ce să fii atent",
   "rules.sum": "Cum calculează verificarea și de unde vin valorile",
   "rules.intro": "Verificarea compară datele tale cu limitele din lege. Este doar o orientare și nu înlocuiește o decizie oficială.",

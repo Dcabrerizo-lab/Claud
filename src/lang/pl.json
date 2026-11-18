@@ -71,6 +71,7 @@
   "steps.tips": "Warto wiedzieć",
   "steps.note": "Dokładną listę poda właściwy urząd.",
   "nein.sum": "Prawdopodobnie nie pasuje ({n})",
+  "nein.spezial": "Do tego {n} świadczeń dla szczególnych sytuacji: żadne nie pasuje do twoich odpowiedzi",
   "beachten": "Na co zwrócić uwagę",
   "rules.sum": "Jak liczy sprawdzenie i skąd pochodzą wartości",
   "rules.intro": "Sprawdzenie porównuje twoje dane z granicami z ustaw. To tylko orientacja i nie zastępuje decyzji urzędu.",

@@ -71,6 +71,7 @@
   "steps.tips": "Bilmekte fayda var",
   "steps.note": "Kesin listeyi yetkili daire size söyler.",
   "nein.sum": "Büyük olasılıkla uymuyor ({n})",
+  "nein.spezial": "Ayrıca özel durumlar için {n} yardım: hiçbiri bilgilerine uymuyor",
   "beachten": "Dikkat etmeniz gerekenler",
   "rules.sum": "Kontrol nasıl hesaplıyor, değerler nereden geliyor",
   "rules.intro": "Kontrol, bilgilerinizi yasal sınırlarla karşılaştırır. Sadece yol göstericidir ve resmi karar yerine geçmez.",

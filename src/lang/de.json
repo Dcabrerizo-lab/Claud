@@ -71,6 +71,7 @@
   "steps.tips": "Gut zu wissen",
   "steps.note": "Die genaue Liste nennt dir die zuständige Stelle.",
   "nein.sum": "Wahrscheinlich nicht passend ({n})",
+  "nein.spezial": "Dazu {n} Leistungen für besondere Lagen: keine passt zu deinen Angaben",
   "beachten": "Das solltest du beachten",
   "rules.sum": "So rechnet der Check und woher die Werte kommen",
   "rules.intro": "Der Check vergleicht deine Angaben mit den Grenzen der Gesetze. Er ist eine Orientierung und ersetzt keinen Bescheid.",

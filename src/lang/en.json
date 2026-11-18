@@ -71,6 +71,7 @@
   "steps.tips": "Good to know",
   "steps.note": "The responsible office will give you the exact list.",
   "nein.sum": "Probably not a match ({n})",
+  "nein.spezial": "Also {n} benefits for special situations: none fits your answers",
   "beachten": "Please note",
   "rules.sum": "How the check works and where the values come from",
   "rules.intro": "The check compares your details with the limits set by law. It is a guide only and does not replace an official decision.",
