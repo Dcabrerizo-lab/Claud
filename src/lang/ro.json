@@ -241,9 +241,8 @@
   "s.pflege.tip": "Serviciul Medical (Medizinischer Dienst) vine în vizită. Ține înainte un jurnal de îngrijire.",
   "sc.h": "Scanează cererea: câmpurile explicate",
   "sc.intro": "Ai primit un formular oficial? Fotografiază-l sau lipește textul. Vei vedea ce înseamnă fiecare câmp și ce informație din verificarea ta se scrie acolo. Aplicația nu completează formularul singură.",
-  "sc.photo": "Alege o fotografie sau o imagine",
-  "sc.paste": "Sau lipește textul formularului",
-  "sc.local": "Recunoaște pe dispozitiv",
+  "sc.paste": "Sau lipește aici textul formularului",
+  "sc.local": "Explică câmpurile",
   "sc.localNote": "Implicit: fotografia este citită doar pe dispozitivul tău și nu este trimisă nicăieri. Pentru asta, recunoașterea textului descarcă o singură dată un program de pe internet.",
   "sc.claudeNote": "Opțional: Claude citește fotografia mai atent. Fotografia este trimisă lui Claude și se numără în utilizarea ta Claude. Alege doar documente pe care vrei să le trimiți.",
   "sc.consent": "Da, fotografia poate fi trimisă lui Claude.",
@@ -1046,9 +1045,12 @@
   "el.keineWerte": "Recunoscut: {titel}. Nu s-au găsit sume; introdu-le mai jos.",
   "el.lese": "Scrisoarea se citește …",
   "el.fehler": "Scrisoarea nu a putut fi citită. Încearcă o fotografie mai luminoasă și dreaptă sau lipește textul.",
-  "sc.verweis": "Ai primit un formular de cerere? La „Verifică o scrisoare” îl poți fotografia, iar aplicația explică câmpurile.",
-  "sc.verweisBtn": "Scanează formularul",
   "briefe.zurueckEinfach": "← Înapoi",
   "pa.info": "Ce înseamnă exact?",
-  "pa.erklaerung": "Explicație"
+  "pa.erklaerung": "Explicație",
+  "sc.photoBtn": "📷 Fotografiază formularul sau alege o imagine",
+  "sc.form": "Recunoscut:",
+  "sc.tipp": "Sfat: dacă completezi mai întâi verificarea prestațiilor, aplicația îți arată aici valorile de copiat.",
+  "sc.f.kv": "Casa ta de asigurări de sănătate (Krankenkasse) și numărul de asigurat. Ambele sunt pe cardul de asigurare.",
+  "sc.f.aufenthalt": "Cetățenia și statutul de ședere (Aufenthaltstitel). Scrie în pașaport sau în permisul de ședere. Atașează o copie dacă se cere."
 }

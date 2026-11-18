@@ -464,8 +464,9 @@
     BEZUG.forEach(function (k) { $('b-' + k).addEventListener('change', function () { state.bezug[k] = $('b-' + k).checked; touched(); }); });
     $('lang').addEventListener('change', function () { setLang($('lang').value); });
     if ($('sc-take')) $('sc-take').addEventListener('click', function () { runNative(); });
-    if ($('sc-local')) {
-      $('sc-local').addEventListener('click', function () { runLocal(); });
+    if ($('sc-local')) $('sc-local').addEventListener('click', function () { runLocal(true); });
+    if ($('sc-file')) $('sc-file').addEventListener('change', function () { if ($('sc-file').files && $('sc-file').files[0]) runLocal(false); });
+    if ($('sc-claude')) {
       $('sc-claude').addEventListener('click', function () { runClaude(); });
       $('sc-consent').addEventListener('change', function () { $('sc-claude').disabled = scanBusy || !$('sc-consent').checked; });
     }
@@ -1017,10 +1018,12 @@
     ['iban', /\biban\b|\bbic\b|bankverbindung|kontoinhaber|kreditinstitut/i],
     ['idnr', /steuer-?\s*id|steueridentifikation|identifikationsnummer|versicherungsnummer|kindergeldnummer|kundennummer|aktenzeichen/i],
     ['gesundheit', /behinderung|\bgdb\b|pflegegrad|erwerbsminder|merkzeichen/i],
+    ['kv', /krankenkasse|krankenversicher|pflegekasse|pflegeversicher|versichert bei|versichertennummer/i],
+    ['aufenthalt', /staatsangeh(ö|oe)rigkeit|aufenthalt|nationalit(ä|ae)t|einreise|reisepass|aufenthaltstitel/i],
     ['ausbildung', /ausbildung|studium|schule|schul|hochschule|universit(ä|ae)t|immatrikul/i],
     ['miete', /miete|nebenkosten|heizkosten|wohnfl(ä|ae)che|unterkunft|vermieter|mietvertrag/i],
     ['vermoegen', /verm(ö|oe)gen|sparguthaben|kontostand|guthaben|wertpapier|bargeld|lebensversicherung|immobilie/i],
-    ['einkommen', /einkommen|brutto|netto|lohn|gehalt|arbeitgeber|\brente\b|verdienst|erwerbst(ä|ae)tig|arbeitslosengeld|krankengeld/i],
+    ['einkommen', /einkommen|brutto|netto|lohn|gehalt|arbeitgeber|\brenten?\b|pension|verdienst|erwerbst(ä|ae)tig|arbeitslosengeld|krankengeld/i],
     ['bezug', /wohngeld|kindergeld|kinderzuschlag|b(ü|ue)rgergeld|grundsicherung|baf(ö|oe)g|sozialleistung|leistungsbezug|bezogene leistungen|bereits beantragt/i],
     ['unterhalt', /unterhalt|alimente|barunterhalt|anderer elternteil/i],
     ['haushalt', /haushalt|bedarfsgemeinschaft|familienstand|angeh(ö|oe)rige|partner|ehegatte|lebensgef|kinder/i],
@@ -1035,16 +1038,18 @@
 
   function blankVal(v) { return !v || !String(v).trim(); }
 
+  function leer(v) { return v === '' || v == null; }
   function scanValue(id) {
     var s = state, v = null;
     if (id === 'name') v = person.name;
     else if (id === 'geb') v = person.geb;
     else if (id === 'adresse') v = [person.strasse, person.ort].filter(function (x) { return !blankVal(x); }).join(', ');
     else if (id === 'tel') v = person.tel;
-    else if (id === 'haushalt') v = haushaltZeile();
-    else if (id === 'miete') v = 'Warmmiete im Monat: ' + money(s.miete);
-    else if (id === 'einkommen') v = 'brutto ' + money(s.brutto) + (s.netto === '' || s.netto == null ? '' : ', netto ' + money(s.netto)) + ' im Monat';
-    else if (id === 'vermoegen') v = money(s.vermoegen);
+    else if (id === 'haushalt') v = started ? haushaltZeile() : null;
+    else if (id === 'miete') v = leer(s.miete) ? null : 'Warmmiete im Monat: ' + money(s.miete) + (leer(s.heizkosten) ? '' : ', davon Heizkosten ' + money(s.heizkosten));
+    else if (id === 'einkommen') v = leer(s.brutto) && leer(s.netto) ? null : [leer(s.brutto) ? '' : 'brutto ' + money(s.brutto), leer(s.netto) ? '' : 'netto ' + money(s.netto)].filter(Boolean).join(', ') + ' im Monat';
+    else if (id === 'vermoegen') v = leer(s.vermoegen) ? null : money(s.vermoegen);
+    else if (!started && id === 'bezug') v = null;
     else if (id === 'bezug') {
       var names = { grundsicherungsgeld: 'Grundsicherungsgeld', sozialamt: 'Grundsicherung oder Sozialhilfe', wohngeld: 'Wohngeld', kiz: 'Kinderzuschlag', kindergeld: 'Kindergeld' };
       var got = BEZUG.filter(function (k) { return s.bezug[k]; }).map(function (k) { return names[k]; });
@@ -1056,18 +1061,26 @@
     return blankVal(v) ? null : String(v);
   }
 
+  // Jede erkannte Zeile bleibt erhalten; Zeilen derselben Art (z. B. Miete, Heizkosten, Wohnfläche) stehen in einer Karte.
+  // Die erste Zeile wie „Antrag auf Wohngeld“ wird als Name des Formulars gezeigt.
+  var scanTitel = '';
   function scanFromText(text) {
-    var seen = {}, out = [];
+    var byId = {}, out = [];
+    scanTitel = '';
     String(text || '').split(/\r?\n/).forEach(function (line) {
-      line = line.replace(/\s+/g, ' ').trim();
-      if (line.length < 3 || /^(antrag\s+auf|formular|anlage)\b/i.test(line)) return;
+      line = line.replace(/\s+/g, ' ').trim().replace(/^(\d{1,2}(\.\d{1,2})*\.?|[a-z]\))\s+/i, '');
+      if (line.length < 3) return;
+      if (/^(antrag\s+(auf|zur|für|nach)|formular|anlage)\b/i.test(line)) { if (!scanTitel) scanTitel = line.slice(0, 90); return; }
       for (var i = 0; i < SCAN.length; i++) {
         if (SCAN[i][1].test(line)) {
-          if (!seen[SCAN[i][0]]) { seen[SCAN[i][0]] = true; out.push({ id: SCAN[i][0], label: line.slice(0, 80) }); }
+          var id = SCAN[i][0];
+          if (!byId[id]) { byId[id] = { id: id, labels: [] }; out.push(byId[id]); }
+          if (byId[id].labels.length < 8 && byId[id].labels.indexOf(line.slice(0, 80)) < 0) byId[id].labels.push(line.slice(0, 80));
           return;
         }
       }
     });
+    out.forEach(function (f) { f.label = f.labels.join(' · '); });
     return out;
   }
 
@@ -1077,12 +1090,16 @@
     if (!$('scan')) return;
     var el = $('sc-out');
     if (!scanFound.length) { el.innerHTML = ''; return; }
-    el.innerHTML = '<h3>' + esc(t('sc.res')) + '</h3><p class="hint">' + esc(t('sc.found', { n: scanFound.length })) + '</p><ul class="sc-list">' +
+    var felder = scanFound.reduce(function (n, f) { return n + (f.labels ? f.labels.length : 1); }, 0);
+    var mitWert = scanFound.some(function (f) { return SCAN_IDS.indexOf(f.id) >= 0 && scanValue(f.id); });
+    el.innerHTML = '<h3>' + esc(t('sc.res')) + '</h3>' + (scanTitel ? '<p class="sc-titel"><span>' + esc(t('sc.form')) + '</span> <bdi lang="de" dir="ltr">' + esc(scanTitel) + '</bdi></p>' : '') +
+      '<p class="hint">' + esc(t('sc.found', { n: felder })) + '</p>' + (mitWert ? '' : '<p class="hint">' + esc(t('sc.tipp')) + '</p>') + '<ul class="sc-list">' +
       scanFound.map(function (f, i) {
         var known = SCAN_IDS.indexOf(f.id) >= 0;
         var expl = known ? t('sc.f.' + f.id) : (f.hint || '');
         var val = known ? scanValue(f.id) : null;
-        return '<li class="sc-row"><div class="sc-lab" lang="de" dir="ltr">' + esc(f.label) + '</div>' +
+        var lab = f.labels && f.labels.length > 1 ? '<ul class="sc-labs">' + f.labels.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : esc(f.label);
+        return '<li class="sc-row"><div class="sc-lab" lang="de" dir="ltr">' + lab + '</div>' +
           (expl ? '<p>' + (known ? '' : '<span class="sc-tag">' + esc(t('sc.claudeHint')) + ': </span>') + esc(expl) + '</p>' : '') +
           '<div class="sc-val">' + (val
             ? '<span>' + esc(t('sc.val')) + '</span><bdi lang="de" dir="ltr">' + esc(val) + '</bdi><button type="button" class="btn ghost" data-scopy="' + i + '">' + esc(t('sc.copy')) + '</button>'
@@ -1128,13 +1145,16 @@
   function scanBusyOn(on) {
     scanBusy = on;
     if ($('sc-take')) $('sc-take').disabled = on;
-    if ($('sc-local')) { $('sc-local').disabled = on; $('sc-claude').disabled = on || !$('sc-consent').checked; }
+    if ($('sc-local')) $('sc-local').disabled = on;
+    if ($('sc-claude')) $('sc-claude').disabled = on || !$('sc-consent').checked;
   }
 
-  function runLocal() {
+  // text = true: Knopf „Felder erklären“ (eingefügter Text); false: gerade gewähltes Foto lesen
+  function runLocal(text) {
     if (scanBusy) return;
-    var txt = $('sc-text').value, file = $('sc-file').files && $('sc-file').files[0];
-    if (txt.trim()) { setScanResult(scanFromText(txt)); return; }
+    var txt = $('sc-text') ? $('sc-text').value : '', file = $('sc-file') && $('sc-file').files && $('sc-file').files[0];
+    if (text && txt.trim()) { setScanResult(scanFromText(txt)); return; }
+    if (text && !file) { scanMsg('sc.need'); return; }
     if (!file) { scanMsg('sc.need'); return; }
     scanBusyOn(true); scanMsg('sc.working');
     ocr(file).then(function (text) {
@@ -1797,7 +1817,6 @@
   });
   $('elPaste').addEventListener('click', function () { var box = $('elPasteBox'); box.hidden = !box.hidden; $('elPaste').setAttribute('aria-expanded', String(!box.hidden)); if (!box.hidden) $('elText').focus(); });
   $('elLesen').addEventListener('click', function () { elGesammelt = ''; textLesen($('elText').value); });
-  $('scVerweis').addEventListener('click', function () { zeigeAnsicht('briefe', false); briefOeffnen('af'); });
 
   $('briefZurueck').addEventListener('click', function () { elGesammelt = ''; var war = null; document.querySelectorAll('#checkBox .pp-teil').forEach(function (s) { if (!s.hidden) war = s.id; }); briefOeffnen(null); for (var k in BRIEF_TEIL) if (BRIEF_TEIL[k] === war) $('brief-' + k).focus(); });
   document.querySelectorAll('#appnav button').forEach(function (b) { b.addEventListener('click', function () {

@@ -241,9 +241,8 @@
   "s.pflege.tip": "Tıbbi Hizmet (Medizinischer Dienst) ziyarete gelir. Öncesinde bir bakım günlüğü tutun.",
   "sc.h": "Başvuruyu tara: alanlar açıklanıyor",
   "sc.intro": "Resmi bir form mu aldınız? Fotoğrafını çekin veya metnini yapıştırın. Her alanın ne anlama geldiğini ve kontrolünüzdeki hangi bilginin oraya yazılacağını görürsünüz. Uygulama formu kendisi doldurmaz.",
-  "sc.photo": "Fotoğraf veya resim seç",
-  "sc.paste": "Ya da formun metnini yapıştırın",
-  "sc.local": "Cihazda tanı",
+  "sc.paste": "Ya da formun metnini buraya yapıştır",
+  "sc.local": "Alanları açıkla",
   "sc.localNote": "Varsayılan: Fotoğraf yalnızca cihazınızda okunur ve hiçbir yere gönderilmez. Bunun için metin tanıma, internetten bir kez bir program yükler.",
   "sc.claudeNote": "İsteğe bağlı: Claude fotoğrafı daha ayrıntılı okur. Fotoğraf Claude’a gönderilir ve Claude kullanım hakkınızdan düşer. Yalnızca göndermek istediğiniz belgeleri seçin.",
   "sc.consent": "Evet, fotoğraf Claude’a gönderilebilir.",
@@ -1046,9 +1045,12 @@
   "el.keineWerte": "Tanındı: {titel}. Tutar bulunamadı; lütfen aşağıya kendin gir.",
   "el.lese": "Mektup okunuyor …",
   "el.fehler": "Mektup okunamadı. Daha aydınlık, düz bir fotoğraf dene veya metni yapıştır.",
-  "sc.verweis": "Bir başvuru formu mu aldın? „Mektup kontrol“ altında fotoğrafını çekebilirsin, uygulama alanları açıklar.",
-  "sc.verweisBtn": "Formu tara",
   "briefe.zurueckEinfach": "← Geri",
   "pa.info": "Bu tam olarak ne anlama geliyor?",
-  "pa.erklaerung": "Açıklama"
+  "pa.erklaerung": "Açıklama",
+  "sc.photoBtn": "📷 Formun fotoğrafını çek veya resim seç",
+  "sc.form": "Tanındı:",
+  "sc.tipp": "İpucu: Önce yardım kontrolünü doldurursan, uygulama burada yazman için değerlerini gösterir.",
+  "sc.f.kv": "Sağlık sigortan (Krankenkasse) ve sigorta numaran. İkisi de sigorta kartında yazar.",
+  "sc.f.aufenthalt": "Vatandaşlık ve oturum durumu (Aufenthaltstitel). Pasaportta veya oturum belgesinde yazar. İstenirse bir kopya ekle."
 }

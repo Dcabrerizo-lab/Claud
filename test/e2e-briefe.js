@@ -78,12 +78,19 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   // Antragsformular: Kachel zeigt die Formular-Erklärung, Einlesen ist dort nicht doppelt
   await p.click('#brief-af');
   ok('Kachel Antragsformular zeigt das Formular-Scannen', await p.isVisible('#scan') && !(await p.isVisible('#einlesen')));
+  ok('Antragsformular: großer Foto-Knopf statt Dateifeld', await p.isVisible('#scan .sc-foto') && (await p.getAttribute('#sc-file', 'class')).includes('vh'));
+  const FORMULAR = 'Antrag auf Wohngeld\n1. Angaben zur antragstellenden Person\nFamilienname, Vorname\nGeburtsdatum\nIBAN\n2. Haushaltsmitglieder\nFamilienstand\n3. Wohnkosten\nGesamtmiete monatlich\nHeizkosten\nWohnfläche in m²\n4. Einkommen\nRenten\nKrankenkasse\nStaatsangehörigkeit\nOrt, Datum, Unterschrift';
+  await p.fill('#sc-text', FORMULAR); await p.click('#sc-local');
+  const out = await p.textContent('#sc-out');
+  ok('Antragsformular: Name des Formulars erkannt', /Erkannt: Antrag auf Wohngeld/.test(out), out.slice(0, 200));
+  ok('Antragsformular: kein Feld geht verloren (Heizkosten, Wohnfläche, Familienstand, Renten)', ['Heizkosten', 'Wohnfläche in m²', 'Familienstand', 'Renten', 'Krankenkasse', 'Staatsangehörigkeit'].every((x) => out.includes(x)));
+  ok('Antragsformular: Nummerierung wird weggelassen', !/\b2\. Haushaltsmitglieder/.test(out) && out.includes('Haushaltsmitglieder'));
+  ok('Antragsformular: zusammengehörige Felder in einer Karte', (await p.locator('#sc-out .sc-row:has-text("Heizkosten") .sc-labs li').count()) === 3);
+  ok('Mit Leistungscheck: Werte zum Abschreiben (Miete 950 €), kein leeres „0 €“', /Warmmiete im Monat: 950 €/.test(out) && !/(^|[^\d.,])0 €/.test(out), out.slice(0, 900));
+  ok('Antragsformular: kein seitliches Scrollen', await breit());
   await p.click('#briefZurueck');
   await p.click('#appnav [data-ansicht=leistungen]');
-  ok('Leistungsseite: Verweis statt Fotofunktion', await p.isVisible('#scanVerweis') && !(await p.isVisible('#scan')));
-  await p.click('#scVerweis');
-  ok('Verweis öffnet „Brief prüfen“ → Antragsformular', await p.isVisible('#scan') && await p.isVisible('#v-briefe'));
-  await p.click('#briefZurueck');
+  ok('Leistungsseite: kein Formular-Scannen und kein Verweis darauf', !(await p.isVisible('#scan')) && (await p.locator('#v-leistungen #scanVerweis, #v-leistungen #scan, #v-leistungen [data-t^="sc."]').count()) === 0);
   // Fremde Sprache: Hinweis „nur auf Deutsch“, Bereiche übersetzt
   await p.selectOption('#lang', 'tr'); await p.click('#appnav [data-ansicht=briefe]'); await p.click('#brief-wg');
   ok('Türkisch: Hinweis, dass die Prüfung nur auf Deutsch ist', await p.isVisible('#ppNurDe'));
@@ -93,6 +100,13 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   await p.setViewportSize({ width: 1280, height: 900 }); await p.click('#briefZurueck');
   ok('Computer: Leiste sichtbar und nicht unten fixiert', await p.isVisible('#appnav') && (await p.evaluate(() => getComputedStyle(document.getElementById('appnav')).position)) !== 'fixed');
   ok('Computer: kein seitliches Scrollen', await breit());
+  // Ganz ohne Leistungscheck (neues Gerät): keine erfundenen Werte, sondern ein Tipp
+  const ctx2 = await b.newContext({ viewport: { width: 360, height: 760 }, locale: 'de-DE' }); const q = await ctx2.newPage();
+  await q.goto(APP + '#briefe'); await q.waitForTimeout(300); await q.click('#brief-af');
+  await q.fill('#sc-text', 'Antrag auf Wohngeld\nGesamtmiete monatlich\nEinkommen\nVermögen\nHaushaltsmitglieder'); await q.click('#sc-local');
+  const leer = await q.textContent('#sc-out');
+  ok('Ohne Leistungscheck: kein „0 €“, keine Haushaltszeile, aber Tipp', !/€/.test(leer) && !/Erwachsene/.test(leer) && /Leistungscheck/.test(leer), leer.slice(0, 400));
+  await ctx2.close();
   ok('Keine Skriptfehler', fehler.length === 0, fehler);
   await b.close();
   console.log(f ? `\n${f} von ${n} Prüfungen fehlgeschlagen` : `Bereiche-Test bestanden: ${n} Prüfungen (Startseite, drei Bereiche, Brief prüfen mit 6 Prüfungen, alte Fristen gelöscht, Sprache, Computer)`);

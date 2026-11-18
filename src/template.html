@@ -279,6 +279,13 @@
   .sc-val bdi { background: var(--bg); border-radius: 6px; padding: 4px 8px; user-select: all; overflow-wrap: anywhere; }
   .sc-val .btn { min-height: 36px; padding: 0 12px; font-size: 0.9em; }
   .sc-tag { font-size: 0.8em; color: var(--muted); }
+  #sc-file.vh { inset-inline-start: 0; top: 0; }
+  .scan .field:has(#sc-file) { position: relative; }
+  .sc-foto { justify-content: center; text-align: center; display: inline-flex; align-items: center; min-height: 56px; cursor: pointer; }
+  #sc-file:focus-visible + .sc-foto { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .sc-titel { font-weight: 700; }
+  .sc-titel span { color: var(--muted); font-weight: 400; }
+  .sc-labs { margin: 0; padding-inline-start: 1.1em; display: grid; gap: 2px; }
 
   .rules { background: transparent; border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px; }
   .rules details { border-top: 0; padding-top: 0; }
@@ -452,7 +459,6 @@
   .einlesen textarea { width: 100%; min-height: 120px; font: inherit; }
   .pp .pp-erkannt { background: #fff6d6; border-color: #e0b100; color: #18202e; }
   .el-erkl { background: var(--warn-bg); border-radius: 12px; padding: 10px 14px; margin-top: 8px; }
-  .scanverweis { background: var(--surface); border-radius: 16px; padding: 14px 16px; box-shadow: var(--shadow); display: grid; gap: 8px; justify-items: start; }
   .pp-hinweis { background: var(--warn-bg); border-radius: 12px; padding: 10px 14px; margin: 0 0 14px; }
   /* Pflegegrad selbst einschätzen */
   .pa-einstieg { display: grid; gap: 4px; justify-items: start; margin: -4px 0 8px; }
@@ -556,16 +562,14 @@
           <h2 id="h-scan" data-t="sc.h"></h2>
           <p data-t="sc.intro"></p>
           <div class="field">
-            <label for="sc-file" data-t="sc.photo"></label>
-            <input type="file" id="sc-file" accept="image/*">
+            <input type="file" id="sc-file" class="vh" accept="image/*">
+            <label for="sc-file" class="btn sc-foto" data-t="sc.photoBtn"></label>
+            <p class="hint" data-t="sc.localNote"></p>
           </div>
           <div class="field">
             <label for="sc-text" data-t="sc.paste"></label>
             <textarea id="sc-text" lang="de" dir="ltr" autocomplete="off" spellcheck="false"></textarea>
-          </div>
-          <div class="box">
-            <p class="hint" data-t="sc.localNote"></p>
-            <div class="btns"><button type="button" class="btn" id="sc-local" data-t="sc.local"></button></div>
+            <div class="btns"><button type="button" class="btn ghost" id="sc-local" data-t="sc.local"></button></div>
           </div>
           <div class="box" id="sc-claudeBox" hidden>
             <p class="hint" data-t="sc.claudeNote"></p>
@@ -968,11 +972,6 @@
           <div class="btns"><button type="button" class="btn" id="mappeMake" data-t="f.make"></button></div>
           <p class="msg" id="pickMsg" role="status"></p>
         </section>
-
-        <div class="scanverweis" id="scanVerweis">
-          <p data-t="sc.verweis"></p>
-          <button type="button" class="btn ghost" id="scVerweis" data-t="sc.verweisBtn"></button>
-        </div>
 
         <div class="rules">
           <details>

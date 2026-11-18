@@ -32,6 +32,11 @@ const NATIVE_SCAN = [
   '          <h2 id="h-scan" data-t="sc.h"></h2>',
   '          <p data-t="sc.nativeIntro"></p>',
   '          <div class="btns"><button type="button" class="btn" id="sc-take" data-t="sc.take"></button></div>',
+  '          <div class="field">',
+  '            <label for="sc-text" data-t="sc.paste"></label>',
+  '            <textarea id="sc-text" lang="de" dir="ltr" autocomplete="off" spellcheck="false"></textarea>',
+  '            <div class="btns"><button type="button" class="btn ghost" id="sc-local" data-t="sc.local"></button></div>',
+  '          </div>',
   '          <p class="msg" id="sc-msg" role="status" aria-live="polite"></p>',
   '          <div id="sc-out"></div>',
   '        </section>'

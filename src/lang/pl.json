@@ -241,9 +241,8 @@
   "s.pflege.tip": "Służba Medyczna (Medizinischer Dienst) przyjdzie z wizytą. Wcześniej prowadź dziennik opieki.",
   "sc.h": "Skanowanie wniosku: wyjaśnienie pól",
   "sc.intro": "Dostałeś(-aś) urzędowy formularz? Zrób mu zdjęcie albo wklej jego tekst. Zobaczysz, co oznacza każde pole i jaka informacja z Twojego sprawdzenia tam trafia. Aplikacja sama nie wypełnia formularza.",
-  "sc.photo": "Wybierz zdjęcie lub obraz",
-  "sc.paste": "Albo wklej tekst formularza",
-  "sc.local": "Rozpoznaj na urządzeniu",
+  "sc.paste": "Albo wklej tutaj tekst formularza",
+  "sc.local": "Wyjaśnij pola",
   "sc.localNote": "Domyślnie: zdjęcie jest czytane tylko na Twoim urządzeniu i nigdzie nie jest wysyłane. W tym celu rozpoznawanie tekstu jednorazowo pobiera program z internetu.",
   "sc.claudeNote": "Opcjonalnie: Claude czyta zdjęcie dokładniej. Zdjęcie jest wtedy wysyłane do Claude i wlicza się do Twojego użycia Claude. Wybieraj tylko dokumenty, które chcesz wysłać.",
   "sc.consent": "Tak, zdjęcie można wysłać do Claude.",
@@ -1046,9 +1045,12 @@
   "el.keineWerte": "Rozpoznano: {titel}. Nie znaleziono kwot; wpisz je poniżej.",
   "el.lese": "Odczytywanie pisma …",
   "el.fehler": "Nie udało się odczytać pisma. Spróbuj jaśniejszego, prostego zdjęcia lub wklej tekst.",
-  "sc.verweis": "Masz formularz wniosku? W „Sprawdź pismo” możesz go sfotografować, a aplikacja wyjaśni pola.",
-  "sc.verweisBtn": "Zeskanuj formularz",
   "briefe.zurueckEinfach": "← Wstecz",
   "pa.info": "Co to dokładnie znaczy?",
-  "pa.erklaerung": "Wyjaśnienie"
+  "pa.erklaerung": "Wyjaśnienie",
+  "sc.photoBtn": "📷 Zrób zdjęcie formularza lub wybierz obraz",
+  "sc.form": "Rozpoznano:",
+  "sc.tipp": "Wskazówka: jeśli najpierw wypełnisz sprawdzenie świadczeń, aplikacja pokaże tu twoje dane do przepisania.",
+  "sc.f.kv": "Twoja kasa chorych (Krankenkasse) i numer ubezpieczenia. Oba są na karcie ubezpieczenia.",
+  "sc.f.aufenthalt": "Obywatelstwo i status pobytu (Aufenthaltstitel). Jest to w paszporcie lub karcie pobytu. Dołącz kopię, jeśli o nią proszą."
 }

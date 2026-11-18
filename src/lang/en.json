@@ -241,9 +241,8 @@
   "s.pflege.tip": "The Medical Service (Medizinischer Dienst) will visit. Keep a care diary beforehand.",
   "sc.h": "Scan a form: fields explained",
   "sc.intro": "Got an official form? Take a photo of it or paste its text. You will see what each field means and which answer from your check goes there. The app does not fill in the form itself.",
-  "sc.photo": "Choose photo or image",
-  "sc.paste": "Or paste the text of the form",
-  "sc.local": "Read on this device",
+  "sc.paste": "Or paste the text of the form here",
+  "sc.local": "Explain the fields",
   "sc.localNote": "Default: the photo is read only on your device and sent nowhere. For this, the text recognition downloads a program from the internet once.",
   "sc.claudeNote": "Optional: Claude reads the photo more closely. The photo is then sent to Claude and counts toward your Claude usage. Choose only documents you are happy to send.",
   "sc.consent": "Yes, the photo may be sent to Claude.",
@@ -1046,9 +1045,12 @@
   "el.keineWerte": "Recognised: {titel}. No amounts were found; please enter them below.",
   "el.lese": "Reading the letter …",
   "el.fehler": "The letter could not be read. Try a brighter, straight photo or paste the text.",
-  "sc.verweis": "Received an application form? Under “Check a letter” you can photograph it and the app explains the fields.",
-  "sc.verweisBtn": "Scan form",
   "briefe.zurueckEinfach": "← Back",
   "pa.info": "What exactly does this mean?",
-  "pa.erklaerung": "Explanation"
+  "pa.erklaerung": "Explanation",
+  "sc.photoBtn": "📷 Photograph the form or choose a picture",
+  "sc.form": "Recognised:",
+  "sc.tipp": "Tip: If you fill in the benefit check first, the app shows your figures here to copy.",
+  "sc.f.kv": "Your health insurance fund (Krankenkasse) and your insurance number. Both are on your health insurance card.",
+  "sc.f.aufenthalt": "Nationality and residence status (Aufenthaltstitel). This is in your passport or residence permit. Add a copy if asked."
 }

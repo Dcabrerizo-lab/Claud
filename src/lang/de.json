@@ -241,9 +241,8 @@
   "s.pflege.tip": "Der Medizinische Dienst kommt zu einem Besuch. Führe vorher ein Pflegetagebuch.",
   "sc.h": "Antrag scannen: Felder erklärt",
   "sc.intro": "Du hast ein amtliches Formular bekommen? Fotografiere es oder füge den Text ein. Du siehst, was jedes Feld bedeutet und welche Angabe aus deinem Check dort hinkommt. Das Formular selbst füllt die App nicht aus.",
-  "sc.photo": "Foto oder Bild wählen",
-  "sc.paste": "Oder Text des Formulars einfügen",
-  "sc.local": "Auf dem Gerät erkennen",
+  "sc.paste": "Oder den Text des Formulars hier einfügen",
+  "sc.local": "Felder erklären",
   "sc.localNote": "Standard: Das Foto wird nur auf deinem Gerät gelesen und nirgends hingeschickt. Dafür lädt die Texterkennung einmalig ein Programm aus dem Internet.",
   "sc.claudeNote": "Optional: Claude liest das Foto genauer. Dabei wird das Foto an Claude gesendet und zählt zu deiner Claude-Nutzung. Wähle nur Unterlagen, die du senden willst.",
   "sc.consent": "Ja, das Foto darf an Claude gesendet werden.",
@@ -1046,9 +1045,12 @@
   "el.keineWerte": "Erkannt: {titel}. Beträge wurden nicht gefunden; bitte unten selbst eintragen.",
   "el.lese": "Der Brief wird gelesen …",
   "el.fehler": "Der Brief konnte nicht gelesen werden. Versuche ein helleres, gerades Foto oder füge den Text ein.",
-  "sc.verweis": "Ein Antragsformular bekommen? Unter „Brief prüfen“ kannst du es fotografieren, und die App erklärt die Felder.",
-  "sc.verweisBtn": "Formular scannen",
   "briefe.zurueckEinfach": "← Zurück",
   "pa.info": "Was bedeutet das genau?",
-  "pa.erklaerung": "Erklärung"
+  "pa.erklaerung": "Erklärung",
+  "sc.photoBtn": "📷 Formular fotografieren oder Bild wählen",
+  "sc.form": "Erkannt:",
+  "sc.tipp": "Tipp: Wenn du vorher den Leistungscheck ausfüllst, zeigt die App hier deine Werte zum Abschreiben.",
+  "sc.f.kv": "Deine Krankenkasse und deine Versichertennummer. Beides steht auf deiner Versichertenkarte.",
+  "sc.f.aufenthalt": "Staatsangehörigkeit und Aufenthaltsstatus. Das steht im Pass oder im Aufenthaltstitel. Lege eine Kopie bei, wenn danach gefragt wird."
 }

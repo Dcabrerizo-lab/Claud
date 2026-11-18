@@ -100,7 +100,7 @@ const MOCK = () => {
   await p.click('#sc-take'); await p.waitForTimeout(300);
   ok('Kachel Antragsformular: eigener Kamera-Knopf', (await calls('Camera.getPhoto')).length === vorher + 1);
   await p.click('#briefZurueck'); await p.click('#appnav [data-ansicht=leistungen]');
-  ok('Leistungsseite: Verweis auf „Brief prüfen“ statt Kamera', await p.isVisible('#scanVerweis') && !(await p.isVisible('#sc-take')));
+  ok('Leistungsseite: keine Kamera und kein Formular-Hinweis', !(await p.isVisible('#sc-take')) && (await p.locator('#scanVerweis').count()) === 0);
 
   // Wohnort: PLZ -> Mietenstufe und zuständige Stelle mit Anschrift (offline)
   ok('Ohne PLZ: Hinweis auf die Postleitzahl in der Wohngeld-Karte', /Postleitzahl/.test(await p.textContent('#c-wohngeld')));
