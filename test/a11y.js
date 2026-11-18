@@ -28,13 +28,13 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
     };
     await pruefe('Startseite');
     await p.click('#goBriefe'); await pruefe('Brief prüfen');
-    await p.click('#brief-pk'); await p.click('#pf-beispiel'); await pruefe('Brief prüfen: Pflegegutachten');
+    await p.click('#brief-pk'); await pruefe('Brief prüfen: Wahl scannen, einfügen, selbst eingeben'); await p.click('#elSelbst'); await p.evaluate(() => document.getElementById('pf-beispiel').click()); await pruefe('Brief prüfen: Pflegegutachten');
     await p.click('#briefZurueck'); await p.click('#brief-vm'); await pruefe('Brief prüfen: Nebenkosten'); await p.click('#briefZurueck');
     await p.click('#appnav [data-ansicht=leistungen]');
     await pruefe('Leistungen (leer)');
     await p.click('#paStart'); await pruefe('Pflegegrad: Alter');
     await p.fill('#pa-jahre', '80'); await p.click('text=Weiter ➜'); await p.click('#pflegeAssist .es-btn >> nth=0');
-    await p.click('#pflegeAssist summary'); await pruefe('Pflegegrad: Frage mit Erklärung');
+    await pruefe('Pflegegrad: Frage mit Erklärung');
     for (let i = 0; i < 6; i++) { const q = await p.textContent('#pa-q'); if (/Wahrscheinlich/.test(q)) break; await p.click(/Probleme|Hilfe|Verhalten/.test(q) ? '#pflegeAssist .es-btn >> nth=1' : '#pflegeAssist .es-btn >> nth=2'); }
     for (let i = 0; i < 40 && !/Wahrscheinlich/.test(await p.textContent('#pa-q')); i++) await p.click('#pflegeAssist .es-btn >> nth=1');
     await pruefe('Pflegegrad: Ergebnis');

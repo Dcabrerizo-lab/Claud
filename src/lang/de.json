@@ -1052,5 +1052,7 @@
   "sc.form": "Erkannt:",
   "sc.tipp": "Tipp: Wenn du vorher den Leistungscheck ausfüllst, zeigt die App hier deine Werte zum Abschreiben.",
   "sc.f.kv": "Deine Krankenkasse und deine Versichertennummer. Beides steht auf deiner Versichertenkarte.",
-  "sc.f.aufenthalt": "Staatsangehörigkeit und Aufenthaltsstatus. Das steht im Pass oder im Aufenthaltstitel. Lege eine Kopie bei, wenn danach gefragt wird."
+  "sc.f.aufenthalt": "Staatsangehörigkeit und Aufenthaltsstatus. Das steht im Pass oder im Aufenthaltstitel. Lege eine Kopie bei, wenn danach gefragt wird.",
+  "el.selbst": "Werte selbst eingeben",
+  "briefe.von": "Brief von: {name}"
 }

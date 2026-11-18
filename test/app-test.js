@@ -70,7 +70,7 @@ const MOCK = () => {
   ok('Start: Startseite mit den drei Bereichen', await p.isVisible('#v-start') && (await p.locator('#appnav button').count()) === 3);
   ok('Alte Fristen werden über Preferences gelöscht', (await calls('Preferences.remove')).some((c) => c.key === 'lotse.fristen'));
   // Prüfpaket läuft unter der CSP der App
-  await p.click('#appnav [data-ansicht=briefe]'); await p.click('#brief-jc'); await p.click('#p-bescheid >> text=Beispiel laden');
+  await p.click('#appnav [data-ansicht=briefe]'); await p.click('#brief-jc'); await p.click('#elSelbst'); await p.evaluate(() => document.querySelector('#p-bescheid [id$="-beispiel"]').click());
   ok('Brief prüfen rechnet in der App', ((await p.textContent('#p-bescheid')) || '').includes('€'));
   ok('Keine Fristen über Preferences gespeichert', !(await calls('Preferences.set')).some((c) => c.key === 'lotse.fristen'));
   await p.click('#appnav [data-ansicht=leistungen]');
@@ -80,7 +80,7 @@ const MOCK = () => {
   ok(KARTEN.length + ' Karten', (await p.locator('#cards .card').count()) === KARTEN.length);
   ok('Schrift lokal geladen', await p.evaluate(async () => { await document.fonts.ready; return [...document.fonts].some((f) => f.status === 'loaded'); }));
   ok('Hinweis zur Web-Version im Impressum ausgeblendet', await p.evaluate(() => { document.getElementById('legalBtn').click(); const h = document.getElementById('legalWeb').hidden; document.getElementById('legalClose').click(); return h; }));
-  ok('Web-Scan (Tesseract/Claude) nicht enthalten, Kamera-Scan vorhanden', (await p.locator('#sc-local').count()) === 0 && (await p.locator('#sc-claudeBox').count()) === 0 && (await p.locator('#sc-take').count()) === 1);
+  ok('Web-Scan (Tesseract/Claude, Dateifeld) nicht enthalten; Kamera-Scan und Text einfügen vorhanden', (await p.locator('#sc-file').count()) === 0 && (await p.locator('#sc-claudeBox').count()) === 0 && (await p.locator('#sc-take').count()) === 1 && (await p.locator('#sc-text').count()) === 1 && (await p.locator('#sc-local').count()) === 1);
   for (const l of ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro']) { await p.selectOption('#lang', l); ok('Sprache ' + l, (await p.locator('#cards .card').count()) === KARTEN.length); }
   await p.selectOption('#lang', 'de');
 

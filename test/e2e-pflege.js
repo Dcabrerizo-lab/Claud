@@ -29,7 +29,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Erklärung steht direkt unter der Frage', /Bettgalgen/.test(await p.textContent('#pflegeAssist .es-h')));
   ok('Antworten ohne Fachbegriffe, gleiche Skala', (await p.textContent('#pflegeAssist .es-wahl')).indexOf('Im Gutachten') < 0);
   ok('Fortschritt zeigt Frage x von y', /Frage 1 von 5/.test(await p.textContent('#pflegeAssist .pa-kopf')));
-  ok('Kopf der Seite (Logo, Sprache) ist ausgeblendet', !(await p.isVisible('header.top')));
+  ok('Kopf der Seite (Logo, Sprache) ist ausgeblendet', (await p.evaluate(() => document.querySelector('header.top').getBoundingClientRect().height)) <= 1);
   await tippe('Schafft nur einen kleinen Teil allein');
   await p.click('text=Weiß ich nicht');
   ok('„Weiß ich nicht“ geht weiter', /aufrecht sitzen|sitzen bleiben/.test(await frage()) === false);

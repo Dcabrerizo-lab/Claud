@@ -1052,5 +1052,7 @@
   "sc.form": "Recunoscut:",
   "sc.tipp": "Sfat: dacă completezi mai întâi verificarea prestațiilor, aplicația îți arată aici valorile de copiat.",
   "sc.f.kv": "Casa ta de asigurări de sănătate (Krankenkasse) și numărul de asigurat. Ambele sunt pe cardul de asigurare.",
-  "sc.f.aufenthalt": "Cetățenia și statutul de ședere (Aufenthaltstitel). Scrie în pașaport sau în permisul de ședere. Atașează o copie dacă se cere."
+  "sc.f.aufenthalt": "Cetățenia și statutul de ședere (Aufenthaltstitel). Scrie în pașaport sau în permisul de ședere. Atașează o copie dacă se cere.",
+  "el.selbst": "Introdu valorile singur",
+  "briefe.von": "Scrisoare de la: {name}"
 }

@@ -96,7 +96,9 @@
   .es-sub { margin: 20px 0 8px; }
   .es-liste { padding-inline-start: 1.2em; }
   /* Pflegegrad-Einschätzung: Frage ganz oben, eine Spalte, Zurück oben, Links unten */
-  .app[data-ansicht="pflege"] .top, .app[data-ansicht="pflege"] .notices, .app[data-ansicht="pflege"] .first { display: none !important; }
+  .app[data-ansicht="pflege"] .notices, .app[data-ansicht="pflege"] .first { display: none !important; }
+  /* Kopf (Logo, Sprache) in der Einschätzung und in einer geöffneten Kachel nur optisch ausblenden: Screenreader behalten die Hauptüberschrift */
+  .app[data-ansicht="pflege"] .top, .app.brief-offen .top { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; margin: 0; padding: 0; }
   .pa-kopf { display: grid; gap: 4px; }
   .pa-zeile { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 44px; }
   .pa-kopf .pa-zur { padding: 8px 0; font-weight: 700; text-decoration: none; }
@@ -454,6 +456,17 @@
   /* Brief prüfen: Prüfpaket (Stile aus erweiterungen/vorschau.html, auf .pp beschränkt) */
   .pp-kopf { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 0 0 14px; }
   .pp-kopf .btn { flex: none; }
+  /* Kachel geöffnet: erst die Wahl (scannen, einfügen, selbst eingeben), dann das Formular. Das eigene Textfeld des Pflegegutachtens
+     entfällt in der App, weil „Text einfügen“ oben dasselbe tut. */
+  #checkBox .pp-teil.pp-zu > :not(:first-child) { display: none !important; }
+  #checkBox label[for="pf-text"], #checkBox #pf-text, #checkBox #pf-lesen, #checkBox #pf-beispiel { display: none !important; }
+  #checkBox .pp-zu #pf-leeren, #checkBox .pp-zu #pf-msg { display: none !important; }
+  #checkBox .card > .einlesen { margin-top: 12px; padding: 0; box-shadow: none; background: transparent; }
+  #checkBox [id$="-beispiel"] { display: none !important; }
+  #checkBox .pp-zu > .card:first-child > .btns, #checkBox .pp-zu > .card:first-child > .msg { display: none !important; }
+  #checkBox .pp-zu .einlesen > .btns { display: grid; gap: 10px; }
+  #checkBox .pp-zu .einlesen > .btns .btn { justify-content: flex-start; min-height: 52px; width: 100%; }
+  .app.brief-offen .notices, .app.brief-offen .first { display: none !important; }
   .einlesen { background: var(--surface); border-radius: 16px; padding: 14px 16px; margin: 0 0 16px; box-shadow: var(--shadow); }
   .einlesen .btns { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 6px; }
   .einlesen textarea { width: 100%; min-height: 120px; font: inherit; }
@@ -534,12 +547,13 @@
 
     <!-- Brief prüfen: nach Absender -->
     <section id="v-briefe" class="ansicht" aria-labelledby="h-briefe" hidden>
-      <h2 id="h-briefe" class="ans-h" data-t="briefe.h"></h2>
+      <h2 id="h-briefe" class="ans-h"></h2>
       <p id="briefeIntro" class="muted" data-t="briefe.t"></p>
       <div class="einlesen" id="einlesen">
         <div class="btns">
           <button type="button" class="btn" id="elScan"><span aria-hidden="true">📷 </span><span id="elScanT" data-t="el.scan"></span></button>
           <button type="button" class="btn ghost" id="elPaste" aria-expanded="false" aria-controls="elPasteBox"><span aria-hidden="true">📋 </span><span data-t="el.paste"></span></button>
+          <button type="button" class="btn ghost" id="elSelbst" hidden><span aria-hidden="true">✏️ </span><span data-t="el.selbst"></span></button>
         </div>
         <input type="file" id="elFile" accept="image/*" hidden>
         <div class="field" id="elPasteBox" hidden>

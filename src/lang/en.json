@@ -1052,5 +1052,7 @@
   "sc.form": "Recognised:",
   "sc.tipp": "Tip: If you fill in the benefit check first, the app shows your figures here to copy.",
   "sc.f.kv": "Your health insurance fund (Krankenkasse) and your insurance number. Both are on your health insurance card.",
-  "sc.f.aufenthalt": "Nationality and residence status (Aufenthaltstitel). This is in your passport or residence permit. Add a copy if asked."
+  "sc.f.aufenthalt": "Nationality and residence status (Aufenthaltstitel). This is in your passport or residence permit. Add a copy if asked.",
+  "el.selbst": "Enter the values yourself",
+  "briefe.von": "Letter from: {name}"
 }

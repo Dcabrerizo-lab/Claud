@@ -1052,5 +1052,7 @@
   "sc.form": "Rozpoznano:",
   "sc.tipp": "Wskazówka: jeśli najpierw wypełnisz sprawdzenie świadczeń, aplikacja pokaże tu twoje dane do przepisania.",
   "sc.f.kv": "Twoja kasa chorych (Krankenkasse) i numer ubezpieczenia. Oba są na karcie ubezpieczenia.",
-  "sc.f.aufenthalt": "Obywatelstwo i status pobytu (Aufenthaltstitel). Jest to w paszporcie lub karcie pobytu. Dołącz kopię, jeśli o nią proszą."
+  "sc.f.aufenthalt": "Obywatelstwo i status pobytu (Aufenthaltstitel). Jest to w paszporcie lub karcie pobytu. Dołącz kopię, jeśli o nią proszą.",
+  "el.selbst": "Wpisz dane samodzielnie",
+  "briefe.von": "List od: {name}"
 }

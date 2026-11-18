@@ -32,17 +32,25 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
     ok(`Kachel ${k} öffnet genau ${teil}`, offen.length === 1 && offen[0] === teil, offen);
     ok(`Kachel ${k}: Fokus auf der Überschrift`, await p.evaluate((t) => document.activeElement === document.querySelector('#' + t + ' h2'), teil));
     ok(`Kachel ${k}: kein seitliches Scrollen`, await breit());
+    ok(`Kachel ${k}: oben steht die gewählte Stelle, nicht „Von wem ist der Brief?“`, /^Brief von: /.test(await p.textContent('#h-briefe')), await p.textContent('#h-briefe'));
+    ok(`Kachel ${k}: erst die Wahl (scannen, einfügen, selbst eingeben), Formular noch zu`, await p.isVisible('#elScan') && await p.isVisible('#elPaste') && await p.isVisible('#elSelbst') && !(await p.isVisible('#' + teil + ' form, #' + teil + ' > .card:nth-child(2)')));
+    ok(`Kachel ${k}: Wahl steht unter der Erklärung des Abschnitts`, await p.evaluate((t) => document.querySelector('#' + t + ' > .card:first-child #einlesen') !== null, teil));
+    ok(`Kachel ${k}: kein „Beispiel laden“ in der App`, !(await p.isVisible('#' + teil + ' [id$="-beispiel"]')));
+    await p.click('#elSelbst');
+    ok(`Kachel ${k}: „Werte selbst eingeben“ öffnet das Formular`, await p.isVisible('#' + teil + ' > :nth-child(2)') && !(await p.isVisible('#elSelbst')));
     await p.click('#briefZurueck');
     ok(`Kachel ${k}: Zurück zeigt wieder die Auswahl, Fokus auf der Kachel`, await p.isVisible('#briefKacheln') && !(await p.isVisible('#checkBox')) && await p.evaluate((id) => document.activeElement.id === id, 'brief-' + k));
   }
   // Rechnen im eingebetteten Prüfpaket: Beispiel Grundsicherungsgeld zeigt ein Ergebnis
-  await p.click('#brief-jc'); await p.click('#p-bescheid >> text=Beispiel laden'); await p.waitForTimeout(100);
+  await p.click('#brief-jc'); await p.click('#elSelbst'); await p.evaluate(() => document.querySelector('#p-bescheid [id$="-beispiel"]').click()); await p.waitForTimeout(100);
   ok('Bescheid-Check rechnet in der App', ((await p.textContent('#p-bescheid')) || '').includes('€'));
   // Nochmal auf „Brief prüfen“ tippen führt zur Auswahl
   await p.click('#appnav [data-ansicht=briefe]');
   ok('Erneutes Tippen auf „Brief prüfen“: zurück zur Auswahl', await p.isVisible('#briefKacheln'));
   // Widerspruch mit Bescheiddatum: die Frist steht beim Schreiben, eine Liste gibt es nicht
-  await p.click('#brief-pk'); await p.fill('#pf-datum', '2026-11-10'); await p.click('#pf-wid-mach');
+  await p.click('#brief-pk');
+  ok('Pflegekasse: kein zweites Textfeld „Text aus dem Gutachten“', !(await p.isVisible('#pf-text')) && !(await p.isVisible('#pf-lesen')));
+  await p.click('#elSelbst'); await p.fill('#pf-datum', '2026-11-10'); await p.click('#pf-wid-mach');
   ok('Widerspruchsfrist steht beim Schreiben', /14\.12\.2026/.test(await p.textContent('#pf-frist')), await p.textContent('#pf-frist'));
   ok('Nichts als Frist gespeichert', (await p.evaluate(() => localStorage.getItem('lotse.fristen'))) === null);
   await p.click('#briefZurueck');
@@ -95,9 +103,9 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   await p.selectOption('#lang', 'tr'); await p.click('#appnav [data-ansicht=briefe]'); await p.click('#brief-wg');
   ok('Türkisch: Hinweis, dass die Prüfung nur auf Deutsch ist', await p.isVisible('#ppNurDe'));
   ok('Türkisch: Leiste übersetzt', (await p.textContent('#appnav')).includes('Mektup kontrol'));
-  await p.selectOption('#lang', 'de');
+  await p.click('#briefZurueck'); await p.selectOption('#lang', 'de');
   // Auf dem Computer: Reiter oben, ohne seitliches Scrollen
-  await p.setViewportSize({ width: 1280, height: 900 }); await p.click('#briefZurueck');
+  await p.setViewportSize({ width: 1280, height: 900 });
   ok('Computer: Leiste sichtbar und nicht unten fixiert', await p.isVisible('#appnav') && (await p.evaluate(() => getComputedStyle(document.getElementById('appnav')).position)) !== 'fixed');
   ok('Computer: kein seitliches Scrollen', await breit());
   // Ganz ohne Leistungscheck (neues Gerät): keine erfundenen Werte, sondern ein Tipp

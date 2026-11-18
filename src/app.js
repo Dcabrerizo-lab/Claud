@@ -1557,7 +1557,8 @@
     if (ANSICHTEN.indexOf(a) < 0) a = 'start';
     if (a === 'pflege' && !$('pflegeAssist').children.length) a = 'leistungen'; // Einschätzung nur über ihren Knopf öffnen
     aktAnsicht = a;
-    $('app').setAttribute('data-ansicht', a); // in der Pflegegrad-Einschätzung Kopf und Hinweise ausblenden, damit die Frage oben steht
+    $('app').setAttribute('data-ansicht', a);
+    if (a !== 'briefe') $('app').classList.remove('brief-offen'); else $('app').classList.toggle('brief-offen', !!briefArt); // in der Pflegegrad-Einschätzung Kopf und Hinweise ausblenden, damit die Frage oben steht
     ANSICHTEN.forEach(function (x) { $('v-' + x).hidden = x !== a; });
     $('jump').hidden = a !== 'leistungen' || esModus;
     var navA = a === 'pflege' || a === 'pflegeinfo' ? 'leistungen' : a;
@@ -1568,6 +1569,7 @@
   }
   function bereicheText() {
     if (!$('v-start') || !BRIEFE) return; // applyLang läuft schon vor dieser Stelle
+    briefKopf();
     var bk = $('briefKacheln');
     if (!bk.children.length) BRIEFE.forEach(function (x) {
       var k = document.createElement('button'); k.type = 'button'; k.className = 'kachel'; k.id = 'brief-' + x[0];
@@ -1641,7 +1643,7 @@
         { text: 'Antrag an die Pflegekasse in die Antragsmappe', zweit: true, wenn: function (r, pg) { return pg == null && r.pg >= 1; }, fn: function (r) {
           paUebernehmen(r); picked.pflege = true; pickedUser.pflege = true; if (lastOut) renderPick(lastOut.results); paZurueck('mappeMake'); } },
         { text: 'Antrag auf Höherstufung schreiben', haupt: true, wenn: function (r, pg) { return pg != null && r.pg > pg; }, fn: function (r, a, g) {
-          paUebernehmen(r); zeigeAnsicht('briefe', false); briefOeffnen('pk'); if (window.PruefpaketPflege) window.PruefpaketPflege.setze(g, 'hoeher'); } },
+          paUebernehmen(r); zeigeAnsicht('briefe', false); briefOeffnen('pk'); if (window.PruefpaketPflege) { window.PruefpaketPflege.setze(g, 'hoeher'); briefFormular(); } } },
         { text: 'Mit dem Gutachten der Pflegekasse vergleichen', fn: function (r) {
           paUebernehmen(r); zeigeAnsicht('briefe', false); briefOeffnen('pk'); } },
         { text: 'Was bedeuten diese Leistungen?', fn: function () { pflegeInfo('pflege', 'pa-q'); } },
@@ -1742,7 +1744,11 @@
     $('briefKacheln').hidden = !!teil; $('briefeIntro').hidden = !!teil; $('checkBox').hidden = !teil;
     $('ppNurDe').hidden = lang === 'de';
     if (briefArt !== (teil ? art : null)) { $('elMsg').textContent = ''; $('elErg').textContent = ''; }
-    briefArt = teil ? art : null; elPlatz();
+    briefArt = teil ? art : null; briefKopf();
+    $('app').classList.toggle('brief-offen', !!teil); // in einer Kachel Logo und Sprachwahl ausblenden, damit die Wahl oben steht
+    // Erst entscheiden (scannen, einfügen oder selbst eingeben), dann erscheint das Formular der Prüfung
+    if (teil && art !== 'af') $(teil).classList.add('pp-zu'); // Antragsformular: dort sind Foto und Einfügen selbst die Wahl
+    elPlatz();
     if (art === 'pk' && window.PruefpaketPflege && pa.antworten && typeof PflegeAssistent !== 'undefined') window.PruefpaketPflege.eigene(PflegeAssistent.eingabe(pa.antworten, null));
     window.scrollTo(0, 0);
     var h = teil && $(teil).querySelector('h2'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
@@ -1750,12 +1756,26 @@
   // ----- Brief einlesen: scannen (Kamera und Texterkennung auf dem Gerät) oder Text einfügen; erweiterungen/brief-lesen.js -----
   // Ohne geöffnete Kachel erkennt die App Absender und Art selbst; in einer Kachel ist die Art bekannt.
   var elGesammelt = '', elBusy = false;
+  // Überschrift oben: ohne Kachel „Von wem ist der Brief?“, in einer Kachel das, was gewählt wurde
+  function briefKopf() {
+    var x = null; BRIEFE.forEach(function (b) { if (b[0] === briefArt) x = b; });
+    $('h-briefe').textContent = !x ? t('briefe.h') : briefArt === 'af' ? t(x[1]) : t('briefe.von', { name: t(x[1]) });
+  }
+  // In einer Kachel: Formular der Prüfung zeigen (nach der Wahl „selbst eingeben“ oder nach dem Einlesen)
+  function briefFormular(fokus) {
+    var sec = briefArt && $(BRIEF_TEIL[briefArt]); if (!sec) return;
+    sec.classList.remove('pp-zu'); $('elSelbst').hidden = true;
+    if (fokus) { var f = sec.querySelector('.card:nth-of-type(2) input, form input, form select'); if (f) f.focus(); }
+  }
+  // Das Einlesen steht in einer Kachel direkt unter der Erklärung des Abschnitts, ohne Kachel über den Kacheln
   function elPlatz() {
     var box = $('einlesen');
     if (briefArt === 'af') { box.hidden = true; return; }
     box.hidden = false;
-    if (briefArt) $('checkBox').insertBefore(box, $('checkBox').querySelector('.pp-teil'));
+    var sec = briefArt && $(BRIEF_TEIL[briefArt]), karte = sec && sec.querySelector('.card');
+    if (karte) karte.appendChild(box);
     else $('v-briefe').insertBefore(box, $('briefKacheln'));
+    $('elSelbst').hidden = !sec || !sec.classList.contains('pp-zu');
     $('elScanT').textContent = t(elGesammelt ? 'el.mehr' : briefArt ? 'el.scanHier' : 'el.scan');
   }
   function elNachricht(text) { $('elMsg').textContent = text || ''; }
@@ -1786,9 +1806,10 @@
       $('elErg').appendChild(d); elNachricht(t('el.erkanntOhne', { titel: r.titel })); return;
     }
     if (!briefArt) briefOeffnen(r.art);
-    if (r.art === 'pk') { $('pf-text').value = text; $('pf-lesen').click(); elNachricht(t('el.erkanntPk', { titel: r.titel })); return; }
+    if (r.art === 'pk') { $('pf-text').value = text; $('pf-lesen').click(); briefFormular(); elNachricht(t('el.erkanntPk', { titel: r.titel })); return; }
     if (r.art === 'af') { setScanResult(scanFromText(text)); elNachricht(t('el.erkanntOhne', { titel: r.titel })); return; }
     var n = window.PruefpaketLesen ? window.PruefpaketLesen.fuelle(r.art, r, haushalt()) : 0;
+    briefFormular();
     elNachricht(n ? t('el.erkannt', { titel: r.titel, n: String(n) }) : t('el.keineWerte', { titel: r.titel }));
   }
   // Foto aufnehmen und auf dem Gerät lesen (App), Foto danach löschen; im Browser: Bild wählen und mit Tesseract lesen
@@ -1816,6 +1837,7 @@
     ocr(f).then(elFertig, elFehler);
   });
   $('elPaste').addEventListener('click', function () { var box = $('elPasteBox'); box.hidden = !box.hidden; $('elPaste').setAttribute('aria-expanded', String(!box.hidden)); if (!box.hidden) $('elText').focus(); });
+  $('elSelbst').addEventListener('click', function () { briefFormular(true); });
   $('elLesen').addEventListener('click', function () { elGesammelt = ''; textLesen($('elText').value); });
 
   $('briefZurueck').addEventListener('click', function () { elGesammelt = ''; var war = null; document.querySelectorAll('#checkBox .pp-teil').forEach(function (s) { if (!s.hidden) war = s.id; }); briefOeffnen(null); for (var k in BRIEF_TEIL) if (BRIEF_TEIL[k] === war) $('brief-' + k).focus(); });
