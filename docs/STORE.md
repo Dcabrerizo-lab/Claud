@@ -35,7 +35,7 @@ Alles muss zur [Datenschutzerklärung](../datenschutz.html) passen. Bei Änderun
 > Bescheid vom Jobcenter, Sozialamt, von der Wohngeldstelle oder Familienkasse, Pflegegutachten oder Nebenkostenabrechnung: Scanne den Brief, wähle ein PDF, füge den Text ein oder trage die Zahlen selbst ein. SoLo rechnet nach, zeigt Abweichungen mit Paragraf und hilft beim Widerspruch, bei der Höherstufung oder bei Einwänden gegen die Abrechnung. Beim Pflegegutachten zeigt die App jede Bewertung, die niedriger ist als deine eigene Einschätzung.
 >
 > **Auch in einfacher Sprache**
-> Für Menschen mit Lernschwierigkeiten, zum Beispiel in einer Werkstatt: eine Frage pro Bildschirm, große Knöpfe, Vorlesen. Das Ergebnis zeigt, was du bekommen kannst, wie viel ungefähr und wo du hingehst.
+> Für Menschen mit Lernschwierigkeiten, zum Beispiel in einer Werkstatt: eine Frage pro Bildschirm, große Knöpfe. Das Ergebnis zeigt, was du bekommen kannst, wie viel ungefähr und wo du hingehst.
 >
 > **Antragsmappe**
 > Die App schreibt dir formlose Anträge auf Deutsch, so wie die Ämter sie brauchen. Damit sicherst du bei vielen Leistungen den Startmonat. Dazu kommen ein Angabenblatt und eine Liste der Unterlagen. Teile alles als PDF, zum Drucken oder per E-Mail.

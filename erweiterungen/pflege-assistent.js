@@ -69,7 +69,6 @@ const PflegeAssistent = (function () {
     const a = migriere(Object.assign(neu(), opt.antworten || {}));
     const pgAktuell = opt.pgAktuell == null || opt.pgAktuell === '' ? null : +opt.pgAktuell;
     const merken = () => { if (opt.speichern) try { opt.speichern(JSON.parse(JSON.stringify(a))); } catch (e) {} };
-    const sprich = (text) => { try { if (!window.speechSynthesis) return; speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'de-DE'; u.rate = 0.9; speechSynthesis.speak(u); } catch (e) {} };
     function weiter() { a.pos++; merken(); zeige(true); }
     function zurueck() { if (a.pos > 0) { a.pos--; merken(); zeige(true); } else if (opt.abbrechen) opt.abbrechen(); }
 
@@ -163,7 +162,6 @@ const PflegeAssistent = (function () {
         weissNicht = () => { delete a.m5[s.id]; delete a.m5Wahl[s.id]; weiter(); };
       }
       box.append(...[kopf(s, liste), vorweg, h('h2', { class: 'es-q', id: 'pa-q', tabindex: '-1', text: frage }), hilfe ? h('p', { class: 'es-h', text: hilfe }) : null,
-        window.speechSynthesis ? h('button', { type: 'button', class: 'es-vor', text: '🔊 Vorlesen', onclick: () => sprich(frage + ' ' + hilfe) }) : null,
         inhalt, nav(weissNicht)].filter(Boolean));
       if (fokus) fokusiere();
     }

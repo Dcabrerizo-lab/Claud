@@ -1332,7 +1332,7 @@
   }
 
   // =====================================================================
-  // Einfache Version (Leichte Sprache): eine Frage pro Bildschirm, große Knöpfe, Vorlesen.
+  // Einfache Version (Leichte Sprache): eine Frage pro Bildschirm, große Knöpfe.
   // Gedacht für Menschen mit Lernschwierigkeiten, zum Beispiel in einer Werkstatt für behinderte Menschen.
   // Rechnet mit denselben Regeln (Rules.evaluate) wie die ausführliche Version: eine Person, eigener Bedarf.
   // =====================================================================
@@ -1401,17 +1401,6 @@
 
   function esSpeichern() { Store.set('lotse.einfach', JSON.stringify({ es: es, an: esModus })); }
 
-  function esSprich(text) {
-    try {
-      if (!window.speechSynthesis) return;
-      window.speechSynthesis.cancel();
-      var u = new SpeechSynthesisUtterance(text);
-      u.lang = { de: 'de-DE', en: 'en-GB', tr: 'tr-TR', ar: 'ar', ru: 'ru-RU', uk: 'uk-UA', pl: 'pl-PL', ro: 'ro-RO' }[lang] || 'de-DE';
-      u.rate = 0.85;
-      window.speechSynthesis.speak(u);
-    } catch (e) {}
-  }
-
   function esRender() {
     var box = $('einfach');
     if (!esModus) { box.hidden = true; $('cols').hidden = false; $('notices').hidden = false; $('jump').hidden = false; $('app').classList.remove('es-an'); return; }
@@ -1420,12 +1409,10 @@
     var fr = esAktiv();
     if (es.schritt >= fr.length) { esErgebnis(fr); return; }
     var f = fr[es.schritt];
-    var vorlesen = t(f.key) + (f.hilfe ? ' ' + t(f.hilfe) : '');
     var h = '<div class="es-top"><span class="es-prog">' + esc(t('es.frage', { n: es.schritt + 1 })) + '</span>' +
       '<div class="es-bar" aria-hidden="true"><span style="width:' + Math.round(100 * es.schritt / fr.length) + '%"></span></div></div>' +
       '<h2 class="es-q" id="es-q" tabindex="-1">' + esc(t(f.key)) + '</h2>' +
-      (f.hilfe ? '<p class="es-h">' + esc(t(f.hilfe)) + '</p>' : '') +
-      (window.speechSynthesis ? '<button type="button" class="es-vor" id="es-vor">🔊 ' + esc(t('es.vorlesen')) + '</button>' : '');
+      (f.hilfe ? '<p class="es-h">' + esc(t(f.hilfe)) + '</p>' : '');
     if (f.art === 'wahl') {
       h += '<div class="es-wahl' + (f.wahl.length > 4 ? ' es-klein' : '') + '" role="group" aria-labelledby="es-q">' + f.wahl.map(function (w) {
         var txt = /^es\./.test(w[2]) ? t(w[2]) : w[2];
@@ -1494,7 +1481,6 @@
       }
       weiter();
     });
-    if ($('es-vor')) $('es-vor').addEventListener('click', function () { esSprich(vorlesen); });
     if ($('es-zurueck')) $('es-zurueck').addEventListener('click', function () { es.schritt = Math.max(0, es.schritt - 1); esSpeichern(); esRender(); });
     $('es-raus').addEventListener('click', function () { esUmschalten(false); });
   }
@@ -1548,7 +1534,6 @@
     if (hat('gsa', 'gsa.grundrente') && es.renteJa === 'ja') tipps.push(t('es.tipp.grundrente'));
     if (gut.some(function (x) { return x.id === 'kgBeh'; })) tipps.push(t(es.wohnen === 'eltern' ? 'es.tipp.kgEltern' : 'es.tipp.kgAbzweig'));
     var h = '<h2 class="es-q" id="es-q" tabindex="-1">' + esc(t(gut.length ? 'es.erg.h' : 'es.erg.keine')) + '</h2>' +
-      (window.speechSynthesis ? '<button type="button" class="es-vor" id="es-vor">🔊 ' + esc(t('es.vorlesen')) + '</button>' : '') +
       (regelnVeraltet() ? '<p class="warn" role="alert">' + esc(t('alt.hinweis', { stand: Rules.RULES.stand })) + '</p>' : '') +
       '<p class="es-h">' + esc(t('es.erg.hinweis')) + '</p>' + gut.map(karte).join('') +
       (tipps.length ? '<div class="es-tipps"><h3 class="es-sub">💡 ' + esc(t('es.erg.tipps')) + '</h3><ul>' + tipps.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div>' : '') +
@@ -1561,7 +1546,7 @@
       '<button type="button" class="chip" id="es-neu">' + esc(t('es.neu')) + '</button>' +
       '<button type="button" class="chip" id="es-raus">' + esc(t('es.ausfuehrlich')) + '</button></div>';
     $('einfach').innerHTML = h;
-    // Text zum Teilen und Vorlesen: Leistung, Einschätzung, Betrag, zuständige Stelle, Tipps, Hinweis „Schätzung“
+    // Text zum Teilen: Leistung, Einschätzung, Betrag, zuständige Stelle, Tipps, Hinweis „Schätzung“
     var text = function () {
       var div = document.createElement('div');
       return ['SoLo: ' + t(gut.length ? 'es.erg.h' : 'es.erg.keine'), ''].concat(gut.map(function (x) {
@@ -1572,7 +1557,6 @@
     $('es-zurueck').addEventListener('click', function () { es.schritt = fr.length - 1; esSpeichern(); esRender(); });
     $('es-neu').addEventListener('click', function () { es = esLeer(); esSpeichern(); esRender(); });
     $('es-raus').addEventListener('click', function () { esUmschalten(false); });
-    if ($('es-vor')) $('es-vor').addEventListener('click', function () { esSprich(text()); });
     $('es-teilen').addEventListener('click', function () {
       var sh = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Share;
       if (sh) sh.share({ title: 'SoLo', text: text() }).catch(function () {});
