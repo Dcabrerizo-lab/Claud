@@ -145,16 +145,43 @@
   // Richtigkeit: Nur Bewertungen, die aus dem Gutachten eingetragen sind, zählen; fehlende werden gezählt und genannt, nicht als Abweichung gewertet.
   let eigen = null;
   const punkteVon = (k, stufe) => (stufe == null ? 0 : P.SKALA[k.s].punkte[stufe] || 0);
-  function abweichungen(g) {
+  // Bereich 5: Maß je Maßnahme wie in pflege.js (1 Tag = 210 Einheiten, Woche 30, Monat 7; Arzt- und Therapiebesuche mit ihrer Gewichtung)
+  const zahlP = (x) => (Number.isFinite(+x) && +x > 0 ? +x : 0);
+  const M5C_F = Object.fromEntries(P.M5C.map((x) => [x[0], x[3]]));
+  function m5Mass(id, v) {
+    v = v || {};
+    if (M5C_F[id]) { const f = M5C_F[id]; return (f.tag && v.taeglich ? f.tag : 0) + zahlP(v.woche) * f.woche + zahlP(v.monat) * f.monat; }
+    return zahlP(v.tag) * 210 + zahlP(v.woche) * 30 + zahlP(v.monat) * 7;
+  }
+  function haeufigkeit(v) {
+    v = v || {}; const t = [];
+    if (v.taeglich) t.push('jeden Tag');
+    if (zahlP(v.tag)) t.push(`${zahlP(v.tag)}-mal am Tag`);
+    if (zahlP(v.woche)) t.push(`${zahlP(v.woche)}-mal pro Woche`);
+    if (zahlP(v.monat)) t.push(`${zahlP(v.monat)}-mal im Monat`);
+    return t.length ? t.join(' und ') : 'keine Hilfe';
+  }
+  const M5_NAME = Object.fromEntries(P.M5A.concat(P.M5B, P.M5C).map((x) => [x[0], x]));
+  // Jede Bewertung des Gutachtens mit der eigenen Einschätzung vergleichen: Kriterien (nach Punkten), Inkontinenz, jede Maßnahme in Bereich 5, 5.16.
+  // ab: Gutachten niedriger als die eigene Einschätzung. fehlt: Kriterium mit eigener Bewertung, im Gutachten noch nicht eingetragen (zählt nicht als Abweichung).
+  function abweichungen(g, kind) {
     const ab = [], fehlt = [];
-    if (!eigen || !eigen.stufen) return { ab, fehlt };
+    if (!eigen) return { ab, fehlt };
+    const es = eigen.stufen || {}, em = eigen.m5 || {}, ei = eigen.inkontinenz || {};
+    for (const art of ['harn', 'stuhl']) if (ei[art] && !(g.inkontinenz && g.inkontinenz[art]))
+      ab.push({ typ: 'ink', id: 'ink-' + art, titel: art === 'harn' ? 'Harninkontinenz (oder Katheter, Urostoma)' : 'Stuhlinkontinenz (oder Stoma)', ist: 'nicht angegeben', soll: 'überwiegend oder vollständig inkontinent' });
     for (const k of P.KRITERIEN) {
-      if (k.s === 'sonde') continue;
-      const e = eigen.stufen[k.id], gu = g.stufen[k.id];
+      const e = es[k.id], gu = g.stufen[k.id];
       if (e == null) continue;
       if (gu == null) { if (punkteVon(k, e) > 0) fehlt.push(k); continue; }
-      if (punkteVon(k, e) > punkteVon(k, gu)) ab.push({ k, e, gu });
+      if (punkteVon(k, e) > punkteVon(k, gu)) ab.push({ typ: 'stufe', id: k.id, k, e, gu });
     }
+    for (const [id] of P.M5A.concat(P.M5B, P.M5C)) {
+      if (id === '5.K' && !kind) continue;
+      if (m5Mass(id, em[id]) > m5Mass(id, g.m5[id])) ab.push({ typ: 'm5', id, titel: `${id} ${M5_NAME[id][2]}`, ist: haeufigkeit(g.m5[id]), soll: haeufigkeit(em[id]), wert: em[id] });
+    }
+    const e16 = em['5.16'] != null ? +em['5.16'] : es['5.16'] != null ? +es['5.16'] : null, g16 = +g.m5['5.16'] || 0;
+    if (e16 != null && e16 > g16) { const sk = P.SKALA.sel; ab.push({ typ: 'm5', id: '5.16', titel: '5.16 Diät oder ärztliche Anweisungen einhalten', ist: `„${sk.kurz[g16]}“ (${sk.stufen[g16]})`, soll: `„${sk.kurz[e16]}“ (${sk.stufen[e16]})`, wert: e16 }); }
     return { ab, fehlt };
   }
   function zeigeVergleich(g, r) {
@@ -166,23 +193,39 @@
       info.append(h('div', { class: 'opt' }, h('p', { text: 'Noch keine eigene Einschätzung. Mach sie in wenigen Minuten (Fragen in einfacher Sprache). Danach zeigt SoLo hier von selbst jede Bewertung, die im Gutachten niedriger ist.' }),
         start ? h('div', { class: 'btns' }, h('button', { type: 'button', class: 'btn primary', id: 'pf-eigen-start', onclick: () => start() }, 'Pflegegrad selbst einschätzen')) : null));
     } else {
-      const re = P.rechne(eigen), { ab, fehlt } = abweichungen(g);
+      const re = P.rechne(eigen), { ab, fehlt } = abweichungen(g, r.kind);
       const satz = [`Deine Einschätzung: ${re.pg ? 'Pflegegrad ' + re.pg : 'kein Pflegegrad'} (${zahl(re.gesamt)} Punkte).`];
       if (eingetragen) satz.push(`Gutachten: ${r.pg ? 'Pflegegrad ' + r.pg : 'kein Pflegegrad'} (${zahl(r.gesamt)} Punkte).`);
       satz.push(!eingetragen ? 'Trage oben die Bewertungen aus dem Gutachten ein oder scanne es, dann erscheinen die Abweichungen hier.' : ab.length ? `Bei ${ab.length} ${ab.length === 1 ? 'Frage' : 'Fragen'} ist das Gutachten niedriger als deine Einschätzung.` : 'Bei keiner Frage ist das Gutachten niedriger als deine Einschätzung.');
       info.append(h('p', { id: 'pf-vergleich', text: satz.join(' ') }));
+      const m5Leer = !Object.entries(g.m5).some(([id, v]) => (id === '5.16' ? +v > 0 : m5Mass(id, v) > 0));
+      if (eingetragen && m5Leer && ab.some((x) => x.typ === 'm5')) info.append(h('p', { class: 'small muted', id: 'pf-m5-leer', text: 'Bereich 5 (Umgang mit Krankheit und Behandlung) ist aus dem Gutachten noch leer. Steht dort wirklich keine Hilfe? Sonst trage die Häufigkeiten oben ein, damit der Vergleich stimmt.' }));
       if (eingetragen && fehlt.length) info.append(h('p', { class: 'small muted', text: `${fehlt.length} ${fehlt.length === 1 ? 'Bewertung fehlt' : 'Bewertungen fehlen'} noch aus dem Gutachten (zum Beispiel „${fehlt[0].leicht}“). Trage sie oben ein, sonst kann SoLo dort nicht vergleichen.` }));
       if (eingetragen) {
-        const ids = new Set(ab.map((x) => x.k.id));
+        const ids = new Set(ab.map((x) => x.id));
         // Automatische Karten, die nicht mehr abweichen und leer sind, verschwinden; ausgefüllte bleiben stehen
         for (const z of [...$('pf-wid-liste').children]) if (z.dataset.auto === '1' && !ids.has(z.dataset.id) && !z.querySelector('textarea').value.trim()) z.remove();
-        for (const { k, e } of ab) fuegeWiderspruchHinzu(k.id, e, true);
+        for (const x of ab) { if (x.typ === 'stufe') fuegeWiderspruchHinzu(x.id, x.e, true); else fuegeTextKarte(x); }
+        // Text der Häufigkeits- und Inkontinenz-Karten aktualisieren
+        for (const x of ab) { const z = $('pf-wid-liste').querySelector(`[data-id="${x.id}"][data-typ]`); if (z) { z.querySelector('.pw-ist').textContent = 'Im Gutachten: ' + x.ist; z.querySelector('.pw-soll').textContent = 'Deine Einschätzung: ' + x.soll; z.dataset.ist = x.ist; z.dataset.soll = x.soll; } }
       }
     }
     // Text der Karten aktualisieren (Gutachten-Wert kann sich geändert haben)
-    for (const z of $('pf-wid-liste').children) { const k = P.kriterium(z.dataset.id), el = z.querySelector('.pw-ist'); if (k && el) { const gu = g.stufen[k.id]; el.textContent = 'Im Gutachten: ' + (gu == null ? 'nicht eingetragen' : `„${P.SKALA[k.s].kurz[gu]}“ (${P.SKALA[k.s].stufen[gu]})`); } }
+    for (const z of $('pf-wid-liste').children) { if (z.dataset.typ) continue; const k = P.kriterium(z.dataset.id), el = z.querySelector('.pw-ist'); if (k && el) { const gu = g.stufen[k.id]; el.textContent = 'Im Gutachten: ' + (gu == null ? 'nicht eingetragen' : `„${P.SKALA[k.s].kurz[gu]}“ (${P.SKALA[k.s].stufen[gu]})`); } }
   }
   let pwn = 0;
+  // Karte für Inkontinenz und Bereich 5 (Häufigkeiten): Werte stehen als Text, die eigene Angabe ändert man in der Einschätzung
+  function fuegeTextKarte(x) {
+    const liste = $('pf-wid-liste');
+    if (liste.querySelector(`[data-id="${x.id}"]`)) return;
+    const n = ++pwn;
+    const zeile = h('div', { class: 'opt pw', 'data-id': x.id, 'data-auto': '1', 'data-typ': x.typ, 'data-titel': x.titel, 'data-ist': x.ist, 'data-soll': x.soll });
+    const mit = h('input', { type: 'checkbox', id: `pw-m-${n}`, class: 'pw-mit', checked: true });
+    zeile.append(h('strong', { text: x.titel }), h('p', { class: 'small pw-ist', text: 'Im Gutachten: ' + x.ist }), h('p', { class: 'pw-soll', text: 'Deine Einschätzung: ' + x.soll }),
+      h('label', { for: `pw-a-${n}`, text: 'Wie ist es im Alltag wirklich? (in eigenen Worten)' }), h('textarea', { id: `pw-a-${n}`, rows: '3', placeholder: x.typ === 'm5' ? 'z. B. „Morgens, mittags und abends müssen wir die Tabletten richten und geben, allein vergisst sie sie.“' : 'z. B. „Sie schafft es nachts nicht mehr rechtzeitig zur Toilette und braucht Einlagen.“' }),
+      h('label', { class: 'check' }, mit, h('span', { text: 'In das Schreiben aufnehmen' })));
+    liste.append(zeile);
+  }
   // Eine Karte: Bewertung (bei „selbst hinzufügen“ wählbar), wie es tatsächlich ist, Beschreibung aus dem Alltag, Haken „aufnehmen“
   function fuegeWiderspruchHinzu(id, soll, auto) {
     const liste = $('pf-wid-liste');
@@ -220,17 +263,25 @@
   }
   function machePflegeWiderspruch() {
     const g = lesePflege(), r = P.rechne(g), hoch = pfArt() === 'hoeher';
-    const auswahl = [...$('pf-wid-liste').children].filter((z) => z.querySelector('.pw-mit').checked && z.dataset.id).map((z) => { const id = z.dataset.id, sel = z.querySelectorAll('select'); return { id, stufeIst: +(g.stufen[id] || 0), stufeSoll: +sel[sel.length - 1].value, alltag: z.querySelector('textarea').value }; }).filter((x) => x.stufeSoll > x.stufeIst);
-    const neu = Object.assign({}, g, { stufen: Object.assign({}, g.stufen) }); auswahl.forEach((x) => { neu.stufen[x.id] = x.stufeSoll; });
+    const gewaehlt = [...$('pf-wid-liste').children].filter((z) => z.querySelector('.pw-mit').checked && z.dataset.id);
+    const textKarten = gewaehlt.filter((z) => z.dataset.typ);
+    const auswahl = gewaehlt.filter((z) => !z.dataset.typ).map((z) => { const id = z.dataset.id, sel = z.querySelectorAll('select'); return { id, stufeIst: +(g.stufen[id] || 0), stufeSoll: +sel[sel.length - 1].value, alltag: z.querySelector('textarea').value }; }).filter((x) => x.stufeSoll > x.stufeIst);
+    const neu = Object.assign({}, g, { stufen: Object.assign({}, g.stufen), m5: Object.assign({}, g.m5), inkontinenz: Object.assign({}, g.inkontinenz) }); auswahl.forEach((x) => { neu.stufen[x.id] = x.stufeSoll; });
+    for (const z of textKarten) {
+      if (z.dataset.typ === 'ink') neu.inkontinenz[z.dataset.id.slice(4)] = true;
+      else if (eigen && eigen.m5 && z.dataset.id !== '5.16') neu.m5[z.dataset.id] = eigen.m5[z.dataset.id];
+      else if (eigen && z.dataset.id === '5.16') neu.m5['5.16'] = eigen.m5 && eigen.m5['5.16'] != null ? eigen.m5['5.16'] : eigen.stufen['5.16'];
+    }
+    const zusatz = textKarten.map((z) => { const a = z.querySelector('textarea').value.trim(); return hoch ? `${z.dataset.titel}: bei der letzten Begutachtung ${z.dataset.ist}, heute ${z.dataset.soll}. ${a || '[Bitte beschreiben, was sich verändert hat und seit wann.]'}` : `${z.dataset.titel}: im Gutachten ${z.dataset.ist}, tatsächlich ${z.dataset.soll}. ${a || '[Bitte beschreiben, wie es im Alltag wirklich ist.]'}`; });
     const ziel = P.rechne(neu).pg, ist = r.bescheid ? r.bescheid.pg : r.pg;
     const absender = { name: $('pf-name').value.trim(), strasse: $('pf-anschrift').value.trim(), ort: $('pf-ort').value.trim() }, stelle = { name: $('pf-kasse').value.trim() };
     const t = hoch
-      ? Widerspruch.hoeherstufung({ absender, stelle, zeichen: $('pf-vnr').value.trim(), heute: heute(), pgJetzt: ist, seit: $('pf-datum').value, punkte: Widerspruch.punkteHoeher(auswahl, P), arzt: true })
-      : Widerspruch.text({ art: 'pflege', absender, stelle, bescheidDatum: $('pf-datum').value, zeichen: $('pf-vnr').value.trim(), heute: heute(), pflege: { pgBescheid: ist, pgZiel: ziel > ist ? ziel : null }, punkte: Widerspruch.punktePflege(auswahl, P), akteneinsicht: true });
+      ? Widerspruch.hoeherstufung({ absender, stelle, zeichen: $('pf-vnr').value.trim(), heute: heute(), pgJetzt: ist, seit: $('pf-datum').value, punkte: Widerspruch.punkteHoeher(auswahl, P).concat(zusatz), arzt: true })
+      : Widerspruch.text({ art: 'pflege', absender, stelle, bescheidDatum: $('pf-datum').value, zeichen: $('pf-vnr').value.trim(), heute: heute(), pflege: { pgBescheid: ist, pgZiel: ziel > ist ? ziel : null }, punkte: Widerspruch.punktePflege(auswahl, P).concat(zusatz), akteneinsicht: true });
     $('pf-wid-text').value = t; $('pf-wid-text').hidden = false; $('pf-wid-copy').hidden = false;
     let info = hoch ? 'Keine Frist. Mehr Geld gibt es ab dem Monat, in dem der Antrag bei der Pflegekasse eingeht. Deshalb bald abschicken.' : $('pf-datum').value ? fristText($('pf-datum').value) : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.';
-    if (auswahl.length && ziel > ist) info = `Mit diesen Änderungen ergäbe sich Pflegegrad ${ziel}. ` + info;
-    if (!auswahl.length) info = 'Noch keine Bewertung mit höherer Stufe gewählt. ' + info;
+    if ((auswahl.length || textKarten.length) && ziel > ist) info = `Mit diesen Änderungen ergäbe sich Pflegegrad ${ziel}. ` + info;
+    if (!auswahl.length && !textKarten.length) info = 'Noch keine Bewertung mit höherer Stufe gewählt. ' + info;
     $('pf-frist').textContent = info;
   }
   function fristText(datum) { const f = Fristen.widerspruch({ datum }); return `Frist: Der Widerspruch muss spätestens am ${de(f.fristende)} bei der Stelle sein (frühester möglicher Tag).`; }

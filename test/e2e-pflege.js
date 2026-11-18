@@ -115,6 +115,18 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   await p.click('#pf-wid-mach');
   const schreiben = await p.inputValue('#pf-wid-text');
   ok('Schreiben enthält die Abweichung mit der Beschreibung aus dem Alltag', /1\.1 .*„selbständig“, heute „überwiegend unselbständig“\. Sie kommt nachts nicht allein hoch/.test(schreiben), schreiben.slice(0, 600));
+  // Jede Bewertung wird verglichen: auch Inkontinenz, Sonde, jede Maßnahme in Bereich 5 und 5.16
+  await p.evaluate(() => window.PruefpaketPflege.eigene({ stufen: { '1.1': 2, '4.13': 1 }, m5: { '5.1': { tag: 3 }, '5.13': { monat: 3 }, '5.16': 2 }, inkontinenz: { harn: true, stuhl: false }, alterJahre: '84' }));
+  await p.waitForTimeout(150);
+  ok('Bereich 5 leer: Hinweis, Häufigkeiten aus dem Gutachten einzutragen', await p.isVisible('#pf-m5-leer'));
+  await p.fill('#pf-5\\.1-tag', '1'); await p.dispatchEvent('#pf-5\\.1-tag', 'input'); await p.waitForTimeout(150);
+  const karten = await p.evaluate(() => [...document.querySelectorAll('#pf-wid-liste .pw')].map((z) => z.dataset.id));
+  ok('Vergleich umfasst Inkontinenz, Sonde, Medikamente, Arztbesuche und Diät', ['ink-harn', '4.13', '5.1', '5.13', '5.16'].every((x) => karten.includes(x)), karten);
+  ok('Medikamente: Gutachten 1-mal, eigene Einschätzung 3-mal am Tag', /Im Gutachten: 1-mal am Tag/.test(await p.textContent('#pf-wid-liste [data-id="5.1"]')) && /3-mal am Tag/.test(await p.textContent('#pf-wid-liste [data-id="5.1"]')));
+  await p.fill('#pf-wid-liste [data-id="5.1"] textarea', 'Dreimal täglich Tabletten richten.');
+  await p.click('#pf-wid-mach');
+  const s2 = await p.inputValue('#pf-wid-text');
+  ok('Schreiben enthält Bereich 5 und Inkontinenz mit Beschreibung', /5\.1 Medikamente richten und geben: .*1-mal am Tag, .*3-mal am Tag\. Dreimal täglich Tabletten richten\./.test(s2) && /Harninkontinenz/.test(s2), s2.slice(0, 900));
   // Säugling: Frage 4.K
   await p.evaluate(() => { localStorage.removeItem('lotse.pflegecheck'); location.hash = '#leistungen'; }); await p.reload(); await p.waitForTimeout(300);
   await p.click('#paStart'); await p.fill('#pa-jahre', '1');
