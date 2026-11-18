@@ -1058,5 +1058,16 @@
   "el.pdf": "Wybierz PDF",
   "el.pdfSeite": "Czytanie strony {n} z {m} …",
   "el.pdfFehler": "Nie udało się odczytać pliku PDF. Czy jest chroniony hasłem? W przeciwnym razie wklej tekst lub zrób zdjęcie listu.",
-  "sc.pdfBtn": "📄 Wybierz plik PDF"
+  "sc.pdfBtn": "📄 Wybierz plik PDF",
+  "ww.h": "Dwie drogi: Grundsicherungsgeld albo Wohngeld i Kinderzuschlag",
+  "ww.t": "Obu naraz nie można otrzymać. Dla twojego gospodarstwa możliwe są obie drogi.",
+  "ww.a.h": "Droga 1: Grundsicherungsgeld (Jobcenter)",
+  "ww.a.t": "Pokrywa całą potrzebę: stawkę podstawową, czynsz i ogrzewanie, do tego ubezpieczenie zdrowotne. W zamian są obowiązki: dokumenty, terminy i szukanie pracy.",
+  "ww.b.h": "Droga 2: Wohngeld i Kinderzuschlag",
+  "ww.b.t": "Dopłaty do twojego dochodu, bez obowiązków wobec Jobcenter. Świadczenia na edukację i uczestnictwo dla dzieci też są dostępne.",
+  "ww.regel.h": "Jak decydują urzędy:",
+  "ww.regel": "Jeśli Wohngeld i Kinderzuschlag razem z twoim dochodem pokrywają potrzeby gospodarstwa, mają pierwszeństwo. Jeśli nie, przysługuje Grundsicherungsgeld.",
+  "ww.tipp": "Wskazówka: złóż oba wnioski jednocześnie. Wtedy żaden miesiąc nie przepadnie, a urzędy same ustalą, która droga obowiązuje.",
+  "karte.mehr": "Pokaż więcej",
+  "karte.weniger": "Pokaż mniej"
 }

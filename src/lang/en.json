@@ -1058,5 +1058,16 @@
   "el.pdf": "Choose a PDF",
   "el.pdfSeite": "Reading page {n} of {m} …",
   "el.pdfFehler": "The PDF could not be read. Is it password protected? Otherwise paste the text or take a photo of the letter.",
-  "sc.pdfBtn": "📄 Choose a PDF file"
+  "sc.pdfBtn": "📄 Choose a PDF file",
+  "ww.h": "Two routes: Grundsicherungsgeld or housing benefit and child supplement",
+  "ww.t": "You cannot get both. Both routes are possible for your household.",
+  "ww.a.h": "Route 1: Grundsicherungsgeld (Jobcenter)",
+  "ww.a.t": "Covers the whole need: standard rate, rent and heating, plus health insurance. In return there are duties: documents, appointments and looking for work.",
+  "ww.b.h": "Route 2: Wohngeld and Kinderzuschlag",
+  "ww.b.t": "Top-ups to your own income, without Jobcenter duties. Education and participation benefits for the children are available here too.",
+  "ww.regel.h": "How the offices decide:",
+  "ww.regel": "If housing benefit and child supplement together with your income cover the household’s needs, they come first. If not, you get Grundsicherungsgeld.",
+  "ww.tipp": "Tip: Apply for both at the same time. Then no month is lost, and the offices settle which route applies.",
+  "karte.mehr": "Show more",
+  "karte.weniger": "Show less"
 }

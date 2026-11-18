@@ -136,7 +136,10 @@ for (let i = 0; i < N; i++) {
     if (zahl !== sollZahl) melde('Zählung oben passt nicht', { ...fall, ist: zahl, soll: sollZahl });
     // Hinweise „Das solltest du beachten“ = Rechnung
     const tog = [...d.querySelectorAll('#together li')].map((li) => norm(li.textContent));
-    const sollTog = out.zusammen.map((z) => norm(text(lang, z[0], z[1]) || '?' + z[0]));
+    // „Grundsicherungsgeld oder Wohngeld/Kinderzuschlag“ steht als eigene Kachel „Zwei Wege“, nicht in der Liste
+    const wege = out.zusammen.some((z) => z[0] === 'z.ggVsWg');
+    if (wege !== !!d.getElementById('zweiWege')) melde('Kachel „Zwei Wege“ passt nicht zur Rechnung', { ...fall, soll: wege });
+    const sollTog = out.zusammen.filter((z) => z[0] !== 'z.ggVsWg').map((z) => norm(text(lang, z[0], z[1]) || '?' + z[0]));
     if (tog.join('|') !== sollTog.join('|')) melde('Hinweise „beachten“ passen nicht', { ...fall, ist: tog.join(' | ').slice(0, 200), soll: sollTog.join(' | ').slice(0, 200) });
     // Speichern und Laden: gespeicherter Stand ergibt nach dem Laden genau dasselbe Ergebnis
     if (i % 3 === 0) {

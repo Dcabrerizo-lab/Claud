@@ -618,11 +618,13 @@
         '<p class="small">' + esc(t('steps.note')) + '</p></div></details>';
     }
     var desc = lang === 'de' ? '' : t('n.' + r.id);
-    return '<article class="card' + (dim ? ' dim' : '') + '" data-id="' + r.id + '" id="c-' + r.id + '">' +
+    // Zuerst nur eine Zeile (Name, Einschätzung, kurzer Satz); ein Tipp klappt Beschreibung, Stelle und nächste Schritte auf
+    return '<article class="card auf' + (dim ? ' dim' : '') + '" data-id="' + r.id + '" id="c-' + r.id + '"><details class="karte"><summary>' +
       '<header><div><h3' + (lang === 'de' ? '' : ' lang="de"') + '>' + esc(r.name) + '</h3>' + (desc ? '<div class="desc">' + esc(desc) + '</div>' : '') + '</div>' +
       '<span class="pill ' + r.level + '"><span aria-hidden="true">' + MARK[r.level] + '</span>' + esc(t('lvl.' + r.level)) + '</span></header>' +
-      '<div class="body"><p class="head2">' + esc(t('h.' + r.hl)) + '</p><div class="txt">' + resultHtml(r) + '</div></div>' +
-      zustHtml(r) + steps + '</article>';
+      '<p class="head2">' + esc(t('h.' + r.hl)) + '</p><span class="karte-mehr" aria-hidden="true" data-mehr="' + esc(t('karte.mehr')) + '" data-weniger="' + esc(t('karte.weniger')) + '"></span></summary>' +
+      '<div class="body"><div class="txt">' + resultHtml(r) + '</div></div>' +
+      zustHtml(r) + steps + '</details></article>';
   }
 
   // Reihenfolge: zuerst alles, was für diese Person zutrifft (wie von Rules.evaluate sortiert: wahrscheinlich, dann möglich),
@@ -648,6 +650,19 @@
         (k.neinSpez.length ? '<details class="spezbox"><summary>' + esc(t('nein.spezial', { n: k.neinSpez.length })) + '</summary>' + k.neinSpez.map(card).join('') + '</details>' : '') +
         '</details>'
       : '');
+  }
+
+  // Ergebniskarte aufklappen (Sprung aus der Übersicht, Rückkehr von der Pflege-Einschätzung oder der Erklärseite)
+  function karteAuf(id) { var a = id && document.getElementById(id); var d = a && a.classList.contains('auf') && a.querySelector('details.karte'); if (d) d.open = true; }
+  // Grundsicherungsgeld oder Wohngeld und Kinderzuschlag: beides zusammen geht nicht. Eine Kachel erklärt die zwei Wege.
+  function zweiWege(results) {
+    var g = function (id) { for (var i = 0; i < results.length; i++) if (results[i].id === id) return results[i]; return null; };
+    var weg = function (ids) { return ids.map(g).filter(function (r) { return r && r.level !== 'nein'; }).map(function (r) {
+      return '<a class="ww-l ' + r.level + '" href="#c-' + r.id + '"><span' + (lang === 'de' ? '' : ' lang="de"') + '>' + esc(r.name) + '</span><span class="pill ' + r.level + '"><span aria-hidden="true">' + MARK[r.level] + '</span>' + esc(t('lvl.' + r.level)) + '</span></a>'; }).join(''); };
+    return '<section class="zweiwege" id="zweiWege" aria-labelledby="h-ww"><h3 id="h-ww">' + esc(t('ww.h')) + '</h3><p>' + esc(t('ww.t')) + '</p>' +
+      '<div class="ww-wege"><div class="ww-weg"><h4>' + esc(t('ww.a.h')) + '</h4><p>' + esc(t('ww.a.t')) + '</p>' + weg(['ggeld']) + '</div>' +
+      '<div class="ww-weg"><h4>' + esc(t('ww.b.h')) + '</h4><p>' + esc(t('ww.b.t')) + '</p>' + weg(['wohngeld', 'kiz', 'but']) + '</div></div>' +
+      '<p class="ww-regel"><b>' + esc(t('ww.regel.h')) + '</b> ' + esc(t('ww.regel')) + '</p><p class="small">' + esc(t('ww.tipp')) + '</p></section>';
   }
 
   function renderPick(results) {
@@ -706,9 +721,10 @@
     $('overview').innerHTML = ov.map(function (r) {
       return '<a class="' + r.level + '" href="#c-' + r.id + '"><span class="m" aria-hidden="true">' + MARK[r.level] + '</span>' + esc(r.name) + '</a>';
     }).join('');
-    $('together').innerHTML = out.zusammen.length
-      ? '<div class="together"><h3>' + esc(t('beachten')) + '</h3>' + listItems(out.zusammen.map(function (z) { return t(z[0], z[1]); })) + '</div>'
-      : '';
+    var wege = out.zusammen.some(function (z) { return z[0] === 'z.ggVsWg'; }), rest = out.zusammen.filter(function (z) { return z[0] !== 'z.ggVsWg'; });
+    $('together').innerHTML = (wege ? zweiWege(out.results) : '') + (rest.length
+      ? '<div class="together"><h3>' + esc(t('beachten')) + '</h3>' + listItems(rest.map(function (z) { return t(z[0], z[1]); })) + '</div>'
+      : '');
     document.querySelectorAll('.cond-kids').forEach(function (el) { el.hidden = state.kids === 0; });
     document.querySelectorAll('.cond-adults2').forEach(function (el) { el.hidden = state.adults !== 2; });
     renderPick(out.results);
@@ -1693,6 +1709,7 @@
   }
   function paZurueck(ziel) {
     zeigeAnsicht('leistungen', false);
+    karteAuf(ziel);
     var el = $(ziel) || $('paStart');
     if (el) { try { el.scrollIntoView({ block: 'center' }); } catch (e) {} if (el.focus) el.focus({ preventScroll: true }); }
   }
@@ -1726,6 +1743,8 @@
     var q = $('pa-q'); if (q) { window.scrollTo(0, 0); q.focus({ preventScroll: true }); }
   }
   $('paStart').addEventListener('click', paOeffnen);
+  // Sprung zu einer Ergebniskarte (Übersicht oben, Kachel „Zwei Wege“): Karte aufklappen
+  $('ergebnis').addEventListener('click', function (e) { var a = e.target.closest && e.target.closest('a[href^="#c-"]'); if (a) karteAuf(a.getAttribute('href').slice(1)); });
 
   // ----- Erklärseite: So funktionieren die Leistungen der Pflegekasse (Beträge aus den Rechenregeln) -----
   var piZurueckZu = 'leistungen', piFokus = null;
@@ -1803,7 +1822,8 @@
   }
   $('piZurueck').addEventListener('click', function () {
     zeigeAnsicht(piZurueckZu, false);
-    var el = piFokus && $(piFokus); if (el) { try { el.scrollIntoView({ block: 'center' }); } catch (e) {} if (el.focus) { if (!el.hasAttribute('tabindex') && !/^(BUTTON|A|INPUT)$/.test(el.tagName)) el.setAttribute('tabindex', '-1'); el.focus({ preventScroll: true }); } }
+    var el = piFokus && $(piFokus);
+    var karte = el && el.closest && el.closest('article.card'); if (karte) karteAuf(karte.id); // zurück in die aufgeklappte Karte if (el) { try { el.scrollIntoView({ block: 'center' }); } catch (e) {} if (el.focus) { if (!el.hasAttribute('tabindex') && !/^(BUTTON|A|INPUT)$/.test(el.tagName)) el.setAttribute('tabindex', '-1'); el.focus({ preventScroll: true }); } }
   });
   Store.get('lotse.pflegecheck', function (v) { try { var d = v ? JSON.parse(v) : null; if (d && typeof d === 'object') { pa.antworten = d.antworten || null; pa.schaetzung = d.schaetzung || null; } } catch (e) {} paAnzeigen(); });
 

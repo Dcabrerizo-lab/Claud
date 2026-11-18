@@ -1058,5 +1058,16 @@
   "el.pdf": "PDF seç",
   "el.pdfSeite": "Sayfa {n} / {m} okunuyor …",
   "el.pdfFehler": "PDF dosyası okunamadı. Şifreyle mi korunuyor? Değilse metni yapıştır veya mektubun fotoğrafını çek.",
-  "sc.pdfBtn": "📄 PDF dosyası seç"
+  "sc.pdfBtn": "📄 PDF dosyası seç",
+  "ww.h": "İki yol: Grundsicherungsgeld veya Wohngeld ve Kinderzuschlag",
+  "ww.t": "İkisi birlikte olmaz. Hanen için iki yol da mümkün.",
+  "ww.a.h": "Yol 1: Grundsicherungsgeld (Jobcenter)",
+  "ww.a.t": "Tüm ihtiyacı karşılar: temel ihtiyaç, kira ve ısınma, ayrıca sağlık sigortası. Karşılığında yükümlülükler vardır: belgeler, randevular ve iş arama.",
+  "ww.b.h": "Yol 2: Wohngeld ve Kinderzuschlag",
+  "ww.b.t": "Kendi gelirine destek, Jobcenter yükümlülükleri olmadan. Çocuklar için eğitim ve katılım yardımı burada da var.",
+  "ww.regel.h": "Kurumlar şöyle karar verir:",
+  "ww.regel": "Wohngeld ve Kinderzuschlag gelirinle birlikte hanenin ihtiyacını karşılıyorsa öncelik onlardadır. Karşılamıyorsa Grundsicherungsgeld verilir.",
+  "ww.tipp": "İpucu: İki başvuruyu aynı anda yap. Böylece hiçbir ay kaybolmaz ve kurumlar hangi yolun geçerli olduğunu kendi aralarında belirler.",
+  "karte.mehr": "Daha fazla göster",
+  "karte.weniger": "Daha az göster"
 }

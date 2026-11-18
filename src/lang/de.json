@@ -1058,5 +1058,16 @@
   "el.pdf": "PDF wählen",
   "el.pdfSeite": "Seite {n} von {m} wird gelesen …",
   "el.pdfFehler": "Die PDF-Datei ließ sich nicht lesen. Ist sie mit einem Passwort geschützt? Sonst füge den Text ein oder fotografiere den Brief.",
-  "sc.pdfBtn": "📄 PDF-Datei wählen"
+  "sc.pdfBtn": "📄 PDF-Datei wählen",
+  "ww.h": "Zwei Wege: Grundsicherungsgeld oder Wohngeld und Kinderzuschlag",
+  "ww.t": "Beides zusammen gibt es nicht. Für deinen Haushalt kommen beide Wege in Frage.",
+  "ww.a.h": "Weg 1: Grundsicherungsgeld (Jobcenter)",
+  "ww.a.t": "Deckt den ganzen Bedarf: Regelbedarf, Miete und Heizung, dazu die Krankenversicherung. Dafür gibt es Pflichten: Unterlagen, Termine und Arbeitssuche.",
+  "ww.b.h": "Weg 2: Wohngeld und Kinderzuschlag",
+  "ww.b.t": "Zuschüsse zu deinem eigenen Einkommen, ohne Pflichten beim Jobcenter. Bildung und Teilhabe für die Kinder gibt es auch hier.",
+  "ww.regel.h": "So entscheiden die Ämter:",
+  "ww.regel": "Reichen Wohngeld und Kinderzuschlag zusammen mit deinem Einkommen für den Bedarf des Haushalts, gehen sie vor. Reichen sie nicht, gibt es Grundsicherungsgeld.",
+  "ww.tipp": "Tipp: Stelle beide Anträge gleichzeitig. Dann geht kein Monat verloren, und die Ämter klären untereinander, welcher Weg gilt.",
+  "karte.mehr": "Mehr anzeigen",
+  "karte.weniger": "Weniger anzeigen"
 }

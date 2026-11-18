@@ -1058,5 +1058,16 @@
   "el.pdf": "Alege un PDF",
   "el.pdfSeite": "Se citește pagina {n} din {m} …",
   "el.pdfFehler": "Fișierul PDF nu a putut fi citit. Este protejat cu parolă? Altfel lipește textul sau fotografiază scrisoarea.",
-  "sc.pdfBtn": "📄 Alege un fișier PDF"
+  "sc.pdfBtn": "📄 Alege un fișier PDF",
+  "ww.h": "Două căi: Grundsicherungsgeld sau Wohngeld și Kinderzuschlag",
+  "ww.t": "Nu le poți primi pe amândouă. Pentru gospodăria ta sunt posibile ambele căi.",
+  "ww.a.h": "Calea 1: Grundsicherungsgeld (Jobcenter)",
+  "ww.a.t": "Acoperă tot necesarul: nivelul de bază, chiria și încălzirea, plus asigurarea de sănătate. În schimb există obligații: documente, programări și căutarea unui loc de muncă.",
+  "ww.b.h": "Calea 2: Wohngeld și Kinderzuschlag",
+  "ww.b.t": "Suplimente la venitul tău, fără obligații la Jobcenter. Prestațiile pentru educație și participare ale copiilor există și aici.",
+  "ww.regel.h": "Cum decid autoritățile:",
+  "ww.regel": "Dacă Wohngeld și Kinderzuschlag împreună cu venitul tău acoperă necesarul gospodăriei, au prioritate. Dacă nu, primești Grundsicherungsgeld.",
+  "ww.tipp": "Sfat: depune ambele cereri în același timp. Astfel nu se pierde nicio lună, iar autoritățile stabilesc între ele care cale se aplică.",
+  "karte.mehr": "Arată mai mult",
+  "karte.weniger": "Arată mai puțin"
 }

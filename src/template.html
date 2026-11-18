@@ -245,6 +245,26 @@
   .overview a.ja .m { color: var(--ok); }
   .overview a.vielleicht .m { color: var(--warn); }
   .card { scroll-margin-top: 12px; }
+  /* Ergebniskarten: zuerst eine Zeile, aufklappbar */
+  .card.auf { padding: 0; gap: 0; }
+  .card.auf > details.karte { border-top: 0; padding: 0; }
+  .card.auf > details.karte > summary { display: grid; gap: 6px; padding: 16px 18px; min-height: 44px; color: var(--ink); font-weight: 400; cursor: pointer; list-style: none; }
+  .card.auf > details.karte > summary::-webkit-details-marker { display: none; }
+  .card.auf > details.karte > summary .head2 { color: var(--muted); font-weight: 600; }
+  .karte-mehr::after { content: attr(data-mehr) " ▾"; color: var(--accent); font-weight: 700; font-size: .9em; }
+  details.karte[open] .karte-mehr::after { content: attr(data-weniger) " ▴"; }
+  .card.auf > details.karte > :not(summary) { margin: 0 18px; }
+  .card.auf > details.karte > :last-child { margin-bottom: 16px; }
+  .card.auf > details.karte[open] > summary { padding-bottom: 8px; }
+  .card.auf .body, .card.auf .zust { margin-bottom: 10px; }
+  /* Zwei Wege: Grundsicherungsgeld oder Wohngeld und Kinderzuschlag */
+  .zweiwege { background: var(--surface); border: 2px solid var(--accent); border-radius: 12px; padding: 16px 18px; display: grid; gap: 10px; margin-bottom: 16px; }
+  .ww-wege { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
+  .ww-weg { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; gap: 6px; align-content: start; }
+  .ww-weg h4 { margin: 0; font-size: 1em; }
+  .ww-l { display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 44px; color: var(--ink); text-decoration: none; border-top: 1px dashed var(--line); padding-top: 6px; }
+  .ww-l > span:first-child { text-decoration: underline; text-decoration-color: var(--accent); }
+  .ww-regel { margin: 0; }
   .neinbox { border: 1px dashed var(--line); border-radius: 10px; padding: 10px 14px; display: grid; gap: 12px; }
   .neinbox > summary { color: var(--muted); }
   .neinbox[open] > summary { margin-bottom: 8px; }
