@@ -2,11 +2,15 @@
 
 Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss steigen). Die Versionsnummer kommt aus dem Build.
 
-## Nächstes Update (nach Build 142)
-- **Pflegegrad selbst einschätzen** auf der Leistungsseite: geführt wie die einfache Version, eine Frage pro Bildschirm, Alter zuerst, Vorfrage je Bereich, Erklärung „Was zählt hier?“ zu jeder Frage, Vorlesen. Ergebnis mit Punkten, Pflegegeld und Abstand zum nächsten Grad; Übernahme in den Fragebogen und auf Wunsch der Antrag in die Mappe. Mit vorhandenem Pflegegrad: Höherstufung prüfen und Schreiben vorausgefüllt.
-- **Brief scannen** in „Brief prüfen“: Foto oder eingefügter Text; die App erkennt Absender und Art (Jobcenter, Sozialamt, Wohngeld, Familienkasse, Pflegegutachten, Nebenkosten, Antragsformular, Anhörung, Aufforderung zur Mitwirkung), trägt die Beträge gelb markiert ein und übernimmt den Haushalt aus „Leistungen“. In jeder Kachel eigener Scan.
-- **Antragsformular** als siebte Kachel; „Formular fotografieren“ ist von der Leistungsseite dorthin umgezogen.
-- **Gutachten-Vergleich:** Die eigene Einschätzung wird Frage für Frage mit dem Gutachten verglichen; Abweichungen lassen sich in den Widerspruch übernehmen.
+## 1.4.0 (ab Versionsnummer 143, November 2026)
+- **Pflegegrad selbst einschätzen** auf der Leistungsseite, mit einfacher Logik: kurze Anleitung, je Bereich zuerst eine Ja/Nein-Frage, Erklärung direkt unter jeder Frage, gleiche Antworten je Bereich, „Frage x von y“. Bereich 5 als Liste zum Ankreuzen, danach nur zu angekreuzten Punkten „Wie oft?“ (von selten nach oft). Ergebnis mit Pflegegrad, Pflegegeld (aufs Konto) und Entlastungsbetrag (Budget), Hauptknopf „Ergebnis übernehmen“; Rechenweg zum Aufklappen.
+- **Erklärseite „So funktionieren die Leistungen der Pflegekasse“**: Geld oder Budget, Pflegegeld, Pflegedienst, Entlastungsbetrag, Verhinderungs- und Kurzzeitpflege, Hilfsmittel; Pfeil-Links aus den Pflege-Karten.
+- **Brief prüfen**: Übersicht nur mit Kacheln; in der Kachel oben „Brief von: …“, dann die Wahl Scannen, PDF wählen, Text einfügen oder Werte selbst eingeben. Werte aus dem Brief gelb markiert, Haushalt aus „Leistungen“. Anhörung und Aufforderung zur Mitwirkung werden erklärt.
+- **PDF**: digitale PDFs werden direkt gelesen, eingescannte Seiten über die Texterkennung des Geräts (pdf.js, Apache 2.0, offline in der App).
+- **Antragsformular** als siebte Kachel: alle Felder erkannt und gruppiert, Name des Formulars, Krankenkasse und Aufenthalt neu, Werte aus dem Leistungscheck nur, wenn eingetragen.
+- **Pflegegutachten**: jede Bewertung wird mit der eigenen Einschätzung verglichen (Kriterien nach Punkten, Sonde, Inkontinenz, jede Maßnahme in Bereich 5, 5.16). Abweichungen erscheinen als Karten mit Feld für den Alltag und gehen ins Schreiben; nicht eingetragene Bewertungen zählen nicht.
+- **Ergebnis**: zuerst, was zutrifft; Karten zum Aufklappen; keine Häkchen-Leiste; Kachel „Zwei Wege“ (Grundsicherungsgeld oder Wohngeld und Kinderzuschlag); Hinweise zu einzelnen Leistungen in deren Karten; „Gut zu wissen für alle Anträge“; unpassende Leistungen für besondere Lagen in einer Zeile. Landespflegegeld außerhalb Bayerns ausgeblendet.
+- **Kinderkrankengeld** nur noch, wenn gerade ein Kind krank ist (neue Frage bei den Kindern).
 
 ## 1.3.1 (ab Versionsnummer 142, November 2026)
 - Bereich „Fristen“ entfernt, auch auf der Startseite, im Fristrechner und beim automatischen Eintragen. Die Leiste hat drei Bereiche: Start, Leistungen, Brief prüfen. Die Widerspruchsfrist steht weiter beim jeweiligen Schreiben. Fristen, die mit Build 141 gespeichert wurden, löscht die App beim Start.

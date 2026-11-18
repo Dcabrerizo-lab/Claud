@@ -32,7 +32,7 @@ Alles muss zur [Datenschutzerklärung](../datenschutz.html) passen. Bei Änderun
 > Kindergeld, Elterngeld, Mutterschaftsgeld, Wohngeld, Kinderzuschlag, Grundsicherungsgeld, Arbeitslosengeld I, Krankengeld, Kinderkrankengeld, Bildung und Teilhabe, Unterhaltsvorschuss, Grundsicherung im Alter und bei Erwerbsminderung, BAföG, Berufsausbildungsbeihilfe, Pflegegeld, Entlastungsbetrag, Verhinderungspflege und Pflegehilfsmittel, Bayerisches Landespflegegeld, Hilfe zur Pflege, Leistungen bei Behinderung (Pauschbetrag, Schwerbehindertenausweis, Eingliederungshilfe, Budget für Arbeit, Erwerbsminderungsrente, Altersrente für schwerbehinderte Menschen), Landesblindengeld, Blindenhilfe, Wohnberechtigungsschein, Befreiung vom Rundfunkbeitrag und von Zuzahlungen, Leistungen nach dem Asylbewerberleistungsgesetz.
 >
 > **Brief vom Amt? Prüfen lassen**
-> Bescheid vom Jobcenter, Sozialamt, von der Wohngeldstelle oder Familienkasse, Pflegegutachten oder Nebenkostenabrechnung: Trage die Zahlen ein, und SoLo rechnet nach, zeigt Abweichungen mit Paragraf und hilft beim Widerspruch, bei der Höherstufung oder bei Einwänden gegen die Abrechnung.
+> Bescheid vom Jobcenter, Sozialamt, von der Wohngeldstelle oder Familienkasse, Pflegegutachten oder Nebenkostenabrechnung: Scanne den Brief, wähle ein PDF, füge den Text ein oder trage die Zahlen selbst ein. SoLo rechnet nach, zeigt Abweichungen mit Paragraf und hilft beim Widerspruch, bei der Höherstufung oder bei Einwänden gegen die Abrechnung. Beim Pflegegutachten zeigt die App jede Bewertung, die niedriger ist als deine eigene Einschätzung.
 >
 > **Auch in einfacher Sprache**
 > Für Menschen mit Lernschwierigkeiten, zum Beispiel in einer Werkstatt: eine Frage pro Bildschirm, große Knöpfe, Vorlesen. Das Ergebnis zeigt, was du bekommen kannst, wie viel ungefähr und wo du hingehst.
@@ -40,11 +40,11 @@ Alles muss zur [Datenschutzerklärung](../datenschutz.html) passen. Bei Änderun
 > **Antragsmappe**
 > Die App schreibt dir formlose Anträge auf Deutsch, so wie die Ämter sie brauchen. Damit sicherst du bei vielen Leistungen den Startmonat. Dazu kommen ein Angabenblatt und eine Liste der Unterlagen. Teile alles als PDF, zum Drucken oder per E-Mail.
 >
-> **Brief scannen**
-> Fotografiere einen Bescheid, ein Gutachten, eine Nebenkostenabrechnung oder ein Antragsformular. Die App erkennt, von wem der Brief ist, trägt die Beträge ein und erklärt Formulare Feld für Feld. Die Erkennung läuft nur auf deinem Gerät.
+> **Brief scannen oder als PDF**
+> Fotografiere einen Bescheid, ein Gutachten, eine Nebenkostenabrechnung oder ein Antragsformular, oder wähle ein PDF, digital oder eingescannt. Die App trägt die Beträge ein und erklärt Formulare Feld für Feld. Die Erkennung läuft nur auf deinem Gerät.
 >
 > **Pflegegrad selbst einschätzen**
-> Schritt für Schritt, eine Frage pro Bildschirm, mit Erklärung zu jeder Frage. Danach weißt du, welcher Pflegegrad in Frage kommt, und kannst die Einschätzung später mit dem Gutachten der Pflegekasse vergleichen.
+> Schritt für Schritt, eine Frage pro Bildschirm, mit Erklärung zu jeder Frage. Danach weißt du, welcher Pflegegrad in Frage kommt, und kannst die Einschätzung mit dem Gutachten der Pflegekasse vergleichen. Eine eigene Seite erklärt die Leistungen der Pflegekasse: was aufs Konto kommt und was ein Budget ist.
 >
 > **In 8 Sprachen**
 > Deutsch, Englisch, Türkisch, Arabisch, Russisch, Ukrainisch, Polnisch und Rumänisch. Amtsbegriffe bleiben deutsch, damit du sie beim Amt wiedererkennst.
@@ -76,7 +76,7 @@ Alles muss zur [Datenschutzerklärung](../datenschutz.html) passen. Bei Änderun
 - **Exportkontrolle:** In `Info.plist` ist `ITSAppUsesNonExemptEncryption = false` gesetzt (nur Standard-Verschlüsselung des Systems).
 - **Kamera:** Begründung steht in `Info.plist` (`NSCameraUsageDescription`).
 - **Review-Hinweis an Apple** (App Review Information → Notes):
-  > Die App läuft vollständig offline und benötigt kein Konto. Zum Testen: auf der Startseite „Welche Hilfen stehen mir zu?“ tippen, oben ein Beispiel wählen („Alleinerziehend …“), Ergebnisse ansehen, unten „Antragsmappe erstellen“ → „PDF teilen“. Unten in der Leiste „Brief prüfen“ → eine Kachel (z. B. „Jobcenter“) → „Beispiel laden“ zeigt die Prüfung eines Bescheids. „Brief scannen“ (unter „Brief prüfen“) nutzt die Kamera und erkennt Text auf dem Gerät (Apple Vision). „Pflegegrad selbst einschätzen“ steht im Fragebogen unter Gesundheit.
+  > Die App läuft vollständig offline und benötigt kein Konto. Zum Testen: auf der Startseite „Welche Hilfen stehen mir zu?“ tippen, oben ein Beispiel wählen („Alleinerziehend …“), Ergebnisse ansehen, unten „Antragsmappe erstellen“ → „PDF teilen“. Unten in der Leiste „Brief prüfen“ → eine Kachel (z. B. „Jobcenter“) → „Werte selbst eingeben“ zeigt die Prüfung eines Bescheids. „Diesen Brief scannen“ in der Kachel nutzt die Kamera und erkennt Text auf dem Gerät (Apple Vision); „PDF wählen“ liest eine PDF-Datei auf dem Gerät. „Pflegegrad selbst einschätzen“ steht im Fragebogen unter Gesundheit.
 
 ## Screenshots
 
