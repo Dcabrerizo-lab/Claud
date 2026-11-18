@@ -139,7 +139,12 @@ for (let i = 0; i < N; i++) {
     // „Grundsicherungsgeld oder Wohngeld/Kinderzuschlag“ steht als eigene Kachel „Zwei Wege“, nicht in der Liste
     const wege = out.zusammen.some((z) => z[0] === 'z.ggVsWg');
     if (wege !== !!d.getElementById('zweiWege')) melde('Kachel „Zwei Wege“ passt nicht zur Rechnung', { ...fall, soll: wege });
-    const sollTog = out.zusammen.filter((z) => z[0] !== 'z.ggVsWg').map((z) => norm(text(lang, z[0], z[1]) || '?' + z[0]));
+    const KARTE = { 'z.wgKiz': ['wohngeld', 'kiz'], 'z.gsaWg': ['gsa', 'wohngeld'], 'z.kgZuerst': ['kiz', 'kindergeld'], 'z.ggBezug': ['wohngeld', 'kiz', 'but'] }, ALLE = ['z.stichtag', 'z.verfahren', 'z.grenzen'];
+    const sollTog = out.zusammen.filter((z) => z[0] !== 'z.ggVsWg' && !KARTE[z[0]] && !ALLE.includes(z[0])).map((z) => norm(text(lang, z[0], z[1]) || '?' + z[0]));
+    // Hinweise zu einer Leistung stehen in deren Karte, Hinweise für alle Anträge in „Gut zu wissen“
+    for (const z of out.zusammen) for (const id of (KARTE[z[0]] || [])) { const a = d.getElementById('c-' + id); if (a && !norm(a.textContent).includes(norm(text(lang, z[0], z[1])))) melde('Hinweis fehlt in der Karte', { ...fall, id, hinweis: z[0] }); }
+    const gut = [...d.querySelectorAll('#gutWissen li')].map((li) => norm(li.textContent)), sollGut = out.zusammen.filter((z) => ALLE.includes(z[0])).map((z) => norm(text(lang, z[0], z[1])));
+    if (gut.join('|') !== sollGut.join('|')) melde('„Gut zu wissen“ passt nicht', { ...fall, ist: gut.join(' | ').slice(0, 200) });
     if (tog.join('|') !== sollTog.join('|')) melde('Hinweise „beachten“ passen nicht', { ...fall, ist: tog.join(' | ').slice(0, 200), soll: sollTog.join(' | ').slice(0, 200) });
     // Speichern und Laden: gespeicherter Stand ergibt nach dem Laden genau dasselbe Ergebnis
     if (i % 3 === 0) {

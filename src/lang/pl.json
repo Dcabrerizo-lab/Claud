@@ -1069,5 +1069,8 @@
   "ww.regel": "Jeśli Wohngeld i Kinderzuschlag razem z twoim dochodem pokrywają potrzeby gospodarstwa, mają pierwszeństwo. Jeśli nie, przysługuje Grundsicherungsgeld.",
   "ww.tipp": "Wskazówka: złóż oba wnioski jednocześnie. Wtedy żaden miesiąc nie przepadnie, a urzędy same ustalą, która droga obowiązuje.",
   "karte.mehr": "Pokaż więcej",
-  "karte.weniger": "Pokaż mniej"
+  "karte.weniger": "Pokaż mniej",
+  "cb.kindKrank": "Dziecko jest teraz chore i dlatego nie mogę iść do pracy",
+  "t.kkg.nurKrank": "Zasiłek na chore dziecko (Kinderkrankengeld) przysługuje, gdy chorym dzieckiem poniżej 12 lat trzeba się opiekować w domu. Jeśli tak jest teraz, zaznacz to w ankiecie przy dzieciach.",
+  "gut.h": "Warto wiedzieć przy wszystkich wnioskach"
 }

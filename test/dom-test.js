@@ -46,7 +46,7 @@ check('Unwahrscheinliche Leistungen sind eingeklappt gruppiert', d.querySelector
 check('Hinweis auf Beispielwerte sichtbar', d.getElementById('sampleNotice').hidden === false);
 check('Übersetzungs-Hinweis bei Deutsch versteckt', d.getElementById('transNotice').hidden === true);
 check('Nächste Schritte vorhanden bei Treffer', card('Wohngeld').querySelector('details') !== null);
-check('Zusammenspiel-Hinweis Wohngeld und Kinderzuschlag', /kombinieren/.test(d.getElementById('together').textContent));
+check('Zusammenspiel-Hinweis Wohngeld und Kinderzuschlag steht in beiden Karten', /kombinieren/.test(d.getElementById('c-wohngeld').textContent) && /kombinieren/.test(d.getElementById('c-kiz').textContent));
 check('Neue Karten vorhanden', ['Grundsicherungsgeld', 'Unterhaltsvorschuss', 'BAföG', 'Pflegegeld und Entlastungsbetrag', 'Kindergeld'].every((n) => names().includes(n)));
 check('Unterhaltsvorschuss im Beispiel 1 wahrscheinlich', level('Unterhaltsvorschuss') === 'ja');
 
@@ -54,7 +54,7 @@ check('Unterhaltsvorschuss im Beispiel 1 wahrscheinlich', level('Unterhaltsvorsc
 d.getElementById('p2').click();
 check('Beispiel 2: Grundsicherung im Alter wahrscheinlich', level('Grundsicherung im Alter und bei voller Erwerbsminderung') === 'ja', pills() + '');
 check('Beispiel 2 füllt Formular und Auswahlfelder', d.getElementById('ek1Art').value === 'rente' && d.getElementById('ek1Brutto').value === '880' && d.getElementById('gebJahr').value === '1955' && d.getElementById('mietstufe').value === '3');
-check('Beispiel 2: Entweder-oder-Hinweis', /nicht gleichzeitig/.test(d.getElementById('together').textContent));
+check('Beispiel 2: Entweder-oder-Hinweis in den Karten Grundsicherung im Alter und Wohngeld', /nicht gleichzeitig/.test(d.getElementById('c-gsa').textContent) && /nicht gleichzeitig/.test(d.getElementById('c-wohngeld').textContent));
 check('Ohne Kinder sind Kinder-Fragen ausgeblendet', [...d.querySelectorAll('.cond-kids')].every((e) => e.hidden === true));
 
 // Eingabe ändern
@@ -93,7 +93,7 @@ setNum('vermoegen', 16000);
 // Bezug Grundsicherungsgeld
 d.getElementById('p1').click();
 setChk('b-grundsicherungsgeld', true);
-check('Grundsicherungsgeld: Hinweis im Zusammenspiel', /Grundsicherungsgeld/.test(d.getElementById('together').textContent));
+check('Grundsicherungsgeld: Hinweis in der Wohngeld-Karte', /Du bekommst Grundsicherungsgeld/.test(d.getElementById('c-wohngeld').textContent));
 d.getElementById('p1').click();
 d.getElementById('adults2').checked = true; fire(d.getElementById('adults2'), 'change');
 check('Zwei Erwachsene werden übernommen', cards().length === KARTEN.length);

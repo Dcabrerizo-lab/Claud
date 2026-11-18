@@ -1069,5 +1069,8 @@
   "ww.regel": "If Wohngeld and Kinderzuschlag together with your income cover the household’s needs, they come first. If not, you get Grundsicherungsgeld.",
   "ww.tipp": "Tip: Apply for both at the same time. Then no month is lost, and the offices settle which route applies.",
   "karte.mehr": "Show more",
-  "karte.weniger": "Show less"
+  "karte.weniger": "Show less",
+  "cb.kindKrank": "A child is ill right now, so I cannot go to work",
+  "t.kkg.nurKrank": "Child sickness benefit (Kinderkrankengeld) is paid when a sick child under 12 has to be cared for at home. If that is the case now, tick it in the questionnaire under children.",
+  "gut.h": "Good to know for all applications"
 }

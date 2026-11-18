@@ -377,6 +377,7 @@ const Rules = (function () {
       erwerbsgemindert: !!inp.erwerbsgemindert || inp.emStd === 'unter3' || !!inp.wfbm || pers.some((x) => x[0] === 'wfbm'),
       behinderung: !!inp.behinderung || String(inp.gdb) === '100',
       kinder12: !!inp.kinder12,
+      kindKrank: !!inp.kindKrank, // ein Kind ist gerade krank, ein Elternteil kann deshalb nicht arbeiten
       unterhaltFehlt: !!inp.unterhaltFehlt,
       ausbildung: ['kind', 'kindBetrieb', 'ich'].indexOf(inp.ausbildung) >= 0 ? inp.ausbildung : '',
       gruppe,
@@ -1004,6 +1005,8 @@ const Rules = (function () {
     if (h.kids === 0) return mk(id, 'nein', 'keinKind', [['kkg.keine']]);
     const pers = h.pers || [];
     if (!pers.some((x) => x[0] === 'lohn' && x[1] > h.minijob)) return mk(id, 'nein', 'vorausFehlt', [['kkg.ohne']]);
+    // Nur zeigen, wenn es gerade passt: ein Kind ist krank und muss zu Hause betreut werden (§ 45 SGB V)
+    if (!h.kindKrank) return mk(id, 'nein', 'vorausFehlt', [['kkg.nurKrank']]);
     const T = h.heute >= 2027 ? R.kkg[2027] : R.kkg[2026];
     return mk(id, 'vielleicht', 'vielleicht', [[h.alleinerz ? 'kkg.ae' : 'kkg.ja', { tage: h.alleinerz ? T.ae : T.tage, max: h.alleinerz ? T.maxAe : T.max, satz: R.kkg.satz, hoechst: eur2(R.kkg.hoechst) }], ['kkg.hinweis']]);
   }

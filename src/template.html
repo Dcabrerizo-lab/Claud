@@ -265,6 +265,10 @@
   .ww-l { display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 44px; color: var(--ink); text-decoration: none; border-top: 1px dashed var(--line); padding-top: 6px; }
   .ww-l > span:first-child { text-decoration: underline; text-decoration-color: var(--accent); }
   .ww-regel { margin: 0; }
+  .karte-hinweis { background: var(--na-bg); color: var(--ink); border-radius: 8px; padding: 8px 12px; margin: 8px 0 0; }
+  .gutwissen { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 4px 18px; }
+  .gutwissen > summary { min-height: 48px; color: var(--ink); }
+  .gutwissen ul { margin: 0 0 12px; padding-inline-start: 20px; display: grid; gap: 8px; }
   .neinbox { border: 1px dashed var(--line); border-radius: 10px; padding: 10px 14px; display: grid; gap: 12px; }
   .neinbox > summary { color: var(--muted); }
   .neinbox[open] > summary { margin-bottom: 8px; }
@@ -692,6 +696,7 @@
             </div>
               <div class="checks">
                 <label class="check"><input type="checkbox" id="kinder12"><span data-t="cb.kinder12"></span></label>
+                <label class="check"><input type="checkbox" id="kindKrank"><span data-t="cb.kindKrank"></span></label>
                 <label class="check"><input type="checkbox" id="unterhaltFehlt"><span data-t="cb.unterhalt"></span></label>
               </div>
             </div>
@@ -987,6 +992,7 @@
         <nav id="overview" class="overview" hidden></nav>
         <div id="together"></div>
         <div id="cards" class="results"></div>
+        <div id="gutWissen"></div>
         <section class="feedback" id="feedback" hidden aria-labelledby="h-feedback">
           <h3 id="h-feedback" data-t="fb.h"></h3>
           <p data-t="fb.text"></p>

@@ -401,7 +401,7 @@
     pr.appendChild(b);
   });
 
-  var CHECKS = ['mzG', 'mzGl', 'algZeit', 'grundrente33', 'wfbmEssen', 'teilhabe', 'schwanger', 'ernaehrung', 'warmwasser', 'kinder12', 'unterhaltFehlt', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt', 'uzTitel', 'autoBraucht'];
+  var CHECKS = ['mzG', 'mzGl', 'algZeit', 'grundrente33', 'wfbmEssen', 'teilhabe', 'schwanger', 'ernaehrung', 'warmwasser', 'kinder12', 'kindKrank', 'unterhaltFehlt', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt', 'uzTitel', 'autoBraucht'];
   var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'ek1bArt', 'bhWeitere', 'baby', 'aufenthalt', 'arbeitSit', 'algMonate', 'krankWochen', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd', 'uzAn', 'wohnart', 'hhAndere', 'euArbeit', 'euJahre'];
   var NUMS = ['miete', 'heizkosten', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'kindEink', 'lohnVorher', 'ek1bBetrag', 'egVor', 'vermoegen', 'uzBetrag', 'autoWert', 'zusatzRente'];
   var BEZUG = ['grundsicherungsgeld', 'sozialamt', 'wohngeld', 'kiz', 'kindergeld'];
@@ -423,7 +423,7 @@
     started = true;
     if (!edited) { edited = true; $('sampleNotice').hidden = true; }
     // Ausgeblendete Felder zurücksetzen, damit keine alten Werte mitrechnen
-    if (state.kids === 0) { state.kinder12 = false; state.unterhaltFehlt = false; state.kidsU6 = 0; state.kids14 = 0; $('kinder12').checked = false; $('unterhaltFehlt').checked = false; }
+    if (state.kids === 0) { state.kinder12 = false; state.kindKrank = false; if ($('kindKrank')) $('kindKrank').checked = false; state.unterhaltFehlt = false; state.kidsU6 = 0; state.kids14 = 0; $('kinder12').checked = false; $('unterhaltFehlt').checked = false; }
     render(); save();
   }
   var soonTimer = null;
@@ -606,6 +606,10 @@
     return '<p class="kern">' + esc(teile[0] || '') + '</p>' + (teile.length > 1 ? '<ul class="punkte">' + teile.slice(1).map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : '');
   }
 
+  // Hinweise, die zu bestimmten Leistungen gehören, stehen in deren Karte; Hinweise für alle Anträge in „Gut zu wissen“
+  var HINWEIS_KARTE = { 'z.wgKiz': ['wohngeld', 'kiz'], 'z.gsaWg': ['gsa', 'wohngeld'], 'z.kgZuerst': ['kiz', 'kindergeld'], 'z.ggBezug': ['wohngeld', 'kiz', 'but'] };
+  var HINWEIS_ALLE = ['z.stichtag', 'z.verfahren', 'z.grenzen'];
+  var kartenHinweise = {};
   function card(r) {
     var dim = r.level === 'nein' || r.level === 'na';
     var s = r.steps;
@@ -623,7 +627,7 @@
       '<header><div><h3' + (lang === 'de' ? '' : ' lang="de"') + '>' + esc(r.name) + '</h3>' + (desc ? '<div class="desc">' + esc(desc) + '</div>' : '') + '</div>' +
       '<span class="pill ' + r.level + '"><span aria-hidden="true">' + MARK[r.level] + '</span>' + esc(t('lvl.' + r.level)) + '</span></header>' +
       '<p class="head2">' + esc(t('h.' + r.hl)) + '</p><span class="karte-mehr" aria-hidden="true" data-mehr="' + esc(t('karte.mehr')) + '" data-weniger="' + esc(t('karte.weniger')) + '"></span></summary>' +
-      '<div class="body"><div class="txt">' + resultHtml(r) + '</div></div>' +
+      '<div class="body"><div class="txt">' + resultHtml(r) + '</div>' + (kartenHinweise[r.id] || []).map(function (z) { return '<p class="karte-hinweis"><span aria-hidden="true">ⓘ </span>' + esc(t(z[0], z[1])) + '</p>'; }).join('') + '</div>' +
       zustHtml(r) + steps + '</details></article>';
   }
 
@@ -711,20 +715,21 @@
       var a = d.closest('article');
       if (a) openIds[a.id] = true; else if (d.classList.contains('spezbox')) spezOpen = true; else if (d.classList.contains('neinbox')) neinOpen = true;
     });
+    kartenHinweise = {};
+    out.zusammen.forEach(function (z) { (HINWEIS_KARTE[z[0]] || []).forEach(function (id) { (kartenHinweise[id] = kartenHinweise[id] || []).push(z); }); });
     $('cards').innerHTML = kartenHtml(out.results);
     Object.keys(openIds).forEach(function (id) { var d = document.querySelector('#' + id + ' details'); if (d) d.open = true; });
     if (neinOpen) { var nb = document.querySelector('#cards .neinbox'); if (nb) nb.open = true; }
     if (spezOpen) { var sb = document.querySelector('#cards .spezbox'); if (sb) sb.open = true; }
-    var ov = out.results.filter(function (r) { return r.level === 'ja' || r.level === 'vielleicht'; });
-    $('overview').hidden = ov.length < 3;
-    $('overview').setAttribute('aria-label', t('ov.label'));
-    $('overview').innerHTML = ov.map(function (r) {
-      return '<a class="' + r.level + '" href="#c-' + r.id + '"><span class="m" aria-hidden="true">' + MARK[r.level] + '</span>' + esc(r.name) + '</a>';
-    }).join('');
-    var wege = out.zusammen.some(function (z) { return z[0] === 'z.ggVsWg'; }), rest = out.zusammen.filter(function (z) { return z[0] !== 'z.ggVsWg'; });
+    $('overview').hidden = true; $('overview').innerHTML = ''; // keine Häkchen-Leiste mehr: die Karten selbst sind die Übersicht
+    // Hinweise verteilen: zu einer Leistung gehörende in deren Karte, für alle Anträge geltende in „Gut zu wissen“, der Rest bleibt in „Beachten“
+    var wege = out.zusammen.some(function (z) { return z[0] === 'z.ggVsWg'; });
+    var rest = out.zusammen.filter(function (z) { return z[0] !== 'z.ggVsWg' && !HINWEIS_KARTE[z[0]] && HINWEIS_ALLE.indexOf(z[0]) < 0; });
+    var alle = out.zusammen.filter(function (z) { return HINWEIS_ALLE.indexOf(z[0]) >= 0; });
     $('together').innerHTML = (wege ? zweiWege(out.results) : '') + (rest.length
       ? '<div class="together"><h3>' + esc(t('beachten')) + '</h3>' + listItems(rest.map(function (z) { return t(z[0], z[1]); })) + '</div>'
       : '');
+    $('gutWissen').innerHTML = alle.length ? '<details class="gutwissen"><summary>' + esc(t('gut.h')) + '</summary>' + listItems(alle.map(function (z) { return t(z[0], z[1]); })) + '</details>' : '';
     document.querySelectorAll('.cond-kids').forEach(function (el) { el.hidden = state.kids === 0; });
     document.querySelectorAll('.cond-adults2').forEach(function (el) { el.hidden = state.adults !== 2; });
     renderPick(out.results);

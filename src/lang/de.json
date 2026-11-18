@@ -1069,5 +1069,8 @@
   "ww.regel": "Reichen Wohngeld und Kinderzuschlag zusammen mit deinem Einkommen für den Bedarf des Haushalts, gehen sie vor. Reichen sie nicht, gibt es Grundsicherungsgeld.",
   "ww.tipp": "Tipp: Stelle beide Anträge gleichzeitig. Dann geht kein Monat verloren, und die Ämter klären untereinander, welcher Weg gilt.",
   "karte.mehr": "Mehr anzeigen",
-  "karte.weniger": "Weniger anzeigen"
+  "karte.weniger": "Weniger anzeigen",
+  "cb.kindKrank": "Ein Kind ist gerade krank, und ich kann deshalb nicht arbeiten gehen",
+  "t.kkg.nurKrank": "Kinderkrankengeld gibt es, wenn ein krankes Kind unter 12 zu Hause betreut werden muss. Ist das gerade so, kreuze es im Fragebogen bei den Kindern an.",
+  "gut.h": "Gut zu wissen für alle Anträge"
 }

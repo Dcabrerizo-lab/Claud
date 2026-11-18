@@ -1069,5 +1069,8 @@
   "ww.regel": "Wohngeld ve Kinderzuschlag gelirinle birlikte hanenin ihtiyacını karşılıyorsa öncelik onlardadır. Karşılamıyorsa Grundsicherungsgeld verilir.",
   "ww.tipp": "İpucu: İki başvuruyu aynı anda yap. Böylece hiçbir ay kaybolmaz ve kurumlar hangi yolun geçerli olduğunu kendi aralarında belirler.",
   "karte.mehr": "Daha fazla göster",
-  "karte.weniger": "Daha az göster"
+  "karte.weniger": "Daha az göster",
+  "cb.kindKrank": "Bir çocuk şu anda hasta ve bu yüzden işe gidemiyorum",
+  "t.kkg.nurKrank": "Çocuk hastalık parası (Kinderkrankengeld), 12 yaşından küçük hasta bir çocuğa evde bakılması gerektiğinde ödenir. Şu anda böyleyse soru formunda çocuklar bölümünde işaretle.",
+  "gut.h": "Tüm başvurular için bilinmesi iyi olanlar"
 }

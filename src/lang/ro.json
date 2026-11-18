@@ -1069,5 +1069,8 @@
   "ww.regel": "Dacă Wohngeld și Kinderzuschlag împreună cu venitul tău acoperă necesarul gospodăriei, au prioritate. Dacă nu, primești Grundsicherungsgeld.",
   "ww.tipp": "Sfat: depune ambele cereri în același timp. Astfel nu se pierde nicio lună, iar autoritățile stabilesc între ele care cale se aplică.",
   "karte.mehr": "Arată mai mult",
-  "karte.weniger": "Arată mai puțin"
+  "karte.weniger": "Arată mai puțin",
+  "cb.kindKrank": "Un copil este bolnav acum și de aceea nu pot merge la muncă",
+  "t.kkg.nurKrank": "Indemnizația pentru copil bolnav (Kinderkrankengeld) se plătește când un copil bolnav sub 12 ani trebuie îngrijit acasă. Dacă așa este acum, bifează în chestionar la copii.",
+  "gut.h": "Bine de știut pentru toate cererile"
 }

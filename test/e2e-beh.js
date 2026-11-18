@@ -26,7 +26,7 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
   await sel('gdb', '50'); await sel('bhPerson', '');
   ok('Ausgeblendete Angaben werden zurückgesetzt', (await p.inputValue('#gdb')) === '');
   const ov = await p.evaluate(() => { const o = document.getElementById('overview'); const links = [...o.querySelectorAll('a')]; return { hidden: o.hidden, n: links.length, ziele: links.every((a) => document.querySelector(a.getAttribute('href'))) }; });
-  ok('Schnellübersicht zeigt Treffer und jeder Link hat ein Ziel', !ov.hidden && ov.n >= 3 && ov.ziele, JSON.stringify(ov));
+  ok('Keine Häkchen-Leiste über dem Ergebnis, nur die Karten', ov.hidden && ov.n === 0, JSON.stringify(ov));
   const ordnung = await p.evaluate(() => { const t = document.getElementById('together'); const c = document.getElementById('cards'); return !t.innerHTML || (t.compareDocumentPosition(c) & Node.DOCUMENT_POSITION_FOLLOWING) > 0; });
   ok('Hinweise ("Beachten") stehen vor den Karten', ordnung);
   // neue Felder vorhanden und befüllt
