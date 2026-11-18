@@ -95,6 +95,20 @@
   .es-wo { font-size: 0.9em; color: var(--muted); margin-top: 8px; }
   .es-sub { margin: 20px 0 8px; }
   .es-liste { padding-inline-start: 1.2em; }
+  /* Pflegegrad-Einschätzung: Frage ganz oben, eine Spalte, Zurück oben, Links unten */
+  .app[data-ansicht="pflege"] .top, .app[data-ansicht="pflege"] .notices, .app[data-ansicht="pflege"] .first { display: none !important; }
+  .pa-kopf { display: grid; gap: 4px; }
+  .pa-zeile { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 44px; }
+  .pa-kopf .pa-zur { padding: 8px 0; font-weight: 700; text-decoration: none; }
+  .pa-wo { font-weight: 700; color: var(--ink); }
+  .pa-unten { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 20px; margin-top: 18px; }
+  .pa-checks { display: grid; gap: 8px; }
+  .pa-check { border: 2px solid var(--line); border-radius: 14px; padding: 12px 14px; background: var(--surface); align-items: center; min-height: 56px; }
+  .pa-check:has(input:checked) { border-color: var(--accent); }
+  .pa-sogehts ol { margin: 4px 0 8px; display: grid; gap: 4px; }
+  .pa-weiter { margin: 18px 0 8px; }
+  .pa-links { list-style: none; padding: 0; margin: 4px 0 16px; display: grid; }
+  .pa-links li .linkbtn { text-decoration: none; font-weight: 700; padding: 10px 0; }
   input.kurz { max-width: 9em; }
   .legende { font-size: 0.85em; color: var(--muted); margin: -4px 0 10px; }
   .info { font-size: 0.85em; background: var(--surface); border-left: 3px solid var(--accent); padding: 6px 10px; margin: 6px 0 0; }

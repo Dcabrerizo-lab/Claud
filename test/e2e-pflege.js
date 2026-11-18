@@ -26,9 +26,10 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Danach Vorfrage Bereich 1', /bewegen/.test(await frage()));
   await tippe('Ja');
   ok('Erste Frage in Bereich 1', /im Bett/.test(await frage()));
-  ok('Antwort zeigt den Begriff aus dem Gutachten', /Im Gutachten: überwiegend selbständig/.test(await p.textContent('#pflegeAssist .es-wahl')));
-  await p.click('#pflegeAssist summary:has-text("Was zählt hier")');
-  ok('Erklärung „Was zählt hier?“ lässt sich öffnen', /Bettgalgen/.test(await p.textContent('#pflegeAssist .pa-info')));
+  ok('Erklärung steht direkt unter der Frage', /Bettgalgen/.test(await p.textContent('#pflegeAssist .es-h')));
+  ok('Antworten ohne Fachbegriffe, gleiche Skala', (await p.textContent('#pflegeAssist .es-wahl')).indexOf('Im Gutachten') < 0);
+  ok('Fortschritt zeigt Frage x von y', /Frage 1 von 5/.test(await p.textContent('#pflegeAssist .pa-kopf')));
+  ok('Kopf der Seite (Logo, Sprache) ist ausgeblendet', !(await p.isVisible('header.top')));
   await tippe('Schafft nur einen kleinen Teil allein');
   await p.click('text=Weiß ich nicht');
   ok('„Weiß ich nicht“ geht weiter', /aufrecht sitzen|sitzen bleiben/.test(await frage()) === false);
@@ -52,12 +53,21 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
     await tippe('Schafft nur einen kleinen Teil allein');
   }
   ok('Nach Bereich 4 kommt Bereich 5', /Medikamenten/.test(await frage()), await frage());
+  // Bereich 5: Liste ankreuzen, dann nur dazu „Wie oft?“; danach wieder abwählen, damit das Ergebnis gleich bleibt
+  await tippe('Ja');
+  ok('Bereich 5: Liste „Wobei muss jemand helfen?“', /Wobei muss jemand helfen/.test(await frage()) && (await p.locator('#pflegeAssist [data-m5]').count()) >= 15);
+  await p.check('[data-m5="5.1"]'); await p.click('text=Weiter ➜');
+  ok('Danach nur „Wie oft“ zum angekreuzten Punkt', /Wie oft muss jemand die Medikamente/.test(await frage()), await frage());
+  ok('Häufigkeiten von selten nach oft', /^Ein paarmal im Monat/.test(await p.textContent('#pflegeAssist .es-wahl .es-btn >> nth=0')));
+  await p.click('text=← Zurück'); await p.uncheck('[data-m5="5.1"]'); await p.click('text=Weiter ➜');
+  ok('Ohne Kreuz direkt zur Frage nach Diät', /Diät/.test(await frage()), await frage());
+  await p.click('text=← Zurück'); await p.click('text=← Zurück');
   await tippe('Nein'); await tippe('Nein'); // Bereich 5 und 6
   ok('Ergebnis: 40 Punkte, Pflegegrad 2', /Pflegegrad 2/.test(await frage()) && /^40 von 100/.test(await p.textContent('#pflegeAssist .es-h')), await frage());
   // Gleiches Ergebnis wie die Rechnung von pflege.js mit den gespeicherten Antworten
   const vgl = await p.evaluate(() => { const d = JSON.parse(localStorage.getItem('lotse.pflegecheck')); const r = Pflege.rechne(PflegeAssistent.eingabe(d.antworten, null)); return { pg: r.pg, punkte: r.gesamt, text: document.querySelector('#pflegeAssist .es-h').textContent }; });
   ok('Angezeigte Punkte = Rechnung pflege.js', vgl.text.startsWith(String(vgl.punkte).replace('.', ',') + ' von 100'), vgl);
-  ok('Ergebnis zeigt Pflegegeld', /Pflegegeld \d/.test(await p.textContent('#pflegeAssist')));
+  ok('Ergebnis zeigt Pflegegeld', /Pflegegeld: \d/.test(await p.textContent('#pflegeAssist')));
   ok('Ergebnis: kein seitliches Scrollen', await breit());
   ok('Ohne Pflegegrad: kein Knopf für Höherstufung', !(await p.isVisible('text=Antrag auf Höherstufung schreiben')));
   await p.click('text=Antrag an die Pflegekasse in die Antragsmappe');

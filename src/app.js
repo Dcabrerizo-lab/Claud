@@ -1537,6 +1537,7 @@
     if (ANSICHTEN.indexOf(a) < 0) a = 'start';
     if (a === 'pflege' && !$('pflegeAssist').children.length) a = 'leistungen'; // Einschätzung nur über ihren Knopf öffnen
     aktAnsicht = a;
+    $('app').setAttribute('data-ansicht', a); // in der Pflegegrad-Einschätzung Kopf und Hinweise ausblenden, damit die Frage oben steht
     ANSICHTEN.forEach(function (x) { $('v-' + x).hidden = x !== a; });
     $('jump').hidden = a !== 'leistungen' || esModus;
     var navA = a === 'pflege' || a === 'pflegeinfo' ? 'leistungen' : a;
@@ -1617,7 +1618,7 @@
       abbrechen: function () { paZurueck('paStart'); },
       aktionen: [
         { text: 'Ergebnis übernehmen', haupt: true, wenn: function (r, pg) { return pg == null; }, fn: function (r) { paUebernehmen(r); paZurueck('c-pflege'); } },
-        { text: 'Antrag an die Pflegekasse in die Antragsmappe', wenn: function (r, pg) { return pg == null && r.pg >= 1; }, fn: function (r) {
+        { text: 'Antrag an die Pflegekasse in die Antragsmappe', zweit: true, wenn: function (r, pg) { return pg == null && r.pg >= 1; }, fn: function (r) {
           paUebernehmen(r); picked.pflege = true; pickedUser.pflege = true; if (lastOut) renderPick(lastOut.results); paZurueck('mappeMake'); } },
         { text: 'Antrag auf Höherstufung schreiben', haupt: true, wenn: function (r, pg) { return pg != null && r.pg > pg; }, fn: function (r, a, g) {
           paUebernehmen(r); zeigeAnsicht('briefe', false); briefOeffnen('pk'); if (window.PruefpaketPflege) window.PruefpaketPflege.setze(g, 'hoeher'); } },

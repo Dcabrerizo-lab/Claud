@@ -83,23 +83,34 @@ const PflegeFragen = (function () {
   // Bereich 5: Fragen in Alltagssprache. Die Antwort wird in die Häufigkeiten von pflege.js übersetzt.
   // Zählt nur, wenn jemand anderes hilft, weil die Person es nicht selbst kann.
   const M5_HINWEIS = 'Zählt nur, wenn jemand anderes hilft, weil die Person es nicht selbst kann. Macht die Person es selbst, ist die Antwort „Nein“.';
-  // Antworten für 5.1 bis 5.11 (Hilfe pro Tag oder Woche)
+  // Bereich 5 läuft in zwei Schritten: erst eine Liste „Wobei hilft jemand?“ (mehrere ankreuzen), dann nur zu den
+  // angekreuzten Punkten die Frage „Wie oft?“. Die Antworten stehen von selten nach oft.
+  // Antworten für 5.1 bis 5.11 (Hilfe pro Tag, Woche oder Monat)
   const M5_OFT = [
-    { text: 'Nein, keine Hilfe nötig', wert: {} },
+    { text: 'Ein paarmal im Monat', wert: { monat: 2 } },
+    { text: '1- bis 3-mal pro Woche', wert: { woche: 2 } },
     { text: '1-mal am Tag', wert: { tag: 1 } },
     { text: '2- bis 3-mal am Tag', wert: { tag: 3 } },
-    { text: '4-mal am Tag oder öfter', wert: { tag: 5 } },
-    { text: '1- bis 3-mal pro Woche', wert: { woche: 2 } },
-    { text: 'Seltener, ein paarmal im Monat', wert: { monat: 2 } }
+    { text: '4-mal am Tag oder öfter', wert: { tag: 5 } }
   ];
   // Antworten für Arzt- und Therapiebesuche (5.13 bis 5.15, 5.K): Begleitung nötig
   const M5_BESUCH = [
-    { text: 'Nein, keine Begleitung nötig', wert: {} },
     { text: '1-mal im Monat', wert: { monat: 1 } },
     { text: '2- bis 3-mal im Monat', wert: { monat: 3 } },
     { text: 'Jede Woche', wert: { woche: 1 } },
     { text: 'Mehrmals pro Woche', wert: { woche: 3 } }
   ];
+  const M5_AUFWENDIG = [{ text: 'An einigen Tagen pro Woche', wert: { woche: 2 } }, { text: 'Jeden Tag', wert: { taeglich: true } }];
+  // Kurze Bezeichnungen für die Liste „Wobei hilft jemand?“
+  const M5_KURZ = {
+    '5.1': 'Medikamente richten oder geben', '5.2': 'Spritzen geben, zum Beispiel Insulin', '5.3': 'Port oder Venenzugang versorgen',
+    '5.4': 'Absaugen oder Sauerstoff geben', '5.5': 'Eincremen, Kälte- oder Wärmepackungen', '5.6': 'Blutzucker, Blutdruck oder Gewicht messen',
+    '5.7': 'Kompressionsstrümpfe, Prothese, Hörgerät oder Brille anlegen', '5.8': 'Verband wechseln, Wunden versorgen', '5.9': 'Stoma versorgen',
+    '5.10': 'Einmalkatheter legen oder beim Abführen helfen', '5.11': 'Übungen aus Krankengymnastik oder Logopädie zu Hause',
+    '5.12': 'Aufwendige Behandlung zu Hause, zum Beispiel Heimbeatmung oder Dialyse', '5.13': 'Zum Arzt begleiten',
+    '5.14': 'Zur Therapie begleiten, zum Beispiel Krankengymnastik (bis 3 Stunden)', '5.15': 'Zu langen Behandlungen begleiten, zum Beispiel Dialyse oder Chemotherapie (über 3 Stunden)',
+    '5.K': 'Zur Frühförderung begleiten'
+  };
   const M5 = {
     '5.1': 'Muss jemand die Medikamente richten oder geben?',
     '5.2': 'Muss jemand Spritzen geben, zum Beispiel Insulin?',
@@ -131,17 +142,14 @@ const PflegeFragen = (function () {
   function hinweis(id) { return (TEXT[id] && TEXT[id][1]) || M5_TIPP[id] || (id.startsWith('5.') ? M5_HINWEIS : ''); }
 
   // Antwort für Bereich 5 in die Werte von pflege.js übersetzen
-  function m5Wert(id, antwortIndex) {
-    if (id === '5.12') return antwortIndex === 1 ? { taeglich: true } : antwortIndex === 2 ? { woche: 2 } : {};
-    const liste = /^5\.(13|14|15|K)$/.test(id) ? M5_BESUCH : M5_OFT;
-    const a = liste[antwortIndex];
-    return a ? Object.assign({}, a.wert) : {};
-  }
-  function m5Antworten(id) {
-    if (id === '5.12') return [{ text: 'Nein' }, { text: 'Ja, jeden Tag' }, { text: 'Ja, an einigen Tagen pro Woche' }];
-    return /^5\.(13|14|15|K)$/.test(id) ? M5_BESUCH : M5_OFT;
+  function m5Antworten(id) { return id === '5.12' ? M5_AUFWENDIG : /^5\.(13|14|15|K)$/.test(id) ? M5_BESUCH : M5_OFT; }
+  function m5Wert(id, antwortIndex) { const a = m5Antworten(id)[antwortIndex]; return a ? Object.assign({}, a.wert) : {}; }
+  // „Wie oft …?“-Frage zu einem angekreuzten Punkt
+  function m5Oft(id) {
+    if (id === '5.12') return 'Wie oft ist die aufwendige Behandlung zu Hause nötig?';
+    return M5[id].replace(/^Muss jemand /, 'Wie oft muss jemand ');
   }
 
-  return { GRUNDSATZ, KIND, VORFRAGE, TEXT, M5, M5_HINWEIS, frage, hinweis, m5Wert, m5Antworten };
+  return { GRUNDSATZ, KIND, VORFRAGE, TEXT, M5, M5_KURZ, M5_HINWEIS, frage, hinweis, m5Wert, m5Antworten, m5Oft };
 })();
 if (typeof module !== 'undefined') module.exports = PflegeFragen;
