@@ -44,10 +44,15 @@ const VERLAUF = 'linear-gradient(160deg,#2d3d85,#161f4a)';
   await roh('2-ergebnis', async () => { await zu('#ergebnis', 10); });
   await roh('3-brief', async () => { await p.click('#appnav [data-ansicht=briefe]'); await zu('#einfachBtn', 10); });
   await roh('4-bescheid', async () => {
-    await p.click('#brief-jc'); await p.click('#p-bescheid >> text=Beispiel laden');
+    await p.click('#brief-jc'); if (await p.isVisible('#elSelbst')) await p.click('#elSelbst');
+    await p.evaluate(() => document.querySelector('#p-bescheid [id$="-beispiel"]').click());
     await zu('#bs-erg', 10);
   });
   await p.click('#briefZurueck');
+  await p.click('#appnav [data-ansicht=leistungen]');
+  await roh('5-pflege', async () => {
+    await p.click('#paStart'); await p.fill('#pa-jahre', '81'); await p.click('#pflegeAssist .es-weiter'); await p.click('#pflegeAssist .es-btn:has-text("Ja")'); await oben();
+  });
   await p.click('#appnav [data-ansicht=leistungen]');
   await roh('6-mappe', async () => { await p.click('#mappeMake'); await oben(); });
   await p.click('#mappeClose');
@@ -63,10 +68,11 @@ const VERLAUF = 'linear-gradient(160deg,#2d3d85,#161f4a)';
   const MOTIVE = [
     ['1-start', 'Hilfen finden, Briefe prüfen', 'Alles an einem Ort, ohne Anmeldung'],
     ['2-ergebnis', require('../test/karten.js').length + ' Leistungen geprüft', 'Mit grober Höhe und klarer Einschätzung'],
-    ['3-brief', 'Brief vom Amt bekommen?', 'Jobcenter, Sozialamt, Wohngeld, Pflegekasse, Vermieter'],
-    ['4-bescheid', 'Bescheid nachgerechnet', 'Abweichungen mit Paragraf, Widerspruch in Minuten'],
+    ['3-brief', 'Brief vom Amt bekommen?', 'Scannen, als PDF oder Text einfügen'],
+    ['4-bescheid', 'Bescheid nachgerechnet', 'Abweichungen mit Paragraf, Widerspruch als PDF'],
+    ['5-pflege', 'Pflegegrad selbst einschätzen', 'Eine Frage pro Bildschirm, mit Erklärung'],
     ['6-mappe', 'Anträge fertig zum Abschicken', 'Formlose Anträge und Angabenblatt als PDF'],
-    ['7-einfach', 'Auch in einfacher Sprache', 'Eine Frage pro Bildschirm, große Knöpfe, Vorlesen'],
+    ['7-einfach', 'Auch in einfacher Sprache', 'Eine Frage pro Bildschirm, große Knöpfe'],
     ['8-sprachen', 'In 8 Sprachen', 'Amtsbegriffe bleiben deutsch, damit du sie wiedererkennst']];
   const FORMATE = [['play', 1080, 1920], ['ios-6.9', 1320, 2868], ['ios-6.5', 1242, 2688]];
   const p2 = await b.newPage();
