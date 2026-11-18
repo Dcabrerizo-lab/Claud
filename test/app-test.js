@@ -95,6 +95,28 @@ const MOCK = () => {
   ok('Scan: Texterkennung mit Fotopfad', (await calls('TextRecognition.recognize')).some((o) => /foto\.jpg$/.test(o.path)));
   ok('Scan: Felder erkannt, Name vorausgefüllt', (await p.locator('#sc-out .sc-row').count()) >= 3 && /Maria Muster/.test(await p.textContent('#sc-out')));
   ok('Scan: Foto danach gelöscht', (await calls('Filesystem.deleteFile')).some((o) => /foto\.jpg$/.test(o.path)));
+  // Eingescanntes PDF (nur Bild, kein Text): pdf.js aus der App (offline) macht ein Seitenbild, die Texterkennung des Geräts liest es,
+  // das Seitenbild wird danach aus dem Cache gelöscht
+  {
+    const { gescannt, digital } = require('./hilfe-pdf');
+    const bildSeite = await ctx.newPage();
+    await bildSeite.setContent('<div style="font:28px Arial;padding:40px;background:#fff;width:800px">Antrag auf Wohngeld<br>Name, Vorname<br>Geburtsdatum<br>IBAN</div>');
+    const png = await bildSeite.screenshot(); await bildSeite.close();
+    const tmp = fs.mkdtempSync(path.join(require('os').tmpdir(), 'solo-app-pdf-'));
+    fs.writeFileSync(path.join(tmp, 'scan.pdf'), await gescannt(png));
+    fs.writeFileSync(path.join(tmp, 'digital.pdf'), await digital(['Antrag auf Wohngeld', 'Familienname, Vorname', 'Gesamtmiete monatlich', 'Ort, Datum, Unterschrift']));
+    const vorRec = (await calls('TextRecognition.recognize')).length;
+    await p.setInputFiles('#sc-pdf', path.join(tmp, 'scan.pdf'));
+    await p.waitForFunction((v) => (window.__calls || []).filter((c) => c[0] === 'TextRecognition.recognize').length > v || /nicht lesen/.test(document.getElementById('sc-msg').textContent), vorRec, { timeout: 20000 }).catch(() => {});
+    await p.waitForTimeout(300);
+    const rec = (await calls('TextRecognition.recognize')).slice(vorRec);
+    ok('Eingescanntes PDF: Seite als Bild an die Texterkennung des Geräts', rec.length === 1 && /solo-pdfseite-\d+\.jpg$/.test(rec[0].path), { rec, msg: await p.textContent('#sc-msg') });
+    ok('Eingescanntes PDF: Seitenbild danach gelöscht', (await calls('Filesystem.deleteFile')).some((o) => /^solo-pdfseite-/.test(o.path)));
+    ok('Eingescanntes PDF: Felder erklärt', /Erkannt: Antrag auf Wohngeld/.test(await p.textContent('#sc-out')));
+    await p.setInputFiles('#sc-pdf', path.join(tmp, 'digital.pdf')); await p.waitForTimeout(1500);
+    ok('Digitales PDF in der App: Text direkt gelesen, keine Texterkennung nötig', (await calls('TextRecognition.recognize')).length === vorRec + 1 && /Gesamtmiete monatlich/.test(await p.textContent('#sc-out')));
+    fs.rmSync(tmp, { recursive: true, force: true });
+  }
   // Direkt in der Kachel: eigener Kamera-Knopf
   const vorher = (await calls('Camera.getPhoto')).length;
   await p.click('#sc-take'); await p.waitForTimeout(300);

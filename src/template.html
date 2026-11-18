@@ -281,8 +281,9 @@
   .sc-val bdi { background: var(--bg); border-radius: 6px; padding: 4px 8px; user-select: all; overflow-wrap: anywhere; }
   .sc-val .btn { min-height: 36px; padding: 0 12px; font-size: 0.9em; }
   .sc-tag { font-size: 0.8em; color: var(--muted); }
-  #sc-file.vh { inset-inline-start: 0; top: 0; }
-  .scan .field:has(#sc-file) { position: relative; }
+  #sc-file.vh, #sc-pdf.vh { inset-inline-start: 0; top: 0; }
+  .scan .field:has(#sc-file), .scan .field:has(#sc-pdf) { position: relative; }
+  #sc-pdf:focus-visible + .sc-foto { outline: 3px solid var(--focus); outline-offset: 2px; }
   .sc-foto { justify-content: center; text-align: center; display: inline-flex; align-items: center; min-height: 56px; cursor: pointer; }
   #sc-file:focus-visible + .sc-foto { outline: 3px solid var(--focus); outline-offset: 2px; }
   .sc-titel { font-weight: 700; }
@@ -552,10 +553,12 @@
       <div class="einlesen" id="einlesen">
         <div class="btns">
           <button type="button" class="btn" id="elScan"><span aria-hidden="true">📷 </span><span id="elScanT" data-t="el.scan"></span></button>
+          <button type="button" class="btn ghost" id="elPdf"><span aria-hidden="true">📄 </span><span data-t="el.pdf"></span></button>
           <button type="button" class="btn ghost" id="elPaste" aria-expanded="false" aria-controls="elPasteBox"><span aria-hidden="true">📋 </span><span data-t="el.paste"></span></button>
           <button type="button" class="btn ghost" id="elSelbst" hidden><span aria-hidden="true">✏️ </span><span data-t="el.selbst"></span></button>
         </div>
         <input type="file" id="elFile" accept="image/*" hidden>
+        <input type="file" id="elPdfFile" accept="application/pdf,.pdf" hidden>
         <div class="field" id="elPasteBox" hidden>
           <label for="elText" data-t="el.textLabel"></label>
           <textarea id="elText" lang="de" dir="ltr" autocomplete="off" spellcheck="false"></textarea>
@@ -578,6 +581,8 @@
           <div class="field">
             <input type="file" id="sc-file" class="vh" accept="image/*">
             <label for="sc-file" class="btn sc-foto" data-t="sc.photoBtn"></label>
+            <input type="file" id="sc-pdf" class="vh" accept="application/pdf,.pdf">
+            <label for="sc-pdf" class="btn ghost sc-foto" data-t="sc.pdfBtn"></label>
             <p class="hint" data-t="sc.localNote"></p>
           </div>
           <div class="field">
@@ -1058,13 +1063,14 @@
         <li><strong>Antragsmappe:</strong> Wenn du die Mappe teilst oder kopierst, entscheidest du, wohin sie geht. Die App sendet sie nirgendwohin.</li>
         <li><strong>Rückmeldung per E-Mail:</strong> Der Knopf unter den Ergebnissen öffnet nur einen Entwurf in deinem E-Mail-Programm, mit App-Version und Einstufungen, ohne deine Angaben aus dem Formular. Gesendet wird erst, wenn du selbst auf Senden tippst. Ich nutze die Nachricht nur zur Prüfung der Berechnung und lösche sie spätestens nach 12 Monaten.</li>
       </ul>
-      <p id="legalWeb">Nur Web-Version: Sie lädt beim Öffnen nichts aus dem Internet nach, auch keine Schriften. Die optionale Texterkennung lädt Programmteile von cdnjs und jsDelivr nach; das Foto selbst bleibt auf deinem Gerät. Der optionale Scan mit Claude sendet das Bild nur nach deiner ausdrücklichen Zustimmung an Anthropic.</p>
+      <p id="legalWeb">Nur Web-Version: Sie lädt beim Öffnen nichts aus dem Internet nach, auch keine Schriften. Die optionale Texterkennung lädt Programmteile von cdnjs und jsDelivr nach, das Lesen von PDF-Dateien das Programm pdf.js von cdnjs; Foto und PDF selbst bleiben auf deinem Gerät. Der optionale Scan mit Claude sendet das Bild nur nach deiner ausdrücklichen Zustimmung an Anthropic.</p>
       <p class="small"><strong>Auswertung mit Claude (nur Web-Version innerhalb von Claude):</strong> Wird die Web-Version als Seite in Claude (claude.ai, Anthropic PBC, USA) geöffnet, gibt es zusätzlich die Möglichkeit, ein Foto mit Claude auswerten zu lassen. Das Foto wird nur gesendet, wenn du das Häkchen zur Einwilligung setzt und auf „Mit Claude auswerten“ tippst (Art. 6 Abs. 1 Buchst. a und Art. 9 Abs. 2 Buchst. a DSGVO, weil Unterlagen Gesundheitsdaten enthalten können). Es wird dann an Anthropic in die USA übermittelt und dort nach den Datenschutzbestimmungen von Anthropic verarbeitet. Die Einwilligung ist freiwillig und gilt nur für dieses eine Foto. In der App für Android und iOS gibt es diese Funktion nicht.</p>
       <h3>Lizenzen</h3>
       <ul>
         <li>Atkinson Hyperlegible und Schibsted Grotesk: SIL Open Font License 1.1</li>
         <li>Noto Sans (PDF-Erzeugung): SIL Open Font License 1.1</li>
         <li>Capacitor und seine Plugins, pdf-lib: MIT-Lizenz</li>
+        <li>pdf.js (Mozilla, PDF-Dateien lesen): Apache License 2.0</li>
         <li>Texterkennung Android: Google ML Kit (Nutzungsbedingungen von Google)</li>
         <li>Texterkennung Web-Version: Tesseract.js und Sprachdaten (Apache-Lizenz 2.0)</li>
         <li>Websites der Behörden außerhalb Bayerns: Wikidata (CC0); Anschriften aus den Impressen der Behörden und aus Wikipedia (Quelle steht jeweils bei der Anschrift)</li>

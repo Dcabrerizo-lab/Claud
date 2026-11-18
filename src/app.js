@@ -466,6 +466,12 @@
     if ($('sc-take')) $('sc-take').addEventListener('click', function () { runNative(); });
     if ($('sc-local')) $('sc-local').addEventListener('click', function () { runLocal(true); });
     if ($('sc-file')) $('sc-file').addEventListener('change', function () { if ($('sc-file').files && $('sc-file').files[0]) runLocal(false); });
+    if ($('sc-pdf')) $('sc-pdf').addEventListener('change', function () {
+      var f = $('sc-pdf').files && $('sc-pdf').files[0]; if (!f || scanBusy) return;
+      scanBusyOn(true);
+      pdfLesen(f, function (i, n) { $('sc-msg').textContent = t('el.pdfSeite', { n: String(i), m: String(n) }); })
+        .then(function (text) { scanBusyOn(false); $('sc-pdf').value = ''; setScanResult(scanFromText(text)); }, function () { scanBusyOn(false); $('sc-pdf').value = ''; scanMsg('el.pdfFehler'); });
+    });
     if ($('sc-claude')) {
       $('sc-claude').addEventListener('click', function () { runClaude(); });
       $('sc-consent').addEventListener('change', function () { $('sc-claude').disabled = scanBusy || !$('sc-consent').checked; });
@@ -1131,6 +1137,72 @@
       document.head.appendChild(sc);
     });
   }
+
+  // ----- PDF lesen (pdf.js von Mozilla): digitale PDFs liefern ihren Text direkt; eingescannte Seiten (nur Bild, kein Text)
+  // werden auf dem Gerät zu einem Bild und gehen durch dieselbe Texterkennung wie ein Foto. Die Datei verlässt das Gerät nicht.
+  var PDFJS_VER = '3.11.174', PDF_MAX_SEITEN = 12, pdfjsLaden = null;
+  function ladePdfjs() {
+    if (window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
+    if (pdfjsLaden) return pdfjsLaden;
+    var basis = NATIVE ? 'pdfjs/' : 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/' + PDFJS_VER + '/'; // App: mitgeliefert, offline
+    pdfjsLaden = new Promise(function (res, rej) {
+      var s = document.createElement('script'); s.src = basis + 'pdf.min.js';
+      s.onload = function () { var L = window.pdfjsLib; if (!L) { pdfjsLaden = null; rej(new Error('pdfjs')); return; } L.GlobalWorkerOptions.workerSrc = basis + 'pdf.worker.min.js'; res(L); };
+      s.onerror = function () { pdfjsLaden = null; rej(new Error('load')); };
+      document.head.appendChild(s);
+    });
+    return pdfjsLaden;
+  }
+  // Textstücke einer Seite zu Zeilen: neue Zeile bei anderer Höhe, Leerzeichen bei sichtbarem Abstand
+  function pdfZeilen(items) {
+    var zeilen = [], akt = '', y = null, ende = null;
+    items.forEach(function (it) {
+      if (!it || typeof it.str !== 'string') return;
+      var x = it.transform ? it.transform[4] : 0, yy = it.transform ? it.transform[5] : y;
+      if (y !== null && Math.abs(yy - y) > 2) { zeilen.push(akt); akt = ''; ende = null; }
+      if (akt && ende !== null && x - ende > 1 && !/\s$/.test(akt) && !/^\s/.test(it.str)) akt += ' ';
+      akt += it.str; y = yy; ende = x + (it.width || 0);
+      if (it.hasEOL) { zeilen.push(akt); akt = ''; y = null; ende = null; }
+    });
+    if (akt) zeilen.push(akt);
+    return zeilen.map(function (z) { return z.replace(/\s+/g, ' ').trim(); }).filter(Boolean).join('\n');
+  }
+  function seiteAlsBild(page) {
+    var v1 = page.getViewport({ scale: 1 }), vp = page.getViewport({ scale: Math.min(2.5, 2000 / v1.width) });
+    var c = document.createElement('canvas'); c.width = Math.ceil(vp.width); c.height = Math.ceil(vp.height);
+    var ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+    return page.render({ canvasContext: ctx, viewport: vp }).promise.then(function () { return c; });
+  }
+  // Seitenbild lesen: App mit der Texterkennung des Geräts (Bild kurz im Cache, danach gelöscht), Browser mit Tesseract
+  function bildText(canvas) {
+    if (!NATIVE) return ocr(canvas);
+    var rec = plug('TextRecognition'), fsys = plug('Filesystem');
+    if (!rec || !fsys) return Promise.reject(new Error('kein Plugin'));
+    var name = 'solo-pdfseite-' + Date.now() + '.jpg';
+    return fsys.writeFile({ path: name, data: canvas.toDataURL('image/jpeg', 0.92).split(',')[1], directory: 'CACHE' }).then(function (r) {
+      var weg = function () { return fsys.deleteFile({ path: name, directory: 'CACHE' }).catch(function () {}); };
+      return rec.recognize({ path: r.uri }).then(function (x) { weg(); return ((x && x.lines) || []).join('\n'); }, function (e) { weg(); throw e; });
+    });
+  }
+  function pdfLesen(file, fortschritt) {
+    return ladePdfjs().then(function (L) {
+      return new Response(file).arrayBuffer().then(function (buf) { return L.getDocument({ data: new Uint8Array(buf), isEvalSupported: false }).promise; });
+    }).then(function (doc) {
+      var n = Math.min(doc.numPages, PDF_MAX_SEITEN), texte = [], i = 0;
+      function naechste() {
+        if (i >= n) return Promise.resolve(texte.join('\n'));
+        i++; if (fortschritt) fortschritt(i, n);
+        return doc.getPage(i).then(function (page) {
+          return page.getTextContent().then(function (tc) {
+            var t1 = pdfZeilen(tc.items);
+            return t1.replace(/\s/g, '').length >= 40 ? t1 : seiteAlsBild(page).then(bildText); // kaum Text: eingescannte Seite
+          });
+        }).then(function (t1) { texte.push(t1); return naechste(); });
+      }
+      return naechste().then(function (t) { try { doc.destroy(); } catch (e) {} return t; });
+    });
+  }
+  function istPdf(f) { return !!f && (/pdf/i.test(f.type || '') || /\.pdf$/i.test(f.name || '')); }
 
   function ocr(file) {
     var work = loadTess().then(function (T) {
@@ -1830,6 +1902,14 @@
     if (elBusy) return;
     if (NATIVE) { elBusy = true; $('elScan').disabled = true; elNachricht(t('el.lese')); fotoText().then(elFertig, elFehler); return; }
     $('elFile').value = ''; $('elFile').click();
+  });
+  $('elPdf').addEventListener('click', function () { if (elBusy) return; $('elPdfFile').value = ''; $('elPdfFile').click(); });
+  $('elPdfFile').addEventListener('change', function () {
+    var f = $('elPdfFile').files && $('elPdfFile').files[0]; if (!f || elBusy) return;
+    elBusy = true; $('elScan').disabled = true; $('elPdf').disabled = true;
+    pdfLesen(f, function (i, n) { elNachricht(t('el.pdfSeite', { n: String(i), m: String(n) })); }).then(function (text) {
+      $('elPdf').disabled = false; elGesammelt = ''; elFertig(text);
+    }, function () { elBusy = false; $('elScan').disabled = false; $('elPdf').disabled = false; elNachricht(t('el.pdfFehler')); });
   });
   $('elFile').addEventListener('change', function () {
     var f = $('elFile').files && $('elFile').files[0]; if (!f) return;

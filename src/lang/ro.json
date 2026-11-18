@@ -1035,7 +1035,7 @@
   "el.paste": "Lipește text",
   "el.textLabel": "Text din scrisoare, de ex. copiat dintr-un PDF",
   "el.lesen": "Citește textul",
-  "el.privat": "Fotografia rămâne pe dispozitiv și este ștearsă după citire. Compară fiecare valoare recunoscută cu scrisoarea.",
+  "el.privat": "Fotografia și PDF-ul rămân pe dispozitiv, fotografia se șterge după citire. Compară fiecare valoare cu scrisoarea.",
   "el.leer": "Lipește mai întâi textul.",
   "el.unbekannt": "Tipul scrisorii nu a fost recunoscut. Atinge mai jos expeditorul și introdu valorile.",
   "el.frist": "Termen în scrisoare: {frist}",
@@ -1054,5 +1054,9 @@
   "sc.f.kv": "Casa ta de asigurări de sănătate (Krankenkasse) și numărul de asigurat. Ambele sunt pe cardul de asigurare.",
   "sc.f.aufenthalt": "Cetățenia și statutul de ședere (Aufenthaltstitel). Scrie în pașaport sau în permisul de ședere. Atașează o copie dacă se cere.",
   "el.selbst": "Introdu valorile singur",
-  "briefe.von": "Scrisoare de la: {name}"
+  "briefe.von": "Scrisoare de la: {name}",
+  "el.pdf": "Alege un PDF",
+  "el.pdfSeite": "Se citește pagina {n} din {m} …",
+  "el.pdfFehler": "Fișierul PDF nu a putut fi citit. Este protejat cu parolă? Altfel lipește textul sau fotografiază scrisoarea.",
+  "sc.pdfBtn": "📄 Alege un fișier PDF"
 }

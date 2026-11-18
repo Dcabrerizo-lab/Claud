@@ -1035,7 +1035,7 @@
   "el.paste": "Text einfügen",
   "el.textLabel": "Text aus dem Brief, z. B. aus einer PDF kopiert",
   "el.lesen": "Text lesen",
-  "el.privat": "Das Foto bleibt auf dem Gerät und wird nach dem Lesen gelöscht. Jeden erkannten Wert bitte mit dem Brief vergleichen.",
+  "el.privat": "Foto und PDF bleiben auf dem Gerät, das Foto wird nach dem Lesen gelöscht. Jeden erkannten Wert bitte mit dem Brief vergleichen.",
   "el.leer": "Bitte zuerst Text einfügen.",
   "el.unbekannt": "Die Art des Briefs wurde nicht erkannt. Tippe unten auf den Absender und trage die Werte ein.",
   "el.frist": "Frist im Brief: {frist}",
@@ -1054,5 +1054,9 @@
   "sc.f.kv": "Deine Krankenkasse und deine Versichertennummer. Beides steht auf deiner Versichertenkarte.",
   "sc.f.aufenthalt": "Staatsangehörigkeit und Aufenthaltsstatus. Das steht im Pass oder im Aufenthaltstitel. Lege eine Kopie bei, wenn danach gefragt wird.",
   "el.selbst": "Werte selbst eingeben",
-  "briefe.von": "Brief von: {name}"
+  "briefe.von": "Brief von: {name}",
+  "el.pdf": "PDF wählen",
+  "el.pdfSeite": "Seite {n} von {m} wird gelesen …",
+  "el.pdfFehler": "Die PDF-Datei ließ sich nicht lesen. Ist sie mit einem Passwort geschützt? Sonst füge den Text ein oder fotografiere den Brief.",
+  "sc.pdfBtn": "📄 PDF-Datei wählen"
 }

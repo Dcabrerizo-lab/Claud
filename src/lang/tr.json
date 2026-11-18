@@ -1035,7 +1035,7 @@
   "el.paste": "Metin yapıştır",
   "el.textLabel": "Mektuptaki metin, örn. bir PDF’ten kopyalanmış",
   "el.lesen": "Metni oku",
-  "el.privat": "Fotoğraf bu cihazda kalır ve okunduktan sonra silinir. Tanınan her değeri lütfen mektupla karşılaştır.",
+  "el.privat": "Fotoğraf ve PDF cihazında kalır, fotoğraf okunduktan sonra silinir. Tanınan her değeri mektupla karşılaştır.",
   "el.leer": "Lütfen önce metin yapıştır.",
   "el.unbekannt": "Mektubun türü tanınmadı. Aşağıda göndereni seç ve değerleri gir.",
   "el.frist": "Mektuptaki süre: {frist}",
@@ -1054,5 +1054,9 @@
   "sc.f.kv": "Sağlık sigortan (Krankenkasse) ve sigorta numaran. İkisi de sigorta kartında yazar.",
   "sc.f.aufenthalt": "Vatandaşlık ve oturum durumu (Aufenthaltstitel). Pasaportta veya oturum belgesinde yazar. İstenirse bir kopya ekle.",
   "el.selbst": "Değerleri kendin gir",
-  "briefe.von": "Mektubu gönderen: {name}"
+  "briefe.von": "Mektubu gönderen: {name}",
+  "el.pdf": "PDF seç",
+  "el.pdfSeite": "Sayfa {n} / {m} okunuyor …",
+  "el.pdfFehler": "PDF dosyası okunamadı. Şifreyle mi korunuyor? Değilse metni yapıştır veya mektubun fotoğrafını çek.",
+  "sc.pdfBtn": "📄 PDF dosyası seç"
 }

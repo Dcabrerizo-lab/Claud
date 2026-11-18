@@ -1035,7 +1035,7 @@
   "el.paste": "Paste text",
   "el.textLabel": "Text from the letter, e.g. copied from a PDF",
   "el.lesen": "Read text",
-  "el.privat": "The photo stays on this device and is deleted after reading. Please compare every recognised value with the letter.",
+  "el.privat": "Photo and PDF stay on your device; the photo is deleted after reading. Please compare every recognised value with the letter.",
   "el.leer": "Please paste text first.",
   "el.unbekannt": "The type of letter was not recognised. Tap the sender below and enter the values.",
   "el.frist": "Deadline in the letter: {frist}",
@@ -1054,5 +1054,9 @@
   "sc.f.kv": "Your health insurance fund (Krankenkasse) and your insurance number. Both are on your health insurance card.",
   "sc.f.aufenthalt": "Nationality and residence status (Aufenthaltstitel). This is in your passport or residence permit. Add a copy if asked.",
   "el.selbst": "Enter the values yourself",
-  "briefe.von": "Letter from: {name}"
+  "briefe.von": "Letter from: {name}",
+  "el.pdf": "Choose a PDF",
+  "el.pdfSeite": "Reading page {n} of {m} …",
+  "el.pdfFehler": "The PDF could not be read. Is it password protected? Otherwise paste the text or take a photo of the letter.",
+  "sc.pdfBtn": "📄 Choose a PDF file"
 }
