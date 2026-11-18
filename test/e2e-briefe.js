@@ -42,7 +42,9 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
     ok(`Kachel ${k}: Zurück zeigt wieder die Auswahl, Fokus auf der Kachel`, await p.isVisible('#briefKacheln') && !(await p.isVisible('#checkBox')) && await p.evaluate((id) => document.activeElement.id === id, 'brief-' + k));
   }
   // Rechnen im eingebetteten Prüfpaket: Beispiel Grundsicherungsgeld zeigt ein Ergebnis
-  await p.click('#brief-jc'); await p.click('#elSelbst'); await p.evaluate(() => document.querySelector('#p-bescheid [id$="-beispiel"]').click()); await p.waitForTimeout(100);
+  await p.click('#brief-jc');
+  ok('Einmal geöffnet: beim nächsten Mal ist das Formular gleich offen (Eingaben bleiben)', await p.isVisible('#p-bescheid > :nth-child(2)') && !(await p.isVisible('#elSelbst')));
+  if (await p.isVisible('#elSelbst')) await p.click('#elSelbst'); await p.evaluate(() => document.querySelector('#p-bescheid [id$="-beispiel"]').click()); await p.waitForTimeout(100);
   ok('Bescheid-Check rechnet in der App', ((await p.textContent('#p-bescheid')) || '').includes('€'));
   // Nochmal auf „Brief prüfen“ tippen führt zur Auswahl
   await p.click('#appnav [data-ansicht=briefe]');
@@ -50,7 +52,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   // Widerspruch mit Bescheiddatum: die Frist steht beim Schreiben, eine Liste gibt es nicht
   await p.click('#brief-pk');
   ok('Pflegekasse: kein zweites Textfeld „Text aus dem Gutachten“', !(await p.isVisible('#pf-text')) && !(await p.isVisible('#pf-lesen')));
-  await p.click('#elSelbst'); await p.fill('#pf-datum', '2026-11-10'); await p.click('#pf-wid-mach');
+  if (await p.isVisible('#elSelbst')) await p.click('#elSelbst'); await p.fill('#pf-datum', '2026-11-10'); await p.click('#pf-wid-mach');
   ok('Widerspruchsfrist steht beim Schreiben', /14\.12\.2026/.test(await p.textContent('#pf-frist')), await p.textContent('#pf-frist'));
   ok('Nichts als Frist gespeichert', (await p.evaluate(() => localStorage.getItem('lotse.fristen'))) === null);
   await p.click('#briefZurueck');
