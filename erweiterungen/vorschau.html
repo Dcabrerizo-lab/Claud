@@ -47,6 +47,7 @@
   .krit p { margin: 0; }
   .krit .pkt { float: right; margin-left: 10px; font-variant-numeric: tabular-nums; color: var(--muted); }
   .opt { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin: 8px 0; }
+  .feld-hilfe { margin: 2px 0 0; font-size: .8em; }
   .abw { display: grid; gap: 4px; }
   .abw p { margin: 0; }
   .abw-kopf { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
@@ -91,7 +92,7 @@
   <section id="p-pflege" role="tabpanel" aria-labelledby="tab-pflege">
     <div class="card">
       <h2>Pflegegutachten prüfen</h2>
-      <p>Trage die Bewertungen aus dem Gutachten des Medizinischen Dienstes ein, oder füge den Text des Gutachtens ein. SoLo rechnet die Punkte nach § 15 SGB XI nach und zeigt, wo es knapp ist.</p>
+      <p>SoLo rechnet die Punkte des Gutachtens nach § 15 SGB XI nach und zeigt, wo es knapp ist. Am schnellsten geht es, wenn du das Gutachten scannst oder als PDF wählst: Von Hand sind es rund 60 Bewertungen.</p>
       <label for="pf-text">Text aus dem Gutachten (aus einem PDF kopiert oder vom Foto erkannt)</label>
       <textarea id="pf-text" placeholder="z. B. 1.1 Positionswechsel im Bett  überwiegend selbständig …"></textarea>
       <div class="btns"><button type="button" class="btn primary" id="pf-lesen">Text lesen</button><button type="button" class="btn" id="pf-beispiel">Beispiel laden</button><button type="button" class="btn" id="pf-leeren">Alles leeren</button></div>

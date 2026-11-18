@@ -1,6 +1,6 @@
 # Update 1.4.0: übersichtlicher, PDF, Pflege
 
-Version 1.4.0, Build 144 (Build 143 enthielt noch „Vorlesen“ und nicht die Änderungen an „Brief prüfen“). Gegenüber 1.3.1 (Build 142). Einzelheiten in `docs/AENDERUNGEN.md`.
+Version 1.4.0, Build 145. Gegenüber Build 144: Hinweise „Wo steht das im Brief?“ bei allen Feldern mit Amtsbegriffen, „formloser Antrag“ erklärt, Pflegegutachten empfiehlt Scannen oder PDF, Kachel „Zwei Wege“ beginnt mit dem, was zu tun ist, klarerer Hinweis bei fremder Sprache. Build 143 und 144 nicht mehr verwenden.
 
 ## Was ist neu: Google Play (max. 500 Zeichen)
 

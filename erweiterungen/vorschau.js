@@ -544,6 +544,38 @@ Ergebnis: Pflegegrad 2`;
   for (const id of ['pf-art-w', 'pf-art-h']) $(id).addEventListener('change', zeigePfArt);
   $('pf-wid-copy').addEventListener('click', () => kopiere($('pf-wid-text'), $('pf-copy-msg')));
   zeigePflege();
+  // Wo steht das im Brief? Kurzer Hinweis unter jedem Feld mit Amtsbegriff, damit man den Wert auch ohne Vorwissen findet
+  const FELD_HILFE = {
+    'bs-b-regel': 'Im Berechnungsbogen bei „Regelbedarf“, je Person eine Zeile. Hier die Summe aller Personen.',
+    'bs-b-ae': 'Im Berechnungsbogen bei „Mehrbedarf“ für Alleinerziehende. Steht dort nichts, leer lassen.',
+    'bs-b-schw': 'Im Berechnungsbogen bei „Mehrbedarf“ für Schwangerschaft. Steht dort nichts, leer lassen.',
+    'bs-b-ww': 'Im Berechnungsbogen bei „Mehrbedarf“ für Warmwasser (wenn das Wasser mit Strom erwärmt wird). Steht dort nichts, leer lassen.',
+    'bs-b-kdu': 'Im Berechnungsbogen bei „Kosten der Unterkunft und Heizung“ (KdU): der Betrag, den das Jobcenter übernimmt.',
+    'bs-b-eink': 'Im Berechnungsbogen bei „zu berücksichtigendes Einkommen“, also nach Abzug der Freibeträge, ohne Kindergeld.',
+    'bs-b-kg': 'Im Berechnungsbogen: Kindergeld, das als Einkommen der Kinder abgezogen wird.',
+    'bs-b-zahl': 'Auf der ersten Seite: der Betrag, der jeden Monat überwiesen wird.',
+    'bs-bg': 'Oben im Brief, zum Beispiel 123A4567890 (auch „BG-Nummer“).',
+    'ga-b-regel': 'Im Berechnungsbogen bei „Regelbedarf“ bzw. „Regelsatz“, für alle Personen zusammen.',
+    'ga-b-g': 'Im Berechnungsbogen bei „Mehrbedarf“ wegen Merkzeichen G. Steht dort nichts, leer lassen.',
+    'ga-b-ww': 'Im Berechnungsbogen bei „Mehrbedarf“ für Warmwasser. Steht dort nichts, leer lassen.',
+    'ga-b-kdu': 'Im Berechnungsbogen bei „Kosten der Unterkunft und Heizung“: der Betrag, den das Amt übernimmt.',
+    'ga-b-eink': 'Im Berechnungsbogen bei „anzurechnendes Einkommen“, zum Beispiel die Rente nach Abzügen.',
+    'ga-b-zahl': 'Auf der ersten Seite: der Betrag, der jeden Monat überwiesen wird.',
+    'ga-az': 'Oben im Brief neben „Aktenzeichen“ oder „Geschäftszeichen“.',
+    'wg-b-miete': 'In der Berechnung des Bescheids bei „zu berücksichtigende Miete“ oder „Miete/Belastung“.',
+    'wg-b-eink': 'In der Berechnung bei „Gesamteinkommen“ (monatlich).',
+    'wg-b-wg': 'Auf der ersten Seite: das Wohngeld im Monat.',
+    'wg-az': 'Oben im Brief neben „Wohngeldnummer“ oder „Aktenzeichen“.',
+    'kz-b-bedarf': 'In der Berechnung des Bescheids bei „Bedarf der Eltern“ bzw. „elterlicher Bedarf“.',
+    'kz-b-eink': 'In der Berechnung bei „Einkommen der Eltern“.',
+    'kz-b-kiz': 'Auf der ersten Seite: der Kinderzuschlag im Monat für alle Kinder zusammen.',
+    'kz-kgnr': 'Oben im Brief, zum Beispiel 123FK456789. Steht auch auf jedem Brief zum Kindergeld.'
+  };
+  for (const [id, text] of Object.entries(FELD_HILFE)) {
+    const el = $(id); if (!el || el.dataset.hilfe) continue;
+    el.dataset.hilfe = '1'; const p = document.createElement('p'); p.className = 'small muted feld-hilfe'; p.id = id + '-hilfe'; p.textContent = text;
+    el.setAttribute('aria-describedby', p.id); el.insertAdjacentElement('afterend', p);
+  }
   // Für die App: Gutachten-Prüfung mit den Antworten der eigenen Einschätzung füllen (Leistungsseite → „Brief prüfen“)
   window.PruefpaketPflege = {
     setze(g, art) {
