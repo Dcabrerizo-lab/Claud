@@ -65,8 +65,16 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Übernahme: Einschätzung steht im Fragebogen', /Pflegegrad 2/.test(await p.textContent('#paStand')));
   ok('Übernahme: Pflegegeld in der Antragsmappe gewählt', await p.isChecked('[data-pick="pflege"]'));
   ok('Pflegegeld-Karte zeigt Einschätzung und Knopf', /Pflegegrad 2/.test(await p.textContent('#c-pflege .pa-karte-knopf')));
+  // Erklärseite: Pflegegeld ist Geld aufs Konto, Entlastungsbetrag ein Budget
+  await p.click('#c-pflege .pi-knopf button');
+  ok('Erklärseite öffnet', await p.isVisible('#v-pflegeinfo') && /So funktionieren/.test(await p.textContent('#pflegeInfo')));
+  ok('Erklärseite: Entlastungsbetrag kommt nicht aufs Konto', /Entlastungsbetrag: 131 € im Monat, aber nicht aufs Konto/.test(await p.textContent('#pflegeInfo')));
+  ok('Erklärseite: kein seitliches Scrollen', await breit());
+  await p.click('#piZurueck');
+  ok('Zurück führt zur Pflegekarte', await p.isVisible('#v-leistungen'));
   // Höherstufung: mit Pflegegrad 1 dieselben Antworten → Pflegegrad 2 → Gutachten-Prüfung vorausgefüllt
   await p.selectOption('#pflegegrad', '1'); await p.waitForTimeout(200);
+  ok('Karte sagt klar: Entlastungsbetrag wird nicht ausgezahlt', /nicht ausgezahlt/.test(await p.textContent('#c-pflege')));
   ok('Mit Pflegegrad: Knopf „Höherstufung prüfen“', /Höherstufung/.test(await p.textContent('#paStart')));
   await p.click('#paStart');
   for (let i = 0; i < 80 && !/Wahrscheinlich/.test(await frage()); i++) {

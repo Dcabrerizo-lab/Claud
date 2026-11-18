@@ -453,6 +453,27 @@
   .pa-mark span { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: .75em; color: var(--muted); white-space: nowrap; }
   .pa table { width: 100%; border-collapse: collapse; } .pa td, .pa th { padding: 6px 4px; border-top: 1px solid var(--line); text-align: left; } .pa .z { text-align: right; }
   .pa-karte-knopf { margin-top: 10px; }
+  /* Erklärseite Pflege */
+  .pi { max-width: 720px; display: grid; gap: 14px; }
+  .pi h2 { font-size: 1.4rem; margin: 0; }
+  .pi .lead { font-size: 1.05rem; }
+  .pi .tabwrap { overflow-x: auto; border-radius: 14px; background: var(--surface); box-shadow: var(--shadow); }
+  .pi table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+  @media (max-width: 600px) {
+    .pi thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    .pi tr { display: grid; gap: 2px; padding: 10px 14px; border-top: 1px solid var(--line); }
+    .pi tbody tr:first-child { border-top: 0; }
+    .pi tbody td { border: 0; padding: 0; }
+    .pi tbody td:first-child { font-weight: 700; }
+    .pi td:last-child { font-variant-numeric: tabular-nums; }
+  }
+  .pi th, .pi td { text-align: left; padding: 9px 12px; border-top: 1px solid var(--line); vertical-align: top; }
+  .pi thead th { border-top: 0; font-size: .8rem; color: var(--muted); }
+  .pi .geld { color: var(--ok, #1d6b3d); font-weight: 700; } .pi .budget { color: var(--accent); font-weight: 700; }
+  .pi details { background: var(--surface); border-radius: 14px; padding: 4px 16px; box-shadow: var(--shadow); }
+  .pi details > summary { min-height: 48px; display: flex; align-items: center; cursor: pointer; font-weight: 700; }
+  .pi details p, .pi details ul { margin: 6px 0 12px; }
+  .pi-knopf { margin-top: 8px; }
 /*PPSTIL*/
 </style>
 
@@ -539,6 +560,13 @@
     <section id="v-pflege" class="ansicht" aria-label="Pflegegrad" hidden>
       <p class="pp-hinweis small" id="paNurDe" data-t="briefe.nurDeutsch" hidden></p>
       <div id="pflegeAssist" class="pa"></div>
+    </section>
+
+    <!-- Erklärseite: So funktionieren die Leistungen der Pflegekasse -->
+    <section id="v-pflegeinfo" class="ansicht" aria-labelledby="h-pflegeinfo" hidden>
+      <div class="pp-kopf"><button type="button" class="btn ghost" id="piZurueck" data-t="briefe.zurueckEinfach"></button></div>
+      <p class="pp-hinweis small" id="piNurDe" data-t="briefe.nurDeutsch" hidden></p>
+      <div id="pflegeInfo" class="pi"></div>
     </section>
 
     <div id="v-leistungen" class="ansicht">

@@ -184,8 +184,8 @@
   "t.bafoeg.alter": "As a rule BAföG is only paid if you are at most 45 when the training starts, for some courses younger. Ask the office.",
   "t.pflege.keiner": "You did not state a care level. Anyone who needs lasting help in daily life can apply to the Pflegekasse for a care level.",
   "t.pflege.antrag": "A care level has been applied for or might be possible. The Pflegekasse arranges an assessment. From care level 2 there is Pflegegeld if relatives provide the care.",
-  "t.pflege.pg1": "With care level 1 there is a relief amount of {ent} per month for help in daily life. Pflegegeld starts at care level 2.",
-  "t.pflege.pg2": "Pflegegeld for care at home: {geld} per month at care level {pg}. In addition there is the relief amount of {ent} per month.",
+  "t.pflege.pg1": "With care level 1 there is a relief amount (Entlastungsbetrag) of {ent} per month. It is not paid out: the care insurance (Pflegekasse) uses it to pay for approved help in daily life, for example household help or care support. Pflegegeld starts at care level 2.",
+  "t.pflege.pg2": "Pflegegeld for care at home: {geld} per month at care level {pg}. This is paid into your account. In addition there is the relief amount (Entlastungsbetrag) of {ent} per month: it is not paid out; the care insurance (Pflegekasse) uses it to pay for approved help in daily life.",
   "z.ggBezug": "You receive Grundsicherungsgeld (until June 2026: Bürgergeld). Wohngeld and Kinderzuschlag usually do not go with it. The education package often runs through the Jobcenter.",
   "z.wgKiz": "Wohngeld and Kinderzuschlag can be combined. Apply for both, even if one of them is borderline.",
   "z.gsaWg": "You cannot receive Grundsicherung im Alter and Wohngeld at the same time. Have both checked and ask which route is better for you.",
@@ -399,7 +399,7 @@
   "t.blindengeld.land": "This only applies if you live in Bavaria. Other federal states have their own rules and amounts. Ask the responsible state office there.",
   "t.pflegeplus.antrag": "A care level has been applied for or is possible. Once it is determined, further benefits from the Pflegekasse come into question.",
   "t.pflegeplus.keiner": "Without a care level these benefits are not available.",
-  "t.pflegeplus.mittel": "With a care level the Pflegekasse pays, for care at home, disposable care aids up to {verbrauch} per month and a grant for home adaptations (for example an accessible bathroom) up to {wohn} per measure.",
+  "t.pflegeplus.mittel": "With a care level, the care insurance (Pflegekasse) pays for consumable care aids (for example gloves, bed protectors) up to {verbrauch} per month for care at home, usually as a delivery and not as money. For alterations in the home (for example an accessible bathroom) there is a grant of up to {wohn} per measure.",
   "t.pflegeplus.verh": "From care level 2 there is also respite care and short-term care when the carer is unavailable or needs a break. They share one joint annual amount. Ask the Pflegekasse for the current amount.",
   "t.arbeit.keine": "The Budget for work is meant for people who work in a workshop for people with disabilities or would be entitled to a place there.",
   "t.arbeit.ja": "People who work in a workshop can move to an employer with the Budget for work. The employer receives a wage subsidy of up to {prozent} % of the wage, plus help at the workplace. A socially insured employment contract at collective-agreement or locally usual pay is required.",
@@ -765,7 +765,7 @@
   "t.pflege.rente": "For someone who cares unpaid for at least 10 hours a week on at least 2 days and works at most 30 hours, the care fund pays pension insurance contributions. (Pflegekasse)",
   "t.pflege.steuer35a": "For care services and household help there is also a tax reduction of 20 % of the costs, at most 4,000 € a year.",
   "t.pflege.zeit": "Relatives can take time off work for care (up to 10 days with care support allowance, care leave up to 6 months, family care leave up to 24 months).",
-  "t.pflegeplus.budget": "From care level 2 there is respite care and short-term care when the carer is unavailable or needs a break. Both share an annual amount of {betrag}.",
+  "t.pflegeplus.budget": "From care level 2 there is respite care (Verhinderungspflege) and short-term care (Kurzzeitpflege) when the carer is unavailable or needs a break. Both share an annual amount of {betrag}. This is not money paid into your account: the care insurance (Pflegekasse) pays for the replacement care.",
   "t.ausweis.kuendigung": "Severely disabled people have special protection against dismissal: the Integrationsamt must agree before a dismissal.",
   "t.ausweis.frei": "With H, Bl, TBl or aG you travel free by bus and train (free Wertmarke) and pay no vehicle tax.",
   "t.ausweis.park": "With aG or Bl there is a parking permit for disabled parking spaces.",
@@ -1046,5 +1046,7 @@
   "el.lese": "Reading the letter …",
   "el.fehler": "The letter could not be read. Try a brighter, straight photo or paste the text.",
   "sc.verweis": "Received an application form? Under “Check a letter” you can photograph it and the app explains the fields.",
-  "sc.verweisBtn": "Scan form"
+  "sc.verweisBtn": "Scan form",
+  "briefe.zurueckEinfach": "← Back",
+  "pa.info": "How care benefits work"
 }

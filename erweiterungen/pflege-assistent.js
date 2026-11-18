@@ -150,9 +150,10 @@ const PflegeAssistent = (function () {
       box.append(h('div', { class: 'es-top' }, h('span', { class: 'es-prog', text: 'Ergebnis deiner Einschätzung' })),
         h('h2', { class: 'es-q', id: 'pa-q', tabindex: '-1', text: titel }),
         h('p', { class: 'es-h', text: `${zahl(r.gesamt)} von 100 Punkten. Ab 12,5 Punkten gibt es Pflegegrad 1, ab 27 Pflegegrad 2, ab 47,5 Pflegegrad 3, ab 70 Pflegegrad 4, ab 90 Pflegegrad 5.` }), bar);
-      if (r.pg >= 1) box.append(h('div', { class: 'es-karte' }, h('div', { class: 'es-lvl', text: 'Das könnte es geben (im Monat)' }),
-        h('ul', { class: 'es-liste' }, r.pg >= 2 ? h('li', { text: `Pflegegeld ${eur(geld.pflegegeld)}, wenn Angehörige pflegen (oder Sachleistungen für einen Pflegedienst)` }) : null,
-          h('li', { text: `Entlastungsbetrag ${eur(geld.entlastung)} für Hilfe im Alltag` }))));
+      if (r.pg >= 1) box.append(h('div', { class: 'es-karte' }, h('div', { class: 'es-lvl', text: 'Das könnte es geben' }),
+        h('ul', { class: 'es-liste' }, r.pg >= 2 ? h('li', { text: `Pflegegeld ${eur(geld.pflegegeld)} im Monat aufs Konto, wenn Angehörige pflegen` }) : null,
+          h('li', { text: `Entlastungsbetrag ${eur(geld.entlastung)} im Monat: kein Geld aufs Konto, sondern ein Budget bei der Pflegekasse für anerkannte Hilfen im Alltag` }),
+          r.pg >= 2 ? h('li', { text: 'Dazu Budgets für Pflegedienst, Vertretung der Pflegeperson und Pflegehilfsmittel' }) : null)));
       if (pgAktuell != null) {
         const t = r.pg > pgAktuell ? `Du hast jetzt Pflegegrad ${pgAktuell}. Nach deiner Einschätzung käme Pflegegrad ${r.pg} in Frage. Ein Antrag auf Höherstufung lohnt sich wahrscheinlich.`
           : r.pg === pgAktuell ? `Das passt zu deinem jetzigen Pflegegrad ${pgAktuell}. Eine Höherstufung lohnt sich nach dieser Einschätzung noch nicht.`

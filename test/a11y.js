@@ -38,6 +38,7 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
     for (let i = 0; i < 6; i++) { const q = await p.textContent('#pa-q'); if (/Wahrscheinlich/.test(q)) break; await p.click(/Probleme|Hilfe|Verhalten/.test(q) ? '#pflegeAssist .es-btn >> nth=1' : '#pflegeAssist .es-btn >> nth=2'); }
     for (let i = 0; i < 40 && !/Wahrscheinlich/.test(await p.textContent('#pa-q')); i++) await p.click('#pflegeAssist .es-btn >> nth=1');
     await pruefe('Pflegegrad: Ergebnis');
+    await p.click('text=Was bedeuten diese Leistungen?'); await pruefe('Erklärseite Pflege'); await p.click('#piZurueck');
     await p.click('text=Zurück zu den Leistungen'); await p.evaluate(() => { localStorage.removeItem('lotse.pflegecheck'); });
     await p.click('#p1'); await pruefe('Beispiel 1 mit Ergebnis');
     await p.selectOption('#lang', 'ar'); await pruefe('Arabisch'); await p.selectOption('#lang', 'de');

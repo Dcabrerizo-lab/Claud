@@ -1493,7 +1493,7 @@
   };
   // ----- Bereiche: Start, Leistungen (Leistungscheck), Brief prüfen -----
   // Beim Öffnen die Startseite; „#leistungen“ und „#briefe“ öffnen den Bereich direkt (Links, Tests).
-  var ANSICHTEN = ['start', 'leistungen', 'briefe', 'pflege']; // „pflege“: Pflegegrad-Einschätzung, gehört zu Leistungen
+  var ANSICHTEN = ['start', 'leistungen', 'briefe', 'pflege', 'pflegeinfo']; // „pflege“: Pflegegrad-Einschätzung, gehört zu Leistungen
   var aktAnsicht = 'leistungen';
   var BRIEFE = [
     ['jc', 'briefe.jobcenter', 'briefe.jobcenter.t', '<path d="M4 20V9l8-5 8 5v11"/><path d="M9 20v-6h6v6M3 20h18"/>'],
@@ -1510,7 +1510,7 @@
     aktAnsicht = a;
     ANSICHTEN.forEach(function (x) { $('v-' + x).hidden = x !== a; });
     $('jump').hidden = a !== 'leistungen' || esModus;
-    var navA = a === 'pflege' ? 'leistungen' : a;
+    var navA = a === 'pflege' || a === 'pflegeinfo' ? 'leistungen' : a;
     document.querySelectorAll('#appnav button').forEach(function (b) { if (b.getAttribute('data-ansicht') === navA) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
     try { if (location.hash !== '#' + a) history.replaceState(null, '', '#' + a); } catch (e) {}
     bereicheText();
@@ -1550,6 +1550,13 @@
       var b = document.createElement('button'); b.type = 'button'; b.className = 'btn ghost'; b.textContent = paKnopfText();
       b.addEventListener('click', paOeffnen); box.appendChild(b);
     }
+    // Erklärknopf an den Pflegekarten: Was ist Geld aufs Konto, was ist Budget bei der Pflegekasse?
+    ['c-pflege', 'c-pflegeplus'].forEach(function (id) {
+      var k = $(id); if (!k || k.querySelector('.pi-knopf')) return;
+      var w = document.createElement('div'); w.className = 'pi-knopf';
+      var bt = document.createElement('button'); bt.type = 'button'; bt.className = 'btn ghost'; bt.textContent = t('pa.info');
+      bt.addEventListener('click', function () { pflegeInfo('leistungen', id); }); w.appendChild(bt); k.appendChild(w);
+    });
   }
   function paZurueck(ziel) {
     zeigeAnsicht('leistungen', false);
@@ -1578,6 +1585,7 @@
           paUebernehmen(r); zeigeAnsicht('briefe', false); briefOeffnen('pk'); if (window.PruefpaketPflege) window.PruefpaketPflege.setze(g, 'hoeher'); } },
         { text: 'Mit dem Gutachten der Pflegekasse vergleichen', fn: function (r) {
           paUebernehmen(r); zeigeAnsicht('briefe', false); briefOeffnen('pk'); } },
+        { text: 'Was bedeuten diese Leistungen?', fn: function () { pflegeInfo('pflege', 'pa-q'); } },
         { text: 'Zurück zu den Leistungen', fn: function (r) { paUebernehmen(r); paZurueck('paStart'); } }
       ]
     });
@@ -1585,6 +1593,73 @@
     var q = $('pa-q'); if (q) { window.scrollTo(0, 0); q.focus({ preventScroll: true }); }
   }
   $('paStart').addEventListener('click', paOeffnen);
+
+  // ----- Erklärseite: So funktionieren die Leistungen der Pflegekasse (Beträge aus den Rechenregeln) -----
+  var piZurueckZu = 'leistungen', piFokus = null;
+  function piEuro(x) { return Number(x).toLocaleString('de-DE', { maximumFractionDigits: 0 }) + ' €'; }
+  function pflegeInfoBauen() {
+    var R = Rules.RULES, box = $('pflegeInfo');
+    if (box.children.length) return;
+    var el = function (tag, text, cls) { var e = document.createElement(tag); if (text != null) e.textContent = text; if (cls) e.className = cls; return e; };
+    var je = function (o) { return [2, 3, 4, 5].map(function (g) { return 'PG ' + g + ': ' + piEuro(o[g]); }).join(' · '); };
+    box.appendChild(el('h2', 'So funktionieren die Leistungen der Pflegekasse')).id = 'h-pflegeinfo';
+    box.appendChild(el('p', 'Nur das Pflegegeld kommt aufs Konto. Alles andere sind Budgets: Die Pflegekasse bezahlt damit Hilfe, Dienste oder Lieferungen, meistens gegen Rechnung. Wer die Budgets nicht nutzt, verschenkt Geld.', 'lead'));
+    var zeilen = [
+      ['Pflegegeld', 'Geld aufs Konto, jeden Monat', je(R.pflege.geld), 'geld'],
+      ['Pflegedienst (Pflegesachleistung)', 'Budget: Der Pflegedienst rechnet direkt mit der Pflegekasse ab', 'bis ' + je(R.pflegeSach).replace(/PG/g, 'PG'), 'budget'],
+      ['Entlastungsbetrag', 'Budget: Die Pflegekasse bezahlt Rechnungen anerkannter Anbieter', piEuro(R.pflege.entlastung) + ' im Monat, ab Pflegegrad 1', 'budget'],
+      ['Verhinderungs- und Kurzzeitpflege', 'Budget: Für die Vertretung, wenn die Pflegeperson ausfällt', 'zusammen ' + piEuro(R.entlastungsbudget) + ' im Jahr, ab Pflegegrad 2', 'budget'],
+      ['Tages- und Nachtpflege', 'Budget: Die Einrichtung rechnet mit der Pflegekasse ab', 'bis ' + je(R.pflegeTages), 'budget'],
+      ['Pflegehilfsmittel zum Verbrauch', 'Lieferung, zum Beispiel als Pflegebox', 'bis ' + piEuro(R.beh.verbrauch) + ' im Monat', 'budget'],
+      ['Umbau der Wohnung', 'Zuschuss, vor dem Umbau beantragen', 'bis ' + piEuro(R.beh.wohnumfeld) + ' je Maßnahme', 'budget']];
+    var tw = el('div', null, 'tabwrap'); tw.setAttribute('role', 'region'); tw.setAttribute('aria-label', 'Geld oder Budget'); tw.tabIndex = 0;
+    var tb = el('table'), th = el('thead'), tr0 = el('tr');
+    ['Leistung', 'Wie es ankommt', 'Höhe'].forEach(function (x) { tr0.appendChild(el('th', x)); }); th.appendChild(tr0); tb.appendChild(th);
+    var body = el('tbody');
+    zeilen.forEach(function (z) { var tr = el('tr'); tr.appendChild(el('td', z[0])); var td = el('td'); td.appendChild(el('span', z[3] === 'geld' ? 'Geld · ' : 'Budget · ', z[3])); td.appendChild(document.createTextNode(z[1].replace(/^Budget: |^Geld aufs Konto, /, function (m) { return m === 'Geld aufs Konto, ' ? 'aufs Konto, ' : ''; }))); tr.appendChild(td); tr.appendChild(el('td', z[2])); body.appendChild(tr); });
+    tb.appendChild(body); tw.appendChild(tb); box.appendChild(tw);
+    var abschnitt = function (titel, absaetze, liste) {
+      var d = el('details'); d.appendChild(el('summary', titel));
+      absaetze.forEach(function (p) { d.appendChild(el('p', p)); });
+      if (liste) { var ul = el('ul'); liste.forEach(function (x) { ul.appendChild(el('li', x)); }); d.appendChild(ul); }
+      box.appendChild(d);
+    };
+    abschnitt('Pflegegeld: Geld für die Pflege durch Angehörige', [
+      'Wenn Angehörige, Freunde oder Nachbarn pflegen, zahlt die Pflegekasse ab Pflegegrad 2 jeden Monat Pflegegeld aufs Konto der gepflegten Person. Sie kann frei entscheiden, wofür sie es verwendet, zum Beispiel als Dankeschön an die Pflegeperson.',
+      'Pflicht: Bei Pflegegrad 2 und 3 einmal im halben Jahr, bei Pflegegrad 4 und 5 einmal im Vierteljahr kommt eine kostenlose Pflegeberatung ins Haus. Fällt sie aus, kann die Pflegekasse das Pflegegeld kürzen.']);
+    abschnitt('Pflegedienst: Sachleistung und Kombination', [
+      'Kommt ein Pflegedienst, rechnet er direkt mit der Pflegekasse ab. Du bekommst dafür kein Geld, aber auch keine Rechnung, solange das Budget reicht.',
+      'Nutzt der Pflegedienst nur einen Teil des Budgets, zahlt die Pflegekasse den Rest anteilig als Pflegegeld aus. Das heißt Kombinationsleistung.']);
+    abschnitt('Entlastungsbetrag: ' + piEuro(R.pflege.entlastung) + ' im Monat, aber nicht aufs Konto', [
+      'Den Entlastungsbetrag gibt es ab Pflegegrad 1. Er wird nicht ausgezahlt. Die Pflegekasse bezahlt damit Hilfen, die die Pflegeperson entlasten.',
+      'So geht es: Der Anbieter rechnet direkt mit der Pflegekasse ab, oder du bezahlst selbst und schickst die Rechnung zur Erstattung ein. Der Anbieter muss in deinem Bundesland anerkannt sein. Die Pflegekasse hat eine Liste.',
+      'Nicht genutzte Beträge sammeln sich an. Du kannst sie bis zum 30. Juni des Folgejahres nutzen, danach verfallen sie.'],
+      ['Haushaltshilfe, Einkaufen, Begleitung zum Arzt', 'Betreuung zu Hause oder in einer Betreuungsgruppe', 'Eigenanteile bei Tages- oder Kurzzeitpflege']);
+    abschnitt('Verhinderungspflege und Kurzzeitpflege: Vertretung für die Pflegeperson', [
+      'Ab Pflegegrad 2 haben beide einen gemeinsamen Jahresbetrag von ' + piEuro(R.entlastungsbudget) + '. Auch das ist kein Geld aufs Konto: Die Pflegekasse bezahlt damit die Vertretung.',
+      'Verhinderungspflege: Die Pflegeperson macht Urlaub, ist krank oder braucht ein paar Stunden Pause. Dann pflegt jemand anderes zu Hause, zum Beispiel ein Pflegedienst, Bekannte oder Nachbarn. Bei nahen Verwandten zahlt die Pflegekasse weniger; frag dort nach.',
+      'Kurzzeitpflege: Die gepflegte Person wohnt für eine Zeit in einer Pflegeeinrichtung, zum Beispiel nach einem Krankenhausaufenthalt.',
+      'Während der Vertretung zahlt die Pflegekasse bis zu 8 Wochen im Jahr die Hälfte des Pflegegelds weiter. Wer nur stundenweise vertreten wird (weniger als 8 Stunden am Tag), behält das volle Pflegegeld.',
+      'Tipp: Den Antrag kannst du auch nachträglich stellen. Hebe alle Rechnungen und Quittungen auf.']);
+    abschnitt('Pflegehilfsmittel und Umbau der Wohnung', [
+      'Pflegehilfsmittel zum Verbrauch, zum Beispiel Einmalhandschuhe, Desinfektion oder Bettschutz, gibt es bis ' + piEuro(R.beh.verbrauch) + ' im Monat. Meist kommt eine Box nach Hause, die der Anbieter mit der Pflegekasse abrechnet.',
+      'Größere Hilfsmittel wie ein Pflegebett oder ein Rollator werden meist leihweise gestellt.',
+      'Für einen Umbau, zum Beispiel eine bodengleiche Dusche oder Haltegriffe, gibt es bis ' + piEuro(R.beh.wohnumfeld) + ' je Maßnahme. Wichtig: vor dem Umbau beantragen, mit Kostenvoranschlag.']);
+    abschnitt('Gut zu wissen für pflegende Angehörige', [
+      'Wer mindestens 10 Stunden in der Woche an mindestens 2 Tagen pflegt und höchstens 30 Stunden arbeitet, für den zahlt die Pflegekasse Rentenbeiträge.',
+      'In der Steuererklärung gibt es den Pflege-Pauschbetrag.',
+      'Pflegeberatung ist kostenlos, bei der Pflegekasse oder im Pflegestützpunkt. Dort hilft man auch beim Antrag.']);
+    box.appendChild(el('p', 'Stand der Beträge: ' + (R.stand || 'November 2026') + '. Den genauen Anspruch legt die Pflegekasse fest.', 'small muted'));
+  }
+  function pflegeInfo(zurueckZu, fokus) {
+    piZurueckZu = zurueckZu || 'leistungen'; piFokus = fokus || null;
+    pflegeInfoBauen(); $('piNurDe').hidden = lang === 'de';
+    zeigeAnsicht('pflegeinfo', true);
+  }
+  $('piZurueck').addEventListener('click', function () {
+    zeigeAnsicht(piZurueckZu, false);
+    var el = piFokus && $(piFokus); if (el) { try { el.scrollIntoView({ block: 'center' }); } catch (e) {} if (el.focus) { if (!el.hasAttribute('tabindex') && !/^(BUTTON|A|INPUT)$/.test(el.tagName)) el.setAttribute('tabindex', '-1'); el.focus({ preventScroll: true }); } }
+  });
   Store.get('lotse.pflegecheck', function (v) { try { var d = v ? JSON.parse(v) : null; if (d && typeof d === 'object') { pa.antworten = d.antworten || null; pa.schaetzung = d.schaetzung || null; } } catch (e) {} paAnzeigen(); });
 
   // Brief prüfen: Kachel öffnet den passenden Teil des Prüfpakets (Abschnitte aus erweiterungen/vorschau.html)

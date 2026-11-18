@@ -184,8 +184,8 @@
   "t.bafoeg.alter": "BAföG gibt es in der Regel nur, wenn man bei Beginn der Ausbildung höchstens 45 Jahre alt ist, bei manchen Studiengängen jünger. Frage das Amt.",
   "t.pflege.keiner": "Du hast keinen Pflegegrad angegeben. Wer im Alltag dauerhaft Hilfe braucht, kann bei der Pflegekasse einen Pflegegrad beantragen.",
   "t.pflege.antrag": "Ein Pflegegrad ist beantragt oder wäre möglich. Die Pflegekasse lässt ihn begutachten. Ab Pflegegrad 2 gibt es Pflegegeld, wenn Angehörige pflegen.",
-  "t.pflege.pg1": "Bei Pflegegrad 1 gibt es den Entlastungsbetrag von {ent} im Monat für Hilfen im Alltag. Pflegegeld gibt es erst ab Pflegegrad 2.",
-  "t.pflege.pg2": "Pflegegeld bei Pflege zu Hause: {geld} im Monat bei Pflegegrad {pg}. Dazu kommt der Entlastungsbetrag von {ent} im Monat.",
+  "t.pflege.pg1": "Bei Pflegegrad 1 gibt es den Entlastungsbetrag von {ent} im Monat. Er wird nicht ausgezahlt: Die Pflegekasse bezahlt damit anerkannte Hilfen im Alltag, zum Beispiel Haushaltshilfe oder Betreuung. Pflegegeld gibt es erst ab Pflegegrad 2.",
+  "t.pflege.pg2": "Pflegegeld bei Pflege zu Hause: {geld} im Monat bei Pflegegrad {pg}. Das kommt aufs Konto. Zusätzlich gibt es den Entlastungsbetrag von {ent} im Monat: Er wird nicht ausgezahlt, sondern die Pflegekasse bezahlt damit anerkannte Hilfen im Alltag.",
   "z.ggBezug": "Du bekommst Grundsicherungsgeld (bis Juni 2026: Bürgergeld). Wohngeld und Kinderzuschlag passen dazu meist nicht. Das Bildungspaket läuft oft über das Jobcenter.",
   "z.wgKiz": "Wohngeld und Kinderzuschlag lassen sich kombinieren. Beantrage beides, auch wenn eins davon knapp ist.",
   "z.gsaWg": "Grundsicherung im Alter und Wohngeld gibt es nicht gleichzeitig. Lass beides prüfen und frage, welcher Weg dir mehr bringt.",
@@ -399,7 +399,7 @@
   "t.blindengeld.land": "Das gilt nur bei Wohnsitz in Bayern. Andere Bundesländer haben eigene Regeln und Beträge. Frage dort beim zuständigen Landesamt.",
   "t.pflegeplus.antrag": "Der Pflegegrad ist beantragt oder möglich. Sobald er festgestellt ist, kommen weitere Leistungen der Pflegekasse in Frage.",
   "t.pflegeplus.keiner": "Ohne Pflegegrad gibt es diese Leistungen nicht.",
-  "t.pflegeplus.mittel": "Mit einem Pflegegrad zahlt die Pflegekasse bei Pflege zu Hause Pflegehilfsmittel zum Verbrauch bis {verbrauch} im Monat und einen Zuschuss für Umbauten in der Wohnung (zum Beispiel ein barrierefreies Bad) bis {wohn} je Maßnahme.",
+  "t.pflegeplus.mittel": "Mit einem Pflegegrad bezahlt die Pflegekasse bei Pflege zu Hause Pflegehilfsmittel zum Verbrauch (zum Beispiel Handschuhe, Bettschutz) bis {verbrauch} im Monat, meist als Lieferung und nicht als Geld. Für Umbauten in der Wohnung (zum Beispiel ein barrierefreies Bad) gibt es einen Zuschuss bis {wohn} je Maßnahme.",
   "t.pflegeplus.verh": "Ab Pflegegrad 2 gibt es außerdem Verhinderungspflege und Kurzzeitpflege, wenn die pflegende Person ausfällt oder eine Pause braucht. Beide teilen sich einen gemeinsamen Jahresbetrag. Frage bei der Pflegekasse nach der aktuellen Höhe.",
   "t.arbeit.keine": "Das Budget für Arbeit ist für Menschen gedacht, die in einer Werkstatt für behinderte Menschen arbeiten oder dort einen Anspruch hätten.",
   "t.arbeit.ja": "Wer in einer Werkstatt arbeitet, kann mit dem Budget für Arbeit zu einem Arbeitgeber wechseln. Der Arbeitgeber bekommt einen Lohnkostenzuschuss von bis zu {prozent} % des Lohns, dazu gibt es Hilfe am Arbeitsplatz. Voraussetzung ist ein sozialversicherungspflichtiger Arbeitsvertrag zu Tariflohn oder ortsüblichem Lohn.",
@@ -765,7 +765,7 @@
   "t.pflege.rente": "Wer ohne Bezahlung mindestens 10 Stunden in der Woche an mindestens 2 Tagen pflegt und höchstens 30 Stunden arbeitet, für den zahlt die Pflegekasse Beiträge zur Rentenversicherung.",
   "t.pflege.steuer35a": "Für Pflegedienst und Hilfen im Haushalt gibt es außerdem eine Steuerermäßigung von 20 % der Kosten, höchstens 4.000 € im Jahr.",
   "t.pflege.zeit": "Angehörige können sich für die Pflege von der Arbeit freistellen lassen (bis 10 Tage mit Pflegeunterstützungsgeld, Pflegezeit bis 6 Monate, Familienpflegezeit bis 24 Monate).",
-  "t.pflegeplus.budget": "Ab Pflegegrad 2 gibt es Verhinderungspflege und Kurzzeitpflege, wenn die pflegende Person ausfällt oder eine Pause braucht. Beide teilen sich einen Jahresbetrag von {betrag}.",
+  "t.pflegeplus.budget": "Ab Pflegegrad 2 gibt es Verhinderungspflege und Kurzzeitpflege, wenn die pflegende Person ausfällt oder eine Pause braucht. Beide teilen sich einen Jahresbetrag von {betrag}. Das ist kein Geld aufs Konto: Die Pflegekasse bezahlt damit die Vertretung.",
   "t.ausweis.kuendigung": "Schwerbehinderte Menschen haben einen besonderen Kündigungsschutz: Vor einer Kündigung muss das Integrationsamt zustimmen.",
   "t.ausweis.frei": "Mit H, Bl, TBl oder aG fährst du kostenlos mit Bus und Bahn (Wertmarke kostenlos) und musst keine Kfz-Steuer zahlen.",
   "t.ausweis.park": "Mit aG oder Bl gibt es einen Parkausweis für Behindertenparkplätze.",
@@ -1046,5 +1046,7 @@
   "el.lese": "Der Brief wird gelesen …",
   "el.fehler": "Der Brief konnte nicht gelesen werden. Versuche ein helleres, gerades Foto oder füge den Text ein.",
   "sc.verweis": "Ein Antragsformular bekommen? Unter „Brief prüfen“ kannst du es fotografieren, und die App erklärt die Felder.",
-  "sc.verweisBtn": "Formular scannen"
+  "sc.verweisBtn": "Formular scannen",
+  "briefe.zurueckEinfach": "← Zurück",
+  "pa.info": "So funktionieren die Pflegeleistungen"
 }

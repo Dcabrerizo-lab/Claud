@@ -184,8 +184,8 @@
   "t.bafoeg.alter": "BAföG kural olarak eğitim başlarken en fazla 45 yaşında olanlara verilir, bazı bölümlerde daha genç. Daireye sorun.",
   "t.pflege.keiner": "Bakım derecesi belirtmediniz. Günlük yaşamda kalıcı yardıma ihtiyacı olan biri Pflegekasse’den bakım derecesi için başvurabilir.",
   "t.pflege.antrag": "Bakım derecesi için başvuruldu veya mümkün olabilir. Pflegekasse değerlendirme yaptırır. Bakım derecesi 2’den itibaren akrabalar bakarsa Pflegegeld verilir.",
-  "t.pflege.pg1": "Bakım derecesi 1 de günlük yaşamda yardım için ayda {ent} destek tutarı verilir. Pflegegeld bakım derecesi 2 den başlar.",
-  "t.pflege.pg2": "Evde bakım için Pflegegeld: bakım derecesi {pg} için ayda {geld}. Buna ayda {ent} destek tutarı eklenir.",
+  "t.pflege.pg1": "Bakım derecesi 1 de ayda {ent} destek tutarı (Entlastungsbetrag) vardır. Bu para ödenmez: Bakım sigortası (Pflegekasse) bununla günlük yaşamda onaylı yardımların bedelini öder, örneğin ev yardımı veya refakat. Pflegegeld bakım derecesi 2 den başlar.",
+  "t.pflege.pg2": "Evde bakım için Pflegegeld: bakım derecesi {pg} için ayda {geld}. Bu hesabına yatırılır. Ayrıca ayda {ent} destek tutarı (Entlastungsbetrag) vardır: Bu ödenmez, bakım sigortası (Pflegekasse) bununla günlük yaşamda onaylı yardımların bedelini öder.",
   "z.ggBezug": "Grundsicherungsgeld alıyorsunuz (Haziran 2026’ya kadar: Bürgergeld). Wohngeld ve Kinderzuschlag genelde bununla birlikte alınmaz. Eğitim paketi çoğunlukla Jobcenter üzerinden işler.",
   "z.wgKiz": "Wohngeld ve Kinderzuschlag birleştirilebilir. İkisine de başvurun, biri sınırda olsa bile.",
   "z.gsaWg": "Grundsicherung im Alter ve Wohngeld aynı anda alınamaz. İkisini de kontrol ettirin ve hangi yolun size daha çok kazandırdığını sorun.",
@@ -399,7 +399,7 @@
   "t.blindengeld.land": "Bu yalnızca Bavyera’da ikamet edenler için geçerlidir. Diğer eyaletlerin kendi kuralları ve tutarları vardır. Orada yetkili eyalet dairesine sorun.",
   "t.pflegeplus.antrag": "Bakım derecesi başvurulmuş veya mümkün. Belirlendikten sonra Pflegekasse’nin başka yardımları söz konusu olur.",
   "t.pflegeplus.keiner": "Bakım derecesi olmadan bu yardımlar verilmez.",
-  "t.pflegeplus.mittel": "Bakım derecesiyle, evde bakımda Pflegekasse tüketim malzemeleri için ayda {verbrauch}’a kadar ve konutta yapılacak tadilatlar (örneğin engelsiz banyo) için önlem başına {wohn}’a kadar destek öder.",
+  "t.pflegeplus.mittel": "Bakım derecesiyle bakım sigortası (Pflegekasse) evde bakımda tüketim amaçlı bakım malzemelerini (örneğin eldiven, yatak koruyucu) ayda {verbrauch} tutarına kadar öder; genellikle para olarak değil, teslimat olarak. Evde tadilat (örneğin engelsiz banyo) için önlem başına {wohn} tutarına kadar destek vardır.",
   "t.pflegeplus.verh": "Bakım derecesi 2’den itibaren, bakım veren kişi yoksa veya mola gerekiyorsa ayrıca Verhinderungspflege ve kısa süreli bakım vardır. İkisi ortak bir yıllık tutarı paylaşır. Güncel tutarı Pflegekasse’den sorun.",
   "t.arbeit.keine": "İş bütçesi, engelliler atölyesinde çalışan veya orada hakkı olan kişiler içindir.",
   "t.arbeit.ja": "Atölyede çalışan biri, İş bütçesiyle bir işverene geçebilir. İşveren ücretin en fazla %{prozent}’ine kadar ücret desteği alır, ayrıca işyerinde yardım sağlanır. Toplu sözleşme veya bölgede olağan ücretle sosyal sigortalı bir iş sözleşmesi gerekir.",
@@ -765,7 +765,7 @@
   "t.pflege.rente": "Haftada en az 10 saat, en az 2 gün ücretsiz bakan ve en fazla 30 saat çalışan kişi için bakım kasası emeklilik primi öder. (Pflegekasse)",
   "t.pflege.steuer35a": "Bakım servisi ve ev yardımı için ayrıca masrafların %20'si, yılda en fazla 4.000 € vergi indirimi vardır.",
   "t.pflege.zeit": "Yakınlar bakım için işten izin alabilir (yardımla 10 güne kadar, Pflegezeit 6 aya kadar, Familienpflegezeit 24 aya kadar).",
-  "t.pflegeplus.budget": "Bakım derecesi 2'den itibaren bakan kişi yoksa veya molaya ihtiyacı varsa vekâlet bakımı ve kısa süreli bakım vardır. İkisi yıllık {betrag} tutarı paylaşır.",
+  "t.pflegeplus.budget": "Bakım derecesi 2 den itibaren, bakan kişi gelemediğinde veya mola vermesi gerektiğinde Verhinderungspflege ve Kurzzeitpflege vardır. İkisi yıllık {betrag} tutarını paylaşır. Bu hesaba yatan para değildir: Bakım sigortası (Pflegekasse) bununla yerine bakan kişinin bedelini öder.",
   "t.ausweis.kuendigung": "Ağır engellilerin işten çıkarmaya karşı özel koruması vardır: İşten çıkarmadan önce Integrationsamt onay vermelidir.",
   "t.ausweis.frei": "H, Bl, TBl veya aG ile otobüs ve trende ücretsiz yolculuk edersin (Wertmarke ücretsiz) ve araç vergisi ödemezsin.",
   "t.ausweis.park": "aG veya Bl ile engelli park yerleri için park kartı vardır.",
@@ -1046,5 +1046,7 @@
   "el.lese": "Mektup okunuyor …",
   "el.fehler": "Mektup okunamadı. Daha aydınlık, düz bir fotoğraf dene veya metni yapıştır.",
   "sc.verweis": "Bir başvuru formu mu aldın? „Mektup kontrol“ altında fotoğrafını çekebilirsin, uygulama alanları açıklar.",
-  "sc.verweisBtn": "Formu tara"
+  "sc.verweisBtn": "Formu tara",
+  "briefe.zurueckEinfach": "← Geri",
+  "pa.info": "Bakım yardımları nasıl işler"
 }

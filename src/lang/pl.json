@@ -184,8 +184,8 @@
   "t.bafoeg.alter": "BAföG przysługuje zasadniczo tylko wtedy, gdy na początku nauki masz najwyżej 45 lat, na niektórych kierunkach mniej. Zapytaj w urzędzie.",
   "t.pflege.keiner": "Nie podano stopnia opieki. Kto stale potrzebuje pomocy w życiu codziennym, może złożyć w Pflegekasse wniosek o stopień opieki.",
   "t.pflege.antrag": "Stopień opieki został zgłoszony lub jest możliwy. Pflegekasse zleca jego ocenę. Od stopnia opieki 2 przysługuje Pflegegeld, jeśli opiekują się krewni.",
-  "t.pflege.pg1": "Przy stopniu opieki 1 przysługuje kwota wsparcia {ent} miesięcznie na pomoc w codziennym życiu. Pflegegeld jest od stopnia opieki 2.",
-  "t.pflege.pg2": "Pflegegeld przy opiece w domu: {geld} miesięcznie przy stopniu opieki {pg}. Do tego kwota wsparcia {ent} miesięcznie.",
+  "t.pflege.pg1": "Przy stopniu opieki 1 przysługuje kwota odciążająca (Entlastungsbetrag) {ent} miesięcznie. Nie jest wypłacana: kasa opiekuńcza (Pflegekasse) opłaca z niej uznaną pomoc w codziennym życiu, np. pomoc domową lub opiekę. Pflegegeld przysługuje od stopnia opieki 2.",
+  "t.pflege.pg2": "Pflegegeld przy opiece w domu: {geld} miesięcznie przy stopniu opieki {pg}. Trafia na konto. Dodatkowo jest kwota odciążająca (Entlastungsbetrag) {ent} miesięcznie: nie jest wypłacana, kasa opiekuńcza (Pflegekasse) opłaca z niej uznaną pomoc w codziennym życiu.",
   "z.ggBezug": "Otrzymujesz Grundsicherungsgeld (do czerwca 2026: Bürgergeld). Wohngeld i Kinderzuschlag zwykle do tego nie pasują. Pakiet edukacji często załatwia się przez Jobcenter.",
   "z.wgKiz": "Wohngeld i Kinderzuschlag można łączyć. Złóż wniosek o oba, nawet jeśli jeden jest na granicy.",
   "z.gsaWg": "Grundsicherung im Alter i Wohngeld nie przysługują jednocześnie. Daj sprawdzić oba i zapytaj, która droga jest dla ciebie korzystniejsza.",
@@ -399,7 +399,7 @@
   "t.blindengeld.land": "Dotyczy to tylko mieszkańców Bawarii. Inne kraje związkowe mają własne zasady i kwoty. Zapytaj tam w odpowiednim urzędzie krajowym.",
   "t.pflegeplus.antrag": "Stopień opieki został zgłoszony lub jest możliwy. Po jego ustaleniu w grę wchodzą dalsze świadczenia Pflegekasse.",
   "t.pflegeplus.keiner": "Bez stopnia opieki te świadczenia nie przysługują.",
-  "t.pflegeplus.mittel": "Przy stopniu opieki Pflegekasse przy opiece w domu płaci za środki pielęgnacyjne zużywalne do {verbrauch} miesięcznie oraz dopłatę do przebudowy mieszkania (np. łazienka bez barier) do {wohn} na jedno przedsięwzięcie.",
+  "t.pflegeplus.mittel": "Przy stopniu opieki kasa opiekuńcza (Pflegekasse) opłaca przy opiece w domu środki pielęgnacyjne zużywalne (np. rękawiczki, podkłady) do {verbrauch} miesięcznie, zwykle jako dostawę, a nie pieniądze. Na przebudowę mieszkania (np. łazienkę bez barier) jest dopłata do {wohn} na jedno przedsięwzięcie.",
   "t.pflegeplus.verh": "Od stopnia opieki 2 przysługuje też opieka zastępcza (Verhinderungspflege) i opieka krótkoterminowa, gdy opiekun jest niedostępny lub potrzebuje przerwy. Mają one wspólną kwotę roczną. Zapytaj Pflegekasse o aktualną wysokość.",
   "t.arbeit.keine": "Budżet na pracę jest przeznaczony dla osób pracujących w warsztacie dla osób z niepełnosprawnościami lub mających do tego prawo.",
   "t.arbeit.ja": "Osoba pracująca w warsztacie może przejść do pracodawcy dzięki Budżetowi na pracę. Pracodawca otrzymuje dopłatę do wynagrodzenia do {prozent} % płacy oraz wsparcie w miejscu pracy. Wymagana jest umowa o pracę z ubezpieczeniem społecznym za wynagrodzenie zgodne z taryfą lub zwyczajowe.",
@@ -765,7 +765,7 @@
   "t.pflege.rente": "Za osobę, która bez wynagrodzenia opiekuje się co najmniej 10 godzin tygodniowo przez co najmniej 2 dni i pracuje najwyżej 30 godzin, kasa opieki płaci składki emerytalne. (Pflegekasse)",
   "t.pflege.steuer35a": "Na serwis pielęgnacyjny i pomoc domową przysługuje też ulga podatkowa 20 % kosztów, maksymalnie 4 000 € rocznie.",
   "t.pflege.zeit": "Krewni mogą wziąć wolne od pracy na opiekę (do 10 dni z zasiłkiem, Pflegezeit do 6 miesięcy, Familienpflegezeit do 24 miesięcy).",
-  "t.pflegeplus.budget": "Od stopnia opieki 2 przysługuje opieka zastępcza i krótkoterminowa, gdy opiekun nie może lub potrzebuje przerwy. Obie dzielą roczną kwotę {betrag}.",
+  "t.pflegeplus.budget": "Od stopnia opieki 2 przysługuje Verhinderungspflege i Kurzzeitpflege, gdy opiekun nie może opiekować się lub potrzebuje przerwy. Obie dzielą roczną kwotę {betrag}. To nie są pieniądze na konto: kasa opiekuńcza (Pflegekasse) opłaca z niej zastępstwo.",
   "t.ausweis.kuendigung": "Osoby ciężko niepełnosprawne mają szczególną ochronę przed zwolnieniem: przed wypowiedzeniem musi wyrazić zgodę Integrationsamt.",
   "t.ausweis.frei": "Z H, Bl, TBl lub aG jeździsz za darmo autobusem i pociągiem (Wertmarke bezpłatna) i nie płacisz podatku samochodowego.",
   "t.ausweis.park": "Z aG lub Bl przysługuje karta parkingowa na miejsca dla niepełnosprawnych.",
@@ -1046,5 +1046,7 @@
   "el.lese": "Odczytywanie pisma …",
   "el.fehler": "Nie udało się odczytać pisma. Spróbuj jaśniejszego, prostego zdjęcia lub wklej tekst.",
   "sc.verweis": "Masz formularz wniosku? W „Sprawdź pismo” możesz go sfotografować, a aplikacja wyjaśni pola.",
-  "sc.verweisBtn": "Zeskanuj formularz"
+  "sc.verweisBtn": "Zeskanuj formularz",
+  "briefe.zurueckEinfach": "← Wstecz",
+  "pa.info": "Jak działają świadczenia opiekuńcze"
 }
