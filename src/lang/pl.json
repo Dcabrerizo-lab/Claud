@@ -1023,5 +1023,8 @@
   "briefe.vermieter.t": "Rozliczenie kosztów dodatkowych",
   "briefe.zurueck": "← Inne pismo",
   "briefe.nurDeutsch": "Ta kontrola jest na razie dostępna tylko po niemiecku. Tłumaczenia wkrótce.",
-  "briefe.hinweis": "Wszystko jest liczone tylko na tym urządzeniu. To nie jest porada prawna: sprawdź każde uzasadnienie samodzielnie, a w razie wątpliwości zapytaj w poradni."
+  "briefe.hinweis": "Wszystko jest liczone tylko na tym urządzeniu. To nie jest porada prawna: sprawdź każde uzasadnienie samodzielnie, a w razie wątpliwości zapytaj w poradni.",
+  "pa.start": "Oceń stopień opieki samodzielnie (Pflegegrad)",
+  "pa.hoeher": "Czy stopień opieki nadal wystarcza? Sprawdź podwyższenie",
+  "pa.stand": "Twoja ocena z {datum}: Pflegegrad {pg} ({punkte} pkt). Stopień opieki ustala kasa opiekuńcza (Pflegekasse)."
 }

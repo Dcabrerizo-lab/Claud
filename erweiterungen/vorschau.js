@@ -436,6 +436,16 @@ Ergebnis: Pflegegrad 2`;
   for (const id of ['pf-art-w', 'pf-art-h']) $(id).addEventListener('change', zeigePfArt);
   $('pf-wid-copy').addEventListener('click', () => kopiere($('pf-wid-text'), $('pf-copy-msg')));
   zeigePflege();
+  // Für die App: Gutachten-Prüfung mit den Antworten der eigenen Einschätzung füllen (Leistungsseite → „Brief prüfen“)
+  window.PruefpaketPflege = {
+    setze(g, art) {
+      setzePflege(g);
+      if (g.alterJahre != null) $('pf-alter').value = g.alterJahre;
+      if (g.alterMonate != null) $('pf-monate').value = g.alterMonate;
+      if (art === 'hoeher') $('pf-art-h').checked = true; else if (art === 'widerspruch') $('pf-art-w').checked = true;
+      zeigePfArt(); zeigePflege();
+    }
+  };
 
   $('bs-erw').addEventListener('click', () => { personZeile('erw'); zeigeBescheid(); });
   $('bs-kind').addEventListener('click', () => { personZeile('kind'); zeigeBescheid(); });

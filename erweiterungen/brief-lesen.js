@@ -1,0 +1,142 @@
+// Brief einlesen: erkennt aus dem Text eines Briefs (Foto mit Texterkennung, PDF oder eingefügt), von wem er ist und was er ist,
+// und liest die Beträge für die Prüfung aus. Nichts davon ist sicher: die App markiert jeden erkannten Wert zum Vergleichen.
+// Ergebnis von lies(): { art, titel, sicher, datum, felder: { <Feld-ID der Prüfung>: Wert }, posten: [...], text }
+const BriefLesen = (function () {
+  'use strict';
+
+  // Arten mit Stichwörtern (Gewicht). Gewinner = höchste Summe; unter 3 Punkten gilt die Art als unbekannt.
+  const ARTEN = {
+    pk: { titel: 'Pflegegutachten oder Bescheid der Pflegekasse', w: [[/Gutachten zur Feststellung der Pflegebedürftigkeit/i, 6], [/Medizinische[rn]? Dienst/i, 3], [/Pflegegrad/i, 2], [/Modul\s*[1-6]|Selbstversorgung|Mobilität/i, 2], [/Pflegekasse/i, 2], [/SGB XI\b/i, 2]] },
+    vm: { titel: 'Nebenkostenabrechnung', w: [[/Betriebskostenabrechnung|Nebenkostenabrechnung|Heiz- und Betriebskosten/i, 6], [/Abrechnungszeitraum/i, 2], [/Vorauszahlung/i, 2], [/Umlageschlüssel|Verteilerschlüssel|Wohnfläche/i, 2], [/Grundsteuer|Müllabfuhr|Hausmeister/i, 2]] },
+    jc: { titel: 'Bescheid vom Jobcenter (Grundsicherungsgeld)', w: [[/Jobcenter/i, 4], [/Grundsicherungsgeld|Bürgergeld/i, 4], [/SGB II\b|Zweite[sn]? Buch/i, 3], [/Bedarfsgemeinschaft/i, 3], [/Regelbedarf/i, 1]] },
+    sa: { titel: 'Bescheid vom Sozialamt (Grundsicherung im Alter)', w: [[/Grundsicherung im Alter/i, 6], [/Sozialamt|Amt für Soziales|Sozialhilfe/i, 3], [/SGB XII\b|Zwölfte[sn]? Buch/i, 3], [/Erwerbsminderung/i, 2]] },
+    wg: { titel: 'Wohngeldbescheid', w: [[/Wohngeldbescheid|Bewilligung von Wohngeld|Wohngeld in Höhe/i, 6], [/Wohngeldbehörde|Wohngeldstelle/i, 4], [/WoGG|Wohngeldgesetz/i, 3], [/Wohngeld/i, 1]] },
+    fk: { titel: 'Bescheid der Familienkasse (Kinderzuschlag)', w: [[/Kinderzuschlag/i, 5], [/Familienkasse/i, 3], [/BKGG|Bundeskindergeldgesetz/i, 3]] },
+    anh: { titel: 'Anhörung', w: [[/Anhörung/i, 5], [/§\s*24 SGB X\b/i, 4], [/Gelegenheit, sich (zu|dazu) zu äußern|Stellungnahme/i, 2]] },
+    mit: { titel: 'Aufforderung, Unterlagen nachzureichen', w: [[/Mitwirkung/i, 4], [/§\s*6[06] SGB I\b/i, 4], [/reichen Sie .{0,40}(ein|nach)|bitte legen Sie .{0,40}vor|fehlende Unterlagen/i, 3]] },
+    af: { titel: 'Antragsformular', w: [[/[☐□▢]/, 3], [/Bitte (ankreuzen|ausfüllen)|Zutreffendes ankreuzen/i, 3], [/Unterschrift (des|der) Antragstellers?/i, 3], [/^\s*Antrag auf\b/im, 2], [/Angaben zur Person/i, 2]] }
+  };
+  // Ein Bescheid schlägt die allgemeinen Arten: „Anhörung“ oder Formular-Merkmale stehen manchmal auch in Bescheiden
+  const VORRANG = ['pk', 'vm', 'jc', 'sa', 'wg', 'fk', 'anh', 'mit', 'af'];
+
+  function erkenne(text) {
+    const t = String(text || '');
+    let best = null, bestP = 0;
+    for (const art of VORRANG) {
+      const p = ARTEN[art].w.reduce((s, [re, g]) => s + (re.test(t) ? g : 0), 0);
+      if (p > bestP) { best = art; bestP = p; }
+    }
+    if (bestP < 3) return { art: null, titel: 'Nicht erkannt', sicher: 0 };
+    // Jobcenter-Bescheid, der Grundsicherung im Alter nur erwähnt: Jobcenter bleibt
+    return { art: best, titel: ARTEN[best].titel, sicher: bestP };
+  }
+
+  // ---------- Zahlen und Daten ----------
+  // Beträge: 1.234,56 oder 1234,56 (mit oder ohne €); auch 1 234,56 aus der Texterkennung
+  const BETRAG = /(\d{1,3}(?:[.\s]\d{3})+|\d+),(\d{2})(?!\d)/g;
+  function betraege(zeile) {
+    const out = []; let m; BETRAG.lastIndex = 0;
+    while ((m = BETRAG.exec(zeile))) out.push(+(m[1].replace(/[.\s]/g, '') + '.' + m[2]));
+    return out;
+  }
+  const DATUM = /\b(\d{1,2})\.(\d{1,2})\.(20\d{2})\b/;
+  function iso(m) { return `${m[3]}-${('0' + m[2]).slice(-2)}-${('0' + m[1]).slice(-2)}`; }
+  function zeilen(text) { return String(text || '').split(/\r?\n/).map((z) => z.replace(/\s+/g, ' ').trim()).filter(Boolean); }
+
+  // Erster Betrag nach einem Stichwort: in derselben Zeile der letzte Betrag (bei Tabellen die Spalte „Gesamt“), sonst in der nächsten Zeile
+  function nach(z, muster, opt) {
+    opt = opt || {};
+    for (let i = 0; i < z.length; i++) {
+      if (!muster.some((re) => re.test(z[i]))) continue;
+      if (opt.ohne && opt.ohne.some((re) => re.test(z[i]))) continue;
+      let b = betraege(z[i]);
+      if (!b.length && i + 1 < z.length && !/[A-Za-zÄÖÜäöü]{4,}/.test(z[i + 1].replace(/EUR|Euro/g, ''))) b = betraege(z[i + 1]);
+      if (b.length) return opt.erster ? b[0] : b[b.length - 1];
+    }
+    return null;
+  }
+  // Datum des Bescheids: „Datum: 12.03.2026“, „vom 12.03.2026“ oder das erste Datum in den ersten Zeilen
+  function bescheidDatum(z) {
+    for (const zl of z.slice(0, 40)) { const m = zl.match(/(?:Datum|Bescheid vom|vom)\s*:?\s*(\d{1,2}\.\d{1,2}\.20\d{2})/i); if (m) return iso(m[1].match(DATUM)); }
+    for (const zl of z.slice(0, 15)) { const m = zl.match(DATUM); if (m) return iso(m); }
+    return null;
+  }
+
+  // ---------- Felder je Art (IDs der Prüfungen in „Brief prüfen“) ----------
+  const FELDER = {
+    jc: {
+      'bs-b-regel': [[/Regelbedarf/i], { ohne: [/Mehrbedarf/i] }],
+      'bs-b-ae': [[/Alleinerziehend/i]],
+      'bs-b-schw': [[/Schwanger|werdende Mütter/i]],
+      'bs-b-ww': [[/Warmwasser/i]],
+      'bs-b-kdu': [[/Unterkunft und Heizung|Kosten der Unterkunft|Bedarfe für Unterkunft/i]],
+      'bs-b-eink': [[/anzurechnende[sn]? Einkommen|zu berücksichtigende[sn]? Einkommen|Einkommen (gesamt|insgesamt)/i], { ohne: [/Kindergeld/i] }],
+      'bs-b-kg': [[/Kindergeld/i]],
+      'bs-b-zahl': [[/Zahlbetrag|Auszahlungsbetrag|Gesamtanspruch|Leistungsanspruch|monatliche[rn]? Gesamtbetrag/i]],
+      'bs-heiz': [[/Heizkosten|Heizung\b/i], { ohne: [/Unterkunft und Heizung/i] }]
+    },
+    sa: {
+      'ga-b-regel': [[/Regelbedarf|Regelsatz/i], { ohne: [/Mehrbedarf/i] }],
+      'ga-b-g': [[/Merkzeichen G|Mehrbedarf.{0,20}\bG\b|Gehbehinderung/i]],
+      'ga-b-ww': [[/Warmwasser/i]],
+      'ga-b-kdu': [[/Unterkunft und Heizung|Kosten der Unterkunft/i]],
+      'ga-b-eink': [[/anzurechnende[sn]? Einkommen|einzusetzende[sn]? Einkommen|Einkommen (gesamt|insgesamt)/i]],
+      'ga-b-zahl': [[/Zahlbetrag|Auszahlungsbetrag|Gesamtanspruch|monatliche[rn]? Leistung/i]],
+      'ga-heiz': [[/Heizkosten/i]]
+    },
+    wg: {
+      'wg-b-miete': [[/zu berücksichtigende Miete|berücksichtigungsfähige Miete|Höchstbetrag|Miete \/ Belastung|zu berücksichtigende Belastung/i]],
+      'wg-b-eink': [[/Gesamteinkommen/i]],
+      'wg-b-wg': [[/Wohngeld (in Höhe von|monatlich|beträgt)|monatliche[sn]? Wohngeld|Wohngeldbetrag/i]],
+      'wg-kalt': [[/Bruttokaltmiete|Miete ohne Heizkosten/i]]
+    },
+    fk: {
+      'kz-b-bedarf': [[/Bedarf der Eltern|elterliche[rn]? Bedarf|Gesamtbedarf der Eltern/i]],
+      'kz-b-eink': [[/Einkommen der Eltern|elterliche[sn]? Einkommen|zu berücksichtigende[sn]? Einkommen/i]],
+      'kz-b-kiz': [[/Kinderzuschlag.{0,30}(insgesamt|monatlich|gesamt|in Höhe)|Gesamtbetrag Kinderzuschlag/i]],
+      'kz-wohn': [[/Wohnkosten|Kosten für Unterkunft|Miete und Heizung/i]]
+    },
+    vm: {
+      'nk-voraus': [[/geleistete Vorauszahlung|Ihre Vorauszahlung|Vorauszahlungen? (gesamt|insgesamt)|abzüglich Vorauszahlung/i]],
+      'nk-heiz': [[/Heizkosten.{0,25}(Ihr|Anteil)|Ihr Anteil Heiz|Heiz- und Warmwasserkosten/i]]
+    }
+  };
+  // Nebenkosten: Posten mit Kosten für das Haus (erster Betrag) und Anteil (letzter Betrag)
+  const POSTEN = /^(Grundsteuer|Müll\w*|Abfall\w*|Wasser\w*|Abwasser|Kaltwasser|Entwässerung|Niederschlagswasser|Straßenreinigung|Hausreinigung|Treppenhausreinigung|Gebäudereinigung|Hausmeister\w*|Garten\w*|Allgemeinstrom|Beleuchtung|Strom (allgemein|Treppenhaus)|Versicherung\w*|Gebäudeversicherung|Haftpflicht\w*|Aufzug|Fahrstuhl|Schornstein\w*|Kabel\w*|Antenne|Ungeziefer\w*|Winterdienst|Verwaltung\w*|Instandhaltung\w*|Reparatur\w*|Bankgebühren|Porto|Rauchwarnmelder\w*|Wartung\w*)\b/i;
+
+  function lies(text, art) {
+    const z = zeilen(text);
+    const e = art ? { art, titel: ARTEN[art] ? ARTEN[art].titel : '', sicher: 99 } : erkenne(text);
+    const out = Object.assign({}, e, { datum: bescheidDatum(z), felder: {}, posten: [], text: String(text || '') });
+    const f = FELDER[out.art] || {};
+    for (const [id, [muster, opt]] of Object.entries(f)) { const w = nach(z, muster, opt); if (w != null) out.felder[id] = w; }
+    if (out.art === 'jc' || out.art === 'sa') {
+      // Miete (ohne Heizung) aus Grundmiete + Nebenkosten
+      const gm = nach(z, [/Grundmiete|Kaltmiete|Nettokaltmiete/i]), nk = nach(z, [/^Nebenkosten|kalte Nebenkosten|Betriebskosten/i]);
+      if (gm != null) out.felder[out.art === 'jc' ? 'bs-miete' : 'ga-miete'] = Math.round((gm + (nk || 0)) * 100) / 100;
+    }
+    if (out.art === 'wg') { const m = String(text).match(/(\d+)\s*(?:zu berücksichtigende )?Haushaltsmitglied/i); if (m) out.felder['wg-n'] = +m[1]; }
+    if (out.art === 'vm') {
+      const m = String(text).match(/(?:Abrechnungszeitraum|Zeitraum)\s*:?\s*(?:vom\s*)?(\d{1,2}\.\d{1,2}\.20\d{2})\s*(?:bis|-|–)\s*(\d{1,2}\.\d{1,2}\.20\d{2})/i);
+      if (m) { out.felder['nk-von'] = iso(m[1].match(DATUM)); out.felder['nk-bis'] = iso(m[2].match(DATUM)); }
+      const wfl = String(text).match(/(?:Ihre |Wohn)fläche\s*:?\s*(\d+(?:,\d+)?)\s*m/i); if (wfl) out.felder['nk-wfl'] = +wfl[1].replace(',', '.');
+      const gfl = String(text).match(/Gesamt(?:wohn)?fläche\s*:?\s*(\d+(?:[.,]\d+)?)\s*m/i); if (gfl) out.felder['nk-gfl'] = +gfl[1].replace('.', '').replace(',', '.');
+      for (const zl of z) {
+        if (!POSTEN.test(zl)) continue;
+        const b = betraege(zl); if (!b.length) continue;
+        out.posten.push({ bez: zl.match(POSTEN)[0], gesamt: b.length > 1 ? b[0] : '', anteil: b[b.length - 1], flaeche: /m²|Wohnfläche|qm/i.test(zl) });
+      }
+    }
+    return out;
+  }
+
+  // Was die App bei Briefen ohne Rechnung sagt
+  const ERKLAERUNG = {
+    anh: 'Eine Anhörung kommt, bevor das Amt etwas zu deinen Ungunsten entscheidet, zum Beispiel Geld zurückfordert oder kürzt. Du darfst dich innerhalb der genannten Frist äußern. Erkläre kurz, wie es war, und lege Belege bei. Wenn du nicht antwortest, entscheidet das Amt nach Aktenlage.',
+    mit: 'Das Amt braucht noch Unterlagen. Reiche sie bis zur genannten Frist ein, am besten mit Kopie und Eingangsbestätigung. Wenn du etwas nicht rechtzeitig schaffst, schreib das vor Ablauf der Frist und nenne einen Termin. Ohne Unterlagen kann das Amt die Leistung ganz oder teilweise versagen (§ 66 SGB I).'
+  };
+  function frist(text) { const m = String(text).match(/(?:bis zum|bis spätestens|spätestens bis zum?|innerhalb von)\s*(\d{1,2}\.\d{1,2}\.20\d{2}|\w+ Wochen?)/i); return m ? m[1] : null; }
+
+  return { erkenne, lies, betraege, ERKLAERUNG, frist, ARTEN };
+})();
+if (typeof module !== 'undefined') module.exports = BriefLesen;

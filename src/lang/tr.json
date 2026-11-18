@@ -1023,5 +1023,8 @@
   "briefe.vermieter.t": "Yan gider hesabı",
   "briefe.zurueck": "← Başka mektup",
   "briefe.nurDeutsch": "Bu kontrol şu anda yalnızca Almanca. Çeviriler gelecek.",
-  "briefe.hinweis": "Her şey yalnızca bu cihazda hesaplanır. Hukuki danışmanlık değildir: Lütfen her gerekçeyi kendiniz kontrol edin ve emin değilseniz bir danışma merkezine sorun."
+  "briefe.hinweis": "Her şey yalnızca bu cihazda hesaplanır. Hukuki danışmanlık değildir: Lütfen her gerekçeyi kendiniz kontrol edin ve emin değilseniz bir danışma merkezine sorun.",
+  "pa.start": "Bakım derecesini kendin tahmin et (Pflegegrad)",
+  "pa.hoeher": "Bakım derecesi hâlâ yeterli mi? Derece yükseltmeyi kontrol et",
+  "pa.stand": "{datum} tarihli tahminin: Pflegegrad {pg} ({punkte} puan). Bakım derecesini bakım sigortası (Pflegekasse) belirler."
 }

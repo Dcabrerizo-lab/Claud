@@ -1023,5 +1023,8 @@
   "briefe.vermieter.t": "Nebenkostenabrechnung",
   "briefe.zurueck": "← Anderer Brief",
   "briefe.nurDeutsch": "Diese Prüfung gibt es zurzeit nur auf Deutsch. Übersetzungen folgen.",
-  "briefe.hinweis": "Alles wird nur auf diesem Gerät gerechnet. Keine Rechtsberatung: Bitte jede Begründung selbst prüfen und im Zweifel eine Beratungsstelle fragen."
+  "briefe.hinweis": "Alles wird nur auf diesem Gerät gerechnet. Keine Rechtsberatung: Bitte jede Begründung selbst prüfen und im Zweifel eine Beratungsstelle fragen.",
+  "pa.start": "Pflegegrad selbst einschätzen",
+  "pa.hoeher": "Reicht der Pflegegrad noch? Höherstufung prüfen",
+  "pa.stand": "Deine Einschätzung vom {datum}: Pflegegrad {pg} ({punkte} Punkte). Den Pflegegrad legt die Pflegekasse fest."
 }

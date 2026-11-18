@@ -1023,5 +1023,8 @@
   "briefe.vermieter.t": "Service charge statement",
   "briefe.zurueck": "← Other letter",
   "briefe.nurDeutsch": "This check is currently only available in German. Translations will follow.",
-  "briefe.hinweis": "Everything is calculated on this device only. No legal advice: please check every reason yourself and ask an advice centre if in doubt."
+  "briefe.hinweis": "Everything is calculated on this device only. No legal advice: please check every reason yourself and ask an advice centre if in doubt.",
+  "pa.start": "Estimate the care level yourself (Pflegegrad)",
+  "pa.hoeher": "Is the care level still enough? Check for a higher level",
+  "pa.stand": "Your estimate from {datum}: Pflegegrad {pg} ({punkte} points). The care insurance (Pflegekasse) decides the care level."
 }

@@ -678,6 +678,7 @@
     document.querySelectorAll('.cond-adults2').forEach(function (el) { el.hidden = state.adults !== 2; });
     renderPick(out.results);
     $('feedback').hidden = false; $('feedbackMail').setAttribute('href', feedbackMail(out.results));
+    if (typeof paAnzeigen === 'function') paAnzeigen();
   }
 
   // ----- Ausfüllhilfe: Antragsmappe (Brief und Angabenblatt auf Deutsch) -----
@@ -1492,7 +1493,7 @@
   };
   // ----- Bereiche: Start, Leistungen (Leistungscheck), Brief prüfen -----
   // Beim Öffnen die Startseite; „#leistungen“ und „#briefe“ öffnen den Bereich direkt (Links, Tests).
-  var ANSICHTEN = ['start', 'leistungen', 'briefe'];
+  var ANSICHTEN = ['start', 'leistungen', 'briefe', 'pflege']; // „pflege“: Pflegegrad-Einschätzung, gehört zu Leistungen
   var aktAnsicht = 'leistungen';
   var BRIEFE = [
     ['jc', 'briefe.jobcenter', 'briefe.jobcenter.t', '<path d="M4 20V9l8-5 8 5v11"/><path d="M9 20v-6h6v6M3 20h18"/>'],
@@ -1504,10 +1505,12 @@
   ];
   function zeigeAnsicht(a, fokus) {
     if (ANSICHTEN.indexOf(a) < 0) a = 'start';
+    if (a === 'pflege' && !$('pflegeAssist').children.length) a = 'leistungen'; // Einschätzung nur über ihren Knopf öffnen
     aktAnsicht = a;
     ANSICHTEN.forEach(function (x) { $('v-' + x).hidden = x !== a; });
     $('jump').hidden = a !== 'leistungen' || esModus;
-    document.querySelectorAll('#appnav button').forEach(function (b) { if (b.getAttribute('data-ansicht') === a) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
+    var navA = a === 'pflege' ? 'leistungen' : a;
+    document.querySelectorAll('#appnav button').forEach(function (b) { if (b.getAttribute('data-ansicht') === navA) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
     try { if (location.hash !== '#' + a) history.replaceState(null, '', '#' + a); } catch (e) {}
     bereicheText();
     if (fokus) { window.scrollTo(0, 0); var h = $('v-' + a).querySelector('h2'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); } }
@@ -1523,6 +1526,66 @@
     });
     BRIEFE.forEach(function (x) { var k = $('brief-' + x[0]); k.querySelector('b').textContent = t(x[1]); k.querySelector('.k-t').textContent = t(x[2]); });
   }
+  // ----- Pflegegrad selbst einschätzen (geführt; Rechnung und Texte aus erweiterungen/pflege*.js) -----
+  var pa = { antworten: null, schaetzung: null };
+  function paSpeichern() { Store.set('lotse.pflegecheck', JSON.stringify(pa)); }
+  function paEchterPg() { return /^[1-5]$/.test(String(state.pflegegrad)) ? +state.pflegegrad : null; }
+  function paStandText() {
+    if (!pa.schaetzung) return '';
+    return t('pa.stand', { pg: pa.schaetzung.pg ? String(pa.schaetzung.pg) : '0', punkte: String(pa.schaetzung.punkte).replace('.', ','), datum: datumKurz(pa.schaetzung.datum) });
+  }
+  function datumKurz(iso) { var b = String(iso || '').split('-').map(Number); try { return new Date(b[0], b[1] - 1, b[2]).toLocaleDateString(lang, { day: '2-digit', month: '2-digit', year: 'numeric' }); } catch (e) { return iso; } }
+  function paKnopfText() { return t(paEchterPg() ? 'pa.hoeher' : 'pa.start'); }
+  function paAnzeigen() {
+    if (!$('paStart') || !pa) return;
+    $('paStart').textContent = paKnopfText();
+    $('paStand').textContent = paStandText(); $('paStand').hidden = !pa.schaetzung;
+    var c = $('c-pflege');
+    if (c && typeof PflegeAssistent !== 'undefined') {
+      var box = c.querySelector('.pa-karte-knopf');
+      if (!box) { box = document.createElement('div'); box.className = 'pa-karte-knopf'; c.appendChild(box); }
+      box.textContent = '';
+      if (pa.schaetzung) { var p = document.createElement('p'); p.className = 'small'; p.textContent = paStandText(); box.appendChild(p); }
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'btn ghost'; b.textContent = paKnopfText();
+      b.addEventListener('click', paOeffnen); box.appendChild(b);
+    }
+  }
+  function paZurueck(ziel) {
+    zeigeAnsicht('leistungen', false);
+    var el = $(ziel) || $('paStart');
+    if (el) { try { el.scrollIntoView({ block: 'center' }); } catch (e) {} if (el.focus) el.focus({ preventScroll: true }); }
+  }
+  function paUebernehmen(r) {
+    pa.schaetzung = { pg: r.pg, punkte: Math.round(r.gesamt * 100) / 100, datum: heuteIso() };
+    if (r.pg >= 1 && !paEchterPg() && state.pflegegrad !== 'antrag') state.pflegegrad = 'antrag';
+    paSpeichern(); $('pflegegrad').value = state.pflegegrad; touched(); // Auswahlfelder schreibt writeForm nicht
+  }
+  function heuteIso() { var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+  function paOeffnen() {
+    if (typeof PflegeAssistent === 'undefined') return;
+    $('paNurDe').hidden = lang === 'de';
+    var pgJetzt = paEchterPg();
+    PflegeAssistent.start($('pflegeAssist'), {
+      pgAktuell: pgJetzt, antworten: pa.antworten,
+      speichern: function (a) { pa.antworten = a; paSpeichern(); },
+      abbrechen: function () { paZurueck('paStart'); },
+      aktionen: [
+        { text: 'Ergebnis übernehmen', haupt: true, wenn: function (r, pg) { return pg == null; }, fn: function (r) { paUebernehmen(r); paZurueck('c-pflege'); } },
+        { text: 'Antrag an die Pflegekasse in die Antragsmappe', wenn: function (r, pg) { return pg == null && r.pg >= 1; }, fn: function (r) {
+          paUebernehmen(r); picked.pflege = true; pickedUser.pflege = true; if (lastOut) renderPick(lastOut.results); paZurueck('mappeMake'); } },
+        { text: 'Antrag auf Höherstufung schreiben', haupt: true, wenn: function (r, pg) { return pg != null && r.pg > pg; }, fn: function (r, a, g) {
+          paUebernehmen(r); zeigeAnsicht('briefe', false); briefOeffnen('pk'); if (window.PruefpaketPflege) window.PruefpaketPflege.setze(g, 'hoeher'); } },
+        { text: 'Mit dem Gutachten der Pflegekasse vergleichen', fn: function (r, a, g) {
+          paUebernehmen(r); zeigeAnsicht('briefe', false); briefOeffnen('pk'); if (window.PruefpaketPflege) window.PruefpaketPflege.setze(g, 'widerspruch'); } },
+        { text: 'Zurück zu den Leistungen', fn: function (r) { paUebernehmen(r); paZurueck('paStart'); } }
+      ]
+    });
+    zeigeAnsicht('pflege', false);
+    var q = $('pa-q'); if (q) { window.scrollTo(0, 0); q.focus({ preventScroll: true }); }
+  }
+  $('paStart').addEventListener('click', paOeffnen);
+  Store.get('lotse.pflegecheck', function (v) { try { var d = v ? JSON.parse(v) : null; if (d && typeof d === 'object') { pa.antworten = d.antworten || null; pa.schaetzung = d.schaetzung || null; } } catch (e) {} paAnzeigen(); });
+
   // Brief prüfen: Kachel öffnet den passenden Teil des Prüfpakets (Abschnitte aus erweiterungen/vorschau.html)
   var BRIEF_TEIL = { jc: 'p-bescheid', sa: 'p-gsa', wg: 'p-wg', fk: 'p-kiz', pk: 'p-pflege', vm: 'p-nk' };
   function briefOeffnen(art) {

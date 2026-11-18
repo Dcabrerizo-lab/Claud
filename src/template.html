@@ -432,6 +432,21 @@
   .pp-kopf { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 0 0 14px; }
   .pp-kopf .btn { flex: none; }
   .pp-hinweis { background: var(--warn-bg); border-radius: 12px; padding: 10px 14px; margin: 0 0 14px; }
+  /* Pflegegrad selbst einschätzen */
+  .pa-einstieg { display: grid; gap: 4px; justify-items: start; margin: -4px 0 8px; }
+  .pa { max-width: 640px; }
+  .pa .es-btn > span { display: grid; gap: 2px; }
+  .pa-a { font-weight: 600; }
+  .pa-amt { font-size: .8em; color: var(--muted); font-weight: 400; }
+  .pa-info { margin: 14px 0 0; border: 1px solid var(--line); border-radius: 12px; padding: 4px 14px; background: var(--surface); }
+  .pa-info > summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font-weight: 600; }
+  .pa-info p, .pa-info ul { margin: 6px 0 10px; }
+  .pa-bar { position: relative; height: 16px; border-radius: 99px; background: var(--line); margin: 30px 0 14px; }
+  .pa-fill { position: absolute; inset: 0 auto 0 0; border-radius: 99px; background: var(--accent); }
+  .pa-mark { position: absolute; top: -5px; bottom: -5px; width: 2px; background: var(--ink); }
+  .pa-mark span { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: .75em; color: var(--muted); white-space: nowrap; }
+  .pa table { width: 100%; border-collapse: collapse; } .pa td, .pa th { padding: 6px 4px; border-top: 1px solid var(--line); text-align: left; } .pa .z { text-align: right; }
+  .pa-karte-knopf { margin-top: 10px; }
 /*PPSTIL*/
 </style>
 
@@ -472,6 +487,12 @@
         <p class="small muted" data-t="briefe.hinweis"></p>
 <!--PRUEFPAKET-->
       </div>
+    </section>
+
+    <!-- Pflegegrad selbst einschätzen (geführt, eine Frage pro Bildschirm) -->
+    <section id="v-pflege" class="ansicht" aria-label="Pflegegrad" hidden>
+      <p class="pp-hinweis small" id="paNurDe" data-t="briefe.nurDeutsch" hidden></p>
+      <div id="pflegeAssist" class="pa"></div>
     </section>
 
     <div id="v-leistungen" class="ansicht">
@@ -582,6 +603,10 @@
             <div class="field">
               <label for="pflegegrad" data-t="pflege.label"></label>
               <select id="pflegegrad"></select>
+            </div>
+            <div class="pa-einstieg">
+              <button type="button" class="btn ghost" id="paStart" data-t="pa.start"></button>
+              <p class="hint" id="paStand" hidden></p>
             </div>
             <div class="field">
               <label for="emStd" data-t="bh.em.label"></label>
