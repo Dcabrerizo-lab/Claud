@@ -89,13 +89,15 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Kachel Antragsformular zeigt das Formular-Scannen', await p.isVisible('#scan') && !(await p.isVisible('#einlesen')));
   ok('Antragsformular: großer Foto-Knopf statt Dateifeld', await p.isVisible('#scan .sc-foto') && (await p.getAttribute('#sc-file', 'class')).includes('vh'));
   const FORMULAR = 'Antrag auf Wohngeld\n1. Angaben zur antragstellenden Person\nFamilienname, Vorname\nGeburtsdatum\nIBAN\n2. Haushaltsmitglieder\nFamilienstand\n3. Wohnkosten\nGesamtmiete monatlich\nHeizkosten\nWohnfläche in m²\n4. Einkommen\nRenten\nKrankenkasse\nStaatsangehörigkeit\nOrt, Datum, Unterschrift';
-  await p.fill('#sc-text', FORMULAR); await p.click('#sc-local');
+  if (!(await p.isVisible('#sc-text'))) await p.click('#sc-pasteBtn'); await p.fill('#sc-text', FORMULAR); await p.click('#sc-local');
   const out = await p.textContent('#sc-out');
   ok('Antragsformular: Name des Formulars erkannt', /Erkannt: Antrag auf Wohngeld/.test(out), out.slice(0, 200));
   ok('Antragsformular: kein Feld geht verloren (Heizkosten, Wohnfläche, Familienstand, Renten)', ['Heizkosten', 'Wohnfläche in m²', 'Familienstand', 'Renten', 'Krankenkasse', 'Staatsangehörigkeit'].every((x) => out.includes(x)));
   ok('Antragsformular: Nummerierung wird weggelassen', !/\b2\. Haushaltsmitglieder/.test(out) && out.includes('Haushaltsmitglieder'));
   ok('Antragsformular: zusammengehörige Felder in einer Karte', (await p.locator('#sc-out .sc-row:has-text("Heizkosten") .sc-labs li').count()) === 3);
   ok('Mit Leistungscheck: Werte zum Abschreiben (Miete 950 €), kein leeres „0 €“', /Warmmiete im Monat: 950 €/.test(out) && !/(^|[^\d.,])0 €/.test(out), out.slice(0, 900));
+  ok('Antragsformular: zwei Teile, Abschreiben mit Kopieren und Liste zum Abhaken', (await p.locator('#sc-out .sc-mit [data-scopy]').count()) >= 1 && (await p.locator('#sc-out .sc-hak input[type=checkbox]').count()) >= 3 && /davon \d+ mit Wert aus deinem Check/.test(out));
+  ok('Antragsformular: Erklärung je Feld zum Aufklappen', (await p.locator('#sc-out details.sc-erkl').count()) >= 5);
   ok('Antragsformular: kein seitliches Scrollen', await breit());
   await p.click('#briefZurueck');
   await p.click('#appnav [data-ansicht=leistungen]');
@@ -112,7 +114,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   // Ganz ohne Leistungscheck (neues Gerät): keine erfundenen Werte, sondern ein Tipp
   const ctx2 = await b.newContext({ viewport: { width: 360, height: 760 }, locale: 'de-DE' }); const q = await ctx2.newPage();
   await q.goto(APP + '#briefe'); await q.waitForTimeout(300); await q.click('#brief-af');
-  await q.fill('#sc-text', 'Antrag auf Wohngeld\nGesamtmiete monatlich\nEinkommen\nVermögen\nHaushaltsmitglieder'); await q.click('#sc-local');
+  if (!(await q.isVisible('#sc-text'))) await q.click('#sc-pasteBtn'); await q.fill('#sc-text', 'Antrag auf Wohngeld\nGesamtmiete monatlich\nEinkommen\nVermögen\nHaushaltsmitglieder'); await q.click('#sc-local');
   const leer = await q.textContent('#sc-out');
   ok('Ohne Leistungscheck: kein „0 €“, keine Haushaltszeile, aber Tipp', !/€/.test(leer) && !/Erwachsene/.test(leer) && /Leistungscheck/.test(leer), leer.slice(0, 400));
   await ctx2.close();

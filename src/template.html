@@ -307,7 +307,18 @@
   .sc-val .btn { min-height: 36px; padding: 0 12px; font-size: 0.9em; }
   .sc-tag { font-size: 0.8em; color: var(--muted); }
   #sc-file.vh, #sc-pdf.vh { inset-inline-start: 0; top: 0; }
-  .scan .field:has(#sc-file), .scan .field:has(#sc-pdf) { position: relative; }
+  .sc-wahl { position: relative; display: grid; gap: 10px; }
+  .sc-wahl .sc-foto { justify-content: flex-start; width: 100%; min-height: 52px; }
+  .sc-foto { gap: 8px; }
+  .sc-row:not(.sc-mit) { padding: 6px 12px; gap: 0; }
+  .sc-row:not(.sc-mit) .sc-erkl > summary { min-height: 36px; }
+  .sc-teil { margin: 16px 0 6px; font-size: 1rem; }
+  .sc-zahl { font-weight: 700; }
+  .sc-erkl { border-top: 0; padding-top: 0; }
+  .sc-erkl > summary { min-height: 40px; font-size: .92em; }
+  .sc-erkl p { margin: 0 0 6px; color: var(--muted); }
+  .sc-hak { padding: 4px 0; font-weight: 700; }
+  .sc-hak:has(input:checked) .sc-lab { text-decoration: line-through; color: var(--muted); }
   #sc-pdf:focus-visible + .sc-foto { outline: 3px solid var(--focus); outline-offset: 2px; }
   .sc-foto { justify-content: center; text-align: center; display: inline-flex; align-items: center; min-height: 56px; cursor: pointer; }
   #sc-file:focus-visible + .sc-foto { outline: 3px solid var(--focus); outline-offset: 2px; }
@@ -603,18 +614,19 @@
         <section class="scan pp-teil" id="scan" aria-labelledby="h-scan" hidden>
           <h2 id="h-scan" data-t="sc.h"></h2>
           <p data-t="sc.intro"></p>
-          <div class="field">
+          <div class="sc-wahl">
             <input type="file" id="sc-file" class="vh" accept="image/*">
-            <label for="sc-file" class="btn sc-foto" data-t="sc.photoBtn"></label>
+            <label for="sc-file" class="btn ghost sc-foto"><span aria-hidden="true">📷 </span><span data-t="sc.take"></span></label>
             <input type="file" id="sc-pdf" class="vh" accept="application/pdf,.pdf">
-            <label for="sc-pdf" class="btn ghost sc-foto" data-t="sc.pdfBtn"></label>
-            <p class="hint" data-t="sc.localNote"></p>
+            <label for="sc-pdf" class="btn ghost sc-foto"><span aria-hidden="true">📄 </span><span data-t="el.pdf"></span></label>
+            <button type="button" class="btn ghost sc-foto" id="sc-pasteBtn" aria-expanded="false" aria-controls="sc-pasteBox"><span aria-hidden="true">📋 </span><span data-t="el.paste"></span></button>
           </div>
-          <div class="field">
+          <div class="field" id="sc-pasteBox" hidden>
             <label for="sc-text" data-t="sc.paste"></label>
             <textarea id="sc-text" lang="de" dir="ltr" autocomplete="off" spellcheck="false"></textarea>
-            <div class="btns"><button type="button" class="btn ghost" id="sc-local" data-t="sc.local"></button></div>
+            <div class="btns"><button type="button" class="btn" id="sc-local" data-t="sc.local"></button></div>
           </div>
+          <p class="small muted" data-t="sc.localNote"></p>
           <div class="box" id="sc-claudeBox" hidden>
             <p class="hint" data-t="sc.claudeNote"></p>
             <label class="check"><input type="checkbox" id="sc-consent"><span data-t="sc.consent"></span></label>

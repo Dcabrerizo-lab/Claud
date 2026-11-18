@@ -465,6 +465,7 @@
     $('lang').addEventListener('change', function () { setLang($('lang').value); });
     if ($('sc-take')) $('sc-take').addEventListener('click', function () { runNative(); });
     if ($('sc-local')) $('sc-local').addEventListener('click', function () { runLocal(true); });
+    if ($('sc-pasteBtn')) $('sc-pasteBtn').addEventListener('click', function () { var b = $('sc-pasteBox'); b.hidden = !b.hidden; $('sc-pasteBtn').setAttribute('aria-expanded', String(!b.hidden)); if (!b.hidden) $('sc-text').focus(); });
     if ($('sc-file')) $('sc-file').addEventListener('change', function () { if ($('sc-file').files && $('sc-file').files[0]) runLocal(false); });
     if ($('sc-pdf')) $('sc-pdf').addEventListener('change', function () {
       var f = $('sc-pdf').files && $('sc-pdf').files[0]; if (!f || scanBusy) return;
@@ -1122,19 +1123,24 @@
     if (!scanFound.length) { el.innerHTML = ''; return; }
     var felder = scanFound.reduce(function (n, f) { return n + (f.labels ? f.labels.length : 1); }, 0);
     var mitWert = scanFound.some(function (f) { return SCAN_IDS.indexOf(f.id) >= 0 && scanValue(f.id); });
+    // Zwei Teile: zuerst, was man aus dem Check abschreiben kann (mit Kopieren), dann eine Liste zum Abhaken; Erklärungen zum Aufklappen
+    var zeilen = scanFound.map(function (f, i) {
+      var known = SCAN_IDS.indexOf(f.id) >= 0;
+      return { f: f, i: i, known: known, val: known ? scanValue(f.id) : null, expl: known ? t('sc.f.' + f.id) : (f.hint || ''),
+        lab: f.labels && f.labels.length > 1 ? '<ul class="sc-labs">' + f.labels.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : esc(f.label) };
+    });
+    var mitZ = zeilen.filter(function (z) { return z.val; }), ohneZ = zeilen.filter(function (z) { return !z.val; });
+    var nMit = mitZ.reduce(function (n, z) { return n + (z.f.labels ? z.f.labels.length : 1); }, 0);
+    var erkl = function (z) { return z.expl ? '<details class="sc-erkl"><summary>' + esc(t('sc.was')) + '</summary><p>' + (z.known ? '' : '<span class="sc-tag">' + esc(t('sc.claudeHint')) + ': </span>') + esc(z.expl) + '</p></details>' : ''; };
     el.innerHTML = '<h3>' + esc(t('sc.res')) + '</h3>' + (scanTitel ? '<p class="sc-titel"><span>' + esc(t('sc.form')) + '</span> <bdi lang="de" dir="ltr">' + esc(scanTitel) + '</bdi></p>' : '') +
-      '<p class="hint">' + esc(t('sc.found', { n: felder })) + '</p>' + (mitWert ? '' : '<p class="hint">' + esc(t('sc.tipp')) + '</p>') + '<ul class="sc-list">' +
-      scanFound.map(function (f, i) {
-        var known = SCAN_IDS.indexOf(f.id) >= 0;
-        var expl = known ? t('sc.f.' + f.id) : (f.hint || '');
-        var val = known ? scanValue(f.id) : null;
-        var lab = f.labels && f.labels.length > 1 ? '<ul class="sc-labs">' + f.labels.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : esc(f.label);
-        return '<li class="sc-row"><div class="sc-lab" lang="de" dir="ltr">' + lab + '</div>' +
-          (expl ? '<p>' + (known ? '' : '<span class="sc-tag">' + esc(t('sc.claudeHint')) + ': </span>') + esc(expl) + '</p>' : '') +
-          '<div class="sc-val">' + (val
-            ? '<span>' + esc(t('sc.val')) + '</span><bdi lang="de" dir="ltr">' + esc(val) + '</bdi><button type="button" class="btn ghost" data-scopy="' + i + '">' + esc(t('sc.copy')) + '</button>'
-            : (known ? '<span class="sc-tag">' + esc(t('sc.self')) + '</span>' : '')) + '</div></li>';
-      }).join('') + '</ul><p class="hint">' + esc(t('sc.check')) + '</p>';
+      '<p class="sc-zahl">' + esc(t('sc.summary', { n: felder, m: nMit })) + '</p>' + (mitWert ? '' : '<p class="hint">' + esc(t('sc.tipp')) + '</p>') +
+      (mitZ.length ? '<h4 class="sc-teil">' + esc(t('sc.abschreiben')) + '</h4><ul class="sc-list">' + mitZ.map(function (z) {
+        return '<li class="sc-row sc-mit"><div class="sc-lab" lang="de" dir="ltr">' + z.lab + '</div><div class="sc-val"><bdi lang="de" dir="ltr">' + esc(z.val) + '</bdi><button type="button" class="btn ghost" data-scopy="' + z.i + '">' + esc(t('sc.copy')) + '</button></div>' + erkl(z) + '</li>';
+      }).join('') + '</ul>' : '') +
+      (ohneZ.length ? '<h4 class="sc-teil">' + esc(t('sc.selbst.h')) + '</h4><ul class="sc-list">' + ohneZ.map(function (z) {
+        return '<li class="sc-row"><label class="check sc-hak"><input type="checkbox"><span class="sc-lab" lang="de" dir="ltr">' + z.lab + '</span></label>' + erkl(z) + '</li>';
+      }).join('') + '</ul>' : '') +
+      '<p class="hint">' + esc(t('sc.check')) + '</p>';
     el.querySelectorAll('[data-scopy]').forEach(function (b) {
       b.addEventListener('click', function () {
         var f = scanFound[Number(b.getAttribute('data-scopy'))];
