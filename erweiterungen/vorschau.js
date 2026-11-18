@@ -120,6 +120,7 @@
     }
     box.append(h('details', {}, h('summary', { text: 'So rechnet die Pflegekasse' }), h('ul', {}, P.SO_GEHTS.map((t) => h('li', { text: t })))));
     zeigeErklaerung(g, r);
+    if (eigen) zeigeVergleich(g, r);
   }
   // Das Gutachten einfach erklärt: jede eingetragene Bewertung mit ihrer Bedeutung im Alltag
   function zeigeErklaerung(g, r) {
@@ -140,6 +141,29 @@
     box.hidden = leer;
   }
   // Widerspruch Pflege: Liste der Kriterien
+  // Vergleich Gutachten ↔ eigene Einschätzung (aus der Leistungsseite der App): wo der Gutachter niedriger bewertet hat
+  let eigen = null;
+  function zeigeVergleich(g, r) {
+    const box = $('pf-erg');
+    const re = P.rechne(eigen);
+    const eingetragen = Object.keys(g.stufen).length > 0;
+    const sec = h('div', { class: 'opt', id: 'pf-vergleich' }, h('h3', { text: 'Vergleich mit deiner Einschätzung' }));
+    if (!eingetragen) { sec.append(h('p', { text: `Deine Einschätzung: ${re.pg ? 'Pflegegrad ' + re.pg : 'kein Pflegegrad'} (${zahl(re.gesamt)} Punkte). Trage oben die Bewertungen aus dem Gutachten ein oder scanne es, dann zeigt SoLo jede Abweichung.` })); box.append(sec); return; }
+    const ab = [];
+    for (const k of P.KRITERIEN) {
+      const e = eigen.stufen && eigen.stufen[k.id], gu = g.stufen[k.id];
+      if (e == null || (P.SKALA[k.s].punkte[e] || 0) <= (gu == null ? 0 : P.SKALA[k.s].punkte[gu] || 0)) continue;
+      ab.push({ k, e, gu });
+    }
+    sec.append(h('p', { text: `Gutachten: ${r.pg ? 'Pflegegrad ' + r.pg : 'kein Pflegegrad'} (${zahl(r.gesamt)} Punkte). Deine Einschätzung: ${re.pg ? 'Pflegegrad ' + re.pg : 'kein Pflegegrad'} (${zahl(re.gesamt)} Punkte).` }));
+    if (!ab.length) { sec.append(h('p', { text: 'Bei keiner Frage hat der Gutachter niedriger bewertet als du.' })); box.append(sec); return; }
+    sec.append(h('p', { text: `Bei ${ab.length} ${ab.length === 1 ? 'Frage' : 'Fragen'} hat der Gutachter niedriger bewertet als du:` }));
+    const tb = h('tbody', {}, ab.map(({ k, e, gu }) => h('tr', {}, h('td', { text: k.leicht }), h('td', { text: gu == null ? 'nicht bewertet' : P.SKALA[k.s].kurz[gu] }), h('td', { text: P.SKALA[k.s].kurz[e] }))));
+    sec.append(h('div', { class: 'tablewrap', tabindex: '0', role: 'region', 'aria-label': 'Abweichungen' }, h('table', {}, h('thead', {}, h('tr', {}, h('th', { text: 'Frage' }), h('th', { text: 'Gutachten' }), h('th', { text: 'Deine Einschätzung' }))), tb)));
+    sec.append(h('button', { type: 'button', class: 'btn', onclick: () => { ab.forEach(({ k, e }) => fuegeWiderspruchHinzu(k.id, e)); $('pf-wid').scrollIntoView({ block: 'start' }); } }, 'Abweichungen in den Widerspruch übernehmen'));
+    sec.append(h('p', { class: 'small muted', text: 'Übernimm nur, was im Alltag wirklich so ist, und beschreibe es im Widerspruch mit eigenen Worten.' }));
+    box.append(sec);
+  }
   function fuegeWiderspruchHinzu(id, soll) {
     const liste = $('pf-wid-liste');
     if (id && liste.querySelector(`[data-id="${id}"]`)) return;
@@ -444,6 +468,59 @@ Ergebnis: Pflegegrad 2`;
       if (g.alterMonate != null) $('pf-monate').value = g.alterMonate;
       if (art === 'hoeher') $('pf-art-h').checked = true; else if (art === 'widerspruch') $('pf-art-w').checked = true;
       zeigePfArt(); zeigePflege();
+    },
+    eigene(g) { eigen = g || null; zeigePflege(); }
+  };
+  // Für die App: erkannte Werte eines eingelesenen Briefs eintragen (erweiterungen/brief-lesen.js) und gelb markieren.
+  // hh = Haushalt aus „Leistungen“: { erwachsene: [{ alter, brutto, netto }], kinder: [alter], miete, heiz, stufe, alleinerziehend }
+  // Personen werden nur eingetragen, wenn dort noch nichts steht. Ergebnis: Zahl der übernommenen Werte aus dem Brief.
+  window.PruefpaketLesen = {
+    fuelle(art, r, hh) {
+      for (const el of document.querySelectorAll('.pp-erkannt')) el.classList.remove('pp-erkannt');
+      let n = 0;
+      const setze = (id, v) => { const el = $(id); if (!el || v == null || v === '') return; el.value = v; el.classList.add('pp-erkannt'); n++; };
+      const leer = (id) => !$(id) || $(id).value === '';
+      const fuellen = (id, v) => { if (leer(id) && v != null && v !== '' && v !== 0) $(id).value = v; };
+      hh = hh || { erwachsene: [], kinder: [] };
+      const erw = hh.erwachsene || [], kin = hh.kinder || [];
+      // Nur leere Zeilen (z. B. die erste, leere Person) dürfen durch den Haushalt ersetzt werden
+      const nurLeer = (tbody) => [...$(tbody).querySelectorAll('input[type="number"]')].every((el) => el.value === '');
+      if (art === 'jc' && erw.length && nurLeer('bs-personen')) {
+        $('bs-personen').replaceChildren();
+        erw.forEach((p) => personZeile('erw', { alter: p.alter, brutto: p.brutto, netto: p.netto }));
+        kin.forEach((a) => personZeile('kind', { alter: a }));
+        fuellen('bs-miete', hh.miete); fuellen('bs-heiz', hh.heiz);
+      }
+      if (art === 'sa') {
+        if (erw.length === 2) $('ga-zahl').value = '2';
+        fuellen('ga-miete', hh.miete); fuellen('ga-heiz', hh.heiz);
+      }
+      if (art === 'wg') {
+        fuellen('wg-n', erw.length + kin.length || ''); fuellen('wg-kalt', hh.miete);
+        if (hh.stufe && $('wg-stufe').querySelector(`option[value="${hh.stufe}"]`)) $('wg-stufe').value = hh.stufe;
+        if (hh.alleinerziehend) $('wg-ae').checked = true;
+        if (nurLeer('wg-mitglieder')) $('wg-mitglieder').replaceChildren();
+        if (!$('wg-mitglieder').children.length) erw.filter((p) => p.brutto).forEach((p) => wgZeile({ art: 'lohn', brutto: p.brutto }));
+      }
+      if (art === 'fk') {
+        if (erw.length === 2) $('kz-zahl').value = '2';
+        if (erw[0]) { fuellen('kz-b1', erw[0].brutto); fuellen('kz-n1', erw[0].netto); }
+        if (erw[1]) { fuellen('kz-b2', erw[1].brutto); fuellen('kz-n2', erw[1].netto); }
+        if (kin.length && nurLeer('kz-kinder')) $('kz-kinder').replaceChildren();
+        if (!$('kz-kinder').children.length) kin.forEach((a) => kzKind({ alter: a }));
+        fuellen('kz-wohn', hh.miete != null ? Math.round(((+hh.miete || 0) + (+hh.heiz || 0)) * 100) / 100 : '');
+      }
+      for (const [id, v] of Object.entries((r && r.felder) || {})) setze(id, v);
+      if (art === 'vm' && r && r.posten && r.posten.length) {
+        $('nk-posten').replaceChildren();
+        r.posten.forEach((p) => nkZeile(p));
+        for (const el of $('nk-posten').querySelectorAll('input[type="text"], input[type="number"]')) if (el.value !== '') el.classList.add('pp-erkannt');
+        n += r.posten.length;
+      }
+      const datumId = { jc: 'bs-datum', sa: 'ga-datum', wg: 'wg-datum', fk: 'kz-datum' }[art];
+      if (datumId && r && r.datum) setze(datumId, r.datum);
+      ({ jc: zeigeBescheid, sa: zeigeGSA, wg: zeigeWG, fk: zeigeKiZ, vm: zeigeNK }[art] || (() => {}))();
+      return n;
     }
   };
 

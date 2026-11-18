@@ -22,8 +22,12 @@ const BriefLesen = (function () {
   function erkenne(text) {
     const t = String(text || '');
     let best = null, bestP = 0;
+    // Formular: typische Eingabefelder zählen (je Feld 2 Punkte, höchstens 8), Bescheide nennen sie kaum
+    const formFelder = [/Name,? Vorname|Familienname/i, /Geburtsdatum/i, /\bIBAN\b/i, /Steuer-?ID|Steueridentifikationsnummer/i, /Ort,? Datum/i, /Unterschrift/i, /Telefon/i, /Staatsangehörigkeit/i, /Familienstand/i]
+      .filter((re) => re.test(t)).length;
     for (const art of VORRANG) {
-      const p = ARTEN[art].w.reduce((s, [re, g]) => s + (re.test(t) ? g : 0), 0);
+      let p = ARTEN[art].w.reduce((s, [re, g]) => s + (re.test(t) ? g : 0), 0);
+      if (art === 'af') p += Math.min(8, formFelder * 2);
       if (p > bestP) { best = art; bestP = p; }
     }
     if (bestP < 3) return { art: null, titel: 'Nicht erkannt', sicher: 0 };

@@ -40,8 +40,11 @@ Alles muss zur [Datenschutzerklärung](../datenschutz.html) passen. Bei Änderun
 > **Antragsmappe**
 > Die App schreibt dir formlose Anträge auf Deutsch, so wie die Ämter sie brauchen. Damit sicherst du bei vielen Leistungen den Startmonat. Dazu kommen ein Angabenblatt und eine Liste der Unterlagen. Teile alles als PDF, zum Drucken oder per E-Mail.
 >
-> **Formular fotografieren**
-> Du hast ein Antragsformular bekommen? Fotografiere es, und die App erklärt dir die Felder. Die Erkennung läuft nur auf deinem Gerät.
+> **Brief scannen**
+> Fotografiere einen Bescheid, ein Gutachten, eine Nebenkostenabrechnung oder ein Antragsformular. Die App erkennt, von wem der Brief ist, trägt die Beträge ein und erklärt Formulare Feld für Feld. Die Erkennung läuft nur auf deinem Gerät.
+>
+> **Pflegegrad selbst einschätzen**
+> Schritt für Schritt, eine Frage pro Bildschirm, mit Erklärung zu jeder Frage. Danach weißt du, welcher Pflegegrad in Frage kommt, und kannst die Einschätzung später mit dem Gutachten der Pflegekasse vergleichen.
 >
 > **In 8 Sprachen**
 > Deutsch, Englisch, Türkisch, Arabisch, Russisch, Ukrainisch, Polnisch und Rumänisch. Amtsbegriffe bleiben deutsch, damit du sie beim Amt wiedererkennst.
@@ -73,7 +76,7 @@ Alles muss zur [Datenschutzerklärung](../datenschutz.html) passen. Bei Änderun
 - **Exportkontrolle:** In `Info.plist` ist `ITSAppUsesNonExemptEncryption = false` gesetzt (nur Standard-Verschlüsselung des Systems).
 - **Kamera:** Begründung steht in `Info.plist` (`NSCameraUsageDescription`).
 - **Review-Hinweis an Apple** (App Review Information → Notes):
-  > Die App läuft vollständig offline und benötigt kein Konto. Zum Testen: auf der Startseite „Welche Hilfen stehen mir zu?“ tippen, oben ein Beispiel wählen („Alleinerziehend …“), Ergebnisse ansehen, unten „Antragsmappe erstellen“ → „PDF teilen“. Unten in der Leiste „Brief prüfen“ → eine Kachel (z. B. „Jobcenter“) → „Beispiel laden“ zeigt die Prüfung eines Bescheids. „Formular fotografieren“ nutzt die Kamera und erkennt Text auf dem Gerät (Apple Vision).
+  > Die App läuft vollständig offline und benötigt kein Konto. Zum Testen: auf der Startseite „Welche Hilfen stehen mir zu?“ tippen, oben ein Beispiel wählen („Alleinerziehend …“), Ergebnisse ansehen, unten „Antragsmappe erstellen“ → „PDF teilen“. Unten in der Leiste „Brief prüfen“ → eine Kachel (z. B. „Jobcenter“) → „Beispiel laden“ zeigt die Prüfung eines Bescheids. „Brief scannen“ (unter „Brief prüfen“) nutzt die Kamera und erkennt Text auf dem Gerät (Apple Vision). „Pflegegrad selbst einschätzen“ steht im Fragebogen unter Gesundheit.
 
 ## Screenshots
 

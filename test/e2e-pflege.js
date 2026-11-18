@@ -77,6 +77,12 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Öffnet „Brief prüfen“ mit dem Pflegegutachten', await p.isVisible('#p-pflege'));
   ok('Höherstufung ist gewählt', await p.isChecked('#pf-art-h'));
   ok('Antworten übernommen (1.1 überwiegend unselbständig, Alter 84)', (await p.inputValue('#pf-1\\.1')) === '2' && (await p.inputValue('#pf-alter')) === '84');
+  ok('Vergleich: gleiche Werte, keine Abweichung', /keiner Frage/.test(await p.textContent('#pf-vergleich')));
+  // Gutachten bewertet niedriger: 1.1 und 1.2 „selbständig“ → zwei Abweichungen, Übernahme in den Widerspruch
+  await p.selectOption('#pf-1\\.1', '0'); await p.selectOption('#pf-1\\.2', '0'); await p.waitForTimeout(150);
+  ok('Vergleich zeigt zwei Abweichungen', /Bei 2 Fragen/.test(await p.textContent('#pf-vergleich')) && (await p.locator('#pf-vergleich tbody tr').count()) === 2, await p.textContent('#pf-vergleich'));
+  await p.click('#pf-vergleich >> text=Abweichungen in den Widerspruch übernehmen');
+  ok('Abweichungen stehen im Widerspruch', (await p.locator('#pf-wid-liste [data-id]').count()) >= 2);
   // Säugling: Frage 4.K
   await p.evaluate(() => { localStorage.removeItem('lotse.pflegecheck'); location.hash = '#leistungen'; }); await p.reload(); await p.waitForTimeout(300);
   await p.click('#paStart'); await p.fill('#pa-jahre', '1');

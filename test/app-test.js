@@ -80,18 +80,27 @@ const MOCK = () => {
   ok(KARTEN.length + ' Karten', (await p.locator('#cards .card').count()) === KARTEN.length);
   ok('Schrift lokal geladen', await p.evaluate(async () => { await document.fonts.ready; return [...document.fonts].some((f) => f.status === 'loaded'); }));
   ok('Hinweis zur Web-Version im Impressum ausgeblendet', await p.evaluate(() => { document.getElementById('legalBtn').click(); const h = document.getElementById('legalWeb').hidden; document.getElementById('legalClose').click(); return h; }));
-  ok('Web-Scan (Tesseract/Claude) nicht enthalten, Kamera-Scan vorhanden', (await p.locator('#sc-local').count()) === 0 && (await p.locator('#sc-claudeBox').count()) === 0 && (await p.isVisible('#sc-take')));
+  ok('Web-Scan (Tesseract/Claude) nicht enthalten, Kamera-Scan vorhanden', (await p.locator('#sc-local').count()) === 0 && (await p.locator('#sc-claudeBox').count()) === 0 && (await p.locator('#sc-take').count()) === 1);
   for (const l of ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro']) { await p.selectOption('#lang', l); ok('Sprache ' + l, (await p.locator('#cards .card').count()) === KARTEN.length); }
   await p.selectOption('#lang', 'de');
 
   // Foto-Scan: Kamera -> Texterkennung -> Felder, Foto wird danach gelöscht
   await p.click('#p1'); await p.fill('#p-name', 'Maria Muster');
-  await p.click('#sc-take');
+  // „Brief scannen“ in „Brief prüfen“: Kamera → Texterkennung → als Antragsformular erkannt → Felder erklärt
+  await p.click('#appnav [data-ansicht=briefe]'); if (await p.isVisible('#briefZurueck')) await p.click('#briefZurueck'); await p.click('#elScan');
+  await p.waitForSelector('#scan:not([hidden])', { timeout: 5000 }).catch(() => {});
+  ok('Brief scannen: Formular erkannt, Kachel Antragsformular offen', await p.isVisible('#scan'));
   await p.waitForSelector('#sc-out .sc-row', { timeout: 5000 }).catch(() => {});
   ok('Scan: Kamera ohne Galerie-Speicherung aufgerufen', (await calls('Camera.getPhoto')).some((o) => o.saveToGallery === false && o.source === 'CAMERA'));
   ok('Scan: Texterkennung mit Fotopfad', (await calls('TextRecognition.recognize')).some((o) => /foto\.jpg$/.test(o.path)));
   ok('Scan: Felder erkannt, Name vorausgefüllt', (await p.locator('#sc-out .sc-row').count()) >= 3 && /Maria Muster/.test(await p.textContent('#sc-out')));
   ok('Scan: Foto danach gelöscht', (await calls('Filesystem.deleteFile')).some((o) => /foto\.jpg$/.test(o.path)));
+  // Direkt in der Kachel: eigener Kamera-Knopf
+  const vorher = (await calls('Camera.getPhoto')).length;
+  await p.click('#sc-take'); await p.waitForTimeout(300);
+  ok('Kachel Antragsformular: eigener Kamera-Knopf', (await calls('Camera.getPhoto')).length === vorher + 1);
+  await p.click('#briefZurueck'); await p.click('#appnav [data-ansicht=leistungen]');
+  ok('Leistungsseite: Verweis auf „Brief prüfen“ statt Kamera', await p.isVisible('#scanVerweis') && !(await p.isVisible('#sc-take')));
 
   // Wohnort: PLZ -> Mietenstufe und zuständige Stelle mit Anschrift (offline)
   ok('Ohne PLZ: Hinweis auf die Postleitzahl in der Wohngeld-Karte', /Postleitzahl/.test(await p.textContent('#c-wohngeld')));

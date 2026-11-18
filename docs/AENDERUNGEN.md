@@ -2,6 +2,12 @@
 
 Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss steigen). Die Versionsnummer kommt aus dem Build.
 
+## Nächstes Update (nach Build 142)
+- **Pflegegrad selbst einschätzen** auf der Leistungsseite: geführt wie die einfache Version, eine Frage pro Bildschirm, Alter zuerst, Vorfrage je Bereich, Erklärung „Was zählt hier?“ zu jeder Frage, Vorlesen. Ergebnis mit Punkten, Pflegegeld und Abstand zum nächsten Grad; Übernahme in den Fragebogen und auf Wunsch der Antrag in die Mappe. Mit vorhandenem Pflegegrad: Höherstufung prüfen und Schreiben vorausgefüllt.
+- **Brief scannen** in „Brief prüfen“: Foto oder eingefügter Text; die App erkennt Absender und Art (Jobcenter, Sozialamt, Wohngeld, Familienkasse, Pflegegutachten, Nebenkosten, Antragsformular, Anhörung, Aufforderung zur Mitwirkung), trägt die Beträge gelb markiert ein und übernimmt den Haushalt aus „Leistungen“. In jeder Kachel eigener Scan.
+- **Antragsformular** als siebte Kachel; „Formular fotografieren“ ist von der Leistungsseite dorthin umgezogen.
+- **Gutachten-Vergleich:** Die eigene Einschätzung wird Frage für Frage mit dem Gutachten verglichen; Abweichungen lassen sich in den Widerspruch übernehmen.
+
 ## 1.3.1 (ab Versionsnummer 142, November 2026)
 - Bereich „Fristen“ entfernt, auch auf der Startseite, im Fristrechner und beim automatischen Eintragen. Die Leiste hat drei Bereiche: Start, Leistungen, Brief prüfen. Die Widerspruchsfrist steht weiter beim jeweiligen Schreiben. Fristen, die mit Build 141 gespeichert wurden, löscht die App beim Start.
 - Store-Bilder und Store-Texte neu, mit neuem Logo (Brief mit Siegel)

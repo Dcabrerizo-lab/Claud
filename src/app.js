@@ -1501,7 +1501,8 @@
     ['wg', 'briefe.wohngeld', 'briefe.wohngeld.t', '<path d="M4 11l8-6 8 6v9H4z"/><path d="M10 20v-5h4v5"/>'],
     ['fk', 'briefe.familienkasse', 'briefe.familienkasse.t', '<circle cx="8" cy="8" r="2.5"/><circle cx="16" cy="8" r="2.5"/><path d="M4 20c.5-3 2-5 4-5M20 20c-.5-3-2-5-4-5M9 20c.5-2 1.5-3 3-3s2.5 1 3 3"/>'],
     ['pk', 'briefe.pflegekasse', 'briefe.pflegekasse.t', '<path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/>'],
-    ['vm', 'briefe.vermieter', 'briefe.vermieter.t', '<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/>']
+    ['vm', 'briefe.vermieter', 'briefe.vermieter.t', '<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/>'],
+    ['af', 'briefe.formular', 'briefe.formular.t', '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h5M8 16h3"/><path d="M13.5 16l1.8 1.8 3.2-3.6"/>']
   ];
   function zeigeAnsicht(a, fokus) {
     if (ANSICHTEN.indexOf(a) < 0) a = 'start';
@@ -1575,8 +1576,8 @@
           paUebernehmen(r); picked.pflege = true; pickedUser.pflege = true; if (lastOut) renderPick(lastOut.results); paZurueck('mappeMake'); } },
         { text: 'Antrag auf Höherstufung schreiben', haupt: true, wenn: function (r, pg) { return pg != null && r.pg > pg; }, fn: function (r, a, g) {
           paUebernehmen(r); zeigeAnsicht('briefe', false); briefOeffnen('pk'); if (window.PruefpaketPflege) window.PruefpaketPflege.setze(g, 'hoeher'); } },
-        { text: 'Mit dem Gutachten der Pflegekasse vergleichen', fn: function (r, a, g) {
-          paUebernehmen(r); zeigeAnsicht('briefe', false); briefOeffnen('pk'); if (window.PruefpaketPflege) window.PruefpaketPflege.setze(g, 'widerspruch'); } },
+        { text: 'Mit dem Gutachten der Pflegekasse vergleichen', fn: function (r) {
+          paUebernehmen(r); zeigeAnsicht('briefe', false); briefOeffnen('pk'); } },
         { text: 'Zurück zu den Leistungen', fn: function (r) { paUebernehmen(r); paZurueck('paStart'); } }
       ]
     });
@@ -1587,16 +1588,92 @@
   Store.get('lotse.pflegecheck', function (v) { try { var d = v ? JSON.parse(v) : null; if (d && typeof d === 'object') { pa.antworten = d.antworten || null; pa.schaetzung = d.schaetzung || null; } } catch (e) {} paAnzeigen(); });
 
   // Brief prüfen: Kachel öffnet den passenden Teil des Prüfpakets (Abschnitte aus erweiterungen/vorschau.html)
-  var BRIEF_TEIL = { jc: 'p-bescheid', sa: 'p-gsa', wg: 'p-wg', fk: 'p-kiz', pk: 'p-pflege', vm: 'p-nk' };
+  var BRIEF_TEIL = { jc: 'p-bescheid', sa: 'p-gsa', wg: 'p-wg', fk: 'p-kiz', pk: 'p-pflege', vm: 'p-nk', af: 'scan' };
+  var briefArt = null;
   function briefOeffnen(art) {
     var teil = BRIEF_TEIL[art];
     document.querySelectorAll('#checkBox .pp-teil').forEach(function (s) { s.hidden = s.id !== teil; });
     $('briefKacheln').hidden = !!teil; $('briefeIntro').hidden = !!teil; $('checkBox').hidden = !teil;
     $('ppNurDe').hidden = lang === 'de';
+    if (briefArt !== (teil ? art : null)) { $('elMsg').textContent = ''; $('elErg').textContent = ''; }
+    briefArt = teil ? art : null; elPlatz();
+    if (art === 'pk' && window.PruefpaketPflege && pa.antworten && typeof PflegeAssistent !== 'undefined') window.PruefpaketPflege.eigene(PflegeAssistent.eingabe(pa.antworten, null));
     window.scrollTo(0, 0);
     var h = teil && $(teil).querySelector('h2'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
   }
-  $('briefZurueck').addEventListener('click', function () { var war = null; document.querySelectorAll('#checkBox .pp-teil').forEach(function (s) { if (!s.hidden) war = s.id; }); briefOeffnen(null); for (var k in BRIEF_TEIL) if (BRIEF_TEIL[k] === war) $('brief-' + k).focus(); });
+  // ----- Brief einlesen: scannen (Kamera und Texterkennung auf dem Gerät) oder Text einfügen; erweiterungen/brief-lesen.js -----
+  // Ohne geöffnete Kachel erkennt die App Absender und Art selbst; in einer Kachel ist die Art bekannt.
+  var elGesammelt = '', elBusy = false;
+  function elPlatz() {
+    var box = $('einlesen');
+    if (briefArt === 'af') { box.hidden = true; return; }
+    box.hidden = false;
+    if (briefArt) $('checkBox').insertBefore(box, $('checkBox').querySelector('.pp-teil'));
+    else $('v-briefe').insertBefore(box, $('briefKacheln'));
+    $('elScanT').textContent = t(elGesammelt ? 'el.mehr' : briefArt ? 'el.scanHier' : 'el.scan');
+  }
+  function elNachricht(text) { $('elMsg').textContent = text || ''; }
+  function zahlOderLeer(v) { var x = parseAmount(String(v == null ? '' : v)); return isFinite(x) && x > 0 ? x : ''; }
+  // Haushalt aus „Leistungen“, damit die Prüfung nicht alles neu abfragt (nur wenn dort schon etwas eingetragen ist)
+  function haushalt() {
+    if (!started) return { erwachsene: [], kinder: [] };
+    var alter = state.gebJahr ? new Date().getFullYear() - (+state.gebJahr) : 40;
+    var erw = [{ alter: alter, brutto: zahlOderLeer(state.ek1Brutto), netto: zahlOderLeer(state.ek1Netto) }];
+    if (state.adults === 2) erw.push({ alter: alter, brutto: zahlOderLeer(state.ek2Brutto), netto: zahlOderLeer(state.ek2Netto) });
+    var kinder = [], u6 = state.kidsU6 || 0, k14 = state.kids14 || 0, rest = Math.max(0, (state.kids || 0) - u6 - k14), i;
+    for (i = 0; i < u6; i++) kinder.push(3);
+    for (i = 0; i < rest; i++) kinder.push(9);
+    for (i = 0; i < k14; i++) kinder.push(15);
+    return { erwachsene: erw, kinder: kinder, miete: zahlOderLeer(state.miete), heiz: zahlOderLeer(state.heizkosten), stufe: state.mietstufe || '', alleinerziehend: state.adults === 1 && (state.kids || 0) > 0 };
+  }
+  function textLesen(text) {
+    if (!text || !text.trim()) { elNachricht(t('el.leer')); return; }
+    var r = BriefLesen.lies(text, briefArt || null);
+    $('elErg').textContent = '';
+    if (!r.art) { elNachricht(t('el.unbekannt')); return; }
+    if (r.art === 'anh' || r.art === 'mit') {
+      var d = document.createElement('div'); d.className = 'el-erkl';
+      var b = document.createElement('b'); b.textContent = r.titel; d.appendChild(b);
+      var p = document.createElement('p'); p.textContent = BriefLesen.ERKLAERUNG[r.art]; d.appendChild(p);
+      var fr = BriefLesen.frist(text);
+      if (fr) { var q = document.createElement('p'); q.textContent = t('el.frist', { frist: fr }); d.appendChild(q); }
+      $('elErg').appendChild(d); elNachricht(t('el.erkanntOhne', { titel: r.titel })); return;
+    }
+    if (!briefArt) briefOeffnen(r.art);
+    if (r.art === 'pk') { $('pf-text').value = text; $('pf-lesen').click(); elNachricht(t('el.erkanntPk', { titel: r.titel })); return; }
+    if (r.art === 'af') { setScanResult(scanFromText(text)); elNachricht(t('el.erkanntOhne', { titel: r.titel })); return; }
+    var n = window.PruefpaketLesen ? window.PruefpaketLesen.fuelle(r.art, r, haushalt()) : 0;
+    elNachricht(n ? t('el.erkannt', { titel: r.titel, n: String(n) }) : t('el.keineWerte', { titel: r.titel }));
+  }
+  // Foto aufnehmen und auf dem Gerät lesen (App), Foto danach löschen; im Browser: Bild wählen und mit Tesseract lesen
+  function fotoText() {
+    return new Promise(function (res, rej) {
+      var cam = plug('Camera'), rec = plug('TextRecognition'), fsys = plug('Filesystem'), path = null;
+      if (!cam || !rec) { rej(new Error('kein Plugin')); return; }
+      var weg = function () { if (path && fsys) { try { fsys.deleteFile({ path: path }).catch(function () {}); } catch (e) {} } };
+      cam.getPhoto({ source: 'CAMERA', resultType: 'uri', quality: 90, saveToGallery: false, correctOrientation: true }).then(function (ph) {
+        path = ph && (ph.path || ph.webPath); if (!path) throw new Error('nopath');
+        return rec.recognize({ path: path });
+      }).then(function (r) { weg(); res(((r && r.lines) || []).join('\n')); }, function (e) { weg(); rej(e); });
+    });
+  }
+  function elFertig(text) { elBusy = false; $('elScan').disabled = false; elGesammelt = (elGesammelt ? elGesammelt + '\n' : '') + text; elPlatz(); textLesen(elGesammelt); }
+  function elFehler(e) { elBusy = false; $('elScan').disabled = false; elNachricht(/cancel/i.test(String(e && (e.message || e) || '')) ? '' : t('el.fehler')); }
+  $('elScan').addEventListener('click', function () {
+    if (elBusy) return;
+    if (NATIVE) { elBusy = true; $('elScan').disabled = true; elNachricht(t('el.lese')); fotoText().then(elFertig, elFehler); return; }
+    $('elFile').value = ''; $('elFile').click();
+  });
+  $('elFile').addEventListener('change', function () {
+    var f = $('elFile').files && $('elFile').files[0]; if (!f) return;
+    elBusy = true; $('elScan').disabled = true; elNachricht(t('el.lese'));
+    ocr(f).then(elFertig, elFehler);
+  });
+  $('elPaste').addEventListener('click', function () { var box = $('elPasteBox'); box.hidden = !box.hidden; $('elPaste').setAttribute('aria-expanded', String(!box.hidden)); if (!box.hidden) $('elText').focus(); });
+  $('elLesen').addEventListener('click', function () { elGesammelt = ''; textLesen($('elText').value); });
+  $('scVerweis').addEventListener('click', function () { zeigeAnsicht('briefe', false); briefOeffnen('af'); });
+
+  $('briefZurueck').addEventListener('click', function () { elGesammelt = ''; var war = null; document.querySelectorAll('#checkBox .pp-teil').forEach(function (s) { if (!s.hidden) war = s.id; }); briefOeffnen(null); for (var k in BRIEF_TEIL) if (BRIEF_TEIL[k] === war) $('brief-' + k).focus(); });
   document.querySelectorAll('#appnav button').forEach(function (b) { b.addEventListener('click', function () {
     var a = b.getAttribute('data-ansicht');
     if (a === 'briefe' && aktAnsicht === 'briefe' && !$('checkBox').hidden) { briefOeffnen(null); $('h-briefe') && $('h-briefe').focus(); return; } // nochmal tippen: zurück zur Auswahl

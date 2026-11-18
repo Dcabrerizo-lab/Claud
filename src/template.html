@@ -431,6 +431,12 @@
   /* Brief prüfen: Prüfpaket (Stile aus erweiterungen/vorschau.html, auf .pp beschränkt) */
   .pp-kopf { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 0 0 14px; }
   .pp-kopf .btn { flex: none; }
+  .einlesen { background: var(--surface); border-radius: 16px; padding: 14px 16px; margin: 0 0 16px; box-shadow: var(--shadow); }
+  .einlesen .btns { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 6px; }
+  .einlesen textarea { width: 100%; min-height: 120px; font: inherit; }
+  .pp .pp-erkannt { background: #fff6d6; border-color: #e0b100; color: #18202e; }
+  .el-erkl { background: var(--warn-bg); border-radius: 12px; padding: 10px 14px; margin-top: 8px; }
+  .scanverweis { background: var(--surface); border-radius: 16px; padding: 14px 16px; box-shadow: var(--shadow); display: grid; gap: 8px; justify-items: start; }
   .pp-hinweis { background: var(--warn-bg); border-radius: 12px; padding: 10px 14px; margin: 0 0 14px; }
   /* Pflegegrad selbst einschätzen */
   .pa-einstieg { display: grid; gap: 4px; justify-items: start; margin: -4px 0 8px; }
@@ -480,12 +486,52 @@
     <section id="v-briefe" class="ansicht" aria-labelledby="h-briefe" hidden>
       <h2 id="h-briefe" class="ans-h" data-t="briefe.h"></h2>
       <p id="briefeIntro" class="muted" data-t="briefe.t"></p>
+      <div class="einlesen" id="einlesen">
+        <div class="btns">
+          <button type="button" class="btn" id="elScan"><span aria-hidden="true">📷 </span><span id="elScanT" data-t="el.scan"></span></button>
+          <button type="button" class="btn ghost" id="elPaste" aria-expanded="false" aria-controls="elPasteBox"><span aria-hidden="true">📋 </span><span data-t="el.paste"></span></button>
+        </div>
+        <input type="file" id="elFile" accept="image/*" hidden>
+        <div class="field" id="elPasteBox" hidden>
+          <label for="elText" data-t="el.textLabel"></label>
+          <textarea id="elText" lang="de" dir="ltr" autocomplete="off" spellcheck="false"></textarea>
+          <div class="btns"><button type="button" class="btn" id="elLesen" data-t="el.lesen"></button></div>
+        </div>
+        <p class="small muted" data-t="el.privat"></p>
+        <p class="msg" id="elMsg" role="status" aria-live="polite"></p>
+        <div id="elErg"></div>
+      </div>
       <div class="kacheln" id="briefKacheln"></div>
       <div id="checkBox" class="pp" hidden>
         <div class="pp-kopf"><button type="button" class="btn ghost" id="briefZurueck" data-t="briefe.zurueck"></button></div>
         <p class="pp-hinweis small" id="ppNurDe" data-t="briefe.nurDeutsch" hidden></p>
         <p class="small muted" data-t="briefe.hinweis"></p>
 <!--PRUEFPAKET-->
+        <!--SCAN-->
+        <section class="scan pp-teil" id="scan" aria-labelledby="h-scan" hidden>
+          <h2 id="h-scan" data-t="sc.h"></h2>
+          <p data-t="sc.intro"></p>
+          <div class="field">
+            <label for="sc-file" data-t="sc.photo"></label>
+            <input type="file" id="sc-file" accept="image/*">
+          </div>
+          <div class="field">
+            <label for="sc-text" data-t="sc.paste"></label>
+            <textarea id="sc-text" lang="de" dir="ltr" autocomplete="off" spellcheck="false"></textarea>
+          </div>
+          <div class="box">
+            <p class="hint" data-t="sc.localNote"></p>
+            <div class="btns"><button type="button" class="btn" id="sc-local" data-t="sc.local"></button></div>
+          </div>
+          <div class="box" id="sc-claudeBox" hidden>
+            <p class="hint" data-t="sc.claudeNote"></p>
+            <label class="check"><input type="checkbox" id="sc-consent"><span data-t="sc.consent"></span></label>
+            <div class="btns"><button type="button" class="btn ghost" id="sc-claude" data-t="sc.claude" disabled></button></div>
+          </div>
+          <p class="msg" id="sc-msg" role="status" aria-live="polite"></p>
+          <div id="sc-out"></div>
+        </section>
+        <!--/SCAN-->
       </div>
     </section>
 
@@ -872,31 +918,10 @@
           <p class="msg" id="pickMsg" role="status"></p>
         </section>
 
-        <!--SCAN-->
-        <section class="scan" id="scan" aria-labelledby="h-scan">
-          <h2 id="h-scan" data-t="sc.h"></h2>
-          <p data-t="sc.intro"></p>
-          <div class="field">
-            <label for="sc-file" data-t="sc.photo"></label>
-            <input type="file" id="sc-file" accept="image/*">
-          </div>
-          <div class="field">
-            <label for="sc-text" data-t="sc.paste"></label>
-            <textarea id="sc-text" lang="de" dir="ltr" autocomplete="off" spellcheck="false"></textarea>
-          </div>
-          <div class="box">
-            <p class="hint" data-t="sc.localNote"></p>
-            <div class="btns"><button type="button" class="btn" id="sc-local" data-t="sc.local"></button></div>
-          </div>
-          <div class="box" id="sc-claudeBox" hidden>
-            <p class="hint" data-t="sc.claudeNote"></p>
-            <label class="check"><input type="checkbox" id="sc-consent"><span data-t="sc.consent"></span></label>
-            <div class="btns"><button type="button" class="btn ghost" id="sc-claude" data-t="sc.claude" disabled></button></div>
-          </div>
-          <p class="msg" id="sc-msg" role="status" aria-live="polite"></p>
-          <div id="sc-out"></div>
-        </section>
-        <!--/SCAN-->
+        <div class="scanverweis" id="scanVerweis">
+          <p data-t="sc.verweis"></p>
+          <button type="button" class="btn ghost" id="scVerweis" data-t="sc.verweisBtn"></button>
+        </div>
 
         <div class="rules">
           <details>

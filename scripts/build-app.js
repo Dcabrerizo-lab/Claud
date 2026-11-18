@@ -28,7 +28,7 @@ let html = render({ native: true }).html;
 
 // Scan: In der App gibt es nur die Kamera mit Texterkennung auf dem Gerät
 const NATIVE_SCAN = [
-  '<section class="scan" id="scan" aria-labelledby="h-scan">',
+  '<section class="scan pp-teil" id="scan" aria-labelledby="h-scan" hidden>',
   '          <h2 id="h-scan" data-t="sc.h"></h2>',
   '          <p data-t="sc.nativeIntro"></p>',
   '          <div class="btns"><button type="button" class="btn" id="sc-take" data-t="sc.take"></button></div>',

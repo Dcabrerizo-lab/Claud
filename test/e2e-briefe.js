@@ -24,7 +24,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   await p.click('#goLeistungen');
   ok('Weg „Welche Hilfen“ öffnet den Leistungscheck', await p.isVisible('#form') && (await p.evaluate(() => location.hash)) === '#leistungen');
   await p.click('#appnav [data-ansicht=start]'); await p.click('#goBriefe');
-  ok('Weg „Brief bekommen“ öffnet die Kacheln', await p.isVisible('#briefKacheln') && (await p.locator('#briefKacheln .kachel').count()) === 6);
+  ok('Weg „Brief bekommen“ öffnet die Kacheln', await p.isVisible('#briefKacheln') && (await p.locator('#briefKacheln .kachel').count()) === 7);
   const ERWARTET = { jc: 'p-bescheid', sa: 'p-gsa', wg: 'p-wg', fk: 'p-kiz', pk: 'p-pflege', vm: 'p-nk' };
   for (const [k, teil] of Object.entries(ERWARTET)) {
     await p.click('#brief-' + k);
@@ -45,6 +45,44 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   await p.click('#brief-pk'); await p.fill('#pf-datum', '2026-11-10'); await p.click('#pf-wid-mach');
   ok('Widerspruchsfrist steht beim Schreiben', /14\.12\.2026/.test(await p.textContent('#pf-frist')), await p.textContent('#pf-frist'));
   ok('Nichts als Frist gespeichert', (await p.evaluate(() => localStorage.getItem('lotse.fristen'))) === null);
+  await p.click('#briefZurueck');
+  // Brief einlesen: Text einfügen ohne Kachel → Absender erkannt, Prüfung offen, Werte gelb markiert, Personen aus „Leistungen“
+  await p.click('#appnav [data-ansicht=leistungen]'); await p.click('#p1'); await p.click('#appnav [data-ansicht=briefe]');
+  ok('Einlesen oben in „Brief prüfen“', await p.isVisible('#einlesen') && /scannen/.test(await p.textContent('#elScan')));
+  await p.click('#elPaste');
+  await p.fill('#elText', 'Jobcenter Musterstadt\nDatum: 12.03.2026\nGrundsicherungsgeld nach dem SGB II\nRegelbedarf 563,00 357,00 920,00\nKosten der Unterkunft und Heizung 755,00\nZahlbetrag 1.501,33');
+  await p.click('#elLesen');
+  ok('Eingefügter Jobcenter-Bescheid öffnet die richtige Prüfung', await p.isVisible('#p-bescheid'));
+  ok('Werte übernommen und markiert', (await p.inputValue('#bs-b-regel')) === '920' && (await p.inputValue('#bs-b-zahl')) === '1501.33' && await p.evaluate(() => document.getElementById('bs-b-kdu').classList.contains('pp-erkannt')));
+  ok('Datum des Bescheids übernommen', (await p.inputValue('#bs-datum')) === '2026-03-12');
+  ok('Haushalt aus „Leistungen“: 1 Erwachsener, 2 Kinder', (await p.locator('#bs-personen tr').count()) === 3);
+  ok('Meldung nennt Absender und Zahl der Werte', /Jobcenter.*4 Werte/.test(await p.textContent('#elMsg')), await p.textContent('#elMsg'));
+  ok('Einlesen sitzt jetzt in der geöffneten Prüfung', await p.evaluate(() => document.getElementById('checkBox').contains(document.getElementById('einlesen'))) && /Diesen Brief/.test(await p.textContent('#elScan')));
+  await p.click('#briefZurueck');
+  // In einer Kachel: Art steht fest (Wohngeld), Text wird dafür gelesen
+  await p.click('#brief-wg'); if (!(await p.isVisible('#elText'))) await p.click('#elPaste');
+  await p.fill('#elText', 'Wohngeldbehörde\nWohngeld in Höhe von 214,00 EUR monatlich\nzu berücksichtigende Miete 702,00 €\nmonatliches Gesamteinkommen 1.845,20 €'); await p.click('#elLesen');
+  ok('Wohngeld in der Kachel gelesen', (await p.inputValue('#wg-b-wg')) === '214' && (await p.inputValue('#wg-b-eink')) === '1845.2');
+  await p.click('#briefZurueck');
+  // Nebenkosten: Posten als Zeilen
+  if (!(await p.isVisible('#elText'))) await p.click('#elPaste');
+  await p.fill('#elText', 'Betriebskostenabrechnung 2025\nAbrechnungszeitraum: 01.01.2025 bis 31.12.2025\nGrundsteuer 2.400,00 Wohnfläche 240,00\nHausmeister 3.000,00 Wohnfläche 300,00\nIhre Vorauszahlungen gesamt 1.800,00'); await p.click('#elLesen');
+  ok('Nebenkosten: Prüfung offen, zwei Posten, Zeitraum', await p.isVisible('#p-nk') && (await p.locator('#nk-posten tr').count()) === 2 && (await p.inputValue('#nk-von')) === '2025-01-01');
+  await p.click('#briefZurueck');
+  // Aufforderung zur Mitwirkung: Erklärung statt Rechnung
+  if (!(await p.isVisible('#elText'))) await p.click('#elPaste');
+  await p.fill('#elText', 'Mitwirkungspflichten nach § 60 SGB I\nBitte reichen Sie folgende Unterlagen bis zum 15.05.2026 ein.'); await p.click('#elLesen');
+  ok('Mitwirkung: Erklärung mit Frist, keine Kachel geöffnet', /Unterlagen/.test(await p.textContent('#elErg')) && /15\.05\.2026/.test(await p.textContent('#elErg')) && await p.isVisible('#briefKacheln'));
+  await p.fill('#elText', 'Liebe Oma, vielen Dank!'); await p.click('#elLesen');
+  ok('Unbekannter Text: Hinweis, Absender zu wählen', /nicht erkannt/.test(await p.textContent('#elMsg')));
+  // Antragsformular: Kachel zeigt die Formular-Erklärung, Einlesen ist dort nicht doppelt
+  await p.click('#brief-af');
+  ok('Kachel Antragsformular zeigt das Formular-Scannen', await p.isVisible('#scan') && !(await p.isVisible('#einlesen')));
+  await p.click('#briefZurueck');
+  await p.click('#appnav [data-ansicht=leistungen]');
+  ok('Leistungsseite: Verweis statt Fotofunktion', await p.isVisible('#scanVerweis') && !(await p.isVisible('#scan')));
+  await p.click('#scVerweis');
+  ok('Verweis öffnet „Brief prüfen“ → Antragsformular', await p.isVisible('#scan') && await p.isVisible('#v-briefe'));
   await p.click('#briefZurueck');
   // Fremde Sprache: Hinweis „nur auf Deutsch“, Bereiche übersetzt
   await p.selectOption('#lang', 'tr'); await p.click('#appnav [data-ansicht=briefe]'); await p.click('#brief-wg');
