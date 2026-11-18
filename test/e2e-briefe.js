@@ -64,6 +64,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   await p.click('#elLesen');
   ok('Eingefügter Jobcenter-Bescheid: Formular offen', await p.isVisible('#p-bescheid > :nth-child(2)'));
   ok('Werte übernommen und markiert', (await p.inputValue('#bs-b-regel')) === '920' && (await p.inputValue('#bs-b-zahl')) === '1501.33' && await p.evaluate(() => document.getElementById('bs-b-kdu').classList.contains('pp-erkannt')));
+  ok('Markierung ist sichtbar gelb', (await p.evaluate(() => getComputedStyle(document.getElementById('bs-b-kdu')).backgroundColor)) === 'rgb(255, 246, 214)');
   ok('Datum des Bescheids übernommen', (await p.inputValue('#bs-datum')) === '2026-03-12');
   ok('Haushalt aus „Leistungen“: 1 Erwachsener, 2 Kinder', (await p.locator('#bs-personen tr').count()) === 3);
   ok('Meldung nennt Absender und Zahl der Werte', /Jobcenter.*4 Werte/.test(await p.textContent('#elMsg')), await p.textContent('#elMsg'));
