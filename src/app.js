@@ -624,7 +624,10 @@
   // Gerechnet wird alles gleich, es ändert sich nur die Anzeige.
   var KERN = ['ggeld', 'gsa', 'wohngeld', 'kiz', 'but', 'pflege', 'pflegeplus', 'uvg', 'rundfunk', 'kindergeld', 'elterngeld'];
   function istKern(r) { return KERN.indexOf(r.id) >= 0; }
+  // Landesleistungen (zurzeit das Landespflegegeld, nur Bayern) erscheinen außerhalb des Landes gar nicht.
+  function ausgeblendet(r) { return r.level === 'nein' && r.hl === 'land'; }
   function kartenReihe(results) {
+    results = results.filter(function (r) { return !ausgeblendet(r); });
     var bad = results.filter(function (r) { return r.level === 'nein'; });
     return {
       passt: results.filter(function (r) { return r.level !== 'nein'; }),

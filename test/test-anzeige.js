@@ -86,13 +86,14 @@ for (let i = 0; i < N; i++) {
     const out = w.__solo.eval();
     const dl = I18N[lang];
     const fall = { lang, e: JSON.stringify(e).slice(0, 400) };
-    // Reihenfolge und Vollständigkeit: Kern, dann „Für deine Lage“, dann die „nein“ im aufklappbaren Bereich (unpassende Spezialleistungen zuletzt)
+    // Reihenfolge und Vollständigkeit: erst alles Zutreffende, dann die „nein“ im aufklappbaren Bereich (unpassende Leistungen für besondere Lagen zuletzt); Landesleistungen außerhalb des Landes gar nicht
     const erwartet = w.__solo.reihe(out.results);
     const ist = [...d.querySelectorAll('#cards article.card')].map((a) => a.getAttribute('data-id'));
     if (ist.join() !== erwartet.join()) melde('Karten fehlen oder Reihenfolge falsch', { ...fall, ist: ist.join(), erwartet: erwartet.join() });
     // Unabhängig von der App-Funktion: jede Leistung genau einmal, alle passenden vor allen unpassenden
-    const ids = out.results.map((r) => r.id).sort().join(), lv = Object.fromEntries(out.results.map((r) => [r.id, r.level]));
+    const ids = out.results.filter((r) => !(r.level === 'nein' && r.hl === 'land')).map((r) => r.id).sort().join(), lv = Object.fromEntries(out.results.map((r) => [r.id, r.level]));
     if ([...ist].sort().join() !== ids) melde('Karten fehlen oder doppelt', { ...fall, ist: ist.join() });
+    for (const r of out.results) if (r.level === 'nein' && r.hl === 'land' && d.getElementById('c-' + r.id)) melde('Landesleistung außerhalb des Landes angezeigt', { ...fall, id: r.id });
     const ersteNein = ist.findIndex((id) => lv[id] === 'nein');
     if (ersteNein >= 0 && ist.slice(ersteNein).some((id) => lv[id] !== 'nein')) melde('Passende Karte steht bei den unpassenden', { ...fall, ist: ist.join() });
     for (const r of out.results) {
