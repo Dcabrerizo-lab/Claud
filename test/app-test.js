@@ -86,10 +86,12 @@ const MOCK = () => {
 
   // Foto-Scan: Kamera -> Texterkennung -> Felder, Foto wird danach gelöscht
   await p.click('#p1'); await p.fill('#p-name', 'Maria Muster');
-  // „Brief scannen“ in „Brief prüfen“: Kamera → Texterkennung → als Antragsformular erkannt → Felder erklärt
-  await p.click('#appnav [data-ansicht=briefe]'); if (await p.isVisible('#briefZurueck')) await p.click('#briefZurueck'); await p.click('#elScan');
+  // „Brief prüfen“: die Übersicht hat kein Scannen; in der Kachel Antragsformular: Kamera → Texterkennung → Felder erklärt
+  await p.click('#appnav [data-ansicht=briefe]'); if (await p.isVisible('#briefZurueck')) await p.click('#briefZurueck');
+  ok('Übersicht „Brief prüfen“: kein Scannen oder Einfügen', !(await p.isVisible('#einlesen')));
+  await p.click('#brief-af'); await p.click('#sc-take');
   await p.waitForSelector('#scan:not([hidden])', { timeout: 5000 }).catch(() => {});
-  ok('Brief scannen: Formular erkannt, Kachel Antragsformular offen', await p.isVisible('#scan'));
+  ok('Kachel Antragsformular offen', await p.isVisible('#scan'));
   await p.waitForSelector('#sc-out .sc-row', { timeout: 5000 }).catch(() => {});
   ok('Scan: Kamera ohne Galerie-Speicherung aufgerufen', (await calls('Camera.getPhoto')).some((o) => o.saveToGallery === false && o.source === 'CAMERA'));
   ok('Scan: Texterkennung mit Fotopfad', (await calls('TextRecognition.recognize')).some((o) => /foto\.jpg$/.test(o.path)));

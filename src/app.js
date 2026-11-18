@@ -1839,14 +1839,13 @@
     sec.classList.remove('pp-zu'); $('elSelbst').hidden = true;
     if (fokus) { var f = sec.querySelector('.card:nth-of-type(2) input, form input, form select'); if (f) f.focus(); }
   }
-  // Das Einlesen steht in einer Kachel direkt unter der Erklärung des Abschnitts, ohne Kachel über den Kacheln
+  // Das Einlesen gibt es nur in einer Kachel, direkt unter der Erklärung des Abschnitts. Auf der Übersicht stehen nur die Kacheln.
   function elPlatz() {
     var box = $('einlesen');
-    if (briefArt === 'af') { box.hidden = true; return; }
+    var sec = briefArt && briefArt !== 'af' && $(BRIEF_TEIL[briefArt]), karte = sec && sec.querySelector('.card');
+    if (!karte) { box.hidden = true; return; }
     box.hidden = false;
-    var sec = briefArt && $(BRIEF_TEIL[briefArt]), karte = sec && sec.querySelector('.card');
-    if (karte) karte.appendChild(box);
-    else $('v-briefe').insertBefore(box, $('briefKacheln'));
+    karte.appendChild(box);
     $('elSelbst').hidden = !sec || !sec.classList.contains('pp-zu');
     $('elScanT').textContent = t(elGesammelt ? 'el.mehr' : briefArt ? 'el.scanHier' : 'el.scan');
   }
@@ -1867,6 +1866,9 @@
   function textLesen(text) {
     if (!text || !text.trim()) { elNachricht(t('el.leer')); return; }
     var r = BriefLesen.lies(text, briefArt || null);
+    // Auch in einer Kachel: Anhörung oder Aufforderung zur Mitwirkung erkennen und erklären statt nachzurechnen
+    var e0 = briefArt ? BriefLesen.erkenne(text) : null;
+    if (e0 && (e0.art === 'anh' || e0.art === 'mit')) r = BriefLesen.lies(text, null);
     $('elErg').textContent = '';
     if (!r.art) { elNachricht(t('el.unbekannt')); return; }
     if (r.art === 'anh' || r.art === 'mit') {
