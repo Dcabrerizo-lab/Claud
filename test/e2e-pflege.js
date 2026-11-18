@@ -66,8 +66,11 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Übernahme: Pflegegeld in der Antragsmappe gewählt', await p.isChecked('[data-pick="pflege"]'));
   ok('Pflegegeld-Karte zeigt Einschätzung und Knopf', /Pflegegrad 2/.test(await p.textContent('#c-pflege .pa-karte-knopf')));
   // Erklärseite: Pflegegeld ist Geld aufs Konto, Entlastungsbetrag ein Budget
-  await p.click('#c-pflege .pi-knopf button');
-  ok('Erklärseite öffnet', await p.isVisible('#v-pflegeinfo') && /So funktionieren/.test(await p.textContent('#pflegeInfo')));
+  await p.click('#c-pflege .pi-link:has-text("Entlastungsbetrag")');
+  ok('Link „Entlastungsbetrag ›“ öffnet die Erklärseite am richtigen Abschnitt', await p.isVisible('#v-pflegeinfo') && await p.evaluate(() => document.getElementById('pi-entl').open && document.activeElement === document.querySelector('#pi-entl summary')));
+  ok('Nur dieser Abschnitt ist aufgeklappt', await p.evaluate(() => [...document.querySelectorAll('#pflegeInfo details')].filter((d) => d.open).length === 1));
+  await p.click('#pflegeInfo .pi-link-tab:has-text("Pflegegeld")');
+  ok('In der Übersicht: Antippen öffnet den Abschnitt', await p.evaluate(() => document.getElementById('pi-geld').open));
   ok('Erklärseite: Entlastungsbetrag kommt nicht aufs Konto', /Entlastungsbetrag: 131 € im Monat, aber nicht aufs Konto/.test(await p.textContent('#pflegeInfo')));
   ok('Erklärseite: kein seitliches Scrollen', await breit());
   await p.click('#piZurueck');

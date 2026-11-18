@@ -103,7 +103,8 @@ for (let i = 0; i < N; i++) {
       const teile = r.tx.map((x) => text(lang, 't.' + x[0], x[1]));
       const fehltKey = r.tx.filter((x, j) => teile[j] == null).map((x) => 't.' + x[0]);
       if (fehltKey.length) { melde('Text fehlt in der Sprachdatei', { ...fall, id: r.id, keys: fehltKey.join() }); continue; }
-      const body = a.querySelectorAll('.body p')[1];
+      const txt = a.querySelector('.body .txt');
+      const body = txt && { textContent: [...txt.querySelectorAll('.kern, .punkte > li')].map((x) => x.textContent).join(' ') };
       if (!body || norm(body.textContent) !== norm(teile.join(' '))) melde('Kartentext passt nicht zur Rechnung', { ...fall, id: r.id, ist: body && body.textContent.slice(0, 300), soll: teile.join(' ').slice(0, 300) });
       // Jeder Betrag, für den der Text einen Platzhalter hat, steht so auf der Karte; Platzhalter des deutschen Textes gibt es auch in der Übersetzung
       r.tx.forEach((x) => {

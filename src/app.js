@@ -593,6 +593,11 @@
   }
 
   function resultText(r) { return r.tx.map(function (x) { return t('t.' + x[0], x[1]); }).join(' '); }
+  // Kartentext gegliedert: der wichtigste Satz oben, weitere Hinweise als Punkte darunter (Wortlaut wie resultText)
+  function resultHtml(r) {
+    var teile = r.tx.map(function (x) { return t('t.' + x[0], x[1]); });
+    return '<p class="kern">' + esc(teile[0] || '') + '</p>' + (teile.length > 1 ? '<ul class="punkte">' + teile.slice(1).map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : '');
+  }
 
   function card(r) {
     var dim = r.level === 'nein' || r.level === 'na';
@@ -609,7 +614,7 @@
     return '<article class="card' + (dim ? ' dim' : '') + '" data-id="' + r.id + '" id="c-' + r.id + '">' +
       '<header><div><h3' + (lang === 'de' ? '' : ' lang="de"') + '>' + esc(r.name) + '</h3>' + (desc ? '<div class="desc">' + esc(desc) + '</div>' : '') + '</div>' +
       '<span class="pill ' + r.level + '"><span aria-hidden="true">' + MARK[r.level] + '</span>' + esc(t('lvl.' + r.level)) + '</span></header>' +
-      '<div class="body"><p class="head2">' + esc(t('h.' + r.hl)) + '</p><p>' + esc(resultText(r)) + '</p></div>' +
+      '<div class="body"><p class="head2">' + esc(t('h.' + r.hl)) + '</p><div class="txt">' + resultHtml(r) + '</div></div>' +
       zustHtml(r) + steps + '</article>';
   }
 
@@ -1551,11 +1556,20 @@
       b.addEventListener('click', paOeffnen); box.appendChild(b);
     }
     // Erklärknopf an den Pflegekarten: Was ist Geld aufs Konto, was ist Budget bei der Pflegekasse?
-    ['c-pflege', 'c-pflegeplus'].forEach(function (id) {
-      var k = $(id); if (!k || k.querySelector('.pi-knopf')) return;
-      var w = document.createElement('div'); w.className = 'pi-knopf';
-      var bt = document.createElement('button'); bt.type = 'button'; bt.className = 'btn ghost'; bt.textContent = t('pa.info');
-      bt.addEventListener('click', function () { pflegeInfo('leistungen', id); }); w.appendChild(bt); k.appendChild(w);
+    var PI_LINKS = { 'c-pflege': [['pi-geld', 'Pflegegeld'], ['pi-dienst', 'Pflegedienst'], ['pi-entl', 'Entlastungsbetrag']],
+      'c-pflegeplus': [['pi-verh', 'Verhinderungs- und Kurzzeitpflege'], ['pi-hilfs', 'Pflegehilfsmittel und Umbau']] };
+    Object.keys(PI_LINKS).forEach(function (id) {
+      var k = $(id); if (!k || k.querySelector('.pi-links')) return;
+      var w = document.createElement('div'); w.className = 'pi-links';
+      var kopf = document.createElement('span'); kopf.className = 'pi-kopf'; kopf.textContent = t('pa.info'); w.appendChild(kopf);
+      PI_LINKS[id].forEach(function (x) {
+        var bt = document.createElement('button'); bt.type = 'button'; bt.className = 'pi-link';
+        bt.setAttribute('aria-label', t('pa.erklaerung') + ': ' + x[1]);
+        bt.appendChild(document.createTextNode(x[1])); var pf = document.createElement('span'); pf.setAttribute('aria-hidden', 'true'); pf.textContent = ' ›'; bt.appendChild(pf);
+        bt.addEventListener('click', function () { pflegeInfo('leistungen', id, x[0]); });
+        w.appendChild(bt);
+      });
+      var kern = k.querySelector('.txt .kern'); if (kern) kern.after(w); else k.appendChild(w);
     });
   }
   function paZurueck(ziel) {
@@ -1605,56 +1619,68 @@
     box.appendChild(el('h2', 'So funktionieren die Leistungen der Pflegekasse')).id = 'h-pflegeinfo';
     box.appendChild(el('p', 'Nur das Pflegegeld kommt aufs Konto. Alles andere sind Budgets: Die Pflegekasse bezahlt damit Hilfe, Dienste oder Lieferungen, meistens gegen Rechnung. Wer die Budgets nicht nutzt, verschenkt Geld.', 'lead'));
     var zeilen = [
-      ['Pflegegeld', 'Geld aufs Konto, jeden Monat', je(R.pflege.geld), 'geld'],
-      ['Pflegedienst (Pflegesachleistung)', 'Budget: Der Pflegedienst rechnet direkt mit der Pflegekasse ab', 'bis ' + je(R.pflegeSach).replace(/PG/g, 'PG'), 'budget'],
-      ['Entlastungsbetrag', 'Budget: Die Pflegekasse bezahlt Rechnungen anerkannter Anbieter', piEuro(R.pflege.entlastung) + ' im Monat, ab Pflegegrad 1', 'budget'],
-      ['Verhinderungs- und Kurzzeitpflege', 'Budget: Für die Vertretung, wenn die Pflegeperson ausfällt', 'zusammen ' + piEuro(R.entlastungsbudget) + ' im Jahr, ab Pflegegrad 2', 'budget'],
-      ['Tages- und Nachtpflege', 'Budget: Die Einrichtung rechnet mit der Pflegekasse ab', 'bis ' + je(R.pflegeTages), 'budget'],
-      ['Pflegehilfsmittel zum Verbrauch', 'Lieferung, zum Beispiel als Pflegebox', 'bis ' + piEuro(R.beh.verbrauch) + ' im Monat', 'budget'],
-      ['Umbau der Wohnung', 'Zuschuss, vor dem Umbau beantragen', 'bis ' + piEuro(R.beh.wohnumfeld) + ' je Maßnahme', 'budget']];
+      ['Pflegegeld', 'Geld aufs Konto, jeden Monat', je(R.pflege.geld), 'geld', 'pi-geld'],
+      ['Pflegedienst (Pflegesachleistung)', 'Budget: Der Pflegedienst rechnet direkt mit der Pflegekasse ab', 'bis ' + je(R.pflegeSach), 'budget', 'pi-dienst'],
+      ['Entlastungsbetrag', 'Budget: Die Pflegekasse bezahlt Rechnungen anerkannter Anbieter', piEuro(R.pflege.entlastung) + ' im Monat, ab Pflegegrad 1', 'budget', 'pi-entl'],
+      ['Verhinderungs- und Kurzzeitpflege', 'Budget: Für die Vertretung, wenn die Pflegeperson ausfällt', 'zusammen ' + piEuro(R.entlastungsbudget) + ' im Jahr, ab Pflegegrad 2', 'budget', 'pi-verh'],
+      ['Tages- und Nachtpflege', 'Budget: Die Einrichtung rechnet mit der Pflegekasse ab', 'bis ' + je(R.pflegeTages), 'budget', 'pi-dienst'],
+      ['Pflegehilfsmittel zum Verbrauch', 'Lieferung, zum Beispiel als Pflegebox', 'bis ' + piEuro(R.beh.verbrauch) + ' im Monat', 'budget', 'pi-hilfs'],
+      ['Umbau der Wohnung', 'Zuschuss, vor dem Umbau beantragen', 'bis ' + piEuro(R.beh.wohnumfeld) + ' je Maßnahme', 'budget', 'pi-hilfs']];
     var tw = el('div', null, 'tabwrap'); tw.setAttribute('role', 'region'); tw.setAttribute('aria-label', 'Geld oder Budget'); tw.tabIndex = 0;
     var tb = el('table'), th = el('thead'), tr0 = el('tr');
     ['Leistung', 'Wie es ankommt', 'Höhe'].forEach(function (x) { tr0.appendChild(el('th', x)); }); th.appendChild(tr0); tb.appendChild(th);
     var body = el('tbody');
-    zeilen.forEach(function (z) { var tr = el('tr'); tr.appendChild(el('td', z[0])); var td = el('td'); td.appendChild(el('span', z[3] === 'geld' ? 'Geld · ' : 'Budget · ', z[3])); td.appendChild(document.createTextNode(z[1].replace(/^Budget: |^Geld aufs Konto, /, function (m) { return m === 'Geld aufs Konto, ' ? 'aufs Konto, ' : ''; }))); tr.appendChild(td); tr.appendChild(el('td', z[2])); body.appendChild(tr); });
+    zeilen.forEach(function (z) {
+      var tr = el('tr'), td0 = el('td'), ln = el('button', null, 'pi-link pi-link-tab'); ln.type = 'button';
+      ln.appendChild(document.createTextNode(z[0])); var pf = el('span', ' ›'); pf.setAttribute('aria-hidden', 'true'); ln.appendChild(pf);
+      ln.addEventListener('click', function () { piAbschnitt(z[4]); }); td0.appendChild(ln); tr.appendChild(td0); var td = el('td'); td.appendChild(el('span', z[3] === 'geld' ? 'Geld · ' : 'Budget · ', z[3])); td.appendChild(document.createTextNode(z[1].replace(/^Budget: |^Geld aufs Konto, /, function (m) { return m === 'Geld aufs Konto, ' ? 'aufs Konto, ' : ''; }))); tr.appendChild(td); tr.appendChild(el('td', z[2])); body.appendChild(tr); });
     tb.appendChild(body); tw.appendChild(tb); box.appendChild(tw);
-    var abschnitt = function (titel, absaetze, liste) {
-      var d = el('details'); d.appendChild(el('summary', titel));
+    var abschnitt = function (id, titel, absaetze, liste) {
+      var d = el('details'); d.id = id; d.appendChild(el('summary', titel));
       absaetze.forEach(function (p) { d.appendChild(el('p', p)); });
       if (liste) { var ul = el('ul'); liste.forEach(function (x) { ul.appendChild(el('li', x)); }); d.appendChild(ul); }
       box.appendChild(d);
     };
-    abschnitt('Pflegegeld: Geld für die Pflege durch Angehörige', [
+    abschnitt('pi-geld', 'Pflegegeld: Geld für die Pflege durch Angehörige', [
       'Wenn Angehörige, Freunde oder Nachbarn pflegen, zahlt die Pflegekasse ab Pflegegrad 2 jeden Monat Pflegegeld aufs Konto der gepflegten Person. Sie kann frei entscheiden, wofür sie es verwendet, zum Beispiel als Dankeschön an die Pflegeperson.',
       'Pflicht: Bei Pflegegrad 2 und 3 einmal im halben Jahr, bei Pflegegrad 4 und 5 einmal im Vierteljahr kommt eine kostenlose Pflegeberatung ins Haus. Fällt sie aus, kann die Pflegekasse das Pflegegeld kürzen.']);
-    abschnitt('Pflegedienst: Sachleistung und Kombination', [
+    abschnitt('pi-dienst', 'Pflegedienst: Sachleistung und Kombination', [
       'Kommt ein Pflegedienst, rechnet er direkt mit der Pflegekasse ab. Du bekommst dafür kein Geld, aber auch keine Rechnung, solange das Budget reicht.',
       'Nutzt der Pflegedienst nur einen Teil des Budgets, zahlt die Pflegekasse den Rest anteilig als Pflegegeld aus. Das heißt Kombinationsleistung.']);
-    abschnitt('Entlastungsbetrag: ' + piEuro(R.pflege.entlastung) + ' im Monat, aber nicht aufs Konto', [
+    abschnitt('pi-entl', 'Entlastungsbetrag: ' + piEuro(R.pflege.entlastung) + ' im Monat, aber nicht aufs Konto', [
       'Den Entlastungsbetrag gibt es ab Pflegegrad 1. Er wird nicht ausgezahlt. Die Pflegekasse bezahlt damit Hilfen, die die Pflegeperson entlasten.',
       'So geht es: Der Anbieter rechnet direkt mit der Pflegekasse ab, oder du bezahlst selbst und schickst die Rechnung zur Erstattung ein. Der Anbieter muss in deinem Bundesland anerkannt sein. Die Pflegekasse hat eine Liste.',
       'Nicht genutzte Beträge sammeln sich an. Du kannst sie bis zum 30. Juni des Folgejahres nutzen, danach verfallen sie.'],
       ['Haushaltshilfe, Einkaufen, Begleitung zum Arzt', 'Betreuung zu Hause oder in einer Betreuungsgruppe', 'Eigenanteile bei Tages- oder Kurzzeitpflege']);
-    abschnitt('Verhinderungspflege und Kurzzeitpflege: Vertretung für die Pflegeperson', [
+    abschnitt('pi-verh', 'Verhinderungspflege und Kurzzeitpflege: Vertretung für die Pflegeperson', [
       'Ab Pflegegrad 2 haben beide einen gemeinsamen Jahresbetrag von ' + piEuro(R.entlastungsbudget) + '. Auch das ist kein Geld aufs Konto: Die Pflegekasse bezahlt damit die Vertretung.',
       'Verhinderungspflege: Die Pflegeperson macht Urlaub, ist krank oder braucht ein paar Stunden Pause. Dann pflegt jemand anderes zu Hause, zum Beispiel ein Pflegedienst, Bekannte oder Nachbarn. Bei nahen Verwandten zahlt die Pflegekasse weniger; frag dort nach.',
       'Kurzzeitpflege: Die gepflegte Person wohnt für eine Zeit in einer Pflegeeinrichtung, zum Beispiel nach einem Krankenhausaufenthalt.',
       'Während der Vertretung zahlt die Pflegekasse bis zu 8 Wochen im Jahr die Hälfte des Pflegegelds weiter. Wer nur stundenweise vertreten wird (weniger als 8 Stunden am Tag), behält das volle Pflegegeld.',
       'Tipp: Den Antrag kannst du auch nachträglich stellen. Hebe alle Rechnungen und Quittungen auf.']);
-    abschnitt('Pflegehilfsmittel und Umbau der Wohnung', [
+    abschnitt('pi-hilfs', 'Pflegehilfsmittel und Umbau der Wohnung', [
       'Pflegehilfsmittel zum Verbrauch, zum Beispiel Einmalhandschuhe, Desinfektion oder Bettschutz, gibt es bis ' + piEuro(R.beh.verbrauch) + ' im Monat. Meist kommt eine Box nach Hause, die der Anbieter mit der Pflegekasse abrechnet.',
       'Größere Hilfsmittel wie ein Pflegebett oder ein Rollator werden meist leihweise gestellt.',
       'Für einen Umbau, zum Beispiel eine bodengleiche Dusche oder Haltegriffe, gibt es bis ' + piEuro(R.beh.wohnumfeld) + ' je Maßnahme. Wichtig: vor dem Umbau beantragen, mit Kostenvoranschlag.']);
-    abschnitt('Gut zu wissen für pflegende Angehörige', [
+    abschnitt('pi-gut', 'Gut zu wissen für pflegende Angehörige', [
       'Wer mindestens 10 Stunden in der Woche an mindestens 2 Tagen pflegt und höchstens 30 Stunden arbeitet, für den zahlt die Pflegekasse Rentenbeiträge.',
       'In der Steuererklärung gibt es den Pflege-Pauschbetrag.',
       'Pflegeberatung ist kostenlos, bei der Pflegekasse oder im Pflegestützpunkt. Dort hilft man auch beim Antrag.']);
     box.appendChild(el('p', 'Stand der Beträge: ' + (R.stand || 'November 2026') + '. Den genauen Anspruch legt die Pflegekasse fest.', 'small muted'));
   }
-  function pflegeInfo(zurueckZu, fokus) {
+  // Abschnitt aufklappen, hinscrollen und den Fokus auf seine Überschrift setzen
+  function piAbschnitt(id) {
+    var d = id && $(id); if (!d) return;
+    d.open = true;
+    try { d.scrollIntoView({ block: 'start' }); } catch (e) {}
+    var s = d.querySelector('summary'); if (s) s.focus({ preventScroll: true });
+  }
+  function pflegeInfo(zurueckZu, fokus, abschnitt) {
     piZurueckZu = zurueckZu || 'leistungen'; piFokus = fokus || null;
     pflegeInfoBauen(); $('piNurDe').hidden = lang === 'de';
-    zeigeAnsicht('pflegeinfo', true);
+    document.querySelectorAll('#pflegeInfo details').forEach(function (d) { d.open = false; });
+    zeigeAnsicht('pflegeinfo', !abschnitt);
+    if (abschnitt) piAbschnitt(abschnitt);
   }
   $('piZurueck').addEventListener('click', function () {
     zeigeAnsicht(piZurueckZu, false);

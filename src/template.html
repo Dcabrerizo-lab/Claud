@@ -473,7 +473,14 @@
   .pi details { background: var(--surface); border-radius: 14px; padding: 4px 16px; box-shadow: var(--shadow); }
   .pi details > summary { min-height: 48px; display: flex; align-items: center; cursor: pointer; font-weight: 700; }
   .pi details p, .pi details ul { margin: 6px 0 12px; }
-  .pi-knopf { margin-top: 8px; }
+  .card .txt .kern { margin: 0; }
+  .card .txt .punkte { margin: 8px 0 0; padding-inline-start: 1.15em; display: grid; gap: 6px; }
+  .card .txt .punkte li::marker { color: var(--muted); }
+  .pi-links { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); }
+  .pi-kopf { width: 100%; font-size: .85em; color: var(--muted); }
+  .pi-link { font: inherit; font-size: .92em; font-weight: 600; color: var(--accent); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; min-height: 44px; cursor: pointer; text-align: start; }
+  .pi-link:hover { border-color: var(--accent); }
+  .pi-link-tab { border: 0; padding: 0; min-height: 44px; font-size: 1em; }
 /*PPSTIL*/
 </style>
 

@@ -9,7 +9,7 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
   const netz = []; p.on('request', (r) => { if (!/^(file|data|blob):/.test(r.url())) netz.push(r.url()); });
   p.on('pageerror', (e) => errs.push(e.message)); p.on('console', (m) => { if (m.type() === 'error' && !/ERR_TUNNEL|ERR_NAME|ERR_INTERNET|fonts.g/.test(m.text())) errs.push(m.text()); });
   await p.goto('file://' + file + '#leistungen');
-  const card = (name) => p.evaluate((nm) => { const c = [...document.querySelectorAll('#cards .card')].find((x) => x.querySelector('h3').textContent === nm); return c ? { pill: c.querySelector('.pill').className.replace('pill ', ''), text: c.querySelector('.body').textContent.replace(/\u00a0/g, ' '), zust: c.querySelector('.zust').textContent } : null; }, name);
+  const card = (name) => p.evaluate((nm) => { const c = [...document.querySelectorAll('#cards .card')].find((x) => x.querySelector('h3').textContent === nm); return c ? { pill: c.querySelector('.pill').className.replace('pill ', ''), text: [...c.querySelectorAll('.body .head2, .body .kern, .body .punkte > li')].map((x) => x.textContent).join(' ').replace(/\u00a0/g, ' '), zust: c.querySelector('.zust').textContent } : null; }, name);
   const sel = (id, v) => p.selectOption('#' + id, v);
   const geb = async (v) => { await p.fill('#gebJahr', v); await p.waitForTimeout(250); };
   const fillNum = async (id, v) => { await p.fill('#' + id, v); await p.press('#' + id, 'Tab'); };
