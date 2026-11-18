@@ -992,13 +992,6 @@
         <nav id="overview" class="overview" hidden></nav>
         <div id="together"></div>
         <div id="cards" class="results"></div>
-        <div id="gutWissen"></div>
-        <section class="feedback" id="feedback" hidden aria-labelledby="h-feedback">
-          <h3 id="h-feedback" data-t="fb.h"></h3>
-          <p data-t="fb.text"></p>
-          <div class="btns"><a class="btn ghost" id="feedbackMail" href="#" data-t="fb.btn"></a></div>
-          <p class="small" data-t="fb.hint"></p>
-        </section>
 
         <section class="helper" id="helper" aria-labelledby="h-helper">
           <h2 id="h-helper" data-t="f.h"></h2>
@@ -1017,6 +1010,17 @@
           <div class="btns"><button type="button" class="btn" id="mappeMake" data-t="f.make"></button></div>
           <p class="msg" id="pickMsg" role="status"></p>
         </section>
+
+        <div class="rules" id="feedback" hidden>
+          <details>
+            <summary data-t="fb.h"></summary>
+            <div class="inner">
+              <p data-t="fb.text"></p>
+              <div class="btns"><a class="btn ghost" id="feedbackMail" href="#" data-t="fb.btn"></a></div>
+              <p class="small" data-t="fb.hint"></p>
+            </div>
+          </details>
+        </div>
 
         <div class="rules">
           <details>
