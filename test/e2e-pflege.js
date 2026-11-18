@@ -103,9 +103,18 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Vergleich: gleiche Werte, keine Abweichung', /keiner Frage/.test(await p.textContent('#pf-vergleich')));
   // Gutachten bewertet niedriger: 1.1 und 1.2 „selbständig“ → zwei Abweichungen, Übernahme in den Widerspruch
   await p.selectOption('#pf-1\\.1', '0'); await p.selectOption('#pf-1\\.2', '0'); await p.waitForTimeout(150);
-  ok('Vergleich zeigt zwei Abweichungen', /Bei 2 Fragen/.test(await p.textContent('#pf-vergleich')) && (await p.locator('#pf-vergleich tbody tr').count()) === 2, await p.textContent('#pf-vergleich'));
-  await p.click('#pf-vergleich >> text=Abweichungen in den Widerspruch übernehmen');
-  ok('Abweichungen stehen im Widerspruch', (await p.locator('#pf-wid-liste [data-id]').count()) >= 2);
+  ok('Vergleich zeigt zwei Abweichungen', /Bei 2 Fragen/.test(await p.textContent('#pf-vergleich')), await p.textContent('#pf-vergleich'));
+  ok('Abweichungen stehen von selbst als Karten mit Beschreibungsfeld da', (await p.locator('#pf-wid-liste .pw[data-auto="1"]').count()) === 2 && (await p.locator('#pf-wid-liste .pw[data-id="1.1"] textarea').count()) === 1);
+  ok('Karte nennt den Wert aus dem Gutachten und die eigene Einschätzung', /Im Gutachten: „schafft es allein“/.test(await p.textContent('#pf-wid-liste .pw[data-id="1.1"]')) && (await p.inputValue('#pf-wid-liste .pw[data-id="1.1"] select')) === '2');
+  await p.fill('#pf-wid-liste .pw[data-id="1.1"] textarea', 'Sie kommt nachts nicht allein hoch und muss gedreht werden.');
+  await p.uncheck('#pf-wid-liste .pw[data-id="1.2"] .pw-mit');
+  // Gutachten-Wert auf eigenen Wert: die leere Karte 1.2 verschwindet, die ausgefüllte 1.1 bleibt
+  await p.selectOption('#pf-1\\.2', '2'); await p.waitForTimeout(150);
+  ok('Karte ohne Abweichung und ohne Text verschwindet', (await p.locator('#pf-wid-liste .pw[data-id="1.2"]').count()) === 0 && (await p.locator('#pf-wid-liste .pw[data-id="1.1"]').count()) === 1);
+  ok('Beschreibung bleibt beim Neurechnen erhalten', /nachts nicht allein/.test(await p.inputValue('#pf-wid-liste .pw[data-id="1.1"] textarea')));
+  await p.click('#pf-wid-mach');
+  const schreiben = await p.inputValue('#pf-wid-text');
+  ok('Schreiben enthält die Abweichung mit der Beschreibung aus dem Alltag', /1\.1 .*„selbständig“, heute „überwiegend unselbständig“\. Sie kommt nachts nicht allein hoch/.test(schreiben), schreiben.slice(0, 600));
   // Säugling: Frage 4.K
   await p.evaluate(() => { localStorage.removeItem('lotse.pflegecheck'); location.hash = '#leistungen'; }); await p.reload(); await p.waitForTimeout(300);
   await p.click('#paStart'); await p.fill('#pa-jahre', '1');

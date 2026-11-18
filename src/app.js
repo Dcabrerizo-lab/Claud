@@ -1743,6 +1743,7 @@
     var q = $('pa-q'); if (q) { window.scrollTo(0, 0); q.focus({ preventScroll: true }); }
   }
   $('paStart').addEventListener('click', paOeffnen);
+  window.SoLoPflegeStart = paOeffnen; // „Pflegegrad selbst einschätzen“ aus der Gutachten-Prüfung
   // Sprung zu einer Ergebniskarte (Übersicht oben, Kachel „Zwei Wege“): Karte aufklappen
   $('ergebnis').addEventListener('click', function (e) { var a = e.target.closest && e.target.closest('a[href^="#c-"]'); if (a) karteAuf(a.getAttribute('href').slice(1)); });
 
@@ -1839,9 +1840,9 @@
     briefArt = teil ? art : null; briefKopf();
     $('app').classList.toggle('brief-offen', !!teil); // in einer Kachel Logo und Sprachwahl ausblenden, damit die Wahl oben steht
     // Erst entscheiden (scannen, einfügen oder selbst eingeben), dann erscheint das Formular der Prüfung
-    if (teil && art !== 'af') $(teil).classList.add('pp-zu'); // Antragsformular: dort sind Foto und Einfügen selbst die Wahl
+    if (teil && art !== 'af' && !$(teil).dataset.offen) $(teil).classList.add('pp-zu'); // einmal geöffnet bleibt das Formular offen (z. B. nach der Pflege-Einschätzung) // Antragsformular: dort sind Foto und Einfügen selbst die Wahl
     elPlatz();
-    if (art === 'pk' && window.PruefpaketPflege && pa.antworten && typeof PflegeAssistent !== 'undefined') window.PruefpaketPflege.eigene(PflegeAssistent.eingabe(pa.antworten, null));
+    if (art === 'pk' && window.PruefpaketPflege && typeof PflegeAssistent !== 'undefined') window.PruefpaketPflege.eigene(pa.antworten ? PflegeAssistent.eingabe(pa.antworten, null) : null);
     window.scrollTo(0, 0);
     var h = teil && $(teil).querySelector('h2'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
   }
@@ -1856,7 +1857,7 @@
   // In einer Kachel: Formular der Prüfung zeigen (nach der Wahl „selbst eingeben“ oder nach dem Einlesen)
   function briefFormular(fokus) {
     var sec = briefArt && $(BRIEF_TEIL[briefArt]); if (!sec) return;
-    sec.classList.remove('pp-zu'); $('elSelbst').hidden = true;
+    sec.classList.remove('pp-zu'); sec.dataset.offen = '1'; $('elSelbst').hidden = true;
     if (fokus) { var f = sec.querySelector('.card:nth-of-type(2) input, form input, form select'); if (f) f.focus(); }
   }
   // Das Einlesen gibt es nur in einer Kachel, direkt unter der Erklärung des Abschnitts. Auf der Übersicht stehen nur die Kacheln.

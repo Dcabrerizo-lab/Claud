@@ -106,21 +106,21 @@
     for (const satz of P.zusammenfassung(g, r, Rules)) box.append(h('p', { text: satz }));
     // Bereiche als kleine Tabelle
     const tb = h('tbody', {}, [1, 2, 3, 4, 5, 6].map((m) => { const mo = r.module[m], zaehlt = !(m === 2 || m === 3) || r.zaehlt23 === m; return h('tr', {}, h('td', { text: P.MODUL[m].kurz }), h('td', { text: mo.bereichName }), h('td', { class: 'z', text: zaehlt ? `${zahl(mo.gewichtet)} / ${zahl(P.ANLAGE2[m].gew[4])}` : 'zählt nicht' })); }));
-    box.append(h('div', { class: 'tablewrap', tabindex: '0', role: 'region', 'aria-label': 'Punkte je Bereich' }, h('table', { class: 'modtab' }, h('thead', {}, h('tr', {}, h('th', { text: 'Bereich' }), h('th', { text: 'Einstufung' }), h('th', { class: 'z', text: 'Punkte' }))), tb)));
+    box.append(h('details', {}, h('summary', { text: 'Punkte je Bereich' }), h('div', { class: 'tablewrap', tabindex: '0', role: 'region', 'aria-label': 'Punkte je Bereich' }, h('table', { class: 'modtab' }, h('thead', {}, h('tr', {}, h('th', { text: 'Bereich' }), h('th', { text: 'Einstufung' }), h('th', { class: 'z', text: 'Punkte' }))), tb))));
     if (r.fehltBisNaechster != null && !r.besonders && r.hebel.moeglich) {
       const jetzt = P.geld(r.pg, Rules), naechst = P.geld(r.naechsterPg, Rules);
       box.append(h('h3', { text: `Was für Pflegegrad ${r.naechsterPg} fehlt` }));
       if (naechst.pflegegeld > jetzt.pflegegeld) box.append(h('p', { text: `Pflegegrad ${r.naechsterPg} brächte ${eur(naechst.pflegegeld - jetzt.pflegegeld)} mehr Pflegegeld im Monat.` }));
       box.append(h('p', { text: r.grenzfall ? 'Es ist knapp. Schon diese Änderungen würden reichen, wenn sie im Alltag wirklich so sind:' : 'Dafür müsste sich einiges ändern, zum Beispiel:' }));
       r.hebel.optionen.slice(0, 3).forEach((o, i) => {
-        const btn = o.wege.every((w) => !w.id.startsWith('M5')) ? h('button', { type: 'button', class: 'btn', onclick: () => { o.wege.forEach((w) => fuegeWiderspruchHinzu(w.id, w.nach)); $('pf-wid').scrollIntoView({ block: 'start' }); } }, 'Für den Widerspruch übernehmen') : null;
+        const btn = o.wege.every((w) => !w.id.startsWith('M5')) ? h('button', { type: 'button', class: 'btn', onclick: () => { o.wege.forEach((w) => fuegeWiderspruchHinzu(w.id, w.nach, false)); $('pf-wid').scrollIntoView({ block: 'start' }); } }, 'Für den Widerspruch übernehmen') : null;
         box.append(h('div', { class: 'opt' }, h('strong', { text: `Möglichkeit ${i + 1}: ${o.schritte === 1 ? 'eine Bewertung' : o.schritte + ' Bewertungen'} anders` }), h('ul', {}, o.wege.map((w) => h('li', { text: weg(w) }))), btn));
       });
       box.append(h('p', { class: 'small muted', text: 'Nur übernehmen, was im Alltag wirklich so ist. Ob eine Bewertung stimmt, wissen nur du und die gepflegte Person.' }));
     }
     box.append(h('details', {}, h('summary', { text: 'So rechnet die Pflegekasse' }), h('ul', {}, P.SO_GEHTS.map((t) => h('li', { text: t })))));
     zeigeErklaerung(g, r);
-    if (eigen) zeigeVergleich(g, r);
+    zeigeVergleich(g, r);
   }
   // Das Gutachten einfach erklärt: jede eingetragene Bewertung mit ihrer Bedeutung im Alltag
   function zeigeErklaerung(g, r) {
@@ -140,57 +140,87 @@
     }
     box.hidden = leer;
   }
-  // Widerspruch Pflege: Liste der Kriterien
-  // Vergleich Gutachten ↔ eigene Einschätzung (aus der Leistungsseite der App): wo der Gutachter niedriger bewertet hat
+  // Widerspruch Pflege. Mit eigener Einschätzung (Pflegegrad-Einschätzung der App) füllt sich die Liste „Wo das Gutachten zu niedrig ist“
+  // von selbst: eine Karte je Bewertung, bei der das Gutachten weniger Punkte gibt als die eigene Einschätzung, mit Feld für den Alltag.
+  // Richtigkeit: Nur Bewertungen, die aus dem Gutachten eingetragen sind, zählen; fehlende werden gezählt und genannt, nicht als Abweichung gewertet.
   let eigen = null;
-  function zeigeVergleich(g, r) {
-    const box = $('pf-erg');
-    const re = P.rechne(eigen);
-    const eingetragen = Object.keys(g.stufen).length > 0;
-    const sec = h('div', { class: 'opt', id: 'pf-vergleich' }, h('h3', { text: 'Vergleich mit deiner Einschätzung' }));
-    if (!eingetragen) { sec.append(h('p', { text: `Deine Einschätzung: ${re.pg ? 'Pflegegrad ' + re.pg : 'kein Pflegegrad'} (${zahl(re.gesamt)} Punkte). Trage oben die Bewertungen aus dem Gutachten ein oder scanne es, dann zeigt SoLo jede Abweichung.` })); box.append(sec); return; }
-    const ab = [];
+  const punkteVon = (k, stufe) => (stufe == null ? 0 : P.SKALA[k.s].punkte[stufe] || 0);
+  function abweichungen(g) {
+    const ab = [], fehlt = [];
+    if (!eigen || !eigen.stufen) return { ab, fehlt };
     for (const k of P.KRITERIEN) {
-      const e = eigen.stufen && eigen.stufen[k.id], gu = g.stufen[k.id];
-      if (e == null || (P.SKALA[k.s].punkte[e] || 0) <= (gu == null ? 0 : P.SKALA[k.s].punkte[gu] || 0)) continue;
-      ab.push({ k, e, gu });
+      if (k.s === 'sonde') continue;
+      const e = eigen.stufen[k.id], gu = g.stufen[k.id];
+      if (e == null) continue;
+      if (gu == null) { if (punkteVon(k, e) > 0) fehlt.push(k); continue; }
+      if (punkteVon(k, e) > punkteVon(k, gu)) ab.push({ k, e, gu });
     }
-    sec.append(h('p', { text: `Gutachten: ${r.pg ? 'Pflegegrad ' + r.pg : 'kein Pflegegrad'} (${zahl(r.gesamt)} Punkte). Deine Einschätzung: ${re.pg ? 'Pflegegrad ' + re.pg : 'kein Pflegegrad'} (${zahl(re.gesamt)} Punkte).` }));
-    if (!ab.length) { sec.append(h('p', { text: 'Bei keiner Frage hat der Gutachter niedriger bewertet als du.' })); box.append(sec); return; }
-    sec.append(h('p', { text: `Bei ${ab.length} ${ab.length === 1 ? 'Frage' : 'Fragen'} hat der Gutachter niedriger bewertet als du:` }));
-    const tb = h('tbody', {}, ab.map(({ k, e, gu }) => h('tr', {}, h('td', { text: k.leicht }), h('td', { text: gu == null ? 'nicht bewertet' : P.SKALA[k.s].kurz[gu] }), h('td', { text: P.SKALA[k.s].kurz[e] }))));
-    sec.append(h('div', { class: 'tablewrap', tabindex: '0', role: 'region', 'aria-label': 'Abweichungen' }, h('table', {}, h('thead', {}, h('tr', {}, h('th', { text: 'Frage' }), h('th', { text: 'Gutachten' }), h('th', { text: 'Deine Einschätzung' }))), tb)));
-    sec.append(h('button', { type: 'button', class: 'btn', onclick: () => { ab.forEach(({ k, e }) => fuegeWiderspruchHinzu(k.id, e)); $('pf-wid').scrollIntoView({ block: 'start' }); } }, 'Abweichungen in den Widerspruch übernehmen'));
-    sec.append(h('p', { class: 'small muted', text: 'Übernimm nur, was im Alltag wirklich so ist, und beschreibe es im Widerspruch mit eigenen Worten.' }));
-    box.append(sec);
+    return { ab, fehlt };
   }
-  function fuegeWiderspruchHinzu(id, soll) {
+  function zeigeVergleich(g, r) {
+    const info = $('pf-ab-info'); if (!info) return;
+    info.replaceChildren();
+    const eingetragen = Object.keys(g.stufen).length > 0;
+    if (!eigen) {
+      const start = window.SoLoPflegeStart;
+      info.append(h('div', { class: 'opt' }, h('p', { text: 'Noch keine eigene Einschätzung. Mach sie in wenigen Minuten (Fragen in einfacher Sprache). Danach zeigt SoLo hier von selbst jede Bewertung, die im Gutachten niedriger ist.' }),
+        start ? h('div', { class: 'btns' }, h('button', { type: 'button', class: 'btn primary', id: 'pf-eigen-start', onclick: () => start() }, 'Pflegegrad selbst einschätzen')) : null));
+    } else {
+      const re = P.rechne(eigen), { ab, fehlt } = abweichungen(g);
+      const satz = [`Deine Einschätzung: ${re.pg ? 'Pflegegrad ' + re.pg : 'kein Pflegegrad'} (${zahl(re.gesamt)} Punkte).`];
+      if (eingetragen) satz.push(`Gutachten: ${r.pg ? 'Pflegegrad ' + r.pg : 'kein Pflegegrad'} (${zahl(r.gesamt)} Punkte).`);
+      satz.push(!eingetragen ? 'Trage oben die Bewertungen aus dem Gutachten ein oder scanne es, dann erscheinen die Abweichungen hier.' : ab.length ? `Bei ${ab.length} ${ab.length === 1 ? 'Frage' : 'Fragen'} ist das Gutachten niedriger als deine Einschätzung.` : 'Bei keiner Frage ist das Gutachten niedriger als deine Einschätzung.');
+      info.append(h('p', { id: 'pf-vergleich', text: satz.join(' ') }));
+      if (eingetragen && fehlt.length) info.append(h('p', { class: 'small muted', text: `${fehlt.length} ${fehlt.length === 1 ? 'Bewertung fehlt' : 'Bewertungen fehlen'} noch aus dem Gutachten (zum Beispiel „${fehlt[0].leicht}“). Trage sie oben ein, sonst kann SoLo dort nicht vergleichen.` }));
+      if (eingetragen) {
+        const ids = new Set(ab.map((x) => x.k.id));
+        // Automatische Karten, die nicht mehr abweichen und leer sind, verschwinden; ausgefüllte bleiben stehen
+        for (const z of [...$('pf-wid-liste').children]) if (z.dataset.auto === '1' && !ids.has(z.dataset.id) && !z.querySelector('textarea').value.trim()) z.remove();
+        for (const { k, e } of ab) fuegeWiderspruchHinzu(k.id, e, true);
+      }
+    }
+    // Text der Karten aktualisieren (Gutachten-Wert kann sich geändert haben)
+    for (const z of $('pf-wid-liste').children) { const k = P.kriterium(z.dataset.id), el = z.querySelector('.pw-ist'); if (k && el) { const gu = g.stufen[k.id]; el.textContent = 'Im Gutachten: ' + (gu == null ? 'nicht eingetragen' : `„${P.SKALA[k.s].kurz[gu]}“ (${P.SKALA[k.s].stufen[gu]})`); } }
+  }
+  let pwn = 0;
+  // Eine Karte: Bewertung (bei „selbst hinzufügen“ wählbar), wie es tatsächlich ist, Beschreibung aus dem Alltag, Haken „aufnehmen“
+  function fuegeWiderspruchHinzu(id, soll, auto) {
     const liste = $('pf-wid-liste');
     if (id && liste.querySelector(`[data-id="${id}"]`)) return;
-    const n = liste.children.length + 1;
-    const wahl = h('select', { id: `pw-k-${n}`, 'aria-label': `Kriterium ${n}` }, P.KRITERIEN.filter((k) => k.s !== 'sonde').map((k) => h('option', { value: k.id, text: `${k.id} ${k.leicht}`, selected: k.id === id })));
+    const n = ++pwn;
+    const zeile = h('div', { class: 'opt pw', 'data-id': id || '', 'data-auto': auto ? '1' : '' });
     const sollSel = h('select', { id: `pw-s-${n}` });
-    const fuellen = () => { const k = P.kriterium(wahl.value); sollSel.replaceChildren(...P.SKALA[k.s].stufen.map((s, i) => h('option', { value: i, text: `${s} (${P.SKALA[k.s].kurz[i]})`, selected: soll != null && i === soll }))); };
-    wahl.addEventListener('change', () => { soll = null; fuellen(); });
-    fuellen();
-    const alltag = h('textarea', { id: `pw-a-${n}`, rows: '3', placeholder: 'Wie ist es im Alltag wirklich? z. B. „Sie kann nicht allein in die Dusche steigen und braucht jedes Mal Hilfe beim Abtrocknen.“' });
-    const zeile = h('div', { class: 'opt', 'data-id': id || '' },
-      h('div', { class: 'grid2' }, h('div', {}, h('label', { for: `pw-k-${n}`, text: 'Kriterium' }), wahl), h('div', {}, h('label', { for: `pw-s-${n}`, text: 'Tatsächlich' }), sollSel)),
-      h('label', { for: `pw-a-${n}`, text: 'Beschreibung aus dem Alltag' }), alltag,
-      h('div', { class: 'btns' }, h('button', { type: 'button', class: 'btn', onclick: () => zeile.remove() }, 'Entfernen')));
-    wahl.addEventListener('change', () => { zeile.dataset.id = wahl.value; });
-    zeile.dataset.id = wahl.value;
+    const fuellen = (kid, wert) => { const k = P.kriterium(kid); sollSel.replaceChildren(...P.SKALA[k.s].kurz.map((s, i) => h('option', { value: i, text: `${s.charAt(0).toUpperCase() + s.slice(1)} (${P.SKALA[k.s].stufen[i]})`, selected: wert != null && i === wert }))); };
+    let kopf;
+    if (auto && id) {
+      const k = P.kriterium(id);
+      kopf = h('div', {}, h('strong', { text: `${k.id} ${k.leicht}` }), h('p', { class: 'small pw-ist' }));
+      fuellen(id, soll);
+    } else {
+      const wahl = h('select', { id: `pw-k-${n}` }, P.KRITERIEN.filter((k) => k.s !== 'sonde').map((k) => h('option', { value: k.id, text: `${k.id} ${k.leicht}`, selected: k.id === id })));
+      wahl.addEventListener('change', () => { zeile.dataset.id = wahl.value; fuellen(wahl.value, null); });
+      fuellen(wahl.value, soll); zeile.dataset.id = wahl.value;
+      kopf = h('div', {}, h('label', { for: `pw-k-${n}`, text: 'Bewertung' }), wahl, h('p', { class: 'small pw-ist' }));
+    }
+    const mit = h('input', { type: 'checkbox', id: `pw-m-${n}`, class: 'pw-mit', checked: true });
+    const alltag = h('textarea', { id: `pw-a-${n}`, rows: '3', placeholder: 'z. B. „Sie kann nicht allein in die Dusche steigen und braucht jedes Mal Hilfe beim Abtrocknen.“' });
+    zeile.append(...[kopf,
+      h('label', { for: `pw-s-${n}`, text: auto ? 'Deine Einschätzung: so ist es wirklich' : 'So ist es wirklich' }), sollSel,
+      h('label', { for: `pw-a-${n}`, text: 'Wie ist es im Alltag wirklich? (in eigenen Worten)' }), alltag,
+      h('label', { class: 'check' }, mit, h('span', { text: 'In das Schreiben aufnehmen' })),
+      auto ? null : h('div', { class: 'btns' }, h('button', { type: 'button', class: 'btn', onclick: () => zeile.remove() }, 'Entfernen'))].filter(Boolean));
     liste.append(zeile);
   }
   const pfArt = () => ($('pf-art-h').checked ? 'hoeher' : 'widerspruch');
   function zeigePfArt() {
     const hoch = pfArt() === 'hoeher';
-    $('pf-art-text').textContent = hoch ? 'Wähle die Bewertungen, bei denen es seit der letzten Begutachtung schlimmer geworden ist, und beschreibe, was sich verändert hat und seit wann.' : 'Wähle die Bewertungen, die im Gutachten zu niedrig sind, und beschreibe in eigenen Worten, wie es im Alltag wirklich ist. Nur was stimmt, gehört hinein.';
+    $('pf-ab-h').textContent = hoch ? 'Wo es schlimmer geworden ist' : 'Wo das Gutachten zu niedrig ist';
+    $('pf-art-text').textContent = hoch ? 'Beschreibe bei jeder Bewertung, was sich seit der letzten Begutachtung verändert hat und seit wann. Nur was stimmt, gehört hinein.' : 'Beschreibe bei jeder Bewertung in eigenen Worten, wie es im Alltag wirklich ist. Nur was stimmt, gehört hinein.';
     $('pf-datum-label').textContent = hoch ? 'Datum der letzten Begutachtung' : 'Datum des Bescheids';
   }
   function machePflegeWiderspruch() {
     const g = lesePflege(), r = P.rechne(g), hoch = pfArt() === 'hoeher';
-    const auswahl = [...$('pf-wid-liste').children].map((z) => { const sel = z.querySelectorAll('select'); const id = sel[0].value; return { id, stufeIst: +(g.stufen[id] || 0), stufeSoll: +sel[1].value, alltag: z.querySelector('textarea').value }; }).filter((x) => x.stufeSoll > x.stufeIst);
+    const auswahl = [...$('pf-wid-liste').children].filter((z) => z.querySelector('.pw-mit').checked && z.dataset.id).map((z) => { const id = z.dataset.id, sel = z.querySelectorAll('select'); return { id, stufeIst: +(g.stufen[id] || 0), stufeSoll: +sel[sel.length - 1].value, alltag: z.querySelector('textarea').value }; }).filter((x) => x.stufeSoll > x.stufeIst);
     const neu = Object.assign({}, g, { stufen: Object.assign({}, g.stufen) }); auswahl.forEach((x) => { neu.stufen[x.id] = x.stufeSoll; });
     const ziel = P.rechne(neu).pg, ist = r.bescheid ? r.bescheid.pg : r.pg;
     const absender = { name: $('pf-name').value.trim(), strasse: $('pf-anschrift').value.trim(), ort: $('pf-ort').value.trim() }, stelle = { name: $('pf-kasse').value.trim() };
@@ -455,7 +485,7 @@ Ergebnis: Pflegegrad 2`;
   });
   $('pf-beispiel').addEventListener('click', () => { $('pf-alter').value = 82; $('pf-text').value = BEISPIEL_GUTACHTEN; $('pf-lesen').click(); });
   $('pf-leeren').addEventListener('click', () => { $('pf-form').reset(); $('pf-form2').reset(); $('pf-text').value = ''; $('pf-msg').textContent = ''; for (const el of document.querySelectorAll('#pf-module input')) { if (el.type === 'checkbox') el.checked = false; else el.value = ''; } zeigePflege(); });
-  $('pf-wid-plus').addEventListener('click', () => fuegeWiderspruchHinzu(null, null));
+  $('pf-wid-plus').addEventListener('click', () => fuegeWiderspruchHinzu(null, null, false));
   $('pf-wid-mach').addEventListener('click', machePflegeWiderspruch);
   for (const id of ['pf-art-w', 'pf-art-h']) $(id).addEventListener('change', zeigePfArt);
   $('pf-wid-copy').addEventListener('click', () => kopiere($('pf-wid-text'), $('pf-copy-msg')));
