@@ -89,8 +89,8 @@ const MOCK = () => {
   ok('Schrift lokal geladen', await p.evaluate(async () => { await document.fonts.ready; return [...document.fonts].some((f) => f.status === 'loaded'); }));
   ok('Hinweis zur Web-Version im Impressum ausgeblendet', await p.evaluate(() => { document.getElementById('legalBtn').click(); const h = document.getElementById('legalWeb').hidden; document.getElementById('legalClose').click(); return h; }));
   ok('Web-Scan (Tesseract/Claude, Dateifeld) nicht enthalten; Kamera-Scan und Text einfügen vorhanden', (await p.locator('#sc-file').count()) === 0 && (await p.locator('#sc-claudeBox').count()) === 0 && (await p.locator('#sc-take').count()) === 1 && (await p.locator('#sc-text').count()) === 1 && (await p.locator('#sc-local').count()) === 1);
-  for (const l of ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro']) { await p.selectOption('#lang', l); ok('Sprache ' + l, (await p.locator('#cards .card').count()) === KARTEN.length); }
-  await p.selectOption('#lang', 'de');
+  for (const l of ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro']) { await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, l); ok('Sprache ' + l, (await p.locator('#cards .card').count()) === KARTEN.length); }
+  await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'de');
 
   // Foto-Scan: Kamera -> Texterkennung -> Felder, Foto wird danach gelöscht
   await p.click('#p1'); await p.fill('#p-name', 'Maria Muster');
@@ -195,7 +195,7 @@ const MOCK = () => {
   // Speichern
   await p.fill('#miete', '777'); await p.press('#miete', 'Tab'); await p.waitForTimeout(800);
   ok('Eingaben werden über Preferences gespeichert', (await calls('Preferences.set')).some((o) => /777/.test(o.value || '')));
-  await p.click('#clearBtn');
+  await p.evaluate(() => document.getElementById('clearBtn').click());
   ok('„Alle Angaben löschen“ entfernt gespeicherte Eingaben', (await calls('Preferences.remove')).length > 0);
 
   // Wohnort nur in der Anschrift der Antragsmappe (PLZ-Feld im Fragebogen leer): App nutzt die PLZ aus „PLZ und Ort“

@@ -350,7 +350,6 @@
     fillSelect('uzAn', [['', t('uz.an.0')], ['k1', t('uz.an.k1')], ['k2', t('uz.an.k2')], ['k3', t('uz.an.k3')], ['ex', t('uz.an.ex')], ['exk', t('uz.an.exk')]], state.uzAn);
     fillSelect('emStd', [['', t('bh.em.0')], ['unter3', t('bh.em.unter3')], ['3bis6', t('bh.em.3bis6')], ['unklar', t('bh.em.unklar')]], state.emStd);
     fillSelect('lang', LANGS.map(function (c) { return [c, I18N[c]['meta.name']]; }), lang);
-    fillSelect('lang2', LANGS.map(function (c) { return [c, I18N[c]['meta.name']]; }), lang);
     plzUpdate(false);
   }
 
@@ -464,7 +463,6 @@
     CHECKS.forEach(function (k) { $(k).addEventListener('change', function () { state[k] = $(k).checked; touched(); }); });
     BEZUG.forEach(function (k) { $('b-' + k).addEventListener('change', function () { state.bezug[k] = $('b-' + k).checked; touched(); }); });
     $('lang').addEventListener('change', function () { setLang($('lang').value); });
-    $('lang2').addEventListener('change', function () { setLang($('lang2').value); });
     if ($('sc-take')) $('sc-take').addEventListener('click', function () { runNative(); });
     if ($('sc-local')) $('sc-local').addEventListener('click', function () { runLocal(true); });
     if ($('sc-pasteBtn')) $('sc-pasteBtn').addEventListener('click', function () { var b = $('sc-pasteBox'); b.hidden = !b.hidden; $('sc-pasteBtn').setAttribute('aria-expanded', String(!b.hidden)); if (!b.hidden) $('sc-text').focus(); });
@@ -1747,7 +1745,6 @@
     var navA = a === 'pflege' || a === 'pflegeinfo' ? 'leistungen' : a;
     document.querySelectorAll('#appnav button').forEach(function (b) { if (b.getAttribute('data-ansicht') === navA) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
     try { if (location.hash !== '#' + a) history.replaceState(null, '', '#' + a); } catch (e) {}
-    $('big2').setAttribute('aria-pressed', $('bigBtn').getAttribute('aria-pressed') || 'false'); $('lang2').value = lang;
     bereicheText();
     if (fokus) { window.scrollTo(0, 0); var h = $('v-' + a).querySelector('h2'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); } }
   }
@@ -2055,7 +2052,6 @@
   $('tab-einst').addEventListener('click', function () { einstReiter('einst'); });
   $('tab-info').addEventListener('click', function () { einstReiter('info'); });
   [['tab-einst', 'tab-info'], ['tab-info', 'tab-einst']].forEach(function (p) { $(p[0]).addEventListener('keydown', function (e) { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { $(p[1]).click(); $(p[1]).focus(); } }); });
-  $('big2').addEventListener('click', function () { $('bigBtn').click(); $('big2').setAttribute('aria-pressed', $('bigBtn').getAttribute('aria-pressed')); });
   $('clear2').addEventListener('click', function () { $('clearBtn').click(); $('clear2Msg').textContent = $('clearMsg').textContent; });
   $('goLeistungen').addEventListener('click', function () { zeigeAnsicht('leistungen', true); });
   $('goBriefe').addEventListener('click', function () { zeigeAnsicht('briefe', true); });
