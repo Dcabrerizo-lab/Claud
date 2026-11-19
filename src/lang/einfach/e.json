@@ -32,7 +32,7 @@
  "start.2": "Dein Ergebnis erscheint hier. Es ändert sich bei jeder neuen Angabe.",
  "start.3": "Du willst erst sehen, wie es aussieht? Lade oben ein Beispiel.",
  "geb.hint": "Zum Beispiel 1962. Daran sieht die App, ob die Person schon im Rentenalter ist.",
- "kindEink.hint": "Zum Beispiel Lohn aus der Ausbildung oder aus einem Minijob. Zähle alle Kinder zusammen. Gib an, wie viel auf dem Konto ankommt. Zähle Kindergeld und Unterhalt nicht mit. Lass das Feld leer, wenn es kein Einkommen gibt.",
+ "kindEink.hint": "Zum Beispiel Lohn aus der Ausbildung oder aus einem Minijob. Zähle alle Kinder zusammen. Gib an, wie viel auf dem Konto ankommt. Zähle Kindergeld, Unterhalt und Waisenrente nicht mit. Lass das Feld leer, wenn es kein Einkommen gibt.",
  "legende": "Wahrscheinlich: Du hast gute Chancen. Stelle einen Antrag. Möglich: Es lohnt sich zu fragen. Die Beträge sind grobe Schätzungen. Die zuständige Stelle rechnet genau.",
  "arbeit.label": "Ist eine erwachsene Person arbeitslos, wird bald arbeitslos oder ist krankgeschrieben?",
  "algMon.label": "Wie lange hast du in den letzten 5 Jahren insgesamt versicherungspflichtig gearbeitet?",
