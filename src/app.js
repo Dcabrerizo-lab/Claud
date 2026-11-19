@@ -364,7 +364,6 @@
     document.querySelectorAll('[data-t]').forEach(function (el) { el.textContent = t(el.getAttribute('data-t')); });
     document.querySelectorAll('[data-t-aria]').forEach(function (el) { el.setAttribute('aria-label', t(el.getAttribute('data-t-aria'))); });
     $('stand').textContent = t('stand', { stand: Rules.RULES.stand });
-    $('standApp').textContent = $('stand').textContent;
     $('appVersion').textContent = t('set.version', { v: APPVERSION });
     einfacheSpracheAnzeigen();
     // Regeln älter als der nächste Stichtag (1. Januar): deutlich darauf hinweisen
@@ -504,15 +503,6 @@
     $('einfacheSpracheBtn').addEventListener('click', function () {
       if (lang !== 'de') return;
       einfacheSpracheSetzen(!einfachSprache, true);
-    });
-    $('delBtn').addEventListener('click', function () {
-      $('delMsg').textContent = ''; $('delConfirm').hidden = false; $('delBtn').setAttribute('aria-expanded', 'true'); $('delNein').focus();
-    });
-    $('delNein').addEventListener('click', function () { $('delConfirm').hidden = true; $('delBtn').setAttribute('aria-expanded', 'false'); $('delBtn').focus(); });
-    $('delJa').addEventListener('click', function () {
-      $('delConfirm').hidden = true; $('delBtn').setAttribute('aria-expanded', 'false');
-      alleAngabenLoeschen();
-      $('delMsg').textContent = t('set.del.done'); $('delBtn').focus();
     });
     $('jumpBtn').addEventListener('click', function () {
       var el = $('ergebnis');
@@ -699,7 +689,7 @@
     var weg = function (ids) { return ids.map(g).filter(function (r) { return r && r.level !== 'nein'; }).map(function (r) {
       return '<a class="ww-l ' + r.level + '" href="#c-' + r.id + '"><span' + (lang === 'de' ? '' : ' lang="de"') + '>' + esc(r.name) + '</span><span class="pill ' + r.level + '"><span aria-hidden="true">' + MARK[r.level] + '</span>' + esc(t('lvl.' + r.level)) + '</span></a>'; }).join(''); };
     return '<section class="zweiwege" id="zweiWege" aria-labelledby="h-ww"><h3 id="h-ww">' + esc(t('ww.h')) + '</h3><p class="ww-tun"><b>' + esc(t('ww.tipp')) + '</b></p><p>' + esc(t('ww.t')) + '</p>' +
-      '<div class="ww-wege"><div class="ww-weg"><h4>' + esc(t('ww.a.h')) + '</h4><p>' + esc(t('ww.a.t')) + '</p>' + weg(['ggeld']) + '</div>' +
+      '<div class="ww-wege"><div class="ww-weg"><h4>' + esc(t('ww.a.h')) + '</h4><p>' + esc(t('ww.a.t')) + '</p>' + weg(['ggeld', 'but']) + '</div>' +
       '<div class="ww-weg"><h4>' + esc(t('ww.b.h')) + '</h4><p>' + esc(t('ww.b.t')) + '</p>' + weg(['wohngeld', 'kiz', 'but']) + '</div></div>' +
       '<p class="ww-regel"><b>' + esc(t('ww.regel.h')) + '</b> ' + esc(t('ww.regel')) + '</p></section>';
   }
@@ -1793,29 +1783,13 @@
     if (an && !es) es = esLeer();
     $('einfachBtn').setAttribute('aria-pressed', String(an));
     esSpeichern(); esRender();
-    if (aktAnsicht === 'einstellungen') return; // in den Einstellungen nur den Modus schalten; Fokus bleibt am Schalter, der Modus gilt im Bereich Leistungen
+    if (aktAnsicht === 'einst') return; // in den Einstellungen nur den Modus schalten; Fokus bleibt am Schalter, der Modus gilt im Bereich Leistungen
     try { window.scrollTo(0, 0); } catch (e) {}
     var q = an ? $('es-q') : $('h-form'); if (q) { q.setAttribute('tabindex', '-1'); q.focus({ preventScroll: true }); }
   }
 
   // Einstellungen: alle gespeicherten Angaben der App löschen (Store-Schlüssel) und die Anzeige auf den Anfangszustand setzen
   var STORE_SCHLUESSEL = ['lotse.state', 'lotse.einfach', 'lotse.einfachSprache', 'lotse.pflegecheck', 'lotse.lang', 'lotse.ack', 'lotse.fristen'];
-  function alleAngabenLoeschen() {
-    clearTimeout(saveTimer); clearTimeout(soonTimer); saveTimer = null; soonTimer = null;
-    STORE_SCHLUESSEL.forEach(function (k) { Store.remove(k); });
-    try { localStorage.removeItem('lotse-lang'); } catch (e) {}
-    state = blankState(); person = { name: '', geb: '', strasse: '', ort: '', tel: '' }; picked = {}; pickedUser = {}; started = false; edited = true;
-    ['p-name', 'p-geb', 'p-strasse', 'p-ort', 'p-tel'].forEach(function (id) { $(id).value = ''; });
-    $('sampleNotice').hidden = true; $('clearMsg').textContent = '';
-    es = null; esModus = false; $('einfachBtn').setAttribute('aria-pressed', 'false');
-    pa = { antworten: null, schaetzung: null }; paAnzeigen();
-    $('app').classList.remove('big'); document.documentElement.classList.remove('big'); $('bigBtn').setAttribute('aria-pressed', 'false');
-    einfachSprache = false;
-    lang = detect();
-    $('firstNotice').hidden = false;
-    esRender(); writeForm(); applyLang(); // zeichnet Auswahlfelder, Ergebnis und alle Texte neu
-  }
-
   state = blankState();
   $('sampleNotice').hidden = true; // Beispiel-Hinweis nur, wenn ein Beispiel geladen ist
   bind();
@@ -1843,7 +1817,7 @@
   };
   // ----- Bereiche: Start, Leistungen (Leistungscheck), Brief prüfen -----
   // Beim Öffnen die Startseite; „#leistungen“ und „#briefe“ öffnen den Bereich direkt (Links, Tests).
-  var ANSICHTEN = ['start', 'leistungen', 'briefe', 'pflege', 'pflegeinfo', 'einstellungen']; // „pflege“: Pflegegrad-Einschätzung, gehört zu Leistungen
+  var ANSICHTEN = ['start', 'leistungen', 'briefe', 'pflege', 'pflegeinfo', 'einst']; // „pflege“: Pflegegrad-Einschätzung, gehört zu Leistungen
   var aktAnsicht = 'leistungen';
   var BRIEFE = [
     ['jc', 'briefe.jobcenter', 'briefe.jobcenter.t', '<path d="M4 20V9l8-5 8 5v11"/><path d="M9 20v-6h6v6M3 20h18"/>'],
@@ -2167,6 +2141,12 @@
     if (a === 'briefe' && aktAnsicht === 'briefe' && !$('checkBox').hidden) { briefOeffnen(null); $('h-briefe') && $('h-briefe').focus(); return; } // nochmal tippen: zurück zur Auswahl
     zeigeAnsicht(a, true);
   }); });
+  // Einstellungen: Reiter und Schalter (greifen auf dieselben Funktionen zu wie der Kopf)
+  function einstReiter(r) { ['einst', 'info'].forEach(function (x) { var on = x === r; $('tab-' + x).setAttribute('aria-selected', String(on)); $('tab-' + x).tabIndex = on ? 0 : -1; $('pn-' + x).hidden = !on; }); }
+  $('tab-einst').addEventListener('click', function () { einstReiter('einst'); });
+  $('tab-info').addEventListener('click', function () { einstReiter('info'); });
+  [['tab-einst', 'tab-info'], ['tab-info', 'tab-einst']].forEach(function (p) { $(p[0]).addEventListener('keydown', function (e) { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { $(p[1]).click(); $(p[1]).focus(); } }); });
+  $('clear2').addEventListener('click', function () { $('clearBtn').click(); $('clear2Msg').textContent = $('clearMsg').textContent; });
   $('goLeistungen').addEventListener('click', function () { zeigeAnsicht('leistungen', true); });
   $('goBriefe').addEventListener('click', function () { zeigeAnsicht('briefe', true); });
   window.addEventListener('hashchange', function () { var a = location.hash.slice(1); if (ANSICHTEN.indexOf(a) >= 0 && a !== aktAnsicht) zeigeAnsicht(a, true); });

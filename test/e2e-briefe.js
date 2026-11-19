@@ -125,6 +125,6 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   await ctx2.close();
   ok('Keine Skriptfehler', fehler.length === 0, fehler);
   await b.close();
-  console.log(f ? `\n${f} von ${n} Prüfungen fehlgeschlagen` : `Bereiche-Test bestanden: ${n} Prüfungen (Startseite, drei Bereiche, Brief prüfen mit 6 Prüfungen, alte Fristen gelöscht, Sprache, Computer)`);
+  console.log(f ? `\n${f} von ${n} Prüfungen fehlgeschlagen` : `Bereiche-Test bestanden: ${n} Prüfungen (Startseite, vier Bereiche, Brief prüfen mit 6 Prüfungen, alte Fristen gelöscht, Sprache, Computer)`);
   process.exit(f ? 1 : 0);
 })().catch((e) => { console.log('ABSTURZ', e.message); process.exit(1); });
