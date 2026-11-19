@@ -540,10 +540,10 @@ const Rules = (function () {
     const uvgKindAnr = kids === 1 && young === 0 && kids14 === 1 && inp.ausbildung === 'kindBetrieb'
       ? Math.max(0, kindEink - R.uvg.wk - R.uvg.azubi) * R.uvg.haelfte : 0;
     // Unterhaltsvorschuss, den die Kinder bekommen würden (zählt als ihr Einkommen): nur Alleinerziehende (auch mit neuer Partnerschaft
-    // ohne Trauschein), wenn Unterhalt fehlt; nicht im Asylverfahren oder mit Duldung (§ 1 Abs. 2a UVG), nicht im Wechselmodell (ein Kind).
+    // ohne Trauschein), wenn Unterhalt fehlt; nicht im Wechselmodell (ein Kind). Asyl/Duldung: offen (deutsches Kind oder eigener Titel des Kindes).
     // Ab 12 Jahren nur mit eigenem Einkommen des Elternteils von mindestens 600 € (oder ohne Grundsicherung), daher dann ohne die Älteren.
     let uvgEst = 0;
-    if ((adults === 1 || uvgPartner === 'neu') && kids > 0 && inp.unterhaltFehlt && inp.aufenthalt !== 'asyl' && !(uvgWechsel && kids === 1)) {
+    if ((adults === 1 || uvgPartner === 'neu') && kids > 0 && inp.unterhaltFehlt && !(uvgWechsel && kids === 1)) {
       const mitte = kids - kidsU6 - kids14;
       const ab12raus = !!inp.kinder12 && bruttoEigen < R.uvg.min12;
       uvgEst = Math.max(0, kidsU6 * R.uvg.bis5 + mitte * R.uvg.bis11 + (ab12raus ? 0 : kids14 * R.uvg.bis17) - unterhalt - waisen - uvgKindAnr);
@@ -946,36 +946,46 @@ const Rules = (function () {
   // Unterhaltsvorschuss
   // ---------------------------------------------------------------
   function unterhaltsvorschuss(h, gg) {
+    const r = uvgKarte(h, gg);
+    // § 1 Abs. 2a UVG: Voraussetzung erfüllt das Kind ODER der Elternteil (deutsches Kind, eigener Titel des Kindes,
+    // Beschäftigungsduldung). Im Asylverfahren oder mit Duldung daher höchstens „möglich“.
+    if (h.asyl && (r.level === 'ja' || r.level === 'vielleicht')) return mk(r.id, 'vielleicht', 'vielleicht', [['uvg.asyl']].concat(r.tx));
+    return r;
+  }
+  function uvgKarte(h, gg) {
     const id = 'uvg';
-    // § 1 Abs. 1 Nr. 1, Abs. 1a UVG: nur bis zum 18. Geburtstag und nur, wenn das Kind beim Elternteil lebt (nicht im Heim, nicht in Pflege)
+    // § 1 Abs. 1 Nr. 1, Abs. 1a UVG: nur bis zum 18. Geburtstag und nur, wenn das Kind beim Elternteil lebt (Heim, Pflege: § 1 Abs. 4 Satz 2)
     if (h.kids === 0) return mk(id, 'nein', 'keinKind', [[h.young > 0 ? 'uvg.volljaehrig' : 'uvg.keinKind']]);
     if (!h.unterhaltFehlt) return mk(id, 'nein', 'vorausFehlt', [['uvg.unterhalt']]);
-    // § 1 Abs. 2a UVG: mit Aufenthaltsgestattung oder Duldung kein Anspruch (Ausnahme: Beschäftigungsduldung, steht im Text)
-    if (h.asyl) return mk(id, 'nein', 'ausschluss', [['uvg.asyl']]);
-    // § 1 Abs. 1 Nr. 2 UVG: verheiratet oder verpartnert mit dem neuen Partner -> nicht mehr alleinstehend; § 1 Abs. 3: lebt mit dem anderen Elternteil
+    // § 1 Abs. 1 Nr. 2 UVG: verheiratet oder verpartnert mit dem neuen Partner -> nicht mehr alleinstehend
     if (h.uvgPartner === 'ehe') return mk(id, 'nein', 'ausschluss', [['uvg.ehe']]);
-    if (h.uvgPartner === 'eltern') return mk(id, 'nein', 'ausschluss', [['uvg.elternteil']]);
+    // § 1 Abs. 3 UVG: lebt mit dem anderen Elternteil; gilt je Kind (nur gemeinsame Kinder), bei mehreren Kindern daher offen
+    if (h.uvgPartner === 'eltern' && h.kids === 1) return mk(id, 'nein', 'ausschluss', [['uvg.elternteil']]);
     // Wechselmodell (BVerwG 12.12.2023, 5 C 9.22): ab 40 % Betreuung durch den anderen Elternteil kein Anspruch
     if (h.uvgWechsel && h.kids === 1) return mk(id, 'nein', 'vorausFehlt', [['uvg.wechsel']]);
     const betrag = ['uvg.ja', { a: eur(R.uvg.bis5), b: eur(R.uvg.bis11), c: eur(R.uvg.bis17) }];
-    // Hinweise für jeden möglichen Anspruch: Rückwirkung höchstens ein Monat (§ 4 UVG), Mitwirkung (§ 1 Abs. 3 UVG),
-    // Aufenthaltstitel ohne EU-Staatsangehörigkeit (§ 1 Abs. 2a UVG)
-    const hinweise = [['uvg.frist'], ['uvg.mitwirken']].concat(!h.eu ? [['uvg.titel']] : []);
+    // Hinweise für jeden möglichen Anspruch: Rückwirkung höchstens ein Monat (§ 4 UVG), Mitwirkung (§ 1 Abs. 3 UVG), Änderungen melden
+    // (§§ 5, 6 UVG), dauernd getrennt auch bei Klinik/Haft des Ehepartners (§ 1 Abs. 2 UVG), Aufenthaltstitel (§ 1 Abs. 2a UVG)
+    const hinweise = [['uvg.frist'], ['uvg.mitwirken'], ['uvg.melden']].concat(h.adults === 1 ? [['uvg.getrennt']] : [], !h.eu && !h.asyl ? [['uvg.titel']] : []);
     // Eigenes Einkommen eines Kindes, das die allgemeinbildende Schule verlassen haben kann (14 bis 17 Jahre), § 2 Abs. 4 UVG
     const kindTx = h.kindEink > 0 && h.kids14 > 0 ? [['uvg.kindEink', { wk: eur(R.uvg.wk), az: eur(R.uvg.azubi) }]] : [];
-    // Höchster möglicher Unterhaltsvorschuss aller Kinder (Kinder von 6 bis 13 können schon 12 sein, wenn ein Kind 12 oder älter ist)
+    // Höchster möglicher Unterhaltsvorschuss (ein Kind von 6 bis 13 kann schon 12 sein, wenn ein Kind 12 oder älter ist)
     const hoch = h.kidsU6 * R.uvg.bis5 + h.kids14 * R.uvg.bis17 + (h.kids - h.kidsU6 - h.kids14) * (h.kinder12 ? R.uvg.bis17 : R.uvg.bis11);
-    // Gezahlter Unterhalt und Waisenrente werden angerechnet (§ 2 Abs. 3 UVG). Erreichen sie den höchsten Unterhaltsvorschuss aller
-    // Kinder, bleibt nichts übrig; sonst nur noch der Unterschied (Verteilung auf die Kinder unbekannt, daher "möglich").
+    // Gezahlter Unterhalt und Waisenrente werden je Kind angerechnet (§ 2 Abs. 3 UVG). Die App kennt nur die Summe: Bei einem Kind
+    // reicht sie für „unwahrscheinlich“, bei mehreren Kindern nie (ein Kind kann alles bekommen, ein anderes nichts) -> „möglich“.
     const anr = h.unterhalt + (h.waisen || 0);
-    if (anr >= hoch) return mk(id, 'nein', 'vorausFehlt', [h.waisen > 0 ? ['uvg.genugW', { u: eur(anr) }] : ['uvg.genug', { u: eur(anr) }]]);
-    if (anr + (h.uvgKindAnr || 0) >= hoch) return mk(id, 'nein', 'vorausFehlt', [['uvg.kindEinkGenug', { e: eur(h.kindEink) }]]);
-    if (anr > 0) return mk(id, 'vielleicht', 'vielleicht', [h.waisen > 0 ? ['uvg.teilW', { u: eur(anr) }] : ['uvg.teil', { u: eur(anr) }], betrag].concat(kindTx, hinweise));
+    if (h.kids === 1 && anr >= hoch) return mk(id, 'nein', 'vorausFehlt', [h.waisen > 0 ? ['uvg.genugW', { u: eur(anr) }] : ['uvg.genug', { u: eur(anr) }]]);
+    if (h.uvgKindAnr > 0 && anr + h.uvgKindAnr >= hoch) return mk(id, 'nein', 'vorausFehlt', [['uvg.kindEinkGenug', { e: eur(h.kindEink) }]]);
+    const teil = anr > 0 ? [h.waisen > 0 ? ['uvg.teilW', { u: eur(anr) }] : ['uvg.teil', { u: eur(anr) }]] : [];
+    if (h.uvgPartner === 'eltern') return mk(id, 'vielleicht', 'vielleicht', [['uvg.elternteilMehr'], betrag].concat(teil, kindTx, hinweise));
+    if (anr > 0) return mk(id, 'vielleicht', 'vielleicht', teil.concat([betrag], kindTx, hinweise));
     if (h.adults === 2 && !h.uvgPartner) return mk(id, 'vielleicht', 'vielleicht', [['uvg.zwei'], betrag].concat(kindTx, hinweise));
     if (h.uvgWechsel) return mk(id, 'vielleicht', 'vielleicht', [['uvg.wechselMehr'], betrag].concat(kindTx, hinweise));
-    // Ab 12 Jahren (§ 1 Abs. 1a UVG): Nr. 1 kein Grundsicherungsgeld des Kindes (Karte „unwahrscheinlich“) oder Nr. 2 eigenes Einkommen
-    // des Elternteils von mindestens 600 € brutto (ohne Kindergeld)
-    if (h.kinder12 && h.bruttoEigen < R.uvg.min12 && !(gg && gg.level === 'nein')) return mk(id, 'vielleicht', 'vielleicht', [['uvg.ab12', { min: eur(R.uvg.min12) }], betrag].concat(kindTx, hinweise));
+    // Ab 12 Jahren (§ 1 Abs. 1a UVG): Nr. 1 kein Grundsicherungsgeld des Kindes oder Nr. 2 eigenes Einkommen des Elternteils von
+    // mindestens 600 € brutto (ohne Kindergeld). Nr. 1 sicher nur, wenn das Grundsicherungsgeld an Einkommen oder Vermögen scheitert;
+    // bei anderen Gründen (Studium, Erwerbsminderung, EU-Ausschluss) kann das Kind trotzdem Leistungen beziehen -> „möglich“.
+    const ohneGG = !!gg && gg.level === 'nein' && (gg.hl === 'einkoHoch' || gg.hl === 'vermHoch');
+    if (h.kinder12 && h.bruttoEigen < R.uvg.min12 && !ohneGG) return mk(id, 'vielleicht', 'vielleicht', [['uvg.ab12', { min: eur(R.uvg.min12) }], betrag].concat(kindTx, hinweise));
     // Einkommen eines Kindes nach der Schule mindert den Betrag: sicher (Ausbildung) oder vielleicht (nur ein Kind, Schule unbekannt)
     if (h.uvgKindAnr > 0 || (kindTx.length && h.kids === 1 && h.kindEink > R.uvg.wk)) return mk(id, 'vielleicht', 'vielleicht', kindTx.concat([betrag], hinweise));
     return mk(id, 'ja', 'ja', [betrag].concat(kindTx, hinweise));

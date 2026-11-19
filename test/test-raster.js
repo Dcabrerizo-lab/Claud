@@ -263,6 +263,8 @@ for (let i = 0; i < 20000; i++) {
   const a = Rules.evaluate({ ...e, aufenthalt: 'asyl' }).results;
   Ref.ASYL_NEIN.forEach((id) => { const x = a.find((y) => y.id === id); if (x.level !== 'nein' && x.level !== 'na') melde('Asyl: ' + id + ' muss ausgeschlossen sein', e, { app: x.level }); });
   if (a.find((y) => y.id === 'asylblg').level !== 'ja') melde('Asyl: Asylbewerberleistungen', e, {});
+  // Unterhaltsvorschuss bei Asyl/Duldung: höchstens „möglich“ (deutsches Kind oder Beschäftigungsduldung, § 1 Abs. 2a UVG)
+  { const ua = a.find((y) => y.id === 'uvg').level, ur = Ref.unterhaltsvorschuss({ ...e, aufenthalt: 'asyl' }).level; if (ua !== ur || ua === 'ja') melde('Asyl: Unterhaltsvorschuss', e, { app: ua, ref: ur }); }
 }
 
 const arten = Object.keys(fehler);

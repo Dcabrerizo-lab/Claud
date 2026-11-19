@@ -399,9 +399,24 @@ ck('[uvg-kindeink] Mehrere Kinder: Einkommen eines älteren Kindes mindert nur d
 ck('[uvg-kindeink] Azubi-Einkommen mindert den geschätzten Unterhaltsvorschuss (Einkommen der Kinder für andere Leistungen)', R.derive(uvAzubi(600)).uvgEst === 394 - (600 - 102.5 - 100) / 2 && R.derive(uvAzubi(2000)).uvgEst === 0);
 ck('[uvg-rueckwirkung] Hinweis: rückwirkend höchstens ein Monat (§ 4 UVG), nur bei möglichem Anspruch', K(uv({}), 'uvg').includes('uvg.frist') && K(uv({ unterhalt: 100 }), 'uvg').includes('uvg.frist') && !K(uv({ unterhalt: 400 }), 'uvg').includes('uvg.frist'));
 ck('[uvg-mitwirkung] Hinweis: Angaben zum anderen Elternteil und Mitwirkung bei der Vaterschaft (§ 1 Abs. 3 UVG)', K(uv({}), 'uvg').includes('uvg.mitwirken'));
-ck('[uvg-aufenthalt] Asylverfahren oder Duldung: kein Anspruch (§ 1 Abs. 2a UVG); ohne EU-Pass Hinweis auf Aufenthaltstitel, EU-Bürger ohne',
-  L(uv({ aufenthalt: 'asyl' }), 'uvg') === 'nein' && K(uv({ aufenthalt: 'asyl' }), 'uvg')[0] === 'uvg.asyl' && R.derive(uv({ aufenthalt: 'asyl' })).uvgEst === 0
-  && K(uv({}), 'uvg').includes('uvg.titel') && !K(uv({ aufenthalt: 'eu' }), 'uvg').includes('uvg.titel'));
+ck('[uvg-aufenthalt] Asylverfahren oder Duldung: nur möglich mit Hinweis (deutsches Kind, eigener Titel des Kindes oder Beschäftigungsduldung, § 1 Abs. 2a UVG); geschätzter Betrag bleibt; ohne EU-Pass Hinweis auf Aufenthaltstitel, EU-Bürger ohne',
+  L(uv({ aufenthalt: 'asyl' }), 'uvg') === 'vielleicht' && K(uv({ aufenthalt: 'asyl' }), 'uvg')[0] === 'uvg.asyl' && R.derive(uv({ aufenthalt: 'asyl' })).uvgEst === 299
+  && L(uv({ aufenthalt: 'asyl', unterhalt: 400 }), 'uvg') === 'nein' && K(uv({}), 'uvg').includes('uvg.titel') && !K(uv({ aufenthalt: 'eu' }), 'uvg').includes('uvg.titel') && !K(uv({ aufenthalt: 'asyl' }), 'uvg').includes('uvg.titel'));
+// Handbeispiele zu den korrigierten Fällen (von Hand nach dem Gesetz, nicht aus der App)
+// Mutter mit Duldung, Kind 4 Jahre mit deutscher Staatsangehörigkeit (Vater deutsch, zahlt nicht): Anspruch des Kindes besteht -> nicht ausgeschlossen
+ck('[uvg-hand] Geduldete Mutter, deutsches Kind (4 Jahre), Vater zahlt nicht: möglich, nie unwahrscheinlich', L(uv({ aufenthalt: 'asyl', kidsU6: 1, brutto: 0, netto: 0 }), 'uvg') === 'vielleicht');
+// Zwei Kinder (3 und 9), verschiedene Väter: Vater des 9-Jährigen zahlt 600 €, Vater des 3-Jährigen nichts -> 227 € für das jüngere Kind
+ck('[uvg-hand] Zwei Kinder, verschiedene Väter, einer zahlt 600 € (mehr als beide Sätze zusammen 526 €): trotzdem möglich (§ 2 Abs. 3 je Kind)', L(uv({ kids: 2, kidsU6: 1, unterhalt: 600 }), 'uvg') === 'vielleicht' && K(uv({ kids: 2, kidsU6: 1, unterhalt: 600 }), 'uvg')[0] === 'uvg.teil');
+// Zwei Kinder (7 und 10), Halbwaisenrente nur für ein Kind (Vater gestorben) 650 €, Vater des anderen Kindes zahlt nicht
+ck('[uvg-hand] Zwei Kinder, Halbwaisenrente 650 € für eines, anderes ohne Unterhalt: möglich', L(uv({ kids: 2, waisen: 650 }), 'uvg') === 'vielleicht' && K(uv({ kids: 2, waisen: 650 }), 'uvg')[0] === 'uvg.teilW');
+// Zwei Kinder, die Mutter lebt mit dem Vater des jüngeren zusammen: für das ältere (anderer Vater) besteht der Anspruch weiter
+ck('[uvg-elternteil] Mehrere Kinder, lebt mit dem Vater eines Kindes zusammen: möglich, Hinweis „nur gemeinsame Kinder“', L(uv({ kids: 2, adults: 2, uvgPartner: 'eltern' }), 'uvg') === 'vielleicht' && K(uv({ kids: 2, adults: 2, uvgPartner: 'eltern' }), 'uvg')[0] === 'uvg.elternteilMehr');
+// Mutter studiert (kein Grundsicherungsgeld wegen § 7 Abs. 5 SGB II), Kind 13, Einkommen 400 €: Kind kann Sozialgeld beziehen -> nur möglich
+{
+  const st = uv({ kinder12: true, brutto: 400, netto: 400, ausbildung: 'ich', gebJahr: 2000, heute: 2026.8 });
+  ck('[uvg-ab12] Elternteil im Studium, Kind 13, 400 € Einkommen: Grundsicherungsgeld aus anderem Grund ausgeschlossen -> nur möglich', L(st, 'ggeld') === 'nein' && L(st, 'uvg') === 'vielleicht');
+}
+ck('[uvg-hinweise] Hinweise: Änderungen melden (§§ 5, 6 UVG); verheiratet, aber dauernd getrennt (auch Klinik oder Haft, § 1 Abs. 2) bei Alleinlebenden', K(uv({}), 'uvg').includes('uvg.melden') && K(uv({}), 'uvg').includes('uvg.getrennt') && !K(uv({ adults: 2, uvgPartner: 'neu' }), 'uvg').includes('uvg.getrennt'));
 ck('[uvg-volljaehrig] Nur volljährige Kinder: kein Unterhaltsvorschuss, Hinweis auf Unterhalt, Jugendamt bis 21, BAföG', L({ young: 1 }, 'uvg') === 'nein' && K({ young: 1 }, 'uvg')[0] === 'uvg.volljaehrig' && K({}, 'uvg')[0] === 'uvg.keinKind');
 {
   // § 1 Abs. 1a Nr. 1: Kind ab 12 ohne Grundsicherungsgeld (hier: Vermögen über dem Schonvermögen) -> wahrscheinlich, auch unter 600 €

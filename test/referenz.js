@@ -71,10 +71,10 @@ function haushalt(e) {
   // Azubi-Einkommen eines einzigen 14- bis 17-jährigen Kindes (§ 2 Abs. 4 UVG), aus dem Auszahlungsbetrag (untere Grenze)
   const azubiAnr = kinder === 1 && jung === 0 && k14 === 1 && e.ausbildung === 'kindBetrieb' ? Math.max(0, kindEink - UVG_WK - UVG_AZUBI) / 2 : 0;
   // Unterhaltsvorschuss, den die Kinder bekämen: Elternteil allein oder mit neuem Partner ohne Trauschein, Unterhalt fehlt,
-  // nicht Asyl/Duldung, nicht ein einziges Kind im Wechselmodell; ab 12 nur mit 600 € eigenem Einkommen (Partner zählt nicht)
+  // nicht ein einziges Kind im Wechselmodell (Asyl/Duldung offen: deutsches Kind möglich); ab 12 nur mit 600 € eigenem Einkommen (Partner zählt nicht)
   let uvg = 0;
   const allein = erwachsene === 1 || e.uvgPartner === 'neu';
-  if (allein && kinder > 0 && e.unterhaltFehlt && e.aufenthalt !== 'asyl' && !(e.uvgWechsel && kinder === 1)) {
+  if (allein && kinder > 0 && e.unterhaltFehlt && !(e.uvgWechsel && kinder === 1)) {
     const ohneAeltere = !!e.kinder12 && brutto - brutto2 < 600;
     uvg = Math.max(0, u6 * UVG.u6 + mitte * UVG.u12 + (ohneAeltere ? 0 : k14 * UVG.u18) - unterhalt - waisen - azubiAnr);
   }
@@ -358,22 +358,33 @@ function grundsicherungsgeldStufe(e) {
   return kappe(e, 'ggeld', lv);
 }
 function unterhaltsvorschuss(e, ggStufe) {
+  const r = uvgOhneAufenthalt(e, ggStufe);
+  // § 1 Abs. 2a: Kind ODER Elternteil muss die Voraussetzung erfüllen -> bei Asyl/Duldung höchstens offen
+  return e.aufenthalt === 'asyl' && r.level === 'ja' ? { level: 'vielleicht' } : r;
+}
+function uvgOhneAufenthalt(e, ggStufe) {
   const h = haushalt(e);
   const NEIN = { level: 'nein' }, OFFEN = { level: 'vielleicht' };
   if (h.kinder === 0 || !e.unterhaltFehlt) return NEIN;
-  if (e.aufenthalt === 'asyl') return NEIN; // § 1 Abs. 2a: Gestattung, Duldung
-  // § 1 Abs. 1 Nr. 2 (neu verheiratet) und § 1 Abs. 3 (lebt mit dem anderen Elternteil)
-  if (h.erwachsene === 2 && (e.uvgPartner === 'ehe' || e.uvgPartner === 'eltern')) return NEIN;
+  // § 1 Abs. 1 Nr. 2 (neu verheiratet); § 1 Abs. 3 (anderer Elternteil im Haushalt) gilt nur für gemeinsame Kinder
+  if (h.erwachsene === 2 && e.uvgPartner === 'ehe') return NEIN;
+  if (h.erwachsene === 2 && e.uvgPartner === 'eltern') return h.kinder === 1 ? NEIN : OFFEN;
   if (e.uvgWechsel && h.kinder === 1) return NEIN; // BVerwG 5 C 9.22: 40 % beim anderen Elternteil
-  // größtmöglicher Betrag: Kinder 6-13 zählen mit dem Satz 12-17, sobald ein Kind 12 oder älter ist
-  const groesst = h.u6 * UVG.u6 + h.k14 * UVG.u18 + h.mitte * (e.kinder12 ? UVG.u18 : UVG.u12);
-  const anrechnung = h.unterhalt + h.waisen;
-  if (anrechnung >= groesst || anrechnung + h.azubiAnr >= groesst) return NEIN;
-  if (anrechnung > 0) return OFFEN;
+  // Anrechnung je Kind (§ 2 Abs. 3): Nur bei einem einzigen Kind lässt sich sagen, dass nichts übrig bleibt
+  if (h.kinder === 1) {
+    const satz = h.u6 ? UVG.u6 : h.k14 || e.kinder12 ? UVG.u18 : UVG.u12; // höchstmöglicher Satz dieses Kindes
+    if (h.unterhalt + h.waisen + h.azubiAnr >= satz) return NEIN;
+  }
+  if (h.unterhalt + h.waisen > 0) return OFFEN;
   if (h.erwachsene === 2 && e.uvgPartner !== 'neu') return OFFEN;
   if (e.uvgWechsel) return OFFEN;
-  // § 1 Abs. 1a: Nr. 1 kein Grundsicherungsgeld oder Nr. 2 eigenes Einkommen mindestens 600 €
-  if (e.kinder12 && h.brutto - h.brutto2 < 600 && (ggStufe || grundsicherungsgeldStufe(e)) !== 'nein') return OFFEN;
+  // § 1 Abs. 1a: Nr. 2 eigenes Einkommen mindestens 600 €; sonst Nr. 1 nur sicher, wenn das Grundsicherungsgeld allein
+  // an Einkommen oder Vermögen scheitert (kein Ausschluss wegen Rente, Erwerbsminderung, Studium, EU-Recht, Sozialamt)
+  if (e.kinder12 && h.brutto - h.brutto2 < 600) {
+    const jung = h.jahre ? h.jahre < 45 : (h.gruppe === '' || h.gruppe === '<30' || h.gruppe === '30-39');
+    const ausgeschlossen = euAus(h) || h.rente || h.em || h.bezug.sozialamt || (e.ausbildung === 'ich' && !e.babBetrieb && jung);
+    if (ausgeschlossen || (ggStufe || grundsicherungsgeldStufe(e)) !== 'nein') return OFFEN;
+  }
   if (h.azubiAnr > 0 || (h.kinder === 1 && h.k14 > 0 && h.kindEink > UVG_WK)) return OFFEN;
   return { level: 'ja' };
 }
@@ -454,7 +465,7 @@ function grenze85(e) {
 }
 function schon90(e) { return 10000 * (e.adults === 2 ? 2 : 1) + 500 * (Math.max(0, e.kids | 0) + Math.max(0, e.young | 0)); }
 // ---------- Asylbewerber: Ausschlüsse (§ 7 Abs. 1 SGB II, § 23 Abs. 2 SGB XII, § 7 WoGG, § 6a BKGG mit § 62 EStG) ----------
-const ASYL_NEIN = ['ggeld', 'gsa', 'wohngeld', 'kiz', 'uvg'];
+const ASYL_NEIN = ['ggeld', 'gsa', 'wohngeld', 'kiz'];
 
 // ---------- Künftige vorrangige Leistung der ersten Person (Arbeitslosengeld, Krankengeld, Elterngeld) ----------
 // Sie zählt bei Grundsicherungsgeld, Wohngeld und Kinderzuschlag als Einkommen (§ 11 SGB II, § 14 WoGG; Elterngeld über 300 €).
