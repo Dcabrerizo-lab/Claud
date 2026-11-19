@@ -174,7 +174,9 @@ function grundsicherungsgeld(h) {
   const bedarf = h.regel + h.miete + h.mehrAE + bm.sicher + ms.sicher;
   const eink = elternEinkommenSGB2(h) + h.kids * KG + kinderEinkommen(h);
   const luecke = bedarf - eink;
-  return { level: luecke >= 50 ? 'ja' : luecke > -(100 + bm.moeglich + ms.moeglich) ? 'vielleicht' : 'nein', bedarf, luecke };
+  const level = luecke >= 50 ? 'ja' : luecke > -(100 + bm.moeglich + ms.moeglich) ? 'vielleicht' : 'nein';
+  // § 7 Abs. 4 SGB II: Altersrente (auch vorgezogen) schließt aus; allein mit nur Rente, Alter unbekannt oder ab 60 -> höchstens „möglich“
+  return { level: level === 'ja' && h.erwachsene === 1 && nurRenteAb60(h) ? 'vielleicht' : level, bedarf, luecke };
 }
 
 // ---------- Wohngeld (WoGG) ----------
@@ -259,11 +261,39 @@ function minderungElternKiZ(h, bedarf) {
   if (anders <= bedarf) return 0.45 * Math.max(0, gesamt - bedarf);
   return (anders - bedarf) + 0.45 * (gesamt - anders);
 }
+// Nur Rente, Alter unbekannt oder ab 60: vielleicht eine Altersrente vor der Regelaltersgrenze (§ 7 Abs. 4 SGB II schließt dann SGB II aus;
+// eine vorgezogene Altersrente gibt es frühestens mit 60 bis 63, § 36-38, § 236-237a SGB VI)
+function nurRenteAb60(h) {
+  const mit = h.p.filter((x) => x.brutto > 0);
+  if (!mit.length || mit.some((x) => x.art !== 'rente')) return false;
+  return h.jahre ? h.jahre >= 60 : (h.gruppe === '' || h.gruppe === '50+');
+}
+// Der Elternteil selbst voll erwerbsgemindert: weniger als 3 Stunden, Werkstattlohn, oder Werkstatt-Haken ohne Angabe „Kind mit Behinderung“
+function emElternteil(e) {
+  const wfbmEink = e.art1 === 'wfbm' || (e.adults === 2 && e.art2 === 'wfbm') || (Array.isArray(e.einkommen) && e.einkommen.some((x) => x.art === 'wfbm'));
+  return e.emStd === 'unter3' || !!e.erwerbsgemindert || wfbmEink || (!!e.wfbm && ['minder', 'erwVor25'].indexOf(e.bhPerson) < 0);
+}
 function kinderzuschlag(h) {
   const b = h.bezug;
   if (h.kids === 0) return { level: 'nein' };
   if (b.grundsicherungsgeld || b.sozialamt) return { level: 'nein' };
   if (b.kiz) return { level: 'na' };
+  // § 6a Abs. 1 Nr. 3 BKGG mit § 7 SGB II (DA-KiZ 20.02.2026 D.2 Abs. 1 Satz 5; BSG B 7/14 KG 1/21 R): Im Haushalt muss jemand
+  // erwerbsfähig sein und dem Grunde nach zum SGB II gehören (Elternteil oder Kind ab 15). Junge Erwachsene: ja.
+  let hoechstensMoeglich = false;
+  if (h.jung === 0) {
+    const em = emElternteil(h.e);
+    if (h.erwachsene === 1 && (h.rente || em)) {
+      const alterBekannt = !!h.e.kidsAlter || h.u6 === h.kinder;
+      if (h.k14 === 0 && alterBekannt) return { level: 'nein' }; // alle Kinder unter 14
+      hoechstensMoeglich = true;
+    } else if (h.erwachsene === 1 && (h.grenz || nurRenteAb60(h))) hoechstensMoeglich = true;
+    else if (h.erwachsene === 2 && !Array.isArray(h.e.einkommen) && h.p[0].art === 'rente' && h.p[1].art === 'rente' && (h.rente || em)) hoechstensMoeglich = true;
+  }
+  const r = kizBetrag(h);
+  return hoechstensMoeglich && r.level === 'ja' ? { ...r, level: 'vielleicht' } : r;
+}
+function kizBetrag(h) {
   const vermGrenze = h.personen <= 2 ? 55000 : 70000 + 15000 * (h.personen - 3);
   if (h.vermoegen > vermGrenze) return { level: 'nein' };
   if (h.brutto < (h.erwachsene === 2 ? 900 : 600)) return { level: 'nein' };

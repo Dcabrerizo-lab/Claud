@@ -1259,5 +1259,11 @@
   "sp.vertraege.5": "Jeder hat das Recht auf ein Basiskonto bei einer Bank, auch mit Schulden (§ 31 Zahlungskontengesetz).",
   "sp.vertraege.6": "Teure Verträge (Handy, Fitnessstudio, Zeitschriften) prüfen. Nach der ersten Laufzeit lassen sich viele Verträge mit einem Monat Frist kündigen.",
   "sp.quellen": "Grundlage: Verbraucherzentrale, Stromspar-Check, Gesetze wie genannt (Stand November 2026).",
-  "t.auto.hochSgb12": "Ein angemessenes Auto ist geschützt (§ 90 Abs. 2 Nr. 10 SGB XII). Bei einem Wert über etwa {wert} prüft das Sozialamt genauer. Deshalb nur „möglich“."
+  "t.auto.hochSgb12": "Ein angemessenes Auto ist geschützt (§ 90 Abs. 2 Nr. 10 SGB XII). Bei einem Wert über etwa {wert} prüft das Sozialamt genauer. Deshalb nur „möglich“.",
+  "t.kiz.rentnerAllein": "Kinderzuschlag setzt voraus, dass im Haushalt jemand erwerbsfähig ist, z. B. ein Partner oder ein Kind ab 15. Wer die Regelaltersgrenze erreicht hat, zählt nicht. Prüfe stattdessen Wohngeld und Grundsicherung im Alter.",
+  "t.kiz.emAllein": "Kinderzuschlag setzt voraus, dass im Haushalt jemand erwerbsfähig ist, z. B. ein Partner oder ein Kind ab 15. Wer voll erwerbsgemindert ist, zählt nicht. Prüfe stattdessen Wohngeld und Grundsicherung im Alter und bei Erwerbsminderung.",
+  "t.kiz.nurAb15": "Kinderzuschlag gibt es hier nur, wenn ein Kind 15 Jahre oder älter ist. Denn im Haushalt muss jemand erwerbsfähig sein. Wer die Regelaltersgrenze erreicht hat oder voll erwerbsgemindert ist, zählt nicht.",
+  "t.kiz.vorgezogen": "Wer Altersrente bezieht oder die Regelaltersgrenze erreicht hat, bekommt keinen Kinderzuschlag, außer ein Kind ist 15 Jahre oder älter. Das gilt auch für Altersrente vor der Regelaltersgrenze, nicht aber für Witwenrente, Waisenrente oder Rente wegen teilweiser Erwerbsminderung.",
+  "t.kiz.rentnerPaar": "Kinderzuschlag gibt es nur, wenn im Haushalt jemand erwerbsfähig ist. Beziehen beide Altersrente oder sind beide voll erwerbsgemindert, gibt es ihn nur, wenn ein Kind 15 Jahre oder älter ist.",
+  "t.ggeld.vorgezogen": "Wer Altersrente bezieht, auch vor der Regelaltersgrenze, bekommt kein Grundsicherungsgeld (§ 7 Abs. 4 SGB II). Zuständig ist dann das Sozialamt (Hilfe zum Lebensunterhalt). Bei Witwenrente, Waisenrente oder Rente wegen teilweiser Erwerbsminderung gilt das nicht."
 }

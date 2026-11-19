@@ -631,5 +631,44 @@ ck('[eu] EU-Bürger ohne Arbeit, unter 5 Jahren: kein Grundsicherungsgeld (§ 7 
 ck('[eu] EU-Bürger: Grundsicherung im Alter ausgeschlossen (§ 23 SGB XII) unter denselben Bedingungen; Kindergeld-Hinweis auf die ersten 3 Monate',
   L({ ...f2, aufenthalt: 'eu', euArbeit: 'nein', euJahre: 'unter5' }, 'gsa') === 'nein' && L({ ...f2, aufenthalt: 'eu', euArbeit: 'nein', euJahre: 'ab5' }, 'gsa') === 'ja' && K({ ...f1, aufenthalt: 'eu' }, 'kindergeld').includes('kg.eu'));
 
+
+// Kinderzuschlag nur, wenn im Haushalt jemand dem Grunde nach zum SGB II gehört (§ 6a Abs. 1 Nr. 3 BKGG i. V. m. § 7, § 8 SGB II;
+// DA-KiZ Stand 20.02.2026, D.2 Abs. 1 Satz 5 und B.1 Abs. 5; BSG 13.07.2022, B 7/14 KG 1/21 R): erwerbsfähiger Elternteil oder Kind ab 15.
+// Handbeispiel: allein, Regelaltersgrenze erreicht, Rente 1.450 € brutto / 1.300 € Zahlbetrag, Miete 800 €, ein Kind, Unterhalt fehlt.
+// Ohne die Regel ergäbe die Rechnung „wahrscheinlich“ (Rente 1.270 € nach Pauschale unter dem Elternbedarf 563 + 203 + 616 = 1.382 €).
+{
+  const rk = { kids: 1, alter: true, art1: 'rente', brutto: 1450, netto: 1300, miete: 800, mietstufe: 3, unterhaltFehlt: true, heute: 2026.9 };
+  const witwe = { ...rk, alter: false, gebJahr: 1986 };
+  ck('[kiz-rentner] Gegenprobe: gleiche Familie, Elternteil 40 (z. B. Witwenrente) -> Kinderzuschlag wahrscheinlich', L(witwe, 'kiz') === 'ja', K(witwe, 'kiz'));
+  ck('[kiz-rentner] Rentner (Regelaltersgrenze) allein mit Kind 13 (Alter angegeben) -> nein, Verweis auf Wohngeld und Grundsicherung im Alter',
+    L({ ...rk, kidsAlter: true }, 'kiz') === 'nein' && K({ ...rk, kidsAlter: true }, 'kiz')[0] === 'kiz.rentnerAllein');
+  ck('[kiz-rentner] Rentner allein mit Kind unter 6 (Alter damit bekannt) -> nein', L({ ...rk, kidsU6: 1 }, 'kiz') === 'nein');
+  ck('[kiz-rentner] Rentner allein mit Kind 16 (14 bis 17) -> nur möglich, Hinweis „nur wenn ein Kind 15 oder älter“',
+    L({ ...rk, kids14: 1, kidsAlter: true }, 'kiz') === 'vielleicht' && K({ ...rk, kids14: 1, kidsAlter: true }, 'kiz')[0] === 'kiz.nurAb15');
+  ck('[kiz-rentner] Rentner allein, Kinderalter nicht angegeben -> nur möglich (keine falsche Absage)', L(rk, 'kiz') === 'vielleicht' && K(rk, 'kiz')[0] === 'kiz.nurAb15');
+  ck('[kiz-rentner] Rentner allein mit Kind und jungem Erwachsenen (18-24, erwerbsfähig) -> normale Rechnung ohne Hinweis',
+    L({ ...rk, young: 1, kidsAlter: true }, 'kiz') !== 'nein' && !K({ ...rk, young: 1, kidsAlter: true }, 'kiz').includes('kiz.nurAb15'));
+  ck('[kiz-rentner] Voll erwerbsgemindert (unter 3 Stunden) allein mit Kind 13 -> nein, eigener Text',
+    L({ ...witwe, emStd: 'unter3', kidsAlter: true }, 'kiz') === 'nein' && K({ ...witwe, emStd: 'unter3', kidsAlter: true }, 'kiz')[0] === 'kiz.emAllein');
+  ck('[kiz-rentner] Teilweise erwerbsgemindert (3 bis 6 Stunden) ist erwerbsfähig -> normale Rechnung', L({ ...witwe, emStd: '3bis6', kidsAlter: true }, 'kiz') === 'ja');
+  ck('[kiz-rentner] Werkstatt-Haken beim Kind mit Behinderung (unter 18) betrifft nicht den Elternteil -> kein Ausschluss',
+    L({ ...witwe, bhPerson: 'minder', wfbm: true, kidsAlter: true }, 'kiz') !== 'nein');
+  // Vorgezogene Altersrente (§ 7 Abs. 4 SGB II): die App kennt die Rentenart nicht -> höchstens „möglich“, nie „nein“
+  ck('[kiz-rentner] Nur Rente, 63 Jahre (vorgezogene Altersrente möglich) -> nur möglich mit Hinweis',
+    L({ ...witwe, gebJahr: 1963, kidsAlter: true }, 'kiz') === 'vielleicht' && K({ ...witwe, gebJahr: 1963, kidsAlter: true }, 'kiz')[0] === 'kiz.vorgezogen');
+  ck('[kiz-rentner] Nur Rente, Alter unbekannt -> nur möglich mit Hinweis', K({ ...witwe, gebJahr: '' }, 'kiz')[0] === 'kiz.vorgezogen' && L({ ...witwe, gebJahr: '' }, 'kiz') === 'vielleicht');
+  ck('[kiz-rentner] Lohn statt Rente, 63 Jahre -> normale Rechnung ohne Hinweis', !K({ ...witwe, gebJahr: 1963, art1: 'lohn', brutto: 2200, netto: 1650 }, 'kiz').includes('kiz.vorgezogen'));
+  // Paar: Rentner + Erwerbstätiger mit Kind 10 -> wie bisher (Anspruch möglich, der Partner gehört zum SGB II)
+  const paar = { adults: 2, kids: 1, art1: 'rente', art2: 'lohn', brutto: 3000, brutto2: 1800, netto: 2500, miete: 900, mietstufe: 3, heute: 2026.9 };
+  ck('[kiz-rentner] Paar Rentner + Erwerbstätiger, Kind 10 -> unverändert wahrscheinlich, ohne Hinweis',
+    L({ ...paar, alter: true }, 'kiz') === 'ja' && L({ ...paar, gebJahr: 1980 }, 'kiz') === 'ja' && K({ ...paar, alter: true }, 'kiz')[0] === 'kiz.ja');
+  const paarR = { ...paar, art2: 'rente', brutto: 1900, brutto2: 700, netto: 1700, alter: true };
+  ck('[kiz-rentner] Paar, beide Rente, Regelaltersgrenze -> höchstens möglich mit Hinweis', L(paarR, 'kiz') !== 'ja' && K(paarR, 'kiz')[0] === 'kiz.rentnerPaar');
+  // Grundsicherungsgeld: Altersrente auch vor der Regelaltersgrenze schließt aus (§ 7 Abs. 4 SGB II) -> höchstens „möglich“
+  const gr = { art1: 'rente', brutto: 700, netto: 620, miete: 450, mietstufe: 3, heute: 2026.9 };
+  ck('[kiz-rentner] Grundsicherungsgeld: nur Rente mit 63 -> möglich mit Hinweis Sozialamt; mit 40 (Witwenrente) wahrscheinlich',
+    L({ ...gr, gebJahr: 1963 }, 'ggeld') === 'vielleicht' && K({ ...gr, gebJahr: 1963 }, 'ggeld').includes('ggeld.vorgezogen') && L({ ...gr, gebJahr: 1986 }, 'ggeld') === 'ja');
+}
+
 console.log(fails ? '\n' + fails + ' von ' + n + ' FEHLGESCHLAGEN' : '\nFall-Tests bestanden: ' + n + ' Prüfungen');
 process.exit(fails ? 1 : 0);
