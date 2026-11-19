@@ -420,6 +420,23 @@
   .weg-txt { display: grid; gap: 2px; min-width: 0; }
   .weg-txt b { font-size: 1.12em; }
   .weg-txt span { opacity: .85; font-size: .95em; }
+  /* Große Auswahlknöpfe (Pfändung, Netto-Helfer): erst wählen, worum es geht, dann weiter */
+  .wahl-liste { display: grid; gap: 10px; margin: 12px 0; }
+  .wahl-raster { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 12px 0; }
+  .wahl { display: grid; gap: 2px; width: 100%; min-height: 64px; padding: 12px 14px; text-align: left; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; box-shadow: var(--shadow-s); }
+  .wahl b { font-size: 1.08em; }
+  .wahl span { opacity: .85; font-size: .93em; }
+  .wahl[aria-pressed="true"], .wahl.vorschlag { border: 2px solid var(--accent); }
+  .wahl-raster .wahl { text-align: center; place-items: center; font-size: 1.15em; }
+  .pf-frage { font-size: 1.15em; font-weight: 600; margin: 14px 0 4px; }
+  .pf-zahl { font-size: 1.6em; font-weight: 700; margin: 6px 0; }
+  .pf-tab { width: 100%; border-collapse: collapse; margin: 8px 0; }
+  .pf-tab td { padding: 6px 4px; border-bottom: 1px solid var(--line); }
+  .pf-tab td:last-child { text-align: right; white-space: nowrap; }
+  .pf .btns, .nh .btns { margin-top: 14px; }
+  .nh-wrap { margin: -4px 0 10px; }
+  .pf-tipps { margin: 12px 0; } .pf-tipps summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
+  .nh { margin-top: 8px; padding: 12px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
   .kacheln { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin: 16px 0; }
   .kachel { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; text-align: left; min-height: 116px; padding: 14px; border-radius: 16px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; box-shadow: var(--shadow-s); }
   .kachel-sym { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent); }
@@ -595,6 +612,7 @@
       <div class="weg-liste">
         <button type="button" class="weg haupt" id="goLeistungen"><span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4M8.5 11l2 2 3.5-4"/></svg></span><span class="weg-txt"><b data-t="home.leistungen"></b><span data-t="home.leistungen.t"></span></span></button>
         <button type="button" class="weg" id="goBriefe"><span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><span class="weg-txt"><b data-t="home.brief"></b><span data-t="home.brief.t"></span></span></button>
+        <button type="button" class="weg" id="goPfaendung"><span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/><path d="M15 3l-3 3-3-3"/></svg></span><span class="weg-txt"><b data-t="home.pfaendung"></b><span data-t="home.pfaendung.t"></span></span></button>
       </div>
       <p class="small muted" data-t="home.privat"></p>
     </section>
@@ -654,6 +672,12 @@
         </section>
         <!--/SCAN-->
       </div>
+    </section>
+
+    <!-- Pfändung: Lohn oder Konto, geführt mit großen Knöpfen -->
+    <section id="v-pfaendung" class="ansicht" aria-labelledby="h-pfaendung" hidden>
+      <h2 id="h-pfaendung" class="ans-h" data-t="pf.h"></h2>
+      <div id="pfInhalt" class="pf"></div>
     </section>
 
     <!-- Pflegegrad selbst einschätzen (geführt, eine Frage pro Bildschirm) -->
@@ -925,6 +949,7 @@
                 <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="ek1Netto"><span aria-hidden="true">€</span></div>
                 <span class="hint" id="ek1NettoHint"></span>
               </div>
+              <div class="nh-wrap" id="ek1NhF" hidden><button type="button" class="btn ghost nh-btn" id="ek1NhBtn" aria-expanded="false" aria-controls="ek1Nh" data-t="nh.btn"></button><div class="nh" id="ek1Nh" hidden></div></div>
               <p class="warn" id="ek1Warn" role="status" hidden></p>
               <div class="subbox cond-ek1b">
                 <div class="field">
@@ -961,6 +986,7 @@
                 <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="ek2Netto"><span aria-hidden="true">€</span></div>
                 <span class="hint" id="ek2NettoHint"></span>
               </div>
+              <div class="nh-wrap" id="ek2NhF" hidden><button type="button" class="btn ghost nh-btn" id="ek2NhBtn" aria-expanded="false" aria-controls="ek2Nh" data-t="nh.btn"></button><div class="nh" id="ek2Nh" hidden></div></div>
               <p class="warn" id="ek2Warn" role="status" hidden></p>
             </div>
             <div class="field cond-kids">
