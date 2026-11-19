@@ -56,10 +56,10 @@ const VERLAUF = 'linear-gradient(160deg,#2d3d85,#161f4a)';
   await p.click('#appnav [data-ansicht=leistungen]');
   await roh('6-mappe', async () => { await p.click('#mappeMake'); await oben(); });
   await p.click('#mappeClose');
-  await p.selectOption('#lang', 'ar');
-  await roh('8-sprachen', async () => { await zu('#ergebnis', 10); });
-  await p.selectOption('#lang', 'de');
-  await p.click('#einfachBtn');
+  await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'ar');
+  await roh('13-sprachen', async () => { await zu('#ergebnis', 10); });
+  await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'de');
+  await p.evaluate(() => document.getElementById('einfachBtn').click());
   await p.addStyleTag({ content: '.top{display:none!important}' }); // Kopfzeile nur für das Bild ausblenden
   await p.fill('#es-in', '1990'); await p.click('#es-weiter');
   await roh('7-einfach', async () => { await zu('.es-top', 16); });
@@ -73,7 +73,7 @@ const VERLAUF = 'linear-gradient(160deg,#2d3d85,#161f4a)';
     ['5-pflege', 'Pflegegrad selbst einschätzen', 'Eine Frage pro Bildschirm, mit Erklärung'],
     ['6-mappe', 'Anträge fertig zum Abschicken', 'Formlose Anträge und Angabenblatt als PDF'],
     ['7-einfach', 'Auch in einfacher Sprache', 'Eine Frage pro Bildschirm, große Knöpfe'],
-    ['8-sprachen', 'In 8 Sprachen', 'Amtsbegriffe bleiben deutsch, damit du sie wiedererkennst']];
+    ['13-sprachen', 'In 13 Sprachen', 'Amtsbegriffe bleiben deutsch, damit du sie wiedererkennst']];
   const FORMATE = [['play', 1080, 1920], ['ios-6.9', 1320, 2868], ['ios-6.5', 1242, 2688]];
   const p2 = await b.newPage();
   for (const [fmt, w, h] of FORMATE) {
@@ -104,7 +104,7 @@ const VERLAUF = 'linear-gradient(160deg,#2d3d85,#161f4a)';
     <img src="${logoImg}" style="width:210px;height:210px;border-radius:46px;box-shadow:0 14px 40px rgba(0,0,0,.35)">
     <div><div style="font-size:66px;font-weight:800;letter-spacing:-1px;line-height:1">SoLo</div><div style="font-size:26px;font-weight:600;opacity:.85;margin-top:4px">Sozialleistungslotse</div>
     <div style="font-size:34px;font-weight:700;margin-top:16px;line-height:1.25">Hilfen finden.<br>Briefe prüfen.<br><span style="color:#f2b233">Anträge schreiben.</span></div>
-    <div style="font-size:24px;margin-top:16px;opacity:.9">Offline · ohne Anmeldung · in 8 Sprachen</div></div></body></html>`);
+    <div style="font-size:24px;margin-top:16px;opacity:.9">Offline · ohne Anmeldung · in 13 Sprachen</div></div></body></html>`);
   await p2.waitForTimeout(100);
   await p2.screenshot({ path: D + 'play-werbegrafik-1024x500.png' });
   await b.close(); srv.close();

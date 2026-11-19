@@ -17,7 +17,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   await p.addInitScript(() => { try { if (!sessionStorage.getItem('erster')) { localStorage.setItem('lotse.fristen', '[{"titel":"Alt","datum":"2026-12-01"}]'); sessionStorage.setItem('erster', '1'); } } catch (e) {} });
   await p.goto(APP); await p.waitForTimeout(300);
   ok('Ohne Adresszusatz öffnet die Startseite', await p.isVisible('#v-start') && !(await p.isVisible('#v-leistungen')));
-  ok('Drei Bereiche, keine Fristen', (await p.locator('#appnav button').count()) === 3 && (await p.locator('#v-fristen, [data-ansicht=fristen], #startFristen').count()) === 0);
+  ok('Vier Bereiche, keine Fristen', (await p.locator('#appnav button').count()) === 4 && (await p.locator('#v-fristen, [data-ansicht=fristen], #startFristen').count()) === 0);
   ok('Alte gespeicherte Fristen werden gelöscht', (await p.evaluate(() => localStorage.getItem('lotse.fristen'))) === null);
   await p.goto(APP + '#fristen'); await p.waitForTimeout(200);
   ok('Alter Link #fristen führt zur Startseite', await p.isVisible('#v-start'));
@@ -108,10 +108,10 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   await p.click('#appnav [data-ansicht=leistungen]');
   ok('Leistungsseite: kein Formular-Scannen und kein Verweis darauf', !(await p.isVisible('#scan')) && (await p.locator('#v-leistungen #scanVerweis, #v-leistungen #scan, #v-leistungen [data-t^="sc."]').count()) === 0);
   // Fremde Sprache: Hinweis „nur auf Deutsch“, Bereiche übersetzt
-  await p.selectOption('#lang', 'tr'); await p.click('#appnav [data-ansicht=briefe]'); await p.click('#brief-wg');
+  await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'tr'); await p.click('#appnav [data-ansicht=briefe]'); await p.click('#brief-wg');
   ok('Türkisch: Hinweis, dass die Prüfung nur auf Deutsch ist', await p.isVisible('#ppNurDe'));
   ok('Türkisch: Leiste übersetzt', (await p.textContent('#appnav')).includes('Mektup kontrol'));
-  await p.click('#briefZurueck'); await p.selectOption('#lang', 'de');
+  await p.click('#briefZurueck'); await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'de');
   // Auf dem Computer: Reiter oben, ohne seitliches Scrollen
   await p.setViewportSize({ width: 1280, height: 900 });
   ok('Computer: Leiste sichtbar und nicht unten fixiert', await p.isVisible('#appnav') && (await p.evaluate(() => getComputedStyle(document.getElementById('appnav')).position)) !== 'fixed');
@@ -125,6 +125,6 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   await ctx2.close();
   ok('Keine Skriptfehler', fehler.length === 0, fehler);
   await b.close();
-  console.log(f ? `\n${f} von ${n} Prüfungen fehlgeschlagen` : `Bereiche-Test bestanden: ${n} Prüfungen (Startseite, drei Bereiche, Brief prüfen mit 6 Prüfungen, alte Fristen gelöscht, Sprache, Computer)`);
+  console.log(f ? `\n${f} von ${n} Prüfungen fehlgeschlagen` : `Bereiche-Test bestanden: ${n} Prüfungen (Startseite, vier Bereiche, Brief prüfen mit 6 Prüfungen, alte Fristen gelöscht, Sprache, Computer)`);
   process.exit(f ? 1 : 0);
 })().catch((e) => { console.log('ABSTURZ', e.message); process.exit(1); });

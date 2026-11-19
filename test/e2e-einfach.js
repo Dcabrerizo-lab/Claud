@@ -25,8 +25,8 @@ const ergebnis = (p) => p.evaluate(() => {
   p.on('pageerror', (e) => errs.push(e.message));
   await p.goto('file://' + file + '#leistungen');
 
-  ok('Knopf „Einfache Sprache“ sichtbar', await p.isVisible('#einfachBtn'));
-  await p.click('#einfachBtn');
+  await p.click('#appnav [data-ansicht=einst]'); ok('Knopf „Einfache Sprache“ in den Einstellungen sichtbar', await p.isVisible('#einfachBtn')); await p.click('#appnav [data-ansicht=leistungen]');
+  await p.evaluate(() => document.getElementById('einfachBtn').click());
   ok('Einfache Version zeigt eine Frage, ausführliches Formular ausgeblendet', await p.isVisible('#es-q') && !(await p.isVisible('#form')));
   ok('Erste Frage: Geburtsjahr', /geboren/.test(await p.textContent('#es-q')));
   // Ungültige Eingabe
@@ -85,7 +85,7 @@ const ergebnis = (p) => p.evaluate(() => {
   await p.click('#es-neu').catch(() => {});
   await p.click('#es-weiter').catch(() => {});
   await p.evaluate(() => { localStorage.clear(); });
-  await p.click('#es-raus'); await p.click('#einfachBtn');
+  await p.click('#es-raus'); await p.evaluate(() => document.getElementById('einfachBtn').click());
   // „Neu anfangen“ gibt es auf dem Ergebnis; hier frisch über Zurück bis zur ersten Frage
   for (let i = 0; i < 20 && !(await p.isVisible('#es-in') && /geboren/.test(await p.textContent('#es-q'))); i++) { if (await p.isVisible('#es-zurueck')) await p.click('#es-zurueck'); else break; }
   await durchlauf(p, ['#1996', 'allein', '#500', 'job', '#2500', 'nein', 'nein', 'nein', 'nein', 'schon:', 'wenig', 'skip']);
@@ -109,7 +109,7 @@ const ergebnis = (p) => p.evaluate(() => {
   // Sprachen: kein Rohschlüssel, alle Knöpfe beschriftet, Arabisch rechts nach links
   await p.click('#es-neu');
   for (const l of ['en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so', 'de']) {
-    await p.click('#es-raus'); await p.selectOption('#lang', l); await p.click('#einfachBtn');
+    await p.click('#es-raus'); await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, l); await p.evaluate(() => document.getElementById('einfachBtn').click());
     const t = await p.textContent('#einfach');
     ok('Sprache ' + l + ': keine Rohschlüssel in der einfachen Version', !/\b(es|einfach)\.[a-zA-Z]+/.test(t), t.slice(0, 120));
     if (l === 'ar') ok('Arabisch: rtl', (await p.evaluate(() => document.getElementById('app').getAttribute('dir'))) === 'rtl');

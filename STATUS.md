@@ -10,6 +10,7 @@ Stand: Version 1.4.0, Build 145 (Play Store AAB gebaut, nicht veröffentlicht). 
 - Dateien: `src/rules.js` (Rechenregeln), `src/app.js` (UI), `src/behoerden.js` (Stellen + Anschriften), `src/plz.js`, `erweiterungen/vorschau.js|html` (Prüfpaket), `brief-lesen.js`, `pflege-assistent.js`, `pflege-fragen.js`, `content/*.json` (Behörden, PLZ), `docs/` (Prüfliste, Quellen, Store, WBS-Grenzen).
 
 ## 2. Erledigt (im Repo)
+- Branch `claude/zwei-wege-but`: Kachel „Zwei Wege“ nennt Bildung und Teilhabe in beiden Wegen; neuer Reiter „Einstellungen“ (4. Knopf unten) mit Unterreitern „Einstellungen“ (Sprache, Große Schrift, Angaben löschen; Kopf-Schalter bleiben vorerst) und „Informationen“ (Passt ein Ergebnis nicht zum Bescheid, So rechnet der Check und woher die Werte kommen, Hinweise, Impressum). Getestet: npm test, e2e-briefe, e2e-einfach, a11y. Tests angepasst (Sprache/Einfach per Skript). Offen: test:app nicht gelaufen.
 - Rechenkern: Grundsicherungsgeld, Wohngeld, Kinderzuschlag, Kindergeld, BuT, GSA, UVG, BAföG, Pflege, ALG I, Krankengeld, Elterngeld, Mutterschaftsgeld, Kinderkrankengeld, Blindengeld, WBS, ABL, Rundfunkbefreiung u. a. Werte 2027 mit automatischem Umschalten zum 1.1.2027. Landesleistungen und WBS-Grenzen aller 16 Länder (Saarland: nur Bundeswerte, siehe 4).
 - Ergebnis: Karten nach Zutreffen sortiert, einklappbar („Mehr anzeigen“), Kachel „Zwei Wege“ (Grundsicherungsgeld vs. Wohngeld+KiZ), „Gut zu wissen“, Kinderkrankengeld per Frage, Hinweise in den Karten.
 - Brief prüfen auf allen Seiten: Absender wählen, dann Scannen / PDF (digital und eingescannt) / Text einfügen / selbst eingeben; erkannte Werte gelb markiert; Abweichungskarten mit Paragraf; Widerspruch und Antworten als PDF (teilen, drucken, speichern).
@@ -28,7 +29,7 @@ Stand: Version 1.4.0, Build 145 (Play Store AAB gebaut, nicht veröffentlicht). 
 - Übersetzt durch KI (je ein Agent), automatisch geprüft (`/home/claude/werkzeug/pruefe.py`-Logik = Schlüssel, Platzhalter, Zahlen, §, Zeilen; im Repo: test-sprachen-zahlen). Unsichere Fachbegriffe bewusst deutsch.
 - **Dari, Paschtu, Somali NICHT muttersprachlich geprüft** (Agenten-Selbsteinschätzung: Dari gut bis mittel, Paschtu und Somali mittel). Farsi (fa): Agenten-Selbsteinschätzung hoch, ebenfalls nicht muttersprachlich geprüft. Vor Veröffentlichung Gegenlesen durch Muttersprachler empfohlen, v. a. t.* und es.*. Französisch: hohes Niveau, ebenfalls nicht extern geprüft.
 - Größengrenze der Web-Datei im Test von 2,5 auf 3 MB angehoben (jetzt ca. 2,56 MB).
-- Offen: Store-Texte (`docs/STORE.md`, `tools/store-bilder.js`) nennen noch „8 Sprachen“.
+- Store-Texte, Store-Bilder-Skript und docs/index.html auf 13 Sprachen angepasst; die Store-Bilder selbst sind noch nicht neu erzeugt (`tools/store-bilder.js`, nur auf Anweisung).
 
 ## 3. Entscheidungen / Regeln
 - Korrektheit zuerst: unsichere Fälle „möglich“ statt „wahrscheinlich“; nie falschen Empfänger einsetzen, dann nur Art der Stelle.
