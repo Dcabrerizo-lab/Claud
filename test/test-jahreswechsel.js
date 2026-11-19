@@ -26,12 +26,13 @@ function seite(iso, vorbelegt) {
       Object.defineProperty(w, 'localStorage', { value: { getItem: (k) => (k in store ? store[k] : null), setItem: (k, v) => { store[k] = String(v); } }, configurable: true });
     }
   });
-  return { d: dom.window.document, errors };
+  return { d: dom.window.document, errors, schliessen: () => dom.window.close() };
 }
 
 const vor = seite('2026-12-31T22:00:00');
 ck('31.12.2026: kein Hinweis auf veraltete Regeln', vor.d.getElementById('altNotice').hidden === true);
 ck('31.12.2026: App startet ohne Skriptfehler', !!vor.d.querySelector('#cards .startcard') && vor.errors.length === 0, vor.errors.join('; '));
+vor.schliessen(); // JSDOM-Fenster freigeben (sonst wächst der Speicher bei vielen Seiten auf mehrere GB)
 
 const nach = seite('2027-01-01T08:00:00');
 const alt = nach.d.getElementById('altNotice');
@@ -41,9 +42,11 @@ ck('1.1.2027: App startet weiter ohne Skriptfehler', !!nach.d.querySelector('#ca
 const kinder = nach.d.querySelector('[data-step="kids"][data-d="1"]');
 if (kinder) kinder.click();
 ck('1.1.2027: nach einer Eingabe alle Karten, keine Skriptfehler', nach.d.querySelectorAll('#cards .card:not(.startcard)').length === KARTEN.length && nach.errors.length === 0, nach.d.querySelectorAll('#cards .card').length + ' ' + nach.errors.join('; '));
+nach.schliessen();
 
 const spaet = seite('2029-06-15T12:00:00');
 ck('2029: Hinweis bleibt, App läuft', spaet.d.getElementById('altNotice').hidden === false && spaet.errors.length === 0, spaet.errors.join('; '));
+spaet.schliessen();
 
 // Rentenalter verschiebt sich mit dem Datum: Jahrgang 1960 (Regelaltersgrenze 66 J. 4 M.) erreicht es je nach Geburtsmonat
 // zwischen Mai 2026 und April 2027: vorher nein, dazwischen möglich (mit Hinweis), danach wahrscheinlich
@@ -63,6 +66,9 @@ const HH = {
   alg: { kids: 1, ek1Art: 'alg', ek1Netto: '1100', miete: '700', plz: '50667', vermoegen: '0', baby: 'da' },
 };
 const kaputt = /undefined|NaN|\[object|\{[a-zA-Z0-9]+\}|\b[a-z]{2,}\.[a-zA-Z0-9]+\.[a-zA-Z0-9.]+\b/;
+// Asynchron mit kurzer Pause nach jeder Seite: jsdom nutzt WeakRefs, deren Ziele bis zum Ende des laufenden
+// (synchronen) Durchlaufs festgehalten werden. Ohne Pause blieben alle ~100 geschlossenen Fenster im Speicher (fast 5 GB).
+(async () => {
 for (const iso of ['2026-12-31T22:00:00', '2027-01-01T08:00:00']) {
   for (const lang of SPRACHEN) {
     for (const [name, hh] of Object.entries(HH)) {
@@ -76,9 +82,12 @@ for (const iso of ['2026-12-31T22:00:00', '2027-01-01T08:00:00']) {
         if (iso.startsWith('2026')) ck('31.12.2026: 620 € Lohn ist kein Minijob, Kinderkrankengeld möglich mit 30 Tagen (alleinerziehend)', /Möglich/.test(k) && /30 Arbeitstage/.test(k) && /höchstens 70/.test(k), k.slice(0, 200));
         else ck('1.1.2027: 620 € Lohn ist jetzt Minijob (Grenze 633 €), kein Kinderkrankengeld', /Unwahrscheinlich/.test(k) && /Minijob/.test(k) && !/Arbeitstage/.test(k), k.slice(0, 200));
       }
+      pg.schliessen();
+      await new Promise((r) => setImmediate(r));
     }
   }
 }
 
 console.log(fails ? '\n' + fails + ' von ' + n + ' FEHLGESCHLAGEN' : 'Jahreswechsel-Test bestanden: ' + n + ' Prüfungen');
 process.exit(fails ? 1 : 0);
+})();

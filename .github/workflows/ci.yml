@@ -36,10 +36,14 @@ jobs:
       - run: npm ci
       - run: npm ci
         working-directory: app
+      - name: Lint (nicht deklarierte Namen, unbenutzte Variablen)
+        run: npm run lint
       - name: Browser installieren (bis zu 3 Versuche, je höchstens 10 Minuten, wartet auf apt)
         run: echo 'DPkg::Lock::Timeout "600";' | sudo tee /etc/apt/apt.conf.d/99lock >/dev/null; for i in 1 2 3; do timeout 600 npx playwright install --with-deps chromium && exit 0; echo "Versuch $i fehlgeschlagen"; sleep 20; done; exit 1
       - name: Regel- und Oberflächentests
         run: npm test
+      - name: Erweiterungen (Prüfpaket, mit Browsertest der Vorschau)
+        run: npm run test:erweiterungen
       - name: Browsertest (Behinderung, Mappe, Sprachen, RTL)
         run: npm run test:e2e
       - name: App-Test (offline, CSP, PDF, Scan, Speichern)
