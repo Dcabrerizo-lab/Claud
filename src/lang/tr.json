@@ -1055,7 +1055,7 @@
   "ww.h": "İki yol: Grundsicherungsgeld veya Wohngeld ve Kinderzuschlag",
   "ww.t": "İkisi birlikte olmaz. Hanen için iki yol da mümkün.",
   "ww.a.h": "Yol 1: Grundsicherungsgeld (Jobcenter)",
-  "ww.a.t": "Tüm ihtiyacı karşılar: temel ihtiyaç, kira ve ısınma, ayrıca sağlık sigortası. Karşılığında yükümlülükler vardır: belgeler, randevular ve iş arama.",
+  "ww.a.t": "Tüm ihtiyacı karşılar: temel ihtiyaç, kira ve ısınma, ayrıca sağlık sigortası. Karşılığında yükümlülükler vardır: belgeler, randevular ve iş arama. Çocuklar için eğitim ve katılım yardımı burada da var.",
   "ww.b.h": "Yol 2: Wohngeld ve Kinderzuschlag",
   "ww.b.t": "Kendi gelirine destek, Jobcenter yükümlülükleri olmadan. Çocuklar için eğitim ve katılım yardımı burada da var.",
   "ww.regel.h": "Kurumlar şöyle karar verir:",

@@ -1055,7 +1055,7 @@
   "ww.h": "Two routes: Grundsicherungsgeld or housing benefit (Wohngeld) and child supplement (Kinderzuschlag)",
   "ww.t": "You cannot get both. Both routes are possible for your household.",
   "ww.a.h": "Route 1: Grundsicherungsgeld (Jobcenter)",
-  "ww.a.t": "Covers the whole need: standard rate, rent and heating, plus health insurance. In return there are duties: documents, appointments and looking for work.",
+  "ww.a.t": "Covers the whole need: standard rate, rent and heating, plus health insurance. In return there are duties: documents, appointments and looking for work. Education and participation benefits for the children are available here too.",
   "ww.b.h": "Route 2: Wohngeld and Kinderzuschlag",
   "ww.b.t": "Top-ups to your own income, without Jobcenter duties. Education and participation benefits for the children are available here too.",
   "ww.regel.h": "How the offices decide:",
