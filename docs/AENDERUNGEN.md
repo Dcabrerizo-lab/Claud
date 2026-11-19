@@ -73,3 +73,6 @@ Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss ste
 
 ## 1.0.0 (bis Versionsnummer 132)
 - Erste Testversionen im geschlossenen Test
+
+---
+
