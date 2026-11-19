@@ -1,5 +1,5 @@
 // Oberfläche des Prüfpakets: in der Vorschau (erweiterungen/vorschau.html) und in der App unter „Brief prüfen“ (scripts/build.js).
-// In der App gibt es keine Reiter und keine Lizenzprüfung; Fristen gehen in die Fristenliste der App (window.SoLoFristen).
+// In der App gibt es keine Reiter und keine Lizenzprüfung.
 // Alle Ausgaben über textContent bzw. Elemente – nie innerHTML mit Eingaben (Schutz vor eingeschleustem Code).
 (function () {
   'use strict';
@@ -18,7 +18,7 @@
   const heute = () => new Date().toISOString().slice(0, 10);
   const de = (s) => { const [y, m, d] = s.split('-'); return `${d}.${m}.${y}`; };
   async function kopiere(textarea, msg) {
-    try { await navigator.clipboard.writeText(textarea.value); msg.textContent = 'Kopiert.'; } catch (e) { textarea.hidden = false; textarea.removeAttribute('readonly'); textarea.select(); msg.textContent = 'Text ist markiert. Bitte mit Strg+C bzw. „Kopieren“ übernehmen.'; textarea.setAttribute('readonly', ''); }
+    try { const cb = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Clipboard; if (cb) await cb.write({ string: textarea.value }); else await navigator.clipboard.writeText(textarea.value); msg.textContent = 'Kopiert. Du kannst den Text jetzt in ein Schreibprogramm oder eine E-Mail einfügen.'; } catch (e) { textarea.hidden = false; textarea.removeAttribute('readonly'); textarea.select(); msg.textContent = 'Text ist markiert. Bitte mit Strg+C bzw. „Kopieren“ übernehmen.'; textarea.setAttribute('readonly', ''); }
   }
 
   // ---------------- Reiter ----------------
@@ -106,20 +106,21 @@
     for (const satz of P.zusammenfassung(g, r, Rules)) box.append(h('p', { text: satz }));
     // Bereiche als kleine Tabelle
     const tb = h('tbody', {}, [1, 2, 3, 4, 5, 6].map((m) => { const mo = r.module[m], zaehlt = !(m === 2 || m === 3) || r.zaehlt23 === m; return h('tr', {}, h('td', { text: P.MODUL[m].kurz }), h('td', { text: mo.bereichName }), h('td', { class: 'z', text: zaehlt ? `${zahl(mo.gewichtet)} / ${zahl(P.ANLAGE2[m].gew[4])}` : 'zählt nicht' })); }));
-    box.append(h('div', { class: 'tablewrap', tabindex: '0', role: 'region', 'aria-label': 'Punkte je Bereich' }, h('table', { class: 'modtab' }, h('thead', {}, h('tr', {}, h('th', { text: 'Bereich' }), h('th', { text: 'Einstufung' }), h('th', { class: 'z', text: 'Punkte' }))), tb)));
+    box.append(h('details', {}, h('summary', { text: 'Punkte je Bereich' }), h('div', { class: 'tablewrap', tabindex: '0', role: 'region', 'aria-label': 'Punkte je Bereich' }, h('table', { class: 'modtab' }, h('thead', {}, h('tr', {}, h('th', { text: 'Bereich' }), h('th', { text: 'Einstufung' }), h('th', { class: 'z', text: 'Punkte' }))), tb))));
     if (r.fehltBisNaechster != null && !r.besonders && r.hebel.moeglich) {
       const jetzt = P.geld(r.pg, Rules), naechst = P.geld(r.naechsterPg, Rules);
       box.append(h('h3', { text: `Was für Pflegegrad ${r.naechsterPg} fehlt` }));
       if (naechst.pflegegeld > jetzt.pflegegeld) box.append(h('p', { text: `Pflegegrad ${r.naechsterPg} brächte ${eur(naechst.pflegegeld - jetzt.pflegegeld)} mehr Pflegegeld im Monat.` }));
       box.append(h('p', { text: r.grenzfall ? 'Es ist knapp. Schon diese Änderungen würden reichen, wenn sie im Alltag wirklich so sind:' : 'Dafür müsste sich einiges ändern, zum Beispiel:' }));
       r.hebel.optionen.slice(0, 3).forEach((o, i) => {
-        const btn = o.wege.every((w) => !w.id.startsWith('M5')) ? h('button', { type: 'button', class: 'btn', onclick: () => { o.wege.forEach((w) => fuegeWiderspruchHinzu(w.id, w.nach)); $('pf-wid').scrollIntoView({ block: 'start' }); } }, 'Für den Widerspruch übernehmen') : null;
+        const btn = o.wege.every((w) => !w.id.startsWith('M5')) ? h('button', { type: 'button', class: 'btn', onclick: () => { o.wege.forEach((w) => fuegeWiderspruchHinzu(w.id, w.nach, false)); $('pf-wid').scrollIntoView({ block: 'start' }); } }, 'Für den Widerspruch übernehmen') : null;
         box.append(h('div', { class: 'opt' }, h('strong', { text: `Möglichkeit ${i + 1}: ${o.schritte === 1 ? 'eine Bewertung' : o.schritte + ' Bewertungen'} anders` }), h('ul', {}, o.wege.map((w) => h('li', { text: weg(w) }))), btn));
       });
       box.append(h('p', { class: 'small muted', text: 'Nur übernehmen, was im Alltag wirklich so ist. Ob eine Bewertung stimmt, wissen nur du und die gepflegte Person.' }));
     }
     box.append(h('details', {}, h('summary', { text: 'So rechnet die Pflegekasse' }), h('ul', {}, P.SO_GEHTS.map((t) => h('li', { text: t })))));
     zeigeErklaerung(g, r);
+    zeigeVergleich(g, r);
   }
   // Das Gutachten einfach erklärt: jede eingetragene Bewertung mit ihrer Bedeutung im Alltag
   function zeigeErklaerung(g, r) {
@@ -139,49 +140,151 @@
     }
     box.hidden = leer;
   }
-  // Widerspruch Pflege: Liste der Kriterien
-  function fuegeWiderspruchHinzu(id, soll) {
+  // Widerspruch Pflege. Mit eigener Einschätzung (Pflegegrad-Einschätzung der App) füllt sich die Liste „Wo das Gutachten zu niedrig ist“
+  // von selbst: eine Karte je Bewertung, bei der das Gutachten weniger Punkte gibt als die eigene Einschätzung, mit Feld für den Alltag.
+  // Richtigkeit: Nur Bewertungen, die aus dem Gutachten eingetragen sind, zählen; fehlende werden gezählt und genannt, nicht als Abweichung gewertet.
+  let eigen = null;
+  const punkteVon = (k, stufe) => (stufe == null ? 0 : P.SKALA[k.s].punkte[stufe] || 0);
+  // Bereich 5: Maß je Maßnahme wie in pflege.js (1 Tag = 210 Einheiten, Woche 30, Monat 7; Arzt- und Therapiebesuche mit ihrer Gewichtung)
+  const zahlP = (x) => (Number.isFinite(+x) && +x > 0 ? +x : 0);
+  const M5C_F = Object.fromEntries(P.M5C.map((x) => [x[0], x[3]]));
+  function m5Mass(id, v) {
+    v = v || {};
+    if (M5C_F[id]) { const f = M5C_F[id]; return (f.tag && v.taeglich ? f.tag : 0) + zahlP(v.woche) * f.woche + zahlP(v.monat) * f.monat; }
+    return zahlP(v.tag) * 210 + zahlP(v.woche) * 30 + zahlP(v.monat) * 7;
+  }
+  function haeufigkeit(v) {
+    v = v || {}; const t = [];
+    if (v.taeglich) t.push('jeden Tag');
+    if (zahlP(v.tag)) t.push(`${zahlP(v.tag)}-mal am Tag`);
+    if (zahlP(v.woche)) t.push(`${zahlP(v.woche)}-mal pro Woche`);
+    if (zahlP(v.monat)) t.push(`${zahlP(v.monat)}-mal im Monat`);
+    return t.length ? t.join(' und ') : 'keine Hilfe';
+  }
+  const M5_NAME = Object.fromEntries(P.M5A.concat(P.M5B, P.M5C).map((x) => [x[0], x]));
+  // Jede Bewertung des Gutachtens mit der eigenen Einschätzung vergleichen: Kriterien (nach Punkten), Inkontinenz, jede Maßnahme in Bereich 5, 5.16.
+  // ab: Gutachten niedriger als die eigene Einschätzung. fehlt: Kriterium mit eigener Bewertung, im Gutachten noch nicht eingetragen (zählt nicht als Abweichung).
+  function abweichungen(g, kind) {
+    const ab = [], fehlt = [];
+    if (!eigen) return { ab, fehlt };
+    const es = eigen.stufen || {}, em = eigen.m5 || {}, ei = eigen.inkontinenz || {};
+    for (const art of ['harn', 'stuhl']) if (ei[art] && !(g.inkontinenz && g.inkontinenz[art]))
+      ab.push({ typ: 'ink', id: 'ink-' + art, titel: art === 'harn' ? 'Harninkontinenz (oder Katheter, Urostoma)' : 'Stuhlinkontinenz (oder Stoma)', ist: 'nicht angegeben', soll: 'überwiegend oder vollständig inkontinent' });
+    for (const k of P.KRITERIEN) {
+      const e = es[k.id], gu = g.stufen[k.id];
+      if (e == null) continue;
+      if (gu == null) { if (punkteVon(k, e) > 0) fehlt.push(k); continue; }
+      if (punkteVon(k, e) > punkteVon(k, gu)) ab.push({ typ: 'stufe', id: k.id, k, e, gu });
+    }
+    for (const [id] of P.M5A.concat(P.M5B, P.M5C)) {
+      if (id === '5.K' && !kind) continue;
+      if (m5Mass(id, em[id]) > m5Mass(id, g.m5[id])) ab.push({ typ: 'm5', id, titel: `${id} ${M5_NAME[id][2]}`, ist: haeufigkeit(g.m5[id]), soll: haeufigkeit(em[id]), wert: em[id] });
+    }
+    const e16 = em['5.16'] != null ? +em['5.16'] : es['5.16'] != null ? +es['5.16'] : null, g16 = +g.m5['5.16'] || 0;
+    if (e16 != null && e16 > g16) { const sk = P.SKALA.sel; ab.push({ typ: 'm5', id: '5.16', titel: '5.16 Diät oder ärztliche Anweisungen einhalten', ist: `„${sk.kurz[g16]}“ (${sk.stufen[g16]})`, soll: `„${sk.kurz[e16]}“ (${sk.stufen[e16]})`, wert: e16 }); }
+    return { ab, fehlt };
+  }
+  function zeigeVergleich(g, r) {
+    const info = $('pf-ab-info'); if (!info) return;
+    info.replaceChildren();
+    const eingetragen = Object.keys(g.stufen).length > 0;
+    if (!eigen) {
+      const start = window.SoLoPflegeStart;
+      info.append(h('div', { class: 'opt' }, h('p', { text: 'Noch keine eigene Einschätzung. Mach sie in wenigen Minuten (Fragen in einfacher Sprache). Danach zeigt SoLo hier von selbst jede Bewertung, die im Gutachten niedriger ist.' }),
+        start ? h('div', { class: 'btns' }, h('button', { type: 'button', class: 'btn primary', id: 'pf-eigen-start', onclick: () => start() }, 'Pflegegrad selbst einschätzen')) : null));
+    } else {
+      const re = P.rechne(eigen), { ab, fehlt } = abweichungen(g, r.kind);
+      const satz = [`Deine Einschätzung: ${re.pg ? 'Pflegegrad ' + re.pg : 'kein Pflegegrad'} (${zahl(re.gesamt)} Punkte).`];
+      if (eingetragen) satz.push(`Gutachten: ${r.pg ? 'Pflegegrad ' + r.pg : 'kein Pflegegrad'} (${zahl(r.gesamt)} Punkte).`);
+      satz.push(!eingetragen ? 'Trage oben die Bewertungen aus dem Gutachten ein oder scanne es, dann erscheinen die Abweichungen hier.' : ab.length ? `Bei ${ab.length} ${ab.length === 1 ? 'Frage' : 'Fragen'} ist das Gutachten niedriger als deine Einschätzung.` : 'Bei keiner Frage ist das Gutachten niedriger als deine Einschätzung.');
+      info.append(h('p', { id: 'pf-vergleich', text: satz.join(' ') }));
+      const m5Leer = !Object.entries(g.m5).some(([id, v]) => (id === '5.16' ? +v > 0 : m5Mass(id, v) > 0));
+      if (eingetragen && m5Leer && ab.some((x) => x.typ === 'm5')) info.append(h('p', { class: 'small muted', id: 'pf-m5-leer', text: 'Bereich 5 (Umgang mit Krankheit und Behandlung) ist aus dem Gutachten noch leer. Steht dort wirklich keine Hilfe? Sonst trage die Häufigkeiten oben ein, damit der Vergleich stimmt.' }));
+      if (eingetragen && fehlt.length) info.append(h('p', { class: 'small muted', text: `${fehlt.length} ${fehlt.length === 1 ? 'Bewertung fehlt' : 'Bewertungen fehlen'} noch aus dem Gutachten (zum Beispiel „${fehlt[0].leicht}“). Trage sie oben ein, sonst kann SoLo dort nicht vergleichen.` }));
+      if (eingetragen) {
+        const ids = new Set(ab.map((x) => x.id));
+        // Automatische Karten, die nicht mehr abweichen und leer sind, verschwinden; ausgefüllte bleiben stehen
+        for (const z of [...$('pf-wid-liste').children]) if (z.dataset.auto === '1' && !ids.has(z.dataset.id) && !z.querySelector('textarea').value.trim()) z.remove();
+        for (const x of ab) { if (x.typ === 'stufe') fuegeWiderspruchHinzu(x.id, x.e, true); else fuegeTextKarte(x); }
+        // Text der Häufigkeits- und Inkontinenz-Karten aktualisieren
+        for (const x of ab) { const z = $('pf-wid-liste').querySelector(`[data-id="${x.id}"][data-typ]`); if (z) { z.querySelector('.pw-ist').textContent = 'Im Gutachten: ' + x.ist; z.querySelector('.pw-soll').textContent = 'Deine Einschätzung: ' + x.soll; z.dataset.ist = x.ist; z.dataset.soll = x.soll; } }
+      }
+    }
+    // Text der Karten aktualisieren (Gutachten-Wert kann sich geändert haben)
+    for (const z of $('pf-wid-liste').children) { if (z.dataset.typ) continue; const k = P.kriterium(z.dataset.id), el = z.querySelector('.pw-ist'); if (k && el) { const gu = g.stufen[k.id]; el.textContent = 'Im Gutachten: ' + (gu == null ? 'nicht eingetragen' : `„${P.SKALA[k.s].kurz[gu]}“ (${P.SKALA[k.s].stufen[gu]})`); } }
+  }
+  let pwn = 0;
+  // Karte für Inkontinenz und Bereich 5 (Häufigkeiten): Werte stehen als Text, die eigene Angabe ändert man in der Einschätzung
+  function fuegeTextKarte(x) {
+    const liste = $('pf-wid-liste');
+    if (liste.querySelector(`[data-id="${x.id}"]`)) return;
+    const n = ++pwn;
+    const zeile = h('div', { class: 'opt pw', 'data-id': x.id, 'data-auto': '1', 'data-typ': x.typ, 'data-titel': x.titel, 'data-ist': x.ist, 'data-soll': x.soll });
+    const mit = h('input', { type: 'checkbox', id: `pw-m-${n}`, class: 'pw-mit', checked: true });
+    zeile.append(h('strong', { text: x.titel }), h('p', { class: 'small pw-ist', text: 'Im Gutachten: ' + x.ist }), h('p', { class: 'pw-soll', text: 'Deine Einschätzung: ' + x.soll }),
+      h('label', { for: `pw-a-${n}`, text: 'Wie ist es im Alltag wirklich? (in eigenen Worten)' }), h('textarea', { id: `pw-a-${n}`, rows: '3', placeholder: x.typ === 'm5' ? 'z. B. „Morgens, mittags und abends müssen wir die Tabletten richten und geben, allein vergisst sie sie.“' : 'z. B. „Sie schafft es nachts nicht mehr rechtzeitig zur Toilette und braucht Einlagen.“' }),
+      h('label', { class: 'check' }, mit, h('span', { text: 'In das Schreiben aufnehmen' })));
+    liste.append(zeile);
+  }
+  // Eine Karte: Bewertung (bei „selbst hinzufügen“ wählbar), wie es tatsächlich ist, Beschreibung aus dem Alltag, Haken „aufnehmen“
+  function fuegeWiderspruchHinzu(id, soll, auto) {
     const liste = $('pf-wid-liste');
     if (id && liste.querySelector(`[data-id="${id}"]`)) return;
-    const n = liste.children.length + 1;
-    const wahl = h('select', { id: `pw-k-${n}`, 'aria-label': `Kriterium ${n}` }, P.KRITERIEN.filter((k) => k.s !== 'sonde').map((k) => h('option', { value: k.id, text: `${k.id} ${k.leicht}`, selected: k.id === id })));
+    const n = ++pwn;
+    const zeile = h('div', { class: 'opt pw', 'data-id': id || '', 'data-auto': auto ? '1' : '' });
     const sollSel = h('select', { id: `pw-s-${n}` });
-    const fuellen = () => { const k = P.kriterium(wahl.value); sollSel.replaceChildren(...P.SKALA[k.s].stufen.map((s, i) => h('option', { value: i, text: `${s} (${P.SKALA[k.s].kurz[i]})`, selected: soll != null && i === soll }))); };
-    wahl.addEventListener('change', () => { soll = null; fuellen(); });
-    fuellen();
-    const alltag = h('textarea', { id: `pw-a-${n}`, rows: '3', placeholder: 'Wie ist es im Alltag wirklich? z. B. „Sie kann nicht allein in die Dusche steigen und braucht jedes Mal Hilfe beim Abtrocknen.“' });
-    const zeile = h('div', { class: 'opt', 'data-id': id || '' },
-      h('div', { class: 'grid2' }, h('div', {}, h('label', { for: `pw-k-${n}`, text: 'Kriterium' }), wahl), h('div', {}, h('label', { for: `pw-s-${n}`, text: 'Tatsächlich' }), sollSel)),
-      h('label', { for: `pw-a-${n}`, text: 'Beschreibung aus dem Alltag' }), alltag,
-      h('div', { class: 'btns' }, h('button', { type: 'button', class: 'btn', onclick: () => zeile.remove() }, 'Entfernen')));
-    wahl.addEventListener('change', () => { zeile.dataset.id = wahl.value; });
-    zeile.dataset.id = wahl.value;
+    const fuellen = (kid, wert) => { const k = P.kriterium(kid); sollSel.replaceChildren(...P.SKALA[k.s].kurz.map((s, i) => h('option', { value: i, text: `${s.charAt(0).toUpperCase() + s.slice(1)} (${P.SKALA[k.s].stufen[i]})`, selected: wert != null && i === wert }))); };
+    let kopf;
+    if (auto && id) {
+      const k = P.kriterium(id);
+      kopf = h('div', {}, h('strong', { text: `${k.id} ${k.leicht}` }), h('p', { class: 'small pw-ist' }));
+      fuellen(id, soll);
+    } else {
+      const wahl = h('select', { id: `pw-k-${n}` }, P.KRITERIEN.filter((k) => k.s !== 'sonde').map((k) => h('option', { value: k.id, text: `${k.id} ${k.leicht}`, selected: k.id === id })));
+      wahl.addEventListener('change', () => { zeile.dataset.id = wahl.value; fuellen(wahl.value, null); });
+      fuellen(wahl.value, soll); zeile.dataset.id = wahl.value;
+      kopf = h('div', {}, h('label', { for: `pw-k-${n}`, text: 'Bewertung' }), wahl, h('p', { class: 'small pw-ist' }));
+    }
+    const mit = h('input', { type: 'checkbox', id: `pw-m-${n}`, class: 'pw-mit', checked: true });
+    const alltag = h('textarea', { id: `pw-a-${n}`, rows: '3', placeholder: 'z. B. „Sie kann nicht allein in die Dusche steigen und braucht jedes Mal Hilfe beim Abtrocknen.“' });
+    zeile.append(...[kopf,
+      h('label', { for: `pw-s-${n}`, text: auto ? 'Deine Einschätzung: so ist es wirklich' : 'So ist es wirklich' }), sollSel,
+      h('label', { for: `pw-a-${n}`, text: 'Wie ist es im Alltag wirklich? (in eigenen Worten)' }), alltag,
+      h('label', { class: 'check' }, mit, h('span', { text: 'In das Schreiben aufnehmen' })),
+      auto ? null : h('div', { class: 'btns' }, h('button', { type: 'button', class: 'btn', onclick: () => zeile.remove() }, 'Entfernen'))].filter(Boolean));
     liste.append(zeile);
   }
   const pfArt = () => ($('pf-art-h').checked ? 'hoeher' : 'widerspruch');
   function zeigePfArt() {
     const hoch = pfArt() === 'hoeher';
-    $('pf-art-text').textContent = hoch ? 'Wähle die Bewertungen, bei denen es seit der letzten Begutachtung schlimmer geworden ist, und beschreibe, was sich verändert hat und seit wann.' : 'Wähle die Bewertungen, die im Gutachten zu niedrig sind, und beschreibe in eigenen Worten, wie es im Alltag wirklich ist. Nur was stimmt, gehört hinein.';
+    $('pf-ab-h').textContent = hoch ? 'Wo es schlimmer geworden ist' : 'Wo das Gutachten zu niedrig ist';
+    $('pf-art-text').textContent = hoch ? 'Beschreibe bei jeder Bewertung, was sich seit der letzten Begutachtung verändert hat und seit wann. Nur was stimmt, gehört hinein.' : 'Beschreibe bei jeder Bewertung in eigenen Worten, wie es im Alltag wirklich ist. Nur was stimmt, gehört hinein.';
     $('pf-datum-label').textContent = hoch ? 'Datum der letzten Begutachtung' : 'Datum des Bescheids';
   }
   function machePflegeWiderspruch() {
     const g = lesePflege(), r = P.rechne(g), hoch = pfArt() === 'hoeher';
-    const auswahl = [...$('pf-wid-liste').children].map((z) => { const sel = z.querySelectorAll('select'); const id = sel[0].value; return { id, stufeIst: +(g.stufen[id] || 0), stufeSoll: +sel[1].value, alltag: z.querySelector('textarea').value }; }).filter((x) => x.stufeSoll > x.stufeIst);
-    const neu = Object.assign({}, g, { stufen: Object.assign({}, g.stufen) }); auswahl.forEach((x) => { neu.stufen[x.id] = x.stufeSoll; });
+    const gewaehlt = [...$('pf-wid-liste').children].filter((z) => z.querySelector('.pw-mit').checked && z.dataset.id);
+    const textKarten = gewaehlt.filter((z) => z.dataset.typ);
+    const auswahl = gewaehlt.filter((z) => !z.dataset.typ).map((z) => { const id = z.dataset.id, sel = z.querySelectorAll('select'); return { id, stufeIst: +(g.stufen[id] || 0), stufeSoll: +sel[sel.length - 1].value, alltag: z.querySelector('textarea').value }; }).filter((x) => x.stufeSoll > x.stufeIst);
+    const neu = Object.assign({}, g, { stufen: Object.assign({}, g.stufen), m5: Object.assign({}, g.m5), inkontinenz: Object.assign({}, g.inkontinenz) }); auswahl.forEach((x) => { neu.stufen[x.id] = x.stufeSoll; });
+    for (const z of textKarten) {
+      if (z.dataset.typ === 'ink') neu.inkontinenz[z.dataset.id.slice(4)] = true;
+      else if (eigen && eigen.m5 && z.dataset.id !== '5.16') neu.m5[z.dataset.id] = eigen.m5[z.dataset.id];
+      else if (eigen && z.dataset.id === '5.16') neu.m5['5.16'] = eigen.m5 && eigen.m5['5.16'] != null ? eigen.m5['5.16'] : eigen.stufen['5.16'];
+    }
+    const zusatz = textKarten.map((z) => { const a = z.querySelector('textarea').value.trim(); return hoch ? `${z.dataset.titel}: bei der letzten Begutachtung ${z.dataset.ist}, heute ${z.dataset.soll}. ${a || '[Bitte beschreiben, was sich verändert hat und seit wann.]'}` : `${z.dataset.titel}: im Gutachten ${z.dataset.ist}, tatsächlich ${z.dataset.soll}. ${a || '[Bitte beschreiben, wie es im Alltag wirklich ist.]'}`; });
     const ziel = P.rechne(neu).pg, ist = r.bescheid ? r.bescheid.pg : r.pg;
     const absender = { name: $('pf-name').value.trim(), strasse: $('pf-anschrift').value.trim(), ort: $('pf-ort').value.trim() }, stelle = { name: $('pf-kasse').value.trim() };
     const t = hoch
-      ? Widerspruch.hoeherstufung({ absender, stelle, zeichen: $('pf-vnr').value.trim(), heute: heute(), pgJetzt: ist, seit: $('pf-datum').value, punkte: Widerspruch.punkteHoeher(auswahl, P), arzt: true })
-      : Widerspruch.text({ art: 'pflege', absender, stelle, bescheidDatum: $('pf-datum').value, zeichen: $('pf-vnr').value.trim(), heute: heute(), pflege: { pgBescheid: ist, pgZiel: ziel > ist ? ziel : null }, punkte: Widerspruch.punktePflege(auswahl, P), akteneinsicht: true });
+      ? Widerspruch.hoeherstufung({ absender, stelle, zeichen: $('pf-vnr').value.trim(), heute: heute(), pgJetzt: ist, seit: $('pf-datum').value, punkte: Widerspruch.punkteHoeher(auswahl, P).concat(zusatz), arzt: true })
+      : Widerspruch.text({ art: 'pflege', absender, stelle, bescheidDatum: $('pf-datum').value, zeichen: $('pf-vnr').value.trim(), heute: heute(), pflege: { pgBescheid: ist, pgZiel: ziel > ist ? ziel : null }, punkte: Widerspruch.punktePflege(auswahl, P).concat(zusatz), akteneinsicht: true });
     $('pf-wid-text').value = t; $('pf-wid-text').hidden = false; $('pf-wid-copy').hidden = false;
-    let info = hoch ? 'Keine Frist. Mehr Geld gibt es ab dem Monat, in dem der Antrag bei der Pflegekasse eingeht. Deshalb bald abschicken.' : $('pf-datum').value ? fristText($('pf-datum').value, 'Widerspruch Pflegekasse') : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.';
-    if (auswahl.length && ziel > ist) info = `Mit diesen Änderungen ergäbe sich Pflegegrad ${ziel}. ` + info;
-    if (!auswahl.length) info = 'Noch keine Bewertung mit höherer Stufe gewählt. ' + info;
+    let info = hoch ? 'Keine Frist. Mehr Geld gibt es ab dem Monat, in dem der Antrag bei der Pflegekasse eingeht. Deshalb bald abschicken.' : $('pf-datum').value ? fristText($('pf-datum').value) : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.';
+    if ((auswahl.length || textKarten.length) && ziel > ist) info = `Mit diesen Änderungen ergäbe sich Pflegegrad ${ziel}. ` + info;
+    if (!auswahl.length && !textKarten.length) info = 'Noch keine Bewertung mit höherer Stufe gewählt. ' + info;
     $('pf-frist').textContent = info;
   }
-  // Frist merken: in der App in die Fristenliste (gleiche Frist nur einmal), in der Vorschau nichts
-  function merke(titel, datum, quelle) { if (window.SoLoFristen && titel && datum) window.SoLoFristen.eintragen({ titel, datum, quelle: quelle || 'pruefpaket' }); }
-  function fristText(datum, titel) { const f = Fristen.widerspruch({ datum }); merke(titel, f.fristende); return `Frist: Der Widerspruch muss spätestens am ${de(f.fristende)} bei der Stelle sein (frühester möglicher Tag).`; }
+  function fristText(datum) { const f = Fristen.widerspruch({ datum }); return `Frist: Der Widerspruch muss spätestens am ${de(f.fristende)} bei der Stelle sein (frühester möglicher Tag).`; }
 
   const BEISPIEL_GUTACHTEN = `1.1 Positionswechsel im Bett überwiegend selbständig
 1.3 Umsetzen überwiegend selbständig
@@ -229,6 +332,23 @@ Ergebnis: Pflegegrad 2`;
       bescheid: { regel: wert('bs-b-regel'), mehrAE: wert('bs-b-ae'), mehrSchwanger: wert('bs-b-schw'), mehrWW: wert('bs-b-ww'), kdu: wert('bs-b-kdu'), einkommen: wert('bs-b-eink'), kindergeld: wert('bs-b-kg'), zahlbetrag: wert('bs-b-zahl') } };
   }
   const WIRK = { passt: 'passt', zuWenig: 'zu deinen Lasten', zuViel: 'zu deinen Gunsten', pruefen: 'bitte prüfen', fehlt: 'nicht eingetragen' };
+  // Ergebnis als Karten: je Abweichung eine Karte (Bescheid, nach SoLo, Grund, Paragraf); was passt, steht in einer Zeile;
+  // die vollständige Tabelle zum Aufklappen. Für alle Bescheid-Prüfungen gleich.
+  function abweichungsKarten(box, r, label) {
+    const grundVon = (p) => p.grund || ((r.gruende || []).find((g) => g.key === p.key) || {}).grund || '';
+    const ab = r.posten.filter((p) => p.wirkung === 'zuWenig' || p.wirkung === 'pruefen');
+    for (const p of ab) {
+      box.append(h('div', { class: 'opt abw' },
+        h('div', { class: 'abw-kopf' }, h('strong', { text: p.name }), h('span', { class: 'pill ' + p.wirkung, text: WIRK[p.wirkung] })),
+        h('p', {}, `Im Bescheid: ${p.bescheid == null ? 'nicht eingetragen' : eur(p.bescheid)} · Nach SoLo: ${eur(p.erwartet)}`),
+        grundVon(p) ? h('p', { class: 'small', text: grundVon(p) }) : null,
+        p.recht ? h('p', { class: 'small muted', text: p.recht }) : null));
+    }
+    const ok = r.posten.filter((p) => p.wirkung === 'passt' || p.wirkung === 'zuViel').map((p) => p.name);
+    if (ok.length) box.append(h('p', { class: 'small', text: (ab.length ? 'Passt: ' : 'Alles passt: ') + ok.join(', ') + '.' }));
+    const tb = h('tbody', {}, r.posten.map((p) => h('tr', {}, h('td', {}, p.name, p.recht ? h('span', { class: 'amt small muted', text: ' ' + p.recht }) : null), h('td', { class: 'z', text: eur(p.erwartet) }), h('td', { class: 'z', text: p.bescheid == null ? '–' : eur(p.bescheid) }), h('td', {}, h('span', { class: 'pill ' + p.wirkung, text: WIRK[p.wirkung] })))));
+    box.append(h('details', {}, h('summary', { text: 'Alle Posten im Vergleich' }), h('div', { class: 'tablewrap', tabindex: '0', role: 'region', 'aria-label': label }, h('table', {}, h('thead', {}, h('tr', {}, h('th', { text: 'Posten' }), h('th', { class: 'z', text: 'nach SoLo' }), h('th', { class: 'z', text: 'im Bescheid' }), h('th', { text: 'Bewertung' }))), tb))));
+  }
   function zeigeBescheid() {
     const box = $('bs-erg'); box.replaceChildren();
     const e = leseBescheid();
@@ -237,17 +357,15 @@ Ergebnis: Pflegegrad 2`;
     box.append(h('h2', { text: 'Ergebnis' }));
     r.hinweise.forEach((t) => box.append(h('p', { class: 'note', text: t })));
     box.append(h('p', {}, r.zuWenigImMonat > 0 ? h('span', { class: 'big', text: `Vermutlich ${eur(r.zuWenigImMonat)} im Monat zu wenig` }) : h('span', { class: 'big', text: 'Keine sichere Abweichung zu deinen Lasten gefunden' })));
-    const tb = h('tbody', {}, r.posten.map((p) => h('tr', {}, h('td', {}, p.name, h('span', { class: 'amt small muted', text: ' ' + p.recht })), h('td', { class: 'z', text: eur(p.erwartet) }), h('td', { class: 'z', text: p.bescheid == null ? '–' : eur(p.bescheid) }), h('td', {}, h('span', { class: 'pill ' + p.wirkung, text: WIRK[p.wirkung] })))));
-    box.append(h('div', { class: 'tablewrap', tabindex: '0', role: 'region', 'aria-label': 'Vergleich der Posten' }, h('table', {}, h('thead', {}, h('tr', {}, h('th', { text: 'Posten' }), h('th', { class: 'z', text: 'nach SoLo' }), h('th', { class: 'z', text: 'im Bescheid' }), h('th', { text: 'Bewertung' }))), tb)));
+    abweichungsKarten(box, r, 'Vergleich der Posten');
     if (r.zahlbetrag) box.append(h('p', { class: 'small', text: `Zahlbetrag nach SoLo ${eur(r.zahlbetrag.erwartet)}, im Bescheid ${eur(r.zahlbetrag.bescheid)}.` }));
-    r.gruende.forEach((g) => box.append(h('p', { class: 'small' }, h('strong', { text: g.name + ': ' }), g.grund)));
     box.append(h('p', { class: 'small muted', text: r.grenzen }));
   }
   function macheBescheidWiderspruch() {
     const r = BescheidSGB2.pruefe(leseBescheid(), Rules);
     const t = Widerspruch.text({ art: 'sgb2', absender: { name: $('bs-name').value.trim(), strasse: $('bs-anschrift').value.trim(), ort: $('bs-ort').value.trim() }, stelle: { name: $('bs-jc').value.trim() }, bescheidDatum: $('bs-datum').value, zeichen: $('bs-bg').value.trim(), heute: heute(), punkte: Widerspruch.punkteSGB2(r), akteneinsicht: r.gruende.some((g) => g.key === 'kdu') });
     $('bs-wid-text').value = t; $('bs-wid-text').hidden = false; $('bs-wid-copy').hidden = false;
-    $('bs-frist').textContent = (r.gruende.length ? '' : 'Es wurde kein Grund gefunden; der Widerspruch hat noch keine Begründung. ') + ($('bs-datum').value ? fristText($('bs-datum').value, 'Widerspruch Jobcenter') : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.');
+    $('bs-frist').textContent = (r.gruende.length ? '' : 'Es wurde kein Grund gefunden; der Widerspruch hat noch keine Begründung. ') + ($('bs-datum').value ? fristText($('bs-datum').value) : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.');
   }
 
   // ---------------- Bescheid Grundsicherung im Alter ----------------
@@ -264,19 +382,15 @@ Ergebnis: Pflegegrad 2`;
     box.append(h('h2', { text: 'Ergebnis' }),
       h('p', {}, h('span', { class: 'big', text: r.posten.length ? (r.zuWenigImMonat > 0 ? `Vermutlich ${eur(r.zuWenigImMonat)} im Monat zu wenig` : r.gruende.length ? 'Bitte prüfen' : 'Keine Abweichung zu deinen Lasten gefunden') : `Nach SoLo: ${eur(r.erwartet.zahlbetrag)} Grundsicherung im Monat` })),
       h('p', { class: 'small', text: `Nach SoLo: Bedarf ${eur(r.erwartet.bedarf)}, anzurechnendes Einkommen ${eur(r.erwartet.einkommen)}, Zahlbetrag ${eur(r.erwartet.zahlbetrag)}.` }));
-    if (r.posten.length) {
-      const tb = h('tbody', {}, r.posten.map((p) => h('tr', {}, h('td', {}, p.name), h('td', { class: 'z', text: eur(p.erwartet) }), h('td', { class: 'z', text: eur(p.bescheid) }), h('td', {}, h('span', { class: 'pill ' + p.wirkung, text: WIRK[p.wirkung] })))));
-      box.append(h('div', { class: 'tablewrap', tabindex: '0', role: 'region', 'aria-label': 'Vergleich Grundsicherung im Alter' }, h('table', {}, h('thead', {}, h('tr', {}, h('th', { text: 'Posten' }), h('th', { class: 'z', text: 'nach SoLo' }), h('th', { class: 'z', text: 'im Bescheid' }), h('th', { text: 'Bewertung' }))), tb)));
-    }
+    if (r.posten.length) abweichungsKarten(box, r, 'Vergleich Grundsicherung im Alter');
     if (r.zahlbetrag) box.append(h('p', { class: 'small', text: `Zahlbetrag nach SoLo ${eur(r.zahlbetrag.erwartet)}, im Bescheid ${eur(r.zahlbetrag.bescheid)}.` }));
-    r.gruende.forEach((g) => box.append(h('p', { class: 'small' }, h('strong', { text: g.name + ': ' }), g.grund)));
     box.append(h('p', { class: 'small muted', text: r.grenzen }));
   }
   function macheGSAWiderspruch() {
     const r = BescheidGSA.pruefe(leseGSA(), Rules);
     const t = Widerspruch.text({ art: 'gsa', absender: { name: $('ga-name').value.trim(), strasse: $('ga-anschrift').value.trim(), ort: $('ga-ort').value.trim() }, stelle: { name: $('ga-stelle').value.trim() }, bescheidDatum: $('ga-datum').value, zeichen: $('ga-az').value.trim(), heute: heute(), punkte: Widerspruch.punkteSGB2(r), akteneinsicht: r.gruende.some((g) => g.key === 'kdu') });
     $('ga-wid-text').value = t; $('ga-wid-text').hidden = false; $('ga-wid-copy').hidden = false;
-    $('ga-frist').textContent = (r.gruende.length ? '' : 'Es wurde kein Grund gefunden; der Widerspruch hat noch keine Begründung. ') + ($('ga-datum').value ? fristText($('ga-datum').value, 'Widerspruch Sozialamt') : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.');
+    $('ga-frist').textContent = (r.gruende.length ? '' : 'Es wurde kein Grund gefunden; der Widerspruch hat noch keine Begründung. ') + ($('ga-datum').value ? fristText($('ga-datum').value) : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.');
   }
 
   // ---------------- Bescheid Wohngeld ----------------
@@ -304,18 +418,14 @@ Ergebnis: Pflegegrad 2`;
     box.append(h('h2', { text: 'Ergebnis' }),
       h('p', {}, h('span', { class: 'big', text: r.posten.length ? (r.zuWenigImMonat > 0 ? `Vermutlich ${eur(r.zuWenigImMonat)} Wohngeld im Monat zu wenig` : r.gruende.length ? 'Abweichung gefunden, bitte prüfen' : 'Keine Abweichung zu deinen Lasten gefunden') : `Nach SoLo: ${eur(r.rechnung.wohngeld)} Wohngeld im Monat` })),
       h('p', { class: 'small', text: `Nach SoLo: Miete ${eur(r.rechnung.miete)} (Höchstbetrag ${eur(r.rechnung.hoechstbetrag)} plus Heizkostenkomponente ${eur(r.rechnung.heizkomponente)}), Einkommen ${eur(r.rechnung.einkommen)}, Wohngeld ${eur(r.rechnung.wohngeld)}.` }));
-    if (r.posten.length) {
-      const tb = h('tbody', {}, r.posten.map((p) => h('tr', {}, h('td', {}, p.name), h('td', { class: 'z', text: eur(p.erwartet) }), h('td', { class: 'z', text: eur(p.bescheid) }), h('td', {}, h('span', { class: 'pill ' + p.wirkung, text: WIRK[p.wirkung] })))));
-      box.append(h('div', { class: 'tablewrap', tabindex: '0', role: 'region', 'aria-label': 'Vergleich Wohngeld' }, h('table', {}, h('thead', {}, h('tr', {}, h('th', { text: 'Posten' }), h('th', { class: 'z', text: 'nach SoLo' }), h('th', { class: 'z', text: 'im Bescheid' }), h('th', { text: 'Bewertung' }))), tb)));
-    }
-    r.gruende.forEach((g) => box.append(h('p', { class: 'small' }, h('strong', { text: g.name + ': ' }), g.grund)));
+    if (r.posten.length) abweichungsKarten(box, r, 'Vergleich Wohngeld');
     box.append(h('p', { class: 'small muted', text: r.grenzen }));
   }
   function macheWGWiderspruch() {
     const r = BescheidWG.pruefe(leseWG(), Rules);
     const t = Widerspruch.text({ art: 'wohngeld', absender: { name: $('wg-name').value.trim(), strasse: $('wg-anschrift').value.trim(), ort: $('wg-ort').value.trim() }, stelle: { name: $('wg-stelle').value.trim() }, bescheidDatum: $('wg-datum').value, zeichen: $('wg-az').value.trim(), heute: heute(), punkte: Widerspruch.punkteSGB2(r) });
     $('wg-wid-text').value = t; $('wg-wid-text').hidden = false; $('wg-wid-copy').hidden = false;
-    $('wg-frist').textContent = (r.gruende.length ? '' : 'Es wurde kein Grund gefunden; der Widerspruch hat noch keine Begründung. ') + ($('wg-datum').value ? fristText($('wg-datum').value, 'Widerspruch Wohngeldstelle') : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.');
+    $('wg-frist').textContent = (r.gruende.length ? '' : 'Es wurde kein Grund gefunden; der Widerspruch hat noch keine Begründung. ') + ($('wg-datum').value ? fristText($('wg-datum').value) : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.');
   }
 
   // ---------------- Bescheid Kinderzuschlag ----------------
@@ -346,18 +456,14 @@ Ergebnis: Pflegegrad 2`;
       h('p', {}, h('span', { class: 'big', text: r.posten.length ? (r.zuWenigImMonat > 0 ? `Vermutlich ${eur(r.zuWenigImMonat)} Kinderzuschlag im Monat zu wenig` : r.gruende.length ? 'Abweichung gefunden, bitte prüfen' : 'Keine Abweichung zu deinen Lasten gefunden') : `Nach SoLo: ${eur(q.kiz)} Kinderzuschlag im Monat` })),
       h('p', { class: 'small', text: `Nach SoLo: Bedarf der Eltern ${eur(q.bedarf)}, anzurechnendes Einkommen der Eltern ${eur(q.einkEltern)}, Kinderzuschlag ${eur(q.kiz)} (höchstens ${eur(q.max)} je Kind).` }));
     r.hinweise.forEach((t) => box.append(h('p', { class: 'note', text: t })));
-    if (r.posten.length) {
-      const tb = h('tbody', {}, r.posten.map((p) => h('tr', {}, h('td', {}, p.name), h('td', { class: 'z', text: eur(p.erwartet) }), h('td', { class: 'z', text: eur(p.bescheid) }), h('td', {}, h('span', { class: 'pill ' + p.wirkung, text: WIRK[p.wirkung] })))));
-      box.append(h('div', { class: 'tablewrap', tabindex: '0', role: 'region', 'aria-label': 'Vergleich Kinderzuschlag' }, h('table', {}, h('thead', {}, h('tr', {}, h('th', { text: 'Posten' }), h('th', { class: 'z', text: 'nach SoLo' }), h('th', { class: 'z', text: 'im Bescheid' }), h('th', { text: 'Bewertung' }))), tb)));
-    }
-    r.gruende.forEach((g) => box.append(h('p', { class: 'small' }, h('strong', { text: g.name + ': ' }), g.grund)));
+    if (r.posten.length) abweichungsKarten(box, r, 'Vergleich Kinderzuschlag');
     box.append(h('p', { class: 'small muted', text: r.grenzen }));
   }
   function macheKiZWiderspruch() {
     const r = BescheidKiZ.pruefe(leseKiZ(), Rules);
     const t = Widerspruch.text({ art: 'kiz', absender: { name: $('kz-name').value.trim(), strasse: $('kz-anschrift').value.trim(), ort: $('kz-ort').value.trim() }, stelle: { name: 'Familienkasse der Bundesagentur für Arbeit' }, bescheidDatum: $('kz-datum').value, zeichen: $('kz-kgnr').value.trim(), heute: heute(), punkte: Widerspruch.punkteSGB2(r) });
     $('kz-wid-text').value = t; $('kz-wid-text').hidden = false; $('kz-wid-copy').hidden = false;
-    $('kz-frist').textContent = (r.gruende.length ? '' : 'Es wurde kein Grund gefunden; der Widerspruch hat noch keine Begründung. ') + ($('kz-datum').value ? fristText($('kz-datum').value, 'Widerspruch Familienkasse') : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.');
+    $('kz-frist').textContent = (r.gruende.length ? '' : 'Es wurde kein Grund gefunden; der Widerspruch hat noch keine Begründung. ') + ($('kz-datum').value ? fristText($('kz-datum').value) : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.');
   }
 
   // ---------------- Nebenkosten ----------------
@@ -392,7 +498,7 @@ Ergebnis: Pflegegrad 2`;
     if (r.befunde.length) box.append(h('h3', { text: 'Was auffällt' }), h('ul', {}, r.befunde.map((b) => h('li', {}, h('span', { class: 'pill ' + (b.schwere === 'fehler' ? 'zuWenig' : 'pruefen'), text: b.schwere === 'fehler' ? 'Fehler' : 'prüfen' }), ' ', b.text))));
     else box.append(h('p', { text: 'Keine Auffälligkeiten nach den geprüften Regeln.' }));
     const tb = h('tbody', {}, r.posten.map((p) => h('tr', {}, h('td', {}, p.bez || '–', p.art ? h('span', { class: 'amt small muted', text: ' ' + p.art }) : null), h('td', { class: 'z', text: eur(p.anteil) }), h('td', {}, h('span', { class: 'pill ' + NKW[p.status][0], text: NKW[p.status][1] })))));
-    box.append(h('div', { class: 'tablewrap', tabindex: '0', role: 'region', 'aria-label': 'Posten mit Bewertung' }, h('table', {}, h('thead', {}, h('tr', {}, h('th', { text: 'Posten' }), h('th', { class: 'z', text: 'Anteil' }), h('th', { text: 'Bewertung' }))), tb)));
+    box.append(h('details', {}, h('summary', { text: 'Alle Posten mit Bewertung' }), h('div', { class: 'tablewrap', tabindex: '0', role: 'region', 'aria-label': 'Posten mit Bewertung' }, h('table', {}, h('thead', {}, h('tr', {}, h('th', { text: 'Posten' }), h('th', { class: 'z', text: 'Anteil' }), h('th', { text: 'Bewertung' }))), tb))));
     if (leist === 'sgb2' || leist === 'gsa') box.append(h('p', { class: 'note', text: r.ergebnis > 0 ? `Eine Nachzahlung muss in der Regel das ${leist === 'gsa' ? 'Sozialamt' : 'Jobcenter'} übernehmen, wenn die Miete angemessen ist. Den Antrag bitte sofort stellen, spätestens im Monat, in dem die Nachzahlung fällig ist. Strittige Posten erst mit dem Vermieter klären.` : `Ein Guthaben wird vom ${leist === 'gsa' ? 'Sozialamt' : 'Jobcenter'} im Monat nach der Gutschrift mit den Kosten der Unterkunft verrechnet (§ 22 Abs. 3 SGB II bzw. entsprechend im SGB XII). Bitte die Abrechnung dort vorlegen.` }));
     if (leist === 'wohngeld') box.append(h('p', { class: 'note', text: 'Steigen die Vorauszahlungen deutlich, kann ein Antrag auf Erhöhung des Wohngeldes sinnvoll sein. Die Wohngeldstelle prüft das.' }));
     box.append(h('p', { class: 'small muted', text: r.grenzen }));
@@ -400,14 +506,11 @@ Ergebnis: Pflegegrad 2`;
   function nkText(t, info) { $('nk-text').value = t; $('nk-text').hidden = false; $('nk-copy').hidden = false; $('nk-info').textContent = info; }
 
   // ---------------- Fristen ----------------
-  let frWert = null, erWert = null;
   function zeigeFristen() {
     const d = $('fr-datum').value, z = $('fr-zugang').value;
-    frWert = null; erWert = null;
-    if (d || z) { const f = Fristen.widerspruch(z ? { zugang: z } : { datum: d }); frWert = f.fristende; $('fr-erg').textContent = `Bekannt gegeben am ${de(f.bekanntgabe)}. Der Widerspruch muss spätestens am ${de(f.fristende)} bei der Stelle eingegangen sein. ${f.hinweis}`; } else $('fr-erg').textContent = '';
+    if (d || z) { const f = Fristen.widerspruch(z ? { zugang: z } : { datum: d }); $('fr-erg').textContent = `Bekannt gegeben am ${de(f.bekanntgabe)}. Der Widerspruch muss spätestens am ${de(f.fristende)} bei der Stelle eingegangen sein. ${f.hinweis}`; } else $('fr-erg').textContent = '';
     const e = $('er-ende').value;
-    if (e) { const r = Fristen.erinnerung({ leistung: $('er-leistung').value, ende: e }); erWert = { datum: r.erinnerungAm, titel: r.text.split('. ')[0].replace(/\.$/, '') }; $('er-erg').textContent = `Erinnerung am ${de(r.erinnerungAm)}: ${r.text} (${r.stelle})`; } else $('er-erg').textContent = '';
-    if ($('fr-merken')) { $('fr-merken').hidden = !(window.SoLoFristen && frWert); $('er-merken').hidden = !(window.SoLoFristen && erWert); }
+    if (e) { const r = Fristen.erinnerung({ leistung: $('er-leistung').value, ende: e }); $('er-erg').textContent = `Erinnerung am ${de(r.erinnerungAm)}: ${r.text} (${r.stelle})`; } else $('er-erg').textContent = '';
   }
 
   // ---------------- Lizenz ----------------
@@ -436,11 +539,106 @@ Ergebnis: Pflegegrad 2`;
   });
   $('pf-beispiel').addEventListener('click', () => { $('pf-alter').value = 82; $('pf-text').value = BEISPIEL_GUTACHTEN; $('pf-lesen').click(); });
   $('pf-leeren').addEventListener('click', () => { $('pf-form').reset(); $('pf-form2').reset(); $('pf-text').value = ''; $('pf-msg').textContent = ''; for (const el of document.querySelectorAll('#pf-module input')) { if (el.type === 'checkbox') el.checked = false; else el.value = ''; } zeigePflege(); });
-  $('pf-wid-plus').addEventListener('click', () => fuegeWiderspruchHinzu(null, null));
+  $('pf-wid-plus').addEventListener('click', () => fuegeWiderspruchHinzu(null, null, false));
   $('pf-wid-mach').addEventListener('click', machePflegeWiderspruch);
   for (const id of ['pf-art-w', 'pf-art-h']) $(id).addEventListener('change', zeigePfArt);
   $('pf-wid-copy').addEventListener('click', () => kopiere($('pf-wid-text'), $('pf-copy-msg')));
   zeigePflege();
+  // Wo steht das im Brief? Kurzer Hinweis unter jedem Feld mit Amtsbegriff, damit man den Wert auch ohne Vorwissen findet
+  const FELD_HILFE = {
+    'bs-b-regel': 'Im Berechnungsbogen bei „Regelbedarf“, je Person eine Zeile. Hier die Summe aller Personen.',
+    'bs-b-ae': 'Im Berechnungsbogen bei „Mehrbedarf“ für Alleinerziehende. Steht dort nichts, leer lassen.',
+    'bs-b-schw': 'Im Berechnungsbogen bei „Mehrbedarf“ für Schwangerschaft. Steht dort nichts, leer lassen.',
+    'bs-b-ww': 'Im Berechnungsbogen bei „Mehrbedarf“ für Warmwasser (wenn das Wasser mit Strom erwärmt wird). Steht dort nichts, leer lassen.',
+    'bs-b-kdu': 'Im Berechnungsbogen bei „Kosten der Unterkunft und Heizung“ (KdU): der Betrag, den das Jobcenter übernimmt.',
+    'bs-b-eink': 'Im Berechnungsbogen bei „zu berücksichtigendes Einkommen“, also nach Abzug der Freibeträge, ohne Kindergeld.',
+    'bs-b-kg': 'Im Berechnungsbogen: Kindergeld, das als Einkommen der Kinder abgezogen wird.',
+    'bs-b-zahl': 'Auf der ersten Seite: der Betrag, der jeden Monat überwiesen wird.',
+    'bs-bg': 'Oben im Brief, zum Beispiel 123A4567890 (auch „BG-Nummer“).',
+    'ga-b-regel': 'Im Berechnungsbogen bei „Regelbedarf“ bzw. „Regelsatz“, für alle Personen zusammen.',
+    'ga-b-g': 'Im Berechnungsbogen bei „Mehrbedarf“ wegen Merkzeichen G. Steht dort nichts, leer lassen.',
+    'ga-b-ww': 'Im Berechnungsbogen bei „Mehrbedarf“ für Warmwasser. Steht dort nichts, leer lassen.',
+    'ga-b-kdu': 'Im Berechnungsbogen bei „Kosten der Unterkunft und Heizung“: der Betrag, den das Amt übernimmt.',
+    'ga-b-eink': 'Im Berechnungsbogen bei „anzurechnendes Einkommen“, zum Beispiel die Rente nach Abzügen.',
+    'ga-b-zahl': 'Auf der ersten Seite: der Betrag, der jeden Monat überwiesen wird.',
+    'ga-az': 'Oben im Brief neben „Aktenzeichen“ oder „Geschäftszeichen“.',
+    'wg-b-miete': 'In der Berechnung des Bescheids bei „zu berücksichtigende Miete“ oder „Miete/Belastung“.',
+    'wg-b-eink': 'In der Berechnung bei „Gesamteinkommen“ (monatlich).',
+    'wg-b-wg': 'Auf der ersten Seite: das Wohngeld im Monat.',
+    'wg-az': 'Oben im Brief neben „Wohngeldnummer“ oder „Aktenzeichen“.',
+    'kz-b-bedarf': 'In der Berechnung des Bescheids bei „Bedarf der Eltern“ bzw. „elterlicher Bedarf“.',
+    'kz-b-eink': 'In der Berechnung bei „Einkommen der Eltern“.',
+    'kz-b-kiz': 'Auf der ersten Seite: der Kinderzuschlag im Monat für alle Kinder zusammen.',
+    'kz-kgnr': 'Oben im Brief, zum Beispiel 123FK456789. Steht auch auf jedem Brief zum Kindergeld.'
+  };
+  for (const [id, text] of Object.entries(FELD_HILFE)) {
+    const el = $(id); if (!el || el.dataset.hilfe) continue;
+    el.dataset.hilfe = '1'; const p = document.createElement('p'); p.className = 'small muted feld-hilfe'; p.id = id + '-hilfe'; p.textContent = text;
+    el.setAttribute('aria-describedby', p.id); el.insertAdjacentElement('afterend', p);
+  }
+  // Für die App: Gutachten-Prüfung mit den Antworten der eigenen Einschätzung füllen (Leistungsseite → „Brief prüfen“)
+  window.PruefpaketPflege = {
+    setze(g, art) {
+      setzePflege(g);
+      if (g.alterJahre != null) $('pf-alter').value = g.alterJahre;
+      if (g.alterMonate != null) $('pf-monate').value = g.alterMonate;
+      if (art === 'hoeher') $('pf-art-h').checked = true; else if (art === 'widerspruch') $('pf-art-w').checked = true;
+      zeigePfArt(); zeigePflege();
+    },
+    eigene(g) { eigen = g || null; zeigePflege(); }
+  };
+  // Für die App: erkannte Werte eines eingelesenen Briefs eintragen (erweiterungen/brief-lesen.js) und gelb markieren.
+  // hh = Haushalt aus „Leistungen“: { erwachsene: [{ alter, brutto, netto }], kinder: [alter], miete, heiz, stufe, alleinerziehend }
+  // Personen werden nur eingetragen, wenn dort noch nichts steht. Ergebnis: Zahl der übernommenen Werte aus dem Brief.
+  window.PruefpaketLesen = {
+    fuelle(art, r, hh) {
+      for (const el of document.querySelectorAll('.pp-erkannt')) el.classList.remove('pp-erkannt');
+      let n = 0;
+      const setze = (id, v) => { const el = $(id); if (!el || v == null || v === '') return; el.value = v; el.classList.add('pp-erkannt'); n++; };
+      const leer = (id) => !$(id) || $(id).value === '';
+      const fuellen = (id, v) => { if (leer(id) && v != null && v !== '' && v !== 0) $(id).value = v; };
+      hh = hh || { erwachsene: [], kinder: [] };
+      const erw = hh.erwachsene || [], kin = hh.kinder || [];
+      // Nur leere Zeilen (z. B. die erste, leere Person) dürfen durch den Haushalt ersetzt werden
+      const nurLeer = (tbody) => [...$(tbody).querySelectorAll('input[type="number"]')].every((el) => el.value === '');
+      if (art === 'jc' && erw.length && nurLeer('bs-personen')) {
+        $('bs-personen').replaceChildren();
+        erw.forEach((p) => personZeile('erw', { alter: p.alter, brutto: p.brutto, netto: p.netto }));
+        kin.forEach((a) => personZeile('kind', { alter: a }));
+        fuellen('bs-miete', hh.miete); fuellen('bs-heiz', hh.heiz);
+      }
+      if (art === 'sa') {
+        if (erw.length === 2) $('ga-zahl').value = '2';
+        fuellen('ga-miete', hh.miete); fuellen('ga-heiz', hh.heiz);
+      }
+      if (art === 'wg') {
+        fuellen('wg-n', erw.length + kin.length || ''); fuellen('wg-kalt', hh.miete);
+        if (hh.stufe && $('wg-stufe').querySelector(`option[value="${hh.stufe}"]`)) $('wg-stufe').value = hh.stufe;
+        if (hh.alleinerziehend) $('wg-ae').checked = true;
+        if (nurLeer('wg-mitglieder')) $('wg-mitglieder').replaceChildren();
+        if (!$('wg-mitglieder').children.length) erw.filter((p) => p.brutto).forEach((p) => wgZeile({ art: 'lohn', brutto: p.brutto }));
+      }
+      if (art === 'fk') {
+        if (erw.length === 2) $('kz-zahl').value = '2';
+        if (erw[0]) { fuellen('kz-b1', erw[0].brutto); fuellen('kz-n1', erw[0].netto); }
+        if (erw[1]) { fuellen('kz-b2', erw[1].brutto); fuellen('kz-n2', erw[1].netto); }
+        if (kin.length && nurLeer('kz-kinder')) $('kz-kinder').replaceChildren();
+        if (!$('kz-kinder').children.length) kin.forEach((a) => kzKind({ alter: a }));
+        fuellen('kz-wohn', hh.miete != null ? Math.round(((+hh.miete || 0) + (+hh.heiz || 0)) * 100) / 100 : '');
+      }
+      for (const [id, v] of Object.entries((r && r.felder) || {})) setze(id, v);
+      if (art === 'vm' && r && r.posten && r.posten.length) {
+        $('nk-posten').replaceChildren();
+        r.posten.forEach((p) => nkZeile(p));
+        for (const el of $('nk-posten').querySelectorAll('input[type="text"], input[type="number"]')) if (el.value !== '') el.classList.add('pp-erkannt');
+        n += r.posten.length;
+      }
+      const datumId = { jc: 'bs-datum', sa: 'ga-datum', wg: 'wg-datum', fk: 'kz-datum' }[art];
+      if (datumId && r && r.datum) setze(datumId, r.datum);
+      ({ jc: zeigeBescheid, sa: zeigeGSA, wg: zeigeWG, fk: zeigeKiZ, vm: zeigeNK }[art] || (() => {}))();
+      return n;
+    }
+  };
 
   $('bs-erw').addEventListener('click', () => { personZeile('erw'); zeigeBescheid(); });
   $('bs-kind').addEventListener('click', () => { personZeile('kind'); zeigeBescheid(); });
@@ -510,7 +708,6 @@ Ergebnis: Pflegegrad 2`;
   });
   $('nk-ew-mach').addEventListener('click', () => {
     const a = leseNK(), r = Nebenkosten.pruefe(a);
-    if (r.fristen && r.fristen.einwendungBis) merke('Einwände Nebenkostenabrechnung', r.fristen.einwendungBis);
     nkText(Nebenkosten.einwendungen({ absender: { name: $('nk-name').value.trim(), strasse: $('nk-anschrift').value.trim(), ort: $('nk-ort').value.trim() }, vermieter: { name: $('nk-verm').value.trim() }, von: a.von, bis: a.bis, heute: heute(), pruefenMit: $('nk-mitpruefen').checked }, r),
       r.fristen && r.fristen.einwendungBis ? `Einwände bitte bis spätestens ${de(r.fristen.einwendungBis)} schicken, am besten per Einwurf-Einschreiben.` : 'Einwände sind bis 12 Monate nach Erhalt der Abrechnung möglich.');
   });
@@ -522,11 +719,7 @@ Ergebnis: Pflegegrad 2`;
   $('nk-copy').addEventListener('click', () => kopiere($('nk-text'), $('nk-copy-msg')));
   nkZeile(); zeigeNK();
 
-  for (const id of ['fr-datum', 'fr-zugang', 'er-leistung', 'er-ende']) $(id).addEventListener('input', zeigeFristen);
-  if ($('fr-merken')) {
-    $('fr-merken').addEventListener('click', () => { if (frWert) { merke('Widerspruch einlegen', frWert, 'eigen'); $('fr-merken-msg').textContent = 'In deine Fristen übernommen.'; } });
-    $('er-merken').addEventListener('click', () => { if (erWert) { merke(erWert.titel, erWert.datum, 'eigen'); $('fr-merken-msg').textContent = 'In deine Fristen übernommen.'; } });
-  }
+  if ($('fr-datum')) for (const id of ['fr-datum', 'fr-zugang', 'er-leistung', 'er-ende']) $(id).addEventListener('input', zeigeFristen); // nur in der Vorschau
   // Spaltennamen an jede Zelle hängen (für die Blockansicht auf schmalen Bildschirmen); Tabellen entstehen bei jeder Eingabe neu
   function beschrifte() {
     for (const t of document.querySelectorAll('section[id^="p-"] .tablewrap table')) {

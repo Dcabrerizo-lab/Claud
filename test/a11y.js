@@ -1,4 +1,4 @@
-// Barrierefreiheit (axe-core, WCAG 2.2 AA + Best Practice; Tippflächen mind. 44 px nach Apple/Google): Startseite, Brief prüfen, Fristen, ausführliche Version (leer, mit Beispiel, Arabisch), Antragsmappe, einfache Version
+// Barrierefreiheit (axe-core, WCAG 2.2 AA + Best Practice; Tippflächen mind. 44 px nach Apple/Google): Startseite, Brief prüfen, ausführliche Version (leer, mit Beispiel, Arabisch), Antragsmappe, einfache Version
 const { chromium } = require('playwright');
 const axePfad = require.resolve('axe-core/axe.min.js');
 const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html');
@@ -28,12 +28,18 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
     };
     await pruefe('Startseite');
     await p.click('#goBriefe'); await pruefe('Brief prüfen');
-    await p.click('#brief-pk'); await p.click('#pf-beispiel'); await pruefe('Brief prüfen: Pflegegutachten');
+    await p.click('#brief-pk'); await pruefe('Brief prüfen: Wahl scannen, einfügen, selbst eingeben'); await p.click('#elSelbst'); await p.evaluate(() => document.getElementById('pf-beispiel').click()); await pruefe('Brief prüfen: Pflegegutachten');
     await p.click('#briefZurueck'); await p.click('#brief-vm'); await pruefe('Brief prüfen: Nebenkosten'); await p.click('#briefZurueck');
-    await p.click('#appnav [data-ansicht=fristen]'); await p.click('#fristNeu summary');
-    await p.fill('#fristTitel', 'Widerspruch'); await p.fill('#fristDatum', '2099-01-15'); await p.click('#fristAdd'); await pruefe('Fristen mit Eintrag');
     await p.click('#appnav [data-ansicht=leistungen]');
     await pruefe('Leistungen (leer)');
+    await p.click('#paStart'); await pruefe('Pflegegrad: Alter');
+    await p.fill('#pa-jahre', '80'); await p.click('text=Weiter ➜'); await p.click('#pflegeAssist .es-btn >> nth=0');
+    await pruefe('Pflegegrad: Frage mit Erklärung');
+    for (let i = 0; i < 6; i++) { const q = await p.textContent('#pa-q'); if (/Wahrscheinlich/.test(q)) break; await p.click(/Probleme|Hilfe|Verhalten/.test(q) ? '#pflegeAssist .es-btn >> nth=1' : '#pflegeAssist .es-btn >> nth=2'); }
+    for (let i = 0; i < 40 && !/Wahrscheinlich/.test(await p.textContent('#pa-q')); i++) await p.click('#pflegeAssist .es-btn >> nth=1');
+    await pruefe('Pflegegrad: Ergebnis');
+    await p.click('text=Was bedeuten diese Leistungen?'); await pruefe('Erklärseite Pflege'); await p.click('#piZurueck');
+    await p.click('text=Zurück zu den Leistungen'); await p.evaluate(() => { localStorage.removeItem('lotse.pflegecheck'); });
     await p.click('#p1'); await pruefe('Beispiel 1 mit Ergebnis');
     await p.selectOption('#lang', 'ar'); await pruefe('Arabisch'); await p.selectOption('#lang', 'de');
     await p.click('#mappeMake'); await pruefe('Antragsmappe'); await p.click('#mappeClose');

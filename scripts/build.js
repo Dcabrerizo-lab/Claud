@@ -73,9 +73,8 @@ function pruefpaket() {
   const stil = html.match(/<style>([\s\S]*?)<\/style>/);
   if (!stil) throw new Error('Prüfpaket: Stile fehlen in vorschau.html');
   const teile = PP_ABSCHNITTE.map((id) => ppAbschnitt(html, id)).join('\n');
-  const fristen = ppAbschnitt(html, 'p-fristen').replace(' hidden', '');
-  const js = ['pflege.js', 'pflege-import.js', 'bescheid-sgb2.js', 'bescheid-gsa.js', 'bescheid-wg.js', 'bescheid-kiz.js', 'fristen.js', 'widerspruch.js', 'nebenkosten.js', 'vorschau.js'].map(ERW).join('\n');
-  return { teile, fristen, css: ppStile(stil[1]), js };
+  const js = ['pflege.js', 'pflege-fragen.js', 'pflege-assistent.js', 'brief-lesen.js', 'pflege-import.js', 'bescheid-sgb2.js', 'bescheid-gsa.js', 'bescheid-wg.js', 'bescheid-kiz.js', 'fristen.js', 'widerspruch.js', 'nebenkosten.js', 'vorschau.js'].map(ERW).join('\n');
+  return { teile, css: ppStile(stil[1]), js };
 }
 
 // opts.native: Store-App (Android/iOS) statt Web
@@ -96,11 +95,10 @@ function render(opts = {}) {
     .replace('/*BEHOERDENDATA*/null', () => (opts.plz === false ? 'null' : behoerdenData()))
     .replace('/*FORMULARE*/\n', () => parts.formulare)
     .replace('<!--PRUEFPAKET-->', () => pp.teile)
-    .replace('<!--PRUEFFRISTEN-->', () => pp.fristen)
     .replace('/*PPSTIL*/\n', () => pp.css)
     .replace('/*PRUEFPAKET*/\n', () => pp.js)
     .replace('/*APP*/\n', () => parts.app.replace("'/*VERSION*/'", () => JSON.stringify(require(path.join(ROOT, 'package.json')).version)));
-  const left = html.match(/\/\*(RULES|I18N|FMT|PLZ|PLZDATA|BEHOERDEN|BEHOERDENDATA|FORMULARE|APP|PPSTIL|PRUEFPAKET)\*\/|<!--PRUEF(PAKET|FRISTEN)-->/);
+  const left = html.match(/\/\*(RULES|I18N|FMT|PLZ|PLZDATA|BEHOERDEN|BEHOERDENDATA|FORMULARE|APP|PPSTIL|PRUEFPAKET)\*\/|<!--PRUEFPAKET-->/);
   if (left) throw new Error('Platzhalter nicht ersetzt: ' + left[0]);
   return { html, i18n: parts.i18n };
 }

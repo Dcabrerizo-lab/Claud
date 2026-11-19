@@ -32,7 +32,7 @@ const MOCK = () => {
       },
       Clipboard: { write: log('Clipboard.write') },
       Browser: { open: log('Browser.open') },
-      Camera: { getPhoto: (o) => { calls.push(['Camera.getPhoto', o]); return Promise.resolve({ path: 'file:///cache/foto.jpg', webPath: 'http://localhost/_capacitor_file_/cache/foto.jpg' }); } },
+      Camera: { getPhoto: (o) => { calls.push(['Camera.getPhoto', o]); return Promise.resolve({ path: 'file:///cache/foto.jpg', webPath: location.origin + '/_capacitor_file_/cache/foto.jpg' }); } },
       PdfAusgabe: {
         drucken: (o) => { calls.push(['PdfAusgabe.drucken', { name: o.name, size: o.data.length }]); window.__druck = o.data; return Promise.resolve(); },
         speichern: (o) => { calls.push(['PdfAusgabe.speichern', { name: o.name, size: o.data.length }]); window.__gespeichert = o.data; return Promise.resolve({ ort: 'Download', name: o.name }); }
@@ -43,7 +43,10 @@ const MOCK = () => {
 };
 
 (async () => {
+  // Wie Capacitor: das aufgenommene Foto liegt unter /_capacitor_file_/ auf demselben Ursprung wie die App (hier ein kleines Testbild)
+  const FOTO = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', 'base64');
   const server = http.createServer((req, res) => {
+    if (req.url.startsWith('/_capacitor_file_/')) { res.writeHead(200, { 'Content-Type': 'image/png' }); res.end(FOTO); return; }
     const f = path.join(WWW, decodeURIComponent(req.url.split('?')[0]).replace(/^\/$/, '/index.html'));
     if (!f.startsWith(WWW) || !fs.existsSync(f)) { res.writeHead(404); res.end(); return; }
     res.writeHead(200, { 'Content-Type': TYPES[path.extname(f)] || 'application/octet-stream' });
@@ -67,13 +70,17 @@ const MOCK = () => {
   await p.goto(origin + '/index.html');
   await p.waitForTimeout(400);
   ok('Keine Skriptfehler beim Start', errs.length === 0, errs.join('|'));
-  ok('Start: Startseite mit den vier Bereichen', await p.isVisible('#v-start') && (await p.locator('#appnav button').count()) === 4);
-  // Fristen über den nativen Speicher (Preferences), Prüfpaket läuft unter der CSP der App
-  await p.click('#appnav [data-ansicht=briefe]'); await p.click('#brief-jc'); await p.click('#p-bescheid >> text=Beispiel laden');
+  ok('Start: Startseite mit den drei Bereichen', await p.isVisible('#v-start') && (await p.locator('#appnav button').count()) === 3);
+  ok('Alte Fristen werden über Preferences gelöscht', (await calls('Preferences.remove')).some((c) => c.key === 'lotse.fristen'));
+  // Prüfpaket läuft unter der CSP der App
+  await p.click('#appnav [data-ansicht=briefe]'); await p.click('#brief-jc'); await p.click('#elSelbst'); await p.evaluate(() => document.querySelector('#p-bescheid [id$="-beispiel"]').click());
   ok('Brief prüfen rechnet in der App', ((await p.textContent('#p-bescheid')) || '').includes('€'));
-  await p.click('#appnav [data-ansicht=fristen]'); await p.click('#fristNeu summary'); await p.fill('#fristTitel', 'Test'); await p.fill('#fristDatum', '2099-01-01'); await p.click('#fristAdd');
-  ok('Fristen werden über Preferences gespeichert', (await calls('Preferences.set')).some((c) => c.key === 'lotse.fristen' && c.value.includes('Test')));
-  await p.click('#fristListe .frist button');
+  // Widerspruch als PDF teilen (wie die Antragsmappe), mit Hinweis zur Abgabe
+  await p.click('#bs-wid-mach'); await p.waitForTimeout(200);
+  ok('Widerspruch: Knöpfe und Hinweis zur Abgabe sichtbar', await p.isVisible('#p-bescheid .schreiben-aus [data-aus="teilen"]') && /unterschreiben/.test(await p.textContent('#p-bescheid .schreiben-aus')));
+  await p.click('#p-bescheid .schreiben-aus [data-aus="teilen"]'); await p.waitForTimeout(2500);
+  ok('Widerspruch: PDF geschrieben und geteilt', (await calls('Filesystem.writeFile')).some((o) => o.path === 'Widerspruch-Jobcenter.pdf') && (await calls('Share.share')).length >= 1);
+  ok('Keine Fristen über Preferences gespeichert', !(await calls('Preferences.set')).some((c) => c.key === 'lotse.fristen'));
   await p.click('#appnav [data-ansicht=leistungen]');
   ok('Gespeicherte Daten werden über Preferences gelesen', (await calls('Preferences.get')).length > 0);
   ok('Erster Start: Anleitung statt Beispielwerte', (await p.locator('#cards .startcard').count()) === 1 && (await p.inputValue('#ek1Brutto')) === '');
@@ -81,18 +88,52 @@ const MOCK = () => {
   ok(KARTEN.length + ' Karten', (await p.locator('#cards .card').count()) === KARTEN.length);
   ok('Schrift lokal geladen', await p.evaluate(async () => { await document.fonts.ready; return [...document.fonts].some((f) => f.status === 'loaded'); }));
   ok('Hinweis zur Web-Version im Impressum ausgeblendet', await p.evaluate(() => { document.getElementById('legalBtn').click(); const h = document.getElementById('legalWeb').hidden; document.getElementById('legalClose').click(); return h; }));
-  ok('Web-Scan (Tesseract/Claude) nicht enthalten, Kamera-Scan vorhanden', (await p.locator('#sc-local').count()) === 0 && (await p.locator('#sc-claudeBox').count()) === 0 && (await p.isVisible('#sc-take')));
+  ok('Web-Scan (Tesseract/Claude, Dateifeld) nicht enthalten; Kamera-Scan und Text einfügen vorhanden', (await p.locator('#sc-file').count()) === 0 && (await p.locator('#sc-claudeBox').count()) === 0 && (await p.locator('#sc-take').count()) === 1 && (await p.locator('#sc-text').count()) === 1 && (await p.locator('#sc-local').count()) === 1);
   for (const l of ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro']) { await p.selectOption('#lang', l); ok('Sprache ' + l, (await p.locator('#cards .card').count()) === KARTEN.length); }
   await p.selectOption('#lang', 'de');
 
   // Foto-Scan: Kamera -> Texterkennung -> Felder, Foto wird danach gelöscht
   await p.click('#p1'); await p.fill('#p-name', 'Maria Muster');
-  await p.click('#sc-take');
+  // „Brief prüfen“: die Übersicht hat kein Scannen; in der Kachel Antragsformular: Kamera → Texterkennung → Felder erklärt
+  await p.click('#appnav [data-ansicht=briefe]'); if (await p.isVisible('#briefZurueck')) await p.click('#briefZurueck');
+  ok('Übersicht „Brief prüfen“: kein Scannen oder Einfügen', !(await p.isVisible('#einlesen')));
+  await p.click('#brief-af'); await p.click('#sc-take');
+  await p.waitForSelector('#scan:not([hidden])', { timeout: 5000 }).catch(() => {});
+  ok('Kachel Antragsformular offen', await p.isVisible('#scan'));
   await p.waitForSelector('#sc-out .sc-row', { timeout: 5000 }).catch(() => {});
   ok('Scan: Kamera ohne Galerie-Speicherung aufgerufen', (await calls('Camera.getPhoto')).some((o) => o.saveToGallery === false && o.source === 'CAMERA'));
   ok('Scan: Texterkennung mit Fotopfad', (await calls('TextRecognition.recognize')).some((o) => /foto\.jpg$/.test(o.path)));
   ok('Scan: Felder erkannt, Name vorausgefüllt', (await p.locator('#sc-out .sc-row').count()) >= 3 && /Maria Muster/.test(await p.textContent('#sc-out')));
+  ok('Scan: Vorschau des Fotos über der Liste (nur im Arbeitsspeicher)', (await p.locator('#sc-out .sc-vorschau img').count()) === 1 && /^blob:/.test(await p.getAttribute('#sc-out .sc-vorschau img', 'src')));
   ok('Scan: Foto danach gelöscht', (await calls('Filesystem.deleteFile')).some((o) => /foto\.jpg$/.test(o.path)));
+  // Eingescanntes PDF (nur Bild, kein Text): pdf.js aus der App (offline) macht ein Seitenbild, die Texterkennung des Geräts liest es,
+  // das Seitenbild wird danach aus dem Cache gelöscht
+  {
+    const { gescannt, digital } = require('./hilfe-pdf');
+    const bildSeite = await ctx.newPage();
+    await bildSeite.setContent('<div style="font:28px Arial;padding:40px;background:#fff;width:800px">Antrag auf Wohngeld<br>Name, Vorname<br>Geburtsdatum<br>IBAN</div>');
+    const png = await bildSeite.screenshot(); await bildSeite.close();
+    const tmp = fs.mkdtempSync(path.join(require('os').tmpdir(), 'solo-app-pdf-'));
+    fs.writeFileSync(path.join(tmp, 'scan.pdf'), await gescannt(png));
+    fs.writeFileSync(path.join(tmp, 'digital.pdf'), await digital(['Antrag auf Wohngeld', 'Familienname, Vorname', 'Gesamtmiete monatlich', 'Ort, Datum, Unterschrift']));
+    const vorRec = (await calls('TextRecognition.recognize')).length;
+    await p.setInputFiles('#sc-pdf', path.join(tmp, 'scan.pdf'));
+    await p.waitForFunction((v) => (window.__calls || []).filter((c) => c[0] === 'TextRecognition.recognize').length > v || /nicht lesen/.test(document.getElementById('sc-msg').textContent), vorRec, { timeout: 20000 }).catch(() => {});
+    await p.waitForTimeout(300);
+    const rec = (await calls('TextRecognition.recognize')).slice(vorRec);
+    ok('Eingescanntes PDF: Seite als Bild an die Texterkennung des Geräts', rec.length === 1 && /solo-pdfseite-\d+\.jpg$/.test(rec[0].path), { rec, msg: await p.textContent('#sc-msg') });
+    ok('Eingescanntes PDF: Seitenbild danach gelöscht', (await calls('Filesystem.deleteFile')).some((o) => /^solo-pdfseite-/.test(o.path)));
+    ok('Eingescanntes PDF: Felder erklärt', /Erkannt: Antrag auf Wohngeld/.test(await p.textContent('#sc-out')));
+    await p.setInputFiles('#sc-pdf', path.join(tmp, 'digital.pdf')); await p.waitForTimeout(1500);
+    ok('Digitales PDF in der App: Text direkt gelesen, keine Texterkennung nötig', (await calls('TextRecognition.recognize')).length === vorRec + 1 && /Gesamtmiete monatlich/.test(await p.textContent('#sc-out')));
+    fs.rmSync(tmp, { recursive: true, force: true });
+  }
+  // Direkt in der Kachel: eigener Kamera-Knopf
+  const vorher = (await calls('Camera.getPhoto')).length;
+  await p.click('#sc-take'); await p.waitForTimeout(300);
+  ok('Kachel Antragsformular: eigener Kamera-Knopf', (await calls('Camera.getPhoto')).length === vorher + 1);
+  await p.click('#briefZurueck'); await p.click('#appnav [data-ansicht=leistungen]');
+  ok('Leistungsseite: keine Kamera und kein Formular-Hinweis', !(await p.isVisible('#sc-take')) && (await p.locator('#scanVerweis').count()) === 0);
 
   // Wohnort: PLZ -> Mietenstufe und zuständige Stelle mit Anschrift (offline)
   ok('Ohne PLZ: Hinweis auf die Postleitzahl in der Wohngeld-Karte', /Postleitzahl/.test(await p.textContent('#c-wohngeld')));
@@ -112,8 +153,8 @@ const MOCK = () => {
   ok('Knöpfe einzeln: PDF teilen, kein doppelter Knopf „Teilen oder speichern“', (await p.textContent('#mappePrint')).includes('PDF') && !(await p.isVisible('#mappeShare')));
   ok('Keine Doppelbeschriftung „oder“ auf den Mappe-Knöpfen', !(await p.evaluate(() => [...document.querySelectorAll('#mappe .btns button')].filter((b) => !b.hidden).some((b) => / oder | or /.test(b.textContent)))));
   await p.click('#mappePrint');
-  await p.waitForFunction(() => window.__calls.some((c) => c[0] === 'Share.share' && c[1].files), null, { timeout: 15000 }).catch(() => {});
-  const shared = (await calls('Share.share')).find((o) => o.files);
+  await p.waitForFunction(() => window.__calls.some((c) => c[0] === 'Share.share' && c[1].files && /Antragsmappe/.test(c[1].files[0])), null, { timeout: 15000 }).catch(() => {});
+  const shared = (await calls('Share.share')).find((o) => o.files && /Antragsmappe/.test(o.files[0]));
   ok('PDF wird erzeugt, gespeichert und geteilt', !!shared && /Antragsmappe\.pdf$/.test(shared.files[0]), JSON.stringify(await p.evaluate(() => window.__calls.slice(-4))) + ' ' + (await p.textContent('#copyMsg')));
   const b64 = await p.evaluate(() => window.__pdf || '');
   if (b64) {

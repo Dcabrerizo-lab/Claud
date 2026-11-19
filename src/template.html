@@ -68,7 +68,6 @@
   .es-bar span { display: block; height: 100%; background: var(--accent); }
   .es-q { font-size: 1.5em; line-height: 1.25; margin: 6px 0 10px; outline: none; }
   .es-h { color: var(--muted); margin-bottom: 14px; }
-  .es-vor { font: inherit; font-size: 0.9em; background: none; border: 1px solid var(--line); border-radius: 99px; padding: 8px 14px; margin-bottom: 16px; cursor: pointer; color: var(--ink); min-height: 44px; }
   .es-wahl { display: grid; gap: 12px; }
   .es-wahl.es-klein { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
   .es-btn { font: inherit; display: flex; align-items: center; gap: 14px; width: 100%; min-height: 64px; padding: 12px 18px; text-align: start;
@@ -95,6 +94,22 @@
   .es-wo { font-size: 0.9em; color: var(--muted); margin-top: 8px; }
   .es-sub { margin: 20px 0 8px; }
   .es-liste { padding-inline-start: 1.2em; }
+  /* Pflegegrad-Einschätzung: Frage ganz oben, eine Spalte, Zurück oben, Links unten */
+  .app[data-ansicht="pflege"] .notices, .app[data-ansicht="pflege"] .first { display: none !important; }
+  /* Kopf (Logo, Sprache) in der Einschätzung und in einer geöffneten Kachel nur optisch ausblenden: Screenreader behalten die Hauptüberschrift */
+  .app[data-ansicht="pflege"] .top, .app.brief-offen .top { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; margin: 0; padding: 0; }
+  .pa-kopf { display: grid; gap: 4px; }
+  .pa-zeile { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 44px; }
+  .pa-kopf .pa-zur { padding: 8px 0; font-weight: 700; text-decoration: none; }
+  .pa-wo { font-weight: 700; color: var(--ink); }
+  .pa-unten { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 20px; margin-top: 18px; }
+  .pa-checks { display: grid; gap: 8px; }
+  .pa-check { border: 2px solid var(--line); border-radius: 14px; padding: 12px 14px; background: var(--surface); align-items: center; min-height: 56px; }
+  .pa-check:has(input:checked) { border-color: var(--accent); }
+  .pa-sogehts ol { margin: 4px 0 8px; display: grid; gap: 4px; }
+  .pa-weiter { margin: 18px 0 8px; }
+  .pa-links { list-style: none; padding: 0; margin: 4px 0 16px; display: grid; }
+  .pa-links li .linkbtn { text-decoration: none; font-weight: 700; padding: 10px 0; }
   input.kurz { max-width: 9em; }
   .legende { font-size: 0.85em; color: var(--muted); margin: -4px 0 10px; }
   .info { font-size: 0.85em; background: var(--surface); border-left: 3px solid var(--accent); padding: 6px 10px; margin: 6px 0 0; }
@@ -229,9 +244,46 @@
   .overview a.ja .m { color: var(--ok); }
   .overview a.vielleicht .m { color: var(--warn); }
   .card { scroll-margin-top: 12px; }
+  /* Ergebniskarten: zuerst eine Zeile, aufklappbar */
+  .card.auf { padding: 0; gap: 0; }
+  .card.auf > details.karte { border-top: 0; padding: 0; }
+  .card.auf > details.karte > summary { display: grid; gap: 6px; padding: 16px 18px; min-height: 44px; color: var(--ink); font-weight: 400; cursor: pointer; list-style: none; }
+  .card.auf > details.karte > summary::-webkit-details-marker { display: none; }
+  .card.auf > details.karte > summary .head2 { color: var(--muted); font-weight: 600; }
+  .karte-mehr::after { content: attr(data-mehr) " ▾"; color: var(--accent); font-weight: 700; font-size: .9em; }
+  details.karte[open] .karte-mehr::after, details.gutwissen[open] .karte-mehr::after { content: attr(data-weniger) " ▴"; }
+  .card.auf > details.karte > :not(summary) { margin: 0 18px; }
+  .card.auf > details.karte > :last-child { margin-bottom: 16px; }
+  .card.auf > details.karte[open] > summary { padding-bottom: 8px; }
+  .card.auf .body, .card.auf .zust { margin-bottom: 10px; }
+  /* Zwei Wege: Grundsicherungsgeld oder Wohngeld und Kinderzuschlag */
+  .zweiwege { background: var(--surface); border: 2px solid var(--accent); border-radius: 12px; padding: 16px 18px; display: grid; gap: 10px; margin-bottom: 16px; }
+  .ww-wege { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
+  .ww-weg { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; gap: 6px; align-content: start; }
+  .ww-weg h4 { margin: 0; font-size: 1em; }
+  .ww-l { display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 44px; color: var(--ink); text-decoration: none; border-top: 1px dashed var(--line); padding-top: 6px; }
+  .ww-l > span:first-child { text-decoration: underline; text-decoration-color: var(--accent); }
+  .ww-regel { margin: 0; }
+  .ww-tun { margin: 0; background: var(--ok-bg); color: var(--ink); border-radius: 8px; padding: 8px 12px; }
+  .karte-hinweis { background: var(--na-bg); color: var(--ink); border-radius: 8px; padding: 8px 12px; margin: 8px 0 0; }
+  .gutwissen { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 4px 18px; }
+  .gutwissen > summary { min-height: 48px; color: var(--ink); display: grid; gap: 4px; padding: 12px 0; list-style: none; cursor: pointer; }
+  .gutwissen > summary::-webkit-details-marker { display: none; }
+  .gw-titel { font-weight: 700; }
+  .gutwissen ul { margin: 0 0 12px; padding-inline-start: 20px; display: grid; gap: 8px; }
+  #druckBrief { display: none; }
+  @media print {
+    html.druckt-brief body * { visibility: hidden !important; }
+    html.druckt-brief #druckBrief, html.druckt-brief #druckBrief * { visibility: visible !important; }
+    html.druckt-brief #druckBrief { display: block; position: absolute; inset: 0 auto auto 0; width: 100%; white-space: pre-wrap; font: 11pt/1.5 Georgia, 'Times New Roman', serif; color: #000; background: #fff; padding: 0; }
+  }
+  .schreiben-aus { display: grid; gap: 8px; margin-top: 8px; }
+  .schreiben-hinweis { margin: 0; }
   .neinbox { border: 1px dashed var(--line); border-radius: 10px; padding: 10px 14px; display: grid; gap: 12px; }
   .neinbox > summary { color: var(--muted); }
   .neinbox[open] > summary { margin-bottom: 8px; }
+  .spezbox { border-top: 1px dashed var(--line); padding-top: 10px; display: grid; gap: 12px; }
+  .spezbox > summary { color: var(--muted); min-height: 44px; display: flex; align-items: center; cursor: pointer; }
 
   .together { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 10px; }
   .together ul { margin: 0; padding-inline-start: 20px; display: grid; gap: 8px; }
@@ -263,6 +315,33 @@
   .sc-val bdi { background: var(--bg); border-radius: 6px; padding: 4px 8px; user-select: all; overflow-wrap: anywhere; }
   .sc-val .btn { min-height: 36px; padding: 0 12px; font-size: 0.9em; }
   .sc-tag { font-size: 0.8em; color: var(--muted); }
+  #sc-file.vh, #sc-pdf.vh { inset-inline-start: 0; top: 0; }
+  .sc-wahl { position: relative; display: grid; gap: 10px; }
+  .sc-wahl .sc-foto { justify-content: flex-start; width: 100%; min-height: 52px; }
+  .sc-foto { gap: 8px; }
+  .sc-row:not(.sc-mit) { padding: 6px 12px; gap: 0; }
+  .sc-row:not(.sc-mit) .sc-erkl > summary { min-height: 36px; }
+  .sc-vorschau { display: grid; gap: 6px; margin-bottom: 12px; }
+  .sc-bilder { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+  .sc-bild { border: 1px solid var(--line); border-radius: 8px; padding: 0; background: #fff; cursor: zoom-in; flex: none; width: 92px; min-height: 44px; }
+  .sc-bild img { display: block; width: 100%; border-radius: 8px; }
+  .sc-bild.gross { width: 100%; cursor: zoom-out; }
+  .sc-kopie { min-height: 36px; padding: 0 12px; font-size: .85em; }
+  .sc-kopiert { margin: 0; }
+  .sc-kopiert:empty { display: none; }
+  .sc-teil { margin: 16px 0 6px; font-size: 1rem; }
+  .sc-zahl { font-weight: 700; }
+  .sc-erkl { border-top: 0; padding-top: 0; }
+  .sc-erkl > summary { min-height: 40px; font-size: .92em; }
+  .sc-erkl p { margin: 0 0 6px; color: var(--muted); }
+  .sc-hak { padding: 4px 0; font-weight: 700; }
+  .sc-hak:has(input:checked) .sc-lab { text-decoration: line-through; color: var(--muted); }
+  #sc-pdf:focus-visible + .sc-foto { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .sc-foto { justify-content: center; text-align: center; display: inline-flex; align-items: center; min-height: 56px; cursor: pointer; }
+  #sc-file:focus-visible + .sc-foto { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .sc-titel { font-weight: 700; }
+  .sc-titel span { color: var(--muted); font-weight: 400; }
+  .sc-labs { margin: 0; padding-inline-start: 1.1em; display: grid; gap: 2px; }
 
   .rules { background: transparent; border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px; }
   .rules details { border-top: 0; padding-top: 0; }
@@ -312,8 +391,8 @@
   }
   @media (min-width: 900px) { .jump { display: none; } .shell { padding-bottom: 40px; } }
 
-  /* Bereiche (Start, Leistungen, Brief prüfen, Fristen) mit Leiste unten; auf breiten Bildschirmen als Reiter unter dem Kopf */
-  .appnav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; display: grid; grid-template-columns: repeat(4, 1fr);
+  /* Bereiche (Start, Leistungen, Brief prüfen) mit Leiste unten; auf breiten Bildschirmen als Reiter unter dem Kopf */
+  .appnav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; display: grid; grid-template-columns: repeat(3, 1fr);
     background: var(--surface); border-top: 1px solid var(--line);
     padding: 4px max(6px, env(safe-area-inset-right, 0px)) calc(4px + env(safe-area-inset-bottom, 0px)) max(6px, env(safe-area-inset-left, 0px)); }
   .appnav button { position: relative; isolation: isolate; border: 0; background: transparent; color: var(--muted); font: inherit; font-size: 0.78rem; font-weight: 700;
@@ -321,11 +400,10 @@
   .appnav svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
   .appnav button[aria-current="page"] { color: var(--accent); }
   .appnav button[aria-current="page"]::before { content: ""; position: absolute; top: 3px; left: 50%; width: 46px; height: 30px; transform: translateX(-50%); border-radius: 99px; background: color-mix(in srgb, var(--accent) 14%, transparent); z-index: -1; }
-  .nav-punkt { position: absolute; top: 6px; left: calc(50% + 8px); width: 9px; height: 9px; border-radius: 9px; background: var(--bad); }
   .shell { padding-bottom: 150px; }
   .jump { bottom: calc(64px + env(safe-area-inset-bottom, 0px)); }
   @media (min-width: 900px) {
-    .appnav { position: static; max-width: 1180px; margin: 0 auto; grid-template-columns: repeat(4, auto); justify-content: start; gap: 8px; background: transparent; border: 0; padding: 0 max(16px, env(safe-area-inset-left, 0px)); }
+    .appnav { position: static; max-width: 1180px; margin: 0 auto; grid-template-columns: repeat(3, auto); justify-content: start; gap: 8px; background: transparent; border: 0; padding: 0 max(16px, env(safe-area-inset-left, 0px)); }
     .appnav button { flex-direction: row; gap: 8px; font-size: 1rem; padding: 8px 16px; border-radius: 999px; min-height: 44px; }
     .appnav button[aria-current="page"] { background: color-mix(in srgb, var(--accent) 14%, transparent); }
     .appnav button[aria-current="page"]::before { display: none; }
@@ -347,17 +425,6 @@
   .kachel-sym { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent); }
   .kachel b { font-size: 1.02em; line-height: 1.25; }
   .kachel span.k-t { color: var(--muted); font-size: .88em; line-height: 1.3; }
-  .frist { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); margin: 10px 0; }
-  .frist.nah { background: var(--warn-bg); border-color: transparent; }
-  .frist.vorbei { background: var(--bad-bg); border-color: transparent; }
-  .frist-tage { flex: none; width: 58px; height: 58px; border-radius: 14px; display: grid; place-items: center; text-align: center; background: var(--surface); font-weight: 800; font-size: 1.3em; line-height: 1.05; color: var(--accent); }
-  .frist.nah .frist-tage { color: var(--warn); } .frist.vorbei .frist-tage { color: var(--bad); }
-  .frist-tage small { display: block; font-size: .55em; font-weight: 600; color: var(--muted); }
-  .frist-txt { flex: 1; min-width: 0; }
-  .frist-txt b { display: block; }
-  .frist button { flex: none; }
-  .fristform { display: grid; gap: 12px; margin-top: 12px; }
-  #fristNeu, #fristRechner { margin-inline: 0; } #fristRechner { margin-top: 12px; } #fristDatum { max-width: 14em; }
 
   /* Antragsmappe: ersetzt die Seite, ist druckbar */
   #mappe { display: grid; gap: 20px; }
@@ -443,7 +510,66 @@
   /* Brief prüfen: Prüfpaket (Stile aus erweiterungen/vorschau.html, auf .pp beschränkt) */
   .pp-kopf { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 0 0 14px; }
   .pp-kopf .btn { flex: none; }
+  /* Kachel geöffnet: erst die Wahl (scannen, einfügen, selbst eingeben), dann das Formular. Das eigene Textfeld des Pflegegutachtens
+     entfällt in der App, weil „Text einfügen“ oben dasselbe tut. */
+  #checkBox .pp-teil.pp-zu > :not(:first-child) { display: none !important; }
+  #checkBox label[for="pf-text"], #checkBox #pf-text, #checkBox #pf-lesen, #checkBox #pf-beispiel { display: none !important; }
+  #checkBox .pp-zu #pf-leeren, #checkBox .pp-zu #pf-msg { display: none !important; }
+  #checkBox .card > .einlesen { margin-top: 12px; padding: 0; box-shadow: none; background: transparent; }
+  #checkBox [id$="-beispiel"] { display: none !important; }
+  #checkBox .pp-zu > .card:first-child > .btns, #checkBox .pp-zu > .card:first-child > .msg { display: none !important; }
+  #checkBox .pp-zu .einlesen > .btns { display: grid; gap: 10px; }
+  #checkBox .pp-zu .einlesen > .btns .btn { justify-content: flex-start; min-height: 52px; width: 100%; }
+  .app.brief-offen .notices, .app.brief-offen .first { display: none !important; }
+  .einlesen { background: var(--surface); border-radius: 16px; padding: 14px 16px; margin: 0 0 16px; box-shadow: var(--shadow); }
+  .einlesen .btns { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 6px; }
+  .einlesen textarea { width: 100%; min-height: 120px; font: inherit; }
+  .pp .pp-erkannt { background: #fff6d6 !important; border-color: #e0b100 !important; color: #18202e !important; } /* !important: die Feldstile des Prüfpakets sind spezifischer */
+  .el-erkl { background: var(--warn-bg); border-radius: 12px; padding: 10px 14px; margin-top: 8px; }
   .pp-hinweis { background: var(--warn-bg); border-radius: 12px; padding: 10px 14px; margin: 0 0 14px; }
+  /* Pflegegrad selbst einschätzen */
+  .pa-einstieg { display: grid; gap: 4px; justify-items: start; margin: -4px 0 8px; }
+  .pa { max-width: 640px; }
+  .pa .es-btn > span { display: grid; gap: 2px; }
+  .pa-a { font-weight: 600; }
+  .pa-amt { font-size: .8em; color: var(--muted); font-weight: 400; }
+  .pa-info { margin: 14px 0 0; border: 1px solid var(--line); border-radius: 12px; padding: 4px 14px; background: var(--surface); }
+  .pa-info > summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font-weight: 600; }
+  .pa-info p, .pa-info ul { margin: 6px 0 10px; }
+  .pa-bar { position: relative; height: 16px; border-radius: 99px; background: var(--line); margin: 30px 0 14px; }
+  .pa-fill { position: absolute; inset: 0 auto 0 0; border-radius: 99px; background: var(--accent); }
+  .pa-mark { position: absolute; top: -5px; bottom: -5px; width: 2px; background: var(--ink); }
+  .pa-mark span { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: .75em; color: var(--muted); white-space: nowrap; }
+  .pa table { width: 100%; border-collapse: collapse; } .pa td, .pa th { padding: 6px 4px; border-top: 1px solid var(--line); text-align: left; } .pa .z { text-align: right; }
+  .pa-karte-knopf { margin-top: 10px; }
+  /* Erklärseite Pflege */
+  .pi { max-width: 720px; display: grid; gap: 14px; }
+  .pi h2 { font-size: 1.4rem; margin: 0; }
+  .pi .lead { font-size: 1.05rem; }
+  .pi .tabwrap { overflow-x: auto; border-radius: 14px; background: var(--surface); box-shadow: var(--shadow); }
+  .pi table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+  @media (max-width: 600px) {
+    .pi thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    .pi tr { display: grid; gap: 2px; padding: 10px 14px; border-top: 1px solid var(--line); }
+    .pi tbody tr:first-child { border-top: 0; }
+    .pi tbody td { border: 0; padding: 0; }
+    .pi tbody td:first-child { font-weight: 700; }
+    .pi td:last-child { font-variant-numeric: tabular-nums; }
+  }
+  .pi th, .pi td { text-align: left; padding: 9px 12px; border-top: 1px solid var(--line); vertical-align: top; }
+  .pi thead th { border-top: 0; font-size: .8rem; color: var(--muted); }
+  .pi .geld { color: var(--ok, #1d6b3d); font-weight: 700; } .pi .budget { color: var(--accent); font-weight: 700; }
+  .pi details { background: var(--surface); border-radius: 14px; padding: 4px 16px; box-shadow: var(--shadow); }
+  .pi details > summary { min-height: 48px; display: flex; align-items: center; cursor: pointer; font-weight: 700; }
+  .pi details p, .pi details ul { margin: 6px 0 12px; }
+  .card .txt .kern { margin: 0; }
+  .card .txt .punkte { margin: 8px 0 0; padding-inline-start: 1.15em; display: grid; gap: 6px; }
+  .card .txt .punkte li::marker { color: var(--muted); }
+  .pi-links { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); }
+  .pi-kopf { width: 100%; font-size: .85em; color: var(--muted); }
+  .pi-link { font: inherit; font-size: .92em; font-weight: 600; color: var(--accent); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; min-height: 44px; cursor: pointer; text-align: start; }
+  .pi-link:hover { border-color: var(--accent); }
+  .pi-link-tab { border: 0; padding: 0; min-height: 44px; font-size: 1em; }
 /*PPSTIL*/
 </style>
 
@@ -451,7 +577,7 @@
   <div class="shell">
     <header class="top">
       <div>
-        <h1><svg class="logo" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><rect width="48" height="48" rx="14" fill="#2b4a9b"/><circle cx="24" cy="24" r="13" fill="none" stroke="#fff" stroke-width="3.2"/><path d="M24 7.5v4M24 36.5v4M7.5 24h4M36.5 24h4" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/><path d="M18.2 24.4l4 4 7.8-8.2" fill="none" stroke="#7fe0b0" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="titel">SoLo <span class="sub">Sozialleistungslotse</span></span></h1>
+        <h1><svg class="logo" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><defs><linearGradient id="logoG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2d3d85"/><stop offset="1" stop-color="#1a2456"/></linearGradient></defs><rect width="100" height="100" rx="26" fill="url(#logoG)"/><rect x="18" y="29" width="56" height="40" rx="7" fill="#fff"/><path d="M22 34l24 18 24-18" fill="none" stroke="#23306b" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="71" cy="69" r="15.5" fill="#f2b233" stroke="#1f2a5e" stroke-width="4"/><path d="M63.8 69.5l5 5 9.6-10.6" fill="none" stroke="#1f2a5e" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="titel">SoLo <span class="sub">Sozialleistungslotse</span></span></h1>
         <p class="lead" data-t="lead"></p>
       </div>
       <div class="tools">
@@ -466,7 +592,6 @@
     <!-- Start: was dringend ist, dann die zwei Hauptwege -->
     <section id="v-start" class="ansicht" aria-labelledby="h-start" hidden>
       <h2 id="h-start" class="ans-h" data-t="home.h"></h2>
-      <div id="startFristen"></div>
       <div class="weg-liste">
         <button type="button" class="weg haupt" id="goLeistungen"><span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4M8.5 11l2 2 3.5-4"/></svg></span><span class="weg-txt"><b data-t="home.leistungen"></b><span data-t="home.leistungen.t"></span></span></button>
         <button type="button" class="weg" id="goBriefe"><span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><span class="weg-txt"><b data-t="home.brief"></b><span data-t="home.brief.t"></span></span></button>
@@ -476,35 +601,72 @@
 
     <!-- Brief prüfen: nach Absender -->
     <section id="v-briefe" class="ansicht" aria-labelledby="h-briefe" hidden>
-      <h2 id="h-briefe" class="ans-h" data-t="briefe.h"></h2>
+      <h2 id="h-briefe" class="ans-h"></h2>
       <p id="briefeIntro" class="muted" data-t="briefe.t"></p>
+      <div class="einlesen" id="einlesen" hidden>
+        <div class="btns">
+          <button type="button" class="btn" id="elScan"><span aria-hidden="true">📷 </span><span id="elScanT" data-t="el.scan"></span></button>
+          <button type="button" class="btn ghost" id="elPdf"><span aria-hidden="true">📄 </span><span data-t="el.pdf"></span></button>
+          <button type="button" class="btn ghost" id="elPaste" aria-expanded="false" aria-controls="elPasteBox"><span aria-hidden="true">📋 </span><span data-t="el.paste"></span></button>
+          <button type="button" class="btn ghost" id="elSelbst" hidden><span aria-hidden="true">✏️ </span><span data-t="el.selbst"></span></button>
+        </div>
+        <input type="file" id="elFile" accept="image/*" hidden>
+        <input type="file" id="elPdfFile" accept="application/pdf,.pdf" hidden>
+        <div class="field" id="elPasteBox" hidden>
+          <label for="elText" data-t="el.textLabel"></label>
+          <textarea id="elText" lang="de" dir="ltr" autocomplete="off" spellcheck="false"></textarea>
+          <div class="btns"><button type="button" class="btn" id="elLesen" data-t="el.lesen"></button></div>
+        </div>
+        <p class="small muted" data-t="el.privat"></p>
+        <p class="msg" id="elMsg" role="status" aria-live="polite"></p>
+        <div id="elErg"></div>
+      </div>
       <div class="kacheln" id="briefKacheln"></div>
       <div id="checkBox" class="pp" hidden>
         <div class="pp-kopf"><button type="button" class="btn ghost" id="briefZurueck" data-t="briefe.zurueck"></button></div>
         <p class="pp-hinweis small" id="ppNurDe" data-t="briefe.nurDeutsch" hidden></p>
         <p class="small muted" data-t="briefe.hinweis"></p>
 <!--PRUEFPAKET-->
+        <!--SCAN-->
+        <section class="scan pp-teil" id="scan" aria-labelledby="h-scan" hidden>
+          <h2 id="h-scan" data-t="sc.h"></h2>
+          <p data-t="sc.intro"></p>
+          <div class="sc-wahl">
+            <input type="file" id="sc-file" class="vh" accept="image/*">
+            <label for="sc-file" class="btn ghost sc-foto"><span aria-hidden="true">📷 </span><span data-t="sc.take"></span></label>
+            <input type="file" id="sc-pdf" class="vh" accept="application/pdf,.pdf">
+            <label for="sc-pdf" class="btn ghost sc-foto"><span aria-hidden="true">📄 </span><span data-t="el.pdf"></span></label>
+            <button type="button" class="btn ghost sc-foto" id="sc-pasteBtn" aria-expanded="false" aria-controls="sc-pasteBox"><span aria-hidden="true">📋 </span><span data-t="el.paste"></span></button>
+          </div>
+          <div class="field" id="sc-pasteBox" hidden>
+            <label for="sc-text" data-t="sc.paste"></label>
+            <textarea id="sc-text" lang="de" dir="ltr" autocomplete="off" spellcheck="false"></textarea>
+            <div class="btns"><button type="button" class="btn" id="sc-local" data-t="sc.local"></button></div>
+          </div>
+          <p class="small muted" data-t="sc.localNote"></p>
+          <div class="box" id="sc-claudeBox" hidden>
+            <p class="hint" data-t="sc.claudeNote"></p>
+            <label class="check"><input type="checkbox" id="sc-consent"><span data-t="sc.consent"></span></label>
+            <div class="btns"><button type="button" class="btn ghost" id="sc-claude" data-t="sc.claude" disabled></button></div>
+          </div>
+          <p class="msg" id="sc-msg" role="status" aria-live="polite"></p>
+          <div id="sc-out"></div>
+        </section>
+        <!--/SCAN-->
       </div>
     </section>
 
-    <!-- Fristen -->
-    <section id="v-fristen" class="ansicht" aria-labelledby="h-fristen" hidden>
-      <h2 id="h-fristen" class="ans-h" data-t="fristen.h"></h2>
-      <p class="muted" data-t="fristen.t"></p>
-      <div id="fristListe"></div>
-      <details class="optblock" id="fristNeu">
-        <summary data-t="fristen.neu"></summary>
-        <div class="fristform">
-          <div class="field"><label for="fristTitel" data-t="fristen.titel"></label><input type="text" id="fristTitel" autocomplete="off"></div>
-          <div class="field"><label for="fristDatum" data-t="fristen.datum"></label><input type="date" id="fristDatum"></div>
-          <button type="button" class="btn" id="fristAdd" data-t="fristen.add"></button>
-          <p class="msg" id="fristMsg" role="status"></p>
-        </div>
-      </details>
-      <details class="optblock pp" id="fristRechner">
-        <summary data-t="fristen.rechner"></summary>
-<!--PRUEFFRISTEN-->
-      </details>
+    <!-- Pflegegrad selbst einschätzen (geführt, eine Frage pro Bildschirm) -->
+    <section id="v-pflege" class="ansicht" aria-label="Pflegegrad" hidden>
+      <p class="pp-hinweis small" id="paNurDe" data-t="briefe.nurDeutsch" hidden></p>
+      <div id="pflegeAssist" class="pa"></div>
+    </section>
+
+    <!-- Erklärseite: So funktionieren die Leistungen der Pflegekasse -->
+    <section id="v-pflegeinfo" class="ansicht" aria-labelledby="h-pflegeinfo" hidden>
+      <div class="pp-kopf"><button type="button" class="btn ghost" id="piZurueck" data-t="briefe.zurueckEinfach"></button></div>
+      <p class="pp-hinweis small" id="piNurDe" data-t="briefe.nurDeutsch" hidden></p>
+      <div id="pflegeInfo" class="pi"></div>
     </section>
 
     <div id="v-leistungen" class="ansicht">
@@ -564,6 +726,7 @@
             </div>
               <div class="checks">
                 <label class="check"><input type="checkbox" id="kinder12"><span data-t="cb.kinder12"></span></label>
+                <label class="check"><input type="checkbox" id="kindKrank"><span data-t="cb.kindKrank"></span></label>
                 <label class="check"><input type="checkbox" id="unterhaltFehlt"><span data-t="cb.unterhalt"></span></label>
               </div>
             </div>
@@ -615,6 +778,10 @@
             <div class="field">
               <label for="pflegegrad" data-t="pflege.label"></label>
               <select id="pflegegrad"></select>
+            </div>
+            <div class="pa-einstieg">
+              <button type="button" class="btn ghost" id="paStart" data-t="pa.start"></button>
+              <p class="hint" id="paStand" hidden></p>
             </div>
             <div class="field">
               <label for="emStd" data-t="bh.em.label"></label>
@@ -855,12 +1022,6 @@
         <nav id="overview" class="overview" hidden></nav>
         <div id="together"></div>
         <div id="cards" class="results"></div>
-        <section class="feedback" id="feedback" hidden aria-labelledby="h-feedback">
-          <h3 id="h-feedback" data-t="fb.h"></h3>
-          <p data-t="fb.text"></p>
-          <div class="btns"><a class="btn ghost" id="feedbackMail" href="#" data-t="fb.btn"></a></div>
-          <p class="small" data-t="fb.hint"></p>
-        </section>
 
         <section class="helper" id="helper" aria-labelledby="h-helper">
           <h2 id="h-helper" data-t="f.h"></h2>
@@ -880,31 +1041,16 @@
           <p class="msg" id="pickMsg" role="status"></p>
         </section>
 
-        <!--SCAN-->
-        <section class="scan" id="scan" aria-labelledby="h-scan">
-          <h2 id="h-scan" data-t="sc.h"></h2>
-          <p data-t="sc.intro"></p>
-          <div class="field">
-            <label for="sc-file" data-t="sc.photo"></label>
-            <input type="file" id="sc-file" accept="image/*">
-          </div>
-          <div class="field">
-            <label for="sc-text" data-t="sc.paste"></label>
-            <textarea id="sc-text" lang="de" dir="ltr" autocomplete="off" spellcheck="false"></textarea>
-          </div>
-          <div class="box">
-            <p class="hint" data-t="sc.localNote"></p>
-            <div class="btns"><button type="button" class="btn" id="sc-local" data-t="sc.local"></button></div>
-          </div>
-          <div class="box" id="sc-claudeBox" hidden>
-            <p class="hint" data-t="sc.claudeNote"></p>
-            <label class="check"><input type="checkbox" id="sc-consent"><span data-t="sc.consent"></span></label>
-            <div class="btns"><button type="button" class="btn ghost" id="sc-claude" data-t="sc.claude" disabled></button></div>
-          </div>
-          <p class="msg" id="sc-msg" role="status" aria-live="polite"></p>
-          <div id="sc-out"></div>
-        </section>
-        <!--/SCAN-->
+        <div class="rules" id="feedback" hidden>
+          <details>
+            <summary data-t="fb.h"></summary>
+            <div class="inner">
+              <p data-t="fb.text"></p>
+              <div class="btns"><a class="btn ghost" id="feedbackMail" href="#" data-t="fb.btn"></a></div>
+              <p class="small" data-t="fb.hint"></p>
+            </div>
+          </details>
+        </div>
 
         <div class="rules">
           <details>
@@ -977,13 +1123,14 @@
         <li><strong>Antragsmappe:</strong> Wenn du die Mappe teilst oder kopierst, entscheidest du, wohin sie geht. Die App sendet sie nirgendwohin.</li>
         <li><strong>Rückmeldung per E-Mail:</strong> Der Knopf unter den Ergebnissen öffnet nur einen Entwurf in deinem E-Mail-Programm, mit App-Version und Einstufungen, ohne deine Angaben aus dem Formular. Gesendet wird erst, wenn du selbst auf Senden tippst. Ich nutze die Nachricht nur zur Prüfung der Berechnung und lösche sie spätestens nach 12 Monaten.</li>
       </ul>
-      <p id="legalWeb">Nur Web-Version: Sie lädt beim Öffnen nichts aus dem Internet nach, auch keine Schriften. Die optionale Texterkennung lädt Programmteile von cdnjs und jsDelivr nach; das Foto selbst bleibt auf deinem Gerät. Der optionale Scan mit Claude sendet das Bild nur nach deiner ausdrücklichen Zustimmung an Anthropic.</p>
+      <p id="legalWeb">Nur Web-Version: Sie lädt beim Öffnen nichts aus dem Internet nach, auch keine Schriften. Die optionale Texterkennung lädt Programmteile von cdnjs und jsDelivr nach, das Lesen von PDF-Dateien das Programm pdf.js von cdnjs; Foto und PDF selbst bleiben auf deinem Gerät. Der optionale Scan mit Claude sendet das Bild nur nach deiner ausdrücklichen Zustimmung an Anthropic.</p>
       <p class="small"><strong>Auswertung mit Claude (nur Web-Version innerhalb von Claude):</strong> Wird die Web-Version als Seite in Claude (claude.ai, Anthropic PBC, USA) geöffnet, gibt es zusätzlich die Möglichkeit, ein Foto mit Claude auswerten zu lassen. Das Foto wird nur gesendet, wenn du das Häkchen zur Einwilligung setzt und auf „Mit Claude auswerten“ tippst (Art. 6 Abs. 1 Buchst. a und Art. 9 Abs. 2 Buchst. a DSGVO, weil Unterlagen Gesundheitsdaten enthalten können). Es wird dann an Anthropic in die USA übermittelt und dort nach den Datenschutzbestimmungen von Anthropic verarbeitet. Die Einwilligung ist freiwillig und gilt nur für dieses eine Foto. In der App für Android und iOS gibt es diese Funktion nicht.</p>
       <h3>Lizenzen</h3>
       <ul>
         <li>Atkinson Hyperlegible und Schibsted Grotesk: SIL Open Font License 1.1</li>
         <li>Noto Sans (PDF-Erzeugung): SIL Open Font License 1.1</li>
         <li>Capacitor und seine Plugins, pdf-lib: MIT-Lizenz</li>
+        <li>pdf.js (Mozilla, PDF-Dateien lesen): Apache License 2.0</li>
         <li>Texterkennung Android: Google ML Kit (Nutzungsbedingungen von Google)</li>
         <li>Texterkennung Web-Version: Tesseract.js und Sprachdaten (Apache-Lizenz 2.0)</li>
         <li>Websites der Behörden außerhalb Bayerns: Wikidata (CC0); Anschriften aus den Impressen der Behörden und aus Wikipedia (Quelle steht jeweils bei der Anschrift)</li>
@@ -1026,7 +1173,6 @@
     <button type="button" data-ansicht="start"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg><span data-t="nav.start"></span></button>
     <button type="button" data-ansicht="leistungen"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4M8.5 11l2 2 3.5-4"/></svg><span data-t="nav.leistungen"></span></button>
     <button type="button" data-ansicht="briefe"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg><span data-t="nav.briefe"></span></button>
-    <button type="button" data-ansicht="fristen"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg><span data-t="nav.fristen"></span><i class="nav-punkt" id="navPunkt" hidden></i></button>
   </nav>
 </div>
 

@@ -2,6 +2,23 @@
 
 Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss steigen). Die Versionsnummer kommt aus dem Build.
 
+## 1.4.0 (ab Versionsnummer 143, November 2026)
+- „Vorlesen“ entfernt (einfache Version und Pflegegrad-Einschätzung), ab Versionsnummer 144
+- Ab Versionsnummer 145: unter jedem Feld mit Amtsbegriff in „Brief prüfen“ ein Hinweis, wo der Wert im Brief steht (Berechnungsbogen, erste Seite, Briefkopf); „formloser Antrag“ in der Ausfüllhilfe erklärt (8 Sprachen); Pflegegutachten empfiehlt Scannen oder PDF statt rund 60 Bewertungen von Hand; Kachel „Zwei Wege“ beginnt mit „Stelle beide Anträge gleichzeitig“; Hinweis bei fremder Sprache empfiehlt Scannen oder PDF.
+- Ab Versionsnummer 144 außerdem: **Brief prüfen** mit Ergebnis als Karten je Abweichung (vollständige Tabelle zum Aufklappen), „Das steht in deinem Bescheid“, Name und Anschrift aus der Ausfüllhilfe, Stelle, Aktenzeichen, Nummer der Bedarfsgemeinschaft, Kindergeld- und Versichertennummer aus dem Brief (gelb markiert, Markierung jetzt sichtbar); jedes Schreiben als PDF teilen, drucken oder speichern, mit Hinweis zur Abgabe. **Antragsformular**: gleiches Muster wie die anderen Kacheln, Vorschau des fotografierten Formulars bzw. der PDF-Seiten (nur im Arbeitsspeicher), Ergebnis in zwei Teilen (direkt abschreiben, Liste zum Abhaken), Kopieren über die Zwischenablage der App mit Rückmeldung.
+- **Pflegegrad selbst einschätzen** auf der Leistungsseite, mit einfacher Logik: kurze Anleitung, je Bereich zuerst eine Ja/Nein-Frage, Erklärung direkt unter jeder Frage, gleiche Antworten je Bereich, „Frage x von y“. Bereich 5 als Liste zum Ankreuzen, danach nur zu angekreuzten Punkten „Wie oft?“ (von selten nach oft). Ergebnis mit Pflegegrad, Pflegegeld (aufs Konto) und Entlastungsbetrag (Budget), Hauptknopf „Ergebnis übernehmen“; Rechenweg zum Aufklappen.
+- **Erklärseite „So funktionieren die Leistungen der Pflegekasse“**: Geld oder Budget, Pflegegeld, Pflegedienst, Entlastungsbetrag, Verhinderungs- und Kurzzeitpflege, Hilfsmittel; Pfeil-Links aus den Pflege-Karten.
+- **Brief prüfen**: Übersicht nur mit Kacheln; in der Kachel oben „Brief von: …“, dann die Wahl Scannen, PDF wählen, Text einfügen oder Werte selbst eingeben. Werte aus dem Brief gelb markiert, Haushalt aus „Leistungen“. Anhörung und Aufforderung zur Mitwirkung werden erklärt.
+- **PDF**: digitale PDFs werden direkt gelesen, eingescannte Seiten über die Texterkennung des Geräts (pdf.js, Apache 2.0, offline in der App).
+- **Antragsformular** als siebte Kachel: alle Felder erkannt und gruppiert, Name des Formulars, Krankenkasse und Aufenthalt neu, Werte aus dem Leistungscheck nur, wenn eingetragen.
+- **Pflegegutachten**: jede Bewertung wird mit der eigenen Einschätzung verglichen (Kriterien nach Punkten, Sonde, Inkontinenz, jede Maßnahme in Bereich 5, 5.16). Abweichungen erscheinen als Karten mit Feld für den Alltag und gehen ins Schreiben; nicht eingetragene Bewertungen zählen nicht.
+- **Ergebnis**: zuerst, was zutrifft; Karten zum Aufklappen; keine Häkchen-Leiste; Kachel „Zwei Wege“ (Grundsicherungsgeld oder Wohngeld und Kinderzuschlag); Hinweise zu einzelnen Leistungen in deren Karten; „Gut zu wissen für alle Anträge“; unpassende Leistungen für besondere Lagen in einer Zeile. Landespflegegeld außerhalb Bayerns ausgeblendet.
+- **Kinderkrankengeld** nur noch, wenn gerade ein Kind krank ist (neue Frage bei den Kindern).
+
+## 1.3.1 (ab Versionsnummer 142, November 2026)
+- Bereich „Fristen“ entfernt, auch auf der Startseite, im Fristrechner und beim automatischen Eintragen. Die Leiste hat drei Bereiche: Start, Leistungen, Brief prüfen. Die Widerspruchsfrist steht weiter beim jeweiligen Schreiben. Fristen, die mit Build 141 gespeichert wurden, löscht die App beim Start.
+- Store-Bilder und Store-Texte neu, mit neuem Logo (Brief mit Siegel)
+
 ## 1.3.0 (ab Versionsnummer 141, November 2026)
 - **Neuer Aufbau mit vier Bereichen** (Leiste unten, auf dem Computer oben als Reiter): Start, Leistungen, Brief prüfen, Fristen. Die Startseite zeigt zwei Wege („Welche Hilfen stehen mir zu?“ und „Ich habe einen Brief bekommen“) und die nächsten Fristen. Der bisherige Leistungscheck ist unverändert unter „Leistungen“.
 - **Brief prüfen**: Kacheln nach Absender (Jobcenter, Sozialamt, Wohngeldstelle, Familienkasse, Pflegekasse, Vermieter) öffnen die Prüfung: Bescheid Grundsicherungsgeld, Grundsicherung im Alter, Wohngeld, Kinderzuschlag, Pflegegutachten mit Widerspruch oder Höherstufung, Nebenkostenabrechnung. Vorerst nur auf Deutsch, mit Hinweis in den anderen Sprachen.

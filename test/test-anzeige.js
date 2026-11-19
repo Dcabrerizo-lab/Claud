@@ -86,10 +86,16 @@ for (let i = 0; i < N; i++) {
     const out = w.__solo.eval();
     const dl = I18N[lang];
     const fall = { lang, e: JSON.stringify(e).slice(0, 400) };
-    // Reihenfolge und Vollständigkeit: erst alle nicht-„nein“, dann die „nein“ im aufklappbaren Bereich
-    const erwartet = out.results.filter((r) => r.level !== 'nein').concat(out.results.filter((r) => r.level === 'nein')).map((r) => r.id);
+    // Reihenfolge und Vollständigkeit: erst alles Zutreffende, dann die „nein“ im aufklappbaren Bereich (unpassende Leistungen für besondere Lagen zuletzt); Landesleistungen außerhalb des Landes gar nicht
+    const erwartet = w.__solo.reihe(out.results);
     const ist = [...d.querySelectorAll('#cards article.card')].map((a) => a.getAttribute('data-id'));
     if (ist.join() !== erwartet.join()) melde('Karten fehlen oder Reihenfolge falsch', { ...fall, ist: ist.join(), erwartet: erwartet.join() });
+    // Unabhängig von der App-Funktion: jede Leistung genau einmal, alle passenden vor allen unpassenden
+    const ids = out.results.filter((r) => !(r.level === 'nein' && r.hl === 'land')).map((r) => r.id).sort().join(), lv = Object.fromEntries(out.results.map((r) => [r.id, r.level]));
+    if ([...ist].sort().join() !== ids) melde('Karten fehlen oder doppelt', { ...fall, ist: ist.join() });
+    for (const r of out.results) if (r.level === 'nein' && r.hl === 'land' && d.getElementById('c-' + r.id)) melde('Landesleistung außerhalb des Landes angezeigt', { ...fall, id: r.id });
+    const ersteNein = ist.findIndex((id) => lv[id] === 'nein');
+    if (ersteNein >= 0 && ist.slice(ersteNein).some((id) => lv[id] !== 'nein')) melde('Passende Karte steht bei den unpassenden', { ...fall, ist: ist.join() });
     for (const r of out.results) {
       karten++;
       const a = d.getElementById('c-' + r.id);
@@ -103,7 +109,8 @@ for (let i = 0; i < N; i++) {
       const teile = r.tx.map((x) => text(lang, 't.' + x[0], x[1]));
       const fehltKey = r.tx.filter((x, j) => teile[j] == null).map((x) => 't.' + x[0]);
       if (fehltKey.length) { melde('Text fehlt in der Sprachdatei', { ...fall, id: r.id, keys: fehltKey.join() }); continue; }
-      const body = a.querySelectorAll('.body p')[1];
+      const txt = a.querySelector('.body .txt');
+      const body = txt && { textContent: [...txt.querySelectorAll('.kern, .punkte > li')].map((x) => x.textContent).join(' ') };
       if (!body || norm(body.textContent) !== norm(teile.join(' '))) melde('Kartentext passt nicht zur Rechnung', { ...fall, id: r.id, ist: body && body.textContent.slice(0, 300), soll: teile.join(' ').slice(0, 300) });
       // Jeder Betrag, für den der Text einen Platzhalter hat, steht so auf der Karte; Platzhalter des deutschen Textes gibt es auch in der Übersetzung
       r.tx.forEach((x) => {
@@ -129,7 +136,15 @@ for (let i = 0; i < N; i++) {
     if (zahl !== sollZahl) melde('Zählung oben passt nicht', { ...fall, ist: zahl, soll: sollZahl });
     // Hinweise „Das solltest du beachten“ = Rechnung
     const tog = [...d.querySelectorAll('#together li')].map((li) => norm(li.textContent));
-    const sollTog = out.zusammen.map((z) => norm(text(lang, z[0], z[1]) || '?' + z[0]));
+    // „Grundsicherungsgeld oder Wohngeld/Kinderzuschlag“ steht als eigene Kachel „Zwei Wege“, nicht in der Liste
+    const wege = out.zusammen.some((z) => z[0] === 'z.ggVsWg');
+    if (wege !== !!d.getElementById('zweiWege')) melde('Kachel „Zwei Wege“ passt nicht zur Rechnung', { ...fall, soll: wege });
+    const KARTE = { 'z.wgKiz': ['wohngeld', 'kiz'], 'z.gsaWg': ['gsa', 'wohngeld'], 'z.kgZuerst': ['kiz', 'kindergeld'], 'z.ggBezug': ['wohngeld', 'kiz', 'but'] }, ALLE = ['z.stichtag', 'z.verfahren', 'z.grenzen'];
+    const sollTog = out.zusammen.filter((z) => z[0] !== 'z.ggVsWg' && !KARTE[z[0]] && !ALLE.includes(z[0])).map((z) => norm(text(lang, z[0], z[1]) || '?' + z[0]));
+    // Hinweise zu einer Leistung stehen in deren Karte, Hinweise für alle Anträge in „Gut zu wissen“
+    for (const z of out.zusammen) for (const id of (KARTE[z[0]] || [])) { const a = d.getElementById('c-' + id); if (a && !norm(a.textContent).includes(norm(text(lang, z[0], z[1])))) melde('Hinweis fehlt in der Karte', { ...fall, id, hinweis: z[0] }); }
+    const gut = [...d.querySelectorAll('#gutWissen li')].map((li) => norm(li.textContent)), sollGut = out.zusammen.filter((z) => ALLE.includes(z[0])).map((z) => norm(text(lang, z[0], z[1])));
+    if (gut.join('|') !== sollGut.join('|')) melde('„Gut zu wissen“ passt nicht', { ...fall, ist: gut.join(' | ').slice(0, 200) });
     if (tog.join('|') !== sollTog.join('|')) melde('Hinweise „beachten“ passen nicht', { ...fall, ist: tog.join(' | ').slice(0, 200), soll: sollTog.join(' | ').slice(0, 200) });
     // Speichern und Laden: gespeicherter Stand ergibt nach dem Laden genau dasselbe Ergebnis
     if (i % 3 === 0) {

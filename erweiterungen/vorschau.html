@@ -47,6 +47,10 @@
   .krit p { margin: 0; }
   .krit .pkt { float: right; margin-left: 10px; font-variant-numeric: tabular-nums; color: var(--muted); }
   .opt { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin: 8px 0; }
+  .feld-hilfe { margin: 2px 0 0; font-size: .8em; }
+  .abw { display: grid; gap: 4px; }
+  .abw p { margin: 0; }
+  .abw-kopf { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
   .btns { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
   details > summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
   .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
@@ -88,7 +92,7 @@
   <section id="p-pflege" role="tabpanel" aria-labelledby="tab-pflege">
     <div class="card">
       <h2>Pflegegutachten prüfen</h2>
-      <p>Trage die Bewertungen aus dem Gutachten des Medizinischen Dienstes ein, oder füge den Text des Gutachtens ein. SoLo rechnet die Punkte nach § 15 SGB XI nach und zeigt, wo es knapp ist.</p>
+      <p>SoLo rechnet die Punkte des Gutachtens nach § 15 SGB XI nach und zeigt, wo es knapp ist. Am schnellsten geht es, wenn du das Gutachten scannst oder als PDF wählst: Von Hand sind es rund 60 Bewertungen.</p>
       <label for="pf-text">Text aus dem Gutachten (aus einem PDF kopiert oder vom Foto erkannt)</label>
       <textarea id="pf-text" placeholder="z. B. 1.1 Positionswechsel im Bett  überwiegend selbständig …"></textarea>
       <div class="btns"><button type="button" class="btn primary" id="pf-lesen">Text lesen</button><button type="button" class="btn" id="pf-beispiel">Beispiel laden</button><button type="button" class="btn" id="pf-leeren">Alles leeren</button></div>
@@ -103,10 +107,8 @@
         <p class="small muted" id="pf-alter-hilfe">Das Alter ist wichtig: Bei Kindern vergleicht der Gutachter mit gesunden Kindern im gleichen Alter, und bis 18 Monate gelten Sonderregeln.</p>
       </fieldset>
     </form>
-    <div class="card ergebnis" id="pf-erg" aria-live="polite"></div>
-    <div class="card" id="pf-erkl"></div>
     <form id="pf-form2" onsubmit="return false">
-      <fieldset><legend>Angaben aus Gutachten und Bescheid</legend>
+      <fieldset><legend>Das steht in deinem Gutachten und Bescheid</legend>
         <div class="grid2">
           <div><label for="pf-pgb">Pflegegrad laut Bescheid</label><select id="pf-pgb"><option value="">nicht bekannt</option><option value="0">kein Pflegegrad</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
           <label class="check"><input type="checkbox" id="pf-harn"> Harn: überwiegend oder vollständig inkontinent, oder Katheter/Urostoma</label>
@@ -115,15 +117,20 @@
       </fieldset>
       <div id="pf-module"></div>
     </form>
+    <div class="card ergebnis" id="pf-erg" aria-live="polite"></div>
+    <div class="card" id="pf-erkl"></div>
     <div class="card" id="pf-wid">
       <h2>Widerspruch oder Höherstufung</h2>
       <fieldset><legend>Was passt?</legend>
         <label class="check"><input type="radio" name="pf-art" id="pf-art-w" value="widerspruch" checked> <span><strong>Widerspruch:</strong> Das Gutachten war schon damals falsch. Frist: ein Monat nach dem Bescheid.</span></label>
         <label class="check"><input type="radio" name="pf-art" id="pf-art-h" value="hoeher"> <span><strong>Höherstufung:</strong> Damals stimmte es, aber seitdem ist es schlimmer geworden. Jederzeit möglich, mehr Geld ab dem Monat des Antrags.</span></label>
       </fieldset>
-      <p id="pf-art-text">Wähle die Bewertungen, die im Gutachten zu niedrig sind, und beschreibe in eigenen Worten, wie es im Alltag wirklich ist. Nur was stimmt, gehört hinein.</p>
+      <h3 id="pf-ab-h">Wo das Gutachten zu niedrig ist</h3>
+      <p id="pf-art-text">Beschreibe bei jeder Bewertung in eigenen Worten, wie es im Alltag wirklich ist. Nur was stimmt, gehört hinein.</p>
+      <div id="pf-ab-info" role="status"></div>
       <div id="pf-wid-liste"></div>
-      <div class="btns"><button type="button" class="btn" id="pf-wid-plus">Kriterium hinzufügen</button></div>
+      <div class="btns"><button type="button" class="btn" id="pf-wid-plus">Weitere Bewertung selbst hinzufügen</button></div>
+      <h3>Deine Angaben für das Schreiben</h3>
       <div class="grid2">
         <div><label for="pf-name">Dein Name (oder der der gepflegten Person)</label><input type="text" id="pf-name" autocomplete="name"></div>
         <div><label for="pf-anschrift">Straße und Hausnummer</label><input type="text" id="pf-anschrift"></div>
@@ -160,7 +167,7 @@
           <div><label for="bs-heiz">Heizkosten</label><input type="number" id="bs-heiz" min="0" step="0.01" inputmode="decimal"></div>
         </div>
       </fieldset>
-      <fieldset><legend>Beträge im Bescheid (Monat, ganze Bedarfsgemeinschaft)</legend>
+      <fieldset><legend>Das steht in deinem Bescheid (Monat, ganze Bedarfsgemeinschaft)</legend>
         <div class="grid2">
           <div><label for="bs-b-regel">Regelbedarfe zusammen</label><input type="number" id="bs-b-regel" step="0.01" inputmode="decimal"></div>
           <div><label for="bs-b-ae">Mehrbedarf Alleinerziehende</label><input type="number" id="bs-b-ae" step="0.01" inputmode="decimal"></div>
@@ -231,7 +238,7 @@
         <label class="check"><input type="checkbox" id="ga-gr2"> Mindestens 33 Jahre Grundrentenzeiten (Grundrentenzuschlag im Rentenbescheid)</label>
         <label class="check"><input type="checkbox" id="ga-g2"> Merkzeichen G im Schwerbehindertenausweis</label>
       </fieldset>
-      <fieldset><legend>Beträge im Bescheid (Monat)</legend>
+      <fieldset><legend>Das steht in deinem Bescheid (Monat)</legend>
         <div class="grid2">
           <div><label for="ga-b-regel">Regelbedarf zusammen</label><input type="number" id="ga-b-regel" step="0.01" inputmode="decimal"></div>
           <div><label for="ga-b-g">Mehrbedarf Merkzeichen G</label><input type="number" id="ga-b-g" step="0.01" inputmode="decimal"></div>
@@ -284,7 +291,7 @@
         <div class="btns"><button type="button" class="btn" id="wg-plus">Einkommen hinzufügen</button></div>
         <p class="small muted">Pauschalabzug: je 10 % für Steuern, Kranken- und Pflegeversicherung, Rentenversicherung. Bei normalem Lohn meist 30 %, bei Rente meist 10 oder 20 %.</p>
       </fieldset>
-      <fieldset><legend>Beträge im Bescheid (Monat)</legend>
+      <fieldset><legend>Das steht in deinem Bescheid (Monat)</legend>
         <div class="grid2">
           <div><label for="wg-b-miete">Zu berücksichtigende Miete</label><input type="number" id="wg-b-miete" step="0.01" inputmode="decimal"></div>
           <div><label for="wg-b-eink">Gesamteinkommen</label><input type="number" id="wg-b-eink" step="0.01" inputmode="decimal"></div>
@@ -334,7 +341,7 @@
         <div class="tablewrap" tabindex="0" role="region" aria-label="Kinder"><table><thead><tr><th>Alter</th><th>Unterhalt oder Unterhaltsvorschuss</th><th>eigenes Einkommen</th><th><span class="vh">Entfernen</span></th></tr></thead><tbody id="kz-kinder"></tbody></table></div>
         <div class="btns"><button type="button" class="btn" id="kz-plus">Kind hinzufügen</button></div>
       </fieldset>
-      <fieldset><legend>Beträge im Bescheid (Monat)</legend>
+      <fieldset><legend>Das steht in deinem Bescheid (Monat)</legend>
         <div class="grid2">
           <div><label for="kz-b-bedarf">Bedarf der Eltern</label><input type="number" id="kz-b-bedarf" step="0.01" inputmode="decimal"></div>
           <div><label for="kz-b-eink">Einkommen der Eltern</label><input type="number" id="kz-b-eink" step="0.01" inputmode="decimal"></div>
@@ -436,8 +443,6 @@
       </div>
       <p id="er-erg" aria-live="polite"></p>
       <p class="small muted">In der App würde SoLo an diesem Tag eine Mitteilung auf dem Handy zeigen, ohne Server.</p>
-      <div class="btns"><button type="button" class="btn" id="fr-merken" hidden>Widerspruchsfrist in meine Fristen</button><button type="button" class="btn" id="er-merken" hidden>Erinnerung in meine Fristen</button></div>
-      <p class="small" id="fr-merken-msg" role="status"></p>
     </div>
   </section>
 

@@ -401,7 +401,7 @@
     pr.appendChild(b);
   });
 
-  var CHECKS = ['mzG', 'mzGl', 'algZeit', 'grundrente33', 'wfbmEssen', 'teilhabe', 'schwanger', 'ernaehrung', 'warmwasser', 'kinder12', 'unterhaltFehlt', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt', 'uzTitel', 'autoBraucht'];
+  var CHECKS = ['mzG', 'mzGl', 'algZeit', 'grundrente33', 'wfbmEssen', 'teilhabe', 'schwanger', 'ernaehrung', 'warmwasser', 'kinder12', 'kindKrank', 'unterhaltFehlt', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt', 'uzTitel', 'autoBraucht'];
   var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'ek1bArt', 'bhWeitere', 'baby', 'aufenthalt', 'arbeitSit', 'algMonate', 'krankWochen', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd', 'uzAn', 'wohnart', 'hhAndere', 'euArbeit', 'euJahre'];
   var NUMS = ['miete', 'heizkosten', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'kindEink', 'lohnVorher', 'ek1bBetrag', 'egVor', 'vermoegen', 'uzBetrag', 'autoWert', 'zusatzRente'];
   var BEZUG = ['grundsicherungsgeld', 'sozialamt', 'wohngeld', 'kiz', 'kindergeld'];
@@ -423,7 +423,7 @@
     started = true;
     if (!edited) { edited = true; $('sampleNotice').hidden = true; }
     // Ausgeblendete Felder zurücksetzen, damit keine alten Werte mitrechnen
-    if (state.kids === 0) { state.kinder12 = false; state.unterhaltFehlt = false; state.kidsU6 = 0; state.kids14 = 0; $('kinder12').checked = false; $('unterhaltFehlt').checked = false; }
+    if (state.kids === 0) { state.kinder12 = false; state.kindKrank = false; if ($('kindKrank')) $('kindKrank').checked = false; state.unterhaltFehlt = false; state.kidsU6 = 0; state.kids14 = 0; $('kinder12').checked = false; $('unterhaltFehlt').checked = false; }
     render(); save();
   }
   var soonTimer = null;
@@ -464,8 +464,16 @@
     BEZUG.forEach(function (k) { $('b-' + k).addEventListener('change', function () { state.bezug[k] = $('b-' + k).checked; touched(); }); });
     $('lang').addEventListener('change', function () { setLang($('lang').value); });
     if ($('sc-take')) $('sc-take').addEventListener('click', function () { runNative(); });
-    if ($('sc-local')) {
-      $('sc-local').addEventListener('click', function () { runLocal(); });
+    if ($('sc-local')) $('sc-local').addEventListener('click', function () { runLocal(true); });
+    if ($('sc-pasteBtn')) $('sc-pasteBtn').addEventListener('click', function () { var b = $('sc-pasteBox'); b.hidden = !b.hidden; $('sc-pasteBtn').setAttribute('aria-expanded', String(!b.hidden)); if (!b.hidden) $('sc-text').focus(); });
+    if ($('sc-file')) $('sc-file').addEventListener('change', function () { if ($('sc-file').files && $('sc-file').files[0]) runLocal(false); });
+    if ($('sc-pdf')) $('sc-pdf').addEventListener('change', function () {
+      var f = $('sc-pdf').files && $('sc-pdf').files[0]; if (!f || scanBusy) return;
+      scanBusyOn(true);
+      pdfLesen(f, function (i, n) { $('sc-msg').textContent = t('el.pdfSeite', { n: String(i), m: String(n) }); })
+        .then(function (text) { return pdfVorschau(f).then(function (b) { scanBilderSetzen(b); }, function () { scanBilderSetzen([]); }).then(function () { scanBusyOn(false); $('sc-pdf').value = ''; setScanResult(scanFromText(text)); }); }, function () { scanBusyOn(false); $('sc-pdf').value = ''; scanMsg('el.pdfFehler'); });
+    });
+    if ($('sc-claude')) {
       $('sc-claude').addEventListener('click', function () { runClaude(); });
       $('sc-consent').addEventListener('change', function () { $('sc-claude').disabled = scanBusy || !$('sc-consent').checked; });
     }
@@ -593,7 +601,16 @@
   }
 
   function resultText(r) { return r.tx.map(function (x) { return t('t.' + x[0], x[1]); }).join(' '); }
+  // Kartentext gegliedert: der wichtigste Satz oben, weitere Hinweise als Punkte darunter (Wortlaut wie resultText)
+  function resultHtml(r) {
+    var teile = r.tx.map(function (x) { return t('t.' + x[0], x[1]); });
+    return '<p class="kern">' + esc(teile[0] || '') + '</p>' + (teile.length > 1 ? '<ul class="punkte">' + teile.slice(1).map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : '');
+  }
 
+  // Hinweise, die zu bestimmten Leistungen gehören, stehen in deren Karte; Hinweise für alle Anträge in „Gut zu wissen“
+  var HINWEIS_KARTE = { 'z.wgKiz': ['wohngeld', 'kiz'], 'z.gsaWg': ['gsa', 'wohngeld'], 'z.kgZuerst': ['kiz', 'kindergeld'], 'z.ggBezug': ['wohngeld', 'kiz', 'but'] };
+  var HINWEIS_ALLE = ['z.stichtag', 'z.verfahren', 'z.grenzen'];
+  var kartenHinweise = {}, gutHtml = '';
   function card(r) {
     var dim = r.level === 'nein' || r.level === 'na';
     var s = r.steps;
@@ -606,11 +623,51 @@
         '<p class="small">' + esc(t('steps.note')) + '</p></div></details>';
     }
     var desc = lang === 'de' ? '' : t('n.' + r.id);
-    return '<article class="card' + (dim ? ' dim' : '') + '" data-id="' + r.id + '" id="c-' + r.id + '">' +
+    // Zuerst nur eine Zeile (Name, Einschätzung, kurzer Satz); ein Tipp klappt Beschreibung, Stelle und nächste Schritte auf
+    return '<article class="card auf' + (dim ? ' dim' : '') + '" data-id="' + r.id + '" id="c-' + r.id + '"><details class="karte"><summary>' +
       '<header><div><h3' + (lang === 'de' ? '' : ' lang="de"') + '>' + esc(r.name) + '</h3>' + (desc ? '<div class="desc">' + esc(desc) + '</div>' : '') + '</div>' +
       '<span class="pill ' + r.level + '"><span aria-hidden="true">' + MARK[r.level] + '</span>' + esc(t('lvl.' + r.level)) + '</span></header>' +
-      '<div class="body"><p class="head2">' + esc(t('h.' + r.hl)) + '</p><p>' + esc(resultText(r)) + '</p></div>' +
-      zustHtml(r) + steps + '</article>';
+      '<p class="head2">' + esc(t('h.' + r.hl)) + '</p><span class="karte-mehr" aria-hidden="true" data-mehr="' + esc(t('karte.mehr')) + '" data-weniger="' + esc(t('karte.weniger')) + '"></span></summary>' +
+      '<div class="body"><div class="txt">' + resultHtml(r) + '</div>' + (kartenHinweise[r.id] || []).map(function (z) { return '<p class="karte-hinweis"><span aria-hidden="true">ⓘ </span>' + esc(t(z[0], z[1])) + '</p>'; }).join('') + '</div>' +
+      zustHtml(r) + steps + '</details></article>';
+  }
+
+  // Reihenfolge: zuerst alles, was für diese Person zutrifft (wie von Rules.evaluate sortiert: wahrscheinlich, dann möglich),
+  // egal ob häufige oder seltene Leistung. Bei den unpassenden stehen die Leistungen, die viele Haushalte betreffen, offen;
+  // unpassende Leistungen für besondere Lagen (Behinderung, Rente, Ausbildung, Asyl …) sind als eine Zeile zusammengefasst.
+  // Gerechnet wird alles gleich, es ändert sich nur die Anzeige.
+  var KERN = ['ggeld', 'gsa', 'wohngeld', 'kiz', 'but', 'pflege', 'pflegeplus', 'uvg', 'rundfunk', 'kindergeld', 'elterngeld'];
+  function istKern(r) { return KERN.indexOf(r.id) >= 0; }
+  // Landesleistungen (zurzeit das Landespflegegeld, nur Bayern) erscheinen außerhalb des Landes gar nicht.
+  function ausgeblendet(r) { return r.level === 'nein' && r.hl === 'land'; }
+  function kartenReihe(results) {
+    results = results.filter(function (r) { return !ausgeblendet(r); });
+    var bad = results.filter(function (r) { return r.level === 'nein'; });
+    return {
+      passt: results.filter(function (r) { return r.level !== 'nein'; }),
+      neinKern: bad.filter(istKern), neinSpez: bad.filter(function (r) { return !istKern(r); })
+    };
+  }
+  function kartenHtml(results) {
+    var k = kartenReihe(results), nein = k.neinKern.length + k.neinSpez.length;
+    return k.passt.map(card).join('') + gutHtml + (nein
+      ? '<details class="neinbox"><summary>' + esc(t('nein.sum', { n: nein })) + '</summary>' + k.neinKern.map(card).join('') +
+        (k.neinSpez.length ? '<details class="spezbox"><summary>' + esc(t('nein.spezial', { n: k.neinSpez.length })) + '</summary>' + k.neinSpez.map(card).join('') + '</details>' : '') +
+        '</details>'
+      : '');
+  }
+
+  // Ergebniskarte aufklappen (Sprung aus der Übersicht, Rückkehr von der Pflege-Einschätzung oder der Erklärseite)
+  function karteAuf(id) { var a = id && document.getElementById(id); var d = a && a.classList.contains('auf') && a.querySelector('details.karte'); if (d) d.open = true; }
+  // Grundsicherungsgeld oder Wohngeld und Kinderzuschlag: beides zusammen geht nicht. Eine Kachel erklärt die zwei Wege.
+  function zweiWege(results) {
+    var g = function (id) { for (var i = 0; i < results.length; i++) if (results[i].id === id) return results[i]; return null; };
+    var weg = function (ids) { return ids.map(g).filter(function (r) { return r && r.level !== 'nein'; }).map(function (r) {
+      return '<a class="ww-l ' + r.level + '" href="#c-' + r.id + '"><span' + (lang === 'de' ? '' : ' lang="de"') + '>' + esc(r.name) + '</span><span class="pill ' + r.level + '"><span aria-hidden="true">' + MARK[r.level] + '</span>' + esc(t('lvl.' + r.level)) + '</span></a>'; }).join(''); };
+    return '<section class="zweiwege" id="zweiWege" aria-labelledby="h-ww"><h3 id="h-ww">' + esc(t('ww.h')) + '</h3><p class="ww-tun"><b>' + esc(t('ww.tipp')) + '</b></p><p>' + esc(t('ww.t')) + '</p>' +
+      '<div class="ww-wege"><div class="ww-weg"><h4>' + esc(t('ww.a.h')) + '</h4><p>' + esc(t('ww.a.t')) + '</p>' + weg(['ggeld']) + '</div>' +
+      '<div class="ww-weg"><h4>' + esc(t('ww.b.h')) + '</h4><p>' + esc(t('ww.b.t')) + '</p>' + weg(['wohngeld', 'kiz', 'but']) + '</div></div>' +
+      '<p class="ww-regel"><b>' + esc(t('ww.regel.h')) + '</b> ' + esc(t('ww.regel')) + '</p></section>';
   }
 
   function renderPick(results) {
@@ -654,30 +711,34 @@
     var summary = parts.length ? parts.join(' · ') : t('c.none');
     $('count').textContent = summary;
     $('jumpText').textContent = summary;
-    var good = out.results.filter(function (r) { return r.level !== 'nein'; });
-    var bad = out.results.filter(function (r) { return r.level === 'nein'; });
-    var openIds = {}, neinOpen = false;
+    var openIds = {}, neinOpen = false, spezOpen = false, gutOpen = false;
     document.querySelectorAll('#cards details[open]').forEach(function (d) {
       var a = d.closest('article');
-      if (a) openIds[a.id] = true; else if (d.classList.contains('neinbox')) neinOpen = true;
+      if (a) openIds[a.id] = true; else if (d.classList.contains('gutwissen')) gutOpen = true; else if (d.classList.contains('spezbox')) spezOpen = true; else if (d.classList.contains('neinbox')) neinOpen = true;
     });
-    $('cards').innerHTML = good.map(card).join('') +
-      (bad.length ? '<details class="neinbox"><summary>' + esc(t('nein.sum', { n: bad.length })) + '</summary>' + bad.map(card).join('') + '</details>' : '');
+    kartenHinweise = {};
+    out.zusammen.forEach(function (z) { (HINWEIS_KARTE[z[0]] || []).forEach(function (id) { (kartenHinweise[id] = kartenHinweise[id] || []).push(z); }); });
+    // „Gut zu wissen für alle Anträge“ steht zwischen den passenden Karten und dem Kasten „Wahrscheinlich nicht passend“
+    var alle = out.zusammen.filter(function (z) { return HINWEIS_ALLE.indexOf(z[0]) >= 0; });
+    gutHtml = alle.length ? '<div id="gutWissen"><details class="gutwissen"><summary><span class="gw-titel">' + esc(t('gut.h')) + '</span><span class="karte-mehr" aria-hidden="true" data-mehr="' + esc(t('karte.mehr')) + '" data-weniger="' + esc(t('karte.weniger')) + '"></span></summary>' + listItems(alle.map(function (z) { return t(z[0], z[1]); })) + '</details></div>' : '';
+    $('cards').innerHTML = kartenHtml(out.results);
     Object.keys(openIds).forEach(function (id) { var d = document.querySelector('#' + id + ' details'); if (d) d.open = true; });
     if (neinOpen) { var nb = document.querySelector('#cards .neinbox'); if (nb) nb.open = true; }
-    var ov = out.results.filter(function (r) { return r.level === 'ja' || r.level === 'vielleicht'; });
-    $('overview').hidden = ov.length < 3;
-    $('overview').setAttribute('aria-label', t('ov.label'));
-    $('overview').innerHTML = ov.map(function (r) {
-      return '<a class="' + r.level + '" href="#c-' + r.id + '"><span class="m" aria-hidden="true">' + MARK[r.level] + '</span>' + esc(r.name) + '</a>';
-    }).join('');
-    $('together').innerHTML = out.zusammen.length
-      ? '<div class="together"><h3>' + esc(t('beachten')) + '</h3>' + listItems(out.zusammen.map(function (z) { return t(z[0], z[1]); })) + '</div>'
-      : '';
+    if (spezOpen) { var sb = document.querySelector('#cards .spezbox'); if (sb) sb.open = true; }
+    if (gutOpen) { var gw = document.querySelector('#cards .gutwissen'); if (gw) gw.open = true; }
+    $('overview').hidden = true; $('overview').innerHTML = ''; // keine Häkchen-Leiste mehr: die Karten selbst sind die Übersicht
+    // Hinweise verteilen: zu einer Leistung gehörende in deren Karte, für alle Anträge geltende in „Gut zu wissen“, der Rest bleibt in „Beachten“
+    var wege = out.zusammen.some(function (z) { return z[0] === 'z.ggVsWg'; });
+    var rest = out.zusammen.filter(function (z) { return z[0] !== 'z.ggVsWg' && !HINWEIS_KARTE[z[0]] && HINWEIS_ALLE.indexOf(z[0]) < 0; });
+    $('together').innerHTML = (wege ? zweiWege(out.results) : '') + (rest.length
+      ? '<div class="together"><h3>' + esc(t('beachten')) + '</h3>' + listItems(rest.map(function (z) { return t(z[0], z[1]); })) + '</div>'
+      : '');
+
     document.querySelectorAll('.cond-kids').forEach(function (el) { el.hidden = state.kids === 0; });
     document.querySelectorAll('.cond-adults2').forEach(function (el) { el.hidden = state.adults !== 2; });
     renderPick(out.results);
     $('feedback').hidden = false; $('feedbackMail').setAttribute('href', feedbackMail(out.results));
+    if (typeof paAnzeigen === 'function') paAnzeigen();
   }
 
   // ----- Ausfüllhilfe: Antragsmappe (Brief und Angabenblatt auf Deutsch) -----
@@ -964,6 +1025,71 @@
     }).catch(function () { msg.textContent = t('f.pdfFail'); });
   }
 
+  // ----- Schreiben aus „Brief prüfen“ (Widerspruch, Höherstufung, Einwände) abgeben: wie bei der Antragsmappe als PDF teilen,
+  // drucken oder speichern, dazu ein klarer Hinweis, wie man es einreicht. Die Knöpfe erscheinen, sobald das Schreiben erstellt ist.
+  var SCHREIBEN = [['pf-wid-text', 'pf-wid-copy', 'Schreiben-Pflegekasse', 'amt'], ['bs-wid-text', 'bs-wid-copy', 'Widerspruch-Jobcenter', 'amt'],
+    ['ga-wid-text', 'ga-wid-copy', 'Widerspruch-Sozialamt', 'amt'], ['wg-wid-text', 'wg-wid-copy', 'Widerspruch-Wohngeld', 'amt'],
+    ['kz-wid-text', 'kz-wid-copy', 'Widerspruch-Kinderzuschlag', 'amt'], ['nk-text', 'nk-copy', 'Schreiben-Nebenkosten', 'vermieter']];
+  var ABGEBEN = {
+    amt: 'So geht es weiter: ausdrucken, unterschreiben und vor Ablauf der Frist abgeben, persönlich mit Eingangsstempel auf deiner Kopie oder per Post, am besten als Einwurf-Einschreiben. Eine einfache E-Mail reicht in der Regel nicht.',
+    vermieter: 'So geht es weiter: unterschreiben und dem Vermieter schicken, so dass du den Zugang nachweisen kannst (Einwurf-Einschreiben oder Übergabe gegen Quittung). Behalte eine Kopie.'
+  };
+  function schreibenPdf(text, titel) {
+    return loadPdfLib().then(function (L) {
+      return L.buildPdf({ pages: [{ blocks: [{ t: 'pre', text: text }] }], title: titel, loadFont: function (n) { return fetch('fonts/pdf/' + n).then(function (r) { return r.arrayBuffer(); }).then(function (b) { return new Uint8Array(b); }); } });
+    });
+  }
+  function schreibenAusgeben(ta, titel, art, msg) {
+    var name = titel + '.pdf', text = ta.value;
+    msg.textContent = t('f.pdfWorking');
+    if (art === 'teilen') {
+      var fs = plug('Filesystem'), sh = plug('Share');
+      if (!fs || !sh) { msg.textContent = t('f.pdfFail'); return; }
+      schreibenPdf(text, titel).then(function (bytes) { return fs.writeFile({ path: name, data: toBase64(bytes), directory: 'CACHE' }); })
+        .then(function (r) { return sh.share({ title: titel, files: [r.uri] }).then(function () {}, function () {}); })
+        .then(function () { msg.textContent = ''; return fs.deleteFile({ path: name, directory: 'CACHE' }).catch(function () {}); })
+        .catch(function () { msg.textContent = t('f.pdfFail'); });
+      return;
+    }
+    var pa = plug('PdfAusgabe');
+    if (!pa) { msg.textContent = t('f.pdfFail'); return; }
+    schreibenPdf(text, titel).then(function (bytes) { return pa[art]({ data: toBase64(bytes), name: name }); })
+      .then(function (r) { msg.textContent = art === 'drucken' ? '' : (r && r.ort === 'Download' ? t('f.gespeichert', { name: r.name || name }) : t('f.gespeichertWahl')); },
+        function (e) { msg.textContent = /abgebrochen/.test(String(e && e.message || e)) ? '' : t('f.pdfFail'); });
+  }
+  // Web: nur dieses Schreiben drucken (der Rest der Seite wird beim Drucken ausgeblendet)
+  function schreibenDrucken(text) {
+    var d = $('druckBrief'); if (!d) { d = document.createElement('div'); d.id = 'druckBrief'; document.body.appendChild(d); }
+    d.textContent = text; document.documentElement.classList.add('druckt-brief');
+    var weg = function () { document.documentElement.classList.remove('druckt-brief'); window.removeEventListener('afterprint', weg); };
+    window.addEventListener('afterprint', weg);
+    try { window.print(); } catch (e) {}
+    setTimeout(weg, 60000);
+  }
+  function schreibenKnoepfe() {
+    var android = NATIVE && plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios');
+    SCHREIBEN.forEach(function (x) {
+      var ta = $(x[0]), copy = $(x[1]); if (!ta || !copy) return;
+      var box = document.createElement('div'); box.className = 'schreiben-aus'; box.hidden = true;
+      var btns = document.createElement('div'); btns.className = 'btns';
+      var msg = document.createElement('p'); msg.className = 'small'; msg.setAttribute('role', 'status');
+      var knopf = function (text, haupt, fn) { var b = document.createElement('button'); b.type = 'button'; b.className = 'btn' + (haupt ? ' primary' : ''); b.textContent = text; b.addEventListener('click', fn); btns.appendChild(b); return b; };
+      if (NATIVE) {
+        knopf('Als PDF teilen', true, function () { schreibenAusgeben(ta, x[2], 'teilen', msg); }).setAttribute('data-aus', 'teilen');
+        if (android) { knopf('Drucken', false, function () { schreibenAusgeben(ta, x[2], 'drucken', msg); }); knopf('PDF speichern', false, function () { schreibenAusgeben(ta, x[2], 'speichern', msg); }); }
+      } else {
+        knopf('Drucken', true, function () { schreibenDrucken(ta.value); }).setAttribute('data-aus', 'drucken');
+        if (navigator.share) knopf('Teilen', false, function () { navigator.share({ title: x[2].replace(/-/g, ' '), text: ta.value }).catch(function () {}); });
+      }
+      var hinweis = document.createElement('p'); hinweis.className = 'note schreiben-hinweis'; hinweis.textContent = ABGEBEN[x[3]];
+      box.appendChild(btns); box.appendChild(msg); box.appendChild(hinweis);
+      var reihe = copy.closest('.btns') || copy; reihe.parentNode.insertBefore(box, reihe.nextSibling);
+      // sichtbar, sobald das Schreiben erstellt ist (die Prüfung zeigt dann das Textfeld)
+      new MutationObserver(function () { box.hidden = ta.hidden; }).observe(ta, { attributes: true, attributeFilter: ['hidden'] });
+    });
+  }
+  schreibenKnoepfe();
+
   function copyMappe() {
     var ta = $('mappeText');
     var done = function () { $('copyMsg').textContent = t('f.copied'); ta.hidden = true; };
@@ -988,10 +1114,12 @@
     ['iban', /\biban\b|\bbic\b|bankverbindung|kontoinhaber|kreditinstitut/i],
     ['idnr', /steuer-?\s*id|steueridentifikation|identifikationsnummer|versicherungsnummer|kindergeldnummer|kundennummer|aktenzeichen/i],
     ['gesundheit', /behinderung|\bgdb\b|pflegegrad|erwerbsminder|merkzeichen/i],
+    ['kv', /krankenkasse|krankenversicher|pflegekasse|pflegeversicher|versichert bei|versichertennummer/i],
+    ['aufenthalt', /staatsangeh(ö|oe)rigkeit|aufenthalt|nationalit(ä|ae)t|einreise|reisepass|aufenthaltstitel/i],
     ['ausbildung', /ausbildung|studium|schule|schul|hochschule|universit(ä|ae)t|immatrikul/i],
     ['miete', /miete|nebenkosten|heizkosten|wohnfl(ä|ae)che|unterkunft|vermieter|mietvertrag/i],
     ['vermoegen', /verm(ö|oe)gen|sparguthaben|kontostand|guthaben|wertpapier|bargeld|lebensversicherung|immobilie/i],
-    ['einkommen', /einkommen|brutto|netto|lohn|gehalt|arbeitgeber|\brente\b|verdienst|erwerbst(ä|ae)tig|arbeitslosengeld|krankengeld/i],
+    ['einkommen', /einkommen|brutto|netto|lohn|gehalt|arbeitgeber|\brenten?\b|pension|verdienst|erwerbst(ä|ae)tig|arbeitslosengeld|krankengeld/i],
     ['bezug', /wohngeld|kindergeld|kinderzuschlag|b(ü|ue)rgergeld|grundsicherung|baf(ö|oe)g|sozialleistung|leistungsbezug|bezogene leistungen|bereits beantragt/i],
     ['unterhalt', /unterhalt|alimente|barunterhalt|anderer elternteil/i],
     ['haushalt', /haushalt|bedarfsgemeinschaft|familienstand|angeh(ö|oe)rige|partner|ehegatte|lebensgef|kinder/i],
@@ -1006,16 +1134,18 @@
 
   function blankVal(v) { return !v || !String(v).trim(); }
 
+  function leer(v) { return v === '' || v == null; }
   function scanValue(id) {
     var s = state, v = null;
     if (id === 'name') v = person.name;
     else if (id === 'geb') v = person.geb;
     else if (id === 'adresse') v = [person.strasse, person.ort].filter(function (x) { return !blankVal(x); }).join(', ');
     else if (id === 'tel') v = person.tel;
-    else if (id === 'haushalt') v = haushaltZeile();
-    else if (id === 'miete') v = 'Warmmiete im Monat: ' + money(s.miete);
-    else if (id === 'einkommen') v = 'brutto ' + money(s.brutto) + (s.netto === '' || s.netto == null ? '' : ', netto ' + money(s.netto)) + ' im Monat';
-    else if (id === 'vermoegen') v = money(s.vermoegen);
+    else if (id === 'haushalt') v = started ? haushaltZeile() : null;
+    else if (id === 'miete') v = leer(s.miete) ? null : 'Warmmiete im Monat: ' + money(s.miete) + (leer(s.heizkosten) ? '' : ', davon Heizkosten ' + money(s.heizkosten));
+    else if (id === 'einkommen') v = leer(s.brutto) && leer(s.netto) ? null : [leer(s.brutto) ? '' : 'brutto ' + money(s.brutto), leer(s.netto) ? '' : 'netto ' + money(s.netto)].filter(Boolean).join(', ') + ' im Monat';
+    else if (id === 'vermoegen') v = leer(s.vermoegen) ? null : money(s.vermoegen);
+    else if (!started && id === 'bezug') v = null;
     else if (id === 'bezug') {
       var names = { grundsicherungsgeld: 'Grundsicherungsgeld', sozialamt: 'Grundsicherung oder Sozialhilfe', wohngeld: 'Wohngeld', kiz: 'Kinderzuschlag', kindergeld: 'Kindergeld' };
       var got = BEZUG.filter(function (k) { return s.bezug[k]; }).map(function (k) { return names[k]; });
@@ -1027,18 +1157,26 @@
     return blankVal(v) ? null : String(v);
   }
 
+  // Jede erkannte Zeile bleibt erhalten; Zeilen derselben Art (z. B. Miete, Heizkosten, Wohnfläche) stehen in einer Karte.
+  // Die erste Zeile wie „Antrag auf Wohngeld“ wird als Name des Formulars gezeigt.
+  var scanTitel = '';
   function scanFromText(text) {
-    var seen = {}, out = [];
+    var byId = {}, out = [];
+    scanTitel = '';
     String(text || '').split(/\r?\n/).forEach(function (line) {
-      line = line.replace(/\s+/g, ' ').trim();
-      if (line.length < 3 || /^(antrag\s+auf|formular|anlage)\b/i.test(line)) return;
+      line = line.replace(/\s+/g, ' ').trim().replace(/^(\d{1,2}(\.\d{1,2})*\.?|[a-z]\))\s+/i, '');
+      if (line.length < 3) return;
+      if (/^(antrag\s+(auf|zur|für|nach)|formular|anlage)\b/i.test(line)) { if (!scanTitel) scanTitel = line.slice(0, 90); return; }
       for (var i = 0; i < SCAN.length; i++) {
         if (SCAN[i][1].test(line)) {
-          if (!seen[SCAN[i][0]]) { seen[SCAN[i][0]] = true; out.push({ id: SCAN[i][0], label: line.slice(0, 80) }); }
+          var id = SCAN[i][0];
+          if (!byId[id]) { byId[id] = { id: id, labels: [] }; out.push(byId[id]); }
+          if (byId[id].labels.length < 8 && byId[id].labels.indexOf(line.slice(0, 80)) < 0) byId[id].labels.push(line.slice(0, 80));
           return;
         }
       }
     });
+    out.forEach(function (f) { f.label = f.labels.join(' · '); });
     return out;
   }
 
@@ -1048,27 +1186,63 @@
     if (!$('scan')) return;
     var el = $('sc-out');
     if (!scanFound.length) { el.innerHTML = ''; return; }
-    el.innerHTML = '<h3>' + esc(t('sc.res')) + '</h3><p class="hint">' + esc(t('sc.found', { n: scanFound.length })) + '</p><ul class="sc-list">' +
-      scanFound.map(function (f, i) {
-        var known = SCAN_IDS.indexOf(f.id) >= 0;
-        var expl = known ? t('sc.f.' + f.id) : (f.hint || '');
-        var val = known ? scanValue(f.id) : null;
-        return '<li class="sc-row"><div class="sc-lab" lang="de" dir="ltr">' + esc(f.label) + '</div>' +
-          (expl ? '<p>' + (known ? '' : '<span class="sc-tag">' + esc(t('sc.claudeHint')) + ': </span>') + esc(expl) + '</p>' : '') +
-          '<div class="sc-val">' + (val
-            ? '<span>' + esc(t('sc.val')) + '</span><bdi lang="de" dir="ltr">' + esc(val) + '</bdi><button type="button" class="btn ghost" data-scopy="' + i + '">' + esc(t('sc.copy')) + '</button>'
-            : (known ? '<span class="sc-tag">' + esc(t('sc.self')) + '</span>' : '')) + '</div></li>';
-      }).join('') + '</ul><p class="hint">' + esc(t('sc.check')) + '</p>';
+    var felder = scanFound.reduce(function (n, f) { return n + (f.labels ? f.labels.length : 1); }, 0);
+    var mitWert = scanFound.some(function (f) { return SCAN_IDS.indexOf(f.id) >= 0 && scanValue(f.id); });
+    // Zwei Teile: zuerst, was man aus dem Check abschreiben kann (mit Kopieren), dann eine Liste zum Abhaken; Erklärungen zum Aufklappen
+    var zeilen = scanFound.map(function (f, i) {
+      var known = SCAN_IDS.indexOf(f.id) >= 0;
+      return { f: f, i: i, known: known, val: known ? scanValue(f.id) : null, expl: known ? t('sc.f.' + f.id) : (f.hint || ''),
+        lab: f.labels && f.labels.length > 1 ? '<ul class="sc-labs">' + f.labels.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : esc(f.label) };
+    });
+    var mitZ = zeilen.filter(function (z) { return z.val; }), ohneZ = zeilen.filter(function (z) { return !z.val; });
+    var nMit = mitZ.reduce(function (n, z) { return n + (z.f.labels ? z.f.labels.length : 1); }, 0);
+    var erkl = function (z) { return z.expl ? '<details class="sc-erkl"><summary>' + esc(t('sc.was')) + '</summary><p>' + (z.known ? '' : '<span class="sc-tag">' + esc(t('sc.claudeHint')) + ': </span>') + esc(z.expl) + '</p></details>' : ''; };
+    var vorschauHtml = scanBilder.length ? '<div class="sc-vorschau"><p class="small">' + esc(t('sc.vorschau')) + '</p><div class="sc-bilder">' + scanBilder.map(function (u, i) { return '<button type="button" class="sc-bild" data-bild="' + i + '" aria-label="' + esc(t('sc.vorschauGross', { n: i + 1 })) + '"><img src="' + esc(u) + '" alt=""></button>'; }).join('') + '</div></div>' : '';
+    el.innerHTML = vorschauHtml + '<h3>' + esc(t('sc.res')) + '</h3>' + (scanTitel ? '<p class="sc-titel"><span>' + esc(t('sc.form')) + '</span> <bdi lang="de" dir="ltr">' + esc(scanTitel) + '</bdi></p>' : '') +
+      '<p class="sc-zahl">' + esc(t('sc.summary', { n: felder, m: nMit })) + '</p>' + (mitWert ? '' : '<p class="hint">' + esc(t('sc.tipp')) + '</p>') +
+      (mitZ.length ? '<h4 class="sc-teil">' + esc(t('sc.abschreiben')) + '</h4><ul class="sc-list">' + mitZ.map(function (z) {
+        return '<li class="sc-row sc-mit"><div class="sc-lab" lang="de" dir="ltr">' + z.lab + '</div><div class="sc-val"><bdi lang="de" dir="ltr">' + esc(z.val) + '</bdi><button type="button" class="btn ghost sc-kopie" data-scopy="' + z.i + '">' + esc(t('sc.copy')) + '</button></div><p class="small sc-kopiert" role="status"></p>' + erkl(z) + '</li>';
+      }).join('') + '</ul>' : '') +
+      (ohneZ.length ? '<h4 class="sc-teil">' + esc(t('sc.selbst.h')) + '</h4><ul class="sc-list">' + ohneZ.map(function (z) {
+        return '<li class="sc-row"><label class="check sc-hak"><input type="checkbox"><span class="sc-lab" lang="de" dir="ltr">' + z.lab + '</span></label>' + erkl(z) + '</li>';
+      }).join('') + '</ul>' : '') +
+      '<p class="hint">' + esc(t('sc.check')) + '</p>';
     el.querySelectorAll('[data-scopy]').forEach(function (b) {
       b.addEventListener('click', function () {
-        var f = scanFound[Number(b.getAttribute('data-scopy'))];
-        var v = scanValue(f.id);
-        var done = function () { b.textContent = t('sc.copied'); };
-        try { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(v).then(done, function () {}); } catch (e) {}
+        var f = scanFound[Number(b.getAttribute('data-scopy'))], v = scanValue(f.id), hin = b.closest('.sc-row').querySelector('.sc-kopiert');
+        var ok = function () { hin.textContent = t('sc.kopiert'); }, nein = function () { hin.textContent = t('f.copyFail'); };
+        try {
+          var cb = plug('Clipboard'); // App: Zwischenablage über das Plugin, im Browser über navigator.clipboard
+          if (cb) cb.write({ string: v }).then(ok, nein);
+          else if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(v).then(ok, nein);
+          else nein();
+        } catch (e) { nein(); }
       });
     });
+    el.querySelectorAll('[data-bild]').forEach(function (b) { b.addEventListener('click', function () { b.classList.toggle('gross'); }); });
   }
 
+
+  // Vorschau des Formulars (Foto oder PDF-Seiten), nur im Arbeitsspeicher, solange die Kachel offen ist; wird nie gespeichert
+  var scanBilder = [];
+  function scanBilderSetzen(liste) { scanBilder.forEach(function (u) { if (/^blob:/.test(u)) { try { URL.revokeObjectURL(u); } catch (e) {} } }); scanBilder = liste || []; }
+  function pdfVorschau(file) {
+    return ladePdfjs().then(function (L) { return new Response(file).arrayBuffer().then(function (buf) { return L.getDocument({ data: new Uint8Array(buf), isEvalSupported: false }).promise; }); })
+      .then(function (doc) {
+        var n = Math.min(doc.numPages, 4), bilder = [], i = 0;
+        function naechste() {
+          if (i >= n) { try { doc.destroy(); } catch (e) {} return bilder; }
+          i++;
+          return doc.getPage(i).then(function (page) {
+            var v1 = page.getViewport({ scale: 1 }), vp = page.getViewport({ scale: Math.min(1.6, 1000 / v1.width) });
+            var c = document.createElement('canvas'); c.width = Math.ceil(vp.width); c.height = Math.ceil(vp.height);
+            var ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+            return page.render({ canvasContext: ctx, viewport: vp }).promise.then(function () { bilder.push(c.toDataURL('image/jpeg', 0.85)); return naechste(); });
+          });
+        }
+        return naechste();
+      });
+  }
   function setScanResult(list) {
     scanFound = list;
     renderScan();
@@ -1086,6 +1260,72 @@
     });
   }
 
+  // ----- PDF lesen (pdf.js von Mozilla): digitale PDFs liefern ihren Text direkt; eingescannte Seiten (nur Bild, kein Text)
+  // werden auf dem Gerät zu einem Bild und gehen durch dieselbe Texterkennung wie ein Foto. Die Datei verlässt das Gerät nicht.
+  var PDFJS_VER = '3.11.174', PDF_MAX_SEITEN = 12, pdfjsLaden = null;
+  function ladePdfjs() {
+    if (window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
+    if (pdfjsLaden) return pdfjsLaden;
+    var basis = NATIVE ? 'pdfjs/' : 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/' + PDFJS_VER + '/'; // App: mitgeliefert, offline
+    pdfjsLaden = new Promise(function (res, rej) {
+      var s = document.createElement('script'); s.src = basis + 'pdf.min.js';
+      s.onload = function () { var L = window.pdfjsLib; if (!L) { pdfjsLaden = null; rej(new Error('pdfjs')); return; } L.GlobalWorkerOptions.workerSrc = basis + 'pdf.worker.min.js'; res(L); };
+      s.onerror = function () { pdfjsLaden = null; rej(new Error('load')); };
+      document.head.appendChild(s);
+    });
+    return pdfjsLaden;
+  }
+  // Textstücke einer Seite zu Zeilen: neue Zeile bei anderer Höhe, Leerzeichen bei sichtbarem Abstand
+  function pdfZeilen(items) {
+    var zeilen = [], akt = '', y = null, ende = null;
+    items.forEach(function (it) {
+      if (!it || typeof it.str !== 'string') return;
+      var x = it.transform ? it.transform[4] : 0, yy = it.transform ? it.transform[5] : y;
+      if (y !== null && Math.abs(yy - y) > 2) { zeilen.push(akt); akt = ''; ende = null; }
+      if (akt && ende !== null && x - ende > 1 && !/\s$/.test(akt) && !/^\s/.test(it.str)) akt += ' ';
+      akt += it.str; y = yy; ende = x + (it.width || 0);
+      if (it.hasEOL) { zeilen.push(akt); akt = ''; y = null; ende = null; }
+    });
+    if (akt) zeilen.push(akt);
+    return zeilen.map(function (z) { return z.replace(/\s+/g, ' ').trim(); }).filter(Boolean).join('\n');
+  }
+  function seiteAlsBild(page) {
+    var v1 = page.getViewport({ scale: 1 }), vp = page.getViewport({ scale: Math.min(2.5, 2000 / v1.width) });
+    var c = document.createElement('canvas'); c.width = Math.ceil(vp.width); c.height = Math.ceil(vp.height);
+    var ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+    return page.render({ canvasContext: ctx, viewport: vp }).promise.then(function () { return c; });
+  }
+  // Seitenbild lesen: App mit der Texterkennung des Geräts (Bild kurz im Cache, danach gelöscht), Browser mit Tesseract
+  function bildText(canvas) {
+    if (!NATIVE) return ocr(canvas);
+    var rec = plug('TextRecognition'), fsys = plug('Filesystem');
+    if (!rec || !fsys) return Promise.reject(new Error('kein Plugin'));
+    var name = 'solo-pdfseite-' + Date.now() + '.jpg';
+    return fsys.writeFile({ path: name, data: canvas.toDataURL('image/jpeg', 0.92).split(',')[1], directory: 'CACHE' }).then(function (r) {
+      var weg = function () { return fsys.deleteFile({ path: name, directory: 'CACHE' }).catch(function () {}); };
+      return rec.recognize({ path: r.uri }).then(function (x) { weg(); return ((x && x.lines) || []).join('\n'); }, function (e) { weg(); throw e; });
+    });
+  }
+  function pdfLesen(file, fortschritt) {
+    return ladePdfjs().then(function (L) {
+      return new Response(file).arrayBuffer().then(function (buf) { return L.getDocument({ data: new Uint8Array(buf), isEvalSupported: false }).promise; });
+    }).then(function (doc) {
+      var n = Math.min(doc.numPages, PDF_MAX_SEITEN), texte = [], i = 0;
+      function naechste() {
+        if (i >= n) return Promise.resolve(texte.join('\n'));
+        i++; if (fortschritt) fortschritt(i, n);
+        return doc.getPage(i).then(function (page) {
+          return page.getTextContent().then(function (tc) {
+            var t1 = pdfZeilen(tc.items);
+            return t1.replace(/\s/g, '').length >= 40 ? t1 : seiteAlsBild(page).then(bildText); // kaum Text: eingescannte Seite
+          });
+        }).then(function (t1) { texte.push(t1); return naechste(); });
+      }
+      return naechste().then(function (t) { try { doc.destroy(); } catch (e) {} return t; });
+    });
+  }
+  function istPdf(f) { return !!f && (/pdf/i.test(f.type || '') || /\.pdf$/i.test(f.name || '')); }
+
   function ocr(file) {
     var work = loadTess().then(function (T) {
       return T.createWorker('deu', 1, { langPath: 'https://cdn.jsdelivr.net/npm/@tesseract.js-data/deu/4.0.0_best_int' }).then(function (w) {
@@ -1099,17 +1339,21 @@
   function scanBusyOn(on) {
     scanBusy = on;
     if ($('sc-take')) $('sc-take').disabled = on;
-    if ($('sc-local')) { $('sc-local').disabled = on; $('sc-claude').disabled = on || !$('sc-consent').checked; }
+    if ($('sc-local')) $('sc-local').disabled = on;
+    if ($('sc-claude')) $('sc-claude').disabled = on || !$('sc-consent').checked;
   }
 
-  function runLocal() {
+  // text = true: Knopf „Felder erklären“ (eingefügter Text); false: gerade gewähltes Foto lesen
+  function runLocal(text) {
     if (scanBusy) return;
-    var txt = $('sc-text').value, file = $('sc-file').files && $('sc-file').files[0];
-    if (txt.trim()) { setScanResult(scanFromText(txt)); return; }
+    var txt = $('sc-text') ? $('sc-text').value : '', file = $('sc-file') && $('sc-file').files && $('sc-file').files[0];
+    if (text && txt.trim()) { scanBilderSetzen([]); setScanResult(scanFromText(txt)); return; }
+    if (text && !file) { scanMsg('sc.need'); return; }
     if (!file) { scanMsg('sc.need'); return; }
     scanBusyOn(true); scanMsg('sc.working');
     ocr(file).then(function (text) {
       scanBusyOn(false);
+      try { scanBilderSetzen([URL.createObjectURL(file)]); } catch (e) { scanBilderSetzen([]); }
       setScanResult(scanFromText(text));
     }, function () {
       scanBusyOn(false); scanMsg('sc.ocrFail');
@@ -1129,7 +1373,9 @@
     cam.getPhoto({ source: 'CAMERA', resultType: 'uri', quality: 90, saveToGallery: false, correctOrientation: true }).then(function (ph) {
       path = ph && (ph.path || ph.webPath);
       if (!path) throw new Error('nopath');
-      return rec.recognize({ path: path });
+      var web = ph.webPath;
+      var vorschau = web ? fetch(web).then(function (x) { return x.blob(); }).then(function (b) { return URL.createObjectURL(b); }, function () { return null; }) : Promise.resolve(null);
+      return vorschau.then(function (u) { scanBilderSetzen(u ? [u] : []); return rec.recognize({ path: path }); });
     }).then(function (r) {
       cleanup(); scanBusyOn(false);
       setScanResult(scanFromText(((r && r.lines) || []).join('\n')));
@@ -1187,7 +1433,7 @@
   }
 
   // =====================================================================
-  // Einfache Version (Leichte Sprache): eine Frage pro Bildschirm, große Knöpfe, Vorlesen.
+  // Einfache Version (Leichte Sprache): eine Frage pro Bildschirm, große Knöpfe.
   // Gedacht für Menschen mit Lernschwierigkeiten, zum Beispiel in einer Werkstatt für behinderte Menschen.
   // Rechnet mit denselben Regeln (Rules.evaluate) wie die ausführliche Version: eine Person, eigener Bedarf.
   // =====================================================================
@@ -1256,17 +1502,6 @@
 
   function esSpeichern() { Store.set('lotse.einfach', JSON.stringify({ es: es, an: esModus })); }
 
-  function esSprich(text) {
-    try {
-      if (!window.speechSynthesis) return;
-      window.speechSynthesis.cancel();
-      var u = new SpeechSynthesisUtterance(text);
-      u.lang = { de: 'de-DE', en: 'en-GB', tr: 'tr-TR', ar: 'ar', ru: 'ru-RU', uk: 'uk-UA', pl: 'pl-PL', ro: 'ro-RO' }[lang] || 'de-DE';
-      u.rate = 0.85;
-      window.speechSynthesis.speak(u);
-    } catch (e) {}
-  }
-
   function esRender() {
     var box = $('einfach');
     if (!esModus) { box.hidden = true; $('cols').hidden = false; $('notices').hidden = false; $('jump').hidden = false; $('app').classList.remove('es-an'); return; }
@@ -1275,12 +1510,10 @@
     var fr = esAktiv();
     if (es.schritt >= fr.length) { esErgebnis(fr); return; }
     var f = fr[es.schritt];
-    var vorlesen = t(f.key) + (f.hilfe ? ' ' + t(f.hilfe) : '');
     var h = '<div class="es-top"><span class="es-prog">' + esc(t('es.frage', { n: es.schritt + 1 })) + '</span>' +
       '<div class="es-bar" aria-hidden="true"><span style="width:' + Math.round(100 * es.schritt / fr.length) + '%"></span></div></div>' +
       '<h2 class="es-q" id="es-q" tabindex="-1">' + esc(t(f.key)) + '</h2>' +
-      (f.hilfe ? '<p class="es-h">' + esc(t(f.hilfe)) + '</p>' : '') +
-      (window.speechSynthesis ? '<button type="button" class="es-vor" id="es-vor">🔊 ' + esc(t('es.vorlesen')) + '</button>' : '');
+      (f.hilfe ? '<p class="es-h">' + esc(t(f.hilfe)) + '</p>' : '');
     if (f.art === 'wahl') {
       h += '<div class="es-wahl' + (f.wahl.length > 4 ? ' es-klein' : '') + '" role="group" aria-labelledby="es-q">' + f.wahl.map(function (w) {
         var txt = /^es\./.test(w[2]) ? t(w[2]) : w[2];
@@ -1349,7 +1582,6 @@
       }
       weiter();
     });
-    if ($('es-vor')) $('es-vor').addEventListener('click', function () { esSprich(vorlesen); });
     if ($('es-zurueck')) $('es-zurueck').addEventListener('click', function () { es.schritt = Math.max(0, es.schritt - 1); esSpeichern(); esRender(); });
     $('es-raus').addEventListener('click', function () { esUmschalten(false); });
   }
@@ -1403,7 +1635,6 @@
     if (hat('gsa', 'gsa.grundrente') && es.renteJa === 'ja') tipps.push(t('es.tipp.grundrente'));
     if (gut.some(function (x) { return x.id === 'kgBeh'; })) tipps.push(t(es.wohnen === 'eltern' ? 'es.tipp.kgEltern' : 'es.tipp.kgAbzweig'));
     var h = '<h2 class="es-q" id="es-q" tabindex="-1">' + esc(t(gut.length ? 'es.erg.h' : 'es.erg.keine')) + '</h2>' +
-      (window.speechSynthesis ? '<button type="button" class="es-vor" id="es-vor">🔊 ' + esc(t('es.vorlesen')) + '</button>' : '') +
       (regelnVeraltet() ? '<p class="warn" role="alert">' + esc(t('alt.hinweis', { stand: Rules.RULES.stand })) + '</p>' : '') +
       '<p class="es-h">' + esc(t('es.erg.hinweis')) + '</p>' + gut.map(karte).join('') +
       (tipps.length ? '<div class="es-tipps"><h3 class="es-sub">💡 ' + esc(t('es.erg.tipps')) + '</h3><ul>' + tipps.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div>' : '') +
@@ -1416,7 +1647,7 @@
       '<button type="button" class="chip" id="es-neu">' + esc(t('es.neu')) + '</button>' +
       '<button type="button" class="chip" id="es-raus">' + esc(t('es.ausfuehrlich')) + '</button></div>';
     $('einfach').innerHTML = h;
-    // Text zum Teilen und Vorlesen: Leistung, Einschätzung, Betrag, zuständige Stelle, Tipps, Hinweis „Schätzung“
+    // Text zum Teilen: Leistung, Einschätzung, Betrag, zuständige Stelle, Tipps, Hinweis „Schätzung“
     var text = function () {
       var div = document.createElement('div');
       return ['SoLo: ' + t(gut.length ? 'es.erg.h' : 'es.erg.keine'), ''].concat(gut.map(function (x) {
@@ -1427,7 +1658,6 @@
     $('es-zurueck').addEventListener('click', function () { es.schritt = fr.length - 1; esSpeichern(); esRender(); });
     $('es-neu').addEventListener('click', function () { es = esLeer(); esSpeichern(); esRender(); });
     $('es-raus').addEventListener('click', function () { esUmschalten(false); });
-    if ($('es-vor')) $('es-vor').addEventListener('click', function () { esSprich(text()); });
     $('es-teilen').addEventListener('click', function () {
       var sh = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Share;
       if (sh) sh.share({ title: 'SoLo', text: text() }).catch(function () {});
@@ -1488,66 +1718,39 @@
     lang: function (c) { setLang(c); },
     eval: function () { return Rules.evaluate(state); },
     speichern: function () { flush(); },
-    state: function () { return state; }
+    state: function () { return state; },
+    reihe: function (results) { var k = kartenReihe(results); return k.passt.concat(k.neinKern, k.neinSpez).map(function (r) { return r.id; }); }
   };
-  // ----- Bereiche: Start, Leistungen (Leistungscheck), Brief prüfen, Fristen -----
-  // Beim Öffnen die Startseite; „#leistungen“, „#briefe“, „#fristen“ öffnen den Bereich direkt (Links, Tests).
-  var ANSICHTEN = ['start', 'leistungen', 'briefe', 'fristen'];
-  var aktAnsicht = 'leistungen', fristen = [];
+  // ----- Bereiche: Start, Leistungen (Leistungscheck), Brief prüfen -----
+  // Beim Öffnen die Startseite; „#leistungen“ und „#briefe“ öffnen den Bereich direkt (Links, Tests).
+  var ANSICHTEN = ['start', 'leistungen', 'briefe', 'pflege', 'pflegeinfo']; // „pflege“: Pflegegrad-Einschätzung, gehört zu Leistungen
+  var aktAnsicht = 'leistungen';
   var BRIEFE = [
     ['jc', 'briefe.jobcenter', 'briefe.jobcenter.t', '<path d="M4 20V9l8-5 8 5v11"/><path d="M9 20v-6h6v6M3 20h18"/>'],
     ['sa', 'briefe.sozialamt', 'briefe.sozialamt.t', '<circle cx="12" cy="7" r="3"/><path d="M5 20c1-4 4-6 7-6s6 2 7 6"/>'],
     ['wg', 'briefe.wohngeld', 'briefe.wohngeld.t', '<path d="M4 11l8-6 8 6v9H4z"/><path d="M10 20v-5h4v5"/>'],
     ['fk', 'briefe.familienkasse', 'briefe.familienkasse.t', '<circle cx="8" cy="8" r="2.5"/><circle cx="16" cy="8" r="2.5"/><path d="M4 20c.5-3 2-5 4-5M20 20c-.5-3-2-5-4-5M9 20c.5-2 1.5-3 3-3s2.5 1 3 3"/>'],
     ['pk', 'briefe.pflegekasse', 'briefe.pflegekasse.t', '<path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/>'],
-    ['vm', 'briefe.vermieter', 'briefe.vermieter.t', '<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/>']
+    ['vm', 'briefe.vermieter', 'briefe.vermieter.t', '<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/>'],
+    ['af', 'briefe.formular', 'briefe.formular.t', '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h5M8 16h3"/><path d="M13.5 16l1.8 1.8 3.2-3.6"/>']
   ];
   function zeigeAnsicht(a, fokus) {
     if (ANSICHTEN.indexOf(a) < 0) a = 'start';
+    if (a === 'pflege' && !$('pflegeAssist').children.length) a = 'leistungen'; // Einschätzung nur über ihren Knopf öffnen
     aktAnsicht = a;
+    $('app').setAttribute('data-ansicht', a);
+    if (a !== 'briefe') $('app').classList.remove('brief-offen'); else $('app').classList.toggle('brief-offen', !!briefArt); // in der Pflegegrad-Einschätzung Kopf und Hinweise ausblenden, damit die Frage oben steht
     ANSICHTEN.forEach(function (x) { $('v-' + x).hidden = x !== a; });
     $('jump').hidden = a !== 'leistungen' || esModus;
-    document.querySelectorAll('#appnav button').forEach(function (b) { if (b.getAttribute('data-ansicht') === a) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
+    var navA = a === 'pflege' || a === 'pflegeinfo' ? 'leistungen' : a;
+    document.querySelectorAll('#appnav button').forEach(function (b) { if (b.getAttribute('data-ansicht') === navA) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
     try { if (location.hash !== '#' + a) history.replaceState(null, '', '#' + a); } catch (e) {}
     bereicheText();
     if (fokus) { window.scrollTo(0, 0); var h = $('v-' + a).querySelector('h2'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); } }
   }
-  function heuteIso() { var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
-  function tageBis(iso) { var a = heuteIso().split('-').map(Number), b = String(iso).split('-').map(Number); return Math.round((Date.UTC(b[0], b[1] - 1, b[2]) - Date.UTC(a[0], a[1] - 1, a[2])) / 864e5); }
-  function datumText(iso) { var b = String(iso).split('-').map(Number); try { return new Date(b[0], b[1] - 1, b[2]).toLocaleDateString(lang, { day: '2-digit', month: '2-digit', year: 'numeric' }); } catch (e) { return iso; } }
-  function fristSpeichern() { Store.set('lotse.fristen', JSON.stringify(fristen)); }
-  function fristKarte(f, loeschbar) {
-    var n = tageBis(f.datum);
-    var el = document.createElement('div');
-    el.className = 'frist' + (n < 0 ? ' vorbei' : n <= 14 ? ' nah' : '');
-    var tage = document.createElement('span'); tage.className = 'frist-tage';
-    tage.textContent = n < 0 ? '!' : String(n);
-    var klein = document.createElement('small'); klein.textContent = n < 0 ? t('fristen.vorbei') : n === 1 ? t('fristen.tag') : t('fristen.tage'); tage.appendChild(klein);
-    var txt = document.createElement('span'); txt.className = 'frist-txt';
-    var b = document.createElement('b'); b.textContent = f.titel; txt.appendChild(b);
-    txt.appendChild(document.createTextNode(t('fristen.bis', { datum: datumText(f.datum) })));
-    el.appendChild(tage); el.appendChild(txt);
-    if (loeschbar) {
-      var x = document.createElement('button'); x.type = 'button'; x.className = 'btn ghost'; x.textContent = t('fristen.erledigt');
-      x.setAttribute('aria-label', t('fristen.erledigt') + ': ' + f.titel);
-      x.addEventListener('click', function () { fristen = fristen.filter(function (y) { return y !== f; }); fristSpeichern(); bereicheText(); $('fristNeu').querySelector('summary').focus(); });
-      el.appendChild(x);
-    }
-    return el;
-  }
-  function fristenSortiert() { return fristen.slice().sort(function (a, b) { return a.datum < b.datum ? -1 : a.datum > b.datum ? 1 : 0; }); }
   function bereicheText() {
-    if (!$('v-start') || !fristen) return;
-    var sort = fristenSortiert(), offen = sort.filter(function (f) { return tageBis(f.datum) >= 0; });
-    $('navPunkt').hidden = !sort.some(function (f) { return tageBis(f.datum) <= 14; });
-    var sf = $('startFristen'); sf.textContent = '';
-    if (offen.length) {
-      var h = document.createElement('h3'); h.className = 'abschnitt'; h.textContent = t('home.naechstes'); sf.appendChild(h);
-      offen.slice(0, 2).forEach(function (f) { sf.appendChild(fristKarte(f, false)); });
-    }
-    var fl = $('fristListe'); fl.textContent = '';
-    if (!sort.length) { var p = document.createElement('p'); p.className = 'muted'; p.textContent = t('fristen.leer'); fl.appendChild(p); }
-    sort.forEach(function (f) { fl.appendChild(fristKarte(f, true)); });
+    if (!$('v-start') || !BRIEFE) return; // applyLang läuft schon vor dieser Stelle
+    briefKopf();
     var bk = $('briefKacheln');
     if (!bk.children.length) BRIEFE.forEach(function (x) {
       var k = document.createElement('button'); k.type = 'button'; k.className = 'kachel'; k.id = 'brief-' + x[0];
@@ -1557,24 +1760,288 @@
     });
     BRIEFE.forEach(function (x) { var k = $('brief-' + x[0]); k.querySelector('b').textContent = t(x[1]); k.querySelector('.k-t').textContent = t(x[2]); });
   }
+  // ----- Pflegegrad selbst einschätzen (geführt; Rechnung und Texte aus erweiterungen/pflege*.js) -----
+  var pa = { antworten: null, schaetzung: null };
+  function paSpeichern() { Store.set('lotse.pflegecheck', JSON.stringify(pa)); }
+  function paEchterPg() { return /^[1-5]$/.test(String(state.pflegegrad)) ? +state.pflegegrad : null; }
+  function paStandText() {
+    if (!pa.schaetzung) return '';
+    return t('pa.stand', { pg: pa.schaetzung.pg ? String(pa.schaetzung.pg) : '0', punkte: String(pa.schaetzung.punkte).replace('.', ','), datum: datumKurz(pa.schaetzung.datum) });
+  }
+  function datumKurz(iso) { var b = String(iso || '').split('-').map(Number); try { return new Date(b[0], b[1] - 1, b[2]).toLocaleDateString(lang, { day: '2-digit', month: '2-digit', year: 'numeric' }); } catch (e) { return iso; } }
+  function paKnopfText() { return t(paEchterPg() ? 'pa.hoeher' : 'pa.start'); }
+  function paAnzeigen() {
+    if (!$('paStart') || !pa) return;
+    $('paStart').textContent = paKnopfText();
+    $('paStand').textContent = paStandText(); $('paStand').hidden = !pa.schaetzung;
+    var c = $('c-pflege');
+    if (c && typeof PflegeAssistent !== 'undefined') {
+      var box = c.querySelector('.pa-karte-knopf');
+      if (!box) { box = document.createElement('div'); box.className = 'pa-karte-knopf'; c.appendChild(box); }
+      box.textContent = '';
+      if (pa.schaetzung) { var p = document.createElement('p'); p.className = 'small'; p.textContent = paStandText(); box.appendChild(p); }
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'btn ghost'; b.textContent = paKnopfText();
+      b.addEventListener('click', paOeffnen); box.appendChild(b);
+    }
+    // Erklärknopf an den Pflegekarten: Was ist Geld aufs Konto, was ist Budget bei der Pflegekasse?
+    var PI_LINKS = { 'c-pflege': [['pi-geld', 'Pflegegeld'], ['pi-dienst', 'Pflegedienst'], ['pi-entl', 'Entlastungsbetrag']],
+      'c-pflegeplus': [['pi-verh', 'Verhinderungs- und Kurzzeitpflege'], ['pi-hilfs', 'Pflegehilfsmittel und Umbau']] };
+    Object.keys(PI_LINKS).forEach(function (id) {
+      var k = $(id); if (!k || k.querySelector('.pi-links')) return;
+      var w = document.createElement('div'); w.className = 'pi-links';
+      var kopf = document.createElement('span'); kopf.className = 'pi-kopf'; kopf.textContent = t('pa.info'); w.appendChild(kopf);
+      PI_LINKS[id].forEach(function (x) {
+        var bt = document.createElement('button'); bt.type = 'button'; bt.className = 'pi-link';
+        bt.setAttribute('aria-label', t('pa.erklaerung') + ': ' + x[1]);
+        bt.appendChild(document.createTextNode(x[1])); var pf = document.createElement('span'); pf.setAttribute('aria-hidden', 'true'); pf.textContent = ' ›'; bt.appendChild(pf);
+        bt.addEventListener('click', function () { pflegeInfo('leistungen', id, x[0]); });
+        w.appendChild(bt);
+      });
+      var kern = k.querySelector('.txt .kern'); if (kern) kern.after(w); else k.appendChild(w);
+    });
+  }
+  function paZurueck(ziel) {
+    zeigeAnsicht('leistungen', false);
+    karteAuf(ziel);
+    var el = $(ziel) || $('paStart');
+    if (el) { try { el.scrollIntoView({ block: 'center' }); } catch (e) {} if (el.focus) el.focus({ preventScroll: true }); }
+  }
+  function paUebernehmen(r) {
+    pa.schaetzung = { pg: r.pg, punkte: Math.round(r.gesamt * 100) / 100, datum: heuteIso() };
+    if (r.pg >= 1 && !paEchterPg() && state.pflegegrad !== 'antrag') state.pflegegrad = 'antrag';
+    paSpeichern(); $('pflegegrad').value = state.pflegegrad; touched(); // Auswahlfelder schreibt writeForm nicht
+  }
+  function heuteIso() { var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+  function paOeffnen() {
+    if (typeof PflegeAssistent === 'undefined') return;
+    $('paNurDe').hidden = lang === 'de';
+    var pgJetzt = paEchterPg();
+    PflegeAssistent.start($('pflegeAssist'), {
+      pgAktuell: pgJetzt, antworten: pa.antworten,
+      speichern: function (a) { pa.antworten = a; paSpeichern(); },
+      abbrechen: function () { paZurueck('paStart'); },
+      aktionen: [
+        { text: 'Ergebnis übernehmen', haupt: true, wenn: function (r, pg) { return pg == null; }, fn: function (r) { paUebernehmen(r); paZurueck('c-pflege'); } },
+        { text: 'Antrag an die Pflegekasse in die Antragsmappe', zweit: true, wenn: function (r, pg) { return pg == null && r.pg >= 1; }, fn: function (r) {
+          paUebernehmen(r); picked.pflege = true; pickedUser.pflege = true; if (lastOut) renderPick(lastOut.results); paZurueck('mappeMake'); } },
+        { text: 'Antrag auf Höherstufung schreiben', haupt: true, wenn: function (r, pg) { return pg != null && r.pg > pg; }, fn: function (r, a, g) {
+          paUebernehmen(r); zeigeAnsicht('briefe', false); briefOeffnen('pk'); if (window.PruefpaketPflege) { window.PruefpaketPflege.setze(g, 'hoeher'); briefFormular(); } } },
+        { text: 'Mit dem Gutachten der Pflegekasse vergleichen', fn: function (r) {
+          paUebernehmen(r); zeigeAnsicht('briefe', false); briefOeffnen('pk'); } },
+        { text: 'Was bedeuten diese Leistungen?', fn: function () { pflegeInfo('pflege', 'pa-q'); } },
+        { text: 'Zurück zu den Leistungen', fn: function (r) { paUebernehmen(r); paZurueck('paStart'); } }
+      ]
+    });
+    zeigeAnsicht('pflege', false);
+    var q = $('pa-q'); if (q) { window.scrollTo(0, 0); q.focus({ preventScroll: true }); }
+  }
+  $('paStart').addEventListener('click', paOeffnen);
+  window.SoLoPflegeStart = paOeffnen; // „Pflegegrad selbst einschätzen“ aus der Gutachten-Prüfung
+  // Sprung zu einer Ergebniskarte (Übersicht oben, Kachel „Zwei Wege“): Karte aufklappen
+  $('ergebnis').addEventListener('click', function (e) { var a = e.target.closest && e.target.closest('a[href^="#c-"]'); if (a) karteAuf(a.getAttribute('href').slice(1)); });
+
+  // ----- Erklärseite: So funktionieren die Leistungen der Pflegekasse (Beträge aus den Rechenregeln) -----
+  var piZurueckZu = 'leistungen', piFokus = null;
+  function piEuro(x) { return Number(x).toLocaleString('de-DE', { maximumFractionDigits: 0 }) + ' €'; }
+  function pflegeInfoBauen() {
+    var R = Rules.RULES, box = $('pflegeInfo');
+    if (box.children.length) return;
+    var el = function (tag, text, cls) { var e = document.createElement(tag); if (text != null) e.textContent = text; if (cls) e.className = cls; return e; };
+    var je = function (o) { return [2, 3, 4, 5].map(function (g) { return 'PG ' + g + ': ' + piEuro(o[g]); }).join(' · '); };
+    box.appendChild(el('h2', 'So funktionieren die Leistungen der Pflegekasse')).id = 'h-pflegeinfo';
+    box.appendChild(el('p', 'Nur das Pflegegeld kommt aufs Konto. Alles andere sind Budgets: Die Pflegekasse bezahlt damit Hilfe, Dienste oder Lieferungen, meistens gegen Rechnung. Wer die Budgets nicht nutzt, verschenkt Geld.', 'lead'));
+    var zeilen = [
+      ['Pflegegeld', 'Geld aufs Konto, jeden Monat', je(R.pflege.geld), 'geld', 'pi-geld'],
+      ['Pflegedienst (Pflegesachleistung)', 'Budget: Der Pflegedienst rechnet direkt mit der Pflegekasse ab', 'bis ' + je(R.pflegeSach), 'budget', 'pi-dienst'],
+      ['Entlastungsbetrag', 'Budget: Die Pflegekasse bezahlt Rechnungen anerkannter Anbieter', piEuro(R.pflege.entlastung) + ' im Monat, ab Pflegegrad 1', 'budget', 'pi-entl'],
+      ['Verhinderungs- und Kurzzeitpflege', 'Budget: Für die Vertretung, wenn die Pflegeperson ausfällt', 'zusammen ' + piEuro(R.entlastungsbudget) + ' im Jahr, ab Pflegegrad 2', 'budget', 'pi-verh'],
+      ['Tages- und Nachtpflege', 'Budget: Die Einrichtung rechnet mit der Pflegekasse ab', 'bis ' + je(R.pflegeTages), 'budget', 'pi-dienst'],
+      ['Pflegehilfsmittel zum Verbrauch', 'Lieferung, zum Beispiel als Pflegebox', 'bis ' + piEuro(R.beh.verbrauch) + ' im Monat', 'budget', 'pi-hilfs'],
+      ['Umbau der Wohnung', 'Zuschuss, vor dem Umbau beantragen', 'bis ' + piEuro(R.beh.wohnumfeld) + ' je Maßnahme', 'budget', 'pi-hilfs']];
+    var tw = el('div', null, 'tabwrap'); tw.setAttribute('role', 'region'); tw.setAttribute('aria-label', 'Geld oder Budget'); tw.tabIndex = 0;
+    var tb = el('table'), th = el('thead'), tr0 = el('tr');
+    ['Leistung', 'Wie es ankommt', 'Höhe'].forEach(function (x) { tr0.appendChild(el('th', x)); }); th.appendChild(tr0); tb.appendChild(th);
+    var body = el('tbody');
+    zeilen.forEach(function (z) {
+      var tr = el('tr'), td0 = el('td'), ln = el('button', null, 'pi-link pi-link-tab'); ln.type = 'button';
+      ln.appendChild(document.createTextNode(z[0])); var pf = el('span', ' ›'); pf.setAttribute('aria-hidden', 'true'); ln.appendChild(pf);
+      ln.addEventListener('click', function () { piAbschnitt(z[4]); }); td0.appendChild(ln); tr.appendChild(td0); var td = el('td'); td.appendChild(el('span', z[3] === 'geld' ? 'Geld · ' : 'Budget · ', z[3])); td.appendChild(document.createTextNode(z[1].replace(/^Budget: |^Geld aufs Konto, /, function (m) { return m === 'Geld aufs Konto, ' ? 'aufs Konto, ' : ''; }))); tr.appendChild(td); tr.appendChild(el('td', z[2])); body.appendChild(tr); });
+    tb.appendChild(body); tw.appendChild(tb); box.appendChild(tw);
+    var abschnitt = function (id, titel, absaetze, liste) {
+      var d = el('details'); d.id = id; d.appendChild(el('summary', titel));
+      absaetze.forEach(function (p) { d.appendChild(el('p', p)); });
+      if (liste) { var ul = el('ul'); liste.forEach(function (x) { ul.appendChild(el('li', x)); }); d.appendChild(ul); }
+      box.appendChild(d);
+    };
+    abschnitt('pi-geld', 'Pflegegeld: Geld für die Pflege durch Angehörige', [
+      'Wenn Angehörige, Freunde oder Nachbarn pflegen, zahlt die Pflegekasse ab Pflegegrad 2 jeden Monat Pflegegeld aufs Konto der gepflegten Person. Sie kann frei entscheiden, wofür sie es verwendet, zum Beispiel als Dankeschön an die Pflegeperson.',
+      'Pflicht: Bei Pflegegrad 2 und 3 einmal im halben Jahr, bei Pflegegrad 4 und 5 einmal im Vierteljahr kommt eine kostenlose Pflegeberatung ins Haus. Fällt sie aus, kann die Pflegekasse das Pflegegeld kürzen.']);
+    abschnitt('pi-dienst', 'Pflegedienst: Sachleistung und Kombination', [
+      'Kommt ein Pflegedienst, rechnet er direkt mit der Pflegekasse ab. Du bekommst dafür kein Geld, aber auch keine Rechnung, solange das Budget reicht.',
+      'Nutzt der Pflegedienst nur einen Teil des Budgets, zahlt die Pflegekasse den Rest anteilig als Pflegegeld aus. Das heißt Kombinationsleistung.']);
+    abschnitt('pi-entl', 'Entlastungsbetrag: ' + piEuro(R.pflege.entlastung) + ' im Monat, aber nicht aufs Konto', [
+      'Den Entlastungsbetrag gibt es ab Pflegegrad 1. Er wird nicht ausgezahlt. Die Pflegekasse bezahlt damit Hilfen, die die Pflegeperson entlasten.',
+      'So geht es: Der Anbieter rechnet direkt mit der Pflegekasse ab, oder du bezahlst selbst und schickst die Rechnung zur Erstattung ein. Der Anbieter muss in deinem Bundesland anerkannt sein. Die Pflegekasse hat eine Liste.',
+      'Nicht genutzte Beträge sammeln sich an. Du kannst sie bis zum 30. Juni des Folgejahres nutzen, danach verfallen sie.'],
+      ['Haushaltshilfe, Einkaufen, Begleitung zum Arzt', 'Betreuung zu Hause oder in einer Betreuungsgruppe', 'Eigenanteile bei Tages- oder Kurzzeitpflege']);
+    abschnitt('pi-verh', 'Verhinderungspflege und Kurzzeitpflege: Vertretung für die Pflegeperson', [
+      'Ab Pflegegrad 2 haben beide einen gemeinsamen Jahresbetrag von ' + piEuro(R.entlastungsbudget) + '. Auch das ist kein Geld aufs Konto: Die Pflegekasse bezahlt damit die Vertretung.',
+      'Verhinderungspflege: Die Pflegeperson macht Urlaub, ist krank oder braucht ein paar Stunden Pause. Dann pflegt jemand anderes zu Hause, zum Beispiel ein Pflegedienst, Bekannte oder Nachbarn. Bei nahen Verwandten zahlt die Pflegekasse weniger; frag dort nach.',
+      'Kurzzeitpflege: Die gepflegte Person wohnt für eine Zeit in einer Pflegeeinrichtung, zum Beispiel nach einem Krankenhausaufenthalt.',
+      'Während der Vertretung zahlt die Pflegekasse bis zu 8 Wochen im Jahr die Hälfte des Pflegegelds weiter. Wer nur stundenweise vertreten wird (weniger als 8 Stunden am Tag), behält das volle Pflegegeld.',
+      'Tipp: Den Antrag kannst du auch nachträglich stellen. Hebe alle Rechnungen und Quittungen auf.']);
+    abschnitt('pi-hilfs', 'Pflegehilfsmittel und Umbau der Wohnung', [
+      'Pflegehilfsmittel zum Verbrauch, zum Beispiel Einmalhandschuhe, Desinfektion oder Bettschutz, gibt es bis ' + piEuro(R.beh.verbrauch) + ' im Monat. Meist kommt eine Box nach Hause, die der Anbieter mit der Pflegekasse abrechnet.',
+      'Größere Hilfsmittel wie ein Pflegebett oder ein Rollator werden meist leihweise gestellt.',
+      'Für einen Umbau, zum Beispiel eine bodengleiche Dusche oder Haltegriffe, gibt es bis ' + piEuro(R.beh.wohnumfeld) + ' je Maßnahme. Wichtig: vor dem Umbau beantragen, mit Kostenvoranschlag.']);
+    abschnitt('pi-gut', 'Gut zu wissen für pflegende Angehörige', [
+      'Wer mindestens 10 Stunden in der Woche an mindestens 2 Tagen pflegt und höchstens 30 Stunden arbeitet, für den zahlt die Pflegekasse Rentenbeiträge.',
+      'In der Steuererklärung gibt es den Pflege-Pauschbetrag.',
+      'Pflegeberatung ist kostenlos, bei der Pflegekasse oder im Pflegestützpunkt. Dort hilft man auch beim Antrag.']);
+    box.appendChild(el('p', 'Stand der Beträge: ' + (R.stand || 'November 2026') + '. Den genauen Anspruch legt die Pflegekasse fest.', 'small muted'));
+  }
+  // Abschnitt aufklappen, hinscrollen und den Fokus auf seine Überschrift setzen
+  function piAbschnitt(id) {
+    var d = id && $(id); if (!d) return;
+    d.open = true;
+    try { d.scrollIntoView({ block: 'start' }); } catch (e) {}
+    var s = d.querySelector('summary'); if (s) s.focus({ preventScroll: true });
+  }
+  function pflegeInfo(zurueckZu, fokus, abschnitt) {
+    piZurueckZu = zurueckZu || 'leistungen'; piFokus = fokus || null;
+    pflegeInfoBauen(); $('piNurDe').hidden = lang === 'de';
+    document.querySelectorAll('#pflegeInfo details').forEach(function (d) { d.open = false; });
+    zeigeAnsicht('pflegeinfo', !abschnitt);
+    if (abschnitt) piAbschnitt(abschnitt);
+  }
+  $('piZurueck').addEventListener('click', function () {
+    zeigeAnsicht(piZurueckZu, false);
+    var el = piFokus && $(piFokus);
+    var karte = el && el.closest && el.closest('article.card'); if (karte) karteAuf(karte.id); // zurück in die aufgeklappte Karte if (el) { try { el.scrollIntoView({ block: 'center' }); } catch (e) {} if (el.focus) { if (!el.hasAttribute('tabindex') && !/^(BUTTON|A|INPUT)$/.test(el.tagName)) el.setAttribute('tabindex', '-1'); el.focus({ preventScroll: true }); } }
+  });
+  Store.get('lotse.pflegecheck', function (v) { try { var d = v ? JSON.parse(v) : null; if (d && typeof d === 'object') { pa.antworten = d.antworten || null; pa.schaetzung = d.schaetzung || null; } } catch (e) {} paAnzeigen(); });
+
   // Brief prüfen: Kachel öffnet den passenden Teil des Prüfpakets (Abschnitte aus erweiterungen/vorschau.html)
-  var BRIEF_TEIL = { jc: 'p-bescheid', sa: 'p-gsa', wg: 'p-wg', fk: 'p-kiz', pk: 'p-pflege', vm: 'p-nk' };
+  var BRIEF_TEIL = { jc: 'p-bescheid', sa: 'p-gsa', wg: 'p-wg', fk: 'p-kiz', pk: 'p-pflege', vm: 'p-nk', af: 'scan' };
+  var briefArt = null;
   function briefOeffnen(art) {
     var teil = BRIEF_TEIL[art];
     document.querySelectorAll('#checkBox .pp-teil').forEach(function (s) { s.hidden = s.id !== teil; });
     $('briefKacheln').hidden = !!teil; $('briefeIntro').hidden = !!teil; $('checkBox').hidden = !teil;
     $('ppNurDe').hidden = lang === 'de';
+    if (briefArt !== (teil ? art : null)) { $('elMsg').textContent = ''; $('elErg').textContent = ''; }
+    if (!teil) scanBilderSetzen([]);
+    briefArt = teil ? art : null; briefKopf();
+    $('app').classList.toggle('brief-offen', !!teil); // in einer Kachel Logo und Sprachwahl ausblenden, damit die Wahl oben steht
+    // Erst entscheiden (scannen, einfügen oder selbst eingeben), dann erscheint das Formular der Prüfung
+    if (teil && art !== 'af' && !$(teil).dataset.offen) $(teil).classList.add('pp-zu');
+    // Name und Anschrift aus der Ausfüllhilfe übernehmen, damit man sie für das Schreiben nicht noch einmal tippt (nur leere Felder)
+    ['pf', 'bs', 'ga', 'wg', 'kz', 'nk'].forEach(function (k) {
+      [['-name', person.name], ['-anschrift', person.strasse], ['-ort', person.ort]].forEach(function (x) { var el = $(k + x[0]); if (el && !el.value && x[1]) el.value = x[1]; });
+    }); // einmal geöffnet bleibt das Formular offen (z. B. nach der Pflege-Einschätzung) // Antragsformular: dort sind Foto und Einfügen selbst die Wahl
+    elPlatz();
+    if (art === 'pk' && window.PruefpaketPflege && typeof PflegeAssistent !== 'undefined') window.PruefpaketPflege.eigene(pa.antworten ? PflegeAssistent.eingabe(pa.antworten, null) : null);
     window.scrollTo(0, 0);
     var h = teil && $(teil).querySelector('h2'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
   }
-  $('briefZurueck').addEventListener('click', function () { var war = null; document.querySelectorAll('#checkBox .pp-teil').forEach(function (s) { if (!s.hidden) war = s.id; }); briefOeffnen(null); for (var k in BRIEF_TEIL) if (BRIEF_TEIL[k] === war) $('brief-' + k).focus(); });
-  // Frist aus anderen Teilen der App eintragen (Prüfpaket): gleiche Frist nicht doppelt
-  function fristEintragen(f) {
-    if (!f || !f.titel || !/^\d{4}-\d{2}-\d{2}$/.test(f.datum || '')) return;
-    if (fristen.some(function (y) { return y.titel === f.titel && y.datum === f.datum; })) return;
-    fristen.push({ titel: String(f.titel).slice(0, 140), datum: f.datum, quelle: f.quelle || '' }); fristSpeichern(); bereicheText();
+  // ----- Brief einlesen: scannen (Kamera und Texterkennung auf dem Gerät) oder Text einfügen; erweiterungen/brief-lesen.js -----
+  // Ohne geöffnete Kachel erkennt die App Absender und Art selbst; in einer Kachel ist die Art bekannt.
+  var elGesammelt = '', elBusy = false;
+  // Überschrift oben: ohne Kachel „Von wem ist der Brief?“, in einer Kachel das, was gewählt wurde
+  function briefKopf() {
+    var x = null; BRIEFE.forEach(function (b) { if (b[0] === briefArt) x = b; });
+    $('h-briefe').textContent = !x ? t('briefe.h') : briefArt === 'af' ? t(x[1]) : t('briefe.von', { name: t(x[1]) });
   }
-  window.SoLoFristen = { eintragen: fristEintragen };
+  // In einer Kachel: Formular der Prüfung zeigen (nach der Wahl „selbst eingeben“ oder nach dem Einlesen)
+  function briefFormular(fokus) {
+    var sec = briefArt && $(BRIEF_TEIL[briefArt]); if (!sec) return;
+    sec.classList.remove('pp-zu'); sec.dataset.offen = '1'; $('elSelbst').hidden = true;
+    if (fokus) { var f = sec.querySelector('.card:nth-of-type(2) input, form input, form select'); if (f) f.focus(); }
+  }
+  // Das Einlesen gibt es nur in einer Kachel, direkt unter der Erklärung des Abschnitts. Auf der Übersicht stehen nur die Kacheln.
+  function elPlatz() {
+    var box = $('einlesen');
+    var sec = briefArt && briefArt !== 'af' && $(BRIEF_TEIL[briefArt]), karte = sec && sec.querySelector('.card');
+    if (!karte) { box.hidden = true; return; }
+    box.hidden = false;
+    karte.appendChild(box);
+    $('elSelbst').hidden = !sec || !sec.classList.contains('pp-zu');
+    $('elScanT').textContent = t(elGesammelt ? 'el.mehr' : briefArt ? 'el.scanHier' : 'el.scan');
+  }
+  function elNachricht(text) { $('elMsg').textContent = text || ''; }
+  function zahlOderLeer(v) { var x = parseAmount(String(v == null ? '' : v)); return isFinite(x) && x > 0 ? x : ''; }
+  // Haushalt aus „Leistungen“, damit die Prüfung nicht alles neu abfragt (nur wenn dort schon etwas eingetragen ist)
+  function haushalt() {
+    if (!started) return { erwachsene: [], kinder: [] };
+    var alter = state.gebJahr ? new Date().getFullYear() - (+state.gebJahr) : 40;
+    var erw = [{ alter: alter, brutto: zahlOderLeer(state.ek1Brutto), netto: zahlOderLeer(state.ek1Netto) }];
+    if (state.adults === 2) erw.push({ alter: alter, brutto: zahlOderLeer(state.ek2Brutto), netto: zahlOderLeer(state.ek2Netto) });
+    var kinder = [], u6 = state.kidsU6 || 0, k14 = state.kids14 || 0, rest = Math.max(0, (state.kids || 0) - u6 - k14), i;
+    for (i = 0; i < u6; i++) kinder.push(3);
+    for (i = 0; i < rest; i++) kinder.push(9);
+    for (i = 0; i < k14; i++) kinder.push(15);
+    return { erwachsene: erw, kinder: kinder, miete: zahlOderLeer(state.miete), heiz: zahlOderLeer(state.heizkosten), stufe: state.mietstufe || '', alleinerziehend: state.adults === 1 && (state.kids || 0) > 0 };
+  }
+  function textLesen(text) {
+    if (!text || !text.trim()) { elNachricht(t('el.leer')); return; }
+    var r = BriefLesen.lies(text, briefArt || null);
+    // Auch in einer Kachel: Anhörung oder Aufforderung zur Mitwirkung erkennen und erklären statt nachzurechnen
+    var e0 = briefArt ? BriefLesen.erkenne(text) : null;
+    if (e0 && (e0.art === 'anh' || e0.art === 'mit')) r = BriefLesen.lies(text, null);
+    $('elErg').textContent = '';
+    if (!r.art) { elNachricht(t('el.unbekannt')); return; }
+    if (r.art === 'anh' || r.art === 'mit') {
+      var d = document.createElement('div'); d.className = 'el-erkl';
+      var b = document.createElement('b'); b.textContent = r.titel; d.appendChild(b);
+      var p = document.createElement('p'); p.textContent = BriefLesen.ERKLAERUNG[r.art]; d.appendChild(p);
+      var fr = BriefLesen.frist(text);
+      if (fr) { var q = document.createElement('p'); q.textContent = t('el.frist', { frist: fr }); d.appendChild(q); }
+      $('elErg').appendChild(d); elNachricht(t('el.erkanntOhne', { titel: r.titel })); return;
+    }
+    if (!briefArt) briefOeffnen(r.art);
+    if (r.art === 'pk') { $('pf-text').value = text; $('pf-lesen').click(); briefFormular(); elNachricht(t('el.erkanntPk', { titel: r.titel })); return; }
+    if (r.art === 'af') { setScanResult(scanFromText(text)); elNachricht(t('el.erkanntOhne', { titel: r.titel })); return; }
+    var n = window.PruefpaketLesen ? window.PruefpaketLesen.fuelle(r.art, r, haushalt()) : 0;
+    briefFormular();
+    elNachricht(n ? t('el.erkannt', { titel: r.titel, n: String(n) }) : t('el.keineWerte', { titel: r.titel }));
+  }
+  // Foto aufnehmen und auf dem Gerät lesen (App), Foto danach löschen; im Browser: Bild wählen und mit Tesseract lesen
+  function fotoText() {
+    return new Promise(function (res, rej) {
+      var cam = plug('Camera'), rec = plug('TextRecognition'), fsys = plug('Filesystem'), path = null;
+      if (!cam || !rec) { rej(new Error('kein Plugin')); return; }
+      var weg = function () { if (path && fsys) { try { fsys.deleteFile({ path: path }).catch(function () {}); } catch (e) {} } };
+      cam.getPhoto({ source: 'CAMERA', resultType: 'uri', quality: 90, saveToGallery: false, correctOrientation: true }).then(function (ph) {
+        path = ph && (ph.path || ph.webPath); if (!path) throw new Error('nopath');
+        return rec.recognize({ path: path });
+      }).then(function (r) { weg(); res(((r && r.lines) || []).join('\n')); }, function (e) { weg(); rej(e); });
+    });
+  }
+  function elFertig(text) { elBusy = false; $('elScan').disabled = false; elGesammelt = (elGesammelt ? elGesammelt + '\n' : '') + text; elPlatz(); textLesen(elGesammelt); }
+  function elFehler(e) { elBusy = false; $('elScan').disabled = false; elNachricht(/cancel/i.test(String(e && (e.message || e) || '')) ? '' : t('el.fehler')); }
+  $('elScan').addEventListener('click', function () {
+    if (elBusy) return;
+    if (NATIVE) { elBusy = true; $('elScan').disabled = true; elNachricht(t('el.lese')); fotoText().then(elFertig, elFehler); return; }
+    $('elFile').value = ''; $('elFile').click();
+  });
+  $('elPdf').addEventListener('click', function () { if (elBusy) return; $('elPdfFile').value = ''; $('elPdfFile').click(); });
+  $('elPdfFile').addEventListener('change', function () {
+    var f = $('elPdfFile').files && $('elPdfFile').files[0]; if (!f || elBusy) return;
+    elBusy = true; $('elScan').disabled = true; $('elPdf').disabled = true;
+    pdfLesen(f, function (i, n) { elNachricht(t('el.pdfSeite', { n: String(i), m: String(n) })); }).then(function (text) {
+      $('elPdf').disabled = false; elGesammelt = ''; elFertig(text);
+    }, function () { elBusy = false; $('elScan').disabled = false; $('elPdf').disabled = false; elNachricht(t('el.pdfFehler')); });
+  });
+  $('elFile').addEventListener('change', function () {
+    var f = $('elFile').files && $('elFile').files[0]; if (!f) return;
+    elBusy = true; $('elScan').disabled = true; elNachricht(t('el.lese'));
+    ocr(f).then(elFertig, elFehler);
+  });
+  $('elPaste').addEventListener('click', function () { var box = $('elPasteBox'); box.hidden = !box.hidden; $('elPaste').setAttribute('aria-expanded', String(!box.hidden)); if (!box.hidden) $('elText').focus(); });
+  $('elSelbst').addEventListener('click', function () { briefFormular(true); });
+  $('elLesen').addEventListener('click', function () { elGesammelt = ''; textLesen($('elText').value); });
+
+  $('briefZurueck').addEventListener('click', function () { elGesammelt = ''; var war = null; document.querySelectorAll('#checkBox .pp-teil').forEach(function (s) { if (!s.hidden) war = s.id; }); briefOeffnen(null); for (var k in BRIEF_TEIL) if (BRIEF_TEIL[k] === war) $('brief-' + k).focus(); });
   document.querySelectorAll('#appnav button').forEach(function (b) { b.addEventListener('click', function () {
     var a = b.getAttribute('data-ansicht');
     if (a === 'briefe' && aktAnsicht === 'briefe' && !$('checkBox').hidden) { briefOeffnen(null); $('h-briefe') && $('h-briefe').focus(); return; } // nochmal tippen: zurück zur Auswahl
@@ -1582,14 +2049,8 @@
   }); });
   $('goLeistungen').addEventListener('click', function () { zeigeAnsicht('leistungen', true); });
   $('goBriefe').addEventListener('click', function () { zeigeAnsicht('briefe', true); });
-  $('fristAdd').addEventListener('click', function () {
-    var ti = $('fristTitel').value.trim(), da = $('fristDatum').value;
-    if (!ti || !/^\d{4}-\d{2}-\d{2}$/.test(da)) { $('fristMsg').textContent = t('fristen.fehlt'); return; }
-    fristEintragen({ titel: ti, datum: da, quelle: 'eigen' });
-    $('fristTitel').value = ''; $('fristDatum').value = ''; $('fristMsg').textContent = t('fristen.gespeichert');
-  });
   window.addEventListener('hashchange', function () { var a = location.hash.slice(1); if (ANSICHTEN.indexOf(a) >= 0 && a !== aktAnsicht) zeigeAnsicht(a, true); });
-  Store.get('lotse.fristen', function (v) { try { var d = v ? JSON.parse(v) : []; if (Array.isArray(d)) fristen = d.filter(function (f) { return f && typeof f.titel === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(f.datum || ''); }); } catch (e) {} bereicheText(); });
+  Store.remove('lotse.fristen'); // Fristen aus 1.3.0 (Build 141) gibt es nicht mehr: gespeicherte Einträge vom Gerät löschen
   zeigeAnsicht((function () { var a = (location.hash || '').slice(1); return ANSICHTEN.indexOf(a) >= 0 ? a : 'start'; })());
 
   Store.get('lotse.state', function (v) {

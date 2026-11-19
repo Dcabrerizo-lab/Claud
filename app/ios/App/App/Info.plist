@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Zum Fotografieren eines Antragsformulars. Die Texterkennung läuft nur auf deinem Gerät, das Foto wird nicht gesendet und danach gelöscht.</string>
+	<string>Zum Fotografieren von Briefen, Bescheiden und Antragsformularen. Die Texterkennung läuft nur auf deinem Gerät, das Foto wird nicht gesendet und danach gelöscht.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Zum Auswählen eines Fotos von einem Antragsformular. Das Foto bleibt auf deinem Gerät.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>

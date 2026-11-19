@@ -28,10 +28,21 @@ let html = render({ native: true }).html;
 
 // Scan: In der App gibt es nur die Kamera mit Texterkennung auf dem Gerät
 const NATIVE_SCAN = [
-  '<section class="scan" id="scan" aria-labelledby="h-scan">',
+  '<section class="scan pp-teil" id="scan" aria-labelledby="h-scan" hidden>',
   '          <h2 id="h-scan" data-t="sc.h"></h2>',
-  '          <p data-t="sc.nativeIntro"></p>',
-  '          <div class="btns"><button type="button" class="btn" id="sc-take" data-t="sc.take"></button></div>',
+  '          <p data-t="sc.intro"></p>',
+  '          <div class="sc-wahl">',
+  '            <button type="button" class="btn ghost sc-foto" id="sc-take"><span aria-hidden="true">📷 </span><span data-t="sc.take"></span></button>',
+  '            <input type="file" id="sc-pdf" class="vh" accept="application/pdf,.pdf">',
+  '            <label for="sc-pdf" class="btn ghost sc-foto"><span aria-hidden="true">📄 </span><span data-t="el.pdf"></span></label>',
+  '            <button type="button" class="btn ghost sc-foto" id="sc-pasteBtn" aria-expanded="false" aria-controls="sc-pasteBox"><span aria-hidden="true">📋 </span><span data-t="el.paste"></span></button>',
+  '          </div>',
+  '          <div class="field" id="sc-pasteBox" hidden>',
+  '            <label for="sc-text" data-t="sc.paste"></label>',
+  '            <textarea id="sc-text" lang="de" dir="ltr" autocomplete="off" spellcheck="false"></textarea>',
+  '            <div class="btns"><button type="button" class="btn" id="sc-local" data-t="sc.local"></button></div>',
+  '          </div>',
+  '          <p class="small muted" data-t="el.privat"></p>',
   '          <p class="msg" id="sc-msg" role="status" aria-live="polite"></p>',
   '          <div id="sc-out"></div>',
   '        </section>'
@@ -71,6 +82,12 @@ fs.copyFileSync(need(path.join(NOTO, '700Bold', 'NotoSans_700Bold.ttf')), path.j
 
 // Amtliche Formulare werden nicht mehr mitgeliefert (nur Links auf die amtlichen Seiten); alte Kopien entfernen
 fs.rmSync(path.join(WWW, 'formulare'), { recursive: true, force: true });
+
+// PDF lesen (Mozilla pdf.js 3.11.174, Apache-2.0): Text aus digitalen PDFs, Seitenbilder aus eingescannten PDFs für die Texterkennung.
+// Liegt lokal in der App (offline); im Browser wird dieselbe Version bei Bedarf von cdnjs geladen.
+fs.mkdirSync(path.join(WWW, 'pdfjs'), { recursive: true });
+for (const f of ['pdf.min.js', 'pdf.worker.min.js']) fs.copyFileSync(need(path.join(MODS, 'pdfjs-dist', 'build', f), 'cd app && npm install'), path.join(WWW, 'pdfjs', f));
+fs.copyFileSync(need(path.join(MODS, 'pdfjs-dist', 'LICENSE')), path.join(WWW, 'pdfjs', 'LICENSE'));
 
 // PDF-Modul bündeln (pdf-lib + fontkit, MIT)
 require(need(path.join(MODS, 'esbuild'))).buildSync({

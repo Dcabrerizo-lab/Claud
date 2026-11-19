@@ -9,7 +9,7 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
   const netz = []; p.on('request', (r) => { if (!/^(file|data|blob):/.test(r.url())) netz.push(r.url()); });
   p.on('pageerror', (e) => errs.push(e.message)); p.on('console', (m) => { if (m.type() === 'error' && !/ERR_TUNNEL|ERR_NAME|ERR_INTERNET|fonts.g/.test(m.text())) errs.push(m.text()); });
   await p.goto('file://' + file + '#leistungen');
-  const card = (name) => p.evaluate((nm) => { const c = [...document.querySelectorAll('#cards .card')].find((x) => x.querySelector('h3').textContent === nm); return c ? { pill: c.querySelector('.pill').className.replace('pill ', ''), text: c.querySelector('.body').textContent.replace(/\u00a0/g, ' '), zust: c.querySelector('.zust').textContent } : null; }, name);
+  const card = (name) => p.evaluate((nm) => { const c = [...document.querySelectorAll('#cards .card')].find((x) => x.querySelector('h3').textContent === nm); return c ? { pill: c.querySelector('.pill').className.replace('pill ', ''), text: [...c.querySelectorAll('.body .head2, .body .kern, .body .punkte > li')].map((x) => x.textContent).join(' ').replace(/\u00a0/g, ' '), zust: c.querySelector('.zust').textContent } : null; }, name);
   const sel = (id, v) => p.selectOption('#' + id, v);
   const geb = async (v) => { await p.fill('#gebJahr', v); await p.waitForTimeout(250); };
   const fillNum = async (id, v) => { await p.fill('#' + id, v); await p.press('#' + id, 'Tab'); };
@@ -26,7 +26,7 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
   await sel('gdb', '50'); await sel('bhPerson', '');
   ok('Ausgeblendete Angaben werden zurückgesetzt', (await p.inputValue('#gdb')) === '');
   const ov = await p.evaluate(() => { const o = document.getElementById('overview'); const links = [...o.querySelectorAll('a')]; return { hidden: o.hidden, n: links.length, ziele: links.every((a) => document.querySelector(a.getAttribute('href'))) }; });
-  ok('Schnellübersicht zeigt Treffer und jeder Link hat ein Ziel', !ov.hidden && ov.n >= 3 && ov.ziele, JSON.stringify(ov));
+  ok('Keine Häkchen-Leiste über dem Ergebnis, nur die Karten', ov.hidden && ov.n === 0, JSON.stringify(ov));
   const ordnung = await p.evaluate(() => { const t = document.getElementById('together'); const c = document.getElementById('cards'); return !t.innerHTML || (t.compareDocumentPosition(c) & Node.DOCUMENT_POSITION_FOLLOWING) > 0; });
   ok('Hinweise ("Beachten") stehen vor den Karten', ordnung);
   // neue Felder vorhanden und befüllt

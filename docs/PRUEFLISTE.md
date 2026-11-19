@@ -352,6 +352,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | 2026: 15 Arbeitstage je Kind und Elternteil (Alleinerziehende 30), höchstens 35 (70); ab 2027 wieder 10 (20), höchstens 25 (50), automatische Umstellung | ✓ | `kkg-tage` |
 | 90 % des Nettos, höchstens 135,63 € am Tag; Kind unter 12 (mit Behinderung ohne Altersgrenze) | ◐ (Alter der Kinder unbekannt, daher „möglich“) | `kkg-tage` |
 | Nur gesetzlich versicherte Eltern mit Arbeit (nicht Minijob) | ✓ | `kkg-ohne` |
+| Nur wenn gerade ein Kind krank ist und ein Elternteil deshalb nicht arbeiten kann (Frage im Fragebogen bei den Kindern) | ✓ | `kkg-krank` |
 
 ## Asylbewerberleistungen (AsylbLG)
 <!-- karten: asylblg -->
