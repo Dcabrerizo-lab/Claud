@@ -31,15 +31,15 @@ jobs:
           - { art: elterngeld, n: 1000, teile: 10, teil: 8 }
           - { art: elterngeld, n: 1000, teile: 10, teil: 9 }
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with: { node-version: 22, cache: npm }
       - run: npm ci
       - name: Browser installieren (bis zu 3 Versuche)
         run: for i in 1 2 3; do timeout 300 npx playwright install --with-deps chromium && exit 0; echo "Versuch $i fehlgeschlagen"; sleep 20; done; exit 1
       - name: Amtlichen Rechner abfragen
         run: node tools/amtliche-rechner/gross.js ${{ matrix.art }} ${{ matrix.n }} ${{ matrix.teil }} ${{ matrix.teile }} gross-${{ matrix.art }}-${{ matrix.teil }}.json
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: gross-${{ matrix.art }}-${{ matrix.teil }}
@@ -53,8 +53,8 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with: { node-version: 22, cache: npm }
       - run: npm ci
       - uses: actions/download-artifact@v4
@@ -72,6 +72,6 @@ jobs:
           git diff --cached --quiet && exit 0
           git commit -m "Amtliche Ergebnisse aus dem großen Abgleich als feste Testfälle ($(tr -d '\n' < auswertung.txt | cut -c1-200))"
           for i in 1 2 3 4; do git pull --rebase -q origin "$GITHUB_REF_NAME" && git push -q origin "HEAD:$GITHUB_REF_NAME" && exit 0; sleep $((i*5)); done; exit 1
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with: { name: gross-ergebnis, path: 'ergebnis/**' }

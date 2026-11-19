@@ -53,13 +53,13 @@ Eine Prüfung durch eine Sozialberatung oder eine Fachanwältin ersetzt dieser B
 
 | Wert | Stand | Was die App rechnet | Hinweis auf der Karte |
 |---|---|---|---|
-| Regelsätze | Kein Beschluss, Nullrunde erwartet | 563 € usw. | Grundsicherungsgeld, Grundsicherung im Alter |
+| Regelsätze | Voraussichtlich gleich bis 30.6.2028, Anpassung künftig zum 1. Juli (Stand 11/2026, nicht beschlossen) | 563 € usw. | Grundsicherungsgeld, Grundsicherung im Alter |
 | Kindergeld 267 € | Einkommensteuerreformgesetz 2027, Bundestag | 259 € | Kindergeld |
 | Grundfreibetrag 12.564 € | dasselbe Gesetz | 12.348 € | Kindergeld für erwachsene Kinder mit Behinderung |
-| Kinderzuschlag ohne Sofortzuschlag (25 €) | Haushaltsbegleitgesetz 2027, Entwurf | 297 € | Kinderzuschlag |
-| Unterhaltsvorschuss bis 16 statt 18 | Haushaltsentwurf | bis 18 | Unterhaltsvorschuss |
+| Sofortzuschlag (25 €) im Kinderzuschlag | Streichung laut Haushaltsausschuss (11/2026) vom Tisch, nicht endgültig | 297 € | Kinderzuschlag |
+| Unterhaltsvorschuss bis 16 statt 18 | Laut Berichten 11/2026 vom Tisch | bis 18 | Unterhaltsvorschuss |
 | Mindestunterhalt / Unterhaltsvorschuss-Beträge 2027 | Verordnung fehlt noch | 227 / 299 / 394 € | – |
-| Wohngeld-Kürzung (BT-Drs. 21/8284) | Bundestag, Anhörung 4.11.2026 | Werte 2026 | Wohngeld, dazu bis Jahresende „Antrag noch 2026 stellen“ (Bestandsschutz laut Entwurf) |
+| Wohngeld-Kürzung (BT-Drs. 21/8284) | Laut Einigung 11/2026 entfällt sie; Erhöhung zum 1.1.2027 ausgesetzt, nicht endgültig | Werte 2026 | Wohngeld, dazu „früh beantragen, Wohngeld erst ab Antragsmonat“ |
 | Pflegegeld 380 / 630 / 890 / 1.080 € | Kabinettsentwurf 30.9.2026 | 347 / 599 / 800 / 990 € | Pflegegeld (ab Pflegegrad 2) |
 | Beitragsbemessungsgrenze KV 6.375 € | Verordnung, Bundesrat fehlt | 5.812,50 € (Krankengeld höchstens 135,63 € je Tag) | Krankengeld bei Lohn über 5.812,50 € |
 

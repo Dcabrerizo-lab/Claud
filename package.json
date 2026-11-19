@@ -20,8 +20,8 @@
     "test:erweiterungen": "node test/erweiterungen/test-pflege.js && node test/erweiterungen/test-pflege-fragen.js && node test/erweiterungen/test-brief-lesen.js && node test/erweiterungen/test-bescheid.js && node test/erweiterungen/test-gsa.js && node test/erweiterungen/test-wohngeld.js && node test/erweiterungen/test-kiz.js && node test/erweiterungen/test-nebenkosten.js && node test/erweiterungen/test-lizenz.js && node test/erweiterungen/e2e-vorschau.js"
   },
   "devDependencies": {
-    "axe-core": "^4.10.3",
-    "jsdom": "^26.1.0",
-    "playwright": "1.63.0"
+    "axe-core": "^4.14.1",
+    "jsdom": "^31.0.1",
+    "playwright": "1.65.1"
   }
 }
