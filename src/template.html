@@ -421,13 +421,13 @@
   .set-gruppe h3 { margin: 0 0 8px; font-size: 1.05em; }
   .set-gruppe p { margin: 0 0 8px; }
   .chip[aria-disabled="true"] { opacity: .6; cursor: not-allowed; }
-  .weg-liste { display: grid; gap: 12px; margin: 18px 0; }
+  .weg-liste { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; margin: 18px 0; }
   .weg { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; min-height: 84px; padding: 16px; border-radius: 16px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; box-shadow: var(--shadow-s); }
   .weg.haupt { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
   .weg-sym { flex: none; width: 50px; height: 50px; border-radius: 14px; display: grid; place-items: center; background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent); }
   .weg.haupt .weg-sym { background: color-mix(in srgb, var(--accent-ink) 18%, transparent); color: var(--accent-ink); }
   .weg-sym svg, .kachel-sym svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
-  .weg-txt { display: grid; gap: 2px; min-width: 0; }
+  .weg-txt { display: grid; gap: 2px; min-width: 0; overflow-wrap: anywhere; }
   .weg-txt b { font-size: 1.12em; }
   .weg-txt span { opacity: .85; font-size: .95em; }
   /* Große Auswahlknöpfe (Pfändung, Netto-Helfer): erst wählen, worum es geht, dann weiter */
