@@ -136,7 +136,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Kind 10 Monate: Frage zum Füttern statt Waschen', /Füttern/.test(await frage()), await frage());
   ok('Kind: Erklärungen erwähnen den Vergleich mit gesunden Kindern', true);
   // Fremde Sprache: Hinweis „nur auf Deutsch“
-  await p.click('text=Später weitermachen'); await p.selectOption('#lang', 'tr'); await p.click('#paStart');
+  await p.click('text=Später weitermachen'); await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'tr'); await p.click('#paStart');
   ok('Türkisch: Hinweis, dass die Einschätzung auf Deutsch ist', await p.isVisible('#paNurDe'));
   ok('Keine Skriptfehler', fehler.length === 0, fehler);
   await b.close();

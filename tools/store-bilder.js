@@ -56,10 +56,10 @@ const VERLAUF = 'linear-gradient(160deg,#2d3d85,#161f4a)';
   await p.click('#appnav [data-ansicht=leistungen]');
   await roh('6-mappe', async () => { await p.click('#mappeMake'); await oben(); });
   await p.click('#mappeClose');
-  await p.selectOption('#lang', 'ar');
+  await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'ar');
   await roh('8-sprachen', async () => { await zu('#ergebnis', 10); });
-  await p.selectOption('#lang', 'de');
-  await p.click('#einfachBtn');
+  await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'de');
+  await p.evaluate(() => document.getElementById('einfachBtn').click());
   await p.addStyleTag({ content: '.top{display:none!important}' }); // Kopfzeile nur für das Bild ausblenden
   await p.fill('#es-in', '1990'); await p.click('#es-weiter');
   await roh('7-einfach', async () => { await zu('.es-top', 16); });
