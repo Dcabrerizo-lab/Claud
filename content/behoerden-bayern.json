@@ -2671,5 +2671,62 @@
     "Waldkraiburg"
    ]
   }
+ },
+ "familienkasseDE": {
+  "he": {
+   "name": "Familienkasse Hessen",
+   "anschrift": [
+    "34196 Kassel"
+   ],
+   "web": "https://www.familienkasse.de",
+   "quelle": "https://www.arbeitsagentur.de/vor-ort/familienkasse/familienkasse-hessen-kassel.html",
+   "stand": "19.11.2026"
+  },
+  "nibr": {
+   "name": "Familienkasse Niedersachsen-Bremen",
+   "anschrift": [
+    "30131 Hannover"
+   ],
+   "web": "https://www.familienkasse.de",
+   "quelle": "https://www.arbeitsagentur.de/vor-ort/familienkasse/familienkasse-niedersachsen-bremen-hannover.html",
+   "stand": "19.11.2026"
+  },
+  "stth": {
+   "name": "Familienkasse Sachsen-Anhalt-Thüringen",
+   "anschrift": [
+    "06073 Halle"
+   ],
+   "web": "https://www.familienkasse.de",
+   "quelle": "https://www.arbeitsagentur.de/vor-ort/familienkasse/familienkasse-sachsen-anhalt-thueringen-halle.html",
+   "stand": "19.11.2026"
+  },
+  "sn": {
+   "name": "Familienkasse Sachsen",
+   "anschrift": [
+    "09092 Chemnitz"
+   ],
+   "web": "https://www.familienkasse.de",
+   "quelle": "https://www.arbeitsagentur.de/vor-ort/familienkasse/familienkasse-sachsen-chemnitz.html",
+   "stand": "19.11.2026"
+  },
+  "bebb": {
+   "name": "Familienkasse Berlin-Brandenburg",
+   "anschrift": [
+    "14465 Potsdam"
+   ],
+   "web": "https://www.familienkasse.de",
+   "quelle": "https://www.arbeitsagentur.de/vor-ort/familienkasse/familienkasse-berlin-brandenburg-berlin.html",
+   "stand": "19.11.2026"
+  }
+ },
+ "fkLand": {
+  "06": "he",
+  "03": "nibr",
+  "04": "nibr",
+  "15": "stth",
+  "16": "stth",
+  "14": "sn",
+  "11": "bebb",
+  "12": "bebb"
  }
 }

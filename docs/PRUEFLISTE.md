@@ -372,6 +372,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 |---|---|---|
 | Versorgungsamt, Elterngeldstelle, Träger der Eingliederungshilfe und Stelle für das Landesblindengeld je Land (ohne Anschrift), sonst allgemeine Angabe | ◐ | `zust-land` |
 | Kreisebene außerhalb Bayerns: kreisfreie Städte (außer Berlin, Hamburg) mit Name und offizieller Website für Wohngeld, Grundsicherung, Unterhaltsvorschuss, Bildung und Teilhabe, Asyl; Landkreise nur für Grundsicherung im Alter | ✓ | `beh-de` |
+| Familienkasse außerhalb Bayerns für Kindergeld und Kinderzuschlag: nur dort, wo ein Land (oder Land-Paar) genau eine Familienkasse hat (Hessen, Niedersachsen und Bremen, Sachsen, Sachsen-Anhalt und Thüringen, Berlin und Brandenburg); Postanschrift laut arbeitsagentur.de, abgerufen 19.11.2026. Nordrhein-Westfalen, Baden-Württemberg, Hamburg, Schleswig-Holstein, Mecklenburg-Vorpommern, Rheinland-Pfalz und Saarland ohne Anschrift | ◐ | `fk-land` |
 | Postanschriften außerhalb Bayerns | ○ (noch nicht hinterlegt; die Karte verweist auf die Website der Behörde) | |
 | Einzelne Zuständigkeiten (z. B. Thüringen, Niedersachsen, Schleswig-Holstein beim Blindengeld) | ○ (nicht sicher bestätigt, daher die allgemeine Angabe; bitte von Fachleuten prüfen lassen) | |
 

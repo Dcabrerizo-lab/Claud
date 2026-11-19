@@ -56,6 +56,11 @@ const Behoerden = (function () {
     if (!D || !has(ZUST, id)) return null;
     var z = ZUST[id];
     if (z.typ === 'fest') return z.nurBY && ags && String(ags).slice(0, 2) !== '09' ? null : stelle(D.fest && D.fest[z.key], '');
+    // Familienkasse außerhalb Bayerns: nur Länder mit genau einer Familienkasse (D.fkLand, Quelle arbeitsagentur.de); sonst keine Angabe
+    if (z.typ === 'fk' && ags && !has(D.kreise, ags)) {
+      var fl = D.fkLand && D.fkLand[String(ags).slice(0, 2)];
+      return fl && D.familienkasseDE && has(D.familienkasseDE, fl) ? stelle(D.familienkasseDE[fl], z.abt) : null;
+    }
     // Außerhalb Bayerns (Daten „de“): kreisfreie Städte für alle Leistungen der Kreisebene, Landkreise für die Grundsicherung
     // im Alter und für Wohngeld. Wohngeld liegt in manchen Ländern bei Städten oder Gemeinden; dann gilt der Antrag beim Kreis
     // trotzdem als gestellt und wird weitergeleitet (§ 16 Abs. 2 SGB I) – daher Anschrift des Kreises mit Hinweis (weiter).

@@ -42,9 +42,9 @@ Stand: Version 1.4.0, Build 145 (Play Store AAB gebaut, nicht veröffentlicht). 
 ## 5. Nächste Schritte (priorisiert)
 1. ~~WBS-Empfänger~~ weitgehend erledigt. Rest: in den 32 bayerischen Ausnahme-Landkreisen Stadtanschrift der Großen Kreisstadt/Delegationsgemeinde je nach PLZ/Gemeinde (PLZ-Daten sind nur kreisgenau, Gemeinde nötig); Bremen prüfen; `beh.plzHint` für WBS anpassen.
 2. ~~Bayerisches Landespflegegeld (`lpg`)~~ erledigt: `D.fest.landesamtPflege` (Postfach 13 65, 92203 Amberg; Quelle lfp.bayern.de, 19.11.2026), nur Bayern.
-3. Weitere feste Anschriften mit Quelle: Mutterschaftsgeldstelle BAS, Landesämter (Ausweis, Elterngeld, Blindengeld, Eingliederungshilfe), Rentenversicherung je Land.
+3. Teilweise erledigt: Familienkassen für HE, NI+HB, SN, ST+TH, BE+BB (`D.familienkasseDE`, `D.fkLand`, arbeitsagentur.de, 19.11.2026). Offen: Familienkasse NRW (Nord/Ost/West), BW (Ost/West), Nord (HH/SH/MV), RP-Saarland (Zuordnung je Kreis nötig). BAS-Mutterschaftsgeldstelle (Friedrich-Ebert-Allee 38, 53113 Bonn, Quelle BAS-Antragsformular 2026) bewusst NICHT als Empfänger eingebaut: Standard ist die Krankenkasse, BAS nur bei privater Versicherung/Familienversicherung. Offen: Landesämter (Ausweis, Elterngeld, Blindengeld, Eingliederungshilfe) und Rentenversicherung je Land.
 4. Nach Anschrift-Änderungen: `docs/PRUEFLISTE.md`, Faktenblatt-Sätze angleichen, Tests laufen lassen.
-5. Große Recherche nur mit Netzfreigabe: Jobcenter/Familienkassen/Agenturen außerhalb Bayerns, WBS-Gemeindestellen.
+5. Große Recherche nur mit Netzfreigabe: Jobcenter außerhalb Bayerns (404 Jobcenter, davon 300 gemeinsame Einrichtungen; die Übersicht der BA enthält keine Anschriften, Impressum je Jobcenter nötig), Agenturen, WBS-Gemeindestellen.
 6. WBS Saarland aus amtlicher Quelle (z. B. Stadt/Ministerium).
 7. iOS-Build klären (Billing oder Codemagic/Mac), dann TestFlight.
 8. Play Store: Build 145 hochladen (Konsole), Store-Texte aus `docs/STORE.md`. Nur auf Nutzerwunsch.
