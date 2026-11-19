@@ -73,6 +73,8 @@ check('Grundsicherung im Alter -> Sozialamt', /Sozialamt/.test(b('gsa', '09572')
 check('Unterhaltsvorschuss -> Jugendamt', /Jugendamt/.test(b('uvg', '09572').abt));
 check('Bildung und Teilhabe -> Landratsamt', b('but', '09162').name === 'Landeshauptstadt München');
 check('Rundfunkbeitrag -> Beitragsservice Köln, auch ohne Kreis', b('rundfunk', null).anschrift.join(' ') === '50656 Köln');
+check('[lpg-stelle] Landespflegegeld -> Landesamt für Pflege, Postfach Amberg, Hausanschrift abweichend, Quelle lfp.bayern.de mit Stand, auch ohne Kreis', b('lpg', null).name === 'Bayerisches Landesamt für Pflege' && b('lpg', null).abt === 'Landespflegegeld' && b('lpg', null).anschrift.join(', ') === 'Postfach 13 65, 92203 Amberg' && b('lpg', '09572').haus.join(', ') === 'Mildred-Scheel-Str. 4, 92224 Amberg' && /^https:\/\/www\.lfp\.bayern\.de\//.test(b('lpg', '09572').quelle) && /^\d{1,2}\.\d{1,2}\.20\d\d$/.test(b('lpg', '09572').stand));
+check('[lpg-stelle] Landespflegegeld gilt nur in Bayern: Wohnort außerhalb Bayerns (Köln) keine Angabe', b('lpg', '05315') === null);
 check('Leistungen ohne Verzeichnis (Pflegekasse, Krankenkasse, Rentenversicherung) -> null', b('pflege', '09572') === null && b('zuzahl', '09572') === null && b('emrente', '09572') === null);
 
 // Jobcenter (amtliche Liste aller Jobcenter, Zuständigkeit laut BayernPortal)

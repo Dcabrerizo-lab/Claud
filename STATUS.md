@@ -41,7 +41,7 @@ Stand: Version 1.4.0, Build 145 (Play Store AAB gebaut, nicht veröffentlicht). 
 
 ## 5. Nächste Schritte (priorisiert)
 1. ~~WBS-Empfänger kreisfreie Städte~~ erledigt (Branch `claude/schritt-1`). Rest: bayerische Landkreise/Große Kreisstädte amtlich prüfen; Bremen prüfen; Hinweistext `beh.plzHint` für WBS in Landkreisen anpassen.
-2. Bayerisches Landespflegegeld (`lpg`): feste Anschrift Landesamt für Pflege (Quelle prüfen), `D.fest` wie Rundfunk.
+2. ~~Bayerisches Landespflegegeld (`lpg`)~~ erledigt: `D.fest.landesamtPflege` (Postfach 13 65, 92203 Amberg; Quelle lfp.bayern.de, 19.11.2026), nur Bayern.
 3. Weitere feste Anschriften mit Quelle: Mutterschaftsgeldstelle BAS, Landesämter (Ausweis, Elterngeld, Blindengeld, Eingliederungshilfe), Rentenversicherung je Land.
 4. Nach Anschrift-Änderungen: `docs/PRUEFLISTE.md`, Faktenblatt-Sätze angleichen, Tests laufen lassen.
 5. Große Recherche nur mit Netzfreigabe: Jobcenter/Familienkassen/Agenturen außerhalb Bayerns, WBS-Gemeindestellen.

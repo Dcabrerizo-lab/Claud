@@ -261,7 +261,9 @@ const data = {
   fkTelefon: '0800 4 5555 30',
   fest: {
     // Bundesweit eine Anschrift (www.rundfunkbeitrag.de, Kontakt)
-    beitragsservice: { name: 'ARD ZDF Deutschlandradio Beitragsservice', anschrift: ['50656 Köln'], web: 'https://www.rundfunkbeitrag.de', quelle: 'https://www.rundfunkbeitrag.de', stand: '' }
+    beitragsservice: { name: 'ARD ZDF Deutschlandradio Beitragsservice', anschrift: ['50656 Köln'], web: 'https://www.rundfunkbeitrag.de', quelle: 'https://www.rundfunkbeitrag.de', stand: '' },
+    // Bayerisches Landespflegegeld: Postanschrift laut Seite „Landespflegegeld“, Hausanschrift laut Impressum des Landesamts (beide lfp.bayern.de, abgerufen 19.11.2026)
+    landesamtPflege: { name: 'Bayerisches Landesamt für Pflege', abt: 'Landespflegegeld', anschrift: ['Postfach 13 65', '92203 Amberg'], haus: ['Mildred-Scheel-Str. 4', '92224 Amberg'], web: 'https://www.lfp.bayern.de/landespflegegeld/', quelle: 'https://www.lfp.bayern.de/landespflegegeld/', stand: '19.11.2026' }
   }
 };
 fs.writeFileSync(OUT, JSON.stringify(data, null, 1) + '\n');

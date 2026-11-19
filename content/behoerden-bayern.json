@@ -2546,6 +2546,21 @@
    "web": "https://www.rundfunkbeitrag.de",
    "quelle": "https://www.rundfunkbeitrag.de",
    "stand": ""
+  },
+  "landesamtPflege": {
+   "name": "Bayerisches Landesamt für Pflege",
+   "abt": "Landespflegegeld",
+   "anschrift": [
+    "Postfach 13 65",
+    "92203 Amberg"
+   ],
+   "haus": [
+    "Mildred-Scheel-Str. 4",
+    "92224 Amberg"
+   ],
+   "web": "https://www.lfp.bayern.de/landespflegegeld/",
+   "quelle": "https://www.lfp.bayern.de/landespflegegeld/",
+   "stand": "19.11.2026"
   }
  }
 }

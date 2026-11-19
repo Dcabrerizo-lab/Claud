@@ -203,6 +203,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Ab Pflegegrad 2, Hauptwohnsitz Bayern, unabhängig vom Einkommen; ab dem Pflegegeldjahr 2026 500 € im Jahr (vorher 1.000 €) | ✓ | `lpg-ja` |
 | Nur in Bayern; ohne Pflegegrad 2 nein, bei laufendem Pflegegrad-Antrag möglich | ✓ | `lpg-voraus` |
 | Antrag einmal beim Bayerischen Landesamt für Pflege; Antragsfrist | ◐ (Fristangaben der Quellen widersprüchlich; die App rät zum baldigen Antrag) | `lpg-ja` |
+| Empfänger des Antrags: Bayerisches Landesamt für Pflege, Postfach 13 65, 92203 Amberg (Hausanschrift Mildred-Scheel-Str. 4, 92224 Amberg); Quelle lfp.bayern.de (Seite Landespflegegeld und Impressum), abgerufen 19.11.2026; nicht für Wohnorte außerhalb Bayerns | ✓ | `lpg-stelle` |
 
 ## Hilfe zur Pflege (SGB XII, 7. Kapitel)
 <!-- karten: hzp -->
