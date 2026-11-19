@@ -7,6 +7,8 @@ name: Schwere Tests
 # (Die Knopfdruck-Variante erscheint erst, wenn diese Datei auch im Haupt-Branch liegt.)
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '37 2 * * 0'   # jeden Sonntag früh, damit Umbauten nicht tagelang unbemerkt Tests brechen
   push:
     paths: ['.github/workflows/schwer.yml']
 
@@ -56,8 +58,8 @@ jobs:
       - run: npm ci
       - run: npm ci
         working-directory: app
-      - name: Browser installieren (bis zu 3 Versuche, je höchstens 5 Minuten)
-        run: for i in 1 2 3; do timeout 300 npx playwright install --with-deps chromium && exit 0; echo "Versuch $i fehlgeschlagen"; sleep 20; done; exit 1
+      - name: Browser installieren (bis zu 3 Versuche, je höchstens 10 Minuten, wartet auf apt)
+        run: echo 'DPkg::Lock::Timeout "600";' | sudo tee /etc/apt/apt.conf.d/99lock >/dev/null; for i in 1 2 3; do timeout 600 npx playwright install --with-deps chromium && exit 0; echo "Versuch $i fehlgeschlagen"; sleep 20; done; exit 1
       - name: Alle Tests einmal sauber
         run: npm test
       - name: Eingebaute Fehler müssen alle entdeckt werden
@@ -77,8 +79,8 @@ jobs:
       - uses: actions/setup-node@v7
         with: { node-version: 22, cache: npm }
       - run: npm ci
-      - name: Browser installieren (bis zu 3 Versuche, je höchstens 5 Minuten)
-        run: for i in 1 2 3; do timeout 300 npx playwright install --with-deps ${{ matrix.browser }} && exit 0; echo "Versuch $i fehlgeschlagen"; sleep 20; done; exit 1
+      - name: Browser installieren (bis zu 3 Versuche, je höchstens 10 Minuten, wartet auf apt)
+        run: echo 'DPkg::Lock::Timeout "600";' | sudo tee /etc/apt/apt.conf.d/99lock >/dev/null; for i in 1 2 3; do timeout 600 npx playwright install --with-deps ${{ matrix.browser }} && exit 0; echo "Versuch $i fehlgeschlagen"; sleep 20; done; exit 1
       - run: npm run build:web
       - name: Ausführliche Version (alle Sprachen, Behinderung, Mappe, PLZ)
         env: { BROWSER: '${{ matrix.browser }}' }
