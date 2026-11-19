@@ -12,9 +12,9 @@ on:
         required: true
         default: '110'
       rechner:
-        description: 'Mac-Rechner (macos-26; bei langer Wartezeit macos-15 oder macos-15-intel, beide mit Xcode 26)'
+        description: 'Mac-Rechner (macos-15-intel, mit Xcode 26; macos-26 bekam im November 2026 oft keinen Rechner)'
         required: false
-        default: 'macos-26'
+        default: 'macos-15-intel'
         type: choice
         options: ['macos-26', 'macos-15', 'macos-15-intel']
 
@@ -24,7 +24,7 @@ permissions:
 jobs:
   testflight:
     # Apple verlangt seit 2026 das iOS-26-SDK (Xcode 26) für Uploads
-    runs-on: ${{ inputs.rechner || 'macos-26' }}
+    runs-on: ${{ inputs.rechner || 'macos-15-intel' }}
     timeout-minutes: 60
     env:
       ISSUER: ${{ secrets.APPSTORE_ISSUER_ID }}
@@ -44,8 +44,8 @@ jobs:
           if [ -z "$X" ]; then echo "::error::Kein Xcode 26 auf diesem Runner"; ls -d /Applications/Xcode*.app; exit 1; fi
           sudo xcode-select -s "$X/Contents/Developer"
           xcodebuild -version
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with: { node-version: 22, cache: npm, cache-dependency-path: app/package-lock.json }
       - run: npm ci
       - run: npm ci
