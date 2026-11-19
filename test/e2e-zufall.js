@@ -12,7 +12,6 @@ let seed = Number(process.env.ZUFALL_SEED) || 20261114;
 const rnd = () => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; };
 const pick = (a) => a[Math.floor(rnd() * a.length)];
 const WERTE = ['0', '1', '450', '603', '604', '1200', '1.234,56', '2,050.50', '99999', '', '  ', 'abc', '-50', '−50', '12.5.2026', '1e9', '780 €', '3500', '600,5'];
-const KAPUTT = /\bNaN\b|\bundefined\b|\bInfinity\b|\[object Object\]|\{[a-zA-Z]\w*\}/;
 // Nicht anklicken: Druck, Teilen, Kopieren, Dateiauswahl, Dokument-Scan, externe Links
 const VERBOTEN = '#mappePrint, #mappeShare, #mappeCopy, #feedbackMail, #sc-take, #sc-file, #sc-claude, #sc-local, a[target="_blank"], input[type=file]';
 

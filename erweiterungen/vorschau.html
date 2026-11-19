@@ -57,6 +57,7 @@
   @media (max-width: 640px) { .row { grid-template-columns: 1fr; } .freq { grid-template-columns: minmax(0, 1fr) repeat(3, 64px); } .ergebnis { position: static; } }
   .tablewrap th, .tablewrap td { overflow-wrap: normal; word-break: normal; hyphens: manual; }
   .pill { white-space: nowrap; }
+  #li-erg .pill { white-space: normal; } /* langer Lizenz-Hinweis darf umbrechen, sonst seitliches Scrollen */
   /* Schmale Bildschirme: jeder Posten als Block, Spaltennamen stehen über den Werten (data-l, gesetzt in vorschau.js) */
   @media (max-width: 560px) {
     .tablewrap table:not(.modtab) thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }

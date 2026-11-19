@@ -34,7 +34,6 @@ const pruefen = () => {
   });
   document.querySelectorAll('button, .chip, label, select, .pill').forEach((e) => {
     if (!sichtbar(e)) return;
-    const cs = getComputedStyle(e);
     if (e.tagName !== 'SELECT' && e.scrollWidth > e.clientWidth + 2) out.push('Text abgeschnitten: ' + e.tagName + (e.id ? '#' + e.id : '') + ' „' + e.textContent.trim().slice(0, 40) + '“');
     const r = e.getBoundingClientRect();
     if ((e.tagName === 'BUTTON' || e.classList.contains('chip')) && (r.height < 40 || r.width < 40)) out.push('Knopf zu klein: ' + (e.id || e.textContent.trim().slice(0, 30)) + ' ' + Math.round(r.width) + '×' + Math.round(r.height));

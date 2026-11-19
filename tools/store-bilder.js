@@ -111,4 +111,3 @@ const VERLAUF = 'linear-gradient(160deg,#2d3d85,#161f4a)';
   console.log('fertig');
 })().catch((e) => { console.log('FEHLER', e.message); process.exit(1); });
 
-function isoIn(tage) { const d = new Date(Date.now() + tage * 864e5); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
