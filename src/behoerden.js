@@ -14,8 +14,9 @@ const Behoerden = (function () {
   //           - Grundsicherung im Alter und bei Erwerbsminderung: örtlicher Träger der Sozialhilfe
   //           - Unterhaltsvorschuss: Jugendamt (in Bayern bei Landkreisen und kreisfreien Städten)
   //           - Bildung und Teilhabe bei Wohngeld oder Kinderzuschlag (§ 6b BKGG)
-  //           - Wohnberechtigungsschein (wbs): Wohnungsamt, nur kreisfreie Städte (nurStadt). Bayern: Landkreise erst nach amtlicher
-  //             Prüfung (Große Kreisstädte sind selbst zuständig), andere Länder: Landkreise ohne Anschrift. Berlin/Hamburg: Bezirksämter, keine Angabe.
+  //           - Wohnberechtigungsschein (wbs): Wohnungsamt der kreisfreien Stadt; Bayern: Landratsamt, aber nur in Landkreisen ohne Große Kreisstadt
+  //             oder Große Delegationsgemeinde (D.wbsAusnahme, BayernPortal), sonst keine Anschrift. Andere Länder: nur kreisfreie Städte
+  //             (Landkreise ohne Anschrift). Berlin/Hamburg: Bezirksämter, keine Angabe.
   //  jobcenter: Grundsicherungsgeld (SGB II), Jobcenter des Wohnorts
   //  zbfs:    Zentrum Bayern Familie und Soziales, Regionalstelle des Regierungsbezirks (Blindengeld, Schwerbehindertenrecht)
   //  bezirk:  Bezirk als überörtlicher Träger der Eingliederungshilfe (Art. 66a AGSG)
@@ -26,7 +27,7 @@ const Behoerden = (function () {
     gsa: { typ: 'kreis', abt: 'Sozialamt, Grundsicherung im Alter und bei Erwerbsminderung' },
     uvg: { typ: 'kreis', abt: 'Jugendamt, Unterhaltsvorschussstelle' },
     but: { typ: 'kreis', abt: 'Bildung und Teilhabe' },
-    wbs: { typ: 'kreis', abt: 'Wohnungsamt', nurStadt: true },
+    wbs: { typ: 'kreis', abt: 'Wohnungsamt', wbs: true },
     ggeld: { typ: 'jobcenter', abt: '' },
     blindengeld: { typ: 'zbfs', abt: 'Blindengeld' },
     ausweis: { typ: 'zbfs', abt: 'Schwerbehindertenrecht' },
@@ -67,8 +68,11 @@ const Behoerden = (function () {
     }
     if (!ags || !has(D.kreise, ags)) return null;
     var rb = String(ags).slice(0, 3);
-    // nurStadt: nur kreisfreie Städte (Kreisschlüssel-Ende bis 70, vgl. Landkreise ab 71), nie das Landratsamt
-    if (z.typ === 'kreis') return z.nurStadt && Number(String(ags).slice(3)) > 70 ? null : stelle(D.kreise[ags], z.abt);
+    if (z.wbs && Number(String(ags).slice(3)) > 70) {
+      // Landkreis (Kreisschlüssel ab 71): Landratsamt nur, wenn die Liste der Ausnahmen vorliegt und der Kreis nicht darin steht
+      return D.wbsAusnahme && D.wbsAusnahme.kreise && !has(D.wbsAusnahme.kreise, ags) ? stelle(D.kreise[ags], 'Wohnberechtigungsschein') : null;
+    }
+    if (z.typ === 'kreis') return stelle(D.kreise[ags], z.abt);
     if (z.typ === 'jobcenter') return has(D.jobcenter, ags) ? stelle(D.jobcenter[ags], z.abt) : null;
     if (z.typ === 'zbfs') return has(D.zbfs, rb) ? stelle(D.zbfs[rb], z.abt) : null;
     if (z.typ === 'bezirk') return has(D.bezirke, rb) ? stelle(D.bezirke[rb], z.abt) : null;

@@ -31,7 +31,7 @@ Stand: Version 1.4.0, Build 145 (Play Store AAB gebaut, nicht veröffentlicht). 
 
 ## 4. Bekannte Probleme / offen
 - WBS-Grenze Saarland nicht abrufbar (Server sperrt): Bundeswerte als Untergrenze (`docs/WBS-GRENZEN.md`).
-- WBS-Empfänger: nur kreisfreie Städte mit Anschrift (Wohnungsamt, `ZUST.wbs` mit `nurStadt`). Landkreise (auch Bayern, Große Kreisstädte), Berlin und Hamburg weiter nur „Wohnungsamt deiner Stadt oder Gemeinde“ (`ANTRAG.wbs`, `ZUST_LAND.wbs`). Bremen/Bremerhaven: Zuständigkeit nicht geprüft. Hinweis „PLZ eingeben“ erscheint auch bei WBS in Landkreisen (`beh.plzHint`).
+- WBS-Empfänger: Wohnungsamt der kreisfreien Stadt (alle Länder außer Berlin/Hamburg); Bayern zusätzlich Landratsamt in den Landkreisen OHNE Große Kreisstadt/Große Delegationsgemeinde (`D.wbsAusnahme`, BayernPortal 19.11.2026). In den 32 Landkreisen mit Ausnahme-Gemeinde, in Landkreisen anderer Länder, Berlin und Hamburg: nur „Wohnungsamt deiner Stadt oder Gemeinde“ (`ANTRAG.wbs`, `ZUST_LAND.wbs`). Bremen/Bremerhaven: Zuständigkeit nicht geprüft. Hinweis „PLZ eingeben“ (`beh.plzHint`) erscheint auch bei WBS, wo keine Anschrift kommt.
 - Außerhalb Bayerns keine Anschrift für Jobcenter, Familienkasse, Versorgungsamt, Elterngeldstelle, Eingliederungshilfe, Hilfe zur Pflege; in Landkreisen auch nicht UVG/BuT.
 - Kasse/Pflegekasse/Rentenversicherung: Träger der Person unbekannt, keine Anschrift möglich.
 - Prüfpaket und Pflege-Assistent nur auf Deutsch. Fachliche Prüfung der Pflege-Inhalte durch Expertin/Experten steht aus.
@@ -40,7 +40,7 @@ Stand: Version 1.4.0, Build 145 (Play Store AAB gebaut, nicht veröffentlicht). 
 - Build 145 AAB: `/home/user/Claud/SoLo-PlayStore-145.aab` (gitignored), Zips in der Scratchpad der alten Sitzung (nicht dauerhaft).
 
 ## 5. Nächste Schritte (priorisiert)
-1. ~~WBS-Empfänger kreisfreie Städte~~ erledigt (Branch `claude/schritt-1`). Rest: bayerische Landkreise/Große Kreisstädte amtlich prüfen; Bremen prüfen; Hinweistext `beh.plzHint` für WBS in Landkreisen anpassen.
+1. ~~WBS-Empfänger~~ weitgehend erledigt. Rest: in den 32 bayerischen Ausnahme-Landkreisen Stadtanschrift der Großen Kreisstadt/Delegationsgemeinde je nach PLZ/Gemeinde (PLZ-Daten sind nur kreisgenau, Gemeinde nötig); Bremen prüfen; `beh.plzHint` für WBS anpassen.
 2. ~~Bayerisches Landespflegegeld (`lpg`)~~ erledigt: `D.fest.landesamtPflege` (Postfach 13 65, 92203 Amberg; Quelle lfp.bayern.de, 19.11.2026), nur Bayern.
 3. Weitere feste Anschriften mit Quelle: Mutterschaftsgeldstelle BAS, Landesämter (Ausweis, Elterngeld, Blindengeld, Eingliederungshilfe), Rentenversicherung je Land.
 4. Nach Anschrift-Änderungen: `docs/PRUEFLISTE.md`, Faktenblatt-Sätze angleichen, Tests laufen lassen.
