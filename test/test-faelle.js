@@ -34,7 +34,9 @@ const f4 = { adults: 2, kids: 2, brutto: 4000, brutto2: 1500, miete: 1100, miets
 ck('F4 Bedarf 1012+780+1100', P(f4, 'ggeld', 'bedarf') === E(1012 + 780 + 1100));
 // Elterneinkommen 3.200 - 2 x 378 Freibetrag = 2.444; Bemessung 1.012 + 1.100 x 2/2,8 = 1.797,71; 594 - 0,45 x 646 = 303 -> wahrscheinlich
 ck('F4 KiZ mit Freibeträgen für Arbeit: wahrscheinlich', L(f4, 'kiz') === 'ja');
-ck('F4b KiZ bei 5.200 € brutto zu hoch', L({ ...f4, brutto: 5200 }, 'kiz') === 'nein');
+ck('F4b KiZ bei 5.200 € brutto und 4.160 € netto zu hoch', L({ ...f4, brutto: 5200, netto: 4160 }, 'kiz') === 'nein');
+// Ohne Netto schätzt die App es nach Lohnsteuer und Beiträgen (Steuerklasse IV/IV, 2 Kinder): rund 3.700 € statt früher pauschal 80 % (4.160 €)
+ck('F4c Netto-Schätzung 5.200 € brutto (3.700 + 1.500): 3.650-3.750 €', (() => { const h = R.evaluate({ ...base, ...f4, brutto: 5200 }).h; return h.nettoGeschaetzt && h.netto > 3650 && h.netto < 3750; })());
 ck('[wbs-grenze] F4 WBS-Grenze 4 Personen (2 Kinder) = 27.500 + 2 x 5.000 + 2 x 1.300 = 40.100', P(f4, 'wbs', 'grenze') === '40.100 €' && L(f4, 'wbs') === 'vielleicht');
 // 5 Bezug von Grundsicherungsgeld
 const f5 = { adults: 2, kids: 3, nichtArbeit: true, miete: 1000, mietstufe: 3, bezug: { grundsicherungsgeld: true } };
