@@ -11,6 +11,7 @@ const lv = card({ ...rentnerin, vermLV: 9000 }, 'gsa');
 check('[verm-lv] Lebensversicherung über der Grenze: nur „möglich“ mit Hinweis', lv.level === 'vielleicht' && lv.tx.some((t) => t[0] === 'verm.lvUnsicher'), lv);
 check('[verm-lv] Lebensversicherung unter der Grenze: bleibt wahrscheinlich', card({ ...rentnerin, vermLV: 3000 }, 'gsa').level === 'ja');
 check('[verm-lv] ohne Angaben unverändert', JSON.stringify(R.evaluate(rentnerin).results) === JSON.stringify(R.evaluate({ ...rentnerin, vermLV: '', vermAV: '', kapErtrag: '' }).results));
+check('[kap-wg] Wohngeld: Zinsen bis 100 € im Jahr zählen nicht (§ 14 Abs. 2 Nr. 15 WoGG)', R.evaluate({ ...rentnerin, kapErtrag: 100 }).h.kapWG === 0 && Math.abs(R.evaluate({ ...rentnerin, kapErtrag: 1300 }).h.kapWG - 100) < 0.001);
 check('[kap-sgb2] Zinsen bis 100 € im Jahr zählen nicht', R.evaluate({ ...rentnerin, kapErtrag: 100 }).h.netto === 800);
 check('[kap-sgb2] Zinsen 1.300 € im Jahr: 100 €/Monat Einkommen', Math.abs(R.evaluate({ ...rentnerin, kapErtrag: 1300 }).h.netto - 900) < 0.001);
 const wg0 = { adults: 1, kids: 0, young: 0, art1: 'lohn', brutto: 1700, netto: 1300, miete: 700, mietstufe: 3, vermoegen: 0, gebJahr: 1980, bezug: {}, heute: 2026.9 };
@@ -30,7 +31,8 @@ const fam = (inp) => card({ adults: 2, kids: 0, young: 0, art1: 'lohn', brutto: 
 check('[famvers] Partner ohne Einkommen: möglich', fam({ art2: 'ohne', brutto2: 0 }).level === 'vielleicht');
 check('[famvers] Partner Minijob 603 €: möglich', fam({ art2: 'lohn', brutto: 3603, brutto2: 603 }).level === 'vielleicht');
 check('[famvers] Partner 1.200 € Lohn: nein', fam({ art2: 'lohn', brutto: 4200, brutto2: 1200 }).level === 'nein');
-check('[famvers] Partner Rente: nein (eigene Versicherung)', fam({ art2: 'rente', brutto: 3400, brutto2: 400 }).level === 'nein');
+check('[famvers] Partner Rente über der Grenze: nein (eigene Versicherung)', fam({ art2: 'rente', brutto: 3900, brutto2: 900 }).level === 'nein');
+check('[famvers] Partner kleine Rente unter der Grenze: möglich (§ 10 Abs. 1 SGB V)', fam({ art2: 'rente', brutto: 3400, brutto2: 400 }).level === 'vielleicht');
 check('[famvers] Grenze 565 € im Text', JSON.stringify(fam({ art2: 'ohne' }).tx).includes('565'));
 check('[famvers] Allein ohne Kinder: nein', card({ ...rentnerin }, 'famvers').level === 'nein');
 console.log(fails ? '\n' + fails + ' Fehler' : '\nErsparnis-Tests bestanden');

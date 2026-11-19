@@ -247,7 +247,7 @@ for (let i = 0; i < 20000; i++) {
   schwelle++; n++;
   const r = {}; Rules.evaluate(e).results.forEach((x) => { r[x.id] = x; });
   for (const id of ['hzp', 'blh']) {
-    const verm = (Number(e.vermoegen) || 0) + (e.autoBraucht || e.mzG ? 0 : Number(e.autoWert) || 0) > Ref.schon90(e);
+    const verm = (Number(e.vermoegen) || 0) > Ref.schon90(e); // Auto geschützt (§ 90 Abs. 2 Nr. 10 SGB XII)
     const app = r[id];
     if (verm) { if (app.level !== 'nein') melde(id + ': Vermögen', e, { app: app.level }); continue; }
     const g = Ref.grenze85(e);

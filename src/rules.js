@@ -56,7 +56,8 @@ const Rules = (function () {
     // die App rechnet vorsichtig ohne Sparer-Pauschbetrag. Vermögen: geförderte Altersvorsorge (Riester, Basisrente/Rürup, Betriebsrente)
     // zählt nicht (§ 12 Abs. 1 Satz 2 Nr. 3 SGB II, § 90 Abs. 2 Nr. 2 SGB XII, WoGVwV 21.37); Lebens- und Rentenversicherungen sind geschützt,
     // wenn sie der Altersvorsorge dienen (Einzelfall) -> nur „möglich“, wenn sie über die Grenze bringen.
-    kap: { freiSGB2Jahr: 100 },
+    // Wohngeld: Kapitalerträge bis 100 € im Jahr bleiben außer Betracht (§ 14 Abs. 2 Nr. 15 WoGG)
+    kap: { freiSGB2Jahr: 100, freiWGJahr: 100 },
     // Familienversicherung (§ 10 SGB V): Gesamteinkommen bis 1/7 der monatlichen Bezugsgröße (2026: 3.955 € -> 565 €; 2027: 4.130 € -> 590 €,
     // SV-Rechengrößenverordnung 2026, Kabinett 7.10.2026 für 2027), bei Minijob bis zur Minijob-Grenze. Kinder bis 18, ohne Arbeit bis 23,
     // in Schule, Ausbildung oder Studium bis 25, mit Behinderung ohne Altersgrenze.
@@ -97,7 +98,8 @@ const Rules = (function () {
     // Elterngeld (§ 2 BEEG): 67 % des Nettos vor der Geburt (65 % ab 1.240 €, bis 100 % bei kleinem Einkommen), 300 bis 1.800 €;
     // ElterngeldPlus die Hälfte für doppelt so lange; Basiselterngeld 12 Monate, mit Partnermonaten oder alleinerziehend 14;
     // kein Anspruch über 175.000 € zu versteuerndem Einkommen der Eltern (Geburten ab 1.4.2025, § 1 Abs. 8 BEEG)
-    // pausch: ein Zwölftel des Arbeitnehmer-Pauschbetrags (§ 2c Abs. 1 BEEG), wie im Elterngeldrechner des Bundes (1.000 € / 12)
+    // pausch: ein Zwölftel des Arbeitnehmer-Pauschbetrags (§ 2c Abs. 1 BEEG). Bleibt bei 1.000 € / 12, obwohl der Wortlaut 1.230 € nahelegt:
+    // Der Elterngeldrechner des Bundes rechnet nachweislich so (alle 33 Referenzfälle auf den Cent).
     eg: { pausch: 1000 / 12, bonus: 0.1, bonusMin: 75, min: 300, max: 1800, satz: 0.67, satzHoch: 0.65, grenzeUnten: 1000, grenzeOben: 1200, monate: 12, partner: 2, einkommenGrenze: 175000 },
     // Hilfe zur Pflege (§§ 61 ff., 85 SGB XII): Einkommensgrenze 2 × RS1 + Wohnkosten + 70 % RS1 je weiterer Person; Vermögen 10.000 € je Erwachsenem
     hzp: { grund: 2, familie: 0.7 },
@@ -402,7 +404,8 @@ const Rules = (function () {
     return Math.round(hi);
   }
   // Annahmen, wenn nur das Brutto bekannt ist: Steuerklasse aus dem Haushalt (allein I, allein mit Kind II,
-  // Paar mit zwei Einkommen IV, Paar mit einem Einkommen III), ohne Kirchensteuer; Pflege: kinderlos ohne Kinder im Haushalt
+  // Paar mit zwei Einkommen IV, Paar mit einem Einkommen III), ohne Kirchensteuer; Pflege: kinderlos ohne Kinder im Haushalt.
+  // III ist für Unverheiratete zu hoch, aber vorsichtig: höheres Netto verspricht nie zu viel. Die Steuerklasse lässt sich im Formular ändern.
   function lohnAnnahmen(h, wer) {
     const kinder = (h.kids || 0) + (h.young || 0);
     const stkl = h.adults === 2 ? (h.zweiVerdiener ? 4 : (wer === 2 ? 5 : 3)) : kinder > 0 ? 2 : 1;
@@ -487,7 +490,7 @@ const Rules = (function () {
     const miete = num(inp.miete);
     const vermoegen = num(inp.vermoegen);
     const kapJahr = num(inp.kapErtrag);
-    const kapSGB = Math.max(0, kapJahr - R.kap.freiSGB2Jahr) / 12, kapWG = kapJahr / 12;
+    const kapSGB = Math.max(0, kapJahr - R.kap.freiSGB2Jahr) / 12, kapWG = Math.max(0, kapJahr - R.kap.freiWGJahr) / 12;
     const netto = nettoOhneKap + kapSGB; // Kapitalerträge zählen ohne Freibetrag für Arbeit
     // Unterhalt, den die Kinder vom anderen Elternteil bekommen (im Monat, alle Kinder zusammen); nur mit Kindern im Haushalt
     const unterhalt = kids + young > 0 ? num(inp.unterhalt) : 0;
@@ -693,7 +696,8 @@ const Rules = (function () {
   // Vermögen nach dem SGB XII (Grundsicherung im Alter, Hilfe zur Pflege, Blindenhilfe) und BAföG: ein Auto zählt mit, außer es wird
   // wegen einer Behinderung oder für die Arbeit gebraucht (§ 90 Abs. 2 Nr. 5 SGB XII bzw. Härte; § 27 BAföG). Im SGB II ist ein
   // angemessenes Auto je erwerbsfähiger Person geschützt (§ 12 SGB II).
-  const vermSGB12 = (h) => h.vermoegen + (h.autoBraucht || h.mzG || h.mzAG ? 0 : (h.autoWert || 0));
+  // Ein angemessenes Auto ist auch im SGB XII geschützt (§ 90 Abs. 2 Nr. 10 SGB XII seit 1.1.2023); über dem Prüfwert nur „möglich“ (besondere())
+  const vermSGB12 = (h) => h.vermoegen;
 
   // Freibetrag des Haushalts: je Person einzeln, nur bei Einkommen aus Arbeit
   // Der Freibetrag gilt je Person und nur für Einkommen aus Arbeit (§ 11b Abs. 3 SGB II), nicht für Rente,
@@ -983,7 +987,7 @@ const Rules = (function () {
     // Barbetrag-Verordnung zu § 90 SGB XII: 10.000 € je volljähriger Person, 500 € je überwiegend unterhaltene Person
     const eigen = h.wohnform !== '';
     const schon = eigen ? R.grundsicherung.schonAllein : R.grundsicherung.schonAllein * h.adults + 500 * h.children;
-    if (vermSGB12(h) > schon) return mk(id, 'nein', 'vermHoch', [['gsa.verm', { schon: eur(schon) }]].concat(h.vermoegen <= schon ? [['auto.sgb12', { wert: eur(h.autoWert) }]] : []));
+    if (vermSGB12(h) > schon) return mk(id, 'nein', 'vermHoch', [['gsa.verm', { schon: eur(schon) }]]);
     // Bei den Eltern oder im Wohnheim zählt nur der eigene Bedarf der Person (keine Einsatzgemeinschaft mit den Eltern; § 43 Abs. 5 SGB XII:
     // Einkommen der Eltern erst ab 100.000 € im Jahr). Regelbedarfsstufe 1 bei den Eltern, Stufe 2 im Wohnheim.
     const regelP = h.wohnform === 'heim' ? R.regelbedarf.partner : (h.adults === 2 && !eigen ? R.regelbedarf.partner : R.regelbedarf.alleinstehend);
@@ -1382,7 +1386,8 @@ const Rules = (function () {
     if (h.adults === 2) {
       const b2 = h.brutto2 || 0, art = h.art2 || '';
       partnerOk = art === 'ohne' || art === 'eg' || (!art && b2 === 0) || (art === 'lohn' && b2 <= h.minijob) || b2 <= grenze;
-      if (art === 'rente' || art === 'alg' || art === 'kg' || art === 'wfbm') partnerOk = false;
+      // Arbeitslosengeld, Krankengeld und Werkstatt bringen eine eigene Versicherung mit; Rente schließt nur über der Grenze aus
+      if (art === 'alg' || art === 'kg' || art === 'wfbm' || (art === 'rente' && b2 > grenze)) partnerOk = false;
       tx.push(partnerOk ? ['famvers.partner', { grenze: eur(grenze), mini: eur(h.minijob) }] : ['famvers.partnerNein', { grenze: eur(grenze) }]);
     }
     if (h.kids > 0) tx.push(['famvers.kinder']);
@@ -1677,6 +1682,8 @@ const Rules = (function () {
       if (h.hhAndere === 'wg' && (id === 'ggeld' || id === 'gsa' || id === 'wohngeld')) zu(r, 'wg.anteil');
       // Ein angemessenes Auto ist im SGB II geschützt; bei hohem Wert prüft das Jobcenter, ob es noch angemessen ist
       if (h.autoWert > R.autoPruefen && !h.autoBraucht && (id === 'ggeld' || id === 'kiz')) { kappe(r); zu(r, 'auto.hoch', { wert: eur(R.autoPruefen) }); }
+      // SGB XII: angemessenes Auto geschützt (§ 90 Abs. 2 Nr. 10); bei hohem Wert prüft das Sozialamt die Angemessenheit
+      if (h.autoWert > R.autoPruefen && !h.autoBraucht && !h.mzG && !h.mzAG && (id === 'gsa' || id === 'hzp' || id === 'blh')) { kappe(r); zu(r, 'auto.hochSgb12', { wert: eur(R.autoPruefen) }); }
       if (h.selbst && (id === 'ggeld' || id === 'kiz' || id === 'wohngeld' || id === 'gsa')) zu(r, 'selbst.hinweis');
       if (h.eu && id === 'kindergeld') zu(r, 'kg.eu');
     });
