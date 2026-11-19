@@ -2,6 +2,12 @@
 
 Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss steigen). Die Versionsnummer kommt aus dem Build.
 
+## Neues Design (Version 147)
+- Design „Warm und menschlich“: Creme-Hintergrund, Petrol als Hauptfarbe, Koralle im Logo und bei persönlichen Hinweisen; weiche Kanten statt grauer Schatten; runde Karten (24 px), Knöpfe als Pille, Hauptknopf mindestens 52 px hoch, Startknopf mit eigener Form.
+- Überschriften in Nunito (lokal in der App, SIL OFL 1.1), Text weiter Atkinson Hyperlegible; Schibsted Grotesk entfernt. Einfache Version bleibt bei der Systemschrift.
+- Neues Logo „Sprechblase mit Haken“ im Kopf, als App-Symbol (Android adaptiv, iOS) und im Startbild (hell Creme, dunkel warmes Dunkel).
+- Dunkelmodus mit eigenen warmen Farben; alle Textpaare mindestens 4,5:1.
+
 ## 1.4.0 (ab Versionsnummer 143, November 2026)
 - „Vorlesen“ entfernt (einfache Version und Pflegegrad-Einschätzung), ab Versionsnummer 144
 - Ab Versionsnummer 145: unter jedem Feld mit Amtsbegriff in „Brief prüfen“ ein Hinweis, wo der Wert im Brief steht (Berechnungsbogen, erste Seite, Briefkopf); „formloser Antrag“ in der Ausfüllhilfe erklärt (8 Sprachen); Pflegegutachten empfiehlt Scannen oder PDF statt rund 60 Bewertungen von Hand; Kachel „Zwei Wege“ beginnt mit „Stelle beide Anträge gleichzeitig“; Hinweis bei fremder Sprache empfiehlt Scannen oder PDF.
