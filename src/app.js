@@ -1856,6 +1856,66 @@
     if (!box.hidden) { va.schritt = 0; vaRender(); var f = box.querySelector('button'); if (f) f.focus(); }
   });
 
+  // ----- Geld sparen im Alltag: erst Thema wählen (große Knöpfe), dann Tipps; Rezepte (selbst geschrieben, nur Deutsch) -----
+  var SP_THEMEN = [
+    ['strom', 'sp.strom', 'sp.strom.t', 6, '<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>'],
+    ['heizen', 'sp.heizen', 'sp.heizen.t', 5, '<path d="M12 21a6 6 0 0 0 6-6c0-4-3-6-4-10-2 2-3 4-3 6-1-1-2-2-2-4-2 2-3 5-3 8a6 6 0 0 0 6 6z"/>'],
+    ['essen', 'sp.essen', 'sp.essen.t', 5, '<path d="M4 11h16a8 8 0 0 1-16 0zM8 7c0-2 2-2 2-4M12 7c0-2 2-2 2-4"/>'],
+    ['vertraege', 'sp.vertraege', 'sp.vertraege.t', 6, '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>'],
+    ['schulden', 'sp.schulden', 'sp.schulden.t', 0, '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/>']
+  ];
+  var SP_TIPPS = { strom: ['sp.strom.1', 'sp.strom.2', 'sp.strom.3', 'sp.strom.4', 'sp.strom.5', 'sp.strom.6'], heizen: ['sp.heizen.1', 'sp.heizen.2', 'sp.heizen.3', 'sp.heizen.4', 'sp.heizen.5'],
+    essen: ['sp.essen.1', 'sp.essen.2', 'sp.essen.3', 'sp.essen.4', 'sp.essen.5'], vertraege: ['sp.vertraege.1', 'sp.vertraege.2', 'sp.vertraege.3', 'sp.vertraege.4', 'sp.vertraege.5', 'sp.vertraege.6'] };
+  // Eigene Rezepte, günstige Grundzutaten, je 4 Portionen; bewusst ohne Preise (Preise ändern sich)
+  var REZEPTE = [
+    ['Linsen-Dal mit Reis', ['250 g rote Linsen', '1 Zwiebel, 1 Knoblauchzehe', '1 Dose gehackte Tomaten', '1 TL Curry, Salz', '250 g Reis'], ['Zwiebel und Knoblauch klein schneiden und in etwas Öl anbraten.', 'Linsen, Tomaten, Curry und 600 ml Wasser dazugeben, 15 Minuten köcheln, bis die Linsen weich sind.', 'Reis nach Packung kochen und mit dem Dal servieren.']],
+    ['Ofengemüse mit Kartoffeln', ['1 kg Kartoffeln', '2 Möhren, 1 Paprika, 1 Zwiebel (oder Gemüse der Saison)', '3 EL Öl, Salz, Paprikapulver', '200 g Quark mit Kräutern'], ['Ofen auf 200 Grad vorheizen.', 'Kartoffeln und Gemüse in Stücke schneiden, mit Öl und Gewürzen mischen.', 'Auf dem Blech 35 Minuten backen, mit Kräuterquark essen.']],
+    ['Nudeln mit Tomaten-Bohnen-Soße', ['400 g Vollkornnudeln', '1 Dose weiße Bohnen', '1 Dose gehackte Tomaten', '1 Zwiebel, Oregano, Salz, Pfeffer'], ['Nudeln nach Packung kochen.', 'Zwiebel anbraten, Tomaten und abgespülte Bohnen dazu, 10 Minuten köcheln und würzen.', 'Mit den Nudeln mischen.']],
+    ['Gemüsesuppe aus Resten', ['Gemüse, das weg muss (zum Beispiel Möhren, Lauch, Kartoffeln, Kohl)', '1 Zwiebel', '1 l Gemüsebrühe', 'Salz, Pfeffer, Petersilie'], ['Gemüse und Zwiebel klein schneiden und kurz in Öl anbraten.', 'Brühe dazugeben und 20 Minuten köcheln.', 'Abschmecken; nach Wunsch pürieren. Reste lassen sich gut einfrieren.']],
+    ['Haferflocken-Frühstück', ['250 g Haferflocken', '750 ml Milch oder Wasser', '2 Äpfel oder Bananen', 'Zimt'], ['Haferflocken mit Milch oder Wasser 5 Minuten unter Rühren köcheln.', 'Obst klein schneiden und darübergeben, mit Zimt bestreuen.', 'Tipp: abends mit kalter Milch ansetzen, morgens fertig.']],
+    ['Kichererbsen-Pfanne mit Ei', ['2 Dosen Kichererbsen', '1 Zwiebel, 1 Paprika', '1 Dose gehackte Tomaten', '4 Eier, Kreuzkümmel, Salz'], ['Zwiebel und Paprika anbraten, Kichererbsen und Tomaten dazugeben, 10 Minuten köcheln.', 'Mit Kreuzkümmel und Salz würzen.', '4 Mulden machen, Eier hineingeben und zugedeckt 6 Minuten garen lassen.']]
+  ];
+  var sp = { thema: '', rezepte: false };
+  function spRender(fokus) {
+    var box = $('spInhalt'); if (!box) return;
+    box.innerHTML = '';
+    var p = function (txt, cls) { var e = document.createElement('p'); e.className = cls || ''; e.textContent = txt; box.appendChild(e); return e; };
+    var zurueck = function (fn) { var d = document.createElement('div'); d.className = 'btns'; d.appendChild(nhKnopf('btn ghost', esc(t('nh.zurueck')), null, fn)); box.appendChild(d); };
+    if (!sp.thema) {
+      p(t('sp.wahl'), 'pf-frage');
+      var l = document.createElement('div'); l.className = 'weg-liste'; box.appendChild(l);
+      SP_THEMEN.forEach(function (x) {
+        l.appendChild(nhKnopf('weg', '<span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + x[4] + '</svg></span><span class="weg-txt"><b>' + esc(t(x[1])) + '</b><span>' + esc(t(x[2])) + '</span></span>', null, function () {
+          if (x[0] === 'schulden') { zeigeAnsicht('pfaendung', true); return; }
+          sp.thema = x[0]; sp.rezepte = false; spRender(true);
+        }));
+      });
+      p(t('home.privat'), 'small muted');
+      if (fokus) { var f0 = box.querySelector('button'); if (f0) f0.focus(); }
+      return;
+    }
+    if (sp.rezepte) {
+      p(t('sp.rezepte'), 'pf-frage');
+      if (lang !== 'de') p(t('briefe.nurDeutsch'), 'pp-hinweis small');
+      REZEPTE.forEach(function (r) {
+        var d = document.createElement('details'); d.className = 'rezept'; d.lang = 'de';
+        d.innerHTML = '<summary>' + esc(r[0]) + '</summary><ul class="sp-liste">' + r[1].map(function (z) { return '<li>' + esc(z) + '</li>'; }).join('') + '</ul><ol class="sp-liste">' + r[2].map(function (z) { return '<li>' + esc(z) + '</li>'; }).join('') + '</ol>';
+        box.appendChild(d);
+      });
+      p(t('sp.rezepte.t'), 'small muted');
+      zurueck(function () { sp.rezepte = false; spRender(true); });
+    } else {
+      var th = SP_THEMEN.filter(function (x) { return x[0] === sp.thema; })[0];
+      p(t(th[1]), 'pf-frage');
+      var ul = document.createElement('ul'); ul.className = 'sp-liste'; box.appendChild(ul);
+      SP_TIPPS[sp.thema].forEach(function (k) { var li = document.createElement('li'); li.textContent = t(k); ul.appendChild(li); });
+      if (sp.thema === 'essen') { var d2 = document.createElement('div'); d2.className = 'btns'; d2.appendChild(nhKnopf('btn', esc(t('sp.rezepte')), null, function () { sp.rezepte = true; spRender(true); })); box.appendChild(d2); }
+      p(t('sp.quellen'), 'small muted');
+      zurueck(function () { sp.thema = ''; spRender(true); });
+    }
+    if (fokus) { var h = box.querySelector('.pf-frage'); if (h) { h.setAttribute('tabindex', '-1'); h.focus(); } }
+  }
+
   // ----- Pfändung: erst wählen (Lohn oder Konto), dann Schritt für Schritt; Rechnung in Rules.pfaendung / Rules.pkonto -----
   var pf = { art: '', schritt: 0, netto: '', pers: null, kg: null, kiz: '' };
   function pfRender(fokus) {
@@ -1944,7 +2004,7 @@
 
   // ----- Bereiche: Start, Leistungen (Leistungscheck), Brief prüfen -----
   // Beim Öffnen die Startseite; „#leistungen“ und „#briefe“ öffnen den Bereich direkt (Links, Tests).
-  var ANSICHTEN = ['start', 'leistungen', 'briefe', 'pflege', 'pflegeinfo', 'pfaendung']; // „pflege“: Pflegegrad-Einschätzung, gehört zu Leistungen
+  var ANSICHTEN = ['start', 'leistungen', 'briefe', 'pflege', 'pflegeinfo', 'pfaendung', 'sparen']; // „pflege“: Pflegegrad-Einschätzung, gehört zu Leistungen
   var aktAnsicht = 'leistungen';
   var BRIEFE = [
     ['jc', 'briefe.jobcenter', 'briefe.jobcenter.t', '<path d="M4 20V9l8-5 8 5v11"/><path d="M9 20v-6h6v6M3 20h18"/>'],
@@ -1963,8 +2023,9 @@
     if (a !== 'briefe') $('app').classList.remove('brief-offen'); else $('app').classList.toggle('brief-offen', !!briefArt); // in der Pflegegrad-Einschätzung Kopf und Hinweise ausblenden, damit die Frage oben steht
     ANSICHTEN.forEach(function (x) { $('v-' + x).hidden = x !== a; });
     $('jump').hidden = a !== 'leistungen' || esModus;
-    var navA = a === 'pflege' || a === 'pflegeinfo' ? 'leistungen' : a === 'pfaendung' ? 'start' : a;
+    var navA = a === 'pflege' || a === 'pflegeinfo' ? 'leistungen' : a === 'pfaendung' || a === 'sparen' ? 'start' : a;
     if (a === 'pfaendung') pfRender(false);
+    if (a === 'sparen') spRender(false);
     document.querySelectorAll('#appnav button').forEach(function (b) { if (b.getAttribute('data-ansicht') === navA) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
     try { if (location.hash !== '#' + a) history.replaceState(null, '', '#' + a); } catch (e) {}
     bereicheText();
@@ -2272,6 +2333,7 @@
   $('goLeistungen').addEventListener('click', function () { zeigeAnsicht('leistungen', true); });
   $('goBriefe').addEventListener('click', function () { zeigeAnsicht('briefe', true); });
   $('goPfaendung').addEventListener('click', function () { zeigeAnsicht('pfaendung', true); });
+  $('goSparen').addEventListener('click', function () { sp.thema = ''; zeigeAnsicht('sparen', true); });
   window.addEventListener('hashchange', function () { var a = location.hash.slice(1); if (ANSICHTEN.indexOf(a) >= 0 && a !== aktAnsicht) zeigeAnsicht(a, true); });
   Store.remove('lotse.fristen'); // Fristen aus 1.3.0 (Build 141) gibt es nicht mehr: gespeicherte Einträge vom Gerät löschen
   zeigeAnsicht((function () { var a = (location.hash || '').slice(1); return ANSICHTEN.indexOf(a) >= 0 ? a : 'start'; })());

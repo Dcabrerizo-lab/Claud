@@ -18,6 +18,10 @@ Stand: Version 1.4.0, Build 145 (Play Store AAB gebaut, nicht veröffentlicht). 
 - Anschriften: Bayern vollständig (Kreise, Jobcenter, Familienkasse N/S, ZBFS, Bezirke); 302 Kreise/Städte bundesweit mit Anschrift (Quelle, Abrufdatum). Rundfunk: feste Anschrift.
 - Netto aus Brutto (19.11.2026): Lohnsteuer/Soli/Kirchensteuer wie amtlicher Programmablaufplan 2026, Sozialabgaben mit Übergangsbereich (`Rules.nettoLohn`, `bruttoAusNetto`, `lohnAnnahmen`). Ersetzt pauschal 80 % (Netto) und / 0,7 (Brutto beim Lohn). Im Einkommen: geschätztes Netto als Hinweis, Knopf „Netto ausrechnen“ (Steuerklasse und Kirchensteuer als große Knöpfe, „Übernehmen“ füllt das Feld). Test `test/test-netto.js`.
 - Pfändung und P-Konto (19.11.2026): großer Startknopf „Ich habe Schulden“, Ansicht `#pfaendung`: Lohn oder Konto wählen, Unterhalt per Zahlenknopf, Ergebnis zuerst, Hinweise aufklappbar. § 850c ZPO mit Tabelle 2026 (BGBl. 2026 I Nr. 80, gilt bis 30.6.2027), P-Konto §§ 899, 902 ZPO. Texte in 8 Sprachen.
+- Ersparnisse aufteilen (19.11.2026): Knopf unter dem Vermögensfeld, große Auswahlknöpfe (Konto, Sparbuch, ETF, Bausparvertrag, Lebens-/Rentenversicherung, Riester/Rürup/Betriebsrente, Zinsen). Riester & Co. zählen nicht; Versicherung nur „möglich“, wenn sie über die Grenze bringt (`evaluate` rechnet dafür ein zweites Mal); Zinsen als Einkommen (Grundsicherungsgeld ab 100 € im Jahr, Wohngeld vorsichtig voll). Test `test/test-ersparnis.js`.
+- Einmalige Hilfen (19.11.2026): Hinweise in den Karten Grundsicherungsgeld/GSA (Erstausstattung, Umzug mit Zusicherung, Schwangerschaft auch ohne laufende Leistung).
+- Neue Karte „Kostenlose Familienversicherung“ (§ 10 SGB V, Grenze 1/7 Bezugsgröße: 2026 565 €, 2027 590 €); jetzt 32 Leistungen (Store-Text, Webseite, docs/index.html angepasst).
+- Bereich „Geld sparen im Alltag“ (19.11.2026): vierter Startknopf, Themen Strom, Heizen, Essen (mit 6 eigenen Rezepten, nur Deutsch), Verträge/Sozialtarife, Schulden (führt zur Pfändung).
 - Konkurrenzvergleich (19.11.2026): Deutschland-Rechner (Wohngeld, Bürgergeld, Pflegegrad), Online-Bescheidprüfer und Nebenkosten-Dienste sind schwächer als SoLo; übernommen wurde nur, was besser ist (Netto-Berechnung, Pfändung).
 - Vorlesen überall entfernt. Einfache Sprache (Werkstatt-Version). Barrierefreiheit (axe, WCAG 2.2 AA).
 - Tests grün vor Build 145: `npm test`, `npm run test:erweiterungen`, `npm run test:e2e`, `npm run test:app` (66 Checks).
@@ -43,7 +47,7 @@ Stand: Version 1.4.0, Build 145 (Play Store AAB gebaut, nicht veröffentlicht). 
 - Build 145 AAB: `/home/user/Claud/SoLo-PlayStore-145.aab` (gitignored), Zips in der Scratchpad der alten Sitzung (nicht dauerhaft).
 
 ## 5. Nächste Schritte (priorisiert)
-0. Branch `claude/netto-pfaendung` vom Nutzer prüfen lassen (Pfändung und Netto-Helfer ansehen), dann PR auf Wunsch. Danach weiter mit 1.
+0. Branch `claude/netto-pfaendung` vom Nutzer prüfen lassen (Pfändung, Netto-Helfer, Ersparnisse, Familienversicherung, Geld sparen), dann PR auf Wunsch. Offen: Rezepte übersetzen; Wohngeld mit Sparer-Pauschbetrag genauer. Danach weiter mit 1.
 1. WBS-Empfänger: kreisfreie Städte bundesweit (Daten in `content/behoerden-deutschland.json`, typ `stadt`) als „Wohnungsamt“; Bayern: Landkreise erst nach amtlicher Prüfung (Große Kreisstädte!). Andere Landkreise: unverändert ohne Anschrift. In `src/behoerden.js` ZUST ergänzen (`wbs`), Test in `test/test-behoerden.js`.
 2. Bayerisches Landespflegegeld (`lpg`): feste Anschrift Landesamt für Pflege (Quelle prüfen), `D.fest` wie Rundfunk.
 3. Weitere feste Anschriften mit Quelle: Mutterschaftsgeldstelle BAS, Landesämter (Ausweis, Elterngeld, Blindengeld, Eingliederungshilfe), Rentenversicherung je Land.

@@ -436,6 +436,8 @@
   .pf-tab td:last-child { text-align: right; white-space: nowrap; }
   .pf .btns, .nh .btns { margin-top: 14px; }
   .nh-wrap { margin: -4px 0 10px; }
+  .sp-liste { padding-left: 1.2em; } .sp-liste li { margin: 8px 0; }
+  .rezept { border: 1px solid var(--line); border-radius: 14px; padding: 4px 14px; margin: 10px 0; background: var(--surface); } .rezept summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
   .pf-tipps { margin: 12px 0; } .pf-tipps summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
   .nh { margin-top: 8px; padding: 12px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
   .kacheln { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin: 16px 0; }
@@ -614,6 +616,7 @@
         <button type="button" class="weg haupt" id="goLeistungen"><span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4M8.5 11l2 2 3.5-4"/></svg></span><span class="weg-txt"><b data-t="home.leistungen"></b><span data-t="home.leistungen.t"></span></span></button>
         <button type="button" class="weg" id="goBriefe"><span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><span class="weg-txt"><b data-t="home.brief"></b><span data-t="home.brief.t"></span></span></button>
         <button type="button" class="weg" id="goPfaendung"><span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/><path d="M15 3l-3 3-3-3"/></svg></span><span class="weg-txt"><b data-t="home.pfaendung"></b><span data-t="home.pfaendung.t"></span></span></button>
+        <button type="button" class="weg" id="goSparen"><span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 11a7 6 0 0 1 13-2h2v4h-2a7 7 0 0 1-3 3v3h-3v-2h-2v2H7v-3a6 6 0 0 1-2-5z"/><circle cx="15" cy="10" r=".8"/></svg></span><span class="weg-txt"><b data-t="home.sparen"></b><span data-t="home.sparen.t"></span></span></button>
       </div>
       <p class="small muted" data-t="home.privat"></p>
     </section>
@@ -673,6 +676,12 @@
         </section>
         <!--/SCAN-->
       </div>
+    </section>
+
+    <!-- Geld sparen im Alltag: Themen mit großen Knöpfen -->
+    <section id="v-sparen" class="ansicht" aria-labelledby="h-sparen" hidden>
+      <h2 id="h-sparen" class="ans-h" data-t="sp.h"></h2>
+      <div id="spInhalt" class="pf"></div>
     </section>
 
     <!-- Pfändung: Lohn oder Konto, geführt mit großen Knöpfen -->
