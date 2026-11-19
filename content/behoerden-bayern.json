@@ -2717,6 +2717,24 @@
    "web": "https://www.familienkasse.de",
    "quelle": "https://www.arbeitsagentur.de/vor-ort/familienkasse/familienkasse-berlin-brandenburg-berlin.html",
    "stand": "19.11.2026"
+  },
+  "nord": {
+   "name": "Familienkasse Nord",
+   "anschrift": [
+    "20069 Hamburg"
+   ],
+   "web": "https://www.familienkasse.de",
+   "quelle": "https://www.arbeitsagentur.de/vor-ort/familienkasse/familienkasse-nord-hamburg.html",
+   "stand": "19.11.2026"
+  },
+  "rps": {
+   "name": "Familienkasse Rheinland-Pfalz-Saarland",
+   "anschrift": [
+    "55149 Mainz"
+   ],
+   "web": "https://www.familienkasse.de",
+   "quelle": "https://www.arbeitsagentur.de/vor-ort/familienkasse/familienkasse-rheinland-pfalz-saarland-koblenz.html",
+   "stand": "19.11.2026"
   }
  },
  "fkLand": {
@@ -2727,6 +2745,49 @@
   "16": "stth",
   "14": "sn",
   "11": "bebb",
-  "12": "bebb"
+  "12": "bebb",
+  "02": "nord",
+  "01": "nord",
+  "13": "nord",
+  "07": "rps",
+  "10": "rps"
+ },
+ "jobcenterDE": {
+  "08111": {
+   "name": "Jobcenter Stuttgart",
+   "anschrift": [
+    "Rosensteinstraße 11",
+    "70191 Stuttgart"
+   ],
+   "haus": null,
+   "web": "https://www.stuttgart.de/leben/arbeit/jobcenter",
+   "quelle": "https://www.stuttgart.de/leben/arbeit/jobcenter",
+   "stand": "19.11.2026"
+  },
+  "05314": {
+   "name": "Jobcenter Bonn",
+   "anschrift": [
+    "Rochusstraße 6",
+    "53123 Bonn"
+   ],
+   "haus": null,
+   "web": "https://www.jobcenter-bonn.de/",
+   "quelle": "https://www.jobcenter-bonn.de/impressum",
+   "stand": "19.11.2026"
+  },
+  "06414": {
+   "name": "Kommunales Jobcenter Wiesbaden",
+   "anschrift": [
+    "Postfach 3920",
+    "65029 Wiesbaden"
+   ],
+   "haus": [
+    "Konradinerallee 11",
+    "65189 Wiesbaden"
+   ],
+   "web": "https://www.wiesbaden.de/leben-in-wiesbaden/arbeit-beruf/kjc",
+   "quelle": "https://www.wiesbaden.de/en/leben-in-wiesbaden/arbeit-beruf/kjc/ueberuns/kontaktdaten-kjc",
+   "stand": "19.11.2026"
+  }
  }
 }

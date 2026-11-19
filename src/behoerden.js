@@ -56,6 +56,8 @@ const Behoerden = (function () {
     if (!D || !has(ZUST, id)) return null;
     var z = ZUST[id];
     if (z.typ === 'fest') return z.nurBY && ags && String(ags).slice(0, 2) !== '09' ? null : stelle(D.fest && D.fest[z.key], '');
+    // Jobcenter außerhalb Bayerns: nur einzeln belegte Fälle (D.jobcenterDE), sonst keine Angabe
+    if (z.typ === 'jobcenter' && ags && !has(D.kreise, ags)) return D.jobcenterDE && has(D.jobcenterDE, ags) ? stelle(D.jobcenterDE[ags], z.abt) : null;
     // Familienkasse außerhalb Bayerns: nur Länder mit genau einer Familienkasse (D.fkLand, Quelle arbeitsagentur.de); sonst keine Angabe
     if (z.typ === 'fk' && ags && !has(D.kreise, ags)) {
       var fl = D.fkLand && D.fkLand[String(ags).slice(0, 2)];
