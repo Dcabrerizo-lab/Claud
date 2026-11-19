@@ -751,6 +751,17 @@
     });
   }
 
+  // Kopf des Ergebnisses: „Gute Nachrichten!“ nur, wenn mindestens eine Leistung wahrscheinlich ist; Satz mit der Zahl der passenden Hilfen
+  // (wahrscheinlich + möglich, gezählt aus den Karten). Keine Gesamtsumme: die Beträge sind Schätzungen und schließen sich teils aus.
+  function kopfErgebnis(ja, passend) {
+    var h = $('h-res'), key = ja > 0 ? 'res.gut' : 'res.h';
+    h.setAttribute('data-t', key); h.textContent = t(key);
+    var satz = $('resSatz');
+    satz.hidden = !(passend > 0);
+    satz.textContent = passend === 1 ? t('res.n1') : passend > 1 ? t('res.n', { n: passend }) : '';
+    $('beratung').hidden = !started;
+  }
+
   function render() {
     syncEinkommen(); folgefragen(); ekFelder(); weitereWarnungen();
     document.querySelectorAll('.cond-kids').forEach(function (el) { el.hidden = state.kids === 0; });
@@ -761,6 +772,7 @@
       $('overview').hidden = true; $('together').innerHTML = '';
       $('cards').innerHTML = '<div class="card startcard"><h3>' + esc(t('start.h')) + '</h3>' + listItems([t('start.1'), t('start.2'), t('start.3')]) + '</div>';
       $('helper').hidden = true; $('legende').hidden = true; $('feedback').hidden = true;
+      kopfErgebnis(0, 0);
       return;
     }
     $('helper').hidden = false; $('legende').hidden = false;
@@ -772,6 +784,7 @@
     if (n.ja) parts.push(t('c.ja', { n: n.ja }));
     if (n.vielleicht) parts.push(t('c.vielleicht', { n: n.vielleicht }));
     var summary = parts.length ? parts.join(' · ') : t('c.none');
+    kopfErgebnis(n.ja, n.ja + n.vielleicht);
     $('count').textContent = summary;
     $('jumpText').textContent = summary;
     var openIds = {}, neinOpen = false, spezOpen = false, gutOpen = false;

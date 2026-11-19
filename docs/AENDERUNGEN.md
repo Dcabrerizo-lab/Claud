@@ -7,6 +7,7 @@ Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss ste
 - Überschriften in Nunito (lokal in der App, SIL OFL 1.1), Text weiter Atkinson Hyperlegible; Schibsted Grotesk entfernt. Einfache Version bleibt bei der Systemschrift.
 - Neues Logo „Sprechblase mit Haken“ im Kopf, als App-Symbol (Android adaptiv, iOS) und im Startbild (hell Creme, dunkel warmes Dunkel).
 - Dunkelmodus mit eigenen warmen Farben; alle Textpaare mindestens 4,5:1.
+- Neuer Aufbau: Start mit Begrüßung, großer Startkarte „Welche Hilfen stehen mir zu?“ und Hinweis „Deine Angaben bleiben bei dir“; Ergebnis mit „Gute Nachrichten!“ (nur wenn etwas wahrscheinlich ist), Zahl der passenden Hilfen und Hinweis auf kostenlose Beratung. Alle neuen Texte in 13 Sprachen und Einfacher Sprache.
 
 ## 1.4.0 (ab Versionsnummer 143, November 2026)
 - „Vorlesen“ entfernt (einfache Version und Pflegegrad-Einschätzung), ab Versionsnummer 144
