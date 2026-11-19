@@ -14,6 +14,14 @@
 - Commit-Fuß: `Co-Authored-By: Claude <Modell> <noreply@anthropic.com>` und `Claude-Session: <Sitzungslink>`. Keine Modell-ID im Repo.
 - Tag-Push ist blockiert (403): nicht umgehen. Netz- und Rechtegrenzen nie umgehen.
 
+## Mehrere Sitzungen parallel
+- Vor dem Start: `git fetch origin`, neuen Branch von der aktuellen `origin/main` anlegen, `git branch -r` ansehen (offene Branches anderer Sitzungen).
+- Pro Sitzung ein klar abgegrenzter Bereich. Wird eine Datei geändert, die ein anderer Branch auch ändert (`src/app.js`, `src/rules.js`, `src/template.html`, `src/lang/*.json`), vorher nachfragen.
+- **Nach jeder Etappe vor dem Push `tools/konflikt-check.sh` ausführen** (dauert Sekunden, ändert nichts). Meldet es „KONFLIKT“: `git merge origin/main` bzw. den genannten Branch, Konflikte lösen, Tests laufen lassen, erst dann pushen. Ohne Konflikt keine weitere Prüfung.
+- `STATUS.md` und den nächsten VersionCode nur auf ausdrücklichen Wunsch ändern. Stand sonst im Commit und in der Antwort nennen.
+- Builds und Store-Uploads nur vom gemergten Stand auf `main`.
+- Keine Merges und keine PRs ohne Auftrag. Nach dem Merge eines anderen Branchs den eigenen Branch mit `origin/main` aktualisieren.
+
 ## Builds und Store
 - **Builds nur auf ausdrückliche Anweisung starten.** Nie von selbst.
 - Keine Store-Aktionen (Play Console, App Store, TestFlight) ohne Freigabe.
