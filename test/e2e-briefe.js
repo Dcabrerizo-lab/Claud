@@ -17,7 +17,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   await p.addInitScript(() => { try { if (!sessionStorage.getItem('erster')) { localStorage.setItem('lotse.fristen', '[{"titel":"Alt","datum":"2026-12-01"}]'); sessionStorage.setItem('erster', '1'); } } catch (e) {} });
   await p.goto(APP); await p.waitForTimeout(300);
   ok('Ohne Adresszusatz öffnet die Startseite', await p.isVisible('#v-start') && !(await p.isVisible('#v-leistungen')));
-  ok('Drei Bereiche, keine Fristen', (await p.locator('#appnav button').count()) === 3 && (await p.locator('#v-fristen, [data-ansicht=fristen], #startFristen').count()) === 0);
+  ok('Vier Bereiche, keine Fristen', (await p.locator('#appnav button').count()) === 4 && (await p.locator('#v-fristen, [data-ansicht=fristen], #startFristen').count()) === 0);
   ok('Alte gespeicherte Fristen werden gelöscht', (await p.evaluate(() => localStorage.getItem('lotse.fristen'))) === null);
   await p.goto(APP + '#fristen'); await p.waitForTimeout(200);
   ok('Alter Link #fristen führt zur Startseite', await p.isVisible('#v-start'));
