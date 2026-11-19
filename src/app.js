@@ -350,6 +350,7 @@
     fillSelect('uzAn', [['', t('uz.an.0')], ['k1', t('uz.an.k1')], ['k2', t('uz.an.k2')], ['k3', t('uz.an.k3')], ['ex', t('uz.an.ex')], ['exk', t('uz.an.exk')]], state.uzAn);
     fillSelect('emStd', [['', t('bh.em.0')], ['unter3', t('bh.em.unter3')], ['3bis6', t('bh.em.3bis6')], ['unklar', t('bh.em.unklar')]], state.emStd);
     fillSelect('lang', LANGS.map(function (c) { return [c, I18N[c]['meta.name']]; }), lang);
+    fillSelect('lang2', LANGS.map(function (c) { return [c, I18N[c]['meta.name']]; }), lang);
     plzUpdate(false);
   }
 
@@ -463,6 +464,7 @@
     CHECKS.forEach(function (k) { $(k).addEventListener('change', function () { state[k] = $(k).checked; touched(); }); });
     BEZUG.forEach(function (k) { $('b-' + k).addEventListener('change', function () { state.bezug[k] = $('b-' + k).checked; touched(); }); });
     $('lang').addEventListener('change', function () { setLang($('lang').value); });
+    $('lang2').addEventListener('change', function () { setLang($('lang2').value); });
     if ($('sc-take')) $('sc-take').addEventListener('click', function () { runNative(); });
     if ($('sc-local')) $('sc-local').addEventListener('click', function () { runLocal(true); });
     if ($('sc-pasteBtn')) $('sc-pasteBtn').addEventListener('click', function () { var b = $('sc-pasteBox'); b.hidden = !b.hidden; $('sc-pasteBtn').setAttribute('aria-expanded', String(!b.hidden)); if (!b.hidden) $('sc-text').focus(); });
@@ -1723,7 +1725,7 @@
   };
   // ----- Bereiche: Start, Leistungen (Leistungscheck), Brief prüfen -----
   // Beim Öffnen die Startseite; „#leistungen“ und „#briefe“ öffnen den Bereich direkt (Links, Tests).
-  var ANSICHTEN = ['start', 'leistungen', 'briefe', 'pflege', 'pflegeinfo']; // „pflege“: Pflegegrad-Einschätzung, gehört zu Leistungen
+  var ANSICHTEN = ['start', 'leistungen', 'briefe', 'pflege', 'pflegeinfo', 'einst']; // „pflege“: Pflegegrad-Einschätzung, gehört zu Leistungen
   var aktAnsicht = 'leistungen';
   var BRIEFE = [
     ['jc', 'briefe.jobcenter', 'briefe.jobcenter.t', '<path d="M4 20V9l8-5 8 5v11"/><path d="M9 20v-6h6v6M3 20h18"/>'],
@@ -1745,6 +1747,7 @@
     var navA = a === 'pflege' || a === 'pflegeinfo' ? 'leistungen' : a;
     document.querySelectorAll('#appnav button').forEach(function (b) { if (b.getAttribute('data-ansicht') === navA) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
     try { if (location.hash !== '#' + a) history.replaceState(null, '', '#' + a); } catch (e) {}
+    $('big2').setAttribute('aria-pressed', $('bigBtn').getAttribute('aria-pressed') || 'false'); $('lang2').value = lang;
     bereicheText();
     if (fokus) { window.scrollTo(0, 0); var h = $('v-' + a).querySelector('h2'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); } }
   }
@@ -2047,6 +2050,13 @@
     if (a === 'briefe' && aktAnsicht === 'briefe' && !$('checkBox').hidden) { briefOeffnen(null); $('h-briefe') && $('h-briefe').focus(); return; } // nochmal tippen: zurück zur Auswahl
     zeigeAnsicht(a, true);
   }); });
+  // Einstellungen: Reiter und Schalter (greifen auf dieselben Funktionen zu wie der Kopf)
+  function einstReiter(r) { ['einst', 'info'].forEach(function (x) { var on = x === r; $('tab-' + x).setAttribute('aria-selected', String(on)); $('tab-' + x).tabIndex = on ? 0 : -1; $('pn-' + x).hidden = !on; }); }
+  $('tab-einst').addEventListener('click', function () { einstReiter('einst'); });
+  $('tab-info').addEventListener('click', function () { einstReiter('info'); });
+  [['tab-einst', 'tab-info'], ['tab-info', 'tab-einst']].forEach(function (p) { $(p[0]).addEventListener('keydown', function (e) { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { $(p[1]).click(); $(p[1]).focus(); } }); });
+  $('big2').addEventListener('click', function () { $('bigBtn').click(); $('big2').setAttribute('aria-pressed', $('bigBtn').getAttribute('aria-pressed')); });
+  $('clear2').addEventListener('click', function () { $('clearBtn').click(); $('clear2Msg').textContent = $('clearMsg').textContent; });
   $('goLeistungen').addEventListener('click', function () { zeigeAnsicht('leistungen', true); });
   $('goBriefe').addEventListener('click', function () { zeigeAnsicht('briefe', true); });
   window.addEventListener('hashchange', function () { var a = location.hash.slice(1); if (ANSICHTEN.indexOf(a) >= 0 && a !== aktAnsicht) zeigeAnsicht(a, true); });
