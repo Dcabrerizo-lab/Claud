@@ -1113,6 +1113,7 @@
   "set.about.h": "O aplikacji",
   "set.version": "Wersja {v}",
   "ek.nettoGeschaetzt": "Brak kwoty netto. Aplikacja szacuje ją na około {n} (klasa podatkowa {k}, bez podatku kościelnego). Dokładniej: „Oblicz netto”.",
+  "ek.renteGeschaetzt": "Brak kwoty netto. Aplikacja szacuje kwotę wypłaty emerytury (Zahlbetrag) na około {n} (po ubezpieczeniu zdrowotnym i pielęgnacyjnym). Dokładna kwota jest na wyciągu z konta lub w Rentenbescheid (decyzja emerytalna). Ubezpieczenie dobrowolne lub prywatne, emerytura zakładowa (Betriebsrente) lub podatek od emerytury? Wtedy wpisz kwotę samodzielnie.",
   "nh.btn": "Oblicz netto",
   "nh.stkl.q": "Jaka klasa podatkowa jest na pasku wypłaty?",
   "nh.stkl": "Klasa podatkowa {k}",

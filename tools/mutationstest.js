@@ -90,6 +90,8 @@ const M = [
   ['UVG: Waisenrente nicht angerechnet', 'const anr = h.unterhalt + (h.waisen || 0);', 'const anr = h.unterhalt;'],
   ['UVG: Heirat mit neuem Partner schließt nicht aus', "if (h.uvgPartner === 'ehe') return mk(id, 'nein'", "if (false) return mk(id, 'nein'"],
   ['UVG: Einkommen des Kindes ohne Halbierung', '? Math.max(0, kindEink - R.uvg.wk - R.uvg.azubi) * R.uvg.haelfte : 0;', '? Math.max(0, kindEink - R.uvg.wk - R.uvg.azubi) : 0;'],
+  ['Lohn: KV-Arbeitnehmeranteil ermäßigt 7,0 % statt 7,3 %', 'kvBasis: 0.07, kvAn: 0.073,', 'kvBasis: 0.07, kvAn: 0.07,'],
+  ['Rente: Pflege 1,8 % (Arbeitnehmeranteil) statt 3,6 % allein', 'rente: { kvHalb: 0.073, pv: 0.036 }', 'rente: { kvHalb: 0.073, pv: 0.018 }']
 ];
 
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'mut-'));
@@ -106,7 +108,7 @@ fs.symlinkSync(path.join(ROOT, 'app', 'node_modules'), path.join(tmp, 'app', 'no
 const DATEI = (m) => m[3] || 'src/rules.js';
 const ORIG = {};
 M.forEach((m) => { ORIG[DATEI(m)] = ORIG[DATEI(m)] || fs.readFileSync(path.join(ROOT, DATEI(m)), 'utf8'); });
-const TESTS = ['test.js', 'test-strict.js', 'test-beh.js', 'test-faelle.js', 'test-raster.js ' + (process.env.MUT_RASTER || 8000), 'test-pruefliste.js', 'test-einfach-gleich.js 3000', 'test-grenzen.js', 'test-formulare.js', 'test-amtlich.js', 'test-ba-beispiele.js', 'test-eigenschaften.js ' + (process.env.MUT_EIGEN || 3000)];
+const TESTS = ['test.js', 'test-netto.js', 'test-strict.js', 'test-beh.js', 'test-faelle.js', 'test-raster.js ' + (process.env.MUT_RASTER || 8000), 'test-pruefliste.js', 'test-einfach-gleich.js 3000', 'test-grenzen.js', 'test-formulare.js', 'test-amtlich.js', 'test-ba-beispiele.js', 'test-eigenschaften.js ' + (process.env.MUT_EIGEN || 3000)];
 const laeuft = () => { try { for (const t of TESTS) execSync('node test/' + t, { cwd: tmp, stdio: 'ignore' }); return true; } catch (e) { return false; } };
 
 let unentdeckt = 0, geprueft = 0;

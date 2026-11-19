@@ -1113,6 +1113,7 @@
   "set.about.h": "Über die App",
   "set.version": "Version {v}",
   "ek.nettoGeschaetzt": "Das Netto fehlt. Die App schätzt es auf etwa {n} (Steuerklasse {k}, ohne Kirchensteuer). Genauer geht es mit „Netto ausrechnen“.",
+  "ek.renteGeschaetzt": "Das Netto fehlt. Die App schätzt den Zahlbetrag der Rente auf etwa {n} (nach Kranken- und Pflegeversicherung). Der genaue Betrag steht auf dem Kontoauszug oder im Rentenbescheid. Freiwillig oder privat versichert, Betriebsrente oder Steuern auf die Rente? Dann den Betrag selbst eingeben.",
   "nh.btn": "Netto ausrechnen",
   "nh.stkl.q": "Welche Steuerklasse steht auf der Lohnabrechnung?",
   "nh.stkl": "Steuerklasse {k}",

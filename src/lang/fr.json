@@ -1113,6 +1113,7 @@
   "set.about.h": "À propos de l'application",
   "set.version": "Version {v}",
   "ek.nettoGeschaetzt": "Le net manque. L'appli l'estime à environ {n} (classe d'impôt {k}, sans impôt d'Église). Plus précis : « Calculer le net ».",
+  "ek.renteGeschaetzt": "Le net manque. L'appli estime le montant versé de la pension (Zahlbetrag) à environ {n} (après assurance maladie et assurance dépendance). Le montant exact figure sur le relevé bancaire ou dans le Rentenbescheid (avis de pension). Assurance volontaire ou privée, retraite d'entreprise (Betriebsrente) ou impôt sur la pension ? Alors saisissez le montant vous-même.",
   "nh.btn": "Calculer le net",
   "nh.stkl.q": "Quelle classe d'impôt figure sur ta fiche de paie ?",
   "nh.stkl": "Classe d'impôt {k}",

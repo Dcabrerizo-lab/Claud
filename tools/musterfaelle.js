@@ -5,6 +5,7 @@
 const fs = require('fs');
 const path = require('path');
 const R = require('../test/rules-de.js');
+const NR = require('../src/rules.js').nettoRente; // Rente netto nach Kranken- und Pflegeversicherung
 
 const base = { adults: 1, kids: 0, young: 0, kidsU6: 0, brutto: 0, brutto2: '', netto: '', miete: 0, vermoegen: 0, heute: 2026.85, bezug: {} };
 const ev = (o) => { const m = {}; R.evaluate({ ...base, ...o }).results.forEach((x) => { m[x.id] = x; }); return m; };
@@ -39,7 +40,7 @@ const wg = [
   [2, 2, 'lohn', 4200, 0, 1100, 3, 'Paar, 2 Kinder, mittleres Einkommen']
 ];
 for (const [ad, k, art, b1, b2, miete, st, txt] of wg) {
-  const e = { adults: ad, kids: k, art1: art, art2: b2 ? art : '', brutto: b1 + b2, brutto2: ad === 2 ? b2 : '', netto: Math.round((b1 + b2) * (art === 'lohn' ? 0.72 : 0.89)), miete, mietstufe: String(st) };
+  const e = { adults: ad, kids: k, art1: art, art2: b2 ? art : '', brutto: b1 + b2, brutto2: ad === 2 ? b2 : '', netto: Math.round(art === 'lohn' ? (b1 + b2) * 0.72 : NR(b1, { kinder: k }) + NR(b2, { kinder: k })), miete, mietstufe: String(st) };
   const abz = art === 'lohn' ? 'Steuern, Kranken- und Rentenversicherung: ja' : 'Kranken- und Pflegeversicherung: ja, Steuern: nein';
   // Die App fragt die Warmmiete; der Wohngeldrechner will die Bruttokaltmiete (ohne Heizung). Die App zieht dafür pauschal
   // die Heizkosten-Entlastung ab (§ 12 Abs. 6 WoGG) – genau diesen Wert für den amtlichen Rechner angeben.

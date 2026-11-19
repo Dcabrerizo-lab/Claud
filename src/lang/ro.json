@@ -1113,6 +1113,7 @@
   "set.about.h": "Despre aplicație",
   "set.version": "Versiunea {v}",
   "ek.nettoGeschaetzt": "Lipsește netul. Aplicația îl estimează la aproximativ {n} (clasa de impozitare {k}, fără impozit bisericesc). Mai exact: „Calculează netul”.",
+  "ek.renteGeschaetzt": "Lipsește netul. Aplicația estimează suma plătită a pensiei (Zahlbetrag) la aproximativ {n} (după asigurarea de sănătate și de îngrijire). Suma exactă apare pe extrasul de cont sau în Rentenbescheid (decizia de pensie). Asigurat voluntar sau privat, pensie ocupațională (Betriebsrente) sau impozit pe pensie? Atunci introduceți singur suma.",
   "nh.btn": "Calculează netul",
   "nh.stkl.q": "Ce clasă de impozitare scrie pe fluturașul de salariu?",
   "nh.stkl": "Clasa de impozitare {k}",

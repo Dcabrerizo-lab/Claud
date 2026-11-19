@@ -1113,6 +1113,7 @@
   "set.about.h": "Ku saabsan app-ka",
   "set.version": "Nooca {v}",
   "ek.nettoGeschaetzt": "Netto-ga waa maqan yahay. App-ku wuxuu ku qiyaasayaa qiyaastii {n} (fasalka canshuurta {k}, canshuur kaniisad la'aan). Si sax ah: „Xisaabi netto“.",
+  "ek.renteGeschaetzt": "Netto-ga waa maqan yahay. App-ku wuxuu ku qiyaasayaa lacagta hawlgabka ee la bixiyo (Zahlbetrag) qiyaastii {n} (kadib caymiska caafimaadka iyo daryeelka). Lacagta saxda ah waxay ku qoran tahay warqadda bangiga ama Rentenbescheid (go'aanka hawlgabka). Caymis ikhtiyaari ah ama gaar ah, hawlgab shaqo (Betriebsrente) ama canshuur hawlgabka? Markaas lacagta adigu geli.",
   "nh.btn": "Xisaabi netto",
   "nh.stkl.q": "Fasalkee canshuur ayaa ku qoran warqadda mushaharka?",
   "nh.stkl": "Fasalka canshuurta {k}",
