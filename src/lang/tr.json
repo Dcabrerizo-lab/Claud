@@ -1169,5 +1169,14 @@
   "t.einmal.sgb2": "Ayrıca başvur (§ 24 Abs. 3 SGB II): ev için ilk donanım (mobilya, ev aletleri), ilk giyim, terapi cihazlarının onarımı veya kiralanması. Her zaman satın almadan önce başvur.",
   "t.einmal.umzug": "Taşınma: Jobcenter taşınma masraflarını, depozitoyu ve kooperatif paylarını yalnızca önceden onay verdiyse öder (§ 22 Abs. 6 SGB II). Depozito genellikle borç olarak verilir.",
   "t.einmal.sgb12": "Ayrıca başvur (§ 31 SGB XII): ev için ilk donanım (mobilya, ev aletleri), ilk giyim, terapi cihazlarının onarımı veya kiralanması. Her zaman satın almadan önce başvur.",
-  "t.einmal.ohneBezug": "Sürekli Grundsicherungsgeld almadan da, gelir yetmiyorsa hamilelik ve doğum için ilk donanım verilebilir (§ 24 Abs. 3 SGB II). Satın almadan önce Jobcenter'a başvur."
+  "t.einmal.ohneBezug": "Sürekli Grundsicherungsgeld almadan da, gelir yetmiyorsa hamilelik ve doğum için ilk donanım verilebilir (§ 24 Abs. 3 SGB II). Satın almadan önce Jobcenter'a başvur.",
+  "n.famvers": "Ücretsiz aile sigortası (sağlık sigortası)",
+  "zu.famvers": "Krankenkasse (sağlık sigortası)",
+  "s.famvers.wo": "Yasal sigortalı üyenin Krankenkasse'sinde.",
+  "s.famvers.tip": "Krankenkasse aile sigortası anketi gönderir. Yakınların gelirini her yıl yeniden bildir.",
+  "t.famvers.keine": "Hanede yakın belirtilmedi.",
+  "t.famvers.partner": "Yasal sigortalıysan ve eşinin geliri ayda en fazla {grenze} ise (mini iş {mini}'e kadar) eşin senin üzerinden ücretsiz sigortalı olabilir (§ 10 SGB V). Evlilik ve kayıtlı birliktelik için geçerlidir.",
+  "t.famvers.partnerNein": "Bu gelirle eş ücretsiz sigortalanamaz: Sınır ayda {grenze}; emekli maaşı, işsizlik parası ve hastalık parası kendi sigortasını getirir (§ 10 SGB V).",
+  "t.famvers.kinder": "18 yaşından küçük çocuklar yasal sigortalı bir ebeveyn üzerinden ücretsiz sigortalıdır. İstisna: Diğer ebeveyn özel sigortalıysa ve daha fazla kazanıyorsa aile sigortası düşebilir.",
+  "t.famvers.jung": "18 yaş üstü çocuklar ücretsiz sigortalı kalır: işsizse 23'e kadar, okul, meslek eğitimi veya üniversitede 25'e kadar, engelliyse yaş sınırı olmadan. Kendi geliri ayda en fazla {grenze} (mini iş sınırına kadar)."
 }

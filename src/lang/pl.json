@@ -1169,5 +1169,14 @@
   "t.einmal.sgb2": "Dodatkowo złóż osobny wniosek (§ 24 Abs. 3 SGB II): pierwsze wyposażenie mieszkania (meble, sprzęt AGD), pierwsza odzież, naprawa lub wynajem sprzętu terapeutycznego. Zawsze przed zakupem.",
   "t.einmal.umzug": "Przeprowadzka: koszty przeprowadzki, kaucję i udziały spółdzielcze Jobcenter pokrywa tylko po wcześniejszej zgodzie (§ 22 Abs. 6 SGB II). Kaucja jest zwykle pożyczką.",
   "t.einmal.sgb12": "Dodatkowo złóż osobny wniosek (§ 31 SGB XII): pierwsze wyposażenie mieszkania (meble, sprzęt AGD), pierwsza odzież, naprawa lub wynajem sprzętu terapeutycznego. Zawsze przed zakupem.",
-  "t.einmal.ohneBezug": "Nawet bez bieżącego Grundsicherungsgeld można dostać pierwszą wyprawkę na ciążę i poród, jeśli dochód na nią nie wystarcza (§ 24 Abs. 3 SGB II). Złóż wniosek w Jobcenter przed zakupem."
+  "t.einmal.ohneBezug": "Nawet bez bieżącego Grundsicherungsgeld można dostać pierwszą wyprawkę na ciążę i poród, jeśli dochód na nią nie wystarcza (§ 24 Abs. 3 SGB II). Złóż wniosek w Jobcenter przed zakupem.",
+  "n.famvers": "Bezpłatne ubezpieczenie rodzinne (zdrowotne)",
+  "zu.famvers": "Krankenkasse (kasa chorych)",
+  "s.famvers.wo": "W Krankenkasse członka ubezpieczonego ustawowo.",
+  "s.famvers.tip": "Kasa przysyła ankietę do ubezpieczenia rodzinnego. Dochód bliskich podawaj co roku na nowo.",
+  "t.famvers.keine": "Nie podano członków rodziny w gospodarstwie.",
+  "t.famvers.partner": "Małżonek lub zarejestrowany partner może być bezpłatnie ubezpieczony przez ciebie, jeśli masz ubezpieczenie ustawowe, a jego dochód wynosi najwyżej {grenze} miesięcznie (minijob do {mini}) (§ 10 SGB V). Dotyczy małżeństwa i zarejestrowanego związku.",
+  "t.famvers.partnerNein": "Przy takim dochodzie partnera nie można ubezpieczyć bezpłatnie: granica to {grenze} miesięcznie; emerytura, zasiłek dla bezrobotnych i chorobowy dają własne ubezpieczenie (§ 10 SGB V).",
+  "t.famvers.kinder": "Dzieci poniżej 18 lat są bezpłatnie ubezpieczone przez rodzica z ubezpieczeniem ustawowym. Wyjątek: jeśli drugi rodzic jest ubezpieczony prywatnie i zarabia więcej, ubezpieczenie rodzinne może odpaść.",
+  "t.famvers.jung": "Dzieci powyżej 18 lat pozostają ubezpieczone bezpłatnie: bez pracy do 23, w szkole, nauce zawodu lub na studiach do 25, z niepełnosprawnością bez granicy wieku. Własny dochód najwyżej {grenze} miesięcznie (minijob do granicy minijobu)."
 }

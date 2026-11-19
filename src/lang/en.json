@@ -1169,5 +1169,14 @@
   "t.einmal.sgb2": "Apply for separately (§ 24 Abs. 3 SGB II): initial furnishing of the flat (furniture, household appliances), initial clothing, repair or rental of therapeutic equipment. Always apply before buying.",
   "t.einmal.umzug": "Moving: the Jobcenter only pays moving costs, deposit and cooperative shares if it agreed beforehand (§ 22 Abs. 6 SGB II). The deposit is usually a loan.",
   "t.einmal.sgb12": "Apply for separately (§ 31 SGB XII): initial furnishing of the flat (furniture, household appliances), initial clothing, repair or rental of therapeutic equipment. Always apply before buying.",
-  "t.einmal.ohneBezug": "Even without ongoing Grundsicherungsgeld you can get initial equipment for pregnancy and birth if your income is not enough for it (§ 24 Abs. 3 SGB II). Apply at the Jobcenter before buying."
+  "t.einmal.ohneBezug": "Even without ongoing Grundsicherungsgeld you can get initial equipment for pregnancy and birth if your income is not enough for it (§ 24 Abs. 3 SGB II). Apply at the Jobcenter before buying.",
+  "n.famvers": "Free family insurance (health insurance)",
+  "zu.famvers": "Krankenkasse (health insurance)",
+  "s.famvers.wo": "At the health insurance fund of the member with statutory insurance.",
+  "s.famvers.tip": "The fund sends a family insurance questionnaire. Report the relatives' income again every year.",
+  "t.famvers.keine": "No relatives in the household were entered.",
+  "t.famvers.partner": "Your spouse or registered partner can be insured free of charge through you if you have statutory insurance and their income is at most {grenze} per month (mini-job up to {mini}) (§ 10 SGB V). Applies to marriage and registered partnership.",
+  "t.famvers.partnerNein": "With this income the partner cannot be insured free of charge: the limit is {grenze} per month; pension, unemployment benefit and sickness benefit come with their own insurance (§ 10 SGB V).",
+  "t.famvers.kinder": "Children under 18 are insured free of charge through a parent with statutory insurance. Exception: if the other parent is privately insured and earns more, family insurance may not apply.",
+  "t.famvers.jung": "Children over 18 stay insured free of charge: without work up to 23, in school, training or university up to 25, with disability without age limit. Own income at most {grenze} per month (mini-job up to the mini-job limit)."
 }

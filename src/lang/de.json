@@ -1169,5 +1169,14 @@
   "t.einmal.sgb2": "Zusätzlich extra beantragen (§ 24 Abs. 3 SGB II): Erstausstattung für die Wohnung (Möbel, Haushaltsgeräte), Erstausstattung mit Kleidung, Reparatur oder Miete therapeutischer Geräte. Immer vor dem Kauf beantragen.",
   "t.einmal.umzug": "Umzug: Umzugskosten, Kaution und Genossenschaftsanteile übernimmt das Jobcenter nur, wenn es vorher zugesichert hat (§ 22 Abs. 6 SGB II). Die Kaution gibt es meist als Darlehen.",
   "t.einmal.sgb12": "Zusätzlich extra beantragen (§ 31 SGB XII): Erstausstattung für die Wohnung (Möbel, Haushaltsgeräte), Erstausstattung mit Kleidung, Reparatur oder Miete therapeutischer Geräte. Immer vor dem Kauf beantragen.",
-  "t.einmal.ohneBezug": "Auch ohne laufendes Grundsicherungsgeld kann es die Erstausstattung bei Schwangerschaft und Geburt geben, wenn das Einkommen dafür nicht reicht (§ 24 Abs. 3 SGB II). Beim Jobcenter vor dem Kauf beantragen."
+  "t.einmal.ohneBezug": "Auch ohne laufendes Grundsicherungsgeld kann es die Erstausstattung bei Schwangerschaft und Geburt geben, wenn das Einkommen dafür nicht reicht (§ 24 Abs. 3 SGB II). Beim Jobcenter vor dem Kauf beantragen.",
+  "n.famvers": "",
+  "zu.famvers": "Krankenkasse",
+  "s.famvers.wo": "Bei der Krankenkasse des gesetzlich versicherten Mitglieds.",
+  "s.famvers.tip": "Die Krankenkasse schickt einen Fragebogen zur Familienversicherung. Einkommen der Angehörigen jedes Jahr neu angeben.",
+  "t.famvers.keine": "Es wurden keine Angehörigen im Haushalt angegeben.",
+  "t.famvers.partner": "Dein Ehe- oder Lebenspartner kann kostenlos über dich mitversichert sein, wenn du gesetzlich versichert bist und sein Einkommen höchstens {grenze} im Monat beträgt (Minijob bis {mini}) (§ 10 SGB V). Gilt für Ehe und eingetragene Partnerschaft.",
+  "t.famvers.partnerNein": "Mit diesem Einkommen kann der Partner nicht kostenlos mitversichert werden: Die Grenze liegt bei {grenze} im Monat, Rente, Arbeitslosengeld und Krankengeld bringen eine eigene Versicherung mit (§ 10 SGB V).",
+  "t.famvers.kinder": "Kinder unter 18 sind kostenlos über einen gesetzlich versicherten Elternteil mitversichert. Ausnahme: Ist der andere Elternteil privat versichert und verdient mehr, kann die Familienversicherung entfallen.",
+  "t.famvers.jung": "Kinder ab 18 bleiben kostenlos mitversichert: ohne Arbeit bis 23, in Schule, Ausbildung oder Studium bis 25, mit Behinderung ohne Altersgrenze. Eigenes Einkommen höchstens {grenze} im Monat (Minijob bis zur Minijob-Grenze)."
 }

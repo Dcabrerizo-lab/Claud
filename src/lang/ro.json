@@ -1169,5 +1169,14 @@
   "t.einmal.sgb2": "Cere separat (§ 24 Abs. 3 SGB II): prima dotare a locuinței (mobilă, electrocasnice), prima îmbrăcăminte, repararea sau închirierea aparatelor terapeutice. Cere întotdeauna înainte de cumpărare.",
   "t.einmal.umzug": "Mutare: costurile de mutare, garanția și părțile sociale le plătește Jobcenter doar dacă a aprobat dinainte (§ 22 Abs. 6 SGB II). Garanția se dă de obicei ca împrumut.",
   "t.einmal.sgb12": "Cere separat (§ 31 SGB XII): prima dotare a locuinței (mobilă, electrocasnice), prima îmbrăcăminte, repararea sau închirierea aparatelor terapeutice. Cere întotdeauna înainte de cumpărare.",
-  "t.einmal.ohneBezug": "Chiar și fără Grundsicherungsgeld curent poți primi prima dotare pentru sarcină și naștere, dacă venitul nu ajunge (§ 24 Abs. 3 SGB II). Cere la Jobcenter înainte de cumpărare."
+  "t.einmal.ohneBezug": "Chiar și fără Grundsicherungsgeld curent poți primi prima dotare pentru sarcină și naștere, dacă venitul nu ajunge (§ 24 Abs. 3 SGB II). Cere la Jobcenter înainte de cumpărare.",
+  "n.famvers": "Asigurare de familie gratuită (sănătate)",
+  "zu.famvers": "Krankenkasse (casa de asigurări de sănătate)",
+  "s.famvers.wo": "La Krankenkasse membrului asigurat legal.",
+  "s.famvers.tip": "Casa trimite un chestionar pentru asigurarea de familie. Declară anual veniturile rudelor.",
+  "t.famvers.keine": "Nu au fost indicate rude în gospodărie.",
+  "t.famvers.partner": "Soțul/soția sau partenerul înregistrat poate fi asigurat gratuit prin tine, dacă ești asigurat legal și venitul lui este de cel mult {grenze} pe lună (minijob până la {mini}) (§ 10 SGB V). Se aplică la căsătorie și parteneriat înregistrat.",
+  "t.famvers.partnerNein": "Cu acest venit partenerul nu poate fi asigurat gratuit: limita este {grenze} pe lună; pensia, ajutorul de șomaj și indemnizația de boală vin cu propria asigurare (§ 10 SGB V).",
+  "t.famvers.kinder": "Copiii sub 18 ani sunt asigurați gratuit prin părintele asigurat legal. Excepție: dacă celălalt părinte are asigurare privată și câștigă mai mult, asigurarea de familie poate să nu se aplice.",
+  "t.famvers.jung": "Copiii peste 18 ani rămân asigurați gratuit: fără loc de muncă până la 23, la școală, ucenicie sau facultate până la 25, cu dizabilitate fără limită de vârstă. Venit propriu de cel mult {grenze} pe lună (minijob până la limita minijobului)."
 }
