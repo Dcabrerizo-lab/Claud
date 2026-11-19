@@ -375,6 +375,57 @@ ck('[but-azubi] Junger Erwachsener in betrieblicher Ausbildung: keine Bildung un
 ck('[uvg-anrechnung] Unterhalt 100 € wird angerechnet (nur möglich), 400 € reicht (nein)', L({ kids: 1, brutto: 1500, unterhaltFehlt: true, unterhalt: 100 }, 'uvg') === 'vielleicht' && L({ kids: 1, brutto: 1500, unterhaltFehlt: true, unterhalt: 400 }, 'uvg') === 'nein');
 ck('[uvg-ab12] Kind ab 12: mit 400 € brutto nur möglich, mit 700 € wahrscheinlich (Grenze 600 €)', L({ kids: 1, brutto: 400, unterhaltFehlt: true, kinder12: true }, 'uvg') === 'vielleicht' && L({ kids: 1, brutto: 700, unterhaltFehlt: true, kinder12: true }, 'uvg') === 'ja');
 ck('[uvg-paar] Zwei Erwachsene im Haushalt: nur möglich (Heirat schließt aus)', L({ adults: 2, kids: 1, unterhaltFehlt: true }, 'uvg') === 'vielleicht' && K({ adults: 2, kids: 1, unterhaltFehlt: true }, 'uvg')[0] === 'uvg.zwei');
+// Unterhaltsvorschuss: alle Fälle des UVG (Stand November 2026, gesetze-im-internet.de/uhvorschg; familienportal.de)
+const uv = (o) => ({ kids: 1, brutto: 1500, netto: 1200, miete: 700, unterhaltFehlt: true, ...o });
+// Amtliche Herleitung (BMBFSFJ, Einlegeblatt Leistungen für Alleinerziehende 2026): Mindestunterhalt 486/558/653 € minus Kindergeld 259 €
+ck('[uvg-amtlich] Beträge 2026 = Mindestunterhalt minus volles Kindergeld (486 − 259, 558 − 259, 653 − 259)', P(uv({}), 'uvg', 'a') === E(486 - 259) && P(uv({}), 'uvg', 'b') === E(558 - 259) && P(uv({}), 'uvg', 'c') === E(653 - 259));
+ck('[uvg-partner] Neue Partnerschaft ohne Trauschein: Anspruch bleibt (wahrscheinlich), Einkommen des Partners zählt nicht für die Grenze ab 12',
+  L(uv({ adults: 2, brutto: 2500, brutto2: 1000, uvgPartner: 'neu' }), 'uvg') === 'ja' && L(uv({ adults: 2, kinder12: true, kids14: 1, brutto: 2500, brutto2: 2000, uvgPartner: 'neu' }), 'uvg') !== 'nein');
+ck('[uvg-stiefelternteil] Mit dem neuen Partner verheiratet oder verpartnert: kein Anspruch (§ 1 Abs. 1 Nr. 2 UVG)', L(uv({ adults: 2, brutto: 2500, brutto2: 1000, uvgPartner: 'ehe' }), 'uvg') === 'nein' && K(uv({ adults: 2, uvgPartner: 'ehe' }), 'uvg')[0] === 'uvg.ehe');
+ck('[uvg-elternteil] Lebt mit dem anderen Elternteil zusammen: kein Anspruch (§ 1 Abs. 3 UVG)', L(uv({ adults: 2, uvgPartner: 'eltern' }), 'uvg') === 'nein' && K(uv({ adults: 2, uvgPartner: 'eltern' }), 'uvg')[0] === 'uvg.elternteil');
+ck('[uvg-wechsel] Wechselmodell (40 % beim anderen Elternteil): ein Kind nein, mehrere Kinder nur möglich', L(uv({ uvgWechsel: true }), 'uvg') === 'nein' && K(uv({ uvgWechsel: true }), 'uvg')[0] === 'uvg.wechsel' && L(uv({ kids: 2, uvgWechsel: true }), 'uvg') === 'vielleicht' && K(uv({ kids: 2, uvgWechsel: true }), 'uvg')[0] === 'uvg.wechselMehr');
+ck('[uvg-waise] Halbwaisenrente wird angerechnet: Kind 6 bis 11 mit 150 € möglich, mit 300 € (≥ 299 €) nein; Kind 14 mit 300 € (< 394 €) möglich',
+  L(uv({ waisen: 150 }), 'uvg') === 'vielleicht' && K(uv({ waisen: 150 }), 'uvg')[0] === 'uvg.teilW' && L(uv({ waisen: 300 }), 'uvg') === 'nein' && K(uv({ waisen: 300 }), 'uvg')[0] === 'uvg.genugW'
+  && L(uv({ waisen: 300, kids14: 1, kinder12: true }), 'uvg') === 'vielleicht');
+ck('[uvg-waise] Unterhalt und Waisenrente zusammen angerechnet: 200 € + 100 € ≥ 299 € -> nein', L(uv({ unterhalt: 200, waisen: 100 }), 'uvg') === 'nein');
+ck('[uvg-waise] Waisenrente zählt bei Wohngeld, Kinderzuschlag und Grundsicherungsgeld als Einkommen der Kinder und mindert den geschätzten Unterhaltsvorschuss', R.derive({ kids: 1, waisen: 200, unterhalt: 50 }).kindZahl === 250 && R.derive(uv({ waisen: 100 })).uvgEst === 299 - 100 && R.derive(uv({ waisen: 100 })).kindZahl === 299);
+// § 2 Abs. 4 UVG, von Hand: Azubi-Vergütung 990 € -> (990 − 102,50 − 100) / 2 = 393,75 € < 394 € (möglich); 991 € -> 394,25 € (nein)
+const uvAzubi = (e) => uv({ kids14: 1, kinder12: true, ausbildung: 'kindBetrieb', kindEink: e });
+ck('[uvg-kindeink] Kind (14-17) in Ausbildung: eigenes Einkommen zur Hälfte nach Abzug von 102,50 € und 100 € angerechnet (990 € möglich, 991 € nein)',
+  L(uvAzubi(990), 'uvg') === 'vielleicht' && K(uvAzubi(990), 'uvg')[0] === 'uvg.kindEink' && L(uvAzubi(991), 'uvg') === 'nein' && K(uvAzubi(991), 'uvg')[0] === 'uvg.kindEinkGenug' && L(uvAzubi(100), 'uvg') === 'ja');
+ck('[uvg-kindeink] Kinder unter 14 (Schulpflicht): Minijob zählt nicht; Kind 14-17, Schule unbekannt: nur möglich mit Hinweis',
+  L(uv({ kindEink: 300 }), 'uvg') === 'ja' && !K(uv({ kindEink: 300 }), 'uvg').includes('uvg.kindEink') && L(uv({ kids14: 1, kinder12: true, kindEink: 300 }), 'uvg') === 'vielleicht' && K(uv({ kids14: 1, kinder12: true, kindEink: 300 }), 'uvg').includes('uvg.kindEink'));
+ck('[uvg-kindeink] Mehrere Kinder: Einkommen eines älteren Kindes mindert nur dessen Betrag (Hinweis, Einstufung bleibt)', L(uv({ kids: 2, kids14: 1, kinder12: true, kindEink: 800 }), 'uvg') === 'ja' && K(uv({ kids: 2, kids14: 1, kinder12: true, kindEink: 800 }), 'uvg').includes('uvg.kindEink'));
+ck('[uvg-kindeink] Azubi-Einkommen mindert den geschätzten Unterhaltsvorschuss (Einkommen der Kinder für andere Leistungen)', R.derive(uvAzubi(600)).uvgEst === 394 - (600 - 102.5 - 100) / 2 && R.derive(uvAzubi(2000)).uvgEst === 0);
+ck('[uvg-rueckwirkung] Hinweis: rückwirkend höchstens ein Monat (§ 4 UVG), nur bei möglichem Anspruch', K(uv({}), 'uvg').includes('uvg.frist') && K(uv({ unterhalt: 100 }), 'uvg').includes('uvg.frist') && !K(uv({ unterhalt: 400 }), 'uvg').includes('uvg.frist'));
+ck('[uvg-mitwirkung] Hinweis: Angaben zum anderen Elternteil und Mitwirkung bei der Vaterschaft (§ 1 Abs. 3 UVG)', K(uv({}), 'uvg').includes('uvg.mitwirken'));
+ck('[uvg-aufenthalt] Asylverfahren oder Duldung: nur möglich mit Hinweis (deutsches Kind, eigener Titel des Kindes oder Beschäftigungsduldung, § 1 Abs. 2a UVG); geschätzter Betrag bleibt; ohne EU-Pass Hinweis auf Aufenthaltstitel, EU-Bürger ohne',
+  L(uv({ aufenthalt: 'asyl' }), 'uvg') === 'vielleicht' && K(uv({ aufenthalt: 'asyl' }), 'uvg')[0] === 'uvg.asyl' && R.derive(uv({ aufenthalt: 'asyl' })).uvgEst === 299
+  && L(uv({ aufenthalt: 'asyl', unterhalt: 400 }), 'uvg') === 'nein' && K(uv({}), 'uvg').includes('uvg.titel') && !K(uv({ aufenthalt: 'eu' }), 'uvg').includes('uvg.titel') && !K(uv({ aufenthalt: 'asyl' }), 'uvg').includes('uvg.titel'));
+// Handbeispiele zu den korrigierten Fällen (von Hand nach dem Gesetz, nicht aus der App)
+// Mutter mit Duldung, Kind 4 Jahre mit deutscher Staatsangehörigkeit (Vater deutsch, zahlt nicht): Anspruch des Kindes besteht -> nicht ausgeschlossen
+ck('[uvg-hand] Geduldete Mutter, deutsches Kind (4 Jahre), Vater zahlt nicht: möglich, nie unwahrscheinlich', L(uv({ aufenthalt: 'asyl', kidsU6: 1, brutto: 0, netto: 0 }), 'uvg') === 'vielleicht');
+// Zwei Kinder (3 und 9), verschiedene Väter: Vater des 9-Jährigen zahlt 600 €, Vater des 3-Jährigen nichts -> 227 € für das jüngere Kind
+ck('[uvg-hand] Zwei Kinder, verschiedene Väter, einer zahlt 600 € (mehr als beide Sätze zusammen 526 €): trotzdem möglich (§ 2 Abs. 3 je Kind)', L(uv({ kids: 2, kidsU6: 1, unterhalt: 600 }), 'uvg') === 'vielleicht' && K(uv({ kids: 2, kidsU6: 1, unterhalt: 600 }), 'uvg')[0] === 'uvg.teil');
+// Zwei Kinder (7 und 10), Halbwaisenrente nur für ein Kind (Vater gestorben) 650 €, Vater des anderen Kindes zahlt nicht
+ck('[uvg-hand] Zwei Kinder, Halbwaisenrente 650 € für eines, anderes ohne Unterhalt: möglich', L(uv({ kids: 2, waisen: 650 }), 'uvg') === 'vielleicht' && K(uv({ kids: 2, waisen: 650 }), 'uvg')[0] === 'uvg.teilW');
+// Zwei Kinder, die Mutter lebt mit dem Vater des jüngeren zusammen: für das ältere (anderer Vater) besteht der Anspruch weiter
+ck('[uvg-elternteil] Mehrere Kinder, lebt mit dem Vater eines Kindes zusammen: möglich, Hinweis „nur gemeinsame Kinder“', L(uv({ kids: 2, adults: 2, uvgPartner: 'eltern' }), 'uvg') === 'vielleicht' && K(uv({ kids: 2, adults: 2, uvgPartner: 'eltern' }), 'uvg')[0] === 'uvg.elternteilMehr');
+// Mutter studiert (kein Grundsicherungsgeld wegen § 7 Abs. 5 SGB II), Kind 13, Einkommen 400 €: Kind kann Sozialgeld beziehen -> nur möglich
+{
+  const st = uv({ kinder12: true, brutto: 400, netto: 400, ausbildung: 'ich', gebJahr: 2000, heute: 2026.8 });
+  ck('[uvg-ab12] Elternteil im Studium, Kind 13, 400 € Einkommen: Grundsicherungsgeld aus anderem Grund ausgeschlossen -> nur möglich', L(st, 'ggeld') === 'nein' && L(st, 'uvg') === 'vielleicht');
+}
+ck('[uvg-hinweise] Hinweise: Änderungen melden (§§ 5, 6 UVG); verheiratet, aber dauernd getrennt (auch Klinik oder Haft, § 1 Abs. 2) bei Alleinlebenden', K(uv({}), 'uvg').includes('uvg.melden') && K(uv({}), 'uvg').includes('uvg.getrennt') && !K(uv({ adults: 2, uvgPartner: 'neu' }), 'uvg').includes('uvg.getrennt'));
+ck('[uvg-volljaehrig] Nur volljährige Kinder: kein Unterhaltsvorschuss, Hinweis auf Unterhalt, Jugendamt bis 21, BAföG', L({ young: 1 }, 'uvg') === 'nein' && K({ young: 1 }, 'uvg')[0] === 'uvg.volljaehrig' && K({}, 'uvg')[0] === 'uvg.keinKind');
+{
+  // § 1 Abs. 1a Nr. 1: Kind ab 12 ohne Grundsicherungsgeld (hier: Vermögen über dem Schonvermögen) -> wahrscheinlich, auch unter 600 €
+  const o = uv({ kinder12: true, kids14: 1, brutto: 400, netto: 400, vermoegen: 60000 });
+  ck('[uvg-ab12] Kind ab 12, Elternteil unter 600 €, aber kein Grundsicherungsgeld: wahrscheinlich (§ 1 Abs. 1a Nr. 1)', L(o, 'ggeld') === 'nein' && L(o, 'uvg') === 'ja');
+  ck('[uvg-ab12] Kind ab 12, Elternteil unter 600 €, Grundsicherungsgeld wird bezogen: nur möglich', L(uv({ kinder12: true, kids14: 1, brutto: 400, netto: 400, bezug: { grundsicherungsgeld: true } }), 'uvg') === 'vielleicht');
+}
+ck('[uvg-anrechnung] Höchstbetrag nach Alter: Kind unter 6 mit 230 € Unterhalt nein (≥ 227 €), Kind 6-11 mit 230 € möglich', L(uv({ kidsU6: 1, unterhalt: 230 }), 'uvg') === 'nein' && L(uv({ unterhalt: 230 }), 'uvg') === 'vielleicht');
+ck('[uvg-einkommen] Unterhaltsvorschuss zählt bei neuer Partnerschaft ohne Trauschein als Einkommen der Kinder, bei Heirat nicht', R.derive(uv({ adults: 2, uvgPartner: 'neu' })).uvgEst === 299 && R.derive(uv({ adults: 2, uvgPartner: 'ehe' })).uvgEst === 0 && R.derive(uv({ adults: 2 })).uvgEst === 0);
 ck('[bafoeg-verm] BAföG-Vermögen: unter 30 Jahren bis 15.000 €', L({ ausbildung: 'ich', alterGruppe: '<30', vermoegen: 16000 }, 'bafoeg') === 'nein' && L({ ausbildung: 'ich', alterGruppe: '<30', vermoegen: 14000 }, 'bafoeg') === 'vielleicht');
 ck('[bafoeg-alter] BAföG-Altersgrenze 45: ab 50 nein, 41 bis 50 nur möglich', L({ ausbildung: 'ich', alterGruppe: '50+' }, 'bafoeg') === 'nein' && L({ ausbildung: 'ich', alterGruppe: '40-49' }, 'bafoeg') === 'vielleicht');
 ck('[bafoeg-betrieb] Betriebliche Ausbildung: kein BAföG', L({ young: 1, ausbildung: 'kindBetrieb' }, 'bafoeg') === 'nein');
