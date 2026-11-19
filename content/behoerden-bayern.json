@@ -2566,6 +2566,7 @@
  "wbsAusnahme": {
   "quelle": "https://www.bayernportal.de/dokumente/leistung/05887331336",
   "stand": "19.11.2026",
+  "rechtsgrundlage": "§ 1 BayDVWoR (Gemeinden mit allen Aufgaben der unteren Bauaufsichtsbehörde, sonst Kreisverwaltungsbehörde); 29 Große Kreisstädte (BayMBl. 2025 Nr. 41); 8 Große Delegationsgemeinden: § 5 Abs. 1 ZustVBau (gesetze-bayern.de), abgeglichen 19.11.2026",
   "hinweis": "Wohnberechtigungsschein: zuständig sind Landratsamt, kreisfreie Stadt, Große Kreisstadt oder Große Delegationsgemeinde (BayernPortal, Liste der 29 Großen Kreisstädte und 8 Großen Delegationsgemeinden). In diesen Landkreisen nennt die App keine Anschrift.",
   "kreise": {
    "09672": [
