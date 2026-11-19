@@ -12,6 +12,9 @@ const rnd = () => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed
 // Eigener Zufall für die Betriebs-, Riester- oder private Rente, damit die übrigen Fälle unverändert bleiben
 let seedZ = 777001;
 const rndZ = () => { seedZ = (seedZ * 1103515245 + 12345) % 2147483648; return seedZ / 2147483648; };
+// Eigener Zufall für die Fragen zum Unterhaltsvorschuss (zweite Person, Wechselmodell, Waisenrente)
+let seedU = 424242;
+const rndU = () => { seedU = (seedU * 1103515245 + 12345) % 2147483648; return seedU / 2147483648; };
 const pick = (a) => a[Math.floor(rnd() * a.length)];
 const geld = (max, schritt) => Math.round(rnd() * max / schritt) * schritt;
 
@@ -62,6 +65,9 @@ function haushaltZufall(i) {
     aufenthalt: rnd() < 0.1 ? 'eu' : '', euArbeit: pick(['', 'ja', 'nein']), euJahre: pick(['', 'unter5', 'ab5']),
         bezug: { grundsicherungsgeld: rnd() < 0.05, sozialamt: rnd() < 0.03, wohngeld: rnd() < 0.05, kiz: rnd() < 0.05, kindergeld: rnd() < 0.4 }
   };
+  e.uvgPartner = adults === 2 ? ['', 'neu', 'neu', 'ehe', 'eltern'][Math.floor(rndU() * 5)] : '';
+  e.uvgWechsel = kids > 0 && rndU() < 0.1;
+  e.waisen = kids + young > 0 && rndU() < 0.15 ? Math.round(rndU() * 60) * 10 : '';
   return e;
 }
 
@@ -122,7 +128,7 @@ function pruefe(e) {
   // Grundsicherung im Alter und bei Erwerbsminderung
   vergleicheGSA(e, r);
   // Unterhaltsvorschuss, BAföG, Arbeitslosengeld I, Krankengeld
-  const u = Ref.unterhaltsvorschuss(e);
+  const u = Ref.unterhaltsvorschuss(e, gg.level);
   if (r.uvg.level !== u.level) melde('Unterhaltsvorschuss: Einstufung', e, { app: r.uvg.level, ref: u.level });
   const bf = Ref.bafoeg(e);
   if (r.bafoeg.level !== bf.level) melde('BAföG: Einstufung', e, { app: r.bafoeg.level, ref: bf.level });

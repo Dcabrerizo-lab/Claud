@@ -159,9 +159,21 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 |---|---|---|
 | 2027: geplante Altersgrenze 16 statt 18 nur als Hinweis, noch nicht eingerechnet | ✓ | `plan-2027` |
 | Beträge je Altersstufe 0–5 / 6–11 / 12–17 (nach Abzug des Kindergeldes) | ✓ | `uvg-betrag` |
-| Gezahlter Unterhalt wird angerechnet (§ 2 Abs. 3) | ✓ | `uvg-anrechnung` |
-| Ab 12 Jahren: kein Grundsicherungsgeld des Kindes oder Elternteil mit mindestens 600 € brutto (§ 1 Abs. 1a) | ◐ | `uvg-ab12` |
-| Elternteil heiratet oder lebt mit dem anderen Elternteil zusammen: kein Anspruch | ◐ | `uvg-paar` |
+| Beträge 2026 = Mindestunterhalt 486/558/653 € minus volles Kindergeld 259 € (§ 2 Abs. 1 und 2; BMBFSFJ, Einlegeblatt 2026) | ✓ | `uvg-amtlich` |
+| Gezahlter Unterhalt wird angerechnet (§ 2 Abs. 3 Nr. 1); „unwahrscheinlich“ erst, wenn er den höchsten Betrag nach Alter erreicht | ✓ | `uvg-anrechnung` |
+| Waisenrente (auch Halbwaisenrente nach Tod des anderen Elternteils) wird angerechnet (§ 1 Abs. 1 Nr. 3 b, § 2 Abs. 3 Nr. 2) und zählt bei anderen Leistungen als Einkommen der Kinder | ✓ | `uvg-waise` |
+| Eigenes Einkommen des Kindes nach der allgemeinbildenden Schule: minus 102,50 € (1/12 Arbeitnehmer-Pauschbetrag), in Ausbildung minus weitere 100 €, davon die Hälfte (§ 2 Abs. 4). Sicher nur bei einem Kind (14–17) in betrieblicher Ausbildung (Auszahlung = untere Grenze), sonst „möglich“ bzw. Hinweis | ◐ | `uvg-kindeink` |
+| Ab 12 Jahren: kein Grundsicherungsgeld des Kindes (Karte Grundsicherungsgeld „unwahrscheinlich“) oder Elternteil mit mindestens 600 € brutto, Partnereinkommen zählt nicht (§ 1 Abs. 1a) | ◐ | `uvg-ab12` |
+| Zwei Erwachsene ohne Angabe, wer die zweite Person ist: nur „möglich“ | ✓ | `uvg-paar` |
+| Neue Partnerschaft ohne Trauschein: Anspruch bleibt (familienportal.de) | ✓ | `uvg-partner` |
+| Mit neuem Partner verheiratet oder verpartnert (Stiefelternteil): kein Anspruch (§ 1 Abs. 1 Nr. 2) | ✓ | `uvg-stiefelternteil` |
+| Lebt mit dem anderen Elternteil zusammen: kein Anspruch (§ 1 Abs. 3) | ✓ | `uvg-elternteil` |
+| Wechselmodell: anderer Elternteil betreut zu 40 % oder mehr, kein Anspruch für dieses Kind (BVerwG, 12.12.2023, 5 C 9.22) | ✓ | `uvg-wechsel` |
+| Aufenthaltsgestattung oder Duldung: kein Anspruch (§ 1 Abs. 2a, Ausnahme Beschäftigungsduldung im Text); ohne EU-Staatsangehörigkeit Hinweis auf nötige Aufenthaltstitel | ◐ | `uvg-aufenthalt` |
+| Verweigerte Angaben zum anderen Elternteil oder keine Mitwirkung bei der Vaterschaft: kein Anspruch; Vater unbekannt oder gestorben: möglich (§ 1 Abs. 3) – nur Hinweis | ◐ | `uvg-mitwirkung` |
+| Rückwirkend höchstens für den Monat vor dem Antrag (§ 4) – Hinweis | ✓ | `uvg-rueckwirkung` |
+| Nur volljährige Kinder: kein Unterhaltsvorschuss, Hinweis auf Unterhalt, Beratung des Jugendamts bis 21 (§ 18 Abs. 4 SGB VIII), BAföG/Berufsausbildungsbeihilfe; Kind im Heim oder in Pflegefamilie: kein Anspruch (Hinweis) | ✓ | `uvg-volljaehrig` |
+| Unterhaltsvorschuss zählt als Einkommen der Kinder bei Grundsicherungsgeld (voll, bis zum Bedarf), Kinderzuschlag (45 %) und Wohngeld, auch bei neuer Partnerschaft ohne Trauschein | ✓ | `uvg-einkommen`, `gg-unterhalt` |
 
 ## BAföG
 <!-- karten: bafoeg -->

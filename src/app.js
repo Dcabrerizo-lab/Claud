@@ -63,7 +63,7 @@
   function save() { clearTimeout(saveTimer); saveTimer = setTimeout(flush, 300); }
   function smooth() { return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'; }
   function blankState() {
-    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', kindEink: '', ek1bArt: '', ek1bBetrag: '', zusatzRente: '', baby: '', egVor: '', aufenthalt: '', miete: '', heizkosten: '', mietstufe: '', plz: '', plzPick: '', bundesland: '', vermoegen: '', gebJahr: '', arbeitSit: '', algMonate: '', krankWochen: '', lohnVorher: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', uzBetrag: '', uzAn: '', uzTitel: false, wohnart: '', hhAndere: '', autoWert: '', autoBraucht: false, euArbeit: '', euJahre: '', bezug: {} };
+    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', waisen: '', uvgPartner: '', uvgWechsel: false, kindEink: '', ek1bArt: '', ek1bBetrag: '', zusatzRente: '', baby: '', egVor: '', aufenthalt: '', miete: '', heizkosten: '', mietstufe: '', plz: '', plzPick: '', bundesland: '', vermoegen: '', gebJahr: '', arbeitSit: '', algMonate: '', krankWochen: '', lohnVorher: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', uzBetrag: '', uzAn: '', uzTitel: false, wohnart: '', hhAndere: '', autoWert: '', autoBraucht: false, euArbeit: '', euJahre: '', bezug: {} };
   }
 
   function detect() {
@@ -149,6 +149,9 @@
     if (!state.bhPerson) reset(['mzG', 'mzGl', 'teilhabe', 'bhWeitere']);
     if (!state.baby) reset(['egVor']);
     if (state.kids + state.young === 0) reset(['kindEink']);
+    // Unterhaltsvorschuss: Folgefragen nur, wenn Unterhalt fehlt; wer die zweite Person ist, nur bei zwei Erwachsenen
+    if (!state.unterhaltFehlt || state.kids === 0) reset(['uvgWechsel', 'uvgPartner']);
+    if (state.adults !== 2) reset(['uvgPartner']);
     if (state.arbeitSit !== 'arbeitslos') reset(['algZeit', 'algMonate']);
     if (state.adults !== 1 || !state.ek1Art || state.ek1Art === 'ohne') reset(['ek1bArt', 'ek1bBetrag']);
     if (!state.ek1bArt) reset(['ek1bBetrag']);
@@ -181,6 +184,8 @@
     show('.cond-ausbich', state.ausbildung === 'ich');
     show('.cond-uz', !ohneUz);
     show('.cond-eu', state.aufenthalt === 'eu');
+    show('.cond-uvg', !!state.unterhaltFehlt && state.kids > 0);
+    show('.cond-uvgPartner', !!state.unterhaltFehlt && state.kids > 0 && state.adults === 2);
     show('.cond-auto', Number(state.autoWert) > 0);
   }
   // Frühere Fragen (Haken „Grad der Behinderung 100“ und „voll erwerbsgemindert“) in die neuen Fragen übernehmen
@@ -349,6 +354,7 @@
     gd.push(['antrag', t('bh.gdb.antrag')]);
     fillSelect('gdb', gd, state.gdb);
     fillSelect('baby', [['', t('baby.0')], ['bald', t('baby.bald')], ['da', t('baby.da')]], state.baby);
+    fillSelect('uvgPartner', [['', t('uvgPartner.0')], ['neu', t('uvgPartner.neu')], ['ehe', t('uvgPartner.ehe')], ['eltern', t('uvgPartner.eltern')]], state.uvgPartner);
     fillSelect('aufenthalt', [['', t('aufenthalt.0')], ['eu', t('aufenthalt.eu')], ['asyl', t('aufenthalt.asyl')]], state.aufenthalt);
     fillSelect('euArbeit', [['', t('eu.arbeit.0')], ['ja', t('eu.arbeit.ja')], ['nein', t('eu.arbeit.nein')]], state.euArbeit);
     fillSelect('euJahre', [['', t('eu.jahre.0')], ['unter5', t('eu.jahre.unter5')], ['ab5', t('eu.jahre.ab5')]], state.euJahre);
@@ -425,9 +431,9 @@
     pr.appendChild(b);
   });
 
-  var CHECKS = ['mzG', 'mzGl', 'algZeit', 'grundrente33', 'wfbmEssen', 'teilhabe', 'schwanger', 'ernaehrung', 'warmwasser', 'kinder12', 'kindKrank', 'unterhaltFehlt', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt', 'uzTitel', 'autoBraucht'];
-  var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'ek1bArt', 'bhWeitere', 'baby', 'aufenthalt', 'arbeitSit', 'algMonate', 'krankWochen', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd', 'uzAn', 'wohnart', 'hhAndere', 'euArbeit', 'euJahre'];
-  var NUMS = ['miete', 'heizkosten', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'kindEink', 'lohnVorher', 'ek1bBetrag', 'egVor', 'vermoegen', 'uzBetrag', 'autoWert', 'zusatzRente'];
+  var CHECKS = ['mzG', 'mzGl', 'algZeit', 'grundrente33', 'wfbmEssen', 'teilhabe', 'schwanger', 'ernaehrung', 'warmwasser', 'kinder12', 'kindKrank', 'unterhaltFehlt', 'uvgWechsel', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt', 'uzTitel', 'autoBraucht'];
+  var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'ek1bArt', 'bhWeitere', 'baby', 'aufenthalt', 'uvgPartner', 'arbeitSit', 'algMonate', 'krankWochen', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd', 'uzAn', 'wohnart', 'hhAndere', 'euArbeit', 'euJahre'];
+  var NUMS = ['miete', 'heizkosten', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'waisen', 'kindEink', 'lohnVorher', 'ek1bBetrag', 'egVor', 'vermoegen', 'uzBetrag', 'autoWert', 'zusatzRente'];
   var BEZUG = ['grundsicherungsgeld', 'sozialamt', 'wohngeld', 'kiz', 'kindergeld'];
 
   function writeForm() {
@@ -912,6 +918,7 @@
     if (s.arbeitSit === 'krank') b.push('Krankgeschrieben' + (s.krankWochen === 'unter6' ? ', unter 6 Wochen' : s.krankWochen === 'laeuft' ? ', Krankengeld läuft' : s.krankWochen === 'ende' ? ', Krankengeld endet bald oder ist ausgelaufen' : ''));
     if (s.lohnVorher) b.push('Letztes Bruttoarbeitsentgelt: ' + money(s.lohnVorher) + ' im Monat');
     if (s.kindEink) b.push('Eigenes Einkommen der Kinder: ' + money(s.kindEink) + ' im Monat');
+    if (s.waisen) b.push('Waisenrente der Kinder: ' + money(s.waisen) + ' im Monat');
     if (s.wohnart === 'eigentum') b.push('Wohnt im eigenen Haus oder in der eigenen Wohnung');
     if (s.hhAndere === 'wg') b.push('Wohngemeinschaft: Miete ist der eigene Anteil');
     if (s.hhAndere === 'verwandte') b.push('Weitere Verwandte wohnen in derselben Wohnung');
@@ -927,6 +934,8 @@
     if (s.pflegegrad && s.pflegegrad !== 'antrag') b.push('Pflegegrad ' + s.pflegegrad);
     if (s.pflegegrad === 'antrag') b.push('Pflegegrad beantragt oder möglich');
     if (s.unterhaltFehlt) b.push('Unterhalt des anderen Elternteils fehlt');
+    if (s.uvgWechsel) b.push('Ein Kind ist zu 40 % der Zeit oder mehr beim anderen Elternteil');
+    if (s.uvgPartner) b.push({ neu: 'Lebt mit neuer Partnerin oder neuem Partner zusammen, nicht verheiratet', ehe: 'Mit der neuen Partnerin oder dem neuen Partner verheiratet oder verpartnert', eltern: 'Lebt mit dem anderen Elternteil des Kindes zusammen' }[s.uvgPartner]);
     if (s.ausbildung === 'kind') b.push('Kind in Schule oder Studium');
     if (s.ausbildung === 'kindBetrieb') b.push('Kind in betrieblicher Ausbildung');
     if (s.ausbildung === 'ich') b.push('Ich selbst in Ausbildung oder Studium');
