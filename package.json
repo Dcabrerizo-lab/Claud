@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "axe-core": "^4.10.3",
-    "jsdom": "^26.1.0",
+    "jsdom": "^31.0.1",
     "playwright": "1.63.0"
   }
 }
