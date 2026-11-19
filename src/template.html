@@ -427,7 +427,8 @@
   .weg-sym { flex: none; width: 50px; height: 50px; border-radius: 14px; display: grid; place-items: center; background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent); }
   .weg.haupt .weg-sym { background: color-mix(in srgb, var(--accent-ink) 18%, transparent); color: var(--accent-ink); }
   .weg-sym svg, .kachel-sym svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
-  .weg-txt { display: grid; gap: 2px; min-width: 0; overflow-wrap: anywhere; }
+  .weg-txt { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2px; min-width: 0; overflow-wrap: anywhere; word-break: break-word; }
+  .weg-txt > * { min-width: 0; }
   .weg-txt b { font-size: 1.12em; }
   .weg-txt span { opacity: .85; font-size: .95em; }
   /* Große Auswahlknöpfe (Pfändung, Netto-Helfer): erst wählen, worum es geht, dann weiter */
