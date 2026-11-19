@@ -5,6 +5,7 @@
 'use strict';
 const { chromium, firefox, webkit } = require('playwright');
 const fs = require('fs'), path = require('path');
+const SHARD = require('./shard.js'); // SHARD=k/n: nur jede n-te Kombination aus Modus und Sprache
 const APP = 'file://' + path.join(__dirname, '..', 'dist', 'sozialleistungslotse.html');
 const SPRACHEN = fs.readdirSync(path.join(__dirname, '..', 'src', 'lang')).filter((f) => f.endsWith('.json')).map((f) => f.replace('.json', ''));
 const HH = { adults: 2, kids: 2, kidsU6: 1, kids14: 0, young: 0, ek1Art: 'lohn', ek1Brutto: '2400', ek1Netto: '1750', ek2Art: 'rente', ek2Brutto: '700', ek2Netto: '640', miete: '850', plz: '90402', vermoegen: '2000', gebJahr: '1962', pflegegrad: '2', gdb: '60', baby: 'bald', bezug: {} };
@@ -44,8 +45,10 @@ const pruefen = () => {
 (async () => {
   const B = { chromium, firefox, webkit }[process.env.BROWSER || 'chromium'];
   const b = await B.launch();
+  let fall = -1;
   for (const modus of ['normal', 'gross', 'system200']) {
     for (const lang of SPRACHEN) {
+      if (!SHARD.nimm(++fall)) continue;
       const ctx = await b.newContext({ viewport: { width: 320, height: 640 }, locale: 'de-DE', deviceScaleFactor: 1 });
       await ctx.addInitScript(([lang, hh, gross]) => {
         try {
@@ -79,6 +82,6 @@ const pruefen = () => {
     }
   }
   await b.close();
-  console.log(fails ? `\n${fails} von ${n} FEHLGESCHLAGEN` : `Kleinbild-Test bestanden: ${n} Prüfungen (320 px, 13 Sprachen, normal, große Schrift, Systemschrift 200 %)`);
+  console.log(fails ? `\n${fails} von ${n} FEHLGESCHLAGEN` : `Kleinbild-Test${SHARD.name} bestanden: ${n} Prüfungen (320 px, 13 Sprachen, normal, große Schrift, Systemschrift 200 %)`);
   process.exit(fails ? 1 : 0);
 })();

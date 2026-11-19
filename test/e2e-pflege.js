@@ -14,7 +14,10 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   const frage = () => p.textContent('#pa-q');
   const tippe = async (text) => { await p.click(`#pflegeAssist .es-btn:has-text("${text}")`); };
   const breit = () => p.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth);
-  await p.goto(APP + '#leistungen'); await p.waitForTimeout(300);
+  // Auf den Zustand warten statt fester Wartezeit; trifft er nicht ein, schlägt die folgende Prüfung fehl
+  const warte = (fn, arg) => p.waitForFunction(fn, arg, { timeout: 5000 }).catch(() => {});
+  const sichtbar = (sel) => p.waitForSelector(sel, { state: 'visible', timeout: 5000 }).catch(() => {});
+  await p.goto(APP + '#leistungen'); await sichtbar('#paStart');
   ok('Knopf im Fragebogen', await p.isVisible('#paStart') && /einschätzen/.test(await p.textContent('#paStart')));
   await p.click('#paStart');
   ok('Ablauf öffnet mit der Frage nach dem Alter', await p.isVisible('#v-pflege') && /alt/.test(await frage()));
@@ -88,7 +91,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   await p.click('#piZurueck');
   ok('Zurück führt zur Pflegekarte', await p.isVisible('#v-leistungen'));
   // Höherstufung: mit Pflegegrad 1 dieselben Antworten → Pflegegrad 2 → Gutachten-Prüfung vorausgefüllt
-  await p.selectOption('#pflegegrad', '1'); await p.waitForTimeout(200);
+  await p.selectOption('#pflegegrad', '1'); await warte(() => /nicht ausgezahlt/.test(document.getElementById('c-pflege').textContent) && /Höherstufung/.test(document.getElementById('paStart').textContent));
   ok('Karte sagt klar: Entlastungsbetrag wird nicht ausgezahlt', /nicht ausgezahlt/.test(await p.textContent('#c-pflege')));
   ok('Mit Pflegegrad: Knopf „Höherstufung prüfen“', /Höherstufung/.test(await p.textContent('#paStart')));
   await p.click('#paStart');
@@ -102,14 +105,14 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Antworten übernommen (1.1 überwiegend unselbständig, Alter 84)', (await p.inputValue('#pf-1\\.1')) === '2' && (await p.inputValue('#pf-alter')) === '84');
   ok('Vergleich: gleiche Werte, keine Abweichung', /keiner Frage/.test(await p.textContent('#pf-vergleich')));
   // Gutachten bewertet niedriger: 1.1 und 1.2 „selbständig“ → zwei Abweichungen, Übernahme in den Widerspruch
-  await p.selectOption('#pf-1\\.1', '0'); await p.selectOption('#pf-1\\.2', '0'); await p.waitForTimeout(150);
+  await p.selectOption('#pf-1\\.1', '0'); await p.selectOption('#pf-1\\.2', '0'); await warte(() => /Bei 2 Fragen/.test(document.getElementById('pf-vergleich').textContent) && document.querySelectorAll('#pf-wid-liste .pw[data-auto="1"]').length === 2);
   ok('Vergleich zeigt zwei Abweichungen', /Bei 2 Fragen/.test(await p.textContent('#pf-vergleich')), await p.textContent('#pf-vergleich'));
   ok('Abweichungen stehen von selbst als Karten mit Beschreibungsfeld da', (await p.locator('#pf-wid-liste .pw[data-auto="1"]').count()) === 2 && (await p.locator('#pf-wid-liste .pw[data-id="1.1"] textarea').count()) === 1);
   ok('Karte nennt den Wert aus dem Gutachten und die eigene Einschätzung', /Im Gutachten: „schafft es allein“/.test(await p.textContent('#pf-wid-liste .pw[data-id="1.1"]')) && (await p.inputValue('#pf-wid-liste .pw[data-id="1.1"] select')) === '2');
   await p.fill('#pf-wid-liste .pw[data-id="1.1"] textarea', 'Sie kommt nachts nicht allein hoch und muss gedreht werden.');
   await p.uncheck('#pf-wid-liste .pw[data-id="1.2"] .pw-mit');
   // Gutachten-Wert auf eigenen Wert: die leere Karte 1.2 verschwindet, die ausgefüllte 1.1 bleibt
-  await p.selectOption('#pf-1\\.2', '2'); await p.waitForTimeout(150);
+  await p.selectOption('#pf-1\\.2', '2'); await warte(() => !document.querySelector('#pf-wid-liste .pw[data-id="1.2"]'));
   ok('Karte ohne Abweichung und ohne Text verschwindet', (await p.locator('#pf-wid-liste .pw[data-id="1.2"]').count()) === 0 && (await p.locator('#pf-wid-liste .pw[data-id="1.1"]').count()) === 1);
   ok('Beschreibung bleibt beim Neurechnen erhalten', /nachts nicht allein/.test(await p.inputValue('#pf-wid-liste .pw[data-id="1.1"] textarea')));
   await p.click('#pf-wid-mach');
@@ -117,9 +120,9 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Schreiben enthält die Abweichung mit der Beschreibung aus dem Alltag', /1\.1 .*„selbständig“, heute „überwiegend unselbständig“\. Sie kommt nachts nicht allein hoch/.test(schreiben), schreiben.slice(0, 600));
   // Jede Bewertung wird verglichen: auch Inkontinenz, Sonde, jede Maßnahme in Bereich 5 und 5.16
   await p.evaluate(() => window.PruefpaketPflege.eigene({ stufen: { '1.1': 2, '4.13': 1 }, m5: { '5.1': { tag: 3 }, '5.13': { monat: 3 }, '5.16': 2 }, inkontinenz: { harn: true, stuhl: false }, alterJahre: '84' }));
-  await p.waitForTimeout(150);
+  await sichtbar('#pf-m5-leer');
   ok('Bereich 5 leer: Hinweis, Häufigkeiten aus dem Gutachten einzutragen', await p.isVisible('#pf-m5-leer'));
-  await p.fill('#pf-5\\.1-tag', '1'); await p.dispatchEvent('#pf-5\\.1-tag', 'input'); await p.waitForTimeout(150);
+  await p.fill('#pf-5\\.1-tag', '1'); await p.dispatchEvent('#pf-5\\.1-tag', 'input'); await warte(() => !!document.querySelector('#pf-wid-liste [data-id="5.1"]'));
   const karten = await p.evaluate(() => [...document.querySelectorAll('#pf-wid-liste .pw')].map((z) => z.dataset.id));
   ok('Vergleich umfasst Inkontinenz, Sonde, Medikamente, Arztbesuche und Diät', ['ink-harn', '4.13', '5.1', '5.13', '5.16'].every((x) => karten.includes(x)), karten);
   ok('Medikamente: Gutachten 1-mal, eigene Einschätzung 3-mal am Tag', /Im Gutachten: 1-mal am Tag/.test(await p.textContent('#pf-wid-liste [data-id="5.1"]')) && /3-mal am Tag/.test(await p.textContent('#pf-wid-liste [data-id="5.1"]')));
@@ -128,7 +131,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   const s2 = await p.inputValue('#pf-wid-text');
   ok('Schreiben enthält Bereich 5 und Inkontinenz mit Beschreibung', /5\.1 Medikamente richten und geben: .*1-mal am Tag, .*3-mal am Tag\. Dreimal täglich Tabletten richten\./.test(s2) && /Harninkontinenz/.test(s2), s2.slice(0, 900));
   // Säugling: Frage 4.K
-  await p.evaluate(() => { localStorage.removeItem('lotse.pflegecheck'); location.hash = '#leistungen'; }); await p.reload(); await p.waitForTimeout(300);
+  await p.evaluate(() => { localStorage.removeItem('lotse.pflegecheck'); location.hash = '#leistungen'; }); await p.reload(); await sichtbar('#paStart');
   await p.click('#paStart'); await p.fill('#pa-jahre', '1');
   ok('Unter 2 Jahren: Monate werden gefragt', await p.isVisible('#pa-monate'));
   await p.fill('#pa-monate', '10'); await p.click('text=Weiter ➜');

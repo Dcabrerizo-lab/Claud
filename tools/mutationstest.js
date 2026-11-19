@@ -94,6 +94,12 @@ const M = [
   ['Rente: Pflege 1,8 % (Arbeitnehmeranteil) statt 3,6 % allein', 'rente: { kvHalb: 0.073, pv: 0.036 }', 'rente: { kvHalb: 0.073, pv: 0.018 }']
 ];
 
+// SHARD=k/n (CI-Matrix): nur jede n-te Mutation (Nummer modulo n); ohne SHARD alle
+const SHARD = /^(\d+)\/(\d+)$/.exec(process.env.SHARD || '1/1');
+if (!SHARD || +SHARD[1] < 1 || +SHARD[1] > +SHARD[2]) { console.log('SHARD ungültig: ' + process.env.SHARD); process.exit(1); }
+const TEIL = +SHARD[1], ANZAHL = +SHARD[2];
+const MEINE = M.filter((_, i) => i % ANZAHL === TEIL - 1);
+if (ANZAHL > 1) console.log('Teil ' + TEIL + '/' + ANZAHL + ': ' + MEINE.length + ' von ' + M.length + ' Mutationen');
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'mut-'));
 for (const d of ['src', 'test', 'docs', 'dist', 'tools/amtliche-rechner']) fs.cpSync(path.join(ROOT, d), path.join(tmp, d), { recursive: true });
 // Einzelne Dateien, die die Tests zusätzlich lesen (Name der App, Webseite)
@@ -112,7 +118,7 @@ const TESTS = ['test.js', 'test-netto.js', 'test-strict.js', 'test-beh.js', 'tes
 const laeuft = () => { try { for (const t of TESTS) execSync('node test/' + t, { cwd: tmp, stdio: 'ignore' }); return true; } catch (e) { return false; } };
 
 let unentdeckt = 0, geprueft = 0;
-for (const m of M) {
+for (const m of MEINE) {
   const [name, alt, neu] = m, datei = DATEI(m), orig = ORIG[datei];
   if (orig.split(alt).length !== 2) { console.log('UNGÜLTIG (Stelle nicht genau einmal gefunden): ' + name); unentdeckt++; continue; }
   fs.writeFileSync(path.join(tmp, datei), orig.replace(alt, neu));
