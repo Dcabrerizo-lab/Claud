@@ -832,7 +832,7 @@
       '<textarea id="empf-' + esc(id) + '" data-empf="' + esc(id) + '" rows="4" lang="de" dir="ltr" autocomplete="off">' + esc(wert) + '</textarea>' +
       '<p class="small">' + esc(t('f.empfHinweis')) + '</p>' +
       '<p class="small"><a href="' + esc(empfSuchUrl(id)) + '" target="_blank" rel="noopener">' + esc(t('f.empfSuche')) + '</a>' +
-      (Object.prototype.hasOwnProperty.call(empfEdit, id) ? ' · <button type="button" class="linkbtn" data-empf-reset="' + esc(id) + '">' + esc(t('f.empfZurueck')) + '</button>' : '') + '</p></div>';
+      '<span data-empf-resetbox="' + esc(id) + '"' + (Object.prototype.hasOwnProperty.call(empfEdit, id) ? '' : ' hidden') + '> · <button type="button" class="linkbtn" data-empf-reset="' + esc(id) + '">' + esc(t('f.empfZurueck')) + '</button></span></p></div>';
   }
   function mappeTextNeu() {
     $('mappeText').value = briefIds().map(function (r) { return letterText(r.id); }).concat([sheetText()]).join('\n\n----------------------------------------\n\n');
@@ -971,6 +971,8 @@
       var el = ev.target, id = el && el.getAttribute && el.getAttribute('data-empf');
       if (!id) return;
       empfEdit[id] = el.value;
+      var rb = $('mappeBody').querySelector('[data-empf-resetbox="' + id + '"]');
+      if (rb) rb.hidden = false;
       var pre = $('brief-' + id);
       if (pre) pre.textContent = letterText(id);
       mappeTextNeu();

@@ -183,6 +183,36 @@ check('Angabenblatt enthält Haushalt, Miete, Einkommen', /Angabenblatt/.test(tx
 check('Angabenblatt nennt Selbstauskunft-Hinweis', /Selbstauskunft/.test(txt));
 check('Leere Felder werden zu Strichen statt "undefined"', !/undefined|null/.test(txt));
 check('Kopiertext enthält Briefe und Angabenblatt', /Betreff: Antrag auf Unterhaltsvorschuss/.test(d.getElementById('mappeText').value) && /Angabenblatt/.test(d.getElementById('mappeText').value));
+// ---------- Empfänger bearbeitbar und Suchlink ----------
+{
+  const feld = d.querySelector('#mappeBody textarea[data-empf="uvg"]');
+  check('[empf] Vor einer Änderung kein Knopf „Wiederherstellen“ sichtbar', d.querySelector('#mappeBody [data-empf-resetbox="uvg"]').hidden === true);
+  const brief = () => d.getElementById('brief-uvg').textContent;
+  const kopie = () => d.getElementById('mappeText').value;
+  check('[empf] Empfängerfeld je Brief, vorbefüllt mit dem Vorschlag der App (Stadt Erlangen, Jugendamt, Anschrift)', !!feld && /^Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle\n.+\n910\d\d Erlangen$/.test(feld.value), feld && feld.value);
+  check('[empf] Feld liegt außerhalb der Briefseite und wird nicht gedruckt', !!feld && !feld.closest('.page') && feld.closest('.empf-edit').classList.contains('no-print'));
+  check('[empf] Nur ein Feld, weil nur ein Brief (Wohngeld hat Formular-Link)', d.querySelectorAll('#mappeBody textarea[data-empf]').length === 1);
+  feld.value = 'Landratsamt Musterkreis\nJugendamt\nMusterweg 5\n12345 Musterstadt'; fire(feld, 'input');
+  check('[empf] Änderung erscheint sofort im Brief', /\n\nLandratsamt Musterkreis\nJugendamt\nMusterweg 5\n12345 Musterstadt\n\nDatum:/.test(brief()) && !/Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle/.test(brief()), brief().slice(0, 300));
+  check('[empf] Änderung erscheint im Kopiertext (auch Grundlage für PDF)', /Landratsamt Musterkreis\nJugendamt\nMusterweg 5\n12345 Musterstadt/.test(kopie()) && /Angabenblatt/.test(kopie()));
+  check('[empf] Fokus und Feld bleiben beim Tippen erhalten (Mappe wird nicht neu aufgebaut)', d.querySelector('#mappeBody textarea[data-empf="uvg"]') === feld);
+  check('[empf] Absender, Betreff und Text bleiben unverändert', /Maria Beispiel/.test(brief()) && /Betreff: Antrag auf Unterhaltsvorschuss/.test(brief()) && /bestätigen Sie mir den Eingang/.test(brief()));
+  feld.value = '  \n \n'; fire(feld, 'input');
+  check('[empf] Leeres Feld: Linie zum Ausfüllen statt leerem Empfänger', /\n\n____________________\n\nDatum:/.test(brief()), brief().slice(0, 200));
+  feld.value = '<img src=x onerror="window.__xss=1">\nTest'; fire(feld, 'input');
+  check('[empf] Eingabe wird nie als HTML ausgeführt', !w.__xss && !d.querySelector('#brief-uvg img') && /<img src=x/.test(brief()));
+  const reset = d.querySelector('#mappeBody [data-empf-reset="uvg"]');
+  check('[empf] Knopf „Vorschlag wiederherstellen“ erscheint nach einer Änderung', !!reset && reset.textContent === I18N.de['f.empfZurueck'] && !reset.closest('[data-empf-resetbox]').hidden);
+  if (reset) reset.click();
+  const feld2 = d.querySelector('#mappeBody textarea[data-empf="uvg"]');
+  check('[empf] Wiederherstellen: Vorschlag wieder im Feld, im Brief und im Kopiertext, Knopf weg', !!feld2 && /^Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle/.test(feld2.value) && /Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle/.test(brief()) && /Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle/.test(kopie()) && d.querySelector('#mappeBody [data-empf-resetbox="uvg"]').hidden === true);
+  const link = d.querySelector('#mappeBody .empf-edit a');
+  const q = link ? decodeURIComponent(link.getAttribute('href').split('?q=')[1] || '') : '';
+  check('[empf] Suchlink: DuckDuckGo, kurzer Suchbegriff und Ortsname ohne Postleitzahl, öffnet extern', !!link && /^https:\/\/duckduckgo\.com\/\?q=/.test(link.getAttribute('href')) && q === 'Unterhaltsvorschussstelle Jugendamt Erlangen' && link.getAttribute('target') === '_blank' && /noopener/.test(link.getAttribute('rel')) && link.textContent === I18N.de['f.empfSuche'], q);
+  check('[empf] Titel und Hinweis in der gewählten Sprache', d.querySelector('#mappeBody .empf-edit label').textContent === I18N.de['f.empfTitel'] && d.querySelector('#mappeBody .empf-edit p.small').textContent === I18N.de['f.empfHinweis']);
+  check('[empf] Neue Texte in allen 8 Sprachen vorhanden', ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro'].every((l) => ['f.empfTitel', 'f.empfHinweis', 'f.empfSuche', 'f.empfZurueck'].every((k) => I18N[l] && typeof I18N[l][k] === 'string' && I18N[l][k].length > 5)));
+  check('[empf] Keine Skriptfehler', errors.length === 0, errors.join('; '));
+}
 check('Web-Version: Anbieter im Impressum David Cabrerizo', d.getElementById('anbieterName').textContent === 'David Cabrerizo');
 check('Druck: feste Briefränder (DIN 5008) per @page, unabhängig vom Browser', /@page\s*\{[^}]*size:\s*A4[^}]*margin:\s*20mm 20mm 20mm 25mm/.test(d.documentElement.innerHTML));
 // Rückmeldung „Ergebnis passt nicht“: E-Mail-Entwurf mit Version und Einstufungen, ohne Angaben aus dem Fragebogen

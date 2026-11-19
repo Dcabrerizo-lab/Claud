@@ -14,11 +14,12 @@ Stand: Version 1.4.0, Build 145 (Play Store AAB gebaut, nicht veröffentlicht). 
 - Ergebnis: Karten nach Zutreffen sortiert, einklappbar („Mehr anzeigen“), Kachel „Zwei Wege“ (Grundsicherungsgeld vs. Wohngeld+KiZ), „Gut zu wissen“, Kinderkrankengeld per Frage, Hinweise in den Karten.
 - Brief prüfen auf allen Seiten: Absender wählen, dann Scannen / PDF (digital und eingescannt) / Text einfügen / selbst eingeben; erkannte Werte gelb markiert; Abweichungskarten mit Paragraf; Widerspruch und Antworten als PDF (teilen, drucken, speichern).
 - Pflege: geführter Assistent (eine Frage je Bildschirm), Gutachten-Vergleich mit jedem Punkt (Module, m5, 5.16), Erklärseite zu Pflegeleistungen.
-- Antragsmappe: Empfänger je Anschreiben bearbeitbar (Feld über dem Brief, gilt für Kopiertext und PDF, „Vorschlag wiederherstellen“) und Link „Zuständige Stelle suchen“ (DuckDuckGo, kurzer Suchbegriff je Leistung `SUCHE` + Ortsname; bei Kassen/Bundesstellen ohne Ort). Noch NICHT im Build/DOM/E2E getestet (19.11.2026).
+- Antragsmappe: Empfänger je Anschreiben bearbeitbar (Feld über dem Brief, gilt für Kopiertext und PDF, „Vorschlag wiederherstellen“) und Link „Zuständige Stelle suchen“ (DuckDuckGo, kurzer Suchbegriff je Leistung `SUCHE` + Ortsname; bei Kassen/Bundesstellen ohne Ort). Getestet 19.11.2026 (DOM-Tests [empf], a11y hell/dunkel).
 - Antragsmappe: Anschreiben mit Empfänger, Angabenblatt, Unterlagenliste, Antragsformular-Hilfe (Vorschau, Kopieren, Abhakliste). Daten aus PLZ/Anschrift vorbefüllt.
 - Anschriften: Bayern vollständig (Kreise, Jobcenter, Familienkasse N/S, ZBFS, Bezirke); 302 Kreise/Städte bundesweit mit Anschrift (Quelle, Abrufdatum). Rundfunk: feste Anschrift.
 - Vorlesen überall entfernt. Einfache Sprache (Werkstatt-Version). Barrierefreiheit (axe, WCAG 2.2 AA).
-- Tests grün vor Build 145: `npm test`, `npm run test:erweiterungen`, `npm run test:e2e`, `npm run test:app` (66 Checks).
+- Tests grün am 19.11.2026 (Branch claude/schritt-1, Web-Build und App-Build nur lokal für Tests): `npm test`, `npm run test:erweiterungen`, `npm run test:e2e`, `npm run test:app` (66 Checks). Für e2e-pdf vorher `cd app && npm ci`.
+- Früher: Tests grün vor Build 145: `npm test`, `npm run test:erweiterungen`, `npm run test:e2e`, `npm run test:app` (66 Checks).
 - Store-Texte und -Bilder (`docs/STORE.md`, `tools/store-bilder.js`), `docs/UPDATE-1.4.0.md`. Faktenblatt und Anschriften-Übersicht als Artefakte (siehe 6).
 
 ## 3. Entscheidungen / Regeln
