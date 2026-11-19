@@ -1,82 +1,62 @@
 # STATUS – SoLo (Sozialleistungslotse)
 
-Stand: Version 1.4.0, Build 145 (Play Store AAB gebaut, nicht veröffentlicht). Neue Arbeit (19.11.2026): Branch `claude/netto-pfaendung` (von `claude/app-development-next-steps-2n8dzt`), noch kein Build, kein PR.
+Stand: 19.11.2026. Letzte Store-Version: 1.4.0, Build 145 (Play-Store-AAB gebaut, nicht veröffentlicht). Nächster VersionCode: 146.
+Ausführlicher Verlauf (Erledigtes, alte Pläne): `docs/AENDERUNGEN.md`, Abschnitt „Entwicklungsverlauf“.
 
-## 1. Projekt
-- Offline-App für Android, iOS, Web: prüft Sozialleistungen (Anspruch wahrscheinlich/möglich, grobe Höhe, Stelle, Unterlagen), prüft Briefe (Bescheid, Pflegegutachten, Nebenkosten), erzeugt Antragsmappe und Widerspruch als PDF.
-- Ziel: rechtlich wasserdicht UND maximal einfach; Korrektheit gleichrangig mit Bedienbarkeit. Zielgruppe: Laien ohne Bürokratie- und Technikwissen.
-- Stack: Vanilla JS, ein-Datei-Web-Build. Capacitor 8 für Android/iOS. Tesseract (Web) bzw. natives TextRecognition-Plugin für OCR, pdf.js 3.11.174 für PDF. Tests: Node-Skripte + Playwright. 13 Sprachen: de, en, tr, ar, ru, uk, pl, ro, fr, fa-AF (Dari), fa (Farsi), ps (Paschtu), so (Somali) (Prüfpaket und Pflege-Assistent nur Deutsch).
-- Build: `scripts/build.js` (src/template.html + src/app.js + src/lang/*.json + erweiterungen/* → `dist/sozialleistungslotse.html`), `scripts/build-app.js` (→ `app/www`, eigenes NATIVE_SCAN-Markup und CSP), `tools/paket-bauen.sh <VC> <dir> <jks> <pwfile>` (AAB, `OHNE_TESTS=1`).
-- Dateien: `src/rules.js` (Rechenregeln, auch Netto nach Programmablaufplan und Pfändung), `src/app.js` (UI), `src/behoerden.js` (Stellen + Anschriften), `src/plz.js`, `erweiterungen/vorschau.js|html` (Prüfpaket), `brief-lesen.js`, `pflege-assistent.js`, `pflege-fragen.js`, `content/*.json` (Behörden, PLZ), `docs/` (Prüfliste, Quellen, Store, WBS-Grenzen).
+## 1. Stand
 
-## 2. Erledigt (im Repo)
-- Branch `claude/zwei-wege-but`: Kachel „Zwei Wege“ nennt Bildung und Teilhabe in beiden Wegen; neuer Reiter „Einstellungen“ (4. Knopf unten) mit Unterreitern „Einstellungen“ (Sprache, Große Schrift, Angaben löschen; Kopf-Schalter bleiben vorerst) und „Informationen“ (Passt ein Ergebnis nicht zum Bescheid, So rechnet der Check und woher die Werte kommen, Hinweise, Impressum). Getestet: npm test, e2e-briefe, e2e-einfach, a11y. Tests angepasst (Sprache/Einfach per Skript). Offen: test:app nicht gelaufen.
-- Rechenkern: Grundsicherungsgeld, Wohngeld, Kinderzuschlag, Kindergeld, BuT, GSA, UVG, BAföG, Pflege, ALG I, Krankengeld, Elterngeld, Mutterschaftsgeld, Kinderkrankengeld, Blindengeld, WBS, ABL, Rundfunkbefreiung u. a. Werte 2027 mit automatischem Umschalten zum 1.1.2027. Landesleistungen und WBS-Grenzen aller 16 Länder (Saarland: nur Bundeswerte, siehe 4).
-- Ergebnis: Karten nach Zutreffen sortiert, einklappbar („Mehr anzeigen“), Kachel „Zwei Wege“ (Grundsicherungsgeld vs. Wohngeld+KiZ), „Gut zu wissen“, Kinderkrankengeld per Frage, Hinweise in den Karten.
-- Brief prüfen auf allen Seiten: Absender wählen, dann Scannen / PDF (digital und eingescannt) / Text einfügen / selbst eingeben; erkannte Werte gelb markiert; Abweichungskarten mit Paragraf; Widerspruch und Antworten als PDF (teilen, drucken, speichern).
-- Pflege: geführter Assistent (eine Frage je Bildschirm), Gutachten-Vergleich mit jedem Punkt (Module, m5, 5.16), Erklärseite zu Pflegeleistungen.
-- Antragsmappe: Empfänger je Anschreiben bearbeitbar (Feld über dem Brief, gilt für Kopiertext und PDF, „Vorschlag wiederherstellen“) und Link „Zuständige Stelle suchen“ (DuckDuckGo, kurzer Suchbegriff je Leistung `SUCHE` + Ortsname; bei Kassen/Bundesstellen ohne Ort). Getestet 19.11.2026 (DOM-Tests [empf], a11y hell/dunkel).
-- Antragsmappe: Anschreiben mit Empfänger, Angabenblatt, Unterlagenliste, Antragsformular-Hilfe (Vorschau, Kopieren, Abhakliste). Daten aus PLZ/Anschrift vorbefüllt.
-- Anschriften: Bayern vollständig (Kreise, Jobcenter, Familienkasse N/S, ZBFS, Bezirke); 302 Kreise/Städte bundesweit mit Anschrift (Quelle, Abrufdatum). Rundfunk: feste Anschrift.
-- Netto aus Brutto (19.11.2026): Lohnsteuer/Soli/Kirchensteuer wie amtlicher Programmablaufplan 2026, Sozialabgaben mit Übergangsbereich (`Rules.nettoLohn`, `bruttoAusNetto`, `lohnAnnahmen`). Ersetzt pauschal 80 % (Netto) und / 0,7 (Brutto beim Lohn). Im Einkommen: geschätztes Netto als Hinweis, Knopf „Netto ausrechnen“ (Steuerklasse und Kirchensteuer als große Knöpfe, „Übernehmen“ füllt das Feld). Test `test/test-netto.js`.
-- Pfändung und P-Konto (19.11.2026): großer Startknopf „Ich habe Schulden“, Ansicht `#pfaendung`: Lohn oder Konto wählen, Unterhalt per Zahlenknopf, Ergebnis zuerst, Hinweise aufklappbar. § 850c ZPO mit Tabelle 2026 (BGBl. 2026 I Nr. 80, gilt bis 30.6.2027), P-Konto §§ 899, 902 ZPO. Texte in 8 Sprachen.
-- Ersparnisse aufteilen (19.11.2026): Knopf unter dem Vermögensfeld, große Auswahlknöpfe (Konto, Sparbuch, ETF, Bausparvertrag, Lebens-/Rentenversicherung, Riester/Rürup/Betriebsrente, Zinsen). Riester & Co. zählen nicht; Versicherung nur „möglich“, wenn sie über die Grenze bringt (`evaluate` rechnet dafür ein zweites Mal); Zinsen als Einkommen (Grundsicherungsgeld ab 100 € im Jahr, Wohngeld vorsichtig voll). Test `test/test-ersparnis.js`.
-- Einmalige Hilfen (19.11.2026): Hinweise in den Karten Grundsicherungsgeld/GSA (Erstausstattung, Umzug mit Zusicherung, Schwangerschaft auch ohne laufende Leistung).
-- Neue Karte „Kostenlose Familienversicherung“ (§ 10 SGB V, Grenze 1/7 Bezugsgröße: 2026 565 €, 2027 590 €); jetzt 32 Leistungen (Store-Text, Webseite, docs/index.html angepasst).
-- Bereich „Geld sparen im Alltag“ (19.11.2026): vierter Startknopf, Themen Strom, Heizen, Essen (mit 6 eigenen Rezepten, nur Deutsch), Verträge/Sozialtarife, Schulden (führt zur Pfändung).
-- Konkurrenzvergleich (19.11.2026): Deutschland-Rechner (Wohngeld, Bürgergeld, Pflegegrad), Online-Bescheidprüfer und Nebenkosten-Dienste sind schwächer als SoLo; übernommen wurde nur, was besser ist (Netto-Berechnung, Pfändung).
-- Vorlesen überall entfernt. Einfache Sprache (Werkstatt-Version). Barrierefreiheit (axe, WCAG 2.2 AA).
-- Tests grün am 19.11.2026 (Branch claude/schritt-1, Web-Build und App-Build nur lokal für Tests): `npm test`, `npm run test:erweiterungen`, `npm run test:e2e`, `npm run test:app` (66 Checks). Für e2e-pdf vorher `cd app && npm ci`.
-- Früher: Tests grün vor Build 145: `npm test`, `npm run test:erweiterungen`, `npm run test:e2e`, `npm run test:app` (66 Checks).
-- Store-Texte und -Bilder (`docs/STORE.md`, `tools/store-bilder.js`), `docs/UPDATE-1.4.0.md`. Faktenblatt und Anschriften-Übersicht als Artefakte (siehe 6).
+### In `main` (bis PR #26)
+| Bereich | Inhalt |
+|---|---|
+| Leistungen | 32 Karten (`test/karten.js`), neu u. a. Kostenlose Familienversicherung (§ 10 SGB V). Werte 2027 mit Umschalten zum 1.1.2027. Landesleistungen und WBS-Grenzen aller 16 Länder (Saarland: nur Bundeswerte). |
+| Neue Bereiche | Netto aus Brutto (Programmablaufplan 2026), Pfändung/P-Konto (Tabelle 2026, gilt bis 30.6.2027), Ersparnisse/Kapitalerträge, Geld sparen im Alltag, einmalige Hilfen (Hinweise in den Karten) |
+| Sprachen | 13 Sprachen + Einfache Sprache. Dari, Farsi, Paschtu, Somali, Französisch nicht muttersprachlich geprüft. Prüfpaket, Pflege-Assistent, Rezepte nur Deutsch. |
+| Anschriften | Bayern vollständig; 302 Kreise/Städte bundesweit mit Anschrift (Quelle, Abrufdatum); Familienkassen in Ländern mit einer Familienkasse; Rundfunk fest |
+| Oberfläche | Reiter „Einstellungen“ (Einstellungen, Informationen); Antragsmappe mit bearbeitbarem Empfänger und Link „Zuständige Stelle suchen“ |
+| Tests/CI | Inhaltliche Prüfung (Fable) behoben (#25); Schwere Tests sonntags; Abhängigkeiten gebündelt (#26) |
 
-## Sprachen fr, fa-AF, fa, ps, so (19.11.2026)
-- Neu: Französisch, Dari (`fa-AF`), Farsi (`fa`, iranisches Persisch), Paschtu (`ps`), Somali (`so`). Dari/Farsi/Paschtu rechts nach links. Startsprache: genaue Gerätesprache zuerst (fa-AF → Dari), sonst die ersten zwei Buchstaben (fa-IR → Farsi).
-- Datum in fa-AF/fa/ps als TT.MM.JJJJ (`Fmt.datum`), sonst Gefahr persischer Kalender/Ziffern. PDF bei allen RTL-Sprachen deutsch (`pdfRtl()`, Schrift ohne arabische Zeichen).
-- Übersetzt durch KI (je ein Agent), automatisch geprüft (`/home/claude/werkzeug/pruefe.py`-Logik = Schlüssel, Platzhalter, Zahlen, §, Zeilen; im Repo: test-sprachen-zahlen). Unsichere Fachbegriffe bewusst deutsch.
-- **Dari, Paschtu, Somali NICHT muttersprachlich geprüft** (Agenten-Selbsteinschätzung: Dari gut bis mittel, Paschtu und Somali mittel). Farsi (fa): Agenten-Selbsteinschätzung hoch, ebenfalls nicht muttersprachlich geprüft. Vor Veröffentlichung Gegenlesen durch Muttersprachler empfohlen, v. a. t.* und es.*. Französisch: hohes Niveau, ebenfalls nicht extern geprüft.
-- Größengrenze der Web-Datei im Test von 2,5 auf 3 MB angehoben (jetzt ca. 2,56 MB).
-- Store-Texte, Store-Bilder-Skript und docs/index.html auf 13 Sprachen angepasst; die Store-Bilder selbst sind noch nicht neu erzeugt (`tools/store-bilder.js`, nur auf Anweisung).
+### Offene Pull Requests (nicht gemergt)
+| PR | Inhalt |
+|---|---|
+| #27 | Renten-Netto nach KV/PV statt 89 %; KV-Satz Arbeitnehmer 7,3 % |
+| #28 | npm-Sicherheit in `app/` (tar, uuid); pdf.js offen |
+| #29 | Prüfbericht: Pläne 2027 auf Stand 19.11.2026 |
+| #30 | Unterhaltsvorschuss vollständig nach UVG (13 Sprachen + Einfache Sprache) |
+| – | CI-Lücken: noch kein PR |
+| Dependabot | #2–#8, #16–#19 (Gradle 9 siehe Entscheidungen) |
 
-## 3. Entscheidungen / Regeln
-- Korrektheit zuerst: unsichere Fälle „möglich“ statt „wahrscheinlich“; nie falschen Empfänger einsetzen, dann nur Art der Stelle.
-- Anschrift wird nur eingesetzt, wenn PLZ bekannt (Frage oder Antragsmappe). Widerspruch nimmt die Stelle aus dem eingelesenen Bescheid.
-- Außerhalb Bayerns nur Kreis/Stadt mit Anschrift. Wohngeld: Kreisanschrift + Weiterleitung nach § 16 SGB I. WBS gehört NICHT dazu (Gemeinde zuständig).
-- Jede Anschrift/Grenze braucht amtliche Quelle + Datum.
-- Kein Vorlesen. Keine Fristen-Kalender. Keine mitgelieferten Formulare, nur geprüfte amtliche Links.
-- Mietobergrenze: App rechnet Orientierung (§ 12 WoGG +10 % + Heizung), echte Grenze je Kommune unbekannt; Hinweis in der App.
-- Erweiterungen (Prüfpaket) per signierter Lizenzdatei, offline geprüft; privater Lizenzschlüssel nie im Repo.
+## 2. Entscheidungen
+- Korrektheit zuerst: unsichere Fälle „möglich“; nie unsicheren Empfänger einsetzen, dann nur Art der Stelle. Jede Zahl, Grenze und Anschrift mit amtlicher Quelle und Datum.
+- Anschrift nur bei bekannter PLZ. Außerhalb Bayerns nur Kreis/Stadt mit Anschrift; Wohngeld: Kreisanschrift + Weiterleitung (§ 16 SGB I). WBS: Gemeinde zuständig. Kranken-, Pflege-, Rentenversicherung: keine Anschrift (Träger hängt von der Person ab).
+- Kein Vorlesen, keine Fristen-Kalender, keine mitgelieferten Formulare (nur geprüfte amtliche Links).
+- Mietobergrenze nur als Orientierung (§ 12 WoGG +10 % + Heizung).
+- Netto: Steuerklasse III für Paar mit einem Einkommen (vorsichtige Annahme).
+- Elterngeld: Pauschale 1.000 €/12 wie der amtliche Rechner.
+- Lange Tests (e2e, App) laufen nur auf GitHub. Schwere Tests jeden Sonntag automatisch (`schwer.yml`).
+- Gradle 9 zurückgestellt: nicht kompatibel mit AGP 8.13 (Build fand Abhängigkeiten nicht).
+- iOS-Upload: Standard-Rechner `macos-15-intel` (macos-26 bekam keinen Rechner).
+- Erweiterungen (Prüfpaket) per signierter Lizenzdatei; privater Lizenzschlüssel nie im Repo.
 
-## 4. Bekannte Probleme / offen
-- WBS-Grenze Saarland nicht abrufbar (Server sperrt): Bundeswerte als Untergrenze (`docs/WBS-GRENZEN.md`).
-- WBS-Empfänger: Wohnungsamt der kreisfreien Stadt (alle Länder außer Berlin/Hamburg); Bayern zusätzlich Landratsamt in den Landkreisen OHNE Große Kreisstadt/Große Delegationsgemeinde (`D.wbsAusnahme`, BayernPortal, gegengeprüft mit BayDVWoR, ZustVBau § 5, BayMBl. 2025 Nr. 41 am 19.11.2026). In den 32 Landkreisen mit Ausnahme-Gemeinde, in Landkreisen anderer Länder, Berlin und Hamburg: nur „Wohnungsamt deiner Stadt oder Gemeinde“ (`ANTRAG.wbs`, `ZUST_LAND.wbs`). Bremen/Bremerhaven: Zuständigkeit nicht geprüft. Hinweis „PLZ eingeben“ (`beh.plzHint`) erscheint auch bei WBS, wo keine Anschrift kommt.
-- Außerhalb Bayerns keine Anschrift für Jobcenter, Familienkasse, Versorgungsamt, Elterngeldstelle, Eingliederungshilfe, Hilfe zur Pflege; in Landkreisen auch nicht UVG/BuT.
-- Kasse/Pflegekasse/Rentenversicherung: Träger der Person unbekannt, keine Anschrift möglich.
-- Prüfpaket und Pflege-Assistent nur auf Deutsch. Fachliche Prüfung der Pflege-Inhalte durch Expertin/Experten steht aus.
-- iOS: GitHub-Workflow `ios-testflight.yml` (Inputs build, rechner) lief für Build 143 und 145 ohne Runner und wurde nach 15 Minuten abgebrochen (macOS-Billing prüfen) – Alternativen Codemagic oder Mac/Xcode. Swift Playgrounds geht nicht.
-- Tag-Push ist blockiert (403), nicht umgehen.
-- Build 145 AAB: `/home/user/Claud/SoLo-PlayStore-145.aab` (gitignored), Zips in der Scratchpad der alten Sitzung (nicht dauerhaft).
+## 3. Offene Punkte
+- **Werte 2027**: eingebaute Werte 2027 gegen endgültige Beschlüsse prüfen, Programmablaufplan Lohnsteuer 2027 eintragen, Pflege-Kinderlosenzuschlag nach PNOG. Prüfung geplant am 1.12.2026 (geplante Aufgabe).
+- Pfändungsfreigrenzen zum 1.7.2027 eintragen (`R.pfaendung`, `gueltigBis`, `test/test-netto.js`).
+- pdf.js 4: Umstieg von 3.11.174 (in #28 als offen vermerkt).
+- Architektur: Stichtags-Werte bündeln; `src/app.js` und Sprachdateien aufteilen; Prüfsummen/CSP für die Web-Version.
+- `wgAbzugAuszahlung` Rente: Werte prüfen ([0, 0.06] → etwa [-0.03, 0.09]).
+- Arbeitende Altersrentner (Netto, Anrechnung).
+- Pflegereform 2027 einarbeiten, sobald beschlossen.
+- Musterfälle-Tabelle (`docs/Musterfaelle-Abgleich.csv`) neu erzeugen.
+- Alte Branches auf GitHub löschen (Proxy verbietet Löschen: Nutzer auf github.com) und „Automatically delete head branches“ einschalten.
+- Anschriften: WBS in den 32 bayerischen Ausnahme-Landkreisen (Gemeinde nötig), Bremen; Jobcenter/Landesämter außerhalb Bayerns nur mit belegter Quelle. WBS Saarland aus amtlicher Quelle.
+- Muttersprachliche Prüfung Dari, Farsi, Paschtu, Somali, Französisch; Übersetzung Prüfpaket, Pflege-Assistent, Rezepte; Expertenprüfung Pflege.
+- iOS: TestFlight-Upload klären. Play Store: Build 145 bzw. nächster Build hochladen (nur auf Wunsch).
 
-## 5. Nächste Schritte (priorisiert)
-0. Zusammengeführt am 19.11.2026 (Branch `claude/zusammenfuehrung`): 13 Sprachen, Einfache Sprache, Empfänger, Netto/Pfändung/Ersparnisse/Familienversicherung/Geld sparen. Offen: Rezepte übersetzen; Wohngeld mit Sparer-Pauschbetrag genauer. Danach weiter mit 1.
-1. ~~WBS-Empfänger~~ weitgehend erledigt. Rest: in den 32 bayerischen Ausnahme-Landkreisen Stadtanschrift der Großen Kreisstadt/Delegationsgemeinde je nach PLZ/Gemeinde (PLZ-Daten sind nur kreisgenau, Gemeinde nötig); Bremen prüfen; `beh.plzHint` für WBS anpassen.
-2. ~~Bayerisches Landespflegegeld (`lpg`)~~ erledigt: `D.fest.landesamtPflege` (Postfach 13 65, 92203 Amberg; Quelle lfp.bayern.de, 19.11.2026), nur Bayern.
-3. Teilweise erledigt: Familienkassen für HE, NI+HB, SN, ST+TH, BE+BB, HH+SH+MV (Nord), RP+SL (`D.familienkasseDE`, `D.fkLand`, arbeitsagentur.de, 19.11.2026; Nord und RP-SL nur indirekt belegt). NRW (West 50574 Köln, Nord 44785 Bochum, Ost 44117 Dortmund) und BW (West 76088 Karlsruhe, Ost 70146 Stuttgart): Postanschriften belegt, aber keine amtliche Kreis-Zuordnung auffindbar (BA-Dienststellensuche dynamisch) -> bewusst ohne Anschrift. Jobcenter: nur Stuttgart, Bonn, Wiesbaden belegt (`D.jobcenterDE`). BAS-Mutterschaftsgeldstelle (Friedrich-Ebert-Allee 38, 53113 Bonn, BAS-Antragsformular 2026) bewusst NICHT als Empfänger: Standard ist die Krankenkasse. Rentenversicherung: bewusst KEIN Empfänger je Land (Träger hängt von der Person ab, § 127 SGB VI; 14 Regionalträger + DRV Bund + Knappschaft-Bahn-See; Hinweis auf § 16 SGB I, Servicetelefon 0800 1000 4800). Landesämter (Recherche 19.11.2026, noch NICHT eingebaut, Kandidaten): Ausweis BE LAGeSo (Postfach 31 09 29, 10639 Berlin; Postfach gilt fürs ganze LAGeSo, prüfen), RP LSJV (56065 Koblenz, Info-PDF), HH Versorgungsamt (Adolph-Schönfelder-Str. 5, 22083 Hamburg, keine eigene Postanschrift), HB Amt für Versorgung und Integration (Doventorscontrescarpe 172 D, 28195 Bremen, Zuständigkeit nur aus Formular); Elterngeld BW L-Bank (L-Bank, Familienförderung, 76113 Karlsruhe, aus Antrag); Eingliederungshilfe HE LWV Regionalverwaltung Kassel (Ständeplatz 6-10, 34117 Kassel, nur Teilgebiet). Alle übrigen Länder/Leistungen nicht landesweit oder nicht belegt (SL, SH, NW, SN, ST, TH, MV, BB, NI: Seiten nicht abrufbar oder Zuständigkeit je Kreis); vor dem Einbau Impressum/Antragsseite der Behörde gegenprüfen.
-4. Nach Anschrift-Änderungen: `docs/PRUEFLISTE.md`, Faktenblatt-Sätze angleichen, Tests laufen lassen.
-5. Jobcenter außerhalb Bayerns (404 Bezirke): mit Web-Tools kaum machbar (viele Seiten robots-gesperrt, Impressen ohne Post-/Hausanschrift, BA-Übersicht ohne Anschriften). Braucht eine Anschriftenliste als Quelle. Außerdem offen: Agenturen, WBS-Gemeindestellen.
-6. WBS Saarland aus amtlicher Quelle (z. B. Stadt/Ministerium).
-7. iOS-Build klären (Billing oder Codemagic/Mac), dann TestFlight.
-8. Play Store: Build 145 hochladen (Konsole), Store-Texte aus `docs/STORE.md`. Nur auf Nutzerwunsch.
-9. Übersetzungen Prüfpaket/Pflege-Assistent; Expertenprüfung Pflege.
-10. Programmablaufplan Lohnsteuer 2027 eintragen, sobald endgültig (BMF, meist Mitte/Ende November): Tarifwerte in `R.lohn` als `pap2027`, Umschalten in `lohnParam`; Pflege-Kinderlosenzuschlag 2027 nach Beschluss des PNOG.
-11. Zum 1.7.2027 neue Pfändungsfreigrenzen eintragen (`R.pfaendung`, `gueltigBis`), Tabellenzeilen in `test/test-netto.js` ersetzen.
+## 4. Nächste Schritte
+1. Offene PRs #27–#30 prüfen und mergen (nur auf Wunsch), danach eigene Branches mit `origin/main` aktualisieren.
+2. CI-Lücken schließen (eigener PR).
+3. 1.12.2026: Werte 2027 eintragen, Tests laufen lassen.
+4. Danach Build 146 vom gemergten `main` (nur auf ausdrückliche Anweisung), Store-Texte aus `docs/STORE.md`.
 
-## 6. Arbeitsregeln für den nächsten Chat
-- Neue Arbeit auf Branch `claude/netto-pfaendung` (oder neuem Branch davon); `claude/app-development-next-steps-2n8dzt` ist der Stand von Build 145. Kein Force-Push, kein PR ohne Auftrag.
-- Commit-Fuß: `Co-Authored-By: Claude <Modell> <noreply@anthropic.com>` und `Claude-Session: <Sitzungslink>`; keine Modell-ID im Repo.
-- Builds NUR auf ausdrücklichen Wunsch starten. Keine Store-Aktionen ohne Freigabe. Netz-/Rechtegrenzen nicht umgehen.
-- Keystore + Passwort liegen nur in der Scratchpad (`schluessel/upload.jks`, `upload-schluessel.txt`), nie in Repo oder Chat. Signatur-SHA beginnt `C8:E4:5D:61`.
-- E-Mail der Nutzerin/des Nutzers privat halten. Antworten auf Deutsch, kurz, übersichtlich.
-- Testen: `npm test`, `npm run test:erweiterungen`, `npm run test:e2e` (lang, 10+ Min, Timeout hoch setzen), `npm run test:app`. Nicht `npm install --omit=optional` (bricht esbuild).
-- Artefakte (privat): Faktenblatt https://claude.ai/artifact/8nR97c2tqV6soVJQs3FLLg ; Anschriften-Übersicht https://claude.ai/artifact/XCWJ5EqUuvuHUXNt1bMJEV (Quelle der Übersicht: Plan zu Schritt 1–3).
-- Guthaben knapp: kurze Chats, kleine Etappen, nach jeder Etappe committen und pushen.
+## 5. Arbeitsregeln
+Siehe `CLAUDE.md` (Branch je Sitzung von `origin/main`, Commit-Fuß, Builds und Store nur auf Anweisung, Schlüssel nie im Repo, Tests).
+Artefakte (privat): Faktenblatt https://claude.ai/artifact/8nR97c2tqV6soVJQs3FLLg ; Anschriften-Übersicht https://claude.ai/artifact/XCWJ5EqUuvuHUXNt1bMJEV
