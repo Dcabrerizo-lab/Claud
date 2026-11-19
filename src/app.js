@@ -800,12 +800,31 @@
     var z = String(empfEdit[id]).split('\n').map(function (x) { return x.replace(/\s+$/, ''); }).filter(function (x) { return x.trim(); });
     return z.length ? z : ['____________________'];
   }
-  // Suche nach der zuständigen Stelle im Internet (öffnet den Browser; die App selbst bleibt offline)
+  // Suche nach der zuständigen Stelle im Internet (öffnet den Browser; die App selbst bleibt offline).
+  // Kurze Begriffe, wie die Ämter sich selbst nennen, plus Wohnort: so landen die Seiten der Stellen oben in der Trefferliste.
+  // ort: false = Stelle hängt nicht vom Wohnort ab (Kasse, Bundesstelle), dann ohne Ort suchen.
+  var SUCHE = {
+    kindergeld: ['Familienkasse'], kiz: ['Familienkasse Kinderzuschlag'], kgBeh: ['Familienkasse'],
+    wohngeld: ['Wohngeldstelle'], wbs: ['Wohnberechtigungsschein beantragen'], but: ['Bildung und Teilhabe Antrag'],
+    uvg: ['Unterhaltsvorschussstelle Jugendamt'], gsa: ['Grundsicherung im Alter Sozialamt'], ggeld: ['Jobcenter'],
+    bafoeg: ['BAföG-Amt'], elterngeld: ['Elterngeldstelle'], hzp: ['Hilfe zur Pflege Sozialamt'], blh: ['Blindenhilfe Sozialamt'],
+    asylblg: ['Asylbewerberleistungen Sozialamt'], eingl: ['Eingliederungshilfe Antrag'], arbeit: ['Budget für Arbeit Eingliederungshilfe'],
+    ausweis: ['Schwerbehindertenausweis beantragen Versorgungsamt'], blindengeld: ['Blindengeld Antrag'],
+    alg1: ['Agentur für Arbeit'], bab: ['Agentur für Arbeit Berufsausbildungsbeihilfe'],
+    lpg: ['Landespflegegeld Antrag Landesamt für Pflege', false], rundfunk: ['Rundfunkbeitrag Befreiung Antrag', false],
+    pflege: ['Pflegekasse Antrag Pflegegrad', false], pflegeplus: ['Pflegekasse Verhinderungspflege Antrag', false],
+    mutter: ['Mutterschaftsgeld Antrag', false], kkg: ['Kinderkrankengeld Krankenkasse', false], zuzahl: ['Zuzahlungsbefreiung Krankenkasse', false],
+    srente: ['Deutsche Rentenversicherung Beratungsstelle'], emrente: ['Deutsche Rentenversicherung Beratungsstelle']
+  };
+  function suchOrt() {
+    // Ortsname aus der Anschrift (ohne Postleitzahl), sonst die Postleitzahl aus dem Fragebogen
+    var o = String(person.ort || '').replace(/\b\d{5}\b/g, '').replace(/[,;]/g, ' ').trim();
+    return o || (/^\d{5}$/.test(String(state.plz || '')) ? String(state.plz) : '');
+  }
   function empfSuchUrl(id) {
-    var a = ANTRAG[id];
-    var ort = String(person.ort || '').trim() || String(state.plz || '').trim();
-    var q = a.betreff.replace(/^Antrag auf (Erteilung eines |Erteilung einer )?/, '').replace(/:.*$/, '') + ' zuständige Stelle Anschrift' + (ort ? ' ' + ort : '');
-    return 'https://duckduckgo.com/?q=' + encodeURIComponent(q);
+    var e = SUCHE[id] || [ANTRAG[id].stelle];
+    var ort = e[1] === false ? '' : suchOrt();
+    return 'https://duckduckgo.com/?q=' + encodeURIComponent(e[0] + (ort ? ' ' + ort : ''));
   }
   function empfHtml(id) {
     var wert = Object.prototype.hasOwnProperty.call(empfEdit, id) ? empfEdit[id] : empfVorschlag(id).join('\n');

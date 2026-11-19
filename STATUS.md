@@ -14,7 +14,7 @@ Stand: Version 1.4.0, Build 145 (Play Store AAB gebaut, nicht veröffentlicht). 
 - Ergebnis: Karten nach Zutreffen sortiert, einklappbar („Mehr anzeigen“), Kachel „Zwei Wege“ (Grundsicherungsgeld vs. Wohngeld+KiZ), „Gut zu wissen“, Kinderkrankengeld per Frage, Hinweise in den Karten.
 - Brief prüfen auf allen Seiten: Absender wählen, dann Scannen / PDF (digital und eingescannt) / Text einfügen / selbst eingeben; erkannte Werte gelb markiert; Abweichungskarten mit Paragraf; Widerspruch und Antworten als PDF (teilen, drucken, speichern).
 - Pflege: geführter Assistent (eine Frage je Bildschirm), Gutachten-Vergleich mit jedem Punkt (Module, m5, 5.16), Erklärseite zu Pflegeleistungen.
-- Antragsmappe: Empfänger je Anschreiben bearbeitbar (Feld über dem Brief, gilt für Kopiertext und PDF, „Vorschlag wiederherstellen“) und Link „Zuständige Stelle suchen“ (DuckDuckGo-Suche mit Leistung und Ort, öffnet den Browser). Noch NICHT im Build/DOM/E2E getestet (19.11.2026).
+- Antragsmappe: Empfänger je Anschreiben bearbeitbar (Feld über dem Brief, gilt für Kopiertext und PDF, „Vorschlag wiederherstellen“) und Link „Zuständige Stelle suchen“ (DuckDuckGo, kurzer Suchbegriff je Leistung `SUCHE` + Ortsname; bei Kassen/Bundesstellen ohne Ort). Noch NICHT im Build/DOM/E2E getestet (19.11.2026).
 - Antragsmappe: Anschreiben mit Empfänger, Angabenblatt, Unterlagenliste, Antragsformular-Hilfe (Vorschau, Kopieren, Abhakliste). Daten aus PLZ/Anschrift vorbefüllt.
 - Anschriften: Bayern vollständig (Kreise, Jobcenter, Familienkasse N/S, ZBFS, Bezirke); 302 Kreise/Städte bundesweit mit Anschrift (Quelle, Abrufdatum). Rundfunk: feste Anschrift.
 - Vorlesen überall entfernt. Einfache Sprache (Werkstatt-Version). Barrierefreiheit (axe, WCAG 2.2 AA).
