@@ -41,7 +41,8 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
     await p.click('text=Was bedeuten diese Leistungen?'); await pruefe('Erklärseite Pflege'); await p.click('#piZurueck');
     await p.click('text=Zurück zu den Leistungen'); await p.evaluate(() => { localStorage.removeItem('lotse.pflegecheck'); });
     await p.click('#p1'); await pruefe('Beispiel 1 mit Ergebnis');
-    await p.selectOption('#lang', 'ar'); await pruefe('Arabisch'); await p.selectOption('#lang', 'de');
+    await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'ar'); await pruefe('Arabisch'); await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'de');
+    await p.click('#appnav [data-ansicht=einstellungen]'); await pruefe('Einstellungen'); await p.click('#appnav [data-ansicht=leistungen]');
     await p.click('#mappeMake'); await pruefe('Antragsmappe'); await p.click('#mappeClose');
     // Selbsttest: ein Feld ohne Beschriftung muss gemeldet werden (sonst prüft der Test nichts)
     if (schema === 'light') {
@@ -51,7 +52,7 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
       out.push({ name: 'Selbsttest: fehlende Beschriftung wird erkannt', r: gefunden ? [] : [{ id: 'selbsttest', impact: 'kritisch', n: 1, beispiel: ['axe hat das unbeschriftete Feld nicht gemeldet'] }] });
       await p.evaluate(() => document.getElementById('a11y-selbsttest').remove());
     }
-    await p.click('#einfachBtn'); await pruefe('Einfache Version: Frage');
+    await p.evaluate(() => document.getElementById('einfachBtn').click()); await p.click('#appnav [data-ansicht=leistungen]'); await pruefe('Einfache Version: Frage');
     await p.fill('#es-in', '1990'); await p.click('#es-weiter'); await pruefe('Einfache Version: Auswahl');
     for (const a of ['eltern', 'nein', 'werkstatt']) { await p.click('[data-es="' + a + '"]'); await p.waitForTimeout(450); }
     await p.fill('#es-in', '250'); await p.click('#es-weiter');

@@ -15,6 +15,7 @@
   var pickedUser = {}; // nur was die Person selbst umgestellt hat; sonst gilt: Haken bei "wahrscheinlich"
   var lastOut = null;
   var lang = 'de';
+  var einfachSprache = false; // Schalter „Einfache Sprache“ (Einstellungen): nur auf Deutsch wirksam, Texte aus I18N_EINFACH
   var edited = false;
   var $ = function (id) { return document.getElementById(id); };
 
@@ -24,6 +25,7 @@
   function t(key, p) {
     var d = I18N[lang] || I18N.de;
     var s = Object.prototype.hasOwnProperty.call(d, key) ? d[key] : (Object.prototype.hasOwnProperty.call(I18N.de, key) ? I18N.de[key] : key);
+    if (einfachSprache && lang === 'de' && typeof I18N_EINFACH !== 'undefined' && Object.prototype.hasOwnProperty.call(I18N_EINFACH, key)) s = I18N_EINFACH[key];
     var rtl = d['meta.dir'] === 'rtl';
     // {eur:100000}: fester Betrag im Text; {name}: Parameter, Beträge sind Objekte { eur: Zahl }
     s = s.replace(/\{eur:(\d+(?:\.\d+)?)\}/g, function (m, n) { return Fmt.euro(Number(n), lang, rtl); });
@@ -362,6 +364,9 @@
     document.querySelectorAll('[data-t]').forEach(function (el) { el.textContent = t(el.getAttribute('data-t')); });
     document.querySelectorAll('[data-t-aria]').forEach(function (el) { el.setAttribute('aria-label', t(el.getAttribute('data-t-aria'))); });
     $('stand').textContent = t('stand', { stand: Rules.RULES.stand });
+    $('standApp').textContent = $('stand').textContent;
+    $('appVersion').textContent = t('set.version', { v: APPVERSION });
+    einfacheSpracheAnzeigen();
     // Regeln älter als der nächste Stichtag (1. Januar): deutlich darauf hinweisen
     var veraltet = regelnVeraltet();
     $('altNotice').hidden = !veraltet; $('altNotice').textContent = veraltet ? t('alt.hinweis', { stand: Rules.RULES.stand }) : '';
@@ -375,6 +380,19 @@
     renderScan();
     if (esModus) esRender();
     bereicheText();
+  }
+
+  // Schalter „Einfache Sprache“: gibt es nur auf Deutsch; in anderen Sprachen sichtbar, aber nicht bedienbar (aria-disabled, bleibt per Tastatur erreichbar)
+  function einfacheSpracheAnzeigen() {
+    var de = lang === 'de', b = $('einfacheSpracheBtn');
+    b.setAttribute('aria-pressed', String(de && einfachSprache));
+    if (de) b.removeAttribute('aria-disabled'); else b.setAttribute('aria-disabled', 'true');
+    $('einfacheSpracheT').textContent = t(de ? 'set.es.t' : 'set.es.nurDe');
+  }
+  function einfacheSpracheSetzen(an, speichern) {
+    einfachSprache = !!an;
+    if (speichern) Store.set('lotse.einfachSprache', an ? '1' : '0');
+    applyLang(); // alle Texte neu zeichnen
   }
 
   function regelnVeraltet() { var ab = Rules.RULES.pruefenAb; return !!ab && new Date() >= new Date(ab + 'T00:00:00'); }
@@ -483,6 +501,19 @@
       $('bigBtn').setAttribute('aria-pressed', String(on));
       save();
     });
+    $('einfacheSpracheBtn').addEventListener('click', function () {
+      if (lang !== 'de') return;
+      einfacheSpracheSetzen(!einfachSprache, true);
+    });
+    $('delBtn').addEventListener('click', function () {
+      $('delMsg').textContent = ''; $('delConfirm').hidden = false; $('delBtn').setAttribute('aria-expanded', 'true'); $('delNein').focus();
+    });
+    $('delNein').addEventListener('click', function () { $('delConfirm').hidden = true; $('delBtn').setAttribute('aria-expanded', 'false'); $('delBtn').focus(); });
+    $('delJa').addEventListener('click', function () {
+      $('delConfirm').hidden = true; $('delBtn').setAttribute('aria-expanded', 'false');
+      alleAngabenLoeschen();
+      $('delMsg').textContent = t('set.del.done'); $('delBtn').focus();
+    });
     $('jumpBtn').addEventListener('click', function () {
       var el = $('ergebnis');
       el.scrollIntoView({ behavior: smooth(), block: 'start' });
@@ -534,7 +565,8 @@
     });
     // Anbieter im Impressum: iPhone-App über das Apple-Konto von Natascha Cabrerizo y Polo, Android und Web: David Cabrerizo
     if (NATIVE && window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') { $('anbieterName').textContent = 'Natascha Cabrerizo y Polo'; document.documentElement.classList.add('ios'); }
-    $('legalBtn').addEventListener('click', openLegal);
+    $('legalBtn').addEventListener('click', function () { openLegal($('legalBtn')); });
+    $('legalBtn2').addEventListener('click', function () { openLegal($('legalBtn2')); });
     $('legalClose').addEventListener('click', closeLegal);
     $('firstOk').addEventListener('click', function () { $('firstNotice').hidden = true; Store.set('lotse.ack', '1'); });
     // Links ins Netz öffnen in der App im Systembrowser, Anker innerhalb der Seite bleiben
@@ -577,13 +609,15 @@
     } catch (e) {}
   }
 
-  function openLegal() {
+  var legalRueck = null; // Knopf, der das Impressum geöffnet hat: dorthin kehrt der Fokus zurück
+  function openLegal(von) {
+    legalRueck = von && von.focus ? von : $('legalBtn');
     $('legalWeb').hidden = NATIVE;
     $('legal').hidden = false; $('app').classList.add('pm');
     try { window.scrollTo(0, 0); } catch (e) {}
     $('legalClose').focus();
   }
-  function closeLegal() { $('legal').hidden = true; $('app').classList.remove('pm'); $('legalBtn').focus(); }
+  function closeLegal() { $('legal').hidden = true; $('app').classList.remove('pm'); (legalRueck || $('legalBtn')).focus(); }
 
   // ----- Ergebnis -----
   function listItems(a) { return '<ul>' + a.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>'; }
@@ -591,7 +625,7 @@
   // Rückmeldung „Ergebnis passt nicht zu meinem Bescheid“: E-Mail-Entwurf an die Kontaktadresse aus dem Impressum.
   // Enthält nur App-Version und die Einstufungen (auf Deutsch), keine Angaben aus dem Fragebogen. Gesendet wird nur, wenn die Person es selbst tut.
   var KONTAKT = 'd.cabrerizo@gmx.de', APPVERSION = '/*VERSION*/';
-  function tDe(k, p) { var l = lang; lang = 'de'; try { return t(k, p); } finally { lang = l; } }
+  function tDe(k, p) { var l = lang, e = einfachSprache; lang = 'de'; einfachSprache = false; try { return t(k, p); } finally { lang = l; einfachSprache = e; } } // immer die Standardtexte (Rückmeldung an den Anbieter)
   function feedbackMail(results) {
     var z = results.filter(function (r) { return r.level === 'ja' || r.level === 'vielleicht'; }).slice(0, 25)
       .map(function (r) { return '- ' + r.name + ': ' + tDe('lvl.' + r.level) + ' (' + tDe('h.' + r.hl) + ')'; });
@@ -1569,7 +1603,7 @@
 
   function esRender() {
     var box = $('einfach');
-    if (!esModus) { box.hidden = true; $('cols').hidden = false; $('notices').hidden = false; $('jump').hidden = false; $('app').classList.remove('es-an'); return; }
+    if (!esModus) { box.hidden = true; $('cols').hidden = false; $('notices').hidden = false; $('jump').hidden = !!aktAnsicht && aktAnsicht !== 'leistungen'; $('app').classList.remove('es-an'); return; }
     box.hidden = false; $('cols').hidden = true; $('notices').hidden = true; $('jump').hidden = true;
     $('app').classList.add('es-an');
     var fr = esAktiv();
@@ -1759,8 +1793,27 @@
     if (an && !es) es = esLeer();
     $('einfachBtn').setAttribute('aria-pressed', String(an));
     esSpeichern(); esRender();
+    if (aktAnsicht === 'einstellungen') return; // in den Einstellungen nur den Modus schalten; Fokus bleibt am Schalter, der Modus gilt im Bereich Leistungen
     try { window.scrollTo(0, 0); } catch (e) {}
     var q = an ? $('es-q') : $('h-form'); if (q) { q.setAttribute('tabindex', '-1'); q.focus({ preventScroll: true }); }
+  }
+
+  // Einstellungen: alle gespeicherten Angaben der App löschen (Store-Schlüssel) und die Anzeige auf den Anfangszustand setzen
+  var STORE_SCHLUESSEL = ['lotse.state', 'lotse.einfach', 'lotse.einfachSprache', 'lotse.pflegecheck', 'lotse.lang', 'lotse.ack', 'lotse.fristen'];
+  function alleAngabenLoeschen() {
+    clearTimeout(saveTimer); clearTimeout(soonTimer); saveTimer = null; soonTimer = null;
+    STORE_SCHLUESSEL.forEach(function (k) { Store.remove(k); });
+    try { localStorage.removeItem('lotse-lang'); } catch (e) {}
+    state = blankState(); person = { name: '', geb: '', strasse: '', ort: '', tel: '' }; picked = {}; pickedUser = {}; started = false; edited = true;
+    ['p-name', 'p-geb', 'p-strasse', 'p-ort', 'p-tel'].forEach(function (id) { $(id).value = ''; });
+    $('sampleNotice').hidden = true; $('clearMsg').textContent = '';
+    es = null; esModus = false; $('einfachBtn').setAttribute('aria-pressed', 'false');
+    pa = { antworten: null, schaetzung: null }; paAnzeigen();
+    $('app').classList.remove('big'); document.documentElement.classList.remove('big'); $('bigBtn').setAttribute('aria-pressed', 'false');
+    einfachSprache = false;
+    lang = detect();
+    $('firstNotice').hidden = false;
+    esRender(); writeForm(); applyLang(); // zeichnet Auswahlfelder, Ergebnis und alle Texte neu
   }
 
   state = blankState();
@@ -1771,7 +1824,9 @@
   applyLang();
   initClaude();
 
-  $('einfachBtn').addEventListener('click', function () { zeigeAnsicht('leistungen'); esUmschalten(!esModus); });
+  // Schaltet nur den Modus „Eine Frage pro Bildschirm“; er gilt im Bereich Leistungen (kein automatischer Sprung dorthin)
+  $('einfachBtn').addEventListener('click', function () { esUmschalten(!esModus); });
+  Store.get('lotse.einfachSprache', function (v) { if (v === '1') einfacheSpracheSetzen(true, false); });
   Store.get('lotse.einfach', function (v) {
     try { var d = v ? JSON.parse(v) : null; if (d && d.es) { es = Object.assign(esLeer(), d.es); if (d.an) esUmschalten(true); } } catch (e) {}
   });
@@ -1788,7 +1843,7 @@
   };
   // ----- Bereiche: Start, Leistungen (Leistungscheck), Brief prüfen -----
   // Beim Öffnen die Startseite; „#leistungen“ und „#briefe“ öffnen den Bereich direkt (Links, Tests).
-  var ANSICHTEN = ['start', 'leistungen', 'briefe', 'pflege', 'pflegeinfo']; // „pflege“: Pflegegrad-Einschätzung, gehört zu Leistungen
+  var ANSICHTEN = ['start', 'leistungen', 'briefe', 'pflege', 'pflegeinfo', 'einstellungen']; // „pflege“: Pflegegrad-Einschätzung, gehört zu Leistungen
   var aktAnsicht = 'leistungen';
   var BRIEFE = [
     ['jc', 'briefe.jobcenter', 'briefe.jobcenter.t', '<path d="M4 20V9l8-5 8 5v11"/><path d="M9 20v-6h6v6M3 20h18"/>'],

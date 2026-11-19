@@ -392,7 +392,7 @@
   @media (min-width: 900px) { .jump { display: none; } .shell { padding-bottom: 40px; } }
 
   /* Bereiche (Start, Leistungen, Brief prüfen) mit Leiste unten; auf breiten Bildschirmen als Reiter unter dem Kopf */
-  .appnav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; display: grid; grid-template-columns: repeat(3, 1fr);
+  .appnav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; display: grid; grid-template-columns: repeat(4, 1fr);
     background: var(--surface); border-top: 1px solid var(--line);
     padding: 4px max(6px, env(safe-area-inset-right, 0px)) calc(4px + env(safe-area-inset-bottom, 0px)) max(6px, env(safe-area-inset-left, 0px)); }
   .appnav button { position: relative; isolation: isolate; border: 0; background: transparent; color: var(--muted); font: inherit; font-size: 0.78rem; font-weight: 700;
@@ -403,14 +403,18 @@
   .shell { padding-bottom: 150px; }
   .jump { bottom: calc(64px + env(safe-area-inset-bottom, 0px)); }
   @media (min-width: 900px) {
-    .appnav { position: static; max-width: 1180px; margin: 0 auto; grid-template-columns: repeat(3, auto); justify-content: start; gap: 8px; background: transparent; border: 0; padding: 0 max(16px, env(safe-area-inset-left, 0px)); }
+    .appnav { position: static; max-width: 1180px; margin: 0 auto; grid-template-columns: repeat(4, auto); justify-content: start; gap: 8px; background: transparent; border: 0; padding: 0 max(16px, env(safe-area-inset-left, 0px)); }
     .appnav button { flex-direction: row; gap: 8px; font-size: 1rem; padding: 8px 16px; border-radius: 999px; min-height: 44px; }
     .appnav button[aria-current="page"] { background: color-mix(in srgb, var(--accent) 14%, transparent); }
     .appnav button[aria-current="page"]::before { display: none; }
     .shell { padding-bottom: 40px; }
   }
-  .app.pm ~ .appnav, .app.pm .appnav { display: none; }
+  .app.pm ~ .appnav, .app.pm .appnav, .app.pm #v-einstellungen { display: none; }
   .ans-h { font-size: 1.5em; margin: 8px 0 12px; }
+  .set-gruppe { margin: 0 0 22px; max-width: 60ch; }
+  .set-gruppe h3 { margin: 0 0 8px; font-size: 1.05em; }
+  .set-gruppe p { margin: 0 0 8px; }
+  .chip[aria-disabled="true"] { opacity: .6; cursor: not-allowed; }
   .weg-liste { display: grid; gap: 12px; margin: 18px 0; }
   .weg { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; min-height: 84px; padding: 16px; border-radius: 16px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; box-shadow: var(--shadow-s); }
   .weg.haupt { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
@@ -584,10 +588,7 @@
         <p class="lead" data-t="lead"></p>
       </div>
       <div class="tools">
-        <label class="langpick"><span data-t="lang.label"></span><select id="lang"></select></label>
         <span class="stand" id="stand"></span>
-        <button type="button" class="chip" id="bigBtn" aria-pressed="false" data-t="big"></button>
-        <button type="button" class="chip es-schalter" id="einfachBtn" aria-pressed="false"><span aria-hidden="true">🙂</span> <span data-t="einfach.btn"></span></button>
       </div>
     </header>
 
@@ -660,6 +661,37 @@
     </section>
 
     <!-- Pflegegrad selbst einschätzen (geführt, eine Frage pro Bildschirm) -->
+    <!-- Einstellungen: Sprache, Anzeige, Einfache Sprache, Über die App, Daten löschen -->
+    <section id="v-einstellungen" class="ansicht" aria-labelledby="h-einstellungen" hidden>
+      <h2 id="h-einstellungen" class="ans-h" data-t="set.h"></h2>
+      <div class="set-gruppe">
+        <h3 data-t="lang.label"></h3>
+        <label class="langpick"><span data-t="lang.label"></span><select id="lang"></select></label>
+      </div>
+      <div class="set-gruppe">
+        <h3 data-t="set.anzeige.h"></h3>
+        <p><button type="button" class="chip" id="bigBtn" aria-pressed="false" data-t="big"></button></p>
+        <p><button type="button" class="chip" id="einfacheSpracheBtn" aria-pressed="false" aria-describedby="einfacheSpracheT"><span data-t="set.es.label"></span></button></p>
+        <p class="small muted" id="einfacheSpracheT"></p>
+        <p><button type="button" class="chip es-schalter" id="einfachBtn" aria-pressed="false" aria-describedby="einfachBtnT"><span aria-hidden="true">🙂</span> <span data-t="einfach.btn"></span></button></p>
+        <p class="small muted" id="einfachBtnT" data-t="set.eine.t"></p>
+      </div>
+      <div class="set-gruppe">
+        <h3 data-t="set.about.h"></h3>
+        <p class="small muted"><span id="appVersion"></span><br><span class="stand" id="standApp"></span></p>
+        <p><button type="button" class="linkbtn" id="legalBtn2" data-t="legal.open"></button></p>
+      </div>
+      <div class="set-gruppe">
+        <h3 data-t="set.daten.h"></h3>
+        <p><button type="button" class="chip" id="delBtn" aria-expanded="false" aria-controls="delConfirm" data-t="set.del.btn"></button></p>
+        <div id="delConfirm" role="group" aria-labelledby="delFrage" hidden>
+          <p id="delFrage" data-t="set.del.frage"></p>
+          <div class="btns"><button type="button" class="btn" id="delJa" data-t="set.del.ja"></button> <button type="button" class="btn ghost" id="delNein" data-t="set.del.nein"></button></div>
+        </div>
+        <p class="msg" id="delMsg" role="status"></p>
+      </div>
+    </section>
+
     <section id="v-pflege" class="ansicht" aria-label="Pflegegrad" hidden>
       <p class="pp-hinweis small" id="paNurDe" data-t="briefe.nurDeutsch" hidden></p>
       <div id="pflegeAssist" class="pa"></div>
@@ -1176,6 +1208,7 @@
     <button type="button" data-ansicht="start"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg><span data-t="nav.start"></span></button>
     <button type="button" data-ansicht="leistungen"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4M8.5 11l2 2 3.5-4"/></svg><span data-t="nav.leistungen"></span></button>
     <button type="button" data-ansicht="briefe"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg><span data-t="nav.briefe"></span></button>
+    <button type="button" data-ansicht="einstellungen"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg><span data-t="nav.einstellungen"></span></button>
   </nav>
 </div>
 
