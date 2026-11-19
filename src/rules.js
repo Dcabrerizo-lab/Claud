@@ -43,9 +43,12 @@ const Rules = (function () {
     // Beitragsbemessungsgrenzen im Monat: 2026 RV 8.450 €, KV 5.812,50 € (SVBezGrV 2026); 2027 RV 8.850 €, KV 6.375 € (Kabinett 7.10.2026).
     // Übergangsbereich bis 2.000 € (§ 20 Abs. 2 SGB IV).
     // kvBasis 7,0 % (halber ermäßigter Beitragssatz) nur für die Vorsorgepauschale der Lohnsteuer (Programmablaufplan), kvAn 7,3 % für den echten Beitrag.
-    // Rente (gesetzlich versichert, abgerufen 19.11.2026): KV halber allgemeiner Beitragssatz 7,3 % + halber Zusatzbeitrag (§ 247 SGB V),
-    // Pflege 3,6 % trägt die rentenbeziehende Person allein (§ 59 Abs. 1 SGB XI), Abschlag 0,25 je Kind vom 2. bis 5. Kind unter 25 (§ 55 Abs. 3 SGB XI).
-    // Kein Kinderlosen-Zuschlag und keine Steuer eingerechnet (vorsichtig: eher höheres Netto).
+    // Rente (gesetzlich pflichtversichert, abgerufen 19.11.2026): KV allgemeiner Beitragssatz und Zusatzbeitrag aus der Rente (§ 247 SGB V),
+    // davon trägt die Rentenversicherung die Hälfte (§ 249a SGB V) -> 7,3 % + halber Zusatzbeitrag. Pflege trägt die rentenbeziehende Person allein
+    // (§ 59 Abs. 1 SGB XI): 3,6 % seit der Beitragssatz-Anpassung zum 1.1.2025 (der Gesetzestext § 55 Abs. 1 SGB XI nennt noch 3,4 %),
+    // Abschlag 0,25 je Kind vom 2. bis 5. Kind unter 25 (§ 55 Abs. 3 SGB XI). Netto aus Brutto ohne Kinderlosen-Zuschlag und ohne Steuer
+    // (vorsichtig: eher höheres Netto); Brutto aus Netto ohne Kinder im Haushalt mit Zuschlag 0,6 (vorsichtig: eher höheres Brutto).
+    // Nicht eingerechnet: arbeitende Altersrentner (Lohn ohne RV/AV-Beitrag, KV 7,0 %), Pflegereform 2027 (Entwurf: Kinderlosen-Zuschlag 0,9).
     lohn: {
       pap2026: { gfb: 12348, z2: 17800, a2: 914.51, z3: 69879, a3: 173.1, c3: 1034.87, z4: 277826, c4: 11135.63, c5: 19470.38,
         w1: 14071, w2: 34939, w3: 222260, kfb: 9756, solzFrei: 20350, papBbgRV: 101400, papBbgKV: 69750,
@@ -184,7 +187,9 @@ const Rules = (function () {
     wgWerbung: { lohn: 1230, rente: 102 },
     // Pauschalabzug beim Wohngeld (§ 16 WoGG) je Einkommensart: [kleinster, größter] üblicher Abzug
     wgAbzug: { lohn: [0.1, 0.3], rente: [0.1, 0.2], kg: [0.1, 0.2], alg: [0, 0], eg: [0, 0], wfbm: [0, 0.1], ohne: [0, 0] },
-    // Wenn nur die Auszahlung bekannt ist: Rente netto ≈ 0,88 × Brutto (nettoRente), also 90 % (bzw. 80 %) Brutto ≈ 100 % (bzw. 94 %) der Auszahlung; Lohn netto 70-80 %
+    // Wenn nur die Auszahlung bekannt ist: Rente netto ≈ 0,87 bis 0,88 × Brutto (nettoRente), also 90 % (bzw. 80 %) Brutto ≈ 103 % (bzw. 91 %)
+    // der Auszahlung. Die Werte [0, 0,06] stammen aus der alten Annahme 0,89 und sind deshalb nur ungefähr (Prüfung 19.11.2026, Anpassung offen);
+    // Lohn netto 70-80 %
     wgAbzugAuszahlung: { lohn: [0, 0.12], rente: [0, 0.06], kg: [0, 0.06], alg: [0, 0], eg: [0, 0], wfbm: [0, 0.05], ohne: [0, 0] },
     // Grundrentenfreibetrag (§ 82a SGB XII): bei 33 Jahren Grundrentenzeiten bleiben von der Rente 100 € und 30 % des Rests frei, höchstens 50 % der Regelbedarfsstufe 1
     grundrente: { sockel: 100, quote: 0.3, max: 0.5 },
@@ -399,19 +404,20 @@ const Rules = (function () {
     return { netto: Math.round((brutto - t.lst - t.soli - t.kist - sv) * 100) / 100, lst: t.lst, soli: t.soli, kist: t.kist, sv };
   }
   // Rente netto: Kranken- und Pflegeversicherung der Rentnerinnen und Rentner (§ 247 SGB V, § 59 und § 55 SGB XI), bis zur Beitragsbemessungsgrenze KV.
-  // o.kinder = Kinder im Haushalt (Näherung für Kinder unter 25). Ohne Kinderlosen-Zuschlag, ohne Steuer.
+  // o.kinder = Kinder im Haushalt (Näherung für Kinder unter 25); o.kinderlos = mit Zuschlag 0,6 (§ 55 Abs. 3 SGB XI). Ohne Steuer.
   function nettoRente(brutto, o) {
     o = o || {};
     brutto = Math.max(0, Number(brutto) || 0);
     const P = lohnParam(o.heute || 2026), RR = R.lohn.rente;
-    const pvR = RR.pv - P.pvAbschlag * Math.min(4, Math.max(0, (o.kinder | 0) - 1));
+    const pvR = o.kinderlos ? RR.pv + P.pvKinderlos : RR.pv - P.pvAbschlag * Math.min(4, Math.max(0, (o.kinder | 0) - 1));
     const satz = RR.kvHalb + (o.kvz != null ? o.kvz : P.kvz) / 200 + pvR;
     return Math.round((brutto - Math.min(brutto, P.bbgKV) * satz) * 100) / 100;
   }
-  // Umgekehrt: Brutto zu einer Rente netto (auf 1 € genau)
+  // Umgekehrt: Brutto zu einer Rente netto (auf 1 € genau). Ohne Kinder im Haushalt mit Kinderlosen-Zuschlag (vorsichtig: eher höheres Brutto).
   function bruttoAusNettoRente(netto, o) {
     netto = Math.max(0, Number(netto) || 0);
     if (!netto) return 0;
+    o = Object.assign({}, o, { kinderlos: !((o && o.kinder) > 0) });
     let lo = netto, hi = netto * 1.5 + 500;
     for (let i = 0; i < 40 && hi - lo > 0.5; i++) { const m = (lo + hi) / 2; if (nettoRente(m, o) < netto) lo = m; else hi = m; }
     return Math.round(hi);

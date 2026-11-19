@@ -73,8 +73,10 @@ check('[netto-rente] Pflege-Abschlag höchstens für 4 Kinder (2. bis 5. Kind)',
 check('[netto-rente] Beiträge nur bis zur Beitragsgrenze KV 5.812,50 € (2026): 7.000 € -> 6.282,16 €', nr(7000) === 6282.16, nr(7000));
 check('[netto-rente] 2027: Beitragsgrenze KV 6.375 €: 7.000 € -> 6.212,69 €', R.nettoRente(7000, { heute: 2027.1 }) === 6212.69, R.nettoRente(7000, { heute: 2027.1 }));
 let invR = true;
-for (const b of [450, 1051, 1200, 1777, 2950, 6100]) if (Math.abs(R.bruttoAusNettoRente(nr(b), { heute: H }) - b) > 1) invR = false;
-check('[netto-rente] Brutto aus Rente netto findet das Brutto wieder (auf 1 € genau)', invR && R.bruttoAusNettoRente(1051.8) === 1200);
+for (const b of [450, 1051, 1200, 1777, 2950, 6100]) for (const k of [1, 3]) if (Math.abs(R.bruttoAusNettoRente(nr(b, { kinder: k }), { kinder: k, heute: H }) - b) > 1) invR = false;
+check('[netto-rente] Brutto aus Rente netto findet das Brutto wieder (mit Kindern, auf 1 € genau)', invR && R.bruttoAusNettoRente(1054.8, { kinder: 2, heute: H }) === 1200);
+// Ohne Kinder: Umkehrung mit Kinderlosen-Zuschlag 0,6 (vorsichtig: höheres Brutto). 1.051,80 / (1 − 0,1295) = 1.208,27 -> 1.208 €
+check('[netto-rente] Brutto aus Rente netto ohne Kinder mit Kinderlosen-Zuschlag: 1.051,80 € -> 1.208 €', R.bruttoAusNettoRente(1051.8, { heute: H }) === 1208 && R.nettoRente(1208, { kinderlos: true, heute: H }) < 1051.8 + 0.5, R.bruttoAusNettoRente(1051.8, { heute: H }));
 const dR = (o) => R.derive(Object.assign({ adults: 1, kids: 0, young: 0, art1: 'rente', brutto: 1200, netto: '', miete: 500, heute: H, bezug: {} }, o)).netto;
 check('[netto-rente] Ohne Netto rechnet die App mit der Rente netto (1.200 € -> 1.051,80 €; Paar 1.200 + 800 € -> 1.753,00 €)', dR() === 1051.8 && dR({ adults: 2, art2: 'rente', brutto: 2000, brutto2: 800 }) === 1753, [dR(), dR({ adults: 2, art2: 'rente', brutto: 2000, brutto2: 800 })]);
 check('2027: Minijob-Grenze 633 € (Netto = Brutto)', R.nettoLohn(633, { stkl: 1, heute: 2027.1 }).netto === 633);

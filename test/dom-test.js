@@ -312,7 +312,7 @@ setTimeout(() => {
     }
   });
   const d3 = dom3.window.document;
-  check('Alte Angaben übernommen: erste Person Lohn 2.000 € brutto, Netto 2.300 €', d3.getElementById('ek1Art').value === 'lohn' && d3.getElementById('ek1Brutto').value === '2000' && d3.getElementById('ek1Netto').value === '2300', d3.getElementById('ek1Art').value + ' ' + d3.getElementById('ek1Brutto').value);
+  check('Alte Angaben übernommen: erste Person Lohn 2.000 € brutto, Haushalts-Netto 2.300 € nach Brutto-Anteil verteilt (1.533 + 767 €)', d3.getElementById('ek1Art').value === 'lohn' && d3.getElementById('ek1Brutto').value === '2000' && d3.getElementById('ek1Netto').value === '1533' && d3.getElementById('ek2Netto').value === '767', d3.getElementById('ek1Art').value + ' ' + d3.getElementById('ek1Brutto').value);
   check('Alte Angaben übernommen: Partner Rente o. Ä. 1.000 € brutto', d3.getElementById('ek2Art').value === 'rente' && d3.getElementById('ek2Brutto').value === '1000');
 
   // Gespeicherte PLZ ohne Mietenstufe (z. B. aus der einfachen Version): Mietenstufe wird beim Laden ergänzt; eine selbst gewählte bleibt
