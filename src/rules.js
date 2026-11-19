@@ -552,7 +552,7 @@ const Rules = (function () {
     // ohne Angabe, an wen: wie für ein Kind (niedrigster Höchstbetrag)
     const uzCap = ({ k1: 1, k2: 2, k3: 3, ex: 0, exk: 1 })[uzAn || 'k1'] * R.uzWG.kind + (uzAn === 'ex' || uzAn === 'exk' ? R.uzWG.ex : 0);
     const uzWGpess = uzTitel ? Math.min(uzBetrag, uzCap) : 0, uzWGopt = uzTitel ? uzBetrag : Math.min(uzBetrag, uzCap);
-    // Eigenes Einkommen der Kinder (Ausbildungsvergütung, Minijob; ohne Kindergeld und Unterhalt), im Monat
+    // Eigenes Einkommen der Kinder (Ausbildungsvergütung, Minijob; ohne Kindergeld, Unterhalt und Waisenrente), im Monat
     const kindEink = kids + young > 0 ? num(inp.kindEink) : 0;
     // Waisenrente der Kinder (Halbwaisen- oder Vollwaisenrente, alle Kinder zusammen, im Monat): Einkommen der Kinder wie Unterhalt,
     // beim Unterhaltsvorschuss angerechnet (§ 2 Abs. 3 Nr. 2 UVG)
@@ -986,7 +986,13 @@ const Rules = (function () {
     const id = 'uvg';
     // § 1 Abs. 1 Nr. 1, Abs. 1a UVG: nur bis zum 18. Geburtstag und nur, wenn das Kind beim Elternteil lebt (Heim, Pflege: § 1 Abs. 4 Satz 2)
     if (h.kids === 0) return mk(id, 'nein', 'keinKind', [[h.young > 0 ? 'uvg.volljaehrig' : 'uvg.keinKind']]);
-    if (!h.unterhaltFehlt) return mk(id, 'nein', 'vorausFehlt', [['uvg.unterhalt']]);
+    if (!h.unterhaltFehlt) {
+      // Waisenrente eingetragen, Haken fehlt: Ein Elternteil ist wohl gestorben (§ 1 Abs. 1 Nr. 3 b UVG) -> wie mit Haken prüfen,
+      // höchstens „möglich“, mit Hinweis auf den Haken
+      if (!(h.waisen > 0)) return mk(id, 'nein', 'vorausFehlt', [['uvg.unterhalt']]);
+      const r = uvgKarte(Object.assign({}, h, { unterhaltFehlt: true }), gg);
+      return r.level === 'nein' ? r : mk(id, 'vielleicht', 'vielleicht', [['uvg.waisenHaken']].concat(r.tx));
+    }
     // § 1 Abs. 1 Nr. 2 UVG: verheiratet oder verpartnert mit dem neuen Partner -> nicht mehr alleinstehend
     if (h.uvgPartner === 'ehe') return mk(id, 'nein', 'ausschluss', [['uvg.ehe']]);
     // § 1 Abs. 3 UVG: lebt mit dem anderen Elternteil; gilt je Kind (nur gemeinsame Kinder), bei mehreren Kindern daher offen
@@ -1006,16 +1012,17 @@ const Rules = (function () {
     const anr = h.unterhalt + (h.waisen || 0);
     if (h.kids === 1 && anr >= hoch) return mk(id, 'nein', 'vorausFehlt', [h.waisen > 0 ? ['uvg.genugW', { u: eur(anr) }] : ['uvg.genug', { u: eur(anr) }]]);
     if (h.uvgKindAnr > 0 && anr + h.uvgKindAnr >= hoch) return mk(id, 'nein', 'vorausFehlt', [['uvg.kindEinkGenug', { e: eur(h.kindEink) }]]);
-    const teil = anr > 0 ? [h.waisen > 0 ? ['uvg.teilW', { u: eur(anr) }] : ['uvg.teil', { u: eur(anr) }]] : [];
-    if (h.uvgPartner === 'eltern') return mk(id, 'vielleicht', 'vielleicht', [['uvg.elternteilMehr'], betrag].concat(teil, kindTx, hinweise));
-    if (anr > 0) return mk(id, 'vielleicht', 'vielleicht', teil.concat([betrag], kindTx, hinweise));
-    if (h.adults === 2 && !h.uvgPartner) return mk(id, 'vielleicht', 'vielleicht', [['uvg.zwei'], betrag].concat(kindTx, hinweise));
-    if (h.uvgWechsel) return mk(id, 'vielleicht', 'vielleicht', [['uvg.wechselMehr'], betrag].concat(kindTx, hinweise));
     // Ab 12 Jahren (§ 1 Abs. 1a UVG): Nr. 1 kein Grundsicherungsgeld des Kindes oder Nr. 2 eigenes Einkommen des Elternteils von
     // mindestens 600 € brutto (ohne Kindergeld). Nr. 1 sicher nur, wenn das Grundsicherungsgeld an Einkommen oder Vermögen scheitert;
     // bei anderen Gründen (Studium, Erwerbsminderung, EU-Ausschluss) kann das Kind trotzdem Leistungen beziehen -> „möglich“.
     const ohneGG = !!gg && gg.level === 'nein' && (gg.hl === 'einkoHoch' || gg.hl === 'vermHoch');
-    if (h.kinder12 && h.bruttoEigen < R.uvg.min12 && !ohneGG) return mk(id, 'vielleicht', 'vielleicht', [['uvg.ab12', { min: eur(R.uvg.min12) }], betrag].concat(kindTx, hinweise));
+    const ab12 = h.kinder12 && h.bruttoEigen < R.uvg.min12 && !ohneGG ? [['uvg.ab12', { min: eur(R.uvg.min12) }]] : [];
+    const teil = anr > 0 ? [h.waisen > 0 ? ['uvg.teilW', { u: eur(anr) }] : ['uvg.teil', { u: eur(anr) }]] : [];
+    if (h.uvgPartner === 'eltern') return mk(id, 'vielleicht', 'vielleicht', [['uvg.elternteilMehr'], betrag].concat(teil, kindTx, hinweise));
+    if (anr > 0) return mk(id, 'vielleicht', 'vielleicht', teil.concat(ab12, [betrag], kindTx, hinweise));
+    if (h.adults === 2 && !h.uvgPartner) return mk(id, 'vielleicht', 'vielleicht', [['uvg.zwei'], betrag].concat(kindTx, hinweise));
+    if (h.uvgWechsel) return mk(id, 'vielleicht', 'vielleicht', [['uvg.wechselMehr'], betrag].concat(kindTx, hinweise));
+    if (ab12.length) return mk(id, 'vielleicht', 'vielleicht', ab12.concat([betrag], kindTx, hinweise));
     // Einkommen eines Kindes nach der Schule mindert den Betrag: sicher (Ausbildung) oder vielleicht (nur ein Kind, Schule unbekannt)
     if (h.uvgKindAnr > 0 || (kindTx.length && h.kids === 1 && h.kindEink > R.uvg.wk)) return mk(id, 'vielleicht', 'vielleicht', kindTx.concat([betrag], hinweise));
     return mk(id, 'ja', 'ja', [betrag].concat(kindTx, hinweise));

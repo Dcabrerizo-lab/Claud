@@ -389,6 +389,13 @@ ck('[uvg-waise] Halbwaisenrente wird angerechnet: Kind 6 bis 11 mit 150 € mög
   && L(uv({ waisen: 300, kids14: 1, kinder12: true }), 'uvg') === 'vielleicht');
 ck('[uvg-waise] Unterhalt und Waisenrente zusammen angerechnet: 200 € + 100 € ≥ 299 € -> nein', L(uv({ unterhalt: 200, waisen: 100 }), 'uvg') === 'nein');
 ck('[uvg-waise] Waisenrente zählt bei Wohngeld, Kinderzuschlag und Grundsicherungsgeld als Einkommen der Kinder und mindert den geschätzten Unterhaltsvorschuss', R.derive({ kids: 1, waisen: 200, unterhalt: 50 }).kindZahl === 250 && R.derive(uv({ waisen: 100 })).uvgEst === 299 - 100 && R.derive(uv({ waisen: 100 })).kindZahl === 299);
+// Waisenrente eingetragen, Haken „Unterhalt fehlt/gestorben“ vergessen: Waisenrente deutet auf einen verstorbenen Elternteil (§ 1 Abs. 1 Nr. 3 b UVG)
+ck('[uvg-witwe] Waisenrente ohne Haken: möglich mit Hinweis auf den Haken; ohne Waisenrente nein; reicht die Waisenrente, nein',
+  L(uv({ unterhaltFehlt: false, waisen: 150 }), 'uvg') === 'vielleicht' && K(uv({ unterhaltFehlt: false, waisen: 150 }), 'uvg')[0] === 'uvg.waisenHaken'
+  && L(uv({ unterhaltFehlt: false }), 'uvg') === 'nein' && K(uv({ unterhaltFehlt: false }), 'uvg')[0] === 'uvg.unterhalt'
+  && L(uv({ unterhaltFehlt: false, waisen: 300 }), 'uvg') === 'nein' && K(uv({ unterhaltFehlt: false, waisen: 300 }), 'uvg')[0] === 'uvg.genugW');
+ck('[uvg-ab12] Hinweis ab 12 auch, wenn Unterhalt oder Waisenrente angerechnet wird (unter 600 € brutto), sonst nicht',
+  K(uv({ waisen: 100, kinder12: true, brutto: 400, netto: 380 }), 'uvg').includes('uvg.ab12') && !K(uv({ waisen: 100, kinder12: true, brutto: 700, netto: 600 }), 'uvg').includes('uvg.ab12'));
 // § 2 Abs. 4 UVG, von Hand: Azubi-Vergütung 990 € -> (990 − 102,50 − 100) / 2 = 393,75 € < 394 € (möglich); 991 € -> 394,25 € (nein)
 const uvAzubi = (e) => uv({ kids14: 1, kinder12: true, ausbildung: 'kindBetrieb', kindEink: e });
 ck('[uvg-kindeink] Kind (14-17) in Ausbildung: eigenes Einkommen zur Hälfte nach Abzug von 102,50 € und 100 € angerechnet (990 € möglich, 991 € nein)',
