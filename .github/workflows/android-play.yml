@@ -1,0 +1,93 @@
+# Android: signiertes App-Bundle bauen und in die Google Play Console hochladen.
+# Start von Hand (Actions → „Android zu Google Play“ → Run workflow), nur vom Stand auf main.
+# Benötigte Secrets (Repo → Settings → Secrets and variables → Actions):
+#   ANDROID_KEYSTORE_BASE64   upload.jks als Base64 (z. B. `base64 -w0 upload.jks`)
+#   ANDROID_KEYSTORE_PASSWORD Passwort des Keystores
+#   ANDROID_KEY_PASSWORD      Passwort des Schlüssels (hier gleich wie Keystore)
+#   ANDROID_KEY_ALIAS         upload
+#   PLAY_SERVICE_ACCOUNT_JSON Inhalt der JSON-Datei des Dienstkontos (Play Console: Releases verwalten, nur diese App)
+name: Android zu Google Play
+
+on:
+  workflow_dispatch:
+    inputs:
+      versionCode:
+        description: 'VersionCode (muss höher sein als der zuletzt hochgeladene, siehe CLAUDE.md)'
+        required: true
+        type: number
+      kanal:
+        description: 'Kanal: internal = Interner Test, alpha = Geschlossener Test'
+        required: true
+        default: 'internal'
+        type: choice
+        options: ['internal', 'alpha']
+      status:
+        description: 'completed = sofort für Tester verfügbar, draft = nur als Entwurf ablegen'
+        required: true
+        default: 'completed'
+        type: choice
+        options: ['completed', 'draft']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-play
+  cancel-in-progress: false
+
+jobs:
+  play:
+    name: Bauen, prüfen, hochladen
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      VERSION_CODE: ${{ inputs.versionCode }}
+    steps:
+      - name: Secrets vorhanden?
+        env:
+          K: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          P: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          J: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+        run: |
+          [ -n "$K" ] && [ -n "$P" ] || { echo "::error::Secrets ANDROID_KEYSTORE_BASE64/ANDROID_KEYSTORE_PASSWORD fehlen"; exit 1; }
+          [ -n "$J" ] || { echo "::error::Secret PLAY_SERVICE_ACCOUNT_JSON fehlt"; exit 1; }
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with: { node-version: 22, cache: npm, cache-dependency-path: app/package-lock.json }
+      - uses: actions/setup-java@v6
+        with: { distribution: temurin, java-version: 21, cache: gradle }
+      - run: npm ci
+      - name: Regel- und Oberflächentests
+        run: npm test
+      - run: npm ci
+        working-directory: app
+      - run: npm run build:app
+      - name: Signiertes App-Bundle bauen
+        working-directory: app/android
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS || 'upload' }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD || secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > "$RUNNER_TEMP/upload.jks"
+          ANDROID_KEYSTORE_FILE="$RUNNER_TEMP/upload.jks" ./gradlew --no-daemon bundleRelease
+          rm -f "$RUNNER_TEMP/upload.jks"
+      - name: Signatur, Paketname und Version prüfen
+        run: |
+          AAB=app/android/app/build/outputs/bundle/release/app-release.aab
+          keytool -printcert -jarfile "$AAB" | tee "$RUNNER_TEMP/cert.txt"
+          grep -q "SHA256: C8:E4:5D:61" "$RUNNER_TEMP/cert.txt" || { echo "::error::Falscher Signaturschlüssel (erwartet C8:E4:5D:61…)"; exit 1; }
+          echo "VersionCode: $VERSION_CODE"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: android-release-aab-${{ inputs.versionCode }}
+          path: app/android/app/build/outputs/bundle/release/app-release.aab
+      - name: In die Play Console hochladen
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: com.Sozialleistungslotse
+          releaseFiles: app/android/app/build/outputs/bundle/release/app-release.aab
+          track: ${{ inputs.kanal }}
+          status: ${{ inputs.status }}
