@@ -17,7 +17,7 @@
 ## Mehrere Sitzungen parallel
 - Vor dem Start: `git fetch origin`, neuen Branch von der aktuellen `origin/main` anlegen, `git branch -r` ansehen (offene Branches anderer Sitzungen).
 - Pro Sitzung ein klar abgegrenzter Bereich. Wird eine Datei geändert, die ein anderer Branch auch ändert (`src/app.js`, `src/rules.js`, `src/template.html`, `src/lang/*.json`), vorher nachfragen.
-- **Nach jeder Etappe vor dem Push `tools/konflikt-check.sh` ausführen** (dauert Sekunden, ändert nichts). Meldet es „KONFLIKT“: `git merge origin/main` bzw. den genannten Branch, Konflikte lösen, Tests laufen lassen, erst dann pushen. Ohne Konflikt keine weitere Prüfung.
+- **Nach jedem erledigten Auftrag (auch kleinen) automatisch und ohne Nachfrage: committen, `tools/konflikt-check.sh` ausführen, pushen.** Nie ungepushte Arbeit am Ende einer Antwort liegen lassen, sonst sehen die anderen Sitzungen sie nicht. Der Check läuft vor dem Push (dauert Sekunden, ändert nichts). Meldet es „KONFLIKT“: `git merge origin/main` bzw. den genannten Branch, Konflikte lösen, Tests laufen lassen, erst dann pushen. Ohne Konflikt keine weitere Prüfung.
 - `STATUS.md` und den nächsten VersionCode nur auf ausdrücklichen Wunsch ändern. Stand sonst im Commit und in der Antwort nennen.
 - Builds und Store-Uploads nur vom gemergten Stand auf `main`.
 - Keine Merges und keine PRs ohne Auftrag. Nach dem Merge eines anderen Branchs den eigenen Branch mit `origin/main` aktualisieren.
@@ -35,6 +35,6 @@
 - Nach Änderungen an Anschriften oder Texten: `docs/PRUEFLISTE.md` und Faktenblatt angleichen.
 
 ## Sparsam arbeiten (Guthaben des Nutzers ist knapp)
-- Kleine Etappen. Nach jeder Etappe committen und pushen. Nur lesen, was nötig ist.
+- Kleine Etappen. Nach jedem erledigten Auftrag committen und pushen (siehe „Mehrere Sitzungen parallel“). Nur lesen, was nötig ist.
 - Keine Agenten und Subagenten ohne Auftrag. Nichts doppelt prüfen.
 - E-Mail-Adresse und persönliche Daten des Nutzers privat halten.
