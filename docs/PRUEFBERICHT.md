@@ -49,21 +49,27 @@ Eine Prüfung durch eine Sozialberatung oder eine Fachanwältin ersetzt dieser B
 
 **Beschlossen und in der App:** Minijob-Grenze 633 € und Kinderkrankentage 10 / 20 je Kind (die App schaltet am 1.1.2027 selbst um); antragsloses Kindergeld ab 2027 (Bundesrat 25.9.2026) als Hinweis auf der Kindergeld-Karte.
 
-**Nur geplant, deshalb nicht eingerechnet, aber als deutlich markierter Hinweis auf der Karte („Geplant ab 2027 … noch nicht beschlossen“):**
+**Nur geplant, deshalb nicht eingerechnet, aber als deutlich markierter Hinweis auf der Karte („Geplant ab 2027 … noch nicht beschlossen“ bzw. „noch nicht endgültig beschlossen“). Stand 19.11.2026:**
 
-| Wert | Stand | Was die App rechnet | Hinweis auf der Karte |
+| Wert | Stand 19.11.2026 (Quelle) | Was die App rechnet | Hinweis auf der Karte |
 |---|---|---|---|
-| Regelsätze | Kein Beschluss, Nullrunde erwartet | 563 € usw. | Grundsicherungsgeld, Grundsicherung im Alter |
-| Kindergeld 267 € | Einkommensteuerreformgesetz 2027, Bundestag | 259 € | Kindergeld |
-| Grundfreibetrag 12.564 € | dasselbe Gesetz | 12.348 € | Kindergeld für erwachsene Kinder mit Behinderung |
-| Kinderzuschlag ohne Sofortzuschlag (25 €) | Haushaltsbegleitgesetz 2027, Entwurf | 297 € | Kinderzuschlag |
-| Unterhaltsvorschuss bis 16 statt 18 | Haushaltsentwurf | bis 18 | Unterhaltsvorschuss |
-| Mindestunterhalt / Unterhaltsvorschuss-Beträge 2027 | Verordnung fehlt noch | 227 / 299 / 394 € | – |
-| Wohngeld-Kürzung (BT-Drs. 21/8284) | Bundestag, Anhörung 4.11.2026 | Werte 2026 | Wohngeld, dazu bis Jahresende „Antrag noch 2026 stellen“ (Bestandsschutz laut Entwurf) |
-| Pflegegeld 380 / 630 / 890 / 1.080 € | Kabinettsentwurf 30.9.2026 | 347 / 599 / 800 / 990 € | Pflegegeld (ab Pflegegrad 2) |
-| Beitragsbemessungsgrenze KV 6.375 € | Verordnung, Bundesrat fehlt | 5.812,50 € (Krankengeld höchstens 135,63 € je Tag) | Krankengeld bei Lohn über 5.812,50 € |
+| Regelsätze gleich bis 30.6.2028, Anpassung künftig zum 1. Juli | Haushaltsbegleitgesetz 2027 (BT-Drs. 21/7860), vom Haushaltsausschuss am 16.11.2026 gebilligt; Bundestag und Bundesrat offen (hib 947/2026, bundestag.de, 16.11.2026) | 563 € usw. | Grundsicherungsgeld, Grundsicherung im Alter |
+| Sofortzuschlag im Kinderzuschlag (25 €) bleibt | Streichung aus dem Haushaltsbegleitgesetz 2027 herausgenommen (hib 947/2026, 16.11.2026); noch nicht endgültig beschlossen | 297 € | Kinderzuschlag |
+| Sofortzuschlag nach dem AsylbLG endet Ende 2026 (Übergang für Bewilligtes bis höchstens Ende Mai 2027) | dasselbe Gesetz, Haushaltsausschuss 16.11.2026 (hib 947/2026) | – (die App rechnet bei Asylbewerberleistungen keine Beträge und nennt keinen Sofortzuschlag) | – |
+| Wohngeld: Kürzung (BT-Drs. 21/8284) entfällt, Dynamisierung zum 1.1.2027 ausgesetzt | Koalitionseinigung 11.11.2026 laut Berichten; amtliche Fassung (Beschluss) steht aus – unsicher | Werte 2026 | Wohngeld, dazu bis Jahresende „früh beantragen“ |
+| Unterhaltsvorschuss bis 16 statt 18 | vom Tisch (Haushaltsausschuss November 2026); neuer BMFSFJ-Entwurf mit Einkommensgrenze, frühestens 2029 – nur Info, kein amtlicher Entwurf veröffentlicht | bis 18 | Unterhaltsvorschuss |
+| Kindergeld 267 € | Einkommensteuerreformgesetz 2027 (BT-Drs. 21/8235), weiter nur Entwurf | 259 € | Kindergeld |
+| Grundfreibetrag 12.564 € | dasselbe Gesetz (BT-Drs. 21/8235), Entwurf | 12.348 € | Kindergeld für erwachsene Kinder mit Behinderung |
+| Mindestunterhalt / Unterhaltsvorschuss-Beträge 2027 | Verordnung fehlt noch. Achtung: Steigt das Kindergeld auf 267 € ohne neue Mindestunterhaltsverordnung, sinkt der Unterhaltsvorschuss auf 219 / 291 / 386 € (volles Kindergeld wird abgezogen, § 2 Abs. 2 UVG) | 227 / 299 / 394 € | – |
+| Pflegegeld 380 / 630 / 890 / 1.080 € | Pflegeneuordnungsgesetz (BT-Drs. 21/8869), 1. Lesung 5.11.2026 (bundestag.de Textarchiv kw45) | 347 / 599 / 800 / 990 € | Pflegegeld (ab Pflegegrad 2) |
+| Pflege: Überbrückungsbudget 2.285 € statt Verhinderungs- und Kurzzeitpflege (gemeinsamer Jahresbetrag 3.539 €) | dasselbe Gesetz, Entwurf | 3.539 € (Recht 2026) | – (nicht gesondert, Hinweis „Budget“ im Pflegegeld-Text) |
+| Pflege: Entlastungsbetrag entfällt bei Pflegegrad 1, sonst Sozialraumbudget 175 € (unter 25 Jahren 300 €) | dasselbe Gesetz, Entwurf | 131 € (Recht 2026) | Pflegegeld: „Entlastungsbetrag soll in ein neues Budget umgebaut werden“ (nur ab Pflegegrad 2) |
+| Pflege: Sachleistungs-Budget statt fester Sachleistungsbeträge | dasselbe Gesetz, Entwurf | Sachleistungen 2026 | – |
+| Kinderlosenzuschlag Pflegeversicherung 0,9 % statt 0,6 % | dasselbe Gesetz, Entwurf | – (Beiträge nur im Netto-Rechner; dort 0,6 %, Recht 2026) | – |
+| Beitragsbemessungsgrenze KV 6.375 € / Versicherungspflichtgrenze 7.012,50 € im Monat | Sozialversicherungs-Rechengrößenverordnung 2027 (BR-Drs. 576/26), Kabinett 7.10.2026, Bundesrat offen | 5.812,50 € (Krankengeld höchstens 135,63 € je Tag) | Krankengeld bei Lohn über 5.812,50 € |
+| Beitragsbemessungsgrenze RV 8.850 €, Bezugsgröße 4.130 € im Monat | dieselbe Verordnung (BR-Drs. 576/26), Bundesrat offen | Netto-Rechner schaltet ab 1.1.2027 schon auf BBG RV 8.850 € / KV 6.375 € um (`R.lohn.bbg2027`); Familienversicherung nutzt Bezugsgröße 4.130 € (`famvers.bezug2027`) – offener Punkt, siehe unten | – |
 
-Ab dem 1.1.2027 zeigt die App zusätzlich ihren Hinweis, dass die Regeln geprüft werden müssen. Am 1. Dezember 2026 ist die nächste Prüfung eingeplant; was dann beschlossen ist, wird eingerechnet.
+Ab dem 1.1.2027 zeigt die App zusätzlich ihren Hinweis, dass die Regeln geprüft werden müssen. Am 1. Dezember 2026 ist die nächste Prüfung eingeplant; was dann beschlossen ist, wird eingerechnet. Dabei zu prüfen: Beschluss von Bundestag und Bundesrat zum Haushaltsbegleitgesetz 2027 (Regelsätze, Kinderzuschlag, Wohngeld), Bundesrat zur Rechengrößenverordnung (BR-Drs. 576/26), Stand Pflegeneuordnungsgesetz (BT-Drs. 21/8869) und Einkommensteuerreformgesetz 2027 (BT-Drs. 21/8235), Mindestunterhaltsverordnung 2027. Offener Punkt: Der Netto-Rechner und die Familienversicherung rechnen ab 1.1.2027 schon mit den Rechengrößen 2027, obwohl der Bundesrat noch nicht zugestimmt hat; nach der Bundesratssitzung bestätigen oder zurücknehmen. Werte, die nur aus Berichten stammen (Wohngeld-Einigung vom 11.11.2026, neuer Unterhaltsvorschuss-Entwurf), erst nach amtlicher Veröffentlichung übernehmen.
 
 ## Nachtarbeit 10./11. November 2026
 

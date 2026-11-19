@@ -219,7 +219,8 @@ const Rules = (function () {
   //  - Höchstbeträge der Miete, Anlage 1 zu § 12 WoGG: Haushaltsgröße 1..5 je Mietenstufe I..VII, Mehrbetrag je weiteres Mitglied
   //  - Klimakomponente, § 12 Abs. 7 WoGG; Heizkostenkomponente (Gesamtbetrag), § 12 Abs. 6 WoGG
   //  - Formel § 19 Abs. 1 WoGG: Wohngeld = 1,15 × (M − (a + b·M + c·Y) × Y), Werte a, b, c: Anlage 2
-  // Achtung: Ein Gesetzentwurf (BT-Drs. 21/8284) will das Wohngeld zum 1.1.2027 ändern. Er ist noch nicht beschlossen.
+  // Stand 19.11.2026: Die Kürzung aus dem Entwurf BT-Drs. 21/8284 entfällt laut Koalitionseinigung vom 11.11.2026, die Dynamisierung
+  // zum 1.1.2027 wird ausgesetzt (Haushaltsbegleitgesetz 2027). Noch nicht endgültig beschlossen; die Werte 2026 gelten weiter.
   // ---------------------------------------------------------------
   const HOECHST = { 1: [361, 437, 521, 608, 694, 82], 2: [408, 493, 587, 686, 782, 94], 3: [456, 551, 657, 766, 875, 106], 4: [511, 619, 737, 858, 982, 119],
     5: [562, 680, 809, 946, 1080, 129], 6: [615, 745, 887, 1035, 1183, 149], 7: [677, 820, 975, 1139, 1302, 163] };
@@ -1636,11 +1637,12 @@ const Rules = (function () {
     return { id: jetzt.id, level, hl: level === jetzt.level ? jetzt.hl : level, tx };
   }
 
-  // Änderungen 2027 (Stand 13. November 2026). Beschlossen und eingerechnet: Minijob-Grenze 633 €, Kinderkrankentage 10/20,
+  // Änderungen 2027 (Stand 19. November 2026). Beschlossen und eingerechnet: Minijob-Grenze 633 €, Kinderkrankentage 10/20,
   // antragsloses Kindergeld (Gesetz vom Bundesrat am 25.9.2026 gebilligt, Hinweis). Nur geplant und deshalb NICHT eingerechnet,
-  // sondern als Hinweis auf der Karte: Kindergeld 267 €, Wegfall des Sofortzuschlags beim Kinderzuschlag, Unterhaltsvorschuss bis 16,
-  // Wohngeld-Kürzung (BT-Drs. 21/8284, Bestandsschutz für Bewilligtes), Pflegegeld 380/630/890/1.080 €, Regelsatz (Nullrunde erwartet),
-  // Beitragsbemessungsgrenze KV 6.375 € (Krankengeld höchstens 148,75 € je Tag), Grundfreibetrag 12.564 €.
+  // sondern als Hinweis auf der Karte: Kindergeld 267 € (BT-Drs. 21/8235), Sofortzuschlag Kinderzuschlag bleibt, Unterhaltsvorschuss
+  // weiter bis 18, Wohngeld ohne Kürzung und ohne Dynamisierung 1.1.2027, Regelsätze gleich bis 30.6.2028 (Haushaltsbegleitgesetz 2027,
+  // BT-Drs. 21/7860, Haushaltsausschuss 16.11.2026), Pflegegeld 380/630/890/1.080 € (BT-Drs. 21/8869),
+  // Beitragsbemessungsgrenze KV 6.375 € (BR-Drs. 576/26; Krankengeld höchstens 148,75 € je Tag), Grundfreibetrag 12.564 €.
   const PLAN = { stand: '11/2026', kg: 267, pflege: [380, 630, 890, 1080], bbgKv: 6375, kgHoechst: 148.75, gfb: 12564 };
   function plan2027(h, results) {
     const offen = (r) => r.level === 'ja' || r.level === 'vielleicht' || r.level === 'na';
