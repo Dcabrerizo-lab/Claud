@@ -1165,5 +1165,9 @@
   "va.erkl": "Riester, Rürup și pensia ocupațională sunt protejate. O asigurare de viață sau de pensie este protejată dacă servește pensiei; verifică instituția. Dobânzile contează ca venit, la Grundsicherungsgeld abia peste 100 € pe an.",
   "va.info": "Împărțit: {g} protejat, {u} depinde de caz, {k} dobânzi pe an.",
   "t.verm.lvUnsicher": "Cu asigurarea de viață sau de pensie depășești limita de avere. Dacă servește pensiei, este adesea protejată. Verifică instituția, de aceea doar „posibil”.",
-  "t.verm.avUnsicher": "Cu Riester, Rürup sau pensie ocupațională depășești limita de avere. La BAföG nu este sigur dacă contează, de aceea doar „posibil”."
+  "t.verm.avUnsicher": "Cu Riester, Rürup sau pensie ocupațională depășești limita de avere. La BAföG nu este sigur dacă contează, de aceea doar „posibil”.",
+  "t.einmal.sgb2": "Cere separat (§ 24 Abs. 3 SGB II): prima dotare a locuinței (mobilă, electrocasnice), prima îmbrăcăminte, repararea sau închirierea aparatelor terapeutice. Cere întotdeauna înainte de cumpărare.",
+  "t.einmal.umzug": "Mutare: costurile de mutare, garanția și părțile sociale le plătește Jobcenter doar dacă a aprobat dinainte (§ 22 Abs. 6 SGB II). Garanția se dă de obicei ca împrumut.",
+  "t.einmal.sgb12": "Cere separat (§ 31 SGB XII): prima dotare a locuinței (mobilă, electrocasnice), prima îmbrăcăminte, repararea sau închirierea aparatelor terapeutice. Cere întotdeauna înainte de cumpărare.",
+  "t.einmal.ohneBezug": "Chiar și fără Grundsicherungsgeld curent poți primi prima dotare pentru sarcină și naștere, dacă venitul nu ajunge (§ 24 Abs. 3 SGB II). Cere la Jobcenter înainte de cumpărare."
 }

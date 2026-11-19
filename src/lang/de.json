@@ -1165,5 +1165,9 @@
   "va.erkl": "Riester, Rürup und Betriebsrente sind geschützt. Eine Lebens- oder Rentenversicherung ist geschützt, wenn sie der Altersvorsorge dient; das prüft die Stelle. Zinsen zählen als Einkommen, beim Grundsicherungsgeld erst über 100 € im Jahr.",
   "va.info": "Aufgeteilt: {g} geschützt, {u} hängt vom Einzelfall ab, {k} Zinsen im Jahr.",
   "t.verm.lvUnsicher": "Mit deiner Lebens- oder Rentenversicherung liegst du über der Vermögensgrenze. Dient sie der Altersvorsorge, ist sie oft geschützt. Das prüft die Stelle, deshalb nur „möglich“.",
-  "t.verm.avUnsicher": "Mit Riester, Rürup oder Betriebsrente liegst du über der Vermögensgrenze. Beim BAföG ist nicht sicher, ob sie zählen, deshalb nur „möglich“."
+  "t.verm.avUnsicher": "Mit Riester, Rürup oder Betriebsrente liegst du über der Vermögensgrenze. Beim BAföG ist nicht sicher, ob sie zählen, deshalb nur „möglich“.",
+  "t.einmal.sgb2": "Zusätzlich extra beantragen (§ 24 Abs. 3 SGB II): Erstausstattung für die Wohnung (Möbel, Haushaltsgeräte), Erstausstattung mit Kleidung, Reparatur oder Miete therapeutischer Geräte. Immer vor dem Kauf beantragen.",
+  "t.einmal.umzug": "Umzug: Umzugskosten, Kaution und Genossenschaftsanteile übernimmt das Jobcenter nur, wenn es vorher zugesichert hat (§ 22 Abs. 6 SGB II). Die Kaution gibt es meist als Darlehen.",
+  "t.einmal.sgb12": "Zusätzlich extra beantragen (§ 31 SGB XII): Erstausstattung für die Wohnung (Möbel, Haushaltsgeräte), Erstausstattung mit Kleidung, Reparatur oder Miete therapeutischer Geräte. Immer vor dem Kauf beantragen.",
+  "t.einmal.ohneBezug": "Auch ohne laufendes Grundsicherungsgeld kann es die Erstausstattung bei Schwangerschaft und Geburt geben, wenn das Einkommen dafür nicht reicht (§ 24 Abs. 3 SGB II). Beim Jobcenter vor dem Kauf beantragen."
 }

@@ -390,6 +390,7 @@ Damit niemand denkt, die App decke alles ab:
 | Lebens- und Rentenversicherung: geschützt, wenn Altersvorsorge (Einzelfall) -> „möglich“, wenn sie über die Grenze bringt | ◐ | `verm-lv` |
 | Zinsen, Dividenden, Ausschüttungen: Grundsicherungsgeld bis 100 € im Jahr frei (§ 1 Abs. 1 Nr. 3 GrusiGV), Rest Einkommen ohne Freibetrag für Arbeit; ebenso im SGB XII und beim Kinderzuschlag | ✓ | `kap-sgb2` |
 | Wohngeld: Kapitalerträge gehören zum Jahreseinkommen (§ 14 WoGG); vorsichtig ohne Sparer-Pauschbetrag und ohne Pauschalabzug | ◐ | `kap-wg` |
+| Einmalige Bedarfe als Hinweis: Erstausstattung Wohnung, Kleidung, Schwangerschaft/Geburt, therapeutische Geräte (§ 24 Abs. 3 SGB II, § 31 SGB XII), auch ohne laufende Leistung bei Schwangerschaft; Umzug nur mit Zusicherung (§ 22 Abs. 6 SGB II) | ◐ | `einmal` |
 | ETF und Aktien zum Tageswert, Kursschwankungen | ○ (die Stelle nimmt den Wert am Tag des Antrags; die App nimmt den eingetragenen Wert) | |
 
 ## Netto aus Brutto (§ 39b EStG, Programmablaufplan 2026; SGB IV)

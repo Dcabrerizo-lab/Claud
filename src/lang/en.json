@@ -1165,5 +1165,9 @@
   "va.erkl": "Riester, Rürup and company pensions are protected. A life or pension insurance is protected if it serves retirement provision; the office checks this. Interest counts as income, for Grundsicherungsgeld only above 100 € per year.",
   "va.info": "Split: {g} protected, {u} depends on the case, {k} interest per year.",
   "t.verm.lvUnsicher": "With your life or pension insurance you are above the asset limit. If it serves retirement provision, it is often protected. The office checks this, so only “possible”.",
-  "t.verm.avUnsicher": "With Riester, Rürup or a company pension you are above the asset limit. For BAföG it is not certain whether they count, so only “possible”."
+  "t.verm.avUnsicher": "With Riester, Rürup or a company pension you are above the asset limit. For BAföG it is not certain whether they count, so only “possible”.",
+  "t.einmal.sgb2": "Apply for separately (§ 24 Abs. 3 SGB II): initial furnishing of the flat (furniture, household appliances), initial clothing, repair or rental of therapeutic equipment. Always apply before buying.",
+  "t.einmal.umzug": "Moving: the Jobcenter only pays moving costs, deposit and cooperative shares if it agreed beforehand (§ 22 Abs. 6 SGB II). The deposit is usually a loan.",
+  "t.einmal.sgb12": "Apply for separately (§ 31 SGB XII): initial furnishing of the flat (furniture, household appliances), initial clothing, repair or rental of therapeutic equipment. Always apply before buying.",
+  "t.einmal.ohneBezug": "Even without ongoing Grundsicherungsgeld you can get initial equipment for pregnancy and birth if your income is not enough for it (§ 24 Abs. 3 SGB II). Apply at the Jobcenter before buying."
 }

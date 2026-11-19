@@ -16,5 +16,13 @@ check('[kap-sgb2] Zinsen 1.300 € im Jahr: 100 €/Monat Einkommen', Math.abs(R
 const wg0 = { adults: 1, kids: 0, young: 0, art1: 'lohn', brutto: 1700, netto: 1300, miete: 700, mietstufe: 3, vermoegen: 0, gebJahr: 1980, bezug: {}, heute: 2026.9 };
 const betrag = (r) => { const s = r.tx.find((t) => t[0] === 'schaetz.eins' || t[0] === 'schaetz.spanne'); return s ? JSON.stringify(s[1]) : r.level; };
 check('[kap-wg] Wohngeld: Zinsen zählen zum Einkommen (Betrag sinkt oder Einstufung ändert sich)', betrag(card(wg0, 'wohngeld')) !== betrag(card({ ...wg0, kapErtrag: 2400 }, 'wohngeld')), [betrag(card(wg0, 'wohngeld')), betrag(card({ ...wg0, kapErtrag: 2400 }, 'wohngeld'))]);
+
+// Einmalige Bedarfe (§ 24 Abs. 3 SGB II, § 31 SGB XII, § 22 Abs. 6 SGB II)
+const keys = (inp, id) => card(inp, id).tx.map((t) => t[0]);
+const arm = { adults: 1, kids: 1, young: 0, art1: 'ohne', brutto: 0, netto: 0, miete: 600, mietstufe: 3, vermoegen: 0, gebJahr: 1990, bezug: {}, heute: 2026.9 };
+check('[einmal] Grundsicherungsgeld: Erstausstattung und Umzug als Hinweis', keys(arm, 'ggeld').includes('einmal.sgb2') && keys(arm, 'ggeld').includes('einmal.umzug'));
+check('[einmal] Grundsicherung im Alter: Erstausstattung als Hinweis', keys(rentnerin, 'gsa').includes('einmal.sgb12'));
+const reich = { ...arm, kids: 0, art1: 'lohn', brutto: 3500, netto: 2400, schwanger: true };
+check('[einmal] Schwanger, Einkommen zu hoch für laufende Leistung: Erstausstattung trotzdem möglich', card(reich, 'ggeld').level === 'nein' && keys(reich, 'ggeld').includes('einmal.ohneBezug'));
 console.log(fails ? '\n' + fails + ' Fehler' : '\nErsparnis-Tests bestanden');
 process.exit(fails ? 1 : 0);

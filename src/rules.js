@@ -1555,6 +1555,16 @@ const Rules = (function () {
   const zustLand = (id, land) => (land && land !== 'BY' && ZUST_LAND[id] ? (ZUST_LAND[id][land] || ZUST_LAND[id]._) : null);
 
   // Hinweise zum Unterhalt, den die Person selbst zahlt (nur wo er die Einstufung beeinflussen kann)
+  // Einmalige Bedarfe, die extra beantragt werden (nicht im Regelsatz): § 24 Abs. 3 SGB II, § 31 SGB XII; Umzug § 22 Abs. 6 SGB II.
+  // Erstausstattung bei Schwangerschaft und Geburt gibt es auch ohne laufende Leistung, wenn das Einkommen dafür nicht reicht (§ 24 Abs. 3 Satz 3).
+  function einmalHinweise(h, results) {
+    results.forEach(function (r) {
+      const offen = r.level === 'ja' || r.level === 'vielleicht';
+      if (r.id === 'ggeld' && offen) r.tx = r.tx.concat([['einmal.sgb2'], ['einmal.umzug']]);
+      else if (r.id === 'ggeld' && r.level === 'nein' && (r.hl === 'bedarfNein' || r.hl === 'einkoHoch') && (h.schwanger || h.baby === 'bald')) r.tx = r.tx.concat([['einmal.ohneBezug']]);
+      if (r.id === 'gsa' && offen) r.tx = r.tx.concat([['einmal.sgb12']]);
+    });
+  }
   function uzHinweise(h, results) {
     if (!(h.uzBetrag > 0)) return;
     const u = { u: eur(h.uzBetrag) };
@@ -1691,6 +1701,7 @@ const Rules = (function () {
       a1, krg, eg, mutterschaftsgeld(h), kinderkrankengeld(h), hzp, landespflegegeld(h), asylbewerber(h), kindergeldBeh(h), erwerbsminderungsrente(h), schwerbRente(h), eingliederungshilfe(h), pauschbetrag(h), ausweis(h), blindengeld(h), blh,
       pflegeplus(h), budgetArbeit(h), rundfunk(h, gg, gsa, { hzp, blh, baf }), zuzahlung(h), bab(h), wbs(h)].map(angabeFehlt(h)).map((x, i) => ({ ...x, name: NAMES[x.id], order: i, steps: STEPS[x.id] }));
     uzHinweise(h, results);
+    einmalHinweise(h, results);
     plan2027(h, results);
     besondere(h, results);
     const sorted = results.slice().sort((a, b) => ORDER[a.level] - ORDER[b.level] || a.order - b.order);

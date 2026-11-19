@@ -1165,5 +1165,9 @@
   "va.erkl": "Riester, Rürup ve işletme emekliliği korunur. Hayat veya emeklilik sigortası emeklilik amacına hizmet ediyorsa korunur; bunu kurum kontrol eder. Faiz gelir sayılır, Grundsicherungsgeld'de yılda 100 € üzerinden itibaren.",
   "va.info": "Ayrıldı: {g} korunur, {u} duruma bağlı, yılda {k} faiz.",
   "t.verm.lvUnsicher": "Hayat veya emeklilik sigortanla varlık sınırının üzerindesin. Emeklilik amacına hizmet ediyorsa çoğu zaman korunur. Bunu kurum kontrol eder, bu yüzden sadece „mümkün“.",
-  "t.verm.avUnsicher": "Riester, Rürup veya işletme emekliliğiyle varlık sınırının üzerindesin. BAföG'de sayılıp sayılmadığı kesin değil, bu yüzden sadece „mümkün“."
+  "t.verm.avUnsicher": "Riester, Rürup veya işletme emekliliğiyle varlık sınırının üzerindesin. BAföG'de sayılıp sayılmadığı kesin değil, bu yüzden sadece „mümkün“.",
+  "t.einmal.sgb2": "Ayrıca başvur (§ 24 Abs. 3 SGB II): ev için ilk donanım (mobilya, ev aletleri), ilk giyim, terapi cihazlarının onarımı veya kiralanması. Her zaman satın almadan önce başvur.",
+  "t.einmal.umzug": "Taşınma: Jobcenter taşınma masraflarını, depozitoyu ve kooperatif paylarını yalnızca önceden onay verdiyse öder (§ 22 Abs. 6 SGB II). Depozito genellikle borç olarak verilir.",
+  "t.einmal.sgb12": "Ayrıca başvur (§ 31 SGB XII): ev için ilk donanım (mobilya, ev aletleri), ilk giyim, terapi cihazlarının onarımı veya kiralanması. Her zaman satın almadan önce başvur.",
+  "t.einmal.ohneBezug": "Sürekli Grundsicherungsgeld almadan da, gelir yetmiyorsa hamilelik ve doğum için ilk donanım verilebilir (§ 24 Abs. 3 SGB II). Satın almadan önce Jobcenter'a başvur."
 }

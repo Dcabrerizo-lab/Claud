@@ -1165,5 +1165,9 @@
   "va.erkl": "Riester, Rürup i emerytura zakładowa są chronione. Ubezpieczenie na życie lub emerytalne jest chronione, jeśli służy zabezpieczeniu na starość; sprawdza to urząd. Odsetki liczą się jako dochód, przy Grundsicherungsgeld dopiero powyżej 100 € rocznie.",
   "va.info": "Podzielono: {g} chronione, {u} zależy od przypadku, {k} odsetek rocznie.",
   "t.verm.lvUnsicher": "Z ubezpieczeniem na życie lub emerytalnym przekraczasz granicę majątku. Jeśli służy zabezpieczeniu na starość, często jest chronione. Sprawdza to urząd, dlatego tylko „możliwe”.",
-  "t.verm.avUnsicher": "Z Riester, Rürup lub emeryturą zakładową przekraczasz granicę majątku. Przy BAföG nie jest pewne, czy się liczą, dlatego tylko „możliwe”."
+  "t.verm.avUnsicher": "Z Riester, Rürup lub emeryturą zakładową przekraczasz granicę majątku. Przy BAföG nie jest pewne, czy się liczą, dlatego tylko „możliwe”.",
+  "t.einmal.sgb2": "Dodatkowo złóż osobny wniosek (§ 24 Abs. 3 SGB II): pierwsze wyposażenie mieszkania (meble, sprzęt AGD), pierwsza odzież, naprawa lub wynajem sprzętu terapeutycznego. Zawsze przed zakupem.",
+  "t.einmal.umzug": "Przeprowadzka: koszty przeprowadzki, kaucję i udziały spółdzielcze Jobcenter pokrywa tylko po wcześniejszej zgodzie (§ 22 Abs. 6 SGB II). Kaucja jest zwykle pożyczką.",
+  "t.einmal.sgb12": "Dodatkowo złóż osobny wniosek (§ 31 SGB XII): pierwsze wyposażenie mieszkania (meble, sprzęt AGD), pierwsza odzież, naprawa lub wynajem sprzętu terapeutycznego. Zawsze przed zakupem.",
+  "t.einmal.ohneBezug": "Nawet bez bieżącego Grundsicherungsgeld można dostać pierwszą wyprawkę na ciążę i poród, jeśli dochód na nią nie wystarcza (§ 24 Abs. 3 SGB II). Złóż wniosek w Jobcenter przed zakupem."
 }
