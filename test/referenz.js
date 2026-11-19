@@ -10,6 +10,8 @@ const KG = 259; // Kindergeld je Kind (§ 66 EStG)
 // Minijob-Grenze (§ 8 Abs. 1a SGB IV): 603 € im Jahr 2026, 633 € ab 1.1.2027 (Mindestlohn 14,60 €)
 const minijobAm = (heute) => ((heute || new Date().getFullYear() + new Date().getMonth() / 12) >= 2027 ? 633 : 603);
 const UVG = { u6: 227, u12: 299, u18: 394 }; // § 2 UVG i. V. m. Mindestunterhalt, abzgl. Kindergeld
+// § 2 Abs. 4 UVG: Arbeitnehmer-Pauschbetrag 1.230 € im Jahr (§ 9a EStG), davon ein Zwölftel; Auszubildende weitere 100 €
+const UVG_WK = 1230 / 12, UVG_AZUBI = 100;
 
 // ---------- Hilfen ----------
 const leer = (v) => v === '' || v == null;
@@ -64,11 +66,17 @@ function haushalt(e) {
   const uzFest = uz > 0 && !!e.uzTitel;
   const uzWer = { k1: [1, 0], k2: [2, 0], k3: [3, 0], ex: [0, 1], exk: [1, 1] }[e.uzAn] || [1, 0];
   const uzDeckel = uzWer[0] * 3000 / 12 + uzWer[1] * 6000 / 12;
-  // Unterhaltsvorschuss, den die Kinder bekämen (Alleinerziehende, Unterhalt fehlt); ab 12 nur mit 600 € eigenem Einkommen
+  // Waisenrente der Kinder: Einkommen der Kinder wie Unterhalt
+  const waisen = kinder + jung > 0 ? zahl(e.waisen) : 0;
+  // Azubi-Einkommen eines einzigen 14- bis 17-jährigen Kindes (§ 2 Abs. 4 UVG), aus dem Auszahlungsbetrag (untere Grenze)
+  const azubiAnr = kinder === 1 && jung === 0 && k14 === 1 && e.ausbildung === 'kindBetrieb' ? Math.max(0, kindEink - UVG_WK - UVG_AZUBI) / 2 : 0;
+  // Unterhaltsvorschuss, den die Kinder bekämen: Elternteil allein oder mit neuem Partner ohne Trauschein, Unterhalt fehlt,
+  // nicht ein einziges Kind im Wechselmodell (Asyl/Duldung offen: deutsches Kind möglich); ab 12 nur mit 600 € eigenem Einkommen (Partner zählt nicht)
   let uvg = 0;
-  if (erwachsene === 1 && kinder > 0 && e.unterhaltFehlt) {
-    const ohneAeltere = !!e.kinder12 && brutto < 600;
-    uvg = Math.max(0, u6 * UVG.u6 + mitte * UVG.u12 + (ohneAeltere ? 0 : k14 * UVG.u18) - unterhalt);
+  const allein = erwachsene === 1 || e.uvgPartner === 'neu';
+  if (allein && kinder > 0 && e.unterhaltFehlt && !(e.uvgWechsel && kinder === 1)) {
+    const ohneAeltere = !!e.kinder12 && brutto - brutto2 < 600;
+    uvg = Math.max(0, u6 * UVG.u6 + mitte * UVG.u12 + (ohneAeltere ? 0 : k14 * UVG.u18) - unterhalt - waisen - azubiAnr);
   }
   // Mehrbedarf Alleinerziehende (§ 21 Abs. 3 SGB II): 36 % (1 Kind < 7 oder 2-3 Kinder < 16) oder 12 % je Kind, max. 60 %
   let mehrAE = 0;
@@ -79,7 +87,7 @@ function haushalt(e) {
   }
   const em = e.emStd === 'unter3' || !!e.wfbm || !!e.erwerbsgemindert || e.art1 === 'wfbm' || e.art2 === 'wfbm' || (Array.isArray(e.einkommen) && e.einkommen.some((x) => x.art === 'wfbm'));
   return { e, erwachsene, kinder, jung, u6, k14, mitte, personen, brutto, brutto2, netto, p, rente, grenz, gruppe, jahre, em,
-    mini: minijobAm(heute), regelEltern, regel: regelEltern + regelKinder, regelKinder, miete: zahl(e.miete), vermoegen: zahl(e.vermoegen), unterhalt, kindEink, uvg, mehrAE, uz, uzFest, uzDeckel,
+    mini: minijobAm(heute), regelEltern, regel: regelEltern + regelKinder, regelKinder, miete: zahl(e.miete), vermoegen: zahl(e.vermoegen), unterhalt, waisen, azubiAnr, kindEink, uvg, mehrAE, uz, uzFest, uzDeckel,
     bezug: e.bezug || {}, kids: kinder + jung };
 }
 
@@ -101,7 +109,7 @@ function elternEinkommenSGB2(h) {
 }
 // Einkommen der Kinder, das ihren Bedarf deckt (Überschuss mindert nicht den Bedarf der Eltern)
 function kinderEinkommen(h) {
-  const e = h.unterhalt + h.uvg + Math.max(0, h.kindEink - h.mini);
+  const e = h.unterhalt + h.waisen + h.uvg + Math.max(0, h.kindEink - h.mini);
   if (!e) return 0;
   const bedarfKinder = h.regelKinder + h.miete * h.kids / h.personen - h.kids * KG;
   return Math.min(e, Math.max(0, bedarfKinder));
@@ -222,13 +230,13 @@ function wohngeld(h) {
       frei += Math.min(100 + 0.3 * Math.max(0, x.brutto - davon - 100), 0.5 * RB[1]);
     }
   }
-  const plus = h.unterhalt + h.uvg + Math.max(0, h.kindEink - 100);
+  const plus = h.unterhalt + h.waisen + h.uvg + Math.max(0, h.kindEink - 100);
   const uzVorsichtig = h.uzFest ? Math.min(h.uz, h.uzDeckel) : 0, uzGuenstig = h.uzFest ? h.uz : Math.min(h.uz, h.uzDeckel);
   const yPess = Math.max(0, h.p.reduce((s, x) => s + (x.brutto - werbung(x)) * (1 - abzugAus(x, 0)), 0) + plus - frei - uzVorsichtig);
   const yOpt = Math.max(0, h.p.reduce((s, x) => s + (x.brutto - werbung(x)) * (1 - abzugAus(x, 1)), 0) + plus - frei - uzGuenstig);
   if (yOpt > yMaxHi) return { level: 'nein' };
   let level = yPess <= yMaxLo ? 'ja' : 'vielleicht';
-  const mittel = h.netto + h.kinder * KG + h.unterhalt + h.uvg + h.kindEink - h.uz;
+  const mittel = h.netto + h.kinder * KG + h.unterhalt + h.waisen + h.uvg + h.kindEink - h.uz;
   if (mittel < 0.8 * (h.regel + h.miete + h.mehrAE)) level = 'vielleicht'; // App: ohne weitere Mehrbedarfe
   let betrag = null;
   if (st) { const M = mieteWG(st, n, h.miete, 1, hk); betrag = [Math.max(0, runde10(wg(n, M, yPess))), Math.max(0, runde10(wg(n, M, yOpt)))]; }
@@ -264,11 +272,11 @@ function kinderzuschlag(h) {
   const anteilEltern = (h.erwachsene === 1 ? [1, 77, 63, 53, 46, 40, 36, 33, 30, 27, 25] : [1, 83, 71, 62, 55, 50, 45, 41, 38, 35, 33])[Math.min(h.kids, 10)] / (h.kids ? 100 : 1);
   const ms = mehrSonst(h), bm = behMehrSGB2(h);
   const bedarfEltern = h.regelEltern + h.mehrAE + ms.eltern + (h.e.bhPerson === 'erwNach25' ? bm.sicher : 0) + h.miete * anteilEltern;
-  const kindAnr = h.unterhalt + h.uvg + Math.max(0, h.kindEink - h.mini);
+  const kindAnr = h.unterhalt + h.waisen + h.uvg + Math.max(0, h.kindEink - h.mini);
   const kiz = Math.max(0, max - minderungElternKiZ(h, bedarfEltern) - 0.45 * kindAnr);
   if (kiz <= 0) return { level: 'nein' };
   // § 6a Abs. 1 Nr. 3 BKGG: mit dem Kinderzuschlag nicht mehr hilfebedürftig (bereinigtes Einkommen, Kindergeld, Kinderzuschlag, 300 € für ein mögliches Wohngeld)
-  const mitKiz = elternEinkommenSGB2(h) + (h.kinder + h.jung) * KG + h.unterhalt + h.uvg + h.kindEink + kiz, bedarfAlle = h.regel + h.miete + h.mehrAE + ms.sicher + bm.sicher;
+  const mitKiz = elternEinkommenSGB2(h) + (h.kinder + h.jung) * KG + h.unterhalt + h.waisen + h.uvg + h.kindEink + kiz, bedarfAlle = h.regel + h.miete + h.mehrAE + ms.sicher + bm.sicher;
   if (mitKiz + 300 < bedarfAlle) return { level: 'vielleicht', kiz };
   if (mitKiz < bedarfAlle) return { level: 'vielleicht', kiz, mitWg: true }; // nur zusammen mit Wohngeld
   return { level: kiz >= 60 ? 'ja' : 'vielleicht', kiz };
@@ -340,13 +348,44 @@ function grundsicherungAlter(e) {
 }
 
 // ---------- Unterhaltsvorschuss (UVG) ----------
-function unterhaltsvorschuss(e) {
+// Einstufung Grundsicherungsgeld wie in der App-Karte: mit künftiger vorrangiger Leistung und Grenze der angemessenen Miete
+function grundsicherungsgeldStufe(e) {
+  const h = haushalt(e), e2 = kuenftig(e);
+  let lv = grundsicherungsgeld(h).level;
+  if (e2) lv = zusammen(lv, grundsicherungsgeld(haushalt(e2)).level);
+  const g = kduGrenze(e);
+  if (g && (Number(e.miete) || 0) > g) lv = zusammen(lv, grundsicherungsgeld(haushalt({ ...e, miete: g })).level);
+  return kappe(e, 'ggeld', lv);
+}
+function unterhaltsvorschuss(e, ggStufe) {
+  const r = uvgOhneAufenthalt(e, ggStufe);
+  // § 1 Abs. 2a: Kind ODER Elternteil muss die Voraussetzung erfüllen -> bei Asyl/Duldung höchstens offen
+  return e.aufenthalt === 'asyl' && r.level === 'ja' ? { level: 'vielleicht' } : r;
+}
+function uvgOhneAufenthalt(e, ggStufe) {
   const h = haushalt(e);
-  if (h.kinder === 0) return { level: 'nein' };
-  if (!e.unterhaltFehlt) return { level: 'nein' };
-  if (h.unterhalt > 0) return { level: h.unterhalt >= h.kinder * UVG.u18 ? 'nein' : 'vielleicht' };
-  if (h.erwachsene === 2) return { level: 'vielleicht' };
-  if (e.kinder12 && h.brutto < 600) return { level: 'vielleicht' };
+  const NEIN = { level: 'nein' }, OFFEN = { level: 'vielleicht' };
+  if (h.kinder === 0 || !e.unterhaltFehlt) return NEIN;
+  // § 1 Abs. 1 Nr. 2 (neu verheiratet); § 1 Abs. 3 (anderer Elternteil im Haushalt) gilt nur für gemeinsame Kinder
+  if (h.erwachsene === 2 && e.uvgPartner === 'ehe') return NEIN;
+  if (h.erwachsene === 2 && e.uvgPartner === 'eltern') return h.kinder === 1 ? NEIN : OFFEN;
+  if (e.uvgWechsel && h.kinder === 1) return NEIN; // BVerwG 5 C 9.22: 40 % beim anderen Elternteil
+  // Anrechnung je Kind (§ 2 Abs. 3): Nur bei einem einzigen Kind lässt sich sagen, dass nichts übrig bleibt
+  if (h.kinder === 1) {
+    const satz = h.u6 ? UVG.u6 : h.k14 || e.kinder12 ? UVG.u18 : UVG.u12; // höchstmöglicher Satz dieses Kindes
+    if (h.unterhalt + h.waisen + h.azubiAnr >= satz) return NEIN;
+  }
+  if (h.unterhalt + h.waisen > 0) return OFFEN;
+  if (h.erwachsene === 2 && e.uvgPartner !== 'neu') return OFFEN;
+  if (e.uvgWechsel) return OFFEN;
+  // § 1 Abs. 1a: Nr. 2 eigenes Einkommen mindestens 600 €; sonst Nr. 1 nur sicher, wenn das Grundsicherungsgeld allein
+  // an Einkommen oder Vermögen scheitert (kein Ausschluss wegen Rente, Erwerbsminderung, Studium, EU-Recht, Sozialamt)
+  if (e.kinder12 && h.brutto - h.brutto2 < 600) {
+    const jung = h.jahre ? h.jahre < 45 : (h.gruppe === '' || h.gruppe === '<30' || h.gruppe === '30-39');
+    const ausgeschlossen = euAus(h) || h.rente || h.em || h.bezug.sozialamt || (e.ausbildung === 'ich' && !e.babBetrieb && jung);
+    if (ausgeschlossen || (ggStufe || grundsicherungsgeldStufe(e)) !== 'nein') return OFFEN;
+  }
+  if (h.azubiAnr > 0 || (h.kinder === 1 && h.k14 > 0 && h.kindEink > UVG_WK)) return OFFEN;
   return { level: 'ja' };
 }
 

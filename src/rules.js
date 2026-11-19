@@ -198,7 +198,11 @@ const Rules = (function () {
     vorsorge: { sockel: 100, quote: 0.3, max: 0.5 },
     // Regelaltersgrenze (§ 235 SGB VI) in Monaten über 65, je Geburtsjahr 1947..1963; ab 1964: 67 Jahre
     rag: { 1947: 1, 1948: 2, 1949: 3, 1950: 4, 1951: 5, 1952: 6, 1953: 7, 1954: 8, 1955: 9, 1956: 10, 1957: 11, 1958: 12, 1959: 14, 1960: 16, 1961: 18, 1962: 20, 1963: 22 },
-    uvg: { bis5: 227, bis11: 299, bis17: 394, min12: 600 },
+    // Unterhaltsvorschuss 2026 (§ 2 Abs. 1 und 2 UVG): Mindestunterhalt 486 / 558 / 653 € (Düsseldorfer Tabelle 1.1.2026) minus volles
+    // Kindergeld 259 € (BMBFSFJ, Einlegeblatt Leistungen für Alleinerziehende, Stand Januar 2026). min12: § 1 Abs. 1a Nr. 2 UVG.
+    // Eigenes Einkommen des Kindes nach der allgemeinbildenden Schule (§ 2 Abs. 4 UVG): abzüglich 1/12 des Arbeitnehmer-Pauschbetrags
+    // (1.230 € / 12 = 102,50 €, § 9a EStG), in Ausbildung zusätzlich 100 € ausbildungsbedingter Aufwand, Rest zur Hälfte (familienportal.de, 11/2026)
+    uvg: { bis5: 227, bis11: 299, bis17: 394, min12: 600, wk: 102.5, azubi: 100, haelfte: 0.5 },
     // Gezahlter Unterhalt (Höchstbeträge im Monat für das Wohngeld, § 18 WoGG: 3.000 € im Jahr je Kind oder sonstiger Person,
     // 6.000 € im Jahr für frühere oder dauernd getrennt lebende Ehe- oder Lebenspartner)
     uzWG: { kind: 250, ex: 500 },
@@ -550,13 +554,29 @@ const Rules = (function () {
     const uzWGpess = uzTitel ? Math.min(uzBetrag, uzCap) : 0, uzWGopt = uzTitel ? uzBetrag : Math.min(uzBetrag, uzCap);
     // Eigenes Einkommen der Kinder (Ausbildungsvergütung, Minijob; ohne Kindergeld und Unterhalt), im Monat
     const kindEink = kids + young > 0 ? num(inp.kindEink) : 0;
-    // Unterhaltsvorschuss, den die Kinder bekommen würden (zählt als ihr Einkommen): nur Alleinerziehende, wenn Unterhalt fehlt.
+    // Waisenrente der Kinder (Halbwaisen- oder Vollwaisenrente, alle Kinder zusammen, im Monat): Einkommen der Kinder wie Unterhalt,
+    // beim Unterhaltsvorschuss angerechnet (§ 2 Abs. 3 Nr. 2 UVG)
+    const waisen = kids + young > 0 ? num(inp.waisen) : 0;
+    // Unterhaltsvorschuss: Wer ist die zweite erwachsene Person? neu = neue Partnerschaft ohne Trauschein (Anspruch bleibt),
+    // ehe = mit dem neuen Partner verheiratet oder verpartnert (§ 1 Abs. 1 Nr. 2 UVG: kein Anspruch), eltern = der andere Elternteil (§ 1 Abs. 3)
+    const uvgPartner = adults === 2 && ['neu', 'ehe', 'eltern'].indexOf(inp.uvgPartner) >= 0 ? inp.uvgPartner : '';
+    // Wechselmodell: ein Kind ist zu 40 % der Zeit oder mehr beim anderen Elternteil (BVerwG, Urteil vom 12.12.2023, 5 C 9.22)
+    const uvgWechsel = kids > 0 && !!inp.uvgWechsel;
+    // Eigenes Einkommen des Elternteils, bei dem das Kind lebt (für die Grenze ab 12 Jahren, § 1 Abs. 1a Nr. 2 UVG)
+    const bruttoEigen = brutto - brutto2;
+    // Eigenes Einkommen des Kindes (§ 2 Abs. 4 UVG) sicher anrechenbar nur, wenn klar ist, wessen Einkommen es ist: ein einziges Kind,
+    // 14 bis 17 Jahre, in betrieblicher Ausbildung, keine jungen Erwachsenen. Eingetragen ist der ausgezahlte Betrag; das Brutto ist
+    // mindestens so hoch, die Anrechnung also mindestens so groß (untere Grenze).
+    const uvgKindAnr = kids === 1 && young === 0 && kids14 === 1 && inp.ausbildung === 'kindBetrieb'
+      ? Math.max(0, kindEink - R.uvg.wk - R.uvg.azubi) * R.uvg.haelfte : 0;
+    // Unterhaltsvorschuss, den die Kinder bekommen würden (zählt als ihr Einkommen): nur Alleinerziehende (auch mit neuer Partnerschaft
+    // ohne Trauschein), wenn Unterhalt fehlt; nicht im Wechselmodell (ein Kind). Asyl/Duldung: offen (deutsches Kind oder eigener Titel des Kindes).
     // Ab 12 Jahren nur mit eigenem Einkommen des Elternteils von mindestens 600 € (oder ohne Grundsicherung), daher dann ohne die Älteren.
     let uvgEst = 0;
-    if (adults === 1 && kids > 0 && inp.unterhaltFehlt) {
+    if ((adults === 1 || uvgPartner === 'neu') && kids > 0 && inp.unterhaltFehlt && !(uvgWechsel && kids === 1)) {
       const mitte = kids - kidsU6 - kids14;
-      const ab12raus = !!inp.kinder12 && brutto < R.uvg.min12;
-      uvgEst = Math.max(0, kidsU6 * R.uvg.bis5 + mitte * R.uvg.bis11 + (ab12raus ? 0 : kids14 * R.uvg.bis17) - unterhalt);
+      const ab12raus = !!inp.kinder12 && bruttoEigen < R.uvg.min12;
+      uvgEst = Math.max(0, kidsU6 * R.uvg.bis5 + mitte * R.uvg.bis11 + (ab12raus ? 0 : kids14 * R.uvg.bis17) - unterhalt - waisen - uvgKindAnr);
     }
     // Mehrbedarf für Alleinerziehende: 36 % bei einem Kind unter 7 oder 2-3 Kindern unter 16, sonst 12 % je Kind, höchstens 60 %
     let mehrAE = 0, mehrAEhoch = 0;
@@ -590,7 +610,7 @@ const Rules = (function () {
       autoWert: num(inp.autoWert), autoBraucht: !!inp.autoBraucht,
       hhAndere: inp.hhAndere === 'wg' || inp.hhAndere === 'verwandte' ? inp.hhAndere : '',
       eu: inp.aufenthalt === 'eu', euArbeit: inp.euArbeit === 'ja', euJahre5: inp.euJahre === 'ab5',
-      art1, art2, pers, liste: !!liste, kindEink, uvgEst, kindZahl: unterhalt + uvgEst, mehrAE, mehrAEhoch, alterGrenz,
+      art1, art2, pers, liste: !!liste, kindEink, uvgEst, kindZahl: unterhalt + waisen + uvgEst, waisen, uvgPartner, uvgWechsel, bruttoEigen, uvgKindAnr, mehrAE, mehrAEhoch, alterGrenz,
       egFreiSGB: sumIf((a, b) => a === 'eg' && b > R.elterngeldFrei ? R.elterngeldFrei : 0),
       // Versicherungspauschale (§ 6 Abs. 1 Nr. 1 Bürgergeld-V) einmal je Person, nicht neben Einkommen aus Arbeit (dort deckt sie der
       // Grundfreibetrag von 100 € ab, § 11b Abs. 2 SGB II). In der Liste (eine Person mit mehreren Einkommen) also höchstens einmal.
@@ -955,20 +975,50 @@ const Rules = (function () {
   // ---------------------------------------------------------------
   // Unterhaltsvorschuss
   // ---------------------------------------------------------------
-  function unterhaltsvorschuss(h) {
+  function unterhaltsvorschuss(h, gg) {
+    const r = uvgKarte(h, gg);
+    // § 1 Abs. 2a UVG: Voraussetzung erfüllt das Kind ODER der Elternteil (deutsches Kind, eigener Titel des Kindes,
+    // Beschäftigungsduldung). Im Asylverfahren oder mit Duldung daher höchstens „möglich“.
+    if (h.asyl && (r.level === 'ja' || r.level === 'vielleicht')) return mk(r.id, 'vielleicht', 'vielleicht', [['uvg.asyl']].concat(r.tx));
+    return r;
+  }
+  function uvgKarte(h, gg) {
     const id = 'uvg';
-    if (h.kids === 0) return mk(id, 'nein', 'keinKind', [['uvg.keinKind']]);
+    // § 1 Abs. 1 Nr. 1, Abs. 1a UVG: nur bis zum 18. Geburtstag und nur, wenn das Kind beim Elternteil lebt (Heim, Pflege: § 1 Abs. 4 Satz 2)
+    if (h.kids === 0) return mk(id, 'nein', 'keinKind', [[h.young > 0 ? 'uvg.volljaehrig' : 'uvg.keinKind']]);
     if (!h.unterhaltFehlt) return mk(id, 'nein', 'vorausFehlt', [['uvg.unterhalt']]);
+    // § 1 Abs. 1 Nr. 2 UVG: verheiratet oder verpartnert mit dem neuen Partner -> nicht mehr alleinstehend
+    if (h.uvgPartner === 'ehe') return mk(id, 'nein', 'ausschluss', [['uvg.ehe']]);
+    // § 1 Abs. 3 UVG: lebt mit dem anderen Elternteil; gilt je Kind (nur gemeinsame Kinder), bei mehreren Kindern daher offen
+    if (h.uvgPartner === 'eltern' && h.kids === 1) return mk(id, 'nein', 'ausschluss', [['uvg.elternteil']]);
+    // Wechselmodell (BVerwG 12.12.2023, 5 C 9.22): ab 40 % Betreuung durch den anderen Elternteil kein Anspruch
+    if (h.uvgWechsel && h.kids === 1) return mk(id, 'nein', 'vorausFehlt', [['uvg.wechsel']]);
     const betrag = ['uvg.ja', { a: eur(R.uvg.bis5), b: eur(R.uvg.bis11), c: eur(R.uvg.bis17) }];
-    // Gezahlter Unterhalt wird angerechnet (§ 2 Abs. 3 UVG). Erreicht er den höchsten Unterhaltsvorschuss für alle Kinder,
-    // bleibt nichts übrig; sonst nur noch der Unterschied (Alter der Kinder unbekannt, daher "möglich").
-    if (h.unterhalt > 0) {
-      if (h.unterhalt >= h.kids * R.uvg.bis17) return mk(id, 'nein', 'vorausFehlt', [['uvg.genug', { u: eur(h.unterhalt) }]]);
-      return mk(id, 'vielleicht', 'vielleicht', [['uvg.teil', { u: eur(h.unterhalt) }], betrag]);
-    }
-    if (h.adults === 2) return mk(id, 'vielleicht', 'vielleicht', [['uvg.zwei'], betrag]);
-    if (h.kinder12 && h.brutto < R.uvg.min12) return mk(id, 'vielleicht', 'vielleicht', [['uvg.ab12', { min: eur(R.uvg.min12) }], betrag]);
-    return mk(id, 'ja', 'ja', [betrag]);
+    // Hinweise für jeden möglichen Anspruch: Rückwirkung höchstens ein Monat (§ 4 UVG), Mitwirkung (§ 1 Abs. 3 UVG), Änderungen melden
+    // (§§ 5, 6 UVG), dauernd getrennt auch bei Klinik/Haft des Ehepartners (§ 1 Abs. 2 UVG), Aufenthaltstitel (§ 1 Abs. 2a UVG)
+    const hinweise = [['uvg.frist'], ['uvg.mitwirken'], ['uvg.melden']].concat(h.adults === 1 ? [['uvg.getrennt']] : [], !h.eu && !h.asyl ? [['uvg.titel']] : []);
+    // Eigenes Einkommen eines Kindes, das die allgemeinbildende Schule verlassen haben kann (14 bis 17 Jahre), § 2 Abs. 4 UVG
+    const kindTx = h.kindEink > 0 && h.kids14 > 0 ? [['uvg.kindEink', { wk: eur(R.uvg.wk), az: eur(R.uvg.azubi) }]] : [];
+    // Höchster möglicher Unterhaltsvorschuss (ein Kind von 6 bis 13 kann schon 12 sein, wenn ein Kind 12 oder älter ist)
+    const hoch = h.kidsU6 * R.uvg.bis5 + h.kids14 * R.uvg.bis17 + (h.kids - h.kidsU6 - h.kids14) * (h.kinder12 ? R.uvg.bis17 : R.uvg.bis11);
+    // Gezahlter Unterhalt und Waisenrente werden je Kind angerechnet (§ 2 Abs. 3 UVG). Die App kennt nur die Summe: Bei einem Kind
+    // reicht sie für „unwahrscheinlich“, bei mehreren Kindern nie (ein Kind kann alles bekommen, ein anderes nichts) -> „möglich“.
+    const anr = h.unterhalt + (h.waisen || 0);
+    if (h.kids === 1 && anr >= hoch) return mk(id, 'nein', 'vorausFehlt', [h.waisen > 0 ? ['uvg.genugW', { u: eur(anr) }] : ['uvg.genug', { u: eur(anr) }]]);
+    if (h.uvgKindAnr > 0 && anr + h.uvgKindAnr >= hoch) return mk(id, 'nein', 'vorausFehlt', [['uvg.kindEinkGenug', { e: eur(h.kindEink) }]]);
+    const teil = anr > 0 ? [h.waisen > 0 ? ['uvg.teilW', { u: eur(anr) }] : ['uvg.teil', { u: eur(anr) }]] : [];
+    if (h.uvgPartner === 'eltern') return mk(id, 'vielleicht', 'vielleicht', [['uvg.elternteilMehr'], betrag].concat(teil, kindTx, hinweise));
+    if (anr > 0) return mk(id, 'vielleicht', 'vielleicht', teil.concat([betrag], kindTx, hinweise));
+    if (h.adults === 2 && !h.uvgPartner) return mk(id, 'vielleicht', 'vielleicht', [['uvg.zwei'], betrag].concat(kindTx, hinweise));
+    if (h.uvgWechsel) return mk(id, 'vielleicht', 'vielleicht', [['uvg.wechselMehr'], betrag].concat(kindTx, hinweise));
+    // Ab 12 Jahren (§ 1 Abs. 1a UVG): Nr. 1 kein Grundsicherungsgeld des Kindes oder Nr. 2 eigenes Einkommen des Elternteils von
+    // mindestens 600 € brutto (ohne Kindergeld). Nr. 1 sicher nur, wenn das Grundsicherungsgeld an Einkommen oder Vermögen scheitert;
+    // bei anderen Gründen (Studium, Erwerbsminderung, EU-Ausschluss) kann das Kind trotzdem Leistungen beziehen -> „möglich“.
+    const ohneGG = !!gg && gg.level === 'nein' && (gg.hl === 'einkoHoch' || gg.hl === 'vermHoch');
+    if (h.kinder12 && h.bruttoEigen < R.uvg.min12 && !ohneGG) return mk(id, 'vielleicht', 'vielleicht', [['uvg.ab12', { min: eur(R.uvg.min12) }], betrag].concat(kindTx, hinweise));
+    // Einkommen eines Kindes nach der Schule mindert den Betrag: sicher (Ausbildung) oder vielleicht (nur ein Kind, Schule unbekannt)
+    if (h.uvgKindAnr > 0 || (kindTx.length && h.kids === 1 && h.kindEink > R.uvg.wk)) return mk(id, 'vielleicht', 'vielleicht', kindTx.concat([betrag], hinweise));
+    return mk(id, 'ja', 'ja', [betrag].concat(kindTx, hinweise));
   }
 
   // ---------------------------------------------------------------
@@ -1751,7 +1801,7 @@ const Rules = (function () {
     const kdu = kduGrenze(h);
     if (kdu && h.miete > kdu) gg = mitKdu(gg, grundsicherungsgeld(Object.assign({}, h, { miete: kdu })), kdu);
     const but = bildungTeilhabe(h, wg, kz, gg);
-    const uvg = unterhaltsvorschuss(h);
+    const uvg = unterhaltsvorschuss(h, gg);
     let gsa = grundsicherungAlter(h);
     if (kdu && h.miete > kdu) gsa = mitKdu(gsa, grundsicherungAlter(Object.assign({}, h, { miete: kdu })), kdu);
     const baf = bafoeg(h);
