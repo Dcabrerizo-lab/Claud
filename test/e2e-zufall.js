@@ -62,7 +62,7 @@ const VERBOTEN = '#mappePrint, #mappeShare, #mappeCopy, #feedbackMail, #sc-take,
       else if (r < 0.01) { schritt = 'Neu laden'; await p.reload(); await p.click('#firstOk', { timeout: 500 }).catch(() => {}); }
       else if (r < 0.045 && !imEinfach) { schritt = 'Einfache Version'; if (await p.isVisible('#einfachBtn')) await p.click('#einfachBtn', { timeout: 1000 }); }
       else if (r < 0.055) { schritt = 'Antragsmappe'; if (await p.isVisible('#mappeMake')) await p.click('#mappeMake', { timeout: 1000 }); }
-      else if (r < 0.06) { const l = pick(['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa', 'ps', 'so']); schritt = 'Sprache ' + l; if (await p.isVisible('#lang')) await p.selectOption('#lang', l); }
+      else if (r < 0.06) { const l = pick(['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so']); schritt = 'Sprache ' + l; if (await p.isVisible('#lang')) await p.selectOption('#lang', l); }
       else {
         const zs = await ziele();
         if (!zs.length) { schritt = 'nichts bedienbar'; fehler.push('Sackgasse: kein bedienbares Element | nach: ' + log.slice(-6).join(' > ')); break; }

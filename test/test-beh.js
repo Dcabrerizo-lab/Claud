@@ -188,7 +188,7 @@ for (let i = 0; i < 30000; i++) {
   if (out.results.length !== KARTEN.length || ids.size !== KARTEN.length || !out.results.every((x) => LV.includes(x.level) && x.name && x.steps && x.tx.length >= 1)) randBad++;
   // Texte müssen in allen Sprachen ohne offene Platzhalter erscheinen
   if (i % 50 === 0) out.results.forEach((x) => x.tx.forEach((y) => {
-    ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa', 'ps', 'so'].forEach((l) => {
+    ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so'].forEach((l) => {
       let s = I18N[l]['t.' + y[0]]; if (s === undefined) { textBad.push(l + ':' + y[0]); return; }
       s = s.replace(/\{(\w+)\}/g, (m, k) => (y[1] && k in y[1] ? String(y[1][k]) : m));
       if (/\{\w+\}/.test(s) || /undefined|NaN|Infinity/.test(s)) textBad.push(l + ':' + y[0] + ' -> ' + s);
@@ -206,7 +206,7 @@ for (let i = 0; i < 30000; i++) {
   if (g('rundfunk').level === 'ja' && !(o.bezug.grundsicherungsgeld || o.bezug.sozialamt)) randBad++;
 }
 check('30.000 Zufallshaushalte ohne Absturz und widerspruchsfrei', randBad === 0, randBad);
-check('Alle Ergebnistexte in 12 Sprachen ohne offene Platzhalter', textBad.length === 0, [...new Set(textBad)].slice(0, 5).join(' | '));
+check('Alle Ergebnistexte in 13 Sprachen ohne offene Platzhalter', textBad.length === 0, [...new Set(textBad)].slice(0, 5).join(' | '));
 
 // Müll-Eingaben
 [null, undefined, {}, { gdb: {} }, { bhPerson: [] }, { blind: 1 }, { emStd: false }, { brutto: 'abc', gdb: 'H' }, { brutto: -5, kids: -2 }, { gdb: 50 }, { gdb: '050' }].forEach((j, i) => {

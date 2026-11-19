@@ -9,7 +9,7 @@ Orientierungscheck für 21 Sozialleistungen in Deutschland: Familie, Wohnen, Gru
 | Pfad | Inhalt |
 |---|---|
 | `src/rules.js` | Regeln als Daten und Logik (Rechtsstand im Feld `stand`). Liefert Textschlüssel und Beträge als Zahlen. |
-| `src/lang/*.json` | Texte in 12 Sprachen (de, en, tr, ar, ru, uk, pl, ro, fr, fa = Dari, ps = Paschtu, so = Somali) |
+| `src/lang/*.json` | Texte in 13 Sprachen (de, en, tr, ar, ru, uk, pl, ro, fr, fa-AF = Dari, fa = Farsi, ps = Paschtu, so = Somali) |
 | `src/template.html`, `src/app.js` | Oberfläche |
 | `src/fmt.js`, `src/plz.js`, `src/behoerden.js` | Betragsformat je Sprache; PLZ → Bundesland, Kreis, Mietenstufe; zuständige Stelle mit Anschrift (Bayern) |
 | `content/` | App-Daten (`plz-data.json`, `behoerden-bayern.json`) und die amtlichen Originalquellen (`quellen/`) |

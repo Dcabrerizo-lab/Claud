@@ -1,4 +1,4 @@
-// Anzeige = Rechnung: Zufallshaushalte laufen durch die echte Oberfläche (dist, JSDOM), in allen 12 Sprachen.
+// Anzeige = Rechnung: Zufallshaushalte laufen durch die echte Oberfläche (dist, JSDOM), in allen 13 Sprachen.
 // Geprüft wird, dass jede Karte genau die Einstufung, Überschrift und den Text (mit allen Beträgen) zeigt, die die Rechnung
 // ergibt, in der richtigen Reihenfolge, und dass nirgends Kaputtes steht (NaN, undefined, {platzhalter}, negative Beträge, Rohschlüssel).
 // Aufruf: node test/test-anzeige.js [Anzahl Haushalte, Standard 240]
@@ -8,7 +8,7 @@ const path = require('path');
 const I18N = require('../dist/i18n.js');
 const Fmt = require('../src/fmt.js');
 const N = Number(process.argv[2]) || 240;
-const LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa', 'ps', 'so'];
+const LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so'];
 const html = fs.readFileSync(path.join(__dirname, '..', 'dist', 'sozialleistungslotse.html'), 'utf8');
 const fehler = [];
 const errors = [];
@@ -176,5 +176,5 @@ if (fehler.length) {
   Object.keys(arten).forEach((a) => { console.log('- ' + a + ': ' + arten[a] + 'x'); const b = fehler.find((f) => f.art === a && f.info); if (b) console.log('  Beispiel: ' + JSON.stringify(b.info).slice(0, 900)); });
   process.exit(1);
 }
-console.log('[anzeige-rechnung] Anzeige-Test bestanden: ' + geprueft + ' Seiten (' + N + ' Haushalte, 12 Sprachen), ' + karten + ' Karten mit Einstufung, Überschrift, Text und jedem Betrag wie berechnet; Speichern und Laden ohne Änderung, keine kaputte Anzeige (' + Math.round((Date.now() - t0) / 1000) + ' s)');
+console.log('[anzeige-rechnung] Anzeige-Test bestanden: ' + geprueft + ' Seiten (' + N + ' Haushalte, 13 Sprachen), ' + karten + ' Karten mit Einstufung, Überschrift, Text und jedem Betrag wie berechnet; Speichern und Laden ohne Änderung, keine kaputte Anzeige (' + Math.round((Date.now() - t0) / 1000) + ' s)');
 process.exit(0);

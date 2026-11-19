@@ -52,7 +52,7 @@ ck('Jahrgang 1960: Anfang 2026 noch nicht im Rentenalter', gsa(2026.2).level ===
 ck('Jahrgang 1960: Mitte 2026 je nach Geburtsmonat (möglich, mit Hinweis)', gsa(2026.5).level === 'vielleicht' && gsa(2026.5).tx.some((t) => t[0] === 'gsa.grenz'));
 ck('Jahrgang 1960: Mitte 2027 sicher im Rentenalter', gsa(2027.5).level === 'ja');
 
-// Ganze Ergebnisseiten nach dem Jahreswechsel in allen 12 Sprachen: keine Skriptfehler, keine kaputten Texte
+// Ganze Ergebnisseiten nach dem Jahreswechsel in allen 13 Sprachen: keine Skriptfehler, keine kaputten Texte
 // (undefined, NaN, offene Platzhalter, fehlende Übersetzungsschlüssel), und die 2027-Werte stehen wirklich auf den Karten.
 const SPRACHEN = fs.readdirSync(__dirname + '/../src/lang').filter((f) => f.endsWith('.json')).map((f) => f.replace('.json', ''));
 const leer = { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', unterhalt: '', kindEink: '', baby: '', aufenthalt: '', miete: '', mietstufe: '', plz: '', vermoegen: '', gebJahr: '', pflegegrad: '', gdb: '', bezug: {} };
