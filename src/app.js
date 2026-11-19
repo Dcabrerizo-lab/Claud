@@ -787,15 +787,44 @@
     return l.join(', ');
   }
 
+  // Empfänger des Anschreibens: Vorschlag der App (Stelle mit Anschrift oder nur Art der Stelle) oder vom Nutzer geändert
+  var empfEdit = {};
+  function empfVorschlag(id) {
+    var a = ANTRAG[id];
+    var b = Behoerden.available() ? Behoerden.fuer(id, aktAgs()) : null;
+    var zl = Rules.zustLand(id, state.bundesland);
+    return b ? [b.name].concat(b.abt ? [b.abt] : [], b.anschrift || []) : [zl || a.stelle];
+  }
+  function empfZeilen(id) {
+    if (!Object.prototype.hasOwnProperty.call(empfEdit, id)) return empfVorschlag(id);
+    var z = String(empfEdit[id]).split('\n').map(function (x) { return x.replace(/\s+$/, ''); }).filter(function (x) { return x.trim(); });
+    return z.length ? z : ['____________________'];
+  }
+  // Suche nach der zuständigen Stelle im Internet (öffnet den Browser; die App selbst bleibt offline)
+  function empfSuchUrl(id) {
+    var a = ANTRAG[id];
+    var ort = String(person.ort || '').trim() || String(state.plz || '').trim();
+    var q = a.betreff.replace(/^Antrag auf (Erteilung eines |Erteilung einer )?/, '').replace(/:.*$/, '') + ' zuständige Stelle Anschrift' + (ort ? ' ' + ort : '');
+    return 'https://duckduckgo.com/?q=' + encodeURIComponent(q);
+  }
+  function empfHtml(id) {
+    var wert = Object.prototype.hasOwnProperty.call(empfEdit, id) ? empfEdit[id] : empfVorschlag(id).join('\n');
+    return '<div class="empf-edit no-print"><label for="empf-' + esc(id) + '"><strong>' + esc(t('f.empfTitel')) + '</strong></label>' +
+      '<textarea id="empf-' + esc(id) + '" data-empf="' + esc(id) + '" rows="4" lang="de" dir="ltr" autocomplete="off">' + esc(wert) + '</textarea>' +
+      '<p class="small">' + esc(t('f.empfHinweis')) + '</p>' +
+      '<p class="small"><a href="' + esc(empfSuchUrl(id)) + '" target="_blank" rel="noopener">' + esc(t('f.empfSuche')) + '</a>' +
+      (Object.prototype.hasOwnProperty.call(empfEdit, id) ? ' · <button type="button" class="linkbtn" data-empf-reset="' + esc(id) + '">' + esc(t('f.empfZurueck')) + '</button>' : '') + '</p></div>';
+  }
+  function mappeTextNeu() {
+    $('mappeText').value = briefIds().map(function (r) { return letterText(r.id); }).concat([sheetText()]).join('\n\n----------------------------------------\n\n');
+  }
   function letterText(id) {
     var a = ANTRAG[id];
     var L = [
       blank(person.name), blank(person.strasse), blank(person.ort)
     ];
     if (person.tel && person.tel.trim()) L.push('Telefon: ' + person.tel.trim());
-    var b = Behoerden.available() ? Behoerden.fuer(id, aktAgs()) : null;
-    var zl = Rules.zustLand(id, state.bundesland);
-    var empf = b ? [b.name].concat(b.abt ? [b.abt] : [], b.anschrift || []) : [zl || a.stelle];
+    var empf = empfZeilen(id);
     L.push.apply(L, [''].concat(empf));
     L.push('', 'Datum: ' + today(), '', 'Betreff: ' + a.betreff, '', 'Sehr geehrte Damen und Herren,', '',
       a.satz + ' Bitte behandeln Sie dieses Schreiben als meinen Antrag und bestätigen Sie mir den Eingang. Bitte senden Sie mir außerdem die amtlichen Antragsformulare und eine Liste der Unterlagen zu, die Sie von mir benötigen. Die Formulare reiche ich schnellstmöglich nach.',
@@ -901,7 +930,7 @@
     var ids = pickedIds(), briefe = briefIds();
     var html = '';
     briefe.forEach(function (r) {
-      html += '<article class="page" lang="de" dir="ltr"><pre>' + esc(letterText(r.id)) + '</pre></article>';
+      html += empfHtml(r.id) + '<article class="page" lang="de" dir="ltr"><pre id="brief-' + esc(r.id) + '">' + esc(letterText(r.id)) + '</pre></article>';
     });
     html += '<article class="page" lang="de" dir="ltr"><pre>' + esc(sheetText()) + '</pre></article>';
     html += '<article class="page docs"><h3>' + esc(t('f.docs')) + '</h3>' + ids.map(function (r) {
@@ -915,7 +944,24 @@
     var ohneOrt = Behoerden.available() && !aktAgs() && (!state.bundesland || state.bundesland === 'BY') &&
       ids.some(function (r) { return Behoerden.brauchtKreis(r.id); });
     $('mappeAdrNote').hidden = !ohneOrt;
-    $('mappeText').value = briefe.map(function (r) { return letterText(r.id); }).concat([sheetText()]).join('\n\n----------------------------------------\n\n');
+    mappeTextNeu();
+  }
+  // Empfänger bearbeiten: Brief und Kopiertext sofort angleichen, ohne die Mappe neu aufzubauen (Fokus bleibt im Feld)
+  if ($('mappeBody')) {
+    $('mappeBody').addEventListener('input', function (ev) {
+      var el = ev.target, id = el && el.getAttribute && el.getAttribute('data-empf');
+      if (!id) return;
+      empfEdit[id] = el.value;
+      var pre = $('brief-' + id);
+      if (pre) pre.textContent = letterText(id);
+      mappeTextNeu();
+    });
+    $('mappeBody').addEventListener('click', function (ev) {
+      var el = ev.target, id = el && el.getAttribute && el.getAttribute('data-empf-reset');
+      if (!id) return;
+      delete empfEdit[id];
+      buildMappe();
+    });
   }
 
   // ----- Amtliche Formulare: Links auf die amtlichen Seiten mit Ausfüllhilfe (SoLo füllt nichts aus) -----
