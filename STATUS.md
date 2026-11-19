@@ -1,13 +1,13 @@
 # STATUS – SoLo (Sozialleistungslotse)
 
-Stand: Version 1.4.0, Build 145 (Play Store AAB gebaut, nicht veröffentlicht). Branch: `claude/app-development-next-steps-2n8dzt`. Letzter Commit: 42a8ea2.
+Stand: Version 1.4.0, Build 145 (Play Store AAB gebaut, nicht veröffentlicht). Neue Arbeit (19.11.2026): Branch `claude/netto-pfaendung` (von `claude/app-development-next-steps-2n8dzt`), noch kein Build, kein PR.
 
 ## 1. Projekt
 - Offline-App für Android, iOS, Web: prüft Sozialleistungen (Anspruch wahrscheinlich/möglich, grobe Höhe, Stelle, Unterlagen), prüft Briefe (Bescheid, Pflegegutachten, Nebenkosten), erzeugt Antragsmappe und Widerspruch als PDF.
 - Ziel: rechtlich wasserdicht UND maximal einfach; Korrektheit gleichrangig mit Bedienbarkeit. Zielgruppe: Laien ohne Bürokratie- und Technikwissen.
 - Stack: Vanilla JS, ein-Datei-Web-Build. Capacitor 8 für Android/iOS. Tesseract (Web) bzw. natives TextRecognition-Plugin für OCR, pdf.js 3.11.174 für PDF. Tests: Node-Skripte + Playwright. 8 Sprachen (Prüfpaket und Pflege-Assistent nur Deutsch).
 - Build: `scripts/build.js` (src/template.html + src/app.js + src/lang/*.json + erweiterungen/* → `dist/sozialleistungslotse.html`), `scripts/build-app.js` (→ `app/www`, eigenes NATIVE_SCAN-Markup und CSP), `tools/paket-bauen.sh <VC> <dir> <jks> <pwfile>` (AAB, `OHNE_TESTS=1`).
-- Dateien: `src/rules.js` (Rechenregeln), `src/app.js` (UI), `src/behoerden.js` (Stellen + Anschriften), `src/plz.js`, `erweiterungen/vorschau.js|html` (Prüfpaket), `brief-lesen.js`, `pflege-assistent.js`, `pflege-fragen.js`, `content/*.json` (Behörden, PLZ), `docs/` (Prüfliste, Quellen, Store, WBS-Grenzen).
+- Dateien: `src/rules.js` (Rechenregeln, auch Netto nach Programmablaufplan und Pfändung), `src/app.js` (UI), `src/behoerden.js` (Stellen + Anschriften), `src/plz.js`, `erweiterungen/vorschau.js|html` (Prüfpaket), `brief-lesen.js`, `pflege-assistent.js`, `pflege-fragen.js`, `content/*.json` (Behörden, PLZ), `docs/` (Prüfliste, Quellen, Store, WBS-Grenzen).
 
 ## 2. Erledigt (im Repo)
 - Rechenkern: Grundsicherungsgeld, Wohngeld, Kinderzuschlag, Kindergeld, BuT, GSA, UVG, BAföG, Pflege, ALG I, Krankengeld, Elterngeld, Mutterschaftsgeld, Kinderkrankengeld, Blindengeld, WBS, ABL, Rundfunkbefreiung u. a. Werte 2027 mit automatischem Umschalten zum 1.1.2027. Landesleistungen und WBS-Grenzen aller 16 Länder (Saarland: nur Bundeswerte, siehe 4).
@@ -16,6 +16,9 @@ Stand: Version 1.4.0, Build 145 (Play Store AAB gebaut, nicht veröffentlicht). 
 - Pflege: geführter Assistent (eine Frage je Bildschirm), Gutachten-Vergleich mit jedem Punkt (Module, m5, 5.16), Erklärseite zu Pflegeleistungen.
 - Antragsmappe: Anschreiben mit Empfänger, Angabenblatt, Unterlagenliste, Antragsformular-Hilfe (Vorschau, Kopieren, Abhakliste). Daten aus PLZ/Anschrift vorbefüllt.
 - Anschriften: Bayern vollständig (Kreise, Jobcenter, Familienkasse N/S, ZBFS, Bezirke); 302 Kreise/Städte bundesweit mit Anschrift (Quelle, Abrufdatum). Rundfunk: feste Anschrift.
+- Netto aus Brutto (19.11.2026): Lohnsteuer/Soli/Kirchensteuer wie amtlicher Programmablaufplan 2026, Sozialabgaben mit Übergangsbereich (`Rules.nettoLohn`, `bruttoAusNetto`, `lohnAnnahmen`). Ersetzt pauschal 80 % (Netto) und / 0,7 (Brutto beim Lohn). Im Einkommen: geschätztes Netto als Hinweis, Knopf „Netto ausrechnen“ (Steuerklasse und Kirchensteuer als große Knöpfe, „Übernehmen“ füllt das Feld). Test `test/test-netto.js`.
+- Pfändung und P-Konto (19.11.2026): großer Startknopf „Ich habe Schulden“, Ansicht `#pfaendung`: Lohn oder Konto wählen, Unterhalt per Zahlenknopf, Ergebnis zuerst, Hinweise aufklappbar. § 850c ZPO mit Tabelle 2026 (BGBl. 2026 I Nr. 80, gilt bis 30.6.2027), P-Konto §§ 899, 902 ZPO. Texte in 8 Sprachen.
+- Konkurrenzvergleich (19.11.2026): Deutschland-Rechner (Wohngeld, Bürgergeld, Pflegegrad), Online-Bescheidprüfer und Nebenkosten-Dienste sind schwächer als SoLo; übernommen wurde nur, was besser ist (Netto-Berechnung, Pfändung).
 - Vorlesen überall entfernt. Einfache Sprache (Werkstatt-Version). Barrierefreiheit (axe, WCAG 2.2 AA).
 - Tests grün vor Build 145: `npm test`, `npm run test:erweiterungen`, `npm run test:e2e`, `npm run test:app` (66 Checks).
 - Store-Texte und -Bilder (`docs/STORE.md`, `tools/store-bilder.js`), `docs/UPDATE-1.4.0.md`. Faktenblatt und Anschriften-Übersicht als Artefakte (siehe 6).
@@ -40,6 +43,7 @@ Stand: Version 1.4.0, Build 145 (Play Store AAB gebaut, nicht veröffentlicht). 
 - Build 145 AAB: `/home/user/Claud/SoLo-PlayStore-145.aab` (gitignored), Zips in der Scratchpad der alten Sitzung (nicht dauerhaft).
 
 ## 5. Nächste Schritte (priorisiert)
+0. Branch `claude/netto-pfaendung` vom Nutzer prüfen lassen (Pfändung und Netto-Helfer ansehen), dann PR auf Wunsch. Danach weiter mit 1.
 1. WBS-Empfänger: kreisfreie Städte bundesweit (Daten in `content/behoerden-deutschland.json`, typ `stadt`) als „Wohnungsamt“; Bayern: Landkreise erst nach amtlicher Prüfung (Große Kreisstädte!). Andere Landkreise: unverändert ohne Anschrift. In `src/behoerden.js` ZUST ergänzen (`wbs`), Test in `test/test-behoerden.js`.
 2. Bayerisches Landespflegegeld (`lpg`): feste Anschrift Landesamt für Pflege (Quelle prüfen), `D.fest` wie Rundfunk.
 3. Weitere feste Anschriften mit Quelle: Mutterschaftsgeldstelle BAS, Landesämter (Ausweis, Elterngeld, Blindengeld, Eingliederungshilfe), Rentenversicherung je Land.
@@ -49,9 +53,11 @@ Stand: Version 1.4.0, Build 145 (Play Store AAB gebaut, nicht veröffentlicht). 
 7. iOS-Build klären (Billing oder Codemagic/Mac), dann TestFlight.
 8. Play Store: Build 145 hochladen (Konsole), Store-Texte aus `docs/STORE.md`. Nur auf Nutzerwunsch.
 9. Übersetzungen Prüfpaket/Pflege-Assistent; Expertenprüfung Pflege.
+10. Programmablaufplan Lohnsteuer 2027 eintragen, sobald endgültig (BMF, meist Mitte/Ende November): Tarifwerte in `R.lohn` als `pap2027`, Umschalten in `lohnParam`; Pflege-Kinderlosenzuschlag 2027 nach Beschluss des PNOG.
+11. Zum 1.7.2027 neue Pfändungsfreigrenzen eintragen (`R.pfaendung`, `gueltigBis`), Tabellenzeilen in `test/test-netto.js` ersetzen.
 
 ## 6. Arbeitsregeln für den nächsten Chat
-- Nur auf Branch `claude/app-development-next-steps-2n8dzt`. Kein Force-Push, kein PR ohne Auftrag.
+- Neue Arbeit auf Branch `claude/netto-pfaendung` (oder neuem Branch davon); `claude/app-development-next-steps-2n8dzt` ist der Stand von Build 145. Kein Force-Push, kein PR ohne Auftrag.
 - Commit-Fuß: `Co-Authored-By: Claude <Modell> <noreply@anthropic.com>` und `Claude-Session: <Sitzungslink>`; keine Modell-ID im Repo.
 - Builds NUR auf ausdrücklichen Wunsch starten. Keine Store-Aktionen ohne Freigabe. Netz-/Rechtegrenzen nicht umgehen.
 - Keystore + Passwort liegen nur in der Scratchpad (`schluessel/upload.jks`, `upload-schluessel.txt`), nie in Repo oder Chat. Signatur-SHA beginnt `C8:E4:5D:61`.

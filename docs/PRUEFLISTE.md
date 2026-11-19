@@ -382,6 +382,33 @@ Damit niemand denkt, die App decke alles ab:
 - Härtefallleistungen und einmalige Bedarfe im Einzelfall (z. B. Waschmaschine, Umzug, Mietschulden)
 - Schuldnerberatung, Sozialtarife (Strom, Telefon, Kultur), Bildungskredit
 
+## Netto aus Brutto (§ 39b EStG, Programmablaufplan 2026; SGB IV)
+
+Wird nur das Brutto eingetragen, schätzt die App das Netto. Gilt für alle Karten, die mit dem Netto rechnen.
+
+| Regel | Status | Test |
+|---|---|---|
+| Lohnsteuer, Solidaritätszuschlag und Kirchensteuer wie der amtliche Programmablaufplan 2026 (BMF 12.11.2025), Monatslohn, gesetzlich versichert | ✓ | `netto-pap` |
+| Steuerklassen I bis VI (II mit Entlastungsbetrag, III Splitting, V/VI eigene Formel) | ✓ | `netto-stkl` |
+| Arbeitnehmeranteile: RV 9,3 %, AV 1,3 %, KV 7,0 % + halber Zusatzbeitrag 2,9 %, PV 1,8 % (Sachsen 2,3 %), kinderlos +0,6, ab 2. Kind −0,25; Übergangsbereich bis 2.000 € (§ 20 Abs. 2a SGB IV); Minijob ohne Abzug | ✓ | `netto-sv` |
+| Steuerklasse ohne Angabe: allein I, allein mit Kind II, Paar mit einem Einkommen III/V, mit zwei Einkommen IV; ohne Kirchensteuer; Nutzer kann im Netto-Helfer wählen | ◐ | `netto-annahme` |
+| Brutto aus Netto (Lohn), wenn nur die Auszahlung bekannt ist | ✓ | `netto-umkehr` |
+| 2027: Programmablaufplan 2027 und Tarif 2027 bei Stand 19.11.2026 noch Entwurf; Steuer weiter nach 2026, Minijob 633 € und Beitragsgrenzen 2027 eingerechnet; nach Veröffentlichung nachtragen | ○ (amtliche Werte 2027 stehen noch nicht fest; Unterschied für die Zielgruppe wenige Euro im Monat) | |
+| Privat Krankenversicherte, Versorgungsbezüge, Einmalzahlungen, Freibeträge auf der Lohnsteuerkarte | ○ (für die Zielgruppe selten; das echte Netto von der Lohnabrechnung geht immer vor) | |
+
+## Pfändung und P-Konto (§§ 850 ff., 899 ff. ZPO)
+
+| Regel | Status | Test |
+|---|---|---|
+| Pfändbarer Betrag nach § 850c ZPO und Pfändungsfreigrenzenbekanntmachung 2026 (BGBl. 2026 I Nr. 80): Netto auf 10 € abgerundet, 70/50/40/30/20/10 % des Mehrbetrags, wie die amtliche Tabelle | ✓ | `pfaendung-tabelle` |
+| Über der Höchstgrenze 4.866,30 € voll pfändbar | ✓ | `pfaendung-hoechst` |
+| P-Konto: 1.590 € automatisch (§ 899 ZPO), Unterhalt und Kindergeld mit Bescheinigung (§§ 902, 903 ZPO) | ✓ | `pkonto` |
+| Pfändung wegen Unterhalt (§ 850d ZPO): andere Freibeträge, Hinweis | ◐ | `pfaendung-tabelle` |
+| Unpfändbare Bezüge (§ 850a ZPO), Kindergeld (§ 76 EStG), Erhöhung durch das Gericht (§§ 850f, 906 ZPO), Übertrag (§ 899 ZPO), Nachzahlungen (§ 904 ZPO): Hinweise | ◐ | `pkonto` |
+| Wöchentliche oder tägliche Auszahlung, Kinderzuschlag auf dem P-Konto, Unterhaltsberechtigte mit eigenem Einkommen (§ 850c Abs. 6 ZPO) | ○ (Monatslohn ist der Regelfall; die übrigen Fälle entscheidet das Vollstreckungsgericht im Einzelfall) | |
+
+Die Tabelle gilt bis 30.6.2027, danach zeigt die App einen Warnhinweis. Jedes Jahr zum 1. Juli neue Werte eintragen.
+
 ## Anzeige und Eingaben (alle Karten)
 
 | Regel | Status | Test |
