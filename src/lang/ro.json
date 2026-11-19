@@ -1270,5 +1270,11 @@
   "sp.vertraege.5": "Oricine are dreptul la un cont de bază la o bancă, chiar și cu datorii (§ 31 Zahlungskontengesetz).",
   "sp.vertraege.6": "Verifică contractele scumpe (telefon mobil, sală de sport, reviste). După prima perioadă multe contracte pot fi reziliate cu o lună preaviz.",
   "sp.quellen": "Bază: Verbraucherzentrale, Stromspar-Check, legile menționate (la noiembrie 2026).",
-  "t.auto.hochSgb12": "O mașină adecvată este protejată (§ 90 Abs. 2 Nr. 10 SGB XII). La o valoare de peste circa {wert}, Sozialamt verifică mai atent. De aceea doar „posibil”."
+  "t.auto.hochSgb12": "O mașină adecvată este protejată (§ 90 Abs. 2 Nr. 10 SGB XII). La o valoare de peste circa {wert}, Sozialamt verifică mai atent. De aceea doar „posibil”.",
+  "t.kiz.rentnerAllein": "Kinderzuschlag presupune ca în gospodărie cineva să fie apt de muncă, de ex. un partener sau un copil de la 15 ani. O persoană care a atins Regelaltersgrenze (vârsta standard de pensionare) nu contează. Verifică în schimb Wohngeld și Grundsicherung im Alter.",
+  "t.kiz.emAllein": "Kinderzuschlag presupune ca în gospodărie cineva să fie apt de muncă, de ex. un partener sau un copil de la 15 ani. O persoană cu incapacitate totală de muncă (voll erwerbsgemindert) nu contează. Verifică în schimb Wohngeld și Grundsicherung im Alter und bei Erwerbsminderung.",
+  "t.kiz.nurAb15": "Aici Kinderzuschlag este posibil doar dacă un copil are 15 ani sau mai mult, pentru că în gospodărie cineva trebuie să fie apt de muncă. O persoană care a atins Regelaltersgrenze sau are incapacitate totală de muncă nu contează.",
+  "t.kiz.vorgezogen": "Cine primește pensie pentru limită de vârstă (Altersrente) sau a atins Regelaltersgrenze nu primește Kinderzuschlag, decât dacă un copil are 15 ani sau mai mult. Aceasta este valabil și pentru pensia înainte de Regelaltersgrenze, dar nu pentru pensia de urmaș (văduvă sau orfan) ori pensia pentru incapacitate parțială de muncă.",
+  "t.kiz.rentnerPaar": "Kinderzuschlag se acordă doar dacă în gospodărie cineva este apt de muncă. Dacă amândoi primesc pensie pentru limită de vârstă (Altersrente) sau amândoi au incapacitate totală de muncă, este posibil doar dacă un copil are 15 ani sau mai mult.",
+  "t.ggeld.vorgezogen": "Cine primește pensie pentru limită de vârstă (Altersrente), chiar și înainte de Regelaltersgrenze, nu primește Grundsicherungsgeld (§ 7 Abs. 4 SGB II). Competent este atunci Sozialamt (Hilfe zum Lebensunterhalt). Aceasta nu este valabil pentru pensia de urmaș (văduvă sau orfan) ori pensia pentru incapacitate parțială de muncă."
 }

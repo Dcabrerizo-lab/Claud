@@ -479,7 +479,7 @@
     started = true;
     if (!edited) { edited = true; $('sampleNotice').hidden = true; }
     // Ausgeblendete Felder zurücksetzen, damit keine alten Werte mitrechnen
-    if (state.kids === 0) { state.kinder12 = false; state.kindKrank = false; if ($('kindKrank')) $('kindKrank').checked = false; state.unterhaltFehlt = false; state.kidsU6 = 0; state.kids14 = 0; $('kinder12').checked = false; $('unterhaltFehlt').checked = false; }
+    if (state.kids === 0) { state.kidsAlter = false; state.kinder12 = false; state.kindKrank = false; if ($('kindKrank')) $('kindKrank').checked = false; state.unterhaltFehlt = false; state.kidsU6 = 0; state.kids14 = 0; $('kinder12').checked = false; $('unterhaltFehlt').checked = false; }
     render(); save();
   }
   var soonTimer = null;
@@ -504,6 +504,8 @@
         if (k === 'kidsU6') state.kidsU6 = Math.min(state.kidsU6, state.kids);
         if (k === 'kidsU6' || k === 'kids14') state.kids14 = Math.min(state.kids14 || 0, state.kids - (state.kidsU6 || 0));
         if (k === 'kids14') state.kids14 = Math.min(state.kids14, state.kids - (state.kidsU6 || 0));
+        // Frage „14 bis 17“ beantwortet: Alter der Kinder gilt als angegeben (Kinderzuschlag bei Rentnern, DA-KiZ D.2)
+        if (k === 'kids14') state.kidsAlter = true;
         $('kids').textContent = state.kids; $('young').textContent = state.young; $('kidsU6').textContent = state.kidsU6 || 0; $('kids14').textContent = state.kids14 || 0; touched();
       });
     });

@@ -1270,5 +1270,11 @@
   "sp.vertraege.5": "لكل شخص الحق في حساب أساسي لدى بنك حتى مع الديون (§ 31 Zahlungskontengesetz).",
   "sp.vertraege.6": "افحص العقود المكلفة (الهاتف المحمول، النادي الرياضي، المجلات). بعد المدة الأولى يمكن إلغاء كثير من العقود بمهلة شهر واحد.",
   "sp.quellen": "المرجع: Verbraucherzentrale وStromspar-Check والقوانين المذكورة (حتى نوفمبر 2026).",
-  "t.auto.hochSgb12": "السيارة المناسبة محمية (§ 90 Abs. 2 Nr. 10 SGB XII). إذا زادت قيمتها على نحو {wert} يدقق Sozialamt أكثر. لذلك „ممكن“ فقط."
+  "t.auto.hochSgb12": "السيارة المناسبة محمية (§ 90 Abs. 2 Nr. 10 SGB XII). إذا زادت قيمتها على نحو {wert} يدقق Sozialamt أكثر. لذلك „ممكن“ فقط.",
+  "t.kiz.rentnerAllein": "يشترط Kinderzuschlag وجود شخص قادر على العمل في الأسرة، مثل شريك أو طفل يبلغ 15 عامًا أو أكثر. من بلغ Regelaltersgrenze (سن التقاعد القانوني) لا يُحتسب. افحص بدلًا من ذلك Wohngeld وGrundsicherung im Alter.",
+  "t.kiz.emAllein": "يشترط Kinderzuschlag وجود شخص قادر على العمل في الأسرة، مثل شريك أو طفل يبلغ 15 عامًا أو أكثر. من كان عاجزًا كليًا عن العمل (voll erwerbsgemindert) لا يُحتسب. افحص بدلًا من ذلك Wohngeld وGrundsicherung im Alter und bei Erwerbsminderung.",
+  "t.kiz.nurAb15": "هنا يكون Kinderzuschlag ممكنًا فقط إذا كان أحد الأطفال يبلغ 15 عامًا أو أكثر، لأنه يجب أن يكون في الأسرة شخص قادر على العمل. من بلغ Regelaltersgrenze أو كان عاجزًا كليًا عن العمل لا يُحتسب.",
+  "t.kiz.vorgezogen": "من يتقاضى معاش الشيخوخة (Altersrente) أو بلغ Regelaltersgrenze لا يحصل على Kinderzuschlag، إلا إذا كان أحد الأطفال يبلغ 15 عامًا أو أكثر. ينطبق هذا أيضًا على معاش الشيخوخة قبل Regelaltersgrenze، ولكن ليس على معاش الأرملة أو الأيتام أو معاش العجز الجزئي عن العمل.",
+  "t.kiz.rentnerPaar": "يُدفع Kinderzuschlag فقط إذا كان في الأسرة شخص قادر على العمل. إذا كان الاثنان يتقاضيان معاش الشيخوخة (Altersrente) أو كانا عاجزين كليًا عن العمل، فهو ممكن فقط إذا كان أحد الأطفال يبلغ 15 عامًا أو أكثر.",
+  "t.ggeld.vorgezogen": "من يتقاضى معاش الشيخوخة (Altersrente)، حتى قبل Regelaltersgrenze، لا يحصل على Grundsicherungsgeld (§ 7 Abs. 4 SGB II). يكون المختص عندها Sozialamt (Hilfe zum Lebensunterhalt). لا ينطبق هذا على معاش الأرملة أو الأيتام أو معاش العجز الجزئي عن العمل."
 }

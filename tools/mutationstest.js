@@ -38,6 +38,7 @@ const M = [
   ['EU-Bürger: Grundsicherungsgeld nicht ausgeschlossen', "    if (euAusschluss(h)) return mk(id, 'nein', 'ausschluss', [['ggeld.eu']]);\n    if (h.alter || h.erwerbsgemindert) {", '    if (h.alter || h.erwerbsgemindert) {'],
   ['KiZ: Wohnanteil Paar 2 Kinder 71,4 statt 71 %', 'wohnPaar: [1, 0.83, 0.71,', 'wohnPaar: [1, 0.83, 0.714,'],
   ['Bürgergeld: Freibetragsstufe 20 % fehlt', 'if (b > 100) f += 0.2 * (Math.min(b, 520) - 100);', ''],
+  ['KiZ: Rentner allein mit Kindern unter 15 nicht ausgeschlossen (DA-KiZ D.2)', "if (h.kids14 === 0 && h.kidsAlter) return mk(id, 'nein', 'ausschluss',", "if (false) return mk(id, 'nein', 'ausschluss',"],
   ['KiZ: Kind evtl. 6 Jahre nicht beachtet', "      if (estHoch > 0) return mk(id, 'vielleicht', 'vielleicht', [['kiz.ae7']]);", ''],
   ['WBS: Berlin WBS 180 falsch (1,6 statt 1,8)', "['WBS 180', 1.8 / 1.4]", "['WBS 180', 1.6 / 1.4]"],
   ['WBS: erreichte Stufe nach Abzügen statt nach Brutto', 'const du = ST.find((x) => jahr <= gS(x[1]))', 'const du = ST.find((x) => nachAbzug <= gS(x[1]))'],

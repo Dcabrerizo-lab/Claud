@@ -1270,5 +1270,11 @@
   "sp.vertraege.5": "Borcu olsa bile herkesin bir bankada temel hesap hakkı vardır (§ 31 Zahlungskontengesetz).",
   "sp.vertraege.6": "Pahalı sözleşmeleri (cep telefonu, spor salonu, dergiler) kontrol et. İlk süreden sonra birçok sözleşme bir ay önceden feshedilebilir.",
   "sp.quellen": "Dayanak: Verbraucherzentrale, Stromspar-Check, belirtilen yasalar (Kasım 2026 itibarıyla).",
-  "t.auto.hochSgb12": "Uygun bir araba korunur (§ 90 Abs. 2 Nr. 10 SGB XII). Değeri yaklaşık {wert} üzerindeyse Sozialamt daha ayrıntılı inceler. Bu yüzden sadece „mümkün“."
+  "t.auto.hochSgb12": "Uygun bir araba korunur (§ 90 Abs. 2 Nr. 10 SGB XII). Değeri yaklaşık {wert} üzerindeyse Sozialamt daha ayrıntılı inceler. Bu yüzden sadece „mümkün“.",
+  "t.kiz.rentnerAllein": "Kinderzuschlag için hanede çalışabilecek durumda birinin olması gerekir, örneğin bir partner ya da 15 yaş ve üzeri bir çocuk. Regelaltersgrenze'ye (yasal emeklilik yaşı) ulaşmış kişi sayılmaz. Bunun yerine Wohngeld ve Grundsicherung im Alter'i kontrol et.",
+  "t.kiz.emAllein": "Kinderzuschlag için hanede çalışabilecek durumda birinin olması gerekir, örneğin bir partner ya da 15 yaş ve üzeri bir çocuk. Tam çalışma gücünü yitirmiş (voll erwerbsgemindert) kişi sayılmaz. Bunun yerine Wohngeld ve Grundsicherung im Alter und bei Erwerbsminderung'u kontrol et.",
+  "t.kiz.nurAb15": "Burada Kinderzuschlag ancak bir çocuk 15 yaşında veya daha büyükse mümkündür, çünkü hanede birinin çalışabilecek durumda olması gerekir. Regelaltersgrenze'ye ulaşmış veya tam çalışma gücünü yitirmiş kişi sayılmaz.",
+  "t.kiz.vorgezogen": "Yaşlılık emekli maaşı (Altersrente) alan veya Regelaltersgrenze'ye ulaşan kişi, bir çocuk 15 yaşında veya daha büyük değilse Kinderzuschlag alamaz. Bu, Regelaltersgrenze'den önce alınan yaşlılık emekli maaşı için de geçerlidir; dul aylığı, yetim aylığı veya kısmi çalışma gücü kaybı aylığı için geçerli değildir.",
+  "t.kiz.rentnerPaar": "Kinderzuschlag ancak hanede çalışabilecek durumda biri varsa ödenir. İkisi de yaşlılık emekli maaşı (Altersrente) alıyorsa veya ikisi de tam çalışma gücünü yitirmişse, ancak bir çocuk 15 yaşında veya daha büyükse mümkündür.",
+  "t.ggeld.vorgezogen": "Yaşlılık emekli maaşı (Altersrente) alan kişi, Regelaltersgrenze'den önce de olsa Grundsicherungsgeld alamaz (§ 7 Abs. 4 SGB II). Bu durumda Sozialamt yetkilidir (Hilfe zum Lebensunterhalt). Bu, dul aylığı, yetim aylığı veya kısmi çalışma gücü kaybı aylığı için geçerli değildir."
 }
