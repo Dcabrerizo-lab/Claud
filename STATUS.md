@@ -29,7 +29,7 @@ Stand: Version 1.4.0, Build 145 (Play Store AAB gebaut, nicht veröffentlicht). 
 - Übersetzt durch KI (je ein Agent), automatisch geprüft (`/home/claude/werkzeug/pruefe.py`-Logik = Schlüssel, Platzhalter, Zahlen, §, Zeilen; im Repo: test-sprachen-zahlen). Unsichere Fachbegriffe bewusst deutsch.
 - **Dari, Paschtu, Somali NICHT muttersprachlich geprüft** (Agenten-Selbsteinschätzung: Dari gut bis mittel, Paschtu und Somali mittel). Farsi (fa): Agenten-Selbsteinschätzung hoch, ebenfalls nicht muttersprachlich geprüft. Vor Veröffentlichung Gegenlesen durch Muttersprachler empfohlen, v. a. t.* und es.*. Französisch: hohes Niveau, ebenfalls nicht extern geprüft.
 - Größengrenze der Web-Datei im Test von 2,5 auf 3 MB angehoben (jetzt ca. 2,56 MB).
-- Offen: Store-Texte (`docs/STORE.md`, `tools/store-bilder.js`) nennen noch „8 Sprachen“.
+- Store-Texte, Store-Bilder-Skript und docs/index.html auf 13 Sprachen angepasst; die Store-Bilder selbst sind noch nicht neu erzeugt (`tools/store-bilder.js`, nur auf Anweisung).
 
 ## 3. Entscheidungen / Regeln
 - Korrektheit zuerst: unsichere Fälle „möglich“ statt „wahrscheinlich“; nie falschen Empfänger einsetzen, dann nur Art der Stelle.

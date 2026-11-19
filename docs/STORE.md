@@ -9,7 +9,7 @@ Alles muss zur [Datenschutzerklärung](../datenschutz.html) passen. Bei Änderun
 |---|---|
 | App-Name | SoLo – Sozialleistungslotse (27 Zeichen) |
 | Untertitel (iOS, max. 30 Zeichen) | Hilfen finden, Briefe prüfen |
-| Werbetext (iOS, max. 170 Zeichen) | Welche Hilfen stehen dir zu? Prüfe 31 Sozialleistungen in zwei Minuten und lass Bescheide vom Amt nachrechnen. Offline, ohne Anmeldung, in 8 Sprachen. |
+| Werbetext (iOS, max. 170 Zeichen) | Welche Hilfen stehen dir zu? Prüfe 31 Sozialleistungen in zwei Minuten und lass Bescheide vom Amt nachrechnen. Offline, ohne Anmeldung, in 13 Sprachen. |
 | Stichwörter (iOS, max. 100 Zeichen) | `Wohngeld,Bürgergeld,Grundsicherung,Kinderzuschlag,Bescheid,Widerspruch,Pflegegrad,Sozialhilfe,Antrag` |
 | Kategorie | Play: *Finanzen* · iOS: *Finanzen* (Zweitkategorie *Dienstprogramme*) |
 | Altersfreigabe | Ab 0 / 4+ (keine kritischen Inhalte) |
@@ -18,7 +18,7 @@ Alles muss zur [Datenschutzerklärung](../datenschutz.html) passen. Bei Änderun
 | Datenschutz-URL Apple | `https://dcabrerizo-lab.github.io/Claud/datenschutz-ios.html` |
 | Datenschutz-URL Google | `https://dcabrerizo-lab.github.io/Claud/datenschutz.html` (GitHub Pages aus dem Ordner `docs/`, Startseite `https://dcabrerizo-lab.github.io/Claud/` als Support-URL) |
 | Support-E-Mail | d.cabrerizo@gmx.de |
-| Sprachen im Store | Deutsch (Haupt), weitere optional: Englisch, Türkisch, Arabisch, Russisch, Ukrainisch, Polnisch, Rumänisch |
+| Sprachen im Store | Deutsch (Haupt), weitere optional: Englisch, Türkisch, Arabisch, Russisch, Ukrainisch, Polnisch, Rumänisch, Französisch, Persisch (Farsi), sofern angeboten Dari, Paschtu, Somali (nicht jeder Store bietet jede Sprache für den Eintrag an; die App selbst hat alle 13) |
 
 ## Kurzbeschreibung (Play, max. 80 Zeichen)
 
@@ -46,8 +46,8 @@ Alles muss zur [Datenschutzerklärung](../datenschutz.html) passen. Bei Änderun
 > **Pflegegrad selbst einschätzen**
 > Schritt für Schritt, eine Frage pro Bildschirm, mit Erklärung zu jeder Frage. Danach weißt du, welcher Pflegegrad in Frage kommt, und kannst die Einschätzung mit dem Gutachten der Pflegekasse vergleichen. Eine eigene Seite erklärt die Leistungen der Pflegekasse: was aufs Konto kommt und was ein Budget ist.
 >
-> **In 8 Sprachen**
-> Deutsch, Englisch, Türkisch, Arabisch, Russisch, Ukrainisch, Polnisch und Rumänisch. Amtsbegriffe bleiben deutsch, damit du sie beim Amt wiedererkennst.
+> **In 13 Sprachen**
+> Deutsch, Englisch, Türkisch, Arabisch, Russisch, Ukrainisch, Polnisch, Rumänisch, Französisch, Dari, Farsi, Paschtu und Somali. Amtsbegriffe bleiben deutsch, damit du sie beim Amt wiedererkennst.
 >
 > **Deine Daten bleiben bei dir**
 > Keine Anmeldung, keine Server, keine Werbung, kein Tracking. Alles wird auf deinem Gerät berechnet und gespeichert.
@@ -88,4 +88,4 @@ Ursprünglicher Vorschlag für die Motive:
 2. Ergebnis mit grünen Karten: „31 Leistungen geprüft“
 3. Karte aufgeklappt (Wo beantragen, Unterlagen): „Nächste Schritte und Unterlagen“
 4. Antragsmappe: „Formlose Anträge als PDF“
-5. Sprache Arabisch oder Türkisch: „In 8 Sprachen“
+5. Sprache Arabisch oder Türkisch: „In 13 Sprachen“
