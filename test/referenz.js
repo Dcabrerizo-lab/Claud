@@ -395,7 +395,13 @@ function unterhaltsvorschuss(e, ggStufe) {
 function uvgOhneAufenthalt(e, ggStufe) {
   const h = haushalt(e);
   const NEIN = { level: 'nein' }, OFFEN = { level: 'vielleicht' };
-  if (h.kinder === 0 || !e.unterhaltFehlt) return NEIN;
+  if (h.kinder === 0) return NEIN;
+  // Waisenrente ohne Haken „Unterhalt fehlt/gestorben“: wie mit Haken, aber höchstens offen
+  if (!e.unterhaltFehlt) {
+    if (!(h.waisen > 0)) return NEIN;
+    const r = uvgOhneAufenthalt(Object.assign({}, e, { unterhaltFehlt: true }), ggStufe);
+    return r.level === 'nein' ? r : OFFEN;
+  }
   // § 1 Abs. 1 Nr. 2 (neu verheiratet); § 1 Abs. 3 (anderer Elternteil im Haushalt) gilt nur für gemeinsame Kinder
   if (h.erwachsene === 2 && e.uvgPartner === 'ehe') return NEIN;
   if (h.erwachsene === 2 && e.uvgPartner === 'eltern') return h.kinder === 1 ? NEIN : OFFEN;

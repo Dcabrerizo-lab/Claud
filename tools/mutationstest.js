@@ -87,7 +87,7 @@ const M = [
   ['Ausweis: Gleichstellung erst ab 40', "if (gdbEff(h) && g >= 30) return", "if (gdbEff(h) && g >= 40) return"],
   ['Grundsicherungsgeld: Freibetrag 30 % statt 20 %', 'if (b > 100) f += 0.2 * (Math.min(b, 520) - 100);', 'if (b > 100) f += 0.3 * (Math.min(b, 520) - 100);'],
   ['Grundsicherungsgeld: Grenze 1.500 € auch ohne Kind', 'const cap = mitKindern ? 1500 : 1200;', 'const cap = 1500;'],
-  ['UVG: Grenze ab 12 Jahren fehlt', 'if (h.kinder12 && h.bruttoEigen < R.uvg.min12 && !ohneGG)', 'if (false)'],
+  ['UVG: Grenze ab 12 Jahren fehlt', 'const ab12 = h.kinder12 && h.bruttoEigen < R.uvg.min12 && !ohneGG ?', 'const ab12 = false ?'],
   ['UVG: Waisenrente nicht angerechnet', 'const anr = h.unterhalt + (h.waisen || 0);', 'const anr = h.unterhalt;'],
   ['UVG: Heirat mit neuem Partner schließt nicht aus', "if (h.uvgPartner === 'ehe') return mk(id, 'nein'", "if (false) return mk(id, 'nein'"],
   ['UVG: Einkommen des Kindes ohne Halbierung', '? Math.max(0, kindEink - R.uvg.wk - R.uvg.azubi) * R.uvg.haelfte : 0;', '? Math.max(0, kindEink - R.uvg.wk - R.uvg.azubi) : 0;'],

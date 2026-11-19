@@ -159,13 +159,14 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
-| 2027: geplante Altersgrenze 16 statt 18 nur als Hinweis, noch nicht eingerechnet | ✓ | `plan-2027` |
+| 2027: geplante Altersgrenze 16 statt 18 laut Berichten vom November 2026 vom Tisch, mit Vorbehalt „noch nicht endgültig beschlossen“; nur Hinweis, nicht eingerechnet | ✓ | `plan-2027` |
 | Beträge je Altersstufe 0–5 / 6–11 / 12–17 (nach Abzug des Kindergeldes) | ✓ | `uvg-betrag` |
 | Beträge 2026 = Mindestunterhalt 486/558/653 € minus volles Kindergeld 259 € (§ 2 Abs. 1 und 2; BMBFSFJ, Einlegeblatt 2026) | ✓ | `uvg-amtlich` |
 | Gezahlter Unterhalt wird je Kind angerechnet (§ 2 Abs. 3 Nr. 1); „unwahrscheinlich“ nur bei einem Kind, wenn er den höchsten Betrag nach Alter erreicht; bei mehreren Kindern höchstens „möglich“ (nur die Summe bekannt) | ✓ | `uvg-anrechnung`, `uvg-hand` |
 | Waisenrente (auch Halbwaisenrente nach Tod des anderen Elternteils) wird angerechnet (§ 1 Abs. 1 Nr. 3 b, § 2 Abs. 3 Nr. 2) und zählt bei anderen Leistungen als Einkommen der Kinder | ✓ | `uvg-waise` |
+| Waisenrente eingetragen, aber nicht angekreuzt, dass Unterhalt fehlt oder der andere Elternteil gestorben ist: „möglich“ mit Hinweis, den Haken zu setzen (Waisenrente deutet auf einen verstorbenen Elternteil, § 1 Abs. 1 Nr. 3 b) | ✓ | `uvg-witwe` |
 | Eigenes Einkommen des Kindes nach der allgemeinbildenden Schule: minus 102,50 € (1/12 Arbeitnehmer-Pauschbetrag), in Ausbildung minus weitere 100 €, davon die Hälfte (§ 2 Abs. 4). Sicher nur bei einem Kind (14–17) in betrieblicher Ausbildung (Auszahlung = untere Grenze), sonst „möglich“ bzw. Hinweis | ◐ | `uvg-kindeink` |
-| Ab 12 Jahren: kein Grundsicherungsgeld des Kindes (Karte Grundsicherungsgeld „unwahrscheinlich“ wegen Einkommen oder Vermögen; bei anderem Ausschlussgrund wie Studium nur „möglich“) oder Elternteil mit mindestens 600 € Einkommen brutto ohne Kindergeld, Partnereinkommen zählt nicht (§ 1 Abs. 1a) | ◐ | `uvg-ab12` |
+| Ab 12 Jahren: kein Grundsicherungsgeld des Kindes (Karte Grundsicherungsgeld „unwahrscheinlich“ wegen Einkommen oder Vermögen; bei anderem Ausschlussgrund wie Studium nur „möglich“) oder Elternteil mit mindestens 600 € Einkommen brutto ohne Kindergeld, Partnereinkommen zählt nicht (§ 1 Abs. 1a); Hinweis auch, wenn Unterhalt oder Waisenrente angerechnet wird | ◐ | `uvg-ab12` |
 | Zwei Erwachsene ohne Angabe, wer die zweite Person ist: nur „möglich“ | ✓ | `uvg-paar` |
 | Neue Partnerschaft ohne Trauschein: Anspruch bleibt (familienportal.de) | ✓ | `uvg-partner` |
 | Mit neuem Partner verheiratet oder verpartnert (Stiefelternteil): kein Anspruch (§ 1 Abs. 1 Nr. 2) | ✓ | `uvg-stiefelternteil` |
