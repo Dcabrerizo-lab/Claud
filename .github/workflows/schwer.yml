@@ -7,6 +7,8 @@ name: Schwere Tests
 # (Die Knopfdruck-Variante erscheint erst, wenn diese Datei auch im Haupt-Branch liegt.)
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '37 2 * * 0'   # jeden Sonntag früh, damit Umbauten nicht tagelang unbemerkt Tests brechen
   push:
     paths: ['.github/workflows/schwer.yml']
 
