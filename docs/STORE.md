@@ -182,18 +182,18 @@ Neues Design mit großen Kacheln. Neu: Netto aus Brutto, Pfändung und P-Konto, 
 
 ### Hinweise für die App-Prüfung (App Review Information → Notes)
 
-Hinweis: Falls das neue Design Knöpfe umbenennt, die Testschritte vor dem Einreichen an die Beschriftungen anpassen.
+Die Testschritte passen zum neuen Design (Startkacheln, Leiste unten; geprüft 19.11.2026).
 
 ```
 Die App läuft vollständig offline. Es gibt keine Anmeldung und kein Konto, ein Demo-Zugang ist nicht nötig. Die App überträgt keine Daten: keine Server, keine Werbung, kein Tracking. Alle Angaben bleiben auf dem Gerät.
 
-Zum Testen: Auf der Startseite „Welche Hilfen stehen mir zu?“ tippen, oben ein Beispiel wählen („Alleinerziehend …“), Ergebnisse ansehen, unten „Antragsmappe erstellen“ → „PDF teilen“. Unten in der Leiste „Brief prüfen“ → eine Kachel (z. B. „Jobcenter“) → „Werte selbst eingeben“ zeigt die Prüfung eines Bescheids. „Pflegegrad selbst einschätzen“ steht im Fragebogen unter Gesundheit.
+Zum Testen: Auf der Startseite „Welche Hilfen stehen mir zu?“ tippen, oben ein Beispiel wählen („Alleinerziehend …“), Ergebnisse ansehen, unten „Antragsmappe erstellen“ → „PDF teilen“. Unten in der Leiste „Brief prüfen“ → eine Kachel (z. B. „Jobcenter“) → „Werte selbst eingeben“ zeigt die Prüfung eines Bescheids. „Pflegegrad selbst einschätzen“ öffnet sich über die Startkachel „Pflege“ oder den Knopf im Fragebogen unter Gesundheit.
 
 Brief-Scan: „Diesen Brief scannen“ in der Kachel nutzt die Kamera. Die Texterkennung läuft lokal auf dem Gerät (Apple Vision), das Foto wird nicht gespeichert und nicht übertragen. „PDF wählen“ liest eine PDF-Datei ebenfalls nur auf dem Gerät.
 
 Die App ist eine Orientierungshilfe, keine Rechtsberatung und keine App einer Behörde.
 ```
-(937 Zeichen)
+(988 Zeichen)
 
 ---
 

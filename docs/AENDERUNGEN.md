@@ -2,12 +2,12 @@
 
 Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss steigen). Die Versionsnummer kommt aus dem Build.
 
-## Neues Design (Version 147)
+## Neues Design (ab Versionsnummer 146)
 - Design „Warm und menschlich“: Creme-Hintergrund, Petrol als Hauptfarbe, Koralle im Logo und bei persönlichen Hinweisen; weiche Kanten statt grauer Schatten; runde Karten (24 px), Knöpfe als Pille, Hauptknopf mindestens 52 px hoch, Startknopf mit eigener Form.
 - Überschriften in Nunito (lokal in der App, SIL OFL 1.1), Text weiter Atkinson Hyperlegible; Schibsted Grotesk entfernt. Einfache Version bleibt bei der Systemschrift.
 - Neues Logo „Sprechblase mit Haken“ im Kopf, als App-Symbol (Android adaptiv, iOS) und im Startbild (hell Creme, dunkel warmes Dunkel).
 - Dunkelmodus mit eigenen warmen Farben; alle Textpaare mindestens 4,5:1.
-- Neuer Aufbau: Start mit Begrüßung, großer Startkarte „Welche Hilfen stehen mir zu?“ und Hinweis „Deine Angaben bleiben bei dir“; Ergebnis mit „Gute Nachrichten!“ (nur wenn etwas wahrscheinlich ist), Zahl der passenden Hilfen und Hinweis auf kostenlose Beratung. Alle neuen Texte in 13 Sprachen und Einfacher Sprache.
+- Neuer Aufbau: Start mit Begrüßung, farbigen Kacheln je Bereich (Hilfen, Brief, Schulden, Geld sparen, neu: Pflege) und Hinweis „Deine Angaben bleiben bei dir“; Ergebnis mit „Gute Nachrichten!“ (nur wenn etwas wahrscheinlich ist), Zahl der passenden Hilfen und Hinweis auf kostenlose Beratung. Alle neuen Texte in 13 Sprachen und Einfacher Sprache.
 
 ## 1.4.0 (ab Versionsnummer 143, November 2026)
 - „Vorlesen“ entfernt (einfache Version und Pflegegrad-Einschätzung), ab Versionsnummer 144
