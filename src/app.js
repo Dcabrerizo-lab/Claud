@@ -5,7 +5,7 @@
     { id: 'p3', key: 'preset.p3', v: { adults: 2, kids: 1, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'lohn', ek1Brutto: 3200, ek1Netto: 2500, ek2Art: 'ohne', brutto: 3200, brutto2: '', netto: 2500, miete: 1100, mietstufe: '5', vermoegen: 8000, gebJahr: 1988, kinder12: false, unterhaltFehlt: false, ausbildung: '', pflegegrad: '', bezug: {} } }
   ];
   var NATIVE = /*NATIVE*/ false; // true in der Store-App (Android und iOS)
-  var LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa', 'ps', 'so'];
+  var LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so'];
   var MARK = { ja: '✓', vielleicht: '~', nein: '✕', na: '•' };
 
   var state = null; // wird unten mit blankState() belegt (leerer Fragebogen beim ersten Start)
@@ -69,7 +69,11 @@
   function detect() {
     try { var s = localStorage.getItem('lotse-lang'); if (s && I18N[s]) return s; } catch (e) {}
     var l = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language || 'de'];
-    for (var i = 0; i < l.length; i++) { var c = String(l[i]).slice(0, 2).toLowerCase(); if (I18N[c]) return c; }
+    for (var i = 0; i < l.length; i++) {
+      var voll = String(l[i]).toLowerCase(), exakt = LANGS.filter(function (x) { return x.toLowerCase() === voll; })[0];
+      if (exakt) return exakt; // z. B. fa-AF (Dari) vor fa (Farsi)
+      var c = voll.slice(0, 2); if (I18N[c]) return c;
+    }
     return 'de';
   }
 

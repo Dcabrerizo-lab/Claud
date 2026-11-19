@@ -110,7 +110,7 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
   await p.click('#mappeClose');
 
   // Sprachen: Felder und Karten ohne Rohschlüssel; RTL
-  for (const l of ['en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa', 'ps', 'so', 'de']) {
+  for (const l of ['en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so', 'de']) {
     await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, l);
     const bad = await p.evaluate(() => {
       const t = document.body.innerText; const m = t.match(/\b(bh|cb|lg|t|s|u|zu|n|h)\.[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)?\b/g) || [];

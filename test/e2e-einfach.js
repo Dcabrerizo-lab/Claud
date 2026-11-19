@@ -108,7 +108,7 @@ const ergebnis = (p) => p.evaluate(() => {
 
   // Sprachen: kein Rohschlüssel, alle Knöpfe beschriftet, Arabisch rechts nach links
   await p.click('#es-neu');
-  for (const l of ['en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa', 'ps', 'so', 'de']) {
+  for (const l of ['en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so', 'de']) {
     await p.click('#es-raus'); await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, l); await p.evaluate(() => document.getElementById('einfachBtn').click());
     const t = await p.textContent('#einfach');
     ok('Sprache ' + l + ': keine Rohschlüssel in der einfachen Version', !/\b(es|einfach)\.[a-zA-Z]+/.test(t), t.slice(0, 120));

@@ -1,4 +1,4 @@
-// Kleine Handys und große Schrift: 320 px breit, in allen 12 Sprachen, je normal, mit „Große Schrift“ der App
+// Kleine Handys und große Schrift: 320 px breit, in allen 13 Sprachen, je normal, mit „Große Schrift“ der App
 // und mit Systemschrift 200 % (Android vergrößert die Schrift in der WebView). Geprüft: kein seitliches Scrollen,
 // kein Element ragt über den Bildschirmrand, keine abgeschnittenen Knopftexte, Knöpfe bleiben erreichbar.
 // Ausführliche Version mit ausgefülltem Haushalt (Karten sichtbar) und einfache Version (erste Frage).
@@ -80,6 +80,6 @@ const pruefen = () => {
     }
   }
   await b.close();
-  console.log(fails ? `\n${fails} von ${n} FEHLGESCHLAGEN` : `Kleinbild-Test bestanden: ${n} Prüfungen (320 px, 12 Sprachen, normal, große Schrift, Systemschrift 200 %)`);
+  console.log(fails ? `\n${fails} von ${n} FEHLGESCHLAGEN` : `Kleinbild-Test bestanden: ${n} Prüfungen (320 px, 13 Sprachen, normal, große Schrift, Systemschrift 200 %)`);
   process.exit(fails ? 1 : 0);
 })();
