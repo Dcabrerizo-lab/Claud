@@ -557,8 +557,8 @@ ck('[eigentum] Eigentum: Grundsicherungsgeld nur „möglich“ (Tilgung meist n
   K({ ...bz, wohnart: 'eigentum', brutto: 1900, netto: 1450, miete: 700 }, 'wohngeld').includes('wohngeld.lasten') && !K({ ...bz, wohnart: 'eigentum', miete: 3000 }, 'ggeld').includes('kdu.hoch'));
 ck('[auto] Auto: im SGB II geschützt, über 15.000 € nur „möglich“; gebraucht (Behinderung/Arbeit) ohne Einschränkung',
   L({ ...bz, autoWert: 9000 }, 'ggeld') === 'ja' && L({ ...bz, autoWert: 20000 }, 'ggeld') === 'vielleicht' && K({ ...bz, autoWert: 20000 }, 'ggeld').includes('auto.hoch') && L({ ...bz, autoWert: 20000, autoBraucht: true }, 'ggeld') === 'ja');
-ck('[auto] Auto zählt bei der Grundsicherung im Alter zum Vermögen (5.000 € + Auto 8.000 € > 10.000 €), außer es wird gebraucht',
-  L(f2, 'gsa') === 'ja' && L({ ...f2, autoWert: 8000 }, 'gsa') === 'nein' && K({ ...f2, autoWert: 8000 }, 'gsa').includes('auto.sgb12') && L({ ...f2, autoWert: 8000, autoBraucht: true }, 'gsa') === 'ja');
+ck('[auto] Grundsicherung im Alter: angemessenes Auto geschützt (§ 90 Abs. 2 Nr. 10 SGB XII); über 15.000 € nur „möglich“, gebraucht ohne Einschränkung',
+  L(f2, 'gsa') === 'ja' && L({ ...f2, autoWert: 8000 }, 'gsa') === 'ja' && L({ ...f2, autoWert: 20000 }, 'gsa') === 'vielleicht' && K({ ...f2, autoWert: 20000 }, 'gsa').includes('auto.hochSgb12') && L({ ...f2, autoWert: 20000, autoBraucht: true }, 'gsa') === 'ja');
 ck('[auto] BAföG: Auto zählt zum Vermögen (10.000 € + Auto 6.000 € über 15.000 € Freibetrag unter 30)',
   L({ ausbildung: 'ich', gebJahr: 2004, vermoegen: 10000, brutto: 0, netto: 0, miete: 400 }, 'bafoeg') !== 'nein' && L({ ausbildung: 'ich', gebJahr: 2004, vermoegen: 10000, autoWert: 6000, brutto: 0, netto: 0, miete: 400 }, 'bafoeg') === 'nein');
 ck('[hh-andere] Verwandte in der Wohnung: Vermutung der Unterstützung (§ 9 Abs. 5 SGB II) und Wohngeld-Haushalt -> nur „möglich“; WG: Hinweis eigener Mietanteil',

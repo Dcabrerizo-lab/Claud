@@ -26,6 +26,7 @@ const GESETZ = {
   520: '§ 11b Abs. 3 SGB II: Grenze der 20-%-Stufe beim Freibetrag für Arbeit (in der Formel sgb2Freibetrag)',
   1500: '§ 11b Abs. 3 SGB II: Obergrenze der 10-%-Stufe mit minderjährigem Kind (in der Formel sgb2Freibetrag)',
   4000: '§ 35a Abs. 2 EStG: Steuerermäßigung haushaltsnahe Pflege- und Betreuungsleistungen, höchstens 4.000 € im Jahr',
+  40000: '§ 6a Abs. 3 BKGG: Vermögensgrenze Kinderzuschlag für die erste Person (in rules.js als vermZwei = 40.000 + 15.000)',
   100000: '§ 94 Abs. 1a SGB XII: Unterhaltsrückgriff auf Kinder erst ab 100.000 € Jahreseinkommen'
 };
 Object.keys(GESETZ).forEach((v) => werte.add(Number(v)));

@@ -54,7 +54,7 @@
  "t.pflege.antrag": "Ein Pflegegrad ist beantragt oder wäre möglich. Die Pflegekasse lässt ihn begutachten. Ab Pflegegrad 2 gibt es Pflegegeld, wenn Angehörige pflegen.",
  "t.pflege.pg1": "Bei Pflegegrad 1 gibt es den Entlastungsbetrag von {ent} im Monat. Du bekommst das Geld nicht auf dein Konto. Die Pflegekasse bezahlt damit anerkannte Hilfen im Alltag. Zum Beispiel Haushaltshilfe oder Betreuung. Pflegegeld gibt es erst ab Pflegegrad 2.",
  "t.pflege.pg2": "Pflegegeld bei Pflege zu Hause: {geld} im Monat bei Pflegegrad {pg}. Das Geld kommt auf dein Konto. Dazu gibt es den Entlastungsbetrag von {ent} im Monat. Den bekommst du nicht aufs Konto. Die Pflegekasse bezahlt damit anerkannte Hilfen im Alltag.",
- "t.kiz.verm": "Wer viel Vermögen hat, bekommt keinen Kinderzuschlag. Richtwert bei Haushaltsgröße {n}: etwa {limit}. Die Familienkasse entscheidet im Einzelfall.",
+ "t.kiz.verm": "Hast du mehr als {limit} Vermögen, gibt es keinen Kinderzuschlag. Das gilt für {n} Personen im Haushalt. Die Grenze ist 40.000 € für die erste Person und 15.000 € für jede weitere Person.",
  "t.kgBeh.keine": "Für Kinder unter 18 Jahren gibt es das normale Kindergeld. Dieser Punkt gilt für Erwachsene mit Behinderung.",
  "t.kgBeh.nach25": "Für ein erwachsenes Kind mit Behinderung gibt es Kindergeld nur in einem Fall. Die Behinderung muss vor dem 25. Geburtstag eingetreten sein. Bei dir ist sie später eingetreten.",
  "t.kgBeh.na": "Du bekommst für dieses Kind schon Kindergeld.",

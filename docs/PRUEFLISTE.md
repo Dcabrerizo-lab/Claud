@@ -57,7 +57,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Regel | Status | Test |
 |---|---|---|
 | Angemessene Unterkunftskosten (§ 35 SGB XII) wie beim Grundsicherungsgeld | ◐ | `kdu-grenze` |
-| Auto zählt zum Vermögen, außer es wird wegen Behinderung oder für die Arbeit gebraucht (§ 90) | ◐ | `auto` |
+| Angemessenes Auto geschützt (§ 90 Abs. 2 Nr. 10 SGB XII); über 15.000 € nur „möglich“; gebraucht (Behinderung, Arbeit) ohne Einschränkung | ◐ | `auto` |
 | EU-Staatsangehörige: Ausschluss wie § 7 SGB II (§ 23 Abs. 3 SGB XII) | ✓ | `eu` |
 | Voraussetzung Rentenalter oder dauerhaft volle Erwerbsminderung (§ 41) | ✓ | `gsa-voraus` |
 | Freibetrag Erwerbstätige 30 %, höchstens 50 % RS1 (§ 82 Abs. 3 Satz 1) | ✓ | `gsa-ewt` |
@@ -298,7 +298,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Minijob ohne Krankengeld | ✓ | `kv-minijob` |
 | Belastungsgrenze 2 % / 1 % bei chronisch Kranken (GdB ab 60 oder Pflegegrad 3–5) | ✓ | `kv-zuzahl` |
 | Fahrtkosten zur ambulanten Behandlung bei aG, Bl, H oder Pflegegrad 3 (mit Einschränkung) bis 5 (§ 60) | ◐ | `kv-fahrt` |
-| Familienversicherung (§ 10): Partner mit Einkommen bis 1/7 der Bezugsgröße (2026: 565 €) oder Minijob; Kinder bis 18, bis 23 ohne Arbeit, bis 25 in Ausbildung; Rente, ALG I, Krankengeld schließen aus | ◐ | `famvers` |
+| Familienversicherung (§ 10): Partner mit Einkommen bis 1/7 der Bezugsgröße (2026: 565 €) oder Minijob; Kinder bis 18, bis 23 ohne Arbeit, bis 25 in Ausbildung; ALG I und Krankengeld schließen aus, Rente nur über der Grenze | ◐ | `famvers` |
 | Familienversicherung: Ausschluss, wenn der andere Elternteil privat versichert ist und mehr verdient (§ 10 Abs. 3), Mitgliedschaft des Hauptversicherten | ○ (Versicherungsstatus fragt die App nicht ab; Hinweis im Text, „möglich“ statt „wahrscheinlich“) | |
 
 ## Rundfunkbeitrag (RBStV)
@@ -395,7 +395,7 @@ Damit niemand denkt, die App decke alles ab:
 | Geförderte Altersvorsorge (Riester, Rürup, Betriebsrente) zählt nicht als Vermögen (§ 12 Abs. 1 Satz 2 Nr. 3 SGB II, § 90 Abs. 2 Nr. 2 SGB XII, WoGVwV 21.37); BAföG: nicht sicher -> „möglich“, wenn sie über die Grenze bringt | ✓ | `verm-av` |
 | Lebens- und Rentenversicherung: geschützt, wenn Altersvorsorge (Einzelfall) -> „möglich“, wenn sie über die Grenze bringt | ◐ | `verm-lv` |
 | Zinsen, Dividenden, Ausschüttungen: Grundsicherungsgeld bis 100 € im Jahr frei (§ 1 Abs. 1 Nr. 3 GrusiGV), Rest Einkommen ohne Freibetrag für Arbeit; ebenso im SGB XII und beim Kinderzuschlag | ✓ | `kap-sgb2` |
-| Wohngeld: Kapitalerträge gehören zum Jahreseinkommen (§ 14 WoGG); vorsichtig ohne Sparer-Pauschbetrag und ohne Pauschalabzug | ◐ | `kap-wg` |
+| Wohngeld: Kapitalerträge gehören zum Jahreseinkommen, auch der steuerfreie Teil, soweit sie 100 € im Jahr übersteigen (§ 14 Abs. 2 Nr. 15 WoGG); vorsichtig ohne Pauschalabzug | ◐ | `kap-wg` |
 | Einmalige Bedarfe als Hinweis: Erstausstattung Wohnung, Kleidung, Schwangerschaft/Geburt, therapeutische Geräte (§ 24 Abs. 3 SGB II, § 31 SGB XII), auch ohne laufende Leistung bei Schwangerschaft; Umzug nur mit Zusicherung (§ 22 Abs. 6 SGB II) | ◐ | `einmal` |
 | ETF und Aktien zum Tageswert, Kursschwankungen | ○ (die Stelle nimmt den Wert am Tag des Antrags; die App nimmt den eingetragenen Wert) | |
 
@@ -408,7 +408,7 @@ Wird nur das Brutto eingetragen, schätzt die App das Netto. Gilt für alle Kart
 | Lohnsteuer, Solidaritätszuschlag und Kirchensteuer wie der amtliche Programmablaufplan 2026 (BMF 12.11.2025), Monatslohn, gesetzlich versichert | ✓ | `netto-pap` |
 | Steuerklassen I bis VI (II mit Entlastungsbetrag, III Splitting, V/VI eigene Formel) | ✓ | `netto-stkl` |
 | Arbeitnehmeranteile: RV 9,3 %, AV 1,3 %, KV 7,0 % + halber Zusatzbeitrag 2,9 %, PV 1,8 % (Sachsen 2,3 %), kinderlos +0,6, ab 2. Kind −0,25; Übergangsbereich bis 2.000 € (§ 20 Abs. 2a SGB IV); Minijob ohne Abzug | ✓ | `netto-sv` |
-| Steuerklasse ohne Angabe: allein I, allein mit Kind II, Paar mit einem Einkommen III/V, mit zwei Einkommen IV; ohne Kirchensteuer; Nutzer kann im Netto-Helfer wählen | ◐ | `netto-annahme` |
+| Steuerklasse ohne Angabe: allein I, allein mit Kind II, Paar mit einem Einkommen III (vorsichtig, auch wenn nicht verheiratet), mit zwei Einkommen IV; ohne Kirchensteuer; Nutzer kann im Netto-Helfer wählen | ◐ | `netto-annahme` |
 | Brutto aus Netto (Lohn), wenn nur die Auszahlung bekannt ist | ✓ | `netto-umkehr` |
 | 2027: Programmablaufplan 2027 und Tarif 2027 bei Stand 19.11.2026 noch Entwurf; Steuer weiter nach 2026, Minijob 633 € und Beitragsgrenzen 2027 eingerechnet; nach Veröffentlichung nachtragen | ○ (amtliche Werte 2027 stehen noch nicht fest; Unterschied für die Zielgruppe wenige Euro im Monat) | |
 | Privat Krankenversicherte, Versorgungsbezüge, Einmalzahlungen, Freibeträge auf der Lohnsteuerkarte | ○ (für die Zielgruppe selten; das echte Netto von der Lohnabrechnung geht immer vor) | |

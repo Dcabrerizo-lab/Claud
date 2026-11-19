@@ -11,7 +11,7 @@ const ROOT = path.join(__dirname, '..');
 const M = [
   ['Miete: Angemessenheitsgrenze 20 % statt 10 %', 'wgCap(h.stufe, h.persons) * 1.1 + wgHeiz(h.persons)', 'wgCap(h.stufe, h.persons) * 1.2 + wgHeiz(h.persons)'],
   ['EU: Ausschluss auch nach 5 Jahren', 'h.eu && !h.euJahre5 && !h.euArbeit', 'h.eu && !h.euArbeit'],
-  ['Auto: zählt im SGB XII nicht zum Vermögen', "const vermSGB12 = (h) => h.vermoegen + (h.autoBraucht || h.mzG || h.mzAG ? 0 : (h.autoWert || 0));", "const vermSGB12 = (h) => h.vermoegen;"],
+  ['Auto: teures Auto im SGB XII ohne Rückstufung auf möglich', "{ kappe(r); zu(r, 'auto.hochSgb12'", "{ zu(r, 'auto.hochSgb12'"],
   ['Eigentum: Grundsicherungsgeld ohne Einschränkung', "if (h.eigentum && (id === 'ggeld' || id === 'gsa')) { kappe(r); zu(r, 'kdu.eigentum'); }", "if (h.eigentum && (id === 'ggeld' || id === 'gsa')) { zu(r, 'kdu.eigentum'); }"],
   ['Grenze: Schonvermögen schon genau auf der Grenze verbraucht', "if (h.vermoegen > schon) return mk(id, 'nein', 'vermHoch', [['ggeld.verm'", "if (h.vermoegen >= schon) return mk(id, 'nein', 'vermHoch', [['ggeld.verm'"],
   ['Grenze: Mindesteinkommen Kinderzuschlag genau auf der Grenze nicht erreicht', 'if (h.brutto < minEink)', 'if (h.brutto <= minEink)'],

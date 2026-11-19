@@ -149,6 +149,7 @@ function kappe(e, id, level) {
   if (eig && (id === 'ggeld' || id === 'gsa' || id === 'wohngeld')) return 'vielleicht';
   if (verw && (id === 'ggeld' || id === 'wohngeld')) return 'vielleicht';
   if (auto && (id === 'ggeld' || id === 'kiz')) return 'vielleicht';
+  if (auto && !e.mzG && !(e.mz && e.mz.aG) && (id === 'gsa' || id === 'hzp' || id === 'blh')) return 'vielleicht';
   return level;
 }
 function grundsicherungsgeld(h) {
@@ -309,8 +310,8 @@ function grundsicherungAlter(e) {
   if (h.bezug.sozialamt) return { level: 'na' };
   if (h.bezug.grundsicherungsgeld) return { level: 'nein' };
   const wf = e.wohnform === 'eltern' || e.wohnform === 'heim' ? e.wohnform : '';
-  // Auto zählt im SGB XII zum Vermögen, außer es wird wegen Behinderung oder für die Arbeit gebraucht
-  const auto = e.autoBraucht || e.mzG || (e.mz && e.mz.aG) ? 0 : zahl(e.autoWert);
+  // Angemessenes Auto ist im SGB XII geschützt (§ 90 Abs. 2 Nr. 10 SGB XII); hoher Wert nur „möglich“ (kappe)
+  const auto = 0;
   if (h.vermoegen + auto > (wf ? 10000 : 10000 * h.erwachsene + 500 * h.kids)) return { level: 'nein' };
   const regelPerson = wf === 'heim' || (h.erwachsene === 2 && !wf) ? RB[2] : RB[1];
   const g = e.mzG ? 0.17 * regelPerson : 0;
