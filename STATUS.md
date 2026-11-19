@@ -31,7 +31,7 @@ Stand: Version 1.4.0, Build 145 (Play Store AAB gebaut, nicht veröffentlicht). 
 
 ## 4. Bekannte Probleme / offen
 - WBS-Grenze Saarland nicht abrufbar (Server sperrt): Bundeswerte als Untergrenze (`docs/WBS-GRENZEN.md`).
-- WBS-Empfänger: Wohnungsamt der kreisfreien Stadt (alle Länder außer Berlin/Hamburg); Bayern zusätzlich Landratsamt in den Landkreisen OHNE Große Kreisstadt/Große Delegationsgemeinde (`D.wbsAusnahme`, BayernPortal 19.11.2026). In den 32 Landkreisen mit Ausnahme-Gemeinde, in Landkreisen anderer Länder, Berlin und Hamburg: nur „Wohnungsamt deiner Stadt oder Gemeinde“ (`ANTRAG.wbs`, `ZUST_LAND.wbs`). Bremen/Bremerhaven: Zuständigkeit nicht geprüft. Hinweis „PLZ eingeben“ (`beh.plzHint`) erscheint auch bei WBS, wo keine Anschrift kommt.
+- WBS-Empfänger: Wohnungsamt der kreisfreien Stadt (alle Länder außer Berlin/Hamburg); Bayern zusätzlich Landratsamt in den Landkreisen OHNE Große Kreisstadt/Große Delegationsgemeinde (`D.wbsAusnahme`, BayernPortal, gegengeprüft mit BayDVWoR, ZustVBau § 5, BayMBl. 2025 Nr. 41 am 19.11.2026). In den 32 Landkreisen mit Ausnahme-Gemeinde, in Landkreisen anderer Länder, Berlin und Hamburg: nur „Wohnungsamt deiner Stadt oder Gemeinde“ (`ANTRAG.wbs`, `ZUST_LAND.wbs`). Bremen/Bremerhaven: Zuständigkeit nicht geprüft. Hinweis „PLZ eingeben“ (`beh.plzHint`) erscheint auch bei WBS, wo keine Anschrift kommt.
 - Außerhalb Bayerns keine Anschrift für Jobcenter, Familienkasse, Versorgungsamt, Elterngeldstelle, Eingliederungshilfe, Hilfe zur Pflege; in Landkreisen auch nicht UVG/BuT.
 - Kasse/Pflegekasse/Rentenversicherung: Träger der Person unbekannt, keine Anschrift möglich.
 - Prüfpaket und Pflege-Assistent nur auf Deutsch. Fachliche Prüfung der Pflege-Inhalte durch Expertin/Experten steht aus.
