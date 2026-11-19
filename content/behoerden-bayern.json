@@ -2546,6 +2546,248 @@
    "web": "https://www.rundfunkbeitrag.de",
    "quelle": "https://www.rundfunkbeitrag.de",
    "stand": ""
+  },
+  "landesamtPflege": {
+   "name": "Bayerisches Landesamt für Pflege",
+   "abt": "Landespflegegeld",
+   "anschrift": [
+    "Postfach 13 65",
+    "92203 Amberg"
+   ],
+   "haus": [
+    "Mildred-Scheel-Str. 4",
+    "92224 Amberg"
+   ],
+   "web": "https://www.lfp.bayern.de/landespflegegeld/",
+   "quelle": "https://www.lfp.bayern.de/landespflegegeld/",
+   "stand": "19.11.2026"
+  }
+ },
+ "wbsAusnahme": {
+  "quelle": "https://www.bayernportal.de/dokumente/leistung/05887331336",
+  "stand": "19.11.2026",
+  "rechtsgrundlage": "§ 1 BayDVWoR (Gemeinden mit allen Aufgaben der unteren Bauaufsichtsbehörde, sonst Kreisverwaltungsbehörde); 29 Große Kreisstädte (BayMBl. 2025 Nr. 41); 8 Große Delegationsgemeinden: § 5 Abs. 1 ZustVBau (gesetze-bayern.de), abgeglichen 19.11.2026",
+  "hinweis": "Wohnberechtigungsschein: zuständig sind Landratsamt, kreisfreie Stadt, Große Kreisstadt oder Große Delegationsgemeinde (BayernPortal, Liste der 29 Großen Kreisstädte und 8 Großen Delegationsgemeinden). In diesen Landkreisen nennt die App keine Anschrift.",
+  "kreise": {
+   "09672": [
+    "Bad Kissingen"
+   ],
+   "09172": [
+    "Bad Reichenhall"
+   ],
+   "09174": [
+    "Dachau"
+   ],
+   "09271": [
+    "Deggendorf"
+   ],
+   "09773": [
+    "Dillingen a.d.Donau"
+   ],
+   "09571": [
+    "Dinkelsbühl",
+    "Feuchtwangen",
+    "Rothenburg ob der Tauber"
+   ],
+   "09779": [
+    "Donauwörth",
+    "Nördlingen"
+   ],
+   "09176": [
+    "Eichstätt"
+   ],
+   "09177": [
+    "Erding"
+   ],
+   "09474": [
+    "Forchheim"
+   ],
+   "09178": [
+    "Freising"
+   ],
+   "09179": [
+    "Fürstenfeldbruck",
+    "Germering"
+   ],
+   "09774": [
+    "Günzburg"
+   ],
+   "09675": [
+    "Kitzingen"
+   ],
+   "09477": [
+    "Kulmbach"
+   ],
+   "09181": [
+    "Landsberg am Lech"
+   ],
+   "09776": [
+    "Lindau (Bodensee)"
+   ],
+   "09479": [
+    "Marktredwitz",
+    "Selb"
+   ],
+   "09185": [
+    "Neuburg a.d.Donau"
+   ],
+   "09373": [
+    "Neumarkt i.d.OPf."
+   ],
+   "09473": [
+    "Neustadt b.Coburg"
+   ],
+   "09775": [
+    "Neu-Ulm"
+   ],
+   "09376": [
+    "Schwandorf"
+   ],
+   "09189": [
+    "Traunstein"
+   ],
+   "09577": [
+    "Weißenburg i.Bay."
+   ],
+   "09671": [
+    "Alzenau"
+   ],
+   "09171": [
+    "Burghausen"
+   ],
+   "09771": [
+    "Friedberg"
+   ],
+   "09180": [
+    "Garmisch-Partenkirchen"
+   ],
+   "09371": [
+    "Sulzbach-Rosenberg"
+   ],
+   "09175": [
+    "Vaterstetten"
+   ],
+   "09183": [
+    "Waldkraiburg"
+   ]
+  }
+ },
+ "familienkasseDE": {
+  "he": {
+   "name": "Familienkasse Hessen",
+   "anschrift": [
+    "34196 Kassel"
+   ],
+   "web": "https://www.familienkasse.de",
+   "quelle": "https://www.arbeitsagentur.de/vor-ort/familienkasse/familienkasse-hessen-kassel.html",
+   "stand": "19.11.2026"
+  },
+  "nibr": {
+   "name": "Familienkasse Niedersachsen-Bremen",
+   "anschrift": [
+    "30131 Hannover"
+   ],
+   "web": "https://www.familienkasse.de",
+   "quelle": "https://www.arbeitsagentur.de/vor-ort/familienkasse/familienkasse-niedersachsen-bremen-hannover.html",
+   "stand": "19.11.2026"
+  },
+  "stth": {
+   "name": "Familienkasse Sachsen-Anhalt-Thüringen",
+   "anschrift": [
+    "06073 Halle"
+   ],
+   "web": "https://www.familienkasse.de",
+   "quelle": "https://www.arbeitsagentur.de/vor-ort/familienkasse/familienkasse-sachsen-anhalt-thueringen-halle.html",
+   "stand": "19.11.2026"
+  },
+  "sn": {
+   "name": "Familienkasse Sachsen",
+   "anschrift": [
+    "09092 Chemnitz"
+   ],
+   "web": "https://www.familienkasse.de",
+   "quelle": "https://www.arbeitsagentur.de/vor-ort/familienkasse/familienkasse-sachsen-chemnitz.html",
+   "stand": "19.11.2026"
+  },
+  "bebb": {
+   "name": "Familienkasse Berlin-Brandenburg",
+   "anschrift": [
+    "14465 Potsdam"
+   ],
+   "web": "https://www.familienkasse.de",
+   "quelle": "https://www.arbeitsagentur.de/vor-ort/familienkasse/familienkasse-berlin-brandenburg-berlin.html",
+   "stand": "19.11.2026"
+  },
+  "nord": {
+   "name": "Familienkasse Nord",
+   "anschrift": [
+    "20069 Hamburg"
+   ],
+   "web": "https://www.familienkasse.de",
+   "quelle": "https://www.arbeitsagentur.de/vor-ort/familienkasse/familienkasse-nord-hamburg.html",
+   "stand": "19.11.2026"
+  },
+  "rps": {
+   "name": "Familienkasse Rheinland-Pfalz-Saarland",
+   "anschrift": [
+    "55149 Mainz"
+   ],
+   "web": "https://www.familienkasse.de",
+   "quelle": "https://www.arbeitsagentur.de/vor-ort/familienkasse/familienkasse-rheinland-pfalz-saarland-koblenz.html",
+   "stand": "19.11.2026"
+  }
+ },
+ "fkLand": {
+  "06": "he",
+  "03": "nibr",
+  "04": "nibr",
+  "15": "stth",
+  "16": "stth",
+  "14": "sn",
+  "11": "bebb",
+  "12": "bebb",
+  "02": "nord",
+  "01": "nord",
+  "13": "nord",
+  "07": "rps",
+  "10": "rps"
+ },
+ "jobcenterDE": {
+  "08111": {
+   "name": "Jobcenter Stuttgart",
+   "anschrift": [
+    "Rosensteinstraße 11",
+    "70191 Stuttgart"
+   ],
+   "haus": null,
+   "web": "https://www.stuttgart.de/leben/arbeit/jobcenter",
+   "quelle": "https://www.stuttgart.de/leben/arbeit/jobcenter",
+   "stand": "19.11.2026"
+  },
+  "05314": {
+   "name": "Jobcenter Bonn",
+   "anschrift": [
+    "Rochusstraße 6",
+    "53123 Bonn"
+   ],
+   "haus": null,
+   "web": "https://www.jobcenter-bonn.de/",
+   "quelle": "https://www.jobcenter-bonn.de/impressum",
+   "stand": "19.11.2026"
+  },
+  "06414": {
+   "name": "Kommunales Jobcenter Wiesbaden",
+   "anschrift": [
+    "Postfach 3920",
+    "65029 Wiesbaden"
+   ],
+   "haus": [
+    "Konradinerallee 11",
+    "65189 Wiesbaden"
+   ],
+   "web": "https://www.wiesbaden.de/leben-in-wiesbaden/arbeit-beruf/kjc",
+   "quelle": "https://www.wiesbaden.de/en/leben-in-wiesbaden/arbeit-beruf/kjc/ueberuns/kontaktdaten-kjc",
+   "stand": "19.11.2026"
   }
  }
 }

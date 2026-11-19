@@ -203,6 +203,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Ab Pflegegrad 2, Hauptwohnsitz Bayern, unabhängig vom Einkommen; ab dem Pflegegeldjahr 2026 500 € im Jahr (vorher 1.000 €) | ✓ | `lpg-ja` |
 | Nur in Bayern; ohne Pflegegrad 2 nein, bei laufendem Pflegegrad-Antrag möglich | ✓ | `lpg-voraus` |
 | Antrag einmal beim Bayerischen Landesamt für Pflege; Antragsfrist | ◐ (Fristangaben der Quellen widersprüchlich; die App rät zum baldigen Antrag) | `lpg-ja` |
+| Empfänger des Antrags: Bayerisches Landesamt für Pflege, Postfach 13 65, 92203 Amberg (Hausanschrift Mildred-Scheel-Str. 4, 92224 Amberg); Quelle lfp.bayern.de (Seite Landespflegegeld und Impressum), abgerufen 19.11.2026; nicht für Wohnorte außerhalb Bayerns | ✓ | `lpg-stelle` |
 
 ## Hilfe zur Pflege (SGB XII, 7. Kapitel)
 <!-- karten: hzp -->
@@ -287,7 +288,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Kein Anspruch im Rentenalter (§ 136 Abs. 2) | ✓ | `alg-alter` |
 
 ## Krankenversicherung (SGB V)
-<!-- karten: krankengeld, zuzahl -->
+<!-- karten: krankengeld, zuzahl, famvers -->
 
 | Regel | Status | Test |
 |---|---|---|
@@ -297,6 +298,8 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Minijob ohne Krankengeld | ✓ | `kv-minijob` |
 | Belastungsgrenze 2 % / 1 % bei chronisch Kranken (GdB ab 60 oder Pflegegrad 3–5) | ✓ | `kv-zuzahl` |
 | Fahrtkosten zur ambulanten Behandlung bei aG, Bl, H oder Pflegegrad 3 (mit Einschränkung) bis 5 (§ 60) | ◐ | `kv-fahrt` |
+| Familienversicherung (§ 10): Partner mit Einkommen bis 1/7 der Bezugsgröße (2026: 565 €) oder Minijob; Kinder bis 18, bis 23 ohne Arbeit, bis 25 in Ausbildung; Rente, ALG I, Krankengeld schließen aus | ◐ | `famvers` |
+| Familienversicherung: Ausschluss, wenn der andere Elternteil privat versichert ist und mehr verdient (§ 10 Abs. 3), Mitgliedschaft des Hauptversicherten | ○ (Versicherungsstatus fragt die App nicht ab; Hinweis im Text, „möglich“ statt „wahrscheinlich“) | |
 
 ## Rundfunkbeitrag (RBStV)
 <!-- karten: rundfunk -->
@@ -318,6 +321,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Länder ohne belegte Landesgrenze (Saarland): unter den Bundeswerten (§ 9 Abs. 2 WoFG: 12.000 / 18.000 €, + 4.100 € je weitere Person, + 500 € je Kind) „wahrscheinlich“, sonst „möglich“ | ◐ | `wbs-land` |
 | Landesgrenzen aller übrigen 15 Länder nach amtlichen Quellen (Tabelle `docs/WBS-GRENZEN.md`), mit Aufrundung (RP, SH) und Zuschlag für 1-2 Personen (SH); auf den Euro geprüft; „nein“ nur über der höchsten Stufe nach 30 % Abzug, Freibeträgen und gezahltem Unterhalt mit 5 % Reserve | ✓ | `wbs-land-grenze` |
 | WBS-Stufen je Land (Berlin WBS 140/180/220, Förderwege HH/SH/MV, NRW Gruppe A/B, HB, RP, ST, TH) mit Grenzen und erreichter Stufe | ✓ | `wbs-stufen` |
+| Empfänger des WBS-Antrags: Wohnungsamt der kreisfreien Stadt mit Anschrift; Bayern: Landratsamt, aber nur in Landkreisen ohne Große Kreisstadt oder Große Delegationsgemeinde (29 + 8 Gemeinden; Liste laut BayernPortal, gegengeprüft am 19.11.2026 mit § 1 BayDVWoR, BayMBl. 2025 Nr. 41 und § 5 Abs. 1 ZustVBau; dort bewusst ohne Anschrift); Landkreise anderer Länder sowie Berlin und Hamburg (Bezirksämter) ohne Anschrift, dort bleibt „Wohnungsamt deiner Stadt oder Gemeinde“; Quelle der Anschrift jeweils Impressum der Behörde | ✓ | `wbs-stelle` |
 | Genaue Einkommensgrenzen der anderen 15 Länder | ○ (Quellen widersprüchlich; Annahme: kein Land liegt unter den Bundeswerten, bitte bestätigen) | |
 
 ## Elterngeld (BEEG)
@@ -370,6 +374,8 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 |---|---|---|
 | Versorgungsamt, Elterngeldstelle, Träger der Eingliederungshilfe und Stelle für das Landesblindengeld je Land (ohne Anschrift), sonst allgemeine Angabe | ◐ | `zust-land` |
 | Kreisebene außerhalb Bayerns: kreisfreie Städte (außer Berlin, Hamburg) mit Name und offizieller Website für Wohngeld, Grundsicherung, Unterhaltsvorschuss, Bildung und Teilhabe, Asyl; Landkreise nur für Grundsicherung im Alter | ✓ | `beh-de` |
+| Familienkasse außerhalb Bayerns für Kindergeld und Kinderzuschlag: nur dort, wo ein Land (oder Land-Gruppe) genau eine Familienkasse hat (Hessen; Niedersachsen und Bremen; Sachsen; Sachsen-Anhalt und Thüringen; Berlin und Brandenburg; Hamburg, Schleswig-Holstein und Mecklenburg-Vorpommern; Rheinland-Pfalz und Saarland); Postanschrift laut arbeitsagentur.de, abgerufen 19.11.2026. Bei Nord und Rheinland-Pfalz-Saarland nur indirekt belegt (alle Dienststellen mit gleichem Namen und gleicher Postanschrift). Nordrhein-Westfalen und Baden-Württemberg (mehrere Familienkassen, Kreiszuordnung nicht amtlich belegt) ohne Anschrift | ◐ | `fk-land` |
+| Jobcenter außerhalb Bayerns: nur einzeln belegte Fälle (Stuttgart, Bonn, Wiesbaden) mit Anschrift aus Impressum/Kontaktseite, abgerufen 19.11.2026; alle übrigen ohne Anschrift (Impressen trennen Post- und Hausanschrift meist nicht, viele Seiten nicht abrufbar) | ◐ | `jobcenter-de` |
 | Postanschriften außerhalb Bayerns | ○ (noch nicht hinterlegt; die Karte verweist auf die Website der Behörde) | |
 | Einzelne Zuständigkeiten (z. B. Thüringen, Niedersachsen, Schleswig-Holstein beim Blindengeld) | ○ (nicht sicher bestätigt, daher die allgemeine Angabe; bitte von Fachleuten prüfen lassen) | |
 
@@ -382,15 +388,54 @@ Damit niemand denkt, die App decke alles ab:
 - Härtefallleistungen und einmalige Bedarfe im Einzelfall (z. B. Waschmaschine, Umzug, Mietschulden)
 - Schuldnerberatung, Sozialtarife (Strom, Telefon, Kultur), Bildungskredit
 
+## Ersparnisse und Kapitalerträge (alle Karten mit Vermögens- oder Einkommensprüfung)
+
+| Regel | Status | Test |
+|---|---|---|
+| Geförderte Altersvorsorge (Riester, Rürup, Betriebsrente) zählt nicht als Vermögen (§ 12 Abs. 1 Satz 2 Nr. 3 SGB II, § 90 Abs. 2 Nr. 2 SGB XII, WoGVwV 21.37); BAföG: nicht sicher -> „möglich“, wenn sie über die Grenze bringt | ✓ | `verm-av` |
+| Lebens- und Rentenversicherung: geschützt, wenn Altersvorsorge (Einzelfall) -> „möglich“, wenn sie über die Grenze bringt | ◐ | `verm-lv` |
+| Zinsen, Dividenden, Ausschüttungen: Grundsicherungsgeld bis 100 € im Jahr frei (§ 1 Abs. 1 Nr. 3 GrusiGV), Rest Einkommen ohne Freibetrag für Arbeit; ebenso im SGB XII und beim Kinderzuschlag | ✓ | `kap-sgb2` |
+| Wohngeld: Kapitalerträge gehören zum Jahreseinkommen (§ 14 WoGG); vorsichtig ohne Sparer-Pauschbetrag und ohne Pauschalabzug | ◐ | `kap-wg` |
+| Einmalige Bedarfe als Hinweis: Erstausstattung Wohnung, Kleidung, Schwangerschaft/Geburt, therapeutische Geräte (§ 24 Abs. 3 SGB II, § 31 SGB XII), auch ohne laufende Leistung bei Schwangerschaft; Umzug nur mit Zusicherung (§ 22 Abs. 6 SGB II) | ◐ | `einmal` |
+| ETF und Aktien zum Tageswert, Kursschwankungen | ○ (die Stelle nimmt den Wert am Tag des Antrags; die App nimmt den eingetragenen Wert) | |
+
+## Netto aus Brutto (§ 39b EStG, Programmablaufplan 2026; SGB IV)
+
+Wird nur das Brutto eingetragen, schätzt die App das Netto. Gilt für alle Karten, die mit dem Netto rechnen.
+
+| Regel | Status | Test |
+|---|---|---|
+| Lohnsteuer, Solidaritätszuschlag und Kirchensteuer wie der amtliche Programmablaufplan 2026 (BMF 12.11.2025), Monatslohn, gesetzlich versichert | ✓ | `netto-pap` |
+| Steuerklassen I bis VI (II mit Entlastungsbetrag, III Splitting, V/VI eigene Formel) | ✓ | `netto-stkl` |
+| Arbeitnehmeranteile: RV 9,3 %, AV 1,3 %, KV 7,0 % + halber Zusatzbeitrag 2,9 %, PV 1,8 % (Sachsen 2,3 %), kinderlos +0,6, ab 2. Kind −0,25; Übergangsbereich bis 2.000 € (§ 20 Abs. 2a SGB IV); Minijob ohne Abzug | ✓ | `netto-sv` |
+| Steuerklasse ohne Angabe: allein I, allein mit Kind II, Paar mit einem Einkommen III/V, mit zwei Einkommen IV; ohne Kirchensteuer; Nutzer kann im Netto-Helfer wählen | ◐ | `netto-annahme` |
+| Brutto aus Netto (Lohn), wenn nur die Auszahlung bekannt ist | ✓ | `netto-umkehr` |
+| 2027: Programmablaufplan 2027 und Tarif 2027 bei Stand 19.11.2026 noch Entwurf; Steuer weiter nach 2026, Minijob 633 € und Beitragsgrenzen 2027 eingerechnet; nach Veröffentlichung nachtragen | ○ (amtliche Werte 2027 stehen noch nicht fest; Unterschied für die Zielgruppe wenige Euro im Monat) | |
+| Privat Krankenversicherte, Versorgungsbezüge, Einmalzahlungen, Freibeträge auf der Lohnsteuerkarte | ○ (für die Zielgruppe selten; das echte Netto von der Lohnabrechnung geht immer vor) | |
+
+## Pfändung und P-Konto (§§ 850 ff., 899 ff. ZPO)
+
+| Regel | Status | Test |
+|---|---|---|
+| Pfändbarer Betrag nach § 850c ZPO und Pfändungsfreigrenzenbekanntmachung 2026 (BGBl. 2026 I Nr. 80): Netto auf 10 € abgerundet, 70/50/40/30/20/10 % des Mehrbetrags, wie die amtliche Tabelle | ✓ | `pfaendung-tabelle` |
+| Über der Höchstgrenze 4.866,30 € voll pfändbar | ✓ | `pfaendung-hoechst` |
+| P-Konto: 1.590 € automatisch (§ 899 ZPO), Unterhalt und Kindergeld mit Bescheinigung (§§ 902, 903 ZPO) | ✓ | `pkonto` |
+| Pfändung wegen Unterhalt (§ 850d ZPO): andere Freibeträge, Hinweis | ◐ | `pfaendung-tabelle` |
+| Unpfändbare Bezüge (§ 850a ZPO), Kindergeld (§ 76 EStG), Erhöhung durch das Gericht (§§ 850f, 906 ZPO), Übertrag (§ 899 ZPO), Nachzahlungen (§ 904 ZPO): Hinweise | ◐ | `pkonto` |
+| Wöchentliche oder tägliche Auszahlung, Kinderzuschlag auf dem P-Konto, Unterhaltsberechtigte mit eigenem Einkommen (§ 850c Abs. 6 ZPO) | ○ (Monatslohn ist der Regelfall; die übrigen Fälle entscheidet das Vollstreckungsgericht im Einzelfall) | |
+
+Die Tabelle gilt bis 30.6.2027, danach zeigt die App einen Warnhinweis. Jedes Jahr zum 1. Juli neue Werte eintragen.
+
 ## Anzeige und Eingaben (alle Karten)
 
 | Regel | Status | Test |
 |---|---|---|
-| Jede Karte zeigt Einstufung, Überschrift, Text und jeden Betrag genau wie berechnet, in allen 8 Sprachen; Zählung und Hinweise passen; Speichern und Laden ändert nichts; nirgends NaN, undefined, Platzhalter, negative Beträge oder Rohschlüssel | ✓ | `anzeige-rechnung` |
+| Jede Karte zeigt Einstufung, Überschrift, Text und jeden Betrag genau wie berechnet, in allen 13 Sprachen; Zählung und Hinweise passen; Speichern und Laden ändert nichts; nirgends NaN, undefined, Platzhalter, negative Beträge oder Rohschlüssel | ✓ | `anzeige-rechnung` |
 | Einfache und ausführliche Version rechnen für dieselbe Person gleich | ✓ | `einfach-gleich` |
 | Feste Euro-Beträge in Texten, Rechenregeln und Webseite passen zu den Werten der Rechnung | ✓ | `feste-zahlen` |
 | Betragseingaben: deutsche und englische Schreibweise, Eurozeichen, Leerzeichen; negative Beträge (auch mit typografischem Minus) und Datumsangaben werden abgewiesen | ✓ | `eingaben` |
 | Grenzwerte auf den Euro genau (−1 € / Grenze / +1 €): Schonvermögen, Mindesteinkommen, Minijob 2026 und 2027, Einkommensgrenze § 85 SGB XII, Stufen des Freibetrags für Arbeit | ✓ | `grenzen` |
 | Zufalls-Klicktest: tausende zufällige Bedienschritte (Felder, Auswahlen, Sprache, Schriftgröße, einfache/ausführliche Version, Antragsmappe, Neuladen) ohne Skriptfehler, kaputte Anzeige, seitliches Scrollen oder Sackgasse | ✓ | `zufall-klick` |
+| Antragsmappe: Empfänger je Anschreiben bearbeitbar (Vorschlag der App vorbefüllt; Änderung sofort in Brief, Kopiertext und PDF; leeres Feld ergibt Linie; Eingabe nie als HTML; Wiederherstellen; Feld nicht im Druck); Suchlink „Zuständige Stelle suchen“ (DuckDuckGo, kurzer Suchbegriff je Leistung und Ortsname, öffnet extern) | ✓ | `empf` |
 | Alte Speicherstände aus allen Ausbaustufen (und der einfachen Version) laden richtig und ergeben dasselbe Ergebnis wie im heutigen Format | ✓ | `altstaende` |
 | Hinweise auf der Ergebnisseite: was SoLo nicht einrechnet (Selbstständigkeit, Wohneigentum, Auto, Mitbewohner, angemessene Miete, EU-Bürger) und das Verfahren danach (Widerspruch § 84 SGG, Überprüfungsantrag § 44 SGB X, Beratung § 14 SGB I, Weiterleitung § 16 SGB I) | ✓ | `verfahren` |

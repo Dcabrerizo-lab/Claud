@@ -1,6 +1,13 @@
 // Betragsformat je Sprache und Betragseingabe. Läuft in der App und in Node (Tests).
 const Fmt = (function () {
-  var LOCALE = { de: 'de-DE', en: 'en-IE', tr: 'tr-TR', ar: 'ar-EG-u-nu-latn', ru: 'ru-RU', uk: 'uk-UA', pl: 'pl-PL', ro: 'ro-RO' };
+  var LOCALE = { de: 'de-DE', en: 'en-IE', tr: 'tr-TR', ar: 'ar-EG-u-nu-latn', ru: 'ru-RU', uk: 'uk-UA', pl: 'pl-PL', ro: 'ro-RO',
+    // Dari (fa-AF), Farsi (fa) und Paschtu: gregorianischer Kalender und lateinische Ziffern erzwingen (sonst persischer Kalender und persische Ziffern)
+    fr: 'fr-FR', 'fa-AF': 'fa-AF-u-ca-gregory-nu-latn', fa: 'fa-IR-u-ca-gregory-nu-latn', ps: 'ps-AF-u-ca-gregory-nu-latn', so: 'so-SO' };
+  // Datum: wie in deutschen Bescheiden (TT.MM.JJJJ), wo das Landesformat missverständlich wäre (Dari: MM/TT/JJJJ; Farsi sonst persischer Kalender)
+  var DATUM = { 'fa-AF': 'de-DE', fa: 'de-DE', ps: 'de-DE' };
+  function datum(d, lang) {
+    try { return d.toLocaleDateString(DATUM[lang] || LOCALE[lang] || 'de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/[\u200e\u200f\u061c]/g, ''); } catch (e) { return d.toLocaleDateString('de-DE'); }
+  }
   var NF = {};
 
   // Ein Betrag als Text, z. B. euro(1674, 'en') -> „€1,674“, euro(242.7, 'de') -> „242,70 €“. Cent nur, wenn nötig.
@@ -32,6 +39,6 @@ const Fmt = (function () {
     return isFinite(n) && n >= 0 ? n : '';
   }
 
-  return { euro: euro, parse: parse, LOCALE: LOCALE };
+  return { euro: euro, parse: parse, datum: datum, LOCALE: LOCALE };
 })();
 if (typeof module !== 'undefined') module.exports = Fmt;

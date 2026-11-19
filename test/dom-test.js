@@ -34,7 +34,7 @@ const setNum = (id, v) => { const c = d.getElementById(id); c.value = String(v);
 
 check('Keine Skriptfehler beim Laden', errors.length === 0, errors.join('; '));
 check('Startsprache folgt dem Browser (Deutsch)', d.getElementById('lang').value === 'de' && d.getElementById('app').getAttribute('lang') === 'de');
-check('Sprachwahl bietet 8 Sprachen', d.getElementById('lang').options.length === 8);
+check('Sprachwahl bietet 13 Sprachen', d.getElementById('lang').options.length === 13);
 check('Start ohne Beispielwerte: leeres Formular', d.getElementById('ek1Brutto').value === '' && d.getElementById('miete').value === '');
 check('Start zeigt Anleitung statt Karten', d.querySelector('#cards .startcard') !== null && cards().length === 0, d.getElementById('cards').innerHTML.slice(0, 200));
 check('Start: Beispiel-Hinweis versteckt', d.getElementById('sampleNotice').hidden === true);
@@ -126,7 +126,7 @@ check('Große Schrift schaltet Klasse', d.getElementById('app').classList.contai
 check('Leere Felder erzeugen keinen Fehler', errors.length === 0 && cards().length === KARTEN.length, errors.join('; '));
 
 // ---------- Sprachen ----------
-const LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro'];
+const LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so'];
 LANGS.forEach((l) => {
   d.getElementById('p1').click();
   setLang(l);
@@ -147,7 +147,7 @@ LANGS.forEach((l) => {
   check(l + ': Beispiele laden ohne Fehler', errors.length === 0, errors.join('; '));
   check(l + ': Preset-Knopf übersetzt', d.getElementById('p1').textContent === dict['preset.p1']);
 });
-check('Sprachwahl wird gemerkt', store['lotse-lang'] === 'ro');
+check('Sprachwahl wird gemerkt', store['lotse-lang'] === 'so');
 setLang('de');
 
 // ---------- Ausfüllhilfe ----------
@@ -183,6 +183,36 @@ check('Angabenblatt enthält Haushalt, Miete, Einkommen', /Angabenblatt/.test(tx
 check('Angabenblatt nennt Selbstauskunft-Hinweis', /Selbstauskunft/.test(txt));
 check('Leere Felder werden zu Strichen statt "undefined"', !/undefined|null/.test(txt));
 check('Kopiertext enthält Briefe und Angabenblatt', /Betreff: Antrag auf Unterhaltsvorschuss/.test(d.getElementById('mappeText').value) && /Angabenblatt/.test(d.getElementById('mappeText').value));
+// ---------- Empfänger bearbeitbar und Suchlink ----------
+{
+  const feld = d.querySelector('#mappeBody textarea[data-empf="uvg"]');
+  check('[empf] Vor einer Änderung kein Knopf „Wiederherstellen“ sichtbar', d.querySelector('#mappeBody [data-empf-resetbox="uvg"]').hidden === true);
+  const brief = () => d.getElementById('brief-uvg').textContent;
+  const kopie = () => d.getElementById('mappeText').value;
+  check('[empf] Empfängerfeld je Brief, vorbefüllt mit dem Vorschlag der App (Stadt Erlangen, Jugendamt, Anschrift)', !!feld && /^Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle\n.+\n910\d\d Erlangen$/.test(feld.value), feld && feld.value);
+  check('[empf] Feld liegt außerhalb der Briefseite und wird nicht gedruckt', !!feld && !feld.closest('.page') && feld.closest('.empf-edit').classList.contains('no-print'));
+  check('[empf] Nur ein Feld, weil nur ein Brief (Wohngeld hat Formular-Link)', d.querySelectorAll('#mappeBody textarea[data-empf]').length === 1);
+  feld.value = 'Landratsamt Musterkreis\nJugendamt\nMusterweg 5\n12345 Musterstadt'; fire(feld, 'input');
+  check('[empf] Änderung erscheint sofort im Brief', /\n\nLandratsamt Musterkreis\nJugendamt\nMusterweg 5\n12345 Musterstadt\n\nDatum:/.test(brief()) && !/Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle/.test(brief()), brief().slice(0, 300));
+  check('[empf] Änderung erscheint im Kopiertext (auch Grundlage für PDF)', /Landratsamt Musterkreis\nJugendamt\nMusterweg 5\n12345 Musterstadt/.test(kopie()) && /Angabenblatt/.test(kopie()));
+  check('[empf] Fokus und Feld bleiben beim Tippen erhalten (Mappe wird nicht neu aufgebaut)', d.querySelector('#mappeBody textarea[data-empf="uvg"]') === feld);
+  check('[empf] Absender, Betreff und Text bleiben unverändert', /Maria Beispiel/.test(brief()) && /Betreff: Antrag auf Unterhaltsvorschuss/.test(brief()) && /bestätigen Sie mir den Eingang/.test(brief()));
+  feld.value = '  \n \n'; fire(feld, 'input');
+  check('[empf] Leeres Feld: Linie zum Ausfüllen statt leerem Empfänger', /\n\n____________________\n\nDatum:/.test(brief()), brief().slice(0, 200));
+  feld.value = '<img src=x onerror="window.__xss=1">\nTest'; fire(feld, 'input');
+  check('[empf] Eingabe wird nie als HTML ausgeführt', !w.__xss && !d.querySelector('#brief-uvg img') && /<img src=x/.test(brief()));
+  const reset = d.querySelector('#mappeBody [data-empf-reset="uvg"]');
+  check('[empf] Knopf „Vorschlag wiederherstellen“ erscheint nach einer Änderung', !!reset && reset.textContent === I18N.de['f.empfZurueck'] && !reset.closest('[data-empf-resetbox]').hidden);
+  if (reset) reset.click();
+  const feld2 = d.querySelector('#mappeBody textarea[data-empf="uvg"]');
+  check('[empf] Wiederherstellen: Vorschlag wieder im Feld, im Brief und im Kopiertext, Knopf weg', !!feld2 && /^Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle/.test(feld2.value) && /Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle/.test(brief()) && /Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle/.test(kopie()) && d.querySelector('#mappeBody [data-empf-resetbox="uvg"]').hidden === true);
+  const link = d.querySelector('#mappeBody .empf-edit a');
+  const q = link ? decodeURIComponent(link.getAttribute('href').split('?q=')[1] || '') : '';
+  check('[empf] Suchlink: DuckDuckGo, kurzer Suchbegriff und Ortsname ohne Postleitzahl, öffnet extern', !!link && /^https:\/\/duckduckgo\.com\/\?q=/.test(link.getAttribute('href')) && q === 'Unterhaltsvorschussstelle Jugendamt Erlangen' && link.getAttribute('target') === '_blank' && /noopener/.test(link.getAttribute('rel')) && link.textContent === I18N.de['f.empfSuche'], q);
+  check('[empf] Titel und Hinweis in der gewählten Sprache', d.querySelector('#mappeBody .empf-edit label').textContent === I18N.de['f.empfTitel'] && d.querySelector('#mappeBody .empf-edit p.small').textContent === I18N.de['f.empfHinweis']);
+  check('[empf] Neue Texte in allen 13 Sprachen vorhanden', ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so'].every((l) => ['f.empfTitel', 'f.empfHinweis', 'f.empfSuche', 'f.empfZurueck'].every((k) => I18N[l] && typeof I18N[l][k] === 'string' && I18N[l][k].length > 5)));
+  check('[empf] Keine Skriptfehler', errors.length === 0, errors.join('; '));
+}
 check('Web-Version: Anbieter im Impressum David Cabrerizo', d.getElementById('anbieterName').textContent === 'David Cabrerizo');
 check('Druck: feste Briefränder (DIN 5008) per @page, unabhängig vom Browser', /@page\s*\{[^}]*size:\s*A4[^}]*margin:\s*20mm 20mm 20mm 25mm/.test(d.documentElement.innerHTML));
 // Rückmeldung „Ergebnis passt nicht“: E-Mail-Entwurf mit Version und Einstufungen, ohne Angaben aus dem Fragebogen
@@ -212,10 +242,10 @@ setTimeout(() => {
   check('Kein horizontales Scrollen erzwungen', !/min-width:\s*\d{4,}px/.test(html));
   check('Logische statt physische Abstände im Formular (RTL-fähig)', !/\.money input\s*\{[^}]*padding-right/.test(html) && /inset-inline-end/.test(html));
   check('Jedes Formularfeld hat eine Beschriftung', ['miete', 'mietstufe', 'ek1Art', 'ek1Brutto', 'ek1Netto', 'ek2Art', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'vermoegen', 'gebJahr', 'kindEink', 'ausbildung', 'pflegegrad', 'p-name', 'p-geb', 'p-strasse', 'p-ort', 'p-tel'].every((id) => d.querySelector('label[for="' + id + '"]')));
-  // Grenze 2,5 MB: eine einzige Datei, die offline läuft; der größte Teil sind PLZ-Daten (ganz Deutschland mit Mietenstufen), Behörden (Bayern), 8 Sprachen,
+  // Grenze 3 MB (bis 1.4: 2,5 MB; angehoben am 19.11.2026 für 13 Sprachen): eine einzige Datei, die offline läuft; der größte Teil sind PLZ-Daten (ganz Deutschland mit Mietenstufen), Behörden (Bayern), 13 Sprachen,
   // seit 1.4 auch „Brief prüfen“ und die Pflegegrad-Einschätzung (zusammen gut 200 KB)
   check('Web-Datei ist ein vollständiges Dokument mit UTF-8 und Viewport (Safari, Handy)', /^<!doctype html>/i.test(html) && /<meta charset="utf-8">/i.test(html.slice(0, 300)) && /name="viewport"/.test(html.slice(0, 400)));
-  check('Dateigröße unter 2,5 MB', html.length < 2.5 * 1024 * 1024, (html.length / 1024).toFixed(0) + ' KB');
+  check('Dateigröße unter 3 MB', html.length < 3 * 1024 * 1024, (html.length / 1024).toFixed(0) + ' KB');
   // ----- Antrag scannen -----
   setLang('de');
   d.getElementById('p1').click();
@@ -319,6 +349,9 @@ setTimeout(() => {
   setSel('wohnart', '');
   check('Miete: Feld heißt wieder „Miete“', d.getElementById('mieteLab').textContent === I18N.de['miete.label']);
   check('Einkommensart „Selbstständig“ wählbar', [...d.getElementById('ek1Art').options].some((o) => o.value === 'selbst'));
+  // Startsprache aus den Geräteeinstellungen: Dari (fa-AF) und Farsi (fa) getrennt erkennen
+  const startLang = (langs) => { const st = {}; const dw = new JSDOM('<!doctype html><html><head><meta charset="utf-8"></head><body>' + html + '</body></html>', { runScripts: 'dangerously', pretendToBeVisual: true, beforeParse(x) { x.HTMLElement.prototype.scrollIntoView = function () {}; x.scrollTo = function () {}; Object.defineProperty(x.navigator, 'languages', { value: langs, configurable: true }); Object.defineProperty(x, 'localStorage', { value: { getItem: (k) => (k in st ? st[k] : null), setItem: (k, v) => { st[k] = String(v); } }, configurable: true }); } }); const v = dw.window.document.getElementById('lang').value; dw.window.close(); return v; };
+  check('Gerät auf Dari (fa-AF) startet in Dari, Farsi (fa-IR, fa) in Farsi, Französisch (fr-CA) in Französisch, Unbekanntes in Deutsch', startLang(['fa-AF']) === 'fa-AF' && startLang(['fa-af', 'de']) === 'fa-AF' && startLang(['fa-IR']) === 'fa' && startLang(['fa']) === 'fa' && startLang(['fr-CA']) === 'fr' && startLang(['ps-AF']) === 'ps' && startLang(['so-SO']) === 'so' && startLang(['xx']) === 'de');
   check('Keine Skriptfehler im gesamten Test', errors.length === 0, errors.join('; '));
   console.log(fails ? '\n' + fails + ' FEHLER' : '\nAlle DOM-Tests bestanden');
   process.exit(fails ? 1 : 0);

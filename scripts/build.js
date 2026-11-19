@@ -7,14 +7,32 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const SRC = path.join(ROOT, 'src');
 const DIST = path.join(ROOT, 'dist');
-const LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro'];
+const LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so'];
 
 const read = (f) => fs.readFileSync(path.join(SRC, f), 'utf8');
+
+// Einfache Sprache: src/lang/einfach/*.json (Dateien mit Unterstrich, z. B. _test.json, werden übersprungen) zu einem Objekt
+// I18N_EINFACH zusammenführen. Nur Schlüssel, die es in de.json gibt; andere Schlüssel und Nicht-Texte werden mit Warnung verworfen.
+function einfachSource(de) {
+  const dir = path.join(SRC, 'lang', 'einfach');
+  const out = {};
+  if (fs.existsSync(dir)) {
+    fs.readdirSync(dir).filter((f) => f.endsWith('.json') && !f.startsWith('_')).sort().forEach((f) => {
+      const o = JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8'));
+      Object.keys(o).forEach((k) => {
+        if (!Object.prototype.hasOwnProperty.call(de, k)) { console.warn('Warnung: Einfache Sprache (' + f + '): Schlüssel nicht in de.json: ' + k); return; }
+        if (typeof o[k] !== 'string') { console.warn('Warnung: Einfache Sprache (' + f + '): Wert ist kein Text: ' + k); return; }
+        out[k] = o[k];
+      });
+    });
+  }
+  return out;
+}
 
 function i18nSource() {
   const all = {};
   LANGS.forEach((l) => { all[l] = JSON.parse(read(path.join('lang', l + '.json'))); });
-  return 'const I18N = ' + JSON.stringify(all) + ';\nif (typeof module !== "undefined") module.exports = I18N;\n';
+  return 'const I18N = ' + JSON.stringify(all) + ';\nconst I18N_EINFACH = ' + JSON.stringify(einfachSource(all.de)) + ';\nif (typeof module !== "undefined") module.exports = I18N;\n';
 }
 
 // Optional: PLZ-Daten (content/plz-data.json). Fehlen sie, bleibt das PLZ-Feld ausgeblendet.

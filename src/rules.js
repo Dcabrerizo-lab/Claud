@@ -35,6 +35,33 @@ const Rules = (function () {
     minijob: 603,
     // Ab 1.1.2027: 633 € (Mindestlohn 14,60 €, Mindestlohnanpassungsverordnung; § 8 Abs. 1a SGB IV). Die App schaltet am Stichtag selbst um.
     minijob2027: 633,
+    // Netto aus Brutto (Lohn). Programmablaufplan Lohnsteuer 2026 (BMF 12.11.2025, endgültig): Tarif § 32a EStG 2026, Grundfreibetrag 12.348 €,
+    // Grenzen der Steuerklassen V/VI, Kinderfreibetrag 9.756 €, Soli-Freigrenze 20.350 €, Grenzen der Vorsorgepauschale (BBG 2026).
+    // 2027: Programmablaufplan 2027 bei Stand 19.11.2026 nur als Entwurf, Tarifänderung noch im Gesetzgebungsverfahren -> Steuer weiter nach 2026.
+    // Sozialversicherung (Arbeitnehmeranteil): RV 9,3 %, AV 1,3 %, KV 7,0 % + halber durchschnittlicher Zusatzbeitrag (2026 und 2027: 2,9 %,
+    // BMG-Bekanntmachungen 7.11.2025 und 30.10.2026), PV 1,8 % (Sachsen 2,3 %), kinderlos +0,6, ab dem 2. Kind je -0,25 (§ 55 SGB XI).
+    // Beitragsbemessungsgrenzen im Monat: 2026 RV 8.450 €, KV 5.812,50 € (SVBezGrV 2026); 2027 RV 8.850 €, KV 6.375 € (Kabinett 7.10.2026).
+    // Übergangsbereich bis 2.000 € (§ 20 Abs. 2 SGB IV).
+    lohn: {
+      pap2026: { gfb: 12348, z2: 17800, a2: 914.51, z3: 69879, a3: 173.1, c3: 1034.87, z4: 277826, c4: 11135.63, c5: 19470.38,
+        w1: 14071, w2: 34939, w3: 222260, kfb: 9756, solzFrei: 20350, papBbgRV: 101400, papBbgKV: 69750,
+        rvAn: 0.093, avAn: 0.013, kvBasis: 0.07, pv: 0.018, pvSachsen: 0.023, pvKinderlos: 0.006, pvAbschlag: 0.0025 },
+      bbg2026: { rv: 8450, kv: 5812.5 }, bbg2027: { rv: 8850, kv: 6375 },
+      kvz2026: 2.9, kvz2027: 2.9, uebergangBis: 2000
+    },
+    // Pfändungsfreigrenzenbekanntmachung 2026 (BGBl. 2026 I Nr. 80 vom 26.3.2026), gilt 1.7.2026 bis 30.6.2027: Grundfreibetrag 1.587,40 €,
+    // Erhöhung für die erste unterhaltsberechtigte Person 597,42 €, für die zweite bis fünfte je 332,83 €, Höchstgrenze 4.866,30 € (§ 850c ZPO)
+    // Zinsen, Dividenden, ETF-Ausschüttungen (Jahr): Grundsicherungsgeld bis 100 € im Kalenderjahr frei (§ 1 Abs. 1 Nr. 3 GrusiGV),
+    // der Rest zählt als Einkommen (§ 11 SGB II). Wohngeld: Kapitalerträge gehören zum Jahreseinkommen (§ 14 WoGG i. V. m. § 20 EStG),
+    // die App rechnet vorsichtig ohne Sparer-Pauschbetrag. Vermögen: geförderte Altersvorsorge (Riester, Basisrente/Rürup, Betriebsrente)
+    // zählt nicht (§ 12 Abs. 1 Satz 2 Nr. 3 SGB II, § 90 Abs. 2 Nr. 2 SGB XII, WoGVwV 21.37); Lebens- und Rentenversicherungen sind geschützt,
+    // wenn sie der Altersvorsorge dienen (Einzelfall) -> nur „möglich“, wenn sie über die Grenze bringen.
+    kap: { freiSGB2Jahr: 100 },
+    // Familienversicherung (§ 10 SGB V): Gesamteinkommen bis 1/7 der monatlichen Bezugsgröße (2026: 3.955 € -> 565 €; 2027: 4.130 € -> 590 €,
+    // SV-Rechengrößenverordnung 2026, Kabinett 7.10.2026 für 2027), bei Minijob bis zur Minijob-Grenze. Kinder bis 18, ohne Arbeit bis 23,
+    // in Schule, Ausbildung oder Studium bis 25, mit Behinderung ohne Altersgrenze.
+    famvers: { bezug2026: 3955, bezug2027: 4130 },
+    pfaendung: { grund: 1587.4, erste: 597.42, weitere: 332.83, hoechst: 4866.3, gueltigBis: '2027-06-30' },
     // Arbeitslosengeld I (SGB III): 60 %, mit Kind 67 % des pauschalierten Nettos (§ 149); Beitragsbemessungsgrenze 2026: 8.450 € im Monat;
     // Netto grob 60-72 % des Bruttos; Dauer § 147 Abs. 2: [Monate versichert in 5 Jahren, Mindestalter, Monate Anspruch]
     alg: { nebenFrei: 165, sperrWochen: 12, satz: 0.6, satzKind: 0.67, bbg: 8450, netto: [0.6, 0.72], nettoKlein: 0.8, kleinBis: 2000, dauer: [[48, 58, 24], [36, 55, 18], [30, 50, 15], [24, 0, 12], [20, 0, 10], [16, 0, 8], [12, 0, 6]] },
@@ -258,6 +285,180 @@ const Rules = (function () {
   const mk = (id, level, hl, tx) => ({ id, level, hl, tx });
 
   // ---------------------------------------------------------------
+  // Netto aus Brutto (Lohn): Lohnsteuer nach dem amtlichen Programmablaufplan 2026 (BMF-Schreiben vom 12.11.2025,
+  // Anlage 1, endgültig) für den Monatslohn, gesetzlich versichert, ohne Versorgungsbezüge und Einmalzahlungen.
+  // Dazu die Arbeitnehmeranteile zur Sozialversicherung (Minijob, Übergangsbereich nach § 20 Abs. 2a SGB IV, normal).
+  // Rundungen wie im Programmablaufplan (abrunden bzw. aufrunden auf Cent oder Euro); geprüft gegen eine
+  // unabhängige Umsetzung des Programmablaufplans (test/test-netto.js).
+  // ---------------------------------------------------------------
+  const ab2 = (x) => Math.floor(x * 100 + 1e-7) / 100; // auf Cent abrunden
+  const ab0 = (x) => Math.floor(x + 1e-9); // auf Euro abrunden
+  const auf0 = (x) => Math.ceil(x - 1e-9); // auf Euro aufrunden
+  const ab6 = (x) => Math.floor(x * 1e6 + 1e-4) / 1e6;
+  function lohnParam(heute) {
+    const L = R.lohn, j27 = heute >= 2027;
+    return { ...L.pap2026, bbgRV: j27 ? L.bbg2027.rv : L.bbg2026.rv, bbgKV: j27 ? L.bbg2027.kv : L.bbg2026.kv, kvz: j27 ? L.kvz2027 : L.kvz2026,
+      minijob: j27 ? R.minijob2027 : R.minijob, uebergang: L.uebergangBis };
+  }
+  // Einkommensteuertarif § 32a EStG wie UPTAB26 (X = zu versteuerndes Einkommen, bei Steuerklasse III halbiert)
+  function tarif(X, P) {
+    let st;
+    if (X < P.gfb + 1) st = 0;
+    else if (X < P.z2) { const y = ab6((X - P.gfb) / 10000); st = ab0((y * P.a2 + 1400) * y); }
+    else if (X < P.z3) { const y = ab6((X - (P.z2 - 1)) / 10000); st = ab0((y * P.a3 + 2397) * y + P.c3); }
+    else if (X < P.z4) st = ab0(X * 0.42 - P.c4);
+    else st = ab0(X * 0.45 - P.c5);
+    return st;
+  }
+  // Steuerklasse V und VI (MST5_6)
+  function st56(ZZX, P) {
+    const up = (ZX) => {
+      const st1 = tarif(ab0(ZX * 1.25), P), st2 = tarif(ab0(ZX * 0.75), P);
+      return Math.max(ab0(ZX * 0.14), (st1 - st2) * 2);
+    };
+    if (ZZX > P.w2) {
+      let st = up(P.w2);
+      if (ZZX > P.w3) { st = ab0(st + (P.w3 - P.w2) * 0.42); st = ab0(st + (ZZX - P.w3) * 0.45); }
+      else st = ab0(st + (ZZX - P.w2) * 0.42);
+      return st;
+    }
+    let st = up(ZZX);
+    if (ZZX > P.w1) { const vergl = st; const hoch = ab0(up(P.w1) + (ZZX - P.w1) * 0.42); st = Math.min(hoch, vergl); }
+    return st;
+  }
+  // o: { stkl 1-6, kinder (Zahl der Kinderfreibeträge, nur für Soli und Kirchensteuer), kinderlos (Zuschlag Pflege),
+  //      pva (Abschläge Pflege ab dem 2. Kind unter 25, 0-4), sachsen, kirche (Satz 0, 0.08 oder 0.09), heute }
+  function lohnsteuerMonat(brutto, o) {
+    const P = lohnParam(o.heute || 2026);
+    const stkl = [1, 2, 3, 4, 5, 6].indexOf(o.stkl) >= 0 ? o.stkl : 1;
+    const ZRE4J = ab2(brutto * 12);
+    const kvSatz = P.kvBasis + (o.kvz != null ? o.kvz : P.kvz) / 100 / 2;
+    let pvSatz = o.sachsen ? P.pvSachsen : P.pv;
+    pvSatz = o.kinderlos ? pvSatz + P.pvKinderlos : pvSatz - Math.min(4, Math.max(0, o.pva | 0)) * P.pvAbschlag;
+    // Vorsorgepauschale (UPEVP, MVSPKVPV, MVSPHB) mit den Grenzen des Programmablaufplans
+    const vspr = ab2(Math.min(ZRE4J, P.papBbgRV) * P.rvAn);
+    const vspkvpv = ab2(Math.min(ZRE4J, P.papBbgKV) * (kvSatz + pvSatz));
+    let vsp = auf0(vspkvpv + vspr);
+    if (stkl !== 6) {
+      const vsphb = Math.min(1900, ab2(ab2(P.avAn * Math.min(ZRE4J, P.papBbgRV)) + vspkvpv));
+      vsp = Math.max(vsp, auf0(vspr + vsphb));
+    }
+    // Tabellenfreibeträge (MZTABFB)
+    let anp = 0;
+    if (stkl < 6 && ZRE4J > 0) anp = ZRE4J < 1230 ? auf0(ZRE4J) : 1230;
+    const sap = stkl < 6 ? 36 : 0, efa = stkl === 2 ? 4260 : 0, kztab = stkl === 3 ? 2 : 1;
+    const kfbJe = stkl === 4 ? P.kfb / 2 : stkl <= 3 ? P.kfb : 0;
+    const jahresSteuer = (ztabfb) => {
+      let zve = ZRE4J - ztabfb - vsp;
+      if (zve < 1) zve = 0;
+      const X = ab0(zve / kztab);
+      return stkl < 5 ? tarif(X, P) * kztab : st56(X, P);
+    };
+    const ztabfb = ab2(efa + anp + sap);
+    const lstJahr = jahresSteuer(ztabfb);
+    const lst = ab0(lstJahr * 100 / 12) / 100;
+    // Solidaritätszuschlag und Kirchensteuer mit Kinderfreibeträgen (MSOLZ)
+    const kinder = Math.max(0, Number(o.kinder) || 0);
+    const jbmg = kinder > 0 ? jahresSteuer(ab2(ztabfb + ab0(kinder * kfbJe))) : lstJahr;
+    let soli = 0;
+    const frei = P.solzFrei * kztab;
+    if (jbmg > frei) {
+      const solzj = Math.min(ab2(jbmg * 5.5 / 100), ab2((jbmg - frei) * 11.9 / 100));
+      soli = ab0(ab0(solzj * 100) / 12) / 100;
+    }
+    const kist = o.kirche ? Math.round(ab0(jbmg * 100 / 12) / 100 * o.kirche * 100) / 100 : 0;
+    return { lst, soli, kist };
+  }
+  // Arbeitnehmeranteile Sozialversicherung im Monat
+  function svMonat(brutto, o) {
+    const P = lohnParam(o.heute || 2026);
+    if (brutto <= P.minijob) return 0; // Minijob: wie bisher in der App ohne Abzüge (Befreiung von der Rentenversicherung häufig)
+    const kvSatz = P.kvBasis + (o.kvz != null ? o.kvz : P.kvz) / 100 / 2;
+    let pvSatz = o.sachsen ? P.pvSachsen : P.pv;
+    pvSatz = o.kinderlos ? pvSatz + P.pvKinderlos : pvSatz - Math.min(4, Math.max(0, o.pva | 0)) * P.pvAbschlag;
+    // Übergangsbereich: reduzierte beitragspflichtige Einnahme für den Arbeitnehmeranteil (§ 20 Abs. 2a Satz 6 SGB IV)
+    const be = brutto <= P.uebergang ? P.uebergang / (P.uebergang - P.minijob) * (brutto - P.minijob) : brutto;
+    const rvav = Math.min(be, P.bbgRV) * (P.rvAn + P.avAn), kvpv = Math.min(be, P.bbgKV) * (kvSatz + pvSatz);
+    return Math.round((rvav + kvpv) * 100) / 100;
+  }
+  function nettoLohn(brutto, o) {
+    o = o || {};
+    brutto = Math.max(0, Number(brutto) || 0);
+    if (!brutto) return { netto: 0, lst: 0, soli: 0, kist: 0, sv: 0 };
+    const P = lohnParam(o.heute || 2026);
+    // Minijob: Lohnsteuer zahlt in der Regel der Arbeitgeber pauschal (§ 40a EStG)
+    const t = brutto <= P.minijob ? { lst: 0, soli: 0, kist: 0 } : lohnsteuerMonat(brutto, o);
+    const sv = svMonat(brutto, o);
+    return { netto: Math.round((brutto - t.lst - t.soli - t.kist - sv) * 100) / 100, lst: t.lst, soli: t.soli, kist: t.kist, sv };
+  }
+  // Umgekehrt: Brutto zu einem Netto (Halbierung, auf 1 € genau)
+  function bruttoAusNetto(netto, o) {
+    netto = Math.max(0, Number(netto) || 0);
+    if (!netto) return 0;
+    const P = lohnParam((o && o.heute) || 2026);
+    if (netto <= P.minijob) return netto;
+    let lo = netto, hi = netto * 2.5 + 500;
+    for (let i = 0; i < 40 && hi - lo > 0.5; i++) { const m = (lo + hi) / 2; if (nettoLohn(m, o).netto < netto) lo = m; else hi = m; }
+    return Math.round(hi);
+  }
+  // Annahmen, wenn nur das Brutto bekannt ist: Steuerklasse aus dem Haushalt (allein I, allein mit Kind II,
+  // Paar mit zwei Einkommen IV, Paar mit einem Einkommen III), ohne Kirchensteuer; Pflege: kinderlos ohne Kinder im Haushalt
+  function lohnAnnahmen(h, wer) {
+    const kinder = (h.kids || 0) + (h.young || 0);
+    const stkl = h.adults === 2 ? (h.zweiVerdiener ? 4 : (wer === 2 ? 5 : 3)) : kinder > 0 ? 2 : 1;
+    return { stkl, kinder: Math.min(kinder, 6), kinderlos: kinder === 0, pva: Math.max(0, Math.min(4, kinder - 1)), sachsen: h.land === 'SN', heute: h.heute };
+  }
+
+  // Netto schätzen, wenn nur das Brutto bekannt ist (je erwachsene Person nach Einkommensart)
+  function schaetzNetto(inp, adults, kinder, brutto, brutto2) {
+    const heute = inp.heute ? Number(inp.heute) : (new Date().getFullYear() + new Date().getMonth() / 12);
+    const art = (a) => (a === 'selbst' ? 'selbst' : a || 'lohn');
+    const teile = adults === 2 ? [[art(inp.art1), brutto - brutto2], [art(inp.art2), brutto2]] : [[art(inp.art1), brutto]];
+    const zwei = adults === 2 && teile.every((x) => x[0] === 'lohn' && x[1] > 0);
+    const h = { adults, kids: kinder, young: 0, zweiVerdiener: zwei, land: inp.bundesland, heute };
+    return Math.round(teile.reduce((a, [ar, b], i) => {
+      if (!(b > 0)) return a;
+      if (ar === 'lohn') {
+        const o = lohnAnnahmen(h, i + 1);
+        const st = [1, 2, 3, 4, 5, 6].indexOf(Number(inp['stkl' + (i + 1)])) >= 0 ? Number(inp['stkl' + (i + 1)]) : o.stkl;
+        return a + nettoLohn(b, { ...o, stkl: st, kirche: inp['kirche' + (i + 1)] ? (inp.bundesland === 'BY' || inp.bundesland === 'BW' ? 0.08 : 0.09) : 0 }).netto;
+      }
+      if (ar === 'rente') return a + b * 0.89;
+      if (ar === 'selbst') return a + b * 0.8;
+      return a + b;
+    }, 0) * 100) / 100;
+  }
+  // ---------------------------------------------------------------
+  // Pfändung: § 850c ZPO mit der Pfändungsfreigrenzenbekanntmachung 2026 (BGBl. 2026 I Nr. 80, gilt 1.7.2026 bis 30.6.2027).
+  // Monatliches Netto wird wie in der amtlichen Tabelle auf volle 10 € abgerundet; vom Betrag über dem Freibetrag sind
+  // 70 % (keine Unterhaltspflicht), 50 %, 40 %, 30 %, 20 %, 10 % (5 und mehr) pfändbar; über der Höchstgrenze alles.
+  // P-Konto: Grundfreibetrag auf volle 10 € aufgerundet (§ 899 Abs. 1 ZPO), Erhöhungen nach § 902 ZPO mit Bescheinigung.
+  // ---------------------------------------------------------------
+  function pfaendFreibetrag(personen) {
+    const P = R.pfaendung, n = Math.min(5, Math.max(0, personen | 0));
+    return Math.round((P.grund + (n >= 1 ? P.erste : 0) + Math.max(0, n - 1) * P.weitere) * 100) / 100;
+  }
+  function pfaendung(netto, personen) {
+    const P = R.pfaendung, n = Math.min(5, Math.max(0, personen | 0));
+    netto = Math.max(0, Number(netto) || 0);
+    const frei = pfaendFreibetrag(n);
+    const quote = [0.7, 0.5, 0.4, 0.3, 0.2, 0.1][n];
+    const stufe = Math.floor(Math.min(netto, P.hoechst) / 10) * 10;
+    let betrag = stufe > frei ? Math.round((stufe - frei) * quote * 100 + 1e-6) / 100 : 0;
+    if (netto > P.hoechst) betrag = Math.round((betrag + netto - P.hoechst) * 100) / 100;
+    return { pfaendbar: betrag, bleibt: Math.round((netto - betrag) * 100) / 100, frei, ueberHoechst: netto > P.hoechst };
+  }
+  // P-Konto: geschützt im Kalendermonat (Grund + Unterhalt + Kindergeld + Kinderzuschlag); ohne Bescheinigung nur der Grundbetrag
+  function pkonto(o) {
+    const P = R.pfaendung, n = Math.min(5, Math.max(0, o.personen | 0));
+    const sockel = Math.ceil(P.grund / 10) * 10;
+    const unterhalt = Math.round(((n >= 1 ? P.erste : 0) + Math.max(0, n - 1) * P.weitere) * 100) / 100;
+    const kg = Math.max(0, o.kindergeldKinder | 0) * R.kindergeld;
+    const kiz = Math.max(0, Number(o.kiz) || 0);
+    return { sockel, unterhalt, kindergeld: kg, kiz, gesamt: Math.round((sockel + unterhalt + kg + kiz) * 100) / 100 };
+  }
+
+  // ---------------------------------------------------------------
   // Hilfsgrößen
   // ---------------------------------------------------------------
   function derive(inp) {
@@ -279,9 +480,15 @@ const Rules = (function () {
     const brutto = liste ? liste.reduce((a, x) => a + x[1], 0) : num(inp.brutto);
     const brutto2 = adults === 2 && !liste ? Math.min(num(inp.brutto2), brutto) : 0;
     const nettoGiven = liste ? true : inp.netto !== '' && inp.netto != null && num(inp.netto) > 0;
-    const netto = liste ? liste.reduce((a, x) => a + x[2], 0) : nettoGiven ? num(inp.netto) : brutto * 0.8;
+    // Ohne Netto: Lohn nach Lohnsteuer und Beiträgen geschätzt (nettoLohn), Rente abzüglich Kranken- und Pflegeversicherung (etwa 89 %),
+    // Gewinn Selbstständiger grob 80 %; Arbeitslosengeld, Krankengeld, Elterngeld und Werkstattlohn sind schon ausgezahlte Beträge
+    const nettoGeschaetzt = !liste && !nettoGiven && brutto > 0;
+    const nettoOhneKap = liste ? liste.reduce((a, x) => a + x[2], 0) : nettoGiven ? num(inp.netto) : schaetzNetto(inp, adults, kids + young, brutto, brutto2);
     const miete = num(inp.miete);
     const vermoegen = num(inp.vermoegen);
+    const kapJahr = num(inp.kapErtrag);
+    const kapSGB = Math.max(0, kapJahr - R.kap.freiSGB2Jahr) / 12, kapWG = kapJahr / 12;
+    const netto = nettoOhneKap + kapSGB; // Kapitalerträge zählen ohne Freibetrag für Arbeit
     // Unterhalt, den die Kinder vom anderen Elternteil bekommen (im Monat, alle Kinder zusammen); nur mit Kindern im Haushalt
     const unterhalt = kids + young > 0 ? num(inp.unterhalt) : 0;
     const regelElt = adults === 2 ? 2 * R.regelbedarf.partner : R.regelbedarf.alleinstehend;
@@ -368,7 +575,7 @@ const Rules = (function () {
       minijob: heute >= 2027 ? R.minijob2027 : R.minijob, heute,
       lohnVorher: num(inp.lohnVorher), alterJahre: jahr >= 1900 && jahr <= 2010 ? heute - jahr - 0.5 : 0,
       fehlt: { einkommen: !liste && blank(inp.brutto), netto: !liste && blank(inp.netto), vermoegen: blank(inp.vermoegen), miete: blank(inp.miete) && inp.wohnform !== 'heim' && inp.wohnform !== 'eltern' },
-      adults, kids, kidsU6, kids14, young, persons, brutto, brutto2, erwerb: pers[0][0] === 'lohn' || (liste ? liste.some((x) => x[0] === 'lohn') : false), erwerb2: art2 === 'lohn', netto, nettoGiven, miete, vermoegen, unterhalt, regel, regelElt,
+      adults, kids, kidsU6, kids14, young, persons, brutto, brutto2, erwerb: pers[0][0] === 'lohn' || (liste ? liste.some((x) => x[0] === 'lohn') : false), erwerb2: art2 === 'lohn', netto, nettoGiven, nettoGeschaetzt, kapJahr, kapWG, miete, vermoegen, unterhalt, regel, regelElt,
       children: kids + young,
       alleinerz: adults === 1 && kids > 0,
       stufe: [1, 2, 3, 4, 5, 6, 7].indexOf(Number(inp.mietstufe)) >= 0 ? Number(inp.mietstufe) : null,
@@ -574,7 +781,7 @@ const Rules = (function () {
     // Betriebs-, Riester- oder private Rente zählt beim Wohngeld wie Rente, bekommt aber keinen Grundrentenfreibetrag
     const zusWG = zusatzVerteilt(h, pers.map((x) => x[1]));
     const grFrei = h.grundrente33 ? pers.reduce((a, x, i) => a + (x[0] === 'rente' ? Math.min(R.grundrente.sockel + R.grundrente.quote * Math.max(0, x[1] - zusWG[i] - R.grundrente.sockel), R.grundrente.max * R.regelbedarf.alleinstehend) : 0), 0) : 0;
-    const extra = (h.kindZahl || 0) + Math.max(0, (h.kindEink || 0) - R.wgKindFrei) - freib - grFrei;
+    const extra = (h.kindZahl || 0) + Math.max(0, (h.kindEink || 0) - R.wgKindFrei) + (h.kapWG || 0) - freib - grFrei;
     const yPess = Math.max(0, yA + extra - (h.uzWGpess || 0)), yOpt = Math.max(0, yB + extra - (h.uzWGopt || 0));
 
     const grenze = h.stufe
@@ -1165,6 +1372,24 @@ const Rules = (function () {
     return mk(id, 'nein', 'vorausFehlt', [['rundfunk.nein']]);
   }
 
+  // Kostenlose Familienversicherung in der gesetzlichen Krankenversicherung (§ 10 SGB V)
+  function famvers(h) {
+    const id = 'famvers';
+    if (h.adults === 1 && h.kids === 0 && h.young === 0) return mk(id, 'nein', 'vorausFehlt', [['famvers.keine']]);
+    const grenze = Math.round((h.heute >= 2027 ? R.famvers.bezug2027 : R.famvers.bezug2026) / 7);
+    const tx = [];
+    let partnerOk = false;
+    if (h.adults === 2) {
+      const b2 = h.brutto2 || 0, art = h.art2 || '';
+      partnerOk = art === 'ohne' || art === 'eg' || (!art && b2 === 0) || (art === 'lohn' && b2 <= h.minijob) || b2 <= grenze;
+      if (art === 'rente' || art === 'alg' || art === 'kg' || art === 'wfbm') partnerOk = false;
+      tx.push(partnerOk ? ['famvers.partner', { grenze: eur(grenze), mini: eur(h.minijob) }] : ['famvers.partnerNein', { grenze: eur(grenze) }]);
+    }
+    if (h.kids > 0) tx.push(['famvers.kinder']);
+    if (h.young > 0) tx.push(['famvers.jung', { grenze: eur(grenze) }]);
+    if (!partnerOk && h.kids === 0 && h.young === 0) return mk(id, 'nein', 'einkoHoch', tx);
+    return mk(id, 'vielleicht', 'vielleicht', tx);
+  }
   // Befreiung von Zuzahlungen der Krankenkasse (§ 62 SGB V)
   function zuzahlung(h) {
     const id = 'zuzahl';
@@ -1271,7 +1496,7 @@ const Rules = (function () {
     kgBeh: 'Kindergeld für erwachsene Kinder mit Behinderung', emrente: 'Erwerbsminderungsrente',
     eingl: 'Eingliederungshilfe', pausch: 'Behinderten-Pauschbetrag', ausweis: 'Schwerbehindertenausweis und Nachteilsausgleiche',
     blindengeld: 'Landesblindengeld', pflegeplus: 'Verhinderungspflege und Pflegehilfsmittel', arbeit: 'Budget für Arbeit',
-    rundfunk: 'Befreiung vom Rundfunkbeitrag', zuzahl: 'Befreiung von Zuzahlungen', bab: 'Berufsausbildungsbeihilfe',
+    rundfunk: 'Befreiung vom Rundfunkbeitrag', zuzahl: 'Befreiung von Zuzahlungen', famvers: 'Kostenlose Familienversicherung', bab: 'Berufsausbildungsbeihilfe',
     wbs: 'Wohnberechtigungsschein', alg1: 'Arbeitslosengeld I', krankengeld: 'Krankengeld', srente: 'Altersrente für schwerbehinderte Menschen', elterngeld: 'Elterngeld', hzp: 'Hilfe zur Pflege', lpg: 'Landespflegegeld (Bayern)', mutter: 'Mutterschaftsgeld', kkg: 'Kinderkrankengeld', blh: 'Blindenhilfe (Sozialhilfe)', asylblg: 'Asylbewerberleistungen'
   };
   // Unterlagen der neuen Karten: gemeinsame Schlüssel (u.*), damit nicht jede Karte eigene Texte braucht
@@ -1280,7 +1505,7 @@ const Rules = (function () {
     eingl: ['u.ausweis', 'u.arzt', 'u.einkommen'], ausweis: ['u.ausweis', 'u.arzt', 'u.foto'],
     blindengeld: ['u.ausweis', 'u.arzt', 'u.bescheide'], pflegeplus: ['u.versichertenkarte', 'u.pflegebescheid', 'u.kosten'],
     arbeit: ['u.ausweis', 'u.arzt', 'u.vertrag'], rundfunk: ['u.beitragsnr', 'u.bescheide', 'u.ausweis'],
-    zuzahl: ['u.versichertenkarte', 'u.quittungen', 'u.einkommen'], bab: ['u.ausbildungsvertrag', 'u.einkommen', 'u.mietvertrag'],
+    zuzahl: ['u.versichertenkarte', 'u.quittungen', 'u.einkommen'], famvers: ['u.versichertenkarte', 'u.einkommen'], bab: ['u.ausbildungsvertrag', 'u.einkommen', 'u.mietvertrag'],
     wbs: ['u.einkommen', 'u.ausweis', 'u.haushalt'],
     srente: ['u.ausweis', 'u.arzt', 'u.rentenverlauf'],
     elterngeld: ['u.geburtsurkunde', 'u.lohnabrechnung', 'u.steuerid'], hzp: ['u.pflegebescheid', 'u.einkommen', 'u.kosten'], lpg: ['u.pflegebescheid', 'u.ausweis', 'u.bescheide'], mutter: ['u.arzt', 'u.versichertenkarte', 'u.lohnabrechnung'], kkg: ['u.arzt', 'u.versichertenkarte', 'u.lohnabrechnung'], blh: ['u.ausweis', 'u.bescheide', 'u.einkommen'], asylblg: ['u.ausweis', 'u.aufenthalt', 'u.einkommen'],
@@ -1352,6 +1577,16 @@ const Rules = (function () {
   const zustLand = (id, land) => (land && land !== 'BY' && ZUST_LAND[id] ? (ZUST_LAND[id][land] || ZUST_LAND[id]._) : null);
 
   // Hinweise zum Unterhalt, den die Person selbst zahlt (nur wo er die Einstufung beeinflussen kann)
+  // Einmalige Bedarfe, die extra beantragt werden (nicht im Regelsatz): § 24 Abs. 3 SGB II, § 31 SGB XII; Umzug § 22 Abs. 6 SGB II.
+  // Erstausstattung bei Schwangerschaft und Geburt gibt es auch ohne laufende Leistung, wenn das Einkommen dafür nicht reicht (§ 24 Abs. 3 Satz 3).
+  function einmalHinweise(h, results) {
+    results.forEach(function (r) {
+      const offen = r.level === 'ja' || r.level === 'vielleicht';
+      if (r.id === 'ggeld' && offen) r.tx = r.tx.concat([['einmal.sgb2'], ['einmal.umzug']]);
+      else if (r.id === 'ggeld' && r.level === 'nein' && (r.hl === 'bedarfNein' || r.hl === 'einkoHoch') && (h.schwanger || h.baby === 'bald')) r.tx = r.tx.concat([['einmal.ohneBezug']]);
+      if (r.id === 'gsa' && offen) r.tx = r.tx.concat([['einmal.sgb12']]);
+    });
+  }
   function uzHinweise(h, results) {
     if (!(h.uzBetrag > 0)) return;
     const u = { u: eur(h.uzBetrag) };
@@ -1447,7 +1682,26 @@ const Rules = (function () {
     });
   }
 
+  // Ersparnisse mit unsicherem Schutz: Lebens-/Rentenversicherung (alle Karten) und geförderte Altersvorsorge (nur BAföG, dort nicht
+  // ausdrücklich geschützt). Bringt der unsichere Teil eine Karte über die Vermögensgrenze, wird „wahrscheinlich“ zu „möglich“ mit Hinweis.
   function evaluate(inp) {
+    const out = evaluateKern(inp);
+    const lv = num(inp.vermLV), av = num(inp.vermAV);
+    if (!(lv > 0 || av > 0)) return out;
+    const vm = num(inp.vermoegen), ohne = { vermLV: '', vermAV: '' };
+    const p2 = lv > 0 ? evaluateKern(Object.assign({}, inp, ohne, { vermoegen: vm + lv })) : null;
+    const p3 = av > 0 ? evaluateKern(Object.assign({}, inp, ohne, { vermoegen: vm + lv + av })) : null;
+    const zuHoch = (o, id) => !!o && (o.results.find((x) => x.id === id) || {}).hl === 'vermHoch';
+    out.results = out.results.map((r) => {
+      if (r.level === 'nein' || r.level === 'na') return r;
+      const key = zuHoch(p2, r.id) ? 'verm.lvUnsicher' : r.id === 'bafoeg' && zuHoch(p3, r.id) ? 'verm.avUnsicher' : '';
+      if (!key) return r;
+      const level = 'vielleicht';
+      return Object.assign({}, r, { level, hl: r.level === level ? r.hl : level, tx: r.tx.concat([[key]]) });
+    }).sort((a, b) => ORDER[a.level] - ORDER[b.level] || a.order - b.order);
+    return out;
+  }
+  function evaluateKern(inp) {
     const h = derive(inp);
     const kg = kindergeld(h);
     const a1 = alg1(h), krg = krankengeld(h), eg = elterngeld(h);
@@ -1467,8 +1721,9 @@ const Rules = (function () {
     const hzp = hilfeZurPflege(h), blh = blindenhilfe(h);
     const results = [kg, wg, kz, gg, but, uvg, gsa, baf, pf,
       a1, krg, eg, mutterschaftsgeld(h), kinderkrankengeld(h), hzp, landespflegegeld(h), asylbewerber(h), kindergeldBeh(h), erwerbsminderungsrente(h), schwerbRente(h), eingliederungshilfe(h), pauschbetrag(h), ausweis(h), blindengeld(h), blh,
-      pflegeplus(h), budgetArbeit(h), rundfunk(h, gg, gsa, { hzp, blh, baf }), zuzahlung(h), bab(h), wbs(h)].map(angabeFehlt(h)).map((x, i) => ({ ...x, name: NAMES[x.id], order: i, steps: STEPS[x.id] }));
+      pflegeplus(h), budgetArbeit(h), rundfunk(h, gg, gsa, { hzp, blh, baf }), zuzahlung(h), famvers(h), bab(h), wbs(h)].map(angabeFehlt(h)).map((x, i) => ({ ...x, name: NAMES[x.id], order: i, steps: STEPS[x.id] }));
     uzHinweise(h, results);
+    einmalHinweise(h, results);
     plan2027(h, results);
     besondere(h, results);
     const sorted = results.slice().sort((a, b) => ORDER[a.level] - ORDER[b.level] || a.order - b.order);
@@ -1478,7 +1733,7 @@ const Rules = (function () {
     return { h, results: sorted, zusammen: zus };
   }
 
-  return { evaluate, RULES: R, WG, limits, wgYmax, wgMiete, wgCap, wgHeiz, wgBetrag, roman, sgb2Freibetrag, kizWohnanteil, haushaltsFreibetrag, derive, NAMES, STEPS, ZUST_LAND, zustLand };
+  return { evaluate, nettoLohn, bruttoAusNetto, lohnAnnahmen, pfaendung, pfaendFreibetrag, pkonto, RULES: R, WG, limits, wgYmax, wgMiete, wgCap, wgHeiz, wgBetrag, roman, sgb2Freibetrag, kizWohnanteil, haushaltsFreibetrag, derive, NAMES, STEPS, ZUST_LAND, zustLand };
 })();
 
 if (typeof module !== 'undefined') module.exports = Rules;
