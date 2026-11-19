@@ -1081,19 +1081,11 @@
   "sc.vorschau": "Twój formularz (tylko na tym urządzeniu, nie jest zapisywany). Dotknij, aby powiększyć.",
   "sc.vorschauGross": "Powiększ stronę {n}",
   "sc.kopiert": "Skopiowano. Możesz teraz wkleić to do formularza online lub wypełnialnego PDF.",
-  "nav.einstellungen": "Ustawienia",
-  "set.h": "Ustawienia",
   "set.anzeige.h": "Wygląd",
   "set.es.label": "Prosty język",
   "set.es.t": "Krótkie zdania i proste słowa.",
   "set.es.nurDe": "Dostępne tylko po niemiecku",
   "set.eine.t": "W sekcji Świadczenia widać naraz tylko jedno pytanie.",
   "set.about.h": "O aplikacji",
-  "set.version": "Wersja {v}",
-  "set.daten.h": "Dane na tym urządzeniu",
-  "set.del.btn": "Usuń zapisane dane",
-  "set.del.frage": "Naprawdę usunąć wszystko? Twoje zapisane dane i ustawienia na tym urządzeniu znikną.",
-  "set.del.ja": "Tak, usuń",
-  "set.del.nein": "Anuluj",
-  "set.del.done": "Usunięto."
+  "set.version": "Wersja {v}"
 }

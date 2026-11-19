@@ -1081,19 +1081,11 @@
   "sc.vorschau": "Formularul tău (doar pe acest dispozitiv, nu se salvează). Atinge pentru mărire.",
   "sc.vorschauGross": "Mărește pagina {n}",
   "sc.kopiert": "Copiat. Acum îl poți lipi într-un formular online sau într-un PDF completabil.",
-  "nav.einstellungen": "Setări",
-  "set.h": "Setări",
   "set.anzeige.h": "Afișare",
   "set.es.label": "Limbaj simplu",
   "set.es.t": "Propoziții scurte și cuvinte simple.",
   "set.es.nurDe": "Există doar în germană",
   "set.eine.t": "În zona Prestații apare câte o singură întrebare odată.",
   "set.about.h": "Despre aplicație",
-  "set.version": "Versiunea {v}",
-  "set.daten.h": "Date pe acest dispozitiv",
-  "set.del.btn": "Șterge datele salvate",
-  "set.del.frage": "Sigur ștergi tot? Datele salvate și setările de pe acest dispozitiv dispar.",
-  "set.del.ja": "Da, șterge",
-  "set.del.nein": "Anulează",
-  "set.del.done": "Șters."
+  "set.version": "Versiunea {v}"
 }

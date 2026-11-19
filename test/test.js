@@ -258,8 +258,8 @@ check('Leere Eingaben erzeugen ' + KARTEN.length + ' Ergebnisse', ev({}).results
 check('Jedes Ergebnis hat Namen und Schritte', ev({}).results.every((r) => r.name && r.steps && r.steps.wo));
 
 // 12) Sprachen
-const LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro'];
-check('Acht Sprachen vorhanden', LANGS.every((l) => I18N[l]) && Object.keys(I18N).length === 8);
+const LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa', 'ps', 'so'];
+check('Zwölf Sprachen vorhanden', LANGS.every((l) => I18N[l]) && Object.keys(I18N).length === 12);
 const deKeys = Object.keys(I18N.de);
 LANGS.forEach((l) => {
   const ks = Object.keys(I18N[l]);
@@ -272,7 +272,10 @@ LANGS.forEach((l) => {
   const bad = deKeys.filter((k) => ph(I18N.de[k]) !== ph(I18N[l][k]));
   check(l + ': Platzhalter stimmen mit Deutsch überein', bad.length === 0, bad.map((k) => k + ' de=' + ph(I18N.de[k]) + ' ' + l + '=' + ph(I18N[l][k])).join(' | '));
 });
-check('Arabisch läuft rechts nach links, alle anderen links nach rechts', I18N.ar['meta.dir'] === 'rtl' && LANGS.filter((l) => l !== 'ar').every((l) => I18N[l]['meta.dir'] === 'ltr'));
+{ const F = require('../src/fmt.js'); const d = new Date(2026, 10, 19);
+  check('Datum in allen Sprachen gregorianisch mit lateinischen Ziffern (Dari/Paschtu als TT.MM.JJJJ, nie persischer Kalender)', F.datum(d, 'fa') === '19.11.2026' && F.datum(d, 'ps') === '19.11.2026' && LANGS.every((l) => { const x = F.datum(d, l); return /2026/.test(x) && /19/.test(x) && /11/.test(x) && !/[\u0660-\u0669\u06f0-\u06f9]/.test(x); }));
+  check('Beträge in allen Sprachen mit lateinischen Ziffern', LANGS.every((l) => /1\D?674/.test(F.euro(1674, l)) && !/[\u0660-\u0669\u06f0-\u06f9]/.test(F.euro(1674, l)))); }
+check('Arabisch, Dari und Paschtu laufen rechts nach links, alle anderen links nach rechts', ['ar', 'fa', 'ps'].every((l) => I18N[l]['meta.dir'] === 'rtl') && LANGS.filter((l) => !['ar', 'fa', 'ps'].includes(l)).every((l) => I18N[l]['meta.dir'] === 'ltr'));
 
 // Leichte Sprache (einfache Version, Deutsch): kurze Sätze (höchstens 15 Wörter), lange Wörter mit Bindestrich gegliedert
 {

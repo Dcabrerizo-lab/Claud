@@ -1081,19 +1081,11 @@
   "sc.vorschau": "Dein Formular (nur auf diesem Gerät, wird nicht gespeichert). Antippen zum Vergrößern.",
   "sc.vorschauGross": "Seite {n} vergrößern",
   "sc.kopiert": "Kopiert. Du kannst es jetzt in ein Online-Formular oder ein ausfüllbares PDF einfügen.",
-  "nav.einstellungen": "Einstellungen",
-  "set.h": "Einstellungen",
   "set.anzeige.h": "Anzeige",
   "set.es.label": "Einfache Sprache",
   "set.es.t": "Kurze Sätze und einfache Wörter.",
   "set.es.nurDe": "Gibt es nur auf Deutsch",
   "set.eine.t": "Im Bereich Leistungen kommt immer nur eine Frage auf einmal.",
   "set.about.h": "Über die App",
-  "set.version": "Version {v}",
-  "set.daten.h": "Daten auf diesem Gerät",
-  "set.del.btn": "Gespeicherte Angaben löschen",
-  "set.del.frage": "Wirklich alles löschen? Deine gespeicherten Angaben und Einstellungen auf diesem Gerät sind dann weg.",
-  "set.del.ja": "Ja, löschen",
-  "set.del.nein": "Abbrechen",
-  "set.del.done": "Gelöscht."
+  "set.version": "Version {v}"
 }

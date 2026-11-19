@@ -5,7 +5,7 @@
     { id: 'p3', key: 'preset.p3', v: { adults: 2, kids: 1, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'lohn', ek1Brutto: 3200, ek1Netto: 2500, ek2Art: 'ohne', brutto: 3200, brutto2: '', netto: 2500, miete: 1100, mietstufe: '5', vermoegen: 8000, gebJahr: 1988, kinder12: false, unterhaltFehlt: false, ausbildung: '', pflegegrad: '', bezug: {} } }
   ];
   var NATIVE = /*NATIVE*/ false; // true in der Store-App (Android und iOS)
-  var LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro'];
+  var LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa', 'ps', 'so'];
   var MARK = { ja: '✓', vielleicht: '~', nein: '✕', na: '•' };
 
   var state = null; // wird unten mit blankState() belegt (leerer Fragebogen beim ersten Start)
@@ -856,7 +856,7 @@
       '<textarea id="empf-' + esc(id) + '" data-empf="' + esc(id) + '" rows="4" lang="de" dir="ltr" autocomplete="off">' + esc(wert) + '</textarea>' +
       '<p class="small">' + esc(t('f.empfHinweis')) + '</p>' +
       '<p class="small"><a href="' + esc(empfSuchUrl(id)) + '" target="_blank" rel="noopener">' + esc(t('f.empfSuche')) + '</a>' +
-      (Object.prototype.hasOwnProperty.call(empfEdit, id) ? ' · <button type="button" class="linkbtn" data-empf-reset="' + esc(id) + '">' + esc(t('f.empfZurueck')) + '</button>' : '') + '</p></div>';
+      '<span data-empf-resetbox="' + esc(id) + '"' + (Object.prototype.hasOwnProperty.call(empfEdit, id) ? '' : ' hidden') + '> · <button type="button" class="linkbtn" data-empf-reset="' + esc(id) + '">' + esc(t('f.empfZurueck')) + '</button></span></p></div>';
   }
   function mappeTextNeu() {
     $('mappeText').value = briefIds().map(function (r) { return letterText(r.id); }).concat([sheetText()]).join('\n\n----------------------------------------\n\n');
@@ -995,6 +995,8 @@
       var el = ev.target, id = el && el.getAttribute && el.getAttribute('data-empf');
       if (!id) return;
       empfEdit[id] = el.value;
+      var rb = $('mappeBody').querySelector('[data-empf-resetbox="' + id + '"]');
+      if (rb) rb.hidden = false;
       var pre = $('brief-' + id);
       if (pre) pre.textContent = letterText(id);
       mappeTextNeu();
@@ -1056,7 +1058,7 @@
   }
   function pdfPages() {
     // Briefe und Angabenblatt sind deutsch. Die Unterlagenliste folgt der Sprache; Arabisch kann pdf-lib nicht setzen, dort bleibt sie deutsch.
-    var pdfLang = lang === 'ar' ? 'de' : lang, saved = lang;
+    var pdfLang = pdfRtl() ? 'de' : lang, saved = lang;
     var pages = briefIds().map(function (r) { return { blocks: [{ t: 'pre', text: letterText(r.id) }] }; });
     pages.push({ blocks: [{ t: 'pre', text: sheetText() }] });
     lang = pdfLang;
@@ -1092,7 +1094,7 @@
     mappePdfBase64().then(function (b64) {
       return pa[art]({ data: b64, name: 'Antragsmappe.pdf' });
     }).then(function (r) {
-      msg.textContent = art === 'drucken' ? (lang === 'ar' ? t('f.pdfArNote') : '') : (r && r.ort === 'Download' ? t('f.gespeichert', { name: r.name || 'Antragsmappe.pdf' }) : t('f.gespeichertWahl'));
+      msg.textContent = art === 'drucken' ? (pdfRtl() ? t('f.pdfArNote') : '') : (r && r.ort === 'Download' ? t('f.gespeichert', { name: r.name || 'Antragsmappe.pdf' }) : t('f.gespeichertWahl'));
     }, function (e) {
       msg.textContent = /abgebrochen/.test(String(e && e.message || e)) ? '' : t('f.pdfFail');
     });
@@ -1109,7 +1111,7 @@
     }).then(function (r) {
       return sh.share({ title: t('f.mappe'), files: [r.uri] }).then(function () {}, function () {});
     }).then(function () {
-      msg.textContent = lang === 'ar' ? t('f.pdfArNote') : '';
+      msg.textContent = pdfRtl() ? t('f.pdfArNote') : '';
       return fs.deleteFile({ path: name, directory: 'CACHE' }).catch(function () {});
     }).catch(function () { msg.textContent = t('f.pdfFail'); });
   }
@@ -1862,7 +1864,9 @@
     if (!pa.schaetzung) return '';
     return t('pa.stand', { pg: pa.schaetzung.pg ? String(pa.schaetzung.pg) : '0', punkte: String(pa.schaetzung.punkte).replace('.', ','), datum: datumKurz(pa.schaetzung.datum) });
   }
-  function datumKurz(iso) { var b = String(iso || '').split('-').map(Number); try { return new Date(b[0], b[1] - 1, b[2]).toLocaleDateString(lang, { day: '2-digit', month: '2-digit', year: 'numeric' }); } catch (e) { return iso; } }
+  // PDF-Schrift hat keine arabische Schrift: bei Arabisch, Dari und Paschtu wird das PDF deutsch erzeugt
+  function pdfRtl() { return !!(I18N[lang] && I18N[lang]['meta.dir'] === 'rtl'); }
+  function datumKurz(iso) { var b = String(iso || '').split('-').map(Number); try { return Fmt.datum(new Date(b[0], b[1] - 1, b[2]), lang); } catch (e) { return iso; } }
   function paKnopfText() { return t(paEchterPg() ? 'pa.hoeher' : 'pa.start'); }
   function paAnzeigen() {
     if (!$('paStart') || !pa) return;

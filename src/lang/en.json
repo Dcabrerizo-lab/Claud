@@ -1081,19 +1081,11 @@
   "sc.vorschau": "Your form (only on this device, not saved). Tap to enlarge.",
   "sc.vorschauGross": "Enlarge page {n}",
   "sc.kopiert": "Copied. You can now paste it into an online form or a fillable PDF.",
-  "nav.einstellungen": "Settings",
-  "set.h": "Settings",
   "set.anzeige.h": "Display",
   "set.es.label": "Easy language",
   "set.es.t": "Short sentences and simple words.",
   "set.es.nurDe": "Only available in German",
   "set.eine.t": "In the Benefits area, you see only one question at a time.",
   "set.about.h": "About the app",
-  "set.version": "Version {v}",
-  "set.daten.h": "Data on this device",
-  "set.del.btn": "Delete saved details",
-  "set.del.frage": "Really delete everything? Your saved details and settings on this device will be gone.",
-  "set.del.ja": "Yes, delete",
-  "set.del.nein": "Cancel",
-  "set.del.done": "Deleted."
+  "set.version": "Version {v}"
 }
