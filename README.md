@@ -16,8 +16,6 @@ Orientierungscheck für 32 Sozialleistungen in Deutschland (Leistungskarten, Lis
 | Pflege | Pflegegrad selbst einschätzen, Erklärseite zu den Leistungen der Pflegekasse (nur Deutsch) |
 | Sprachen | 13 Sprachen und Einfache Sprache |
 
-In Arbeit (offene Pull Requests, noch nicht in `main`): Renten-Netto nach Kranken- und Pflegeversicherung statt pauschal 89 % (#27), Unterhaltsvorschuss vollständig nach UVG (#30).
-
 [![CI](https://github.com/Dcabrerizo-lab/Claud/actions/workflows/ci.yml/badge.svg)](https://github.com/Dcabrerizo-lab/Claud/actions/workflows/ci.yml)
 
 ## Aufbau
