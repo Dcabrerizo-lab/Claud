@@ -22,13 +22,16 @@ const warte = (ms) => new Promise((r) => setTimeout(r, ms));
   const p = await webview.page();
   const fehler = []; p.on('pageerror', (e) => fehler.push(e.message)); p.on('console', (m) => { if (m.type() === 'error' && !/Share canceled/.test(m.text())) fehler.push(m.text()); }); // „Share canceled“: der Test schließt den Teilen-Dialog selbst
   p.on('response', (r) => { if (r.status() >= 400) fehler.push('Datei fehlt (' + r.status() + '): ' + r.url()); });
-  await p.waitForSelector('#cards', { timeout: 60000 });
+  // Seit den Reitern startet die App auf der Startseite; #cards liegt in der (verborgenen) Ansicht „Leistungen“
+  await p.waitForSelector('#cards', { state: 'attached', timeout: 60000 });
+  await p.evaluate(() => { const b = document.querySelector('#appnav [data-ansicht=leistungen]'); if (b) b.click(); });
   await warte(1500);
   ok('Native App erkannt (Capacitor)', await p.evaluate(() => !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform())));
 
   if (phase === 'vorher') {
     if (await p.isVisible('#firstOk')) await p.evaluate(() => document.getElementById('firstOk').click());
     await p.evaluate(() => document.getElementById('p2').click()); await warte(800);
+    await p.evaluate(() => { const b = document.querySelector('#appnav [data-ansicht=leistungen]'); if (b) b.click(); }); await warte(500);
     ok('Beispiel-Haushalt: alle ' + KARTEN.length + ' Karten', (await p.locator('#cards .card:not(.startcard)').count()) === KARTEN.length);
     await p.fill('#ek1Brutto', '2100'); await p.locator('#ek1Brutto').press('Tab'); await warte(500);
     await p.fill('#p-name', 'Maria Muster'); await p.fill('#p-strasse', 'Hauptstr. 1'); await p.fill('#p-ort', '91054 Erlangen');
