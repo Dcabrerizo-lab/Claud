@@ -382,6 +382,16 @@ Damit niemand denkt, die App decke alles ab:
 - Härtefallleistungen und einmalige Bedarfe im Einzelfall (z. B. Waschmaschine, Umzug, Mietschulden)
 - Schuldnerberatung, Sozialtarife (Strom, Telefon, Kultur), Bildungskredit
 
+## Ersparnisse und Kapitalerträge (alle Karten mit Vermögens- oder Einkommensprüfung)
+
+| Regel | Status | Test |
+|---|---|---|
+| Geförderte Altersvorsorge (Riester, Rürup, Betriebsrente) zählt nicht als Vermögen (§ 12 Abs. 1 Satz 2 Nr. 3 SGB II, § 90 Abs. 2 Nr. 2 SGB XII, WoGVwV 21.37); BAföG: nicht sicher -> „möglich“, wenn sie über die Grenze bringt | ✓ | `verm-av` |
+| Lebens- und Rentenversicherung: geschützt, wenn Altersvorsorge (Einzelfall) -> „möglich“, wenn sie über die Grenze bringt | ◐ | `verm-lv` |
+| Zinsen, Dividenden, Ausschüttungen: Grundsicherungsgeld bis 100 € im Jahr frei (§ 1 Abs. 1 Nr. 3 GrusiGV), Rest Einkommen ohne Freibetrag für Arbeit; ebenso im SGB XII und beim Kinderzuschlag | ✓ | `kap-sgb2` |
+| Wohngeld: Kapitalerträge gehören zum Jahreseinkommen (§ 14 WoGG); vorsichtig ohne Sparer-Pauschbetrag und ohne Pauschalabzug | ◐ | `kap-wg` |
+| ETF und Aktien zum Tageswert, Kursschwankungen | ○ (die Stelle nimmt den Wert am Tag des Antrags; die App nimmt den eingetragenen Wert) | |
+
 ## Netto aus Brutto (§ 39b EStG, Programmablaufplan 2026; SGB IV)
 
 Wird nur das Brutto eingetragen, schätzt die App das Netto. Gilt für alle Karten, die mit dem Netto rechnen.

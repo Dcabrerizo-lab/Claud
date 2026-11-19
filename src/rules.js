@@ -51,6 +51,12 @@ const Rules = (function () {
     },
     // Pfändungsfreigrenzenbekanntmachung 2026 (BGBl. 2026 I Nr. 80 vom 26.3.2026), gilt 1.7.2026 bis 30.6.2027: Grundfreibetrag 1.587,40 €,
     // Erhöhung für die erste unterhaltsberechtigte Person 597,42 €, für die zweite bis fünfte je 332,83 €, Höchstgrenze 4.866,30 € (§ 850c ZPO)
+    // Zinsen, Dividenden, ETF-Ausschüttungen (Jahr): Grundsicherungsgeld bis 100 € im Kalenderjahr frei (§ 1 Abs. 1 Nr. 3 GrusiGV),
+    // der Rest zählt als Einkommen (§ 11 SGB II). Wohngeld: Kapitalerträge gehören zum Jahreseinkommen (§ 14 WoGG i. V. m. § 20 EStG),
+    // die App rechnet vorsichtig ohne Sparer-Pauschbetrag. Vermögen: geförderte Altersvorsorge (Riester, Basisrente/Rürup, Betriebsrente)
+    // zählt nicht (§ 12 Abs. 1 Satz 2 Nr. 3 SGB II, § 90 Abs. 2 Nr. 2 SGB XII, WoGVwV 21.37); Lebens- und Rentenversicherungen sind geschützt,
+    // wenn sie der Altersvorsorge dienen (Einzelfall) -> nur „möglich“, wenn sie über die Grenze bringen.
+    kap: { freiSGB2Jahr: 100 },
     pfaendung: { grund: 1587.4, erste: 597.42, weitere: 332.83, hoechst: 4866.3, gueltigBis: '2027-06-30' },
     // Arbeitslosengeld I (SGB III): 60 %, mit Kind 67 % des pauschalierten Nettos (§ 149); Beitragsbemessungsgrenze 2026: 8.450 € im Monat;
     // Netto grob 60-72 % des Bruttos; Dauer § 147 Abs. 2: [Monate versichert in 5 Jahren, Mindestalter, Monate Anspruch]
@@ -473,9 +479,12 @@ const Rules = (function () {
     // Ohne Netto: Lohn nach Lohnsteuer und Beiträgen geschätzt (nettoLohn), Rente abzüglich Kranken- und Pflegeversicherung (etwa 89 %),
     // Gewinn Selbstständiger grob 80 %; Arbeitslosengeld, Krankengeld, Elterngeld und Werkstattlohn sind schon ausgezahlte Beträge
     const nettoGeschaetzt = !liste && !nettoGiven && brutto > 0;
-    const netto = liste ? liste.reduce((a, x) => a + x[2], 0) : nettoGiven ? num(inp.netto) : schaetzNetto(inp, adults, kids + young, brutto, brutto2);
+    const nettoOhneKap = liste ? liste.reduce((a, x) => a + x[2], 0) : nettoGiven ? num(inp.netto) : schaetzNetto(inp, adults, kids + young, brutto, brutto2);
     const miete = num(inp.miete);
     const vermoegen = num(inp.vermoegen);
+    const kapJahr = num(inp.kapErtrag);
+    const kapSGB = Math.max(0, kapJahr - R.kap.freiSGB2Jahr) / 12, kapWG = kapJahr / 12;
+    const netto = nettoOhneKap + kapSGB; // Kapitalerträge zählen ohne Freibetrag für Arbeit
     // Unterhalt, den die Kinder vom anderen Elternteil bekommen (im Monat, alle Kinder zusammen); nur mit Kindern im Haushalt
     const unterhalt = kids + young > 0 ? num(inp.unterhalt) : 0;
     const regelElt = adults === 2 ? 2 * R.regelbedarf.partner : R.regelbedarf.alleinstehend;
@@ -562,7 +571,7 @@ const Rules = (function () {
       minijob: heute >= 2027 ? R.minijob2027 : R.minijob, heute,
       lohnVorher: num(inp.lohnVorher), alterJahre: jahr >= 1900 && jahr <= 2010 ? heute - jahr - 0.5 : 0,
       fehlt: { einkommen: !liste && blank(inp.brutto), netto: !liste && blank(inp.netto), vermoegen: blank(inp.vermoegen), miete: blank(inp.miete) && inp.wohnform !== 'heim' && inp.wohnform !== 'eltern' },
-      adults, kids, kidsU6, kids14, young, persons, brutto, brutto2, erwerb: pers[0][0] === 'lohn' || (liste ? liste.some((x) => x[0] === 'lohn') : false), erwerb2: art2 === 'lohn', netto, nettoGiven, nettoGeschaetzt, miete, vermoegen, unterhalt, regel, regelElt,
+      adults, kids, kidsU6, kids14, young, persons, brutto, brutto2, erwerb: pers[0][0] === 'lohn' || (liste ? liste.some((x) => x[0] === 'lohn') : false), erwerb2: art2 === 'lohn', netto, nettoGiven, nettoGeschaetzt, kapJahr, kapWG, miete, vermoegen, unterhalt, regel, regelElt,
       children: kids + young,
       alleinerz: adults === 1 && kids > 0,
       stufe: [1, 2, 3, 4, 5, 6, 7].indexOf(Number(inp.mietstufe)) >= 0 ? Number(inp.mietstufe) : null,
@@ -768,7 +777,7 @@ const Rules = (function () {
     // Betriebs-, Riester- oder private Rente zählt beim Wohngeld wie Rente, bekommt aber keinen Grundrentenfreibetrag
     const zusWG = zusatzVerteilt(h, pers.map((x) => x[1]));
     const grFrei = h.grundrente33 ? pers.reduce((a, x, i) => a + (x[0] === 'rente' ? Math.min(R.grundrente.sockel + R.grundrente.quote * Math.max(0, x[1] - zusWG[i] - R.grundrente.sockel), R.grundrente.max * R.regelbedarf.alleinstehend) : 0), 0) : 0;
-    const extra = (h.kindZahl || 0) + Math.max(0, (h.kindEink || 0) - R.wgKindFrei) - freib - grFrei;
+    const extra = (h.kindZahl || 0) + Math.max(0, (h.kindEink || 0) - R.wgKindFrei) + (h.kapWG || 0) - freib - grFrei;
     const yPess = Math.max(0, yA + extra - (h.uzWGpess || 0)), yOpt = Math.max(0, yB + extra - (h.uzWGopt || 0));
 
     const grenze = h.stufe
@@ -1641,7 +1650,26 @@ const Rules = (function () {
     });
   }
 
+  // Ersparnisse mit unsicherem Schutz: Lebens-/Rentenversicherung (alle Karten) und geförderte Altersvorsorge (nur BAföG, dort nicht
+  // ausdrücklich geschützt). Bringt der unsichere Teil eine Karte über die Vermögensgrenze, wird „wahrscheinlich“ zu „möglich“ mit Hinweis.
   function evaluate(inp) {
+    const out = evaluateKern(inp);
+    const lv = num(inp.vermLV), av = num(inp.vermAV);
+    if (!(lv > 0 || av > 0)) return out;
+    const vm = num(inp.vermoegen), ohne = { vermLV: '', vermAV: '' };
+    const p2 = lv > 0 ? evaluateKern(Object.assign({}, inp, ohne, { vermoegen: vm + lv })) : null;
+    const p3 = av > 0 ? evaluateKern(Object.assign({}, inp, ohne, { vermoegen: vm + lv + av })) : null;
+    const zuHoch = (o, id) => !!o && (o.results.find((x) => x.id === id) || {}).hl === 'vermHoch';
+    out.results = out.results.map((r) => {
+      if (r.level === 'nein' || r.level === 'na') return r;
+      const key = zuHoch(p2, r.id) ? 'verm.lvUnsicher' : r.id === 'bafoeg' && zuHoch(p3, r.id) ? 'verm.avUnsicher' : '';
+      if (!key) return r;
+      const level = 'vielleicht';
+      return Object.assign({}, r, { level, hl: r.level === level ? r.hl : level, tx: r.tx.concat([[key]]) });
+    }).sort((a, b) => ORDER[a.level] - ORDER[b.level] || a.order - b.order);
+    return out;
+  }
+  function evaluateKern(inp) {
     const h = derive(inp);
     const kg = kindergeld(h);
     const a1 = alg1(h), krg = krankengeld(h), eg = elterngeld(h);

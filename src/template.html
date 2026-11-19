@@ -427,6 +427,7 @@
   .wahl b { font-size: 1.08em; }
   .wahl span { opacity: .85; font-size: .93em; }
   .wahl[aria-pressed="true"], .wahl.vorschlag { border: 2px solid var(--accent); }
+  .wahl[aria-pressed="true"] b::before { content: "✓ "; color: var(--accent); }
   .wahl-raster .wahl { text-align: center; place-items: center; font-size: 1.15em; }
   .pf-frage { font-size: 1.15em; font-weight: 600; margin: 14px 0 4px; }
   .pf-zahl { font-size: 1.6em; font-weight: 700; margin: 6px 0; }
@@ -1016,6 +1017,7 @@
               <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="vermoegen"><span aria-hidden="true">€</span></div>
               <span class="hint" data-t="verm.hint"></span>
             </div>
+            <div class="nh-wrap" id="vaF"><button type="button" class="btn ghost nh-btn" id="vaBtn" aria-expanded="false" aria-controls="va" data-t="va.btn"></button><p class="info" id="vaInfo" role="status" hidden></p><div class="nh" id="va" hidden></div></div>
             <div class="field">
               <label for="autoWert" data-t="auto.label"></label>
               <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="autoWert"><span aria-hidden="true">€</span></div>

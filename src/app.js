@@ -420,6 +420,7 @@
     $('gebJahr').value = state.gebJahr || '';
     CHECKS.forEach(function (k) { $(k).checked = !!state[k]; });
     BEZUG.forEach(function (k) { $('b-' + k).checked = !!state.bezug[k]; });
+    if ($('vaInfo')) vaInfo();
   }
 
   function touched() {
@@ -1791,6 +1792,67 @@
       $('ek' + i + 'NhBtn').setAttribute('aria-expanded', String(!box.hidden));
       if (!box.hidden) { nhSchritt[i] = 0; nettoHelfer(i); var f = box.querySelector('button'); if (f) f.focus(); }
     });
+  });
+
+  // ----- Ersparnisse aufteilen: erst antippen, was man hat (große Knöpfe), dann Beträge; zählend, geschützt, Einzelfall, Zinsen -----
+  var VA = [['konto', 'va.konto', '', 'z'], ['spar', 'va.spar', '', 'z'], ['etf', 'va.etf', 'va.etf.t', 'z'], ['bauspar', 'va.bauspar', '', 'z'],
+    ['lv', 'va.lv', 'va.lv.t', 'u'], ['av', 'va.av', 'va.av.t', 'g'], ['kap', 'va.kap', 'va.kap.t', 'k']];
+  var va = { schritt: 0, wahl: {}, wert: {} };
+  function vaInfo() {
+    var g = Number(state.vermAV) || 0, u = Number(state.vermLV) || 0, k = Number(state.kapErtrag) || 0;
+    $('vaInfo').hidden = !(g || u || k);
+    $('vaInfo').textContent = g || u || k ? t('va.info', { g: { eur: g }, u: { eur: u }, k: { eur: k } }) : '';
+  }
+  function vaRender() {
+    var box = $('va'); box.innerHTML = '';
+    var p = function (txt, cls) { var e = document.createElement('p'); e.className = cls || ''; e.textContent = txt; box.appendChild(e); return e; };
+    var rtl = I18N[lang] && I18N[lang]['meta.dir'] === 'rtl';
+    if (va.schritt === 0) {
+      p(t('va.wahl'), 'pf-frage');
+      var l = document.createElement('div'); l.className = 'wahl-liste'; box.appendChild(l);
+      VA.forEach(function (x) {
+        l.appendChild(nhKnopf('wahl', '<b>' + esc(t(x[1])) + '</b>' + (x[2] ? '<span>' + esc(t(x[2])) + '</span>' : ''), !!va.wahl[x[0]], function () { va.wahl[x[0]] = !va.wahl[x[0]]; this.setAttribute('aria-pressed', String(!!va.wahl[x[0]])); }));
+      });
+      var d = document.createElement('div'); d.className = 'btns'; box.appendChild(d);
+      d.appendChild(nhKnopf('btn', esc(t('pf.weiter')), null, function () { if (!VA.some(function (x) { return va.wahl[x[0]]; })) return; va.schritt = 1; vaRender(); var f = box.querySelector('input'); if (f) f.focus(); }));
+      return;
+    }
+    if (va.schritt === 1) {
+      p(t('va.betraege'), 'pf-frage');
+      VA.forEach(function (x) {
+        if (!va.wahl[x[0]]) return;
+        var f = document.createElement('div'); f.className = 'field';
+        f.innerHTML = '<label for="va-' + x[0] + '">' + esc(t(x[1])) + '</label><div class="money"><input type="text" inputmode="decimal" autocomplete="off" id="va-' + x[0] + '"><span aria-hidden="true">€</span></div>' + (x[2] ? '<span class="hint">' + esc(t(x[2])) + '</span>' : '');
+        box.appendChild(f);
+        var inp = f.querySelector('input'); if (va.wert[x[0]]) inp.value = String(va.wert[x[0]]).replace('.', ',');
+        inp.addEventListener('input', function () { var v = parseAmount(inp.value); va.wert[x[0]] = v === '' ? 0 : v; });
+      });
+      var d1 = document.createElement('div'); d1.className = 'btns'; box.appendChild(d1);
+      d1.appendChild(nhKnopf('btn', esc(t('pf.weiter')), null, function () { va.schritt = 2; vaRender(); box.querySelector('.pf-frage').focus(); }));
+      d1.appendChild(nhKnopf('btn ghost', esc(t('nh.zurueck')), null, function () { va.schritt = 0; vaRender(); }));
+      return;
+    }
+    var sum = function (art) { return VA.reduce(function (a, x) { return a + (x[3] === art && va.wahl[x[0]] ? Number(va.wert[x[0]]) || 0 : 0); }, 0); };
+    var z = sum('z'), u = sum('u'), g = sum('g'), k = sum('k');
+    p(t('va.erg'), 'pf-frage').setAttribute('tabindex', '-1');
+    var tab = document.createElement('table'); tab.className = 'pf-tab';
+    [['va.zaehlt', z], ['va.unsicher', u], ['va.geschuetzt', g], ['va.kapZeile', k]].forEach(function (r) {
+      if (!r[1] && r[0] !== 'va.zaehlt') return;
+      var tr = tab.insertRow(); tr.insertCell().textContent = t(r[0]); tr.insertCell().textContent = Fmt.euro(Math.round(r[1]), lang, rtl);
+    });
+    box.appendChild(tab);
+    p(t('va.erkl'), 'small muted');
+    var d2 = document.createElement('div'); d2.className = 'btns'; box.appendChild(d2);
+    d2.appendChild(nhKnopf('btn', esc(t('nh.uebernehmen')), null, function () {
+      state.vermLV = u || ''; state.vermAV = g || ''; state.kapErtrag = k || '';
+      var f = $('vermoegen'); f.value = String(Math.round(z)); f.dispatchEvent(new Event('input', { bubbles: true }));
+      box.hidden = true; $('vaBtn').setAttribute('aria-expanded', 'false'); va.schritt = 0; vaInfo(); touchedSoon(); f.focus();
+    }));
+    d2.appendChild(nhKnopf('btn ghost', esc(t('nh.zurueck')), null, function () { va.schritt = 1; vaRender(); }));
+  }
+  $('vaBtn').addEventListener('click', function () {
+    var box = $('va'); box.hidden = !box.hidden; $('vaBtn').setAttribute('aria-expanded', String(!box.hidden));
+    if (!box.hidden) { va.schritt = 0; vaRender(); var f = box.querySelector('button'); if (f) f.focus(); }
   });
 
   // ----- Pfändung: erst wählen (Lohn oder Konto), dann Schritt für Schritt; Rechnung in Rules.pfaendung / Rules.pkonto -----
