@@ -38,16 +38,24 @@ const Rules = (function () {
     // Netto aus Brutto (Lohn). Programmablaufplan Lohnsteuer 2026 (BMF 12.11.2025, endgültig): Tarif § 32a EStG 2026, Grundfreibetrag 12.348 €,
     // Grenzen der Steuerklassen V/VI, Kinderfreibetrag 9.756 €, Soli-Freigrenze 20.350 €, Grenzen der Vorsorgepauschale (BBG 2026).
     // 2027: Programmablaufplan 2027 bei Stand 19.11.2026 nur als Entwurf, Tarifänderung noch im Gesetzgebungsverfahren -> Steuer weiter nach 2026.
-    // Sozialversicherung (Arbeitnehmeranteil): RV 9,3 %, AV 1,3 %, KV 7,0 % + halber durchschnittlicher Zusatzbeitrag (2026 und 2027: 2,9 %,
+    // Sozialversicherung (Arbeitnehmeranteil): RV 9,3 %, AV 1,3 %, KV 7,3 % (halber allgemeiner Beitragssatz 14,6 %, § 241 und § 249 SGB V) + halber durchschnittlicher Zusatzbeitrag (2026 und 2027: 2,9 %,
     // BMG-Bekanntmachungen 7.11.2025 und 30.10.2026), PV 1,8 % (Sachsen 2,3 %), kinderlos +0,6, ab dem 2. Kind je -0,25 (§ 55 SGB XI).
     // Beitragsbemessungsgrenzen im Monat: 2026 RV 8.450 €, KV 5.812,50 € (SVBezGrV 2026); 2027 RV 8.850 €, KV 6.375 € (Kabinett 7.10.2026).
     // Übergangsbereich bis 2.000 € (§ 20 Abs. 2 SGB IV).
+    // kvBasis 7,0 % (halber ermäßigter Beitragssatz) nur für die Vorsorgepauschale der Lohnsteuer (Programmablaufplan), kvAn 7,3 % für den echten Beitrag.
+    // Rente (gesetzlich pflichtversichert, abgerufen 19.11.2026): KV allgemeiner Beitragssatz und Zusatzbeitrag aus der Rente (§ 247 SGB V),
+    // davon trägt die Rentenversicherung die Hälfte (§ 249a SGB V) -> 7,3 % + halber Zusatzbeitrag. Pflege trägt die rentenbeziehende Person allein
+    // (§ 59 Abs. 1 SGB XI): 3,6 % seit der Beitragssatz-Anpassung zum 1.1.2025 (der Gesetzestext § 55 Abs. 1 SGB XI nennt noch 3,4 %),
+    // Abschlag 0,25 je Kind vom 2. bis 5. Kind unter 25 (§ 55 Abs. 3 SGB XI). Netto aus Brutto ohne Kinderlosen-Zuschlag und ohne Steuer
+    // (vorsichtig: eher höheres Netto); Brutto aus Netto ohne Kinder im Haushalt mit Zuschlag 0,6 (vorsichtig: eher höheres Brutto).
+    // Nicht eingerechnet: arbeitende Altersrentner (Lohn ohne RV/AV-Beitrag, KV 7,0 %), Pflegereform 2027 (Entwurf: Kinderlosen-Zuschlag 0,9).
     lohn: {
       pap2026: { gfb: 12348, z2: 17800, a2: 914.51, z3: 69879, a3: 173.1, c3: 1034.87, z4: 277826, c4: 11135.63, c5: 19470.38,
         w1: 14071, w2: 34939, w3: 222260, kfb: 9756, solzFrei: 20350, papBbgRV: 101400, papBbgKV: 69750,
-        rvAn: 0.093, avAn: 0.013, kvBasis: 0.07, pv: 0.018, pvSachsen: 0.023, pvKinderlos: 0.006, pvAbschlag: 0.0025 },
+        rvAn: 0.093, avAn: 0.013, kvBasis: 0.07, kvAn: 0.073, pv: 0.018, pvSachsen: 0.023, pvKinderlos: 0.006, pvAbschlag: 0.0025 },
       bbg2026: { rv: 8450, kv: 5812.5 }, bbg2027: { rv: 8850, kv: 6375 },
-      kvz2026: 2.9, kvz2027: 2.9, uebergangBis: 2000
+      kvz2026: 2.9, kvz2027: 2.9, uebergangBis: 2000,
+      rente: { kvHalb: 0.073, pv: 0.036 }
     },
     // Pfändungsfreigrenzenbekanntmachung 2026 (BGBl. 2026 I Nr. 80 vom 26.3.2026), gilt 1.7.2026 bis 30.6.2027: Grundfreibetrag 1.587,40 €,
     // Erhöhung für die erste unterhaltsberechtigte Person 597,42 €, für die zweite bis fünfte je 332,83 €, Höchstgrenze 4.866,30 € (§ 850c ZPO)
@@ -179,7 +187,9 @@ const Rules = (function () {
     wgWerbung: { lohn: 1230, rente: 102 },
     // Pauschalabzug beim Wohngeld (§ 16 WoGG) je Einkommensart: [kleinster, größter] üblicher Abzug
     wgAbzug: { lohn: [0.1, 0.3], rente: [0.1, 0.2], kg: [0.1, 0.2], alg: [0, 0], eg: [0, 0], wfbm: [0, 0.1], ohne: [0, 0] },
-    // Wenn nur die Auszahlung bekannt ist: Rente netto ≈ 0,89 × Brutto, also 90 % (bzw. 80 %) Brutto ≈ 100 % (bzw. 94 %) der Auszahlung; Lohn netto 70-80 %
+    // Wenn nur die Auszahlung bekannt ist: Rente netto ≈ 0,87 bis 0,88 × Brutto (nettoRente), also 90 % (bzw. 80 %) Brutto ≈ 103 % (bzw. 91 %)
+    // der Auszahlung. Die Werte [0, 0,06] stammen aus der alten Annahme 0,89 und sind deshalb nur ungefähr (Prüfung 19.11.2026, Anpassung offen);
+    // Lohn netto 70-80 %
     wgAbzugAuszahlung: { lohn: [0, 0.12], rente: [0, 0.06], kg: [0, 0.06], alg: [0, 0], eg: [0, 0], wfbm: [0, 0.05], ohne: [0, 0] },
     // Grundrentenfreibetrag (§ 82a SGB XII): bei 33 Jahren Grundrentenzeiten bleiben von der Rente 100 € und 30 % des Rests frei, höchstens 50 % der Regelbedarfsstufe 1
     grundrente: { sockel: 100, quote: 0.3, max: 0.5 },
@@ -376,7 +386,7 @@ const Rules = (function () {
   function svMonat(brutto, o) {
     const P = lohnParam(o.heute || 2026);
     if (brutto <= P.minijob) return 0; // Minijob: wie bisher in der App ohne Abzüge (Befreiung von der Rentenversicherung häufig)
-    const kvSatz = P.kvBasis + (o.kvz != null ? o.kvz : P.kvz) / 100 / 2;
+    const kvSatz = P.kvAn + (o.kvz != null ? o.kvz : P.kvz) / 100 / 2;
     let pvSatz = o.sachsen ? P.pvSachsen : P.pv;
     pvSatz = o.kinderlos ? pvSatz + P.pvKinderlos : pvSatz - Math.min(4, Math.max(0, o.pva | 0)) * P.pvAbschlag;
     // Übergangsbereich: reduzierte beitragspflichtige Einnahme für den Arbeitnehmeranteil (§ 20 Abs. 2a Satz 6 SGB IV)
@@ -393,6 +403,25 @@ const Rules = (function () {
     const t = brutto <= P.minijob ? { lst: 0, soli: 0, kist: 0 } : lohnsteuerMonat(brutto, o);
     const sv = svMonat(brutto, o);
     return { netto: Math.round((brutto - t.lst - t.soli - t.kist - sv) * 100) / 100, lst: t.lst, soli: t.soli, kist: t.kist, sv };
+  }
+  // Rente netto: Kranken- und Pflegeversicherung der Rentnerinnen und Rentner (§ 247 SGB V, § 59 und § 55 SGB XI), bis zur Beitragsbemessungsgrenze KV.
+  // o.kinder = Kinder im Haushalt (Näherung für Kinder unter 25); o.kinderlos = mit Zuschlag 0,6 (§ 55 Abs. 3 SGB XI). Ohne Steuer.
+  function nettoRente(brutto, o) {
+    o = o || {};
+    brutto = Math.max(0, Number(brutto) || 0);
+    const P = lohnParam(o.heute || 2026), RR = R.lohn.rente;
+    const pvR = o.kinderlos ? RR.pv + P.pvKinderlos : RR.pv - P.pvAbschlag * Math.min(4, Math.max(0, (o.kinder | 0) - 1));
+    const satz = RR.kvHalb + (o.kvz != null ? o.kvz : P.kvz) / 200 + pvR;
+    return Math.round((brutto - Math.min(brutto, P.bbgKV) * satz) * 100) / 100;
+  }
+  // Umgekehrt: Brutto zu einer Rente netto (auf 1 € genau). Ohne Kinder im Haushalt mit Kinderlosen-Zuschlag (vorsichtig: eher höheres Brutto).
+  function bruttoAusNettoRente(netto, o) {
+    netto = Math.max(0, Number(netto) || 0);
+    if (!netto) return 0;
+    o = Object.assign({}, o, { kinderlos: !((o && o.kinder) > 0) });
+    let lo = netto, hi = netto * 1.5 + 500;
+    for (let i = 0; i < 40 && hi - lo > 0.5; i++) { const m = (lo + hi) / 2; if (nettoRente(m, o) < netto) lo = m; else hi = m; }
+    return Math.round(hi);
   }
   // Umgekehrt: Brutto zu einem Netto (Halbierung, auf 1 € genau)
   function bruttoAusNetto(netto, o) {
@@ -427,7 +456,7 @@ const Rules = (function () {
         const st = [1, 2, 3, 4, 5, 6].indexOf(Number(inp['stkl' + (i + 1)])) >= 0 ? Number(inp['stkl' + (i + 1)]) : o.stkl;
         return a + nettoLohn(b, { ...o, stkl: st, kirche: inp['kirche' + (i + 1)] ? (inp.bundesland === 'BY' || inp.bundesland === 'BW' ? 0.08 : 0.09) : 0 }).netto;
       }
-      if (ar === 'rente') return a + b * 0.89;
+      if (ar === 'rente') return a + nettoRente(b, { kinder, heute });
       if (ar === 'selbst') return a + b * 0.8;
       return a + b;
     }, 0) * 100) / 100;
@@ -484,7 +513,7 @@ const Rules = (function () {
     const brutto = liste ? liste.reduce((a, x) => a + x[1], 0) : num(inp.brutto);
     const brutto2 = adults === 2 && !liste ? Math.min(num(inp.brutto2), brutto) : 0;
     const nettoGiven = liste ? true : inp.netto !== '' && inp.netto != null && num(inp.netto) > 0;
-    // Ohne Netto: Lohn nach Lohnsteuer und Beiträgen geschätzt (nettoLohn), Rente abzüglich Kranken- und Pflegeversicherung (etwa 89 %),
+    // Ohne Netto: Lohn nach Lohnsteuer und Beiträgen geschätzt (nettoLohn), Rente abzüglich Kranken- und Pflegeversicherung (nettoRente, etwa 88 %),
     // Gewinn Selbstständiger grob 80 %; Arbeitslosengeld, Krankengeld, Elterngeld und Werkstattlohn sind schon ausgezahlte Beträge
     const nettoGeschaetzt = !liste && !nettoGiven && brutto > 0;
     const nettoOhneKap = liste ? liste.reduce((a, x) => a + x[2], 0) : nettoGiven ? num(inp.netto) : schaetzNetto(inp, adults, kids + young, brutto, brutto2);
@@ -1742,7 +1771,7 @@ const Rules = (function () {
     return { h, results: sorted, zusammen: zus };
   }
 
-  return { evaluate, nettoLohn, bruttoAusNetto, lohnAnnahmen, pfaendung, pfaendFreibetrag, pkonto, RULES: R, WG, limits, wgYmax, wgMiete, wgCap, wgHeiz, wgBetrag, roman, sgb2Freibetrag, kizWohnanteil, haushaltsFreibetrag, derive, NAMES, STEPS, ZUST_LAND, zustLand };
+  return { evaluate, nettoLohn, bruttoAusNetto, nettoRente, bruttoAusNettoRente, lohnAnnahmen, pfaendung, pfaendFreibetrag, pkonto, RULES: R, WG, limits, wgYmax, wgMiete, wgCap, wgHeiz, wgBetrag, roman, sgb2Freibetrag, kizWohnanteil, haushaltsFreibetrag, derive, NAMES, STEPS, ZUST_LAND, zustLand };
 })();
 
 if (typeof module !== 'undefined') module.exports = Rules;

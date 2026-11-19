@@ -407,9 +407,14 @@ Wird nur das Brutto eingetragen, schätzt die App das Netto. Gilt für alle Kart
 |---|---|---|
 | Lohnsteuer, Solidaritätszuschlag und Kirchensteuer wie der amtliche Programmablaufplan 2026 (BMF 12.11.2025), Monatslohn, gesetzlich versichert | ✓ | `netto-pap` |
 | Steuerklassen I bis VI (II mit Entlastungsbetrag, III Splitting, V/VI eigene Formel) | ✓ | `netto-stkl` |
-| Arbeitnehmeranteile: RV 9,3 %, AV 1,3 %, KV 7,0 % + halber Zusatzbeitrag 2,9 %, PV 1,8 % (Sachsen 2,3 %), kinderlos +0,6, ab 2. Kind −0,25; Übergangsbereich bis 2.000 € (§ 20 Abs. 2a SGB IV); Minijob ohne Abzug | ✓ | `netto-sv` |
+| Arbeitnehmeranteile: RV 9,3 %, AV 1,3 %, KV 7,3 % + halber Zusatzbeitrag 2,9 %, PV 1,8 % (Sachsen 2,3 %), kinderlos +0,6, ab 2. Kind −0,25; Übergangsbereich bis 2.000 € (§ 20 Abs. 2a SGB IV); Minijob ohne Abzug | ✓ | `netto-sv` |
 | Steuerklasse ohne Angabe: allein I, allein mit Kind II, Paar mit einem Einkommen III (vorsichtig, auch wenn nicht verheiratet), mit zwei Einkommen IV; ohne Kirchensteuer; Nutzer kann im Netto-Helfer wählen | ◐ | `netto-annahme` |
 | Brutto aus Netto (Lohn), wenn nur die Auszahlung bekannt ist | ✓ | `netto-umkehr` |
+| Krankenversicherung Arbeitnehmer: halber allgemeiner Beitragssatz 7,3 % (§ 241, § 249 SGB V) + halber Zusatzbeitrag; der ermäßigte Satz 7,0 % nur in der Vorsorgepauschale der Lohnsteuer | ✓ | `netto-kv` |
+| Rente netto (gesetzlich pflichtversichert): KV allgemeiner Satz + Zusatzbeitrag (§ 247 SGB V), davon die Hälfte durch die Rentenversicherung (§ 249a SGB V) = 7,3 % + halber Zusatzbeitrag; Pflege 3,6 % allein (§ 59 Abs. 1 SGB XI; Satz seit Beitragssatz-Anpassung 1.1.2025, Gesetzestext § 55 Abs. 1 nennt noch 3,4 %), ab 2. Kind −0,25 bis 5. Kind (§ 55 Abs. 3 SGB XI, Kinder im Haushalt als Näherung), bis Beitragsgrenze KV; Netto ohne Kinderlosen-Zuschlag und ohne Steuer (vorsichtig); Brutto aus Rente netto ohne Kinder mit Zuschlag 0,6 (vorsichtig) | ◐ | `netto-rente` |
+| Paar: eine Person mit Netto, die andere nur mit Brutto: fehlendes Netto je Person geschätzt (Lohn, Rente, Selbstständige 80 %); allein mit zweitem Einkommen ebenso | ✓ | `netto-person` |
+| Arbeitende Altersrentner: Lohn ohne Renten- und Arbeitslosenversicherung, KV 7,0 % (ermäßigt) | ○ (selten in der Zielgruppe; Netto von der Lohnabrechnung geht vor; App rechnet mit vollen Beiträgen, also eher zu wenig Netto und eher zu viel Leistung) | |
+| Pflegereform 2027: Kinderlosen-Zuschlag 0,9 % statt 0,6 % | ○ (bei Stand 19.11.2026 nur Entwurf; nach Verkündung nachtragen) | |
 | 2027: Programmablaufplan 2027 und Tarif 2027 bei Stand 19.11.2026 noch Entwurf; Steuer weiter nach 2026, Minijob 633 € und Beitragsgrenzen 2027 eingerechnet; nach Veröffentlichung nachtragen | ○ (amtliche Werte 2027 stehen noch nicht fest; Unterschied für die Zielgruppe wenige Euro im Monat) | |
 | Privat Krankenversicherte, Versorgungsbezüge, Einmalzahlungen, Freibeträge auf der Lohnsteuerkarte | ○ (für die Zielgruppe selten; das echte Netto von der Lohnabrechnung geht immer vor) | |
 

@@ -162,7 +162,7 @@ function personZufall() {
   const ein = [];
   if (rnd() < 0.6) ein.push({ art: 'wfbm', b: pick([52, 120, 180, 250, 300, 400, geld(600, 1)]) });
   if (rnd() < 0.2) ein.push({ art: 'lohn', b: geld(1500, 5) });
-  if (rnd() < 0.5) { const b = geld(1600, 5); ein.push(rnd() < 0.5 ? { art: 'rente', b } : { art: 'rente', b: Math.round(b / 0.89), n: b }); }
+  if (rnd() < 0.5) { const b = geld(1600, 5); ein.push(rnd() < 0.5 ? { art: 'rente', b } : { art: 'rente', b: Rules.bruttoAusNettoRente(b), n: b }); }
   const wf = pick(['', 'eltern', 'heim']);
   return {
     adults: 1, kids: 0, young: 0, einkommen: ein, wohnform: wf,

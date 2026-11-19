@@ -51,13 +51,34 @@ check('Steuerklasse II (Alleinerziehende) mehr Netto als I', n(2500, { stkl: 2 }
 check('[netto-sv] Minijob (603 €) ohne Abzüge, wie bisher in der App', n(603, { stkl: 1 }) === 603);
 check('Übergangsbereich beginnt fast ohne Beiträge (650 €: unter 30 € Beiträge)', R.nettoLohn(650, { stkl: 1, heute: H }).sv < 30);
 const sv2000 = R.nettoLohn(2000, { stkl: 1, kinderlos: true, heute: H }).sv;
-check('[netto-sv] Übergangsbereich endet bei 2.000 € mit vollen Beiträgen (21,45 %)', Math.abs(sv2000 - 2000 * 0.2145) < 0.02, sv2000);
+check('[netto-sv] Übergangsbereich endet bei 2.000 € mit vollen Beiträgen (21,75 %: RV 9,3 + AV 1,3 + KV 7,3 + 1,45 + PV 2,4)', Math.abs(sv2000 - 2000 * 0.2175) < 0.02, sv2000);
+// Krankenversicherung Arbeitnehmer: halber allgemeiner Beitragssatz 7,3 % (§ 241, § 249 SGB V), nicht der ermäßigte 7,0 %
+// 3.000 € mit Kind (PV 1,8 %): 9,3 + 1,3 + 7,3 + 1,45 + 1,8 = 21,15 % = 634,50 €
+check('[netto-kv] KV-Arbeitnehmeranteil 7,3 % + halber Zusatzbeitrag (3.000 €: Beiträge 634,50 €)', R.nettoLohn(3000, { stkl: 1, heute: H }).sv === 634.5, R.nettoLohn(3000, { stkl: 1, heute: H }).sv);
+check('[netto-kv] KV-Beitrag 1 % Zusatzbeitrag mehr = 0,5 % vom Lohn (3.000 €: 15 €)', Math.abs(R.nettoLohn(3000, { stkl: 1, kvz: 3.9, heute: H }).sv - R.nettoLohn(3000, { stkl: 1, heute: H }).sv - 15) < 0.02);
 check('[netto-sv] Kinderlos zahlt 0,6 % mehr Pflege (3.000 €: 18 €)', Math.abs(R.nettoLohn(3000, { stkl: 1, heute: H }).sv + 18 - R.nettoLohn(3000, { stkl: 1, kinderlos: true, heute: H }).sv) < 0.02);
 check('Sachsen: 0,5 % mehr Pflege (3.000 €: 15 €)', Math.abs(R.nettoLohn(3000, { stkl: 1, sachsen: true, heute: H }).sv - R.nettoLohn(3000, { stkl: 1, heute: H }).sv - 15) < 0.02);
 check('Kirchensteuer 9 % senkt das Netto', n(3500, { stkl: 1, kirche: 0.09 }) < n(3500, { stkl: 1 }));
 let inv = true;
 for (const b of [700, 1100, 1650, 2400, 3300, 5200]) { const back = R.bruttoAusNetto(n(b, { stkl: 1 }), { stkl: 1, heute: H }); if (Math.abs(back - b) > 1) inv = false; }
 check('[netto-umkehr] Brutto aus Netto findet das Brutto wieder (auf 1 € genau)', inv);
+
+// 3b) Rente netto: KV 7,3 % + halber Zusatzbeitrag 1,45 % (§ 247 SGB V), PV 3,6 % allein (§ 59 Abs. 1 SGB XI), ab dem 2. Kind −0,25 (§ 55 Abs. 3 SGB XI)
+//     Rechnung zu Fuß: 1.200 × (1 − 0,1235) = 1.051,80; 2.000 × 0,8765 = 1.753,00; mit 2 Kindern 1.200 × (1 − 0,121) = 1.054,80
+const nr = (b, o) => R.nettoRente(b, Object.assign({ heute: H }, o));
+check('[netto-rente] Rente 1.200 € -> 1.051,80 € netto', nr(1200) === 1051.8, nr(1200));
+check('[netto-rente] Rente 2.000 € -> 1.753,00 € netto', nr(2000) === 1753, nr(2000));
+check('[netto-rente] Rente 1.200 € mit 2 Kindern -> 1.054,80 € (Pflege −0,25)', nr(1200, { kinder: 2 }) === 1054.8, nr(1200, { kinder: 2 }));
+check('[netto-rente] Pflege-Abschlag höchstens für 4 Kinder (2. bis 5. Kind)', nr(1200, { kinder: 5 }) === nr(1200, { kinder: 9 }) && nr(1200, { kinder: 5 }) > nr(1200, { kinder: 4 }));
+check('[netto-rente] Beiträge nur bis zur Beitragsgrenze KV 5.812,50 € (2026): 7.000 € -> 6.282,16 €', nr(7000) === 6282.16, nr(7000));
+check('[netto-rente] 2027: Beitragsgrenze KV 6.375 €: 7.000 € -> 6.212,69 €', R.nettoRente(7000, { heute: 2027.1 }) === 6212.69, R.nettoRente(7000, { heute: 2027.1 }));
+let invR = true;
+for (const b of [450, 1051, 1200, 1777, 2950, 6100]) for (const k of [1, 3]) if (Math.abs(R.bruttoAusNettoRente(nr(b, { kinder: k }), { kinder: k, heute: H }) - b) > 1) invR = false;
+check('[netto-rente] Brutto aus Rente netto findet das Brutto wieder (mit Kindern, auf 1 € genau)', invR && R.bruttoAusNettoRente(1054.8, { kinder: 2, heute: H }) === 1200);
+// Ohne Kinder: Umkehrung mit Kinderlosen-Zuschlag 0,6 (vorsichtig: höheres Brutto). 1.051,80 / (1 − 0,1295) = 1.208,27 -> 1.208 €
+check('[netto-rente] Brutto aus Rente netto ohne Kinder mit Kinderlosen-Zuschlag: 1.051,80 € -> 1.208 €', R.bruttoAusNettoRente(1051.8, { heute: H }) === 1208 && R.nettoRente(1208, { kinderlos: true, heute: H }) < 1051.8 + 0.5, R.bruttoAusNettoRente(1051.8, { heute: H }));
+const dR = (o) => R.derive(Object.assign({ adults: 1, kids: 0, young: 0, art1: 'rente', brutto: 1200, netto: '', miete: 500, heute: H, bezug: {} }, o)).netto;
+check('[netto-rente] Ohne Netto rechnet die App mit der Rente netto (1.200 € -> 1.051,80 €; Paar 1.200 + 800 € -> 1.753,00 €)', dR() === 1051.8 && dR({ adults: 2, art2: 'rente', brutto: 2000, brutto2: 800 }) === 1753, [dR(), dR({ adults: 2, art2: 'rente', brutto: 2000, brutto2: 800 })]);
 check('2027: Minijob-Grenze 633 € (Netto = Brutto)', R.nettoLohn(633, { stkl: 1, heute: 2027.1 }).netto === 633);
 
 // 4) Annahmen aus dem Haushalt

@@ -1088,6 +1088,7 @@
   "set.about.h": "About the app",
   "set.version": "Version {v}",
   "ek.nettoGeschaetzt": "Net is missing. The app estimates it at about {n} (tax class {k}, without church tax). Use “Calculate net” for a more exact figure.",
+  "ek.renteGeschaetzt": "Net is missing. The app estimates the pension payout (Zahlbetrag) at about {n} (after health and long-term care insurance). The exact amount is on your bank statement or in the Rentenbescheid (pension notice). Voluntarily or privately insured, a company pension (Betriebsrente) or tax on the pension? Then enter the amount yourself.",
   "nh.btn": "Calculate net",
   "nh.stkl.q": "Which tax class is on your payslip?",
   "nh.stkl": "Tax class {k}",

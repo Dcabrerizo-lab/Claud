@@ -1088,6 +1088,7 @@
   "set.about.h": "Uygulama hakkında",
   "set.version": "Sürüm {v}",
   "ek.nettoGeschaetzt": "Net tutar eksik. Uygulama bunu yaklaşık {n} olarak tahmin ediyor (vergi sınıfı {k}, kilise vergisi olmadan). Daha doğrusu için „Neti hesapla“.",
+  "ek.renteGeschaetzt": "Net tutar eksik. Uygulama emekli maaşının ödeme tutarını (Zahlbetrag) yaklaşık {n} olarak tahmin ediyor (sağlık ve bakım sigortası düşüldükten sonra). Kesin tutar banka hesap dökümünde veya Rentenbescheid'de (emeklilik kararı) yazar. İsteğe bağlı veya özel sigortalı mısınız, işyeri emekli maaşı (Betriebsrente) mı alıyorsunuz ya da emekli maaşından vergi mi ödüyorsunuz? O zaman tutarı kendiniz girin.",
   "nh.btn": "Neti hesapla",
   "nh.stkl.q": "Bordroda hangi vergi sınıfı yazıyor?",
   "nh.stkl": "Vergi sınıfı {k}",

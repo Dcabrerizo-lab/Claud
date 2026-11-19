@@ -197,7 +197,7 @@
   // Art: lohn (Lohn/Gehalt, Freibetrag bei der Grundsicherung), rente, alg (Arbeitslosengeld I), kg (Krankengeld), ohne (kein Einkommen).
   // Arbeitslosengeld I und Krankengeld haben kein Brutto: dort zählt der ausgezahlte Betrag (Feld „Betrag laut Bescheid“).
   // Fehlt das Brutto, schätzt die App es aus dem Betrag auf dem Konto: Minijob (bis 603 €) brutto = netto,
-  // sonst Lohn etwa netto / 0,7 und Rente etwa netto / 0,89 (Kranken- und Pflegeversicherung). geschaetzt = true zeigt einen Hinweis.
+  // sonst Lohn aus Lohnsteuer und Beiträgen (bruttoAusNetto) und Rente aus Kranken- und Pflegeversicherung (bruttoAusNettoRente, etwa netto / 0,88). geschaetzt = true zeigt einen Hinweis.
   function ekPerson(i) {
     var art = state['ek' + i + 'Art'], b = state['ek' + i + 'Brutto'], n = state['ek' + i + 'Netto'];
     var leer = function (v) { return v === '' || v == null; };
@@ -206,12 +206,29 @@
     var mitBrutto = art === 'lohn' || art === 'rente' || art === 'selbst';
     var nn = leer(n) ? '' : Number(n), bb = mitBrutto ? (leer(b) ? '' : Number(b)) : nn, geschaetzt = false;
     if (mitBrutto && bb === '' && nn !== '' && nn > 0) {
-      bb = Math.round(art === 'rente' ? nn / 0.89 : art === 'lohn' ? Rules.bruttoAusNetto(nn, lohnOpts(i)) : nn <= Rules.RULES.minijob ? nn : nn / 0.7); geschaetzt = true;
+      bb = Math.round(art === 'rente' ? Rules.bruttoAusNettoRente(nn, { kinder: kinderZahl(), heute: heuteJahr() }) : art === 'lohn' ? Rules.bruttoAusNetto(nn, lohnOpts(i)) : nn <= Rules.RULES.minijob ? nn : nn / 0.7); geschaetzt = true;
     }
     return { gesetzt: true, b: bb, n: nn, arbeit: art === 'lohn' || art === 'selbst', art: art, geschaetzt: geschaetzt };
   }
+  // Jahr wie in den Regeln (schaetzNetto): Jahr + Monat / 12; Kinder im Haushalt als Näherung für Kinder unter 25 (Pflege-Abschlag)
+  function heuteJahr() { var d = new Date(); return d.getFullYear() + d.getMonth() / 12; }
+  function kinderZahl() { return (Number(state.kids) || 0) + (Number(state.young) || 0); }
+  // Netto einer Person schätzen, wenn nur das Brutto da ist: Lohn nach Lohnsteuer und Beiträgen, Rente nach Kranken- und
+  // Pflegeversicherung, Gewinn Selbstständiger grob 80 %; andere Arten sind schon ausgezahlte Beträge
+  function nettoSchaetzen(p, i) {
+    var b = p.b === '' || p.b == null ? 0 : Number(p.b);
+    if (!(b > 0)) return 0;
+    if (p.art === 'rente') return Rules.nettoRente(b, { kinder: kinderZahl(), heute: heuteJahr() });
+    if (p.art === 'lohn') return Rules.nettoLohn(b, Object.assign(lohnOpts(i), { heute: heuteJahr() })).netto;
+    if (p.art === 'selbst') return Math.round(b * 0.8 * 100) / 100;
+    return b;
+  }
   function syncEinkommen() {
     var p1 = ekPerson(1), p2 = state.adults === 2 ? ekPerson(2) : { gesetzt: false, b: '', n: '', arbeit: true };
+    // Paar: eine Person mit Netto, die andere nur mit Brutto -> fehlendes Netto dieser Person einzeln schätzen (sonst zählte es 0)
+    var mitN = function (p) { return p.n !== '' && Number(p.n) > 0; };
+    if (p2.gesetzt && p1.n === '' && p1.b !== '' && mitN(p2)) p1 = Object.assign({}, p1, { n: nettoSchaetzen(p1, 1) });
+    if (p2.gesetzt && p2.n === '' && p2.b !== '' && mitN(p1)) p2 = Object.assign({}, p2, { n: nettoSchaetzen(p2, 2) });
     var sum = function (a, c) { return a === '' && c === '' ? '' : (a === '' ? 0 : a) + (c === '' ? 0 : c); };
     state.brutto = sum(p1.b, p2.b);
     state.netto = sum(p1.n, p2.n);
@@ -223,7 +240,7 @@
     var b2 = state.ek1bBetrag === '' || state.ek1bBetrag == null ? 0 : Number(state.ek1bBetrag);
     if (state.adults === 1 && state.ek1bArt && b2 > 0 && p1.gesetzt) {
       var mitN = p1.art === 'lohn' || p1.art === 'rente' || p1.art === 'selbst';
-      state.einkommen = [mitN ? { art: p1.art, b: p1.b === '' ? 0 : p1.b, n: p1.n === '' ? (p1.b === '' ? 0 : p1.b * 0.8) : p1.n } : { art: p1.art, b: p1.b === '' ? 0 : p1.b }, { art: state.ek1bArt, b: b2 }];
+      state.einkommen = [mitN ? { art: p1.art, b: p1.b === '' ? 0 : p1.b, n: p1.n === '' ? nettoSchaetzen(p1, 1) : p1.n } : { art: p1.art, b: p1.b === '' ? 0 : p1.b }, { art: state.ek1bArt, b: b2 }];
     } else delete state.einkommen;
     state.ek1Geschaetzt = !!p1.geschaetzt; state.ek2Geschaetzt = !!p2.geschaetzt;
   }
@@ -247,6 +264,8 @@
       var info = !w && state['ek' + i + 'Geschaetzt'] ? t('ek.geschaetzt', { b: money(ekPerson(i).b) }) : '';
       // Lohn mit Brutto, aber ohne Netto: geschätztes Netto zeigen (Lohnsteuer und Beiträge), genauer mit dem Netto-Helfer
       if (!w && !info && art === 'lohn' && bb !== '' && bb != null && Number(bb) > 0 && (nn === '' || nn == null)) info = t('ek.nettoGeschaetzt', { n: { eur: Math.round(Rules.nettoLohn(Number(bb), lohnOpts(i)).netto) }, k: Rules.roman(lohnOpts(i).stkl) });
+      // Rente mit Brutto, aber ohne Zahlbetrag: geschätzten Zahlbetrag zeigen (nach Kranken- und Pflegeversicherung)
+      if (!w && !info && art === 'rente' && bb !== '' && bb != null && Number(bb) > 0 && (nn === '' || nn == null)) info = t('ek.renteGeschaetzt', { n: { eur: Math.round(Rules.nettoRente(Number(bb), { kinder: kinderZahl(), heute: heuteJahr() })) } });
       $('ek' + i + 'NhF').hidden = art !== 'lohn';
       $('ek' + i + 'Warn').hidden = !w && !info;
       $('ek' + i + 'Warn').className = w ? 'warn' : 'info';
@@ -281,6 +300,12 @@
     s.ek1Brutto = s.brutto === '' || s.brutto == null ? '' : Math.max(0, Number(s.brutto) - b2);
     s.ek1Netto = s.netto == null ? '' : s.netto;
     if (b2) { s.ek2Art = s.nichtArbeit2 ? 'rente' : 'lohn'; s.ek2Brutto = b2; }
+    // Altes Netto war das Netto des ganzen Haushalts: nach dem Brutto-Anteil auf beide Personen verteilen (sonst würde das Netto
+    // der zweiten Person zusätzlich geschätzt)
+    var bAlle = Number(s.brutto) || 0;
+    if (b2 && bAlle > 0 && s.netto !== '' && s.netto != null) {
+      s.ek1Netto = Math.round(Number(s.netto) * s.ek1Brutto / bAlle); s.ek2Netto = Number(s.netto) - s.ek1Netto;
+    }
     return s;
   }
 
