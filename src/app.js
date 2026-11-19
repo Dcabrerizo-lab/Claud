@@ -197,7 +197,7 @@
   // Art: lohn (Lohn/Gehalt, Freibetrag bei der Grundsicherung), rente, alg (Arbeitslosengeld I), kg (Krankengeld), ohne (kein Einkommen).
   // Arbeitslosengeld I und Krankengeld haben kein Brutto: dort zählt der ausgezahlte Betrag (Feld „Betrag laut Bescheid“).
   // Fehlt das Brutto, schätzt die App es aus dem Betrag auf dem Konto: Minijob (bis 603 €) brutto = netto,
-  // sonst Lohn etwa netto / 0,7 und Rente etwa netto / 0,89 (Kranken- und Pflegeversicherung). geschaetzt = true zeigt einen Hinweis.
+  // sonst Lohn aus Lohnsteuer und Beiträgen (bruttoAusNetto) und Rente aus Kranken- und Pflegeversicherung (bruttoAusNettoRente, etwa netto / 0,88). geschaetzt = true zeigt einen Hinweis.
   function ekPerson(i) {
     var art = state['ek' + i + 'Art'], b = state['ek' + i + 'Brutto'], n = state['ek' + i + 'Netto'];
     var leer = function (v) { return v === '' || v == null; };
@@ -206,7 +206,7 @@
     var mitBrutto = art === 'lohn' || art === 'rente' || art === 'selbst';
     var nn = leer(n) ? '' : Number(n), bb = mitBrutto ? (leer(b) ? '' : Number(b)) : nn, geschaetzt = false;
     if (mitBrutto && bb === '' && nn !== '' && nn > 0) {
-      bb = Math.round(art === 'rente' ? nn / 0.89 : art === 'lohn' ? Rules.bruttoAusNetto(nn, lohnOpts(i)) : nn <= Rules.RULES.minijob ? nn : nn / 0.7); geschaetzt = true;
+      bb = Math.round(art === 'rente' ? Rules.bruttoAusNettoRente(nn, { kinder: (Number(state.kids) || 0) + (Number(state.young) || 0) }) : art === 'lohn' ? Rules.bruttoAusNetto(nn, lohnOpts(i)) : nn <= Rules.RULES.minijob ? nn : nn / 0.7); geschaetzt = true;
     }
     return { gesetzt: true, b: bb, n: nn, arbeit: art === 'lohn' || art === 'selbst', art: art, geschaetzt: geschaetzt };
   }
@@ -247,6 +247,8 @@
       var info = !w && state['ek' + i + 'Geschaetzt'] ? t('ek.geschaetzt', { b: money(ekPerson(i).b) }) : '';
       // Lohn mit Brutto, aber ohne Netto: geschätztes Netto zeigen (Lohnsteuer und Beiträge), genauer mit dem Netto-Helfer
       if (!w && !info && art === 'lohn' && bb !== '' && bb != null && Number(bb) > 0 && (nn === '' || nn == null)) info = t('ek.nettoGeschaetzt', { n: { eur: Math.round(Rules.nettoLohn(Number(bb), lohnOpts(i)).netto) }, k: Rules.roman(lohnOpts(i).stkl) });
+      // Rente mit Brutto, aber ohne Zahlbetrag: geschätzten Zahlbetrag zeigen (nach Kranken- und Pflegeversicherung)
+      if (!w && !info && art === 'rente' && bb !== '' && bb != null && Number(bb) > 0 && (nn === '' || nn == null)) info = t('ek.renteGeschaetzt', { n: { eur: Math.round(Rules.nettoRente(Number(bb), { kinder: (Number(state.kids) || 0) + (Number(state.young) || 0) })) } });
       $('ek' + i + 'NhF').hidden = art !== 'lohn';
       $('ek' + i + 'Warn').hidden = !w && !info;
       $('ek' + i + 'Warn').className = w ? 'warn' : 'info';

@@ -87,6 +87,8 @@ const M = [
   ['Grundsicherungsgeld: Freibetrag 30 % statt 20 %', 'if (b > 100) f += 0.2 * (Math.min(b, 520) - 100);', 'if (b > 100) f += 0.3 * (Math.min(b, 520) - 100);'],
   ['Grundsicherungsgeld: Grenze 1.500 € auch ohne Kind', 'const cap = mitKindern ? 1500 : 1200;', 'const cap = 1500;'],
   ['UVG: Grenze ab 12 Jahren fehlt', 'if (h.kinder12 && h.brutto < R.uvg.min12)', 'if (false)'],
+  ['Lohn: KV-Arbeitnehmeranteil ermäßigt 7,0 % statt 7,3 %', 'kvBasis: 0.07, kvAn: 0.073,', 'kvBasis: 0.07, kvAn: 0.07,'],
+  ['Rente: Pflege 1,8 % (Arbeitnehmeranteil) statt 3,6 % allein', 'rente: { kvHalb: 0.073, pv: 0.036 }', 'rente: { kvHalb: 0.073, pv: 0.018 }']
 ];
 
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'mut-'));
@@ -103,7 +105,7 @@ fs.symlinkSync(path.join(ROOT, 'app', 'node_modules'), path.join(tmp, 'app', 'no
 const DATEI = (m) => m[3] || 'src/rules.js';
 const ORIG = {};
 M.forEach((m) => { ORIG[DATEI(m)] = ORIG[DATEI(m)] || fs.readFileSync(path.join(ROOT, DATEI(m)), 'utf8'); });
-const TESTS = ['test.js', 'test-strict.js', 'test-beh.js', 'test-faelle.js', 'test-raster.js ' + (process.env.MUT_RASTER || 8000), 'test-pruefliste.js', 'test-einfach-gleich.js 3000', 'test-grenzen.js', 'test-formulare.js', 'test-amtlich.js', 'test-ba-beispiele.js', 'test-eigenschaften.js ' + (process.env.MUT_EIGEN || 3000)];
+const TESTS = ['test.js', 'test-netto.js', 'test-strict.js', 'test-beh.js', 'test-faelle.js', 'test-raster.js ' + (process.env.MUT_RASTER || 8000), 'test-pruefliste.js', 'test-einfach-gleich.js 3000', 'test-grenzen.js', 'test-formulare.js', 'test-amtlich.js', 'test-ba-beispiele.js', 'test-eigenschaften.js ' + (process.env.MUT_EIGEN || 3000)];
 const laeuft = () => { try { for (const t of TESTS) execSync('node test/' + t, { cwd: tmp, stdio: 'ignore' }); return true; } catch (e) { return false; } };
 
 let unentdeckt = 0, geprueft = 0;
