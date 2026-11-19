@@ -206,7 +206,7 @@
     var mitBrutto = art === 'lohn' || art === 'rente' || art === 'selbst';
     var nn = leer(n) ? '' : Number(n), bb = mitBrutto ? (leer(b) ? '' : Number(b)) : nn, geschaetzt = false;
     if (mitBrutto && bb === '' && nn !== '' && nn > 0) {
-      bb = Math.round(art === 'rente' ? nn / 0.89 : nn <= 603 ? nn : nn / 0.7); geschaetzt = true;
+      bb = Math.round(art === 'rente' ? nn / 0.89 : art === 'lohn' ? Rules.bruttoAusNetto(nn, lohnOpts(i)) : nn <= Rules.RULES.minijob ? nn : nn / 0.7); geschaetzt = true;
     }
     return { gesetzt: true, b: bb, n: nn, arbeit: art === 'lohn' || art === 'selbst', art: art, geschaetzt: geschaetzt };
   }
@@ -245,6 +245,9 @@
       else if (art && art !== 'ohne') w = plausi(mitBrutto ? bb : nn, 20, 15000) || (mitBrutto ? plausi(nn, 20, 15000) : '');
       if (!w && !$('ek' + i + 'Art').closest('[hidden]')) w = feldUngueltig('ek' + i + 'Brutto') || feldUngueltig('ek' + i + 'Netto');
       var info = !w && state['ek' + i + 'Geschaetzt'] ? t('ek.geschaetzt', { b: money(ekPerson(i).b) }) : '';
+      // Lohn mit Brutto, aber ohne Netto: geschätztes Netto zeigen (Lohnsteuer und Beiträge), genauer mit dem Netto-Helfer
+      if (!w && !info && art === 'lohn' && bb !== '' && bb != null && Number(bb) > 0 && (nn === '' || nn == null)) info = t('ek.nettoGeschaetzt', { n: { eur: Math.round(Rules.nettoLohn(Number(bb), lohnOpts(i)).netto) }, k: Rules.roman(lohnOpts(i).stkl) });
+      $('ek' + i + 'NhF').hidden = art !== 'lohn';
       $('ek' + i + 'Warn').hidden = !w && !info;
       $('ek' + i + 'Warn').className = w ? 'warn' : 'info';
       $('ek' + i + 'Warn').textContent = w || info;
@@ -438,6 +441,7 @@
     $('gebJahr').value = state.gebJahr || '';
     CHECKS.forEach(function (k) { $(k).checked = !!state[k]; });
     BEZUG.forEach(function (k) { $('b-' + k).checked = !!state.bezug[k]; });
+    if ($('vaInfo')) vaInfo();
   }
 
   function touched() {
@@ -796,6 +800,7 @@
     pflegeplus: { stelle: 'Pflegekasse', betreff: 'Antrag auf Verhinderungspflege, Pflegehilfsmittel und Zuschuss zur Wohnumfeldverbesserung', satz: 'hiermit beantrage ich Leistungen der Pflegeversicherung: Verhinderungspflege und Kurzzeitpflege, Pflegehilfsmittel zum Verbrauch und gegebenenfalls einen Zuschuss für wohnumfeldverbessernde Maßnahmen.' },
     arbeit: { stelle: 'Träger der Eingliederungshilfe (in Bayern der Bezirk)', betreff: 'Antrag auf Budget für Arbeit', satz: 'hiermit beantrage ich ein Budget für Arbeit nach § 61 SGB IX.' },
     rundfunk: { stelle: 'ARD ZDF Deutschlandradio Beitragsservice', betreff: 'Antrag auf Befreiung vom Rundfunkbeitrag', satz: 'hiermit beantrage ich die Befreiung vom Rundfunkbeitrag. Den Bescheid über meine Sozialleistung füge ich bei.' },
+    famvers: { stelle: 'Meine Krankenkasse', betreff: 'Antrag auf Familienversicherung', satz: 'hiermit beantrage ich die beitragsfreie Familienversicherung für meine Angehörigen nach § 10 SGB V. Den Fragebogen zur Familienversicherung fülle ich gern aus.' },
     zuzahl: { stelle: 'Meine Krankenkasse', betreff: 'Antrag auf Befreiung von Zuzahlungen', satz: 'hiermit beantrage ich die Befreiung von Zuzahlungen oder die Feststellung der Belastungsgrenze. Bitte prüfen Sie auch, ob ich als chronisch krank gelte.' },
     alg1: { stelle: 'Agentur für Arbeit', betreff: 'Arbeitsuchendmeldung und Antrag auf Arbeitslosengeld', satz: 'hiermit melde ich mich arbeitsuchend und beantrage Arbeitslosengeld. Bitte nennen Sie mir einen Termin für die persönliche Arbeitslosmeldung. Ist mein Leistungsvermögen wegen Krankheit eingeschränkt, bitte ich um Prüfung nach § 145 SGB III.' },
     bab: { stelle: 'Agentur für Arbeit', betreff: 'Antrag auf Berufsausbildungsbeihilfe', satz: 'hiermit beantrage ich Berufsausbildungsbeihilfe für meine Berufsausbildung.' },
@@ -1821,9 +1826,285 @@
     state: function () { return state; },
     reihe: function (results) { var k = kartenReihe(results); return k.passt.concat(k.neinKern, k.neinSpez).map(function (r) { return r.id; }); }
   };
+  // ----- Netto-Helfer: Steuerklasse und Kirchensteuer mit großen Knöpfen wählen, Netto nach Programmablaufplan ausrechnen -----
+  function lohnOpts(i) {
+    var o = Rules.lohnAnnahmen({ adults: state.adults, kids: Number(state.kids) || 0, young: Number(state.young) || 0, zweiVerdiener: state.adults === 2 && state.ek1Art === 'lohn' && state.ek2Art === 'lohn', land: state.bundesland }, i);
+    if ([1, 2, 3, 4, 5, 6].indexOf(Number(state['stkl' + i])) >= 0) o.stkl = Number(state['stkl' + i]);
+    o.kirche = state['kirche' + i] ? (state.bundesland === 'BY' || state.bundesland === 'BW' ? 0.08 : 0.09) : 0;
+    return o;
+  }
+  var nhSchritt = { 1: 0, 2: 0 };
+  function nhKnopf(cls, html, gedrueckt, fn) {
+    var b = document.createElement('button'); b.type = 'button'; b.className = cls; b.innerHTML = html;
+    if (gedrueckt != null) b.setAttribute('aria-pressed', String(!!gedrueckt));
+    b.addEventListener('click', fn); return b;
+  }
+  function nettoHelfer(i) {
+    var box = $('ek' + i + 'Nh'); box.innerHTML = '';
+    var b = Number(state['ek' + i + 'Brutto']) || 0;
+    var p = function (txt, cls) { var e = document.createElement('p'); e.className = cls || ''; e.textContent = txt; box.appendChild(e); return e; };
+    if (!(b > 0)) { p(t('nh.ohneBrutto'), 'hint'); return; }
+    var o = lohnOpts(i), s = nhSchritt[i];
+    if (s === 0) {
+      p(t('nh.stkl.q'), 'pf-frage');
+      var l = document.createElement('div'); l.className = 'wahl-liste'; box.appendChild(l);
+      [1, 2, 3, 4, 5, 6].forEach(function (k) {
+        var bt = nhKnopf('wahl' + (k === o.stkl && !state['stkl' + i] ? ' vorschlag' : ''), '<b>' + esc(t('nh.stkl', { k: Rules.roman(k) })) + '</b><span>' + esc(t(['nh.s1', 'nh.s2', 'nh.s3', 'nh.s4', 'nh.s5', 'nh.s6'][k - 1])) + '</span>', Number(state['stkl' + i]) === k, function () { state['stkl' + i] = k; nhSchritt[i] = 1; nettoHelfer(i); touchedSoon(); box.querySelector('button').focus(); });
+        l.appendChild(bt);
+      });
+      l.appendChild(nhKnopf('wahl', '<b>' + esc(t('nh.weissnicht')) + '</b><span>' + esc(t('nh.annahme', { k: Rules.roman(o.stkl) })) + '</span>', null, function () { state['stkl' + i] = ''; nhSchritt[i] = 1; nettoHelfer(i); box.querySelector('button').focus(); }));
+      return;
+    }
+    if (s === 1) {
+      p(t('nh.kirche.q'), 'pf-frage');
+      var r = document.createElement('div'); r.className = 'wahl-raster'; box.appendChild(r);
+      [['nh.ja', true], ['nh.nein', false], ['nh.weissnicht', false]].forEach(function (x) {
+        r.appendChild(nhKnopf('wahl', '<b>' + esc(t(x[0])) + '</b>', null, function () { state['kirche' + i] = x[1]; nhSchritt[i] = 2; nettoHelfer(i); touchedSoon(); box.querySelector('button').focus(); }));
+      });
+      var z = document.createElement('div'); z.className = 'btns'; z.appendChild(nhKnopf('btn ghost', esc(t('nh.zurueck')), null, function () { nhSchritt[i] = 0; nettoHelfer(i); })); box.appendChild(z);
+      return;
+    }
+    var e = Rules.nettoLohn(b, lohnOpts(i));
+    p(t('nh.erg'), 'pf-frage');
+    p(t('nh.wert', { n: { eur: e.netto } }), 'pf-zahl');
+    if (!e.sv && !e.lst) p(t('nh.minijob'), 'hint');
+    else {
+      var tab = document.createElement('table'); tab.className = 'pf-tab';
+      [['nh.brutto', b], ['nh.lst', -e.lst], ['nh.soli', -e.soli], ['nh.kist', -e.kist], ['nh.sv', -e.sv]].forEach(function (x) {
+        if (x[0] !== 'nh.brutto' && !x[1]) return;
+        var tr = tab.insertRow(); tr.insertCell().textContent = t(x[0]);
+        tr.insertCell().textContent = (x[1] < 0 ? '− ' : '') + Fmt.euro(Math.round(Math.abs(x[1]) * 100) / 100, lang, I18N[lang] && I18N[lang]['meta.dir'] === 'rtl');
+      });
+      box.appendChild(tab);
+    }
+    p(t('nh.basis', { k: Rules.roman(lohnOpts(i).stkl) }), 'small muted');
+    var bt2 = document.createElement('div'); bt2.className = 'btns';
+    bt2.appendChild(nhKnopf('btn', esc(t('nh.uebernehmen')), null, function () {
+      var f = $('ek' + i + 'Netto'); f.value = String(e.netto).replace('.', ',');
+      f.dispatchEvent(new Event('input', { bubbles: true }));
+      box.hidden = true; $('ek' + i + 'NhBtn').setAttribute('aria-expanded', 'false'); nhSchritt[i] = 0; f.focus();
+    }));
+    bt2.appendChild(nhKnopf('btn ghost', esc(t('nh.zurueck')), null, function () { nhSchritt[i] = 0; nettoHelfer(i); }));
+    box.appendChild(bt2);
+  }
+  [1, 2].forEach(function (i) {
+    $('ek' + i + 'NhBtn').addEventListener('click', function () {
+      var box = $('ek' + i + 'Nh'); box.hidden = !box.hidden;
+      $('ek' + i + 'NhBtn').setAttribute('aria-expanded', String(!box.hidden));
+      if (!box.hidden) { nhSchritt[i] = 0; nettoHelfer(i); var f = box.querySelector('button'); if (f) f.focus(); }
+    });
+  });
+
+  // ----- Ersparnisse aufteilen: erst antippen, was man hat (große Knöpfe), dann Beträge; zählend, geschützt, Einzelfall, Zinsen -----
+  var VA = [['konto', 'va.konto', '', 'z'], ['spar', 'va.spar', '', 'z'], ['etf', 'va.etf', 'va.etf.t', 'z'], ['bauspar', 'va.bauspar', '', 'z'],
+    ['lv', 'va.lv', 'va.lv.t', 'u'], ['av', 'va.av', 'va.av.t', 'g'], ['kap', 'va.kap', 'va.kap.t', 'k']];
+  var va = { schritt: 0, wahl: {}, wert: {} };
+  function vaInfo() {
+    var g = Number(state.vermAV) || 0, u = Number(state.vermLV) || 0, k = Number(state.kapErtrag) || 0;
+    $('vaInfo').hidden = !(g || u || k);
+    $('vaInfo').textContent = g || u || k ? t('va.info', { g: { eur: g }, u: { eur: u }, k: { eur: k } }) : '';
+  }
+  function vaRender() {
+    var box = $('va'); box.innerHTML = '';
+    var p = function (txt, cls) { var e = document.createElement('p'); e.className = cls || ''; e.textContent = txt; box.appendChild(e); return e; };
+    var rtl = I18N[lang] && I18N[lang]['meta.dir'] === 'rtl';
+    if (va.schritt === 0) {
+      p(t('va.wahl'), 'pf-frage');
+      var l = document.createElement('div'); l.className = 'wahl-liste'; box.appendChild(l);
+      VA.forEach(function (x) {
+        l.appendChild(nhKnopf('wahl', '<b>' + esc(t(x[1])) + '</b>' + (x[2] ? '<span>' + esc(t(x[2])) + '</span>' : ''), !!va.wahl[x[0]], function () { va.wahl[x[0]] = !va.wahl[x[0]]; this.setAttribute('aria-pressed', String(!!va.wahl[x[0]])); }));
+      });
+      var d = document.createElement('div'); d.className = 'btns'; box.appendChild(d);
+      d.appendChild(nhKnopf('btn', esc(t('pf.weiter')), null, function () { if (!VA.some(function (x) { return va.wahl[x[0]]; })) return; va.schritt = 1; vaRender(); var f = box.querySelector('input'); if (f) f.focus(); }));
+      return;
+    }
+    if (va.schritt === 1) {
+      p(t('va.betraege'), 'pf-frage');
+      VA.forEach(function (x) {
+        if (!va.wahl[x[0]]) return;
+        var f = document.createElement('div'); f.className = 'field';
+        f.innerHTML = '<label for="va-' + x[0] + '">' + esc(t(x[1])) + '</label><div class="money"><input type="text" inputmode="decimal" autocomplete="off" id="va-' + x[0] + '"><span aria-hidden="true">€</span></div>' + (x[2] ? '<span class="hint">' + esc(t(x[2])) + '</span>' : '');
+        box.appendChild(f);
+        var inp = f.querySelector('input'); if (va.wert[x[0]]) inp.value = String(va.wert[x[0]]).replace('.', ',');
+        inp.addEventListener('input', function () { var v = parseAmount(inp.value); va.wert[x[0]] = v === '' ? 0 : v; });
+      });
+      var d1 = document.createElement('div'); d1.className = 'btns'; box.appendChild(d1);
+      d1.appendChild(nhKnopf('btn', esc(t('pf.weiter')), null, function () { va.schritt = 2; vaRender(); box.querySelector('.pf-frage').focus(); }));
+      d1.appendChild(nhKnopf('btn ghost', esc(t('nh.zurueck')), null, function () { va.schritt = 0; vaRender(); }));
+      return;
+    }
+    var sum = function (art) { return VA.reduce(function (a, x) { return a + (x[3] === art && va.wahl[x[0]] ? Number(va.wert[x[0]]) || 0 : 0); }, 0); };
+    var z = sum('z'), u = sum('u'), g = sum('g'), k = sum('k');
+    p(t('va.erg'), 'pf-frage').setAttribute('tabindex', '-1');
+    var tab = document.createElement('table'); tab.className = 'pf-tab';
+    [['va.zaehlt', z], ['va.unsicher', u], ['va.geschuetzt', g], ['va.kapZeile', k]].forEach(function (r) {
+      if (!r[1] && r[0] !== 'va.zaehlt') return;
+      var tr = tab.insertRow(); tr.insertCell().textContent = t(r[0]); tr.insertCell().textContent = Fmt.euro(Math.round(r[1]), lang, rtl);
+    });
+    box.appendChild(tab);
+    p(t('va.erkl'), 'small muted');
+    var d2 = document.createElement('div'); d2.className = 'btns'; box.appendChild(d2);
+    d2.appendChild(nhKnopf('btn', esc(t('nh.uebernehmen')), null, function () {
+      state.vermLV = u || ''; state.vermAV = g || ''; state.kapErtrag = k || '';
+      var f = $('vermoegen'); f.value = String(Math.round(z)); f.dispatchEvent(new Event('input', { bubbles: true }));
+      box.hidden = true; $('vaBtn').setAttribute('aria-expanded', 'false'); va.schritt = 0; vaInfo(); touchedSoon(); f.focus();
+    }));
+    d2.appendChild(nhKnopf('btn ghost', esc(t('nh.zurueck')), null, function () { va.schritt = 1; vaRender(); }));
+  }
+  $('vaBtn').addEventListener('click', function () {
+    var box = $('va'); box.hidden = !box.hidden; $('vaBtn').setAttribute('aria-expanded', String(!box.hidden));
+    if (!box.hidden) { va.schritt = 0; vaRender(); var f = box.querySelector('button'); if (f) f.focus(); }
+  });
+
+  // ----- Geld sparen im Alltag: erst Thema wählen (große Knöpfe), dann Tipps; Rezepte (selbst geschrieben, nur Deutsch) -----
+  var SP_THEMEN = [
+    ['strom', 'sp.strom', 'sp.strom.t', 6, '<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>'],
+    ['heizen', 'sp.heizen', 'sp.heizen.t', 5, '<path d="M12 21a6 6 0 0 0 6-6c0-4-3-6-4-10-2 2-3 4-3 6-1-1-2-2-2-4-2 2-3 5-3 8a6 6 0 0 0 6 6z"/>'],
+    ['essen', 'sp.essen', 'sp.essen.t', 5, '<path d="M4 11h16a8 8 0 0 1-16 0zM8 7c0-2 2-2 2-4M12 7c0-2 2-2 2-4"/>'],
+    ['vertraege', 'sp.vertraege', 'sp.vertraege.t', 6, '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>'],
+    ['schulden', 'sp.schulden', 'sp.schulden.t', 0, '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/>']
+  ];
+  var SP_TIPPS = { strom: ['sp.strom.1', 'sp.strom.2', 'sp.strom.3', 'sp.strom.4', 'sp.strom.5', 'sp.strom.6'], heizen: ['sp.heizen.1', 'sp.heizen.2', 'sp.heizen.3', 'sp.heizen.4', 'sp.heizen.5'],
+    essen: ['sp.essen.1', 'sp.essen.2', 'sp.essen.3', 'sp.essen.4', 'sp.essen.5'], vertraege: ['sp.vertraege.1', 'sp.vertraege.2', 'sp.vertraege.3', 'sp.vertraege.4', 'sp.vertraege.5', 'sp.vertraege.6'] };
+  // Eigene Rezepte, günstige Grundzutaten, je 4 Portionen; bewusst ohne Preise (Preise ändern sich)
+  var REZEPTE = [
+    ['Linsen-Dal mit Reis', ['250 g rote Linsen', '1 Zwiebel, 1 Knoblauchzehe', '1 Dose gehackte Tomaten', '1 TL Curry, Salz', '250 g Reis'], ['Zwiebel und Knoblauch klein schneiden und in etwas Öl anbraten.', 'Linsen, Tomaten, Curry und 600 ml Wasser dazugeben, 15 Minuten köcheln, bis die Linsen weich sind.', 'Reis nach Packung kochen und mit dem Dal servieren.']],
+    ['Ofengemüse mit Kartoffeln', ['1 kg Kartoffeln', '2 Möhren, 1 Paprika, 1 Zwiebel (oder Gemüse der Saison)', '3 EL Öl, Salz, Paprikapulver', '200 g Quark mit Kräutern'], ['Ofen auf 200 Grad vorheizen.', 'Kartoffeln und Gemüse in Stücke schneiden, mit Öl und Gewürzen mischen.', 'Auf dem Blech 35 Minuten backen, mit Kräuterquark essen.']],
+    ['Nudeln mit Tomaten-Bohnen-Soße', ['400 g Vollkornnudeln', '1 Dose weiße Bohnen', '1 Dose gehackte Tomaten', '1 Zwiebel, Oregano, Salz, Pfeffer'], ['Nudeln nach Packung kochen.', 'Zwiebel anbraten, Tomaten und abgespülte Bohnen dazu, 10 Minuten köcheln und würzen.', 'Mit den Nudeln mischen.']],
+    ['Gemüsesuppe aus Resten', ['Gemüse, das weg muss (zum Beispiel Möhren, Lauch, Kartoffeln, Kohl)', '1 Zwiebel', '1 l Gemüsebrühe', 'Salz, Pfeffer, Petersilie'], ['Gemüse und Zwiebel klein schneiden und kurz in Öl anbraten.', 'Brühe dazugeben und 20 Minuten köcheln.', 'Abschmecken; nach Wunsch pürieren. Reste lassen sich gut einfrieren.']],
+    ['Haferflocken-Frühstück', ['250 g Haferflocken', '750 ml Milch oder Wasser', '2 Äpfel oder Bananen', 'Zimt'], ['Haferflocken mit Milch oder Wasser 5 Minuten unter Rühren köcheln.', 'Obst klein schneiden und darübergeben, mit Zimt bestreuen.', 'Tipp: abends mit kalter Milch ansetzen, morgens fertig.']],
+    ['Kichererbsen-Pfanne mit Ei', ['2 Dosen Kichererbsen', '1 Zwiebel, 1 Paprika', '1 Dose gehackte Tomaten', '4 Eier, Kreuzkümmel, Salz'], ['Zwiebel und Paprika anbraten, Kichererbsen und Tomaten dazugeben, 10 Minuten köcheln.', 'Mit Kreuzkümmel und Salz würzen.', '4 Mulden machen, Eier hineingeben und zugedeckt 6 Minuten garen lassen.']]
+  ];
+  var sp = { thema: '', rezepte: false };
+  function spRender(fokus) {
+    var box = $('spInhalt'); if (!box) return;
+    box.innerHTML = '';
+    var p = function (txt, cls) { var e = document.createElement('p'); e.className = cls || ''; e.textContent = txt; box.appendChild(e); return e; };
+    var zurueck = function (fn) { var d = document.createElement('div'); d.className = 'btns'; d.appendChild(nhKnopf('btn ghost', esc(t('nh.zurueck')), null, fn)); box.appendChild(d); };
+    if (!sp.thema) {
+      p(t('sp.wahl'), 'pf-frage');
+      var l = document.createElement('div'); l.className = 'weg-liste'; box.appendChild(l);
+      SP_THEMEN.forEach(function (x) {
+        l.appendChild(nhKnopf('weg', '<span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + x[4] + '</svg></span><span class="weg-txt"><b>' + esc(t(x[1])) + '</b><span>' + esc(t(x[2])) + '</span></span>', null, function () {
+          if (x[0] === 'schulden') { zeigeAnsicht('pfaendung', true); return; }
+          sp.thema = x[0]; sp.rezepte = false; spRender(true);
+        }));
+      });
+      p(t('home.privat'), 'small muted');
+      if (fokus) { var f0 = box.querySelector('button'); if (f0) f0.focus(); }
+      return;
+    }
+    if (sp.rezepte) {
+      p(t('sp.rezepte'), 'pf-frage');
+      if (lang !== 'de') p(t('briefe.nurDeutsch'), 'pp-hinweis small');
+      REZEPTE.forEach(function (r) {
+        var d = document.createElement('details'); d.className = 'rezept'; d.lang = 'de';
+        d.innerHTML = '<summary>' + esc(r[0]) + '</summary><ul class="sp-liste">' + r[1].map(function (z) { return '<li>' + esc(z) + '</li>'; }).join('') + '</ul><ol class="sp-liste">' + r[2].map(function (z) { return '<li>' + esc(z) + '</li>'; }).join('') + '</ol>';
+        box.appendChild(d);
+      });
+      p(t('sp.rezepte.t'), 'small muted');
+      zurueck(function () { sp.rezepte = false; spRender(true); });
+    } else {
+      var th = SP_THEMEN.filter(function (x) { return x[0] === sp.thema; })[0];
+      p(t(th[1]), 'pf-frage');
+      var ul = document.createElement('ul'); ul.className = 'sp-liste'; box.appendChild(ul);
+      SP_TIPPS[sp.thema].forEach(function (k) { var li = document.createElement('li'); li.textContent = t(k); ul.appendChild(li); });
+      if (sp.thema === 'essen') { var d2 = document.createElement('div'); d2.className = 'btns'; d2.appendChild(nhKnopf('btn', esc(t('sp.rezepte')), null, function () { sp.rezepte = true; spRender(true); })); box.appendChild(d2); }
+      p(t('sp.quellen'), 'small muted');
+      zurueck(function () { sp.thema = ''; spRender(true); });
+    }
+    if (fokus) { var h = box.querySelector('.pf-frage'); if (h) { h.setAttribute('tabindex', '-1'); h.focus(); } }
+  }
+
+  // ----- Pfändung: erst wählen (Lohn oder Konto), dann Schritt für Schritt; Rechnung in Rules.pfaendung / Rules.pkonto -----
+  var pf = { art: '', schritt: 0, netto: '', pers: null, kg: null, kiz: '' };
+  function pfRender(fokus) {
+    var box = $('pfInhalt'); if (!box) return;
+    box.innerHTML = '';
+    var rtl = I18N[lang] && I18N[lang]['meta.dir'] === 'rtl';
+    var E = function (x) { return Fmt.euro(Math.round(x * 100) / 100, lang, rtl); };
+    var p = function (txt, cls) { var e = document.createElement('p'); e.className = cls || ''; e.textContent = txt; box.appendChild(e); return e; };
+    var knoepfe = function (cls) { var d = document.createElement('div'); d.className = cls; box.appendChild(d); return d; };
+    var leiste = function (weiter) {
+      var d = knoepfe('btns');
+      if (weiter) d.appendChild(nhKnopf('btn', esc(t('pf.weiter')), null, weiter));
+      d.appendChild(nhKnopf('btn ghost', esc(t('pf.zurueck')), null, function () { pf.schritt = Math.max(0, pf.schritt - 1); if (!pf.schritt) pf.art = ''; pfRender(true); }));
+    };
+    // Weitere Hinweise zum Aufklappen (erst das Ergebnis, Details danach)
+    var tipps = function (keys) {
+      var d = document.createElement('details'); d.className = 'pf-tipps';
+      var su = document.createElement('summary'); su.textContent = t('steps.tips'); d.appendChild(su);
+      keys.forEach(function (k) { var e = document.createElement('p'); e.className = 'hint'; e.textContent = t(k); d.appendChild(e); });
+      box.appendChild(d);
+    };
+    var heute = new Date().toISOString().slice(0, 10);
+    if (heute > Rules.RULES.pfaendung.gueltigBis) p(t('pf.alt'), 'warn');
+    if (!pf.art) {
+      p(t('pf.wahl'), 'pf-frage');
+      var l = knoepfe('weg-liste');
+      [['lohn', 'pf.lohn', 'pf.lohn.t', '<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 9v6M18 9v6"/>'], ['konto', 'pf.konto', 'pf.konto.t', '<path d="M3 10l9-6 9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/>']].forEach(function (x) {
+        l.appendChild(nhKnopf('weg', '<span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + x[3] + '</svg></span><span class="weg-txt"><b>' + esc(t(x[1])) + '</b><span>' + esc(t(x[2])) + '</span></span>', null, function () { pf.art = x[0]; pf.schritt = 1; pfRender(true); }));
+      });
+      p(t('pf.stand'), 'small muted');
+      p(t('home.privat'), 'small muted');
+      if (fokus) { var f0 = box.querySelector('button'); if (f0) f0.focus(); }
+      return;
+    }
+    // Schritt 1: Zahl der Unterhaltsberechtigten (große Zahlenknöpfe)
+    if (pf.schritt === 1) {
+      p(t('pf.pers.q'), 'pf-frage'); p(t('pf.pers.hint'), 'hint');
+      var r = knoepfe('wahl-raster');
+      [0, 1, 2, 3, 4, 5].forEach(function (n) { r.appendChild(nhKnopf('wahl', '<b>' + esc(n === 5 ? t('pf.mehr') : String(n)) + '</b>', pf.pers === n, function () { pf.pers = n; pf.schritt = 2; pfRender(true); })); });
+      leiste(null);
+    } else if (pf.schritt === 2 && pf.art === 'lohn') {
+      p(t('pf.netto.q'), 'pf-frage');
+      var fld = document.createElement('div'); fld.className = 'field';
+      fld.innerHTML = '<label for="pfNetto">' + esc(t('pf.netto.l')) + '</label><div class="money"><input type="text" inputmode="decimal" autocomplete="off" id="pfNetto"><span aria-hidden="true">€</span></div><span class="hint">' + esc(t('pf.netto.hint')) + '</span>';
+      box.appendChild(fld);
+      var inp = fld.querySelector('input'); inp.value = pf.netto === '' ? '' : String(pf.netto).replace('.', ',');
+      var msg = p('', 'warn'); msg.hidden = true; msg.setAttribute('role', 'status');
+      var weiter = function () { var v = parseAmount(inp.value); if (v === '' || !(v >= 0)) { msg.hidden = false; msg.textContent = t('pf.netto.fehlt'); inp.focus(); return; } pf.netto = v; pf.schritt = 3; pfRender(true); };
+      inp.addEventListener('keydown', function (ev) { if (ev.key === 'Enter') weiter(); });
+      leiste(weiter);
+      if (fokus) { inp.focus(); return; }
+    } else if (pf.schritt === 2 && pf.art === 'konto') {
+      p(t('pf.kg.q'), 'pf-frage'); p(t('pf.kg.hint'), 'hint');
+      var r2 = knoepfe('wahl-raster');
+      [0, 1, 2, 3, 4, 5].forEach(function (n) { r2.appendChild(nhKnopf('wahl', '<b>' + esc(n === 5 ? t('pf.mehr') : String(n)) + '</b>', pf.kg === n, function () { pf.kg = n; pf.schritt = 3; pfRender(true); })); });
+      leiste(null);
+    } else if (pf.art === 'lohn') {
+      var e = Rules.pfaendung(pf.netto, pf.pers);
+      p(t('pf.erg.h'), 'pf-frage');
+      if (!e.pfaendbar) { p(t('pf.erg.nichts', { n: { eur: pf.netto }, f: { eur: e.frei } }), 'pf-zahl'); }
+      else {
+        p(t('pf.erg.bleibt', { b: { eur: e.bleibt } }), 'pf-zahl');
+        p(t('pf.erg.lohn', { p: { eur: e.pfaendbar }, n: { eur: pf.netto } }));
+      }
+      if (e.ueberHoechst) p(t('pf.erg.hoch', { h: { eur: Rules.RULES.pfaendung.hoechst } }), 'hint');
+      p(t('pf.erg.frei', { f: { eur: e.frei } }), 'small muted');
+      p(t('pf.tipp.unterhalt'), 'hint');
+      tipps(['pf.tipp.einmal', 'pf.tipp.kg', 'pf.tipp.mehr', 'pf.tipp.beratung']);
+      var d = knoepfe('btns');
+      d.appendChild(nhKnopf('btn', esc(t('pf.konto.weiter')), null, function () { pf.art = 'konto'; pf.schritt = 2; pfRender(true); }));
+      d.appendChild(nhKnopf('btn ghost', esc(t('pf.neu')), null, function () { pf = { art: '', schritt: 0, netto: '', pers: null, kg: null, kiz: '' }; pfRender(true); }));
+    } else {
+      var k = Rules.pkonto({ personen: pf.pers, kindergeldKinder: pf.kg });
+      p(t('pf.erg.h'), 'pf-frage');
+      p(t('pf.erg.konto', { g: { eur: k.gesamt } }), 'pf-zahl');
+      var tab = document.createElement('table'); tab.className = 'pf-tab';
+      [['pf.k.sockel', k.sockel], ['pf.k.unterhalt', k.unterhalt], ['pf.k.kg', k.kindergeld]].forEach(function (x) { if (!x[1] && x[0] !== 'pf.k.sockel') return; var tr = tab.insertRow(); tr.insertCell().textContent = t(x[0]); tr.insertCell().textContent = E(x[1]); });
+      box.appendChild(tab);
+      if (k.unterhalt || k.kindergeld) p(t('pf.tipp.bescheinigung'), 'hint');
+      tipps(['pf.tipp.umwandeln', 'pf.tipp.uebertrag', 'pf.tipp.sozial', 'pf.tipp.kontomehr', 'pf.tipp.beratung']);
+      var d2 = knoepfe('btns');
+      d2.appendChild(nhKnopf('btn ghost', esc(t('pf.neu')), null, function () { pf = { art: '', schritt: 0, netto: '', pers: null, kg: null, kiz: '' }; pfRender(true); }));
+    }
+    if (fokus) { var h = box.querySelector('.pf-frage'); if (h) { h.setAttribute('tabindex', '-1'); h.focus(); } }
+  }
+
   // ----- Bereiche: Start, Leistungen (Leistungscheck), Brief prüfen -----
   // Beim Öffnen die Startseite; „#leistungen“ und „#briefe“ öffnen den Bereich direkt (Links, Tests).
-  var ANSICHTEN = ['start', 'leistungen', 'briefe', 'pflege', 'pflegeinfo', 'einst']; // „pflege“: Pflegegrad-Einschätzung, gehört zu Leistungen
+  var ANSICHTEN = ['start', 'leistungen', 'briefe', 'pflege', 'pflegeinfo', 'einst', 'pfaendung', 'sparen']; // „pflege“: Pflegegrad-Einschätzung, gehört zu Leistungen
   var aktAnsicht = 'leistungen';
   var BRIEFE = [
     ['jc', 'briefe.jobcenter', 'briefe.jobcenter.t', '<path d="M4 20V9l8-5 8 5v11"/><path d="M9 20v-6h6v6M3 20h18"/>'],
@@ -1842,7 +2123,9 @@
     if (a !== 'briefe') $('app').classList.remove('brief-offen'); else $('app').classList.toggle('brief-offen', !!briefArt); // in der Pflegegrad-Einschätzung Kopf und Hinweise ausblenden, damit die Frage oben steht
     ANSICHTEN.forEach(function (x) { $('v-' + x).hidden = x !== a; });
     $('jump').hidden = a !== 'leistungen' || esModus;
-    var navA = a === 'pflege' || a === 'pflegeinfo' ? 'leistungen' : a;
+    var navA = a === 'pflege' || a === 'pflegeinfo' ? 'leistungen' : a === 'pfaendung' || a === 'sparen' ? 'start' : a;
+    if (a === 'pfaendung') pfRender(false);
+    if (a === 'sparen') spRender(false);
     document.querySelectorAll('#appnav button').forEach(function (b) { if (b.getAttribute('data-ansicht') === navA) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
     try { if (location.hash !== '#' + a) history.replaceState(null, '', '#' + a); } catch (e) {}
     bereicheText();
@@ -2157,6 +2440,8 @@
   $('clear2').addEventListener('click', function () { $('clearBtn').click(); $('clear2Msg').textContent = $('clearMsg').textContent; });
   $('goLeistungen').addEventListener('click', function () { zeigeAnsicht('leistungen', true); });
   $('goBriefe').addEventListener('click', function () { zeigeAnsicht('briefe', true); });
+  $('goPfaendung').addEventListener('click', function () { zeigeAnsicht('pfaendung', true); });
+  $('goSparen').addEventListener('click', function () { sp.thema = ''; zeigeAnsicht('sparen', true); });
   window.addEventListener('hashchange', function () { var a = location.hash.slice(1); if (ANSICHTEN.indexOf(a) >= 0 && a !== aktAnsicht) zeigeAnsicht(a, true); });
   Store.remove('lotse.fristen'); // Fristen aus 1.3.0 (Build 141) gibt es nicht mehr: gespeicherte Einträge vom Gerät löschen
   zeigeAnsicht((function () { var a = (location.hash || '').slice(1); return ANSICHTEN.indexOf(a) >= 0 ? a : 'start'; })());

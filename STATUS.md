@@ -1,13 +1,13 @@
 # STATUS – SoLo (Sozialleistungslotse)
 
-Stand: Version 1.4.0, Build 145 (Play Store AAB gebaut, nicht veröffentlicht). Branch: `claude/app-development-next-steps-2n8dzt`. Letzter Commit: 42a8ea2.
+Stand: Version 1.4.0, Build 145 (Play Store AAB gebaut, nicht veröffentlicht). Neue Arbeit (19.11.2026): Branch `claude/netto-pfaendung` (von `claude/app-development-next-steps-2n8dzt`), noch kein Build, kein PR.
 
 ## 1. Projekt
 - Offline-App für Android, iOS, Web: prüft Sozialleistungen (Anspruch wahrscheinlich/möglich, grobe Höhe, Stelle, Unterlagen), prüft Briefe (Bescheid, Pflegegutachten, Nebenkosten), erzeugt Antragsmappe und Widerspruch als PDF.
 - Ziel: rechtlich wasserdicht UND maximal einfach; Korrektheit gleichrangig mit Bedienbarkeit. Zielgruppe: Laien ohne Bürokratie- und Technikwissen.
 - Stack: Vanilla JS, ein-Datei-Web-Build. Capacitor 8 für Android/iOS. Tesseract (Web) bzw. natives TextRecognition-Plugin für OCR, pdf.js 3.11.174 für PDF. Tests: Node-Skripte + Playwright. 13 Sprachen: de, en, tr, ar, ru, uk, pl, ro, fr, fa-AF (Dari), fa (Farsi), ps (Paschtu), so (Somali) (Prüfpaket und Pflege-Assistent nur Deutsch).
 - Build: `scripts/build.js` (src/template.html + src/app.js + src/lang/*.json + erweiterungen/* → `dist/sozialleistungslotse.html`), `scripts/build-app.js` (→ `app/www`, eigenes NATIVE_SCAN-Markup und CSP), `tools/paket-bauen.sh <VC> <dir> <jks> <pwfile>` (AAB, `OHNE_TESTS=1`).
-- Dateien: `src/rules.js` (Rechenregeln), `src/app.js` (UI), `src/behoerden.js` (Stellen + Anschriften), `src/plz.js`, `erweiterungen/vorschau.js|html` (Prüfpaket), `brief-lesen.js`, `pflege-assistent.js`, `pflege-fragen.js`, `content/*.json` (Behörden, PLZ), `docs/` (Prüfliste, Quellen, Store, WBS-Grenzen).
+- Dateien: `src/rules.js` (Rechenregeln, auch Netto nach Programmablaufplan und Pfändung), `src/app.js` (UI), `src/behoerden.js` (Stellen + Anschriften), `src/plz.js`, `erweiterungen/vorschau.js|html` (Prüfpaket), `brief-lesen.js`, `pflege-assistent.js`, `pflege-fragen.js`, `content/*.json` (Behörden, PLZ), `docs/` (Prüfliste, Quellen, Store, WBS-Grenzen).
 
 ## 2. Erledigt (im Repo)
 - Branch `claude/zwei-wege-but`: Kachel „Zwei Wege“ nennt Bildung und Teilhabe in beiden Wegen; neuer Reiter „Einstellungen“ (4. Knopf unten) mit Unterreitern „Einstellungen“ (Sprache, Große Schrift, Angaben löschen; Kopf-Schalter bleiben vorerst) und „Informationen“ (Passt ein Ergebnis nicht zum Bescheid, So rechnet der Check und woher die Werte kommen, Hinweise, Impressum). Getestet: npm test, e2e-briefe, e2e-einfach, a11y. Tests angepasst (Sprache/Einfach per Skript). Offen: test:app nicht gelaufen.
@@ -18,6 +18,13 @@ Stand: Version 1.4.0, Build 145 (Play Store AAB gebaut, nicht veröffentlicht). 
 - Antragsmappe: Empfänger je Anschreiben bearbeitbar (Feld über dem Brief, gilt für Kopiertext und PDF, „Vorschlag wiederherstellen“) und Link „Zuständige Stelle suchen“ (DuckDuckGo, kurzer Suchbegriff je Leistung `SUCHE` + Ortsname; bei Kassen/Bundesstellen ohne Ort). Getestet 19.11.2026 (DOM-Tests [empf], a11y hell/dunkel).
 - Antragsmappe: Anschreiben mit Empfänger, Angabenblatt, Unterlagenliste, Antragsformular-Hilfe (Vorschau, Kopieren, Abhakliste). Daten aus PLZ/Anschrift vorbefüllt.
 - Anschriften: Bayern vollständig (Kreise, Jobcenter, Familienkasse N/S, ZBFS, Bezirke); 302 Kreise/Städte bundesweit mit Anschrift (Quelle, Abrufdatum). Rundfunk: feste Anschrift.
+- Netto aus Brutto (19.11.2026): Lohnsteuer/Soli/Kirchensteuer wie amtlicher Programmablaufplan 2026, Sozialabgaben mit Übergangsbereich (`Rules.nettoLohn`, `bruttoAusNetto`, `lohnAnnahmen`). Ersetzt pauschal 80 % (Netto) und / 0,7 (Brutto beim Lohn). Im Einkommen: geschätztes Netto als Hinweis, Knopf „Netto ausrechnen“ (Steuerklasse und Kirchensteuer als große Knöpfe, „Übernehmen“ füllt das Feld). Test `test/test-netto.js`.
+- Pfändung und P-Konto (19.11.2026): großer Startknopf „Ich habe Schulden“, Ansicht `#pfaendung`: Lohn oder Konto wählen, Unterhalt per Zahlenknopf, Ergebnis zuerst, Hinweise aufklappbar. § 850c ZPO mit Tabelle 2026 (BGBl. 2026 I Nr. 80, gilt bis 30.6.2027), P-Konto §§ 899, 902 ZPO. Texte in 8 Sprachen.
+- Ersparnisse aufteilen (19.11.2026): Knopf unter dem Vermögensfeld, große Auswahlknöpfe (Konto, Sparbuch, ETF, Bausparvertrag, Lebens-/Rentenversicherung, Riester/Rürup/Betriebsrente, Zinsen). Riester & Co. zählen nicht; Versicherung nur „möglich“, wenn sie über die Grenze bringt (`evaluate` rechnet dafür ein zweites Mal); Zinsen als Einkommen (Grundsicherungsgeld ab 100 € im Jahr, Wohngeld vorsichtig voll). Test `test/test-ersparnis.js`.
+- Einmalige Hilfen (19.11.2026): Hinweise in den Karten Grundsicherungsgeld/GSA (Erstausstattung, Umzug mit Zusicherung, Schwangerschaft auch ohne laufende Leistung).
+- Neue Karte „Kostenlose Familienversicherung“ (§ 10 SGB V, Grenze 1/7 Bezugsgröße: 2026 565 €, 2027 590 €); jetzt 32 Leistungen (Store-Text, Webseite, docs/index.html angepasst).
+- Bereich „Geld sparen im Alltag“ (19.11.2026): vierter Startknopf, Themen Strom, Heizen, Essen (mit 6 eigenen Rezepten, nur Deutsch), Verträge/Sozialtarife, Schulden (führt zur Pfändung).
+- Konkurrenzvergleich (19.11.2026): Deutschland-Rechner (Wohngeld, Bürgergeld, Pflegegrad), Online-Bescheidprüfer und Nebenkosten-Dienste sind schwächer als SoLo; übernommen wurde nur, was besser ist (Netto-Berechnung, Pfändung).
 - Vorlesen überall entfernt. Einfache Sprache (Werkstatt-Version). Barrierefreiheit (axe, WCAG 2.2 AA).
 - Tests grün am 19.11.2026 (Branch claude/schritt-1, Web-Build und App-Build nur lokal für Tests): `npm test`, `npm run test:erweiterungen`, `npm run test:e2e`, `npm run test:app` (66 Checks). Für e2e-pdf vorher `cd app && npm ci`.
 - Früher: Tests grün vor Build 145: `npm test`, `npm run test:erweiterungen`, `npm run test:e2e`, `npm run test:app` (66 Checks).
@@ -51,6 +58,7 @@ Stand: Version 1.4.0, Build 145 (Play Store AAB gebaut, nicht veröffentlicht). 
 - Build 145 AAB: `/home/user/Claud/SoLo-PlayStore-145.aab` (gitignored), Zips in der Scratchpad der alten Sitzung (nicht dauerhaft).
 
 ## 5. Nächste Schritte (priorisiert)
+0. Zusammengeführt am 19.11.2026 (Branch `claude/zusammenfuehrung`): 13 Sprachen, Einfache Sprache, Empfänger, Netto/Pfändung/Ersparnisse/Familienversicherung/Geld sparen. Offen: Rezepte übersetzen; Wohngeld mit Sparer-Pauschbetrag genauer. Danach weiter mit 1.
 1. ~~WBS-Empfänger~~ weitgehend erledigt. Rest: in den 32 bayerischen Ausnahme-Landkreisen Stadtanschrift der Großen Kreisstadt/Delegationsgemeinde je nach PLZ/Gemeinde (PLZ-Daten sind nur kreisgenau, Gemeinde nötig); Bremen prüfen; `beh.plzHint` für WBS anpassen.
 2. ~~Bayerisches Landespflegegeld (`lpg`)~~ erledigt: `D.fest.landesamtPflege` (Postfach 13 65, 92203 Amberg; Quelle lfp.bayern.de, 19.11.2026), nur Bayern.
 3. Teilweise erledigt: Familienkassen für HE, NI+HB, SN, ST+TH, BE+BB, HH+SH+MV (Nord), RP+SL (`D.familienkasseDE`, `D.fkLand`, arbeitsagentur.de, 19.11.2026; Nord und RP-SL nur indirekt belegt). NRW (West 50574 Köln, Nord 44785 Bochum, Ost 44117 Dortmund) und BW (West 76088 Karlsruhe, Ost 70146 Stuttgart): Postanschriften belegt, aber keine amtliche Kreis-Zuordnung auffindbar (BA-Dienststellensuche dynamisch) -> bewusst ohne Anschrift. Jobcenter: nur Stuttgart, Bonn, Wiesbaden belegt (`D.jobcenterDE`). BAS-Mutterschaftsgeldstelle (Friedrich-Ebert-Allee 38, 53113 Bonn, BAS-Antragsformular 2026) bewusst NICHT als Empfänger: Standard ist die Krankenkasse. Rentenversicherung: bewusst KEIN Empfänger je Land (Träger hängt von der Person ab, § 127 SGB VI; 14 Regionalträger + DRV Bund + Knappschaft-Bahn-See; Hinweis auf § 16 SGB I, Servicetelefon 0800 1000 4800). Landesämter (Recherche 19.11.2026, noch NICHT eingebaut, Kandidaten): Ausweis BE LAGeSo (Postfach 31 09 29, 10639 Berlin; Postfach gilt fürs ganze LAGeSo, prüfen), RP LSJV (56065 Koblenz, Info-PDF), HH Versorgungsamt (Adolph-Schönfelder-Str. 5, 22083 Hamburg, keine eigene Postanschrift), HB Amt für Versorgung und Integration (Doventorscontrescarpe 172 D, 28195 Bremen, Zuständigkeit nur aus Formular); Elterngeld BW L-Bank (L-Bank, Familienförderung, 76113 Karlsruhe, aus Antrag); Eingliederungshilfe HE LWV Regionalverwaltung Kassel (Ständeplatz 6-10, 34117 Kassel, nur Teilgebiet). Alle übrigen Länder/Leistungen nicht landesweit oder nicht belegt (SL, SH, NW, SN, ST, TH, MV, BB, NI: Seiten nicht abrufbar oder Zuständigkeit je Kreis); vor dem Einbau Impressum/Antragsseite der Behörde gegenprüfen.
@@ -60,9 +68,11 @@ Stand: Version 1.4.0, Build 145 (Play Store AAB gebaut, nicht veröffentlicht). 
 7. iOS-Build klären (Billing oder Codemagic/Mac), dann TestFlight.
 8. Play Store: Build 145 hochladen (Konsole), Store-Texte aus `docs/STORE.md`. Nur auf Nutzerwunsch.
 9. Übersetzungen Prüfpaket/Pflege-Assistent; Expertenprüfung Pflege.
+10. Programmablaufplan Lohnsteuer 2027 eintragen, sobald endgültig (BMF, meist Mitte/Ende November): Tarifwerte in `R.lohn` als `pap2027`, Umschalten in `lohnParam`; Pflege-Kinderlosenzuschlag 2027 nach Beschluss des PNOG.
+11. Zum 1.7.2027 neue Pfändungsfreigrenzen eintragen (`R.pfaendung`, `gueltigBis`), Tabellenzeilen in `test/test-netto.js` ersetzen.
 
 ## 6. Arbeitsregeln für den nächsten Chat
-- Nur auf Branch `claude/app-development-next-steps-2n8dzt`. Kein Force-Push, kein PR ohne Auftrag.
+- Neue Arbeit auf Branch `claude/netto-pfaendung` (oder neuem Branch davon); `claude/app-development-next-steps-2n8dzt` ist der Stand von Build 145. Kein Force-Push, kein PR ohne Auftrag.
 - Commit-Fuß: `Co-Authored-By: Claude <Modell> <noreply@anthropic.com>` und `Claude-Session: <Sitzungslink>`; keine Modell-ID im Repo.
 - Builds NUR auf ausdrücklichen Wunsch starten. Keine Store-Aktionen ohne Freigabe. Netz-/Rechtegrenzen nicht umgehen.
 - Keystore + Passwort liegen nur in der Scratchpad (`schluessel/upload.jks`, `upload-schluessel.txt`), nie in Repo oder Chat. Signatur-SHA beginnt `C8:E4:5D:61`.

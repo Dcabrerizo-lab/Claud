@@ -9,7 +9,7 @@ Alles muss zur [Datenschutzerklärung](../datenschutz.html) passen. Bei Änderun
 |---|---|
 | App-Name | SoLo – Sozialleistungslotse (27 Zeichen) |
 | Untertitel (iOS, max. 30 Zeichen) | Hilfen finden, Briefe prüfen |
-| Werbetext (iOS, max. 170 Zeichen) | Welche Hilfen stehen dir zu? Prüfe 31 Sozialleistungen in zwei Minuten und lass Bescheide vom Amt nachrechnen. Offline, ohne Anmeldung, in 13 Sprachen. |
+| Werbetext (iOS, max. 170 Zeichen) | Welche Hilfen stehen dir zu? Prüfe 32 Sozialleistungen in zwei Minuten und lass Bescheide vom Amt nachrechnen. Offline, ohne Anmeldung, in 13 Sprachen. |
 | Stichwörter (iOS, max. 100 Zeichen) | `Wohngeld,Bürgergeld,Grundsicherung,Kinderzuschlag,Bescheid,Widerspruch,Pflegegrad,Sozialhilfe,Antrag` |
 | Kategorie | Play: *Finanzen* · iOS: *Finanzen* (Zweitkategorie *Dienstprogramme*) |
 | Altersfreigabe | Ab 0 / 4+ (keine kritischen Inhalte) |
@@ -26,7 +26,7 @@ Alles muss zur [Datenschutzerklärung](../datenschutz.html) passen. Bei Änderun
 
 ## Beschreibung (Play und iOS)
 
-> Steht dir Wohngeld zu? Kinderzuschlag? Grundsicherung? SoLo prüft in zwei Minuten 31 Sozialleistungen und Vergünstigungen und zeigt dir, was wahrscheinlich, möglich oder unwahrscheinlich ist, mit den nächsten Schritten, der zuständigen Stelle und den nötigen Unterlagen.
+> Steht dir Wohngeld zu? Kinderzuschlag? Grundsicherung? SoLo prüft in zwei Minuten 32 Sozialleistungen und Vergünstigungen und zeigt dir, was wahrscheinlich, möglich oder unwahrscheinlich ist, mit den nächsten Schritten, der zuständigen Stelle und den nötigen Unterlagen.
 >
 > **Was die App prüft**
 > Kindergeld, Elterngeld, Mutterschaftsgeld, Wohngeld, Kinderzuschlag, Grundsicherungsgeld, Arbeitslosengeld I, Krankengeld, Kinderkrankengeld, Bildung und Teilhabe, Unterhaltsvorschuss, Grundsicherung im Alter und bei Erwerbsminderung, BAföG, Berufsausbildungsbeihilfe, Pflegegeld, Entlastungsbetrag, Verhinderungspflege und Pflegehilfsmittel, Bayerisches Landespflegegeld, Hilfe zur Pflege, Leistungen bei Behinderung (Pauschbetrag, Schwerbehindertenausweis, Eingliederungshilfe, Budget für Arbeit, Erwerbsminderungsrente, Altersrente für schwerbehinderte Menschen), Landesblindengeld, Blindenhilfe, Wohnberechtigungsschein, Befreiung vom Rundfunkbeitrag und von Zuzahlungen, Leistungen nach dem Asylbewerberleistungsgesetz.
@@ -85,7 +85,7 @@ Fertige Bilder (7 Motive in allen drei Formaten, Werbegrafik, Symbol 512 × 512,
 Ursprünglicher Vorschlag für die Motive:
 
 1. Fragebogen mit Beispiel: „In zwei Minuten zum Überblick“
-2. Ergebnis mit grünen Karten: „31 Leistungen geprüft“
+2. Ergebnis mit grünen Karten: „32 Leistungen geprüft“
 3. Karte aufgeklappt (Wo beantragen, Unterlagen): „Nächste Schritte und Unterlagen“
 4. Antragsmappe: „Formlose Anträge als PDF“
 5. Sprache Arabisch oder Türkisch: „In 13 Sprachen“
