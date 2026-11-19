@@ -36,6 +36,14 @@ check('[beh-de] Alle Kreise außerhalb Bayerns (außer Berlin, Hamburg) mit Webs
   check('[beh-de] Anschrift aus dem Handy-Abruf wird genutzt', JSON.stringify(Behoerden.fuer('wohngeld', '05315').anschrift) === JSON.stringify(['Beispielplatz 1', '50667 Köln']) && Behoerden.fuer('wohngeld', '05315').stand === '11.11.2026');
   Behoerden.init(D);
 }
+// WBS-Empfänger (Wohnungsamt): nur kreisfreie Städte, nie Landkreise; Berlin und Hamburg bleiben ohne Angabe
+check('[wbs-stelle] Köln (kreisfreie Stadt): Stadt Köln, Wohnungsamt, Anschrift mit Quelle und Stand, ohne Weiterleitungs-Hinweis', bd('wbs', '05315').name === 'Stadt Köln' && bd('wbs', '05315').abt === 'Wohnungsamt' && /^50\d{3} Köln$/.test(bd('wbs', '05315').anschrift[1]) && /^https?:\/\//.test(bd('wbs', '05315').quelle) && !!bd('wbs', '05315').stand && !bd('wbs', '05315').weiter);
+check('[wbs-stelle] Leipzig (Stadt): Wohnungsamt; Landkreis Leipzig, Kreis Mettmann: keine Angabe', bd('wbs', '14713').name === 'Stadt Leipzig' && bd('wbs', '14729') === null && bd('wbs', '05158') === null);
+check('[wbs-stelle] Alle 79 kreisfreien Städte außerhalb Bayerns mit Wohnungsamt und Anschrift, kein Landkreis', Object.entries(DE.kreise).every(([a, e]) => { const b = bd('wbs', a); return e.typ === 'stadt' ? !!b && b.abt === 'Wohnungsamt' && !!b.anschrift && b.name === e.name : b === null; }));
+check('[wbs-stelle] Berlin und Hamburg: keine Angabe (Bezirksämter)', bd('wbs', '11000') === null && bd('wbs', '02000') === null);
+check('[wbs-stelle] Bayern: kreisfreie Stadt (München, Ingolstadt) mit Wohnungsamt und Anschrift', bd('wbs', '09162').name === 'Landeshauptstadt München' && bd('wbs', '09162').abt === 'Wohnungsamt' && !!bd('wbs', '09162').anschrift && bd('wbs', '09161').name === 'Stadt Ingolstadt');
+check('[wbs-stelle] Bayern: Landkreise (Erlangen-Höchstadt, Landshut) ohne Angabe, bis amtlich geprüft; alle 25 kreisfreien Städte mit Angabe', bd('wbs', '09572') === null && bd('wbs', '09274') === null && Object.keys(D.kreise).filter((a) => Number(a.slice(3)) <= 70).every((a) => !!bd('wbs', a)) && Object.keys(D.kreise).filter((a) => Number(a.slice(3)) > 70).every((a) => bd('wbs', a) === null));
+check('[wbs-stelle] Unbekannter Kreis oder fehlender Ort: keine Angabe; Wohngeld in Bayern unverändert', bd('wbs', null) === null && bd('wbs', '99999') === null && !!bd('wohngeld', '09572'));
 check('[beh-de] Bayern unverändert: Erlangen-Höchstadt mit Anschrift', /Landratsamt/.test(bd('wohngeld', '09572').name) && !!bd('wohngeld', '09572').anschrift);
 
 // Vollständigkeit: jeder bayerische Kreis aus den PLZ-Daten hat eine Stelle

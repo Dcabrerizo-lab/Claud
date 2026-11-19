@@ -318,6 +318,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Länder ohne belegte Landesgrenze (Saarland): unter den Bundeswerten (§ 9 Abs. 2 WoFG: 12.000 / 18.000 €, + 4.100 € je weitere Person, + 500 € je Kind) „wahrscheinlich“, sonst „möglich“ | ◐ | `wbs-land` |
 | Landesgrenzen aller übrigen 15 Länder nach amtlichen Quellen (Tabelle `docs/WBS-GRENZEN.md`), mit Aufrundung (RP, SH) und Zuschlag für 1-2 Personen (SH); auf den Euro geprüft; „nein“ nur über der höchsten Stufe nach 30 % Abzug, Freibeträgen und gezahltem Unterhalt mit 5 % Reserve | ✓ | `wbs-land-grenze` |
 | WBS-Stufen je Land (Berlin WBS 140/180/220, Förderwege HH/SH/MV, NRW Gruppe A/B, HB, RP, ST, TH) mit Grenzen und erreichter Stufe | ✓ | `wbs-stufen` |
+| Empfänger des WBS-Antrags: Wohnungsamt der kreisfreien Stadt mit Anschrift (Quelle und Abrufdatum wie bei den übrigen Stellen); Landkreise (auch in Bayern, wegen der Großen Kreisstädte) sowie Berlin und Hamburg (Bezirksämter) bewusst ohne Anschrift, dort bleibt „Wohnungsamt deiner Stadt oder Gemeinde“ | ◐ | `wbs-stelle` |
 | Genaue Einkommensgrenzen der anderen 15 Länder | ○ (Quellen widersprüchlich; Annahme: kein Land liegt unter den Bundeswerten, bitte bestätigen) | |
 
 ## Elterngeld (BEEG)
