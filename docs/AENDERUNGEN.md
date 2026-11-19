@@ -3,6 +3,7 @@
 Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss steigen). Die Versionsnummer kommt aus dem Build.
 
 ## 1.4.0 (ab Versionsnummer 143, November 2026)
+- Ab Versionsnummer 146: Renten-Netto genauer (Beiträge zur Kranken- und Pflegeversicherung statt Pauschale); Krankenversicherung beim Lohn korrigiert; Netto wird je Person gerechnet; Unterhaltsvorschuss vollständig (Waisenrente, Kind zu 40 % oder mehr beim anderen Elternteil, neue Partnerschaft, Aufenthalt und mehr); Auto bei Grundsicherung im Alter geschützt; Pläne für 2027 aktualisiert; Sicherheits-Updates.
 - „Vorlesen“ entfernt (einfache Version und Pflegegrad-Einschätzung), ab Versionsnummer 144
 - Ab Versionsnummer 145: unter jedem Feld mit Amtsbegriff in „Brief prüfen“ ein Hinweis, wo der Wert im Brief steht (Berechnungsbogen, erste Seite, Briefkopf); „formloser Antrag“ in der Ausfüllhilfe erklärt (8 Sprachen); Pflegegutachten empfiehlt Scannen oder PDF statt rund 60 Bewertungen von Hand; Kachel „Zwei Wege“ beginnt mit „Stelle beide Anträge gleichzeitig“; Hinweis bei fremder Sprache empfiehlt Scannen oder PDF.
 - Ab Versionsnummer 144 außerdem: **Brief prüfen** mit Ergebnis als Karten je Abweichung (vollständige Tabelle zum Aufklappen), „Das steht in deinem Bescheid“, Name und Anschrift aus der Ausfüllhilfe, Stelle, Aktenzeichen, Nummer der Bedarfsgemeinschaft, Kindergeld- und Versichertennummer aus dem Brief (gelb markiert, Markierung jetzt sichtbar); jedes Schreiben als PDF teilen, drucken oder speichern, mit Hinweis zur Abgabe. **Antragsformular**: gleiches Muster wie die anderen Kacheln, Vorschau des fotografierten Formulars bzw. der PDF-Seiten (nur im Arbeitsspeicher), Ergebnis in zwei Teilen (direkt abschreiben, Liste zum Abhaken), Kopieren über die Zwischenablage der App mit Rückmeldung.
@@ -73,6 +74,3 @@ Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss ste
 
 ## 1.0.0 (bis Versionsnummer 132)
 - Erste Testversionen im geschlossenen Test
-
----
-
