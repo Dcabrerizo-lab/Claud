@@ -2268,6 +2268,7 @@
     var q = $('pa-q'); if (q) { window.scrollTo(0, 0); q.focus({ preventScroll: true }); }
   }
   $('paStart').addEventListener('click', paOeffnen);
+  $('goPflege').addEventListener('click', function () { if (typeof PflegeAssistent === 'undefined') zeigeAnsicht('leistungen', true); else paOeffnen(); }); // Startkachel Pflege: Pflegegrad selbst einschätzen
   window.SoLoPflegeStart = paOeffnen; // „Pflegegrad selbst einschätzen“ aus der Gutachten-Prüfung
   // Sprung zu einer Ergebniskarte (Übersicht oben, Kachel „Zwei Wege“): Karte aufklappen
   $('ergebnis').addEventListener('click', function (e) { var a = e.target.closest && e.target.closest('a[href^="#c-"]'); if (a) karteAuf(a.getAttribute('href').slice(1)); });

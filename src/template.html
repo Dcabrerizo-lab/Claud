@@ -618,17 +618,28 @@
   .app[data-ansicht="start"] .top .lead { display: none; }
   .gruss { font-size: 1.7em; font-weight: 900; margin: 4px 0 6px; }
   .gruss-t { color: var(--muted); font-size: 1.05em; margin: 0 0 4px; }
-  .weg.haupt { flex-direction: column; align-items: stretch; gap: 14px; min-height: 0; padding: 22px 22px 20px; }
-  .weg.haupt .weg-txt { display: flex; flex-direction: column; gap: 6px; }
-  .weg.haupt .weg-txt b { font-family: var(--font-display); font-weight: 900; font-size: 1.45em; line-height: 1.2; }
-  .weg.haupt .hero-meta { order: -1; opacity: 1; font-size: .9em; font-weight: 700; }
-  .hero-los { align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; min-height: 52px; padding: 0 24px; border-radius: 999px; background: var(--surface); color: var(--accent); font-weight: 800; font-size: 1.05em; }
-  [dir="rtl"] .pfeil { display: inline-block; transform: scaleX(-1); }
-  .weg:not(.haupt) { min-height: 72px; padding: 14px 16px; }
-  .weg:not(.haupt) .weg-sym { width: 46px; height: 46px; }
-  .weg:not(.haupt) .weg-txt b { font-family: var(--font-display); font-weight: 800; font-size: 1.05em; }
-  .weg:not(.haupt) .weg-txt span { color: var(--muted); opacity: 1; font-size: .9em; }
-  #goPfaendung .weg-sym { background: var(--hint-bg); color: var(--hint); }
+  /* Startseite als Kachel-Raster (Kacheln wie Richtung 3 „Bunt und bildhaft“, Farben aus der warmen Palette; weiße Schrift mind. 4,5:1).
+     Spaltenbreite in em: bei 320 px oder großer Schrift bricht das Raster auf eine Spalte um. Jeder Bereich hat seine Farbe. */
+  :root { --c-leistungen: #0f6b5c; --c-briefe: #a14a2f; --c-pfaendung: #7a3b69; --c-sparen: #2f6b3a; --c-pflege: #23507f; }
+  .start-raster { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5em), 1fr)); gap: 12px; margin: 18px 0; max-width: 640px; }
+  .sk { --c: var(--c-leistungen); display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; gap: 14px; min-height: 150px; width: 100%; padding: 16px; border: 0; border-radius: 26px;
+    background: var(--c); color: #fff; font: inherit; text-align: start; cursor: pointer; box-shadow: 0 2px 0 color-mix(in srgb, var(--c) 70%, #000); }
+  .sk:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+  @media (hover: hover) { .sk:hover { filter: brightness(1.08); } }
+  .sk-haupt { grid-column: 1 / -1; min-height: 160px; }
+  .start-raster > .sk:last-child:nth-child(even) { grid-column: 1 / -1; min-height: 0; }
+  .sk-briefe { --c: var(--c-briefe); } .sk-pfaendung { --c: var(--c-pfaendung); } .sk-sparen { --c: var(--c-sparen); } .sk-pflege { --c: var(--c-pflege); }
+  .sk-sym { flex: none; width: 48px; height: 48px; border-radius: 16px; display: grid; place-items: center; background: rgba(255, 255, 255, .2); color: #fff; }
+  .sk-sym svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+  .sk-txt { display: grid; gap: 4px; min-width: 0; overflow-wrap: anywhere; hyphens: auto; }
+  .sk-txt b { font-family: var(--font-display); font-weight: 800; font-size: 1.25rem; line-height: 1.2; }
+  .sk-haupt .sk-txt b { font-weight: 900; font-size: 1.5rem; }
+  .sk-txt span { font-size: .875rem; line-height: 1.35; }
+  .app.big .sk-txt b { font-size: 1.25em; } .app.big .sk-haupt .sk-txt b { font-size: 1.5em; } .app.big .sk-txt span { font-size: .875em; }
+  /* Bereichsfarbe auch in den Bereichen: Symbole in Brief prüfen, Schulden, Geld sparen */
+  .app[data-ansicht="briefe"] .kachel-sym { background: var(--c-briefe); color: #fff; }
+  .app[data-ansicht="pfaendung"] .weg-sym { background: var(--c-pfaendung); color: #fff; }
+  .app[data-ansicht="sparen"] .weg-sym { background: var(--c-sparen); color: #fff; }
   .hinweis-koralle { display: flex; gap: 12px; align-items: flex-start; background: var(--hint-bg); color: var(--hint); border-radius: var(--r-item); padding: 14px 16px; margin: 4px 0 0; font-weight: 700; }
   .hinweis-koralle > svg { flex: none; width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; margin-top: 1px; }
   .hinweis-koralle p { margin: 0; }
@@ -653,11 +664,12 @@
     <section id="v-start" class="ansicht" aria-labelledby="h-start" hidden>
       <h2 id="h-start" class="ans-h gruss" data-t="home.gruss"></h2>
       <p class="gruss-t" data-t="home.gruss.t"></p>
-      <div class="weg-liste">
-        <button type="button" class="weg haupt" id="goLeistungen"><span class="weg-txt"><b data-t="home.leistungen"></b><span class="hero-meta" data-t="home.hero.meta"></span></span><span class="hero-los"><span data-t="home.los"></span><span class="pfeil" aria-hidden="true">→</span></span></button>
-        <button type="button" class="weg" id="goBriefe"><span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><span class="weg-txt"><b data-t="home.brief"></b><span data-t="home.brief.t"></span></span></button>
-        <button type="button" class="weg" id="goPfaendung"><span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/><path d="M15 3l-3 3-3-3"/></svg></span><span class="weg-txt"><b data-t="home.pfaendung"></b><span data-t="home.pfaendung.t"></span></span></button>
-        <button type="button" class="weg" id="goSparen"><span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 11a7 6 0 0 1 13-2h2v4h-2a7 7 0 0 1-3 3v3h-3v-2h-2v2H7v-3a6 6 0 0 1-2-5z"/><circle cx="15" cy="10" r=".8"/></svg></span><span class="weg-txt"><b data-t="home.sparen"></b><span data-t="home.sparen.t"></span></span></button>
+      <div class="start-raster">
+        <button type="button" class="sk sk-haupt sk-leistungen" id="goLeistungen"><span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4M8.5 11l2 2 3.5-4"/></svg></span><span class="sk-txt"><b data-t="home.leistungen"></b><span data-t="home.hero.meta"></span></span></button>
+        <button type="button" class="sk sk-briefe" id="goBriefe"><span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><span class="sk-txt"><b data-t="home.brief"></b><span data-t="home.brief.t"></span></span></button>
+        <button type="button" class="sk sk-pfaendung" id="goPfaendung"><span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/><path d="M15 3l-3 3-3-3"/></svg></span><span class="sk-txt"><b data-t="home.pfaendung"></b><span data-t="home.pfaendung.t"></span></span></button>
+        <button type="button" class="sk sk-sparen" id="goSparen"><span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 11a7 6 0 0 1 13-2h2v4h-2a7 7 0 0 1-3 3v3h-3v-2h-2v2H7v-3a6 6 0 0 1-2-5z"/><circle cx="15" cy="10" r=".8"/></svg></span><span class="sk-txt"><b data-t="home.sparen"></b><span data-t="home.sparen.t"></span></span></button>
+        <button type="button" class="sk sk-pflege" id="goPflege"><span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/><path d="M9 12h6M12 9v6"/></svg></span><span class="sk-txt"><b data-t="home.pflege"></b><span data-t="home.pflege.t"></span></span></button>
       </div>
       <p class="hinweis-koralle"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg><span data-t="home.sicher"></span></p>
     </section>
