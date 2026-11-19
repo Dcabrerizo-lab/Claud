@@ -1258,5 +1258,11 @@
   "sp.vertraege.5": "Każdy ma prawo do konta podstawowego w banku, także z długami (§ 31 Zahlungskontengesetz).",
   "sp.vertraege.6": "Sprawdź drogie umowy (telefon, siłownia, czasopisma). Po pierwszym okresie wiele umów można wypowiedzieć z miesięcznym terminem.",
   "sp.quellen": "Podstawa: Verbraucherzentrale, Stromspar-Check, wymienione ustawy (stan na listopad 2026).",
-  "t.auto.hochSgb12": "Odpowiedni samochód jest chroniony (§ 90 Abs. 2 Nr. 10 SGB XII). Przy wartości powyżej około {wert} Sozialamt sprawdza dokładniej. Dlatego tylko „możliwe”."
+  "t.auto.hochSgb12": "Odpowiedni samochód jest chroniony (§ 90 Abs. 2 Nr. 10 SGB XII). Przy wartości powyżej około {wert} Sozialamt sprawdza dokładniej. Dlatego tylko „możliwe”.",
+  "t.kiz.rentnerAllein": "Kinderzuschlag wymaga, aby w gospodarstwie domowym ktoś był zdolny do pracy, np. partner lub dziecko w wieku od 15 lat. Osoba, która osiągnęła Regelaltersgrenze (ustawowy wiek emerytalny), się nie liczy. Sprawdź zamiast tego Wohngeld i Grundsicherung im Alter.",
+  "t.kiz.emAllein": "Kinderzuschlag wymaga, aby w gospodarstwie domowym ktoś był zdolny do pracy, np. partner lub dziecko w wieku od 15 lat. Osoba całkowicie niezdolna do pracy (voll erwerbsgemindert) się nie liczy. Sprawdź zamiast tego Wohngeld i Grundsicherung im Alter und bei Erwerbsminderung.",
+  "t.kiz.nurAb15": "Tutaj Kinderzuschlag jest możliwy tylko wtedy, gdy dziecko ma 15 lat lub więcej, ponieważ ktoś w gospodarstwie domowym musi być zdolny do pracy. Osoba, która osiągnęła Regelaltersgrenze lub jest całkowicie niezdolna do pracy, się nie liczy.",
+  "t.kiz.vorgezogen": "Kto pobiera emeryturę (Altersrente) lub osiągnął Regelaltersgrenze, nie dostaje Kinderzuschlag, chyba że dziecko ma 15 lat lub więcej. Dotyczy to także emerytury przed Regelaltersgrenze, ale nie renty wdowiej, renty sierocej ani renty z powodu częściowej niezdolności do pracy.",
+  "t.kiz.rentnerPaar": "Kinderzuschlag przysługuje tylko wtedy, gdy ktoś w gospodarstwie domowym jest zdolny do pracy. Jeśli oboje pobierają emeryturę (Altersrente) lub oboje są całkowicie niezdolni do pracy, jest możliwy tylko wtedy, gdy dziecko ma 15 lat lub więcej.",
+  "t.ggeld.vorgezogen": "Kto pobiera emeryturę (Altersrente), także przed Regelaltersgrenze, nie dostaje Grundsicherungsgeld (§ 7 Abs. 4 SGB II). Właściwy jest wtedy Sozialamt (Hilfe zum Lebensunterhalt). Nie dotyczy to renty wdowiej, renty sierocej ani renty z powodu częściowej niezdolności do pracy."
 }

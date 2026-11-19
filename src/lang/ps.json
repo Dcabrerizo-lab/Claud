@@ -1258,5 +1258,11 @@
   "sp.vertraege.5": "هر څوک حق لري په بانک کې بنسټیز حساب ولري، حتی د پورونو سره (§ 31 Zahlungskontengesetz).",
   "sp.vertraege.6": "ګران تړونونه (موبایل، جم، مجلې) وګورئ. د لومړۍ مودې وروسته ډېری تړونونه د یوې میاشتې په مهلت فسخ کېدای شي.",
   "sp.quellen": "بنسټ: د مصرف‌کوونکو مرکز، Stromspar-Check، یاد شوي قوانین (د نومبر 2026 حالت).",
-  "t.auto.hochSgb12": "مناسب موټر خوندي دی (§ 90 Abs. 2 Nr. 10 SGB XII). له شاوخوا {wert} څخه د لوړ ارزښت سره Sozialamt ډېر دقیق ګوري. نو یوازې «ممکن»."
+  "t.auto.hochSgb12": "مناسب موټر خوندي دی (§ 90 Abs. 2 Nr. 10 SGB XII). له شاوخوا {wert} څخه د لوړ ارزښت سره Sozialamt ډېر دقیق ګوري. نو یوازې «ممکن».",
+  "t.kiz.rentnerAllein": "د Kinderzuschlag شرط دا دی چې په کورنۍ کې څوک د کار وړ وي، لکه ملګری یا 15 کلن یا لوی ماشوم. هغه څوک چې Regelaltersgrenze (د تقاعد قانوني عمر) ته رسېدلی، نه شمېرل کېږي. پر ځای یې Wohngeld او Grundsicherung im Alter وګورئ.",
+  "t.kiz.emAllein": "د Kinderzuschlag شرط دا دی چې په کورنۍ کې څوک د کار وړ وي، لکه ملګری یا 15 کلن یا لوی ماشوم. هغه څوک چې په بشپړه توګه د کار وړتیا نه لري (voll erwerbsgemindert)، نه شمېرل کېږي. پر ځای یې Wohngeld او Grundsicherung im Alter und bei Erwerbsminderung وګورئ.",
+  "t.kiz.nurAb15": "دلته Kinderzuschlag یوازې هغه وخت ممکن دی چې یو ماشوم 15 کلن یا لوی وي، ځکه په کورنۍ کې باید څوک د کار وړ وي. هغه څوک چې Regelaltersgrenze ته رسېدلی یا په بشپړه توګه د کار وړتیا نه لري، نه شمېرل کېږي.",
+  "t.kiz.vorgezogen": "څوک چې د زوړتیا تقاعد (Altersrente) اخلي یا Regelaltersgrenze ته رسېدلی، Kinderzuschlag نه اخلي، مګر دا چې یو ماشوم 15 کلن یا لوی وي. دا د Regelaltersgrenze نه مخکې د زوړتیا تقاعد لپاره هم دی، خو د کونډې، یتیم یا د کار د جزوي ناوړتیا تقاعد لپاره نه دی.",
+  "t.kiz.rentnerPaar": "Kinderzuschlag یوازې هغه وخت ورکول کېږي چې په کورنۍ کې څوک د کار وړ وي. که دواړه د زوړتیا تقاعد (Altersrente) اخلي یا دواړه په بشپړه توګه د کار وړتیا نه لري، یوازې هغه وخت ممکن دی چې یو ماشوم 15 کلن یا لوی وي.",
+  "t.ggeld.vorgezogen": "څوک چې د زوړتیا تقاعد (Altersrente) اخلي، حتی د Regelaltersgrenze نه مخکې، Grundsicherungsgeld نه اخلي (§ 7 Abs. 4 SGB II). بیا Sozialamt مسؤل دی (Hilfe zum Lebensunterhalt). دا د کونډې، یتیم یا د کار د جزوي ناوړتیا تقاعد لپاره نه دی."
 }

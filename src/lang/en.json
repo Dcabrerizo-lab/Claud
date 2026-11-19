@@ -1258,5 +1258,11 @@
   "sp.vertraege.5": "Everyone has the right to a basic account at a bank, even with debts (§ 31 Zahlungskontengesetz).",
   "sp.vertraege.6": "Check expensive contracts (mobile phone, gym, magazines). After the initial term many contracts can be cancelled with one month's notice.",
   "sp.quellen": "Basis: consumer advice centre, Stromspar-Check, laws as named (as of November 2026).",
-  "t.auto.hochSgb12": "A reasonable car is protected (§ 90 Abs. 2 Nr. 10 SGB XII). For a value above about {wert} the Sozialamt checks more closely. So only “possible”."
+  "t.auto.hochSgb12": "A reasonable car is protected (§ 90 Abs. 2 Nr. 10 SGB XII). For a value above about {wert} the Sozialamt checks more closely. So only “possible”.",
+  "t.kiz.rentnerAllein": "Kinderzuschlag requires someone in the household who is able to work, e.g. a partner or a child aged 15 or older. A person who has reached the Regelaltersgrenze (standard retirement age) does not count. Check Wohngeld and Grundsicherung im Alter instead.",
+  "t.kiz.emAllein": "Kinderzuschlag requires someone in the household who is able to work, e.g. a partner or a child aged 15 or older. A person who is fully unable to work (voll erwerbsgemindert) does not count. Check Wohngeld and Grundsicherung im Alter und bei Erwerbsminderung instead.",
+  "t.kiz.nurAb15": "Here Kinderzuschlag is only possible if a child is 15 years or older, because someone in the household must be able to work. A person who has reached the Regelaltersgrenze or is fully unable to work does not count.",
+  "t.kiz.vorgezogen": "If you receive an old-age pension (Altersrente) or have reached the Regelaltersgrenze, there is no Kinderzuschlag unless a child is 15 years or older. This also applies to an old-age pension before the Regelaltersgrenze, but not to a widow's pension, orphan's pension or pension for partial incapacity to work.",
+  "t.kiz.rentnerPaar": "Kinderzuschlag is only paid if someone in the household is able to work. If both receive an old-age pension (Altersrente) or both are fully unable to work, it is only possible if a child is 15 years or older.",
+  "t.ggeld.vorgezogen": "Anyone receiving an old-age pension (Altersrente), even before the Regelaltersgrenze, gets no Grundsicherungsgeld (§ 7 Abs. 4 SGB II). The Sozialamt is then responsible (Hilfe zum Lebensunterhalt). This does not apply to a widow's pension, orphan's pension or pension for partial incapacity to work."
 }
