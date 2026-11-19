@@ -1,7 +1,7 @@
 # STATUS – SoLo (Sozialleistungslotse)
 
 Stand: 19.11.2026. Letzte Store-Version: 1.4.0, Build 145 (Play-Store-AAB gebaut, nicht veröffentlicht). Nächster VersionCode: 146.
-Ausführlicher Verlauf (Erledigtes, alte Pläne): `docs/AENDERUNGEN.md`, Abschnitt „Entwicklungsverlauf“.
+Ausführlicher Verlauf (Erledigtes, alte Pläne): `docs/VERLAUF.md`, Abschnitt „Entwicklungsverlauf“.
 
 ## 1. Stand
 
