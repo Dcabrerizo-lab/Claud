@@ -5,7 +5,7 @@ Ausführlicher Verlauf (Erledigtes, alte Pläne): `docs/VERLAUF.md`, Abschnitt �
 
 ## 1. Stand
 
-### In `main` (bis PR #26)
+### In `main` (bis PR #26; neuere PRs siehe unten)
 | Bereich | Inhalt |
 |---|---|
 | Leistungen | 32 Karten (`test/karten.js`), neu u. a. Kostenlose Familienversicherung (§ 10 SGB V). Werte 2027 mit Umschalten zum 1.1.2027. Landesleistungen und WBS-Grenzen aller 16 Länder (Saarland: nur Bundeswerte). |
@@ -15,15 +15,16 @@ Ausführlicher Verlauf (Erledigtes, alte Pläne): `docs/VERLAUF.md`, Abschnitt �
 | Oberfläche | Reiter „Einstellungen“ (Einstellungen, Informationen); Antragsmappe mit bearbeitbarem Empfänger und Link „Zuständige Stelle suchen“ |
 | Tests/CI | Inhaltliche Prüfung (Fable) behoben (#25); Schwere Tests sonntags; Abhängigkeiten gebündelt (#26) |
 
-### Offene Pull Requests (nicht gemergt)
+### Am 19.11.2026 gemergt
 | PR | Inhalt |
 |---|---|
 | #27 | Renten-Netto nach KV/PV statt 89 %; KV-Satz Arbeitnehmer 7,3 % |
 | #28 | npm-Sicherheit in `app/` (tar, uuid); pdf.js offen |
 | #29 | Prüfbericht: Pläne 2027 auf Stand 19.11.2026 |
 | #30 | Unterhaltsvorschuss vollständig nach UVG (13 Sprachen + Einfache Sprache) |
-| – | CI-Lücken: noch kein PR |
-| Dependabot | #2–#8, #16–#19 (Gradle 9 siehe Entscheidungen) |
+| #32 | CI-Lücken: ESLint und Erweiterungstests in der CI, Speicherleck im Jahreswechsel-Test |
+| #33 | Workflow `android-play.yml` (Play-Upload, nur von Hand) |
+| Dependabot | überholte PRs geschlossen; #8 (google-services 4.5.0) offen (Gradle 9 siehe Entscheidungen) |
 
 ## 2. Entscheidungen
 - Korrektheit zuerst: unsichere Fälle „möglich“; nie unsicheren Empfänger einsetzen, dann nur Art der Stelle. Jede Zahl, Grenze und Anschrift mit amtlicher Quelle und Datum.
@@ -52,10 +53,9 @@ Ausführlicher Verlauf (Erledigtes, alte Pläne): `docs/VERLAUF.md`, Abschnitt �
 - iOS: TestFlight-Upload klären. Play Store: Build 145 bzw. nächster Build hochladen (nur auf Wunsch).
 
 ## 4. Nächste Schritte
-1. Offene PRs #27–#30 prüfen und mergen (nur auf Wunsch), danach eigene Branches mit `origin/main` aktualisieren.
-2. CI-Lücken schließen (eigener PR).
-3. 1.12.2026: Werte 2027 eintragen, Tests laufen lassen.
-4. Danach Build 146 vom gemergten `main` (nur auf ausdrückliche Anweisung), Store-Texte aus `docs/STORE.md`.
+1. Erledigt: PRs #27–#30, #32, #33 gemergt. Eigene Branches mit `origin/main` aktualisieren.
+2. 1.12.2026: Werte 2027 eintragen, Tests laufen lassen.
+3. Danach Build 146 vom gemergten `main` (nur auf ausdrückliche Anweisung), Store-Texte aus `docs/STORE.md`.
 
 ## 5. Arbeitsregeln
 Siehe `CLAUDE.md` (Branch je Sitzung von `origin/main`, Commit-Fuß, Builds und Store nur auf Anweisung, Schlüssel nie im Repo, Tests).
