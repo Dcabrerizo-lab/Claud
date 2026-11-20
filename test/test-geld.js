@@ -38,6 +38,7 @@ ck('[ms] keine offenen Platzhalter in geschweiften Klammern', leer.every((t) => 
 const voll = G.schreiben('aufst', { g: 'Muster Inkasso GmbH', adr: 'Musterweg 1\n12345 Musterstadt', az: 'AZ-1', datum: '20.11.2026' });
 ck('[ms] Eingaben eingesetzt, Anschrift nur aus der Eingabe', voll.includes('Muster Inkasso GmbH\nMusterweg 1\n12345 Musterstadt') && voll.includes('Aktenzeichen: AZ-1') && !voll.includes(G.LUECKE.adr) && voll.includes('[Ort], 20.11.2026'));
 ck('[ms] Forderungsaufstellung nennt § 13a Abs. 1 und 2 RDG und ist kein Anerkenntnis', /§ 13a Abs\. 1 und 2/.test(voll) && /kein Anerkenntnis/.test(voll));
+ck('[ms] Forderungsaufstellung: auch § 43d BRAO (Rechtsanwälte), keine Zahlungsverweigerung im Muster (Prüfung 20.11.2026)', /§ 43d der Bundesrechtsanwaltsordnung/.test(G.schreiben('aufst', {})) && !/zahle ich nicht/.test(G.MUSTER.map((m) => G.schreiben(m, {})).join('\n')));
 ck('[ms] P-Konto: § 903 ZPO, Angaben nach Abs. 3 (Höhe, Art, Zeitraum, Unterhaltsberechtigte, Geburtsdatum)', /§ 903 ZPO/.test(leer[3]) && /Höhe und Art der Leistungen/.test(leer[3]) && /Zeitraum/.test(leer[3]) && /Geburtsdatum minderjähriger/.test(leer[3]));
 ck('[ms] keine Wertung des Einzelfalls (verjährt, unberechtigt, unwirksam, rechtswidrig)', leer.every((t) => !/verjährt|unberechtigt|unwirksam|rechtswidrig|sittenwidrig/i.test(t)));
 const boese = G.schreiben('geduld', { g: '<script>x</script>\u0007Firma', adr: 'a\r\nb\u0000', az: 'x'.repeat(500) });
