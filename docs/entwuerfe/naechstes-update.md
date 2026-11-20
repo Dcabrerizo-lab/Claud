@@ -10,6 +10,7 @@ Stand: 20.11.2026 · Wünsche von David, noch nicht umgesetzt
 | Startseite | „Geld sparen im Alltag“ und „Ich habe Schulden“ werden eine Kachel „Geld und Schulden“ mit 6 Unterkacheln (docs/entwuerfe/schulden-bereich.md) |
 | Geld sparen im Alltag | Haushaltsplan raus; er wandert nach „Ich habe Schulden“ (mit Haushaltsbuch, Energie-Check, Schuldenliste) |
 | Geld sparen im Alltag | Bereich „Schulden und Pfändung“ raus (steckt schon in „Ich habe Schulden“; Tipps der Schuldnerberatungen dorthin mitnehmen) |
+| Kopfzeile | Satz „Prüfe in etwa 5 Minuten …“ (Schlüssel lead) nur auf der Startseite, sonst nicht |
 | Ergebnisliste | Karte „Kostenlose Familienversicherung“ ganz raus (Regel, Texte, Tests, Prüfliste, Karten-Liste) |
 | Ergebnisliste | „Nächste Schritte“ und „Unterlagen“ aus den Karten raus; sie stehen in der Antragsmappe (Stelle, Unterlagen mit Haken, Tipp) |
 
@@ -20,6 +21,8 @@ Hinweis zur Ergebnisliste: Die Mappe zeigt Schritte und Unterlagen nur für Leis
 | ganze App – Zurück-Knopf | Heute uneinheitlich: Knopf oben als „btn ghost“ (pp-kopf), Knopf unten (nh.zurueck), teils keiner (z. B. Ich ziehe aus, Pflege-Auswahl). Neu überall wie bei „Pflegegrad selbst einschätzen“: oben links „← Zurück“ als Textknopf (linkbtn pa-zur in einer Kopfzeile), auf jeder Unterseite vorhanden, führt immer genau eine Ebene hoch; Zurück-Taste des Handys macht dasselbe. Test ergänzen, der jede Ansicht auf diesen Knopf prüft. |
 | ganze App – Steuerung am Handy | iOS: seitlich wischen = eine Ebene zurück bzw. wieder vorwärts. Android: Zurück-Taste/-Geste = eine Ebene zurück (heute springt sie teils direkt zur Startseite). Umsetzung über einen gemeinsamen Ebenen-Verlauf (History API), derselbe Weg wie der „← Zurück“-Knopf. |
 | ganze App | Unter jeder Startkachel wieder Kacheln in derselben Form wie die Startseite |
+
+| ganze App – Infotexte | Zu viel Text, Anordnung/Platzierung; prüfen, ob es so viele Infofelder braucht (Prüfbericht folgt: ux-infotexte) |
 
 ## Inhaltliche Korrekturen
 - WBS bei Asylverfahren/Duldung: „Unwahrscheinlich“ (docs/entwuerfe/wbs-aufenthalt.md)
