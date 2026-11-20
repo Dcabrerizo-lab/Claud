@@ -279,6 +279,7 @@ var Haushalt = (function () {
   var VERBRAUCH_DESTATIS = { jahr: 2021, kwh: [2105, 3470, 5411] }; // 1, 2, 3 und mehr Personen
   var TOL = { cent: 3000, anteil: 0.05 }; // „passt ungefähr“: Faustregel von SoLo, keine Grenze aus einem Gesetz
   var ISO = /^\d{4}-\d\d-\d\d$/;
+  var SAISON_TAGE = 330, AKTUELL_TAGE = 31; // Faustregeln von SoLo (keine Grenzen aus einem Gesetz)
   function tageZwischen(a, b) {
     var u = function (s) { return Date.UTC(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10), 12); };
     return Math.round((u(b) - u(a)) / 86400000);
@@ -326,33 +327,51 @@ var Haushalt = (function () {
     return { klasse: i + 1, kwh: VERBRAUCH_DESTATIS.kwh[i], jahr: VERBRAUCH_DESTATIS.jahr };
   }
   // Eine Sparte (Strom oder Gas) ausrechnen. x = gespeicherte Angaben (energie.strom bzw. energie.gas)
-  function energieSparte(x, art, heuteIso) {
+  // heiz = Art der Heizung (energie.heiz). Gas und Heizen mit Strom schwanken stark über das Jahr: Hochrechnung aus Zählerständen
+  // erst ab SAISON_TAGE belastbar (sonst „ungenau“, kein Plan-Hinweis, kein Brief). Ablesung älter als AKTUELL_TAGE: kein Brief, kein Plan-Hinweis.
+  function energieSparte(x, art, heuteIso, heiz) {
     x = x || {};
-    var m3 = art === 'gas' && !!x.m3;
-    var v = jahresVerbrauch(x.weg === 'rechnung' ? { jahr: x.jahr } : { z1: x.z1, d1: x.d1, z2: x.z2, d2: x.d2 }, heuteIso);
-    var r = { art: art, verbrauch: v, kwh: v.kwh, m3: m3, kosten: null, vergleich: null, belastbar: false, fehltFaktor: false };
+    var m3 = art === 'gas' && !!x.m3, h = heuteIso || isoTag(new Date());
+    var v = jahresVerbrauch(x.weg === 'rechnung' ? { jahr: x.jahr } : { z1: x.z1, d1: x.d1, z2: x.z2, d2: x.d2 }, h);
+    var r = { art: art, verbrauch: v, kwh: v.kwh, m3: m3, kosten: null, vergleich: null, belastbar: false, fehltFaktor: false, aktuell: true };
+    if (v.quelle === 'zaehler' && v.kwh !== null) {
+      if ((art === 'gas' || heiz === 'strom') && v.tage < SAISON_TAGE) { v.ungenau = true; v.saison = true; }
+      r.aktuell = tageZwischen(x.d2, h) <= AKTUELL_TAGE;
+    }
     if (m3 && v.kwh !== null) { r.kwh = gasKwh(v.kwh, x.faktor); r.fehltFaktor = r.kwh === null; }
     r.kosten = jahresKosten(r.kwh, x.ap, x.gp, art);
     r.vergleich = r.kosten ? abschlagVergleich(r.kosten.cent, x.a, x.n) : null;
-    r.belastbar = !!(r.vergleich && !r.kosten.geschaetzt && !r.kosten.gpFehlt && !v.ungenau);
+    r.belastbar = !!(r.vergleich && !r.kosten.geschaetzt && !r.kosten.gpFehlt && !v.ungenau && r.aktuell);
     return r;
   }
   // Summe der belastbar geschätzten Nachzahlungen (Strom und, wenn mit eigenem Gasvertrag geheizt wird, Gas); 0 = kein Hinweis im Plan
   function energieNachzahlung(en, heuteIso) {
     if (!en) return 0;
     return (en.heiz === 'gas' ? ['strom', 'gas'] : ['strom']).reduce(function (a, s) {
-      var r = energieSparte(en[s], s, heuteIso);
+      var r = energieSparte(en[s], s, heuteIso, en.heiz);
       return a + (r.belastbar && r.vergleich.art === 'nach' ? r.vergleich.diff : 0);
     }, 0);
   }
   // Brief an den Versorger (nur Deutsch, nur Platzhalter für persönliche Daten). o = { art: 'nach'|'gut', datum, stand, einheit, kwh, neu }
   function abschlagBrief(o) {
     var satz = o.art === 'gut' ?
-      'Mein Verbrauch ist damit erheblich geringer als im letzten Abrechnungszeitraum. Bitte berücksichtigen Sie das und senken Sie meinen monatlichen Abschlag auf etwa ' + o.neu + ' (§ 41b Abs. 3 Satz 2 EnWG bzw. § 13 Abs. 1 Satz 4 StromGVV/GasGVV).' :
+      'Mein Verbrauch ist damit voraussichtlich geringer als bei der Berechnung meines Abschlags angenommen. Bitte prüfen Sie das und senken Sie meinen monatlichen Abschlag auf etwa ' + o.neu + ' (§ 41b Abs. 3 Satz 2 EnWG bzw. § 13 Abs. 1 Satz 4 StromGVV/GasGVV).' :
       'Damit ich keine hohe Nachzahlung bekomme, bitte ich Sie, meinen monatlichen Abschlag auf etwa ' + o.neu + ' zu erhöhen.';
     return ['[Name, Anschrift]', '', 'An: [Name des Strom- bzw. Gasversorgers]', '', 'Kundennummer: [_____]   Zählernummer: [_____]', '', 'Bitte um Anpassung meines Abschlags', '',
       'Sehr geehrte Damen und Herren,', '', 'mein aktueller Zählerstand am ' + o.datum + ' ist ' + o.stand + ' ' + o.einheit + '. Daraus ergibt sich ein Verbrauch von etwa ' + o.kwh + ' kWh im Jahr.',
       satz, 'Bitte bestätigen Sie mir die Änderung in Textform.', '', 'Mit freundlichen Grüßen', '', '[Ort], ' + o.datum, '[Unterschrift]'].join('\n');
+  }
+  // Preis und Umrechnungsfaktor: bis zu 4 Nachkommastellen (z. B. 32,875 ct oder 10,934 kWh/m³). Toleranzvergleich wegen Gleitkomma (32,8 · 100 ≠ 3280).
+  var STELLEN = 4;
+  function dezimalOk(v) { var c = v * Math.pow(10, STELLEN); return Math.abs(Math.round(c) - c) < 1e-6; }
+  // Eingabe „32,875“, „32.875“, „10,934“: genau ein Komma oder Punkt als Dezimalzeichen, keine Tausenderpunkte. Leer → null, ungültig → NaN.
+  function dezimalAus(v) {
+    if (v === null || v === undefined) return null;
+    var s = String(v).replace(/[\s\u00a0\u202f]/g, '');
+    if (s === '') return null;
+    if (!/^\d+([.,]\d{1,4})?$/.test(s)) return NaN;
+    var n = Number(s.replace(',', '.'));
+    return isFinite(n) ? Math.round(n * 10000) / 10000 : NaN;
   }
   function leerEnergie() {
     var s = function (weg) { return { a: null, n: 12, weg: weg, z1: null, d1: '', z2: null, d2: '', jahr: null, ap: null, gp: null }; };
@@ -371,8 +390,8 @@ var Haushalt = (function () {
       z.n = q.n === 11 ? 11 : 12;
       if (q.weg === 'zaehler' || q.weg === 'rechnung') z.weg = q.weg;
       ['d1', 'd2'].forEach(function (k) { var v = q[k]; if (typeof v === 'string' && ISO.test(v)) { var t2 = new Date(Date.UTC(+v.slice(0, 4), +v.slice(5, 7) - 1, +v.slice(8, 10))); if (t2.getUTCMonth() === +v.slice(5, 7) - 1) z[k] = v; } });
-      z.ap = typeof q.ap === 'number' && q.ap > 0 && q.ap < 200 && Math.round(q.ap * 100) === q.ap * 100 ? q.ap : null;
-      if (s === 'gas') { z.m3 = q.m3 === true; z.faktor = typeof q.faktor === 'number' && q.faktor >= 5 && q.faktor <= 15 ? q.faktor : null; }
+      z.ap = typeof q.ap === 'number' && q.ap > 0 && q.ap < 200 && dezimalOk(q.ap) ? q.ap : null;
+      if (s === 'gas') { z.m3 = q.m3 === true; z.faktor = typeof q.faktor === 'number' && q.faktor >= 5 && q.faktor <= 15 && dezimalOk(q.faktor) ? q.faktor : null; }
     });
     return x;
   }
@@ -706,12 +725,23 @@ var Haushalt = (function () {
   }
   function zahlLokal(n) { try { return Number(n).toLocaleString(ctx.locale()); } catch (e) { return String(n); } }
   function zahlText(n) { return n === null || n === undefined ? '' : String(n).replace('.', ','); }
-  function zahlFeld(id, label, wert, hint, einheit, onWert) {
+  // Sichtbare Fehlermeldung unter dem Feld (verschwindet beim nächsten Neuzeichnen)
+  function feldFehler(inp, f) {
+    inp.setAttribute('aria-invalid', 'true');
+    var fid = inp.id + '-f', m = $(fid);
+    if (!m) { m = el('span', 'hb-feld-fehler'); m.id = fid; f.appendChild(m); inp.setAttribute('aria-describedby', ((inp.getAttribute('aria-describedby') || '') + ' ' + fid).trim()); }
+    m.textContent = t('hb.en.f.zahl');
+  }
+  function zahlFeld(id, label, wert, hint, einheit, onWert, dezimal) {
     var f = el('div', 'field hb-feld'), l = el('label'); l.htmlFor = id; l.textContent = label; f.appendChild(l);
     var m = el('div', 'money'), i = el('input'); i.type = 'text'; i.inputMode = 'decimal'; i.autocomplete = 'off'; i.id = id; i.value = zahlText(wert);
     m.appendChild(i); if (einheit) { var u = el('span', '', einheit); u.setAttribute('aria-hidden', 'true'); m.appendChild(u); } f.appendChild(m);
     if (hint) { var h = el('span', 'hint'); h.id = id + '-h'; h.textContent = hint; f.appendChild(h); i.setAttribute('aria-describedby', h.id); }
-    i.addEventListener('change', function () { onWert(zahlAus(i.value), i, f); });
+    i.addEventListener('change', function () {
+      var n = dezimal ? dezimalAus(i.value) : zahlAus(i.value);
+      if (n !== null && !(n >= 0)) { feldFehler(i, f); return; }
+      onWert(n, i, f);
+    });
     return f;
   }
   function auswahl(id, label, wert, optionen, onWert) {
@@ -733,7 +763,7 @@ var Haushalt = (function () {
   // Ergebnis (das Wichtigste zuerst): Wort, Betrag, Vorschlag, Hinweise zur Genauigkeit, Vergleich
   function enErgebnis(box) {
     box.innerHTML = '';
-    var art = enAktiv(), x = daten.energie[art], r = energieSparte(x, art, heuteIso()), v = r.verbrauch;
+    var art = enAktiv(), x = daten.energie[art], r = energieSparte(x, art, heuteIso(), daten.energie.heiz), v = r.verbrauch;
     var wort = el('p', 'hb-en-erg'); box.appendChild(wort);
     var fehlt = [];
     if (!(x.a > 0)) fehlt.push(t('hb.en.abschlag'));
@@ -743,7 +773,8 @@ var Haushalt = (function () {
     if (fehlt.length) { wort.classList.add('offen'); wort.textContent = t('hb.en.fehlt', { was: fehlt.join(', ') }); }
     if (r.kwh !== null) {
       box.appendChild(el('p', '', t(v.quelle === 'rechnung' ? 'hb.en.verbrauch.rechnung' : 'hb.en.verbrauch', { kwh: zahlLokal(r.kwh) })));
-      if (v.ungenau) box.appendChild(el('p', 'hint', t('hb.en.ungenau')));
+      if (v.ungenau) box.appendChild(el('p', 'hint hb-en-ungenau', t('hb.en.ungenau') + (v.saison ? ' ' + t('hb.en.saison') : '')));
+      if (!r.aktuell) box.appendChild(el('p', 'hint hb-en-alt', t('hb.en.alt')));
       if (v.lang) box.appendChild(el('p', 'hint', t('hb.en.lang')));
     }
     if (r.vergleich) {
@@ -810,13 +841,13 @@ var Haushalt = (function () {
       var lm = el('label', 'check'), cm = el('input'); cm.type = 'checkbox'; cm.id = p + 'm3'; cm.checked = !!x.m3;
       cm.addEventListener('change', function () { enSetze(function () { x.m3 = cm.checked; }, p + 'm3'); });
       lm.appendChild(cm); lm.appendChild(el('span', '', t('hb.en.gas.einheit'))); fs.appendChild(lm);
-      if (x.m3) fs.appendChild(zahlFeld(p + 'faktor', t('hb.en.gas.faktor'), x.faktor, '', 'kWh/m³', function (n, inp) {
-        if (n !== null && !(n >= 5 && n <= 15)) { inp.setAttribute('aria-invalid', 'true'); return; }
+      if (x.m3) fs.appendChild(zahlFeld(p + 'faktor', t('hb.en.gas.faktor'), x.faktor, '', 'kWh/m³', function (n, inp, f) {
+        if (n !== null && !(n >= 5 && n <= 15)) { feldFehler(inp, f); return; }
         enSetze(function () { x.faktor = n; }, p + 'faktor');
-      }));
+      }, true));
     }
     var einheit = art === 'gas' && x.m3 ? 'm³' : 'kWh';
-    var ganzSetzen = function (k, id) { return function (n, inp) { if (n !== null && !(n >= 0)) { inp.setAttribute('aria-invalid', 'true'); return; } enSetze(function () { x[k] = n === null ? null : Math.round(n); if (k === 'z2' && n !== null && !x.d2) x.d2 = heuteIso(); }, id); }; };
+    var ganzSetzen = function (k, id) { return function (n, inp, f) { if (n !== null && !(n >= 0)) { feldFehler(inp, f); return; } enSetze(function () { x[k] = n === null ? null : Math.round(n); if (k === 'z2' && n !== null && !x.d2) x.d2 = heuteIso(); }, id); }; };
     var datum = function (k, label) {
       var f = el('div', 'field'), l = el('label'); l.htmlFor = p + k; l.textContent = label; f.appendChild(l);
       var i = el('input'); i.type = 'date'; i.id = p + k; i.value = x[k] || ''; i.max = heuteIso();
@@ -831,10 +862,10 @@ var Haushalt = (function () {
     } else {
       fs.appendChild(zahlFeld(p + 'jahr', t('hb.en.jahr').replace('kWh', einheit), x.jahr, '', einheit, ganzSetzen('jahr', p + 'jahr')));
     }
-    fs.appendChild(zahlFeld(p + 'ap', t('hb.en.ap'), x.ap, '', 'ct', function (n, inp) {
-      if (n !== null && !(n > 0 && n < 200)) { inp.setAttribute('aria-invalid', 'true'); return; }
-      enSetze(function () { x.ap = n === null ? null : Math.round(n * 100) / 100; }, p + 'ap');
-    }));
+    fs.appendChild(zahlFeld(p + 'ap', t('hb.en.ap'), x.ap, '', 'ct', function (n, inp, f) {
+      if (n !== null && !(n > 0 && n < 200)) { feldFehler(inp, f); return; }
+      enSetze(function () { x.ap = n; }, p + 'ap');
+    }, true));
     fs.appendChild(geldFeld(p + 'gp', t('hb.en.gp'), x.gp, t('hb.en.preis.t'), function (neu) { enSetze(function () { x.gp = neu; }, p + 'gp'); }));
     // Warmwasser mit Strom: dasselbe Feld wie im Leistungs-Check (eine Datenquelle)
     var s = check(), lw = el('label', 'check'), cw = el('input'); cw.type = 'checkbox'; cw.id = p + 'ww'; cw.checked = !!(s && s.warmwasser);
@@ -845,8 +876,8 @@ var Haushalt = (function () {
       fragen(fw, t('hb.en.frage.ww'), schreib, function () { cw.checked = alt; cw.focus(); });
     });
     lw.appendChild(cw); lw.appendChild(el('span', '', t('hb.en.ww'))); fw.appendChild(lw); fw.appendChild(el('span', 'hint', t('hb.en.ww.t'))); fs.appendChild(fw);
-    if (!s) fs.appendChild(zahlFeld(p + 'personen', t('hb.en.personen'), en.personen, '', '', function (n, inp) {
-      if (n !== null && !(n >= 1 && n <= 20)) { inp.setAttribute('aria-invalid', 'true'); return; }
+    if (!s) fs.appendChild(zahlFeld(p + 'personen', t('hb.en.personen'), en.personen, '', '', function (n, inp, f) {
+      if (n !== null && !(n >= 1 && n <= 20)) { feldFehler(inp, f); return; }
       enSetze(function (e) { e.personen = n === null ? null : Math.round(n); }, p + 'personen');
     }));
     box.appendChild(fs);
@@ -1156,7 +1187,7 @@ var Haushalt = (function () {
     ausCheck: ausCheck, aenderung: aenderung, uebernahme: uebernahme, normiere: normiere, hinweisListe: hinweisListe, aenderungsBrief: aenderungsBrief, VORLAUF_TAGE: VORLAUF_TAGE,
     // Energiekosten-Check (Rechnung)
     PREIS: PREIS, VERBRAUCH_DESTATIS: VERBRAUCH_DESTATIS, TOL: TOL, tageZwischen: tageZwischen, jahresVerbrauch: jahresVerbrauch, gasKwh: gasKwh, jahresKosten: jahresKosten,
-    abschlagVergleich: abschlagVergleich, destatisVergleich: destatisVergleich, energieSparte: energieSparte, energieNachzahlung: energieNachzahlung, abschlagBrief: abschlagBrief,
+    abschlagVergleich: abschlagVergleich, destatisVergleich: destatisVergleich, energieSparte: energieSparte, energieNachzahlung: energieNachzahlung, abschlagBrief: abschlagBrief, dezimalAus: dezimalAus, SAISON_TAGE: SAISON_TAGE, AKTUELL_TAGE: AKTUELL_TAGE,
     // Oberfläche
     rest: function () { return rechnung(); }, // Kurzstatus für „Mein Ordner“: { rest, restEuro, leer }
     init: init, zeigen: zeigen, sprache: function () { render(); if (daten) startHinweis(); }, speicherOrt: speicherOrt,

@@ -72,6 +72,7 @@ setTimeout(() => {
     klick($('hb-en-tab-strom'));
     setze('hb-en-heiz', 'strom');
     check('Heizung mit Strom: kein Vergleich mit dem Haushaltsstrom', !d.querySelector('.hb-en-dv') && !$('hb-en-tab-gas'));
+    check('[en-check] Befund 6: Heizung mit Strom, 90 Tage: ungenau mit Jahreszeit-Hinweis, kein Brief, kein Plan-Hinweis', /Beim Heizen ist der Verbrauch im Winter/.test(tx($('hbEnErgebnis'))) && !$('hb-en-brief') && !$('hb-hw-energie'), tx($('hbEnErgebnis')));
     setze('hb-en-heiz', 'miete');
     // Warmwasser: dasselbe Feld wie im Check
     haken('hb-en-ww', true);
@@ -101,6 +102,17 @@ function teil2() {
     check('Nach neuLaden: Box zu, Daten erhalten', !$('hbEnergie') && gespeichert().energie.strom.z1 === 10000 && gespeichert().energie.strom.ap === 36.5);
     klick($('hb-kat-energie')); klick($('hb-en-knopf'));
     check('Wieder geöffnet: Werte da', $('hb-en-z1').value === '10000' && $('hb-en-ap').value === '36,5');
+    // Befund 7: Preis mit 3 Nachkommastellen, sichtbare Fehlermeldung unter dem Feld
+    setze('hb-en-ap', '32,87555');
+    check('[en-check] Befund 7: 5 Nachkommastellen: Fehlermeldung unter dem Feld, nichts gespeichert', !!$('hb-en-ap-f') && /Diese Zahl passt nicht/.test($('hb-en-ap-f').textContent) && $('hb-en-ap').getAttribute('aria-invalid') === 'true' && /hb-en-ap-f/.test($('hb-en-ap').getAttribute('aria-describedby') || '') && gespeichert().energie.strom.ap === 36.5);
+    setze('hb-en-ap', '32,875');
+    check('[en-check] Befund 7: 32,875 ct angenommen und angezeigt', gespeichert().energie.strom.ap === 32.875 && $('hb-en-ap').value === '32,875' && !$('hb-en-ap-f'));
+    setze('hb-en-ap', '36,5');
+    // Befund 12: alte Ablesung → kein Brief, kein Plan-Hinweis, Bitte um neue Ablesung
+    setze('hb-en-d2', iso(40));
+    check('[en-check] Befund 12: Ablesung 40 Tage alt: „Bitte lies den Zähler neu ab“, kein Brief, kein Plan-Hinweis', /Bitte lies den Zähler neu ab/.test(tx($('hbEnErgebnis'))) && !$('hb-en-brief') && !$('hb-hw-energie'), tx($('hbEnErgebnis')));
+    setze('hb-en-d2', iso(10));
+    check('[en-check] Befund 12: Aktuelle Ablesung: Brief wieder da', !!$('hb-en-brief') && !/Bitte lies den Zähler neu ab/.test(tx($('hbEnErgebnis'))));
     // Ohne Grundsicherungsgeld, Heizung mit Gas: Antrag im Fälligkeitsmonat
     w.__solo.set({ adults: 2, kids: 1, miete: 600, plz: '90542', bezug: {} }); zumPlan(); if (!$('hb-en-knopf')) klick($('hb-kat-energie'));
     if (!$('hbEnergie')) klick($('hb-en-knopf'));
