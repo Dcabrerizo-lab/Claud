@@ -186,11 +186,14 @@ const Rules = (function () {
     // Werbungskosten-Pauschbeträge im Jahr (§ 9a Satz 1 Nr. 1 und 3 EStG), beim Wohngeld vom Einkommen abgezogen (§ 14 Abs. 1 WoGG)
     wgWerbung: { lohn: 1230, rente: 102 },
     // Pauschalabzug beim Wohngeld (§ 16 WoGG) je Einkommensart: [kleinster, größter] üblicher Abzug
-    wgAbzug: { lohn: [0.1, 0.3], rente: [0.1, 0.2], kg: [0.1, 0.2], alg: [0, 0], eg: [0, 0], wfbm: [0, 0.1], ohne: [0, 0] },
+    // Unterhalt für die Person selbst (unt): steuerfrei (§ 14 Abs. 2 Nr. 19/20 WoGG) oder mit Realsplitting steuerpflichtig (§ 22 Nr. 1a EStG);
+    // familienversichert ohne Beiträge -> 0 %, mit Steuer und eigener Kranken-/Pflegeversicherung -> 20 % (§ 16 Abs. 1 Nr. 1 und 2, Satz 2 WoGG)
+    wgAbzug: { lohn: [0.1, 0.3], rente: [0.1, 0.2], kg: [0.1, 0.2], alg: [0, 0], eg: [0, 0], wfbm: [0, 0.1], unt: [0, 0.2], ohne: [0, 0] },
     // Wenn nur die Auszahlung bekannt ist: Rente netto ≈ 0,87 bis 0,88 × Brutto (nettoRente), also 90 % (bzw. 80 %) Brutto ≈ 103 % (bzw. 91 %)
     // der Auszahlung. Die Werte [0, 0,06] stammen aus der alten Annahme 0,89 und sind deshalb nur ungefähr (Prüfung 19.11.2026, Anpassung offen);
     // Lohn netto 70-80 %
-    wgAbzugAuszahlung: { lohn: [0, 0.12], rente: [0, 0.06], kg: [0, 0.06], alg: [0, 0], eg: [0, 0], wfbm: [0, 0.05], ohne: [0, 0] },
+    // Unterhalt: der Zahlbetrag ist schon der volle Betrag (keine Abzüge vor der Auszahlung), daher wie wgAbzug.unt
+    wgAbzugAuszahlung: { lohn: [0, 0.12], rente: [0, 0.06], kg: [0, 0.06], alg: [0, 0], eg: [0, 0], wfbm: [0, 0.05], unt: [0, 0.2], ohne: [0, 0] },
     // Grundrentenfreibetrag (§ 82a SGB XII): bei 33 Jahren Grundrentenzeiten bleiben von der Rente 100 € und 30 % des Rests frei, höchstens 50 % der Regelbedarfsstufe 1
     grundrente: { sockel: 100, quote: 0.3, max: 0.5 },
     // Zusätzliche Altersvorsorge (Betriebsrente, Riester-Rente, private Rente), § 82 Abs. 4 SGB XII: 100 € frei und 30 % des Rests,
@@ -504,7 +507,9 @@ const Rules = (function () {
     const young = Math.max(0, inp.young | 0);
     const persons = adults + kids + young;
     // Einfache Version: Liste der Einkommen einer Person [{ art, b }] (b = ausgezahlter Betrag)
-    const ARTEN = ['lohn', 'rente', 'alg', 'kg', 'eg', 'wfbm', 'ohne'];
+    // unt = Unterhalt für die Person selbst (Trennungs- oder Ehegattenunterhalt, Unterhalt von den Eltern), Zahlbetrag im Monat:
+    // Einkommen, aber kein Einkommen aus Arbeit (kein Freibetrag § 11b Abs. 3 SGB II, Minderung des Kinderzuschlags in voller Höhe)
+    const ARTEN = ['lohn', 'rente', 'alg', 'kg', 'eg', 'wfbm', 'unt', 'ohne'];
     // Eintrag: [Art, Brutto, Netto, nurAuszahlung] – ohne eigenes Netto ist b der ausgezahlte Betrag (einfache Version)
     // Selbstständige: Gewinn zählt wie Einkommen aus Arbeit (Freibetrag § 11b Abs. 3 SGB II, § 82 Abs. 3 SGB XII; Wohngeld § 14 WoGG);
     // Unterschiede (kein Arbeitslosengeld/Krankengeld ohne freiwillige Versicherung, vorläufige Bewilligung) über h.selbst
@@ -539,7 +544,7 @@ const Rules = (function () {
     const art2 = ARTEN.indexOf(aSel(inp.art2)) >= 0 ? aSel(inp.art2) : (inp.nichtArbeit2 ? 'rente' : 'lohn');
     // Arbeitslosengeld, Krankengeld, Elterngeld und Werkstattlohn fragt die App als ausgezahlten Betrag ab (laut Bescheid/Lohnzettel):
     // beim Wohngeld dann nur der kleine Abzug für ausgezahlte Beträge, wie in der einfachen Version (§ 16 WoGG)
-    const AUSZ = { alg: 1, kg: 1, eg: 1, wfbm: 1 };
+    const AUSZ = { alg: 1, kg: 1, eg: 1, wfbm: 1, unt: 1 };
     const pers = liste ? (liste.length ? liste : [['ohne', 0]]) : adults === 2 ? [[art1, brutto - brutto2, 0, !!inp.aus1 || !!AUSZ[art1], inp.art1 === 'selbst'], [art2, brutto2, 0, !!AUSZ[art2], inp.art2 === 'selbst']] : [[art1, brutto, 0, !!inp.aus1 || !!AUSZ[art1], inp.art1 === 'selbst']];
     const sumIf = (f) => pers.reduce((a, x) => a + f(x[0], x[1]), 0);
     // Unterhalt, den die Person selbst an andere zahlt (Kinder, die nicht im Haushalt leben, frühere Partner), im Monat.
@@ -820,7 +825,10 @@ const Rules = (function () {
       const wk = x[4] ? 0 : x[0] === 'lohn' || x[0] === 'wfbm' ? R.wgWerbung.lohn / 12 : x[0] === 'rente' ? R.wgWerbung.rente / 12 : 0;
       const wkHier = Math.min(wk, x[1]); wkSum += wkHier;
       const zaehlt = x[0] === 'eg' ? Math.max(0, x[1] - R.elterngeldFrei) : x[1] - wkHier;
-      sumB += zaehlt; yA += zaehlt * (1 - ab[0]); yB += zaehlt * (1 - ab[1]);
+      // Unterhalt für sich selbst: mit Realsplitting sonstige Einkünfte (§ 22 Nr. 1a EStG) nach Werbungskosten-Pauschbetrag 102 € (§ 9a Satz 1
+      // Nr. 3 EStG), sonst voll (§ 14 Abs. 2 Nr. 19 und 20 WoGG). Die App weiß das nicht: Pauschbetrag nur für „möglich“ (yB).
+      const wkOpt = x[0] === 'unt' ? Math.min(R.wgWerbung.rente / 12, x[1]) : 0;
+      sumB += zaehlt; yA += zaehlt * (1 - ab[0]); yB += (zaehlt - wkOpt) * (1 - ab[1]);
     });
     const wA = sumB > 0 ? yA / sumB : 0.9, wB = sumB > 0 ? yB / sumB : 0.7;
     // Anzeige als Grenze für das Brutto (bzw. den ausgezahlten Betrag bei ALG I und Elterngeld), Werbungskosten wieder dazu
@@ -1158,7 +1166,10 @@ const Rules = (function () {
       const fb = (h.adults === 2 ? R.bafoeg.freiPaar : R.bafoeg.freiAllein) + Math.max(0, h.children - 1) * R.bafoeg.jeKind;
       const p = { fb: eur(fb) };
       if (h.netto <= fb) return mk(id, 'ja', 'ja', [['bafoeg.kindJa', p]]);
-      if (h.netto <= fb + R.bafoeg.spanne) return mk(id, 'vielleicht', 'vielleicht', [['bafoeg.kindRand', p]]);
+      // Unterhalt eines Elternteils für sich selbst zählt beim BAföG nur, wenn er versteuert wird (Realsplitting, § 21 Abs. 1 BAföG
+      // i. V. m. § 22 Nr. 1a EStG): ohne ihn unter der Grenze -> höchstens „möglich“
+      const untE = (h.pers || []).reduce((a, x) => a + (x[0] === 'unt' ? (h.liste ? x[2] : x[1]) : 0), 0);
+      if (h.netto - untE <= fb + R.bafoeg.spanne) return mk(id, 'vielleicht', 'vielleicht', [['bafoeg.kindRand', p]]);
       return mk(id, 'nein', 'einkoHoch', [['bafoeg.kindNein', p]]);
     }
     // ich selbst: Elterneinkommen unbekannt
