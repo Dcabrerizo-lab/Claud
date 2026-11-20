@@ -10,7 +10,7 @@ Im übrigen CSS stehen nur Variablen. Ausnahme: Druckstile (`@media print`, Schw
 - Wird eine Bereichsfarbe als Schrift, Rand oder Häkchen auf einer Karte gebraucht: `--c-<bereich>-t` (im Dunkelmodus aufgehellt).
 - Farbe ist nie die einzige Information: Jede Kachel hat Symbol und Text, jedes Ergebnis ein Wort („Wahrscheinlich“, „Möglich“ …).
 - Petrol (`--accent`) ist zugleich die Bedienfarbe (Knöpfe, Reiter, Auswahl, Vorgänge, Einstellungen).
-- **Innerhalb einer Kachel- bzw. Knopfgruppe kommt keine Farbe doppelt vor** (Regel des Nutzers, 20.11.2026). Das gilt für Startseite, Brief-Absender, Pflege-Auswahl, Geld sparen (Themen), Pfändung (Mein Lohn / Mein Konto), Ich ziehe aus (7 Kacheln) und künftig die Mein-Ordner-Karten. Die Farben kommen nur aus der Palette; die Zuordnung steht im CSS-Block „Gruppenfarben“ (`/* gruppe <name> */`). `tools/kontrast-pruefen.js` prüft, dass keine Farbe doppelt ist und jede Kachel eine Farbe hat (Anzahl wie im Code). Neue Gruppe: Regeln mit `/* gruppe <name> */` ergänzen und die erwartete Anzahl im Prüfskript eintragen.
+- **Innerhalb einer Kachel- bzw. Knopfgruppe kommt keine Farbe doppelt vor** (Regel des Nutzers, 20.11.2026). Das gilt für Startseite, Brief-Absender, Pflege-Auswahl, Geld sparen (Themen), Pfändung (Mein Lohn / Mein Konto), Ich ziehe aus (7 Kacheln) und Mein Ordner (Zeilen-Symbole: Fristen Ziegel, Ergebnis Petrol, Mappe Schiefer, Haushalt Beere, Ich ziehe aus Violett, Pflege Blau, Pfändung Pflaume; frei: Indigo, Meerblau, Grün). Die Farben kommen nur aus der Palette; die Zuordnung steht im CSS-Block „Gruppenfarben“ (`/* gruppe <name> */`). `tools/kontrast-pruefen.js` prüft, dass keine Farbe doppelt ist und jede Kachel eine Farbe hat (Anzahl wie im Code). Neue Gruppe: Regeln mit `/* gruppe <name> */` ergänzen und die erwartete Anzahl im Prüfskript eintragen.
 - Kein Ocker als Bereichsfarbe. Bernstein (`--warn`) nur für „Möglich“ und Warnungen.
 
 ## Bereiche
@@ -55,4 +55,6 @@ Im übrigen CSS stehen nur Variablen. Ausnahme: Druckstile (`@media print`, Schw
 | Pflege-Auswahl | Unterstützung Blau (`--c-pflege`), Einschätzung Meerblau (`--c-wohngeld`) |
 | Geld sparen | Strom Meerblau, Heizen Ziegel, Essen Grün, Verträge Indigo, Schulden Pflaume (wie Pfändung), Haushaltsplan Beere |
 | Pfändung | Mein Lohn Pflaume, Mein Konto Meerblau |
+| Energie-Check (Haushaltsplan, Reiter bei Heizung mit eigenem Gasvertrag) | Strom Meerblau, Gas/Heizen Ziegel (wie in „Geld sparen“); Ergebnis: Nachzahlung möglich `--warn`, passt ungefähr `--ok`, Guthaben möglich `--na`, Eingabefehler `--bad` |
 | Ich ziehe aus | Vorher Violett, Erste Tage Schiefer (wie in src/ausziehen.js), Geld Grün, Versicherungen Blau, Achtung Ziegel, Hilfen Petrol, Careleaver Beere |
+| Mein Ordner | Schulden-Liste (`#or-schulden`) Grün (`--c-sparen`), weil die Liste zu „Geld sparen“ gehört und Pflaume schon die Zeile Pfändung hat (Entscheidung 20.11.2026). Weitere Zeilen kommen mit der Fristen-Übersicht. |

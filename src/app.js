@@ -79,15 +79,17 @@
   }
   var Store = {
     get: function (key, cb) { if (Vorgaenge.DATEN.indexOf(key) >= 0) tr().get(key, cb); else StoreRoh.get(key, cb); },
-    set: function (key, val) { if (Vorgaenge.DATEN.indexOf(key) >= 0) tr().set(key, val); else StoreRoh.set(key, val); },
+    set: function (key, val) { if (Vorgaenge.DATEN.indexOf(key) >= 0) return tr().set(key, val); StoreRoh.set(key, val); }, // false: Vorgang nicht bereit (gesperrt)
     remove: function (key) { if (Vorgaenge.DATEN.indexOf(key) >= 0) tr().remove(key); else StoreRoh.remove(key); }
   };
   var saveTimer = null;
   function flush() { clearTimeout(saveTimer); saveTimer = null; Store.set('lotse.state', JSON.stringify({ s: state, p: person, e: edited, big: $('app').classList.contains('big') })); Store.set('lotse.pfaendung', JSON.stringify(pf)); }
   function save() { clearTimeout(saveTimer); saveTimer = setTimeout(flush, 300); }
   function smooth() { return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'; }
+  // Erlaubte Arten für das zweite Einkommen einer Person (leer = keins)
+  var EK_ZWEIT = ['', 'lohn', 'selbst', 'rente', 'alg', 'kg', 'eg', 'wfbm', 'unt'];
   function blankState() {
-    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', waisen: '', uvgPartner: '', uvgWechsel: false, kindEink: '', ek1bArt: '', ek1bBetrag: '', zusatzRente: '', baby: '', egVor: '', aufenthalt: '', miete: '', heizkosten: '', mietstufe: '', plz: '', plzPick: '', bundesland: '', vermoegen: '', gebJahr: '', arbeitSit: '', algMonate: '', krankWochen: '', lohnVorher: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', uzBetrag: '', uzAn: '', uzTitel: false, wohnart: '', hhAndere: '', autoWert: '', autoBraucht: false, euArbeit: '', euJahre: '', bezug: {} };
+    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', waisen: '', uvgPartner: '', uvgWechsel: false, kindEink: '', ek1bArt: '', ek1bBetrag: '', ek2bArt: '', ek2bBetrag: '', zusatzRente: '', baby: '', egVor: '', aufenthalt: '', miete: '', heizkosten: '', mietstufe: '', plz: '', plzPick: '', bundesland: '', vermoegen: '', gebJahr: '', arbeitSit: '', algMonate: '', krankWochen: '', lohnVorher: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', uzBetrag: '', uzAn: '', uzTitel: false, wohnart: '', hhAndere: '', autoWert: '', autoBraucht: false, euArbeit: '', euJahre: '', bezug: {} };
   }
 
   function detect() {
@@ -177,10 +179,13 @@
     if (!state.unterhaltFehlt || state.kids === 0) reset(['uvgWechsel', 'uvgPartner']);
     if (state.adults !== 2) reset(['uvgPartner']);
     if (state.arbeitSit !== 'arbeitslos') reset(['algZeit', 'algMonate']);
-    if (state.adults !== 1 || !state.ek1Art || state.ek1Art === 'ohne') reset(['ek1bArt', 'ek1bBetrag']);
+    // Zweites Einkommen je Person (auch bei Paaren); nur erlaubte Arten (beschädigter Stand -> leer)
+    if (!state.ek1Art || state.ek1Art === 'ohne' || EK_ZWEIT.indexOf(state.ek1bArt) < 0) reset(['ek1bArt', 'ek1bBetrag']);
+    if (state.adults !== 2 || !state.ek2Art || state.ek2Art === 'ohne' || EK_ZWEIT.indexOf(state.ek2bArt) < 0) reset(['ek2bArt', 'ek2bBetrag']);
     if (!state.ek1bArt) reset(['ek1bBetrag']);
-    if (!(state.ek1Art === 'rente' || state.ek2Art === 'rente' || state.ek1bArt === 'rente')) reset(['grundrente33', 'zusatzRente']);
-    if (!(state.wfbm || state.ek1Art === 'wfbm' || state.ek1bArt === 'wfbm')) reset(['wfbmEssen']);
+    if (!state.ek2bArt) reset(['ek2bBetrag']);
+    if (!(state.ek1Art === 'rente' || state.ek2Art === 'rente' || state.ek1bArt === 'rente' || state.ek2bArt === 'rente')) reset(['grundrente33', 'zusatzRente']);
+    if (!(state.wfbm || state.ek1Art === 'wfbm' || state.ek1bArt === 'wfbm' || state.ek2bArt === 'wfbm')) reset(['wfbmEssen']);
     if (state.arbeitSit !== 'krank') reset(['krankWochen']);
     if (!state.arbeitSit) reset(['lohnVorher']);
     if (state.ausbildung !== 'ich') reset(['babBetrieb', 'babWohnt']);
@@ -199,10 +204,12 @@
     show('.cond-kinder', state.kids + state.young > 0);
     show('.cond-alos', state.arbeitSit === 'arbeitslos');
     show('.cond-baby', !!state.baby);
-    show('.cond-ek1b', state.adults === 1 && !!state.ek1Art && state.ek1Art !== 'ohne');
+    show('.cond-ek1b', !!state.ek1Art && state.ek1Art !== 'ohne');
     show('.cond-ek1bBetrag', !!state.ek1bArt);
-    show('.cond-rente', state.ek1Art === 'rente' || state.ek2Art === 'rente' || state.ek1bArt === 'rente');
-    show('.cond-wfbm', !!state.wfbm || state.ek1Art === 'wfbm' || state.ek1bArt === 'wfbm');
+    show('.cond-ek2b', state.adults === 2 && !!state.ek2Art && state.ek2Art !== 'ohne');
+    show('.cond-ek2bBetrag', !!state.ek2bArt);
+    show('.cond-rente', state.ek1Art === 'rente' || state.ek2Art === 'rente' || state.ek1bArt === 'rente' || state.ek2bArt === 'rente');
+    show('.cond-wfbm', !!state.wfbm || state.ek1Art === 'wfbm' || state.ek1bArt === 'wfbm' || state.ek2bArt === 'wfbm');
     show('.cond-krank', state.arbeitSit === 'krank');
     show('.cond-job', !!state.arbeitSit);
     show('.cond-ausbich', state.ausbildung === 'ich');
@@ -265,13 +272,34 @@
     state.nichtArbeit = p1.gesetzt && !p1.arbeit;
     state.nichtArbeit2 = p2.gesetzt && !p2.arbeit;
     state.art1 = p1.art; state.art2 = p2.art || '';
-    // Allein: ein zweites Einkommen derselben Person (z. B. Werkstattlohn und Rente) als Liste für die Regeln
-    var b2 = state.ek1bBetrag === '' || state.ek1bBetrag == null ? 0 : Number(state.ek1bBetrag);
-    if (state.adults === 1 && state.ek1bArt && b2 > 0 && p1.gesetzt) {
-      var mitN = p1.art === 'lohn' || p1.art === 'rente' || p1.art === 'selbst';
-      state.einkommen = [mitN ? { art: p1.art, b: p1.b === '' ? 0 : p1.b, n: p1.n === '' ? nettoSchaetzen(p1, 1) : p1.n } : { art: p1.art, b: p1.b === '' ? 0 : p1.b }, { art: state.ek1bArt, b: b2 }];
-    } else delete state.einkommen;
+    // Zweites Einkommen einer Person (z. B. Lohn und Unterhalt, Werkstattlohn und Rente) als Liste für die Regeln, je Person
+    // in fester Reihenfolge: Hauptfeld, dann zweites Einkommen (Werbungskosten beim Wohngeld werden in dieser Reihenfolge verbraucht)
+    state.einkommen = einkommensListe(p1, p2);
+    if (!state.einkommen) delete state.einkommen;
     state.ek1Geschaetzt = !!p1.geschaetzt; state.ek2Geschaetzt = !!p2.geschaetzt;
+  }
+  // Liste { p, art, b, n? } für die Regeln, wenn eine Person ein zweites Einkommen hat; sonst null (Summenfelder wie bisher).
+  // Allein ohne p (gleiche Liste wie früher); Hauptfeld „Kein Einkommen“: kein Eintrag.
+  function einkommensListe(p1, p2) {
+    var zwei = state.adults === 2;
+    // wie folgefragen(): nur mit erlaubter Art und eigenem Hauptfeld (render() baut die Liste vor dem Zurücksetzen)
+    var zweit = function (i) {
+      var a = state['ek' + i + 'bArt'], h = state['ek' + i + 'Art'], b = state['ek' + i + 'bBetrag'];
+      b = b === '' || b == null ? 0 : Number(b);
+      return a && EK_ZWEIT.indexOf(a) >= 0 && h && h !== 'ohne' && b > 0 ? b : 0;
+    };
+    var b1 = zweit(1), b2 = zwei ? zweit(2) : 0;
+    if (!(b1 > 0 || b2 > 0) || !p1.gesetzt || (zwei && !p2.gesetzt)) return null;
+    var liste = [];
+    var add = function (e, i) { if (zwei) e.p = i; liste.push(e); };
+    var haupt = function (p, i) {
+      if (p.art === 'ohne') return;
+      var mitN = p.art === 'lohn' || p.art === 'rente' || p.art === 'selbst';
+      add(mitN ? { art: p.art, b: p.b === '' ? 0 : p.b, n: p.n === '' ? nettoSchaetzen(p, i) : p.n } : { art: p.art, b: p.b === '' ? 0 : p.b }, i);
+    };
+    haupt(p1, 1); if (b1 > 0) add({ art: state.ek1bArt, b: b1 }, 1);
+    if (zwei) { haupt(p2, 2); if (b2 > 0) add({ art: state.ek2bArt, b: b2 }, 2); }
+    return liste;
   }
   // Nur die Felder zeigen, die zur gewählten Art passen; Beschriftung je Art
   function ekFelder() {
@@ -281,11 +309,13 @@
       $('ek' + i + 'BruttoF').hidden = !mitBrutto;
       $('ek' + i + 'NettoF').hidden = !art || art === 'ohne';
       $('ek' + i + 'BruttoLab').textContent = t(art === 'lohn' || art === 'rente' ? 'ek.brutto.' + art : 'ek.brutto');
-      // Allein: zweites Einkommen eigenes Feld; zu zweit: Summe
+      // Zweites Einkommen: eigenes Aufklappfeld je Person; Hinweis auf das Feld nur zu zweit
       var ah = [];
       if (art === 'lohn') ah.push(t('ek.art.hint.lohn'));
       if (state.adults === 2 && art && art !== 'ohne') ah.push(t('ek.art.hint'));
       $('ek' + i + 'ArtHint').textContent = ah.join(' '); $('ek' + i + 'ArtHint').hidden = !ah.length;
+      var zArt = state['ek' + i + 'bArt'];
+      $('ek' + i + 'bLohnHint').hidden = !(zArt === 'lohn' || zArt === 'selbst');
       $('ek' + i + 'BruttoHint').textContent = art === 'rente' ? t('ek.brutto.hint.rente') : art === 'selbst' ? t('ek.brutto.hint.selbst') : t('ek.brutto.hint.lohn');
       var bescheid = art === 'alg' || art === 'kg' || art === 'eg' || art === 'wfbm' || art === 'unt';
       $('ek' + i + 'NettoLab').textContent = bescheid ? t(art === 'kg' ? 'ek.betrag.kg' : art === 'unt' ? 'ek.betrag.unt' : 'ek.betrag') : art === 'selbst' ? t('ek.netto.selbst') : t('ek.netto');
@@ -355,7 +385,9 @@
     else if (eins) s.push(t('wgmax.zeile', { betrag: E(w.von), stufe: Rules.roman(w.sv), personen: pers }));
     else s.push(t(stufen.length ? 'wgmax.zeileSpanne' : 'wgmax.zeileOhne', { von: E(w.von), bis: E(w.bis), sv: Rules.roman(w.sv), sb: Rules.roman(w.sb), personen: pers }));
     var V = { drunter: w.geschaetzt ? 'wgmax.drunterEtwa' : 'wgmax.drunter', drueber: w.geschaetzt ? 'wgmax.drueberEtwa' : 'wgmax.drueber', nah: 'wgmax.nah', moeglich: 'wgmax.moeglich' };
-    if (w.vergleich) s.push(t(V[w.vergleich], { kalt: E(w.kalt), betrag: E(w.vergleich === 'drueber' ? w.bis : w.von) }));
+    // Mehrere mögliche Stufen und Miete über dem höchsten Wert: welcher Betrag zählt, hängt von der Stufe ab (Spanne statt festem Betrag)
+    if (!eins && w.vergleich === 'drueber') V.drueber = w.geschaetzt ? 'wgmax.moeglichDrueberEtwa' : 'wgmax.moeglichDrueber';
+    if (w.vergleich) s.push(t(V[w.vergleich], { kalt: E(w.kalt), betrag: E(w.vergleich === 'drueber' ? w.bis : w.von), von: E(w.von), bis: E(w.bis) }));
     if (state.hhAndere === 'verwandte') s.push(t('wgmax.verwandte'));
     p.textContent = s.join(' ');
     p.classList.toggle('moeglich', !eins || w.vergleich === 'moeglich' || w.vergleich === 'nah');
@@ -433,7 +465,9 @@
     var ek = [['', t('ek.art.0')], ['lohn', t('ek.art.lohn')], ['selbst', t('ek.art.selbst')], ['rente', t('ek.art.rente')], ['alg', t('ek.art.alg')], ['kg', t('ek.art.kg')], ['eg', t('ek.art.eg')], ['wfbm', t('ek.art.wfbm')], ['unt', t('ek.art.unt')], ['ohne', t('ek.art.ohne')]];
     fillSelect('ek1Art', ek, state.ek1Art);
     fillSelect('ek2Art', ek, state.ek2Art);
-    fillSelect('ek1bArt', [['', t('ek.weiteres.0')]].concat(ek.slice(1).filter(function (x) { return x[0] !== 'ohne'; })), state.ek1bArt);
+    var ekZweit = [['', t('ek.weiteres.0')]].concat(ek.slice(1).filter(function (x) { return x[0] !== 'ohne'; }));
+    fillSelect('ek1bArt', ekZweit, state.ek1bArt);
+    fillSelect('ek2bArt', ekZweit, state.ek2bArt);
     fillSelect('mietstufe', st, state.mietstufe);
     fillSelect('bundesland', [['', t('bl.unbekannt')]].concat(BUNDESLAENDER), state.bundesland);
     fillSelect('arbeitSit', [['', t('arbeit.0')], ['arbeitslos', t('arbeit.arbeitslos')], ['krank', t('arbeit.krank')]], state.arbeitSit);
@@ -476,7 +510,9 @@
     $('appVersion').textContent = t('set.version', { v: APPVERSION });
     einfacheSpracheAnzeigen();
     if (window.Haushalt && Haushalt.sprache) Haushalt.sprache(); // Haushaltsplan (src/haushalt.js) in der neuen Sprache zeichnen
+    if (window.FristenOrdner) FristenOrdner.sprache(); // Fristen in „Mein Ordner“ (src/fristen.js)
     if (window.Ausziehen && Ausziehen.sprache) Ausziehen.sprache(); // „Ich ziehe aus“ (src/ausziehen.js) in der neuen Sprache zeichnen
+    if (window.Schulden && Schulden.sprache) Schulden.sprache(); // Schulden-Liste (src/schulden.js)
     // Regeln älter als der nächste Stichtag (1. Januar): deutlich darauf hinweisen
     var veraltet = regelnVeraltet();
     $('altNotice').hidden = !veraltet; $('altNotice').textContent = veraltet ? t('alt.hinweis', { stand: Rules.RULES.stand }) : '';
@@ -569,10 +605,10 @@
   }
   // Was „Alle Angaben löschen“ löscht. Neue Teile hier ergänzen: Sprachschlüssel clear.teil.*
   // Ist ein gespeicherter Vorgang geöffnet, nennt der Text ihn: gelöscht wird nur in diesem Vorgang, andere bleiben.
-  var LOESCH_TEILE = ['clear.teil.form', 'clear.teil.person'].concat(window.Haushalt ? ['clear.teil.haushalt'] : [], window.Ausziehen ? ['az.h'] : [], ['clear.teil.mehr']);
+  var LOESCH_TEILE = ['clear.teil.form', 'clear.teil.person'].concat(window.Haushalt ? ['clear.teil.haushalt'] : [], window.Ausziehen ? ['az.h'] : [], window.FristenOrdner ? ['fri.karte'] : [], window.Schulden ? ['sl.ordner'] : [], ['clear.teil.mehr']);
   function loeschWas() {
     var a = tresor && tresor.bereit() ? tresor.aktiv() : null, mehrere = a && tresor.liste().length > 1;
-    return t('clear.was') + ' ' + LOESCH_TEILE.map(function (k) { return k === 'az.h' ? '„' + t(k) + '“' : t(k); }).join(' · ') +
+    return t('clear.was') + ' ' + LOESCH_TEILE.map(function (k) { return k === 'az.h' || k === 'sl.ordner' ? '„' + t(k) + '“' : t(k); }).join(' · ') +
       (a && a.name ? ' ' + t('clear.teil.vorgang', { name: a.name }) : mehrere ? ' ' + t('clear.teil.offen') : '');
   }
   // Rückgängig-Leiste: bleibt etwa 10 Sekunden; solange der Fokus darin ist, verschwindet sie nicht
@@ -598,8 +634,8 @@
   });
 
   var CHECKS = ['mzG', 'mzGl', 'algZeit', 'grundrente33', 'wfbmEssen', 'teilhabe', 'schwanger', 'ernaehrung', 'warmwasser', 'kinder12', 'kindKrank', 'unterhaltFehlt', 'uvgWechsel', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt', 'uzTitel', 'autoBraucht'];
-  var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'ek1bArt', 'bhWeitere', 'baby', 'aufenthalt', 'uvgPartner', 'arbeitSit', 'algMonate', 'krankWochen', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd', 'uzAn', 'wohnart', 'hhAndere', 'euArbeit', 'euJahre'];
-  var NUMS = ['miete', 'heizkosten', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'waisen', 'kindEink', 'lohnVorher', 'ek1bBetrag', 'egVor', 'vermoegen', 'uzBetrag', 'autoWert', 'zusatzRente'];
+  var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'ek1bArt', 'ek2bArt', 'bhWeitere', 'baby', 'aufenthalt', 'uvgPartner', 'arbeitSit', 'algMonate', 'krankWochen', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd', 'uzAn', 'wohnart', 'hhAndere', 'euArbeit', 'euJahre'];
+  var NUMS = ['miete', 'heizkosten', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'waisen', 'kindEink', 'lohnVorher', 'ek1bBetrag', 'ek2bBetrag', 'egVor', 'vermoegen', 'uzBetrag', 'autoWert', 'zusatzRente'];
   var BEZUG = ['grundsicherungsgeld', 'sozialamt', 'wohngeld', 'kiz', 'kindergeld'];
 
   function writeForm() {
@@ -614,6 +650,8 @@
     CHECKS.forEach(function (k) { $(k).checked = !!state[k]; });
     BEZUG.forEach(function (k) { $('b-' + k).checked = !!state.bezug[k]; });
     if ($('vaInfo')) vaInfo();
+    // Aufklappfeld „+ Weiteres Einkommen“ offen, wenn etwas eingetragen ist
+    $('ek1bBox').open = !!state.ek1bArt; $('ek2bBox').open = !!state.ek2bArt;
   }
 
   function touched() {
@@ -1206,9 +1244,11 @@
       var teile = [];
       if ((art === 'lohn' || art === 'rente' || art === 'selbst') && !blankVal(s['ek' + i + 'Brutto'])) teile.push('brutto ' + money(s['ek' + i + 'Brutto']));
       if (!blankVal(s['ek' + i + 'Netto'])) teile.push((art === 'alg' || art === 'kg' || art === 'eg' || art === 'wfbm' || art === 'unt' ? '' : 'netto ') + money(s['ek' + i + 'Netto']));
-      return wer + ': ' + ARTDE[art] + (teile.length ? ', ' + teile.join(', ') + ' im Monat' : '');
+      var zArt = s['ek' + i + 'bArt'], zB = Number(String(s['ek' + i + 'bBetrag'] == null ? '' : s['ek' + i + 'bBetrag']).replace(',', '.'));
+      var dazu = ARTDE[zArt] && zArt !== 'ohne' && zB > 0 ? '; dazu ' + ARTDE[zArt] + ' ' + money(zB) + ' im Monat' : '';
+      return wer + ': ' + ARTDE[art] + (teile.length ? ', ' + teile.join(', ') + ' im Monat' : '') + dazu;
     };
-    if (Array.isArray(s.einkommen)) L.push('Einkommen: ' + (s.einkommen.length ? s.einkommen.map(function (x) { return ARTDE[x.art] + ' ' + money(x.b); }).join(', ') + ' im Monat' : 'kein Einkommen'));
+    if (Array.isArray(s.einkommen) && s.adults !== 2) L.push('Einkommen: ' + (s.einkommen.length ? s.einkommen.map(function (x) { return ARTDE[x.art] + ' ' + money(x.b); }).join(', ') + ' im Monat' : 'kein Einkommen'));
     else L.push(ekZeile(1, s.adults === 2 ? 'Einkommen (ich)' : 'Einkommen'));
     if (s.adults === 2) L.push(ekZeile(2, 'Einkommen (Partner/in)'));
     if (Number(s.zusatzRente) > 0) L.push('Davon Betriebsrente, Riester-Rente oder private Rente: ' + money(s.zusatzRente) + ' im Monat (Freibetrag nach § 82 Abs. 4 SGB XII)');
@@ -1386,23 +1426,25 @@
   }
   // Web: Druckdialog des Browsers (Druck-CSS zeigt nur die Seite). App: derselbe PDF-Weg wie bei der Antragsmappe (Android drucken, iPhone teilen)
   function ebAusgeben(art) {
-    var msg = $('ebMsg');
     if (art === 'web') { try { window.print(); } catch (e) {} return; }
-    var name = 'SoLo-Ergebnis.pdf';
+    pdfAusgeben(ebPdfSeiten(), t('eb.titel'), 'SoLo-Ergebnis.pdf', $('ebMsg'), art, pdfRtl());
+  }
+  // PDF bauen und ausgeben (art 'drucken': Android drucken, sonst teilen); Datei danach aus dem Cache löschen. Auch für die Schulden-Liste.
+  function pdfAusgeben(seiten, titel, name, msg, art, arHinweis) {
     msg.textContent = t('f.pdfWorking');
-    var pdf = loadPdfLib().then(function (L) { return L.buildPdf({ pages: ebPdfSeiten(), title: t('eb.titel'), loadFont: function (n) { return fetch('fonts/pdf/' + n).then(function (r) { return r.arrayBuffer(); }).then(function (b) { return new Uint8Array(b); }); } }); });
+    var pdf = loadPdfLib().then(function (L) { return L.buildPdf({ pages: seiten, title: titel, loadFont: function (n) { return fetch('fonts/pdf/' + n).then(function (r) { return r.arrayBuffer(); }).then(function (b) { return new Uint8Array(b); }); } }); });
     if (art === 'drucken') {
       var pa = plug('PdfAusgabe');
       if (!pa) { msg.textContent = t('f.pdfFail'); return; }
       pdf.then(function (bytes) { return pa.drucken({ data: toBase64(bytes), name: name }); })
-        .then(function () { msg.textContent = pdfRtl() ? t('f.pdfArNote') : ''; }, function (e) { msg.textContent = /abgebrochen/.test(String(e && e.message || e)) ? '' : t('f.pdfFail'); });
+        .then(function () { msg.textContent = arHinweis ? t('f.pdfArNote') : ''; }, function (e) { msg.textContent = /abgebrochen/.test(String(e && e.message || e)) ? '' : t('f.pdfFail'); });
       return;
     }
     var fs = plug('Filesystem'), sh = plug('Share');
     if (!fs || !sh) { msg.textContent = t('f.pdfFail'); return; }
     pdf.then(function (bytes) { return fs.writeFile({ path: name, data: toBase64(bytes), directory: 'CACHE' }); })
-      .then(function (r) { return sh.share({ title: t('eb.titel'), files: [r.uri] }).then(function () {}, function () {}); })
-      .then(function () { msg.textContent = pdfRtl() ? t('f.pdfArNote') : ''; return fs.deleteFile({ path: name, directory: 'CACHE' }).catch(function () {}); })
+      .then(function (r) { return sh.share({ title: titel, files: [r.uri] }).then(function () {}, function () {}); })
+      .then(function () { msg.textContent = arHinweis ? t('f.pdfArNote') : ''; return fs.deleteFile({ path: name, directory: 'CACHE' }).catch(function () {}); })
       .catch(function () { msg.textContent = t('f.pdfFail'); });
   }
 
@@ -1518,9 +1560,10 @@
     try { window.print(); } catch (e) {}
     setTimeout(weg, 60000);
   }
-  function schreibenKnoepfe() {
+  // Ein Schreiben (x = [Textfeld, Kopieren-Knopf, Dateiname, Art]); auch für später erzeugte Felder (Kostensenkung: KostensenkungHilfe)
+  function schreibenKnopf(x) {
     var android = NATIVE && plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios');
-    SCHREIBEN.forEach(function (x) {
+    (function () {
       var ta = $(x[0]), copy = $(x[1]); if (!ta || !copy) return;
       var box = document.createElement('div'); box.className = 'schreiben-aus'; box.hidden = true;
       var btns = document.createElement('div'); btns.className = 'btns';
@@ -1538,8 +1581,9 @@
       var reihe = copy.closest('.btns') || copy; reihe.parentNode.insertBefore(box, reihe.nextSibling);
       // sichtbar, sobald das Schreiben erstellt ist (die Prüfung zeigt dann das Textfeld)
       new MutationObserver(function () { box.hidden = ta.hidden; }).observe(ta, { attributes: true, attributeFilter: ['hidden'] });
-    });
+    })();
   }
+  function schreibenKnoepfe() { SCHREIBEN.forEach(schreibenKnopf); }
   schreibenKnoepfe();
 
   function copyMappe() {
@@ -2170,7 +2214,7 @@
   }
 
   // Einstellungen: alle gespeicherten Angaben der App löschen (Store-Schlüssel) und die Anzeige auf den Anfangszustand setzen
-  var STORE_SCHLUESSEL = ['lotse.state', 'lotse.einfach', 'lotse.einfachSprache', 'lotse.beratung', 'lotse.haken', 'lotse.pflegecheck', 'lotse.lang', 'lotse.ack', 'lotse.fristen'];
+  var STORE_SCHLUESSEL = ['lotse.state', 'lotse.einfach', 'lotse.einfachSprache', 'lotse.beratung', 'lotse.haken', 'lotse.pflegecheck', 'lotse.lang', 'lotse.ack', 'lotse.fristen', 'lotse.fristTag', 'lotse.fristHinweis'];
   state = blankState();
   $('sampleNotice').hidden = true; // Beispiel-Hinweis nur, wenn ein Beispiel geladen ist
   bind();
@@ -2396,6 +2440,7 @@
       p(t('sp.schulden.erst'), 'sp-zwischen');
       var ol = document.createElement('ol'); ol.className = 'sp-liste'; box.appendChild(ol);
       ['sp.schulden.1', 'sp.schulden.2', 'sp.schulden.3', 'sp.schulden.4'].forEach(function (k) { var li = document.createElement('li'); li.textContent = t(k); ol.appendChild(li); });
+      if (window.Schulden) { var slk = document.createElement('div'); slk.className = 'btns'; slk.appendChild(nhKnopf('btn', esc(t('sl.knopf')), null, function () { oeffneVon('schulden', true); })); slk.firstChild.id = 'sp-schuldenliste'; box.appendChild(slk); } // Schulden-Liste (src/schulden.js)
       p(t('sp.schulden.fall'), 'sp-zwischen');
       SP_SCHULDEN_FAELLE.forEach(function (f) {
         var dt = document.createElement('details'); dt.className = 'pf-tipps sp-fall'; dt.setAttribute('data-fall', f);
@@ -2527,7 +2572,7 @@
 
   // ----- Bereiche: Start, Leistungen (Leistungscheck), Brief prüfen -----
   // Beim Öffnen die Startseite; „#leistungen“ und „#briefe“ öffnen den Bereich direkt (Links, Tests).
-  var ANSICHTEN = ['start', 'leistungen', 'briefe', 'pflege', 'pflegeinfo', 'pflegestart', 'einst', 'ordner', 'pfaendung', 'sparen', 'haushalt', 'ausziehen']; // „pflege“: Pflegegrad-Einschätzung, gehört zu Leistungen
+  var ANSICHTEN = ['start', 'leistungen', 'briefe', 'pflege', 'pflegeinfo', 'pflegestart', 'einst', 'ordner', 'pfaendung', 'sparen', 'haushalt', 'ausziehen', 'schulden']; // „pflege“: Pflegegrad-Einschätzung, gehört zu Leistungen
   var aktAnsicht = 'leistungen';
   // Herkunft merken: „Zurück“, Leiste und Android-Taste folgen ihr (keine festen Ziele)
   var NAV_BEREICHE = ['start', 'ordner', 'einst']; // Leiste unten; Leistungen und Briefe erreicht man über die Startkacheln (markieren Start)
@@ -2545,6 +2590,7 @@
     if (a === 'pfaendung') { if (pf.schritt > 0) { pf.schritt--; if (!pf.schritt) pf.art = ''; pfRender(true); } else zurueckZurHerkunft(a); return true; }
     if (a === 'sparen') { if (sp.rezepte) sp.rezepte = false; else if (sp.thema) sp.thema = ''; else { zurueckZurHerkunft(a); return true; } spRender(true); return true; }
     if (a === 'haushalt') { zurueckZurHerkunft(a); return true; }
+    if (a === 'schulden') { if (!(window.Schulden && Schulden.zurueck())) zurueckZurHerkunft(a); return true; }
     if (a === 'ausziehen') { if (window.Ausziehen && Ausziehen.offen()) Ausziehen.zurueck(); else zurueckZurHerkunft(a); return true; }
     if (a === 'briefe' && !$('checkBox').hidden) { $('briefZurueck').click(); return true; }
     if (a === 'leistungen' && $('es-zurueck')) { $('es-zurueck').click(); return true; }
@@ -2580,6 +2626,7 @@
     var navA = navBereich(a);
     if (a === 'haushalt' && window.Haushalt) Haushalt.zeigen();
     if (a === 'ausziehen' && window.Ausziehen) Ausziehen.zeigen();
+    if (a === 'schulden' && window.Schulden) Schulden.zeigen();
     if (a === 'pfaendung') pfRender(false);
     if (a === 'pflegestart') puRender(false);
     if (a === 'sparen') spRender(false);
@@ -2633,6 +2680,7 @@
     if (weg) { vgHinterAb = Date.now(); return; }
     var war = vgHinterAb; vgHinterAb = 0;
     if (war && tresor && tresor.pinAn() && tresor.bereit() && Date.now() - war >= VG_SPERRE_MS) vgSperrenJetzt();
+    else if (war && Date.now() - war >= VG_SPERRE_MS && window.FristenOrdner) FristenOrdner.startHinweis(); // „Öffnen“ nach 2 Minuten im Hintergrund (höchstens einmal am Tag)
   }
   document.addEventListener('visibilitychange', function () { vgHintergrund(document.visibilityState === 'hidden'); });
   // Mit PIN schneller speichern: beim Verlassen eines Feldes sofort
@@ -2660,6 +2708,8 @@
     if (aktAnsicht === 'pfaendung') pfRender(false);
     if (window.Haushalt && Haushalt.neuLaden) Haushalt.neuLaden(); // jeder Vorgang hat seinen eigenen Haushaltsplan
     if (window.Ausziehen && Ausziehen.neuLaden) Ausziehen.neuLaden(); // und eigene Haken und Notizen bei „Ich ziehe aus“
+    if (window.FristenOrdner) FristenOrdner.neuLaden(); // und eigene Fristen
+    if (window.Schulden && Schulden.neuLaden) Schulden.neuLaden(); // und eine eigene Schulden-Liste
     vgRender();
   }
   function pfLeer() { return { art: '', schritt: 0, netto: '', pers: null, kg: null, kiz: '' }; }
@@ -2691,6 +2741,7 @@
   function angabenLoeschen(alle) {
     clearTimeout(saveTimer); saveTimer = null;
     if (alle) tresor.allesLoeschen(); else Vorgaenge.DATEN.forEach(function (k) { Store.remove(k); });
+    if (alle) StoreRoh.remove('lotse.fristTag'); // Merker der Fristen (nur ein Datum); die Einstellung lotse.fristHinweis bleibt wie die PIN
     vgNeuLaden();
   }
   function vgSpeichernForm(box, idName, mitHinweis) {
@@ -2914,6 +2965,9 @@
       b.querySelector('b').textContent = titel; b.querySelector('.zeile-st').textContent = status;
       b.addEventListener('click', fn); li.appendChild(b); ul.appendChild(li);
     };
+    // Fristen (src/fristen.js): als erste Zeile, nur mit mindestens einer offenen Frist; die Liste ist eine Unterseite
+    var fo = null; if (window.FristenOrdner) { try { fo = FristenOrdner.stand(); } catch (e) {} FristenOrdner.render(); }
+    if (fo) zeile('fristen', t('fri.karte'), fo.text, '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', function () { usZeigen('ordner', 'fristen', true); });
     var erg = started && edited && lastOut ? lastOut.results : null;
     if (erg) {
       var n = { ja: 0, vielleicht: 0 }; erg.forEach(function (r) { if (r.level in n) n[r.level]++; });
@@ -2925,6 +2979,11 @@
     if (window.Haushalt && Haushalt.rest) {
       var hr = null; try { hr = Haushalt.rest(); } catch (e) {}
       if (hr && !hr.leer) zeile('haushalt', t('hb.h'), hr.rest >= 0 ? t('hb.rest', { b: { eur: hr.restEuro } }) : t('hb.fehlt', { b: { eur: -hr.restEuro } }), '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M15 15h2"/>', function () { oeffneVon('haushalt', true); });
+    }
+    // Schulden-Liste: nur die Zahl der offenen Einträge (keine Summe) und die nächste Frist, solange es die Fristen in „Mein Ordner“ (src/fristen.js, FristenOrdner) nicht gibt
+    if (window.Schulden && Schulden.kurz) {
+      var sk = null; try { sk = Schulden.kurz(); } catch (e) {}
+      if (sk && sk.n) zeile('schulden', t('sl.ordner'), t('sl.ordner.st', { n: sk.n }) + (sk.frist && !window.FristenOrdner ? ' · ' + t('sl.ordner.frist', { d: Fmt.datum(new Date(+sk.frist.slice(0, 4), +sk.frist.slice(5, 7) - 1, +sk.frist.slice(8, 10)), lang) }) : ''), '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>', function () { oeffneVon('schulden', true); });
     }
     // „Ich ziehe aus“ (Branch claude/ausziehen): nur, wenn das Modul den Fortschritt liefert (Ausziehen.stand() -> { n, von })
     var AZ = window.Ausziehen;
@@ -3345,6 +3404,13 @@
     var e0 = briefArt ? BriefLesen.erkenne(text) : null;
     if (e0 && (e0.art === 'anh' || e0.art === 'mit')) r = BriefLesen.lies(text, null);
     $('elErg').textContent = '';
+    // Aufforderung zur Senkung der Wohn- oder Heizkosten: Erklärung statt Nachrechnung (erweiterungen/kostensenkung.js)
+    var ks = BriefLesen.kostensenkung ? BriefLesen.kostensenkung(text) : null;
+    if (ks && !ks.ist) ks = null;
+    if (ks && !ks.anhoerung && (!briefArt || briefArt === 'jc' || briefArt === 'sa' || briefArt === 'an')) {
+      if (!briefArt && ks.traeger) briefOeffnen(ks.traeger); // ohne Kachel nur mit erkanntem Absender, nie geraten
+      ksZeigen(ks, text); elNachricht(t('el.erkanntOhne', { titel: t(ks.heiz ? 'el.ks.titelHeiz' : 'el.ks.titel') })); return;
+    }
     // Anderer Brief: Frist mit Beleg suchen, Mahnbescheid und Inkasso erkennen (Anhörung und Mitwirkung erklärt der Teil darunter)
     if (briefArt === 'an' && r.art !== 'anh' && r.art !== 'mit') { elNachricht(''); if (window.PruefpaketAndere) window.PruefpaketAndere.zeige(text, { box: $('elErg'), wechseln: function (art) { var tx = text; briefOeffnen(art); textLesen(tx); } }); return; }
     if (!r.art) { elNachricht(t('el.unbekannt')); return; }
@@ -3354,7 +3420,8 @@
       var p = document.createElement('p'); p.textContent = BriefLesen.ERKLAERUNG[r.art]; d.appendChild(p);
       var fr = BriefLesen.frist(text);
       if (fr) { var q = document.createElement('p'); q.textContent = t('el.frist', { frist: fr }); d.appendChild(q); }
-      $('elErg').appendChild(d); elNachricht(t('el.erkanntOhne', { titel: r.titel })); return;
+      var fk = fr && window.FristenOrdner ? FristenOrdner.briefKnopf(text, r.art) : null; if (fk) d.appendChild(fk); // nur auf Knopfdruck merken
+      $('elErg').appendChild(d); if (ks) ksZeigen(ks, text); elNachricht(t('el.erkanntOhne', { titel: r.titel })); return;
     }
     if (!briefArt) briefOeffnen(r.art);
     if (r.art === 'pk') { $('pf-text').value = text; $('pf-lesen').click(); briefFormular(); elNachricht(t('el.erkanntPk', { titel: r.titel })); return; }
@@ -3362,6 +3429,10 @@
     var n = window.PruefpaketLesen ? window.PruefpaketLesen.fuelle(r.art, r, haushalt()) : 0;
     briefFormular();
     elNachricht(n ? t('el.erkannt', { titel: r.titel, n: String(n) }) : t('el.keineWerte', { titel: r.titel }));
+  }
+  function ksZeigen(ks, text) {
+    if (!window.KostensenkungHilfe) return;
+    window.KostensenkungHilfe.zeige($('elErg'), ks, { t: t, tL: tL, person: person, kennungen: BriefLesen.kennungen ? BriefLesen.kennungen(text) : {}, briefArt: briefArt, schreibenKnopf: schreibenKnopf, heute: new Date() });
   }
   // Foto aufnehmen und auf dem Gerät lesen (App), Foto danach löschen; im Browser: Bild wählen und mit Tesseract lesen
   function fotoText() {
@@ -3446,6 +3517,8 @@
       grenzen: function () { try { return started && edited ? Rules.evaluate(state).grenzen : null; } catch (e) { return null; } },
       setze: function (werte) { if (started && !edited) state = blankState(); Object.assign(state, werte); writeForm(); buildSelects(); touched(); },
       zeige: oeffneVon, regeln: function () { return Rules.RULES; }, plug: plug, nativ: NATIVE,
+      fristenNeu: function () { if (window.FristenOrdner) FristenOrdner.neu(); },
+      sparen: function (thema) { sp.thema = thema; sp.rezepte = false; oeffneVon('sparen', true); }, // Energiekosten-Check: „Mehr Spartipps“
       foto: NATIVE ? fotoText : null, bild: ocr,
       textAusgeben: function (text, titel, msg) { if (!NATIVE) { schreibenDrucken(text); return; } schreibenAusgeben({ value: text }, titel, plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen', msg); }
     });
@@ -3453,6 +3526,39 @@
   // „Ich ziehe aus“: Haken und Notizen je Vorgang (lotse.ausziehen in Vorgaenge.DATEN), mit PIN verschlüsselt, kopiert und gelöscht
   if (window.Ausziehen) Ausziehen.speicherOrt({ laden: function (cb) { Store.get('lotse.ausziehen', cb); }, schreiben: function (text, cb) { Store.set('lotse.ausziehen', text); cb(null); } });
   if (window.Ausziehen) Ausziehen.init({ t: t, zeige: oeffneVon, plug: plug, famversGrenze: function () { var R = Rules.RULES.famvers; return Fmt.euro(Math.round((new Date().getFullYear() >= 2027 ? R.bezug2027 : R.bezug2026) / 7), lang, I18N[lang]['meta.dir'] === 'rtl'); } }); // „Ich ziehe aus“ (src/ausziehen.js)
+  // Fristen in „Mein Ordner“ (src/fristen.js): je Vorgang (lotse.fristliste in Vorgaenge.DATEN), Hinweis beim Öffnen höchstens einmal am Tag
+  if (window.FristenOrdner) {
+    FristenOrdner.speicherOrt({ laden: function (cb) { Store.get('lotse.fristliste', cb); }, schreiben: function (text, cb) { cb(Store.set('lotse.fristliste', text) === false ? new Error('nicht gespeichert') : null); } });
+    FristenOrdner.init({
+      t: tL, lang: function () { return lang; }, datum: function (d) { return Fmt.datum(d, lang); }, roh: StoreRoh, neu: ordnerRender,
+      alle: function () {
+        if (!tresor || !tresor.bereit()) return [];
+        var h = tresor.ueberall('lotse.haushalt');
+        return tresor.ueberall('lotse.fristliste').map(function (v, i) { return { id: v.id, name: v.name, aktiv: v.aktiv, fristliste: v.wert, haushalt: h[i] ? h[i].wert : null }; });
+      },
+      ablauf: function () { var a = tresor && tresor.bereit() ? tresor.aktiv() : null; return a && a.ablauf ? new Date(a.ablauf) : null; },
+      oeffneVorgang: vgOeffnen,
+      zeigeListe: function () { herkunft = {}; zeigeAnsicht('ordner', false); usZeigen('ordner', 'fristen', true); }
+    });
+  }
+  // Schulden-Liste (src/schulden.js): je Vorgang (lotse.schulden in Vorgaenge.DATEN), mit PIN verschlüsselt, kopiert und gelöscht.
+  // Das Blatt für die Beratung ist deutsch (tDe, ohne Einfache Sprache); App: PDF wie das Ergebnisblatt, Web: Druckdialog.
+  if (window.Schulden) {
+    Schulden.speicherOrt({ laden: function (cb) { Store.get('lotse.schulden', cb); }, schreiben: function (text, cb) { Store.set('lotse.schulden', text); cb(null); } });
+    Schulden.init({
+      t: tL, tDe: function (k, p) { var l = lang, e = einfachSprache; lang = 'de'; einfachSprache = false; try { return t(k, p); } finally { lang = l; einfachSprache = e; } },
+      lang: function () { return lang; }, euro: function (x) { return Fmt.euro(x, lang, I18N[lang]['meta.dir'] === 'rtl'); }, euroDe: function (x) { return Fmt.euro(x, 'de'); },
+      datum: function (d) { return Fmt.datum(d, lang); }, datumDe: function (d) { return Fmt.datum(d, 'de'); }, zeige: oeffneVon, plug: plug, nativ: NATIVE,
+      haushalt: function () { if (!window.Haushalt) return null; var r = Haushalt.rest(), d = Haushalt.daten(); return { rest: r, raten: d && d.plan && d.plan.aus && d.plan.aus.raten || 0 }; },
+      pdf: function (seiten, titel, name, msg) { pdfAusgeben(seiten, titel, name, msg, plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen', false); }
+    });
+    // Fristende aus dem Rechenkern der Fristen (src/fristen.js), wenn vorhanden; sonst rechnet die Liste selbst (Rückfall auch bei ungültigem Ergebnis)
+    var FO = window.FristenOrdner;
+    if (FO && (typeof FO.endeTage === 'function' || typeof FO.endeWochen === 'function')) Schulden.fristRechner(function (zu, tage) {
+      if (typeof FO.endeTage === 'function') return FO.endeTage(zu, tage);
+      return tage % 7 ? null : FO.endeWochen(zu, tage / 7);
+    });
+  }
   window.addEventListener('hashchange', function () { var a = location.hash.slice(1); if (ANSICHTEN.indexOf(a) >= 0 && a !== aktAnsicht) zeigeAnsicht(a, true); });
   Store.remove('lotse.fristen'); // Fristen aus 1.3.0 (Build 141) gibt es nicht mehr: gespeicherte Einträge vom Gerät löschen
   zeigeAnsicht((function () { var a = (location.hash || '').slice(1); return ANSICHTEN.indexOf(a) >= 0 ? a : 'start'; })());
