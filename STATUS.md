@@ -82,6 +82,14 @@ Erledigt (in 1.6.0): Aufgaben 1–7 – Fristen-Übersicht, Schulden-Liste, Ener
 4. Stichtagswerte bündeln
 5. `src/app.js` aufteilen
 
+### Vorgemerkt für die Version nach 1.7.0 (Build 149)
+| Nr. | Vorhaben |
+|---|---|
+| 1 | App-Datei verkleinern (zurzeit etwa 6 MB) |
+| 2 | Muttersprachler lesen gegen: Dari (fa-AF), Paschtu (ps), Somali (so) |
+| 3 | Anwaltliche Klärung Rechtsdienstleistungsgesetz (RDG) |
+| 4 | Nutzertest mit 5 Personen |
+
 ### Vorgemerkt für die Version danach
 | Nr. | Vorhaben |
 |---|---|

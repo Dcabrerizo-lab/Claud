@@ -107,6 +107,8 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Antragsformular: Erklärung je Feld zum Aufklappen', (await p.locator('#sc-out details.sc-erkl').count()) >= 5);
   ok('Antragsformular: kein seitliches Scrollen', await breit());
   await p.click('#briefZurueck');
+  ok('Zurück aus dem Antragsformular: eine Ebene hoch zur Kachel „Anderer Brief oder Formular“', await p.isVisible('#brief-af') && !(await p.isVisible('#briefKacheln')));
+  await p.click('#briefZurueck'); // noch eine Ebene hoch: Übersicht „Von wem ist der Brief?“ (sonst bleibt die Unterebene beim nächsten Öffnen stehen)
   await p.click('#appnav [data-ansicht=start]'); await p.click('#goLeistungen');
   ok('Leistungsseite: kein Formular-Scannen und kein Verweis darauf', !(await p.isVisible('#scan')) && (await p.locator('#v-leistungen #scanVerweis, #v-leistungen #scan, #v-leistungen [data-t^="sc."]').count()) === 0);
   // Fremde Sprache: Hinweis „nur auf Deutsch“, Bereiche übersetzt
