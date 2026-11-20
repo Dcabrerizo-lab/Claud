@@ -39,7 +39,7 @@ setTimeout(() => {
     check('[az-oberflaeche] Unterseite mit Überschrift', /Bevor du ausziehst/.test($('azH').textContent) && d.activeElement === $('azH'));
     check('[az-oberflaeche] U25-Warnung sichtbar', /Erst fragen, dann unterschreiben/.test(d.querySelector('.az-warn').textContent));
     check('[az-oberflaeche] Weitere Punkte zugeklappt', !!d.querySelector('.az-weitere') && !d.querySelector('.az-weitere').open);
-    check('[az-oberflaeche] Quelle mit Datum', /Quelle: §[ \u00a0]551 BGB \(abgerufen am 20\.11\.2026\)/.test($('az-p-vertrag').textContent));
+    check('[az-oberflaeche] Quelle mit Datum in „Quellen und Stand“ am Seitenende, zugeklappt', /Quelle: §[ \u00a0]551 BGB \(abgerufen am 20\.11\.2026\)/.test($('az-q-vertrag').textContent) && $('azQuellen').contains($('az-q-vertrag')) && !$('azQuellen').open && !/Quelle:/.test($('az-p-vertrag').textContent));
     const cb = d.querySelector('[data-az-ab="vertrag"]'); cb.checked = true; cb.dispatchEvent(new w.Event('change', { bubbles: true }));
     check('[az-oberflaeche] Haken gespeichert', JSON.parse(mem['lotse.ausziehen']).ab.vertrag === true, mem['lotse.ausziehen']);
     { const st = w.Ausziehen.stand(); check('[az-oberflaeche] Ausziehen.stand(): erledigt und alle Punkte für „Mein Ordner“', st && st.n === 1 && st.von > 20, st); }

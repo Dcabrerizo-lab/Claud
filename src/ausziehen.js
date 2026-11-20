@@ -232,7 +232,7 @@ var Ausziehen = (function () {
     '.az-punkt.ok .az-check span{text-decoration:line-through;text-decoration-thickness:1px;opacity:.75}' +
     '.az-titel{font-weight:700;margin:0}.az-kurz{margin:0}.az-punkt>.az-q{margin:0}.az-punkt>.btns{margin:0}' +
     '.az-punkt details>summary,.az-weitere>summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-weight:600;color:var(--accent)}' +
-    '.az-punkt details p{margin:6px 0}.az-q{font-size:.85em;color:var(--muted)}' +
+    '.az-punkt details p{margin:6px 0}.az-q{font-size:.85em;color:var(--muted)}.az-qliste{margin:0;padding-inline-start:18px}.az-qliste li{margin:4px 0}.az-qliste .az-q{margin:0}' +
     '.az-chip{display:inline-block;font-size:.85em;font-weight:700;border-radius:999px;padding:2px 10px;background:var(--warn-bg);color:var(--warn);justify-self:start}' +
     '.az-stufe{margin:10px 0 0;font-size:1.1em;border-inline-start:6px solid var(--c-ausziehen);padding-inline-start:10px}' +
     '.az-stufe.s-unnoetig{border-color:var(--muted)}' +
@@ -248,27 +248,45 @@ var Ausziehen = (function () {
   }
   // Quelle bleibt deutsch und links-nach-rechts, auch in Arabisch, Farsi und Paschtu (sonst springen Klammern und Paragrafen)
   function quelleHtml(p) { return p.q ? '<p class="az-q">' + esc(t('az.quelle', { q: '@@Q@@', d: ABGERUFEN })).replace('@@Q@@', '<bdi dir="ltr" lang="de">' + esc(quelleText(p)) + '</bdi>') + '</p>' : ''; }
+  // „Quellen und Stand“: alle Quellen der Seite zugeklappt am Seitenende (gemeinsames Bauteil details.mehr), je Punkt mit Titel
+  function quellenHtml(b) {
+    var mitQ = allePunkte(b).filter(function (p) { return p.q; });
+    return '<details class="mehr quellen az-quellen" id="azQuellen"><summary>' + esc(t('qs.titel')) + '</summary><p>' + esc(t('az.stand', { d: ABGERUFEN })) + '</p>' +
+      (mitQ.length ? '<ul class="az-qliste">' + mitQ.map(function (p) { return '<li id="az-q-' + p.id + '"><b>' + esc(t('az.p.' + p.id)) + '</b>' + quelleHtml(p) + '</li>'; }).join('') + '</ul>' : '') + '</details>';
+  }
+  // Fließtext eines Info-Punkts: erster Satz sichtbar, Rest zum Aufklappen. Nie, wenn im Rest eine Zahl oder Frist steht (Fristen und Beträge nie verstecken)
+  // Entschieden wird am deutschen Standardtext (deAbsatz), damit keine Übersetzung eine Frist versteckt („one month“).
+  var FRIST_WORT = /\d|Frist|Monat|Woche|Tag/;
+  function ersterSatz(absatz, deAbsatz) {
+    var d = /^(.+?[.!?])\s+(.+)$/.exec(deAbsatz || absatz);
+    if (!d || FRIST_WORT.test(d[2])) return [absatz];
+    var m = /^(.+?[.!?؟])\s+(.+)$/.exec(absatz);
+    if (!m || FRIST_WORT.test(m[2])) return [absatz];
+    return [m[1], m[2]];
+  }
   function punktHtml(p, liste) {
     var ok = liste && daten.ab[p.id];
     var h = '<li class="az-punkt' + (p.warn ? ' warn-p' : '') + (ok ? ' ok' : '') + '" id="az-p-' + p.id + '">';
     if (liste) h += '<label class="az-check"><input type="checkbox" data-az-ab="' + p.id + '"' + (ok ? ' checked' : '') + '><span>' + esc(t('az.p.' + p.id)) + '</span></label>';
     else h += '<p class="az-titel">' + esc(t('az.p.' + p.id)) + '</p>';
     if (p.moeglich) h += '<span class="az-chip">' + esc(t('az.moeglich')) + '</span>';
-    var det = esc(t('az.p.' + p.id + '.t', p.id === 'kv' && ctx.famversGrenze ? { grenze: ctx.famversGrenze() } : null)).split('\n').map(function (s) { return '<p>' + s + '</p>'; }).join('');
+    var roh = t('az.p.' + p.id + '.t', p.id === 'kv' && ctx.famversGrenze ? { grenze: ctx.famversGrenze() } : null).split('\n');
+    var det = roh.map(function (s) { return '<p>' + esc(s) + '</p>'; }).join('');
     if (p.knopf === 'brief') {
       h += '<details class="az-brief"><summary>' + esc(t('az.brief.zeigen')) + '</summary>' + det +
         '<p class="small">' + esc(t('az.brief.hinweis')) + '</p><label for="azBrief" class="small">' + esc(t('az.brief.label')) + '</label>' +
         '<textarea id="azBrief" lang="de" dir="ltr" spellcheck="false">' + esc(briefText()) + '</textarea>' +
-        '<div class="btns"><button type="button" class="btn" id="azBriefKopieren">' + esc(t('az.brief.kopieren')) + '</button></div><p class="small" id="azBriefMsg" role="status"></p>' + quelleHtml(p) + '</details>';
+        '<div class="btns"><button type="button" class="btn" id="azBriefKopieren">' + esc(t('az.brief.kopieren')) + '</button></div><p class="small" id="azBriefMsg" role="status"></p></details>';
     } else if (!liste) {
       // Info-Punkte: der erste Satzblock gleich sichtbar, der Rest zum Aufklappen
-      var teile = det.split('</p>').filter(Boolean).map(function (x) { return x + '</p>'; });
+      var deRoh = typeof I18N !== 'undefined' && I18N.de && I18N.de['az.p.' + p.id + '.t'];
+      var teile = (roh.length === 1 && deRoh && deRoh.indexOf('\n') < 0 ? ersterSatz(roh[0], deRoh) : roh).map(function (x) { return '<p>' + esc(x) + '</p>'; });
       h += teile[0].replace('<p>', '<p class="az-kurz">');
-      var rest = teile.slice(1).join('') + (p.knopf ? '<div class="btns">' + knopfHtml(p.knopf) + '</div>' : '') + quelleHtml(p);
+      var rest = teile.slice(1).join('') + (p.knopf ? '<div class="btns">' + knopfHtml(p.knopf) + '</div>' : '');
       if (teile.length > 1) h += '<details><summary>' + esc(t('az.mehrDazu')) + '</summary>' + rest + '</details>';
       else h += rest;
     } else {
-      h += '<details><summary>' + esc(t('az.mehrDazu')) + '</summary>' + det + (p.knopf ? '<div class="btns">' + knopfHtml(p.knopf) + '</div>' : '') + quelleHtml(p) + '</details>';
+      h += '<details><summary>' + esc(t('az.mehrDazu')) + '</summary>' + det + (p.knopf ? '<div class="btns">' + knopfHtml(p.knopf) + '</div>' : '') + '</details>';
     }
     return h + '</li>';
   }
@@ -280,7 +298,7 @@ var Ausziehen = (function () {
       h += '<button type="button" class="sk az-k az-k-' + id + '" data-az-geh="' + id + '" id="az-geh-' + id + '"><span class="sk-sym" aria-hidden="true">' + sym(id) + '</span><span class="sk-txt"><b>' + esc(t('az.' + id + '.h')) + '</b><span>' +
         esc(t('az.' + id + '.t')) + '</span>' + (f ? '<span class="az-fort">' + esc(t('az.erledigt', { n: f.n, von: f.von })) + '</span>' : '') + '</span></button>';
     });
-    h += '</div><p class="small muted">' + esc(t('home.privat')) + '</p>';
+    h += '</div>';
     box.innerHTML = h;
     if (fokus) { var b = box.querySelector('#az-geh-' + fokus); if (b) b.focus(); }
   }
@@ -301,8 +319,8 @@ var Ausziehen = (function () {
       h += '<ul class="az-liste">' + oben.map(function (p) { return punktHtml(p, b.liste); }).join('') + '</ul>';
       if (unten.length) h += '<details class="az-weitere"' + (unten.some(function (p) { return daten.ab[p.id]; }) ? ' open' : '') + '><summary>' + esc(t('az.weitere', { n: unten.length })) + '</summary><ul class="az-liste">' + unten.map(function (p) { return punktHtml(p, b.liste); }).join('') + '</ul></details>';
     }
-    if (b.liste) h += '<div class="field"><label for="azNotiz">' + esc(t('az.notiz')) + '</label><textarea id="azNotiz" aria-describedby="azNotizH"></textarea><span class="hint" id="azNotizH">' + esc(t('az.notiz.t')) + '</span></div>';
-    h += '<p class="small muted">' + esc(t('az.stand', { d: ABGERUFEN })) + '</p>';
+    if (b.liste) h += '<div class="field"><label for="azNotiz">' + esc(t('az.notiz')) + '</label><textarea id="azNotiz" placeholder="' + esc(t('az.notiz.t')) + '"></textarea></div>';
+    h += quellenHtml(b);
     box.innerHTML = h;
     var n = $('azNotiz'); if (n) n.value = daten.notiz[b.id] || '';
   }

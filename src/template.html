@@ -1024,6 +1024,7 @@
   details.mehr > summary::before { content: "i"; flex: none; display: inline-grid; place-items: center; width: 20px; height: 20px; border: 2px solid currentColor; border-radius: 50%; font-size: .8em; font-weight: 900; line-height: 1; }
   details.mehr > summary::after { content: "▸"; font-size: .85em; }
   details.mehr[open] > summary::after { content: "▾"; }
+  details.mehr.quellen { margin-top: 18px; } /* „Quellen und Stand“: immer letzte Zeile der Seite */
   details.mehr > :not(summary) { margin: 0 0 6px; color: var(--muted); font-size: .92em; font-weight: 400; }
   .form-ende { display: grid; gap: 8px; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); }
   .rb-satz { margin: 12px 0 0; }
@@ -1622,7 +1623,6 @@
       <div id="ordnerFristen" class="unterseite" data-seite="fristen" hidden>
         <!--ZURUECK cls=us-zurueck-->
         <h2 class="ans-h" id="friH" data-t="fri.h"></h2>
-        <p class="small muted" data-t="fri.lead"></p>
         <p class="msg" id="friMsg" role="status"></p>
         <div id="friListe"></div>
       </div>

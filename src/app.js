@@ -113,7 +113,15 @@
     return d;
   }
   function mehrHtml(innenHtml, titel) { return '<details class="mehr"><summary>' + esc(titel) + '</summary>' + innenHtml + '</details>'; }
-  window.SoloMehr = { el: mehrEl, rb: function () { return t('rb.satz'); } }; // auch für die Prüfpakete (erweiterungen/vorschau.js)
+  // „Quellen und Stand“: eine zugeklappte Zeile am Seitenende (gleiches Bauteil details.mehr) statt offener Quellen-Absätze.
+  // Die Quellen bleiben vollständig, nur zugeklappt. Fristen und Beträge gehören nie hierher.
+  function quellenEl(texte) {
+    var d = document.createElement('details'); d.className = 'mehr quellen';
+    var s = document.createElement('summary'); s.textContent = t('qs.titel'); d.appendChild(s);
+    (texte || []).forEach(function (x) { if (!x) return; var p = document.createElement('p'); p.textContent = x; d.appendChild(p); });
+    return d;
+  }
+  window.SoloMehr = { el: mehrEl, quellen: quellenEl, rb: function () { return t('rb.satz'); } }; // auch für die Prüfpakete (erweiterungen/vorschau.js), Schulden-Liste und „Ich ziehe aus“
 
   function fillSelect(id, items, current) {
     var el = $(id);
@@ -2460,8 +2468,10 @@
     ['essen', 'sp.essen', 'sp.essen.t', 5, '<path d="M4 11h16a8 8 0 0 1-16 0zM8 7c0-2 2-2 2-4M12 7c0-2 2-2 2-4"/>'],
     ['vertraege', 'sp.vertraege', 'sp.vertraege.t', 5, '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>']
   ];
-  var SP_TIPPS = { strom: ['sp.strom.1', 'sp.strom.2', 'sp.strom.3', 'sp.strom.4', 'sp.strom.5', 'sp.strom.6'], heizen: ['sp.heizen.1', 'sp.heizen.2', 'sp.heizen.3', 'sp.heizen.4', 'sp.heizen.5'],
-    essen: ['sp.essen.1', 'sp.essen.2', 'sp.essen.3', 'sp.essen.4', 'sp.essen.5'], vertraege: ['sp.vertraege.1', 'sp.vertraege.2', 'sp.vertraege.3', 'sp.vertraege.5', 'sp.vertraege.6'] };
+  // Reihenfolge: die 3 wirksamsten Tipps zuerst (sichtbar), der Rest hinter „Welche Tipps gibt es noch?“. Tipps mit Frist oder Nachzahlung stehen vorn.
+  var SP_TIPPS = { strom: ['sp.strom.6', 'sp.strom.5', 'sp.strom.1', 'sp.strom.2', 'sp.strom.3', 'sp.strom.4'], heizen: ['sp.heizen.5', 'sp.heizen.1', 'sp.heizen.2', 'sp.heizen.3', 'sp.heizen.4'],
+    essen: ['sp.essen.5', 'sp.essen.4', 'sp.essen.1', 'sp.essen.2', 'sp.essen.3'], vertraege: ['sp.vertraege.1', 'sp.vertraege.6', 'sp.vertraege.5', 'sp.vertraege.2', 'sp.vertraege.3'] };
+  var SP_SICHTBAR = 3;
   // Schulden: Tipps nach gemeinnützigen Schuldnerberatungen, sinngemäß in eigenen Worten. Quellen (abgerufen 20.11.2026):
   //  Verbraucherzentralen: verbraucherzentrale.nrw „Erste Schritte, wenn die Schulden drücken“; verbraucherzentrale.de „Gerichtliches Mahnverfahren:
   //  Was tun bei einem Mahnbescheid?“, „Ratenvereinbarung beim Inkasso“, „Schuldnerberatungen: So erkennen Sie unseriöse Angebote“, „Privatinsolvenz –
@@ -2515,7 +2525,6 @@
           gsOeffne(x[0]); spRender(true);
         }));
       });
-      p(t('home.privat'), 'small muted');
       if (fokus) { var f0 = box.querySelector('button'); if (f0) f0.focus(); }
       return;
     }
@@ -2536,7 +2545,7 @@
       if (sp.fall === 'konto') knopf('btn sp-rechner', t('sp.schulden.pf'), function () { pf = { art: 'konto', schritt: 1, netto: pf.netto, pers: pf.pers, kg: pf.kg, kiz: pf.kiz }; oeffneVon('pfaendung', true); });
       aufklappen(t('steps.tips'), t('sp.schulden.' + sp.fall), sp.fall);
       knopf('btn ghost gs-zur-hilfe', t('gs.hilfe'), function () { gsOeffne('hilfe'); spRender(true); });
-      p(t('sp.schulden.quellen'), 'small muted');
+      box.appendChild(quellenEl([t('sp.schulden.quellen')]));
     } else if (sp.bereich === 'hilfe') {
       p(t('gs.hilfe'), 'pf-frage');
       var hb = document.createElement('div'); hb.className = 'gs-box gs-schritt gs-beratung';
@@ -2547,7 +2556,7 @@
       ['sp.schulden.1', 'sp.schulden.2', 'sp.schulden.3'].forEach(function (k) { var li = document.createElement('li'); li.textContent = t(k); ol.appendChild(li); });
       p(t('sp.schulden.fall'), 'sp-zwischen');
       SP_SCHULDEN_FAELLE.forEach(function (f) { aufklappen(t('sp.schulden.' + f + '.s'), t('sp.schulden.' + f), f); });
-      p(t('sp.schulden.quellen'), 'small muted');
+      box.appendChild(quellenEl([t('sp.schulden.quellen')]));
     } else if (sp.rezepte) {
       p(t('sp.rezepte'), 'pf-frage');
       if (lang !== 'de') p(t('briefe.nurDeutsch'), 'pp-hinweis small');
@@ -2565,10 +2574,15 @@
     } else {
       var th = SP_THEMEN.filter(function (x) { return x[0] === sp.thema; })[0];
       p(t(th[1]), 'pf-frage');
-      var ul = document.createElement('ul'); ul.className = 'sp-liste'; box.appendChild(ul);
-      SP_TIPPS[sp.thema].forEach(function (k) { var li = document.createElement('li'); li.textContent = tL(k); ul.appendChild(li); });
+      var tippListe = function (keys, ziel) { var ul = document.createElement('ul'); ul.className = 'sp-liste'; ziel.appendChild(ul); keys.forEach(function (k) { var li = document.createElement('li'); li.textContent = tL(k); ul.appendChild(li); }); };
+      tippListe(SP_TIPPS[sp.thema].slice(0, SP_SICHTBAR), box);
+      if (SP_TIPPS[sp.thema].length > SP_SICHTBAR) {
+        var mt = document.createElement('details'); mt.className = 'mehr sp-mehr';
+        var ms = document.createElement('summary'); ms.textContent = t('mehr.tipps'); mt.appendChild(ms);
+        tippListe(SP_TIPPS[sp.thema].slice(SP_SICHTBAR), mt); box.appendChild(mt);
+      }
       if (sp.thema === 'essen') knopf('btn', t('sp.rezepte'), function () { sp.rezepte = true; spRender(true); });
-      p(t('sp.quellen'), 'small muted');
+      box.appendChild(quellenEl([t('sp.quellen')]));
     }
     if (fokus) { var h = box.querySelector('.pf-frage'); if (h) { h.setAttribute('tabindex', '-1'); h.focus(); } }
   }
@@ -2618,8 +2632,6 @@
       [['lohn', 'pf.lohn', 'pf.lohn.t', '<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 9v6M18 9v6"/>'], ['konto', 'pf.konto', 'pf.konto.t', '<path d="M3 10l9-6 9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/>']].forEach(function (x) {
         l.appendChild(nhKnopf('weg', '<span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + x[3] + '</svg></span><span class="weg-txt"><b>' + esc(t(x[1])) + '</b><span>' + esc(t(x[2])) + '</span></span>', null, function () { pf.art = x[0]; pf.schritt = 1; pfRender(true); }));
       });
-      p(t('pf.stand'), 'small muted');
-      p(t('home.privat'), 'small muted');
       if (fokus) { var f0 = box.querySelector('button'); if (f0) f0.focus(); }
       return;
     }
@@ -2662,6 +2674,7 @@
       d.appendChild(nhKnopf('btn', esc(t('pf.konto.weiter')), null, function () { pf.art = 'konto'; pf.schritt = 2; pfRender(true); }));
       d.appendChild(nhKnopf('btn ghost', esc(t('pf.neu')), null, function () { pf = { art: '', schritt: 0, netto: '', pers: null, kg: null, kiz: '' }; pfRender(true); }));
       spVerweis();
+      box.appendChild(quellenEl([t('pf.stand')])); // Quelle der Werte unter dem Ergebnis, zugeklappt
     } else {
       var k = Rules.pkonto({ personen: pf.pers, kindergeldKinder: pf.kg });
       p(t('pf.erg.h'), 'pf-frage');
@@ -2675,6 +2688,7 @@
       var d2 = knoepfe('btns');
       d2.appendChild(nhKnopf('btn ghost', esc(t('pf.neu')), null, function () { pf = { art: '', schritt: 0, netto: '', pers: null, kg: null, kiz: '' }; pfRender(true); }));
       spVerweis();
+      box.appendChild(quellenEl([t('pf.stand')]));
     }
     if (fokus) { var h = box.querySelector('.pf-frage'); if (h) { h.setAttribute('tabindex', '-1'); h.focus(); } }
   }
@@ -2684,7 +2698,7 @@
   pfRender = function (fokus) {
     pfRenderGanz(fokus);
     var box = $('pfInhalt');
-    if (box && !beratung) box.querySelectorAll('p').forEach(function (e) { if (e.children.length === 0 && /§/.test(e.textContent)) e.textContent = Fmt.ohnePara(e.textContent); });
+    if (box && !beratung) box.querySelectorAll('p').forEach(function (e) { if (e.children.length === 0 && !e.closest('.quellen') && /§/.test(e.textContent)) e.textContent = Fmt.ohnePara(e.textContent); });
   };
 
   // ----- Bereiche: Start, Leistungen (Leistungscheck), Brief prüfen -----
@@ -2972,7 +2986,6 @@
     if (LOESCH_TEILE) $('clearWas').textContent = loeschWas(); // nennt den geöffneten Vorgang
     var h3 = vgEl('h2', 'ans-h', t('vg.h')); h3.id = 'vgH'; h3.tabIndex = -1; g.appendChild(h3);
     if (!bereit) return;
-    g.appendChild(vgEl('p', 'small muted', t('vg.t')));
     g.appendChild(vgEl('p', 'vg-aktiv', t('vg.aktiv', { name: vgName(a) })));
     vgSpeichernForm(g, 'vgNameSet', true);
     var msg = vgEl('p', 'msg', msgAlt); msg.id = 'vgMsg'; msg.setAttribute('role', 'status'); g.appendChild(msg);
@@ -3402,7 +3415,7 @@
       'Wer mindestens 10 Stunden in der Woche an mindestens 2 Tagen pflegt und höchstens 30 Stunden arbeitet, für den zahlt die Pflegekasse Rentenbeiträge.',
       'In der Steuererklärung gibt es den Pflege-Pauschbetrag.',
       'Pflegeberatung ist kostenlos, bei der Pflegekasse oder im Pflegestützpunkt. Dort hilft man auch beim Antrag.']);
-    box.appendChild(el('p', 'Stand der Beträge: ' + (R.stand || 'November 2026') + '. Den genauen Anspruch legt die Pflegekasse fest.', 'small muted'));
+    box.appendChild(quellenEl(['Stand der Beträge: ' + (R.stand || 'November 2026') + '. Den genauen Anspruch legt die Pflegekasse fest.']));
   }
   // Abschnitt aufklappen, hinscrollen und den Fokus auf seine Überschrift setzen
   function piAbschnitt(id) {
@@ -3546,7 +3559,7 @@
         box.appendChild(w);
       }
       p('Hilfe bei allen Fragen und beim Antrag: Pflegekasse oder Pflegestützpunkt, kostenlos.', 'hint');
-      p('Stand der Beträge: ' + U.stand + ' (' + U.quelle + '). Den genauen Anspruch legt die Pflegekasse fest.', 'small muted');
+      box.appendChild(quellenEl(['Stand der Beträge: ' + U.stand + ' (' + U.quelle + '). Den genauen Anspruch legt die Pflegekasse fest.']));
       if (!pg && !vonErg && typeof PflegeAssistent !== 'undefined') box.appendChild(el('div', null, 'btns')).appendChild(nhKnopf('btn', esc(t('pu.schaetzen')), null, function () { paOeffnen(true); }));
     }
     if (fokus) { var h = box.querySelector('.pf-frage'); if (h) { h.setAttribute('tabindex', '-1'); h.focus(); } }

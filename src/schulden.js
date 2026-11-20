@@ -276,8 +276,8 @@ var Schulden = (function () {
     var fb = el('div', 'sl-frage-platz'); fb.id = 'slFrage'; box.appendChild(fb);
     if (frage && frage.art === 'csv') csvFrageZeigen(fb);
     var m = el('p', 'small'); m.id = 'slExportMsg'; m.setAttribute('aria-live', 'polite'); box.appendChild(m);
-    box.appendChild(el('p', 'small muted', t('sl.privat')));
-    box.appendChild(el('p', 'small muted', t('sp.schulden.quellen')));
+    // Quellen zugeklappt am Seitenende (gemeinsames Bauteil „Quellen und Stand“ aus src/app.js)
+    box.appendChild(window.SoloMehr && window.SoloMehr.quellen ? window.SoloMehr.quellen([t('sp.schulden.quellen')]) : el('p', 'small muted', t('sp.schulden.quellen')));
     fokus(fokusId);
   }
   function fokus(id) { var e = id && $(id); if (e) { try { e.focus(); } catch (x) { /* nicht fokussierbar */ } } }
