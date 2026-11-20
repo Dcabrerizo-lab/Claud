@@ -2945,6 +2945,7 @@
     $('stSicher').textContent = t(pin ? 'vg.pin.an' : 'set.sicher.t');
     $('stFach').textContent = t('set.beratung.label') + ': ' + t(beratung ? 'set.an' : 'set.aus');
     $('stAbout').textContent = t('set.version', { v: APPVERSION });
+    var fb = $('friHinweisBtn'); if ($('stErinnern') && fb) $('stErinnern').textContent = t(fb.getAttribute('aria-checked') === 'true' ? 'set.an' : 'set.aus');
   }
   // Mein Ordner: geöffneter Vorgang oben, darunter nur Bereiche mit eigenem Inhalt (Kurzstatus, Sprung); leer: freundlicher Einstieg
   function ordnerRender() {

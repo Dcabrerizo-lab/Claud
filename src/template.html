@@ -642,6 +642,10 @@
   /* Schalter (role="switch"): Bahn mit Knopf, dazu „An“ bzw. „Aus“ als Text */
   .schalter { display: flex; align-items: center; gap: 12px; width: 100%; max-width: 30em; min-height: 52px; padding: 8px 14px; border: 1px solid var(--line); border-radius: var(--r-ctl, 14px); background: var(--surface); color: var(--ink); font: inherit; font-weight: 700; text-align: start; cursor: pointer; }
   .schalter-t { flex: 1; min-width: 0; }
+  .schalter-unter { display: block; font-weight: 400; color: var(--muted); font-size: .88em; margin-top: 2px; }
+  /* Sprache in den Einstellungen: gleiche Zeile wie die Schalter darunter */
+  .langpick.set-zeile { display: flex; align-items: center; gap: 12px; width: 100%; max-width: 30em; min-height: 52px; padding: 8px 14px; margin: 0 0 8px; border: 1px solid var(--line); border-radius: var(--r-ctl, 14px); background: var(--surface); color: var(--ink); font-size: 1em; font-weight: 700; box-sizing: border-box; }
+  .langpick.set-zeile select { flex: none; max-width: 55%; box-shadow: none; font-weight: 400; }
   .schalter-zst { flex: none; font-weight: 400; color: var(--muted); font-size: .9em; }
   .schalter-bahn { flex: none; position: relative; width: 48px; height: 28px; border-radius: 999px; background: var(--na-bg); border: 2px solid var(--field); }
   .schalter-bahn::after { content: ""; position: absolute; top: 2px; inset-inline-start: 2px; width: 20px; height: 20px; border-radius: 50%; background: var(--field); transition: inset-inline-start .15s; }
@@ -1563,6 +1567,7 @@
         <h2 id="h-einst" class="ans-h" data-t="nav.einst"></h2>
         <ul class="zeilen">
           <li><button type="button" class="zeile" data-seite="anzeige"><span class="zeile-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h7"/><circle cx="18" cy="16" r="3"/></svg></span><span class="zeile-txt"><b data-t="set.anzeige.h"></b><span class="zeile-st" id="stAnzeige"></span></span><span class="zeile-pfeil" aria-hidden="true">›</span></button></li>
+          <li><button type="button" class="zeile" data-seite="erinnern"><span class="zeile-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></span><span class="zeile-txt"><b data-t="set.erinnern.h"></b><span class="zeile-st" id="stErinnern"></span></span><span class="zeile-pfeil" aria-hidden="true">›</span></button></li>
           <li><button type="button" class="zeile" data-seite="sicher"><span class="zeile-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span><span class="zeile-txt"><b data-t="set.sicher.h"></b><span class="zeile-st" id="stSicher"></span></span><span class="zeile-pfeil" aria-hidden="true">›</span></button></li>
           <li><button type="button" class="zeile" data-seite="fach"><span class="zeile-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="12" rx="2"/><path d="M9 7V5h6v2M4 12h16"/></svg></span><span class="zeile-txt"><b data-t="set.fach.h"></b><span class="zeile-st" id="stFach"></span></span><span class="zeile-pfeil" aria-hidden="true">›</span></button></li>
           <li><button type="button" class="zeile" data-seite="about"><span class="zeile-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg></span><span class="zeile-txt"><b data-t="set.about.h"></b><span class="zeile-st" id="stAbout"></span></span><span class="zeile-pfeil" aria-hidden="true">›</span></button></li>
@@ -1572,10 +1577,9 @@
         <div class="pp-kopf"><button type="button" class="btn ghost us-zurueck">← <span data-t="pf.zurueck"></span></button></div>
         <h2 class="ans-h" data-t="set.anzeige.h"></h2>
         <div class="set-gruppe">
-          <label class="langpick"><span data-t="lang.label"></span><select id="lang"></select></label>
+          <label class="langpick set-zeile"><span class="schalter-t" data-t="lang.label"></span><select id="lang"></select></label>
           <p><button type="button" class="schalter" id="bigBtn" role="switch" aria-checked="false"><span class="schalter-t" data-t="big"></span><span class="schalter-zst"></span><span class="schalter-bahn" aria-hidden="true"></span></button></p>
-          <p><button type="button" class="schalter" id="einfacheSpracheBtn" role="switch" aria-checked="false" aria-describedby="einfacheSpracheT"><span class="schalter-t" data-t="set.es.label"></span><span class="schalter-zst"></span><span class="schalter-bahn" aria-hidden="true"></span></button></p>
-          <p class="small muted" id="einfacheSpracheT"></p>
+          <p><button type="button" class="schalter" id="einfacheSpracheBtn" role="switch" aria-checked="false" aria-describedby="einfacheSpracheT"><span class="schalter-t"><span data-t="set.es.label"></span><span class="schalter-unter" id="einfacheSpracheT"></span></span><span class="schalter-zst"></span><span class="schalter-bahn" aria-hidden="true"></span></button></p>
           <div class="field"><span class="lab" id="lab-thema" data-t="set.thema"></span>
             <div class="seg seg3" role="radiogroup" aria-labelledby="lab-thema">
               <input type="radio" name="thema" id="thema-auto" value="" checked><label for="thema-auto" data-t="set.thema.auto"></label>
@@ -1585,15 +1589,18 @@
           </div>
         </div>
       </div>
+      <div class="unterseite" id="es-erinnern" data-seite="erinnern" hidden>
+        <div class="pp-kopf"><button type="button" class="btn ghost us-zurueck">← <span data-t="pf.zurueck"></span></button></div>
+        <h2 class="ans-h" data-t="set.erinnern.h"></h2>
+        <div class="set-gruppe" id="friSet">
+          <p><button type="button" class="schalter" id="friHinweisBtn" role="switch" aria-checked="true" aria-describedby="friHinweisT"><span class="schalter-t"><span data-t="fri.set.label"></span><span class="schalter-unter" id="friHinweisT" data-t="fri.set.t"></span></span><span class="schalter-zst"></span><span class="schalter-bahn" aria-hidden="true"></span></button></p>
+        </div>
+      </div>
       <div class="unterseite" id="es-sicher" data-seite="sicher" hidden>
         <div class="pp-kopf"><button type="button" class="btn ghost us-zurueck">← <span data-t="pf.zurueck"></span></button></div>
         <h2 class="ans-h" id="h-sicher" data-t="set.sicher.h"></h2>
         <!-- PIN-Sperre und automatisch löschen füllt vgRender (app.js); „Alle Vorgänge löschen“ in #vgAlleBox -->
         <div class="set-gruppe" id="setSicher"></div>
-        <div class="set-gruppe" id="friSet">
-          <p><button type="button" class="schalter" id="friHinweisBtn" role="switch" aria-checked="true" aria-describedby="friHinweisT"><span class="schalter-t" data-t="fri.set.label"></span><span class="schalter-zst"></span><span class="schalter-bahn" aria-hidden="true"></span></button></p>
-          <p class="small muted" id="friHinweisT" data-t="fri.set.t"></p>
-        </div>
         <div class="set-gruppe">
           <h3 data-t="set.loeschen.h"></h3>
           <p><button type="button" class="chip vg-weg" id="clear2" data-t="set.vgLoeschen"></button> <span class="msg" id="clear2Msg" role="status"></span></p>

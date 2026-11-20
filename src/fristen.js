@@ -614,7 +614,7 @@ var FristenOrdner = (function () {
     }
   }
 
-  // ---------- Schalter „Erinnerung an Fristen beim Öffnen“ (Einstellungen → Sicherheit und Daten) ----------
+  // ---------- Schalter „Erinnerung an Fristen beim Öffnen“ (Einstellungen → Erinnerungen) ----------
   function schalterSetzen() { var b = $('friHinweisBtn'); if (b) b.setAttribute('aria-checked', String(erlaubt)); }
 
   // ctx = { t, datum(d), lang(), roh (Gerätespeicher ohne Vorgang), alle() → [{ id, name, aktiv, fristliste, haushalt }],
