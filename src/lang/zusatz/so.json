@@ -34,5 +34,20 @@
   "bp.art.termin.tag": "Goorma ayuu yahay ballanku? (warqadda ayuu ku qoran yahay)",
   "bp.art.tag": "Ilaa goorma? (taariikhda warqadda)",
   "bp.datum": "Taariikhda go'aanka (dhinaca midig ee sare ee warqadda)",
-  "bp.datum.t": "Geli taariikhda. SoLo isla markiiba waxay muujinaysaa ilaa goorma aad racfaan gudbin karto."
+  "bp.datum.t": "Geli taariikhda. SoLo isla markiiba waxay muujinaysaa ilaa goorma aad racfaan gudbin karto.",
+  "bp.pf.h": "Hubi qiimaynta daryeelka",
+  "bp.pf.p": "Iskaan garee qiimaynta ama dooro PDF. SoLo ayaa dib u xisaabinaya dhibcaha.",
+  "bp.sa.h": "Hubi go'aanka sugnaanta aasaasiga ah ee gabowga (Grundsicherung im Alter)",
+  "bp.wg.h": "Hubi go'aanka Wohngeld",
+  "bp.wg.p": "Iskaan garee go'aanka Wohngeld. SoLo ayaa dib ugu xisaabinaya sida sharciga kaalmada guriga.",
+  "bp.kz.h": "Hubi go'aanka Kinderzuschlag",
+  "bp.nk.h": "Hubi xisaabta kharashaadka dheeraadka ah (Nebenkostenabrechnung)",
+  "bp.nk.p": "Iskaan garee xisaabta. SoLo ayaa hubinaya waqtiyada iyo qodobada.",
+  "bp.w.bg": "Dhammaan kuwa Jobcenter-ku wada xisaabiyo: adiga, xaaskaaga, ninkaaga ama lammaanahaaga iyo carruurtiinna aan guursan ee ka yar 25 sano ee guriga ku nool (§ 7 Abs. 3 SGB II).",
+  "bp.w.bb": "Bogagga go'aanka ee xisaabta: qof iyo bil kasta, waxa la aqbalay iyo waxa dakhli ahaan loo jaray. Badanaa dhammaadka go'aanka.",
+  "bp.w.rb": "Lacag go'an oo nolol maalmeedka ah, tusaale cunto, dhar iyo koronto. Qadarku wuxuu ku xiran yahay da'da iyo inaad keligaa ama lammaane ahaan ku nooshahay (§ 20 SGB II).",
+  "bp.w.mb": "Lacag dheeraad ah xaalado gaar ah, tusaale waalid keli ah, uurka ama haddii biyaha kulul guriga dhexdiisa lagu kululeeyo (§ 21 SGB II).",
+  "bp.w.kdu": "Kirada, kharashaadka dheeraadka ah iyo kuleylinta, inta Jobcenter-ku u aqoonsado inay ku habboon yihiin (§ 22 SGB II).",
+  "bp.w.zb": "Lacagta bil kasta lagu shubo.",
+  "bp.w.bz": "Bilaha go'aanku ansax yahay. Kadib waxaa loo baahan yahay codsi sii wadid (Weiterbewilligungsantrag). Ma aha taariikhda go'aanka."
 }

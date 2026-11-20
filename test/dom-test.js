@@ -264,10 +264,10 @@ setTimeout(() => {
   check('Kein horizontales Scrollen erzwungen', !/min-width:\s*\d{4,}px/.test(html));
   check('Logische statt physische Abstände im Formular (RTL-fähig)', !/\.money input\s*\{[^}]*padding-right/.test(html) && /inset-inline-end/.test(html));
   check('Jedes Formularfeld hat eine Beschriftung', ['miete', 'mietstufe', 'ek1Art', 'ek1Brutto', 'ek1Netto', 'ek2Art', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'vermoegen', 'gebJahr', 'kindEink', 'ausbildung', 'pflegegrad', 'p-name', 'p-geb', 'p-strasse', 'p-ort', 'p-tel'].every((id) => d.querySelector('label[for="' + id + '"]')));
-  // Grenze 5 MB (bis 1.4: 2,5 MB; 19.11.2026: 3 MB für 13 Sprachen; 20.11.2026: 4 MB für Vorgänge speichern, Beratungsmodus, Pflege-Unterstützung, Schulden-Tipps, Haushaltsplan; 20.11.2026 nachmittags: 5 MB für Fristen, Schuldenliste, Energie, Mietgrenze, Kostensenkung, Paar-Einkommen – Entscheidung des Nutzers): eine einzige Datei, die offline läuft; der größte Teil sind PLZ-Daten (ganz Deutschland mit Mietenstufen), Behörden (Bayern), 13 Sprachen,
+  // Grenze 6 MB (Entscheidung David 20.11.2026; davor 5 MB; bis 1.4: 2,5 MB; 19.11.2026: 3 MB für 13 Sprachen; 20.11.2026: 4 MB für Vorgänge speichern, Beratungsmodus, Pflege-Unterstützung, Schulden-Tipps, Haushaltsplan; 20.11.2026 nachmittags: 5 MB für Fristen, Schuldenliste, Energie, Mietgrenze, Kostensenkung, Paar-Einkommen – Entscheidung des Nutzers): eine einzige Datei, die offline läuft; der größte Teil sind PLZ-Daten (ganz Deutschland mit Mietenstufen), Behörden (Bayern), 13 Sprachen,
   // seit 1.4 auch „Brief prüfen“ und die Pflegegrad-Einschätzung (zusammen gut 200 KB)
   check('Web-Datei ist ein vollständiges Dokument mit UTF-8 und Viewport (Safari, Handy)', /^<!doctype html>/i.test(html) && /<meta charset="utf-8">/i.test(html.slice(0, 300)) && /name="viewport"/.test(html.slice(0, 400)));
-  check('Dateigröße unter 5 MB', html.length < 5 * 1024 * 1024, (html.length / 1024).toFixed(0) + ' KB');
+  check('Dateigröße unter 6 MB', html.length < 6 * 1024 * 1024, (html.length / 1024).toFixed(0) + ' KB');
   // ----- Antrag scannen -----
   setLang('de');
   beispiel('p1');
@@ -429,7 +429,7 @@ setTimeout(() => {
     check('[geld] zweimal „← Zurück“: wieder bei den 6 Kacheln', kacheln().length === 6);
     // 6 Kostenlose Hilfe
     kacheln()[5].click();
-    check('[geld] Kostenlose Hilfe: zuerst Schuldnerberatung finden, dann 3 erste Schritte', box.querySelector('.gs-beratung p').textContent === I18N.de['sp.schulden.4'] && box.querySelectorAll('ol.sp-liste li').length === 3 && box.querySelector('ol.sp-liste li').textContent === I18N.de['sp.schulden.1']);
+    check('[geld] Kostenlose Hilfe: zuerst Schuldnerberatung finden, dann 3 erste Schritte', box.querySelector('.gs-beratung p').textContent === I18N.de['sp.schulden.4'] && box.querySelectorAll('.sp-schritte li').length === 3 && box.querySelector('.sp-schritte li p').textContent === I18N.de['sp.schulden.1']);
     const hf = [...box.querySelectorAll('details.sp-fall')].map((x) => x.getAttribute('data-fall'));
     check('[geld] Kostenlose Hilfe: Inkasso, Ratenzahlung, unseriöse Angebote, Privatinsolvenz zum Aufklappen', hf.join() === 'inkasso,rate,unserioes,insolvenz', hf.join());
     check('[schulden] Quellenzeile nennt Verbraucherzentralen, BAG-SB, Caritas/Diakonie und AG SBV', /Verbraucherzentralen.*BAG-SB.*Caritas.*Diakonie.*AG SBV/.test(box.textContent));
@@ -439,7 +439,8 @@ setTimeout(() => {
     const th = kacheln().map((b) => b.className.match(/gs-t-([a-z]+)/)[1]);
     check('[geld] Sparen im Alltag: Strom, Heizen, Essen, Verträge (Kacheln)', th.join() === 'strom,heizen,essen,vertraege', th.join());
     kacheln()[3].click();
-    check('[geld] Verträge ohne Schulden-Text (Sperre steht nur unter „Es ist dringend“)', !/41g/.test(box.textContent) && box.querySelectorAll('ul.sp-liste li').length === 5);
+    check('[geld] Verträge ohne Schulden-Text (Sperre steht nur unter „Es ist dringend“)', !/41g/.test(box.textContent) && box.querySelectorAll('.sp-tipps li').length === 5);
+    { const tp = [...box.querySelectorAll('details.tipp')]; check('[geld-tipp] Jeder Tipp: Symbol + kurzer Satz (höchstens 12 Wörter), ausführlicher Text zugeklappt', tp.length === 5 && tp.every((x) => x.querySelector('summary .tipp-sym svg') && x.querySelector('.tipp-kurz').textContent.split(/\s+/).length <= 12 && !x.open && x.querySelector('p').textContent.length > x.querySelector('.tipp-kurz').textContent.length), tp.map((x) => x.querySelector('.tipp-kurz').textContent)); }
     zur(); zur(); zur();
     check('[geld] Zurück aus Sparen-Thema → Themen → Kacheln → Start', sicht() === 'start');
     // Alle Ebenen in allen Sprachen ohne Rohschlüssel
@@ -465,7 +466,7 @@ setTimeout(() => {
     check('[geld] Pfändungsrechner: vor dem Rechnen kein Knopf „Kostenlose Hilfe“', !d.querySelector('#pfInhalt .pf-zur-hilfe'));
     pfB().find((b) => b.textContent === '0').click();
     pfB().find((b) => b.textContent === '0').click();
-    const jetztK = [...d.querySelectorAll('#pfInhalt .pf-jetzt li')].map((x) => x.textContent);
+    const jetztK = [...d.querySelectorAll('#pfInhalt .pf-jetzt li p')].map((x) => x.textContent);
     check('[schulden-korr] Konto: Umwandeln innerhalb eines Monats schützt auch gesperrtes Guthaben (§ 899 Abs. 1 ZPO)', jetztK[0] === I18N.de['pf.tipp.umwandeln'] && /innerhalb eines Monats.*schon gesperrte Guthaben geschützt \(§ 899 Abs\. 1 ZPO\)/.test(jetztK[0]), jetztK[0]);
     const erg = d.querySelector('#pfInhalt .pf-zahl'), tk = d.querySelector('#pfInhalt .pf-zur-hilfe');
     check('[geld] Nach dem Rechnen: Knopf „Kostenlose Hilfe“ unter dem Ergebnis', !!erg && !!tk && tk.textContent === I18N.de['gs.hilfe'] && (erg.compareDocumentPosition(tk) & w.Node.DOCUMENT_POSITION_FOLLOWING));

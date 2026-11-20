@@ -34,5 +34,20 @@
   "bp.art.termin.tag": "Randevu ne zaman? (mektupta yazar)",
   "bp.art.tag": "Ne zamana kadar? (mektuptaki tarih)",
   "bp.datum": "Kararın tarihi (mektubun sağ üstünde yazar)",
-  "bp.datum.t": "Tarihi gir. SoLo hemen ne zamana kadar itiraz edebileceğini gösterir."
+  "bp.datum.t": "Tarihi gir. SoLo hemen ne zamana kadar itiraz edebileceğini gösterir.",
+  "bp.pf.h": "Bakım raporunu kontrol et",
+  "bp.pf.p": "Raporu tara veya bir PDF seç. SoLo puanları yeniden hesaplar.",
+  "bp.sa.h": "Yaşlılıkta temel güvence (Grundsicherung im Alter) kararını kontrol et",
+  "bp.wg.h": "Wohngeld kararını kontrol et",
+  "bp.wg.p": "Wohngeld kararını tara. SoLo, Konut Yardımı Kanunu'na göre yeniden hesaplar.",
+  "bp.kz.h": "Kinderzuschlag kararını kontrol et",
+  "bp.nk.h": "Yan gider hesabını (Nebenkostenabrechnung) kontrol et",
+  "bp.nk.p": "Hesabı tara. SoLo süreleri ve kalemleri kontrol eder.",
+  "bp.w.bg": "Jobcenter'ın birlikte hesapladığı herkes: sen, eşin veya hayat arkadaşın ve hanedeki 25 yaşından küçük evlenmemiş çocuklarınız (§ 7 Abs. 3 SGB II).",
+  "bp.w.bb": "Karardaki hesap sayfaları: kişi ve ay başına neyin kabul edildiği ve neyin gelir olarak düşüldüğü. Genellikle kararın arkasındadır.",
+  "bp.w.rb": "Günlük yaşam için sabit tutar, örneğin yemek, giyim ve elektrik. Miktar yaşa ve yalnız mı yoksa çift olarak mı yaşadığına bağlıdır (§ 20 SGB II).",
+  "bp.w.mb": "Özel durumlarda ek tutar, örneğin tek ebeveynler için, hamilelikte veya sıcak su evde ısıtılıyorsa (§ 21 SGB II).",
+  "bp.w.kdu": "Jobcenter'ın uygun kabul ettiği ölçüde kira, yan giderler ve ısınma (§ 22 SGB II).",
+  "bp.w.zb": "Her ay hesabına yatırılan tutar.",
+  "bp.w.bz": "Kararın geçerli olduğu aylar. Sonrasında devam başvurusu (Weiterbewilligungsantrag) gerekir. Bu, kararın tarihi değildir."
 }

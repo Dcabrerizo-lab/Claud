@@ -34,5 +34,20 @@
   "bp.art.termin.tag": "When is the appointment? (it is in the letter)",
   "bp.art.tag": "By when? (date from the letter)",
   "bp.datum": "Date of the decision (top right of the letter)",
-  "bp.datum.t": "Enter the date. SoLo then shows right away by when you can object."
+  "bp.datum.t": "Enter the date. SoLo then shows right away by when you can object.",
+  "bp.pf.h": "Check a care assessment",
+  "bp.pf.p": "Scan the assessment or choose a PDF. SoLo recalculates the points.",
+  "bp.sa.h": "Check a decision on basic income support in old age (Grundsicherung im Alter)",
+  "bp.wg.h": "Check a housing benefit (Wohngeld) decision",
+  "bp.wg.p": "Scan the Wohngeld decision. SoLo recalculates it under the Housing Benefit Act.",
+  "bp.kz.h": "Check a child supplement (Kinderzuschlag) decision",
+  "bp.nk.h": "Check a service charge statement (Nebenkostenabrechnung)",
+  "bp.nk.p": "Scan the statement. SoLo checks deadlines and items.",
+  "bp.w.bg": "Everyone the Jobcenter calculates together – you, your spouse or partner and your unmarried children under 25 in the household (§ 7 Abs. 3 SGB II).",
+  "bp.w.bb": "The pages of the decision with the calculation: per person and month, what is recognised and what is deducted as income. Usually at the back.",
+  "bp.w.rb": "A fixed amount for everyday life, for example food, clothing and electricity. It depends on age and on whether you live alone or as a couple (§ 20 SGB II).",
+  "bp.w.mb": "An extra amount in special situations, for example for single parents, in pregnancy or if hot water is heated in the flat (§ 21 SGB II).",
+  "bp.w.kdu": "Rent, service charges and heating, as far as the Jobcenter recognises them as reasonable (§ 22 SGB II).",
+  "bp.w.zb": "The amount paid into your account every month.",
+  "bp.w.bz": "The months the decision covers. After that you need an application to continue (Weiterbewilligungsantrag). It is not the date of the decision."
 }

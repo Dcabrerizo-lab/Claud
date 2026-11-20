@@ -26,7 +26,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   await p.click('#goLeistungen');
   ok('Weg „Welche Hilfen“ öffnet den Leistungscheck', await p.isVisible('#form') && (await p.evaluate(() => location.hash)) === '#leistungen');
   await p.click('#appnav [data-ansicht=start]'); await p.click('#goBriefe');
-  ok('Weg „Brief bekommen“ öffnet die Kacheln', await p.isVisible('#briefKacheln') && (await p.locator('#briefKacheln .kachel').count()) === 8); // 8 Kacheln seit „Formular ausfüllen“ (ux-brief)
+  ok('Weg „Brief bekommen“ öffnet die Kacheln', await p.isVisible('#briefKacheln') && (await p.locator('#briefKacheln .kachel').count()) === 7); // 7 Kacheln: „Anderer Brief oder Formular“ ist eine Kachel mit zwei Unterkarten
   const ERWARTET = { jc: 'p-bescheid', sa: 'p-gsa', wg: 'p-wg', fk: 'p-kiz', pk: 'p-pflege', vm: 'p-nk' };
   for (const [k, teil] of Object.entries(ERWARTET)) {
     await p.click('#brief-' + k);
@@ -88,7 +88,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Mitwirkung in der Kachel: Erklärung mit Frist', /Unterlagen/.test(await p.textContent('#elErg')) && /15\.05\.2026/.test(await p.textContent('#elErg')));
   await p.click('#briefZurueck');
   // Antragsformular: Kachel zeigt die Formular-Erklärung, Einlesen ist dort nicht doppelt
-  await p.click('#brief-af');
+  await p.click('#brief-ab'); await p.click('#brief-af');
   ok('Kachel Antragsformular zeigt das Formular-Scannen', await p.isVisible('#scan') && !(await p.isVisible('#einlesen')));
   ok('Antragsformular: großer Foto-Knopf statt Dateifeld', await p.isVisible('#scan .sc-foto') && (await p.getAttribute('#sc-file', 'class')).includes('vh'));
   const FORMULAR = 'Antrag auf Wohngeld\n1. Angaben zur antragstellenden Person\nFamilienname, Vorname\nGeburtsdatum\nIBAN\n2. Haushaltsmitglieder\nFamilienstand\n3. Wohnkosten\nGesamtmiete monatlich\nHeizkosten\nWohnfläche in m²\n4. Einkommen\nRenten\nKrankenkasse\nStaatsangehörigkeit\nOrt, Datum, Unterschrift';
@@ -120,7 +120,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Computer: kein seitliches Scrollen', await breit());
   // Ganz ohne Leistungscheck (neues Gerät): keine erfundenen Werte, sondern ein Tipp
   const ctx2 = await b.newContext({ viewport: { width: 360, height: 760 }, locale: 'de-DE' }); const q = await ctx2.newPage(); await q.addInitScript(SF_ALLES);
-  await q.goto(APP + '#briefe'); await q.waitForTimeout(300); await q.click('#brief-af');
+  await q.goto(APP + '#briefe'); await q.waitForTimeout(300); await q.click('#brief-ab'); await q.click('#brief-af');
   if (!(await q.isVisible('#sc-text'))) await q.click('#sc-pasteBtn'); await q.fill('#sc-text', 'Antrag auf Wohngeld\nGesamtmiete monatlich\nEinkommen\nVermögen\nHaushaltsmitglieder'); await q.click('#sc-local');
   const leer = await q.textContent('#sc-out');
   ok('Ohne Leistungscheck: kein „0 €“, keine Haushaltszeile, aber Tipp', !/€/.test(leer) && !/Erwachsene/.test(leer) && /Leistungscheck/.test(leer), leer.slice(0, 400));

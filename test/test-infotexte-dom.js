@@ -41,11 +41,23 @@ setTimeout(() => {
   check('Datenschutz am Scan-Knopf, ohne „Wert vergleichen“', /gelöscht/.test(de['el.privat']) && !/vergleichen/.test(de['el.privat']));
   check('„Keine Rechtsberatung“ erst unter dem Prüfergebnis (leer: ausgeblendet per CSS)', !!d.querySelector('#bs-erg + .rb-erg') && !!d.querySelector('#bs-wid-text ~ .rb-schreiben'));
   $('briefZurueck').click();
+  // Eine Kachel „Anderer Brief oder Formular“: erst einlesen, darunter zwei Unterkarten zur Wahl von Hand
+  check('Brief-Übersicht: 7 Kacheln, „Anderer Brief oder Formular“ statt zwei Kacheln', d.querySelectorAll('#briefKacheln .kachel').length === 7 && !!$('brief-ab') && !$('briefKacheln').contains($('brief-an')) && !$('briefKacheln').contains($('brief-af')) && $('brief-ab').querySelector('b').textContent === de['briefe.ab']);
+  $('brief-ab').click();
+  check('Gemeinsame Kachel: Einlesen oben, darunter „Brief mit Frist oder Mahnung“ und „Antragsformular ausfüllen“', !$('abWahl').hidden && $('abWahl').contains($('einlesen')) && !$('einlesen').hidden && $('abWahl').compareDocumentPosition($('abUnter')) & w.Node.DOCUMENT_POSITION_CONTAINED_BY && $('einlesen').compareDocumentPosition($('abUnter')) & w.Node.DOCUMENT_POSITION_FOLLOWING && $('brief-an').textContent.includes(de['briefe.andere']) && $('brief-af').textContent.includes(de['briefe.formular']));
+  $('elPaste').click(); $('elText').value = 'Antrag auf Wohngeld\nBitte ankreuzen\nFamilienname, Vorname\nGeburtsdatum\nIBAN\nOrt, Datum\nUnterschrift des Antragstellers'; $('elLesen').click();
+  check('Gemeinsame Kachel: ein Formular wird erkannt und erklärt (Formular-Teil offen)', !$('scan').hidden && $('abWahl').hidden, $('elMsg').textContent);
+  $('briefZurueck').click();
+  check('Zurück aus dem Formular: wieder die gemeinsame Kachel, Fokus auf der Unterkarte', !$('abWahl').hidden && d.activeElement === $('brief-af'));
+  $('briefZurueck').click();
+  check('Noch einmal Zurück: Übersicht, Fokus auf der Kachel', !$('briefKacheln').hidden && d.activeElement === $('brief-ab'));
+  $('brief-ab').click();
   $('brief-an').click();
   $('elPaste').click(); $('elText').value = 'Bescheid\nGegen diesen Bescheid können Sie innerhalb eines Monats Widerspruch einlegen.'; $('elLesen').click();
   const erg = $('elErg').textContent;
   check('Anderer Brief: „Frist im Brief: 1 Monat“ statt „Monats“', /Frist im Brief: 1 Monat/.test(erg) && !/Frist im Brief: Monats/.test(erg), erg.slice(0, 160));
   check('Anderer Brief: Ergebnis endet mit „Keine Rechtsberatung“', [...$('elErg').querySelectorAll('.rb-satz')].some((p) => p.textContent === de['rb.satz']));
+  $('briefZurueck').click();
   $('briefZurueck').click();
 
   // Leistungs-Check: erste Frage zuerst
@@ -88,7 +100,7 @@ setTimeout(() => {
   check('Mappe: Hinweis „kein Antrag“ genau dann, wenn die Rentenauskunft (srente) dabei ist', !!letzt.querySelector('.mappe-srente') === mitSr && $('introSrente').hidden === !mitSr);
   check('Texte zu Arbeitslosmeldung und Rentenauskunft in allen 13 Sprachen', ['f.alg1.meldung', 'f.srente.hinweis'].every((k) => Object.keys(I18N).every((l) => typeof I18N[l][k] === 'string' && I18N[l][k].length > 20)));
   check('Arbeitslosmeldung: „Ein Brief reicht nicht“, persönlich oder online, 3 Monate / 3 Tage (§ 141, § 38 SGB III)', /Brief reicht nicht/.test(de['f.alg1.meldung']) && /persönlich oder online/.test(de['f.alg1.meldung']) && /3 Monate/.test(de['f.alg1.meldung']) && /3 Tagen/.test(de['f.alg1.meldung']));
-  check('Datenschutz: „bleiben auf diesem Gerät, solange du nichts selbst sendest“ (Erststart und Start)', /solange du nichts selbst sendest/.test(de['first.text']) && /solange du nichts selbst sendest/.test(de['home.privat']));
+  check('Datenschutz: „bleiben auf diesem Gerät, solange du nichts selbst sendest“ (Erststart und Start)', /solange du nichts selbst sendest/.test(de['first.text']) && /solange du nichts selbst sendest/.test(de['home.sicher']) && !('home.privat' in de));
   const hk = auf[0].querySelector('input[data-haken]'); hk.click();
   check('Mappe: „Erledigt“ wird gemerkt (lotse.haken)', /mappe\|/.test(String(store['lotse.haken'] || '')) || hk.checked);
   console.log(fails ? `\n${fails} Fehler` : '\nInfotexte: alle Prüfungen bestanden');

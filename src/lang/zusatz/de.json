@@ -34,5 +34,20 @@
   "bp.art.termin.tag": "Wann ist der Termin? (steht im Brief)",
   "bp.art.tag": "Bis wann? (Datum aus dem Brief)",
   "bp.datum": "Datum des Bescheids (steht oben rechts im Brief)",
-  "bp.datum.t": "Trag das Datum ein. Dann zeigt SoLo sofort, bis wann du Widerspruch einlegen kannst."
+  "bp.datum.t": "Trag das Datum ein. Dann zeigt SoLo sofort, bis wann du Widerspruch einlegen kannst.",
+  "bp.pf.h": "Pflegegutachten prüfen",
+  "bp.pf.p": "Scanne das Gutachten oder wähle ein PDF. SoLo rechnet die Punkte nach.",
+  "bp.sa.h": "Bescheid Grundsicherung im Alter prüfen",
+  "bp.wg.h": "Wohngeldbescheid prüfen",
+  "bp.wg.p": "Scanne den Wohngeldbescheid. SoLo rechnet nach dem Wohngeldgesetz nach.",
+  "bp.kz.h": "Bescheid Kinderzuschlag prüfen",
+  "bp.nk.h": "Nebenkostenabrechnung prüfen",
+  "bp.nk.p": "Scanne die Abrechnung. SoLo prüft Fristen und Posten.",
+  "bp.w.bg": "Alle, für die das Jobcenter zusammen rechnet: du, dein Ehe- oder Lebenspartner und eure unverheirateten Kinder unter 25 im Haushalt (§ 7 Abs. 3 SGB II).",
+  "bp.w.bb": "Die Seiten im Bescheid mit der Rechnung: je Person und Monat, was anerkannt und was als Einkommen abgezogen wird. Meist hinten am Bescheid.",
+  "bp.w.rb": "Fester Betrag für den Alltag, zum Beispiel Essen, Kleidung und Strom. Die Höhe hängt vom Alter ab und davon, ob man allein oder als Paar lebt (§ 20 SGB II).",
+  "bp.w.mb": "Zusätzlicher Betrag in besonderen Lagen, zum Beispiel für Alleinerziehende, in der Schwangerschaft oder wenn das Warmwasser in der Wohnung erzeugt wird (§ 21 SGB II).",
+  "bp.w.kdu": "Miete, Nebenkosten und Heizung, soweit das Jobcenter sie als angemessen anerkennt (§ 22 SGB II).",
+  "bp.w.zb": "Der Betrag, der jeden Monat überwiesen wird.",
+  "bp.w.bz": "Die Monate, für die der Bescheid gilt. Danach braucht es einen Weiterbewilligungsantrag. Er ist nicht das Datum des Bescheids."
 }

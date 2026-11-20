@@ -541,7 +541,7 @@ Liste je Vorgang (`lotse.fristliste` in `Vorgaenge.DATEN`), kein eigener Bereich
 | Eigene Titel und Notizen nur als Text (kein HTML), Laden mit Prüfung (feste Listen, höchstens 50: zuerst erledigte kürzen, bei 50 offenen „Liste voll“; erledigte nach 30 Tagen weg); Datenschutzerklärung und Löschtext nennen die Fristen | ✓ | `fristen`, `fristen-dom` |
 ## Aufforderung zur Senkung der Unterkunftskosten (erweiterungen/kostensenkung.js)
 
-Brief prüfen → Jobcenter, Sozialamt oder Anderer Brief; keine Rechnung, nur Erklärung. Quellen mit Abrufdatum 20.11.2026 in `docs/entwuerfe/kostensenkung.md`. Erkennung zusätzlich in `test/erweiterungen/test-kostensenkung.js`.
+Brief prüfen → Jobcenter, Sozialamt oder „Anderer Brief oder Formular“ (Brief mit Frist oder Mahnung); keine Rechnung, nur Erklärung. Quellen mit Abrufdatum 20.11.2026 in `docs/entwuerfe/kostensenkung.md`. Erkennung zusätzlich in `test/erweiterungen/test-kostensenkung.js`.
 
 | Regel | Status | Test |
 |---|---|---|
@@ -561,6 +561,8 @@ Brief prüfen → Jobcenter, Sozialamt oder Anderer Brief; keine Rechnung, nur E
 | Einfache und ausführliche Version rechnen für dieselbe Person gleich | ✓ | `einfach-gleich` |
 | Leistungs-Check „Schritt für Schritt“: jede Formular-Angabe hat eine Frage, nur nötige Folgefragen, „← Zurück“ eine Frage zurück, Übersicht mit „ändern“, gleiches Ergebnis wie „Alles auf einer Seite“ | ✓ | `schritte` |
 | Einfache Sprache vollständig: jeder deutsche Text hat eine einfache Fassung (oder „=“, wenn der Standardtext schon einfach ist), ohne neue Zahlen oder Platzhalter | ✓ | `einfach-vollstaendig` |
+| „Brief prüfen“ in Einfacher Sprache: jeder sichtbare feste Text (vorschau.html, vorschau.js, brief-lesen.js) hat eine einfache Fassung; Zahlen, Fristen und Paragrafen bleiben; Schreiben an Ämter bleiben förmlich; Schalter aus stellt den Standardtext her | ✓ | `brief-einfach` |
+| Geld und Schulden, Pfändung: jeder Tipp mit Symbol und einem kurzen Satz (Fristen und Beträge sichtbar), Einzelheiten zum Aufklappen; „Quellen und Stand“ zugeklappt am Seitenende | ✓ | `geld-tipp` (dom-test) |
 | Einfache Sprache in der Pflege-Einschätzung: jede Frage, Antwort, jeder Hinweis und jeder Text der Ergebnisseite hat eine einfache Fassung (src/lang/einfach/pflege/pflege.json); Zahlen, Paragrafen und Platzhalter gleich; Antwortstufen, Werte und Punkte unverändert | ✓ | `pflege-einfach` |
 | Feste Euro-Beträge in Texten, Rechenregeln und Webseite passen zu den Werten der Rechnung | ✓ | `feste-zahlen` |
 | Betragseingaben: deutsche und englische Schreibweise, Eurozeichen, Leerzeichen; negative Beträge (auch mit typografischem Minus) und Datumsangaben werden abgewiesen | ✓ | `eingaben` |

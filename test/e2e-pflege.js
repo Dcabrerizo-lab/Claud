@@ -94,7 +94,8 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   await p.click('#pflegeAssist .pa-links button:has-text("Zurück zum Leistungs-Check")');
   ok('Link führt zurück in den Leistungs-Check', await p.isVisible('#v-leistungen'));
   // Erklärseite: Pflegegeld ist Geld aufs Konto, Entlastungsbetrag ein Budget
-  await p.click('#c-pflege summary');
+  // Der Link „Zurück zum Leistungs-Check“ öffnet die Pflege-Karte schon (paZurueck/karteAuf); sonst hier aufklappen
+  if (!(await p.evaluate(() => document.querySelector('#c-pflege details.karte').open))) await p.click('#c-pflege summary');
   ok('Ergebniskarte klappt auf', await p.evaluate(() => document.querySelector('#c-pflege details.karte').open));
   await p.click('#c-pflege .pi-link:has-text("Entlastungsbetrag")');
   ok('Link „Entlastungsbetrag ›“ öffnet die Erklärseite am richtigen Abschnitt', await p.isVisible('#v-pflegeinfo') && await p.evaluate(() => document.getElementById('pi-entl').open && document.activeElement === document.querySelector('#pi-entl summary')));

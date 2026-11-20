@@ -34,5 +34,20 @@
   "bp.art.termin.tag": "Quand est le rendez-vous ? (indiqué dans la lettre)",
   "bp.art.tag": "Jusqu’à quand ? (date de la lettre)",
   "bp.datum": "Date de la décision (en haut à droite de la lettre)",
-  "bp.datum.t": "Saisis la date. SoLo montre tout de suite jusqu’à quand tu peux faire un recours."
+  "bp.datum.t": "Saisis la date. SoLo montre tout de suite jusqu’à quand tu peux faire un recours.",
+  "bp.pf.h": "Vérifier une expertise de dépendance",
+  "bp.pf.p": "Scanne l’expertise ou choisis un PDF. SoLo recalcule les points.",
+  "bp.sa.h": "Vérifier une décision de minimum vieillesse (Grundsicherung im Alter)",
+  "bp.wg.h": "Vérifier une décision de Wohngeld",
+  "bp.wg.p": "Scanne la décision de Wohngeld. SoLo recalcule selon la loi sur l’aide au logement.",
+  "bp.kz.h": "Vérifier une décision de Kinderzuschlag",
+  "bp.nk.h": "Vérifier un décompte de charges (Nebenkostenabrechnung)",
+  "bp.nk.p": "Scanne le décompte. SoLo vérifie les délais et les postes.",
+  "bp.w.bg": "Toutes les personnes que le Jobcenter compte ensemble : toi, ton conjoint ou partenaire et vos enfants non mariés de moins de 25 ans dans le foyer (§ 7 Abs. 3 SGB II).",
+  "bp.w.bb": "Les pages de la décision avec le calcul : par personne et par mois, ce qui est reconnu et ce qui est déduit comme revenu. En général à la fin de la décision.",
+  "bp.w.rb": "Un montant fixe pour la vie quotidienne, par exemple nourriture, vêtements et électricité. Il dépend de l’âge et du fait de vivre seul ou en couple (§ 20 SGB II).",
+  "bp.w.mb": "Un montant en plus dans des situations particulières, par exemple pour les parents seuls, pendant la grossesse ou si l’eau chaude est produite dans le logement (§ 21 SGB II).",
+  "bp.w.kdu": "Loyer, charges et chauffage, dans la mesure où le Jobcenter les reconnaît comme appropriés (§ 22 SGB II).",
+  "bp.w.zb": "Le montant versé chaque mois.",
+  "bp.w.bz": "Les mois couverts par la décision. Ensuite, il faut une demande de renouvellement (Weiterbewilligungsantrag). Ce n’est pas la date de la décision."
 }

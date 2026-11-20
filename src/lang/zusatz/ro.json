@@ -34,5 +34,20 @@
   "bp.art.termin.tag": "Când este întâlnirea? (scrie în scrisoare)",
   "bp.art.tag": "Până când? (data din scrisoare)",
   "bp.datum": "Data deciziei (sus în dreapta în scrisoare)",
-  "bp.datum.t": "Introdu data. SoLo arată imediat până când poți face contestație."
+  "bp.datum.t": "Introdu data. SoLo arată imediat până când poți face contestație.",
+  "bp.pf.h": "Verifică expertiza de îngrijire",
+  "bp.pf.p": "Scanează expertiza sau alege un PDF. SoLo recalculează punctele.",
+  "bp.sa.h": "Verifică decizia privind asigurarea de bază la bătrânețe (Grundsicherung im Alter)",
+  "bp.wg.h": "Verifică decizia privind Wohngeld",
+  "bp.wg.p": "Scanează decizia privind Wohngeld. SoLo recalculează după Legea ajutorului pentru locuință.",
+  "bp.kz.h": "Verifică decizia privind Kinderzuschlag",
+  "bp.nk.h": "Verifică decontul costurilor suplimentare (Nebenkostenabrechnung)",
+  "bp.nk.p": "Scanează decontul. SoLo verifică termenele și pozițiile.",
+  "bp.w.bg": "Toți cei pe care Jobcenter îi calculează împreună: tu, soțul sau partenerul tău și copiii voștri necăsătoriți sub 25 de ani din gospodărie (§ 7 Abs. 3 SGB II).",
+  "bp.w.bb": "Paginile deciziei cu calculul: pe persoană și lună, ce s-a recunoscut și ce s-a scăzut ca venit. De obicei la sfârșitul deciziei.",
+  "bp.w.rb": "O sumă fixă pentru viața de zi cu zi, de exemplu mâncare, haine și curent. Suma depinde de vârstă și de faptul că locuiești singur sau în cuplu (§ 20 SGB II).",
+  "bp.w.mb": "O sumă suplimentară în situații speciale, de exemplu pentru părinții singuri, în sarcină sau dacă apa caldă se încălzește în locuință (§ 21 SGB II).",
+  "bp.w.kdu": "Chiria, costurile suplimentare și încălzirea, în măsura în care Jobcenter le recunoaște ca adecvate (§ 22 SGB II).",
+  "bp.w.zb": "Suma virată în fiecare lună.",
+  "bp.w.bz": "Lunile pentru care este valabilă decizia. După aceea ai nevoie de o cerere de prelungire (Weiterbewilligungsantrag). Nu este data deciziei."
 }

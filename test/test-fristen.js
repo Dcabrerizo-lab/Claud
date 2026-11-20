@@ -146,7 +146,7 @@ const ck = (name, c, x) => { n++; if (!c) { fails++; console.log('FAIL', name, x
   const benutzt = new Set((quelle.match(/'fri\.[a-zA-Z.]+'/g) || []).map((x) => x.slice(1, -1)).filter((k) => !k.endsWith('.')));
   F.ARTEN.forEach((a) => { benutzt.add('fri.art.' + a); if (a !== 'eigen') benutzt.add('fri.art.' + a + '.t'); });
   F.STELLEN.forEach((s) => benutzt.add('fri.stelle.' + s)); F.WORTE.forEach((w) => { benutzt.add('fri.wort.' + w); benutzt.add('fri.wort.' + w + '.t'); });
-  ['fri.dauer.w', 'fri.dauer.w1', 'fri.dauer.t', 'fri.dauer.t1', 'fri.dauer.m', 'fri.dauer.m1', 'fri.karte', 'fri.h', 'fri.lead', 'fri.set.label', 'fri.set.t'].forEach((k) => benutzt.add(k));
+  ['fri.dauer.w', 'fri.dauer.w1', 'fri.dauer.t', 'fri.dauer.t1', 'fri.dauer.m', 'fri.dauer.m1', 'fri.karte', 'fri.h', 'fri.set.label', 'fri.set.t'].forEach((k) => benutzt.add(k));
   const fehlen = [...benutzt].filter((k) => !(k in de));
   ck('[fristen] Jeder benutzte Schlüssel steht in de.json', !fehlen.length, fehlen);
   const zahlen = (s) => (String(s).replace(/\{[^}]*\}/g, ' ').match(/\d+/g) || []).sort().join(' ');

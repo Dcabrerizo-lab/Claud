@@ -99,8 +99,8 @@
   <!-- Pflegegutachten -->
   <section id="p-pflege" role="tabpanel" aria-labelledby="tab-pflege">
     <div class="card">
-      <h2>Pflegegutachten prüfen</h2>
-      <p>Scanne das Gutachten oder wähle ein PDF. SoLo rechnet die Punkte nach.</p>
+      <h2 data-t="bp.pf.h">Pflegegutachten prüfen</h2>
+      <p data-t="bp.pf.p">Scanne das Gutachten oder wähle ein PDF. SoLo rechnet die Punkte nach.</p>
       <details class="mehr"><summary data-t="bp.was">Was prüft SoLo genau?</summary><p>SoLo rechnet die Punkte des Gutachtens nach § 15 SGB XI nach und zeigt, wo es knapp ist. Scannen geht am schnellsten: Von Hand sind es rund 60 Bewertungen.</p></details>
       <label for="pf-text">Text aus dem Gutachten (aus einem PDF kopiert oder vom Foto erkannt)</label>
       <textarea id="pf-text" placeholder="z. B. 1.1 Positionswechsel im Bett  überwiegend selbständig …"></textarea>
@@ -167,13 +167,13 @@
       <details class="mehr"><summary data-t="bp.was">Was prüft SoLo genau?</summary><p data-t="bp.jc.was">SoLo rechnet die Beträge deines Bescheids für einen Monat nach, mit denselben Regeln wie der Leistungs-Check: Regelbedarfe, Mehrbedarfe, Miete und Heizung und das angerechnete Einkommen. Wo der Bescheid zu deinen Lasten abweicht, zeigt SoLo den Unterschied und den Grund.</p></details>
       <details class="begriffe"><summary data-t="bp.begriffe">Wörter im Bescheid erklärt</summary>
         <dl>
-          <dt>Bedarfsgemeinschaft</dt><dd>Alle, für die das Jobcenter zusammen rechnet: du, dein Ehe- oder Lebenspartner und eure unverheirateten Kinder unter 25 im Haushalt (§ 7 Abs. 3 SGB II).</dd>
-          <dt>Berechnungsbogen</dt><dd>Die Seiten im Bescheid mit der Rechnung: je Person und Monat, was anerkannt und was als Einkommen abgezogen wird. Meist hinten am Bescheid.</dd>
-          <dt>Regelbedarf</dt><dd>Fester Betrag für den Alltag, zum Beispiel Essen, Kleidung und Strom. Die Höhe hängt vom Alter ab und davon, ob man allein oder als Paar lebt (§ 20 SGB II).</dd>
-          <dt>Mehrbedarf</dt><dd>Zusätzlicher Betrag in besonderen Lagen, zum Beispiel für Alleinerziehende, in der Schwangerschaft oder wenn das Warmwasser in der Wohnung erzeugt wird (§ 21 SGB II).</dd>
-          <dt>KdU (Kosten der Unterkunft und Heizung)</dt><dd>Miete, Nebenkosten und Heizung, soweit das Jobcenter sie als angemessen anerkennt (§ 22 SGB II).</dd>
-          <dt>Zahlbetrag</dt><dd>Der Betrag, der jeden Monat überwiesen wird.</dd>
-          <dt>Bewilligungszeitraum</dt><dd>Die Monate, für die der Bescheid gilt. Danach braucht es einen Weiterbewilligungsantrag. Er ist nicht das Datum des Bescheids.</dd>
+          <dt>Bedarfsgemeinschaft</dt><dd data-t="bp.w.bg">Alle, für die das Jobcenter zusammen rechnet: du, dein Ehe- oder Lebenspartner und eure unverheirateten Kinder unter 25 im Haushalt (§ 7 Abs. 3 SGB II).</dd>
+          <dt>Berechnungsbogen</dt><dd data-t="bp.w.bb">Die Seiten im Bescheid mit der Rechnung: je Person und Monat, was anerkannt und was als Einkommen abgezogen wird. Meist hinten am Bescheid.</dd>
+          <dt>Regelbedarf</dt><dd data-t="bp.w.rb">Fester Betrag für den Alltag, zum Beispiel Essen, Kleidung und Strom. Die Höhe hängt vom Alter ab und davon, ob man allein oder als Paar lebt (§ 20 SGB II).</dd>
+          <dt>Mehrbedarf</dt><dd data-t="bp.w.mb">Zusätzlicher Betrag in besonderen Lagen, zum Beispiel für Alleinerziehende, in der Schwangerschaft oder wenn das Warmwasser in der Wohnung erzeugt wird (§ 21 SGB II).</dd>
+          <dt>KdU (Kosten der Unterkunft und Heizung)</dt><dd data-t="bp.w.kdu">Miete, Nebenkosten und Heizung, soweit das Jobcenter sie als angemessen anerkennt (§ 22 SGB II).</dd>
+          <dt>Zahlbetrag</dt><dd data-t="bp.w.zb">Der Betrag, der jeden Monat überwiesen wird.</dd>
+          <dt>Bewilligungszeitraum</dt><dd data-t="bp.w.bz">Die Monate, für die der Bescheid gilt. Danach braucht es einen Weiterbewilligungsantrag. Er ist nicht das Datum des Bescheids.</dd>
         </dl>
       </details>
       <div class="btns"><button type="button" class="btn" id="bs-beispiel">Beispiel laden</button></div>
@@ -229,7 +229,7 @@
   <!-- Bescheid Grundsicherung im Alter -->
   <section id="p-gsa" role="tabpanel" aria-labelledby="tab-gsa" hidden>
     <div class="card">
-      <h2>Bescheid Grundsicherung im Alter prüfen</h2>
+      <h2 data-t="bp.sa.h">Bescheid Grundsicherung im Alter prüfen</h2>
       <p data-t="bp.scan.p">Scanne den Bescheid. SoLo rechnet nach und zeigt Abweichungen.</p>
       <details class="mehr"><summary data-t="bp.was">Was prüft SoLo genau?</summary><p>Für Grundsicherung im Alter und bei Erwerbsminderung vom Sozialamt. Trage die Beträge für einen Monat ein. SoLo rechnet mit denselben Regeln wie die App nach, dazu mit dem Freibetrag für Betriebs-, Riester- und private Renten.</p></details>
       <details class="begriffe"><summary data-t="bp.begriffe">Wörter im Bescheid erklärt</summary>
@@ -238,7 +238,7 @@
           <dt>Regelbedarf (Regelsatz)</dt><dd>Fester Betrag für den Alltag, zum Beispiel Essen, Kleidung und Strom. Die Höhe hängt davon ab, ob man allein oder als Paar lebt (§ 27a SGB XII).</dd>
           <dt>Mehrbedarf</dt><dd>Zusätzlicher Betrag in besonderen Lagen, zum Beispiel mit Merkzeichen G im Schwerbehindertenausweis (§ 30 SGB XII).</dd>
           <dt>KdU (Kosten der Unterkunft und Heizung)</dt><dd>Miete, Nebenkosten und Heizung, soweit das Sozialamt sie als angemessen anerkennt (§ 35 SGB XII).</dd>
-          <dt>Zahlbetrag</dt><dd>Der Betrag, der jeden Monat überwiesen wird.</dd>
+          <dt>Zahlbetrag</dt><dd data-t="bp.w.zb">Der Betrag, der jeden Monat überwiesen wird.</dd>
         </dl>
       </details>
       <div class="btns"><button type="button" class="btn" id="ga-beispiel">Beispiel laden</button></div>
@@ -310,8 +310,8 @@
   <!-- Bescheid Wohngeld -->
   <section id="p-wg" role="tabpanel" aria-labelledby="tab-wg" hidden>
     <div class="card">
-      <h2>Wohngeldbescheid prüfen</h2>
-      <p>Scanne den Wohngeldbescheid. SoLo rechnet nach dem Wohngeldgesetz nach.</p>
+      <h2 data-t="bp.wg.h">Wohngeldbescheid prüfen</h2>
+      <p data-t="bp.wg.p">Scanne den Wohngeldbescheid. SoLo rechnet nach dem Wohngeldgesetz nach.</p>
       <details class="mehr"><summary data-t="bp.was">Was prüft SoLo genau?</summary><p>Trage die Angaben aus dem Bescheid ein (Beträge im Monat). Die Rechnung trifft den amtlichen Wohngeldrechner auf höchstens 1 € genau.</p></details>
       <div class="btns"><button type="button" class="btn" id="wg-beispiel">Beispiel laden</button></div>
     </div>
@@ -363,7 +363,7 @@
   <!-- Bescheid Kinderzuschlag -->
   <section id="p-kiz" role="tabpanel" aria-labelledby="tab-kiz" hidden>
     <div class="card">
-      <h2>Bescheid Kinderzuschlag prüfen</h2>
+      <h2 data-t="bp.kz.h">Bescheid Kinderzuschlag prüfen</h2>
       <p data-t="bp.scan.p">Scanne den Bescheid. SoLo rechnet nach und zeigt Abweichungen.</p>
       <details class="mehr"><summary data-t="bp.was">Was prüft SoLo genau?</summary><p>Trage die Durchschnittsbeträge der letzten sechs Monate vor dem Antrag ein. Mit diesem Zeitraum rechnet auch die Familienkasse. SoLo rechnet mit denselben Regeln wie die App nach.</p></details>
       <div class="btns"><button type="button" class="btn" id="kz-beispiel">Beispiel laden</button></div>
@@ -415,8 +415,8 @@
   <!-- Nebenkosten -->
   <section id="p-nk" role="tabpanel" aria-labelledby="tab-nk" hidden>
     <div class="card">
-      <h2>Nebenkostenabrechnung prüfen</h2>
-      <p>Scanne die Abrechnung. SoLo prüft Fristen und Posten.</p>
+      <h2 data-t="bp.nk.h">Nebenkostenabrechnung prüfen</h2>
+      <p data-t="bp.nk.p">Scanne die Abrechnung. SoLo prüft Fristen und Posten.</p>
       <details class="mehr"><summary data-t="bp.was">Was prüft SoLo genau?</summary><p>SoLo prüft Fristen, nicht umlagefähige Posten, die Verteilung nach Wohnfläche, Heizkosten und CO₂-Kosten. Ob ein Betrag zu hoch ist, kann SoLo nicht entscheiden.</p></details>
       <div class="btns"><button type="button" class="btn" id="nk-beispiel">Beispiel laden</button></div>
     </div>

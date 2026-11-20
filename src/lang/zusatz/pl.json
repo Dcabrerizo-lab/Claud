@@ -34,5 +34,20 @@
   "bp.art.termin.tag": "Kiedy jest termin? (jest w liście)",
   "bp.art.tag": "Do kiedy? (data z listu)",
   "bp.datum": "Data decyzji (u góry po prawej w liście)",
-  "bp.datum.t": "Wpisz datę. SoLo od razu pokaże, do kiedy możesz złożyć odwołanie."
+  "bp.datum.t": "Wpisz datę. SoLo od razu pokaże, do kiedy możesz złożyć odwołanie.",
+  "bp.pf.h": "Sprawdź orzeczenie o opiece",
+  "bp.pf.p": "Zeskanuj orzeczenie albo wybierz PDF. SoLo przeliczy punkty.",
+  "bp.sa.h": "Sprawdź decyzję o zabezpieczeniu podstawowym na starość (Grundsicherung im Alter)",
+  "bp.wg.h": "Sprawdź decyzję o Wohngeld",
+  "bp.wg.p": "Zeskanuj decyzję o Wohngeld. SoLo przeliczy według ustawy o dodatku mieszkaniowym.",
+  "bp.kz.h": "Sprawdź decyzję o Kinderzuschlag",
+  "bp.nk.h": "Sprawdź rozliczenie kosztów dodatkowych (Nebenkostenabrechnung)",
+  "bp.nk.p": "Zeskanuj rozliczenie. SoLo sprawdzi terminy i pozycje.",
+  "bp.w.bg": "Wszyscy, których Jobcenter liczy razem: ty, twój małżonek lub partner i wasze niezamężne dzieci poniżej 25 lat w gospodarstwie domowym (§ 7 Abs. 3 SGB II).",
+  "bp.w.bb": "Strony decyzji z obliczeniem: na osobę i miesiąc – co uznano i co odliczono jako dochód. Zwykle na końcu decyzji.",
+  "bp.w.rb": "Stała kwota na codzienne życie, np. jedzenie, ubranie i prąd. Wysokość zależy od wieku i od tego, czy mieszkasz sam, czy w parze (§ 20 SGB II).",
+  "bp.w.mb": "Dodatkowa kwota w szczególnych sytuacjach, np. dla samotnych rodziców, w ciąży albo gdy ciepła woda jest podgrzewana w mieszkaniu (§ 21 SGB II).",
+  "bp.w.kdu": "Czynsz, koszty dodatkowe i ogrzewanie w zakresie, w jakim Jobcenter uznaje je za odpowiednie (§ 22 SGB II).",
+  "bp.w.zb": "Kwota przelewana co miesiąc.",
+  "bp.w.bz": "Miesiące, na które obowiązuje decyzja. Potem potrzebny jest wniosek o dalsze przyznanie (Weiterbewilligungsantrag). To nie jest data decyzji."
 }
