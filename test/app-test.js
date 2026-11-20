@@ -99,7 +99,7 @@ const MOCK = () => {
   // „Brief prüfen“: die Übersicht hat kein Scannen; in der Kachel Antragsformular: Kamera → Texterkennung → Felder erklärt
   await p.click('#appnav [data-ansicht=start]'); await p.click('#goBriefe'); if (await p.isVisible('#briefZurueck')) await p.click('#briefZurueck');
   ok('Übersicht „Brief prüfen“: kein Scannen oder Einfügen', !(await p.isVisible('#einlesen')));
-  await p.click('#brief-af'); await p.click('#sc-take');
+  await p.click('#brief-ab'); await p.click('#brief-af'); await p.click('#sc-take');
   await p.waitForSelector('#scan:not([hidden])', { timeout: 5000 }).catch(() => {});
   ok('Kachel Antragsformular offen', await p.isVisible('#scan'));
   await p.waitForSelector('#sc-out .sc-row', { timeout: 5000 }).catch(() => {});

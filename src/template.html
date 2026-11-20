@@ -701,6 +701,8 @@
   .weg-txt { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2px; min-width: 0; overflow-wrap: anywhere; word-break: break-word; }
   .weg-txt > * { min-width: 0; }
   .weg-txt b { font-size: 1.12em; }
+  .ab-oder { margin: 18px 0 0; font-weight: 600; }
+  #abUnter { margin-top: 8px; }
   .weg-txt span { opacity: .85; font-size: .95em; }
   /* Große Auswahlknöpfe (Pfändung, Netto-Helfer): erst wählen, worum es geht, dann weiter */
   .wahl-liste { display: grid; gap: 10px; margin: 12px 0; }
@@ -1105,6 +1107,15 @@
       <div id="checkBox" class="pp" hidden>
         <p class="pp-hinweis small" id="ppNurDe" data-t="briefe.nurDeutsch" hidden></p>
 <!--PRUEFPAKET-->
+        <!-- Gemeinsame Kachel „Anderer Brief oder Formular“: erst einlesen (die App erkennt Formular oder Brief), darunter die Wahl von Hand -->
+        <section class="pp-teil" id="abWahl" aria-labelledby="h-abWahl" hidden>
+          <div class="card">
+            <h2 id="h-abWahl" data-t="briefe.ab"></h2>
+            <p data-t="briefe.ab.lead"></p>
+            <p class="ab-oder" data-t="briefe.ab.wahl"></p>
+            <div class="weg-liste" id="abUnter"></div>
+          </div>
+        </section>
         <!--SCAN-->
         <section class="scan pp-teil" id="scan" aria-labelledby="h-scan" hidden>
           <h2 id="h-scan" data-t="sc.h"></h2>

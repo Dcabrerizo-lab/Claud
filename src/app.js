@@ -2855,9 +2855,15 @@
     ['fk', 'briefe.familienkasse', 'briefe.familienkasse.t', '<circle cx="8" cy="8" r="2.5"/><circle cx="16" cy="8" r="2.5"/><path d="M4 20c.5-3 2-5 4-5M20 20c-.5-3-2-5-4-5M9 20c.5-2 1.5-3 3-3s2.5 1 3 3"/>'],
     ['pk', 'briefe.pflegekasse', 'briefe.pflegekasse.t', '<path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/>'],
     ['vm', 'briefe.vermieter', 'briefe.vermieter.t', '<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/>'],
+    // Eine Kachel für „anderer Brief“ und „Antragsformular“: erst einlesen (die App erkennt Formular oder Brief), darunter die Wahl von Hand
+    ['ab', 'briefe.ab', 'briefe.ab.t', '<path d="M3 7h12v10H3z"/><path d="M3 7l6 5 6-5"/><path d="M17 5h4v14h-6"/><path d="M18 9h2M18 12h2"/>']
+  ];
+  // Unterkarten der Kachel „ab“ (weiße Karten, manuelle Wahl)
+  var BRIEFE_UNTER = [
     ['an', 'briefe.andere', 'briefe.andere.t', '<path d="M4 6h16v12H4z"/><path d="M4 6l8 6 8-6"/><path d="M12 15.5v.5"/>'],
     ['af', 'briefe.formular', 'briefe.formular.t', '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h5M8 16h3"/><path d="M13.5 16l1.8 1.8 3.2-3.6"/>']
   ];
+  var abVon = false; // „Anderer Brief“ oder „Formular“ über die gemeinsame Kachel geöffnet: „Zurück“ führt dorthin
   function zeigeAnsicht(a, fokus) {
     if (ANSICHTEN.indexOf(a) < 0) a = 'start';
     if (a === 'pflege' && !$('pflegeAssist').children.length) a = 'leistungen'; // Einschätzung nur über ihren Knopf öffnen
@@ -2896,6 +2902,12 @@
       bk.appendChild(k);
     });
     BRIEFE.forEach(function (x) { var k = $('brief-' + x[0]); k.querySelector('b').textContent = t(x[1]); k.querySelector('.k-t').textContent = t(x[2]); });
+    var ab = $('abUnter');
+    if (ab && !ab.children.length) BRIEFE_UNTER.forEach(function (x) {
+      var k = nhKnopf('weg ab-karte', '<span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + x[3] + '</svg></span><span class="weg-txt"><b></b><span></span></span>', null, function () { abVon = true; briefOeffnen(x[0]); });
+      k.id = 'brief-' + x[0]; ab.appendChild(k);
+    });
+    BRIEFE_UNTER.forEach(function (x) { var k = $('brief-' + x[0]); if (!k) return; k.querySelector('b').textContent = t(x[1]); k.querySelector('.weg-txt span').textContent = t(x[2]); });
   }
   // ----- Vorgänge (Haushalte): speichern, öffnen, umbenennen, kopieren, löschen; PIN-Sperre; automatisch löschen (src/vorgaenge.js) -----
   // In der Oberfläche heißt es „Vorgang“ bzw. „Haushalt“. Wer nur einen Vorgang hat, sieht nur den Knopf „Vorgang speichern“.
@@ -3625,7 +3637,7 @@
   Store.get('lotse.pflegecheck', function (v) { try { var d = v ? JSON.parse(v) : null; if (d && typeof d === 'object') { pa.antworten = d.antworten || null; pa.schaetzung = d.schaetzung || null; } } catch (e) {} paAnzeigen(); });
 
   // Brief prüfen: Kachel öffnet den passenden Teil des Prüfpakets (Abschnitte aus erweiterungen/vorschau.html)
-  var BRIEF_TEIL = { jc: 'p-bescheid', sa: 'p-gsa', wg: 'p-wg', fk: 'p-kiz', pk: 'p-pflege', vm: 'p-nk', an: 'p-andere', af: 'scan' };
+  var BRIEF_TEIL = { jc: 'p-bescheid', sa: 'p-gsa', wg: 'p-wg', fk: 'p-kiz', pk: 'p-pflege', vm: 'p-nk', an: 'p-andere', af: 'scan', ab: 'abWahl' };
   var briefArt = null;
   function briefOeffnen(art) {
     var teil = BRIEF_TEIL[art];
@@ -3637,7 +3649,8 @@
     briefArt = teil ? art : null; briefKopf();
     $('app').classList.toggle('brief-offen', !!teil); // in einer Kachel Logo und Sprachwahl ausblenden, damit die Wahl oben steht
     // Erst entscheiden (scannen, einfügen oder selbst eingeben), dann erscheint das Formular der Prüfung
-    if (teil && art !== 'af' && art !== 'an' && !$(teil).dataset.offen) $(teil).classList.add('pp-zu');
+    if (!teil) abVon = false;
+    if (teil && art !== 'af' && art !== 'an' && art !== 'ab' && !$(teil).dataset.offen) $(teil).classList.add('pp-zu');
     // Name und Anschrift aus der Ausfüllhilfe übernehmen, damit man sie für das Schreiben nicht noch einmal tippt (nur leere Felder)
     ['pf', 'bs', 'ga', 'wg', 'kz', 'nk'].forEach(function (k) {
       [['-name', person.name], ['-anschrift', person.strasse], ['-ort', person.ort]].forEach(function (x) { var el = $(k + x[0]); if (el && !el.value && x[1]) el.value = x[1]; });
@@ -3652,8 +3665,8 @@
   var elGesammelt = '', elBusy = false;
   // Überschrift oben: ohne Kachel „Von wem ist der Brief?“, in einer Kachel das, was gewählt wurde
   function briefKopf() {
-    var x = null; BRIEFE.forEach(function (b) { if (b[0] === briefArt) x = b; });
-    $('h-briefe').textContent = !x ? t('briefe.h') : briefArt === 'af' || briefArt === 'an' ? t(x[1]) : t('briefe.von', { name: t(x[1]) });
+    var x = null; BRIEFE.concat(BRIEFE_UNTER).forEach(function (b) { if (b[0] === briefArt) x = b; });
+    $('h-briefe').textContent = !x ? t('briefe.h') : briefArt === 'af' || briefArt === 'an' || briefArt === 'ab' ? t(x[1]) : t('briefe.von', { name: t(x[1]) });
   }
   // In einer Kachel: Formular der Prüfung zeigen (nach der Wahl „selbst eingeben“ oder nach dem Einlesen)
   function briefFormular(fokus) {
@@ -3688,6 +3701,8 @@
   }
   function textLesen(text) {
     if (!text || !text.trim()) { elNachricht(t('el.leer')); return; }
+    // Gemeinsame Kachel „Anderer Brief oder Formular“: Formular erkannt → Formular erklären, sonst → Brief (Frist, Mahnung, Inkasso; von dort Wechsel zur genauen Prüfung)
+    if (briefArt === 'ab') { var ea = BriefLesen.erkenne(text); abVon = true; briefOeffnen(ea.art === 'af' ? 'af' : 'an'); abVon = true; }
     var r = BriefLesen.lies(text, briefArt || null);
     // Auch in einer Kachel: Anhörung oder Aufforderung zur Mitwirkung erkennen und erklären statt nachzurechnen
     var e0 = briefArt ? BriefLesen.erkenne(text) : null;
@@ -3763,7 +3778,13 @@
   if (NATIVE && $('scLocalNote')) { $('scLocalNote').setAttribute('data-t', 'el.privat'); $('scLocalNote').textContent = t('el.privat'); }
   $('elLesen').addEventListener('click', function () { elGesammelt = ''; textLesen($('elText').value); });
 
-  function briefZurueckTun() { elGesammelt = ''; var war = null; document.querySelectorAll('#checkBox .pp-teil').forEach(function (s) { if (!s.hidden) war = s.id; }); briefOeffnen(null); for (var k in BRIEF_TEIL) if (BRIEF_TEIL[k] === war) $('brief-' + k).focus(); } // „← Zurück“ in einer Kachel (über src/navigation.js)
+  function briefZurueckTun() {
+    elGesammelt = ''; var war = null, k, art = null; document.querySelectorAll('#checkBox .pp-teil').forEach(function (s) { if (!s.hidden) war = s.id; });
+    for (k in BRIEF_TEIL) if (BRIEF_TEIL[k] === war) art = k;
+    if (abVon && (art === 'an' || art === 'af')) { briefOeffnen('ab'); var u = $('brief-' + art); if (u) u.focus(); return; } // eine Ebene hoch: zur gemeinsamen Kachel
+    briefOeffnen(null);
+    var z = $('brief-' + (art === 'an' || art === 'af' ? 'ab' : art)); if (z) z.focus();
+  } // „← Zurück“ in einer Kachel (über src/navigation.js)
   document.querySelectorAll('#appnav button').forEach(function (b) { b.addEventListener('click', function () {
     var a = b.getAttribute('data-ansicht');
     herkunft = {};

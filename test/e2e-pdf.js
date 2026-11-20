@@ -36,7 +36,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   await p.waitForFunction(() => /nicht lesen/.test(document.getElementById('elMsg').textContent), null, { timeout: 30000 }).catch(() => {});
   ok('Keine PDF-Datei: verständliche Meldung', /Passwort/.test(await p.textContent('#elMsg')), await p.textContent('#elMsg'));
   await p.click('#briefZurueck');
-  await p.click('#brief-af');
+  await p.click('#brief-ab'); await p.click('#brief-af');
   ok('Antragsformular: Knopf „PDF-Datei wählen“', await p.isVisible('label[for=sc-pdf]'));
   await p.setInputFiles('#sc-pdf', form);
   await p.waitForFunction(() => document.getElementById('sc-out').textContent.length > 20, null, { timeout: 30000 }).catch(() => {});
