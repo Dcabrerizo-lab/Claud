@@ -484,6 +484,13 @@ setTimeout(() => {
     zur();
     check('[geld] Zurück von den 6 Kacheln: Startseite', sicht() === 'start');
   }
+  // Leistungs-Check: Weg wählen (src/schritte.js, ausführlich in test/test-schritte.js)
+  {
+    const sfBox = d.getElementById('schritte');
+    check('[schritte] Abschnitt „Schritt für Schritt“ vorhanden, Modul geladen', !!sfBox && !!w.Schritte && w.Schritte.FRAGEN.length > 40);
+    check('[schritte] Jede Formular-Angabe hat eine Frage oder gehört zu einer Mehrfachfrage', ['adults', 'kids', 'kidsU6', 'kids14', 'young', 'gebJahr', 'baby', 'egVor', 'aufenthalt', 'euArbeit', 'euJahre', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'bhWeitere', 'emStd', 'em5', 'ernaehrung', 'schwanger', 'arbeitSit', 'algZeit', 'algMonate', 'krankWochen', 'lohnVorher', 'ausbildung', 'wohnart', 'miete', 'heizkosten', 'warmwasser', 'hhAndere', 'plz', 'bundesland', 'mietstufe', 'ek1Art', 'ek1Brutto', 'ek1Netto', 'ek1bArt', 'ek1bBetrag', 'ek2Art', 'ek2Brutto', 'ek2Netto', 'ek2bArt', 'ek2bBetrag', 'zusatzRente', 'grundrente33', 'wfbmEssen', 'unterhalt', 'waisen', 'kindEink', 'uzBetrag', 'uzAn', 'uzTitel', 'vermoegen', 'autoWert', 'autoBraucht', 'uvgWechsel', 'uvgPartner']
+      .every((k) => w.Schritte.FRAGEN.some((f) => f.id === k)) && ['kinder12', 'kindKrank', 'unterhaltFehlt', 'mzG', 'mzGl', 'bhSelbst', 'wfbm', 'teilhabe', 'babBetrieb', 'babWohnt'].every((k) => w.Schritte.FRAGEN.some((f) => (f.felder || []).some((x) => x[0] === k))));
+  }
   check('Keine Skriptfehler im gesamten Test', errors.length === 0, errors.join('; '));
   console.log(fails ? '\n' + fails + ' FEHLER' : '\nAlle DOM-Tests bestanden');
   process.exit(fails ? 1 : 0);

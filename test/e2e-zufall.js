@@ -4,6 +4,8 @@
 // Scrollen, in der einfachen Version immer eine Frage oder ein Ergebnis, in der ausführlichen Version Karten oder Startanleitung.
 // Aufruf: node test/e2e-zufall.js [Schritte, Standard 1200] (BROWSER=firefox|webkit für andere Browser; ZUFALL_SEED für einen anderen Ablauf)
 const pw = require('playwright');
+// Leistungs-Check: Weg „Alles auf einer Seite“ vorwählen (sonst erscheint zuerst die Auswahl Schritt für Schritt / Alles auf einer Seite)
+const SF_ALLES = () => { try { if (!localStorage.getItem('lotse.checkWeg')) { localStorage.setItem('lotse.checkWeg', 'alles'); localStorage.setItem('CapacitorStorage.lotse.checkWeg', 'alles'); } } catch (e) {} };
 const browserTyp = pw[process.env.BROWSER || 'chromium'];
 const path = require('path');
 // SHARD=k/n: jeder Teil macht ein n-tel der Schritte mit eigenem Startwert (zusammen gleicher Umfang)
@@ -22,7 +24,7 @@ const VERBOTEN = '#mappePrint, #mappeShare, #mappeCopy, #feedbackMail, #sc-take,
 (async () => {
   const b = await browserTyp.launch();
   const ctx = await b.newContext({ viewport: { width: 390, height: 800 }, locale: 'de-DE' });
-  const p = await ctx.newPage();
+  const p = await ctx.newPage(); await p.addInitScript(SF_ALLES);
   const fehler = [];
   const log = [];
   p.on('pageerror', (e) => fehler.push('Skriptfehler: ' + e.message + ' | nach: ' + log.slice(-6).join(' > ')));

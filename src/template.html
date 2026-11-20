@@ -120,6 +120,28 @@
   .es-wo { font-size: 0.9em; color: var(--muted); margin-top: 8px; }
   .es-sub { margin: 20px 0 8px; }
   .es-liste { padding-inline-start: 1.2em; }
+  /* Leistungs-Check Schritt für Schritt (src/schritte.js): Wahl des Weges, eine Frage pro Seite, Übersicht „Deine Angaben“ */
+  .app.sf-an #cols, .app.sf-an #jump { display: none !important; }
+  .app.sf-an.sf-erg #cols { display: grid !important; grid-template-columns: minmax(0, 1fr); }
+  .app.sf-erg #cols > section:first-child { display: none; }
+  .app.es-an #schritte { display: none; }
+  .sf:empty { display: none; }
+  .sf .sf-weg { margin: 14px 0 0; font-size: .9em; }
+  .sf .sf-weg .linkbtn { padding: 10px 0; }
+  .app:not(.sf-an) .sf { margin-bottom: 4px; }
+  .sf-hilfe { margin: 0 0 14px; } .sf-hilfe > summary { cursor: pointer; color: var(--accent); font-weight: 600; padding: 8px 0; min-height: 44px; }
+  .sf-hilfe p { color: var(--muted); margin: 4px 0 0; }
+  .sf-zaehler { display: flex; align-items: center; gap: 16px; }
+  .sf-zaehler .es-btn { width: 72px; justify-content: center; font-size: 1.6em; }
+  .sf-zaehler output { font-size: 2em; font-weight: 700; min-width: 2ch; text-align: center; }
+  .sf-ueb-b { margin: 18px 0 6px; font-size: 1.05em; }
+  .sf-ueb { margin: 0; border-top: 1px solid var(--line); }
+  .sf-zeile { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .sf-zeile dt { grid-column: 1; font-size: .9em; color: var(--muted); }
+  .sf-zeile dd { grid-column: 1; margin: 0; font-weight: 600; overflow-wrap: anywhere; }
+  .sf-zeile dd.sf-aendern { grid-column: 2; grid-row: 1 / span 2; align-self: center; font-weight: 400; }
+  .sf-wahl .weg-txt span { opacity: .85; }
+  .sf-wahl .weg-sym { color: var(--on-c); }
   /* Pflegegrad-Einschätzung: Frage ganz oben, eine Spalte, Zurück oben, Links unten */
   .app[data-ansicht="pflege"] .notices, .app[data-ansicht="pflege"] .first { display: none !important; }
   .pa-kopf { display: grid; gap: 4px; }
@@ -1280,6 +1302,7 @@
     </div>
 
     <section id="einfach" class="einfach" hidden></section>
+    <section id="schritte" class="einfach sf" aria-live="off"></section>
 
     <div class="cols" id="cols">
       <section aria-labelledby="h-form">
@@ -1958,6 +1981,7 @@ Behoerden.init(/*BEHOERDENDATA*/null);
 /*AUSZIEHEN*/
 /*FRISTEN*/
 /*SCHULDEN*/
+/*SCHRITTE*/
 </script>
 <script>
 /*NAVIGATION*/

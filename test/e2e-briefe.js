@@ -3,6 +3,8 @@
 // alte gespeicherte Fristen werden gelöscht, kein seitliches Scrollen, keine Skriptfehler, Hinweis bei fremder Sprache.
 'use strict';
 const { chromium } = require('playwright');
+// Leistungs-Check: Weg „Alles auf einer Seite“ vorwählen (sonst erscheint zuerst die Auswahl Schritt für Schritt / Alles auf einer Seite)
+const SF_ALLES = () => { try { if (!localStorage.getItem('lotse.checkWeg')) { localStorage.setItem('lotse.checkWeg', 'alles'); localStorage.setItem('CapacitorStorage.lotse.checkWeg', 'alles'); } } catch (e) {} };
 const path = require('path');
 const APP = 'file://' + path.join(__dirname, '..', 'dist', 'sozialleistungslotse.html');
 let n = 0, f = 0;
@@ -10,7 +12,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
 (async () => {
   const b = await chromium.launch();
   const ctx = await b.newContext({ viewport: { width: 360, height: 760 }, locale: 'de-DE' });
-  const p = await ctx.newPage();
+  const p = await ctx.newPage(); await p.addInitScript(SF_ALLES);
   const fehler = []; p.on('pageerror', (e) => fehler.push(e.message)); p.on('console', (m) => { if (m.type() === 'error') fehler.push(m.text()); });
   const breit = () => p.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth);
   // Gespeicherte Fristen aus Build 141 liegen noch im Speicher: Die App löscht sie beim Start
@@ -117,7 +119,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Computer: Leiste sichtbar und nicht unten fixiert', await p.isVisible('#appnav') && (await p.evaluate(() => getComputedStyle(document.getElementById('appnav')).position)) !== 'fixed');
   ok('Computer: kein seitliches Scrollen', await breit());
   // Ganz ohne Leistungscheck (neues Gerät): keine erfundenen Werte, sondern ein Tipp
-  const ctx2 = await b.newContext({ viewport: { width: 360, height: 760 }, locale: 'de-DE' }); const q = await ctx2.newPage();
+  const ctx2 = await b.newContext({ viewport: { width: 360, height: 760 }, locale: 'de-DE' }); const q = await ctx2.newPage(); await q.addInitScript(SF_ALLES);
   await q.goto(APP + '#briefe'); await q.waitForTimeout(300); await q.click('#brief-af');
   if (!(await q.isVisible('#sc-text'))) await q.click('#sc-pasteBtn'); await q.fill('#sc-text', 'Antrag auf Wohngeld\nGesamtmiete monatlich\nEinkommen\nVermögen\nHaushaltsmitglieder'); await q.click('#sc-local');
   const leer = await q.textContent('#sc-out');

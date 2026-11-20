@@ -1,4 +1,6 @@
 const chromium = require('playwright')[process.env.BROWSER || 'chromium']; // BROWSER=firefox oder webkit für andere Browser
+// Leistungs-Check: Weg „Alles auf einer Seite“ vorwählen (sonst erscheint zuerst die Auswahl Schritt für Schritt / Alles auf einer Seite)
+const SF_ALLES = () => { try { if (!localStorage.getItem('lotse.checkWeg')) { localStorage.setItem('lotse.checkWeg', 'alles'); localStorage.setItem('CapacitorStorage.lotse.checkWeg', 'alles'); } } catch (e) {} };
 const KARTEN = require('./karten.js');
 const SHARD = require('./shard.js'); // SHARD=k/n: nur jede n-te Sprache (Fälle davor laufen in jedem Teil)
 const out = []; const ok = (n, c, x) => out.push((c ? 'ok   ' : 'FAIL ') + n + (c ? '' : ' ' + (x || '')));
@@ -6,7 +8,7 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
 (async () => {
   const b = await chromium.launch();
   const ctx = await b.newContext({ viewport: { width: 390, height: 900 }, locale: 'de-DE', deviceScaleFactor: 1 });
-  const p = await ctx.newPage(); const errs = [];
+  const p = await ctx.newPage(); await p.addInitScript(SF_ALLES); const errs = [];
   const netz = []; p.on('request', (r) => { if (!/^(file|data|blob):/.test(r.url())) netz.push(r.url()); });
   p.on('pageerror', (e) => errs.push(e.message)); p.on('console', (m) => { if (m.type() === 'error' && !/ERR_TUNNEL|ERR_NAME|ERR_INTERNET|fonts.g/.test(m.text())) errs.push(m.text()); });
   await p.goto('file://' + file + '#leistungen');
