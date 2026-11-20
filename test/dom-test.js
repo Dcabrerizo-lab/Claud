@@ -352,6 +352,37 @@ setTimeout(() => {
   // Startsprache aus den Geräteeinstellungen: Dari (fa-AF) und Farsi (fa) getrennt erkennen
   const startLang = (langs) => { const st = {}; const dw = new JSDOM('<!doctype html><html><head><meta charset="utf-8"></head><body>' + html + '</body></html>', { runScripts: 'dangerously', pretendToBeVisual: true, beforeParse(x) { x.HTMLElement.prototype.scrollIntoView = function () {}; x.scrollTo = function () {}; Object.defineProperty(x.navigator, 'languages', { value: langs, configurable: true }); Object.defineProperty(x, 'localStorage', { value: { getItem: (k) => (k in st ? st[k] : null), setItem: (k, v) => { st[k] = String(v); } }, configurable: true }); } }); const v = dw.window.document.getElementById('lang').value; dw.window.close(); return v; };
   check('Gerät auf Dari (fa-AF) startet in Dari, Farsi (fa-IR, fa) in Farsi, Französisch (fr-CA) in Französisch, Unbekanntes in Deutsch', startLang(['fa-AF']) === 'fa-AF' && startLang(['fa-af', 'de']) === 'fa-AF' && startLang(['fa-IR']) === 'fa' && startLang(['fa']) === 'fa' && startLang(['fr-CA']) === 'fr' && startLang(['ps-AF']) === 'ps' && startLang(['so-SO']) === 'so' && startLang(['xx']) === 'de');
+  // Geld sparen → Schulden und Pfändung: Knopf zum Rechner oben, 4 erste Schritte, 8 Fälle zum Aufklappen; Verweis im Rechner erst unter dem Ergebnis
+  {
+    setLang('de');
+    d.getElementById('goSparen').click();
+    const spB = () => [...d.querySelectorAll('#spInhalt button')];
+    const schuldenK = spB().find((b) => b.textContent.indexOf(I18N.de['sp.schulden']) === 0);
+    check('[schulden] Kachel „Schulden und Pfändung“ in Geld sparen', !!schuldenK);
+    schuldenK.click();
+    const box = d.getElementById('spInhalt');
+    const ersterKnopf = box.querySelector('button');
+    check('[schulden] Ganz oben der Knopf „Ausrechnen, was dir bleibt“', !!ersterKnopf && ersterKnopf.textContent === I18N.de['sp.schulden.pf'] && !ersterKnopf.closest('details'));
+    check('[schulden] Erste Schritte mit 4 Punkten', box.querySelectorAll('ol.sp-liste li').length === 4 && box.querySelector('ol.sp-liste li').textContent === I18N.de['sp.schulden.1']);
+    const faelle = [...box.querySelectorAll('details.sp-fall')].map((x) => x.getAttribute('data-fall'));
+    check('[schulden] Was tun, wenn …: 8 Fälle zum Aufklappen in fester Reihenfolge', faelle.join() === 'inkasso,mahn,konto,strom,miete,rate,unserioes,insolvenz', faelle.join());
+    check('[schulden] Fälle zu Beginn zugeklappt, Mahnbescheid nennt die 2-Wochen-Frist mit Quelle', [...box.querySelectorAll('details.sp-fall')].every((x) => !x.open) && /2 Wochen.*§ 692 ZPO/.test(box.querySelector('[data-fall="mahn"] p').textContent));
+    check('[schulden] Quellenzeile nennt Verbraucherzentralen, BAG-SB, Caritas/Diakonie und AG SBV', /Verbraucherzentralen.*BAG-SB.*Caritas.*Diakonie.*AG SBV/.test(box.textContent));
+    const roh = Object.keys(I18N).filter((l) => { setLang(l); return /sp\.schulden|pf\.tipps|undefined/.test(d.getElementById('spInhalt').textContent); });
+    check('[schulden] In allen 13 Sprachen ohne Rohschlüssel', roh.length === 0, roh.join());
+    setLang('de');
+    d.querySelector('#spInhalt [data-fall="konto"] button').click();
+    check('[schulden] P-Konto-Fall führt zum Pfändungsrechner', d.getElementById('app').getAttribute('data-ansicht') === 'pfaendung');
+    const pfB = () => [...d.querySelectorAll('#pfInhalt button')];
+    check('[schulden] Pfändungsrechner: vor dem Rechnen kein Knopf „Tipps bei Schulden“', !pfB().some((b) => b.textContent === I18N.de['pf.tipps']));
+    pfB().find((b) => b.textContent.indexOf(I18N.de['pf.konto']) === 0).click();
+    pfB().find((b) => b.textContent === '0').click();
+    pfB().find((b) => b.textContent === '0').click();
+    const erg = d.querySelector('#pfInhalt .pf-zahl'), tk = pfB().find((b) => b.textContent === I18N.de['pf.tipps']);
+    check('[schulden] Nach dem Rechnen: Knopf „Tipps bei Schulden“ unter dem Ergebnis', !!erg && !!tk && (erg.compareDocumentPosition(tk) & w.Node.DOCUMENT_POSITION_FOLLOWING));
+    tk.click();
+    check('[schulden] Knopf öffnet die Schulden-Tipps', d.getElementById('app').getAttribute('data-ansicht') === 'sparen' && d.querySelectorAll('#spInhalt details.sp-fall').length === 8);
+  }
   check('Keine Skriptfehler im gesamten Test', errors.length === 0, errors.join('; '));
   console.log(fails ? '\n' + fails + ' FEHLER' : '\nAlle DOM-Tests bestanden');
   process.exit(fails ? 1 : 0);

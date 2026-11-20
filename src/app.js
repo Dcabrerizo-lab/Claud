@@ -2015,6 +2015,17 @@
   ];
   var SP_TIPPS = { strom: ['sp.strom.1', 'sp.strom.2', 'sp.strom.3', 'sp.strom.4', 'sp.strom.5', 'sp.strom.6'], heizen: ['sp.heizen.1', 'sp.heizen.2', 'sp.heizen.3', 'sp.heizen.4', 'sp.heizen.5'],
     essen: ['sp.essen.1', 'sp.essen.2', 'sp.essen.3', 'sp.essen.4', 'sp.essen.5'], vertraege: ['sp.vertraege.1', 'sp.vertraege.2', 'sp.vertraege.3', 'sp.vertraege.4', 'sp.vertraege.5', 'sp.vertraege.6'] };
+  // Schulden und Pfändung: Tipps nach gemeinnützigen Schuldnerberatungen, sinngemäß in eigenen Worten. Quellen (abgerufen 20.11.2026):
+  //  Verbraucherzentralen: verbraucherzentrale.nrw „Erste Schritte, wenn die Schulden drücken“; verbraucherzentrale.de „Gerichtliches Mahnverfahren:
+  //  Was tun bei einem Mahnbescheid?“, „Ratenvereinbarung beim Inkasso“, „Schuldnerberatungen: So erkennen Sie unseriöse Angebote“, „Privatinsolvenz –
+  //  in 3 Jahren schuldenfrei?“, „5 Wege: So erhalten Sie eine P-Konto-Bescheinigung“; BAG-SB: meine-schulden.de (Beratungsstellen-Suche, Inkassobriefe,
+  //  P-Konto, Mahnverfahren, Insolvenz); Caritas: caritas.de „Mietschulden: Tipps“, „Professionelle Hilfe gibt es bei der Schuldnerberatung“;
+  //  AG SBV (Wohlfahrtsverbände, BAG-SB, Verbraucherzentralen): „Konzept Soziale Schuldnerberatung“.
+  //  Gesetze: Verjährung §§ 195, 199 BGB; Mahnbescheid § 692 Abs. 1 Nr. 3 ZPO, Einspruch §§ 700, 339 ZPO; P-Konto §§ 850k, 899, 903 ZPO;
+  //  Energiesperre § 19 StromGVV/GasGVV; Darlehen § 22 Abs. 8 SGB II, § 36 SGB XII; Kündigung § 543 Abs. 2 Nr. 3, Schonfrist § 569 Abs. 3 Nr. 2 BGB;
+  //  Insolvenz §§ 287, 295, 302, 305 InsO.
+  // Reihenfolge wie im Auftrag; „konto“ bekommt zusätzlich den Knopf zum Pfändungsrechner.
+  var SP_SCHULDEN_FAELLE = ['inkasso', 'mahn', 'konto', 'strom', 'miete', 'rate', 'unserioes', 'insolvenz'];
   // Eigene Rezepte, günstige Grundzutaten, je 4 Portionen; bewusst ohne Preise (Preise ändern sich)
   var REZEPTE = [
     ['Linsen-Dal mit Reis', ['250 g rote Linsen', '1 Zwiebel, 1 Knoblauchzehe', '1 Dose gehackte Tomaten', '1 TL Curry, Salz', '250 g Reis'], ['Zwiebel und Knoblauch klein schneiden und in etwas Öl anbraten.', 'Linsen, Tomaten, Curry und 600 ml Wasser dazugeben, 15 Minuten köcheln, bis die Linsen weich sind.', 'Reis nach Packung kochen und mit dem Dal servieren.']],
@@ -2035,7 +2046,6 @@
       var l = document.createElement('div'); l.className = 'weg-liste'; box.appendChild(l);
       SP_THEMEN.forEach(function (x) {
         l.appendChild(nhKnopf('weg', '<span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + x[4] + '</svg></span><span class="weg-txt"><b>' + esc(t(x[1])) + '</b><span>' + esc(t(x[2])) + '</span></span>', null, function () {
-          if (x[0] === 'schulden') { zeigeAnsicht('pfaendung', true); return; }
           sp.thema = x[0]; sp.rezepte = false; spRender(true);
         }));
       });
@@ -2053,6 +2063,23 @@
       });
       p(t('sp.rezepte.t'), 'small muted');
       zurueck(function () { sp.rezepte = false; spRender(true); });
+    } else if (sp.thema === 'schulden') {
+      var zumRechner = function (cls) { var d = document.createElement('div'); d.className = 'btns'; d.appendChild(nhKnopf(cls, esc(t('sp.schulden.pf')), null, function () { zeigeAnsicht('pfaendung', true); })); return d; };
+      p(t('sp.schulden'), 'pf-frage');
+      box.appendChild(zumRechner('btn sp-rechner'));
+      p(t('sp.schulden.erst'), 'sp-zwischen');
+      var ol = document.createElement('ol'); ol.className = 'sp-liste'; box.appendChild(ol);
+      ['sp.schulden.1', 'sp.schulden.2', 'sp.schulden.3', 'sp.schulden.4'].forEach(function (k) { var li = document.createElement('li'); li.textContent = t(k); ol.appendChild(li); });
+      p(t('sp.schulden.fall'), 'sp-zwischen');
+      SP_SCHULDEN_FAELLE.forEach(function (f) {
+        var dt = document.createElement('details'); dt.className = 'pf-tipps sp-fall'; dt.setAttribute('data-fall', f);
+        var su = document.createElement('summary'); su.textContent = t('sp.schulden.' + f + '.s'); dt.appendChild(su);
+        var e = document.createElement('p'); e.className = 'hint'; e.textContent = t('sp.schulden.' + f); dt.appendChild(e);
+        if (f === 'konto') dt.appendChild(zumRechner('btn ghost'));
+        box.appendChild(dt);
+      });
+      p(t('sp.schulden.quellen'), 'small muted');
+      zurueck(function () { sp.thema = ''; spRender(true); });
     } else {
       var th = SP_THEMEN.filter(function (x) { return x[0] === sp.thema; })[0];
       p(t(th[1]), 'pf-frage');
@@ -2086,6 +2113,8 @@
       keys.forEach(function (k) { var e = document.createElement('p'); e.className = 'hint'; e.textContent = t(k); d.appendChild(e); });
       box.appendChild(d);
     };
+    // Verweis auf die Schulden-Tipps im Bereich „Geld sparen“: nur unter dem Ergebnis, nicht vor dem Rechnen
+    var spVerweis = function () { var d = knoepfe('btns'); d.appendChild(nhKnopf('btn ghost', esc(t('pf.tipps')), null, function () { sp.thema = 'schulden'; sp.rezepte = false; zeigeAnsicht('sparen', true); })); };
     var heute = new Date().toISOString().slice(0, 10);
     if (heute > Rules.RULES.pfaendung.gueltigBis) p(t('pf.alt'), 'warn');
     if (!pf.art) {
@@ -2136,6 +2165,7 @@
       var d = knoepfe('btns');
       d.appendChild(nhKnopf('btn', esc(t('pf.konto.weiter')), null, function () { pf.art = 'konto'; pf.schritt = 2; pfRender(true); }));
       d.appendChild(nhKnopf('btn ghost', esc(t('pf.neu')), null, function () { pf = { art: '', schritt: 0, netto: '', pers: null, kg: null, kiz: '' }; pfRender(true); }));
+      spVerweis();
     } else {
       var k = Rules.pkonto({ personen: pf.pers, kindergeldKinder: pf.kg });
       p(t('pf.erg.h'), 'pf-frage');
@@ -2147,6 +2177,7 @@
       tipps(['pf.tipp.umwandeln', 'pf.tipp.uebertrag', 'pf.tipp.sozial', 'pf.tipp.kontomehr', 'pf.tipp.beratung']);
       var d2 = knoepfe('btns');
       d2.appendChild(nhKnopf('btn ghost', esc(t('pf.neu')), null, function () { pf = { art: '', schritt: 0, netto: '', pers: null, kg: null, kiz: '' }; pfRender(true); }));
+      spVerweis();
     }
     if (fokus) { var h = box.querySelector('.pf-frage'); if (h) { h.setAttribute('tabindex', '-1'); h.focus(); } }
   }
