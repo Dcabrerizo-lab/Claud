@@ -10,7 +10,7 @@ Stand: 20.11.2026 · Wünsche von David, noch nicht umgesetzt
 | Startseite | „Geld sparen im Alltag“ und „Ich habe Schulden“ werden eine Kachel „Geld und Schulden“ mit 6 Unterkacheln (docs/entwuerfe/schulden-bereich.md) |
 | Geld sparen im Alltag | Haushaltsplan raus; er wandert nach „Ich habe Schulden“ (mit Haushaltsbuch, Energie-Check, Schuldenliste) |
 | Geld sparen im Alltag | Bereich „Schulden und Pfändung“ raus (steckt schon in „Ich habe Schulden“; Tipps der Schuldnerberatungen dorthin mitnehmen) |
-| Kopfzeile | Satz „Prüfe in etwa 5 Minuten …“ (Schlüssel lead) nur auf der Startseite, sonst nicht |
+| Kopfzeile | Ganze Kopfzeile (Logo, App-Name, Satz „Prüfe in etwa 5 Minuten …“) nur auf der Startseite, sonst nicht |
 | Ergebnisliste | Karte „Kostenlose Familienversicherung“ ganz raus (Regel, Texte, Tests, Prüfliste, Karten-Liste) |
 | Ergebnisliste | „Nächste Schritte“ und „Unterlagen“ aus den Karten raus; sie stehen in der Antragsmappe (Stelle, Unterlagen mit Haken, Tipp) |
 
