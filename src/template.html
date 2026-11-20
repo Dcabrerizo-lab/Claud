@@ -4,35 +4,41 @@
   /* Layout: links der Fragebogen, rechts live das Ergebnis; auf dem Handy untereinander mit fester Leiste unten.
      Alle Abstände nutzen logische Eigenschaften, damit Arabisch (rechts nach links) sauber spiegelt. */
   :root {
-    --font-display: 'Schibsted Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --font-display: 'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif;
     --font-body: 'Atkinson Hyperlegible', system-ui, -apple-system, 'Segoe UI', 'Noto Sans Arabic', Tahoma, sans-serif;
-    --bg: #eef2f6;
+    /* Design „Warm und menschlich“: Creme, Tinte, Petrol, Koralle nur im Logo und bei persönlichen Hinweisen */
+    --bg: #fffaf3;
     --surface: #ffffff;
-    --ink: #13202b;
-    --muted: #54677a;
-    --line: #d3dce5;
-    --accent: #2b4a9b;
+    --ink: #2b2a28;
+    --muted: #5f5a52;
+    --line: #efe6d8;
+    --field: #8c8174;  /* Rand von Eingabefeldern: mind. 3:1 zur Fläche */
+    --accent: #0f6b5c;
     --accent-ink: #ffffff;
-    --ok: #17643f;     --ok-bg: #e2f3ea;
-    --warn: #7a5200;   --warn-bg: #fbefcf;
-    --bad: #a1301f;    --bad-bg: #fbe5e1;
-    --na: #4a5b6b;     --na-bg: #e5eaf0;
-    --focus: #1d6fe0;
+    --accent-soft: #dff2ec;
+    --ok: #0f6b5c;     --ok-bg: #dff2ec;
+    --warn: #8a5a00;   --warn-bg: #fff1d6;
+    --bad: #9a3b26;    --bad-bg: #f9e4dc;
+    --na: #5f5a52;     --na-bg: #f1ebe2;
+    --hint: #a14a2f;   --hint-bg: #fde8df;
+    --coral: #ff7a59;
+    --focus: #b4472a;
+    color-scheme: light;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #0e161d; --surface: #16212a; --ink: #e7eef4; --muted: #9bb0c0; --line: #2b3b48;
-      --accent: #9db8ff; --accent-ink: #0e161d;
-      --ok: #6fd9a2; --ok-bg: #12301f; --warn: #f2c862; --warn-bg: #35290b;
-      --bad: #ff9a8a; --bad-bg: #3b1a15; --na: #a9bac8; --na-bg: #22313d; --focus: #7db2ff;
+      --bg: #1b1815; --surface: #26221f; --ink: #f4ede3; --muted: #c4b8a8; --line: #3b342d; --field: #8a7f72;
+      --accent: #6fd3bd; --accent-ink: #10221e; --accent-soft: #1a3a33;
+      --ok: #8be0cb; --ok-bg: #173a33; --warn: #f3c56b; --warn-bg: #3a2c10;
+      --bad: #ffab97; --bad-bg: #3d211a; --na: #c4b8a8; --na-bg: #2f2a25; --hint: #ffb398; --hint-bg: #3f2419; --focus: #ffb398;
       color-scheme: dark;
     }
   }
   :root[data-theme="dark"] {
-    --bg: #0e161d; --surface: #16212a; --ink: #e7eef4; --muted: #9bb0c0; --line: #2b3b48;
-    --accent: #9db8ff; --accent-ink: #0e161d;
-    --ok: #6fd9a2; --ok-bg: #12301f; --warn: #f2c862; --warn-bg: #35290b;
-    --bad: #ff9a8a; --bad-bg: #3b1a15; --na: #a9bac8; --na-bg: #22313d; --focus: #7db2ff;
+    --bg: #1b1815; --surface: #26221f; --ink: #f4ede3; --muted: #c4b8a8; --line: #3b342d; --field: #8a7f72;
+    --accent: #6fd3bd; --accent-ink: #10221e; --accent-soft: #1a3a33;
+    --ok: #8be0cb; --ok-bg: #173a33; --warn: #f3c56b; --warn-bg: #3a2c10;
+    --bad: #ffab97; --bad-bg: #3d211a; --na: #c4b8a8; --na-bg: #2f2a25; --hint: #ffb398; --hint-bg: #3f2419; --focus: #ffb398;
     color-scheme: dark;
   }
 
@@ -71,7 +77,7 @@
   .es-wahl { display: grid; gap: 12px; }
   .es-wahl.es-klein { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
   .es-btn { font: inherit; display: flex; align-items: center; gap: 14px; width: 100%; min-height: 64px; padding: 12px 18px; text-align: start;
-    background: var(--surface); color: var(--ink); border: 2px solid var(--line); border-radius: 14px; cursor: pointer; font-weight: 600; }
+    background: var(--surface); color: var(--ink); border: 2px solid var(--line); border-radius: var(--r-item); cursor: pointer; font-weight: 600; }
   .es-btn:focus-visible { border-color: var(--accent); }
   @media (hover: hover) { .es-btn:hover { border-color: var(--accent); } }
   .es-btn.an { border-color: var(--accent); background: var(--accent); color: var(--accent-ink); }
@@ -80,7 +86,7 @@
   .es-mz { font-size: 1.4em; font-weight: 800; }
   .es-mzt { font-size: 0.75em; font-weight: 500; }
   .es-zahl { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-  .es-zahl input { font: inherit; font-size: 1.6em; width: 100%; max-width: 9em; min-height: 64px; padding: 6px 14px; border: 2px solid var(--line); border-radius: 14px; background: var(--surface); color: var(--ink); }
+  .es-zahl input { font: inherit; font-size: 1.6em; width: 100%; max-width: 9em; min-height: 64px; padding: 6px 14px; border: 2px solid var(--field); border-radius: 14px; background: var(--surface); color: var(--ink); }
   .es-zahl span { font-size: 1.4em; }
   .es-nav1 { display: grid; gap: 12px; margin-top: 16px; }
   .es-weiter { justify-content: center; background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
@@ -121,7 +127,7 @@
     padding-block: 20px 96px;
   }
   h1, h2, h3 { font-family: var(--font-display); line-height: 1.2; margin: 0; text-wrap: balance; }
-  h1 { font-size: 2em; font-weight: 800; letter-spacing: -0.01em; }
+  h1 { font-size: 2em; font-weight: 900; letter-spacing: -0.01em; }
   h1 .sub { display: block; font-size: 0.45em; font-weight: 600; letter-spacing: 0; color: var(--muted); margin-top: 2px; }
   h2 { font-size: 1.35em; font-weight: 800; }
   h3 { font-size: 1.1em; font-weight: 600; }
@@ -146,7 +152,7 @@
   .stand { font-size: 0.8em; color: var(--muted); letter-spacing: 0.02em; }
 
   .notice {
-    background: var(--warn-bg); color: var(--warn); border: 1px solid currentColor; border-radius: 8px;
+    background: var(--warn-bg); color: var(--warn); border: 1px solid currentColor; border-radius: 14px;
     padding: 10px 14px; font-size: 0.92em; margin-bottom: 12px;
   }
   .notice.info { background: var(--na-bg); color: var(--na); }
@@ -172,7 +178,7 @@
   .money span { position: absolute; inset-inline-end: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
   input[type="number"], input[type="text"], input[type="date"], select {
     font: inherit; color: var(--ink); background: var(--surface);
-    border: 1px solid var(--line); border-radius: 8px; padding: 0 14px; min-height: 48px; width: 100%;
+    border: 1px solid var(--field); border-radius: 8px; padding: 0 14px; min-height: 48px; width: 100%;
     font-variant-numeric: tabular-nums;
   }
   .money input { direction: ltr; text-align: start; }
@@ -180,7 +186,7 @@
   .app.pm .ansicht { display: none !important; }
   .einst-tabs { display: flex; gap: 8px; margin: 12px 0 16px; flex-wrap: wrap; }
   .einst-tabs button { border: 1px solid var(--line, #c9ced8); background: transparent; color: inherit; font: inherit; font-weight: 700; min-height: 44px; padding: 8px 18px; border-radius: 999px; }
-  .einst-tabs button[aria-selected="true"] { background: color-mix(in srgb, var(--accent) 14%, transparent); color: var(--accent); border-color: var(--accent); }
+  .einst-tabs button[aria-selected="true"] { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
   .einst-pn { display: grid; gap: 12px; max-width: 70ch; }
   .einst-pn[hidden] { display: none; }
   #legal { display: grid; gap: 16px; max-width: 70ch; }
@@ -190,14 +196,14 @@
   .linkbtn { background: none; border: 0; padding: 12px 0; min-height: 44px; color: var(--accent); font: inherit; text-decoration: underline; cursor: pointer; text-align: start; }
   select { appearance: auto; }
 
-  .seg { position: relative; display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--surface); }
+  .seg { position: relative; display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--field); border-radius: 8px; overflow: hidden; background: var(--surface); }
   .seg input { position: absolute; opacity: 0; pointer-events: none; }
   .seg label { display: grid; place-items: center; min-height: 48px; padding: 0 12px; cursor: pointer; font-weight: 700; text-align: center; }
   .seg input:nth-of-type(2) + label { border-inline-start: 1px solid var(--line); }
   .seg input:checked + label { background: var(--accent); color: var(--accent-ink); }
   .seg input:focus-visible + label { outline: 3px solid var(--focus); outline-offset: -3px; }
 
-  .stepper { display: grid; grid-template-columns: 52px 1fr 52px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--surface); }
+  .stepper { display: grid; grid-template-columns: 52px 1fr 52px; border: 1px solid var(--field); border-radius: 8px; overflow: hidden; background: var(--surface); }
   .stepper button { font: inherit; font-size: 1.4em; border: 0; background: transparent; color: var(--ink); min-height: 48px; cursor: pointer; }
   .stepper button:hover { background: var(--bg); }
   .stepper output { display: grid; place-items: center; font-weight: 700; font-variant-numeric: tabular-nums; border-inline: 1px solid var(--line); }
@@ -263,7 +269,7 @@
   .card.auf > details.karte[open] > summary { padding-bottom: 8px; }
   .card.auf .body, .card.auf .zust { margin-bottom: 10px; }
   /* Zwei Wege: Grundsicherungsgeld oder Wohngeld und Kinderzuschlag */
-  .zweiwege { background: var(--surface); border: 2px solid var(--accent); border-radius: 12px; padding: 16px 18px; display: grid; gap: 10px; margin-bottom: 16px; }
+  .zweiwege { background: var(--surface); border: 2px solid var(--accent); border-radius: var(--r-card); padding: 16px 18px; display: grid; gap: 10px; margin-bottom: 16px; }
   .ww-wege { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
   .ww-weg { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; gap: 6px; align-content: start; }
   .ww-weg h4 { margin: 0; font-size: 1em; }
@@ -271,8 +277,8 @@
   .ww-l > span:first-child { text-decoration: underline; text-decoration-color: var(--accent); }
   .ww-regel { margin: 0; }
   .ww-tun { margin: 0; background: var(--ok-bg); color: var(--ink); border-radius: 8px; padding: 8px 12px; }
-  .karte-hinweis { background: var(--na-bg); color: var(--ink); border-radius: 8px; padding: 8px 12px; margin: 8px 0 0; }
-  .gutwissen { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 4px 18px; }
+  .karte-hinweis { background: var(--hint-bg); color: var(--hint); border-radius: 14px; padding: 8px 12px; margin: 8px 0 0; }
+  .gutwissen { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-card); padding: 4px 18px; }
   .gutwissen > summary { min-height: 48px; color: var(--ink); display: grid; gap: 4px; padding: 12px 0; list-style: none; cursor: pointer; }
   .gutwissen > summary::-webkit-details-marker { display: none; }
   .gw-titel { font-weight: 700; }
@@ -294,7 +300,7 @@
   .together { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 10px; }
   .together ul { margin: 0; padding-inline-start: 20px; display: grid; gap: 8px; }
 
-  .helper { background: var(--surface); border: 2px solid var(--accent); border-radius: 10px; padding: 18px; display: grid; gap: 16px; }
+  .helper { background: var(--surface); border: 2px solid var(--accent); border-radius: var(--r-card); padding: 18px; display: grid; gap: 16px; }
   .helper .two { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); }
   @media (min-width: 560px) { .helper .two { grid-template-columns: 1fr 1fr; } }
   .btn {
@@ -305,8 +311,8 @@
   .btn:disabled { opacity: .5; cursor: not-allowed; }
   .btns { display: flex; flex-wrap: wrap; gap: 8px 12px; }
   .msg { font-size: 0.9em; color: var(--muted); min-height: 1.4em; }
-  .scan { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 14px; }
-  .scan textarea { font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; width: 100%; min-height: 96px; resize: vertical; }
+  .scan { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-card); padding: 18px; display: grid; gap: 14px; }
+  .scan textarea { font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--field); border-radius: 8px; padding: 10px 14px; width: 100%; min-height: 96px; resize: vertical; }
   .scan, .scan > * { min-width: 0; }
   .scan input[type="file"] { font: inherit; width: 100%; max-width: 100%; min-width: 0; }
   .scan label { overflow-wrap: anywhere; }
@@ -405,13 +411,13 @@
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 56px; padding: 4px 2px; cursor: pointer; line-height: 1.15; text-align: center; }
   .appnav svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
   .appnav button[aria-current="page"] { color: var(--accent); }
-  .appnav button[aria-current="page"]::before { content: ""; position: absolute; top: 3px; left: 50%; width: 46px; height: 30px; transform: translateX(-50%); border-radius: 99px; background: color-mix(in srgb, var(--accent) 14%, transparent); z-index: -1; }
+  .appnav button[aria-current="page"]::before { content: ""; position: absolute; top: 3px; left: 50%; width: 46px; height: 30px; transform: translateX(-50%); border-radius: 99px; background: var(--accent-soft); z-index: -1; }
   .shell { padding-bottom: 150px; }
   .jump { bottom: calc(64px + env(safe-area-inset-bottom, 0px)); }
   @media (min-width: 900px) {
     .appnav { position: static; max-width: 1180px; margin: 0 auto; grid-template-columns: repeat(4, auto); justify-content: start; gap: 8px; background: transparent; border: 0; padding: 0 max(16px, env(safe-area-inset-left, 0px)); }
     .appnav button { flex-direction: row; gap: 8px; font-size: 1rem; padding: 8px 16px; border-radius: 999px; min-height: 44px; }
-    .appnav button[aria-current="page"] { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+    .appnav button[aria-current="page"] { background: var(--accent-soft); }
     .appnav button[aria-current="page"]::before { display: none; }
     .shell { padding-bottom: 40px; }
   }
@@ -422,9 +428,9 @@
   .set-gruppe p { margin: 0 0 8px; }
   .chip[aria-disabled="true"] { opacity: .6; cursor: not-allowed; }
   .weg-liste { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; margin: 18px 0; }
-  .weg { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; min-height: 84px; padding: 16px; border-radius: 16px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; box-shadow: var(--shadow-s); }
-  .weg.haupt { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
-  .weg-sym { flex: none; width: 50px; height: 50px; border-radius: 14px; display: grid; place-items: center; background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent); }
+  .weg { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; min-height: 84px; padding: 16px; border-radius: var(--r-item); border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; box-shadow: var(--shadow-s); }
+  .weg.haupt { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); border-radius: 28px; border-end-start-radius: 8px; padding: 20px; }
+  .weg-sym { flex: none; width: 50px; height: 50px; border-radius: 999px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); }
   .weg.haupt .weg-sym { background: color-mix(in srgb, var(--accent-ink) 18%, transparent); color: var(--accent-ink); }
   .weg-sym svg, .kachel-sym svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
   .weg-txt { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2px; min-width: 0; overflow-wrap: anywhere; word-break: break-word; }
@@ -434,7 +440,7 @@
   /* Große Auswahlknöpfe (Pfändung, Netto-Helfer): erst wählen, worum es geht, dann weiter */
   .wahl-liste { display: grid; gap: 10px; margin: 12px 0; }
   .wahl-raster { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 12px 0; }
-  .wahl { display: grid; gap: 2px; width: 100%; min-height: 64px; padding: 12px 14px; text-align: left; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; box-shadow: var(--shadow-s); }
+  .wahl { display: grid; gap: 2px; width: 100%; min-height: 64px; padding: 12px 14px; text-align: left; border-radius: var(--r-item); border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; box-shadow: var(--shadow-s); }
   .wahl b { font-size: 1.08em; }
   .wahl span { opacity: .85; font-size: .93em; }
   .wahl[aria-pressed="true"], .wahl.vorschlag { border: 2px solid var(--accent); }
@@ -452,8 +458,8 @@
   .pf-tipps { margin: 12px 0; } .pf-tipps summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
   .nh { margin-top: 8px; padding: 12px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
   .kacheln { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin: 16px 0; }
-  .kachel { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; text-align: left; min-height: 116px; padding: 14px; border-radius: 16px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; box-shadow: var(--shadow-s); }
-  .kachel-sym { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent); }
+  .kachel { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; text-align: left; min-height: 116px; padding: 14px; border-radius: var(--r-item); border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; box-shadow: var(--shadow-s); }
+  .kachel-sym { width: 44px; height: 44px; border-radius: 999px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); }
   .kachel b { font-size: 1.02em; line-height: 1.25; }
   .kachel span.k-t { color: var(--muted); font-size: .88em; line-height: 1.3; max-width: 100%; overflow-wrap: anywhere; }
 
@@ -494,12 +500,13 @@
 
   /* ===== Moderne Optik (nur Gestaltung; Bedienung, Größen und Kontraste wie geprüft) =====
      Weiche Karten mit Schatten statt Rahmen, runde Formen, farbiger Rand je Einstufung, ruhige Kopfzeile mit Symbol. */
-  :root { --r-card: 16px; --r-ctl: 12px; --shadow: 0 1px 2px rgba(19, 32, 43, .06), 0 6px 20px rgba(19, 32, 43, .07); --shadow-s: 0 1px 2px rgba(19, 32, 43, .08); --bg: #f2f5f9; }
-  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --shadow: 0 1px 2px rgba(0, 0, 0, .5), 0 6px 20px rgba(0, 0, 0, .35); --shadow-s: 0 1px 2px rgba(0, 0, 0, .5); --bg: #0e161d; } }
-  :root[data-theme="dark"] { --shadow: 0 1px 2px rgba(0, 0, 0, .5), 0 6px 20px rgba(0, 0, 0, .35); --shadow-s: 0 1px 2px rgba(0, 0, 0, .5); --bg: #0e161d; }
+  /* Warm und menschlich: weiche Kante statt grauem Schatten, Karten 24 px, Listen-Elemente 22 px, Knöpfe als Pille */
+  :root { --r-card: 24px; --r-item: 22px; --r-ctl: 14px; --shadow: 0 2px 0 var(--line); --shadow-s: 0 2px 0 var(--line); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --shadow: 0 2px 0 #12100e; --shadow-s: 0 2px 0 #12100e; } }
+  :root[data-theme="dark"] { --shadow: 0 2px 0 #12100e; --shadow-s: 0 2px 0 #12100e; }
   /* Kopf */
   .top h1 { display: flex; align-items: center; gap: 12px; }
-  .top h1 .logo { flex: none; width: 48px; height: 48px; border-radius: 14px; box-shadow: var(--shadow-s); }
+  .top h1 .logo { flex: none; width: 48px; height: 48px; border-radius: 14px; }
   .top h1 .titel { display: block; }
   .tools .chip, .langpick select { box-shadow: var(--shadow-s); }
   /* Fragebogen-Abschnitte als Karten, Überschrift mit Farbbalken */
@@ -537,11 +544,12 @@
   .summary h2 { font-size: 1.45em; }
   details summary { min-height: 44px; }
   /* Knöpfe */
-  .btn { border-radius: 999px; box-shadow: var(--shadow-s); }
+  .btn { border-radius: 999px; box-shadow: none; }
+  .btns > .btn:not(.ghost), .es-weiter { min-height: 52px; }
   .btn.ghost { box-shadow: none; }
   /* Leiste unten: leicht durchscheinend, Knopf als Pille */
-  .jump { background: color-mix(in srgb, var(--surface) 88%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-top: 1px solid var(--line); box-shadow: 0 -4px 16px rgba(19, 32, 43, .06); }
-  .jump button { border-radius: 999px; padding-inline: 22px; box-shadow: var(--shadow-s); }
+  .jump { background: color-mix(in srgb, var(--surface) 88%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-top: 1px solid var(--line); }
+  .jump button { border-radius: 999px; padding-inline: 22px; box-shadow: none; }
   @media (prefers-reduced-motion: reduce) { .chip, input, select { transition: none; } .chip:active { transform: none; } }
   /* Brief prüfen: Prüfpaket (Stile aus erweiterungen/vorschau.html, auf .pp beschränkt) */
   .pp-kopf { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 0 0 14px; }
@@ -557,7 +565,7 @@
   #checkBox .pp-zu .einlesen > .btns { display: grid; gap: 10px; }
   #checkBox .pp-zu .einlesen > .btns .btn { justify-content: flex-start; min-height: 52px; width: 100%; }
   .app.brief-offen .notices, .app.brief-offen .first { display: none !important; }
-  .einlesen { background: var(--surface); border-radius: 16px; padding: 14px 16px; margin: 0 0 16px; box-shadow: var(--shadow); }
+  .einlesen { background: var(--surface); border-radius: var(--r-card); padding: 14px 16px; margin: 0 0 16px; box-shadow: var(--shadow); }
   .einlesen .btns { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 6px; }
   .einlesen textarea { width: 100%; min-height: 120px; font: inherit; }
   .pp .pp-erkannt { background: #fff6d6 !important; border-color: #e0b100 !important; color: #18202e !important; } /* !important: die Feldstile des Prüfpakets sind spezifischer */
@@ -606,6 +614,43 @@
   .pi-link { font: inherit; font-size: .92em; font-weight: 600; color: var(--accent); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; min-height: 44px; cursor: pointer; text-align: start; }
   .pi-link:hover { border-color: var(--accent); }
   .pi-link-tab { border: 0; padding: 0; min-height: 44px; font-size: 1em; }
+  /* Bildschirmaufbau „Warm und menschlich“: Begrüßung, Startkarte, Listen-Elemente, Hinweise in Koralle-Ton */
+  .app[data-ansicht="start"] .top .lead { display: none; }
+  .gruss { font-size: 1.7em; font-weight: 900; margin: 4px 0 6px; }
+  .gruss-t { color: var(--muted); font-size: 1.05em; margin: 0 0 4px; }
+  /* Startseite als Kachel-Raster (Kacheln wie Richtung 3 „Bunt und bildhaft“, Farben aus der warmen Palette; weiße Schrift mind. 4,5:1).
+     Spaltenbreite in em: bei 320 px oder großer Schrift bricht das Raster auf eine Spalte um. Jeder Bereich hat seine Farbe. */
+  :root { --c-leistungen: #0f6b5c; --c-briefe: #a14a2f; --c-pfaendung: #7a3b69; --c-sparen: #2f6b3a; --c-pflege: #23507f; }
+  .start-raster { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5em), 1fr)); gap: 12px; margin: 18px 0; max-width: 640px; }
+  .sk { --c: var(--c-leistungen); display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; gap: 14px; min-height: 150px; width: 100%; padding: 16px; border: 0; border-radius: 26px;
+    background: var(--c); color: #fff; font: inherit; text-align: start; cursor: pointer; box-shadow: 0 2px 0 color-mix(in srgb, var(--c) 70%, #000); }
+  .sk:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+  @media (hover: hover) { .sk:hover { filter: brightness(1.08); } }
+  .sk-haupt { grid-column: 1 / -1; min-height: 160px; justify-content: flex-start; gap: 16px; padding: 22px 22px 20px; border-radius: 28px; border-end-start-radius: 8px; }
+  .sk-haupt .sk-txt { display: flex; flex-direction: column; gap: 6px; }
+  .sk-haupt .sk-meta { order: -1; font-weight: 700; font-size: .875rem; }
+  .hero-los { display: inline-flex; align-items: center; gap: 8px; min-height: 52px; padding: 0 24px; border-radius: 999px; background: #fff; color: var(--c-leistungen); font-family: var(--font-display); font-weight: 800; font-size: 1.05rem; }
+  [dir="rtl"] .pfeil { display: inline-block; transform: scaleX(-1); }
+  .start-raster > .sk:last-child:nth-child(even) { grid-column: 1 / -1; min-height: 0; }
+  .sk-briefe { --c: var(--c-briefe); } .sk-pfaendung { --c: var(--c-pfaendung); } .sk-sparen { --c: var(--c-sparen); } .sk-pflege { --c: var(--c-pflege); }
+  .sk-sym { flex: none; width: 48px; height: 48px; border-radius: 16px; display: grid; place-items: center; background: rgba(255, 255, 255, .2); color: #fff; }
+  .sk-sym svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+  .sk-txt { display: grid; gap: 4px; min-width: 0; overflow-wrap: anywhere; hyphens: auto; }
+  .sk-txt b { font-family: var(--font-display); font-weight: 800; font-size: 1.25rem; line-height: 1.2; }
+  .sk-haupt .sk-txt b { font-weight: 900; font-size: 1.5rem; }
+  .sk-txt span { font-size: .875rem; line-height: 1.35; }
+  .app.big .sk-txt b { font-size: 1.25em; } .app.big .sk-haupt .sk-txt b { font-size: 1.5em; } .app.big .sk-txt span { font-size: .875em; }
+  /* Bereichsfarbe auch in den Bereichen: Symbole in Brief prüfen, Schulden, Geld sparen */
+  .app[data-ansicht="briefe"] .kachel-sym { background: var(--c-briefe); color: #fff; }
+  .app[data-ansicht="pfaendung"] .weg-sym { background: var(--c-pfaendung); color: #fff; }
+  .app[data-ansicht="sparen"] .weg-sym { background: var(--c-sparen); color: #fff; }
+  .hinweis-koralle { display: flex; gap: 12px; align-items: flex-start; background: var(--hint-bg); color: var(--hint); border-radius: var(--r-item); padding: 14px 16px; margin: 4px 0 0; font-weight: 700; }
+  .hinweis-koralle > svg { flex: none; width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; margin-top: 1px; }
+  .hinweis-koralle p { margin: 0; }
+  .hinweis-koralle.beratung > div { display: grid; gap: 4px; }
+  .hinweis-koralle.beratung > div > p:not(.b-titel) { font-weight: 400; color: var(--ink); font-size: .92em; }
+  .summary .res-satz { flex-basis: 100%; font-size: 1.05em; font-weight: 700; }
+  .summary h2 { font-weight: 900; }
 /*PPSTIL*/
 </style>
 
@@ -613,7 +658,7 @@
   <div class="shell">
     <header class="top">
       <div>
-        <h1><svg class="logo" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><defs><linearGradient id="logoG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2d3d85"/><stop offset="1" stop-color="#1a2456"/></linearGradient></defs><rect width="100" height="100" rx="26" fill="url(#logoG)"/><rect x="18" y="29" width="56" height="40" rx="7" fill="#fff"/><path d="M22 34l24 18 24-18" fill="none" stroke="#23306b" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="71" cy="69" r="15.5" fill="#f2b233" stroke="#1f2a5e" stroke-width="4"/><path d="M63.8 69.5l5 5 9.6-10.6" fill="none" stroke="#1f2a5e" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="titel">SoLo <span class="sub">Sozialleistungslotse</span></span></h1>
+        <h1><svg class="logo" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><rect width="100" height="100" rx="30" fill="#0f6b5c"/><path d="M30 26h40a12 12 0 0 1 12 12v20a12 12 0 0 1-12 12H50L36 82V70h-6a12 12 0 0 1-12-12V38a12 12 0 0 1 12-12z" fill="#fffaf3"/><path d="M37 48l9 9 18-18" fill="none" stroke="#ff7a59" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="titel">SoLo <span class="sub">Sozialleistungslotse</span></span></h1>
         <p class="lead" data-t="lead"></p>
       </div>
     </header>
@@ -621,14 +666,16 @@
     <main id="inhalt">
     <!-- Start: was dringend ist, dann die zwei Hauptwege -->
     <section id="v-start" class="ansicht" aria-labelledby="h-start" hidden>
-      <h2 id="h-start" class="ans-h" data-t="home.h"></h2>
-      <div class="weg-liste">
-        <button type="button" class="weg haupt" id="goLeistungen"><span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4M8.5 11l2 2 3.5-4"/></svg></span><span class="weg-txt"><b data-t="home.leistungen"></b><span data-t="home.leistungen.t"></span></span></button>
-        <button type="button" class="weg" id="goBriefe"><span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><span class="weg-txt"><b data-t="home.brief"></b><span data-t="home.brief.t"></span></span></button>
-        <button type="button" class="weg" id="goPfaendung"><span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/><path d="M15 3l-3 3-3-3"/></svg></span><span class="weg-txt"><b data-t="home.pfaendung"></b><span data-t="home.pfaendung.t"></span></span></button>
-        <button type="button" class="weg" id="goSparen"><span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 11a7 6 0 0 1 13-2h2v4h-2a7 7 0 0 1-3 3v3h-3v-2h-2v2H7v-3a6 6 0 0 1-2-5z"/><circle cx="15" cy="10" r=".8"/></svg></span><span class="weg-txt"><b data-t="home.sparen"></b><span data-t="home.sparen.t"></span></span></button>
+      <h2 id="h-start" class="ans-h gruss" data-t="home.gruss"></h2>
+      <p class="gruss-t" data-t="home.gruss.t"></p>
+      <div class="start-raster">
+        <button type="button" class="sk sk-haupt sk-leistungen" id="goLeistungen"><span class="sk-txt"><b data-t="home.leistungen"></b><span class="sk-meta" data-t="home.hero.meta"></span></span><span class="hero-los"><span data-t="home.los"></span><span class="pfeil" aria-hidden="true">→</span></span></button>
+        <button type="button" class="sk sk-briefe" id="goBriefe"><span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><span class="sk-txt"><b data-t="home.brief"></b><span data-t="home.brief.t"></span></span></button>
+        <button type="button" class="sk sk-pfaendung" id="goPfaendung"><span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/><path d="M15 3l-3 3-3-3"/></svg></span><span class="sk-txt"><b data-t="home.pfaendung"></b><span data-t="home.pfaendung.t"></span></span></button>
+        <button type="button" class="sk sk-sparen" id="goSparen"><span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 11a7 6 0 0 1 13-2h2v4h-2a7 7 0 0 1-3 3v3h-3v-2h-2v2H7v-3a6 6 0 0 1-2-5z"/><circle cx="15" cy="10" r=".8"/></svg></span><span class="sk-txt"><b data-t="home.sparen"></b><span data-t="home.sparen.t"></span></span></button>
+        <button type="button" class="sk sk-pflege" id="goPflege"><span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/><path d="M9 12h6M12 9v6"/></svg></span><span class="sk-txt"><b data-t="home.pflege"></b><span data-t="home.pflege.t"></span></span></button>
       </div>
-      <p class="small muted" data-t="home.privat"></p>
+      <p class="hinweis-koralle"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg><span data-t="home.sicher"></span></p>
     </section>
 
     <!-- Brief prüfen: nach Absender -->
@@ -1077,11 +1124,13 @@
         <div class="summary">
           <h2 id="h-res" data-t="res.h"></h2>
           <span class="count" id="count" aria-live="polite"></span>
+          <p class="res-satz" id="resSatz" hidden></p>
         </div>
         <p class="legende" id="legende" data-t="legende"></p>
         <nav id="overview" class="overview" hidden></nav>
         <div id="together"></div>
         <div id="cards" class="results"></div>
+        <div class="hinweis-koralle beratung" id="beratung" hidden><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg><div><p class="b-titel" data-t="res.beratung"></p><p data-t="foot.2"></p></div></div>
 
         <section class="helper" id="helper" aria-labelledby="h-helper">
           <h2 id="h-helper" data-t="f.h"></h2>
@@ -1193,7 +1242,6 @@
 
         <div class="foot">
           <p data-t="foot.1"></p>
-          <p data-t="foot.2"></p>
           <p data-t="foot.3"></p>
           <p><button type="button" class="linkbtn" id="legalBtn" data-t="legal.open"></button></p>
         </div>
@@ -1219,7 +1267,7 @@
       <p class="small"><strong>Auswertung mit Claude (nur Web-Version innerhalb von Claude):</strong> Wird die Web-Version als Seite in Claude (claude.ai, Anthropic PBC, USA) geöffnet, gibt es zusätzlich die Möglichkeit, ein Foto mit Claude auswerten zu lassen. Das Foto wird nur gesendet, wenn du das Häkchen zur Einwilligung setzt und auf „Mit Claude auswerten“ tippst (Art. 6 Abs. 1 Buchst. a und Art. 9 Abs. 2 Buchst. a DSGVO, weil Unterlagen Gesundheitsdaten enthalten können). Es wird dann an Anthropic in die USA übermittelt und dort nach den Datenschutzbestimmungen von Anthropic verarbeitet. Die Einwilligung ist freiwillig und gilt nur für dieses eine Foto. In der App für Android und iOS gibt es diese Funktion nicht.</p>
       <h3>Lizenzen</h3>
       <ul>
-        <li>Atkinson Hyperlegible und Schibsted Grotesk: SIL Open Font License 1.1</li>
+        <li>Schriften Atkinson Hyperlegible (Braille Institute) und Nunito (The Nunito Project Authors): SIL Open Font License 1.1</li>
         <li>Noto Sans (PDF-Erzeugung): SIL Open Font License 1.1</li>
         <li>Capacitor und seine Plugins, pdf-lib: MIT-Lizenz</li>
         <li>pdf.js (Mozilla, PDF-Dateien lesen): Apache License 2.0</li>

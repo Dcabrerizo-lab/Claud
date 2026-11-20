@@ -62,7 +62,7 @@ fs.mkdirSync(path.join(WWW, 'fonts', 'pdf'), { recursive: true });
 // Oberflächen-Schriften (Fontsource, SIL OFL 1.1)
 const FONTS = [
   ['atkinson-hyperlegible', 'Atkinson Hyperlegible', [[400, 'latin'], [400, 'latin-ext'], [700, 'latin'], [700, 'latin-ext']]],
-  ['schibsted-grotesk', 'Schibsted Grotesk', [[600, 'latin'], [600, 'latin-ext'], [800, 'latin'], [800, 'latin-ext']]]
+  ['nunito', 'Nunito', [600, 700, 800, 900].flatMap((w) => [[w, 'latin'], [w, 'latin-ext']])]
 ];
 const RANGE = {
   latin: 'U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD',
@@ -103,6 +103,7 @@ const safeArea = 'body{padding-top:env(safe-area-inset-top);padding-bottom:env(s
 html = replaceOnce(html, '<style>', '<style>\n' + faces + safeArea, 'erstes <style>');
 const head = '<!doctype html>\n<html lang="de"><head><meta charset="utf-8">' +
   '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">\n' +
+  '<meta name="theme-color" content="#fffaf3" media="(prefers-color-scheme: light)">\n<meta name="theme-color" content="#1b1815" media="(prefers-color-scheme: dark)">\n' +
   '<meta http-equiv="Content-Security-Policy" content="' + CSP + '">\n' +
   '<link rel="icon" href="data:,">\n'; // leeres Symbol: sonst fragt die WebView /favicon.ico an (404 im Log); <title>, Links und <style> folgen aus der Vorlage
 fs.writeFileSync(path.join(WWW, 'index.html'), head + html + '\n</body></html>\n');
