@@ -372,6 +372,13 @@
   .hb-katfeld { display: grid; gap: 8px; }
   .hb-frage, .hb-hinweis { border: 2px solid var(--accent); border-radius: 12px; padding: 10px 12px; display: grid; gap: 8px; }
   .hb-frage p, .hb-hinweis p { margin: 0; }
+  /* Haushaltsbuch: Beleg-Häkchen und Belegliste (keine neue Farbe) */
+  .hb-beleg { display: grid; gap: 6px; }
+  .hb-beleg-art { display: grid; gap: 4px; margin-inline-start: 28px; }
+  .hb-beleg .hint, .hb-beleg .warn { margin: 0; }
+  .hb-bl > summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font-weight: 600; }
+  .hb-bl-summe { margin: 6px 0; font-weight: 600; }
+  .hb-bl-liste li { overflow-wrap: anywhere; }
   .hb-hinweise { display: grid; gap: 10px; }
   .hb-hinweise:empty, #hbSpeicherMsg:empty { display: none; }
   .hb-mehr > summary, .hb-hw-det > summary, .hb-rb > summary, .hb-wb > summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font-weight: 600; }
