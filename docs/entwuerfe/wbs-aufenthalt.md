@@ -13,8 +13,14 @@ Stand: 20.11.2026 · Status: vorgemerkt, noch nicht umgesetzt
 - Offen: Landesrecht Bayern (BayWoFG) und die anderen Länder prüfen
 
 ## Vorschlag
-- Bei `h.asyl`: höchstens „möglich“, nie „Ja“
+- Bei `h.asyl`: Stufe „Unwahrscheinlich“ (`nein`), weil der WBS nur ausnahmsweise möglich ist (Entscheidung David, 20.11.2026)
 - Hinweis (Entwurf): „Mit Duldung oder Aufenthaltsgestattung gibt es den Wohnberechtigungsschein meist nicht. Ausnahme zum Beispiel bei Ausbildungsduldung. Frage beim Wohnungsamt.“
+
+## Tests gegen diese Fehlerart (vorgemerkt)
+- Voraussetzungs-Matrix: je Leistung alle Nicht-Einkommens-Voraussetzungen (Aufenthalt, Alter, Ausbildung, Wohnort, Vorrang anderer Leistungen) mit Quelle in einer Tabelle; Test prüft jede Zelle
+- Vollständigkeitstest: jede Leistung muss jeden Aufenthaltsstatus ausdrücklich behandeln, sonst Test rot
+- Eigenschaftstest: asyl + sehr niedriges Einkommen → nie „Wahrscheinlich“, außer bei Leistungen, die in der Matrix dafür freigegeben sind
+- Fable-Prüfliste: bei jeder Leistung zuerst „Wer ist ausgeschlossen?“ prüfen, erst dann die Zahlen
 - Übersetzungen in allen Sprachen + Einfache Sprache; Amtsbegriff „Wohnberechtigungsschein“ deutsch erhalten
 - Test in `test/` ergänzen (asyl + niedriges Einkommen → nicht „ja“)
 - Vor dem Merge: unabhängige Prüfung (Fable)
