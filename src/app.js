@@ -404,6 +404,7 @@
     $('stand').textContent = t('stand', { stand: Rules.RULES.stand });
     $('appVersion').textContent = t('set.version', { v: APPVERSION });
     einfacheSpracheAnzeigen();
+    if (window.Ausziehen && Ausziehen.sprache) Ausziehen.sprache(); // „Ich ziehe aus“ (src/ausziehen.js) in der neuen Sprache zeichnen
     // Regeln älter als der nächste Stichtag (1. Januar): deutlich darauf hinweisen
     var veraltet = regelnVeraltet();
     $('altNotice').hidden = !veraltet; $('altNotice').textContent = veraltet ? t('alt.hinweis', { stand: Rules.RULES.stand }) : '';
@@ -2153,7 +2154,7 @@
 
   // ----- Bereiche: Start, Leistungen (Leistungscheck), Brief prüfen -----
   // Beim Öffnen die Startseite; „#leistungen“ und „#briefe“ öffnen den Bereich direkt (Links, Tests).
-  var ANSICHTEN = ['start', 'leistungen', 'briefe', 'pflege', 'pflegeinfo', 'einst', 'pfaendung', 'sparen']; // „pflege“: Pflegegrad-Einschätzung, gehört zu Leistungen
+  var ANSICHTEN = ['start', 'leistungen', 'briefe', 'pflege', 'pflegeinfo', 'einst', 'pfaendung', 'sparen', 'ausziehen']; // „pflege“: Pflegegrad-Einschätzung, gehört zu Leistungen
   var aktAnsicht = 'leistungen';
   var BRIEFE = [
     ['jc', 'briefe.jobcenter', 'briefe.jobcenter.t', '<path d="M4 20V9l8-5 8 5v11"/><path d="M9 20v-6h6v6M3 20h18"/>'],
@@ -2172,7 +2173,8 @@
     if (a !== 'briefe') $('app').classList.remove('brief-offen'); else $('app').classList.toggle('brief-offen', !!briefArt); // in der Pflegegrad-Einschätzung Kopf und Hinweise ausblenden, damit die Frage oben steht
     ANSICHTEN.forEach(function (x) { $('v-' + x).hidden = x !== a; });
     $('jump').hidden = a !== 'leistungen' || esModus;
-    var navA = a === 'pflege' || a === 'pflegeinfo' ? 'leistungen' : a === 'pfaendung' || a === 'sparen' ? 'start' : a;
+    var navA = a === 'pflege' || a === 'pflegeinfo' ? 'leistungen' : a === 'pfaendung' || a === 'sparen' || a === 'ausziehen' ? 'start' : a;
+    if (a === 'ausziehen' && window.Ausziehen) Ausziehen.zeigen();
     if (a === 'pfaendung') pfRender(false);
     if (a === 'sparen') spRender(false);
     document.querySelectorAll('#appnav button').forEach(function (b) { if (b.getAttribute('data-ansicht') === navA) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
@@ -2492,6 +2494,7 @@
   $('goBriefe').addEventListener('click', function () { zeigeAnsicht('briefe', true); });
   $('goPfaendung').addEventListener('click', function () { zeigeAnsicht('pfaendung', true); });
   $('goSparen').addEventListener('click', function () { sp.thema = ''; zeigeAnsicht('sparen', true); });
+  if (window.Ausziehen) Ausziehen.init({ t: t, zeige: zeigeAnsicht, plug: plug, famversGrenze: function () { var R = Rules.RULES.famvers; return Fmt.euro(Math.round((new Date().getFullYear() >= 2027 ? R.bezug2027 : R.bezug2026) / 7), lang, I18N[lang]['meta.dir'] === 'rtl'); } }); // „Ich ziehe aus“ (src/ausziehen.js)
   window.addEventListener('hashchange', function () { var a = location.hash.slice(1); if (ANSICHTEN.indexOf(a) >= 0 && a !== aktAnsicht) zeigeAnsicht(a, true); });
   Store.remove('lotse.fristen'); // Fristen aus 1.3.0 (Build 141) gibt es nicht mehr: gespeicherte Einträge vom Gerät löschen
   zeigeAnsicht((function () { var a = (location.hash || '').slice(1); return ANSICHTEN.indexOf(a) >= 0 ? a : 'start'; })());
