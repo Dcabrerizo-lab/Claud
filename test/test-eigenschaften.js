@@ -14,6 +14,9 @@ const HEUTE = Number(process.env.HEUTE) || 2026.8; // HEUTE=2027.05 prüft diese
 let seed = 777;
 const rnd = () => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; };
 const pick = (a) => a[Math.floor(rnd() * a.length)];
+let seed2 = 4242; // eigener Strom für die Paar-Listen
+const rnd2 = () => { seed2 = (seed2 * 1103515245 + 12345) % 2147483648; return seed2 / 2147483648; };
+const pick2 = (a) => a[Math.floor(rnd2() * a.length)];
 const RANG = { ja: 3, vielleicht: 2, na: 1, nein: 0 };
 
 const fehler = {};
@@ -94,6 +97,32 @@ for (let i = 0; i < N; i++) {
       if (betrag(u0[id]) !== null && betrag(u1[id]) !== null && betrag(u1[id]) > betrag(u0[id]) + 10) melde('Mehr Unterhalt, mehr Geld: ' + id, e, [unt, betrag(u0[id]), betrag(u1[id])]);
     }
   }
+  // ---------- Monotonie: Paar mit Einkommensliste (je Person Hauptfeld + zweites Einkommen) ----------
+  // Wird der Betrag eines vorhandenen Eintrags erhöht, steigt die Schätzung von Grundsicherungsgeld, Wohngeld und Kinderzuschlag nie.
+  // Nicht geprüft (bewusst): ein neuer Eintrag einer anderen Art (die Wohngeld-Obergrenze „möglich“ rechnet den höchsten § 16-Abzug der
+  // Person auf ihr ganzes Einkommen und kann dadurch steigen, WoGVwV Nr. 16.11-16.13), Elterngeld über die 300-€-Schwelle (egFreiSGB),
+  // Werkstattlohn (wechselt die zuständige Stelle) und beim Kinderzuschlag die Stufe (mehr Einkommen kann „möglich mit Wohngeld“ zu
+  // „wahrscheinlich“ machen). Eigener Zufallsgenerator, damit die übrigen Haushalte unverändert bleiben.
+  if (e.adults === 2) {
+    const ARTP = ['lohn', 'lohn', 'rente', 'alg', 'kg', 'unt', 'eg'];
+    const liste = [];
+    [1, 2].forEach((p) => {
+      const a1 = pick2(ARTP), b1 = Math.round(rnd2() * (a1 === 'eg' ? 1200 : 2500)) + (a1 === 'eg' ? 301 : 0);
+      liste.push(a1 === 'lohn' ? { p, art: a1, b: b1, n: Math.round(b1 * 0.75) } : { p, art: a1, b: b1 });
+      if (rnd2() < 0.7) { const a2 = pick2(ARTP.filter((x) => x !== 'eg')); liste.push({ p, art: a2, b: Math.round(rnd2() * 700) }); }
+    });
+    const i = Math.floor(rnd2() * liste.length);
+    if (liste[i].art !== 'eg') {
+      const hoeher = liste.map((x, j) => (j !== i ? x : x.n != null ? { ...x, b: x.b + 150, n: Math.round((x.b + 150) * 0.75) } : { ...x, b: x.b + 150 }));
+      const p0 = ev({ ...e, einkommen: liste }), p1 = ev({ ...e, einkommen: hoeher });
+      const unten = (x) => /einkoNiedrig|minEink/.test(x.hl) || (x.tx || []).some((t) => t[0] === 'kiz.mitWg');
+      for (const id of ['ggeld', 'wohngeld', 'kiz']) {
+        if (unten(p0[id]) || unten(p1[id])) continue;
+        if (id !== 'kiz' && RANG[p1[id].level] > RANG[p0[id].level] && p0[id].level !== 'na') melde('Paar-Liste: mehr Einkommen, bessere Einstufung: ' + id, liste, [p0[id].level, p1[id].level]);
+        if (betrag(p0[id]) !== null && betrag(p1[id]) !== null && betrag(p1[id]) > betrag(p0[id]) + 10) melde('Paar-Liste: mehr Einkommen, mehr Geld: ' + id, liste, [betrag(p0[id]), betrag(p1[id])]);
+      }
+    }
+  }
   // ---------- Monotonie: ein Kind mehr, mehr Miete ----------
   const k = ev({ ...e, kids: e.kids + 1 });
   if (bedarf(a.ggeld) !== null && bedarf(k.ggeld) !== null && bedarf(k.ggeld) <= bedarf(a.ggeld)) melde('Ein Kind mehr, Bedarf nicht höher', e, [bedarf(a.ggeld), bedarf(k.ggeld)]);
@@ -130,4 +159,4 @@ if (arten.length) {
   arten.forEach((a) => console.log('\n- ' + a + ': ' + fehler[a].anzahl + 'x\n  Beispiel: ' + JSON.stringify(fehler[a].beispiel).slice(0, 900)));
   process.exit(1);
 }
-console.log('Eigenschaftstest bestanden: ' + n + ' Haushalte, Monotonie (Einkommen, Kinder, Miete, Vermögen, GdB, Pflegegrad) und Widerspruchsfreiheit der Karten');
+console.log('Eigenschaftstest bestanden: ' + n + ' Haushalte, Monotonie (Einkommen, Paar-Listen, Kinder, Miete, Vermögen, GdB, Pflegegrad) und Widerspruchsfreiheit der Karten');
