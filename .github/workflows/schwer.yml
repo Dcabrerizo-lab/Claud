@@ -55,6 +55,8 @@ jobs:
         run: node test/test-eigenschaften.js 1000000
       - name: Dasselbe nach dem Jahreswechsel (Werte 2027, 300.000 Haushalte)
         run: HEUTE=2027.05 node test/test-eigenschaften.js 300000
+      - name: Abhängigkeiten aller Angaben (200.000 Haushalte, 2026 und 2027)
+        run: node test/test-abhaengigkeiten.js 200000 && HEUTE=2027.05 node test/test-abhaengigkeiten.js 100000
 
   mutation:
     name: Mutationstest Teil ${{ matrix.teil }}/3

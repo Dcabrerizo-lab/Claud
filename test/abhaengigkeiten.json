@@ -1,0 +1,333 @@
+{
+ "_info": [
+  "Soll-Tabelle für test/test-abhaengigkeiten.js: von welchen Angaben jede Karte abhängen MUSS (haengtAb).",
+  "Erster Stand 20.11.2026 aus dem beobachteten Verhalten übernommen; jede Zeile wird gegen die amtliche Rechtsgrundlage geprüft (docs/entwuerfe/abhaengigkeiten-pruefung.md).",
+  "Ändert eine Code-Änderung eine Abhängigkeit, wird der Test rot: dann Rechtsgrundlage prüfen und diese Tabelle bewusst anpassen."
+ ],
+ "karten": {
+  "kindergeld": {
+   "haengtAb": [
+    "aufenthalt",
+    "kinder"
+   ],
+   "quelle": "§§ 62 ff. EStG, Höhe § 66 EStG; Kinder ab 18: § 32 Abs. 4 EStG"
+  },
+  "wohngeld": {
+   "haengtAb": [
+    "alter",
+    "arbeit",
+    "aufenthalt",
+    "ausbildung",
+    "baby",
+    "behinderung",
+    "einkommen",
+    "kinder",
+    "miete",
+    "pflegegrad",
+    "vermoegen",
+    "wohnart"
+   ],
+   "quelle": "Wohngeldgesetz, §§ 12–19 WoGG"
+  },
+  "kiz": {
+   "haengtAb": [
+    "alter",
+    "arbeit",
+    "aufenthalt",
+    "baby",
+    "einkommen",
+    "kinder",
+    "miete",
+    "vermoegen"
+   ],
+   "quelle": "§ 6a BKGG"
+  },
+  "ggeld": {
+   "haengtAb": [
+    "alter",
+    "arbeit",
+    "aufenthalt",
+    "ausbildung",
+    "baby",
+    "einkommen",
+    "kinder",
+    "miete",
+    "vermoegen",
+    "wohnart"
+   ],
+   "quelle": "SGB II, §§ 7, 9, 11–12, 19–22 SGB II"
+  },
+  "but": {
+   "haengtAb": [
+    "alter",
+    "arbeit",
+    "aufenthalt",
+    "ausbildung",
+    "baby",
+    "behinderung",
+    "einkommen",
+    "kinder",
+    "miete",
+    "pflegegrad",
+    "vermoegen"
+   ],
+   "quelle": "§ 28 SGB II, § 6b BKGG, § 34 SGB XII"
+  },
+  "uvg": {
+   "haengtAb": [
+    "aufenthalt",
+    "kinder"
+   ],
+   "quelle": "Unterhaltsvorschussgesetz, §§ 1–4 UVG"
+  },
+  "gsa": {
+   "haengtAb": [
+    "alter",
+    "aufenthalt",
+    "einkommen",
+    "kinder",
+    "miete",
+    "vermoegen",
+    "wohnart"
+   ],
+   "quelle": "§§ 41 ff. SGB XII"
+  },
+  "bafoeg": {
+   "haengtAb": [
+    "alter",
+    "ausbildung",
+    "einkommen",
+    "kinder",
+    "vermoegen"
+   ],
+   "quelle": "BAföG"
+  },
+  "pflege": {
+   "haengtAb": [
+    "pflegegrad"
+   ],
+   "quelle": "§§ 36–38, 41, 44, 45b SGB XI"
+  },
+  "kgBeh": {
+   "haengtAb": [],
+   "quelle": "§ 32 Abs. 4 Satz 1 Nr. 3 EStG"
+  },
+  "emrente": {
+   "haengtAb": [
+    "alter",
+    "arbeit"
+   ],
+   "quelle": "§ 43 SGB VI"
+  },
+  "eingl": {
+   "haengtAb": [
+    "alter",
+    "behinderung",
+    "blind",
+    "pflegegrad"
+   ],
+   "quelle": "§§ 90 ff. SGB IX; Kinder mit seelischer Behinderung: § 35a SGB VIII"
+  },
+  "pausch": {
+   "haengtAb": [
+    "behinderung"
+   ],
+   "quelle": "§ 33b EStG"
+  },
+  "ausweis": {
+   "haengtAb": [
+    "behinderung",
+    "blind",
+    "pflegegrad"
+   ],
+   "quelle": "§§ 2, 152 SGB IX"
+  },
+  "blindengeld": {
+   "haengtAb": [
+    "blind",
+    "bundesland"
+   ],
+   "quelle": "Landesblindengeldgesetz (Bayern: BayBlindG)"
+  },
+  "blh": {
+   "haengtAb": [
+    "aufenthalt",
+    "blind",
+    "vermoegen"
+   ],
+   "quelle": "§ 72 SGB XII"
+  },
+  "pflegeplus": {
+   "haengtAb": [
+    "pflegegrad"
+   ],
+   "quelle": "§§ 39, 40, 42, 42a SGB XI"
+  },
+  "arbeit": {
+   "haengtAb": [],
+   "quelle": "§ 61 SGB IX"
+  },
+  "rundfunk": {
+   "haengtAb": [
+    "alter",
+    "arbeit",
+    "aufenthalt",
+    "ausbildung",
+    "baby",
+    "blind",
+    "einkommen",
+    "kinder",
+    "miete",
+    "pflegegrad",
+    "vermoegen"
+   ],
+   "quelle": "§ 4 RBStV"
+  },
+  "zuzahl": {
+   "haengtAb": [
+    "behinderung",
+    "blind",
+    "pflegegrad"
+   ],
+   "quelle": "§ 62 SGB V"
+  },
+  "famvers": {
+   "haengtAb": [
+    "kinder"
+   ],
+   "quelle": "§ 10 SGB V"
+  },
+  "bab": {
+   "haengtAb": [],
+   "quelle": "§§ 56 ff. SGB III"
+  },
+  "wbs": {
+   "haengtAb": [
+    "aufenthalt",
+    "behinderung",
+    "bundesland",
+    "einkommen",
+    "kinder",
+    "pflegegrad"
+   ],
+   "quelle": "§ 27 WoFG, Einkommensgrenze § 9 Abs. 2 WoFG; in Ländern mit eigenem Gesetz Landesrecht"
+  },
+  "alg1": {
+   "haengtAb": [
+    "alter",
+    "arbeit"
+   ],
+   "quelle": "§§ 136 ff. SGB III"
+  },
+  "krankengeld": {
+   "haengtAb": [
+    "arbeit"
+   ],
+   "quelle": "§§ 44 ff. SGB V"
+  },
+  "srente": {
+   "haengtAb": [
+    "alter",
+    "behinderung"
+   ],
+   "quelle": "§§ 37, 236a SGB VI"
+  },
+  "elterngeld": {
+   "haengtAb": [
+    "aufenthalt",
+    "baby"
+   ],
+   "quelle": "BEEG, §§ 1–2 BEEG"
+  },
+  "hzp": {
+   "haengtAb": [
+    "pflegegrad",
+    "vermoegen"
+   ],
+   "quelle": "§§ 61 ff. SGB XII"
+  },
+  "lpg": {
+   "haengtAb": [
+    "bundesland",
+    "pflegegrad"
+   ],
+   "quelle": "BayLPflGG"
+  },
+  "mutter": {
+   "haengtAb": [
+    "baby",
+    "einkommen"
+   ],
+   "quelle": "§ 19 MuSchG, § 24i SGB V"
+  },
+  "kkg": {
+   "haengtAb": [],
+   "quelle": "§ 45 SGB V"
+  },
+  "asylblg": {
+   "haengtAb": [
+    "aufenthalt"
+   ],
+   "quelle": "AsylbLG"
+  }
+ },
+ "ausschluesse": [
+  {
+   "merkmal": "aufenthalt",
+   "wert": "asyl",
+   "karten": [
+    "ggeld"
+   ],
+   "hoechstens": "nein",
+   "quelle": "§ 7 Abs. 1 Satz 2 Nr. 3 SGB II – vor Übernahme prüfen"
+  },
+  {
+   "merkmal": "aufenthalt",
+   "wert": "asyl",
+   "karten": [
+    "gsa"
+   ],
+   "hoechstens": "nein",
+   "quelle": "§ 23 Abs. 2 SGB XII – vor Übernahme prüfen"
+  },
+  {
+   "merkmal": "aufenthalt",
+   "wert": "asyl",
+   "karten": [
+    "wohngeld"
+   ],
+   "hoechstens": "nein",
+   "quelle": "§ 7 Abs. 1 Nr. 9 WoGG"
+  },
+  {
+   "merkmal": "aufenthalt",
+   "wert": "asyl",
+   "karten": [
+    "kiz"
+   ],
+   "hoechstens": "nein",
+   "quelle": "§ 6a Abs. 1 Nr. 1 BKGG (setzt Kindergeld voraus) i. V. m. § 1 Abs. 3 BKGG / § 62 Abs. 2 EStG – vor Übernahme prüfen"
+  },
+  {
+   "merkmal": "aufenthalt",
+   "wert": "asyl",
+   "karten": [
+    "wbs"
+   ],
+   "hoechstens": "nein",
+   "quelle": "§ 27 Abs. 2 Satz 2 WoFG (Ausnahmen z. B. Ausbildungsduldung)"
+  }
+ ],
+ "bekannt": [
+  {
+   "karte": "wbs",
+   "merkmal": "aufenthalt",
+   "entwurf": "docs/entwuerfe/wbs-aufenthalt.md, nächstes Update"
+  },
+  {
+   "karte": "wbs",
+   "merkmal": "aufenthalt=asyl",
+   "entwurf": "docs/entwuerfe/wbs-aufenthalt.md, nächstes Update"
+  }
+ ]
+}
