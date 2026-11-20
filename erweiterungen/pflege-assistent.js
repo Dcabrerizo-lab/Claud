@@ -195,8 +195,8 @@ const PflegeAssistent = (function () {
       const sichtbar = (opt.aktionen || []).filter((x) => !x.wenn || x.wenn(r, pgAktuell));
       const tu = (x) => () => x.fn(r, JSON.parse(JSON.stringify(a)), g);
       const knoepfe2 = sichtbar.filter((x) => x.haupt || x.zweit), links = sichtbar.filter((x) => !x.haupt && !x.zweit);
-      if (knoepfe2.length) box.append(h('div', { class: 'es-nav1 pa-weiter' }, knoepfe2.map((x) => h('button', { type: 'button', class: 'btn' + (x.haupt ? '' : ' ghost'), text: x.text, onclick: tu(x) }))));
-      if (links.length) box.append(h('ul', { class: 'pa-links' }, links.map((x) => h('li', {}, h('button', { type: 'button', class: 'linkbtn', text: x.text + ' ›', onclick: tu(x) })))));
+      if (knoepfe2.length) box.append(h('div', { class: 'es-nav1 pa-weiter' }, knoepfe2.map((x) => h('button', { type: 'button', class: 'btn' + (x.haupt ? '' : ' ghost'), text: typeof x.text === 'function' ? x.text(r, pgAktuell) : x.text, onclick: tu(x) }))));
+      if (links.length) box.append(h('ul', { class: 'pa-links' }, links.map((x) => h('li', {}, h('button', { type: 'button', class: 'linkbtn', text: (typeof x.text === 'function' ? x.text(r, pgAktuell) : x.text) + ' ›', onclick: tu(x) })))));
       const tb = h('tbody', {}, [1, 2, 3, 4, 5, 6].map((m) => { const mo = r.module[m], zaehlt = !(m === 2 || m === 3) || r.zaehlt23 === m;
         return h('tr', {}, h('td', { text: P.MODUL[m].kurz }), h('td', { class: 'z', text: zaehlt ? `${zahl(mo.gewichtet)} / ${zahl(P.ANLAGE2[m].gew[4])}` : 'zählt nicht' })); }));
       box.append(h('details', { class: 'pa-info' }, h('summary', { text: 'So wurde gerechnet' }),

@@ -15,7 +15,7 @@ const M = [
   ['Eigentum: Grundsicherungsgeld ohne Einschränkung', "if (h.eigentum && (id === 'ggeld' || id === 'gsa')) { kappe(r); zu(r, 'kdu.eigentum'); }", "if (h.eigentum && (id === 'ggeld' || id === 'gsa')) { zu(r, 'kdu.eigentum'); }"],
   ['Grenze: Schonvermögen schon genau auf der Grenze verbraucht', "if (h.vermoegen > schon) return mk(id, 'nein', 'vermHoch', [['ggeld.verm'", "if (h.vermoegen >= schon) return mk(id, 'nein', 'vermHoch', [['ggeld.verm'"],
   ['Grenze: Mindesteinkommen Kinderzuschlag genau auf der Grenze nicht erreicht', 'if (h.brutto < minEink)', 'if (h.brutto <= minEink)'],
-  ['Wohngeld: ausgezahlte Beträge der ausführlichen Version wie Brutto behandelt', 'const AUSZ = { alg: 1, kg: 1, eg: 1, wfbm: 1 };', 'const AUSZ = {};'],
+  ['Wohngeld: ausgezahlte Beträge der ausführlichen Version wie Brutto behandelt', 'const AUSZ = { alg: 1, kg: 1, eg: 1, wfbm: 1, unt: 1 };', 'const AUSZ = {};'],
   ['2027: Wohngeld-Tipp auch nach dem Jahreswechsel', "h.heute < 2027 && r.level !== 'na' ? [['plan.wgDez']]", "r.level !== 'na' ? [['plan.wgDez']]"],
   ['2027: Pflegegeld-Hinweis auch ohne Pflegegrad', "offen(r) && (h.pflegegrad >= 2 || h.pflegeAntrag)) add([['plan.pflege'", "offen(r)) add([['plan.pflege'"],
   ['Künftige Leistung: keine zweite Rechnung', '    if (zk) { wg = mitZukunft(', '    if (false) { wg = mitZukunft('],

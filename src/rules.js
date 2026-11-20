@@ -186,11 +186,14 @@ const Rules = (function () {
     // Werbungskosten-Pauschbeträge im Jahr (§ 9a Satz 1 Nr. 1 und 3 EStG), beim Wohngeld vom Einkommen abgezogen (§ 14 Abs. 1 WoGG)
     wgWerbung: { lohn: 1230, rente: 102 },
     // Pauschalabzug beim Wohngeld (§ 16 WoGG) je Einkommensart: [kleinster, größter] üblicher Abzug
-    wgAbzug: { lohn: [0.1, 0.3], rente: [0.1, 0.2], kg: [0.1, 0.2], alg: [0, 0], eg: [0, 0], wfbm: [0, 0.1], ohne: [0, 0] },
+    // Unterhalt für die Person selbst (unt): steuerfrei (§ 14 Abs. 2 Nr. 19/20 WoGG) oder mit Realsplitting steuerpflichtig (§ 22 Nr. 1a EStG);
+    // familienversichert ohne Beiträge -> 0 %, mit Steuer und eigener Kranken-/Pflegeversicherung -> 20 % (§ 16 Abs. 1 Nr. 1 und 2, Satz 2 WoGG)
+    wgAbzug: { lohn: [0.1, 0.3], rente: [0.1, 0.2], kg: [0.1, 0.2], alg: [0, 0], eg: [0, 0], wfbm: [0, 0.1], unt: [0, 0.2], ohne: [0, 0] },
     // Wenn nur die Auszahlung bekannt ist: Rente netto ≈ 0,87 bis 0,88 × Brutto (nettoRente), also 90 % (bzw. 80 %) Brutto ≈ 103 % (bzw. 91 %)
     // der Auszahlung. Die Werte [0, 0,06] stammen aus der alten Annahme 0,89 und sind deshalb nur ungefähr (Prüfung 19.11.2026, Anpassung offen);
     // Lohn netto 70-80 %
-    wgAbzugAuszahlung: { lohn: [0, 0.12], rente: [0, 0.06], kg: [0, 0.06], alg: [0, 0], eg: [0, 0], wfbm: [0, 0.05], ohne: [0, 0] },
+    // Unterhalt: der Zahlbetrag ist schon der volle Betrag (keine Abzüge vor der Auszahlung), daher wie wgAbzug.unt
+    wgAbzugAuszahlung: { lohn: [0, 0.12], rente: [0, 0.06], kg: [0, 0.06], alg: [0, 0], eg: [0, 0], wfbm: [0, 0.05], unt: [0, 0.2], ohne: [0, 0] },
     // Grundrentenfreibetrag (§ 82a SGB XII): bei 33 Jahren Grundrentenzeiten bleiben von der Rente 100 € und 30 % des Rests frei, höchstens 50 % der Regelbedarfsstufe 1
     grundrente: { sockel: 100, quote: 0.3, max: 0.5 },
     // Zusätzliche Altersvorsorge (Betriebsrente, Riester-Rente, private Rente), § 82 Abs. 4 SGB XII: 100 € frei und 30 % des Rests,
@@ -211,6 +214,19 @@ const Rules = (function () {
     autoPruefen: 15000,
     bafoeg: { freiAllein: 1690, freiPaar: 2540, jeKind: 770, spanne: 1200, vermBis29: 15000, vermAb30: 45000 },
     pflege: { geld: { 2: 347, 3: 599, 4: 800, 5: 990 }, entlastung: 131 },
+    // Pflege-Startkachel „Welche Unterstützung gibt es?“. Beträge oben (pflege, pflegeSach, pflegeTages, entlastungsbudget, beh.verbrauch,
+    // beh.wohnumfeld). Quelle: BMG, Online-Ratgeber Pflege „Verhinderungspflege“, „Pflege zu Hause“, „Weitere Leistungen und Angebote zur
+    // Unterstützung im Alltag“ und „Pflege-Wohngemeinschaften“ (alle Stand 14.9.2026, abgerufen 20.11.2026); §§ 36–45b SGB XI.
+    // wohngruppe: Wohngruppenzuschlag 224 € im Monat ab Pflegegrad 1 (§ 38a SGB XI, BMG „Pflege-Wohngemeinschaften“, Stand 14.9.2026).
+    // Familienentlastende Dienste: laut BMG Beispiel für anerkannte Angebote zur Unterstützung im Alltag (Entlastungsbetrag, § 45a/§ 45b);
+    // Verhinderungspflege „kann auch stundenweise in Anspruch genommen werden“ (BMG „Verhinderungspflege“, Stand 14.9.2026).
+    // Ohne festen Betrag: Kombination (anteilig, § 38), Hausnotruf (Zuschuss nach Hilfsmittelverzeichnis, § 40 Abs. 1), Pflegekurse (§ 45),
+    // Pflegeberatung (§ 7a), Rentenbeiträge (§ 44, nach Pflegegrad und Leistungsart), Pflegezeit (PflegeZG, FPfZG).
+    // Gilt seit 1.1.2025 (Beträge) bzw. 1.7.2025 (gemeinsamer Jahresbetrag); bis zur Prüfung am pruefenAb (oben).
+    // Reform: Entwurf Pflegeneuordnungsgesetz (PNOG), BT-Drs. 21/8869 (hib 873/2026 vom 2.11.2026; BMG-FAQ Stand 28.10.2026), noch nicht beschlossen.
+    // Nach dem Beschluss: status auf 'beschlossen' setzen, Beträge mit Stichtag eintragen und den Reformsatz in der App anpassen.
+    pflegeUnterst: { stand: '14.9.2026', abgerufen: '20.11.2026', quelle: 'Bundesministerium für Gesundheit, Online-Ratgeber Pflege; SGB XI', wohngruppe: 224,
+      reform: { status: 'entwurf', jahr: 2027, drs: '21/8869', datum: '2.11.2026' } },
     // Menschen mit Behinderung. Quellen: § 33b Abs. 3 EStG (Pauschbeträge), § 32a EStG (Grundfreibetrag 2026),
     // ZBFS Bayern, Infoblatt Blindengeld (Stand 1.7.2026), § 40 SGB XI, § 61 SGB IX, § 208 SGB IX, Art. 11 BayWoFG
     beh: {
@@ -504,7 +520,9 @@ const Rules = (function () {
     const young = Math.max(0, inp.young | 0);
     const persons = adults + kids + young;
     // Einfache Version: Liste der Einkommen einer Person [{ art, b }] (b = ausgezahlter Betrag)
-    const ARTEN = ['lohn', 'rente', 'alg', 'kg', 'eg', 'wfbm', 'ohne'];
+    // unt = Unterhalt für die Person selbst (Trennungs- oder Ehegattenunterhalt, Unterhalt von den Eltern), Zahlbetrag im Monat:
+    // Einkommen, aber kein Einkommen aus Arbeit (kein Freibetrag § 11b Abs. 3 SGB II, Minderung des Kinderzuschlags in voller Höhe)
+    const ARTEN = ['lohn', 'rente', 'alg', 'kg', 'eg', 'wfbm', 'unt', 'ohne'];
     // Eintrag: [Art, Brutto, Netto, nurAuszahlung] – ohne eigenes Netto ist b der ausgezahlte Betrag (einfache Version)
     // Selbstständige: Gewinn zählt wie Einkommen aus Arbeit (Freibetrag § 11b Abs. 3 SGB II, § 82 Abs. 3 SGB XII; Wohngeld § 14 WoGG);
     // Unterschiede (kein Arbeitslosengeld/Krankengeld ohne freiwillige Versicherung, vorläufige Bewilligung) über h.selbst
@@ -539,7 +557,7 @@ const Rules = (function () {
     const art2 = ARTEN.indexOf(aSel(inp.art2)) >= 0 ? aSel(inp.art2) : (inp.nichtArbeit2 ? 'rente' : 'lohn');
     // Arbeitslosengeld, Krankengeld, Elterngeld und Werkstattlohn fragt die App als ausgezahlten Betrag ab (laut Bescheid/Lohnzettel):
     // beim Wohngeld dann nur der kleine Abzug für ausgezahlte Beträge, wie in der einfachen Version (§ 16 WoGG)
-    const AUSZ = { alg: 1, kg: 1, eg: 1, wfbm: 1 };
+    const AUSZ = { alg: 1, kg: 1, eg: 1, wfbm: 1, unt: 1 };
     const pers = liste ? (liste.length ? liste : [['ohne', 0]]) : adults === 2 ? [[art1, brutto - brutto2, 0, !!inp.aus1 || !!AUSZ[art1], inp.art1 === 'selbst'], [art2, brutto2, 0, !!AUSZ[art2], inp.art2 === 'selbst']] : [[art1, brutto, 0, !!inp.aus1 || !!AUSZ[art1], inp.art1 === 'selbst']];
     const sumIf = (f) => pers.reduce((a, x) => a + f(x[0], x[1]), 0);
     // Unterhalt, den die Person selbst an andere zahlt (Kinder, die nicht im Haushalt leben, frühere Partner), im Monat.
@@ -820,7 +838,10 @@ const Rules = (function () {
       const wk = x[4] ? 0 : x[0] === 'lohn' || x[0] === 'wfbm' ? R.wgWerbung.lohn / 12 : x[0] === 'rente' ? R.wgWerbung.rente / 12 : 0;
       const wkHier = Math.min(wk, x[1]); wkSum += wkHier;
       const zaehlt = x[0] === 'eg' ? Math.max(0, x[1] - R.elterngeldFrei) : x[1] - wkHier;
-      sumB += zaehlt; yA += zaehlt * (1 - ab[0]); yB += zaehlt * (1 - ab[1]);
+      // Unterhalt für sich selbst: mit Realsplitting sonstige Einkünfte (§ 22 Nr. 1a EStG) nach Werbungskosten-Pauschbetrag 102 € (§ 9a Satz 1
+      // Nr. 3 EStG), sonst voll (§ 14 Abs. 2 Nr. 19 und 20 WoGG). Die App weiß das nicht: Pauschbetrag nur für „möglich“ (yB).
+      const wkOpt = x[0] === 'unt' ? Math.min(R.wgWerbung.rente / 12, x[1]) : 0;
+      sumB += zaehlt; yA += zaehlt * (1 - ab[0]); yB += (zaehlt - wkOpt) * (1 - ab[1]);
     });
     const wA = sumB > 0 ? yA / sumB : 0.9, wB = sumB > 0 ? yB / sumB : 0.7;
     // Anzeige als Grenze für das Brutto (bzw. den ausgezahlten Betrag bei ALG I und Elterngeld), Werbungskosten wieder dazu
@@ -1158,7 +1179,10 @@ const Rules = (function () {
       const fb = (h.adults === 2 ? R.bafoeg.freiPaar : R.bafoeg.freiAllein) + Math.max(0, h.children - 1) * R.bafoeg.jeKind;
       const p = { fb: eur(fb) };
       if (h.netto <= fb) return mk(id, 'ja', 'ja', [['bafoeg.kindJa', p]]);
-      if (h.netto <= fb + R.bafoeg.spanne) return mk(id, 'vielleicht', 'vielleicht', [['bafoeg.kindRand', p]]);
+      // Unterhalt eines Elternteils für sich selbst zählt beim BAföG nur, wenn er versteuert wird (Realsplitting, § 21 Abs. 1 BAföG
+      // i. V. m. § 22 Nr. 1a EStG): ohne ihn unter der Grenze -> höchstens „möglich“
+      const untE = (h.pers || []).reduce((a, x) => a + (x[0] === 'unt' ? (h.liste ? x[2] : x[1]) : 0), 0);
+      if (h.netto - untE <= fb + R.bafoeg.spanne) return mk(id, 'vielleicht', 'vielleicht', [['bafoeg.kindRand', p]]);
       return mk(id, 'nein', 'einkoHoch', [['bafoeg.kindNein', p]]);
     }
     // ich selbst: Elterneinkommen unbekannt
@@ -1464,6 +1488,43 @@ const Rules = (function () {
     return mk(id, 'ja', 'ja', tx);
   }
 
+  // Übersicht der Pflegeleistungen (Pflege-Startkachel, „Welche Unterstützung gibt es?“): je Leistung ab welchem Pflegegrad sie gilt
+  // (0 = auch ohne Pflegegrad), Betrag je Pflegegrad (null = kein fester Betrag), Einheit (monat, jahr, mass = je Maßnahme), „bis“ = Höchstbetrag,
+  // Art (konto = Geld aufs Konto, budget = die Pflegekasse bezahlt Rechnungen, zuschuss, frei = kostenlos, schutz = Absicherung) und Rechtsgrundlage.
+  // Pflegegrad 1: nur, was dort gilt (§ 28a SGB XI).
+  function pflegeLeistungen() {
+    const je = (b, ab) => { const o = {}; for (let g = 1; g <= 5; g++) o[g] = g >= ab ? (typeof b === 'object' ? b[g] : b) : null; return o; };
+    const U = R.pflegeUnterst;
+    return [
+      { id: 'geld', ab: 2, art: 'konto', betrag: je(R.pflege.geld, 2), einheit: 'monat', bis: false, recht: '§ 37 SGB XI' },
+      { id: 'dienst', ab: 2, art: 'budget', betrag: je(R.pflegeSach, 2), einheit: 'monat', bis: true, recht: '§ 36 SGB XI' },
+      { id: 'entl', ab: 1, art: 'budget', betrag: je(R.pflege.entlastung, 1), einheit: 'monat', bis: true, recht: '§ 45b SGB XI' },
+      { id: 'verh', ab: 2, art: 'budget', betrag: je(R.entlastungsbudget, 2), einheit: 'jahr', bis: true, recht: '§§ 39, 42, 42a SGB XI' },
+      { id: 'tages', ab: 2, art: 'budget', betrag: je(R.pflegeTages, 2), einheit: 'monat', bis: true, recht: '§ 41 SGB XI' },
+      { id: 'kombi', ab: 2, art: 'konto', betrag: null, recht: '§ 38 SGB XI' },
+      { id: 'hilfs', ab: 1, art: 'budget', betrag: je(R.beh.verbrauch, 1), einheit: 'monat', bis: true, recht: '§ 40 Abs. 2 SGB XI' },
+      { id: 'notruf', ab: 1, art: 'zuschuss', betrag: null, recht: '§ 40 Abs. 1 SGB XI' },
+      { id: 'umbau', ab: 1, art: 'zuschuss', betrag: je(R.beh.wohnumfeld, 1), einheit: 'mass', bis: true, recht: '§ 40 Abs. 4 SGB XI' },
+      { id: 'wg', ab: 1, art: 'zuschuss', betrag: je(U.wohngruppe, 1), einheit: 'monat', bis: false, recht: '§ 38a SGB XI' },
+      { id: 'kurs', ab: 0, art: 'frei', betrag: null, recht: '§ 45 SGB XI' },
+      { id: 'beratung', ab: 0, art: 'frei', betrag: null, recht: '§§ 7a, 7c, 37 Abs. 3 SGB XI' },
+      { id: 'rente', ab: 2, art: 'schutz', betrag: null, recht: '§ 44 SGB XI' },
+      { id: 'zeit', ab: 1, art: 'schutz', betrag: null, recht: 'PflegeZG, FPfZG, § 44a SGB XI' }
+    ];
+  }
+  // Was bei einem Pflegegrad gilt (0 = noch keiner): Liste aus pflegeLeistungen, Betrag für diesen Pflegegrad als Zahl
+  function pflegeFuer(pg) {
+    pg = [1, 2, 3, 4, 5].indexOf(Number(pg)) >= 0 ? Number(pg) : 0;
+    return pflegeLeistungen().filter((l) => pg >= l.ab && (pg > 0 || l.ab === 0))
+      .map((l) => ({ ...l, wert: l.betrag && pg ? l.betrag[pg] : null }));
+  }
+  // Kombinationsleistung (§ 38 SGB XI): anteiliges Pflegegeld, wenn der Pflegedienst nur einen Teil des Sachleistungsbudgets nutzt
+  function pflegeKombi(pg, sachGenutzt) {
+    if (!R.pflege.geld[pg]) return 0;
+    const anteil = Math.min(1, Math.max(0, sachGenutzt / R.pflegeSach[pg]));
+    return Math.round(R.pflege.geld[pg] * (1 - anteil) * 100) / 100;
+  }
+
   // Verhinderungspflege, Pflegehilfsmittel, Wohnumfeld (SGB XI)
   function pflegeplus(h) {
     const id = 'pflegeplus';
@@ -1647,6 +1708,19 @@ const Rules = (function () {
   });
   // Der Pauschbetrag wird in der Steuererklärung geltend gemacht, dazu gibt es keinen Antrag
   STEPS.pausch.u = ['u.steuererklaerung', 'u.ausweis', 'u.steuerid'];
+  // Rechtsgrundlagen je Karte (nur im Beratungsmodus sichtbar). Aus den Quellen in diesem Modul und der Regeltabelle der App;
+  // nur Gesetz und Paragraf, keine Beträge. Landesleistungen: Landesgesetz bzw. Landesrecht.
+  const RECHT = {
+    kindergeld: '§§ 62 ff. EStG, Höhe § 66 EStG; Kinder ab 18: § 32 Abs. 4 EStG', wohngeld: 'Wohngeldgesetz, §§ 12–19 WoGG',
+    kiz: '§ 6a BKGG', ggeld: 'SGB II, §§ 7, 9, 11–12, 19–22 SGB II', but: '§ 28 SGB II, § 6b BKGG, § 34 SGB XII',
+    uvg: 'Unterhaltsvorschussgesetz, §§ 1–4 UVG', gsa: '§§ 41 ff. SGB XII', bafoeg: 'BAföG', pflege: '§§ 36–38, 41, 44, 45b SGB XI',
+    kgBeh: '§ 32 Abs. 4 Satz 1 Nr. 3 EStG', emrente: '§ 43 SGB VI', eingl: '§§ 90 ff. SGB IX; Kinder mit seelischer Behinderung: § 35a SGB VIII',
+    pausch: '§ 33b EStG', ausweis: '§§ 2, 152 SGB IX', blindengeld: 'Landesblindengeldgesetz (Bayern: BayBlindG)',
+    pflegeplus: '§§ 39, 40, 42, 42a SGB XI', arbeit: '§ 61 SGB IX', rundfunk: '§ 4 RBStV', zuzahl: '§ 62 SGB V', famvers: '§ 10 SGB V',
+    bab: '§§ 56 ff. SGB III', wbs: '§ 27 WoFG, Einkommensgrenze § 9 Abs. 2 WoFG; in Ländern mit eigenem Gesetz Landesrecht', alg1: '§§ 136 ff. SGB III', krankengeld: '§§ 44 ff. SGB V',
+    srente: '§§ 37, 236a SGB VI', elterngeld: 'BEEG, §§ 1–2 BEEG', hzp: '§§ 61 ff. SGB XII', lpg: 'BayLPflGG',
+    mutter: '§ 19 MuSchG, § 24i SGB V', kkg: '§ 45 SGB V', blh: '§ 72 SGB XII', asylblg: 'AsylbLG'
+  };
 
   // Fehlende Angaben: Leistungen, die Einkommen, Vermögen oder Miete vergleichen, dürfen mit leeren Feldern kein „ja“ ergeben.
   // Nur positive Ergebnisse werden ersetzt; „nein“ aus anderen Gründen (z. B. falsche Zuständigkeit) und „na“ bleiben stehen.
@@ -1854,7 +1928,7 @@ const Rules = (function () {
     const hzp = hilfeZurPflege(h), blh = blindenhilfe(h);
     const results = [kg, wg, kz, gg, but, uvg, gsa, baf, pf,
       a1, krg, eg, mutterschaftsgeld(h), kinderkrankengeld(h), hzp, landespflegegeld(h), asylbewerber(h), kindergeldBeh(h), erwerbsminderungsrente(h), schwerbRente(h), eingliederungshilfe(h), pauschbetrag(h), ausweis(h), blindengeld(h), blh,
-      pflegeplus(h), budgetArbeit(h), rundfunk(h, gg, gsa, { hzp, blh, baf }), zuzahlung(h), famvers(h), bab(h), wbs(h)].map(angabeFehlt(h)).map((x, i) => ({ ...x, name: NAMES[x.id], order: i, steps: STEPS[x.id] }));
+      pflegeplus(h), budgetArbeit(h), rundfunk(h, gg, gsa, { hzp, blh, baf }), zuzahlung(h), famvers(h), bab(h), wbs(h)].map(angabeFehlt(h)).map((x, i) => ({ ...x, name: NAMES[x.id], order: i, steps: STEPS[x.id], recht: RECHT[x.id] }));
     uzHinweise(h, results);
     einmalHinweise(h, results);
     plan2027(h, results);
@@ -1866,7 +1940,7 @@ const Rules = (function () {
     return { h, results: sorted, zusammen: zus };
   }
 
-  return { evaluate, nettoLohn, bruttoAusNetto, nettoRente, bruttoAusNettoRente, lohnAnnahmen, pfaendung, pfaendFreibetrag, pkonto, RULES: R, WG, limits, wgYmax, wgMiete, wgCap, wgHeiz, wgBetrag, roman, sgb2Freibetrag, kizWohnanteil, haushaltsFreibetrag, derive, NAMES, STEPS, ZUST_LAND, zustLand };
+  return { evaluate, pflegeLeistungen, pflegeFuer, pflegeKombi, nettoLohn, bruttoAusNetto, nettoRente, bruttoAusNettoRente, lohnAnnahmen, pfaendung, pfaendFreibetrag, pkonto, RULES: R, WG, limits, wgYmax, wgMiete, wgCap, wgHeiz, wgBetrag, roman, sgb2Freibetrag, kizWohnanteil, haushaltsFreibetrag, derive, NAMES, STEPS, RECHT, ZUST_LAND, zustLand };
 })();
 
 if (typeof module !== 'undefined') module.exports = Rules;

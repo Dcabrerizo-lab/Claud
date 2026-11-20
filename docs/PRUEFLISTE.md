@@ -37,6 +37,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Elterngeld 300 € frei bei Einkommen vor der Geburt (§ 10 Abs. 5 BEEG) | ✓ | `gg-eg300` |
 | Unterhalt und Unterhaltsvorschuss als Einkommen der Kinder, gedeckelt auf ihren Bedarf | ✓ | `gg-unterhalt` |
 | Selbst gezahlter Unterhalt: Abzug vom Einkommen, wenn festgelegt (Unterhaltstitel, Jugendamtsurkunde, notarielle Vereinbarung) und gezahlt (§ 11b Abs. 1 Satz 1 Nr. 7); ohne Titel kein Abzug, Hinweis | ✓ | `uz-sgb2` |
+| Unterhalt für die Person selbst (Trennungs- oder Ehegattenunterhalt, Unterhalt von den Eltern; Einkommensart „Unterhalt für dich“): voll Einkommen (§ 11 Abs. 1), kein Freibetrag für Arbeit, nur Versicherungspauschale 30 € (§ 6 Abs. 1 Nr. 1 Bürgergeld-V); Netto = Zahlbetrag ohne Steuer-/Beitragsschätzung | ✓ | `unt-sgb2` |
 | Vorrangige Leistungen (§ 12a SGB II): geschätztes Arbeitslosengeld, Krankengeld oder Elterngeld (über 300 €) zählt als Einkommen; zweite Rechnung „sobald gezahlt“ (statt des Lohns der ersten Person), Einstufung aus beiden, Hinweis aufs Überbrücken | ✓ | `zuk-einkommen` |
 | Schonvermögen nach Alter (§ 12 Abs. 2, ab 1.7.2026): 5.000 € bis zum 30. Geburtstag, dann 10.000 €, ab dem 40. 12.500 €, ab dem 50. 20.000 € je Person | ✓ | `gg-verm` |
 | Mehrbedarf Alleinerziehende (§ 21 Abs. 3) | ✓ | `gg-mb-ae` |
@@ -63,6 +64,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Voraussetzung Rentenalter oder dauerhaft volle Erwerbsminderung (§ 41) | ✓ | `gsa-voraus` |
 | Freibetrag Erwerbstätige 30 %, höchstens 50 % RS1 (§ 82 Abs. 3 Satz 1) | ✓ | `gsa-ewt` |
 | Selbst gezahlter Unterhalt: in der Regel kein Abzug (§ 82 SGB XII kennt ihn nicht), Hinweis auf Selbstbehalt | ◐ | `uz-gsa` |
+| Unterhalt für die Person selbst: voll Einkommen (§ 82 Abs. 1 SGB XII), kein Freibetrag nach § 82 Abs. 3 | ✓ | `unt-sgb12` |
 | Werkstattlohn: Arbeitsförderungsgeld frei, 1/8 RS1 + 50 % frei (§ 82 Abs. 2 Nr. 5, Abs. 3 Satz 2) | ✓ | `gsa-wfbm` |
 | Grundrentenfreibetrag (§ 82a) | ✓ | `gsa-grundrente` |
 | Freibetrag für Betriebs-, Riester- und private Rente (§ 82 Abs. 4), Grundrentenfreibetrag nur auf die gesetzliche Rente | ✓ | `gsa-zusatzrente` |
@@ -107,6 +109,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Ausschluss bei Grundsicherungsgeld, Grundsicherung, Asylbewerberleistungen (§ 7) | ✓ | `wg-ausschluss`, `asyl-ausschluss` |
 | Ausschluss Azubis und Studierende mit dem Grunde nach förderfähiger Ausbildung (§ 20 Abs. 2) | ✓ | `wg-azubi` |
 | Selbst gezahlter Unterhalt (§ 18 WoGG): bis 3.000 € im Jahr je Kind oder sonstiger Person, 6.000 € für frühere oder getrennt lebende Ehe- oder Lebenspartner; ohne Titel vorsichtig nur für „möglich“, mit Titel günstig der ganze Betrag (ob ein Titel über den Höchstbetrag hinaus zählt, ist nicht am Gesetzestext geprüft) | ◐ | `uz-wg` |
+| Unterhalt für die Person selbst: ohne Realsplitting voll (§ 14 Abs. 2 Nr. 19 und 20 WoGG), mit Realsplitting sonstige Einkünfte (§ 22 Nr. 1a EStG) nach 102 € Pauschbetrag (§ 9a Satz 1 Nr. 3 EStG); Pauschalabzug § 16 WoGG 0 % (familienversichert) bis 20 % (Steuer und eigene Kranken-/Pflegeversicherung). Realsplitting unbekannt: „wahrscheinlich“ mit 0 % und ohne Pauschbetrag, „möglich“ mit 20 % und Pauschbetrag | ◐ | `unt-wg` |
 | Geschätztes Arbeitslosengeld, Krankengeld oder Elterngeld als künftiges Einkommen (§ 14 WoGG; Elterngeld bis 300 € frei), zweite Rechnung und Einstufung aus beiden | ✓ | `zuk-einkommen` |
 
 ## Kinderzuschlag (BKGG)
@@ -122,6 +125,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Ausschluss bei Asylbewerberleistungen (kein Kindergeld) | ✓ | `asyl-ausschluss` |
 | Im Haushalt muss jemand dem Grunde nach zum SGB II gehören (§ 6a Abs. 1 Nr. 3 BKGG i. V. m. § 7, § 8 SGB II; DA-KiZ Stand 20.02.2026, D.2 Abs. 1 Satz 5 und B.1 Abs. 5; BSG 13.07.2022, B 7/14 KG 1/21 R): allein mit Regelaltersgrenze oder voller Erwerbsminderung und nur Kindern unter 14 „eher nicht“; Kinderalter unbekannt oder Kind 14-17: höchstens „möglich“ (nur mit Kind ab 15); junge Erwachsene: normale Rechnung; Paar mit erwerbsfähigem Partner unverändert; beide Rente: höchstens „möglich“; nur Rente ab 60 oder Alter unbekannt (vorgezogene Altersrente, § 7 Abs. 4 SGB II): höchstens „möglich“ | ✓ | `kiz-rentner` |
 | Selbst gezahlter, festgelegter Unterhalt mindert das Einkommen der Eltern (§ 11b Abs. 1 Satz 1 Nr. 7 SGB II) | ✓ | `uz-sgb2` |
+| Unterhalt für einen Elternteil selbst: zählt für das Mindesteinkommen (§ 6a Abs. 1 Nr. 2 BKGG: Einkommen nach § 11 Abs. 1 Satz 1 und 2 SGB II, nur Wohngeld, Kindergeld, Kinderzuschlag ausgenommen); mindert als „anderes Einkommen“ in voller Höhe, die Überschreitung gilt zuerst als Erwerbseinkommen (§ 6a Abs. 6 BKGG) | ✓ | `unt-kiz` |
 | Geschätztes Arbeitslosengeld, Krankengeld oder Elterngeld als künftiges Einkommen der Eltern, zweite Rechnung | ✓ | `zuk-einkommen` |
 
 ## Kindergeld (EStG, BKGG)
@@ -186,6 +190,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 |---|---|---|
 | Auto zählt zum Vermögen (§ 27) | ✓ | `auto` |
 | Elternfreibeträge (§ 25) und Grenzbereich | ✓ | `bafoeg-eltern` |
+| Unterhalt eines Elternteils für sich selbst: Einkommen nach § 21 Abs. 1 BAföG nur mit Realsplitting (§ 22 Nr. 1a EStG); entscheidet er über die Grenze, höchstens „möglich“ | ◐ | `unt-bafoeg` |
 | Höhe der Elternfreibeträge 2026: 2.540 € (verheiratet), 1.690 € (je Elternteil sonst), 770 € je weiteres Kind | ✓ (mehrere Quellen übereinstimmend; Änderung erst zum Sommersemester 2027 geplant, nur Wohnpauschale) | `bafoeg-eltern` |
 | Vermögensfreibetrag 15.000 € bis zum 30. Geburtstag, danach 45.000 € (§ 29) | ✓ | `bafoeg-verm` |
 | Altersgrenze 45 bei Beginn (§ 10 Abs. 3), Ausnahmen möglich | ✓ | `bafoeg-alter` |
@@ -210,6 +215,11 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Pflegesachleistung und Kombinationsleistung (§§ 36, 38), Tages- und Nachtpflege (§ 41) | ✓ | `pfl-sach` |
 | Rentenversicherung für pflegende Angehörige (§ 44) | ◐ | `pfl-rente` |
 | Pflegezeit, Familienpflegezeit, Pflegeunterstützungsgeld | ◐ | `pfl-zeit` |
+| Pflege-Startkachel „Welche Unterstützung gibt es?“: nur Leistungen des gewählten Pflegegrads (Pflegegrad 1 nach § 28a SGB XI ohne Pflegegeld, Sachleistung, Verhinderungs-/Kurzzeitpflege, Tagespflege, Rentenbeiträge; ohne Pflegegrad nur Pflegekurse und Pflegeberatung) | ✓ | `pu-pg` |
+| Feste Beträge 2026 der Übersicht: Pflegegeld, Sachleistung, Tages-/Nachtpflege, Entlastungsbetrag 131 €, gemeinsamer Jahresbetrag 3.539 € (§ 42a), Pflegehilfsmittel 42 €, Wohnumfeld 4.180 € je Maßnahme, Wohngruppenzuschlag 224 € (§ 38a); Quelle BMG, Online-Ratgeber Pflege, Stand 14.9.2026, abgerufen 20.11.2026 | ✓ | `pu-betrag` |
+| Verhinderungspflege auch stundenweise (BMG „Verhinderungspflege“, Stand 14.9.2026); Familienentlastende Dienste als anerkanntes Angebot zur Unterstützung im Alltag über den Entlastungsbetrag (BMG „Weitere Leistungen und Angebote zur Unterstützung im Alltag“, Stand 14.9.2026); Bezahlung des FED als Verhinderungspflege nur „möglich“ | ✓ | `pu-fed` |
+| Darstellung: „pro Monat“ und „pro Jahr“ getrennt, Alltagswort mit Amtswort in Klammern, Reformentwurf 2027 in einem Satz, Stellen nur als Art (Pflegekasse, Pflegestützpunkt). Erklärtexte nur Deutsch (wie Pflege-Assistent) | ✓ | `pu-ansicht` |
+| Pflege-Korrekturen (abgerufen 20.11.2026): Beratungsbesuch Pflicht halbjährlich bei PG 2–5, PG 4/5 auf Wunsch vierteljährlich (§ 37 Abs. 3 SGB XI); Verhinderungspflege durch nahe Angehörige/Haushalt nicht beruflich höchstens doppeltes Pflegegeld plus nachgewiesene Kosten bis zum Jahresbetrag (§ 39 Abs. 3 SGB XI); aufs Konto Pflegegeld und Wohngruppenzuschlag; ohne Pflegegrad 10 Arbeitstage auch bei voraussichtlicher Pflegebedürftigkeit (§ 2, § 7 Abs. 4 PflegeZG) | ✓ | `pu-korr` |
 
 ## Bayerisches Landespflegegeld (BayLPflGG)
 <!-- karten: lpg -->
@@ -444,8 +454,41 @@ Wird nur das Brutto eingetragen, schätzt die App das Netto. Gilt für alle Kart
 | Pfändung wegen Unterhalt (§ 850d ZPO): andere Freibeträge, Hinweis | ◐ | `pfaendung-tabelle` |
 | Unpfändbare Bezüge (§ 850a ZPO), Kindergeld (§ 76 EStG), Erhöhung durch das Gericht (§§ 850f, 906 ZPO), Übertrag (§ 899 ZPO), Nachzahlungen (§ 904 ZPO): Hinweise | ◐ | `pkonto` |
 | Wöchentliche oder tägliche Auszahlung, Kinderzuschlag auf dem P-Konto, Unterhaltsberechtigte mit eigenem Einkommen (§ 850c Abs. 6 ZPO) | ○ (Monatslohn ist der Regelfall; die übrigen Fälle entscheidet das Vollstreckungsgericht im Einzelfall) | |
+| Geld sparen → „Schulden und Pfändung“: oben Knopf zum Pfändungsrechner, „Erste Schritte“ (4), „Was tun, wenn …“ zum Aufklappen (Inkasso, Mahnbescheid, Kontopfändung/P-Konto, Strom-/Gassperre, Mietschulden, Ratenzahlung, unseriöse Schuldenregulierer, Privatinsolvenz); Tipps sinngemäß nach Verbraucherzentralen, BAG-SB (meine-schulden.de), Caritas/Diakonie, AG SBV (abgerufen 20.11.2026); Fristen: Widerspruch Mahnbescheid 2 Wochen (§ 692 Abs. 1 Nr. 3 ZPO), Einspruch Vollstreckungsbescheid 2 Wochen (§§ 700, 339 ZPO), Vollstreckungsbescheid: Pfändung schon möglich (§ 700 ZPO); Schonfrist Räumungsklage 2 Monate, einmal in 2 Jahren (§ 569 Abs. 3 Nr. 2 BGB), gilt nicht für eine zusätzliche ordentliche Kündigung; Strom-/Gassperre erst ab 2 Abschlägen und 100 €, Androhung 4 Wochen, Ankündigung 8 Werktage (§ 41f EnWG), Grundversorgung: zinsfreie Raten (§ 41g EnWG, abgerufen 20.11.2026); Verjährung 3 Jahre ab Jahresende (§§ 195, 199 BGB), Restschuldbefreiung in der Regel nach 3 Jahren (§ 287 InsO), Geldstrafen bleiben (§ 302 InsO); Beratungsstellen nur als Art der Stelle | ✓ | `schulden` |
+| Pfändungsrechner: Knopf „Tipps bei Schulden“ erst unter dem Ergebnis, nicht vor dem Rechnen | ✓ | `schulden` |
+| Schulden-Korrekturen: Strom/Gas-Sperre nach §§ 41f, 41g EnWG statt StromGVV, Vollstreckungsbescheid erlaubt Pfändung (§ 700 ZPO), Schonfrist nicht für ordentliche Kündigung | ✓ | `schulden-korr` |
 
 Die Tabelle gilt bis 30.6.2027, danach zeigt die App einen Warnhinweis. Jedes Jahr zum 1. Juli neue Werte eintragen.
+
+## Haushaltsplan und Haushaltsbuch (src/haushalt.js)
+
+| Regel | Status | Test |
+|---|---|---|
+| Plan: Einnahmen minus feste Ausgaben in Cent, Ergebnis auf ganze Euro („etwa“); Monatswechsel, wiederkehrende Ausgaben (31. → Monatsletzter), Vormonat | ✓ | `hb-plan` |
+| Kassenzettel: Gesamtsumme (ZU ZAHLEN, SUMME, GESAMT, EUR), Datum (nicht Zukunft, höchstens 3 Jahre alt), Geschäft und Kategorie; nur Vorschlag, nie ungefragt gespeichert; Foto nicht gespeichert | ✓ | `hb-kassenzettel` |
+| Eine Datenquelle mit dem Leistungs-Check (Netto, Miete warm, Unterhalt für die Kinder, Kinderzahl → Kindergeld); vorhandene Werte nur nach Rückfrage; Brutto, Art (Lohn/Rente), Heizung, Kindergeld-Bezug nie still übernommen | ✓ | `hb-uebernahme` |
+| Hinweise nur bei Auslöser, höchstens 2 sichtbar, „Nicht mehr zeigen“: Weiterbewilligung (§ 41 Abs. 3 SGB II, § 44 Abs. 3 SGB XII, § 25 Abs. 1 WoGG, § 6a Abs. 7 BKGG), Einkommensänderung (§ 60 SGB I), Nebenkosten-Nachzahlung (§ 22 Abs. 1 SGB II, § 35 SGB XII), Darlehen (§ 24 Abs. 1, § 42a SGB II, § 37 Abs. 1 SGB XII), Bildung und Teilhabe (§ 28 SGB II, § 34 SGB XII, § 6b BKGG), Rundfunkbeitrag (§ 4 Abs. 1 RBStV) | ✓ | `hb-hinweise` |
+| Regelbedarf zur Orientierung: Anteile nach § 5 RBEG (434,96 €), Stufe 1 aus den Werten der App | ✓ | `hb-regelbedarf` |
+| Korrekturen: Meldepflicht je Leistung (Grundsicherungsgeld/Sozialhilfe sofort nach § 60 Abs. 1 SGB I, Wohngeld bei dauerhaft mehr als 15 % nach § 27 Abs. 3 WoGG, Kinderzuschlag meist erst beim nächsten Antrag; abgerufen 20.11.2026), Vorlage „Änderung melden“ nur bei Grundsicherungsgeld oder Sozialhilfe; Nachzahlung: Antrag im Monat der Fälligkeit; ganzes Haushaltsbuch löschen mit Rückgängig; je Vorgang gespeichert und mit PIN verschlüsselt | ✓ | `hb-korr` |
+| Spartipps mit Fundstelle (Text „Quelle: …“ unter jedem Tipp): Miete – Verbraucherzentrale, Deutscher Mieterbund, Wohngeldgesetz; Strom und Gas – Stromspiegel für Deutschland, Verbraucherzentrale (Energieberatung); Handy und Internet – Verbraucherzentrale, § 56 Abs. 3 TKG (Kündigung nach der Erstlaufzeit mit 1 Monat Frist, abgerufen 20.11.2026); Versicherungen, Mobilität, Sonstiges – Verbraucherzentrale; Lebensmittel – Verbraucherzentrale, Bundeszentrum für Ernährung; Kinder – § 28 SGB II, § 34 SGB XII, § 6b BKGG (Bildung und Teilhabe), Familienkasse; Raten – BAG-SB (meine-schulden.de). Abrufdatum der allgemeinen Ratgeberseiten vor der Veröffentlichung nachtragen | ◐ | `hb-tipps` |
+
+## Ich ziehe aus (src/ausziehen.js)
+
+Eigener Bereich für junge Menschen; keine Rechnung, nur Hinweise. Quellen mit Abrufdatum 20.11.2026 in `Ausziehen.Q`.
+
+| Regel | Status | Test |
+|---|---|---|
+| Übersicht mit 7 Kacheln (2 Spalten, jede Kachel eine eigene Palettenfarbe, keine Hex-Werte im Modul), Unterseiten mit „Zurück“ (Herkunft gemerkt), Checklisten mit Fortschritt, wichtige Punkte offen, weitere zum Aufklappen | ✓ | `az-aufbau`, `az-oberflaeche` |
+| Unter 25 mit Grundsicherungsgeld: Zusicherung vor Vertragsschluss, Pflicht-Gründe, keine Erstausstattung ohne Zusicherung, weniger Regelbedarf (§ 22 Abs. 5, § 24 Abs. 6, § 20 Abs. 3 SGB II), Verzicht bei wichtigem Grund, deutliche Warnung | ✓ | `az-aufbau`, `az-oberflaeche` |
+| Kaution höchstens 3 Kaltmieten ohne Betriebskosten, 3 Monatsraten (§ 551 BGB); Kaution als Darlehen, Umzugskosten mit Zusicherung (§ 22 Abs. 6 SGB II); Erstausstattung vor dem Kauf beantragen (§ 24 Abs. 3, § 37 SGB II) | ✓ | `az-quellen` |
+| Ummelden in 2 Wochen, Wohnungsgeberbestätigung (§ 17 Abs. 1, § 19 BMG); Grundversorgung melden (§ 2 StromGVV); Rundfunk je Wohnung, Befreiung nur auf Antrag und nur für die Person (§ 2, § 4 Abs. 1 RBeitrStV); Laufzeit 24 Monate, danach jederzeit kündbar (§ 56 TKG); Kfz-Anschrift unverzüglich (§ 15 FZV); Steuer-ID an Arbeitgeber (§ 39e Abs. 4 EStG) | ✓ | `az-quellen` |
+| Basiskonto, 10 Geschäftstage (§ 31 ZKG); P-Konto (§ 850k ZPO); Lastschrift 8 Wochen (§ 675x BGB); Nebenkostenabrechnung 12 Monate, danach keine Nachforderung, 12 Monate für Einwände (§ 556 Abs. 3 BGB); Aufbewahren nach Verbraucherzentrale (Stand 23.10.2025) | ✓ | `az-quellen` |
+| Kostenfallen: Widerruf 14 Tage (§ 312g, § 355 BGB), Bestellknopf (§ 312j BGB), Dispo-Beratung 6 Monate/75 % (§ 504a BGB), Widerspruch 1 Monat (§ 84 SGG), Datenkopie kostenlos (Art. 15 Abs. 3 DSGVO); „Später zahlen“ und Kredite „ohne Schufa“ nach Verbraucherzentrale | ✓ | `az-quellen` |
+| Versicherungen gestuft nach Verbraucherzentrale (Stand 21.11.2025, VZ Hamburg 15.04.2026), Kfz-Haftpflicht unter „Unbedingt“, Auslandsreise-Krankenversicherung unter „Kommt drauf an“; Familienversicherung bis 18/23/25, Ausnahme privat versicherter Elternteil, Grenze 1/7 Bezugsgröße aus `R.famvers` (§ 10 Abs. 2 und 3 SGB V); Gesundheitsfragen (§ 19 VVG); keine Anbieter, keine Preise | ✓ | `az-quellen`, `az-oberflaeche` |
+| Hilfen nur „möglich“: BAB (§ 56, § 60 SGB III), BAföG (§ 2), Wohngeld-Ausschluss (§ 20 Abs. 2 WoGG), Kindergeld bis 18/21/25 und Abzweigung (§ 32 Abs. 4, § 74 EStG), Kindergeld für sich selbst (§ 1 Abs. 2 BKGG), Unterhalt der Eltern bis Ende der ersten Ausbildung (§ 1610 Abs. 2 BGB, Beratung § 18 Abs. 4 SGB VIII), Grundsicherungsgeld (§ 7 Abs. 5, § 22, § 24, § 27 SGB II), Bildung und Teilhabe (§ 28 SGB II), Waisenrente bis 18 immer, in Ausbildung oder Freiwilligendienst bis 27 (§ 48 Abs. 4 SGB VI) | ✓ | `az-aufbau`, `az-oberflaeche` |
+| Careleaver: § 41 (in der Regel bis 21, Rückkehr möglich), § 41a, § 41 Abs. 3 und § 36b, kein Kostenbeitrag aus eigenem Einkommen, Ausnahmen Kindergeld und zweckgleiche Leistungen (§ 92 Abs. 1a, § 93 Abs. 1, § 94 Abs. 3, Abs. 6 weggefallen), Krankenhilfe (§ 40, § 41 Abs. 2), Ombudsstelle (§ 9a SGB VIII); Briefvorlage nur „An das Jugendamt“, keine Anschrift, Zuständigkeit (§ 86a Abs. 4), schriftlicher Bescheid erbeten | ✓ | `az-quellen`, `az-oberflaeche` |
+| Abhaken und Notizen lokal (`lotse.ausziehen`, Schnittstelle `Ausziehen.speicherOrt`), nur bekannte Einträge, Speicherfehler gemeldet, „Alle Angaben löschen“ leert alles | ✓ | `az-speichern`, `az-oberflaeche` |
+| 13 Sprachen und Einfache Sprache: alle Schlüssel, gleiche Platzhalter und Vorschriften, keine Rohschlüssel | ✓ | `az-sprachen`, `az-oberflaeche` |
 
 ## Anzeige und Eingaben (alle Karten)
 
@@ -458,5 +501,9 @@ Die Tabelle gilt bis 30.6.2027, danach zeigt die App einen Warnhinweis. Jedes Ja
 | Grenzwerte auf den Euro genau (−1 € / Grenze / +1 €): Schonvermögen, Mindesteinkommen, Minijob 2026 und 2027, Einkommensgrenze § 85 SGB XII, Stufen des Freibetrags für Arbeit | ✓ | `grenzen` |
 | Zufalls-Klicktest: tausende zufällige Bedienschritte (Felder, Auswahlen, Sprache, Schriftgröße, einfache/ausführliche Version, Antragsmappe, Neuladen) ohne Skriptfehler, kaputte Anzeige, seitliches Scrollen oder Sackgasse | ✓ | `zufall-klick` |
 | Antragsmappe: Empfänger je Anschreiben bearbeitbar (Vorschlag der App vorbefüllt; Änderung sofort in Brief, Kopiertext und PDF; leeres Feld ergibt Linie; Eingabe nie als HTML; Wiederherstellen; Feld nicht im Druck); Suchlink „Zuständige Stelle suchen“ (DuckDuckGo, kurzer Suchbegriff je Leistung und Ortsname, öffnet extern) | ✓ | `empf` |
+| Geburtsjahr im Formular: nur 4 Ziffern von 1900 bis heute minus 15 Jahre (wie in der einfachen Version); sonst sichtbare Meldung „4 Ziffern, zum Beispiel 1962“ und kein Ergebnis (z. B. „54“, „1854“, „2030“) | ✓ | `geb` |
+| Einkommensfelder: „Lohn/Rente im Monat vor Abzügen (brutto)“ je Art; Minijob-Hinweis nur bei Lohn; allein lebend zweites Einkommen über eigenes Feld, zu zweit Summe je Person; Schalter „Kurzer Check für Menschen mit Behinderung (eine Person)“ | ✓ | `formular` |
 | Alte Speicherstände aus allen Ausbaustufen (und der einfachen Version) laden richtig und ergeben dasselbe Ergebnis wie im heutigen Format | ✓ | `altstaende` |
+| Vorgänge (Haushalte): speichern, öffnen, umbenennen, „Kopie zum Ausprobieren“, löschen; zu einem Vorgang gehören Fragebogen mit Briefdaten, einfache Version, Pflege-Einschätzung, Pfändung, Haushaltsplan/-buch, Checklisten-Haken sowie Haken und Notizen aus „Ich ziehe aus“ (`lotse.haken`, `lotse.haushalt`, `lotse.ausziehen` in `Vorgaenge.DATEN`, also mit PIN verschlüsselt; Einstellungen wie Sprache und Beratungsmodus gelten für alle); „Alle Angaben löschen“ leert den geöffneten Vorgang mit Rückgängig, „Alle Vorgänge löschen“ und „Diesen Vorgang löschen“ in den Einstellungen unter „Sicherheit und Daten“ (dort auch PIN-Sperre und automatisches Löschen), Verwaltung der Vorgänge in „Mein Ordner“ → „Alle Haushalte und Vorgänge“; alte Speicherstände werden übernommen; Beispiel überschreibt nie einen gespeicherten Vorgang; PIN-Sperre (Sichtschutz) verschlüsselt alles mit WebCrypto (PBKDF2-SHA-256, 600.000 Durchläufe, AES-GCM, zufälliges Salt und IV), PIN nie gespeichert, Wartezeit nach 5 Fehlversuchen; automatisches Löschen nach 30/90 Tagen mit Datum; Speicher voll oder gesperrt wird gemeldet | ✓ | `vorgaenge` |
+| Leiste unten: Start, Mein Ordner, Einstellungen (Leistungen und Briefe über die Startkacheln, markieren Start; #leistungen und #briefe gehen weiter). Mein Ordner: geöffneter Vorgang mit „Wechseln“, letztes Ergebnis, Antragsmappe, Haushaltsplan (Rest im Monat), Pflege-Einschätzung, Pfändung, „Ich ziehe aus“ nur mit Modul; leere Bereiche ausgeblendet, Leerzustand mit „Los geht's“, keine Fristen. „Kurzer Check für Menschen mit Behinderung (eine Person)“ als Link am Anfang des Leistungs-Checks, nicht mehr in den Einstellungen. Einstellungen als Liste mit Unterseiten (Anzeige und Sprache mit Schaltern und Hell/Dunkel/wie Gerät, Sicherheit und Daten, Für Fachkräfte, Über die App) | ✓ | `navigation` |
 | Hinweise auf der Ergebnisseite: was SoLo nicht einrechnet (Selbstständigkeit, Wohneigentum, Auto, Mitbewohner, angemessene Miete, EU-Bürger) und das Verfahren danach (Widerspruch § 84 SGG, Überprüfungsantrag § 44 SGB X, Beratung § 14 SGB I, Weiterleitung § 16 SGB I) | ✓ | `verfahren` |

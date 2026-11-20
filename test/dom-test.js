@@ -27,6 +27,8 @@ const names = () => cards().map((c) => c.querySelector('h3').textContent);
 const card = (n) => cards().find((c) => c.querySelector('h3').textContent === n);
 const level = (n) => card(n).querySelector('.pill').className.replace('pill ', '');
 const fire = (el, type) => el.dispatchEvent(new w.Event(type, { bubbles: true }));
+// Beispiel laden; sind schon eigene Angaben da, fragt die App nach – hier bestätigen
+const beispiel = (id) => { d.getElementById(id).click(); if (!d.getElementById('beispielDlg').hidden) d.getElementById('beispielJa').click(); };
 const setLang = (c) => { const s = d.getElementById('lang'); s.value = c; fire(s, 'change'); };
 const setSel = (id, v) => { const s = d.getElementById(id); s.value = v; fire(s, 'change'); };
 const setChk = (id, v) => { const c = d.getElementById(id); c.checked = v; fire(c, 'change'); };
@@ -38,7 +40,7 @@ check('Sprachwahl bietet 13 Sprachen', d.getElementById('lang').options.length =
 check('Start ohne Beispielwerte: leeres Formular', d.getElementById('ek1Brutto').value === '' && d.getElementById('miete').value === '');
 check('Start zeigt Anleitung statt Karten', d.querySelector('#cards .startcard') !== null && cards().length === 0, d.getElementById('cards').innerHTML.slice(0, 200));
 check('Start: Beispiel-Hinweis versteckt', d.getElementById('sampleNotice').hidden === true);
-d.getElementById('p1').click();
+beispiel('p1');
 check(KARTEN.length + ' Ergebnis-Karten', cards().length === KARTEN.length, cards().length);
 check('Beispiel 1: Wohngeld, Kinderzuschlag, Kindergeld wahrscheinlich', ['Wohngeld', 'Kinderzuschlag', 'Kindergeld'].every((n) => level(n) === 'ja'), names() + ' | ' + pills());
 check('Zusammenfassung zeigt Anzahl', /\d+ wahrscheinlich/.test(d.getElementById('count').textContent), d.getElementById('count').textContent);
@@ -51,21 +53,48 @@ check('Neue Karten vorhanden', ['Grundsicherungsgeld', 'Unterhaltsvorschuss', 'B
 check('Unterhaltsvorschuss im Beispiel 1 wahrscheinlich', level('Unterhaltsvorschuss') === 'ja');
 
 // Beispiel 2
-d.getElementById('p2').click();
+beispiel('p2');
 check('Beispiel 2: Grundsicherung im Alter wahrscheinlich', level('Grundsicherung im Alter und bei voller Erwerbsminderung') === 'ja', pills() + '');
 check('Beispiel 2 füllt Formular und Auswahlfelder', d.getElementById('ek1Art').value === 'rente' && d.getElementById('ek1Brutto').value === '880' && d.getElementById('gebJahr').value === '1955' && d.getElementById('mietstufe').value === '3');
+check('Beispiel 2: Kasten „Entweder oder“ mit Links zu beiden Karten', !!d.getElementById('entwederOder') && !!d.querySelector('#entwederOder a[href="#c-gsa"]') && !!d.querySelector('#entwederOder a[href="#c-wohngeld"]') && !d.getElementById('zweiWege'));
 check('Beispiel 2: Entweder-oder-Hinweis in den Karten Grundsicherung im Alter und Wohngeld', /nicht gleichzeitig/.test(d.getElementById('c-gsa').textContent) && /nicht gleichzeitig/.test(d.getElementById('c-wohngeld').textContent));
 check('Ohne Kinder sind Kinder-Fragen ausgeblendet', [...d.querySelectorAll('.cond-kids')].every((e) => e.hidden === true));
 
 // Eingabe ändern
-d.getElementById('p1').click();
+beispiel('p1');
 check('Mit Kindern sind Kinder-Fragen sichtbar', [...d.querySelectorAll('.cond-kids')].every((e) => e.hidden === false));
 setNum('ek1Brutto', 9000); setNum('ek1Netto', 6500);
 check('Hinweis verschwindet nach eigener Eingabe', d.getElementById('sampleNotice').hidden === true);
 check('Hohes Einkommen: Wohngeld und Kinderzuschlag unwahrscheinlich', level('Wohngeld') === 'nein' && level('Kinderzuschlag') === 'nein');
+// Beispiel laden bei eigenen Angaben: erst Rückfrage im eigenen Dialog, „Abbrechen“ und Esc lassen alles stehen
+d.getElementById('p2').click();
+const dlg = d.getElementById('beispielDlg');
+check('Beispiel über eigene Angaben: Rückfrage-Dialog offen, Fokus auf „Abbrechen“', !dlg.hidden && dlg.querySelector('[role="alertdialog"][aria-modal="true"]') && d.activeElement === d.getElementById('beispielNein'));
+check('Rückfrage: Hintergrund gesperrt (inert)', d.getElementById('cols').hasAttribute('inert'));
+d.getElementById('beispielNein').click();
+check('Rückfrage „Abbrechen“: eigene Angaben bleiben, Hintergrund wieder frei', dlg.hidden && d.getElementById('ek1Brutto').value === '9000' && !d.getElementById('cols').hasAttribute('inert'));
+d.getElementById('p2').click(); dlg.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+check('Rückfrage Esc: schließt ohne Laden', dlg.hidden && d.getElementById('ek1Brutto').value === '9000');
+d.getElementById('p2').click(); d.getElementById('beispielJa').click();
+check('Rückfrage „Beispiel laden“: Beispiel geladen', dlg.hidden && d.getElementById('ek1Art').value === 'rente');
+d.getElementById('p1').click();
+check('Unverändertes Beispiel: kein Dialog beim Wechsel', dlg.hidden && d.getElementById('ek1Art').value !== 'rente');
+// Eingeklappte Karte: zweite Zeile mit Betrag und Art der Stelle statt „Anspruch ist wahrscheinlich“
+const z2 = (id) => d.querySelector('#c-' + id + ' .head2').textContent;
+check('Kartenzeile Wohngeld: ungefährer Betrag und Wohngeldstelle', /ca\. .*€.* im Monat/.test(z2('wohngeld')) && /Wohngeldstelle/.test(z2('wohngeld')) && !/wahrscheinlich/.test(z2('wohngeld')), z2('wohngeld'));
+// Alle Angaben löschen: sagt, was gelöscht wird; Rückgängig-Leiste stellt alles wieder her
+d.getElementById('p-name').value = 'Test'; fire(d.getElementById('p-name'), 'input');
+check('Löschen-Knopf getrennt von den Beispielen, Text nennt Formular und Briefdaten', !d.getElementById('presets').contains(d.getElementById('clearBtn')) && /Formular/.test(d.getElementById('clearWas').textContent) && /Anschrift/.test(d.getElementById('clearWas').textContent));
+d.getElementById('clearBtn').click();
+check('Löschen: Formular leer, Rückgängig-Leiste sichtbar', d.getElementById('ek1Art').value === '' && d.getElementById('p-name').value === '' && !d.getElementById('undoBar').hidden);
+d.getElementById('undoBtn').click();
+check('Rückgängig: Angaben und Name zurück, Leiste weg', d.getElementById('ek1Brutto').value !== '' && d.getElementById('p-name').value === 'Test' && d.getElementById('undoBar').hidden);
+d.getElementById('clearBtn').click(); setNum('miete', 500);
+check('Neue Eingabe nach dem Löschen: Rückgängig-Leiste verschwindet', d.getElementById('undoBar').hidden);
+d.getElementById('p-name').value = ''; fire(d.getElementById('p-name'), 'input');
 
 // Stepper
-d.getElementById('p1').click();
+beispiel('p1');
 d.querySelector('[data-step="kids"][data-d="1"]').click();
 check('Stepper erhöht Kinderzahl', d.getElementById('kids').textContent === '3');
 for (let i = 0; i < 5; i++) d.querySelector('[data-step="kids"][data-d="-1"]').click();
@@ -73,7 +102,7 @@ check('Stepper geht nicht unter 0', d.getElementById('kids').textContent === '0'
 check('Ohne Kinder: Kinderzuschlag und Unterhaltsvorschuss unwahrscheinlich', level('Kinderzuschlag') === 'nein' && level('Unterhaltsvorschuss') === 'nein');
 
 // Neue Eingaben
-d.getElementById('p1').click();
+beispiel('p1');
 setChk('b-kindergeld', true);
 check('Kindergeld schon bezogen: Karte "Schon vorhanden"', level('Kindergeld') === 'na');
 setChk('b-kindergeld', false);
@@ -91,15 +120,15 @@ check('Grundsicherungsgeld: 9.000 € liegen unter 15.000 € Schonbetrag der Fa
 setNum('vermoegen', 16000);
 
 // Bezug Grundsicherungsgeld
-d.getElementById('p1').click();
+beispiel('p1');
 setChk('b-grundsicherungsgeld', true);
 check('Grundsicherungsgeld: Hinweis in der Wohngeld-Karte', /Du bekommst Grundsicherungsgeld/.test(d.getElementById('c-wohngeld').textContent));
-d.getElementById('p1').click();
+beispiel('p1');
 d.getElementById('adults2').checked = true; fire(d.getElementById('adults2'), 'change');
 check('Zwei Erwachsene werden übernommen', cards().length === KARTEN.length);
 
 // ---------- Einkommen je Person: nur passende Felder, verständliche Beschriftung ----------
-d.getElementById('p1').click();
+beispiel('p1');
 const vis = (id) => !d.getElementById(id).hidden;
 check('Lohn: Brutto- und Netto-Feld sichtbar', vis('ek1BruttoF') && vis('ek1NettoF') && d.getElementById('ek1NettoLab').textContent === I18N.de['ek.netto']);
 setSel('ek1Art', 'alg');
@@ -113,13 +142,13 @@ check('Kein Einkommen: keine Betragsfelder', !vis('ek1BruttoF') && !vis('ek1Nett
 setSel('ek1Art', '');
 check('Noch nichts gewählt: keine Betragsfelder', !vis('ek1BruttoF') && !vis('ek1NettoF'));
 check('Partner-Block nur bei zwei Erwachsenen', d.getElementById('ekbox2').hidden === true);
-d.getElementById('p3').click();
+beispiel('p3');
 check('Beispiel Paar: Partner-Block sichtbar, Partner ohne Einkommen', d.getElementById('ekbox2').hidden === false && d.getElementById('ek2Art').value === 'ohne');
-d.getElementById('p1').click();
+beispiel('p1');
 
 // Große Schrift
 d.getElementById('bigBtn').click();
-check('Große Schrift schaltet Klasse', d.getElementById('app').classList.contains('big') && d.getElementById('bigBtn').getAttribute('aria-pressed') === 'true');
+check('Große Schrift schaltet Klasse', d.getElementById('app').classList.contains('big') && d.getElementById('bigBtn').getAttribute('aria-checked') === 'true' && d.getElementById('bigBtn').getAttribute('role') === 'switch');
 
 // Leere Eingaben
 ['miete', 'ek1Brutto', 'ek1Netto', 'vermoegen'].forEach((k) => setNum(k, ''));
@@ -128,7 +157,7 @@ check('Leere Felder erzeugen keinen Fehler', errors.length === 0 && cards().leng
 // ---------- Sprachen ----------
 const LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so'];
 LANGS.forEach((l) => {
-  d.getElementById('p1').click();
+  beispiel('p1');
   setLang(l);
   const dict = I18N[l];
   const app = d.getElementById('app');
@@ -143,7 +172,7 @@ LANGS.forEach((l) => {
   check(l + ': Auswahlfelder übersetzt', d.getElementById('pflegegrad').options[0].textContent === dict['pflege.0'] && d.getElementById('mietstufe').options[1].textContent === dict['stufe.n'].replace('{n}', 'I'));
   check(l + ': Übersetzungs-Hinweis ' + (l === 'de' ? 'versteckt' : 'sichtbar'), d.getElementById('transNotice').hidden === (l === 'de'));
   check(l + ': Beschreibung unter der Karte ' + (l === 'de' ? 'fehlt bei Deutsch' : 'vorhanden'), (card('Wohngeld').querySelector('.desc') === null) === (l === 'de'));
-  ['p2', 'p3'].forEach((p) => { d.getElementById(p).click(); });
+  ['p2', 'p3'].forEach((p) => { beispiel(p); });
   check(l + ': Beispiele laden ohne Fehler', errors.length === 0, errors.join('; '));
   check(l + ': Preset-Knopf übersetzt', d.getElementById('p1').textContent === dict['preset.p1']);
 });
@@ -151,7 +180,7 @@ check('Sprachwahl wird gemerkt', store['lotse-lang'] === 'so');
 setLang('de');
 
 // ---------- Ausfüllhilfe ----------
-d.getElementById('p1').click();
+beispiel('p1');
 const pickBoxes = () => [...d.querySelectorAll('[data-pick]')];
 const okCount = cards().filter((c) => /pill (ja|vielleicht)/.test(c.querySelector('.pill').className)).length;
 check('Auswahl für die Ausfüllhilfe nennt alle passenden Leistungen', pickBoxes().length === okCount && okCount >= 4, pickBoxes().length + ' vs ' + okCount);
@@ -248,7 +277,7 @@ setTimeout(() => {
   check('Dateigröße unter 4 MB', html.length < 4 * 1024 * 1024, (html.length / 1024).toFixed(0) + ' KB');
   // ----- Antrag scannen -----
   setLang('de');
-  d.getElementById('p1').click();
+  beispiel('p1');
   setNum('miete', 950);
   d.getElementById('p-name').value = 'Maria Muster'; fire(d.getElementById('p-name'), 'input');
   d.getElementById('p-geb').value = '01.02.1985'; fire(d.getElementById('p-geb'), 'input');
@@ -352,6 +381,59 @@ setTimeout(() => {
   // Startsprache aus den Geräteeinstellungen: Dari (fa-AF) und Farsi (fa) getrennt erkennen
   const startLang = (langs) => { const st = {}; const dw = new JSDOM('<!doctype html><html><head><meta charset="utf-8"></head><body>' + html + '</body></html>', { runScripts: 'dangerously', pretendToBeVisual: true, beforeParse(x) { x.HTMLElement.prototype.scrollIntoView = function () {}; x.scrollTo = function () {}; Object.defineProperty(x.navigator, 'languages', { value: langs, configurable: true }); Object.defineProperty(x, 'localStorage', { value: { getItem: (k) => (k in st ? st[k] : null), setItem: (k, v) => { st[k] = String(v); } }, configurable: true }); } }); const v = dw.window.document.getElementById('lang').value; dw.window.close(); return v; };
   check('Gerät auf Dari (fa-AF) startet in Dari, Farsi (fa-IR, fa) in Farsi, Französisch (fr-CA) in Französisch, Unbekanntes in Deutsch', startLang(['fa-AF']) === 'fa-AF' && startLang(['fa-af', 'de']) === 'fa-AF' && startLang(['fa-IR']) === 'fa' && startLang(['fa']) === 'fa' && startLang(['fr-CA']) === 'fr' && startLang(['ps-AF']) === 'ps' && startLang(['so-SO']) === 'so' && startLang(['xx']) === 'de');
+  // Zurück-Wege über die gemerkte Herkunft (Start → Pflege/Pfändung/Sparen → zurück)
+  const sicht = () => ['start', 'leistungen', 'briefe', 'pflege', 'pfaendung', 'sparen'].find((x) => !d.getElementById('v-' + x).hidden);
+  const navAkt = () => (d.querySelector('#appnav button[aria-current="page"]') || {}).getAttribute?.('data-ansicht');
+  d.querySelector('#appnav button[data-ansicht="start"]').click();
+  d.getElementById('goPfaendung').click();
+  check('Start → Pfändung: Leiste markiert Start, oben „← Zurück“', sicht() === 'pfaendung' && navAkt() === 'start' && /← /.test(d.querySelector('[data-zurueck="pfaendung"]').textContent));
+  d.querySelector('[data-zurueck="pfaendung"]').click();
+  check('Pfändung „← Zurück“ führt zur Startseite', sicht() === 'start');
+  d.getElementById('goSparen').click(); d.querySelector('[data-zurueck="sparen"]').click();
+  check('Geld sparen „← Zurück“ führt zur Startseite', sicht() === 'start');
+  d.getElementById('goPflege').click();
+  if (sicht() === 'pflege') {
+    check('Start → Pflege: Leiste markiert Start', navAkt() === 'start');
+    d.querySelector('#pflegeAssist .pa-zur').click();
+    check('Start → Pflege → „Zurück“ führt zur Startseite', sicht() === 'start');
+  }
+  // Geld sparen → Schulden und Pfändung: Knopf zum Rechner oben, 4 erste Schritte, 8 Fälle zum Aufklappen; Verweis im Rechner erst unter dem Ergebnis
+  {
+    setLang('de');
+    d.getElementById('goSparen').click();
+    const spB = () => [...d.querySelectorAll('#spInhalt button')];
+    const schuldenK = spB().find((b) => b.textContent.indexOf(I18N.de['sp.schulden']) === 0);
+    check('[schulden] Kachel „Schulden und Pfändung“ in Geld sparen', !!schuldenK);
+    schuldenK.click();
+    const box = d.getElementById('spInhalt');
+    const ersterKnopf = box.querySelector('button');
+    check('[schulden] Ganz oben der Knopf „Ausrechnen, was dir bleibt“', !!ersterKnopf && ersterKnopf.textContent === I18N.de['sp.schulden.pf'] && !ersterKnopf.closest('details'));
+    check('[schulden] Erste Schritte mit 4 Punkten', box.querySelectorAll('ol.sp-liste li').length === 4 && box.querySelector('ol.sp-liste li').textContent === I18N.de['sp.schulden.1']);
+    const faelle = [...box.querySelectorAll('details.sp-fall')].map((x) => x.getAttribute('data-fall'));
+    check('[schulden] Was tun, wenn …: 8 Fälle zum Aufklappen in fester Reihenfolge', faelle.join() === 'inkasso,mahn,konto,strom,miete,rate,unserioes,insolvenz', faelle.join());
+    check('[schulden] Fälle zu Beginn zugeklappt, Mahnbescheid nennt die 2-Wochen-Frist mit Quelle', [...box.querySelectorAll('details.sp-fall')].every((x) => !x.open) && /2 Wochen.*§ 692 ZPO/.test(box.querySelector('[data-fall="mahn"] p').textContent));
+    const fall = (f) => box.querySelector('[data-fall="' + f + '"] p').textContent;
+    check('[schulden-korr] Strom/Gas: 2 Abschläge und 100 €, 4 Wochen Androhung, 8 Werktage, zinsfreie Raten (§§ 41f, 41g EnWG)', /2 Monatsabschlägen und mindestens 100 € .*§ 41f EnWG/.test(fall('strom')) && /4 Wochen vorher angedroht und 8 Werktage/.test(fall('strom')) && /zinsfreie Ratenzahlung .*§ 41g EnWG/.test(fall('strom')) && /Strom und Gas/.test(fall('strom')) && !/StromGVV/.test(fall('strom')));
+    check('[schulden-korr] Vollstreckungsbescheid: darf schon gepfändet werden, Einspruch 2 Wochen', /darf schon gepfändet werden \(§ 700 ZPO\)\. Dagegen hilft nur noch ein Einspruch innerhalb von 2 Wochen/.test(fall('mahn')));
+    check('[schulden-korr] Mietschulden: ordentliche Kündigung kann trotz Schonfrist bestehen bleiben', /ordentlich \(mit Frist\) gekündigt.*trotz Zahlung bestehen bleiben/.test(fall('miete')));
+    check('[schulden] Quellenzeile nennt Verbraucherzentralen, BAG-SB, Caritas/Diakonie und AG SBV', /Verbraucherzentralen.*BAG-SB.*Caritas.*Diakonie.*AG SBV/.test(box.textContent));
+    const roh = Object.keys(I18N).filter((l) => { setLang(l); return /sp\.schulden|pf\.tipps|undefined/.test(d.getElementById('spInhalt').textContent); });
+    check('[schulden] In allen 13 Sprachen ohne Rohschlüssel', roh.length === 0, roh.join());
+    setLang('de');
+    d.querySelector('#spInhalt [data-fall="konto"] button').click();
+    check('[schulden] P-Konto-Fall führt zum Pfändungsrechner', d.getElementById('app').getAttribute('data-ansicht') === 'pfaendung');
+    const pfB = () => [...d.querySelectorAll('#pfInhalt button')];
+    check('[schulden] Pfändungsrechner: vor dem Rechnen kein Knopf „Tipps bei Schulden“', !pfB().some((b) => b.textContent === I18N.de['pf.tipps']));
+    pfB().find((b) => b.textContent.indexOf(I18N.de['pf.konto']) === 0).click();
+    pfB().find((b) => b.textContent === '0').click();
+    pfB().find((b) => b.textContent === '0').click();
+    const jetztK = [...d.querySelectorAll('#pfInhalt .pf-jetzt li')].map((x) => x.textContent);
+    check('[schulden-korr] Konto: Umwandeln innerhalb eines Monats schützt auch gesperrtes Guthaben (§ 899 Abs. 1 ZPO)', jetztK[0] === I18N.de['pf.tipp.umwandeln'] && /innerhalb eines Monats.*schon gesperrte Guthaben geschützt \(§ 899 Abs\. 1 ZPO\)/.test(jetztK[0]), jetztK[0]);
+    const erg = d.querySelector('#pfInhalt .pf-zahl'), tk = pfB().find((b) => b.textContent === I18N.de['pf.tipps']);
+    check('[schulden] Nach dem Rechnen: Knopf „Tipps bei Schulden“ unter dem Ergebnis', !!erg && !!tk && (erg.compareDocumentPosition(tk) & w.Node.DOCUMENT_POSITION_FOLLOWING));
+    tk.click();
+    check('[schulden] Knopf öffnet die Schulden-Tipps', d.getElementById('app').getAttribute('data-ansicht') === 'sparen' && d.querySelectorAll('#spInhalt details.sp-fall').length === 8);
+  }
   check('Keine Skriptfehler im gesamten Test', errors.length === 0, errors.join('; '));
   console.log(fails ? '\n' + fails + ' FEHLER' : '\nAlle DOM-Tests bestanden');
   process.exit(fails ? 1 : 0);

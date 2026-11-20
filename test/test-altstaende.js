@@ -47,6 +47,18 @@ FAELLE.forEach((f) => {
   ck('[altstaende] ' + f.name + ': Name in der Antragsmappe übernommen', s.d.getElementById('p-name').value === 'Test');
 });
 
+// Leer gespeicherter Stand (App zweimal geöffnet, nichts eingegeben): nicht als bearbeitet werten, kein „4 möglich“
+{
+  const blank = seite({ 'lotse.ack': '1' }).w.__solo.state();
+  const z = seite({ 'lotse.state': JSON.stringify({ s: blank, p: { name: '', geb: '', strasse: '', ort: '', tel: '' }, e: true, big: false }), 'lotse.ack': '1', 'lotse-lang': 'de' });
+  const I = require('../dist/i18n.js');
+  ck('[altstaende] leer gespeicherter Stand: Check zeigt „noch keine Angaben“, keine Einstufungen', z.d.getElementById('count').textContent === I.de['c.leer'] && z.d.querySelectorAll('#cards .pill').length === 0, z.d.getElementById('count').textContent);
+  const bsp = seite({ 'lotse.state': JSON.stringify({ s: Object.assign({}, blank, { ek1Art: 'lohn', ek1Brutto: 2200, ek1Netto: 1750, miete: 950 }), p: {}, e: false }), 'lotse.ack': '1', 'lotse-lang': 'de' });
+  ck('[altstaende] gespeichertes Beispiel (e: false) bleibt Beispiel: Hinweis sichtbar, nicht als eigene Angabe', !bsp.d.getElementById('sampleNotice').hidden && bsp.w.__solo.state().ek1Netto === 1750);
+  const ordner = z.d.getElementById('v-ordner');
+  ck('[altstaende] leer gespeicherter Stand: Ordner ohne Einstufung „möglich“', !ordner || !/\d+ (möglich|wahrscheinlich)/.test(ordner.textContent) && !z.w.__solo.state().ek1Art, ordner && ordner.textContent.slice(0, 200));
+}
+
 // Antragsmappe mit jeder Einkommensart (auch später ergänzten wie „selbstständig“): kein „undefined“ im Angabenblatt
 {
   const probe = seite({ 'lotse.ack': '1' });

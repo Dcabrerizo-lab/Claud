@@ -12,7 +12,9 @@
   "t.krank.78": "3 6 78",
   "t.pflege.rente": "10 2 30",
   "t.srente.allg": "2 35 5 50",
-  "t.kindergeld.familiengeld": "2024 2025 3 3"
+  "t.kindergeld.familiengeld": "2024 2025 3 3",
+  "sp.schulden.mahn": "2 2 692 700",
+  "sp.schulden.miete": "2 2 569"
  },
  "en": {
   "s.kindergeld.tip": "6"

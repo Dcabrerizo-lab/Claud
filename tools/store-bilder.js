@@ -35,25 +35,25 @@ const VERLAUF = 'linear-gradient(160deg,#13806e,#0a4f44)';
   await p.goto(APP);
   await roh('1-start', async () => { await p.click('#appnav [data-ansicht=start]'); await oben(); });
   // Leistungscheck mit Beispiel
-  await p.click('#appnav [data-ansicht=leistungen]');
+  await p.click('#appnav [data-ansicht=start]'); await p.click('#goLeistungen');
   await p.click('#firstOk').catch(() => {});
   await p.click('#p1');
   await p.fill('#p-name', 'Maria Muster'); await p.fill('#p-strasse', 'Hauptstr. 1'); await p.fill('#p-ort', '91054 Erlangen'); await p.press('#p-ort', 'Tab');
   if (await p.isVisible('#plz')) await p.fill('#plz', '91054');
   await p.waitForTimeout(300);
   await roh('2-ergebnis', async () => { await zu('#ergebnis', 10); });
-  await roh('3-brief', async () => { await p.click('#appnav [data-ansicht=briefe]'); await zu('#einfachBtn', 10); });
+  await roh('3-brief', async () => { await p.click('#appnav [data-ansicht=start]'); await p.click('#goBriefe'); await zu('#einfachBtn', 10); });
   await roh('4-bescheid', async () => {
     await p.click('#brief-jc'); if (await p.isVisible('#elSelbst')) await p.click('#elSelbst');
     await p.evaluate(() => document.querySelector('#p-bescheid [id$="-beispiel"]').click());
     await zu('#bs-erg', 10);
   });
   await p.click('#briefZurueck');
-  await p.click('#appnav [data-ansicht=leistungen]');
+  await p.click('#appnav [data-ansicht=start]'); await p.click('#goLeistungen');
   await roh('5-pflege', async () => {
     await p.click('#paStart'); await p.fill('#pa-jahre', '81'); await p.click('#pflegeAssist .es-weiter'); await p.click('#pflegeAssist .es-btn:has-text("Ja")'); await oben();
   });
-  await p.click('#appnav [data-ansicht=leistungen]');
+  await p.click('#appnav [data-ansicht=start]'); await p.click('#goLeistungen');
   await roh('6-mappe', async () => { await p.click('#mappeMake'); await oben(); });
   await p.click('#mappeClose');
   await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'ar');

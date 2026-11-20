@@ -21,7 +21,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Knopf im Fragebogen', await p.isVisible('#paStart') && /einschätzen/.test(await p.textContent('#paStart')));
   await p.click('#paStart');
   ok('Ablauf öffnet mit der Frage nach dem Alter', await p.isVisible('#v-pflege') && /alt/.test(await frage()));
-  ok('Leiste zeigt weiter „Leistungen“', (await p.getAttribute('#appnav [data-ansicht=leistungen]', 'aria-current')) === 'page');
+  ok('Leiste zeigt weiter „Start“ (Leistungen gehört zur Startseite)', (await p.getAttribute('#appnav [data-ansicht=start]', 'aria-current')) === 'page');
   ok('Fokus auf der Frage', await p.evaluate(() => document.activeElement && document.activeElement.id === 'pa-q'));
   await p.click('text=Weiter ➜');
   ok('Ohne Alter: Hinweis statt weiter', /Alter/.test(await p.textContent('#pflegeAssist .warn')) && /alt/.test(await frage()));
@@ -36,7 +36,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   await tippe('Schafft nur einen kleinen Teil allein');
   await p.click('text=Weiß ich nicht');
   ok('„Weiß ich nicht“ geht weiter', /aufrecht sitzen|sitzen bleiben/.test(await frage()) === false);
-  await p.click('text=← Zurück');
+  await p.click('text=← Zurück >> visible=true');
   ok('Zurück zeigt die vorige Frage', /aufrecht sitzen/.test(await frage()), await frage());
   await tippe('Schafft nur einen kleinen Teil allein');
   for (let i = 0; i < 3; i++) await tippe('Schafft nur einen kleinen Teil allein');
@@ -62,9 +62,9 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   await p.check('[data-m5="5.1"]'); await p.click('text=Weiter ➜');
   ok('Danach nur „Wie oft“ zum angekreuzten Punkt', /Wie oft muss jemand die Medikamente/.test(await frage()), await frage());
   ok('Häufigkeiten von selten nach oft', /^Ein paarmal im Monat/.test(await p.textContent('#pflegeAssist .es-wahl .es-btn >> nth=0')));
-  await p.click('text=← Zurück'); await p.uncheck('[data-m5="5.1"]'); await p.click('text=Weiter ➜');
+  await p.click('text=← Zurück >> visible=true'); await p.uncheck('[data-m5="5.1"]'); await p.click('text=Weiter ➜');
   ok('Ohne Kreuz direkt zur Frage nach Diät', /Diät/.test(await frage()), await frage());
-  await p.click('text=← Zurück'); await p.click('text=← Zurück');
+  await p.click('text=← Zurück >> visible=true'); await p.click('text=← Zurück >> visible=true');
   await tippe('Nein'); await tippe('Nein'); // Bereich 5 und 6
   ok('Ergebnis: 40 Punkte, Pflegegrad 2', /Pflegegrad 2/.test(await frage()) && /^40 von 100/.test(await p.textContent('#pflegeAssist .es-h')), await frage());
   // Gleiches Ergebnis wie die Rechnung von pflege.js mit den gespeicherten Antworten

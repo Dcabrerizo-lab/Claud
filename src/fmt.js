@@ -39,6 +39,28 @@ const Fmt = (function () {
     return isFinite(n) && n >= 0 ? n : '';
   }
 
-  return { euro: euro, parse: parse, datum: datum, LOCALE: LOCALE };
+  // Laienansicht (Beratungsmodus aus): Paragrafen in Klammern ausblenden, z. B. „… Überprüfungsantrag (§ 44 SGB X); …“ -> „… Überprüfungsantrag; …“.
+  // Steht vor dem Paragrafen ein Begriff („(Nahtlosigkeit, § 145 SGB III)“), bleibt der Begriff stehen. Texte ohne § bleiben unverändert.
+  function ohnePara(s) {
+    return String(s).replace(/\s*\(([^()]*)\)/g, function (m, inh) {
+      var i = inh.search(/§|Art\.\s*\d/);
+      if (i < 0) return m;
+      var vor = inh.slice(0, i).replace(/[\s,;،؛]+$/, '');
+      return vor ? ' (' + vor + ')' : '';
+    });
+  }
+  // Geburtsdatum einheitlich als TT.MM.JJJJ: „1.2.1985“, „01021985“, „1985-02-01“, „1/2/1985“. Unklares (z. B. zweistellige Jahre) bleibt wie eingegeben.
+  function gebDatum(v) {
+    var s = String(v == null ? '' : v).trim(), m, t, mo, j;
+    if ((m = s.match(/^(\d{1,2})[./ -](\d{1,2})[./ -](\d{4})$/))) { t = +m[1]; mo = +m[2]; j = +m[3]; }
+    else if ((m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/))) { j = +m[1]; mo = +m[2]; t = +m[3]; }
+    else if ((m = s.match(/^(\d{2})(\d{2})(\d{4})$/))) { t = +m[1]; mo = +m[2]; j = +m[3]; }
+    else return s;
+    var d = new Date(Date.UTC(j, mo - 1, t));
+    if (j < 1900 || j > 2100 || d.getUTCFullYear() !== j || d.getUTCMonth() !== mo - 1 || d.getUTCDate() !== t) return s;
+    return (t < 10 ? '0' : '') + t + '.' + (mo < 10 ? '0' : '') + mo + '.' + j;
+  }
+
+  return { euro: euro, parse: parse, datum: datum, ohnePara: ohnePara, gebDatum: gebDatum, LOCALE: LOCALE };
 })();
 if (typeof module !== 'undefined') module.exports = Fmt;

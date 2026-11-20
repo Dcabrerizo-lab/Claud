@@ -26,8 +26,8 @@ const bedarf = (x) => { const t = x && x.tx.find((a) => a[1] && a[1].bedarf); re
 function zufall() {
   const adults = rnd() < 0.5 ? 1 : 2;
   const kids = pick([0, 0, 1, 2, 3]);
-  const art1 = pick(['lohn', 'lohn', 'rente', 'alg', 'ohne']);
-  const art2 = adults === 2 ? pick(['lohn', 'rente', 'ohne']) : '';
+  const art1 = pick(['lohn', 'lohn', 'rente', 'alg', 'unt', 'ohne']);
+  const art2 = adults === 2 ? pick(['lohn', 'rente', 'unt', 'ohne']) : '';
   const b1 = art1 === 'ohne' ? 0 : Math.round(rnd() * 3500);
   const b2 = art2 && art2 !== 'ohne' ? Math.round(rnd() * 2500) : 0;
   const q = (a) => (a === 'lohn' ? 0.72 : 1);
@@ -80,6 +80,18 @@ for (let i = 0; i < N; i++) {
       const unten = (x) => /einkoNiedrig|minEink/.test(x.hl) || (x.tx || []).some((t) => t[0] === 'kiz.mitWg'); // untere Grenze: erst genug Einkommen macht die Leistung möglich
       if (!unten(a[id]) && !unten(b[id]) && betrag(a[id]) !== null && betrag(b[id]) !== null && betrag(b[id]) > betrag(a[id]) + 10) melde('Mehr Einkommen, mehr Geld: ' + id, e, [betrag(a[id]), betrag(b[id])]);
       if (!unten(a[id]) && !unten(b[id]) && RANG[b[id].level] > RANG[a[id].level] && a[id].level !== 'na') melde('Mehr Einkommen, bessere Einstufung: ' + id, e, [a[id].level, b[id].level]);
+    }
+  }
+  // ---------- Monotonie: mehr Unterhalt für sich selbst (Art unt, neben Lohn als Liste) ----------
+  if (e.adults === 1) {
+    const lohn = Math.round(e.brutto * 0.5), unt = Math.round(rnd() * 900);
+    const mitU = (u) => ({ ...e, einkommen: [{ art: 'lohn', b: lohn, n: Math.round(lohn * 0.75) }].concat(u > 0 ? [{ art: 'unt', b: u }] : []) });
+    const u0 = ev(mitU(unt)), u1 = ev(mitU(unt + 150));
+    const unten = (x) => /einkoNiedrig|minEink/.test(x.hl) || (x.tx || []).some((t) => t[0] === 'kiz.mitWg');
+    for (const id of ['ggeld', 'gsa', 'wohngeld', 'kiz', 'bafoeg']) {
+      if (unten(u0[id]) || unten(u1[id])) continue;
+      if (RANG[u1[id].level] > RANG[u0[id].level] && u0[id].level !== 'na') melde('Mehr Unterhalt, bessere Einstufung: ' + id, e, [unt, u0[id].level, u1[id].level]);
+      if (betrag(u0[id]) !== null && betrag(u1[id]) !== null && betrag(u1[id]) > betrag(u0[id]) + 10) melde('Mehr Unterhalt, mehr Geld: ' + id, e, [unt, betrag(u0[id]), betrag(u1[id])]);
     }
   }
   // ---------- Monotonie: ein Kind mehr, mehr Miete ----------
