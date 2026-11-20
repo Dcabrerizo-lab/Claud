@@ -472,6 +472,24 @@ Die Tabelle gilt bis 30.6.2027, danach zeigt die App einen Warnhinweis. Jedes Ja
 | Korrekturen: Meldepflicht je Leistung (Grundsicherungsgeld/Sozialhilfe sofort nach § 60 Abs. 1 SGB I, Wohngeld bei dauerhaft mehr als 15 % nach § 27 Abs. 3 WoGG, Kinderzuschlag meist erst beim nächsten Antrag; abgerufen 20.11.2026), Vorlage „Änderung melden“ nur bei Grundsicherungsgeld oder Sozialhilfe; Nachzahlung: Antrag im Monat der Fälligkeit; ganzes Haushaltsbuch löschen mit Rückgängig; je Vorgang gespeichert und mit PIN verschlüsselt | ✓ | `hb-korr` |
 | Spartipps mit Fundstelle (Text „Quelle: …“ unter jedem Tipp): Miete – Verbraucherzentrale, Deutscher Mieterbund, Wohngeldgesetz; Strom und Gas – Stromspiegel für Deutschland, Verbraucherzentrale (Energieberatung); Handy und Internet – Verbraucherzentrale, § 56 Abs. 3 TKG (Kündigung nach der Erstlaufzeit mit 1 Monat Frist, abgerufen 20.11.2026); Versicherungen, Mobilität, Sonstiges – Verbraucherzentrale; Lebensmittel – Verbraucherzentrale, Bundeszentrum für Ernährung; Kinder – § 28 SGB II, § 34 SGB XII, § 6b BKGG (Bildung und Teilhabe), Familienkasse; Raten – BAG-SB (meine-schulden.de). Abrufdatum der allgemeinen Ratgeberseiten vor der Veröffentlichung nachtragen | ◐ | `hb-tipps` |
 
+## Ich ziehe aus (src/ausziehen.js)
+
+Eigener Bereich für junge Menschen; keine Rechnung, nur Hinweise. Quellen mit Abrufdatum 20.11.2026 in `Ausziehen.Q`.
+
+| Regel | Status | Test |
+|---|---|---|
+| Übersicht mit 7 Kacheln (2 Spalten), Unterseiten mit „Zurück“ (Herkunft gemerkt), Checklisten mit Fortschritt, wichtige Punkte offen, weitere zum Aufklappen | ✓ | `az-aufbau`, `az-oberflaeche` |
+| Unter 25 mit Grundsicherungsgeld: Zusicherung vor Vertragsschluss, Pflicht-Gründe, keine Erstausstattung ohne Zusicherung (§ 22 Abs. 5, § 24 Abs. 6 SGB II), deutliche Warnung | ✓ | `az-aufbau`, `az-oberflaeche` |
+| Kaution höchstens 3 Kaltmieten ohne Betriebskosten, 3 Monatsraten (§ 551 BGB); Kaution als Darlehen, Umzugskosten mit Zusicherung (§ 22 Abs. 6 SGB II); Erstausstattung vor dem Kauf beantragen (§ 24 Abs. 3, § 37 SGB II) | ✓ | `az-quellen` |
+| Ummelden in 2 Wochen, Wohnungsgeberbestätigung (§ 17 Abs. 1, § 19 BMG); Grundversorgung melden (§ 2 StromGVV); Rundfunk je Wohnung, Befreiung (§ 2, § 4 Abs. 1 RBeitrStV); Laufzeit 24 Monate (§ 56 TKG); Kfz-Anschrift unverzüglich (§ 15 FZV); Steuer-ID an Arbeitgeber (§ 39e Abs. 4 EStG) | ✓ | `az-quellen` |
+| Basiskonto, 10 Geschäftstage (§ 31 ZKG); P-Konto (§ 850k ZPO); Lastschrift 8 Wochen (§ 675x BGB); Nebenkostenabrechnung 12 Monate (§ 556 Abs. 3 BGB); Aufbewahren nach Verbraucherzentrale (Stand 23.10.2025) | ✓ | `az-quellen` |
+| Kostenfallen: Widerruf 14 Tage (§ 312g, § 355 BGB), Bestellknopf (§ 312j BGB), Dispo-Beratung 6 Monate/75 % (§ 504a BGB), Widerspruch 1 Monat (§ 84 SGG), Datenkopie kostenlos (Art. 15 Abs. 3 DSGVO); „Später zahlen“ und Kredite „ohne Schufa“ nach Verbraucherzentrale | ✓ | `az-quellen` |
+| Versicherungen gestuft nach Verbraucherzentrale (Stand 21.11.2025, VZ Hamburg 15.04.2026); Familienversicherung bis 18/23/25, Grenze 1/7 Bezugsgröße aus `R.famvers` (§ 10 SGB V); Gesundheitsfragen (§ 19 VVG); keine Anbieter, keine Preise | ✓ | `az-quellen`, `az-oberflaeche` |
+| Hilfen nur „möglich“: BAB (§ 56, § 60 SGB III), BAföG (§ 2), Wohngeld-Ausschluss (§ 20 Abs. 2 WoGG), Kindergeld bis 25 und Abzweigung (§ 32 Abs. 4, § 74 EStG), Grundsicherungsgeld (§ 7 Abs. 5, § 22, § 24, § 27 SGB II), Bildung und Teilhabe (§ 28 SGB II), Waisenrente bis 27 (§ 48 Abs. 4 SGB VI) | ✓ | `az-aufbau`, `az-oberflaeche` |
+| Careleaver: § 41 (in der Regel bis 21, Rückkehr möglich), § 41a, § 41 Abs. 3 und § 36b, kein Kostenbeitrag aus eigenem Einkommen (§ 92 Abs. 1a, § 94 Abs. 3, Abs. 6 weggefallen), Ombudsstelle (§ 9a SGB VIII); Briefvorlage nur „An das Jugendamt“, keine Anschrift | ✓ | `az-quellen`, `az-oberflaeche` |
+| Abhaken und Notizen lokal (`lotse.ausziehen`, Schnittstelle `Ausziehen.speicherOrt`), nur bekannte Einträge, Speicherfehler gemeldet, „Alle Angaben löschen“ leert alles | ✓ | `az-speichern`, `az-oberflaeche` |
+| 13 Sprachen und Einfache Sprache: alle Schlüssel, gleiche Platzhalter und Vorschriften, keine Rohschlüssel | ✓ | `az-sprachen`, `az-oberflaeche` |
+
 ## Anzeige und Eingaben (alle Karten)
 
 | Regel | Status | Test |

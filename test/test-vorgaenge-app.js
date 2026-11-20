@@ -69,11 +69,14 @@ const knopf = (s, root, text) => [...root.querySelectorAll('button')].find((b) =
   // Haushaltsplan (src/haushalt.js) je Vorgang
   const H = s.w.Haushalt, essen = () => (H.daten().plan.aus || {}).essen;
   H.laden({ plan: { aus: { essen: 30000 } } });
+  if (s.w.Ausziehen) s.w.Ausziehen.laden({ ab: { vertrag: true } });
   ck('[vorgaenge] Haushaltsplan im geöffneten Vorgang gespeichert', /30000/.test(mem['lotse.haushalt'] || ''));
   knopf(s, d.getElementById('vgMenu'), 'Ohne Namen').click();
   ck('[vorgaenge] anderer Vorgang: eigener (leerer) Haushaltsplan', essen() === undefined);
+  ck('[vorgaenge] anderer Vorgang: eigene (leere) Haken bei „Ich ziehe aus“', !s.w.Ausziehen || !s.w.Ausziehen.daten().ab.vertrag);
   knopf(s, d.getElementById('vgMenu'), 'Familie M.').click();
   ck('[vorgaenge] zurück: Haushaltsplan des Vorgangs wieder da', essen() === 30000);
+  ck('[vorgaenge] zurück: Haken bei „Ich ziehe aus“ wieder da', !s.w.Ausziehen || s.w.Ausziehen.daten().ab.vertrag === true);
   ck('[vorgaenge] Löschen-Text nennt den Haushaltsplan', /Haushaltsplan und Haushaltsbuch/.test(d.getElementById('clearWas').textContent));
 
   // Alle Angaben löschen: Text nennt den Vorgang, Rückgängig stellt ihn wieder her, nach einem Wechsel nicht mehr
