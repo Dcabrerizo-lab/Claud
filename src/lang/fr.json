@@ -4,6 +4,7 @@
   "lang.label": "Langue",
   "lead": "Vérifie en environ 5 minutes à quelles prestations sociales tu pourrais avoir droit, et prépare directement ta demande.",
   "stand": "Règles en vigueur au {stand}",
+  "vertrauen": "À jour : {stand} · d’après des sources officielles",
   "big": "Grands caractères",
   "sample": "Ceci est un exemple. Remplace les valeurs par tes propres informations. Tout reste sur ton appareil, rien n'est envoyé.",
   "trans": "Les noms des prestations et des administrations restent en allemand, pour que tu puisses les utiliser auprès des services. Les traductions sont automatiques et peuvent contenir des erreurs.",

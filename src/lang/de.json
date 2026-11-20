@@ -4,6 +4,7 @@
   "lang.label": "Sprache",
   "lead": "Prüfe in etwa 5 Minuten, welche Sozialleistungen dir zustehen könnten, und bereite gleich den Antrag vor.",
   "stand": "Regeln Stand {stand}",
+  "vertrauen": "Stand: {stand} · nach amtlichen Quellen",
   "big": "Große Schrift",
   "sample": "Das ist ein Beispiel. Ersetze die Werte durch deine eigenen Angaben. Alles bleibt auf deinem Gerät, nichts wird gesendet.",
   "trans": "Die Namen der Leistungen und Ämter bleiben auf Deutsch, damit du sie dort nennen kannst. Die Übersetzungen sind maschinell erstellt und können Fehler enthalten.",

@@ -507,6 +507,7 @@
     document.querySelectorAll('[data-t]').forEach(function (el) { el.textContent = t(el.getAttribute('data-t')); });
     document.querySelectorAll('[data-t-aria]').forEach(function (el) { el.setAttribute('aria-label', t(el.getAttribute('data-t-aria'))); });
     $('stand').textContent = t('stand', { stand: Rules.RULES.stand });
+    $('vertrauenT').textContent = t('vertrauen', { stand: Rules.RULES.stand }); // Stand und Herkunft der Zahlen sichtbar am Ergebnis
     $('appVersion').textContent = t('set.version', { v: APPVERSION });
     einfacheSpracheAnzeigen();
     if (window.Haushalt && Haushalt.sprache) Haushalt.sprache(); // Haushaltsplan (src/haushalt.js) in der neuen Sprache zeichnen
@@ -1390,7 +1391,7 @@
       ebZeilen().map(function (z) {
         return '<tr><th scope="row"><span' + (lang === 'de' ? '' : ' lang="de"') + '>' + esc(z.r.name) + '</span>' + (lang === 'de' ? '' : '<br><span class="small">' + esc(t('n.' + z.r.id)) + '</span>') +
           (beratung && z.r.recht ? '<br><span class="small" lang="de" dir="ltr">' + esc(z.r.recht) + '</span>' : '') + '</th>' +
-          '<td><span class="pill ' + z.r.level + '"><span aria-hidden="true">' + MARK[z.r.level] + '</span>' + esc(z.lvl) + '</span></td><td>' + esc(z.betrag) + '</td><td>' + esc(z.stelle) + '</td><td>' + esc(z.schritt) + '</td></tr>';
+          '<td data-l="' + esc(t(cols[1])) + '"><span class="pill ' + z.r.level + '"><span aria-hidden="true">' + MARK[z.r.level] + '</span>' + esc(z.lvl) + '</span></td><td data-l="' + esc(t(cols[2])) + '">' + esc(z.betrag) + '</td><td data-l="' + esc(t(cols[3])) + '">' + esc(z.stelle) + '</td><td data-l="' + esc(t(cols[4])) + '">' + esc(z.schritt) + '</td></tr>'; // data-l: Spaltenname für die Kartenansicht auf dem Handy
       }).join('') + '</tbody></table>' +
       '<p class="eb-hinweis">' + esc(t('eb.hinweis', { stand: Rules.RULES.stand })) + '</p>';
   }
@@ -2642,7 +2643,7 @@
     briefKopf();
     var bk = $('briefKacheln');
     if (!bk.children.length) BRIEFE.forEach(function (x) {
-      var k = document.createElement('button'); k.type = 'button'; k.className = 'kachel'; k.id = 'brief-' + x[0];
+      var k = document.createElement('button'); k.type = 'button'; k.className = 'kachel uk-karte'; k.id = 'brief-' + x[0];
       k.innerHTML = '<span class="kachel-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + x[3] + '</svg></span><b></b><span class="k-t"></span>';
       k.addEventListener('click', function () { briefOeffnen(x[0]); });
       bk.appendChild(k);
@@ -3418,7 +3419,7 @@
       var b = document.createElement('b'); b.textContent = r.titel; d.appendChild(b);
       var p = document.createElement('p'); p.textContent = BriefLesen.ERKLAERUNG[r.art]; d.appendChild(p);
       var fr = BriefLesen.frist(text);
-      if (fr) { var q = document.createElement('p'); q.textContent = t('el.frist', { frist: fr }); d.appendChild(q); }
+      if (fr) { var q = document.createElement('p'); q.className = 'frist frist-wann'; q.setAttribute('role', 'note'); q.textContent = t('el.frist', { frist: fr }); $('elErg').appendChild(q); } // Frist-Muster ganz oben
       var fk = fr && window.FristenOrdner ? FristenOrdner.briefKnopf(text, r.art) : null; if (fk) d.appendChild(fk); // nur auf Knopfdruck merken
       $('elErg').appendChild(d); if (ks) ksZeigen(ks, text); elNachricht(t('el.erkanntOhne', { titel: r.titel })); return;
     }
