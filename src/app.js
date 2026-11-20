@@ -121,7 +121,71 @@
     (texte || []).forEach(function (x) { if (!x) return; var p = document.createElement('p'); p.textContent = x; d.appendChild(p); });
     return d;
   }
-  window.SoloMehr = { el: mehrEl, quellen: quellenEl, rb: function () { return t('rb.satz'); } }; // auch für die Prüfpakete (erweiterungen/vorschau.js), Schulden-Liste und „Ich ziehe aus“
+  // Ein Tipp in „Geld und Schulden“ und im Pfändungsrechner: Linien-Symbol + ein kurzer Satz (Schlüssel „<key>.kurz“, Handlung zuerst,
+  // Fristen und Beträge stehen darin sichtbar), der ausführliche Text (<key>) zum Aufklappen (gleiches Bauteil details.mehr, Variante .tipp).
+  // Symbole sind feste Pfade (kein Text von außen), Stil wie die Kachel-Symbole (Linie, 24er Raster).
+  var TIPP_SYM = {
+    aus: '<path d="M12 3v9"/><path d="M7 6a8 8 0 1 0 10 0"/>',
+    waesche: '<rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="12" cy="13" r="4.5"/><path d="M7 6h2"/>',
+    topf: '<path d="M4 10h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M2 10h20M9 6h6"/>',
+    thermo: '<path d="M10 14V5a2 2 0 0 1 4 0v9a4 4 0 1 1-4 0z"/><path d="M12 9v7"/>',
+    zaehler: '<path d="M4 17a8 8 0 1 1 16 0"/><path d="M12 17l4-5"/><path d="M4 20h16"/>',
+    hausCheck: '<path d="M4 11l8-6 8 6v9H4z"/><path d="M9 15l2 2 4-4"/>',
+    fenster: '<rect x="5" y="3" width="14" height="18" rx="1"/><path d="M12 3v18M5 12h14"/>',
+    heizung: '<path d="M6 6v12M10 6v12M14 6v12M18 6v12M4 8h16M4 18h16"/>',
+    wind: '<path d="M3 8h11a3 3 0 1 0-3-3M3 12h15a3 3 0 1 1-3 3M3 16h7"/>',
+    einreichen: '<path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M9 14h6M12 11v6"/>',
+    liste: '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>',
+    blatt: '<path d="M5 19c0-8 6-14 14-14 0 8-6 14-14 14z"/><path d="M5 19l8-8"/>',
+    frost: '<path d="M12 3v18M4.2 7.5l15.6 9M4.2 16.5l15.6-9"/>',
+    korb: '<path d="M3 10h18l-2 10H5z"/><path d="M8 10l4-6 4 6"/>',
+    teller: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/>',
+    radio: '<rect x="3" y="8" width="18" height="12" rx="2"/><path d="M7 8l10-5"/><circle cx="15" cy="14" r="2.5"/><path d="M6 13h4M6 16h4"/>',
+    telefon: '<path d="M5 4h4l2 5-3 2a11 11 0 0 0 5 5l2-3 5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 6a2 2 0 0 1 2-2z"/>',
+    ticket: '<path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/><path d="M14 6v12"/>',
+    bank: '<path d="M3 10l9-6 9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/>',
+    schere: '<circle cx="6" cy="7" r="3"/><circle cx="6" cy="17" r="3"/><path d="M8.5 8.5L20 18M8.5 15.5L20 6"/>',
+    person: '<circle cx="12" cy="7" r="3"/><path d="M5 20c1-4 4-6 7-6s6 2 7 6"/>',
+    post: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
+    haus: '<path d="M4 11l8-6 8 6v9H4z"/><path d="M10 20v-5h4v5"/>',
+    stopp: '<circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/>',
+    lupe: '<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/>',
+    kalender: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+    warn: '<path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/>',
+    waage: '<path d="M12 4v16M6 20h12M5 7h14"/><path d="M5 7l-3 6h6zM19 7l-3 6h6z"/>',
+    uhr: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    blitz: '<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>',
+    schild: '<path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6z"/>',
+    beleg: '<path d="M6 3h9l4 4v14H6z"/><path d="M9 14l2 2 4-4"/>',
+    kind: '<circle cx="12" cy="6" r="2.5"/><path d="M8 21v-6l-2-4h12l-2 4v6"/>',
+    weiter: '<path d="M4 12h14M13 6l6 6-6 6"/>',
+    geld: '<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>'
+  };
+  var TIPP_VON = {
+    'sp.strom.1': 'aus', 'sp.strom.2': 'waesche', 'sp.strom.3': 'topf', 'sp.strom.4': 'thermo', 'sp.strom.5': 'zaehler', 'sp.strom.6': 'hausCheck',
+    'sp.heizen.1': 'thermo', 'sp.heizen.2': 'fenster', 'sp.heizen.3': 'heizung', 'sp.heizen.4': 'wind', 'sp.heizen.5': 'einreichen',
+    'sp.essen.1': 'liste', 'sp.essen.2': 'blatt', 'sp.essen.3': 'frost', 'sp.essen.4': 'korb', 'sp.essen.5': 'teller',
+    'sp.vertraege.1': 'radio', 'sp.vertraege.2': 'telefon', 'sp.vertraege.3': 'ticket', 'sp.vertraege.5': 'bank', 'sp.vertraege.6': 'schere',
+    'sp.schulden.1': 'post', 'sp.schulden.2': 'haus', 'sp.schulden.3': 'stopp', 'sp.schulden.4': 'person',
+    'sp.schulden.inkasso': 'lupe', 'sp.schulden.rate': 'kalender', 'sp.schulden.unserioes': 'warn', 'sp.schulden.insolvenz': 'waage',
+    'sp.schulden.konto': 'schild', 'sp.schulden.strom': 'blitz', 'sp.schulden.mahn': 'waage', 'sp.schulden.miete': 'haus',
+    'gs.d.konto.frist': 'uhr', 'gs.d.konto.schritt': 'bank', 'gs.d.strom.frist': 'uhr', 'gs.d.strom.schritt': 'telefon',
+    'gs.d.mahn.frist': 'uhr', 'gs.d.mahn.schritt': 'post', 'gs.d.miete.frist': 'uhr', 'gs.d.miete.schritt': 'einreichen',
+    'pf.tipp.unterhalt': 'warn', 'pf.tipp.unterhaltspflichten': 'lupe', 'pf.tipp.mehr': 'waage', 'pf.tipp.beratung': 'person', 'pf.tipp.einmal': 'geld',
+    'pf.tipp.kg': 'kind', 'pf.tipp.umwandeln': 'bank', 'pf.tipp.bescheinigung': 'beleg', 'pf.tipp.kontomehr': 'waage', 'pf.tipp.uebertrag': 'weiter', 'pf.tipp.sozial': 'schild'
+  };
+  // laien: Paragrafen wie bisher nur bei den Spartipps aus dem Text nehmen (tL); sonst bleiben sie stehen
+  function tippEl(key, cls, laien) {
+    var d = document.createElement('details'); d.className = 'mehr tipp' + (cls ? ' ' + cls : ''); d.setAttribute('data-tipp', key);
+    var s = document.createElement('summary');
+    var sym = document.createElement('span'); sym.className = 'tipp-sym'; sym.setAttribute('aria-hidden', 'true');
+    sym.innerHTML = '<svg viewBox="0 0 24 24">' + (TIPP_SYM[TIPP_VON[key]] || TIPP_SYM.liste) + '</svg>'; // feste Pfade aus TIPP_SYM
+    var k = document.createElement('span'); k.className = 'tipp-kurz'; k.textContent = (laien ? tL : t)(key + '.kurz');
+    s.appendChild(sym); s.appendChild(k); d.appendChild(s);
+    var p = document.createElement('p'); p.textContent = (laien ? tL : t)(key); d.appendChild(p);
+    return d;
+  }
+  window.SoloMehr = { el: mehrEl, quellen: quellenEl, tipp: tippEl, rb: function () { return t('rb.satz'); } }; // auch für die Prüfpakete (erweiterungen/vorschau.js), Schulden-Liste und „Ich ziehe aus“
 
   function fillSelect(id, items, current) {
     var el = $(id);
@@ -2468,10 +2532,9 @@
     ['essen', 'sp.essen', 'sp.essen.t', 5, '<path d="M4 11h16a8 8 0 0 1-16 0zM8 7c0-2 2-2 2-4M12 7c0-2 2-2 2-4"/>'],
     ['vertraege', 'sp.vertraege', 'sp.vertraege.t', 5, '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>']
   ];
-  // Reihenfolge: die 3 wirksamsten Tipps zuerst (sichtbar), der Rest hinter „Welche Tipps gibt es noch?“. Tipps mit Frist oder Nachzahlung stehen vorn.
+  // Reihenfolge: die wirksamsten Tipps zuerst; Tipps mit Frist oder Nachzahlung stehen vorn. Jeder Tipp: Symbol + kurzer Satz, Rest zum Aufklappen.
   var SP_TIPPS = { strom: ['sp.strom.6', 'sp.strom.5', 'sp.strom.1', 'sp.strom.2', 'sp.strom.3', 'sp.strom.4'], heizen: ['sp.heizen.5', 'sp.heizen.1', 'sp.heizen.2', 'sp.heizen.3', 'sp.heizen.4'],
     essen: ['sp.essen.5', 'sp.essen.4', 'sp.essen.1', 'sp.essen.2', 'sp.essen.3'], vertraege: ['sp.vertraege.1', 'sp.vertraege.6', 'sp.vertraege.5', 'sp.vertraege.2', 'sp.vertraege.3'] };
-  var SP_SICHTBAR = 3;
   // Schulden: Tipps nach gemeinnützigen Schuldnerberatungen, sinngemäß in eigenen Worten. Quellen (abgerufen 20.11.2026):
   //  Verbraucherzentralen: verbraucherzentrale.nrw „Erste Schritte, wenn die Schulden drücken“; verbraucherzentrale.de „Gerichtliches Mahnverfahren:
   //  Was tun bei einem Mahnbescheid?“, „Ratenvereinbarung beim Inkasso“, „Schuldnerberatungen: So erkennen Sie unseriöse Angebote“, „Privatinsolvenz –
@@ -2511,7 +2574,8 @@
     var p = function (txt, cls) { var e = document.createElement('p'); e.className = cls || ''; e.textContent = txt; box.appendChild(e); return e; };
     var raster = function () { var r = document.createElement('div'); r.className = 'sk-raster'; box.appendChild(r); return r; };
     var knopf = function (cls, txt, fn) { var d = document.createElement('div'); d.className = 'btns'; d.appendChild(nhKnopf(cls, esc(txt), null, fn)); box.appendChild(d); return d.firstChild; };
-    var aufklappen = function (titel, txt, fall) { var dt = document.createElement('details'); dt.className = 'pf-tipps sp-fall'; if (fall) dt.setAttribute('data-fall', fall); var su = document.createElement('summary'); su.textContent = titel; dt.appendChild(su); var e = document.createElement('p'); e.className = 'hint'; e.textContent = txt; dt.appendChild(e); box.appendChild(dt); return dt; };
+    var tipp = function (key, fall, ziel, laien) { var dt = tippEl(key, fall ? 'sp-fall' : '', laien); if (fall) dt.setAttribute('data-fall', fall); (ziel || box).appendChild(dt); return dt; };
+    var tippListe = function (keys, cls, laien) { var ul = document.createElement('ul'); ul.className = 'tipp-liste ' + cls; box.appendChild(ul); keys.forEach(function (k) { var li = document.createElement('li'); tipp(k, '', li, laien); ul.appendChild(li); }); return ul; };
     if (!sp.bereich) {
       p(t('pf.wahl'), 'pf-frage');
       var r0 = raster();
@@ -2539,23 +2603,22 @@
       [['gs-frist', 'gs.frist', '.frist'], ['gs-schritt', 'gs.schritt', '.schritt']].forEach(function (z) {
         var d = document.createElement('div'); d.className = 'gs-box ' + z[0];
         var h3 = document.createElement('h3'); h3.textContent = t(z[1]); d.appendChild(h3);
-        var e = document.createElement('p'); e.textContent = t('gs.d.' + sp.fall + z[2]); d.appendChild(e);
+        tipp('gs.d.' + sp.fall + z[2], '', d);
         box.appendChild(d);
       });
       if (sp.fall === 'konto') knopf('btn sp-rechner', t('sp.schulden.pf'), function () { pf = { art: 'konto', schritt: 1, netto: pf.netto, pers: pf.pers, kg: pf.kg, kiz: pf.kiz }; oeffneVon('pfaendung', true); });
-      aufklappen(t('steps.tips'), t('sp.schulden.' + sp.fall), sp.fall);
+      tipp('sp.schulden.' + sp.fall, sp.fall);
       knopf('btn ghost gs-zur-hilfe', t('gs.hilfe'), function () { gsOeffne('hilfe'); spRender(true); });
       box.appendChild(quellenEl([t('sp.schulden.quellen')]));
     } else if (sp.bereich === 'hilfe') {
       p(t('gs.hilfe'), 'pf-frage');
       var hb = document.createElement('div'); hb.className = 'gs-box gs-schritt gs-beratung';
       var hh = document.createElement('h3'); hh.textContent = t('gs.hilfe.finden'); hb.appendChild(hh);
-      var hp = document.createElement('p'); hp.textContent = t('sp.schulden.4'); hb.appendChild(hp); box.appendChild(hb);
+      tipp('sp.schulden.4', '', hb); box.appendChild(hb);
       p(t('sp.schulden.erst'), 'sp-zwischen');
-      var ol = document.createElement('ol'); ol.className = 'sp-liste'; box.appendChild(ol);
-      ['sp.schulden.1', 'sp.schulden.2', 'sp.schulden.3'].forEach(function (k) { var li = document.createElement('li'); li.textContent = t(k); ol.appendChild(li); });
+      tippListe(['sp.schulden.1', 'sp.schulden.2', 'sp.schulden.3'], 'sp-schritte');
       p(t('sp.schulden.fall'), 'sp-zwischen');
-      SP_SCHULDEN_FAELLE.forEach(function (f) { aufklappen(t('sp.schulden.' + f + '.s'), t('sp.schulden.' + f), f); });
+      SP_SCHULDEN_FAELLE.forEach(function (f) { tipp('sp.schulden.' + f, f); });
       box.appendChild(quellenEl([t('sp.schulden.quellen')]));
     } else if (sp.rezepte) {
       p(t('sp.rezepte'), 'pf-frage');
@@ -2574,13 +2637,7 @@
     } else {
       var th = SP_THEMEN.filter(function (x) { return x[0] === sp.thema; })[0];
       p(t(th[1]), 'pf-frage');
-      var tippListe = function (keys, ziel) { var ul = document.createElement('ul'); ul.className = 'sp-liste'; ziel.appendChild(ul); keys.forEach(function (k) { var li = document.createElement('li'); li.textContent = tL(k); ul.appendChild(li); }); };
-      tippListe(SP_TIPPS[sp.thema].slice(0, SP_SICHTBAR), box);
-      if (SP_TIPPS[sp.thema].length > SP_SICHTBAR) {
-        var mt = document.createElement('details'); mt.className = 'mehr sp-mehr';
-        var ms = document.createElement('summary'); ms.textContent = t('mehr.tipps'); mt.appendChild(ms);
-        tippListe(SP_TIPPS[sp.thema].slice(SP_SICHTBAR), mt); box.appendChild(mt);
-      }
+      tippListe(SP_TIPPS[sp.thema], 'sp-tipps', true);
       if (sp.thema === 'essen') knopf('btn', t('sp.rezepte'), function () { sp.rezepte = true; spRender(true); });
       box.appendChild(quellenEl([t('sp.quellen')]));
     }
@@ -2609,17 +2666,17 @@
       if (weiter) knoepfe('btns').appendChild(nhKnopf('btn', esc(t('pf.weiter')), null, weiter));
     };
     // Weitere Hinweise zum Aufklappen (erst das Ergebnis, Details danach)
+    // Jeder Hinweis: Symbol + kurzer Satz, Einzelheiten zum Aufklappen (tippEl)
     var tipps = function (keys) {
-      var d = document.createElement('details'); d.className = 'pf-tipps';
-      var su = document.createElement('summary'); su.textContent = t('steps.tips'); d.appendChild(su);
-      keys.forEach(function (k) { var e = document.createElement('p'); e.className = 'hint'; e.textContent = t(k); d.appendChild(e); });
+      var d = document.createElement('div'); d.className = 'pf-tipps';
+      keys.forEach(function (k) { d.appendChild(tippEl(k)); });
       box.appendChild(d);
     };
     var jetzt = function (keys) {
       var d = document.createElement('div'); d.className = 'pf-jetzt';
       var h3 = document.createElement('h3'); h3.textContent = t('pf.jetzt.h'); d.appendChild(h3);
-      var ol = document.createElement('ol'); ol.className = 'sp-liste';
-      keys.forEach(function (k) { var li = document.createElement('li'); li.textContent = t(k); ol.appendChild(li); });
+      var ol = document.createElement('ol'); ol.className = 'tipp-liste';
+      keys.forEach(function (k) { var li = document.createElement('li'); li.appendChild(tippEl(k)); ol.appendChild(li); });
       d.appendChild(ol); box.appendChild(d);
     };
     // Verweis auf „Geld und Schulden“ → „Kostenlose Hilfe“: nur unter dem Ergebnis, nicht vor dem Rechnen. „Zurück“ führt von dort eine Ebene hoch.
@@ -2667,7 +2724,7 @@
       }
       if (e.ueberHoechst) p(t('pf.erg.hoch', { h: { eur: Rules.RULES.pfaendung.hoechst } }), 'hint');
       p(t('pf.erg.frei', { f: { eur: e.frei } }), 'small muted');
-      p(t('pf.tipp.unterhalt'), 'hint');
+      box.appendChild(tippEl('pf.tipp.unterhalt', 'tipp-warn'));
       jetzt(['pf.tipp.unterhaltspflichten', 'pf.tipp.mehr', 'pf.tipp.beratung']); // zuerst: alle Unterhaltspflichten berücksichtigt? (§ 850c ZPO)
       tipps(['pf.tipp.einmal', 'pf.tipp.kg']);
       var d = knoepfe('btns');
@@ -2698,7 +2755,7 @@
   pfRender = function (fokus) {
     pfRenderGanz(fokus);
     var box = $('pfInhalt');
-    if (box && !beratung) box.querySelectorAll('p').forEach(function (e) { if (e.children.length === 0 && !e.closest('.quellen') && /§/.test(e.textContent)) e.textContent = Fmt.ohnePara(e.textContent); });
+    if (box && !beratung) box.querySelectorAll('p').forEach(function (e) { if (e.children.length === 0 && !e.closest('.quellen, .tipp') && /§/.test(e.textContent)) e.textContent = Fmt.ohnePara(e.textContent); });
   };
 
   // ----- Bereiche: Start, Leistungen (Leistungscheck), Brief prüfen -----

@@ -1025,6 +1025,18 @@
   details.mehr > summary::after { content: "▸"; font-size: .85em; }
   details.mehr[open] > summary::after { content: "▾"; }
   details.mehr.quellen { margin-top: 18px; } /* „Quellen und Stand“: immer letzte Zeile der Seite */
+  /* Tipp (Geld und Schulden, Pfändung): Linien-Symbol + kurzer Satz, Einzelheiten zum Aufklappen (src/app.js tippEl) */
+  details.mehr.tipp { border: 1px solid var(--line); border-radius: var(--r-item); background: var(--surface); padding: 2px 12px; margin: 8px 0; }
+  details.mehr.tipp > summary { display: flex; gap: 12px; color: var(--ink); font-size: 1em; font-weight: 600; min-height: 48px; }
+  details.mehr.tipp > summary::before { content: none; display: none; }
+  details.mehr.tipp > summary::after { margin-inline-start: auto; color: var(--accent); }
+  details.mehr.tipp > p { color: var(--ink); font-size: .95em; margin: 0 0 10px; }
+  .tipp-sym { flex: none; width: 32px; height: 32px; display: grid; place-items: center; color: var(--accent); }
+  .tipp-sym svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+  .tipp-kurz { flex: 1; min-width: 0; }
+  .tipp-liste { list-style: none; margin: 0; padding: 0; }
+  .gs-box details.mehr.tipp, .pf-jetzt details.mehr.tipp { border: 0; background: none; padding: 0; margin: 0; }
+  details.mehr.tipp.tipp-warn { border-color: var(--warn); }
   details.mehr > :not(summary) { margin: 0 0 6px; color: var(--muted); font-size: .92em; font-weight: 400; }
   .form-ende { display: grid; gap: 8px; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); }
   .rb-satz { margin: 12px 0 0; }
