@@ -131,7 +131,12 @@ const KostensenkungHilfe = (function () {
         // Notiz nur ein kurzer Titel; Beginn und Länge der Frist legt das Amt fest, die App rechnet nichts aus
         try {
           Promise.resolve(FO.hinzu({ art: 'kostensenkung', datum: v, titel: t(a.titel), stelle: ks.traeger, quelle: 'brief', notiz: t('el.ks.tun.belege.t') }))
-            .then((r) => { if (r === false) fehler(); else fm.textContent = t('el.ks.frist.ok'); }, fehler);
+            // hinzu() gibt 'neu', 'da' (schon gemerkt) oder false zurück
+            .then((r) => {
+              if (r === 'da') fm.textContent = t('el.ks.frist.da');
+              else if (r === 'neu' || r === true) fm.textContent = t('el.ks.frist.ok');
+              else fehler();
+            }, fehler);
         } catch (e) { fehler(); }
       });
     }
@@ -149,19 +154,28 @@ const KostensenkungHilfe = (function () {
     const bem = form.appendChild(neu('textarea')); bem.id = 'ks-bem'; bem.rows = 2;
     const lt = form.appendChild(neu('label', t('el.ks.text'))); lt.setAttribute('for', 'ks-text');
     const ta = form.appendChild(neu('textarea')); ta.id = 'ks-text'; ta.rows = 14; ta.hidden = true;
+    // Nach eigener Bearbeitung nicht mehr automatisch überschreiben; neu erstellen nur über den Knopf (kein confirm(), blockiert in der App)
+    const nRow = form.appendChild(neu('div', null, 'el-ks-neu')); nRow.hidden = true;
+    nRow.appendChild(neu('p', t('el.ks.neu.hinweis'), 'small')).setAttribute('role', 'status');
+    const bNeu = nRow.appendChild(neu('button', t('el.ks.neu.btn'), 'chip')); bNeu.type = 'button'; bNeu.id = 'ks-neu';
+    let selbst = false;
+    ta.addEventListener('input', () => { selbst = true; });
     const cRow = form.appendChild(neu('div', null, 'btns'));
     const copy = cRow.appendChild(neu('button', t('el.ks.kopieren'), 'btn')); copy.type = 'button'; copy.id = 'ks-copy';
     const cm = form.appendChild(neu('p', null, 'small')); cm.setAttribute('role', 'status');
     form.appendChild(neu('p', t('el.ks.antwort.hinweis'), 'note'));
 
     const k = ctx.kennungen || {}, pe = ctx.person || {};
-    const schreiben = () => {
+    const schreiben = (zwingen) => {
+      if (selbst && zwingen !== true) { nRow.hidden = false; return; }
+      selbst = false; nRow.hidden = true;
       const gr = {}; GRUENDE.forEach((x) => { gr[x] = $q('ks-g-' + x).checked; });
       ta.value = entwurf(ks, { name: pe.name, anschrift: pe.strasse, ort: pe.ort, stelle: k.stelle, bg: k.bg, az: k.az, art: ctx.briefArt, heute: ctx.heute, gruende: gr, bem: bem.value });
     };
     const $q = (id) => form.querySelector('#' + id);
-    fs.addEventListener('change', schreiben);
-    bem.addEventListener('input', schreiben);
+    fs.addEventListener('change', () => schreiben());
+    bem.addEventListener('input', () => schreiben());
+    bNeu.addEventListener('click', () => { schreiben(true); ta.focus(); });
     bAntw.addEventListener('click', () => {
       const auf = form.hidden;
       form.hidden = !auf; bAntw.setAttribute('aria-expanded', String(auf));

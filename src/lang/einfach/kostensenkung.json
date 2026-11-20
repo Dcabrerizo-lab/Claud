@@ -1,5 +1,5 @@
 {
- "el.ks.titel": "Das Amt sagt: Deine Miete ist zu hoch",
+ "el.ks.titel": "Das Amt sagt: Deine Wohnung kostet zu viel",
  "el.ks.titelHeiz": "Das Amt sagt: Deine Heizkosten sind zu hoch",
  "el.ks.kern": "Dieser Brief kürzt meistens noch kein Geld. Das Amt zahlt die Miete meistens noch 6 Monate weiter. Danach zahlt es vielleicht weniger.",
  "el.ks.deckel": "Achtung: Ist deine Miete sehr viel höher als die Grenze? Mehr als das 1,5-fache? Dann zahlt das Amt den Teil darüber vielleicht sofort nicht mehr. Mit Kindern gibt es manchmal eine Ausnahme. Frag eine Beratungsstelle.",
@@ -35,6 +35,9 @@
  "el.ks.hinweis": "Das ist nur eine Hilfe. Es ist keine Beratung von einem Anwalt. Jede Stadt hat eigene Regeln. Frag im Zweifel eine Beratungsstelle.",
  "el.ks.frist.btn": "Termin in „Mein Ordner“ speichern",
  "el.ks.frist.ok": "Gespeichert. Du findest den Termin in „Mein Ordner“.",
+ "el.ks.frist.da": "Diesen Termin hast du schon gespeichert. Er ist in „Mein Ordner“.",
+ "el.ks.neu.btn": "Text neu machen (deine Änderungen sind dann weg)",
+ "el.ks.neu.hinweis": "Du hast den Text selbst geändert. Er ändert sich jetzt nicht mehr von allein.",
  "el.ks.frist.fehler": "Das hat nicht geklappt. Prüf das Datum und versuch es noch einmal.",
  "el.ks.frist.datum": "Bis wann? (steht im Brief)",
  "el.ks.antwort.btn": "Brief an das Amt schreiben",

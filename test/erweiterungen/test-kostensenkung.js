@@ -52,6 +52,15 @@ ok('1 JC Stichtag', a.stichtag === '01.06.2027', a.stichtag);
 ok('1 JC nicht Heizung', a.heiz === false);
 ok('1 JC Datum', a.datum === '2026-11-03', a.datum);
 ok('1 JC kein Rechtsbehelf, keine Anhörung', !a.rechtsbehelf && !a.anhoerung);
+// Befund 1 (Code-Prüfung): Zeile mit der Grenze vor der eigenen Miete
+const KS_GRENZE_ZUERST = `Jobcenter Musterstadt
+Aufforderung zur Senkung der Kosten der Unterkunft (§ 22 Abs. 1 SGB II)
+Die angemessenen Aufwendungen betragen 540,00 €.
+Ihre Bruttokaltmiete beträgt 690,00 € und ist damit unangemessen.
+Bitte bemühen Sie sich um eine Senkung (Wohnungssuche).`;
+const ag = L.kostensenkung(KS_GRENZE_ZUERST);
+ok('1b Grenze vor Miete: kostenIst 690, Grenze 540', ag.kostenIst === 690 && ag.grenze === 540, [ag.kostenIst, ag.grenze]);
+ok('1b Richtwert-Zeile nicht als eigene Kosten', L.kostensenkung(KS_GRENZE_ZUERST.replace('Die angemessenen Aufwendungen', 'Der Richtwert')).kostenIst === 690);
 // 2. Sozialamt
 const b = L.kostensenkung(KS_SA);
 ok('2 SA erkannt', b.ist && b.traeger === 'sa', b);

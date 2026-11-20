@@ -224,7 +224,13 @@ const BriefLesen = (function () {
     const heiz = /Heizkosten/.test(t) && !/Bruttokaltmiete|Kaltmiete|Mietobergrenze|Unterkunftskosten/i.test(t);
     // Beträge: eigene Kosten (erster Betrag) und Grenze des Amts (letzter Betrag), nur aus passenden Zeilen
     let kostenIst = null, grenze = null;
-    for (const zl of z) { if (/tatsächliche|Ihre (Brutto)?kaltmiete|betragen/i.test(zl)) { const b = betraege(zl); if (b.length) { kostenIst = b[0]; break; } } }
+    // Zeilen zur Grenze des Amts („Die angemessenen Aufwendungen betragen 540 €“) sind nicht die eigenen Kosten;
+    // „Ihre Miete von 610 € übersteigt die angemessene …“ nennt die eigenen Kosten zuerst
+    const istGrenzZeile = (zl) => /angemessen|Angemessenheitsgrenze|Mietobergrenze|Richtwert/i.test(zl) && !/unangemessen|tatsächlich|übersteigt/i.test(zl);
+    for (const zl of z) {
+      if (!/tatsächlich|Ihre (Brutto)?kaltmiete|betr(a|ä)gt|betragen/i.test(zl) || istGrenzZeile(zl)) continue;
+      const b = betraege(zl); if (b.length) { kostenIst = b[0]; break; }
+    }
     for (const zl of z) {
       if (!/angemessen|Angemessenheitsgrenze|Mietobergrenze/i.test(zl) || /unangemessen|übersteigt|tatsächlich/i.test(zl)) continue;
       const b = betraege(zl); if (b.length) { grenze = b[b.length - 1]; break; }

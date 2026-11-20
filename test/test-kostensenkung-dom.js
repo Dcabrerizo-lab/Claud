@@ -16,7 +16,7 @@ function starte(mem, fristen) {
       w.__SOLO_TEST__ = true; w.HTMLElement.prototype.scrollIntoView = function () {}; w.scrollTo = function () {};
       Object.defineProperty(w, 'localStorage', { value: { getItem: (k) => (k in mem ? mem[k] : null), setItem: (k, v) => { mem[k] = String(v); }, removeItem: (k) => { delete mem[k]; } }, configurable: true });
       Object.defineProperty(w.navigator, 'languages', { value: ['de-DE'], configurable: true });
-      if (fristen) w.FristenOrdner = { hinzu: (x) => { gemerkt.push(x); return true; } };
+      if (fristen) w.FristenOrdner = { hinzu: (x) => { gemerkt.push(x); return x.datum === '2027-01-15' ? false : gemerkt.length > 1 ? 'da' : 'neu'; } };
       w.addEventListener('error', (e) => errors.push(e.message));
     }
   });
@@ -66,6 +66,18 @@ setTimeout(() => {
     $('ks-g-kinder').checked = true; $('ks-g-kinder').dispatchEvent(new w.Event('change', { bubbles: true }));
     check('[ks] Entwurf mit Kindern und Stelle', /Kita bzw\. Schule/.test($('ks-text').value) && /An: Jobcenter Musterstadt/.test($('ks-text').value) && /BG-Nummer: 123A1234567/.test($('ks-text').value), $('ks-text').value);
     check('[ks] Teilen/Drucken angelegt', !!box.querySelector('.schreiben-aus'));
+    // Befund 8: eigene Änderungen im Textfeld werden nicht stillschweigend überschrieben
+    check('[ks] ohne eigene Änderung kein Hinweis „neu erstellen“', box.querySelector('.el-ks-neu').hidden);
+    $('ks-text').value += 'MEINE ERGÄNZUNG'; $('ks-text').dispatchEvent(new w.Event('input', { bubbles: true }));
+    $('ks-g-krank').checked = true; $('ks-g-krank').dispatchEvent(new w.Event('change', { bubbles: true }));
+    check('[ks] eigene Änderung bleibt beim Ankreuzen erhalten', /MEINE ERGÄNZUNG/.test($('ks-text').value) && !/Attest/.test($('ks-text').value), $('ks-text').value);
+    check('[ks] Knopf „Text neu erstellen“ sichtbar', !box.querySelector('.el-ks-neu').hidden && /eigene Änderungen gehen verloren/.test($('ks-neu').textContent));
+    klick(w, $('ks-antwort')); klick(w, $('ks-antwort'));
+    check('[ks] Zu- und Aufklappen überschreibt nicht', /MEINE ERGÄNZUNG/.test($('ks-text').value));
+    klick(w, $('ks-neu'));
+    check('[ks] neu erstellt: mit Attest, ohne eigene Änderung, Hinweis weg', !/MEINE ERGÄNZUNG/.test($('ks-text').value) && /Attest/.test($('ks-text').value) && box.querySelector('.el-ks-neu').hidden);
+    $('ks-g-krank').checked = false; $('ks-g-krank').dispatchEvent(new w.Event('change', { bubbles: true }));
+    check('[ks] danach wieder automatisch', !/Attest/.test($('ks-text').value));
     // Sozialamt
     box = lies(w, d, 'sa', KS_SA);
     check('[ks] Sozialamt: Detail Sozialamt', box && box.querySelectorAll('details').length === 6 && box.getAttribute('data-traeger') === 'sa');
@@ -97,7 +109,7 @@ setTimeout(() => {
     try {
       w2.__solo.lang('de');
       const box = lies(w2, d2, 'jc', KS_JC);
-      check('[ks] Einfache Sprache: Titel', box && /Das Amt sagt: Deine Miete ist zu hoch/.test(box.textContent), box && box.querySelector('b').textContent);
+      check('[ks] Einfache Sprache: Titel', box && /Das Amt sagt: Deine Wohnung kostet zu viel/.test(box.textContent), box && box.querySelector('b').textContent);
       check('[ks] Einfache Sprache: U25-Satz', box && /jünger als 25/.test(box.textContent));
       check('[ks] mit FristenOrdner: Knopf und Datum vorbelegt', !!$2('ks-frist') && $2('ks-frist-datum').value === '2027-05-31');
       klick(w2, $2('ks-antwort'));
@@ -108,9 +120,18 @@ setTimeout(() => {
         check('[ks] Frist gespeichert gemeldet', /Gespeichert/.test(d2.querySelector('.el-ks-frist [role=status]').textContent));
         $2('ks-frist-datum').value = ''; klick(w2, $2('ks-frist'));
         check('[ks] leeres Datum: Fehlermeldung, nichts übergeben', gemerkt.length === 1 && /nicht geklappt/.test(d2.querySelector('.el-ks-frist [role=status]').textContent));
-        check('[ks] keine Skriptfehler (2)', B.errors.length === 0, B.errors);
-        console.log(fehler ? '\n' + fehler + ' von ' + n + ' FEHLGESCHLAGEN' : 'Kostensenkung-Oberfläche: alle ' + n + ' Prüfungen bestanden');
-        process.exit(fehler ? 1 : 0);
+        const st = () => d2.querySelector('.el-ks-frist [role=status]').textContent;
+        $2('ks-frist-datum').value = '2027-05-31'; klick(w2, $2('ks-frist'));
+        setTimeout(() => {
+          check('[ks] Rückgabe „da“: schon gemerkt', gemerkt.length === 2 && /schon gespeichert/.test(st()), st());
+          $2('ks-frist-datum').value = '2027-01-15'; klick(w2, $2('ks-frist'));
+          setTimeout(() => {
+            check('[ks] Rückgabe false: Fehlermeldung', /nicht geklappt/.test(st()), st());
+            check('[ks] keine Skriptfehler (2)', B.errors.length === 0, B.errors);
+            console.log(fehler ? '\n' + fehler + ' von ' + n + ' FEHLGESCHLAGEN' : 'Kostensenkung-Oberfläche: alle ' + n + ' Prüfungen bestanden');
+            process.exit(fehler ? 1 : 0);
+          }, 50);
+        }, 50);
       }, 50);
     } catch (e) { check('Ausnahme (2): ' + e.message, false, e.stack); console.log(fehler + ' FEHLGESCHLAGEN'); process.exit(1); }
   }, 300);
