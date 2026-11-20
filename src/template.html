@@ -283,6 +283,69 @@
   .gutwissen > summary::-webkit-details-marker { display: none; }
   .gw-titel { font-weight: 700; }
   .gutwissen ul { margin: 0 0 12px; padding-inline-start: 20px; display: grid; gap: 8px; }
+  /* Haushaltsplan und Haushaltsbuch (src/haushalt.js) */
+  .hb-go { margin-top: 12px; }
+  .hb-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; padding: 4px; border-radius: 999px; background: var(--bg); border: 1px solid var(--line); margin: 8px 0 14px; }
+  .hb-tabs button { min-height: 48px; border: 0; border-radius: 999px; background: transparent; color: var(--ink); font: inherit; font-weight: 700; cursor: pointer; overflow-wrap: anywhere; }
+  .hb-tabs button[aria-pressed="true"] { background: var(--c-sparen, var(--accent)); color: #fff; }
+  .hb { display: grid; gap: 14px; }
+  .hb-lead { margin: 0; color: var(--muted); }
+  .hb-ergebnis { font-size: 1.25em; font-weight: 700; margin: 0; padding: 14px 16px; border-radius: var(--r-card, 14px); background: var(--accent-soft); color: var(--ink); }
+  .hb-ergebnis.minus { background: color-mix(in srgb, #b3261e 16%, var(--surface)); }
+  .hb-karte { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-card, 14px); padding: 16px; display: grid; gap: 12px; min-width: 0; }
+  .hb-karte > legend, .hb-katwahl > legend { font-weight: 700; font-size: 1.05em; padding: 0 4px; }
+  .hb-katwahl { border: 0; padding: 0; margin: 0; min-width: 0; }
+  .hb-kats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .hb-kat { display: grid; justify-items: center; gap: 4px; min-height: 92px; padding: 10px 4px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; text-align: center; overflow-wrap: anywhere; }
+  .hb-kat[aria-pressed="true"], .hb-kat[aria-expanded="true"] { border: 2px solid var(--c-sparen, var(--accent)); background: var(--accent-soft); }
+  .hb-kname { font-size: .9em; font-weight: 600; line-height: 1.2; }
+  .hb-kwert { font-size: .9em; color: var(--muted); }
+  .hb-sym { width: 36px; height: 36px; border-radius: 999px; display: grid; place-items: center; background: var(--c-sparen, var(--accent)); color: #fff; flex: none; }
+  .hb-sym svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+  .hb-katfeld { display: grid; gap: 8px; }
+  .hb-frage, .hb-hinweis { border: 2px solid var(--accent); border-radius: 12px; padding: 10px 12px; display: grid; gap: 8px; }
+  .hb-frage p, .hb-hinweis p { margin: 0; }
+  .hb-hinweise { display: grid; gap: 10px; }
+  .hb-hinweise:empty, #hbSpeicherMsg:empty { display: none; }
+  .hb-mehr > summary, .hb-hw-det > summary, .hb-rb > summary, .hb-wb > summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font-weight: 600; }
+  .hb-start { margin: 8px 0 14px; }
+  .btn.klein { min-height: 44px; padding: 6px 12px; font-size: .95em; }
+  .hb-liste { margin: 0; padding-inline-start: 20px; display: grid; gap: 6px; }
+  .hb-liste li.fehlt::marker { content: "! "; color: #b3261e; font-weight: 700; }
+  .hb-liste li.ok::marker { content: "✓ "; color: var(--accent); font-weight: 700; }
+  .hb-ue-t { margin: 0; font-weight: 700; }
+  .hb-ue h3 { margin: 0; }
+  .hb-fehlt { outline: 3px solid #b3261e; outline-offset: 4px; border-radius: 8px; }
+  .hb-fehlt-t { display: inline-block; font-size: .85em; font-weight: 700; color: #fff; background: #b3261e; border-radius: 999px; padding: 2px 10px; margin-bottom: 4px; }
+  .hb-gross { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .hb-plus { min-height: 56px; font-size: 1.05em; width: 100%; }
+  .hb-monat { display: grid; grid-template-columns: 56px minmax(0, 1fr) 56px; align-items: center; text-align: center; gap: 6px; }
+  .hb-mon-knopf { min-height: 48px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink); font: inherit; font-size: 1.5em; cursor: pointer; }
+  [dir="rtl"] .hb-mon-knopf { transform: scaleX(-1); }
+  .hb-summe { font-weight: 700; margin: 0; }
+  .hb-eintraege { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .hb-eintrag { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 4px 10px; align-items: center; padding: 10px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+  .hb-e-txt { display: grid; min-width: 0; overflow-wrap: anywhere; } .hb-e-txt span { font-size: .88em; color: var(--muted); }
+  .hb-e-betrag { font-weight: 700; white-space: nowrap; }
+  .hb-e-knoepfe { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+  .hb-rueck { position: sticky; bottom: calc(76px + env(safe-area-inset-bottom, 0px)); display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 12px; border-radius: 12px; background: var(--ink); color: var(--surface); }
+  .hb-rueck .btn { color: var(--surface); border-color: var(--surface); }
+  .hb-betrag input { font-size: 1.6em; font-weight: 700; }
+  .hb-pad { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; direction: ltr; }
+  .hb-taste { min-height: 56px; border: 1px solid var(--line); border-radius: 12px; background: var(--bg); color: var(--ink); font: inherit; font-size: 1.4em; font-weight: 700; cursor: pointer; }
+  .hb-scaninfo { margin: 0; padding: 10px 12px; border-radius: 10px; background: var(--accent-soft); font-weight: 600; }
+  .hb-balken { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+  .hb-b-kopf { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; }
+  .hb-b-wert { font-weight: 700; white-space: nowrap; }
+  .hb-b-spur { height: 14px; border-radius: 999px; background: var(--bg); border: 1px solid var(--line); margin-top: 6px; overflow: hidden; }
+  .hb-b-spur span { display: block; height: 100%; background: var(--c-sparen, var(--accent)); border-radius: 999px; }
+  .hb-b-spur.vor { height: 8px; } .hb-b-spur.vor span { background: var(--muted); }
+  .hb-balken p { margin: 4px 0 0; }
+  .hb-h3 { margin: 6px 0 0; font-size: 1.1em; }
+  .hb-tipps { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+  .hb-tipps li { border-inline-start: 4px solid var(--c-sparen, var(--accent)); padding: 4px 12px; display: grid; gap: 4px; } .hb-tipps p { margin: 0; }
+  .app.big .hb-kats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media (forced-colors: active) { .hb-b-spur span { background: CanvasText; } .hb-tabs button[aria-pressed="true"] { outline: 3px solid Highlight; } }
   #druckBrief { display: none; }
   @media print {
     html.druckt-brief body * { visibility: hidden !important; }
@@ -739,6 +802,15 @@
     <section id="v-sparen" class="ansicht" aria-labelledby="h-sparen" hidden>
       <h2 id="h-sparen" class="ans-h" data-t="sp.h"></h2>
       <div id="spInhalt" class="pf"></div>
+      <button type="button" class="weg hb-go" id="goHaushalt"><span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h4"/></svg></span><span class="weg-txt"><b data-t="hb.kachel"></b><span data-t="hb.kachel.t"></span></span></button>
+    </section>
+
+    <!-- Haushaltsplan und Haushaltsbuch (src/haushalt.js): Plan, Ausgaben, Auswertung -->
+    <section id="v-haushalt" class="ansicht" aria-labelledby="h-haushalt" hidden>
+      <h2 id="h-haushalt" class="ans-h" data-t="hb.h"></h2>
+      <div class="hb-tabs" role="group" data-t-aria="hb.h"><button type="button" id="hb-tab-plan" aria-pressed="true"></button><button type="button" id="hb-tab-buch" aria-pressed="false"></button><button type="button" id="hb-tab-ausw" aria-pressed="false"></button></div>
+      <div id="hbInhalt" class="hb"></div>
+      <p class="warn" id="hbSpeicherMsg" role="alert"></p>
     </section>
 
     <!-- Pfändung: Lohn oder Konto, geführt mit großen Knöpfen -->
@@ -1333,6 +1405,9 @@ Plz.init(/*PLZDATA*/null);
 <script>
 /*BEHOERDEN*/
 Behoerden.init(/*BEHOERDENDATA*/null);
+</script>
+<script>
+/*HAUSHALT*/
 </script>
 <script>
 /*FORMULARE*/
