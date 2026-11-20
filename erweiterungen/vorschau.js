@@ -349,10 +349,34 @@ Ergebnis: Pflegegrad 2`;
     const tb = h('tbody', {}, r.posten.map((p) => h('tr', {}, h('td', {}, p.name, p.recht ? h('span', { class: 'amt small muted', text: ' ' + p.recht }) : null), h('td', { class: 'z', text: eur(p.erwartet) }), h('td', { class: 'z', text: p.bescheid == null ? '–' : eur(p.bescheid) }), h('td', {}, h('span', { class: 'pill ' + p.wirkung, text: WIRK[p.wirkung] })))));
     box.append(h('details', {}, h('summary', { text: 'Alle Posten im Vergleich' }), h('div', { class: 'tablewrap', tabindex: '0', role: 'region', 'aria-label': label }, h('table', {}, h('thead', {}, h('tr', {}, h('th', { text: 'Posten' }), h('th', { class: 'z', text: 'nach SoLo' }), h('th', { class: 'z', text: 'im Bescheid' }), h('th', { text: 'Bewertung' }))), tb))));
   }
+  // Erst vergleichen, wenn die für die Rechnung nötigen Angaben da sind. Sonst nennt SoLo konkret, was fehlt:
+  // Nach dem Einlesen stehen oft nur die Beträge des Bescheids da, und ohne Kinder oder Miete gäbe es einen Fehlalarm.
+  const da = (v) => v != null && v !== '';
+  function fehltNoch(box, liste) {
+    if (!liste.length) return false;
+    box.append(h('h2', { text: 'Ergebnis' }),
+      h('p', { class: 'pp-fehlt-liste' }, h('strong', { text: 'Es fehlen noch: ' }), liste.join(', ') + '.'),
+      h('p', { class: 'small muted', text: 'Erst wenn diese Angaben eingetragen sind, vergleicht SoLo den Bescheid. Vorher wäre das Ergebnis oft falsch.' }));
+    return true;
+  }
+  function fehltSGB2(e) {
+    const b = e.bescheid, f = [];
+    const kinder = e.personen.filter((p) => p.rolle !== 'erw');
+    if ([...$('bs-personen').children].some((tr) => tr.querySelector('input').value === '')) f.push('Alter jeder Person');
+    if (!kinder.length && (b.kindergeld > 0 || b.mehrAE > 0)) f.push('Kinder (im Bescheid stehen Kindergeld oder Mehrbedarf für Alleinerziehende)');
+    if (da(b.kdu) || da(b.zahlbetrag)) {
+      if (!da(e.miete.tatsaechlich)) f.push('Miete');
+      if (!da(e.miete.heizung)) f.push('Heizkosten (0, wenn keine)');
+    }
+    if (b.einkommen > 0 && !e.personen.some((p) => p.brutto || p.netto || p.sonstiges)) f.push('Einkommen der Personen (im Bescheid wird Einkommen angerechnet)');
+    if (!Object.values(b).some(da)) f.push('Beträge aus dem Bescheid');
+    return f;
+  }
   function zeigeBescheid() {
     const box = $('bs-erg'); box.replaceChildren();
     const e = leseBescheid();
     if (!e.personen.length) { box.append(h('p', { text: 'Bitte zuerst die Personen eintragen.' })); return; }
+    if (fehltNoch(box, fehltSGB2(e))) return;
     const r = BescheidSGB2.pruefe(e, Rules);
     box.append(h('h2', { text: 'Ergebnis' }));
     r.hinweise.forEach((t) => box.append(h('p', { class: 'note', text: t })));
@@ -378,7 +402,11 @@ Ergebnis: Pflegegrad 2`;
   function zeigeGSA() {
     $('ga-p2').hidden = $('ga-zahl').value !== '2';
     const box = $('ga-erg'); box.replaceChildren();
-    const r = BescheidGSA.pruefe(leseGSA(), Rules);
+    const e = leseGSA(), b = e.bescheid, f = [];
+    if (da(b.kdu) || da(b.zahlbetrag)) { if (!da(e.miete.tatsaechlich)) f.push('Miete'); if (!da(e.miete.heizung)) f.push('Heizkosten (0, wenn keine)'); }
+    if (b.einkommen > 0 && !e.personen.some((p) => p.renteNetto || p.zusatzRente || p.lohnNetto || p.sonstiges)) f.push('Rente oder anderes Einkommen (im Bescheid wird Einkommen angerechnet)');
+    if (fehltNoch(box, f)) return;
+    const r = BescheidGSA.pruefe(e, Rules);
     box.append(h('h2', { text: 'Ergebnis' }),
       h('p', {}, h('span', { class: 'big', text: r.posten.length ? (r.zuWenigImMonat > 0 ? `Vermutlich ${eur(r.zuWenigImMonat)} im Monat zu wenig` : r.gruende.length ? 'Bitte prüfen' : 'Keine Abweichung zu deinen Lasten gefunden') : `Nach SoLo: ${eur(r.erwartet.zahlbetrag)} Grundsicherung im Monat` })),
       h('p', { class: 'small', text: `Nach SoLo: Bedarf ${eur(r.erwartet.bedarf)}, anzurechnendes Einkommen ${eur(r.erwartet.einkommen)}, Zahlbetrag ${eur(r.erwartet.zahlbetrag)}.` }));
@@ -414,7 +442,11 @@ Ergebnis: Pflegegrad 2`;
   }
   function zeigeWG() {
     const box = $('wg-erg'); box.replaceChildren();
-    const r = BescheidWG.pruefe(leseWG(), Rules);
+    const e = leseWG(), b = e.bescheid, f = [];
+    if ((da(b.miete) || da(b.wohngeld)) && $('wg-kalt').value === '') f.push('Miete ohne Heizung');
+    if (b.einkommen > 0 && !e.mitglieder.some((m) => m.brutto || m.unterhalt)) f.push('Einkommen im Haushalt (im Bescheid steht ein Gesamteinkommen)');
+    if (fehltNoch(box, f)) return;
+    const r = BescheidWG.pruefe(e, Rules);
     box.append(h('h2', { text: 'Ergebnis' }),
       h('p', {}, h('span', { class: 'big', text: r.posten.length ? (r.zuWenigImMonat > 0 ? `Vermutlich ${eur(r.zuWenigImMonat)} Wohngeld im Monat zu wenig` : r.gruende.length ? 'Abweichung gefunden, bitte prüfen' : 'Keine Abweichung zu deinen Lasten gefunden') : `Nach SoLo: ${eur(r.rechnung.wohngeld)} Wohngeld im Monat` })),
       h('p', { class: 'small', text: `Nach SoLo: Miete ${eur(r.rechnung.miete)} (Höchstbetrag ${eur(r.rechnung.hoechstbetrag)} plus Heizkostenkomponente ${eur(r.rechnung.heizkomponente)}), Einkommen ${eur(r.rechnung.einkommen)}, Wohngeld ${eur(r.rechnung.wohngeld)}.` }));
@@ -451,6 +483,11 @@ Ergebnis: Pflegegrad 2`;
     const box = $('kz-erg'); box.replaceChildren();
     const e = leseKiZ();
     if (!e.kinder.length) { box.append(h('p', { text: 'Bitte zuerst die Kinder eintragen.' })); return; }
+    const b = e.bescheid, f = [];
+    if ([...$('kz-kinder').children].some((tr) => tr.querySelector('input').value === '')) f.push('Alter jedes Kindes');
+    if ((da(b.bedarf) || da(b.kiz)) && $('kz-wohn').value === '') f.push('Miete mit Heizung');
+    if (b.einkommen > 0 && !e.eltern.some((x) => x.brutto || x.netto)) f.push('Lohn der Eltern (im Bescheid wird Einkommen angerechnet)');
+    if (fehltNoch(box, f)) return;
     const r = BescheidKiZ.pruefe(e, Rules), q = r.rechnung;
     box.append(h('h2', { text: 'Ergebnis' }),
       h('p', {}, h('span', { class: 'big', text: r.posten.length ? (r.zuWenigImMonat > 0 ? `Vermutlich ${eur(r.zuWenigImMonat)} Kinderzuschlag im Monat zu wenig` : r.gruende.length ? 'Abweichung gefunden, bitte prüfen' : 'Keine Abweichung zu deinen Lasten gefunden') : `Nach SoLo: ${eur(q.kiz)} Kinderzuschlag im Monat` })),
@@ -546,19 +583,19 @@ Ergebnis: Pflegegrad 2`;
   zeigePflege();
   // Wo steht das im Brief? Kurzer Hinweis unter jedem Feld mit Amtsbegriff, damit man den Wert auch ohne Vorwissen findet
   const FELD_HILFE = {
-    'bs-b-regel': 'Im Berechnungsbogen bei „Regelbedarf“, je Person eine Zeile. Hier die Summe aller Personen.',
+    'bs-b-regel': 'Im Berechnungsbogen (die Seiten mit der Rechnung, meist hinten am Bescheid) bei „Regelbedarf“ (fester Betrag für den Alltag), je Person eine Zeile. Hier die Summe aller Personen.',
     'bs-b-ae': 'Im Berechnungsbogen bei „Mehrbedarf“ für Alleinerziehende. Steht dort nichts, leer lassen.',
     'bs-b-schw': 'Im Berechnungsbogen bei „Mehrbedarf“ für Schwangerschaft. Steht dort nichts, leer lassen.',
     'bs-b-ww': 'Im Berechnungsbogen bei „Mehrbedarf“ für Warmwasser (wenn das Wasser mit Strom erwärmt wird). Steht dort nichts, leer lassen.',
-    'bs-b-kdu': 'Im Berechnungsbogen bei „Kosten der Unterkunft und Heizung“ (KdU): der Betrag, den das Jobcenter übernimmt.',
+    'bs-b-kdu': 'Im Berechnungsbogen bei „Kosten der Unterkunft und Heizung“ (KdU, also Miete, Nebenkosten und Heizung): der Betrag, den das Jobcenter übernimmt.',
     'bs-b-eink': 'Im Berechnungsbogen bei „zu berücksichtigendes Einkommen“, also nach Abzug der Freibeträge, ohne Kindergeld.',
     'bs-b-kg': 'Im Berechnungsbogen: Kindergeld, das als Einkommen der Kinder abgezogen wird.',
     'bs-b-zahl': 'Auf der ersten Seite: der Betrag, der jeden Monat überwiesen wird.',
     'bs-bg': 'Oben im Brief, zum Beispiel 123A4567890 (auch „BG-Nummer“).',
-    'ga-b-regel': 'Im Berechnungsbogen bei „Regelbedarf“ bzw. „Regelsatz“, für alle Personen zusammen.',
+    'ga-b-regel': 'Im Berechnungsbogen (die Seiten mit der Rechnung, meist hinten am Bescheid) bei „Regelbedarf“ bzw. „Regelsatz“ (fester Betrag für den Alltag), für alle Personen zusammen.',
     'ga-b-g': 'Im Berechnungsbogen bei „Mehrbedarf“ wegen Merkzeichen G. Steht dort nichts, leer lassen.',
     'ga-b-ww': 'Im Berechnungsbogen bei „Mehrbedarf“ für Warmwasser. Steht dort nichts, leer lassen.',
-    'ga-b-kdu': 'Im Berechnungsbogen bei „Kosten der Unterkunft und Heizung“: der Betrag, den das Amt übernimmt.',
+    'ga-b-kdu': 'Im Berechnungsbogen bei „Kosten der Unterkunft und Heizung“ (KdU, also Miete, Nebenkosten und Heizung): der Betrag, den das Amt übernimmt.',
     'ga-b-eink': 'Im Berechnungsbogen bei „anzurechnendes Einkommen“, zum Beispiel die Rente nach Abzügen.',
     'ga-b-zahl': 'Auf der ersten Seite: der Betrag, der jeden Monat überwiesen wird.',
     'ga-az': 'Oben im Brief neben „Aktenzeichen“ oder „Geschäftszeichen“.',
@@ -587,6 +624,17 @@ Ergebnis: Pflegegrad 2`;
     },
     eigene(g) { eigen = g || null; zeigePflege(); }
   };
+  // Datum des Bescheids nicht sicher erkannt: Feld leer lassen und als „bitte eintragen“ markieren (nie ein anderes Datum raten)
+  function datumFehlt(id) {
+    const el = $(id); el.classList.add('pp-fehlt');
+    let p = $(id + '-fehlt');
+    if (!p) {
+      p = h('p', { class: 'small pp-fehlt-hinweis', id: id + '-fehlt', text: 'Bitte eintragen: Das Datum des Bescheids wurde nicht sicher erkannt. Es steht meist oben rechts im Brief oder hinter „Bescheid vom“.' });
+      el.insertAdjacentElement('afterend', p); el.setAttribute('aria-describedby', p.id);
+      el.addEventListener('input', () => { if (el.value) { el.classList.remove('pp-fehlt'); p.hidden = true; } });
+    }
+    p.hidden = false;
+  }
   // Für die App: erkannte Werte eines eingelesenen Briefs eintragen (erweiterungen/brief-lesen.js) und gelb markieren.
   // hh = Haushalt aus „Leistungen“: { erwachsene: [{ alter, brutto, netto }], kinder: [alter], miete, heiz, stufe, alleinerziehend }
   // Personen werden nur eingetragen, wenn dort noch nichts steht. Ergebnis: Zahl der übernommenen Werte aus dem Brief.
@@ -635,6 +683,7 @@ Ergebnis: Pflegegrad 2`;
       }
       const datumId = { jc: 'bs-datum', sa: 'ga-datum', wg: 'wg-datum', fk: 'kz-datum' }[art];
       if (datumId && r && r.datum) setze(datumId, r.datum);
+      else if (datumId && r && leer(datumId)) datumFehlt(datumId);
       ({ jc: zeigeBescheid, sa: zeigeGSA, wg: zeigeWG, fk: zeigeKiZ, vm: zeigeNK }[art] || (() => {}))();
       return n;
     }
@@ -718,6 +767,31 @@ Ergebnis: Pflegegrad 2`;
   });
   $('nk-copy').addEventListener('click', () => kopiere($('nk-text'), $('nk-copy-msg')));
   nkZeile(); zeigeNK();
+
+  // ---------------- Anderer Brief: Frist nur mit Beleg, Hinweise zu Mahnbescheid und Inkasso ----------------
+  // opt.wechseln(art): in der App zur passenden Prüfung wechseln, wenn SoLo die Art des Briefs erkennt
+  const ARTNAME = { jc: 'Bescheid vom Jobcenter', sa: 'Bescheid vom Sozialamt', wg: 'Wohngeldbescheid', fk: 'Bescheid über Kinderzuschlag', pk: 'Brief der Pflegekasse', vm: 'Nebenkostenabrechnung' };
+  function zeigeAndere(text, opt) {
+    const box = (opt && opt.box) || $('an-erg'); if (!box) return;
+    box.replaceChildren();
+    if (!String(text || '').trim()) return;
+    const r = BriefLesen.andere(text);
+    if (r.mahnbescheid) box.append(h('p', { class: 'note' }, h('strong', { text: 'Das ist wohl ein gerichtlicher Mahnbescheid. ' }), 'Widerspruch nur innerhalb von 2 Wochen ab Zustellung. Mehr dazu unten.'));
+    if (r.vollstreckungsbescheid) box.append(h('p', { class: 'note' }, h('strong', { text: 'Das ist wohl ein Vollstreckungsbescheid. ' }), 'Einspruch nur innerhalb von 2 Wochen ab Zustellung. Frag sofort eine Schuldnerberatung.'));
+    if (r.inkasso) box.append(h('p', { class: 'note' }, h('strong', { text: 'Im Brief steht „Inkasso“. ' }), 'Lies unten, was du prüfen solltest.'));
+    if (r.fristen.length) {
+      box.append(h('p', {}, h('strong', { text: 'Frist im Brief: ' + r.fristen[0].frist })),
+        h('p', { class: 'small muted', text: 'So steht es im Brief: „' + r.fristen[0].zeile + '“' }));
+      if (r.fristen.length > 1) box.append(h('details', {}, h('summary', { text: 'Weitere Fristen im Brief' }), h('ul', {}, r.fristen.slice(1).map((x) => h('li', { text: x.frist + ': „' + x.zeile + '“' })))));
+      box.append(h('p', { class: 'small', text: 'Bitte die Frist im Brief selbst nachlesen. Die Texterkennung kann sich irren.' }));
+    } else {
+      box.append(h('p', {}, h('strong', { text: 'Keine Frist gefunden.' }), ' Das heißt nicht, dass es keine gibt. Suche im Brief nach „bis zum“, „innerhalb von“ oder „binnen“. Im Zweifel frag eine Beratungsstelle.'));
+    }
+    if (r.art && ARTNAME[r.art] && opt && opt.wechseln) box.append(h('p', {}, 'Das sieht aus wie: ' + ARTNAME[r.art] + '. ', h('button', { type: 'button', class: 'btn ghost', text: 'Diesen Brief genauer prüfen', onclick: () => opt.wechseln(r.art) })));
+  }
+  window.PruefpaketAndere = { zeige: zeigeAndere };
+  if ($('an-lesen')) $('an-lesen').addEventListener('click', () => zeigeAndere($('an-text').value));
+  if ($('an-pfaendung') && !$('v-pfaendung')) $('an-pfaendung').hidden = true; // den Pfändungsrechner gibt es nur in der App
 
   if ($('fr-datum')) for (const id of ['fr-datum', 'fr-zugang', 'er-leistung', 'er-ende']) $(id).addEventListener('input', zeigeFristen); // nur in der Vorschau
   // Spaltennamen an jede Zelle hängen (für die Blockansicht auf schmalen Bildschirmen); Tabellen entstehen bei jeder Eingabe neu

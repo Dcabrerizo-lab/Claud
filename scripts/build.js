@@ -55,7 +55,7 @@ function jsonData(name) {
 // Prüfpaket (Brief prüfen): Abschnitte, Stile und Bausteine aus erweiterungen/ – eine Quelle für App und Vorschau.
 // Die Abschnitte stehen in erweiterungen/vorschau.html; die Stile werden auf .pp beschränkt, damit sie die App nicht verändern.
 const ERW = (f) => fs.readFileSync(path.join(ROOT, 'erweiterungen', f), 'utf8');
-const PP_ABSCHNITTE = ['p-pflege', 'p-bescheid', 'p-gsa', 'p-wg', 'p-kiz', 'p-nk'];
+const PP_ABSCHNITTE = ['p-pflege', 'p-bescheid', 'p-gsa', 'p-wg', 'p-kiz', 'p-nk', 'p-andere'];
 function ppAbschnitt(html, id) {
   const a = html.indexOf('<section id="' + id + '"');
   if (a < 0) throw new Error('Prüfpaket: Abschnitt fehlt: ' + id);

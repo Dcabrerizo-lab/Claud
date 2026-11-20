@@ -59,10 +59,15 @@ const BriefLesen = (function () {
     }
     return null;
   }
-  // Datum des Bescheids: „Datum: 12.03.2026“, „vom 12.03.2026“ oder das erste Datum in den ersten Zeilen
+  // Datum des Bescheids nur aus eindeutigen Mustern: „Datum: 12.03.2026“, „Bescheid vom 12.03.2026“ oder das Datum im Briefkopf
+  // („Musterstadt, den 12.03.2026“ oder nur das Datum in einer eigenen Zeile). Ein anderes Datum (Bewilligungszeitraum,
+  // „Ihr Antrag vom“, Geburtsdatum) wäre falsch und verschöbe die Widerspruchsfrist; dann bleibt das Feld leer (bitte eintragen).
   function bescheidDatum(z) {
-    for (const zl of z.slice(0, 40)) { const m = zl.match(/(?:Datum|Bescheid vom|vom)\s*:?\s*(\d{1,2}\.\d{1,2}\.20\d{2})/i); if (m) return iso(m[1].match(DATUM)); }
-    for (const zl of z.slice(0, 15)) { const m = zl.match(DATUM); if (m) return iso(m); }
+    const D = '(\\d{1,2}\\.\\d{1,2}\\.20\\d{2})';
+    const muster = [new RegExp('(?:^|[^\\wäöüß])(?:Datum|Bescheiddatum)\\s*:?\\s*' + D, 'i'), new RegExp('\\bBescheid(?:es)? vom\\s*' + D, 'i')];
+    for (const re of muster) for (const zl of z.slice(0, 40)) { const m = zl.match(re); if (m) return iso(m[1].match(DATUM)); }
+    const kopf = new RegExp('^(?:[A-ZÄÖÜ][\\wäöüß .()/-]{1,40},\\s*(?:(?:den|am)\\s+)?)?' + D + '$');
+    for (const zl of z.slice(0, 15)) { if (/bis|Zeitraum|geboren|Geburt/i.test(zl)) continue; const m = zl.match(kopf); if (m) return iso(m[1].match(DATUM)); }
     return null;
   }
 
@@ -158,6 +163,17 @@ const BriefLesen = (function () {
   };
   function frist(text) { const m = String(text).match(/(?:bis zum|bis spätestens|spätestens bis zum?|innerhalb von)\s*(\d{1,2}\.\d{1,2}\.20\d{2}|\w+ Wochen?)/i); return m ? m[1] : null; }
 
-  return { erkenne, lies, betraege, ERKLAERUNG, frist, ARTEN };
+  // Anderer Brief: Frist nur mit Beleg (die Zeile aus dem Brief, in der sie steht), dazu Hinweise auf Mahnbescheid oder Inkasso.
+  // Ergebnis: { fristen: [{ frist, zeile }], mahnbescheid, vollstreckungsbescheid, inkasso, art (erkannte Art aus erkenne oder null) }
+  const FRIST = /(?:bis zum|bis spätestens(?: zum)?|spätestens bis zum?|spätestens am|innerhalb von|innerhalb eines|binnen)\s*(\d{1,2}\.\d{1,2}\.20\d{2}|(?:zwei|drei|vier|sechs|einem|einer|\d{1,2})\s+(?:Wochen?|Tagen?|Monats?|Monaten)|Monats|Woche)/i;
+  function andere(text) {
+    const t = String(text || ''), fristen = [];
+    for (const zl of zeilen(t)) { const m = zl.match(FRIST); if (m && fristen.length < 3) fristen.push({ frist: m[1], zeile: zl.length > 160 ? zl.slice(0, 157) + '…' : zl }); }
+    const vb = /Vollstreckungsbescheid/i.test(t) && !/^\s*Mahnbescheid/im.test(t) && /^\s*Vollstreckungsbescheid/im.test(t);
+    const e = erkenne(t);
+    return { fristen, mahnbescheid: !vb && /Mahnbescheid/i.test(t) && /Amtsgericht|Mahngericht/i.test(t), vollstreckungsbescheid: vb, inkasso: /Inkasso/i.test(t), art: e.art };
+  }
+
+  return { erkenne, lies, betraege, ERKLAERUNG, frist, andere, ARTEN };
 })();
 if (typeof module !== 'undefined') module.exports = BriefLesen;
