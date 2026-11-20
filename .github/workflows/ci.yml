@@ -20,8 +20,8 @@ permissions:
   contents: read
 
 jobs:
-  test:
-    name: Tests (Regeln, Oberfläche, Browser, App)
+  regeln:
+    name: Tests a (Lint, Regeln, Oberfläche, Erweiterungen)
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -36,14 +36,59 @@ jobs:
       - run: npm ci
       - run: npm ci
         working-directory: app
+      - name: Playwright-Version für den Browser-Zwischenspeicher
+        id: pw
+        run: echo "version=$(node -p "require('./package-lock.json').packages['node_modules/playwright'].version")" >> "$GITHUB_OUTPUT"
+      - name: Browser aus dem Zwischenspeicher
+        id: pwcache
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}-chromium
+      - name: Browser installieren (bis zu 3 Versuche, je höchstens 10 Minuten, wartet auf apt)
+        if: steps.pwcache.outputs.cache-hit != 'true'
+        run: echo 'DPkg::Lock::Timeout "600";' | sudo tee /etc/apt/apt.conf.d/99lock >/dev/null; for i in 1 2 3; do timeout 600 npx playwright install --with-deps chromium && exit 0; echo "Versuch $i fehlgeschlagen"; sleep 20; done; exit 1
+      - name: Systempakete für den Browser (bei Treffer im Zwischenspeicher)
+        if: steps.pwcache.outputs.cache-hit == 'true'
+        run: echo 'DPkg::Lock::Timeout "600";' | sudo tee /etc/apt/apt.conf.d/99lock >/dev/null; for i in 1 2 3; do timeout 600 npx playwright install-deps chromium && exit 0; echo "Versuch $i fehlgeschlagen"; sleep 20; done; exit 1
       - name: Lint (nicht deklarierte Namen, unbenutzte Variablen)
         run: npm run lint
-      - name: Browser installieren (bis zu 3 Versuche, je höchstens 10 Minuten, wartet auf apt)
-        run: echo 'DPkg::Lock::Timeout "600";' | sudo tee /etc/apt/apt.conf.d/99lock >/dev/null; for i in 1 2 3; do timeout 600 npx playwright install --with-deps chromium && exit 0; echo "Versuch $i fehlgeschlagen"; sleep 20; done; exit 1
       - name: Regel- und Oberflächentests
         run: npm test
       - name: Erweiterungen (Prüfpaket, mit Browsertest der Vorschau)
         run: npm run test:erweiterungen
+
+  browser:
+    name: Tests b (Browser, App)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            app/package-lock.json
+      - run: npm ci
+      - run: npm ci
+        working-directory: app
+      - name: Playwright-Version für den Browser-Zwischenspeicher
+        id: pw
+        run: echo "version=$(node -p "require('./package-lock.json').packages['node_modules/playwright'].version")" >> "$GITHUB_OUTPUT"
+      - name: Browser aus dem Zwischenspeicher
+        id: pwcache
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}-chromium
+      - name: Browser installieren (bis zu 3 Versuche, je höchstens 10 Minuten, wartet auf apt)
+        if: steps.pwcache.outputs.cache-hit != 'true'
+        run: echo 'DPkg::Lock::Timeout "600";' | sudo tee /etc/apt/apt.conf.d/99lock >/dev/null; for i in 1 2 3; do timeout 600 npx playwright install --with-deps chromium && exit 0; echo "Versuch $i fehlgeschlagen"; sleep 20; done; exit 1
+      - name: Systempakete für den Browser (bei Treffer im Zwischenspeicher)
+        if: steps.pwcache.outputs.cache-hit == 'true'
+        run: echo 'DPkg::Lock::Timeout "600";' | sudo tee /etc/apt/apt.conf.d/99lock >/dev/null; for i in 1 2 3; do timeout 600 npx playwright install-deps chromium && exit 0; echo "Versuch $i fehlgeschlagen"; sleep 20; done; exit 1
       - name: Browsertest (Behinderung, Mappe, Sprachen, RTL)
         run: npm run test:e2e
       - name: App-Test (offline, CSP, PDF, Scan, Speichern)
@@ -53,6 +98,19 @@ jobs:
         with:
           name: sozialleistungslotse-web
           path: dist/sozialleistungslotse.html
+
+  # Abschluss mit dem bisherigen Namen: bleibt als ein Prüfpunkt erhalten (z. B. falls er als Pflicht-Check eingetragen wird)
+  test:
+    name: Tests (Regeln, Oberfläche, Browser, App)
+    needs: [regeln, browser]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Beide Testteile bestanden?
+        run: |
+          echo "Teil a: ${{ needs.regeln.result }}, Teil b: ${{ needs.browser.result }}"
+          [ "${{ needs.regeln.result }}" = success ] && [ "${{ needs.browser.result }}" = success ]
 
   android:
     name: Android
