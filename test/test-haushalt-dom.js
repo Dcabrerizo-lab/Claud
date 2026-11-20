@@ -94,8 +94,10 @@ setTimeout(() => {
     klick($('hb-tab-plan'));
     const bald = new Date(); bald.setDate(bald.getDate() + 20);
     setze('hb-wb-kiz', bald.toISOString().slice(0, 10));
-    check('Erinnerung an die Weiterbewilligung auf der Startseite', !!$('hbStart') && /Kinderzuschlag/.test($('hbStart').textContent));
-    check('Erinnerung steht unter der Begrüßung, vor den Kacheln', $('hbStart').previousElementSibling && $('hbStart').previousElementSibling.classList.contains('gruss-t') && $('hbStart').nextElementSibling.classList.contains('start-raster'));
+    // Nur ein Hinweis: Fristen (src/fristen.js) übernimmt den Folgeantrag (Hinweis #friStart beim Öffnen, höchstens einmal am Tag; test-fristen-dom.js)
+    check('Kein eigener Haushalts-Hinweis mehr (#hbStart)', !$('hbStart'));
+    const fs0 = w.FristenOrdner.stand();
+    check('Folgeantrag steht in den Fristen von „Mein Ordner“', fs0 && /Kinderzuschlag/.test(fs0.text), fs0);
     // Speicherfehler abgefangen
     voll = true; setze('hb-sonstEin', '10');
     check('Speicherfehler wird angezeigt (Meldung der Vorgänge-Speicherung)', !$('vgFehler').hidden && /Speicher voll oder gesperrt/.test($('vgFehler').textContent), $('vgFehler').textContent);

@@ -164,7 +164,7 @@ const orZ = () => [...d.querySelectorAll('#ordnerKarten .zeile')].map((b) => b.i
 check('Mein Ordner: Leiste markiert Mein Ordner, kein Kopftext', navAkt() === 'ordner' && !$('v-ordner').hidden && w.getComputedStyle(d.querySelector('.top .lead')).display === 'none');
 check('[navigation] Mein Ordner: geöffneter Vorgang oben mit „Wechseln“', !$('ordnerKopf').hidden && /Geöffnet:/.test($('ordnerKopf').textContent) && [...$('ordnerKopf').querySelectorAll('button')].some((b) => b.textContent === I18N.de['ordner.wechseln']));
 check('Mein Ordner: letztes Ergebnis mit Zähler und Antragsmappe mit Auswahl', orZ()[0] === 'or-ergebnis' && /wahrscheinlich|möglich/.test($('or-ergebnis').textContent) && /Ausgewählt: 2/.test(($('or-mappe') || {}).textContent || ''), orZ().join());
-check('Mein Ordner: keine Fristen, kein leerer Bereich (Pflege, Pfändung ohne Angaben)', !/Frist/.test($('v-ordner').textContent) && !$('or-pflege') && !$('or-pfaendung') && $('ordnerLeer').hidden);
+check('Mein Ordner: keine Fristen, kein leerer Bereich (Pflege, Pfändung ohne Angaben)', !$('or-fristen') && !/Frist/.test($('ordnerHaupt').textContent) && !$('or-pflege') && !$('or-pfaendung') && $('ordnerLeer').hidden);
 $('or-ergebnis').click();
 check('Sprung zum Ergebnis: Leistungen offen, Leiste markiert Mein Ordner (Herkunft)', !$('v-leistungen').hidden && navAkt() === 'ordner');
 d.querySelector('#appnav [data-ansicht="ordner"]').click();

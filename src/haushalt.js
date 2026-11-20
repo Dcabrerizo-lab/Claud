@@ -504,6 +504,7 @@ var Haushalt = (function () {
   }
   // Beim Öffnen der App: Erinnerung an den Weiterbewilligungsantrag oben auf der Startseite (nur in der App, keine Mitteilung)
   function startHinweis() {
+    if (ctx && ctx.fristenNeu) { var a0 = $('hbStart'); if (a0) a0.remove(); ctx.fristenNeu(); return; } // nur ein Hinweis: Fristen (src/fristen.js) übernimmt den Folgeantrag
     var v = $('v-start'); if (!v) return;
     var alt = $('hbStart'); if (alt) alt.remove();
     var wb = hinweisListe({ bewilligt: daten.bewilligt, heute: new Date(), weg: daten.weg }).filter(function (h) { return h.art === 'wb'; })[0];

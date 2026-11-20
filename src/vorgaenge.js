@@ -4,7 +4,7 @@
 // Mit PIN steht alles verschlüsselt (PBKDF2-SHA-256 + AES-GCM, zufälliges Salt und IV) unter lotse.vorgaenge; die PIN selbst wird nie gespeichert.
 const Vorgaenge = (function () {
   var SCHLUESSEL = 'lotse.vorgaenge';
-  var DATEN = ['lotse.state', 'lotse.einfach', 'lotse.pflegecheck', 'lotse.pfaendung', 'lotse.haushalt', 'lotse.haken', 'lotse.ausziehen'];
+  var DATEN = ['lotse.state', 'lotse.einfach', 'lotse.pflegecheck', 'lotse.pfaendung', 'lotse.haushalt', 'lotse.haken', 'lotse.ausziehen', 'lotse.fristliste'];
   var ITER = 600000; // PBKDF2-HMAC-SHA-256: Empfehlung OWASP Password Storage Cheat Sheet (Stand 2023/2026)
   var NAME_MAX = 24;
   var TAG = 86400000;
@@ -225,6 +225,8 @@ const Vorgaenge = (function () {
       gesperrt: function () { return !!(meta && meta.pin) && !bereit; },
       sperrRest: sperrRest,
       liste: function () { return bereit ? c.liste.map(function (v) { return { id: v.id, name: v.name, erstellt: v.erstellt, geaendert: v.geaendert, ablauf: ablauf(v, meta.tage || 0) }; }) : []; },
+      // Wert eines Datenschlüssels in allen Vorgängen (nur lesen), z. B. für den Fristen-Hinweis beim Öffnen
+      ueberall: function (k) { if (!bereit) return []; return c.liste.map(function (v) { return { id: v.id, name: v.name, aktiv: v.id === c.aktiv, wert: v.daten && v.daten[k] != null ? v.daten[k] : null }; }); },
       aktiv: function () { if (!bereit) return null; var v = aktiv(c); return { id: v.id, name: v.name, geaendert: v.geaendert, ablauf: ablauf(v, meta.tage || 0) }; },
       // Vorgang wechseln: vorher müssen die Angaben im Speicher stehen (App: flush())
       oeffnen: function (id) {

@@ -476,6 +476,7 @@
     $('appVersion').textContent = t('set.version', { v: APPVERSION });
     einfacheSpracheAnzeigen();
     if (window.Haushalt && Haushalt.sprache) Haushalt.sprache(); // Haushaltsplan (src/haushalt.js) in der neuen Sprache zeichnen
+    if (window.FristenOrdner) FristenOrdner.sprache(); // Fristen in „Mein Ordner“ (src/fristen.js)
     if (window.Ausziehen && Ausziehen.sprache) Ausziehen.sprache(); // „Ich ziehe aus“ (src/ausziehen.js) in der neuen Sprache zeichnen
     // Regeln älter als der nächste Stichtag (1. Januar): deutlich darauf hinweisen
     var veraltet = regelnVeraltet();
@@ -2170,7 +2171,7 @@
   }
 
   // Einstellungen: alle gespeicherten Angaben der App löschen (Store-Schlüssel) und die Anzeige auf den Anfangszustand setzen
-  var STORE_SCHLUESSEL = ['lotse.state', 'lotse.einfach', 'lotse.einfachSprache', 'lotse.beratung', 'lotse.haken', 'lotse.pflegecheck', 'lotse.lang', 'lotse.ack', 'lotse.fristen'];
+  var STORE_SCHLUESSEL = ['lotse.state', 'lotse.einfach', 'lotse.einfachSprache', 'lotse.beratung', 'lotse.haken', 'lotse.pflegecheck', 'lotse.lang', 'lotse.ack', 'lotse.fristen', 'lotse.fristTag', 'lotse.fristHinweis'];
   state = blankState();
   $('sampleNotice').hidden = true; // Beispiel-Hinweis nur, wenn ein Beispiel geladen ist
   bind();
@@ -2633,6 +2634,7 @@
     if (weg) { vgHinterAb = Date.now(); return; }
     var war = vgHinterAb; vgHinterAb = 0;
     if (war && tresor && tresor.pinAn() && tresor.bereit() && Date.now() - war >= VG_SPERRE_MS) vgSperrenJetzt();
+    else if (war && Date.now() - war >= VG_SPERRE_MS && window.FristenOrdner) FristenOrdner.startHinweis(); // „Öffnen“ nach 2 Minuten im Hintergrund (höchstens einmal am Tag)
   }
   document.addEventListener('visibilitychange', function () { vgHintergrund(document.visibilityState === 'hidden'); });
   // Mit PIN schneller speichern: beim Verlassen eines Feldes sofort
@@ -2660,6 +2662,7 @@
     if (aktAnsicht === 'pfaendung') pfRender(false);
     if (window.Haushalt && Haushalt.neuLaden) Haushalt.neuLaden(); // jeder Vorgang hat seinen eigenen Haushaltsplan
     if (window.Ausziehen && Ausziehen.neuLaden) Ausziehen.neuLaden(); // und eigene Haken und Notizen bei „Ich ziehe aus“
+    if (window.FristenOrdner) FristenOrdner.neuLaden(); // und eigene Fristen
     vgRender();
   }
   function pfLeer() { return { art: '', schritt: 0, netto: '', pers: null, kg: null, kiz: '' }; }
@@ -2691,6 +2694,7 @@
   function angabenLoeschen(alle) {
     clearTimeout(saveTimer); saveTimer = null;
     if (alle) tresor.allesLoeschen(); else Vorgaenge.DATEN.forEach(function (k) { Store.remove(k); });
+    if (alle) StoreRoh.remove('lotse.fristTag'); // Merker der Fristen (nur ein Datum); die Einstellung lotse.fristHinweis bleibt wie die PIN
     vgNeuLaden();
   }
   function vgSpeichernForm(box, idName, mitHinweis) {
@@ -2914,6 +2918,9 @@
       b.querySelector('b').textContent = titel; b.querySelector('.zeile-st').textContent = status;
       b.addEventListener('click', fn); li.appendChild(b); ul.appendChild(li);
     };
+    // Fristen (src/fristen.js): als erste Zeile, nur mit mindestens einer offenen Frist; die Liste ist eine Unterseite
+    var fo = null; if (window.FristenOrdner) { try { fo = FristenOrdner.stand(); } catch (e) {} FristenOrdner.render(); }
+    if (fo) zeile('fristen', t('fri.karte'), fo.text, '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', function () { usZeigen('ordner', 'fristen', true); });
     var erg = started && edited && lastOut ? lastOut.results : null;
     if (erg) {
       var n = { ja: 0, vielleicht: 0 }; erg.forEach(function (r) { if (r.level in n) n[r.level]++; });
@@ -3354,6 +3361,7 @@
       var p = document.createElement('p'); p.textContent = BriefLesen.ERKLAERUNG[r.art]; d.appendChild(p);
       var fr = BriefLesen.frist(text);
       if (fr) { var q = document.createElement('p'); q.textContent = t('el.frist', { frist: fr }); d.appendChild(q); }
+      var fk = fr && window.FristenOrdner ? FristenOrdner.briefKnopf(text, r.art) : null; if (fk) d.appendChild(fk); // nur auf Knopfdruck merken
       $('elErg').appendChild(d); elNachricht(t('el.erkanntOhne', { titel: r.titel })); return;
     }
     if (!briefArt) briefOeffnen(r.art);
@@ -3445,6 +3453,7 @@
       ergebnis: function () { try { return started && edited ? Rules.evaluate(state).results : null; } catch (e) { return null; } },
       setze: function (werte) { if (started && !edited) state = blankState(); Object.assign(state, werte); writeForm(); buildSelects(); touched(); },
       zeige: oeffneVon, regeln: function () { return Rules.RULES; }, plug: plug, nativ: NATIVE,
+      fristenNeu: function () { if (window.FristenOrdner) FristenOrdner.neu(); },
       foto: NATIVE ? fotoText : null, bild: ocr,
       textAusgeben: function (text, titel, msg) { if (!NATIVE) { schreibenDrucken(text); return; } schreibenAusgeben({ value: text }, titel, plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen', msg); }
     });
@@ -3452,6 +3461,21 @@
   // „Ich ziehe aus“: Haken und Notizen je Vorgang (lotse.ausziehen in Vorgaenge.DATEN), mit PIN verschlüsselt, kopiert und gelöscht
   if (window.Ausziehen) Ausziehen.speicherOrt({ laden: function (cb) { Store.get('lotse.ausziehen', cb); }, schreiben: function (text, cb) { Store.set('lotse.ausziehen', text); cb(null); } });
   if (window.Ausziehen) Ausziehen.init({ t: t, zeige: oeffneVon, plug: plug, famversGrenze: function () { var R = Rules.RULES.famvers; return Fmt.euro(Math.round((new Date().getFullYear() >= 2027 ? R.bezug2027 : R.bezug2026) / 7), lang, I18N[lang]['meta.dir'] === 'rtl'); } }); // „Ich ziehe aus“ (src/ausziehen.js)
+  // Fristen in „Mein Ordner“ (src/fristen.js): je Vorgang (lotse.fristliste in Vorgaenge.DATEN), Hinweis beim Öffnen höchstens einmal am Tag
+  if (window.FristenOrdner) {
+    FristenOrdner.speicherOrt({ laden: function (cb) { Store.get('lotse.fristliste', cb); }, schreiben: function (text, cb) { Store.set('lotse.fristliste', text); cb(null); } });
+    FristenOrdner.init({
+      t: tL, lang: function () { return lang; }, datum: function (d) { return Fmt.datum(d, lang); }, roh: StoreRoh, neu: ordnerRender,
+      alle: function () {
+        if (!tresor || !tresor.bereit()) return [];
+        var h = tresor.ueberall('lotse.haushalt');
+        return tresor.ueberall('lotse.fristliste').map(function (v, i) { return { id: v.id, name: v.name, aktiv: v.aktiv, fristliste: v.wert, haushalt: h[i] ? h[i].wert : null }; });
+      },
+      ablauf: function () { var a = tresor && tresor.bereit() ? tresor.aktiv() : null; return a && a.ablauf ? new Date(a.ablauf) : null; },
+      oeffneVorgang: vgOeffnen,
+      zeigeListe: function () { herkunft = {}; zeigeAnsicht('ordner', false); usZeigen('ordner', 'fristen', true); }
+    });
+  }
   window.addEventListener('hashchange', function () { var a = location.hash.slice(1); if (ANSICHTEN.indexOf(a) >= 0 && a !== aktAnsicht) zeigeAnsicht(a, true); });
   Store.remove('lotse.fristen'); // Fristen aus 1.3.0 (Build 141) gibt es nicht mehr: gespeicherte Einträge vom Gerät löschen
   zeigeAnsicht((function () { var a = (location.hash || '').slice(1); return ANSICHTEN.indexOf(a) >= 0 ? a : 'start'; })());

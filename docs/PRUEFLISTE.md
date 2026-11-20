@@ -492,6 +492,20 @@ Eigener Bereich für junge Menschen; keine Rechnung, nur Hinweise. Quellen mit A
 | Abhaken und Notizen lokal (`lotse.ausziehen`, Schnittstelle `Ausziehen.speicherOrt`), nur bekannte Einträge, Speicherfehler gemeldet, „Alle Angaben löschen“ leert alles | ✓ | `az-speichern`, `az-oberflaeche` |
 | 13 Sprachen und Einfache Sprache: alle Schlüssel, gleiche Platzhalter und Vorschriften, keine Rohschlüssel | ✓ | `az-sprachen`, `az-oberflaeche` |
 
+## Fristen in „Mein Ordner“ (src/fristen.js)
+
+Liste je Vorgang (`lotse.fristliste` in `Vorgaenge.DATEN`), kein eigener Bereich, kein Kalender, keine Mitteilung des Systems. Quellen abgerufen am 20.11.2026.
+
+| Regel | Status | Test |
+|---|---|---|
+| Widerspruch: Bescheid gilt am 4. Tag nach Aufgabe zur Post als bekannt gegeben, nicht auf Werktag verschoben (§ 37 Abs. 2 SGB X seit 1.1.2025; BSG 6.5.2010, B 14 AS 12/09 R); 1 Monat (§ 84 Abs. 1 SGG), Ende nach § 64 SGG, Sa/So/Feiertag → nächster Werktag | ✓ | `fristen` |
+| Anhörung und Mitwirkung ohne 4-Tage-Regel: ab Tag des Erhalts, sonst Briefdatum + 1 („Ungefähr“) (§ 26 SGB X, §§ 187, 188 BGB); Mahnbescheid/Vollstreckungsbescheid 2 Wochen ab Zustellung (§ 692, § 700, § 339, § 222 ZPO); Daten aus dem Brief nie verschoben (§ 26 Abs. 5 SGB X) | ✓ | `fristen` |
+| Nur die 9 bundesweiten Feiertage, Hinweis auf Landesfeiertage; nie ein zu später Tag | ✓ | `fristen`, `fristen-dom` |
+| Folgeantrag aus dem Haushaltsplan (Vorlauf 42/60 Tage, App-Regel), nur ein Hinweis auf der Startseite | ✓ | `fristen`, `fristen-dom` |
+| Aus „Brief prüfen“ nur per Knopf „Frist merken“, nie automatisch; kein Brieftext gespeichert; Dublettenschutz; Schnittstelle `FristenOrdner.hinzu({art, datum, titel, stelle, quelle, notiz})` | ✓ | `fristen-dom` |
+| Hinweis beim Öffnen höchstens 1× am Tag (Merker `lotse.fristTag` nur JJJJ-MM-TT, bei jeder Tagesprüfung gesetzt), Erledigt/Später/Ansehen, andere Vorgänge nur Ansehen, Schalter, mit PIN erst nach dem Entsperren und kein Klartext | ✓ | `fristen-dom` |
+| Eigene Titel und Notizen nur als Text (kein HTML), Laden mit Prüfung (feste Listen, höchstens 50, erledigte nach 30 Tagen weg) | ✓ | `fristen`, `fristen-dom` |
+
 ## Anzeige und Eingaben (alle Karten)
 
 | Regel | Status | Test |
