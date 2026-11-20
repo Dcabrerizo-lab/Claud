@@ -57,7 +57,7 @@
  "ek.brutto.lohn": "Lohn im Monat vor den Abzügen (brutto)",
  "ek.brutto.rente": "Rente im Monat vor den Abzügen (brutto)",
  "ek.netto": "Das kommt im Monat auf deinem Konto an",
- "ek.netto.hint": "Lass das Feld leer, wenn du den Betrag nicht weißt. Dann rechnet die App mit 80 % vom Brutto.",
+ "ek.netto.hint": "Du weißt den Betrag nicht? Dann lass das Feld leer. Dann schätzt die App das Netto aus Lohnsteuer und Beiträgen.",
  "ek.betrag": "Betrag im Monat laut Bescheid",
  "ek.betrag.hint.alg": "Das steht im Bescheid der Agentur für Arbeit. Steht dort ein Betrag pro Tag? Dann rechne mal 30.",
  "ek.betrag.hint.kg": "Das steht im Schreiben der Krankenkasse. Steht dort ein Betrag pro Tag? Dann rechne mal 30.",

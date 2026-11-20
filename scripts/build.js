@@ -13,6 +13,8 @@ const read = (f) => fs.readFileSync(path.join(SRC, f), 'utf8');
 
 // Einfache Sprache: src/lang/einfach/*.json (Dateien mit Unterstrich, z. B. _test.json, werden übersprungen) zu einem Objekt
 // I18N_EINFACH zusammenführen. Nur Schlüssel, die es in de.json gibt; andere Schlüssel und Nicht-Texte werden mit Warnung verworfen.
+// Wert "=": Der Standardtext ist schon einfach (kurze Beschriftung, Name, Betrag). Er wird nicht doppelt ausgeliefert;
+// t() nimmt dann den Standardtext. So hat jeder Schlüssel einen Eintrag (Prüfung: test/test-einfach-vollstaendig.js).
 function einfachSource(de) {
   const dir = path.join(SRC, 'lang', 'einfach');
   const out = {};
@@ -22,6 +24,7 @@ function einfachSource(de) {
       Object.keys(o).forEach((k) => {
         if (!Object.prototype.hasOwnProperty.call(de, k)) { console.warn('Warnung: Einfache Sprache (' + f + '): Schlüssel nicht in de.json: ' + k); return; }
         if (typeof o[k] !== 'string') { console.warn('Warnung: Einfache Sprache (' + f + '): Wert ist kein Text: ' + k); return; }
+        if (o[k] === '=') return; // Standardtext gilt
         out[k] = o[k];
       });
     });
