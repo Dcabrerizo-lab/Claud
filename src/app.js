@@ -192,6 +192,9 @@
     var ohneUz = !(Number(state.uzBetrag) > 0);
     if (ohneUz) reset(['uzAn', 'uzTitel']);
     if (state.aufenthalt !== 'eu') reset(['euArbeit', 'euJahre']);
+    // Einkommensart „Asylbewerberleistungen“ nur bei Aufenthalt „Asylverfahren oder Duldung“ (sonst Auswahl entfernen)
+    if (state.aufenthalt !== 'asyl') ['ek1Art', 'ek2Art'].forEach(function (k) { if (state[k] === 'asylblg') reset([k]); });
+    ekArtOptionen();
     if (!(Number(state.autoWert) > 0)) reset(['autoBraucht']);
     // Eigentum: Feld „Miete“ wird zu „Kosten fürs Wohnen“ (Kredit, Nebenkosten, Heizung)
     var eig = state.wohnart === 'eigentum';
@@ -237,8 +240,9 @@
   function ekPerson(i) {
     var art = state['ek' + i + 'Art'], b = state['ek' + i + 'Brutto'], n = state['ek' + i + 'Netto'];
     var leer = function (v) { return v === '' || v == null; };
-    if (!art) return { gesetzt: false, b: '', n: '', arbeit: true, art: '' };
-    if (art === 'ohne') return { gesetzt: true, b: 0, n: 0, arbeit: false, art: art };
+    if (!art || (art === 'asylblg' && state.aufenthalt !== 'asyl')) return { gesetzt: false, b: '', n: '', arbeit: true, art: '' };
+    // Asylbewerberleistungen: kein Betrag (zählt wie „kein Einkommen“); die Regeln erkennen den Bezug an der Art
+    if (art === 'ohne' || art === 'asylblg') return { gesetzt: true, b: 0, n: 0, arbeit: false, art: art };
     var mitBrutto = art === 'lohn' || art === 'rente' || art === 'selbst';
     var nn = leer(n) ? '' : Number(n), bb = mitBrutto ? (leer(b) ? '' : Number(b)) : nn, geschaetzt = false;
     if (mitBrutto && bb === '' && nn !== '' && nn > 0) {
@@ -293,7 +297,7 @@
     var liste = [];
     var add = function (e, i) { if (zwei) e.p = i; liste.push(e); };
     var haupt = function (p, i) {
-      if (p.art === 'ohne') return;
+      if (p.art === 'ohne' || p.art === 'asylblg') return;
       var mitN = p.art === 'lohn' || p.art === 'rente' || p.art === 'selbst';
       add(mitN ? { art: p.art, b: p.b === '' ? 0 : p.b, n: p.n === '' ? nettoSchaetzen(p, i) : p.n } : { art: p.art, b: p.b === '' ? 0 : p.b }, i);
     };
@@ -307,12 +311,12 @@
       var art = state['ek' + i + 'Art'];
       var mitBrutto = art === 'lohn' || art === 'rente' || art === 'selbst';
       $('ek' + i + 'BruttoF').hidden = !mitBrutto;
-      $('ek' + i + 'NettoF').hidden = !art || art === 'ohne';
+      $('ek' + i + 'NettoF').hidden = !art || art === 'ohne' || art === 'asylblg';
       $('ek' + i + 'BruttoLab').textContent = t(art === 'lohn' || art === 'rente' ? 'ek.brutto.' + art : 'ek.brutto');
       // Zweites Einkommen: eigenes Aufklappfeld je Person; Hinweis auf das Feld nur zu zweit
       var ah = [];
       if (art === 'lohn') ah.push(t('ek.art.hint.lohn'));
-      if (state.adults === 2 && art && art !== 'ohne') ah.push(t('ek.art.hint'));
+      if (state.adults === 2 && art && art !== 'ohne' && art !== 'asylblg') ah.push(t('ek.art.hint'));
       $('ek' + i + 'ArtHint').textContent = ah.join(' '); $('ek' + i + 'ArtHint').hidden = !ah.length;
       var zArt = state['ek' + i + 'bArt'];
       $('ek' + i + 'bLohnHint').hidden = !(zArt === 'lohn' || zArt === 'selbst');
@@ -459,13 +463,26 @@
       '<p class="small">' + esc(b.anschrift ? (b.quelleArt === 'wikipedia' ? t('beh.pruefenWiki', { stand: b.stand || '' }) : b.stand ? t('beh.pruefen', { stand: b.stand }) : t('beh.pruefenKurz')) : t('beh.ohneAdr')) + '</p>';
   }
 
+  // Einkommensarten; „Asylbewerberleistungen“ nur bei Aufenthalt „asyl“ (Wohngeld § 7 Abs. 1 Satz 1 Nr. 8 WoGG, Rundfunk § 4 Abs. 1 Nr. 4 RBStV)
+  function ekArtListe() {
+    var ek = [['', t('ek.art.0')], ['lohn', t('ek.art.lohn')], ['selbst', t('ek.art.selbst')], ['rente', t('ek.art.rente')], ['alg', t('ek.art.alg')], ['kg', t('ek.art.kg')], ['eg', t('ek.art.eg')], ['wfbm', t('ek.art.wfbm')], ['unt', t('ek.art.unt')], ['ohne', t('ek.art.ohne')]];
+    if (state.aufenthalt === 'asyl') ek.splice(ek.length - 1, 0, ['asylblg', t('ek.art.asylblg')]);
+    return ek;
+  }
+  // Auswahl nur neu füllen, wenn sich die Sichtbarkeit von „Asylbewerberleistungen“ ändert
+  function ekArtOptionen() {
+    ['ek1Art', 'ek2Art'].forEach(function (id) {
+      var hat = !!$(id).querySelector('option[value="asylblg"]');
+      if (hat !== (state.aufenthalt === 'asyl')) fillSelect(id, ekArtListe(), state[id]);
+    });
+  }
   function buildSelects() {
     var st = [['', t('stufe.unbekannt')]];
     for (var i = 1; i <= 7; i++) st.push([String(i), t('stufe.n', { n: Rules.roman(i) })]);
-    var ek = [['', t('ek.art.0')], ['lohn', t('ek.art.lohn')], ['selbst', t('ek.art.selbst')], ['rente', t('ek.art.rente')], ['alg', t('ek.art.alg')], ['kg', t('ek.art.kg')], ['eg', t('ek.art.eg')], ['wfbm', t('ek.art.wfbm')], ['unt', t('ek.art.unt')], ['ohne', t('ek.art.ohne')]];
+    var ek = ekArtListe();
     fillSelect('ek1Art', ek, state.ek1Art);
     fillSelect('ek2Art', ek, state.ek2Art);
-    var ekZweit = [['', t('ek.weiteres.0')]].concat(ek.slice(1).filter(function (x) { return x[0] !== 'ohne'; }));
+    var ekZweit = [['', t('ek.weiteres.0')]].concat(ek.slice(1).filter(function (x) { return x[0] !== 'ohne' && x[0] !== 'asylblg'; }));
     fillSelect('ek1bArt', ekZweit, state.ek1bArt);
     fillSelect('ek2bArt', ekZweit, state.ek2bArt);
     fillSelect('mietstufe', st, state.mietstufe);
@@ -1235,11 +1252,12 @@
     if (s.wohnform === 'heim') L.push('Wohnkosten: laut Wohn- und Betreuungsvertrag des Wohnheims (Betrag liegt dem Vertrag bei)');
     else if (s.wohnform === 'eltern' && !s.miete) L.push('Wohnt bei den Eltern, zahlt keine Miete');
     else L.push('Warmmiete im Monat: ' + money(s.miete) + (s.mietstufe ? ' (Mietenstufe ' + Rules.roman(Number(s.mietstufe)) + ')' : '') + (Number(String(s.heizkosten).replace(',', '.')) > 0 ? ', davon Heizkosten ' + money(s.heizkosten) : ''));
-    var ARTDE = { lohn: 'Lohn oder Gehalt', rente: 'Rente oder Pension', alg: 'Arbeitslosengeld I', kg: 'Krankengeld', eg: 'Elterngeld', selbst: 'Gewinn aus selbstständiger Arbeit', wfbm: 'Lohn aus der Werkstatt für behinderte Menschen', unt: 'Unterhalt für sich selbst (Zahlbetrag)', ohne: 'kein Einkommen' };
+    var ARTDE = { lohn: 'Lohn oder Gehalt', rente: 'Rente oder Pension', alg: 'Arbeitslosengeld I', kg: 'Krankengeld', eg: 'Elterngeld', selbst: 'Gewinn aus selbstständiger Arbeit', wfbm: 'Lohn aus der Werkstatt für behinderte Menschen', unt: 'Unterhalt für sich selbst (Zahlbetrag)', asylblg: 'Leistungen nach dem Asylbewerberleistungsgesetz', ohne: 'kein Einkommen' };
     var ekZeile = function (i, wer) {
       var art = s['ek' + i + 'Art'];
       if (!art) return wer + ': nicht angegeben';
       if (art === 'ohne') return wer + ': kein Einkommen';
+      if (art === 'asylblg') return wer + ': ' + ARTDE.asylblg;
       var teile = [];
       if ((art === 'lohn' || art === 'rente' || art === 'selbst') && !blankVal(s['ek' + i + 'Brutto'])) teile.push('brutto ' + money(s['ek' + i + 'Brutto']));
       if (!blankVal(s['ek' + i + 'Netto'])) teile.push((art === 'alg' || art === 'kg' || art === 'eg' || art === 'wfbm' || art === 'unt' ? '' : 'netto ') + money(s['ek' + i + 'Netto']));

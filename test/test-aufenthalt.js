@@ -8,6 +8,8 @@
 //  - Ausweis: § 2 Abs. 2 SGB IX („rechtmäßig“), BSG 29.04.2010, B 9 SB 2/09 R; Landesblindengeld: § 9 Abs. 1 AsylbLG („vergleichbare Landesgesetze“)
 //  - EU ohne Arbeit unter 5 Jahren: Hilfe zur Pflege, Blindenhilfe § 23 Abs. 3 SGB XII; BAföG § 8 Abs. 1 Nr. 2 bis 4 BAföG
 //  - Krankengeld bei Rente: § 50 Abs. 1 und 2 SGB V
+//  - Einkommensart Asylbewerberleistungen: Wohngeld § 7 Abs. 1 Satz 1 Nr. 8 WoGG, Bildung und Teilhabe § 3 Abs. 4 AsylbLG, Kita § 90 Abs. 4
+//    SGB VIII, Rundfunk § 4 Abs. 1 Nr. 4 RBStV (bravors.brandenburg.de/vertraege/rbstv/5, Abruf 20.11.2026)
 'use strict';
 const R = require('./rules-de.js');
 let n = 0, fails = 0;
@@ -28,7 +30,7 @@ for (const land of ['', 'BY', 'NW', 'BE']) {
 {
   const hh = { adults: 1, kids: 2, kidsU6: 1, art1: 'lohn', brutto: 2300, netto: 1700, miete: 850, mietstufe: '4' };
   const [o, a] = paar(hh, 'wohngeld');
-  ck('[wg-asyl] Wohngeld bei Asyl und Arbeit: „möglich“ statt „unwahrscheinlich“, Hinweis vorn (nur ohne Asylbewerberleistungen)', o.level === 'ja' && a.level === 'vielleicht' && keys(a)[0] === 'wohngeld.asyl', [o.level, a.level, keys(a)]);
+  ck('[wg-asyl] Wohngeld bei Asyl und Arbeit ohne Asylbewerberleistungen: normal gerechnet, auch „wahrscheinlich“ (§ 3 Abs. 5 WoGG), Hinweis vorn', o.level === 'ja' && a.level === 'ja' && keys(a)[0] === 'wohngeld.asyl', [o.level, a.level, keys(a)]);
   const [o2, a2] = paar({ ...hh, brutto: 9000, netto: 6000 }, 'wohngeld');
   ck('[wg-asyl] Wohngeld bei Asyl und hohem Einkommen: bleibt „unwahrscheinlich“', o2.level === 'nein' && a2.level === 'nein');
 }
@@ -118,10 +120,23 @@ for (const land of ['', 'NW']) {
   ck('[krank-rente] Krankengeld bei Rente: höchstens „möglich“, Hinweis vorn (Vollrente endet, Teilrente gekürzt)', r.level === 'vielleicht' && keys(r)[0] === 'krank.rente', r);
 }
 
+// Einkommensart „Asylbewerberleistungen“ (nur mit Aufenthalt „asyl“)
+{
+  const hh = { adults: 1, kids: 2, kidsU6: 1, art1: 'asylblg', brutto: 0, netto: 0, miete: 600, mietstufe: '3', aufenthalt: 'asyl' };
+  const b = res(hh), ohneAsyl = res({ ...hh, aufenthalt: '' });
+  ck('[asyl-bezug] Wohngeld bei Asylbewerberleistungen: „unwahrscheinlich“, Hinweis Sozialamt (§ 7 Abs. 1 Satz 1 Nr. 8 WoGG)', b.wohngeld.level === 'nein' && keys(b.wohngeld)[0] === 'wohngeld.asylBezug', b.wohngeld);
+  ck('[asyl-bezug] Bildung und Teilhabe bei Asylbewerberleistungen: „bekommst du“ über das Sozialamt, Kita ohne Beitrag (§ 3 Abs. 4 AsylbLG, § 90 Abs. 4 SGB VIII)', b.but.level === 'ja' && keys(b.but)[0] === 'but.asylBezug' && keys(b.but).includes('but.kita'), b.but);
+  ck('[asyl-bezug] Rundfunkbeitrag bei Asylbewerberleistungen: Befreiung „bekommst du“ (§ 4 Abs. 1 Nr. 4 RBStV)', b.rundfunk.level === 'ja' && keys(b.rundfunk)[0] === 'rundfunk.asyl', b.rundfunk);
+  ck('[asyl-bezug] Karte Asylbewerberleistungen: „bekommst du schon“', b.asylblg.level === 'na' && keys(b.asylblg)[0] === 'asyl.na', b.asylblg);
+  ck('[asyl-bezug] Ohne Aufenthalt „asyl“ zählt die Auswahl nicht (wie „kein Einkommen“)', ohneAsyl.asylblg.level === 'nein' && ohneAsyl.wohngeld.tx[0][0] !== 'wohngeld.asylBezug' && ohneAsyl.rundfunk.level !== 'ja', [ohneAsyl.wohngeld, ohneAsyl.rundfunk.level]);
+  const zwei = res({ ...hh, adults: 2, art1: 'lohn', brutto: 1500, netto: 1150, art2: 'asylblg', brutto2: 0 });
+  ck('[asyl-bezug] Asylbewerberleistungen bei der zweiten Person: Wohngeld ausgeschlossen', zwei.wohngeld.level === 'nein' && keys(zwei.wohngeld)[0] === 'wohngeld.asylBezug', zwei.wohngeld);
+}
+
 // Jeder Hinweis-Schlüssel hat einen deutschen Text
 {
   const I18N = require('../src/lang/de.json');
-  const neu = ['wbs.asyl', 'wohngeld.asyl', 'but.asyl', 'bafoeg.asyl', 'bab.asyl', 'hzp.asyl', 'eingl.asyl', 'alg1.asyl', 'blindengeld.asyl', 'ausweis.asyl', 'blh.asyl', 'sh.eu', 'bafoeg.eu', 'krank.rente'];
+  const neu = ['wbs.asyl', 'wohngeld.asyl', 'but.asyl', 'bafoeg.asyl', 'bab.asyl', 'hzp.asyl', 'eingl.asyl', 'alg1.asyl', 'blindengeld.asyl', 'ausweis.asyl', 'blh.asyl', 'sh.eu', 'bafoeg.eu', 'krank.rente', 'wohngeld.asylBezug', 'but.asylBezug', 'asyl.na'];
   ck('Alle Asyl-Hinweise haben einen Text', neu.every((k) => typeof I18N['t.' + k] === 'string' && I18N['t.' + k].length > 20), neu.filter((k) => !I18N['t.' + k]));
   ck('Karte Familienversicherung ist entfernt (keine Texte mehr)', !Object.keys(I18N).some((k) => /famvers/.test(k)) && !R.evaluate({ ...base }).results.some((x) => x.id === 'famvers'));
 }

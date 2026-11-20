@@ -272,6 +272,14 @@ for (let i = 0; i < 20000; i++) {
     const ok = id === 'wohngeld' ? x.level !== 'ja' && (x.level !== 'vielleicht' || x.tx[0][0] === 'wohngeld.asyl') : x.level === ohne;
     if (!ok) melde('Asyl: ' + id + ' höchstens möglich, sonst wie ohne Asyl', e, { app: x.level, ohneAsyl: r[id].level });
   });
+  // [asyl-bezug] Wohngeld bei Asyl ohne Bezug: Hinweis vorn, wenn nicht ausgeschlossen. Mit Einkommensart „Asylbewerberleistungen“:
+  // Wohngeld nein (§ 7 Abs. 1 Satz 1 Nr. 8 WoGG), Rundfunk ja (§ 4 Abs. 1 Nr. 4 RBStV), Karte Asylbewerberleistungen „bekommst du schon“,
+  // Bildung und Teilhabe mit Kindern ja (§ 3 Abs. 4 AsylbLG)
+  { const w = a.find((y) => y.id === 'wohngeld'); if ((w.level === 'ja' || w.level === 'vielleicht') && w.tx[0][0] !== 'wohngeld.asyl') melde('Asyl: Wohngeld-Hinweis', e, { app: w.tx[0] }); }
+  if (!Array.isArray(e.einkommen)) {
+    const b = {}; Rules.evaluate({ ...e, aufenthalt: 'asyl', art1: 'asylblg' }).results.forEach((y) => { b[y.id] = y.level; });
+    if (b.wohngeld !== 'nein' || b.rundfunk !== 'ja' || b.asylblg !== 'na' || (e.kids > 0 && b.but !== 'ja')) melde('Asyl mit Bezug: Wohngeld/Rundfunk/BuT', e, b);
+  }
   // Unterhaltsvorschuss bei Asyl/Duldung: höchstens „möglich“ (deutsches Kind oder Beschäftigungsduldung, § 1 Abs. 2a UVG)
   { const ua = a.find((y) => y.id === 'uvg').level, ur = Ref.unterhaltsvorschuss({ ...e, aufenthalt: 'asyl' }).level; if (ua !== ur || ua === 'ja') melde('Asyl: Unterhaltsvorschuss', e, { app: ua, ref: ur }); }
 }
@@ -287,4 +295,4 @@ if (!((zukZahl.alg || 0) >= zukMin && (zukZahl.kg || 0) >= zukMin && (zukZahl.eg
 console.log('[zuk-einkommen] Künftige vorrangige Leistung als Einkommen geprüft: ' + JSON.stringify(zukZahl));
 if (kduZahl < Math.max(10, N / 300)) { console.log('Zu wenige Haushalte mit Miete über der Angemessenheitsgrenze: ' + kduZahl); process.exit(1); }
 console.log('[kdu-grenze] Miete über der Angemessenheitsgrenze geprüft: ' + kduZahl + ' Haushalte');
-console.log('[wg-formel] [wg-ae] [kiz-formel] [eg-satz] [hzp-grenze] [blh-grenze] [sh-eu] [asyl-ausschluss] Raster-Test bestanden: ' + n + ' Haushalte (davon ' + raster + ' als vollständiges Raster für Werkstatt-Beschäftigte, ' + schwelle + ' im Schwellen-Raster), App und unabhängige Referenz stimmen überein (Grundsicherungsgeld, Grundsicherung im Alter und bei Erwerbsminderung mit Werkstattlohn und Wohnform, Wohngeld, Kinderzuschlag, Unterhaltsvorschuss, BAföG, Arbeitslosengeld I, Krankengeld, Elterngeld, Hilfe zur Pflege, Blindenhilfe, Ausschlüsse bei Asyl: Einstufung und Beträge).');
+console.log('[wg-formel] [wg-ae] [kiz-formel] [eg-satz] [hzp-grenze] [blh-grenze] [sh-eu] [asyl-ausschluss] [asyl-bezug] Raster-Test bestanden: ' + n + ' Haushalte (davon ' + raster + ' als vollständiges Raster für Werkstatt-Beschäftigte, ' + schwelle + ' im Schwellen-Raster), App und unabhängige Referenz stimmen überein (Grundsicherungsgeld, Grundsicherung im Alter und bei Erwerbsminderung mit Werkstattlohn und Wohnform, Wohngeld, Kinderzuschlag, Unterhaltsvorschuss, BAföG, Arbeitslosengeld I, Krankengeld, Elterngeld, Hilfe zur Pflege, Blindenhilfe, Ausschlüsse bei Asyl: Einstufung und Beträge).');

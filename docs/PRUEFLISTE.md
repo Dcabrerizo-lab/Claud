@@ -90,7 +90,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
-| Asylverfahren oder Duldung: nicht pauschal ausgeschlossen (§ 3 Abs. 5 Satz 1 Nr. 2, 4 WoGG); ausgeschlossen nur bei Bezug von Grundleistungen nach dem AsylbLG (§ 7 Abs. 1 Satz 1 Nr. 8 WoGG). Bezug fragt die App nicht ab: höchstens „möglich“ mit Hinweis (Abruf 20.11.2026) | ◐ | `wg-asyl` |
+| Asylverfahren oder Duldung: nicht pauschal ausgeschlossen (§ 3 Abs. 5 Satz 1 Nr. 2, 4 WoGG; ausreisepflichtig ohne Duldung nicht berechtigt). Ohne Einkommensart „Asylbewerberleistungen“ normal gerechnet, auch „wahrscheinlich“, Hinweis vorn (Entscheidung David 20.11.2026); mit ihr „unwahrscheinlich“ mit Hinweis Sozialamt (§ 7 Abs. 1 Satz 1 Nr. 8 WoGG) (Abruf 20.11.2026) | ◐ | `wg-asyl` `asyl-bezug` |
 | Eigentum: Lastenzuschuss, Belastung nach § 10 WoGG nicht genau gerechnet -> nur „möglich“ | ◐ | `eigentum` |
 | Verwandte in derselben Wohnung zählen meist zum Haushalt (§ 5) -> nur „möglich“ | ◐ | `hh-andere` |
 | Ausgezahlte Beträge (Arbeitslosengeld, Krankengeld, Elterngeld, Werkstattlohn) nur mit dem kleinen Abzug für Auszahlungen, in einfacher und ausführlicher Version gleich (§ 16 WoGG) | ✓ | `einfach-gleich` |
@@ -402,7 +402,8 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Regel | Status | Test |
 |---|---|---|
 | Eigene Leistung bei Aufenthaltsgestattung, Duldung, Ausreisepflicht (§ 1); Analogleistungen nach 36 Monaten (§ 2) | ✓ / ◐ | `asyl-ja` |
-| Ausschluss vom Grundsicherungsgeld, von der Grundsicherung im Alter und vom Kinderzuschlag; Wohnberechtigungsschein „unwahrscheinlich“; Wohngeld höchstens „möglich“ (nur ohne AsylbLG-Bezug, § 7 Abs. 1 Satz 1 Nr. 8 WoGG) | ✓ | `asyl-ausschluss` |
+| Ausschluss vom Grundsicherungsgeld, von der Grundsicherung im Alter und vom Kinderzuschlag; Wohnberechtigungsschein „unwahrscheinlich“; Wohngeld nur ohne AsylbLG-Bezug (§ 7 Abs. 1 Satz 1 Nr. 8 WoGG) | ✓ | `asyl-ausschluss` |
+| Einkommensart „Asylbewerberleistungen“ (nur bei Aufenthalt „asyl“ wählbar): Karte „bekommst du schon“, Wohngeld „unwahrscheinlich“ (§ 7 Abs. 1 Satz 1 Nr. 8 WoGG), Bildung und Teilhabe „bekommst du“ über das Sozialamt (§ 3 Abs. 4 AsylbLG), Kita ohne Beitrag (§ 90 Abs. 4 Satz 2 SGB VIII), Rundfunkbeitrag befreit (§ 4 Abs. 1 Nr. 4 RBStV); Zuzahlung unverändert „möglich“ (Abruf 20.11.2026) | ✓ | `asyl-bezug` |
 | Höhe der Leistungen (Bedarfsstufen, Sachleistungen in Unterkünften) | ○ (hängt von der Unterbringung ab; die Stelle rechnet) | |
 
 ## Zuständige Stellen außerhalb Bayerns

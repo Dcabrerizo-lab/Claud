@@ -29,9 +29,11 @@ function zufall() {
   const b1 = art1 === 'ohne' ? 0 : Math.round(rnd() * 3500);
   const b2 = art2 && art2 !== 'ohne' ? Math.round(rnd() * 2500) : 0;
   const q = (a) => (a === 'lohn' ? 0.72 : 1);
+  // Asylbewerberleistungen (asylblg) ohne weiteren Zufallswert: bei „ohne“ und ungerader Kinderzahl. Zählt nur mit Aufenthalt „asyl“,
+  // sonst wie „ohne“ – die übrigen Beobachtungen bleiben gleich
   return {
     adults, kids, kidsU6: Math.floor(rnd() * (kids + 1)), young: pick([0, 0, 1]),
-    art1, art2, brutto: b1 + b2, brutto2: adults === 2 ? b2 : '', netto: Math.round(b1 * q(art1) + b2 * q(art2)),
+    art1: art1 === 'ohne' && kids % 2 === 1 ? 'asylblg' : art1, art2, brutto: b1 + b2, brutto2: adults === 2 ? b2 : '', netto: Math.round(b1 * q(art1) + b2 * q(art2)),
     miete: pick([0, 300 + Math.round(rnd() * 1200)]), mietstufe: pick(['', '1', '3', '5', '7']),
     vermoegen: pick([0, 0, 3000, 9000, 14000, 40000, 70000]),
     gebJahr: pick(['', 1950, 1958, 1965, 1980, 1995, 2003]), heute: HEUTE,

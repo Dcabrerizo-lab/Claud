@@ -569,7 +569,8 @@ const Rules = (function () {
     // Eintrag: [Art, Brutto, Netto, nurAuszahlung, selbst, Person] – ohne eigenes Netto ist b der ausgezahlte Betrag (einfache Version)
     // Selbstständige: Gewinn zählt wie Einkommen aus Arbeit (Freibetrag § 11b Abs. 3 SGB II, § 82 Abs. 3 SGB XII; Wohngeld § 14 WoGG);
     // Unterschiede (kein Arbeitslosengeld/Krankengeld ohne freiwillige Versicherung, vorläufige Bewilligung) über h.selbst
-    const aSel = (a) => (a === 'selbst' ? 'lohn' : a);
+    // Asylbewerberleistungen (nur bei Aufenthalt „asyl“ wählbar): rechnet wie „kein Einkommen“, der Bezug steht in asylBezug
+    const aSel = (a) => (a === 'selbst' ? 'lohn' : a === 'asylblg' ? 'ohne' : a);
     const selbst1 = inp.art1 === 'selbst' || (Array.isArray(inp.einkommen) && inp.einkommen.some((x) => x && x.art === 'selbst'));
     const liste = Array.isArray(inp.einkommen) ? inp.einkommen.filter((x) => x && ARTEN.indexOf(aSel(x.art)) >= 0).map((x) => {
       const nurAus = blank(x.n);
@@ -691,6 +692,8 @@ const Rules = (function () {
         : sumIf((a, b) => a !== 'lohn' && a !== 'ohne' && b > 0 ? Math.min(b, R.versPauschale) : 0),
       mzG: !!inp.mzG, mzGl: !!inp.mzGl || !!(inp.mz && inp.mz.Gl), mzRF: !!(inp.mz && inp.mz.RF), mzAG: !!(inp.mz && inp.mz.aG), wfbmJahre: num(inp.wfbmJahre), grundrente33: !!inp.grundrente33, zusatzRente: num(inp.zusatzRente), bhEinkHoch: !!inp.bhEinkHoch, teilhabe: !!inp.teilhabe, bhWeitere: Math.min(4, Math.max(0, inp.bhWeitere | 0)), schwanger: !!inp.schwanger, ernaehrung: !!inp.ernaehrung, warmwasser: !!inp.warmwasser, gebJahr: jahr,
       baby: inp.baby === 'bald' || inp.baby === 'da' ? inp.baby : '', egVor: blank(inp.egVor) ? null : num(inp.egVor), asyl: inp.aufenthalt === 'asyl',
+      // Bezug von Asylbewerberleistungen: Einkommensart „asylblg“ einer Person, nur zusammen mit Aufenthalt „asyl“
+      asylBezug: inp.aufenthalt === 'asyl' && (inp.art1 === 'asylblg' || (adults === 2 && inp.art2 === 'asylblg') || (Array.isArray(inp.einkommen) && inp.einkommen.some((x) => x && x.art === 'asylblg'))),
       wohnform: inp.wohnform === 'eltern' || inp.wohnform === 'heim' ? inp.wohnform : '', wfbmEssen: !!inp.wfbmEssen,
       mieteGegeben: !blank(inp.miete) && num(inp.miete) > 0,
       // Heizkosten (freiwillig): nur gültig, wenn kleiner als die Warmmiete
@@ -870,10 +873,14 @@ const Rules = (function () {
   // Aufenthaltsgestattung und Duldung sind wohngeldberechtigt (§ 3 Abs. 5 Satz 1 Nr. 2 und 4 WoGG,
   // https://www.gesetze-im-internet.de/wogg/__3.html, Abruf 20.11.2026). Ausgeschlossen ist nur, wer Grundleistungen oder Leistungen in
   // besonderen Fällen nach dem AsylbLG bekommt (§ 7 Abs. 1 Satz 1 Nr. 8 WoGG, https://www.gesetze-im-internet.de/wogg/__7.html,
-  // Abruf 20.11.2026). Ob jemand AsylbLG-Leistungen bezieht, fragt die App nicht: bei asyl höchstens „möglich“ mit Hinweis.
-  // Ausreisepflichtig ohne Duldung: in § 3 Abs. 5 Satz 1 Nr. 1 bis 6 WoGG nicht genannt, also nicht wohngeldberechtigt (Hinweistext nennt das).
+  // Abruf 20.11.2026). Bezug fragt die App als Einkommensart „Asylbewerberleistungen“ ab (h.asylBezug): dann „unwahrscheinlich“ mit
+  // Hinweis aufs Sozialamt. Ohne diese Auswahl rechnet die App normal, auch „wahrscheinlich“ (§ 3 Abs. 5 WoGG; Entscheidung David,
+  // 20.11.2026), mit Hinweis vorn. Ausreisepflichtig ohne Duldung: in § 3 Abs. 5 Satz 1 Nr. 1 bis 6 WoGG nicht genannt, also nicht
+  // wohngeldberechtigt (der Hinweis nennt das).
   function wohngeld(h) {
-    return asylHoechstens(h, wohngeld0(h), 'wohngeld.asyl');
+    if (h.asylBezug) return mk('wohngeld', 'nein', 'ausschluss', [['wohngeld.asylBezug']]);
+    const r = wohngeld0(h);
+    return h.asyl && (r.level === 'ja' || r.level === 'vielleicht') ? { ...r, tx: [['wohngeld.asyl']].concat(r.tx) } : r;
   }
   function wohngeld0(h) {
     const id = 'wohngeld';
@@ -1110,7 +1117,10 @@ const Rules = (function () {
     }
     // § 3 Abs. 4 AsylbLG: Bildung und Teilhabe auch mit Asylbewerberleistungen (entsprechend §§ 34, 34a, 34b SGB XII), nach 36 Monaten
     // über § 2 Abs. 1 AsylbLG (https://www.gesetze-im-internet.de/asylblg/__3.html, .../__2.html, Abruf 20.11.2026). Die App weiß nicht,
-    // ob Asylbewerberleistungen bewilligt sind: „möglich“
+    // ob Asylbewerberleistungen bewilligt sind: „möglich“. Mit Einkommensart „Asylbewerberleistungen“ (h.asylBezug): „bekommst du“ über das
+    // Sozialamt; Kita ohne Kostenbeitrag bei Leistungen nach §§ 2, 3 AsylbLG (§ 90 Abs. 4 Satz 2 SGB VIII,
+    // https://www.gesetze-im-internet.de/sgb_8/__90.html, Abruf 20.11.2026)
+    if (h.asylBezug) return mk(id, 'ja', 'ja', [['but.asylBezug'], inhalt].concat(h.kidsU6 > 0 ? [['but.kita']] : []));
     if (h.asyl) return mk(id, 'vielleicht', 'butMoeglich', [['but.asyl'], inhalt].concat(h.kidsU6 > 0 ? [['but.kita']] : []));
     // § 90 Abs. 4 SGB VIII: Kita und Tagespflege ohne Kostenbeitrag bei Grundsicherung, Wohngeld, Kinderzuschlag, Asylbewerberleistungen
     const kita = h.kidsU6 > 0 ? [['but.kita']] : [];
@@ -1535,6 +1545,7 @@ const Rules = (function () {
   function asylbewerber(h) {
     const id = 'asylblg';
     if (!h.asyl) return mk(id, 'nein', 'vorausFehlt', [['asyl.keine']]);
+    if (h.asylBezug) return mk(id, 'na', 'na', [['asyl.na'], ['asyl.analog']]);
     return mk(id, 'ja', 'ja', [['asyl.ja'], ['asyl.analog']]);
   }
 
@@ -1700,7 +1711,9 @@ const Rules = (function () {
   function rundfunk0(h, gg, gsa, w) {
     const id = 'rundfunk';
     if (h.bezug.grundsicherungsgeld || h.bezug.sozialamt) return mk(id, 'ja', 'ja', [['rundfunk.bezug']]);
-    // § 4 Abs. 1 Nr. 4 RBStV: Leistungen nach dem Asylbewerberleistungsgesetz
+    // § 4 Abs. 1 Nr. 4 RBStV: Empfänger von Leistungen nach dem Asylbewerberleistungsgesetz (https://bravors.brandenburg.de/vertraege/rbstv/5,
+    // Abruf 20.11.2026; gleicher Staatsvertrag in allen Ländern). Mit Bezug (h.asylBezug) „bekommst du“, sonst „möglich“
+    if (h.asylBezug) return mk(id, 'ja', 'ja', [['rundfunk.asyl']]);
     if (h.asyl) return mk(id, 'vielleicht', 'butMoeglich', [['rundfunk.asyl']]);
     if (gg.level === 'ja' || gsa.level === 'ja') return mk(id, 'vielleicht', 'butMoeglich', [['rundfunk.folgt']]);
     if (gg.level === 'vielleicht' || gsa.level === 'vielleicht') return mk(id, 'vielleicht', 'butMoeglich', [['rundfunk.haerte']]);
