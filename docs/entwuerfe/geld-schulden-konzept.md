@@ -303,3 +303,6 @@ Nutzen ★–★★★ · Aufwand S/M/L · Risiko niedrig/mittel/hoch
 | B12 | Schnittstelle zu Fachsoftware | ★ | L | hoch (kein belegtes offenes Format) | nicht geplant |
 
 Empfehlung: Im nächsten Update B1–B6 (Beratungsmodus als *andere Sicht*, keine neuen Daten). Vor B7/B10 zwei bis drei Schuldnerberater/innen fragen, was sie im Gespräch wirklich brauchen – David hat über den Träger Zugang zu Fachkräften.
+
+## Entscheidung David (20.11.2026, 21:54)
+Alle drei Fragen nach Empfehlung: (1) Krisen-Check als erste Karte in „Es ist dringend“; (2) „Sparen im Alltag“ eine Ebene tiefer unter „Mein Geld planen“, „Post vom Inkasso“ wird eigene Kachel; (3) Beratungsmodus im nächsten Update als dichtere Sicht auf dieselben Daten, amtliches Gläubiger- und Forderungsverzeichnis später nach Fachprüfung. Die vorgeschlagenen Namen dürfen so heißen.
