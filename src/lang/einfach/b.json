@@ -107,7 +107,7 @@
  "t.kg.antraglos": "Neu ab 2027: Die Familienkasse zahlt Kindergeld Schritt für Schritt auch ohne Antrag, wenn ihr alle Daten vorliegen. Ab Frühjahr 2027 gilt das für Familien, die schon Kindergeld bekommen. Voraussichtlich ab Ende 2027 gilt es auch beim ersten Kind. Bis dahin stellst du den Antrag.",
  "t.plan.kg": "Geplant ab 2027: Kindergeld {b} je Kind. Das steht in einem Gesetzentwurf (Stand November 2026). Es ist noch nicht beschlossen. Die App rechnet mit dem heutigen Betrag.",
  "t.plan.kiz": "2027: Der Sofortzuschlag von 25 € pro Kind sollte wegfallen. Jetzt soll er bleiben (Stand November 2026). Das ist noch nicht ganz sicher. Die Familienkasse sagt zum Jahreswechsel, wie viel Kinderzuschlag es 2027 gibt.",
- "t.plan.uvg": "2027: Es war geplant, Unterhaltsvorschuss nur bis 16 Jahre zu zahlen. Das ist jetzt vom Tisch (Stand November 2026). 2027 gibt es Unterhaltsvorschuss weiter, bis das Kind 18 wird.",
+ "t.plan.uvg": "2027: Es war geplant, Unterhaltsvorschuss nur bis 16 Jahre zu zahlen. Das soll jetzt nicht kommen (Stand November 2026). Dann gibt es Unterhaltsvorschuss 2027 weiter, bis das Kind 18 wird. Das ist noch nicht ganz sicher.",
  "t.plan.wg": "2027: Das Wohngeld sollte gekürzt werden. Das kommt jetzt nicht (Stand November 2026). Es wird 2027 aber auch nicht erhöht. Es bleibt bei den Beträgen von jetzt. Das ist noch nicht ganz sicher.",
  "t.plan.wgDez": "Tipp: Wohngeld gibt es erst ab dem Monat, in dem du den Antrag stellst. Stelle den Antrag deshalb früh.",
  "t.plan.pflege": "Geplant ab 2027: Pflegegeld im Monat: {a} (Pflegegrad 2), {b} (3), {c} (4) und {d} (5). Der Entlastungsbetrag soll in ein neues Budget umgebaut werden. Das steht in einem Kabinettsentwurf (Stand November 2026). Es ist noch nicht beschlossen.",
@@ -135,5 +135,11 @@
  "t.wbs.stufeVielleicht": "Das Wohnungsamt zieht bis zu 30 % ab. Danach kann es für die Stufe {name} reichen.",
  "t.kkg.nurKrank": "Kinderkrankengeld gibt es, wenn du ein krankes Kind unter 12 zu Hause betreuen musst. Ist das gerade so? Dann kreuze es im Fragebogen bei den Kindern an.",
  "t.mehr.warmwasser": "Darin ist ein Mehrbedarf für Warmwasser aus dem Boiler enthalten. Er beträgt {betrag}.",
- "t.auto.hochSgb12": "Ein Auto ist geschützt, wenn es angemessen ist. Hat es einen Wert über etwa {wert}, prüft das Sozialamt genauer. Deshalb steht hier nur „möglich“."
+ "t.auto.hochSgb12": "Ein Auto ist geschützt, wenn es angemessen ist. Hat es einen Wert über etwa {wert}, prüft das Sozialamt genauer. Deshalb steht hier nur „möglich“.",
+ "t.kiz.rentnerAllein": "Für Kinderzuschlag muss im Haushalt jemand arbeiten können. Zum Beispiel ein Partner oder ein Kind ab 15. Du hast die Regelaltersgrenze erreicht? Dann zählst du nicht. Prüfe lieber Wohngeld und Grundsicherung im Alter.",
+ "t.kiz.emAllein": "Für Kinderzuschlag muss im Haushalt jemand arbeiten können. Zum Beispiel ein Partner oder ein Kind ab 15. Du bist voll erwerbsgemindert? Dann zählst du nicht. Prüfe lieber Wohngeld und Grundsicherung im Alter und bei Erwerbsminderung.",
+ "t.kiz.nurAb15": "Kinderzuschlag gibt es hier nur, wenn ein Kind 15 Jahre oder älter ist. Denn im Haushalt muss jemand arbeiten können. Wer die Regelaltersgrenze erreicht hat, zählt nicht. Wer voll erwerbsgemindert ist, zählt auch nicht.",
+ "t.kiz.vorgezogen": "Du bekommst Altersrente? Oder du hast die Regelaltersgrenze erreicht? Dann gibt es keinen Kinderzuschlag. Nur wenn ein Kind 15 Jahre oder älter ist, geht es doch. Das gilt auch für Altersrente vor der Regelaltersgrenze. Es gilt nicht für Witwenrente, Waisenrente oder Rente wegen teilweiser Erwerbsminderung.",
+ "t.kiz.rentnerPaar": "Für Kinderzuschlag muss im Haushalt jemand arbeiten können. Ihr bekommt beide Altersrente? Oder ihr seid beide voll erwerbsgemindert? Dann gibt es ihn nur, wenn ein Kind 15 Jahre oder älter ist.",
+ "t.ggeld.vorgezogen": "Du bekommst Altersrente? Auch vor der Regelaltersgrenze? Dann gibt es kein Grundsicherungsgeld (§ 7 Abs. 4 SGB II). Dann ist das Sozialamt zuständig (Hilfe zum Lebensunterhalt). Das gilt nicht für Witwenrente, Waisenrente oder Rente wegen teilweiser Erwerbsminderung."
 }

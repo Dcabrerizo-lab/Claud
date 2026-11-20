@@ -3,7 +3,8 @@ name: Schwere Tests
 # Große Testläufe: viele Millionen Haushalte gegen die unabhängige Referenzrechnung, Logik-Test mit 1 Million Haushalten,
 # vollständiger Mutationstest, Browsertests in Firefox und WebKit (Safari), die echte App im Android-Emulator (Android 8, 11, 15)
 # und der iOS-Build. Sparsam: nur von Hand (Actions -> Schwere Tests
-# -> Run workflow) und einmal, wenn diese Datei geändert wird. Dauer etwa 20 bis 40 Minuten.
+# -> Run workflow), sonntags automatisch und einmal, wenn diese Datei geändert wird. Browsertests (4 Teile je Browser)
+# und Mutationstest (3 Teile) laufen parallel; Dauer etwa 20 bis 30 Minuten (längster Job: Rastertest bzw. Android-Emulator).
 # (Die Knopfdruck-Variante erscheint erst, wenn diese Datei auch im Haupt-Branch liegt.)
 on:
   workflow_dispatch:
@@ -86,7 +87,7 @@ jobs:
   browser:
     name: Browsertests ${{ matrix.browser }} Teil ${{ matrix.teil }}/4
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 40   # ein Viertel der Arbeit; ungeteilt brauchte der Job bis 75 Minuten
     strategy:
       fail-fast: false
       matrix:

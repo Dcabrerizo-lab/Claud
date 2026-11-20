@@ -206,7 +206,8 @@ check('Wohngeld: Netto allein genügt NICHT (Wohngeld rechnet mit Brutto)', get(
   // Miete 600, Rente 900 (kein Freibetrag, 30 € Versicherungspauschale): Bedarf 563 + 390 + 600 + 67,56 Mehrbedarf (12 %) = 1.620,56;
   // Kinderbedarf 390 + 300 = 690, abzüglich 259 Kindergeld = 431 € anrechenbarer Unterhalt. Mit 1.000 € Unterhalt: Einkommen
   // 870 + 259 + 431 = 1.560 -> Lücke 60,56 -> noch „wahrscheinlich“ (bei voller Anrechnung wären es 2.129 € und damit „nein“).
-  const gg = (u) => lv(ev({ kids: 1, brutto: 900, netto: 900, nichtArbeit: true, miete: 600, vermoegen: 0, unterhalt: u }), 'ggeld');
+  // Geburtsjahr 1986: Rente kann keine vorgezogene Altersrente sein (§ 7 Abs. 4 SGB II), z. B. Witwenrente
+  const gg = (u) => lv(ev({ kids: 1, brutto: 900, netto: 900, nichtArbeit: true, miete: 600, vermoegen: 0, unterhalt: u, gebJahr: 1986 }), 'ggeld');
   check('Grundsicherungsgeld ohne Unterhalt: Lücke 394 € -> wahrscheinlich', gg('') === 'ja');
   check('Grundsicherungsgeld mit 1.000 € Unterhalt: nur 431 € angerechnet -> Lücke 61 € (nicht nein)', gg(1000) === 'ja');
   check('Grundsicherungsgeld: 431 € und 1.000 € Unterhalt wirken gleich (Deckel beim Kinderbedarf)', gg(431) === gg(1000));

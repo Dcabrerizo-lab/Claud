@@ -479,7 +479,7 @@
     started = true;
     if (!edited) { edited = true; $('sampleNotice').hidden = true; }
     // Ausgeblendete Felder zurücksetzen, damit keine alten Werte mitrechnen
-    if (state.kids === 0) { state.kinder12 = false; state.kindKrank = false; if ($('kindKrank')) $('kindKrank').checked = false; state.unterhaltFehlt = false; state.kidsU6 = 0; state.kids14 = 0; $('kinder12').checked = false; $('unterhaltFehlt').checked = false; }
+    if (state.kids === 0) { state.kidsAlter = false; state.kinder12 = false; state.kindKrank = false; if ($('kindKrank')) $('kindKrank').checked = false; state.unterhaltFehlt = false; state.kidsU6 = 0; state.kids14 = 0; $('kinder12').checked = false; $('unterhaltFehlt').checked = false; }
     render(); save();
   }
   var soonTimer = null;
@@ -504,6 +504,8 @@
         if (k === 'kidsU6') state.kidsU6 = Math.min(state.kidsU6, state.kids);
         if (k === 'kidsU6' || k === 'kids14') state.kids14 = Math.min(state.kids14 || 0, state.kids - (state.kidsU6 || 0));
         if (k === 'kids14') state.kids14 = Math.min(state.kids14, state.kids - (state.kidsU6 || 0));
+        // Frage „14 bis 17“ beantwortet: Alter der Kinder gilt als angegeben (Kinderzuschlag bei Rentnern, DA-KiZ D.2)
+        if (k === 'kids14') state.kidsAlter = true;
         $('kids').textContent = state.kids; $('young').textContent = state.young; $('kidsU6').textContent = state.kidsU6 || 0; $('kids14').textContent = state.kids14 || 0; touched();
       });
     });
@@ -751,6 +753,17 @@
     });
   }
 
+  // Kopf des Ergebnisses: „Gute Nachrichten!“ nur, wenn mindestens eine Leistung wahrscheinlich ist; Satz mit der Zahl der passenden Hilfen
+  // (wahrscheinlich + möglich, gezählt aus den Karten). Keine Gesamtsumme: die Beträge sind Schätzungen und schließen sich teils aus.
+  function kopfErgebnis(ja, passend) {
+    var h = $('h-res'), key = ja > 0 ? 'res.gut' : 'res.h';
+    h.setAttribute('data-t', key); h.textContent = t(key);
+    var satz = $('resSatz');
+    satz.hidden = !(passend > 0);
+    satz.textContent = passend === 1 ? t('res.n1') : passend > 1 ? t('res.n', { n: passend }) : '';
+    $('beratung').hidden = !started;
+  }
+
   function render() {
     syncEinkommen(); folgefragen(); ekFelder(); weitereWarnungen();
     document.querySelectorAll('.cond-kids').forEach(function (el) { el.hidden = state.kids === 0; });
@@ -761,6 +774,7 @@
       $('overview').hidden = true; $('together').innerHTML = '';
       $('cards').innerHTML = '<div class="card startcard"><h3>' + esc(t('start.h')) + '</h3>' + listItems([t('start.1'), t('start.2'), t('start.3')]) + '</div>';
       $('helper').hidden = true; $('legende').hidden = true; $('feedback').hidden = true;
+      kopfErgebnis(0, 0);
       return;
     }
     $('helper').hidden = false; $('legende').hidden = false;
@@ -772,6 +786,7 @@
     if (n.ja) parts.push(t('c.ja', { n: n.ja }));
     if (n.vielleicht) parts.push(t('c.vielleicht', { n: n.vielleicht }));
     var summary = parts.length ? parts.join(' · ') : t('c.none');
+    kopfErgebnis(n.ja, n.ja + n.vielleicht);
     $('count').textContent = summary;
     $('jumpText').textContent = summary;
     var openIds = {}, neinOpen = false, spezOpen = false, gutOpen = false;
@@ -2255,6 +2270,7 @@
     var q = $('pa-q'); if (q) { window.scrollTo(0, 0); q.focus({ preventScroll: true }); }
   }
   $('paStart').addEventListener('click', paOeffnen);
+  $('goPflege').addEventListener('click', function () { if (typeof PflegeAssistent === 'undefined') zeigeAnsicht('leistungen', true); else paOeffnen(); }); // Startkachel Pflege: Pflegegrad selbst einschätzen
   window.SoLoPflegeStart = paOeffnen; // „Pflegegrad selbst einschätzen“ aus der Gutachten-Prüfung
   // Sprung zu einer Ergebniskarte (Übersicht oben, Kachel „Zwei Wege“): Karte aufklappen
   $('ergebnis').addEventListener('click', function (e) { var a = e.target.closest && e.target.closest('a[href^="#c-"]'); if (a) karteAuf(a.getAttribute('href').slice(1)); });

@@ -34,6 +34,7 @@ Ausführlicher Verlauf (Erledigtes, alte Pläne): `docs/VERLAUF.md`, Abschnitt �
 - Netto: Steuerklasse III für Paar mit einem Einkommen (vorsichtige Annahme).
 - Elterngeld: Pauschale 1.000 €/12 wie der amtliche Rechner.
 - Lange Tests (e2e, App) laufen nur auf GitHub. Schwere Tests jeden Sonntag automatisch (`schwer.yml`).
+- Teststufen (Entscheidung 20.11.2026): Bei jedem PR nur die normale CI (Regeln, Oberfläche, Browser, App, Android-Bau). Die schweren Tests (`schwer.yml`: Safari, Firefox, Emulator, Mutationstest, Raster) laufen **einmal vor jedem Release auf dem fertigen Stand von `main`** und sonntags automatisch – nicht mehr für jeden einzelnen PR. Ausnahme: PRs, die die Testumgebung selbst ändern (Workflows, Testskripte). Erst bauen, wenn der Lauf auf `main` grün ist.
 - Gradle 9 zurückgestellt: nicht kompatibel mit AGP 8.13 (Build fand Abhängigkeiten nicht).
 - iOS-Upload: Standard-Rechner `macos-15-intel` (macos-26 bekam keinen Rechner).
 - Erweiterungen (Prüfpaket) per signierter Lizenzdatei; privater Lizenzschlüssel nie im Repo.

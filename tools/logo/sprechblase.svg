@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="1024" height="1024">
-  <!-- SoLo-Logo „Sprechblase mit Haken“ (Vorschlag 1). Vollflächig ohne Rundung: die Stores runden selbst ab. -->
-  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#139281"/><stop offset="1" stop-color="#0a5c52"/></linearGradient></defs>
-  <rect width="100" height="100" fill="url(#g)"/>
-  <path d="M28 25h44a10 10 0 0 1 10 10v24a10 10 0 0 1-10 10H48L34 80V69h-6a10 10 0 0 1-10-10V35a10 10 0 0 1 10-10z" fill="#fff"/>
-  <path d="M37 47l8.5 8.5L63 38" fill="none" stroke="#0e7c6b" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- SoLo-Logo „Sprechblase mit Haken“, Design „Warm und menschlich“: Petrol #0f6b5c, Creme #fffaf3, Haken Koralle #ff7a59.
+       Im Kopf der App mit rx=30; als App-Symbol vollflächig ohne Rundung (die Stores runden selbst ab, siehe tools/mkicon.js). -->
+  <rect width="100" height="100" rx="30" fill="#0f6b5c"/>
+  <path d="M30 26h40a12 12 0 0 1 12 12v20a12 12 0 0 1-12 12H50L36 82V70h-6a12 12 0 0 1-12-12V38a12 12 0 0 1 12-12z" fill="#fffaf3"/>
+  <path d="M37 48l9 9 18-18" fill="none" stroke="#ff7a59" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

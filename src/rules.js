@@ -552,7 +552,7 @@ const Rules = (function () {
     // ohne Angabe, an wen: wie für ein Kind (niedrigster Höchstbetrag)
     const uzCap = ({ k1: 1, k2: 2, k3: 3, ex: 0, exk: 1 })[uzAn || 'k1'] * R.uzWG.kind + (uzAn === 'ex' || uzAn === 'exk' ? R.uzWG.ex : 0);
     const uzWGpess = uzTitel ? Math.min(uzBetrag, uzCap) : 0, uzWGopt = uzTitel ? uzBetrag : Math.min(uzBetrag, uzCap);
-    // Eigenes Einkommen der Kinder (Ausbildungsvergütung, Minijob; ohne Kindergeld und Unterhalt), im Monat
+    // Eigenes Einkommen der Kinder (Ausbildungsvergütung, Minijob; ohne Kindergeld, Unterhalt und Waisenrente), im Monat
     const kindEink = kids + young > 0 ? num(inp.kindEink) : 0;
     // Waisenrente der Kinder (Halbwaisen- oder Vollwaisenrente, alle Kinder zusammen, im Monat): Einkommen der Kinder wie Unterhalt,
     // beim Unterhaltsvorschuss angerechnet (§ 2 Abs. 3 Nr. 2 UVG)
@@ -635,8 +635,12 @@ const Rules = (function () {
       alter,
       // WfbM-Arbeitsbereich gilt als voll erwerbsgemindert (BA-Weisung § 8 SGB II Rz. 8.8-8.10a) -> Sozialamt statt Jobcenter
       erwerbsgemindert: !!inp.erwerbsgemindert || inp.emStd === 'unter3' || !!inp.wfbm || pers.some((x) => x[0] === 'wfbm'),
+      // Voll erwerbsgemindert ist der Elternteil selbst, nicht ein Kind mit Behinderung (Werkstatt-Haken bei „Kind unter 18“ / „Kind ab 18“)
+      emEltern: !!inp.erwerbsgemindert || inp.emStd === 'unter3' || pers.some((x) => x[0] === 'wfbm') || (!!inp.wfbm && inp.bhPerson !== 'minder' && inp.bhPerson !== 'erwVor25'),
       behinderung: !!inp.behinderung || String(inp.gdb) === '100',
       kinder12: !!inp.kinder12,
+      // Alter der Kinder bekannt: ausdrücklich angegeben (Frage „14 bis 17“ beantwortet) oder alle Kinder unter 6
+      kidsAlter: !!inp.kidsAlter || (kids > 0 && kidsU6 === kids),
       kindKrank: !!inp.kindKrank, // ein Kind ist gerade krank, ein Elternteil kann deshalb nicht arbeiten
       unterhaltFehlt: !!inp.unterhaltFehlt,
       ausbildung: ['kind', 'kindBetrieb', 'ich'].indexOf(inp.ausbildung) >= 0 ? inp.ausbildung : '',
@@ -870,12 +874,39 @@ const Rules = (function () {
   // ---------------------------------------------------------------
   // Kinderzuschlag
   // ---------------------------------------------------------------
+  // Nur Rente als Einkommen, Regelaltersgrenze nicht sicher erreicht, Alter unbekannt oder ab 60: könnte eine vorgezogene Altersrente sein
+  // (§ 7 Abs. 4 SGB II). Bei bekanntem Alter unter 60 ist das ausgeschlossen (Witwen-, Waisen- oder Erwerbsminderungsrente).
+  function vielleichtAltersrente(h) {
+    const p = (h.pers || []).filter((x) => x[1] > 0);
+    if (!p.length || !p.every((x) => x[0] === 'rente')) return false;
+    if (h.alterJahre) return h.alterJahre >= 60;
+    return h.gruppe === '' || h.gruppe === '50+';
+  }
+  // Kinderzuschlag setzt voraus, dass im Haushalt mindestens eine Person dem Grunde nach zum SGB II gehört (§ 6a Abs. 1 Nr. 3 BKGG
+  // i. V. m. § 7, § 8 SGB II; DA-KiZ Stand 20.02.2026, D.2 Abs. 1 Satz 5 und B.1 Abs. 5; BSG 13.07.2022, B 7/14 KG 1/21 R):
+  // ein erwerbsfähiger Elternteil oder ein Kind ab 15. Altersrentner (Regelaltersgrenze, auch vorgezogene Altersrente, § 7 Abs. 4 SGB II)
+  // und voll Erwerbsgeminderte zählen nicht.
   function kinderzuschlag(h) {
     const id = 'kiz';
     if (h.children === 0) return mk(id, 'nein', 'keinKind', [['kiz.keinKind']]);
     if (h.bezug.grundsicherungsgeld || h.bezug.sozialamt) return mk(id, 'nein', 'ausschluss', [['kiz.ausschluss']]);
     if (h.bezug.kiz) return mk(id, 'na', 'na', [['kiz.na']]);
     if (h.asyl) return mk(id, 'nein', 'ausschluss', [['kiz.asyl']]);
+    let hinweis = null;
+    if (h.young === 0) {
+      const em = h.emEltern;
+      if (h.adults === 1 && (h.alter || em)) {
+        // Allein, kein Kind ab 15 (alle Kinder sicher unter 14 bzw. Alter angegeben und keines von 14 bis 17): kein Anspruch
+        if (h.kids14 === 0 && h.kidsAlter) return mk(id, 'nein', 'ausschluss', [[h.alter ? 'kiz.rentnerAllein' : 'kiz.emAllein']]);
+        hinweis = 'kiz.nurAb15';
+      } else if (h.adults === 1 && (h.alterGrenz || vielleichtAltersrente(h))) hinweis = 'kiz.vorgezogen';
+      else if (h.adults === 2 && !h.liste && h.art1 === 'rente' && h.art2 === 'rente' && (h.alter || em)) hinweis = 'kiz.rentnerPaar';
+    }
+    const r = kizRechnung(h, id);
+    if (!hinweis || r.level === 'nein') return r;
+    return mk(id, 'vielleicht', r.level === 'ja' ? 'vielleicht' : r.hl, [[hinweis]].concat(r.tx));
+  }
+  function kizRechnung(h, id) {
     const vermGrenze = h.persons <= 2 ? R.kiz.vermZwei : R.kiz.vermDrei + R.kiz.vermJeWeiteres * (h.persons - 3);
     if (h.vermoegen > vermGrenze) return mk(id, 'nein', 'vermHoch', [['kiz.verm', { n: h.persons, limit: eur(vermGrenze) }]]);
     const minEink = h.adults === 2 ? R.kiz.minPaar : R.kiz.minAlleinerziehend;
@@ -918,7 +949,14 @@ const Rules = (function () {
     return [[level === 'ja' ? 'bedarfJa' : level === 'vielleicht' ? 'bedarfRand' : 'bedarfNein', { bedarf: eur(bedarf) }]];
   }
 
+  // § 7 Abs. 4 SGB II: Wer eine Altersrente bezieht (auch vor der Regelaltersgrenze), bekommt kein Grundsicherungsgeld.
+  // Die App kennt die Rentenart nicht: allein, nur Rente, Alter unbekannt oder ab 60 -> höchstens „möglich“ mit Hinweis.
   function grundsicherungsgeld(h) {
+    const r = ggeldRechnung(h);
+    if (h.adults !== 1 || (r.level !== 'ja' && r.level !== 'vielleicht') || !vielleichtAltersrente(h)) return r;
+    return mk(r.id, 'vielleicht', 'vielleicht', r.tx.slice(0, 1).concat([['ggeld.vorgezogen']], r.tx.slice(1)));
+  }
+  function ggeldRechnung(h) {
     const id = 'ggeld';
     // Paar mit Kindern, eine Person im Rentenalter oder voll erwerbsgemindert: Die andere Person kann erwerbsfähig sein und gehört
     // dann mit den Kindern zum Jobcenter (gemischte Bedarfsgemeinschaft, § 7 Abs. 2 und 3 SGB II); ohne Kinder nur als Hinweis
@@ -986,7 +1024,13 @@ const Rules = (function () {
     const id = 'uvg';
     // § 1 Abs. 1 Nr. 1, Abs. 1a UVG: nur bis zum 18. Geburtstag und nur, wenn das Kind beim Elternteil lebt (Heim, Pflege: § 1 Abs. 4 Satz 2)
     if (h.kids === 0) return mk(id, 'nein', 'keinKind', [[h.young > 0 ? 'uvg.volljaehrig' : 'uvg.keinKind']]);
-    if (!h.unterhaltFehlt) return mk(id, 'nein', 'vorausFehlt', [['uvg.unterhalt']]);
+    if (!h.unterhaltFehlt) {
+      // Waisenrente eingetragen, Haken fehlt: Ein Elternteil ist wohl gestorben (§ 1 Abs. 1 Nr. 3 b UVG) -> wie mit Haken prüfen,
+      // höchstens „möglich“, mit Hinweis auf den Haken
+      if (!(h.waisen > 0)) return mk(id, 'nein', 'vorausFehlt', [['uvg.unterhalt']]);
+      const r = uvgKarte(Object.assign({}, h, { unterhaltFehlt: true }), gg);
+      return r.level === 'nein' ? r : mk(id, 'vielleicht', 'vielleicht', [['uvg.waisenHaken']].concat(r.tx));
+    }
     // § 1 Abs. 1 Nr. 2 UVG: verheiratet oder verpartnert mit dem neuen Partner -> nicht mehr alleinstehend
     if (h.uvgPartner === 'ehe') return mk(id, 'nein', 'ausschluss', [['uvg.ehe']]);
     // § 1 Abs. 3 UVG: lebt mit dem anderen Elternteil; gilt je Kind (nur gemeinsame Kinder), bei mehreren Kindern daher offen
@@ -1006,16 +1050,17 @@ const Rules = (function () {
     const anr = h.unterhalt + (h.waisen || 0);
     if (h.kids === 1 && anr >= hoch) return mk(id, 'nein', 'vorausFehlt', [h.waisen > 0 ? ['uvg.genugW', { u: eur(anr) }] : ['uvg.genug', { u: eur(anr) }]]);
     if (h.uvgKindAnr > 0 && anr + h.uvgKindAnr >= hoch) return mk(id, 'nein', 'vorausFehlt', [['uvg.kindEinkGenug', { e: eur(h.kindEink) }]]);
-    const teil = anr > 0 ? [h.waisen > 0 ? ['uvg.teilW', { u: eur(anr) }] : ['uvg.teil', { u: eur(anr) }]] : [];
-    if (h.uvgPartner === 'eltern') return mk(id, 'vielleicht', 'vielleicht', [['uvg.elternteilMehr'], betrag].concat(teil, kindTx, hinweise));
-    if (anr > 0) return mk(id, 'vielleicht', 'vielleicht', teil.concat([betrag], kindTx, hinweise));
-    if (h.adults === 2 && !h.uvgPartner) return mk(id, 'vielleicht', 'vielleicht', [['uvg.zwei'], betrag].concat(kindTx, hinweise));
-    if (h.uvgWechsel) return mk(id, 'vielleicht', 'vielleicht', [['uvg.wechselMehr'], betrag].concat(kindTx, hinweise));
     // Ab 12 Jahren (§ 1 Abs. 1a UVG): Nr. 1 kein Grundsicherungsgeld des Kindes oder Nr. 2 eigenes Einkommen des Elternteils von
     // mindestens 600 € brutto (ohne Kindergeld). Nr. 1 sicher nur, wenn das Grundsicherungsgeld an Einkommen oder Vermögen scheitert;
     // bei anderen Gründen (Studium, Erwerbsminderung, EU-Ausschluss) kann das Kind trotzdem Leistungen beziehen -> „möglich“.
     const ohneGG = !!gg && gg.level === 'nein' && (gg.hl === 'einkoHoch' || gg.hl === 'vermHoch');
-    if (h.kinder12 && h.bruttoEigen < R.uvg.min12 && !ohneGG) return mk(id, 'vielleicht', 'vielleicht', [['uvg.ab12', { min: eur(R.uvg.min12) }], betrag].concat(kindTx, hinweise));
+    const ab12 = h.kinder12 && h.bruttoEigen < R.uvg.min12 && !ohneGG ? [['uvg.ab12', { min: eur(R.uvg.min12) }]] : [];
+    const teil = anr > 0 ? [h.waisen > 0 ? ['uvg.teilW', { u: eur(anr) }] : ['uvg.teil', { u: eur(anr) }]] : [];
+    if (h.uvgPartner === 'eltern') return mk(id, 'vielleicht', 'vielleicht', [['uvg.elternteilMehr'], betrag].concat(teil, kindTx, hinweise));
+    if (anr > 0) return mk(id, 'vielleicht', 'vielleicht', teil.concat(ab12, [betrag], kindTx, hinweise));
+    if (h.adults === 2 && !h.uvgPartner) return mk(id, 'vielleicht', 'vielleicht', [['uvg.zwei'], betrag].concat(kindTx, hinweise));
+    if (h.uvgWechsel) return mk(id, 'vielleicht', 'vielleicht', [['uvg.wechselMehr'], betrag].concat(kindTx, hinweise));
+    if (ab12.length) return mk(id, 'vielleicht', 'vielleicht', ab12.concat([betrag], kindTx, hinweise));
     // Einkommen eines Kindes nach der Schule mindert den Betrag: sicher (Ausbildung) oder vielleicht (nur ein Kind, Schule unbekannt)
     if (h.uvgKindAnr > 0 || (kindTx.length && h.kids === 1 && h.kindEink > R.uvg.wk)) return mk(id, 'vielleicht', 'vielleicht', kindTx.concat([betrag], hinweise));
     return mk(id, 'ja', 'ja', [betrag].concat(kindTx, hinweise));
