@@ -255,6 +255,9 @@
   .ekbox { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; gap: 14px; background: var(--surface); }
   .ekbox h3 { font-size: 1em; }
   .subbox { border-inline-start: 3px solid var(--line); padding-inline-start: 14px; display: grid; gap: 14px; }
+  /* Zweites Einkommen im Einkommenskasten: Aufklappfeld ohne eigene Linie oben (Farben wie details summary, --accent) */
+  details.ek-mehr { border-top: 0; padding-top: 0; }
+  details.ek-mehr[open] > summary { margin-bottom: 8px; }
   .warn { color: var(--warn); background: var(--warn-bg); border-radius: 6px; padding: 6px 10px; font-size: 0.9em; }
   /* Höchstbetrag der Miete beim Wohngeld unter dem Mietfeld: Info-Paar, bei „möglich“ das Paar „Möglich“ (kein Rot: kein Ausschluss) */
   .mietgrenze { font-size: 0.9em; color: var(--na); background: var(--na-bg); border-inline-start: 4px solid var(--na); border-radius: 6px; padding: 6px 10px; margin: 6px 0 0; }
@@ -370,6 +373,21 @@
   .hb-sym { width: 36px; height: 36px; border-radius: 999px; display: grid; place-items: center; background: var(--c-sparen); color: var(--on-c); flex: none; }
   .hb-sym svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
   .hb-katfeld { display: grid; gap: 8px; }
+  /* Energiekosten-Check (src/haushalt.js energieBox): Ergebnis-Wort nach docs/FARBEN.md, Farbe nie allein */
+  .hb-en { display: grid; gap: 10px; }
+  .hb-en-ergebnis { display: grid; gap: 6px; } .hb-en-ergebnis p { margin: 0; }
+  .hb-en-erg { font-size: 1.15em; font-weight: 700; padding: 12px 14px; border-radius: 12px; background: var(--na-bg); color: var(--ink); }
+  .hb-en-erg.nach { background: var(--warn-bg); color: var(--warn); }
+  .hb-en-erg.passt { background: var(--ok-bg); color: var(--ok); }
+  .hb-en-erg.gut { background: var(--na-bg); color: var(--na); }
+  .hb-en-erg.fehler { background: var(--bad-bg); color: var(--bad); }
+  .hb-en-erg:empty { display: none; }
+  .hb-en-schaetz { font-weight: 600; }
+  .hb-en-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .hb-en-tab { display: flex; align-items: center; gap: 8px; min-height: 48px; padding: 6px 10px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+  .hb-en-tab[aria-pressed="true"] { border: 2px solid var(--accent); background: var(--accent-soft); }
+  .hb-en-felder { border: 0; padding: 0; margin: 0; display: grid; gap: 8px; } .hb-en-felder > legend { font-weight: 700; padding: 0; }
+  .hb-en-det > summary { font-weight: 600; cursor: pointer; padding: 8px 0; } .hb-en-det p { margin: 6px 0; }
   .hb-frage, .hb-hinweis { border: 2px solid var(--accent); border-radius: 12px; padding: 10px 12px; display: grid; gap: 8px; }
   .hb-frage p, .hb-hinweis p { margin: 0; }
   .hb-hinweise { display: grid; gap: 10px; }
@@ -383,6 +401,7 @@
   .hb-ue-t { margin: 0; font-weight: 700; }
   .hb-ue h3 { margin: 0; }
   .hb-fehlt { outline: 3px solid var(--bad); outline-offset: 4px; border-radius: 8px; }
+  .hb-feld-fehler { display: block; color: var(--bad); font-weight: 700; font-size: .9em; margin-top: 4px; }
   .hb-fehlt-t { display: inline-block; font-size: .85em; font-weight: 700; color: var(--bad-on); background: var(--bad); border-radius: 999px; padding: 2px 10px; margin-bottom: 4px; }
   .hb-gross { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
   .hb-plus { min-height: 56px; font-size: 1.05em; width: 100%; }
@@ -881,6 +900,8 @@
   .app .az .az-raster > .az-k:nth-child(5) { --c: var(--c-briefe); } /* gruppe ausziehen */
   .app .az .az-raster > .az-k:nth-child(6) { --c: var(--c-leistungen); } /* gruppe ausziehen */
   .app .az .az-raster > .az-k:nth-child(7) { --c: var(--c-familienkasse); } /* gruppe ausziehen */
+  .app .hb-en .hb-en-tabs > button:nth-child(1) .hb-sym { background: var(--c-wohngeld); } /* gruppe energie */
+  .app .hb-en .hb-en-tabs > button:nth-child(2) .hb-sym { background: var(--c-briefe); } /* gruppe energie */
   /* ===== Ende Gruppenfarben ===== */
   .hinweis-koralle { display: flex; gap: 12px; align-items: flex-start; background: var(--hint-bg); color: var(--hint); border-radius: var(--r-item); padding: 14px 16px; margin: 4px 0 0; font-weight: 700; }
   .hinweis-koralle > svg { flex: none; width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; margin-top: 1px; }
@@ -1300,17 +1321,21 @@
               </div>
               <div class="nh-wrap" id="ek1NhF" hidden><button type="button" class="btn ghost nh-btn" id="ek1NhBtn" aria-expanded="false" aria-controls="ek1Nh" data-t="nh.btn"></button><div class="nh" id="ek1Nh" hidden></div></div>
               <p class="warn" id="ek1Warn" role="status" hidden></p>
-              <div class="subbox cond-ek1b">
-                <div class="field">
-                  <label for="ek1bArt" data-t="ek.weiteres"></label>
-                  <select id="ek1bArt"></select>
-                  <span class="hint" data-t="ek.weiteres.hint"></span>
+              <details class="ek-mehr cond-ek1b" id="ek1bBox">
+                <summary data-t="ek.weiteres.auf"></summary>
+                <div class="subbox">
+                  <div class="field">
+                    <label for="ek1bArt" data-t="ek.weiteres"></label>
+                    <select id="ek1bArt"></select>
+                    <span class="hint" data-t="ek.weiteres.hint"></span>
+                    <span class="hint" id="ek1bLohnHint" data-t="ek.weiteres.hint.lohn" hidden></span>
+                  </div>
+                  <div class="field cond-ek1bBetrag">
+                    <label for="ek1bBetrag" data-t="ek.weiteres.betrag"></label>
+                    <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="ek1bBetrag"><span aria-hidden="true">€</span></div>
+                  </div>
                 </div>
-                <div class="field cond-ek1bBetrag">
-                  <label for="ek1bBetrag" data-t="ek.weiteres.betrag"></label>
-                  <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="ek1bBetrag"><span aria-hidden="true">€</span></div>
-                </div>
-              </div>
+              </details>
               <div class="field cond-rente">
                 <label for="zusatzRente" data-t="ek.zusatzRente"></label>
                 <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="zusatzRente" aria-describedby="zusatzRenteHint"><span aria-hidden="true">€</span></div>
@@ -1337,6 +1362,21 @@
               </div>
               <div class="nh-wrap" id="ek2NhF" hidden><button type="button" class="btn ghost nh-btn" id="ek2NhBtn" aria-expanded="false" aria-controls="ek2Nh" data-t="nh.btn"></button><div class="nh" id="ek2Nh" hidden></div></div>
               <p class="warn" id="ek2Warn" role="status" hidden></p>
+              <details class="ek-mehr cond-ek2b" id="ek2bBox">
+                <summary data-t="ek.weiteres.auf"></summary>
+                <div class="subbox">
+                  <div class="field">
+                    <label for="ek2bArt" data-t="ek.weiteres2"></label>
+                    <select id="ek2bArt"></select>
+                    <span class="hint" data-t="ek.weiteres.hint"></span>
+                    <span class="hint" id="ek2bLohnHint" data-t="ek.weiteres.hint.lohn" hidden></span>
+                  </div>
+                  <div class="field cond-ek2bBetrag">
+                    <label for="ek2bBetrag" data-t="ek.weiteres.betrag"></label>
+                    <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="ek2bBetrag"><span aria-hidden="true">€</span></div>
+                  </div>
+                </div>
+              </details>
             </div>
             <div class="field cond-kids">
               <label for="unterhalt" data-t="unterh.label"></label>

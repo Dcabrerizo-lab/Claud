@@ -55,11 +55,11 @@ const Formulare = (function () {
     return v;
   }
 
-  // Einkommensarten der antragstellenden Person (erste Person, dazu ein weiteres Einkommen bei Alleinstehenden)
-  // (einfache Version: Einkommensliste)
+  // Einkommensarten der antragstellenden Person (erste Person mit ihrem zweiten Einkommen)
+  // (Einkommensliste: Einträge der zweiten Person, p = 2, gehören nicht dazu)
   function arten(s) {
-    if (Array.isArray(s.einkommen)) return s.einkommen.map((e) => e && e.art).filter(Boolean);
-    return [s.ek1Art || s.art1, s.adults === 1 ? s.ek1bArt : ''].filter(Boolean);
+    if (Array.isArray(s.einkommen)) return s.einkommen.filter((e) => e && Number(e.p) !== 2).map((e) => e.art).filter(Boolean);
+    return [s.ek1Art || s.art1, s.ek1bArt || ''].filter(Boolean);
   }
   const istSelbst = (s) => arten(s).indexOf('selbst') >= 0 || s.ek2Art === 'selbst';
 

@@ -10,6 +10,8 @@
  "wgmax.drueberEtwa": "Deine Miete ohne Heizung ist ungefähr {kalt}. Das ist wahrscheinlich mehr. Dann zählen nur {betrag}. Du kannst trotzdem Wohngeld bekommen.",
  "wgmax.nah": "Deine Miete ohne Heizung ist ungefähr {kalt}. Das ist fast genau die Grenze. Schreib unten deine Heizkosten dazu. Dann wissen wir es genauer.",
  "wgmax.moeglich": "Vielleicht ist deine Miete ohne Heizung ({kalt}) mehr als die Grenze. Das hängt von der Mietenstufe ab.",
+ "wgmax.moeglichDrueber": "Deine Miete ohne Heizung ist {kalt}. Das ist mehr. Dann zählen nur {von} bis {bis}. Das hängt von der Mietenstufe ab.",
+ "wgmax.moeglichDrueberEtwa": "Deine Miete ohne Heizung ist ungefähr {kalt}. Das ist wahrscheinlich mehr. Dann zählen nur {von} bis {bis}. Das hängt von der Mietenstufe ab.",
  "wgmax.eigen": "Wohngeld gibt es auch für eine eigene Wohnung oder ein eigenes Haus. Dann heißt es Lastenzuschuss. Dabei zählen höchstens {betrag} im Monat. Was von deinen Kosten zählt, rechnet die Wohngeldstelle aus.",
  "wgmax.verwandte": "Wohnen Verwandte bei dir? Zum Beispiel deine Eltern oder deine erwachsenen Kinder? Dann zählen sie beim Wohngeld meistens mit. Dann darf die Miete höher sein.",
  "wgmax.mehr": "Was zählt beim Wohngeld als Miete?",

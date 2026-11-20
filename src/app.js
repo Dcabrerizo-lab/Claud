@@ -86,8 +86,10 @@
   function flush() { clearTimeout(saveTimer); saveTimer = null; Store.set('lotse.state', JSON.stringify({ s: state, p: person, e: edited, big: $('app').classList.contains('big') })); Store.set('lotse.pfaendung', JSON.stringify(pf)); }
   function save() { clearTimeout(saveTimer); saveTimer = setTimeout(flush, 300); }
   function smooth() { return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'; }
+  // Erlaubte Arten für das zweite Einkommen einer Person (leer = keins)
+  var EK_ZWEIT = ['', 'lohn', 'selbst', 'rente', 'alg', 'kg', 'eg', 'wfbm', 'unt'];
   function blankState() {
-    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', waisen: '', uvgPartner: '', uvgWechsel: false, kindEink: '', ek1bArt: '', ek1bBetrag: '', zusatzRente: '', baby: '', egVor: '', aufenthalt: '', miete: '', heizkosten: '', mietstufe: '', plz: '', plzPick: '', bundesland: '', vermoegen: '', gebJahr: '', arbeitSit: '', algMonate: '', krankWochen: '', lohnVorher: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', uzBetrag: '', uzAn: '', uzTitel: false, wohnart: '', hhAndere: '', autoWert: '', autoBraucht: false, euArbeit: '', euJahre: '', bezug: {} };
+    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', waisen: '', uvgPartner: '', uvgWechsel: false, kindEink: '', ek1bArt: '', ek1bBetrag: '', ek2bArt: '', ek2bBetrag: '', zusatzRente: '', baby: '', egVor: '', aufenthalt: '', miete: '', heizkosten: '', mietstufe: '', plz: '', plzPick: '', bundesland: '', vermoegen: '', gebJahr: '', arbeitSit: '', algMonate: '', krankWochen: '', lohnVorher: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', uzBetrag: '', uzAn: '', uzTitel: false, wohnart: '', hhAndere: '', autoWert: '', autoBraucht: false, euArbeit: '', euJahre: '', bezug: {} };
   }
 
   function detect() {
@@ -177,10 +179,13 @@
     if (!state.unterhaltFehlt || state.kids === 0) reset(['uvgWechsel', 'uvgPartner']);
     if (state.adults !== 2) reset(['uvgPartner']);
     if (state.arbeitSit !== 'arbeitslos') reset(['algZeit', 'algMonate']);
-    if (state.adults !== 1 || !state.ek1Art || state.ek1Art === 'ohne') reset(['ek1bArt', 'ek1bBetrag']);
+    // Zweites Einkommen je Person (auch bei Paaren); nur erlaubte Arten (beschädigter Stand -> leer)
+    if (!state.ek1Art || state.ek1Art === 'ohne' || EK_ZWEIT.indexOf(state.ek1bArt) < 0) reset(['ek1bArt', 'ek1bBetrag']);
+    if (state.adults !== 2 || !state.ek2Art || state.ek2Art === 'ohne' || EK_ZWEIT.indexOf(state.ek2bArt) < 0) reset(['ek2bArt', 'ek2bBetrag']);
     if (!state.ek1bArt) reset(['ek1bBetrag']);
-    if (!(state.ek1Art === 'rente' || state.ek2Art === 'rente' || state.ek1bArt === 'rente')) reset(['grundrente33', 'zusatzRente']);
-    if (!(state.wfbm || state.ek1Art === 'wfbm' || state.ek1bArt === 'wfbm')) reset(['wfbmEssen']);
+    if (!state.ek2bArt) reset(['ek2bBetrag']);
+    if (!(state.ek1Art === 'rente' || state.ek2Art === 'rente' || state.ek1bArt === 'rente' || state.ek2bArt === 'rente')) reset(['grundrente33', 'zusatzRente']);
+    if (!(state.wfbm || state.ek1Art === 'wfbm' || state.ek1bArt === 'wfbm' || state.ek2bArt === 'wfbm')) reset(['wfbmEssen']);
     if (state.arbeitSit !== 'krank') reset(['krankWochen']);
     if (!state.arbeitSit) reset(['lohnVorher']);
     if (state.ausbildung !== 'ich') reset(['babBetrieb', 'babWohnt']);
@@ -199,10 +204,12 @@
     show('.cond-kinder', state.kids + state.young > 0);
     show('.cond-alos', state.arbeitSit === 'arbeitslos');
     show('.cond-baby', !!state.baby);
-    show('.cond-ek1b', state.adults === 1 && !!state.ek1Art && state.ek1Art !== 'ohne');
+    show('.cond-ek1b', !!state.ek1Art && state.ek1Art !== 'ohne');
     show('.cond-ek1bBetrag', !!state.ek1bArt);
-    show('.cond-rente', state.ek1Art === 'rente' || state.ek2Art === 'rente' || state.ek1bArt === 'rente');
-    show('.cond-wfbm', !!state.wfbm || state.ek1Art === 'wfbm' || state.ek1bArt === 'wfbm');
+    show('.cond-ek2b', state.adults === 2 && !!state.ek2Art && state.ek2Art !== 'ohne');
+    show('.cond-ek2bBetrag', !!state.ek2bArt);
+    show('.cond-rente', state.ek1Art === 'rente' || state.ek2Art === 'rente' || state.ek1bArt === 'rente' || state.ek2bArt === 'rente');
+    show('.cond-wfbm', !!state.wfbm || state.ek1Art === 'wfbm' || state.ek1bArt === 'wfbm' || state.ek2bArt === 'wfbm');
     show('.cond-krank', state.arbeitSit === 'krank');
     show('.cond-job', !!state.arbeitSit);
     show('.cond-ausbich', state.ausbildung === 'ich');
@@ -265,13 +272,34 @@
     state.nichtArbeit = p1.gesetzt && !p1.arbeit;
     state.nichtArbeit2 = p2.gesetzt && !p2.arbeit;
     state.art1 = p1.art; state.art2 = p2.art || '';
-    // Allein: ein zweites Einkommen derselben Person (z. B. Werkstattlohn und Rente) als Liste für die Regeln
-    var b2 = state.ek1bBetrag === '' || state.ek1bBetrag == null ? 0 : Number(state.ek1bBetrag);
-    if (state.adults === 1 && state.ek1bArt && b2 > 0 && p1.gesetzt) {
-      var mitN = p1.art === 'lohn' || p1.art === 'rente' || p1.art === 'selbst';
-      state.einkommen = [mitN ? { art: p1.art, b: p1.b === '' ? 0 : p1.b, n: p1.n === '' ? nettoSchaetzen(p1, 1) : p1.n } : { art: p1.art, b: p1.b === '' ? 0 : p1.b }, { art: state.ek1bArt, b: b2 }];
-    } else delete state.einkommen;
+    // Zweites Einkommen einer Person (z. B. Lohn und Unterhalt, Werkstattlohn und Rente) als Liste für die Regeln, je Person
+    // in fester Reihenfolge: Hauptfeld, dann zweites Einkommen (Werbungskosten beim Wohngeld werden in dieser Reihenfolge verbraucht)
+    state.einkommen = einkommensListe(p1, p2);
+    if (!state.einkommen) delete state.einkommen;
     state.ek1Geschaetzt = !!p1.geschaetzt; state.ek2Geschaetzt = !!p2.geschaetzt;
+  }
+  // Liste { p, art, b, n? } für die Regeln, wenn eine Person ein zweites Einkommen hat; sonst null (Summenfelder wie bisher).
+  // Allein ohne p (gleiche Liste wie früher); Hauptfeld „Kein Einkommen“: kein Eintrag.
+  function einkommensListe(p1, p2) {
+    var zwei = state.adults === 2;
+    // wie folgefragen(): nur mit erlaubter Art und eigenem Hauptfeld (render() baut die Liste vor dem Zurücksetzen)
+    var zweit = function (i) {
+      var a = state['ek' + i + 'bArt'], h = state['ek' + i + 'Art'], b = state['ek' + i + 'bBetrag'];
+      b = b === '' || b == null ? 0 : Number(b);
+      return a && EK_ZWEIT.indexOf(a) >= 0 && h && h !== 'ohne' && b > 0 ? b : 0;
+    };
+    var b1 = zweit(1), b2 = zwei ? zweit(2) : 0;
+    if (!(b1 > 0 || b2 > 0) || !p1.gesetzt || (zwei && !p2.gesetzt)) return null;
+    var liste = [];
+    var add = function (e, i) { if (zwei) e.p = i; liste.push(e); };
+    var haupt = function (p, i) {
+      if (p.art === 'ohne') return;
+      var mitN = p.art === 'lohn' || p.art === 'rente' || p.art === 'selbst';
+      add(mitN ? { art: p.art, b: p.b === '' ? 0 : p.b, n: p.n === '' ? nettoSchaetzen(p, i) : p.n } : { art: p.art, b: p.b === '' ? 0 : p.b }, i);
+    };
+    haupt(p1, 1); if (b1 > 0) add({ art: state.ek1bArt, b: b1 }, 1);
+    if (zwei) { haupt(p2, 2); if (b2 > 0) add({ art: state.ek2bArt, b: b2 }, 2); }
+    return liste;
   }
   // Nur die Felder zeigen, die zur gewählten Art passen; Beschriftung je Art
   function ekFelder() {
@@ -281,11 +309,13 @@
       $('ek' + i + 'BruttoF').hidden = !mitBrutto;
       $('ek' + i + 'NettoF').hidden = !art || art === 'ohne';
       $('ek' + i + 'BruttoLab').textContent = t(art === 'lohn' || art === 'rente' ? 'ek.brutto.' + art : 'ek.brutto');
-      // Allein: zweites Einkommen eigenes Feld; zu zweit: Summe
+      // Zweites Einkommen: eigenes Aufklappfeld je Person; Hinweis auf das Feld nur zu zweit
       var ah = [];
       if (art === 'lohn') ah.push(t('ek.art.hint.lohn'));
       if (state.adults === 2 && art && art !== 'ohne') ah.push(t('ek.art.hint'));
       $('ek' + i + 'ArtHint').textContent = ah.join(' '); $('ek' + i + 'ArtHint').hidden = !ah.length;
+      var zArt = state['ek' + i + 'bArt'];
+      $('ek' + i + 'bLohnHint').hidden = !(zArt === 'lohn' || zArt === 'selbst');
       $('ek' + i + 'BruttoHint').textContent = art === 'rente' ? t('ek.brutto.hint.rente') : art === 'selbst' ? t('ek.brutto.hint.selbst') : t('ek.brutto.hint.lohn');
       var bescheid = art === 'alg' || art === 'kg' || art === 'eg' || art === 'wfbm' || art === 'unt';
       $('ek' + i + 'NettoLab').textContent = bescheid ? t(art === 'kg' ? 'ek.betrag.kg' : art === 'unt' ? 'ek.betrag.unt' : 'ek.betrag') : art === 'selbst' ? t('ek.netto.selbst') : t('ek.netto');
@@ -355,7 +385,9 @@
     else if (eins) s.push(t('wgmax.zeile', { betrag: E(w.von), stufe: Rules.roman(w.sv), personen: pers }));
     else s.push(t(stufen.length ? 'wgmax.zeileSpanne' : 'wgmax.zeileOhne', { von: E(w.von), bis: E(w.bis), sv: Rules.roman(w.sv), sb: Rules.roman(w.sb), personen: pers }));
     var V = { drunter: w.geschaetzt ? 'wgmax.drunterEtwa' : 'wgmax.drunter', drueber: w.geschaetzt ? 'wgmax.drueberEtwa' : 'wgmax.drueber', nah: 'wgmax.nah', moeglich: 'wgmax.moeglich' };
-    if (w.vergleich) s.push(t(V[w.vergleich], { kalt: E(w.kalt), betrag: E(w.vergleich === 'drueber' ? w.bis : w.von) }));
+    // Mehrere mögliche Stufen und Miete über dem höchsten Wert: welcher Betrag zählt, hängt von der Stufe ab (Spanne statt festem Betrag)
+    if (!eins && w.vergleich === 'drueber') V.drueber = w.geschaetzt ? 'wgmax.moeglichDrueberEtwa' : 'wgmax.moeglichDrueber';
+    if (w.vergleich) s.push(t(V[w.vergleich], { kalt: E(w.kalt), betrag: E(w.vergleich === 'drueber' ? w.bis : w.von), von: E(w.von), bis: E(w.bis) }));
     if (state.hhAndere === 'verwandte') s.push(t('wgmax.verwandte'));
     p.textContent = s.join(' ');
     p.classList.toggle('moeglich', !eins || w.vergleich === 'moeglich' || w.vergleich === 'nah');
@@ -433,7 +465,9 @@
     var ek = [['', t('ek.art.0')], ['lohn', t('ek.art.lohn')], ['selbst', t('ek.art.selbst')], ['rente', t('ek.art.rente')], ['alg', t('ek.art.alg')], ['kg', t('ek.art.kg')], ['eg', t('ek.art.eg')], ['wfbm', t('ek.art.wfbm')], ['unt', t('ek.art.unt')], ['ohne', t('ek.art.ohne')]];
     fillSelect('ek1Art', ek, state.ek1Art);
     fillSelect('ek2Art', ek, state.ek2Art);
-    fillSelect('ek1bArt', [['', t('ek.weiteres.0')]].concat(ek.slice(1).filter(function (x) { return x[0] !== 'ohne'; })), state.ek1bArt);
+    var ekZweit = [['', t('ek.weiteres.0')]].concat(ek.slice(1).filter(function (x) { return x[0] !== 'ohne'; }));
+    fillSelect('ek1bArt', ekZweit, state.ek1bArt);
+    fillSelect('ek2bArt', ekZweit, state.ek2bArt);
     fillSelect('mietstufe', st, state.mietstufe);
     fillSelect('bundesland', [['', t('bl.unbekannt')]].concat(BUNDESLAENDER), state.bundesland);
     fillSelect('arbeitSit', [['', t('arbeit.0')], ['arbeitslos', t('arbeit.arbeitslos')], ['krank', t('arbeit.krank')]], state.arbeitSit);
@@ -598,8 +632,8 @@
   });
 
   var CHECKS = ['mzG', 'mzGl', 'algZeit', 'grundrente33', 'wfbmEssen', 'teilhabe', 'schwanger', 'ernaehrung', 'warmwasser', 'kinder12', 'kindKrank', 'unterhaltFehlt', 'uvgWechsel', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt', 'uzTitel', 'autoBraucht'];
-  var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'ek1bArt', 'bhWeitere', 'baby', 'aufenthalt', 'uvgPartner', 'arbeitSit', 'algMonate', 'krankWochen', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd', 'uzAn', 'wohnart', 'hhAndere', 'euArbeit', 'euJahre'];
-  var NUMS = ['miete', 'heizkosten', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'waisen', 'kindEink', 'lohnVorher', 'ek1bBetrag', 'egVor', 'vermoegen', 'uzBetrag', 'autoWert', 'zusatzRente'];
+  var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'ek1bArt', 'ek2bArt', 'bhWeitere', 'baby', 'aufenthalt', 'uvgPartner', 'arbeitSit', 'algMonate', 'krankWochen', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd', 'uzAn', 'wohnart', 'hhAndere', 'euArbeit', 'euJahre'];
+  var NUMS = ['miete', 'heizkosten', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'waisen', 'kindEink', 'lohnVorher', 'ek1bBetrag', 'ek2bBetrag', 'egVor', 'vermoegen', 'uzBetrag', 'autoWert', 'zusatzRente'];
   var BEZUG = ['grundsicherungsgeld', 'sozialamt', 'wohngeld', 'kiz', 'kindergeld'];
 
   function writeForm() {
@@ -614,6 +648,8 @@
     CHECKS.forEach(function (k) { $(k).checked = !!state[k]; });
     BEZUG.forEach(function (k) { $('b-' + k).checked = !!state.bezug[k]; });
     if ($('vaInfo')) vaInfo();
+    // Aufklappfeld „+ Weiteres Einkommen“ offen, wenn etwas eingetragen ist
+    $('ek1bBox').open = !!state.ek1bArt; $('ek2bBox').open = !!state.ek2bArt;
   }
 
   function touched() {
@@ -1206,9 +1242,11 @@
       var teile = [];
       if ((art === 'lohn' || art === 'rente' || art === 'selbst') && !blankVal(s['ek' + i + 'Brutto'])) teile.push('brutto ' + money(s['ek' + i + 'Brutto']));
       if (!blankVal(s['ek' + i + 'Netto'])) teile.push((art === 'alg' || art === 'kg' || art === 'eg' || art === 'wfbm' || art === 'unt' ? '' : 'netto ') + money(s['ek' + i + 'Netto']));
-      return wer + ': ' + ARTDE[art] + (teile.length ? ', ' + teile.join(', ') + ' im Monat' : '');
+      var zArt = s['ek' + i + 'bArt'], zB = Number(String(s['ek' + i + 'bBetrag'] == null ? '' : s['ek' + i + 'bBetrag']).replace(',', '.'));
+      var dazu = ARTDE[zArt] && zArt !== 'ohne' && zB > 0 ? '; dazu ' + ARTDE[zArt] + ' ' + money(zB) + ' im Monat' : '';
+      return wer + ': ' + ARTDE[art] + (teile.length ? ', ' + teile.join(', ') + ' im Monat' : '') + dazu;
     };
-    if (Array.isArray(s.einkommen)) L.push('Einkommen: ' + (s.einkommen.length ? s.einkommen.map(function (x) { return ARTDE[x.art] + ' ' + money(x.b); }).join(', ') + ' im Monat' : 'kein Einkommen'));
+    if (Array.isArray(s.einkommen) && s.adults !== 2) L.push('Einkommen: ' + (s.einkommen.length ? s.einkommen.map(function (x) { return ARTDE[x.art] + ' ' + money(x.b); }).join(', ') + ' im Monat' : 'kein Einkommen'));
     else L.push(ekZeile(1, s.adults === 2 ? 'Einkommen (ich)' : 'Einkommen'));
     if (s.adults === 2) L.push(ekZeile(2, 'Einkommen (Partner/in)'));
     if (Number(s.zusatzRente) > 0) L.push('Davon Betriebsrente, Riester-Rente oder private Rente: ' + money(s.zusatzRente) + ' im Monat (Freibetrag nach § 82 Abs. 4 SGB XII)');
@@ -3458,6 +3496,7 @@
       ergebnis: function () { try { return started && edited ? Rules.evaluate(state).results : null; } catch (e) { return null; } },
       setze: function (werte) { if (started && !edited) state = blankState(); Object.assign(state, werte); writeForm(); buildSelects(); touched(); },
       zeige: oeffneVon, regeln: function () { return Rules.RULES; }, plug: plug, nativ: NATIVE,
+      sparen: function (thema) { sp.thema = thema; sp.rezepte = false; oeffneVon('sparen', true); }, // Energiekosten-Check: „Mehr Spartipps“
       foto: NATIVE ? fotoText : null, bild: ocr,
       textAusgeben: function (text, titel, msg) { if (!NATIVE) { schreibenDrucken(text); return; } schreibenAusgeben({ value: text }, titel, plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen', msg); }
     });

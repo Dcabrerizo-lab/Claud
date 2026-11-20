@@ -53,6 +53,29 @@ const soll3 = lohn(1600, { h: { adults: 1, kids: 0, young: 0 }, wer: 1 });
 ck('[netto-person] Allein, Lohn 1.600 € brutto + zweites Einkommen: Lohn nach Lohnsteuer und Beiträgen', s.einkommen && Math.abs(s.einkommen[0].n - soll3) < 0.01, [s.einkommen && s.einkommen[0].n, soll3]);
 s = st({ ek1Art: 'selbst', ek1Brutto: 1000, ek1Netto: '', ek1bArt: 'rente', ek1bBetrag: 300 });
 ck('[netto-person] Allein, selbstständig 1.000 € + zweites Einkommen: grob 80 %', s.einkommen && s.einkommen[0].n === 800, s.einkommen);
+// Zweites Einkommen auch bei Paaren (Liste mit Person p), Aufklappfeld je Person
+s = st({ adults: 2, ek1Art: 'lohn', ek1Brutto: 1200, ek1Netto: 950, ek1bArt: 'unt', ek1bBetrag: 300, ek2Art: 'lohn', ek2Brutto: 1800, ek2Netto: 1350 });
+ck('[paar-ek] Paar: Unterhalt als zweites Einkommen von Person 1 in der Liste (p 1), Feld sichtbar', s.einkommen && s.einkommen.length === 3 && s.einkommen[1].p === 1 && s.einkommen[1].art === 'unt' && s.einkommen[1].b === 300 && s.einkommen[2].p === 2 && !w.document.getElementById('ek1bBox').hidden, s.einkommen);
+s = st({ adults: 2, ek1Art: 'lohn', ek1Brutto: 2000, ek1Netto: 1480, ek2Art: 'rente', ek2Brutto: 900, ek2Netto: '', ek2bArt: 'lohn', ek2bBetrag: 200 });
+ck('[paar-ek] Paar: Nebenjob als zweites Einkommen von Person 2 (p 2), Hauptfeld P2 mit geschätztem Netto, Reihenfolge Hauptfeld vor zweitem Einkommen', s.einkommen && s.einkommen.length === 3 && s.einkommen[1].p === 2 && s.einkommen[1].art === 'rente' && Math.abs(s.einkommen[1].n - R.nettoRente(900, { heute })) < 0.01 && s.einkommen[2].p === 2 && s.einkommen[2].art === 'lohn' && s.einkommen[2].b === 200 && s.einkommen[2].n === undefined, s.einkommen);
+ck('[paar-ek] Aufklappfeld Person 2 offen, wenn ein zweites Einkommen eingetragen ist; Lohn-Hinweis sichtbar', w.document.getElementById('ek2bBox').open === true && !w.document.getElementById('ek2bLohnHint').hidden);
+s = st({ adults: 1, ek1Art: 'lohn', ek1Brutto: 2000, ek1Netto: 1480, ek2Art: 'rente', ek2bArt: 'lohn', ek2bBetrag: 200 });
+ck('[paar-ek] Wechsel auf eine erwachsene Person: zweites Einkommen von Person 2 gelöscht, keine Liste', s.ek2bArt === '' && s.ek2bBetrag === '' && !s.einkommen && w.document.getElementById('ek2bBox').closest('[hidden]') !== null, [s.ek2bArt, s.ek2bBetrag, s.einkommen]);
+s = st({ adults: 2, ek1Art: 'lohn', ek1Brutto: 2000, ek1Netto: 1480, ek2Art: 'ohne', ek2bArt: 'lohn', ek2bBetrag: 200 });
+ck('[paar-ek] Partner „Kein Einkommen“: Aufklappfeld ausgeblendet, Wert gelöscht', w.document.getElementById('ek2bBox').hidden && s.ek2bArt === '' && !s.einkommen, [s.ek2bArt, s.einkommen]);
+ck('[paar-ek] Auswahl zweites Einkommen: Unterhalt ja, „Kein Einkommen“ nein', ['ek1bArt', 'ek2bArt'].every((id) => opt(id).includes('unt') && !opt(id).includes('ohne')), ['ek1bArt', 'ek2bArt'].map(opt));
+s = st({ adults: 2, ek1Art: 'lohn', ek1Brutto: 2000, ek1Netto: 1480, ek2Art: 'lohn', ek2Netto: 500, ek2bArt: 'gibtsnicht', ek2bBetrag: 200 });
+ck('[paar-ek] Unbekannte Art im gespeicherten Stand wird verworfen', s.ek2bArt === '' && !s.einkommen, [s.ek2bArt, s.einkommen]);
+// Antragsmappe: je Person eine Zeile mit „dazu …“, Person 2 nicht doppelt
+st({ adults: 2, ek1Art: 'lohn', ek1Brutto: 1200, ek1Netto: 950, ek1bArt: 'unt', ek1bBetrag: 300, ek2Art: 'lohn', ek2Brutto: 1800, ek2Netto: 1350, ek2bArt: 'lohn', ek2bBetrag: 150 });
+{
+  const doc0 = w.document;
+  doc0.querySelectorAll('[data-pick]').forEach((cb) => { cb.checked = true; cb.dispatchEvent(new w.Event('change', { bubbles: true })); });
+  doc0.getElementById('mappeMake').click();
+  const txt = doc0.getElementById('mappeBody').textContent;
+  ck('[paar-ek] Antragsmappe: Zeile je Person mit zweitem Einkommen, keine gemeinsame Listenzeile', /Einkommen \(ich\): Lohn oder Gehalt, brutto 1\.200 €, netto 950 € im Monat; dazu Unterhalt für sich selbst \(Zahlbetrag\) 300 € im Monat/.test(txt) && /Einkommen \(Partner\/in\): Lohn oder Gehalt, brutto 1\.800 €, netto 1\.350 € im Monat; dazu Lohn oder Gehalt 150 € im Monat/.test(txt) && !/Einkommen: Lohn/.test(txt), (txt.match(/Einkommen.{0,200}/g) || []).join(' || '));
+}
+
 // Formular-Texte: Brutto-Beschriftung je Art, Minijob-Hinweis nur bei Lohn, Summen-Hinweis nur zu zweit
 const doc = w.document, $ = (id) => doc.getElementById(id);
 const L = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'src', 'lang', (doc.documentElement.lang || 'de') + '.json'), 'utf8'));
