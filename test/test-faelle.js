@@ -592,15 +592,69 @@ ck('[zuk-einkommen] Bekommt die Leistung schon (Einkommensart Arbeitslosengeld):
 ck('[zuk-einkommen] Grundsicherungsgeld fällt danach weg: Hinweis aufs Überbrücken bis zur ersten Zahlung',
   K({ ...zAlg, lohnVorher: 4500 }, 'ggeld').includes('zuk.nein') && K({ ...zAlg, lohnVorher: 4500 }, 'ggeld').includes('zuk.ueberbruecken') && L({ ...zAlg, lohnVorher: 4500 }, 'ggeld') === 'vielleicht');
 
-// Änderungen 2027 (Stand November 2026): Beschlossenes als Hinweis/Rechnung, Geplantes nur als Hinweis, nicht eingerechnet
+// Nur geltendes Recht (Nutzerregel 20.11.2026): keine Inhalte aus Gesetzentwürfen, 2027-Werte erst ab 2027 und nur nach Verkündung
 const pk = (o, id) => K(o, id);
 const p2 = { kids: 2, brutto: 1800, miete: 850, mietstufe: 3, unterhaltFehlt: true };
-ck('[plan-2027] Kindergeld: Hinweis antragsloses Kindergeld (beschlossen) und geplante 267 €; gerechnet wird weiter mit 259 €', pk(p2, 'kindergeld').includes('kg.antraglos') && res(p2).m.kindergeld.tx.some((t) => t[0] === 'plan.kg' && t[1].b === E(267)) && P(p2, 'kindergeld', 'kg') === E(259));
-ck('[plan-2027] Kinderzuschlag, Unterhaltsvorschuss, Wohngeld: Hinweis auf geplante Änderungen nur bei „wahrscheinlich“ oder „möglich“', pk(p2, 'uvg').includes('plan.uvg') && pk({ ...p2, unterhaltFehlt: false }, 'uvg').every((k) => k !== 'plan.uvg') && (L(p2, 'kiz') === 'nein' || pk(p2, 'kiz').includes('plan.kiz')) && (L(p2, 'wohngeld') === 'nein' || pk(p2, 'wohngeld').includes('plan.wg')));
-ck('[plan-2027] Wohngeld: Tipp „Antrag noch 2026“ nur vor dem Jahreswechsel', pk({ ...f1, heute: 2026.9 }, 'wohngeld').includes('plan.wgDez') && !pk({ ...f1, heute: 2027.05 }, 'wohngeld').includes('plan.wgDez') && pk({ ...f1, heute: 2027.05 }, 'wohngeld').includes('plan.wg'));
-ck('[plan-2027] Pflegegeld: geplante Beträge 380/630/890/1.080 € nur ab Pflegegrad 2', res({ pflegegrad: 3 }).m.pflege.tx.some((t) => t[0] === 'plan.pflege' && t[1].a === E(380) && t[1].d === E(1080)) && !pk({ pflegegrad: 1 }, 'pflege').includes('plan.pflege'));
-ck('[plan-2027] Regelsatz: Hinweis „2027 noch nicht beschlossen, erwartet 563 €“ bei Grundsicherungsgeld und Grundsicherung im Alter', pk(f1, 'ggeld').includes('plan.regel') && pk(f2, 'gsa').includes('plan.regel'));
-ck('[plan-2027] Krankengeld: Hinweis auf die neue Beitragsbemessungsgrenze nur bei Lohn über 5.812,50 €', pk({ arbeitSit: 'krank', krankWochen: 'laeuft', lohnVorher: 7000 }, 'krankengeld').includes('plan.krank') && !pk({ arbeitSit: 'krank', krankWochen: 'laeuft', lohnVorher: 3000 }, 'krankengeld').includes('plan.krank'));
+const alleKeys = (o) => res(o).m && Object.values(res(o).m).flatMap((r) => r.tx.map((a) => a[0]));
+const faelle27 = [p2, f1, f2, { pflegegrad: 3 }, { arbeitSit: 'krank', krankWochen: 'laeuft', lohnVorher: 7000 }, { gdb: '80', bhPerson: 'minder', kids: 1 }];
+ck('[recht-geltend] Keine Entwurfs-Hinweise (plan.*) mehr, weder 2026 noch 2027', [2026.9, 2027.05].every((hj) => faelle27.every((o) => !alleKeys({ ...o, heute: hj }).some((k) => /^plan\./.test(k)))));
+ck('[recht-geltend] Antragsloses Kindergeld (BGBl. 2026 I Nr. 307, in Kraft 1.1.2027) erst ab 2027', !pk({ ...p2, heute: 2026.9 }, 'kindergeld').includes('kg.antraglos') && pk({ ...p2, heute: 2027.05 }, 'kindergeld').includes('kg.antraglos') && P({ ...p2, heute: 2027.05 }, 'kindergeld', 'kg') === E(259));
+ck('[recht-geltend] Wohngeld-Tipp „früh beantragen“ ohne Datumsbedingung, nur bei „wahrscheinlich“ oder „möglich“', [2026.9, 2027.05].every((hj) => L({ ...f1, heute: hj }, 'wohngeld') === 'nein' || pk({ ...f1, heute: hj }, 'wohngeld').includes('wg.frueh')) && pk({ ...f1, heute: 2027.05 }, 'wohngeld').includes('wg.frueh') && !pk({ kids: 0, brutto: 9000, miete: 400, mietstufe: 1 }, 'wohngeld').includes('wg.frueh'));
+// SV-Rechengrößenverordnung 2027: Bundesrat 20.11.2026, bei Stand 20.11.2026 nicht verkündet -> auch 2027 die Werte 2026
+const kgBetrag = (hj) => res({ arbeitSit: 'krank', krankWochen: 'laeuft', lohnVorher: 7000, heute: hj }).m.krankengeld.tx.find((t) => t[0] === 'schaetz.spanne')[1];
+const algBetrag = (hj) => res({ ...a1, lohnVorher: 9000, heute: hj }).m.alg1.tx.find((t) => t[0] === 'schaetz.spanne')[1];
+const fvGrenze = (hj) => res({ adults: 2, art2: 'lohn', brutto: 2500, brutto2: 700, heute: hj }).m.famvers.tx.find((t) => /^famvers\.partner/.test(t[0]))[1].grenze;
+const kkgHoechst = (hj) => res({ kids: 1, brutto: 2500, kindKrank: true, heute: hj }).m.kkg.tx[0][1].hoechst;
+ck('[recht-geltend] SV-Rechengrößen 2027 nicht verkündet: Krankengeld, Arbeitslosengeld, Familienversicherung und Kinderkrankengeld 2027 wie 2026',
+  R.RULES.svrg2027.verkuendet === false && JSON.stringify(kgBetrag(2027.05)) === JSON.stringify(kgBetrag(2026.9)) && JSON.stringify(algBetrag(2027.05)) === JSON.stringify(algBetrag(2026.9)) &&
+  JSON.stringify(fvGrenze(2027.05)) === JSON.stringify(E(565)) && JSON.stringify(kkgHoechst(2027.05)) === '"135,63 €"');
+R.RULES.svrg2027.verkuendet = true;
+ck('[recht-geltend] Nach Verkündung (Schalter): ab 2027 neue Grenzen (KV 6.375 €, RV 8.850 €, Bezugsgröße 4.130 €, Kinderkrankengeld höchstens 148,75 €), 2026 unverändert',
+  JSON.stringify(kgBetrag(2027.05)) !== JSON.stringify(kgBetrag(2026.9)) && JSON.stringify(algBetrag(2027.05)) !== JSON.stringify(algBetrag(2026.9)) &&
+  JSON.stringify(fvGrenze(2027.05)) === JSON.stringify(E(590)) && JSON.stringify(fvGrenze(2026.9)) === JSON.stringify(E(565)) && JSON.stringify(kkgHoechst(2027.05)) === '"148,75 €"');
+R.RULES.svrg2027.verkuendet = false;
+{ // „Ich ziehe aus“ holt die Grenze über Rules.famversGrenze (mit Schalter), nicht über das Kalenderjahr
+  const aus = [2026.9, 2027.05, 2028.5].map((hj) => R.famversGrenze(hj));
+  R.RULES.svrg2027.verkuendet = true;
+  const an = [2026.9, 2027.05, 2028.5].map((hj) => R.famversGrenze(hj));
+  R.RULES.svrg2027.verkuendet = false;
+  const appSrc = require('fs').readFileSync(require('path').join(__dirname, '..', 'src', 'app.js'), 'utf8');
+  const zeile = (appSrc.match(/famversGrenze: function[^\n]*/) || [''])[0];
+  ck('[recht-geltend] Familienversicherungs-Grenze (auch „Ich ziehe aus“): ab 2027 mit Schalter aus 565 €, mit Schalter an 590 €, 2026 immer 565 €',
+    JSON.stringify(aus) === '[565,565,565]' && JSON.stringify(an) === '[565,590,590]' && /Rules\.famversGrenze\(\)/.test(zeile) && !/getFullYear|bezug2027/.test(zeile), JSON.stringify({ aus, an, zeile }));
+}
+{
+  const fsL = require('fs'), pthL = require('path'), dirL = pthL.join(__dirname, '..', 'src', 'lang');
+  const PROGNOSE = {
+    de: /voraussichtlich|geplant|Frühjahr|Entwurf/i, en: /expected|planned|spring|draft/i, fr: /prévu|printemps|projet de loi/i, pl: /przewidyw|planowan|wiosn|projekt/i,
+    ro: /preconizat|planificat|primăvar|proiect/i, ru: /ожида|планиру|весн|проект/i, uk: /очіку|плану|весн|проєкт/i, tr: /bekleni|planlan|ilkbahar|taslak/i,
+    ar: /متوقع|مخطط|الربيع|مشروع/, fa: /پیش‌بینی|برنامه‌ریزی|بهار|پیش‌نویس/, 'fa-AF': /پیش‌بینی|برنامه‌ریزی|بهار|پیش‌نویس/, ps: /اټکل|پلان|پسرلی|مسوده/, so: /la filayo|qorsheysan|gu'ga|qabyo/i
+  };
+  const dateien = fsL.readdirSync(dirL).filter((f) => f.endsWith('.json')).map((f) => pthL.join(dirL, f)).concat(['b.json', 'e.json', 'mietgrenze.json'].map((f) => pthL.join(dirL, 'einfach', f)));
+  const probleme = [];
+  for (const f of dateien) {
+    const d = JSON.parse(fsL.readFileSync(f, 'utf8'));
+    Object.keys(d).forEach((k) => { if (/^t\.plan\./.test(k) || k === 'wgmax.d.2027') probleme.push(pthL.basename(f) + ': ' + k); });
+    if (d['alt.hinweis'] && /633|Minijob|Kinderkranken|Kindergeld|Wohngeld/.test(d['alt.hinweis'])) probleme.push(pthL.basename(f) + ': alt.hinweis nennt einzelne 2027-Werte');
+    // Prognose-Wörter (voraussichtlich, geplant, Frühjahr …) in Texten zu geltendem Recht, je Sprache
+    const prog = PROGNOSE[pthL.basename(f, '.json')] || (/einfach/.test(f) ? PROGNOSE.de : null);
+    if (prog) ['t.kg.antraglos', 't.wg.frueh', 'alt.hinweis', 'foot.3'].forEach((k) => { if (d[k] && prog.test(d[k])) probleme.push(pthL.basename(f) + ': ' + k + ' mit Prognose'); });
+    if (/einfach/.test(f)) {
+      // Einfache Sprache (b.json): Minijob-Hinweise ebenfalls mit Platzhalter {mini}
+      ['t.krank.minijob', 't.alg1.minijob'].forEach((k) => { if (k in d && (!/\{mini\}/.test(d[k]) || /603|633/.test(d[k]))) probleme.push(pthL.basename(f) + ': ' + k + ' ohne {mini}'); });
+      if (/b\.json$/.test(f) && !d['t.krank.minijob']) probleme.push('einfach/b.json: fehlt t.krank.minijob');
+      continue;
+    }
+    ['t.wg.frueh', 't.kg.antraglos', 'foot.3'].forEach((k) => { if (!d[k]) probleme.push(pthL.basename(f) + ': fehlt ' + k); });
+    ['t.krank.minijob', 't.alg1.minijob'].forEach((k) => { if (!/\{mini\}/.test(d[k]) || /603/.test(d[k])) probleme.push(pthL.basename(f) + ': ' + k + ' ohne {mini}'); });
+    if (/2027/.test(d['foot.3'])) probleme.push(pthL.basename(f) + ': foot.3 nennt 2027');
+  }
+  ck('[recht-geltend] Texte in allen 13 Sprachen und Einfacher Sprache: keine Entwurfs-Schlüssel, keine Prognose-Wörter, alt.hinweis neutral, foot.3 ohne 2027, Minijob-Grenze als Platzhalter (auch Einfache Sprache)', probleme.length === 0, probleme.join('; '));
+}
+ck('[recht-geltend] Minijob-Hinweis Krankengeld/Arbeitslosengeld mit der Minijob-Grenze des Jahres (603 € / 633 €)',
+  JSON.stringify(res({ arbeitSit: 'krank', krankWochen: 'laeuft', lohnVorher: 500, heute: 2026.9 }).m.krankengeld.tx[0]) === JSON.stringify(['krank.minijob', { mini: E(603) }]) &&
+  JSON.stringify(res({ arbeitSit: 'krank', krankWochen: 'laeuft', lohnVorher: 620, heute: 2027.05 }).m.krankengeld.tx[0]) === JSON.stringify(['krank.minijob', { mini: E(633) }]) &&
+  res({ ...a1, lohnVorher: 620, heute: 2027.05 }).m.alg1.tx.some((t) => t[0] === 'alg1.minijob' && t[1].mini === E(633)));
 
 ck('[verfahren] Hinweise „nicht eingerechnet“ (bei Leistungen mit Einkommensprüfung) und „Widerspruch, Überprüfungsantrag, Beratung“ (bei jedem Ergebnis)', res(f1).z.includes('z.grenzen') && res(f1).z.includes('z.verfahren') && !R.evaluate({ ...base, adults: 1, brutto: 9000, netto: 6000, miete: 400, vermoegen: 900000, gebJahr: 1990 }).zusammen.some((a) => a[0] === 'z.grenzen'));
 

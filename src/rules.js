@@ -35,12 +35,19 @@ const Rules = (function () {
     minijob: 603,
     // Ab 1.1.2027: 633 € (Mindestlohn 14,60 €, Mindestlohnanpassungsverordnung; § 8 Abs. 1a SGB IV). Die App schaltet am Stichtag selbst um.
     minijob2027: 633,
+    // Schalter für alle Werte der SV-Rechengrößenverordnung 2027 (Beitragsgrenzen, Bezugsgröße, Krankengeld-Höchstbetrag), siehe unten bei lohn
+    svrg2027: { verkuendet: false, stand: '20.11.2026' },
     // Netto aus Brutto (Lohn). Programmablaufplan Lohnsteuer 2026 (BMF 12.11.2025, endgültig): Tarif § 32a EStG 2026, Grundfreibetrag 12.348 €,
     // Grenzen der Steuerklassen V/VI, Kinderfreibetrag 9.756 €, Soli-Freigrenze 20.350 €, Grenzen der Vorsorgepauschale (BBG 2026).
     // 2027: Programmablaufplan 2027 bei Stand 19.11.2026 nur als Entwurf, Tarifänderung noch im Gesetzgebungsverfahren -> Steuer weiter nach 2026.
     // Sozialversicherung (Arbeitnehmeranteil): RV 9,3 %, AV 1,3 %, KV 7,3 % (halber allgemeiner Beitragssatz 14,6 %, § 241 und § 249 SGB V) + halber durchschnittlicher Zusatzbeitrag (2026 und 2027: 2,9 %,
     // BMG-Bekanntmachungen 7.11.2025 und 30.10.2026), PV 1,8 % (Sachsen 2,3 %), kinderlos +0,6, ab dem 2. Kind je -0,25 (§ 55 SGB XI).
-    // Beitragsbemessungsgrenzen im Monat: 2026 RV 8.450 €, KV 5.812,50 € (SVBezGrV 2026); 2027 RV 8.850 €, KV 6.375 € (Kabinett 7.10.2026).
+    // Beitragsbemessungsgrenzen im Monat: 2026 RV 8.450 €, KV 5.812,50 € (SVBezGrV 2026). 2027 RV 8.850 €, KV 6.375 €: Sozialversicherungs-
+    // Rechengrößenverordnung 2027 (BR-Drs. 576/26, Kabinett 7.10.2026, Zustimmung Bundesrat 20.11.2026, 1070. Sitzung TOP 48), bei Stand
+    // 20.11.2026 NOCH NICHT im BGBl. verkündet -> svrg2027.verkuendet = false: auch 2027 gelten die Werte 2026 bis zur Verkündung.
+    // Nach der Verkündung: Fundstelle (BGBl. 2026 I Nr. …) hier eintragen und verkuendet auf true setzen.
+    // Zusatzbeitrag 2027: 2,9 % (§ 242a SGB V; BMG-Pressemitteilung „Zusatzbeitragssatz GKV 2027 festgelegt“ vom 30.10.2026,
+    // Bekanntmachung im Bundesanzeiger; Fundstelle bei Stand 20.11.2026 nicht online gefunden). Gleich hoch wie 2026, die Umschaltung ändert nichts.
     // Übergangsbereich bis 2.000 € (§ 20 Abs. 2 SGB IV).
     // kvBasis 7,0 % (halber ermäßigter Beitragssatz) nur für die Vorsorgepauschale der Lohnsteuer (Programmablaufplan), kvAn 7,3 % für den echten Beitrag.
     // Rente (gesetzlich pflichtversichert, abgerufen 19.11.2026): KV allgemeiner Beitragssatz und Zusatzbeitrag aus der Rente (§ 247 SGB V),
@@ -66,17 +73,19 @@ const Rules = (function () {
     // wenn sie der Altersvorsorge dienen (Einzelfall) -> nur „möglich“, wenn sie über die Grenze bringen.
     // Wohngeld: Kapitalerträge bis 100 € im Jahr bleiben außer Betracht (§ 14 Abs. 2 Nr. 15 WoGG)
     kap: { freiSGB2Jahr: 100, freiWGJahr: 100 },
-    // Familienversicherung (§ 10 SGB V): Gesamteinkommen bis 1/7 der monatlichen Bezugsgröße (2026: 3.955 € -> 565 €; 2027: 4.130 € -> 590 €,
-    // SV-Rechengrößenverordnung 2026, Kabinett 7.10.2026 für 2027), bei Minijob bis zur Minijob-Grenze. Kinder bis 18, ohne Arbeit bis 23,
+    // Familienversicherung (§ 10 SGB V): Gesamteinkommen bis 1/7 der monatlichen Bezugsgröße (2026: 3.955 € -> 565 €, SVBezGrV 2026;
+    // 2027: 4.130 € -> 590 € nach der SV-Rechengrößenverordnung 2027, erst nach Verkündung, siehe svrg2027), bei Minijob bis zur Minijob-Grenze. Kinder bis 18, ohne Arbeit bis 23,
     // in Schule, Ausbildung oder Studium bis 25, mit Behinderung ohne Altersgrenze.
     famvers: { bezug2026: 3955, bezug2027: 4130 },
     pfaendung: { grund: 1587.4, erste: 597.42, weitere: 332.83, hoechst: 4866.3, gueltigBis: '2027-06-30' },
     // Arbeitslosengeld I (SGB III): 60 %, mit Kind 67 % des pauschalierten Nettos (§ 149); Beitragsbemessungsgrenze 2026: 8.450 € im Monat;
     // Netto grob 60-72 % des Bruttos; Dauer § 147 Abs. 2: [Monate versichert in 5 Jahren, Mindestalter, Monate Anspruch]
-    alg: { nebenFrei: 165, sperrWochen: 12, satz: 0.6, satzKind: 0.67, bbg: 8450, netto: [0.6, 0.72], nettoKlein: 0.8, kleinBis: 2000, dauer: [[48, 58, 24], [36, 55, 18], [30, 50, 15], [24, 0, 12], [20, 0, 10], [16, 0, 8], [12, 0, 6]] },
+    // 2027 (bbg2027, RV-Grenze 8.850 €) nur nach Verkündung der SV-Rechengrößenverordnung 2027 (svrg2027)
+    alg: { nebenFrei: 165, sperrWochen: 12, satz: 0.6, satzKind: 0.67, bbg: 8450, bbg2027: 8850, netto: [0.6, 0.72], nettoKlein: 0.8, kleinBis: 2000, dauer: [[48, 58, 24], [36, 55, 18], [30, 50, 15], [24, 0, 12], [20, 0, 10], [16, 0, 8], [12, 0, 6]] },
     // Krankengeld (§ 47 SGB V): 70 % des Bruttos, höchstens 90 % des Nettos, bis zur Beitragsbemessungsgrenze 2026 (5.812,50 € im Monat);
     // davon gehen Beiträge zur Renten-, Arbeitslosen- und Pflegeversicherung ab (rund 12,5 %); höchstens 78 Wochen (§ 48 SGB V)
-    krank: { satz: 0.7, nettoMax: 0.9, bbg: 5812.5, abzug: 0.125, wochen: 78 },
+    // 2027 (bbg2027, KV-Grenze 6.375 €) nur nach Verkündung der SV-Rechengrößenverordnung 2027 (svrg2027)
+    krank: { satz: 0.7, nettoMax: 0.9, bbg: 5812.5, bbg2027: 6375, abzug: 0.125, wochen: 78 },
     // Pauschale für Versicherungen bei Einkommen, das kein Lohn ist (§ 6 Abs. 1 Nr. 1 GrusiGV)
     versPauschale: 30,
     // Elterngeld: bis 300 € frei beim Wohngeld (§ 10 Abs. 1 BEEG); bei Grundsicherung und Kinderzuschlag nur, wenn vor der Geburt Einkommen da war (§ 10 Abs. 5 BEEG)
@@ -127,9 +136,10 @@ const Rules = (function () {
     // zum bisherigen Netto (§ 20 MuSchG); nicht gesetzlich versicherte Arbeitnehmerinnen (auch Minijob, familienversichert):
     // Bundesamt für Soziale Sicherung einmalig höchstens 210 €. Schutzfrist 6 Wochen vor, 8 (bei Früh- oder Mehrlingsgeburt 12) nach der Geburt
     mutter: { tag: 13, bas: 210, vor: 6, nach: 8, nachLang: 12 },
-    // Kinderkrankengeld (§ 45 SGB V): 90 % des Nettos (höchstens 135,63 € am Tag); Arbeitstage je Kind und Elternteil:
+    // Kinderkrankengeld (§ 45 SGB V): 90 % des Nettos, höchstens 70 % der Beitragsbemessungsgrenze KV je Kalendertag (2026: 5.812,50 / 30 × 0,7
+    // = 135,63 €; 2027 hoechst2027 = 6.375 / 30 × 0,7 = 148,75 € erst nach Verkündung der SV-Rechengrößenverordnung 2027, svrg2027); Arbeitstage je Kind und Elternteil:
     // 2026 befristet 15 (Alleinerziehende 30), höchstens 35 (70); ab 2027 wieder 10 (20), höchstens 25 (50)
-    kkg: { 2026: { tage: 15, ae: 30, max: 35, maxAe: 70 }, 2027: { tage: 10, ae: 20, max: 25, maxAe: 50 }, satz: 90, hoechst: 135.63 },
+    kkg: { 2026: { tage: 15, ae: 30, max: 35, maxAe: 70 }, 2027: { tage: 10, ae: 20, max: 25, maxAe: 50 }, satz: 90, hoechst: 135.63, hoechst2027: 148.75 },
     // Bayerisches Familiengeld (250 €, ab dem 3. Kind 300 € im Monat, 13. bis 36. Lebensmonat) und Krippengeld (bis 100 €, einkommensabhängig):
     // nur noch für Kinder, die bis 31.12.2024 geboren sind
     famgeld: { betrag: 250, ab3: 300, krippe: 100 },
@@ -223,10 +233,9 @@ const Rules = (function () {
     // Ohne festen Betrag: Kombination (anteilig, § 38), Hausnotruf (Zuschuss nach Hilfsmittelverzeichnis, § 40 Abs. 1), Pflegekurse (§ 45),
     // Pflegeberatung (§ 7a), Rentenbeiträge (§ 44, nach Pflegegrad und Leistungsart), Pflegezeit (PflegeZG, FPfZG).
     // Gilt seit 1.1.2025 (Beträge) bzw. 1.7.2025 (gemeinsamer Jahresbetrag); bis zur Prüfung am pruefenAb (oben).
-    // Reform: Entwurf Pflegeneuordnungsgesetz (PNOG), BT-Drs. 21/8869 (hib 873/2026 vom 2.11.2026; BMG-FAQ Stand 28.10.2026), noch nicht beschlossen.
-    // Nach dem Beschluss: status auf 'beschlossen' setzen, Beträge mit Stichtag eintragen und den Reformsatz in der App anpassen.
-    pflegeUnterst: { stand: '14.9.2026', abgerufen: '20.11.2026', quelle: 'Bundesministerium für Gesundheit, Online-Ratgeber Pflege; SGB XI', wohngruppe: 224,
-      reform: { status: 'entwurf', jahr: 2027, drs: '21/8869', datum: '2.11.2026' } },
+    // Merker (nicht anzeigen): Entwurf Pflegeneuordnungsgesetz (PNOG), BT-Drs. 21/8869 (hib 873/2026 vom 2.11.2026), bei Stand 20.11.2026
+    // nicht beschlossen. Erst nach Verkündung im BGBl. Beträge mit Stichtag eintragen und ab dem Stichtag anzeigen.
+    pflegeUnterst: { stand: '14.9.2026', abgerufen: '20.11.2026', quelle: 'Bundesministerium für Gesundheit, Online-Ratgeber Pflege; SGB XI', wohngruppe: 224 },
     // Menschen mit Behinderung. Quellen: § 33b Abs. 3 EStG (Pauschbeträge), § 32a EStG (Grundfreibetrag 2026),
     // ZBFS Bayern, Infoblatt Blindengeld (Stand 1.7.2026), § 40 SGB XI, § 61 SGB IX, § 208 SGB IX, Art. 11 BayWoFG
     beh: {
@@ -350,9 +359,16 @@ const Rules = (function () {
   const ab0 = (x) => Math.floor(x + 1e-9); // auf Euro abrunden
   const auf0 = (x) => Math.ceil(x - 1e-9); // auf Euro aufrunden
   const ab6 = (x) => Math.floor(x * 1e6 + 1e-4) / 1e6;
+  // Werte der SV-Rechengrößenverordnung 2027 erst ab 2027 UND nur, wenn sie im BGBl. verkündet ist (R.svrg2027)
+  const sv27 = (heute) => heute >= 2027 && R.svrg2027.verkuendet === true;
+  // Einkommensgrenze der Familienversicherung (1/7 der Bezugsgröße, § 10 Abs. 1 Nr. 5 SGB V) für das Jahr heute (Standard: jetzt); 2027 nur nach Verkündung (sv27)
+  function famversGrenze(heute) {
+    const hj = heute ? Number(heute) : (new Date().getFullYear() + new Date().getMonth() / 12);
+    return Math.round((sv27(hj) ? R.famvers.bezug2027 : R.famvers.bezug2026) / 7);
+  }
   function lohnParam(heute) {
-    const L = R.lohn, j27 = heute >= 2027;
-    return { ...L.pap2026, bbgRV: j27 ? L.bbg2027.rv : L.bbg2026.rv, bbgKV: j27 ? L.bbg2027.kv : L.bbg2026.kv, kvz: j27 ? L.kvz2027 : L.kvz2026,
+    const L = R.lohn, j27 = heute >= 2027, s27 = sv27(heute);
+    return { ...L.pap2026, bbgRV: s27 ? L.bbg2027.rv : L.bbg2026.rv, bbgKV: s27 ? L.bbg2027.kv : L.bbg2026.kv, kvz: j27 ? L.kvz2027 : L.kvz2026,
       minijob: j27 ? R.minijob2027 : R.minijob, uebergang: L.uebergangBis };
   }
   // Einkommensteuertarif § 32a EStG wie UPTAB26 (X = zu versteuerndes Einkommen, bei Steuerklasse III halbiert)
@@ -1318,7 +1334,7 @@ const Rules = (function () {
     if (h.selbst) return mk(id, 'vielleicht', 'vielleicht', [['alg1.selbst'], melden]);
     if (!h.algZeit) return mk(id, 'vielleicht', 'vielleicht', [['alg1.zeit'], melden]);
     // Minijob ist arbeitslosenversicherungsfrei (§ 27 Abs. 2 SGB III): zählt nicht für den Anspruch
-    if (h.lohnVorher > 0 && h.lohnVorher <= h.minijob) return mk(id, 'vielleicht', 'vielleicht', [['alg1.minijob'], melden]);
+    if (h.lohnVorher > 0 && h.lohnVorher <= h.minijob) return mk(id, 'vielleicht', 'vielleicht', [['alg1.minijob', { mini: eur(h.minijob) }], melden]);
     const p = h.children > 0 ? R.alg.satzKind : R.alg.satz;
     const tx = [['alg1.ja', { p: Math.round(p * 100) }]];
     if (h.algMonate) {
@@ -1326,7 +1342,7 @@ const Rules = (function () {
       tx.push(['alg1.dauer', { m: row[2] }]);
     } else tx.push(['alg1.dauerMin']);
     if (h.lohnVorher > 0) {
-      const b = Math.min(h.lohnVorher, R.alg.bbg);
+      const b = Math.min(h.lohnVorher, sv27(h.heute) ? R.alg.bbg2027 : R.alg.bbg);
       const q = nettoSpanne(b);
       tx.push(['schaetz.spanne', { a: eur(r10(b * q[0] * p)), b: eur(r10(b * q[1] * p)) }]);
     }
@@ -1343,11 +1359,11 @@ const Rules = (function () {
     if (h.krankWochen === 'ende') return mk(id, 'nein', 'vorausFehlt', [['krank.ende']]);
     // Selbstständige: Krankengeld nur mit Wahlerklärung oder Wahltarif der Krankenkasse (§ 44 Abs. 2 Nr. 2, § 53 Abs. 6 SGB V)
     if (h.selbst) return mk(id, 'vielleicht', 'vielleicht', [['krank.selbst'], ['krank.78']]);
-    // Minijob (bis 603 €): nicht krankenversichert über die Arbeit, daher kein Krankengeld (§ 7 SGB V, § 44 SGB V)
-    if (h.lohnVorher > 0 && h.lohnVorher <= h.minijob) return mk(id, 'nein', 'vorausFehlt', [['krank.minijob']]);
+    // Minijob (bis zur Minijob-Grenze): nicht krankenversichert über die Arbeit, daher kein Krankengeld (§ 7 SGB V, § 44 SGB V)
+    if (h.lohnVorher > 0 && h.lohnVorher <= h.minijob) return mk(id, 'nein', 'vorausFehlt', [['krank.minijob', { mini: eur(h.minijob) }]]);
     const tx = [[h.krankWochen === 'unter6' ? 'krank.lfz' : 'krank.ja']];
     if (h.lohnVorher > 0) {
-      const b = Math.min(h.lohnVorher, R.krank.bbg);
+      const b = Math.min(h.lohnVorher, sv27(h.heute) ? R.krank.bbg2027 : R.krank.bbg);
       // Netto grob 60-72 % des Bruttos; Krankengeld = min(70 % brutto, 90 % netto), abzüglich der Beiträge
       const kgv = (q) => r10(Math.min(R.krank.satz * b, R.krank.nettoMax * b * q) * (1 - R.krank.abzug));
       const q = nettoSpanne(b);
@@ -1424,7 +1440,7 @@ const Rules = (function () {
     // Nur zeigen, wenn es gerade passt: ein Kind ist krank und muss zu Hause betreut werden (§ 45 SGB V)
     if (!h.kindKrank) return mk(id, 'nein', 'vorausFehlt', [['kkg.nurKrank']]);
     const T = h.heute >= 2027 ? R.kkg[2027] : R.kkg[2026];
-    return mk(id, 'vielleicht', 'vielleicht', [[h.alleinerz ? 'kkg.ae' : 'kkg.ja', { tage: h.alleinerz ? T.ae : T.tage, max: h.alleinerz ? T.maxAe : T.max, satz: R.kkg.satz, hoechst: eur2(R.kkg.hoechst) }], ['kkg.hinweis']]);
+    return mk(id, 'vielleicht', 'vielleicht', [[h.alleinerz ? 'kkg.ae' : 'kkg.ja', { tage: h.alleinerz ? T.ae : T.tage, max: h.alleinerz ? T.maxAe : T.max, satz: R.kkg.satz, hoechst: eur2(sv27(h.heute) ? R.kkg.hoechst2027 : R.kkg.hoechst) }], ['kkg.hinweis']]);
   }
 
   // Bayerisches Landespflegegeld (BayLPflGG): Pflegegrad 2 bis 5, Hauptwohnsitz Bayern, einkommensunabhängig, Antrag beim Landesamt für Pflege
@@ -1622,7 +1638,7 @@ const Rules = (function () {
   function famvers(h) {
     const id = 'famvers';
     if (h.adults === 1 && h.kids === 0 && h.young === 0) return mk(id, 'nein', 'vorausFehlt', [['famvers.keine']]);
-    const grenze = Math.round((h.heute >= 2027 ? R.famvers.bezug2027 : R.famvers.bezug2026) / 7);
+    const grenze = famversGrenze(h.heute);
     const tx = [];
     let partnerOk = false;
     if (h.adults === 2) {
@@ -1905,25 +1921,17 @@ const Rules = (function () {
     return { id: jetzt.id, level, hl: level === jetzt.level ? jetzt.hl : level, tx };
   }
 
-  // Änderungen 2027 (Stand 19. November 2026). Beschlossen und eingerechnet: Minijob-Grenze 633 €, Kinderkrankentage 10/20,
-  // antragsloses Kindergeld (Gesetz vom Bundesrat am 25.9.2026 gebilligt, Hinweis). Nur geplant und deshalb NICHT eingerechnet,
-  // sondern als Hinweis auf der Karte: Kindergeld 267 € (BT-Drs. 21/8235), Sofortzuschlag Kinderzuschlag bleibt, Unterhaltsvorschuss
-  // weiter bis 18, Wohngeld ohne Kürzung und ohne Dynamisierung 1.1.2027, Regelsätze gleich bis 30.6.2028 (Haushaltsbegleitgesetz 2027,
-  // BT-Drs. 21/7860, Haushaltsausschuss 16.11.2026), Pflegegeld 380/630/890/1.080 € (BT-Drs. 21/8869),
-  // Beitragsbemessungsgrenze KV 6.375 € (BR-Drs. 576/26; Krankengeld höchstens 148,75 € je Tag), Grundfreibetrag 12.564 €.
-  const PLAN = { stand: '11/2026', kg: 267, pflege: [380, 630, 890, 1080], bbgKv: 6375, kgHoechst: 148.75, gfb: 12564 };
-  function plan2027(h, results) {
-    const offen = (r) => r.level === 'ja' || r.level === 'vielleicht' || r.level === 'na';
+  // Zusätzliche Hinweise auf Karten. Nur geltendes Recht: Inhalte aus Gesetzentwürfen werden nicht angezeigt.
+  // Merker (Stand 20.11.2026, nicht anzeigen): Entwürfe zu Kindergeld 267 € (BT-Drs. 21/8235), Haushaltsbegleitgesetz 2027
+  // (BT-Drs. 21/7860: Sofortzuschlag, Unterhaltsvorschuss, Wohngeld, Regelsätze), Pflegegeld (BT-Drs. 21/8869), Grundfreibetrag 12.564 €.
+  // Erst nach Verkündung und ab dem Stichtag einrechnen bzw. anzeigen.
+  function kartenHinweise(h, results) {
     results.forEach(function (r) {
-      const add = (x) => { r.tx = r.tx.concat(x); };
-      if (r.id === 'kindergeld' && offen(r)) add([['kg.antraglos'], ['plan.kg', { b: eur(PLAN.kg) }]]);
-      else if (r.id === 'kiz' && offen(r)) add([['plan.kiz']]);
-      else if (r.id === 'uvg' && offen(r)) add([['plan.uvg']]);
-      else if (r.id === 'wohngeld' && offen(r)) add([['plan.wg']].concat(h.heute < 2027 && r.level !== 'na' ? [['plan.wgDez']] : []));
-      else if (r.id === 'pflege' && offen(r) && (h.pflegegrad >= 2 || h.pflegeAntrag)) add([['plan.pflege', { a: eur(PLAN.pflege[0]), b: eur(PLAN.pflege[1]), c: eur(PLAN.pflege[2]), d: eur(PLAN.pflege[3]) }]]);
-      else if ((r.id === 'ggeld' || r.id === 'gsa') && offen(r)) add([['plan.regel', { rs: eur(R.regelbedarf.alleinstehend) }]]);
-      else if (r.id === 'krankengeld' && offen(r) && h.lohnVorher > R.krank.bbg) add([['plan.krank', { bbg: eur(PLAN.bbgKv), max: eur2(PLAN.kgHoechst) }]]);
-      else if (r.id === 'kgBeh' && offen(r)) add([['plan.gfb', { gfb: eur(PLAN.gfb) }]]);
+      // Wohngeld gibt es erst ab dem Antragsmonat (§ 25 Abs. 2 WoGG): früh beantragen
+      if (r.id === 'wohngeld' && (r.level === 'ja' || r.level === 'vielleicht')) r.tx = r.tx.concat([['wg.frueh']]);
+      // Antragsloses Kindergeld bei Geburt (§ 67 Abs. 2 i. V. m. § 69 Satz 3 EStG n. F.): Gesetz zur Einführung eines antragslosen
+      // Kindergeldes vom 15.10.2026, BGBl. 2026 I Nr. 307 (ausgegeben 20.10.2026), in Kraft 1.1.2027 (Art. 4). Erst ab 2027 anzeigen.
+      else if (r.id === 'kindergeld' && h.heute >= 2027 && (r.level === 'ja' || r.level === 'vielleicht' || r.level === 'na')) r.tx = r.tx.concat([['kg.antraglos']]);
     });
   }
 
@@ -2001,7 +2009,7 @@ const Rules = (function () {
       pflegeplus(h), budgetArbeit(h), rundfunk(h, gg, gsa, { hzp, blh, baf }), zuzahlung(h), famvers(h), bab(h), wbs(h)].map(angabeFehlt(h)).map((x, i) => ({ ...x, name: NAMES[x.id], order: i, steps: STEPS[x.id], recht: RECHT[x.id] }));
     uzHinweise(h, results);
     einmalHinweise(h, results);
-    plan2027(h, results);
+    kartenHinweise(h, results);
     besondere(h, results);
     const sorted = results.slice().sort((a, b) => ORDER[a.level] - ORDER[b.level] || a.order - b.order);
     const zus = zusammenspiel(h, results);
@@ -2010,7 +2018,7 @@ const Rules = (function () {
     return { h, results: sorted, zusammen: zus };
   }
 
-  return { evaluate, pflegeLeistungen, pflegeFuer, pflegeKombi, nettoLohn, bruttoAusNetto, nettoRente, bruttoAusNettoRente, lohnAnnahmen, pfaendung, pfaendFreibetrag, pkonto, RULES: R, WG, limits, wgYmax, wgMiete, wgCap, wgHeiz, wgHoechst, wgBetrag, roman, sgb2Freibetrag, kizWohnanteil, haushaltsFreibetrag, derive, NAMES, STEPS, RECHT, ZUST_LAND, zustLand };
+  return { evaluate, famversGrenze, pflegeLeistungen, pflegeFuer, pflegeKombi, nettoLohn, bruttoAusNetto, nettoRente, bruttoAusNettoRente, lohnAnnahmen, pfaendung, pfaendFreibetrag, pkonto, RULES: R, WG, limits, wgYmax, wgMiete, wgCap, wgHeiz, wgHoechst, wgBetrag, roman, sgb2Freibetrag, kizWohnanteil, haushaltsFreibetrag, derive, NAMES, STEPS, RECHT, ZUST_LAND, zustLand };
 })();
 
 if (typeof module !== 'undefined') module.exports = Rules;

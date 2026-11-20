@@ -71,7 +71,11 @@ check('[netto-rente] Rente 2.000 € -> 1.753,00 € netto', nr(2000) === 1753, 
 check('[netto-rente] Rente 1.200 € mit 2 Kindern -> 1.054,80 € (Pflege −0,25)', nr(1200, { kinder: 2 }) === 1054.8, nr(1200, { kinder: 2 }));
 check('[netto-rente] Pflege-Abschlag höchstens für 4 Kinder (2. bis 5. Kind)', nr(1200, { kinder: 5 }) === nr(1200, { kinder: 9 }) && nr(1200, { kinder: 5 }) > nr(1200, { kinder: 4 }));
 check('[netto-rente] Beiträge nur bis zur Beitragsgrenze KV 5.812,50 € (2026): 7.000 € -> 6.282,16 €', nr(7000) === 6282.16, nr(7000));
-check('[netto-rente] 2027: Beitragsgrenze KV 6.375 €: 7.000 € -> 6.212,69 €', R.nettoRente(7000, { heute: 2027.1 }) === 6212.69, R.nettoRente(7000, { heute: 2027.1 }));
+// SV-Rechengrößenverordnung 2027 bei Stand 20.11.2026 nicht verkündet: 2027 weiter KV-Grenze 5.812,50 €; nach Verkündung (Schalter) 6.375 €
+check('[netto-rente] 2027 vor Verkündung der Rechengrößen: Beitragsgrenze weiter 5.812,50 € (7.000 € -> 6.282,16 €)', R.nettoRente(7000, { heute: 2027.1 }) === 6282.16, R.nettoRente(7000, { heute: 2027.1 }));
+R.RULES.svrg2027.verkuendet = true;
+check('[netto-rente] 2027 nach Verkündung: Beitragsgrenze KV 6.375 €: 7.000 € -> 6.212,69 €', R.nettoRente(7000, { heute: 2027.1 }) === 6212.69 && R.nettoRente(7000, { heute: 2026.9 }) === 6282.16, R.nettoRente(7000, { heute: 2027.1 }));
+R.RULES.svrg2027.verkuendet = false;
 let invR = true;
 for (const b of [450, 1051, 1200, 1777, 2950, 6100]) for (const k of [1, 3]) if (Math.abs(R.bruttoAusNettoRente(nr(b, { kinder: k }), { kinder: k, heute: H }) - b) > 1) invR = false;
 check('[netto-rente] Brutto aus Rente netto findet das Brutto wieder (mit Kindern, auf 1 € genau)', invR && R.bruttoAusNettoRente(1054.8, { kinder: 2, heute: H }) === 1200);
