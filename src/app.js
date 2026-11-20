@@ -2933,10 +2933,10 @@
       var hr = null; try { hr = Haushalt.rest(); } catch (e) {}
       if (hr && !hr.leer) zeile('haushalt', t('hb.h'), hr.rest >= 0 ? t('hb.rest', { b: { eur: hr.restEuro } }) : t('hb.fehlt', { b: { eur: -hr.restEuro } }), '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M15 15h2"/>', function () { oeffneVon('haushalt', true); });
     }
-    // Schulden-Liste: nur die Zahl der offenen Einträge (keine Summe) und die nächste Frist, solange es die Fristen-Übersicht (b-fristen) nicht gibt
+    // Schulden-Liste: nur die Zahl der offenen Einträge (keine Summe) und die nächste Frist, solange es die Fristen in „Mein Ordner“ (src/fristen.js, FristenOrdner) nicht gibt
     if (window.Schulden && Schulden.kurz) {
       var sk = null; try { sk = Schulden.kurz(); } catch (e) {}
-      if (sk && sk.n) zeile('schulden', t('sl.ordner'), t('sl.ordner.st', { n: sk.n }) + (sk.frist && !window.FristListe ? ' · ' + t('sl.ordner.frist', { d: Fmt.datum(new Date(+sk.frist.slice(0, 4), +sk.frist.slice(5, 7) - 1, +sk.frist.slice(8, 10)), lang) }) : ''), '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>', function () { oeffneVon('schulden', true); });
+      if (sk && sk.n) zeile('schulden', t('sl.ordner'), t('sl.ordner.st', { n: sk.n }) + (sk.frist && !window.FristenOrdner ? ' · ' + t('sl.ordner.frist', { d: Fmt.datum(new Date(+sk.frist.slice(0, 4), +sk.frist.slice(5, 7) - 1, +sk.frist.slice(8, 10)), lang) }) : ''), '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>', function () { oeffneVon('schulden', true); });
     }
     // „Ich ziehe aus“ (Branch claude/ausziehen): nur, wenn das Modul den Fortschritt liefert (Ausziehen.stand() -> { n, von })
     var AZ = window.Ausziehen;
@@ -3474,6 +3474,12 @@
       datum: function (d) { return Fmt.datum(d, lang); }, datumDe: function (d) { return Fmt.datum(d, 'de'); }, zeige: oeffneVon, plug: plug, nativ: NATIVE,
       haushalt: function () { if (!window.Haushalt) return null; var r = Haushalt.rest(), d = Haushalt.daten(); return { rest: r, raten: d && d.plan && d.plan.aus && d.plan.aus.raten || 0 }; },
       pdf: function (seiten, titel, name, msg) { pdfAusgeben(seiten, titel, name, msg, plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen', false); }
+    });
+    // Fristende aus dem Rechenkern der Fristen (src/fristen.js), wenn vorhanden; sonst rechnet die Liste selbst (Rückfall auch bei ungültigem Ergebnis)
+    var FO = window.FristenOrdner;
+    if (FO && (typeof FO.endeTage === 'function' || typeof FO.endeWochen === 'function')) Schulden.fristRechner(function (zu, tage) {
+      if (typeof FO.endeTage === 'function') return FO.endeTage(zu, tage);
+      return tage % 7 ? null : FO.endeWochen(zu, tage / 7);
     });
   }
   window.addEventListener('hashchange', function () { var a = location.hash.slice(1); if (ANSICHTEN.indexOf(a) >= 0 && a !== aktAnsicht) zeigeAnsicht(a, true); });

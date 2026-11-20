@@ -439,21 +439,24 @@ var Schulden = (function () {
   }
 
   // ----- CSV-Export (gleicher Weg wie das Haushaltsbuch; vorher Hinweis) -----
-  function csvFragen() { frage = { art: 'csv' }; render(); fokus('sl-csv-ja'); }
+  function csvFragen() { frage = { art: 'csv', notiz: false }; render(); fokus('sl-csv-ja'); }
   function csvFrageZeigen(platz) {
     var q = el('div', 'hb-frage'); q.setAttribute('role', 'group');
     q.appendChild(el('p', '', t('sl.csv.warn')));
+    var nl = el('label', 'check'), nc = el('input'); nc.type = 'checkbox'; nc.id = 'sl-csv-notiz'; nc.checked = !!frage.notiz;
+    nc.addEventListener('change', function () { frage.notiz = nc.checked; });
+    nl.appendChild(nc); nl.appendChild(el('span', '', t('sl.csv.notiz'))); q.appendChild(nl);
     var qb = el('div', 'btns');
-    qb.appendChild(knopf('btn', t('sl.csv.ja'), function () { frage = null; render(); exportCsv(); fokus('sl-csv'); }, { id: 'sl-csv-ja' }));
+    qb.appendChild(knopf('btn', t('sl.csv.ja'), function () { var mit = !!frage.notiz; frage = null; render(); exportCsv(mit); fokus('sl-csv'); }, { id: 'sl-csv-ja' }));
     qb.appendChild(knopf('btn ghost', t('sl.abbrechen'), function () { frage = null; render('sl-csv'); }));
     q.appendChild(qb); platz.appendChild(q);
   }
-  function csvText() {
+  function csvText(mitNotiz) {
     var kopf = ['nr', 'glaeubiger', 'anschrift', 'art', 'az', 'anfang', 'jetzt', 'standD', 'rate', 'faellig', 'stand', 'zu', 'notiz'].map(function (k) { return t('sl.col.' + k); });
-    return '﻿' + csv(sortiert(daten.liste, new Date()), kopf, { art: function (a) { return artName(a); }, st: function (s) { return stName(s); } }, true);
+    return '﻿' + csv(sortiert(daten.liste, new Date()), kopf, { art: function (a) { return artName(a); }, st: function (s) { return stName(s); } }, !!mitNotiz);
   }
-  function exportCsv() {
-    var msg = $('slExportMsg'), txt = csvText(), name = 'Schulden-' + isoTag(new Date()) + '.csv';
+  function exportCsv(mitNotiz) {
+    var msg = $('slExportMsg'), txt = csvText(mitNotiz), name = 'Schulden-' + isoTag(new Date()) + '.csv';
     var fsys = ctx.plug && ctx.plug('Filesystem'), sh = ctx.plug && ctx.plug('Share');
     if (ctx.nativ) {
       if (!fsys || !sh) { msg.textContent = t('sl.csv.fehler'); return; }
@@ -482,7 +485,8 @@ var Schulden = (function () {
     if (eb && eb.parentNode) eb.parentNode.insertBefore(s, eb.nextSibling); else ($('app') || document.body).appendChild(s);
     return s;
   }
-  var blattOpt = { kuerzel: '', az: true, adr: true, notiz: false };
+  function blattStandard() { return { kuerzel: '', az: true, adr: true, notiz: false, hh: true }; }
+  var blattOpt = blattStandard();
   function blattBar() {
     var bar = $('slBlattBar'); bar.textContent = '';
     var h = el('h2', '', t('sl.druck')); h.id = 'h-slb'; h.tabIndex = -1; bar.appendChild(h);
@@ -496,6 +500,11 @@ var Schulden = (function () {
       c.addEventListener('change', function () { blattOpt[x[0]] = c.checked; blattSeite(); });
       l.appendChild(c); l.appendChild(el('span', '', t(x[2]))); bar.appendChild(l);
     });
+    if (hhZeile(true)) { // nur, wenn es einen Haushaltsplan gibt
+      var hl = el('label', 'check'), hc = el('input'); hc.type = 'checkbox'; hc.id = 'slMitHh'; hc.checked = blattOpt.hh;
+      hc.addEventListener('change', function () { blattOpt.hh = hc.checked; blattSeite(); });
+      hl.appendChild(hc); hl.appendChild(el('span', '', t('sl.druck.hhMit'))); bar.appendChild(hl);
+    }
     var b = el('div', 'btns');
     b.appendChild(knopf('btn', t('f.print'), blattAusgeben, { id: 'slDruck' }));
     b.appendChild(knopf('btn ghost', t('pf.zurueck'), blattSchliessen, { id: 'slBlattZu' }));
@@ -508,7 +517,8 @@ var Schulden = (function () {
     var k = text(blattOpt.kuerzel, 8);
     return de('sl.druck.stand', { d: ctx.datumDe ? ctx.datumDe(new Date()) : ctx.datum(new Date()) }) + (k ? ' · ' + de('eb.kuerzelZeile', { k: k }) : '');
   }
-  function hhZeile() {
+  function hhZeile(immer) {
+    if (!immer && !blattOpt.hh) return '';
     var hh = haushalt(), s = summen(daten.liste), v = vergleich(s.raten, hh);
     return v ? de('sl.druck.hh', { e: eurDe(hh.rest.ein), a: eurDe(hh.rest.aus), r: eurDe(hh.rest.rest), f: eurDe(v.frei) }) : '';
   }
@@ -565,6 +575,7 @@ var Schulden = (function () {
     });
     var s = summen(daten.liste);
     b.push({ t: 'p', text: de('sl.druck.summen', { b1: eurDe(s.gesamt), b2: eurDe(s.raten) }) });
+    if (s.ohneBetrag) b.push({ t: 'p', text: de('sl.sum.ohneBetrag', { n: String(s.ohneBetrag) }) });
     var hz = hhZeile(); if (hz) b.push({ t: 'p', text: hz });
     b.push({ t: 'h', text: de('sl.u.h') });
     for (var i = 1; i <= 8; i++) b.push({ t: 'li', text: de('sl.u.' + i) });
@@ -599,7 +610,12 @@ var Schulden = (function () {
     if (eingabe) { var id = eingabe.id; eingabe = null; render(id ? 'sl-e-' + id : 'sl-neu'); return true; }
     return false;
   }
-  function neuLaden() { eingabe = null; frage = null; if (blattOffen()) blattSchliessen(); laden(function () { render(); }); }
+  function neuLaden() {
+    eingabe = null; frage = null; if (blattOffen()) blattSchliessen();
+    blattOpt = blattStandard(); // Kürzel und Haken gehören nicht in den nächsten Vorgang
+    ['slSeite', 'slBlattBar'].forEach(function (id) { var x = $(id); if (x) x.textContent = ''; });
+    laden(function () { render(); });
+  }
   // Kurzstatus für „Mein Ordner“: nur die Zahl der offenen Einträge (keine Summe, Entscheidung 20.11.2026) und die nächste laufende Frist
   function kurz() {
     if (!daten) return null;
@@ -611,7 +627,7 @@ var Schulden = (function () {
     // Rechnung (Tests)
     ART: ART_IDS, STATUS: STATUS, FRIST_TAGE: FRIST_TAGE, artStufe: artStufe, stufe: stufe, betrag: betrag, summen: summen, sortiert: sortiert,
     vergleich: vergleich, fristEnde: fristEnde, fristEndeEinfach: fristEndeEinfach, fristRechner: fristRechner, fristInfo: fristInfo, fristVorbei: fristVorbei,
-    feiertageBund: feiertageBund, fristen: fristen, csv: csv, csvFeld: csvFeld, normiere: normiere, zuCent: zuCent,
+    feiertageBund: feiertageBund, fristen: fristen, csv: csv, pdfSeiten: function () { return pdfSeiten(); }, csvFeld: csvFeld, normiere: normiere, zuCent: zuCent,
     // Oberfläche
     init: init, zeigen: zeigen, sprache: sprache, zurueck: zurueck, neuLaden: neuLaden, speicherOrt: speicherOrt, kurz: kurz,
     daten: function () { return daten ? JSON.parse(JSON.stringify(daten)) : null; }
