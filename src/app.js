@@ -166,12 +166,13 @@
     'sp.heizen.1': 'thermo', 'sp.heizen.2': 'fenster', 'sp.heizen.3': 'heizung', 'sp.heizen.4': 'wind', 'sp.heizen.5': 'einreichen',
     'sp.essen.1': 'liste', 'sp.essen.2': 'blatt', 'sp.essen.3': 'frost', 'sp.essen.4': 'korb', 'sp.essen.5': 'teller',
     'sp.vertraege.1': 'radio', 'sp.vertraege.2': 'telefon', 'sp.vertraege.3': 'ticket', 'sp.vertraege.5': 'bank', 'sp.vertraege.6': 'schere',
-    'sp.schulden.1': 'post', 'sp.schulden.2': 'haus', 'sp.schulden.3': 'stopp', 'sp.schulden.4': 'person',
+    'sp.schulden.1': 'post', 'sp.schulden.2': 'haus', 'sp.schulden.3': 'stopp',
     'sp.schulden.inkasso': 'lupe', 'sp.schulden.rate': 'kalender', 'sp.schulden.unserioes': 'warn', 'sp.schulden.insolvenz': 'waage',
     'sp.schulden.konto': 'schild', 'sp.schulden.strom': 'blitz', 'sp.schulden.mahn': 'waage', 'sp.schulden.miete': 'haus',
     'gs.d.konto.frist': 'uhr', 'gs.d.konto.schritt': 'bank', 'gs.d.strom.frist': 'uhr', 'gs.d.strom.schritt': 'telefon',
     'gs.d.mahn.frist': 'uhr', 'gs.d.mahn.schritt': 'post', 'gs.d.miete.frist': 'uhr', 'gs.d.miete.schritt': 'einreichen',
     'pf.tipp.unterhalt': 'warn', 'pf.tipp.unterhaltspflichten': 'lupe', 'pf.tipp.mehr': 'waage', 'pf.tipp.beratung': 'person', 'pf.tipp.einmal': 'geld',
+    'ip.w1': 'stopp', 'ip.w2': 'kalender', 'ip.w3': 'post', 'sb.ordner': 'liste', 'gs.d.geld.frist': 'uhr', 'gs.d.geld.schritt': 'telefon',
     'pf.tipp.kg': 'kind', 'pf.tipp.umwandeln': 'bank', 'pf.tipp.bescheinigung': 'beleg', 'pf.tipp.kontomehr': 'waage', 'pf.tipp.uebertrag': 'weiter', 'pf.tipp.sozial': 'schild'
   };
   // laien: Paragrafen wie bisher nur bei den Spartipps aus dem Text nehmen (tL); sonst bleiben sie stehen
@@ -2574,28 +2575,52 @@
     if (!box.hidden) { va.schritt = 0; vaRender(); var f = box.querySelector('button'); if (f) f.focus(); }
   });
 
-  // ----- Geld und Schulden (Startkachel, Ansicht „sparen“): 6 Kacheln in der Form der Startseite (Entscheidung David 20.11.2026,
-  //  docs/entwuerfe/schulden-bereich.md). „Was bleibt mir?“, „Meine Schulden-Liste“ und „Mein Geld planen“ öffnen eigene Ansichten
-  //  (pfaendung, schulden, haushalt); „Zurück“ führt von dort hierher (Herkunft). Jede Kachel eine eigene Farbe (CSS „gruppe geld“).
+  // ----- Geld und Schulden (Startkachel, Ansicht „sparen“): 6 Kacheln in der Form der Startseite. Reihenfolge nach dem Ablauf der
+  //  Schuldnerberatung: erst sichern, dann ordnen, dann antworten, dann planen, dann Hilfe (Konzept docs/entwuerfe/geld-schulden-konzept.md,
+  //  Entscheidung David 20.11.2026: Krisen-Check als erste Karte in „Es ist dringend“, eigene Kachel „Post vom Inkasso“, „Sparen im Alltag“
+  //  unter „Mein Geld planen“, „Kostenlose Hilfe“ heißt jetzt „Schuldnerberatung“). „Was bleibt mir?“ und „Meine Schulden-Liste“ öffnen eigene
+  //  Ansichten (pfaendung, schulden); „Zurück“ führt von dort hierher (Herkunft). Neue Teile in src/geld.js.
+  //  Klasse gs-sparen an „Mein Geld planen“: dort liegen die Themen von „Geld sparen im Alltag“ (Kacheln gs-t-*).
   var GS_KACHELN = [
     ['dringend', 'gs.dringend', 'gs.dringend.t', '<path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/>'],
     ['bleibt', 'gs.bleibt', 'home.pfaendung.t', '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/><path d="M15 3l-3 3-3-3"/>'],
     ['liste', 'sl.h', 'gs.liste.t', '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>'],
-    ['planen', 'gs.planen', 'hb.kachel.t', '<path d="M4 7h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a1 1 0 0 1-1-1z"/><path d="M4 7l11-3v3"/><circle cx="16" cy="13.5" r="1"/>'],
-    ['sparen', 'sp.h', 'home.sparen.t', '<path d="M5 11a7 6 0 0 1 13-2h2v4h-2a7 7 0 0 1-3 3v3h-3v-2h-2v2H7v-3a6 6 0 0 1-2-5z"/><circle cx="15" cy="10" r=".8"/>'],
-    ['hilfe', 'gs.hilfe', 'gs.hilfe.t', '<circle cx="12" cy="7" r="3"/><path d="M5 20c1-4 4-6 7-6s6 2 7 6"/><path d="M17 4l2-2M19 7h2"/>']
+    ['inkasso', 'gs.inkasso', 'gs.inkasso.t', '<path d="M3 6h13v10H3z"/><path d="M3 6l6.5 5L16 6"/><circle cx="17" cy="16" r="3"/><path d="M19.2 18.2L22 21"/>'],
+    ['planen', 'gs.planen', 'gs.planen.t', '<path d="M4 7h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a1 1 0 0 1-1-1z"/><path d="M4 7l11-3v3"/><circle cx="16" cy="13.5" r="1"/>'],
+    ['hilfe', 'sb.h', 'sb.h.t', '<circle cx="9" cy="8" r="3"/><path d="M3 20c1-4 3-6 6-6s5 2 6 6"/><path d="M14 4h7v5h-4l-2 2V9h-1z"/>']
   ];
-  // Es ist dringend: je Fall Frist und erster Schritt, Einzelheiten zum Aufklappen (Texte sp.schulden.<fall>, Quellen siehe unten).
+  // Es ist dringend: zuerst der Krisen-Check, dann je Fall Frist und erster Schritt, Einzelheiten zum Aufklappen (Texte sp.schulden.<fall>).
   //  konto: § 850k Abs. 1 ZPO (Umwandlung, 4. Geschäftstag), § 899 Abs. 1 ZPO (Umwandlung binnen eines Monats schützt gesperrtes Guthaben);
   //  strom: §§ 41f, 41g EnWG; mahn: §§ 692 Abs. 1 Nr. 3, 694, 700, 339 ZPO; miete: § 569 Abs. 3 Nr. 2 BGB, § 22 Abs. 8 SGB II, § 36 SGB XII
   //  (alle abgerufen 20.11.2026 auf gesetze-im-internet.de).
+  //  geld (Geldstrafe, Texte gs.d.geld.*, inhaltlich wie sl.warum.geldstrafe): § 43 StGB (2 Tagessätze = 1 Tag Ersatzfreiheitsstrafe),
+  //  § 459a StPO (Zahlungserleichterungen durch die Vollstreckungsbehörde), § 451 Abs. 1 StPO (Staatsanwaltschaft ist Vollstreckungsbehörde),
+  //  Art. 293 EGStGB (Abwendung durch freie Arbeit, Landesverordnung) – Wortlaut abgerufen 20.11.2026 auf gesetze-im-internet.de.
   var GS_DRINGEND = [
+    ['check', 'kc.h', '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>', 'kc.h.t'],
     ['konto', 'pf.konto', '<path d="M3 10l9-6 9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/>'],
     ['strom', 'gs.d.strom', '<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>'],
     ['mahn', 'gs.d.mahn', '<path d="M4 6h16v12H4z"/><path d="M4 6l8 6 8-6"/><path d="M12 15.5v.5"/>'],
-    ['miete', 'gs.d.miete', '<path d="M4 11l8-6 8 6v9H4z"/><path d="M10 20v-5h4v5"/>']
+    ['miete', 'gs.d.miete', '<path d="M4 11l8-6 8 6v9H4z"/><path d="M10 20v-5h4v5"/>'],
+    ['geld', 'gs.d.geld', '<path d="M12 4v16M6 20h12M5 7h14"/><path d="M5 7l-3 6h6zM19 7l-3 6h6z"/>']
   ];
-  // Sparen im Alltag: nur Strom, Heizen, Essen (mit Link zur Verbraucherzentrale), Verträge; Schulden und Haushaltsplan haben eigene Kacheln
+  // Post vom Inkasso: Prüfliste (§ 13a RDG), Musterschreiben, Raten anbieten, Gerichtspost (Sprung zum Mahnbescheid)
+  var GS_INKASSO = [
+    ['pruef', 'ip.h', 'ip.h.t', '<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5M8.5 11l2 2 3.5-3.5"/>'],
+    ['schreiben', 'ms.h', 'ms.h.t', '<path d="M6 3h9l4 4v14H6z"/><path d="M9 17l1-3 6-6 2 2-6 6z"/>'],
+    ['rate', 'gs.rate', 'gs.rate.t', '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>'],
+    ['gelb', 'gs.gelb', 'gs.gelb.t', '<path d="M4 6h16v12H4z"/><path d="M4 6l8 6 8-6"/><path d="M12 15.5v.5"/>']
+  ];
+  // Schuldnerberatung: Beratungsstelle finden (sl.hilfe.1–5), Bis zum Termin, Beratungsmappe, Ablauf und Privatinsolvenz, unseriöse Anbieter
+  //  Ablauf (sb.ablauf.lead): AG SBV „Konzept Soziale Schuldnerberatung“ (2018), S. 10–14; Privatinsolvenz §§ 287, 305 InsO (abgerufen 20.11.2026).
+  var GS_HILFE = [
+    ['finden', 'sb.finden', 'sb.finden.t', '<path d="M12 21s-6-6.5-6-11a6 6 0 0 1 12 0c0 4.5-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/>'],
+    ['termin', 'sb.termin', 'sb.termin.t', '<path d="M7 3h10M7 21h10M8 3c0 5 8 5 8 9s-8 4-8 9M16 3c0 5-8 5-8 9s8 4 8 9"/>'],
+    ['mappe', 'sb.mappe', 'sb.mappe.t', '<path d="M3 6h7l2 2h9v11H3z"/><path d="M8 13h8"/>'],
+    ['ablauf', 'sb.ablauf', 'sb.ablauf.t', '<circle cx="5" cy="18" r="2"/><circle cx="12" cy="9" r="2"/><circle cx="19" cy="15" r="2"/><path d="M6.5 16.5l4-6M13.5 10.5l4 3"/>'],
+    ['unser', 'sb.unser', 'sb.unser.t', '<path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/>']
+  ];
+  // Sparen im Alltag (jetzt unter „Mein Geld planen“): Strom, Heizen, Essen (mit Link zur Verbraucherzentrale), Verträge
   var SP_THEMEN = [
     ['strom', 'sp.strom', 'sp.strom.t', 6, '<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>'],
     ['heizen', 'sp.heizen', 'sp.heizen.t', 5, '<path d="M12 21a6 6 0 0 0 6-6c0-4-3-6-4-10-2 2-3 4-3 6-1-1-2-2-2-4-2 2-3 5-3 8a6 6 0 0 0 6 6z"/>'],
@@ -2611,14 +2636,13 @@
   //  in 3 Jahren schuldenfrei?“, „5 Wege: So erhalten Sie eine P-Konto-Bescheinigung“; BAG-SB: meine-schulden.de (Beratungsstellen-Suche, Inkassobriefe,
   //  P-Konto, Mahnverfahren, Insolvenz); Caritas: caritas.de „Mietschulden: Tipps“, „Professionelle Hilfe gibt es bei der Schuldnerberatung“;
   //  AG SBV (Wohlfahrtsverbände, BAG-SB, Verbraucherzentralen): „Konzept Soziale Schuldnerberatung“.
-  //  Gesetze: Verjährung §§ 195, 199 BGB; Mahnbescheid § 692 Abs. 1 Nr. 3 ZPO, Einspruch §§ 700, 339 ZPO; P-Konto §§ 850k, 899, 903 ZPO;
+  //  Gesetze: Verjährung §§ 195, 199 BGB (Beginn mit Schluss des Jahres der Entstehung, § 199 Abs. 1 BGB, Wortlaut abgerufen 20.11.2026);
+  //  Mahnbescheid § 692 Abs. 1 Nr. 3 ZPO, Einspruch §§ 700, 339 ZPO; P-Konto §§ 850k, 899, 903 ZPO;
   //  Energiesperre §§ 41f, 41g EnWG (Strom und Gas; abgerufen 20.11.2026); Darlehen § 22 Abs. 8 SGB II, § 36 SGB XII; Kündigung § 543 Abs. 2 Nr. 3, Schonfrist § 569 Abs. 3 Nr. 2 BGB;
-  //  Insolvenz §§ 287, 295, 302, 305 InsO.
-  // Fälle unter „Es ist dringend“ (konto, strom, mahn, miete) und unter „Kostenlose Hilfe“ (inkasso, rate, unserioes, insolvenz); jeder Text nur an einer Stelle.
+  //  Insolvenz §§ 287, 295, 302, 305 InsO. Prüfliste und Warnungen zu Inkasso: § 13a Abs. 1, 3, 4 RDG (Wortlaut abgerufen 20.11.2026).
   // Inkasso (sp.schulden.inkasso): Verjährung 3 Jahre (§ 195 BGB) ab Schluss des Jahres der Entstehung (§ 199 Abs. 1 BGB); Neubeginn bei Anerkenntnis,
   // z. B. Abschlagszahlung (§ 212 Abs. 1 Nr. 1 BGB); 30 Jahre bei rechtskräftig festgestellten Ansprüchen, z. B. Urteil, Vollstreckungsbescheid
   // (§ 197 Abs. 1 Nr. 3 BGB). https://www.gesetze-im-internet.de/bgb/__195.html, __197.html, __199.html, __212.html, Abruf 20.11.2026
-  var SP_SCHULDEN_FAELLE = ['inkasso', 'rate', 'unserioes', 'insolvenz'];
   // Essen: Link zur Verbraucherzentrale statt eigener Rezepte (Entscheidung David 20.11.2026). Verbraucherzentrale Bundesverband,
   // „So geht gesunde Ernährung mit wenig Geld“ (Seite in einfacher Sprache, Stand der Seite 14.06.2024, abgerufen 20.11.2026).
   var SP_VZ_URL = 'https://www.verbraucherzentrale.de/lebensmittel/so-geht-gesunde-ernaehrung-mit-wenig-geld-96404';
@@ -2628,15 +2652,31 @@
   function skKachel(cls, sym, titel, text, fn) {
     return nhKnopf('uk-karte ' + cls, '<span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + sym + '</svg></span><span class="sk-txt"><b>' + esc(titel) + '</b>' + (text ? '<span>' + esc(text) + '</span>' : '') + '</span>', null, fn);
   }
-  function gsOeffne(bereich) { sp.bereich = bereich; sp.fall = ''; sp.thema = ''; }
-  // Sprung aus einer Unteransicht (Pfändung, Haushaltsplan) in einen Teil von „Geld und Schulden“: Herkunft bleibt die der Startkachel,
-  // damit „Zurück“ eine Ebene hoch führt (Teil → Kacheln → Startseite) und nicht im Kreis zwischen zwei Ansichten
-  function gsSprung(bereich, thema) {
-    gsOeffne(bereich); sp.thema = thema || '';
+  function gsOeffne(bereich) { sp.bereich = bereich; sp.fall = ''; sp.thema = ''; if (bereich === 'dringend' && window.Geld) Geld.kcStart(); }
+  // Sprung aus einer Unteransicht (Pfändung, Haushaltsplan, Schulden-Liste) in einen Teil von „Geld und Schulden“: Herkunft bleibt die der
+  // Startkachel, damit „Zurück“ eine Ebene hoch führt (Teil → Kacheln → Startseite) und nicht im Kreis zwischen zwei Ansichten
+  function gsSprung(bereich, thema, fall) {
+    if (bereich === 'sparen') bereich = 'planen'; // „Sparen im Alltag“ liegt unter „Mein Geld planen“
+    gsOeffne(bereich); sp.thema = thema || ''; sp.fall = fall || '';
+    if (aktAnsicht === 'sparen') { spRender(true); return; }
     if (!herkunft.sparen || herkunft.sparen === aktAnsicht) herkunft.sparen = 'start';
     zeigeAnsicht('sparen', true);
   }
-  function spRender(fokus) {
+  function pfBescheinigung() { pf = { art: 'besch', schritt: 1, netto: pf.netto, pers: pf.pers, kg: pf.kg, kiz: pf.kiz }; oeffneVon('pfaendung', true); }
+  function pfKonto() { pf = { art: 'konto', schritt: 1, netto: pf.netto, pers: pf.pers, kg: pf.kg, kiz: pf.kiz }; oeffneVon('pfaendung', true); }
+  function abschlagPruefen() { oeffneVon('haushalt', true); if (window.Haushalt && Haushalt.energie) Haushalt.energie(); }
+  // Ziele aus dem Krisen-Check, „Bis zum Termin“ und der Schulden-Liste
+  function gsZiel(z) {
+    if (['mahn', 'geld', 'miete', 'strom', 'konto'].indexOf(z) >= 0) { gsSprung('dringend', '', z); return; }
+    if (z === 'essen') { oeffneVon('leistungen', true); return; }
+    if (z === 'liste') { oeffneVon('schulden', true); return; }
+    if (z === 'haushalt') { oeffneVon('haushalt', true); return; }
+    if (z === 'pkonto-rechner') { pfKonto(); return; }
+    if (z === 'finden') { gsSprung('hilfe', '', 'finden'); return; }
+    if (z === 'inkasso') { gsSprung('inkasso'); return; }
+    if (z === 'geduld' || z === 'aufst') { Geld.schreibenVorbelegen(z); gsSprung('inkasso', '', 'schreiben'); }
+  }
+  function spRender(fokus, fokusId) {
     var box = $('spInhalt'); if (!box) return;
     box.innerHTML = '';
     var p = function (txt, cls) { var e = document.createElement('p'); e.className = cls || ''; e.textContent = txt; box.appendChild(e); return e; };
@@ -2644,27 +2684,44 @@
     var knopf = function (cls, txt, fn) { var d = document.createElement('div'); d.className = 'btns'; d.appendChild(nhKnopf(cls, esc(txt), null, fn)); box.appendChild(d); return d.firstChild; };
     var tipp = function (key, fall, ziel, laien) { var dt = tippEl(key, fall ? 'sp-fall' : '', laien); if (fall) dt.setAttribute('data-fall', fall); (ziel || box).appendChild(dt); return dt; };
     var tippListe = function (keys, cls, laien) { var ul = document.createElement('ul'); ul.className = 'tipp-liste ' + cls; box.appendChild(ul); keys.forEach(function (k) { var li = document.createElement('li'); tipp(k, '', li, laien); ul.appendChild(li); }); return ul; };
+    var neu = function (id) { spRender(false, id); };
+    // Unterkarten [id, Titel, Untertitel, Symbol]; „Gelber Umschlag“ springt zum Fall Mahnbescheid
+    var unterkarten = function (liste, prefix) {
+      var r = raster();
+      liste.forEach(function (x) {
+        r.appendChild(skKachel(prefix + x[0], x[3], t(x[1]), t(x[2]), function () {
+          if (x[0] === 'gelb') { gsOeffne('dringend'); sp.fall = 'mahn'; spRender(true); return; }
+          sp.fall = x[0]; if (x[0] === 'schreiben') Geld.schreibenVorbelegen(''); spRender(true);
+        }));
+      });
+    };
     if (!sp.bereich) {
       p(t('pf.wahl'), 'pf-frage');
+      if (beratung) { // Beratungsmodus (B4): geöffneter Vorgang und schneller Wechsel über „Mein Ordner“ (nur Deutsch)
+        var va = tresor && tresor.bereit() ? tresor.aktiv() : null, kz = document.createElement('p'); kz.className = 'ber-nur small gs-klient';
+        kz.appendChild(document.createTextNode('Klient (Vorgang): ' + (va && va.name ? va.name : 'ohne Namen') + ' · '));
+        var wb = document.createElement('button'); wb.type = 'button'; wb.className = 'linkbtn'; wb.id = 'gs-klient-wechseln'; wb.textContent = 'wechseln';
+        wb.addEventListener('click', function () { herkunft = {}; zeigeAnsicht('ordner', true); }); kz.appendChild(wb); box.appendChild(kz);
+      }
       var r0 = raster();
       GS_KACHELN.forEach(function (x) {
         if (x[0] === 'liste' && !window.Schulden) return;
-        if (x[0] === 'planen' && !window.Haushalt) return;
-        r0.appendChild(skKachel('gs-' + x[0], x[3], t(x[1]), t(x[2]), function () {
+        r0.appendChild(skKachel('gs-' + x[0] + (x[0] === 'planen' ? ' gs-sparen' : ''), x[3], t(x[1]), t(x[2]), function () {
           if (x[0] === 'bleibt') { oeffneVon('pfaendung', true); return; }
           if (x[0] === 'liste') { oeffneVon('schulden', true); return; }
-          if (x[0] === 'planen') { oeffneVon('haushalt', true); return; }
           gsOeffne(x[0]); spRender(true);
         }));
       });
-      if (fokus) { var f0 = box.querySelector('button'); if (f0) f0.focus(); }
+      if (fokus) { var f0 = box.querySelector('.uk-raster button'); if (f0) f0.focus(); }
       return;
     }
     if (sp.bereich === 'dringend' && !sp.fall) {
       p(t('gs.dringend'), 'pf-frage');
       p(t('gs.d.wahl'), 'hint');
       var r1 = raster();
-      GS_DRINGEND.forEach(function (x) { r1.appendChild(skKachel('gs-d-' + x[0], x[2], t(x[1]), '', function () { sp.fall = x[0]; spRender(true); })); });
+      GS_DRINGEND.forEach(function (x) { r1.appendChild(skKachel('gs-d-' + x[0], x[2], t(x[1]), x[3] ? t(x[3]) : '', function () { sp.fall = x[0]; if (x[0] === 'check') Geld.kcStart(); spRender(true); })); });
+    } else if (sp.bereich === 'dringend' && sp.fall === 'check') {
+      Geld.krisenCheck(box, function () { spRender(false); var f = $('kc-erg') || $('kc-ja'); if (f) { if (f.id === 'kc-erg') f.focus(); else { var q = $('kc-q'); if (q) { q.tabIndex = -1; q.focus(); } } } });
     } else if (sp.bereich === 'dringend') {
       var fx = GS_DRINGEND.filter(function (x) { return x[0] === sp.fall; })[0];
       p(t(fx[1]), 'pf-frage');
@@ -2674,23 +2731,58 @@
         tipp('gs.d.' + sp.fall + z[2], '', d);
         box.appendChild(d);
       });
-      if (sp.fall === 'konto') knopf('btn sp-rechner', t('sp.schulden.pf'), function () { pf = { art: 'konto', schritt: 1, netto: pf.netto, pers: pf.pers, kg: pf.kg, kiz: pf.kiz }; oeffneVon('pfaendung', true); });
-      tipp('sp.schulden.' + sp.fall, sp.fall);
-      knopf('btn ghost gs-zur-hilfe', t('gs.hilfe'), function () { gsOeffne('hilfe'); spRender(true); });
+      // je Fall genau ein nächster Schritt in der App
+      if (sp.fall === 'konto') { knopf('btn sp-rechner', t('sp.schulden.pf'), pfKonto); knopf('btn ghost gs-besch', t('ms.pkonto'), pfBescheinigung); }
+      if (sp.fall === 'strom' && window.Haushalt) knopf('btn ghost gs-abschlag', t('pl.abschlag'), abschlagPruefen);
+      if (sp.fall === 'mahn' && window.Schulden) knopf('btn ghost gs-in-liste', t('gs.d.mahn.liste'), function () { oeffneVon('schulden', true); Schulden.neu({ st: 'mahnbescheid' }); });
+      if (sp.fall !== 'geld') tipp('sp.schulden.' + sp.fall, sp.fall);
+      knopf('btn ghost gs-zur-hilfe', t('sb.finden'), function () { gsOeffne('hilfe'); sp.fall = 'finden'; spRender(true); });
       box.appendChild(quellenEl([t('sp.schulden.quellen')]));
+    } else if (sp.bereich === 'inkasso' && !sp.fall) {
+      p(t('gs.inkasso'), 'pf-frage');
+      unterkarten(GS_INKASSO, 'gs-i-');
+    } else if (sp.bereich === 'inkasso' && sp.fall === 'pruef') {
+      Geld.pruefliste(box, neu);
+      tipp('sp.schulden.inkasso', 'inkasso');
+      box.appendChild(quellenEl([t('sp.schulden.quellen')]));
+    } else if (sp.bereich === 'inkasso' && sp.fall === 'schreiben') {
+      Geld.schreibenSeite(box, neu);
+    } else if (sp.bereich === 'inkasso' && sp.fall === 'rate') {
+      p(t('gs.rate'), 'pf-frage');
+      tipp('sp.schulden.rate', 'rate');
+      var hr = window.Haushalt ? Haushalt.rest() : null, hd = window.Haushalt ? Haushalt.daten() : null; // frei vor Raten wie in der Schulden-Liste (Schulden.vergleich)
+      if (hr && !hr.leer) p(t('sl.hh.frei', { b: { eur: Math.round((hr.rest + (hd && hd.plan && hd.plan.aus && hd.plan.aus.raten > 0 ? hd.plan.aus.raten : 0)) / 100) } }), 'gs-frei'); else p(t('sl.hh.keiner'), 'small');
+      if (window.Haushalt) knopf('btn ghost gs-zum-plan', t('hb.kachel'), function () { oeffneVon('haushalt', true); });
+      box.appendChild(quellenEl([t('sp.schulden.quellen')]));
+    } else if (sp.bereich === 'hilfe' && !sp.fall) {
+      p(t('sb.h'), 'pf-frage');
+      unterkarten(GS_HILFE, 'gs-h-');
     } else if (sp.bereich === 'hilfe') {
-      p(t('gs.hilfe'), 'pf-frage');
-      var hb = document.createElement('div'); hb.className = 'gs-box gs-schritt gs-beratung';
-      var hh = document.createElement('h3'); hh.textContent = t('gs.hilfe.finden'); hb.appendChild(hh);
-      tipp('sp.schulden.4', '', hb); box.appendChild(hb);
-      p(t('sp.schulden.erst'), 'sp-zwischen');
-      tippListe(['sp.schulden.1', 'sp.schulden.2', 'sp.schulden.3'], 'sp-schritte');
-      p(t('sp.schulden.fall'), 'sp-zwischen');
-      SP_SCHULDEN_FAELLE.forEach(function (f) { tipp('sp.schulden.' + f, f); });
+      if (sp.fall === 'termin') Geld.wartezeit(box);
+      else if (sp.fall === 'mappe') Geld.mappe(box);
+      else if (sp.fall === 'finden') {
+        p(t('sb.finden'), 'pf-frage');
+        var hb = document.createElement('div'); hb.className = 'gs-box gs-schritt gs-beratung'; box.appendChild(hb);
+        ['sl.hilfe.1', 'sl.hilfe.4', 'sl.hilfe.5', 'sl.hilfe.2', 'sl.hilfe.3'].forEach(function (k) { var e = document.createElement('p'); e.textContent = t(k); hb.appendChild(e); });
+        tipp('sp.schulden.unserioes', 'unserioes');
+      } else if (sp.fall === 'ablauf') {
+        p(t('sb.ablauf'), 'pf-frage');
+        p(t('sb.ablauf.lead'), 'hint');
+        tippListe(['sp.schulden.1', 'sp.schulden.2', 'sp.schulden.3'], 'sp-schritte');
+        tipp('sp.schulden.insolvenz', 'insolvenz');
+      } else {
+        p(t('sb.unser'), 'pf-frage');
+        tipp('sp.schulden.unserioes', 'unserioes');
+      }
       box.appendChild(quellenEl([t('sp.schulden.quellen')]));
-    } else if (!sp.thema) {
-      p(t('sp.h'), 'pf-frage');
-      p(t('sp.wahl'), 'hint');
+    } else if (!sp.thema) { // Mein Geld planen: Haushaltsplan, Abschlag prüfen, darunter die Themen von „Geld sparen im Alltag“
+      p(t('gs.planen'), 'pf-frage');
+      var rp = raster();
+      if (window.Haushalt) {
+        rp.appendChild(skKachel('gs-p-hh', '<path d="M4 7h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a1 1 0 0 1-1-1z"/><path d="M4 7l11-3v3"/><circle cx="16" cy="13.5" r="1"/>', t('hb.kachel'), t('hb.kachel.t'), function () { oeffneVon('haushalt', true); }));
+        rp.appendChild(skKachel('gs-p-abschlag', '<path d="M13 2L4 14h7l-1 8 9-12h-7z"/><circle cx="18" cy="18" r="4"/><path d="M18 16v2l1.2 1"/>', t('pl.abschlag'), t('pl.abschlag.t'), abschlagPruefen));
+      }
+      var h3 = document.createElement('h3'); h3.className = 'gs-sparen-h'; h3.textContent = t('sp.h'); box.appendChild(h3);
       var r2 = raster();
       SP_THEMEN.forEach(function (x) { r2.appendChild(skKachel('gs-t-' + x[0], x[4], t(x[1]), t(x[2]), function () { sp.thema = x[0]; spRender(true); })); });
     } else {
@@ -2704,10 +2796,12 @@
       }
       box.appendChild(quellenEl([t('sp.quellen')]));
     }
+    if (fokusId && $(fokusId)) { $(fokusId).focus(); return; }
     if (fokus) { var h = box.querySelector('.pf-frage'); if (h) { h.setAttribute('tabindex', '-1'); h.focus(); } }
   }
   // Eine Ebene zurück innerhalb von „Geld und Schulden“; false = schon auf der obersten Ebene
   function spEbeneZurueck() {
+    if (window.Geld && Geld.zurueck(sp.fall)) return true;
     if (sp.fall) sp.fall = '';
     else if (sp.thema) sp.thema = '';
     else if (sp.bereich) sp.bereich = '';
@@ -2741,17 +2835,26 @@
       keys.forEach(function (k) { var li = document.createElement('li'); li.appendChild(tippEl(k)); ol.appendChild(li); });
       d.appendChild(ol); box.appendChild(d);
     };
-    // Verweis auf „Geld und Schulden“ → „Kostenlose Hilfe“: nur unter dem Ergebnis, nicht vor dem Rechnen. „Zurück“ führt von dort eine Ebene hoch.
-    var spVerweis = function () { var d = knoepfe('btns'); d.appendChild(nhKnopf('btn ghost pf-zur-hilfe', esc(t('gs.hilfe')), null, function () { gsSprung('hilfe'); })); };
+    // Verweis auf „Geld und Schulden“ → „Schuldnerberatung“: nur unter dem Ergebnis, nicht vor dem Rechnen. „Zurück“ führt von dort eine Ebene hoch.
+    var spVerweis = function () { var d = knoepfe('btns'); d.appendChild(nhKnopf('btn ghost pf-zur-hilfe', esc(t('sb.h')), null, function () { gsSprung('hilfe'); })); };
     var heute = new Date().toISOString().slice(0, 10);
     if (heute > Rules.RULES.pfaendung.gueltigBis) p(t('pf.alt'), 'warn');
     if (!pf.art) {
       p(t('pf.wahl'), 'pf-frage');
       var l = knoepfe('weg-liste');
-      [['lohn', 'pf.lohn', 'pf.lohn.t', '<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 9v6M18 9v6"/>'], ['konto', 'pf.konto', 'pf.konto.t', '<path d="M3 10l9-6 9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/>']].forEach(function (x) {
-        l.appendChild(nhKnopf('weg', '<span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + x[3] + '</svg></span><span class="weg-txt"><b>' + esc(t(x[1])) + '</b><span>' + esc(t(x[2])) + '</span></span>', null, function () { pf.art = x[0]; pf.schritt = 1; pfRender(true); }));
+      // dritte Karte: Bescheinigung für das P-Konto (Musterschreiben, § 903 ZPO, src/geld.js)
+      [['lohn', 'pf.lohn', 'pf.lohn.t', '<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 9v6M18 9v6"/>'], ['konto', 'pf.konto', 'pf.konto.t', '<path d="M3 10l9-6 9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/>'],
+        ['besch', 'ms.pkonto', 'ms.pkonto.t', '<path d="M6 3h9l4 4v14H6z"/><path d="M9 14l2 2 4-4"/>']].forEach(function (x) {
+        if (x[0] === 'besch' && !window.Geld) return;
+        l.appendChild(nhKnopf('weg pf-w-' + x[0], '<span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + x[3] + '</svg></span><span class="weg-txt"><b>' + esc(t(x[1])) + '</b><span>' + esc(t(x[2])) + '</span></span>', null, function () { pf.art = x[0]; pf.schritt = 1; pfRender(true); }));
       });
+      if (beratung && window.Geld) Geld.pfMaske(box, Rules, E, parseAmount); // Beratungsmodus (B2): alles auf einer Seite mit Rechenweg
       if (fokus) { var f0 = box.querySelector('button'); if (f0) f0.focus(); }
+      return;
+    }
+    if (pf.art === 'besch') {
+      Geld.schreibenSeite(box, function (id) { pfRender(false); if (id && $(id)) $(id).focus(); }, 'pkonto');
+      if (fokus) { var hb0 = box.querySelector('.pf-frage'); if (hb0) { hb0.setAttribute('tabindex', '-1'); hb0.focus(); } }
       return;
     }
     // Schritt 1: Zahl der Unterhaltsberechtigten (große Zahlenknöpfe)
@@ -2865,7 +2968,7 @@
     var a = aktAnsicht, sub = '', d = 0, x;
     if (a === 'pflege') { d = (pa.antworten && +pa.antworten.pos) || 0; sub = 'q' + d; }
     else if (a === 'pfaendung') { d = pf.schritt; sub = pf.art + d; }
-    else if (a === 'sparen') { d = (sp.bereich ? 1 : 0) + (sp.fall ? 1 : 0) + (sp.thema ? 1 : 0); sub = sp.bereich ? [sp.bereich, sp.fall || sp.thema].filter(Boolean).join('-') : ''; }
+    else if (a === 'sparen') { d = (sp.bereich ? 1 : 0) + (sp.fall ? 1 : 0) + (sp.thema ? 1 : 0) + (window.Geld ? Geld.tiefe(sp.fall) : 0); sub = sp.bereich ? [sp.bereich, sp.fall || sp.thema].filter(Boolean).join('-') + (window.Geld && Geld.tiefe(sp.fall) ? '-w' : '') : ''; }
     else if (a === 'schulden') { x = $('slBlatt'); d = ($('slEingabe') ? 1 : 0) + (x && !x.hidden ? 1 : 0); sub = d ? 'e' + d : ''; }
     else if (a === 'ausziehen') { d = window.Ausziehen && Ausziehen.offen() ? 1 : 0; sub = d ? 'offen' : ''; }
     else if (a === 'briefe') { d = $('checkBox').hidden ? 0 : 1; sub = d ? (briefArt || '') : ''; }
@@ -2883,6 +2986,7 @@
   // Offene Blätter und Dialoge zuerst schließen (Zurück-Taste, Browser-Zurück, Wischen)
   function blattSchliessen() {
     if (!$('ergBlatt').hidden) { ebSchliessen(); return true; }
+    if (window.Schulden && Schulden.blattOffen && Schulden.blattOffen() && aktAnsicht !== 'schulden') { Schulden.zurueck(); return true; }
     if (!$('legal').hidden) { closeLegal(); return true; }
     if (!$('mappe').hidden) { closeMappe(); return true; }
     return false;
@@ -2901,7 +3005,7 @@
     }
     if ((a === 'einst' || a === 'ordner') && sub) usZeigen(a, sub, true);
     else if (a === 'briefe' && BRIEF_TEIL[sub]) briefOeffnen(sub);
-    else if (a === 'sparen' && sub) { var sx = sub.split('-'); gsOeffne(sx[0]); if (sx[1]) { if (sx[0] === 'dringend') sp.fall = sx[1]; else sp.thema = sx[1]; } spRender(true); }
+    else if (a === 'sparen' && sub) { var sx = sub.split('-'); if (sx[0] === 'sparen') sx[0] = 'planen'; gsOeffne(sx[0]); if (sx[1]) { if (sx[0] === 'planen') sp.thema = sx[1]; else sp.fall = sx[1]; } spRender(true); }
     else if (a === 'pflegestart' && /^pg/.test(sub)) puOeffnen('pg');
     else if (a === 'pflegestart' && /^liste\d$/.test(sub)) puOeffnen('liste', +sub.slice(5));
   }
@@ -3028,6 +3132,7 @@
     if (window.Ausziehen && Ausziehen.neuLaden) Ausziehen.neuLaden(); // und eigene Haken und Notizen bei „Ich ziehe aus“
     if (window.FristenOrdner) FristenOrdner.neuLaden(); // und eigene Fristen
     if (window.Schulden && Schulden.neuLaden) Schulden.neuLaden(); // und eine eigene Schulden-Liste
+    if (window.Geld) Geld.neuLaden(); // und eigene Haken unter „Schuldnerberatung“ (Bis zum Termin, Beratungsmappe)
     vgRender();
   }
   function pfLeer() { return { art: '', schritt: 0, netto: '', pers: null, kg: null, kiz: '' }; }
@@ -3913,13 +4018,29 @@
       lang: function () { return lang; }, euro: function (x) { return Fmt.euro(x, lang, I18N[lang]['meta.dir'] === 'rtl'); }, euroDe: function (x) { return Fmt.euro(x, 'de'); },
       datum: function (d) { return Fmt.datum(d, lang); }, datumDe: function (d) { return Fmt.datum(d, 'de'); }, zeige: oeffneVon, plug: plug, nativ: NATIVE,
       haushalt: function () { if (!window.Haushalt) return null; var r = Haushalt.rest(), d = Haushalt.daten(); return { rest: r, raten: d && d.plan && d.plan.aus && d.plan.aus.raten || 0 }; },
-      pdf: function (seiten, titel, name, msg) { pdfAusgeben(seiten, titel, name, msg, plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen', false); }
+      pdf: function (seiten, titel, name, msg) { pdfAusgeben(seiten, titel, name, msg, plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen', false); },
+      beratung: function () { return beratung; },
+      // Knöpfe je Eintrag: „Stimmt der Brief?“ und „Schreiben“ (src/geld.js); „Schuldnerberatung“ statt der Aufklapper
+      geld: function (was, e) { if (!window.Geld) return; if (was === 'schreiben') { Geld.schreibenVorbelegen('', e); gsSprung('inkasso', '', 'schreiben'); } else if (was === 'pruef') gsSprung('inkasso', '', 'pruef'); else gsSprung('hilfe'); }
     });
     // Fristende aus dem Rechenkern der Fristen (src/fristen.js), wenn vorhanden; sonst rechnet die Liste selbst (Rückfall auch bei ungültigem Ergebnis)
     var FO = window.FristenOrdner;
     if (FO && (typeof FO.endeTage === 'function' || typeof FO.endeWochen === 'function')) Schulden.fristRechner(function (zu, tage) {
       if (typeof FO.endeTage === 'function') return FO.endeTage(zu, tage);
       return tage % 7 ? null : FO.endeWochen(zu, tage / 7);
+    });
+  }
+  // Geld und Schulden, neue Teile (src/geld.js): Haken „Bis zum Termin“ und „Beratungsmappe“ je Vorgang (lotse.beratung-haken in Vorgaenge.DATEN)
+  if (window.Geld) {
+    Geld.speicherOrt({ laden: function (cb) { Store.get('lotse.beratung-haken', cb); }, schreiben: function (text) { Store.set('lotse.beratung-haken', text); } });
+    Geld.init({
+      t: t, tDe: tDe, lang: function () { return lang; }, beratung: function () { return beratung; }, datumDe: function (d) { return Fmt.datum(d, 'de'); },
+      kachel: function (cls, sym, titel, text, fn) { return skKachel(cls, TIPP_SYM[sym] || TIPP_SYM.liste, titel, text, fn); }, tipp: function (k, cls) { return tippEl(k, cls); },
+      ziel: gsZiel, schreibenOeffnen: function (art) { Geld.schreibenVorbelegen(art); sp.fall = 'schreiben'; spRender(true); },
+      schulden: function () { var d = window.Schulden && Schulden.daten(); return d ? d.liste.filter(function (e) { return e.st !== 'erledigt'; }) : []; },
+      planFertig: function () { return !!(window.Haushalt && Haushalt.rest().ausgefuellt); },
+      mappeDrucken: window.Schulden ? function () { oeffneVon('schulden', true); Schulden.blatt(); } : null, // Druck: Blatt der Schulden-Liste mit Haushaltsplan und Unterlagenliste
+      textAusgeben: function (text, titel, msg) { if (!NATIVE) { schreibenDrucken(text); return; } schreibenAusgeben({ value: text }, titel, plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen', msg); }
     });
   }
   window.addEventListener('hashchange', function () { var a = location.hash.slice(1); if (ANSICHTEN.indexOf(a) >= 0 && a !== aktAnsicht) zeigeAnsicht(a, true); });

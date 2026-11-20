@@ -1009,6 +1009,26 @@
   .gs-box h3 { font-size: 1em; margin: 0 0 4px; }
   .gs-box p { margin: 0; }
   .gs-box.gs-schritt { border-inline-start-color: var(--c-leistungen-t); }
+  /* Geld und Schulden, neue Teile (src/geld.js): Krisen-Check, Haken-Listen, Kopfkarte der Schulden-Liste, Brücke im Haushaltsplan */
+  .kc-frage { font-size: 1.2em; font-weight: 600; margin: 8px 0 16px; }
+  .kc-knoepfe { grid-template-columns: 1fr 1fr; }
+  .kc-liste { list-style: none; padding: 0; margin: 8px 0; display: grid; gap: 10px; max-width: 640px; }
+  .kc-liste > li > .uk-karte { width: 100%; }
+  ol.kc-liste { counter-reset: kc; }
+  ol.kc-liste > li { counter-increment: kc; display: grid; grid-template-columns: 2em 1fr; align-items: center; }
+  ol.kc-liste > li::before { content: counter(kc) "."; font-weight: 700; font-size: 1.2em; }
+  .kc-alle .check, .ip-liste .check, .sb-haken .check { margin: 6px 0; }
+  .ip-liste { border: 0; padding: 0; margin: 8px 0; }
+  .sb-haken { list-style: none; padding: 0; margin: 8px 0; }
+  .sb-zeile { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px; border-bottom: 1px solid var(--line); padding: 6px 0; }
+  .sl-kopfkarte, .hb-bruecke { border: 1px solid var(--line); border-inline-start: 4px solid var(--uk, var(--accent)); border-radius: var(--r-item); background: var(--surface); padding: 12px 14px; margin: 12px 0; }
+  .sl-kopfkarte h3 { font-size: 1em; margin: 0 0 4px; }
+  .sl-reihe { margin: 4px 0; padding-inline-start: 1.4em; }
+  .hb-bruecke-t { font-weight: 600; margin: 0 0 4px; }
+  .gs-sparen-h { font-size: 1em; margin: 20px 0 0; }
+  .ms-text { width: 100%; font-family: inherit; }
+  .gs-klient { margin: 0 0 8px; }
+  .sl-tabelle { margin: 8px 0; }
   .sp-link-karte { text-decoration: none; min-height: 0; margin: 16px 0; max-width: 640px; }
   .frist.gs-frist h3 { font-size: var(--fs-s); margin: 0; color: var(--ink); }
   .app[data-ansicht="sparen"] .weg-sym { background: var(--c-sparen); color: var(--on-c); }
@@ -2014,6 +2034,7 @@ Behoerden.init(/*BEHOERDENDATA*/null);
 /*AUSZIEHEN*/
 /*FRISTEN*/
 /*SCHULDEN*/
+/*GELD*/
 /*SCHRITTE*/
 </script>
 <script>

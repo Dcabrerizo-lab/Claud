@@ -171,6 +171,46 @@ d.querySelector('#appnav [data-ansicht="ordner"]').click();
 setLang('ar');
 check('Arabisch: Leiste und Ordner übersetzt, rechts nach links', $('app').getAttribute('dir') === 'rtl' && d.querySelector('#appnav [data-ansicht="ordner"]').textContent === I18N.ar['nav.ordner'] && $('or-ergebnis').querySelector('b').textContent === I18N.ar['ordner.ergebnis']);
 setLang('de');
+// ---------- Geld und Schulden: Beratungsmodus als dichtere Sicht (Konzept g, U8); Privatnutzer sieht NICHTS Zusätzliches ----------
+{
+  const navZur = (v) => d.querySelector('#v-' + v + ' [data-nav-zurueck]').click();
+  const sp = () => $('spInhalt');
+  const zuGeld = () => { d.querySelector('#appnav [data-ansicht="start"]').click(); $('goGeld').click(); };
+  const k = (sel) => { const e = sp().querySelector(sel); if (!e) throw new Error('fehlt: ' + sel); e.click(); };
+  // ein Eintrag in der Schulden-Liste (für Tabelle und Auswahl im Schreiben)
+  w.location.hash = '#schulden'; w.dispatchEvent(new w.HashChangeEvent('hashchange'));
+  if (!d.querySelector('#slInhalt .sl-eintrag')) { $('sl-neu').click(); $('sl-f-g').value = 'Beispiel Inkasso'; fire($('sl-f-g'), 'input'); $('sl-speichern').click(); }
+  const seiten = () => {
+    const o = {};
+    zuGeld(); o.kacheln = sp().innerHTML;
+    k('.gs-dringend'); o.dringend = sp().innerHTML; k('.gs-d-check'); o.check = sp().innerHTML; navZur('sparen'); navZur('sparen');
+    k('.gs-inkasso'); k('.gs-i-pruef'); o.pruef = sp().innerHTML; navZur('sparen');
+    k('.gs-i-schreiben'); k('.ms-geduld'); o.schreiben = sp().innerHTML; navZur('sparen'); navZur('sparen'); navZur('sparen');
+    k('.gs-hilfe'); k('.gs-h-termin'); o.termin = sp().innerHTML; navZur('sparen'); k('.gs-h-mappe'); o.mappe = sp().innerHTML; navZur('sparen'); navZur('sparen');
+    k('.gs-bleibt'); let n = 0; while (!d.querySelector('#pfInhalt .pf-w-lohn') && n++ < 5) navZur('pfaendung'); o.pfaendung = $('pfInhalt').innerHTML;
+    w.location.hash = '#schulden'; w.dispatchEvent(new w.HashChangeEvent('hashchange')); o.schulden = $('slInhalt').innerHTML;
+    return o;
+  };
+  check('[ber-geld] Beratungsmodus ist aus', $('beratungBtn').getAttribute('aria-checked') === 'false');
+  const vorher = seiten();
+  const mitBer = (o) => Object.keys(o).filter((x) => /ber-nur/.test(o[x]));
+  const VERBOTEN = /Gesprächsnotiz|Klient|Handzettel|13a Abs\. 1 Nr|Pfändung auf einer Seite|sl-tabelle|sl-ansicht/;
+  check('[ber-geld] Privatmodus: auf keiner Seite ein Element für Fachkräfte (ber-nur), keine Fundstelle, keine Gesprächsnotiz, kein Klient', mitBer(vorher).length === 0 && !Object.values(vorher).some((h) => VERBOTEN.test(h)), mitBer(vorher).concat(Object.keys(vorher).filter((x) => VERBOTEN.test(vorher[x]))));
+  $('beratungBtn').click();
+  const an = seiten();
+  check('[ber-geld] Beratungsmodus: zusätzliche Sicht auf Kacheln (Klient), Krisen-Check (alle Fragen, Notiz), Prüfliste (Fundstellen), Schreiben (Absender), Bis zum Termin (Handzettel), Pfändung (eine Seite), Schulden-Liste (Tabelle)',
+    ['kacheln', 'check', 'pruef', 'schreiben', 'termin', 'mappe', 'pfaendung', 'schulden'].every((x) => /ber-nur/.test(an[x])) && /Klient/.test(an.kacheln) && /kc-notiz/.test(an.check) && /§ 13a Abs\. 1 Nr\. 1 RDG/.test(an.pruef) && /pf-maske/.test(an.pfaendung) && /sl-ansicht-tabelle/.test(an.schulden), mitBer(an));
+  zuGeld(); k('.gs-dringend'); k('.gs-d-check');
+  check('[ber-geld] Krisen-Check im Beratungsmodus: alle 7 Fragen auf einer Seite', sp().querySelectorAll('.kc-alle input[type=checkbox]').length === 7);
+  w.location.hash = '#schulden'; w.dispatchEvent(new w.HashChangeEvent('hashchange')); $('sl-ansicht-tabelle').click();
+  check('[ber-geld] Schulden-Liste: Tabelle mit Gläubiger und Sortierung', !!d.querySelector('#slInhalt .sl-tabelle') && /Beispiel Inkasso/.test(d.querySelector('#slInhalt .sl-tabelle').textContent) && !!$('sl-sort'));
+  $('sl-ansicht-karten').click();
+  $('beratungBtn').click();
+  const nachher = seiten();
+  const anders = Object.keys(vorher).filter((x) => vorher[x] !== nachher[x]);
+  check('[ber-geld] Nach dem Ausschalten: jede Seite wieder genau wie vorher (DOM-Vergleich)', anders.length === 0, anders);
+  d.querySelector('#appnav [data-ansicht="start"]').click();
+}
 check('Keine Skriptfehler', errors.length === 0, errors.join('; '));
 console.log(fails ? '\n' + fails + ' FEHLER' : '\nAlle Tests (Beratungsmodus, Ergebnisblatt, Checkliste, Mappe) bestanden');
 process.exit(fails ? 1 : 0);

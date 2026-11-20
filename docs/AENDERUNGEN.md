@@ -2,6 +2,14 @@
 
 Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss steigen). Die Versionsnummer kommt aus dem Build.
 
+## Nächstes Update nach 1.7.0 (in Arbeit)
+- **Geld und Schulden neu geordnet**: Es ist dringend · Was bleibt mir? · Meine Schulden-Liste · **Post vom Inkasso** · Mein Geld planen (mit Spartipps) · **Schuldnerberatung**.
+- **Krisen-Check „Was ist zuerst dran?“** (7 Fragen) und neuer Fall **Geldstrafe: Haft droht**.
+- **Inkasso-Brief prüfen** (6 Punkte nach § 13a RDG) und **Musterschreiben**: Bitte um Geduld, Forderungsaufstellung, Widerspruch, Bescheinigung für das P-Konto.
+- **Bis zum Termin** und **Beratungsmappe** zum Abhaken (je Vorgang gespeichert); Schulden-Liste mit „Was ist zuerst wichtig?“ oben und Knöpfen je Eintrag.
+- Haushaltsplan: bei knappem Geld Karte „Leistungs-Check“ direkt unter dem Ergebnis.
+- **Beratungsmodus**: dichtere Sicht für Fachkräfte (Tabelle, Pfändung auf einer Seite, Gesprächsnotiz, Handzettel); im Privatmodus ändert sich nichts.
+
 ## 1.7.0 (ab Versionsnummer 149, November 2026)
 - **Geld und Schulden** sind jetzt eine Kachel auf der Startseite, mit 6 Unterkacheln (z. B. „Es ist dringend“, Schulden-Liste, Haushaltsplan, Kostenlose Hilfe).
 - **Pflege**: Die Pflegegrad-Einschätzung hat eine eigene Ergebnisseite.
