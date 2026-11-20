@@ -99,5 +99,9 @@
   "fri.zeile": "Mektupta bulunan: “{zeile}”",
   "fri.feld.fest": "Mektuba göre süre (lütfen kontrol et, günü değiştirebilirsin)",
   "fri.feld.fest.fehlt": "Lütfen sürenin gününü gir.",
-  "fri.voll": "Liste dolu (50 açık süre). Önce bir süreyi tamamlandı olarak işaretle veya sil."
+  "fri.voll": "Liste dolu (50 açık süre). Önce bir süreyi tamamlandı olarak işaretle veya sil.",
+  "fri.art.wid.offen": "Widerspruch, Einspruch veya Klage (itiraz veya dava)",
+  "fri.art.wid.wg": "Karara Widerspruch veya Klage ({stelle})",
+  "fri.wid.offen": "Başvuru yolunun adı kuruma göre değişir: çoğunlukla Widerspruch, çocuk parasında (Kindergeld) Einspruch, bazen de yalnızca dava (Klage) mümkündür. Senin için hangisinin geçerli olduğu mektubun sonundaki Rechtsbehelfsbelehrung bölümünde yazar. Yazın bu güne kadar oraya ulaşmış olmalı.",
+  "fri.wid.wg": "Kira yardımı (Wohngeld): Bazı eyaletlerde Widerspruch yoktur. O zaman yalnızca Verwaltungsgericht’te dava (Klage) mümkündür, süre aynıdır. Senin için hangisinin geçerli olduğu kararın sonundaki Rechtsbehelfsbelehrung bölümünde yazar."
 }

@@ -7,6 +7,10 @@
 // Rechnung (Quellen abgerufen am 20.11.2026, Entwurf docs/entwuerfe/fristen.md Abschnitt 4). SoLo nennt immer den frühesten möglichen Tag:
 // - Bescheid per Post: bekannt gegeben am 4. Tag nach Aufgabe zur Post (§ 37 Abs. 2 SGB X, seit 1.1.2025), nicht auf einen Werktag verschoben
 //   (BSG 6.5.2010, B 14 AS 12/09 R). Widerspruch 1 Monat (§ 84 Abs. 1 SGG), Ende nach § 64 SGG.
+//   Gleicher Tag bei Wohngeld (SGB X gilt, § 68 Nr. 10 SGB I; Widerspruch § 70 VwGO oder, wo je Land abgeschafft, Klage § 74 Abs. 1 Satz 2 VwGO;
+//   Ende § 57 VwGO, § 222 ZPO) und Kindergeld (4. Tag § 122 Abs. 2 Nr. 1 AO, Einspruch § 355 Abs. 1 AO, Ende § 108 AO). Nur das Wort ist anders:
+//   Wohngeld „Widerspruch oder Klage“, Brief ohne bekannte Stelle „Widerspruch, Einspruch oder Klage“ (fri.wid.wg, fri.wid.offen).
+//   Kinderzuschlag (Familienkasse): Widerspruch, Sozialgericht (§ 15 BKGG).
 // - Anhörung, Mitwirkung (keine Verwaltungsakte): ab dem Tag des Erhalts, sonst ab dem Briefdatum („Ungefähr“, nie ein zu später Tag),
 //   §§ 187, 188 BGB, § 26 SGB X. Sagt der Brief „ab Datum dieses Schreibens“, immer ab dem Briefdatum („Gerechnet“, kein Feld „bekommen am“).
 // - Mahnbescheid, Vollstreckungsbescheid: 2 Wochen ab Zustellung (§ 692 Abs. 1 Nr. 3, § 700, § 339 ZPO), Ende § 222 ZPO.
@@ -273,9 +277,12 @@ var FristenOrdner = (function () {
   function titelVon(e) {
     if (e.art === 'eigen' || (e.art === 'frist' && e.titel)) return e.titel;
     if (e.art === 'wb') return t('fri.art.wb', { leistung: leistungName(e.leistung) });
-    var s = t('fri.art.' + e.art, { stelle: e.stelle && e.stelle !== 'andere' ? t('fri.stelle.' + e.stelle) : '\u0000' });
+    // Rechtsweg je Stelle: Wohngeld Verwaltungsrechtsweg (Widerspruch § 70 VwGO, je Land abgeschafft: dann Klage, § 68 Abs. 1 Satz 2, § 74 VwGO);
+    // Brief ohne bekannte Stelle: Widerspruch, Einspruch (Kindergeld, § 355 AO) oder Klage. Die App legt sich dann nicht auf ein Wort fest.
+    var s = t(widOffen(e) ? 'fri.art.wid.offen' : e.art === 'wid' && e.stelle === 'wg' ? 'fri.art.wid.wg' : 'fri.art.' + e.art, { stelle: e.stelle && e.stelle !== 'andere' ? t('fri.stelle.' + e.stelle) : '\u0000' });
     return s.replace(/\s*[(（]\s*\u0000\s*[)）]/g, '').replace(/\u0000/g, t('fri.stelle.andere')).trim();
   }
+  function widOffen(e) { return e.art === 'wid' && (!e.stelle || e.stelle === 'andere'); }
   function bereit() { return !!(ctx && geladen && daten); }
   function aktivListe() {
     if (!bereit()) return [];
@@ -432,7 +439,8 @@ var FristenOrdner = (function () {
     if (e.art === 'wb') {
       art.appendChild(el('p', 'small', t('fri.art.wb.t', { leistung: leistungName(e.leistung), ende: datumText(e.ende) })));
       if (h > e.ende) art.appendChild(el('p', 'small warn', t('fri.art.wb.spaet')));
-    } else if (e.art !== 'eigen') art.appendChild(el('p', 'small', t('fri.art.' + e.art + '.t')));
+    } else if (e.art !== 'eigen') art.appendChild(el('p', 'small', t(widOffen(e) ? 'fri.wid.offen' : 'fri.art.' + e.art + '.t')));
+    if (e.art === 'wid' && e.stelle === 'wg') art.appendChild(el('p', 'small', t('fri.wid.wg')));
     if (e.notiz) art.appendChild(el('p', 'small fri-notiz', e.notiz)); // nur als Text
     var ab = ctx.ablauf ? ctx.ablauf() : null;
     if (ab && e.bis) { var abTag = ab.getFullYear() + '-' + zwei(ab.getMonth() + 1) + '-' + zwei(ab.getDate()); if (abTag < e.bis) art.appendChild(el('p', 'small warn', t('fri.vorgangWeg', { datum: datumText(abTag), bis: datumText(e.bis) }))); }

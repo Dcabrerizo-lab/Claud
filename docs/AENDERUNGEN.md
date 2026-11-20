@@ -2,6 +2,17 @@
 
 Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss steigen). Die Versionsnummer kommt aus dem Build.
 
+## 1.6.0 (ab Versionsnummer 148, November 2026)
+- Ab Versionsnummer 148: **Fristen-Übersicht** in „Mein Ordner“: Fristen aus Briefen merken (Tag vor dem Speichern prüfen und ändern), Rechenweg sichtbar, erledigte abhaken.
+- Ab Versionsnummer 148: **Schulden-Liste** mit Druckblatt (auch als PDF) und CSV-Export; Haushaltsplan kann mitgedruckt werden.
+- Ab Versionsnummer 148: **Energiekosten-Check** für Strom und Gas: Zählerstände eintragen, Verbrauch und Abschlag vergleichen, Brief zum Senken des Abschlags.
+- Ab Versionsnummer 148: **Höchstbetrag der Miete beim Wohngeld** wird angezeigt (bei unsicherer Mietenstufe als Spanne, „möglich“).
+- Ab Versionsnummer 148: **Hilfe bei Aufforderung zur Senkung der Wohnkosten** (Brief vom Amt lesen, Antwort-Entwurf, Frist merken).
+- Ab Versionsnummer 148: **Zweites Einkommen je Person**: Bei zwei Erwachsenen hat jede Person ein Feld „Weiteres Einkommen“ (Fragebogen, Haushaltsplan, Antragsmappe).
+- Ab Versionsnummer 148: **Hinweise im Haushaltsbuch** zu Mehrbedarf, Erspartem sowie Pflege- und Steuer-Belegen.
+- Ab Versionsnummer 148: **Nur geltendes Recht**: Hinweise auf geplante Änderungen entfernt. Neue Werte erscheinen erst, wenn sie gelten.
+- Ab Versionsnummer 148: Korrekturen bei Mahnbescheid und Stromschulden. Neue Texte in 13 Sprachen und Einfacher Sprache.
+
 ## 1.5.0 (ab Versionsnummer 147, November 2026)
 - Ab Versionsnummer 147: **Neue Leiste** Start | Mein Ordner | Einstellungen; Einstellungen als Liste mit Unterseiten (Haushalte, Anzeige, Fachkräfte, Über die App).
 - Ab Versionsnummer 147: **Vorgänge speichern** (z. B. einer je Haushalt) mit freiwilliger PIN-Sperre (Sichtschutz, verschlüsselt auf dem Gerät), Selbstsperre, Rückfrage vor dem Löschen und automatischem Löschen länger nicht geänderter Vorgänge.

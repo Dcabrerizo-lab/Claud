@@ -99,5 +99,9 @@
   "fri.zeile": "Waxaa laga helay warqadda: „{zeile}“",
   "fri.feld.fest": "Waqtiga sida warqaddu sheegtay (fadlan hubi, maalinta waad beddeli kartaa)",
   "fri.feld.fest.fehlt": "Fadlan geli maalinta waqtiga.",
-  "fri.voll": "Liisku waa buuxaa (50 waqti oo furan). Marka hore calaamadee waqti la dhammeeyay ama tirtir."
+  "fri.voll": "Liisku waa buuxaa (50 waqti oo furan). Marka hore calaamadee waqti la dhammeeyay ama tirtir.",
+  "fri.art.wid.offen": "Widerspruch, Einspruch ama Klage (diidmo ama dacwad)",
+  "fri.art.wid.wg": "Widerspruch ama Klage ka dhan ah go'aanka ({stelle})",
+  "fri.wid.offen": "Magaca habka diidmadu wuu ku kala duwan yahay xafiiska: inta badan Widerspruch, lacagta carruurta (Kindergeld) waa Einspruch, mararka qaarkoodna waxaa suurtagal ah oo keliya dacwad maxkamadeed (Klage). Midka adiga ku khuseeya wuxuu ku qoran yahay Rechtsbehelfsbelehrung ee dhammaadka warqadda. Warqaddaadu waa inay halkaas gaartaa ugu dambayn maalintan.",
+  "fri.wid.wg": "Kaalmada kirada (Wohngeld): gobollada qaarkood ma jiro Widerspruch. Markaas waxaa suurtagal ah oo keliya dacwad (Klage) oo la geeyo Verwaltungsgericht, isla waqtigaas. Midka adiga ku khuseeya wuxuu ku qoran yahay Rechtsbehelfsbelehrung ee dhammaadka go'aanka."
 }
