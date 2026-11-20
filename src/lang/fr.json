@@ -1022,6 +1022,7 @@
   "t.kkg.ae": "Si ton enfant de moins de 12 ans est malade, tu peux rester à la maison : les parents seuls ont droit à {tage} jours ouvrés par enfant et par an, au maximum {max} jours. La Krankenkasse paie environ {satz} % du salaire net, au maximum {hoechst} par jour.",
   "t.kkg.hinweis": "Le médecin établit un certificat, qui est transmis à l'employeur et à la Krankenkasse. Pour les enfants handicapés, cela vaut aussi après 12 ans.",
   "t.but.kita": "La crèche (Kita) et l'assistante maternelle (Tagespflege) sont gratuites si tu reçois le revenu de base (Grundsicherungsgeld), l'aide au logement (Wohngeld), le supplément pour enfants (Kinderzuschlag) ou des prestations pour demandeurs d'asile. Présente la décision (Bescheid) au Jugendamt ou à la Kita.",
+  "t.but.hort": "Si un enfant scolarisé va au Hort (accueil après l'école), aucune participation n'est due non plus – sur demande auprès du Jugendamt. Cela ne vaut généralement pas pour la Mittagsbetreuung ou l'Offener Ganztag de l'école ; là, Bildung und Teilhabe paie le repas de midi.",
   "n.mutter": "Indemnités de maternité",
   "n.kkg": "Indemnités pour enfant malade",
   "zu.mutter": "Krankenkasse",

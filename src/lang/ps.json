@@ -1022,6 +1022,7 @@
   "t.kkg.ae": "که ستاسو ماشوم له 12 کالو کم عمر لري او ناروغ وي، کولای شئ په کور کې پاتې شئ: یوازې پالونکي په کال کې د هر ماشوم لپاره {tage} کاري ورځې لري، تر ټولو زیات {max} ورځې. Krankenkasse د خالص عاید شاوخوا {satz} % ورکوي، په ورځ کې تر ټولو زیات {hoechst}.",
   "t.kkg.hinweis": "ډاکټره یا ډاکټر یو تصدیق ورکوي، چې کارګمارونکي او Krankenkasse ته ځي. د معلولیت لرونکو ماشومانو لپاره له 12 کالو وروسته هم اعتبار لري.",
   "t.but.kita": "Kita او Tagespflege (د ماشوم ورځنۍ پالنه) وړیا دي، که تاسو Grundsicherungsgeld، Wohngeld، Kinderzuschlag یا Asylbewerberleistungen ترلاسه کوئ. Bescheid په Jugendamt یا Kita کې وښایاست.",
+  "t.but.hort": "که یو د ښوونځي ماشوم Hort (له ښوونځي وروسته پالنځی) ته ځي، د هغې لپاره هم فیس نه ورکول کېږي – په Jugendamt کې د غوښتنې سره. دا معمولاً د ښوونځي Mittagsbetreuung یا Offener Ganztag لپاره نه دي؛ هلته د غرمې ډوډۍ Bildung und Teilhabe ورکوي.",
   "n.mutter": "د مورتوب پیسې",
   "n.kkg": "د ناروغ ماشوم پیسې",
   "zu.mutter": "Krankenkasse",

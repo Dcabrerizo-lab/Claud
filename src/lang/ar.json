@@ -1022,6 +1022,7 @@
   "t.kkg.ae": "إذا مرض طفلك دون 12 عامًا يمكنك البقاء في المنزل: للوالد المنفرد {tage} يوم عمل لكل طفل سنويًا، {max} يومًا على الأكثر. تدفع Krankenkasse نحو {satz} % من الصافي، حتى {hoechst} يوميًا.",
   "t.kkg.hinweis": "يصدر الطبيب شهادة لصاحب العمل ولـ Krankenkasse. للأطفال ذوي الإعاقة ينطبق ذلك أيضًا فوق 12 عامًا.",
   "t.but.kita": "الحضانة (Kita) ورعاية الأطفال النهارية مجانية إذا كنت تحصل على Grundsicherungsgeld أو Wohngeld أو Kinderzuschlag أو إعانات طالبي اللجوء. قدّم القرار إلى Jugendamt أو الحضانة.",
+  "t.but.hort": "إذا كان طفل في سن المدرسة يذهب إلى Hort (رعاية بعد المدرسة)، فلا يجب دفع رسوم لذلك أيضًا – بطلب إلى Jugendamt. لا ينطبق هذا عادةً على Mittagsbetreuung أو Offener Ganztag في المدرسة؛ هناك يدفع Bildung und Teilhabe ثمن الغداء.",
   "n.mutter": "إعانة الأمومة",
   "n.kkg": "إعانة مرض الطفل",
   "zu.mutter": "Krankenkasse",

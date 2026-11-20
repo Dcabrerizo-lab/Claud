@@ -126,6 +126,7 @@ for (const land of ['', 'NW']) {
   const b = res(hh), ohneAsyl = res({ ...hh, aufenthalt: '' });
   ck('[asyl-bezug] Wohngeld bei Asylbewerberleistungen: „unwahrscheinlich“, Hinweis Sozialamt (§ 7 Abs. 1 Satz 1 Nr. 8 WoGG)', b.wohngeld.level === 'nein' && keys(b.wohngeld)[0] === 'wohngeld.asylBezug', b.wohngeld);
   ck('[asyl-bezug] Bildung und Teilhabe bei Asylbewerberleistungen: „bekommst du“ über das Sozialamt, Kita ohne Beitrag (§ 3 Abs. 4 AsylbLG, § 90 Abs. 4 SGB VIII)', b.but.level === 'ja' && keys(b.but)[0] === 'but.asylBezug' && keys(b.but).includes('but.kita'), b.but);
+  ck('[asyl-bezug] Bildung und Teilhabe bei Asylbewerberleistungen mit Schulkind: Hort ohne Beitrag (§ 90 Abs. 4, § 22 Abs. 1 SGB VIII)', keys(b.but).includes('but.hort') && !keys(res({ ...hh, kids: 1, kidsU6: 1 }).but).includes('but.hort'), b.but);
   ck('[asyl-bezug] Rundfunkbeitrag bei Asylbewerberleistungen: Befreiung „bekommst du“ (§ 4 Abs. 1 Nr. 4 RBStV)', b.rundfunk.level === 'ja' && keys(b.rundfunk)[0] === 'rundfunk.asyl', b.rundfunk);
   ck('[asyl-bezug] Karte Asylbewerberleistungen: „bekommst du schon“', b.asylblg.level === 'na' && keys(b.asylblg)[0] === 'asyl.na', b.asylblg);
   ck('[asyl-bezug] Ohne Aufenthalt „asyl“ zählt die Auswahl nicht (wie „kein Einkommen“)', ohneAsyl.asylblg.level === 'nein' && ohneAsyl.wohngeld.tx[0][0] !== 'wohngeld.asylBezug' && ohneAsyl.rundfunk.level !== 'ja', [ohneAsyl.wohngeld, ohneAsyl.rundfunk.level]);

@@ -1022,6 +1022,7 @@
   "t.kkg.ae": "اگر طفل زیر 12 سال شما مریض است، می‌توانید در خانه بمانید: مادر یا پدر تنها {tage} روز کاری برای هر طفل در سال دارد، حداکثر {max} روز. Krankenkasse تقریباً {satz} % معاش خالص را می‌پردازد، حداکثر {hoechst} در روز.",
   "t.kkg.hinweis": "داکتر یک تصدیق می‌دهد که به کارفرما و Krankenkasse فرستاده می‌شود. برای اطفال دارای معلولیت، بالاتر از 12 سال هم اعتبار دارد.",
   "t.but.kita": "کودکستان (Kita) و نگهداری روزانه طفل (Tagespflege) رایگان است، اگر Grundsicherungsgeld، Wohngeld، Kinderzuschlag یا کمک‌های پناهجویان (Asylbewerberleistungen) می‌گیرید. Bescheid را به Jugendamt یا کودکستان نشان دهید.",
+  "t.but.hort": "اگر یک طفل مکتبی به Hort (مرکز نگهداری بعد از مکتب) می‌رود، برای آن هم لازم نیست پولی پرداخت شود – با درخواست در Jugendamt. این معمولاً برای Mittagsbetreuung یا Offener Ganztag مکتب صدق نمی‌کند؛ در آن‌جا غذای چاشت را Bildung und Teilhabe می‌پردازد.",
   "n.mutter": "پول مادری (Mutterschaftsgeld)",
   "n.kkg": "پول برای مریضی طفل",
   "zu.mutter": "Krankenkasse (بیمه صحی)",

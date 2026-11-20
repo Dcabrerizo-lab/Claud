@@ -549,6 +549,7 @@ ck('[kkg-ohne] Kinderkrankengeld: ohne Kind nein, ohne Arbeit oder nur Minijob n
 const butWg = (u6) => K({ kids: 1, kidsU6: u6, art1: 'lohn', brutto: 2600, netto: 1900, miete: 750, mietstufe: '4', vermoegen: 0 }, 'but');
 ck('[but-kita] Wohngeld möglich (noch nicht bezogen): Kita-Hinweis nur mit Kind unter 6', butWg(1).includes('but.kita') && !butWg(0).includes('but.kita'));
 ck('[but-kita] Kita beitragsfrei bei Wohngeld/Kinderzuschlag/Grundsicherung: Hinweis nur mit Kind unter 6', K({ kids: 1, kidsU6: 1, bezug: { wohngeld: true } }, 'but').includes('but.kita') && !K({ kids: 1, bezug: { wohngeld: true } }, 'but').includes('but.kita'));
+ck('[but-hort] Hort ohne Kostenbeitrag (§ 90 Abs. 4, § 22 Abs. 1 SGB VIII): Hinweis nur mit Kind ab 6, auch bei Wohngeld möglich', K({ kids: 1, bezug: { wohngeld: true } }, 'but').includes('but.hort') && !K({ kids: 1, kidsU6: 1, bezug: { wohngeld: true } }, 'but').includes('but.hort') && K({ kids: 2, kidsU6: 1, bezug: { kiz: true } }, 'but').includes('but.hort') && butWg(0).includes('but.hort') && !butWg(1).includes('but.hort'));
 
 // Unterhalt, den die Person selbst zahlt (§ 11b Abs. 1 Satz 1 Nr. 7 SGB II; § 18 WoGG; SGB XII ohne Abzug)
 const S = (o, id) => { const t = res(o).m[id].tx.find((a) => a[0] === 'schaetz.eins'); return t ? Number(t[1].a.replace(/\D/g, '')) : null; };

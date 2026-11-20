@@ -1117,22 +1117,24 @@ const Rules = (function () {
     if (h.children === 0) return mk(id, 'nein', 'keinKind', [['but.keinKind']]);
     // § 28 Abs. 1 SGB II: junge Erwachsene nur, solange sie zur Schule gehen und keine Ausbildungsvergütung bekommen
     if (h.kids === 0 && (h.ausbildung === 'kindBetrieb' || h.kindEink > 0)) return mk(id, 'nein', 'vorausFehlt', [['but.azubi']]);
+    // § 90 Abs. 4 SGB VIII: Kita und Tagespflege ohne Kostenbeitrag bei Grundsicherung, Wohngeld, Kinderzuschlag, Asylbewerberleistungen.
+    // Gilt auch für den Hort als Tageseinrichtung (§ 22 Abs. 1 SGB VIII), nicht für Mittagsbetreuung/Offenen Ganztag der Schule
+    // (https://www.gesetze-im-internet.de/sgb_8/__90.html, .../__22.html, Abruf 20.11.2026)
+    const betreuung = (h.kidsU6 > 0 ? [['but.kita']] : []).concat(h.kids > h.kidsU6 ? [['but.hort']] : []);
     const inhalt = h.young === 0 && h.kids > 0 && h.kidsU6 === h.kids ? ['but.inhaltKlein', { teil: eur(R.but.teilhabeMonat) }] : ['but.inhalt', { schul: eur(R.but.schulbedarf), teil: eur(R.but.teilhabeMonat) }];
     if (h.bezug.grundsicherungsgeld || h.bezug.sozialamt || h.bezug.kiz || h.bezug.wohngeld) {
-      return mk(id, 'ja', 'ja', [['but.bezug'], inhalt].concat(h.kidsU6 > 0 ? [['but.kita']] : []));
+      return mk(id, 'ja', 'ja', [['but.bezug'], inhalt].concat(betreuung));
     }
     // § 3 Abs. 4 AsylbLG: Bildung und Teilhabe auch mit Asylbewerberleistungen (entsprechend §§ 34, 34a, 34b SGB XII), nach 36 Monaten
     // über § 2 Abs. 1 AsylbLG (https://www.gesetze-im-internet.de/asylblg/__3.html, .../__2.html, Abruf 20.11.2026). Die App weiß nicht,
     // ob Asylbewerberleistungen bewilligt sind: „möglich“. Mit Einkommensart „Asylbewerberleistungen“ (h.asylBezug): „bekommst du“ über das
     // Sozialamt; Kita ohne Kostenbeitrag bei Leistungen nach §§ 2, 3 AsylbLG (§ 90 Abs. 4 Satz 2 SGB VIII,
     // https://www.gesetze-im-internet.de/sgb_8/__90.html, Abruf 20.11.2026)
-    if (h.asylBezug) return mk(id, 'ja', 'ja', [['but.asylBezug'], inhalt].concat(h.kidsU6 > 0 ? [['but.kita']] : []));
-    if (h.asyl) return mk(id, 'vielleicht', 'butMoeglich', [['but.asyl'], inhalt].concat(h.kidsU6 > 0 ? [['but.kita']] : []));
-    // § 90 Abs. 4 SGB VIII: Kita und Tagespflege ohne Kostenbeitrag bei Grundsicherung, Wohngeld, Kinderzuschlag, Asylbewerberleistungen
-    const kita = h.kidsU6 > 0 ? [['but.kita']] : [];
-    if (wg.level === 'ja' || kz.level === 'ja' || gg.level === 'ja') return mk(id, 'ja', 'butFolgt', [['but.folgt'], inhalt].concat(kita));
+    if (h.asylBezug) return mk(id, 'ja', 'ja', [['but.asylBezug'], inhalt].concat(betreuung));
+    if (h.asyl) return mk(id, 'vielleicht', 'butMoeglich', [['but.asyl'], inhalt].concat(betreuung));
+    if (wg.level === 'ja' || kz.level === 'ja' || gg.level === 'ja') return mk(id, 'ja', 'butFolgt', [['but.folgt'], inhalt].concat(betreuung));
     if (wg.level === 'vielleicht' || kz.level === 'vielleicht' || gg.level === 'vielleicht') {
-      return mk(id, 'vielleicht', 'butMoeglich', [['but.moeglich'], inhalt].concat(kita));
+      return mk(id, 'vielleicht', 'butMoeglich', [['but.moeglich'], inhalt].concat(betreuung));
     }
     return mk(id, 'nein', 'vorausFehlt', [['but.fehlt']]);
   }

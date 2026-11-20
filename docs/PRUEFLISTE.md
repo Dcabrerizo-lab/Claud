@@ -161,6 +161,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Schulbedarf und Teilhabe 15 € im Monat; bei Kindern unter 6 nur Teilhabe | ✓ | `but-inhalt` |
 | Junge Erwachsene nur in der Schule, nicht mit Ausbildungsvergütung | ✓ | `but-azubi` |
 | Kita und Tagespflege ohne Kostenbeitrag bei Grundsicherung, Wohngeld, Kinderzuschlag, Asylbewerberleistungen (§ 90 Abs. 4 SGB VIII) | ✓ | `but-kita` |
+| Hort für Schulkinder ebenso ohne Kostenbeitrag, auf Antrag beim Jugendamt; nicht Mittagsbetreuung/Offener Ganztag der Schule (§ 90 Abs. 4, § 22 Abs. 1 SGB VIII, Abruf 20.11.2026) | ✓ | `but-hort` |
 
 ## Unterhaltsvorschuss (UVG)
 <!-- karten: uvg -->
