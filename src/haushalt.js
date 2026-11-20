@@ -173,7 +173,7 @@ var Haushalt = (function () {
   function wert(v) { return v === '' || v === null || v === undefined ? null : zuCent(v); }
   // Aus den Angaben im Check: Werte für den Plan (vorausfüllen). s = state des Checks oder null (keine eigenen Angaben)
   function ausCheck(s, kindergeldEuro) {
-    var o = { ek1: null, ek1Art: '', ek1NurBrutto: false, ek2: null, ek2Art: '', ek2NurBrutto: false, zwei: false, miete: null, uh: null, kinder: 0, kg: null };
+    var o = { ek1: null, ek1Art: '', ek1NurBrutto: false, ek2: null, ek2Art: '', ek2NurBrutto: false, ek1b: null, ek1bArt: '', ek2b: null, ek2bArt: '', zwei: false, miete: null, uh: null, kinder: 0, kg: null };
     if (!s) return o;
     o.zwei = s.adults === 2;
     [1, 2].forEach(function (i) {
@@ -182,6 +182,10 @@ var Haushalt = (function () {
       o['ek' + i + 'Art'] = art;
       o['ek' + i] = art === 'ohne' ? null : wert(s['ek' + i + 'Netto']);
       o['ek' + i + 'NurBrutto'] = MIT_BRUTTO.indexOf(art) >= 0 && o['ek' + i] === null && wert(s['ek' + i + 'Brutto']) !== null;
+      // Zweites Einkommen der Person (Betrag „was ankommt“), nur mit gewählter Art
+      var zArt = s['ek' + i + 'bArt'] || '';
+      o['ek' + i + 'bArt'] = zArt;
+      o['ek' + i + 'b'] = zArt ? wert(s['ek' + i + 'bBetrag']) : null;
     });
     o.miete = wert(s.miete); o.uh = wert(s.unterhalt);
     o.kinder = Number(s.kids) || 0;
@@ -202,6 +206,8 @@ var Haushalt = (function () {
       if (i === 2 && s.adults !== 2) return;
       var art = s['ek' + i + 'Art'] || '', netto = wert(s['ek' + i + 'Netto']);
       if (art && art !== 'ohne' && netto !== null) da.push({ was: 'ek', i: i, art: art, c: netto });
+      var zArt = s['ek' + i + 'bArt'] || '', zC = zArt ? wert(s['ek' + i + 'bBetrag']) : null;
+      if (zArt && zC !== null) da.push({ was: 'ek', i: i, zweit: true, art: zArt, c: zC });
       if (MIT_BRUTTO.indexOf(art) >= 0 && wert(s['ek' + i + 'Brutto']) === null) fehlt.push({ was: 'brutto', i: i, art: art, feld: 'ek' + i + 'Brutto' });
       if (!art && netto !== null) fehlt.push({ was: 'art', i: i, feld: 'ek' + i + 'Art' });
     });
@@ -406,7 +412,7 @@ var Haushalt = (function () {
   function eur(cent) { return ctx.euro((cent || 0) / 100); }
   function katName(k) { return t('hb.k.' + k); }
   function katSym(k) { var x = KAT.filter(function (a) { return a[0] === k; })[0] || KAT[8]; return '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + x[1] + '</svg>'; }
-  function leer() { return { v: 1, plan: { kg: null, leist: null, sonst: null, aus: {} }, buch: [], weg: {}, bewilligt: {}, ekBasis: null, energie: leerEnergie() }; }
+  function leer() { return { v: 1, plan: { kg: null, leist: null, sonst: null, aus: {} }, buch: [], weg: {}, bewilligt: {}, ekBasis: null, ekV: 2, energie: leerEnergie() }; }
 
   // ----- Speicherung: eine kleine Schnittstelle, später leicht an „Vorgänge“ anzubinden (Haushalt.speicherOrt) -----
   var SCHLUESSEL = 'lotse.haushalt';
@@ -430,6 +436,8 @@ var Haushalt = (function () {
     if (d.weg && typeof d.weg === 'object') Object.keys(d.weg).forEach(function (k) { if (d.weg[k] === true) x.weg[k] = true; });
     if (d.bewilligt && typeof d.bewilligt === 'object') ['sgb2', 'sgb12', 'wohngeld', 'kiz'].forEach(function (k) { if (/^\d{4}-\d\d-\d\d$/.test(d.bewilligt[k] || '')) x.bewilligt[k] = d.bewilligt[k]; });
     if (typeof d.ekBasis === 'number') x.ekBasis = d.ekBasis;
+    // ekV 2: ekBasis enthält das zweite Einkommen. Ältere Stände (ohne ekV) werden in hinweisDaten() einmal angeglichen.
+    x.ekV = d.ekV === 2 ? 2 : 1;
     x.energie = normiereEnergie(d.energie);
     if (Array.isArray(d.buch)) x.buch = d.buch.filter(function (e) { return e && /^\d{4}-\d\d-\d\d$/.test(e.d) && typeof e.c === 'number' && e.c > 0; });
     return x;
@@ -445,7 +453,7 @@ var Haushalt = (function () {
   function geteilte() { return ausCheck(check(), kindergeldEuro()); }
   function planEin() {
     var g = geteilte(), p = daten.plan;
-    return [g.ek1, g.zwei ? g.ek2 : null, p.kg !== null ? p.kg : g.kg, g.uh, p.leist, p.sonst];
+    return [g.ek1, g.ek1b, g.zwei ? g.ek2 : null, g.zwei ? g.ek2b : null, p.kg !== null ? p.kg : g.kg, g.uh, p.leist, p.sonst];
   }
   function planAus() { var a = Object.assign({}, daten.plan.aus); a.miete = geteilte().miete || 0; return a; }
   function rechnung() { return planRechnung(planEin(), planAus()); }
@@ -528,6 +536,14 @@ var Haushalt = (function () {
       });
       sl.appendChild(sel);
       fs.appendChild(f); fs.appendChild(sl);
+      // Zweites Einkommen der Person: eigene Zeile, nur wenn im Check eine Art gewählt ist (die Art wählt man dort)
+      var zArt = g['ek' + i + 'bArt'];
+      if (zArt) {
+        var zc = g['ek' + i + 'b'];
+        fs.appendChild(geldFeld('hb-ek' + i + 'b', t(i === 1 ? 'hb.ek1b' : 'hb.ek2b'), zc, t('ek.art.' + zArt) + '. ' + (zc !== null ? t('hb.uebernommen') + ' ' : '') + t('hb.geteilt'), function (neu, inp, feld) {
+          geteiltSetzen(feld, 'ek' + i + 'bBetrag', geteilte()['ek' + i + 'b'], neu, inp);
+        }));
+      }
     });
     var kgC = p.kg !== null ? p.kg : g.kg;
     fs.appendChild(geldFeld('hb-kg', t('hb.kg'), kgC, p.kg === null && g.kg !== null ? t('hb.kg.aus', { n: String(g.kinder), b: { eur: kindergeldEuro() } }) + ' ' + t('hb.uebernommen') : '', function (neu) {
@@ -587,8 +603,10 @@ var Haushalt = (function () {
   }
   function hinweisDaten(r) {
     var s = check(), g = geteilte();
-    var ekJetzt = g.ek1 === null && (!g.zwei || g.ek2 === null) ? null : (g.ek1 || 0) + (g.zwei ? g.ek2 || 0 : 0);
-    if (ekJetzt !== null && !(daten.ekBasis > 0)) { daten.ekBasis = ekJetzt; sichern(); }
+    var teile = [g.ek1, g.ek1b, g.zwei ? g.ek2 : null, g.zwei ? g.ek2b : null];
+    var ekJetzt = teile.every(function (x) { return x === null; }) ? null : teile.reduce(function (a, x) { return a + (x || 0); }, 0);
+    // Erste Basis oder einmalige Angleichung älterer Stände (Basis ohne zweites Einkommen gespeichert, sonst käme der Hinweis grundlos)
+    if (ekJetzt !== null && (!(daten.ekBasis > 0) || daten.ekV !== 2)) { daten.ekBasis = ekJetzt; daten.ekV = 2; sichern(); }
     var res = ctx.ergebnis ? ctx.ergebnis() : null, lv = null;
     if (res) { lv = {}; res.forEach(function (x) { lv[x.id] = x.level; }); }
     return hinweisListe({ aus: planAus(), eintraege: monatsEintraege(daten.buch, monat).concat(monatsEintraege(daten.buch, monatPlus(monat, -1))),
@@ -936,7 +954,7 @@ var Haushalt = (function () {
   }
   function planText() {
     var g = geteilte(), r = rechnung(), z = [t('hb.druck.h'), t('hb.druck.stand', { d: ctx.datum(new Date()) }), '', t('hb.ein')];
-    var ein = [[t('hb.ek1'), g.ek1], [g.zwei ? t('hb.ek2') : '', g.zwei ? g.ek2 : null], [t('hb.kg'), daten.plan.kg !== null ? daten.plan.kg : g.kg], [t('hb.uh'), g.uh], [t('hb.leist'), daten.plan.leist], [t('hb.sonstEin'), daten.plan.sonst]];
+    var ein = [[t('hb.ek1'), g.ek1], [t('hb.ek1b'), g.ek1b], [g.zwei ? t('hb.ek2') : '', g.zwei ? g.ek2 : null], [g.zwei ? t('hb.ek2b') : '', g.zwei ? g.ek2b : null], [t('hb.kg'), daten.plan.kg !== null ? daten.plan.kg : g.kg], [t('hb.uh'), g.uh], [t('hb.leist'), daten.plan.leist], [t('hb.sonstEin'), daten.plan.sonst]];
     ein.forEach(function (x) { if (x[1]) z.push('  ' + x[0] + ': ' + eur(x[1])); });
     z.push('  = ' + eur(r.ein), '', t('hb.aus'));
     var aus = planAus(); KAT_IDS.forEach(function (k) { if (aus[k]) z.push('  ' + katName(k) + ': ' + eur(aus[k])); });

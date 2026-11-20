@@ -14,6 +14,8 @@
   "hb.aus.t": "Tippe auf einen Bereich und trag den Betrag ein.",
   "hb.ek1": "Dein Einkommen (netto)",
   "hb.ek2": "Einkommen deines Partners oder deiner Partnerin (netto)",
+  "hb.ek1b": "Dein zweites Einkommen (netto)",
+  "hb.ek2b": "Zweites Einkommen deines Partners oder deiner Partnerin (netto)",
   "hb.ek.art": "Art des Einkommens",
   "hb.ek.hint": "Was auf dem Konto ankommt.",
   "hb.ek.nurBrutto": "Im Leistungs-Check steht nur der Brutto-Betrag. Trag hier ein, was auf dem Konto ankommt.",
