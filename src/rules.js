@@ -1971,7 +1971,11 @@ const Rules = (function () {
   }
   // Vermögensgrenzen je Leistung für den Hinweis im Haushaltsbuch (dieselben Formeln wie in den Karten)
   function vermGrenzen(h) {
-    return { ggeld: R.sgb2.schon[h.gruppe] * h.adults + R.sgb2.schon['<30'] * h.children,
+    // ggeldMin: Das Alter steht nur für die älteste erwachsene Person fest (oder gar nicht). Weitere Erwachsene können jünger sein:
+    // kleinste mögliche Grenze mit dem kleinsten Freibetrag (§ 12 Abs. 2 SGB II). Der Hinweis nennt dann keine feste Zahl.
+    const unsicher = h.gruppe === '' || h.adults > 1;
+    const min = unsicher ? (h.gruppe ? R.sgb2.schon[h.gruppe] : R.sgb2.schon['<30']) + R.sgb2.schon['<30'] * (h.adults - 1 + h.children) : 0;
+    return { ggeld: R.sgb2.schon[h.gruppe] * h.adults + R.sgb2.schon['<30'] * h.children, ggeldMin: min,
       gsa: h.wohnform !== '' ? R.grundsicherung.schonAllein : R.grundsicherung.schonAllein * h.adults + R.schonUnterhalten * h.children,
       wohngeld: R.wohngeld.vermoegenErste + R.wohngeld.vermoegenJeWeitere * (h.persons - 1),
       kiz: h.persons <= 2 ? R.kiz.vermZwei : R.kiz.vermDrei + R.kiz.vermJeWeiteres * (h.persons - 3) };

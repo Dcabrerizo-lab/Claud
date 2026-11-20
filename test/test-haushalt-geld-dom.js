@@ -48,6 +48,9 @@ setTimeout(() => {
     klick($('hb-neu')); setze('hb-betrag', '120'); klick($('hb-wahl-sonst')); setze('hb-notiz', 'Handwerker bar');
     haken('hb-beleg');
     check('[hb-belege] Steuer vorgeschlagen; „bar“ zeigt Warnung', $('hb-beleg-st').checked && !$('hb-beleg-bar').hidden && /Bar bezahlte/.test($('hb-beleg-bar').textContent));
+    setze('hb-notiz', 'Apotheke Zuzahlung bar');
+    check('[hb-bar] „bar“ ohne Handwerker/Haushaltshilfe: keine Warnung', $('hb-beleg-st').checked && $('hb-beleg-bar').hidden);
+    setze('hb-notiz', 'Handwerker bar');
     haken('hb-beleg-st');
     check('[hb-belege] alle Unterpunkte aus: Häkchen aus, Unterpunkte versteckt', !$('hb-beleg').checked && d.querySelector('.hb-beleg-art').hidden);
     klick($('hb-speichern'));
@@ -67,6 +70,7 @@ setTimeout(() => {
     klick($('hb-bl-vor'));
     check('[hb-belege] Jahr-Umschalter: Vorjahr ohne Belege', /Belege \d{4}/.test(tx(bl().querySelector('summary'))) && tx(bl().querySelector('summary')) !== 'Belege ' + jahr && /Noch keine Belege/.test(bl().textContent) && d.activeElement === $('hb-bl-vor'));
     klick($('hb-bl-nach'));
+    check('[hb-belege-heute] „Nächstes Jahr“ nicht über das laufende Jahr hinaus', tx(bl().querySelector('summary')) === 'Belege ' + jahr && $('hb-bl-nach').disabled && d.activeElement === $('hb-bl-vor'));
     // Knopf „Belegliste“ im Hinweis öffnet die Liste
     klick($('hb-tab-plan'));
     const bk = knopf('Belegliste', $('hb-hw-pflege') || d);
@@ -76,6 +80,13 @@ setTimeout(() => {
     klick(knopf('Nicht mehr zeigen', $('hb-hw-pflege')));
     check('[hb-geld] weggeklickt: nächster Geld-Hinweis (Steuer) erscheint nur, wenn nicht als Beleg markiert', geldHinweise().join() === 'steuer' && JSON.parse(mem['lotse.haushalt']).weg[Object.keys(JSON.parse(mem['lotse.haushalt']).weg)[0]] === true, geldHinweise());
     check('[hb-geld] nie zwei Geld-Hinweise gleichzeitig', geldHinweise().length <= 1);
+    // Erspartes: Grundsicherungsgeld mit Vorbehalt; Paar ohne feste Zahl (Befunde 5, 6)
+    const verm = (werte) => { w.__solo.set(Object.assign({ adults: 1, kids: 0, ek1Art: 'lohn', ek1Brutto: 1600, ek1Netto: 1250, miete: 600, heizkosten: 80, plz: '90542', bezug: { grundsicherungsgeld: true } }, werte)); zumPlan(); klick($('hb-tab-ausw')); return $('hb-hw-verm'); };
+    const v1 = verm({ gebJahr: 1980, vermoegen: 11000 });
+    check('[hb-verm-ggeld] eine Person: „möglicherweise … (etwa 12.500 €)“', !!v1 && /möglicherweise/.test(tx(v1.querySelector('p'))) && /etwa 12\.500 €/.test(tx(v1.querySelector('p'))), v1 && tx(v1));
+    const v2 = verm({ adults: 2, gebJahr: 1980, vermoegen: 15000 });
+    check('[hb-verm-paar] Paar: keine feste Zahl in der Überschrift, Hinweis auf das Alter jeder Person', !!v2 && /möglicherweise/.test(tx(v2.querySelector('p'))) && !/25\.000|17\.500/.test(tx(v2.querySelector('p'))) && /Alter jeder Person/.test(tx(v2.querySelector('p'))), v2 && tx(v2));
+    check('[hb-verm-ggeld] Aufklapptext nennt Altfälle (Bewilligung vor dem 1.7.2026)', !!v2 && /vor dem 1\.7\.2026/.test(tx(v2.querySelector('details'))), v2 && tx(v2.querySelector('details')));
     // Sprachen: keine Rohschlüssel
     ['en', 'ar', 'fa', 'so', 'uk'].forEach((l) => { w.__solo.lang(l); zumPlan(); klick($('hb-tab-ausw')); check(l + ': keine Rohschlüssel (Belege, Hinweis)', !/hb\.[a-z]/.test($('v-haushalt').textContent)); });
     w.__solo.lang('de');

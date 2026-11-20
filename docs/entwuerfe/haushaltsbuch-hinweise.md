@@ -1,6 +1,8 @@
 # Entwurf: Hinweise im Haushaltsbuch zu Mehrbedarf, Erspartem, Pflege- und Steuer-Belegen
 
 Stand: 20.11.2026. Code-Grundlage: `origin/main` (gelesen mit `git show origin/main:<pfad>`). Zeilenangaben beziehen sich auf `origin/main:src/haushalt.js` (848 Zeilen).
+
+> Nachtrag (Code-Prüfung, 20.11.2026): Alle Stellen zur Pflegereform (PNOG, `pflege.frist`, `RULES.pnog`) sind mit **NICHT GEBAUT (nur geltendes Recht)** markiert. Gebaut ist nur geltendes Recht. Pflege-Belege zählen im laufenden Kalenderjahr, bis 30.6. zusätzlich das Vorjahr (statt Halbjahre); Belege nur bis heute.
 Parallele Branches mit Überschneidung: `claude/b-energie` (haushalt.js +330 Zeilen, neuer Hinweis `energie` Prio 75, `leer()` um `energie` erweitert), b-fristen (Arbeitsstand `/home/claude/w-fristen`: `startHinweis()` gibt an `ctx.fristenNeu` ab), Entwurf b-schuldenliste (`csvFeld`-Export aus haushalt.js).
 
 ---
@@ -56,8 +58,8 @@ Schlüssel im Stil `hb.hw.<art>` (Hinweistext) und `hb.hw.<art>.d` (Aufklappen �
 |---|---|---|
 | `hb.hw.pflege` | Du hast Pflege-Belege über {b} markiert. Reich sie bei der Pflegekasse ein. Dann kannst du Geld zurückbekommen. | Du hast Belege für die Pflege. Zusammen {b}. Schick sie an die Pflegekasse. Dann bekommst du vielleicht Geld zurück. |
 | `hb.hw.pflege.d` | Den Entlastungsbetrag ({e} € im Monat, ab Pflegegrad 1) zahlt die Pflegekasse nur gegen Belege zurück, z. B. für anerkannte Alltagshilfe, Tagespflege oder Kurzzeitpflege.¹⁶ Was du in einem Jahr nicht verbrauchst, kannst du nach heutigem Recht noch bis 30. Juni des nächsten Jahres nutzen.¹⁷ Pflegehilfsmittel zum Verbrauch (z. B. Handschuhe, Bettschutz) bezahlt die Kasse bis {h} € im Monat.¹⁸ Für Verhinderungs- und Kurzzeitpflege gibt es ab Pflegegrad 2 zusammen bis zu {j} € im Jahr.¹⁹ | Die Pflegekasse gibt dir Geld zurück. Dafür brauchst du Belege. Jeden Monat bis {e} €. Nicht ausgegebenes Geld kannst du heute noch bis zum 30. Juni im nächsten Jahr nutzen. |
-| `hb.hw.pflege.frist` (nur 1.11.–31.12.2026) | Pflege: Ab 2027 soll sich der Entlastungsbetrag ändern (Gesetz noch nicht beschlossen). Nutze Reste aus 2026 möglichst noch in diesem Jahr und heb die Belege auf.²⁰ ²¹ | Achtung Pflege: Ab 2027 ändert sich vielleicht viel. Gib das Pflege-Geld für 2026 möglichst noch dieses Jahr aus. Heb die Belege auf. |
-| `hb.hw.pflege.frist.d` | Das Gesetz ist noch nicht beschlossen (1. Lesung im Bundestag am 5.11.2026).²¹ Laut Entwurf soll ab 1.1.2027 ein „Sozialraumbudget“ den Entlastungsbetrag ersetzen: nur noch ab Pflegegrad 2, nur für anerkannte Alltagshilfen und ohne Ansparen. Bei Pflegegrad 1 soll es statt Geld eine Pflegebegleitung geben. Eine Übergangsregel für Reste aus 2026 steht nicht im Entwurf.²⁰ Nach heutigem Recht kannst du Reste aus 2026 bis 30.6.2027 nutzen.¹⁷ Ob das so bleibt, ist offen. Frag deine Pflegekasse. | Das Gesetz ist noch nicht fertig. Heute gilt noch: Reste aus 2026 gehen bis 30. Juni 2027. Das kann sich ändern. Frag deine Pflegekasse. |
+| **NICHT GEBAUT (nur geltendes Recht)** `hb.hw.pflege.frist` (nur 1.11.–31.12.2026) | Pflege: Ab 2027 soll sich der Entlastungsbetrag ändern (Gesetz noch nicht beschlossen). Nutze Reste aus 2026 möglichst noch in diesem Jahr und heb die Belege auf.²⁰ ²¹ | Achtung Pflege: Ab 2027 ändert sich vielleicht viel. Gib das Pflege-Geld für 2026 möglichst noch dieses Jahr aus. Heb die Belege auf. |
+| **NICHT GEBAUT (nur geltendes Recht)** `hb.hw.pflege.frist.d` | Das Gesetz ist noch nicht beschlossen (1. Lesung im Bundestag am 5.11.2026).²¹ Laut Entwurf soll ab 1.1.2027 ein „Sozialraumbudget“ den Entlastungsbetrag ersetzen: nur noch ab Pflegegrad 2, nur für anerkannte Alltagshilfen und ohne Ansparen. Bei Pflegegrad 1 soll es statt Geld eine Pflegebegleitung geben. Eine Übergangsregel für Reste aus 2026 steht nicht im Entwurf.²⁰ Nach heutigem Recht kannst du Reste aus 2026 bis 30.6.2027 nutzen.¹⁷ Ob das so bleibt, ist offen. Frag deine Pflegekasse. | Das Gesetz ist noch nicht fertig. Heute gilt noch: Reste aus 2026 gehen bis 30. Juni 2027. Das kann sich ändern. Frag deine Pflegekasse. |
 | `hb.hw.pflege.knopf` (Knopf) | Zur Pflege | Zur Pflege |
 | `hb.hw.belege` (Knopf) | Belegliste | Belege zeigen |
 
@@ -92,7 +94,7 @@ Alle Texte sind in 13 Sprachen nötig (`src/lang/haushalt/*.json`) und in Einfac
 | `mb.dauer` | `sgb` und eine **wiederkehrende** Buchung (`w: true`) in `sonst` mit Notiz `WORTE.dauer` (`/umgang\|besuch.*kind\|fahrt.*kind\|hygiene\|inkontinenz\|medikament/i`) | – |
 | `verm` | Für jede Leistung L ∈ {ggeld, gsa, wohngeld, kiz} mit Bezug oder Check-Ergebnis ja/vielleicht: `V = Erspartes laut Check`, `G = Grenze L` (aus Rules). Hinweis, wenn `V ≥ 0,8 × G` (**App-Regel, kein Gesetz**) oder `rest > 0` und `V + 6 × rest > G` (**App-Regel**). Bei mehreren L: die kleinste Grenze. | `V > G` (dann zeigt der Check schon „nein“ mit Grund `vermHoch`); `weg['verm-'+L+'-'+G]` (neue Grenze, z. B. Geburtstag 30/40/50, zeigt ihn wieder) |
 | `pflege` | Summe der Buchungen mit `bp: true` im laufenden + vorigen Kalenderhalbjahr > 0 und nicht weggeklickt (`weg['pflege-'+Halbjahr]`) | – |
-| `pflege.frist` | Check `pflegegrad` 1–5 (oder Pflege-Belege vorhanden) **und** heute zwischen 1.11.2026 und 31.12.2026 **und** `RULES.pnog.stand === 'entwurf'` (bei Verkündung oder Scheitern Wert ändern → Hinweis verschwindet, neuer Text nötig) | `weg['pflege-frist-2026']` |
+| **NICHT GEBAUT (nur geltendes Recht)** `pflege.frist` | Check `pflegegrad` 1–5 (oder Pflege-Belege vorhanden) **und** heute zwischen 1.11.2026 und 31.12.2026 **und** `RULES.pnog.stand === 'entwurf'` (bei Verkündung oder Scheitern Wert ändern → Hinweis verschwindet, neuer Text nötig) | `weg['pflege-frist-2026']` |
 | `steuer` | Erstmals eine Buchung, deren Notiz `WORTE.steuer` passt (`/handwerker\|reinigung\|haushaltshilfe\|gärtner\|gaertner\|schornstein\|pflegedienst\|apotheke\|zuzahlung\|brille\|zahnarzt\|arbeitsmittel\|fachbuch\|laptop.*arbeit/i`) und die noch kein Beleg-Häkchen hat | `weg['steuer']` (einmal je Vorgang); **nicht** bei Bezug Grundsicherungsgeld/Sozialamt ohne Lohn (`bezugSgb && ek1Art !== 'lohn'`): keine Steuer, kein Nutzen (Prüfung: aus offener Frage 10 übernommen) |
 
 **Nur ein Hinweis aus dieser Gruppe gleichzeitig:** In `hinweisListe` werden die Kandidaten erst gesammelt und nur der mit der höchsten Prio per `add` übernommen (siehe 4.2).
@@ -144,9 +146,9 @@ Alle Texte sind in 13 Sprachen nötig (`src/lang/haushalt/*.json`) und in Einfac
 | Schonvermögen SGB XII | 10.000 € je Volljährigem + 500 € je Unterhaltenem | 11, 12 | 20.11.2026 | 1.1.2023 (lt. App) | – |
 | Wohngeld „erhebliches Vermögen“ | Richtwert 60.000 € + 30.000 € je weitere Person (WoGVwV 21.37, „in der Regel“) | 13, 14 | 20.11.2026 | – | Verwaltungsvorschrift, kein Gesetz; gerichtlich nicht bindend → „möglich“ |
 | Kinderzuschlag Vermögen | 40.000 € + 15.000 € je weitere Person | 15 | 20.11.2026 | – | durch die Reform nicht geändert (Verweis jetzt auf § 12 Abs. 2 Satz 1 SGB II) |
-| Entlastungsbetrag | 131 €/Monat, Reste bis 30.6. Folgejahr | 16, 17 | 20.11.2026 | 1.1.2025 | PNOG-Entwurf (20): ab 1.1.2027 Sozialraumbudget 175 € (unter 25 J. 300 €), nur Pflegegrad 2–5, nur Alltagshilfen, ohne Ansparen; Pflegegrad 1 ohne Geldbetrag (nicht beschlossen) |
-| Pflegehilfsmittel zum Verbrauch | 42 €/Monat | 18 | 20.11.2026 | 1.1.2025 | PNOG-Entwurf (20): keine eigene Leistung mehr |
-| Gemeinsamer Jahresbetrag | 3.539 €/Jahr ab PG 2 | 19 | 20.11.2026 | 1.7.2025 | PNOG-Entwurf (20): entfällt, „Überbrückungsbudget“ bis 2.285 €/Jahr (§ 39-E) |
+| Entlastungsbetrag | 131 €/Monat, Reste bis 30.6. Folgejahr | 16, 17 | 20.11.2026 | 1.1.2025 | **NICHT GEBAUT (nur geltendes Recht)** PNOG-Entwurf (20): ab 1.1.2027 Sozialraumbudget 175 € (unter 25 J. 300 €), nur Pflegegrad 2–5, nur Alltagshilfen, ohne Ansparen; Pflegegrad 1 ohne Geldbetrag (nicht beschlossen) |
+| Pflegehilfsmittel zum Verbrauch | 42 €/Monat | 18 | 20.11.2026 | 1.1.2025 | **NICHT GEBAUT (nur geltendes Recht)** PNOG-Entwurf (20): keine eigene Leistung mehr |
+| Gemeinsamer Jahresbetrag | 3.539 €/Jahr ab PG 2 | 19 | 20.11.2026 | 1.7.2025 | **NICHT GEBAUT (nur geltendes Recht)** PNOG-Entwurf (20): entfällt, „Überbrückungsbudget“ bis 2.285 €/Jahr (§ 39-E) |
 | § 35a EStG | 20 %; max. 510 € / 4.000 € / 1.200 € | 22 | 20.11.2026 | – | keine Änderung für 2027 gefunden |
 | § 33b Behinderten-Pauschbetrag | 384 … 2.840 €; 7.400 € | 24 | 20.11.2026 | VZ 2021 | – |
 | § 33b Pflege-Pauschbetrag | 600 / 1.100 / 1.800 € | 24 | 20.11.2026 | VZ 2021 | Abs. 8: Evaluierung ab Ende 2026 |
@@ -157,7 +159,7 @@ Neue Einträge in `src/rules.js` → `RULES` (klein, an einer Stelle):
 ```js
 // § 40 Abs. 2 SGB XI: Pflegehilfsmittel zum Verbrauch bis 42 € im Monat (seit 1.1.2025). Quelle: gesetze-im-internet.de/sgb_11/__40.html, abgerufen 20.11.2026
 // Steuer (nur für Hinweistexte): § 35a EStG (20 %, max. 510/4.000/1.200 €), § 9a Nr. 1a EStG (1.230 €). Abgerufen 20.11.2026
-// PNOG (BT-Drs. 21/8869): Stand 20.11.2026 Entwurf, 1. Lesung 5.11.2026. Bei Verkündung: pnog.stand ändern, Pflege-Hinweise und Pflege-Bereich umstellen.
+// **NICHT GEBAUT (nur geltendes Recht)** – PNOG (BT-Drs. 21/8869): Stand 20.11.2026 Entwurf, 1. Lesung 5.11.2026. Bei Verkündung: pnog.stand ändern, Pflege-Hinweise und Pflege-Bereich umstellen.
 pflegeHm: 42, steuer: { quote: 0.2, minijob: 510, hnd: 4000, handwerk: 1200, anPausch: 1230 }, pnog: { stand: 'entwurf' }, // 'entwurf' | 'verkuendet' | 'gescheitert'
 ```
 Die übrigen Werte gibt es schon: `RULES.mehr`, `sgb2.schon`, `grundsicherung.schonAllein`, `wohngeld.vermoegen*`, `kiz.verm*`, `pflege.entlastung`, `entlastungsbudget`, `pflegePausch`.
@@ -196,11 +198,12 @@ var vn = vermNah(e.verm, e.grenzen, e.rest, lv, bz);   // { l, g, v, monate } od
 if (vn) k('verm-' + vn.l + '-' + vn.g, 58, Object.assign({ art: 'verm' }, vn));
 var pf = belegSumme(e.buchAlle, 'bp', halbjahr(e.heute), true);   // laufendes + voriges Halbjahr
 if (pf > 0) k('pflege-' + halbjahr(e.heute), 35, { art: 'pflege', b: pf });
+// **NICHT GEBAUT (nur geltendes Recht)**
 if (pflegeFristAktiv(e.heute, e.pnog) && (hat.pflegegrad >= 1 || pf > 0)) k('pflege-frist-2026', 65, { art: 'pflege', frist: true });
 if (!(bezugSgb && hat.ek1Art !== 'lohn') && (e.eintraege || []).some(function (x) { return !x.bs && WORTE.steuer.test(x.n || ''); })) k('steuer', 20, { art: 'steuer' });
 if (kand.length) { var best = kand.sort(function (a, b) { return b.prio - a.prio; })[0]; out.push(best); }
 ```
-- `pflegeFristAktiv(heute, pnog)`: `heute >= 2026-11-01 && heute <= 2026-12-31 && !!pnog && pnog.stand === 'entwurf'` (Prüfung: die Bedingung im ersten Entwurf war nie falsch). Ist das PNOG bis dahin verkündet, gibt es **keinen** Hinweis, bis ein neuer, geprüfter Text `hb.hw.pflege.frist2` da ist (offene Frage 2).
+- **NICHT GEBAUT (nur geltendes Recht)** `pflegeFristAktiv(heute, pnog)`: `heute >= 2026-11-01 && heute <= 2026-12-31 && !!pnog && pnog.stand === 'entwurf'` (Prüfung: die Bedingung im ersten Entwurf war nie falsch). Ist das PNOG bis dahin verkündet, gibt es **keinen** Hinweis, bis ein neuer, geprüfter Text `hb.hw.pflege.frist2` da ist (offene Frage 2).
 - `vermNah(v, grenzen, restCent, lv, bz)`: nur Leistungen mit Bezug (`bz.grundsicherungsgeld`→ggeld, `bz.sozialamt`→gsa) oder `lv[id]` ∈ {ja, vielleicht}; `v > G` → null; Treffer bei `v >= 0.8*G` oder `restCent > 0 && v*100 + 6*restCent > G*100`; `monate = ceil((G*100 - v*100)/restCent)` (nur wenn `restCent > 0`). Kleinste Grenze gewinnt. Kein Treffer ohne `v` (Check leer).
 - Prio-Einordnung zu Bestehendem: wb 100, ek 90, knapp 80, energie 75 (b-energie), **pflege-frist 65**, kaputt 60, **verm 58**, **mb 50–56**, but 50, schulden 45, tarif 40, **pflege 35**, **steuer 20**. `hinweise()` (Z. 495) zeigt weiter 2 sichtbar + Rest unter „Weitere Hinweise“; neu kommt höchstens einer dazu.
 
@@ -208,7 +211,7 @@ if (kand.length) { var best = kand.sort(function (a, b) { return b.prio - a.prio
 
 ### 4.3 `hinweisElement` (Z. 465)
 
-- Text: `h.art === 'mb'` → `t('hb.hw.mb.' + h.was, platzhalterMehr(h.was))`; `verm` → `h.monate && h.v < 0.8*h.g ? 'hb.hw.verm.bald' : 'hb.hw.verm'` mit `{ b: {eur: v}, g: {eur: g}, l: t('hb.wb.' + mapL(h.l)), r: {eur: rest/100}, n: String(monate) }`; Details: `hb.hw.verm.d.<l>` + `hb.hw.verm.d2`; `pflege` → `h.frist ? 'hb.hw.pflege.frist' : 'hb.hw.pflege'`.
+- Text: `h.art === 'mb'` → `t('hb.hw.mb.' + h.was, platzhalterMehr(h.was))`; `verm` → `h.monate && h.v < 0.8*h.g ? 'hb.hw.verm.bald' : 'hb.hw.verm'` mit `{ b: {eur: v}, g: {eur: g}, l: t('hb.wb.' + mapL(h.l)), r: {eur: rest/100}, n: String(monate) }`; Details: `hb.hw.verm.d.<l>` + `hb.hw.verm.d2`; `pflege` → **NICHT GEBAUT (nur geltendes Recht)** `h.frist ? 'hb.hw.pflege.frist' : 'hb.hw.pflege'`.
   (Achtung: `hb.wb.<l>` kennt nur `sgb2, sgb12, wohngeld, kiz` → Abbildung ggeld→sgb2, gsa→sgb12.)
 - Knöpfe: `mb`/`verm` → „Zum Leistungs-Check“ (`ctx.zeige('leistungen', true)`, wie Z. 475); `pflege` → `hb.hw.belege` (öffnet Reiter „Auswertung“, Belegliste) und `hb.hw.pflege.knopf` (`ctx.zeige('pflegestart', true)`); `steuer` → `hb.hw.belege`. Wegklicken wie Z. 474.
 - `d.id = 'hb-hw-' + h.art` bleibt (pro Art nur ein Element, passt zur Ein-Hinweis-Regel).
@@ -275,7 +278,7 @@ Nicht nötig: e2e; die schweren Tests laufen wie üblich auf GitHub.
 
 ## 5. Offene Fragen und Unsicherheiten
 
-1. **PNOG (Pflegereform)**: nur Entwurf (BT-Drs. 21/8869, 1. Lesung 5.11.2026, Bundesrat 20.11.2026). Inkrafttreten laut Art. 11 Abs. 1 am 1.1.2027, aber nicht sicher; der Entwurf enthält **keine** Übergangsregel für Reste des Entlastungsbetrags aus 2026 und streicht den Betrag bei Pflegegrad 1 ganz (Quelle 20, Volltext gelesen). Der Frist-Hinweis sagt deshalb nur „möglichst“ und nennt das geltende Recht (30.6.2027). Bei Verkündung: Texte, `RULES.pnog`, 42-€-Hilfsmittel und gemeinsamen Jahresbetrag umstellen (auch Pflege-Bereich `rules.js` Z. 1556–1589). Die Prüfung am 1.12.2026 (STATUS.md) sollte das PNOG einschließen.
+1. **NICHT GEBAUT (nur geltendes Recht)** **PNOG (Pflegereform)**: nur Entwurf (BT-Drs. 21/8869, 1. Lesung 5.11.2026, Bundesrat 20.11.2026). Inkrafttreten laut Art. 11 Abs. 1 am 1.1.2027, aber nicht sicher; der Entwurf enthält **keine** Übergangsregel für Reste des Entlastungsbetrags aus 2026 und streicht den Betrag bei Pflegegrad 1 ganz (Quelle 20, Volltext gelesen). Der Frist-Hinweis sagt deshalb nur „möglichst“ und nennt das geltende Recht (30.6.2027). Bei Verkündung: Texte, `RULES.pnog`, 42-€-Hilfsmittel und gemeinsamen Jahresbetrag umstellen (auch Pflege-Bereich `rules.js` Z. 1556–1589). Die Prüfung am 1.12.2026 (STATUS.md) sollte das PNOG einschließen.
 2. Soll der Frist-Hinweis nach Verkündung bis 31.12. bleiben (dann mit sicherem Text) oder entfallen, falls eine Übergangsregel kommt?
 3. **Wohngeld-Vermögen**: 60.000/30.000 € sind nur Verwaltungsvorschrift (amtlich gefunden, Quelle 14), Gericht: „Orientierungswert“. Hinweistext sagt das; trotzdem wird bei Wohngeld vielleicht besser **nur** bei `V > 0,8 × G` ein Hinweis gezeigt und nie „Grenze erreicht“.
 4. **Fristen-Übersicht**: Pflege-Frist 30.6. als Eintrag in der Fristenliste (b-fristen) oder nur im Haushaltsbuch? Vorschlag: nach b-fristen-Merge als Vorschlag dort, nicht im `startHinweis` (der gehört nach dem Merge den Fristen).

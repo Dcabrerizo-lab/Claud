@@ -845,38 +845,49 @@ var Haushalt = (function () {
   var GELD_ARTEN = ['mb', 'verm', 'pflege', 'steuer'];
   var WORTE_GELD = {
     // ohne „Frauenarzt“ und „Kinderwagen“: zu viele falsche Treffer bei einer sehr persönlichen Frage
-    schwanger: /schwanger|umstands|mutterpass|baby(ausstattung|erstausstattung)/i,
+    // „Schwangerschaftstest“ ist kein Hinweis auf eine Schwangerschaft
+    schwanger: /schwanger(?!schaftstest)|umstands|mutterpass|baby(ausstattung|erstausstattung)/i,
     // ohne „Therme“: Gas-Therme läuft meist über die Heizkosten (§ 21 Abs. 7 Satz 1 SGB II)
     ww: /boiler|durchlauferhitzer|warmwasserspeicher/i,
-    ern: /di(ä|ae)t|glutenfrei|z(ö|oe)liakie|laktosefrei|sondennahrung|ern(ä|ae)hrung/i,
-    dauer: /umgang|besuch.*kind|fahrt.*kind|hygiene|inkontinenz|medikament/i,
-    steuer: /handwerker|reinigung|haushaltshilfe|g(ä|ae)rtner|schornstein|pflegedienst|apotheke|zuzahlung|brille|zahnarzt|arbeitsmittel|fachbuch|laptop.*arbeit/i,
+    // ohne „Ernährung“ allein (z. B. „Ernährungsberatung“, „gesunde Ernährung“): kein Hinweis auf eine Krankheit
+    ern: /di(ä|ae)t|glutenfrei|z(ö|oe)liakie|laktosefrei|sondennahrung/i,
+    dauer: /umgang|besuch.*kind\b|fahrt.*kind\b|hygiene|inkontinenz|medikament/i,
+    // „Reinigungsmittel“ und „Brillenputztuch“ sind keine Steuer-Belege
+    steuer: /handwerker|reinigung(?!smittel)|haushaltshilfe|g(ä|ae)rtner|schornstein|pflegedienst|apotheke|zuzahlung|brille\b|zahnarzt|arbeitsmittel|fachbuch|laptop.*arbeit/i,
+    // Barzahlung schadet nur bei § 35a EStG (Handwerker, haushaltsnahe Dienste), nicht z. B. bei Zuzahlungen in der Apotheke
+    hhw: /handwerker|haushalts-?hilfe|putz(hilfe|kraft|frau)|reinigungskraft|g(ä|ae)rtner|maler|klempner|elektriker|installateur|schornstein/i,
     pflegeBeleg: /pflegedienst|alltagshilfe|alltagsbegleit|tagespflege|kurzzeitpflege|verhinderungspflege|betreuungsdienst|inkontinenz|einmalhandschuh|bettschutz/i,
     bar: /(^|[^a-zäöüß])bar([^a-zäöüß]|$)/i
   };
   // Buchung beim Laden bereinigen: nur bekannte Felder; Beleg-Häkchen nur als echtes true (Schutz gegen veränderte Stände)
-  function buchungBereinigen(e) {
-    var o = {};
-    ['id', 'd', 'c', 'k', 'n', 'w', 'bis'].forEach(function (f) { if (e[f] !== undefined) o[f] = e[f]; });
+  // Typen prüfen: id (kurzer Text), d und c prüft normiere, k bekannte Kategorie, n Text bis 80 Zeichen, w nur true, bis 'JJJJ-MM'
+  function buchungBereinigen(e, i) {
+    var o = { id: typeof e.id === 'string' && /^[\w-]{1,40}$/.test(e.id) ? e.id : 'e-alt-' + i, d: e.d, c: e.c, k: KAT_IDS.indexOf(e.k) >= 0 ? e.k : 'sonst' };
+    if (typeof e.n === 'string' && e.n) o.n = e.n.slice(0, 80);
+    if (e.w === true) o.w = true;
+    if (o.w && typeof e.bis === 'string' && /^\d{4}-\d\d$/.test(e.bis)) o.bis = e.bis;
     if (e.bs === true) o.bs = true;
     if (e.bp === true) o.bp = true;
     return o;
   }
-  // Kalenderhalbjahr: '2026-2' (Juli bis Dezember)
-  function halbjahr(d) { var iso = typeof d === 'string' ? d : isoTag(d || new Date()); return iso.slice(0, 4) + '-' + (+iso.slice(5, 7) <= 6 ? 1 : 2); }
-  function hjVorher(hj) { var j = +hj.slice(0, 4); return hj.slice(5) === '2' ? j + '-1' : (j - 1) + '-2'; }
-  function hjVon(hj) { return hj.slice(0, 4) + (hj.slice(5) === '1' ? '-01-01' : '-07-01'); }
-  function hjBis(hj) { return hj.slice(0, 4) + (hj.slice(5) === '1' ? '-06-30' : '-12-31'); }
-  // Belege einer Art ('bs' Steuer, 'bp' Pflegekasse) zwischen zwei Tagen; wiederkehrende Buchungen je Monat aufgelöst, nach Datum sortiert
-  function belegListe(buch, art, vonIso, bisIso) {
+  // Pflege-Belege: laufendes Kalenderjahr; bis 30.6. auch das Vorjahr (nicht verbrauchter Entlastungsbetrag, § 45b Abs. 1 Satz 5 SGB XI)
+  function pflegeFenster(d) {
+    var iso = typeof d === 'string' ? d : isoTag(d || new Date()), j = +iso.slice(0, 4), vj = iso.slice(5) <= '06-30';
+    return { von: (vj ? j - 1 : j) + '-01-01', bis: iso, id: 'pflege-' + j + (vj ? '-vj' : '') };
+  }
+  // Belege einer Art ('bs' Steuer, 'bp' Pflegekasse) zwischen zwei Tagen, höchstens bis heute (wiederkehrende Buchungen erzeugen
+  // sonst künftige Monate); wiederkehrende Buchungen je Monat aufgelöst, nach Datum sortiert
+  function belegListe(buch, art, vonIso, bisIso, heuteIso) {
+    var h = heuteIso || isoTag(new Date());
+    if (h < bisIso) bisIso = h;
     var out = [], ym = monatVon(vonIso), bis = monatVon(bisIso);
     for (var n = 0; ym <= bis && n < 600; n++, ym = monatPlus(ym, 1)) {
       monatsEintraege(buch, ym).forEach(function (e) { if (e[art] === true && e.d >= vonIso && e.d <= bisIso) out.push(e); });
     }
     return out.sort(function (a, b) { return a.d < b.d ? -1 : a.d > b.d ? 1 : 0; });
   }
-  function belegSumme(buch, art, hj, mitVorigem) {
-    return belegListe(buch, art, hjVon(mitVorigem ? hjVorher(hj) : hj), hjBis(hj)).reduce(function (a, e) { return a + e.c; }, 0);
+  function belegSumme(buch, art, vonIso, bisIso, heuteIso) {
+    return belegListe(buch, art, vonIso, bisIso, heuteIso).reduce(function (a, e) { return a + e.c; }, 0);
   }
   // CSV der Belegliste: Datum;Kategorie;Notiz;Betrag;Für (csvFeld schützt vor Formeln)
   function belegCsv(liste, kopf, katName, zweck) {
@@ -892,10 +903,11 @@ var Haushalt = (function () {
     lv = lv || {}; bz = bz || {}; restCent = restCent > 0 ? restCent : 0;
     var best = null;
     VERM_LEISTUNG.forEach(function (x) {
-      var l = x[0], g = grenzen[l];
+      // gMin: kleinste mögliche Grenze, wenn sie vom Alter weiterer Personen abhängt (Paare, Alter unbekannt); dann keine feste Zahl im Text
+      var l = x[0], g = grenzen[l], gMin = grenzen[l + 'Min'] > 0 && grenzen[l + 'Min'] < g ? grenzen[l + 'Min'] : 0, ga = gMin || g;
       if (!(bz[x[1]] || lv[l] === 'ja' || lv[l] === 'vielleicht') || !(g > 0) || v > g) return;
-      if (!(v >= 0.8 * g || (restCent > 0 && v * 100 + 6 * restCent > g * 100))) return;
-      if (!best || g < best.g) best = { l: l, g: g, v: v, r: restCent, monate: restCent > 0 ? Math.ceil((g * 100 - v * 100) / restCent) : 0 };
+      if (!(v >= 0.8 * ga || (restCent > 0 && v * 100 + 6 * restCent > ga * 100))) return;
+      if (!best || ga < (best.gMin || best.g)) best = { l: l, g: g, gMin: gMin, etwa: !!gMin, v: v, r: restCent, monate: restCent > 0 && !gMin && v < g ? Math.ceil((g * 100 - v * 100) / restCent) : 0 };
     });
     return best;
   }
@@ -905,20 +917,22 @@ var Haushalt = (function () {
     var k = function (id, prio, extra) { if (!weg[id]) kand.push(Object.assign({ id: id, prio: prio }, extra)); };
     var bezugSgb = !!(bz.grundsicherungsgeld || bz.sozialamt), eintraege = e.eintraege || [];
     if (sgb) {
-      if (WORTE_GELD.schwanger.test(notizen) && !hat.schwanger) k('mb-schwanger', 56, { art: 'mb', was: 'schwanger' });
+      // Schwangerschaft nur bei Bezug: Der Text sagt „Sag es dem Amt“ (beim Check-Ergebnis „vielleicht“ gibt es noch kein Amt)
+      if (bezugSgb && WORTE_GELD.schwanger.test(notizen) && !hat.schwanger) k('mb-schwanger', 56, { art: 'mb', was: 'schwanger' });
       if (WORTE_GELD.ww.test(notizen) && !hat.warmwasser) k('mb-ww', 55, { art: 'mb', was: 'ww' });
       if (WORTE_GELD.ern.test(notizen) && !hat.ernaehrung) k('mb-ern', 54, { art: 'mb', was: 'ern' });
       if (eintraege.some(function (x) { return x.w && x.k === 'sonst' && WORTE_GELD.dauer.test(x.n || ''); })) k('mb-dauer', 52, { art: 'mb', was: 'dauer' });
-      if (hat.gdb && hat.gdb !== 'antrag' && !hat.teilhabe && !hat.mzG) k('mb-beh', 51, { art: 'mb', was: 'beh' });
+      // nur mit Auslöser: GdB ab 50 oder Merkzeichen H/Bl/TBl (Wert 'H'); nicht bei „antrag“ oder kleinem GdB
+      if ((hat.gdb === 'H' || Number(hat.gdb) >= 50) && !hat.teilhabe && !hat.mzG) k('mb-beh', 51, { art: 'mb', was: 'beh' });
     }
     if (bezugSgb && Number(hat.adults) === 1 && Number(hat.kids) > 0) k('mb-ae', 50, { art: 'mb', was: 'ae' });
     var vn = vermNah(g.verm, g.grenzen, g.rest, lv, bz);
     if (vn) k('verm-' + vn.l + '-' + vn.g, 58, Object.assign({ art: 'verm' }, vn));
-    var heute = e.heute || new Date(), hj = halbjahr(heute), pf = g.buchAlle ? belegSumme(g.buchAlle, 'bp', hj, true) : 0;
-    if (pf > 0) k('pflege-' + hj, 35, { art: 'pflege', b: pf });
+    var hIso = isoTag(e.heute || new Date()), fe = pflegeFenster(hIso), pf = g.buchAlle ? belegSumme(g.buchAlle, 'bp', fe.von, fe.bis, hIso) : 0;
+    if (pf > 0) k(fe.id, 35, { art: 'pflege', b: pf });
     // Steuer: nicht bei Grundsicherungsgeld/Sozialhilfe ohne eigenes Erwerbseinkommen (keine Steuer, kein Nutzen)
     var erwerb = ['lohn', 'selbst'].indexOf(hat.ek1Art) >= 0 || ['lohn', 'selbst'].indexOf(hat.ek2Art) >= 0;
-    if (!(bezugSgb && !erwerb) && eintraege.some(function (x) { return !x.bs && WORTE_GELD.steuer.test(x.n || ''); })) k('steuer', 20, { art: 'steuer' });
+    if (!(bezugSgb && !erwerb) && eintraege.some(function (x) { return !x.bs && !x.bp && WORTE_GELD.steuer.test(x.n || ''); })) k('steuer', 20, { art: 'steuer' });
     if (kand.length) out.push(kand.sort(function (a, b) { return b.prio - a.prio; })[0]);
   }
   // Daten aus dem Check und dem Plan für geldHinweis (nur in der Oberfläche)
@@ -943,7 +957,10 @@ var Haushalt = (function () {
       var l = leistungName(VERM_NAME[h.l]), S = R.sgb2.schon;
       var dp = { ggeld: { a: E(S['<30']), b: E(S['30-39']), c: E(S['40-49']), d: E(S['50+']) }, gsa: { a: E(R.grundsicherung.schonAllein), k: E(R.schonUnterhalten) },
         wohngeld: { g1: E(R.wohngeld.vermoegenErste), g2: E(R.wohngeld.vermoegenJeWeitere) }, kiz: { a: E(R.kiz.vermZwei - R.kiz.vermJeWeiteres), b: E(R.kiz.vermJeWeiteres) } }[h.l];
-      var txt = h.monate && h.v < 0.8 * h.g ? t('hb.hw.verm.bald', { r: E(euroGanz(h.r)), n: String(h.monate), l: l, g: E(h.g) }) : t('hb.hw.verm', { b: E(h.v), l: l, g: E(h.g) });
+      // Grundsicherungsgeld: immer mit Vorbehalt (Altfälle § 65a SGB II); Paare/Alter unbekannt ohne Zahl; Wohngeld: Richtwert, keine Grenze
+      var pre = h.l === 'wohngeld' ? 'hb.hw.verm.wg' : h.l === 'ggeld' ? (h.etwa ? 'hb.hw.verm.gg0' : 'hb.hw.verm.gg') : 'hb.hw.verm';
+      var ga = h.gMin || h.g, bald = h.r > 0 && h.v < 0.8 * ga;
+      var txt = bald ? t(pre + '.bald', { r: E(euroGanz(h.r)), n: String(h.monate), l: l, g: E(h.g) }) : t(pre, { b: E(h.v), l: l, g: E(h.g) });
       return [txt, [t('hb.hw.verm.d.' + h.l, dp), t('hb.hw.verm.d2')]];
     }
     if (h.art === 'pflege') {
@@ -983,7 +1000,7 @@ var Haushalt = (function () {
       var an = !!(eingabe.bs || eingabe.bp), n = eingabe.n || '';
       haupt.checked = an; st.checked = !!eingabe.bs; pf.checked = !!eingabe.bp; sub.hidden = !an;
       tipp.hidden = an || !(WORTE_GELD.steuer.test(n) || WORTE_GELD.pflegeBeleg.test(n));
-      bar.hidden = !(eingabe.bs && WORTE_GELD.bar.test(n));
+      bar.hidden = !(eingabe.bs && WORTE_GELD.bar.test(n) && WORTE_GELD.hhw.test(n));
     };
     haupt.addEventListener('change', function () {
       if (haupt.checked) { if (WORTE_GELD.pflegeBeleg.test(eingabe.n || '')) eingabe.bp = true; else eingabe.bs = true; } else { eingabe.bs = false; eingabe.bp = false; }
@@ -999,10 +1016,10 @@ var Haushalt = (function () {
   var blJahr = 0, blOffen = false;
   function zeigeBelege() { ansicht = 'ausw'; eingabe = null; blOffen = true; render('hb-bl-sum'); }
   function belegDaten(j) {
-    var st = belegListe(daten.buch, 'bs', j + '-01-01', j + '-12-31'), pf = belegListe(daten.buch, 'bp', j + '-01-01', j + '-12-31');
+    var st = belegListe(daten.buch, 'bs', j + '-01-01', j + '-12-31'), pf = belegListe(daten.buch, 'bp', j + '-01-01', j + '-12-31'); // jeweils höchstens bis heute
     var sum = function (l) { return l.reduce(function (a, e) { return a + e.c; }, 0); };
     return { st: st, pf: pf, sst: sum(st), spf: sum(pf),
-      alle: daten.buch.length ? belegListe(daten.buch, 'bs', j + '-01-01', j + '-12-31').concat(pf.filter(function (e) { return !e.bs; })).sort(function (a, b) { return a.d < b.d ? -1 : a.d > b.d ? 1 : 0; }) : [] };
+      alle: daten.buch.length ? st.concat(pf.filter(function (e) { return !e.bs; })).sort(function (a, b) { return a.d < b.d ? -1 : a.d > b.d ? 1 : 0; }) : [] };
   }
   function belegZeile(e) { return ctx.datum(new Date(+e.d.slice(0, 4), +e.d.slice(5, 7) - 1, +e.d.slice(8, 10))) + ' · ' + katName(e.k) + (e.n ? ' · ' + e.n : '') + ' · ' + eur(e.c); }
   function belegZweck(e) { return [e.bs ? t('hb.beleg.st') : '', e.bp ? t('hb.beleg.pf') : ''].filter(Boolean).join(', '); }
@@ -1031,15 +1048,16 @@ var Haushalt = (function () {
     } catch (e) { msg.textContent = t('hb.csv.fehler'); }
   }
   function belegBox() {
-    var j = blJahr || +monat.slice(0, 4), b = belegDaten(j);
+    var jetzt = new Date().getFullYear(), j = Math.min(blJahr || +monat.slice(0, 4), jetzt), b = belegDaten(j); // nicht über das laufende Jahr hinaus
     var d = el('details', 'hb-karte hb-bl'); d.id = 'hbBelege'; d.open = blOffen;
     d.addEventListener('toggle', function () { blOffen = d.open; });
     var su = el('summary'); su.id = 'hb-bl-sum'; su.textContent = t('hb.bl.h', { j: String(j) }); d.appendChild(su);
-    var neu = function (fokus) { var o = $('hbBelege'), n2 = belegBox(); if (o) o.replaceWith(n2); if ($(fokus)) $(fokus).focus(); };
+    var neu = function (fokus) { var o = $('hbBelege'), n2 = belegBox(); if (o) o.replaceWith(n2); var f = $(fokus); if (f && f.disabled) f = $('hb-bl-vor'); if (f) f.focus(); };
     var lei = el('div', 'hb-monat');
     lei.appendChild(knopf('hb-mon-knopf', '‹', function () { blJahr = j - 1; neu('hb-bl-vor'); }, { 'aria-label': t('hb.bl.vor'), id: 'hb-bl-vor' }));
     var jn = el('b', 'hb-mon-name', String(j)); jn.setAttribute('aria-live', 'polite'); lei.appendChild(jn);
-    lei.appendChild(knopf('hb-mon-knopf', '›', function () { blJahr = j + 1; neu('hb-bl-nach'); }, { 'aria-label': t('hb.bl.nach'), id: 'hb-bl-nach' }));
+    var na = knopf('hb-mon-knopf', '›', function () { if (j < jetzt) { blJahr = j + 1; neu('hb-bl-nach'); } }, { 'aria-label': t('hb.bl.nach'), id: 'hb-bl-nach' });
+    na.disabled = j >= jetzt; lei.appendChild(na);
     d.appendChild(lei);
     if (!b.st.length && !b.pf.length) { d.appendChild(el('p', 'muted', t('hb.bl.leer'))); return d; }
     if (b.st.length) d.appendChild(el('p', 'hb-bl-summe', t('hb.bl.st', { n: String(b.st.length), b: { eur: b.sst / 100 } })));
@@ -1062,7 +1080,7 @@ var Haushalt = (function () {
     // Rechnung (Tests)
     KAT: KAT_IDS, zuCent: zuCent, euroGanz: euroGanz, planRechnung: planRechnung, monatPlus: monatPlus, monatsEintraege: monatsEintraege,
     nachKategorie: nachKategorie, auswertung: auswertung, tipps: tipps, kassenzettel: kassenzettel, csv: csv, regelbedarfAnteile: regelbedarfAnteile, RBEG5: RBEG5,
-    halbjahr: halbjahr, belegListe: belegListe, belegSumme: belegSumme, belegCsv: belegCsv, vermNah: vermNah, WORTE_GELD: WORTE_GELD,
+    pflegeFenster: pflegeFenster, belegListe: belegListe, belegSumme: belegSumme, belegCsv: belegCsv, vermNah: vermNah, WORTE_GELD: WORTE_GELD,
     ausCheck: ausCheck, aenderung: aenderung, uebernahme: uebernahme, normiere: normiere, hinweisListe: hinweisListe, aenderungsBrief: aenderungsBrief, VORLAUF_TAGE: VORLAUF_TAGE,
     // Oberfläche
     rest: function () { return rechnung(); }, // Kurzstatus für „Mein Ordner“: { rest, restEuro, leer }
