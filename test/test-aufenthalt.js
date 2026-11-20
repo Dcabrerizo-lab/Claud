@@ -5,7 +5,9 @@
 //  - Bildung und Teilhabe: § 3 Abs. 4 AsylbLG -> nie „nein“ allein wegen Asyl
 //  - BAföG: § 8 Abs. 2a und 3 BAföG; BAB: § 60 Abs. 3 SGB III; Arbeitslosengeld: § 138 Abs. 5 Nr. 1 SGB III
 //  - Hilfe zur Pflege: § 23 Abs. 2 SGB XII; Eingliederungshilfe: § 100 Abs. 2 SGB IX; Kindergeld bei Behinderung: § 62 Abs. 2 EStG
-//  - Ausweis: § 2 Abs. 2 SGB IX („rechtmäßig“); Landesblindengeld: § 9 Abs. 1 AsylbLG („vergleichbare Landesgesetze“)
+//  - Ausweis: § 2 Abs. 2 SGB IX („rechtmäßig“), BSG 29.04.2010, B 9 SB 2/09 R; Landesblindengeld: § 9 Abs. 1 AsylbLG („vergleichbare Landesgesetze“)
+//  - EU ohne Arbeit unter 5 Jahren: Hilfe zur Pflege, Blindenhilfe § 23 Abs. 3 SGB XII; BAföG § 8 Abs. 1 Nr. 2 bis 4 BAföG
+//  - Krankengeld bei Rente: § 50 Abs. 1 und 2 SGB V
 'use strict';
 const R = require('./rules-de.js');
 let n = 0, fails = 0;
@@ -89,10 +91,37 @@ for (const land of ['', 'NW']) {
   ck('[ausweis-asyl] Schwerbehindertenausweis bei Asyl: höchstens „möglich“ (§ 2 Abs. 2 SGB IX „rechtmäßig“)', o.level === 'ja' && a.level === 'vielleicht' && keys(a)[0] === 'ausweis.asyl', [o.level, a]);
 }
 
+// EU-Bürger ohne Arbeit, unter 5 Jahren (euAusschluss): Hilfe zur Pflege und Blindenhilfe wie Grundsicherung im Alter
+// (§ 23 Abs. 3 SGB XII, https://www.gesetze-im-internet.de/sgb_12/__23.html, Abruf 20.11.2026)
+{
+  const eu = { art1: 'rente', brutto: 700, netto: 700, miete: 450, gebJahr: 1950, pflegegrad: '3', bhPerson: 'ich', gdb: '100', blind: 'blind', aufenthalt: 'eu' };
+  const ohne = res({ ...eu, euArbeit: 'nein', euJahre: 'unter5' }), arbeit = res({ ...eu, euArbeit: 'ja', euJahre: 'unter5' }), fuenf = res({ ...eu, euArbeit: 'nein', euJahre: 'ab5' });
+  for (const id of ['hzp', 'blh']) {
+    ck('[' + id + '-eu] ' + id + ' bei EU ohne Arbeit unter 5 Jahren: gleiche Stufe wie Grundsicherung im Alter, Hinweis § 23 Abs. 3 SGB XII', ohne[id].level === 'nein' && ohne[id].level === ohne.gsa.level && keys(ohne[id])[0] === 'sh.eu', [ohne[id], ohne.gsa.level]);
+    ck('[' + id + '-eu] ' + id + ' bei EU mit Arbeit oder nach 5 Jahren: kein Ausschluss', arbeit[id].level !== 'nein' && fuenf[id].level !== 'nein' && !keys(arbeit[id]).includes('sh.eu'), [arbeit[id], fuenf[id]]);
+  }
+}
+
+// BAföG bei EU-Bürgern ohne Arbeit: höchstens „möglich“ (§ 8 Abs. 1 Nr. 2 bis 4 BAföG)
+{
+  const hh = { adults: 2, kids: 0, young: 1, ausbildung: 'kind', art1: 'ohne', brutto: 0, netto: 0, miete: 600, aufenthalt: 'eu' };
+  const o = res({ ...hh, aufenthalt: '' }).bafoeg, a = res({ ...hh, euArbeit: 'nein', euJahre: 'unter5' }).bafoeg, j = res({ ...hh, euArbeit: 'ja' }).bafoeg;
+  ck('[bafoeg-eu] BAföG bei EU ohne Arbeit: „wahrscheinlich“ wird „möglich“ mit Hinweis', o.level === 'ja' && a.level === 'vielleicht' && keys(a)[0] === 'bafoeg.eu', [o.level, a]);
+  ck('[bafoeg-eu] BAföG bei EU mit Arbeit: kein Hinweis', !keys(j).includes('bafoeg.eu'), j);
+}
+
+// Krankengeld bei Rente (§ 50 Abs. 1 und 2 SGB V, https://www.gesetze-im-internet.de/sgb_5/__50.html, Abruf 20.11.2026)
+{
+  const hh = { arbeitSit: 'krank', krankWochen: 'laeuft', lohnVorher: 2800 };
+  const l = res({ ...hh, art1: 'lohn', brutto: 2800, netto: 2000 }).krankengeld, r = res({ ...hh, art1: 'rente', brutto: 1200, netto: 1200 }).krankengeld;
+  ck('[krank-rente] Krankengeld mit Lohn: „wahrscheinlich“', l.level === 'ja' && !keys(l).includes('krank.rente'), l);
+  ck('[krank-rente] Krankengeld bei Rente: höchstens „möglich“, Hinweis vorn (Vollrente endet, Teilrente gekürzt)', r.level === 'vielleicht' && keys(r)[0] === 'krank.rente', r);
+}
+
 // Jeder Hinweis-Schlüssel hat einen deutschen Text
 {
   const I18N = require('../src/lang/de.json');
-  const neu = ['wbs.asyl', 'wohngeld.asyl', 'but.asyl', 'bafoeg.asyl', 'bab.asyl', 'hzp.asyl', 'eingl.asyl', 'alg1.asyl', 'blindengeld.asyl', 'ausweis.asyl'];
+  const neu = ['wbs.asyl', 'wohngeld.asyl', 'but.asyl', 'bafoeg.asyl', 'bab.asyl', 'hzp.asyl', 'eingl.asyl', 'alg1.asyl', 'blindengeld.asyl', 'ausweis.asyl', 'blh.asyl', 'sh.eu', 'bafoeg.eu', 'krank.rente'];
   ck('Alle Asyl-Hinweise haben einen Text', neu.every((k) => typeof I18N['t.' + k] === 'string' && I18N['t.' + k].length > 20), neu.filter((k) => !I18N['t.' + k]));
   ck('Karte Familienversicherung ist entfernt (keine Texte mehr)', !Object.keys(I18N).some((k) => /famvers/.test(k)) && !R.evaluate({ ...base }).results.some((x) => x.id === 'famvers'));
 }

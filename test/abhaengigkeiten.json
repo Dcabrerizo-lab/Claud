@@ -2,7 +2,8 @@
  "_info": [
   "Soll-Tabelle für test/test-abhaengigkeiten.js: von welchen Angaben jede Karte abhängen MUSS (haengtAb).",
   "Erster Stand 20.11.2026 aus dem beobachteten Verhalten übernommen; geprüft gegen die amtliche Rechtsgrundlage (docs/entwuerfe/abhaengigkeiten-pruefung.md). Asyl-Regeln, WBS und neue Angaben (bab, bhPerson, wfbm, kindKrank, einkommen2) ergänzt am 20.11.2026.",
-  "Ändert eine Code-Änderung eine Abhängigkeit, wird der Test rot: dann Rechtsgrundlage prüfen und diese Tabelle bewusst anpassen."
+  "Ändert eine Code-Änderung eine Abhängigkeit, wird der Test rot: dann Rechtsgrundlage prüfen und diese Tabelle bewusst anpassen.",
+  "EU-Ausschluss bei Hilfe zur Pflege, Blindenhilfe und BAföG sowie Krankengeld bei Rente ergänzt am 20.11.2026 (Ausschluss-Regeln mit „wenn“)."
  ],
  "karten": {
   "kindergeld": {
@@ -274,10 +275,11 @@
   },
   "hzp": {
    "haengtAb": [
+    "aufenthalt",
     "pflegegrad",
     "vermoegen"
    ],
-   "quelle": "§§ 61 ff. SGB XII"
+   "quelle": "§§ 61 ff. SGB XII; EU-Ausschluss § 23 Abs. 3 SGB XII (https://www.gesetze-im-internet.de/sgb_12/__23.html, Abruf 20.11.2026)"
   },
   "lpg": {
    "haengtAb": [
@@ -437,6 +439,72 @@
    "mindestens": "vielleicht",
    "nurMitKindern": true,
    "quelle": "§ 3 Abs. 4 AsylbLG: Bildung und Teilhabe auch mit Asylbewerberleistungen (https://www.gesetze-im-internet.de/asylblg/__3.html, Abruf 20.11.2026)"
+  },
+  {
+   "merkmal": "aufenthalt",
+   "wert": "eu",
+   "wenn": {
+    "euArbeit": [
+     "",
+     "nein"
+    ],
+    "euJahre": [
+     "",
+     "unter5"
+    ],
+    "art1": [
+     "rente",
+     "alg",
+     "unt",
+     "ohne"
+    ]
+   },
+   "karten": [
+    "gsa",
+    "hzp",
+    "blh"
+   ],
+   "hoechstens": "nein",
+   "quelle": "§ 23 Abs. 3 Satz 1, 6, 7 SGB XII: EU-Bürger ohne Arbeit, unter 5 Jahren keine Leistungen nach Abs. 1 (umfasst Hilfe zur Pflege und Sozialhilfe im Einzelfall wie Blindenhilfe) und nach dem Vierten Kapitel (https://www.gesetze-im-internet.de/sgb_12/__23.html, Abruf 20.11.2026)"
+  },
+  {
+   "merkmal": "aufenthalt",
+   "wert": "eu",
+   "wenn": {
+    "euArbeit": [
+     "",
+     "nein"
+    ],
+    "euJahre": [
+     "",
+     "unter5"
+    ],
+    "art1": [
+     "rente",
+     "alg",
+     "unt",
+     "ohne"
+    ]
+   },
+   "karten": [
+    "bafoeg"
+   ],
+   "hoechstens": "vielleicht",
+   "quelle": "§ 8 Abs. 1 Nr. 2 bis 4 BAföG: Daueraufenthalt, Arbeitnehmer/Selbstständige und Familienangehörige oder Beschäftigung vor der Ausbildung (https://www.gesetze-im-internet.de/baf_g/__8.html, Abruf 20.11.2026)"
+  },
+  {
+   "merkmal": "arbeit",
+   "wert": "krank",
+   "wenn": {
+    "art1": [
+     "rente"
+    ]
+   },
+   "karten": [
+    "krankengeld"
+   ],
+   "hoechstens": "vielleicht",
+   "quelle": "§ 50 Abs. 1 Satz 1 Nr. 1 und Abs. 2 SGB V: Vollrente beendet, Teilrente kürzt das Krankengeld (https://www.gesetze-im-internet.de/sgb_5/__50.html, Abruf 20.11.2026)"
   }
  ],
  "bekannt": []

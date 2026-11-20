@@ -427,6 +427,11 @@ function uvgOhneAufenthalt(e, ggStufe) {
 
 // ---------- BAföG (nur Einstufung; Kind: Freibeträge der Eltern § 25 BAföG, vereinfacht wie in der App) ----------
 function bafoeg(e) {
+  const r = bafoeg0(e);
+  // § 8 Abs. 1 Nr. 2 bis 4 BAföG: EU-Bürger ohne Arbeit, unter 5 Jahren höchstens „möglich“
+  return euAus(haushalt(e)) && r.level === 'ja' ? { ...r, level: 'vielleicht' } : r;
+}
+function bafoeg0(e) {
   const h = haushalt(e);
   const a = e.ausbildung;
   if (a !== 'kind' && a !== 'kindBetrieb' && a !== 'ich') return { level: 'nein' };
@@ -479,7 +484,9 @@ function krankengeld(e) {
   if (zahl(e.lohnVorher) > 0 && zahl(e.lohnVorher) <= minijobAm(e.heute ? Number(e.heute) : 0)) return { level: 'nein', spanne: null };
   const lohn = Math.min(zahl(e.lohnVorher), 5812.5);
   const kg = (q) => runde10(Math.min(0.7 * lohn, 0.9 * lohn * q) * 0.875);
-  return { level: e.krankWochen === 'unter6' ? 'vielleicht' : 'ja', spanne: lohn > 0 ? [kg(0.6), kg(lohn <= 2000 ? 0.8 : 0.72)] : null };
+  // § 50 Abs. 1 und 2 SGB V: Rente (erste Person) beendet oder kürzt das Krankengeld -> höchstens „möglich“
+  const rente = h.p[0].art === 'rente' && h.p[0].brutto > 0;
+  return { level: e.krankWochen === 'unter6' || rente ? 'vielleicht' : 'ja', spanne: lohn > 0 ? [kg(0.6), kg(lohn <= 2000 ? 0.8 : 0.72)] : null };
 }
 
 

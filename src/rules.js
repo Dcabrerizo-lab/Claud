@@ -823,7 +823,9 @@ const Rules = (function () {
   // Aufenthalt „Asylverfahren oder Duldung“ (h.asyl, umfasst Aufenthaltsgestattung, Duldung und Ausreisepflicht, § 1 Abs. 1 Nr. 1, 4, 5
   // AsylbLG): Wo das Gesetz Gestattung und Duldung verschieden behandelt oder die Lage unklar ist, höchstens „möglich“ mit Hinweis vorn.
   // „Unwahrscheinlich“ und „bekommst du schon“ bleiben.
-  const asylHoechstens = (h, r, key) => (!h.asyl || (r.level !== 'ja' && r.level !== 'vielleicht') ? r : mk(r.id, 'vielleicht', r.level === 'ja' ? 'vielleicht' : r.hl, [[key]].concat(r.tx)));
+  // hoechstensMoeglich: „wahrscheinlich“ wird „möglich“, Hinweis key vorn; „unwahrscheinlich“ und „bekommst du schon“ bleiben.
+  const hoechstensMoeglich = (r, key) => (r.level !== 'ja' && r.level !== 'vielleicht' ? r : mk(r.id, 'vielleicht', r.level === 'ja' ? 'vielleicht' : r.hl, [[key]].concat(r.tx)));
+  const asylHoechstens = (h, r, key) => (h.asyl ? hoechstensMoeglich(r, key) : r);
   // Vermögen nach dem SGB XII (Grundsicherung im Alter, Hilfe zur Pflege, Blindenhilfe) und BAföG: ein Auto zählt mit, außer es wird
   // wegen einer Behinderung oder für die Arbeit gebraucht (§ 90 Abs. 2 Nr. 5 SGB XII bzw. Härte; § 27 BAföG). Im SGB II ist ein
   // angemessenes Auto je erwerbsfähiger Person geschützt (§ 12 SGB II).
@@ -869,6 +871,7 @@ const Rules = (function () {
   // https://www.gesetze-im-internet.de/wogg/__3.html, Abruf 20.11.2026). Ausgeschlossen ist nur, wer Grundleistungen oder Leistungen in
   // besonderen Fällen nach dem AsylbLG bekommt (§ 7 Abs. 1 Satz 1 Nr. 8 WoGG, https://www.gesetze-im-internet.de/wogg/__7.html,
   // Abruf 20.11.2026). Ob jemand AsylbLG-Leistungen bezieht, fragt die App nicht: bei asyl höchstens „möglich“ mit Hinweis.
+  // Ausreisepflichtig ohne Duldung: in § 3 Abs. 5 Satz 1 Nr. 1 bis 6 WoGG nicht genannt, also nicht wohngeldberechtigt (Hinweistext nennt das).
   function wohngeld(h) {
     return asylHoechstens(h, wohngeld0(h), 'wohngeld.asyl');
   }
@@ -1264,8 +1267,12 @@ const Rules = (function () {
   // § 8 BAföG (https://www.gesetze-im-internet.de/baf_g/__8.html, Abruf 20.11.2026): Aufenthaltsgestattung ist nicht genannt (nur über
   // Abs. 3: 5 Jahre eigene oder 3 Jahre Erwerbstätigkeit eines Elternteils); Duldung erst nach 15 Monaten Aufenthalt (Abs. 2a).
   // Bei asyl daher höchstens „möglich“ mit Hinweis.
+  // EU-Bürger: § 8 Abs. 1 Nr. 2 bis 4 BAföG (gleiche Fundstelle, Abruf 20.11.2026): nur mit Recht auf Daueraufenthalt, als Arbeitnehmer
+  // oder Selbstständiger (auch Familienangehörige, also Arbeit der Eltern) oder nach Beschäftigung mit Bezug zur Ausbildung. Ohne Arbeit und
+  // unter 5 Jahren (euAusschluss) höchstens „möglich“ mit Hinweis; nicht „unwahrscheinlich“, weil die App die Arbeit der Eltern nicht kennt.
   function bafoeg(h) {
-    return asylHoechstens(h, bafoeg0(h), 'bafoeg.asyl');
+    const r = asylHoechstens(h, bafoeg0(h), 'bafoeg.asyl');
+    return euAusschluss(h) ? hoechstensMoeglich(r, 'bafoeg.eu') : r;
   }
   function bafoeg0(h) {
     const id = 'bafoeg';
@@ -1394,6 +1401,12 @@ const Rules = (function () {
     // Minijob (bis zur Minijob-Grenze): nicht krankenversichert über die Arbeit, daher kein Krankengeld (§ 7 SGB V, § 44 SGB V)
     if (h.lohnVorher > 0 && h.lohnVorher <= h.minijob) return mk(id, 'nein', 'vorausFehlt', [['krank.minijob', { mini: eur(h.minijob) }]]);
     const tx = [[h.krankWochen === 'unter6' ? 'krank.lfz' : 'krank.ja']];
+    // Rente: Vollrente wegen Alters oder Rente wegen voller Erwerbsminderung beendet den Anspruch auf Krankengeld (§ 50 Abs. 1 Satz 1 Nr. 1
+    // SGB V); Teilrente wegen Alters oder Rente wegen teilweiser Erwerbsminderung kürzen es, wenn sie nach Beginn der Arbeitsunfähigkeit
+    // beginnen (§ 50 Abs. 2 SGB V; https://www.gesetze-im-internet.de/sgb_5/__50.html, Abruf 20.11.2026). Welche Rente es ist, fragt die
+    // App nicht: bei Einkommensart Rente (erste Person) höchstens „möglich“, Hinweis vorn, Betrag nur als Obergrenze
+    const rente = (h.pers || []).some((x, i) => x[0] === 'rente' && x[1] > 0 && (h.liste ? x[5] : i + 1) === 1);
+    if (rente) tx.unshift(['krank.rente']);
     if (h.lohnVorher > 0) {
       const b = Math.min(h.lohnVorher, sv27(h.heute) ? R.krank.bbg2027 : R.krank.bbg);
       // Netto grob 60-72 % des Bruttos; Krankengeld = min(70 % brutto, 90 % netto), abzüglich der Beiträge
@@ -1402,7 +1415,8 @@ const Rules = (function () {
       tx.push(['schaetz.spanne', { a: eur(kgv(q[0])), b: eur(kgv(q[1])) }]);
     }
     tx.push(['krank.78']);
-    return mk(id, h.krankWochen === 'unter6' ? 'vielleicht' : 'ja', h.krankWochen === 'unter6' ? 'vielleicht' : 'ja', tx);
+    const sicher = h.krankWochen !== 'unter6' && !rente;
+    return mk(id, sicher ? 'ja' : 'vielleicht', sicher ? 'ja' : 'vielleicht', tx);
   }
 
   // Elterngeld (BEEG)
@@ -1442,6 +1456,10 @@ const Rules = (function () {
   function hilfeZurPflege(h) {
     const id = 'hzp';
     if (h.pflegegrad < 2 && !h.pflegeAntrag) return mk(id, 'nein', 'vorausFehlt', [['hzp.keine']]);
+    // EU-Bürger ohne Arbeit, unter 5 Jahren: keine Leistungen nach § 23 Abs. 1 SGB XII (umfasst Hilfe zur Pflege), Ausnahmen Härte
+    // (Satz 6) und nach 5 Jahren (Satz 7) – § 23 Abs. 3 SGB XII, https://www.gesetze-im-internet.de/sgb_12/__23.html, Abruf 20.11.2026.
+    // Gleiche Logik und Stufe wie bei der Grundsicherung im Alter (euAusschluss)
+    if (euAusschluss(h)) return mk(id, 'nein', 'ausschluss', [['sh.eu']]);
     if (vermSGB12(h) > R.grundsicherung.schonAllein * h.adults + 500 * h.children) return mk(id, 'nein', 'vermHoch', [['hzp.verm']]);
     // § 23 Abs. 2 SGB XII: keine Sozialhilfe für Leistungsberechtigte nach § 1 AsylbLG (https://www.gesetze-im-internet.de/sgb_12/__23.html,
     // Abruf 20.11.2026). Nach 36 Monaten SGB XII entsprechend (§ 2 Abs. 1 AsylbLG), davor nur im Einzelfall (§ 6 Abs. 1 AsylbLG,
@@ -1492,6 +1510,12 @@ const Rules = (function () {
   function blindenhilfe(h) {
     const id = 'blh';
     if (h.blind !== 'blind') return mk(id, 'nein', h.blind ? 'vorausFehlt' : 'keinBeh', [[h.blind ? 'blh.hoch' : 'blh.keine']]);
+    // EU-Bürger ohne Arbeit, unter 5 Jahren: § 23 Abs. 3 Satz 1 SGB XII schließt „Leistungen nach Absatz 1“ aus; Blindenhilfe ist Sozialhilfe
+    // im Einzelfall nach § 23 Abs. 1 Satz 3. Ausnahmen Härte (Satz 6) und nach 5 Jahren (Satz 7)
+    // (https://www.gesetze-im-internet.de/sgb_12/__23.html, Abruf 20.11.2026). Gleiche Logik und Stufe wie Grundsicherung im Alter
+    if (euAusschluss(h)) return mk(id, 'nein', 'ausschluss', [['sh.eu']]);
+    // § 23 Abs. 2 SGB XII: keine Sozialhilfe für Leistungsberechtigte nach § 1 AsylbLG (Status, nicht tatsächlicher Bezug); nach 36 Monaten
+    // § 2 Abs. 1 AsylbLG (https://www.gesetze-im-internet.de/sgb_12/__23.html, Abruf 20.11.2026)
     if (h.asyl) return mk(id, 'vielleicht', 'vielleicht', [['blh.asyl']]);
     if (vermSGB12(h) > R.grundsicherung.schonAllein * h.adults + 500 * h.children) return mk(id, 'nein', 'vermHoch', [['blh.verm']]);
     const grenze = R.hzp.grund * R.regelbedarf.alleinstehend + h.miete + R.hzp.familie * R.regelbedarf.alleinstehend * (h.persons - 1);
@@ -1721,8 +1745,10 @@ const Rules = (function () {
   function wbs(h) {
     const id = 'wbs';
     // § 27 Abs. 2 WoFG (https://www.gesetze-im-internet.de/wofg/__27.html, Abruf 20.11.2026): nur wer rechtlich in der Lage ist, auf
-    // längere Dauer einen Wohnsitz zu begründen; Bayern: Art. 14 Abs. 2 BayWoFG. Mit Duldung oder Gestattung meist nicht, Ausnahmen
-    // z. B. Ausbildungsduldung (Rechtsprechung, docs/entwuerfe/wbs-aufenthalt.md) -> „unwahrscheinlich“ mit Hinweis (Entscheidung David, 20.11.2026)
+    // längere Dauer einen Wohnsitz zu begründen; Bayern: Art. 14 Abs. 2 BayWoFG (https://www.gesetze-bayern.de/Content/Document/BayWoFG-14,
+    // Abruf 20.11.2026). Mit Duldung oder Gestattung meist nicht. Ausnahme z. B. Ausbildungsduldung: VG Berlin, Urteil vom 25.06.2019,
+    // VG 8 K 202.18 (rechtlich verfestigter Aufenthalt, Duldung muss noch mindestens ein Jahr gelten; Volltext asyl.net, rsdb M27364,
+    // Abruf 20.11.2026) -> „unwahrscheinlich“ mit Hinweis (Entscheidung David, 20.11.2026)
     if (h.asyl) return mk(id, 'nein', 'vorausFehlt', [['wbs.asyl']]);
     // Andere Länder: eigene Einkommensgrenzen (Landesrecht). Sicher ist nur: Kein Land liegt unter den Bundeswerten (§ 9 Abs. 2 WoFG).
     // Das Brutto ist nie kleiner als das maßgebliche Gesamteinkommen; liegt es unter der Bundesgrenze, ist der WBS wahrscheinlich.

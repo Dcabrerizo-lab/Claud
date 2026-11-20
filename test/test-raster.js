@@ -255,6 +255,8 @@ for (let i = 0; i < 20000; i++) {
   for (const id of ['hzp', 'blh']) {
     const verm = (Number(e.vermoegen) || 0) > Ref.schon90(e); // Auto geschützt (§ 90 Abs. 2 Nr. 10 SGB XII)
     const app = r[id];
+    // [sh-eu] EU-Bürger ohne Arbeit, unter 5 Jahren: wie Grundsicherung im Alter ausgeschlossen (§ 23 Abs. 3 SGB XII)
+    if (Ref.euAus(Ref.haushalt(e))) { if (app.level !== 'nein' || app.tx[0][0] !== 'sh.eu') melde(id + ': EU-Ausschluss', e, { app: app.level }); continue; }
     if (verm) { if (app.level !== 'nein') melde(id + ': Vermögen', e, { app: app.level }); continue; }
     const g = Ref.grenze85(e);
     const k = app.tx[0];
@@ -285,4 +287,4 @@ if (!((zukZahl.alg || 0) >= zukMin && (zukZahl.kg || 0) >= zukMin && (zukZahl.eg
 console.log('[zuk-einkommen] Künftige vorrangige Leistung als Einkommen geprüft: ' + JSON.stringify(zukZahl));
 if (kduZahl < Math.max(10, N / 300)) { console.log('Zu wenige Haushalte mit Miete über der Angemessenheitsgrenze: ' + kduZahl); process.exit(1); }
 console.log('[kdu-grenze] Miete über der Angemessenheitsgrenze geprüft: ' + kduZahl + ' Haushalte');
-console.log('[wg-formel] [wg-ae] [kiz-formel] [eg-satz] [hzp-grenze] [blh-grenze] [asyl-ausschluss] Raster-Test bestanden: ' + n + ' Haushalte (davon ' + raster + ' als vollständiges Raster für Werkstatt-Beschäftigte, ' + schwelle + ' im Schwellen-Raster), App und unabhängige Referenz stimmen überein (Grundsicherungsgeld, Grundsicherung im Alter und bei Erwerbsminderung mit Werkstattlohn und Wohnform, Wohngeld, Kinderzuschlag, Unterhaltsvorschuss, BAföG, Arbeitslosengeld I, Krankengeld, Elterngeld, Hilfe zur Pflege, Blindenhilfe, Ausschlüsse bei Asyl: Einstufung und Beträge).');
+console.log('[wg-formel] [wg-ae] [kiz-formel] [eg-satz] [hzp-grenze] [blh-grenze] [sh-eu] [asyl-ausschluss] Raster-Test bestanden: ' + n + ' Haushalte (davon ' + raster + ' als vollständiges Raster für Werkstatt-Beschäftigte, ' + schwelle + ' im Schwellen-Raster), App und unabhängige Referenz stimmen überein (Grundsicherungsgeld, Grundsicherung im Alter und bei Erwerbsminderung mit Werkstattlohn und Wohnform, Wohngeld, Kinderzuschlag, Unterhaltsvorschuss, BAföG, Arbeitslosengeld I, Krankengeld, Elterngeld, Hilfe zur Pflege, Blindenhilfe, Ausschlüsse bei Asyl: Einstufung und Beträge).');

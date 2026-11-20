@@ -4,7 +4,8 @@
 // Das Ergebnis wird mit der Soll-Tabelle test/abhaengigkeiten.json verglichen (jede Zeile mit Rechtsgrundlage):
 //  - Soll „hängt ab“, aber die Karte reagiert nie         → FEHLER (Voraussetzung vergessen, z. B. Aufenthalt beim WBS)
 //  - Karte reagiert, aber in der Soll-Tabelle steht nichts → FEHLER (neue, ungeprüfte Abhängigkeit: Tabelle prüfen und ergänzen)
-//  - Ausschluss-Regeln (z. B. „Asyl → nie wahrscheinlich“, „hoechstens“) und Mindest-Regeln („mindestens“, optional nur mit Kindern)
+//  - Ausschluss-Regeln (z. B. „Asyl → nie wahrscheinlich“, „hoechstens“) und Mindest-Regeln („mindestens“, optional nur mit Kindern
+//    oder nur „wenn“ weitere Angaben passen)
 //    werden für jeden Haushalt geprüft
 // Bekannte, schon vorgemerkte Lücken stehen in „bekannt“ und werden nur gemeldet (mit Verweis auf den Entwurf).
 // Aufruf: node test/test-abhaengigkeiten.js [Anzahl Haushalte, Standard 1500]   ·   --tabelle  gibt die beobachtete Tabelle aus
@@ -108,6 +109,8 @@ for (let i = 0; i < N; i++) {
         for (const k of regel.karten) {
           const RANG = { nein: 0, na: 0, vielleicht: 1, ja: 2 };
           if (regel.nurMitKindern && !(x.e.kids > 0)) continue;
+          // wenn: weitere Bedingungen an den Haushalt (Feld → erlaubte Werte), z. B. EU-Bürger ohne Arbeit und unter 5 Jahren
+          if (regel.wenn && !Object.entries(regel.wenn).every(([f, w]) => w.includes(x.e[f]))) continue;
           const zuHoch = regel.hoechstens && RANG[x.s[k]] > RANG[regel.hoechstens], zuNiedrig = regel.mindestens && RANG[x.s[k]] < RANG[regel.mindestens];
           if (zuHoch || zuNiedrig) {
             const key = k + ' bei ' + m + '=' + x.v;
