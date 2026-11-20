@@ -1173,7 +1173,6 @@
   "briefe.ab.t": "Znaleźć termin, objaśnić formularz, upomnienie lub Inkasso",
   "briefe.ab.lead": "Wczytaj list lub formularz. SoLo rozpozna, co to jest.",
   "briefe.ab.wahl": "Albo wybierz sam:",
-  "briefe.nurDeutsch": "To sprawdzenie jest na razie tylko po niemiecku. Wskazówka: zeskanuj list lub wybierz PDF, a aplikacja sama wpisze wartości.",
   "pa.start": "Oceń stopień opieki samodzielnie (Pflegegrad)",
   "pa.hoeher": "Czy stopień opieki nadal wystarcza? Sprawdź podwyższenie",
   "pa.stand": "Twoja ocena z {datum}: Pflegegrad {pg} ({punkte} pkt). Stopień opieki ustala kasa opiekuńcza (Pflegekasse).",

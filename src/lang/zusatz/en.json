@@ -49,5 +49,6 @@
   "bp.w.mb": "An extra amount in special situations, for example for single parents, in pregnancy or if hot water is heated in the flat (§ 21 SGB II).",
   "bp.w.kdu": "Rent, service charges and heating, as far as the Jobcenter recognises them as reasonable (§ 22 SGB II).",
   "bp.w.zb": "The amount paid into your account every month.",
-  "bp.w.bz": "The months the decision covers. After that you need an application to continue (Weiterbewilligungsantrag). It is not the date of the decision."
+  "bp.w.bz": "The months the decision covers. After that you need an application to continue (Weiterbewilligungsantrag). It is not the date of the decision.",
+  "briefe.schreibenDe": "Letters to authorities, for example an objection, are always in German. The authorities need them that way."
 }

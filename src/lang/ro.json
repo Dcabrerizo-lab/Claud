@@ -1173,7 +1173,6 @@
   "briefe.ab.t": "Găsește termenul, explică formularul, somație sau Inkasso",
   "briefe.ab.lead": "Încarcă scrisoarea sau formularul. SoLo recunoaște ce este.",
   "briefe.ab.wahl": "Sau alege tu:",
-  "briefe.nurDeutsch": "Această verificare este momentan doar în germană. Sfat: scanează scrisoarea sau alege un PDF, iar aplicația completează singură valorile.",
   "pa.start": "Estimează singur gradul de îngrijire (Pflegegrad)",
   "pa.hoeher": "Mai este suficient gradul de îngrijire? Verifică un grad mai mare",
   "pa.stand": "Estimarea ta din {datum}: Pflegegrad {pg} ({punkte} puncte). Gradul de îngrijire îl stabilește casa de îngrijire (Pflegekasse).",

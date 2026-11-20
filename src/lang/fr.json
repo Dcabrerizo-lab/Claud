@@ -1173,7 +1173,6 @@
   "briefe.ab.t": "Trouver le délai, expliquer un formulaire, rappel ou Inkasso",
   "briefe.ab.lead": "Lis la lettre ou le formulaire. SoLo reconnaît ce que c’est.",
   "briefe.ab.wahl": "Ou choisis toi-même :",
-  "briefe.nurDeutsch": "Cette vérification n'existe pour l'instant qu'en allemand. Conseil : scanne la lettre ou choisis un PDF, l'appli saisira alors les valeurs elle-même.",
   "pa.start": "Estimer soi-même le degré de dépendance (Pflegegrad)",
   "pa.hoeher": "Le degré de dépendance suffit-il encore ? Vérifier un passage à un degré supérieur",
   "pa.stand": "Ton estimation du {datum} : Pflegegrad {pg} ({punkte} points). C'est la Pflegekasse qui fixe le degré de dépendance.",

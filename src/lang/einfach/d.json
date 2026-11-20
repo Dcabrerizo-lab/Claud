@@ -124,7 +124,6 @@
   "res.n": "{n} Hilfen passen vielleicht zu dir.",
   "res.beratung": "Du bist unsicher? Dann frag eine Beratungsstelle in deiner Nähe. Die Hilfe kostet nichts.",
   "briefe.andere.t": "Du weißt nicht, was es für ein Brief ist? Die App sucht die Frist. Du findest auch kostenlose Hilfe.",
-  "briefe.nurDeutsch": "Diese Prüfung gibt es zurzeit nur auf Deutsch. Tipp: Scanne den Brief oder wähle eine PDF-Datei. Dann trägt die App die Werte selbst ein.",
   "pa.hoeher": "Reicht der Pflegegrad noch? Höherstufung prüfen",
   "pa.stand": "Deine Einschätzung vom {datum}: Pflegegrad {pg} ({punkte} Punkte). Den Pflegegrad legt die Pflegekasse fest.",
   "el.textLabel": "Text aus dem Brief, zum Beispiel aus einer PDF kopiert",

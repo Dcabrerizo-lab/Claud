@@ -111,7 +111,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Leistungsseite: kein Formular-Scannen und kein Verweis darauf', !(await p.isVisible('#scan')) && (await p.locator('#v-leistungen #scanVerweis, #v-leistungen #scan, #v-leistungen [data-t^="sc."]').count()) === 0);
   // Fremde Sprache: Hinweis „nur auf Deutsch“, Bereiche übersetzt
   await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'tr'); await p.click('#appnav [data-ansicht=start]'); await p.click('#goBriefe'); await p.click('#brief-wg');
-  ok('Türkisch: Hinweis, dass die Prüfung nur auf Deutsch ist', await p.isVisible('#ppNurDe'));
+  ok('Türkisch: Hinweis, dass Schreiben an Ämter auf Deutsch sind', await p.isVisible('#ppNurDe'));
   ok('Türkisch: Leiste übersetzt', (await p.textContent('#appnav')).includes('Klasörüm'));
   await p.click('#briefZurueck'); await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'de');
   // Auf dem Computer: Reiter oben, ohne seitliches Scrollen

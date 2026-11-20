@@ -49,5 +49,6 @@
   "bp.w.mb": "Un montant en plus dans des situations particulières, par exemple pour les parents seuls, pendant la grossesse ou si l’eau chaude est produite dans le logement (§ 21 SGB II).",
   "bp.w.kdu": "Loyer, charges et chauffage, dans la mesure où le Jobcenter les reconnaît comme appropriés (§ 22 SGB II).",
   "bp.w.zb": "Le montant versé chaque mois.",
-  "bp.w.bz": "Les mois couverts par la décision. Ensuite, il faut une demande de renouvellement (Weiterbewilligungsantrag). Ce n’est pas la date de la décision."
+  "bp.w.bz": "Les mois couverts par la décision. Ensuite, il faut une demande de renouvellement (Weiterbewilligungsantrag). Ce n’est pas la date de la décision.",
+  "briefe.schreibenDe": "Les lettres aux administrations, par exemple une opposition, sont toujours en allemand. Les administrations en ont besoin ainsi."
 }

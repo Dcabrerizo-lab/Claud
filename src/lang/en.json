@@ -1173,7 +1173,6 @@
   "briefe.ab.t": "Find the deadline, explain a form, reminder or Inkasso",
   "briefe.ab.lead": "Scan in the letter or form. SoLo recognises what it is.",
   "briefe.ab.wahl": "Or choose yourself:",
-  "briefe.nurDeutsch": "This check is currently only available in German. Tip: scan the letter or choose a PDF, and the app fills in the values itself.",
   "pa.start": "Estimate the care level yourself (Pflegegrad)",
   "pa.hoeher": "Is the care level still enough? Check for a higher level",
   "pa.stand": "Your estimate from {datum}: Pflegegrad {pg} ({punkte} points). The care insurance (Pflegekasse) decides the care level.",

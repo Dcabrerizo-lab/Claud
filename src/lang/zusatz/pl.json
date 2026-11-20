@@ -49,5 +49,6 @@
   "bp.w.mb": "Dodatkowa kwota w szczególnych sytuacjach, np. dla samotnych rodziców, w ciąży albo gdy ciepła woda jest podgrzewana w mieszkaniu (§ 21 SGB II).",
   "bp.w.kdu": "Czynsz, koszty dodatkowe i ogrzewanie w zakresie, w jakim Jobcenter uznaje je za odpowiednie (§ 22 SGB II).",
   "bp.w.zb": "Kwota przelewana co miesiąc.",
-  "bp.w.bz": "Miesiące, na które obowiązuje decyzja. Potem potrzebny jest wniosek o dalsze przyznanie (Weiterbewilligungsantrag). To nie jest data decyzji."
+  "bp.w.bz": "Miesiące, na które obowiązuje decyzja. Potem potrzebny jest wniosek o dalsze przyznanie (Weiterbewilligungsantrag). To nie jest data decyzji.",
+  "briefe.schreibenDe": "Pisma do urzędów, na przykład sprzeciw, są zawsze po niemiecku. Urzędy potrzebują ich w tej formie."
 }

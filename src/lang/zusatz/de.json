@@ -49,5 +49,6 @@
   "bp.w.mb": "Zusätzlicher Betrag in besonderen Lagen, zum Beispiel für Alleinerziehende, in der Schwangerschaft oder wenn das Warmwasser in der Wohnung erzeugt wird (§ 21 SGB II).",
   "bp.w.kdu": "Miete, Nebenkosten und Heizung, soweit das Jobcenter sie als angemessen anerkennt (§ 22 SGB II).",
   "bp.w.zb": "Der Betrag, der jeden Monat überwiesen wird.",
-  "bp.w.bz": "Die Monate, für die der Bescheid gilt. Danach braucht es einen Weiterbewilligungsantrag. Er ist nicht das Datum des Bescheids."
+  "bp.w.bz": "Die Monate, für die der Bescheid gilt. Danach braucht es einen Weiterbewilligungsantrag. Er ist nicht das Datum des Bescheids.",
+  "briefe.schreibenDe": "Schreiben an Ämter, zum Beispiel ein Widerspruch, sind immer auf Deutsch. Die Ämter brauchen sie so."
 }

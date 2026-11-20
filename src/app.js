@@ -2692,7 +2692,7 @@
       box.appendChild(quellenEl([t('sp.schulden.quellen')]));
     } else if (sp.rezepte) {
       p(t('sp.rezepte'), 'pf-frage');
-      if (lang !== 'de') p(t('briefe.nurDeutsch'), 'pp-hinweis small');
+      if (lang !== 'de') p(t('pu.nurDe'), 'pp-hinweis small');
       REZEPTE.forEach(function (r) {
         var d = document.createElement('details'); d.className = 'rezept'; d.lang = 'de';
         d.innerHTML = '<summary>' + esc(r[0]) + '</summary><ul class="sp-liste">' + r[1].map(function (z) { return '<li>' + esc(z) + '</li>'; }).join('') + '</ul><ol class="sp-liste">' + r[2].map(function (z) { return '<li>' + esc(z) + '</li>'; }).join('') + '</ol>';
