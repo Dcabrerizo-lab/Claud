@@ -111,8 +111,8 @@ const start = (s) => klick(s, s.d.querySelector('#appnav [data-ansicht=start]'))
       ['Einstellungen: Fachleute', () => w.__solo.unterseite('einst', 'fach'), 'einst', 'einst'],
       ['Einstellungen: Erinnern', () => w.__solo.unterseite('einst', 'erinnern'), 'einst', 'einst'],
       ['Einstellungen: Über', () => w.__solo.unterseite('einst', 'about'), 'einst', 'einst'],
-      ['Mein Ordner: Fristen', () => w.__solo.unterseite('ordner', 'fristen'), 'ordner', 'ordner'],
-      ['Mein Ordner: Alle Haushalte', () => w.__solo.unterseite('ordner', 'alle'), 'ordner', 'ordner']
+      ['Mein Ordner: Fristen', () => w.__solo.unterseite('ordner', 'fristen'), 'ordner', 'ordner']
+
     ];
     for (const [name, oeffne, ansicht, danach] of faelle) {
       start(s); await warte();

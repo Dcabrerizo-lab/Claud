@@ -1,5 +1,5 @@
-// Vorgänge in der Oberfläche: Einstieg beim Ergebnis, Kürzel-Schild nur bei mehreren Vorgängen, Beispiel überschreibt keinen
-// gespeicherten Vorgang, Wechseln, Kopie, PIN-Sperre mit Sperrbildschirm, falsche PIN, Speicherfehler, Wort „Profil“ nie sichtbar.
+// Vorgänge in der Oberfläche: nur in „Mein Ordner“ (Liste wie eine Profilauswahl, „+ Neuen Vorgang anlegen“, Bearbeiten),
+// Beispiel überschreibt keinen gespeicherten Vorgang, Wechseln mit einem Tipp, Kopie, PIN-Sperre mit Sperrbildschirm, falsche PIN, Speicherfehler, Wort „Profil“ nie sichtbar.
 'use strict';
 const { JSDOM } = require('jsdom');
 const fs = require('fs');
@@ -27,6 +27,12 @@ function seite(mem, opt) {
 }
 const submit = (s, form) => form.dispatchEvent(new s.w.Event('submit', { bubbles: true, cancelable: true }));
 const knopf = (s, root, text) => [...root.querySelectorAll('button')].find((b) => b.textContent === text);
+// Wechseln mit einem Tipp auf die Zeile in „Mein Ordner“; Anlegen über „+“; Bearbeiten-Knöpfe in der Zeile eines Vorgangs
+const wechsel = (s, name) => s.d.querySelector('#setHaushalte button.vg-zeile[data-vg-name="' + name + '"]').click();
+const anlegen = (s, name) => { s.d.getElementById('vgPlus').click(); s.d.getElementById('vgNameNeu').value = name; submit(s, s.d.getElementById('vgNeuForm')); };
+const bearbeiten = (s) => { const b = s.d.getElementById('vgBearb'); if (b && b.getAttribute('aria-pressed') !== 'true') b.click(); };
+const zeileVon = (s, name) => s.d.querySelector('#setHaushalte [data-vg-name="' + name + '"]').closest('li');
+const offenName = (s) => { const z = s.d.querySelector('#setHaushalte .vg-offen [data-vg-name]'); return z ? z.getAttribute('data-vg-name') : ''; };
 
 (async () => {
   const alt = { s: { adults: 1, kids: 0, ek1Art: 'lohn', ek1Brutto: 2100, ek1Netto: 1600, miete: 640, mietstufe: '3', vermoegen: 500, bezug: {} }, p: { name: 'Erika Muster' }, e: true };
@@ -35,19 +41,26 @@ const knopf = (s, root, text) => [...root.querySelectorAll('button')].find((b) =
   const d = s.d;
   ck('[vorgaenge] lädt ohne Skriptfehler', s.errors.length === 0, s.errors.join(' | '));
   ck('[vorgaenge] alter Speicherstand übernommen', d.getElementById('miete').value === '640' && d.getElementById('p-name').value === 'Erika Muster');
-  ck('[vorgaenge] ein Vorgang: kein Kürzel-Schild, kein Sperrbildschirm', d.getElementById('vgChip').hidden && !d.getElementById('vgSperre'));
-  const res = d.getElementById('vgRes');
-  ck('[vorgaenge] Einstieg „Vorgang speichern“ beim Ergebnis', res && !res.hidden && /Vorgang speichern/.test(res.textContent) && d.getElementById('vgNameRes'));
-  ck('[vorgaenge] Verwaltung in „Mein Ordner“, Unterseite „Alle Haushalte und Vorgänge“', d.getElementById('setHaushalte').closest('.unterseite').id === 'ordnerAlle' && d.getElementById('setHaushalte').closest('#v-ordner'));
-  ck('[vorgaenge] PIN-Sperre und automatisch löschen in den Einstellungen unter „Sicherheit und Daten“', !!d.querySelector('#es-sicher #setSicher #vgTage') && /PIN-Sperre/.test(d.getElementById('setSicher').textContent) && !!d.querySelector('#es-sicher #vgAlleBox button') && !d.querySelector('#setHaushalte #vgTage'));
+  ck('[vorgaenge] Vorgänge nur in „Mein Ordner“: kein Kürzel-Schild im Kopf, kein Kasten beim Ergebnis, keine Liste in den Einstellungen', !d.getElementById('vgChip') && !d.getElementById('vgMenu') && !d.getElementById('vgRes') && !d.querySelector('#v-einst .vg-liste') && !!d.getElementById('setHaushalte').closest('#ordnerHaupt') && !d.getElementById('setHaushalte').closest('.unterseite') && !d.getElementById('vgSperre'));
+  ck('[vorgaenge] ein Vorgang: keine Liste, kein „Bearbeiten“, nur „+ Weiteren Vorgang anlegen“', !d.querySelector('#setHaushalte .vg-zeile[data-vg-name]') && !d.getElementById('vgBearb') && /Weiteren Vorgang anlegen/.test(d.getElementById('vgPlus').textContent) && d.getElementById('vgH').classList.contains('vh'));
+  ck('[vorgaenge] PIN-Sperre und automatisch löschen in den Einstellungen unter „Sicherheit und Daten“, Link aus „Mein Ordner“', !!d.querySelector('#es-sicher #setSicher #vgTage') && /PIN-Sperre/.test(d.getElementById('setSicher').textContent) && !!d.querySelector('#es-sicher #loeschListe #vgAlle') && !/niemand die Angaben wiederherstellen/.test(d.getElementById('setSicher').textContent) && !d.querySelector('#setHaushalte #vgTage') && !!d.getElementById('vgZuSicher'));
 
-  // Speichern unter Namen
-  d.getElementById('vgNameRes').value = '  Familie M.  ';
-  submit(s, d.getElementById('vgNameRes').form);
-  await warte(20);
-  ck('[vorgaenge] gespeichert: Name im Speicher, Angaben weiter unter lotse.state', /Familie M\./.test(mem['lotse.vorgaenge'] || '') && JSON.parse(mem['lotse.state']).s.miete === 640);
-  ck('[vorgaenge] nach dem Speichern: Bestätigung beim Ergebnis', /Gespeichert als „Familie M\.“/.test(d.getElementById('vgRes').textContent));
-  ck('[vorgaenge] weiterhin kein Kürzel-Schild bei einem Vorgang', d.getElementById('vgChip').hidden);
+  // Weiteren Vorgang anlegen: neuer leerer Vorgang, die bisherigen Angaben bleiben im ersten
+  anlegen(s, '  Leer  ');
+  await warte(50);
+  ck('[vorgaenge] angelegt: neuer leerer Vorgang geöffnet, Name im Speicher', d.getElementById('miete').value === '' && /"Leer"/.test(mem['lotse.vorgaenge'] || '') && offenName(s) === 'Leer');
+  ck('[vorgaenge] zwei Vorgänge: Liste mit Initialen-Kreis, geöffneter markiert, „Bearbeiten“, „+ Neuen Vorgang anlegen“', d.querySelectorAll('#setHaushalte .vg-zeile[data-vg-name]').length === 2 && d.querySelector('#setHaushalte .vg-offen [aria-current="true"]') && d.querySelector('#setHaushalte .vg-offen .vg-kreis').textContent === 'L' && !!d.getElementById('vgBearb') && /Neuen Vorgang anlegen/.test(d.getElementById('vgPlus').textContent) && !d.getElementById('vgH').classList.contains('vh'));
+  ck('[vorgaenge] Umbenennen, Kopie und Löschen erst nach „Bearbeiten“', !knopf(s, zeileVon(s, 'Ohne Namen'), 'Umbenennen'));
+  bearbeiten(s);
+  ck('[vorgaenge] „Bearbeiten“ zeigt Umbenennen, Kopie, Löschen', ['Umbenennen', 'Kopie zum Ausprobieren', 'Löschen'].every((x) => !!knopf(s, zeileVon(s, 'Ohne Namen'), x)) && d.getElementById('vgBearb').textContent === 'Fertig');
+  knopf(s, zeileVon(s, 'Ohne Namen'), 'Umbenennen').click();
+  zeileVon(s, 'Ohne Namen').querySelector('.vg-umb input').value = 'Familie M.';
+  submit(s, zeileVon(s, 'Ohne Namen').querySelector('.vg-umb'));
+  knopf(s, zeileVon(s, 'Leer'), 'Löschen').click();
+  ck('[vorgaenge] Löschen in „Bearbeiten“: dieselbe Rückfrage', /Nur „Leer“ löschen\?/.test(d.getElementById('loeschFrage').textContent));
+  d.getElementById('loeschJa').click();
+  await warte(50);
+  ck('[vorgaenge] umbenannt und geöffneten gelöscht: „Familie M.“ mit den Angaben geöffnet, wieder ohne Liste', d.getElementById('miete').value === '640' && d.getElementById('p-name').value === 'Erika Muster' && !d.querySelector('#setHaushalte .vg-zeile[data-vg-name]') && /Familie M\./.test(mem['lotse.vorgaenge'] || '') && JSON.parse(mem['lotse.state']).s.miete === 640);
 
   // Beispiel darf den gespeicherten Vorgang nicht überschreiben
   d.getElementById('p1').click();
@@ -58,67 +71,62 @@ const knopf = (s, root, text) => [...root.querySelectorAll('button')].find((b) =
   ck('[vorgaenge] Beispiel öffnet einen neuen Vorgang', st.liste.length === 2 && st.aktiv !== fam.id);
   ck('[vorgaenge] gespeicherter Vorgang bleibt unverändert', JSON.parse(fam.daten['lotse.state']).s.miete === 640, fam.daten);
   ck('[vorgaenge] Beispiel ohne Antragsdaten des gespeicherten Vorgangs', d.getElementById('p-name').value === '');
-  const chip = d.getElementById('vgChip');
-  ck('[vorgaenge] zwei Vorgänge: Kürzel-Schild im Kopf', !chip.hidden && chip.textContent === 'Ohne Namen');
+  ck('[vorgaenge] zwei Vorgänge: der neue (ohne Namen) ist in der Liste markiert', offenName(s) === 'Ohne Namen');
 
-  // Wechseln über das Schild
-  chip.click();
-  ck('[vorgaenge] Schild öffnet die Auswahl', !d.getElementById('vgMenu').hidden);
-  knopf(s, d.getElementById('vgMenu'), 'Familie M.').click();
-  ck('[vorgaenge] Wechsel lädt Angaben und Antragsdaten', d.getElementById('miete').value === '640' && d.getElementById('p-name').value === 'Erika Muster' && chip.textContent === 'Familie M.');
+  // Wechseln mit einem Tipp
+  wechsel(s, 'Familie M.');
+  ck('[vorgaenge] Wechsel lädt Angaben und Antragsdaten', d.getElementById('miete').value === '640' && d.getElementById('p-name').value === 'Erika Muster' && offenName(s) === 'Familie M.');
 
   // Haushaltsplan (src/haushalt.js) je Vorgang
   const H = s.w.Haushalt, essen = () => (H.daten().plan.aus || {}).essen;
   H.laden({ plan: { aus: { essen: 30000 } } });
   if (s.w.Ausziehen) s.w.Ausziehen.laden({ ab: { vertrag: true } });
   ck('[vorgaenge] Haushaltsplan im geöffneten Vorgang gespeichert', /30000/.test(mem['lotse.haushalt'] || ''));
-  knopf(s, d.getElementById('vgMenu'), 'Ohne Namen').click();
+  wechsel(s, 'Ohne Namen');
   ck('[vorgaenge] anderer Vorgang: eigener (leerer) Haushaltsplan', essen() === undefined);
   ck('[vorgaenge] anderer Vorgang: eigene (leere) Haken bei „Ich ziehe aus“', !s.w.Ausziehen || !s.w.Ausziehen.daten().ab.vertrag);
-  knopf(s, d.getElementById('vgMenu'), 'Familie M.').click();
+  wechsel(s, 'Familie M.');
   ck('[vorgaenge] zurück: Haushaltsplan des Vorgangs wieder da', essen() === 30000);
   ck('[vorgaenge] zurück: Haken bei „Ich ziehe aus“ wieder da', !s.w.Ausziehen || s.w.Ausziehen.daten().ab.vertrag === true);
-  ck('[vorgaenge] Löschen-Text nennt den Haushaltsplan', /Haushaltsplan und Haushaltsbuch/.test(d.getElementById('clearWas').textContent));
-
-  // Alle Angaben löschen: Text nennt den Vorgang, Rückgängig stellt ihn wieder her, nach einem Wechsel nicht mehr
-  ck('[vorgaenge] Löschen-Text nennt den geöffneten Vorgang', /nur der geöffnete Vorgang \(„Familie M\.“\)\. Alle Vorgänge löschst du in den Einstellungen/.test(d.getElementById('clearWas').textContent), d.getElementById('clearWas').textContent);
-  const hk = d.querySelector('input[data-haken]'); hk.checked = true; hk.dispatchEvent(new s.w.Event('change', { bubbles: true }));
+  // Löschen: zwei klare Zeilen in Einstellungen → Sicherheit und Daten, jede sagt, was weg ist
+  const c2 = d.getElementById('clear2'), va = d.getElementById('vgAlle');
+  ck('[vorgaenge] Löschen: „Nur „Familie M.“ löschen“ nennt, was weg ist', /Nur „Familie M\.“ löschen/.test(c2.textContent) && /Fristen/.test(c2.textContent) && /Andere Vorgänge bleiben/.test(c2.textContent), c2.textContent);
+  ck('[vorgaenge] Löschen: „Alles auf diesem Gerät löschen“ nennt Vorgänge und PIN, Sprache bleibt', /Alles auf diesem Gerät löschen/.test(va.textContent) && /PIN/.test(va.textContent) && /Sprache/.test(va.textContent));
+  ck('[vorgaenge] keine Löschen-Knöpfe im Leistungs-Check, nur ein Link dorthin', !d.getElementById('clearBtn') && !!d.getElementById('clearLink'));
+  [...d.querySelectorAll('[data-pick]')].slice(0, 1).forEach((cb) => { cb.checked = true; cb.dispatchEvent(new s.w.Event('change', { bubbles: true })); });
+  d.getElementById('mappeMake').click(); // Haken gibt es nur in der Antragsmappe
+  const hk = d.querySelector('#m-unterlagen input[data-haken]'); hk.checked = true; hk.dispatchEvent(new s.w.Event('change', { bubbles: true }));
   ck('[vorgaenge] Haken der Checkliste gehören zum Vorgang', !!mem['lotse.haken'] && !!mem['lotse.pfaendung']);
-  d.getElementById('clearBtn').click();
-  ck('[vorgaenge] Löschen: ganzer Vorgang leer (Pfändung, Haken, Haushaltsplan)', !mem['lotse.pfaendung'] && !mem['lotse.haken'] && !d.querySelector('input[data-haken]:checked'), Object.keys(mem));
-  ck('[vorgaenge] Löschen leert nur den geöffneten Vorgang (auch den Haushaltsplan)', d.getElementById('miete').value === '' && d.getElementById('p-name').value === '' && essen() === undefined && !d.getElementById('undoBar').hidden && chip.textContent === 'Familie M.');
-  d.getElementById('undoBtn').click();
-  await warte(20);
-  ck('[vorgaenge] Rückgängig: Angaben des Vorgangs zurück und gespeichert', d.getElementById('miete').value === '640' && d.getElementById('p-name').value === 'Erika Muster' && JSON.parse(mem['lotse.state']).s.miete === 640);
-  ck('[vorgaenge] Rückgängig: Pfändung und Haken zurück', !!mem['lotse.pfaendung'] && /true/.test(mem['lotse.haken'] || '') && !!d.querySelector('input[data-haken]:checked'));
-  ck('[vorgaenge] Rückgängig: Haushaltsplan zurück und gespeichert', essen() === 30000 && /30000/.test(mem['lotse.haushalt'] || ''));
-  d.getElementById('clearBtn').click();
-  knopf(s, d.getElementById('vgMenu'), 'Ohne Namen').click();
-  ck('[vorgaenge] Wechsel nach dem Löschen: Rückgängig-Leiste weg', d.getElementById('undoBar').hidden);
-  knopf(s, d.getElementById('vgMenu'), 'Familie M.').click();
-  ck('[vorgaenge] gelöschter Vorgang bleibt leer, anderer Vorgang unberührt', d.getElementById('miete').value === '');
+  d.getElementById('mappeClose').click();
+  d.querySelector('#appnav [data-ansicht="einst"]').click(); d.querySelector('#einstListe .zeile[data-seite="sicher"]').click();
+  d.getElementById('clear2').click();
+  const fr = d.getElementById('loeschFrage');
+  ck('[vorgaenge] Rückfrage nennt, was weg ist, Knöpfe „Behalten“ und „Löschen“ (rot), keiner vorgewählt, Hinweis auf Rückgängig', fr && /Nur „Familie M\.“ löschen\?/.test(fr.textContent) && /Haushaltsplan und Haushaltsbuch/.test(fr.textContent) && /10 Sekunden/.test(fr.textContent) && d.activeElement === d.getElementById('loeschFrageT') && d.getElementById('loeschNein').textContent === 'Behalten' && d.getElementById('loeschJa').classList.contains('loesch-ja') && d.getElementById('loeschJa').textContent === 'Löschen', [fr && fr.textContent, d.activeElement && d.activeElement.id]);
+  d.getElementById('loeschNein').click();
+  ck('[vorgaenge] „Behalten“ löscht nichts', !d.getElementById('loeschFrage') && !!mem['lotse.haken'] && d.getElementById('miete').value === '640');
   d.getElementById('miete').value = '640'; d.getElementById('miete').dispatchEvent(new s.w.Event('change'));
   d.getElementById('p-name').value = 'Erika Muster'; d.getElementById('p-name').dispatchEvent(new s.w.Event('input'));
   H.laden({ plan: { aus: { essen: 30000 } } });
   await warte(400);
 
   // Kopie zum Ausprobieren
-  const g = d.getElementById('setHaushalte');
-  knopf(s, g.querySelector('li.vg-offen'), 'Kopie zum Ausprobieren').click();
+  bearbeiten(s);
+  knopf(s, zeileVon(s, 'Familie M.'), 'Kopie zum Ausprobieren').click();
   d.getElementById('miete').value = '900'; d.getElementById('miete').dispatchEvent(new s.w.Event('change'));
   await warte(400);
-  knopf(s, d.getElementById('vgMenu'), 'Familie M.').click();
+  wechsel(s, 'Familie M.');
   ck('[vorgaenge] Kopie: Original unverändert', d.getElementById('miete').value === '640');
   ck('[vorgaenge] Kopie übernimmt den Haushaltsplan', JSON.parse(mem['lotse.vorgaenge']).klar.liste.filter((v) => v.daten && /30000/.test(v.daten['lotse.haushalt'] || '')).length === 1 && essen() === 30000);
-  ck('[vorgaenge] drei Vorgänge in der Liste', d.querySelectorAll('#setHaushalte li').length === 3);
-  ck('[vorgaenge] Wort „Profil“ nie in der Oberfläche', !/Profil/i.test(d.getElementById('setHaushalte').textContent + chip.textContent + res.textContent));
+  ck('[vorgaenge] drei Vorgänge in der Liste', d.querySelectorAll('#setHaushalte .vg-zeile[data-vg-name]').length === 3);
+  ck('[vorgaenge] Wort „Profil“ nie in der Oberfläche', !/Profil/i.test(d.getElementById('setHaushalte').textContent));
 
   // Automatisch löschen: Datum sichtbar
   const sel = d.getElementById('vgTage'); sel.value = '30'; sel.dispatchEvent(new s.w.Event('change'));
   ck('[vorgaenge] automatisches Löschen: Datum „wird am … gelöscht“ sichtbar', d.querySelectorAll('#setHaushalte .vg-ablauf').length === 3 && /Wird am \d\d\.\d\d\.\d{4} gelöscht/.test(d.getElementById('setHaushalte').textContent));
 
   // PIN setzen
-  knopf(s, d.getElementById('setSicher'), 'PIN festlegen').click();
+  d.getElementById('vgPinSchalter').click();
+  ck('[vorgaenge] PIN festlegen: Warnung „PIN vergessen“ erst im Feld, nicht dauerhaft', /niemand die Angaben wiederherstellen/.test(d.getElementById('vgPinForm').textContent));
   d.getElementById('vgPin1').value = '12'; d.getElementById('vgPin2').value = '12';
   submit(s, d.getElementById('vgPinForm'));
   ck('[vorgaenge] zu kurze PIN abgelehnt', /4 bis 12 Ziffern/.test(d.getElementById('vgPinForm').textContent));
@@ -143,7 +151,7 @@ const knopf = (s, root, text) => [...root.querySelectorAll('button')].find((b) =
   submit(s, d.getElementById('vgPinForm'));
   for (let i = 0; i < 200 && !/bisherige PIN stimmt nicht/.test(d.getElementById('vgPinForm').textContent); i++) await warte(50);
   ck('[vorgaenge] PIN ändern: falsche bisherige PIN abgelehnt', /bisherige PIN stimmt nicht/.test(d.getElementById('vgPinForm').textContent));
-  knopf(s, d.getElementById('setSicher'), 'PIN-Sperre ausschalten').click();
+  d.getElementById('vgPinSchalter').click();
   ck('[vorgaenge] PIN ausschalten: nur mit bisheriger PIN', !!d.getElementById('vgPin0') && !d.getElementById('vgPin1'));
   d.getElementById('vgPinForm').remove();
   // Automatisch sperren nach etwa 2 Minuten im Hintergrund
@@ -173,12 +181,12 @@ const knopf = (s, root, text) => [...root.querySelectorAll('button')].find((b) =
   ck('[vorgaenge] richtige PIN: entsperrt, Angaben des Vorgangs geladen', sp.hidden && s2.d.getElementById('miete').value === '640' && s2.d.getElementById('p-name').value === 'Erika Muster');
   ck('[vorgaenge] nach dem Entsperren: Haushaltsplan entschlüsselt geladen', s2.w.Haushalt.daten().plan.aus.essen === 30000);
   ck('[vorgaenge] nach dem Entsperren: App wieder bedienbar', s2.d.getElementById('app').inert === false);
-  ck('[vorgaenge] nach dem Entsperren: Kürzel-Schild', !s2.d.getElementById('vgChip').hidden && s2.d.getElementById('vgChip').textContent === 'Familie M.');
+  ck('[vorgaenge] nach dem Entsperren: „Familie M.“ in „Mein Ordner“ geöffnet', offenName(s2) === 'Familie M.');
 
   // Automatisch löschen umstellen, geöffneter Vorgang ist abgelaufen: Rückfrage mit Anzahl, keine fremden Daten überschreiben
   {
     const m6 = { 'lotse.ack': '1', 'lotse-lang': 'de', 'lotse.state': JSON.stringify({ s: { adults: 1, kids: 0, ek1Art: 'lohn', ek1Netto: 1500, miete: 111, bezug: {} }, p: {}, e: true }) };
-    const a = seite(m6); a.d.getElementById('vgNameRes').value = 'Alt'; submit(a, a.d.getElementById('vgNameRes').form); await warte(50);
+    const a = seite(m6); await warte(50);
     a.w.dispatchEvent(new a.w.Event('pagehide')); await warte(50);
     const meta = JSON.parse(m6['lotse.vorgaenge']); const altId = meta.klar.aktiv, jetzt = Date.now();
     meta.klar.liste[0].geaendert = jetzt - 100 * 86400000;
@@ -199,21 +207,41 @@ const knopf = (s, root, text) => [...root.querySelectorAll('button')].find((b) =
   // Kopie mit langem Namen: „(Kopie)“ bleibt ganz
   {
     const m7 = { 'lotse.ack': '1', 'lotse-lang': 'de' }; const c = seite(m7);
-    c.d.getElementById('vgNameRes').value = 'Familie Mustermann-Lang'; submit(c, c.d.getElementById('vgNameRes').form); await warte(50);
-    knopf(c, c.d.getElementById('setHaushalte').querySelector('li.vg-offen'), 'Kopie zum Ausprobieren').click(); await warte(50);
+    anlegen(c, 'Familie Mustermann-Lang'); await warte(50);
+    ck('[vorgaenge] leerer erster Vorgang ohne Namen: „Anlegen“ gibt ihm nur den Namen (kein zweiter leerer)', JSON.parse(m7['lotse.vorgaenge']).klar.liste.length === 1);
+    anlegen(c, 'B'); await warte(50); bearbeiten(c);
+    knopf(c, zeileVon(c, 'Familie Mustermann-Lang'), 'Kopie zum Ausprobieren').click(); await warte(50);
     const namen = JSON.parse(m7['lotse.vorgaenge']).klar.liste.map((v) => v.name);
     ck('[vorgaenge] Kopiename: erst kürzen, dann „(Kopie)“', namen.some((x) => /\(Kopie\)$/.test(x) && x.length <= 24), namen);
+  }
+
+  // Löschen bestätigen: nur der geöffnete Vorgang, danach alles
+  {
+    const m9 = { 'lotse.ack': '1', 'lotse-lang': 'de' }; const e = seite(m9);
+    anlegen(e, 'A'); await warte(30);
+    e.d.getElementById('miete').value = '333'; e.d.getElementById('miete').dispatchEvent(new e.w.Event('change')); await warte(400);
+    anlegen(e, 'B'); await warte(30);
+    e.d.getElementById('clear2').click(); e.d.getElementById('loeschJa').click(); await warte(50);
+    const l9 = JSON.parse(m9['lotse.vorgaenge']).klar.liste.map((v) => v.name);
+    ck('[vorgaenge] „Nur „B“ löschen“: nur B weg, A wieder offen, Meldung', l9.join() === 'A' && e.d.getElementById('miete').value === '333' && e.d.getElementById('loeschMsg').textContent === '„B“ ist gelöscht.', [l9, e.d.getElementById('loeschMsg').textContent]);
+    ck('[vorgaenge] nach dem Löschen: Leiste „Rückgängig“', !e.d.getElementById('undoBar').hidden && /„B“ ist gelöscht/.test(e.d.getElementById('undoText').textContent));
+    e.d.getElementById('undoBtn').click(); await warte(50);
+    ck('[vorgaenge] Rückgängig: B wieder da und geöffnet', JSON.parse(m9['lotse.vorgaenge']).klar.liste.map((v) => v.name).join() === 'A,B' && offenName(e) === 'B' && e.d.getElementById('undoBar').hidden);
+    e.d.getElementById('clear2').click(); e.d.getElementById('loeschJa').click(); await warte(50);
+    e.d.getElementById('vgAlle').click();
+    ck('[vorgaenge] „Alles löschen“: Rückfrage sagt „nicht rückgängig“', /nicht rückgängig/.test(e.d.getElementById('loeschFrage').textContent));
+    e.d.getElementById('loeschJa').click(); await warte(50);
+    ck('[vorgaenge] „Alles löschen“: alle Vorgänge weg, App leer, Meldung, Sprache bleibt', e.d.getElementById('miete').value === '' && !/"A"/.test(m9['lotse.vorgaenge'] || '') && /Alles ist gelöscht/.test(e.d.getElementById('loeschMsg').textContent) && m9['lotse-lang'] === 'de');
   }
 
   // PIN vergessen: alles löschen
   const s3 = seite(mem);
   knopf(s3, s3.d.getElementById('vgSperre'), 'Alles löschen und neu beginnen').click();
-  ck('[vorgaenge] PIN vergessen: alles gelöscht, App leer und bedienbar', s3.d.getElementById('vgSperre').hidden && !mem['lotse.vorgaenge'] && s3.d.getElementById('miete').value === '' && s3.d.getElementById('vgChip').hidden);
+  ck('[vorgaenge] PIN vergessen: alles gelöscht, App leer und bedienbar', s3.d.getElementById('vgSperre').hidden && !mem['lotse.vorgaenge'] && s3.d.getElementById('miete').value === '');
 
   // Speicher voll oder gesperrt
   const s4 = seite({ 'lotse.ack': '1', 'lotse-lang': 'de' }, { voll: true });
-  s4.d.getElementById('vgNameRes').value = 'X';
-  submit(s4, s4.d.getElementById('vgNameRes').form);
+  anlegen(s4, 'X');
   await warte(20);
   const f = s4.d.getElementById('vgFehler');
   ck('[vorgaenge] Speicherfehler: sichtbare Meldung, kein Skriptfehler', f && !f.hidden && /Speicher voll oder gesperrt/.test(f.textContent) && s4.errors.length === 0, s4.errors.join(' | '));

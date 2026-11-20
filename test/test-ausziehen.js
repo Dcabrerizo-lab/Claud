@@ -12,7 +12,7 @@ const de = require('../src/lang/ausziehen/de.json');
 // az-aufbau: Übersicht höchstens 8 Kacheln, jede Kachel ein Bereich; Checklisten mit Punkten
 check('[az-aufbau] 6 bis 8 Kacheln', A.HAUPT.length >= 6 && A.HAUPT.length <= 8, A.HAUPT.length);
 A.HAUPT.forEach((id) => check('[az-aufbau] Bereich ' + id, !!A.BEREICHE.find((b) => b.id === id)));
-['vorher', 'tage', 'care'].forEach((id) => check('[az-aufbau] Checkliste ' + id, A.BEREICHE.find((b) => b.id === id).liste === true));
+['vorher', 'tage'].forEach((id) => check('[az-aufbau] Checkliste ' + id, A.BEREICHE.find((b) => b.id === id).liste === true));
 const ids = []; A.BEREICHE.forEach((b) => A.allePunkte(b).forEach((p) => ids.push(p.id)));
 check('[az-aufbau] Punkt-IDs eindeutig', new Set(ids).size === ids.length);
 const quelltext = fs.readFileSync(path.join(__dirname, '..', 'src', 'ausziehen.js'), 'utf8');
@@ -36,8 +36,7 @@ A.BEREICHE.forEach((b) => A.allePunkte(b).forEach((p) => {
   });
 }));
 check('[az-quellen] Abrufdatum', /^\d\d\.\d\d\.\d{4}$/.test(A.ABGERUFEN));
-check('[az-quellen] Briefvorlage ohne Anschrift, nur Art der Stelle', /^An das Jugendamt\n/.test(A.briefText()) && !/\d{5} /.test(A.briefText()));
-check('[az-quellen] Brief nennt § 41 SGB VIII', /§ 41 SGB VIII/.test(A.briefText()));
+check('[az-aufbau] keine Kachel „Für Careleaver“, keine Briefvorlage', !A.HAUPT.includes('care') && !A.BEREICHE.some((b) => b.id === 'care') && !A.briefText && !Object.values(de).some((x) => /Careleaver|Ombudsstelle/.test(x)));
 
 // az-speichern: nur bekannte Haken und Notizen; Fortschritt
 const d = A.normiere({ ab: { leisten: true, melden: true, unbekannt: true, konten: true }, notiz: { vorher: 'Termin', geld: 'x', care: 5 } });

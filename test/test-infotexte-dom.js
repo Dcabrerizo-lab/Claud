@@ -52,8 +52,8 @@ setTimeout(() => {
   d.querySelector('#appnav [data-ansicht=start]') && d.querySelector('#appnav [data-ansicht=start]').click();
   $('goLeistungen').click();
   const formEnde = d.querySelector('.form-ende');
-  check('Beispiel, Kurzer Check und Löschen stehen nach dem Formular', formEnde && $('form').compareDocumentPosition(formEnde) & w.Node.DOCUMENT_POSITION_FOLLOWING && formEnde.contains($('presets')) && formEnde.contains($('einfachBtn')) && formEnde.contains($('clearBtn')));
-  check('Lösch-Erklärung zugeklappt', $('clearWas').closest('details.mehr') && !$('clearWas').closest('details').open && /Formular/.test($('clearWas').textContent));
+  check('Beispiel, Kurzer Check und Löschen stehen nach dem Formular', formEnde && $('form').compareDocumentPosition(formEnde) & w.Node.DOCUMENT_POSITION_FOLLOWING && formEnde.contains($('presets')) && formEnde.contains($('einfachBtn')) && formEnde.contains($('clearLink')));
+  check('Löschen: nur ein Link zu Sicherheit und Daten (#69)', !$('clearBtn') && $('clearLink').classList.contains('linkbtn'));
   const hinweise = [...d.querySelectorAll('#form .hint')].filter(sichtbar);
   check('Formular leer: höchstens 8 sichtbare Feldhinweise', hinweise.length <= 8, hinweise.map((x) => x.textContent.slice(0, 30)));
   check('Alle ⓘ-Bauteile zu, Überschrift als Frage', [...d.querySelectorAll('#form details.mehr')].every((x) => !x.open && /\?$/.test(x.querySelector('summary').textContent)), [...d.querySelectorAll('#form details.mehr summary')].map((x) => x.textContent));

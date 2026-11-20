@@ -25,7 +25,7 @@ const check = (n, c, x) => { if (!c) { fails++; console.log('FAIL', n, x || '');
 const fire = (el, type) => el.dispatchEvent(new w.Event(type, { bubbles: true }));
 const setLang = (c) => { const s = $('lang'); s.value = c; fire(s, 'change'); };
 const LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so'];
-const NEU = ['nav.ordner', 'ordner.leer', 'ordner.wechseln', 'ordner.alle', 'ordner.ergebnis', 'ordner.mappe', 'ordner.mappe.n', 'ordner.ausziehen', 'ordner.ausziehen.n', 'ordner.pflege', 'ordner.pfaendung', 'set.sicher.h', 'set.sicher.t', 'set.an', 'set.aus', 'set.thema', 'set.thema.auto', 'set.thema.hell', 'set.thema.dunkel', 'set.loeschen.h', 'set.vgLoeschen', 'set.fach.h', 'set.beratung.label', 'set.beratung.t', 'recht.label', 'haken.hint',
+const NEU = ['nav.ordner', 'vg.liste.h', 'vg.plus', 'vg.plusWeiter', 'vg.anlegen', 'vg.neu.t', 'vg.bearbeiten', 'vg.fertig', 'vg.zuSicher', 'karte.mappe', 'ordner.ergebnis', 'ordner.mappe', 'ordner.mappe.n', 'ordner.ausziehen', 'ordner.ausziehen.n', 'ordner.pflege', 'ordner.pfaendung', 'set.sicher.h', 'set.sicher.t', 'set.an', 'set.aus', 'set.thema', 'set.thema.auto', 'set.thema.hell', 'set.thema.dunkel', 'set.loeschen.h', 'l.eins', 'l.alle', 'l.ja', 'set.fach.h', 'set.beratung.label', 'set.beratung.t', 'recht.label', 'haken.hint', ,
   'eb.btn', 'eb.h', 'eb.intro', 'eb.kuerzel', 'eb.titel', 'eb.datum', 'eb.kuerzelZeile', 'eb.col.leistung', 'eb.col.einstufung', 'eb.col.betrag', 'eb.col.stelle', 'eb.col.schritt', 'eb.hinweis'];
 
 // ---------- Hilfsfunktionen in fmt.js ----------
@@ -52,7 +52,7 @@ d.querySelector('#appnav [data-ansicht="einst"]').click();
 const zeilenE = [...d.querySelectorAll('#einstListe .zeile')];
 check('Einstellungen: fünf Zeilen (Anzeige und Sprache, Erinnerungen, Sicherheit und Daten, Für Fachkräfte, Über die App), Leiste markiert Einstellungen', zeilenE.map((z) => z.getAttribute('data-seite')).join() === 'anzeige,erinnern,sicher,fach,about' && zeilenE.map((z) => z.querySelector('b').textContent).join('|') === [I18N.de['set.anzeige.h'], I18N.de['set.erinnern.h'], I18N.de['set.sicher.h'], I18N.de['set.fach.h'], I18N.de['set.about.h']].join('|') && navAkt() === 'einst');
 check('Einstellungen: jede Zeile mit einer Zeile Status (Sprache, PIN, Beratungsmodus, Version)', /Deutsch/.test($('stAnzeige').textContent) && $('stSicher').textContent === I18N.de['set.sicher.t'] && $('stFach').textContent === 'Beratungsmodus: Aus' && /^Version \d/.test($('stAbout').textContent));
-check('Einstellungen: kein Kopftext, keine Reiter, kein Kurzer Check, kein „Alle Angaben löschen“ ganz unten', w.getComputedStyle(d.querySelector('.top .lead')).display === 'none' && !$('tab-info') && !d.querySelector('#v-einst [role="tablist"]') && !$('einfachBtn').closest('#v-einst'));
+check('Einstellungen: kein Kopftext, keine Reiter, kein Kurzer Check, kein „Alle Angaben löschen“ ganz unten', w.getComputedStyle(d.querySelector('header.top')).position === 'absolute' && !$('tab-info') && !d.querySelector('#v-einst [role="tablist"]') && !$('einfachBtn').closest('#v-einst'));
 check('Unterseiten zu Beginn zu, Liste sichtbar', !$('einstListe').hidden && [...d.querySelectorAll('#v-einst .unterseite')].every((u) => u.hidden));
 zeilenE[0].click();
 check('Zeile öffnet die Unterseite „Anzeige und Sprache“ mit „← Zurück“, Fokus auf der Überschrift', !$('es-anzeige').hidden && $('einstListe').hidden && /← Zurück/.test($('es-anzeige').querySelector('.us-zurueck').textContent) && d.activeElement === $('es-anzeige').querySelector('h2'));
@@ -70,7 +70,7 @@ check('Wie Gerät: Attribut weg, gespeichert leer', !d.documentElement.hasAttrib
 $('es-anzeige').querySelector('.us-zurueck').click();
 check('„← Zurück“ führt zur Liste, Fokus auf der Zeile', !$('einstListe').hidden && $('es-anzeige').hidden && d.activeElement === zeilenE[0]);
 zeilenE[1].click();
-check('Sicherheit und Daten: „Diesen Vorgang löschen“ und „Alle Vorgänge löschen“', $('clear2').textContent === I18N.de['set.vgLoeschen'] && !!$('vgAlleBox').querySelector('button') && $('vgAlleBox').textContent === I18N.de['vg.alleLoeschen']);
+check('Sicherheit und Daten: zwei Löschen-Zeilen (nur dieser Vorgang, alles auf dem Gerät)', /löschen/.test($('clear2').querySelector('b').textContent) && $('vgAlle').querySelector('b').textContent === I18N.de['l.alle'] && $('loeschListe').children.length === 2);
 d.querySelector('#appnav [data-ansicht="einst"]').click();
 check('Leiste „Einstellungen“ führt aus der Unterseite zur Liste', !$('einstListe').hidden && $('es-sicher').hidden);
 zeilenE[2].click();
@@ -126,18 +126,15 @@ check('Beratungsmodus wieder aus: Paragrafen weg', !/§/.test(d.getElementById('
 
 // ---------- Unterlagen-Checkliste (ersetzt die Listen in Karte und Mappe) ----------
 const wgHaken = () => [...d.querySelectorAll('#c-wohngeld input[data-haken]')];
-const docsBox = () => [...d.querySelectorAll('#c-wohngeld .lab-s')].find((x) => x.textContent === I18N.de['steps.docs']).parentNode;
-check('Karte: Unterlagen als Checkliste, keine zweite Liste', wgHaken().length === 3 && d.querySelectorAll('#c-wohngeld .haken-liste').length === 1 && docsBox().querySelectorAll('ul').length === 1 && !!docsBox().querySelector('ul.haken-liste'));
-wgHaken()[0].checked = true; fire(wgHaken()[0], 'change');
-check('Haken wird auf dem Gerät gespeichert', JSON.parse(store['lotse.haken'] || '{}')['wohngeld|s.wohngeld.u1'] === true);
+check('[karte-mappe] Karte: keine Unterlagen und nächsten Schritte, nur der Hinweis auf die Antragsmappe', wgHaken().length === 0 && !d.querySelector('#c-wohngeld .haken-liste') && d.querySelector('#c-wohngeld .karte-mappe').textContent === I18N.de['karte.mappe']);
 [...d.querySelectorAll('[data-pick]')].forEach((cb) => { cb.checked = ['wohngeld', 'uvg'].includes(cb.getAttribute('data-pick')); fire(cb, 'change'); });
 $('p-geb').value = '1.2.1985'; fire($('p-geb'), 'input'); fire($('p-geb'), 'change');
 check('Geburtsdatum wird beim Verlassen des Feldes einheitlich formatiert', $('p-geb').value === '01.02.1985');
 $('mappeMake').click();
 const mh = () => [...d.querySelectorAll('#m-unterlagen input[data-haken="wohngeld|s.wohngeld.u1"]')];
-check('Mappe: dieselbe Checkliste, Haken aus der Karte übernommen', mh().length === 1 && mh()[0].checked && d.querySelectorAll('#m-unterlagen .haken-liste').length === 2);
-mh()[0].checked = false; fire(mh()[0], 'change');
-check('Haken in der Mappe gilt auch in der Karte', wgHaken()[0].checked === false);
+check('[karte-mappe] Mappe: Checkliste mit Haken, Stelle und Tipp je Leistung', mh().length === 1 && !mh()[0].checked && d.querySelectorAll('#m-unterlagen .haken-liste').length === 2 && $('m-unterlagen').textContent.includes(I18N.de['s.wohngeld.wo']) && $('m-unterlagen').textContent.includes(I18N.de['steps.note']));
+mh()[0].checked = true; fire(mh()[0], 'change');
+check('Haken in der Mappe wird auf dem Gerät gespeichert', JSON.parse(store['lotse.haken'] || '{}')['wohngeld|s.wohngeld.u1'] === true);
 
 // ---------- Antragsmappe: Übersicht, Drucken am Ende, Geburtsdatum ----------
 // Mappe (Vorgabe David 20.11.2026): kein Inhaltsverzeichnis, ein Hauptknopf, Formulare direkt nach den Briefen
@@ -156,21 +153,21 @@ check('Angabenblatt: Geburtsdatum TT.MM.JJJJ', /Geburtsdatum: 01\.02\.1985/.test
 $('mappeClose').click();
 // ---------- Mein Ordner ----------
 d.querySelector('#appnav [data-ansicht="ordner"]').click();
-check('Mein Ordner mit Beispiel (nicht eigene Angaben): freundlicher Leerzustand mit „Los geht\'s“', !$('ordnerLeer').hidden && $('ordnerKarten').hidden && $('ordnerLos').textContent.indexOf(I18N.de['home.los']) === 0);
+check('Mein Ordner mit Beispiel (nicht eigene Angaben): kein Kasten „Los geht\'s“, keine Inhaltszeilen, Vorgänge sichtbar', !$('ordnerLeer') && !$('ordnerLos') && $('ordnerKarten').hidden && !$('setHaushalte').hidden && !!$('vgH'));
 $('miete').value = '700'; fire($('miete'), 'input'); fire($('miete'), 'change');
 d.querySelector('#appnav [data-ansicht="ordner"]').click();
 const orZ = () => [...d.querySelectorAll('#ordnerKarten .zeile')].map((b) => b.id);
-check('Mein Ordner: Leiste markiert Mein Ordner, kein Kopftext', navAkt() === 'ordner' && !$('v-ordner').hidden && w.getComputedStyle(d.querySelector('.top .lead')).display === 'none');
-check('[navigation] Mein Ordner: geöffneter Vorgang oben mit „Wechseln“', !$('ordnerKopf').hidden && /Geöffnet:/.test($('ordnerKopf').textContent) && [...$('ordnerKopf').querySelectorAll('button')].some((b) => b.textContent === I18N.de['ordner.wechseln']));
+check('Mein Ordner: Leiste markiert Mein Ordner, kein Kopftext', navAkt() === 'ordner' && !$('v-ordner').hidden && w.getComputedStyle(d.querySelector('header.top')).position === 'absolute');
+check('[navigation] Mein Ordner: Vorgänge oben, ohne Kopfzeile „Geöffnet“ und ohne „Wechseln“', !$('ordnerKopf') && $('setHaushalte').compareDocumentPosition($('ordnerKarten')) === 4);
 check('Mein Ordner: letztes Ergebnis mit Zähler und Antragsmappe mit Auswahl', orZ()[0] === 'or-ergebnis' && /wahrscheinlich|möglich/.test($('or-ergebnis').textContent) && /Ausgewählt: 2/.test(($('or-mappe') || {}).textContent || ''), orZ().join());
-check('Mein Ordner: keine Fristen, kein leerer Bereich (Pflege, Pfändung ohne Angaben)', !$('or-fristen') && !/Frist/.test($('ordnerHaupt').textContent) && !$('or-pflege') && !$('or-pfaendung') && $('ordnerLeer').hidden);
+check('Mein Ordner: keine Fristen, kein leerer Bereich (Pflege, Pfändung ohne Angaben)', !$('or-fristen') && !/Frist/.test($('ordnerHaupt').textContent) && !$('or-pflege') && !$('or-pfaendung'));
 $('or-ergebnis').click();
 check('Sprung zum Ergebnis: Leistungen offen, Leiste markiert Mein Ordner (Herkunft)', !$('v-leistungen').hidden && navAkt() === 'ordner');
 d.querySelector('#appnav [data-ansicht="ordner"]').click();
-$('or-alle').click();
-check('Unterseite „Alle Haushalte und Vorgänge“ mit der Verwaltung', !$('ordnerAlle').hidden && $('ordnerHaupt').hidden && !!$('setHaushalte').querySelector('#vgH') && !!$('vgNameSet'));
-$('ordnerAlle').querySelector('.us-zurueck').click();
-check('„← Zurück“ führt zur Übersicht', !$('ordnerHaupt').hidden && $('ordnerAlle').hidden);
+check('Mein Ordner: kein Feld „Alle Haushalte und Vorgänge“, ein Vorgang: nur „+ Weiteren Vorgang anlegen“', !$('or-alle') && !$('ordnerAlle') && !!$('vgH') && /Weiteren Vorgang anlegen/.test($('vgPlus').textContent) && !$('vgBearb'));
+$('vgZuSicher').click();
+check('„PIN-Sperre und automatisch löschen“ öffnet Einstellungen → Sicherheit und Daten', !$('v-einst').hidden && !$('es-sicher').hidden && !!$('vgTage'));
+d.querySelector('#appnav [data-ansicht="ordner"]').click();
 setLang('ar');
 check('Arabisch: Leiste und Ordner übersetzt, rechts nach links', $('app').getAttribute('dir') === 'rtl' && d.querySelector('#appnav [data-ansicht="ordner"]').textContent === I18N.ar['nav.ordner'] && $('or-ergebnis').querySelector('b').textContent === I18N.ar['ordner.ergebnis']);
 setLang('de');

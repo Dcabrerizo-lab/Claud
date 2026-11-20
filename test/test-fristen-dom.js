@@ -208,7 +208,7 @@ const E = {
     ck('[fristen-dom] Befund 5: ein Eintrag erledigt', JSON.parse(m['lotse.fristliste']).e.filter((e) => e.erledigt).length === 1);
     ck('[fristen-dom] Befund 5: mit erledigtem Eintrag: neu, erledigter gekürzt', FO.hinzu({ art: 'eigen', titel: 'Passt', bis: '2027-03-01' }) === 'neu' && JSON.parse(m['lotse.fristliste']).e.length === 50 && !JSON.parse(m['lotse.fristliste']).e.some((e) => e.erledigt));
     // Befund 4: Löschtext nennt die Fristen
-    ck('[fristen-dom] Befund 4: „Alle Angaben löschen“ nennt die Fristen', /Fristen/.test(s.$('clearWas').textContent), s.$('clearWas').textContent);
+    ck('[fristen-dom] Befund 4: „Nur diesen Vorgang löschen“ nennt die Fristen', /Fristen/.test(s.$('clear2').textContent), s.$('clear2').textContent);
   }
 
   // 8. Mit PIN, zwei Vorgänge: kein Hinweis vor dem Entsperren, kein Klartext; Frist im anderen Vorgang → nur „Ansehen“
@@ -237,7 +237,7 @@ const E = {
     s.klick(knopf(st, 'Ansehen'));
     await warte(30);
     ck('[fristen-dom] Ansehen: öffnet den Vorgang und die Liste', !s.$('ordnerFristen').hidden && /Geheimtitel/.test(s.$('friListe').textContent) && !s.$('friStart'));
-    ck('[fristen-dom] Vorgang gewechselt', (() => { const c = s.d.getElementById('vgChip'); return c && c.textContent === 'Oma'; })(), omaId);
+    ck('[fristen-dom] Vorgang gewechselt', (() => { const c = s.d.querySelector('#setHaushalte .vg-offen [data-vg-name]'); return c && c.getAttribute('data-vg-name') === 'Oma'; })(), omaId);
   }
 
   ck('[fristen-dom] keine Skriptfehler', !s.errors.length, s.errors);

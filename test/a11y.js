@@ -46,7 +46,7 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
     await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'ar'); await pruefe('Arabisch'); await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'de');
     await p.click('#mappeMake'); await pruefe('Antragsmappe'); await p.click('#mappeClose');
     await p.click('#appnav [data-ansicht=ordner]'); await pruefe('Mein Ordner');
-    await p.click('#or-alle'); await pruefe('Mein Ordner: Alle Haushalte und Vorgänge');
+    await p.click('#vgPlus'); await pruefe('Mein Ordner: + Weiteren Vorgang anlegen');
     await p.click('#appnav [data-ansicht=einst]'); await pruefe('Einstellungen');
     for (const z of ['anzeige', 'sicher', 'fach', 'about']) { await p.click('#einstListe .zeile[data-seite=' + z + ']'); await pruefe('Einstellungen: ' + z); await p.click('#es-' + z + ' .us-zurueck'); }
     await p.click('#appnav [data-ansicht=start]'); await p.click('#goLeistungen');
