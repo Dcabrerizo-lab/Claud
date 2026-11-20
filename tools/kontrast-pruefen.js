@@ -86,7 +86,7 @@ for (const [a, b] of Object.entries(gleich)) {
     start: (css.match(/class="sk sk-[a-z]+/g) || []).length,
     absender: (app.match(/var BRIEFE = \[([\s\S]*?)\n {2}\];/) || ['', ''])[1].split('\n').filter((z) => /^\s*\['/.test(z)).length,
     sparen: (app.match(/var SP_THEMEN = \[([\s\S]*?)\n {2}\];/) || ['', ''])[1].split('\n').filter((z) => /^\s*\['/.test(z)).length,
-    pflegestart: 2, pfaendung: 2,
+    pflegestart: 2, pfaendung: 2, checkweg: 2, // Leistungs-Check: Schritt für Schritt Petrol, Alles auf einer Seite Schiefer
     ordner: (app.match(/zeile\('[a-z]+'/g) || []).length, // Mein Ordner: jede Zeile eine eigene Farbe (ID-Selektoren, weil Zeilen nur mit Inhalt erscheinen)
     energie: 2, // Energiekosten-Check im Haushaltsplan: Strom Meerblau, Gas Ziegel (wie „Geld sparen“)
     ausziehen: ((az.match(/var HAUPT = \[([^\]]*)\]/) || ['', ''])[1].match(/'[a-z]+'/g) || []).length

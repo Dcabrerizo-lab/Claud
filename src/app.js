@@ -83,7 +83,7 @@
     remove: function (key) { if (Vorgaenge.DATEN.indexOf(key) >= 0) tr().remove(key); else StoreRoh.remove(key); }
   };
   var saveTimer = null;
-  function flush() { clearTimeout(saveTimer); saveTimer = null; Store.set('lotse.state', JSON.stringify({ s: state, p: person, e: edited, big: $('app').classList.contains('big') })); Store.set('lotse.pfaendung', JSON.stringify(pf)); }
+  function flush() { clearTimeout(saveTimer); saveTimer = null; Store.set('lotse.state', JSON.stringify({ s: state, p: person, e: edited, big: $('app').classList.contains('big'), sf: window.Schritte ? Schritte.stand() : null })); Store.set('lotse.pfaendung', JSON.stringify(pf)); }
   function save() { clearTimeout(saveTimer); saveTimer = setTimeout(flush, 300); }
   function smooth() { return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'; }
   // Erlaubte Arten für das zweite Einkommen einer Person (leer = keins)
@@ -527,6 +527,7 @@
     if (!$('ergBlatt').hidden) ebBauen();
     renderScan();
     if (esModus) esRender();
+    if (window.Schritte) Schritte.render(); // Frage für Frage (src/schritte.js) in der neuen Sprache
     bereicheText();
     vgRender();
     schalterText(); einstStatus(); ordnerRender();
@@ -556,6 +557,7 @@
     if (aktAnsicht === 'pfaendung') pfRender(false);
     if (aktAnsicht === 'sparen') spRender(false);
     if (aktAnsicht === 'haushalt' && window.Haushalt) Haushalt.sprache(); // Druckblatt nur im Beratungsmodus
+    if (an && window.Schritte && !Schritte.weg()) Schritte.wegLaden('', true); // Beratungsmodus: ohne eigene Wahl „Alles auf einer Seite“
   }
 
   function regelnVeraltet() { var ab = Rules.RULES.pruefenAb; return !!ab && new Date() >= new Date(ab + 'T00:00:00'); }
@@ -2208,13 +2210,14 @@
     if (an && !es) es = esLeer();
     $('einfachBtn').setAttribute('aria-pressed', String(an));
     esSpeichern(); esRender();
+    if (window.Schritte) Schritte.render(); // Kurzer Check an: Frage für Frage ausblenden
     if (aktAnsicht === 'einst') return; // in den Einstellungen nur den Modus schalten; Fokus bleibt am Schalter, der Modus gilt im Bereich Leistungen
     try { window.scrollTo(0, 0); } catch (e) {}
     var q = an ? $('es-q') : $('h-form'); if (q) { q.setAttribute('tabindex', '-1'); q.focus({ preventScroll: true }); }
   }
 
   // Einstellungen: alle gespeicherten Angaben der App löschen (Store-Schlüssel) und die Anzeige auf den Anfangszustand setzen
-  var STORE_SCHLUESSEL = ['lotse.state', 'lotse.einfach', 'lotse.einfachSprache', 'lotse.beratung', 'lotse.haken', 'lotse.pflegecheck', 'lotse.lang', 'lotse.ack', 'lotse.fristen', 'lotse.fristTag', 'lotse.fristHinweis'];
+  var STORE_SCHLUESSEL = ['lotse.state', 'lotse.einfach', 'lotse.einfachSprache', 'lotse.beratung', 'lotse.haken', 'lotse.pflegecheck', 'lotse.lang', 'lotse.ack', 'lotse.fristen', 'lotse.fristTag', 'lotse.fristHinweis', 'lotse.checkWeg'];
   state = blankState();
   $('sampleNotice').hidden = true; // Beispiel-Hinweis nur, wenn ein Beispiel geladen ist
   bind();
@@ -2227,6 +2230,22 @@
   $('einfachBtn').addEventListener('click', function () { esUmschalten(!esModus); });
   Store.get('lotse.einfachSprache', function (v) { if (v === '1') einfacheSpracheSetzen(true, false); });
   Store.get('lotse.beratung', function (v) { if (v === '1') beratungSetzen(true, false); });
+  // ----- Leistungs-Check: Weg wählen (Schritt für Schritt oder Alles auf einer Seite), Modul src/schritte.js -----
+  // Beide Wege schreiben in denselben Zustand (state). Die Wahl gilt pro Gerät (lotse.checkWeg, nicht im Vorgang).
+  if (window.Schritte) {
+    Schritte.init({
+      t: t, state: function () { return state; }, begonnen: function () { return started; },
+      geaendert: function (id) { writeForm(); if (id === 'plz') plzUpdate(true); buildSelects(); touched(); },
+      speichern: save, app: function () { return $('app'); },
+      formKopf: function () { return $('h-form'); }, ergebnisKopf: function () { return $('h-res'); },
+      euro: function (v) { return Fmt.euro(v, lang, !!(I18N[lang] && I18N[lang]['meta.dir'] === 'rtl')); }, parse: parseAmount, roman: Rules.roman,
+      plz: function (p) { return Plz.lookup ? Plz.lookup(p) : null; }, plzDa: function () { return !!(Plz.available && Plz.available()); },
+      laender: function () { return BUNDESLAENDER; }, kurzAn: function () { return esModus; },
+      wegSpeichern: function (w) { if (w) Store.set('lotse.checkWeg', w); else Store.remove('lotse.checkWeg'); },
+      verzoegerung: window.__SOLO_TEST__ ? 0 : 250
+    }, $('schritte'));
+    Store.get('lotse.checkWeg', function (v) { Schritte.wegLaden(v, beratung); });
+  }
   Store.get('lotse.haken', function (v) { try { var d = v ? JSON.parse(v) : null; if (d && typeof d === 'object') { haken = d; render(); } } catch (e) {} });
   Store.get('lotse.einfach', function (v) {
     try { var d = v ? JSON.parse(v) : null; if (d && d.es) { es = Object.assign(esLeer(), d.es); if (d.an) esUmschalten(true); } } catch (e) {}
@@ -2593,6 +2612,7 @@
     if (a === 'schulden') { if (!(window.Schulden && Schulden.zurueck())) zurueckZurHerkunft(a); return true; }
     if (a === 'ausziehen') { if (window.Ausziehen && Ausziehen.offen()) Ausziehen.zurueck(); else zurueckZurHerkunft(a); return true; }
     if (a === 'briefe' && !$('checkBox').hidden) { $('briefZurueck').click(); return true; }
+    if (a === 'leistungen' && !esModus && window.Schritte && Schritte.zurueck()) return true; // Frage für Frage: eine Frage zurück
     if (a === 'leistungen' && $('es-zurueck')) { $('es-zurueck').click(); return true; }
     if ((a === 'einst' || a === 'ordner') && usOffen(a)) { usZeigen(a, '', true); return true; } // Unterseite: zurück zur Liste
     if ((a === 'leistungen' || a === 'briefe') && herkunft[a]) { zurueckZurHerkunft(a); return true; } // z. B. aus „Mein Ordner“ gekommen
@@ -2635,6 +2655,7 @@
     document.querySelectorAll('#appnav button').forEach(function (b) { if (b.getAttribute('data-ansicht') === navA) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
     try { if (location.hash !== '#' + a) history.replaceState(null, '', '#' + a); } catch (e) {}
     bereicheText();
+    if (a === 'leistungen' && window.Schritte && !esModus) { Schritte.zeigen(fokus); fokus = false; } // Auswahl des Weges oder Frage für Frage; setzt den Fokus selbst
     if (fokus) { window.scrollTo(0, 0); var h = $('v-' + a).querySelector('h2'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); } }
   }
   function bereicheText() {
@@ -2696,6 +2717,7 @@
     $('sampleNotice').hidden = true; $('clearMsg').textContent = '';
     pf = pfLeer(); pa = { antworten: null, schaetzung: null };
     haken = {}; Store.get('lotse.haken', function (v) { try { var d = v ? JSON.parse(v) : null; if (d && typeof d === 'object') haken = d; } catch (e) {} });
+    if (window.Schritte) Schritte.laden(null);
     Store.get('lotse.state', stateLaden);
     if (!started) { writeForm(); buildSelects(); render(); }
     Store.get('lotse.einfach', function (v) {
@@ -3580,6 +3602,7 @@
       [['p-name', 'name'], ['p-geb', 'geb'], ['p-strasse', 'strasse'], ['p-ort', 'ort'], ['p-tel', 'tel']].forEach(function (x) { $(x[0]).value = person[x[1]] || ''; });
       if (d.big) { $('app').classList.add('big'); document.documentElement.classList.add('big'); $('bigBtn').setAttribute('aria-checked', 'true'); }
       writeForm(); buildSelects(); render();
+      if (window.Schritte) Schritte.laden(d.sf); // Stand von „Schritt für Schritt“ in diesem Vorgang
     } catch (e) {}
   }
 })();

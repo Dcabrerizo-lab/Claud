@@ -1,12 +1,14 @@
 // Barrierefreiheit (axe-core, WCAG 2.2 AA + Best Practice; Tippflächen mind. 44 px nach Apple/Google): Startseite, Brief prüfen, ausführliche Version (leer, mit Beispiel, Arabisch), Antragsmappe, einfache Version
 const { chromium } = require('playwright');
+// Leistungs-Check: Weg „Alles auf einer Seite“ vorwählen (sonst erscheint zuerst die Auswahl Schritt für Schritt / Alles auf einer Seite)
+const SF_ALLES = () => { try { if (!localStorage.getItem('lotse.checkWeg')) { localStorage.setItem('lotse.checkWeg', 'alles'); localStorage.setItem('CapacitorStorage.lotse.checkWeg', 'alles'); } } catch (e) {} };
 const axePfad = require.resolve('axe-core/axe.min.js');
 const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html');
 (async () => {
   const b = await chromium.launch();
   const out = [];
   for (const schema of ['light', 'dark']) {
-    const p = await (await b.newContext({ viewport: { width: 390, height: 844 }, locale: 'de-DE', colorScheme: schema })).newPage();
+    const p = await (await b.newContext({ viewport: { width: 390, height: 844 }, locale: 'de-DE', colorScheme: schema })).newPage(); await p.addInitScript(SF_ALLES);
     await p.goto('file://' + file);
     const pruefe = async (name) => {
       await p.addScriptTag({ path: axePfad });

@@ -3,6 +3,8 @@
 // Aufruf: npm run test:app (baut vorher app/www)
 'use strict';
 const { chromium } = require('playwright');
+// Leistungs-Check: Weg „Alles auf einer Seite“ vorwählen (sonst erscheint zuerst die Auswahl Schritt für Schritt / Alles auf einer Seite)
+const SF_ALLES = () => { try { if (!localStorage.getItem('lotse.checkWeg')) { localStorage.setItem('lotse.checkWeg', 'alles'); localStorage.setItem('CapacitorStorage.lotse.checkWeg', 'alles'); } } catch (e) {} };
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
@@ -60,7 +62,7 @@ const MOCK = () => {
   const b = await chromium.launch();
   const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, locale: 'de-DE', serviceWorkers: 'block' });
   await ctx.addInitScript(MOCK);
-  const p = await ctx.newPage();
+  const p = await ctx.newPage(); await p.addInitScript(SF_ALLES);
   const reqs = [], errs = [], csp = [];
   p.on('request', (r) => reqs.push(r.url()));
   p.on('pageerror', (e) => errs.push(e.message));
@@ -226,7 +228,7 @@ const MOCK = () => {
   ok('Android: Anbieter im Impressum David Cabrerizo', (await anbieter()) === 'David Cabrerizo', await anbieter());
   const ctxI = await b.newContext({ viewport: { width: 390, height: 844 }, locale: 'de-DE', serviceWorkers: 'block' });
   await ctxI.addInitScript(() => { window.__platform = 'ios'; }); await ctxI.addInitScript(MOCK);
-  const pi = await ctxI.newPage(); await pi.goto(origin + '/index.html#leistungen'); await pi.waitForFunction(() => /Natascha/.test(document.getElementById('legal').textContent), null, { timeout: 5000 }).catch(() => {});
+  const pi = await ctxI.newPage(); await pi.addInitScript(SF_ALLES); await pi.goto(origin + '/index.html#leistungen'); await pi.waitForFunction(() => /Natascha/.test(document.getElementById('legal').textContent), null, { timeout: 5000 }).catch(() => {});
   const legalI = await pi.evaluate(() => document.getElementById('legal').textContent);
   ok('iPhone: Anbieter im Impressum Natascha Cabrerizo y Polo, nicht David', /Anbieter: Natascha Cabrerizo y Polo/.test(legalI.replace(/\s+/g, ' ')) && !/David/.test(legalI), legalI.slice(0, 200));
   await pi.click('#p1'); await pi.fill('#p-name', 'Test'); await pi.evaluate(() => document.getElementById('mappeMake').click()); await pi.waitForSelector('#mappePrint', { state: 'visible', timeout: 5000 }).catch(() => {});
