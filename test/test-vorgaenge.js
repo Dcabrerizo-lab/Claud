@@ -53,7 +53,9 @@ const holen = (t, k) => { let r; t.get(k, (v) => { r = v; }); return r; };
     t.set('lotse.state', '{"s":{"miete":700}}'); t.set('lotse.pfaendung', '{"art":"lohn"}');
     ck('[vorgaenge] vorgang: zwei Vorgänge', t.liste().length === 2);
     t.oeffnen(id1);
-    ck('[vorgaenge] vorgang: Wechsel lädt die Angaben des anderen Vorgangs', holen(t, 'lotse.state') === '{"s":{"miete":500}}' && s.mem['lotse.state'] === '{"s":{"miete":500}}' && s.mem['lotse.pfaendung'] === undefined);
+    ck('[vorgaenge] vorgang: Wechsel ohne PIN schreibt erst lotse.vorgaenge, dann die Klartext-Schlüssel', holen(t, 'lotse.state') === '{"s":{"miete":500}}' && s.mem['lotse.state'] === '{"s":{"miete":700}}');
+    await t.fertig(); await null;
+    ck('[vorgaenge] vorgang: Wechsel lädt die Angaben des anderen Vorgangs', holen(t, 'lotse.state') === '{"s":{"miete":500}}' && JSON.parse(s.mem['lotse.vorgaenge']).klar.aktiv === id1 && s.mem['lotse.state'] === '{"s":{"miete":500}}' && s.mem['lotse.pfaendung'] === undefined);
     t.oeffnen(id2);
     ck('[vorgaenge] vorgang: Pfändung gehört zum Vorgang', holen(t, 'lotse.pfaendung') === '{"art":"lohn"}');
     const k = t.kopie(id1, 'Haushalt 1 (Kopie)');
@@ -131,13 +133,36 @@ const holen = (t, k) => { let r; t.get(k, (v) => { r = v; }); return r; };
     ck('[vorgaenge] ablauf: nur 0, 30, 90 erlaubt', t.tage(45) === 0 && t.tage(90) === 90 && t.tage(30) === 30);
     await t.fertig();
     uhr += 15 * TAG; // „Alt“ jetzt 35 Tage unverändert, „Neu“ 15 Tage
-    const t2 = oeffne(s, { jetzt: () => uhr });
+    let gemeldet = null; const t2 = oeffne(s, { jetzt: () => uhr, geloescht: (n, am) => { gemeldet = [n, am]; } });
     ck('[vorgaenge] ablauf: abgelaufener Vorgang beim Start gelöscht', t2.liste().map((x) => x.name).join() === 'Neu' && holen(t2, 'lotse.state') === 'b');
+    ck('[vorgaenge] ablauf: Löschen beim Start wird gemeldet (Anzahl, Datum)', gemeldet && gemeldet[0] === 1 && gemeldet[1] === uhr, gemeldet);
     // mit PIN: alles abgelaufen -> ohne PIN gelöscht
     await t2.pinSetzen('1234');
     uhr += 31 * TAG;
     const t3 = oeffne(s, { jetzt: () => uhr });
     ck('[vorgaenge] ablauf: mit PIN: alles abgelaufen wird auch gesperrt gelöscht', t3.bereit() && !t3.pinAn() && t3.liste().length === 1 && t3.tage() === 30);
+  }
+
+  // Uhrsprung: mehr als ein Jahr seit dem letzten Öffnen -> erst nachfragen
+  {
+    let uhr = Date.UTC(2026, 10, 20);
+    const s = speicher({}), t = oeffne(s, { jetzt: () => uhr });
+    t.set('lotse.state', 'a'); t.umbenennen(t.aktiv().id, 'A'); t.tage(30); await t.fertig();
+    uhr += 400 * TAG;
+    let frage = null; const t2 = oeffne(s, { jetzt: () => uhr, sprung: (ja) => { frage = ja; } });
+    ck('[vorgaenge] uhr: Sprung über ein Jahr -> Rückfrage, noch nichts gelöscht', typeof frage === 'function' && t2.liste().length === 1 && t2.aktiv().name === 'A');
+    frage();
+    ck('[vorgaenge] uhr: nach „Ja“ abgelaufene Vorgänge gelöscht', t2.liste().length === 1 && t2.aktiv().name === '' && holen(t2, 'lotse.state') === null);
+  }
+
+  // PIN prüfen (für „PIN ändern“ und „ausschalten“); Fehler beim Anzeigen zählt nicht als falsche PIN
+  {
+    const s = speicher({}), t = oeffne(s);
+    t.set('lotse.state', 'x'); await t.pinSetzen('135790');
+    ck('[vorgaenge] pinPruefen: richtige PIN ja, falsche nein', (await t.pinPruefen('135790')) === true && (await t.pinPruefen('000000')) === false);
+    const t2 = oeffne(s, { bereit: () => { throw new Error('Anzeige'); } });
+    let fehler = null; const r = await t2.entsperren('135790').catch((e) => { fehler = e; });
+    ck('[vorgaenge] entsperren: Fehler beim Anzeigen ist kein Fehlversuch', fehler && /Anzeige/.test(fehler.message) && t2.bereit() && !JSON.parse(s.mem['lotse.vorgaenge']).fehl, r);
   }
 
   // Speicherfehler (voll oder gesperrt): Meldung statt Absturz, alte Daten bleiben

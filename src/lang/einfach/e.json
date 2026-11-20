@@ -28,7 +28,7 @@
  "first.text": "SoLo gibt dir eine allgemeine Orientierung. Die App nutzt deine Angaben und vereinfachte Regeln. SoLo ist keine Rechtsberatung. SoLo prüft keinen Einzelfall rechtlich. Die zuständige Stelle entscheidet immer über deinen Anspruch. Bei Fragen helfen dir kostenlose Sozialberatungen.",
  "clear.done": "Alles gelöscht. Das Formular ist leer.",
  "vg.t": "Du kannst deine Angaben unter einem kurzen Namen speichern. Zum Beispiel für jeden Haushalt einen eigenen Vorgang. Später kannst du ihn wieder öffnen. Alles bleibt auf diesem Gerät. Nichts wird gesendet.",
- "vg.pin.t": "Mit einer PIN sind deine Angaben auf diesem Gerät verschlüsselt. Das heißt: Ohne PIN kann sie niemand lesen. Zum Beispiel, wenn jemand dein Handy nimmt. Das ist ein Sichtschutz. Gegen Fachleute mit Spezial-Werkzeug hilft er nicht sicher.",
+ "vg.pin.t": "Mit einer PIN sind deine Angaben auf diesem Gerät verschlüsselt. Das heißt: Ohne PIN kann sie niemand lesen. Zum Beispiel, wenn jemand dein Handy nimmt. Das ist ein Sichtschutz. Gegen Fachleute mit Spezial-Werkzeug hilft er nicht sicher. Nach 2 Minuten im Hintergrund sperrt sich SoLo von selbst.",
  "vg.pin.vergessen": "Wichtig: Merk dir die PIN gut. Wenn du sie vergisst, kann niemand deine Angaben zurückholen. Auch wir nicht. Dann musst du alles löschen und neu anfangen.",
  "vg.auto.t": "Bei jedem Vorgang steht das Datum. Nach diesem Datum löscht die App den Vorgang. Das passiert, wenn du die App das nächste Mal öffnest.",
  "vg.sperre.vergessen.t": "Ohne PIN kann man die Angaben nicht öffnen. Du kannst alles löschen und neu anfangen.",

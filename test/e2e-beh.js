@@ -89,6 +89,7 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
   await fillNum('ek1Brutto', '2000');
 
   await p.click('#p1');
+  if (await p.isVisible('#beispielDlg')) await p.click('#beispielJa'); // eigene Angaben: erst Rückfrage, dann Beispiel laden
   ok('Beispiel 1: keine Gesundheits-Unterfragen offen', !(await p.isVisible('#gdb')) && !(await p.isVisible('#em5')));
   await p.click('#p2'); await sel('bhPerson', 'erwVor25'); await p.check('#bhSelbst'); await sel('gdb', '100'); await sel('blind', 'hoch'); await sel('emStd', 'unter3'); await p.check('#em5'); await sel('pflegegrad', '3');
   await sel('ausbildung', 'ich'); await p.check('#babBetrieb'); await p.check('#babWohnt'); await fillNum('ek1Brutto', '2000'); await geb('1970');

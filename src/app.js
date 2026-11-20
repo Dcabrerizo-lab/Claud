@@ -70,7 +70,9 @@
   var tresor = null;
   function tr() {
     if (!tresor) {
-      tresor = Vorgaenge.tresor(StoreRoh, { gesperrt: function () { if (tresor) vgSperreZeigen(); }, fehler: vgSpeicherFehler, bereit: function () { if (tresor) vgBereit(); } });
+      tresor = Vorgaenge.tresor(StoreRoh, { gesperrt: function () { if (tresor) vgSperreZeigen(); }, fehler: vgSpeicherFehler, bereit: function () { if (tresor) vgBereit(); },
+        geloescht: function (n, am) { vgHinweis(t('vg.auto.gemeldet', { datum: Fmt.datum(new Date(am), lang), n: String(n) })); },
+        sprung: function (ja) { if (window.confirm(t('vg.auto.sprung'))) ja(); } });
       if (tresor.gesperrt()) vgSperreZeigen(); else vgRender();
     }
     return tresor;
@@ -740,7 +742,7 @@
         else if (aktAnsicht !== 'start') { herkunft = {}; zeigeAnsicht('start', true); }
         else ap.exitApp();
       });
-      ap.addListener('appStateChange', function (s) { if (s && !s.isActive) flush(); });
+      ap.addListener('appStateChange', function (s) { if (s && !s.isActive) flush(); vgHintergrund(!(s && s.isActive)); });
     }
     var kb = plug('Keyboard');
     if (kb) {
@@ -2540,6 +2542,8 @@
   // ----- Vorgänge (Haushalte): speichern, öffnen, umbenennen, kopieren, löschen; PIN-Sperre; automatisch löschen (src/vorgaenge.js) -----
   // In der Oberfläche heißt es „Vorgang“ bzw. „Haushalt“. Wer nur einen Vorgang hat, sieht nur den Knopf „Vorgang speichern“.
   function vgEl(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+  // „Name (Kopie)“: erst den Namen kürzen, damit der Zusatz ganz bleibt
+  function vgKopieName(n) { var x = n; while (x.length > 1 && Vorgaenge.nameSauber(t('vg.kopieName', { name: x })) !== t('vg.kopieName', { name: x }).replace(/\s+/g, ' ').trim()) x = x.slice(0, -1).trim(); return t('vg.kopieName', { name: x }); }
   function vgName(v) { return v && v.name ? v.name : t('vg.ohneName'); }
   function vgDatum(ms) { return Fmt.datum(new Date(ms), lang); }
   function vgMsg(txt) { var m = $('vgMsg'); if (m) m.textContent = txt; }
@@ -2555,6 +2559,23 @@
     var f = vgEl('div', 'notice warn vg-fehler'); f.id = 'vgFehler'; f.setAttribute('role', 'alert'); f.hidden = true; $('inhalt').insertBefore(f, $('inhalt').firstChild);
   }
   function vgSpeicherFehler() { vgGeruest(); var f = $('vgFehler'); f.textContent = t('vg.fehler.speicher'); f.hidden = false; }
+  // Meldung nach automatischem Löschen (oben im Inhalt, gleiche Stelle wie die Speicher-Meldung)
+  function vgHinweis(txt) { var go = function () { vgGeruest(); var f = $('vgFehler'); f.textContent = txt; f.hidden = false; }; if ($('inhalt')) go(); else setTimeout(go, 0); }
+  // Neu laden (Sperren); in Tests ersetzbar
+  function vgNeuStart() { if (window.__soloNeuStart) window.__soloNeuStart(); else { try { location.reload(); } catch (e) {} } }
+  function vgSperrenJetzt() { flush(); tresor.fertig().then(vgNeuStart); }
+  // Automatisch sperren: nach etwa 2 Minuten im Hintergrund (nur mit PIN). Vorher speichern, dann neu laden (Sperrbildschirm).
+  var VG_SPERRE_MS = 120000, vgHinterAb = 0;
+  function vgHintergrund(weg) {
+    if (weg) { vgHinterAb = Date.now(); return; }
+    var war = vgHinterAb; vgHinterAb = 0;
+    if (war && tresor && tresor.pinAn() && tresor.bereit() && Date.now() - war >= VG_SPERRE_MS) vgSperrenJetzt();
+  }
+  document.addEventListener('visibilitychange', function () { vgHintergrund(document.visibilityState === 'hidden'); });
+  // Mit PIN schneller speichern: beim Verlassen eines Feldes sofort
+  document.addEventListener('focusout', function (e) { if (tresor && tresor.pinAn() && tresor.bereit() && e.target && /^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName) && saveTimer) flush(); });
+  // Web: in einem anderen Fenster geändert -> neu laden, damit nichts überschrieben wird
+  window.addEventListener('storage', function (e) { if (e.key === Vorgaenge.SCHLUESSEL) { clearTimeout(saveTimer); saveTimer = null; vgNeuStart(); } });
   // Angaben des geöffneten Vorgangs neu laden (nach Wechsel, neuem Vorgang, Löschen)
   function vgNeuLaden() {
     if (undoFn) undoWeg(); // Rückgängig gehört zum vorher geöffneten Vorgang
@@ -2618,7 +2639,7 @@
     f.addEventListener('submit', function (e) { e.preventDefault(); vgSpeichern(i); });
     box.appendChild(f);
   }
-  function vgBereit() { var s = $('vgSperre'); if (s && !s.hidden) { s.hidden = true; $('app').removeAttribute('aria-hidden'); var h = document.querySelector('h1'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); } } vgRender(); }
+  function vgBereit() { var s = $('vgSperre'); if (s && !s.hidden) { s.hidden = true; $('app').removeAttribute('aria-hidden'); $('app').inert = false; var h = document.querySelector('h1'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); } } vgRender(); }
   function vgRender() {
     if (!tresor || !$('pn-einst')) return;
     vgGeruest();
@@ -2684,7 +2705,7 @@
       });
       knopf('vg.kopie', function () {
         flush();
-        if (tresor.kopie(v.id, t('vg.kopieName', { name: vgName(v) }))) { vgNeuLaden(); vgMsg(t('vg.geoeffnet', { name: vgName(tresor.aktiv()) })); var h = $('vgH'); if (h) h.focus(); }
+        if (tresor.kopie(v.id, vgKopieName(vgName(v)))) { vgNeuLaden(); vgMsg(t('vg.geoeffnet', { name: vgName(tresor.aktiv()) })); var h = $('vgH'); if (h) h.focus(); }
       });
       knopf('vg.loeschen', function () {
         if (!window.confirm(t('vg.loeschenFrage', { name: vgName(v) }))) return;
@@ -2706,7 +2727,17 @@
     var sel = vgEl('select'); sel.id = 'vgTage';
     Vorgaenge.TAGE.forEach(function (n) { var o = vgEl('option', null, n ? t('vg.auto.tage', { n: String(n) }) : t('vg.auto.nie')); o.value = String(n); sel.appendChild(o); });
     sel.value = String(tresor.tage());
-    sel.addEventListener('change', function () { flush(); tresor.tage(Number(sel.value)); vgRender(); vgMsg(t('vg.auto.ok')); var s2 = $('vgTage'); if (s2) s2.focus(); });
+    sel.addEventListener('change', function () {
+      // Vorher fragen, wenn die neue Frist sofort Vorgänge löscht (mit Anzahl)
+      var neuT = Number(sel.value), jetzt = Date.now();
+      var n = neuT > 0 ? tresor.liste().filter(function (v) { return jetzt >= Vorgaenge.ablauf(v, neuT); }).length : 0;
+      if (n && !window.confirm(t('vg.auto.frage', { n: String(n) }))) { sel.value = String(tresor.tage()); return; }
+      flush(); var vorher = tresor.aktiv().id;
+      tresor.tage(neuT);
+      // Geöffneter Vorgang gelöscht: alte Angaben nicht in den nächsten Vorgang schreiben, sondern dessen Angaben laden
+      if (tresor.aktiv().id !== vorher) { clearTimeout(saveTimer); saveTimer = null; vgNeuLaden(); }
+      vgRender(); vgMsg(n ? t('vg.auto.weg', { n: String(n) }) : t('vg.auto.ok')); var s2 = $('vgTage'); if (s2) s2.focus();
+    });
     g.appendChild(al); g.appendChild(sel);
     g.appendChild(vgEl('p', 'small muted', t('vg.auto.t')));
     // PIN-Sperre (Sichtschutz)
@@ -2718,11 +2749,11 @@
       g.appendChild(vgEl('p', 'vg-aktiv', t('vg.pin.an')));
       var pb = vgEl('div', 'btns');
       var sp = vgEl('button', 'btn', t('vg.pin.sperren')); sp.type = 'button';
-      sp.addEventListener('click', function () { flush(); tresor.fertig().then(function () { try { location.reload(); } catch (e) {} }); });
+      sp.addEventListener('click', vgSperrenJetzt);
       var ae = vgEl('button', 'btn ghost', t('vg.pin.aendern')); ae.type = 'button'; ae.setAttribute('aria-expanded', 'false');
-      ae.addEventListener('click', function () { vgPinForm(g, ae); });
+      ae.addEventListener('click', function () { vgPinForm(g, ae, false, true); });
       var aus = vgEl('button', 'btn ghost', t('vg.pin.aus')); aus.type = 'button';
-      aus.addEventListener('click', function () { flush(); tresor.pinAus().then(function () { vgRender(); vgMsg(t('vg.pin.ausOk')); }); });
+      aus.addEventListener('click', function () { vgPinForm(g, aus, true); });
       pb.appendChild(sp); pb.appendChild(ae); pb.appendChild(aus); g.appendChild(pb);
     } else {
       var pn = vgEl('button', 'btn ghost', t('vg.pin.neu')); pn.type = 'button'; pn.setAttribute('aria-expanded', 'false');
@@ -2734,35 +2765,42 @@
     g.appendChild(vgEl('p', 'vg-alle')).appendChild(ab);
     if (alt && $(alt) && alt !== 'vgMsg') { try { $(alt).focus({ preventScroll: true }); } catch (e) {} }
   }
-  function vgPinForm(g, ausloeser) {
-    if ($('vgPinForm')) { $('vgPin1').focus(); return; }
+  // PIN festlegen, ändern (mitAlt) oder ausschalten (nurAus). Ändern und Ausschalten fragen die bisherige PIN ab.
+  function vgPinForm(g, ausloeser, nurAus, mitAlt) {
+    var alt = $('vgPinForm'); if (alt) { if (alt.getAttribute('data-art') === (nurAus ? 'aus' : 'neu')) { alt.querySelector('input').focus(); return; } alt.remove(); }
     ausloeser.setAttribute('aria-expanded', 'true');
-    var f = vgEl('form', 'vg-form'); f.id = 'vgPinForm'; f.setAttribute('novalidate', '');
-    [['vgPin1', 'vg.pin.label'], ['vgPin2', 'vg.pin.label2']].forEach(function (x) {
+    var f = vgEl('form', 'vg-form'); f.id = 'vgPinForm'; f.setAttribute('novalidate', ''); f.setAttribute('data-art', nurAus ? 'aus' : 'neu');
+    var felder = (nurAus || mitAlt ? [['vgPin0', 'vg.pin.alt']] : []).concat(nurAus ? [] : [['vgPin1', 'vg.pin.label'], ['vgPin2', 'vg.pin.label2']]);
+    felder.forEach(function (x) {
       var l = vgEl('label', null, t(x[1])); l.setAttribute('for', x[0]);
       var i = vgEl('input'); i.id = x[0]; i.type = 'password'; i.setAttribute('inputmode', 'numeric'); i.setAttribute('autocomplete', 'off'); i.maxLength = 12;
       f.appendChild(l); f.appendChild(i);
     });
-    var b = vgEl('button', 'btn', t('vg.pin.speichern')); b.type = 'submit'; f.appendChild(b);
+    var b = vgEl('button', 'btn', t(nurAus ? 'vg.pin.aus' : 'vg.pin.speichern')); b.type = 'submit'; f.appendChild(b);
     var m = vgEl('p', 'msg'); m.setAttribute('role', 'status'); f.appendChild(m);
     f.addEventListener('submit', function (e) {
       e.preventDefault();
-      var p1 = $('vgPin1').value, p2 = $('vgPin2').value;
-      if (!Vorgaenge.PIN_RE.test(p1)) { m.textContent = t('vg.pin.kurz'); $('vgPin1').focus(); return; }
-      if (p1 !== p2) { m.textContent = t('vg.pin.ungleich'); $('vgPin2').focus(); return; }
+      var p0 = $('vgPin0') ? $('vgPin0').value : null, p1 = $('vgPin1') ? $('vgPin1').value : '', p2 = $('vgPin2') ? $('vgPin2').value : '';
+      if (!nurAus) {
+        if (!Vorgaenge.PIN_RE.test(p1)) { m.textContent = t('vg.pin.kurz'); $('vgPin1').focus(); return; }
+        if (p1 !== p2) { m.textContent = t('vg.pin.ungleich'); $('vgPin2').focus(); return; }
+      }
       b.disabled = true; m.textContent = t('vg.bitte');
       flush();
-      tresor.pinSetzen(p1).then(function (ok) { vgRender(); vgMsg(t(ok ? 'vg.pin.ok' : 'vg.fehler.speicher')); var h = $('vgH'); if (h) h.focus(); });
+      (p0 === null ? Promise.resolve(true) : tresor.pinPruefen(p0)).then(function (richtig) {
+        if (!richtig) { b.disabled = false; m.textContent = t('vg.pin.altFalsch'); $('vgPin0').value = ''; $('vgPin0').focus(); return; }
+        if (nurAus) return tresor.pinAus().then(function () { vgRender(); vgMsg(t('vg.pin.ausOk')); var h = $('vgH'); if (h) h.focus(); });
+        return tresor.pinSetzen(p1).then(function (ok) { vgRender(); vgMsg(t(ok ? 'vg.pin.ok' : 'vg.fehler.speicher')); var h = $('vgH'); if (h) h.focus(); });
+      });
     });
     ausloeser.parentNode.parentNode.insertBefore(f, ausloeser.parentNode.nextSibling);
-    $('vgPin1').focus();
+    f.querySelector('input').focus();
   }
-  // Sperrbildschirm: deckt die App ab, bis die PIN stimmt
   function vgSperreZeigen() {
     var s = $('vgSperre');
     if (!s) { s = vgEl('div', 'vg-sperre'); s.id = 'vgSperre'; s.setAttribute('role', 'dialog'); s.setAttribute('aria-modal', 'true'); s.setAttribute('aria-labelledby', 'vgSperreH'); $('app').parentNode.appendChild(s); }
     s.innerHTML = ''; s.hidden = false; s.setAttribute('lang', lang); s.setAttribute('dir', I18N[lang]['meta.dir']);
-    $('app').setAttribute('aria-hidden', 'true');
+    $('app').setAttribute('aria-hidden', 'true'); $('app').inert = true;
     var box = vgEl('div', 'vg-sperre-box');
     var h = vgEl('h2', null, t('vg.sperre.h')); h.id = 'vgSperreH'; box.appendChild(h);
     box.appendChild(vgEl('p', null, t('vg.sperre.t')));
