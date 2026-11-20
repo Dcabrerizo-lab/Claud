@@ -14,6 +14,8 @@
   "hb.aus.t": "Dotknij obszaru i wpisz kwotę.",
   "hb.ek1": "Twój dochód (netto)",
   "hb.ek2": "Dochód twojego partnera lub partnerki (netto)",
+  "hb.ek1b": "Twój drugi dochód (netto)",
+  "hb.ek2b": "Drugi dochód twojego partnera lub partnerki (netto)",
   "hb.ek.art": "Rodzaj dochodu",
   "hb.ek.hint": "To, co wpływa na konto.",
   "hb.ek.nurBrutto": "W sprawdzaniu świadczeń jest tylko kwota brutto. Wpisz tutaj, co wpływa na konto.",

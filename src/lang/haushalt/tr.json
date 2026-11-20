@@ -14,6 +14,8 @@
   "hb.aus.t": "Bir alana dokun ve tutarı gir.",
   "hb.ek1": "Gelirin (net)",
   "hb.ek2": "Eşinin veya partnerinin geliri (net)",
+  "hb.ek1b": "İkinci gelirin (net)",
+  "hb.ek2b": "Eşinin veya partnerinin ikinci geliri (net)",
   "hb.ek.art": "Gelir türü",
   "hb.ek.hint": "Hesabına yatan miktar.",
   "hb.ek.nurBrutto": "Yardım kontrolünde sadece brüt tutar var. Buraya hesabına yatan miktarı gir.",

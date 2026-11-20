@@ -92,6 +92,18 @@ check('Übernahme: Netto ohne Art -> Art fehlt', was(H.uebernahme({ adults: 1, e
 check('Übernahme: Rente ohne Brutto -> Brutto fehlt', H.uebernahme({ adults: 1, ek1Art: 'rente', ek1Netto: 1200, plz: '1' }, {}).fehlt[0].feld === 'ek1Brutto');
 check('Übernahme: ALG ohne Brutto -> nichts fehlt', H.uebernahme({ adults: 1, ek1Art: 'alg', ek1Netto: 1200, plz: '90542' }, {}).fehlt.length === 0);
 
+// Zweites Einkommen je Person (auch bei Paaren): eigene Zeile im Plan, Übernahme meldet beide
+{
+  const st = { adults: 2, ek1Art: 'lohn', ek1Netto: 1000, ek1bArt: 'unt', ek1bBetrag: 300, ek2Art: 'lohn', ek2Netto: 900, ek2bArt: 'lohn', ek2bBetrag: 150, plz: '90542' };
+  const x = H.ausCheck(st, 259);
+  check('[paar-ek] Check -> Plan: zweites Einkommen beider Personen in Cent', x.ek1b === 30000 && x.ek1bArt === 'unt' && x.ek2b === 15000 && x.ek2bArt === 'lohn', x);
+  check('[paar-ek] Check -> Plan: allein kein zweites Einkommen von Person 2', H.ausCheck(Object.assign({}, st, { adults: 1 }), 259).ek2b === null);
+  check('[paar-ek] Check -> Plan: Betrag ohne Art zählt nicht', H.ausCheck({ adults: 1, ek1Art: 'lohn', ek1Netto: 1000, ek1bArt: '', ek1bBetrag: 300 }, 259).ek1b === null);
+  const u2 = H.uebernahme(st, {});
+  check('[paar-ek] Übernahme: beide zweiten Einkommen als übernommen gemeldet', u2.da.filter((d) => d.was === 'ek' && d.zweit).map((d) => d.i + d.art + d.c).join() === '1unt30000,2lohn15000', u2.da);
+  check('[paar-ek] Normieren: alter Stand ohne ekV -> 1 (einmalige Angleichung der Basis), neuer Stand 2', H.normiere({ ekBasis: 100000 }).ekV === 1 && H.normiere({ ekBasis: 100000, ekV: 2 }).ekV === 2 && H.normiere(null).ekV === 2);
+}
+
 // Speicherdaten prüfen (kaputte Daten nicht übernehmen)
 const nd = H.normiere({ plan: { kg: 'x', leist: 500, aus: { miete: 1, essen: 100 } }, buch: [{ d: '2026-11-01', c: 100, k: 'essen' }, { d: 'kaputt', c: 5 }, { d: '2026-11-01', c: -1 }], weg: { a: true, b: 'ja' }, bewilligt: { sgb2: '2027-01-31', kiz: 'bald' }, ekBasis: 100000 });
 check('Normieren', nd.plan.kg === null && nd.plan.leist === 500 && nd.plan.aus.miete === undefined && nd.plan.aus.essen === 100 && nd.buch.length === 1 && nd.weg.a && !nd.weg.b && nd.bewilligt.sgb2 === '2027-01-31' && !nd.bewilligt.kiz && nd.ekBasis === 100000, nd);

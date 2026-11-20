@@ -14,6 +14,8 @@
   "hb.aus.t": "Atinge un domeniu și introdu suma.",
   "hb.ek1": "Venitul tău (net)",
   "hb.ek2": "Venitul partenerului sau partenerei (net)",
+  "hb.ek1b": "Al doilea venit al tău (net)",
+  "hb.ek2b": "Al doilea venit al partenerului sau partenerei (net)",
   "hb.ek.art": "Tipul venitului",
   "hb.ek.hint": "Ce ajunge în cont.",
   "hb.ek.nurBrutto": "În verificarea prestațiilor există doar suma brută. Introdu aici ce ajunge în cont.",

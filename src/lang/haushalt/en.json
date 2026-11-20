@@ -14,6 +14,8 @@
   "hb.aus.t": "Tap an area and enter the amount.",
   "hb.ek1": "Your income (net)",
   "hb.ek2": "Your partner's income (net)",
+  "hb.ek1b": "Your second income (net)",
+  "hb.ek2b": "Your partner's second income (net)",
   "hb.ek.art": "Type of income",
   "hb.ek.hint": "What arrives in your bank account.",
   "hb.ek.nurBrutto": "The benefits check only has the gross amount. Enter here what arrives in your bank account.",

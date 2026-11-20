@@ -1,6 +1,8 @@
 {
   "hb.plan.lead": "Das dauert etwa 5 Minuten. Wie viel Geld bekommst du jeden Monat? Was musst du jeden Monat bezahlen?",
   "hb.ek.nurBrutto": "Im Leistungs-Check steht nur der Betrag vor den Abzügen. Schreib hier: So viel Geld kommt auf dein Konto.",
+  "hb.ek1b": "Dein zweites Einkommen (das, was ankommt)",
+  "hb.ek2b": "Zweites Einkommen von deinem Partner oder deiner Partnerin (das, was ankommt)",
   "hb.frage.ersetzen": "Im Leistungs-Check steht {alt}. Willst du {neu} nehmen? Dann gilt das an beiden Stellen.",
   "hb.frage.art": "Im Leistungs-Check steht „{alt}“. Willst du „{neu}“ nehmen? Dann musst du dort den Betrag vor den Abzügen neu schreiben.",
   "hb.k.miete.t": "Die ganze Miete: mit Neben-Kosten und Heizung.",

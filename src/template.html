@@ -255,6 +255,9 @@
   .ekbox { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; gap: 14px; background: var(--surface); }
   .ekbox h3 { font-size: 1em; }
   .subbox { border-inline-start: 3px solid var(--line); padding-inline-start: 14px; display: grid; gap: 14px; }
+  /* Zweites Einkommen im Einkommenskasten: Aufklappfeld ohne eigene Linie oben (Farben wie details summary, --accent) */
+  details.ek-mehr { border-top: 0; padding-top: 0; }
+  details.ek-mehr[open] > summary { margin-bottom: 8px; }
   .warn { color: var(--warn); background: var(--warn-bg); border-radius: 6px; padding: 6px 10px; font-size: 0.9em; }
   /* Höchstbetrag der Miete beim Wohngeld unter dem Mietfeld: Info-Paar, bei „möglich“ das Paar „Möglich“ (kein Rot: kein Ausschluss) */
   .mietgrenze { font-size: 0.9em; color: var(--na); background: var(--na-bg); border-inline-start: 4px solid var(--na); border-radius: 6px; padding: 6px 10px; margin: 6px 0 0; }
@@ -1288,17 +1291,21 @@
               </div>
               <div class="nh-wrap" id="ek1NhF" hidden><button type="button" class="btn ghost nh-btn" id="ek1NhBtn" aria-expanded="false" aria-controls="ek1Nh" data-t="nh.btn"></button><div class="nh" id="ek1Nh" hidden></div></div>
               <p class="warn" id="ek1Warn" role="status" hidden></p>
-              <div class="subbox cond-ek1b">
-                <div class="field">
-                  <label for="ek1bArt" data-t="ek.weiteres"></label>
-                  <select id="ek1bArt"></select>
-                  <span class="hint" data-t="ek.weiteres.hint"></span>
+              <details class="ek-mehr cond-ek1b" id="ek1bBox">
+                <summary data-t="ek.weiteres.auf"></summary>
+                <div class="subbox">
+                  <div class="field">
+                    <label for="ek1bArt" data-t="ek.weiteres"></label>
+                    <select id="ek1bArt"></select>
+                    <span class="hint" data-t="ek.weiteres.hint"></span>
+                    <span class="hint" id="ek1bLohnHint" data-t="ek.weiteres.hint.lohn" hidden></span>
+                  </div>
+                  <div class="field cond-ek1bBetrag">
+                    <label for="ek1bBetrag" data-t="ek.weiteres.betrag"></label>
+                    <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="ek1bBetrag"><span aria-hidden="true">€</span></div>
+                  </div>
                 </div>
-                <div class="field cond-ek1bBetrag">
-                  <label for="ek1bBetrag" data-t="ek.weiteres.betrag"></label>
-                  <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="ek1bBetrag"><span aria-hidden="true">€</span></div>
-                </div>
-              </div>
+              </details>
               <div class="field cond-rente">
                 <label for="zusatzRente" data-t="ek.zusatzRente"></label>
                 <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="zusatzRente" aria-describedby="zusatzRenteHint"><span aria-hidden="true">€</span></div>
@@ -1325,6 +1332,21 @@
               </div>
               <div class="nh-wrap" id="ek2NhF" hidden><button type="button" class="btn ghost nh-btn" id="ek2NhBtn" aria-expanded="false" aria-controls="ek2Nh" data-t="nh.btn"></button><div class="nh" id="ek2Nh" hidden></div></div>
               <p class="warn" id="ek2Warn" role="status" hidden></p>
+              <details class="ek-mehr cond-ek2b" id="ek2bBox">
+                <summary data-t="ek.weiteres.auf"></summary>
+                <div class="subbox">
+                  <div class="field">
+                    <label for="ek2bArt" data-t="ek.weiteres2"></label>
+                    <select id="ek2bArt"></select>
+                    <span class="hint" data-t="ek.weiteres.hint"></span>
+                    <span class="hint" id="ek2bLohnHint" data-t="ek.weiteres.hint.lohn" hidden></span>
+                  </div>
+                  <div class="field cond-ek2bBetrag">
+                    <label for="ek2bBetrag" data-t="ek.weiteres.betrag"></label>
+                    <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="ek2bBetrag"><span aria-hidden="true">€</span></div>
+                  </div>
+                </div>
+              </details>
             </div>
             <div class="field cond-kids">
               <label for="unterhalt" data-t="unterh.label"></label>
