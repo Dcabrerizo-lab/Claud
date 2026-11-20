@@ -642,6 +642,10 @@
   /* Schalter (role="switch"): Bahn mit Knopf, dazu „An“ bzw. „Aus“ als Text */
   .schalter { display: flex; align-items: center; gap: 12px; width: 100%; max-width: 30em; min-height: 52px; padding: 8px 14px; border: 1px solid var(--line); border-radius: var(--r-ctl, 14px); background: var(--surface); color: var(--ink); font: inherit; font-weight: 700; text-align: start; cursor: pointer; }
   .schalter-t { flex: 1; min-width: 0; }
+  .schalter-unter { display: block; font-weight: 400; color: var(--muted); font-size: .88em; margin-top: 2px; }
+  /* Sprache in den Einstellungen: gleiche Zeile wie die Schalter darunter */
+  .langpick.set-zeile { display: flex; align-items: center; gap: 12px; width: 100%; max-width: 30em; min-height: 52px; padding: 8px 14px; margin: 0 0 8px; border: 1px solid var(--line); border-radius: var(--r-ctl, 14px); background: var(--surface); color: var(--ink); font-size: 1em; font-weight: 700; box-sizing: border-box; }
+  .langpick.set-zeile select { flex: none; max-width: 55%; box-shadow: none; font-weight: 400; }
   .schalter-zst { flex: none; font-weight: 400; color: var(--muted); font-size: .9em; }
   .schalter-bahn { flex: none; position: relative; width: 48px; height: 28px; border-radius: 999px; background: var(--na-bg); border: 2px solid var(--field); }
   .schalter-bahn::after { content: ""; position: absolute; top: 2px; inset-inline-start: 2px; width: 20px; height: 20px; border-radius: 50%; background: var(--field); transition: inset-inline-start .15s; }
@@ -1572,10 +1576,9 @@
         <div class="pp-kopf"><button type="button" class="btn ghost us-zurueck">← <span data-t="pf.zurueck"></span></button></div>
         <h2 class="ans-h" data-t="set.anzeige.h"></h2>
         <div class="set-gruppe">
-          <label class="langpick"><span data-t="lang.label"></span><select id="lang"></select></label>
+          <label class="langpick set-zeile"><span class="schalter-t" data-t="lang.label"></span><select id="lang"></select></label>
           <p><button type="button" class="schalter" id="bigBtn" role="switch" aria-checked="false"><span class="schalter-t" data-t="big"></span><span class="schalter-zst"></span><span class="schalter-bahn" aria-hidden="true"></span></button></p>
-          <p><button type="button" class="schalter" id="einfacheSpracheBtn" role="switch" aria-checked="false" aria-describedby="einfacheSpracheT"><span class="schalter-t" data-t="set.es.label"></span><span class="schalter-zst"></span><span class="schalter-bahn" aria-hidden="true"></span></button></p>
-          <p class="small muted" id="einfacheSpracheT"></p>
+          <p><button type="button" class="schalter" id="einfacheSpracheBtn" role="switch" aria-checked="false" aria-describedby="einfacheSpracheT"><span class="schalter-t"><span data-t="set.es.label"></span><span class="schalter-unter" id="einfacheSpracheT"></span></span><span class="schalter-zst"></span><span class="schalter-bahn" aria-hidden="true"></span></button></p>
           <div class="field"><span class="lab" id="lab-thema" data-t="set.thema"></span>
             <div class="seg seg3" role="radiogroup" aria-labelledby="lab-thema">
               <input type="radio" name="thema" id="thema-auto" value="" checked><label for="thema-auto" data-t="set.thema.auto"></label>
