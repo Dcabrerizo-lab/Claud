@@ -2615,6 +2615,9 @@
   //  Energiesperre §§ 41f, 41g EnWG (Strom und Gas; abgerufen 20.11.2026); Darlehen § 22 Abs. 8 SGB II, § 36 SGB XII; Kündigung § 543 Abs. 2 Nr. 3, Schonfrist § 569 Abs. 3 Nr. 2 BGB;
   //  Insolvenz §§ 287, 295, 302, 305 InsO.
   // Fälle unter „Es ist dringend“ (konto, strom, mahn, miete) und unter „Kostenlose Hilfe“ (inkasso, rate, unserioes, insolvenz); jeder Text nur an einer Stelle.
+  // Inkasso (sp.schulden.inkasso): Verjährung 3 Jahre (§ 195 BGB) ab Schluss des Jahres der Entstehung (§ 199 Abs. 1 BGB); Neubeginn bei Anerkenntnis,
+  // z. B. Abschlagszahlung (§ 212 Abs. 1 Nr. 1 BGB); 30 Jahre bei rechtskräftig festgestellten Ansprüchen, z. B. Urteil, Vollstreckungsbescheid
+  // (§ 197 Abs. 1 Nr. 3 BGB). https://www.gesetze-im-internet.de/bgb/__195.html, __197.html, __199.html, __212.html, Abruf 20.11.2026
   var SP_SCHULDEN_FAELLE = ['inkasso', 'rate', 'unserioes', 'insolvenz'];
   // Essen: Link zur Verbraucherzentrale statt eigener Rezepte (Entscheidung David 20.11.2026). Verbraucherzentrale Bundesverband,
   // „So geht gesunde Ernährung mit wenig Geld“ (Seite in einfacher Sprache, Stand der Seite 14.06.2024, abgerufen 20.11.2026).
