@@ -501,7 +501,13 @@ function grenze85(e) {
 }
 function schon90(e) { return 10000 * (e.adults === 2 ? 2 : 1) + 500 * (Math.max(0, e.kids | 0) + Math.max(0, e.young | 0)); }
 // ---------- Asylbewerber: Ausschlüsse (§ 7 Abs. 1 SGB II, § 23 Abs. 2 SGB XII, § 7 WoGG, § 6a BKGG mit § 62 EStG) ----------
-const ASYL_NEIN = ['ggeld', 'gsa', 'wohngeld', 'kiz'];
+// Asylverfahren oder Duldung: ausgeschlossen (§ 7 Abs. 1 Satz 2 Nr. 3 SGB II, § 23 Abs. 2 SGB XII, § 6a BKGG; WBS: § 27 Abs. 2 WoFG,
+// Entscheidung David 20.11.2026: „unwahrscheinlich“)
+const ASYL_NEIN = ['ggeld', 'gsa', 'kiz', 'wbs'];
+// Höchstens „möglich“, sonst wie ohne Asyl: Wohngeld nur ohne AsylbLG-Bezug (§ 3 Abs. 5, § 7 Abs. 1 Satz 1 Nr. 8 WoGG), BAföG (§ 8 Abs. 2a,
+// Abs. 3 BAföG), Arbeitslosengeld (§ 138 Abs. 5 Nr. 1 SGB III), Kindergeld bei Behinderung (§ 62 Abs. 2 EStG), Ausweis (§ 2 Abs. 2 SGB IX),
+// Landesblindengeld (§ 9 Abs. 1 AsylbLG) – alle abgerufen 20.11.2026 auf gesetze-im-internet.de bzw. gesetze-bayern.de
+const ASYL_MOEGLICH = ['wohngeld', 'bafoeg', 'alg1', 'kgBeh', 'ausweis', 'blindengeld'];
 
 // ---------- Künftige vorrangige Leistung der ersten Person (Arbeitslosengeld, Krankengeld, Elterngeld) ----------
 // Sie zählt bei Grundsicherungsgeld, Wohngeld und Kinderzuschlag als Einkommen (§ 11 SGB II, § 14 WoGG; Elterngeld über 300 €).
@@ -532,4 +538,4 @@ function kduGrenze(e) {
   return hoechst(st, n) * 1.1 + heiz(n);
 }
 
-module.exports = { kappe, euAus, kduGrenze, kuenftig, zusammen, elterngeld, grenze85, schon90, ASYL_NEIN, haushalt, grundsicherungsgeld, wohngeld, kinderzuschlag, grundsicherungAlter, unterhaltsvorschuss, bafoeg, arbeitslosengeld, krankengeld, regelaltersgrenze, freibetragArbeit, RB };
+module.exports = { kappe, euAus, kduGrenze, kuenftig, zusammen, elterngeld, grenze85, schon90, ASYL_NEIN, ASYL_MOEGLICH, haushalt, grundsicherungsgeld, wohngeld, kinderzuschlag, grundsicherungAlter, unterhaltsvorschuss, bafoeg, arbeitslosengeld, krankengeld, regelaltersgrenze, freibetragArbeit, RB };

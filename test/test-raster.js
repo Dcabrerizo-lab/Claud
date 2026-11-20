@@ -263,6 +263,13 @@ for (let i = 0; i < 20000; i++) {
   const a = Rules.evaluate({ ...e, aufenthalt: 'asyl' }).results;
   Ref.ASYL_NEIN.forEach((id) => { const x = a.find((y) => y.id === id); if (x.level !== 'nein' && x.level !== 'na') melde('Asyl: ' + id + ' muss ausgeschlossen sein', e, { app: x.level }); });
   if (a.find((y) => y.id === 'asylblg').level !== 'ja') melde('Asyl: Asylbewerberleistungen', e, {});
+  // Höchstens „möglich“, sonst dieselbe Einstufung wie ohne Asyl (Gesetz trennt Gestattung und Duldung oder ist unklar)
+  // (Wohngeld: ohne den Ausblick auf künftige Leistungen, den die App bei Asyl nicht rechnet, daher nur „nie wahrscheinlich“ und Hinweis vorn)
+  Ref.ASYL_MOEGLICH.forEach((id) => {
+    const x = a.find((y) => y.id === id), ohne = r[id].level === 'ja' ? 'vielleicht' : r[id].level;
+    const ok = id === 'wohngeld' ? x.level !== 'ja' && (x.level !== 'vielleicht' || x.tx[0][0] === 'wohngeld.asyl') : x.level === ohne;
+    if (!ok) melde('Asyl: ' + id + ' höchstens möglich, sonst wie ohne Asyl', e, { app: x.level, ohneAsyl: r[id].level });
+  });
   // Unterhaltsvorschuss bei Asyl/Duldung: höchstens „möglich“ (deutsches Kind oder Beschäftigungsduldung, § 1 Abs. 2a UVG)
   { const ua = a.find((y) => y.id === 'uvg').level, ur = Ref.unterhaltsvorschuss({ ...e, aufenthalt: 'asyl' }).level; if (ua !== ur || ua === 'ja') melde('Asyl: Unterhaltsvorschuss', e, { app: ua, ref: ur }); }
 }

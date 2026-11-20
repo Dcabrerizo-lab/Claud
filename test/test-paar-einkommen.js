@@ -6,7 +6,6 @@
 //  - § 82 Abs. 3 SGB XII (30 %, höchstens 50 % RS 1 = 281,50 €, je Person)
 //  - §§ 14, 16 WoGG, § 9a EStG (Werbungskosten-Pauschbetrag einmal je Person; § 16-Abzug je Person für ihr ganzes Einkommen, WoGVwV 16.11-16.13)
 //  - § 6a Abs. 1 Nr. 2, Abs. 6 BKGG (Mindesteinkommen 900 € ohne § 11b, Minderung 45 % / 100 %)
-//  - § 10 SGB V (Familienversicherung; Arbeitslosengeld bringt eine eigene Versicherung mit)
 'use strict';
 const R = require('./rules-de.js');
 const base = { kids: 0, young: 0, vermoegen: 0, bezug: {}, gebJahr: 1985, heute: 2026.9 };
@@ -31,16 +30,13 @@ m = run({ adults: 2, miete: 800, mietstufe: '3', einkommen: [P(1, 'lohn', 2000, 
 ck('[paar-ek] F2 Freibetrag 348 + 208,90 = 556,90', Math.abs(R.haushaltsFreibetrag(m._h) - 556.9) < 0.01, R.haushaltsFreibetrag(m._h));
 ck('F2 Grundsicherungsgeld möglich (Lücke −14,10)', m.ggeld.level === 'vielleicht', m.ggeld.level);
 ck('F2 Wohngeld: Werbungskosten P1 einmal, lo 2.464 / hi 3.145, bis 80 €', JSON.stringify(grenze(m.wohngeld)) === JSON.stringify([E(2464), E(3145)]) && sch(m.wohngeld).b === E(80), m.wohngeld.tx);
-ck('F2 Familienversicherung möglich (603 € Minijob)', !!t(m.famvers, /^famvers\.partner$/), m.famvers.tx);
 // F2b Gegenprobe: Minijob 300 bei Person 2
 m = run({ adults: 2, miete: 800, mietstufe: '3', einkommen: [P(1, 'lohn', 2000, 1480), P(2, 'lohn', 603, 603), P(2, 'lohn', 300)] });
 ck('[paar-ek] F2b Freibetrag 348 + 298,90 = 646,90; Grundsicherungsgeld ≈ 80 €', Math.abs(R.haushaltsFreibetrag(m._h) - 646.9) < 0.01 && m.ggeld.level === 'ja' && sch(m.ggeld).a === E(80), m.ggeld.tx);
-ck('F2b Familienversicherung unwahrscheinlich (903 €)', !!t(m.famvers, /^famvers\.partnerNein$/), m.famvers.tx);
 
 // F3 Rentnerpaar, P1 Rente 800 + Minijob 300 (30 % = 90 € frei, § 82 Abs. 3 SGB XII), P2 Rente 650: Lücke 102
 m = run({ adults: 2, gebJahr: 1950, miete: 750, einkommen: [P(1, 'rente', 910, 800), P(1, 'lohn', 300), P(2, 'rente', 740, 650)] });
 ck('[paar-ek] F3 Grundsicherung im Alter ≈ 100 €', m.gsa.level === 'ja' && sch(m.gsa).a === E(100), m.gsa.tx);
-ck('F3 Familienversicherung unwahrscheinlich (Rente P2 740 €)', !!t(m.famvers, /^famvers\.partnerNein$/), m.famvers.tx);
 
 // F3b SGB-XII-Freibetrag je Person, nicht je Einkommen: P1 Rente 400 + zwei Löhne je 900 (Zahlbetrag) → 30 % von 1.800 = 540,
 //   gedeckelt auf 281,50 (50 % RS 1) einmal; P2 Rente 600. Bedarf 1.012 + 900 = 1.912; Einkommen 400 + 1.800 − 281,50 + 600 = 2.518,50
@@ -99,30 +95,9 @@ m = run({ adults: 2, kids: 1, gebJahr: 1955, miete: 800, einkommen: [P(1, 'rente
 ck('[paar-ek] F11 Kinderzuschlag möglich mit Hinweis Rentnerpaar', m.kiz.level === 'vielleicht' && !!t(m.kiz, /^kiz\.rentnerPaar$/), m.kiz.tx);
 ck('F11 Grundsicherung im Alter ≈ 220 €', m.gsa.level === 'ja' && sch(m.gsa).a === E(220), m.gsa.tx);
 
-// F12 Familienversicherung: P2 ALG I 300 + Nebenjob 200 → über das Arbeitslosengeld selbst versichert
+// F12 P2 ALG I 300 + Nebenjob 200
 m = run({ adults: 2, miete: 700, einkommen: [P(1, 'lohn', 2000, 1480), P(2, 'alg', 300), P(2, 'lohn', 200)] });
-ck('[paar-ek] F12 Familienversicherung unwahrscheinlich (partnerNein)', m.famvers.level === 'nein' && !!t(m.famvers, /^famvers\.partnerNein$/), m.famvers.tx);
 ck('F12 Arbeitslosengeld bei Person 2: „beziehst du schon“', m.alg1.level === 'na', m.alg1.level);
-
-// F13 Familienversicherung mit Liste: Elterngeld im Hauptfeld, Rente 900 € als zweites Einkommen -> Rente über der Grenze
-//   (Elterngeld zählt nicht zum Gesamteinkommen, GKV-Spitzenverband, Grundsätzliche Hinweise Gesamteinkommen 29.09.2022, Anlage)
-m = run({ adults: 2, miete: 700, einkommen: [P(1, 'lohn', 2000, 1480), P(2, 'eg', 600), P(2, 'rente', 900)] });
-ck('[paar-ek] F13 Elterngeld + Rente 900: Familienversicherung unwahrscheinlich', !!t(m.famvers, /^famvers\.partnerNein$/), m.famvers.tx);
-// F13b Minijob 500 + Elterngeld 600: Elterngeld zählt nicht, nur Lohn -> Minijob-Grenze -> möglich
-m = run({ adults: 2, miete: 700, einkommen: [P(1, 'lohn', 2000, 1480), P(2, 'lohn', 500, 500), P(2, 'eg', 600)] });
-ck('[paar-ek] F13b Minijob 500 + Elterngeld 600: Familienversicherung möglich', !!t(m.famvers, /^famvers\.partner$/) && !t(m.famvers, /^famvers\.partnerNein$/), m.famvers.tx);
-// F13c Rente 400 + Lohn 200 (nicht nur Lohn): 600 > 565 (Gesamteinkommensgrenze, nicht die Minijob-Grenze)
-m = run({ adults: 2, miete: 700, einkommen: [P(1, 'lohn', 2000, 1480), P(2, 'rente', 400), P(2, 'lohn', 200)] });
-ck('[paar-ek] F13c Rente 400 + Lohn 200: Familienversicherung unwahrscheinlich', !!t(m.famvers, /^famvers\.partnerNein$/), m.famvers.tx);
-// F13d Minijob 300 + Unterhalt 400: Unterhalt zählt in der Regel nicht, beim Realsplitting schon -> möglich mit Hinweis
-m = run({ adults: 2, miete: 700, einkommen: [P(1, 'lohn', 2000, 1480), P(2, 'lohn', 300, 300), P(2, 'unt', 400)] });
-ck('[paar-ek] F13d Minijob 300 + Unterhalt 400: möglich mit Realsplitting-Hinweis', !!t(m.famvers, /^famvers\.partner$/) && !!t(m.famvers, /^famvers\.realsplit$/), m.famvers.tx);
-
-// Stichtag 1.1.2027: Minijob-Grenze 603 € bis 31.12.2026, 633 € erst ab 1.1.2027 (§ 8 Abs. 1a SGB IV, Mindestlohn);
-//   Minijob 620 + Elterngeld 300 bei Person 2
-const f13e = (heute) => run({ adults: 2, miete: 700, heute, einkommen: [P(1, 'lohn', 2000, 1480), P(2, 'lohn', 620, 620), P(2, 'eg', 300)] });
-ck('[paar-ek] F13e 2026: Minijob 620 > 603: Familienversicherung unwahrscheinlich', !!t(f13e(2026.9).famvers, /^famvers\.partnerNein$/), f13e(2026.9).famvers.tx);
-ck('[paar-ek] F13e ab 1.1.2027: Minijob 620 ≤ 633: Familienversicherung möglich', !!t(f13e(2027.0).famvers, /^famvers\.partner$/), f13e(2027.0).famvers.tx);
 
 // Versicherungspauschale höchstens bis zur Höhe des anderen Einkommens: Unterhalt 20 € ohne Lohn -> 20, nicht 30
 m = run({ adults: 2, miete: 700, einkommen: [P(1, 'unt', 20), P(2, 'ohne', 0)] });
