@@ -1,14 +1,15 @@
 name: CI
 
 # Sparsam: läuft bei Pull Requests, Pushes auf main und Version-Tags (v1.2.3, zusätzlich signiertes Play-Store-Bundle),
-# sonst nur auf Knopfdruck. Reine Doku- und Quellen-Änderungen lösen keinen Lauf aus.
+# sonst nur auf Knopfdruck. Reine Markdown- und Quellen-Änderungen lösen keinen Lauf aus. docs/ wird NICHT ausgenommen:
+# dort liegen die GitHub-Pages-Seiten (datenschutz*.html, index.html), die ein Test mit site/ vergleicht.
 on:
   push:
     branches: ['main']
     tags: ['v*']
-    paths-ignore: ['content/quellen/**', 'docs/**', '**.md']
+    paths-ignore: ['content/quellen/**', '**.md']
   pull_request:
-    paths-ignore: ['content/quellen/**', 'docs/**', '**.md']
+    paths-ignore: ['content/quellen/**', '**.md']
   workflow_dispatch:
 
 concurrency:
@@ -58,10 +59,35 @@ jobs:
       - name: Erweiterungen (Prüfpaket, mit Browsertest der Vorschau)
         run: npm run test:erweiterungen
 
+  # Browsertests in parallelen Teilen (vorher ein Job mit ca. 8 Minuten, davon 5,5 Minuten Zufalls-Klicktest).
+  # Die Teile stehen in package.json (e2e:basis, e2e:zufall). Ein Schritt prüft, dass sie zusammen genau test:e2e abdecken
+  # (kein neuer Browsertest geht in CI verloren). test:e2e selbst bleibt für lokale Läufe unverändert.
+  # Zufalls-Klicktest: SHARD=k/2, jeder Teil 200 der 400 Schritte mit eigenem Startwert (zusammen derselbe Umfang).
+  # Höchstens 2 Teile: jeder Teil braucht mindestens 151 Schritte für den festen Besuch der Antragsmappe (Schritt 150).
   browser:
-    name: Tests b (Browser, App)
+    name: Tests b (${{ matrix.teil }})
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - teil: Browser – Fälle, einfach, klein, Briefe, Pflege, PDF, Barrierefreiheit
+            skript: e2e:basis
+            web: true
+            shard: ''
+          - teil: Browser – Zufalls-Klicktest 1/2
+            skript: e2e:zufall
+            web: true
+            shard: '1/2'
+          - teil: Browser – Zufalls-Klicktest 2/2
+            skript: e2e:zufall
+            web: true
+            shard: '2/2'
+          - teil: App – offline, CSP, PDF, Scan, Speichern
+            skript: test:app
+            web: false
+            shard: ''
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -89,32 +115,53 @@ jobs:
       - name: Systempakete für den Browser (bei Treffer im Zwischenspeicher)
         if: steps.pwcache.outputs.cache-hit == 'true'
         run: echo 'DPkg::Lock::Timeout "600";' | sudo tee /etc/apt/apt.conf.d/99lock >/dev/null; for i in 1 2 3; do timeout 600 npx playwright install-deps chromium && exit 0; echo "Versuch $i fehlgeschlagen"; sleep 20; done; exit 1
-      - name: Browsertest (Behinderung, Mappe, Sprachen, RTL)
-        run: npm run test:e2e
-      - name: App-Test (offline, CSP, PDF, Scan, Speichern)
-        run: npm run test:app
+      - name: Decken die Teile genau test:e2e ab?
+        if: matrix.skript == 'e2e:basis'
+        run: |
+          node -e '
+            const s = require("./package.json").scripts, teile = (x) => x.split("&&").map((t) => t.trim()).filter((t) => !t.startsWith("npm run build:web"));
+            const soll = teile(s["test:e2e"]).sort(), ist = [...teile(s["e2e:basis"]), ...teile(s["e2e:zufall"])].sort();
+            if (JSON.stringify(soll) !== JSON.stringify(ist)) { console.log("::error::e2e:basis + e2e:zufall weichen von test:e2e ab\nsoll: " + soll.join(" | ") + "\nist:  " + ist.join(" | ")); process.exit(1); }
+            console.log("Teile = test:e2e (" + soll.length + " Testdateien)");'
+      - name: Web-Version bauen
+        if: matrix.web
+        run: npm run build:web
+      # Wackelschutz: bei Fehlschlag genau einmal wiederholen, mit Warnung im Log, in der Zusammenfassung und als Hinweis
+      # am Pull Request. Ein echter Fehler (Startwerte fest) scheitert auch im zweiten Versuch. Lokal gibt es keine Wiederholung.
+      - name: Test ${{ matrix.skript }} (bei Fehlschlag einmal wiederholt)
+        env:
+          SHARD: ${{ matrix.shard }}
+          SKRIPT: ${{ matrix.skript }}
+        run: |
+          if npm run "$SKRIPT"; then exit 0; fi
+          echo "::warning title=Browsertest wiederholt::$SKRIPT ${SHARD:+(Teil $SHARD) }ist beim ersten Versuch fehlgeschlagen und wird einmal wiederholt. Bestehen im zweiten Versuch heißt: wackliger Test oder zeitabhängiger Fehler, bitte ansehen."
+          echo "**wiederholt:** \`$SKRIPT\` ${SHARD:+(Teil $SHARD) }ist beim ersten Versuch fehlgeschlagen und wurde einmal wiederholt." >> "$GITHUB_STEP_SUMMARY"
+          echo "===== wiederholt: $SKRIPT ${SHARD:+(Teil $SHARD) }– zweiter und letzter Versuch ====="
+          npm run "$SKRIPT"
       - name: Web-Version als Artefakt
+        if: matrix.skript == 'e2e:basis'
         uses: actions/upload-artifact@v7
         with:
           name: sozialleistungslotse-web
           path: dist/sozialleistungslotse.html
 
-  # Abschluss mit dem bisherigen Namen: bleibt als ein Prüfpunkt erhalten (z. B. falls er als Pflicht-Check eingetragen wird)
+  # Abschluss mit dem bisherigen Namen: bleibt als ein Prüfpunkt erhalten (Pflicht-Check). Verlangt alle Teile
+  # einschließlich Android-Build; „Tests b“ ist nur dann erfolgreich, wenn jeder Matrix-Teil bestanden hat.
   test:
     name: Tests (Regeln, Oberfläche, Browser, App)
-    needs: [regeln, browser]
+    needs: [regeln, browser, android]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Beide Testteile bestanden?
+      - name: Alle Teile bestanden?
         run: |
-          echo "Teil a: ${{ needs.regeln.result }}, Teil b: ${{ needs.browser.result }}"
-          [ "${{ needs.regeln.result }}" = success ] && [ "${{ needs.browser.result }}" = success ]
+          echo "Teil a: ${{ needs.regeln.result }}, Teil b (alle Teile): ${{ needs.browser.result }}, Android: ${{ needs.android.result }}"
+          [ "${{ needs.regeln.result }}" = success ] && [ "${{ needs.browser.result }}" = success ] && [ "${{ needs.android.result }}" = success ]
 
+  # Läuft parallel zu den Tests (braucht sie nicht zum Kompilieren); der Abschluss-Check oben verlangt ihn trotzdem.
   android:
     name: Android
-    needs: test
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:

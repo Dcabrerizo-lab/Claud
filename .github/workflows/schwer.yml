@@ -6,7 +6,15 @@ name: Schwere Tests
 # -> Run workflow), sonntags automatisch und einmal, wenn diese Datei geändert wird. Browsertests (4 Teile je Browser)
 # und Mutationstest (3 Teile) laufen parallel; Dauer etwa 20 bis 30 Minuten (längster Job: Rastertest bzw. Android-Emulator).
 # (Die Knopfdruck-Variante erscheint erst, wenn diese Datei auch im Haupt-Branch liegt.)
+# Zusätzlich: schwer-regeln.yml ruft bei Push auf main mit Änderung an src/rules.js nur die Rechen-Jobs auf
+# (Rastertest, Logik-Test, Mutationstest; nur_logik: true). Browser, Emulator und iOS bleiben bei Sonntag/Release/Knopfdruck.
 on:
+  workflow_call:
+    inputs:
+      nur_logik:
+        description: Nur Rastertest, Logik-Test und Mutationstest (ohne Browser, Emulator, iOS)
+        type: boolean
+        default: false
   workflow_dispatch:
   schedule:
     - cron: '37 2 * * 0'   # jeden Sonntag früh, damit Umbauten nicht tagelang unbemerkt Tests brechen
@@ -86,6 +94,7 @@ jobs:
 
   browser:
     name: Browsertests ${{ matrix.browser }} Teil ${{ matrix.teil }}/4
+    if: ${{ !inputs.nur_logik }}
     runs-on: ubuntu-latest
     timeout-minutes: 40   # ein Viertel der Arbeit; ungeteilt brauchte der Job bis 75 Minuten
     strategy:
@@ -130,6 +139,7 @@ jobs:
 
   android-geraete:
     name: Android-Emulator API ${{ matrix.api }}
+    if: ${{ !inputs.nur_logik }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     strategy:
@@ -178,6 +188,7 @@ jobs:
 
   ios:
     name: iOS (Simulator-Build)
+    if: ${{ !inputs.nur_logik }}
     runs-on: macos-15-intel
     timeout-minutes: 45
     steps:
