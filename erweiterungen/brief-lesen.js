@@ -161,7 +161,32 @@ const BriefLesen = (function () {
     anh: 'Eine Anhörung kommt, bevor das Amt etwas zu deinen Ungunsten entscheidet, zum Beispiel Geld zurückfordert oder kürzt. Du darfst dich innerhalb der genannten Frist äußern. Erkläre kurz, wie es war, und lege Belege bei. Wenn du nicht antwortest, entscheidet das Amt nach Aktenlage.',
     mit: 'Das Amt braucht noch Unterlagen. Reiche sie bis zur genannten Frist ein, am besten mit Kopie und Eingangsbestätigung. Wenn du etwas nicht rechtzeitig schaffst, schreib das vor Ablauf der Frist und nenne einen Termin. Ohne Unterlagen kann das Amt die Leistung ganz oder teilweise versagen (§ 66 SGB I).'
   };
-  function frist(text) { const m = String(text).match(/(?:bis zum|bis spätestens|spätestens bis zum?|innerhalb von)\s*(\d{1,2}\.\d{1,2}\.20\d{2}|\w+ Wochen?)/i); return m ? m[1] : null; }
+  // Frist für Anhörung und Mitwirkung: Zeile für Zeile, nur aus Zeilen mit einem Frist-Wort („äußern“, „Unterlagen“, „Frist“ …).
+  // Ein anderes Datum im Brief („Leistungen bis zum 31.01.2027 bewilligt“) wäre zu spät. Bei mehreren Daten zählt das früheste;
+  // ein festes Datum geht vor einer Dauer („innerhalb von zwei Wochen“). Ergebnis: { frist, zeile, abBrief } oder null.
+  // abBrief: Die Zeile sagt, dass die Frist ab dem Datum des Schreibens läuft (dann nie ab dem Tag des Erhalts rechnen).
+  const FRIST_WORT = /(?:^|[^A-Za-zÄÖÜäöüß])(?:äußer|Äußer|Stellung|einreich|einzureich|reichen Sie|vorleg|vorzuleg|legen Sie|Unterlagen|nachreich|nachzureich|Frist|Widerspruch|Gelegenheit|mitteil|mitzuteil|Nachweis|Rückmeldung)/i;
+  const FRIST_ANFANG = /(?:bis zum|bis spätestens(?: zum)?|spätestens bis zum?|spätestens am|innerhalb von|innerhalb eines|binnen)\s*$/i;
+  const AB_BRIEF = /\bab (?:dem )?(?:Datum|Ausstellungsdatum) (?:dieses|des|dieser|der) (?:Schreibens|Briefe?s|Bescheide?s|Mitteilung|Anhörung|Aufforderung)|\bnach (?:dem )?Datum (?:dieses|des) (?:Schreibens|Briefe?s)|\bvom Datum dieses Schreibens an\b/i;
+  function fristMitZeile(text) {
+    const zl = zeilen(text), re = new RegExp(FRIST.source, 'gi');
+    let fest = null, dauer = null;
+    for (let i = 0; i < zl.length; i++) {
+      let z = zl[i];
+      if (FRIST_ANFANG.test(z) && i + 1 < zl.length) z += ' ' + zl[i + 1]; // „… bis zum“ am Zeilenende, Datum in der nächsten Zeile
+      if (!FRIST_WORT.test(z)) continue;
+      const zeile = z.length > 160 ? z.slice(0, 157) + '…' : z;
+      let m; re.lastIndex = 0;
+      while ((m = re.exec(z))) {
+        const d = m[1].match(DATUM);
+        if (d) { const x = iso(d); if (!fest || x < fest.iso) fest = { frist: m[1], zeile, iso: x }; }
+        else if (!dauer) dauer = { frist: m[1], zeile, abBrief: AB_BRIEF.test(z) };
+      }
+    }
+    if (fest) return { frist: fest.frist, zeile: fest.zeile, abBrief: false };
+    return dauer;
+  }
+  function frist(text) { const r = fristMitZeile(text); return r ? r.frist : null; }
 
   // Anderer Brief: Frist nur mit Beleg (die Zeile aus dem Brief, in der sie steht), dazu Hinweise auf Mahnbescheid oder Inkasso.
   // Ergebnis: { fristen: [{ frist, zeile }], mahnbescheid, vollstreckungsbescheid, inkasso, art (erkannte Art aus erkenne oder null) }
@@ -250,6 +275,6 @@ const BriefLesen = (function () {
     };
   }
 
-  return { erkenne, lies, betraege, ERKLAERUNG, frist, andere, ARTEN, kostensenkung, kennungen: (text) => kennungen(zeilen(text), String(text || '')) };
+  return { erkenne, lies, betraege, ERKLAERUNG, frist, fristMitZeile, andere, ARTEN, kostensenkung, kennungen: (text) => kennungen(zeilen(text), String(text || '')) };
 })();
 if (typeof module !== 'undefined') module.exports = BriefLesen;

@@ -16,10 +16,13 @@ function starte(mem, fristen) {
       w.__SOLO_TEST__ = true; w.HTMLElement.prototype.scrollIntoView = function () {}; w.scrollTo = function () {};
       Object.defineProperty(w, 'localStorage', { value: { getItem: (k) => (k in mem ? mem[k] : null), setItem: (k, v) => { mem[k] = String(v); }, removeItem: (k) => { delete mem[k]; } }, configurable: true });
       Object.defineProperty(w.navigator, 'languages', { value: ['de-DE'], configurable: true });
-      if (fristen) w.FristenOrdner = { hinzu: (x) => { gemerkt.push(x); return x.datum === '2027-01-15' ? false : gemerkt.length > 1 ? 'da' : 'neu'; } };
       w.addEventListener('error', (e) => errors.push(e.message));
     }
   });
+  // Das echte src/fristen.js ist im Paket: Schnittstelle hinzu() durch den Stub ersetzen bzw. für „ohne“ ganz entfernen
+  const stub = (x) => { gemerkt.push(x); return x.datum === '2027-01-15' ? false : gemerkt.length > 1 ? 'da' : 'neu'; };
+  if (fristen) { if (dom.window.FristenOrdner) dom.window.FristenOrdner.hinzu = stub; else dom.window.FristenOrdner = { hinzu: stub }; }
+  else dom.window.FristenOrdner = undefined;
   return { w: dom.window, d: dom.window.document, errors, gemerkt };
 }
 const klick = (w, el) => el.dispatchEvent(new w.MouseEvent('click', { bubbles: true }));
