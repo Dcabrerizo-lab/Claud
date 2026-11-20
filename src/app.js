@@ -517,7 +517,6 @@
     var veraltet = regelnVeraltet();
     $('altNotice').hidden = !veraltet; $('altNotice').textContent = veraltet ? t('alt.hinweis', { stand: Rules.RULES.stand }) : '';
     $('transNotice').hidden = lang === 'de';
-    $('clearWas').textContent = loeschWas();
     document.querySelectorAll('#presets button').forEach(function (b) {
       b.textContent = t(PRESETS.filter(function (p) { return p.id === b.id; })[0].key);
     });
@@ -577,7 +576,7 @@
     b.addEventListener('click', function () {
       var laden = function () {
         vgVorBeispiel(); // Beispiel nie in einen gespeicherten Vorgang schreiben: dann öffnet es einen neuen leeren Vorgang
-        state = JSON.parse(JSON.stringify(p.v)); if (undoFn) undoWeg();
+        state = JSON.parse(JSON.stringify(p.v));
         edited = false; started = true; pickedUser = {}; $('sampleNotice').hidden = false;
         writeForm(); buildSelects(); render(); save();
       };
@@ -606,22 +605,49 @@
   // Was „Alle Angaben löschen“ löscht. Neue Teile hier ergänzen: Sprachschlüssel clear.teil.*
   // Ist ein gespeicherter Vorgang geöffnet, nennt der Text ihn: gelöscht wird nur in diesem Vorgang, andere bleiben.
   var LOESCH_TEILE = ['clear.teil.form', 'clear.teil.person'].concat(window.Haushalt ? ['clear.teil.haushalt'] : [], window.Ausziehen ? ['az.h'] : [], window.FristenOrdner ? ['fri.karte'] : [], window.Schulden ? ['sl.ordner'] : [], ['clear.teil.mehr']);
-  function loeschWas() {
-    var a = tresor && tresor.bereit() ? tresor.aktiv() : null, mehrere = a && tresor.liste().length > 1;
-    return t('clear.was') + ' ' + LOESCH_TEILE.map(function (k) { return k === 'az.h' || k === 'sl.ordner' ? '„' + t(k) + '“' : t(k); }).join(' · ') +
-      (a && a.name ? ' ' + t('clear.teil.vorgang', { name: a.name }) : mehrere ? ' ' + t('clear.teil.offen') : '');
+  function loeschWas() { return t('l.einsWas', { teile: LOESCH_TEILE.map(function (k) { return k === 'az.h' || k === 'sl.ordner' ? '„' + t(k) + '“' : t(k); }).join(', ') }); }
+  function loeschEinsTitel(v) { return v && v.name ? t('l.eins', { name: v.name }) : t('l.einsOhne'); }
+  // Einen Vorgang ganz löschen (Name und alle Angaben in Vorgaenge.DATEN); der letzte wird durch einen leeren ersetzt
+  // Danach etwa 10 Sekunden „Rückgängig“ (holt das Abbild aller Vorgänge zurück; neue Eingaben beenden das Angebot)
+  function vgLoeschen(id, msgEl) {
+    var v = tresor.liste().filter(function (x) { return x.id === id; })[0]; if (!v) return;
+    flush();
+    var sicher = tresor.sicherung(), war = id === tresor.aktiv().id;
+    if (war) { clearTimeout(saveTimer); saveTimer = null; }
+    tresor.loeschen(id);
+    if (war) vgNeuLaden(); else vgRender();
+    var ok = v.name ? t('l.okEins', { name: v.name }) : t('l.okOhne');
+    if (msgEl) msgEl.textContent = ok;
+    undoZeigen(ok, function () {
+      clearTimeout(saveTimer); saveTimer = null;
+      if (!tresor.zurueck(sicher)) return;
+      vgNeuLaden();
+      var m = $('loeschMsg'); if (m) m.textContent = t('l.zurueck');
+    });
   }
   // Rückgängig-Leiste: bleibt etwa 10 Sekunden; solange der Fokus darin ist, verschwindet sie nicht
   var undoFn = null, undoTimer = null;
   function undoWeg() { clearTimeout(undoTimer); undoFn = null; $('undoBar').hidden = true; }
   function undoUhr() { clearTimeout(undoTimer); undoTimer = setTimeout(function () { if (!$('undoBar').contains(document.activeElement)) undoWeg(); }, 10000); }
-  function undoZeigen(fn) {
-    undoFn = fn;
-    $('undoText').textContent = t('clear.bar');
-    $('undoBar').hidden = false; undoUhr();
-  }
-  $('undoBtn').addEventListener('click', function () { var f = undoFn; undoWeg(); if (f) f(); var c = $('clearBtn'); if (c && c.offsetParent) c.focus(); });
+  function undoZeigen(text, fn) { undoFn = fn; $('undoText').textContent = text; $('undoBar').hidden = false; undoUhr(); }
+  $('undoBtn').addEventListener('click', function () { var f = undoFn; undoWeg(); if (f) f(); });
   $('undoBar').addEventListener('focusout', undoUhr);
+  // Rückfrage vor dem Löschen: dieselbe klare Aussage, „Abbrechen“ als Hauptknopf, „Ja, endgültig löschen“ rot
+  function loeschFragen(nach, ausloeser, titel, was, ja, mitUndo) {
+    var alt = $('loeschFrage'); if (alt) alt.remove();
+    var box = vgEl('div', 'loesch-frage'); box.id = 'loeschFrage'; box.setAttribute('role', 'group'); box.setAttribute('aria-labelledby', 'loeschFrageT');
+    var tt = vgEl('p', 'loesch-frage-t', titel + '?'); tt.id = 'loeschFrageT'; box.appendChild(tt);
+    box.appendChild(vgEl('p', 'small', was));
+    box.appendChild(vgEl('p', 'small', t(mitUndo ? 'l.kurzZurueck' : 'l.endgueltig')));
+    var bt = vgEl('div', 'btns');
+    var nein = vgEl('button', 'btn ghost', t('l.abbrechen')); nein.type = 'button'; nein.id = 'loeschNein';
+    var jb = vgEl('button', 'btn loesch-ja', t('l.ja')); jb.type = 'button'; jb.id = 'loeschJa';
+    nein.addEventListener('click', function () { box.remove(); if (ausloeser && document.body.contains(ausloeser)) ausloeser.focus(); });
+    jb.addEventListener('click', function () { box.remove(); flush(); ja(); });
+    bt.appendChild(nein); bt.appendChild(jb); box.appendChild(bt);
+    nach.parentNode.insertBefore(box, nach.nextSibling);
+    tt.tabIndex = -1; tt.focus(); // kein Knopf vorgewählt (NN/g): Fokus auf die Frage
+  }
   $('beispielNein').addEventListener('click', function () { dlgZu(false); });
   $('beispielJa').addEventListener('click', function () { dlgZu(true); });
   $('beispielDlg').addEventListener('click', function (e) { if (e.target === $('beispielDlg')) dlgZu(false); });
@@ -776,25 +802,8 @@
     $('mappeCopy').addEventListener('click', copyMappe);
     // „Drucken“ auch am Ende der Mappe: löst denselben Weg aus wie der Knopf oben (Web: Drucken, App: PDF)
     $('mappePrint2').addEventListener('click', function () { (!$('mappeDruck').hidden ? $('mappeDruck') : $('mappePrint')).click(); });
-    $('clearBtn').addEventListener('click', function () {
-      // Löscht den ganzen geöffneten Vorgang (angabenLoeschen(false)): Formular, Briefdaten, einfache Version, Pflege-Einschätzung,
-      // Pfändung, Haushaltsplan und Haken. Andere Vorgänge bleiben. „Rückgängig“ stellt ihn etwa 10 Sekunden lang wieder her.
-      flush();
-      var vorher = { daten: {}, picked: Object.assign({}, picked), pickedUser: Object.assign({}, pickedUser), edited: edited, sample: !$('sampleNotice').hidden, vg: tresor && tresor.bereit() ? tresor.aktiv().id : null };
-      var etwas = Object.keys(person).some(function (k) { return person[k]; }) || started;
-      Vorgaenge.DATEN.forEach(function (k) { Store.get(k, function (v) { vorher.daten[k] = v; if (v != null) etwas = true; }); });
-      clearTimeout(soonTimer);
-      angabenLoeschen(false);
-      $('clearMsg').textContent = t('clear.done');
-      if (etwas && vorher.vg) undoZeigen(function () {
-        if (!(tresor.bereit() && tresor.aktiv().id === vorher.vg)) return; // anderer Vorgang offen oder gesperrt
-        Vorgaenge.DATEN.forEach(function (k) { if (vorher.daten[k] != null) Store.set(k, vorher.daten[k]); });
-        vgNeuLaden();
-        picked = vorher.picked; pickedUser = vorher.pickedUser; edited = vorher.edited; $('sampleNotice').hidden = !vorher.sample;
-        render(); flush();
-        $('clearMsg').textContent = t('clear.undone'); if ($('clear2Msg').textContent) $('clear2Msg').textContent = t('clear.undone');
-      });
-    });
+    // Löschen gibt es nur an einer Stelle (Einstellungen → Sicherheit und Daten); hier nur der Weg dorthin
+    $('clearLink').addEventListener('click', function () { herkunft = {}; zeigeAnsicht('einst', false); usZeigen('einst', 'sicher', true); });
     // Anbieter im Impressum: iPhone-App über das Apple-Konto von Natascha Cabrerizo y Polo, Android und Web: David Cabrerizo
     if (NATIVE && window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') { $('anbieterName').textContent = 'Natascha Cabrerizo y Polo'; document.documentElement.classList.add('ios'); }
     $('legalBtn').addEventListener('click', function () { openLegal($('legalBtn')); });
@@ -881,7 +890,7 @@
   var kartenHinweise = {}, gutHtml = '';
   // Beratungsmodus: Rechtsgrundlage der Leistung (Rules.RECHT, deutsch) unter dem Kartentext
   function rechtHtml(r) { return beratung && r.recht ? '<p class="recht"><strong>' + esc(t('recht.label')) + ':</strong> <span lang="de" dir="ltr">' + esc(r.recht) + '</span></p>' : ''; }
-  // Unterlagen-Checkliste zum Abhaken: eine Fassung für die Karte und die Antragsmappe; Haken bleiben auf dem Gerät (lotse.haken)
+  // Unterlagen-Checkliste zum Abhaken (nur in der Antragsmappe); Haken bleiben auf dem Gerät (lotse.haken)
   function unterlagenListe(r) {
     return '<p class="small muted haken-hint no-print">' + esc(t('haken.hint')) + '</p><ul class="haken-liste">' + r.steps.u.map(function (k) {
       var key = r.id + '|' + k;
@@ -910,17 +919,10 @@
   }
   function card(r) {
     var dim = r.level === 'nein' || r.level === 'na';
-    var s = r.steps;
-    var steps = '';
-    if (r.level !== 'nein') {
-      steps = '<details><summary>' + esc(t('steps.sum')) + '</summary><div class="inner">' +
-        '<div><div class="lab-s">' + esc(t('steps.wo')) + '</div><p>' + esc(tL(s.wo)) + '</p></div>' +
-        '<div><div class="lab-s">' + esc(t('steps.docs')) + '</div>' + unterlagenListe(r) + '</div>' +
-        '<div><div class="lab-s">' + esc(t('steps.tips')) + '</div>' + listItems([tL(s.tip)]) + '</div>' +
-        '<p class="small">' + esc(t('steps.note')) + '</p></div></details>';
-    }
+    // Unterlagen und nächste Schritte stehen nur in der Antragsmappe (m-unterlagen, mit Haken); die Karte verweist kurz darauf
+    var steps = r.level !== 'nein' ? '<p class="small karte-mappe">' + esc(t('karte.mappe')) + '</p>' : '';
     var desc = lang === 'de' ? '' : t('n.' + r.id);
-    // Zuerst nur eine Zeile (Name, Einschätzung, kurzer Satz); ein Tipp klappt Beschreibung, Stelle und nächste Schritte auf
+    // Zuerst nur eine Zeile (Name, Einschätzung, kurzer Satz); ein Tipp klappt Beschreibung und Stelle auf
     return '<article class="card auf' + (dim ? ' dim' : '') + '" data-id="' + r.id + '" id="c-' + r.id + '"><details class="karte"><summary>' +
       '<header><div><h3' + (lang === 'de' ? '' : ' lang="de"') + '>' + esc(r.name) + '</h3>' + (desc ? '<div class="desc">' + esc(desc) + '</div>' : '') + '</div>' +
       '<span class="pill ' + r.level + '"><span aria-hidden="true">' + MARK[r.level] + '</span>' + esc(t('lvl.' + r.level)) + '</span></header>' +
@@ -1287,7 +1289,7 @@
       html += empfHtml(r.id) + '<article class="page" id="m-brief-' + esc(r.id) + '" tabindex="-1" lang="de" dir="ltr"><pre id="brief-' + esc(r.id) + '">' + esc(letterText(r.id)) + '</pre></article>';
     });
     html += '<article class="page" id="m-angaben" tabindex="-1" lang="de" dir="ltr"><pre>' + esc(sheetText()) + '</pre></article>';
-    html += '<article class="page docs" id="m-unterlagen" tabindex="-1"><h3>' + esc(t('f.docs')) + '</h3>' + ids.map(function (r) {
+    html += '<article class="page docs" id="m-unterlagen" tabindex="-1"><h3>' + esc(t('f.docs')) + '</h3><p class="small">' + esc(t('steps.note')) + '</p>' + ids.map(function (r) {
       var s = r.steps;
       return '<h3>' + esc(nameLang(r)) + '</h3>' +
         '<p>' + esc(tL(s.wo)) + '</p>' + unterlagenListe(r) + '<p class="tip">' + esc(tL(s.tip)) + '</p>';
@@ -2656,16 +2658,10 @@
   function vgKopieName(n) { var x = n; while (x.length > 1 && Vorgaenge.nameSauber(t('vg.kopieName', { name: x })) !== t('vg.kopieName', { name: x }).replace(/\s+/g, ' ').trim()) x = x.slice(0, -1).trim(); return t('vg.kopieName', { name: x }); }
   function vgName(v) { return v && v.name ? v.name : t('vg.ohneName'); }
   function vgDatum(ms) { return Fmt.datum(new Date(ms), lang); }
-  function vgMsg(txt) { ['vgMsg', 'vgMsgS'].forEach(function (id) { var m = $(id); if (m) m.textContent = txt; }); } // Meldung in „Alle Haushalte“ und in „Sicherheit und Daten“
+  function vgMsg(txt) { var m = $(aktAnsicht === 'einst' ? 'vgMsgS' : 'vgMsg'); if (m) m.textContent = txt; } // Meldung in „Mein Ordner“ und in „Sicherheit und Daten“
   // Oberfläche an festen Stellen einhängen (ohne Änderungen an den Abschnitten anderer Bereiche)
   function vgGeruest() {
-    if ($('vgRes')) return;
-    var r = vgEl('div', 'vg-res'); r.id = 'vgRes'; var b = $('beratung'); b.parentNode.insertBefore(r, b.nextSibling);
-    var kopf = document.querySelector('header.top');
-    var chip = vgEl('button', 'vg-chip'); chip.type = 'button'; chip.id = 'vgChip'; chip.hidden = true; chip.setAttribute('aria-expanded', 'false'); chip.setAttribute('aria-controls', 'vgMenu');
-    var menu = vgEl('div', 'vg-menu'); menu.id = 'vgMenu'; menu.hidden = true;
-    kopf.appendChild(chip); kopf.appendChild(menu);
-    chip.addEventListener('click', function () { var auf = menu.hidden; menu.hidden = !auf; chip.setAttribute('aria-expanded', String(auf)); if (auf) { var f = menu.querySelector('button'); if (f) f.focus(); } });
+    if ($('vgFehler')) return;
     var f = vgEl('div', 'notice warn vg-fehler'); f.id = 'vgFehler'; f.setAttribute('role', 'alert'); f.hidden = true; $('inhalt').insertBefore(f, $('inhalt').firstChild);
   }
   function vgSpeicherFehler() { vgGeruest(); var f = $('vgFehler'); f.textContent = t('vg.fehler.speicher'); f.hidden = false; }
@@ -2689,11 +2685,10 @@
   window.addEventListener('storage', function (e) { if (e.key === Vorgaenge.SCHLUESSEL) { clearTimeout(saveTimer); saveTimer = null; vgNeuStart(); } });
   // Angaben des geöffneten Vorgangs neu laden (nach Wechsel, neuem Vorgang, Löschen)
   function vgNeuLaden() {
-    if (undoFn) undoWeg(); // Rückgängig gehört zum vorher geöffneten Vorgang
     if (!$('mappe').hidden) closeMappe();
     state = blankState(); person = { name: '', geb: '', strasse: '', ort: '', tel: '' }; picked = {}; pickedUser = {}; started = false; edited = false;
     ['p-name', 'p-geb', 'p-strasse', 'p-ort', 'p-tel'].forEach(function (id) { $(id).value = ''; });
-    $('sampleNotice').hidden = true; $('clearMsg').textContent = '';
+    $('sampleNotice').hidden = true;
     pf = pfLeer(); pa = { antworten: null, schaetzung: null };
     haken = {}; Store.get('lotse.haken', function (v) { try { var d = v ? JSON.parse(v) : null; if (d && typeof d === 'object') haken = d; } catch (e) {} });
     Store.get('lotse.state', stateLaden);
@@ -2724,17 +2719,8 @@
     flush(); tresor.neu(''); vgNeuLaden();
   }
   function vgOeffnen(id) {
-    flush();
+    flush(); if (undoFn) undoWeg(); // Rückgängig gehört zum vorher geöffneten Vorgang
     if (tresor.oeffnen(id)) { vgNeuLaden(); vgMsg(t('vg.geoeffnet', { name: vgName(tresor.aktiv()) })); }
-  }
-  function vgSpeichern(feld) {
-    var n = Vorgaenge.nameSauber(feld.value);
-    if (!n) { vgMsg(t('vg.nameFehlt')); var m2 = feld.parentNode.querySelector('.msg'); if (m2) m2.textContent = t('vg.nameFehlt'); feld.focus(); return; }
-    flush();
-    var a = tresor.aktiv();
-    if (!a.name) tresor.umbenennen(a.id, n); else tresor.kopie(a.id, n);
-    vgRender(); vgMsg(t('vg.gespeichert', { name: n }));
-    var r = $('vgResMsg'); if (r) r.textContent = t('vg.gespeichert', { name: n });
   }
   // Für „Alle Angaben löschen“ (Rückfrage und Rückgängig: claude/ux-ergebnis): alle=false leert nur den geöffneten Vorgang
   // (Name bleibt), alle=true löscht alle Vorgänge, die PIN und die Einstellung „automatisch löschen“ bleibt.
@@ -2744,106 +2730,109 @@
     if (alle) StoreRoh.remove('lotse.fristTag'); // Merker der Fristen (nur ein Datum); die Einstellung lotse.fristHinweis bleibt wie die PIN
     vgNeuLaden();
   }
-  function vgSpeichernForm(box, idName, mitHinweis) {
-    var f = vgEl('form', 'vg-form'); f.setAttribute('novalidate', '');
-    var l = vgEl('label', null, t('vg.name.label')); l.setAttribute('for', idName);
-    var i = vgEl('input'); i.id = idName; i.type = 'text'; i.maxLength = Vorgaenge.NAME_MAX; i.setAttribute('autocomplete', 'off'); i.setAttribute('aria-describedby', idName + 'H');
-    var h = vgEl('p', 'small muted', t('vg.name.hint')); h.id = idName + 'H';
-    var b = vgEl('button', 'btn', tresor.aktiv().name ? t('vg.speichernNeu') : t('vg.speichern')); b.type = 'submit';
-    f.appendChild(l); f.appendChild(i); if (mitHinweis) f.appendChild(h); f.appendChild(b);
-    f.addEventListener('submit', function (e) { e.preventDefault(); vgSpeichern(i); });
-    box.appendChild(f);
-  }
   function vgBereit() { var s = $('vgSperre'); if (s && !s.hidden) { s.hidden = true; $('app').removeAttribute('aria-hidden'); $('app').inert = false; var h = document.querySelector('h1'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); } } vgRender(); }
+  // Vorgänge (Profile) nur in „Mein Ordner“ (Muster: Netflix-Profilauswahl, Google-Kontowechsel): eine klare Liste mit
+  // Initialen-Kreis, der geöffnete Vorgang markiert, Wechseln mit einem Tipp, „+ Neuen Vorgang anlegen“ als letzte Zeile,
+  // Umbenennen/Kopie/Löschen erst nach „Bearbeiten“. Gespeichert wird automatisch in den geöffneten Vorgang.
+  // Mit nur einem Vorgang: keine Liste, nur „+ Weiteren Vorgang anlegen“. PIN und automatisch löschen: Einstellungen → Sicherheit und Daten.
+  var vgBearb = false, vgFormAuf = false;
+  function vgKuerzel(v) { var n = v && v.name ? v.name : ''; var w = n.replace(/[^\p{L}\p{N} ]/gu, ' ').trim().split(/\s+/).filter(Boolean); return w.length ? (w[0].charAt(0) + (w[1] ? w[1].charAt(0) : '')).toUpperCase() : '?'; }
+  function vgAnlegen(feld) {
+    var n = Vorgaenge.nameSauber(feld.value);
+    if (!n) { vgMsg(t('vg.nameFehlt')); feld.focus(); return; }
+    flush();
+    var a = tresor.aktiv();
+    // Ein leerer Vorgang ohne Namen (nichts eingegeben) bekommt nur den Namen, statt einen zweiten leeren anzulegen
+    if (!a.name && !started && tresor.liste().length === 1) { tresor.umbenennen(a.id, n); vgFormAuf = false; vgRender(); }
+    else { tresor.neu(n); vgFormAuf = false; vgNeuLaden(); }
+    vgMsg(t('vg.geoeffnet', { name: n })); var h = $('vgH'); if (h) h.focus();
+  }
   function vgRender() {
     if (!tresor || !$('setHaushalte')) return;
     vgGeruest();
     var bereit = tresor.bereit(), liste = tresor.liste(), a = tresor.aktiv();
-    // Kopf: Kürzel-Schild nur bei mehr als einem Vorgang
-    var chip = $('vgChip'), menu = $('vgMenu');
-    chip.hidden = !bereit || liste.length < 2; menu.hidden = true; chip.setAttribute('aria-expanded', 'false');
-    if (!chip.hidden) {
-      chip.textContent = vgName(a); chip.title = t('vg.wechseln');
-      chip.setAttribute('aria-label', t('vg.wechseln') + ': ' + vgName(a));
-      menu.innerHTML = '';
-      liste.forEach(function (v) {
-        var b = vgEl('button', 'chip', vgName(v)); b.type = 'button';
-        if (v.id === a.id) { b.setAttribute('aria-current', 'true'); b.disabled = true; }
-        b.addEventListener('click', function () { vgOeffnen(v.id); chip.focus(); });
-        menu.appendChild(b);
-      });
-      var vw = vgEl('button', 'linkbtn', t('vg.verwalten')); vw.type = 'button';
-      vw.addEventListener('click', function () { menu.hidden = true; vgAlleOeffnen(); });
-      menu.appendChild(vw);
-    }
-    // Ergebnis: einfacher Einstieg
-    var r = $('vgRes'); r.innerHTML = ''; r.hidden = !bereit;
-    if (bereit) {
-      r.appendChild(vgEl('h3', null, t('vg.speichern')));
-      if (a.name) r.appendChild(vgEl('p', null, t('vg.gespeichert', { name: a.name })));
-      else vgSpeichernForm(r, 'vgNameRes', true);
-      var rm = vgEl('p', 'msg'); rm.id = 'vgResMsg'; rm.setAttribute('role', 'status'); r.appendChild(rm);
-      var zw = vgEl('button', 'linkbtn', t('vg.verwalten')); zw.type = 'button';
-      zw.addEventListener('click', vgAlleOeffnen);
-      r.appendChild(zw);
-    }
-    // Einstellungen: Verwaltung ganz oben
     var g = $('setHaushalte'), alt = document.activeElement && document.activeElement.id, msgAlt = $('vgMsg') ? $('vgMsg').textContent : '';
-    var gs = $('setSicher'); gs.innerHTML = ''; $('vgAlleBox').innerHTML = ''; // Sicherheit und Daten (Einstellungen): automatisch löschen, PIN, alle löschen
-    g.innerHTML = ''; g.hidden = false;
+    var gs = $('setSicher'); gs.innerHTML = ''; // Sicherheit und Daten (Einstellungen): automatisch löschen, PIN, alle löschen
+    g.innerHTML = ''; g.hidden = !bereit;
     if (aktAnsicht === 'ordner') ordnerRender();
-    if (LOESCH_TEILE) $('clearWas').textContent = loeschWas(); // nennt den geöffneten Vorgang
-    var h3 = vgEl('h2', 'ans-h', t('vg.h')); h3.id = 'vgH'; h3.tabIndex = -1; g.appendChild(h3);
     if (!bereit) return;
-    g.appendChild(vgEl('p', 'small muted', t('vg.t')));
-    g.appendChild(vgEl('p', 'vg-aktiv', t('vg.aktiv', { name: vgName(a) })));
-    vgSpeichernForm(g, 'vgNameSet', true);
-    var msg = vgEl('p', 'msg', msgAlt); msg.id = 'vgMsg'; msg.setAttribute('role', 'status'); g.appendChild(msg);
+    var mehrere = liste.length > 1;
+    if (!mehrere) vgBearb = false;
+    var kopfZ = vgEl('div', 'vg-kopf');
+    var h3 = vgEl('h3', null, t('vg.liste.h')); h3.id = 'vgH'; h3.tabIndex = -1; kopfZ.appendChild(h3);
+    if (mehrere) {
+      var bb = vgEl('button', 'chip', t(vgBearb ? 'vg.fertig' : 'vg.bearbeiten')); bb.type = 'button'; bb.id = 'vgBearb'; bb.setAttribute('aria-pressed', String(vgBearb));
+      bb.addEventListener('click', function () { vgBearb = !vgBearb; vgRender(); var x = $('vgBearb'); if (x) x.focus(); });
+      kopfZ.appendChild(bb);
+    }
+    g.appendChild(kopfZ);
+    if (!mehrere) h3.classList.add('vh'); // ein Vorgang: keine Liste, Überschrift nur für Screenreader
+    var msg = vgEl('p', 'msg', msgAlt); msg.id = 'vgMsg'; msg.setAttribute('role', 'status');
     var ul = vgEl('ul', 'vg-liste');
-    liste.forEach(function (v) {
-      var li = vgEl('li', v.id === a.id ? 'vg-offen' : '');
-      var kopf = vgEl('p', 'vg-name'); kopf.appendChild(vgEl('strong', null, vgName(v)));
-      if (v.id === a.id) kopf.appendChild(vgEl('span', 'vg-marke', ' · ' + t('vg.offen')));
-      li.appendChild(kopf);
-      var info = vgEl('p', 'small muted', t('vg.geaendert', { datum: vgDatum(v.geaendert) }));
-      if (v.ablauf) { info.appendChild(document.createElement('br')); info.appendChild(vgEl('span', 'vg-ablauf', t('vg.loeschtAm', { datum: vgDatum(v.ablauf) }))); }
-      li.appendChild(info);
-      var btns = vgEl('div', 'btns');
-      var knopf = function (key, fn, cls) { var b = vgEl('button', cls || 'chip', t(key)); b.type = 'button'; b.addEventListener('click', fn); btns.appendChild(b); return b; };
-      if (v.id !== a.id) knopf('vg.oeffnen', function () { vgOeffnen(v.id); var h = $('vgH'); if (h) h.focus(); });
-      knopf('vg.umbenennen', function () {
-        var neuN = vgEl('form', 'vg-form vg-umb'); neuN.setAttribute('novalidate', '');
-        var l = vgEl('label', null, t('vg.name.label')); l.setAttribute('for', 'vgUmb-' + v.id);
-        var i = vgEl('input'); i.id = 'vgUmb-' + v.id; i.type = 'text'; i.maxLength = Vorgaenge.NAME_MAX; i.value = v.name; i.setAttribute('autocomplete', 'off');
-        var ok = vgEl('button', 'btn', t('vg.umbenennen')); ok.type = 'submit';
-        neuN.appendChild(l); neuN.appendChild(i); neuN.appendChild(ok);
-        neuN.addEventListener('submit', function (e) { e.preventDefault(); if (tresor.umbenennen(v.id, i.value)) { vgRender(); vgMsg(t('vg.gespeichert', { name: Vorgaenge.nameSauber(i.value) })); } else { vgMsg(t('vg.nameFehlt')); i.focus(); } });
-        li.appendChild(neuN); i.focus();
-      });
-      knopf('vg.kopie', function () {
-        flush();
-        if (tresor.kopie(v.id, vgKopieName(vgName(v)))) { vgNeuLaden(); vgMsg(t('vg.geoeffnet', { name: vgName(tresor.aktiv()) })); var h = $('vgH'); if (h) h.focus(); }
-      });
-      knopf('vg.loeschen', function () {
-        if (!window.confirm(t('vg.loeschenFrage', { name: vgName(v) }))) return;
-        var war = v.id === a.id;
-        if (war) { clearTimeout(saveTimer); saveTimer = null; }
-        tresor.loeschen(v.id);
-        if (war) vgNeuLaden(); else vgRender();
-        vgMsg(t('vg.geloescht')); var h = $('vgH'); if (h) h.focus();
-      }, 'chip vg-weg');
-      li.appendChild(btns); ul.appendChild(li);
+    if (mehrere) liste.forEach(function (v) {
+      var offen = v.id === a.id, li = vgEl('li', offen ? 'vg-offen' : '');
+      var z = vgEl(offen ? 'div' : 'button', 'vg-zeile'); if (!offen) { z.type = 'button'; z.addEventListener('click', function () { vgOeffnen(v.id); var h = $('vgH'); if (h) h.focus(); }); }
+      z.setAttribute('data-vg-name', vgName(v));
+      if (offen) z.setAttribute('aria-current', 'true');
+      z.appendChild(vgEl('span', 'vg-kreis', vgKuerzel(v))).setAttribute('aria-hidden', 'true');
+      var tx = vgEl('span', 'vg-txt'); tx.appendChild(vgEl('b', null, vgName(v)));
+      var st = vgEl('span', 'vg-st', offen ? t('vg.offen') : t('vg.geaendert', { datum: vgDatum(v.geaendert) }));
+      tx.appendChild(st);
+      if (v.ablauf) tx.appendChild(vgEl('span', 'vg-st vg-ablauf', t('vg.loeschtAm', { datum: vgDatum(v.ablauf) })));
+      z.appendChild(tx);
+      z.appendChild(vgEl('span', offen ? 'vg-haken' : 'zeile-pfeil', offen ? '✓' : '›')).setAttribute('aria-hidden', 'true');
+      li.appendChild(z);
+      if (vgBearb) {
+        var btns = vgEl('div', 'btns');
+        var knopf = function (key, fn, cls) { var b = vgEl('button', cls || 'chip', t(key)); b.type = 'button'; b.setAttribute('aria-label', t(key) + ': ' + vgName(v)); b.addEventListener('click', fn); btns.appendChild(b); return b; };
+        knopf('vg.umbenennen', function () {
+          var neuN = vgEl('form', 'vg-form vg-umb'); neuN.setAttribute('novalidate', '');
+          var l = vgEl('label', null, t('vg.name.label')); l.setAttribute('for', 'vgUmb-' + v.id);
+          var i = vgEl('input'); i.id = 'vgUmb-' + v.id; i.type = 'text'; i.maxLength = Vorgaenge.NAME_MAX; i.value = v.name; i.setAttribute('autocomplete', 'off');
+          var ok = vgEl('button', 'btn', t('vg.umbenennen')); ok.type = 'submit';
+          neuN.appendChild(l); neuN.appendChild(i); neuN.appendChild(ok);
+          neuN.addEventListener('submit', function (e) { e.preventDefault(); if (tresor.umbenennen(v.id, i.value)) { vgRender(); vgMsg(t('vg.gespeichert', { name: Vorgaenge.nameSauber(i.value) })); } else { vgMsg(t('vg.nameFehlt')); i.focus(); } });
+          li.appendChild(neuN); i.focus();
+        });
+        knopf('vg.kopie', function () {
+          flush();
+          if (tresor.kopie(v.id, vgKopieName(vgName(v)))) { vgNeuLaden(); vgMsg(t('vg.geoeffnet', { name: vgName(tresor.aktiv()) })); var h = $('vgH'); if (h) h.focus(); }
+        });
+        var lk = knopf('vg.loeschen', function () {
+          loeschFragen(li, lk, loeschEinsTitel(v), loeschWas(), function () { vgLoeschen(v.id, $('vgMsg')); var h = $('vgH'); if (h) h.focus(); }, true);
+        }, 'chip vg-weg');
+        li.appendChild(btns);
+      }
+      ul.appendChild(li);
     });
-    g.appendChild(ul);
-    var nb = vgEl('button', 'btn ghost', t('vg.neu')); nb.type = 'button';
-    nb.addEventListener('click', function () { flush(); tresor.neu(''); vgNeuLaden(); vgMsg(t('vg.neuOk')); var h = $('vgH'); if (h) h.focus(); });
-    g.appendChild(vgEl('p')).appendChild(nb);
+    // „+ Neuen Vorgang anlegen“ (bei einem Vorgang: „+ Weiteren Vorgang anlegen“): öffnet ein kleines Feld für den Namen
+    var pl = vgEl('li', 'vg-plus-li');
+    var pb = vgEl('button', 'vg-zeile vg-plus'); pb.type = 'button'; pb.id = 'vgPlus'; pb.setAttribute('aria-expanded', String(vgFormAuf));
+    pb.appendChild(vgEl('span', 'vg-kreis', '+')).setAttribute('aria-hidden', 'true');
+    pb.appendChild(vgEl('span', 'vg-txt')).appendChild(vgEl('b', null, t(mehrere ? 'vg.plus' : 'vg.plusWeiter')));
+    pb.addEventListener('click', function () { vgFormAuf = !vgFormAuf; vgRender(); var f = vgFormAuf ? $('vgNameNeu') : $('vgPlus'); if (f) f.focus(); });
+    pl.appendChild(pb);
+    if (vgFormAuf) {
+      var f = vgEl('form', 'vg-form'); f.setAttribute('novalidate', ''); f.id = 'vgNeuForm';
+      var l = vgEl('label', null, t('vg.name.label')); l.setAttribute('for', 'vgNameNeu');
+      var i = vgEl('input'); i.id = 'vgNameNeu'; i.type = 'text'; i.maxLength = Vorgaenge.NAME_MAX; i.setAttribute('autocomplete', 'off'); i.setAttribute('aria-describedby', 'vgNameNeuH');
+      var hh = vgEl('p', 'small muted', t('vg.name.hint') + ' ' + t('vg.neu.t')); hh.id = 'vgNameNeuH';
+      var b = vgEl('button', 'btn', t('vg.anlegen')); b.type = 'submit';
+      f.appendChild(l); f.appendChild(i); f.appendChild(hh); f.appendChild(b);
+      f.addEventListener('submit', function (e) { e.preventDefault(); vgAnlegen(i); });
+      pl.appendChild(f);
+    }
+    ul.appendChild(pl);
+    g.appendChild(ul); g.appendChild(msg);
+    var zs = vgEl('button', 'linkbtn small', t('vg.zuSicher')); zs.type = 'button'; zs.id = 'vgZuSicher';
+    zs.addEventListener('click', function () { herkunft = {}; zeigeAnsicht('einst', false); usZeigen('einst', 'sicher', true); });
+    g.appendChild(vgEl('p', 'vg-sicher')).appendChild(zs);
     var msgS = vgEl('p', 'msg', msgAlt); msgS.id = 'vgMsgS'; msgS.setAttribute('role', 'status');
-    g = gs; // ab hier: Unterseite „Sicherheit und Daten“
-    // Automatisch löschen
-    g.appendChild(vgEl('h3', null, t('vg.auto.h')));
-    var al = vgEl('label', 'vg-auto'); al.setAttribute('for', 'vgTage'); al.textContent = t('vg.auto.label');
-    var sel = vgEl('select'); sel.id = 'vgTage';
+    g = gs; // ab hier: Unterseite „Sicherheit und Daten“ – je Funktion eine Zeile im Aussehen der Schalter, Erklärungen unter „Mehr dazu“
+    // Automatisch löschen: eine Zeile mit Auswahl
+    var al = vgEl('label', 'schalter set-zeile'); al.setAttribute('for', 'vgTage');
+    var alt1 = vgEl('span', 'schalter-t', t('vg.auto.h')); alt1.appendChild(vgEl('span', 'schalter-unter', t('vg.auto.unter'))); al.appendChild(alt1);
+    var sel = vgEl('select'); sel.id = 'vgTage'; sel.setAttribute('aria-label', t('vg.auto.h') + ': ' + t('vg.auto.label'));
     Vorgaenge.TAGE.forEach(function (n) { var o = vgEl('option', null, n ? t('vg.auto.tage', { n: String(n) }) : t('vg.auto.nie')); o.value = String(n); sel.appendChild(o); });
     sel.value = String(tresor.tage());
     sel.addEventListener('change', function () {
@@ -2857,31 +2846,38 @@
       if (tresor.aktiv().id !== vorher) { clearTimeout(saveTimer); saveTimer = null; vgNeuLaden(); }
       vgRender(); vgMsg(n ? t('vg.auto.weg', { n: String(n) }) : t('vg.auto.ok')); var s2 = $('vgTage'); if (s2) s2.focus();
     });
-    g.appendChild(al); g.appendChild(sel);
-    g.appendChild(vgEl('p', 'small muted', t('vg.auto.t')));
-    // PIN-Sperre (Sichtschutz)
-    g.appendChild(vgEl('h3', null, t('vg.pin.h')));
-    g.appendChild(vgEl('p', 'small', t('vg.pin.t')));
-    g.appendChild(vgEl('p', 'warn', t('vg.pin.vergessen')));
-    if (!Vorgaenge.webCrypto()) g.appendChild(vgEl('p', 'small muted', t('vg.pin.nicht')));
-    else if (tresor.pinAn()) {
-      g.appendChild(vgEl('p', 'vg-aktiv', t('vg.pin.an')));
+    al.appendChild(sel); g.appendChild(vgEl('p')).appendChild(al);
+    // PIN-Sperre: ein Schalter; an -> „Jetzt sperren“ und „PIN ändern“; die Warnung „PIN vergessen“ erst im Feld zum Festlegen
+    var webOk = Vorgaenge.webCrypto(), pinAn = webOk && tresor.pinAn();
+    var ps = vgEl('button', 'schalter'); ps.type = 'button'; ps.id = 'vgPinSchalter'; ps.setAttribute('role', 'switch'); ps.setAttribute('aria-checked', String(!!pinAn));
+    var pst = vgEl('span', 'schalter-t', t('vg.pin.h')); pst.appendChild(vgEl('span', 'schalter-unter', t(webOk ? 'vg.pin.unter' : 'vg.pin.nicht'))); ps.appendChild(pst);
+    ps.appendChild(vgEl('span', 'schalter-zst', t(pinAn ? 'set.an' : 'set.aus'))); ps.appendChild(vgEl('span', 'schalter-bahn')).setAttribute('aria-hidden', 'true');
+    if (!webOk) ps.setAttribute('aria-disabled', 'true');
+    ps.addEventListener('click', function () { if (!webOk) return; if (tresor.pinAn()) vgPinForm(g, ps, true); else vgPinForm(g, ps); });
+    g.appendChild(vgEl('p')).appendChild(ps);
+    if (pinAn) {
       var pb = vgEl('div', 'btns');
-      var sp = vgEl('button', 'btn', t('vg.pin.sperren')); sp.type = 'button';
+      var sp = vgEl('button', 'btn ghost', t('vg.pin.sperren')); sp.type = 'button';
       sp.addEventListener('click', vgSperrenJetzt);
       var ae = vgEl('button', 'btn ghost', t('vg.pin.aendern')); ae.type = 'button'; ae.setAttribute('aria-expanded', 'false');
       ae.addEventListener('click', function () { vgPinForm(g, ae, false, true); });
-      var aus = vgEl('button', 'btn ghost', t('vg.pin.aus')); aus.type = 'button';
-      aus.addEventListener('click', function () { vgPinForm(g, aus, true); });
-      pb.appendChild(sp); pb.appendChild(ae); pb.appendChild(aus); g.appendChild(pb);
-    } else {
-      var pn = vgEl('button', 'btn ghost', t('vg.pin.neu')); pn.type = 'button'; pn.setAttribute('aria-expanded', 'false');
-      pn.addEventListener('click', function () { vgPinForm(g, pn); });
-      g.appendChild(vgEl('p')).appendChild(pn);
+      pb.appendChild(sp); pb.appendChild(ae); g.appendChild(pb);
     }
-    var ab = vgEl('button', 'chip vg-weg', t('vg.alleLoeschen')); ab.type = 'button';
-    ab.addEventListener('click', function () { if (!window.confirm(t('vg.alleFrage'))) return; angabenLoeschen(true); vgMsg(t('vg.alleOk')); var h = $('vgH'); if (h) h.focus(); });
-    $('vgAlleBox').appendChild(ab); g.appendChild(msgS);
+    var md = vgEl('details', 'set-mehr'); md.appendChild(vgEl('summary', null, t('vg.mehrDazu')));
+    md.appendChild(vgEl('p', 'small', t('vg.pin.t'))); md.appendChild(vgEl('p', 'small', t('vg.auto.t')));
+    g.appendChild(md);
+    g.appendChild(msgS);
+    // Löschen: höchstens zwei klare Zeilen mit Mülleimer; jede sagt, was genau weg ist; danach eine Rückfrage
+    var ll = $('loeschListe'); ll.innerHTML = '';
+    var lz = function (id, titel, was, fn, lang2) { // was: kurz in der Zeile; lang2: genaue Liste in der Rückfrage
+      var li = vgEl('li'), b = vgEl('button', 'zeile loesch-zeile'); b.type = 'button'; b.id = id;
+      b.innerHTML = '<span class="zeile-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg></span><span class="zeile-txt"><b></b><span class="zeile-st"></span></span>';
+      b.querySelector('b').textContent = titel; b.querySelector('.zeile-st').textContent = was;
+      b.addEventListener('click', function () { loeschFragen(li, b, titel, lang2 || was, fn, id === 'clear2'); });
+      li.appendChild(b); ll.appendChild(li);
+    };
+    lz('clear2', loeschEinsTitel(a), t('l.einsKurz'), function () { vgLoeschen(a.id, $('loeschMsg')); }, loeschWas());
+    lz('vgAlle', t('l.alle'), t('l.alleWas'), function () { angabenLoeschen(true); vgFormAuf = false; vgBearb = false; $('loeschMsg').textContent = t('l.okAlle'); var h = $('h-sicher'); if (h) h.focus(); });
     if (alt && $(alt) && alt !== 'vgMsg' && alt !== 'vgMsgS') { try { $(alt).focus({ preventScroll: true }); } catch (e) {} }
     else if (!$('es-sicher').hidden && (!document.activeElement || document.activeElement === document.body)) { var hs = $('h-sicher'); hs.tabIndex = -1; hs.focus({ preventScroll: true }); } // Knopf neu gezeichnet: Fokus auf die Überschrift
   }
@@ -2896,6 +2892,7 @@
       var i = vgEl('input'); i.id = x[0]; i.type = 'password'; i.setAttribute('inputmode', 'numeric'); i.setAttribute('autocomplete', 'off'); i.maxLength = 12;
       f.appendChild(l); f.appendChild(i);
     });
+    if (!nurAus && !mitAlt) f.appendChild(vgEl('p', 'warn', t('vg.pin.vergessen'))); // Warnung erst beim Festlegen, nicht dauerhaft
     var b = vgEl('button', 'btn', t(nurAus ? 'vg.pin.aus' : 'vg.pin.speichern')); b.type = 'submit'; f.appendChild(b);
     var m = vgEl('p', 'msg'); m.setAttribute('role', 'status'); f.appendChild(m);
     f.addEventListener('submit', function (e) {
@@ -2909,8 +2906,8 @@
       flush();
       (p0 === null ? Promise.resolve(true) : tresor.pinPruefen(p0)).then(function (richtig) {
         if (!richtig) { b.disabled = false; m.textContent = t('vg.pin.altFalsch'); $('vgPin0').value = ''; $('vgPin0').focus(); return; }
-        if (nurAus) return tresor.pinAus().then(function () { vgRender(); vgMsg(t('vg.pin.ausOk')); var h = $('vgH'); if (h) h.focus(); });
-        return tresor.pinSetzen(p1).then(function (ok) { vgRender(); vgMsg(t(ok ? 'vg.pin.ok' : 'vg.fehler.speicher')); var h = $('vgH'); if (h) h.focus(); });
+        if (nurAus) return tresor.pinAus().then(function () { vgRender(); vgMsg(t('vg.pin.ausOk')); var h = $('h-sicher'); if (h) h.focus(); });
+        return tresor.pinSetzen(p1).then(function (ok) { vgRender(); vgMsg(t(ok ? 'vg.pin.ok' : 'vg.fehler.speicher')); var h = $('h-sicher'); if (h) h.focus(); });
       });
     });
     ausloeser.parentNode.parentNode.insertBefore(f, ausloeser.parentNode.nextSibling);
@@ -2932,7 +2929,6 @@
     else ziel = (a === 'einst' && war && document.querySelector('#einstListe .zeile[data-seite="' + war + '"]')) || (usVon && document.body.contains(usVon) && !usVon.closest('[hidden]') ? usVon : liste.querySelector('h2'));
     if (ziel) { if (!/^(BUTTON|A|INPUT|SELECT)$/.test(ziel.tagName)) ziel.setAttribute('tabindex', '-1'); ziel.focus({ preventScroll: true }); }
   }
-  function vgAlleOeffnen() { herkunft = {}; zeigeAnsicht('ordner', false); usZeigen('ordner', 'alle', true); }
   // Einstellungen: eine Zeile Status je Bereich
   function einstStatus() {
     if (!$('stAnzeige') || !lang) return;
@@ -2946,18 +2942,9 @@
     $('stFach').textContent = t('set.beratung.label') + ': ' + t(beratung ? 'set.an' : 'set.aus');
     $('stAbout').textContent = t('set.version', { v: APPVERSION });
   }
-  // Mein Ordner: geöffneter Vorgang oben, darunter nur Bereiche mit eigenem Inhalt (Kurzstatus, Sprung); leer: freundlicher Einstieg
+  // Mein Ordner: geöffneter Vorgang oben, darunter nur Bereiche mit eigenem Inhalt (Kurzstatus, Sprung); die Vorgänge darunter füllt vgRender
   function ordnerRender() {
     if (!$('ordnerKarten') || typeof aktAnsicht === 'undefined' || aktAnsicht !== 'ordner') return;
-    var kopf = $('ordnerKopf'), bereit = tresor && tresor.bereit && tresor.bereit();
-    kopf.innerHTML = ''; kopf.hidden = !bereit;
-    if (bereit) {
-      var a = tresor.aktiv(), pk = vgEl('p'), nm = vgEl('span', 'vg-kuerzel', vgName(a));
-      pk.appendChild(document.createTextNode(t('vg.aktiv', { name: '\u0000' }).split('\u0000')[0])); pk.appendChild(nm); pk.appendChild(document.createTextNode(t('vg.aktiv', { name: '\u0000' }).split('\u0000')[1] || ''));
-      var wb = vgEl('button', 'chip', t('ordner.wechseln')); wb.type = 'button'; wb.setAttribute('aria-label', t('vg.wechseln') + ': ' + vgName(a));
-      wb.addEventListener('click', function () { usZeigen('ordner', 'alle', true); });
-      kopf.appendChild(pk); kopf.appendChild(wb);
-    }
     var ul = $('ordnerKarten'); ul.innerHTML = '';
     var zeile = function (id, titel, status, sym, fn) {
       var li = vgEl('li'), b = vgEl('button', 'zeile'); b.type = 'button'; b.id = 'or-' + id;
@@ -2993,10 +2980,7 @@
     }
     if (pa && pa.schaetzung) zeile('pflege', t('ordner.pflege'), paStandText(), '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>', function () { oeffneVon('pflegestart', true); });
     if (pf && pf.art && pf.schritt > 0) zeile('pfaendung', t('ordner.pfaendung'), t(pf.art === 'lohn' ? 'pf.lohn' : 'pf.konto'), '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/>', function () { oeffneVon('pfaendung', true); });
-    var leer = !ul.children.length;
-    ul.hidden = leer; $('ordnerLeer').hidden = !leer;
-    if (bereit) { var al = vgEl('li'), ab = vgEl('button', 'linkbtn', t('ordner.alle')); ab.type = 'button'; ab.id = 'or-alle'; ab.addEventListener('click', function () { usZeigen('ordner', 'alle', true); }); al.appendChild(ab); var ul2 = $('ordnerAlleLink'); if (!ul2) { ul2 = vgEl('ul', 'zeilen'); ul2.id = 'ordnerAlleLink'; $('ordnerHaupt').appendChild(ul2); } ul2.innerHTML = ''; ul2.appendChild(al); }
-    else if ($('ordnerAlleLink')) $('ordnerAlleLink').innerHTML = '';
+    ul.hidden = !ul.children.length;
   }
   // Sperrbildschirm: deckt die App ab, bis die PIN stimmt
   function vgSperreZeigen() {
@@ -3481,7 +3465,6 @@
   // Einstellungen und Mein Ordner: Zeilen öffnen Unterseiten, „← Zurück“ führt zur Liste (usZeigen, siehe Vorgänge)
   document.querySelectorAll('#einstListe .zeile').forEach(function (b) { b.addEventListener('click', function () { usZeigen('einst', b.getAttribute('data-seite'), true); }); });
   document.querySelectorAll('.us-zurueck').forEach(function (b) { b.addEventListener('click', function () { usZeigen(b.closest('.ansicht').id.slice(2), '', true); }); });
-  $('ordnerLos').addEventListener('click', function () { oeffneVon('leistungen', true); });
   // Hell, Dunkel oder wie das Gerät: nur das Attribut data-theme (Farben im :root) und die Speicherung
   function themaSetzen(w, speichern) {
     if (w === 'light' || w === 'dark') document.documentElement.setAttribute('data-theme', w); else { w = ''; document.documentElement.removeAttribute('data-theme'); }
@@ -3495,7 +3478,6 @@
   if (window.MutationObserver) new MutationObserver(function () { schalterText(); einstStatus(); }).observe($('v-einst'), { subtree: true, attributes: true, attributeFilter: ['aria-checked'] });
   document.querySelectorAll('.schalter').forEach(function (b) { b.addEventListener('click', function () { schalterText(); einstStatus(); }); }); // gleich nach dem Umschalten (nach dem eigenen Klick-Handler)
   schalterText();
-  $('clear2').addEventListener('click', function () { $('clearBtn').click(); $('clear2Msg').textContent = $('clearMsg').textContent; });
   $('goLeistungen').addEventListener('click', function () { zeigeAnsicht('leistungen', true); });
   $('goBriefe').addEventListener('click', function () { zeigeAnsicht('briefe', true); });
   $('goPfaendung').addEventListener('click', function () { oeffneVon('pfaendung', true); });

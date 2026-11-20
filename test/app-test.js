@@ -197,8 +197,8 @@ const MOCK = () => {
   // Speichern
   await p.fill('#miete', '777'); await p.press('#miete', 'Tab'); await warte(() => (window.__calls || []).some((c) => c[0] === 'Preferences.set' && /777/.test(c[1].value || '')));
   ok('Eingaben werden über Preferences gespeichert', (await calls('Preferences.set')).some((o) => /777/.test(o.value || '')));
-  await p.evaluate(() => document.getElementById('clearBtn').click());
-  ok('„Alle Angaben löschen“ entfernt gespeicherte Eingaben', (await calls('Preferences.remove')).length > 0);
+  await p.evaluate(() => { document.getElementById('clear2').click(); document.getElementById('loeschJa').click(); });
+  ok('„Nur diesen Vorgang löschen“ entfernt gespeicherte Eingaben', (await calls('Preferences.remove')).length > 0);
 
   // Wohnort nur in der Anschrift der Antragsmappe (PLZ-Feld im Fragebogen leer): App nutzt die PLZ aus „PLZ und Ort“
   await p.click('#p1'); await p.fill('#plz', ''); await p.fill('#p-name', 'Maria Muster'); await p.fill('#p-ort', '');

@@ -67,7 +67,7 @@ Pflege
 Wähle, ob du Unterstützung suchst oder den Pflegegrad selbst einschätzen willst. Du siehst die Leistungen je Pflegegrad, auch Hilfen für pflegende Angehörige.
 
 Ich ziehe aus
-Für Azubis, Studierende, junge Erwachsene und Careleaver: Checklisten zum Abhaken, Geld, Kostenfallen, Versicherungen und Hilfen.
+Für Azubis, Studierende und junge Erwachsene: Checklisten zum Abhaken, Geld, Kostenfallen, Versicherungen und Hilfen.
 
 Brief vom Amt? Prüfen lassen
 Bescheid vom Jobcenter, Sozialamt, von der Wohngeldstelle oder Familienkasse, Pflegegutachten oder Nebenkostenabrechnung: Scanne den Brief, wähle ein PDF, füge den Text ein oder trage die Zahlen selbst ein. SoLo rechnet nach, zeigt Abweichungen und hilft beim Widerspruch.
@@ -208,7 +208,7 @@ Bildschirme im neuen Design (Vorschlag, 8 Motive; Überschrift auf dem Bild in K
 
 1. Startseite mit den großen Kacheln („Hilfen finden, Briefe prüfen“)
 2. Ergebnis mit den Karten („32 Leistungen geprüft“)
-3. Karte aufgeklappt: Wo beantragen, Unterlagen („Nächste Schritte und Unterlagen“)
+3. Antragsmappe mit Stelle, Unterlagen zum Abhaken und Tipp („Nächste Schritte und Unterlagen“)
 4. Netto aus Brutto oder Pfändung/P-Konto („Rund ums Geld“)
 5. Brief prüfen: Kacheln nach Absender und Ergebnis mit Abweichung („Bescheid nachgerechnet“)
 6. Antragsmappe („Anträge fertig zum Abschicken“)

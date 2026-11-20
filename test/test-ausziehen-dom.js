@@ -33,7 +33,7 @@ setTimeout(() => {
     klick(w, kachel);
     check('[az-oberflaeche] Bereich offen', !$('v-ausziehen').hidden && w.location.hash === '#ausziehen');
     const k = d.querySelectorAll('#azInhalt .az-k');
-    check('[az-oberflaeche] 7 Kacheln in der Übersicht', k.length === 7, k.length);
+    check('[az-oberflaeche] 6 Kacheln in der Übersicht, keine Kachel „Für Careleaver“', k.length === 6 && !$('az-geh-care') && !/Careleaver/.test($('azInhalt').textContent), k.length);
     check('[az-oberflaeche] Fortschritt auf Kachel', /0 von 9 erledigt/.test($('az-geh-vorher').textContent), $('az-geh-vorher').textContent);
     klick(w, $('az-geh-vorher'));
     check('[az-oberflaeche] Unterseite mit Überschrift', /Bevor du ausziehst/.test($('azH').textContent) && d.activeElement === $('azH'));
@@ -42,7 +42,7 @@ setTimeout(() => {
     check('[az-oberflaeche] Quelle mit Datum', /Quelle: §[ \u00a0]551 BGB \(abgerufen am 20\.11\.2026\)/.test($('az-p-vertrag').textContent));
     const cb = d.querySelector('[data-az-ab="vertrag"]'); cb.checked = true; cb.dispatchEvent(new w.Event('change', { bubbles: true }));
     check('[az-oberflaeche] Haken gespeichert', JSON.parse(mem['lotse.ausziehen']).ab.vertrag === true, mem['lotse.ausziehen']);
-    { const st = w.Ausziehen.stand(); check('[az-oberflaeche] Ausziehen.stand(): erledigt und alle Punkte für „Mein Ordner“', st && st.n === 1 && st.von > 20, st); }
+    { const st = w.Ausziehen.stand(); check('[az-oberflaeche] Ausziehen.stand(): erledigt und alle 20 Punkte (ohne Careleaver) für „Mein Ordner“', st && st.n === 1 && st.von === 20, st); }
     { const nb = d.querySelector('#appnav [data-ansicht="ordner"]'); if (nb) { klick(w, nb); check('[az-oberflaeche] Mein Ordner zeigt „Ich ziehe aus“ mit Fortschritt', /„Ich ziehe aus“\s*1 von \d+ erledigt/.test($('v-ordner').textContent), $('v-ordner').textContent.slice(0, 200)); klick(w, $('goAusziehen') || nb); klick(w, $('az-geh-vorher')); } }
     check('[az-oberflaeche] Fortschritt aktualisiert', /1 von 9 erledigt/.test($('azFort').textContent));
     const no = $('azNotiz'); no.value = 'Besichtigung Freitag'; no.dispatchEvent(new w.Event('input', { bubbles: true }));
@@ -58,15 +58,8 @@ setTimeout(() => {
     klick(w, d.querySelector('[data-az-zurueck]'));
     check('[az-oberflaeche] Zurück nach Herkunft (Geld)', /Dein Geld im Griff/.test($('azH').textContent));
     klick(w, d.querySelector('[data-az-zurueck]'));
-    // Careleaver: Briefvorlage
-    klick(w, $('az-geh-care'));
-    check('[az-oberflaeche] Careleaver § 41', /§[ \u00a0]41 SGB VIII/.test($('azInhalt').textContent));
-    check('[az-oberflaeche] Careleaver: Krankenversicherung, 7 Punkte', !!$('az-p-careKv') && /0 von 7 erledigt/.test($('azFort').textContent), $('azFort').textContent);
-    check('[az-oberflaeche] Brief: schriftlicher Bescheid, Beispiel-Datum', /schriftlichen Bescheid/.test($('azBrief').value) && /ab meinem 18\. Geburtstag/.test($('azBrief').value));
-    check('[az-oberflaeche] Brief: Zuständigkeit § 86a', /86a Abs\. 4 SGB VIII/.test(d.querySelector('.az-brief').textContent));
-    check('[az-oberflaeche] Briefvorlage Deutsch, ohne Anschrift', $('azBrief') && $('azBrief').lang === 'de' && /^An das Jugendamt/.test($('azBrief').value));
     // Hilfen -> Leistungs-Check
-    klick(w, d.querySelector('[data-az-zurueck]')); klick(w, $('az-geh-hilfen'));
+    klick(w, $('az-geh-hilfen'));
     check('[az-oberflaeche] Hilfen „möglich“', d.querySelectorAll('#azInhalt .az-chip').length === 9);
     klick(w, d.querySelector('[data-az-weg="check"]'));
     check('[az-oberflaeche] Weg zum Leistungs-Check', !$('v-leistungen').hidden);
@@ -85,17 +78,15 @@ setTimeout(() => {
         // Alle Sprachen: keine Rohschlüssel, RTL
         LANGS.forEach((l) => {
           w.__solo.lang(l);
-          ['', 'vorher', 'tage', 'geld', 'vers', 'achtung', 'hilfen', 'care'].forEach((id) => {
+          ['', 'vorher', 'tage', 'geld', 'vers', 'achtung', 'hilfen'].forEach((id) => {
             w.Ausziehen.oeffnen(id);
             const tx = $('v-ausziehen').textContent + $('goAusziehen').textContent;
             check('[az-oberflaeche] ' + l + ' ' + (id || 'übersicht') + ' ohne Rohschlüssel', !/\baz\.[a-zA-Z]/.test(tx) && !/\{\w+\}/.test(tx), (tx.match(/\baz\.[a-zA-Z.]+|\{\w+\}/g) || []).slice(0, 3));
           });
         });
         // Alle Angaben löschen löscht auch Haken und Notizen
-        w.__solo.lang('de'); klick(w, $('clearBtn'));
+        w.__solo.lang('de'); klick(w, $('clear2')); klick(w, $('loeschJa'));
         check('[az-oberflaeche] Löschen leert Haken (ganzer Vorgang)', !mem['lotse.ausziehen'] && JSON.stringify(w.Ausziehen.daten().ab) === '{}', mem['lotse.ausziehen']);
-        klick(w, $('undoBtn'));
-        check('[az-oberflaeche] Rückgängig holt Haken zurück', JSON.parse(mem['lotse.ausziehen']).ab.vertrag === true && w.Ausziehen.daten().ab.vertrag === true, mem['lotse.ausziehen']);
         check('[az-oberflaeche] keine Skriptfehler nach Neustart', b.errors.length === 0, b.errors);
       } catch (e) { check('[az-oberflaeche] Neustart', false, e.stack); }
       // Speicherfehler wird gemeldet

@@ -47,7 +47,7 @@ check('Zusammenfassung zeigt Anzahl', /\d+ wahrscheinlich/.test(d.getElementById
 check('Unwahrscheinliche Leistungen sind eingeklappt gruppiert', d.querySelector('.neinbox') !== null && d.querySelector('.neinbox').open === false);
 check('Hinweis auf Beispielwerte sichtbar', d.getElementById('sampleNotice').hidden === false);
 check('Übersetzungs-Hinweis bei Deutsch versteckt', d.getElementById('transNotice').hidden === true);
-check('Nächste Schritte vorhanden bei Treffer', card('Wohngeld').querySelector('details') !== null);
+check('Treffer: Hinweis auf Unterlagen und nächste Schritte in der Antragsmappe', /Antragsmappe/.test((card('Wohngeld').querySelector('.karte-mappe') || {}).textContent || ''));
 check('Zusammenspiel-Hinweis Wohngeld und Kinderzuschlag steht in beiden Karten', /kombinieren/.test(d.getElementById('c-wohngeld').textContent) && /kombinieren/.test(d.getElementById('c-kiz').textContent));
 check('Neue Karten vorhanden', ['Grundsicherungsgeld', 'Unterhaltsvorschuss', 'BAföG', 'Pflegegeld und Entlastungsbetrag', 'Kindergeld'].every((n) => names().includes(n)));
 check('Unterhaltsvorschuss im Beispiel 1 wahrscheinlich', level('Unterhaltsvorschuss') === 'ja');
@@ -82,15 +82,13 @@ check('Unverändertes Beispiel: kein Dialog beim Wechsel', dlg.hidden && d.getEl
 // Eingeklappte Karte: zweite Zeile mit Betrag und Art der Stelle statt „Anspruch ist wahrscheinlich“
 const z2 = (id) => d.querySelector('#c-' + id + ' .head2').textContent;
 check('Kartenzeile Wohngeld: ungefährer Betrag und Wohngeldstelle', /ca\. .*€.* im Monat/.test(z2('wohngeld')) && /Wohngeldstelle/.test(z2('wohngeld')) && !/wahrscheinlich/.test(z2('wohngeld')), z2('wohngeld'));
-// Alle Angaben löschen: sagt, was gelöscht wird; Rückgängig-Leiste stellt alles wieder her
+// Löschen nur an einer Stelle (Einstellungen → Sicherheit und Daten): Zeile sagt, was weg ist; Rückfrage; danach leer
 d.getElementById('p-name').value = 'Test'; fire(d.getElementById('p-name'), 'input');
-check('Löschen-Knopf getrennt von den Beispielen, Text nennt Formular und Briefdaten', !d.getElementById('presets').contains(d.getElementById('clearBtn')) && /Formular/.test(d.getElementById('clearWas').textContent) && /Anschrift/.test(d.getElementById('clearWas').textContent));
-d.getElementById('clearBtn').click();
-check('Löschen: Formular leer, Rückgängig-Leiste sichtbar', d.getElementById('ek1Art').value === '' && d.getElementById('p-name').value === '' && !d.getElementById('undoBar').hidden);
-d.getElementById('undoBtn').click();
-check('Rückgängig: Angaben und Name zurück, Leiste weg', d.getElementById('ek1Brutto').value !== '' && d.getElementById('p-name').value === 'Test' && d.getElementById('undoBar').hidden);
-d.getElementById('clearBtn').click(); setNum('miete', 500);
-check('Neue Eingabe nach dem Löschen: Rückgängig-Leiste verschwindet', d.getElementById('undoBar').hidden);
+check('Leistungs-Check: kein Löschen-Knopf, nur ein Link zu „Sicherheit und Daten“; Löschen-Zeile nennt Formular und Briefdaten', !d.getElementById('clearBtn') && !!d.getElementById('clearLink') && !d.getElementById('presets').contains(d.getElementById('clearLink')) && /Andere Vorgänge bleiben/.test(d.getElementById('clear2').textContent));
+d.getElementById('clear2').click();
+check('Rückfrage nennt genau: Formular und Briefdaten', /Formular/.test(d.getElementById('loeschFrage').textContent) && /Anschrift/.test(d.getElementById('loeschFrage').textContent));
+d.getElementById('loeschJa').click();
+check('Löschen nach „Löschen“ in der Rückfrage: Formular leer, Meldung', d.getElementById('ek1Art').value === '' && d.getElementById('p-name').value === '' && /gelöscht/.test(d.getElementById('loeschMsg').textContent));
 d.getElementById('p-name').value = ''; fire(d.getElementById('p-name'), 'input');
 
 // Stepper
@@ -384,6 +382,14 @@ setTimeout(() => {
   // Zurück-Wege über die gemerkte Herkunft (Start → Pflege/Pfändung/Sparen → zurück)
   const sicht = () => ['start', 'leistungen', 'briefe', 'pflege', 'pfaendung', 'sparen'].find((x) => !d.getElementById('v-' + x).hidden);
   const navAkt = () => (d.querySelector('#appnav button[aria-current="page"]') || {}).getAttribute?.('data-ansicht');
+  d.querySelector('#appnav button[data-ansicht="start"]').click();
+  // Kopfzeile (Logo, App-Name, Satz „Prüfe in etwa 5 Minuten …“) nur auf der Startseite; sonst sichtbar versteckt, h1 bleibt für Screenreader
+  const kopfVersteckt = () => { const st = w.getComputedStyle(d.querySelector('header.top')); return st.position === 'absolute' && st.width === '1px' && st.overflow === 'hidden'; };
+  check('Kopfzeile mit Logo, Name und Satz „Prüfe in etwa 5 Minuten“ auf der Startseite sichtbar', !kopfVersteckt() && w.getComputedStyle(d.querySelector('.top .lead')).display !== 'none' && !!d.querySelector('.top .kopf-titel h1'));
+  for (const a of ['leistungen', 'ordner', 'einst']) {
+    if (a === 'leistungen') d.getElementById('goLeistungen').click(); else d.querySelector('#appnav button[data-ansicht="' + a + '"]').click();
+    check('Kopfzeile auf „' + a + '“ ausgeblendet, h1 im Dokument, eigene Überschrift sichtbar', kopfVersteckt() && d.querySelectorAll('header.top h1').length === 1 && !!d.querySelector('#v-' + a + ' h2:not([hidden])'));
+  }
   d.querySelector('#appnav button[data-ansicht="start"]').click();
   d.getElementById('goPfaendung').click();
   check('Start → Pfändung: Leiste markiert Start, oben „← Zurück“', sicht() === 'pfaendung' && navAkt() === 'start' && /← /.test(d.querySelector('[data-zurueck="pfaendung"]').textContent));
