@@ -391,7 +391,7 @@
     if (state.hhAndere === 'verwandte') s.push(t('wgmax.verwandte'));
     p.textContent = s.join(' ');
     p.classList.toggle('moeglich', !eins || w.vergleich === 'moeglich' || w.vergleich === 'nah');
-    var teile = (eig ? [] : ['wgmax.d.kalt']).concat(['wgmax.d.heiz', 'wgmax.d.klima'], eig ? [] : ['wgmax.d.drueber'], ['wgmax.d.personen', 'wgmax.d.ausgeschlossen', 'wgmax.d.stufe', 'wgmax.d.2027']);
+    var teile = (eig ? [] : ['wgmax.d.kalt']).concat(['wgmax.d.heiz', 'wgmax.d.klima'], eig ? [] : ['wgmax.d.drueber'], ['wgmax.d.personen', 'wgmax.d.ausgeschlossen', 'wgmax.d.stufe']);
     box.innerHTML = teile.map(function (k) { return '<p>' + esc(t(k, { heiz: E(w.heizKomp), klima: E(w.klima), personen: pers })) + '</p>'; }).join('') +
       '<p><strong>' + esc(t('wgmax.d.kdu')) + '</strong></p>';
   }
@@ -3325,7 +3325,6 @@
         box.appendChild(w);
       }
       p('Hilfe bei allen Fragen und beim Antrag: Pflegekasse oder Pflegestützpunkt, kostenlos.', 'hint');
-      if (U.reform.status === 'entwurf') p('Für ' + U.reform.jahr + ' ist eine Pflegereform geplant, aber noch nicht beschlossen. Leistungen und Beträge können sich dann ändern, auch bei Pflegegrad 1.', 'small muted');
       p('Stand der Beträge: ' + U.stand + ' (' + U.quelle + '). Den genauen Anspruch legt die Pflegekasse fest.', 'small muted');
       var d2 = box.appendChild(el('div', null, 'btns'));
       if (!pg && typeof PflegeAssistent !== 'undefined') d2.appendChild(nhKnopf('btn', esc(t('pu.schaetzen')), null, function () { paOeffnen(true); }));
@@ -3514,6 +3513,7 @@
       datum: function (d) { return Fmt.datum(d, lang); }, datumDe: function (d) { return Fmt.datum(d, 'de'); }, locale: function () { return Fmt.LOCALE[lang] || 'de-DE'; },
       daten: function () { return started && edited ? state : null; },
       ergebnis: function () { try { return started && edited ? Rules.evaluate(state).results : null; } catch (e) { return null; } },
+      grenzen: function () { try { return started && edited ? Rules.evaluate(state).grenzen : null; } catch (e) { return null; } },
       setze: function (werte) { if (started && !edited) state = blankState(); Object.assign(state, werte); writeForm(); buildSelects(); touched(); },
       zeige: oeffneVon, regeln: function () { return Rules.RULES; }, plug: plug, nativ: NATIVE,
       fristenNeu: function () { if (window.FristenOrdner) FristenOrdner.neu(); },
@@ -3524,7 +3524,7 @@
   }
   // „Ich ziehe aus“: Haken und Notizen je Vorgang (lotse.ausziehen in Vorgaenge.DATEN), mit PIN verschlüsselt, kopiert und gelöscht
   if (window.Ausziehen) Ausziehen.speicherOrt({ laden: function (cb) { Store.get('lotse.ausziehen', cb); }, schreiben: function (text, cb) { Store.set('lotse.ausziehen', text); cb(null); } });
-  if (window.Ausziehen) Ausziehen.init({ t: t, zeige: oeffneVon, plug: plug, famversGrenze: function () { var R = Rules.RULES.famvers; return Fmt.euro(Math.round((new Date().getFullYear() >= 2027 ? R.bezug2027 : R.bezug2026) / 7), lang, I18N[lang]['meta.dir'] === 'rtl'); } }); // „Ich ziehe aus“ (src/ausziehen.js)
+  if (window.Ausziehen) Ausziehen.init({ t: t, zeige: oeffneVon, plug: plug, famversGrenze: function () { return Fmt.euro(Rules.famversGrenze(), lang, I18N[lang]['meta.dir'] === 'rtl'); } }); // „Ich ziehe aus“ (src/ausziehen.js)
   // Fristen in „Mein Ordner“ (src/fristen.js): je Vorgang (lotse.fristliste in Vorgaenge.DATEN), Hinweis beim Öffnen höchstens einmal am Tag
   if (window.FristenOrdner) {
     FristenOrdner.speicherOrt({ laden: function (cb) { Store.get('lotse.fristliste', cb); }, schreiben: function (text, cb) { cb(Store.set('lotse.fristliste', text) === false ? new Error('nicht gespeichert') : null); } });

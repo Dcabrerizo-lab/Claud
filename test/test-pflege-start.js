@@ -52,10 +52,10 @@ setTimeout(() => {
   check('[pu-fed] Verhinderungspflege: stundenweise und Familienentlastender Dienst erklärt', /stundenweise/.test(d.getElementById('pu-l-verh').textContent) && /Familienentlastende Dienste/.test(d.getElementById('pu-l-verh').textContent));
   check('Entlastungsbetrag: Familienentlastender Dienst bezahlbar, wenn anerkannt', /Familienentlastender Dienst \(FED\) kann so bezahlt werden, wenn er in deinem Bundesland anerkannt ist/.test(d.getElementById('pu-l-entl').textContent));
   check('Kombination mit Rechenbeispiel aus den Regeln (PG 3: 299,50 €)', /Beispiel Pflegegrad 3: Der Pflegedienst nutzt die Hälfte \(748,50 €\)\. Dann kommen noch 299,50 € Pflegegeld/.test(d.getElementById('pu-l-kombi').textContent), d.getElementById('pu-l-kombi').textContent);
-  check('Reformentwurf 2027 in genau einem Satz', (t3.match(/Pflegereform/g) || []).length === 1 && /2027/.test(t3));
+  check('[recht-geltend] Kein Satz zu einer geplanten Pflegereform (nur geltendes Recht)', !/Pflegereform|geplant|nicht beschlossen|Entwurf/.test(t3));
   check('[pu-korr] Beratungsbesuch nach § 37 Abs. 3 SGB XI: Pflicht halbjährlich ab PG 2, PG 4/5 auf Wunsch vierteljährlich', /Bei Pflegegrad 2 bis 5 kommt einmal im halben Jahr/.test(d.getElementById('pu-l-geld').textContent) && /Pflegegrad 4 und 5 geht das auf Wunsch auch jedes Vierteljahr/.test(d.getElementById('pu-l-geld').textContent) && !/4 und 5 einmal im Vierteljahr/.test(t3));
   check('[pu-korr] Verhinderungspflege durch Angehörige: Doppeltes Pflegegeld plus nachgewiesene Kosten', /Personen aus demselben Haushalt \(nicht beruflich\).*Doppelte des monatlichen Pflegegeldes\. Nachgewiesene Kosten wie Fahrt oder Verdienstausfall/.test(d.getElementById('pu-l-verh').textContent));
-  check('[pu-korr] Aufs Konto: Pflegegeld und Wohngruppenzuschlag; Reform auch bei PG 1', /Aufs Konto kommen nur das Pflegegeld und, wer in einer ambulant betreuten Wohngruppe lebt, der Wohngruppenzuschlag/.test(t3) && /auch bei Pflegegrad 1/.test(t3));
+  check('[pu-korr] Aufs Konto: Pflegegeld und Wohngruppenzuschlag', /Aufs Konto kommen nur das Pflegegeld und, wer in einer ambulant betreuten Wohngruppe lebt, der Wohngruppenzuschlag/.test(t3));
   check('Stand und Quelle genannt', /Stand der Beträge: 14\.9\.2026 \(Bundesministerium für Gesundheit/.test(t3));
   check('Stellen nur als Art (Pflegekasse, Pflegestützpunkt), keine Anschrift', /Pflegestützpunkt/.test(t3) && !/\b\d{5}\b/.test(t3));
   knopf(de['pf.zurueck']).click();

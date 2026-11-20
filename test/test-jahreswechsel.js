@@ -36,7 +36,7 @@ vor.schliessen(); // JSDOM-Fenster freigeben (sonst wächst der Speicher bei vie
 
 const nach = seite('2027-01-01T08:00:00');
 const alt = nach.d.getElementById('altNotice');
-ck('1.1.2027: deutlicher Hinweis auf veraltete Regeln, nennt die schon eingearbeitete Minijob-Grenze', alt.hidden === false && /2026/.test(alt.textContent) && /633/.test(alt.textContent), alt.textContent);
+ck('1.1.2027: deutlicher Hinweis auf veraltete Regeln, neutral (nur ein Teil eingearbeitet, Beträge bei der Stelle prüfen, keine Einzelwerte)', alt.hidden === false && /2026/.test(alt.textContent) && /nur ein Teil/.test(alt.textContent) && /zuständigen Stelle/.test(alt.textContent) && !/633|Minijob/.test(alt.textContent), alt.textContent);
 ck('1.1.2027: App startet weiter ohne Skriptfehler', !!nach.d.querySelector('#cards .startcard') && nach.errors.length === 0, nach.errors.join('; '));
 // Eingabe nach dem Jahreswechsel: Karten erscheinen, keine Fehler
 const kinder = nach.d.querySelector('[data-step="kids"][data-d="1"]');
