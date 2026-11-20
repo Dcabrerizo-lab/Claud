@@ -41,6 +41,10 @@ android {
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
+            // Test-App neben der Store-App installierbar: eigene Paket-ID com.Sozialleistungslotse.test und eigener Name
+            // „SoLo Test“ (app/src/debug/res/values/strings.xml). FileProvider (Manifest: applicationId + ".fileprovider") und Plugins (getPackageName)
+            // passen sich also an. Release-Build (com.Sozialleistungslotse) bleibt unverändert.
+            applicationIdSuffix ".test"
         }
         release {
             if (System.getenv('ANDROID_KEYSTORE_FILE')) signingConfig signingConfigs.release

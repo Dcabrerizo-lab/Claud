@@ -298,6 +298,11 @@ check('Arabisch, Dari, Farsi und Paschtu laufen rechts nach links, alle anderen 
   const gradle = (lies('app/android/app/build.gradle').match(/applicationId\s+"([^"]+)"/) || [])[1];
   const cap = JSON.parse(lies('app/capacitor.config.json')).appId;
   const ios = [...lies('app/ios/App/App.xcodeproj/project.pbxproj').matchAll(/PRODUCT_BUNDLE_IDENTIFIER = ([^;]+);/g)].map((m) => m[1].trim());
+  // Test-App (Debug-Build): eigene Paket-ID mit „.test“ und Name „SoLo Test“, damit sie neben der Store-App installierbar ist
+  const g = lies('app/android/app/build.gradle'), dbg = (g.match(/buildTypes\s*\{[\s\S]*?debug\s*\{([\s\S]*?)\}/) || [])[1] || '', rel = (g.match(/release\s*\{([^}]*minifyEnabled[^}]*)\}/) || [])[1] || '';
+  const dbgName = fsy.existsSync(py.join(R0, 'app/android/app/src/debug/res/values/strings.xml')) ? lies('app/android/app/src/debug/res/values/strings.xml') : '';
+  check('Test-App: Debug-Build mit applicationIdSuffix ".test" und Name „SoLo Test“, Release ohne Suffix, FileProvider über ${applicationId}',
+    /applicationIdSuffix\s+"\.test"/.test(dbg) && !/applicationIdSuffix/.test(rel) && /name="app_name">SoLo Test</.test(dbgName) && /android:authorities="\$\{applicationId\}\.fileprovider"/.test(lies('app/android/app/src/main/AndroidManifest.xml')), dbg);
   check('Nur SoLo: Android-Paketname, Capacitor-ID und iOS-Bundle-ID sind ' + ID, gradle === ID && cap === ID && ios.length > 0 && ios.every((x) => x === ID), [gradle, cap, ios.join(',')].join(' / '));
 }
 // Die Webseite zum Hochladen (site/) enthält dieselbe Datenschutzerklärung wie das Projekt
