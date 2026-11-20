@@ -166,7 +166,8 @@ const MOCK = () => {
     ok('PDF-Datei wird nach dem Teilen aus dem Cache gelöscht', (await calls('Filesystem.deleteFile')).some((o) => o.path === 'Antragsmappe.pdf'));
   } else ok('PDF erzeugt', false, await p.textContent('#copyMsg'));
   // Android: Drucken (Druckdialog des Systems) und Speichern (Ordner Downloads) über das native Plugin PdfAusgabe
-  ok('Android: Knöpfe Drucken und PDF speichern sichtbar', (await p.isVisible('#mappeDruck')) && (await p.isVisible('#mappeSpeichern')));
+  await p.evaluate(() => { document.querySelector('#mappe .mappe-mehr').open = true; }); // Drucken/Speichern stehen unter „Weitere Möglichkeiten“
+  ok('Android: Knöpfe Drucken und PDF speichern unter „Weitere Möglichkeiten“ sichtbar', (await p.isVisible('#mappeDruck')) && (await p.isVisible('#mappeSpeichern')));
   await p.click('#mappeDruck');
   await p.waitForFunction(() => !!window.__druck, null, { timeout: 15000 }).catch(() => {});
   const druck = Buffer.from(await p.evaluate(() => window.__druck || ''), 'base64');

@@ -25,7 +25,7 @@ const check = (n, c, x) => { if (!c) { fails++; console.log('FAIL', n, x || '');
 const fire = (el, type) => el.dispatchEvent(new w.Event(type, { bubbles: true }));
 const setLang = (c) => { const s = $('lang'); s.value = c; fire(s, 'change'); };
 const LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so'];
-const NEU = ['nav.ordner', 'ordner.leer', 'ordner.wechseln', 'ordner.alle', 'ordner.ergebnis', 'ordner.mappe', 'ordner.mappe.n', 'ordner.ausziehen', 'ordner.ausziehen.n', 'ordner.pflege', 'ordner.pfaendung', 'set.sicher.h', 'set.sicher.t', 'set.an', 'set.aus', 'set.thema', 'set.thema.auto', 'set.thema.hell', 'set.thema.dunkel', 'set.loeschen.h', 'set.vgLoeschen', 'set.fach.h', 'set.beratung.label', 'set.beratung.t', 'recht.label', 'haken.hint', 'f.inhalt', 'f.inh.brief', 'f.inh.angaben',
+const NEU = ['nav.ordner', 'ordner.leer', 'ordner.wechseln', 'ordner.alle', 'ordner.ergebnis', 'ordner.mappe', 'ordner.mappe.n', 'ordner.ausziehen', 'ordner.ausziehen.n', 'ordner.pflege', 'ordner.pfaendung', 'set.sicher.h', 'set.sicher.t', 'set.an', 'set.aus', 'set.thema', 'set.thema.auto', 'set.thema.hell', 'set.thema.dunkel', 'set.loeschen.h', 'set.vgLoeschen', 'set.fach.h', 'set.beratung.label', 'set.beratung.t', 'recht.label', 'haken.hint',
   'eb.btn', 'eb.h', 'eb.intro', 'eb.kuerzel', 'eb.close', 'eb.titel', 'eb.datum', 'eb.kuerzelZeile', 'eb.col.leistung', 'eb.col.einstufung', 'eb.col.betrag', 'eb.col.stelle', 'eb.col.schritt', 'eb.hinweis'];
 
 // ---------- Hilfsfunktionen in fmt.js ----------
@@ -140,12 +140,11 @@ mh()[0].checked = false; fire(mh()[0], 'change');
 check('Haken in der Mappe gilt auch in der Karte', wgHaken()[0].checked === false);
 
 // ---------- Antragsmappe: Übersicht, Drucken am Ende, Geburtsdatum ----------
-const links = [...d.querySelectorAll('#mappeBody .mappe-inhalt a[data-sprung]')];
-check('Mappe: Übersicht „In dieser Mappe:“ mit Sprungmarken auf vorhandene Teile', d.querySelector('#mappeBody .mappe-inhalt h3').textContent === 'In dieser Mappe:' && links.length === 4 && links.every((a) => !!$(a.getAttribute('data-sprung'))), links.map((a) => a.textContent).join(' | '));
-check('Mappe: Übersicht nennt Brief, Angabenblatt, Unterlagen, Formulare', /Unterhaltsvorschuss/.test(links[0].textContent) && links[1].getAttribute('data-sprung') === 'm-angaben' && links[2].getAttribute('data-sprung') === 'm-unterlagen' && links[3].getAttribute('data-sprung') === 'm-formulare');
-check('Mappe: Übersicht wird nicht gedruckt', d.querySelector('#mappeBody .mappe-inhalt').classList.contains('no-print'));
-links[1].click();
-check('Sprungmarke setzt den Fokus auf den Abschnitt', d.activeElement === $('m-angaben'));
+// Mappe (Vorgabe David 20.11.2026): kein Inhaltsverzeichnis, ein Hauptknopf, Formulare direkt nach den Briefen
+check('Mappe: kein Inhaltsverzeichnis mehr (die Aufgabenliste ist das Verzeichnis)', !d.querySelector('#mappeBody .mappe-inhalt') && !!d.querySelector('#mappeBody .aufgaben'));
+check('Mappe: oben ein Hauptknopf, Kopieren und Teilen unter „Weitere Möglichkeiten“', !$('mappePrint').closest('details') && $('mappeCopy').closest('details.mappe-mehr') && $('mappeShare').closest('details.mappe-mehr') && $('mappeDruck').closest('details.mappe-mehr'));
+{ const teile = [...d.querySelectorAll('#mappeBody > .page')].map((p) => p.id); const f = teile.indexOf('m-formulare');
+  check('Mappe: amtliche Formulare direkt nach den Briefen', f < 0 || teile.slice(0, f).every((x) => /^m-brief-/.test(x)), teile.join(', ')); }
 gedruckt = 0; $('mappePrint2').click();
 check('Mappe: „Drucken“ auch am Ende', !!$('mappePrint2') && $('mappePrint2').textContent === I18N.de['f.print'] && gedruckt === 1 && $('mappePrint2').closest('#mappe') && $('mappePrint2').closest('.no-print'));
 check('Angabenblatt: Geburtsdatum TT.MM.JJJJ', /Geburtsdatum: 01\.02\.1985/.test($('m-angaben').textContent));

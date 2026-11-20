@@ -103,6 +103,18 @@
     return 'de';
   }
 
+  // Gemeinsames Info-Bauteil „ⓘ Mehr dazu“ (CSS details.mehr in template.html): einmal gebaut, überall gleich benutzt.
+  // Überschrift immer als Frage, die sagt, was drin ist (z. B. „Wo finde ich das?“), nie nur „Mehr“. Fristen und Beträge nie hier hinein.
+  // text wird nur als Text eingesetzt (textContent bzw. esc), nie als HTML.
+  function mehrEl(text, titel) {
+    var d = document.createElement('details'); d.className = 'mehr';
+    var s = document.createElement('summary'); s.textContent = titel; d.appendChild(s);
+    var p = document.createElement('p'); p.textContent = text; d.appendChild(p);
+    return d;
+  }
+  function mehrHtml(innenHtml, titel) { return '<details class="mehr"><summary>' + esc(titel) + '</summary>' + innenHtml + '</details>'; }
+  window.SoloMehr = { el: mehrEl, rb: function () { return t('rb.satz'); } }; // auch für die Prüfpakete (erweiterungen/vorschau.js)
+
   function fillSelect(id, items, current) {
     var el = $(id);
     el.innerHTML = items.map(function (it) { return '<option value="' + esc(it[0]) + '">' + esc(it[1]) + '</option>'; }).join('');
@@ -112,9 +124,11 @@
   var BUNDESLAENDER = [['BW', 'Baden-Württemberg'], ['BY', 'Bayern'], ['BE', 'Berlin'], ['BB', 'Brandenburg'], ['HB', 'Bremen'], ['HH', 'Hamburg'], ['HE', 'Hessen'], ['MV', 'Mecklenburg-Vorpommern'], ['NI', 'Niedersachsen'], ['NW', 'Nordrhein-Westfalen'], ['RP', 'Rheinland-Pfalz'], ['SL', 'Saarland'], ['SN', 'Sachsen'], ['ST', 'Sachsen-Anhalt'], ['SH', 'Schleswig-Holstein'], ['TH', 'Thüringen']];
 
   // PLZ -> Bundesland und Mietenstufe (Daten sind fest in der App, kein Netz). Ohne Daten bleibt das Feld verborgen.
+  function plzFelder(erkannt) { $('blField').hidden = $('stufeField').hidden = !!erkannt; }
   function plzUpdate(apply) {
     var out = $('plzOut'); out.innerHTML = '';
     $('plzField').hidden = !Plz.available();
+    plzFelder(false);
     if (!Plz.available()) return;
     var raw = String(state.plz || '').replace(/\D/g, '');
     if (raw.length < 5) return;
@@ -138,11 +152,12 @@
       });
       d.appendChild(s2); out.appendChild(d);
     };
-    var src = esc(t('plz.source', { stand: ((Plz.info() && Plz.info().wogv || '').match(/\d+\.\d+\.\d{4}/) || [''])[0] }));
+    var srcText = t('plz.source', { stand: ((Plz.info() && Plz.info().wogv || '').match(/\d+\.\d+\.\d{4}/) || [''])[0] });
+    var src = function () { out.appendChild(mehrEl(srcText, t('beh.quelle'))); };
     if (r.sure) {
       applyStufe(r.stufe);
       say('<strong>' + esc(t('plz.found', { ort: r.candidates[0].label, stufe: Rules.roman(r.stufe) })) + '</strong>');
-      say(src); altBlock(); return;
+      src(); altBlock(); plzFelder(r.bl && r.bl === state.bundesland && String(r.stufe) === String(state.mietstufe)); return;
     }
     if (r.candidates.every(function (c) { return !c.stufe; })) { say(esc(t('plz.unknown'))); return; }
     say(esc(t('plz.ask')));
@@ -163,7 +178,7 @@
       if (c && c.stufe) { state.mietstufe = String(c.stufe); $('mietstufe').value = String(c.stufe); }
       touched();
     });
-    say(src); altBlock();
+    src(); altBlock();
   }
 
   // ----- Folgefragen: nur zeigen, wenn sie passen; ausgeblendete Werte zurücksetzen, damit sie nicht mitrechnen -----
@@ -196,7 +211,8 @@
     // Eigentum: Feld „Miete“ wird zu „Kosten fürs Wohnen“ (Kredit, Nebenkosten, Heizung)
     var eig = state.wohnart === 'eigentum';
     $('mieteLab').setAttribute('data-t', eig ? 'miete.label.eigen' : 'miete.label'); $('mieteLab').textContent = t(eig ? 'miete.label.eigen' : 'miete.label');
-    $('mieteHint').setAttribute('data-t', eig ? 'miete.hint.eigen' : 'miete.hint'); $('mieteHint').textContent = t(eig ? 'miete.hint.eigen' : 'miete.hint');
+    $('mieteHint').hidden = !eig;
+    $('hhHint').hidden = !state.hhAndere;
     var show = function (sel, on) { document.querySelectorAll(sel).forEach(function (el) { el.hidden = !on; }); };
     show('.cond-bh', !!state.bhPerson);
     show('.cond-bh25', state.bhPerson === 'erwVor25');
@@ -310,10 +326,9 @@
       $('ek' + i + 'NettoF').hidden = !art || art === 'ohne';
       $('ek' + i + 'BruttoLab').textContent = t(art === 'lohn' || art === 'rente' ? 'ek.brutto.' + art : 'ek.brutto');
       // Zweites Einkommen: eigenes Aufklappfeld je Person; Hinweis auf das Feld nur zu zweit
-      var ah = [];
-      if (art === 'lohn') ah.push(t('ek.art.hint.lohn'));
-      if (state.adults === 2 && art && art !== 'ohne') ah.push(t('ek.art.hint'));
-      $('ek' + i + 'ArtHint').textContent = ah.join(' '); $('ek' + i + 'ArtHint').hidden = !ah.length;
+      // sichtbar nur der kurze Minijob-Satz; der lange Hinweis auf das zweite Einkommen steht hinter „Mehr dazu“
+      $('ek' + i + 'ArtHint').textContent = art === 'lohn' ? t('ek.art.hint.lohn') : ''; $('ek' + i + 'ArtHint').hidden = art !== 'lohn';
+      $('ek' + i + 'ArtMehr').hidden = !(state.adults === 2 && art && art !== 'ohne');
       var zArt = state['ek' + i + 'bArt'];
       $('ek' + i + 'bLohnHint').hidden = !(zArt === 'lohn' || zArt === 'selbst');
       $('ek' + i + 'BruttoHint').textContent = art === 'rente' ? t('ek.brutto.hint.rente') : art === 'selbst' ? t('ek.brutto.hint.selbst') : t('ek.brutto.hint.lohn');
@@ -456,7 +471,8 @@
       (b.haus ? '<p class="small"><bdi>' + esc(t('beh.besuch')) + '</bdi> ' + esc(b.haus.join(', ')) + '</p>' : '') +
       (b.web ? '<p><a href="' + esc(b.web) + '" target="_blank" rel="noopener">' + esc(t('beh.web')) + '</a></p>' : '') + '</div>' +
       (b.weiter ? '<p class="small">' + esc(tL('beh.wgWeiter')) + '</p>' : '') +
-      '<p class="small">' + esc(b.anschrift ? (b.quelleArt === 'wikipedia' ? t('beh.pruefenWiki', { stand: b.stand || '' }) : b.stand ? t('beh.pruefen', { stand: b.stand }) : t('beh.pruefenKurz')) : t('beh.ohneAdr')) + '</p>';
+      (!b.anschrift ? '<p class="small">' + esc(t('beh.ohneAdr')) + '</p>'
+        : '<p class="small">' + esc(t('beh.pruefenKurz')) + '</p>' + (b.quelleArt === 'wikipedia' || b.stand ? mehrHtml('<p>' + esc(b.quelleArt === 'wikipedia' ? t('beh.pruefenWiki', { stand: b.stand || '' }) : t('beh.pruefen', { stand: b.stand })) + '</p>', t('beh.quelle')) : ''));
   }
 
   function buildSelects() {
@@ -506,6 +522,8 @@
     app.setAttribute('dir', I18N[lang]['meta.dir']);
     document.querySelectorAll('[data-t]').forEach(function (el) { el.textContent = t(el.getAttribute('data-t')); });
     document.querySelectorAll('[data-t-aria]').forEach(function (el) { el.setAttribute('aria-label', t(el.getAttribute('data-t-aria'))); });
+    document.querySelectorAll('[data-t-ph]').forEach(function (el) { el.setAttribute('placeholder', t(el.getAttribute('data-t-ph'))); });
+    $('mappeDeNote').hidden = lang === 'de'; // Hinweis „Brief und Angabenblatt sind auf Deutsch“ nur bei anderer App-Sprache
     $('stand').textContent = t('stand', { stand: Rules.RULES.stand });
     $('appVersion').textContent = t('set.version', { v: APPVERSION });
     einfacheSpracheAnzeigen();
@@ -757,7 +775,7 @@
     if (NATIVE) { $('mappePrint').setAttribute('data-t', 'f.pdf'); $('mappePrint').textContent = t('f.pdf'); }
     // Android: eigene Knöpfe zum Drucken und Speichern (dort bietet der Teilen-Dialog das nicht auf jedem Gerät an; iPhone: im Teilen-Dialog enthalten)
     if (NATIVE && plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios')) {
-      $('mappeDruck').hidden = false; $('mappeSpeichern').hidden = false; $('mappePrint').classList.add('ghost');
+      $('mappeDruck').hidden = false; $('mappeSpeichern').hidden = false; // unter „Weitere Möglichkeiten“; Hauptknopf bleibt „PDF teilen“
       $('mappeDruck').addEventListener('click', function () { pdfAusgabe('drucken'); });
       $('mappeSpeichern').addEventListener('click', function () { pdfAusgabe('speichern'); });
     }
@@ -882,8 +900,8 @@
   // Beratungsmodus: Rechtsgrundlage der Leistung (Rules.RECHT, deutsch) unter dem Kartentext
   function rechtHtml(r) { return beratung && r.recht ? '<p class="recht"><strong>' + esc(t('recht.label')) + ':</strong> <span lang="de" dir="ltr">' + esc(r.recht) + '</span></p>' : ''; }
   // Unterlagen-Checkliste zum Abhaken: eine Fassung für die Karte und die Antragsmappe; Haken bleiben auf dem Gerät (lotse.haken)
-  function unterlagenListe(r) {
-    return '<p class="small muted haken-hint no-print">' + esc(t('haken.hint')) + '</p><ul class="haken-liste">' + r.steps.u.map(function (k) {
+  function unterlagenListe(r, ohneHinweis) {
+    return (ohneHinweis ? '' : '<p class="small muted haken-hint no-print">' + esc(t('haken.hint')) + '</p>') + '<ul class="haken-liste">' + r.steps.u.map(function (k) {
       var key = r.id + '|' + k;
       return '<li><label class="haken"><input type="checkbox" data-haken="' + esc(key) + '"' + (haken[key] ? ' checked' : '') + '><span>' + esc(tL(k)) + '</span></label></li>';
     }).join('') + '</ul>';
@@ -971,10 +989,10 @@
   }
   function zweiWege(results) {
     var weg = function (ids) { return wegLinks(results, ids); };
-    return '<section class="zweiwege" id="zweiWege" aria-labelledby="h-ww"><h3 id="h-ww">' + esc(t('ww.h')) + '</h3><p class="ww-tun"><b>' + esc(t('ww.tipp')) + '</b></p><p>' + esc(t('ww.t')) + '</p>' +
-      '<div class="ww-wege"><div class="ww-weg"><h4>' + esc(t('ww.a.h')) + '</h4><p>' + esc(t('ww.a.t')) + '</p>' + weg(['ggeld', 'but']) + '</div>' +
+    return '<section class="zweiwege" id="zweiWege" aria-labelledby="h-ww"><h3 id="h-ww">' + esc(t('ww.h')) + '</h3><p class="ww-tun"><b>' + esc(t('ww.tipp')) + '</b></p>' +
+      '<details class="mehr ww-mehr"><summary>' + esc(t('mehr.wege')) + '</summary><p>' + esc(t('ww.t')) + '</p><div class="ww-wege"><div class="ww-weg"><h4>' + esc(t('ww.a.h')) + '</h4><p>' + esc(t('ww.a.t')) + '</p>' + weg(['ggeld', 'but']) + '</div>' +
       '<div class="ww-weg"><h4>' + esc(t('ww.b.h')) + '</h4><p>' + esc(t('ww.b.t')) + '</p>' + weg(['wohngeld', 'kiz', 'but']) + '</div></div>' +
-      '<p class="ww-regel"><b>' + esc(t('ww.regel.h')) + '</b> ' + esc(t('ww.regel')) + '</p></section>';
+      '<p class="ww-regel"><b>' + esc(t('ww.regel.h')) + '</b> ' + esc(t('ww.regel')) + '</p></details></section>';
   }
 
   function renderPick(results) {
@@ -1005,6 +1023,7 @@
     satz.textContent = passend === 1 ? t('res.n1') : passend > 1 ? t('res.n', { n: passend }) : '';
     $('ebOpen').hidden = !(passend > 0);
     $('beratung').hidden = !started;
+    $('resRb').hidden = !started; // „Erste Einschätzung, keine Rechtsberatung“ unter jedem Ergebnis
   }
 
   function render() {
@@ -1150,29 +1169,61 @@
     var ort = e[1] === false ? '' : suchOrt();
     return 'https://duckduckgo.com/?q=' + encodeURIComponent(e[0] + (ort ? ' ' + ort : ''));
   }
+  // Empfänger direkt im Anschreiben an der Stelle der Anschrift (nur am Bildschirm; gedruckt wird der fertige Brief):
+  // Anschrift bekannt (amtliche Daten, Bayern/PLZ): steht schon da, mit kleinem „ändern“. Sonst ein dezentes, gestricheltes Feld
+  // „Anschrift der Stelle eintragen“ mit dem passenden Suchlink. Nie ein unsicherer Empfänger: ohne Daten nur die Art der Stelle.
+  var empfHinweisDa = false; // Hinweis zum Empfänger nur einmal je Mappe (beim ersten Brief ohne Anschrift)
+  function empfBekannt(id) { var b = Behoerden.available() ? Behoerden.fuer(id, aktAgs()) : null; return !!(b && b.anschrift && b.anschrift.length); }
   function empfHtml(id) {
-    var wert = Object.prototype.hasOwnProperty.call(empfEdit, id) ? empfEdit[id] : empfVorschlag(id).join('\n');
-    return '<div class="empf-edit no-print"><label for="empf-' + esc(id) + '"><strong>' + esc(t('f.empfTitel')) + '</strong></label>' +
-      '<textarea id="empf-' + esc(id) + '" data-empf="' + esc(id) + '" rows="4" lang="de" dir="ltr" autocomplete="off">' + esc(wert) + '</textarea>' +
-      '<p class="small">' + esc(t('f.empfHinweis')) + '</p>' +
-      '<p class="small"><a href="' + esc(empfSuchUrl(id)) + '" target="_blank" rel="noopener">' + esc(t('f.empfSuche')) + '</a>' +
-      '<span data-empf-resetbox="' + esc(id) + '"' + (Object.prototype.hasOwnProperty.call(empfEdit, id) ? '' : ' hidden') + '> · <button type="button" class="linkbtn" data-empf-reset="' + esc(id) + '">' + esc(t('f.empfZurueck')) + '</button></span></p></div>';
+    var eigen = Object.prototype.hasOwnProperty.call(empfEdit, id);
+    var wert = eigen ? empfEdit[id] : empfVorschlag(id).join('\n');
+    var bekannt = empfBekannt(id), zu = bekannt && !eigen;
+    return '<div class="empf-edit empf-im-brief no-print">' +
+      (bekannt ? '<div class="empf-zeigen" data-empf-zeigen="' + esc(id) + '"' + (zu ? '' : ' hidden') + '><pre>' + esc(empfZeilen(id).join('\n')) + '</pre> <button type="button" class="linkbtn empf-aendern" data-empf-aendern="' + esc(id) + '">' + esc(t('f.empfAendern')) + '</button></div>' : '') +
+      '<div class="empf-feld" data-empf-feld="' + esc(id) + '"' + (zu ? ' hidden' : '') + '><label for="empf-' + esc(id) + '" class="vh">' + esc(t('f.empfTitel')) + '</label>' +
+      '<textarea id="empf-' + esc(id) + '" data-empf="' + esc(id) + '" rows="4" lang="de" dir="ltr" autocomplete="off" placeholder="' + esc(t('f.empfPlatz')) + '">' + esc(wert) + '</textarea>' +
+      '<p class="empf-such"><a class="btn ghost" href="' + esc(empfSuchUrl(id)) + '" target="_blank" rel="noopener">' + esc(t('f.empfSuche')) + '</a>' +
+      '<span data-empf-resetbox="' + esc(id) + '"' + (eigen ? '' : ' hidden') + '> <button type="button" class="linkbtn" data-empf-reset="' + esc(id) + '">' + esc(t('f.empfZurueck')) + '</button></span></p>' +
+      (bekannt || empfHinweisDa ? '' : (empfHinweisDa = true, '<p class="small">' + esc(t('f.empfHinweis')) + '</p>')) + '</div></div>';
   }
   function mappeTextNeu() {
     $('mappeText').value = briefIds().map(function (r) { return letterText(r.id); }).concat([sheetText()]).join('\n\n----------------------------------------\n\n');
   }
-  function letterText(id) {
+  // Aufgabenliste der Mappe (Vorbild GOV.UK „task list“): nummeriert, je Schritt ein Knopf, Haken „Erledigt“ (lotse.haken, Schlüssel mappe|…).
+  // Die Frist (Antrag sichert den Monat) steht sichtbar im letzten Schritt, nie zum Aufklappen.
+  function aufgabenHtml(mitBrief, mitForm, ohneOrt) {
+    var schritt = function (key, titel, text, knopf) {
+      var hk = 'mappe|' + key;
+      return '<li class="aufgabe"><h3>' + esc(t(titel)) + '</h3>' + (text ? '<p>' + esc(t(text)) + '</p>' : '') + knopf +
+        '<label class="haken"><input type="checkbox" data-haken="' + esc(hk) + '"' + (haken[hk] ? ' checked' : '') + '><span>' + esc(t('f.auf.erledigt')) + '</span></label></li>';
+    };
+    var zu = function (ziel, txt) { return '<p><button type="button" class="btn" data-sprung="' + ziel + '">' + esc(t(txt)) + '</button></p>'; };
+    return '<section class="no-print" aria-labelledby="h-auf"><h3 id="h-auf" class="vh">' + esc(t('f.auf.h')) + '</h3><ol class="aufgaben">' +
+      (mitBrief ? schritt('brief', 'f.auf.1', '', (ohneOrt ? '<p class="warn" id="mappeAdrNote">' + esc(t('f.adrFehlt')) + '</p>' : '') + zu('m-brief', 'f.auf.zu1')) : '') +
+      (mitForm ? schritt('formular', 'f.auf.2', '', zu('m-formulare', 'f.auf.zu2')) : '') +
+      schritt('unterlagen', 'f.auf.3', '', zu('m-unterlagen', 'f.auf.zu3')) +
+      schritt('abschicken', 'f.auf.4', 'f.auf.4.t', '<p class="mappe-stichtag"><strong>' + esc(t('f.stichtag')) + '</strong></p><p><button type="button" class="btn" data-mappe-druck="1">' + esc(t('f.print')) + '</button></p>') +
+      '</ol></section>';
+  }
+  // Brief am Bildschirm: Absender, Empfängerfeld, Rest; der ganze Brief (#brief-ID) nur im Druck
+  function briefSeite(id) {
+    var b = briefTeile(id);
+    return '<article class="page" id="m-brief-' + esc(id) + '" tabindex="-1" lang="de" dir="ltr"><pre id="brief-' + esc(id) + '" class="nur-druck">' + esc(letterText(id)) + '</pre>' +
+      '<div class="no-print"><pre>' + esc(b.kopf.join('\n')) + '\n</pre>' + empfHtml(id) + '<pre>' + esc(b.rest.join('\n')) + '</pre></div></article>';
+  }
+  // Brief in drei Teilen: Absender, Empfänger, Rest. In der Mappe steht das Empfängerfeld am Bildschirm an seiner Stelle im Brief.
+  function letterText(id) { var b = briefTeile(id); return b.kopf.concat([''], b.empf, b.rest).join('\n'); }
+  function briefTeile(id) {
     var a = ANTRAG[id];
-    var L = [
+    var K = [
       blank(person.name), blank(person.strasse), blank(person.ort)
     ];
-    if (person.tel && person.tel.trim()) L.push('Telefon: ' + person.tel.trim());
-    var empf = empfZeilen(id);
-    L.push.apply(L, [''].concat(empf));
+    if (person.tel && person.tel.trim()) K.push('Telefon: ' + person.tel.trim());
+    var L = [];
     L.push('', 'Datum: ' + today(), '', 'Betreff: ' + a.betreff, '', 'Sehr geehrte Damen und Herren,', '',
       a.satz + ' Bitte behandeln Sie dieses Schreiben als meinen Antrag und bestätigen Sie mir den Eingang. Bitte senden Sie mir außerdem die amtlichen Antragsformulare und eine Liste der Unterlagen zu, die Sie von mir benötigen. Die Formulare reiche ich schnellstmöglich nach.',
       '', 'Zu meinem Haushalt gehören: ' + haushaltZeile() + '.', '', 'Mit freundlichen Grüßen', '', '', blank(person.name) + '   (Unterschrift)');
-    return L.join('\n');
+    return { kopf: K, empf: empfZeilen(id), rest: L };
   }
 
   function besond() {
@@ -1276,28 +1327,23 @@
   }
   function buildMappe() {
     var ids = pickedIds(), briefe = briefIds();
-    var html = '', fh = formsHtml();
+    var html = '', fh = formsHtml(); empfHinweisDa = false;
     var nameLang = function (r) { return r.name + (lang === 'de' ? '' : ' (' + t('n.' + r.id) + ')'); };
-    // Übersicht mit Sprungmarken (nur am Bildschirm, nicht im Druck)
-    var inhalt = briefe.map(function (r) { return ['m-brief-' + r.id, t('f.inh.brief', { name: nameLang(r) })]; })
-      .concat([['m-angaben', t('f.inh.angaben')], ['m-unterlagen', t('f.docs')]]).concat(fh ? [['m-formulare', t('f.forms')]] : []);
-    html += '<nav class="mappe-inhalt no-print" aria-labelledby="h-minhalt"><h3 id="h-minhalt">' + esc(t('f.inhalt')) + '</h3><ol>' +
-      inhalt.map(function (x) { return '<li><a href="#' + x[0] + '" data-sprung="' + x[0] + '">' + esc(x[1]) + '</a></li>'; }).join('') + '</ol></nav>';
-    briefe.forEach(function (r) {
-      html += empfHtml(r.id) + '<article class="page" id="m-brief-' + esc(r.id) + '" tabindex="-1" lang="de" dir="ltr"><pre id="brief-' + esc(r.id) + '">' + esc(letterText(r.id)) + '</pre></article>';
-    });
-    html += '<article class="page" id="m-angaben" tabindex="-1" lang="de" dir="ltr"><pre>' + esc(sheetText()) + '</pre></article>';
-    html += '<article class="page docs" id="m-unterlagen" tabindex="-1"><h3>' + esc(t('f.docs')) + '</h3>' + ids.map(function (r) {
-      var s = r.steps;
-      return '<h3>' + esc(nameLang(r)) + '</h3>' +
-        '<p>' + esc(tL(s.wo)) + '</p>' + unterlagenListe(r) + '<p class="tip">' + esc(tL(s.tip)) + '</p>';
-    }).join('') + '</article>';
-    html += fh.replace('<article class="page docs forms">', '<article class="page docs forms" id="m-formulare" tabindex="-1">');
-    $('mappeBody').innerHTML = html;
-    // Hinweis, wenn Anschreiben ohne Empfänger-Anschrift bleiben, weil der Wohnort fehlt (Anschriften gibt es für Bayern)
+    // Kein Inhaltsverzeichnis: oben eine Aufgabenliste (die Liste ist das Verzeichnis), dann Briefe, Formulare, Angabenblatt, Unterlagen
+    // Fehlt der Wohnort, kann die App keine Anschriften einsetzen (Anschriften gibt es für Bayern): Hinweis im Schritt „Anschrift eintragen“
     var ohneOrt = Behoerden.available() && !aktAgs() && (!state.bundesland || state.bundesland === 'BY') &&
       ids.some(function (r) { return Behoerden.brauchtKreis(r.id); });
-    $('mappeAdrNote').hidden = !ohneOrt;
+    html += aufgabenHtml(briefe.length > 0, !!fh, ohneOrt);
+    briefe.forEach(function (r) { html += briefSeite(r.id); });
+    html += fh.replace('<article class="page docs forms">', '<article class="page docs forms" id="m-formulare" tabindex="-1">');
+    html += '<article class="page" id="m-angaben" tabindex="-1" lang="de" dir="ltr"><pre>' + esc(sheetText()) + '</pre></article>';
+    html += '<article class="page docs" id="m-unterlagen" tabindex="-1"><h3>' + esc(t('f.docs')) + '</h3>' +
+      '<p class="small muted haken-hint no-print">' + esc(t('haken.hint')) + '</p>' + ids.map(function (r) {
+      var s = r.steps;
+      return '<h3>' + esc(nameLang(r)) + '</h3>' +
+        '<p>' + esc(tL(s.wo)) + '</p>' + unterlagenListe(r, true) + '<p class="tip">' + esc(tL(s.tip)) + '</p>';
+    }).join('') + '<p class="small rb-satz">' + esc(t('rb.satz')) + '</p></article>';
+    $('mappeBody').innerHTML = html;
     mappeTextNeu();
   }
   // Empfänger bearbeiten: Brief und Kopiertext sofort angleichen, ohne die Mappe neu aufzubauen (Fokus bleibt im Feld)
@@ -1310,14 +1356,24 @@
       if (rb) rb.hidden = false;
       var pre = $('brief-' + id);
       if (pre) pre.textContent = letterText(id);
+      var zg = $('mappeBody').querySelector('[data-empf-zeigen="' + id + '"] pre');
+      if (zg) zg.textContent = empfZeilen(id).join('\n');
       mappeTextNeu();
     });
     $('mappeBody').addEventListener('click', function (ev) {
       var sp = ev.target && ev.target.closest && ev.target.closest('[data-sprung]');
-      if (sp) {
-        ev.preventDefault();
-        var ziel = $(sp.getAttribute('data-sprung'));
+      if (sp) { // Schritt der Aufgabenliste: zum ersten passenden Teil springen
+        var z = sp.getAttribute('data-sprung'), ziel = z === 'm-brief' ? $('mappeBody').querySelector('[id^="m-brief-"]') : $(z);
         if (ziel) { ziel.scrollIntoView({ behavior: smooth(), block: 'start' }); ziel.focus({ preventScroll: true }); }
+        return;
+      }
+      if (ev.target && ev.target.closest && ev.target.closest('[data-mappe-druck]')) { $('mappePrint2').click(); return; }
+      var ae = ev.target && ev.target.closest && ev.target.closest('[data-empf-aendern]');
+      if (ae) { // „ändern“: Feld an derselben Stelle öffnen
+        var aid = ae.getAttribute('data-empf-aendern');
+        $('mappeBody').querySelector('[data-empf-zeigen="' + aid + '"]').hidden = true;
+        $('mappeBody').querySelector('[data-empf-feld="' + aid + '"]').hidden = false;
+        $('empf-' + aid).focus();
         return;
       }
       var el = ev.target, id = el && el.getAttribute && el.getAttribute('data-empf-reset');
@@ -1339,11 +1395,14 @@
     // Leistungen ohne Formular-Link: Der formlose Antrag steht weiter oben in der Mappe
     var HINWEIS_FUER = { gsa: 'gsa', wg: 'wohngeld', wbs: 'wbs' }, briefe = {};
     briefIds().forEach(function (r) { briefe[r.id] = true; });
-    var h = '<article class="page docs forms"><h3>' + esc(t('f.forms')) + '</h3><p>' + esc(t('f.formsWeb')) + '</p>';
-    h += '<ul lang="de" dir="ltr">' + fp.map(function (f) {
-      var brief = f.art === 'hinweis' && briefe[HINWEIS_FUER[f.id]] ? (/[.!?]$/.test(f.warum) ? '' : '.') + ' <strong>' + esc(t('f.formsBrief')) + '</strong>' : '';
-      return '<li><strong>' + esc(f.titel) + '</strong> – ' + esc(f.warum) + brief + (f.url ? '<br><a href="' + esc(f.url) + '" target="_blank" rel="noopener">' + esc(t('f.formsLink')) + '</a>' : '') + (f.hilfe ? '<br><em>Ausfüllhilfe:</em>' + listItems(f.hilfe) : '') + '</li>';
-    }).join('') + '</ul><p class="tip">' + esc(t('f.formsCheck')) + '</p>';
+    // Je Formular eine Karte: Titel, darunter gleich groß der Link zum amtlichen Formular, dann ein Satz; Ausfüllhilfe zum Aufklappen
+    var h = '<article class="page docs forms"><h3>' + esc(t('f.forms')) + '</h3>' + mehrHtml('<p>' + esc(t('f.formsWeb')) + '</p>', t('mehr.was'));
+    h += fp.map(function (f) {
+      var brief = f.art === 'hinweis' && briefe[HINWEIS_FUER[f.id]] ? '<p><strong>' + esc(t('f.formsBrief')) + '</strong></p>' : '';
+      return '<section class="form-karte" lang="de" dir="ltr"><h4>' + esc(f.titel) + '</h4>' +
+        (f.url ? '<p class="form-link"><a class="btn" href="' + esc(f.url) + '" target="_blank" rel="noopener">' + esc(t('f.formsLink')) + '</a></p>' : '') +
+        '<p>' + esc(f.warum) + '</p>' + brief + (f.hilfe ? mehrHtml('<div>' + listItems(f.hilfe) + '</div>', t('mehr.ausfuellen')) : '') + '</section>';
+    }).join('') + '<p class="tip">' + esc(t('f.formsCheck')) + '</p>';
     if (jc) h += '<h3>' + esc(t('f.formsUnt')) + '</h3>' + '<div lang="de" dir="ltr">' + listItems(Formulare.unterlagen(state)) + '</div>';
     return h + '</article>';
   }
@@ -1474,6 +1533,7 @@
         s.u.forEach(function (k) { blocks.push({ t: 'li', text: (haken[r.id + '|' + k] ? '[x] ' : '[ ] ') + tL(k) }); });
         blocks.push({ t: 'small', text: tL(s.tip) });
       });
+      blocks.push({ t: 'small', text: t('rb.satz') }); // „Keine Rechtsberatung“ auf jedem Ausdruck
       pages.push({ blocks: blocks });
     } finally { lang = saved; }
     return pages;
@@ -3341,7 +3401,7 @@
   function briefOeffnen(art) {
     var teil = BRIEF_TEIL[art];
     document.querySelectorAll('#checkBox .pp-teil').forEach(function (s) { s.hidden = s.id !== teil; });
-    $('briefKacheln').hidden = !!teil; $('briefeIntro').hidden = !!teil; $('checkBox').hidden = !teil;
+    $('briefKacheln').hidden = !!teil; $('checkBox').hidden = !teil;
     $('ppNurDe').hidden = lang === 'de';
     if (briefArt !== (teil ? art : null)) { $('elMsg').textContent = ''; $('elErg').textContent = ''; }
     if (!teil) scanBilderSetzen([]);
@@ -3378,7 +3438,8 @@
     var sec = briefArt && briefArt !== 'af' && $(BRIEF_TEIL[briefArt]), karte = sec && sec.querySelector('.card');
     if (!karte) { box.hidden = true; return; }
     box.hidden = false;
-    karte.appendChild(box);
+    var satz = karte.querySelector('h2 + p'); // erster Satz; Details („Mehr dazu“, Wörter erklärt, Beispiel) stehen darunter
+    if (satz) satz.insertAdjacentElement('afterend', box); else karte.appendChild(box);
     $('elSelbst').hidden = !sec || !sec.classList.contains('pp-zu');
     $('elScanT').textContent = t(elGesammelt ? 'el.mehr' : briefArt ? 'el.scanHier' : 'el.scan');
   }
@@ -3418,7 +3479,7 @@
       var b = document.createElement('b'); b.textContent = r.titel; d.appendChild(b);
       var p = document.createElement('p'); p.textContent = BriefLesen.ERKLAERUNG[r.art]; d.appendChild(p);
       var fr = BriefLesen.frist(text);
-      if (fr) { var q = document.createElement('p'); q.textContent = t('el.frist', { frist: fr }); d.appendChild(q); }
+      if (fr) { var q = document.createElement('p'); q.textContent = t('el.frist', { frist: BriefLesen.fristLesbar ? BriefLesen.fristLesbar(fr) : fr }); d.appendChild(q); }
       var fk = fr && window.FristenOrdner ? FristenOrdner.briefKnopf(text, r.art) : null; if (fk) d.appendChild(fk); // nur auf Knopfdruck merken
       $('elErg').appendChild(d); if (ks) ksZeigen(ks, text); elNachricht(t('el.erkanntOhne', { titel: r.titel })); return;
     }
@@ -3469,6 +3530,8 @@
   $('elSelbst').addEventListener('click', function () { briefFormular(true); });
   if ($('an-pfaendung')) $('an-pfaendung').addEventListener('click', function () { oeffneVon('pfaendung', true); });
   if ($('an-eingabe')) $('an-eingabe').hidden = true; // in der App liest das Einlesen oben den Brief
+  // Antragsformular: Hinweis auf das Nachladen der Texterkennung gilt nur für die Web-Version; in der App liest das Gerät selbst
+  if (NATIVE && $('scLocalNote')) { $('scLocalNote').setAttribute('data-t', 'el.privat'); $('scLocalNote').textContent = t('el.privat'); }
   $('elLesen').addEventListener('click', function () { elGesammelt = ''; textLesen($('elText').value); });
 
   $('briefZurueck').addEventListener('click', function () { elGesammelt = ''; var war = null; document.querySelectorAll('#checkBox .pp-teil').forEach(function (s) { if (!s.hidden) war = s.id; }); briefOeffnen(null); for (var k in BRIEF_TEIL) if (BRIEF_TEIL[k] === war) $('brief-' + k).focus(); });

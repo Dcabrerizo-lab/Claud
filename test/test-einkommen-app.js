@@ -84,7 +84,7 @@ ck('[formular] Lohn: „Lohn im Monat vor Abzügen (brutto)“ + Minijob-Hinweis
 st({ ek1Art: 'rente', ek1Brutto: 900 });
 ck('[formular] Rente: „Rente im Monat vor Abzügen (brutto)“, kein Minijob-Hinweis', $('ek1BruttoLab').textContent === L['ek.brutto.rente'] && $('ek1ArtHint').hidden, [$('ek1BruttoLab').textContent, $('ek1ArtHint').textContent]);
 st({ adults: 2, ek1Art: 'rente', ek1Brutto: 900, ek2Art: 'ohne' });
-ck('[formular] Paar: Summen-Hinweis bei Person 1, nicht bei „Kein Einkommen“', $('ek1ArtHint').textContent === L['ek.art.hint'] && $('ek2ArtHint').hidden);
+ck('[formular] Paar: Summen-Hinweis bei Person 1 hinter „Mehr dazu“, nicht bei „Kein Einkommen“', !$('ek1ArtMehr').hidden && $('ek1ArtMehr').textContent.includes(L['ek.art.hint']) && !$('ek1ArtMehr').open && $('ek2ArtMehr').hidden && $('ek2ArtHint').hidden);
 ck('[formular] Schalter heißt „Kurzer Check für Menschen mit Behinderung (eine Person)“', $('einfachBtn').textContent.includes(L['einfach.btn']) && !/🙂/.test($('einfachBtn').textContent));
 // Geburtsjahr: „54“ ist ungültig -> Meldung sichtbar, kein Ergebnis; „1954“ -> rechnet
 st({ ek1Art: 'rente', ek1Brutto: 900 });

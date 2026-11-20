@@ -219,7 +219,10 @@ check('Kopiertext enthält Briefe und Angabenblatt', /Betreff: Antrag auf Unterh
   const brief = () => d.getElementById('brief-uvg').textContent;
   const kopie = () => d.getElementById('mappeText').value;
   check('[empf] Empfängerfeld je Brief, vorbefüllt mit dem Vorschlag der App (Stadt Erlangen, Jugendamt, Anschrift)', !!feld && /^Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle\n.+\n910\d\d Erlangen$/.test(feld.value), feld && feld.value);
-  check('[empf] Feld liegt außerhalb der Briefseite und wird nicht gedruckt', !!feld && !feld.closest('.page') && feld.closest('.empf-edit').classList.contains('no-print'));
+  check('[empf] Feld steht im Anschreiben an der Stelle der Anschrift, wird nicht gedruckt (gedruckt wird der fertige Brief)', !!feld && feld.closest('.page') === d.getElementById('m-brief-uvg') && feld.closest('.empf-edit').classList.contains('no-print') && d.getElementById('brief-uvg').classList.contains('nur-druck'));
+  check('[empf] Anschrift bekannt: steht schon da, Feld erst nach „ändern“', !d.querySelector('[data-empf-zeigen="uvg"]').hidden && d.querySelector('[data-empf-feld="uvg"]').hidden && /Stadt Erlangen/.test(d.querySelector('[data-empf-zeigen="uvg"]').textContent));
+  d.querySelector('[data-empf-aendern="uvg"]').click();
+  check('[empf] „ändern“ öffnet das Feld an derselben Stelle', !d.querySelector('[data-empf-feld="uvg"]').hidden && d.querySelector('[data-empf-zeigen="uvg"]').hidden);
   check('[empf] Nur ein Feld, weil nur ein Brief (Wohngeld hat Formular-Link)', d.querySelectorAll('#mappeBody textarea[data-empf]').length === 1);
   feld.value = 'Landratsamt Musterkreis\nJugendamt\nMusterweg 5\n12345 Musterstadt'; fire(feld, 'input');
   check('[empf] Änderung erscheint sofort im Brief', /\n\nLandratsamt Musterkreis\nJugendamt\nMusterweg 5\n12345 Musterstadt\n\nDatum:/.test(brief()) && !/Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle/.test(brief()), brief().slice(0, 300));
@@ -238,7 +241,7 @@ check('Kopiertext enthält Briefe und Angabenblatt', /Betreff: Antrag auf Unterh
   const link = d.querySelector('#mappeBody .empf-edit a');
   const q = link ? decodeURIComponent(link.getAttribute('href').split('?q=')[1] || '') : '';
   check('[empf] Suchlink: DuckDuckGo, kurzer Suchbegriff und Ortsname ohne Postleitzahl, öffnet extern', !!link && /^https:\/\/duckduckgo\.com\/\?q=/.test(link.getAttribute('href')) && q === 'Unterhaltsvorschussstelle Jugendamt Erlangen' && link.getAttribute('target') === '_blank' && /noopener/.test(link.getAttribute('rel')) && link.textContent === I18N.de['f.empfSuche'], q);
-  check('[empf] Titel und Hinweis in der gewählten Sprache', d.querySelector('#mappeBody .empf-edit label').textContent === I18N.de['f.empfTitel'] && d.querySelector('#mappeBody .empf-edit p.small').textContent === I18N.de['f.empfHinweis']);
+  check('[empf] Titel und Platzhalter in der gewählten Sprache; bei bekannter Anschrift kein Hinweis „Fehlt die Anschrift“', d.querySelector('#mappeBody .empf-edit label').textContent === I18N.de['f.empfTitel'] && d.querySelector('#mappeBody textarea[data-empf]').getAttribute('placeholder') === I18N.de['f.empfPlatz'] && !d.querySelector('#mappeBody .empf-edit p.small'));
   check('[empf] Neue Texte in allen 13 Sprachen vorhanden', ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so'].every((l) => ['f.empfTitel', 'f.empfHinweis', 'f.empfSuche', 'f.empfZurueck'].every((k) => I18N[l] && typeof I18N[l][k] === 'string' && I18N[l][k].length > 5)));
   check('[empf] Keine Skriptfehler', errors.length === 0, errors.join('; '));
 }
@@ -255,7 +258,7 @@ setTimeout(() => {
   check('Kopieren meldet Ergebnis oder zeigt Ersatzfeld', d.getElementById('copyMsg').textContent.length > 0 || d.getElementById('mappeText').hidden === false);
   // Sprache in der Mappe
   setLang('en');
-  const docs = d.querySelector('#mappeBody .docs');
+  const docs = d.getElementById('m-unterlagen');
   check('Mappe wird bei Sprachwechsel neu aufgebaut: Unterlagenliste englisch', /Documents for this benefit/.test(docs.textContent) && /Rental contract or confirmation of rent/.test(docs.textContent), docs.textContent.slice(0, 80));
   check('Brief bleibt bei Sprachwechsel Deutsch', /Betreff: Antrag auf Unterhaltsvorschuss/.test(d.querySelector('#mappeBody .page').textContent));
   setLang('ar');

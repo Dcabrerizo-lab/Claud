@@ -187,6 +187,15 @@ const BriefLesen = (function () {
     return dauer;
   }
   function frist(text) { const r = fristMitZeile(text); return r ? r.frist : null; }
+  // Lesbare Anzeige der gefundenen Frist: „innerhalb eines Monats“ liefert nur „Monats“ (das Wort „eines“ steckt im Anfang),
+  // „innerhalb einer Woche“ ggf. nur „Woche“. Angezeigt wird dann „1 Monat“ bzw. „1 Woche“; der Rohwert bleibt für die Fristrechnung.
+  function fristLesbar(f) {
+    const x = String(f == null ? '' : f).trim();
+    if (/^Monats$/i.test(x)) return '1 Monat';
+    if (/^Woche$/i.test(x)) return '1 Woche';
+    const m = /^(einem|einer)\s+(Monat|Woche|Tag)$/i.exec(x);
+    return m ? '1 ' + m[2].charAt(0).toUpperCase() + m[2].slice(1).toLowerCase() : x;
+  }
 
   // Anderer Brief: Frist nur mit Beleg (die Zeile aus dem Brief, in der sie steht), dazu Hinweise auf Mahnbescheid oder Inkasso.
   // Ergebnis: { fristen: [{ frist, zeile }], mahnbescheid, vollstreckungsbescheid, inkasso, art (erkannte Art aus erkenne oder null) }
@@ -275,6 +284,6 @@ const BriefLesen = (function () {
     };
   }
 
-  return { erkenne, lies, betraege, ERKLAERUNG, frist, fristMitZeile, andere, ARTEN, kostensenkung, kennungen: (text) => kennungen(zeilen(text), String(text || '')) };
+  return { erkenne, lies, betraege, ERKLAERUNG, frist, fristLesbar, fristMitZeile, andere, ARTEN, kostensenkung, kennungen: (text) => kennungen(zeilen(text), String(text || '')) };
 })();
 if (typeof module !== 'undefined') module.exports = BriefLesen;
