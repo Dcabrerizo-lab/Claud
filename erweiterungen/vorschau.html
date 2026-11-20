@@ -101,7 +101,7 @@
     <div class="card">
       <h2>Pflegegutachten prüfen</h2>
       <p>Scanne das Gutachten oder wähle ein PDF. SoLo rechnet die Punkte nach.</p>
-      <details class="mehr"><summary>Was prüft SoLo genau?</summary><p>SoLo rechnet die Punkte des Gutachtens nach § 15 SGB XI nach und zeigt, wo es knapp ist. Scannen geht am schnellsten: Von Hand sind es rund 60 Bewertungen.</p></details>
+      <details class="mehr"><summary data-t="bp.was">Was prüft SoLo genau?</summary><p>SoLo rechnet die Punkte des Gutachtens nach § 15 SGB XI nach und zeigt, wo es knapp ist. Scannen geht am schnellsten: Von Hand sind es rund 60 Bewertungen.</p></details>
       <label for="pf-text">Text aus dem Gutachten (aus einem PDF kopiert oder vom Foto erkannt)</label>
       <textarea id="pf-text" placeholder="z. B. 1.1 Positionswechsel im Bett  überwiegend selbständig …"></textarea>
       <div class="btns"><button type="button" class="btn primary" id="pf-lesen">Text lesen</button><button type="button" class="btn" id="pf-beispiel">Beispiel laden</button><button type="button" class="btn" id="pf-leeren">Alles leeren</button></div>
@@ -162,10 +162,10 @@
   <!-- Bescheid Grundsicherungsgeld -->
   <section id="p-bescheid" role="tabpanel" aria-labelledby="tab-bescheid" hidden>
     <div class="card">
-      <h2>Bescheid Grundsicherungsgeld prüfen</h2>
-      <p>Scanne den Bescheid. SoLo rechnet nach und zeigt Abweichungen.</p>
-      <details class="mehr"><summary>Was prüft SoLo genau?</summary><p>Trage die Personen und die Beträge aus dem Bescheid für einen Monat ein. SoLo rechnet mit denselben Regeln wie die App nach.</p></details>
-      <details class="begriffe"><summary>Wörter im Bescheid erklärt</summary>
+      <h2 data-t="bp.jc.h">Bescheid Grundsicherungsgeld prüfen</h2>
+      <p data-t="bp.scan.p">Scanne den Bescheid. SoLo rechnet nach und zeigt Abweichungen.</p>
+      <details class="mehr"><summary data-t="bp.was">Was prüft SoLo genau?</summary><p data-t="bp.jc.was">SoLo rechnet die Beträge deines Bescheids für einen Monat nach, mit denselben Regeln wie der Leistungs-Check: Regelbedarfe, Mehrbedarfe, Miete und Heizung und das angerechnete Einkommen. Wo der Bescheid zu deinen Lasten abweicht, zeigt SoLo den Unterschied und den Grund.</p></details>
+      <details class="begriffe"><summary data-t="bp.begriffe">Wörter im Bescheid erklärt</summary>
         <dl>
           <dt>Bedarfsgemeinschaft</dt><dd>Alle, für die das Jobcenter zusammen rechnet: du, dein Ehe- oder Lebenspartner und eure unverheirateten Kinder unter 25 im Haushalt (§ 7 Abs. 3 SGB II).</dd>
           <dt>Berechnungsbogen</dt><dd>Die Seiten im Bescheid mit der Rechnung: je Person und Monat, was anerkannt und was als Einkommen abgezogen wird. Meist hinten am Bescheid.</dd>
@@ -230,9 +230,9 @@
   <section id="p-gsa" role="tabpanel" aria-labelledby="tab-gsa" hidden>
     <div class="card">
       <h2>Bescheid Grundsicherung im Alter prüfen</h2>
-      <p>Scanne den Bescheid. SoLo rechnet nach und zeigt Abweichungen.</p>
-      <details class="mehr"><summary>Was prüft SoLo genau?</summary><p>Für Grundsicherung im Alter und bei Erwerbsminderung vom Sozialamt. Trage die Beträge für einen Monat ein. SoLo rechnet mit denselben Regeln wie die App nach, dazu mit dem Freibetrag für Betriebs-, Riester- und private Renten.</p></details>
-      <details class="begriffe"><summary>Wörter im Bescheid erklärt</summary>
+      <p data-t="bp.scan.p">Scanne den Bescheid. SoLo rechnet nach und zeigt Abweichungen.</p>
+      <details class="mehr"><summary data-t="bp.was">Was prüft SoLo genau?</summary><p>Für Grundsicherung im Alter und bei Erwerbsminderung vom Sozialamt. Trage die Beträge für einen Monat ein. SoLo rechnet mit denselben Regeln wie die App nach, dazu mit dem Freibetrag für Betriebs-, Riester- und private Renten.</p></details>
+      <details class="begriffe"><summary data-t="bp.begriffe">Wörter im Bescheid erklärt</summary>
         <dl>
           <dt>Berechnungsbogen</dt><dd>Die Seiten im Bescheid mit der Rechnung: was anerkannt und was als Einkommen abgezogen wird. Meist hinten am Bescheid.</dd>
           <dt>Regelbedarf (Regelsatz)</dt><dd>Fester Betrag für den Alltag, zum Beispiel Essen, Kleidung und Strom. Die Höhe hängt davon ab, ob man allein oder als Paar lebt (§ 27a SGB XII).</dd>
@@ -312,7 +312,7 @@
     <div class="card">
       <h2>Wohngeldbescheid prüfen</h2>
       <p>Scanne den Wohngeldbescheid. SoLo rechnet nach dem Wohngeldgesetz nach.</p>
-      <details class="mehr"><summary>Was prüft SoLo genau?</summary><p>Trage die Angaben aus dem Bescheid ein (Beträge im Monat). Die Rechnung trifft den amtlichen Wohngeldrechner auf höchstens 1 € genau.</p></details>
+      <details class="mehr"><summary data-t="bp.was">Was prüft SoLo genau?</summary><p>Trage die Angaben aus dem Bescheid ein (Beträge im Monat). Die Rechnung trifft den amtlichen Wohngeldrechner auf höchstens 1 € genau.</p></details>
       <div class="btns"><button type="button" class="btn" id="wg-beispiel">Beispiel laden</button></div>
     </div>
     <form id="wg-form" onsubmit="return false">
@@ -364,8 +364,8 @@
   <section id="p-kiz" role="tabpanel" aria-labelledby="tab-kiz" hidden>
     <div class="card">
       <h2>Bescheid Kinderzuschlag prüfen</h2>
-      <p>Scanne den Bescheid. SoLo rechnet nach und zeigt Abweichungen.</p>
-      <details class="mehr"><summary>Was prüft SoLo genau?</summary><p>Trage die Durchschnittsbeträge der letzten sechs Monate vor dem Antrag ein. Mit diesem Zeitraum rechnet auch die Familienkasse. SoLo rechnet mit denselben Regeln wie die App nach.</p></details>
+      <p data-t="bp.scan.p">Scanne den Bescheid. SoLo rechnet nach und zeigt Abweichungen.</p>
+      <details class="mehr"><summary data-t="bp.was">Was prüft SoLo genau?</summary><p>Trage die Durchschnittsbeträge der letzten sechs Monate vor dem Antrag ein. Mit diesem Zeitraum rechnet auch die Familienkasse. SoLo rechnet mit denselben Regeln wie die App nach.</p></details>
       <div class="btns"><button type="button" class="btn" id="kz-beispiel">Beispiel laden</button></div>
     </div>
     <form id="kz-form" onsubmit="return false">
@@ -417,7 +417,7 @@
     <div class="card">
       <h2>Nebenkostenabrechnung prüfen</h2>
       <p>Scanne die Abrechnung. SoLo prüft Fristen und Posten.</p>
-      <details class="mehr"><summary>Was prüft SoLo genau?</summary><p>SoLo prüft Fristen, nicht umlagefähige Posten, die Verteilung nach Wohnfläche, Heizkosten und CO₂-Kosten. Ob ein Betrag zu hoch ist, kann SoLo nicht entscheiden.</p></details>
+      <details class="mehr"><summary data-t="bp.was">Was prüft SoLo genau?</summary><p>SoLo prüft Fristen, nicht umlagefähige Posten, die Verteilung nach Wohnfläche, Heizkosten und CO₂-Kosten. Ob ein Betrag zu hoch ist, kann SoLo nicht entscheiden.</p></details>
       <div class="btns"><button type="button" class="btn" id="nk-beispiel">Beispiel laden</button></div>
     </div>
     <form id="nk-form" onsubmit="return false">
@@ -477,7 +477,7 @@
     <div class="card">
       <h2>Anderer Brief oder du weißt es nicht</h2>
       <p>Scanne den Brief oder füge den Text ein. SoLo sucht eine Frist.</p>
-      <details class="mehr"><summary>Was prüft SoLo genau?</summary><p>SoLo zeigt eine Frist nur, wenn sie im Brief steht. Weiter unten steht, was bei Mahnbescheid und Inkasso wichtig ist.</p></details>
+      <details class="mehr"><summary data-t="bp.was">Was prüft SoLo genau?</summary><p>SoLo zeigt eine Frist nur, wenn sie im Brief steht. Weiter unten steht, was bei Mahnbescheid und Inkasso wichtig ist.</p></details>
       <div class="an-eingabe" id="an-eingabe">
         <label for="an-text">Text aus dem Brief</label>
         <textarea id="an-text" lang="de" rows="5" autocomplete="off" spellcheck="false"></textarea>

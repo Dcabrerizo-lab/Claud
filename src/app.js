@@ -113,7 +113,7 @@
     return d;
   }
   function mehrHtml(innenHtml, titel) { return '<details class="mehr"><summary>' + esc(titel) + '</summary>' + innenHtml + '</details>'; }
-  window.SoloMehr = { el: mehrEl, rb: function () { return t('rb.satz'); } }; // auch für die Prüfpakete (erweiterungen/vorschau.js)
+  window.SoloMehr = { el: mehrEl, rb: function () { return t('rb.satz'); }, t: function (k, p) { return Object.prototype.hasOwnProperty.call(I18N.de, k) ? t(k, p) : null; } }; // auch für die Prüfpakete (erweiterungen/vorschau.js)
 
   function fillSelect(id, items, current) {
     var el = $(id);
@@ -530,6 +530,8 @@
     fillSelect('uzAn', [['', t('uz.an.0')], ['k1', t('uz.an.k1')], ['k2', t('uz.an.k2')], ['k3', t('uz.an.k3')], ['ex', t('uz.an.ex')], ['exk', t('uz.an.exk')]], state.uzAn);
     fillSelect('emStd', [['', t('bh.em.0')], ['unter3', t('bh.em.unter3')], ['3bis6', t('bh.em.3bis6')], ['unklar', t('bh.em.unklar')]], state.emStd);
     fillSelect('lang', LANGS.map(function (c) { return [c, I18N[c]['meta.name']]; }), lang);
+    // Sprachwahl oben auf der Startseite: jede Sprache in ihrer eigenen Schrift, dazu „Deutsch – Einfache Sprache“
+    fillSelect('langTop', LANGS.map(function (c) { return [c, I18N[c]['meta.name']]; }).concat([['de-einfach', I18N.de['lang.einfach']]]), lang === 'de' && einfachSprache ? 'de-einfach' : lang);
     plzUpdate(false);
   }
 
@@ -543,8 +545,8 @@
     document.querySelectorAll('[data-t-aria]').forEach(function (el) { el.setAttribute('aria-label', t(el.getAttribute('data-t-aria'))); });
     document.querySelectorAll('[data-t-ph]').forEach(function (el) { el.setAttribute('placeholder', t(el.getAttribute('data-t-ph'))); });
     $('mappeDeNote').hidden = lang === 'de'; // Hinweis „Brief und Angabenblatt sind auf Deutsch“ nur bei anderer App-Sprache
-    $('stand').textContent = t('stand', { stand: Rules.RULES.stand });
-    $('vertrauenT').textContent = t('vertrauen', { stand: Rules.RULES.stand }); // Stand und Herkunft der Zahlen sichtbar am Ergebnis
+    $('stand').textContent = t('stand', { stand: standL() });
+    $('vertrauenT').textContent = t('vertrauen', { stand: standL() }); // Stand und Herkunft der Zahlen sichtbar am Ergebnis
     $('appVersion').textContent = t('set.version', { v: APPVERSION });
     einfacheSpracheAnzeigen();
     if (window.Haushalt && Haushalt.sprache) Haushalt.sprache(); // Haushaltsplan (src/haushalt.js) in der neuen Sprache zeichnen
@@ -553,7 +555,7 @@
     if (window.Schulden && Schulden.sprache) Schulden.sprache(); // Schulden-Liste (src/schulden.js)
     // Regeln älter als der nächste Stichtag (1. Januar): deutlich darauf hinweisen
     var veraltet = regelnVeraltet();
-    $('altNotice').hidden = !veraltet; $('altNotice').textContent = veraltet ? t('alt.hinweis', { stand: Rules.RULES.stand }) : '';
+    $('altNotice').hidden = !veraltet; $('altNotice').textContent = veraltet ? t('alt.hinweis', { stand: standL() }) : '';
     $('transNotice').hidden = lang === 'de';
     buildSelects();
     render();
@@ -595,6 +597,8 @@
     if (an && window.Schritte && !Schritte.weg()) Schritte.wegLaden('', true); // Beratungsmodus: ohne eigene Wahl „Alles auf einer Seite“
   }
 
+  // Stand der Regeln in der App-Sprache (Monatsname übersetzt, Fmt.monat); das Angabenblatt (Deutsch) nimmt Rules.RULES.stand
+  function standL() { return Fmt.monat(Rules.RULES.stand, lang); }
   function regelnVeraltet() { var ab = Rules.RULES.pruefenAb; return !!ab && new Date() >= new Date(ab + 'T00:00:00'); }
 
   function setLang(c) {
@@ -667,7 +671,9 @@
     jb.addEventListener('click', function () { box.remove(); flush(); ja(); });
     bt.appendChild(nein); bt.appendChild(jb); box.appendChild(bt);
     nach.parentNode.insertBefore(box, nach.nextSibling);
-    tt.tabIndex = -1; tt.focus(); // kein Knopf vorgewählt (NN/g): Fokus auf die Frage
+    tt.tabIndex = -1; tt.focus({ preventScroll: true }); // kein Knopf vorgewählt (NN/g): Fokus auf die Frage
+    // Rückfrage ganz in den Blick holen (nicht unter dem Bildrand oder hinter der unteren Leiste; Abstand: scroll-margin in .loesch-frage)
+    try { box.scrollIntoView({ behavior: smooth(), block: 'center' }); } catch (e) { box.scrollIntoView(); }
   }
 
   var CHECKS = ['mzG', 'mzGl', 'algZeit', 'grundrente33', 'wfbmEssen', 'teilhabe', 'schwanger', 'ernaehrung', 'warmwasser', 'kinder12', 'kindKrank', 'unterhaltFehlt', 'uvgWechsel', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt', 'uzTitel', 'autoBraucht'];
@@ -737,6 +743,12 @@
     CHECKS.forEach(function (k) { $(k).addEventListener('change', function () { state[k] = $(k).checked; touched(); }); });
     BEZUG.forEach(function (k) { $('b-' + k).addEventListener('change', function () { state.bezug[k] = $('b-' + k).checked; touched(); }); });
     $('lang').addEventListener('change', function () { setLang($('lang').value); });
+    $('langTop').addEventListener('change', function () {
+      var v = $('langTop').value, es = v === 'de-einfach';
+      if (es || (v === 'de' && einfachSprache)) { einfachSprache = es; Store.set('lotse.einfachSprache', es ? '1' : '0'); }
+      setLang(es ? 'de' : v);
+      var k = $('langTop'); if (k) k.focus({ preventScroll: true });
+    });
     if ($('sc-take')) $('sc-take').addEventListener('click', function () { runNative(); });
     if ($('sc-local')) $('sc-local').addEventListener('click', function () { runLocal(true); });
     if ($('sc-pasteBtn')) $('sc-pasteBtn').addEventListener('click', function () { var b = $('sc-pasteBox'); b.hidden = !b.hidden; $('sc-pasteBtn').setAttribute('aria-expanded', String(!b.hidden)); if (!b.hidden) $('sc-text').focus(); });
@@ -902,6 +914,13 @@
   // Beratungsmodus: Rechtsgrundlage der Leistung (Rules.RECHT, deutsch) unter dem Kartentext
   function rechtHtml(r) { return beratung && r.recht ? '<p class="recht"><strong>' + esc(t('recht.label')) + ':</strong> <span lang="de" dir="ltr">' + esc(r.recht) + '</span></p>' : ''; }
   // Unterlagen-Checkliste zum Abhaken (Antragsmappe); Haken bleiben auf dem Gerät (lotse.haken)
+  // Grundsicherungsgeld: die genaue Liste nach der Lage des Haushalts (src/formulare.js, nur Deutsch) statt der allgemeinen – eine Liste je Hilfe
+  function unterlagenGenau(r) {
+    return '<ul class="haken-liste">' + Formulare.unterlagen(state).map(function (text) {
+      var key = r.id + '|f:' + text.slice(0, 60);
+      return '<li><label class="haken"><input type="checkbox" data-haken="' + esc(key) + '"' + (haken[key] ? ' checked' : '') + '><span>' + esc(text) + '</span></label></li>';
+    }).join('') + '</ul>';
+  }
   function unterlagenListe(r, ohneHinweis) {
     return (ohneHinweis ? '' : '<p class="small muted haken-hint no-print">' + esc(t('haken.hint')) + '</p>') + '<ul class="haken-liste">' + r.steps.u.map(function (k) {
       var key = r.id + '|' + k;
@@ -928,6 +947,17 @@
     if (zl) teile.push(zl); else if (Object.prototype.hasOwnProperty.call(I18N.de, zk)) teile.push(t(zk));
     return teile.length ? teile.join(' · ') : t('h.' + r.hl);
   }
+  // Alles, was für ein genaueres Ergebnis fehlt, auf einmal nennen (ohne die fehlt.*-Zeilen der Karte doppelt)
+  var GENAUER = { wohngeld: 1, kiz: 1, ggeld: 1, but: 1 };
+  function genauerHtml(r) {
+    if (!GENAUER[r.id] || (r.level !== 'ja' && r.level !== 'vielleicht')) return '';
+    var schon = {}; r.tx.forEach(function (x) { schon[x[0]] = true; });
+    var f = [];
+    if (r.id !== 'but' && (state.vermoegen === '' || state.vermoegen == null) && !schon['fehlt.vermoegen']) f.push(t('gn.vermoegen'));
+    if (r.id === 'wohngeld' && !state.mietstufe) f.push(t('gn.plz'));
+    if ((state.ek1Geschaetzt || state.ek2Geschaetzt) && !schon['fehlt.einkommen']) f.push(t('gn.brutto'));
+    return f.length ? '<p class="karte-genauer">' + esc(t('gn.liste', { liste: f.join(', ') })) + '</p>' : '';
+  }
   function card(r) {
     var dim = r.level === 'nein' || r.level === 'na';
     // Unterlagen und nächste Schritte stehen nur in der Antragsmappe (m-unterlagen, mit Haken); die Karte verweist kurz darauf
@@ -938,7 +968,7 @@
       '<header><div><h3' + (lang === 'de' ? '' : ' lang="de"') + '>' + esc(r.name) + '</h3>' + (desc ? '<div class="desc">' + esc(desc) + '</div>' : '') + '</div>' +
       '<span class="pill ' + r.level + '"><span aria-hidden="true">' + MARK[r.level] + '</span>' + esc(t('lvl.' + r.level)) + '</span></header>' +
       '<p class="head2">' + esc(beratung ? zeile2(r) : Fmt.ohnePara(zeile2(r))) + '</p><span class="karte-mehr" aria-hidden="true" data-mehr="' + esc(t('karte.mehr')) + '" data-weniger="' + esc(t('karte.weniger')) + '"></span></summary>' +
-      '<div class="body"><div class="txt">' + resultHtml(r) + '</div>' + (kartenHinweise[r.id] || []).map(function (z) { return '<p class="karte-hinweis"><span aria-hidden="true">ⓘ </span>' + esc(tL(z[0], z[1])) + '</p>'; }).join('') + rechtHtml(r) + '</div>' +
+      '<div class="body"><div class="txt">' + resultHtml(r) + genauerHtml(r) + '</div>' + (kartenHinweise[r.id] || []).map(function (z) { return '<p class="karte-hinweis"><span aria-hidden="true">ⓘ </span>' + esc(tL(z[0], z[1])) + '</p>'; }).join('') + rechtHtml(r) + '</div>' +
       zustHtml(r) + steps + '</details></article>';
   }
 
@@ -982,12 +1012,15 @@
       '<div class="ww-wege"><div class="ww-weg"><h4>' + esc(tL('eo.a.h')) + '</h4><p>' + esc(tL('eo.a.t')) + '</p>' + wegLinks(results, ['gsa']) + '</div>' +
       '<div class="ww-weg"><h4>' + esc(tL('eo.b.h')) + '</h4><p>' + esc(tL('eo.b.t')) + '</p>' + wegLinks(results, ['wohngeld']) + '</div></div></section>';
   }
+  // Ohne Kinder: Texte mit Endung „0“ (kein Kinderzuschlag, keine Bildung und Teilhabe). Vorrang Wohngeld: § 12a SGB II,
+  // § 7 Abs. 1 WoGG (gesetze-im-internet.de, abgerufen 20.11.2026)
   function zweiWege(results) {
     var weg = function (ids) { return wegLinks(results, ids); };
-    return '<section class="zweiwege" id="zweiWege" aria-labelledby="h-ww"><h3 id="h-ww">' + esc(t('ww.h')) + '</h3><p class="ww-tun"><b>' + esc(t('ww.tipp')) + '</b></p>' +
-      '<details class="mehr ww-mehr"><summary>' + esc(t('mehr.wege')) + '</summary><p>' + esc(t('ww.t')) + '</p><div class="ww-wege"><div class="ww-weg"><h4>' + esc(t('ww.a.h')) + '</h4><p>' + esc(t('ww.a.t')) + '</p>' + weg(['ggeld', 'but']) + '</div>' +
-      '<div class="ww-weg"><h4>' + esc(t('ww.b.h')) + '</h4><p>' + esc(t('ww.b.t')) + '</p>' + weg(['wohngeld', 'kiz', 'but']) + '</div></div>' +
-      '<p class="ww-regel"><b>' + esc(t('ww.regel.h')) + '</b> ' + esc(t('ww.regel')) + '</p></details></section>';
+    var k = (state.kids || 0) + (state.young || 0) > 0, o = k ? '' : '0';
+    return '<section class="zweiwege" id="zweiWege" aria-labelledby="h-ww"><h3 id="h-ww">' + esc(t('ww.h' + o)) + '</h3><p class="ww-tun"><b>' + esc(t('ww.tipp')) + '</b></p>' +
+      '<details class="mehr ww-mehr"><summary>' + esc(t('mehr.wege')) + '</summary><p>' + esc(t('ww.t')) + '</p><div class="ww-wege"><div class="ww-weg"><h4>' + esc(t('ww.a.h')) + '</h4><p>' + esc(t('ww.a.t' + o)) + '</p>' + weg(k ? ['ggeld', 'but'] : ['ggeld']) + '</div>' +
+      '<div class="ww-weg"><h4>' + esc(t('ww.b.h' + o)) + '</h4><p>' + esc(t('ww.b.t' + o)) + '</p>' + weg(k ? ['wohngeld', 'kiz', 'but'] : ['wohngeld']) + '</div></div>' +
+      '<p class="ww-regel"><b>' + esc(t('ww.regel.h')) + '</b> ' + esc(t('ww.regel' + o)) + '</p></details></section>';
   }
 
   function renderPick(results) {
@@ -1189,6 +1222,15 @@
   // alg1: Der Brief ersetzt die Arbeitslosmeldung nicht. Arbeitslosmeldung elektronisch im Fachportal oder persönlich (§ 141 Abs. 1 SGB III);
   //       Arbeitsuchendmeldung spätestens 3 Monate vor dem Ende, bei kürzerer Kenntnis innerhalb von 3 Tagen (§ 38 Abs. 1 SGB III).
   // srente: Das Anschreiben bittet nur um Rentenauskunft und Beratung (ANTRAG.srente), es ist kein Rentenantrag (§ 99 Abs. 1 SGB VI).
+  // Mehrere Hilfen: wofür es ein Anschreiben gibt und was über das amtliche Formular läuft
+  function anschreibenFuer(briefe) {
+    var nm = function (r) { return r.name + (lang === 'de' ? '' : ' (' + t('n.' + r.id) + ')'); };
+    var mitBrief = {}; (briefe || []).forEach(function (r) { mitBrief[r.id] = true; });
+    var form = pickedIds().filter(function (r) { return !mitBrief[r.id]; });
+    if (!(briefe || []).length || (briefe.length === 1 && !form.length)) return '';
+    return '<p>' + esc(t(briefe.length === 1 ? 'f.auf.1.eins' : 'f.auf.1.fuer', { liste: briefe.map(nm).join(', ') })) + '</p>' +
+      (form.length ? '<p>' + esc(t('f.auf.1.form', { liste: form.map(nm).join(', ') })) + '</p>' : '');
+  }
   function aufgabenHtml(mitBrief, mitForm, ohneOrt, briefe) {
     var hat = function (id) { return (briefe || []).some(function (r) { return r.id === id; }); };
     var nurSrente = hat('srente') && briefe.length === 1 && !mitForm;
@@ -1199,7 +1241,7 @@
     };
     var zu = function (ziel, txt) { return '<p><button type="button" class="btn" data-sprung="' + ziel + '">' + esc(t(txt)) + '</button></p>'; };
     return '<section class="no-print" aria-labelledby="h-auf"><h3 id="h-auf" class="vh">' + esc(t('f.auf.h')) + '</h3><ol class="aufgaben">' +
-      (mitBrief ? schritt('brief', 'f.auf.1', '', (ohneOrt ? '<p class="warn" id="mappeAdrNote">' + esc(t('f.adrFehlt')) + '</p>' : '') + zu('m-brief', 'f.auf.zu1')) : '') +
+      (mitBrief ? schritt('brief', 'f.auf.1', '', anschreibenFuer(briefe) + (ohneOrt ? '<p class="warn" id="mappeAdrNote">' + esc(t('f.adrFehlt')) + '</p>' : '') + zu('m-brief', 'f.auf.zu1')) : '') +
       (mitForm ? schritt('formular', 'f.auf.2', '', zu('m-formulare', 'f.auf.zu2')) : '') +
       schritt('unterlagen', 'f.auf.3', '', zu('m-unterlagen', 'f.auf.zu3')) +
       schritt('abschicken', 'f.auf.4', 'f.auf.4.t', (hat('alg1') ? '<p class="warn mappe-alg1" role="note"><strong>' + esc(t('f.alg1.meldung')) + '</strong></p>' : '') +
@@ -1347,7 +1389,7 @@
       '<p class="small">' + esc(t('steps.note')) + '</p><p class="small muted haken-hint no-print">' + esc(t('haken.hint')) + '</p>' + ids.map(function (r) {
       var s = r.steps;
       return '<h3>' + esc(nameLang(r)) + '</h3>' +
-        '<p>' + esc(tL(s.wo)) + '</p>' + unterlagenListe(r, true) + '<p class="tip">' + esc(tL(s.tip)) + '</p>';
+        '<p>' + esc(tL(s.wo)) + '</p>' + (r.id === 'ggeld' && lang === 'de' && typeof Formulare !== 'undefined' ? unterlagenGenau(r) : unterlagenListe(r, true)) + '<p class="tip">' + esc(tL(s.tip)) + '</p>';
     }).join('') + '<p class="small rb-satz">' + esc(t('rb.satz')) + '</p></article>';
     $('mappeBody').innerHTML = html;
     mappeTextNeu();
@@ -1397,7 +1439,6 @@
   function formsHtml() {
     var fp = formPlan();
     if (!fp.length) return '';
-    var jc = fp.some(function (f) { return f.id === 'ggeld'; });
     // Leistungen ohne Formular-Link: Der formlose Antrag steht weiter oben in der Mappe
     var HINWEIS_FUER = { gsa: 'gsa', wg: 'wohngeld', wbs: 'wbs' }, briefe = {};
     briefIds().forEach(function (r) { briefe[r.id] = true; });
@@ -1409,7 +1450,6 @@
         (f.url ? '<p class="form-link"><a class="btn" href="' + esc(f.url) + '" target="_blank" rel="noopener">' + esc(t('f.formsLink')) + '</a></p>' : '') +
         '<p>' + esc(f.warum) + '</p>' + brief + (f.hilfe ? mehrHtml('<div>' + listItems(f.hilfe) + '</div>', t('mehr.ausfuellen')) : '') + '</section>';
     }).join('') + '<p class="tip">' + esc(t('f.formsCheck')) + '</p>';
-    if (jc) h += '<h3>' + esc(t('f.formsUnt')) + '</h3>' + '<div lang="de" dir="ltr">' + listItems(Formulare.unterlagen(state)) + '</div>';
     return h + '</article>';
   }
 
@@ -1457,7 +1497,7 @@
           (beratung && z.r.recht ? '<br><span class="small" lang="de" dir="ltr">' + esc(z.r.recht) + '</span>' : '') + '</th>' +
           '<td data-l="' + esc(t(cols[1])) + '"><span class="pill ' + z.r.level + '"><span aria-hidden="true">' + MARK[z.r.level] + '</span>' + esc(z.lvl) + '</span></td><td data-l="' + esc(t(cols[2])) + '">' + esc(z.betrag) + '</td><td data-l="' + esc(t(cols[3])) + '">' + esc(z.stelle) + '</td><td data-l="' + esc(t(cols[4])) + '">' + esc(z.schritt) + '</td></tr>'; // data-l: Spaltenname für die Kartenansicht auf dem Handy
       }).join('') + '</tbody></table>' +
-      '<p class="eb-hinweis">' + esc(t('eb.hinweis', { stand: Rules.RULES.stand })) + '</p>';
+      '<p class="eb-hinweis">' + esc(t('eb.hinweis', { stand: standL() })) + '</p>';
   }
   var ebZurueck = null;
   function ebOeffnen() {
@@ -1485,7 +1525,7 @@
         if (beratung && z.r.recht) b.push({ t: 'small', text: z.r.recht });
         [['eb.col.einstufung', z.lvl], ['eb.col.betrag', z.betrag], ['eb.col.stelle', z.stelle], ['eb.col.schritt', z.schritt]].forEach(function (x) { b.push({ t: 'li', text: t(x[0]) + ': ' + x[1] }); });
       });
-      b.push({ t: 'small', text: t('eb.hinweis', { stand: Rules.RULES.stand }) });
+      b.push({ t: 'small', text: t('eb.hinweis', { stand: standL() }) });
       return [{ blocks: b }];
     } finally { lang = saved; }
   }
@@ -2218,7 +2258,7 @@
     if (gut.some(function (x) { return x.id === 'kgBeh'; })) tipps.push(t(es.wohnen === 'eltern' ? 'es.tipp.kgEltern' : 'es.tipp.kgAbzweig'));
     esMietgrenze(gut, out, tipps);
     var h = '<h2 class="es-q" id="es-q" tabindex="-1">' + esc(t(gut.length ? 'es.erg.h' : 'es.erg.keine')) + '</h2>' +
-      (regelnVeraltet() ? '<p class="warn" role="alert">' + esc(t('alt.hinweis', { stand: Rules.RULES.stand })) + '</p>' : '') +
+      (regelnVeraltet() ? '<p class="warn" role="alert">' + esc(t('alt.hinweis', { stand: standL() })) + '</p>' : '') +
       '<p class="es-h">' + esc(t('es.erg.hinweis')) + '</p>' + gut.map(karte).join('') +
       (tipps.length ? '<div class="es-tipps"><h3 class="es-sub">💡 ' + esc(t('es.erg.tipps')) + '</h3><ul>' + tipps.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div>' : '') +
       (schon.length ? '<h3 class="es-sub">' + esc(t('es.erg.schon')) + '</h3><ul class="es-liste">' + schon.map(function (x) { return '<li>' + (ES_ICON[x.id] || '•') + ' ' + esc(t('es.n.' + x.id)) + '</li>'; }).join('') + '</ul>' : '') +
@@ -3145,7 +3185,7 @@
     if (lang === 'de' && einfachSprache) teile.push(t('set.es.label'));
     $('stAnzeige').textContent = teile.filter(Boolean).join(' · ');
     var pin = tresor && tresor.bereit && tresor.bereit() && tresor.pinAn();
-    $('stSicher').textContent = t(pin ? 'vg.pin.an' : 'set.sicher.t');
+    $('stSicher').textContent = t(pin ? 'vg.pin.an' : 'set.sicher.t') + ' · ' + t('set.sicher.loeschen');
     $('stFach').textContent = t('set.beratung.label') + ': ' + t(beratung ? 'set.an' : 'set.aus');
     $('stAbout').textContent = t('set.version', { v: APPVERSION });
     var fb = $('friHinweisBtn'); if ($('stErinnern') && fb) $('stErinnern').textContent = t(fb.getAttribute('aria-checked') === 'true' ? 'set.an' : 'set.aus');
@@ -3173,7 +3213,7 @@
     }
     if (window.Haushalt && Haushalt.rest) {
       var hr = null; try { hr = Haushalt.rest(); } catch (e) {}
-      if (hr && !hr.leer) zeile('haushalt', t('hb.h'), hr.rest >= 0 ? t('hb.rest', { b: { eur: hr.restEuro } }) : t('hb.fehlt', { b: { eur: -hr.restEuro } }), '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M15 15h2"/>', function () { oeffneVon('haushalt', true); });
+      if (hr && !hr.leer && hr.ausgefuellt !== false) zeile('haushalt', t('hb.h'), hr.rest >= 0 ? t('hb.rest', { b: { eur: hr.restEuro } }) : t('hb.fehlt', { b: { eur: -hr.restEuro } }), '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M15 15h2"/>', function () { oeffneVon('haushalt', true); });
     }
     // Schulden-Liste: nur die Zahl der offenen Einträge (keine Summe) und die nächste Frist, solange es die Fristen in „Mein Ordner“ (src/fristen.js, FristenOrdner) nicht gibt
     if (window.Schulden && Schulden.kurz) {
@@ -3611,7 +3651,7 @@
     var sec = briefArt && briefArt !== 'af' && $(BRIEF_TEIL[briefArt]), karte = sec && sec.querySelector('.card');
     if (!karte) { box.hidden = true; return; }
     box.hidden = false;
-    var satz = karte.querySelector('h2 + p'); // erster Satz; Details („Mehr dazu“, Wörter erklärt, Beispiel) stehen darunter
+    var satz = karte.querySelector('.pp-frist-box') || karte.querySelector('h2 + p'); // erster Satz (bei Bescheiden: Frist und Art des Briefs); Details stehen darunter
     if (satz) satz.insertAdjacentElement('afterend', box); else karte.appendChild(box);
     $('elSelbst').hidden = !sec || !sec.classList.contains('pp-zu');
     $('elScanT').textContent = t(elGesammelt ? 'el.mehr' : briefArt ? 'el.scanHier' : 'el.scan');
@@ -3619,16 +3659,19 @@
   function elNachricht(text) { $('elMsg').textContent = text || ''; }
   function zahlOderLeer(v) { var x = parseAmount(String(v == null ? '' : v)); return isFinite(x) && x > 0 ? x : ''; }
   // Haushalt aus „Leistungen“, damit die Prüfung nicht alles neu abfragt (nur wenn dort schon etwas eingetragen ist)
+  // Nur echte Eingaben, kein erfundenes Alter. Check: Warmmiete; miete = ohne Heizung (nur mit Heizkosten), warm = Warmmiete.
   function haushalt() {
     if (!started) return { erwachsene: [], kinder: [] };
-    var alter = state.gebJahr ? new Date().getFullYear() - (+state.gebJahr) : 40;
+    var alter = state.gebJahr ? new Date().getFullYear() - (+state.gebJahr) : '';
     var erw = [{ alter: alter, brutto: zahlOderLeer(state.ek1Brutto), netto: zahlOderLeer(state.ek1Netto) }];
-    if (state.adults === 2) erw.push({ alter: alter, brutto: zahlOderLeer(state.ek2Brutto), netto: zahlOderLeer(state.ek2Netto) });
+    if (state.adults === 2) erw.push({ alter: '', brutto: zahlOderLeer(state.ek2Brutto), netto: zahlOderLeer(state.ek2Netto) });
     var kinder = [], u6 = state.kidsU6 || 0, k14 = state.kids14 || 0, rest = Math.max(0, (state.kids || 0) - u6 - k14), i;
-    for (i = 0; i < u6; i++) kinder.push(3);
-    for (i = 0; i < rest; i++) kinder.push(9);
-    for (i = 0; i < k14; i++) kinder.push(15);
-    return { erwachsene: erw, kinder: kinder, miete: zahlOderLeer(state.miete), heiz: zahlOderLeer(state.heizkosten), stufe: state.mietstufe || '', alleinerziehend: state.adults === 1 && (state.kids || 0) > 0 };
+    for (i = 0; i < u6; i++) kinder.push({ alter: '', gruppe: 'u6' });
+    for (i = 0; i < rest; i++) kinder.push({ alter: '', gruppe: state.kidsAlter ? '6bis13' : '' });
+    for (i = 0; i < k14; i++) kinder.push({ alter: '', gruppe: '14plus' });
+    var warm = zahlOderLeer(state.miete), heiz = zahlOderLeer(state.heizkosten);
+    var kalt = warm !== '' && heiz !== '' && heiz < warm ? Math.round((warm - heiz) * 100) / 100 : '';
+    return { erwachsene: erw, kinder: kinder, miete: kalt, warm: warm, heiz: kalt !== '' ? heiz : '', stufe: state.mietstufe || '', alleinerziehend: state.adults === 1 && (state.kids || 0) > 0 };
   }
   function textLesen(text) {
     if (!text || !text.trim()) { elNachricht(t('el.leer')); return; }
@@ -3700,7 +3743,11 @@
     ocr(f).then(elFertig, elFehler);
   });
   $('elPaste').addEventListener('click', function () { var box = $('elPasteBox'); box.hidden = !box.hidden; $('elPaste').setAttribute('aria-expanded', String(!box.hidden)); if (!box.hidden) $('elText').focus(); });
-  $('elSelbst').addEventListener('click', function () { briefFormular(true); });
+  // „Werte selbst eingeben“: Haushalt aus dem Check genauso vorbefüllen wie beim Einlesen (nur leere Felder, nur echte Eingaben)
+  $('elSelbst').addEventListener('click', function () {
+    if (window.PruefpaketLesen && ['jc', 'sa', 'wg', 'fk'].indexOf(briefArt) >= 0) window.PruefpaketLesen.fuelle(briefArt, null, haushalt());
+    briefFormular(true);
+  });
   if ($('an-pfaendung')) $('an-pfaendung').addEventListener('click', function () { oeffneVon('pfaendung', true); });
   if ($('an-eingabe')) $('an-eingabe').hidden = true; // in der App liest das Einlesen oben den Brief
   // Antragsformular: Hinweis auf das Nachladen der Texterkennung gilt nur für die Web-Version; in der App liest das Gerät selbst

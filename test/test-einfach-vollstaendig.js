@@ -1,5 +1,5 @@
 // Einfache Sprache ist vollständig: Jeder deutsche Schlüssel (src/lang/de.json und die Unterordner-Wörterbücher
-// haushalt, ausziehen, schulden, fristen) hat einen Eintrag in src/lang/einfach/*.json. Wert "=" heißt: Der Standardtext
+// haushalt, ausziehen, schulden, fristen, zusatz) hat einen Eintrag in src/lang/einfach/*.json. Wert "=" heißt: Der Standardtext
 // ist schon einfach (kurze Beschriftung, Name); er gilt dann auch in Einfacher Sprache (scripts/build.js liefert ihn nicht doppelt aus).
 // Außerdem: keine neuen Platzhalter {x} und keine neuen Zahlen in der einfachen Fassung. Weglassen ist erlaubt (Paragrafen,
 // Nebensachen); Zahlen bis 12 dürfen neu als Ziffer stehen („einen Monat“ → „1 Monat“).
@@ -7,7 +7,7 @@
 const fs = require('fs');
 const path = require('path');
 const DIR = path.join(__dirname, '..', 'src', 'lang');
-const UNTER = ['haushalt', 'ausziehen', 'schulden', 'fristen', 'schritte'];
+const UNTER = ['haushalt', 'ausziehen', 'schulden', 'fristen', 'schritte', 'zusatz'];
 
 // Ausnahmen (kurz und begründet): technische Angaben, kein sichtbarer Text
 const AUSNAHMEN = {

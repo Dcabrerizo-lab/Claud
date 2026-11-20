@@ -35,7 +35,7 @@ setTimeout(() => {
   $('brief-jc').click();
   const karte = d.querySelector('#p-bescheid .card');
   const satz = karte.querySelector('h2 + p');
-  check('Jobcenter: Einlesen steht direkt unter dem ersten Satz', satz && satz.nextElementSibling === $('einlesen'), karte.innerHTML.slice(0, 200));
+  check('Jobcenter: Einlesen steht direkt unter dem ersten Satz (dazwischen nur Frist und Art des Briefs)', satz && (satz.nextElementSibling === $('einlesen') || (satz.nextElementSibling.id === 'bs-fristbox' && satz.nextElementSibling.nextElementSibling === $('einlesen'))), karte.innerHTML.slice(0, 200));
   check('Jobcenter: erster Satz kurz (höchstens 12 Wörter)', satz.textContent.trim().split(/\s+/).length <= 12, satz.textContent);
   check('Feldhilfen hinter „Wo steht das?“, alle zu', [...d.querySelectorAll('#p-bescheid .feld-hilfe')].every((x) => x.tagName === 'DETAILS' && !x.open && x.querySelector('summary').textContent === 'Wo steht das?') && d.querySelectorAll('#p-bescheid .feld-hilfe').length >= 8);
   check('Datenschutz am Scan-Knopf, ohne „Wert vergleichen“', /gelöscht/.test(de['el.privat']) && !/vergleichen/.test(de['el.privat']));
