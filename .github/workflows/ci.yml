@@ -1,15 +1,16 @@
 name: CI
 
 # Sparsam: läuft bei Pull Requests, Pushes auf main und Version-Tags (v1.2.3, zusätzlich signiertes Play-Store-Bundle),
-# sonst nur auf Knopfdruck. Reine Markdown- und Quellen-Änderungen lösen keinen Lauf aus. docs/ wird NICHT ausgenommen:
-# dort liegen die GitHub-Pages-Seiten (datenschutz*.html, index.html), die ein Test mit site/ vergleicht.
+# sonst nur auf Knopfdruck. Der Workflow startet IMMER (kein paths-ignore), damit der Pflicht-Check
+# „Tests (Regeln, Oberfläche, Browser, App)“ auch bei reinen Doku-PRs erscheint und Auto-Merge nicht hängen bleibt.
+# Der Job „Änderungen“ erkennt reine Markdown- und Quellen-Änderungen (**.md, content/quellen/**); dann werden die
+# teuren Jobs übersprungen und der Pflicht-Check meldet „success“. docs/*.html zählt NICHT als Doku: dort liegen die
+# GitHub-Pages-Seiten (datenschutz*.html, index.html), die ein Test mit site/ vergleicht.
 on:
   push:
     branches: ['main']
     tags: ['v*']
-    paths-ignore: ['content/quellen/**', '**.md']
   pull_request:
-    paths-ignore: ['content/quellen/**', '**.md']
   workflow_dispatch:
 
 concurrency:
@@ -21,8 +22,45 @@ permissions:
   contents: read
 
 jobs:
+  # Pfadfilter: code=false nur, wenn JEDE geänderte Datei Markdown oder unter content/quellen/ ist.
+  # Im Zweifel (Tag, Knopfdruck, neuer Branch, leere Liste, git-Fehler) code=true, also volle Tests.
+  aenderungen:
+    name: Änderungen
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      code: ${{ steps.filter.outputs.code }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          filter: blob:none   # ganze Historie ohne Dateiinhalte: schnell, reicht für git diff --name-only
+      - id: filter
+        env:
+          EVENT: ${{ github.event_name }}
+          REF: ${{ github.ref }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD: ${{ github.event.pull_request.head.sha }}
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+        run: |
+          code=true; bereich=''
+          if [ "$EVENT" = pull_request ]; then bereich="$PR_BASE...$PR_HEAD"
+          elif [ "$EVENT" = push ] && [[ "$REF" == refs/heads/* ]] && [ -n "$BEFORE" ] && [ "$BEFORE" != 0000000000000000000000000000000000000000 ]; then bereich="$BEFORE..$AFTER"
+          fi
+          if [ -n "$bereich" ] && dateien=$(git diff --name-only "$bereich"); then
+            echo "Geänderte Dateien ($bereich):"; echo "$dateien"
+            if [ -n "$dateien" ] && ! grep -qvE '(\.md$|^content/quellen/)' <<< "$dateien"; then code=false; fi
+          else
+            echo "Kein Vergleich möglich ($EVENT, $REF): volle Tests"
+          fi
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          if [ "$code" = false ]; then echo "Nur Markdown/Quellen geändert: teure Jobs werden übersprungen, Pflicht-Check meldet success." | tee -a "$GITHUB_STEP_SUMMARY"; fi
+
   regeln:
     name: Tests a (Lint, Regeln, Oberfläche, Erweiterungen)
+    needs: aenderungen
+    if: needs.aenderungen.outputs.code == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -66,6 +104,8 @@ jobs:
   # Höchstens 2 Teile: jeder Teil braucht mindestens 151 Schritte für den festen Besuch der Antragsmappe (Schritt 150).
   browser:
     name: Tests b (${{ matrix.teil }})
+    needs: aenderungen
+    if: needs.aenderungen.outputs.code == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     strategy:
@@ -145,23 +185,40 @@ jobs:
           name: sozialleistungslotse-web
           path: dist/sozialleistungslotse.html
 
-  # Abschluss mit dem bisherigen Namen: bleibt als ein Prüfpunkt erhalten (Pflicht-Check). Verlangt alle Teile
-  # einschließlich Android-Build; „Tests b“ ist nur dann erfolgreich, wenn jeder Matrix-Teil bestanden hat.
+  # Abschluss mit dem bisherigen Namen: Pflicht-Check für main (Auto-Merge). Läuft immer (always()).
+  # Grün nur, wenn „Änderungen“ erfolgreich war UND
+  #  - bei Code-Änderungen: Teil a, alle Matrix-Teile von b und Android „success“ sind,
+  #  - bei reinen Doku-Änderungen: diese Jobs „skipped“ (oder success) sind.
+  # failure, cancelled oder ein unerwartetes skipped bei Code-Änderungen ergeben rot.
   test:
     name: Tests (Regeln, Oberfläche, Browser, App)
-    needs: [regeln, browser, android]
+    needs: [aenderungen, regeln, browser, android]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - name: Alle Teile bestanden?
+        env:
+          FILTER: ${{ needs.aenderungen.result }}
+          CODE: ${{ needs.aenderungen.outputs.code }}
+          A: ${{ needs.regeln.result }}
+          B: ${{ needs.browser.result }}
+          ANDROID: ${{ needs.android.result }}
         run: |
-          echo "Teil a: ${{ needs.regeln.result }}, Teil b (alle Teile): ${{ needs.browser.result }}, Android: ${{ needs.android.result }}"
-          [ "${{ needs.regeln.result }}" = success ] && [ "${{ needs.browser.result }}" = success ] && [ "${{ needs.android.result }}" = success ]
+          echo "Änderungen: $FILTER (code=$CODE) | Teil a: $A | Teil b (alle Teile): $B | Android: $ANDROID"
+          [ "$FILTER" = success ] || { echo "::error::Pfadfilter nicht erfolgreich"; exit 1; }
+          for r in "$A" "$B" "$ANDROID"; do
+            if [ "$CODE" = true ]; then [ "$r" = success ] || { echo "::error::Teiljob nicht bestanden ($r)"; exit 1; }
+            else [ "$r" = skipped ] || [ "$r" = success ] || { echo "::error::Teiljob nicht bestanden ($r)"; exit 1; }
+            fi
+          done
+          echo "Pflicht-Check bestanden"
 
   # Läuft parallel zu den Tests (braucht sie nicht zum Kompilieren); der Abschluss-Check oben verlangt ihn trotzdem.
   android:
     name: Android
+    needs: aenderungen
+    if: needs.aenderungen.outputs.code == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
