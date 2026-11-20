@@ -834,6 +834,7 @@ var Haushalt = (function () {
     nachKategorie: nachKategorie, auswertung: auswertung, tipps: tipps, kassenzettel: kassenzettel, csv: csv, regelbedarfAnteile: regelbedarfAnteile, RBEG5: RBEG5,
     ausCheck: ausCheck, aenderung: aenderung, uebernahme: uebernahme, normiere: normiere, hinweisListe: hinweisListe, aenderungsBrief: aenderungsBrief, VORLAUF_TAGE: VORLAUF_TAGE,
     // Oberfläche
+    rest: function () { return rechnung(); }, // Kurzstatus für „Mein Ordner“: { rest, restEuro, leer }
     init: init, zeigen: zeigen, sprache: function () { render(); if (daten) startHinweis(); }, speicherOrt: speicherOrt,
     daten: function () { return JSON.parse(JSON.stringify(daten)); }, laden: function (d) { daten = normiere(d); sichern(); render(); startHinweis(); },
     // Nach einem Wechsel des Vorgangs: Plan des geöffneten Vorgangs aus dem Speicherort lesen (ohne zu schreiben)

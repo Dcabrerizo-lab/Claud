@@ -26,7 +26,7 @@ const ergebnis = (p) => p.evaluate(() => {
   p.on('pageerror', (e) => errs.push(e.message));
   await p.goto('file://' + file + '#leistungen');
 
-  await p.click('#appnav [data-ansicht=einst]'); ok('Knopf „Einfache Sprache“ in den Einstellungen sichtbar', await p.isVisible('#einfachBtn')); await p.click('#appnav [data-ansicht=leistungen]');
+  await p.click('#appnav [data-ansicht=start]'); await p.click('#goLeistungen'); ok('Link „Kurzer Check“ am Anfang des Leistungs-Checks sichtbar, nicht in den Einstellungen', await p.isVisible('#einfachBtn') && (await p.locator('#v-einst #einfachBtn').count()) === 0);
   await p.evaluate(() => document.getElementById('einfachBtn').click());
   ok('Einfache Version zeigt eine Frage, ausführliches Formular ausgeblendet', await p.isVisible('#es-q') && !(await p.isVisible('#form')));
   ok('Erste Frage: Geburtsjahr', /geboren/.test(await p.textContent('#es-q')));

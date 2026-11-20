@@ -38,7 +38,8 @@ const knopf = (s, root, text) => [...root.querySelectorAll('button')].find((b) =
   ck('[vorgaenge] ein Vorgang: kein Kürzel-Schild, kein Sperrbildschirm', d.getElementById('vgChip').hidden && !d.getElementById('vgSperre'));
   const res = d.getElementById('vgRes');
   ck('[vorgaenge] Einstieg „Vorgang speichern“ beim Ergebnis', res && !res.hidden && /Vorgang speichern/.test(res.textContent) && d.getElementById('vgNameRes'));
-  ck('[vorgaenge] Verwaltung ganz oben in den Einstellungen', d.getElementById('pn-einst').firstElementChild.id === 'setHaushalte');
+  ck('[vorgaenge] Verwaltung in „Mein Ordner“, Unterseite „Alle Haushalte und Vorgänge“', d.getElementById('setHaushalte').closest('.unterseite').id === 'ordnerAlle' && d.getElementById('setHaushalte').closest('#v-ordner'));
+  ck('[vorgaenge] PIN-Sperre und automatisch löschen in den Einstellungen unter „Sicherheit und Daten“', !!d.querySelector('#es-sicher #setSicher #vgTage') && /PIN-Sperre/.test(d.getElementById('setSicher').textContent) && !!d.querySelector('#es-sicher #vgAlleBox button') && !d.querySelector('#setHaushalte #vgTage'));
 
   // Speichern unter Namen
   d.getElementById('vgNameRes').value = '  Familie M.  ';
@@ -114,7 +115,7 @@ const knopf = (s, root, text) => [...root.querySelectorAll('button')].find((b) =
   ck('[vorgaenge] automatisches Löschen: Datum „wird am … gelöscht“ sichtbar', d.querySelectorAll('#setHaushalte .vg-ablauf').length === 3 && /Wird am \d\d\.\d\d\.\d{4} gelöscht/.test(d.getElementById('setHaushalte').textContent));
 
   // PIN setzen
-  knopf(s, g, 'PIN festlegen').click();
+  knopf(s, d.getElementById('setSicher'), 'PIN festlegen').click();
   d.getElementById('vgPin1').value = '12'; d.getElementById('vgPin2').value = '12';
   submit(s, d.getElementById('vgPinForm'));
   ck('[vorgaenge] zu kurze PIN abgelehnt', /4 bis 12 Ziffern/.test(d.getElementById('vgPinForm').textContent));
@@ -127,7 +128,7 @@ const knopf = (s, root, text) => [...root.querySelectorAll('button')].find((b) =
   // Geheimtext (Base64) selbst nicht durchsuchen: Zufallsfolgen wie „640“ wären sonst falscher Alarm
   const roh = JSON.stringify(Object.assign({}, mem, { 'lotse.vorgaenge': JSON.stringify(Object.assign({}, JSON.parse(mem['lotse.vorgaenge'] || '{}'), { pin: { geheim: !!(JSON.parse(mem['lotse.vorgaenge'] || '{}').pin || {}).ct } })) }));
   ck('[vorgaenge] mit PIN: nichts Lesbares im Speicher, PIN nicht gespeichert', !/Erika|Muster|Familie|640|miete/.test(roh) && !roh.includes('2580') && !mem['lotse.state'] && !mem['lotse.haushalt'], roh.slice(0, 300));
-  ck('[vorgaenge] PIN-Sperre als „an“ angezeigt', /PIN-Sperre ist an/.test(d.getElementById('setHaushalte').textContent));
+  ck('[vorgaenge] PIN-Sperre als „an“ angezeigt', /PIN-Sperre ist an/.test(d.getElementById('setSicher').textContent));
 
   // Neustart: Sperrbildschirm
   const s2 = seite(mem);

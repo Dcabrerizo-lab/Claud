@@ -21,7 +21,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Knopf im Fragebogen', await p.isVisible('#paStart') && /einschätzen/.test(await p.textContent('#paStart')));
   await p.click('#paStart');
   ok('Ablauf öffnet mit der Frage nach dem Alter', await p.isVisible('#v-pflege') && /alt/.test(await frage()));
-  ok('Leiste zeigt weiter „Leistungen“', (await p.getAttribute('#appnav [data-ansicht=leistungen]', 'aria-current')) === 'page');
+  ok('Leiste zeigt weiter „Start“ (Leistungen gehört zur Startseite)', (await p.getAttribute('#appnav [data-ansicht=start]', 'aria-current')) === 'page');
   ok('Fokus auf der Frage', await p.evaluate(() => document.activeElement && document.activeElement.id === 'pa-q'));
   await p.click('text=Weiter ➜');
   ok('Ohne Alter: Hinweis statt weiter', /Alter/.test(await p.textContent('#pflegeAssist .warn')) && /alt/.test(await frage()));

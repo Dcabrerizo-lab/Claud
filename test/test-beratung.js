@@ -25,7 +25,7 @@ const check = (n, c, x) => { if (!c) { fails++; console.log('FAIL', n, x || '');
 const fire = (el, type) => el.dispatchEvent(new w.Event(type, { bubbles: true }));
 const setLang = (c) => { const s = $('lang'); s.value = c; fire(s, 'change'); };
 const LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so'];
-const NEU = ['set.fach.h', 'set.beratung.label', 'set.beratung.t', 'recht.label', 'haken.hint', 'f.inhalt', 'f.inh.brief', 'f.inh.angaben',
+const NEU = ['nav.ordner', 'ordner.leer', 'ordner.wechseln', 'ordner.alle', 'ordner.ergebnis', 'ordner.mappe', 'ordner.mappe.n', 'ordner.ausziehen', 'ordner.ausziehen.n', 'ordner.pflege', 'ordner.pfaendung', 'einfach.vor', 'set.sicher.h', 'set.sicher.t', 'set.an', 'set.aus', 'set.thema', 'set.thema.auto', 'set.thema.hell', 'set.thema.dunkel', 'set.loeschen.h', 'set.vgLoeschen', 'set.fach.h', 'set.beratung.label', 'set.beratung.t', 'recht.label', 'haken.hint', 'f.inhalt', 'f.inh.brief', 'f.inh.angaben',
   'eb.btn', 'eb.h', 'eb.intro', 'eb.kuerzel', 'eb.close', 'eb.titel', 'eb.datum', 'eb.kuerzelZeile', 'eb.col.leistung', 'eb.col.einstufung', 'eb.col.betrag', 'eb.col.stelle', 'eb.col.schritt', 'eb.hinweis'];
 
 // ---------- Hilfsfunktionen in fmt.js ----------
@@ -37,10 +37,40 @@ check('Neue Texte in allen 13 Sprachen', LANGS.every((l) => NEU.every((k) => typ
 check('Platzhalter in allen Sprachen wie im Deutschen', LANGS.every((l) => NEU.every((k) => (I18N.de[k].match(/\{\w+\}/g) || []).join() === (I18N[l][k].match(/\{\w+\}/g) || []).join())));
 check('Kein Paragraf in einem Sprachtext außerhalb von Klammern (sonst bliebe er in der Laienansicht stehen)', LANGS.every((l) => Object.values(I18N[l]).every((v) => typeof v !== 'string' || !/§|Art\. \d/.test(Fmt.ohnePara(v)))));
 
-// ---------- Einstellungen: drei Blöcke ----------
-const gruppen = [...d.querySelectorAll('#pn-einst .set-gruppe')];
-check('Einstellungen: Haushalte (Verwaltung der Vorgänge, nur ein Block), Anzeige und Sprache, Für Fachkräfte, Über die App – in dieser Reihenfolge', gruppen.length === 4 && gruppen[0].id === 'setHaushalte' && !gruppen[0].hidden && !!gruppen[0].querySelector('#vgH') && d.querySelectorAll('#pn-einst #vgH').length === 1 && gruppen[3].querySelector('h3').textContent === I18N.de['set.about.h'] && gruppen[1].querySelector('h3').textContent === 'Anzeige und Sprache' && !!gruppen[1].querySelector('#lang') && !!gruppen[1].querySelector('#bigBtn') && gruppen[2].id === 'setFach' && gruppen[2].querySelector('h3').textContent === 'Für Fachkräfte');
-check('Beratungsmodus: Schalter standardmäßig aus', $('beratungBtn').getAttribute('aria-pressed') === 'false' && $('beratungBtn').textContent.trim() === 'Beratungsmodus' && $('beratungT').textContent === I18N.de['set.beratung.t']);
+// ---------- Leiste unten und Einstellungen (kurze Liste, Unterseiten, Schalter) ----------
+const navB = () => [...d.querySelectorAll('#appnav button')];
+const navAkt = () => (d.querySelector('#appnav button[aria-current="page"]') || {}).getAttribute?.('data-ansicht');
+check('[navigation] Leiste: drei Punkte Start | Mein Ordner | Einstellungen, beschriftet', navB().map((x) => x.getAttribute('data-ansicht')).join() === 'start,ordner,einst' && navB().map((x) => x.textContent).join('|') === 'Start|Mein Ordner|Einstellungen');
+d.querySelector('#appnav [data-ansicht="einst"]').click();
+const zeilenE = [...d.querySelectorAll('#einstListe .zeile')];
+check('Einstellungen: vier Zeilen (Anzeige und Sprache, Sicherheit und Daten, Für Fachkräfte, Über die App), Leiste markiert Einstellungen', zeilenE.map((z) => z.getAttribute('data-seite')).join() === 'anzeige,sicher,fach,about' && zeilenE.map((z) => z.querySelector('b').textContent).join('|') === [I18N.de['set.anzeige.h'], I18N.de['set.sicher.h'], I18N.de['set.fach.h'], I18N.de['set.about.h']].join('|') && navAkt() === 'einst');
+check('Einstellungen: jede Zeile mit einer Zeile Status (Sprache, PIN, Beratungsmodus, Version)', /Deutsch/.test($('stAnzeige').textContent) && $('stSicher').textContent === I18N.de['set.sicher.t'] && $('stFach').textContent === 'Beratungsmodus: Aus' && /^Version \d/.test($('stAbout').textContent));
+check('Einstellungen: kein Kopftext, keine Reiter, kein Kurzer Check, kein „Alle Angaben löschen“ ganz unten', w.getComputedStyle(d.querySelector('.top .lead')).display === 'none' && !$('tab-info') && !d.querySelector('#v-einst [role="tablist"]') && !$('einfachBtn').closest('#v-einst'));
+check('Unterseiten zu Beginn zu, Liste sichtbar', !$('einstListe').hidden && [...d.querySelectorAll('#v-einst .unterseite')].every((u) => u.hidden));
+zeilenE[0].click();
+check('Zeile öffnet die Unterseite „Anzeige und Sprache“ mit „← Zurück“, Fokus auf der Überschrift', !$('es-anzeige').hidden && $('einstListe').hidden && /← Zurück/.test($('es-anzeige').querySelector('.us-zurueck').textContent) && d.activeElement === $('es-anzeige').querySelector('h2'));
+const sw = ['bigBtn', 'einfacheSpracheBtn'].map($);
+check('[navigation] Schalter: role="switch", aria-checked aus, sichtbar „Aus“', sw.every((b) => b.getAttribute('role') === 'switch' && b.getAttribute('aria-checked') === 'false' && b.querySelector('.schalter-zst').textContent === 'Aus') && !sw.some((b) => b.hasAttribute('aria-pressed')));
+$('bigBtn').click();
+check('Große Schrift an: aria-checked, sichtbar „An“, Status der Zeile', $('bigBtn').getAttribute('aria-checked') === 'true' && $('bigBtn').querySelector('.schalter-zst').textContent === 'An' && /Große Schrift/.test($('stAnzeige').textContent));
+$('bigBtn').click();
+check('Große Schrift wieder aus', $('bigBtn').getAttribute('aria-checked') === 'false' && !$('app').classList.contains('big'));
+check('Hell/Dunkel/wie Gerät: drei Auswahlfelder, „Wie Gerät“ gewählt', [...d.querySelectorAll('input[name="thema"]')].map((r) => r.value).join() === ',light,dark' && $('thema-auto').checked && !d.documentElement.hasAttribute('data-theme'));
+$('thema-dunkel').click();
+check('Dunkel: data-theme="dark" und gespeichert', d.documentElement.getAttribute('data-theme') === 'dark' && store['lotse.thema'] === 'dark');
+$('thema-auto').click();
+check('Wie Gerät: Attribut weg, gespeichert leer', !d.documentElement.hasAttribute('data-theme') && store['lotse.thema'] === '');
+$('es-anzeige').querySelector('.us-zurueck').click();
+check('„← Zurück“ führt zur Liste, Fokus auf der Zeile', !$('einstListe').hidden && $('es-anzeige').hidden && d.activeElement === zeilenE[0]);
+zeilenE[1].click();
+check('Sicherheit und Daten: „Diesen Vorgang löschen“ und „Alle Vorgänge löschen“', $('clear2').textContent === I18N.de['set.vgLoeschen'] && !!$('vgAlleBox').querySelector('button') && $('vgAlleBox').textContent === I18N.de['vg.alleLoeschen']);
+d.querySelector('#appnav [data-ansicht="einst"]').click();
+check('Leiste „Einstellungen“ führt aus der Unterseite zur Liste', !$('einstListe').hidden && $('es-sicher').hidden);
+zeilenE[2].click();
+check('Beratungsmodus: Schalter standardmäßig aus', $('beratungBtn').getAttribute('aria-checked') === 'false' && $('beratungBtn').getAttribute('role') === 'switch' && $('beratungBtn').querySelector('.schalter-t').textContent === 'Beratungsmodus' && $('beratungT').textContent === I18N.de['set.beratung.t']);
+d.querySelector('#appnav [data-ansicht="start"]').click(); $('goLeistungen').click();
+check('Startkachel Leistungen: Leiste markiert Start', navAkt() === 'start' && !$('v-leistungen').hidden);
+check('Kurzer Check als dezenter Link am Anfang des Leistungs-Checks', $('einfachBtn').closest('.es-link') && $('einfachBtn').closest('#cols') && $('einfachBtn').closest('.es-link').textContent.indexOf(I18N.de['einfach.vor']) === 0);
 check('Vor dem ersten Ergebnis kein Knopf „Ergebnis mitgeben“', $('ebOpen').hidden === true);
 
 // ---------- Laienansicht ----------
@@ -53,7 +83,7 @@ check('Knopf „Ergebnis mitgeben / drucken“ direkt unter dem Ergebniszähler'
 
 // ---------- Beratungsmodus an ----------
 $('beratungBtn').click();
-check('Beratungsmodus an: Schalter gedrückt und gespeichert', $('beratungBtn').getAttribute('aria-pressed') === 'true' && store['lotse.beratung'] === '1');
+check('Beratungsmodus an: Schalter an und gespeichert', $('beratungBtn').getAttribute('aria-checked') === 'true' && store['lotse.beratung'] === '1' && $('stFach').textContent === 'Beratungsmodus: An');
 check('Beratungsmodus: jede Karte mit Rechtsgrundlage', [...d.querySelectorAll('#cards article.card')].every((a) => /Rechtsgrundlage:/.test((a.querySelector('.recht') || {}).textContent || '')));
 check('Beratungsmodus: Wohngeld nennt das WoGG, Kinderzuschlag § 6a BKGG', /WoGG/.test(d.querySelector('#c-wohngeld .recht').textContent) && /§ 6a BKGG/.test(d.querySelector('#c-kiz .recht').textContent));
 check('Beratungsmodus: Paragrafen in „Gut zu wissen“ sichtbar (§ 44 SGB X)', /§ 44 SGB X/.test(gut()));
@@ -117,6 +147,26 @@ check('Angabenblatt: Geburtsdatum TT.MM.JJJJ', /Geburtsdatum: 01\.02\.1985/.test
   check('Angabenblatt: Geburtsdatum aus ISO-Schreibweise wird TT.MM.JJJJ', /Geburtsdatum: 01\.02\.1985/.test($('m-angaben').textContent));
 }
 $('mappeClose').click();
+// ---------- Mein Ordner ----------
+d.querySelector('#appnav [data-ansicht="ordner"]').click();
+check('Mein Ordner mit Beispiel (nicht eigene Angaben): freundlicher Leerzustand mit „Los geht\'s“', !$('ordnerLeer').hidden && $('ordnerKarten').hidden && $('ordnerLos').textContent.indexOf(I18N.de['home.los']) === 0);
+$('miete').value = '700'; fire($('miete'), 'input'); fire($('miete'), 'change');
+d.querySelector('#appnav [data-ansicht="ordner"]').click();
+const orZ = () => [...d.querySelectorAll('#ordnerKarten .zeile')].map((b) => b.id);
+check('Mein Ordner: Leiste markiert Mein Ordner, kein Kopftext', navAkt() === 'ordner' && !$('v-ordner').hidden && w.getComputedStyle(d.querySelector('.top .lead')).display === 'none');
+check('[navigation] Mein Ordner: geöffneter Vorgang oben mit „Wechseln“', !$('ordnerKopf').hidden && /Geöffnet:/.test($('ordnerKopf').textContent) && [...$('ordnerKopf').querySelectorAll('button')].some((b) => b.textContent === I18N.de['ordner.wechseln']));
+check('Mein Ordner: letztes Ergebnis mit Zähler und Antragsmappe mit Auswahl', orZ()[0] === 'or-ergebnis' && /wahrscheinlich|möglich/.test($('or-ergebnis').textContent) && /Ausgewählt: 2/.test(($('or-mappe') || {}).textContent || ''), orZ().join());
+check('Mein Ordner: keine Fristen, kein leerer Bereich (Pflege, Pfändung ohne Angaben)', !/Frist/.test($('v-ordner').textContent) && !$('or-pflege') && !$('or-pfaendung') && $('ordnerLeer').hidden);
+$('or-ergebnis').click();
+check('Sprung zum Ergebnis: Leistungen offen, Leiste markiert Mein Ordner (Herkunft)', !$('v-leistungen').hidden && navAkt() === 'ordner');
+d.querySelector('#appnav [data-ansicht="ordner"]').click();
+$('or-alle').click();
+check('Unterseite „Alle Haushalte und Vorgänge“ mit der Verwaltung', !$('ordnerAlle').hidden && $('ordnerHaupt').hidden && !!$('setHaushalte').querySelector('#vgH') && !!$('vgNameSet'));
+$('ordnerAlle').querySelector('.us-zurueck').click();
+check('„← Zurück“ führt zur Übersicht', !$('ordnerHaupt').hidden && $('ordnerAlle').hidden);
+setLang('ar');
+check('Arabisch: Leiste und Ordner übersetzt, rechts nach links', $('app').getAttribute('dir') === 'rtl' && d.querySelector('#appnav [data-ansicht="ordner"]').textContent === I18N.ar['nav.ordner'] && $('or-ergebnis').querySelector('b').textContent === I18N.ar['ordner.ergebnis']);
+setLang('de');
 check('Keine Skriptfehler', errors.length === 0, errors.join('; '));
 console.log(fails ? '\n' + fails + ' FEHLER' : '\nAlle Tests (Beratungsmodus, Ergebnisblatt, Checkliste, Mappe) bestanden');
 process.exit(fails ? 1 : 0);
