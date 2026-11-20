@@ -385,7 +385,9 @@
     else if (eins) s.push(t('wgmax.zeile', { betrag: E(w.von), stufe: Rules.roman(w.sv), personen: pers }));
     else s.push(t(stufen.length ? 'wgmax.zeileSpanne' : 'wgmax.zeileOhne', { von: E(w.von), bis: E(w.bis), sv: Rules.roman(w.sv), sb: Rules.roman(w.sb), personen: pers }));
     var V = { drunter: w.geschaetzt ? 'wgmax.drunterEtwa' : 'wgmax.drunter', drueber: w.geschaetzt ? 'wgmax.drueberEtwa' : 'wgmax.drueber', nah: 'wgmax.nah', moeglich: 'wgmax.moeglich' };
-    if (w.vergleich) s.push(t(V[w.vergleich], { kalt: E(w.kalt), betrag: E(w.vergleich === 'drueber' ? w.bis : w.von) }));
+    // Mehrere mögliche Stufen und Miete über dem höchsten Wert: welcher Betrag zählt, hängt von der Stufe ab (Spanne statt festem Betrag)
+    if (!eins && w.vergleich === 'drueber') V.drueber = w.geschaetzt ? 'wgmax.moeglichDrueberEtwa' : 'wgmax.moeglichDrueber';
+    if (w.vergleich) s.push(t(V[w.vergleich], { kalt: E(w.kalt), betrag: E(w.vergleich === 'drueber' ? w.bis : w.von), von: E(w.von), bis: E(w.bis) }));
     if (state.hhAndere === 'verwandte') s.push(t('wgmax.verwandte'));
     p.textContent = s.join(' ');
     p.classList.toggle('moeglich', !eins || w.vergleich === 'moeglich' || w.vergleich === 'nah');

@@ -326,7 +326,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Minijob ohne Krankengeld | ✓ | `kv-minijob` |
 | Belastungsgrenze 2 % / 1 % bei chronisch Kranken (GdB ab 60 oder Pflegegrad 3–5) | ✓ | `kv-zuzahl` |
 | Fahrtkosten zur ambulanten Behandlung bei aG, Bl, H oder Pflegegrad 3 (mit Einschränkung) bis 5 (§ 60) | ◐ | `kv-fahrt` |
-| Familienversicherung (§ 10): Partner mit Einkommen bis 1/7 der Bezugsgröße (2026: 565 €) oder Minijob; Kinder bis 18, bis 23 ohne Arbeit, bis 25 in Ausbildung; ALG I und Krankengeld schließen aus, Rente nur über der Grenze | ◐ | `famvers` |
+| Familienversicherung (§ 10): Partner mit Einkommen bis 1/7 der Bezugsgröße (2026: 565 €) oder Minijob; Kinder bis 18, bis 23 ohne Arbeit, bis 25 in Ausbildung; ALG I und Krankengeld schließen aus, Rente nur über der Grenze; Elterngeld zählt nicht, Unterhalt nur beim Realsplitting (Hinweis „möglich“) (GKV-Spitzenverband, Grundsätzliche Hinweise Gesamteinkommen 29.09.2022, Anlage und Abschn. 2.3.4.2); Minijob-Grenze nur, wenn Person 2 nur Lohn hat | ◐ | `famvers` |
 | Familienversicherung: Ausschluss, wenn der andere Elternteil privat versichert ist und mehr verdient (§ 10 Abs. 3), Mitgliedschaft des Hauptversicherten | ○ (Versicherungsstatus fragt die App nicht ab; Hinweis im Text, „möglich“ statt „wahrscheinlich“) | |
 
 ## Rundfunkbeitrag (RBStV)

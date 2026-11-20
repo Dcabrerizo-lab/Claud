@@ -664,9 +664,10 @@ const Rules = (function () {
         const anders = e.reduce((s, x) => s + (x[0] !== 'lohn' && x[0] !== 'ohne' ? x[1] : 0), 0);
         const lohn = e.reduce((s, x) => s + (x[0] === 'lohn' ? x[1] : 0), 0);
         if (!(anders > 0)) return a;
-        return a + (lohn > 0 ? Math.min(anders, Math.max(0, R.versPauschale - lohn)) : R.versPauschale);
+        // höchstens bis zur Höhe des anderen Einkommens: Absetzbeträge mindern das Einkommen nur bis 0 (§ 11b Abs. 1 SGB II)
+        return a + Math.min(anders, lohn > 0 ? Math.max(0, R.versPauschale - lohn) : R.versPauschale);
       }, 0)
-        : sumIf((a, b) => a !== 'lohn' && a !== 'ohne' && b > 0 ? R.versPauschale : 0),
+        : sumIf((a, b) => a !== 'lohn' && a !== 'ohne' && b > 0 ? Math.min(b, R.versPauschale) : 0),
       mzG: !!inp.mzG, mzGl: !!inp.mzGl || !!(inp.mz && inp.mz.Gl), mzRF: !!(inp.mz && inp.mz.RF), mzAG: !!(inp.mz && inp.mz.aG), wfbmJahre: num(inp.wfbmJahre), grundrente33: !!inp.grundrente33, zusatzRente: num(inp.zusatzRente), bhEinkHoch: !!inp.bhEinkHoch, teilhabe: !!inp.teilhabe, bhWeitere: Math.min(4, Math.max(0, inp.bhWeitere | 0)), schwanger: !!inp.schwanger, ernaehrung: !!inp.ernaehrung, warmwasser: !!inp.warmwasser, gebJahr: jahr,
       baby: inp.baby === 'bald' || inp.baby === 'da' ? inp.baby : '', egVor: blank(inp.egVor) ? null : num(inp.egVor), asyl: inp.aufenthalt === 'asyl',
       wohnform: inp.wohnform === 'eltern' || inp.wohnform === 'heim' ? inp.wohnform : '', wfbmEssen: !!inp.wfbmEssen,
@@ -1627,11 +1628,23 @@ const Rules = (function () {
     if (h.adults === 2) {
       const b2 = h.brutto2 || 0, art = h.art2 || '';
       partnerOk = art === 'ohne' || art === 'eg' || (!art && b2 === 0) || (art === 'lohn' && b2 <= h.minijob) || b2 <= grenze;
+      // Mit Einkommensliste alle Einträge von Person 2 ansehen (Gesamteinkommen § 16 SGB IV; GKV-Spitzenverband, Grundsätzliche Hinweise
+      // Gesamteinkommen vom 29.09.2022, Anlage: Elterngeld zählt nicht; Abschn. 2.3.4.2: Unterhalt nur beim Realsplitting -> Hinweis „möglich“).
+      // Nur Lohn: Minijob-Grenze, sonst ein Siebtel der Bezugsgröße
+      let unt2 = 0, sum2 = 0;
+      if (h.liste) {
+        const e2 = h.pers.filter((x) => x[5] === 2 && x[1] > 0);
+        const zaehlt = e2.filter((x) => x[0] !== 'eg' && x[0] !== 'unt' && x[0] !== 'ohne');
+        sum2 = zaehlt.reduce((s, x) => s + x[1], 0);
+        unt2 = e2.reduce((s, x) => s + (x[0] === 'unt' ? x[1] : 0), 0);
+        partnerOk = sum2 === 0 || sum2 <= (zaehlt.every((x) => x[0] === 'lohn' && !x[4]) ? h.minijob : grenze);
+      }
       // Arbeitslosengeld, Krankengeld und Werkstatt bringen eine eigene Versicherung mit; Rente schließt nur über der Grenze aus
-      if (art === 'alg' || art === 'kg' || art === 'wfbm' || (art === 'rente' && b2 > grenze)) partnerOk = false;
+      if (!h.liste && (art === 'alg' || art === 'kg' || art === 'wfbm' || (art === 'rente' && b2 > grenze))) partnerOk = false;
       // Mit Liste ist art2 bei „Arbeitslosengeld + Nebenjob“ gleich lohn: die eigene Versicherung kommt trotzdem vom Arbeitslosengeld
       if (h.liste && h.pers.some((x) => x[5] === 2 && (x[0] === 'alg' || x[0] === 'kg' || x[0] === 'wfbm') && x[1] > 0)) partnerOk = false;
       tx.push(partnerOk ? ['famvers.partner', { grenze: eur(grenze), mini: eur(h.minijob) }] : ['famvers.partnerNein', { grenze: eur(grenze) }]);
+      if (partnerOk && unt2 > 0 && sum2 + unt2 > grenze) tx.push(['famvers.realsplit', { grenze: eur(grenze) }]);
     }
     if (h.kids > 0) tx.push(['famvers.kinder']);
     if (h.young > 0) tx.push(['famvers.jung', { grenze: eur(grenze) }]);
