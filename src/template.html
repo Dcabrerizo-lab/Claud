@@ -350,6 +350,26 @@
     .eb-tab tr { break-inside: avoid; }
     .eb-tab .pill { border: 0.5pt solid #000; }
   }
+  /* Schulden-Liste (src/schulden.js); Blatt für die Beratung nutzt .ergblatt/.eb-tab */
+  .sl-lead { margin: 0 0 8px; color: var(--muted); }
+  .sl-summe { border: 1px solid var(--line); border-inline-start: 4px solid var(--c-pfaendung-t); border-radius: var(--r-card, 14px); background: var(--surface); padding: 12px 16px; display: grid; gap: 6px; margin: 8px 0; }
+  .sl-summe p { margin: 0; }
+  .sl-gesamt { font-size: 1.25em; font-weight: 700; }
+  .sl-hh { display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 8px; }
+  .sl-fehler { color: var(--bad); font-weight: 700; }
+  .sl-stufe { margin: 20px 0 6px; padding-inline-start: 10px; border-inline-start: 4px solid var(--c-pfaendung-t); font-size: 1.05em; }
+  .sl-liste { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .sl-eintrag { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; display: grid; gap: 6px; }
+  .sl-eintrag p { margin: 0; }
+  .sl-kopf { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; justify-content: space-between; }
+  .sl-name { overflow-wrap: anywhere; }
+  .sl-daten { color: var(--muted); font-size: 0.95em; overflow-wrap: anywhere; }
+  .sl-eintrag .pf-tipps { margin: 0; }
+  .sl-knoepfe { margin-top: 0 !important; }
+  .sl-eingabe h3 { margin: 0; }
+  .sl-eingabe textarea { width: 100%; font: inherit; padding: 8px; border: 1px solid var(--field); border-radius: 8px; background: var(--surface); color: var(--ink); }
+  .sl-unterlagen { list-style: none; padding: 0; }
+  #slSpeicherMsg:empty { display: none; }
   /* Haushaltsplan und Haushaltsbuch (src/haushalt.js) */
   .hb-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; padding: 4px; border-radius: 999px; background: var(--bg); border: 1px solid var(--line); margin: 8px 0 14px; }
   .hb-tabs button { min-height: 48px; border: 0; border-radius: 999px; background: transparent; color: var(--ink); font: inherit; font-weight: 700; cursor: pointer; overflow-wrap: anywhere; }
@@ -869,6 +889,8 @@
   .app .az .az-raster > .az-k:nth-child(5) { --c: var(--c-briefe); } /* gruppe ausziehen */
   .app .az .az-raster > .az-k:nth-child(6) { --c: var(--c-leistungen); } /* gruppe ausziehen */
   .app .az .az-raster > .az-k:nth-child(7) { --c: var(--c-familienkasse); } /* gruppe ausziehen */
+  .app[data-ansicht="ordner"] #or-schulden .zeile-sym { background: var(--c-sparen); } /* gruppe ordner */
+  .app[data-ansicht="ordner"] #or-schulden .zeile-sym { color: var(--on-c); }
   /* ===== Ende Gruppenfarben ===== */
   .hinweis-koralle { display: flex; gap: 12px; align-items: flex-start; background: var(--hint-bg); color: var(--hint); border-radius: var(--r-item); padding: 14px 16px; margin: 4px 0 0; font-weight: 700; }
   .hinweis-koralle > svg { flex: none; width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; margin-top: 1px; }
@@ -976,6 +998,14 @@
       <div class="hb-tabs" role="group" data-t-aria="hb.h"><button type="button" id="hb-tab-plan" aria-pressed="true"></button><button type="button" id="hb-tab-buch" aria-pressed="false"></button><button type="button" id="hb-tab-ausw" aria-pressed="false"></button></div>
       <div id="hbInhalt" class="hb"></div>
       <p class="warn" id="hbSpeicherMsg" role="alert"></p>
+    </section>
+
+    <!-- Schulden-Liste (src/schulden.js): Geld sparen → Schulden und Pfändung → „Meine Schulden-Liste“ -->
+    <section id="v-schulden" class="ansicht" aria-labelledby="h-schulden" hidden>
+      <div class="pp-kopf"><button type="button" class="btn ghost" data-zurueck="schulden">← <span data-t="pf.zurueck"></span></button></div>
+      <h2 id="h-schulden" class="ans-h" data-t="sl.h"></h2>
+      <div id="slInhalt" class="pf sl"></div>
+      <p class="warn" id="slSpeicherMsg" role="alert"></p>
     </section>
 
     <!-- Ich ziehe aus (src/ausziehen.js): Übersicht mit Kacheln, Checklisten, Geld, Hilfen -->
@@ -1668,6 +1698,7 @@ Behoerden.init(/*BEHOERDENDATA*/null);
 <script>
 /*HAUSHALT*/
 /*AUSZIEHEN*/
+/*SCHULDEN*/
 </script>
 <script>
 /*FORMULARE*/

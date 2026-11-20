@@ -56,3 +56,4 @@ Im übrigen CSS stehen nur Variablen. Ausnahme: Druckstile (`@media print`, Schw
 | Geld sparen | Strom Meerblau, Heizen Ziegel, Essen Grün, Verträge Indigo, Schulden Pflaume (wie Pfändung), Haushaltsplan Beere |
 | Pfändung | Mein Lohn Pflaume, Mein Konto Meerblau |
 | Ich ziehe aus | Vorher Violett, Erste Tage Schiefer (wie in src/ausziehen.js), Geld Grün, Versicherungen Blau, Achtung Ziegel, Hilfen Petrol, Careleaver Beere |
+| Mein Ordner | Schulden-Liste (`#or-schulden`) Grün (`--c-sparen`), weil die Liste zu „Geld sparen“ gehört und Pflaume schon die Zeile Pfändung hat (Entscheidung 20.11.2026). Weitere Zeilen kommen mit der Fristen-Übersicht. |

@@ -477,6 +477,7 @@
     einfacheSpracheAnzeigen();
     if (window.Haushalt && Haushalt.sprache) Haushalt.sprache(); // Haushaltsplan (src/haushalt.js) in der neuen Sprache zeichnen
     if (window.Ausziehen && Ausziehen.sprache) Ausziehen.sprache(); // „Ich ziehe aus“ (src/ausziehen.js) in der neuen Sprache zeichnen
+    if (window.Schulden && Schulden.sprache) Schulden.sprache(); // Schulden-Liste (src/schulden.js)
     // Regeln älter als der nächste Stichtag (1. Januar): deutlich darauf hinweisen
     var veraltet = regelnVeraltet();
     $('altNotice').hidden = !veraltet; $('altNotice').textContent = veraltet ? t('alt.hinweis', { stand: Rules.RULES.stand }) : '';
@@ -569,10 +570,10 @@
   }
   // Was „Alle Angaben löschen“ löscht. Neue Teile hier ergänzen: Sprachschlüssel clear.teil.*
   // Ist ein gespeicherter Vorgang geöffnet, nennt der Text ihn: gelöscht wird nur in diesem Vorgang, andere bleiben.
-  var LOESCH_TEILE = ['clear.teil.form', 'clear.teil.person'].concat(window.Haushalt ? ['clear.teil.haushalt'] : [], window.Ausziehen ? ['az.h'] : [], ['clear.teil.mehr']);
+  var LOESCH_TEILE = ['clear.teil.form', 'clear.teil.person'].concat(window.Haushalt ? ['clear.teil.haushalt'] : [], window.Ausziehen ? ['az.h'] : [], window.Schulden ? ['sl.ordner'] : [], ['clear.teil.mehr']);
   function loeschWas() {
     var a = tresor && tresor.bereit() ? tresor.aktiv() : null, mehrere = a && tresor.liste().length > 1;
-    return t('clear.was') + ' ' + LOESCH_TEILE.map(function (k) { return k === 'az.h' ? '„' + t(k) + '“' : t(k); }).join(' · ') +
+    return t('clear.was') + ' ' + LOESCH_TEILE.map(function (k) { return k === 'az.h' || k === 'sl.ordner' ? '„' + t(k) + '“' : t(k); }).join(' · ') +
       (a && a.name ? ' ' + t('clear.teil.vorgang', { name: a.name }) : mehrere ? ' ' + t('clear.teil.offen') : '');
   }
   // Rückgängig-Leiste: bleibt etwa 10 Sekunden; solange der Fokus darin ist, verschwindet sie nicht
@@ -1386,23 +1387,25 @@
   }
   // Web: Druckdialog des Browsers (Druck-CSS zeigt nur die Seite). App: derselbe PDF-Weg wie bei der Antragsmappe (Android drucken, iPhone teilen)
   function ebAusgeben(art) {
-    var msg = $('ebMsg');
     if (art === 'web') { try { window.print(); } catch (e) {} return; }
-    var name = 'SoLo-Ergebnis.pdf';
+    pdfAusgeben(ebPdfSeiten(), t('eb.titel'), 'SoLo-Ergebnis.pdf', $('ebMsg'), art, pdfRtl());
+  }
+  // PDF bauen und ausgeben (art 'drucken': Android drucken, sonst teilen); Datei danach aus dem Cache löschen. Auch für die Schulden-Liste.
+  function pdfAusgeben(seiten, titel, name, msg, art, arHinweis) {
     msg.textContent = t('f.pdfWorking');
-    var pdf = loadPdfLib().then(function (L) { return L.buildPdf({ pages: ebPdfSeiten(), title: t('eb.titel'), loadFont: function (n) { return fetch('fonts/pdf/' + n).then(function (r) { return r.arrayBuffer(); }).then(function (b) { return new Uint8Array(b); }); } }); });
+    var pdf = loadPdfLib().then(function (L) { return L.buildPdf({ pages: seiten, title: titel, loadFont: function (n) { return fetch('fonts/pdf/' + n).then(function (r) { return r.arrayBuffer(); }).then(function (b) { return new Uint8Array(b); }); } }); });
     if (art === 'drucken') {
       var pa = plug('PdfAusgabe');
       if (!pa) { msg.textContent = t('f.pdfFail'); return; }
       pdf.then(function (bytes) { return pa.drucken({ data: toBase64(bytes), name: name }); })
-        .then(function () { msg.textContent = pdfRtl() ? t('f.pdfArNote') : ''; }, function (e) { msg.textContent = /abgebrochen/.test(String(e && e.message || e)) ? '' : t('f.pdfFail'); });
+        .then(function () { msg.textContent = arHinweis ? t('f.pdfArNote') : ''; }, function (e) { msg.textContent = /abgebrochen/.test(String(e && e.message || e)) ? '' : t('f.pdfFail'); });
       return;
     }
     var fs = plug('Filesystem'), sh = plug('Share');
     if (!fs || !sh) { msg.textContent = t('f.pdfFail'); return; }
     pdf.then(function (bytes) { return fs.writeFile({ path: name, data: toBase64(bytes), directory: 'CACHE' }); })
-      .then(function (r) { return sh.share({ title: t('eb.titel'), files: [r.uri] }).then(function () {}, function () {}); })
-      .then(function () { msg.textContent = pdfRtl() ? t('f.pdfArNote') : ''; return fs.deleteFile({ path: name, directory: 'CACHE' }).catch(function () {}); })
+      .then(function (r) { return sh.share({ title: titel, files: [r.uri] }).then(function () {}, function () {}); })
+      .then(function () { msg.textContent = arHinweis ? t('f.pdfArNote') : ''; return fs.deleteFile({ path: name, directory: 'CACHE' }).catch(function () {}); })
       .catch(function () { msg.textContent = t('f.pdfFail'); });
   }
 
@@ -2396,6 +2399,7 @@
       p(t('sp.schulden.erst'), 'sp-zwischen');
       var ol = document.createElement('ol'); ol.className = 'sp-liste'; box.appendChild(ol);
       ['sp.schulden.1', 'sp.schulden.2', 'sp.schulden.3', 'sp.schulden.4'].forEach(function (k) { var li = document.createElement('li'); li.textContent = t(k); ol.appendChild(li); });
+      if (window.Schulden) { var slk = document.createElement('div'); slk.className = 'btns'; slk.appendChild(nhKnopf('btn', esc(t('sl.knopf')), null, function () { oeffneVon('schulden', true); })); slk.firstChild.id = 'sp-schuldenliste'; box.appendChild(slk); } // Schulden-Liste (src/schulden.js)
       p(t('sp.schulden.fall'), 'sp-zwischen');
       SP_SCHULDEN_FAELLE.forEach(function (f) {
         var dt = document.createElement('details'); dt.className = 'pf-tipps sp-fall'; dt.setAttribute('data-fall', f);
@@ -2527,7 +2531,7 @@
 
   // ----- Bereiche: Start, Leistungen (Leistungscheck), Brief prüfen -----
   // Beim Öffnen die Startseite; „#leistungen“ und „#briefe“ öffnen den Bereich direkt (Links, Tests).
-  var ANSICHTEN = ['start', 'leistungen', 'briefe', 'pflege', 'pflegeinfo', 'pflegestart', 'einst', 'ordner', 'pfaendung', 'sparen', 'haushalt', 'ausziehen']; // „pflege“: Pflegegrad-Einschätzung, gehört zu Leistungen
+  var ANSICHTEN = ['start', 'leistungen', 'briefe', 'pflege', 'pflegeinfo', 'pflegestart', 'einst', 'ordner', 'pfaendung', 'sparen', 'haushalt', 'ausziehen', 'schulden']; // „pflege“: Pflegegrad-Einschätzung, gehört zu Leistungen
   var aktAnsicht = 'leistungen';
   // Herkunft merken: „Zurück“, Leiste und Android-Taste folgen ihr (keine festen Ziele)
   var NAV_BEREICHE = ['start', 'ordner', 'einst']; // Leiste unten; Leistungen und Briefe erreicht man über die Startkacheln (markieren Start)
@@ -2545,6 +2549,7 @@
     if (a === 'pfaendung') { if (pf.schritt > 0) { pf.schritt--; if (!pf.schritt) pf.art = ''; pfRender(true); } else zurueckZurHerkunft(a); return true; }
     if (a === 'sparen') { if (sp.rezepte) sp.rezepte = false; else if (sp.thema) sp.thema = ''; else { zurueckZurHerkunft(a); return true; } spRender(true); return true; }
     if (a === 'haushalt') { zurueckZurHerkunft(a); return true; }
+    if (a === 'schulden') { if (!(window.Schulden && Schulden.zurueck())) zurueckZurHerkunft(a); return true; }
     if (a === 'ausziehen') { if (window.Ausziehen && Ausziehen.offen()) Ausziehen.zurueck(); else zurueckZurHerkunft(a); return true; }
     if (a === 'briefe' && !$('checkBox').hidden) { $('briefZurueck').click(); return true; }
     if (a === 'leistungen' && $('es-zurueck')) { $('es-zurueck').click(); return true; }
@@ -2580,6 +2585,7 @@
     var navA = navBereich(a);
     if (a === 'haushalt' && window.Haushalt) Haushalt.zeigen();
     if (a === 'ausziehen' && window.Ausziehen) Ausziehen.zeigen();
+    if (a === 'schulden' && window.Schulden) Schulden.zeigen();
     if (a === 'pfaendung') pfRender(false);
     if (a === 'pflegestart') puRender(false);
     if (a === 'sparen') spRender(false);
@@ -2660,6 +2666,7 @@
     if (aktAnsicht === 'pfaendung') pfRender(false);
     if (window.Haushalt && Haushalt.neuLaden) Haushalt.neuLaden(); // jeder Vorgang hat seinen eigenen Haushaltsplan
     if (window.Ausziehen && Ausziehen.neuLaden) Ausziehen.neuLaden(); // und eigene Haken und Notizen bei „Ich ziehe aus“
+    if (window.Schulden && Schulden.neuLaden) Schulden.neuLaden(); // und eine eigene Schulden-Liste
     vgRender();
   }
   function pfLeer() { return { art: '', schritt: 0, netto: '', pers: null, kg: null, kiz: '' }; }
@@ -2925,6 +2932,11 @@
     if (window.Haushalt && Haushalt.rest) {
       var hr = null; try { hr = Haushalt.rest(); } catch (e) {}
       if (hr && !hr.leer) zeile('haushalt', t('hb.h'), hr.rest >= 0 ? t('hb.rest', { b: { eur: hr.restEuro } }) : t('hb.fehlt', { b: { eur: -hr.restEuro } }), '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M15 15h2"/>', function () { oeffneVon('haushalt', true); });
+    }
+    // Schulden-Liste: nur die Zahl der offenen Einträge (keine Summe) und die nächste Frist, solange es die Fristen-Übersicht (b-fristen) nicht gibt
+    if (window.Schulden && Schulden.kurz) {
+      var sk = null; try { sk = Schulden.kurz(); } catch (e) {}
+      if (sk && sk.n) zeile('schulden', t('sl.ordner'), t('sl.ordner.st', { n: sk.n }) + (sk.frist && !window.FristListe ? ' · ' + t('sl.ordner.frist', { d: Fmt.datum(new Date(+sk.frist.slice(0, 4), +sk.frist.slice(5, 7) - 1, +sk.frist.slice(8, 10)), lang) }) : ''), '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>', function () { oeffneVon('schulden', true); });
     }
     // „Ich ziehe aus“ (Branch claude/ausziehen): nur, wenn das Modul den Fortschritt liefert (Ausziehen.stand() -> { n, von })
     var AZ = window.Ausziehen;
@@ -3452,6 +3464,18 @@
   // „Ich ziehe aus“: Haken und Notizen je Vorgang (lotse.ausziehen in Vorgaenge.DATEN), mit PIN verschlüsselt, kopiert und gelöscht
   if (window.Ausziehen) Ausziehen.speicherOrt({ laden: function (cb) { Store.get('lotse.ausziehen', cb); }, schreiben: function (text, cb) { Store.set('lotse.ausziehen', text); cb(null); } });
   if (window.Ausziehen) Ausziehen.init({ t: t, zeige: oeffneVon, plug: plug, famversGrenze: function () { var R = Rules.RULES.famvers; return Fmt.euro(Math.round((new Date().getFullYear() >= 2027 ? R.bezug2027 : R.bezug2026) / 7), lang, I18N[lang]['meta.dir'] === 'rtl'); } }); // „Ich ziehe aus“ (src/ausziehen.js)
+  // Schulden-Liste (src/schulden.js): je Vorgang (lotse.schulden in Vorgaenge.DATEN), mit PIN verschlüsselt, kopiert und gelöscht.
+  // Das Blatt für die Beratung ist deutsch (tDe, ohne Einfache Sprache); App: PDF wie das Ergebnisblatt, Web: Druckdialog.
+  if (window.Schulden) {
+    Schulden.speicherOrt({ laden: function (cb) { Store.get('lotse.schulden', cb); }, schreiben: function (text, cb) { Store.set('lotse.schulden', text); cb(null); } });
+    Schulden.init({
+      t: tL, tDe: function (k, p) { var l = lang, e = einfachSprache; lang = 'de'; einfachSprache = false; try { return t(k, p); } finally { lang = l; einfachSprache = e; } },
+      lang: function () { return lang; }, euro: function (x) { return Fmt.euro(x, lang, I18N[lang]['meta.dir'] === 'rtl'); }, euroDe: function (x) { return Fmt.euro(x, 'de'); },
+      datum: function (d) { return Fmt.datum(d, lang); }, datumDe: function (d) { return Fmt.datum(d, 'de'); }, zeige: oeffneVon, plug: plug, nativ: NATIVE,
+      haushalt: function () { if (!window.Haushalt) return null; var r = Haushalt.rest(), d = Haushalt.daten(); return { rest: r, raten: d && d.plan && d.plan.aus && d.plan.aus.raten || 0 }; },
+      pdf: function (seiten, titel, name, msg) { pdfAusgeben(seiten, titel, name, msg, plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen', false); }
+    });
+  }
   window.addEventListener('hashchange', function () { var a = location.hash.slice(1); if (ANSICHTEN.indexOf(a) >= 0 && a !== aktAnsicht) zeigeAnsicht(a, true); });
   Store.remove('lotse.fristen'); // Fristen aus 1.3.0 (Build 141) gibt es nicht mehr: gespeicherte Einträge vom Gerät löschen
   zeigeAnsicht((function () { var a = (location.hash || '').slice(1); return ANSICHTEN.indexOf(a) >= 0 ? a : 'start'; })());
