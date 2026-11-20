@@ -7,6 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const I18N = require('../dist/i18n.js');
 const Fmt = require('../src/fmt.js');
+const Rules = require('../src/rules.js');
 const N = Number(process.argv[2]) || 240;
 const LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so'];
 const html = fs.readFileSync(path.join(__dirname, '..', 'dist', 'sozialleistungslotse.html'), 'utf8');
@@ -110,7 +111,18 @@ for (let i = 0; i < N; i++) {
       const pill = a.querySelector('.pill');
       if (!pill.classList.contains(r.level)) melde('Einstufung (Farbe) passt nicht', { ...fall, id: r.id, ist: pill.className, soll: r.level });
       if (norm(pill.textContent).indexOf(norm(dl['lvl.' + r.level])) < 0) melde('Einstufung (Text) passt nicht', { ...fall, id: r.id, ist: pill.textContent });
-      const h2 = text(lang, 'h.' + r.hl);
+      let h2 = text(lang, 'h.' + r.hl);
+      // Passende Leistung: zweite Zeile = besonderer Grund (falls nicht nur „wahrscheinlich/möglich“) · ungefährer Betrag (falls berechnet) · Art der Stelle
+      if (h2 != null && (r.level === 'ja' || r.level === 'vielleicht')) {
+        const BK = { 'schaetz.eins': 'karte.betrag.eins', 'schaetz.spanne': 'karte.betrag.spanne', 'schaetz.bis': 'karte.betrag.bis', 'schaetz.mind': 'karte.betrag.mind' };
+        const teile = [];
+        if (r.hl !== 'ja' && r.hl !== 'vielleicht') teile.push(h2);
+        const b = r.tx.find((x) => BK[x[0]]);
+        if (b) teile.push(text(lang, BK[b[0]], b[1]));
+        const zl = Rules.zustLand(r.id, e.bundesland);
+        if (zl) teile.push(zl); else if (Object.prototype.hasOwnProperty.call(I18N.de, 'zu.' + r.id)) teile.push(text(lang, 'zu.' + r.id));
+        if (teile.length) h2 = teile.join(' · ');
+      }
       if (h2 == null) melde('Überschrift fehlt in der Sprachdatei', { ...fall, key: 'h.' + r.hl });
       else if (norm(a.querySelector('.head2').textContent) !== norm(h2)) melde('Überschrift passt nicht', { ...fall, id: r.id, ist: a.querySelector('.head2').textContent, soll: h2 });
       const teile = r.tx.map((x) => text(lang, 't.' + x[0], x[1]));
@@ -155,6 +167,8 @@ for (let i = 0; i < N; i++) {
     // „Grundsicherungsgeld oder Wohngeld/Kinderzuschlag“ steht als eigene Kachel „Zwei Wege“, nicht in der Liste
     const wege = out.zusammen.some((z) => z[0] === 'z.ggVsWg');
     if (wege !== !!d.getElementById('zweiWege')) melde('Kachel „Zwei Wege“ passt nicht zur Rechnung', { ...fall, soll: wege });
+    const eo = out.zusammen.some((z) => z[0] === 'z.gsaWg');
+    if (eo !== !!d.getElementById('entwederOder')) melde('Kasten „Entweder oder“ passt nicht zur Rechnung', { ...fall, soll: eo });
     const KARTE = { 'z.wgKiz': ['wohngeld', 'kiz'], 'z.gsaWg': ['gsa', 'wohngeld'], 'z.kgZuerst': ['kiz', 'kindergeld'], 'z.ggBezug': ['wohngeld', 'kiz', 'but'] }, ALLE = ['z.stichtag', 'z.verfahren', 'z.grenzen'];
     const sollTog = out.zusammen.filter((z) => z[0] !== 'z.ggVsWg' && !KARTE[z[0]] && !ALLE.includes(z[0])).map((z) => norm(text(lang, z[0], z[1]) || '?' + z[0]));
     // Hinweise zu einer Leistung stehen in deren Karte, Hinweise für alle Anträge in „Gut zu wissen“

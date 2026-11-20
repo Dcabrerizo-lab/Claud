@@ -438,6 +438,7 @@
     var veraltet = regelnVeraltet();
     $('altNotice').hidden = !veraltet; $('altNotice').textContent = veraltet ? t('alt.hinweis', { stand: Rules.RULES.stand }) : '';
     $('transNotice').hidden = lang === 'de';
+    $('clearWas').textContent = loeschWas();
     document.querySelectorAll('#presets button').forEach(function (b) {
       b.textContent = t(PRESETS.filter(function (p) { return p.id === b.id; })[0].key);
     });
@@ -493,12 +494,61 @@
     var b = document.createElement('button');
     b.type = 'button'; b.className = 'chip'; b.id = p.id;
     b.addEventListener('click', function () {
-      vgVorBeispiel(); // Beispiel nie in einen gespeicherten Vorgang schreiben
-      state = JSON.parse(JSON.stringify(p.v));
-      edited = false; started = true; pickedUser = {}; $('sampleNotice').hidden = false;
-      writeForm(); buildSelects(); render(); save();
+      var laden = function () {
+        vgVorBeispiel(); // Beispiel nie in einen gespeicherten Vorgang schreiben: dann öffnet es einen neuen leeren Vorgang
+        state = JSON.parse(JSON.stringify(p.v)); if (undoFn) undoWeg();
+        edited = false; started = true; pickedUser = {}; $('sampleNotice').hidden = false;
+        writeForm(); buildSelects(); render(); save();
+      };
+      // Rückfrage nur, wenn das Beispiel wirklich eigene Angaben überschreibt (ein geladenes, unverändertes Beispiel zählt nicht;
+      // ein gespeicherter Vorgang bleibt ohnehin unberührt, weil das Beispiel einen neuen Vorgang öffnet)
+      var gespeichert = tresor && tresor.bereit() && !!tresor.aktiv().name;
+      if (started && edited && !gespeichert) rueckfrage(b, laden); else laden();
     });
     pr.appendChild(b);
+  });
+
+  // Rückfrage als eigener Dialog (role="alertdialog"): Fokus bleibt im Dialog, Esc oder „Abbrechen“ schließt, danach Fokus zurück zum Knopf
+  var dlgJa = null, dlgVon = null;
+  function dlgHintergrund(an) { ['cols', 'jump', 'appnav'].forEach(function (id) { var el = $(id); if (!el) return; if (an) el.setAttribute('inert', ''); else el.removeAttribute('inert'); }); }
+  function rueckfrage(von, ja) {
+    dlgJa = ja; dlgVon = von;
+    $('beispielDlg').hidden = false; dlgHintergrund(true);
+    $('beispielNein').focus();
+  }
+  function dlgZu(ok) {
+    var f = dlgJa; dlgJa = null;
+    $('beispielDlg').hidden = true; dlgHintergrund(false);
+    if (ok && f) f();
+    if (dlgVon && dlgVon.focus) dlgVon.focus();
+  }
+  // Was „Alle Angaben löschen“ löscht. Neue Teile hier ergänzen: Sprachschlüssel clear.teil.*
+  // Ist ein gespeicherter Vorgang geöffnet, nennt der Text ihn: gelöscht wird nur in diesem Vorgang, andere bleiben.
+  var LOESCH_TEILE = ['clear.teil.form', 'clear.teil.person'];
+  function loeschWas() {
+    var a = tresor && tresor.bereit() ? tresor.aktiv() : null;
+    return t('clear.was') + ' ' + LOESCH_TEILE.map(function (k) { return t(k); }).join(' · ') + (a && a.name ? ' ' + t('clear.teil.vorgang', { name: a.name }) : '');
+  }
+  // Rückgängig-Leiste: bleibt etwa 10 Sekunden; solange der Fokus darin ist, verschwindet sie nicht
+  var undoFn = null, undoTimer = null;
+  function undoWeg() { clearTimeout(undoTimer); undoFn = null; $('undoBar').hidden = true; }
+  function undoUhr() { clearTimeout(undoTimer); undoTimer = setTimeout(function () { if (!$('undoBar').contains(document.activeElement)) undoWeg(); }, 10000); }
+  function undoZeigen(fn) {
+    undoFn = fn;
+    $('undoText').textContent = t('clear.bar');
+    $('undoBar').hidden = false; undoUhr();
+  }
+  $('undoBtn').addEventListener('click', function () { var f = undoFn; undoWeg(); if (f) f(); var c = $('clearBtn'); if (c && c.offsetParent) c.focus(); });
+  $('undoBar').addEventListener('focusout', undoUhr);
+  $('beispielNein').addEventListener('click', function () { dlgZu(false); });
+  $('beispielJa').addEventListener('click', function () { dlgZu(true); });
+  $('beispielDlg').addEventListener('click', function (e) { if (e.target === $('beispielDlg')) dlgZu(false); });
+  $('beispielDlg').addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { e.preventDefault(); dlgZu(false); return; }
+    if (e.key === 'Tab') { // nur zwischen den beiden Knöpfen wechseln
+      var a = $('beispielNein'), z = $('beispielJa');
+      if (e.shiftKey && document.activeElement === a) { e.preventDefault(); z.focus(); } else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); }
+    }
   });
 
   var CHECKS = ['mzG', 'mzGl', 'algZeit', 'grundrente33', 'wfbmEssen', 'teilhabe', 'schwanger', 'ernaehrung', 'warmwasser', 'kinder12', 'kindKrank', 'unterhaltFehlt', 'uvgWechsel', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt', 'uzTitel', 'autoBraucht'];
@@ -521,7 +571,7 @@
   }
 
   function touched() {
-    started = true;
+    started = true; if (undoFn) undoWeg(); // nach neuer Eingabe nichts Altes mehr zurückholen
     if (!edited) { edited = true; $('sampleNotice').hidden = true; }
     // Ausgeblendete Felder zurücksetzen, damit keine alten Werte mitrechnen
     if (state.kids === 0) { state.kidsAlter = false; state.kinder12 = false; state.kindKrank = false; if ($('kindKrank')) $('kindKrank').checked = false; state.unterhaltFehlt = false; state.kidsU6 = 0; state.kids14 = 0; $('kinder12').checked = false; $('unterhaltFehlt').checked = false; }
@@ -643,6 +693,9 @@
     // „Drucken“ auch am Ende der Mappe: löst denselben Weg aus wie der Knopf oben (Web: Drucken, App: PDF)
     $('mappePrint2').addEventListener('click', function () { (!$('mappeDruck').hidden ? $('mappeDruck') : $('mappePrint')).click(); });
     $('clearBtn').addEventListener('click', function () {
+      // Stand merken: „Rückgängig“ stellt ihn etwa 10 Sekunden lang wieder her
+      // Mit Vorgängen: nur der geöffnete Vorgang wird geleert; Rückgängig gilt nur, solange derselbe Vorgang offen ist
+      var vorher = { state: JSON.parse(JSON.stringify(state)), person: Object.assign({}, person), picked: Object.assign({}, picked), pickedUser: Object.assign({}, pickedUser), started: started, edited: edited, sample: !$('sampleNotice').hidden, haken: Object.assign({}, haken), vg: tresor && tresor.bereit() ? tresor.aktiv().id : null };
       state = blankState(); person = { name: '', geb: '', strasse: '', ort: '', tel: '' }; picked = {}; pickedUser = {}; started = false;
       ['p-name', 'p-geb', 'p-strasse', 'p-ort', 'p-tel'].forEach(function (id) { $(id).value = ''; });
       haken = {}; Store.remove('lotse.haken');
@@ -651,6 +704,15 @@
       Store.remove('lotse.state');
       writeForm(); buildSelects(); render();
       $('clearMsg').textContent = t('clear.done');
+      if (vorher.started || Object.keys(vorher.person).some(function (k) { return vorher.person[k]; })) undoZeigen(function () {
+        if (vorher.vg && !(tresor.bereit() && tresor.aktiv().id === vorher.vg)) return; // anderer Vorgang offen oder gesperrt
+        haken = vorher.haken; if (Object.keys(haken).length) Store.set('lotse.haken', JSON.stringify(haken));
+        state = vorher.state; person = vorher.person; picked = vorher.picked; pickedUser = vorher.pickedUser; started = vorher.started; edited = vorher.edited;
+        $('sampleNotice').hidden = !vorher.sample;
+        [['p-name', 'name'], ['p-geb', 'geb'], ['p-strasse', 'strasse'], ['p-ort', 'ort'], ['p-tel', 'tel']].forEach(function (x) { $(x[0]).value = person[x[1]] || ''; });
+        writeForm(); buildSelects(); render(); flush();
+        $('clearMsg').textContent = t('clear.undone'); if ($('clear2Msg').textContent) $('clear2Msg').textContent = t('clear.undone');
+      });
     });
     // Anbieter im Impressum: iPhone-App über das Apple-Konto von Natascha Cabrerizo y Polo, Android und Web: David Cabrerizo
     if (NATIVE && window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') { $('anbieterName').textContent = 'Natascha Cabrerizo y Polo'; document.documentElement.classList.add('ios'); }
@@ -752,6 +814,19 @@
     document.querySelectorAll('input[data-haken]').forEach(function (cb) { if (cb !== el && cb.getAttribute('data-haken') === key) cb.checked = el.checked; });
     Store.set('lotse.haken', JSON.stringify(haken));
   });
+  // Zweite Zeile der eingeklappten Karte: bei passenden Leistungen statt „Anspruch ist wahrscheinlich/möglich“ (steht schon im Etikett)
+  // der grob geschätzte Betrag (nur wenn die Karte einen ausrechnet) und die Art der zuständigen Stelle. Sonst der Grund wie bisher.
+  var BETRAG_KURZ = { 'schaetz.eins': 'karte.betrag.eins', 'schaetz.spanne': 'karte.betrag.spanne', 'schaetz.bis': 'karte.betrag.bis', 'schaetz.mind': 'karte.betrag.mind' };
+  function zeile2(r) {
+    if (r.level !== 'ja' && r.level !== 'vielleicht') return t('h.' + r.hl);
+    var teile = [];
+    if (r.hl !== 'ja' && r.hl !== 'vielleicht') teile.push(t('h.' + r.hl)); // besonderer Grund (z. B. „Einkommen eher zu niedrig“) bleibt
+    var b = r.tx.filter(function (x) { return BETRAG_KURZ[x[0]]; })[0];
+    if (b) teile.push(t(BETRAG_KURZ[b[0]], b[1]));
+    var zl = Rules.zustLand(r.id, state.bundesland), zk = 'zu.' + r.id;
+    if (zl) teile.push(zl); else if (Object.prototype.hasOwnProperty.call(I18N.de, zk)) teile.push(t(zk));
+    return teile.length ? teile.join(' · ') : t('h.' + r.hl);
+  }
   function card(r) {
     var dim = r.level === 'nein' || r.level === 'na';
     var s = r.steps;
@@ -768,7 +843,7 @@
     return '<article class="card auf' + (dim ? ' dim' : '') + '" data-id="' + r.id + '" id="c-' + r.id + '"><details class="karte"><summary>' +
       '<header><div><h3' + (lang === 'de' ? '' : ' lang="de"') + '>' + esc(r.name) + '</h3>' + (desc ? '<div class="desc">' + esc(desc) + '</div>' : '') + '</div>' +
       '<span class="pill ' + r.level + '"><span aria-hidden="true">' + MARK[r.level] + '</span>' + esc(t('lvl.' + r.level)) + '</span></header>' +
-      '<p class="head2">' + esc(t('h.' + r.hl)) + '</p><span class="karte-mehr" aria-hidden="true" data-mehr="' + esc(t('karte.mehr')) + '" data-weniger="' + esc(t('karte.weniger')) + '"></span></summary>' +
+      '<p class="head2">' + esc(beratung ? zeile2(r) : Fmt.ohnePara(zeile2(r))) + '</p><span class="karte-mehr" aria-hidden="true" data-mehr="' + esc(t('karte.mehr')) + '" data-weniger="' + esc(t('karte.weniger')) + '"></span></summary>' +
       '<div class="body"><div class="txt">' + resultHtml(r) + '</div>' + (kartenHinweise[r.id] || []).map(function (z) { return '<p class="karte-hinweis"><span aria-hidden="true">ⓘ </span>' + esc(tL(z[0], z[1])) + '</p>'; }).join('') + rechtHtml(r) + '</div>' +
       zustHtml(r) + steps + '</details></article>';
   }
@@ -801,10 +876,20 @@
   // Ergebniskarte aufklappen (Sprung aus der Übersicht, Rückkehr von der Pflege-Einschätzung oder der Erklärseite)
   function karteAuf(id) { var a = id && document.getElementById(id); var d = a && a.classList.contains('auf') && a.querySelector('details.karte'); if (d) d.open = true; }
   // Grundsicherungsgeld oder Wohngeld und Kinderzuschlag: beides zusammen geht nicht. Eine Kachel erklärt die zwei Wege.
-  function zweiWege(results) {
+  function wegLinks(results, ids) {
     var g = function (id) { for (var i = 0; i < results.length; i++) if (results[i].id === id) return results[i]; return null; };
-    var weg = function (ids) { return ids.map(g).filter(function (r) { return r && r.level !== 'nein'; }).map(function (r) {
-      return '<a class="ww-l ' + r.level + '" href="#c-' + r.id + '"><span' + (lang === 'de' ? '' : ' lang="de"') + '>' + esc(r.name) + '</span><span class="pill ' + r.level + '"><span aria-hidden="true">' + MARK[r.level] + '</span>' + esc(t('lvl.' + r.level)) + '</span></a>'; }).join(''); };
+    return ids.map(g).filter(function (r) { return r && r.level !== 'nein'; }).map(function (r) {
+      return '<a class="ww-l ' + r.level + '" href="#c-' + r.id + '"><span' + (lang === 'de' ? '' : ' lang="de"') + '>' + esc(r.name) + '</span><span class="pill ' + r.level + '"><span aria-hidden="true">' + MARK[r.level] + '</span>' + esc(t('lvl.' + r.level)) + '</span></a>'; }).join('');
+  }
+  // Rente/Erwerbsminderung: Grundsicherung im Alter oder Wohngeld – gibt es nicht gleichzeitig (Hinweis z.gsaWg). Gleicher Aufbau wie „Zwei Wege“,
+  // aber nur mit Aussagen, die schon in der App stehen (z.gsaWg, es.r.gsa, es.r.wohngeld, sp.vertraege.1); keine eigene Vorrangregel.
+  function entwederOder(results) {
+    return '<section class="zweiwege" id="entwederOder" aria-labelledby="h-eo"><h3 id="h-eo">' + esc(tL('eo.h')) + '</h3><p class="ww-tun"><b>' + esc(tL('eo.tipp')) + '</b></p><p>' + esc(tL('eo.t')) + '</p>' +
+      '<div class="ww-wege"><div class="ww-weg"><h4>' + esc(tL('eo.a.h')) + '</h4><p>' + esc(tL('eo.a.t')) + '</p>' + wegLinks(results, ['gsa']) + '</div>' +
+      '<div class="ww-weg"><h4>' + esc(tL('eo.b.h')) + '</h4><p>' + esc(tL('eo.b.t')) + '</p>' + wegLinks(results, ['wohngeld']) + '</div></div></section>';
+  }
+  function zweiWege(results) {
+    var weg = function (ids) { return wegLinks(results, ids); };
     return '<section class="zweiwege" id="zweiWege" aria-labelledby="h-ww"><h3 id="h-ww">' + esc(t('ww.h')) + '</h3><p class="ww-tun"><b>' + esc(t('ww.tipp')) + '</b></p><p>' + esc(t('ww.t')) + '</p>' +
       '<div class="ww-wege"><div class="ww-weg"><h4>' + esc(t('ww.a.h')) + '</h4><p>' + esc(t('ww.a.t')) + '</p>' + weg(['ggeld', 'but']) + '</div>' +
       '<div class="ww-weg"><h4>' + esc(t('ww.b.h')) + '</h4><p>' + esc(t('ww.b.t')) + '</p>' + weg(['wohngeld', 'kiz', 'but']) + '</div></div>' +
@@ -886,7 +971,8 @@
     // Hinweise verteilen: zu einer Leistung gehörende in deren Karte, für alle Anträge geltende in „Gut zu wissen“, der Rest bleibt in „Beachten“
     var wege = out.zusammen.some(function (z) { return z[0] === 'z.ggVsWg'; });
     var rest = out.zusammen.filter(function (z) { return z[0] !== 'z.ggVsWg' && !HINWEIS_KARTE[z[0]] && HINWEIS_ALLE.indexOf(z[0]) < 0; });
-    $('together').innerHTML = (wege ? zweiWege(out.results) : '') + (rest.length
+    var eo = out.zusammen.some(function (z) { return z[0] === 'z.gsaWg'; });
+    $('together').innerHTML = (wege ? zweiWege(out.results) : '') + (eo ? entwederOder(out.results) : '') + (rest.length
       ? '<div class="together"><h3>' + esc(t('beachten')) + '</h3>' + listItems(rest.map(function (z) { return tL(z[0], z[1]); })) + '</div>'
       : '');
 
@@ -2465,6 +2551,7 @@
   function vgSpeicherFehler() { vgGeruest(); var f = $('vgFehler'); f.textContent = t('vg.fehler.speicher'); f.hidden = false; }
   // Angaben des geöffneten Vorgangs neu laden (nach Wechsel, neuem Vorgang, Löschen)
   function vgNeuLaden() {
+    if (undoFn) undoWeg(); // Rückgängig gehört zum vorher geöffneten Vorgang
     if (!$('mappe').hidden) closeMappe();
     state = blankState(); person = { name: '', geb: '', strasse: '', ort: '', tel: '' }; picked = {}; pickedUser = {}; started = false; edited = false;
     ['p-name', 'p-geb', 'p-strasse', 'p-ort', 'p-tel'].forEach(function (id) { $(id).value = ''; });
@@ -2559,6 +2646,7 @@
     // Einstellungen: Verwaltung ganz oben
     var g = $('setHaushalte'), alt = document.activeElement && document.activeElement.id, msgAlt = $('vgMsg') ? $('vgMsg').textContent : '';
     g.innerHTML = ''; g.hidden = false;
+    if (LOESCH_TEILE) $('clearWas').textContent = loeschWas(); // nennt den geöffneten Vorgang
     var h3 = vgEl('h3', null, t('vg.h')); h3.id = 'vgH'; h3.tabIndex = -1; g.appendChild(h3);
     if (!bereit) return;
     g.appendChild(vgEl('p', 'small muted', t('vg.t')));

@@ -53,6 +53,7 @@ const knopf = (s, root, text) => [...root.querySelectorAll('button')].find((b) =
   await warte(400);
   const st = JSON.parse(mem['lotse.vorgaenge']).klar;
   const fam = st.liste.find((v) => v.name === 'Familie M.');
+  ck('[vorgaenge] Beispiel bei gespeichertem Vorgang: keine Rückfrage (überschreibt nichts)', d.getElementById('beispielDlg').hidden);
   ck('[vorgaenge] Beispiel öffnet einen neuen Vorgang', st.liste.length === 2 && st.aktiv !== fam.id);
   ck('[vorgaenge] gespeicherter Vorgang bleibt unverändert', JSON.parse(fam.daten['lotse.state']).s.miete === 640, fam.daten);
   ck('[vorgaenge] Beispiel ohne Antragsdaten des gespeicherten Vorgangs', d.getElementById('p-name').value === '');
@@ -64,6 +65,22 @@ const knopf = (s, root, text) => [...root.querySelectorAll('button')].find((b) =
   ck('[vorgaenge] Schild öffnet die Auswahl', !d.getElementById('vgMenu').hidden);
   knopf(s, d.getElementById('vgMenu'), 'Familie M.').click();
   ck('[vorgaenge] Wechsel lädt Angaben und Antragsdaten', d.getElementById('miete').value === '640' && d.getElementById('p-name').value === 'Erika Muster' && chip.textContent === 'Familie M.');
+
+  // Alle Angaben löschen: Text nennt den Vorgang, Rückgängig stellt ihn wieder her, nach einem Wechsel nicht mehr
+  ck('[vorgaenge] Löschen-Text nennt den geöffneten Vorgang', /Nur in diesem Vorgang \(„Familie M\.“\)/.test(d.getElementById('clearWas').textContent), d.getElementById('clearWas').textContent);
+  d.getElementById('clearBtn').click();
+  ck('[vorgaenge] Löschen leert nur den geöffneten Vorgang', d.getElementById('miete').value === '' && d.getElementById('p-name').value === '' && !d.getElementById('undoBar').hidden && chip.textContent === 'Familie M.');
+  d.getElementById('undoBtn').click();
+  await warte(20);
+  ck('[vorgaenge] Rückgängig: Angaben des Vorgangs zurück und gespeichert', d.getElementById('miete').value === '640' && d.getElementById('p-name').value === 'Erika Muster' && JSON.parse(mem['lotse.state']).s.miete === 640);
+  d.getElementById('clearBtn').click();
+  knopf(s, d.getElementById('vgMenu'), 'Ohne Namen').click();
+  ck('[vorgaenge] Wechsel nach dem Löschen: Rückgängig-Leiste weg', d.getElementById('undoBar').hidden);
+  knopf(s, d.getElementById('vgMenu'), 'Familie M.').click();
+  ck('[vorgaenge] gelöschter Vorgang bleibt leer, anderer Vorgang unberührt', d.getElementById('miete').value === '');
+  d.getElementById('miete').value = '640'; d.getElementById('miete').dispatchEvent(new s.w.Event('change'));
+  d.getElementById('p-name').value = 'Erika Muster'; d.getElementById('p-name').dispatchEvent(new s.w.Event('input'));
+  await warte(400);
 
   // Kopie zum Ausprobieren
   const g = d.getElementById('setHaushalte');

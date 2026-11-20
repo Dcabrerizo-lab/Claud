@@ -33,6 +33,8 @@
  "vg.auto.t": "Bei jedem Vorgang steht das Datum. Nach diesem Datum löscht die App den Vorgang. Das passiert, wenn du die App das nächste Mal öffnest.",
  "vg.sperre.vergessen.t": "Ohne PIN kann man die Angaben nicht öffnen. Du kannst alles löschen und neu anfangen.",
  "vg.fehler.speicher": "Speichern geht gerade nicht. Der Speicher ist voll oder gesperrt. Deine Angaben sind weg, wenn du die App schließt.",
+ "preset.dlg.t": "Das Beispiel ersetzt deine Angaben im Formular. Dein Name und deine Anschrift für die Briefe bleiben.",
+ "clear.bar": "Alles gelöscht.",
  "lg.gesund.hint": "Trifft nichts davon zu? Dann geh einfach weiter.",
  "start.1": "Beantworte die Fragen zu deinem Haushalt, zu deiner Wohnung und zu deinem Einkommen.",
  "start.2": "Dein Ergebnis erscheint hier. Es ändert sich bei jeder neuen Angabe.",

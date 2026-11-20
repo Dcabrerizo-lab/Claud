@@ -167,6 +167,24 @@
   [hidden] { display: none !important; }
   .presets { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
   .presets-label { font-size: 0.85em; color: var(--muted); margin-bottom: 8px; }
+  /* „Alle Angaben löschen“: abgesetzt von den Beispielen, eigene Farbe */
+  .loeschzeile { margin: 20px 0 24px; padding-top: 14px; border-top: 1px solid var(--line); display: grid; gap: 4px; justify-items: start; }
+  .chip.loeschen { color: var(--bad); border: 1px solid currentColor; background: var(--surface); box-shadow: none; }
+  .loesch-was { margin: 0; color: var(--muted); }
+  /* Rückgängig-Leiste und Rückfrage-Dialog */
+  .undo { position: fixed; left: 12px; right: 12px; bottom: calc(72px + env(safe-area-inset-bottom, 0px)); z-index: 8; max-width: 560px; margin: 0 auto;
+    display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; justify-content: space-between;
+    background: var(--ink); color: var(--surface); border-radius: 12px; padding: 8px 8px 8px 14px; box-shadow: var(--shadow-s); }
+  .undo[hidden] { display: none; }
+  .undo button { font: inherit; font-weight: 700; min-height: 44px; padding: 6px 14px; border-radius: 8px; border: 2px solid currentColor; background: transparent; color: inherit; cursor: pointer; }
+  @media (min-width: 900px) { .undo { bottom: 16px; } }
+  .dlg-hg { position: fixed; inset: 0; z-index: 9; background: rgba(0, 0, 0, .45); display: flex; align-items: center; justify-content: center; padding: 16px; }
+  .dlg-hg[hidden] { display: none; }
+  .dlg { background: var(--surface); color: var(--ink); border-radius: var(--r-card); padding: 18px 20px; max-width: 440px; width: 100%; display: grid; gap: 10px; box-shadow: var(--shadow-s); }
+  .dlg h2 { margin: 0; font-size: 1.15em; }
+  .dlg p { margin: 0; }
+  .dlg-knoepfe { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+  .dlg-ja { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 700; }
   form, .formgrid { display: grid; gap: 28px; }
   fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 16px; min-width: 0; }
   legend { font-family: var(--font-display); font-weight: 800; font-size: 1.1em; padding: 0 0 4px; width: 100%; border-bottom: 2px solid var(--ink); margin-bottom: 4px; }
@@ -855,7 +873,11 @@
         <h2 id="h-form" style="margin-bottom:12px" data-t="h.form"></h2>
         <div class="presets-label" id="presetLabel" data-t="preset.label"></div>
         <div class="presets" role="group" aria-labelledby="presetLabel" id="presets" style="margin-bottom:8px"></div>
-        <p style="margin-bottom:24px"><button type="button" class="chip" id="clearBtn" data-t="clear.btn"></button> <span class="msg" id="clearMsg" role="status"></span></p>
+        <div class="loeschzeile">
+          <button type="button" class="chip loeschen" id="clearBtn"><span aria-hidden="true">✕ </span><span data-t="clear.btn"></span></button>
+          <p class="small loesch-was" id="clearWas"></p>
+          <span class="msg" id="clearMsg" role="status"></span>
+        </div>
 
         <form id="form" onsubmit="return false" autocomplete="off">
           <fieldset>
@@ -1405,6 +1427,17 @@
   <div class="jump" id="jump" role="region" aria-labelledby="jumpBtn">
     <span class="t" id="jumpText"></span>
     <button type="button" id="jumpBtn" data-t="jump"></button>
+  </div>
+
+  <!-- Rückgängig nach „Alle Angaben löschen“ (etwa 10 Sekunden) -->
+  <div class="undo" id="undoBar" hidden><span id="undoText"></span> <button type="button" id="undoBtn" data-t="clear.undo"></button></div>
+  <!-- Rückfrage vor „Beispiel laden“, wenn schon eigene Angaben da sind (eigener Dialog, kein window.confirm) -->
+  <div class="dlg-hg" id="beispielDlg" hidden>
+    <div class="dlg" role="alertdialog" aria-modal="true" aria-labelledby="beispielDlgH" aria-describedby="beispielDlgT">
+      <h2 id="beispielDlgH" data-t="preset.dlg.h"></h2>
+      <p id="beispielDlgT" data-t="preset.dlg.t"></p>
+      <div class="dlg-knoepfe"><button type="button" class="chip" id="beispielNein" data-t="preset.dlg.nein"></button> <button type="button" class="chip dlg-ja" id="beispielJa" data-t="preset.dlg.ja"></button></div>
+    </div>
   </div>
 
   <nav class="appnav" id="appnav" aria-label="SoLo">
