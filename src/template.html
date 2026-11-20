@@ -199,7 +199,6 @@
   .top .sprach-knopf select { width: auto; max-width: min(18em, calc(100vw - 110px)); min-height: 40px; border: 0; padding-block: 0; padding-inline: 2px 6px; background: transparent; color: var(--ink); font: inherit; font-weight: 700; border: 0 !important; }
   .loesch-frage { scroll-margin-block: 96px; }
   .pa .z { white-space: nowrap; }
-  .tools { display: flex; gap: 8px 12px; align-items: center; flex-wrap: wrap; }
   .chip {
     font: inherit; font-size: 0.85em; color: var(--ink);
     background: var(--surface); border: 1px solid var(--line); border-radius: 999px;
@@ -834,7 +833,7 @@
   .top h1 { display: flex; align-items: center; gap: 12px; }
   .top h1 .logo { flex: none; width: 48px; height: 48px; border-radius: 14px; }
   .top h1 .titel { display: block; }
-  .tools .chip, .langpick select { box-shadow: var(--shadow-s); }
+  .langpick select { box-shadow: var(--shadow-s); }
   /* Fragebogen-Abschnitte als Karten, Überschrift mit Farbbalken */
   form > fieldset { background: var(--surface); border: 1px solid transparent; border-radius: var(--r-card); padding: 18px; box-shadow: var(--shadow); }
   form > fieldset > legend { float: left; border-bottom: 0; padding: 0 0 0 12px; padding-inline: 12px 0; margin-bottom: 2px; border-inline-start: 4px solid var(--accent); line-height: 1.25; }
@@ -965,6 +964,8 @@
   /* Kopfzeile (Logo, App-Name, Satz „Prüfe in etwa 5 Minuten …“) nur auf der Startseite (David, 20.11.2026).
      Sonst nur sichtbar versteckt: h1 bleibt für Screenreader. */
   .app:not([data-ansicht="start"]) .top { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; margin: 0; padding: 0; }
+  /* Sprachwahl oben nur auf der Startseite (sonst in den Einstellungen): auf allen anderen Seiten, auch „Deine Angaben“, nicht unsichtbar per Tastatur oder Vorlesefunktion erreichbar */
+  .app:not([data-ansicht="start"]) .top .sprach-knopf { display: none; }
   .gruss { font-size: 1.7em; font-weight: 900; margin: 4px 0 6px; }
   .gruss-t { color: var(--muted); font-size: 1.05em; margin: 0 0 4px; }
   /* Startseite als Kachel-Raster (Kacheln wie Richtung 3 „Bunt und bildhaft“, Farben aus der warmen Palette; weiße Schrift mind. 4,5:1).
@@ -1021,7 +1022,7 @@
   .ip-liste { border: 0; padding: 0; margin: 8px 0; }
   .sb-haken { list-style: none; padding: 0; margin: 8px 0; }
   .sb-zeile { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px; border-bottom: 1px solid var(--line); padding: 6px 0; }
-  .sl-kopfkarte, .hb-bruecke { border: 1px solid var(--line); border-inline-start: 4px solid var(--uk, var(--accent)); border-radius: var(--r-item); background: var(--surface); padding: 12px 14px; margin: 12px 0; }
+  .sl-kopfkarte, .hb-bruecke { border: 1px solid var(--line); border-inline-start: 4px solid var(--uk, var(--hint-rand)); border-radius: var(--r-item); background: var(--surface); padding: 12px 14px; margin: 12px 0; }
   .sl-kopfkarte h3 { font-size: 1em; margin: 0 0 4px; }
   .sl-reihe { margin: 4px 0; padding-inline-start: 1.4em; }
   .hb-bruecke-t { font-weight: 600; margin: 0 0 4px; }
@@ -1163,6 +1164,9 @@
      Unterseiten die Klasse .uk-karte tragen). Bereichsfarbe: --uk auf der Ansicht (unten), sonst Petrol. */
   .uk-raster { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5em), 1fr)); gap: 12px; margin: 16px 0; max-width: 640px; }
   .uk-raster > :last-child:nth-child(odd) { grid-column: 1 / -1; min-height: 0; }
+  /* Geld und Schulden: alle Kacheln einer Auswahl gleich hoch (nicht nur je Zeile), außer bei breiter Schlusskachel */
+  #spInhalt > .uk-raster:not(:has(> :last-child:nth-child(odd))) { grid-auto-rows: 1fr; }
+  .uk-karte b bdi[lang="de"] { hyphens: auto; -webkit-hyphens: auto; } /* deutscher Amtsbegriff in Übersetzungen: mit Strich trennen */
   #v-briefe, #v-pruefen, .app[data-ansicht="briefe"] { --uk: var(--c-briefe-t); }
   #v-sparen, #v-haushalt, #v-schulden { --uk: var(--c-sparen-t); }
   #v-pfaendung { --uk: var(--c-pfaendung-t); }

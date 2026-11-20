@@ -34,11 +34,12 @@ SDK=$(grep -m1 "^sdk.dir=" app/android/local.properties 2>/dev/null | cut -d= -f
 AAPT=$(ls -d "$SDK"/build-tools/*/aapt2 2>/dev/null | sort -V | tail -1 || true)
 if [ -n "$AAPT" ]; then
   INFO=$("$AAPT" dump badging "$APK" 2>/dev/null | awk 'NR==1')
-  echo "$INFO" | grep -q "name='com.Sozialleistungslotse'" || { echo "FALSCHER PAKETNAME: $INFO"; exit 1; }
+  # Die APK ist die Test-App (Debug-Build, Paket com.Sozialleistungslotse.test, Name „SoLo Test“), neben der Store-App installierbar
+  echo "$INFO" | grep -q "name='com.Sozialleistungslotse.test'" || { echo "FALSCHER PAKETNAME: $INFO"; exit 1; }
   echo "$INFO" | grep -q "versionCode='$VC'" || { echo "FALSCHE VERSIONSNUMMER: $INFO"; exit 1; }
   echo "$INFO" | grep -q "versionName='$VN'" || { echo "FALSCHER VERSIONSNAME: $INFO"; exit 1; }
 fi
-echo "Signatur $SHA, Paket com.Sozialleistungslotse, Version $VN ($VC)"
+echo "Signatur $SHA, Play-Bundle com.Sozialleistungslotse, Test-APK com.Sozialleistungslotse.test, Version $VN ($VC)"
 
 echo "== 4. Pakete =="
 mkdir -p "$ZIEL"; P="$ZIEL/SoLo"; I="$ZIEL/SoLo-iOS"

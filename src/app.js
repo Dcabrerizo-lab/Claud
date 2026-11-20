@@ -2600,7 +2600,7 @@
     ['check', 'kc.h', '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>', 'kc.h.t'],
     ['konto', 'pf.konto', '<path d="M3 10l9-6 9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/>'],
     ['strom', 'gs.d.strom', '<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>'],
-    ['mahn', 'gs.d.mahn', '<path d="M4 6h16v12H4z"/><path d="M4 6l8 6 8-6"/><path d="M12 15.5v.5"/>'],
+    ['mahn', 'gs.d.mahn', '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>'],
     ['miete', 'gs.d.miete', '<path d="M4 11l8-6 8 6v9H4z"/><path d="M10 20v-5h4v5"/>'],
     ['geld', 'gs.d.geld', '<path d="M12 4v16M6 20h12M5 7h14"/><path d="M5 7l-3 6h6zM19 7l-3 6h6z"/>']
   ];
@@ -2609,7 +2609,7 @@
     ['pruef', 'ip.h', 'ip.h.t', '<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5M8.5 11l2 2 3.5-3.5"/>'],
     ['schreiben', 'ms.h', 'ms.h.t', '<path d="M6 3h9l4 4v14H6z"/><path d="M9 17l1-3 6-6 2 2-6 6z"/>'],
     ['rate', 'gs.rate', 'gs.rate.t', '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>'],
-    ['gelb', 'gs.gelb', 'gs.gelb.t', '<path d="M4 6h16v12H4z"/><path d="M4 6l8 6 8-6"/><path d="M12 15.5v.5"/>']
+    ['gelb', 'gs.gelb', 'gs.gelb.t', '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>']
   ];
   // Schuldnerberatung: Beratungsstelle finden (sl.hilfe.1–5), Bis zum Termin, Beratungsmappe, Ablauf und Privatinsolvenz, unseriöse Anbieter
   //  Ablauf (sb.ablauf.lead): AG SBV „Konzept Soziale Schuldnerberatung“ (2018), S. 10–14; Privatinsolvenz §§ 287, 305 InsO (abgerufen 20.11.2026).
@@ -2649,8 +2649,14 @@
 
   var sp = { bereich: '', fall: '', thema: '' };
   // Kachel in der Form der Startseite (Klasse sk): Symbol, Titel, kurzer Text
+  // Deutscher Amtsbegriff in Klammern in einer Übersetzung (z. B. „(Mahnbescheid)“): als lang="de" auszeichnen, damit er wie deutscher
+  // Text getrennt wird (mit Trennstrich, auch in Arabisch/Persisch richtig herum) statt mitten im Wort ohne Strich umzubrechen (schmale Kachel, 390 px)
+  function kachelTitel(titel) {
+    var h = esc(titel);
+    return lang === 'de' ? h : h.replace(/\(([A-Za-zÄÖÜäöüß][A-Za-zÄÖÜäöüß\u00AD\- ]{7,})\)/g, '<bdi lang="de" dir="ltr">($1)</bdi>');
+  }
   function skKachel(cls, sym, titel, text, fn) {
-    return nhKnopf('uk-karte ' + cls, '<span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + sym + '</svg></span><span class="sk-txt"><b>' + esc(titel) + '</b>' + (text ? '<span>' + esc(text) + '</span>' : '') + '</span>', null, fn);
+    return nhKnopf('uk-karte ' + cls, '<span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + sym + '</svg></span><span class="sk-txt"><b>' + kachelTitel(titel) + '</b>' + (text ? '<span>' + esc(text) + '</span>' : '') + '</span>', null, fn);
   }
   function gsOeffne(bereich) { sp.bereich = bereich; sp.fall = ''; sp.thema = ''; if (bereich === 'dringend' && window.Geld) Geld.kcStart(); }
   // Sprung aus einer Unteransicht (Pfändung, Haushaltsplan, Schulden-Liste) in einen Teil von „Geld und Schulden“: Herkunft bleibt die der
