@@ -833,6 +833,68 @@ Ergebnis: Pflegegrad 2`;
   const mo = new MutationObserver(() => { if (!geplant) { geplant = true; setTimeout(() => { geplant = false; beschrifte(); }, 0); } });
   document.querySelectorAll('section[id^="p-"]').forEach((s) => mo.observe(s, { childList: true, subtree: true }));
   beschrifte();
+  // ---------------- Einfache Sprache (nur in der App, nur Deutsch; Schalter in den Einstellungen) ----------------
+  // Wörterbuch src/lang/einfach/brief/brief.json, im Paket als BRIEF_EINFACH (scripts/build.js). Schlüssel = deutscher Standardtext,
+  // {1} {2} … = Werte aus dem Programm. Ersetzt werden nur sichtbare Texte (Textknoten, placeholder, aria-label) unter der Wurzel,
+  // nie Eingaben, nie textarea (Schreiben an Ämter bleiben förmlich), nie Elemente mit data-t (übersetzt die App). Ausschalten stellt alles zurück.
+  const EIN = typeof BRIEF_EINFACH !== 'undefined' && BRIEF_EINFACH && BRIEF_EINFACH.texte ? BRIEF_EINFACH.texte : null;
+  const einNorm = (x) => String(x).replace(/\s+/g, ' ').trim();
+  const einGenau = new Map(), einMuster = [], einTeile = [];
+  if (EIN) for (const [k, v] of Object.entries(EIN)) {
+    if (v === '=' || typeof v !== 'string') continue;
+    if (/\{\d+\}/.test(k)) {
+      const nr = [], quelle = k.split(/(\{\d+\})/).map((t) => { const m = /^\{(\d+)\}$/.exec(t); if (m) { nr.push(m[1]); return '(.+?)'; } return t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }).join('');
+      einMuster.push({ re: new RegExp('^' + quelle + '$'), nr, v });
+    } else { einGenau.set(k, v); if (k.split(' ').length >= 3) einTeile.push([k, v]); }
+  }
+  einTeile.sort((x, y) => y[0].length - x[0].length);
+  function einText(roh) {
+    const n = einNorm(roh); if (!n) return null;
+    if (einGenau.has(n)) return einGenau.get(n);
+    for (const m of einMuster) { const x = m.re.exec(n); if (x) return m.v.replace(/\{(\d+)\}/g, (y, i) => (m.nr.indexOf(i) >= 0 ? x[m.nr.indexOf(i) + 1] : y)); }
+    // zusammengesetzte Texte (z. B. „Kein Grund gefunden. “ + Frist): bekannte ganze Sätze darin ersetzen
+    let r = n; for (const [k, v] of einTeile) if (r.indexOf(k) >= 0) r = r.split(k).join(v);
+    return r !== n ? r : null;
+  }
+  let einAn = false, einMo = null;
+  const einStand = new Map(); // Knoten oder [Element, Attribut] → { orig, ein }
+  const einAus = (el) => !el || el.closest('textarea, script, style, [data-t], [contenteditable="true"]');
+  function einKnoten(n) {
+    if (n.nodeType === 3) {
+      if (einAus(n.parentElement)) return;
+      const alt = einStand.get(n); if (alt && n.nodeValue === alt.ein) return;
+      const e = einText(n.nodeValue); if (e == null) return;
+      const m = /^(\s*)[\s\S]*?(\s*)$/.exec(n.nodeValue), neu = m[1] + e + m[2];
+      einStand.set(n, { orig: n.nodeValue, ein: neu }); n.nodeValue = neu;
+      return;
+    }
+    if (n.nodeType !== 1 || einAus(n)) return;
+    for (const el of [n, ...n.querySelectorAll('[placeholder], [aria-label]')]) for (const a of ['placeholder', 'aria-label']) {
+      if (!el.hasAttribute(a) || einAus(el)) continue;
+      const key = el, schl = a + '@'; const st = (einStand.get(key) || {})[schl];
+      if (st && el.getAttribute(a) === st.ein) continue;
+      const e = einText(el.getAttribute(a)); if (e == null) continue;
+      const o = einStand.get(key) || {}; o[schl] = { orig: el.getAttribute(a), ein: e }; einStand.set(key, o); el.setAttribute(a, e);
+    }
+    const w = document.createTreeWalker(n, 4); for (let t = w.nextNode(); t; t = w.nextNode()) einKnoten(t);
+  }
+  function einZurueck() {
+    for (const [k, v] of einStand) {
+      if (k.nodeType === 3) { if (k.nodeValue === v.ein) k.nodeValue = v.orig; continue; }
+      for (const schl of Object.keys(v)) { const a = schl.slice(0, -1); if (k.getAttribute(a) === v[schl].ein) k.setAttribute(a, v[schl].orig); }
+    }
+    einStand.clear();
+  }
+  function einSetze(an, wurzel) {
+    an = !!an && !!EIN && !!wurzel;
+    if (einMo) { einMo.disconnect(); einMo = null; }
+    if (!an) { if (einAn) einZurueck(); einAn = false; return; }
+    einAn = true;
+    einKnoten(wurzel); beschrifte();
+    einMo = new MutationObserver((liste) => { for (const r of liste) { if (r.type === 'characterData') einKnoten(r.target); else if (r.type === 'attributes') einKnoten(r.target); else r.addedNodes.forEach(einKnoten); } beschrifte(); });
+    einMo.observe(wurzel, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ['placeholder', 'aria-label'] });
+  }
+  window.PruefpaketEinfach = { setze: einSetze, text: (x) => (einAn ? einText(x) || x : x), aktiv: () => einAn };
   if ($('li-demo')) {
     $('li-demo').addEventListener('click', () => zeigeLizenz(DEMO_LIZENZ));
     $('li-datei').addEventListener('change', async (e) => { const f = e.target.files && e.target.files[0]; if (f) zeigeLizenz(await f.text()); });

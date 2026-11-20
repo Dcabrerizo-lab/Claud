@@ -599,6 +599,7 @@
     $('stand').textContent = t('stand', { stand: Rules.RULES.stand });
     $('appVersion').textContent = t('set.version', { v: APPVERSION });
     einfacheSpracheAnzeigen();
+    if (window.PruefpaketEinfach) window.PruefpaketEinfach.setze(lang === 'de' && einfachSprache, $('v-briefe')); // „Brief prüfen“ in Einfacher Sprache (src/lang/einfach/brief/brief.json)
     if (window.Haushalt && Haushalt.sprache) Haushalt.sprache(); // Haushaltsplan (src/haushalt.js) in der neuen Sprache zeichnen
     if (window.FristenOrdner) FristenOrdner.sprache(); // Fristen in „Mein Ordner“ (src/fristen.js)
     if (window.Ausziehen && Ausziehen.sprache) Ausziehen.sprache(); // „Ich ziehe aus“ (src/ausziehen.js) in der neuen Sprache zeichnen
@@ -3699,6 +3700,7 @@
     for (i = 0; i < k14; i++) kinder.push(15);
     return { erwachsene: erw, kinder: kinder, miete: zahlOderLeer(state.miete), heiz: zahlOderLeer(state.heizkosten), stufe: state.mietstufe || '', alleinerziehend: state.adults === 1 && (state.kids || 0) > 0 };
   }
+  function ppEin(x) { return window.PruefpaketEinfach ? window.PruefpaketEinfach.text(x) : x; } // Brief-Art (brief-lesen.js) in Einfacher Sprache
   function textLesen(text) {
     if (!text || !text.trim()) { elNachricht(t('el.leer')); return; }
     // Gemeinsame Kachel „Anderer Brief oder Formular“: Formular erkannt → Formular erklären, sonst → Brief (Frist, Mahnung, Inkasso; von dort Wechsel zur genauen Prüfung)
@@ -3720,19 +3722,19 @@
     if (!r.art) { elNachricht(t('el.unbekannt')); return; }
     if (r.art === 'anh' || r.art === 'mit') {
       var d = document.createElement('div'); d.className = 'el-erkl';
-      var b = document.createElement('b'); b.textContent = r.titel; d.appendChild(b);
+      var b = document.createElement('b'); b.textContent = ppEin(r.titel); d.appendChild(b);
       var p = document.createElement('p'); p.textContent = BriefLesen.ERKLAERUNG[r.art]; d.appendChild(p);
       var fr = BriefLesen.frist(text);
       if (fr) { var q = document.createElement('p'); q.textContent = t('el.frist', { frist: BriefLesen.fristLesbar ? BriefLesen.fristLesbar(fr) : fr }); d.appendChild(q); }
       var fk = fr && window.FristenOrdner ? FristenOrdner.briefKnopf(text, r.art) : null; if (fk) d.appendChild(fk); // nur auf Knopfdruck merken
-      $('elErg').appendChild(d); if (ks) ksZeigen(ks, text); elNachricht(t('el.erkanntOhne', { titel: r.titel })); return;
+      $('elErg').appendChild(d); if (ks) ksZeigen(ks, text); elNachricht(t('el.erkanntOhne', { titel: ppEin(r.titel) })); return;
     }
     if (!briefArt) briefOeffnen(r.art);
-    if (r.art === 'pk') { $('pf-text').value = text; $('pf-lesen').click(); briefFormular(); elNachricht(t('el.erkanntPk', { titel: r.titel })); return; }
-    if (r.art === 'af') { setScanResult(scanFromText(text)); elNachricht(t('el.erkanntOhne', { titel: r.titel })); return; }
+    if (r.art === 'pk') { $('pf-text').value = text; $('pf-lesen').click(); briefFormular(); elNachricht(t('el.erkanntPk', { titel: ppEin(r.titel) })); return; }
+    if (r.art === 'af') { setScanResult(scanFromText(text)); elNachricht(t('el.erkanntOhne', { titel: ppEin(r.titel) })); return; }
     var n = window.PruefpaketLesen ? window.PruefpaketLesen.fuelle(r.art, r, haushalt()) : 0;
     briefFormular();
-    elNachricht(n ? t('el.erkannt', { titel: r.titel, n: String(n) }) : t('el.keineWerte', { titel: r.titel }));
+    elNachricht(n ? t('el.erkannt', { titel: ppEin(r.titel), n: String(n) }) : t('el.keineWerte', { titel: ppEin(r.titel) }));
   }
   function ksZeigen(ks, text) {
     if (!window.KostensenkungHilfe) return;
