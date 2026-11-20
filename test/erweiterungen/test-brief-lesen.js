@@ -126,6 +126,16 @@ ok('Frist mit Datum', a2.fristen[0] && a2.fristen[0].frist === '15.12.2026', a2.
 const a3 = L.andere('Sehr geehrte Damen und Herren,\nanbei die Unterlagen.');
 ok('Ohne Frist keine Frist', a3.fristen.length === 0 && !a3.inkasso && !a3.mahnbescheid);
 ok('Mahnbescheid nur mit Gericht', !L.andere('Wir drohen mit einem Mahnbescheid.').mahnbescheid);
+// Korrekturen 15–17
+const ink = L.andere('Muster Inkasso GmbH\nZahlen Sie bis zum 15.12.2026. Andernfalls werden wir beim zuständigen Amtsgericht einen Mahnbescheid beantragen.');
+ok('Inkasso-Drohsatz „… Mahnbescheid beantragen“ ist kein Mahnbescheid', !ink.mahnbescheid && ink.inkasso, ink);
+const VB1 = L.andere('Amtsgericht Coburg – Vollstreckungsbescheid\nAuf der Grundlage des Mahnbescheids vom 01.10.2026 wird der Vollstreckungsbescheid erlassen.\nGegen diesen Bescheid ist Einspruch möglich, innerhalb von zwei Wochen.');
+ok('Vollstreckungsbescheid mit Kopfzeile „Amtsgericht … – Vollstreckungsbescheid“', VB1.vollstreckungsbescheid && !VB1.mahnbescheid, VB1);
+const VB2 = L.andere('Amtsgericht Coburg\nMahnbescheid zugestellt am 01.10.2026\nVollstreckungsbescheid\nSie können innerhalb von zwei Wochen Einspruch einlegen.');
+ok('Vollstreckungsbescheid trotz Zeile „Mahnbescheid zugestellt am …“', VB2.vollstreckungsbescheid && !VB2.mahnbescheid, VB2);
+ok('Mahnbescheid mit Hinweis auf möglichen Vollstreckungsbescheid bleibt Mahnbescheid', (() => { const x = L.andere(MB + '\nOhne Widerspruch kann der Antragsteller einen Vollstreckungsbescheid beantragen; dagegen ist Einspruch möglich.'); return x.mahnbescheid && !x.vollstreckungsbescheid; })());
+const fr = L.andere('Bitte zahlen Sie bis zum 10.12.2026.\nGegen diesen Bescheid können Sie innerhalb eines Monats Widerspruch einlegen.');
+ok('Fristen mit Widerspruch, Einspruch oder Klage zuerst', fr.fristen.length === 2 && /Widerspruch/.test(fr.fristen[0].zeile), fr.fristen);
 
 console.log(f ? `\n${f} von ${n} Prüfungen fehlgeschlagen` : `Brief einlesen: alle ${n} Prüfungen bestanden`);
 process.exit(f ? 1 : 0);

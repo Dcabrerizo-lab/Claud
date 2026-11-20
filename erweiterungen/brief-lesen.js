@@ -168,10 +168,22 @@ const BriefLesen = (function () {
   const FRIST = /(?:bis zum|bis spätestens(?: zum)?|spätestens bis zum?|spätestens am|innerhalb von|innerhalb eines|binnen)\s*(\d{1,2}\.\d{1,2}\.20\d{2}|(?:zwei|drei|vier|sechs|einem|einer|\d{1,2})\s+(?:Wochen?|Tagen?|Monats?|Monaten)|Monats|Woche)/i;
   function andere(text) {
     const t = String(text || ''), fristen = [];
-    for (const zl of zeilen(t)) { const m = zl.match(FRIST); if (m && fristen.length < 3) fristen.push({ frist: m[1], zeile: zl.length > 160 ? zl.slice(0, 157) + '…' : zl }); }
-    const vb = /Vollstreckungsbescheid/i.test(t) && !/^\s*Mahnbescheid/im.test(t) && /^\s*Vollstreckungsbescheid/im.test(t);
+    const zl = zeilen(t), alle = [];
+    for (const z of zl) { const m = z.match(FRIST); if (m) alle.push({ frist: m[1], zeile: z.length > 160 ? z.slice(0, 157) + '…' : z }); }
+    // Fristen für Widerspruch, Einspruch oder Klage zuerst (stabil sortiert), höchstens 3
+    const rf = (x) => (/Widerspruch|Einspruch|Klage/i.test(x.zeile) ? 0 : 1);
+    alle.map((x, i) => [x, i]).sort((a, b) => rf(a[0]) - rf(b[0]) || a[1] - b[1]).slice(0, 3).forEach((x) => fristen.push(x[0]));
+    // Mahnbescheid: als Überschrift (eigene Zeile, auch „Amtsgericht … – Mahnbescheid“) oder zusammen mit Widerspruch und Zustellung;
+    // nicht in Drohsätzen („… werden wir einen Mahnbescheid beantragen“)
+    const mbZ = zl.filter((z) => /Mahnbescheid/i.test(z) && !/beantrag|werden wir/i.test(z));
+    const mbKopf = mbZ.some((z) => /(^|[–—-]\s*)Mahnbescheid\s*$/i.test(z.trim()));
+    const mb = mbKopf || (mbZ.length > 0 && /Widerspruch/i.test(t) && /Zustellung|zugestellt/i.test(t));
+    // Vollstreckungsbescheid: Wort und (Einspruch oder „auf der Grundlage des Mahnbescheids“); ein Mahnbescheid mit eigener
+    // Überschrift erwähnt ihn oft nur als Folge, dann zählt er nur mit eigener Überschrift
+    const vbKopf = zl.some((z) => /(^|[–—-]\s*)Vollstreckungsbescheid\s*$/i.test(z.trim()));
+    const vb = /Vollstreckungsbescheid/i.test(t) && (/Einspruch/i.test(t) || /auf der Grundlage des Mahnbescheids/i.test(t)) && (vbKopf || !mbKopf);
     const e = erkenne(t);
-    return { fristen, mahnbescheid: !vb && /Mahnbescheid/i.test(t) && /Amtsgericht|Mahngericht/i.test(t), vollstreckungsbescheid: vb, inkasso: /Inkasso/i.test(t), art: e.art };
+    return { fristen, mahnbescheid: !vb && mb && /Amtsgericht|Mahngericht/i.test(t), vollstreckungsbescheid: vb, inkasso: /Inkasso/i.test(t), art: e.art };
   }
 
   return { erkenne, lies, betraege, ERKLAERUNG, frist, andere, ARTEN };

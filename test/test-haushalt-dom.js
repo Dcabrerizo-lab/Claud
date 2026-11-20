@@ -103,8 +103,23 @@ setTimeout(() => {
     // Geld sparen → Schulden → Pfändungsrechner → Zurück führt wieder zu „Geld sparen“ (Herkunft)
     klick($('goSparen')); klick([...d.querySelectorAll('#spInhalt button.weg')].find((b) => /Schulden/.test(b.textContent))); klick(d.querySelector('#spInhalt .sp-rechner'));
     check('Schulden-Tipps öffnen den Pfändungsrechner', !$('v-pfaendung').hidden);
+    { // Pfändung Lohn: „Das tust du jetzt“ beginnt mit den Unterhaltspflichten (§ 850c ZPO)
+      const pb = () => [...d.querySelectorAll('#v-pfaendung button')];
+      klick(pb().find((b) => /Lohn/.test(b.textContent))); klick(pb().find((b) => b.textContent.trim() === '0'));
+      setze('pfNetto', '2400'); klick(pb().find((b) => /Weiter/.test(b.textContent)));
+      const li = d.querySelector('#v-pfaendung .pf-jetzt li');
+      check('[schulden-korr] Lohn: erster Schritt prüft, ob alle Unterhaltspflichten berücksichtigt sind', li && /alle Menschen berücksichtigt, denen du Unterhalt zahlst/.test(li.textContent), li && li.textContent);
+    }
     klick(d.querySelector('#v-pfaendung [data-zurueck]'));
     check('Zurück vom Pfändungsrechner: wieder bei „Geld sparen“', !$('v-sparen').hidden);
+    { // Einkommen geändert: Vorlage „Änderung melden“ nur bei Grundsicherungsgeld oder Sozialhilfe; Text nennt die Regeln je Leistung
+      const melden = (bezug) => { w.__solo.set({ adults: 1, kids: 0, ek1Art: 'lohn', ek1Brutto: 2000, ek1Netto: 1500, miete: 500, plz: '90542', bezug }); w.Haushalt.laden({ ekBasis: 100000 }); zumPlan(); return !!knopf('Änderung dem Amt melden', $('hbHinweise')); };
+      check('[hb-korr] Vorlage „Änderung melden“ bei Grundsicherungsgeld', melden({ grundsicherungsgeld: true }));
+      check('[hb-korr] keine Vorlage bei Wohngeld (eigene Regel)', !melden({ wohngeld: true }));
+      check('[hb-korr] Meldepflicht-Text: § 60 SGB I, Wohngeld 15 %, Kinderzuschlag erst beim nächsten Antrag', /§ 60 Abs\. 1 SGB I.*mehr als 15 % .*§ 27 Abs\. 3 WoGG.*Kinderzuschlag.*nächsten Antrag/.test(w.I18N ? w.I18N.de['hb.hw.ek.d'] : require('../dist/i18n.js').de['hb.hw.ek.d']));
+      check('[hb-korr] Nachzahlung: Antrag noch im Monat der Fälligkeit', /Antrag noch im Monat, in dem sie fällig ist/.test(require('../dist/i18n.js').de['hb.hw.nk.d']));
+      w.Haushalt.laden({});
+    }
     // Sprachen: kein Rohschlüssel
     ['en', 'ar', 'fa', 'so'].forEach((l) => { w.__solo.lang(l); zumPlan(); check(l + ': keine Rohschlüssel', !/hb\.[a-z]/.test($('v-haushalt').textContent)); });
     check('Keine Skriptfehler', errors.length === 0, errors);

@@ -427,6 +427,8 @@ setTimeout(() => {
     pfB().find((b) => b.textContent.indexOf(I18N.de['pf.konto']) === 0).click();
     pfB().find((b) => b.textContent === '0').click();
     pfB().find((b) => b.textContent === '0').click();
+    const jetztK = [...d.querySelectorAll('#pfInhalt .pf-jetzt li')].map((x) => x.textContent);
+    check('[schulden-korr] Konto: Umwandeln innerhalb eines Monats schützt auch gesperrtes Guthaben (§ 899 Abs. 1 ZPO)', jetztK[0] === I18N.de['pf.tipp.umwandeln'] && /innerhalb eines Monats.*schon gesperrte Guthaben geschützt \(§ 899 Abs\. 1 ZPO\)/.test(jetztK[0]), jetztK[0]);
     const erg = d.querySelector('#pfInhalt .pf-zahl'), tk = pfB().find((b) => b.textContent === I18N.de['pf.tipps']);
     check('[schulden] Nach dem Rechnen: Knopf „Tipps bei Schulden“ unter dem Ergebnis', !!erg && !!tk && (erg.compareDocumentPosition(tk) & w.Node.DOCUMENT_POSITION_FOLLOWING));
     tk.click();

@@ -154,5 +154,12 @@ check('Alle genutzten hb-Schlüssel existieren', !fehlend.length, fehlend);
 const ef = path.join(__dirname, '..', 'src', 'lang', 'einfach', 'haushalt.json');
 if (fs.existsSync(ef)) { const E = JSON.parse(fs.readFileSync(ef, 'utf8')); const x = Object.keys(E).filter((k) => !(k in de) || ph(E[k]) !== ph(de[k])); check('Einfache Sprache: Schlüssel und Platzhalter', !x.length, x); }
 
+{ // [hb-tipps] jeder Spartipp hat in allen Sprachen eine Fundstelle; Handy nennt § 56 TKG
+  const langs = fs.readdirSync(path.join(__dirname, '..', 'src', 'lang', 'haushalt')).map((f) => JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'src', 'lang', 'haushalt', f), 'utf8')));
+  const kats = H.KAT;
+  check('[hb-tipps] Spartipp und Quelle je Kategorie in allen Sprachen', langs.every((L) => kats.every((k) => L['hb.tipp.' + k] && L['hb.quelle.' + k])));
+  check('[hb-tipps] Handy: Kündigung nach Mindestlaufzeit mit einem Monat Frist (§ 56 TKG)', /einem Monat/.test(de['hb.tipp.handy']) && /§ 56/.test(de['hb.quelle.handy']));
+}
+
 if (fehler) { console.log('\n' + fehler + ' von ' + n + ' Prüfungen fehlgeschlagen'); process.exit(1); }
 console.log('Haushalt-Test bestanden: ' + n + ' Prüfungen (Rechnung, Kategorien, Monatswechsel, Rundung, Kassenzettel, Übernahme, Hinweise, Sprachen)');

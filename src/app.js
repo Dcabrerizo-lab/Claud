@@ -2437,7 +2437,7 @@
       if (e.ueberHoechst) p(t('pf.erg.hoch', { h: { eur: Rules.RULES.pfaendung.hoechst } }), 'hint');
       p(t('pf.erg.frei', { f: { eur: e.frei } }), 'small muted');
       p(t('pf.tipp.unterhalt'), 'hint');
-      jetzt(['pf.tipp.mehr', 'pf.tipp.beratung']);
+      jetzt(['pf.tipp.unterhaltspflichten', 'pf.tipp.mehr', 'pf.tipp.beratung']); // zuerst: alle Unterhaltspflichten berücksichtigt? (§ 850c ZPO)
       tipps(['pf.tipp.einmal', 'pf.tipp.kg']);
       var d = knoepfe('btns');
       d.appendChild(nhKnopf('btn', esc(t('pf.konto.weiter')), null, function () { pf.art = 'konto'; pf.schritt = 2; pfRender(true); }));
