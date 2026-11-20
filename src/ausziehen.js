@@ -367,7 +367,9 @@ var Ausziehen = (function () {
     daten: function () { return JSON.parse(JSON.stringify(daten)); }, laden: function (d) { daten = normiere(d); sichern(); render(); },
     // Nach einem Wechsel des Vorgangs: Haken und Notizen des geöffneten Vorgangs lesen (ohne zu schreiben); offen: Unterseite geöffnet?
     neuLaden: function () { speicher.laden(function (v) { try { daten = normiere(v ? JSON.parse(v) : null); } catch (e) { daten = leer(); } render(); }); },
-    offen: function () { return !!ansicht; }
+    offen: function () { return !!ansicht; },
+    // Für „Mein Ordner“: erledigte und alle Checklistenpunkte über alle Bereiche
+    stand: function () { var n = 0, von = 0; if (!daten) return null; BEREICHE.forEach(function (b) { var f = fortschritt(daten, b.id); if (f) { n += f.n; von += f.von; } }); return { n: n, von: von }; }
   };
 })();
 if (typeof module !== 'undefined') module.exports = Ausziehen;

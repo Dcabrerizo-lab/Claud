@@ -3407,11 +3407,15 @@
     try {
       var d = JSON.parse(v);
       if (!d || !d.s) return;
-      var b = blankState();
-      state = Object.assign(b, migriereEinkommen(migriereFragen(d.s))); state.bezug = d.s.bezug || {}; started = true;
+      var b = blankState(), leer = blankState();
+      state = Object.assign(b, migriereEinkommen(migriereFragen(d.s))); state.bezug = d.s.bezug || {};
       if (!/^\d{4}$/.test(String(state.gebJahr))) state.gebJahr = ''; // nur so, wie das Feld es speichert (4 Ziffern); Manipuliertes verwerfen
       if (d.p) person = Object.assign(person, d.p);
-      edited = true; $('sampleNotice').hidden = true;
+      // Nur echte Angaben zählen: ein leer gespeicherter Stand (App zweimal geöffnet, nichts eingegeben) bleibt „nicht begonnen“
+      var echt = Object.keys(leer).some(function (k) { return k !== 'bezug' && String(state[k] == null ? '' : state[k]) !== String(leer[k]); }) ||
+        Object.keys(state.bezug).some(function (k) { return state.bezug[k]; }) || Object.keys(person).some(function (k) { return person[k]; });
+      // Ein gespeichertes, unverändertes Beispiel (e: false) bleibt ein Beispiel: zählt nicht als eigene Angabe
+      started = echt; edited = echt && d.e !== false; $('sampleNotice').hidden = !(echt && d.e === false);
       [['p-name', 'name'], ['p-geb', 'geb'], ['p-strasse', 'strasse'], ['p-ort', 'ort'], ['p-tel', 'tel']].forEach(function (x) { $(x[0]).value = person[x[1]] || ''; });
       if (d.big) { $('app').classList.add('big'); document.documentElement.classList.add('big'); $('bigBtn').setAttribute('aria-checked', 'true'); }
       writeForm(); buildSelects(); render();

@@ -42,6 +42,8 @@ setTimeout(() => {
     check('[az-oberflaeche] Quelle mit Datum', /Quelle: §[ \u00a0]551 BGB \(abgerufen am 20\.11\.2026\)/.test($('az-p-vertrag').textContent));
     const cb = d.querySelector('[data-az-ab="vertrag"]'); cb.checked = true; cb.dispatchEvent(new w.Event('change', { bubbles: true }));
     check('[az-oberflaeche] Haken gespeichert', JSON.parse(mem['lotse.ausziehen']).ab.vertrag === true, mem['lotse.ausziehen']);
+    { const st = w.Ausziehen.stand(); check('[az-oberflaeche] Ausziehen.stand(): erledigt und alle Punkte für „Mein Ordner“', st && st.n === 1 && st.von > 20, st); }
+    { const nb = d.querySelector('#appnav [data-ansicht="ordner"]'); if (nb) { klick(w, nb); check('[az-oberflaeche] Mein Ordner zeigt „Ich ziehe aus“ mit Fortschritt', /„Ich ziehe aus“\s*1 von \d+ erledigt/.test($('v-ordner').textContent), $('v-ordner').textContent.slice(0, 200)); klick(w, $('goAusziehen') || nb); klick(w, $('az-geh-vorher')); } }
     check('[az-oberflaeche] Fortschritt aktualisiert', /1 von 9 erledigt/.test($('azFort').textContent));
     const no = $('azNotiz'); no.value = 'Besichtigung Freitag'; no.dispatchEvent(new w.Event('input', { bubbles: true }));
     klick(w, d.querySelector('[data-az-zurueck]'));
