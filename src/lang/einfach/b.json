@@ -122,7 +122,7 @@
  "t.kdu.eigentum": "Bei Eigentum zahlt das Amt Zinsen, Nebenkosten und Heizung. Die Tilgung vom Kredit zahlt es meist nicht. Deshalb steht hier nur „möglich“.",
  "t.kdu.hoch": "Deine Wohnkosten sind wahrscheinlich höher als die Grenze. Die Grenze liegt ungefähr bei {grenze} im Monat mit Heizung. Jede Stadt legt die Grenze selbst fest. Im ersten Jahr zahlt das Amt höchstens eineinhalb Mal so viel wie die Grenze. Danach meist nur noch die Grenze. Die App hat auch mit der Grenze gerechnet.",
  "t.ggeld.verwandte": "Verwandte wohnen mit dir zusammen und verdienen genug? Dann nimmt das Jobcenter an, dass sie dich unterstützen (§ 9 Abs. 5 SGB II). Du kannst das widerlegen. Deshalb steht hier nur „möglich“.",
- "t.wohngeld.lasten": "Bei Eigentum gibt es Wohngeld als Lastenzuschuss. Die Wohngeldstelle rechnet die Belastung nach § 10 WoGG aus (Kreditkosten plus Pauschale für Instandhaltung). Deshalb steht hier nur „möglich“.",
+ "t.wohngeld.lasten": "Bei Eigentum gibt es Wohngeld als Lastenzuschuss. Die Wohngeldstelle rechnet die Belastung aus (Kreditkosten plus Pauschale für Instandhaltung, § 10 WoGG). Deshalb steht hier nur „möglich“.",
  "t.wohngeld.verwandte": "Verwandte in derselben Wohnung gehören beim Wohngeld meist zum Haushalt. Ihr Einkommen zählt mit (§ 5 WoGG). Deshalb steht hier nur „möglich“.",
  "t.wg.anteil": "In einer Wohngemeinschaft zählt nur dein eigener Anteil an der Miete. Deine Mitbewohner gehören nicht zu deinem Haushalt.",
  "t.auto.hoch": "Ein Auto ist geschützt, wenn es angemessen ist. Hat es einen Wert über etwa {wert}, prüft das Jobcenter genauer. Deshalb steht hier nur „möglich“.",

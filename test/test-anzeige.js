@@ -59,7 +59,13 @@ function haushalt() {
 }
 
 // Erwarteter Text einer Karte, unabhängig von der App aus den Sprachdateien gebaut
+// Beratungsmodus aus (Laienansicht): Paragrafen in Klammern ausgeblendet; an: Text unverändert. Jeder zweite Haushalt mit Beratungsmodus.
+let beratung = false;
 function text(lang, key, p) {
+  const s0 = textRoh(lang, key, p);
+  return s0 == null || beratung ? s0 : Fmt.ohnePara(s0);
+}
+function textRoh(lang, key, p) {
   const dl = I18N[lang] || I18N.de;
   let s = Object.prototype.hasOwnProperty.call(dl, key) ? dl[key] : (Object.prototype.hasOwnProperty.call(I18N.de, key) ? I18N.de[key] : null);
   if (s == null) return null; // Schlüssel fehlt: wird als Fehler gemeldet
@@ -81,6 +87,7 @@ for (let i = 0; i < N; i++) {
   const langs = i % 12 === 0 ? LANGS : [LANGS[i % LANGS.length]];
   for (const lang of langs) {
     w.__solo.lang(lang);
+    beratung = i % 2 === 1; w.__solo.beratung(beratung);
     w.__solo.set(e);
     geprueft++;
     const out = w.__solo.eval();
@@ -128,6 +135,15 @@ for (let i = 0; i < N; i++) {
         });
       });
     }
+    // Beratungsmodus: Rechtsgrundlage in jeder Karte; Laienansicht: keine Rechtsgrundlage und kein Paragraf im Kartentext
+    for (const r of out.results) {
+      const a = d.getElementById('c-' + r.id); if (!a) continue;
+      const rg = a.querySelector('.recht');
+      if (beratung ? !(rg && rg.textContent.indexOf(r.recht) >= 0) : !!rg) melde('Rechtsgrundlage passt nicht zum Beratungsmodus', { ...fall, id: r.id, beratung });
+      if (!beratung && /§|Art\. \d/.test(a.querySelector('.body').textContent)) melde('Paragraf in der Laienansicht', { ...fall, id: r.id, fund: a.querySelector('.body').textContent.match(/.{0,40}(§|Art\. \d).{0,20}/)[0] });
+    }
+    const hinweise = [...d.querySelectorAll('#gutWissen li, #together li')].map((x) => x.textContent).join(' ');
+    if (!beratung && /§|Art\. \d/.test(hinweise)) melde('Paragraf in „Gut zu wissen“ oder „Beachten“ (Laienansicht)', { ...fall, fund: hinweise.slice(0, 200) });
     // Zählung oben = Karten
     const n = { ja: 0, vielleicht: 0 };
     out.results.forEach((r) => { if (r.level in n) n[r.level]++; });

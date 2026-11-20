@@ -283,6 +283,38 @@
   .gutwissen > summary::-webkit-details-marker { display: none; }
   .gw-titel { font-weight: 700; }
   .gutwissen ul { margin: 0 0 12px; padding-inline-start: 20px; display: grid; gap: 8px; }
+  /* Beratungsmodus: Rechtsgrundlage; Unterlagen-Checkliste; Übersicht der Mappe; Ergebnisblatt */
+  .recht { margin: 8px 0 0; font-size: 0.92em; color: var(--muted); }
+  .haken-liste { list-style: none; padding: 0; margin: 4px 0; display: grid; gap: 4px; }
+  .haken { display: flex; align-items: flex-start; gap: 10px; min-height: 44px; padding: 8px 0; cursor: pointer; }
+  .haken input { width: 22px; height: 22px; margin: 1px 0 0; flex: none; accent-color: var(--accent); }
+  .haken input:checked + span { text-decoration: line-through; color: var(--muted); }
+  .haken-hint { margin: 0; }
+  .mappe-inhalt { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-card); padding: 12px 18px; margin: 12px 0; }
+  .mappe-inhalt h3 { margin: 0 0 6px; }
+  .mappe-inhalt ol { margin: 0; padding-inline-start: 22px; display: grid; gap: 2px; }
+  .mappe-inhalt a { display: inline-block; padding: 10px 0; line-height: 1.4; }
+  .eb-tab th .small { font-weight: 400; }
+  .mappe-ende { margin: 16px 0; }
+  .eb-open { margin: 8px 0 0; }
+  .eb-kuerzel input { max-width: 12em; }
+  .ergblatt { overflow-x: auto; }
+  .eb-titel { margin: 0 0 4px; }
+  .eb-kopf { margin: 0 0 12px; color: var(--muted); }
+  .eb-tab { width: 100%; border-collapse: collapse; font-size: 0.92em; }
+  .eb-tab th, .eb-tab td { text-align: start; vertical-align: top; border-bottom: 1px solid var(--line); padding: 8px 6px; }
+  .eb-tab thead th { border-bottom-width: 2px; }
+  .eb-tab .pill { white-space: nowrap; }
+  .eb-hinweis { margin: 14px 0 0; font-size: 0.9em; }
+  @media print {
+    .haken input { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .haken input:checked + span { text-decoration: none; color: #000; }
+    .ergblatt, .ergblatt * { color: #000 !important; background: #fff !important; box-shadow: none !important; }
+    .eb-tab { font-size: 9.5pt; }
+    .eb-tab th, .eb-tab td { border-bottom: 0.5pt solid #777; padding: 4pt 3pt; }
+    .eb-tab tr { break-inside: avoid; }
+    .eb-tab .pill { border: 0.5pt solid #000; }
+  }
   #druckBrief { display: none; }
   @media print {
     html.druckt-brief body * { visibility: hidden !important; }
@@ -1130,6 +1162,7 @@
           <h2 id="h-res" data-t="res.h"></h2>
           <span class="count" id="count" aria-live="polite"></span>
           <p class="res-satz" id="resSatz" hidden></p>
+          <p class="eb-open"><button type="button" class="btn ghost" id="ebOpen" data-t="eb.btn" hidden></button></p>
         </div>
         <p class="legende" id="legende" data-t="legende"></p>
         <nav id="overview" class="overview" hidden></nav>
@@ -1168,17 +1201,24 @@
         <button type="button" role="tab" id="tab-info" aria-controls="pn-info" aria-selected="false" tabindex="-1" data-t="einst.tab.info"></button>
       </div>
       <div id="pn-einst" role="tabpanel" aria-labelledby="tab-einst" class="einst-pn">
-      <div class="set-gruppe">
-        <h3 data-t="lang.label"></h3>
-        <label class="langpick"><span data-t="lang.label"></span><select id="lang"></select></label>
+      <!-- Drei Blöcke: Haushalte (füllt claude/profile, bis dahin ausgeblendet), Anzeige und Sprache, Für Fachkräfte -->
+      <div class="set-gruppe" id="setHaushalte" hidden>
+        <h3 data-t="set.hh.h"></h3>
+        <div id="haushalteBox"></div>
       </div>
       <div class="set-gruppe">
         <h3 data-t="set.anzeige.h"></h3>
+        <label class="langpick"><span data-t="lang.label"></span><select id="lang"></select></label>
         <p><button type="button" class="chip" id="bigBtn" aria-pressed="false" data-t="big"></button></p>
         <p><button type="button" class="chip" id="einfacheSpracheBtn" aria-pressed="false" aria-describedby="einfacheSpracheT"><span data-t="set.es.label"></span></button></p>
         <p class="small muted" id="einfacheSpracheT"></p>
         <p><button type="button" class="chip es-schalter" id="einfachBtn" aria-pressed="false" aria-describedby="einfachBtnT"><span aria-hidden="true">🙂</span> <span data-t="einfach.btn"></span></button></p>
         <p class="small muted" id="einfachBtnT" data-t="set.eine.t"></p>
+      </div>
+      <div class="set-gruppe" id="setFach">
+        <h3 data-t="set.fach.h"></h3>
+        <p><button type="button" class="chip" id="beratungBtn" aria-pressed="false" aria-describedby="beratungT"><span data-t="set.beratung.label"></span></button></p>
+        <p class="small muted" id="beratungT" data-t="set.beratung.t"></p>
       </div>
       <div class="set-gruppe">
         <h3 data-t="set.about.h"></h3>
@@ -1305,6 +1345,22 @@
         <textarea id="mappeText" readonly hidden></textarea>
       </div>
       <div id="mappeBody"></div>
+      <div class="btns no-print mappe-ende"><button type="button" class="btn" id="mappePrint2" data-t="f.print"></button></div>
+    </section>
+
+    <!-- Ergebnisblatt zum Mitgeben: eine Druckseite ohne Namen (höchstens Kürzel) -->
+    <section id="ergBlatt" hidden aria-labelledby="h-eb">
+      <div class="mappe-bar no-print">
+        <h2 id="h-eb" data-t="eb.h"></h2>
+        <p data-t="eb.intro"></p>
+        <div class="field eb-kuerzel"><label for="ebKuerzel" data-t="eb.kuerzel"></label><input type="text" id="ebKuerzel" maxlength="8" autocomplete="off" spellcheck="false"></div>
+        <div class="btns">
+          <button type="button" class="btn" id="ebDruck" data-t="f.print"></button>
+          <button type="button" class="btn ghost" id="ebClose" data-t="eb.close"></button>
+        </div>
+        <p class="msg" id="ebMsg" role="status"></p>
+      </div>
+      <article class="page ergblatt" id="ebSeite"></article>
     </section>
     </main>
   </div>
