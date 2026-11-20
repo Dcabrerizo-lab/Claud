@@ -53,7 +53,7 @@ function zufall() {
 
 // Angaben, die einzeln verändert werden: Name → Liste möglicher Werte (der Haushalt wird auf jeden Wert gesetzt)
 const MERKMALE = {
-  aufenthalt: ['', 'eu', 'asyl'],
+  aufenthalt: ['', 'eu', 'asyl', 'ausreise'],
   alter: ['', 1950, 1958, 1965, 1980, 1995, 2003],
   ausbildung: ['', 'ich', 'kind', 'kindBetrieb'],
   // Ausbildung im Betrieb und Wohnen außerhalb der Eltern (BAB, § 60 SGB III)

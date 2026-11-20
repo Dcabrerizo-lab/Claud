@@ -91,6 +91,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Regel | Status | Test |
 |---|---|---|
 | Asylverfahren oder Duldung: nicht pauschal ausgeschlossen (§ 3 Abs. 5 Satz 1 Nr. 2, 4 WoGG; ausreisepflichtig ohne Duldung nicht berechtigt). Ohne Einkommensart „Asylbewerberleistungen“ normal gerechnet, auch „wahrscheinlich“, Hinweis vorn (Entscheidung David 20.11.2026); mit ihr „unwahrscheinlich“ mit Hinweis Sozialamt (§ 7 Abs. 1 Satz 1 Nr. 8 WoGG) (Abruf 20.11.2026) | ◐ | `wg-asyl` `asyl-bezug` |
+| Aufenthalt „ausreisepflichtig ohne Duldung“ (eigene Auswahl, sonst wie Asylverfahren/Duldung): Wohngeld „unwahrscheinlich“ (in § 3 Abs. 5 Satz 1 Nr. 1 bis 6 WoGG nicht genannt), WBS „unwahrscheinlich“ ohne Ausnahme (§ 27 Abs. 2 WoFG) (Abruf 20.11.2026) | ✓ | `ausreise` |
 | Eigentum: Lastenzuschuss, Belastung nach § 10 WoGG nicht genau gerechnet -> nur „möglich“ | ◐ | `eigentum` |
 | Verwandte in derselben Wohnung zählen meist zum Haushalt (§ 5) -> nur „möglich“ | ◐ | `hh-andere` |
 | Ausgezahlte Beträge (Arbeitslosengeld, Krankengeld, Elterngeld, Werkstattlohn) nur mit dem kleinen Abzug für Auszahlungen, in einfacher und ausführlicher Version gleich (§ 16 WoGG) | ✓ | `einfach-gleich` |

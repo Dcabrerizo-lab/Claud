@@ -14,5 +14,9 @@
  "ek.art.asylblg": "Asylbewerberleistungen",
  "t.wohngeld.asylBezug": "Du bekommst Leistungen nach dem Asylbewerberleistungsgesetz? Dann gibt es kein Wohngeld (§ 7 WoGG). Das Sozialamt zahlt die Kosten für die Wohnung. Ändert sich etwas? Dann frag beim Sozialamt.",
  "t.but.asylBezug": "Du bekommst Leistungen nach dem Asylbewerberleistungsgesetz. Dann gibt es auch Bildung und Teilhabe für die Kinder (§ 3 AsylbLG). Beantrage es beim Sozialamt oder beim Landratsamt.",
- "t.asyl.na": "Du bekommst schon Leistungen nach dem Asylbewerberleistungsgesetz. Ändert sich etwas? Zum Beispiel Einkommen, Familie oder Wohnung? Dann sag es dem Sozialamt."
+ "t.asyl.na": "Du bekommst schon Leistungen nach dem Asylbewerberleistungsgesetz. Ändert sich etwas? Zum Beispiel Einkommen, Familie oder Wohnung? Dann sag es dem Sozialamt.",
+ "aufenthalt.asyl": "Asylverfahren oder Duldung",
+ "aufenthalt.ausreise": "Ausreisepflichtig ohne Duldung",
+ "t.wohngeld.ausreise": "Du musst ausreisen und hast keine Duldung? Dann gibt es kein Wohngeld (§ 3 WoGG). Für Wohnung und Essen ist das Sozialamt zuständig.",
+ "t.wbs.ausreise": "Du musst ausreisen und hast keine Duldung? Dann gibt es keinen Wohnberechtigungsschein (§ 27 WoFG). Lass dich beraten, zum Beispiel bei einer Flüchtlingsberatung."
 }

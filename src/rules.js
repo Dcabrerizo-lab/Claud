@@ -691,9 +691,11 @@ const Rules = (function () {
       }, 0)
         : sumIf((a, b) => a !== 'lohn' && a !== 'ohne' && b > 0 ? Math.min(b, R.versPauschale) : 0),
       mzG: !!inp.mzG, mzGl: !!inp.mzGl || !!(inp.mz && inp.mz.Gl), mzRF: !!(inp.mz && inp.mz.RF), mzAG: !!(inp.mz && inp.mz.aG), wfbmJahre: num(inp.wfbmJahre), grundrente33: !!inp.grundrente33, zusatzRente: num(inp.zusatzRente), bhEinkHoch: !!inp.bhEinkHoch, teilhabe: !!inp.teilhabe, bhWeitere: Math.min(4, Math.max(0, inp.bhWeitere | 0)), schwanger: !!inp.schwanger, ernaehrung: !!inp.ernaehrung, warmwasser: !!inp.warmwasser, gebJahr: jahr,
-      baby: inp.baby === 'bald' || inp.baby === 'da' ? inp.baby : '', egVor: blank(inp.egVor) ? null : num(inp.egVor), asyl: inp.aufenthalt === 'asyl',
+      baby: inp.baby === 'bald' || inp.baby === 'da' ? inp.baby : '', egVor: blank(inp.egVor) ? null : num(inp.egVor), asyl: inp.aufenthalt === 'asyl' || inp.aufenthalt === 'ausreise',
+      // ausreisepflichtig ohne Duldung (§ 1 Abs. 1 Nr. 5 AsylbLG): sonst wie asyl, aber kein Wohngeld und kein WBS
+      ausreise: inp.aufenthalt === 'ausreise',
       // Bezug von Asylbewerberleistungen: Einkommensart „asylblg“ einer Person, nur zusammen mit Aufenthalt „asyl“
-      asylBezug: inp.aufenthalt === 'asyl' && (inp.art1 === 'asylblg' || (adults === 2 && inp.art2 === 'asylblg') || (Array.isArray(inp.einkommen) && inp.einkommen.some((x) => x && x.art === 'asylblg'))),
+      asylBezug: (inp.aufenthalt === 'asyl' || inp.aufenthalt === 'ausreise') && (inp.art1 === 'asylblg' || (adults === 2 && inp.art2 === 'asylblg') || (Array.isArray(inp.einkommen) && inp.einkommen.some((x) => x && x.art === 'asylblg'))),
       wohnform: inp.wohnform === 'eltern' || inp.wohnform === 'heim' ? inp.wohnform : '', wfbmEssen: !!inp.wfbmEssen,
       mieteGegeben: !blank(inp.miete) && num(inp.miete) > 0,
       // Heizkosten (freiwillig): nur gültig, wenn kleiner als die Warmmiete
@@ -878,6 +880,10 @@ const Rules = (function () {
   // 20.11.2026), mit Hinweis vorn. Ausreisepflichtig ohne Duldung: in § 3 Abs. 5 Satz 1 Nr. 1 bis 6 WoGG nicht genannt, also nicht
   // wohngeldberechtigt (der Hinweis nennt das).
   function wohngeld(h) {
+    // Ausreisepflichtig ohne Duldung: in § 3 Abs. 5 Satz 1 Nr. 1 bis 6 WoGG nicht genannt (Freizügigkeit, Aufenthaltstitel oder Duldung,
+    // völkerrechtliches Abkommen, Aufenthaltsgestattung, heimatlose Ausländer, Befreiung vom Titel), also nicht wohngeldberechtigt
+    // (https://www.gesetze-im-internet.de/wogg/__3.html, Abruf 20.11.2026)
+    if (h.ausreise) return mk('wohngeld', 'nein', 'ausschluss', [['wohngeld.ausreise']]);
     if (h.asylBezug) return mk('wohngeld', 'nein', 'ausschluss', [['wohngeld.asylBezug']]);
     const r = wohngeld0(h);
     return h.asyl && (r.level === 'ja' || r.level === 'vielleicht') ? { ...r, tx: [['wohngeld.asyl']].concat(r.tx) } : r;
@@ -1762,6 +1768,8 @@ const Rules = (function () {
     // Abruf 20.11.2026). Mit Duldung oder Gestattung meist nicht. Ausnahme z. B. Ausbildungsduldung: VG Berlin, Urteil vom 25.06.2019,
     // VG 8 K 202.18 (rechtlich verfestigter Aufenthalt, Duldung muss noch mindestens ein Jahr gelten; Volltext asyl.net, rsdb M27364,
     // Abruf 20.11.2026) -> „unwahrscheinlich“ mit Hinweis (Entscheidung David, 20.11.2026)
+    // Ausreisepflichtig ohne Duldung: kann rechtlich keinen Wohnsitz auf längere Dauer begründen (§ 27 Abs. 2 WoFG), keine Ausnahme
+    if (h.ausreise) return mk(id, 'nein', 'vorausFehlt', [['wbs.ausreise']]);
     if (h.asyl) return mk(id, 'nein', 'vorausFehlt', [['wbs.asyl']]);
     // Andere Länder: eigene Einkommensgrenzen (Landesrecht). Sicher ist nur: Kein Land liegt unter den Bundeswerten (§ 9 Abs. 2 WoFG).
     // Das Brutto ist nie kleiner als das maßgebliche Gesamteinkommen; liegt es unter der Bundesgrenze, ist der WBS wahrscheinlich.

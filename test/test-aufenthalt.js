@@ -133,10 +133,23 @@ for (const land of ['', 'NW']) {
   ck('[asyl-bezug] Asylbewerberleistungen bei der zweiten Person: Wohngeld ausgeschlossen', zwei.wohngeld.level === 'nein' && keys(zwei.wohngeld)[0] === 'wohngeld.asylBezug', zwei.wohngeld);
 }
 
+// Ausreisepflichtig ohne Duldung (aufenthalt = 'ausreise'): wie Asyl, aber kein Wohngeld (§ 3 Abs. 5 Satz 1 WoGG nennt es nicht,
+// https://www.gesetze-im-internet.de/wogg/__3.html, Abruf 20.11.2026) und kein WBS (§ 27 Abs. 2 WoFG)
+{
+  const hh = { adults: 1, kids: 2, kidsU6: 1, art1: 'lohn', brutto: 2300, netto: 1700, miete: 850, mietstufe: '4' };
+  const a = res({ ...hh, aufenthalt: 'asyl' }), x = res({ ...hh, aufenthalt: 'ausreise' });
+  ck('[ausreise] Wohngeld ausreisepflichtig ohne Duldung: „unwahrscheinlich“ mit eigenem Hinweis, Asyl/Duldung dagegen gerechnet', x.wohngeld.level === 'nein' && keys(x.wohngeld)[0] === 'wohngeld.ausreise' && a.wohngeld.level === 'ja', [x.wohngeld, a.wohngeld.level]);
+  ck('[ausreise] WBS ausreisepflichtig ohne Duldung: „unwahrscheinlich“ ohne Ausnahme-Hinweis', x.wbs.level === 'nein' && keys(x.wbs)[0] === 'wbs.ausreise', x.wbs);
+  const gleich = ['ggeld', 'gsa', 'kiz', 'asylblg', 'but', 'bafoeg', 'alg1', 'hzp', 'eingl', 'ausweis', 'rundfunk', 'uvg'].filter((id) => a[id].level !== x[id].level);
+  ck('[ausreise] Sonst wie Asylverfahren oder Duldung', gleich.length === 0, gleich);
+  const b = res({ ...hh, art1: 'asylblg', brutto: 0, netto: 0, aufenthalt: 'ausreise' });
+  ck('[ausreise] Einkommensart Asylbewerberleistungen auch bei Ausreisepflicht (§ 1 Abs. 1 Nr. 5 AsylbLG)', b.asylblg.level === 'na' && b.rundfunk.level === 'ja', [b.asylblg.level, b.rundfunk.level]);
+}
+
 // Jeder Hinweis-Schlüssel hat einen deutschen Text
 {
   const I18N = require('../src/lang/de.json');
-  const neu = ['wbs.asyl', 'wohngeld.asyl', 'but.asyl', 'bafoeg.asyl', 'bab.asyl', 'hzp.asyl', 'eingl.asyl', 'alg1.asyl', 'blindengeld.asyl', 'ausweis.asyl', 'blh.asyl', 'sh.eu', 'bafoeg.eu', 'krank.rente', 'wohngeld.asylBezug', 'but.asylBezug', 'asyl.na'];
+  const neu = ['wbs.asyl', 'wohngeld.asyl', 'but.asyl', 'bafoeg.asyl', 'bab.asyl', 'hzp.asyl', 'eingl.asyl', 'alg1.asyl', 'blindengeld.asyl', 'ausweis.asyl', 'blh.asyl', 'sh.eu', 'bafoeg.eu', 'krank.rente', 'wohngeld.asylBezug', 'but.asylBezug', 'asyl.na', 'wohngeld.ausreise', 'wbs.ausreise'];
   ck('Alle Asyl-Hinweise haben einen Text', neu.every((k) => typeof I18N['t.' + k] === 'string' && I18N['t.' + k].length > 20), neu.filter((k) => !I18N['t.' + k]));
   ck('Karte Familienversicherung ist entfernt (keine Texte mehr)', !Object.keys(I18N).some((k) => /famvers/.test(k)) && !R.evaluate({ ...base }).results.some((x) => x.id === 'famvers'));
 }

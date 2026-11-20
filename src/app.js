@@ -193,7 +193,7 @@
     if (ohneUz) reset(['uzAn', 'uzTitel']);
     if (state.aufenthalt !== 'eu') reset(['euArbeit', 'euJahre']);
     // Einkommensart „Asylbewerberleistungen“ nur bei Aufenthalt „Asylverfahren oder Duldung“ (sonst Auswahl entfernen)
-    if (state.aufenthalt !== 'asyl') ['ek1Art', 'ek2Art'].forEach(function (k) { if (state[k] === 'asylblg') reset([k]); });
+    if (!istAsyl()) ['ek1Art', 'ek2Art'].forEach(function (k) { if (state[k] === 'asylblg') reset([k]); });
     ekArtOptionen();
     if (!(Number(state.autoWert) > 0)) reset(['autoBraucht']);
     // Eigentum: Feld „Miete“ wird zu „Kosten fürs Wohnen“ (Kredit, Nebenkosten, Heizung)
@@ -240,7 +240,7 @@
   function ekPerson(i) {
     var art = state['ek' + i + 'Art'], b = state['ek' + i + 'Brutto'], n = state['ek' + i + 'Netto'];
     var leer = function (v) { return v === '' || v == null; };
-    if (!art || (art === 'asylblg' && state.aufenthalt !== 'asyl')) return { gesetzt: false, b: '', n: '', arbeit: true, art: '' };
+    if (!art || (art === 'asylblg' && !istAsyl())) return { gesetzt: false, b: '', n: '', arbeit: true, art: '' };
     // Asylbewerberleistungen: kein Betrag (zählt wie „kein Einkommen“); die Regeln erkennen den Bezug an der Art
     if (art === 'ohne' || art === 'asylblg') return { gesetzt: true, b: 0, n: 0, arbeit: false, art: art };
     var mitBrutto = art === 'lohn' || art === 'rente' || art === 'selbst';
@@ -463,17 +463,19 @@
       '<p class="small">' + esc(b.anschrift ? (b.quelleArt === 'wikipedia' ? t('beh.pruefenWiki', { stand: b.stand || '' }) : b.stand ? t('beh.pruefen', { stand: b.stand }) : t('beh.pruefenKurz')) : t('beh.ohneAdr')) + '</p>';
   }
 
+  // Aufenthalt „Asylverfahren oder Duldung“ (asyl) oder „ausreisepflichtig ohne Duldung“ (ausreise): beide wie asyl in den Regeln
+  function istAsyl() { return state.aufenthalt === 'asyl' || state.aufenthalt === 'ausreise'; }
   // Einkommensarten; „Asylbewerberleistungen“ nur bei Aufenthalt „asyl“ (Wohngeld § 7 Abs. 1 Satz 1 Nr. 8 WoGG, Rundfunk § 4 Abs. 1 Nr. 4 RBStV)
   function ekArtListe() {
     var ek = [['', t('ek.art.0')], ['lohn', t('ek.art.lohn')], ['selbst', t('ek.art.selbst')], ['rente', t('ek.art.rente')], ['alg', t('ek.art.alg')], ['kg', t('ek.art.kg')], ['eg', t('ek.art.eg')], ['wfbm', t('ek.art.wfbm')], ['unt', t('ek.art.unt')], ['ohne', t('ek.art.ohne')]];
-    if (state.aufenthalt === 'asyl') ek.splice(ek.length - 1, 0, ['asylblg', t('ek.art.asylblg')]);
+    if (istAsyl()) ek.splice(ek.length - 1, 0, ['asylblg', t('ek.art.asylblg')]);
     return ek;
   }
   // Auswahl nur neu füllen, wenn sich die Sichtbarkeit von „Asylbewerberleistungen“ ändert
   function ekArtOptionen() {
     ['ek1Art', 'ek2Art'].forEach(function (id) {
       var hat = !!$(id).querySelector('option[value="asylblg"]');
-      if (hat !== (state.aufenthalt === 'asyl')) fillSelect(id, ekArtListe(), state[id]);
+      if (hat !== istAsyl()) fillSelect(id, ekArtListe(), state[id]);
     });
   }
   function buildSelects() {
@@ -502,7 +504,7 @@
     fillSelect('gdb', gd, state.gdb);
     fillSelect('baby', [['', t('baby.0')], ['bald', t('baby.bald')], ['da', t('baby.da')]], state.baby);
     fillSelect('uvgPartner', [['', t('uvgPartner.0')], ['neu', t('uvgPartner.neu')], ['ehe', t('uvgPartner.ehe')], ['eltern', t('uvgPartner.eltern')]], state.uvgPartner);
-    fillSelect('aufenthalt', [['', t('aufenthalt.0')], ['eu', t('aufenthalt.eu')], ['asyl', t('aufenthalt.asyl')]], state.aufenthalt);
+    fillSelect('aufenthalt', [['', t('aufenthalt.0')], ['eu', t('aufenthalt.eu')], ['asyl', t('aufenthalt.asyl')], ['ausreise', t('aufenthalt.ausreise')]], state.aufenthalt);
     fillSelect('euArbeit', [['', t('eu.arbeit.0')], ['ja', t('eu.arbeit.ja')], ['nein', t('eu.arbeit.nein')]], state.euArbeit);
     fillSelect('euJahre', [['', t('eu.jahre.0')], ['unter5', t('eu.jahre.unter5')], ['ab5', t('eu.jahre.ab5')]], state.euJahre);
     fillSelect('wohnart', [['', t('wohnart.miete')], ['eigentum', t('wohnart.eigen')]], state.wohnart);
@@ -1202,7 +1204,8 @@
     if (s.baby === 'bald') b.push('Ein Baby wird erwartet');
     if (s.baby === 'da') b.push('Baby jünger als 14 Monate');
     if (s.egVor) b.push('Nettoeinkommen vor der Geburt (für das Elterngeld): ' + money(s.egVor) + ' im Monat');
-    if (s.aufenthalt === 'asyl') b.push('Im Asylverfahren, mit Duldung oder ausreisepflichtig');
+    if (s.aufenthalt === 'asyl') b.push('Im Asylverfahren (Aufenthaltsgestattung) oder mit Duldung');
+    if (s.aufenthalt === 'ausreise') b.push('Ausreisepflichtig ohne Duldung');
     if (s.schwanger) b.push('Schwangerschaft (ab der 13. Woche)');
     if (s.ernaehrung) b.push('Krankheitsbedingt kostenaufwändige Ernährung (ärztliche Bescheinigung folgt)');
     if (s.warmwasser) b.push('Warmwasser über Boiler oder Durchlauferhitzer in der Wohnung');
