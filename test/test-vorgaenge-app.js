@@ -70,11 +70,14 @@ const knopf = (s, root, text) => [...root.querySelectorAll('button')].find((b) =
   // Haushaltsplan (src/haushalt.js) je Vorgang
   const H = s.w.Haushalt, essen = () => (H.daten().plan.aus || {}).essen;
   H.laden({ plan: { aus: { essen: 30000 } } });
+  if (s.w.Ausziehen) s.w.Ausziehen.laden({ ab: { vertrag: true } });
   ck('[vorgaenge] Haushaltsplan im geöffneten Vorgang gespeichert', /30000/.test(mem['lotse.haushalt'] || ''));
   knopf(s, d.getElementById('vgMenu'), 'Ohne Namen').click();
   ck('[vorgaenge] anderer Vorgang: eigener (leerer) Haushaltsplan', essen() === undefined);
+  ck('[vorgaenge] anderer Vorgang: eigene (leere) Haken bei „Ich ziehe aus“', !s.w.Ausziehen || !s.w.Ausziehen.daten().ab.vertrag);
   knopf(s, d.getElementById('vgMenu'), 'Familie M.').click();
   ck('[vorgaenge] zurück: Haushaltsplan des Vorgangs wieder da', essen() === 30000);
+  ck('[vorgaenge] zurück: Haken bei „Ich ziehe aus“ wieder da', !s.w.Ausziehen || s.w.Ausziehen.daten().ab.vertrag === true);
   ck('[vorgaenge] Löschen-Text nennt den Haushaltsplan', /Haushaltsplan und Haushaltsbuch/.test(d.getElementById('clearWas').textContent));
 
   // Alle Angaben löschen: Text nennt den Vorgang, Rückgängig stellt ihn wieder her, nach einem Wechsel nicht mehr
@@ -129,10 +132,33 @@ const knopf = (s, root, text) => [...root.querySelectorAll('button')].find((b) =
   const roh = JSON.stringify(Object.assign({}, mem, { 'lotse.vorgaenge': JSON.stringify(Object.assign({}, JSON.parse(mem['lotse.vorgaenge'] || '{}'), { pin: { geheim: !!(JSON.parse(mem['lotse.vorgaenge'] || '{}').pin || {}).ct } })) }));
   ck('[vorgaenge] mit PIN: nichts Lesbares im Speicher, PIN nicht gespeichert', !/Erika|Muster|Familie|640|miete/.test(roh) && !roh.includes('2580') && !mem['lotse.state'] && !mem['lotse.haushalt'], roh.slice(0, 300));
   ck('[vorgaenge] PIN-Sperre als „an“ angezeigt', /PIN-Sperre ist an/.test(d.getElementById('setSicher').textContent));
+  ck('[vorgaenge] PIN: 6 Ziffern empfohlen, Selbstsperre ehrlich im Text', /empfohlen: 6/.test(require('../dist/i18n.js').de['vg.pin.label']) && /2 Minuten im Hintergrund/.test(d.getElementById('setSicher').textContent));
+  // PIN ändern und ausschalten fragen die bisherige PIN ab
+  knopf(s, d.getElementById('setSicher'), 'PIN ändern').click();
+  ck('[vorgaenge] PIN ändern: Feld „Bisherige PIN“', !!d.getElementById('vgPin0'));
+  d.getElementById('vgPin0').value = '1111'; d.getElementById('vgPin1').value = '123456'; d.getElementById('vgPin2').value = '123456';
+  submit(s, d.getElementById('vgPinForm'));
+  for (let i = 0; i < 200 && !/bisherige PIN stimmt nicht/.test(d.getElementById('vgPinForm').textContent); i++) await warte(50);
+  ck('[vorgaenge] PIN ändern: falsche bisherige PIN abgelehnt', /bisherige PIN stimmt nicht/.test(d.getElementById('vgPinForm').textContent));
+  knopf(s, d.getElementById('setSicher'), 'PIN-Sperre ausschalten').click();
+  ck('[vorgaenge] PIN ausschalten: nur mit bisheriger PIN', !!d.getElementById('vgPin0') && !d.getElementById('vgPin1'));
+  d.getElementById('vgPinForm').remove();
+  // Automatisch sperren nach etwa 2 Minuten im Hintergrund
+  let neuStart = 0, vs = 'visible'; const echtNow = s.w.Date.now; let versatz = 0;
+  s.w.__soloNeuStart = () => { neuStart++; };
+  Object.defineProperty(d, 'visibilityState', { get: () => vs, configurable: true });
+  s.w.Date.now = () => echtNow.call(s.w.Date) + versatz;
+  const sicht = (x) => { vs = x; d.dispatchEvent(new s.w.Event('visibilitychange')); };
+  sicht('hidden'); versatz = 30000; sicht('visible'); await warte(100);
+  ck('[vorgaenge] kurz im Hintergrund (30 s): bleibt offen', neuStart === 0);
+  sicht('hidden'); versatz += 130000; sicht('visible'); for (let i = 0; i < 100 && !neuStart; i++) await warte(50);
+  ck('[vorgaenge] über 2 Minuten im Hintergrund: speichert und sperrt (neu laden)', neuStart === 1);
+  s.w.Date.now = echtNow; versatz = 0;
 
   // Neustart: Sperrbildschirm
   const s2 = seite(mem);
   const sp = s2.d.getElementById('vgSperre');
+  ck('[vorgaenge] Sperrbildschirm: App dahinter inert', s2.d.getElementById('app').inert === true);
   ck('[vorgaenge] Neustart mit PIN: Sperrbildschirm, keine Angaben geladen', sp && !sp.hidden && s2.d.getElementById('miete').value === '' && s2.errors.length === 0, s2.errors.join(' | '));
   s2.d.getElementById('vgPinEin').value = '0000';
   submit(s2, s2.d.getElementById('vgPinEin').form);
@@ -143,7 +169,38 @@ const knopf = (s, root, text) => [...root.querySelectorAll('button')].find((b) =
   for (let i = 0; i < 100 && !sp.hidden; i++) await warte(50);
   ck('[vorgaenge] richtige PIN: entsperrt, Angaben des Vorgangs geladen', sp.hidden && s2.d.getElementById('miete').value === '640' && s2.d.getElementById('p-name').value === 'Erika Muster');
   ck('[vorgaenge] nach dem Entsperren: Haushaltsplan entschlüsselt geladen', s2.w.Haushalt.daten().plan.aus.essen === 30000);
+  ck('[vorgaenge] nach dem Entsperren: App wieder bedienbar', s2.d.getElementById('app').inert === false);
   ck('[vorgaenge] nach dem Entsperren: Kürzel-Schild', !s2.d.getElementById('vgChip').hidden && s2.d.getElementById('vgChip').textContent === 'Familie M.');
+
+  // Automatisch löschen umstellen, geöffneter Vorgang ist abgelaufen: Rückfrage mit Anzahl, keine fremden Daten überschreiben
+  {
+    const m6 = { 'lotse.ack': '1', 'lotse-lang': 'de', 'lotse.state': JSON.stringify({ s: { adults: 1, kids: 0, ek1Art: 'lohn', ek1Netto: 1500, miete: 111, bezug: {} }, p: {}, e: true }) };
+    const a = seite(m6); a.d.getElementById('vgNameRes').value = 'Alt'; submit(a, a.d.getElementById('vgNameRes').form); await warte(50);
+    a.w.dispatchEvent(new a.w.Event('pagehide')); await warte(50);
+    const meta = JSON.parse(m6['lotse.vorgaenge']); const altId = meta.klar.aktiv, jetzt = Date.now();
+    meta.klar.liste[0].geaendert = jetzt - 100 * 86400000;
+    meta.klar.liste.push({ id: 'bbbbbbbbbbbb', name: 'Neu', erstellt: jetzt, geaendert: jetzt, daten: { 'lotse.state': JSON.stringify({ s: { adults: 1, kids: 0, miete: 222, bezug: {} }, p: {}, e: true }) } });
+    m6['lotse.vorgaenge'] = JSON.stringify(meta);
+    const b = seite(m6); let gefragt = '';
+    b.w.confirm = (txt) => { gefragt = txt; return false; };
+    const sel6 = b.d.getElementById('vgTage'); sel6.value = '30'; sel6.dispatchEvent(new b.w.Event('change'));
+    ck('[vorgaenge] Frist umstellen: Rückfrage mit Anzahl', /Anzahl: 1/.test(gefragt), gefragt);
+    ck('[vorgaenge] Frist umstellen: „Abbrechen“ lässt alles, Auswahl zurück', sel6.value === '0' && JSON.parse(m6['lotse.vorgaenge']).klar.liste.length === 2 && b.d.getElementById('miete').value === '111');
+    b.w.confirm = () => true;
+    sel6.value = '30'; sel6.dispatchEvent(new b.w.Event('change')); await warte(400);
+    const nach = JSON.parse(m6['lotse.vorgaenge']).klar;
+    ck('[vorgaenge] Frist umstellen: abgelaufener geöffneter Vorgang gelöscht, anderer geladen', nach.liste.length === 1 && nach.liste[0].name === 'Neu' && b.d.getElementById('miete').value === '222' && nach.aktiv !== altId);
+    ck('[vorgaenge] Frist umstellen: Angaben des anderen Vorgangs nicht überschrieben', JSON.parse(m6['lotse.state']).s.miete === 222, m6['lotse.state']);
+  }
+
+  // Kopie mit langem Namen: „(Kopie)“ bleibt ganz
+  {
+    const m7 = { 'lotse.ack': '1', 'lotse-lang': 'de' }; const c = seite(m7);
+    c.d.getElementById('vgNameRes').value = 'Familie Mustermann-Lang'; submit(c, c.d.getElementById('vgNameRes').form); await warte(50);
+    knopf(c, c.d.getElementById('setHaushalte').querySelector('li.vg-offen'), 'Kopie zum Ausprobieren').click(); await warte(50);
+    const namen = JSON.parse(m7['lotse.vorgaenge']).klar.liste.map((v) => v.name);
+    ck('[vorgaenge] Kopiename: erst kürzen, dann „(Kopie)“', namen.some((x) => /\(Kopie\)$/.test(x) && x.length <= 24), namen);
+  }
 
   // PIN vergessen: alles löschen
   const s3 = seite(mem);

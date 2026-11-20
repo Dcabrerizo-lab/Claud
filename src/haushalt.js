@@ -261,7 +261,7 @@ var Haushalt = (function () {
     return out.sort(function (a, b) { return b.prio - a.prio; });
   }
   function aenderungsBrief(alt, neu, datum) {
-    return ['[Name, Anschrift]', '', 'An: [zuständige Stelle]', '', 'Aktenzeichen bzw. Nummer der Bedarfsgemeinschaft: [_____]', '', 'Mitteilung über eine Änderung meines Einkommens', '',
+    return ['[Name, Anschrift]', '', 'An: [Jobcenter oder Sozialamt]', '', 'Aktenzeichen bzw. Nummer der Bedarfsgemeinschaft: [_____]', '', 'Mitteilung über eine Änderung meines Einkommens', '',
       'Sehr geehrte Damen und Herren,', '', 'hiermit teile ich Ihnen nach § 60 Abs. 1 Satz 1 Nr. 2 SGB I mit, dass sich mein Einkommen geändert hat.',
       'Bisher: etwa ' + alt + ' netto im Monat.', 'Neu: etwa ' + neu + ' netto im Monat, ab dem [Datum].', '', 'Nachweise (zum Beispiel die Lohnabrechnung) lege ich bei.', '',
       'Mit freundlichen Grüßen', '', '[Ort], ' + datum, '[Unterschrift]'].join('\n');
@@ -321,7 +321,7 @@ var Haushalt = (function () {
   function rechnung() { return planRechnung(planEin(), planAus()); }
 
   // ----- Hilfen für Elemente -----
-  function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html !== undefined) e.innerHTML = html; return e; }
+  function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt !== undefined) e.textContent = txt; return e; } // nur Text, nie HTML
   function knopf(cls, text, fn, attr) { var b = el('button', cls); b.type = 'button'; b.textContent = text; b.addEventListener('click', fn); if (attr) Object.keys(attr).forEach(function (k) { b.setAttribute(k, attr[k]); }); return b; }
   function geldFeld(id, label, cent, hint, onWert) {
     var f = el('div', 'field hb-feld');
@@ -363,7 +363,7 @@ var Haushalt = (function () {
   function renderPlan(fokusId) {
     var box = $('hbInhalt'); box.innerHTML = '';
     var g = geteilte(), p = daten.plan, s = check();
-    box.appendChild(el('p', 'hb-lead', esc(t('hb.plan.lead'))));
+    box.appendChild(el('p', 'hb-lead', t('hb.plan.lead')));
     var erg = el('p', 'hb-ergebnis'); erg.id = 'hbErgebnis'; erg.setAttribute('aria-live', 'polite'); box.appendChild(erg);
     var aktual = function () {
       var r = rechnung(); erg.textContent = ergebnisSatz(r); erg.classList.toggle('minus', !r.leer && r.rest < 0);
@@ -371,7 +371,7 @@ var Haushalt = (function () {
     };
 
     // Einnahmen
-    var fs = el('fieldset', 'hb-karte'); fs.appendChild(el('legend', '', esc(t('hb.ein'))));
+    var fs = el('fieldset', 'hb-karte'); fs.appendChild(el('legend', '', t('hb.ein')));
     [1, 2].forEach(function (i) {
       if (i === 2 && !g.zwei) return;
       var art = g['ek' + i + 'Art'], c = g['ek' + i];
@@ -411,8 +411,8 @@ var Haushalt = (function () {
     box.appendChild(fs);
 
     // Feste Ausgaben: große Knöpfe mit Symbol; ein Tipp öffnet das Feld darunter
-    var fa = el('fieldset', 'hb-karte'); fa.appendChild(el('legend', '', esc(t('hb.aus'))));
-    fa.appendChild(el('p', 'hint', esc(t('hb.aus.t'))));
+    var fa = el('fieldset', 'hb-karte'); fa.appendChild(el('legend', '', t('hb.aus')));
+    fa.appendChild(el('p', 'hint', t('hb.aus.t')));
     var grid = el('div', 'hb-kats'), aus = planAus();
     KAT.forEach(function (k) {
       var b = el('button', 'hb-kat'); b.type = 'button'; b.id = 'hb-kat-' + k[0];
@@ -466,9 +466,9 @@ var Haushalt = (function () {
     var d = el('div', 'hb-hinweis'); d.id = 'hb-hw-' + h.art;
     var txt = h.art === 'wb' ? t('hb.hw.wb', { l: leistungName(h.leistung), d: ctx.datum(new Date(+h.ende.slice(0, 4), +h.ende.slice(5, 7) - 1, +h.ende.slice(8, 10))) }) :
       h.art === 'ek' ? t('hb.hw.ek', { alt: { eur: euroGanz(h.alt) }, neu: { eur: euroGanz(h.neu) } }) : h.art === 'tarif' && !h.rundfunk ? t('hb.hw.tarif0') : t('hb.hw.' + h.art);
-    d.appendChild(el('p', '', esc(txt)));
+    d.appendChild(el('p', '', txt));
     var det = el('details', 'hb-hw-det'), su = el('summary'); su.textContent = t('hb.hw.mehr'); det.appendChild(su);
-    det.appendChild(el('p', 'small', esc(t('hb.hw.' + (h.art === 'tarif' && !h.rundfunk ? 'tarif0' : h.art) + '.d'))));
+    det.appendChild(el('p', 'small', t('hb.hw.' + (h.art === 'tarif' && !h.rundfunk ? 'tarif0' : h.art) + '.d')));
     d.appendChild(det);
     var b = el('div', 'btns');
     var weg = function () { daten.weg[h.id] = true; if (h.art === 'ek') daten.ekBasis = h.neu; sichern(); neuZeichnen(); };
@@ -477,7 +477,9 @@ var Haushalt = (function () {
     if (h.art === 'nk') b.appendChild(knopf('btn ghost klein', t('hb.hw.brief'), function () { ctx.zeige('briefe', true); }));
     if (h.art === 'ek') {
       b.appendChild(knopf('btn ghost klein', t('hb.hw.neuPruefen'), function () { daten.ekBasis = h.neu; sichern(); ctx.zeige('leistungen', true); }));
-      b.appendChild(knopf('btn ghost klein', t('hb.hw.melden'), function () {
+      // Mitteilung nach § 60 SGB I nur bei Grundsicherungsgeld oder Sozialhilfe (Wohngeld und Kinderzuschlag haben eigene Regeln)
+      var bzk = (check() || {}).bezug || {};
+      if (bzk.grundsicherungsgeld || bzk.sozialamt) b.appendChild(knopf('btn ghost klein', t('hb.hw.melden'), function () {
         if (d.querySelector('textarea')) return;
         var l = el('label'); l.htmlFor = 'hb-brief'; l.textContent = t('hb.hw.briefLabel'); d.appendChild(l);
         var ta = el('textarea'); ta.id = 'hb-brief'; ta.rows = 12; ta.lang = 'de'; ta.value = aenderungsBrief(ctx.euroDe(euroGanz(h.alt)), ctx.euroDe(euroGanz(h.neu)), ctx.datumDe(new Date())); d.appendChild(ta);
@@ -517,39 +519,39 @@ var Haushalt = (function () {
   function bewilligtBox() {
     var d = el('details', 'hb-karte hb-wb'), su = el('summary'); su.textContent = t('hb.wb.h'); d.appendChild(su);
     if (Object.keys(daten.bewilligt).length) d.open = true;
-    d.appendChild(el('p', 'hint', esc(t('hb.wb.t'))));
+    d.appendChild(el('p', 'hint', t('hb.wb.t')));
     ['sgb2', 'sgb12', 'wohngeld', 'kiz'].forEach(function (l) {
       var f = el('div', 'field'), lab = el('label'); lab.htmlFor = 'hb-wb-' + l; lab.textContent = t('hb.wb.bis', { l: leistungName(l) }); f.appendChild(lab);
       var i = el('input'); i.type = 'date'; i.id = 'hb-wb-' + l; i.value = daten.bewilligt[l] || '';
       i.addEventListener('change', function () { if (/^\d{4}-\d\d-\d\d$/.test(i.value)) daten.bewilligt[l] = i.value; else delete daten.bewilligt[l]; sichern(); var h = $('hbHinweise'); if (h) hinweise(h, rechnung()); startHinweis(); });
       f.appendChild(i); d.appendChild(f);
     });
-    d.appendChild(el('p', 'small', esc(t('hb.wb.quelle'))));
+    d.appendChild(el('p', 'small', t('hb.wb.quelle')));
     return d;
   }
   function uebernahmeBox(s) {
     var u = uebernahme(s, { kg: daten.plan.kg !== null ? daten.plan.kg : geteilte().kg, energie: daten.plan.aus.energie || 0, leist: daten.plan.leist || 0 });
     var box = el('div', 'hb-karte hb-ue'); box.id = 'hbUe';
-    var h = el('h3', '', esc(t('hb.ue.h'))); h.id = 'hb-ue-h'; h.tabIndex = -1; box.appendChild(h);
-    box.appendChild(el('p', 'hb-ue-t', esc(t('hb.ue.da'))));
+    var h = el('h3', '', t('hb.ue.h')); h.id = 'hb-ue-h'; h.tabIndex = -1; box.appendChild(h);
+    box.appendChild(el('p', 'hb-ue-t', t('hb.ue.da')));
     var ul = el('ul', 'hb-liste');
-    if (!u.da.length) ul.appendChild(el('li', '', esc(t('hb.ue.nichts'))));
+    if (!u.da.length) ul.appendChild(el('li', '', t('hb.ue.nichts')));
     u.da.forEach(function (x) {
       var txt = x.was === 'ek' ? t('hb.ue.ek', { art: t('ek.art.' + x.art), b: { eur: x.c / 100 } }) : x.was === 'miete' ? t('hb.ue.miete', { b: { eur: x.c / 100 } }) :
         x.was === 'uh' ? t('hb.ue.uh', { b: { eur: x.c / 100 } }) : t('hb.ue.kinder', { n: String(x.n) });
-      ul.appendChild(el('li', 'ok', esc(txt)));
+      ul.appendChild(el('li', 'ok', txt));
     });
     box.appendChild(ul);
     var bestaetigt = {};
     u.fragen.forEach(function (x) {
       var l = el('label', 'check'), c = el('input'); c.type = 'checkbox'; c.id = 'hb-frage-' + x.was;
       c.addEventListener('change', function () { bestaetigt[x.was] = c.checked; });
-      l.appendChild(c); l.appendChild(el('span', '', esc(t('hb.ue.kgFrage')))); box.appendChild(l);
+      l.appendChild(c); l.appendChild(el('span', '', t('hb.ue.kgFrage'))); box.appendChild(l);
     });
     if (u.fehlt.length) {
-      box.appendChild(el('p', 'hb-ue-t', esc(t('hb.ue.fehlt'))));
+      box.appendChild(el('p', 'hb-ue-t', t('hb.ue.fehlt')));
       var ul2 = el('ul', 'hb-liste');
-      u.fehlt.forEach(function (x) { ul2.appendChild(el('li', 'fehlt', esc(t('hb.f.' + x.was, { art: x.art ? t('ek.art.' + x.art) : '' })))); });
+      u.fehlt.forEach(function (x) { ul2.appendChild(el('li', 'fehlt', t('hb.f.' + x.was, { art: x.art ? t('ek.art.' + x.art) : '' }))); });
       box.appendChild(ul2);
     }
     var b = el('div', 'btns');
@@ -642,8 +644,8 @@ var Haushalt = (function () {
     var sm = el('p', 'small'); sm.id = 'hbScanMsg'; sm.setAttribute('aria-live', 'polite'); sm.textContent = t('hb.scan.t'); box.appendChild(sm);
     monatsLeiste(box, renderBuch);
     var liste = monatsEintraege(daten.buch, monat);
-    box.appendChild(el('p', 'hb-summe', esc(t('hb.summe', { m: monatsName(monat), b: { eur: summe(liste.map(function (e) { return e.c; })) / 100 } }))));
-    if (!liste.length) box.appendChild(el('p', 'muted', esc(t('hb.liste.leer'))));
+    box.appendChild(el('p', 'hb-summe', t('hb.summe', { m: monatsName(monat), b: { eur: summe(liste.map(function (e) { return e.c; })) / 100 } })));
+    if (!liste.length) box.appendChild(el('p', 'muted', t('hb.liste.leer')));
     var ul = el('ul', 'hb-eintraege');
     liste.forEach(function (e) {
       var li = el('li', 'hb-eintrag');
@@ -661,7 +663,7 @@ var Haushalt = (function () {
     box.appendChild(ul);
     if (rueck) {
       var r = el('div', 'hb-rueck'); r.setAttribute('role', 'status');
-      r.appendChild(el('span', '', esc(rueck.text)));
+      r.appendChild(el('span', '', rueck.text));
       r.appendChild(knopf('btn ghost klein', t('hb.rueck'), function () { daten.buch = rueck.vorher; rueck = null; sichern(); renderBuch('hb-neu'); }, { id: 'hb-rueck' }));
       box.appendChild(r);
     }
@@ -671,7 +673,7 @@ var Haushalt = (function () {
       lb.appendChild(knopf('btn ghost klein', t('hb.buchLoeschen'), function () { rueck = { vorher: JSON.parse(JSON.stringify(daten.buch)), text: t('hb.buchGeloescht') }; daten.buch = []; sichern(); renderBuch('hb-rueck'); }, { id: 'hb-buchLoeschen' }));
       box.appendChild(lb);
     }
-    box.appendChild(el('p', 'small', esc(t('home.privat'))));
+    box.appendChild(el('p', 'small', t('home.privat')));
     if (fokusId && $(fokusId)) $(fokusId).focus();
   }
   function loeschen(e) {
@@ -705,7 +707,7 @@ var Haushalt = (function () {
     });
     f.appendChild(pad);
     // Kategorie per Tipp
-    var fk = el('fieldset', 'hb-katwahl'); fk.appendChild(el('legend', '', esc(t('hb.kat'))));
+    var fk = el('fieldset', 'hb-katwahl'); fk.appendChild(el('legend', '', t('hb.kat')));
     var g = el('div', 'hb-kats klein');
     KAT.forEach(function (k) {
       var b = el('button', 'hb-kat'); b.type = 'button'; b.setAttribute('aria-pressed', String(eingabe.k === k[0])); b.id = 'hb-wahl-' + k[0];
@@ -720,8 +722,8 @@ var Haushalt = (function () {
     var fn = el('div', 'field'), ln = el('label'); ln.htmlFor = 'hb-notiz'; ln.textContent = t('hb.notiz'); fn.appendChild(ln);
     var ni = el('input'); ni.type = 'text'; ni.id = 'hb-notiz'; ni.maxLength = 80; ni.autocomplete = 'off'; ni.value = eingabe.n; ni.addEventListener('input', function () { eingabe.n = ni.value; }); fn.appendChild(ni); f.appendChild(fn);
     var lw = el('label', 'check'), cw = el('input'); cw.type = 'checkbox'; cw.id = 'hb-wieder'; cw.checked = eingabe.w; cw.addEventListener('change', function () { eingabe.w = cw.checked; });
-    lw.appendChild(cw); lw.appendChild(el('span', '', esc(t('hb.wieder')))); f.appendChild(lw);
-    if (eingabe.id && eingabe.w) f.appendChild(el('p', 'hint', esc(t('hb.wieder.hint'))));
+    lw.appendChild(cw); lw.appendChild(el('span', '', t('hb.wieder'))); f.appendChild(lw);
+    if (eingabe.id && eingabe.w) f.appendChild(el('p', 'hint', t('hb.wieder.hint')));
     var msg = el('p', 'warn'); msg.id = 'hbEingabeMsg'; msg.setAttribute('role', 'alert'); msg.hidden = true; f.appendChild(msg);
     var bt = el('div', 'btns');
     bt.appendChild(knopf('btn', t('hb.speichern'), function () {
@@ -770,7 +772,7 @@ var Haushalt = (function () {
     var box = $('hbInhalt'); box.innerHTML = '';
     monatsLeiste(box, renderAusw);
     var aw = auswertung(daten.buch, monat);
-    if (!aw.zeilen.length) { box.appendChild(el('p', 'muted', esc(t('hb.ausw.leer')))); if (fokusId && $(fokusId)) $(fokusId).focus(); return; }
+    if (!aw.zeilen.length) { box.appendChild(el('p', 'muted', t('hb.ausw.leer'))); if (fokusId && $(fokusId)) $(fokusId).focus(); return; }
     var max = aw.zeilen.reduce(function (a, z) { return Math.max(a, z.c, z.vor); }, 1);
     var ul = el('ul', 'hb-balken');
     aw.zeilen.forEach(function (z) {
@@ -784,12 +786,14 @@ var Haushalt = (function () {
     });
     box.appendChild(ul);
     var sd = aw.summe - aw.vorSumme;
-    box.appendChild(el('p', 'hb-summe', esc(t('hb.ausw.summe', { b: { eur: aw.summe / 100 } })) + ' <span class="small">' + esc(t('hb.ausw.vm', { b: { eur: aw.vorSumme / 100 } })) + ' · ' +
-      esc(sd > 0 ? t('hb.ausw.mehr', { b: { eur: sd / 100 } }) : sd < 0 ? t('hb.ausw.weniger', { b: { eur: -sd / 100 } }) : t('hb.ausw.gleich')) + '</span>'));
+    var su = el('p', 'hb-summe', t('hb.ausw.summe', { b: { eur: aw.summe / 100 } }) + ' ');
+    su.appendChild(el('span', 'small', t('hb.ausw.vm', { b: { eur: aw.vorSumme / 100 } }) + ' · ' +
+      (sd > 0 ? t('hb.ausw.mehr', { b: { eur: sd / 100 } }) : sd < 0 ? t('hb.ausw.weniger', { b: { eur: -sd / 100 } }) : t('hb.ausw.gleich'))));
+    box.appendChild(su);
     // Spartipps (höchstens 3) mit Quelle
     var tp = tipps(aw);
     if (tp.length) {
-      box.appendChild(el('h3', 'hb-h3', esc(t('hb.tipps'))));
+      box.appendChild(el('h3', 'hb-h3', t('hb.tipps')));
       var tl = el('ul', 'hb-tipps');
       tp.forEach(function (k) {
         var li = el('li'); li.innerHTML = '<b>' + esc(katName(k)) + '</b><p>' + esc(t('hb.tipp.' + k)) + '</p><p class="small">' + esc(t('hb.quelle', { q: t('hb.quelle.' + k) })) + '</p>';
@@ -803,10 +807,10 @@ var Haushalt = (function () {
     var st1 = ctx.regeln && ctx.regeln().regelbedarf && ctx.regeln().regelbedarf.alleinstehend;
     if (st1) {
       var d = el('details', 'hb-rb'), su = el('summary'); su.textContent = t('hb.rb.h'); d.appendChild(su);
-      d.appendChild(el('p', '', esc(t('hb.rb.t', { b: { eur: st1 } }))));
+      d.appendChild(el('p', '', t('hb.rb.t', { b: { eur: st1 } })));
       var rl = el('ul', 'hb-liste');
-      regelbedarfAnteile(st1).forEach(function (x) { rl.appendChild(el('li', '', esc(t('hb.rb.zeile', { k: t('hb.rb.' + x.k), p: String(x.prozent), b: { eur: x.euro } })))); });
-      d.appendChild(rl); d.appendChild(el('p', 'small', esc(t('hb.rb.quelle'))));
+      regelbedarfAnteile(st1).forEach(function (x) { rl.appendChild(el('li', '', t('hb.rb.zeile', { k: t('hb.rb.' + x.k), p: String(x.prozent), b: { eur: x.euro } }))); });
+      d.appendChild(rl); d.appendChild(el('p', 'small', t('hb.rb.quelle')));
       box.appendChild(d);
     }
     var hw = el('div', 'hb-hinweise'); hw.id = 'hbHinweise'; box.appendChild(hw); hinweise(hw, rechnung());

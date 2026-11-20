@@ -24,7 +24,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   await p.click('#goLeistungen');
   ok('Weg „Welche Hilfen“ öffnet den Leistungscheck', await p.isVisible('#form') && (await p.evaluate(() => location.hash)) === '#leistungen');
   await p.click('#appnav [data-ansicht=start]'); await p.click('#goBriefe');
-  ok('Weg „Brief bekommen“ öffnet die Kacheln', await p.isVisible('#briefKacheln') && (await p.locator('#briefKacheln .kachel').count()) === 7);
+  ok('Weg „Brief bekommen“ öffnet die Kacheln', await p.isVisible('#briefKacheln') && (await p.locator('#briefKacheln .kachel').count()) === 8); // 8 Kacheln seit „Formular ausfüllen“ (ux-brief)
   const ERWARTET = { jc: 'p-bescheid', sa: 'p-gsa', wg: 'p-wg', fk: 'p-kiz', pk: 'p-pflege', vm: 'p-nk' };
   for (const [k, teil] of Object.entries(ERWARTET)) {
     await p.click('#brief-' + k);

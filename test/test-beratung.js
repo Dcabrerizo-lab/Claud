@@ -37,6 +37,13 @@ check('Neue Texte in allen 13 Sprachen', LANGS.every((l) => NEU.every((k) => typ
 check('Platzhalter in allen Sprachen wie im Deutschen', LANGS.every((l) => NEU.every((k) => (I18N.de[k].match(/\{\w+\}/g) || []).join() === (I18N[l][k].match(/\{\w+\}/g) || []).join())));
 check('Kein Paragraf in einem Sprachtext außerhalb von Klammern (sonst bliebe er in der Laienansicht stehen)', LANGS.every((l) => Object.values(I18N[l]).every((v) => typeof v !== 'string' || !/§|Art\. \d/.test(Fmt.ohnePara(v)))));
 
+// ---------- Rechtsgrundlagen (Korrektur 11) ----------
+{
+  const R = require('../src/rules.js').RECHT;
+  check('Rechtsgrundlage WBS: § 27 WoFG, Grenze § 9 Abs. 2 WoFG, Landesrecht', /§ 27 WoFG/.test(R.wbs) && /§ 9 Abs\. 2 WoFG/.test(R.wbs) && /Landesrecht/.test(R.wbs));
+  check('Rechtsgrundlage Pflege: §§ 36–38, 41, 44, 45b SGB XI; weitere Pflegeleistungen §§ 39, 40, 42, 42a', R.pflege === '§§ 36–38, 41, 44, 45b SGB XI' && R.pflegeplus === '§§ 39, 40, 42, 42a SGB XI');
+}
+
 // ---------- Leiste unten und Einstellungen (kurze Liste, Unterseiten, Schalter) ----------
 const navB = () => [...d.querySelectorAll('#appnav button')];
 const navAkt = () => (d.querySelector('#appnav button[aria-current="page"]') || {}).getAttribute?.('data-ansicht');

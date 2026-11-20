@@ -4,7 +4,7 @@
 // Mit PIN steht alles verschlüsselt (PBKDF2-SHA-256 + AES-GCM, zufälliges Salt und IV) unter lotse.vorgaenge; die PIN selbst wird nie gespeichert.
 const Vorgaenge = (function () {
   var SCHLUESSEL = 'lotse.vorgaenge';
-  var DATEN = ['lotse.state', 'lotse.einfach', 'lotse.pflegecheck', 'lotse.pfaendung', 'lotse.haushalt', 'lotse.haken'];
+  var DATEN = ['lotse.state', 'lotse.einfach', 'lotse.pflegecheck', 'lotse.pfaendung', 'lotse.haushalt', 'lotse.haken', 'lotse.ausziehen'];
   var ITER = 600000; // PBKDF2-HMAC-SHA-256: Empfehlung OWASP Password Storage Cheat Sheet (Stand 2023/2026)
   var NAME_MAX = 24;
   var TAG = 86400000;
@@ -86,14 +86,14 @@ const Vorgaenge = (function () {
     // Ohne PIN: geöffneter Vorgang unter den bisherigen Schlüsseln, der Rest (ohne dessen Daten) unter lotse.vorgaenge
     function klarMeta() {
       var cc = kopieVon(c); aktiv(cc).daten = null;
-      return { v: 1, tage: meta.tage || 0, klar: cc };
+      return { v: 1, tage: meta.tage || 0, zuletzt: meta.zuletzt || 0, klar: cc };
     }
     function speichernJetzt() {
       if (!bereit) return Promise.resolve(false);
       if (!key) return setzen(SCHLUESSEL, JSON.stringify(klarMeta()));
       var pin = meta.pin, tage = meta.tage || 0, bis = spaetestens(c, tage);
       return verschluesseln(key, c).then(function (e) {
-        var m = { v: 1, tage: tage, pin: { salt: pin.salt, iter: pin.iter, iv: e.iv, ct: e.ct }, bis: bis };
+        var m = { v: 1, tage: tage, zuletzt: meta.zuletzt || 0, pin: { salt: pin.salt, iter: pin.iter, iv: e.iv, ct: e.ct }, bis: bis };
         if (!meta.pin) return true; // PIN inzwischen ausgeschaltet: der nächste Schreibvorgang speichert unverschlüsselt
         meta = m; return setzen(SCHLUESSEL, JSON.stringify(m));
       }, function () { fehler(); return false; });
@@ -118,11 +118,20 @@ const Vorgaenge = (function () {
       if (opt.bereit) opt.bereit();
     }
     function wert(k) { var d = aktiv(c).daten; return d && d[k] != null ? d[k] : null; }
-    function abgelaufenePruefen() {
+    // beimStart: beim Öffnen bzw. Entsperren. Dann wird gemeldet, was gelöscht wurde (opt.geloescht), und bei einem
+    // Sprung der Geräteuhr um mehr als ein Jahr seit dem letzten Öffnen erst nachgefragt (opt.sprung), statt sofort zu löschen.
+    function uhrSprung() { return !!(meta && meta.zuletzt && jetzt() - meta.zuletzt > 365 * TAG); }
+    function abgelaufenePruefen(beimStart) {
+      if (beimStart && meta.tage > 0 && uhrSprung() && opt.sprung) {
+        opt.sprung(function () { meta.zuletzt = jetzt(); abgelaufenePruefen(true); speichern(); });
+        return 0;
+      }
       var a = aktiv(c).id;
       var n = aufraeumen(c, meta.tage || 0, jetzt());
       if (n && !key && aktiv(c).id !== a) klarDatenSchreiben();
+      meta.zuletzt = Math.max(meta.zuletzt || 0, jetzt());
       if (n) speichern();
+      if (n && beimStart && opt.geloescht) opt.geloescht(n, jetzt());
       return n;
     }
 
@@ -131,7 +140,7 @@ const Vorgaenge = (function () {
         meta = parse(v) || { v: 1, tage: 0 };
         if (meta.pin) {
           // Alles abgelaufen: ohne PIN löschen (das Ablaufdatum steht unverschlüsselt, die Angaben nicht)
-          if (meta.tage > 0 && meta.bis && jetzt() >= meta.bis) { allesLoeschen(); return; }
+          if (meta.tage > 0 && meta.bis && jetzt() >= meta.bis && !uhrSprung()) { allesLoeschen(); return; }
           klarDatenEntfernen(); // Reste aus der Zeit vor der PIN
           if (opt.gesperrt) opt.gesperrt();
           return;
@@ -145,7 +154,7 @@ const Vorgaenge = (function () {
             if (x != null) d[k] = x;
             if (--offen) return;
             aktiv(c).daten = d;
-            bereit = true; abgelaufenePruefen(); fertig();
+            bereit = true; abgelaufenePruefen(true); fertig();
           });
         });
       });
@@ -159,11 +168,14 @@ const Vorgaenge = (function () {
       return schluessel(pin, unb64(p.salt), p.iter).then(function (k) {
         return entschluesseln(k, p.iv, p.ct).then(function (obj) {
           if (!gueltig(obj)) throw new Error('ungültig');
-          key = k; c = obj; meta.fehl = 0; meta.sperreBis = 0;
-          bereit = true; abgelaufenePruefen(); speichern(); fertig();
-          return { ok: true };
+          return { k: k, obj: obj };
         });
-      }).catch(function () {
+      }).then(function (r) {
+        // außerhalb des Fehlerzweigs: ein Fehler beim Anzeigen zählt nicht als falsche PIN
+        key = r.k; c = r.obj; meta.fehl = 0; meta.sperreBis = 0;
+        bereit = true; abgelaufenePruefen(true); speichern(); fertig();
+        return { ok: true };
+      }, function () {
         meta.fehl = (meta.fehl || 0) + 1;
         var w = wartezeit(meta.fehl);
         meta.sperreBis = w ? jetzt() + w : 0;
@@ -217,7 +229,7 @@ const Vorgaenge = (function () {
       // Vorgang wechseln: vorher müssen die Angaben im Speicher stehen (App: flush())
       oeffnen: function (id) {
         if (!bereit || !finde(c, id) || id === c.aktiv) return false;
-        c.aktiv = id; if (!key) klarDatenSchreiben(); speichern(); return true;
+        c.aktiv = id; var k = speichern(); if (!key) k.then(klarDatenSchreiben); return true; // erst lotse.vorgaenge, dann die Klartext-Schlüssel
       },
       neu: function (name) {
         if (!bereit) return null;
@@ -248,6 +260,10 @@ const Vorgaenge = (function () {
         if (!bereit) return 0;
         meta.tage = [0, 30, 90].indexOf(Number(n)) >= 0 ? Number(n) : 0;
         abgelaufenePruefen(); speichern(); return meta.tage;
+      },
+      pinPruefen: function (pin) {
+        var p = meta && meta.pin; if (!p || !p.ct || !PIN_RE.test(String(pin))) return Promise.resolve(false);
+        return kette.then(function () { p = meta.pin; return schluessel(String(pin), unb64(p.salt), p.iter); }).then(function (k) { return entschluesseln(k, p.iv, p.ct).then(function () { return true; }); }).catch(function () { return false; });
       },
       entsperren: entsperren, pinSetzen: pinSetzen, pinAus: pinAus, allesLoeschen: allesLoeschen,
       fertig: function () { return kette; }

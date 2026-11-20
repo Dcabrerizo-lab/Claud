@@ -70,7 +70,9 @@
   var tresor = null;
   function tr() {
     if (!tresor) {
-      tresor = Vorgaenge.tresor(StoreRoh, { gesperrt: function () { if (tresor) vgSperreZeigen(); }, fehler: vgSpeicherFehler, bereit: function () { if (tresor) vgBereit(); } });
+      tresor = Vorgaenge.tresor(StoreRoh, { gesperrt: function () { if (tresor) vgSperreZeigen(); }, fehler: vgSpeicherFehler, bereit: function () { if (tresor) vgBereit(); },
+        geloescht: function (n, am) { vgHinweis(t('vg.auto.gemeldet', { datum: Fmt.datum(new Date(am), lang), n: String(n) })); },
+        sprung: function (ja) { if (window.confirm(t('vg.auto.sprung'))) ja(); } });
       if (tresor.gesperrt()) vgSperreZeigen(); else vgRender();
     }
     return tresor;
@@ -437,6 +439,7 @@
     $('appVersion').textContent = t('set.version', { v: APPVERSION });
     einfacheSpracheAnzeigen();
     if (window.Haushalt && Haushalt.sprache) Haushalt.sprache(); // Haushaltsplan (src/haushalt.js) in der neuen Sprache zeichnen
+    if (window.Ausziehen && Ausziehen.sprache) Ausziehen.sprache(); // „Ich ziehe aus“ (src/ausziehen.js) in der neuen Sprache zeichnen
     // Regeln älter als der nächste Stichtag (1. Januar): deutlich darauf hinweisen
     var veraltet = regelnVeraltet();
     $('altNotice').hidden = !veraltet; $('altNotice').textContent = veraltet ? t('alt.hinweis', { stand: Rules.RULES.stand }) : '';
@@ -529,10 +532,10 @@
   }
   // Was „Alle Angaben löschen“ löscht. Neue Teile hier ergänzen: Sprachschlüssel clear.teil.*
   // Ist ein gespeicherter Vorgang geöffnet, nennt der Text ihn: gelöscht wird nur in diesem Vorgang, andere bleiben.
-  var LOESCH_TEILE = ['clear.teil.form', 'clear.teil.person'].concat(window.Haushalt ? ['clear.teil.haushalt'] : [], ['clear.teil.mehr']);
+  var LOESCH_TEILE = ['clear.teil.form', 'clear.teil.person'].concat(window.Haushalt ? ['clear.teil.haushalt'] : [], window.Ausziehen ? ['az.h'] : [], ['clear.teil.mehr']);
   function loeschWas() {
     var a = tresor && tresor.bereit() ? tresor.aktiv() : null, mehrere = a && tresor.liste().length > 1;
-    return t('clear.was') + ' ' + LOESCH_TEILE.map(function (k) { return t(k); }).join(' · ') +
+    return t('clear.was') + ' ' + LOESCH_TEILE.map(function (k) { return k === 'az.h' ? '„' + t(k) + '“' : t(k); }).join(' · ') +
       (a && a.name ? ' ' + t('clear.teil.vorgang', { name: a.name }) : mehrere ? ' ' + t('clear.teil.offen') : '');
   }
   // Rückgängig-Leiste: bleibt etwa 10 Sekunden; solange der Fokus darin ist, verschwindet sie nicht
@@ -741,7 +744,7 @@
         else if (aktAnsicht !== 'start') { herkunft = {}; zeigeAnsicht('start', true); }
         else ap.exitApp();
       });
-      ap.addListener('appStateChange', function (s) { if (s && !s.isActive) flush(); });
+      ap.addListener('appStateChange', function (s) { if (s && !s.isActive) flush(); vgHintergrund(!(s && s.isActive)); });
     }
     var kb = plug('Keyboard');
     if (kb) {
@@ -2289,7 +2292,7 @@
   //  P-Konto, Mahnverfahren, Insolvenz); Caritas: caritas.de „Mietschulden: Tipps“, „Professionelle Hilfe gibt es bei der Schuldnerberatung“;
   //  AG SBV (Wohlfahrtsverbände, BAG-SB, Verbraucherzentralen): „Konzept Soziale Schuldnerberatung“.
   //  Gesetze: Verjährung §§ 195, 199 BGB; Mahnbescheid § 692 Abs. 1 Nr. 3 ZPO, Einspruch §§ 700, 339 ZPO; P-Konto §§ 850k, 899, 903 ZPO;
-  //  Energiesperre § 19 StromGVV/GasGVV; Darlehen § 22 Abs. 8 SGB II, § 36 SGB XII; Kündigung § 543 Abs. 2 Nr. 3, Schonfrist § 569 Abs. 3 Nr. 2 BGB;
+  //  Energiesperre §§ 41f, 41g EnWG (Strom und Gas; abgerufen 20.11.2026); Darlehen § 22 Abs. 8 SGB II, § 36 SGB XII; Kündigung § 543 Abs. 2 Nr. 3, Schonfrist § 569 Abs. 3 Nr. 2 BGB;
   //  Insolvenz §§ 287, 295, 302, 305 InsO.
   // Reihenfolge wie im Auftrag; „konto“ bekommt zusätzlich den Knopf zum Pfändungsrechner.
   var SP_SCHULDEN_FAELLE = ['inkasso', 'mahn', 'konto', 'strom', 'miete', 'rate', 'unserioes', 'insolvenz'];
@@ -2436,7 +2439,7 @@
       if (e.ueberHoechst) p(t('pf.erg.hoch', { h: { eur: Rules.RULES.pfaendung.hoechst } }), 'hint');
       p(t('pf.erg.frei', { f: { eur: e.frei } }), 'small muted');
       p(t('pf.tipp.unterhalt'), 'hint');
-      jetzt(['pf.tipp.mehr', 'pf.tipp.beratung']);
+      jetzt(['pf.tipp.unterhaltspflichten', 'pf.tipp.mehr', 'pf.tipp.beratung']); // zuerst: alle Unterhaltspflichten berücksichtigt? (§ 850c ZPO)
       tipps(['pf.tipp.einmal', 'pf.tipp.kg']);
       var d = knoepfe('btns');
       d.appendChild(nhKnopf('btn', esc(t('pf.konto.weiter')), null, function () { pf.art = 'konto'; pf.schritt = 2; pfRender(true); }));
@@ -2469,7 +2472,7 @@
 
   // ----- Bereiche: Start, Leistungen (Leistungscheck), Brief prüfen -----
   // Beim Öffnen die Startseite; „#leistungen“ und „#briefe“ öffnen den Bereich direkt (Links, Tests).
-  var ANSICHTEN = ['start', 'leistungen', 'briefe', 'pflege', 'pflegeinfo', 'pflegestart', 'einst', 'ordner', 'pfaendung', 'sparen', 'haushalt']; // „pflege“: Pflegegrad-Einschätzung, gehört zu Leistungen
+  var ANSICHTEN = ['start', 'leistungen', 'briefe', 'pflege', 'pflegeinfo', 'pflegestart', 'einst', 'ordner', 'pfaendung', 'sparen', 'haushalt', 'ausziehen']; // „pflege“: Pflegegrad-Einschätzung, gehört zu Leistungen
   var aktAnsicht = 'leistungen';
   // Herkunft merken: „Zurück“, Leiste und Android-Taste folgen ihr (keine festen Ziele)
   var NAV_BEREICHE = ['start', 'ordner', 'einst']; // Leiste unten; Leistungen und Briefe erreicht man über die Startkacheln (markieren Start)
@@ -2487,6 +2490,7 @@
     if (a === 'pfaendung') { if (pf.schritt > 0) { pf.schritt--; if (!pf.schritt) pf.art = ''; pfRender(true); } else zurueckZurHerkunft(a); return true; }
     if (a === 'sparen') { if (sp.rezepte) sp.rezepte = false; else if (sp.thema) sp.thema = ''; else { zurueckZurHerkunft(a); return true; } spRender(true); return true; }
     if (a === 'haushalt') { zurueckZurHerkunft(a); return true; }
+    if (a === 'ausziehen') { if (window.Ausziehen && Ausziehen.offen()) Ausziehen.zurueck(); else zurueckZurHerkunft(a); return true; }
     if (a === 'briefe' && !$('checkBox').hidden) { $('briefZurueck').click(); return true; }
     if (a === 'leistungen' && $('es-zurueck')) { $('es-zurueck').click(); return true; }
     if ((a === 'einst' || a === 'ordner') && usOffen(a)) { usZeigen(a, '', true); return true; } // Unterseite: zurück zur Liste
@@ -2520,6 +2524,7 @@
     jumpPruefen();
     var navA = navBereich(a);
     if (a === 'haushalt' && window.Haushalt) Haushalt.zeigen();
+    if (a === 'ausziehen' && window.Ausziehen) Ausziehen.zeigen();
     if (a === 'pfaendung') pfRender(false);
     if (a === 'pflegestart') puRender(false);
     if (a === 'sparen') spRender(false);
@@ -2545,6 +2550,8 @@
   // ----- Vorgänge (Haushalte): speichern, öffnen, umbenennen, kopieren, löschen; PIN-Sperre; automatisch löschen (src/vorgaenge.js) -----
   // In der Oberfläche heißt es „Vorgang“ bzw. „Haushalt“. Wer nur einen Vorgang hat, sieht nur den Knopf „Vorgang speichern“.
   function vgEl(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+  // „Name (Kopie)“: erst den Namen kürzen, damit der Zusatz ganz bleibt
+  function vgKopieName(n) { var x = n; while (x.length > 1 && Vorgaenge.nameSauber(t('vg.kopieName', { name: x })) !== t('vg.kopieName', { name: x }).replace(/\s+/g, ' ').trim()) x = x.slice(0, -1).trim(); return t('vg.kopieName', { name: x }); }
   function vgName(v) { return v && v.name ? v.name : t('vg.ohneName'); }
   function vgDatum(ms) { return Fmt.datum(new Date(ms), lang); }
   function vgMsg(txt) { ['vgMsg', 'vgMsgS'].forEach(function (id) { var m = $(id); if (m) m.textContent = txt; }); } // Meldung in „Alle Haushalte“ und in „Sicherheit und Daten“
@@ -2560,6 +2567,23 @@
     var f = vgEl('div', 'notice warn vg-fehler'); f.id = 'vgFehler'; f.setAttribute('role', 'alert'); f.hidden = true; $('inhalt').insertBefore(f, $('inhalt').firstChild);
   }
   function vgSpeicherFehler() { vgGeruest(); var f = $('vgFehler'); f.textContent = t('vg.fehler.speicher'); f.hidden = false; }
+  // Meldung nach automatischem Löschen (oben im Inhalt, gleiche Stelle wie die Speicher-Meldung)
+  function vgHinweis(txt) { var go = function () { vgGeruest(); var f = $('vgFehler'); f.textContent = txt; f.hidden = false; }; if ($('inhalt')) go(); else setTimeout(go, 0); }
+  // Neu laden (Sperren); in Tests ersetzbar
+  function vgNeuStart() { if (window.__soloNeuStart) window.__soloNeuStart(); else { try { location.reload(); } catch (e) {} } }
+  function vgSperrenJetzt() { flush(); tresor.fertig().then(vgNeuStart); }
+  // Automatisch sperren: nach etwa 2 Minuten im Hintergrund (nur mit PIN). Vorher speichern, dann neu laden (Sperrbildschirm).
+  var VG_SPERRE_MS = 120000, vgHinterAb = 0;
+  function vgHintergrund(weg) {
+    if (weg) { vgHinterAb = Date.now(); return; }
+    var war = vgHinterAb; vgHinterAb = 0;
+    if (war && tresor && tresor.pinAn() && tresor.bereit() && Date.now() - war >= VG_SPERRE_MS) vgSperrenJetzt();
+  }
+  document.addEventListener('visibilitychange', function () { vgHintergrund(document.visibilityState === 'hidden'); });
+  // Mit PIN schneller speichern: beim Verlassen eines Feldes sofort
+  document.addEventListener('focusout', function (e) { if (tresor && tresor.pinAn() && tresor.bereit() && e.target && /^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName) && saveTimer) flush(); });
+  // Web: in einem anderen Fenster geändert -> neu laden, damit nichts überschrieben wird
+  window.addEventListener('storage', function (e) { if (e.key === Vorgaenge.SCHLUESSEL) { clearTimeout(saveTimer); saveTimer = null; vgNeuStart(); } });
   // Angaben des geöffneten Vorgangs neu laden (nach Wechsel, neuem Vorgang, Löschen)
   function vgNeuLaden() {
     if (undoFn) undoWeg(); // Rückgängig gehört zum vorher geöffneten Vorgang
@@ -2580,6 +2604,7 @@
     Store.get('lotse.pfaendung', pfLaden);
     if (aktAnsicht === 'pfaendung') pfRender(false);
     if (window.Haushalt && Haushalt.neuLaden) Haushalt.neuLaden(); // jeder Vorgang hat seinen eigenen Haushaltsplan
+    if (window.Ausziehen && Ausziehen.neuLaden) Ausziehen.neuLaden(); // und eigene Haken und Notizen bei „Ich ziehe aus“
     vgRender();
   }
   function pfLeer() { return { art: '', schritt: 0, netto: '', pers: null, kg: null, kiz: '' }; }
@@ -2623,7 +2648,7 @@
     f.addEventListener('submit', function (e) { e.preventDefault(); vgSpeichern(i); });
     box.appendChild(f);
   }
-  function vgBereit() { var s = $('vgSperre'); if (s && !s.hidden) { s.hidden = true; $('app').removeAttribute('aria-hidden'); var h = document.querySelector('h1'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); } } vgRender(); }
+  function vgBereit() { var s = $('vgSperre'); if (s && !s.hidden) { s.hidden = true; $('app').removeAttribute('aria-hidden'); $('app').inert = false; var h = document.querySelector('h1'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); } } vgRender(); }
   function vgRender() {
     if (!tresor || !$('setHaushalte')) return;
     vgGeruest();
@@ -2691,7 +2716,7 @@
       });
       knopf('vg.kopie', function () {
         flush();
-        if (tresor.kopie(v.id, t('vg.kopieName', { name: vgName(v) }))) { vgNeuLaden(); vgMsg(t('vg.geoeffnet', { name: vgName(tresor.aktiv()) })); var h = $('vgH'); if (h) h.focus(); }
+        if (tresor.kopie(v.id, vgKopieName(vgName(v)))) { vgNeuLaden(); vgMsg(t('vg.geoeffnet', { name: vgName(tresor.aktiv()) })); var h = $('vgH'); if (h) h.focus(); }
       });
       knopf('vg.loeschen', function () {
         if (!window.confirm(t('vg.loeschenFrage', { name: vgName(v) }))) return;
@@ -2715,7 +2740,17 @@
     var sel = vgEl('select'); sel.id = 'vgTage';
     Vorgaenge.TAGE.forEach(function (n) { var o = vgEl('option', null, n ? t('vg.auto.tage', { n: String(n) }) : t('vg.auto.nie')); o.value = String(n); sel.appendChild(o); });
     sel.value = String(tresor.tage());
-    sel.addEventListener('change', function () { flush(); tresor.tage(Number(sel.value)); vgRender(); vgMsg(t('vg.auto.ok')); var s2 = $('vgTage'); if (s2) s2.focus(); });
+    sel.addEventListener('change', function () {
+      // Vorher fragen, wenn die neue Frist sofort Vorgänge löscht (mit Anzahl)
+      var neuT = Number(sel.value), jetzt = Date.now();
+      var n = neuT > 0 ? tresor.liste().filter(function (v) { return jetzt >= Vorgaenge.ablauf(v, neuT); }).length : 0;
+      if (n && !window.confirm(t('vg.auto.frage', { n: String(n) }))) { sel.value = String(tresor.tage()); return; }
+      flush(); var vorher = tresor.aktiv().id;
+      tresor.tage(neuT);
+      // Geöffneter Vorgang gelöscht: alte Angaben nicht in den nächsten Vorgang schreiben, sondern dessen Angaben laden
+      if (tresor.aktiv().id !== vorher) { clearTimeout(saveTimer); saveTimer = null; vgNeuLaden(); }
+      vgRender(); vgMsg(n ? t('vg.auto.weg', { n: String(n) }) : t('vg.auto.ok')); var s2 = $('vgTage'); if (s2) s2.focus();
+    });
     g.appendChild(al); g.appendChild(sel);
     g.appendChild(vgEl('p', 'small muted', t('vg.auto.t')));
     // PIN-Sperre (Sichtschutz)
@@ -2727,11 +2762,11 @@
       g.appendChild(vgEl('p', 'vg-aktiv', t('vg.pin.an')));
       var pb = vgEl('div', 'btns');
       var sp = vgEl('button', 'btn', t('vg.pin.sperren')); sp.type = 'button';
-      sp.addEventListener('click', function () { flush(); tresor.fertig().then(function () { try { location.reload(); } catch (e) {} }); });
+      sp.addEventListener('click', vgSperrenJetzt);
       var ae = vgEl('button', 'btn ghost', t('vg.pin.aendern')); ae.type = 'button'; ae.setAttribute('aria-expanded', 'false');
-      ae.addEventListener('click', function () { vgPinForm(g, ae); });
+      ae.addEventListener('click', function () { vgPinForm(g, ae, false, true); });
       var aus = vgEl('button', 'btn ghost', t('vg.pin.aus')); aus.type = 'button';
-      aus.addEventListener('click', function () { flush(); tresor.pinAus().then(function () { vgRender(); vgMsg(t('vg.pin.ausOk')); }); });
+      aus.addEventListener('click', function () { vgPinForm(g, aus, true); });
       pb.appendChild(sp); pb.appendChild(ae); pb.appendChild(aus); g.appendChild(pb);
     } else {
       var pn = vgEl('button', 'btn ghost', t('vg.pin.neu')); pn.type = 'button'; pn.setAttribute('aria-expanded', 'false');
@@ -2744,28 +2779,36 @@
     if (alt && $(alt) && alt !== 'vgMsg' && alt !== 'vgMsgS') { try { $(alt).focus({ preventScroll: true }); } catch (e) {} }
     else if (!$('es-sicher').hidden && (!document.activeElement || document.activeElement === document.body)) { var hs = $('h-sicher'); hs.tabIndex = -1; hs.focus({ preventScroll: true }); } // Knopf neu gezeichnet: Fokus auf die Überschrift
   }
-  function vgPinForm(g, ausloeser) {
-    if ($('vgPinForm')) { $('vgPin1').focus(); return; }
+  // PIN festlegen, ändern (mitAlt) oder ausschalten (nurAus). Ändern und Ausschalten fragen die bisherige PIN ab.
+  function vgPinForm(g, ausloeser, nurAus, mitAlt) {
+    var alt = $('vgPinForm'); if (alt) { if (alt.getAttribute('data-art') === (nurAus ? 'aus' : 'neu')) { alt.querySelector('input').focus(); return; } alt.remove(); }
     ausloeser.setAttribute('aria-expanded', 'true');
-    var f = vgEl('form', 'vg-form'); f.id = 'vgPinForm'; f.setAttribute('novalidate', '');
-    [['vgPin1', 'vg.pin.label'], ['vgPin2', 'vg.pin.label2']].forEach(function (x) {
+    var f = vgEl('form', 'vg-form'); f.id = 'vgPinForm'; f.setAttribute('novalidate', ''); f.setAttribute('data-art', nurAus ? 'aus' : 'neu');
+    var felder = (nurAus || mitAlt ? [['vgPin0', 'vg.pin.alt']] : []).concat(nurAus ? [] : [['vgPin1', 'vg.pin.label'], ['vgPin2', 'vg.pin.label2']]);
+    felder.forEach(function (x) {
       var l = vgEl('label', null, t(x[1])); l.setAttribute('for', x[0]);
       var i = vgEl('input'); i.id = x[0]; i.type = 'password'; i.setAttribute('inputmode', 'numeric'); i.setAttribute('autocomplete', 'off'); i.maxLength = 12;
       f.appendChild(l); f.appendChild(i);
     });
-    var b = vgEl('button', 'btn', t('vg.pin.speichern')); b.type = 'submit'; f.appendChild(b);
+    var b = vgEl('button', 'btn', t(nurAus ? 'vg.pin.aus' : 'vg.pin.speichern')); b.type = 'submit'; f.appendChild(b);
     var m = vgEl('p', 'msg'); m.setAttribute('role', 'status'); f.appendChild(m);
     f.addEventListener('submit', function (e) {
       e.preventDefault();
-      var p1 = $('vgPin1').value, p2 = $('vgPin2').value;
-      if (!Vorgaenge.PIN_RE.test(p1)) { m.textContent = t('vg.pin.kurz'); $('vgPin1').focus(); return; }
-      if (p1 !== p2) { m.textContent = t('vg.pin.ungleich'); $('vgPin2').focus(); return; }
+      var p0 = $('vgPin0') ? $('vgPin0').value : null, p1 = $('vgPin1') ? $('vgPin1').value : '', p2 = $('vgPin2') ? $('vgPin2').value : '';
+      if (!nurAus) {
+        if (!Vorgaenge.PIN_RE.test(p1)) { m.textContent = t('vg.pin.kurz'); $('vgPin1').focus(); return; }
+        if (p1 !== p2) { m.textContent = t('vg.pin.ungleich'); $('vgPin2').focus(); return; }
+      }
       b.disabled = true; m.textContent = t('vg.bitte');
       flush();
-      tresor.pinSetzen(p1).then(function (ok) { vgRender(); vgMsg(t(ok ? 'vg.pin.ok' : 'vg.fehler.speicher')); var h = $('vgH'); if (h) h.focus(); });
+      (p0 === null ? Promise.resolve(true) : tresor.pinPruefen(p0)).then(function (richtig) {
+        if (!richtig) { b.disabled = false; m.textContent = t('vg.pin.altFalsch'); $('vgPin0').value = ''; $('vgPin0').focus(); return; }
+        if (nurAus) return tresor.pinAus().then(function () { vgRender(); vgMsg(t('vg.pin.ausOk')); var h = $('vgH'); if (h) h.focus(); });
+        return tresor.pinSetzen(p1).then(function (ok) { vgRender(); vgMsg(t(ok ? 'vg.pin.ok' : 'vg.fehler.speicher')); var h = $('vgH'); if (h) h.focus(); });
+      });
     });
     ausloeser.parentNode.parentNode.insertBefore(f, ausloeser.parentNode.nextSibling);
-    $('vgPin1').focus();
+    f.querySelector('input').focus();
   }
   // ----- Unterseiten in „Einstellungen“ und „Mein Ordner“: Liste bzw. Übersicht oder eine Unterseite, „← Zurück“ führt zurück -----
   var usAktiv = { einst: '', ordner: '' }, usVon = null;
@@ -2846,7 +2889,7 @@
     var s = $('vgSperre');
     if (!s) { s = vgEl('div', 'vg-sperre'); s.id = 'vgSperre'; s.setAttribute('role', 'dialog'); s.setAttribute('aria-modal', 'true'); s.setAttribute('aria-labelledby', 'vgSperreH'); $('app').parentNode.appendChild(s); }
     s.innerHTML = ''; s.hidden = false; s.setAttribute('lang', lang); s.setAttribute('dir', I18N[lang]['meta.dir']);
-    $('app').setAttribute('aria-hidden', 'true');
+    $('app').setAttribute('aria-hidden', 'true'); $('app').inert = true;
     var box = vgEl('div', 'vg-sperre-box');
     var h = vgEl('h2', null, t('vg.sperre.h')); h.id = 'vgSperreH'; box.appendChild(h);
     box.appendChild(vgEl('p', null, t('vg.sperre.t')));
@@ -2973,13 +3016,14 @@
   // ----- Erklärseite: So funktionieren die Leistungen der Pflegekasse (Beträge aus den Rechenregeln) -----
   var piZurueckZu = 'leistungen', piFokus = null;
   function piEuro(x) { return Number(x).toLocaleString('de-DE', { maximumFractionDigits: 0 }) + ' €'; }
+  // Beratungsbesuch: § 37 Abs. 3 Satz 1 SGB XI (gesetze-im-internet.de, abgerufen 20.11.2026): Pflegegrad 2–5 halbjährlich Pflicht, 4 und 5 auf Wunsch vierteljährlich
   function pflegeInfoBauen() {
     var R = Rules.RULES, box = $('pflegeInfo');
     if (box.children.length) return;
     var el = function (tag, text, cls) { var e = document.createElement(tag); if (text != null) e.textContent = text; if (cls) e.className = cls; return e; };
     var je = function (o) { return [2, 3, 4, 5].map(function (g) { return 'PG ' + g + ': ' + piEuro(o[g]); }).join(' · '); };
     box.appendChild(el('h2', 'So funktionieren die Leistungen der Pflegekasse')).id = 'h-pflegeinfo';
-    box.appendChild(el('p', 'Nur das Pflegegeld kommt aufs Konto. Alles andere sind Budgets: Die Pflegekasse bezahlt damit Hilfe, Dienste oder Lieferungen, meistens gegen Rechnung. Wer die Budgets nicht nutzt, verschenkt Geld.', 'lead'));
+    box.appendChild(el('p', 'Aufs Konto kommen nur das Pflegegeld und, wer in einer ambulant betreuten Wohngruppe lebt, der Wohngruppenzuschlag. Alles andere sind Budgets: Die Pflegekasse bezahlt damit Hilfe, Dienste oder Lieferungen, meistens gegen Rechnung. Wer die Budgets nicht nutzt, verschenkt Geld.', 'lead'));
     var zeilen = [
       ['Pflegegeld', 'Geld aufs Konto, jeden Monat', je(R.pflege.geld), 'geld', 'pi-geld'],
       ['Pflegedienst (Pflegesachleistung)', 'Budget: Der Pflegedienst rechnet direkt mit der Pflegekasse ab', 'bis ' + je(R.pflegeSach), 'budget', 'pi-dienst'],
@@ -3005,7 +3049,7 @@
     };
     abschnitt('pi-geld', 'Pflegegeld: Geld für die Pflege durch Angehörige', [
       'Wenn Angehörige, Freunde oder Nachbarn pflegen, zahlt die Pflegekasse ab Pflegegrad 2 jeden Monat Pflegegeld aufs Konto der gepflegten Person. Sie kann frei entscheiden, wofür sie es verwendet, zum Beispiel als Dankeschön an die Pflegeperson.',
-      'Pflicht: Bei Pflegegrad 2 und 3 einmal im halben Jahr, bei Pflegegrad 4 und 5 einmal im Vierteljahr kommt eine kostenlose Pflegeberatung ins Haus. Fällt sie aus, kann die Pflegekasse das Pflegegeld kürzen.']);
+      'Pflicht: Bei Pflegegrad 2 bis 5 kommt einmal im halben Jahr eine kostenlose Beratung ins Haus. Bei Pflegegrad 4 und 5 geht das auf Wunsch auch jedes Vierteljahr. Fällt die Pflicht-Beratung aus, kann die Pflegekasse das Pflegegeld kürzen.']);
     abschnitt('pi-dienst', 'Pflegedienst: Sachleistung und Kombination', [
       'Kommt ein Pflegedienst, rechnet er direkt mit der Pflegekasse ab. Du bekommst dafür kein Geld, aber auch keine Rechnung, solange das Budget reicht.',
       'Nutzt der Pflegedienst nur einen Teil des Budgets, zahlt die Pflegekasse den Rest anteilig als Pflegegeld aus. Das heißt Kombinationsleistung.']);
@@ -3016,7 +3060,8 @@
       ['Haushaltshilfe, Einkaufen, Begleitung zum Arzt', 'Betreuung zu Hause oder in einer Betreuungsgruppe', 'Eigenanteile bei Tages- oder Kurzzeitpflege']);
     abschnitt('pi-verh', 'Verhinderungspflege und Kurzzeitpflege: Vertretung für die Pflegeperson', [
       'Ab Pflegegrad 2 haben beide einen gemeinsamen Jahresbetrag von ' + piEuro(R.entlastungsbudget) + '. Auch das ist kein Geld aufs Konto: Die Pflegekasse bezahlt damit die Vertretung.',
-      'Verhinderungspflege: Die Pflegeperson macht Urlaub, ist krank oder braucht ein paar Stunden Pause. Dann pflegt jemand anderes zu Hause, zum Beispiel ein Pflegedienst, Bekannte oder Nachbarn. Bei nahen Verwandten zahlt die Pflegekasse weniger; frag dort nach.',
+      'Verhinderungspflege: Die Pflegeperson macht Urlaub, ist krank oder braucht ein paar Stunden Pause. Dann pflegt jemand anderes zu Hause, zum Beispiel ein Pflegedienst, Bekannte oder Nachbarn.',
+      'Vertreten nahe Angehörige oder Personen aus demselben Haushalt (nicht beruflich), zahlt die Pflegekasse höchstens das Doppelte des monatlichen Pflegegeldes. Nachgewiesene Kosten wie Fahrt oder Verdienstausfall können dazukommen (bis zum Jahresbetrag).',
       'Kurzzeitpflege: Die gepflegte Person wohnt für eine Zeit in einer Pflegeeinrichtung, zum Beispiel nach einem Krankenhausaufenthalt.',
       'Während der Vertretung zahlt die Pflegekasse bis zu 8 Wochen im Jahr die Hälfte des Pflegegelds weiter. Wer nur stundenweise vertreten wird (weniger als 8 Stunden am Tag), behält das volle Pflegegeld.',
       'Tipp: Den Antrag kannst du auch nachträglich stellen. Hebe alle Rechnungen und Quittungen auf.']);
@@ -3062,7 +3107,7 @@
     var e2 = function (x) { return Number(x).toLocaleString('de-DE', { minimumFractionDigits: x % 1 ? 2 : 0, maximumFractionDigits: 2 }) + ' €'; };
     return {
       geld: ['Geld für die Pflege zu Hause (Pflegegeld)', 'Kommt aufs Konto, wenn Angehörige, Freunde oder Nachbarn pflegen. Die gepflegte Person entscheidet frei, wofür sie es verwendet.',
-        ['Pflicht: Bei Pflegegrad 2 und 3 einmal im halben Jahr, bei Pflegegrad 4 und 5 einmal im Vierteljahr kommt eine kostenlose Beratung ins Haus. Fällt sie aus, kann die Pflegekasse das Pflegegeld kürzen.']],
+        ['Pflicht: Bei Pflegegrad 2 bis 5 kommt einmal im halben Jahr eine kostenlose Beratung ins Haus. Bei Pflegegrad 4 und 5 geht das auf Wunsch auch jedes Vierteljahr. Fällt die Pflicht-Beratung aus, kann die Pflegekasse das Pflegegeld kürzen.']],
       dienst: ['Pflegedienst kommt ins Haus (Pflegesachleistung)', 'Kein Geld aufs Konto: Der Pflegedienst rechnet bis zu diesem Betrag direkt mit der Pflegekasse ab.',
         ['Geht statt Pflegegeld oder zusammen damit (siehe „Pflegedienst und Pflegegeld gemischt“).',
           'Was der Pflegedienst in einem Monat nicht braucht, kannst du bis zu 40 % des Betrags auch für anerkannte Hilfen im Alltag nutzen (Umwandlung). Die Rechnungen reichst du bei der Pflegekasse ein.']],
@@ -3076,7 +3121,7 @@
           'Das geht auch stundenweise, zum Beispiel für einen Nachmittag. Stundenweise Betreuung bieten unter anderem Familienentlastende Dienste an. Eine Bezahlung als Verhinderungspflege ist möglich: Frag vorher bei der Pflegekasse nach.',
           'Kurzzeitpflege: Die gepflegte Person wohnt für eine Zeit in einer Pflegeeinrichtung, zum Beispiel nach dem Krankenhaus. Höchstens 8 Wochen im Jahr.',
           'Während der Vertretung zahlt die Pflegekasse bis zu 8 Wochen im Jahr die Hälfte des Pflegegeldes weiter.',
-          'Vertreten nahe Verwandte ohne Gewerbe, zahlt die Pflegekasse höchstens das Doppelte des Pflegegeldes.',
+          'Vertreten nahe Angehörige oder Personen aus demselben Haushalt (nicht beruflich), zahlt die Pflegekasse höchstens das Doppelte des monatlichen Pflegegeldes. Nachgewiesene Kosten wie Fahrt oder Verdienstausfall können dazukommen (bis zum Jahresbetrag).', // § 39 Abs. 3 SGB XI (abgerufen 20.11.2026)
           'Rechnungen aufheben: Die Erstattung kannst du nachträglich beantragen, spätestens bis zum Ende des folgenden Jahres.']],
       tages: ['Tagespflege oder Nachtpflege (teilstationäre Pflege)', 'Die Person ist tagsüber oder nachts in einer Einrichtung. Die Einrichtung rechnet bis zu diesem Betrag direkt mit der Pflegekasse ab.',
         ['Gibt es zusätzlich: Pflegegeld und Pflegedienst werden dafür nicht gekürzt.', 'Die Fahrt zur Einrichtung gehört dazu. Essen und Unterkunft zahlst du selbst; dafür kann der Entlastungsbetrag helfen.']],
@@ -3132,9 +3177,13 @@
       var pg = pu.pg || 0, liste = Rules.pflegeFuer(pg), tx = puTexte(pg), U = Rules.RULES.pflegeUnterst;
       var top = PU_TOP[Math.min(pg, 2)];
       p(pg ? 'Das gibt es bei Pflegegrad ' + pg : 'Das gibt es ohne Pflegegrad', 'pf-frage');
-      if (pg >= 2) p('Nur das Pflegegeld kommt aufs Konto. Das meiste sind Budgets: Die Pflegekasse bezahlt damit Hilfe, meistens gegen Rechnung. Wer sie nicht nutzt, verschenkt Hilfe.', 'hint');
+      if (pg >= 2) p('Aufs Konto kommen nur das Pflegegeld und, wer in einer ambulant betreuten Wohngruppe lebt, der Wohngruppenzuschlag. Das meiste sind Budgets: Die Pflegekasse bezahlt damit Hilfe, meistens gegen Rechnung. Wer sie nicht nutzt, verschenkt Hilfe.', 'hint');
       else if (pg === 1) p('Bei Pflegegrad 1 gibt es noch kein Pflegegeld und keinen Pflegedienst als Sachleistung. Es gibt aber Budgets und Zuschüsse. Die Pflegekasse bezahlt damit Hilfe, meistens gegen Rechnung.', 'hint');
-      else p('Geld und Budgets der Pflegekasse gibt es erst mit einem Pflegegrad. Den Antrag stellst du bei der Pflegekasse; ein Anruf genügt. Diese Hilfen gibt es schon vorher:', 'hint');
+      else {
+        p('Geld und Budgets der Pflegekasse gibt es erst mit einem Pflegegrad. Den Antrag stellst du bei der Pflegekasse; ein Anruf genügt. Diese Hilfen gibt es schon vorher:', 'hint');
+        // § 2 PflegeZG mit § 7 Abs. 4 Satz 2 PflegeZG (gesetze-im-internet.de, abgerufen 20.11.2026): gilt schon bei voraussichtlicher Pflegebedürftigkeit
+        p('Tritt die Pflege plötzlich ein, dürfen Angehörige bis zu 10 Arbeitstage der Arbeit fernbleiben, um die Pflege zu organisieren. Das gilt schon, wenn ein Pflegegrad voraussichtlich kommt. Als Lohnersatz gibt es auf Antrag das Pflegeunterstützungsgeld der Pflegekasse.', 'hint');
+      }
       var karte = function (l, ziel) {
         var z = tx[l.id], d = el('section', null, 'pu-l pu-' + l.art); d.id = 'pu-l-' + l.id;
         d.appendChild(el('h3', z[0]));
@@ -3162,7 +3211,7 @@
         box.appendChild(w);
       }
       p('Hilfe bei allen Fragen und beim Antrag: Pflegekasse oder Pflegestützpunkt, kostenlos.', 'hint');
-      if (U.reform.status === 'entwurf') p('Für ' + U.reform.jahr + ' ist eine Pflegereform geplant, aber noch nicht beschlossen; die Beträge können sich dann ändern.', 'small muted');
+      if (U.reform.status === 'entwurf') p('Für ' + U.reform.jahr + ' ist eine Pflegereform geplant, aber noch nicht beschlossen. Leistungen und Beträge können sich dann ändern, auch bei Pflegegrad 1.', 'small muted');
       p('Stand der Beträge: ' + U.stand + ' (' + U.quelle + '). Den genauen Anspruch legt die Pflegekasse fest.', 'small muted');
       var d2 = box.appendChild(el('div', null, 'btns'));
       if (!pg && typeof PflegeAssistent !== 'undefined') d2.appendChild(nhKnopf('btn', esc(t('pu.schaetzen')), null, function () { paOeffnen(true); }));
@@ -3345,6 +3394,9 @@
       textAusgeben: function (text, titel, msg) { if (!NATIVE) { schreibenDrucken(text); return; } schreibenAusgeben({ value: text }, titel, plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen', msg); }
     });
   }
+  // „Ich ziehe aus“: Haken und Notizen je Vorgang (lotse.ausziehen in Vorgaenge.DATEN), mit PIN verschlüsselt, kopiert und gelöscht
+  if (window.Ausziehen) Ausziehen.speicherOrt({ laden: function (cb) { Store.get('lotse.ausziehen', cb); }, schreiben: function (text, cb) { Store.set('lotse.ausziehen', text); cb(null); } });
+  if (window.Ausziehen) Ausziehen.init({ t: t, zeige: oeffneVon, plug: plug, famversGrenze: function () { var R = Rules.RULES.famvers; return Fmt.euro(Math.round((new Date().getFullYear() >= 2027 ? R.bezug2027 : R.bezug2026) / 7), lang, I18N[lang]['meta.dir'] === 'rtl'); } }); // „Ich ziehe aus“ (src/ausziehen.js)
   window.addEventListener('hashchange', function () { var a = location.hash.slice(1); if (ANSICHTEN.indexOf(a) >= 0 && a !== aktAnsicht) zeigeAnsicht(a, true); });
   Store.remove('lotse.fristen'); // Fristen aus 1.3.0 (Build 141) gibt es nicht mehr: gespeicherte Einträge vom Gerät löschen
   zeigeAnsicht((function () { var a = (location.hash || '').slice(1); return ANSICHTEN.indexOf(a) >= 0 ? a : 'start'; })());

@@ -1713,11 +1713,11 @@ const Rules = (function () {
   const RECHT = {
     kindergeld: '§§ 62 ff. EStG, Höhe § 66 EStG; Kinder ab 18: § 32 Abs. 4 EStG', wohngeld: 'Wohngeldgesetz, §§ 12–19 WoGG',
     kiz: '§ 6a BKGG', ggeld: 'SGB II, §§ 7, 9, 11–12, 19–22 SGB II', but: '§ 28 SGB II, § 6b BKGG, § 34 SGB XII',
-    uvg: 'Unterhaltsvorschussgesetz, §§ 1–4 UVG', gsa: '§§ 41 ff. SGB XII', bafoeg: 'BAföG', pflege: '§§ 37, 45b SGB XI',
+    uvg: 'Unterhaltsvorschussgesetz, §§ 1–4 UVG', gsa: '§§ 41 ff. SGB XII', bafoeg: 'BAföG', pflege: '§§ 36–38, 41, 44, 45b SGB XI',
     kgBeh: '§ 32 Abs. 4 Satz 1 Nr. 3 EStG', emrente: '§ 43 SGB VI', eingl: '§§ 90 ff. SGB IX; Kinder mit seelischer Behinderung: § 35a SGB VIII',
     pausch: '§ 33b EStG', ausweis: '§§ 2, 152 SGB IX', blindengeld: 'Landesblindengeldgesetz (Bayern: BayBlindG)',
-    pflegeplus: '§§ 39, 40 SGB XI', arbeit: '§ 61 SGB IX', rundfunk: '§ 4 RBStV', zuzahl: '§ 62 SGB V', famvers: '§ 10 SGB V',
-    bab: '§§ 56 ff. SGB III', wbs: '§ 9 Abs. 2 WoFG und Landesrecht', alg1: '§§ 136 ff. SGB III', krankengeld: '§§ 44 ff. SGB V',
+    pflegeplus: '§§ 39, 40, 42, 42a SGB XI', arbeit: '§ 61 SGB IX', rundfunk: '§ 4 RBStV', zuzahl: '§ 62 SGB V', famvers: '§ 10 SGB V',
+    bab: '§§ 56 ff. SGB III', wbs: '§ 27 WoFG, Einkommensgrenze § 9 Abs. 2 WoFG; in Ländern mit eigenem Gesetz Landesrecht', alg1: '§§ 136 ff. SGB III', krankengeld: '§§ 44 ff. SGB V',
     srente: '§§ 37, 236a SGB VI', elterngeld: 'BEEG, §§ 1–2 BEEG', hzp: '§§ 61 ff. SGB XII', lpg: 'BayLPflGG',
     mutter: '§ 19 MuSchG, § 24i SGB V', kkg: '§ 45 SGB V', blh: '§ 72 SGB XII', asylblg: 'AsylbLG'
   };
