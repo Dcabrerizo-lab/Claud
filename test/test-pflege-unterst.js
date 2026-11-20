@@ -45,9 +45,9 @@ check('Kombi: ganze Sachleistung -> kein Pflegegeld', Rules.pflegeKombi(3, 1497)
 check('Kombi: ohne Pflegedienst -> volles Pflegegeld', Rules.pflegeKombi(4, 0) === 800);
 check('Kombi: Pflegegrad 1 -> nichts', Rules.pflegeKombi(1, 0) === 0);
 
-// Quelle, Stand, Reformhinweis
+// Quelle, Stand; kein Hinweis auf Entwürfe
 check('Stand und Quelle gesetzt', R.pflegeUnterst.stand === '14.9.2026' && /Gesundheit/.test(R.pflegeUnterst.quelle));
-check('Reform 2027 als Entwurf vermerkt', R.pflegeUnterst.reform.status === 'entwurf' && R.pflegeUnterst.reform.jahr === 2027);
+check('[recht-geltend] Kein Reformentwurf in den Daten (nur geltendes Recht)', !('reform' in R.pflegeUnterst));
 
 console.log(fails ? fails + ' FEHLER (Pflege-Unterstützung)' : '[pflege-unterst] Pflege-Übersicht: Leistungen je Pflegegrad, feste Beträge (BMG, Stand 14.9.2026), Einheiten und Kombination stimmen');
 process.exit(fails ? 1 : 0);

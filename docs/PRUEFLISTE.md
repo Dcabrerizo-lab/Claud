@@ -26,13 +26,12 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Verwandte in der Wohnung: Vermutung der Unterstützung (§ 9 Abs. 5) -> nur „möglich“; WG: eigener Mietanteil | ◐ | `hh-andere` |
 | EU-Staatsangehörige ohne Arbeit, unter 5 Jahren: Leistungsausschluss (§ 7 Abs. 1 Satz 2 und 4) | ✓ | `eu` |
 | Altersrente schließt aus, auch vor der Regelaltersgrenze (§ 7 Abs. 4 SGB II): allein, nur Rente, Alter unbekannt oder ab 60 -> höchstens „möglich“ mit Hinweis auf das Sozialamt (Hilfe zum Lebensunterhalt) | ✓ | `kiz-rentner` |
-| 2027: Regelsatz noch nicht beschlossen, Nullrunde erwartet: Hinweis, gerechnet wird mit 563 € | ✓ | `plan-2027` |
 | Regelbedarfe 2026: 563 / 506 / 451 / 390 € (§ 20, § 23) | ✓ | `gg-regel` |
 | Freibetrag für Erwerbstätige (§ 11b Abs. 2, 3): 100 € frei, 20 % bis 520 €, 30 % bis 1.000 €, 10 % bis 1.200 € (mit Kind 1.500 €) | ✓ | `gg-ewt` |
 | Freibetrag nur für Einkommen aus Arbeit, nicht für Rente, Arbeitslosengeld, Krankengeld, Elterngeld | ✓ | `gg-ewt-art` |
 | Schüler und Azubis unter 25: Einkommen bis zur Minijob-Grenze frei (§ 11b Abs. 2b) | ✓ | `gg-azubi` |
 | Minijob-Grenze ab 1.1.2027: 633 € (Mindestlohn 14,60 €), die App schaltet am Stichtag selbst um (auch Krankengeld und Arbeitslosengeld) | ✓ | `minijob-2027` |
-| Weitere Beträge 2027 (Kindergeld 267 €, Grundfreibetrag 12.564 €, Beitragsbemessungsgrenzen, Regelsätze, Wohngeld) | ○ (Stand 10.11.2026 nur Entwürfe bzw. offen; erst nach Verkündung einarbeiten; die App weist ab 1.1.2027 darauf hin) | |
+| Weitere Beträge 2027 (Kindergeld 267 €, Grundfreibetrag 12.564 €, Regelsätze, Wohngeld, Pflegegeld) | ○ (Stand 20.11.2026 nur Entwürfe; werden nicht angezeigt, auch nicht als „geplant“ (Nutzerregel 20.11.2026: nur geltendes Recht); erst nach Verkündung und ab Stichtag einarbeiten; die App weist ab 1.1.2027 auf veraltete Regeln hin) | |
 | Schüler und Azubis über der Minijob-Grenze: auf den Teil darüber zusätzlich der Freibetrag nach Abs. 3 | ○ (die App rechnet vorsichtig ohne diesen Zusatz, der Betrag fällt also eher zu niedrig aus; von einer Fachperson bestätigen lassen) | |
 | Elterngeld 300 € frei bei Einkommen vor der Geburt (§ 10 Abs. 5 BEEG) | ✓ | `gg-eg300` |
 | Unterhalt und Unterhaltsvorschuss als Einkommen der Kinder, gedeckelt auf ihren Bedarf | ✓ | `gg-unterhalt` |
@@ -94,11 +93,11 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Eigentum: Lastenzuschuss, Belastung nach § 10 WoGG nicht genau gerechnet -> nur „möglich“ | ◐ | `eigentum` |
 | Verwandte in derselben Wohnung zählen meist zum Haushalt (§ 5) -> nur „möglich“ | ◐ | `hh-andere` |
 | Ausgezahlte Beträge (Arbeitslosengeld, Krankengeld, Elterngeld, Werkstattlohn) nur mit dem kleinen Abzug für Auszahlungen, in einfacher und ausführlicher Version gleich (§ 16 WoGG) | ✓ | `einfach-gleich` |
-| 2027: geplante Kürzung (BT-Drs. 21/8284) nur als Hinweis; Tipp „Antrag noch 2026“ wegen Bestandsschutz nur vor dem Jahreswechsel | ✓ | `plan-2027` |
+| Tipp „früh beantragen“ (Wohngeld erst ab dem Antragsmonat, § 25 Abs. 2 WoGG) bei „wahrscheinlich“ oder „möglich“, ohne Datumsbedingung; keine Hinweise aus Gesetzentwürfen (BT-Drs. 21/8284 nicht angezeigt) | ✓ | `recht-geltend` |
 | Formel, Höchstbeträge, Klima- und Heizkomponente (§§ 12, 19), Pauschalabzug je Einkommensart (§ 16) | ✓ | `wg-formel` |
 | Werbungskosten-Pauschbetrag (§ 14 WoGG mit § 9a EStG: Arbeit 1.230 €, Rente 102 €, nicht bei Selbstständigen) und Mindestwerte für M und Y (Anlage 3 WoGG, ab 1.1.2025); 60 Haushalte gleich wie der amtliche Wohngeldrechner des Bundes | ✓ | `amtlich-wohngeld` |
 | Bruttokaltmiete mit angegebenen Heizkosten (freiwilliges Feld), sonst Warmmiete minus Heizkostenkomponente (§§ 9, 12 WoGG) | ✓ | `wg-heiz` |
-| Höchstbetrag der Miete unter dem Mietfeld und in der Einfachen Version (Gut zu wissen): Anlage 1 WoGG plus Klimakomponente (§ 12 Abs. 1, 7 WoGG, BGBl. 2024 I Nr. 314, abgerufen 20.11.2026), Vergleich mit der geschätzten Bruttokaltmiete (wie Wohngeld-Rechnung); Mietenstufe unsicher: Spanne und „möglich“; Abgrenzung zu den örtlichen Kosten der Unterkunft (§ 22 Abs. 1 SGB II, § 35 SGB XII); 2027 nur als Plan (BT-Drs. 21/8284, nicht beschlossen, Stand 20.11.2026), keine Umstellung nach Datum | ✓ | `mietgrenze`, `mietgrenze-dom` |
+| Höchstbetrag der Miete unter dem Mietfeld und in der Einfachen Version (Gut zu wissen): Anlage 1 WoGG plus Klimakomponente (§ 12 Abs. 1, 7 WoGG, BGBl. 2024 I Nr. 314, abgerufen 20.11.2026), Vergleich mit der geschätzten Bruttokaltmiete (wie Wohngeld-Rechnung); Mietenstufe unsicher: Spanne und „möglich“; Abgrenzung zu den örtlichen Kosten der Unterkunft (§ 22 Abs. 1 SGB II, § 35 SGB XII); kein Hinweis auf Entwürfe zu 2027 (BT-Drs. 21/8284, nicht beschlossen, Stand 20.11.2026) | ✓ | `mietgrenze`, `mietgrenze-dom` |
 | Kinderzuschlag/Grundsicherungsgeld: Mehrbedarf Alleinerziehende 36 % bei Kind unter 7; Kind von 6-13 kann 6 sein -> nie fälschlich „eher nicht“ (§ 21 Abs. 3 SGB II) | ✓ | `kiz-ae7` |
 | Freibetrag 1.800 € je schwerbehinderter Person (GdB 100 oder Schwerbehinderung mit Pflege, § 17 Nr. 1) | ✓ | `wg-schwerb` |
 | Freibetrag Alleinerziehende 1.320 € (§ 17 Nr. 3) | ✓ | `wg-ae` |
@@ -119,7 +118,6 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
-| 2027: geplanter Wegfall des Sofortzuschlags (25 €) nur als Hinweis, noch nicht eingerechnet | ✓ | `plan-2027` |
 | Höchstbetrag, Mindesteinkommen, 45 % Minderung, Vermögen; Einkommen der Eltern nach § 11b SGB II; Mehrbedarf Alleinerziehende | ✓ | `kiz-formel` |
 | Kinderzuschlag muss Hilfebedürftigkeit beenden (§ 6a Abs. 1 Nr. 3 BKGG): bereinigtes Einkommen + Kindergeld + Kinderzuschlag; reicht es nur mit Wohngeld: „möglich“, beides beantragen; 40 Familien ohne Widerspruch zum KiZ-Lotsen | ✓ | `amtlich-kiz` |
 | Mehrbedarfe der Eltern im Bedarf der Eltern (Schwangerschaft, Warmwasser, 35 % Teilhabe) | ✓ | `kiz-mehr` |
@@ -135,7 +133,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
-| 2027: antragsloses Kindergeld (Gesetz, Bundesrat 25.9.2026) als Hinweis; geplante 267 € nur als Hinweis, gerechnet wird mit 259 € | ✓ | `plan-2027` |
+| 2027: antragsloses Kindergeld bei Geburt (§ 67 Abs. 2 i. V. m. § 69 Satz 3 EStG n. F.; Gesetz vom 15.10.2026, BGBl. 2026 I Nr. 307, ausgegeben 20.10.2026, in Kraft 1.1.2027) als Hinweis erst ab 1.1.2027, ohne Prognose; Entwurf 267 € wird nicht angezeigt, gerechnet wird mit 259 € | ✓ | `recht-geltend` |
 | 259 € je Kind und Monat (2026); bis 18, bis 25 in Ausbildung oder Studium (§ 32 Abs. 4 Nr. 2) | ✓ | `kg-betrag` |
 | Bis 21 arbeitslos gemeldet, bis 25 Freiwilligendienst, Ausbildungsplatzsuche, Übergangszeit bis 4 Monate; nach erster Ausbildung höchstens 20 Stunden Arbeit (§ 32 Abs. 4) | ◐ | `kg-mehr` |
 | Ausländer: nur mit bestimmten Aufenthaltstiteln (§ 62 Abs. 2) | ◐ | `kg-asyl` |
@@ -165,7 +163,6 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
-| 2027: geplante Altersgrenze 16 statt 18 laut Berichten vom November 2026 vom Tisch, mit Vorbehalt „noch nicht endgültig beschlossen“; nur Hinweis, nicht eingerechnet | ✓ | `plan-2027` |
 | Beträge je Altersstufe 0–5 / 6–11 / 12–17 (nach Abzug des Kindergeldes) | ✓ | `uvg-betrag` |
 | Beträge 2026 = Mindestunterhalt 486/558/653 € minus volles Kindergeld 259 € (§ 2 Abs. 1 und 2; BMBFSFJ, Einlegeblatt 2026) | ✓ | `uvg-amtlich` |
 | Gezahlter Unterhalt wird je Kind angerechnet (§ 2 Abs. 3 Nr. 1); „unwahrscheinlich“ nur bei einem Kind, wenn er den höchsten Betrag nach Alter erreicht; bei mehreren Kindern höchstens „möglich“ (nur die Summe bekannt) | ✓ | `uvg-anrechnung`, `uvg-hand` |
@@ -211,7 +208,6 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
-| 2027: geplantes Pflegegeld 380 / 630 / 890 / 1.080 € nur als Hinweis (ab Pflegegrad 2), gerechnet wird mit den Beträgen 2026 | ✓ | `plan-2027` |
 | Pflegegeld, Entlastungsbetrag | ✓ | `pfl-geld` |
 | Verhinderungspflege, Kurzzeitpflege (Entlastungsbudget 3.539 €), Pflegehilfsmittel, Wohnumfeld | ✓ | `pfl-plus` |
 | Pflegesachleistung und Kombinationsleistung (§§ 36, 38), Tages- und Nachtpflege (§ 41) | ✓ | `pfl-sach` |
@@ -220,7 +216,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Pflege-Startkachel „Welche Unterstützung gibt es?“: nur Leistungen des gewählten Pflegegrads (Pflegegrad 1 nach § 28a SGB XI ohne Pflegegeld, Sachleistung, Verhinderungs-/Kurzzeitpflege, Tagespflege, Rentenbeiträge; ohne Pflegegrad nur Pflegekurse und Pflegeberatung) | ✓ | `pu-pg` |
 | Feste Beträge 2026 der Übersicht: Pflegegeld, Sachleistung, Tages-/Nachtpflege, Entlastungsbetrag 131 €, gemeinsamer Jahresbetrag 3.539 € (§ 42a), Pflegehilfsmittel 42 €, Wohnumfeld 4.180 € je Maßnahme, Wohngruppenzuschlag 224 € (§ 38a); Quelle BMG, Online-Ratgeber Pflege, Stand 14.9.2026, abgerufen 20.11.2026 | ✓ | `pu-betrag` |
 | Verhinderungspflege auch stundenweise (BMG „Verhinderungspflege“, Stand 14.9.2026); Familienentlastende Dienste als anerkanntes Angebot zur Unterstützung im Alltag über den Entlastungsbetrag (BMG „Weitere Leistungen und Angebote zur Unterstützung im Alltag“, Stand 14.9.2026); Bezahlung des FED als Verhinderungspflege nur „möglich“ | ✓ | `pu-fed` |
-| Darstellung: „pro Monat“ und „pro Jahr“ getrennt, Alltagswort mit Amtswort in Klammern, Reformentwurf 2027 in einem Satz, Stellen nur als Art (Pflegekasse, Pflegestützpunkt). Erklärtexte nur Deutsch (wie Pflege-Assistent) | ✓ | `pu-ansicht` |
+| Darstellung: „pro Monat“ und „pro Jahr“ getrennt, Alltagswort mit Amtswort in Klammern, kein Hinweis auf den Reformentwurf (nur geltendes Recht), Stellen nur als Art (Pflegekasse, Pflegestützpunkt). Erklärtexte nur Deutsch (wie Pflege-Assistent) | ✓ | `pu-ansicht` |
 | Pflege-Korrekturen (abgerufen 20.11.2026): Beratungsbesuch Pflicht halbjährlich bei PG 2–5, PG 4/5 auf Wunsch vierteljährlich (§ 37 Abs. 3 SGB XI); Verhinderungspflege durch nahe Angehörige/Haushalt nicht beruflich höchstens doppeltes Pflegegeld plus nachgewiesene Kosten bis zum Jahresbetrag (§ 39 Abs. 3 SGB XI); aufs Konto Pflegegeld und Wohngruppenzuschlag; ohne Pflegegrad 10 Arbeitstage auch bei voraussichtlicher Pflegebedürftigkeit (§ 2, § 7 Abs. 4 PflegeZG) | ✓ | `pu-korr` |
 
 ## Bayerisches Landespflegegeld (BayLPflGG)
@@ -320,7 +316,8 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
-| 2027: Beitragsbemessungsgrenze 6.375 € (Verordnung, Bundesrat ausstehend) als Hinweis bei hohem Lohn; Krankengeld dann höchstens 148,75 € je Tag | ✓ | `plan-2027` |
+| 2027: Werte der Sozialversicherungs-Rechengrößenverordnung 2027 (BR-Drs. 576/26, Zustimmung Bundesrat 20.11.2026) erst ab 2027 und nur nach Verkündung im BGBl. (Schalter `svrg2027`; Stand 20.11.2026: nicht verkündet, daher auch 2027 Werte 2026): KV-Grenze 6.375 € (Krankengeld, Netto), RV-Grenze 8.850 € (Arbeitslosengeld, Netto), Bezugsgröße 4.130 € (Familienversicherung 590 €), Kinderkrankengeld höchstens 148,75 € | ✓ | `recht-geltend` |
+| Minijob-Hinweis bei Krankengeld und Arbeitslosengeld nennt die Grenze des Jahres (2026: 603 €, ab 2027: 633 €), keine feste Zahl im Text | ✓ | `recht-geltend` |
 | Krankengeld 70 % brutto, höchstens 90 % netto, Beitragsbemessungsgrenze (§ 47) | ✓ | `kv-kg` |
 | Lohnfortzahlung 6 Wochen, Krankengeld bis 78 Wochen (§ 48) | ◐ | `kv-78` |
 | Minijob ohne Krankengeld | ✓ | `kv-minijob` |
@@ -442,8 +439,8 @@ Wird nur das Brutto eingetragen, schätzt die App das Netto. Gilt für alle Kart
 | Rente netto (gesetzlich pflichtversichert): KV allgemeiner Satz + Zusatzbeitrag (§ 247 SGB V), davon die Hälfte durch die Rentenversicherung (§ 249a SGB V) = 7,3 % + halber Zusatzbeitrag; Pflege 3,6 % allein (§ 59 Abs. 1 SGB XI; Satz seit Beitragssatz-Anpassung 1.1.2025, Gesetzestext § 55 Abs. 1 nennt noch 3,4 %), ab 2. Kind −0,25 bis 5. Kind (§ 55 Abs. 3 SGB XI, Kinder im Haushalt als Näherung), bis Beitragsgrenze KV; Netto ohne Kinderlosen-Zuschlag und ohne Steuer (vorsichtig); Brutto aus Rente netto ohne Kinder mit Zuschlag 0,6 (vorsichtig) | ◐ | `netto-rente` |
 | Paar: eine Person mit Netto, die andere nur mit Brutto: fehlendes Netto je Person geschätzt (Lohn, Rente, Selbstständige 80 %); allein mit zweitem Einkommen ebenso | ✓ | `netto-person` |
 | Arbeitende Altersrentner: Lohn ohne Renten- und Arbeitslosenversicherung, KV 7,0 % (ermäßigt) | ○ (selten in der Zielgruppe; Netto von der Lohnabrechnung geht vor; App rechnet mit vollen Beiträgen, also eher zu wenig Netto und eher zu viel Leistung) | |
-| Pflegereform 2027: Kinderlosen-Zuschlag 0,9 % statt 0,6 % | ○ (bei Stand 19.11.2026 nur Entwurf; nach Verkündung nachtragen) | |
-| 2027: Programmablaufplan 2027 und Tarif 2027 bei Stand 19.11.2026 noch Entwurf; Steuer weiter nach 2026, Minijob 633 € und Beitragsgrenzen 2027 eingerechnet; nach Veröffentlichung nachtragen | ○ (amtliche Werte 2027 stehen noch nicht fest; Unterschied für die Zielgruppe wenige Euro im Monat) | |
+| Pflegereform 2027: Kinderlosen-Zuschlag 0,9 % statt 0,6 % | ○ (bei Stand 20.11.2026 nur Entwurf, wird nicht angezeigt; nach Verkündung nachtragen) | |
+| 2027: Programmablaufplan 2027 und Tarif 2027 bei Stand 19.11.2026 noch Entwurf; Steuer weiter nach 2026, Minijob 633 € eingerechnet, Beitragsgrenzen 2027 erst nach Verkündung (Schalter `svrg2027`); nach Veröffentlichung nachtragen | ○ (amtliche Werte 2027 stehen noch nicht fest; Unterschied für die Zielgruppe wenige Euro im Monat) | |
 | Privat Krankenversicherte, Versorgungsbezüge, Einmalzahlungen, Freibeträge auf der Lohnsteuerkarte | ○ (für die Zielgruppe selten; das echte Netto von der Lohnabrechnung geht immer vor) | |
 
 ## Pfändung und P-Konto (§§ 850 ff., 899 ff. ZPO)
