@@ -1,0 +1,24 @@
+# Sammelliste nächstes Update (nach 1.6.0 / 148)
+
+Stand: 20.11.2026 · Wünsche von David, noch nicht umgesetzt
+
+## Aufräumen der Oberfläche (David, 20.11.2026)
+| Bereich | Änderung |
+|---|---|
+| Mein Ordner | Kasten „Los geht's“ entfernen |
+| Mein Ordner | Feld „Alle Haushalte und Vorgänge“ entfernen; stattdessen nur die gespeicherten Vorgänge zeigen und ein Feld „Neuen Vorgang speichern“ |
+| Geld sparen im Alltag | Haushaltsplan raus; er wandert nach „Ich habe Schulden: Was bleibt mir?“ (mit Haushaltsbuch, Energie-Check, Schuldenliste) |
+| Geld sparen im Alltag | Bereich „Schulden und Pfändung“ raus (steckt schon in „Ich habe Schulden“; Tipps der Schuldnerberatungen dorthin mitnehmen) |
+| Ergebnisliste | Karte „Kostenlose Familienversicherung“ ganz raus (Regel, Texte, Tests, Prüfliste, Karten-Liste) |
+| Ergebnisliste | „Nächste Schritte“ und „Unterlagen“ aus den Karten raus; sie stehen in der Antragsmappe (Stelle, Unterlagen mit Haken, Tipp) |
+
+Hinweis zur Ergebnisliste: Die Mappe zeigt Schritte und Unterlagen nur für Leistungen, die man in die Mappe übernimmt. Darauf auf der Karte kurz hinweisen („Unterlagen und nächste Schritte findest du in der Antragsmappe“).
+
+## Inhaltliche Korrekturen
+- WBS bei Asylverfahren/Duldung: „Unwahrscheinlich“ (docs/entwuerfe/wbs-aufenthalt.md)
+- Sichere Lücken aus docs/entwuerfe/abhaengigkeiten-pruefung.md: Bildung und Teilhabe, Wohngeld, BAföG, BAB, Hilfe zur Pflege, Eingliederungshilfe, Kindergeld Behinderung
+- Mögliche Lücken klären: Arbeitslosengeld, Blindengeld, Schwerbehindertenausweis bei Asyl
+- Abhängigkeitstest ergänzen (Angaben für BAB, Kindergeld Behinderung, Arbeit, Kinderkrankengeld)
+
+## Schon vorgemerkt (siehe STATUS.md)
+Dokumente einlesen, Brief-Hinweis/Quellen, Pflege-Auswahl, Spartipps der Schuldnerberatung u. a.
