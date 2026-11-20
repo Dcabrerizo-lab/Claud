@@ -211,6 +211,70 @@ const BriefLesen = (function () {
     return { fristen, mahnbescheid: !vb && mb && /Amtsgericht|Mahngericht/i.test(t), vollstreckungsbescheid: vb, inkasso: /Inkasso/i.test(t), art: e.art };
   }
 
-  return { erkenne, lies, betraege, ERKLAERUNG, frist, fristMitZeile, andere, ARTEN };
+  // ---------- Aufforderung zur Senkung der Unterkunfts- oder Heizkosten (§ 22 Abs. 1 SGB II, § 35 SGB XII) ----------
+  // Eigene Prüfung statt Eintrag in ARTEN: ein solcher Brief vom Jobcenter gewönne in erkenne() sonst als Bescheid „jc“.
+  // Ergebnis: { ist, punkte, traeger: 'jc'|'sa'|null, heiz, kostenIst, grenze, frist, fristZeile, stichtag, datum,
+  //   anhoerung, rechtsbehelf, keinVA, eineinhalb }. Nichts davon ist sicher; die App nennt Unsicheres nur „möglich“.
+  const KS_KERN = /Kostensenkung|Senkung (der|Ihrer) (Unterkunfts|Wohn|Heiz)?(kosten|Aufwendungen)|(kosten|Aufwendungen)[^.\n]{0,30}zu senken/i;
+  const KS_UNANG = /unangemessen/i;
+  const KS_ANG = /Angemessenheitsgrenze|Mietobergrenze|angemessene[nr]? (Aufwendungen|Kosten|Miete|Bruttokaltmiete|Heizkosten)|Richtwert/i;
+  const KS = [
+    [KS_KERN, 6], [KS_UNANG, 3], [KS_ANG, 3],
+    [/Kosten der Unterkunft|Unterkunftskosten|Unterkunft und Heizung|Bruttokaltmiete/i, 2],
+    [/§\s*22 Abs(?:atz|\.)?\s*1\b[^\n]{0,20}SGB II|§\s*35 Abs(?:atz|\.)?\s*[13]\b[^\n]{0,20}SGB XII/i, 4],
+    [/(sechs|6) Monate/i, 2],
+    [/Wohnungssuche|Bemühungen|Wohnungsangebote|Untervermietung/i, 2],
+    [/Karenzzeit/i, 1]
+  ];
+  const KS_BESCHEID = [/Bewilligungszeitraum/i, /Berechnungsbogen|Berechnung der Leistung/i, /Zahlbetrag|Auszahlungsbetrag|Gesamtanspruch/i,
+    /Rechtsbehelfsbelehrung/i, /hiermit (bewillige|bewilligt)|werden .{0,40}bewilligt/i];
+  const KS_KEIN_VA = /kein Verwaltungsakt|kein Bescheid|Widerspruch (ist )?nicht (zulässig|möglich|statthaft)/i;
+  function ksTraeger(t) {
+    if (/§\s*35\b[^\n]{0,30}SGB XII/i.test(t)) return 'sa';
+    if (/§\s*22\b[^\n]{0,30}SGB II\b/i.test(t)) return 'jc';
+    if (/Jobcenter/i.test(t)) return 'jc';
+    if (/Sozialamt|Amt für Soziales|Grundsicherung im Alter|SGB XII\b|Zwölfte[sn]? Buch/i.test(t)) return 'sa';
+    if (/SGB II\b|Zweite[sn]? Buch/i.test(t)) return 'jc';
+    return null;
+  }
+  function kostensenkung(text) {
+    const t = String(text || ''), z = zeilen(t);
+    const punkte = KS.reduce((s, [re, g]) => s + (re.test(t) ? g : 0), 0);
+    const keinVA = KS_KEIN_VA.test(t);
+    const bescheid = keinVA ? 0 : KS_BESCHEID.filter((re) => re.test(t)).length;
+    const ist = KS_KERN.test(t) && (KS_UNANG.test(t) || KS_ANG.test(t)) && punkte >= 9 && bescheid < 2;
+    const anhP = ARTEN.anh.w.reduce((s, [re, g]) => s + (re.test(t) ? g : 0), 0);
+    const rechtsbehelf = /Rechtsbehelfsbelehrung|Widerspruch (erheben|einlegen|erhoben werden)/i.test(t)
+      && !/kein(en)? Widerspruch|Widerspruch (ist )?nicht (zulässig|möglich|statthaft)|kein Verwaltungsakt/i.test(t);
+    const heiz = /Heizkosten/.test(t) && !/Bruttokaltmiete|Kaltmiete|Mietobergrenze|Unterkunftskosten/i.test(t);
+    // Beträge: eigene Kosten (erster Betrag) und Grenze des Amts (letzter Betrag), nur aus passenden Zeilen
+    let kostenIst = null, grenze = null;
+    // Zeilen zur Grenze des Amts („Die angemessenen Aufwendungen betragen 540 €“) sind nicht die eigenen Kosten;
+    // „Ihre Miete von 610 € übersteigt die angemessene …“ nennt die eigenen Kosten zuerst
+    const istGrenzZeile = (zl) => /angemessen|Angemessenheitsgrenze|Mietobergrenze|Richtwert/i.test(zl) && !/unangemessen|tatsächlich|übersteigt/i.test(zl);
+    for (const zl of z) {
+      if (!/tatsächlich|Ihre (Brutto)?kaltmiete|betr(a|ä)gt|betragen/i.test(zl) || istGrenzZeile(zl)) continue;
+      const b = betraege(zl); if (b.length) { kostenIst = b[0]; break; }
+    }
+    for (const zl of z) {
+      if (!/angemessen|Angemessenheitsgrenze|Mietobergrenze/i.test(zl) || /unangemessen|übersteigt|tatsächlich/i.test(zl)) continue;
+      const b = betraege(zl); if (b.length) { grenze = b[b.length - 1]; break; }
+    }
+    if (grenze == null) for (const zl of z) { if (/übersteigt die angemessene/i.test(zl)) { const b = betraege(zl); if (b.length) { grenze = b[b.length - 1]; break; } } }
+    // Frist: nur ein Datum, mit der Zeile als Beleg; Zeilen zur Senkung oder zu Nachweisen zuerst
+    const FD = /(?:bis zum|bis spätestens(?: zum)?|spätestens bis zum?|spätestens am)\s*(\d{1,2}\.\d{1,2}\.20\d{2})/i;
+    const kand = z.filter((zl) => FD.test(zl));
+    const best = kand.find((zl) => /senk|Bemühung|Nachweis|Unterkunft|Heiz|äußern/i.test(zl)) || kand[0] || null;
+    const frist = best ? best.match(FD)[1] : null;
+    const fristZeile = best ? (best.length > 160 ? best.slice(0, 157) + '…' : best) : null;
+    const st = t.match(/ab (?:dem )?(\d{1,2}\.\d{1,2}\.20\d{2})[^\n]{0,80}(nur noch|angemessen)/i);
+    return {
+      ist, punkte, traeger: ksTraeger(t), heiz, kostenIst, grenze, frist, fristZeile, stichtag: st ? st[1] : null,
+      datum: bescheidDatum(z), anhoerung: anhP >= 9, rechtsbehelf, keinVA,
+      eineinhalb: /eineinhalb|anderthalb|1,5[- ]?fach|150\s*(%|Prozent)/i.test(t)
+    };
+  }
+
+  return { erkenne, lies, betraege, ERKLAERUNG, frist, fristMitZeile, andere, ARTEN, kostensenkung, kennungen: (text) => kennungen(zeilen(text), String(text || '')) };
 })();
 if (typeof module !== 'undefined') module.exports = BriefLesen;

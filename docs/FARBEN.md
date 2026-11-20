@@ -55,4 +55,5 @@ Im übrigen CSS stehen nur Variablen. Ausnahme: Druckstile (`@media print`, Schw
 | Pflege-Auswahl | Unterstützung Blau (`--c-pflege`), Einschätzung Meerblau (`--c-wohngeld`) |
 | Geld sparen | Strom Meerblau, Heizen Ziegel, Essen Grün, Verträge Indigo, Schulden Pflaume (wie Pfändung), Haushaltsplan Beere |
 | Pfändung | Mein Lohn Pflaume, Mein Konto Meerblau |
+| Energie-Check (Haushaltsplan, Reiter bei Heizung mit eigenem Gasvertrag) | Strom Meerblau, Gas/Heizen Ziegel (wie in „Geld sparen“); Ergebnis: Nachzahlung möglich `--warn`, passt ungefähr `--ok`, Guthaben möglich `--na`, Eingabefehler `--bad` |
 | Ich ziehe aus | Vorher Violett, Erste Tage Schiefer (wie in src/ausziehen.js), Geld Grün, Versicherungen Blau, Achtung Ziegel, Hilfen Petrol, Careleaver Beere |

@@ -97,7 +97,7 @@ function pruefpaket() {
   const stil = html.match(/<style>([\s\S]*?)<\/style>/);
   if (!stil) throw new Error('Prüfpaket: Stile fehlen in vorschau.html');
   const teile = PP_ABSCHNITTE.map((id) => ppAbschnitt(html, id)).join('\n');
-  const js = ['pflege.js', 'pflege-fragen.js', 'pflege-assistent.js', 'brief-lesen.js', 'pflege-import.js', 'bescheid-sgb2.js', 'bescheid-gsa.js', 'bescheid-wg.js', 'bescheid-kiz.js', 'fristen.js', 'widerspruch.js', 'nebenkosten.js', 'vorschau.js'].map(ERW).join('\n');
+  const js = ['pflege.js', 'pflege-fragen.js', 'pflege-assistent.js', 'brief-lesen.js', 'kostensenkung.js', 'pflege-import.js', 'bescheid-sgb2.js', 'bescheid-gsa.js', 'bescheid-wg.js', 'bescheid-kiz.js', 'fristen.js', 'widerspruch.js', 'nebenkosten.js', 'vorschau.js'].map(ERW).join('\n');
   return { teile, css: ppStile(stil[1]), js };
 }
 
