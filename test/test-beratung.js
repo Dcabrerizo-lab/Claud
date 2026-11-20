@@ -37,6 +37,13 @@ check('Neue Texte in allen 13 Sprachen', LANGS.every((l) => NEU.every((k) => typ
 check('Platzhalter in allen Sprachen wie im Deutschen', LANGS.every((l) => NEU.every((k) => (I18N.de[k].match(/\{\w+\}/g) || []).join() === (I18N[l][k].match(/\{\w+\}/g) || []).join())));
 check('Kein Paragraf in einem Sprachtext außerhalb von Klammern (sonst bliebe er in der Laienansicht stehen)', LANGS.every((l) => Object.values(I18N[l]).every((v) => typeof v !== 'string' || !/§|Art\. \d/.test(Fmt.ohnePara(v)))));
 
+// ---------- Rechtsgrundlagen (Korrektur 11) ----------
+{
+  const R = require('../src/rules.js').RECHT;
+  check('Rechtsgrundlage WBS: § 27 WoFG, Grenze § 9 Abs. 2 WoFG, Landesrecht', /§ 27 WoFG/.test(R.wbs) && /§ 9 Abs\. 2 WoFG/.test(R.wbs) && /Landesrecht/.test(R.wbs));
+  check('Rechtsgrundlage Pflege: §§ 36–38, 41, 44, 45b SGB XI; weitere Pflegeleistungen §§ 39, 40, 42, 42a', R.pflege === '§§ 36–38, 41, 44, 45b SGB XI' && R.pflegeplus === '§§ 39, 40, 42, 42a SGB XI');
+}
+
 // ---------- Einstellungen: drei Blöcke ----------
 const gruppen = [...d.querySelectorAll('#pn-einst .set-gruppe')];
 check('Einstellungen: Haushalte (Verwaltung der Vorgänge, nur ein Block), Anzeige und Sprache, Für Fachkräfte, Über die App – in dieser Reihenfolge', gruppen.length === 4 && gruppen[0].id === 'setHaushalte' && !gruppen[0].hidden && !!gruppen[0].querySelector('#vgH') && d.querySelectorAll('#pn-einst #vgH').length === 1 && gruppen[3].querySelector('h3').textContent === I18N.de['set.about.h'] && gruppen[1].querySelector('h3').textContent === 'Anzeige und Sprache' && !!gruppen[1].querySelector('#lang') && !!gruppen[1].querySelector('#bigBtn') && gruppen[2].id === 'setFach' && gruppen[2].querySelector('h3').textContent === 'Für Fachkräfte');

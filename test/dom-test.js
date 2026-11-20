@@ -412,6 +412,10 @@ setTimeout(() => {
     const faelle = [...box.querySelectorAll('details.sp-fall')].map((x) => x.getAttribute('data-fall'));
     check('[schulden] Was tun, wenn …: 8 Fälle zum Aufklappen in fester Reihenfolge', faelle.join() === 'inkasso,mahn,konto,strom,miete,rate,unserioes,insolvenz', faelle.join());
     check('[schulden] Fälle zu Beginn zugeklappt, Mahnbescheid nennt die 2-Wochen-Frist mit Quelle', [...box.querySelectorAll('details.sp-fall')].every((x) => !x.open) && /2 Wochen.*§ 692 ZPO/.test(box.querySelector('[data-fall="mahn"] p').textContent));
+    const fall = (f) => box.querySelector('[data-fall="' + f + '"] p').textContent;
+    check('[schulden-korr] Strom/Gas: 2 Abschläge und 100 €, 4 Wochen Androhung, 8 Werktage, zinsfreie Raten (§§ 41f, 41g EnWG)', /2 Monatsabschlägen und mindestens 100 € .*§ 41f EnWG/.test(fall('strom')) && /4 Wochen vorher angedroht und 8 Werktage/.test(fall('strom')) && /zinsfreie Ratenzahlung .*§ 41g EnWG/.test(fall('strom')) && /Strom und Gas/.test(fall('strom')) && !/StromGVV/.test(fall('strom')));
+    check('[schulden-korr] Vollstreckungsbescheid: darf schon gepfändet werden, Einspruch 2 Wochen', /darf schon gepfändet werden \(§ 700 ZPO\)\. Dagegen hilft nur noch ein Einspruch innerhalb von 2 Wochen/.test(fall('mahn')));
+    check('[schulden-korr] Mietschulden: ordentliche Kündigung kann trotz Schonfrist bestehen bleiben', /ordentlich \(mit Frist\) gekündigt.*trotz Zahlung bestehen bleiben/.test(fall('miete')));
     check('[schulden] Quellenzeile nennt Verbraucherzentralen, BAG-SB, Caritas/Diakonie und AG SBV', /Verbraucherzentralen.*BAG-SB.*Caritas.*Diakonie.*AG SBV/.test(box.textContent));
     const roh = Object.keys(I18N).filter((l) => { setLang(l); return /sp\.schulden|pf\.tipps|undefined/.test(d.getElementById('spInhalt').textContent); });
     check('[schulden] In allen 13 Sprachen ohne Rohschlüssel', roh.length === 0, roh.join());

@@ -2290,7 +2290,7 @@
   //  P-Konto, Mahnverfahren, Insolvenz); Caritas: caritas.de „Mietschulden: Tipps“, „Professionelle Hilfe gibt es bei der Schuldnerberatung“;
   //  AG SBV (Wohlfahrtsverbände, BAG-SB, Verbraucherzentralen): „Konzept Soziale Schuldnerberatung“.
   //  Gesetze: Verjährung §§ 195, 199 BGB; Mahnbescheid § 692 Abs. 1 Nr. 3 ZPO, Einspruch §§ 700, 339 ZPO; P-Konto §§ 850k, 899, 903 ZPO;
-  //  Energiesperre § 19 StromGVV/GasGVV; Darlehen § 22 Abs. 8 SGB II, § 36 SGB XII; Kündigung § 543 Abs. 2 Nr. 3, Schonfrist § 569 Abs. 3 Nr. 2 BGB;
+  //  Energiesperre §§ 41f, 41g EnWG (Strom und Gas; abgerufen 20.11.2026); Darlehen § 22 Abs. 8 SGB II, § 36 SGB XII; Kündigung § 543 Abs. 2 Nr. 3, Schonfrist § 569 Abs. 3 Nr. 2 BGB;
   //  Insolvenz §§ 287, 295, 302, 305 InsO.
   // Reihenfolge wie im Auftrag; „konto“ bekommt zusätzlich den Knopf zum Pfändungsrechner.
   var SP_SCHULDEN_FAELLE = ['inkasso', 'mahn', 'konto', 'strom', 'miete', 'rate', 'unserioes', 'insolvenz'];
