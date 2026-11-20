@@ -3,6 +3,8 @@
 // Aufruf: npm run test:app (baut vorher app/www)
 'use strict';
 const { chromium } = require('playwright');
+// Leistungs-Check: Weg „Alles auf einer Seite“ vorwählen (sonst erscheint zuerst die Auswahl Schritt für Schritt / Alles auf einer Seite)
+const SF_ALLES = () => { try { if (!localStorage.getItem('lotse.checkWeg')) { localStorage.setItem('lotse.checkWeg', 'alles'); localStorage.setItem('CapacitorStorage.lotse.checkWeg', 'alles'); } } catch (e) {} };
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
@@ -16,7 +18,7 @@ const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '
 const MOCK = () => {
   const calls = (window.__calls = []);
   const log = (name) => (o) => { calls.push([name, o]); return Promise.resolve({}); };
-  const store = {};
+  const store = { 'lotse.checkWeg': 'alles' }; // Leistungs-Check: Weg „Alles auf einer Seite“ vorgewählt (src/schritte.js)
   window.Capacitor = {
     getPlatform: () => window.__platform || 'android',
     Plugins: {
@@ -60,7 +62,7 @@ const MOCK = () => {
   const b = await chromium.launch();
   const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, locale: 'de-DE', serviceWorkers: 'block' });
   await ctx.addInitScript(MOCK);
-  const p = await ctx.newPage();
+  const p = await ctx.newPage(); await p.addInitScript(SF_ALLES);
   const reqs = [], errs = [], csp = [];
   p.on('request', (r) => reqs.push(r.url()));
   p.on('pageerror', (e) => errs.push(e.message));
@@ -86,7 +88,8 @@ const MOCK = () => {
   await p.click('#appnav [data-ansicht=start]'); await p.click('#goLeistungen');
   ok('Gespeicherte Daten werden über Preferences gelesen', (await calls('Preferences.get')).length > 0);
   ok('Erster Start: Anleitung statt Beispielwerte', (await p.locator('#cards .startcard').count()) === 1 && (await p.inputValue('#ek1Brutto')) === '');
-  await p.click('#p1');
+  if (await p.isVisible('#schritte .sf-w2')) await p.click('#schritte .sf-w2'); // Leistungs-Check: Weg „Alles auf einer Seite“ wählen (src/schritte.js)
+  await p.evaluate(() => document.getElementById('p1').click());
   ok(KARTEN.length + ' Karten', (await p.locator('#cards .card').count()) === KARTEN.length);
   ok('Schrift lokal geladen', await p.evaluate(async () => { await document.fonts.ready; return [...document.fonts].some((f) => f.status === 'loaded'); }));
   ok('Hinweis zur Web-Version im Impressum ausgeblendet', await p.evaluate(() => { document.getElementById('legalBtn').click(); const h = document.getElementById('legalWeb').hidden; document.getElementById('legalClose').click(); return h; }));
@@ -95,7 +98,7 @@ const MOCK = () => {
   await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'de');
 
   // Foto-Scan: Kamera -> Texterkennung -> Felder, Foto wird danach gelöscht
-  await p.click('#p1'); await p.fill('#p-name', 'Maria Muster');
+  await p.evaluate(() => document.getElementById('p1').click()); await p.fill('#p-name', 'Maria Muster');
   // „Brief prüfen“: die Übersicht hat kein Scannen; in der Kachel Antragsformular: Kamera → Texterkennung → Felder erklärt
   await p.click('#appnav [data-ansicht=start]'); await p.click('#goBriefe'); if (await p.isVisible('#briefZurueck')) await p.click('#briefZurueck');
   ok('Übersicht „Brief prüfen“: kein Scannen oder Einfügen', !(await p.isVisible('#einlesen')));
@@ -198,11 +201,11 @@ const MOCK = () => {
   // Speichern
   await p.fill('#miete', '777'); await p.press('#miete', 'Tab'); await warte(() => (window.__calls || []).some((c) => c[0] === 'Preferences.set' && /777/.test(c[1].value || '')));
   ok('Eingaben werden über Preferences gespeichert', (await calls('Preferences.set')).some((o) => /777/.test(o.value || '')));
-  await p.evaluate(() => document.getElementById('clearBtn').click());
-  ok('„Alle Angaben löschen“ entfernt gespeicherte Eingaben', (await calls('Preferences.remove')).length > 0);
+  await p.evaluate(() => { document.getElementById('clear2').click(); document.getElementById('loeschJa').click(); });
+  ok('„Nur diesen Vorgang löschen“ entfernt gespeicherte Eingaben', (await calls('Preferences.remove')).length > 0);
 
   // Wohnort nur in der Anschrift der Antragsmappe (PLZ-Feld im Fragebogen leer): App nutzt die PLZ aus „PLZ und Ort“
-  await p.click('#p1'); await p.fill('#plz', ''); await p.fill('#p-name', 'Maria Muster'); await p.fill('#p-ort', '');
+  await p.evaluate(() => document.getElementById('p1').click()); await p.fill('#plz', ''); await p.fill('#p-name', 'Maria Muster'); await p.fill('#p-ort', '');
   await p.click('#mappeMake');
   ok('Ohne Wohnort: Hinweis in der Mappe, dass die PLZ fehlt', await p.isVisible('#mappeAdrNote'));
   await p.click('#mappeClose');
@@ -227,10 +230,11 @@ const MOCK = () => {
   ok('Android: Anbieter im Impressum David Cabrerizo', (await anbieter()) === 'David Cabrerizo', await anbieter());
   const ctxI = await b.newContext({ viewport: { width: 390, height: 844 }, locale: 'de-DE', serviceWorkers: 'block' });
   await ctxI.addInitScript(() => { window.__platform = 'ios'; }); await ctxI.addInitScript(MOCK);
-  const pi = await ctxI.newPage(); await pi.goto(origin + '/index.html#leistungen'); await pi.waitForFunction(() => /Natascha/.test(document.getElementById('legal').textContent), null, { timeout: 5000 }).catch(() => {});
+  const pi = await ctxI.newPage(); await pi.addInitScript(SF_ALLES); await pi.goto(origin + '/index.html#leistungen'); await pi.waitForFunction(() => /Natascha/.test(document.getElementById('legal').textContent), null, { timeout: 5000 }).catch(() => {});
   const legalI = await pi.evaluate(() => document.getElementById('legal').textContent);
   ok('iPhone: Anbieter im Impressum Natascha Cabrerizo y Polo, nicht David', /Anbieter: Natascha Cabrerizo y Polo/.test(legalI.replace(/\s+/g, ' ')) && !/David/.test(legalI), legalI.slice(0, 200));
-  await pi.click('#p1'); await pi.fill('#p-name', 'Test'); await pi.evaluate(() => document.getElementById('mappeMake').click()); await pi.waitForSelector('#mappePrint', { state: 'visible', timeout: 5000 }).catch(() => {});
+  if (await pi.isVisible('#schritte .sf-w2')) await pi.click('#schritte .sf-w2');
+  await pi.evaluate(() => document.getElementById('p1').click()); await pi.fill('#p-name', 'Test'); await pi.evaluate(() => document.getElementById('mappeMake').click()); await pi.waitForSelector('#mappePrint', { state: 'visible', timeout: 5000 }).catch(() => {});
   ok('iPhone: keine Android-Knöpfe Drucken/Speichern, PDF teilen vorhanden', !(await pi.isVisible('#mappeDruck')) && !(await pi.isVisible('#mappeSpeichern')) && (await pi.isVisible('#mappePrint')));
   await ctxI.close();
 

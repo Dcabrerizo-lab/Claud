@@ -1,5 +1,7 @@
 // Browsertest der einfachen Version (Leichte Sprache): Durchlauf, Ergebnisse, Sprachen, Speichern, Zurück, Antragsmappe
 const chromium = require('playwright')[process.env.BROWSER || 'chromium']; // BROWSER=firefox oder webkit für andere Browser
+// Leistungs-Check: Weg „Alles auf einer Seite“ vorwählen (sonst erscheint zuerst die Auswahl Schritt für Schritt / Alles auf einer Seite)
+const SF_ALLES = () => { try { if (!localStorage.getItem('lotse.checkWeg')) { localStorage.setItem('lotse.checkWeg', 'alles'); localStorage.setItem('CapacitorStorage.lotse.checkWeg', 'alles'); } } catch (e) {} };
 const SHARD = require('./shard.js'); // SHARD=k/n: nur jede n-te Sprache (Fälle davor laufen in jedem Teil)
 const out = []; const ok = (n, c, x) => out.push((c ? 'ok   ' : 'FAIL ') + n + (c ? '' : ' ' + (x || '')));
 const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html');
@@ -22,7 +24,7 @@ const ergebnis = (p) => p.evaluate(() => {
 (async () => {
   const b = await chromium.launch();
   const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, locale: 'de-DE', deviceScaleFactor: 1 });
-  const p = await ctx.newPage(); const errs = [];
+  const p = await ctx.newPage(); await p.addInitScript(SF_ALLES); const errs = [];
   p.on('pageerror', (e) => errs.push(e.message));
   await p.goto('file://' + file + '#leistungen');
 
@@ -125,9 +127,20 @@ const ergebnis = (p) => p.evaluate(() => {
   // Veraltete Regeln: ab dem nächsten Stichtag (1.1.2027) ein deutlicher Hinweis
   const c2 = await b.newContext({ locale: 'de-DE' });
   await c2.addInitScript(() => { const D = Date; const fest = new D('2027-02-01T10:00:00').getTime(); window.Date = class extends D { constructor(...a) { super(...(a.length ? a : [fest])); } static now() { return fest; } }; });
-  const p2 = await c2.newPage(); await p2.goto('file://' + file + '#leistungen');
+  const p2 = await c2.newPage(); await p2.addInitScript(SF_ALLES); await p2.goto('file://' + file + '#leistungen');
   ok('Ab 2027: Hinweis „Regeln veraltet“ sichtbar', await p2.isVisible('#altNotice') && /aktualisieren/.test(await p2.textContent('#altNotice')));
   await c2.close();
+  // Leistungs-Check: Auswahl beim ersten Öffnen, Schritt für Schritt, Umschalten (ausführlich in test/test-schritte.js)
+  const c3 = await b.newContext({ viewport: { width: 390, height: 844 }, locale: 'de-DE' });
+  const p3 = await c3.newPage(); p3.on('pageerror', (e) => errs.push(e.message)); await p3.goto('file://' + file + '#leistungen');
+  ok('Erstes Öffnen: zwei Karten zur Auswahl, Formular verborgen', await p3.isVisible('#sfWahlSchritt') && await p3.isVisible('#sfWahlAlles') && !(await p3.isVisible('#form')));
+  await p3.click('#sfWahlSchritt');
+  ok('Schritt für Schritt: eine Frage, großer Antwort-Knopf', await p3.isVisible('#sfFrage') && !(await p3.isVisible('#form')) && (await p3.locator('#schritte .es-btn').first().boundingBox()).height >= 56);
+  await p3.click('#schritte [data-i="0"]'); await p3.waitForTimeout(400);
+  ok('Nach der Antwort: nächste Frage mit „← Zurück“ oben', await p3.isVisible('#sfZurueck'));
+  await p3.click('#sfWegAlles');
+  ok('Umschalten: Formular sichtbar, Antwort übernommen', await p3.isVisible('#form') && await p3.isChecked('#adults1'));
+  await c3.close();
   ok('Keine Skriptfehler', errs.length === 0, errs.join(' | '));
   await b.close();
   console.log(out.join('\n'));

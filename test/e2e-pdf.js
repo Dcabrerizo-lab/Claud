@@ -3,6 +3,8 @@
 // Eingescannte PDFs (Seite als Bild → Texterkennung) prüft test/app-test.js mit der Texterkennung der App.
 'use strict';
 const { chromium } = require('playwright');
+// Leistungs-Check: Weg „Alles auf einer Seite“ vorwählen (sonst erscheint zuerst die Auswahl Schritt für Schritt / Alles auf einer Seite)
+const SF_ALLES = () => { try { if (!localStorage.getItem('lotse.checkWeg')) { localStorage.setItem('lotse.checkWeg', 'alles'); localStorage.setItem('CapacitorStorage.lotse.checkWeg', 'alles'); } } catch (e) {} };
 const path = require('path'), fs = require('fs'), os = require('os');
 const { digital } = require('./hilfe-pdf');
 const APP = 'file://' + path.join(__dirname, '..', 'dist', 'sozialleistungslotse.html');
@@ -16,7 +18,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   fs.writeFileSync(form, await digital(['Antrag auf Wohngeld', '1. Familienname, Vorname', 'Geburtsdatum', '3. Gesamtmiete monatlich', 'Heizkosten', 'Krankenkasse', 'Ort, Datum, Unterschrift']));
   fs.writeFileSync(kaputt, 'Das ist kein PDF.');
   const b = await chromium.launch();
-  const p = await (await b.newContext({ viewport: { width: 360, height: 760 }, locale: 'de-DE' })).newPage();
+  const p = await (await b.newContext({ viewport: { width: 360, height: 760 }, locale: 'de-DE' })).newPage(); await p.addInitScript(SF_ALLES);
   const fehler = []; p.on('pageerror', (e) => fehler.push(e.message));
   let geladen = 0;
   await p.route('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/**', (r) => { geladen++; const name = r.request().url().split('/').pop(); r.fulfill({ path: path.join(PDFJS, name), contentType: 'application/javascript', headers: { 'Access-Control-Allow-Origin': '*' } }); });

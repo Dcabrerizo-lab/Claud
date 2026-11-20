@@ -11,10 +11,10 @@ const regeln = {
 // Namen, die eine Datei der App/Erweiterungen bereitstellt und eine andere nutzt
 // (im Browser werden die Dateien zu einer Seite zusammengefügt, in Node per require geladen)
 const appNamen = Object.fromEntries([
-  'Rules', 'Fmt', 'Plz', 'Behoerden', 'Formulare', 'I18N', 'I18N_EINFACH',
+  'Rules', 'Fmt', 'Plz', 'Behoerden', 'Formulare', 'I18N', 'I18N_EINFACH', 'PFLEGE_EINFACH',
   'BriefLesen', 'PflegeAssistent', 'Pflege', 'PflegeFragen', 'PflegeImport',
   'BescheidGSA', 'BescheidKiZ', 'BescheidSGB2', 'BescheidWG', 'Fristen', 'Nebenkosten',
-  'Widerspruch', 'Lizenz', 'BRIEF_EINFACH', 'Haushalt', 'Ausziehen', 'Schulden', 'Navigation', 'FristenOrdner', 'LIZENZ_SCHLUESSEL', 'DEMO_LIZENZ', 'Vorgaenge',
+  'Widerspruch', 'Lizenz', 'BRIEF_EINFACH', 'Haushalt', 'Ausziehen', 'Schulden', 'Navigation', 'Schritte', 'FristenOrdner', 'LIZENZ_SCHLUESSEL', 'DEMO_LIZENZ', 'Vorgaenge',
 ].map((n) => [n, 'readonly']));
 
 module.exports = [

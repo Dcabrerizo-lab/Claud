@@ -35,7 +35,7 @@ SoLo – Sozialleistungslotse
 ### Kurzbeschreibung (max. 80)
 
 ```
-32 Sozialleistungen prüfen, Briefe vom Amt verstehen, Geld planen. Offline.
+31 Sozialleistungen prüfen, Briefe vom Amt verstehen, Geld planen. Offline.
 ```
 (75 Zeichen)
 
@@ -44,13 +44,13 @@ SoLo – Sozialleistungslotse
 Hinweis: Google Play zeigt keine Markdown-Formatierung. Deshalb stehen die Zwischenüberschriften als eigene Zeilen ohne Sternchen.
 
 ```
-Steht dir Wohngeld zu? Kinderzuschlag? Grundsicherung? SoLo prüft in etwa 5 Minuten 32 Sozialleistungen und Vergünstigungen. Die App zeigt dir, was wahrscheinlich, möglich oder unwahrscheinlich ist, mit den nächsten Schritten, der zuständigen Stelle und den nötigen Unterlagen.
+Steht dir Wohngeld zu? Kinderzuschlag? Grundsicherung? SoLo prüft in etwa 5 Minuten 31 Sozialleistungen und Vergünstigungen. Die App zeigt dir, was wahrscheinlich, möglich oder unwahrscheinlich ist, mit den nächsten Schritten, der zuständigen Stelle und den nötigen Unterlagen.
 
 Einfach zu bedienen
 Unten in der Leiste: Start, Mein Ordner und Einstellungen. Zuerst siehst du, was jetzt zählt. Details klappst du bei Bedarf auf.
 
 Was die App prüft
-Kindergeld, Elterngeld, Mutterschaftsgeld, Wohngeld, Kinderzuschlag, Grundsicherungsgeld, Arbeitslosengeld I, Krankengeld, Kinderkrankengeld, Bildung und Teilhabe, Unterhaltsvorschuss, Grundsicherung im Alter und bei Erwerbsminderung, BAföG, Berufsausbildungsbeihilfe, kostenlose Familienversicherung, Pflegegeld, Entlastungsbetrag, Verhinderungspflege und Pflegehilfsmittel, Bayerisches Landespflegegeld, Hilfe zur Pflege, Leistungen bei Behinderung (Pauschbetrag, Schwerbehindertenausweis, Eingliederungshilfe, Budget für Arbeit, Erwerbsminderungsrente, Altersrente für schwerbehinderte Menschen), Landesblindengeld, Blindenhilfe, Wohnberechtigungsschein, Befreiung vom Rundfunkbeitrag und von Zuzahlungen, Leistungen nach dem Asylbewerberleistungsgesetz.
+Kindergeld, Elterngeld, Mutterschaftsgeld, Wohngeld, Kinderzuschlag, Grundsicherungsgeld, Arbeitslosengeld I, Krankengeld, Kinderkrankengeld, Bildung und Teilhabe, Unterhaltsvorschuss, Grundsicherung im Alter und bei Erwerbsminderung, BAföG, Berufsausbildungsbeihilfe, Pflegegeld, Entlastungsbetrag, Verhinderungspflege und Pflegehilfsmittel, Bayerisches Landespflegegeld, Hilfe zur Pflege, Leistungen bei Behinderung (Pauschbetrag, Schwerbehindertenausweis, Eingliederungshilfe, Budget für Arbeit, Erwerbsminderungsrente, Altersrente für schwerbehinderte Menschen), Landesblindengeld, Blindenhilfe, Wohnberechtigungsschein, Befreiung vom Rundfunkbeitrag und von Zuzahlungen, Leistungen nach dem Asylbewerberleistungsgesetz.
 
 Mein Ordner
 Speichere deine Angaben als Vorgang, zum Beispiel einen je Haushalt, und öffne sie später wieder. Eine PIN schützt sie vor fremden Blicken. Dazu kommen eine Checkliste der Unterlagen und ein Ergebnisblatt zum Drucken oder Mitgeben. Die Fristen-Übersicht zeigt, was bis wann zu tun ist.
@@ -67,7 +67,7 @@ Pflege
 Wähle, ob du Unterstützung suchst oder den Pflegegrad selbst einschätzen willst. Du siehst die Leistungen je Pflegegrad, auch Hilfen für pflegende Angehörige.
 
 Ich ziehe aus
-Für Azubis, Studierende, junge Erwachsene und Careleaver: Checklisten zum Abhaken, Geld, Kostenfallen, Versicherungen und Hilfen.
+Für Azubis, Studierende und junge Erwachsene: Checklisten zum Abhaken, Geld, Kostenfallen, Versicherungen und Hilfen.
 
 Brief vom Amt? Prüfen lassen
 Bescheid vom Jobcenter, Sozialamt, von der Wohngeldstelle oder Familienkasse, Pflegegutachten oder Nebenkostenabrechnung: Scanne den Brief, wähle ein PDF, füge den Text ein oder trage die Zahlen selbst ein. SoLo rechnet nach, zeigt Abweichungen und hilft beim Widerspruch.
@@ -139,7 +139,7 @@ Hilfen finden, Briefe prüfen
 ### Werbetext / Promotional Text (max. 170)
 
 ```
-Welche Hilfen stehen dir zu? Prüfe 32 Sozialleistungen, lass Briefe vom Amt nachrechnen und plane dein Geld. Mit PIN-Sperre, offline, ohne Anmeldung, in 13 Sprachen.
+Welche Hilfen stehen dir zu? Prüfe 31 Sozialleistungen, lass Briefe vom Amt nachrechnen und plane dein Geld. Mit PIN-Sperre, offline, ohne Anmeldung, in 13 Sprachen.
 ```
 (165 Zeichen)
 
@@ -207,8 +207,8 @@ Die Bilder sind zuletzt für Version 1.5.0 mit `node tools/store-bilder.js` erze
 Bildschirme im neuen Design (Vorschlag, 8 Motive; Überschrift auf dem Bild in Klammern):
 
 1. Startseite mit den großen Kacheln („Hilfen finden, Briefe prüfen“)
-2. Ergebnis mit den Karten („32 Leistungen geprüft“)
-3. Karte aufgeklappt: Wo beantragen, Unterlagen („Nächste Schritte und Unterlagen“)
+2. Ergebnis mit den Karten („31 Leistungen geprüft“)
+3. Antragsmappe mit Stelle, Unterlagen zum Abhaken und Tipp („Nächste Schritte und Unterlagen“)
 4. Netto aus Brutto oder Pfändung/P-Konto („Rund ums Geld“)
 5. Brief prüfen: Kacheln nach Absender und Ergebnis mit Abweichung („Bescheid nachgerechnet“)
 6. Antragsmappe („Anträge fertig zum Abschicken“)

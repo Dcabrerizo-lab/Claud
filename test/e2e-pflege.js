@@ -2,6 +2,8 @@
 // Höherstufung mit vorausgefüllter Gutachten-Prüfung, Säugling, „Weiß ich nicht“, Zurück, Später weitermachen, kein seitliches Scrollen.
 'use strict';
 const { chromium } = require('playwright');
+// Leistungs-Check: Weg „Alles auf einer Seite“ vorwählen (sonst erscheint zuerst die Auswahl Schritt für Schritt / Alles auf einer Seite)
+const SF_ALLES = () => { try { if (!localStorage.getItem('lotse.checkWeg')) { localStorage.setItem('lotse.checkWeg', 'alles'); localStorage.setItem('CapacitorStorage.lotse.checkWeg', 'alles'); } } catch (e) {} };
 const path = require('path');
 const APP = 'file://' + path.join(__dirname, '..', 'dist', 'sozialleistungslotse.html');
 let n = 0, f = 0;
@@ -9,7 +11,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
 (async () => {
   const b = await chromium.launch();
   const ctx = await b.newContext({ viewport: { width: 360, height: 760 }, locale: 'de-DE' });
-  const p = await ctx.newPage();
+  const p = await ctx.newPage(); await p.addInitScript(SF_ALLES);
   const fehler = []; p.on('pageerror', (e) => fehler.push(e.message)); p.on('console', (m) => { if (m.type() === 'error') fehler.push(m.text()); });
   const frage = () => p.textContent('#pa-q');
   const tippe = async (text) => { await p.click(`#pflegeAssist .es-btn:has-text("${text}")`); };
@@ -68,7 +70,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   await tippe('Nein'); await tippe('Nein'); // Bereich 5 und 6
   ok('Ergebnis: 40 Punkte, Pflegegrad 2', /^Wahrscheinlich Pflegegrad 2/.test(await frage()) && /^40 von 100/.test(await p.textContent('#pflegeAssist .pa-punkte')), await frage());
   ok('Ergebnisseite: Hinweis „Das ist eine Einschätzung“', /Das ist eine Einschätzung\. Entscheiden tut die Pflegekasse\./.test(await p.textContent('#pflegeAssist')));
-  ok('Ergebnisseite: höchstens 3 Kacheln', (await p.locator('#pflegeAssist .pa-kacheln > .sk').count()) === 3);
+  ok('Ergebnisseite: höchstens 3 Kacheln', (await p.locator('#pflegeAssist .pa-kacheln > .uk-karte').count()) === 3);
   ok('Ergebnisseite: aus dem Leistungs-Check gekommen, Link zurück dorthin', await p.isVisible('#pflegeAssist .pa-links button:has-text("Zurück zum Leistungs-Check")'));
   // Gleiches Ergebnis wie die Rechnung von pflege.js mit den gespeicherten Antworten
   const vgl = await p.evaluate(() => { const d = JSON.parse(localStorage.getItem('lotse.pflegecheck')); const r = Pflege.rechne(PflegeAssistent.eingabe(d.antworten, null)); return { pg: r.pg, punkte: r.gesamt, text: document.querySelector('#pflegeAssist .pa-punkte').textContent }; });

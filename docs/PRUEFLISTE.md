@@ -90,6 +90,8 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
+| Asylverfahren oder Duldung: nicht pauschal ausgeschlossen (§ 3 Abs. 5 Satz 1 Nr. 2, 4 WoGG; ausreisepflichtig ohne Duldung nicht berechtigt). Ohne Einkommensart „Asylbewerberleistungen“ normal gerechnet, auch „wahrscheinlich“, Hinweis vorn (Entscheidung David 20.11.2026); mit ihr „unwahrscheinlich“ mit Hinweis Sozialamt (§ 7 Abs. 1 Satz 1 Nr. 8 WoGG) (Abruf 20.11.2026) | ◐ | `wg-asyl` `asyl-bezug` |
+| Aufenthalt „ausreisepflichtig ohne Duldung“ (eigene Auswahl, sonst wie Asylverfahren/Duldung): Wohngeld „unwahrscheinlich“ (in § 3 Abs. 5 Satz 1 Nr. 1 bis 6 WoGG nicht genannt), WBS „unwahrscheinlich“ ohne Ausnahme (§ 27 Abs. 2 WoFG) (Abruf 20.11.2026) | ✓ | `ausreise` |
 | Eigentum: Lastenzuschuss, Belastung nach § 10 WoGG nicht genau gerechnet -> nur „möglich“ | ◐ | `eigentum` |
 | Verwandte in derselben Wohnung zählen meist zum Haushalt (§ 5) -> nur „möglich“ | ◐ | `hh-andere` |
 | Ausgezahlte Beträge (Arbeitslosengeld, Krankengeld, Elterngeld, Werkstattlohn) nur mit dem kleinen Abzug für Auszahlungen, in einfacher und ausführlicher Version gleich (§ 16 WoGG) | ✓ | `einfach-gleich` |
@@ -107,7 +109,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Grundrentenfreibetrag (§ 17a) | ✓ | `wg-grundrente` |
 | Mietenstufe aus der Postleitzahl für ganz Deutschland (Anlage zur WoGV, Stand 1.1.2023); Bayern von Hand geprüft, übrige Länder automatisch und unabhängig gegengeprüft (13.386 Einträge, 0 Abweichungen); nicht eindeutige Orte ohne Stufe | ✓ | `plz-stufe` |
 | Vermögen: Regelvermutung der Verwaltungsvorschrift (60.000 € + 30.000 € je weitere Person) | ✓ | `wg-verm` |
-| Ausschluss bei Grundsicherungsgeld, Grundsicherung, Asylbewerberleistungen (§ 7) | ✓ | `wg-ausschluss`, `asyl-ausschluss` |
+| Ausschluss bei Grundsicherungsgeld, Grundsicherung im Alter und Hilfe zum Lebensunterhalt (§ 7 Abs. 1 Satz 1 Nr. 1, 5, 6 WoGG; Nr. 3 ist weggefallen); Asylbewerberleistungen siehe Zeile Asylverfahren | ✓ | `wg-ausschluss`, `asyl-ausschluss` |
 | Ausschluss Azubis und Studierende mit dem Grunde nach förderfähiger Ausbildung (§ 20 Abs. 2) | ✓ | `wg-azubi` |
 | Selbst gezahlter Unterhalt (§ 18 WoGG): bis 3.000 € im Jahr je Kind oder sonstiger Person, 6.000 € für frühere oder getrennt lebende Ehe- oder Lebenspartner; ohne Titel vorsichtig nur für „möglich“, mit Titel günstig der ganze Betrag (ob ein Titel über den Höchstbetrag hinaus zählt, ist nicht am Gesetzestext geprüft) | ◐ | `uz-wg` |
 | Unterhalt für die Person selbst: ohne Realsplitting voll (§ 14 Abs. 2 Nr. 19 und 20 WoGG), mit Realsplitting sonstige Einkünfte (§ 22 Nr. 1a EStG) nach 102 € Pauschbetrag (§ 9a Satz 1 Nr. 3 EStG); Pauschalabzug § 16 WoGG 0 % (familienversichert) bis 20 % (Steuer und eigene Kranken-/Pflegeversicherung). Realsplitting unbekannt: „wahrscheinlich“ mit 0 % und ohne Pauschbetrag, „möglich“ mit 20 % und Pauschbetrag | ◐ | `unt-wg` |
@@ -145,6 +147,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
+| Asylverfahren oder Duldung: Aufenthaltsvoraussetzung wie Kindergeld (§ 62 Abs. 2 EStG), höchstens „möglich“ mit Hinweis (Abruf 20.11.2026) | ◐ | `kgbeh-asyl` |
 | Behinderung vor dem 25. Geburtstag eingetreten | ✓ | `kgbeh-25` |
 | Kind kann sich nicht selbst unterhalten (Grundfreibetrag 12.348 € plus behinderungsbedingter Mehrbedarf) | ✓ | `kgbeh-ja` |
 
@@ -153,6 +156,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
+| Asylverfahren oder Duldung: Bildung und Teilhabe auch mit Asylbewerberleistungen (§ 3 Abs. 4 AsylbLG), „möglich“ statt „nein“ (Abruf 20.11.2026) | ◐ | `but-asyl` |
 | Anspruch bei Grundsicherungsgeld, Grundsicherung, Wohngeld oder Kinderzuschlag | ✓ | `but-bezug` |
 | Schulbedarf und Teilhabe 15 € im Monat; bei Kindern unter 6 nur Teilhabe | ✓ | `but-inhalt` |
 | Junge Erwachsene nur in der Schule, nicht mit Ausbildungsvergütung | ✓ | `but-azubi` |
@@ -187,6 +191,8 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
+| Asylverfahren oder Duldung: Gestattung nur über § 8 Abs. 3, Duldung erst nach 15 Monaten (§ 8 Abs. 2a BAföG): höchstens „möglich“ mit Hinweis (Abruf 20.11.2026) | ◐ | `bafoeg-asyl` |
+| EU-Bürger ohne Arbeit, unter 5 Jahren: BAföG nur mit Daueraufenthaltsrecht, als Arbeitnehmer/Selbstständiger oder Familienangehöriger oder nach Beschäftigung (§ 8 Abs. 1 Nr. 2 bis 4 BAföG): höchstens „möglich“ mit Hinweis, Arbeit der Eltern kennt die App nicht (Abruf 20.11.2026) | ◐ | `bafoeg-eu` |
 | Auto zählt zum Vermögen (§ 27) | ✓ | `auto` |
 | Elternfreibeträge (§ 25) und Grenzbereich | ✓ | `bafoeg-eltern` |
 | Unterhalt eines Elternteils für sich selbst: Einkommen nach § 21 Abs. 1 BAföG nur mit Realsplitting (§ 22 Nr. 1a EStG); entscheidet er über die Grenze, höchstens „möglich“ | ◐ | `unt-bafoeg` |
@@ -200,6 +206,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
+| Asylverfahren oder Duldung: mit Gestattung keine BAB, mit Duldung nach 15 Monaten (§ 60 Abs. 3 SGB III): Hinweis (Abruf 20.11.2026) | ◐ | `bab-asyl` |
 | Betriebliche Ausbildung, Wohnung außerhalb des Elternhauses (§ 60) | ✓ | `bab-voraus` |
 | Höhe nach Bedarf und Einkommen der Eltern | ○ (Elterneinkommen wird nicht abgefragt; die Karte zeigt nie „wahrscheinlich“) | |
 
@@ -235,6 +242,8 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
+| Asylverfahren oder Duldung: keine Sozialhilfe (§ 23 Abs. 2 SGB XII), nach 36 Monaten § 2 AsylbLG, davor Einzelfall § 6 AsylbLG: „möglich“ mit eigenem Hinweis (Abruf 20.11.2026) | ◐ | `hzp-asyl` |
+| EU-Bürger ohne Arbeit, unter 5 Jahren: keine Leistungen nach § 23 Abs. 1 SGB XII, Ausnahmen Härte und nach 5 Jahren (§ 23 Abs. 3 Satz 1, 6, 7 SGB XII): „unwahrscheinlich“ wie Grundsicherung im Alter, Hinweis Sozialhilfe (Abruf 20.11.2026) | ✓ | `sh-eu` |
 | Voraussetzung Pflegegrad 2–5 oder laufender Antrag (§ 61a) | ✓ | `hzp-voraus` |
 | Einkommensgrenze: 2 × Regelsatz Stufe 1 + Wohnkosten + 70 % Familienzuschlag (§ 85) | ✓ | `hzp-grenze` |
 | Schonvermögen 10.000 € je Erwachsenem, 500 € je unterhaltener Person | ✓ | `hzp-verm` |
@@ -256,6 +265,8 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
+| Asylverfahren oder Duldung: Eingliederungshilfe ausgeschlossen (§ 100 Abs. 2 SGB IX), nach 36 Monaten § 2 AsylbLG, davor Einzelfall; Kinder mit seelischer Behinderung § 6 Abs. 2 SGB VIII: eigener Hinweis (Abruf 20.11.2026) | ◐ | `eingl-asyl` |
+| Asylverfahren oder Duldung: Schwerbehinderteneigenschaft verlangt „rechtmäßigen“ Wohnsitz oder Arbeitsplatz (§ 2 Abs. 2 SGB IX); mit Duldung Anspruch auf Feststellung, wenn der Aufenthalt voraussichtlich länger als 6 Monate dauert (BSG 29.04.2010, B 9 SB 2/09 R, rechtsprechung-im-internet.de). Die Prognose fragt die App nicht ab: höchstens „möglich“ (Abruf 20.11.2026) | ◐ | `ausweis-asyl` |
 | Schwerbehindertenausweis ab GdB 50, Gleichstellung ab 30, Zusatzurlaub 5 Tage (§ 2, § 208) | ✓ | `sb-ausweis` |
 | Wertmarke kostenlos bei H/Bl/TBl/aG und mit G bei Grundsicherung (§ 228); Kfz-Steuer-Ermäßigung bei G, Befreiung bei H/Bl/aG | ✓ | `sb-frei` |
 | Besonderer Kündigungsschutz (§ 168) | ◐ | `sb-kuendigung` |
@@ -278,6 +289,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
+| Asylverfahren oder Duldung: § 9 Abs. 1 AsylbLG schließt Leistungen nach „vergleichbaren Landesgesetzen“ aus; ob das Landesblindengeld darunter fällt, ist offen (Art. 1, 3 BayBlindG ohne Regel): höchstens „möglich“ (Abruf 20.11.2026) | ◐ | `blindengeld-asyl` |
 | Blindengeld und Sehbehindertengeld, Beträge Stand 7/2026 | ✓ | `bg-betrag` |
 | Anrechnung von Pflegegeld: 46 % bei Pflegegrad 2, 33 % ab 3, mindestens 20 € (Art. 4) | ✓ | `bg-pflege` |
 | Andere Länder: blinde Menschen „wahrscheinlich“ (Landesblindengeld gibt es in jedem Land), Spanne für Erwachsene etwa 350 bis 950 €; hochgradig Sehbehinderte nur „möglich“; Hinweis Pflegegeld-Anrechnung | ◐ | `bg-land` |
@@ -292,6 +304,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Nur für blinde Menschen (§ 72 Abs. 5), nicht bei hochgradiger Sehbehinderung | ✓ | `blh-voraus` |
 | Landesblindengeld wird voll angerechnet (§ 72 Abs. 1 Satz 2); in Bayern meist nur ein kleiner Unterschiedsbetrag | ◐ | `blh-land` |
 | Einkommensgrenze wie bei Hilfe zur Pflege (§ 85), darüber höchstens 40 % eingesetzt (§ 87 Abs. 1 Satz 3) | ✓ | `blh-grenze` |
+| EU-Bürger ohne Arbeit, unter 5 Jahren: Blindenhilfe wie Hilfe zur Pflege ausgeschlossen (§ 23 Abs. 3 SGB XII), Ausnahmen Härte und nach 5 Jahren (Abruf 20.11.2026) | ✓ | `sh-eu` |
 | Schonvermögen 10.000 € je Erwachsenem | ✓ | `blh-verm` |
 | Unter 18 Jahren halber Betrag (§ 72 Abs. 2), Anrechnung von Pflegegeld (§ 72 Abs. 1 Satz 3), Kürzung im Heim (§ 72 Abs. 4) | ◐ | `blh-hinweise` |
 | Asylbewerber: erst mit Analogleistungen (§ 2 AsylbLG) | ◐ | `blh-asyl` |
@@ -303,6 +316,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
+| Asylverfahren oder Duldung: verfügbar nur, wer arbeiten „kann und darf“ (§ 138 Abs. 5 Nr. 1 SGB III), also mit Arbeitserlaubnis: höchstens „möglich“ (Abruf 20.11.2026) | ◐ | `alg-asyl` |
 | Selbstständige nur mit freiwilliger Arbeitslosenversicherung (§ 28a) | ◐ | `selbst` |
 | Anwartschaft 12 Monate in 30 Monaten (§§ 142, 143); Minijob zählt nicht (§ 27 Abs. 2) | ✓ | `alg-anwart` |
 | 60 %, mit Kind 67 % des pauschalierten Nettos (§ 149), Beitragsbemessungsgrenze (§ 341) | ✓ | `alg-satz` |
@@ -313,19 +327,18 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Kein Anspruch im Rentenalter (§ 136 Abs. 2) | ✓ | `alg-alter` |
 
 ## Krankenversicherung (SGB V)
-<!-- karten: krankengeld, zuzahl, famvers -->
+<!-- karten: krankengeld, zuzahl -->
 
 | Regel | Status | Test |
 |---|---|---|
-| 2027: Werte der Sozialversicherungs-Rechengrößenverordnung 2027 (BR-Drs. 576/26, Zustimmung Bundesrat 20.11.2026) erst ab 2027 und nur nach Verkündung im BGBl. (Schalter `svrg2027`; Stand 20.11.2026: nicht verkündet, daher auch 2027 Werte 2026): KV-Grenze 6.375 € (Krankengeld, Netto), RV-Grenze 8.850 € (Arbeitslosengeld, Netto), Bezugsgröße 4.130 € (Familienversicherung 590 €), Kinderkrankengeld höchstens 148,75 € | ✓ | `recht-geltend` |
+| 2027: Werte der Sozialversicherungs-Rechengrößenverordnung 2027 (BR-Drs. 576/26, Zustimmung Bundesrat 20.11.2026) erst ab 2027 und nur nach Verkündung im BGBl. (Schalter `svrg2027`; Stand 20.11.2026: nicht verkündet, daher auch 2027 Werte 2026): KV-Grenze 6.375 € (Krankengeld, Netto), RV-Grenze 8.850 € (Arbeitslosengeld, Netto), Bezugsgröße 4.130 € (Familienversicherung 590 €, nur noch in „Ich ziehe aus“), Kinderkrankengeld höchstens 148,75 € | ✓ | `recht-geltend` |
 | Minijob-Hinweis bei Krankengeld und Arbeitslosengeld nennt die Grenze des Jahres (2026: 603 €, ab 2027: 633 €), keine feste Zahl im Text | ✓ | `recht-geltend` |
 | Krankengeld 70 % brutto, höchstens 90 % netto, Beitragsbemessungsgrenze (§ 47) | ✓ | `kv-kg` |
 | Lohnfortzahlung 6 Wochen, Krankengeld bis 78 Wochen (§ 48) | ◐ | `kv-78` |
 | Minijob ohne Krankengeld | ✓ | `kv-minijob` |
+| Rente (erste Person): Vollrente wegen Alters oder volle Erwerbsminderungsrente beendet den Anspruch, Teilrente kürzt ihn (§ 50 Abs. 1 Satz 1 Nr. 1, Abs. 2 SGB V). Welche Rente, fragt die App nicht: höchstens „möglich“, Hinweis vorn (Abruf 20.11.2026) | ◐ | `krank-rente` |
 | Belastungsgrenze 2 % / 1 % bei chronisch Kranken (GdB ab 60 oder Pflegegrad 3–5) | ✓ | `kv-zuzahl` |
 | Fahrtkosten zur ambulanten Behandlung bei aG, Bl, H oder Pflegegrad 3 (mit Einschränkung) bis 5 (§ 60) | ◐ | `kv-fahrt` |
-| Familienversicherung (§ 10): Partner mit Einkommen bis 1/7 der Bezugsgröße (2026: 565 €) oder Minijob; Kinder bis 18, bis 23 ohne Arbeit, bis 25 in Ausbildung; ALG I und Krankengeld schließen aus, Rente nur über der Grenze; Elterngeld zählt nicht, Unterhalt nur beim Realsplitting (Hinweis „möglich“) (GKV-Spitzenverband, Grundsätzliche Hinweise Gesamteinkommen 29.09.2022, Anlage und Abschn. 2.3.4.2); Minijob-Grenze nur, wenn Person 2 nur Lohn hat | ◐ | `famvers` |
-| Familienversicherung: Ausschluss, wenn der andere Elternteil privat versichert ist und mehr verdient (§ 10 Abs. 3), Mitgliedschaft des Hauptversicherten | ○ (Versicherungsstatus fragt die App nicht ab; Hinweis im Text, „möglich“ statt „wahrscheinlich“) | |
 
 ## Rundfunkbeitrag (RBStV)
 <!-- karten: rundfunk -->
@@ -342,6 +355,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
+| Asylverfahren oder Duldung: WBS nur bei Möglichkeit eines dauerhaften Wohnsitzes (§ 27 Abs. 2 WoFG, Art. 14 Abs. 2 BayWoFG): „unwahrscheinlich“ mit Hinweis auf Ausnahmen (z. B. Ausbildungsduldung: VG Berlin, Urteil vom 25.06.2019, VG 8 K 202.18) und Wohnungsamt (Entscheidung David 20.11.2026; Abruf 20.11.2026) | ◐ | `wbs-asyl` |
 | Einkommensgrenzen nach Haushaltsgröße und Kindern; höhere Grenzen per Gebietsverordnung | ✓ | `wbs-grenze` |
 | Freibetrag Schwerbehinderte nach § 24 WoFG (4.500 € / 2.100 €) | ✓ | `wbs-schwerb` |
 | Länder ohne belegte Landesgrenze (Saarland): unter den Bundeswerten (§ 9 Abs. 2 WoFG: 12.000 / 18.000 €, + 4.100 € je weitere Person, + 500 € je Kind) „wahrscheinlich“, sonst „möglich“ | ◐ | `wbs-land` |
@@ -390,7 +404,8 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Regel | Status | Test |
 |---|---|---|
 | Eigene Leistung bei Aufenthaltsgestattung, Duldung, Ausreisepflicht (§ 1); Analogleistungen nach 36 Monaten (§ 2) | ✓ / ◐ | `asyl-ja` |
-| Ausschluss vom Grundsicherungsgeld, von der Grundsicherung im Alter, vom Wohngeld und vom Kinderzuschlag | ✓ | `asyl-ausschluss` |
+| Ausschluss vom Grundsicherungsgeld, von der Grundsicherung im Alter und vom Kinderzuschlag; Wohnberechtigungsschein „unwahrscheinlich“; Wohngeld nur ohne AsylbLG-Bezug (§ 7 Abs. 1 Satz 1 Nr. 8 WoGG) | ✓ | `asyl-ausschluss` |
+| Einkommensart „Asylbewerberleistungen“ (nur bei Aufenthalt „asyl“ wählbar): Karte „bekommst du schon“, Wohngeld „unwahrscheinlich“ (§ 7 Abs. 1 Satz 1 Nr. 8 WoGG), Bildung und Teilhabe „bekommst du“ über das Sozialamt (§ 3 Abs. 4 AsylbLG), Kita ohne Beitrag (§ 90 Abs. 4 Satz 2 SGB VIII), Rundfunkbeitrag befreit (§ 4 Abs. 1 Nr. 4 RBStV); Zuzahlung unverändert „möglich“ (Abruf 20.11.2026) | ✓ | `asyl-bezug` |
 | Höhe der Leistungen (Bedarfsstufen, Sachleistungen in Unterkünften) | ○ (hängt von der Unterbringung ab; die Stelle rechnet) | |
 
 ## Zuständige Stellen außerhalb Bayerns
@@ -499,7 +514,7 @@ Eigener Bereich für junge Menschen; keine Rechnung, nur Hinweise. Quellen mit A
 
 | Regel | Status | Test |
 |---|---|---|
-| Übersicht mit 7 Kacheln (2 Spalten, jede Kachel eine eigene Palettenfarbe, keine Hex-Werte im Modul), Unterseiten mit „Zurück“ (Herkunft gemerkt), Checklisten mit Fortschritt, wichtige Punkte offen, weitere zum Aufklappen | ✓ | `az-aufbau`, `az-oberflaeche` |
+| Übersicht mit 6 Kacheln (2 Spalten, jede Kachel eine eigene Palettenfarbe, keine Hex-Werte im Modul), Unterseiten mit „Zurück“ (Herkunft gemerkt), Checklisten mit Fortschritt, wichtige Punkte offen, weitere zum Aufklappen | ✓ | `az-aufbau`, `az-oberflaeche` |
 | Unter 25 mit Grundsicherungsgeld: Zusicherung vor Vertragsschluss, Pflicht-Gründe, keine Erstausstattung ohne Zusicherung, weniger Regelbedarf (§ 22 Abs. 5, § 24 Abs. 6, § 20 Abs. 3 SGB II), Verzicht bei wichtigem Grund, deutliche Warnung | ✓ | `az-aufbau`, `az-oberflaeche` |
 | Kaution höchstens 3 Kaltmieten ohne Betriebskosten, 3 Monatsraten (§ 551 BGB); Kaution als Darlehen, Umzugskosten mit Zusicherung (§ 22 Abs. 6 SGB II); Erstausstattung vor dem Kauf beantragen (§ 24 Abs. 3, § 37 SGB II) | ✓ | `az-quellen` |
 | Ummelden in 2 Wochen, Wohnungsgeberbestätigung (§ 17 Abs. 1, § 19 BMG); Grundversorgung melden (§ 2 StromGVV); Rundfunk je Wohnung, Befreiung nur auf Antrag und nur für die Person (§ 2, § 4 Abs. 1 RBeitrStV); Laufzeit 24 Monate, danach jederzeit kündbar (§ 56 TKG); Kfz-Anschrift unverzüglich (§ 15 FZV); Steuer-ID an Arbeitgeber (§ 39e Abs. 4 EStG) | ✓ | `az-quellen` |
@@ -507,7 +522,6 @@ Eigener Bereich für junge Menschen; keine Rechnung, nur Hinweise. Quellen mit A
 | Kostenfallen: Widerruf 14 Tage (§ 312g, § 355 BGB), Bestellknopf (§ 312j BGB), Dispo-Beratung 6 Monate/75 % (§ 504a BGB), Widerspruch 1 Monat (§ 84 SGG), Datenkopie kostenlos (Art. 15 Abs. 3 DSGVO); „Später zahlen“ und Kredite „ohne Schufa“ nach Verbraucherzentrale | ✓ | `az-quellen` |
 | Versicherungen gestuft nach Verbraucherzentrale (Stand 21.11.2025, VZ Hamburg 15.04.2026), Kfz-Haftpflicht unter „Unbedingt“, Auslandsreise-Krankenversicherung unter „Kommt drauf an“; Familienversicherung bis 18/23/25, Ausnahme privat versicherter Elternteil, Grenze 1/7 Bezugsgröße aus `R.famvers` (§ 10 Abs. 2 und 3 SGB V); Gesundheitsfragen (§ 19 VVG); keine Anbieter, keine Preise | ✓ | `az-quellen`, `az-oberflaeche` |
 | Hilfen nur „möglich“: BAB (§ 56, § 60 SGB III), BAföG (§ 2), Wohngeld-Ausschluss (§ 20 Abs. 2 WoGG), Kindergeld bis 18/21/25 und Abzweigung (§ 32 Abs. 4, § 74 EStG), Kindergeld für sich selbst (§ 1 Abs. 2 BKGG), Unterhalt der Eltern bis Ende der ersten Ausbildung (§ 1610 Abs. 2 BGB, Beratung § 18 Abs. 4 SGB VIII), Grundsicherungsgeld (§ 7 Abs. 5, § 22, § 24, § 27 SGB II), Bildung und Teilhabe (§ 28 SGB II), Waisenrente bis 18 immer, in Ausbildung oder Freiwilligendienst bis 27 (§ 48 Abs. 4 SGB VI) | ✓ | `az-aufbau`, `az-oberflaeche` |
-| Careleaver: § 41 (in der Regel bis 21, Rückkehr möglich), § 41a, § 41 Abs. 3 und § 36b, kein Kostenbeitrag aus eigenem Einkommen, Ausnahmen Kindergeld und zweckgleiche Leistungen (§ 92 Abs. 1a, § 93 Abs. 1, § 94 Abs. 3, Abs. 6 weggefallen), Krankenhilfe (§ 40, § 41 Abs. 2), Ombudsstelle (§ 9a SGB VIII); Briefvorlage nur „An das Jugendamt“, keine Anschrift, Zuständigkeit (§ 86a Abs. 4), schriftlicher Bescheid erbeten | ✓ | `az-quellen`, `az-oberflaeche` |
 | Abhaken und Notizen lokal (`lotse.ausziehen`, Schnittstelle `Ausziehen.speicherOrt`), nur bekannte Einträge, Speicherfehler gemeldet, „Alle Angaben löschen“ leert alles | ✓ | `az-speichern`, `az-oberflaeche` |
 | 13 Sprachen und Einfache Sprache: alle Schlüssel, gleiche Platzhalter und Vorschriften, keine Rohschlüssel | ✓ | `az-sprachen`, `az-oberflaeche` |
 
@@ -545,17 +559,20 @@ Brief prüfen → Jobcenter, Sozialamt oder „Anderer Brief oder Formular“ (B
 |---|---|---|
 | Jede Karte zeigt Einstufung, Überschrift, Text und jeden Betrag genau wie berechnet, in allen 13 Sprachen; Zählung und Hinweise passen; Speichern und Laden ändert nichts; nirgends NaN, undefined, Platzhalter, negative Beträge oder Rohschlüssel | ✓ | `anzeige-rechnung` |
 | Einfache und ausführliche Version rechnen für dieselbe Person gleich | ✓ | `einfach-gleich` |
+| Leistungs-Check „Schritt für Schritt“: jede Formular-Angabe hat eine Frage, nur nötige Folgefragen, „← Zurück“ eine Frage zurück, Übersicht mit „ändern“, gleiches Ergebnis wie „Alles auf einer Seite“ | ✓ | `schritte` |
 | Einfache Sprache vollständig: jeder deutsche Text hat eine einfache Fassung (oder „=“, wenn der Standardtext schon einfach ist), ohne neue Zahlen oder Platzhalter | ✓ | `einfach-vollstaendig` |
 | „Brief prüfen“ in Einfacher Sprache: jeder sichtbare feste Text (vorschau.html, vorschau.js, brief-lesen.js) hat eine einfache Fassung; Zahlen, Fristen und Paragrafen bleiben; Schreiben an Ämter bleiben förmlich; Schalter aus stellt den Standardtext her | ✓ | `brief-einfach` |
 | Geld und Schulden, Pfändung: jeder Tipp mit Symbol und einem kurzen Satz (Fristen und Beträge sichtbar), Einzelheiten zum Aufklappen; „Quellen und Stand“ zugeklappt am Seitenende | ✓ | `geld-tipp` (dom-test) |
+| Einfache Sprache in der Pflege-Einschätzung: jede Frage, Antwort, jeder Hinweis und jeder Text der Ergebnisseite hat eine einfache Fassung (src/lang/einfach/pflege/pflege.json); Zahlen, Paragrafen und Platzhalter gleich; Antwortstufen, Werte und Punkte unverändert | ✓ | `pflege-einfach` |
 | Feste Euro-Beträge in Texten, Rechenregeln und Webseite passen zu den Werten der Rechnung | ✓ | `feste-zahlen` |
 | Betragseingaben: deutsche und englische Schreibweise, Eurozeichen, Leerzeichen; negative Beträge (auch mit typografischem Minus) und Datumsangaben werden abgewiesen | ✓ | `eingaben` |
 | Grenzwerte auf den Euro genau (−1 € / Grenze / +1 €): Schonvermögen, Mindesteinkommen, Minijob 2026 und 2027, Einkommensgrenze § 85 SGB XII, Stufen des Freibetrags für Arbeit | ✓ | `grenzen` |
 | Zufalls-Klicktest: tausende zufällige Bedienschritte (Felder, Auswahlen, Sprache, Schriftgröße, einfache/ausführliche Version, Antragsmappe, Neuladen) ohne Skriptfehler, kaputte Anzeige, seitliches Scrollen oder Sackgasse | ✓ | `zufall-klick` |
+| Ergebniskarten ohne „Nächste Schritte“ und „Unterlagen“, nur der Satz „Unterlagen und nächste Schritte findest du in der Antragsmappe.“; die Antragsmappe (`m-unterlagen`) zeigt je Leistung Stelle, Unterlagen zum Abhaken (`lotse.haken`) und Tipp sowie „Die genaue Liste nennt dir die zuständige Stelle.“ | ✓ | `karte-mappe` |
 | Antragsmappe: Empfänger je Anschreiben bearbeitbar (Vorschlag der App vorbefüllt; Änderung sofort in Brief, Kopiertext und PDF; leeres Feld ergibt Linie; Eingabe nie als HTML; Wiederherstellen; Feld nicht im Druck); Suchlink „Zuständige Stelle suchen“ (DuckDuckGo, kurzer Suchbegriff je Leistung und Ortsname, öffnet extern) | ✓ | `empf` |
 | Geburtsjahr im Formular: nur 4 Ziffern von 1900 bis heute minus 15 Jahre (wie in der einfachen Version); sonst sichtbare Meldung „4 Ziffern, zum Beispiel 1962“ und kein Ergebnis (z. B. „54“, „1854“, „2030“) | ✓ | `geb` |
 | Einkommensfelder: „Lohn/Rente im Monat vor Abzügen (brutto)“ je Art; Minijob-Hinweis nur bei Lohn; allein lebend zweites Einkommen über eigenes Feld, zu zweit Summe je Person; Schalter „Kurzer Check für Menschen mit Behinderung (eine Person)“ | ✓ | `formular` |
 | Alte Speicherstände aus allen Ausbaustufen (und der einfachen Version) laden richtig und ergeben dasselbe Ergebnis wie im heutigen Format | ✓ | `altstaende` |
-| Vorgänge (Haushalte): speichern, öffnen, umbenennen, „Kopie zum Ausprobieren“, löschen; zu einem Vorgang gehören Fragebogen mit Briefdaten, einfache Version, Pflege-Einschätzung, Pfändung, Haushaltsplan/-buch, Checklisten-Haken sowie Haken und Notizen aus „Ich ziehe aus“ (`lotse.haken`, `lotse.haushalt`, `lotse.ausziehen` in `Vorgaenge.DATEN`, also mit PIN verschlüsselt; Einstellungen wie Sprache und Beratungsmodus gelten für alle); „Alle Angaben löschen“ leert den geöffneten Vorgang mit Rückgängig, „Alle Vorgänge löschen“ und „Diesen Vorgang löschen“ in den Einstellungen unter „Sicherheit und Daten“ (dort auch PIN-Sperre und automatisches Löschen), Verwaltung der Vorgänge in „Mein Ordner“ → „Alle Haushalte und Vorgänge“; alte Speicherstände werden übernommen; Beispiel überschreibt nie einen gespeicherten Vorgang; PIN-Sperre (Sichtschutz) verschlüsselt alles mit WebCrypto (PBKDF2-SHA-256, 600.000 Durchläufe, AES-GCM, zufälliges Salt und IV), PIN nie gespeichert, Wartezeit nach 5 Fehlversuchen; automatisches Löschen nach 30/90 Tagen mit Datum; Speicher voll oder gesperrt wird gemeldet | ✓ | `vorgaenge` |
-| Leiste unten: Start, Mein Ordner, Einstellungen (Leistungen und Briefe über die Startkacheln, markieren Start; #leistungen und #briefe gehen weiter). Mein Ordner: geöffneter Vorgang mit „Wechseln“, letztes Ergebnis, Antragsmappe, Haushaltsplan (Rest im Monat), Pflege-Einschätzung, Pfändung, „Ich ziehe aus“ nur mit Modul; leere Bereiche ausgeblendet, Leerzustand mit „Los geht's“, keine Fristen. „Kurzer Check für Menschen mit Behinderung (eine Person)“ als Link am Anfang des Leistungs-Checks, nicht mehr in den Einstellungen. Einstellungen als Liste mit Unterseiten (Anzeige und Sprache mit Schaltern und Hell/Dunkel/wie Gerät, Sicherheit und Daten, Für Fachkräfte, Über die App) | ✓ | `navigation` |
+| Vorgänge (Haushalte): speichern, öffnen, umbenennen, „Kopie zum Ausprobieren“, löschen; zu einem Vorgang gehören Fragebogen mit Briefdaten, einfache Version, Pflege-Einschätzung, Pfändung, Haushaltsplan/-buch, Checklisten-Haken sowie Haken und Notizen aus „Ich ziehe aus“ (`lotse.haken`, `lotse.haushalt`, `lotse.ausziehen` in `Vorgaenge.DATEN`, also mit PIN verschlüsselt; Einstellungen wie Sprache und Beratungsmodus gelten für alle); Vorgänge nur in „Mein Ordner“ (kein Schild im Kopf, kein Kasten beim Ergebnis): mit einem Vorgang keine Liste, nur „+ Weiteren Vorgang anlegen“; ab zwei eine Liste mit Initialen-Kreis, geöffneter markiert, Wechseln mit einem Tipp, „+ Neuen Vorgang anlegen“, Umbenennen/Kopie/Löschen erst nach „Bearbeiten“; Löschen nur in „Sicherheit und Daten“ mit zwei Zeilen („Nur „Name“ löschen“ = dieser Vorgang mit allen Teilen aus `Vorgaenge.DATEN`; „Alles auf diesem Gerät löschen“ = alle Vorgänge und PIN, Sprache/Anzeige/„Automatisch löschen“ bleiben), jede mit Rückfrage („Abbrechen“ / „Ja, endgültig löschen“) und Meldung; im Leistungs-Check nur ein Link dorthin; PIN-Sperre als Schalter, Warnung „PIN vergessen“ erst beim Festlegen, Erklärungen unter „Mehr dazu“; alte Speicherstände werden übernommen; Beispiel überschreibt nie einen gespeicherten Vorgang; PIN-Sperre (Sichtschutz) verschlüsselt alles mit WebCrypto (PBKDF2-SHA-256, 600.000 Durchläufe, AES-GCM, zufälliges Salt und IV), PIN nie gespeichert, Wartezeit nach 5 Fehlversuchen; automatisches Löschen nach 30/90 Tagen mit Datum; Speicher voll oder gesperrt wird gemeldet | ✓ | `vorgaenge` |
+| Leiste unten: Start, Mein Ordner, Einstellungen (Leistungen und Briefe über die Startkacheln, markieren Start; #leistungen und #briefe gehen weiter). Mein Ordner: geöffneter Vorgang, letztes Ergebnis, Antragsmappe, Haushaltsplan (Rest im Monat), Pflege-Einschätzung, Pfändung, „Ich ziehe aus“ nur mit Modul; leere Bereiche ausgeblendet, kein Kasten „Los geht's“, darunter die gespeicherten Vorgänge, keine Fristen. Kopfzeile (Logo, Name, Satz „Prüfe in etwa 5 Minuten …“) nur auf der Startseite, sonst nur für Screenreader (h1 bleibt). „Kurzer Check für Menschen mit Behinderung (eine Person)“ als Link am Anfang des Leistungs-Checks, nicht mehr in den Einstellungen. Einstellungen als Liste mit Unterseiten (Anzeige und Sprache mit Schaltern und Hell/Dunkel/wie Gerät, Sicherheit und Daten, Für Fachkräfte, Über die App) | ✓ | `navigation` |
 | Hinweise auf der Ergebnisseite: was SoLo nicht einrechnet (Selbstständigkeit, Wohneigentum, Auto, Mitbewohner, angemessene Miete, EU-Bürger) und das Verfahren danach (Widerspruch § 84 SGG, Überprüfungsantrag § 44 SGB X, Beratung § 14 SGB I, Weiterleitung § 16 SGB I) | ✓ | `verfahren` |

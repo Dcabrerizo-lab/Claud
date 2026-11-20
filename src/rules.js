@@ -365,7 +365,8 @@ const Rules = (function () {
   const ab6 = (x) => Math.floor(x * 1e6 + 1e-4) / 1e6;
   // Werte der SV-Rechengrößenverordnung 2027 erst ab 2027 UND nur, wenn sie im BGBl. verkündet ist (R.svrg2027)
   const sv27 = (heute) => heute >= 2027 && R.svrg2027.verkuendet === true;
-  // Einkommensgrenze der Familienversicherung (1/7 der Bezugsgröße, § 10 Abs. 1 Nr. 5 SGB V) für das Jahr heute (Standard: jetzt); 2027 nur nach Verkündung (sv27)
+  // Einkommensgrenze der Familienversicherung (1/7 der Bezugsgröße, § 10 Abs. 1 Nr. 5 SGB V) für das Jahr heute (Standard: jetzt); 2027 nur nach Verkündung (sv27).
+  // Die Karte „Kostenlose Familienversicherung“ ist entfernt (Entscheidung David, 20.11.2026); die Grenze nutzt noch „Ich ziehe aus“ (src/ausziehen.js).
   function famversGrenze(heute) {
     const hj = heute ? Number(heute) : (new Date().getFullYear() + new Date().getMonth() / 12);
     return Math.round((sv27(hj) ? R.famvers.bezug2027 : R.famvers.bezug2026) / 7);
@@ -568,7 +569,8 @@ const Rules = (function () {
     // Eintrag: [Art, Brutto, Netto, nurAuszahlung, selbst, Person] – ohne eigenes Netto ist b der ausgezahlte Betrag (einfache Version)
     // Selbstständige: Gewinn zählt wie Einkommen aus Arbeit (Freibetrag § 11b Abs. 3 SGB II, § 82 Abs. 3 SGB XII; Wohngeld § 14 WoGG);
     // Unterschiede (kein Arbeitslosengeld/Krankengeld ohne freiwillige Versicherung, vorläufige Bewilligung) über h.selbst
-    const aSel = (a) => (a === 'selbst' ? 'lohn' : a);
+    // Asylbewerberleistungen (nur bei Aufenthalt „asyl“ wählbar): rechnet wie „kein Einkommen“, der Bezug steht in asylBezug
+    const aSel = (a) => (a === 'selbst' ? 'lohn' : a === 'asylblg' ? 'ohne' : a);
     const selbst1 = inp.art1 === 'selbst' || (Array.isArray(inp.einkommen) && inp.einkommen.some((x) => x && x.art === 'selbst'));
     const liste = Array.isArray(inp.einkommen) ? inp.einkommen.filter((x) => x && ARTEN.indexOf(aSel(x.art)) >= 0).map((x) => {
       const nurAus = blank(x.n);
@@ -689,7 +691,11 @@ const Rules = (function () {
       }, 0)
         : sumIf((a, b) => a !== 'lohn' && a !== 'ohne' && b > 0 ? Math.min(b, R.versPauschale) : 0),
       mzG: !!inp.mzG, mzGl: !!inp.mzGl || !!(inp.mz && inp.mz.Gl), mzRF: !!(inp.mz && inp.mz.RF), mzAG: !!(inp.mz && inp.mz.aG), wfbmJahre: num(inp.wfbmJahre), grundrente33: !!inp.grundrente33, zusatzRente: num(inp.zusatzRente), bhEinkHoch: !!inp.bhEinkHoch, teilhabe: !!inp.teilhabe, bhWeitere: Math.min(4, Math.max(0, inp.bhWeitere | 0)), schwanger: !!inp.schwanger, ernaehrung: !!inp.ernaehrung, warmwasser: !!inp.warmwasser, gebJahr: jahr,
-      baby: inp.baby === 'bald' || inp.baby === 'da' ? inp.baby : '', egVor: blank(inp.egVor) ? null : num(inp.egVor), asyl: inp.aufenthalt === 'asyl',
+      baby: inp.baby === 'bald' || inp.baby === 'da' ? inp.baby : '', egVor: blank(inp.egVor) ? null : num(inp.egVor), asyl: inp.aufenthalt === 'asyl' || inp.aufenthalt === 'ausreise',
+      // ausreisepflichtig ohne Duldung (§ 1 Abs. 1 Nr. 5 AsylbLG): sonst wie asyl, aber kein Wohngeld und kein WBS
+      ausreise: inp.aufenthalt === 'ausreise',
+      // Bezug von Asylbewerberleistungen: Einkommensart „asylblg“ einer Person, nur zusammen mit Aufenthalt „asyl“
+      asylBezug: (inp.aufenthalt === 'asyl' || inp.aufenthalt === 'ausreise') && (inp.art1 === 'asylblg' || (adults === 2 && inp.art2 === 'asylblg') || (Array.isArray(inp.einkommen) && inp.einkommen.some((x) => x && x.art === 'asylblg'))),
       wohnform: inp.wohnform === 'eltern' || inp.wohnform === 'heim' ? inp.wohnform : '', wfbmEssen: !!inp.wfbmEssen,
       mieteGegeben: !blank(inp.miete) && num(inp.miete) > 0,
       // Heizkosten (freiwillig): nur gültig, wenn kleiner als die Warmmiete
@@ -819,6 +825,12 @@ const Rules = (function () {
   // SGB II, § 23 Abs. 3 SGB XII). Rückausnahme: Arbeitnehmer oder Selbstständige (unionsrechtlicher Status) und nach 5 Jahren
   // gewöhnlichem Aufenthalt (§ 7 Abs. 1 Satz 4 SGB II). Die App fragt Arbeit und Aufenthaltsdauer; die genaue Prüfung macht die Stelle.
   const euAusschluss = (h) => h.eu && !h.euJahre5 && !h.euArbeit && !h.selbst && !(h.erwerb && h.brutto > 0);
+  // Aufenthalt „Asylverfahren oder Duldung“ (h.asyl, umfasst Aufenthaltsgestattung, Duldung und Ausreisepflicht, § 1 Abs. 1 Nr. 1, 4, 5
+  // AsylbLG): Wo das Gesetz Gestattung und Duldung verschieden behandelt oder die Lage unklar ist, höchstens „möglich“ mit Hinweis vorn.
+  // „Unwahrscheinlich“ und „bekommst du schon“ bleiben.
+  // hoechstensMoeglich: „wahrscheinlich“ wird „möglich“, Hinweis key vorn; „unwahrscheinlich“ und „bekommst du schon“ bleiben.
+  const hoechstensMoeglich = (r, key) => (r.level !== 'ja' && r.level !== 'vielleicht' ? r : mk(r.id, 'vielleicht', r.level === 'ja' ? 'vielleicht' : r.hl, [[key]].concat(r.tx)));
+  const asylHoechstens = (h, r, key) => (h.asyl ? hoechstensMoeglich(r, key) : r);
   // Vermögen nach dem SGB XII (Grundsicherung im Alter, Hilfe zur Pflege, Blindenhilfe) und BAföG: ein Auto zählt mit, außer es wird
   // wegen einer Behinderung oder für die Arbeit gebraucht (§ 90 Abs. 2 Nr. 5 SGB XII bzw. Härte; § 27 BAföG). Im SGB II ist ein
   // angemessenes Auto je erwerbsfähiger Person geschützt (§ 12 SGB II).
@@ -860,11 +872,26 @@ const Rules = (function () {
   // ---------------------------------------------------------------
   // Wohngeld
   // ---------------------------------------------------------------
+  // Aufenthaltsgestattung und Duldung sind wohngeldberechtigt (§ 3 Abs. 5 Satz 1 Nr. 2 und 4 WoGG,
+  // https://www.gesetze-im-internet.de/wogg/__3.html, Abruf 20.11.2026). Ausgeschlossen ist nur, wer Grundleistungen oder Leistungen in
+  // besonderen Fällen nach dem AsylbLG bekommt (§ 7 Abs. 1 Satz 1 Nr. 8 WoGG, https://www.gesetze-im-internet.de/wogg/__7.html,
+  // Abruf 20.11.2026). Bezug fragt die App als Einkommensart „Asylbewerberleistungen“ ab (h.asylBezug): dann „unwahrscheinlich“ mit
+  // Hinweis aufs Sozialamt. Ohne diese Auswahl rechnet die App normal, auch „wahrscheinlich“ (§ 3 Abs. 5 WoGG; Entscheidung David,
+  // 20.11.2026), mit Hinweis vorn. Ausreisepflichtig ohne Duldung: in § 3 Abs. 5 Satz 1 Nr. 1 bis 6 WoGG nicht genannt, also nicht
+  // wohngeldberechtigt (der Hinweis nennt das).
   function wohngeld(h) {
+    // Ausreisepflichtig ohne Duldung: in § 3 Abs. 5 Satz 1 Nr. 1 bis 6 WoGG nicht genannt (Freizügigkeit, Aufenthaltstitel oder Duldung,
+    // völkerrechtliches Abkommen, Aufenthaltsgestattung, heimatlose Ausländer, Befreiung vom Titel), also nicht wohngeldberechtigt
+    // (https://www.gesetze-im-internet.de/wogg/__3.html, Abruf 20.11.2026)
+    if (h.ausreise) return mk('wohngeld', 'nein', 'ausschluss', [['wohngeld.ausreise']]);
+    if (h.asylBezug) return mk('wohngeld', 'nein', 'ausschluss', [['wohngeld.asylBezug']]);
+    const r = wohngeld0(h);
+    return h.asyl && (r.level === 'ja' || r.level === 'vielleicht') ? { ...r, tx: [['wohngeld.asyl']].concat(r.tx) } : r;
+  }
+  function wohngeld0(h) {
     const id = 'wohngeld';
     if (h.bezug.grundsicherungsgeld || h.bezug.sozialamt) return mk(id, 'nein', 'ausschluss', [['wohngeld.ausschluss']]);
     if (h.bezug.wohngeld) return mk(id, 'na', 'na', [['wohngeld.na']]);
-    if (h.asyl) return mk(id, 'nein', 'ausschluss', [['wohngeld.asyl']]); // § 7 Abs. 1 Nr. 9 WoGG
     // Bei den Eltern: Wohngeld gibt es nur für den ganzen Haushalt (Antrag der Eltern); im Wohnheim geht die Grundsicherung vor
     if (h.wohnform) return mk(id, 'nein', 'vorausFehlt', [['wohngeld.' + h.wohnform]]);
     const vermLimit = R.wohngeld.vermoegenErste + R.wohngeld.vermoegenJeWeitere * (h.persons - 1);
@@ -1094,6 +1121,13 @@ const Rules = (function () {
     if (h.bezug.grundsicherungsgeld || h.bezug.sozialamt || h.bezug.kiz || h.bezug.wohngeld) {
       return mk(id, 'ja', 'ja', [['but.bezug'], inhalt].concat(h.kidsU6 > 0 ? [['but.kita']] : []));
     }
+    // § 3 Abs. 4 AsylbLG: Bildung und Teilhabe auch mit Asylbewerberleistungen (entsprechend §§ 34, 34a, 34b SGB XII), nach 36 Monaten
+    // über § 2 Abs. 1 AsylbLG (https://www.gesetze-im-internet.de/asylblg/__3.html, .../__2.html, Abruf 20.11.2026). Die App weiß nicht,
+    // ob Asylbewerberleistungen bewilligt sind: „möglich“. Mit Einkommensart „Asylbewerberleistungen“ (h.asylBezug): „bekommst du“ über das
+    // Sozialamt; Kita ohne Kostenbeitrag bei Leistungen nach §§ 2, 3 AsylbLG (§ 90 Abs. 4 Satz 2 SGB VIII,
+    // https://www.gesetze-im-internet.de/sgb_8/__90.html, Abruf 20.11.2026)
+    if (h.asylBezug) return mk(id, 'ja', 'ja', [['but.asylBezug'], inhalt].concat(h.kidsU6 > 0 ? [['but.kita']] : []));
+    if (h.asyl) return mk(id, 'vielleicht', 'butMoeglich', [['but.asyl'], inhalt].concat(h.kidsU6 > 0 ? [['but.kita']] : []));
     // § 90 Abs. 4 SGB VIII: Kita und Tagespflege ohne Kostenbeitrag bei Grundsicherung, Wohngeld, Kinderzuschlag, Asylbewerberleistungen
     const kita = h.kidsU6 > 0 ? [['but.kita']] : [];
     if (wg.level === 'ja' || kz.level === 'ja' || gg.level === 'ja') return mk(id, 'ja', 'butFolgt', [['but.folgt'], inhalt].concat(kita));
@@ -1246,7 +1280,17 @@ const Rules = (function () {
   // ---------------------------------------------------------------
   // BAföG
   // ---------------------------------------------------------------
+  // § 8 BAföG (https://www.gesetze-im-internet.de/baf_g/__8.html, Abruf 20.11.2026): Aufenthaltsgestattung ist nicht genannt (nur über
+  // Abs. 3: 5 Jahre eigene oder 3 Jahre Erwerbstätigkeit eines Elternteils); Duldung erst nach 15 Monaten Aufenthalt (Abs. 2a).
+  // Bei asyl daher höchstens „möglich“ mit Hinweis.
+  // EU-Bürger: § 8 Abs. 1 Nr. 2 bis 4 BAföG (gleiche Fundstelle, Abruf 20.11.2026): nur mit Recht auf Daueraufenthalt, als Arbeitnehmer
+  // oder Selbstständiger (auch Familienangehörige, also Arbeit der Eltern) oder nach Beschäftigung mit Bezug zur Ausbildung. Ohne Arbeit und
+  // unter 5 Jahren (euAusschluss) höchstens „möglich“ mit Hinweis; nicht „unwahrscheinlich“, weil die App die Arbeit der Eltern nicht kennt.
   function bafoeg(h) {
+    const r = asylHoechstens(h, bafoeg0(h), 'bafoeg.asyl');
+    return euAusschluss(h) ? hoechstensMoeglich(r, 'bafoeg.eu') : r;
+  }
+  function bafoeg0(h) {
     const id = 'bafoeg';
     if (!h.ausbildung) return mk(id, 'nein', 'vorausFehlt', [['bafoeg.keine']]);
     if (h.ausbildung === 'kindBetrieb') return mk(id, 'nein', 'vorausFehlt', [['bafoeg.betrieb']]);
@@ -1302,8 +1346,10 @@ const Rules = (function () {
     if (h.bhPerson !== 'erwVor25') return keinBeh(id);
     if (h.bezug.kindergeld) return mk(id, 'na', 'na', [['kgBeh.na']]);
     if (h.bhEinkHoch) return mk(id, 'nein', 'einkoHoch', [['kgBeh.hoch', { gfb: eur(R.beh.grundfreibetrag) }]]);
-    if (h.bhSelbst) return mk(id, 'ja', 'ja', [['kgBeh.ja', { kg: eur(R.kindergeld) }]]);
-    return mk(id, 'vielleicht', 'vielleicht', [['kgBeh.pruefen', { gfb: eur(R.beh.grundfreibetrag) }]]);
+    // Gleiche Aufenthalts-Voraussetzung wie beim Kindergeld: § 62 Abs. 2 EStG (https://www.gesetze-im-internet.de/estg/__62.html,
+    // Abruf 20.11.2026): Gestattung nicht genannt, Duldung nur als Beschäftigungsduldung (Nr. 5) -> bei asyl höchstens „möglich“
+    if (h.bhSelbst) return asylHoechstens(h, mk(id, 'ja', 'ja', [['kgBeh.ja', { kg: eur(R.kindergeld) }]]), 'kindergeld.asyl');
+    return asylHoechstens(h, mk(id, 'vielleicht', 'vielleicht', [['kgBeh.pruefen', { gfb: eur(R.beh.grundfreibetrag) }]]), 'kindergeld.asyl');
   }
 
   // Erwerbsminderungsrente (§ 43 SGB VI; Quelle: Deutsche Rentenversicherung)
@@ -1325,8 +1371,13 @@ const Rules = (function () {
   // Netto grob als Anteil vom Brutto: 60 % (Steuerklasse V, hohe Abzüge) bis 72 %, bei kleinem Brutto (bis 2.000 €) bis 80 %
   const nettoSpanne = (b) => [R.alg.netto[0], b <= R.alg.kleinBis ? R.alg.nettoKlein : R.alg.netto[1]];
 
-  // Arbeitslosengeld I (§§ 136 ff. SGB III)
+  // Arbeitslosengeld I (§§ 136 ff. SGB III). Verfügbar ist nur, wer eine Beschäftigung ausüben „kann und darf“ (§ 138 Abs. 1 Nr. 3,
+  // Abs. 5 Nr. 1 SGB III, https://www.gesetze-im-internet.de/sgb_3/__138.html, Abruf 20.11.2026): im Asylverfahren oder mit Duldung
+  // hängt das an der Arbeitserlaubnis -> höchstens „möglich“ mit Hinweis
   function alg1(h) {
+    return asylHoechstens(h, alg10(h), 'alg1.asyl');
+  }
+  function alg10(h) {
     const id = 'alg1';
     const melden = ['alg1.melden'];
     if (h.art1 === 'alg' || (h.adults === 2 && h.art2 === 'alg') || (h.pers || []).some((x) => x[0] === 'alg' && x[1] > 0)) return mk(id, 'na', 'na', [['alg1.na']]);
@@ -1366,6 +1417,12 @@ const Rules = (function () {
     // Minijob (bis zur Minijob-Grenze): nicht krankenversichert über die Arbeit, daher kein Krankengeld (§ 7 SGB V, § 44 SGB V)
     if (h.lohnVorher > 0 && h.lohnVorher <= h.minijob) return mk(id, 'nein', 'vorausFehlt', [['krank.minijob', { mini: eur(h.minijob) }]]);
     const tx = [[h.krankWochen === 'unter6' ? 'krank.lfz' : 'krank.ja']];
+    // Rente: Vollrente wegen Alters oder Rente wegen voller Erwerbsminderung beendet den Anspruch auf Krankengeld (§ 50 Abs. 1 Satz 1 Nr. 1
+    // SGB V); Teilrente wegen Alters oder Rente wegen teilweiser Erwerbsminderung kürzen es, wenn sie nach Beginn der Arbeitsunfähigkeit
+    // beginnen (§ 50 Abs. 2 SGB V; https://www.gesetze-im-internet.de/sgb_5/__50.html, Abruf 20.11.2026). Welche Rente es ist, fragt die
+    // App nicht: bei Einkommensart Rente (erste Person) höchstens „möglich“, Hinweis vorn, Betrag nur als Obergrenze
+    const rente = (h.pers || []).some((x, i) => x[0] === 'rente' && x[1] > 0 && (h.liste ? x[5] : i + 1) === 1);
+    if (rente) tx.unshift(['krank.rente']);
     if (h.lohnVorher > 0) {
       const b = Math.min(h.lohnVorher, sv27(h.heute) ? R.krank.bbg2027 : R.krank.bbg);
       // Netto grob 60-72 % des Bruttos; Krankengeld = min(70 % brutto, 90 % netto), abzüglich der Beiträge
@@ -1374,7 +1431,8 @@ const Rules = (function () {
       tx.push(['schaetz.spanne', { a: eur(kgv(q[0])), b: eur(kgv(q[1])) }]);
     }
     tx.push(['krank.78']);
-    return mk(id, h.krankWochen === 'unter6' ? 'vielleicht' : 'ja', h.krankWochen === 'unter6' ? 'vielleicht' : 'ja', tx);
+    const sicher = h.krankWochen !== 'unter6' && !rente;
+    return mk(id, sicher ? 'ja' : 'vielleicht', sicher ? 'ja' : 'vielleicht', tx);
   }
 
   // Elterngeld (BEEG)
@@ -1414,7 +1472,15 @@ const Rules = (function () {
   function hilfeZurPflege(h) {
     const id = 'hzp';
     if (h.pflegegrad < 2 && !h.pflegeAntrag) return mk(id, 'nein', 'vorausFehlt', [['hzp.keine']]);
+    // EU-Bürger ohne Arbeit, unter 5 Jahren: keine Leistungen nach § 23 Abs. 1 SGB XII (umfasst Hilfe zur Pflege), Ausnahmen Härte
+    // (Satz 6) und nach 5 Jahren (Satz 7) – § 23 Abs. 3 SGB XII, https://www.gesetze-im-internet.de/sgb_12/__23.html, Abruf 20.11.2026.
+    // Gleiche Logik und Stufe wie bei der Grundsicherung im Alter (euAusschluss)
+    if (euAusschluss(h)) return mk(id, 'nein', 'ausschluss', [['sh.eu']]);
     if (vermSGB12(h) > R.grundsicherung.schonAllein * h.adults + 500 * h.children) return mk(id, 'nein', 'vermHoch', [['hzp.verm']]);
+    // § 23 Abs. 2 SGB XII: keine Sozialhilfe für Leistungsberechtigte nach § 1 AsylbLG (https://www.gesetze-im-internet.de/sgb_12/__23.html,
+    // Abruf 20.11.2026). Nach 36 Monaten SGB XII entsprechend (§ 2 Abs. 1 AsylbLG), davor nur im Einzelfall (§ 6 Abs. 1 AsylbLG,
+    // https://www.gesetze-im-internet.de/asylblg/__6.html, Abruf 20.11.2026)
+    if (h.asyl) return mk(id, 'vielleicht', 'vielleicht', [['hzp.asyl'], ['hzp.heim']]);
     const grenze = R.hzp.grund * R.regelbedarf.alleinstehend + h.miete + R.hzp.familie * R.regelbedarf.alleinstehend * (h.persons - 1);
     return mk(id, 'vielleicht', 'vielleicht', [[h.netto <= grenze ? 'hzp.unter' : 'hzp.ueber', { grenze: eur(grenze) }], ['hzp.heim']]);
   }
@@ -1460,6 +1526,12 @@ const Rules = (function () {
   function blindenhilfe(h) {
     const id = 'blh';
     if (h.blind !== 'blind') return mk(id, 'nein', h.blind ? 'vorausFehlt' : 'keinBeh', [[h.blind ? 'blh.hoch' : 'blh.keine']]);
+    // EU-Bürger ohne Arbeit, unter 5 Jahren: § 23 Abs. 3 Satz 1 SGB XII schließt „Leistungen nach Absatz 1“ aus; Blindenhilfe ist Sozialhilfe
+    // im Einzelfall nach § 23 Abs. 1 Satz 3. Ausnahmen Härte (Satz 6) und nach 5 Jahren (Satz 7)
+    // (https://www.gesetze-im-internet.de/sgb_12/__23.html, Abruf 20.11.2026). Gleiche Logik und Stufe wie Grundsicherung im Alter
+    if (euAusschluss(h)) return mk(id, 'nein', 'ausschluss', [['sh.eu']]);
+    // § 23 Abs. 2 SGB XII: keine Sozialhilfe für Leistungsberechtigte nach § 1 AsylbLG (Status, nicht tatsächlicher Bezug); nach 36 Monaten
+    // § 2 Abs. 1 AsylbLG (https://www.gesetze-im-internet.de/sgb_12/__23.html, Abruf 20.11.2026)
     if (h.asyl) return mk(id, 'vielleicht', 'vielleicht', [['blh.asyl']]);
     if (vermSGB12(h) > R.grundsicherung.schonAllein * h.adults + 500 * h.children) return mk(id, 'nein', 'vermHoch', [['blh.verm']]);
     const grenze = R.hzp.grund * R.regelbedarf.alleinstehend + h.miete + R.hzp.familie * R.regelbedarf.alleinstehend * (h.persons - 1);
@@ -1479,6 +1551,7 @@ const Rules = (function () {
   function asylbewerber(h) {
     const id = 'asylblg';
     if (!h.asyl) return mk(id, 'nein', 'vorausFehlt', [['asyl.keine']]);
+    if (h.asylBezug) return mk(id, 'na', 'na', [['asyl.na'], ['asyl.analog']]);
     return mk(id, 'ja', 'ja', [['asyl.ja'], ['asyl.analog']]);
   }
 
@@ -1502,6 +1575,11 @@ const Rules = (function () {
     // nur Pflegebedürftigkeit im Rentenalter, ohne Hinweis auf Behinderung: hier nicht vorschlagen (dafür gibt es die Pflegekarten)
     if (h.alter && !h.bhPerson && !gdbEff(h) && !h.blind && !h.wfbm && !h.erwerbsgemindert) return keinBeh(id);
     if (h.bezug.eingl) return mk(id, 'na', 'na', [['eingl.na']]);
+    // § 100 Abs. 2 SGB IX: Leistungsberechtigte nach § 1 AsylbLG erhalten keine Eingliederungshilfe
+    // (https://www.gesetze-im-internet.de/sgb_9_2018/__100.html, Abruf 20.11.2026). Nach 36 Monaten Teil 2 SGB IX entsprechend (§ 2 Abs. 1
+    // AsylbLG), davor im Einzelfall (§ 6 Abs. 1 AsylbLG); Kinder mit seelischer Behinderung: Jugendamt, mit Duldung oder rechtmäßigem
+    // Aufenthalt (§ 6 Abs. 2 SGB VIII, https://www.gesetze-im-internet.de/sgb_8/__6.html, Abruf 20.11.2026)
+    if (h.asyl) return mk(id, 'vielleicht', 'vielleicht', [['eingl.asyl']]);
     if (h.bhPerson === 'minder') return mk(id, 'vielleicht', 'vielleicht', [['eingl.kind']]);
     return mk(id, 'vielleicht', 'vielleicht', [['eingl.erw']]);
   }
@@ -1522,8 +1600,14 @@ const Rules = (function () {
     return mk(id, 'ja', 'ja', tx);
   }
 
-  // Schwerbehindertenausweis und Nachteilsausgleiche (§ 2 SGB IX, § 208 SGB IX)
+  // Schwerbehindertenausweis und Nachteilsausgleiche (§ 2 SGB IX, § 208 SGB IX). § 2 Abs. 2 SGB IX verlangt Wohnsitz, gewöhnlichen
+  // Aufenthalt oder Arbeitsplatz „rechtmäßig“ im Inland (https://www.gesetze-im-internet.de/sgb_9_2018/__2.html, Abruf 20.11.2026);
+  // mit Duldung besteht der Anspruch auf Feststellung, wenn der Aufenthalt voraussichtlich länger als 6 Monate dauert (BSG 29.04.2010,
+  // B 9 SB 2/09 R, Leitsatz, rechtsprechung-im-internet.de, Abruf 20.11.2026). Die Prognose kennt die App nicht -> höchstens „möglich“ mit Hinweis
   function ausweis(h) {
+    return asylHoechstens(h, ausweis0(h), 'ausweis.asyl');
+  }
+  function ausweis0(h) {
     const id = 'ausweis';
     const g = gdbNum(h);
     if (!gdbEff(h) && h.gdbAntrag) return mk(id, 'na', 'na', [['ausweis.laeuft']]);
@@ -1538,8 +1622,14 @@ const Rules = (function () {
     return keinBeh(id);
   }
 
-  // Landesblindengeld Bayern (Art. 1 BayBlindG; ZBFS, Stand 1.7.2026)
+  // Landesblindengeld Bayern (Art. 1 BayBlindG; ZBFS, Stand 1.7.2026). Art. 1 und 3 BayBlindG schließen Asylsuchende nicht aus
+  // (https://www.gesetze-bayern.de/Content/Document/BayBlindG-1, .../BayBlindG-3, Abruf 20.11.2026), aber § 9 Abs. 1 AsylbLG schließt
+  // Leistungen nach „vergleichbaren Landesgesetzen“ aus (https://www.gesetze-im-internet.de/asylblg/__9.html, Abruf 20.11.2026). Ob das
+  // Landesblindengeld darunter fällt, steht nicht im Gesetz -> bei asyl höchstens „möglich“ mit Hinweis
   function blindengeld(h) {
+    return asylHoechstens(h, blindengeld0(h), 'blindengeld.asyl');
+  }
+  function blindengeld0(h) {
     const id = 'blindengeld';
     if (!h.blind) return keinBeh(id);
     // Andere Länder: Jedes Land hat ein eigenes Landesblindengeld (eigene Gesetze und Beträge). Blinde Menschen bekommen es überall,
@@ -1627,7 +1717,9 @@ const Rules = (function () {
   function rundfunk0(h, gg, gsa, w) {
     const id = 'rundfunk';
     if (h.bezug.grundsicherungsgeld || h.bezug.sozialamt) return mk(id, 'ja', 'ja', [['rundfunk.bezug']]);
-    // § 4 Abs. 1 Nr. 4 RBStV: Leistungen nach dem Asylbewerberleistungsgesetz
+    // § 4 Abs. 1 Nr. 4 RBStV: Empfänger von Leistungen nach dem Asylbewerberleistungsgesetz (https://bravors.brandenburg.de/vertraege/rbstv/5,
+    // Abruf 20.11.2026; gleicher Staatsvertrag in allen Ländern). Mit Bezug (h.asylBezug) „bekommst du“, sonst „möglich“
+    if (h.asylBezug) return mk(id, 'ja', 'ja', [['rundfunk.asyl']]);
     if (h.asyl) return mk(id, 'vielleicht', 'butMoeglich', [['rundfunk.asyl']]);
     if (gg.level === 'ja' || gsa.level === 'ja') return mk(id, 'vielleicht', 'butMoeglich', [['rundfunk.folgt']]);
     if (gg.level === 'vielleicht' || gsa.level === 'vielleicht') return mk(id, 'vielleicht', 'butMoeglich', [['rundfunk.haerte']]);
@@ -1638,39 +1730,6 @@ const Rules = (function () {
     return mk(id, 'nein', 'vorausFehlt', [['rundfunk.nein']]);
   }
 
-  // Kostenlose Familienversicherung in der gesetzlichen Krankenversicherung (§ 10 SGB V)
-  function famvers(h) {
-    const id = 'famvers';
-    if (h.adults === 1 && h.kids === 0 && h.young === 0) return mk(id, 'nein', 'vorausFehlt', [['famvers.keine']]);
-    const grenze = famversGrenze(h.heute);
-    const tx = [];
-    let partnerOk = false;
-    if (h.adults === 2) {
-      const b2 = h.brutto2 || 0, art = h.art2 || '';
-      partnerOk = art === 'ohne' || art === 'eg' || (!art && b2 === 0) || (art === 'lohn' && b2 <= h.minijob) || b2 <= grenze;
-      // Mit Einkommensliste alle Einträge von Person 2 ansehen (Gesamteinkommen § 16 SGB IV; GKV-Spitzenverband, Grundsätzliche Hinweise
-      // Gesamteinkommen vom 29.09.2022, Anlage: Elterngeld zählt nicht; Abschn. 2.3.4.2: Unterhalt nur beim Realsplitting -> Hinweis „möglich“).
-      // Nur Lohn: Minijob-Grenze, sonst ein Siebtel der Bezugsgröße
-      let unt2 = 0, sum2 = 0;
-      if (h.liste) {
-        const e2 = h.pers.filter((x) => x[5] === 2 && x[1] > 0);
-        const zaehlt = e2.filter((x) => x[0] !== 'eg' && x[0] !== 'unt' && x[0] !== 'ohne');
-        sum2 = zaehlt.reduce((s, x) => s + x[1], 0);
-        unt2 = e2.reduce((s, x) => s + (x[0] === 'unt' ? x[1] : 0), 0);
-        partnerOk = sum2 === 0 || sum2 <= (zaehlt.every((x) => x[0] === 'lohn' && !x[4]) ? h.minijob : grenze);
-      }
-      // Arbeitslosengeld, Krankengeld und Werkstatt bringen eine eigene Versicherung mit; Rente schließt nur über der Grenze aus
-      if (!h.liste && (art === 'alg' || art === 'kg' || art === 'wfbm' || (art === 'rente' && b2 > grenze))) partnerOk = false;
-      // Mit Liste ist art2 bei „Arbeitslosengeld + Nebenjob“ gleich lohn: die eigene Versicherung kommt trotzdem vom Arbeitslosengeld
-      if (h.liste && h.pers.some((x) => x[5] === 2 && (x[0] === 'alg' || x[0] === 'kg' || x[0] === 'wfbm') && x[1] > 0)) partnerOk = false;
-      tx.push(partnerOk ? ['famvers.partner', { grenze: eur(grenze), mini: eur(h.minijob) }] : ['famvers.partnerNein', { grenze: eur(grenze) }]);
-      if (partnerOk && unt2 > 0 && sum2 + unt2 > grenze) tx.push(['famvers.realsplit', { grenze: eur(grenze) }]);
-    }
-    if (h.kids > 0) tx.push(['famvers.kinder']);
-    if (h.young > 0) tx.push(['famvers.jung', { grenze: eur(grenze) }]);
-    if (!partnerOk && h.kids === 0 && h.young === 0) return mk(id, 'nein', 'einkoHoch', tx);
-    return mk(id, 'vielleicht', 'vielleicht', tx);
-  }
   // Befreiung von Zuzahlungen der Krankenkasse (§ 62 SGB V)
   function zuzahlung(h) {
     const id = 'zuzahl';
@@ -1686,10 +1745,13 @@ const Rules = (function () {
   // Berufsausbildungsbeihilfe (§§ 56 ff. SGB III): nur Voraussetzungen, keine Berechnung
   function bab(h) {
     const id = 'bab';
-    if (h.ausbildung === 'kindBetrieb') return mk(id, 'vielleicht', 'vielleicht', [['bab.kind']]);
+    // § 60 Abs. 3 SGB III (https://www.gesetze-im-internet.de/sgb_3/__60.html, Abruf 20.11.2026): mit Aufenthaltsgestattung keine
+    // Berufsausbildungsbeihilfe, mit Duldung erst nach 15 Monaten Aufenthalt -> bei asyl Hinweis vorn
+    const asyl = h.asyl ? [['bab.asyl']] : [];
+    if (h.ausbildung === 'kindBetrieb') return mk(id, 'vielleicht', 'vielleicht', asyl.concat([['bab.kind']]));
     if (h.ausbildung !== 'ich' || !h.babBetrieb) return mk(id, 'nein', 'vorausFehlt', [['bab.keine']]);
     if (!h.babWohnt) return mk(id, 'nein', 'vorausFehlt', [['bab.wohnen']]);
-    return mk(id, 'vielleicht', 'vielleicht', [['bab.ja']]);
+    return mk(id, 'vielleicht', 'vielleicht', asyl.concat([['bab.ja']]));
   }
 
   // Wohnberechtigungsschein Bayern (Art. 11 BayWoFG): Jahres-Einkommensgrenze
@@ -1701,6 +1763,14 @@ const Rules = (function () {
   }
   function wbs(h) {
     const id = 'wbs';
+    // § 27 Abs. 2 WoFG (https://www.gesetze-im-internet.de/wofg/__27.html, Abruf 20.11.2026): nur wer rechtlich in der Lage ist, auf
+    // längere Dauer einen Wohnsitz zu begründen; Bayern: Art. 14 Abs. 2 BayWoFG (https://www.gesetze-bayern.de/Content/Document/BayWoFG-14,
+    // Abruf 20.11.2026). Mit Duldung oder Gestattung meist nicht. Ausnahme z. B. Ausbildungsduldung: VG Berlin, Urteil vom 25.06.2019,
+    // VG 8 K 202.18 (rechtlich verfestigter Aufenthalt, Duldung muss noch mindestens ein Jahr gelten; Volltext asyl.net, rsdb M27364,
+    // Abruf 20.11.2026) -> „unwahrscheinlich“ mit Hinweis (Entscheidung David, 20.11.2026)
+    // Ausreisepflichtig ohne Duldung: kann rechtlich keinen Wohnsitz auf längere Dauer begründen (§ 27 Abs. 2 WoFG), keine Ausnahme
+    if (h.ausreise) return mk(id, 'nein', 'vorausFehlt', [['wbs.ausreise']]);
+    if (h.asyl) return mk(id, 'nein', 'vorausFehlt', [['wbs.asyl']]);
     // Andere Länder: eigene Einkommensgrenzen (Landesrecht). Sicher ist nur: Kein Land liegt unter den Bundeswerten (§ 9 Abs. 2 WoFG).
     // Das Brutto ist nie kleiner als das maßgebliche Gesamteinkommen; liegt es unter der Bundesgrenze, ist der WBS wahrscheinlich.
     if (h.land && h.land !== 'BY') {
@@ -1777,7 +1847,7 @@ const Rules = (function () {
     kgBeh: 'Kindergeld für erwachsene Kinder mit Behinderung', emrente: 'Erwerbsminderungsrente',
     eingl: 'Eingliederungshilfe', pausch: 'Behinderten-Pauschbetrag', ausweis: 'Schwerbehindertenausweis und Nachteilsausgleiche',
     blindengeld: 'Landesblindengeld', pflegeplus: 'Verhinderungspflege und Pflegehilfsmittel', arbeit: 'Budget für Arbeit',
-    rundfunk: 'Befreiung vom Rundfunkbeitrag', zuzahl: 'Befreiung von Zuzahlungen', famvers: 'Kostenlose Familienversicherung', bab: 'Berufsausbildungsbeihilfe',
+    rundfunk: 'Befreiung vom Rundfunkbeitrag', zuzahl: 'Befreiung von Zuzahlungen', bab: 'Berufsausbildungsbeihilfe',
     wbs: 'Wohnberechtigungsschein', alg1: 'Arbeitslosengeld I', krankengeld: 'Krankengeld', srente: 'Altersrente für schwerbehinderte Menschen', elterngeld: 'Elterngeld', hzp: 'Hilfe zur Pflege', lpg: 'Landespflegegeld (Bayern)', mutter: 'Mutterschaftsgeld', kkg: 'Kinderkrankengeld', blh: 'Blindenhilfe (Sozialhilfe)', asylblg: 'Asylbewerberleistungen'
   };
   // Unterlagen der neuen Karten: gemeinsame Schlüssel (u.*), damit nicht jede Karte eigene Texte braucht
@@ -1786,7 +1856,7 @@ const Rules = (function () {
     eingl: ['u.ausweis', 'u.arzt', 'u.einkommen'], ausweis: ['u.ausweis', 'u.arzt', 'u.foto'],
     blindengeld: ['u.ausweis', 'u.arzt', 'u.bescheide'], pflegeplus: ['u.versichertenkarte', 'u.pflegebescheid', 'u.kosten'],
     arbeit: ['u.ausweis', 'u.arzt', 'u.vertrag'], rundfunk: ['u.beitragsnr', 'u.bescheide', 'u.ausweis'],
-    zuzahl: ['u.versichertenkarte', 'u.quittungen', 'u.einkommen'], famvers: ['u.versichertenkarte', 'u.einkommen'], bab: ['u.ausbildungsvertrag', 'u.einkommen', 'u.mietvertrag'],
+    zuzahl: ['u.versichertenkarte', 'u.quittungen', 'u.einkommen'], bab: ['u.ausbildungsvertrag', 'u.einkommen', 'u.mietvertrag'],
     wbs: ['u.einkommen', 'u.ausweis', 'u.haushalt'],
     srente: ['u.ausweis', 'u.arzt', 'u.rentenverlauf'],
     elterngeld: ['u.geburtsurkunde', 'u.lohnabrechnung', 'u.steuerid'], hzp: ['u.pflegebescheid', 'u.einkommen', 'u.kosten'], lpg: ['u.pflegebescheid', 'u.ausweis', 'u.bescheide'], mutter: ['u.arzt', 'u.versichertenkarte', 'u.lohnabrechnung'], kkg: ['u.arzt', 'u.versichertenkarte', 'u.lohnabrechnung'], blh: ['u.ausweis', 'u.bescheide', 'u.einkommen'], asylblg: ['u.ausweis', 'u.aufenthalt', 'u.einkommen'],
@@ -1806,7 +1876,7 @@ const Rules = (function () {
     uvg: 'Unterhaltsvorschussgesetz, §§ 1–4 UVG', gsa: '§§ 41 ff. SGB XII', bafoeg: 'BAföG', pflege: '§§ 36–38, 41, 44, 45b SGB XI',
     kgBeh: '§ 32 Abs. 4 Satz 1 Nr. 3 EStG', emrente: '§ 43 SGB VI', eingl: '§§ 90 ff. SGB IX; Kinder mit seelischer Behinderung: § 35a SGB VIII',
     pausch: '§ 33b EStG', ausweis: '§§ 2, 152 SGB IX', blindengeld: 'Landesblindengeldgesetz (Bayern: BayBlindG)',
-    pflegeplus: '§§ 39, 40, 42, 42a SGB XI', arbeit: '§ 61 SGB IX', rundfunk: '§ 4 RBStV', zuzahl: '§ 62 SGB V', famvers: '§ 10 SGB V',
+    pflegeplus: '§§ 39, 40, 42, 42a SGB XI', arbeit: '§ 61 SGB IX', rundfunk: '§ 4 RBStV', zuzahl: '§ 62 SGB V',
     bab: '§§ 56 ff. SGB III', wbs: '§ 27 WoFG, Einkommensgrenze § 9 Abs. 2 WoFG; in Ländern mit eigenem Gesetz Landesrecht', alg1: '§§ 136 ff. SGB III', krankengeld: '§§ 44 ff. SGB V',
     srente: '§§ 37, 236a SGB VI', elterngeld: 'BEEG, §§ 1–2 BEEG', hzp: '§§ 61 ff. SGB XII', lpg: 'BayLPflGG',
     mutter: '§ 19 MuSchG, § 24i SGB V', kkg: '§ 45 SGB V', blh: '§ 72 SGB XII', asylblg: 'AsylbLG'
@@ -2021,7 +2091,7 @@ const Rules = (function () {
     const hzp = hilfeZurPflege(h), blh = blindenhilfe(h);
     const results = [kg, wg, kz, gg, but, uvg, gsa, baf, pf,
       a1, krg, eg, mutterschaftsgeld(h), kinderkrankengeld(h), hzp, landespflegegeld(h), asylbewerber(h), kindergeldBeh(h), erwerbsminderungsrente(h), schwerbRente(h), eingliederungshilfe(h), pauschbetrag(h), ausweis(h), blindengeld(h), blh,
-      pflegeplus(h), budgetArbeit(h), rundfunk(h, gg, gsa, { hzp, blh, baf }), zuzahlung(h), famvers(h), bab(h), wbs(h)].map(angabeFehlt(h)).map((x, i) => ({ ...x, name: NAMES[x.id], order: i, steps: STEPS[x.id], recht: RECHT[x.id] }));
+      pflegeplus(h), budgetArbeit(h), rundfunk(h, gg, gsa, { hzp, blh, baf }), zuzahlung(h), bab(h), wbs(h)].map(angabeFehlt(h)).map((x, i) => ({ ...x, name: NAMES[x.id], order: i, steps: STEPS[x.id], recht: RECHT[x.id] }));
     uzHinweise(h, results);
     einmalHinweise(h, results);
     kartenHinweise(h, results);

@@ -27,8 +27,8 @@ const names = () => cards().map((c) => c.querySelector('h3').textContent);
 const card = (n) => cards().find((c) => c.querySelector('h3').textContent === n);
 const level = (n) => card(n).querySelector('.pill').className.replace('pill ', '');
 const fire = (el, type) => el.dispatchEvent(new w.Event(type, { bubbles: true }));
-// Beispiel laden; sind schon eigene Angaben da, fragt die App nach – hier bestätigen
-const beispiel = (id) => { d.getElementById(id).click(); if (!d.getElementById('beispielDlg').hidden) d.getElementById('beispielJa').click(); };
+// Beispiel laden (nur noch Testhilfe: unsichtbare Knöpfe in #presets, David 20.11.2026)
+const beispiel = (id) => { d.getElementById(id).click(); };
 const setLang = (c) => { const s = d.getElementById('lang'); s.value = c; fire(s, 'change'); };
 const setSel = (id, v) => { const s = d.getElementById(id); s.value = v; fire(s, 'change'); };
 const setChk = (id, v) => { const c = d.getElementById(id); c.checked = v; fire(c, 'change'); };
@@ -47,7 +47,7 @@ check('Zusammenfassung zeigt Anzahl', /\d+ wahrscheinlich/.test(d.getElementById
 check('Unwahrscheinliche Leistungen sind eingeklappt gruppiert', d.querySelector('.neinbox') !== null && d.querySelector('.neinbox').open === false);
 check('Hinweis auf Beispielwerte sichtbar', d.getElementById('sampleNotice').hidden === false);
 check('Übersetzungs-Hinweis bei Deutsch versteckt', d.getElementById('transNotice').hidden === true);
-check('Nächste Schritte vorhanden bei Treffer', card('Wohngeld').querySelector('details') !== null);
+check('Treffer: Hinweis auf Unterlagen und nächste Schritte in der Antragsmappe', /Antragsmappe/.test((card('Wohngeld').querySelector('.karte-mappe') || {}).textContent || ''));
 check('Zusammenspiel-Hinweis Wohngeld und Kinderzuschlag steht in beiden Karten', /kombinieren/.test(d.getElementById('c-wohngeld').textContent) && /kombinieren/.test(d.getElementById('c-kiz').textContent));
 check('Neue Karten vorhanden', ['Grundsicherungsgeld', 'Unterhaltsvorschuss', 'BAföG', 'Pflegegeld und Entlastungsbetrag', 'Kindergeld'].every((n) => names().includes(n)));
 check('Unterhaltsvorschuss im Beispiel 1 wahrscheinlich', level('Unterhaltsvorschuss') === 'ja');
@@ -66,31 +66,22 @@ check('Mit Kindern sind Kinder-Fragen sichtbar', [...d.querySelectorAll('.cond-k
 setNum('ek1Brutto', 9000); setNum('ek1Netto', 6500);
 check('Hinweis verschwindet nach eigener Eingabe', d.getElementById('sampleNotice').hidden === true);
 check('Hohes Einkommen: Wohngeld und Kinderzuschlag unwahrscheinlich', level('Wohngeld') === 'nein' && level('Kinderzuschlag') === 'nein');
-// Beispiel laden bei eigenen Angaben: erst Rückfrage im eigenen Dialog, „Abbrechen“ und Esc lassen alles stehen
-d.getElementById('p2').click();
-const dlg = d.getElementById('beispielDlg');
-check('Beispiel über eigene Angaben: Rückfrage-Dialog offen, Fokus auf „Abbrechen“', !dlg.hidden && dlg.querySelector('[role="alertdialog"][aria-modal="true"]') && d.activeElement === d.getElementById('beispielNein'));
-check('Rückfrage: Hintergrund gesperrt (inert)', d.getElementById('cols').hasAttribute('inert'));
-d.getElementById('beispielNein').click();
-check('Rückfrage „Abbrechen“: eigene Angaben bleiben, Hintergrund wieder frei', dlg.hidden && d.getElementById('ek1Brutto').value === '9000' && !d.getElementById('cols').hasAttribute('inert'));
-d.getElementById('p2').click(); dlg.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
-check('Rückfrage Esc: schließt ohne Laden', dlg.hidden && d.getElementById('ek1Brutto').value === '9000');
-d.getElementById('p2').click(); d.getElementById('beispielJa').click();
-check('Rückfrage „Beispiel laden“: Beispiel geladen', dlg.hidden && d.getElementById('ek1Art').value === 'rente');
+check('Keine sichtbaren Beispiele im Leistungs-Check (nur Testhilfe)', d.getElementById('presets').hidden && !d.getElementById('presetLabel') && !d.getElementById('beispielDlg'));
 d.getElementById('p1').click();
-check('Unverändertes Beispiel: kein Dialog beim Wechsel', dlg.hidden && d.getElementById('ek1Art').value !== 'rente');
 // Eingeklappte Karte: zweite Zeile mit Betrag und Art der Stelle statt „Anspruch ist wahrscheinlich“
 const z2 = (id) => d.querySelector('#c-' + id + ' .head2').textContent;
 check('Kartenzeile Wohngeld: ungefährer Betrag und Wohngeldstelle', /ca\. .*€.* im Monat/.test(z2('wohngeld')) && /Wohngeldstelle/.test(z2('wohngeld')) && !/wahrscheinlich/.test(z2('wohngeld')), z2('wohngeld'));
-// Alle Angaben löschen: sagt, was gelöscht wird; Rückgängig-Leiste stellt alles wieder her
+// Löschen nur an einer Stelle (Einstellungen → Sicherheit und Daten): Zeile sagt, was weg ist; Rückfrage; danach leer
 d.getElementById('p-name').value = 'Test'; fire(d.getElementById('p-name'), 'input');
-check('Löschen-Knopf getrennt von den Beispielen, Text nennt Formular und Briefdaten', !d.getElementById('presets').contains(d.getElementById('clearBtn')) && /Formular/.test(d.getElementById('clearWas').textContent) && /Anschrift/.test(d.getElementById('clearWas').textContent));
-d.getElementById('clearBtn').click();
-check('Löschen: Formular leer, Rückgängig-Leiste sichtbar', d.getElementById('ek1Art').value === '' && d.getElementById('p-name').value === '' && !d.getElementById('undoBar').hidden);
-d.getElementById('undoBtn').click();
-check('Rückgängig: Angaben und Name zurück, Leiste weg', d.getElementById('ek1Brutto').value !== '' && d.getElementById('p-name').value === 'Test' && d.getElementById('undoBar').hidden);
-d.getElementById('clearBtn').click(); setNum('miete', 500);
-check('Neue Eingabe nach dem Löschen: Rückgängig-Leiste verschwindet', d.getElementById('undoBar').hidden);
+check('Leistungs-Check: „Angaben löschen“ oben in der Leiste von „Deine Angaben“ (vor dem Formular); Löschen-Zeile nennt Formular und Briefdaten', !d.getElementById('clearBtn') && !!d.getElementById('clearLink') && d.getElementById('sfLeiste').contains(d.getElementById('clearLink')) && d.getElementById('clearLink').compareDocumentPosition(d.getElementById('form')) & 4 && /Andere Vorgänge bleiben/.test(d.getElementById('clear2').textContent));
+d.getElementById('clearLink').click();
+check('„Angaben löschen“ oben: dieselbe Rückfrage direkt darunter (Behalten/Löschen)', !!d.querySelector('#schritte #loeschFrage') && /Formular/.test(d.getElementById('loeschFrage').textContent) && d.getElementById('loeschNein').textContent === 'Behalten');
+d.getElementById('loeschNein').click();
+check('„Behalten“: Rückfrage weg, Angaben bleiben', !d.getElementById('loeschFrage') && d.getElementById('p-name').value === 'Test');
+d.getElementById('clear2').click();
+check('Rückfrage nennt genau: Formular und Briefdaten', /Formular/.test(d.getElementById('loeschFrage').textContent) && /Anschrift/.test(d.getElementById('loeschFrage').textContent));
+d.getElementById('loeschJa').click();
+check('Löschen nach „Löschen“ in der Rückfrage: Formular leer, Meldung', d.getElementById('ek1Art').value === '' && d.getElementById('p-name').value === '' && /gelöscht/.test(d.getElementById('loeschMsg').textContent));
 d.getElementById('p-name').value = ''; fire(d.getElementById('p-name'), 'input');
 
 // Stepper
@@ -174,8 +165,7 @@ LANGS.forEach((l) => {
   check(l + ': Beschreibung unter der Karte ' + (l === 'de' ? 'fehlt bei Deutsch' : 'vorhanden'), (card('Wohngeld').querySelector('.desc') === null) === (l === 'de'));
   ['p2', 'p3'].forEach((p) => { beispiel(p); });
   check(l + ': Beispiele laden ohne Fehler', errors.length === 0, errors.join('; '));
-  check(l + ': Preset-Knopf übersetzt', d.getElementById('p1').textContent === dict['preset.p1']);
-});
+  });
 check('Sprachwahl wird gemerkt', store['lotse-lang'] === 'so');
 setLang('de');
 
@@ -388,6 +378,14 @@ setTimeout(() => {
   const sicht = () => ['start', 'leistungen', 'briefe', 'pflege', 'pfaendung', 'sparen'].find((x) => !d.getElementById('v-' + x).hidden);
   const navAkt = () => (d.querySelector('#appnav button[aria-current="page"]') || {}).getAttribute?.('data-ansicht');
   d.querySelector('#appnav button[data-ansicht="start"]').click();
+  // Kopfzeile (Logo, App-Name, Satz „Prüfe in etwa 5 Minuten …“) nur auf der Startseite; sonst sichtbar versteckt, h1 bleibt für Screenreader
+  const kopfVersteckt = () => { const st = w.getComputedStyle(d.querySelector('header.top')); return st.position === 'absolute' && st.width === '1px' && st.overflow === 'hidden'; };
+  check('Kopfzeile mit Logo, Name und Satz „Prüfe in etwa 5 Minuten“ auf der Startseite sichtbar', !kopfVersteckt() && w.getComputedStyle(d.querySelector('.top .lead')).display !== 'none' && !!d.querySelector('.top .kopf-titel h1'));
+  for (const a of ['leistungen', 'ordner', 'einst']) {
+    if (a === 'leistungen') d.getElementById('goLeistungen').click(); else d.querySelector('#appnav button[data-ansicht="' + a + '"]').click();
+    check('Kopfzeile auf „' + a + '“ ausgeblendet, h1 im Dokument, eigene Überschrift sichtbar', kopfVersteckt() && d.querySelectorAll('header.top h1').length === 1 && !!d.querySelector('#v-' + a + ' h2:not([hidden])'));
+  }
+  d.querySelector('#appnav button[data-ansicht="start"]').click();
   d.getElementById('goGeld').click();
   check('Start → Geld und Schulden: Leiste markiert Start, oben „← Zurück“ als Textknopf', sicht() === 'sparen' && navAkt() === 'start' && /← /.test(d.querySelector('#v-sparen [data-nav-zurueck]').textContent) && d.querySelector('#v-sparen [data-nav-zurueck]').classList.contains('pa-zur'));
   d.querySelector('#v-sparen [data-nav-zurueck]').click();
@@ -406,14 +404,12 @@ setTimeout(() => {
     d.querySelector('#appnav button[data-ansicht="start"]').click();
     d.getElementById('goGeld').click();
     const box = d.getElementById('spInhalt');
-    const kacheln = () => [...box.querySelectorAll('.sk-raster > button.sk')];
+    const kacheln = () => [...box.querySelectorAll('.uk-raster > button.uk-karte')];
     const zur = () => d.querySelector('#v-sparen [data-nav-zurueck]').click();
     const titel = kacheln().map((b) => b.querySelector('b').textContent);
     check('[geld] 6 Kacheln in fester Reihenfolge', titel.join('|') === ['gs.dringend', 'gs.bleibt', 'sl.h', 'gs.planen', 'sp.h', 'gs.hilfe'].map((k) => I18N.de[k]).join('|'), titel.join('|'));
-    check('[geld] Kacheln in der Form der Startseite (sk, Symbol, Titel, Text)', kacheln().every((b) => b.querySelector('.sk-sym svg') && b.querySelector('.sk-txt b') && b.querySelector('.sk-txt span')));
-    const farbe = (b) => w.getComputedStyle(b).getPropertyValue('--c').trim();
-    const farben = kacheln().map(farbe);
-    check('[geld] jede Kachel eine eigene Farbe', farben.every(Boolean) && new Set(farben).size === 6, farben.join());
+    check('[geld] Kacheln in der Form der Startseite (Symbol, Titel, Text)', kacheln().every((b) => b.querySelector('.sk-sym svg') && b.querySelector('.sk-txt b') && b.querySelector('.sk-txt span')));
+    check('[geld] weiße Unterkacheln (uk-karte im uk-raster, Design #68)', kacheln().length === 6 && kacheln().every((b) => b.classList.contains('uk-karte') && !b.classList.contains('sk')));
     // 1 Es ist dringend
     kacheln()[0].click();
     const faelle = kacheln().map((b) => b.className.match(/gs-d-([a-z]+)/)[1]);
@@ -454,14 +450,14 @@ setTimeout(() => {
     Object.keys(I18N).forEach((l) => {
       setLang(l);
       ebenen.forEach((weg) => {
-        while (box.querySelector('.sk-raster') && kacheln().length !== 6 || !box.querySelector('.sk-raster')) zur();
+        while (box.querySelector('.uk-raster') && kacheln().length !== 6 || !box.querySelector('.uk-raster')) zur();
         weg.forEach((i) => kacheln()[i].click());
         if (/\b(gs|sp|pf|home)\.[a-z]|undefined/.test(box.textContent)) roh.push(l + ':' + weg.join('-'));
       });
     });
     check('[geld] In allen 13 Sprachen ohne Rohschlüssel', roh.length === 0, roh.join());
     setLang('de');
-    while (!(box.querySelector('.sk-raster') && kacheln().length === 6)) zur();
+    while (!(box.querySelector('.uk-raster') && kacheln().length === 6)) zur();
     // Konto gepfändet → Pfändungsrechner (Konto) → nach dem Ergebnis „Kostenlose Hilfe“ → Zurück eine Ebene hoch
     kacheln()[0].click(); kacheln()[0].click();
     box.querySelector('.sp-rechner').click();
@@ -480,6 +476,13 @@ setTimeout(() => {
     check('[geld] Zurück aus „Kostenlose Hilfe“: 6 Kacheln (kein Kreis zum Rechner)', sicht() === 'sparen' && kacheln().length === 6);
     zur();
     check('[geld] Zurück von den 6 Kacheln: Startseite', sicht() === 'start');
+  }
+  // Leistungs-Check: Weg wählen (src/schritte.js, ausführlich in test/test-schritte.js)
+  {
+    const sfBox = d.getElementById('schritte');
+    check('[schritte] Abschnitt „Schritt für Schritt“ vorhanden, Modul geladen', !!sfBox && !!w.Schritte && w.Schritte.FRAGEN.length > 40);
+    check('[schritte] Jede Formular-Angabe hat eine Frage oder gehört zu einer Mehrfachfrage', ['adults', 'kids', 'kidsU6', 'kids14', 'young', 'gebJahr', 'baby', 'egVor', 'aufenthalt', 'euArbeit', 'euJahre', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'bhWeitere', 'emStd', 'em5', 'ernaehrung', 'schwanger', 'arbeitSit', 'algZeit', 'algMonate', 'krankWochen', 'lohnVorher', 'ausbildung', 'wohnart', 'miete', 'heizkosten', 'warmwasser', 'hhAndere', 'plz', 'bundesland', 'mietstufe', 'ek1Art', 'ek1Brutto', 'ek1Netto', 'ek1bArt', 'ek1bBetrag', 'ek2Art', 'ek2Brutto', 'ek2Netto', 'ek2bArt', 'ek2bBetrag', 'zusatzRente', 'grundrente33', 'wfbmEssen', 'unterhalt', 'waisen', 'kindEink', 'uzBetrag', 'uzAn', 'uzTitel', 'vermoegen', 'autoWert', 'autoBraucht', 'uvgWechsel', 'uvgPartner']
+      .every((k) => w.Schritte.FRAGEN.some((f) => f.id === k)) && ['kinder12', 'kindKrank', 'unterhaltFehlt', 'mzG', 'mzGl', 'bhSelbst', 'wfbm', 'teilhabe', 'babBetrieb', 'babWohnt'].every((k) => w.Schritte.FRAGEN.some((f) => (f.felder || []).some((x) => x[0] === k))));
   }
   check('Keine Skriptfehler im gesamten Test', errors.length === 0, errors.join('; '));
   console.log(fails ? '\n' + fails + ' FEHLER' : '\nAlle DOM-Tests bestanden');

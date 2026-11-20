@@ -26,14 +26,5 @@ check('[einmal] Grundsicherung im Alter: Erstausstattung als Hinweis', keys(rent
 const reich = { ...arm, kids: 0, art1: 'lohn', brutto: 3500, netto: 2400, schwanger: true };
 check('[einmal] Schwanger, Einkommen zu hoch für laufende Leistung: Erstausstattung trotzdem möglich', card(reich, 'ggeld').level === 'nein' && keys(reich, 'ggeld').includes('einmal.ohneBezug'));
 
-// Familienversicherung (§ 10 SGB V): 2026 Grenze 3.955 € / 7 = 565 €, Minijob 603 €
-const fam = (inp) => card({ adults: 2, kids: 0, young: 0, art1: 'lohn', brutto: 3000, netto: 2100, miete: 800, mietstufe: 3, vermoegen: 0, gebJahr: 1985, bezug: {}, heute: 2026.9, ...inp }, 'famvers');
-check('[famvers] Partner ohne Einkommen: möglich', fam({ art2: 'ohne', brutto2: 0 }).level === 'vielleicht');
-check('[famvers] Partner Minijob 603 €: möglich', fam({ art2: 'lohn', brutto: 3603, brutto2: 603 }).level === 'vielleicht');
-check('[famvers] Partner 1.200 € Lohn: nein', fam({ art2: 'lohn', brutto: 4200, brutto2: 1200 }).level === 'nein');
-check('[famvers] Partner Rente über der Grenze: nein (eigene Versicherung)', fam({ art2: 'rente', brutto: 3900, brutto2: 900 }).level === 'nein');
-check('[famvers] Partner kleine Rente unter der Grenze: möglich (§ 10 Abs. 1 SGB V)', fam({ art2: 'rente', brutto: 3400, brutto2: 400 }).level === 'vielleicht');
-check('[famvers] Grenze 565 € im Text', JSON.stringify(fam({ art2: 'ohne' }).tx).includes('565'));
-check('[famvers] Allein ohne Kinder: nein', card({ ...rentnerin }, 'famvers').level === 'nein');
 console.log(fails ? '\n' + fails + ' Fehler' : '\nErsparnis-Tests bestanden');
 process.exit(fails ? 1 : 0);

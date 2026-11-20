@@ -88,6 +88,7 @@ const start = (s) => klick(s, s.d.querySelector('#appnav [data-ansicht=start]'))
     // Fälle: öffnen, erwartete Ansicht danach, erwartete Ansicht nach „Zurück“
     const faelle = [
       ['Leistungen', () => klick(s, $('goLeistungen')), 'leistungen', 'start'],
+      ['Leistungs-Check Schritt für Schritt: Frage 2', () => { klick(s, $('goLeistungen')); const w1 = d.querySelector('#schritte .sf-w1'); if (w1) klick(s, w1); const o = d.querySelector('#schritte .es-wahl button'); if (o) klick(s, o); }, 'leistungen', 'leistungen'],
       ['Brief: Absender-Auswahl', () => klick(s, $('goBriefe')), 'briefe', 'start'],
       ['Brief: Kachel Jobcenter', () => { klick(s, $('goBriefe')); klick(s, $('brief-jc')); }, 'briefe', 'briefe'],
       ['Geld und Schulden', () => klick(s, $('goGeld')), 'sparen', 'start'],
@@ -111,8 +112,8 @@ const start = (s) => klick(s, s.d.querySelector('#appnav [data-ansicht=start]'))
       ['Einstellungen: Fachleute', () => w.__solo.unterseite('einst', 'fach'), 'einst', 'einst'],
       ['Einstellungen: Erinnern', () => w.__solo.unterseite('einst', 'erinnern'), 'einst', 'einst'],
       ['Einstellungen: Über', () => w.__solo.unterseite('einst', 'about'), 'einst', 'einst'],
-      ['Mein Ordner: Fristen', () => w.__solo.unterseite('ordner', 'fristen'), 'ordner', 'ordner'],
-      ['Mein Ordner: Alle Haushalte', () => w.__solo.unterseite('ordner', 'alle'), 'ordner', 'ordner']
+      ['Mein Ordner: Fristen', () => w.__solo.unterseite('ordner', 'fristen'), 'ordner', 'ordner']
+
     ];
     for (const [name, oeffne, ansicht, danach] of faelle) {
       start(s); await warte();

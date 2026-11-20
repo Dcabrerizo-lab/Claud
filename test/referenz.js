@@ -427,6 +427,11 @@ function uvgOhneAufenthalt(e, ggStufe) {
 
 // ---------- BAföG (nur Einstufung; Kind: Freibeträge der Eltern § 25 BAföG, vereinfacht wie in der App) ----------
 function bafoeg(e) {
+  const r = bafoeg0(e);
+  // § 8 Abs. 1 Nr. 2 bis 4 BAföG: EU-Bürger ohne Arbeit, unter 5 Jahren höchstens „möglich“
+  return euAus(haushalt(e)) && r.level === 'ja' ? { ...r, level: 'vielleicht' } : r;
+}
+function bafoeg0(e) {
   const h = haushalt(e);
   const a = e.ausbildung;
   if (a !== 'kind' && a !== 'kindBetrieb' && a !== 'ich') return { level: 'nein' };
@@ -479,7 +484,9 @@ function krankengeld(e) {
   if (zahl(e.lohnVorher) > 0 && zahl(e.lohnVorher) <= minijobAm(e.heute ? Number(e.heute) : 0)) return { level: 'nein', spanne: null };
   const lohn = Math.min(zahl(e.lohnVorher), 5812.5);
   const kg = (q) => runde10(Math.min(0.7 * lohn, 0.9 * lohn * q) * 0.875);
-  return { level: e.krankWochen === 'unter6' ? 'vielleicht' : 'ja', spanne: lohn > 0 ? [kg(0.6), kg(lohn <= 2000 ? 0.8 : 0.72)] : null };
+  // § 50 Abs. 1 und 2 SGB V: Rente (erste Person) beendet oder kürzt das Krankengeld -> höchstens „möglich“
+  const rente = h.p[0].art === 'rente' && h.p[0].brutto > 0;
+  return { level: e.krankWochen === 'unter6' || rente ? 'vielleicht' : 'ja', spanne: lohn > 0 ? [kg(0.6), kg(lohn <= 2000 ? 0.8 : 0.72)] : null };
 }
 
 
@@ -501,7 +508,15 @@ function grenze85(e) {
 }
 function schon90(e) { return 10000 * (e.adults === 2 ? 2 : 1) + 500 * (Math.max(0, e.kids | 0) + Math.max(0, e.young | 0)); }
 // ---------- Asylbewerber: Ausschlüsse (§ 7 Abs. 1 SGB II, § 23 Abs. 2 SGB XII, § 7 WoGG, § 6a BKGG mit § 62 EStG) ----------
-const ASYL_NEIN = ['ggeld', 'gsa', 'wohngeld', 'kiz'];
+// Asylverfahren oder Duldung: ausgeschlossen (§ 7 Abs. 1 Satz 2 Nr. 3 SGB II, § 23 Abs. 2 SGB XII, § 6a BKGG; WBS: § 27 Abs. 2 WoFG,
+// Entscheidung David 20.11.2026: „unwahrscheinlich“)
+const ASYL_NEIN = ['ggeld', 'gsa', 'kiz', 'wbs'];
+// Höchstens „möglich“, sonst wie ohne Asyl: BAföG (§ 8 Abs. 2a,
+// Abs. 3 BAföG), Arbeitslosengeld (§ 138 Abs. 5 Nr. 1 SGB III), Kindergeld bei Behinderung (§ 62 Abs. 2 EStG), Ausweis (§ 2 Abs. 2 SGB IX),
+// Landesblindengeld (§ 9 Abs. 1 AsylbLG) – alle abgerufen 20.11.2026 auf gesetze-im-internet.de bzw. gesetze-bayern.de
+// Wohngeld: ohne Einkommensart „Asylbewerberleistungen“ normal gerechnet (§ 3 Abs. 5 WoGG, Entscheidung David 20.11.2026), mit ihr
+// ausgeschlossen (§ 7 Abs. 1 Satz 1 Nr. 8 WoGG) – eigene Prüfung im Raster-Test
+const ASYL_MOEGLICH = ['bafoeg', 'alg1', 'kgBeh', 'ausweis', 'blindengeld'];
 
 // ---------- Künftige vorrangige Leistung der ersten Person (Arbeitslosengeld, Krankengeld, Elterngeld) ----------
 // Sie zählt bei Grundsicherungsgeld, Wohngeld und Kinderzuschlag als Einkommen (§ 11 SGB II, § 14 WoGG; Elterngeld über 300 €).
@@ -532,4 +547,4 @@ function kduGrenze(e) {
   return hoechst(st, n) * 1.1 + heiz(n);
 }
 
-module.exports = { kappe, euAus, kduGrenze, kuenftig, zusammen, elterngeld, grenze85, schon90, ASYL_NEIN, haushalt, grundsicherungsgeld, wohngeld, kinderzuschlag, grundsicherungAlter, unterhaltsvorschuss, bafoeg, arbeitslosengeld, krankengeld, regelaltersgrenze, freibetragArbeit, RB };
+module.exports = { kappe, euAus, kduGrenze, kuenftig, zusammen, elterngeld, grenze85, schon90, ASYL_NEIN, ASYL_MOEGLICH, haushalt, grundsicherungsgeld, wohngeld, kinderzuschlag, grundsicherungAlter, unterhaltsvorschuss, bafoeg, arbeitslosengeld, krankengeld, regelaltersgrenze, freibetragArbeit, RB };

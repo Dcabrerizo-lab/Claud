@@ -4,6 +4,8 @@
 // Scrollen, in der einfachen Version immer eine Frage oder ein Ergebnis, in der ausführlichen Version Karten oder Startanleitung.
 // Aufruf: node test/e2e-zufall.js [Schritte, Standard 1200] (BROWSER=firefox|webkit für andere Browser; ZUFALL_SEED für einen anderen Ablauf)
 const pw = require('playwright');
+// Leistungs-Check: Weg „Alles auf einer Seite“ vorwählen (sonst erscheint zuerst die Auswahl Schritt für Schritt / Alles auf einer Seite)
+const SF_ALLES = () => { try { if (!localStorage.getItem('lotse.checkWeg')) { localStorage.setItem('lotse.checkWeg', 'alles'); localStorage.setItem('CapacitorStorage.lotse.checkWeg', 'alles'); } } catch (e) {} };
 const browserTyp = pw[process.env.BROWSER || 'chromium'];
 const path = require('path');
 // SHARD=k/n: jeder Teil macht ein n-tel der Schritte mit eigenem Startwert (zusammen gleicher Umfang)
@@ -22,7 +24,7 @@ const VERBOTEN = '#mappePrint, #mappeShare, #mappeCopy, #feedbackMail, #sc-take,
 (async () => {
   const b = await browserTyp.launch();
   const ctx = await b.newContext({ viewport: { width: 390, height: 800 }, locale: 'de-DE' });
-  const p = await ctx.newPage();
+  const p = await ctx.newPage(); await p.addInitScript(SF_ALLES);
   const fehler = [];
   const log = [];
   p.on('pageerror', (e) => fehler.push('Skriptfehler: ' + e.message + ' | nach: ' + log.slice(-6).join(' > ')));
@@ -52,7 +54,7 @@ const VERBOTEN = '#mappePrint, #mappeShare, #mappeCopy, #feedbackMail, #sc-take,
     const offen = document.querySelector('#mappe:not([hidden]), #legal:not([hidden])');
     const wurzel = offen || document;
     const els = [...wurzel.querySelectorAll('button, input, select, summary, [role=button]')].filter((el) => vis(el) && !el.matches(verboten));
-    return els.map((el, i) => { el.setAttribute('data-zufall', String(i)); return { i, tag: el.tagName.toLowerCase(), typ: el.type || '', id: el.id || '', text: (el.innerText || el.value || '').slice(0, 30), opts: el.tagName === 'SELECT' ? [...el.options].map((o) => o.value) : null }; });
+    return els.map((el, i) => { el.setAttribute('data-zufall', String(i)); return { i, tag: el.tagName.toLowerCase(), typ: el.type || '', id: el.id || '', weg: !!el.closest('#appnav, .nav-kopf, #leistungenKopf'), text: (el.innerText || el.value || '').slice(0, 30), opts: el.tagName === 'SELECT' ? [...el.options].map((o) => o.value) : null }; });
   }, VERBOTEN);
 
   const besucht = { einfach: 0, ausfuehrlich: 0, mappe: 0, karten: 0 };
@@ -65,7 +67,7 @@ const VERBOTEN = '#mappePrint, #mappeShare, #mappeCopy, #feedbackMail, #sc-take,
       const r = rnd();
       // Feste Besuche, damit jeder Lauf sicher alle Bereiche prüft: einfache Version und Antragsmappe
       if ((s % 200 === 50 || einfachNochmal > 0) && !imEinfach) { einfachNochmal = s % 200 === 50 ? 10 : einfachNochmal - 1; schritt = 'Einfache Version (fest)'; for (const zu of ['#mappeClose', '#legalClose']) if (await p.isVisible(zu)) await p.click(zu, { timeout: 1000 }); await zuLeistungen(); if (!(await p.locator('#es-raus').first().isVisible())) await p.evaluate(() => document.getElementById('einfachBtn').click()); } // vorher Mappe oder Impressum schließen und zum Bereich Leistungen (sonst bleibt die einfache Version unsichtbar); klappt es nicht, bis zu 10 Schritte erneut
-      else if (s % 200 === 150 || mappeNochmal > 0) { mappeNochmal = s % 200 === 150 ? 10 : mappeNochmal - 1; schritt = 'Antragsmappe (fest)'; for (const zu of ['#mappeClose', '#legalClose']) if (await p.isVisible(zu)) await p.click(zu, { timeout: 1000 }); await zuLeistungen(); if (await p.locator('#es-raus').first().isVisible()) { await p.locator('#es-raus').first().click({ timeout: 1000 }); await p.waitForTimeout(150); } if (!(await p.isVisible('#mappeMake')) || await p.isDisabled('#mappeMake')) { await p.click('#p1', { timeout: 1000 }).catch(() => {}); if (await p.isVisible('#beispielJa')) await p.click('#beispielJa', { timeout: 1000 }); await p.waitForTimeout(150); } /* noch kein Ergebnis (Mappe-Bereich erscheint erst mit Ergebnis) oder nichts auswählbar: Beispiel laden */ await p.evaluate(() => { const c = [...document.querySelectorAll('[data-pick]')]; if (c.length && !c.some((x) => x.checked)) c[0].click(); }); /* alles abgewählt: eine Leistung wählen */ if (await p.isVisible('#mappeMake')) await p.click('#mappeMake', { timeout: 1000 }); } // erst zum Bereich Leistungen (es gibt jetzt mehr Bereiche), dann die einfache Version verlassen
+      else if (s % 200 === 150 || mappeNochmal > 0) { mappeNochmal = s % 200 === 150 ? 10 : mappeNochmal - 1; schritt = 'Antragsmappe (fest)'; for (const zu of ['#mappeClose', '#legalClose']) if (await p.isVisible(zu)) await p.click(zu, { timeout: 1000 }); await zuLeistungen(); if (await p.locator('#es-raus').first().isVisible()) { await p.locator('#es-raus').first().click({ timeout: 1000 }); await p.waitForTimeout(150); } if (!(await p.isVisible('#mappeMake')) || await p.isDisabled('#mappeMake')) { await p.evaluate(() => document.getElementById('p1').click()).catch(() => {}); if (await p.isVisible('#beispielJa')) await p.click('#beispielJa', { timeout: 1000 }); await p.waitForTimeout(150); } /* noch kein Ergebnis (Mappe-Bereich erscheint erst mit Ergebnis) oder nichts auswählbar: Beispiel laden */ await p.evaluate(() => { const c = [...document.querySelectorAll('[data-pick]')]; if (c.length && !c.some((x) => x.checked)) c[0].click(); }); /* alles abgewählt: eine Leistung wählen */ if (await p.isVisible('#mappeMake')) await p.click('#mappeMake', { timeout: 1000 }); } // erst zum Bereich Leistungen (es gibt jetzt mehr Bereiche), dann die einfache Version verlassen
       else if (r < 0.01) { schritt = 'Neu laden'; await p.reload(); await p.click('#firstOk', { timeout: 500 }).catch(() => {}); }
       else if (r < 0.045 && !imEinfach) { schritt = 'Einfache Version'; if (true) await p.evaluate(() => document.getElementById('einfachBtn').click()); }
       else if (r < 0.055) { schritt = 'Antragsmappe'; if (await p.isVisible('#mappeMake')) await p.click('#mappeMake', { timeout: 1000 }); }
@@ -75,7 +77,7 @@ const VERBOTEN = '#mappePrint, #mappeShare, #mappeCopy, #feedbackMail, #sc-take,
         if (!zs.length) { schritt = 'nichts bedienbar'; fehler.push('Sackgasse: kein bedienbares Element | nach: ' + log.slice(-6).join(' > ')); break; }
         // In der einfachen Version länger bleiben: „zur ausführlichen Version“ nur selten wählen, sonst bleibt sie kaum geprüft
         let z = pick(zs);
-        for (let k = 0; k < 5 && imEinfach && (z.id === 'es-raus' || z.id === 'einfachBtn') && rnd() < 0.85; k++) z = pick(zs);
+        for (let k = 0; k < 5 && imEinfach && (z.id === 'es-raus' || z.id === 'einfachBtn' || z.weg) && rnd() < 0.85; k++) z = pick(zs); // auch Leiste und „← Zurück“ (verlassen die Seite) nur selten
         const sel = '[data-zufall="' + z.i + '"]';
         if (z.tag === 'select') { const v = pick(z.opts); schritt = 'Auswahl ' + (z.id || '?') + '=' + v; await p.selectOption(sel, v, { timeout: 1000 }); }
         else if (z.tag === 'input' && (z.typ === 'text' || z.typ === 'number' || z.typ === 'tel' || z.typ === '')) { const v = pick(WERTE); schritt = 'Eingabe ' + (z.id || '?') + '="' + v + '"'; await p.fill(sel, v, { timeout: 1000 }); await p.press(sel, 'Tab', { timeout: 1000 }).catch(() => {}); }

@@ -97,7 +97,7 @@ setTimeout(() => {
   check('[pflege-ergebnis] Nach der letzten Frage: Ergebnisseite „Wahrscheinlich Pflegegrad X“', ansicht() === 'pflege' && !!pgE, titel());
   check('[pflege-ergebnis] Hinweis: nur Einschätzung, Pflegekasse entscheidet', /Das ist eine Einschätzung\. Entscheiden tut die Pflegekasse\./.test(pa().textContent));
   check('[pflege-ergebnis] Bedeutung mit Beträgen aus den Regeln (Pflegegeld, Pflegedienst)', new RegExp('Pflegegeld: ' + require('../src/rules.js').RULES.pflege.geld[pgE] + ' €').test(pa().querySelector('.pa-bedeutung').textContent) && /Pflegedienst: bis/.test(pa().querySelector('.pa-bedeutung').textContent), pa().querySelector('.pa-bedeutung').textContent);
-  const kach = [...pa().querySelectorAll('.pa-kacheln > .sk')];
+  const kach = [...pa().querySelectorAll('.pa-kacheln > .uk-karte')];
   check('[pflege-ergebnis] Drei Kacheln: Antrag, Was steht mir zu?, Gutachten', kach.length === 3 && kach[0].classList.contains('pa-k-antrag') && kach[1].classList.contains('pa-k-hilfen') && kach[2].classList.contains('pa-k-gutachten') && /Antrag an die Pflegekasse/.test(kach[0].textContent), kach.map((x) => x.textContent));
   check('[pflege-ergebnis] Keine großen Knöpfe mehr, nur Textlinks', pa().querySelectorAll('.btn').length === 0 && !!pa().querySelector('.pa-aendern'));
   check('[pflege-ergebnis] Aus der Pflege-Startseite: kein Sprung in den Leistungs-Check', !/Leistungs-Check/.test(pa().textContent));

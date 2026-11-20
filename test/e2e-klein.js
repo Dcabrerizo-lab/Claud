@@ -4,6 +4,8 @@
 // Ausführliche Version mit ausgefülltem Haushalt (Karten sichtbar) und einfache Version (erste Frage).
 'use strict';
 const { chromium, firefox, webkit } = require('playwright');
+// Leistungs-Check: Weg „Alles auf einer Seite“ vorwählen (sonst erscheint zuerst die Auswahl Schritt für Schritt / Alles auf einer Seite)
+const SF_ALLES = () => { try { if (!localStorage.getItem('lotse.checkWeg')) { localStorage.setItem('lotse.checkWeg', 'alles'); localStorage.setItem('CapacitorStorage.lotse.checkWeg', 'alles'); } } catch (e) {} };
 const fs = require('fs'), path = require('path');
 const SHARD = require('./shard.js'); // SHARD=k/n: nur jede n-te Kombination aus Modus und Sprache
 const APP = 'file://' + path.join(__dirname, '..', 'dist', 'sozialleistungslotse.html');
@@ -56,7 +58,7 @@ const pruefen = () => {
           localStorage.setItem('lotse.state', JSON.stringify({ s: hh, p: {}, e: true, big: gross }));
         } catch (e) {}
       }, [lang, HH, modus === 'gross']);
-      const p = await ctx.newPage();
+      const p = await ctx.newPage(); await p.addInitScript(SF_ALLES);
       const err = []; p.on('pageerror', (e) => err.push(e.message));
       await p.goto(APP);
       if (modus === 'system200') await p.addStyleTag({ content: 'html { font-size: 200% !important; } html.big { font-size: 200% !important; }' });

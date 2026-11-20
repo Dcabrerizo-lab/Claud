@@ -1,0 +1,22 @@
+{
+ "t.but.asyl": "Du bekommst Leistungen nach dem Asylbewerberleistungsgesetz? Dann gibt es auch Bildung und Teilhabe für deine Kinder. Beantrage es beim Sozialamt oder Landratsamt.",
+ "t.bafoeg.asyl": "Du bist im Asylverfahren? Dann gibt es BAföG meist nicht. Du hast eine Duldung? Dann gibt es BAföG erst nach 15 Monaten in Deutschland. Das BAföG-Amt prüft das.",
+ "t.alg1.asyl": "Arbeitslosengeld gibt es nur, wenn du arbeiten darfst. Dafür brauchst du eine Arbeitserlaubnis. Die Agentur für Arbeit prüft das.",
+ "t.hzp.asyl": "Du bist im Asylverfahren oder hast eine Duldung? Dann bekommst du Hilfe zur Pflege meist erst nach 36 Monaten in Deutschland. Davor kann das Amt im Einzelfall helfen.",
+ "t.eingl.asyl": "Du bist im Asylverfahren oder hast eine Duldung? Dann bekommst du Eingliederungshilfe meist erst nach 36 Monaten in Deutschland. Davor kann das Amt im Einzelfall helfen. Hat ein Kind eine seelische Behinderung? Dann frag auch beim Jugendamt.",
+ "t.ausweis.asyl": "Du hast eine Duldung? Auch dann kannst du den Schwerbehindertenausweis bekommen. Du musst nur voraussichtlich länger als 6 Monate in Deutschland bleiben. Du bist im Asylverfahren? Dann prüft das Amt deinen Fall. Stell den Antrag.",
+ "t.blindengeld.asyl": "Du bekommst Leistungen nach dem Asylbewerberleistungsgesetz? Dann bekommst du das Landesblindengeld vielleicht nicht. Das Gesetz ist hier nicht klar. Stell den Antrag trotzdem. Das Amt prüft das.",
+ "t.bab.asyl": "Du bist im Asylverfahren? Dann gibt es keine Berufsausbildungsbeihilfe. Du hast eine Duldung? Dann gibt es sie erst nach 15 Monaten in Deutschland.",
+ "t.wbs.asyl": "Du hast eine Duldung oder eine Aufenthaltsgestattung? Dann bekommst du den Wohnberechtigungsschein meist nicht. Ausnahme zum Beispiel: Ausbildungsduldung. Frag beim Wohnungsamt.",
+ "t.sh.eu": "Hilfe zur Pflege und Blindenhilfe sind Sozialhilfe. Du kommst aus einem anderen EU-Land? Dann gibt es sie in den ersten 5 Jahren meist nur mit Arbeit oder einem Aufenthaltsrecht (§ 23 SGB XII). In einem Härtefall kann das Sozialamt trotzdem helfen. Lass deinen Fall beraten.",
+ "t.bafoeg.eu": "Du kommst aus einem anderen EU-Land? Dann gibt es BAföG meist nur, wenn du oder deine Eltern in Deutschland arbeiten. Oder wenn du schon lange hier lebst, meist 5 Jahre (§ 8 BAföG). Das BAföG-Amt prüft das.",
+ "t.krank.rente": "Du bekommst Rente? Bei voller Rente gibt es kein Krankengeld (§ 50 SGB V). Bei einer Teilrente gibt es vielleicht weniger Krankengeld. Frag bei der Krankenkasse.",
+ "ek.art.asylblg": "Asylbewerberleistungen",
+ "t.wohngeld.asylBezug": "Du bekommst Leistungen nach dem Asylbewerberleistungsgesetz? Dann gibt es kein Wohngeld (§ 7 WoGG). Das Sozialamt zahlt die Kosten für die Wohnung. Ändert sich etwas? Dann frag beim Sozialamt.",
+ "t.but.asylBezug": "Du bekommst Leistungen nach dem Asylbewerberleistungsgesetz. Dann gibt es auch Bildung und Teilhabe für die Kinder (§ 3 AsylbLG). Beantrage es beim Sozialamt oder beim Landratsamt.",
+ "t.asyl.na": "Du bekommst schon Leistungen nach dem Asylbewerberleistungsgesetz. Ändert sich etwas? Zum Beispiel Einkommen, Familie oder Wohnung? Dann sag es dem Sozialamt.",
+ "aufenthalt.asyl": "Asylverfahren oder Duldung",
+ "aufenthalt.ausreise": "Ausreisepflichtig ohne Duldung",
+ "t.wohngeld.ausreise": "Du musst ausreisen und hast keine Duldung? Dann gibt es kein Wohngeld (§ 3 WoGG). Für Wohnung und Essen ist das Sozialamt zuständig.",
+ "t.wbs.ausreise": "Du musst ausreisen und hast keine Duldung? Dann gibt es keinen Wohnberechtigungsschein (§ 27 WoFG). Lass dich beraten, zum Beispiel bei einer Flüchtlingsberatung."
+}

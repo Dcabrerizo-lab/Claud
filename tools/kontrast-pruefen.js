@@ -43,12 +43,16 @@ const paare = [
   ['Knopfschrift auf Bedienfarbe', 'accent-ink', 'accent', 4.5], ['Bedienfarbe auf hellem Petrol', 'accent', 'accent-soft', 4.5],
   ['Ergebnis „Wahrscheinlich“', 'ok', 'ok-bg', 4.5], ['Ergebnis „Möglich“', 'warn', 'warn-bg', 4.5],
   ['Ergebnis „Nicht“', 'bad', 'bad-bg', 4.5], ['Ergebnis „Keine Angabe“', 'na', 'na-bg', 4.5],
-  ['Hinweis (Koralle)', 'hint', 'hint-bg', 4.5], ['Warnung (Hinweisbox)', 'warn', 'warn-bg', 4.5],
+  ['Tipp / Hinweis (Schiefer-Blau)', 'hint', 'hint-bg', 4.5], ['Tipp: Randbalken', 'hint-rand', 'hint-bg', 3], ['Warnung (Hinweisbox)', 'warn', 'warn-bg', 4.5],
+  ['Frist: Text auf Frist-Fläche', 'ink', 'bad-bg', 4.5], ['Frist: Balken und Symbol', 'bad', 'bad-bg', 3],
+  ['Fokusrahmen auf Karte', 'focus', 'surface', 3], ['Fokusrahmen neben Bedienfarbe', 'focus', 'accent-soft', 3],
   ['Plakette „fehlt“', 'bad-on', 'bad', 4.5], ['Erkanntes Feld (Brief)', 'mark-ink', 'mark-bg', 4.5],
   ['Feldrand auf Karte', 'field', 'surface', 3], ['Fokusrahmen auf Hintergrund', 'focus', 'bg', 3],
   ['Antragsmappe (Papier)', 'papier-ink', 'papier', 4.5], ['Link in der Antragsmappe', 'papier-link', 'papier', 4.5],
   ['Start: „Los geht\'s“', 'c-leistungen', 'on-c', 4.5],
   ...BEREICHE.map((b) => ['Bereich ' + b + ': weiße Schrift auf Kachel', 'on-c', 'c-' + b, 4.5]),
+  // Startkachel als Fläche muss sich vom Hintergrund abheben (KERN/WCAG 1.4.11: Bedienelemente mind. 3:1), auch im Dunkelmodus
+  ...BEREICHE.map((b) => ['Bereich ' + b + ': Kachel-Fläche auf Hintergrund', 'c-' + b, 'bg', 3]),
   ...BEREICHE.map((b) => ['Bereich ' + b + ': Farbe als Schrift auf Karte', 'c-' + b + '-t', 'surface', 4.5]),
   ...BEREICHE.map((b) => ['Bereich ' + b + ': Farbe als Schrift auf Hintergrund', 'c-' + b + '-t', 'bg', 4.5]),
   ...ABSENDER.map((a) => ['Absender ' + a + ': weiße Schrift auf Kachel', 'on-c', 'c-' + a, 4.5]),
@@ -74,38 +78,44 @@ else zeilen.filter((z) => z.includes('ZU WENIG')).forEach((z) => console.log('FE
 for (const [a, b] of Object.entries(gleich)) {
   if (hex('var(--c-' + a + ')', hell).join() !== hex('var(--c-' + b + ')', hell).join()) { fehler++; console.log('FEHLER: Absender ' + a + ' soll die Farbe von ' + b + ' haben'); }
 }
-// Innerhalb einer Kachel- bzw. Knopfgruppe keine Farbe doppelt (Regel in docs/FARBEN.md).
-// Startseite und Brief-Absender über die Variablen, die übrigen Gruppen über die Regeln mit „/* gruppe <name> */“ im CSS.
-// Die Anzahl der Einträge wird mit dem Code verglichen, damit eine neue Kachel nicht ohne eigene Farbe bleibt.
+// Startseite: keine Farbe doppelt (Regel des Nutzers, 20.11.2026; gilt seit der Design-Prüfung nur noch für die Startseite,
+// Unterseiten haben weiße Karten .uk-karte mit der Bereichsfarbe als Symbol, siehe docs/FARBEN.md).
+// Farbe jeder Startkachel (class="sk sk-<name>") aus der Regel „.sk-<name> { --c: var(--…); …}“; ohne Regel Petrol (Grundfarbe .sk).
+// Dazu Farbfehlsichtigkeit: Die Startkacheln müssen auch bei Rot- oder Grünschwäche (Protanopie, Deuteranopie) unterscheidbar
+// bleiben. Simulation nach Machado, Oliveira, Fernandes 2009 (volle Ausprägung, Matrizen aus der Veröffentlichung, IEEE TVCG 15(6)),
+// Abstand ΔE76 in CIELAB; Mindestabstand 12 (Näherung, ersetzt keinen Test mit Betroffenen). Farbe ist ohnehin nie allein Träger.
+const startFarben = (() => {
+  const namen = [...css.matchAll(/class="sk (?:sk-haupt )?sk-([a-z]+)"/g)].map((m) => m[1]);
+  const farbe = (n) => { const m = css.match(new RegExp('\\.sk-' + n + ' \\{ --c: var\\(--([a-z0-9-]+)\\);')); return m ? m[1] : 'c-leistungen'; };
+  return namen.map((n) => [n, farbe(n)]);
+})();
 {
-  const lies = (datei) => fs.readFileSync(path.join(__dirname, '..', 'src', datei), 'utf8');
-  // Startseite: Farbe jeder Startkachel (class="sk sk-<name>") aus der Regel „.sk-<name> { --c: var(--…); }“; ohne Regel Petrol (Grundfarbe .sk)
-  const startKacheln = [...css.matchAll(/class="sk (?:sk-haupt )?sk-([a-z]+)"/g)].map((m) => m[1]);
-  const startFarbe = (n) => { const m = css.match(new RegExp('\\.sk-' + n + ' \\{ --c: var\\(--([a-z0-9-]+)\\); \\}')); return m ? m[1] : 'c-leistungen'; };
-  const gruppen = { start: startKacheln.map(startFarbe), absender: ABSENDER.map((a) => 'c-' + a) };
-  for (const m of css.matchAll(/\{\s*(?:background|--c):\s*var\(--([a-z0-9-]+)\);\s*\}\s*\/\*\s*gruppe ([a-z-]+)\s*\*\//g)) (gruppen[m[2]] = gruppen[m[2]] || []).push(m[1]);
-  const app = lies('app.js'), az = lies('ausziehen.js');
-  const erwartet = {
-    start: (css.match(/class="sk (?:sk-haupt )?sk-[a-z]+/g) || []).length,
-    absender: (app.match(/var BRIEFE = \[([\s\S]*?)\n {2}\];/) || ['', ''])[1].split('\n').filter((z) => /^\s*\['/.test(z)).length,
-    sparen: (app.match(/var SP_THEMEN = \[([\s\S]*?)\n {2}\];/) || ['', ''])[1].split('\n').filter((z) => /^\s*\['/.test(z)).length,
-    geld: (app.match(/var GS_KACHELN = \[([\s\S]*?)\n {2}\];/) || ['', ''])[1].split('\n').filter((z) => /^\s*\['/.test(z)).length, // Geld und Schulden: 6 Kacheln
-    dringend: (app.match(/var GS_DRINGEND = \[([\s\S]*?)\n {2}\];/) || ['', ''])[1].split('\n').filter((z) => /^\s*\['/.test(z)).length, // Es ist dringend: 4 Fälle
-    pflegestart: 2, pfaendung: 2,
-    pflegeergebnis: 3, // Ergebnisseite der Pflege-Einschätzung: Antrag Schiefer, Unterstützung Blau, Gutachten Ziegel
-    ordner: (app.match(/zeile\('[a-z]+'/g) || []).length, // Mein Ordner: jede Zeile eine eigene Farbe (ID-Selektoren, weil Zeilen nur mit Inhalt erscheinen)
-    energie: 2, // Energiekosten-Check im Haushaltsplan: Strom Meerblau, Gas Ziegel (wie „Geld sparen“)
-    ausziehen: ((az.match(/var HAUPT = \[([^\]]*)\]/) || ['', ''])[1].match(/'[a-z]+'/g) || []).length
+  const farben = startFarben.map(([, v]) => hex('var(--' + v + ')', hell).join());
+  const doppelt = farben.filter((f, i) => farben.indexOf(f) !== i);
+  if (startFarben.length < 2) { fehler++; console.log('FEHLER: Startkacheln nicht gefunden'); }
+  if (doppelt.length) { fehler++; console.log('FEHLER: Startseite: Farbe doppelt (' + startFarben.map((x) => x.join('=')).join(', ') + ')'); }
+  const lin = (c) => { c /= 255; return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+  const MACHADO = {
+    Protanopie: [[0.152286, 1.052583, -0.204868], [0.114503, 0.786281, 0.099216], [-0.003882, -0.048116, 1.051998]],
+    Deuteranopie: [[0.367322, 0.860646, -0.227968], [0.280085, 0.672501, 0.047413], [-0.011820, 0.042940, 0.968881]]
   };
-  const vorher = fehler;
-  for (const [g, liste] of Object.entries(gruppen)) {
-    const farben = liste.map((v) => hex('var(--' + v + ')', hell).join());
-    const doppelt = farben.filter((f, i) => farben.indexOf(f) !== i);
-    if (doppelt.length) { fehler++; console.log('FEHLER: Gruppe „' + g + '“: Farbe doppelt (' + liste.join(', ') + ')'); }
-    if (erwartet[g] !== undefined && erwartet[g] !== liste.length) { fehler++; console.log('FEHLER: Gruppe „' + g + '“: ' + liste.length + ' Farben, aber ' + erwartet[g] + ' Einträge'); }
+  const lab = (l) => {
+    const f = (t) => (t > 0.008856 ? Math.cbrt(t) : 7.787 * t + 16 / 116);
+    const X = (0.4124 * l[0] + 0.3576 * l[1] + 0.1805 * l[2]) / 0.95047, Y = 0.2126 * l[0] + 0.7152 * l[1] + 0.0722 * l[2], Z = (0.0193 * l[0] + 0.1192 * l[1] + 0.9505 * l[2]) / 1.08883;
+    return [116 * f(Y) - 16, 500 * (f(X) - f(Y)), 200 * (f(Y) - f(Z))];
+  };
+  const sicht = (rgb, m) => { const l = rgb.map(lin); return m ? m.map((r) => Math.min(1, Math.max(0, r[0] * l[0] + r[1] * l[1] + r[2] * l[2]))) : l; };
+  const MIN_DE = 12;
+  let kleinster = Infinity;
+  for (const [art, m] of [['normale Sicht', null], ...Object.entries(MACHADO)]) {
+    const L = startFarben.map(([, v]) => lab(sicht(hex('var(--' + v + ')', hell), m)));
+    for (let i = 0; i < L.length; i++) for (let j = i + 1; j < L.length; j++) {
+      const d = Math.hypot(L[i][0] - L[j][0], L[i][1] - L[j][1], L[i][2] - L[j][2]);
+      kleinster = Math.min(kleinster, d);
+      if (d < MIN_DE) { fehler++; console.log('FEHLER: ' + art + ': Startkacheln ' + startFarben[i][0] + ' und ' + startFarben[j][0] + ' kaum unterscheidbar (ΔE ' + d.toFixed(1) + ' < ' + MIN_DE + ')'); }
+    }
   }
-  for (const g of Object.keys(erwartet)) if (!gruppen[g]) { fehler++; console.log('FEHLER: Gruppe „' + g + '“ ohne Farben'); }
-  if (fehler === vorher && !process.argv.includes('--tabelle')) console.log('[farben] ' + Object.keys(gruppen).length + ' Gruppen ohne doppelte Farbe');
+  if (!process.argv.includes('--tabelle')) console.log('[farben] Startseite: ' + startFarben.length + ' Kacheln, keine Farbe doppelt, kleinster Abstand auch bei Rot-/Grünschwäche ΔE ' + kleinster.toFixed(1));
 }
 // Keine verstreuten Farbwerte: außerhalb der Palette (bis „* { box-sizing“) nur Variablen; Ausnahme Druckstile (@media print: Schwarz auf Weiß)
 let stil = css.slice(css.indexOf('<style>'), css.indexOf('</style>'));
