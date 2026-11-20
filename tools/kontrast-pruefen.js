@@ -74,6 +74,31 @@ else zeilen.filter((z) => z.includes('ZU WENIG')).forEach((z) => console.log('FE
 for (const [a, b] of Object.entries(gleich)) {
   if (hex('var(--c-' + a + ')', hell).join() !== hex('var(--c-' + b + ')', hell).join()) { fehler++; console.log('FEHLER: Absender ' + a + ' soll die Farbe von ' + b + ' haben'); }
 }
+// Innerhalb einer Kachel- bzw. Knopfgruppe keine Farbe doppelt (Regel in docs/FARBEN.md).
+// Startseite und Brief-Absender über die Variablen, die übrigen Gruppen über die Regeln mit „/* gruppe <name> */“ im CSS.
+// Die Anzahl der Einträge wird mit dem Code verglichen, damit eine neue Kachel nicht ohne eigene Farbe bleibt.
+{
+  const lies = (datei) => fs.readFileSync(path.join(__dirname, '..', 'src', datei), 'utf8');
+  const gruppen = { start: BEREICHE.map((b) => 'c-' + b), absender: ABSENDER.map((a) => 'c-' + a) };
+  for (const m of css.matchAll(/\{\s*(?:background|--c):\s*var\(--([a-z0-9-]+)\);\s*\}\s*\/\*\s*gruppe ([a-z-]+)\s*\*\//g)) (gruppen[m[2]] = gruppen[m[2]] || []).push(m[1]);
+  const app = lies('app.js'), az = lies('ausziehen.js');
+  const erwartet = {
+    start: (css.match(/class="sk sk-[a-z]+/g) || []).length,
+    absender: (app.match(/var BRIEFE = \[([\s\S]*?)\n {2}\];/) || ['', ''])[1].split('\n').filter((z) => /^\s*\['/.test(z)).length,
+    sparen: (app.match(/var SP_THEMEN = \[([\s\S]*?)\n {2}\];/) || ['', ''])[1].split('\n').filter((z) => /^\s*\['/.test(z)).length,
+    pflegestart: 2, pfaendung: 2,
+    ausziehen: ((az.match(/var HAUPT = \[([^\]]*)\]/) || ['', ''])[1].match(/'[a-z]+'/g) || []).length
+  };
+  const vorher = fehler;
+  for (const [g, liste] of Object.entries(gruppen)) {
+    const farben = liste.map((v) => hex('var(--' + v + ')', hell).join());
+    const doppelt = farben.filter((f, i) => farben.indexOf(f) !== i);
+    if (doppelt.length) { fehler++; console.log('FEHLER: Gruppe „' + g + '“: Farbe doppelt (' + liste.join(', ') + ')'); }
+    if (erwartet[g] !== undefined && erwartet[g] !== liste.length) { fehler++; console.log('FEHLER: Gruppe „' + g + '“: ' + liste.length + ' Farben, aber ' + erwartet[g] + ' Einträge'); }
+  }
+  for (const g of Object.keys(erwartet)) if (!gruppen[g]) { fehler++; console.log('FEHLER: Gruppe „' + g + '“ ohne Farben'); }
+  if (fehler === vorher && !process.argv.includes('--tabelle')) console.log('[farben] ' + Object.keys(gruppen).length + ' Gruppen ohne doppelte Farbe');
+}
 // Keine verstreuten Farbwerte: außerhalb der Palette (bis „* { box-sizing“) nur Variablen; Ausnahme Druckstile (@media print: Schwarz auf Weiß)
 let stil = css.slice(css.indexOf('<style>'), css.indexOf('</style>'));
 stil = stil.slice(stil.indexOf('* { box-sizing'));

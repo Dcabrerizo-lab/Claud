@@ -10,6 +10,7 @@ Im übrigen CSS stehen nur Variablen. Ausnahme: Druckstile (`@media print`, Schw
 - Wird eine Bereichsfarbe als Schrift, Rand oder Häkchen auf einer Karte gebraucht: `--c-<bereich>-t` (im Dunkelmodus aufgehellt).
 - Farbe ist nie die einzige Information: Jede Kachel hat Symbol und Text, jedes Ergebnis ein Wort („Wahrscheinlich“, „Möglich“ …).
 - Petrol (`--accent`) ist zugleich die Bedienfarbe (Knöpfe, Reiter, Auswahl, Vorgänge, Einstellungen).
+- **Innerhalb einer Kachel- bzw. Knopfgruppe kommt keine Farbe doppelt vor** (Regel des Nutzers, 20.11.2026). Das gilt für Startseite, Brief-Absender, Pflege-Auswahl, Geld sparen (Themen), Pfändung (Mein Lohn / Mein Konto), Ich ziehe aus (7 Kacheln) und künftig die Mein-Ordner-Karten. Die Farben kommen nur aus der Palette; die Zuordnung steht im CSS-Block „Gruppenfarben“ (`/* gruppe <name> */`). `tools/kontrast-pruefen.js` prüft, dass keine Farbe doppelt ist und jede Kachel eine Farbe hat (Anzahl wie im Code). Neue Gruppe: Regeln mit `/* gruppe <name> */` ergänzen und die erwartete Anzahl im Prüfskript eintragen.
 - Kein Ocker als Bereichsfarbe. Bernstein (`--warn`) nur für „Möglich“ und Warnungen.
 
 ## Bereiche
@@ -45,3 +46,13 @@ Im übrigen CSS stehen nur Variablen. Ausnahme: Druckstile (`@media print`, Schw
 | Vom Brief erkanntes Feld | `--mark-bg`, `--mark-line`, `--mark-ink` |
 | Antragsmappe (Papier bleibt weiß) | `--papier`, `--papier-ink`, `--papier-ink2`, `--papier-link` |
 | Fokusrahmen, Feldrand, Kante, Dialog-Hintergrund | `--focus`, `--field`, `--kante`, `--overlay` |
+
+## Gruppenfarben (keine Farbe doppelt)
+| Gruppe | Reihenfolge der Kacheln → Farbe |
+|---|---|
+| Startseite | Leistungen Petrol, Brief Ziegel, Schulden Pflaume, Geld sparen Grün, Pflege Blau, Ich ziehe aus Violett |
+| Brief-Absender | siehe Tabelle oben (8 verschiedene) |
+| Pflege-Auswahl | Unterstützung Blau (`--c-pflege`), Einschätzung Meerblau (`--c-wohngeld`) |
+| Geld sparen | Strom Meerblau, Heizen Ziegel, Essen Grün, Verträge Indigo, Schulden Pflaume (wie Pfändung), Haushaltsplan Beere |
+| Pfändung | Mein Lohn Pflaume, Mein Konto Meerblau |
+| Ich ziehe aus | Vorher Violett, Erste Tage Meerblau, Geld Grün, Versicherungen Blau, Achtung Ziegel, Hilfen Petrol, Careleaver Beere |

@@ -820,6 +820,25 @@
   .pu-art { color: var(--muted); }
   .pu-weitere { margin: 16px 0; } .pu-weitere > summary { font-weight: 600; cursor: pointer; padding: 8px 0; }
   .app[data-ansicht="sparen"] .weg-sym { background: var(--c-sparen); color: var(--on-c); }
+  /* ===== Gruppenfarben: innerhalb einer Kachel- bzw. Knopfgruppe keine Farbe doppelt (docs/FARBEN.md, geprüft in tools/kontrast-pruefen.js) ===== */
+  .app[data-ansicht="sparen"] #spInhalt > .weg-liste > .weg:nth-child(1) .weg-sym { background: var(--c-wohngeld); } /* gruppe sparen */
+  .app[data-ansicht="sparen"] #spInhalt > .weg-liste > .weg:nth-child(2) .weg-sym { background: var(--c-briefe); } /* gruppe sparen */
+  .app[data-ansicht="sparen"] #spInhalt > .weg-liste > .weg:nth-child(3) .weg-sym { background: var(--c-sparen); } /* gruppe sparen */
+  .app[data-ansicht="sparen"] #spInhalt > .weg-liste > .weg:nth-child(4) .weg-sym { background: var(--c-sozialamt); } /* gruppe sparen */
+  .app[data-ansicht="sparen"] #spInhalt > .weg-liste > .weg:nth-child(5) .weg-sym { background: var(--c-pfaendung); } /* gruppe sparen */
+  .app[data-ansicht="sparen"] #spInhalt > .weg-liste > .weg:nth-child(6) .weg-sym { background: var(--c-familienkasse); } /* gruppe sparen */
+  .app[data-ansicht="pflegestart"] .weg-liste > .weg:nth-child(1) .weg-sym { background: var(--c-pflege); } /* gruppe pflegestart */
+  .app[data-ansicht="pflegestart"] .weg-liste > .weg:nth-child(2) .weg-sym { background: var(--c-wohngeld); } /* gruppe pflegestart */
+  .app[data-ansicht="pfaendung"] #pfInhalt > .weg-liste > .weg:nth-child(1) .weg-sym { background: var(--c-pfaendung); } /* gruppe pfaendung */
+  .app[data-ansicht="pfaendung"] #pfInhalt > .weg-liste > .weg:nth-child(2) .weg-sym { background: var(--c-wohngeld); } /* gruppe pfaendung */
+  .app .az .az-raster > .az-k:nth-child(1) { --c: var(--c-ausziehen); } /* gruppe ausziehen */
+  .app .az .az-raster > .az-k:nth-child(2) { --c: var(--c-wohngeld); } /* gruppe ausziehen */
+  .app .az .az-raster > .az-k:nth-child(3) { --c: var(--c-sparen); } /* gruppe ausziehen */
+  .app .az .az-raster > .az-k:nth-child(4) { --c: var(--c-pflege); } /* gruppe ausziehen */
+  .app .az .az-raster > .az-k:nth-child(5) { --c: var(--c-briefe); } /* gruppe ausziehen */
+  .app .az .az-raster > .az-k:nth-child(6) { --c: var(--c-leistungen); } /* gruppe ausziehen */
+  .app .az .az-raster > .az-k:nth-child(7) { --c: var(--c-familienkasse); } /* gruppe ausziehen */
+  /* ===== Ende Gruppenfarben ===== */
   .hinweis-koralle { display: flex; gap: 12px; align-items: flex-start; background: var(--hint-bg); color: var(--hint); border-radius: var(--r-item); padding: 14px 16px; margin: 4px 0 0; font-weight: 700; }
   .hinweis-koralle > svg { flex: none; width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; margin-top: 1px; }
   .hinweis-koralle p { margin: 0; }
