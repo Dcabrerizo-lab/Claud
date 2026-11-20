@@ -23,6 +23,20 @@
     --hint: #a14a2f;   --hint-bg: #fde8df;
     --coral: #ff7a59;
     --focus: #b4472a;
+    /* ===== Farbpalette: alle Farben der App stehen hier (Zuordnung Bereich -> Farbe: docs/FARBEN.md) =====
+       Bereichsfarben: Flächen mit weißer Schrift (--on-c), in hell und dunkel gleich, Kontrast mind. 4,5:1 (tools/kontrast-pruefen.js).
+       --c-*-t: dieselbe Bereichsfarbe als Schrift, Rand oder Symbol auf --surface/--bg (im Dunkelmodus aufgehellt). */
+    --on-c: #ffffff;
+    --c-leistungen: #0f6b5c; --c-briefe: #a14a2f; --c-pfaendung: #7a3b69; --c-sparen: #2f6b3a; --c-pflege: #23507f; --c-ausziehen: #5b3f8f;
+    --c-leistungen-t: #0f6b5c; --c-briefe-t: #a14a2f; --c-pfaendung-t: #7a3b69; --c-sparen-t: #2f6b3a; --c-pflege-t: #23507f; --c-ausziehen-t: #5b3f8f;
+    /* Absender in „Ich habe einen Brief bekommen“: gleiche Farbe wie der passende Bereich, sonst eine eigene */
+    --c-jobcenter: var(--c-leistungen); --c-sozialamt: #4a47a3; --c-wohngeld: #0e6178; --c-familienkasse: #a2365e;
+    --c-pflegekasse: var(--c-pflege); --c-vermieter: var(--c-ausziehen); --c-anderer: var(--c-briefe); --c-formular: #52606d;
+    --bad-on: #ffffff;   /* Schrift auf --bad (Plakette „fehlt“) */
+    --mark-bg: #fff6d6; --mark-line: #e0b100; --mark-ink: #18202e;  /* vom Brief erkanntes Feld */
+    --overlay: rgba(0, 0, 0, .45);
+    --kante: var(--line);  /* weiche Kante unter Karten */
+    --papier: #ffffff; --papier-ink: #111111; --papier-ink2: #333333; --papier-link: #0b3d91;  /* Antragsmappe: Papier bleibt weiß */
     color-scheme: light;
   }
   @media (prefers-color-scheme: dark) {
@@ -31,6 +45,8 @@
       --accent: #6fd3bd; --accent-ink: #10221e; --accent-soft: #1a3a33;
       --ok: #8be0cb; --ok-bg: #173a33; --warn: #f3c56b; --warn-bg: #3a2c10;
       --bad: #ffab97; --bad-bg: #3d211a; --na: #c4b8a8; --na-bg: #2f2a25; --hint: #ffb398; --hint-bg: #3f2419; --focus: #ffb398;
+      --c-leistungen-t: #6fd3bd; --c-briefe-t: #ffb398; --c-pfaendung-t: #f0b4dd; --c-sparen-t: #9fdba8; --c-pflege-t: #a9cbf3; --c-ausziehen-t: #cdb8f0;
+      --bad-on: #26221f; --kante: #12100e;
       color-scheme: dark;
     }
   }
@@ -39,6 +55,8 @@
     --accent: #6fd3bd; --accent-ink: #10221e; --accent-soft: #1a3a33;
     --ok: #8be0cb; --ok-bg: #173a33; --warn: #f3c56b; --warn-bg: #3a2c10;
     --bad: #ffab97; --bad-bg: #3d211a; --na: #c4b8a8; --na-bg: #2f2a25; --hint: #ffb398; --hint-bg: #3f2419; --focus: #ffb398;
+    --c-leistungen-t: #6fd3bd; --c-briefe-t: #ffb398; --c-pfaendung-t: #f0b4dd; --c-sparen-t: #9fdba8; --c-pflege-t: #a9cbf3; --c-ausziehen-t: #cdb8f0;
+    --bad-on: #26221f; --kante: #12100e;
     color-scheme: dark;
   }
 
@@ -93,7 +111,7 @@
   .es-skip { justify-content: center; }
   .es-nav { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
   .es-karte { background: var(--surface); border: 2px solid var(--line); border-radius: 14px; padding: 14px 16px; margin-bottom: 14px; }
-  .es-karte.ja { border-color: var(--ok, #2e7d32); }
+  .es-karte.ja { border-color: var(--ok); }
   .es-karte h3 { font-size: 1.2em; margin-bottom: 4px; }
   .es-lvl { font-weight: 700; margin-bottom: 6px; }
   .es-geld { font-weight: 700; font-size: 1.1em; margin-top: 6px; }
@@ -178,7 +196,7 @@
   .undo[hidden] { display: none; }
   .undo button { font: inherit; font-weight: 700; min-height: 44px; padding: 6px 14px; border-radius: 8px; border: 2px solid currentColor; background: transparent; color: inherit; cursor: pointer; }
   @media (min-width: 900px) { .undo { bottom: 16px; } }
-  .dlg-hg { position: fixed; inset: 0; z-index: 9; background: rgba(0, 0, 0, .45); display: flex; align-items: center; justify-content: center; padding: 16px; }
+  .dlg-hg { position: fixed; inset: 0; z-index: 9; background: var(--overlay); display: flex; align-items: center; justify-content: center; padding: 16px; }
   .dlg-hg[hidden] { display: none; }
   .dlg { background: var(--surface); color: var(--ink); border-radius: var(--r-card); padding: 18px 20px; max-width: 440px; width: 100%; display: grid; gap: 10px; box-shadow: var(--shadow-s); }
   .dlg h2 { margin: 0; font-size: 1.15em; }
@@ -203,7 +221,7 @@
   [dir="rtl"] .money input { text-align: right; }
   .app.pm .ansicht { display: none !important; }
   .einst-tabs { display: flex; gap: 8px; margin: 12px 0 16px; flex-wrap: wrap; }
-  .einst-tabs button { border: 1px solid var(--line, #c9ced8); background: transparent; color: inherit; font: inherit; font-weight: 700; min-height: 44px; padding: 8px 18px; border-radius: 999px; }
+  .einst-tabs button { border: 1px solid var(--line); background: transparent; color: inherit; font: inherit; font-weight: 700; min-height: 44px; padding: 8px 18px; border-radius: 999px; }
   .einst-tabs button[aria-selected="true"] { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
   .einst-pn { display: grid; gap: 12px; max-width: 70ch; }
   .einst-pn[hidden] { display: none; }
@@ -336,11 +354,11 @@
   /* Haushaltsplan und Haushaltsbuch (src/haushalt.js) */
   .hb-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; padding: 4px; border-radius: 999px; background: var(--bg); border: 1px solid var(--line); margin: 8px 0 14px; }
   .hb-tabs button { min-height: 48px; border: 0; border-radius: 999px; background: transparent; color: var(--ink); font: inherit; font-weight: 700; cursor: pointer; overflow-wrap: anywhere; }
-  .hb-tabs button[aria-pressed="true"] { background: var(--c-sparen, var(--accent)); color: #fff; }
+  .hb-tabs button[aria-pressed="true"] { background: var(--c-sparen); color: var(--on-c); }
   .hb { display: grid; gap: 14px; }
   .hb-lead { margin: 0; color: var(--muted); }
   .hb-ergebnis { font-size: 1.25em; font-weight: 700; margin: 0; padding: 14px 16px; border-radius: var(--r-card, 14px); background: var(--accent-soft); color: var(--ink); }
-  .hb-ergebnis.minus { background: color-mix(in srgb, #b3261e 16%, var(--surface)); }
+  .hb-ergebnis.minus { background: color-mix(in srgb, var(--bad) 16%, var(--surface)); }
   .hb-karte { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-card, 14px); padding: 16px; display: grid; gap: 12px; min-width: 0; }
   .hb-karte > legend, .hb-katwahl > legend { font-weight: 700; font-size: 1.05em; padding: 0; border-bottom: 0; }
   .hb-karte > legend { float: left; width: 100%; margin: 0; } /* Überschrift in der Karte statt auf dem Rahmen */
@@ -350,7 +368,7 @@
   .hb-kat[aria-pressed="true"], .hb-kat[aria-expanded="true"] { border: 2px solid var(--c-sparen, var(--accent)); background: var(--accent-soft); }
   .hb-kname { font-size: .9em; font-weight: 600; line-height: 1.2; }
   .hb-kwert { font-size: .9em; color: var(--muted); }
-  .hb-sym { width: 36px; height: 36px; border-radius: 999px; display: grid; place-items: center; background: var(--c-sparen, var(--accent)); color: #fff; flex: none; }
+  .hb-sym { width: 36px; height: 36px; border-radius: 999px; display: grid; place-items: center; background: var(--c-sparen); color: var(--on-c); flex: none; }
   .hb-sym svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
   .hb-katfeld { display: grid; gap: 8px; }
   .hb-frage, .hb-hinweis { border: 2px solid var(--accent); border-radius: 12px; padding: 10px 12px; display: grid; gap: 8px; }
@@ -361,12 +379,12 @@
   .hb-start { margin: 8px 0 14px; }
   .btn.klein { min-height: 44px; padding: 6px 12px; font-size: .95em; }
   .hb-liste { margin: 0; padding-inline-start: 20px; display: grid; gap: 6px; }
-  .hb-liste li.fehlt::marker { content: "! "; color: #b3261e; font-weight: 700; }
+  .hb-liste li.fehlt::marker { content: "! "; color: var(--bad); font-weight: 700; }
   .hb-liste li.ok::marker { content: "✓ "; color: var(--accent); font-weight: 700; }
   .hb-ue-t { margin: 0; font-weight: 700; }
   .hb-ue h3 { margin: 0; }
-  .hb-fehlt { outline: 3px solid #b3261e; outline-offset: 4px; border-radius: 8px; }
-  .hb-fehlt-t { display: inline-block; font-size: .85em; font-weight: 700; color: #fff; background: #b3261e; border-radius: 999px; padding: 2px 10px; margin-bottom: 4px; }
+  .hb-fehlt { outline: 3px solid var(--bad); outline-offset: 4px; border-radius: 8px; }
+  .hb-fehlt-t { display: inline-block; font-size: .85em; font-weight: 700; color: var(--bad-on); background: var(--bad); border-radius: 999px; padding: 2px 10px; margin-bottom: 4px; }
   .hb-gross { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
   .hb-plus { min-height: 56px; font-size: 1.05em; width: 100%; }
   .hb-monat { display: grid; grid-template-columns: 56px minmax(0, 1fr) 56px; align-items: center; text-align: center; gap: 6px; }
@@ -448,7 +466,7 @@
   .sc-row:not(.sc-mit) .sc-erkl > summary { min-height: 36px; }
   .sc-vorschau { display: grid; gap: 6px; margin-bottom: 12px; }
   .sc-bilder { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
-  .sc-bild { border: 1px solid var(--line); border-radius: 8px; padding: 0; background: #fff; cursor: zoom-in; flex: none; width: 92px; min-height: 44px; }
+  .sc-bild { border: 1px solid var(--line); border-radius: 8px; padding: 0; background: var(--papier); cursor: zoom-in; flex: none; width: 92px; min-height: 44px; }
   .sc-bild img { display: block; width: 100%; border-radius: 8px; }
   .sc-bild.gross { width: 100%; cursor: zoom-out; }
   .sc-kopie { min-height: 36px; padding: 0 12px; font-size: .85em; }
@@ -544,20 +562,20 @@
   .vg-menu { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 8px 0; }
   .vg-gruppe h4 { margin: 18px 0 6px; font-size: 1em; }
   .vg-form label { display: block; font-weight: 600; margin: 8px 0 4px; }
-  .vg-form input { font: inherit; min-height: 44px; padding: 6px 10px; border: 1px solid var(--line, #bbb); border-radius: 8px; width: 100%; max-width: 22em; box-sizing: border-box; }
+  .vg-form input { font: inherit; min-height: 44px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 8px; width: 100%; max-width: 22em; box-sizing: border-box; }
   .vg-form .btn { margin-top: 8px; }
   .vg-form input, .vg-form p { margin: 2px 0 4px; }
   .vg-liste { list-style: none; padding: 0; margin: 12px 0; }
-  .vg-liste li { border: 1px solid var(--line, #ddd); border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; }
+  .vg-liste li { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; }
   .vg-liste li.vg-offen { border-color: var(--accent); }
   .vg-liste p { margin: 0 0 6px; }
   .vg-liste .btns { display: flex; flex-wrap: wrap; gap: 6px; }
   .vg-ablauf { font-weight: 700; }
   .vg-res { margin: 20px 0; padding: 14px 16px; border: 1px dashed var(--accent); border-radius: 12px; }
   .vg-res h3 { margin: 0 0 6px; font-size: 1.05em; }
-  .vg-sperre { position: fixed; inset: 0; z-index: 1000; font-family: var(--font-body); background: var(--bg, #fffaf3); color: var(--ink, #1b1815); display: flex; align-items: center; justify-content: center; padding: 20px; overflow: auto; }
+  .vg-sperre { position: fixed; inset: 0; z-index: 1000; font-family: var(--font-body); background: var(--bg); color: var(--ink); display: flex; align-items: center; justify-content: center; padding: 20px; overflow: auto; }
   .vg-sperre-box { max-width: 26em; width: 100%; }
-  .vg-sperre input { font: inherit; font-size: 1.4em; letter-spacing: 0.3em; min-height: 48px; padding: 6px 10px; width: 100%; box-sizing: border-box; border: 1px solid var(--line, #bbb); border-radius: 8px; margin: 6px 0 10px; }
+  .vg-sperre input { font: inherit; font-size: 1.4em; letter-spacing: 0.3em; min-height: 48px; padding: 6px 10px; width: 100%; box-sizing: border-box; border: 1px solid var(--line); border-radius: 8px; margin: 6px 0 10px; }
   .vg-sperre label { display: block; font-weight: 600; }
   .vg-vergessen { margin-top: 18px; }
   .vg-vergessen summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; color: var(--accent); }
@@ -605,15 +623,15 @@
   #mappe[hidden] { display: none; }
   .mappe-bar { display: grid; gap: 12px; }
   .page {
-    background: #fff; color: #111; border: 1px solid var(--line); border-radius: 6px;
+    background: var(--papier); color: var(--papier-ink); border: 1px solid var(--line); border-radius: 6px;
     padding: 28px 32px; font-family: Georgia, 'Times New Roman', serif; font-size: 1rem; line-height: 1.55;
   }
-  .page h3 { font-family: var(--font-display); font-size: 1.1em; margin-bottom: 12px; color: #111; }
-  .page a, .page a:visited { color: #0b3d91; }
+  .page h3 { font-family: var(--font-display); font-size: 1.1em; margin-bottom: 12px; color: var(--papier-ink); }
+  .page a, .page a:visited { color: var(--papier-link); }
   .page pre { margin: 0; white-space: pre-wrap; font: inherit; direction: ltr; text-align: left; }
   .page.docs { font-family: var(--font-body); }
   .page.docs ul { margin: 4px 0 12px; padding-inline-start: 20px; }
-  .page.docs .tip { font-size: 0.92em; color: #333; }
+  .page.docs .tip { font-size: 0.92em; color: var(--papier-ink2); }
   .empf-edit { margin: 12px 0 6px; padding: 10px; border: 1px dashed var(--warn); border-radius: 8px; background: var(--warn-bg); color: var(--ink); }
   .empf-edit .small { color: var(--ink); }
   .empf-edit a { color: var(--accent); }
@@ -638,9 +656,7 @@
   /* ===== Moderne Optik (nur Gestaltung; Bedienung, Größen und Kontraste wie geprüft) =====
      Weiche Karten mit Schatten statt Rahmen, runde Formen, farbiger Rand je Einstufung, ruhige Kopfzeile mit Symbol. */
   /* Warm und menschlich: weiche Kante statt grauem Schatten, Karten 24 px, Listen-Elemente 22 px, Knöpfe als Pille */
-  :root { --r-card: 24px; --r-item: 22px; --r-ctl: 14px; --shadow: 0 2px 0 var(--line); --shadow-s: 0 2px 0 var(--line); }
-  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --shadow: 0 2px 0 #12100e; --shadow-s: 0 2px 0 #12100e; } }
-  :root[data-theme="dark"] { --shadow: 0 2px 0 #12100e; --shadow-s: 0 2px 0 #12100e; }
+  :root { --r-card: 24px; --r-item: 22px; --r-ctl: 14px; --shadow: 0 2px 0 var(--kante); --shadow-s: 0 2px 0 var(--kante); }
   /* Kopf */
   .top h1 { display: flex; align-items: center; gap: 12px; }
   .top h1 .logo { flex: none; width: 48px; height: 48px; border-radius: 14px; }
@@ -707,7 +723,7 @@
   .einlesen { background: var(--surface); border-radius: var(--r-card); padding: 14px 16px; margin: 0 0 16px; box-shadow: var(--shadow); }
   .einlesen .btns { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 6px; }
   .einlesen textarea { width: 100%; min-height: 120px; font: inherit; }
-  .pp .pp-erkannt { background: #fff6d6 !important; border-color: #e0b100 !important; color: #18202e !important; } /* !important: die Feldstile des Prüfpakets sind spezifischer */
+  .pp .pp-erkannt { background: var(--mark-bg) !important; border-color: var(--mark-line) !important; color: var(--mark-ink) !important; } /* !important: die Feldstile des Prüfpakets sind spezifischer */
   .el-erkl { background: var(--warn-bg); border-radius: 12px; padding: 10px 14px; margin-top: 8px; }
   .pp-hinweis { background: var(--warn-bg); border-radius: 12px; padding: 10px 14px; margin: 0 0 14px; }
   /* Pflegegrad selbst einschätzen */
@@ -741,7 +757,7 @@
   }
   .pi th, .pi td { text-align: left; padding: 9px 12px; border-top: 1px solid var(--line); vertical-align: top; }
   .pi thead th { border-top: 0; font-size: .8rem; color: var(--muted); }
-  .pi .geld { color: var(--ok, #1d6b3d); font-weight: 700; } .pi .budget { color: var(--accent); font-weight: 700; }
+  .pi .geld { color: var(--ok); font-weight: 700; } .pi .budget { color: var(--accent); font-weight: 700; }
   .pi details { background: var(--surface); border-radius: 14px; padding: 4px 16px; box-shadow: var(--shadow); }
   .pi details > summary { min-height: 48px; display: flex; align-items: center; cursor: pointer; font-weight: 700; }
   .pi details p, .pi details ul { margin: 6px 0 12px; }
@@ -759,20 +775,20 @@
   .gruss-t { color: var(--muted); font-size: 1.05em; margin: 0 0 4px; }
   /* Startseite als Kachel-Raster (Kacheln wie Richtung 3 „Bunt und bildhaft“, Farben aus der warmen Palette; weiße Schrift mind. 4,5:1).
      Spaltenbreite in em: bei 320 px oder großer Schrift bricht das Raster auf eine Spalte um. Jeder Bereich hat seine Farbe. */
-  :root { --c-leistungen: #0f6b5c; --c-briefe: #a14a2f; --c-pfaendung: #7a3b69; --c-sparen: #2f6b3a; --c-pflege: #23507f; }
+  /* Bereichsfarben: siehe Palette oben (--c-*) */
   .start-raster { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5em), 1fr)); gap: 12px; margin: 18px 0; max-width: 640px; }
   .sk { --c: var(--c-leistungen); display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; gap: 14px; min-height: 150px; width: 100%; padding: 16px; border: 0; border-radius: 26px;
-    background: var(--c); color: #fff; font: inherit; text-align: start; cursor: pointer; box-shadow: 0 2px 0 color-mix(in srgb, var(--c) 70%, #000); }
+    background: var(--c); color: var(--on-c); font: inherit; text-align: start; cursor: pointer; box-shadow: 0 2px 0 color-mix(in srgb, var(--c) 70%, black); }
   .sk:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
   @media (hover: hover) { .sk:hover { filter: brightness(1.08); } }
   .sk-haupt { grid-column: 1 / -1; min-height: 160px; justify-content: flex-start; gap: 16px; padding: 22px 22px 20px; border-radius: 28px; border-end-start-radius: 8px; }
   .sk-haupt .sk-txt { display: flex; flex-direction: column; gap: 6px; }
   .sk-haupt .sk-meta { order: -1; font-weight: 700; font-size: .875rem; }
-  .hero-los { display: inline-flex; align-items: center; gap: 8px; min-height: 52px; padding: 0 24px; border-radius: 999px; background: #fff; color: var(--c-leistungen); font-family: var(--font-display); font-weight: 800; font-size: 1.05rem; }
+  .hero-los { display: inline-flex; align-items: center; gap: 8px; min-height: 52px; padding: 0 24px; border-radius: 999px; background: var(--on-c); color: var(--c-leistungen); font-family: var(--font-display); font-weight: 800; font-size: 1.05rem; }
   [dir="rtl"] .pfeil { display: inline-block; transform: scaleX(-1); }
   .start-raster > .sk:last-child:nth-child(even) { grid-column: 1 / -1; min-height: 0; }
-  .sk-briefe { --c: var(--c-briefe); } .sk-pfaendung { --c: var(--c-pfaendung); } .sk-sparen { --c: var(--c-sparen); } .sk-pflege { --c: var(--c-pflege); }
-  .sk-sym { flex: none; width: 48px; height: 48px; border-radius: 16px; display: grid; place-items: center; background: rgba(255, 255, 255, .2); color: #fff; }
+  .sk-briefe { --c: var(--c-briefe); } .sk-pfaendung { --c: var(--c-pfaendung); } .sk-sparen { --c: var(--c-sparen); } .sk-pflege { --c: var(--c-pflege); } .sk-ausziehen { --c: var(--c-ausziehen); }
+  .sk-sym { flex: none; width: 48px; height: 48px; border-radius: 16px; display: grid; place-items: center; background: color-mix(in srgb, var(--on-c) 20%, transparent); color: var(--on-c); }
   .sk-sym svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
   .sk-txt { display: grid; gap: 4px; min-width: 0; overflow-wrap: anywhere; hyphens: auto; }
   .sk-txt b, .kachel b { hyphens: manual; }
@@ -781,18 +797,28 @@
   .sk-txt span { font-size: .875rem; line-height: 1.35; }
   .app.big .sk-txt b { font-size: 1.25em; } .app.big .sk-haupt .sk-txt b { font-size: 1.5em; } .app.big .sk-txt span { font-size: .875em; }
   /* Bereichsfarbe auch in den Bereichen: Symbole in Brief prüfen, Schulden, Geld sparen */
-  .app[data-ansicht="briefe"] .kachel-sym { background: var(--c-briefe); color: #fff; }
-  .app[data-ansicht="pfaendung"] .weg-sym { background: var(--c-pfaendung); color: #fff; }
-  .app[data-ansicht="pflegestart"] .weg-sym { background: var(--c-pflege); color: #fff; }
+  /* Brief bekommen: jede Absender-Kachel farbig wie die Startkacheln (weiße Schrift, Symbol und Text bleiben) */
+  #briefKacheln .kachel { --c: var(--c-anderer); background: var(--c); color: var(--on-c); border-color: transparent; border-radius: 26px; box-shadow: 0 2px 0 color-mix(in srgb, var(--c) 70%, black); }
+  #briefKacheln .kachel span.k-t { color: var(--on-c); }
+  #briefKacheln .kachel-sym { border-radius: 16px; background: color-mix(in srgb, var(--on-c) 20%, transparent); color: var(--on-c); }
+  #briefKacheln .kachel:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+  @media (hover: hover) { #briefKacheln .kachel:hover { filter: brightness(1.08); } }
+  #briefKacheln #brief-jc { --c: var(--c-jobcenter); } #briefKacheln #brief-sa { --c: var(--c-sozialamt); } #briefKacheln #brief-wg { --c: var(--c-wohngeld); } #briefKacheln #brief-fk { --c: var(--c-familienkasse); }
+  #briefKacheln #brief-pk { --c: var(--c-pflegekasse); } #briefKacheln #brief-vm { --c: var(--c-vermieter); } #briefKacheln #brief-an { --c: var(--c-anderer); } #briefKacheln #brief-af { --c: var(--c-formular); }
+  .app[data-ansicht="pfaendung"] .weg-sym { background: var(--c-pfaendung); color: var(--on-c); }
+  .app[data-ansicht="pfaendung"] .wahl[aria-pressed="true"], .app[data-ansicht="pfaendung"] .wahl.vorschlag { border-color: var(--c-pfaendung-t); }
+  .app[data-ansicht="pfaendung"] .wahl[aria-pressed="true"] b::before { color: var(--c-pfaendung-t); }
+  .app[data-ansicht="pflegestart"] .weg-sym { background: var(--c-pflege); color: var(--on-c); }
+  .app[data-ansicht="ausziehen"] .weg-sym { background: var(--c-ausziehen); color: var(--on-c); }
   .pu-l { border: 1px solid var(--line); border-radius: var(--r-item); background: var(--surface); padding: 12px 14px; margin: 12px 0; }
   .pu-l h3 { font-size: 1.05em; margin: 0 0 6px; line-height: 1.3; }
   .pu-l p { margin: 4px 0; }
   .pu-betrag b { font-size: 1.25em; }
-  .pu-einheit { font-weight: 600; padding: 1px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); }
-  .pu-jahr .pu-einheit { background: var(--c-pflege); color: #fff; }
+  .pu-einheit { font-weight: 600; padding: 1px 8px; border-radius: 999px; background: color-mix(in srgb, var(--c-pflege) 14%, var(--surface)); color: var(--c-pflege-t); }
+  .pu-jahr .pu-einheit { background: var(--c-pflege); color: var(--on-c); }
   .pu-art { color: var(--muted); }
   .pu-weitere { margin: 16px 0; } .pu-weitere > summary { font-weight: 600; cursor: pointer; padding: 8px 0; }
-  .app[data-ansicht="sparen"] .weg-sym { background: var(--c-sparen); color: #fff; }
+  .app[data-ansicht="sparen"] .weg-sym { background: var(--c-sparen); color: var(--on-c); }
   .hinweis-koralle { display: flex; gap: 12px; align-items: flex-start; background: var(--hint-bg); color: var(--hint); border-radius: var(--r-item); padding: 14px 16px; margin: 4px 0 0; font-weight: 700; }
   .hinweis-koralle > svg { flex: none; width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; margin-top: 1px; }
   .hinweis-koralle p { margin: 0; }
