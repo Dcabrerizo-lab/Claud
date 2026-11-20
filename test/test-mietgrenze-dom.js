@@ -74,7 +74,7 @@ setze({ mietstufe: '2', miete: 600, hhAndere: 'verwandte' });
 check('Verwandte: Hinweis', /Verwandte/.test(txt()), txt());
 // 7) Aufklapptext: KdU-Absatz fett, ohne KdU-Orientierungsbetrag
 setze({ mietstufe: '3', miete: 950 });
-check('Aufklapptext: Bruttokaltmiete, Heizbetrag 170,20, Klima 29,60, 2027, KdU', /Bruttokaltmiete/.test(inhalt()) && /170,20/.test(inhalt()) && /29,60/.test(inhalt()) && /1\.1\.2027/.test(inhalt()) && /Nicht verwechseln/.test(inhalt()), inhalt());
+check('Aufklapptext: Bruttokaltmiete, Heizbetrag 170,20, Klima 29,60, KdU; kein Entwurfs-Hinweis zu 2027 (nur geltendes Recht)', /Bruttokaltmiete/.test(inhalt()) && /170,20/.test(inhalt()) && /29,60/.test(inhalt()) && !/2027|geplant|nicht beschlossen/.test(inhalt()) && /Nicht verwechseln/.test(inhalt()), inhalt());
 check('KdU-Absatz fett', /Nicht verwechseln/.test(d.querySelector('#mieteGrenzeInhalt strong').textContent));
 const kdu = Math.round(686.6 * 1.1 * 100) / 100;
 check('keine KdU-Orientierung (Tabelle × 1,1) im Aufklapptext', !inhalt().includes(String(kdu).replace('.', ',')), kdu);

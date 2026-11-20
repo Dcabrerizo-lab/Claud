@@ -359,7 +359,7 @@
     if (state.hhAndere === 'verwandte') s.push(t('wgmax.verwandte'));
     p.textContent = s.join(' ');
     p.classList.toggle('moeglich', !eins || w.vergleich === 'moeglich' || w.vergleich === 'nah');
-    var teile = (eig ? [] : ['wgmax.d.kalt']).concat(['wgmax.d.heiz', 'wgmax.d.klima'], eig ? [] : ['wgmax.d.drueber'], ['wgmax.d.personen', 'wgmax.d.ausgeschlossen', 'wgmax.d.stufe', 'wgmax.d.2027']);
+    var teile = (eig ? [] : ['wgmax.d.kalt']).concat(['wgmax.d.heiz', 'wgmax.d.klima'], eig ? [] : ['wgmax.d.drueber'], ['wgmax.d.personen', 'wgmax.d.ausgeschlossen', 'wgmax.d.stufe']);
     box.innerHTML = teile.map(function (k) { return '<p>' + esc(t(k, { heiz: E(w.heizKomp), klima: E(w.klima), personen: pers })) + '</p>'; }).join('') +
       '<p><strong>' + esc(t('wgmax.d.kdu')) + '</strong></p>';
   }
@@ -3266,7 +3266,6 @@
         box.appendChild(w);
       }
       p('Hilfe bei allen Fragen und beim Antrag: Pflegekasse oder Pflegestützpunkt, kostenlos.', 'hint');
-      if (U.reform.status === 'entwurf') p('Für ' + U.reform.jahr + ' ist eine Pflegereform geplant, aber noch nicht beschlossen. Leistungen und Beträge können sich dann ändern, auch bei Pflegegrad 1.', 'small muted');
       p('Stand der Beträge: ' + U.stand + ' (' + U.quelle + '). Den genauen Anspruch legt die Pflegekasse fest.', 'small muted');
       var d2 = box.appendChild(el('div', null, 'btns'));
       if (!pg && typeof PflegeAssistent !== 'undefined') d2.appendChild(nhKnopf('btn', esc(t('pu.schaetzen')), null, function () { paOeffnen(true); }));
