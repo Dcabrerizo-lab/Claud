@@ -276,6 +276,12 @@
       var mitBrutto = art === 'lohn' || art === 'rente' || art === 'selbst';
       $('ek' + i + 'BruttoF').hidden = !mitBrutto;
       $('ek' + i + 'NettoF').hidden = !art || art === 'ohne';
+      $('ek' + i + 'BruttoLab').textContent = t(art === 'lohn' || art === 'rente' ? 'ek.brutto.' + art : 'ek.brutto');
+      // Allein: zweites Einkommen eigenes Feld; zu zweit: Summe
+      var ah = [];
+      if (art === 'lohn') ah.push(t('ek.art.hint.lohn'));
+      if (state.adults === 2 && art && art !== 'ohne') ah.push(t('ek.art.hint'));
+      $('ek' + i + 'ArtHint').textContent = ah.join(' '); $('ek' + i + 'ArtHint').hidden = !ah.length;
       $('ek' + i + 'BruttoHint').textContent = art === 'rente' ? t('ek.brutto.hint.rente') : art === 'selbst' ? t('ek.brutto.hint.selbst') : t('ek.brutto.hint.lohn');
       var bescheid = art === 'alg' || art === 'kg' || art === 'eg' || art === 'wfbm';
       $('ek' + i + 'NettoLab').textContent = bescheid ? t(art === 'kg' ? 'ek.betrag.kg' : 'ek.betrag') : art === 'selbst' ? t('ek.netto.selbst') : t('ek.netto');
@@ -313,9 +319,13 @@
   function weitereWarnungen() {
     var mw = feldUngueltig('miete') || plausi(state.miete, 50, 6000);
     $('mieteWarn').hidden = !mw; $('mieteWarn').textContent = mw;
-    var gj = state.gebJahr, gw = '';
-    if (gj !== '' && gj != null && (gj < 1900 || gj > new Date().getFullYear() - 15)) gw = t('warn.geb');
+    var ge = $('gebJahr'), gw = gebUngueltig() && (document.activeElement !== ge || ge.value.trim().length >= 4) ? t('warn.geb') : '';
     $('gebWarn').hidden = !gw; $('gebWarn').textContent = gw;
+  }
+  // Geburtsjahr: 4 Ziffern, 1900 bis heute-15 (wie Ein-Frage-Modus)
+  function gebUngueltig() {
+    var r = $('gebJahr').value.trim();
+    return r !== '' && (!/^\d{4}$/.test(r) || r < 1900 || r > new Date().getFullYear() - 15);
   }
   // Gespeicherte Angaben aus der früheren Eingabe (Summen und Haken) übernehmen
   function migriereEinkommen(s) {
@@ -835,11 +845,12 @@
     syncEinkommen(); folgefragen(); ekFelder(); weitereWarnungen();
     document.querySelectorAll('.cond-kids').forEach(function (el) { el.hidden = state.kids === 0; });
     document.querySelectorAll('.cond-adults2').forEach(function (el) { el.hidden = state.adults !== 2; });
-    if (!started) {
+    var gu = started && gebUngueltig(); // ungültiges Geburtsjahr: nicht rechnen
+    if (!started || gu) {
       // Erster Start: keine erfundenen Ergebnisse zeigen, sondern erklären, wie es geht
-      $('count').textContent = t('c.leer'); $('jumpText').textContent = t('c.leer');
+      $('count').textContent = $('jumpText').textContent = t(gu ? 'warn.geb' : 'c.leer');
       $('overview').hidden = true; $('together').innerHTML = '';
-      $('cards').innerHTML = '<div class="card startcard"><h3>' + esc(t('start.h')) + '</h3>' + listItems([t('start.1'), t('start.2'), t('start.3')]) + '</div>';
+      $('cards').innerHTML = gu ? '<div class="card startcard"><p class="warn"><a href="#gebJahr">' + esc(t('warn.geb')) + '</a></p></div>' : '<div class="card startcard"><h3>' + esc(t('start.h')) + '</h3>' + listItems([t('start.1'), t('start.2'), t('start.3')]) + '</div>';
       $('helper').hidden = true; $('legende').hidden = true; $('feedback').hidden = true;
       kopfErgebnis(0, 0);
       return;

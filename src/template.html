@@ -694,6 +694,7 @@
   .sk-sym { flex: none; width: 48px; height: 48px; border-radius: 16px; display: grid; place-items: center; background: rgba(255, 255, 255, .2); color: #fff; }
   .sk-sym svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
   .sk-txt { display: grid; gap: 4px; min-width: 0; overflow-wrap: anywhere; hyphens: auto; }
+  .sk-txt b, .kachel b { hyphens: manual; }
   .sk-txt b { font-family: var(--font-display); font-weight: 800; font-size: 1.25rem; line-height: 1.2; }
   .sk-haupt .sk-txt b { font-weight: 900; font-size: 1.5rem; }
   .sk-txt span { font-size: .875rem; line-height: 1.35; }
@@ -1088,10 +1089,10 @@
               <div class="field">
                 <label for="ek1Art" data-t="ek.art"></label>
                 <select id="ek1Art"></select>
-                <span class="hint" data-t="ek.art.hint"></span>
+                <span class="hint" id="ek1ArtHint"></span>
               </div>
               <div class="field" id="ek1BruttoF" hidden>
-                <label for="ek1Brutto" data-t="ek.brutto"></label>
+                <label for="ek1Brutto" id="ek1BruttoLab"></label>
                 <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="ek1Brutto"><span aria-hidden="true">€</span></div>
                 <span class="hint" id="ek1BruttoHint"></span>
               </div>
@@ -1125,10 +1126,10 @@
               <div class="field">
                 <label for="ek2Art" data-t="ek.art2"></label>
                 <select id="ek2Art"></select>
-                <span class="hint" data-t="ek.art.hint"></span>
+                <span class="hint" id="ek2ArtHint"></span>
               </div>
               <div class="field" id="ek2BruttoF" hidden>
-                <label for="ek2Brutto" data-t="ek.brutto"></label>
+                <label for="ek2Brutto" id="ek2BruttoLab"></label>
                 <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="ek2Brutto"><span aria-hidden="true">€</span></div>
                 <span class="hint" id="ek2BruttoHint"></span>
               </div>
@@ -1248,7 +1249,7 @@
         <p><button type="button" class="chip" id="bigBtn" aria-pressed="false" data-t="big"></button></p>
         <p><button type="button" class="chip" id="einfacheSpracheBtn" aria-pressed="false" aria-describedby="einfacheSpracheT"><span data-t="set.es.label"></span></button></p>
         <p class="small muted" id="einfacheSpracheT"></p>
-        <p><button type="button" class="chip es-schalter" id="einfachBtn" aria-pressed="false" aria-describedby="einfachBtnT"><span aria-hidden="true">🙂</span> <span data-t="einfach.btn"></span></button></p>
+        <p><button type="button" class="chip es-schalter" id="einfachBtn" aria-pressed="false" aria-describedby="einfachBtnT"><span aria-hidden="true">♿</span> <span data-t="einfach.btn"></span></button></p>
         <p class="small muted" id="einfachBtnT" data-t="set.eine.t"></p>
       </div>
       <div class="set-gruppe" id="setFach">
