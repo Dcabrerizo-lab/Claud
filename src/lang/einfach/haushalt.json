@@ -1,6 +1,8 @@
 {
   "hb.plan.lead": "Das dauert etwa 5 Minuten. Wie viel Geld bekommst du jeden Monat? Was musst du jeden Monat bezahlen?",
   "hb.ek.nurBrutto": "Im Leistungs-Check steht nur der Betrag vor den Abzügen. Schreib hier: So viel Geld kommt auf dein Konto.",
+  "hb.ek1b": "Dein zweites Einkommen (das, was ankommt)",
+  "hb.ek2b": "Zweites Einkommen von deinem Partner oder deiner Partnerin (das, was ankommt)",
   "hb.frage.ersetzen": "Im Leistungs-Check steht {alt}. Willst du {neu} nehmen? Dann gilt das an beiden Stellen.",
   "hb.frage.art": "Im Leistungs-Check steht „{alt}“. Willst du „{neu}“ nehmen? Dann musst du dort den Betrag vor den Abzügen neu schreiben.",
   "hb.k.miete.t": "Die ganze Miete: mit Neben-Kosten und Heizung.",
@@ -54,6 +56,9 @@
   "hb.en.verbrauch": "Im ganzen Jahr sind das etwa {kwh} kWh.",
   "hb.en.verbrauch.rechnung": "Auf der Rechnung stehen {kwh} kWh.",
   "hb.en.ungenau": "Die Zeit ist kurz. Das Ergebnis ist nicht genau.",
+  "hb.en.f.zahl": "Diese Zahl passt nicht. Bitte prüf die Zahl.",
+  "hb.en.saison": "Beim Heizen brauchst du im Winter viel mehr. Das Ergebnis stimmt erst, wenn die Ablesungen fast ein Jahr auseinander liegen. Oder nimm die Zahl von der Rechnung.",
+  "hb.en.alt": "Die Ablesung ist älter als einen Monat. Bitte lies den Zähler neu ab.",
   "hb.en.kosten": "Das kostet im Jahr ungefähr {b}. Du zahlst {a}.",
   "hb.en.nach": "Vielleicht musst du etwa {b} nach-zahlen.",
   "hb.en.gut": "Vielleicht bekommst du etwa {b} zurück.",

@@ -255,6 +255,9 @@
   .ekbox { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; gap: 14px; background: var(--surface); }
   .ekbox h3 { font-size: 1em; }
   .subbox { border-inline-start: 3px solid var(--line); padding-inline-start: 14px; display: grid; gap: 14px; }
+  /* Zweites Einkommen im Einkommenskasten: Aufklappfeld ohne eigene Linie oben (Farben wie details summary, --accent) */
+  details.ek-mehr { border-top: 0; padding-top: 0; }
+  details.ek-mehr[open] > summary { margin-bottom: 8px; }
   .warn { color: var(--warn); background: var(--warn-bg); border-radius: 6px; padding: 6px 10px; font-size: 0.9em; }
   /* Höchstbetrag der Miete beim Wohngeld unter dem Mietfeld: Info-Paar, bei „möglich“ das Paar „Möglich“ (kein Rot: kein Ausschluss) */
   .mietgrenze { font-size: 0.9em; color: var(--na); background: var(--na-bg); border-inline-start: 4px solid var(--na); border-radius: 6px; padding: 6px 10px; margin: 6px 0 0; }
@@ -391,6 +394,23 @@
   .hb-hinweise:empty, #hbSpeicherMsg:empty { display: none; }
   .hb-mehr > summary, .hb-hw-det > summary, .hb-rb > summary, .hb-wb > summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font-weight: 600; }
   .hb-start { margin: 8px 0 14px; }
+  /* Fristen (src/fristen.js): Hinweis beim Öffnen nach Zustand (Bernstein bald, Rot abgelaufen), Liste in „Mein Ordner“ */
+  .fri-start { margin: 8px 0 14px; border: 2px solid var(--warn); background: var(--warn-bg); color: var(--ink); border-radius: 12px; padding: 10px 12px; display: grid; gap: 8px; }
+  .fri-start.vorbei { border-color: var(--bad); background: var(--bad-bg); }
+  .fri-start p { margin: 0; }
+  .fri-start-t { font-weight: 700; }
+  .fri-start .btns, .fri-e .btns { display: flex; flex-wrap: wrap; gap: 8px; }
+  #friListe { display: grid; gap: 12px; }
+  .fri-e { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; display: grid; gap: 8px; background: var(--surface); }
+  .fri-e p, .fri-e h3 { margin: 0; }
+  .fri-titel { font-size: 1.05em; overflow-wrap: anywhere; }
+  .fri-det > summary, .fri-eigen > summary, .fri-fertig > summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font-weight: 600; }
+  .fri-det p { margin: 6px 0 0; }
+  .fri-form { display: grid; gap: 8px; max-width: 30em; }
+  .fri-fertig-l { margin: 0; padding-inline-start: 20px; display: grid; gap: 4px; overflow-wrap: anywhere; }
+  .fri-merken { display: grid; gap: 6px; margin-top: 8px; }
+  .fri-merken p { margin: 0; }
+  .fri-merken .msg:empty, #friMsg:empty { display: none; }
   .btn.klein { min-height: 44px; padding: 6px 12px; font-size: .95em; }
   .hb-liste { margin: 0; padding-inline-start: 20px; display: grid; gap: 6px; }
   .hb-liste li.fehlt::marker { content: "! "; color: var(--bad); font-weight: 700; }
@@ -398,6 +418,7 @@
   .hb-ue-t { margin: 0; font-weight: 700; }
   .hb-ue h3 { margin: 0; }
   .hb-fehlt { outline: 3px solid var(--bad); outline-offset: 4px; border-radius: 8px; }
+  .hb-feld-fehler { display: block; color: var(--bad); font-weight: 700; font-size: .9em; margin-top: 4px; }
   .hb-fehlt-t { display: inline-block; font-size: .85em; font-weight: 700; color: var(--bad-on); background: var(--bad); border-radius: 999px; padding: 2px 10px; margin-bottom: 4px; }
   .hb-gross { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
   .hb-plus { min-height: 56px; font-size: 1.05em; width: 100%; }
@@ -772,6 +793,18 @@
   .einlesen textarea { width: 100%; min-height: 120px; font: inherit; }
   .pp .pp-erkannt { background: var(--mark-bg) !important; border-color: var(--mark-line) !important; color: var(--mark-ink) !important; } /* !important: die Feldstile des Prüfpakets sind spezifischer */
   .el-erkl { background: var(--warn-bg); border-radius: 12px; padding: 10px 14px; margin-top: 8px; }
+  /* Aufforderung zur Senkung der Wohnkosten (erweiterungen/kostensenkung.js): Rand in der Farbe des Absenders */
+  .el-ks { border-inline-start: 4px solid var(--c-briefe-t); display: grid; gap: 8px; }
+  .el-ks[data-traeger="jc"] { border-inline-start-color: var(--c-leistungen-t); }
+  .el-ks[data-traeger="sa"] { border-inline-start-color: var(--c-sozialamt); }
+  .el-ks p, .el-ks h3, .el-ks ul { margin: 0; }
+  .el-ks ul { padding-inline-start: 20px; display: grid; gap: 6px; }
+  .el-ks-ws { background: var(--na-bg); color: var(--na); border-radius: 8px; padding: 6px 10px; }
+  .el-ks-deckel { font-weight: 700; }
+  .el-ks-frist, .el-ks-antwort { display: grid; gap: 6px; }
+  .el-ks-antwort fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 4px; min-width: 0; }
+  .el-ks-antwort textarea { width: 100%; font: inherit; }
+  .el-ks-g { display: flex; gap: 6px; align-items: flex-start; min-height: 32px; }
   .pp-hinweis { background: var(--warn-bg); border-radius: 12px; padding: 10px 14px; margin: 0 0 14px; }
   /* Pflegegrad selbst einschätzen */
   .pa-einstieg { display: grid; gap: 4px; justify-items: start; margin: -4px 0 8px; }
@@ -884,6 +917,14 @@
   .app .az .az-raster > .az-k:nth-child(5) { --c: var(--c-briefe); } /* gruppe ausziehen */
   .app .az .az-raster > .az-k:nth-child(6) { --c: var(--c-leistungen); } /* gruppe ausziehen */
   .app .az .az-raster > .az-k:nth-child(7) { --c: var(--c-familienkasse); } /* gruppe ausziehen */
+  .app[data-ansicht="ordner"] #or-fristen .zeile-sym { background: var(--c-briefe); } /* gruppe ordner */
+  .app[data-ansicht="ordner"] #or-ergebnis .zeile-sym { background: var(--c-leistungen); } /* gruppe ordner */
+  .app[data-ansicht="ordner"] #or-mappe .zeile-sym { background: var(--c-formular); } /* gruppe ordner */
+  .app[data-ansicht="ordner"] #or-haushalt .zeile-sym { background: var(--c-familienkasse); } /* gruppe ordner */
+  .app[data-ansicht="ordner"] #or-ausziehen .zeile-sym { background: var(--c-ausziehen); } /* gruppe ordner */
+  .app[data-ansicht="ordner"] #or-pflege .zeile-sym { background: var(--c-pflege); } /* gruppe ordner */
+  .app[data-ansicht="ordner"] #or-pfaendung .zeile-sym { background: var(--c-pfaendung); } /* gruppe ordner */
+  .app[data-ansicht="ordner"] #ordnerKarten .zeile-sym { color: var(--on-c); }
   .app .hb-en .hb-en-tabs > button:nth-child(1) .hb-sym { background: var(--c-wohngeld); } /* gruppe energie */
   .app .hb-en .hb-en-tabs > button:nth-child(2) .hb-sym { background: var(--c-briefe); } /* gruppe energie */
   /* ===== Ende Gruppenfarben ===== */
@@ -1305,17 +1346,21 @@
               </div>
               <div class="nh-wrap" id="ek1NhF" hidden><button type="button" class="btn ghost nh-btn" id="ek1NhBtn" aria-expanded="false" aria-controls="ek1Nh" data-t="nh.btn"></button><div class="nh" id="ek1Nh" hidden></div></div>
               <p class="warn" id="ek1Warn" role="status" hidden></p>
-              <div class="subbox cond-ek1b">
-                <div class="field">
-                  <label for="ek1bArt" data-t="ek.weiteres"></label>
-                  <select id="ek1bArt"></select>
-                  <span class="hint" data-t="ek.weiteres.hint"></span>
+              <details class="ek-mehr cond-ek1b" id="ek1bBox">
+                <summary data-t="ek.weiteres.auf"></summary>
+                <div class="subbox">
+                  <div class="field">
+                    <label for="ek1bArt" data-t="ek.weiteres"></label>
+                    <select id="ek1bArt"></select>
+                    <span class="hint" data-t="ek.weiteres.hint"></span>
+                    <span class="hint" id="ek1bLohnHint" data-t="ek.weiteres.hint.lohn" hidden></span>
+                  </div>
+                  <div class="field cond-ek1bBetrag">
+                    <label for="ek1bBetrag" data-t="ek.weiteres.betrag"></label>
+                    <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="ek1bBetrag"><span aria-hidden="true">€</span></div>
+                  </div>
                 </div>
-                <div class="field cond-ek1bBetrag">
-                  <label for="ek1bBetrag" data-t="ek.weiteres.betrag"></label>
-                  <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="ek1bBetrag"><span aria-hidden="true">€</span></div>
-                </div>
-              </div>
+              </details>
               <div class="field cond-rente">
                 <label for="zusatzRente" data-t="ek.zusatzRente"></label>
                 <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="zusatzRente" aria-describedby="zusatzRenteHint"><span aria-hidden="true">€</span></div>
@@ -1342,6 +1387,21 @@
               </div>
               <div class="nh-wrap" id="ek2NhF" hidden><button type="button" class="btn ghost nh-btn" id="ek2NhBtn" aria-expanded="false" aria-controls="ek2Nh" data-t="nh.btn"></button><div class="nh" id="ek2Nh" hidden></div></div>
               <p class="warn" id="ek2Warn" role="status" hidden></p>
+              <details class="ek-mehr cond-ek2b" id="ek2bBox">
+                <summary data-t="ek.weiteres.auf"></summary>
+                <div class="subbox">
+                  <div class="field">
+                    <label for="ek2bArt" data-t="ek.weiteres2"></label>
+                    <select id="ek2bArt"></select>
+                    <span class="hint" data-t="ek.weiteres.hint"></span>
+                    <span class="hint" id="ek2bLohnHint" data-t="ek.weiteres.hint.lohn" hidden></span>
+                  </div>
+                  <div class="field cond-ek2bBetrag">
+                    <label for="ek2bBetrag" data-t="ek.weiteres.betrag"></label>
+                    <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="ek2bBetrag"><span aria-hidden="true">€</span></div>
+                  </div>
+                </div>
+              </details>
             </div>
             <div class="field cond-kids">
               <label for="unterhalt" data-t="unterh.label"></label>
@@ -1446,6 +1506,14 @@
           <button type="button" class="btn" id="ordnerLos"><span data-t="home.los"></span> <span class="pfeil" aria-hidden="true">→</span></button>
         </div>
       </div>
+      <!-- Fristen (src/fristen.js): Unterseite von „Mein Ordner“, kein eigener Bereich. Namen v-fristen/startFristen nicht wieder benutzen (1.3.0) -->
+      <div id="ordnerFristen" class="unterseite" data-seite="fristen" hidden>
+        <div class="pp-kopf"><button type="button" class="btn ghost us-zurueck">← <span data-t="pf.zurueck"></span></button></div>
+        <h2 class="ans-h" id="friH" data-t="fri.h"></h2>
+        <p class="small muted" data-t="fri.lead"></p>
+        <p class="msg" id="friMsg" role="status"></p>
+        <div id="friListe"></div>
+      </div>
       <div id="ordnerAlle" class="unterseite" data-seite="alle" hidden>
         <div class="pp-kopf"><button type="button" class="btn ghost us-zurueck">← <span data-t="pf.zurueck"></span></button></div>
         <div class="set-gruppe vg-gruppe" id="setHaushalte" hidden></div>
@@ -1485,6 +1553,10 @@
         <h2 class="ans-h" id="h-sicher" data-t="set.sicher.h"></h2>
         <!-- PIN-Sperre und automatisch löschen füllt vgRender (app.js); „Alle Vorgänge löschen“ in #vgAlleBox -->
         <div class="set-gruppe" id="setSicher"></div>
+        <div class="set-gruppe" id="friSet">
+          <p><button type="button" class="schalter" id="friHinweisBtn" role="switch" aria-checked="true" aria-describedby="friHinweisT"><span class="schalter-t" data-t="fri.set.label"></span><span class="schalter-zst"></span><span class="schalter-bahn" aria-hidden="true"></span></button></p>
+          <p class="small muted" id="friHinweisT" data-t="fri.set.t"></p>
+        </div>
         <div class="set-gruppe">
           <h3 data-t="set.loeschen.h"></h3>
           <p><button type="button" class="chip vg-weg" id="clear2" data-t="set.vgLoeschen"></button> <span class="msg" id="clear2Msg" role="status"></span></p>
@@ -1685,6 +1757,7 @@ Behoerden.init(/*BEHOERDENDATA*/null);
 <script>
 /*HAUSHALT*/
 /*AUSZIEHEN*/
+/*FRISTEN*/
 </script>
 <script>
 /*FORMULARE*/

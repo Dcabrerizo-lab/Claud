@@ -94,8 +94,10 @@ setTimeout(() => {
     klick($('hb-tab-plan'));
     const bald = new Date(); bald.setDate(bald.getDate() + 20);
     setze('hb-wb-kiz', bald.toISOString().slice(0, 10));
-    check('Erinnerung an die Weiterbewilligung auf der Startseite', !!$('hbStart') && /Kinderzuschlag/.test($('hbStart').textContent));
-    check('Erinnerung steht unter der Begrüßung, vor den Kacheln', $('hbStart').previousElementSibling && $('hbStart').previousElementSibling.classList.contains('gruss-t') && $('hbStart').nextElementSibling.classList.contains('start-raster'));
+    // Nur ein Hinweis: Fristen (src/fristen.js) übernimmt den Folgeantrag (Hinweis #friStart beim Öffnen, höchstens einmal am Tag; test-fristen-dom.js)
+    check('Kein eigener Haushalts-Hinweis mehr (#hbStart)', !$('hbStart'));
+    const fs0 = w.FristenOrdner.stand();
+    check('Folgeantrag steht in den Fristen von „Mein Ordner“', fs0 && /Kinderzuschlag/.test(fs0.text), fs0);
     // Speicherfehler abgefangen
     voll = true; setze('hb-sonstEin', '10');
     check('Speicherfehler wird angezeigt (Meldung der Vorgänge-Speicherung)', !$('vgFehler').hidden && /Speicher voll oder gesperrt/.test($('vgFehler').textContent), $('vgFehler').textContent);
@@ -113,11 +115,16 @@ setTimeout(() => {
     klick(d.querySelector('#v-pfaendung [data-zurueck]'));
     check('Zurück vom Pfändungsrechner: wieder bei „Geld sparen“', !$('v-sparen').hidden);
     { // Einkommen geändert: Vorlage „Änderung melden“ nur bei Grundsicherungsgeld oder Sozialhilfe; Text nennt die Regeln je Leistung
-      const melden = (bezug) => { w.__solo.set({ adults: 1, kids: 0, ek1Art: 'lohn', ek1Brutto: 2000, ek1Netto: 1500, miete: 500, plz: '90542', bezug }); w.Haushalt.laden({ ekBasis: 100000 }); zumPlan(); return !!knopf('Änderung dem Amt melden', $('hbHinweise')); };
+      const melden = (bezug) => { w.__solo.set({ adults: 1, kids: 0, ek1Art: 'lohn', ek1Brutto: 2000, ek1Netto: 1500, miete: 500, plz: '90542', bezug }); w.Haushalt.laden({ ekBasis: 100000, ekV: 2 }); zumPlan(); return !!knopf('Änderung dem Amt melden', $('hbHinweise')); };
       check('[hb-korr] Vorlage „Änderung melden“ bei Grundsicherungsgeld', melden({ grundsicherungsgeld: true }));
       check('[hb-korr] keine Vorlage bei Wohngeld (eigene Regel)', !melden({ wohngeld: true }));
       check('[hb-korr] Meldepflicht-Text: § 60 SGB I, Wohngeld 15 %, Kinderzuschlag erst beim nächsten Antrag', /§ 60 Abs\. 1 SGB I.*mehr als 15 % .*§ 27 Abs\. 3 WoGG.*Kinderzuschlag.*nächsten Antrag/.test(w.I18N ? w.I18N.de['hb.hw.ek.d'] : require('../dist/i18n.js').de['hb.hw.ek.d']));
       check('[hb-korr] Nachzahlung: Antrag noch im Monat der Fälligkeit', /Antrag noch im Monat, in dem sie fällig ist/.test(require('../dist/i18n.js').de['hb.hw.nk.d']));
+      // Älterer Stand ohne ekV: Basis ohne zweites Einkommen gespeichert -> einmal angleichen, kein grundloser Hinweis
+      w.__solo.set({ adults: 1, kids: 0, ek1Art: 'lohn', ek1Brutto: 1300, ek1Netto: 1000, ek1bArt: 'unt', ek1bBetrag: 400, miete: 500, plz: '90542', bezug: { grundsicherungsgeld: true } });
+      w.Haushalt.laden({ ekBasis: 100000 }); zumPlan();
+      check('[paar-ek] Haushaltsplan: zweites Einkommen als eigene Zeile', $('hb-ek1b') && $('hb-ek1b').value === '400', $('hb-ek1b') && $('hb-ek1b').value);
+      check('[paar-ek] Alter Stand ohne ekV: Basis einmal angeglichen (1.400 €), kein Hinweis „Einkommen geändert“', w.Haushalt.daten().ekBasis === 140000 && w.Haushalt.daten().ekV === 2 && !$('hb-hw-ek'), w.Haushalt.daten());
       w.Haushalt.laden({});
     }
     // Sprachen: kein Rohschlüssel
