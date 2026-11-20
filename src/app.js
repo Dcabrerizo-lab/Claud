@@ -2585,6 +2585,7 @@
   }
   function zurueckSchritt() {
     var a = aktAnsicht, b;
+    if (paRueck && a === paRueck && (a !== 'pflegestart' || pu.schritt === 'liste')) { paErgebnisZeigen(); return true; } // Unterseite der Pflege-Ergebnisseite
     if (a === 'pflege') { b = document.querySelector('#pflegeAssist .pa-zur'); if (b) b.click(); else paVerlassen(); return true; }
     if (a === 'pflegeinfo') { $('piZurueck').click(); return true; }
     if (a === 'pfaendung') { if (pf.schritt > 0) { pf.schritt--; if (!pf.schritt) pf.art = ''; pfRender(true); } else zurueckZurHerkunft(a); return true; }
@@ -2617,6 +2618,7 @@
   function zeigeAnsicht(a, fokus) {
     if (ANSICHTEN.indexOf(a) < 0) a = 'start';
     if (a === 'pflege' && !$('pflegeAssist').children.length) a = 'leistungen'; // Einschätzung nur über ihren Knopf öffnen
+    paRueckPruefen(a); // Rückweg zur Pflege-Ergebnisseite nur auf der Unterseite selbst
     aktAnsicht = a;
     $('app').setAttribute('data-ansicht', a);
     if (a !== 'briefe') $('app').classList.remove('brief-offen'); else $('app').classList.toggle('brief-offen', !!briefArt); // in der Pflegegrad-Einschätzung Kopf und Hinweise ausblenden, damit die Frage oben steht
@@ -3087,40 +3089,80 @@
     var el = $(ziel) || $('paStart');
     if (el) { try { el.scrollIntoView({ block: 'center' }); } catch (e) {} if (el.focus) el.focus({ preventScroll: true }); }
   }
+  // Ergebnis der Einschätzung merken (automatisch auf der Ergebnisseite). Das Datum bleibt, solange sich das Ergebnis nicht ändert.
+  function paMerken(r) {
+    var punkte = Math.round(r.gesamt * 100) / 100, alt = pa.schaetzung;
+    if (alt && alt.pg === r.pg && alt.punkte === punkte) return;
+    pa.schaetzung = { pg: r.pg, punkte: punkte, datum: heuteIso() };
+    paSpeichern(); paAnzeigen();
+  }
+  // In den Fragebogen übernehmen (nur, wenn man zum Antrag oder zurück in den Leistungs-Check geht)
   function paUebernehmen(r) {
-    pa.schaetzung = { pg: r.pg, punkte: Math.round(r.gesamt * 100) / 100, datum: heuteIso() };
+    paMerken(r);
     if (r.pg >= 1 && !paEchterPg() && state.pflegegrad !== 'antrag') state.pflegegrad = 'antrag';
-    paSpeichern(); $('pflegegrad').value = state.pflegegrad; touched(); // Auswahlfelder schreibt writeForm nicht
+    $('pflegegrad').value = state.pflegegrad; touched(); // Auswahlfelder schreibt writeForm nicht
   }
   function heuteIso() { var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
   var paVonStart = false; // Einschätzung aus der Pflege-Startkachel geöffnet: „Zurück“ führt zur Auswahl
-  function paVerlassen() { if (paVonStart) puOeffnen('wahl'); else if (herkunftVon('pflege') === 'leistungen') paZurueck('paStart'); else zurueckZurHerkunft('pflege'); }
-  function paOeffnen(vonStart) {
-    if (typeof PflegeAssistent === 'undefined') return;
-    paVonStart = vonStart === true;
+  var paRueck = ''; // Unterseite, die aus der Ergebnisseite geöffnet wurde ('briefe', 'leistungen', 'pflegestart'): „← Zurück“ führt zur Ergebnisseite
+  function paVomLeistungsCheck() { return !paVonStart && herkunftVon('pflege') === 'leistungen'; }
+  function paVerlassen() { paRueck = ''; if (paVonStart) puOeffnen('wahl'); else if (herkunftVon('pflege') === 'leistungen') paZurueck('paStart'); else zurueckZurHerkunft('pflege'); }
+  // Unterseite der Ergebnisseite öffnen: Rückweg merken
+  function paUnterseite(ziel) { paRueck = ziel; if (aktAnsicht === ziel) paRueckPruefen(ziel); }
+  // Beim Ansichtswechsel: Rückweg nur auf der Unterseite selbst; Leistungs-Check bekommt oben „← Zurück“, im Brief heißt der Knopf „← Zurück“
+  function paRueckPruefen(a) {
+    if (paRueck && a !== paRueck) paRueck = '';
+    var k = $('paRueckKopf'), bz = $('briefZurueck');
+    if (k) k.hidden = !(paRueck === 'leistungen' && a === 'leistungen');
+    if (bz) bz.textContent = paRueck === 'briefe' ? '← ' + t('pf.zurueck') : t('briefe.zurueck');
+  }
+  // Kachel-Symbole (Pfade): Antrag wie „Mappe“ in Mein Ordner, Unterstützung wie in der Pflege-Auswahl, Gutachten wie ein Formular
+  var PA_SYM = {
+    antrag: ['M4 7a2 2 0 0 1 2-2h3l2 2h7a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z', 'M9 13h6'],
+    hilfen: ['M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z', 'M9 12h6M12 9v6'],
+    gutachten: ['M7 3h10a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z', 'M8 8h8M8 12h5', 'M13.5 16l1.8 1.8 3.2-3.6']
+  };
+  function paStarten(zumErgebnis) {
     $('paNurDe').hidden = lang === 'de';
     var pgJetzt = paEchterPg();
     PflegeAssistent.start($('pflegeAssist'), {
-      pgAktuell: pgJetzt, antworten: pa.antworten,
+      pgAktuell: pgJetzt, antworten: pa.antworten, ergebnis: zumErgebnis === true,
       speichern: function (a) { pa.antworten = a; paSpeichern(); },
+      beimErgebnis: paMerken,
       abbrechen: paVerlassen,
       aktionen: [
-        { text: 'Ergebnis übernehmen', haupt: true, wenn: function (r, pg) { return pg == null; }, fn: function (r) { paUebernehmen(r); paZurueck('c-pflege'); } },
-        { text: 'Antrag an die Pflegekasse in die Antragsmappe', zweit: true, wenn: function (r, pg) { return pg == null && r.pg >= 1; }, fn: function (r) {
-          paUebernehmen(r); picked.pflege = true; pickedUser.pflege = true; if (lastOut) renderPick(lastOut.results); paZurueck('mappeMake'); } },
-        { text: 'Antrag auf Höherstufung schreiben', haupt: true, wenn: function (r, pg) { return pg != null && r.pg > pg; }, fn: function (r, a, g) {
-          paUebernehmen(r); zeigeAnsicht('briefe', false); briefOeffnen('pk'); if (window.PruefpaketPflege) { window.PruefpaketPflege.setze(g, 'hoeher'); briefFormular(); } } },
-        { text: 'Mit dem Gutachten der Pflegekasse vergleichen', fn: function (r) {
-          paUebernehmen(r); zeigeAnsicht('briefe', false); briefOeffnen('pk'); } },
-        { text: function (r) { return r.pg ? 'Das gibt es bei Pflegegrad ' + r.pg : 'Das gibt es ohne Pflegegrad'; }, zweit: true, fn: function (r) { paUebernehmen(r); puOeffnen('liste', r.pg || 0); } },
-        { text: 'Was bedeuten diese Leistungen?', fn: function () { pflegeInfo('pflege', 'pa-q'); } },
-        { text: 'Zurück zu den Leistungen', fn: function (r) { paUebernehmen(r); paZurueck('paStart'); } }
+        { kachel: 'antrag', sym: PA_SYM.antrag, titel: 'Antrag an die Pflegekasse', text: 'Mit der Antragsmappe, deine Daten sind schon drin', wenn: function (r, pg) { return pg == null && r.pg >= 1; }, fn: function (r) {
+          paUebernehmen(r); picked.pflege = true; pickedUser.pflege = true; if (lastOut) renderPick(lastOut.results);
+          paZurueck('mappeMake'); paUnterseite('leistungen'); } },
+        { kachel: 'antrag', sym: PA_SYM.antrag, titel: 'Höherstufung beantragen', text: 'Schreiben an die Pflegekasse mit deinen Antworten', wenn: function (r, pg) { return pg != null && r.pg > pg; }, fn: function (r, a, g) {
+          paUebernehmen(r); zeigeAnsicht('briefe', false); briefOeffnen('pk'); paUnterseite('briefe');
+          if (window.PruefpaketPflege) { window.PruefpaketPflege.setze(g, 'hoeher'); briefFormular(); } } },
+        { kachel: 'hilfen', sym: PA_SYM.hilfen, titel: 'Was steht mir zu?', text: function (r) { return r.pg ? 'Unterstützung bei Pflegegrad ' + r.pg : 'Hilfen schon ohne Pflegegrad'; }, fn: function (r) {
+          paUnterseite('pflegestart'); puOeffnen('liste', r.pg || 0, true); } },
+        { kachel: 'gutachten', sym: PA_SYM.gutachten, titel: 'Mit dem Gutachten vergleichen', text: 'Brief der Pflegekasse prüfen', fn: function () {
+          zeigeAnsicht('briefe', false); briefOeffnen('pk'); paUnterseite('briefe'); } },
+        // In den Leistungs-Check nur, wenn man von dort gekommen ist
+        { titel: 'Zurück zum Leistungs-Check', wenn: paVomLeistungsCheck, fn: function (r) { paUebernehmen(r); paRueck = ''; paZurueck('c-pflege'); } }
       ]
     });
-    if (aktAnsicht !== 'pflege' && aktAnsicht !== 'pflegeinfo') herkunft.pflege = aktAnsicht;
+  }
+  // Von einer Unterseite zurück zur Ergebnisseite; die Herkunft der Einschätzung bleibt
+  function paErgebnisZeigen() {
+    if (typeof PflegeAssistent === 'undefined') return;
+    paRueck = ''; $('paRueckKopf').hidden = true;
+    paStarten(true);
     zeigeAnsicht('pflege', false);
     var q = $('pa-q'); if (q) { window.scrollTo(0, 0); q.focus({ preventScroll: true }); }
   }
+  function paOeffnen(vonStart, zumErgebnis) {
+    if (typeof PflegeAssistent === 'undefined') return;
+    paVonStart = vonStart === true; paRueck = '';
+    if (aktAnsicht !== 'pflege' && aktAnsicht !== 'pflegeinfo') herkunft.pflege = aktAnsicht; // vor dem Start: die Ergebnisseite fragt die Herkunft ab
+    paStarten(zumErgebnis);
+    zeigeAnsicht('pflege', false);
+    var q = $('pa-q'); if (q) { window.scrollTo(0, 0); q.focus({ preventScroll: true }); }
+  }
+  $('paRueckZur').addEventListener('click', paErgebnisZeigen);
   $('paStart').addEventListener('click', function () { paOeffnen(); });
   $('goPflege').addEventListener('click', function () { puOeffnen('wahl'); }); // Startkachel Pflege: Auswahl Unterstützung / Einschätzung
   window.SoLoPflegeStart = paOeffnen; // „Pflegegrad selbst einschätzen“ aus der Gutachten-Prüfung
@@ -3256,8 +3298,9 @@
         ['Pflegezeit und Familienpflegezeit gelten nur in größeren Betrieben. Frag beim Arbeitgeber nach.']]
     };
   }
-  function puOeffnen(schritt, pg) {
+  function puOeffnen(schritt, pg, vonErgebnis) {
     pu.schritt = schritt || 'wahl';
+    if (!vonErgebnis && paRueck === 'pflegestart') paRueck = ''; // aus der Pflege-Ergebnisseite: „Zurück“ führt dorthin
     if (pg != null) pu.pg = pg;
     if (aktAnsicht === 'pflegestart') puRender(true); else zeigeAnsicht('pflegestart', true);
   }
@@ -3268,8 +3311,16 @@
     var p = function (txt, cls) { return box.appendChild(el('p', txt, cls)); };
     var leiste = function (zurueck) { var d = box.appendChild(el('div', null, 'btns')); d.appendChild(nhKnopf('btn ghost', esc(t('pf.zurueck')), null, zurueck)); return d; };
     $('puNurDe').hidden = lang === 'de' || pu.schritt === 'wahl';
+    var vonErg = paRueck === 'pflegestart' && pu.schritt === 'liste'; // aus der Pflege-Ergebnisseite geöffnet
+    if (vonErg) { var kz = box.appendChild(el('div', null, 'pa-zeile pu-zur')); var zb = kz.appendChild(el('button', '← ' + t('pf.zurueck'), 'linkbtn pa-zur')); zb.type = 'button'; zb.addEventListener('click', paErgebnisZeigen); }
     if (pu.schritt === 'wahl') {
       p(t('pu.wahl'), 'pf-frage');
+      // Letzte Einschätzung mit Knopf zum Ansehen der Ergebnisseite
+      if (pa.schaetzung && typeof PflegeAssistent !== 'undefined') {
+        var le = box.appendChild(el('div', null, 'es-karte pu-letzte')); le.id = 'pu-letzte';
+        le.appendChild(el('p', t(pa.schaetzung.pg ? 'pu.letzte' : 'pu.letzte0', { pg: String(pa.schaetzung.pg), datum: datumKurz(pa.schaetzung.datum) })));
+        le.appendChild(nhKnopf('btn ghost', esc(t('pu.letzte.ansehen')), null, function () { paOeffnen(true, true); }));
+      }
       var l = box.appendChild(el('div', null, 'weg-liste'));
       [['hilfe', 'pu.hilfe', 'pu.hilfe.t', '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/><path d="M9 12h6M12 9v6"/>', function () { puOeffnen('pg'); }],
         ['schaetzen', 'pu.schaetzen', 'pu.schaetzen.t', '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h5M8 16h3"/><path d="M13.5 16l1.8 1.8 3.2-3.6"/>', function () { paOeffnen(true); }]].forEach(function (x) {
@@ -3327,8 +3378,8 @@
       p('Hilfe bei allen Fragen und beim Antrag: Pflegekasse oder Pflegestützpunkt, kostenlos.', 'hint');
       p('Stand der Beträge: ' + U.stand + ' (' + U.quelle + '). Den genauen Anspruch legt die Pflegekasse fest.', 'small muted');
       var d2 = box.appendChild(el('div', null, 'btns'));
-      if (!pg && typeof PflegeAssistent !== 'undefined') d2.appendChild(nhKnopf('btn', esc(t('pu.schaetzen')), null, function () { paOeffnen(true); }));
-      d2.appendChild(nhKnopf('btn ghost', esc(t('pf.zurueck')), null, function () { puOeffnen('pg'); }));
+      if (!pg && !vonErg && typeof PflegeAssistent !== 'undefined') d2.appendChild(nhKnopf('btn', esc(t('pu.schaetzen')), null, function () { paOeffnen(true); }));
+      d2.appendChild(nhKnopf('btn ghost', esc(t('pf.zurueck')), null, vonErg ? paErgebnisZeigen : function () { puOeffnen('pg'); }));
     }
     if (fokus) { var h = box.querySelector('.pf-frage'); if (h) { h.setAttribute('tabindex', '-1'); h.focus(); } }
   }
@@ -3471,7 +3522,7 @@
   if ($('an-eingabe')) $('an-eingabe').hidden = true; // in der App liest das Einlesen oben den Brief
   $('elLesen').addEventListener('click', function () { elGesammelt = ''; textLesen($('elText').value); });
 
-  $('briefZurueck').addEventListener('click', function () { elGesammelt = ''; var war = null; document.querySelectorAll('#checkBox .pp-teil').forEach(function (s) { if (!s.hidden) war = s.id; }); briefOeffnen(null); for (var k in BRIEF_TEIL) if (BRIEF_TEIL[k] === war) $('brief-' + k).focus(); });
+  $('briefZurueck').addEventListener('click', function () { if (paRueck === 'briefe') { briefOeffnen(null); paErgebnisZeigen(); return; } elGesammelt = ''; var war = null; document.querySelectorAll('#checkBox .pp-teil').forEach(function (s) { if (!s.hidden) war = s.id; }); briefOeffnen(null); for (var k in BRIEF_TEIL) if (BRIEF_TEIL[k] === war) $('brief-' + k).focus(); });
   document.querySelectorAll('#appnav button').forEach(function (b) { b.addEventListener('click', function () {
     var a = b.getAttribute('data-ansicht');
     herkunft = {};

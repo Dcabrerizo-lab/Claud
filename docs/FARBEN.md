@@ -53,6 +53,7 @@ Im übrigen CSS stehen nur Variablen. Ausnahme: Druckstile (`@media print`, Schw
 | Startseite | Leistungen Petrol, Brief Ziegel, Schulden Pflaume, Geld sparen Grün, Pflege Blau, Ich ziehe aus Violett |
 | Brief-Absender | siehe Tabelle oben (8 verschiedene) |
 | Pflege-Auswahl | Unterstützung Blau (`--c-pflege`), Einschätzung Meerblau (`--c-wohngeld`) |
+| Pflege-Ergebnis (Kacheln unter „Wahrscheinlich Pflegegrad X“) | Antrag bzw. Höherstufung Schiefer (`--c-formular`, wie die Mappe), Was steht mir zu? Blau (`--c-pflege`), Gutachten vergleichen Ziegel (`--c-briefe`, Brief bekommen) |
 | Geld sparen | Strom Meerblau, Heizen Ziegel, Essen Grün, Verträge Indigo, Schulden Pflaume (wie Pfändung), Haushaltsplan Beere |
 | Pfändung | Mein Lohn Pflaume, Mein Konto Meerblau |
 | Energie-Check (Haushaltsplan, Reiter bei Heizung mit eigenem Gasvertrag) | Strom Meerblau, Gas/Heizen Ziegel (wie in „Geld sparen“); Ergebnis: Nachzahlung möglich `--warn`, passt ungefähr `--ok`, Guthaben möglich `--na`, Eingabefehler `--bad` |

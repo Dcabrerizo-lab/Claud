@@ -66,18 +66,31 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Ohne Kreuz direkt zur Frage nach Diät', /Diät/.test(await frage()), await frage());
   await p.click('text=← Zurück >> visible=true'); await p.click('text=← Zurück >> visible=true');
   await tippe('Nein'); await tippe('Nein'); // Bereich 5 und 6
-  ok('Ergebnis: 40 Punkte, Pflegegrad 2', /Pflegegrad 2/.test(await frage()) && /^40 von 100/.test(await p.textContent('#pflegeAssist .es-h')), await frage());
+  ok('Ergebnis: 40 Punkte, Pflegegrad 2', /^Wahrscheinlich Pflegegrad 2/.test(await frage()) && /^40 von 100/.test(await p.textContent('#pflegeAssist .pa-punkte')), await frage());
+  ok('Ergebnisseite: Hinweis „Das ist eine Einschätzung“', /Das ist eine Einschätzung\. Entscheiden tut die Pflegekasse\./.test(await p.textContent('#pflegeAssist')));
+  ok('Ergebnisseite: höchstens 3 Kacheln', (await p.locator('#pflegeAssist .pa-kacheln > .sk').count()) === 3);
+  ok('Ergebnisseite: aus dem Leistungs-Check gekommen, Link zurück dorthin', await p.isVisible('#pflegeAssist .pa-links button:has-text("Zurück zum Leistungs-Check")'));
   // Gleiches Ergebnis wie die Rechnung von pflege.js mit den gespeicherten Antworten
-  const vgl = await p.evaluate(() => { const d = JSON.parse(localStorage.getItem('lotse.pflegecheck')); const r = Pflege.rechne(PflegeAssistent.eingabe(d.antworten, null)); return { pg: r.pg, punkte: r.gesamt, text: document.querySelector('#pflegeAssist .es-h').textContent }; });
+  const vgl = await p.evaluate(() => { const d = JSON.parse(localStorage.getItem('lotse.pflegecheck')); const r = Pflege.rechne(PflegeAssistent.eingabe(d.antworten, null)); return { pg: r.pg, punkte: r.gesamt, text: document.querySelector('#pflegeAssist .pa-punkte').textContent }; });
   ok('Angezeigte Punkte = Rechnung pflege.js', vgl.text.startsWith(String(vgl.punkte).replace('.', ',') + ' von 100'), vgl);
   ok('Ergebnis zeigt Pflegegeld', /Pflegegeld: \d/.test(await p.textContent('#pflegeAssist')));
   ok('Ergebnis: kein seitliches Scrollen', await breit());
-  ok('Ohne Pflegegrad: kein Knopf für Höherstufung', !(await p.isVisible('text=Antrag auf Höherstufung schreiben')));
-  await p.click('text=Antrag an die Pflegekasse in die Antragsmappe');
+  ok('Ohne Pflegegrad: keine Kachel für Höherstufung', !(await p.isVisible('text=Höherstufung beantragen')));
+  // „Was steht mir zu?“ und zurück: das Ergebnis bleibt
+  await p.click('#pflegeAssist .pa-k-hilfen');
+  ok('„Was steht mir zu?“ zeigt die Unterstützung bei Pflegegrad 2', await p.isVisible('#v-pflegestart') && /Das gibt es bei Pflegegrad 2/.test(await p.textContent('#puInhalt')));
+  await p.click('#puInhalt .pu-zur .pa-zur');
+  ok('„← Zurück“ führt zur Ergebnisseite', /^Wahrscheinlich Pflegegrad 2/.test(await frage()));
+  await p.click('#pflegeAssist .pa-k-antrag');
   ok('Übernahme: Pflegegrad „beantragt oder möglich“', (await p.inputValue('#pflegegrad')) === 'antrag');
   ok('Übernahme: Einschätzung steht im Fragebogen', /Pflegegrad 2/.test(await p.textContent('#paStand')));
   ok('Übernahme: Pflegegeld in der Antragsmappe gewählt', await p.isChecked('[data-pick="pflege"]'));
   ok('Pflegegeld-Karte zeigt Einschätzung und Knopf', /Pflegegrad 2/.test(await p.textContent('#c-pflege .pa-karte-knopf')));
+  ok('Antragsmappe: oben „← Zurück“', await p.isVisible('#paRueckZur'));
+  await p.click('#paRueckZur');
+  ok('Zurück aus der Antragsmappe: Ergebnisseite', /^Wahrscheinlich Pflegegrad 2/.test(await frage()));
+  await p.click('#pflegeAssist .pa-links button:has-text("Zurück zum Leistungs-Check")');
+  ok('Link führt zurück in den Leistungs-Check', await p.isVisible('#v-leistungen'));
   // Erklärseite: Pflegegeld ist Geld aufs Konto, Entlastungsbetrag ein Budget
   await p.click('#c-pflege summary');
   ok('Ergebniskarte klappt auf', await p.evaluate(() => document.querySelector('#c-pflege details.karte').open));
@@ -99,7 +112,8 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
     const an = await p.$('#pflegeAssist .es-btn.an'); if (an) await an.click(); else await p.click('text=Weiß ich nicht');
   }
   ok('Mit Pflegegrad 1: Höherstufung lohnt sich', /Höherstufung lohnt sich/.test(await p.textContent('#pflegeAssist')));
-  await p.click('text=Antrag auf Höherstufung schreiben');
+  ok('Mit Pflegegrad 1: Kachel „Höherstufung beantragen“', /Höherstufung beantragen/.test(await p.textContent('#pflegeAssist .pa-k-antrag')));
+  await p.click('#pflegeAssist .pa-k-antrag');
   ok('Öffnet „Brief prüfen“ mit dem Pflegegutachten', await p.isVisible('#p-pflege'));
   ok('Höherstufung ist gewählt', await p.isChecked('#pf-art-h'));
   ok('Antworten übernommen (1.1 überwiegend unselbständig, Alter 84)', (await p.inputValue('#pf-1\\.1')) === '2' && (await p.inputValue('#pf-alter')) === '84');
