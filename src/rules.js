@@ -77,7 +77,7 @@ const Rules = (function () {
     // Krankengeld (§ 47 SGB V): 70 % des Bruttos, höchstens 90 % des Nettos, bis zur Beitragsbemessungsgrenze 2026 (5.812,50 € im Monat);
     // davon gehen Beiträge zur Renten-, Arbeitslosen- und Pflegeversicherung ab (rund 12,5 %); höchstens 78 Wochen (§ 48 SGB V)
     krank: { satz: 0.7, nettoMax: 0.9, bbg: 5812.5, abzug: 0.125, wochen: 78 },
-    // Pauschale für Versicherungen bei Einkommen, das kein Lohn ist (§ 6 Abs. 1 Nr. 1 Bürgergeld-V)
+    // Pauschale für Versicherungen bei Einkommen, das kein Lohn ist (§ 6 Abs. 1 Nr. 1 GrusiGV)
     versPauschale: 30,
     // Elterngeld: bis 300 € frei beim Wohngeld (§ 10 Abs. 1 BEEG); bei Grundsicherung und Kinderzuschlag nur, wenn vor der Geburt Einkommen da war (§ 10 Abs. 5 BEEG)
     elterngeldFrei: 300,
@@ -545,17 +545,19 @@ const Rules = (function () {
     // unt = Unterhalt für die Person selbst (Trennungs- oder Ehegattenunterhalt, Unterhalt von den Eltern), Zahlbetrag im Monat:
     // Einkommen, aber kein Einkommen aus Arbeit (kein Freibetrag § 11b Abs. 3 SGB II, Minderung des Kinderzuschlags in voller Höhe)
     const ARTEN = ['lohn', 'rente', 'alg', 'kg', 'eg', 'wfbm', 'unt', 'ohne'];
-    // Eintrag: [Art, Brutto, Netto, nurAuszahlung] – ohne eigenes Netto ist b der ausgezahlte Betrag (einfache Version)
+    // Eintrag: [Art, Brutto, Netto, nurAuszahlung, selbst, Person] – ohne eigenes Netto ist b der ausgezahlte Betrag (einfache Version)
     // Selbstständige: Gewinn zählt wie Einkommen aus Arbeit (Freibetrag § 11b Abs. 3 SGB II, § 82 Abs. 3 SGB XII; Wohngeld § 14 WoGG);
     // Unterschiede (kein Arbeitslosengeld/Krankengeld ohne freiwillige Versicherung, vorläufige Bewilligung) über h.selbst
     const aSel = (a) => (a === 'selbst' ? 'lohn' : a);
     const selbst1 = inp.art1 === 'selbst' || (Array.isArray(inp.einkommen) && inp.einkommen.some((x) => x && x.art === 'selbst'));
     const liste = Array.isArray(inp.einkommen) ? inp.einkommen.filter((x) => x && ARTEN.indexOf(aSel(x.art)) >= 0).map((x) => {
       const nurAus = blank(x.n);
-      return [aSel(x.art), num(x.b), nurAus ? num(x.b) : num(x.n), nurAus, x.art === 'selbst'];
+      // Person: p = 2 nur bei zwei Erwachsenen (zweite Person), sonst 1 (alte Listen ohne p gehören zu Person 1)
+      return [aSel(x.art), num(x.b), nurAus ? num(x.b) : num(x.n), nurAus, x.art === 'selbst', adults === 2 && Number(x.p) === 2 ? 2 : 1];
     }) : null;
     const brutto = liste ? liste.reduce((a, x) => a + x[1], 0) : num(inp.brutto);
-    const brutto2 = adults === 2 && !liste ? Math.min(num(inp.brutto2), brutto) : 0;
+    // Einkommen der zweiten Person: mit Liste die Summe ihrer Einträge (auch für Familienversicherung und UVG-Grenze von Person 1)
+    const brutto2 = adults !== 2 ? 0 : liste ? liste.reduce((a, x) => a + (x[5] === 2 ? x[1] : 0), 0) : Math.min(num(inp.brutto2), brutto);
     const nettoGiven = liste ? true : inp.netto !== '' && inp.netto != null && num(inp.netto) > 0;
     // Ohne Netto: Lohn nach Lohnsteuer und Beiträgen geschätzt (nettoLohn), Rente abzüglich Kranken- und Pflegeversicherung (nettoRente, etwa 88 %),
     // Gewinn Selbstständiger grob 80 %; Arbeitslosengeld, Krankengeld, Elterngeld und Werkstattlohn sind schon ausgezahlte Beträge
@@ -575,8 +577,10 @@ const Rules = (function () {
     const regel = regelElt + kidsU6 * R.regelbedarf.kind0 + kids14 * R.regelbedarf.kind14 + (kids - kidsU6 - kids14) * R.regelbedarf.kind + young * R.regelbedarf.jungErwachsener;
     const pg = ['1', '2', '3', '4', '5'].indexOf(String(inp.pflegegrad)) >= 0 ? Number(inp.pflegegrad) : 0;
     // Einkommensart je erwachsener Person (lohn, rente, alg, kg, eg = Elterngeld, ohne). Ältere Speicherstände: aus den Haken.
-    const art1 = liste ? (liste.some((x) => x[0] === 'lohn') ? 'lohn' : liste.length ? liste[0][0] : 'ohne') : ARTEN.indexOf(aSel(inp.art1)) >= 0 ? aSel(inp.art1) : (inp.nichtArbeit ? 'rente' : 'lohn');
-    const art2 = ARTEN.indexOf(aSel(inp.art2)) >= 0 ? aSel(inp.art2) : (inp.nichtArbeit2 ? 'rente' : 'lohn');
+    // Mit Liste: Lohn, wenn die Person Lohn hat, sonst die Art ihres ersten Eintrags
+    const hauptArt = (p) => { const e = liste.filter((x) => x[5] === p); return e.some((x) => x[0] === 'lohn') ? 'lohn' : e.length ? e[0][0] : 'ohne'; };
+    const art1 = liste ? hauptArt(1) : ARTEN.indexOf(aSel(inp.art1)) >= 0 ? aSel(inp.art1) : (inp.nichtArbeit ? 'rente' : 'lohn');
+    const art2 = liste && adults === 2 ? hauptArt(2) : ARTEN.indexOf(aSel(inp.art2)) >= 0 ? aSel(inp.art2) : (inp.nichtArbeit2 ? 'rente' : 'lohn');
     // Arbeitslosengeld, Krankengeld, Elterngeld und Werkstattlohn fragt die App als ausgezahlten Betrag ab (laut Bescheid/Lohnzettel):
     // beim Wohngeld dann nur der kleine Abzug für ausgezahlte Beträge, wie in der einfachen Version (§ 16 WoGG)
     const AUSZ = { alg: 1, kg: 1, eg: 1, wfbm: 1, unt: 1 };
@@ -652,9 +656,16 @@ const Rules = (function () {
       eu: inp.aufenthalt === 'eu', euArbeit: inp.euArbeit === 'ja', euJahre5: inp.euJahre === 'ab5',
       art1, art2, pers, liste: !!liste, kindEink, uvgEst, kindZahl: unterhalt + waisen + uvgEst, waisen, uvgPartner, uvgWechsel, bruttoEigen, uvgKindAnr, mehrAE, mehrAEhoch, alterGrenz,
       egFreiSGB: sumIf((a, b) => a === 'eg' && b > R.elterngeldFrei ? R.elterngeldFrei : 0),
-      // Versicherungspauschale (§ 6 Abs. 1 Nr. 1 Bürgergeld-V) einmal je Person, nicht neben Einkommen aus Arbeit (dort deckt sie der
-      // Grundfreibetrag von 100 € ab, § 11b Abs. 2 SGB II). In der Liste (eine Person mit mehreren Einkommen) also höchstens einmal.
-      vPausch: liste ? (pers.some((x) => x[0] !== 'lohn' && x[0] !== 'ohne' && x[1] > 0) && !pers.some((x) => x[0] === 'lohn' && x[1] > 0) ? R.versPauschale : 0)
+      // Versicherungspauschale (§ 6 Abs. 1 Nr. 1 GrusiGV) einmal je volljähriger Person, nicht zusätzlich neben Einkommen aus Arbeit (dort
+      // steckt sie im Grundabsetzbetrag von 100 €, § 11b Abs. 2 SGB II). Ist der Lohn kleiner als 30 €, geht nur der vom Lohn nicht gedeckte
+      // Rest vom anderen Einkommen derselben Person ab (BA, Fachliche Weisungen §§ 11-11b SGB II Rz. 11.155 mit Beispiel).
+      vPausch: liste ? [1, 2].reduce((a, p) => {
+        const e = pers.filter((x) => x[5] === p);
+        const anders = e.reduce((s, x) => s + (x[0] !== 'lohn' && x[0] !== 'ohne' ? x[1] : 0), 0);
+        const lohn = e.reduce((s, x) => s + (x[0] === 'lohn' ? x[1] : 0), 0);
+        if (!(anders > 0)) return a;
+        return a + (lohn > 0 ? Math.min(anders, Math.max(0, R.versPauschale - lohn)) : R.versPauschale);
+      }, 0)
         : sumIf((a, b) => a !== 'lohn' && a !== 'ohne' && b > 0 ? R.versPauschale : 0),
       mzG: !!inp.mzG, mzGl: !!inp.mzGl || !!(inp.mz && inp.mz.Gl), mzRF: !!(inp.mz && inp.mz.RF), mzAG: !!(inp.mz && inp.mz.aG), wfbmJahre: num(inp.wfbmJahre), grundrente33: !!inp.grundrente33, zusatzRente: num(inp.zusatzRente), bhEinkHoch: !!inp.bhEinkHoch, teilhabe: !!inp.teilhabe, bhWeitere: Math.min(4, Math.max(0, inp.bhWeitere | 0)), schwanger: !!inp.schwanger, ernaehrung: !!inp.ernaehrung, warmwasser: !!inp.warmwasser, gebJahr: jahr,
       baby: inp.baby === 'bald' || inp.baby === 'da' ? inp.baby : '', egVor: blank(inp.egVor) ? null : num(inp.egVor), asyl: inp.aufenthalt === 'asyl',
@@ -668,7 +679,7 @@ const Rules = (function () {
       minijob: heute >= 2027 ? R.minijob2027 : R.minijob, heute,
       lohnVorher: num(inp.lohnVorher), alterJahre: jahr >= 1900 && jahr <= 2010 ? heute - jahr - 0.5 : 0,
       fehlt: { einkommen: !liste && blank(inp.brutto), netto: !liste && blank(inp.netto), vermoegen: blank(inp.vermoegen), miete: blank(inp.miete) && inp.wohnform !== 'heim' && inp.wohnform !== 'eltern' },
-      adults, kids, kidsU6, kids14, young, persons, brutto, brutto2, erwerb: pers[0][0] === 'lohn' || (liste ? liste.some((x) => x[0] === 'lohn') : false), erwerb2: art2 === 'lohn', netto, nettoGiven, nettoGeschaetzt, kapJahr, kapWG, miete, vermoegen, unterhalt, regel, regelElt,
+      adults, kids, kidsU6, kids14, young, persons, brutto, brutto2, erwerb: liste ? liste.some((x) => x[0] === 'lohn' && x[5] === 1) : pers[0][0] === 'lohn', erwerb2: liste ? liste.some((x) => x[0] === 'lohn' && x[5] === 2) : art2 === 'lohn', netto, nettoGiven, nettoGeschaetzt, kapJahr, kapWG, miete, vermoegen, unterhalt, regel, regelElt,
       children: kids + young,
       alleinerz: adults === 1 && kids > 0,
       stufe: [1, 2, 3, 4, 5, 6, 7].indexOf(Number(inp.mietstufe)) >= 0 ? Number(inp.mietstufe) : null,
@@ -798,10 +809,12 @@ const Rules = (function () {
   // Arbeitslosengeld I oder Krankengeld. erwerb: erste Person (bei Alleinstehenden der ganze Haushalt), erwerb2: zweite Person.
   function haushaltsFreibetrag(h) {
     const mk_ = h.kids > 0;
-    // Einfache Version: nur der Lohn zählt für den Freibetrag (nicht Rente oder Werkstattlohn derselben Person)
-    const b1 = h.liste ? h.pers.filter((x) => x[0] === 'lohn').reduce((a, x) => a + x[1], 0) : h.brutto - h.brutto2;
+    // Liste: je Person aus der Summe ihrer Löhne (mehrere Jobs einer Person: ein Freibetrag, BA-FW Rz. 11.15), nicht aus Rente,
+    // Unterhalt oder Werkstattlohn derselben Person
+    const lohnVon = (p) => h.pers.filter((x) => x[0] === 'lohn' && x[5] === p).reduce((a, x) => a + x[1], 0);
+    const b1 = h.liste ? lohnVon(1) : h.brutto - h.brutto2;
     const f1 = h.erwerb ? sgb2Freibetrag(b1, mk_) : 0;
-    const f2 = h.adults === 2 && h.erwerb2 ? sgb2Freibetrag(h.brutto2, mk_) : 0;
+    const f2 = h.adults === 2 && h.erwerb2 ? sgb2Freibetrag(h.liste ? lohnVon(2) : h.brutto2, mk_) : 0;
     return f1 + f2;
   }
 
@@ -854,15 +867,31 @@ const Rules = (function () {
     // Elterngeld bis 300 € je Person ist gar kein Einkommen (§ 10 Abs. 1 BEEG): nur der Teil darüber zählt, mit Pauschalabzug
     // Werbungskosten-Pauschbetrag (§ 14 Abs. 1 WoGG i. V. m. § 9a EStG): Lohn und Werkstattlohn 1.230 €, Renten 102 € im Jahr.
     // Nicht bei Selbstständigen (Gewinn ist schon nach Betriebsausgaben) und nicht bei Lohnersatzleistungen.
+    // Pauschbeträge gelten einmal je Person, nicht je Einkommen (§ 9a Satz 1 Nr. 1 Buchst. a EStG: 1.230 € für alle Löhne; Nr. 3: „insgesamt“
+    // 102 € für Renten und Unterhalt mit Realsplitting); in der Reihenfolge der Liste verbraucht (Hauptfeld zuerst).
+    // § 16 WoGG: der Abzug (je 10 % für Steuer, KV/PV, RV) gilt je Person für ihr ganzes Einkommen (WoGVwV Nr. 16.11-16.13). Für „möglich“
+    // deshalb der höchste obere Abzug der Person auf alle ihre Einkommen; für „wahrscheinlich“ bleibt der vorsichtige Wert je Einkommen.
+    const persNr = (x, i) => (h.liste ? x[5] : i + 1);
+    const tab = (x) => (x[3] ? R.wgAbzugAuszahlung[x[0]] : R.wgAbzug[x[0]]) || R.wgAbzug.lohn;
+    const abHi = {};
+    pers.forEach(function (x, i) { const p = persNr(x, i); if (x[1] > 0) abHi[p] = Math.max(abHi[p] || 0, tab(x)[1]); });
+    const wkL = { 1: R.wgWerbung.lohn / 12, 2: R.wgWerbung.lohn / 12 }, wkR = { 1: R.wgWerbung.rente / 12, 2: R.wgWerbung.rente / 12 };
+    const wkTeil = pers.map(function (x, i) {
+      const p = persNr(x, i), topf = x[4] ? null : x[0] === 'lohn' || x[0] === 'wfbm' ? wkL : x[0] === 'rente' ? wkR : null;
+      if (!topf) return 0;
+      const t = Math.min(topf[p], x[1]); topf[p] -= t; return t;
+    });
     let wkSum = 0;
-    pers.forEach(function (x) {
-      const ab = (x[3] ? R.wgAbzugAuszahlung[x[0]] : R.wgAbzug[x[0]]) || R.wgAbzug.lohn;
-      const wk = x[4] ? 0 : x[0] === 'lohn' || x[0] === 'wfbm' ? R.wgWerbung.lohn / 12 : x[0] === 'rente' ? R.wgWerbung.rente / 12 : 0;
-      const wkHier = Math.min(wk, x[1]); wkSum += wkHier;
+    pers.forEach(function (x, i) {
+      const p = persNr(x, i), t = tab(x);
+      const ab = [t[0], Math.max(t[1], abHi[p] || 0)];
+      const wkHier = wkTeil[i]; wkSum += wkHier;
       const zaehlt = x[0] === 'eg' ? Math.max(0, x[1] - R.elterngeldFrei) : x[1] - wkHier;
       // Unterhalt für sich selbst: mit Realsplitting sonstige Einkünfte (§ 22 Nr. 1a EStG) nach Werbungskosten-Pauschbetrag 102 € (§ 9a Satz 1
-      // Nr. 3 EStG), sonst voll (§ 14 Abs. 2 Nr. 19 und 20 WoGG). Die App weiß das nicht: Pauschbetrag nur für „möglich“ (yB).
-      const wkOpt = x[0] === 'unt' ? Math.min(R.wgWerbung.rente / 12, x[1]) : 0;
+      // Nr. 3 EStG, zusammen mit Renten derselben Person), sonst voll (§ 14 Abs. 2 Nr. 19 und 20 WoGG). Die App weiß das nicht: Pauschbetrag
+      // nur für „möglich“ (yB), aus dem Rest, den die Renten der Person nicht verbraucht haben.
+      let wkOpt = 0;
+      if (x[0] === 'unt') { wkOpt = Math.min(wkR[p], x[1]); wkR[p] -= wkOpt; }
       sumB += zaehlt; yA += zaehlt * (1 - ab[0]); yB += (zaehlt - wkOpt) * (1 - ab[1]);
     });
     const wA = sumB > 0 ? yA / sumB : 0.9, wB = sumB > 0 ? yB / sumB : 0.7;
@@ -943,7 +972,7 @@ const Rules = (function () {
         if (h.kids14 === 0 && h.kidsAlter) return mk(id, 'nein', 'ausschluss', [[h.alter ? 'kiz.rentnerAllein' : 'kiz.emAllein']]);
         hinweis = 'kiz.nurAb15';
       } else if (h.adults === 1 && (h.alterGrenz || vielleichtAltersrente(h))) hinweis = 'kiz.vorgezogen';
-      else if (h.adults === 2 && !h.liste && h.art1 === 'rente' && h.art2 === 'rente' && (h.alter || em)) hinweis = 'kiz.rentnerPaar';
+      else if (h.adults === 2 && [1, 2].every((p) => h.pers.some((x, i) => x[0] === 'rente' && (h.liste ? x[5] : i + 1) === p)) && (h.alter || em)) hinweis = 'kiz.rentnerPaar';
     }
     const r = kizRechnung(h, id);
     if (!hinweis || r.level === 'nein') return r;
@@ -1128,7 +1157,11 @@ const Rules = (function () {
     // Netto je Einkommen: in der ausführlichen Version anteilig aus dem Haushaltsnetto
     const nettos = pers.map((x) => (h.liste ? x[2] : sumB > 0 ? h.netto * x[1] / sumB : h.netto / pers.length));
     const zus = zusatzVerteilt(h, nettos);
-    return pers.reduce((a, x, i) => {
+    // Freibetrag für Arbeit (§ 82 Abs. 3 Satz 1 SGB XII): 30 %, höchstens 50 % RS 1, je Person aus allen ihren Löhnen zusammen
+    const lohnP = {};
+    pers.forEach((x, i) => { if (x[0] === 'lohn') { const p = h.liste ? x[5] : i + 1; lohnP[p] = (lohnP[p] || 0) + nettos[i]; } });
+    const freiArbeit = Object.keys(lohnP).reduce((a, p) => a + Math.min(R.gsaArbeit.quote * lohnP[p], R.gsaArbeit.max * rs1), 0);
+    return -freiArbeit + pers.reduce((a, x, i) => {
       const art = x[0], b = x[1];
       const n = nettos[i];
       if (art === 'wfbm') {
@@ -1136,7 +1169,7 @@ const Rules = (function () {
         const frei = Math.min(e, R.wfbm.achtel * rs1 + R.wfbm.rest * Math.max(0, e - R.wfbm.achtel * rs1));
         return a + e - frei;
       }
-      if (art === 'lohn') return a + n - Math.min(R.gsaArbeit.quote * n, R.gsaArbeit.max * rs1);
+      if (art === 'lohn') return a + n;
       if (art === 'eg') return a + Math.max(0, n - (b > R.elterngeldFrei ? R.elterngeldFrei : 0));
       // Rente: Grundrentenfreibetrag nur auf die gesetzliche Rente (§ 82a), Freibetrag für zusätzliche Altersvorsorge auf Betriebs-, Riester- oder private Rente (§ 82 Abs. 4)
       if (art === 'rente') { const z = zus[i], gesetzlich = n - z; return a + n - (h.grundrente33 ? freiStaffel(gesetzlich, R.grundrente, rs1) : 0) - freiStaffel(z, R.vorsorge, rs1); }
@@ -1275,7 +1308,7 @@ const Rules = (function () {
   function alg1(h) {
     const id = 'alg1';
     const melden = ['alg1.melden'];
-    if (h.art1 === 'alg' || (h.adults === 2 && h.art2 === 'alg')) return mk(id, 'na', 'na', [['alg1.na']]);
+    if (h.art1 === 'alg' || (h.adults === 2 && h.art2 === 'alg') || (h.pers || []).some((x) => x[0] === 'alg' && x[1] > 0)) return mk(id, 'na', 'na', [['alg1.na']]);
     // Krankengeld läuft aus: Arbeitslosengeld trotz eingeschränkter Leistungsfähigkeit (Nahtlosigkeit, § 145 SGB III)
     if (h.arbeitSit === 'krank' && h.krankWochen === 'ende') return mk(id, 'vielleicht', 'vielleicht', [['alg1.nahtlos'], melden]);
     if (h.arbeitSit !== 'arbeitslos') return mk(id, 'nein', 'vorausFehlt', [['alg1.keine']]);
@@ -1304,7 +1337,7 @@ const Rules = (function () {
   // Krankengeld (§§ 44 ff. SGB V)
   function krankengeld(h) {
     const id = 'krankengeld';
-    if (h.art1 === 'kg' || (h.adults === 2 && h.art2 === 'kg')) return mk(id, 'na', 'na', [['krank.na'], ['krank.78']]);
+    if (h.art1 === 'kg' || (h.adults === 2 && h.art2 === 'kg') || (h.pers || []).some((x) => x[0] === 'kg' && x[1] > 0)) return mk(id, 'na', 'na', [['krank.na'], ['krank.78']]);
     if (h.arbeitSit !== 'krank') return mk(id, 'nein', 'vorausFehlt', [['krank.keine']]);
     if (h.krankWochen === 'ende') return mk(id, 'nein', 'vorausFehlt', [['krank.ende']]);
     // Selbstständige: Krankengeld nur mit Wahlerklärung oder Wahltarif der Krankenkasse (§ 44 Abs. 2 Nr. 2, § 53 Abs. 6 SGB V)
@@ -1596,6 +1629,8 @@ const Rules = (function () {
       partnerOk = art === 'ohne' || art === 'eg' || (!art && b2 === 0) || (art === 'lohn' && b2 <= h.minijob) || b2 <= grenze;
       // Arbeitslosengeld, Krankengeld und Werkstatt bringen eine eigene Versicherung mit; Rente schließt nur über der Grenze aus
       if (art === 'alg' || art === 'kg' || art === 'wfbm' || (art === 'rente' && b2 > grenze)) partnerOk = false;
+      // Mit Liste ist art2 bei „Arbeitslosengeld + Nebenjob“ gleich lohn: die eigene Versicherung kommt trotzdem vom Arbeitslosengeld
+      if (h.liste && h.pers.some((x) => x[5] === 2 && (x[0] === 'alg' || x[0] === 'kg' || x[0] === 'wfbm') && x[1] > 0)) partnerOk = false;
       tx.push(partnerOk ? ['famvers.partner', { grenze: eur(grenze), mini: eur(h.minijob) }] : ['famvers.partnerNein', { grenze: eur(grenze) }]);
     }
     if (h.kids > 0) tx.push(['famvers.kinder']);
