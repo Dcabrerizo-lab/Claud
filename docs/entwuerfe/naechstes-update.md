@@ -12,6 +12,7 @@ Stand: 20.11.2026 · Wünsche von David, noch nicht umgesetzt
 | Geld sparen im Alltag | Bereich „Schulden und Pfändung“ raus (steckt schon in „Ich habe Schulden“; Tipps der Schuldnerberatungen dorthin mitnehmen) |
 | Kopfzeile | Ganze Kopfzeile (Logo, App-Name, Satz „Prüfe in etwa 5 Minuten …“) nur auf der Startseite, sonst nicht |
 | Ergebnisliste | Karte „Kostenlose Familienversicherung“ ganz raus (Regel, Texte, Tests, Prüfliste, Karten-Liste) |
+| Profile/Vorgänge | Idee gut, Umsetzung unübersichtlich; man wird auf anderen Seiten damit konfrontiert. Neu: Profile nur in Mein Ordner (Liste nach bewährten Mustern anderer Apps, Wechseln mit einem Tipp, „+ Neu“, Bearbeiten dahinter); Kürzel im Kopf, Speichern-Kasten auf der Ergebnisseite und Verwaltung in den Einstellungen entfallen; Sicherheitsfunktionen an einer Stelle |
 | Ergebnisliste | „Nächste Schritte“ und „Unterlagen“ aus den Karten raus; sie stehen in der Antragsmappe (Stelle, Unterlagen mit Haken, Tipp) |
 
 Hinweis zur Ergebnisliste: Die Mappe zeigt Schritte und Unterlagen nur für Leistungen, die man in die Mappe übernimmt. Darauf auf der Karte kurz hinweisen („Unterlagen und nächste Schritte findest du in der Antragsmappe“).
