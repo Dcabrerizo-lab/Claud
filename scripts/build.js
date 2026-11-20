@@ -1,5 +1,5 @@
 // Baut die Web-Version: dist/i18n.js und dist/sozialleistungslotse.html
-// aus src/template.html, src/rules.js, src/fmt.js, src/plz.js, src/app.js und src/lang/*.json.
+// aus src/template.html, src/rules.js, src/fmt.js, src/plz.js, src/vorgaenge.js, src/app.js und src/lang/*.json.
 'use strict';
 const fs = require('fs');
 const path = require('path');
@@ -98,7 +98,7 @@ function pruefpaket() {
 // opts.native: Store-App (Android/iOS) statt Web
 function render(opts = {}) {
   const pp = pruefpaket();
-  const parts = { rules: read('rules.js'), i18n: i18nSource(), fmt: read('fmt.js'), plz: read('plz.js'), behoerden: read('behoerden.js'), formulare: read('formulare.js'), app: read('app.js') };
+  const parts = { rules: read('rules.js'), i18n: i18nSource(), fmt: read('fmt.js'), plz: read('plz.js'), behoerden: read('behoerden.js'), formulare: read('formulare.js'), vorgaenge: read('vorgaenge.js'), app: read('app.js') };
   if (opts.native) {
     if (!parts.app.includes('/*NATIVE*/ false')) throw new Error('Marker /*NATIVE*/ fehlt in src/app.js');
     parts.app = parts.app.replace('/*NATIVE*/ false', 'true');
@@ -112,11 +112,12 @@ function render(opts = {}) {
     .replace('/*BEHOERDEN*/\n', () => parts.behoerden)
     .replace('/*BEHOERDENDATA*/null', () => (opts.plz === false ? 'null' : behoerdenData()))
     .replace('/*FORMULARE*/\n', () => parts.formulare)
+    .replace('/*VORGAENGE*/\n', () => parts.vorgaenge)
     .replace('<!--PRUEFPAKET-->', () => pp.teile)
     .replace('/*PPSTIL*/\n', () => pp.css)
     .replace('/*PRUEFPAKET*/\n', () => pp.js)
     .replace('/*APP*/\n', () => parts.app.replace("'/*VERSION*/'", () => JSON.stringify(require(path.join(ROOT, 'package.json')).version)));
-  const left = html.match(/\/\*(RULES|I18N|FMT|PLZ|PLZDATA|BEHOERDEN|BEHOERDENDATA|FORMULARE|APP|PPSTIL|PRUEFPAKET)\*\/|<!--PRUEFPAKET-->/);
+  const left = html.match(/\/\*(RULES|I18N|FMT|PLZ|PLZDATA|BEHOERDEN|BEHOERDENDATA|FORMULARE|VORGAENGE|APP|PPSTIL|PRUEFPAKET)\*\/|<!--PRUEFPAKET-->/);
   if (left) throw new Error('Platzhalter nicht ersetzt: ' + left[0]);
   return { html, i18n: parts.i18n };
 }

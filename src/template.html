@@ -458,6 +458,28 @@
   .ans-h { font-size: 1.5em; margin: 8px 0 12px; }
   .set-gruppe { margin: 0 0 22px; max-width: 60ch; }
   .set-gruppe h3 { margin: 0 0 8px; font-size: 1.05em; }
+  /* Vorgänge (Haushalte): Kürzel-Schild im Kopf, Verwaltung in den Einstellungen, Sperrbildschirm */
+  .vg-chip { margin-inline-start: auto; align-self: flex-start; max-width: 11em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-height: 36px; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--accent); background: transparent; color: var(--accent); font: inherit; font-size: 0.85em; font-weight: 700; cursor: pointer; }
+  .vg-menu { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 8px 0; }
+  .vg-gruppe h4 { margin: 18px 0 6px; font-size: 1em; }
+  .vg-form label { display: block; font-weight: 600; margin: 8px 0 4px; }
+  .vg-form input { font: inherit; min-height: 44px; padding: 6px 10px; border: 1px solid var(--line, #bbb); border-radius: 8px; width: 100%; max-width: 22em; box-sizing: border-box; }
+  .vg-form .btn { margin-top: 8px; }
+  .vg-form input, .vg-form p { margin: 2px 0 4px; }
+  .vg-liste { list-style: none; padding: 0; margin: 12px 0; }
+  .vg-liste li { border: 1px solid var(--line, #ddd); border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; }
+  .vg-liste li.vg-offen { border-color: var(--accent); }
+  .vg-liste p { margin: 0 0 6px; }
+  .vg-liste .btns { display: flex; flex-wrap: wrap; gap: 6px; }
+  .vg-ablauf { font-weight: 700; }
+  .vg-res { margin: 20px 0; padding: 14px 16px; border: 1px dashed var(--accent); border-radius: 12px; }
+  .vg-res h3 { margin: 0 0 6px; font-size: 1.05em; }
+  .vg-sperre { position: fixed; inset: 0; z-index: 1000; font-family: var(--font-body); background: var(--bg, #fffaf3); color: var(--ink, #1b1815); display: flex; align-items: center; justify-content: center; padding: 20px; overflow: auto; }
+  .vg-sperre-box { max-width: 26em; width: 100%; }
+  .vg-sperre input { font: inherit; font-size: 1.4em; letter-spacing: 0.3em; min-height: 48px; padding: 6px 10px; width: 100%; box-sizing: border-box; border: 1px solid var(--line, #bbb); border-radius: 8px; margin: 6px 0 10px; }
+  .vg-sperre label { display: block; font-weight: 600; }
+  .vg-vergessen { margin-top: 18px; }
+  .vg-vergessen summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; color: var(--accent); }
   .set-gruppe p { margin: 0 0 8px; }
   .chip[aria-disabled="true"] { opacity: .6; cursor: not-allowed; }
   .weg-liste { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; margin: 18px 0; }
@@ -1397,6 +1419,9 @@ Behoerden.init(/*BEHOERDENDATA*/null);
 </script>
 <script>
 /*FORMULARE*/
+</script>
+<script>
+/*VORGAENGE*/
 </script>
 <script>
 /*PRUEFPAKET*/
