@@ -8,6 +8,7 @@ Jede Zahl und Regel der riskantesten Teile wurde von vier unabhängigen Prüflä
 | Grundsicherung, Studierende/Azubis, BAföG-Werte | quellen/grundsicherung.md |
 | Kindergeld bei Behinderung, Pauschbeträge, Pflege, EM-Rente, Blindengeld, Zuzahlung, Budget für Arbeit | quellen/kindergeld-behinderung.md |
 | WBS Bayern, Rundfunkbeitrag | quellen/wbs-rundfunk.md |
+| Geld und Schulden: Geldstrafe, Inkasso (§ 13a RDG), P-Konto-Bescheinigung (§ 903 ZPO), Schuldnerberatung | quellen/geld-schulden.md |
 
 Status je Aussage: BELEGT (amtlicher Wortlaut gelesen) · NUR SEKUNDÄRQUELLE · NICHT BELEGBAR · ABWEICHUNG (korrigiert).
 

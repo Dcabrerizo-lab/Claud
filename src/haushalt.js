@@ -504,8 +504,17 @@ var Haushalt = (function () {
     var g = geteilte(), p = daten.plan, s = check();
     box.appendChild(el('p', 'hb-lead', t('hb.plan.lead')));
     var erg = el('p', 'hb-ergebnis'); erg.id = 'hbErgebnis'; erg.setAttribute('aria-live', 'polite'); box.appendChild(erg);
+    // Brücke zum Leistungs-Check (Konzept U7, AG SBV „Konzept Soziale Schuldnerberatung“ 2018, S. 12: Existenzsicherung durch mehr Einkommen):
+    // bei Fehlbetrag oder knappem Plan als Karte direkt unter dem Ergebnis statt in der Hinweisliste
+    var bruecke = el('div', 'hb-karte hb-bruecke'); bruecke.id = 'hbBruecke'; box.appendChild(bruecke);
     var aktual = function () {
       var r = rechnung(); erg.textContent = ergebnisSatz(r); erg.classList.toggle('minus', !r.leer && r.rest < 0);
+      bruecke.textContent = ''; bruecke.hidden = !(!r.leer && r.knapp);
+      if (!bruecke.hidden) {
+        bruecke.appendChild(el('p', 'hb-bruecke-t', t('hb.hw.knapp')));
+        bruecke.appendChild(el('p', 'small', t('hb.hw.knapp.d')));
+        var bb = el('div', 'btns'); bb.appendChild(knopf('btn', t('hb.zumCheck'), function () { ctx.zeige('leistungen', true); }, { id: 'hb-bruecke-check' })); bruecke.appendChild(bb);
+      }
       var h = $('hbHinweise'); if (h) hinweise(h, r);
     };
 
@@ -627,7 +636,7 @@ var Haushalt = (function () {
     var b = el('div', 'btns');
     var weg = function () { daten.weg[h.id] = true; if (h.art === 'ek') daten.ekBasis = h.neu; sichern(); neuZeichnen(); };
     if (h.art === 'knapp' || h.art === 'but') b.appendChild(knopf('btn ghost klein', t('hb.zumCheck'), function () { ctx.zeige('leistungen', true); }));
-    if (h.art === 'schulden') b.appendChild(knopf('btn ghost klein', t('hb.zuSchulden'), function () { ctx.zeige('pfaendung', true); }));
+    if (h.art === 'schulden') b.appendChild(knopf('btn ghost klein', t('hb.zuSchulden'), function () { ctx.zeige(window.Schulden ? 'schulden' : 'pfaendung', true); })); // Raten im Plan → Schulden-Liste (Konzept U7)
     if (h.art === 'energie') b.appendChild(knopf('btn ghost klein', t('hb.en.knopf'), enOeffnen));
     if (h.art === 'nk') b.appendChild(knopf('btn ghost klein', t('hb.hw.brief'), function () { ctx.zeige('briefe', true); }));
     if (h.art === 'ek') {
@@ -649,7 +658,7 @@ var Haushalt = (function () {
   }
   function hinweise(box, r) {
     box.innerHTML = '';
-    var liste = hinweisDaten(r), neu = function () { hinweise(box, rechnung()); var f = box.querySelector('button') || $('hbErgebnis'); if (f) f.focus(); };
+    var liste = hinweisDaten(r).filter(function (h) { return h.art !== 'knapp' || !$('hbBruecke'); }), neu = function () { hinweise(box, rechnung()); var f = box.querySelector('button') || $('hbErgebnis'); if (f) f.focus(); };
     liste.slice(0, 2).forEach(function (h) { box.appendChild(hinweisElement(h, neu)); });
     if (liste.length > 2) {
       var d = el('details', 'hb-mehr'), su = el('summary'); su.textContent = t('hb.hw.weitere', { n: String(liste.length - 2) }); d.appendChild(su);
@@ -1456,6 +1465,7 @@ var Haushalt = (function () {
     // kommt aus dem Check und zählt nicht) – sonst wäre „Im Monat bleiben dir …“ nur Einkommen minus Miete, ohne Essen, Strom und Handy.
     rest: function () { var r = rechnung(); r.ausgefuellt = !!daten && Object.keys(daten.plan.aus || {}).some(function (k) { return k !== 'miete' && daten.plan.aus[k] > 0; }); return r; },
     init: init, zeigen: zeigen, sprache: function () { render(); if (daten) startHinweis(); }, speicherOrt: speicherOrt,
+    energie: function () { if (daten) enOeffnen(); }, // „Abschlag prüfen“ direkt aus „Mein Geld planen“ und „Strom- oder Gassperre droht“
     daten: function () { return JSON.parse(JSON.stringify(daten)); }, laden: function (d) { daten = normiere(d); sichern(); render(); startHinweis(); },
     // Nach einem Wechsel des Vorgangs: Plan des geöffneten Vorgangs aus dem Speicherort lesen (ohne zu schreiben)
     neuLaden: function () { offenKat = ''; enOffen = false; eingabe = null; rueck = null; speicher.laden(function (v) { try { daten = normiere(v ? JSON.parse(v) : null); } catch (e) { daten = leer(); } render(); startHinweis(); }); }
