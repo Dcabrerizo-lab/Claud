@@ -78,7 +78,14 @@ const M = [
   ['Grundsicherung: Grundrentenfreibetrag auch auf die Betriebsrente', 'freiStaffel(gesetzlich, R.grundrente, rs1)', 'freiStaffel(n, R.grundrente, rs1)'],
   ['Kinderzuschlag: anderes Elterneinkommen nur zu 45 %', 'return andere > bedarf ? andere - bedarf + R.kiz.anrechnung * arbeit : R.kiz.anrechnung * Math.max(0, gesamt - bedarf);', 'return R.kiz.anrechnung * Math.max(0, gesamt - bedarf);'],
   ['Rundfunk: Befreiung bei Blindenhilfe, Hilfe zur Pflege, BAföG fehlt', "if (okW(w.hzp) || okW(w.blh) || (okW(w.baf) && h.ausbildung === 'ich' && h.wohnform !== 'eltern'))", 'if (false)'],
-  ['Grundsicherungsgeld: Versicherungspauschale neben Lohn', "&& !pers.some((x) => x[0] === 'lohn' && x[1] > 0) ? R.versPauschale : 0)", '? R.versPauschale : 0)'],
+  ['Grundsicherungsgeld: Versicherungspauschale neben Lohn', 'return a + (lohn > 0 ? Math.min(anders, Math.max(0, R.versPauschale - lohn)) : R.versPauschale);', 'return a + R.versPauschale;'],
+  ['Grundsicherungsgeld: kein Rest der Versicherungspauschale bei Lohn unter 30 €', 'lohn > 0 ? Math.min(anders, Math.max(0, R.versPauschale - lohn)) :', 'lohn > 0 ? 0 :'],
+  ['Grundsicherungsgeld: Freibetrag für Arbeit aus den Löhnen beider Personen zusammen', "h.pers.filter((x) => x[0] === 'lohn' && x[5] === p)", "h.pers.filter((x) => x[0] === 'lohn')"],
+  ['Wohngeld: Werbungskosten-Pauschbetrag je Einkommen statt je Person', 'const t = Math.min(topf[p], x[1]); topf[p] -= t; return t;', 'const t = Math.min(topf[p], x[1]); return t;'],
+  ['Wohngeld: § 16-Abzug für „möglich“ je Einkommen statt je Person', 'const ab = [t[0], Math.max(t[1], abHi[p] || 0)];', 'const ab = t;'],
+  ['Grundsicherung im Alter: Freibetrag für Arbeit je Einkommen statt je Person', 'const p = h.liste ? x[5] : i + 1; lohnP[p]', 'const p = i; lohnP[p]'],
+  ['Familienversicherung: Arbeitslosengeld neben Nebenjob bei Person 2 übersehen', "if (h.liste && h.pers.some((x) => x[5] === 2 && (x[0] === 'alg'", "if (false && h.pers.some((x) => x[5] === 2 && (x[0] === 'alg'"],
+  ['Arbeitslosengeld: als zweites Einkommen nicht als „beziehst du schon“ erkannt', "|| (h.pers || []).some((x) => x[0] === 'alg' && x[1] > 0)) return", ') return'],
   ['Grundsicherung: Freibetrag größer als die Rente', 'const freiStaffel = (x, p, rs1) => (x > 0 ? Math.min(p.sockel + p.quote * Math.max(0, x - p.sockel), p.max * rs1, x) : 0);', 'const freiStaffel = (x, p, rs1) => (x > 0 ? Math.min(p.sockel + p.quote * Math.max(0, x - p.sockel), p.max * rs1) : 0);'],
   ['Grundsicherungsgeld: Elterngeld 300 € nicht frei', "egFreiSGB: sumIf((a, b) => a === 'eg' && b > R.elterngeldFrei ? R.elterngeldFrei : 0)", "egFreiSGB: sumIf(() => 0)"],
   ['Grundsicherungsgeld: Unterhalt ohne Deckel', 'return Math.min(eink, Math.max(0, kinderBedarf - h.children * R.kindergeld));', 'return eink;'],
@@ -115,7 +122,7 @@ fs.symlinkSync(path.join(ROOT, 'app', 'node_modules'), path.join(tmp, 'app', 'no
 const DATEI = (m) => m[3] || 'src/rules.js';
 const ORIG = {};
 M.forEach((m) => { ORIG[DATEI(m)] = ORIG[DATEI(m)] || fs.readFileSync(path.join(ROOT, DATEI(m)), 'utf8'); });
-const TESTS = ['test.js', 'test-netto.js', 'test-strict.js', 'test-beh.js', 'test-faelle.js', 'test-raster.js ' + (process.env.MUT_RASTER || 8000), 'test-pruefliste.js', 'test-einfach-gleich.js 3000', 'test-grenzen.js', 'test-formulare.js', 'test-amtlich.js', 'test-ba-beispiele.js', 'test-eigenschaften.js ' + (process.env.MUT_EIGEN || 3000)];
+const TESTS = ['test.js', 'test-netto.js', 'test-strict.js', 'test-beh.js', 'test-faelle.js', 'test-raster.js ' + (process.env.MUT_RASTER || 8000), 'test-pruefliste.js', 'test-einfach-gleich.js 3000', 'test-grenzen.js', 'test-formulare.js', 'test-amtlich.js', 'test-ba-beispiele.js', 'test-paar-einkommen.js', 'test-eigenschaften.js ' + (process.env.MUT_EIGEN || 3000)];
 const laeuft = () => { try { for (const t of TESTS) execSync('node test/' + t, { cwd: tmp, stdio: 'ignore' }); return true; } catch (e) { return false; } };
 
 let unentdeckt = 0, geprueft = 0;
