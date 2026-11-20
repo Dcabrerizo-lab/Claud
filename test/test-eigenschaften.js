@@ -59,7 +59,10 @@ for (let i = 0; i < N; i++) {
   n++;
   // ---------- Widerspruchsfreiheit ----------
   if (Object.keys(a).filter((k) => k !== '_z').length !== KARTEN.length) melde('Anzahl der Karten', e, Object.keys(a).length);
-  if (e.aufenthalt === 'asyl') ['ggeld', 'gsa', 'wohngeld', 'kiz'].forEach((id) => { if (a[id].level !== 'nein') melde('Asyl: ' + id + ' nicht ausgeschlossen', e, a[id].level); });
+  // Asyl: ausgeschlossen (§ 7 SGB II, § 23 Abs. 2 SGB XII, § 6a BKGG, § 27 Abs. 2 WoFG); Wohngeld nur ohne AsylbLG-Bezug (§ 7 Abs. 1 Satz 1 Nr. 8 WoGG): nie „wahrscheinlich“
+  if (e.aufenthalt === 'asyl') ['ggeld', 'gsa', 'kiz', 'wbs'].forEach((id) => { if (a[id].level !== 'nein') melde('Asyl: ' + id + ' nicht ausgeschlossen', e, a[id].level); });
+  if (e.aufenthalt === 'asyl' && a.wohngeld.level === 'ja') melde('Asyl: Wohngeld „wahrscheinlich“', e, null);
+  if (e.aufenthalt === 'asyl' && e.kids > 0 && a.but.level === 'nein') melde('Asyl mit Kindern: Bildung und Teilhabe nein (§ 3 Abs. 4 AsylbLG)', e, null);
   if (a.ggeld.level === 'ja' && a.gsa.level === 'ja') melde('Jobcenter und Sozialamt beide wahrscheinlich', e, null);
   if (a.ggeld.level === 'ja' && e.kids > 0 && a.but.level !== 'ja') melde('Grundsicherungsgeld wahrscheinlich, aber Bildung und Teilhabe nicht', e, a.but.level);
   if ((a.wohngeld.level === 'ja' || a.kiz.level === 'ja') && e.kids > 0 && a.but.level === 'nein') melde('Wohngeld/Kinderzuschlag wahrscheinlich, aber Bildung und Teilhabe nein', e, null);

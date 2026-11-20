@@ -207,6 +207,9 @@
     var ohneUz = !(Number(state.uzBetrag) > 0);
     if (ohneUz) reset(['uzAn', 'uzTitel']);
     if (state.aufenthalt !== 'eu') reset(['euArbeit', 'euJahre']);
+    // Einkommensart „Asylbewerberleistungen“ nur bei Aufenthalt „Asylverfahren oder Duldung“ (sonst Auswahl entfernen)
+    if (!istAsyl()) ['ek1Art', 'ek2Art'].forEach(function (k) { if (state[k] === 'asylblg') reset([k]); });
+    ekArtOptionen();
     if (!(Number(state.autoWert) > 0)) reset(['autoBraucht']);
     // Eigentum: Feld „Miete“ wird zu „Kosten fürs Wohnen“ (Kredit, Nebenkosten, Heizung)
     var eig = state.wohnart === 'eigentum';
@@ -253,8 +256,9 @@
   function ekPerson(i) {
     var art = state['ek' + i + 'Art'], b = state['ek' + i + 'Brutto'], n = state['ek' + i + 'Netto'];
     var leer = function (v) { return v === '' || v == null; };
-    if (!art) return { gesetzt: false, b: '', n: '', arbeit: true, art: '' };
-    if (art === 'ohne') return { gesetzt: true, b: 0, n: 0, arbeit: false, art: art };
+    if (!art || (art === 'asylblg' && !istAsyl())) return { gesetzt: false, b: '', n: '', arbeit: true, art: '' };
+    // Asylbewerberleistungen: kein Betrag (zählt wie „kein Einkommen“); die Regeln erkennen den Bezug an der Art
+    if (art === 'ohne' || art === 'asylblg') return { gesetzt: true, b: 0, n: 0, arbeit: false, art: art };
     var mitBrutto = art === 'lohn' || art === 'rente' || art === 'selbst';
     var nn = leer(n) ? '' : Number(n), bb = mitBrutto ? (leer(b) ? '' : Number(b)) : nn, geschaetzt = false;
     if (mitBrutto && bb === '' && nn !== '' && nn > 0) {
@@ -309,7 +313,7 @@
     var liste = [];
     var add = function (e, i) { if (zwei) e.p = i; liste.push(e); };
     var haupt = function (p, i) {
-      if (p.art === 'ohne') return;
+      if (p.art === 'ohne' || p.art === 'asylblg') return;
       var mitN = p.art === 'lohn' || p.art === 'rente' || p.art === 'selbst';
       add(mitN ? { art: p.art, b: p.b === '' ? 0 : p.b, n: p.n === '' ? nettoSchaetzen(p, i) : p.n } : { art: p.art, b: p.b === '' ? 0 : p.b }, i);
     };
@@ -323,12 +327,12 @@
       var art = state['ek' + i + 'Art'];
       var mitBrutto = art === 'lohn' || art === 'rente' || art === 'selbst';
       $('ek' + i + 'BruttoF').hidden = !mitBrutto;
-      $('ek' + i + 'NettoF').hidden = !art || art === 'ohne';
+      $('ek' + i + 'NettoF').hidden = !art || art === 'ohne' || art === 'asylblg';
       $('ek' + i + 'BruttoLab').textContent = t(art === 'lohn' || art === 'rente' ? 'ek.brutto.' + art : 'ek.brutto');
       // Zweites Einkommen: eigenes Aufklappfeld je Person; Hinweis auf das Feld nur zu zweit
       // sichtbar nur der kurze Minijob-Satz; der lange Hinweis auf das zweite Einkommen steht hinter „Mehr dazu“
       $('ek' + i + 'ArtHint').textContent = art === 'lohn' ? t('ek.art.hint.lohn') : ''; $('ek' + i + 'ArtHint').hidden = art !== 'lohn';
-      $('ek' + i + 'ArtMehr').hidden = !(state.adults === 2 && art && art !== 'ohne');
+      $('ek' + i + 'ArtMehr').hidden = !(state.adults === 2 && art && art !== 'ohne' && art !== 'asylblg');
       var zArt = state['ek' + i + 'bArt'];
       $('ek' + i + 'bLohnHint').hidden = !(zArt === 'lohn' || zArt === 'selbst');
       $('ek' + i + 'BruttoHint').textContent = art === 'rente' ? t('ek.brutto.hint.rente') : art === 'selbst' ? t('ek.brutto.hint.selbst') : t('ek.brutto.hint.lohn');
@@ -475,13 +479,28 @@
         : '<p class="small">' + esc(t('beh.pruefenKurz')) + '</p>' + (b.quelleArt === 'wikipedia' || b.stand ? mehrHtml('<p>' + esc(b.quelleArt === 'wikipedia' ? t('beh.pruefenWiki', { stand: b.stand || '' }) : t('beh.pruefen', { stand: b.stand })) + '</p>', t('beh.quelle')) : ''));
   }
 
+  // Aufenthalt „Asylverfahren oder Duldung“ (asyl) oder „ausreisepflichtig ohne Duldung“ (ausreise): beide wie asyl in den Regeln
+  function istAsyl() { return state.aufenthalt === 'asyl' || state.aufenthalt === 'ausreise'; }
+  // Einkommensarten; „Asylbewerberleistungen“ nur bei Aufenthalt „asyl“ (Wohngeld § 7 Abs. 1 Satz 1 Nr. 8 WoGG, Rundfunk § 4 Abs. 1 Nr. 4 RBStV)
+  function ekArtListe() {
+    var ek = [['', t('ek.art.0')], ['lohn', t('ek.art.lohn')], ['selbst', t('ek.art.selbst')], ['rente', t('ek.art.rente')], ['alg', t('ek.art.alg')], ['kg', t('ek.art.kg')], ['eg', t('ek.art.eg')], ['wfbm', t('ek.art.wfbm')], ['unt', t('ek.art.unt')], ['ohne', t('ek.art.ohne')]];
+    if (istAsyl()) ek.splice(ek.length - 1, 0, ['asylblg', t('ek.art.asylblg')]);
+    return ek;
+  }
+  // Auswahl nur neu füllen, wenn sich die Sichtbarkeit von „Asylbewerberleistungen“ ändert
+  function ekArtOptionen() {
+    ['ek1Art', 'ek2Art'].forEach(function (id) {
+      var hat = !!$(id).querySelector('option[value="asylblg"]');
+      if (hat !== istAsyl()) fillSelect(id, ekArtListe(), state[id]);
+    });
+  }
   function buildSelects() {
     var st = [['', t('stufe.unbekannt')]];
     for (var i = 1; i <= 7; i++) st.push([String(i), t('stufe.n', { n: Rules.roman(i) })]);
-    var ek = [['', t('ek.art.0')], ['lohn', t('ek.art.lohn')], ['selbst', t('ek.art.selbst')], ['rente', t('ek.art.rente')], ['alg', t('ek.art.alg')], ['kg', t('ek.art.kg')], ['eg', t('ek.art.eg')], ['wfbm', t('ek.art.wfbm')], ['unt', t('ek.art.unt')], ['ohne', t('ek.art.ohne')]];
+    var ek = ekArtListe();
     fillSelect('ek1Art', ek, state.ek1Art);
     fillSelect('ek2Art', ek, state.ek2Art);
-    var ekZweit = [['', t('ek.weiteres.0')]].concat(ek.slice(1).filter(function (x) { return x[0] !== 'ohne'; }));
+    var ekZweit = [['', t('ek.weiteres.0')]].concat(ek.slice(1).filter(function (x) { return x[0] !== 'ohne' && x[0] !== 'asylblg'; }));
     fillSelect('ek1bArt', ekZweit, state.ek1bArt);
     fillSelect('ek2bArt', ekZweit, state.ek2bArt);
     fillSelect('mietstufe', st, state.mietstufe);
@@ -501,7 +520,7 @@
     fillSelect('gdb', gd, state.gdb);
     fillSelect('baby', [['', t('baby.0')], ['bald', t('baby.bald')], ['da', t('baby.da')]], state.baby);
     fillSelect('uvgPartner', [['', t('uvgPartner.0')], ['neu', t('uvgPartner.neu')], ['ehe', t('uvgPartner.ehe')], ['eltern', t('uvgPartner.eltern')]], state.uvgPartner);
-    fillSelect('aufenthalt', [['', t('aufenthalt.0')], ['eu', t('aufenthalt.eu')], ['asyl', t('aufenthalt.asyl')]], state.aufenthalt);
+    fillSelect('aufenthalt', [['', t('aufenthalt.0')], ['eu', t('aufenthalt.eu')], ['asyl', t('aufenthalt.asyl')], ['ausreise', t('aufenthalt.ausreise')]], state.aufenthalt);
     fillSelect('euArbeit', [['', t('eu.arbeit.0')], ['ja', t('eu.arbeit.ja')], ['nein', t('eu.arbeit.nein')]], state.euArbeit);
     fillSelect('euJahre', [['', t('eu.jahre.0')], ['unter5', t('eu.jahre.unter5')], ['ab5', t('eu.jahre.ab5')]], state.euJahre);
     fillSelect('wohnart', [['', t('wohnart.miete')], ['eigentum', t('wohnart.eigen')]], state.wohnart);
@@ -1105,7 +1124,6 @@
     pflegeplus: { stelle: 'Pflegekasse', betreff: 'Antrag auf Verhinderungspflege, Pflegehilfsmittel und Zuschuss zur Wohnumfeldverbesserung', satz: 'hiermit beantrage ich Leistungen der Pflegeversicherung: Verhinderungspflege und Kurzzeitpflege, Pflegehilfsmittel zum Verbrauch und gegebenenfalls einen Zuschuss für wohnumfeldverbessernde Maßnahmen.' },
     arbeit: { stelle: 'Träger der Eingliederungshilfe (in Bayern der Bezirk)', betreff: 'Antrag auf Budget für Arbeit', satz: 'hiermit beantrage ich ein Budget für Arbeit nach § 61 SGB IX.' },
     rundfunk: { stelle: 'ARD ZDF Deutschlandradio Beitragsservice', betreff: 'Antrag auf Befreiung vom Rundfunkbeitrag', satz: 'hiermit beantrage ich die Befreiung vom Rundfunkbeitrag. Den Bescheid über meine Sozialleistung füge ich bei.' },
-    famvers: { stelle: 'Meine Krankenkasse', betreff: 'Antrag auf Familienversicherung', satz: 'hiermit beantrage ich die beitragsfreie Familienversicherung für meine Angehörigen nach § 10 SGB V. Den Fragebogen zur Familienversicherung fülle ich gern aus.' },
     zuzahl: { stelle: 'Meine Krankenkasse', betreff: 'Antrag auf Befreiung von Zuzahlungen', satz: 'hiermit beantrage ich die Befreiung von Zuzahlungen oder die Feststellung der Belastungsgrenze. Bitte prüfen Sie auch, ob ich als chronisch krank gelte.' },
     alg1: { stelle: 'Agentur für Arbeit', betreff: 'Arbeitsuchendmeldung und Antrag auf Arbeitslosengeld', satz: 'hiermit melde ich mich arbeitsuchend und beantrage Arbeitslosengeld. Bitte nennen Sie mir einen Termin für die persönliche Arbeitslosmeldung. Ist mein Leistungsvermögen wegen Krankheit eingeschränkt, bitte ich um Prüfung nach § 145 SGB III.' },
     bab: { stelle: 'Agentur für Arbeit', betreff: 'Antrag auf Berufsausbildungsbeihilfe', satz: 'hiermit beantrage ich Berufsausbildungsbeihilfe für meine Berufsausbildung.' },
@@ -1232,7 +1250,8 @@
     if (s.baby === 'bald') b.push('Ein Baby wird erwartet');
     if (s.baby === 'da') b.push('Baby jünger als 14 Monate');
     if (s.egVor) b.push('Nettoeinkommen vor der Geburt (für das Elterngeld): ' + money(s.egVor) + ' im Monat');
-    if (s.aufenthalt === 'asyl') b.push('Im Asylverfahren, mit Duldung oder ausreisepflichtig');
+    if (s.aufenthalt === 'asyl') b.push('Im Asylverfahren (Aufenthaltsgestattung) oder mit Duldung');
+    if (s.aufenthalt === 'ausreise') b.push('Ausreisepflichtig ohne Duldung');
     if (s.schwanger) b.push('Schwangerschaft (ab der 13. Woche)');
     if (s.ernaehrung) b.push('Krankheitsbedingt kostenaufwändige Ernährung (ärztliche Bescheinigung folgt)');
     if (s.warmwasser) b.push('Warmwasser über Boiler oder Durchlauferhitzer in der Wohnung');
@@ -1282,11 +1301,12 @@
     if (s.wohnform === 'heim') L.push('Wohnkosten: laut Wohn- und Betreuungsvertrag des Wohnheims (Betrag liegt dem Vertrag bei)');
     else if (s.wohnform === 'eltern' && !s.miete) L.push('Wohnt bei den Eltern, zahlt keine Miete');
     else L.push('Warmmiete im Monat: ' + money(s.miete) + (s.mietstufe ? ' (Mietenstufe ' + Rules.roman(Number(s.mietstufe)) + ')' : '') + (Number(String(s.heizkosten).replace(',', '.')) > 0 ? ', davon Heizkosten ' + money(s.heizkosten) : ''));
-    var ARTDE = { lohn: 'Lohn oder Gehalt', rente: 'Rente oder Pension', alg: 'Arbeitslosengeld I', kg: 'Krankengeld', eg: 'Elterngeld', selbst: 'Gewinn aus selbstständiger Arbeit', wfbm: 'Lohn aus der Werkstatt für behinderte Menschen', unt: 'Unterhalt für sich selbst (Zahlbetrag)', ohne: 'kein Einkommen' };
+    var ARTDE = { lohn: 'Lohn oder Gehalt', rente: 'Rente oder Pension', alg: 'Arbeitslosengeld I', kg: 'Krankengeld', eg: 'Elterngeld', selbst: 'Gewinn aus selbstständiger Arbeit', wfbm: 'Lohn aus der Werkstatt für behinderte Menschen', unt: 'Unterhalt für sich selbst (Zahlbetrag)', asylblg: 'Leistungen nach dem Asylbewerberleistungsgesetz', ohne: 'kein Einkommen' };
     var ekZeile = function (i, wer) {
       var art = s['ek' + i + 'Art'];
       if (!art) return wer + ': nicht angegeben';
       if (art === 'ohne') return wer + ': kein Einkommen';
+      if (art === 'asylblg') return wer + ': ' + ARTDE.asylblg;
       var teile = [];
       if ((art === 'lohn' || art === 'rente' || art === 'selbst') && !blankVal(s['ek' + i + 'Brutto'])) teile.push('brutto ' + money(s['ek' + i + 'Brutto']));
       if (!blankVal(s['ek' + i + 'Netto'])) teile.push((art === 'alg' || art === 'kg' || art === 'eg' || art === 'wfbm' || art === 'unt' ? '' : 'netto ') + money(s['ek' + i + 'Netto']));
