@@ -127,7 +127,7 @@ setTimeout(() => {
     klick(d.querySelector('#appnav button[data-ansicht="ordner"]'));
     const oz = $('or-schulden');
     check('[schuldenliste] Mein Ordner: Zeile „Schulden-Liste · 1 offen“, ohne Summe', oz && /Schulden-Liste/.test(oz.textContent) && /1 offen/.test(oz.textContent) && !/€/.test(oz.textContent), oz && oz.textContent);
-    check('[schuldenliste] ohne FristenOrdner: Frist in Mein Ordner, eigene Rechnung (28.12.2026)', !w.FristenOrdner && w.Schulden.fristEnde('2026-12-11', 14) === '2026-12-28' && (new Date().toISOString().slice(0, 10) > '2026-12-28' || /Frist bis 28\.12\.2026/.test(oz.textContent)), oz.textContent);
+    check('[schuldenliste] mit FristenOrdner (src/fristen.js): Fristende 28.12.2026, keine eigene Frist in Mein Ordner', !!w.FristenOrdner && w.Schulden.fristEnde('2026-12-11', 14) === '2026-12-28' && !/Frist/.test(oz.textContent), oz.textContent);
     klick(oz);
     check('[schuldenliste] aus Mein Ordner zurück zur Liste', !$('v-schulden').hidden);
     // Sprachen: keine fehlenden Schlüssel
@@ -149,7 +149,7 @@ setTimeout(() => {
   zweiteSeite();
 }, 300);
 
-// Zwei Vorgänge (ohne PIN); FristenOrdner als Platzhalter für src/fristen.js (Branch b-fristen) mit endeWochen
+// Zwei Vorgänge (ohne PIN); im echten FristenOrdner (src/fristen.js) wird endeWochen durch einen Platzhalter ersetzt, endeTage entfernt
 function zweiteSeite() {
   const jetzt = Date.now(), mem2 = { 'lotse.ack': '1', 'lotse-lang': 'de',
     'lotse.vorgaenge': JSON.stringify({ v: 1, tage: 0, klar: { aktiv: 'va', liste: [{ id: 'va', name: 'Anna', geaendert: jetzt, daten: {} }, { id: 'vb', name: 'Bert', geaendert: jetzt, daten: {} }] } }) };
@@ -160,11 +160,11 @@ function zweiteSeite() {
       x.__SOLO_TEST__ = true; x.HTMLElement.prototype.scrollIntoView = function () {}; x.scrollTo = function () {}; x.print = function () {};
       Object.defineProperty(x, 'localStorage', { value: { getItem: (k) => (k in mem2 ? mem2[k] : null), setItem: (k, v) => { mem2[k] = String(v); }, removeItem: (k) => { delete mem2[k]; } }, configurable: true });
       Object.defineProperty(x.navigator, 'languages', { value: ['de-DE'], configurable: true });
-      x.FristenOrdner = { endeWochen: (b, n) => (n === 2 && b === '2026-12-11' ? '2031-01-02' : 'kaputt') };
       x.addEventListener('error', (e) => err2.push(e.message));
     }
   });
   const w2 = dom2.window, d2 = w2.document, $2 = (id) => d2.getElementById(id);
+  w2.FristenOrdner.endeTage = undefined; w2.FristenOrdner.endeWochen = (b, n) => (n === 2 && b === '2026-12-11' ? '2031-01-02' : 'kaputt');
   const setze2 = (id, v) => { const e = $2(id); e.value = v; e.dispatchEvent(new w2.Event('input', { bubbles: true })); e.dispatchEvent(new w2.Event('change', { bubbles: true })); };
   const klick2 = (el) => el.dispatchEvent(new w2.MouseEvent('click', { bubbles: true }));
   setTimeout(() => {
