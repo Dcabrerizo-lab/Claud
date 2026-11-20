@@ -366,6 +366,21 @@
   .hb-sym { width: 36px; height: 36px; border-radius: 999px; display: grid; place-items: center; background: var(--c-sparen); color: var(--on-c); flex: none; }
   .hb-sym svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
   .hb-katfeld { display: grid; gap: 8px; }
+  /* Energiekosten-Check (src/haushalt.js energieBox): Ergebnis-Wort nach docs/FARBEN.md, Farbe nie allein */
+  .hb-en { display: grid; gap: 10px; }
+  .hb-en-ergebnis { display: grid; gap: 6px; } .hb-en-ergebnis p { margin: 0; }
+  .hb-en-erg { font-size: 1.15em; font-weight: 700; padding: 12px 14px; border-radius: 12px; background: var(--na-bg); color: var(--ink); }
+  .hb-en-erg.nach { background: var(--warn-bg); color: var(--warn); }
+  .hb-en-erg.passt { background: var(--ok-bg); color: var(--ok); }
+  .hb-en-erg.gut { background: var(--na-bg); color: var(--na); }
+  .hb-en-erg.fehler { background: var(--bad-bg); color: var(--bad); }
+  .hb-en-erg:empty { display: none; }
+  .hb-en-schaetz { font-weight: 600; }
+  .hb-en-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .hb-en-tab { display: flex; align-items: center; gap: 8px; min-height: 48px; padding: 6px 10px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+  .hb-en-tab[aria-pressed="true"] { border: 2px solid var(--accent); background: var(--accent-soft); }
+  .hb-en-felder { border: 0; padding: 0; margin: 0; display: grid; gap: 8px; } .hb-en-felder > legend { font-weight: 700; padding: 0; }
+  .hb-en-det > summary { font-weight: 600; cursor: pointer; padding: 8px 0; } .hb-en-det p { margin: 6px 0; }
   .hb-frage, .hb-hinweis { border: 2px solid var(--accent); border-radius: 12px; padding: 10px 12px; display: grid; gap: 8px; }
   .hb-frage p, .hb-hinweis p { margin: 0; }
   .hb-hinweise { display: grid; gap: 10px; }
@@ -865,6 +880,8 @@
   .app .az .az-raster > .az-k:nth-child(5) { --c: var(--c-briefe); } /* gruppe ausziehen */
   .app .az .az-raster > .az-k:nth-child(6) { --c: var(--c-leistungen); } /* gruppe ausziehen */
   .app .az .az-raster > .az-k:nth-child(7) { --c: var(--c-familienkasse); } /* gruppe ausziehen */
+  .app .hb-en .hb-en-tabs > button:nth-child(1) .hb-sym { background: var(--c-wohngeld); } /* gruppe energie */
+  .app .hb-en .hb-en-tabs > button:nth-child(2) .hb-sym { background: var(--c-briefe); } /* gruppe energie */
   /* ===== Ende Gruppenfarben ===== */
   .hinweis-koralle { display: flex; gap: 12px; align-items: flex-start; background: var(--hint-bg); color: var(--hint); border-radius: var(--r-item); padding: 14px 16px; margin: 4px 0 0; font-weight: 700; }
   .hinweis-koralle > svg { flex: none; width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; margin-top: 1px; }
