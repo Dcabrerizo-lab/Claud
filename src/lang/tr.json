@@ -513,6 +513,7 @@
   "clear.was": "Siler:",
   "clear.teil.form": "formdaki tüm bilgiler",
   "clear.teil.person": "mektuplar için ad, doğum tarihi, adres ve telefon",
+  "clear.teil.haushalt": "Bütçe planı ve harcama defteri",
   "clear.teil.vorgang": "Yalnızca bu dosyada („{name}“). Kaydedilmiş diğer dosyalar kalır.",
   "clear.bar": "Tüm bilgiler silindi.",
   "clear.undo": "Geri al",

@@ -513,6 +513,7 @@
   "clear.was": "Supprime :",
   "clear.teil.form": "toutes les réponses du formulaire",
   "clear.teil.person": "nom, date de naissance, adresse et téléphone pour les lettres",
+  "clear.teil.haushalt": "Plan de budget et carnet de dépenses",
   "clear.teil.vorgang": "Uniquement dans ce dossier (« {name} »). Les autres dossiers enregistrés restent.",
   "clear.bar": "Toutes les réponses ont été supprimées.",
   "clear.undo": "Annuler la suppression",

@@ -16,6 +16,8 @@
   var lastOut = null;
   var lang = 'de';
   var einfachSprache = false; // Schalter „Einfache Sprache“ (Einstellungen): nur auf Deutsch wirksam, Texte aus I18N_EINFACH
+  // Für src/haushalt.js (Druckblatt nur im Beratungsmodus): window.SoloBeratung.an()
+  window.SoloBeratung = { an: function () { return beratung; } };
   var beratung = false; // Beratungsmodus (Einstellungen, „Für Fachkräfte“): Paragrafen und Rechtsgrundlagen zeigen; aus = Laienansicht ohne Paragrafen
   var haken = {}; // Unterlagen-Checkliste: abgehakte Unterlagen je Leistung („id|Schlüssel“), nur auf dem Gerät
   var edited = false;
@@ -434,6 +436,7 @@
     $('stand').textContent = t('stand', { stand: Rules.RULES.stand });
     $('appVersion').textContent = t('set.version', { v: APPVERSION });
     einfacheSpracheAnzeigen();
+    if (window.Haushalt && Haushalt.sprache) Haushalt.sprache(); // Haushaltsplan (src/haushalt.js) in der neuen Sprache zeichnen
     // Regeln älter als der nächste Stichtag (1. Januar): deutlich darauf hinweisen
     var veraltet = regelnVeraltet();
     $('altNotice').hidden = !veraltet; $('altNotice').textContent = veraltet ? t('alt.hinweis', { stand: Rules.RULES.stand }) : '';
@@ -475,6 +478,7 @@
     if (!$('ergBlatt').hidden) ebBauen();
     if (aktAnsicht === 'pfaendung') pfRender(false);
     if (aktAnsicht === 'sparen') spRender(false);
+    if (aktAnsicht === 'haushalt' && window.Haushalt) Haushalt.sprache(); // Druckblatt nur im Beratungsmodus
   }
 
   function regelnVeraltet() { var ab = Rules.RULES.pruefenAb; return !!ab && new Date() >= new Date(ab + 'T00:00:00'); }
@@ -524,7 +528,7 @@
   }
   // Was „Alle Angaben löschen“ löscht. Neue Teile hier ergänzen: Sprachschlüssel clear.teil.*
   // Ist ein gespeicherter Vorgang geöffnet, nennt der Text ihn: gelöscht wird nur in diesem Vorgang, andere bleiben.
-  var LOESCH_TEILE = ['clear.teil.form', 'clear.teil.person'];
+  var LOESCH_TEILE = ['clear.teil.form', 'clear.teil.person'].concat(window.Haushalt ? ['clear.teil.haushalt'] : []);
   function loeschWas() {
     var a = tresor && tresor.bereit() ? tresor.aktiv() : null;
     return t('clear.was') + ' ' + LOESCH_TEILE.map(function (k) { return t(k); }).join(' · ') + (a && a.name ? ' ' + t('clear.teil.vorgang', { name: a.name }) : '');
@@ -695,7 +699,7 @@
     $('clearBtn').addEventListener('click', function () {
       // Stand merken: „Rückgängig“ stellt ihn etwa 10 Sekunden lang wieder her
       // Mit Vorgängen: nur der geöffnete Vorgang wird geleert; Rückgängig gilt nur, solange derselbe Vorgang offen ist
-      var vorher = { state: JSON.parse(JSON.stringify(state)), person: Object.assign({}, person), picked: Object.assign({}, picked), pickedUser: Object.assign({}, pickedUser), started: started, edited: edited, sample: !$('sampleNotice').hidden, haken: Object.assign({}, haken), vg: tresor && tresor.bereit() ? tresor.aktiv().id : null };
+      var vorher = { state: JSON.parse(JSON.stringify(state)), person: Object.assign({}, person), picked: Object.assign({}, picked), pickedUser: Object.assign({}, pickedUser), started: started, edited: edited, sample: !$('sampleNotice').hidden, haken: Object.assign({}, haken), hh: window.Haushalt ? Haushalt.daten() : null, vg: tresor && tresor.bereit() ? tresor.aktiv().id : null };
       state = blankState(); person = { name: '', geb: '', strasse: '', ort: '', tel: '' }; picked = {}; pickedUser = {}; started = false;
       ['p-name', 'p-geb', 'p-strasse', 'p-ort', 'p-tel'].forEach(function (id) { $(id).value = ''; });
       haken = {}; Store.remove('lotse.haken');
@@ -707,6 +711,7 @@
       if (vorher.started || Object.keys(vorher.person).some(function (k) { return vorher.person[k]; })) undoZeigen(function () {
         if (vorher.vg && !(tresor.bereit() && tresor.aktiv().id === vorher.vg)) return; // anderer Vorgang offen oder gesperrt
         haken = vorher.haken; if (Object.keys(haken).length) Store.set('lotse.haken', JSON.stringify(haken));
+        if (vorher.hh && window.Haushalt) Haushalt.laden(vorher.hh); // Haushaltsplan und -buch (src/haushalt.js leert sie beim Löschen mit)
         state = vorher.state; person = vorher.person; picked = vorher.picked; pickedUser = vorher.pickedUser; started = vorher.started; edited = vorher.edited;
         $('sampleNotice').hidden = !vorher.sample;
         [['p-name', 'name'], ['p-geb', 'geb'], ['p-strasse', 'strasse'], ['p-ort', 'ort'], ['p-tel', 'tel']].forEach(function (x) { $(x[0]).value = person[x[1]] || ''; });
@@ -2274,7 +2279,8 @@
     ['heizen', 'sp.heizen', 'sp.heizen.t', 5, '<path d="M12 21a6 6 0 0 0 6-6c0-4-3-6-4-10-2 2-3 4-3 6-1-1-2-2-2-4-2 2-3 5-3 8a6 6 0 0 0 6 6z"/>'],
     ['essen', 'sp.essen', 'sp.essen.t', 5, '<path d="M4 11h16a8 8 0 0 1-16 0zM8 7c0-2 2-2 2-4M12 7c0-2 2-2 2-4"/>'],
     ['vertraege', 'sp.vertraege', 'sp.vertraege.t', 6, '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>'],
-    ['schulden', 'sp.schulden', 'sp.schulden.t', 0, '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/>']
+    ['schulden', 'sp.schulden', 'sp.schulden.t', 0, '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/>'],
+    ['haushalt', 'hb.kachel', 'hb.kachel.t', 0, '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h4"/>'] // öffnet den Haushaltsplan (src/haushalt.js)
   ];
   var SP_TIPPS = { strom: ['sp.strom.1', 'sp.strom.2', 'sp.strom.3', 'sp.strom.4', 'sp.strom.5', 'sp.strom.6'], heizen: ['sp.heizen.1', 'sp.heizen.2', 'sp.heizen.3', 'sp.heizen.4', 'sp.heizen.5'],
     essen: ['sp.essen.1', 'sp.essen.2', 'sp.essen.3', 'sp.essen.4', 'sp.essen.5'], vertraege: ['sp.vertraege.1', 'sp.vertraege.2', 'sp.vertraege.3', 'sp.vertraege.4', 'sp.vertraege.5', 'sp.vertraege.6'] };
@@ -2309,6 +2315,7 @@
       var l = document.createElement('div'); l.className = 'weg-liste'; box.appendChild(l);
       SP_THEMEN.forEach(function (x) {
         l.appendChild(nhKnopf('weg', '<span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + x[4] + '</svg></span><span class="weg-txt"><b>' + esc(t(x[1])) + '</b><span>' + esc(t(x[2])) + '</span></span>', null, function () {
+          if (x[0] === 'haushalt') { oeffneVon('haushalt', true); return; }
           sp.thema = x[0]; sp.rezepte = false; spRender(true);
         }));
       });
@@ -2464,7 +2471,7 @@
 
   // ----- Bereiche: Start, Leistungen (Leistungscheck), Brief prüfen -----
   // Beim Öffnen die Startseite; „#leistungen“ und „#briefe“ öffnen den Bereich direkt (Links, Tests).
-  var ANSICHTEN = ['start', 'leistungen', 'briefe', 'pflege', 'pflegeinfo', 'pflegestart', 'einst', 'pfaendung', 'sparen']; // „pflege“: Pflegegrad-Einschätzung, gehört zu Leistungen
+  var ANSICHTEN = ['start', 'leistungen', 'briefe', 'pflege', 'pflegeinfo', 'pflegestart', 'einst', 'pfaendung', 'sparen', 'haushalt']; // „pflege“: Pflegegrad-Einschätzung, gehört zu Leistungen
   var aktAnsicht = 'leistungen';
   // Herkunft merken: „Zurück“, Leiste und Android-Taste folgen ihr (keine festen Ziele)
   var NAV_BEREICHE = ['start', 'leistungen', 'briefe', 'einst'];
@@ -2481,6 +2488,7 @@
     if (a === 'pflegeinfo') { $('piZurueck').click(); return true; }
     if (a === 'pfaendung') { if (pf.schritt > 0) { pf.schritt--; if (!pf.schritt) pf.art = ''; pfRender(true); } else zurueckZurHerkunft(a); return true; }
     if (a === 'sparen') { if (sp.rezepte) sp.rezepte = false; else if (sp.thema) sp.thema = ''; else { zurueckZurHerkunft(a); return true; } spRender(true); return true; }
+    if (a === 'haushalt') { zurueckZurHerkunft(a); return true; }
     if (a === 'briefe' && !$('checkBox').hidden) { $('briefZurueck').click(); return true; }
     if (a === 'leistungen' && $('es-zurueck')) { $('es-zurueck').click(); return true; }
     return false;
@@ -2511,6 +2519,7 @@
     $('jump').hidden = a !== 'leistungen' || esModus;
     jumpPruefen();
     var navA = navBereich(a);
+    if (a === 'haushalt' && window.Haushalt) Haushalt.zeigen();
     if (a === 'pfaendung') pfRender(false);
     if (a === 'pflegestart') puRender(false);
     if (a === 'sparen') spRender(false);
@@ -2567,6 +2576,7 @@
     Store.get('lotse.pflegecheck', function (v) { try { var d = v ? JSON.parse(v) : null; if (d && typeof d === 'object') { pa.antworten = d.antworten || null; pa.schaetzung = d.schaetzung || null; } } catch (e) {} paAnzeigen(); });
     Store.get('lotse.pfaendung', pfLaden);
     if (aktAnsicht === 'pfaendung') pfRender(false);
+    if (window.Haushalt && Haushalt.neuLaden) Haushalt.neuLaden(); // jeder Vorgang hat seinen eigenen Haushaltsplan
     vgRender();
   }
   function pfLeer() { return { art: '', schritt: 0, netto: '', pers: null, kg: null, kiz: '' }; }
@@ -3223,6 +3233,24 @@
   $('goPfaendung').addEventListener('click', function () { oeffneVon('pfaendung', true); });
   $('goSparen').addEventListener('click', function () { sp.thema = ''; oeffneVon('sparen', true); });
   document.querySelectorAll('[data-zurueck]').forEach(function (b) { b.addEventListener('click', function () { zurueckZurHerkunft(b.getAttribute('data-zurueck')); }); });
+  // Haushaltsplan und Haushaltsbuch (src/haushalt.js): gemeinsame Felder liegen nur im Check (state), der Plan liest und schreibt sie hier.
+  // Gespeichert wird der Plan je Vorgang (lotse.haushalt gehört zu Vorgaenge.DATEN): mit PIN verschlüsselt, mit dem Vorgang kopiert und gelöscht.
+  if (window.Haushalt) {
+    Haushalt.speicherOrt({
+      laden: function (cb) { Store.get('lotse.haushalt', cb); },
+      schreiben: function (text, cb) { Store.set('lotse.haushalt', text); cb(null); } // Speicherfehler meldet der Tresor (vgSpeicherFehler)
+    });
+    Haushalt.init({
+      t: tL, euro: function (x) { return Fmt.euro(x, lang, I18N[lang]['meta.dir'] === 'rtl'); }, euroDe: function (x) { return Fmt.euro(x, 'de'); },
+      datum: function (d) { return Fmt.datum(d, lang); }, datumDe: function (d) { return Fmt.datum(d, 'de'); }, locale: function () { return Fmt.LOCALE[lang] || 'de-DE'; },
+      daten: function () { return started && edited ? state : null; },
+      ergebnis: function () { try { return started && edited ? Rules.evaluate(state).results : null; } catch (e) { return null; } },
+      setze: function (werte) { if (started && !edited) state = blankState(); Object.assign(state, werte); writeForm(); buildSelects(); touched(); },
+      zeige: oeffneVon, regeln: function () { return Rules.RULES; }, plug: plug, nativ: NATIVE,
+      foto: NATIVE ? fotoText : null, bild: ocr,
+      textAusgeben: function (text, titel, msg) { if (!NATIVE) { schreibenDrucken(text); return; } schreibenAusgeben({ value: text }, titel, plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen', msg); }
+    });
+  }
   window.addEventListener('hashchange', function () { var a = location.hash.slice(1); if (ANSICHTEN.indexOf(a) >= 0 && a !== aktAnsicht) zeigeAnsicht(a, true); });
   Store.remove('lotse.fristen'); // Fristen aus 1.3.0 (Build 141) gibt es nicht mehr: gespeicherte Einträge vom Gerät löschen
   zeigeAnsicht((function () { var a = (location.hash || '').slice(1); return ANSICHTEN.indexOf(a) >= 0 ? a : 'start'; })());
@@ -3235,6 +3263,7 @@
       if (!d || !d.s) return;
       var b = blankState();
       state = Object.assign(b, migriereEinkommen(migriereFragen(d.s))); state.bezug = d.s.bezug || {}; started = true;
+      if (!/^\d{4}$/.test(String(state.gebJahr))) state.gebJahr = ''; // nur so, wie das Feld es speichert (4 Ziffern); Manipuliertes verwerfen
       if (d.p) person = Object.assign(person, d.p);
       edited = true; $('sampleNotice').hidden = true;
       [['p-name', 'name'], ['p-geb', 'geb'], ['p-strasse', 'strasse'], ['p-ort', 'ort'], ['p-tel', 'tel']].forEach(function (x) { $(x[0]).value = person[x[1]] || ''; });

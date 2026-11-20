@@ -66,13 +66,24 @@ const knopf = (s, root, text) => [...root.querySelectorAll('button')].find((b) =
   knopf(s, d.getElementById('vgMenu'), 'Familie M.').click();
   ck('[vorgaenge] Wechsel lädt Angaben und Antragsdaten', d.getElementById('miete').value === '640' && d.getElementById('p-name').value === 'Erika Muster' && chip.textContent === 'Familie M.');
 
+  // Haushaltsplan (src/haushalt.js) je Vorgang
+  const H = s.w.Haushalt, essen = () => (H.daten().plan.aus || {}).essen;
+  H.laden({ plan: { aus: { essen: 30000 } } });
+  ck('[vorgaenge] Haushaltsplan im geöffneten Vorgang gespeichert', /30000/.test(mem['lotse.haushalt'] || ''));
+  knopf(s, d.getElementById('vgMenu'), 'Ohne Namen').click();
+  ck('[vorgaenge] anderer Vorgang: eigener (leerer) Haushaltsplan', essen() === undefined);
+  knopf(s, d.getElementById('vgMenu'), 'Familie M.').click();
+  ck('[vorgaenge] zurück: Haushaltsplan des Vorgangs wieder da', essen() === 30000);
+  ck('[vorgaenge] Löschen-Text nennt den Haushaltsplan', /Haushaltsplan und Haushaltsbuch/.test(d.getElementById('clearWas').textContent));
+
   // Alle Angaben löschen: Text nennt den Vorgang, Rückgängig stellt ihn wieder her, nach einem Wechsel nicht mehr
   ck('[vorgaenge] Löschen-Text nennt den geöffneten Vorgang', /Nur in diesem Vorgang \(„Familie M\.“\)/.test(d.getElementById('clearWas').textContent), d.getElementById('clearWas').textContent);
   d.getElementById('clearBtn').click();
-  ck('[vorgaenge] Löschen leert nur den geöffneten Vorgang', d.getElementById('miete').value === '' && d.getElementById('p-name').value === '' && !d.getElementById('undoBar').hidden && chip.textContent === 'Familie M.');
+  ck('[vorgaenge] Löschen leert nur den geöffneten Vorgang (auch den Haushaltsplan)', d.getElementById('miete').value === '' && d.getElementById('p-name').value === '' && essen() === undefined && !d.getElementById('undoBar').hidden && chip.textContent === 'Familie M.');
   d.getElementById('undoBtn').click();
   await warte(20);
   ck('[vorgaenge] Rückgängig: Angaben des Vorgangs zurück und gespeichert', d.getElementById('miete').value === '640' && d.getElementById('p-name').value === 'Erika Muster' && JSON.parse(mem['lotse.state']).s.miete === 640);
+  ck('[vorgaenge] Rückgängig: Haushaltsplan zurück und gespeichert', essen() === 30000 && /30000/.test(mem['lotse.haushalt'] || ''));
   d.getElementById('clearBtn').click();
   knopf(s, d.getElementById('vgMenu'), 'Ohne Namen').click();
   ck('[vorgaenge] Wechsel nach dem Löschen: Rückgängig-Leiste weg', d.getElementById('undoBar').hidden);
@@ -80,6 +91,7 @@ const knopf = (s, root, text) => [...root.querySelectorAll('button')].find((b) =
   ck('[vorgaenge] gelöschter Vorgang bleibt leer, anderer Vorgang unberührt', d.getElementById('miete').value === '');
   d.getElementById('miete').value = '640'; d.getElementById('miete').dispatchEvent(new s.w.Event('change'));
   d.getElementById('p-name').value = 'Erika Muster'; d.getElementById('p-name').dispatchEvent(new s.w.Event('input'));
+  H.laden({ plan: { aus: { essen: 30000 } } });
   await warte(400);
 
   // Kopie zum Ausprobieren
@@ -89,6 +101,7 @@ const knopf = (s, root, text) => [...root.querySelectorAll('button')].find((b) =
   await warte(400);
   knopf(s, d.getElementById('vgMenu'), 'Familie M.').click();
   ck('[vorgaenge] Kopie: Original unverändert', d.getElementById('miete').value === '640');
+  ck('[vorgaenge] Kopie übernimmt den Haushaltsplan', JSON.parse(mem['lotse.vorgaenge']).klar.liste.filter((v) => v.daten && /30000/.test(v.daten['lotse.haushalt'] || '')).length === 1 && essen() === 30000);
   ck('[vorgaenge] drei Vorgänge in der Liste', d.querySelectorAll('#setHaushalte li').length === 3);
   ck('[vorgaenge] Wort „Profil“ nie in der Oberfläche', !/Profil/i.test(d.getElementById('setHaushalte').textContent + chip.textContent + res.textContent));
 
@@ -107,8 +120,9 @@ const knopf = (s, root, text) => [...root.querySelectorAll('button')].find((b) =
   d.getElementById('vgPin2').value = '2580';
   submit(s, d.getElementById('vgPinForm'));
   for (let i = 0; i < 100 && mem['lotse.state']; i++) await warte(50);
-  const roh = JSON.stringify(mem);
-  ck('[vorgaenge] mit PIN: nichts Lesbares im Speicher, PIN nicht gespeichert', !/Erika|Muster|Familie|640|miete/.test(roh) && !roh.includes('2580') && !mem['lotse.state'], roh.slice(0, 300));
+  // Geheimtext (Base64) selbst nicht durchsuchen: Zufallsfolgen wie „640“ wären sonst falscher Alarm
+  const roh = JSON.stringify(Object.assign({}, mem, { 'lotse.vorgaenge': JSON.stringify(Object.assign({}, JSON.parse(mem['lotse.vorgaenge'] || '{}'), { pin: { geheim: !!(JSON.parse(mem['lotse.vorgaenge'] || '{}').pin || {}).ct } })) }));
+  ck('[vorgaenge] mit PIN: nichts Lesbares im Speicher, PIN nicht gespeichert', !/Erika|Muster|Familie|640|miete/.test(roh) && !roh.includes('2580') && !mem['lotse.state'] && !mem['lotse.haushalt'], roh.slice(0, 300));
   ck('[vorgaenge] PIN-Sperre als „an“ angezeigt', /PIN-Sperre ist an/.test(d.getElementById('setHaushalte').textContent));
 
   // Neustart: Sperrbildschirm
@@ -123,6 +137,7 @@ const knopf = (s, root, text) => [...root.querySelectorAll('button')].find((b) =
   submit(s2, s2.d.getElementById('vgPinEin').form);
   for (let i = 0; i < 100 && !sp.hidden; i++) await warte(50);
   ck('[vorgaenge] richtige PIN: entsperrt, Angaben des Vorgangs geladen', sp.hidden && s2.d.getElementById('miete').value === '640' && s2.d.getElementById('p-name').value === 'Erika Muster');
+  ck('[vorgaenge] nach dem Entsperren: Haushaltsplan entschlüsselt geladen', s2.w.Haushalt.daten().plan.aus.essen === 30000);
   ck('[vorgaenge] nach dem Entsperren: Kürzel-Schild', !s2.d.getElementById('vgChip').hidden && s2.d.getElementById('vgChip').textContent === 'Familie M.');
 
   // PIN vergessen: alles löschen

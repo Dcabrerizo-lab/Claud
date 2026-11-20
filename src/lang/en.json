@@ -513,6 +513,7 @@
   "clear.was": "Deletes:",
   "clear.teil.form": "all entries in the form",
   "clear.teil.person": "name, date of birth, address and phone for the letters",
+  "clear.teil.haushalt": "Budget plan and spending diary",
   "clear.teil.vorgang": "Only in this case (“{name}”). Other saved cases stay.",
   "clear.bar": "All entries deleted.",
   "clear.undo": "Undo",

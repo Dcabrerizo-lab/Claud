@@ -453,6 +453,16 @@ Wird nur das Brutto eingetragen, schätzt die App das Netto. Gilt für alle Kart
 
 Die Tabelle gilt bis 30.6.2027, danach zeigt die App einen Warnhinweis. Jedes Jahr zum 1. Juli neue Werte eintragen.
 
+## Haushaltsplan und Haushaltsbuch (src/haushalt.js)
+
+| Regel | Status | Test |
+|---|---|---|
+| Plan: Einnahmen minus feste Ausgaben in Cent, Ergebnis auf ganze Euro („etwa“); Monatswechsel, wiederkehrende Ausgaben (31. → Monatsletzter), Vormonat | ✓ | `hb-plan` |
+| Kassenzettel: Gesamtsumme (ZU ZAHLEN, SUMME, GESAMT, EUR), Datum (nicht Zukunft, höchstens 3 Jahre alt), Geschäft und Kategorie; nur Vorschlag, nie ungefragt gespeichert; Foto nicht gespeichert | ✓ | `hb-kassenzettel` |
+| Eine Datenquelle mit dem Leistungs-Check (Netto, Miete warm, Unterhalt für die Kinder, Kinderzahl → Kindergeld); vorhandene Werte nur nach Rückfrage; Brutto, Art (Lohn/Rente), Heizung, Kindergeld-Bezug nie still übernommen | ✓ | `hb-uebernahme` |
+| Hinweise nur bei Auslöser, höchstens 2 sichtbar, „Nicht mehr zeigen“: Weiterbewilligung (§ 41 Abs. 3 SGB II, § 44 Abs. 3 SGB XII, § 25 Abs. 1 WoGG, § 6a Abs. 7 BKGG), Einkommensänderung (§ 60 SGB I), Nebenkosten-Nachzahlung (§ 22 Abs. 1 SGB II, § 35 SGB XII), Darlehen (§ 24 Abs. 1, § 42a SGB II, § 37 Abs. 1 SGB XII), Bildung und Teilhabe (§ 28 SGB II, § 34 SGB XII, § 6b BKGG), Rundfunkbeitrag (§ 4 Abs. 1 RBStV) | ✓ | `hb-hinweise` |
+| Regelbedarf zur Orientierung: Anteile nach § 5 RBEG (434,96 €), Stufe 1 aus den Werten der App | ✓ | `hb-regelbedarf` |
+
 ## Anzeige und Eingaben (alle Karten)
 
 | Regel | Status | Test |

@@ -513,6 +513,7 @@
   "clear.was": "Löscht:",
   "clear.teil.form": "alle Angaben im Formular",
   "clear.teil.person": "Name, Geburtsdatum, Anschrift und Telefon für die Briefe",
+  "clear.teil.haushalt": "Haushaltsplan und Haushaltsbuch",
   "clear.teil.vorgang": "Nur in diesem Vorgang („{name}“). Andere gespeicherte Vorgänge bleiben.",
   "clear.bar": "Alle Angaben gelöscht.",
   "clear.undo": "Rückgängig",
