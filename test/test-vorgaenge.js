@@ -165,6 +165,23 @@ const holen = (t, k) => { let r; t.get(k, (v) => { r = v; }); return r; };
     ck('[vorgaenge] entsperren: Fehler beim Anzeigen ist kein Fehlversuch', fehler && /Anzeige/.test(fehler.message) && t2.bereit() && !JSON.parse(s.mem['lotse.vorgaenge']).fehl, r);
   }
 
+  // Fristen (lotse.fristliste): gehört zum Vorgang, mit PIN verschlüsselt, kopiert und gelöscht; ueberall() liest alle Vorgänge
+  {
+    const s = speicher({}), t = oeffne(s);
+    ck('[vorgaenge] DATEN enthält lotse.fristliste', V.DATEN.indexOf('lotse.fristliste') >= 0);
+    t.set('lotse.fristliste', '{"v":1,"e":[{"art":"eigen","titel":"Geheimfrist"}]}'); t.umbenennen(t.aktiv().id, 'A');
+    const b = t.kopie(t.aktiv().id, 'B');
+    ck('[vorgaenge] fristliste: Kopie kopiert', /Geheimfrist/.test(holen(t, 'lotse.fristliste')) && t.aktiv().id === b);
+    t.neu('C');
+    const u = t.ueberall('lotse.fristliste');
+    ck('[vorgaenge] ueberall: alle Vorgänge, ohne PIN auch die nicht geöffneten', u.length === 3 && u.filter((x) => /Geheimfrist/.test(x.wert || '')).length === 2 && u.filter((x) => x.aktiv).length === 1 && u[2].aktiv && u[2].wert === null, u);
+    await t.pinSetzen('2468'); await t.fertig();
+    ck('[vorgaenge] fristliste mit PIN nicht im Klartext', !Object.values(s.mem).some((v) => /Geheimfrist/.test(v)));
+    ck('[vorgaenge] ueberall mit PIN (entsperrt)', t.ueberall('lotse.fristliste').filter((x) => /Geheimfrist/.test(x.wert || '')).length === 2);
+    t.loeschen(b);
+    ck('[vorgaenge] fristliste: Löschen löscht', t.ueberall('lotse.fristliste').filter((x) => /Geheimfrist/.test(x.wert || '')).length === 1);
+  }
+
   // Speicherfehler (voll oder gesperrt): Meldung statt Absturz, alte Daten bleiben
   {
     const s = speicher({ 'lotse.state': 'x' }), t = oeffne(s);

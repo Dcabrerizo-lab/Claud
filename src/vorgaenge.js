@@ -4,7 +4,7 @@
 // Mit PIN steht alles verschlüsselt (PBKDF2-SHA-256 + AES-GCM, zufälliges Salt und IV) unter lotse.vorgaenge; die PIN selbst wird nie gespeichert.
 const Vorgaenge = (function () {
   var SCHLUESSEL = 'lotse.vorgaenge';
-  var DATEN = ['lotse.state', 'lotse.einfach', 'lotse.pflegecheck', 'lotse.pfaendung', 'lotse.haushalt', 'lotse.haken', 'lotse.ausziehen', 'lotse.schulden'];
+  var DATEN = ['lotse.state', 'lotse.einfach', 'lotse.pflegecheck', 'lotse.pfaendung', 'lotse.haushalt', 'lotse.haken', 'lotse.ausziehen', 'lotse.fristliste', 'lotse.schulden'];
   var ITER = 600000; // PBKDF2-HMAC-SHA-256: Empfehlung OWASP Password Storage Cheat Sheet (Stand 2023/2026)
   var NAME_MAX = 24;
   var TAG = 86400000;
@@ -213,11 +213,11 @@ const Vorgaenge = (function () {
       SCHLUESSEL: SCHLUESSEL, DATEN: DATEN,
       hat: function (k) { return DATEN.indexOf(k) >= 0; },
       get: function (k, cb) { if (!bereit) { warte.push([k, cb]); return; } cb(wert(k)); },
-      set: function (k, val) {
-        if (!bereit) return; // vor dem Laden oder gesperrt: nichts überschreiben
-        if (!wertSetzen(c, k, val == null ? null : String(val), jetzt())) return;
+      set: function (k, val) { // false: nicht gespeichert (vor dem Laden oder gesperrt)
+        if (!bereit) return false; // vor dem Laden oder gesperrt: nichts überschreiben
+        if (!wertSetzen(c, k, val == null ? null : String(val), jetzt())) return true; // unverändert
         if (!key) { if (val == null) roh.remove(k); else roh.set(k, String(val), fehler); }
-        speichern();
+        speichern(); return true;
       },
       remove: function (k) { api.set(k, null); },
       bereit: function () { return bereit; },
@@ -225,6 +225,8 @@ const Vorgaenge = (function () {
       gesperrt: function () { return !!(meta && meta.pin) && !bereit; },
       sperrRest: sperrRest,
       liste: function () { return bereit ? c.liste.map(function (v) { return { id: v.id, name: v.name, erstellt: v.erstellt, geaendert: v.geaendert, ablauf: ablauf(v, meta.tage || 0) }; }) : []; },
+      // Wert eines Datenschlüssels in allen Vorgängen (nur lesen), z. B. für den Fristen-Hinweis beim Öffnen
+      ueberall: function (k) { if (!bereit) return []; return c.liste.map(function (v) { return { id: v.id, name: v.name, aktiv: v.id === c.aktiv, wert: v.daten && v.daten[k] != null ? v.daten[k] : null }; }); },
       aktiv: function () { if (!bereit) return null; var v = aktiv(c); return { id: v.id, name: v.name, geaendert: v.geaendert, ablauf: ablauf(v, meta.tage || 0) }; },
       // Vorgang wechseln: vorher müssen die Angaben im Speicher stehen (App: flush())
       oeffnen: function (id) {

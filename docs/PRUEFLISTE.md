@@ -326,7 +326,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Minijob ohne Krankengeld | ✓ | `kv-minijob` |
 | Belastungsgrenze 2 % / 1 % bei chronisch Kranken (GdB ab 60 oder Pflegegrad 3–5) | ✓ | `kv-zuzahl` |
 | Fahrtkosten zur ambulanten Behandlung bei aG, Bl, H oder Pflegegrad 3 (mit Einschränkung) bis 5 (§ 60) | ◐ | `kv-fahrt` |
-| Familienversicherung (§ 10): Partner mit Einkommen bis 1/7 der Bezugsgröße (2026: 565 €) oder Minijob; Kinder bis 18, bis 23 ohne Arbeit, bis 25 in Ausbildung; ALG I und Krankengeld schließen aus, Rente nur über der Grenze | ◐ | `famvers` |
+| Familienversicherung (§ 10): Partner mit Einkommen bis 1/7 der Bezugsgröße (2026: 565 €) oder Minijob; Kinder bis 18, bis 23 ohne Arbeit, bis 25 in Ausbildung; ALG I und Krankengeld schließen aus, Rente nur über der Grenze; Elterngeld zählt nicht, Unterhalt nur beim Realsplitting (Hinweis „möglich“) (GKV-Spitzenverband, Grundsätzliche Hinweise Gesamteinkommen 29.09.2022, Anlage und Abschn. 2.3.4.2); Minijob-Grenze nur, wenn Person 2 nur Lohn hat | ◐ | `famvers` |
 | Familienversicherung: Ausschluss, wenn der andere Elternteil privat versichert ist und mehr verdient (§ 10 Abs. 3), Mitgliedschaft des Hauptversicherten | ○ (Versicherungsstatus fragt die App nicht ab; Hinweis im Text, „möglich“ statt „wahrscheinlich“) | |
 
 ## Rundfunkbeitrag (RBStV)
@@ -485,6 +485,8 @@ Geld sparen → Schulden und Pfändung → „Meine Schulden-Liste“. Grundlage
 | Hinweise nur bei Auslöser, höchstens 2 sichtbar, „Nicht mehr zeigen“: Weiterbewilligung (§ 41 Abs. 3 SGB II, § 44 Abs. 3 SGB XII, § 25 Abs. 1 WoGG, § 6a Abs. 7 BKGG), Einkommensänderung (§ 60 SGB I), Nebenkosten-Nachzahlung (§ 22 Abs. 1 SGB II, § 35 SGB XII), Darlehen (§ 24 Abs. 1, § 42a SGB II, § 37 Abs. 1 SGB XII), Bildung und Teilhabe (§ 28 SGB II, § 34 SGB XII, § 6b BKGG), Rundfunkbeitrag (§ 4 Abs. 1 RBStV) | ✓ | `hb-hinweise` |
 | Regelbedarf zur Orientierung: Anteile nach § 5 RBEG (434,96 €), Stufe 1 aus den Werten der App | ✓ | `hb-regelbedarf` |
 | Korrekturen: Meldepflicht je Leistung (Grundsicherungsgeld/Sozialhilfe sofort nach § 60 Abs. 1 SGB I, Wohngeld bei dauerhaft mehr als 15 % nach § 27 Abs. 3 WoGG, Kinderzuschlag meist erst beim nächsten Antrag; abgerufen 20.11.2026), Vorlage „Änderung melden“ nur bei Grundsicherungsgeld oder Sozialhilfe; Nachzahlung: Antrag im Monat der Fälligkeit; ganzes Haushaltsbuch löschen mit Rückgängig; je Vorgang gespeichert und mit PIN verschlüsselt | ✓ | `hb-korr` |
+| Energiekosten-Check (im Plan unter „Strom und Gas“): Jahresverbrauch aus zwei Zählerständen (× 365, mind. 14 Tage, unter 60 Tagen „ungenau“, bei Gas und Heizen mit Strom unter 330 Tagen „ungenau“ mit Jahreszeit-Hinweis, über 2 Jahre Hinweis) oder von der Rechnung; Gas in m³ nur mit Faktor von der Rechnung; Kosten mit eigenem Preis oder Destatis-Durchschnitt 37,97 / 11,58 ct/kWh (PM Nr. 345 vom 30.09.2026, 1. Hj. 2026); 11 oder 12 Abschläge; „passt ungefähr“ bis 30 € bzw. 5 % (Faustregel, keine Gesetzesgrenze); Ergebnis immer „möglich“; Arbeitspreis und Gas-Faktor mit bis zu 4 Nachkommastellen (Fehlermeldung unter dem Feld, Speichern ohne Gleitkomma-Verlust); Plan-Hinweis und Brief nur mit eigenem Preis, nicht ungenau und Ablesung höchstens 31 Tage alt (sonst „Bitte lies den Zähler neu ab“); Brief „senken“ (nur Vergleich mit dem Abschlag: „voraussichtlich geringer als bei der Berechnung meines Abschlags angenommen“) mit § 41b Abs. 3 Satz 2 EnWG / § 13 Abs. 1 Satz 4 StromGVV/GasGVV, „erhöhen“ ohne Paragraf; Vergleich nur mit Destatis-Durchschnitt 2021 je Haushaltsgröße (2.105 / 3.470 / 5.411 kWh) ohne Urteil; Stromspiegel nur als Link (Klassen erst nach schriftlicher Erlaubnis von co2online); Warmwasser gemeinsames Feld mit dem Check (§ 21 Abs. 7 SGB II) | ◐ | `en-check` |
+| Energie-Texte (abgerufen 20.11.2026): Haushaltsstrom aus dem Regelbedarf, Darlehen nach § 24 Abs. 1 SGB II (ältere Schulden § 22 Abs. 8), Sozialhilfe § 37 Abs. 1, § 36 SGB XII, gesondert zu beantragen; Heizkosten-Nachzahlung im Fälligkeitsmonat (§ 22 Abs. 1 SGB II, § 35 Abs. 1 und 5 SGB XII), Antrag im Fälligkeitsmonat (§ 37 Abs. 2 SGB II); Abwendungsvereinbarung nur Grundversorgung nach Androhung, 6–18 bzw. bei über 300 € 12–24 Monate (§ 41g Abs. 1 EnWG); Korrektur `sp.vertraege.4`: § 41g EnWG statt § 19 StromGVV/GasGVV, Darlehen § 24 Abs. 1 bzw. § 22 Abs. 8 SGB II; Türkisch „kesintisi tehlikesi mi var?“ | ✓ | `en-korr` |
 | Spartipps mit Fundstelle (Text „Quelle: …“ unter jedem Tipp): Miete – Verbraucherzentrale, Deutscher Mieterbund, Wohngeldgesetz; Strom und Gas – Stromspiegel für Deutschland, Verbraucherzentrale (Energieberatung); Handy und Internet – Verbraucherzentrale, § 56 Abs. 3 TKG (Kündigung nach der Erstlaufzeit mit 1 Monat Frist, abgerufen 20.11.2026); Versicherungen, Mobilität, Sonstiges – Verbraucherzentrale; Lebensmittel – Verbraucherzentrale, Bundeszentrum für Ernährung; Kinder – § 28 SGB II, § 34 SGB XII, § 6b BKGG (Bildung und Teilhabe), Familienkasse; Raten – BAG-SB (meine-schulden.de). Abrufdatum der allgemeinen Ratgeberseiten vor der Veröffentlichung nachtragen | ◐ | `hb-tipps` |
 
 ## Ich ziehe aus (src/ausziehen.js)
@@ -504,6 +506,33 @@ Eigener Bereich für junge Menschen; keine Rechnung, nur Hinweise. Quellen mit A
 | Careleaver: § 41 (in der Regel bis 21, Rückkehr möglich), § 41a, § 41 Abs. 3 und § 36b, kein Kostenbeitrag aus eigenem Einkommen, Ausnahmen Kindergeld und zweckgleiche Leistungen (§ 92 Abs. 1a, § 93 Abs. 1, § 94 Abs. 3, Abs. 6 weggefallen), Krankenhilfe (§ 40, § 41 Abs. 2), Ombudsstelle (§ 9a SGB VIII); Briefvorlage nur „An das Jugendamt“, keine Anschrift, Zuständigkeit (§ 86a Abs. 4), schriftlicher Bescheid erbeten | ✓ | `az-quellen`, `az-oberflaeche` |
 | Abhaken und Notizen lokal (`lotse.ausziehen`, Schnittstelle `Ausziehen.speicherOrt`), nur bekannte Einträge, Speicherfehler gemeldet, „Alle Angaben löschen“ leert alles | ✓ | `az-speichern`, `az-oberflaeche` |
 | 13 Sprachen und Einfache Sprache: alle Schlüssel, gleiche Platzhalter und Vorschriften, keine Rohschlüssel | ✓ | `az-sprachen`, `az-oberflaeche` |
+
+## Fristen in „Mein Ordner“ (src/fristen.js)
+
+Liste je Vorgang (`lotse.fristliste` in `Vorgaenge.DATEN`), kein eigener Bereich, kein Kalender, keine Mitteilung des Systems. Quellen abgerufen am 20.11.2026.
+
+| Regel | Status | Test |
+|---|---|---|
+| Widerspruch: Bescheid gilt am 4. Tag nach Aufgabe zur Post als bekannt gegeben, nicht auf Werktag verschoben (§ 37 Abs. 2 SGB X seit 1.1.2025; BSG 6.5.2010, B 14 AS 12/09 R); 1 Monat (§ 84 Abs. 1 SGG), Ende nach § 64 SGG, Sa/So/Feiertag → nächster Werktag | ✓ | `fristen` |
+| Anhörung und Mitwirkung ohne 4-Tage-Regel: ab Tag des Erhalts, sonst ab Briefdatum („Ungefähr“, nie zu spät); „ab Datum dieses Schreibens“ immer ab Briefdatum, ohne Feld „bekommen am“ (§ 26 SGB X, §§ 187, 188 BGB); Mahnbescheid/Vollstreckungsbescheid 2 Wochen ab Zustellung (§ 692, § 700, § 339, § 222 ZPO); Daten aus dem Brief nie verschoben (§ 26 Abs. 5 SGB X) | ✓ | `fristen` |
+| Nur die 9 bundesweiten Feiertage, Hinweis auf Landesfeiertage; nie ein zu später Tag | ✓ | `fristen`, `fristen-dom` |
+| Folgeantrag aus dem Haushaltsplan (Vorlauf 42/60 Tage, App-Regel), nur ein Hinweis auf der Startseite | ✓ | `fristen`, `fristen-dom` |
+| Aus „Brief prüfen“ nur per Knopf „Frist merken“, nie automatisch; Frist nur aus Zeilen mit Frist-Wort (äußern, Unterlagen, Frist …), bei mehreren das früheste, Zeile und Tag vor dem Speichern sichtbar, Tag änderbar; kein Brieftext gespeichert; „Rückgängig“ nach Vorgangswechsel ungültig; „Gemerkt“ nur, wenn das Speichern geklappt hat; Dublettenschutz; Schnittstelle `FristenOrdner.hinzu({art, datum, titel, stelle, quelle, notiz})` | ✓ | `fristen-dom` |
+| Hinweis beim Öffnen höchstens 1× am Tag (Merker `lotse.fristTag` nur JJJJ-MM-TT, bei jeder Tagesprüfung gesetzt), Erledigt/Später/Ansehen, andere Vorgänge nur Ansehen, Schalter, mit PIN erst nach dem Entsperren und kein Klartext | ✓ | `fristen-dom` |
+| Eigene Titel und Notizen nur als Text (kein HTML), Laden mit Prüfung (feste Listen, höchstens 50: zuerst erledigte kürzen, bei 50 offenen „Liste voll“; erledigte nach 30 Tagen weg); Datenschutzerklärung und Löschtext nennen die Fristen | ✓ | `fristen`, `fristen-dom` |
+## Aufforderung zur Senkung der Unterkunftskosten (erweiterungen/kostensenkung.js)
+
+Brief prüfen → Jobcenter, Sozialamt oder Anderer Brief; keine Rechnung, nur Erklärung. Quellen mit Abrufdatum 20.11.2026 in `docs/entwuerfe/kostensenkung.md`. Erkennung zusätzlich in `test/erweiterungen/test-kostensenkung.js`.
+
+| Regel | Status | Test |
+|---|---|---|
+| In der Regel noch keine Kürzung, Weiterzahlung in der Regel höchstens 6 Monate (§ 22 Abs. 1 Satz 9–10 SGB II, § 35 Abs. 3 SGB XII); Heizkosten ohne Karenzzeit | ✓ | `ks` |
+| Grenze vom 1,5-Fachen ab dem ersten Tag seit 1.7.2026, ohne 6 Monate; Ausnahmen im ersten Jahr im Einzelfall, z. B. mit Kindern (§ 22 Abs. 1 Satz 6–7 SGB II, § 35 Abs. 1 SGB XII); Hinweis sichtbar, wenn Miete > 1,5 × Grenze oder der Brief es nennt, nie bei Heizkosten | ✓ | `ks` |
+| Kein Widerspruch gegen den Hinweis (BSG B 14 AS 31/20 R); steht eine Rechtsbehelfsbelehrung im Brief: „Widerspruch möglich, Frist in der Regel ein Monat“ (§ 84 Abs. 1 SGG) | ✓ | `ks` |
+| Antwort-Entwurf nur mit angehakten Gründen, Paragraf passend zum Träger (§ 22 Abs. 1 Satz 11/12 SGB II bzw. § 35 Abs. 3 Satz 4/3 SGB XII, unbekannt: beide); Empfänger nur Stelle aus dem Brief oder Art der Stelle; Haken werden nicht gespeichert | ✓ | `ks` |
+| Frist nur aus dem Brief, mit Belegzeile; keine selbst berechnete Frist; Knopf „Frist übernehmen“ nur mit `FristenOrdner.hinzu` | ✓ | `ks` |
+| U25: ohne vorherige Zusicherung nach Umzug möglicherweise keine Unterkunftskosten (§ 22 Abs. 5 SGB II), auch in Einfacher Sprache | ✓ | `ks` |
+| 13 Sprachen und Einfache Sprache: keine Rohschlüssel, Zahlen und Paragrafen gleich | ✓ | `ks` |
 
 ## Anzeige und Eingaben (alle Karten)
 

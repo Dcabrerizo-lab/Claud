@@ -14,7 +14,7 @@ const appNamen = Object.fromEntries([
   'Rules', 'Fmt', 'Plz', 'Behoerden', 'Formulare', 'I18N', 'I18N_EINFACH',
   'BriefLesen', 'PflegeAssistent', 'Pflege', 'PflegeFragen', 'PflegeImport',
   'BescheidGSA', 'BescheidKiZ', 'BescheidSGB2', 'BescheidWG', 'Fristen', 'Nebenkosten',
-  'Widerspruch', 'Lizenz', 'Haushalt', 'Ausziehen', 'Schulden', 'LIZENZ_SCHLUESSEL', 'DEMO_LIZENZ', 'Vorgaenge',
+  'Widerspruch', 'Lizenz', 'Haushalt', 'Ausziehen', 'Schulden', 'FristenOrdner', 'LIZENZ_SCHLUESSEL', 'DEMO_LIZENZ', 'Vorgaenge',
 ].map((n) => [n, 'readonly']));
 
 module.exports = [
