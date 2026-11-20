@@ -6,9 +6,13 @@
 const pw = require('playwright');
 const browserTyp = pw[process.env.BROWSER || 'chromium'];
 const path = require('path');
-const SCHRITTE = Number(process.argv[2]) || 1200;
+// SHARD=k/n: jeder Teil macht ein n-tel der Schritte mit eigenem Startwert (zusammen gleicher Umfang)
+const SHARD = require('./shard.js');
+const GESAMT = Number(process.argv[2]) || 1200;
+const SCHRITTE = Math.ceil(GESAMT / SHARD.anzahl);
 const APP = 'file://' + path.join(__dirname, '..', 'dist', 'sozialleistungslotse.html');
-let seed = Number(process.env.ZUFALL_SEED) || 20261114;
+const START = (Number(process.env.ZUFALL_SEED) || 20261114) + (SHARD.teil - 1) * 1000003;
+let seed = START;
 const rnd = () => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; };
 const pick = (a) => a[Math.floor(rnd() * a.length)];
 const WERTE = ['0', '1', '450', '603', '604', '1200', '1.234,56', '2,050.50', '99999', '', '  ', 'abc', '-50', '−50', '12.5.2026', '1e9', '780 €', '3500', '600,5'];
@@ -51,13 +55,15 @@ const VERBOTEN = '#mappePrint, #mappeShare, #mappeCopy, #feedbackMail, #sc-take,
 
   const besucht = { einfach: 0, ausfuehrlich: 0, mappe: 0, karten: 0 };
   let imEinfach = false;
+  let einfachNochmal = 0; // ebenso für den festen Besuch der einfachen Version
+  let mappeNochmal = 0; // fester Mappen-Besuch: klappt er nicht (z. B. Knopf gerade verdeckt), bis zu 10 Schritte erneut versuchen
   for (let s = 0; s < SCHRITTE; s++) {
     let schritt = '';
     try {
       const r = rnd();
       // Feste Besuche, damit jeder Lauf sicher alle Bereiche prüft: einfache Version und Antragsmappe
-      if (s % 200 === 50 && !imEinfach) { schritt = 'Einfache Version (fest)'; for (const zu of ['#mappeClose', '#legalClose']) if (await p.isVisible(zu)) await p.click(zu, { timeout: 1000 }); if (true) await p.evaluate(() => document.getElementById('einfachBtn').click()); } // vorher Mappe oder Impressum schließen, dort ist der Schalter ausgeblendet
-      else if (s % 200 === 150) { schritt = 'Antragsmappe (fest)'; for (const zu of ['#mappeClose', '#legalClose']) if (await p.isVisible(zu)) await p.click(zu, { timeout: 1000 }); if (await p.isVisible('#appnav [data-ansicht=leistungen]')) await p.click('#appnav [data-ansicht=leistungen]', { timeout: 1000 }); await p.waitForTimeout(150); if (await p.locator('#es-raus').first().isVisible()) { await p.locator('#es-raus').first().click({ timeout: 1000 }); await p.waitForTimeout(150); } if (await p.isVisible('#mappeMake')) await p.click('#mappeMake', { timeout: 1000 }); } // erst zum Bereich Leistungen (es gibt jetzt mehr Bereiche), dann die einfache Version verlassen
+      if ((s % 200 === 50 || einfachNochmal > 0) && !imEinfach) { einfachNochmal = s % 200 === 50 ? 10 : einfachNochmal - 1; schritt = 'Einfache Version (fest)'; for (const zu of ['#mappeClose', '#legalClose']) if (await p.isVisible(zu)) await p.click(zu, { timeout: 1000 }); if (await p.isVisible('#appnav [data-ansicht=leistungen]')) { await p.click('#appnav [data-ansicht=leistungen]', { timeout: 1000 }); await p.waitForTimeout(150); } if (!(await p.locator('#es-raus').first().isVisible())) await p.evaluate(() => document.getElementById('einfachBtn').click()); } // vorher Mappe oder Impressum schließen und zum Bereich Leistungen (sonst bleibt die einfache Version unsichtbar); klappt es nicht, bis zu 10 Schritte erneut
+      else if (s % 200 === 150 || mappeNochmal > 0) { mappeNochmal = s % 200 === 150 ? 10 : mappeNochmal - 1; schritt = 'Antragsmappe (fest)'; for (const zu of ['#mappeClose', '#legalClose']) if (await p.isVisible(zu)) await p.click(zu, { timeout: 1000 }); if (await p.isVisible('#appnav [data-ansicht=leistungen]')) await p.click('#appnav [data-ansicht=leistungen]', { timeout: 1000 }); await p.waitForTimeout(150); if (await p.locator('#es-raus').first().isVisible()) { await p.locator('#es-raus').first().click({ timeout: 1000 }); await p.waitForTimeout(150); } if (await p.isVisible('#mappeMake') && await p.isDisabled('#mappeMake')) await p.click('#p1', { timeout: 1000 }).catch(() => {}); /* nichts auswählbar: Beispiel laden */ await p.evaluate(() => { const c = [...document.querySelectorAll('[data-pick]')]; if (c.length && !c.some((x) => x.checked)) c[0].click(); }); /* alles abgewählt: eine Leistung wählen */ if (await p.isVisible('#mappeMake')) await p.click('#mappeMake', { timeout: 1000 }); } // erst zum Bereich Leistungen (es gibt jetzt mehr Bereiche), dann die einfache Version verlassen
       else if (r < 0.01) { schritt = 'Neu laden'; await p.reload(); await p.click('#firstOk', { timeout: 500 }).catch(() => {}); }
       else if (r < 0.045 && !imEinfach) { schritt = 'Einfache Version'; if (true) await p.evaluate(() => document.getElementById('einfachBtn').click()); }
       else if (r < 0.055) { schritt = 'Antragsmappe'; if (await p.isVisible('#mappeMake')) await p.click('#mappeMake', { timeout: 1000 }); }
@@ -79,8 +85,9 @@ const VERBOTEN = '#mappePrint, #mappeShare, #mappeCopy, #feedbackMail, #sc-take,
     const z = await zustand();
     if (process.env.ZUFALL_DEBUG && z.esModus !== imEinfach) console.log(s, z.esModus ? 'rein' : 'raus', schritt);
     imEinfach = z.esModus;
+    if (imEinfach) einfachNochmal = 0;
     if (z.esModus) besucht.einfach++; else besucht.ausfuehrlich++;
-    if (z.mappe) besucht.mappe++;
+    if (z.mappe) { besucht.mappe++; mappeNochmal = 0; }
     if (z.karten > 1) besucht.karten++;
     if (z.kaputt) fehler.push('Kaputte Anzeige „' + z.kaputt + '“: …' + z.stelle.replace(/\s+/g, ' ') + '… | nach: ' + log.slice(-6).join(' > '));
     if (z.breite > 2) fehler.push('Seitliches Scrollen (' + z.breite + ' px) | nach: ' + log.slice(-6).join(' > '));
@@ -89,7 +96,7 @@ const VERBOTEN = '#mappePrint, #mappeShare, #mappeCopy, #feedbackMail, #sc-take,
     if (fehler.length >= 5) break;
   }
   await b.close();
-  if (fehler.length) { console.log('FEHLER Zufalls-Klicktest (Startwert ' + (Number(process.env.ZUFALL_SEED) || 20261114) + '):'); [...new Set(fehler)].slice(0, 5).forEach((f) => console.log('- ' + f)); process.exit(1); }
+  if (fehler.length) { console.log('FEHLER Zufalls-Klicktest' + SHARD.name + ' (Startwert ' + START + '):'); [...new Set(fehler)].slice(0, 5).forEach((f) => console.log('- ' + f)); process.exit(1); }
   if (besucht.einfach < SCHRITTE / 20 || !besucht.mappe || !besucht.karten) { console.log('FEHLER Zufalls-Klicktest erreicht nicht alle Bereiche: ' + JSON.stringify(besucht)); process.exit(1); }
-  console.log('[zufall-klick] Zufalls-Klicktest bestanden: ' + SCHRITTE + ' zufällige Bedienschritte ohne Skriptfehler, kaputte Anzeige, seitliches Scrollen oder Sackgasse (Schritte in der einfachen Version ' + besucht.einfach + ', mit Ergebniskarten ' + besucht.karten + ', in der Antragsmappe ' + besucht.mappe + ')');
+  console.log('[zufall-klick] Zufalls-Klicktest' + SHARD.name + ' bestanden (Startwert ' + START + '): ' + SCHRITTE + ' zufällige Bedienschritte ohne Skriptfehler, kaputte Anzeige, seitliches Scrollen oder Sackgasse (Schritte in der einfachen Version ' + besucht.einfach + ', mit Ergebniskarten ' + besucht.karten + ', in der Antragsmappe ' + besucht.mappe + ')');
 })().catch((e) => { console.log('ABSTURZ', e.message); process.exit(1); });
