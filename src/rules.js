@@ -1561,7 +1561,8 @@ const Rules = (function () {
 
   // Schwerbehindertenausweis und Nachteilsausgleiche (§ 2 SGB IX, § 208 SGB IX). § 2 Abs. 2 SGB IX verlangt Wohnsitz, gewöhnlichen
   // Aufenthalt oder Arbeitsplatz „rechtmäßig“ im Inland (https://www.gesetze-im-internet.de/sgb_9_2018/__2.html, Abruf 20.11.2026);
-  // bei Gestattung und Duldung nicht eindeutig -> höchstens „möglich“ mit Hinweis
+  // mit Duldung besteht der Anspruch auf Feststellung, wenn der Aufenthalt voraussichtlich länger als 6 Monate dauert (BSG 29.04.2010,
+  // B 9 SB 2/09 R, Leitsatz, rechtsprechung-im-internet.de, Abruf 20.11.2026). Die Prognose kennt die App nicht -> höchstens „möglich“ mit Hinweis
   function ausweis(h) {
     return asylHoechstens(h, ausweis0(h), 'ausweis.asyl');
   }

@@ -108,7 +108,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Grundrentenfreibetrag (§ 17a) | ✓ | `wg-grundrente` |
 | Mietenstufe aus der Postleitzahl für ganz Deutschland (Anlage zur WoGV, Stand 1.1.2023); Bayern von Hand geprüft, übrige Länder automatisch und unabhängig gegengeprüft (13.386 Einträge, 0 Abweichungen); nicht eindeutige Orte ohne Stufe | ✓ | `plz-stufe` |
 | Vermögen: Regelvermutung der Verwaltungsvorschrift (60.000 € + 30.000 € je weitere Person) | ✓ | `wg-verm` |
-| Ausschluss bei Grundsicherungsgeld, Grundsicherung (§ 7 Abs. 1 Satz 1 Nr. 1, 3 WoGG); Asylbewerberleistungen siehe Zeile Asylverfahren | ✓ | `wg-ausschluss`, `asyl-ausschluss` |
+| Ausschluss bei Grundsicherungsgeld, Grundsicherung im Alter und Hilfe zum Lebensunterhalt (§ 7 Abs. 1 Satz 1 Nr. 1, 5, 6 WoGG; Nr. 3 ist weggefallen); Asylbewerberleistungen siehe Zeile Asylverfahren | ✓ | `wg-ausschluss`, `asyl-ausschluss` |
 | Ausschluss Azubis und Studierende mit dem Grunde nach förderfähiger Ausbildung (§ 20 Abs. 2) | ✓ | `wg-azubi` |
 | Selbst gezahlter Unterhalt (§ 18 WoGG): bis 3.000 € im Jahr je Kind oder sonstiger Person, 6.000 € für frühere oder getrennt lebende Ehe- oder Lebenspartner; ohne Titel vorsichtig nur für „möglich“, mit Titel günstig der ganze Betrag (ob ein Titel über den Höchstbetrag hinaus zählt, ist nicht am Gesetzestext geprüft) | ◐ | `uz-wg` |
 | Unterhalt für die Person selbst: ohne Realsplitting voll (§ 14 Abs. 2 Nr. 19 und 20 WoGG), mit Realsplitting sonstige Einkünfte (§ 22 Nr. 1a EStG) nach 102 € Pauschbetrag (§ 9a Satz 1 Nr. 3 EStG); Pauschalabzug § 16 WoGG 0 % (familienversichert) bis 20 % (Steuer und eigene Kranken-/Pflegeversicherung). Realsplitting unbekannt: „wahrscheinlich“ mit 0 % und ohne Pauschbetrag, „möglich“ mit 20 % und Pauschbetrag | ◐ | `unt-wg` |
@@ -262,7 +262,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Regel | Status | Test |
 |---|---|---|
 | Asylverfahren oder Duldung: Eingliederungshilfe ausgeschlossen (§ 100 Abs. 2 SGB IX), nach 36 Monaten § 2 AsylbLG, davor Einzelfall; Kinder mit seelischer Behinderung § 6 Abs. 2 SGB VIII: eigener Hinweis (Abruf 20.11.2026) | ◐ | `eingl-asyl` |
-| Asylverfahren oder Duldung: Schwerbehinderteneigenschaft verlangt „rechtmäßigen“ Wohnsitz oder Arbeitsplatz (§ 2 Abs. 2 SGB IX), bei Gestattung und Duldung unklar: höchstens „möglich“ (Abruf 20.11.2026) | ◐ | `ausweis-asyl` |
+| Asylverfahren oder Duldung: Schwerbehinderteneigenschaft verlangt „rechtmäßigen“ Wohnsitz oder Arbeitsplatz (§ 2 Abs. 2 SGB IX); mit Duldung Anspruch auf Feststellung, wenn der Aufenthalt voraussichtlich länger als 6 Monate dauert (BSG 29.04.2010, B 9 SB 2/09 R, rechtsprechung-im-internet.de). Die Prognose fragt die App nicht ab: höchstens „möglich“ (Abruf 20.11.2026) | ◐ | `ausweis-asyl` |
 | Schwerbehindertenausweis ab GdB 50, Gleichstellung ab 30, Zusatzurlaub 5 Tage (§ 2, § 208) | ✓ | `sb-ausweis` |
 | Wertmarke kostenlos bei H/Bl/TBl/aG und mit G bei Grundsicherung (§ 228); Kfz-Steuer-Ermäßigung bei G, Befreiung bei H/Bl/aG | ✓ | `sb-frei` |
 | Besonderer Kündigungsschutz (§ 168) | ◐ | `sb-kuendigung` |
