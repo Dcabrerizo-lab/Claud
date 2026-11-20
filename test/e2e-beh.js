@@ -1,5 +1,6 @@
 const chromium = require('playwright')[process.env.BROWSER || 'chromium']; // BROWSER=firefox oder webkit für andere Browser
 const KARTEN = require('./karten.js');
+const SHARD = require('./shard.js'); // SHARD=k/n: nur jede n-te Sprache (Fälle davor laufen in jedem Teil)
 const out = []; const ok = (n, c, x) => out.push((c ? 'ok   ' : 'FAIL ') + n + (c ? '' : ' ' + (x || '')));
 const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html');
 (async () => {
@@ -110,7 +111,7 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
   await p.click('#mappeClose');
 
   // Sprachen: Felder und Karten ohne Rohschlüssel; RTL
-  for (const l of ['en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so', 'de']) {
+  for (const l of ['en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so', 'de'].filter((l, i) => SHARD.nimm(i) || l === 'de')) { // Deutsch zuletzt in jedem Teil: danach gleicher Zustand wie ohne Aufteilung
     await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, l);
     const bad = await p.evaluate(() => {
       const t = document.body.innerText; const m = t.match(/\b(bh|cb|lg|t|s|u|zu|n|h)\.[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)?\b/g) || [];
@@ -135,5 +136,5 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
   }
   ok('Keine Konsolen- oder Skriptfehler', errs.length === 0, errs.join(' | '));
   ok('Datenschutz: Die Web-Version ruft während der ganzen Nutzung keinen Server auf', netz.length === 0, netz.slice(0, 5).join(' '));
-  await b.close(); console.log(out.join('\n')); process.exit(out.some((l) => l.startsWith('FAIL')) ? 1 : 0);
+  await b.close(); console.log(out.join('\n')); if (SHARD.aktiv) console.log('Ausführliche Version' + SHARD.name + ': ' + out.length + ' Prüfungen'); process.exit(out.some((l) => l.startsWith('FAIL')) ? 1 : 0);
 })().catch((e) => { console.log(out.join('\n')); console.log('ABSTURZ', e.message); process.exit(1); });

@@ -67,8 +67,10 @@ const MOCK = () => {
   p.on('console', (m) => { if (m.type() === 'error') (/Content Security/i.test(m.text()) ? csp : errs).push(m.text()); });
   const calls = (name) => p.evaluate((n) => window.__calls.filter((c) => c[0] === n).map((c) => c[1]), name);
 
+  // Auf den Zustand warten statt fester Wartezeit; trifft er nicht ein, schlägt die folgende Prüfung fehl
+  const warte = (fn, arg, ms) => p.waitForFunction(fn, arg, { timeout: ms || 5000 }).catch(() => {});
   await p.goto(origin + '/index.html');
-  await p.waitForTimeout(400);
+  await warte(() => !!document.getElementById('v-start') && document.getElementById('v-start').offsetParent !== null && (window.__calls || []).some((c) => c[0] === 'Preferences.remove' && c[1] && c[1].key === 'lotse.fristen'));
   ok('Keine Skriptfehler beim Start', errs.length === 0, errs.join('|'));
   ok('Start: Startseite mit den vier Reitern', await p.isVisible('#v-start') && (await p.locator('#appnav button').count()) === 4);
   ok('Alte Fristen werden über Preferences gelöscht', (await calls('Preferences.remove')).some((c) => c.key === 'lotse.fristen'));
@@ -76,9 +78,9 @@ const MOCK = () => {
   await p.click('#appnav [data-ansicht=briefe]'); await p.click('#brief-jc'); await p.click('#elSelbst'); await p.evaluate(() => document.querySelector('#p-bescheid [id$="-beispiel"]').click());
   ok('Brief prüfen rechnet in der App', ((await p.textContent('#p-bescheid')) || '').includes('€'));
   // Widerspruch als PDF teilen (wie die Antragsmappe), mit Hinweis zur Abgabe
-  await p.click('#bs-wid-mach'); await p.waitForTimeout(200);
+  await p.click('#bs-wid-mach'); await p.waitForSelector('#p-bescheid .schreiben-aus [data-aus="teilen"]', { state: 'visible', timeout: 5000 }).catch(() => {});
   ok('Widerspruch: Knöpfe und Hinweis zur Abgabe sichtbar', await p.isVisible('#p-bescheid .schreiben-aus [data-aus="teilen"]') && /unterschreiben/.test(await p.textContent('#p-bescheid .schreiben-aus')));
-  await p.click('#p-bescheid .schreiben-aus [data-aus="teilen"]'); await p.waitForTimeout(2500);
+  await p.click('#p-bescheid .schreiben-aus [data-aus="teilen"]'); await warte(() => (window.__calls || []).some((c) => c[0] === 'Filesystem.writeFile' && c[1].path === 'Widerspruch-Jobcenter.pdf') && (window.__calls || []).some((c) => c[0] === 'Share.share'), null, 15000);
   ok('Widerspruch: PDF geschrieben und geteilt', (await calls('Filesystem.writeFile')).some((o) => o.path === 'Widerspruch-Jobcenter.pdf') && (await calls('Share.share')).length >= 1);
   ok('Keine Fristen über Preferences gespeichert', !(await calls('Preferences.set')).some((c) => c.key === 'lotse.fristen'));
   await p.click('#appnav [data-ansicht=leistungen]');
@@ -119,25 +121,25 @@ const MOCK = () => {
     const vorRec = (await calls('TextRecognition.recognize')).length;
     await p.setInputFiles('#sc-pdf', path.join(tmp, 'scan.pdf'));
     await p.waitForFunction((v) => (window.__calls || []).filter((c) => c[0] === 'TextRecognition.recognize').length > v || /nicht lesen/.test(document.getElementById('sc-msg').textContent), vorRec, { timeout: 20000 }).catch(() => {});
-    await p.waitForTimeout(300);
+    await warte(() => (window.__calls || []).some((c) => c[0] === 'Filesystem.deleteFile' && /^solo-pdfseite-/.test(c[1].path)) && /Erkannt: Antrag auf Wohngeld/.test(document.getElementById('sc-out').textContent) && !document.getElementById('sc-take').disabled); // Scan fertig (nicht mehr beschäftigt)
     const rec = (await calls('TextRecognition.recognize')).slice(vorRec);
     ok('Eingescanntes PDF: Seite als Bild an die Texterkennung des Geräts', rec.length === 1 && /solo-pdfseite-\d+\.jpg$/.test(rec[0].path), { rec, msg: await p.textContent('#sc-msg') });
     ok('Eingescanntes PDF: Seitenbild danach gelöscht', (await calls('Filesystem.deleteFile')).some((o) => /^solo-pdfseite-/.test(o.path)));
     ok('Eingescanntes PDF: Felder erklärt', /Erkannt: Antrag auf Wohngeld/.test(await p.textContent('#sc-out')));
-    await p.setInputFiles('#sc-pdf', path.join(tmp, 'digital.pdf')); await p.waitForTimeout(1500);
+    await p.setInputFiles('#sc-pdf', path.join(tmp, 'digital.pdf')); await warte(() => /Gesamtmiete monatlich/.test(document.getElementById('sc-out').textContent), null, 15000);
     ok('Digitales PDF in der App: Text direkt gelesen, keine Texterkennung nötig', (await calls('TextRecognition.recognize')).length === vorRec + 1 && /Gesamtmiete monatlich/.test(await p.textContent('#sc-out')));
     fs.rmSync(tmp, { recursive: true, force: true });
   }
   // Direkt in der Kachel: eigener Kamera-Knopf
   const vorher = (await calls('Camera.getPhoto')).length;
-  await p.click('#sc-take'); await p.waitForTimeout(300);
+  await p.click('#sc-take'); await warte((v) => (window.__calls || []).filter((c) => c[0] === 'Camera.getPhoto').length > v, vorher);
   ok('Kachel Antragsformular: eigener Kamera-Knopf', (await calls('Camera.getPhoto')).length === vorher + 1);
   await p.click('#briefZurueck'); await p.click('#appnav [data-ansicht=leistungen]');
   ok('Leistungsseite: keine Kamera und kein Formular-Hinweis', !(await p.isVisible('#sc-take')) && (await p.locator('#scanVerweis').count()) === 0);
 
   // Wohnort: PLZ -> Mietenstufe und zuständige Stelle mit Anschrift (offline)
   ok('Ohne PLZ: Hinweis auf die Postleitzahl in der Wohngeld-Karte', /Postleitzahl/.test(await p.textContent('#c-wohngeld')));
-  await p.fill('#plz', '90542'); await p.waitForTimeout(300);
+  await p.fill('#plz', '90542'); await warte(() => document.getElementById('mietstufe').value === '3' && /Nägelsbachstraße/.test((document.querySelector('#c-wohngeld .behoerde') || {}).textContent || ''));
   ok('PLZ 90542: Bayern und Mietenstufe III gesetzt', (await p.inputValue('#bundesland')) === 'BY' && (await p.inputValue('#mietstufe')) === '3');
   const beh = (await p.textContent('#c-wohngeld .behoerde').catch(() => '')).replace(/\s+/g, ' ');
   ok('Wohngeld-Karte nennt Landratsamt Erlangen-Höchstadt mit Anschrift', /Landratsamt Erlangen-Höchstadt, Wohngeldstelle/.test(beh) && /Nägelsbachstraße 1/.test(beh) && /91052 Erlangen/.test(beh), beh);
@@ -193,7 +195,7 @@ const MOCK = () => {
   ok('Externe Links öffnen im Systembrowser', (await calls('Browser.open')).some((o) => o.url === 'https://www.example.org/'));
 
   // Speichern
-  await p.fill('#miete', '777'); await p.press('#miete', 'Tab'); await p.waitForTimeout(800);
+  await p.fill('#miete', '777'); await p.press('#miete', 'Tab'); await warte(() => (window.__calls || []).some((c) => c[0] === 'Preferences.set' && /777/.test(c[1].value || '')));
   ok('Eingaben werden über Preferences gespeichert', (await calls('Preferences.set')).some((o) => /777/.test(o.value || '')));
   await p.evaluate(() => document.getElementById('clearBtn').click());
   ok('„Alle Angaben löschen“ entfernt gespeicherte Eingaben', (await calls('Preferences.remove')).length > 0);
@@ -203,7 +205,7 @@ const MOCK = () => {
   await p.click('#mappeMake');
   ok('Ohne Wohnort: Hinweis in der Mappe, dass die PLZ fehlt', await p.isVisible('#mappeAdrNote'));
   await p.click('#mappeClose');
-  await p.fill('#p-ort', '90542 Eckental'); await p.waitForTimeout(200);
+  await p.fill('#p-ort', '90542 Eckental'); await warte(() => /Familienkasse Bayern Nord/.test(document.getElementById('c-kindergeld').textContent));
   ok('PLZ aus der Anschrift: Karte nennt die zuständige Stelle', /Familienkasse Bayern Nord/.test(await p.textContent('#c-kindergeld')));
   await p.click('#mappeMake');
   const brief2 = await p.inputValue('#mappeText');
@@ -211,7 +213,7 @@ const MOCK = () => {
   ok('PLZ aus der Anschrift: kein Hinweis auf fehlende PLZ', !(await p.isVisible('#mappeAdrNote')));
   await p.click('#mappeClose');
   // Mehrere Orte unter einer PLZ: Ortsname aus der Anschrift entscheidet (84032: Altdorf im Lkr. Landshut oder Stadt Landshut)
-  await p.fill('#p-ort', '84032 Altdorf'); await p.waitForTimeout(200);
+  await p.fill('#p-ort', '84032 Altdorf'); await warte(() => /Landratsamt Landshut/.test((document.getElementById('c-wohngeld') || {}).textContent || ''));
   ok('84032 Altdorf: Landratsamt Landshut (nicht Stadt Landshut)', /Landratsamt Landshut/.test(await p.textContent('#c-wohngeld').catch(() => '')));
 
   const net = reqs.filter((u) => !u.startsWith(origin) && !u.startsWith('data:') && !u.startsWith('blob:'));
@@ -224,10 +226,10 @@ const MOCK = () => {
   ok('Android: Anbieter im Impressum David Cabrerizo', (await anbieter()) === 'David Cabrerizo', await anbieter());
   const ctxI = await b.newContext({ viewport: { width: 390, height: 844 }, locale: 'de-DE', serviceWorkers: 'block' });
   await ctxI.addInitScript(() => { window.__platform = 'ios'; }); await ctxI.addInitScript(MOCK);
-  const pi = await ctxI.newPage(); await pi.goto(origin + '/index.html#leistungen'); await pi.waitForTimeout(400);
+  const pi = await ctxI.newPage(); await pi.goto(origin + '/index.html#leistungen'); await pi.waitForFunction(() => /Natascha/.test(document.getElementById('legal').textContent), null, { timeout: 5000 }).catch(() => {});
   const legalI = await pi.evaluate(() => document.getElementById('legal').textContent);
   ok('iPhone: Anbieter im Impressum Natascha Cabrerizo y Polo, nicht David', /Anbieter: Natascha Cabrerizo y Polo/.test(legalI.replace(/\s+/g, ' ')) && !/David/.test(legalI), legalI.slice(0, 200));
-  await pi.click('#p1'); await pi.fill('#p-name', 'Test'); await pi.evaluate(() => document.getElementById('mappeMake').click()); await pi.waitForTimeout(300);
+  await pi.click('#p1'); await pi.fill('#p-name', 'Test'); await pi.evaluate(() => document.getElementById('mappeMake').click()); await pi.waitForSelector('#mappePrint', { state: 'visible', timeout: 5000 }).catch(() => {});
   ok('iPhone: keine Android-Knöpfe Drucken/Speichern, PDF teilen vorhanden', !(await pi.isVisible('#mappeDruck')) && !(await pi.isVisible('#mappeSpeichern')) && (await pi.isVisible('#mappePrint')));
   await ctxI.close();
 

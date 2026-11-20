@@ -1,5 +1,6 @@
 // Browsertest der einfachen Version (Leichte Sprache): Durchlauf, Ergebnisse, Sprachen, Speichern, Zurück, Antragsmappe
 const chromium = require('playwright')[process.env.BROWSER || 'chromium']; // BROWSER=firefox oder webkit für andere Browser
+const SHARD = require('./shard.js'); // SHARD=k/n: nur jede n-te Sprache (Fälle davor laufen in jedem Teil)
 const out = []; const ok = (n, c, x) => out.push((c ? 'ok   ' : 'FAIL ') + n + (c ? '' : ' ' + (x || '')));
 const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html');
 
@@ -108,7 +109,7 @@ const ergebnis = (p) => p.evaluate(() => {
 
   // Sprachen: kein Rohschlüssel, alle Knöpfe beschriftet, Arabisch rechts nach links
   await p.click('#es-neu');
-  for (const l of ['en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so', 'de']) {
+  for (const l of ['en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so', 'de'].filter((l, i) => SHARD.nimm(i) || l === 'de')) { // Deutsch zuletzt in jedem Teil: danach gleicher Zustand wie ohne Aufteilung
     await p.click('#es-raus'); await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, l); await p.evaluate(() => document.getElementById('einfachBtn').click());
     const t = await p.textContent('#einfach');
     ok('Sprache ' + l + ': keine Rohschlüssel in der einfachen Version', !/\b(es|einfach)\.[a-zA-Z]+/.test(t), t.slice(0, 120));
@@ -131,6 +132,6 @@ const ergebnis = (p) => p.evaluate(() => {
   await b.close();
   console.log(out.join('\n'));
   const f = out.filter((x) => x.startsWith('FAIL')).length;
-  console.log(f ? '\n' + f + ' FEHLER' : '\nEinfache Version: alle ' + out.length + ' Prüfungen bestanden');
+  console.log(f ? '\n' + f + ' FEHLER' : '\nEinfache Version' + SHARD.name + ': alle ' + out.length + ' Prüfungen bestanden');
   process.exit(f ? 1 : 0);
 })().catch((e) => { console.log('ABSTURZ', e.message); process.exit(1); });
