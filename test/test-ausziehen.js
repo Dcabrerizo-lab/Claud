@@ -15,6 +15,11 @@ A.HAUPT.forEach((id) => check('[az-aufbau] Bereich ' + id, !!A.BEREICHE.find((b)
 ['vorher', 'tage', 'care'].forEach((id) => check('[az-aufbau] Checkliste ' + id, A.BEREICHE.find((b) => b.id === id).liste === true));
 const ids = []; A.BEREICHE.forEach((b) => A.allePunkte(b).forEach((p) => ids.push(p.id)));
 check('[az-aufbau] Punkt-IDs eindeutig', new Set(ids).size === ids.length);
+const quelltext = fs.readFileSync(path.join(__dirname, '..', 'src', 'ausziehen.js'), 'utf8');
+const farbe = (id) => { const m = quelltext.match(new RegExp('\\.az-k-' + id + '\\{--c:var\\((--c-[a-z]+)\\)')); return m ? m[1] : '--c-ausziehen'; };
+const farben = A.HAUPT.map(farbe);
+check('[az-aufbau] jede Kachel eine eigene Palettenfarbe', new Set(farben).size === A.HAUPT.length, farben);
+check('[az-aufbau] keine Hex-Farben im Modul', !/#[0-9a-fA-F]{6}\b/.test(quelltext));
 check('[az-aufbau] U25-Warnung als Punkt', A.BEREICHE[0].punkte.some((p) => p.id === 'u25' && p.warn));
 check('[az-aufbau] Hilfen alle „möglich“', A.BEREICHE.find((b) => b.id === 'hilfen').punkte.every((p) => p.moeglich));
 

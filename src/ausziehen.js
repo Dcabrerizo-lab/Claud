@@ -47,7 +47,13 @@ var Ausziehen = (function () {
     sgb8_41: ['§ 41 SGB VIII', GII + '/sgb_8/__41.html'],
     sgb8_41a: ['§ 41a SGB VIII', GII + '/sgb_8/__41a.html'],
     sgb8_36b: ['§ 41 Abs. 3, § 36b SGB VIII', GII + '/sgb_8/__36b.html'],
-    sgb8_94: ['§ 92 Abs. 1a, § 94 Abs. 3 und 6 (weggefallen) SGB VIII', GII + '/sgb_8/__94.html'],
+    sgb8_94: ['§ 92 Abs. 1a, § 93 Abs. 1, § 94 Abs. 3 und 6 (weggefallen) SGB VIII', GII + '/sgb_8/__94.html'],
+    sgb8_86a: ['§ 86a Abs. 4 SGB VIII', GII + '/sgb_8/__86a.html'],
+    sgb8_40: ['§ 40, § 41 Abs. 2 SGB VIII', GII + '/sgb_8/__40.html'],
+    sgb8_18: ['§ 18 Abs. 4 SGB VIII', GII + '/sgb_8/__18.html'],
+    bgb1610: ['§ 1610 Abs. 2 BGB', GII + '/bgb/__1610.html'],
+    bkgg1: ['§ 1 Abs. 2 BKGG', GII + '/bkgg_1996/__1.html'],
+    sgb2_20: ['§ 20 Abs. 3 SGB II', GII + '/sgb_2/__20.html'],
     sgb8_9a: ['§ 9a SGB VIII', GII + '/sgb_8/__9a.html']
   };
   var ABGERUFEN = '20.11.2026';
@@ -67,7 +73,7 @@ var Ausziehen = (function () {
   var BEREICHE = [
     { id: 'vorher', liste: true, punkte: [
       { id: 'leisten', knopf: 'plan' },
-      { id: 'u25', warn: true, q: ['sgb2_22_5', 'sgb2_24'] },
+      { id: 'u25', warn: true, q: ['sgb2_22_5', 'sgb2_24', 'sgb2_20'] },
       { id: 'suche', q: ['wofg27'], knopf: 'check' },
       { id: 'vertrag', q: ['bgb551'] },
       { id: 'uebergabe' },
@@ -111,7 +117,8 @@ var Ausziehen = (function () {
       { id: 'bab', q: ['sgb3_60', 'wogg20'], moeglich: true },
       { id: 'bafoeg', q: ['bafoeg', 'wogg20'], moeglich: true },
       { id: 'wohngeld', q: ['wogg20'], moeglich: true },
-      { id: 'kindergeld', q: ['estg32'], moeglich: true },
+      { id: 'kindergeld', q: ['estg32', 'bkgg1'], moeglich: true },
+      { id: 'unterhalt', q: ['bgb1610', 'sgb8_18'], moeglich: true },
       { id: 'grundsicherung', q: ['sgb2_22_5', 'sgb2_22_6', 'sgb2_24', 'sgb2_7'], moeglich: true },
       { id: 'rfBefreiung', q: ['rbstv'], moeglich: true },
       { id: 'but', q: ['sgb2_28'], moeglich: true },
@@ -122,13 +129,14 @@ var Ausziehen = (function () {
       { id: 'nachbetreuung', q: ['sgb8_41a'] },
       { id: 'uebergang', q: ['sgb8_36b'] },
       { id: 'kostenbeitrag', q: ['sgb8_94'] },
+      { id: 'careKv', q: ['sgb8_40'] },
       { id: 'beratung', q: ['sgb1_14', 'sgb8_9a'] },
-      { id: 'antrag', q: ['sgb8_41'], knopf: 'brief' }
+      { id: 'antrag', q: ['sgb8_41', 'sgb8_86a'], knopf: 'brief' }
     ] },
     { id: 'vers', unter: true, stufen: [
-      { id: 'muss', punkte: [{ id: 'kv', q: ['sgb5_10', 'vzVers'] }, { id: 'phv', q: ['vzVers'] }] },
-      { id: 'sinnvoll', punkte: [{ id: 'bu', q: ['vzVers', 'vvg19'] }, { id: 'kfzH', q: ['vzVers'] }] },
-      { id: 'kommtDrauf', punkte: [{ id: 'hausrat', q: ['vzVers'] }] },
+      { id: 'muss', punkte: [{ id: 'kv', q: ['sgb5_10', 'vzVers'] }, { id: 'phv', q: ['vzVers'] }, { id: 'kfzH', q: ['vzVers'] }] },
+      { id: 'sinnvoll', punkte: [{ id: 'bu', q: ['vzVers', 'vvg19'] }] },
+      { id: 'kommtDrauf', punkte: [{ id: 'hausrat', q: ['vzVers'] }, { id: 'auslandKv', q: ['vzVers'] }] },
       { id: 'unnoetig', punkte: [{ id: 'geraete', q: ['vzVers', 'vzhhVers'] }, { id: 'restschuld', q: ['vzhhVers'] }, { id: 'gepaeck', q: ['vzVers', 'vzhhVers'] }] }
     ] }
   ];
@@ -193,9 +201,9 @@ var Ausziehen = (function () {
       'An das Jugendamt', '',
       'Antrag auf Hilfe für junge Volljährige (§ 41 SGB VIII)', '',
       'Sehr geehrte Damen und Herren,', '',
-      'hiermit beantrage ich Hilfe für junge Volljährige nach § 41 SGB VIII ab dem ________ [oder: die Fortsetzung meiner bisherigen Hilfe über meinen 18. Geburtstag hinaus].', '',
+      'hiermit beantrage ich Hilfe für junge Volljährige nach § 41 SGB VIII ab dem ________ (zum Beispiel ab meinem 18. Geburtstag) [oder: die Fortsetzung meiner bisherigen Hilfe über meinen 18. Geburtstag hinaus].', '',
       'Ich brauche weiter Unterstützung, weil: ________ (zum Beispiel Wohnung, Ausbildung oder Schule, Umgang mit Geld, Post von Ämtern).', '',
-      'Bitte laden Sie mich zu einem Gespräch über den Hilfeplan ein (§ 36 SGB VIII). Bitte bestätigen Sie mir den Eingang dieses Antrags schriftlich.', '',
+      'Bitte laden Sie mich zu einem Gespräch über den Hilfeplan ein (§ 36 SGB VIII). Bitte bestätigen Sie mir den Eingang dieses Antrags schriftlich und entscheiden Sie mit einem schriftlichen Bescheid.', '',
       'Mit freundlichen Grüßen', '',
       'Name, Geburtsdatum', 'Anschrift', 'Telefon oder E-Mail', 'Ort, Datum, Unterschrift'
     ].join('\n');
@@ -212,7 +220,8 @@ var Ausziehen = (function () {
     '.az-fort{font-weight:700}' +
     '.az-raster{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,9.5em),1fr));gap:12px;margin:8px 0;max-width:640px}' +
     '.az-raster>.az-k:last-child:nth-child(odd){grid-column:1/-1;min-height:0}.az-raster{min-width:0}' +
-    '.az .az-k{--c:var(--c-ausziehen);min-height:140px}.az .az-k-achtung{--c:var(--c-briefe)}.az-k .az-fort{font-weight:700;margin-top:4px;background:rgba(255,255,255,.2);border-radius:999px;padding:2px 10px;justify-self:start}' +
+    // Jede Kachel eine eigene Farbe aus der Palette (keine doppelt): Bevor = Violett, Tage = Schiefer, Geld = Grün (Geld sparen), Versicherungen = Blau (Schutz), Finger weg = Ziegel, Hilfen = Petrol (Leistungen), Careleaver = Beere (Familie)
+    '.az .az-k{--c:var(--c-ausziehen);min-height:140px}.az .az-k-tage{--c:var(--c-formular)}.az .az-k-geld{--c:var(--c-sparen)}.az .az-k-vers{--c:var(--c-pflege)}.az .az-k-achtung{--c:var(--c-briefe)}.az .az-k-hilfen{--c:var(--c-leistungen)}.az .az-k-care{--c:var(--c-familienkasse)}.az-k .az-fort{font-weight:700;margin-top:4px;background:rgba(255,255,255,.2);border-radius:999px;padding:2px 10px;justify-self:start}' +
     '.az-warn{border:3px solid var(--hint);background:var(--hint-bg);color:var(--ink);border-radius:var(--r-item,16px);padding:14px 16px;display:grid;gap:6px}' +
     '.az-warn b{font-size:1.1em;color:var(--hint)}.az-warn p{margin:0}' +
     '.az-liste{list-style:none;margin:0;padding:0;display:grid;gap:10px}' +
