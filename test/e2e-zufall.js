@@ -55,13 +55,14 @@ const VERBOTEN = '#mappePrint, #mappeShare, #mappeCopy, #feedbackMail, #sc-take,
 
   const besucht = { einfach: 0, ausfuehrlich: 0, mappe: 0, karten: 0 };
   let imEinfach = false;
+  let einfachNochmal = 0; // ebenso für den festen Besuch der einfachen Version
   let mappeNochmal = 0; // fester Mappen-Besuch: klappt er nicht (z. B. Knopf gerade verdeckt), bis zu 10 Schritte erneut versuchen
   for (let s = 0; s < SCHRITTE; s++) {
     let schritt = '';
     try {
       const r = rnd();
       // Feste Besuche, damit jeder Lauf sicher alle Bereiche prüft: einfache Version und Antragsmappe
-      if (s % 200 === 50 && !imEinfach) { schritt = 'Einfache Version (fest)'; for (const zu of ['#mappeClose', '#legalClose']) if (await p.isVisible(zu)) await p.click(zu, { timeout: 1000 }); if (true) await p.evaluate(() => document.getElementById('einfachBtn').click()); } // vorher Mappe oder Impressum schließen, dort ist der Schalter ausgeblendet
+      if ((s % 200 === 50 || einfachNochmal > 0) && !imEinfach) { einfachNochmal = s % 200 === 50 ? 10 : einfachNochmal - 1; schritt = 'Einfache Version (fest)'; for (const zu of ['#mappeClose', '#legalClose']) if (await p.isVisible(zu)) await p.click(zu, { timeout: 1000 }); if (await p.isVisible('#appnav [data-ansicht=leistungen]')) { await p.click('#appnav [data-ansicht=leistungen]', { timeout: 1000 }); await p.waitForTimeout(150); } if (!(await p.locator('#es-raus').first().isVisible())) await p.evaluate(() => document.getElementById('einfachBtn').click()); } // vorher Mappe oder Impressum schließen und zum Bereich Leistungen (sonst bleibt die einfache Version unsichtbar); klappt es nicht, bis zu 10 Schritte erneut
       else if (s % 200 === 150 || mappeNochmal > 0) { mappeNochmal = s % 200 === 150 ? 10 : mappeNochmal - 1; schritt = 'Antragsmappe (fest)'; for (const zu of ['#mappeClose', '#legalClose']) if (await p.isVisible(zu)) await p.click(zu, { timeout: 1000 }); if (await p.isVisible('#appnav [data-ansicht=leistungen]')) await p.click('#appnav [data-ansicht=leistungen]', { timeout: 1000 }); await p.waitForTimeout(150); if (await p.locator('#es-raus').first().isVisible()) { await p.locator('#es-raus').first().click({ timeout: 1000 }); await p.waitForTimeout(150); } if (await p.isVisible('#mappeMake') && await p.isDisabled('#mappeMake')) await p.click('#p1', { timeout: 1000 }).catch(() => {}); /* nichts auswählbar: Beispiel laden */ await p.evaluate(() => { const c = [...document.querySelectorAll('[data-pick]')]; if (c.length && !c.some((x) => x.checked)) c[0].click(); }); /* alles abgewählt: eine Leistung wählen */ if (await p.isVisible('#mappeMake')) await p.click('#mappeMake', { timeout: 1000 }); } // erst zum Bereich Leistungen (es gibt jetzt mehr Bereiche), dann die einfache Version verlassen
       else if (r < 0.01) { schritt = 'Neu laden'; await p.reload(); await p.click('#firstOk', { timeout: 500 }).catch(() => {}); }
       else if (r < 0.045 && !imEinfach) { schritt = 'Einfache Version'; if (true) await p.evaluate(() => document.getElementById('einfachBtn').click()); }
@@ -84,6 +85,7 @@ const VERBOTEN = '#mappePrint, #mappeShare, #mappeCopy, #feedbackMail, #sc-take,
     const z = await zustand();
     if (process.env.ZUFALL_DEBUG && z.esModus !== imEinfach) console.log(s, z.esModus ? 'rein' : 'raus', schritt);
     imEinfach = z.esModus;
+    if (imEinfach) einfachNochmal = 0;
     if (z.esModus) besucht.einfach++; else besucht.ausfuehrlich++;
     if (z.mappe) { besucht.mappe++; mappeNochmal = 0; }
     if (z.karten > 1) besucht.karten++;

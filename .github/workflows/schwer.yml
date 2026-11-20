@@ -123,6 +123,7 @@ jobs:
         run: node test/e2e-einfach.js
       - name: Kleine Handys und große Schrift (320 px, Systemschrift 200 %; Kombinationen dieses Teils)
         run: node test/e2e-klein.js
+      # Feste Besuche (einfache Version, Antragsmappe) werden bis zu 10 Schritte wiederholt, damit auch 500 Schritte je Teil alle Bereiche erreichen
       - name: Zufalls-Klicktest (2.000 zufällige Bedienschritte, je Teil 500 mit eigenem Startwert)
         env: { ZUFALL_SEED: '${{ github.run_number }}' }
         run: node test/e2e-zufall.js 2000
