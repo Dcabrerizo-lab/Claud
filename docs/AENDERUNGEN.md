@@ -2,6 +2,16 @@
 
 Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss steigen). Die Versionsnummer kommt aus dem Build.
 
+## 1.5.0 (ab Versionsnummer 147, November 2026)
+- Ab Versionsnummer 147: **Neue Leiste** Start | Mein Ordner | Einstellungen; Einstellungen als Liste mit Unterseiten (Haushalte, Anzeige, Fachkräfte, Über die App).
+- Ab Versionsnummer 147: **Vorgänge speichern** (z. B. einer je Haushalt) mit freiwilliger PIN-Sperre (Sichtschutz, verschlüsselt auf dem Gerät), Selbstsperre, Rückfrage vor dem Löschen und automatischem Löschen länger nicht geänderter Vorgänge.
+- Ab Versionsnummer 147: **Beratungsmodus** (Rechtsgrundlagen mit Paragrafen bei den Ergebnissen), **Ergebnisblatt** zum Drucken oder Mitgeben, **Unterlagen-Checkliste**, Antragsmappe mit Übersicht.
+- Ab Versionsnummer 147: **Pflege**: Startkachel mit Auswahl Unterstützung oder Einschätzung, Leistungen je Pflegegrad; Beratungsbesuch, Verhinderungspflege durch Angehörige, Wohngruppenzuschlag, 10 Tage Arbeitsverhinderung.
+- Ab Versionsnummer 147: **Geld sparen**: Schulden und Pfändung mit Tipps von Schuldnerberatungen; **Haushaltsplan und Haushaltsbuch** mit Kassenzettel-Scan (Texterkennung auf dem Gerät) und CSV-Export.
+- Ab Versionsnummer 147: neue Einkommensart **„Unterhalt für sich selbst“** (Trennungs-/Ehegattenunterhalt, Unterhalt von den Eltern).
+- Ab Versionsnummer 147: neuer Bereich **„Ich ziehe aus“** für junge Menschen (Azubis, Studierende, junge Erwachsene, Careleaver): Checklisten, Geld, Kostenfallen, Versicherungen, Hilfen; 13 Sprachen und Einfache Sprache.
+- Ab Versionsnummer 147: **einheitliches Farbkonzept** (Palette an einer Stelle, keine Farbe doppelt je Kachelgruppe); Verbesserungen aus der Nutzerprüfung (Zurück-Wege, Rückfrage vor „Beispiel laden“, Rückgängig nach Löschen, Brief prüfen erst bei vollständigen Angaben, Fachwörter erklärt, Kachel „Anderer Brief“, Formularprüfungen); Korrekturen bei Brief-Erkennung, Pfändung, Rechtsgrundlagen und Schulden-Tipps.
+
 ## 1.4.0 (ab Versionsnummer 143, November 2026)
 - Ab Versionsnummer 146: Renten-Netto genauer (Beiträge zur Kranken- und Pflegeversicherung statt Pauschale); Krankenversicherung beim Lohn korrigiert; Netto wird je Person gerechnet; Unterhaltsvorschuss vollständig (Waisenrente, Kind zu 40 % oder mehr beim anderen Elternteil, neue Partnerschaft, Aufenthalt und mehr); Auto bei Grundsicherung im Alter geschützt; Pläne für 2027 aktualisiert; Sicherheits-Updates.
 - Ab Versionsnummer 146: **Neues Design** „Warm und menschlich“: Creme, Petrol, Koralle; runde Karten, Knöpfe als Pille, warmer Dunkelmodus (alle Texte mindestens 4,5:1); Überschriften in Nunito; neues Logo „Sprechblase mit Haken“ als App-Symbol und Startbild. Startseite mit Begrüßung und farbigen Kacheln je Bereich (neu: Kachel „Pflege“), Hinweis „Deine Angaben bleiben bei dir“. Ergebnis mit „Gute Nachrichten!“ (nur wenn etwas wahrscheinlich ist), Zahl der passenden Hilfen und Hinweis auf kostenlose Beratung. Neue Texte in 13 Sprachen und Einfacher Sprache.

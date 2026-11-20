@@ -20,7 +20,7 @@ Gleicher Text wie bei Google Play, Deutsch und Englisch.
 |---|---|
 | Name | SoLo – Sozialleistungslotse |
 | Untertitel (30) | Hilfen finden, Briefe prüfen |
-| Werbetext (170) | Welche Hilfen stehen dir zu? Prüfe 31 Sozialleistungen in zwei Minuten und lass Bescheide vom Amt nachrechnen. Offline, ohne Anmeldung, in 8 Sprachen. |
+| Werbetext (170) | Welche Hilfen stehen dir zu? Prüfe 31 Sozialleistungen in etwa 5 Minuten und lass Bescheide vom Amt nachrechnen. Offline, ohne Anmeldung, in 8 Sprachen. |
 | Stichwörter (100) | Wohngeld,Bürgergeld,Grundsicherung,Kinderzuschlag,Bescheid,Widerspruch,Pflegegrad,Sozialhilfe,Antrag |
 | Beschreibung | wie bei Google Play, aus `docs/STORE.md` |
 | Neuerungen | Text „Was ist neu“ oben |
