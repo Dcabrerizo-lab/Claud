@@ -236,12 +236,15 @@ var Schulden = (function () {
     box.textContent = '';
     if (eingabe) { renderEingabe(box); fokus(fokusId || 'sl-f-g'); return; }
     var heute = new Date(), s = summen(daten.liste), liste = sortiert(daten.liste, heute);
+    // Aufbau wie die anderen Seiten in „Geld und Schulden“ (Auftrag David 21.11.2026): oben die großen Kacheln, direkt darunter der grüne
+    // Hauptknopf, dann Summe, Reihenfolge und die Liste selbst
     if (!daten.liste.length) box.appendChild(el('p', 'sl-lead', t('sl.lead')));
-    if (s.n) box.appendChild(summenKarte(s));
-    var nb = el('div', 'btns');
+    box.appendChild(kacheln(s));
+    var nb = el('div', 'btns sl-neu-btns');
     nb.appendChild(knopf('btn', t('sl.neu'), function () { neueEingabe(null); render('sl-f-g'); }, { id: 'sl-neu' }));
     box.appendChild(nb);
-    if (!daten.liste.length) box.appendChild(el('p', 'muted', t('sl.leer')));
+    if (!daten.liste.length) box.appendChild(el('p', 'muted sl-leer', t('sl.leer')));
+    if (s.n) box.appendChild(summenKarte(s));
     // Kopfkarte „Was ist zuerst wichtig?“: immer sichtbar, auch bei leerer Liste (Konzept U3); Begründung zum Aufklappen
     box.appendChild(kopfKarte());
     // Beratungsmodus (B1): Umschalter Karten/Tabelle, Tabelle sortierbar (nur Deutsch, nur hier)
@@ -262,20 +265,36 @@ var Schulden = (function () {
       erl.forEach(function (e) { ul2.appendChild(zeile(e, heute)); });
       de2.appendChild(ul2); box.appendChild(de2);
     }
-    // Beratungsstelle finden und „Bitte mitbringen“ stehen jetzt unter „Schuldnerberatung“ (Texte sl.hilfe.*, sl.u.* dort): ein Sprung statt Aufklapper
-    var ex = el('div', 'btns sl-export');
-    if (ctx.geld) ex.appendChild(knopf('btn ghost', t('sb.h'), function () { ctx.geld('hilfe'); }, { id: 'sl-zur-beratung' }));
-    if (s.n) ex.appendChild(knopf('btn ghost', t('sl.druck'), blattOeffnen, { id: 'sl-druck' }));
-    if (daten.liste.length) ex.appendChild(knopf('btn ghost', t('sl.csv'), csvFragen, { id: 'sl-csv' }));
-    ex.appendChild(knopf('btn ghost', t('sl.hh.knopf'), function () { ctx.zeige('haushalt', true); }, { id: 'sl-hh' }));
-    ex.appendChild(knopf('btn ghost', t('sp.schulden.pf'), function () { ctx.zeige('pfaendung', true); }, { id: 'sl-pf' }));
-    box.appendChild(ex);
+    // Export als Tabelle gehört zur Liste: kleiner Knopf direkt darunter (Blatt, Beratung, Haushaltsplan und Pfändung sind Kacheln oben)
+    if (daten.liste.length) { var ex = el('div', 'btns sl-export'); ex.appendChild(knopf('btn ghost', t('sl.csv'), csvFragen, { id: 'sl-csv' })); box.appendChild(ex); }
     var fb = el('div', 'sl-frage-platz'); fb.id = 'slFrage'; box.appendChild(fb);
     if (frage && frage.art === 'csv') csvFrageZeigen(fb);
     var m = el('p', 'small'); m.id = 'slExportMsg'; m.setAttribute('aria-live', 'polite'); box.appendChild(m);
     // Quellen zugeklappt am Seitenende (gemeinsames Bauteil „Quellen und Stand“ aus src/app.js)
     box.appendChild(window.SoloMehr && window.SoloMehr.quellen ? window.SoloMehr.quellen([t('sp.schulden.quellen')]) : el('p', 'small muted', t('sp.schulden.quellen')));
     fokus(fokusId);
+  }
+  // Große Kacheln (uk-karte wie in „Geld und Schulden“): Symbol, Titel, kurzer Text; Titel und Texte wie auf den Kacheln dort
+  var SYM = {
+    hilfe: '<circle cx="9" cy="8" r="3"/><path d="M3 20c1-4 3-6 6-6s5 2 6 6"/><path d="M14 4h7v5h-4l-2 2V9h-1z"/>',
+    blatt: '<path d="M7 8V3h10v5"/><rect x="3" y="8" width="18" height="9" rx="2"/><path d="M7 14h10v7H7z"/>',
+    hh: '<path d="M4 7h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a1 1 0 0 1-1-1z"/><path d="M4 7l11-3v3"/><circle cx="16" cy="13.5" r="1"/>',
+    bleibt: '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/><path d="M15 3l-3 3-3-3"/>'
+  };
+  function kachel(id, sym, titel, text, fn) {
+    var k = ctx.kachel ? ctx.kachel('sl-k ' + id, SYM[sym], titel, text, fn) : null;
+    if (!k) { // ohne Kachel-Bauteil (Einzeltests): gleiche Klassen, nur Text
+      k = knopf('uk-karte sl-k ' + id, '', fn); var tx = el('span', 'sk-txt'); tx.appendChild(el('b', '', titel)); if (text) tx.appendChild(el('span', '', text)); k.appendChild(tx);
+    }
+    k.id = id; return k;
+  }
+  function kacheln(s) {
+    var r = el('div', 'uk-raster sl-kacheln');
+    if (ctx.geld) r.appendChild(kachel('sl-zur-beratung', 'hilfe', t('sb.h'), t('sb.h.t'), function () { ctx.geld('hilfe'); }));
+    if (s.n) r.appendChild(kachel('sl-druck', 'blatt', t('sl.druck'), t('sl.druck.t'), blattOeffnen));
+    r.appendChild(kachel('sl-hh', 'hh', t('hb.kachel'), t('hb.kachel.t'), function () { ctx.zeige('haushalt', true); }));
+    r.appendChild(kachel('sl-pf', 'bleibt', t('gs.bleibt'), t('home.pfaendung.t'), function () { ctx.zeige('pfaendung', true); }));
+    return r;
   }
   function kopfKarte() {
     var k = el('div', 'sl-kopfkarte'); k.id = 'slKopf';

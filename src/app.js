@@ -4026,6 +4026,7 @@
       haushalt: function () { if (!window.Haushalt) return null; var r = Haushalt.rest(), d = Haushalt.daten(); return { rest: r, raten: d && d.plan && d.plan.aus && d.plan.aus.raten || 0 }; },
       pdf: function (seiten, titel, name, msg) { pdfAusgeben(seiten, titel, name, msg, plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen', false); },
       beratung: function () { return beratung; },
+      kachel: skKachel, // große Kacheln oben wie in „Geld und Schulden“
       // Knöpfe je Eintrag: „Stimmt der Brief?“ und „Schreiben“ (src/geld.js); „Schuldnerberatung“ statt der Aufklapper
       geld: function (was, e) { if (!window.Geld) return; if (was === 'schreiben') { Geld.schreibenVorbelegen('', e); gsSprung('inkasso', '', 'schreiben'); } else if (was === 'pruef') gsSprung('inkasso', '', 'pruef'); else gsSprung('hilfe'); }
     });
