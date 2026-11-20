@@ -5,7 +5,7 @@
   'use strict';
   const $ = (id) => document.getElementById(id);
   // „Keine Rechtsberatung“: immer derselbe Satz (Text rb.satz in src/lang/*.json); in der App aus der gewählten Sprache
-  const RB_SATZ = 'Erste Einschätzung, keine Rechtsberatung. Es entscheidet das Amt.';
+  const RB_SATZ = 'Erste Einschätzung, keine Rechtsberatung. Es entscheidet das Amt, im Streit das Gericht.';
   const rbSatz = () => (window.SoloMehr && window.SoloMehr.rb ? window.SoloMehr.rb() : RB_SATZ);
   const h = (tag, attrs, ...kids) => {
     const e = document.createElement(tag);
