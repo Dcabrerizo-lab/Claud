@@ -24,7 +24,11 @@ const Widerspruch = (function () {
     z.push('');
     z.push(`hiermit lege ich Widerspruch gegen den oben genannten Bescheid ein.`);
     z.push('');
-    if (w.art === 'pflege') {
+    // Ohne geprüfte Begründung (Angaben unvollständig oder kein Grund gefunden): fristwahrender Widerspruch, Begründung folgt – nie eine halbe Zahlen-Begründung
+    const ohne = w.art !== 'pflege' && !(w.punkte || []).length;
+    if (ohne) {
+      z.push('Die Begründung reiche ich nach, sobald ich den Bescheid vollständig prüfen konnte.');
+    } else if (w.art === 'pflege') {
       z.push(`Festgestellt wurde Pflegegrad ${w.pflege && w.pflege.pgBescheid != null ? w.pflege.pgBescheid : '…'}. Nach meiner Überzeugung sind die Beeinträchtigungen im Alltag höher, als im Gutachten bewertet.${w.pflege && w.pflege.pgZiel ? ` Ich beantrage die Feststellung von Pflegegrad ${w.pflege.pgZiel}.` : ''}`);
       z.push('');
       z.push('Begründung: Folgende Kriterien sind im Gutachten zu niedrig bewertet:');
@@ -41,7 +45,7 @@ const Widerspruch = (function () {
       z.push('');
     }
     if (w.akteneinsicht) { z.push('Zugleich beantrage ich Akteneinsicht (§ 25 SGB X) bzw. die Übersendung einer Kopie der Unterlagen, auf denen die Entscheidung beruht.'); z.push(''); }
-    if (w.unterlagenNachreichen) { z.push('Eine ausführliche Begründung und weitere Unterlagen reiche ich nach.'); z.push(''); }
+    if (w.unterlagenNachreichen && !ohne) { z.push('Eine ausführliche Begründung und weitere Unterlagen reiche ich nach.'); z.push(''); }
     z.push('Bitte bestätigen Sie mir den Eingang dieses Widerspruchs.');
     z.push('');
     z.push('Mit freundlichen Grüßen');

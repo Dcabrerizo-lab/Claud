@@ -59,7 +59,7 @@ setTimeout(async () => {
   $('einfacheSpracheBtn').click(); await warte();
   const nichtEinfach = sichtbareTexte().filter((s) => W[s] && W[s] !== '=');
   ok('Schalter an: kein bekannter Text mehr in der Standardfassung', nichtEinfach.length === 0, nichtEinfach.slice(0, 10));
-  ok('Schalter an: Wörter im Bescheid einfach erklärt', $('p-bescheid').textContent.includes(W['Die Monate, für die der Bescheid gilt. Danach braucht es einen Weiterbewilligungsantrag. Er ist nicht das Datum des Bescheids.']));
+  ok('Schalter an: Wörter im Bescheid einfach erklärt', $('p-bescheid').textContent.includes(require('../src/lang/einfach/zusatz.json')['bp.w.bz']));
   ok('Schalter an: Feldhilfe hinter „Wo steht das?“ einfach', $('bs-b-kdu-hilfe') && $('bs-b-kdu-hilfe').textContent.includes('Das ist das Geld für Miete'), $('bs-b-kdu-hilfe') && $('bs-b-kdu-hilfe').textContent);
   // neu gezeichnetes Ergebnis
   $('bs-b-zahl').value = '1000'; $('bs-b-zahl').dispatchEvent(new w.Event('input', { bubbles: true })); await warte();

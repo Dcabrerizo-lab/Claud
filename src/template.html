@@ -192,6 +192,13 @@
   /* Kopf */
   .top { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: flex-end; justify-content: space-between; margin-bottom: 20px; }
   .top .lead { max-width: 60ch; color: var(--muted); margin-top: 8px; }
+  /* Sprachwahl oben auf der Startseite (Weltkugel und Name der Sprache in ihrer eigenen Schrift) */
+  .sprach-knopf { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; margin-inline-start: auto; padding-block: 2px; padding-inline: 12px 4px; border: 2px solid var(--accent); border-radius: 999px; background: var(--surface); color: var(--accent); }
+  .sprach-knopf svg { flex: none; width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+  .top .sprach-knopf select, .top .sprach-knopf select:focus { box-shadow: none; outline-offset: 2px; }
+  .top .sprach-knopf select { width: auto; max-width: 13em; min-height: 40px; border: 0; padding-block: 0; padding-inline: 2px 6px; background: transparent; color: var(--ink); font: inherit; font-weight: 700; border: 0 !important; }
+  .loesch-frage { scroll-margin-block: 96px; }
+  .pa .z { white-space: nowrap; }
   .tools { display: flex; gap: 8px 12px; align-items: center; flex-wrap: wrap; }
   .chip {
     font: inherit; font-size: 0.85em; color: var(--ink);
@@ -879,7 +886,13 @@
   .pf-jetzt h3 { margin: 0 0 6px; }
   /* Kachel geöffnet: erst die Wahl (scannen, einfügen, selbst eingeben), dann das Formular. Das eigene Textfeld des Pflegegutachtens
      entfällt in der App, weil „Text einfügen“ oben dasselbe tut. */
-  #checkBox .pp-teil.pp-zu > :not(:first-child) { display: none !important; }
+  #checkBox .pp-teil.pp-zu > :not(:first-child), #checkBox .pp-teil.pp-anders > :not(:first-child) { display: none !important; }
+  /* Brief prüfen wie der Rest der App: runde weiße Karten mit Schatten statt eckiger Kästen */
+  #checkBox.pp .card { border: 0; border-radius: var(--r-card); box-shadow: var(--shadow); padding: 20px; }
+  #checkBox.pp fieldset { border-radius: var(--r-feld); }
+  .pp-frist-box { display: grid; gap: 10px; margin: 12px 0 4px; }
+  .pp-frist-box .frist { margin: 0; }
+  .pp-artwahl { display: grid; gap: 4px; }
   #checkBox label[for="pf-text"], #checkBox #pf-text, #checkBox #pf-lesen, #checkBox #pf-beispiel { display: none !important; }
   #checkBox .pp-zu #pf-leeren, #checkBox .pp-zu #pf-msg { display: none !important; }
   #checkBox .card > .einlesen { margin-top: 12px; padding: 0; box-shadow: none; background: transparent; }
@@ -1174,6 +1187,7 @@
         <h1><svg class="logo" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><rect width="100" height="100" rx="30" fill="#0f6b5c"/><path d="M30 26h40a12 12 0 0 1 12 12v20a12 12 0 0 1-12 12H50L36 82V70h-6a12 12 0 0 1-12-12V38a12 12 0 0 1 12-12z" fill="#fffaf3"/><path d="M37 48l9 9 18-18" fill="none" stroke="#ff7a59" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="titel">SoLo <span class="sub">Sozial&shy;leistungs&shy;lotse</span></span></h1>
         <p class="lead" data-t="lead"></p>
       </div>
+      <label class="sprach-knopf"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg><span class="vh" data-t="lang.top"></span><select id="langTop"></select></label>
     </header>
 
     <main id="inhalt">

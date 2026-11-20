@@ -32,6 +32,7 @@ function statisch() {
 // Zeichenketten aus vorschau.js, die als Text erscheinen. Ausgenommen sind Stellen, die kein Text sind (Kennungen, Klassen,
 // Selektoren, Attributnamen) und die Werte für die Schreiben an Ämter (förmlich, bleiben unverändert).
 const KEIN_TEXT_ATTR = new Set(['class', 'id', 'type', 'for', 'role', 'inputmode', 'min', 'max', 'step', 'value', 'style', 'rows', 'tabindex', 'name', 'autocomplete', 'aria-labelledby', 'aria-describedby', 'aria-controls', 'aria-hidden', 'aria-live', 'data-id', 'data-auto', 'data-typ', 'data-titel', 'data-ist', 'data-soll', 'data-t', 'art', 'stelle', 'quelle', 'feld', 'bis']);
+// tA(schlüssel, deutsch): Text kommt aus den Wörterbüchern der App (src/lang/zusatz, einfach/zusatz.json)
 const KEIN_TEXT_AUFRUF = /^(\$|querySelector|querySelectorAll|getElementById|addEventListener|setAttribute|getAttribute|removeAttribute|add|remove|toggle|contains|startsWith|endsWith|test|replace|split|includes|matches|closest|padStart|slice|insertAdjacentElement|observe|getItem|setItem|createElement|createTextNode)$/;
 function skript(datei, ohne) {
   const src = fs.readFileSync(path.join(ROOT, 'erweiterungen', datei), 'utf8');
@@ -45,7 +46,7 @@ function skript(datei, ohne) {
     const p = eltern[eltern.length - 1];
     const keinText = p && ((p.type === 'Property' && p.key === n && !p.computed) ||
       (p.type === 'Property' && p.value === n && KEIN_TEXT_ATTR.has(p.key.name || p.key.value)) ||
-      (p.type === 'CallExpression' && n !== p.callee && (KEIN_TEXT_AUFRUF.test((p.callee.property && p.callee.property.name) || p.callee.name || '') || (p.callee.name === 'h' && p.arguments[0] === n))) ||
+      (p.type === 'CallExpression' && n !== p.callee && (p.callee.name === 'tA' || KEIN_TEXT_AUFRUF.test((p.callee.property && p.callee.property.name) || p.callee.name || '') || (p.callee.name === 'h' && p.arguments[0] === n))) ||
       (p.type === 'MemberExpression' && p.computed) || p.type === 'BinaryExpression' && /^[=!]==?$/.test(p.operator) || p.type === 'ImportDeclaration' || p.type === 'SwitchCase');
     if (!keinText) {
       if (n.type === 'Literal' && typeof n.value === 'string') nimm(norm(n.value), n);

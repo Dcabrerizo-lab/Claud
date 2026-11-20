@@ -191,7 +191,7 @@ check('Entweder Formular oder formlos: Wohngeld hat in Bayern einen Formular-Lin
 const formSeite = d.querySelector('#mappeBody .forms');
 check('Amtliche Formulare: Wohngeld als Link auf die amtliche Seite, kein Knopf zum Ausfüllen', !!formSeite && /Antrag auf Wohngeld \(Mietzuschuss\)/.test(formSeite.textContent) && !!formSeite.querySelector('a[href*="stmb.bayern.de"]') && formSeite.textContent.indexOf(I18N.de['f.formsWeb']) >= 0 && !d.getElementById('formsShare'), formSeite && formSeite.textContent.slice(0, 200));
 check('Formular-Link und formloser Brief schließen sich aus: beim Link (Wohngeld Bayern) kein Satz „formloser Antrag in dieser Mappe“', !!formSeite && formSeite.textContent.indexOf(I18N.de['f.formsBrief']) < 0);
-check('Amtliche Formulare: ohne Jobcenter keine Jobcenter-Unterlagenliste', !!formSeite && formSeite.textContent.indexOf(I18N.de['f.formsUnt']) < 0);
+check('Amtliche Formulare: keine eigene Unterlagenliste (eine Liste je Hilfe steht bei den Unterlagen)', !!formSeite && formSeite.textContent.indexOf('Kontoauszüge der letzten 3 Monate') < 0);
 const txt = pages.map((p) => p.textContent).join('\n');
 // Anschrift „91056 Erlangen“ liefert den Wohnort (kein PLZ-Feld ausgefüllt): Empfänger ist die Stadt Erlangen
 check('Brief: Absender, Empfänger (aus der PLZ der Anschrift) und Betreff', /Maria Beispiel/.test(txt) && /Hauptstraße 1/.test(txt) && /Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle/.test(txt) && /Betreff: Antrag auf Unterhaltsvorschuss/.test(txt));

@@ -1452,7 +1452,9 @@ var Haushalt = (function () {
     PREIS: PREIS, VERBRAUCH_DESTATIS: VERBRAUCH_DESTATIS, TOL: TOL, tageZwischen: tageZwischen, jahresVerbrauch: jahresVerbrauch, gasKwh: gasKwh, jahresKosten: jahresKosten,
     abschlagVergleich: abschlagVergleich, destatisVergleich: destatisVergleich, energieSparte: energieSparte, energieNachzahlung: energieNachzahlung, abschlagBrief: abschlagBrief, dezimalAus: dezimalAus, SAISON_TAGE: SAISON_TAGE, AKTUELL_TAGE: AKTUELL_TAGE,
     // Oberfläche
-    rest: function () { return rechnung(); }, // Kurzstatus für „Mein Ordner“: { rest, restEuro, leer }
+    // Kurzstatus für „Mein Ordner“: { rest, restEuro, leer, ausgefuellt }. ausgefuellt: mindestens eine eigene Ausgabe im Plan (die Miete
+    // kommt aus dem Check und zählt nicht) – sonst wäre „Im Monat bleiben dir …“ nur Einkommen minus Miete, ohne Essen, Strom und Handy.
+    rest: function () { var r = rechnung(); r.ausgefuellt = !!daten && Object.keys(daten.plan.aus || {}).some(function (k) { return k !== 'miete' && daten.plan.aus[k] > 0; }); return r; },
     init: init, zeigen: zeigen, sprache: function () { render(); if (daten) startHinweis(); }, speicherOrt: speicherOrt,
     daten: function () { return JSON.parse(JSON.stringify(daten)); }, laden: function (d) { daten = normiere(d); sichern(); render(); startHinweis(); },
     // Nach einem Wechsel des Vorgangs: Plan des geöffneten Vorgangs aus dem Speicherort lesen (ohne zu schreiben)
