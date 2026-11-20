@@ -40,7 +40,7 @@ var Navigation = (function () {
   }
 
   // ---------- Ebenen und Verlauf ----------
-  var app = null, st = [], k = 0, sitzung = '', warte = null, geplant = false;
+  var app = null, st = [], k = 0, sitzung = '', warte = null, geplant = false, stumm = false;
   function zustand(e, i) { return { solo: sitzung, i: i, t: e.tiefe, p: e.pfad }; }
   function adresse(e) { return '#' + String(e.pfad).split('/')[0]; }
   function setze(art, e, i) { try { history[art](zustand(e, i), '', adresse(e)); } catch (x) { /* ohne Verlauf (z. B. file: in alten WebViews) */ } }
@@ -48,7 +48,7 @@ var Navigation = (function () {
 
   // Stand der App mit dem Verlauf abgleichen. nachVor: nach Vorwärts nicht zurückspringen, nur ersetzen.
   function abgleich(nachVor) {
-    if (!app) return;
+    if (!app || stumm) return;
     if (warte) { warte.nochmal = true; return; }
     var e = app.ebene(), cur = st[k], hs = null;
     try { hs = history.state; } catch (x) { /* ohne Verlauf */ }
@@ -90,8 +90,10 @@ var Navigation = (function () {
       abgleich(true);
     }
   }
-  // Erst offene Blätter und Dialoge schließen, dann eine Ebene hoch
-  function eineEbeneHoch() { return !!((app.schliessen && app.schliessen()) || app.hoch()); }
+  // Erst offene Blätter und Dialoge schließen, dann eine Ebene hoch (ohne Zwischenabgleich; der folgt danach)
+  function eineEbeneHoch() { stumm = true; try { return !!((app.schliessen && app.schliessen()) || app.hoch()); } finally { stumm = false; } }
+  // Die App meldet einen Wechsel der Ansicht: sofort abgleichen (Adresse stimmt gleich), außer mitten in „eine Ebene hoch“
+  function melde() { abgleich(false); }
   // Zurück-Knopf, Android-Taste, Rand-Wischen: eine Ebene hoch. false: schon ganz oben (Start)
   function zurueck() {
     if (!app) return false;
@@ -139,7 +141,7 @@ var Navigation = (function () {
   }
 
   return {
-    kopfHtml: kopfHtml, kopf: kopf, vorlage: vorlage, init: init, zurueck: zurueck, melde: planen, abgleich: abgleich,
+    kopfHtml: kopfHtml, kopf: kopf, vorlage: vorlage, init: init, zurueck: zurueck, melde: melde, planen: planen, abgleich: abgleich,
     tiefe: function () { return st[k] ? st[k].tiefe : 0; },
     stand: function () { return { k: k, st: JSON.parse(JSON.stringify(st)), warte: !!warte }; }
   };
