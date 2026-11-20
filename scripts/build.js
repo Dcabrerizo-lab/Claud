@@ -106,12 +106,14 @@ function pruefpaket() {
 // opts.native: Store-App (Android/iOS) statt Web
 function render(opts = {}) {
   const pp = pruefpaket();
-  const parts = { rules: read('rules.js'), i18n: i18nSource(), fmt: read('fmt.js'), plz: read('plz.js'), behoerden: read('behoerden.js'), formulare: read('formulare.js'), vorgaenge: read('vorgaenge.js'), haushalt: read('haushalt.js'), ausziehen: read('ausziehen.js'), fristen: read('fristen.js'), schulden: read('schulden.js'), app: read('app.js') };
+  const parts = { rules: read('rules.js'), i18n: i18nSource(), fmt: read('fmt.js'), plz: read('plz.js'), behoerden: read('behoerden.js'), formulare: read('formulare.js'), vorgaenge: read('vorgaenge.js'), haushalt: read('haushalt.js'), ausziehen: read('ausziehen.js'), fristen: read('fristen.js'), schulden: read('schulden.js'), navigation: read('navigation.js'), app: read('app.js') };
   if (opts.native) {
     if (!parts.app.includes('/*NATIVE*/ false')) throw new Error('Marker /*NATIVE*/ fehlt in src/app.js');
     parts.app = parts.app.replace('/*NATIVE*/ false', 'true');
   }
-  const html = read('template.html')
+  const vorlage = require(path.join(SRC, 'navigation.js')).vorlage(read('template.html')); // gemeinsamer Zurück-Knopf: Marken <!--ZURUECK ...-->
+  if (/<!--ZURUECK/.test(vorlage)) throw new Error('Marke <!--ZURUECK--> mit falscher Schreibweise in src/template.html');
+  const html = vorlage
     .replace('/*RULES*/\n', () => parts.rules)
     .replace('/*I18N*/\n', () => parts.i18n)
     .replace('/*FMT*/\n', () => parts.fmt)
@@ -125,11 +127,12 @@ function render(opts = {}) {
     .replace('/*AUSZIEHEN*/\n', () => parts.ausziehen)
     .replace('/*FRISTEN*/\n', () => parts.fristen)
     .replace('/*SCHULDEN*/\n', () => parts.schulden)
+    .replace('/*NAVIGATION*/\n', () => parts.navigation)
     .replace('<!--PRUEFPAKET-->', () => pp.teile)
     .replace('/*PPSTIL*/\n', () => pp.css)
     .replace('/*PRUEFPAKET*/\n', () => pp.js)
     .replace('/*APP*/\n', () => parts.app.replace("'/*VERSION*/'", () => JSON.stringify(require(path.join(ROOT, 'package.json')).version)));
-  const left = html.match(/\/\*(RULES|I18N|FMT|PLZ|PLZDATA|BEHOERDEN|BEHOERDENDATA|FORMULARE|VORGAENGE|HAUSHALT|AUSZIEHEN|FRISTEN|SCHULDEN|APP|PPSTIL|PRUEFPAKET)\*\/|<!--PRUEFPAKET-->/);
+  const left = html.match(/\/\*(RULES|I18N|FMT|PLZ|PLZDATA|BEHOERDEN|BEHOERDENDATA|FORMULARE|VORGAENGE|HAUSHALT|AUSZIEHEN|FRISTEN|SCHULDEN|NAVIGATION|APP|PPSTIL|PRUEFPAKET)\*\/|<!--PRUEFPAKET-->/);
   if (left) throw new Error('Platzhalter nicht ersetzt: ' + left[0]);
   return { html, i18n: parts.i18n };
 }

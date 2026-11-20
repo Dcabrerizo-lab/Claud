@@ -147,7 +147,7 @@ var Ausziehen = (function () {
 
   // Alle Textschlüssel (Tests: jede Sprache hat sie, keine Rohschlüssel)
   function schluessel() {
-    var k = ['az.h', 'az.kachel', 'az.kachel.t', 'az.lead', 'az.zurueck', 'az.quelle', 'az.mehrDazu', 'az.weitere', 'az.erledigt', 'az.notiz', 'az.notiz.t',
+    var k = ['az.h', 'az.kachel', 'az.kachel.t', 'az.lead', 'az.quelle', 'az.mehrDazu', 'az.weitere', 'az.erledigt', 'az.notiz', 'az.notiz.t',
       'az.moeglich', 'az.speicherFehler', 'az.u25.warn', 'az.u25.warn.h', 'az.brief.zeigen', 'az.brief.kopieren', 'az.brief.kopiert',
       'az.brief.hinweis', 'az.brief.label', 'az.knopf.plan', 'az.knopf.check', 'az.knopf.briefe', 'az.knopf.pfaendung', 'az.knopf.vers', 'az.hilfen.check', 'az.vers.tipp', 'az.stand'];
     BEREICHE.forEach(function (b) {
@@ -285,8 +285,7 @@ var Ausziehen = (function () {
     if (fokus) { var b = box.querySelector('#az-geh-' + fokus); if (b) b.focus(); }
   }
   function renderBereich(box, b) {
-    var h = '<div class="btns"><button type="button" class="btn ghost klein" data-az-zurueck>' + esc(t('az.zurueck')) + '</button></div>' +
-      '<h3 class="pf-frage" id="azH" tabindex="-1">' + esc(t('az.' + b.id + '.h')) + '</h3><p class="az-lead">' + esc(t('az.' + b.id + '.t')) + '</p>';
+    var h = '<h3 class="pf-frage" id="azH" tabindex="-1">' + esc(t('az.' + b.id + '.h')) + '</h3><p class="az-lead">' + esc(t('az.' + b.id + '.t')) + '</p>';
     var f = fortschritt(daten, b.id);
     if (f) h += '<p class="az-fort" id="azFort" role="status">' + esc(t('az.erledigt', { n: f.n, von: f.von })) + '</p>';
     if (b.id === 'vorher') h += '<div class="az-warn" role="note"><b>' + esc(t('az.u25.warn.h')) + '</b><p>' + esc(t('az.u25.warn')) + '</p></div>';
@@ -304,7 +303,6 @@ var Ausziehen = (function () {
     }
     if (b.liste) h += '<div class="field"><label for="azNotiz">' + esc(t('az.notiz')) + '</label><textarea id="azNotiz" aria-describedby="azNotizH"></textarea><span class="hint" id="azNotizH">' + esc(t('az.notiz.t')) + '</span></div>';
     h += '<p class="small muted">' + esc(t('az.stand', { d: ABGERUFEN })) + '</p>';
-    h += '<div class="btns"><button type="button" class="btn ghost" data-az-zurueck>' + esc(t('az.zurueck')) + '</button></div>';
     box.innerHTML = h;
     var n = $('azNotiz'); if (n) n.value = daten.notiz[b.id] || '';
   }
@@ -335,10 +333,9 @@ var Ausziehen = (function () {
     var box = $('azInhalt');
     if (box) {
       box.addEventListener('click', function (ev) {
-        var el = ev.target.closest ? ev.target.closest('[data-az-geh],[data-az-weg],[data-az-zurueck],#azBriefKopieren') : null; if (!el) return;
+        var el = ev.target.closest ? ev.target.closest('[data-az-geh],[data-az-weg],#azBriefKopieren') : null; if (!el) return;
         if (el.id === 'azBriefKopieren') { kopieren(); return; }
         if (el.hasAttribute('data-az-weg')) { weg(el.getAttribute('data-az-weg')); return; }
-        if (el.hasAttribute('data-az-zurueck')) { zurueck(); return; }
         geh(el.getAttribute('data-az-geh'));
       });
       box.addEventListener('change', function (ev) {

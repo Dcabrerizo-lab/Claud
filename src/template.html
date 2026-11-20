@@ -121,10 +121,18 @@
   /* Pflegegrad-Einschätzung: Frage ganz oben, eine Spalte, Zurück oben, Links unten */
   .app[data-ansicht="pflege"] .notices, .app[data-ansicht="pflege"] .first { display: none !important; }
   /* Kopf (Logo, Sprache) in der Einschätzung und in einer geöffneten Kachel nur optisch ausblenden: Screenreader behalten die Hauptüberschrift */
-  .app[data-ansicht="pflege"] .top, .app.brief-offen .top { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; margin: 0; padding: 0; }
+  /* Unterseiten: Kopf ausblenden, damit „← Zurück“ (src/navigation.js) ganz oben links steht; sichtbar bleibt er auf Start, Leistungen, Mein Ordner, Einstellungen */
+  .app[data-ansicht="pflege"] .top, .app.brief-offen .top, .app[data-ansicht="briefe"] .top, .app[data-ansicht="sparen"] .top, .app[data-ansicht="haushalt"] .top, .app[data-ansicht="schulden"] .top,
+  .app[data-ansicht="ausziehen"] .top, .app[data-ansicht="pfaendung"] .top, .app[data-ansicht="pflegestart"] .top, .app[data-ansicht="pflegeinfo"] .top { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; margin: 0; padding: 0; }
+  /* Unterseiten in Einstellungen und Mein Ordner (eigene Regel: ältere WebViews ohne :has überspringen nur diese) */
+  .app:has(#v-einst:not([hidden]) > .unterseite:not([hidden])) .top, .app:has(#v-ordner:not([hidden]) > .unterseite:not([hidden])) .top { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; margin: 0; padding: 0; }
   .pa-kopf { display: grid; gap: 4px; }
   .pa-zeile { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 44px; }
-  .pa-kopf .pa-zur { padding: 8px 0; font-weight: 700; text-decoration: none; }
+  .pa-kopf .pa-zur, .nav-kopf .pa-zur { padding: 8px 0; font-weight: 700; text-decoration: none; }
+  /* Gemeinsamer Zurück-Knopf (src/navigation.js): oben links in einer Kopfzeile, auf jeder Unterseite gleich */
+  .nav-kopf { justify-content: flex-start; margin: 0 0 4px; }
+  .nav-pfeil { display: inline-block; }
+  [dir="rtl"] .nav-pfeil { transform: scaleX(-1); }
   .pa-wo { font-weight: 700; color: var(--ink); }
   .pa-unten { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 20px; margin-top: 18px; }
   .pa-checks { display: grid; gap: 8px; }
@@ -998,6 +1006,8 @@
 
     <!-- Brief prüfen: nach Absender -->
     <section id="v-briefe" class="ansicht" aria-labelledby="h-briefe" hidden>
+      <!--ZURUECK kid=briefeKopf-->
+      <!--ZURUECK id=briefZurueck kid=briefKachelKopf hidden=1-->
       <h2 id="h-briefe" class="ans-h"></h2>
       <p id="briefeIntro" class="muted" data-t="briefe.t"></p>
       <div class="einlesen" id="einlesen" hidden>
@@ -1020,7 +1030,6 @@
       </div>
       <div class="kacheln" id="briefKacheln"></div>
       <div id="checkBox" class="pp" hidden>
-        <div class="pp-kopf"><button type="button" class="btn ghost" id="briefZurueck" data-t="briefe.zurueck"></button></div>
         <p class="pp-hinweis small" id="ppNurDe" data-t="briefe.nurDeutsch" hidden></p>
         <p class="small muted" data-t="briefe.hinweis"></p>
 <!--PRUEFPAKET-->
@@ -1055,14 +1064,14 @@
 
     <!-- Geld sparen im Alltag: Themen mit großen Knöpfen -->
     <section id="v-sparen" class="ansicht" aria-labelledby="h-sparen" hidden>
-      <div class="pp-kopf"><button type="button" class="btn ghost" data-zurueck="sparen">← <span data-t="pf.zurueck"></span></button></div>
+      <!--ZURUECK-->
       <h2 id="h-sparen" class="ans-h" data-t="sp.h"></h2>
       <div id="spInhalt" class="pf"></div>
     </section>
 
     <!-- Haushaltsplan und Haushaltsbuch (src/haushalt.js): Plan, Ausgaben, Auswertung -->
     <section id="v-haushalt" class="ansicht" aria-labelledby="h-haushalt" hidden>
-      <div class="pp-kopf"><button type="button" class="btn ghost" data-zurueck="haushalt">← <span data-t="pf.zurueck"></span></button></div>
+      <!--ZURUECK-->
       <h2 id="h-haushalt" class="ans-h" data-t="hb.h"></h2>
       <div class="hb-tabs" role="group" data-t-aria="hb.h"><button type="button" id="hb-tab-plan" aria-pressed="true"></button><button type="button" id="hb-tab-buch" aria-pressed="false"></button><button type="button" id="hb-tab-ausw" aria-pressed="false"></button></div>
       <div id="hbInhalt" class="hb"></div>
@@ -1071,7 +1080,7 @@
 
     <!-- Schulden-Liste (src/schulden.js): Geld sparen → Schulden und Pfändung → „Meine Schulden-Liste“ -->
     <section id="v-schulden" class="ansicht" aria-labelledby="h-schulden" hidden>
-      <div class="pp-kopf"><button type="button" class="btn ghost" data-zurueck="schulden">← <span data-t="pf.zurueck"></span></button></div>
+      <!--ZURUECK-->
       <h2 id="h-schulden" class="ans-h" data-t="sl.h"></h2>
       <div id="slInhalt" class="pf sl"></div>
       <p class="warn" id="slSpeicherMsg" role="alert"></p>
@@ -1079,6 +1088,7 @@
 
     <!-- Ich ziehe aus (src/ausziehen.js): Übersicht mit Kacheln, Checklisten, Geld, Hilfen -->
     <section id="v-ausziehen" class="ansicht" aria-labelledby="h-ausziehen" hidden>
+      <!--ZURUECK-->
       <h2 id="h-ausziehen" class="ans-h" data-t="az.h"></h2>
       <div id="azInhalt" class="az"></div>
       <p class="warn" id="azSpeicherMsg" role="alert"></p>
@@ -1086,13 +1096,14 @@
 
     <!-- Pfändung: Lohn oder Konto, geführt mit großen Knöpfen -->
     <section id="v-pfaendung" class="ansicht" aria-labelledby="h-pfaendung" hidden>
-      <div class="pp-kopf"><button type="button" class="btn ghost" data-zurueck="pfaendung">← <span data-t="pf.zurueck"></span></button></div>
+      <!--ZURUECK-->
       <h2 id="h-pfaendung" class="ans-h" data-t="pf.h"></h2>
       <div id="pfInhalt" class="pf"></div>
     </section>
 
     <!-- Pflege-Startkachel: Auswahl Unterstützung / Einschätzung, Unterstützung nach Pflegegrad -->
     <section id="v-pflegestart" class="ansicht" aria-labelledby="h-pflegestart" hidden>
+      <!--ZURUECK-->
       <h2 id="h-pflegestart" class="ans-h" data-t="home.pflege"></h2>
       <p class="pp-hinweis small" id="puNurDe" data-t="pu.nurDe" hidden></p>
       <div id="puInhalt" class="pf pu"></div>
@@ -1106,12 +1117,13 @@
 
     <!-- Erklärseite: So funktionieren die Leistungen der Pflegekasse -->
     <section id="v-pflegeinfo" class="ansicht" aria-labelledby="h-pflegeinfo" hidden>
-      <div class="pp-kopf"><button type="button" class="btn ghost" id="piZurueck" data-t="briefe.zurueckEinfach"></button></div>
+      <!--ZURUECK id=piZurueck-->
       <p class="pp-hinweis small" id="piNurDe" data-t="briefe.nurDeutsch" hidden></p>
       <div id="pflegeInfo" class="pi"></div>
     </section>
 
     <div id="v-leistungen" class="ansicht">
+    <!--ZURUECK kid=leistungenKopf-->
     <div class="notice info first" id="firstNotice" role="note" hidden>
       <p data-t="first.text"></p>
       <button type="button" class="btn" id="firstOk" data-t="first.ok"></button>
@@ -1549,14 +1561,14 @@
       </div>
       <!-- Fristen (src/fristen.js): Unterseite von „Mein Ordner“, kein eigener Bereich. Namen v-fristen/startFristen nicht wieder benutzen (1.3.0) -->
       <div id="ordnerFristen" class="unterseite" data-seite="fristen" hidden>
-        <div class="pp-kopf"><button type="button" class="btn ghost us-zurueck">← <span data-t="pf.zurueck"></span></button></div>
+        <!--ZURUECK cls=us-zurueck-->
         <h2 class="ans-h" id="friH" data-t="fri.h"></h2>
         <p class="small muted" data-t="fri.lead"></p>
         <p class="msg" id="friMsg" role="status"></p>
         <div id="friListe"></div>
       </div>
       <div id="ordnerAlle" class="unterseite" data-seite="alle" hidden>
-        <div class="pp-kopf"><button type="button" class="btn ghost us-zurueck">← <span data-t="pf.zurueck"></span></button></div>
+        <!--ZURUECK cls=us-zurueck-->
         <div class="set-gruppe vg-gruppe" id="setHaushalte" hidden></div>
       </div>
     </section>
@@ -1574,7 +1586,7 @@
         </ul>
       </div>
       <div class="unterseite" id="es-anzeige" data-seite="anzeige" hidden>
-        <div class="pp-kopf"><button type="button" class="btn ghost us-zurueck">← <span data-t="pf.zurueck"></span></button></div>
+        <!--ZURUECK cls=us-zurueck-->
         <h2 class="ans-h" data-t="set.anzeige.h"></h2>
         <div class="set-gruppe">
           <label class="langpick set-zeile"><span class="schalter-t" data-t="lang.label"></span><select id="lang"></select></label>
@@ -1597,7 +1609,7 @@
         </div>
       </div>
       <div class="unterseite" id="es-sicher" data-seite="sicher" hidden>
-        <div class="pp-kopf"><button type="button" class="btn ghost us-zurueck">← <span data-t="pf.zurueck"></span></button></div>
+        <!--ZURUECK cls=us-zurueck-->
         <h2 class="ans-h" id="h-sicher" data-t="set.sicher.h"></h2>
         <!-- PIN-Sperre und automatisch löschen füllt vgRender (app.js); „Alle Vorgänge löschen“ in #vgAlleBox -->
         <div class="set-gruppe" id="setSicher"></div>
@@ -1608,7 +1620,7 @@
         </div>
       </div>
       <div class="unterseite" id="es-fach" data-seite="fach" hidden>
-        <div class="pp-kopf"><button type="button" class="btn ghost us-zurueck">← <span data-t="pf.zurueck"></span></button></div>
+        <!--ZURUECK cls=us-zurueck-->
         <h2 class="ans-h" data-t="set.fach.h"></h2>
         <div class="set-gruppe" id="setFach">
           <p><button type="button" class="schalter" id="beratungBtn" role="switch" aria-checked="false" aria-describedby="beratungT"><span class="schalter-t" data-t="set.beratung.label"></span><span class="schalter-zst"></span><span class="schalter-bahn" aria-hidden="true"></span></button></p>
@@ -1616,7 +1628,7 @@
         </div>
       </div>
       <div class="unterseite" id="es-about" data-seite="about" hidden>
-        <div class="pp-kopf"><button type="button" class="btn ghost us-zurueck">← <span data-t="pf.zurueck"></span></button></div>
+        <!--ZURUECK cls=us-zurueck-->
         <h2 class="ans-h" data-t="set.about.h"></h2>
         <div class="set-gruppe">
           <p class="small muted"><span id="appVersion"></span><br><span class="stand" id="stand"></span></p>
@@ -1687,7 +1699,7 @@
     </section>
 
     <section id="legal" hidden aria-labelledby="h-legal">
-      <div class="btns"><button type="button" class="btn ghost" id="legalClose" data-t="legal.close"></button></div>
+      <!--ZURUECK id=legalClose-->
       <div lang="de" dir="ltr">
       <h2 id="h-legal">Impressum, Datenschutz, Lizenzen</h2>
       <h3>Impressum (§ 5 DDG)</h3>
@@ -1720,6 +1732,7 @@
     </section>
 
     <section id="mappe" hidden aria-labelledby="h-mappe">
+      <div class="no-print"><!--ZURUECK id=mappeClose--></div>
       <h1 class="vh">SoLo</h1>
       <div class="mappe-bar no-print">
         <h2 id="h-mappe" data-t="f.mappe"></h2>
@@ -1732,7 +1745,6 @@
           <button type="button" class="btn" id="mappePrint" data-t="f.print"></button>
           <button type="button" class="btn ghost" id="mappeCopy" data-t="f.copy"></button>
           <button type="button" class="btn ghost" id="mappeShare" data-t="f.share" hidden></button>
-          <button type="button" class="btn ghost" id="mappeClose" data-t="f.close"></button>
         </div>
         <p class="msg" id="copyMsg" role="status"></p>
         <textarea id="mappeText" readonly hidden></textarea>
@@ -1743,13 +1755,13 @@
 
     <!-- Ergebnisblatt zum Mitgeben: eine Druckseite ohne Namen (höchstens Kürzel) -->
     <section id="ergBlatt" hidden aria-labelledby="h-eb">
+      <div class="no-print"><!--ZURUECK id=ebClose--></div>
       <div class="mappe-bar no-print">
         <h2 id="h-eb" data-t="eb.h"></h2>
         <p data-t="eb.intro"></p>
         <div class="field eb-kuerzel"><label for="ebKuerzel" data-t="eb.kuerzel"></label><input type="text" id="ebKuerzel" maxlength="8" autocomplete="off" spellcheck="false"></div>
         <div class="btns">
           <button type="button" class="btn" id="ebDruck" data-t="f.print"></button>
-          <button type="button" class="btn ghost" id="ebClose" data-t="eb.close"></button>
         </div>
         <p class="msg" id="ebMsg" role="status"></p>
       </div>
@@ -1803,6 +1815,9 @@ Behoerden.init(/*BEHOERDENDATA*/null);
 /*AUSZIEHEN*/
 /*FRISTEN*/
 /*SCHULDEN*/
+</script>
+<script>
+/*NAVIGATION*/
 </script>
 <script>
 /*FORMULARE*/
