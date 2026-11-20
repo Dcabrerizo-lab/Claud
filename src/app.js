@@ -41,16 +41,17 @@
 
   // ----- Speicher: Preferences in der App, sonst localStorage -----
   function plug(name) { try { return window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins[name] || null; } catch (e) { return null; } }
-  var Store = {
+  var StoreRoh = {
     get: function (key, cb) {
       var p = plug('Preferences');
       if (p) { p.get({ key: key }).then(function (r) { cb(r && r.value); }, function () { cb(null); }); return; }
       try { cb(localStorage.getItem(key)); } catch (e) { cb(null); }
     },
-    set: function (key, val) {
+    set: function (key, val, fehler, ok) { // fehler/ok: nur für die Vorgänge (Speicher voll oder gesperrt melden)
       var p = plug('Preferences');
-      if (p) { p.set({ key: key, value: val }).catch(function () {}); return; }
-      try { localStorage.setItem(key, val); } catch (e) {}
+      if (p) { p.set({ key: key, value: val }).then(function () { if (ok) ok(); }, function () { if (fehler) fehler(); }); return; }
+      try { localStorage.setItem(key, val); } catch (e) { if (fehler) fehler(e); return; }
+      if (ok) ok();
     },
     remove: function (key) {
       var p = plug('Preferences');
@@ -58,8 +59,22 @@
       try { localStorage.removeItem(key); } catch (e) {}
     }
   };
+  // Angaben eines Vorgangs (lotse.state, lotse.einfach, lotse.pflegecheck, lotse.pfaendung) gehen über den Tresor (src/vorgaenge.js)
+  var tresor = null;
+  function tr() {
+    if (!tresor) {
+      tresor = Vorgaenge.tresor(StoreRoh, { gesperrt: function () { if (tresor) vgSperreZeigen(); }, fehler: vgSpeicherFehler, bereit: function () { if (tresor) vgBereit(); } });
+      if (tresor.gesperrt()) vgSperreZeigen(); else vgRender();
+    }
+    return tresor;
+  }
+  var Store = {
+    get: function (key, cb) { if (Vorgaenge.DATEN.indexOf(key) >= 0) tr().get(key, cb); else StoreRoh.get(key, cb); },
+    set: function (key, val) { if (Vorgaenge.DATEN.indexOf(key) >= 0) tr().set(key, val); else StoreRoh.set(key, val); },
+    remove: function (key) { if (Vorgaenge.DATEN.indexOf(key) >= 0) tr().remove(key); else StoreRoh.remove(key); }
+  };
   var saveTimer = null;
-  function flush() { clearTimeout(saveTimer); saveTimer = null; Store.set('lotse.state', JSON.stringify({ s: state, p: person, e: edited, big: $('app').classList.contains('big') })); }
+  function flush() { clearTimeout(saveTimer); saveTimer = null; Store.set('lotse.state', JSON.stringify({ s: state, p: person, e: edited, big: $('app').classList.contains('big') })); Store.set('lotse.pfaendung', JSON.stringify(pf)); }
   function save() { clearTimeout(saveTimer); saveTimer = setTimeout(flush, 300); }
   function smooth() { return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'; }
   function blankState() {
@@ -417,6 +432,7 @@
     renderScan();
     if (esModus) esRender();
     bereicheText();
+    vgRender();
   }
 
   // Schalter „Einfache Sprache“: gibt es nur auf Deutsch; in anderen Sprachen sichtbar, aber nicht bedienbar (aria-disabled, bleibt per Tastatur erreichbar)
@@ -449,6 +465,7 @@
     var b = document.createElement('button');
     b.type = 'button'; b.className = 'chip'; b.id = p.id;
     b.addEventListener('click', function () {
+      vgVorBeispiel(); // Beispiel nie in einen gespeicherten Vorgang schreiben
       state = JSON.parse(JSON.stringify(p.v));
       edited = false; started = true; pickedUser = {}; $('sampleNotice').hidden = false;
       writeForm(); buildSelects(); render(); save();
@@ -2192,6 +2209,264 @@
     });
     BRIEFE.forEach(function (x) { var k = $('brief-' + x[0]); k.querySelector('b').textContent = t(x[1]); k.querySelector('.k-t').textContent = t(x[2]); });
   }
+  // ----- Vorgänge (Haushalte): speichern, öffnen, umbenennen, kopieren, löschen; PIN-Sperre; automatisch löschen (src/vorgaenge.js) -----
+  // In der Oberfläche heißt es „Vorgang“ bzw. „Haushalt“. Wer nur einen Vorgang hat, sieht nur den Knopf „Vorgang speichern“.
+  function vgEl(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+  function vgName(v) { return v && v.name ? v.name : t('vg.ohneName'); }
+  function vgDatum(ms) { return Fmt.datum(new Date(ms), lang); }
+  function vgMsg(txt) { var m = $('vgMsg'); if (m) m.textContent = txt; }
+  // Oberfläche an festen Stellen einhängen (ohne Änderungen an den Abschnitten anderer Bereiche)
+  function vgGeruest() {
+    if ($('vgGruppe')) return;
+    var g = vgEl('div', 'set-gruppe vg-gruppe'); g.id = 'vgGruppe'; $('pn-einst').insertBefore(g, $('pn-einst').firstChild);
+    var r = vgEl('div', 'vg-res'); r.id = 'vgRes'; var b = $('beratung'); b.parentNode.insertBefore(r, b.nextSibling);
+    var kopf = document.querySelector('header.top');
+    var chip = vgEl('button', 'vg-chip'); chip.type = 'button'; chip.id = 'vgChip'; chip.hidden = true; chip.setAttribute('aria-expanded', 'false'); chip.setAttribute('aria-controls', 'vgMenu');
+    var menu = vgEl('div', 'vg-menu'); menu.id = 'vgMenu'; menu.hidden = true;
+    kopf.appendChild(chip); kopf.appendChild(menu);
+    chip.addEventListener('click', function () { var auf = menu.hidden; menu.hidden = !auf; chip.setAttribute('aria-expanded', String(auf)); if (auf) { var f = menu.querySelector('button'); if (f) f.focus(); } });
+    var f = vgEl('div', 'notice warn vg-fehler'); f.id = 'vgFehler'; f.setAttribute('role', 'alert'); f.hidden = true; $('inhalt').insertBefore(f, $('inhalt').firstChild);
+  }
+  function vgSpeicherFehler() { vgGeruest(); var f = $('vgFehler'); f.textContent = t('vg.fehler.speicher'); f.hidden = false; }
+  // Angaben des geöffneten Vorgangs neu laden (nach Wechsel, neuem Vorgang, Löschen)
+  function vgNeuLaden() {
+    if (!$('mappe').hidden) closeMappe();
+    state = blankState(); person = { name: '', geb: '', strasse: '', ort: '', tel: '' }; picked = {}; pickedUser = {}; started = false; edited = false;
+    ['p-name', 'p-geb', 'p-strasse', 'p-ort', 'p-tel'].forEach(function (id) { $(id).value = ''; });
+    $('sampleNotice').hidden = true; $('clearMsg').textContent = '';
+    pf = pfLeer(); pa = { antworten: null, schaetzung: null };
+    Store.get('lotse.state', stateLaden);
+    if (!started) { writeForm(); buildSelects(); render(); }
+    Store.get('lotse.einfach', function (v) {
+      var d = null; try { d = v ? JSON.parse(v) : null; } catch (e) {}
+      es = d && d.es ? Object.assign(esLeer(), d.es) : (esModus ? esLeer() : null);
+      if (esModus) esRender();
+    });
+    Store.get('lotse.pflegecheck', function (v) { try { var d = v ? JSON.parse(v) : null; if (d && typeof d === 'object') { pa.antworten = d.antworten || null; pa.schaetzung = d.schaetzung || null; } } catch (e) {} paAnzeigen(); });
+    Store.get('lotse.pfaendung', pfLaden);
+    if (aktAnsicht === 'pfaendung') pfRender(false);
+    vgRender();
+  }
+  function pfLeer() { return { art: '', schritt: 0, netto: '', pers: null, kg: null, kiz: '' }; }
+  function pfLaden(v) {
+    var d = null; try { d = v ? JSON.parse(v) : null; } catch (e) {}
+    pf = pfLeer();
+    if (d && typeof d === 'object') Object.keys(pf).forEach(function (k) { if (Object.prototype.hasOwnProperty.call(d, k)) pf[k] = d[k]; });
+    if (['', 'lohn', 'konto'].indexOf(pf.art) < 0) pf = pfLeer();
+  }
+  function vgVorBeispiel() {
+    if (!tresor || !tresor.bereit() || !tresor.aktiv().name) return;
+    flush(); tresor.neu(''); vgNeuLaden();
+  }
+  function vgOeffnen(id) {
+    flush();
+    if (tresor.oeffnen(id)) { vgNeuLaden(); vgMsg(t('vg.geoeffnet', { name: vgName(tresor.aktiv()) })); }
+  }
+  function vgSpeichern(feld) {
+    var n = Vorgaenge.nameSauber(feld.value);
+    if (!n) { vgMsg(t('vg.nameFehlt')); var m2 = feld.parentNode.querySelector('.msg'); if (m2) m2.textContent = t('vg.nameFehlt'); feld.focus(); return; }
+    flush();
+    var a = tresor.aktiv();
+    if (!a.name) tresor.umbenennen(a.id, n); else tresor.kopie(a.id, n);
+    vgRender(); vgMsg(t('vg.gespeichert', { name: n }));
+    var r = $('vgResMsg'); if (r) r.textContent = t('vg.gespeichert', { name: n });
+  }
+  // Für „Alle Angaben löschen“ (Rückfrage und Rückgängig: claude/ux-ergebnis): alle=false leert nur den geöffneten Vorgang
+  // (Name bleibt), alle=true löscht alle Vorgänge, die PIN und die Einstellung „automatisch löschen“ bleibt.
+  function angabenLoeschen(alle) {
+    clearTimeout(saveTimer); saveTimer = null;
+    if (alle) tresor.allesLoeschen(); else Vorgaenge.DATEN.forEach(function (k) { Store.remove(k); });
+    vgNeuLaden();
+  }
+  function vgSpeichernForm(box, idName, mitHinweis) {
+    var f = vgEl('form', 'vg-form'); f.setAttribute('novalidate', '');
+    var l = vgEl('label', null, t('vg.name.label')); l.setAttribute('for', idName);
+    var i = vgEl('input'); i.id = idName; i.type = 'text'; i.maxLength = Vorgaenge.NAME_MAX; i.setAttribute('autocomplete', 'off'); i.setAttribute('aria-describedby', idName + 'H');
+    var h = vgEl('p', 'small muted', t('vg.name.hint')); h.id = idName + 'H';
+    var b = vgEl('button', 'btn', tresor.aktiv().name ? t('vg.speichernNeu') : t('vg.speichern')); b.type = 'submit';
+    f.appendChild(l); f.appendChild(i); if (mitHinweis) f.appendChild(h); f.appendChild(b);
+    f.addEventListener('submit', function (e) { e.preventDefault(); vgSpeichern(i); });
+    box.appendChild(f);
+  }
+  function vgBereit() { var s = $('vgSperre'); if (s && !s.hidden) { s.hidden = true; $('app').removeAttribute('aria-hidden'); var h = document.querySelector('h1'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); } } vgRender(); }
+  function vgRender() {
+    if (!tresor || !$('pn-einst')) return;
+    vgGeruest();
+    var bereit = tresor.bereit(), liste = tresor.liste(), a = tresor.aktiv();
+    // Kopf: Kürzel-Schild nur bei mehr als einem Vorgang
+    var chip = $('vgChip'), menu = $('vgMenu');
+    chip.hidden = !bereit || liste.length < 2; menu.hidden = true; chip.setAttribute('aria-expanded', 'false');
+    if (!chip.hidden) {
+      chip.textContent = vgName(a); chip.title = t('vg.wechseln');
+      chip.setAttribute('aria-label', t('vg.wechseln') + ': ' + vgName(a));
+      menu.innerHTML = '';
+      liste.forEach(function (v) {
+        var b = vgEl('button', 'chip', vgName(v)); b.type = 'button';
+        if (v.id === a.id) { b.setAttribute('aria-current', 'true'); b.disabled = true; }
+        b.addEventListener('click', function () { vgOeffnen(v.id); chip.focus(); });
+        menu.appendChild(b);
+      });
+      var vw = vgEl('button', 'linkbtn', t('vg.verwalten')); vw.type = 'button';
+      vw.addEventListener('click', function () { menu.hidden = true; zeigeAnsicht('einst', false); einstReiter('einst'); var h = $('vgH'); if (h) { h.scrollIntoView({ behavior: smooth(), block: 'start' }); h.focus({ preventScroll: true }); } });
+      menu.appendChild(vw);
+    }
+    // Ergebnis: einfacher Einstieg
+    var r = $('vgRes'); r.innerHTML = ''; r.hidden = !bereit;
+    if (bereit) {
+      r.appendChild(vgEl('h3', null, t('vg.speichern')));
+      if (a.name) r.appendChild(vgEl('p', null, t('vg.gespeichert', { name: a.name })));
+      else vgSpeichernForm(r, 'vgNameRes', true);
+      var rm = vgEl('p', 'msg'); rm.id = 'vgResMsg'; rm.setAttribute('role', 'status'); r.appendChild(rm);
+      var zw = vgEl('button', 'linkbtn', t('vg.verwalten')); zw.type = 'button';
+      zw.addEventListener('click', function () { zeigeAnsicht('einst', false); einstReiter('einst'); var h = $('vgH'); if (h) { h.scrollIntoView({ behavior: smooth(), block: 'start' }); h.focus({ preventScroll: true }); } });
+      r.appendChild(zw);
+    }
+    // Einstellungen: Verwaltung ganz oben
+    var g = $('vgGruppe'), alt = document.activeElement && document.activeElement.id, msgAlt = $('vgMsg') ? $('vgMsg').textContent : '';
+    g.innerHTML = '';
+    var h3 = vgEl('h3', null, t('vg.h')); h3.id = 'vgH'; h3.tabIndex = -1; g.appendChild(h3);
+    if (!bereit) return;
+    g.appendChild(vgEl('p', 'small muted', t('vg.t')));
+    g.appendChild(vgEl('p', 'vg-aktiv', t('vg.aktiv', { name: vgName(a) })));
+    vgSpeichernForm(g, 'vgNameSet', true);
+    var msg = vgEl('p', 'msg', msgAlt); msg.id = 'vgMsg'; msg.setAttribute('role', 'status'); g.appendChild(msg);
+    var ul = vgEl('ul', 'vg-liste');
+    liste.forEach(function (v) {
+      var li = vgEl('li', v.id === a.id ? 'vg-offen' : '');
+      var kopf = vgEl('p', 'vg-name'); kopf.appendChild(vgEl('strong', null, vgName(v)));
+      if (v.id === a.id) kopf.appendChild(vgEl('span', 'vg-marke', ' · ' + t('vg.offen')));
+      li.appendChild(kopf);
+      var info = vgEl('p', 'small muted', t('vg.geaendert', { datum: vgDatum(v.geaendert) }));
+      if (v.ablauf) { info.appendChild(document.createElement('br')); info.appendChild(vgEl('span', 'vg-ablauf', t('vg.loeschtAm', { datum: vgDatum(v.ablauf) }))); }
+      li.appendChild(info);
+      var btns = vgEl('div', 'btns');
+      var knopf = function (key, fn, cls) { var b = vgEl('button', cls || 'chip', t(key)); b.type = 'button'; b.addEventListener('click', fn); btns.appendChild(b); return b; };
+      if (v.id !== a.id) knopf('vg.oeffnen', function () { vgOeffnen(v.id); var h = $('vgH'); if (h) h.focus(); });
+      knopf('vg.umbenennen', function () {
+        var neuN = vgEl('form', 'vg-form vg-umb'); neuN.setAttribute('novalidate', '');
+        var l = vgEl('label', null, t('vg.name.label')); l.setAttribute('for', 'vgUmb-' + v.id);
+        var i = vgEl('input'); i.id = 'vgUmb-' + v.id; i.type = 'text'; i.maxLength = Vorgaenge.NAME_MAX; i.value = v.name; i.setAttribute('autocomplete', 'off');
+        var ok = vgEl('button', 'btn', t('vg.umbenennen')); ok.type = 'submit';
+        neuN.appendChild(l); neuN.appendChild(i); neuN.appendChild(ok);
+        neuN.addEventListener('submit', function (e) { e.preventDefault(); if (tresor.umbenennen(v.id, i.value)) { vgRender(); vgMsg(t('vg.gespeichert', { name: Vorgaenge.nameSauber(i.value) })); } else { vgMsg(t('vg.nameFehlt')); i.focus(); } });
+        li.appendChild(neuN); i.focus();
+      });
+      knopf('vg.kopie', function () {
+        flush();
+        if (tresor.kopie(v.id, t('vg.kopieName', { name: vgName(v) }))) { vgNeuLaden(); vgMsg(t('vg.geoeffnet', { name: vgName(tresor.aktiv()) })); var h = $('vgH'); if (h) h.focus(); }
+      });
+      knopf('vg.loeschen', function () {
+        if (!window.confirm(t('vg.loeschenFrage', { name: vgName(v) }))) return;
+        var war = v.id === a.id;
+        if (war) { clearTimeout(saveTimer); saveTimer = null; }
+        tresor.loeschen(v.id);
+        if (war) vgNeuLaden(); else vgRender();
+        vgMsg(t('vg.geloescht')); var h = $('vgH'); if (h) h.focus();
+      }, 'chip vg-weg');
+      li.appendChild(btns); ul.appendChild(li);
+    });
+    g.appendChild(ul);
+    var nb = vgEl('button', 'btn ghost', t('vg.neu')); nb.type = 'button';
+    nb.addEventListener('click', function () { flush(); tresor.neu(''); vgNeuLaden(); vgMsg(t('vg.neuOk')); var h = $('vgH'); if (h) h.focus(); });
+    g.appendChild(vgEl('p')).appendChild(nb);
+    // Automatisch löschen
+    g.appendChild(vgEl('h4', null, t('vg.auto.h')));
+    var al = vgEl('label', 'vg-auto'); al.setAttribute('for', 'vgTage'); al.textContent = t('vg.auto.label');
+    var sel = vgEl('select'); sel.id = 'vgTage';
+    Vorgaenge.TAGE.forEach(function (n) { var o = vgEl('option', null, n ? t('vg.auto.tage', { n: String(n) }) : t('vg.auto.nie')); o.value = String(n); sel.appendChild(o); });
+    sel.value = String(tresor.tage());
+    sel.addEventListener('change', function () { flush(); tresor.tage(Number(sel.value)); vgRender(); vgMsg(t('vg.auto.ok')); var s2 = $('vgTage'); if (s2) s2.focus(); });
+    g.appendChild(al); g.appendChild(sel);
+    g.appendChild(vgEl('p', 'small muted', t('vg.auto.t')));
+    // PIN-Sperre (Sichtschutz)
+    g.appendChild(vgEl('h4', null, t('vg.pin.h')));
+    g.appendChild(vgEl('p', 'small', t('vg.pin.t')));
+    g.appendChild(vgEl('p', 'warn', t('vg.pin.vergessen')));
+    if (!Vorgaenge.webCrypto()) g.appendChild(vgEl('p', 'small muted', t('vg.pin.nicht')));
+    else if (tresor.pinAn()) {
+      g.appendChild(vgEl('p', 'vg-aktiv', t('vg.pin.an')));
+      var pb = vgEl('div', 'btns');
+      var sp = vgEl('button', 'btn', t('vg.pin.sperren')); sp.type = 'button';
+      sp.addEventListener('click', function () { flush(); tresor.fertig().then(function () { try { location.reload(); } catch (e) {} }); });
+      var ae = vgEl('button', 'btn ghost', t('vg.pin.aendern')); ae.type = 'button'; ae.setAttribute('aria-expanded', 'false');
+      ae.addEventListener('click', function () { vgPinForm(g, ae); });
+      var aus = vgEl('button', 'btn ghost', t('vg.pin.aus')); aus.type = 'button';
+      aus.addEventListener('click', function () { flush(); tresor.pinAus().then(function () { vgRender(); vgMsg(t('vg.pin.ausOk')); }); });
+      pb.appendChild(sp); pb.appendChild(ae); pb.appendChild(aus); g.appendChild(pb);
+    } else {
+      var pn = vgEl('button', 'btn ghost', t('vg.pin.neu')); pn.type = 'button'; pn.setAttribute('aria-expanded', 'false');
+      pn.addEventListener('click', function () { vgPinForm(g, pn); });
+      g.appendChild(vgEl('p')).appendChild(pn);
+    }
+    var ab = vgEl('button', 'chip vg-weg', t('vg.alleLoeschen')); ab.type = 'button';
+    ab.addEventListener('click', function () { if (!window.confirm(t('vg.alleFrage'))) return; angabenLoeschen(true); vgMsg(t('vg.alleOk')); var h = $('vgH'); if (h) h.focus(); });
+    g.appendChild(vgEl('p', 'vg-alle')).appendChild(ab);
+    if (alt && $(alt) && alt !== 'vgMsg') { try { $(alt).focus({ preventScroll: true }); } catch (e) {} }
+  }
+  function vgPinForm(g, ausloeser) {
+    if ($('vgPinForm')) { $('vgPin1').focus(); return; }
+    ausloeser.setAttribute('aria-expanded', 'true');
+    var f = vgEl('form', 'vg-form'); f.id = 'vgPinForm'; f.setAttribute('novalidate', '');
+    [['vgPin1', 'vg.pin.label'], ['vgPin2', 'vg.pin.label2']].forEach(function (x) {
+      var l = vgEl('label', null, t(x[1])); l.setAttribute('for', x[0]);
+      var i = vgEl('input'); i.id = x[0]; i.type = 'password'; i.setAttribute('inputmode', 'numeric'); i.setAttribute('autocomplete', 'off'); i.maxLength = 12;
+      f.appendChild(l); f.appendChild(i);
+    });
+    var b = vgEl('button', 'btn', t('vg.pin.speichern')); b.type = 'submit'; f.appendChild(b);
+    var m = vgEl('p', 'msg'); m.setAttribute('role', 'status'); f.appendChild(m);
+    f.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var p1 = $('vgPin1').value, p2 = $('vgPin2').value;
+      if (!Vorgaenge.PIN_RE.test(p1)) { m.textContent = t('vg.pin.kurz'); $('vgPin1').focus(); return; }
+      if (p1 !== p2) { m.textContent = t('vg.pin.ungleich'); $('vgPin2').focus(); return; }
+      b.disabled = true; m.textContent = t('vg.bitte');
+      flush();
+      tresor.pinSetzen(p1).then(function (ok) { vgRender(); vgMsg(t(ok ? 'vg.pin.ok' : 'vg.fehler.speicher')); var h = $('vgH'); if (h) h.focus(); });
+    });
+    ausloeser.parentNode.parentNode.insertBefore(f, ausloeser.parentNode.nextSibling);
+    $('vgPin1').focus();
+  }
+  // Sperrbildschirm: deckt die App ab, bis die PIN stimmt
+  function vgSperreZeigen() {
+    var s = $('vgSperre');
+    if (!s) { s = vgEl('div', 'vg-sperre'); s.id = 'vgSperre'; s.setAttribute('role', 'dialog'); s.setAttribute('aria-modal', 'true'); s.setAttribute('aria-labelledby', 'vgSperreH'); $('app').parentNode.appendChild(s); }
+    s.innerHTML = ''; s.hidden = false; s.setAttribute('lang', lang); s.setAttribute('dir', I18N[lang]['meta.dir']);
+    $('app').setAttribute('aria-hidden', 'true');
+    var box = vgEl('div', 'vg-sperre-box');
+    var h = vgEl('h2', null, t('vg.sperre.h')); h.id = 'vgSperreH'; box.appendChild(h);
+    box.appendChild(vgEl('p', null, t('vg.sperre.t')));
+    var f = vgEl('form'); f.setAttribute('novalidate', '');
+    var l = vgEl('label', null, t('vg.pin.feld')); l.setAttribute('for', 'vgPinEin');
+    var i = vgEl('input'); i.id = 'vgPinEin'; i.type = 'password'; i.setAttribute('inputmode', 'numeric'); i.setAttribute('autocomplete', 'off'); i.maxLength = 12;
+    var b = vgEl('button', 'btn', t('vg.sperre.los')); b.type = 'submit';
+    var m = vgEl('p', 'msg'); m.id = 'vgSperreMsg'; m.setAttribute('role', 'alert');
+    f.appendChild(l); f.appendChild(i); f.appendChild(b); f.appendChild(m); box.appendChild(f);
+    var warte = function (ms) {
+      b.disabled = true; m.textContent = t('vg.sperre.warten', { s: String(Math.ceil(ms / 1000)) });
+      setTimeout(function () { b.disabled = false; m.textContent = ''; }, ms);
+    };
+    f.addEventListener('submit', function (e) {
+      e.preventDefault(); if (b.disabled) return;
+      b.disabled = true; m.textContent = t('vg.bitte');
+      tresor.entsperren(i.value).then(function (r) {
+        i.value = '';
+        if (r.ok) return;
+        b.disabled = false; m.textContent = t('vg.sperre.falsch');
+        if (r.warten) warte(r.warten);
+        i.focus();
+      });
+    });
+    var d = vgEl('details', 'vg-vergessen'); d.appendChild(vgEl('summary', null, t('vg.sperre.vergessen')));
+    d.appendChild(vgEl('p', null, t('vg.sperre.vergessen.t')));
+    var wb = vgEl('button', 'btn ghost', t('vg.sperre.loeschen')); wb.type = 'button';
+    wb.addEventListener('click', function () { if (!window.confirm(t('vg.alleFrage'))) return; tresor.allesLoeschen(); vgNeuLaden(); });
+    d.appendChild(wb); box.appendChild(d);
+    s.appendChild(box);
+    var rest = tresor ? tresor.sperrRest() : 0; if (rest > 0) warte(rest);
+    try { i.focus(); } catch (e) {}
+  }
+  Store.get('lotse.pfaendung', pfLaden);
+
   // ----- Pflegegrad selbst einschätzen (geführt; Rechnung und Texte aus erweiterungen/pflege*.js) -----
   var pa = { antworten: null, schaetzung: null };
   function paSpeichern() { Store.set('lotse.pflegecheck', JSON.stringify(pa)); }
@@ -2496,7 +2771,8 @@
   Store.remove('lotse.fristen'); // Fristen aus 1.3.0 (Build 141) gibt es nicht mehr: gespeicherte Einträge vom Gerät löschen
   zeigeAnsicht((function () { var a = (location.hash || '').slice(1); return ANSICHTEN.indexOf(a) >= 0 ? a : 'start'; })());
 
-  Store.get('lotse.state', function (v) {
+  Store.get('lotse.state', stateLaden);
+  function stateLaden(v) {
     if (!v) return;
     try {
       var d = JSON.parse(v);
@@ -2509,5 +2785,5 @@
       if (d.big) { $('app').classList.add('big'); document.documentElement.classList.add('big'); $('bigBtn').setAttribute('aria-pressed', 'true'); }
       writeForm(); buildSelects(); render();
     } catch (e) {}
-  });
+  }
 })();
