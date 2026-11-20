@@ -109,6 +109,10 @@ const Rules = (function () {
     // § 21 Abs. 4 SGB II (erwerbsfähig), § 23 Nr. 2 SGB II (Sozialgeld ab 15), § 30 Abs. 4 SGB XII (ab 15, Eingliederungshilfe § 112 SGB IX)
     // Pflege-Pauschbetrag für unentgeltlich Pflegende (§ 33b Abs. 6 EStG): Pflegegrad 2: 600 €, 3: 1.100 €, 4 und 5 sowie Merkzeichen H: 1.800 €
     pflegePausch: { 2: 600, 3: 1100, 4: 1800, 5: 1800, H: 1800 },
+    // Haushaltsbuch-Hinweise (nur für Texte): § 40 Abs. 2 SGB XI Pflegehilfsmittel zum Verbrauch bis 42 € im Monat (seit 1.1.2025);
+    // § 35a EStG (20 %, höchstens 510 / 4.000 / 1.200 €), § 9a Satz 1 Nr. 1a EStG (1.230 €); § 1 VO zu § 90 Abs. 2 Nr. 9 SGB XII (500 € je überwiegend
+    // unterhaltene Person). Quellen: gesetze-im-internet.de/sgb_11/__40.html, /estg/__35a.html, /estg/__9a.html, /bshg_88abs2dv_1988/__1.html, abgerufen 20.11.2026.
+    pflegeHm: 42, schonUnterhalten: 500, steuer: { quote: 0.2, minijob: 510, hnd: 4000, handwerk: 1200, anPausch: 1230 },
     // Altersrente für schwerbehinderte Menschen (§ 37, § 236a SGB VI): abschlagsfrei ab 65 (ab Jahrgang 1964), frühestens 3 Jahre früher mit Abschlag
     // (höchstens 10,8 %); Jahrgänge 1952 bis 1963 nach der gleichen Staffel wie die Regelaltersgrenze, nur 2 Jahre früher; bis 1951: 63. Wartezeit 35 Jahre.
     srente: { frei: 65, frueher: 3, bis1951: 63, abschlag: 10.8 },
@@ -1986,6 +1990,17 @@ const Rules = (function () {
     }).sort((a, b) => ORDER[a.level] - ORDER[b.level] || a.order - b.order);
     return out;
   }
+  // Vermögensgrenzen je Leistung für den Hinweis im Haushaltsbuch (dieselben Formeln wie in den Karten)
+  function vermGrenzen(h) {
+    // ggeldMin: Das Alter steht nur für die älteste erwachsene Person fest (oder gar nicht). Weitere Erwachsene können jünger sein:
+    // kleinste mögliche Grenze mit dem kleinsten Freibetrag (§ 12 Abs. 2 SGB II). Der Hinweis nennt dann keine feste Zahl.
+    const unsicher = h.gruppe === '' || h.adults > 1;
+    const min = unsicher ? (h.gruppe ? R.sgb2.schon[h.gruppe] : R.sgb2.schon['<30']) + R.sgb2.schon['<30'] * (h.adults - 1 + h.children) : 0;
+    return { ggeld: R.sgb2.schon[h.gruppe] * h.adults + R.sgb2.schon['<30'] * h.children, ggeldMin: min,
+      gsa: h.wohnform !== '' ? R.grundsicherung.schonAllein : R.grundsicherung.schonAllein * h.adults + R.schonUnterhalten * h.children,
+      wohngeld: R.wohngeld.vermoegenErste + R.wohngeld.vermoegenJeWeitere * (h.persons - 1),
+      kiz: h.persons <= 2 ? R.kiz.vermZwei : R.kiz.vermDrei + R.kiz.vermJeWeiteres * (h.persons - 3) };
+  }
   function evaluateKern(inp) {
     const h = derive(inp);
     const kg = kindergeld(h);
@@ -2015,7 +2030,7 @@ const Rules = (function () {
     const zus = zusammenspiel(h, results);
     // Hinweis zur vorrangigen Leistung vor den allgemeinen Hinweisen (nicht eingerechnet, Verfahren, Stichtag)
     if (zk) { const i = zus.findIndex((z) => ['z.grenzen', 'z.verfahren', 'z.stichtag'].indexOf(z[0]) >= 0); zus.splice(i < 0 ? zus.length : i, 0, ['z.zuk.' + zk.quelle]); }
-    return { h, results: sorted, zusammen: zus };
+    return { h, results: sorted, zusammen: zus, grenzen: vermGrenzen(h) };
   }
 
   return { evaluate, famversGrenze, pflegeLeistungen, pflegeFuer, pflegeKombi, nettoLohn, bruttoAusNetto, nettoRente, bruttoAusNettoRente, lohnAnnahmen, pfaendung, pfaendFreibetrag, pkonto, RULES: R, WG, limits, wgYmax, wgMiete, wgCap, wgHeiz, wgHoechst, wgBetrag, roman, sgb2Freibetrag, kizWohnanteil, haushaltsFreibetrag, derive, NAMES, STEPS, RECHT, ZUST_LAND, zustLand };

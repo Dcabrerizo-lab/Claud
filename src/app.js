@@ -3513,6 +3513,7 @@
       datum: function (d) { return Fmt.datum(d, lang); }, datumDe: function (d) { return Fmt.datum(d, 'de'); }, locale: function () { return Fmt.LOCALE[lang] || 'de-DE'; },
       daten: function () { return started && edited ? state : null; },
       ergebnis: function () { try { return started && edited ? Rules.evaluate(state).results : null; } catch (e) { return null; } },
+      grenzen: function () { try { return started && edited ? Rules.evaluate(state).grenzen : null; } catch (e) { return null; } },
       setze: function (werte) { if (started && !edited) state = blankState(); Object.assign(state, werte); writeForm(); buildSelects(); touched(); },
       zeige: oeffneVon, regeln: function () { return Rules.RULES; }, plug: plug, nativ: NATIVE,
       fristenNeu: function () { if (window.FristenOrdner) FristenOrdner.neu(); },

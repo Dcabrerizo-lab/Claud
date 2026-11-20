@@ -266,6 +266,7 @@ var Haushalt = (function () {
     // 1. Sozialtarife und Rundfunkbeitrag: Ausgaben für Handy, Mobilität, Strom oder Rundfunk; nur bei passender Leistung oder knappem Plan
     var rf = !!(bz.grundsicherungsgeld || bz.sozialamt) || offen('rundfunk');
     if ((katSumme('handy') > 0 || katSumme('mobil') > 0 || katSumme('energie') > 0 || WORTE.rundfunk.test(notizen)) && (rf || e.knapp)) add('tarif', 40, { art: 'tarif', rundfunk: rf });
+    geldHinweis(e, sgb, notizen, out); // Mehrbedarf, Erspartes, Pflege, Steuer: höchstens einer (Funktionen am Ende)
     return out.sort(function (a, b) { return b.prio - a.prio; });
   }
   function aenderungsBrief(alt, neu, datum) {
@@ -439,7 +440,7 @@ var Haushalt = (function () {
     // ekV 2: ekBasis enthält das zweite Einkommen. Ältere Stände (ohne ekV) werden in hinweisDaten() einmal angeglichen.
     x.ekV = d.ekV === 2 ? 2 : 1;
     x.energie = normiereEnergie(d.energie);
-    if (Array.isArray(d.buch)) x.buch = d.buch.filter(function (e) { return e && /^\d{4}-\d\d-\d\d$/.test(e.d) && typeof e.c === 'number' && e.c > 0; });
+    if (Array.isArray(d.buch)) x.buch = d.buch.filter(function (e) { return e && /^\d{4}-\d\d-\d\d$/.test(e.d) && typeof e.c === 'number' && e.c > 0; }).map(buchungBereinigen);
     return x;
   }
   function sichern() {
@@ -611,10 +612,11 @@ var Haushalt = (function () {
     if (res) { lv = {}; res.forEach(function (x) { lv[x.id] = x.level; }); }
     return hinweisListe({ aus: planAus(), eintraege: monatsEintraege(daten.buch, monat).concat(monatsEintraege(daten.buch, monatPlus(monat, -1))),
       knapp: !r.leer && r.knapp, ein: r.ein, ekBasis: daten.ekBasis, ekJetzt: ekJetzt, bezug: s && s.bezug, ergebnis: lv, kinder: s ? Number(s.kids) || 0 : null,
-      bewilligt: daten.bewilligt, heute: new Date(), weg: daten.weg, energieNach: energieNachzahlung(daten.energie, heuteIso()) });
+      bewilligt: daten.bewilligt, heute: new Date(), weg: daten.weg, geld: geldDaten(r), energieNach: energieNachzahlung(daten.energie, heuteIso()) });
   }
   function leistungName(l) { return t('hb.wb.' + l); }
   function hinweisElement(h, neuZeichnen) {
+    if (GELD_ARTEN.indexOf(h.art) >= 0) return geldHinweisElement(h, neuZeichnen);
     var d = el('div', 'hb-hinweis'); d.id = 'hb-hw-' + h.art;
     var txt = h.art === 'wb' ? t('hb.hw.wb', { l: leistungName(h.leistung), d: ctx.datum(new Date(+h.ende.slice(0, 4), +h.ende.slice(5, 7) - 1, +h.ende.slice(8, 10))) }) :
       h.art === 'ek' ? t('hb.hw.ek', { alt: { eur: euroGanz(h.alt) }, neu: { eur: euroGanz(h.neu) } }) : h.art === 'tarif' && !h.rundfunk ? t('hb.hw.tarif0') : t('hb.hw.' + h.art);
@@ -1016,11 +1018,11 @@ var Haushalt = (function () {
     liste.forEach(function (e) {
       var li = el('li', 'hb-eintrag');
       li.innerHTML = '<span class="hb-sym">' + katSym(e.k) + '</span><span class="hb-e-txt"><b>' + esc(katName(e.k)) + '</b><span>' + esc(ctx.datum(new Date(+e.d.slice(0, 4), +e.d.slice(5, 7) - 1, +e.d.slice(8, 10)))) +
-        (e.w ? ' · ' + esc(t('hb.wieder.kurz')) : '') + (e.n ? ' · ' + esc(e.n) : '') + '</span></span><span class="hb-e-betrag">' + esc(eur(e.c)) + '</span>';
+        (e.w ? ' · ' + esc(t('hb.wieder.kurz')) : '') + (e.bs || e.bp ? ' · ' + esc(t('hb.beleg.kurz')) : '') + (e.n ? ' · ' + esc(e.n) : '') + '</span></span><span class="hb-e-betrag">' + esc(eur(e.c)) + '</span>';
       var bt = el('span', 'hb-e-knoepfe');
       bt.appendChild(knopf('btn ghost klein', t('hb.bearbeiten'), function () {
         var o = daten.buch.filter(function (x) { return x.id === e.id; })[0]; if (!o) return;
-        neueEingabe({ id: o.id, betrag: String((o.c / 100).toFixed(2)).replace('.', ','), k: o.k, d: o.d, n: o.n || '', w: !!o.w });
+        neueEingabe({ id: o.id, betrag: String((o.c / 100).toFixed(2)).replace('.', ','), k: o.k, d: o.d, n: o.n || '', w: !!o.w, bs: !!o.bs, bp: !!o.bp });
         renderBuch('hb-betrag');
       }, { 'aria-label': t('hb.bearbeiten') + ': ' + katName(e.k) + ' ' + eur(e.c) }));
       bt.appendChild(knopf('btn ghost klein', t('hb.loeschen'), function () { loeschen(e); }, { 'aria-label': t('hb.loeschen') + ': ' + katName(e.k) + ' ' + eur(e.c) }));
@@ -1090,6 +1092,7 @@ var Haushalt = (function () {
     var lw = el('label', 'check'), cw = el('input'); cw.type = 'checkbox'; cw.id = 'hb-wieder'; cw.checked = eingabe.w; cw.addEventListener('change', function () { eingabe.w = cw.checked; });
     lw.appendChild(cw); lw.appendChild(el('span', '', t('hb.wieder'))); f.appendChild(lw);
     if (eingabe.id && eingabe.w) f.appendChild(el('p', 'hint', t('hb.wieder.hint')));
+    f.appendChild(belegFeld(f));
     var msg = el('p', 'warn'); msg.id = 'hbEingabeMsg'; msg.setAttribute('role', 'alert'); msg.hidden = true; f.appendChild(msg);
     var bt = el('div', 'btns');
     bt.appendChild(knopf('btn', t('hb.speichern'), function () {
@@ -1097,6 +1100,7 @@ var Haushalt = (function () {
       var fehler = !(c > 0) ? 'hb.bitteBetrag' : !eingabe.k ? 'hb.bitteKat' : !/^\d{4}-\d\d-\d\d$/.test(eingabe.d) ? 'hb.datum' : '';
       if (fehler) { msg.hidden = false; msg.textContent = t(fehler); (fehler === 'hb.bitteBetrag' ? inp : fehler === 'hb.datum' ? di : g.querySelector('button')).focus(); return; }
       var e = { id: eingabe.id || ('e' + Date.now().toString(36) + Math.floor(Math.random() * 1e4).toString(36)), d: eingabe.d, c: c, k: eingabe.k, n: eingabe.n.trim(), w: !!eingabe.w };
+      if (eingabe.bs) e.bs = true; if (eingabe.bp) e.bp = true;
       var alt = daten.buch.filter(function (x) { return x.id === e.id; })[0];
       if (alt && alt.bis && e.w) e.bis = alt.bis;
       daten.buch = daten.buch.filter(function (x) { return x.id !== e.id; }).concat([e]);
@@ -1138,7 +1142,7 @@ var Haushalt = (function () {
     var box = $('hbInhalt'); box.innerHTML = '';
     monatsLeiste(box, renderAusw);
     var aw = auswertung(daten.buch, monat);
-    if (!aw.zeilen.length) { box.appendChild(el('p', 'muted', t('hb.ausw.leer'))); if (fokusId && $(fokusId)) $(fokusId).focus(); return; }
+    if (!aw.zeilen.length) { box.appendChild(el('p', 'muted', t('hb.ausw.leer'))); box.appendChild(belegBox()); if (fokusId && $(fokusId)) $(fokusId).focus(); return; }
     var max = aw.zeilen.reduce(function (a, z) { return Math.max(a, z.c, z.vor); }, 1);
     var ul = el('ul', 'hb-balken');
     aw.zeilen.forEach(function (z) {
@@ -1180,6 +1184,7 @@ var Haushalt = (function () {
       d.appendChild(rl); d.appendChild(el('p', 'small', t('hb.rb.quelle')));
       box.appendChild(d);
     }
+    box.appendChild(belegBox());
     var hw = el('div', 'hb-hinweise'); hw.id = 'hbHinweise'; box.appendChild(hw); hinweise(hw, rechnung());
     if (fokusId && $(fokusId)) $(fokusId).focus();
   }
@@ -1199,10 +1204,250 @@ var Haushalt = (function () {
   }
   function zeigen() { ueOffen = false; render(); }
 
+  // =====================================================================
+  // Geld-Hinweise (Mehrbedarf, Erspartes, Pflege- und Steuer-Belege) und Beleg-Häkchen je Buchung.
+  // Entwurf mit Prüfvermerk: docs/entwuerfe/haushaltsbuch-hinweise.md. Gebündelt am Ende, damit das Zusammenführen leicht bleibt.
+  // Höchstens EIN Hinweis aus dieser Gruppe gleichzeitig (nicht überladen). Unsichere Fälle nur „möglich“, nie Zusagen.
+  // =====================================================================
+  var GELD_ARTEN = ['mb', 'verm', 'pflege', 'steuer'];
+  var WORTE_GELD = {
+    // ohne „Frauenarzt“ und „Kinderwagen“: zu viele falsche Treffer bei einer sehr persönlichen Frage
+    // „Schwangerschaftstest“ ist kein Hinweis auf eine Schwangerschaft
+    schwanger: /schwanger(?!schaftstest)|umstands|mutterpass|baby(ausstattung|erstausstattung)/i,
+    // ohne „Therme“: Gas-Therme läuft meist über die Heizkosten (§ 21 Abs. 7 Satz 1 SGB II)
+    ww: /boiler|durchlauferhitzer|warmwasserspeicher/i,
+    // ohne „Ernährung“ allein (z. B. „Ernährungsberatung“, „gesunde Ernährung“): kein Hinweis auf eine Krankheit
+    ern: /di(ä|ae)t|glutenfrei|z(ö|oe)liakie|laktosefrei|sondennahrung/i,
+    dauer: /umgang|besuch.*kind\b|fahrt.*kind\b|hygiene|inkontinenz|medikament/i,
+    // „Reinigungsmittel“ und „Brillenputztuch“ sind keine Steuer-Belege
+    steuer: /handwerker|reinigung(?!smittel)|haushaltshilfe|g(ä|ae)rtner|schornstein|pflegedienst|apotheke|zuzahlung|brille\b|zahnarzt|arbeitsmittel|fachbuch|laptop.*arbeit/i,
+    // Barzahlung schadet nur bei § 35a EStG (Handwerker, haushaltsnahe Dienste), nicht z. B. bei Zuzahlungen in der Apotheke
+    hhw: /handwerker|haushalts-?hilfe|putz(hilfe|kraft|frau)|reinigungskraft|g(ä|ae)rtner|maler|klempner|elektriker|installateur|schornstein/i,
+    pflegeBeleg: /pflegedienst|alltagshilfe|alltagsbegleit|tagespflege|kurzzeitpflege|verhinderungspflege|betreuungsdienst|inkontinenz|einmalhandschuh|bettschutz/i,
+    bar: /(^|[^a-zäöüß])bar([^a-zäöüß]|$)/i
+  };
+  // Buchung beim Laden bereinigen: nur bekannte Felder; Beleg-Häkchen nur als echtes true (Schutz gegen veränderte Stände)
+  // Typen prüfen: id (kurzer Text), d und c prüft normiere, k bekannte Kategorie, n Text bis 80 Zeichen, w nur true, bis 'JJJJ-MM'
+  function buchungBereinigen(e, i) {
+    var o = { id: typeof e.id === 'string' && /^[\w-]{1,40}$/.test(e.id) ? e.id : 'e-alt-' + i, d: e.d, c: e.c, k: KAT_IDS.indexOf(e.k) >= 0 ? e.k : 'sonst' };
+    if (typeof e.n === 'string' && e.n) o.n = e.n.slice(0, 80);
+    if (e.w === true) o.w = true;
+    if (o.w && typeof e.bis === 'string' && /^\d{4}-\d\d$/.test(e.bis)) o.bis = e.bis;
+    if (e.bs === true) o.bs = true;
+    if (e.bp === true) o.bp = true;
+    return o;
+  }
+  // Pflege-Belege: laufendes Kalenderjahr; bis 30.6. auch das Vorjahr (nicht verbrauchter Entlastungsbetrag, § 45b Abs. 1 Satz 5 SGB XI)
+  function pflegeFenster(d) {
+    var iso = typeof d === 'string' ? d : isoTag(d || new Date()), j = +iso.slice(0, 4), vj = iso.slice(5) <= '06-30';
+    return { von: (vj ? j - 1 : j) + '-01-01', bis: iso, id: 'pflege-' + j + (vj ? '-vj' : '') };
+  }
+  // Belege einer Art ('bs' Steuer, 'bp' Pflegekasse) zwischen zwei Tagen, höchstens bis heute (wiederkehrende Buchungen erzeugen
+  // sonst künftige Monate); wiederkehrende Buchungen je Monat aufgelöst, nach Datum sortiert
+  function belegListe(buch, art, vonIso, bisIso, heuteIso) {
+    var h = heuteIso || isoTag(new Date());
+    if (h < bisIso) bisIso = h;
+    var out = [], ym = monatVon(vonIso), bis = monatVon(bisIso);
+    for (var n = 0; ym <= bis && n < 600; n++, ym = monatPlus(ym, 1)) {
+      monatsEintraege(buch, ym).forEach(function (e) { if (e[art] === true && e.d >= vonIso && e.d <= bisIso) out.push(e); });
+    }
+    return out.sort(function (a, b) { return a.d < b.d ? -1 : a.d > b.d ? 1 : 0; });
+  }
+  function belegSumme(buch, art, vonIso, bisIso, heuteIso) {
+    return belegListe(buch, art, vonIso, bisIso, heuteIso).reduce(function (a, e) { return a + e.c; }, 0);
+  }
+  // CSV der Belegliste: Datum;Kategorie;Notiz;Betrag;Für (csvFeld schützt vor Formeln)
+  function belegCsv(liste, kopf, katName, zweck) {
+    var z = [kopf.map(csvFeld).join(';')];
+    liste.forEach(function (e) { z.push([e.d, katName(e.k), e.n || '', (e.c / 100).toFixed(2).replace('.', ','), zweck ? zweck(e) : ''].map(csvFeld).join(';')); });
+    return z.join('\r\n') + '\r\n';
+  }
+  // Erspartes nah an einer Vermögensgrenze (App-Regel, kein Gesetz: ab 80 % der Grenze oder in 6 Monaten erreicht).
+  // v: Erspartes laut Check (Euro), grenzen: { ggeld, gsa, wohngeld, kiz } (Euro), restCent: was laut Plan im Monat übrig bleibt.
+  var VERM_LEISTUNG = [['ggeld', 'grundsicherungsgeld'], ['gsa', 'sozialamt'], ['wohngeld', 'wohngeld'], ['kiz', 'kiz']];
+  function vermNah(v, grenzen, restCent, lv, bz) {
+    if (v === null || v === undefined || !(v >= 0) || !grenzen) return null;
+    lv = lv || {}; bz = bz || {}; restCent = restCent > 0 ? restCent : 0;
+    var best = null;
+    VERM_LEISTUNG.forEach(function (x) {
+      // gMin: kleinste mögliche Grenze, wenn sie vom Alter weiterer Personen abhängt (Paare, Alter unbekannt); dann keine feste Zahl im Text
+      var l = x[0], g = grenzen[l], gMin = grenzen[l + 'Min'] > 0 && grenzen[l + 'Min'] < g ? grenzen[l + 'Min'] : 0, ga = gMin || g;
+      if (!(bz[x[1]] || lv[l] === 'ja' || lv[l] === 'vielleicht') || !(g > 0) || v > g) return;
+      if (!(v >= 0.8 * ga || (restCent > 0 && v * 100 + 6 * restCent > ga * 100))) return;
+      if (!best || ga < (best.gMin || best.g)) best = { l: l, g: g, gMin: gMin, etwa: !!gMin, v: v, r: restCent, monate: restCent > 0 && !gMin && v < g ? Math.ceil((g * 100 - v * 100) / restCent) : 0 };
+    });
+    return best;
+  }
+  // Nur geltendes Recht: keine Hinweise auf Gesetzentwürfe (z. B. Pflegereform), auch nicht als „Entwurf“ (Regel des Nutzers, 20.11.2026).
+  function geldHinweis(e, sgb, notizen, out) {
+    var weg = e.weg || {}, lv = e.ergebnis || {}, bz = e.bezug || {}, g = e.geld || {}, hat = g.angaben || {}, kand = [];
+    var k = function (id, prio, extra) { if (!weg[id]) kand.push(Object.assign({ id: id, prio: prio }, extra)); };
+    var bezugSgb = !!(bz.grundsicherungsgeld || bz.sozialamt), eintraege = e.eintraege || [];
+    if (sgb) {
+      // Schwangerschaft nur bei Bezug: Der Text sagt „Sag es dem Amt“ (beim Check-Ergebnis „vielleicht“ gibt es noch kein Amt)
+      if (bezugSgb && WORTE_GELD.schwanger.test(notizen) && !hat.schwanger) k('mb-schwanger', 56, { art: 'mb', was: 'schwanger' });
+      if (WORTE_GELD.ww.test(notizen) && !hat.warmwasser) k('mb-ww', 55, { art: 'mb', was: 'ww' });
+      if (WORTE_GELD.ern.test(notizen) && !hat.ernaehrung) k('mb-ern', 54, { art: 'mb', was: 'ern' });
+      if (eintraege.some(function (x) { return x.w && x.k === 'sonst' && WORTE_GELD.dauer.test(x.n || ''); })) k('mb-dauer', 52, { art: 'mb', was: 'dauer' });
+      // nur mit Auslöser: GdB ab 50 oder Merkzeichen H/Bl/TBl (Wert 'H'); nicht bei „antrag“ oder kleinem GdB
+      if ((hat.gdb === 'H' || Number(hat.gdb) >= 50) && !hat.teilhabe && !hat.mzG) k('mb-beh', 51, { art: 'mb', was: 'beh' });
+    }
+    if (bezugSgb && Number(hat.adults) === 1 && Number(hat.kids) > 0) k('mb-ae', 50, { art: 'mb', was: 'ae' });
+    var vn = vermNah(g.verm, g.grenzen, g.rest, lv, bz);
+    if (vn) k('verm-' + vn.l + '-' + vn.g, 58, Object.assign({ art: 'verm' }, vn));
+    var hIso = isoTag(e.heute || new Date()), fe = pflegeFenster(hIso), pf = g.buchAlle ? belegSumme(g.buchAlle, 'bp', fe.von, fe.bis, hIso) : 0;
+    if (pf > 0) k(fe.id, 35, { art: 'pflege', b: pf });
+    // Steuer: nicht bei Grundsicherungsgeld/Sozialhilfe ohne eigenes Erwerbseinkommen (keine Steuer, kein Nutzen)
+    var erwerb = ['lohn', 'selbst'].indexOf(hat.ek1Art) >= 0 || ['lohn', 'selbst'].indexOf(hat.ek2Art) >= 0;
+    if (!(bezugSgb && !erwerb) && eintraege.some(function (x) { return !x.bs && !x.bp && WORTE_GELD.steuer.test(x.n || ''); })) k('steuer', 20, { art: 'steuer' });
+    if (kand.length) out.push(kand.sort(function (a, b) { return b.prio - a.prio; })[0]);
+  }
+  // Daten aus dem Check und dem Plan für geldHinweis (nur in der Oberfläche)
+  function geldDaten(r) {
+    var s = check(), a = {};
+    if (s) {
+      ['schwanger', 'warmwasser', 'ernaehrung', 'teilhabe', 'mzG'].forEach(function (f) { a[f] = !!s[f]; });
+      a.gdb = s.gdb || ''; a.adults = Number(s.adults) || 0; a.kids = Number(s.kids) || 0; a.pflegegrad = Number(s.pflegegrad) || 0; a.ek1Art = s.ek1Art || ''; a.ek2Art = s.adults === 2 ? s.ek2Art || '' : '';
+    }
+    var v = s ? wert(s.vermoegen) : null;
+    return { angaben: a, verm: v === null ? null : v / 100, grenzen: ctx.grenzen ? ctx.grenzen() : null, rest: r.leer ? 0 : r.rest, buchAlle: daten.buch };
+  }
+  function prozent(x) { var n = Math.round(x * 1000) / 10; try { return n.toLocaleString(ctx.locale(), { maximumFractionDigits: 1 }); } catch (e) { return String(n); } }
+  var VERM_NAME = { ggeld: 'sgb2', gsa: 'sgb12', wohngeld: 'wohngeld', kiz: 'kiz' };
+  function geldTexte(h) {
+    var R = ctx.regeln ? ctx.regeln() : {}, E = function (x) { return { eur: x }; };
+    if (h.art === 'mb') {
+      var p = { schwanger: { p: prozent(R.mehr.schwanger) }, ww: { p: prozent(R.mehr.ww.erw) }, ae: { max: prozent(R.mehr.aeMax) }, beh: { p: prozent(R.mehr.teilhabe) } }[h.was] || {};
+      return [t('hb.hw.mb.' + h.was), [t('hb.hw.mb.' + h.was + '.d', p)]];
+    }
+    if (h.art === 'verm') {
+      var l = leistungName(VERM_NAME[h.l]), S = R.sgb2.schon;
+      var dp = { ggeld: { a: E(S['<30']), b: E(S['30-39']), c: E(S['40-49']), d: E(S['50+']) }, gsa: { a: E(R.grundsicherung.schonAllein), k: E(R.schonUnterhalten) },
+        wohngeld: { g1: E(R.wohngeld.vermoegenErste), g2: E(R.wohngeld.vermoegenJeWeitere) }, kiz: { a: E(R.kiz.vermZwei - R.kiz.vermJeWeiteres), b: E(R.kiz.vermJeWeiteres) } }[h.l];
+      // Grundsicherungsgeld: immer mit Vorbehalt (Altfälle § 65a SGB II); Paare/Alter unbekannt ohne Zahl; Wohngeld: Richtwert, keine Grenze
+      var pre = h.l === 'wohngeld' ? 'hb.hw.verm.wg' : h.l === 'ggeld' ? (h.etwa ? 'hb.hw.verm.gg0' : 'hb.hw.verm.gg') : 'hb.hw.verm';
+      var ga = h.gMin || h.g, bald = h.r > 0 && h.v < 0.8 * ga;
+      var txt = bald ? t(pre + '.bald', { r: E(euroGanz(h.r)), n: String(h.monate), l: l, g: E(h.g) }) : t(pre, { b: E(h.v), l: l, g: E(h.g) });
+      return [txt, [t('hb.hw.verm.d.' + h.l, dp), t('hb.hw.verm.d2')]];
+    }
+    if (h.art === 'pflege') {
+      return [t('hb.hw.pflege', { b: E(h.b / 100) }), [t('hb.hw.pflege.d', { e: E(R.pflege.entlastung), h: E(R.pflegeHm), j: E(R.entlastungsbudget) })]];
+    }
+    var P = R.pflegePausch;
+    return [t('hb.hw.steuer'), [t('hb.hw.steuer.d', { a: E(R.steuer.hnd), hw: E(R.steuer.handwerk), p2: E(P[2]), p3: E(P[3]), p4: E(P[4]), wk: E(R.steuer.anPausch) })]];
+  }
+  // Hinweis-Element der Gruppe (Text und Details nur über textContent)
+  function geldHinweisElement(h, neuZeichnen) {
+    var d = el('div', 'hb-hinweis'); d.id = 'hb-hw-' + h.art;
+    var tx = geldTexte(h);
+    d.appendChild(el('p', '', tx[0]));
+    var det = el('details', 'hb-hw-det'), su = el('summary'); su.textContent = t('hb.hw.mehr'); det.appendChild(su);
+    tx[1].forEach(function (x) { det.appendChild(el('p', 'small', x)); });
+    d.appendChild(det);
+    var b = el('div', 'btns');
+    if (h.art === 'mb') b.appendChild(knopf('btn ghost klein', t('hb.hw.mb.melden'), function () { ctx.zeige('leistungen', true); }));
+    if (h.art === 'verm') b.appendChild(knopf('btn ghost klein', t('hb.hw.verm.check'), function () { ctx.zeige('leistungen', true); markieren(['vermoegen']); }));
+    if (h.art === 'pflege' || h.art === 'steuer') b.appendChild(knopf('btn ghost klein', t('hb.hw.belege'), zeigeBelege));
+    if (h.art === 'pflege') b.appendChild(knopf('btn ghost klein', t('hb.hw.pflege.knopf'), function () { ctx.zeige('pflegestart', true); }));
+    b.appendChild(knopf('btn ghost klein', t('hb.hw.weg'), function () { daten.weg[h.id] = true; sichern(); neuZeichnen(); }));
+    d.appendChild(b);
+    return d;
+  }
+  // Eingabe: Häkchen „Beleg aufheben“; erst danach „für die Steuer“ / „für die Pflegekasse“. Passende Notiz: nur Tipp, kein Anhaken.
+  function belegFeld(form) {
+    var box = el('div', 'hb-beleg');
+    var c = function (id, txt, an, parent) { var l = el('label', 'check'), i = el('input'); i.type = 'checkbox'; i.id = id; i.checked = an; l.appendChild(i); l.appendChild(el('span', '', txt)); parent.appendChild(l); return i; };
+    var haupt = c('hb-beleg', t('hb.beleg'), !!(eingabe.bs || eingabe.bp), box);
+    var sub = el('div', 'hb-beleg-art'); sub.setAttribute('role', 'group'); sub.setAttribute('aria-label', t('hb.beleg'));
+    var st = c('hb-beleg-st', t('hb.beleg.st'), !!eingabe.bs, sub), pf = c('hb-beleg-pf', t('hb.beleg.pf'), !!eingabe.bp, sub);
+    box.appendChild(sub);
+    var tipp = el('p', 'hint', t('hb.beleg.vorschlag')); tipp.id = 'hb-beleg-tipp'; box.appendChild(tipp);
+    var bar = el('p', 'warn', t('hb.beleg.bar')); bar.id = 'hb-beleg-bar'; box.appendChild(bar);
+    var zeig = function () {
+      var an = !!(eingabe.bs || eingabe.bp), n = eingabe.n || '';
+      haupt.checked = an; st.checked = !!eingabe.bs; pf.checked = !!eingabe.bp; sub.hidden = !an;
+      tipp.hidden = an || !(WORTE_GELD.steuer.test(n) || WORTE_GELD.pflegeBeleg.test(n));
+      bar.hidden = !(eingabe.bs && WORTE_GELD.bar.test(n) && WORTE_GELD.hhw.test(n));
+    };
+    haupt.addEventListener('change', function () {
+      if (haupt.checked) { if (WORTE_GELD.pflegeBeleg.test(eingabe.n || '')) eingabe.bp = true; else eingabe.bs = true; } else { eingabe.bs = false; eingabe.bp = false; }
+      zeig(); if (haupt.checked) (eingabe.bp ? pf : st).focus();
+    });
+    st.addEventListener('change', function () { eingabe.bs = st.checked; zeig(); if (!eingabe.bs && !eingabe.bp) haupt.focus(); });
+    pf.addEventListener('change', function () { eingabe.bp = pf.checked; zeig(); if (!eingabe.bs && !eingabe.bp) haupt.focus(); });
+    var ni = form.querySelector('#hb-notiz'); if (ni) ni.addEventListener('input', zeig);
+    zeig();
+    return box;
+  }
+  // Belegliste in der Auswertung (Kalenderjahr, umschaltbar), Druck und CSV
+  var blJahr = 0, blOffen = false;
+  function zeigeBelege() { ansicht = 'ausw'; eingabe = null; blOffen = true; render('hb-bl-sum'); }
+  function belegDaten(j) {
+    var st = belegListe(daten.buch, 'bs', j + '-01-01', j + '-12-31'), pf = belegListe(daten.buch, 'bp', j + '-01-01', j + '-12-31'); // jeweils höchstens bis heute
+    var sum = function (l) { return l.reduce(function (a, e) { return a + e.c; }, 0); };
+    return { st: st, pf: pf, sst: sum(st), spf: sum(pf),
+      alle: daten.buch.length ? st.concat(pf.filter(function (e) { return !e.bs; })).sort(function (a, b) { return a.d < b.d ? -1 : a.d > b.d ? 1 : 0; }) : [] };
+  }
+  function belegZeile(e) { return ctx.datum(new Date(+e.d.slice(0, 4), +e.d.slice(5, 7) - 1, +e.d.slice(8, 10))) + ' · ' + katName(e.k) + (e.n ? ' · ' + e.n : '') + ' · ' + eur(e.c); }
+  function belegZweck(e) { return [e.bs ? t('hb.beleg.st') : '', e.bp ? t('hb.beleg.pf') : ''].filter(Boolean).join(', '); }
+  function belegText(j, b) {
+    var z = [t('hb.bl.h', { j: String(j) }), t('hb.druck.stand', { d: ctx.datum(new Date()) }), ''];
+    if (b.st.length) { z.push(t('hb.bl.st', { n: String(b.st.length), b: { eur: b.sst / 100 } })); b.st.forEach(function (e) { z.push('  ' + belegZeile(e)); }); z.push(''); }
+    if (b.pf.length) { z.push(t('hb.bl.pf', { n: String(b.pf.length), b: { eur: b.spf / 100 } })); b.pf.forEach(function (e) { z.push('  ' + belegZeile(e)); }); z.push(''); }
+    z.push(t('hb.bl.hinweis'));
+    return z.join('\n');
+  }
+  function belegDatei(name, text, msg) {
+    var fsys = ctx.plug && ctx.plug('Filesystem'), sh = ctx.plug && ctx.plug('Share');
+    if (ctx.nativ) {
+      if (!fsys || !sh) { msg.textContent = t('hb.csv.fehler'); return; }
+      fsys.writeFile({ path: name, data: text, directory: 'CACHE', encoding: 'utf8' })
+        .then(function (r) { return sh.share({ title: name, files: [r.uri] }).then(function () {}, function () {}); })
+        .then(function () { msg.textContent = ''; return fsys.deleteFile({ path: name, directory: 'CACHE' }).catch(function () {}); })
+        .catch(function () { msg.textContent = t('hb.csv.fehler'); });
+      return;
+    }
+    try {
+      var url = URL.createObjectURL(new Blob([text], { type: 'text/csv;charset=utf-8' }));
+      var a = el('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(url); }, 10000);
+      msg.textContent = t('hb.csv.ok', { name: name });
+    } catch (e) { msg.textContent = t('hb.csv.fehler'); }
+  }
+  function belegBox() {
+    var jetzt = new Date().getFullYear(), j = Math.min(blJahr || +monat.slice(0, 4), jetzt), b = belegDaten(j); // nicht über das laufende Jahr hinaus
+    var d = el('details', 'hb-karte hb-bl'); d.id = 'hbBelege'; d.open = blOffen;
+    d.addEventListener('toggle', function () { blOffen = d.open; });
+    var su = el('summary'); su.id = 'hb-bl-sum'; su.textContent = t('hb.bl.h', { j: String(j) }); d.appendChild(su);
+    var neu = function (fokus) { var o = $('hbBelege'), n2 = belegBox(); if (o) o.replaceWith(n2); var f = $(fokus); if (f && f.disabled) f = $('hb-bl-vor'); if (f) f.focus(); };
+    var lei = el('div', 'hb-monat');
+    lei.appendChild(knopf('hb-mon-knopf', '‹', function () { blJahr = j - 1; neu('hb-bl-vor'); }, { 'aria-label': t('hb.bl.vor'), id: 'hb-bl-vor' }));
+    var jn = el('b', 'hb-mon-name', String(j)); jn.setAttribute('aria-live', 'polite'); lei.appendChild(jn);
+    var na = knopf('hb-mon-knopf', '›', function () { if (j < jetzt) { blJahr = j + 1; neu('hb-bl-nach'); } }, { 'aria-label': t('hb.bl.nach'), id: 'hb-bl-nach' });
+    na.disabled = j >= jetzt; lei.appendChild(na);
+    d.appendChild(lei);
+    if (!b.st.length && !b.pf.length) { d.appendChild(el('p', 'muted', t('hb.bl.leer'))); return d; }
+    if (b.st.length) d.appendChild(el('p', 'hb-bl-summe', t('hb.bl.st', { n: String(b.st.length), b: { eur: b.sst / 100 } })));
+    if (b.pf.length) d.appendChild(el('p', 'hb-bl-summe', t('hb.bl.pf', { n: String(b.pf.length), b: { eur: b.spf / 100 } })));
+    var ul = el('ul', 'hb-liste hb-bl-liste');
+    b.alle.forEach(function (e) { ul.appendChild(el('li', '', belegZeile(e) + ' (' + belegZweck(e) + ')')); });
+    d.appendChild(ul);
+    d.appendChild(el('p', 'small', t('hb.bl.hinweis')));
+    var msg = el('p', 'small'); msg.id = 'hbBlMsg'; msg.setAttribute('aria-live', 'polite');
+    var bt = el('div', 'btns');
+    bt.appendChild(knopf('btn ghost', t('hb.bl.drucken'), function () { ctx.textAusgeben(belegText(j, b), t('hb.bl.h', { j: String(j) }), msg); }, { id: 'hb-bl-drucken' }));
+    bt.appendChild(knopf('btn ghost', t('hb.bl.csv'), function () {
+      belegDatei('Belege-' + j + '.csv', '﻿' + belegCsv(b.alle, [t('hb.datum'), t('hb.kat'), t('hb.notiz'), t('hb.betrag'), t('hb.bl.zweck')], katName, belegZweck), msg);
+    }, { id: 'hb-bl-csv' }));
+    d.appendChild(bt); d.appendChild(msg);
+    return d;
+  }
+
   return {
     // Rechnung (Tests)
     KAT: KAT_IDS, zuCent: zuCent, euroGanz: euroGanz, planRechnung: planRechnung, monatPlus: monatPlus, monatsEintraege: monatsEintraege,
     nachKategorie: nachKategorie, auswertung: auswertung, tipps: tipps, kassenzettel: kassenzettel, csv: csv, regelbedarfAnteile: regelbedarfAnteile, RBEG5: RBEG5,
+    pflegeFenster: pflegeFenster, belegListe: belegListe, belegSumme: belegSumme, belegCsv: belegCsv, vermNah: vermNah, WORTE_GELD: WORTE_GELD,
     ausCheck: ausCheck, aenderung: aenderung, uebernahme: uebernahme, normiere: normiere, hinweisListe: hinweisListe, aenderungsBrief: aenderungsBrief, VORLAUF_TAGE: VORLAUF_TAGE,
     // Energiekosten-Check (Rechnung)
     PREIS: PREIS, VERBRAUCH_DESTATIS: VERBRAUCH_DESTATIS, TOL: TOL, tageZwischen: tageZwischen, jahresVerbrauch: jahresVerbrauch, gasKwh: gasKwh, jahresKosten: jahresKosten,
