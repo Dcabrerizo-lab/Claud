@@ -82,6 +82,13 @@ setTimeout(() => {
   const fk = d.querySelector('#m-formulare .form-karte');
   check('Mappe: Formular-Link groß direkt unter dem Titel', !fk || (fk.children[1] && fk.children[1].querySelector('a.btn[target="_blank"]')));
   check('Mappe: „Keine Rechtsberatung“ auf dem Ausdruck (Unterlagenliste)', $('m-unterlagen').querySelector('.rb-satz').textContent === de['rb.satz']);
+  // Prüfvermerk PR #67, Punkte 5–7
+  const letzt = auf[auf.length - 1], mitAlg = !!$('m-brief-alg1'), mitSr = !!$('m-brief-srente');
+  check('Mappe: Hinweis Arbeitslosmeldung genau dann, wenn ein Brief zum Arbeitslosengeld dabei ist', !!letzt.querySelector('.mappe-alg1') === mitAlg && (!mitAlg || letzt.querySelector('.mappe-alg1').textContent === de['f.alg1.meldung']));
+  check('Mappe: Hinweis „kein Antrag“ genau dann, wenn die Rentenauskunft (srente) dabei ist', !!letzt.querySelector('.mappe-srente') === mitSr && $('introSrente').hidden === !mitSr);
+  check('Texte zu Arbeitslosmeldung und Rentenauskunft in allen 13 Sprachen', ['f.alg1.meldung', 'f.srente.hinweis'].every((k) => Object.keys(I18N).every((l) => typeof I18N[l][k] === 'string' && I18N[l][k].length > 20)));
+  check('Arbeitslosmeldung: „Ein Brief reicht nicht“, persönlich oder online, 3 Monate / 3 Tage (§ 141, § 38 SGB III)', /Brief reicht nicht/.test(de['f.alg1.meldung']) && /persönlich oder online/.test(de['f.alg1.meldung']) && /3 Monate/.test(de['f.alg1.meldung']) && /3 Tagen/.test(de['f.alg1.meldung']));
+  check('Datenschutz: „bleiben auf diesem Gerät, solange du nichts selbst sendest“ (Erststart und Start)', /solange du nichts selbst sendest/.test(de['first.text']) && /solange du nichts selbst sendest/.test(de['home.privat']));
   const hk = auf[0].querySelector('input[data-haken]'); hk.click();
   check('Mappe: „Erledigt“ wird gemerkt (lotse.haken)', /mappe\|/.test(String(store['lotse.haken'] || '')) || hk.checked);
   console.log(fails ? `\n${fails} Fehler` : '\nInfotexte: alle Prüfungen bestanden');
