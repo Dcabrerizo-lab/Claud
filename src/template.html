@@ -142,6 +142,12 @@
   .pa-weiter { margin: 18px 0 8px; }
   .pa-links { list-style: none; padding: 0; margin: 4px 0 16px; display: grid; }
   .pa-links li .linkbtn { text-decoration: none; font-weight: 700; padding: 10px 0; }
+  #leistungenKopf.pa-fest { position: sticky; top: 0; z-index: 5; background: var(--bg); } /* Rückweg zur Pflege-Ergebnisseite bleibt beim Scrollen sichtbar */
+  .pa-grad { font-size: 1.9em; }
+  /* Ergebnisseite der Einschätzung: Kacheln in der Form der Startseite (höchstens 3) */
+  .pa-kacheln { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5em), 1fr)); gap: 12px; margin: 18px 0 8px; }
+  .pa-kacheln > .sk { min-height: 132px; }
+  .pa-kacheln > .sk:last-child:nth-child(3) { grid-column: 1 / -1; min-height: 0; }
   input.kurz { max-width: 9em; }
   .legende { font-size: 0.85em; color: var(--muted); margin: -4px 0 10px; }
   .info { font-size: 0.85em; background: var(--surface); border-left: 3px solid var(--accent); padding: 6px 10px; margin: 6px 0 0; }
@@ -959,6 +965,9 @@
   #spInhalt .sk-raster > .gs-t-vertraege { --c: var(--c-sozialamt); } /* gruppe sparen */
   .app[data-ansicht="pflegestart"] .weg-liste > .weg:nth-child(1) .weg-sym { background: var(--c-pflege); } /* gruppe pflegestart */
   .app[data-ansicht="pflegestart"] .weg-liste > .weg:nth-child(2) .weg-sym { background: var(--c-wohngeld); } /* gruppe pflegestart */
+  #pflegeAssist .pa-k-antrag { --c: var(--c-formular); } /* gruppe pflegeergebnis */
+  #pflegeAssist .pa-k-hilfen { --c: var(--c-pflege); } /* gruppe pflegeergebnis */
+  #pflegeAssist .pa-k-gutachten { --c: var(--c-briefe); } /* gruppe pflegeergebnis */
   .app[data-ansicht="pfaendung"] #pfInhalt > .weg-liste > .weg:nth-child(1) .weg-sym { background: var(--c-pfaendung); } /* gruppe pfaendung */
   .app[data-ansicht="pfaendung"] #pfInhalt > .weg-liste > .weg:nth-child(2) .weg-sym { background: var(--c-wohngeld); } /* gruppe pfaendung */
   .app .az .az-raster > .az-k:nth-child(1) { --c: var(--c-ausziehen); } /* gruppe ausziehen */

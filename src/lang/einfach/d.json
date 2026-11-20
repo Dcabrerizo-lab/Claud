@@ -151,5 +151,8 @@
  "cb.kindKrank": "Ein Kind ist gerade krank. Deshalb kann ich nicht arbeiten gehen.",
  "pu.hilfe.t": "Geld und Hilfen von der Pflegekasse. Passend zu deinem Pflegegrad.",
  "pu.pg.hint": "Das steht im Brief von der Pflegekasse.",
+ "pu.letzte": "Deine letzte Einschätzung: Pflegegrad {pg}. Vom {datum}.",
+ "pu.letzte0": "Deine letzte Einschätzung: kein Pflegegrad. Vom {datum}.",
+ "pu.letzte.ansehen": "Ergebnis ansehen",
  "home.pflege.t": "Pflegegrad und Leistungen zur Unterstützung bei der Pflege"
 }

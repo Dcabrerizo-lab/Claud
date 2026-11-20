@@ -1,6 +1,7 @@
 // Geführte Selbsteinschätzung des Pflegegrads: eine Frage pro Bildschirm, wie die einfache Version der App.
 // Rechnung: pflege.js (§ 15 SGB XI). Texte: pflege-fragen.js. Ausgabe nur über Elemente und textContent (kein innerHTML mit Eingaben).
-// PflegeAssistent.start(container, { pgAktuell, antworten, speichern(a), aktionen: [{ text, haupt, fn(ergebnis, antworten) }], abbrechen() })
+// PflegeAssistent.start(container, { pgAktuell, antworten, ergebnis, speichern(a), beimErgebnis(r), aktionen: [{ titel, text, kachel, sym, wenn(r, pg), fn(r, antworten, eingabe) }], abbrechen() })
+// Aktionen mit „kachel“ erscheinen als Kachel (höchstens 3), die übrigen als Textlink.
 const PflegeAssistent = (function () {
   'use strict';
   const P = Pflege, F = PflegeFragen;
@@ -167,44 +168,83 @@ const PflegeAssistent = (function () {
     }
     function fokusiere() { const q = box.querySelector('#pa-q'); if (q) { q.focus({ preventScroll: true }); try { box.scrollIntoView({ block: 'start' }); } catch (e) {} } }
 
-    // Ergebnis: oben der Pflegegrad und was es gibt, dann die nächsten Schritte; Rechenweg und Tipp zum Aufklappen
+    // Ergebnisseite: groß der wahrscheinliche Pflegegrad, kurz was er bedeutet, dann höchstens 3 Kacheln; Punkte und Tipp zum Aufklappen.
+    // Das Ergebnis meldet opt.beimErgebnis (die App speichert es). „← Zurück“ verlässt die Einschätzung, „Antworten ändern“ geht zur letzten Frage.
     function zeigeErgebnis() {
       const g = eingabe(a, pgAktuell), r = P.rechne(g);
-      const geld = P.geld(r.pg, typeof Rules !== 'undefined' ? Rules : null);
-      const bar = h('div', { class: 'pa-bar', 'aria-hidden': 'true' }, h('div', { class: 'pa-fill', style: `width:${Math.min(100, r.gesamt)}%` }));
-      P.GRAD_AB.forEach((x, i) => bar.append(h('div', { class: 'pa-mark', style: `left:${x}%` }, h('span', { text: `PG ${i + 1}` }))));
+      if (opt.beimErgebnis) try { opt.beimErgebnis(r); } catch (e) {}
       const titel = r.pg ? `Wahrscheinlich Pflegegrad ${r.pg}` : 'Wahrscheinlich kein Pflegegrad';
-      box.append(h('div', { class: 'es-top pa-kopf' }, h('div', { class: 'pa-zeile' }, h('button', { type: 'button', class: 'linkbtn pa-zur', onclick: zurueck, text: '← Antworten ändern' })),
+      box.append(h('div', { class: 'es-top pa-kopf' }, h('div', { class: 'pa-zeile' }, h('button', { type: 'button', class: 'linkbtn pa-zur', onclick: () => opt.abbrechen && opt.abbrechen(), text: '← Zurück' })),
         h('span', { class: 'es-prog pa-wo', text: 'Ergebnis deiner Einschätzung' })),
-        h('h2', { class: 'es-q', id: 'pa-q', tabindex: '-1', text: titel }),
-        h('p', { class: 'es-h', text: `${zahl(r.gesamt)} von 100 Punkten. Den Pflegegrad legt die Pflegekasse nach dem Besuch des Gutachters fest.` }), bar);
+        h('h2', { class: 'es-q pa-grad', id: 'pa-q', tabindex: '-1', text: titel }),
+        h('p', { class: 'es-h pa-hinweis', text: 'Das ist eine Einschätzung. Entscheiden tut die Pflegekasse.' }));
       if (pgAktuell != null) {
         const t = r.pg > pgAktuell ? `Du hast jetzt Pflegegrad ${pgAktuell}. Nach deiner Einschätzung käme Pflegegrad ${r.pg} in Frage. Ein Antrag auf Höherstufung lohnt sich wahrscheinlich.`
           : r.pg === pgAktuell ? `Das passt zu deinem jetzigen Pflegegrad ${pgAktuell}. Eine Höherstufung lohnt sich nach dieser Einschätzung noch nicht.`
             : `Die Einschätzung liegt unter deinem jetzigen Pflegegrad ${pgAktuell}. Stelle keinen Antrag auf Höherstufung ohne Beratung: Die Pflegekasse prüft dann neu und kann auch niedriger einstufen.`;
         box.append(h('p', { class: 'es-karte' + (r.pg > pgAktuell ? ' ja' : ''), text: t }));
       }
-      if (r.pg >= 1) box.append(h('div', { class: 'es-karte' }, h('div', { class: 'es-lvl', text: 'Das könnte es geben' }),
-        h('ul', { class: 'es-liste' }, r.pg >= 2 ? h('li', { text: `Pflegegeld: ${eur(geld.pflegegeld)} im Monat aufs Konto, wenn Angehörige pflegen` }) : null,
-          h('li', { text: `Entlastungsbetrag: ${eur(geld.entlastung)} im Monat, kein Geld aufs Konto, sondern ein Budget bei der Pflegekasse` }),
-          r.pg >= 2 ? h('li', { text: 'Dazu Budgets für Pflegedienst, Vertretung und Pflegehilfsmittel' }) : null)));
-      if (r.fehltBisNaechster != null && !r.besonders && r.hebel && r.hebel.moeglich && r.naechsterPg) {
-        box.append(h('p', { text: r.grenzfall ? `Es ist knapp: Bis Pflegegrad ${r.naechsterPg} fehlen ${zahl(r.fehltBisNaechster)} Punkte. Prüfe die Antworten, bei denen du unsicher warst.` : `Bis Pflegegrad ${r.naechsterPg} fehlen ${zahl(r.fehltBisNaechster)} Punkte.` }));
-      }
-      // Nächste Schritte: Hauptknopf groß, ein zweiter Knopf, alles Weitere als Links
+      box.append(bedeutung(r.pg));
+      // Kacheln wie auf der Startseite (höchstens 3), übrige Aktionen als Textlinks
       const sichtbar = (opt.aktionen || []).filter((x) => !x.wenn || x.wenn(r, pgAktuell));
       const tu = (x) => () => x.fn(r, JSON.parse(JSON.stringify(a)), g);
-      const knoepfe2 = sichtbar.filter((x) => x.haupt || x.zweit), links = sichtbar.filter((x) => !x.haupt && !x.zweit);
-      if (knoepfe2.length) box.append(h('div', { class: 'es-nav1 pa-weiter' }, knoepfe2.map((x) => h('button', { type: 'button', class: 'btn' + (x.haupt ? '' : ' ghost'), text: typeof x.text === 'function' ? x.text(r, pgAktuell) : x.text, onclick: tu(x) }))));
-      if (links.length) box.append(h('ul', { class: 'pa-links' }, links.map((x) => h('li', {}, h('button', { type: 'button', class: 'linkbtn', text: (typeof x.text === 'function' ? x.text(r, pgAktuell) : x.text) + ' ›', onclick: tu(x) })))));
+      const txt = (x, k) => (typeof x[k] === 'function' ? x[k](r, pgAktuell) : x[k]);
+      const kacheln = sichtbar.filter((x) => x.kachel).slice(0, 3), links = sichtbar.filter((x) => !x.kachel);
+      if (kacheln.length) box.append(h('div', { class: 'pa-kacheln' }, kacheln.map((x) => h('button', { type: 'button', class: 'sk pa-k-' + x.kachel, onclick: tu(x) },
+        h('span', { class: 'sk-sym', 'aria-hidden': 'true' }, symbol(x.sym || [])), h('span', { class: 'sk-txt' }, h('b', { text: txt(x, 'titel') }), x.text ? h('span', { text: txt(x, 'text') }) : null)))));
+      box.append(h('ul', { class: 'pa-links' }, links.map((x) => h('li', {}, h('button', { type: 'button', class: 'linkbtn', text: txt(x, 'titel') + ' ›', onclick: tu(x) }))),
+        h('li', {}, h('button', { type: 'button', class: 'linkbtn pa-aendern', text: 'Antworten ändern ›', onclick: zurueck }))));
+      // Zum Aufklappen: Punkte je Bereich
+      const bar = h('div', { class: 'pa-bar', 'aria-hidden': 'true' }, h('div', { class: 'pa-fill', style: `width:${Math.min(100, r.gesamt)}%` }));
+      P.GRAD_AB.forEach((x, i) => bar.append(h('div', { class: 'pa-mark', style: `left:${x}%` }, h('span', { text: `PG ${i + 1}` }))));
       const tb = h('tbody', {}, [1, 2, 3, 4, 5, 6].map((m) => { const mo = r.module[m], zaehlt = !(m === 2 || m === 3) || r.zaehlt23 === m;
         return h('tr', {}, h('td', { text: P.MODUL[m].kurz }), h('td', { class: 'z', text: zaehlt ? `${zahl(mo.gewichtet)} / ${zahl(P.ANLAGE2[m].gew[4])}` : 'zählt nicht' })); }));
-      box.append(h('details', { class: 'pa-info' }, h('summary', { text: 'So wurde gerechnet' }),
-        h('p', { class: 'small', text: 'Ab 12,5 Punkten gibt es Pflegegrad 1, ab 27 Pflegegrad 2, ab 47,5 Pflegegrad 3, ab 70 Pflegegrad 4, ab 90 Pflegegrad 5. Von den Bereichen 2 und 3 zählt nur der höhere. Grundlage: § 15 SGB XI.' }),
-        h('div', { class: 'tablewrap', tabindex: '0', role: 'region', 'aria-label': 'Punkte je Bereich' }, h('table', {}, h('thead', {}, h('tr', {}, h('th', { text: 'Bereich' }), h('th', { class: 'z', text: 'Punkte' }))), tb))));
+      let knapp = null;
+      if (r.fehltBisNaechster != null && !r.besonders && r.hebel && r.hebel.moeglich && r.naechsterPg) {
+        knapp = h('p', { text: r.grenzfall ? `Es ist knapp: Bis Pflegegrad ${r.naechsterPg} fehlen ${zahl(r.fehltBisNaechster)} Punkte. Prüfe die Antworten, bei denen du unsicher warst.` : `Bis Pflegegrad ${r.naechsterPg} fehlen ${zahl(r.fehltBisNaechster)} Punkte.` });
+      }
+      box.append(h('details', { class: 'pa-info pa-punkte-box' }, h('summary', { text: 'Punkte je Bereich' }),
+        h('p', { class: 'pa-punkte', text: `${zahl(r.gesamt)} von 100 Punkten.` }), bar, knapp,
+        h('div', { class: 'tablewrap', tabindex: '0', role: 'region', 'aria-label': 'Punkte je Bereich' }, h('table', {}, h('thead', {}, h('tr', {}, h('th', { text: 'Bereich' }), h('th', { class: 'z', text: 'Punkte' }))), tb)),
+        h('p', { class: 'small', text: 'Ab 12,5 Punkten gibt es Pflegegrad 1, ab 27 Pflegegrad 2, ab 47,5 Pflegegrad 3, ab 70 Pflegegrad 4, ab 90 Pflegegrad 5. Von den Bereichen 2 und 3 zählt nur der höhere. Grundlage: § 15 SGB XI.' })));
       box.append(h('details', { class: 'pa-info' }, h('summary', { text: 'Tipp für den Termin mit dem Gutachter' }),
         h('p', { text: 'Führe eine Woche lang ein Pflegetagebuch: Was war nötig, wie oft, wie lange? Lege beim Termin Arztberichte und den Medikamentenplan bereit, und sei dabei, wenn möglich. Zeige keine besseren Seiten als im Alltag.' })));
     }
+    // Was der Pflegegrad bedeutet: die wichtigsten Leistungen mit Beträgen. Beträge nur aus den Rechenregeln der App
+    // (Rules.pflegeFuer; Quellen dort: §§ 36, 37, 40, 45b SGB XI, BMG-Ratgeber Pflege, Stand 14.9.2026, abgerufen 20.11.2026).
+    function bedeutung(pg) {
+      const R = typeof Rules !== 'undefined' ? Rules : null;
+      const w = {};
+      if (R && R.pflegeFuer) R.pflegeFuer(pg).forEach((l) => { w[l.id] = l.wert; });
+      else { const geld = P.geld(pg, null); w.geld = geld.pflegegeld || null; w.entl = geld.entlastung || null; }
+      const li = [];
+      let vorweg = null;
+      if (pg >= 2) {
+        if (w.geld) li.push(`Pflegegeld: ${eur(w.geld)} im Monat aufs Konto, wenn Angehörige pflegen`);
+        if (w.dienst) li.push(`Oder ein Pflegedienst: bis ${eur(w.dienst)} im Monat, die Pflegekasse bezahlt direkt`);
+        if (w.entl) li.push(`Entlastungsbetrag: ${eur(w.entl)} im Monat für Hilfe im Alltag, kein Geld aufs Konto`);
+      } else if (pg === 1) {
+        vorweg = 'Bei Pflegegrad 1 gibt es noch kein Pflegegeld, aber diese Hilfen der Pflegekasse:';
+        if (w.entl) li.push(`Entlastungsbetrag: ${eur(w.entl)} im Monat für Hilfe im Alltag, kein Geld aufs Konto`);
+        if (w.hilfs) li.push(`Pflegehilfsmittel wie Handschuhe: bis ${eur(w.hilfs)} im Monat`);
+        if (w.umbau) li.push(`Umbau der Wohnung: bis ${eur(w.umbau)} je Maßnahme`);
+      } else {
+        li.push('Ohne Pflegegrad gibt es kein Geld von der Pflegekasse.');
+        li.push('Kostenlos sind Pflegeberatung und Pflegekurse für Angehörige.');
+      }
+      const stand = R && R.RULES && R.RULES.pflegeUnterst ? R.RULES.pflegeUnterst.stand : null;
+      return h('div', { class: 'es-karte pa-bedeutung' }, h('div', { class: 'es-lvl', text: pg ? `Das bedeutet Pflegegrad ${pg}` : 'Das bedeutet das' }),
+        vorweg ? h('p', { text: vorweg }) : null, h('ul', { class: 'es-liste' }, li.map((x) => h('li', { text: x }))),
+        stand ? h('p', { class: 'small muted', text: `Stand der Beträge: ${stand}.` }) : null);
+    }
+    // Symbol der Kachel aus Pfaden (ohne innerHTML)
+    function symbol(pfade) {
+      const ns = 'http://www.w3.org/2000/svg', s = document.createElementNS(ns, 'svg');
+      s.setAttribute('viewBox', '0 0 24 24');
+      pfade.forEach((d) => { const p = document.createElementNS(ns, 'path'); p.setAttribute('d', d); s.appendChild(p); });
+      return s;
+    }
+    if (opt.ergebnis) a.pos = schritte(a).length - 1; // Gespeichertes Ergebnis direkt ansehen
     zeige(true);
     return { zeige };
   }

@@ -60,3 +60,4 @@ Im übrigen CSS stehen nur Variablen. Ausnahme: Druckstile (`@media print`, Schw
 | Energie-Check (Haushaltsplan, Reiter bei Heizung mit eigenem Gasvertrag) | Strom Meerblau, Gas/Heizen Ziegel (wie in „Geld sparen“); Ergebnis: Nachzahlung möglich `--warn`, passt ungefähr `--ok`, Guthaben möglich `--na`, Eingabefehler `--bad` |
 | Ich ziehe aus | Vorher Violett, Erste Tage Schiefer (wie in src/ausziehen.js), Geld Grün, Versicherungen Blau, Achtung Ziegel, Hilfen Petrol, Careleaver Beere |
 | Mein Ordner | Schulden-Liste (`#or-schulden`) Grün (`--c-sparen`), weil die Liste zu „Geld sparen“ gehört und Pflaume schon die Zeile Pfändung hat (Entscheidung 20.11.2026). Weitere Zeilen kommen mit der Fristen-Übersicht. |
+| Pflege-Ergebnis (Kacheln unter „Wahrscheinlich Pflegegrad X“) | Antrag bzw. Höherstufung Schiefer (`--c-formular`, wie die Mappe), Was steht mir zu? Blau (`--c-pflege`), Gutachten vergleichen Ziegel (`--c-briefe`, Brief bekommen) |
