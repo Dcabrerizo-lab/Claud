@@ -1240,11 +1240,8 @@
         <button type="button" role="tab" id="tab-info" aria-controls="pn-info" aria-selected="false" tabindex="-1" data-t="einst.tab.info"></button>
       </div>
       <div id="pn-einst" role="tabpanel" aria-labelledby="tab-einst" class="einst-pn">
-      <!-- Drei Blöcke: Haushalte (füllt claude/profile, bis dahin ausgeblendet), Anzeige und Sprache, Für Fachkräfte -->
-      <div class="set-gruppe" id="setHaushalte" hidden>
-        <h3 data-t="set.hh.h"></h3>
-        <div id="haushalteBox"></div>
-      </div>
+      <!-- Blöcke: Haushalte und Vorgänge (füllt vgRender in app.js, ohne Speicher ausgeblendet), Anzeige und Sprache, Für Fachkräfte, Über die App -->
+      <div class="set-gruppe vg-gruppe" id="setHaushalte" hidden></div>
       <div class="set-gruppe">
         <h3 data-t="set.anzeige.h"></h3>
         <label class="langpick"><span data-t="lang.label"></span><select id="lang"></select></label>

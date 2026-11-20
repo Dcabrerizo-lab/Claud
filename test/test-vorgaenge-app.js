@@ -38,7 +38,7 @@ const knopf = (s, root, text) => [...root.querySelectorAll('button')].find((b) =
   ck('[vorgaenge] ein Vorgang: kein Kürzel-Schild, kein Sperrbildschirm', d.getElementById('vgChip').hidden && !d.getElementById('vgSperre'));
   const res = d.getElementById('vgRes');
   ck('[vorgaenge] Einstieg „Vorgang speichern“ beim Ergebnis', res && !res.hidden && /Vorgang speichern/.test(res.textContent) && d.getElementById('vgNameRes'));
-  ck('[vorgaenge] Verwaltung ganz oben in den Einstellungen', d.getElementById('pn-einst').firstElementChild.id === 'vgGruppe');
+  ck('[vorgaenge] Verwaltung ganz oben in den Einstellungen', d.getElementById('pn-einst').firstElementChild.id === 'setHaushalte');
 
   // Speichern unter Namen
   d.getElementById('vgNameRes').value = '  Familie M.  ';
@@ -66,18 +66,18 @@ const knopf = (s, root, text) => [...root.querySelectorAll('button')].find((b) =
   ck('[vorgaenge] Wechsel lädt Angaben und Antragsdaten', d.getElementById('miete').value === '640' && d.getElementById('p-name').value === 'Erika Muster' && chip.textContent === 'Familie M.');
 
   // Kopie zum Ausprobieren
-  const g = d.getElementById('vgGruppe');
+  const g = d.getElementById('setHaushalte');
   knopf(s, g.querySelector('li.vg-offen'), 'Kopie zum Ausprobieren').click();
   d.getElementById('miete').value = '900'; d.getElementById('miete').dispatchEvent(new s.w.Event('change'));
   await warte(400);
   knopf(s, d.getElementById('vgMenu'), 'Familie M.').click();
   ck('[vorgaenge] Kopie: Original unverändert', d.getElementById('miete').value === '640');
-  ck('[vorgaenge] drei Vorgänge in der Liste', d.querySelectorAll('#vgGruppe li').length === 3);
-  ck('[vorgaenge] Wort „Profil“ nie in der Oberfläche', !/Profil/i.test(d.getElementById('vgGruppe').textContent + chip.textContent + res.textContent));
+  ck('[vorgaenge] drei Vorgänge in der Liste', d.querySelectorAll('#setHaushalte li').length === 3);
+  ck('[vorgaenge] Wort „Profil“ nie in der Oberfläche', !/Profil/i.test(d.getElementById('setHaushalte').textContent + chip.textContent + res.textContent));
 
   // Automatisch löschen: Datum sichtbar
   const sel = d.getElementById('vgTage'); sel.value = '30'; sel.dispatchEvent(new s.w.Event('change'));
-  ck('[vorgaenge] automatisches Löschen: Datum „wird am … gelöscht“ sichtbar', d.querySelectorAll('#vgGruppe .vg-ablauf').length === 3 && /Wird am \d\d\.\d\d\.\d{4} gelöscht/.test(d.getElementById('vgGruppe').textContent));
+  ck('[vorgaenge] automatisches Löschen: Datum „wird am … gelöscht“ sichtbar', d.querySelectorAll('#setHaushalte .vg-ablauf').length === 3 && /Wird am \d\d\.\d\d\.\d{4} gelöscht/.test(d.getElementById('setHaushalte').textContent));
 
   // PIN setzen
   knopf(s, g, 'PIN festlegen').click();
@@ -92,7 +92,7 @@ const knopf = (s, root, text) => [...root.querySelectorAll('button')].find((b) =
   for (let i = 0; i < 100 && mem['lotse.state']; i++) await warte(50);
   const roh = JSON.stringify(mem);
   ck('[vorgaenge] mit PIN: nichts Lesbares im Speicher, PIN nicht gespeichert', !/Erika|Muster|Familie|640|miete/.test(roh) && !roh.includes('2580') && !mem['lotse.state'], roh.slice(0, 300));
-  ck('[vorgaenge] PIN-Sperre als „an“ angezeigt', /PIN-Sperre ist an/.test(d.getElementById('vgGruppe').textContent));
+  ck('[vorgaenge] PIN-Sperre als „an“ angezeigt', /PIN-Sperre ist an/.test(d.getElementById('setHaushalte').textContent));
 
   // Neustart: Sperrbildschirm
   const s2 = seite(mem);

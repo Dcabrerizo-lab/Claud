@@ -25,7 +25,7 @@ const check = (n, c, x) => { if (!c) { fails++; console.log('FAIL', n, x || '');
 const fire = (el, type) => el.dispatchEvent(new w.Event(type, { bubbles: true }));
 const setLang = (c) => { const s = $('lang'); s.value = c; fire(s, 'change'); };
 const LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so'];
-const NEU = ['set.hh.h', 'set.fach.h', 'set.beratung.label', 'set.beratung.t', 'recht.label', 'haken.hint', 'f.inhalt', 'f.inh.brief', 'f.inh.angaben',
+const NEU = ['set.fach.h', 'set.beratung.label', 'set.beratung.t', 'recht.label', 'haken.hint', 'f.inhalt', 'f.inh.brief', 'f.inh.angaben',
   'eb.btn', 'eb.h', 'eb.intro', 'eb.kuerzel', 'eb.close', 'eb.titel', 'eb.datum', 'eb.kuerzelZeile', 'eb.col.leistung', 'eb.col.einstufung', 'eb.col.betrag', 'eb.col.stelle', 'eb.col.schritt', 'eb.hinweis'];
 
 // ---------- Hilfsfunktionen in fmt.js ----------
@@ -39,7 +39,7 @@ check('Kein Paragraf in einem Sprachtext außerhalb von Klammern (sonst bliebe e
 
 // ---------- Einstellungen: drei Blöcke ----------
 const gruppen = [...d.querySelectorAll('#pn-einst .set-gruppe')];
-check('Einstellungen: Haushalte (Platzhalter, ausgeblendet), Anzeige und Sprache, Für Fachkräfte – in dieser Reihenfolge', gruppen[0].id === 'setHaushalte' && gruppen[0].hidden && gruppen[1].querySelector('h3').textContent === 'Anzeige und Sprache' && !!gruppen[1].querySelector('#lang') && !!gruppen[1].querySelector('#bigBtn') && gruppen[2].id === 'setFach' && gruppen[2].querySelector('h3').textContent === 'Für Fachkräfte');
+check('Einstellungen: Haushalte (Verwaltung der Vorgänge, nur ein Block), Anzeige und Sprache, Für Fachkräfte, Über die App – in dieser Reihenfolge', gruppen.length === 4 && gruppen[0].id === 'setHaushalte' && !gruppen[0].hidden && !!gruppen[0].querySelector('#vgH') && d.querySelectorAll('#pn-einst #vgH').length === 1 && gruppen[3].querySelector('h3').textContent === I18N.de['set.about.h'] && gruppen[1].querySelector('h3').textContent === 'Anzeige und Sprache' && !!gruppen[1].querySelector('#lang') && !!gruppen[1].querySelector('#bigBtn') && gruppen[2].id === 'setFach' && gruppen[2].querySelector('h3').textContent === 'Für Fachkräfte');
 check('Beratungsmodus: Schalter standardmäßig aus', $('beratungBtn').getAttribute('aria-pressed') === 'false' && $('beratungBtn').textContent.trim() === 'Beratungsmodus' && $('beratungT').textContent === I18N.de['set.beratung.t']);
 check('Vor dem ersten Ergebnis kein Knopf „Ergebnis mitgeben“', $('ebOpen').hidden === true);
 

@@ -2442,8 +2442,7 @@
   function vgMsg(txt) { var m = $('vgMsg'); if (m) m.textContent = txt; }
   // Oberfläche an festen Stellen einhängen (ohne Änderungen an den Abschnitten anderer Bereiche)
   function vgGeruest() {
-    if ($('vgGruppe')) return;
-    var g = vgEl('div', 'set-gruppe vg-gruppe'); g.id = 'vgGruppe'; $('pn-einst').insertBefore(g, $('pn-einst').firstChild);
+    if ($('vgRes')) return;
     var r = vgEl('div', 'vg-res'); r.id = 'vgRes'; var b = $('beratung'); b.parentNode.insertBefore(r, b.nextSibling);
     var kopf = document.querySelector('header.top');
     var chip = vgEl('button', 'vg-chip'); chip.type = 'button'; chip.id = 'vgChip'; chip.hidden = true; chip.setAttribute('aria-expanded', 'false'); chip.setAttribute('aria-controls', 'vgMenu');
@@ -2547,8 +2546,8 @@
       r.appendChild(zw);
     }
     // Einstellungen: Verwaltung ganz oben
-    var g = $('vgGruppe'), alt = document.activeElement && document.activeElement.id, msgAlt = $('vgMsg') ? $('vgMsg').textContent : '';
-    g.innerHTML = '';
+    var g = $('setHaushalte'), alt = document.activeElement && document.activeElement.id, msgAlt = $('vgMsg') ? $('vgMsg').textContent : '';
+    g.innerHTML = ''; g.hidden = false;
     var h3 = vgEl('h3', null, t('vg.h')); h3.id = 'vgH'; h3.tabIndex = -1; g.appendChild(h3);
     if (!bereit) return;
     g.appendChild(vgEl('p', 'small muted', t('vg.t')));
