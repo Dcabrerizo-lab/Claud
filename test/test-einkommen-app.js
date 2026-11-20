@@ -51,7 +51,11 @@ ck('[formular] Lohn: „Lohn im Monat vor Abzügen (brutto)“ + Minijob-Hinweis
 st({ ek1Art: 'rente', ek1Brutto: 900 });
 ck('[formular] Rente: „Rente im Monat vor Abzügen (brutto)“, kein Minijob-Hinweis', $('ek1BruttoLab').textContent === L['ek.brutto.rente'] && $('ek1ArtHint').hidden, [$('ek1BruttoLab').textContent, $('ek1ArtHint').textContent]);
 st({ adults: 2, ek1Art: 'rente', ek1Brutto: 900, ek2Art: 'ohne' });
-ck('[formular] Paar: Summen-Hinweis bei Person 1, nicht bei „Kein Einkommen“', $('ek1ArtHint').textContent === L['ek.art.hint'] && $('ek2ArtHint').hidden);
+ck('[formular] Paar: Summen-Hinweis bei Person 1, nicht bei „Kein Einkommen“', $('ek1ArtHint').textContent === L['ek.art.hint.summe'] && $('ek2ArtHint').hidden);
+st({ adults: 2, ek1Art: 'lohn', ek1Brutto: 2000, ek2Art: 'rente', ek2Brutto: 800 });
+ck('[formular] Partner: Summen-Hinweis und „Nicht hier eintragen“ (Kindergeld, Unterhalt der Kinder)', $('ek2ArtHint').textContent === L['ek.art.hint.summe'] + ' ' + L['ek.nicht'], $('ek2ArtHint').textContent);
+st({ ek1Art: 'rente', ek1Brutto: 900 });
+ck('[formular] Allein: zweites Einkommen mit Beispielen und „Nicht hier eintragen“', !doc.querySelector('.cond-ek1b').hidden && doc.querySelector('.cond-ek1b').textContent.includes(L['ek.weiteres.hint']) && doc.querySelector('.cond-ek1b').textContent.includes(L['ek.nicht']));
 ck('[formular] Schalter heißt „Kurzer Check für Menschen mit Behinderung (eine Person)“', $('einfachBtn').textContent.includes(L['einfach.btn']) && !/🙂/.test($('einfachBtn').textContent));
 // Geburtsjahr: „54“ ist ungültig -> Meldung sichtbar, kein Ergebnis; „1954“ -> rechnet
 st({ ek1Art: 'rente', ek1Brutto: 900 });

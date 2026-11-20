@@ -256,11 +256,13 @@
       var mitBrutto = art === 'lohn' || art === 'rente' || art === 'selbst';
       $('ek' + i + 'BruttoF').hidden = !mitBrutto;
       $('ek' + i + 'NettoF').hidden = !art || art === 'ohne';
-      $('ek' + i + 'BruttoLab').textContent = t(art === 'lohn' || art === 'rente' ? 'ek.brutto.' + art : 'ek.brutto');
-      // Allein: zweites Einkommen eigenes Feld; zu zweit: Summe
+      $('ek' + i + 'BruttoLab').textContent = t(art === 'lohn' || art === 'rente' || art === 'selbst' ? 'ek.brutto.' + art : 'ek.brutto');
+      // Allein: zweites Einkommen über eigenes Feld (kein Summen-Hinweis); zu zweit: Summe je Person
       var ah = [];
       if (art === 'lohn') ah.push(t('ek.art.hint.lohn'));
-      if (state.adults === 2 && art && art !== 'ohne') ah.push(t('ek.art.hint'));
+      if (state.adults === 2 && art && art !== 'ohne') ah.push(t('ek.art.hint.summe'));
+      else if (state.adults !== 2 && i === 1 && !art) ah.push(t('ek.art.hint'));
+      if (i === 2 && art !== 'ohne') ah.push(t('ek.nicht')); // Partner: was nicht hierher gehört, wie beim zweiten Einkommen
       $('ek' + i + 'ArtHint').textContent = ah.join(' '); $('ek' + i + 'ArtHint').hidden = !ah.length;
       $('ek' + i + 'BruttoHint').textContent = art === 'rente' ? t('ek.brutto.hint.rente') : art === 'selbst' ? t('ek.brutto.hint.selbst') : t('ek.brutto.hint.lohn');
       var bescheid = art === 'alg' || art === 'kg' || art === 'eg' || art === 'wfbm';
@@ -479,7 +481,8 @@
     $('kids14').textContent = state.kids14 || 0;
     $('young').textContent = state.young;
     NUMS.forEach(function (k) { $(k).value = state[k] == null ? '' : String(state[k]).replace('.', ','); });
-    $('gebJahr').value = state.gebJahr || '';
+    if (!/^\d{4}$/.test(state.gebJahr)) state.gebJahr = '';
+    $('gebJahr').value = state.gebJahr;
     CHECKS.forEach(function (k) { $(k).checked = !!state[k]; });
     BEZUG.forEach(function (k) { $('b-' + k).checked = !!state.bezug[k]; });
     if ($('vaInfo')) vaInfo();
