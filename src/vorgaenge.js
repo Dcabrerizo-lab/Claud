@@ -4,7 +4,7 @@
 // Mit PIN steht alles verschlüsselt (PBKDF2-SHA-256 + AES-GCM, zufälliges Salt und IV) unter lotse.vorgaenge; die PIN selbst wird nie gespeichert.
 const Vorgaenge = (function () {
   var SCHLUESSEL = 'lotse.vorgaenge';
-  var DATEN = ['lotse.state', 'lotse.einfach', 'lotse.pflegecheck', 'lotse.pfaendung', 'lotse.haushalt', 'lotse.haken', 'lotse.ausziehen', 'lotse.fristliste'];
+  var DATEN = ['lotse.state', 'lotse.einfach', 'lotse.pflegecheck', 'lotse.pfaendung', 'lotse.haushalt', 'lotse.haken', 'lotse.ausziehen', 'lotse.fristliste', 'lotse.schulden'];
   var ITER = 600000; // PBKDF2-HMAC-SHA-256: Empfehlung OWASP Password Storage Cheat Sheet (Stand 2023/2026)
   var NAME_MAX = 24;
   var TAG = 86400000;
