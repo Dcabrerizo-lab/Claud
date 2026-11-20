@@ -2,6 +2,7 @@
 // Rechtsquellen (WoGG § 20, SGB II § 7/§ 8, § 33b EStG, SGB XI, BayBlindG, BayWoFG), nicht aus rules.js.
 const R = require('./rules-de.js');
 const KARTEN = require('./karten.js');
+require('./test-unterhalt-selbst.js'); // Musterfälle „Unterhalt für sich selbst“ (eigene Datei, läuft mit den Fall-Tests)
 const base = { adults: 1, kids: 0, young: 0, brutto: 0, brutto2: 0, netto: '', miete: 0, vermoegen: 0, bezug: {} };
 let n = 0, fails = 0;
 const ck = (name, c, x) => { n++; if (!c) { fails++; console.log('FAIL', name, x === undefined ? '' : x); } };
