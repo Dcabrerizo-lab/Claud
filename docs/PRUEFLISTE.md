@@ -494,6 +494,20 @@ Eigener Bereich für junge Menschen; keine Rechnung, nur Hinweise. Quellen mit A
 | Abhaken und Notizen lokal (`lotse.ausziehen`, Schnittstelle `Ausziehen.speicherOrt`), nur bekannte Einträge, Speicherfehler gemeldet, „Alle Angaben löschen“ leert alles | ✓ | `az-speichern`, `az-oberflaeche` |
 | 13 Sprachen und Einfache Sprache: alle Schlüssel, gleiche Platzhalter und Vorschriften, keine Rohschlüssel | ✓ | `az-sprachen`, `az-oberflaeche` |
 
+## Aufforderung zur Senkung der Unterkunftskosten (erweiterungen/kostensenkung.js)
+
+Brief prüfen → Jobcenter, Sozialamt oder Anderer Brief; keine Rechnung, nur Erklärung. Quellen mit Abrufdatum 20.11.2026 in `docs/entwuerfe/kostensenkung.md`. Erkennung zusätzlich in `test/erweiterungen/test-kostensenkung.js`.
+
+| Regel | Status | Test |
+|---|---|---|
+| In der Regel noch keine Kürzung, Weiterzahlung in der Regel höchstens 6 Monate (§ 22 Abs. 1 Satz 9–10 SGB II, § 35 Abs. 3 SGB XII); Heizkosten ohne Karenzzeit | ✓ | `ks` |
+| Grenze vom 1,5-Fachen ab dem ersten Tag seit 1.7.2026, ohne 6 Monate; Ausnahmen im ersten Jahr im Einzelfall, z. B. mit Kindern (§ 22 Abs. 1 Satz 6–7 SGB II, § 35 Abs. 1 SGB XII); Hinweis sichtbar, wenn Miete > 1,5 × Grenze oder der Brief es nennt, nie bei Heizkosten | ✓ | `ks` |
+| Kein Widerspruch gegen den Hinweis (BSG B 14 AS 31/20 R); steht eine Rechtsbehelfsbelehrung im Brief: „Widerspruch möglich, Frist in der Regel ein Monat“ (§ 84 Abs. 1 SGG) | ✓ | `ks` |
+| Antwort-Entwurf nur mit angehakten Gründen, Paragraf passend zum Träger (§ 22 Abs. 1 Satz 11/12 SGB II bzw. § 35 Abs. 3 Satz 4/3 SGB XII, unbekannt: beide); Empfänger nur Stelle aus dem Brief oder Art der Stelle; Haken werden nicht gespeichert | ✓ | `ks` |
+| Frist nur aus dem Brief, mit Belegzeile; keine selbst berechnete Frist; Knopf „Frist übernehmen“ nur mit `FristenOrdner.hinzu` | ✓ | `ks` |
+| U25: ohne vorherige Zusicherung nach Umzug möglicherweise keine Unterkunftskosten (§ 22 Abs. 5 SGB II), auch in Einfacher Sprache | ✓ | `ks` |
+| 13 Sprachen und Einfache Sprache: keine Rohschlüssel, Zahlen und Paragrafen gleich | ✓ | `ks` |
+
 ## Anzeige und Eingaben (alle Karten)
 
 | Regel | Status | Test |

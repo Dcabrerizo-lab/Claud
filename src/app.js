@@ -1556,9 +1556,10 @@
     try { window.print(); } catch (e) {}
     setTimeout(weg, 60000);
   }
-  function schreibenKnoepfe() {
+  // Ein Schreiben (x = [Textfeld, Kopieren-Knopf, Dateiname, Art]); auch für später erzeugte Felder (Kostensenkung: KostensenkungHilfe)
+  function schreibenKnopf(x) {
     var android = NATIVE && plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios');
-    SCHREIBEN.forEach(function (x) {
+    (function () {
       var ta = $(x[0]), copy = $(x[1]); if (!ta || !copy) return;
       var box = document.createElement('div'); box.className = 'schreiben-aus'; box.hidden = true;
       var btns = document.createElement('div'); btns.className = 'btns';
@@ -1576,8 +1577,9 @@
       var reihe = copy.closest('.btns') || copy; reihe.parentNode.insertBefore(box, reihe.nextSibling);
       // sichtbar, sobald das Schreiben erstellt ist (die Prüfung zeigt dann das Textfeld)
       new MutationObserver(function () { box.hidden = ta.hidden; }).observe(ta, { attributes: true, attributeFilter: ['hidden'] });
-    });
+    })();
   }
+  function schreibenKnoepfe() { SCHREIBEN.forEach(schreibenKnopf); }
   schreibenKnoepfe();
 
   function copyMappe() {
@@ -3383,6 +3385,13 @@
     var e0 = briefArt ? BriefLesen.erkenne(text) : null;
     if (e0 && (e0.art === 'anh' || e0.art === 'mit')) r = BriefLesen.lies(text, null);
     $('elErg').textContent = '';
+    // Aufforderung zur Senkung der Wohn- oder Heizkosten: Erklärung statt Nachrechnung (erweiterungen/kostensenkung.js)
+    var ks = BriefLesen.kostensenkung ? BriefLesen.kostensenkung(text) : null;
+    if (ks && !ks.ist) ks = null;
+    if (ks && !ks.anhoerung && (!briefArt || briefArt === 'jc' || briefArt === 'sa' || briefArt === 'an')) {
+      if (!briefArt && ks.traeger) briefOeffnen(ks.traeger); // ohne Kachel nur mit erkanntem Absender, nie geraten
+      ksZeigen(ks, text); elNachricht(t('el.erkanntOhne', { titel: t(ks.heiz ? 'el.ks.titelHeiz' : 'el.ks.titel') })); return;
+    }
     // Anderer Brief: Frist mit Beleg suchen, Mahnbescheid und Inkasso erkennen (Anhörung und Mitwirkung erklärt der Teil darunter)
     if (briefArt === 'an' && r.art !== 'anh' && r.art !== 'mit') { elNachricht(''); if (window.PruefpaketAndere) window.PruefpaketAndere.zeige(text, { box: $('elErg'), wechseln: function (art) { var tx = text; briefOeffnen(art); textLesen(tx); } }); return; }
     if (!r.art) { elNachricht(t('el.unbekannt')); return; }
@@ -3392,7 +3401,7 @@
       var p = document.createElement('p'); p.textContent = BriefLesen.ERKLAERUNG[r.art]; d.appendChild(p);
       var fr = BriefLesen.frist(text);
       if (fr) { var q = document.createElement('p'); q.textContent = t('el.frist', { frist: fr }); d.appendChild(q); }
-      $('elErg').appendChild(d); elNachricht(t('el.erkanntOhne', { titel: r.titel })); return;
+      $('elErg').appendChild(d); if (ks) ksZeigen(ks, text); elNachricht(t('el.erkanntOhne', { titel: r.titel })); return;
     }
     if (!briefArt) briefOeffnen(r.art);
     if (r.art === 'pk') { $('pf-text').value = text; $('pf-lesen').click(); briefFormular(); elNachricht(t('el.erkanntPk', { titel: r.titel })); return; }
@@ -3400,6 +3409,10 @@
     var n = window.PruefpaketLesen ? window.PruefpaketLesen.fuelle(r.art, r, haushalt()) : 0;
     briefFormular();
     elNachricht(n ? t('el.erkannt', { titel: r.titel, n: String(n) }) : t('el.keineWerte', { titel: r.titel }));
+  }
+  function ksZeigen(ks, text) {
+    if (!window.KostensenkungHilfe) return;
+    window.KostensenkungHilfe.zeige($('elErg'), ks, { t: t, tL: tL, person: person, kennungen: BriefLesen.kennungen ? BriefLesen.kennungen(text) : {}, briefArt: briefArt, schreibenKnopf: schreibenKnopf, heute: new Date() });
   }
   // Foto aufnehmen und auf dem Gerät lesen (App), Foto danach löschen; im Browser: Bild wählen und mit Tesseract lesen
   function fotoText() {
