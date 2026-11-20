@@ -945,7 +945,7 @@
   "t.ggeld.asyl": "У процедурі притулку, з Duldung або за обов'язку виїхати немає Grundsicherungsgeld і Grundsicherung, а є виплати за Asylbewerberleistungsgesetz.",
   "t.kiz.asyl": "Kinderzuschlag потребує Kindergeld, якого в процедурі притулку зазвичай немає.",
   "t.kindergeld.asyl": "У процедурі притулку або з Duldung Kindergeld зазвичай не належить. Винятки є за певних дозволів на проживання. Це перевіряє Familienkasse.",
-  "t.wohngeld.asyl": "З Aufenthaltsgestattung або Duldung Wohngeld можливий, але лише якщо ви не отримуєте допомогу за Asylbewerberleistungsgesetz, наприклад тому, що достатньо заробляєте. Без Duldung (лише з обов'язком виїзду) Wohngeld немає. Це перевіряє Wohngeldstelle.",
+  "t.wohngeld.asyl": "З Aufenthaltsgestattung або Duldung Wohngeld можливий, але лише якщо ви не отримуєте виплат за Asylbewerberleistungsgesetz, наприклад тому, що достатньо заробляєте. Це перевіряє Wohngeldstelle.",
   "t.wohngeld.asylBezug": "Отримувачі допомоги за Asylbewerberleistungsgesetz не отримують Wohngeld (§ 7 WoGG). Витрати на житло оплачує Sozialamt у межах цієї допомоги. Якщо щось зміниться, запитайте там.",
   "t.wohngeld.ausreise": "Якщо ви зобов'язані виїхати з Німеччини і не маєте Duldung, Wohngeld ви не отримаєте (§ 3 Abs. 5 WoGG). За житло та утримання відповідає Sozialamt (Asylbewerberleistungen).",
   "t.but.asyl": "Якщо ви отримуєте виплати за Asylbewerberleistungsgesetz, дітям належить і Bildung und Teilhabe. Подайте заяву до Sozialamt або Landratsamt разом із цими виплатами.",

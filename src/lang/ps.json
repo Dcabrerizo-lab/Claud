@@ -945,7 +945,7 @@
   "t.ggeld.asyl": "د پناه غوښتنې په پروسه کې، د Duldung سره یا د وتلو د مکلفیت سره Grundsicherungsgeld او Grundsicherung نشته، بلکې د Asylbewerberleistungsgesetz له مخې مرستې شته.",
   "t.kiz.asyl": "Kinderzuschlag، Kindergeld ته اړتیا لري، چې د پناه غوښتنې په پروسه کې معمولاً نه ورکول کېږي.",
   "t.kindergeld.asyl": "د پناه غوښتنې په پروسه کې یا د Duldung سره Kindergeld معمولاً نه ورکول کېږي. استثناوې د ځینو Aufenthaltstitel سره شته. Familienkasse یې ګوري.",
-  "t.wohngeld.asyl": "د Aufenthaltsgestattung یا Duldung سره Wohngeld ممکن دی، خو یوازې که د Asylbewerberleistungsgesetz له مخې مرستې نه اخلئ، د بېلګې په توګه ځکه چې کافي عاید لرئ. پرته له Duldung (یوازې د وتلو مکلفیت) Wohngeld نشته. Wohngeldstelle یې ګوري.",
+  "t.wohngeld.asyl": "د Aufenthaltsgestattung یا Duldung سره Wohngeld ممکن دی، خو یوازې هغه وخت چې تاسو د Asylbewerberleistungsgesetz له مخې مرستې نه ترلاسه کوئ، د بېلګې په توګه ځکه چې کافي عاید لرئ. Wohngeldstelle یې ګوري.",
   "t.wohngeld.asylBezug": "څوک چې د Asylbewerberleistungsgesetz له مخې مرستې اخلي، Wohngeld نه ترلاسه کوي (§ 7 WoGG). د کور لګښتونه Sozialamt د دې مرستو سره ورکوي. که څه بدل شول، هلته وپوښتئ.",
   "t.wohngeld.ausreise": "که تاسو له آلمان څخه د وتلو مکلف یاست او Duldung نه لرئ، Wohngeld نه ترلاسه کوئ (§ 3 Abs. 5 WoGG). د کور او ژوند لګښتونو لپاره Sozialamt مسؤل دی (Asylbewerberleistungen).",
   "t.but.asyl": "که تاسو د Asylbewerberleistungsgesetz له مخې مرستې ترلاسه کوئ، د ماشومانو لپاره Bildung und Teilhabe هم شته. دا د همدې مرستو سره یوځای له Sozialamt یا Landratsamt څخه وغواړئ.",

@@ -945,7 +945,7 @@
   "t.ggeld.asyl": "در مراحل پناهندگی (Asylverfahren)، با Duldung یا در حالت مکلف به ترک کشور (ausreisepflichtig)، Grundsicherungsgeld و Grundsicherung داده نمی‌شود، بلکه کمک‌ها طبق Asylbewerberleistungsgesetz.",
   "t.kiz.asyl": "برای Kinderzuschlag، Kindergeld لازم است، که در مراحل پناهندگی معمولاً داده نمی‌شود.",
   "t.kindergeld.asyl": "در مراحل پناهندگی (Asylverfahren) یا با Duldung، Kindergeld معمولاً داده نمی‌شود. با بعضی اجازه‌های اقامت (Aufenthaltstitel) استثناهایی وجود دارد. Familienkasse این را بررسی می‌کند.",
-  "t.wohngeld.asyl": "با Aufenthaltsgestattung یا Duldung گرفتن Wohngeld ممکن است، اما فقط اگر کمک‌ها طبق Asylbewerberleistungsgesetz نگیرید، مثلاً چون عاید کافی دارید. بدون Duldung (فقط با مکلفیت خروج) Wohngeld نیست. Wohngeldstelle این را بررسی می‌کند.",
+  "t.wohngeld.asyl": "با Aufenthaltsgestattung یا Duldung، Wohngeld ممکن است، اما فقط وقتی که کمک‌ها طبق Asylbewerberleistungsgesetz نمی‌گیرید، مثلاً چون درآمد کافی دارید. Wohngeldstelle این را بررسی می‌کند.",
   "t.wohngeld.asylBezug": "کسی که کمک‌ها طبق Asylbewerberleistungsgesetz می‌گیرد، Wohngeld نمی‌گیرد (§ 7 WoGG). مصارف خانه را Sozialamt همراه این کمک‌ها می‌پردازد. اگر چیزی تغییر کرد، از آنجا بپرسید.",
   "t.wohngeld.ausreise": "اگر مکلف به خروج از آلمان هستید و Duldung ندارید، Wohngeld نمی‌گیرید (§ 3 Abs. 5 WoGG). برای خانه و مصارف زندگی Sozialamt مسئول است (Asylbewerberleistungen).",
   "t.but.asyl": "اگر کمک‌ها طبق Asylbewerberleistungsgesetz می‌گیرید، برای اطفال Bildung und Teilhabe هم وجود دارد. آن را همراه با همین کمک‌ها از Sozialamt یا Landratsamt درخواست کنید.",

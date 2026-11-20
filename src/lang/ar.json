@@ -945,7 +945,7 @@
   "t.ggeld.asyl": "في إجراءات اللجوء أو مع Duldung أو الالتزام بالمغادرة لا يوجد Grundsicherungsgeld ولا Grundsicherung، بل إعانات وفق Asylbewerberleistungsgesetz.",
   "t.kiz.asyl": "يتطلب Kinderzuschlag وجود Kindergeld، الذي لا يُمنح عادةً في إجراءات اللجوء.",
   "t.kindergeld.asyl": "في إجراءات اللجوء أو مع Duldung لا يوجد Kindergeld عادةً. توجد استثناءات مع بعض تصاريح الإقامة. تفحص ذلك Familienkasse.",
-  "t.wohngeld.asyl": "مع Aufenthaltsgestattung أو Duldung يمكن الحصول على Wohngeld، لكن فقط إذا لم تحصل على إعانات حسب Asylbewerberleistungsgesetz، مثلًا لأنك تكسب ما يكفي. بدون Duldung (مع إلزام بالمغادرة فقط) لا يوجد Wohngeld. تفحص Wohngeldstelle ذلك.",
+  "t.wohngeld.asyl": "مع Aufenthaltsgestattung أو Duldung يمكن الحصول على Wohngeld، لكن فقط إذا كنت لا تحصل على إعانات حسب Asylbewerberleistungsgesetz، مثلًا لأنك تكسب ما يكفي. تفحص ذلك Wohngeldstelle.",
   "t.wohngeld.asylBezug": "من يحصل على إعانات حسب Asylbewerberleistungsgesetz لا يحصل على Wohngeld (§ 7 WoGG). تدفع Sozialamt تكاليف السكن ضمن هذه الإعانات. اسأل هناك إذا تغيّر شيء.",
   "t.wohngeld.ausreise": "إذا كنت ملزمًا بمغادرة ألمانيا وليس لديك Duldung فلا تحصل على Wohngeld (§ 3 Abs. 5 WoGG). المسؤول عن السكن والمعيشة هو Sozialamt (Asylbewerberleistungen).",
   "t.but.asyl": "إذا كنت تحصل على إعانات حسب Asylbewerberleistungsgesetz، فهناك أيضًا Bildung und Teilhabe للأطفال. قدّم الطلب لدى Sozialamt أو Landratsamt مع هذه الإعانات.",

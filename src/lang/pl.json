@@ -945,7 +945,7 @@
   "t.ggeld.asyl": "W procedurze azylowej, z Duldung lub zobowiązanym do wyjazdu nie ma Grundsicherungsgeld ani Grundsicherung, lecz świadczenia z Asylbewerberleistungsgesetz.",
   "t.kiz.asyl": "Kinderzuschlag wymaga Kindergeld, którego w procedurze azylowej zwykle nie ma.",
   "t.kindergeld.asyl": "W procedurze azylowej lub z Duldung Kindergeld zwykle nie przysługuje. Wyjątki są przy niektórych tytułach pobytowych. Sprawdza to Familienkasse.",
-  "t.wohngeld.asyl": "Z Aufenthaltsgestattung lub Duldung Wohngeld jest możliwe, ale tylko jeśli nie otrzymujesz świadczeń z Asylbewerberleistungsgesetz, na przykład dlatego, że zarabiasz wystarczająco. Bez Duldung (tylko z obowiązkiem wyjazdu) nie ma Wohngeld. Sprawdza to Wohngeldstelle.",
+  "t.wohngeld.asyl": "Z Aufenthaltsgestattung lub Duldung Wohngeld jest możliwy, ale tylko jeśli nie otrzymujesz świadczeń z Asylbewerberleistungsgesetz, na przykład dlatego, że zarabiasz wystarczająco. Sprawdza to Wohngeldstelle.",
   "t.wohngeld.asylBezug": "Osoby otrzymujące świadczenia z Asylbewerberleistungsgesetz nie dostają Wohngeld (§ 7 WoGG). Koszty mieszkania pokrywa Sozialamt w ramach tych świadczeń. Zapytaj tam, jeśli coś się zmieni.",
   "t.wohngeld.ausreise": "Jeśli masz obowiązek wyjazdu z Niemiec i nie masz Duldung, nie dostaniesz Wohngeld (§ 3 Abs. 5 WoGG). Za mieszkanie i utrzymanie odpowiada Sozialamt (Asylbewerberleistungen).",
   "t.but.asyl": "Jeśli otrzymujesz świadczenia z Asylbewerberleistungsgesetz, dzieciom przysługuje też Bildung und Teilhabe. Złóż wniosek w Sozialamt lub Landratsamt razem z tymi świadczeniami.",

@@ -945,7 +945,7 @@
   "t.ggeld.asyl": "În procedură de azil, cu Duldung sau obligat să plece nu există Grundsicherungsgeld sau Grundsicherung, ci prestații după Asylbewerberleistungsgesetz.",
   "t.kiz.asyl": "Kinderzuschlag presupune Kindergeld, care în procedura de azil de obicei nu se acordă.",
   "t.kindergeld.asyl": "În procedură de azil sau cu Duldung de obicei nu există Kindergeld. Există excepții cu anumite permise de ședere. Familienkasse verifică.",
-  "t.wohngeld.asyl": "Cu Aufenthaltsgestattung sau Duldung, Wohngeld este posibil, dar numai dacă nu primiți prestații după Asylbewerberleistungsgesetz, de exemplu pentru că câștigați suficient. Fără Duldung (doar cu obligația de a părăsi țara) nu există Wohngeld. Wohngeldstelle verifică.",
+  "t.wohngeld.asyl": "Cu Aufenthaltsgestattung sau Duldung, Wohngeld este posibil, dar numai dacă nu primiți prestații după Asylbewerberleistungsgesetz, de exemplu pentru că câștigați suficient. Wohngeldstelle verifică.",
   "t.wohngeld.asylBezug": "Cine primește prestații după Asylbewerberleistungsgesetz nu primește Wohngeld (§ 7 WoGG). Costurile locuinței le plătește Sozialamt împreună cu aceste prestații. Întrebați acolo dacă se schimbă ceva.",
   "t.wohngeld.ausreise": "Dacă sunteți obligat să părăsiți Germania și nu aveți Duldung, nu primiți Wohngeld (§ 3 Abs. 5 WoGG). Pentru locuință și trai este responsabil Sozialamt (Asylbewerberleistungen).",
   "t.but.asyl": "Dacă primiți prestații după Asylbewerberleistungsgesetz, copiii primesc și Bildung und Teilhabe. Cereți-le la Sozialamt sau Landratsamt împreună cu aceste prestații.",

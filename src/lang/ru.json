@@ -945,7 +945,7 @@
   "t.ggeld.asyl": "В процедуре убежища, с Duldung или при обязанности выехать нет Grundsicherungsgeld и Grundsicherung, а есть пособия по Asylbewerberleistungsgesetz.",
   "t.kiz.asyl": "Kinderzuschlag требует Kindergeld, который в процедуре убежища обычно не положен.",
   "t.kindergeld.asyl": "В процедуре убежища или с Duldung Kindergeld обычно не положен. Исключения есть при определённых видах на жительство. Это проверяет Familienkasse.",
-  "t.wohngeld.asyl": "С Aufenthaltsgestattung или Duldung Wohngeld возможен, но только если вы не получаете пособия по Asylbewerberleistungsgesetz, например потому что достаточно зарабатываете. Без Duldung (только с обязанностью выезда) Wohngeld нет. Это проверяет Wohngeldstelle.",
+  "t.wohngeld.asyl": "С Aufenthaltsgestattung или Duldung Wohngeld возможен, но только если вы не получаете пособия по Asylbewerberleistungsgesetz, например потому что достаточно зарабатываете. Это проверяет Wohngeldstelle.",
   "t.wohngeld.asylBezug": "Получатели пособий по Asylbewerberleistungsgesetz не получают Wohngeld (§ 7 WoGG). Расходы на жильё оплачивает Sozialamt в рамках этих пособий. Если что-то изменится, спросите там.",
   "t.wohngeld.ausreise": "Если вы обязаны выехать из Германии и у вас нет Duldung, Wohngeld вы не получите (§ 3 Abs. 5 WoGG). За жильё и содержание отвечает Sozialamt (Asylbewerberleistungen).",
   "t.but.asyl": "Если вы получаете пособия по Asylbewerberleistungsgesetz, детям положено и Bildung und Teilhabe. Подайте заявление в Sozialamt или Landratsamt вместе с этими пособиями.",
