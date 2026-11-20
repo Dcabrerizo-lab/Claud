@@ -1,4 +1,19 @@
-# Entwurf: Bereich „Ich habe Schulden“ neu ordnen (nächstes Update)
+# Entwurf: Kachel „Geld und Schulden“ (nächstes Update)
+
+**Entscheidung David 20.11.2026:** „Geld sparen im Alltag“ und „Ich habe Schulden“ werden EINE Startkachel „Geld und Schulden“. Sie ersetzt den Vorschlag unten; die Befunde gelten weiter.
+
+| Unterkachel (Reihenfolge) | Inhalt |
+|---|---|
+| Es ist dringend | Konto gepfändet, Sperre droht, Mahnbescheid, Wohnung gekündigt – Frist und erster Schritt |
+| Was bleibt mir? | Pfändungsrechner Lohn/Konto, P-Konto |
+| Meine Schulden-Liste | Überblick, Druckblatt |
+| Mein Geld planen | Haushaltsplan, Haushaltsbuch, Energie-Check |
+| Sparen im Alltag | Strom, Heizen, Essen mit Rezepten, Verträge |
+| Kostenlose Hilfe | Schuldnerberatung, erste Schritte, Inkasso-Briefe, unseriöse Angebote, Privatinsolvenz |
+
+Das Wort „Schulden“ bleibt im Namen (Auffindbarkeit). Muss unbedingt übersichtlich und intuitiv sein.
+
+## Früherer Stand: Bereich „Ich habe Schulden“
 
 Stand: 20.11.2026 · Auftrag David: Startkachel heißt nur „Ich habe Schulden“; alles zu Schulden nur dort; jede Ebene als Kacheln in derselben Form wie die Startseite.
 
