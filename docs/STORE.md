@@ -1,7 +1,7 @@
 # Store-Angaben
 
 Texte und Antworten zum Kopieren in die Google Play Console und App Store Connect.
-Stand: Version **1.5.0**, VersionCode/Build **147** (20.11.2026).
+Stand: Version **1.6.0**, VersionCode/Build **148** (20.11.2026).
 Alles muss zur [Datenschutzerklärung](../datenschutz.html) passen. Bei Änderungen an der App beide Stellen prüfen.
 Jedes Textfeld steht in einem eigenen Kasten zum Kopieren. Die Zahl in Klammern darunter ist die Zeichenzahl (per Skript gezählt, Leerzeichen und Zeilenumbrüche mitgezählt).
 Store-Texte nur auf Deutsch (bisher keine englischen Einträge).
@@ -10,7 +10,7 @@ Store-Texte nur auf Deutsch (bisher keine englischen Einträge).
 
 | Feld | Wert |
 |---|---|
-| Version | 1.5.0 (VersionCode/Build 147) |
+| Version | 1.6.0 (VersionCode/Build 148) |
 | Kategorie | Play: *Finanzen* · iOS: *Finanzen* (Zweitkategorie *Dienstprogramme*) |
 | Altersfreigabe | Ab 0 / 4+ (keine kritischen Inhalte) |
 | Preis | 1,49 € einmalig (Play Console: „Mit Google Play monetarisieren“), keine In-App-Käufe, keine Werbung, kein Abo. Tester bekommen Gutscheincodes. |
@@ -53,13 +53,14 @@ Was die App prüft
 Kindergeld, Elterngeld, Mutterschaftsgeld, Wohngeld, Kinderzuschlag, Grundsicherungsgeld, Arbeitslosengeld I, Krankengeld, Kinderkrankengeld, Bildung und Teilhabe, Unterhaltsvorschuss, Grundsicherung im Alter und bei Erwerbsminderung, BAföG, Berufsausbildungsbeihilfe, kostenlose Familienversicherung, Pflegegeld, Entlastungsbetrag, Verhinderungspflege und Pflegehilfsmittel, Bayerisches Landespflegegeld, Hilfe zur Pflege, Leistungen bei Behinderung (Pauschbetrag, Schwerbehindertenausweis, Eingliederungshilfe, Budget für Arbeit, Erwerbsminderungsrente, Altersrente für schwerbehinderte Menschen), Landesblindengeld, Blindenhilfe, Wohnberechtigungsschein, Befreiung vom Rundfunkbeitrag und von Zuzahlungen, Leistungen nach dem Asylbewerberleistungsgesetz.
 
 Mein Ordner
-Speichere deine Angaben als Vorgang, zum Beispiel einen je Haushalt, und öffne sie später wieder. Eine PIN schützt sie vor fremden Blicken. Dazu kommen eine Checkliste der Unterlagen und ein Ergebnisblatt zum Drucken oder Mitgeben.
+Speichere deine Angaben als Vorgang, zum Beispiel einen je Haushalt, und öffne sie später wieder. Eine PIN schützt sie vor fremden Blicken. Dazu kommen eine Checkliste der Unterlagen und ein Ergebnisblatt zum Drucken oder Mitgeben. Die Fristen-Übersicht zeigt, was bis wann zu tun ist.
 
 Rund ums Geld
 - Netto aus Brutto, auch für die Rente.
 - Haushaltsplan und Haushaltsbuch: Einnahmen und Ausgaben eintragen oder einen Kassenzettel scannen.
-- Schulden, Pfändung und P-Konto: Du siehst, wie viel geschützt ist, mit Tipps von Schuldnerberatungen.
-- Geld sparen im Alltag: Strom, Heizen, Essen und Sozialtarife.
+- Schulden, Pfändung und P-Konto: Du siehst, wie viel geschützt ist, mit Tipps von Schuldnerberatungen. Dazu eine Schulden-Liste zum Drucken.
+- Geld sparen im Alltag: Strom, Heizen, Essen und Sozialtarife. Mit Energiekosten-Check für Strom und Gas.
+- Wohnen: Höchstbetrag der Miete beim Wohngeld und Hilfe, wenn das Amt sagt, dass deine Wohnung zu viel kostet.
 - Unterhalt für dich selbst, Ersparnisse und Zinsen werden bei den Leistungen berücksichtigt.
 
 Pflege
@@ -88,14 +89,14 @@ Die Leistungen werden für alle Bundesländer geprüft. Für Bayern nennt SoLo d
 
 Wichtig: SoLo ist eine Orientierung, keine Rechtsberatung. Über deinen Anspruch entscheidet immer die zuständige Stelle. SoLo ist keine App einer Behörde. Rechtsstand: November 2026.
 ```
-(3.607 Zeichen)
+(3.854 Zeichen)
 
 ### Neuigkeiten in dieser Version (max. 500)
 
 ```
-Neu: Mein Ordner – Angaben als Vorgang speichern, mit PIN-Sperre. Haushaltsplan und Haushaltsbuch mit Kassenzettel-Scan. Bereich „Ich ziehe aus“ für junge Menschen und Careleaver. Pflege: Unterstützung oder Einschätzung wählen, Leistungen je Pflegegrad. Dazu Schulden-Tipps, Unterlagen-Checkliste, Ergebnisblatt zum Mitgeben, Beratungsmodus mit Paragrafen und die Einkommensart „Unterhalt für sich selbst“. Neue Leiste: Start, Mein Ordner, Einstellungen. Weiter alles offline auf deinem Gerät.
+Neu: Fristen-Übersicht in „Mein Ordner“ – du siehst, was bis wann zu tun ist. Schulden-Liste mit Blatt zum Drucken. Energiekosten-Check für Strom und Gas. Wohngeld: Die App zeigt den Höchstbetrag der Miete. Hilfe, wenn das Amt sagt: Deine Wohnung kostet zu viel. Bei Paaren kann jede Person ein zweites Einkommen eintragen. Haushaltsbuch mit Hinweisen zu Mehrbedarf, Erspartem, Pflege- und Steuer-Belegen. Die App zeigt nur geltendes Recht. Weiter alles offline auf deinem Gerät.
 ```
-(493 Zeichen)
+(479 Zeichen)
 
 ### Kategorie und Tags (Vorschlag)
 
@@ -160,9 +161,9 @@ Wohngeld,Bürgergeld,Grundsicherung,Kinderzuschlag,Bescheid,Widerspruch,Pflegegr
 Gleicher Text wie „Neuigkeiten in dieser Version“ bei Google Play:
 
 ```
-Neu: Mein Ordner – Angaben als Vorgang speichern, mit PIN-Sperre. Haushaltsplan und Haushaltsbuch mit Kassenzettel-Scan. Bereich „Ich ziehe aus“ für junge Menschen und Careleaver. Pflege: Unterstützung oder Einschätzung wählen, Leistungen je Pflegegrad. Dazu Schulden-Tipps, Unterlagen-Checkliste, Ergebnisblatt zum Mitgeben, Beratungsmodus mit Paragrafen und die Einkommensart „Unterhalt für sich selbst“. Neue Leiste: Start, Mein Ordner, Einstellungen. Weiter alles offline auf deinem Gerät.
+Neu: Fristen-Übersicht in „Mein Ordner“ – du siehst, was bis wann zu tun ist. Schulden-Liste mit Blatt zum Drucken. Energiekosten-Check für Strom und Gas. Wohngeld: Die App zeigt den Höchstbetrag der Miete. Hilfe, wenn das Amt sagt: Deine Wohnung kostet zu viel. Bei Paaren kann jede Person ein zweites Einkommen eintragen. Haushaltsbuch mit Hinweisen zu Mehrbedarf, Erspartem, Pflege- und Steuer-Belegen. Die App zeigt nur geltendes Recht. Weiter alles offline auf deinem Gerät.
 ```
-(493 Zeichen)
+(479 Zeichen)
 
 ### URLs
 
@@ -182,7 +183,7 @@ Neu: Mein Ordner – Angaben als Vorgang speichern, mit PIN-Sperre. Haushaltspla
 
 ### Hinweise für die App-Prüfung (App Review Information → Notes)
 
-Die Testschritte passen zu Version 1.5.0 (Startkacheln, Leiste unten: Start, Mein Ordner, Einstellungen; Stand 20.11.2026).
+Die Testschritte passen zu Version 1.6.0 (Startkacheln, Leiste unten: Start, Mein Ordner, Einstellungen; Stand 20.11.2026).
 
 ```
 Die App läuft vollständig offline. Es gibt keine Anmeldung und kein Konto, ein Demo-Zugang ist nicht nötig. Die App überträgt keine Daten: keine Server, keine Werbung, kein Tracking. Alle Angaben bleiben auf dem Gerät.
@@ -201,7 +202,7 @@ Die App ist eine Orientierungshilfe, keine Rechtsberatung und keine App einer Be
 
 Benötigt: Play mindestens 2 Handy-Screenshots (höchstens 8) und eine Werbegrafik (1024 × 500); iOS 6,9″ (1320 × 2868) und 6,5″ (1242 × 2688), optional iPad (höchstens 10 je Größe).
 
-Die Bilder für Version 1.5.0 sind mit `node tools/store-bilder.js` erzeugt (20.11.2026, neues Design mit Leiste Start | Mein Ordner | Einstellungen; Ausgabe nach `store-bilder/`: Motive in allen drei Formaten, Werbegrafik, Symbol 512 × 512, Logo 1024 × 1024). Sie liegen in den Paketen unter `Store-Bilder`.
+Die Bilder sind zuletzt für Version 1.5.0 mit `node tools/store-bilder.js` erzeugt (20.11.2026, neues Design mit Leiste Start | Mein Ordner | Einstellungen; Ausgabe nach `store-bilder/`: Motive in allen drei Formaten, Werbegrafik, Symbol 512 × 512, Logo 1024 × 1024). Sie liegen in den Paketen unter `Store-Bilder`.
 
 Bildschirme im neuen Design (Vorschlag, 8 Motive; Überschrift auf dem Bild in Klammern):
 

@@ -1,10 +1,19 @@
 # STATUS – SoLo (Sozialleistungslotse)
 
-Stand: 20.11.2026. Letzte gebaute Version: **1.5.0, VersionCode/Build 147** (Play-Store-AAB gebaut, nicht veröffentlicht; iOS zu TestFlight hochgeladen (Build 147, Lauf 44729530498 erfolgreich)). **Nächster VersionCode: 148.**
+Stand: 20.11.2026. Letzte gebaute Version: **1.5.0, VersionCode/Build 147** (Play-Store-AAB gebaut, nicht veröffentlicht; iOS zu TestFlight hochgeladen (Build 147, Lauf 44729530498 erfolgreich)). **In Vorbereitung: 1.6.0 / 148** (Version, Store-Texte und Änderungen eingetragen; noch nicht gebaut). **Nächster VersionCode: 148.**
 Übergabe für neue Sitzungen: zuerst diese Datei, dann `CLAUDE.md` (verbindliche Arbeitsregeln).
 Ausführlicher Verlauf (Erledigtes, alte Pläne): `docs/VERLAUF.md`, Abschnitt „Entwicklungsverlauf“.
 
 ## 1. Stand
+
+### Version 1.6.0 (in Vorbereitung, Build 148)
+| Bereich | Inhalt |
+|---|---|
+| Mein Ordner | Fristen-Übersicht (Fristen aus Briefen merken, Rechenweg, abhaken) |
+| Geld | Schulden-Liste mit Druckblatt; Energiekosten-Check (Strom, Gas); zweites Einkommen je Person; Hinweise im Haushaltsbuch zu Mehrbedarf, Erspartem, Pflege- und Steuer-Belegen |
+| Wohnen | Höchstbetrag der Miete beim Wohngeld; Hilfe bei Aufforderung zur Senkung der Wohnkosten |
+| Recht | Nur geltendes Recht: Hinweise auf geplante Änderungen entfernt; Korrekturen Mahnbescheid und Stromschulden |
+| Store | Texte in `docs/STORE.md` (Stand 148), Änderungen in `docs/AENDERUNGEN.md` |
 
 ### Version 1.5.0 (Build 147, 20.11.2026)
 | Bereich | Inhalt |
@@ -43,7 +52,9 @@ Ausführlicher Verlauf (Erledigtes, alte Pläne): `docs/VERLAUF.md`, Abschnitt �
 ## 2. Entscheidungen
 - Korrektheit zuerst: unsichere Fälle „möglich“; nie unsicheren Empfänger einsetzen, dann nur Art der Stelle. Jede Zahl, Grenze und Anschrift mit amtlicher Quelle und Datum.
 - Anschrift nur bei bekannter PLZ. Außerhalb Bayerns nur Kreis/Stadt mit Anschrift; Wohngeld: Kreisanschrift + Weiterleitung (§ 16 SGB I). WBS: Gemeinde zuständig. Kranken-, Pflege-, Rentenversicherung: keine Anschrift (Träger hängt von der Person ab).
-- Kein Vorlesen, keine Fristen-Kalender, keine mitgelieferten Formulare (nur geprüfte amtliche Links).
+- Kein Vorlesen, keine mitgelieferten Formulare (nur geprüfte amtliche Links). Fristen: seit 1.6.0 Fristen-Übersicht in „Mein Ordner“ (frühere Entscheidung „keine Fristen-Kalender“ damit geändert).
+- **Nur geltendes Recht** (Entscheidung 20.11.2026): Die App zeigt keine Hinweise auf geplante Änderungen. Werte 2027 erscheinen erst ab 1.1.2027.
+- Größengrenze der App-Datei: 5 MB (Entscheidung 20.11.2026).
 - Mietobergrenze nur als Orientierung (§ 12 WoGG +10 % + Heizung).
 - Netto: Steuerklasse III für Paar mit einem Einkommen (vorsichtige Annahme).
 - Elterngeld: Pauschale 1.000 €/12 wie der amtliche Rechner.
@@ -54,27 +65,38 @@ Ausführlicher Verlauf (Erledigtes, alte Pläne): `docs/VERLAUF.md`, Abschnitt �
 - Erweiterungen (Prüfpaket) per signierter Lizenzdatei; privater Lizenzschlüssel nie im Repo.
 
 ## 3. Offene Punkte
-- **Parallele Sitzung B** arbeitet auf `claude/b-*`-Branches an den ersten sechs Punkten der Liste unten (Fristen-Übersicht bis zweites Einkommensfeld). Diese Punkte nicht doppelt anfangen; vor Änderungen an `src/app.js`, `src/rules.js`, `src/template.html`, `src/lang/*.json` die `claude/b-*`-Branches ansehen.
-- **Werte 2027**: Prüfung geplant am **1.12.2026** (geplante Aufgabe): eingebaute Werte 2027 gegen endgültige Beschlüsse, Programmablaufplan Lohnsteuer 2027, Pflege-Kinderlosenzuschlag nach PNOG.
+- **Vollprüfungen** am **1.12.2026** und **20.12.2026**. Werte 2027 (Prüfung am 1.12.2026, geplante Aufgabe): eingebaute Werte 2027 gegen endgültige Beschlüsse, Programmablaufplan Lohnsteuer 2027, Pflege-Kinderlosenzuschlag nach PNOG.
 - Pfändungsfreigrenzen zum 1.7.2027 eintragen (`R.pfaendung`, `gueltigBis`, `test/test-netto.js`).
 - pdf.js 4: Umstieg von 3.11.174.
 - `src/lang/de.json` „lead“ sagt noch „in zwei Minuten“ (Startseite und Store sagen „etwa 5 Minuten“), in allen Sprachen angleichen.
-- `CLAUDE.md` nennt noch „Nächster VersionCode: 147“ → auf 148 setzen (Nutzer entscheidet).
 - Muttersprachliche Prüfung Dari, Farsi, Paschtu, Somali, Französisch; Expertenprüfung Pflege.
-- Play Store: AAB 147 hochladen (nur auf Wunsch). Alte Branches auf github.com löschen.
+- Build 148 (Version 1.6.0): vom Nutzer freigegeben; erst bauen, wenn die schweren Tests auf `main` grün sind. Danach hier „Letzte gebaute Version“ und den nächsten VersionCode (149) eintragen, auch in `CLAUDE.md`.
+- Play Store: AAB hochladen (nur auf Wunsch). Alte Branches auf github.com löschen.
 
 ## 4. Nächste Schritte
-1. Fristen-Übersicht (Sitzung B)
-2. Schuldenübersicht (Sitzung B)
-3. Energiekosten-Check (Sitzung B)
-4. Mietgrenze Wohngeld (Sitzung B)
-5. Hilfe bei Kostensenkung (Sitzung B)
-6. Zweites Einkommensfeld für Paare (Sitzung B)
-7. Hinweise im Haushaltsbuch zu Mehrbedarfen, Vermögen, Pflege- und Steuer-Belegen
-8. `main` schützen (nur PRs mit grünem Pflicht-Check) und Auto-Merge einschalten – **nicht erledigt**
-9. Stichtagswerte bündeln
-10. `src/app.js` aufteilen
-11. 1.12.2026: geplante Prüfung der Werte 2027, danach Build 148 nur auf ausdrückliche Anweisung
+Erledigt (in 1.6.0): Aufgaben 1–7 – Fristen-Übersicht, Schulden-Liste, Energiekosten-Check, Mietgrenze Wohngeld, Hilfe bei Kostensenkung, zweites Einkommen je Person, Hinweise im Haushaltsbuch.
+
+1. Build 148 (Version 1.6.0) vom gemergten Stand auf `main`, nach grünen schweren Tests
+2. Vollprüfungen am 1.12.2026 (mit Werten 2027) und am 20.12.2026
+3. `main` schützen (nur PRs mit grünem Pflicht-Check) und Auto-Merge einschalten – **nicht erledigt**
+4. Stichtagswerte bündeln
+5. `src/app.js` aufteilen
+
+### Vorgemerkt für die Version danach
+| Nr. | Vorhaben |
+|---|---|
+| 1 | Werte aus Dokumenten übernehmen (Kontoauszug, Lohnabrechnung, Bescheid) |
+| 2 | Behörden-Hinweis und Quellenliste sichtbar |
+| 3 | Stand der Rechtslage sichtbar |
+| 4 | Fehler melden |
+| 5 | App weiterempfehlen (QR-Code) |
+| 6 | Direktlinks zu amtlichen Online-Anträgen |
+| 7 | Ausfüllhilfe mit Kopierknöpfen |
+| 8 | Beratungsstellen über PLZ |
+| 9 | Beratungsmodus ausbauen |
+| 10 | Freiwillige Rückmeldung |
+
+Regeln dafür: nur geltendes Recht (2027 erst ab 1.1.2027), Größengrenze 5 MB, jede Zahl und Anschrift mit amtlicher Quelle.
 
 ## 5. Arbeitsregeln
 Siehe `CLAUDE.md` (Branch je Sitzung von `origin/main`, Commit-Fuß, Builds und Store nur auf Anweisung, Schlüssel nie im Repo, Tests).
