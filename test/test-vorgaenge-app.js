@@ -130,7 +130,8 @@ const knopf = (s, root, text) => [...root.querySelectorAll('button')].find((b) =
   for (let i = 0; i < 100 && mem['lotse.state']; i++) await warte(50);
   // Geheimtext (Base64) selbst nicht durchsuchen: Zufallsfolgen wie „640“ wären sonst falscher Alarm
   const roh = JSON.stringify(Object.assign({}, mem, { 'lotse.vorgaenge': JSON.stringify(Object.assign({}, JSON.parse(mem['lotse.vorgaenge'] || '{}'), { pin: { geheim: !!(JSON.parse(mem['lotse.vorgaenge'] || '{}').pin || {}).ct } })) }));
-  ck('[vorgaenge] mit PIN: nichts Lesbares im Speicher, PIN nicht gespeichert', !/Erika|Muster|Familie|640|miete/.test(roh) && !roh.includes('2580') && !mem['lotse.state'] && !mem['lotse.haushalt'], roh.slice(0, 300));
+  ck('[vorgaenge] mit PIN: nichts Lesbares im Speicher, PIN nicht gespeichert', !/Erika|Muster|Familie|640|miete/.test(roh) && !roh.includes('2580') && !mem['lotse.state'] && !mem['lotse.haushalt'] && !mem['lotse.haken'] && !mem['lotse.ausziehen'], roh.slice(0, 300));
+  { const V = require('../src/vorgaenge.js'); ck('[vorgaenge] Korrektur 6: Haken, Haushalt und Ausziehen gehören zum Vorgang (DATEN), Beratungsmodus nicht', ['lotse.haken', 'lotse.haushalt', 'lotse.ausziehen'].every((k) => V.DATEN.includes(k)) && !V.DATEN.includes('lotse.beratung')); }
   ck('[vorgaenge] PIN-Sperre als „an“ angezeigt', /PIN-Sperre ist an/.test(d.getElementById('setSicher').textContent));
   ck('[vorgaenge] PIN: 6 Ziffern empfohlen, Selbstsperre ehrlich im Text', /empfohlen: 6/.test(require('../dist/i18n.js').de['vg.pin.label']) && /2 Minuten im Hintergrund/.test(d.getElementById('setSicher').textContent));
   // PIN ändern und ausschalten fragen die bisherige PIN ab

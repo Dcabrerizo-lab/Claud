@@ -2687,7 +2687,7 @@
     g.innerHTML = ''; g.hidden = false;
     if (aktAnsicht === 'ordner') ordnerRender();
     if (LOESCH_TEILE) $('clearWas').textContent = loeschWas(); // nennt den geöffneten Vorgang
-    var h3 = vgEl('h3', null, t('vg.h')); h3.id = 'vgH'; h3.tabIndex = -1; g.appendChild(h3);
+    var h3 = vgEl('h2', 'ans-h', t('vg.h')); h3.id = 'vgH'; h3.tabIndex = -1; g.appendChild(h3);
     if (!bereit) return;
     g.appendChild(vgEl('p', 'small muted', t('vg.t')));
     g.appendChild(vgEl('p', 'vg-aktiv', t('vg.aktiv', { name: vgName(a) })));
@@ -2735,7 +2735,7 @@
     var msgS = vgEl('p', 'msg', msgAlt); msgS.id = 'vgMsgS'; msgS.setAttribute('role', 'status');
     g = gs; // ab hier: Unterseite „Sicherheit und Daten“
     // Automatisch löschen
-    g.appendChild(vgEl('h4', null, t('vg.auto.h')));
+    g.appendChild(vgEl('h3', null, t('vg.auto.h')));
     var al = vgEl('label', 'vg-auto'); al.setAttribute('for', 'vgTage'); al.textContent = t('vg.auto.label');
     var sel = vgEl('select'); sel.id = 'vgTage';
     Vorgaenge.TAGE.forEach(function (n) { var o = vgEl('option', null, n ? t('vg.auto.tage', { n: String(n) }) : t('vg.auto.nie')); o.value = String(n); sel.appendChild(o); });
@@ -2754,7 +2754,7 @@
     g.appendChild(al); g.appendChild(sel);
     g.appendChild(vgEl('p', 'small muted', t('vg.auto.t')));
     // PIN-Sperre (Sichtschutz)
-    g.appendChild(vgEl('h4', null, t('vg.pin.h')));
+    g.appendChild(vgEl('h3', null, t('vg.pin.h')));
     g.appendChild(vgEl('p', 'small', t('vg.pin.t')));
     g.appendChild(vgEl('p', 'warn', t('vg.pin.vergessen')));
     if (!Vorgaenge.webCrypto()) g.appendChild(vgEl('p', 'small muted', t('vg.pin.nicht')));

@@ -586,7 +586,7 @@
   /* Vorgänge (Haushalte): Kürzel-Schild im Kopf, Verwaltung in den Einstellungen, Sperrbildschirm */
   .vg-chip { margin-inline-start: auto; align-self: flex-start; max-width: 11em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-height: 36px; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--accent); background: transparent; color: var(--accent); font: inherit; font-size: 0.85em; font-weight: 700; cursor: pointer; }
   .vg-menu { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 8px 0; }
-  .vg-gruppe h4 { margin: 18px 0 6px; font-size: 1em; }
+  .vg-gruppe h4, #setSicher h3:not(:first-child) { margin: 18px 0 6px; font-size: 1em; }
   .vg-form label { display: block; font-weight: 600; margin: 8px 0 4px; }
   .vg-form input { font: inherit; min-height: 44px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 8px; width: 100%; max-width: 22em; box-sizing: border-box; }
   .vg-form .btn { margin-top: 8px; }
@@ -1024,7 +1024,7 @@
     <div class="cols" id="cols">
       <section aria-labelledby="h-form">
         <h2 id="h-form" style="margin-bottom:12px" data-t="h.form"></h2>
-        <p class="es-link"><span data-t="einfach.vor"></span> <button type="button" class="linkbtn" id="einfachBtn" aria-pressed="false"><span data-t="einfach.btn"></span></button></p>
+        <p class="es-link"><button type="button" class="linkbtn" id="einfachBtn" aria-pressed="false"><span data-t="einfach.btn"></span></button></p>
         <div class="presets-label" id="presetLabel" data-t="preset.label"></div>
         <div class="presets" role="group" aria-labelledby="presetLabel" id="presets" style="margin-bottom:8px"></div>
         <div class="loeschzeile">
