@@ -126,8 +126,10 @@
   .app.sf-erg #cols > section:first-child { display: none; }
   .app.es-an #schritte { display: none; }
   .sf:empty { display: none; }
-  .sf .sf-weg { margin: 14px 0 0; font-size: .9em; }
-  .sf .sf-weg .linkbtn { padding: 10px 0; }
+  /* Leiste oben in „Deine Angaben“: Wahl des Weges und „Angaben löschen“ (src/schritte.js) */
+  .sf-leiste { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin: 4px 0 14px; }
+  .sf-umschalter { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+  .sf-leiste .sf-loeschen { padding: 10px 0; margin-inline-start: auto; }
   .app:not(.sf-an) .sf { margin-bottom: 4px; }
   .sf-hilfe { margin: 0 0 14px; } .sf-hilfe > summary { cursor: pointer; color: var(--accent); font-weight: 600; padding: 8px 0; min-height: 44px; }
   .sf-hilfe p { color: var(--muted); margin: 4px 0 0; }
@@ -1303,6 +1305,7 @@
 
     <section id="einfach" class="einfach" hidden></section>
     <section id="schritte" class="einfach sf" aria-live="off"></section>
+    <div id="presets" hidden></div><!-- Beispiele nur als Testhilfe, nicht sichtbar (David 20.11.2026) -->
 
     <div class="cols" id="cols">
       <section aria-labelledby="h-form">
@@ -1672,9 +1675,6 @@
         </form>
         <div class="form-ende">
           <p class="es-link"><button type="button" class="linkbtn" id="einfachBtn" aria-pressed="false"><span data-t="einfach.btn"></span></button></p>
-          <div class="presets-label" id="presetLabel" data-t="preset.label"></div>
-          <div class="presets" role="group" aria-labelledby="presetLabel" id="presets" style="margin-bottom:8px"></div>
-          <p class="loeschzeile small"><button type="button" class="linkbtn" id="clearLink" data-t="l.link"></button></p>
         </div>
       </section>
 
@@ -1944,13 +1944,6 @@
   <!-- Rückgängig nach „Alle Angaben löschen“ (etwa 10 Sekunden) -->
   <div class="undo" id="undoBar" hidden><span id="undoText"></span> <button type="button" id="undoBtn" data-t="clear.undo"></button></div>
   <!-- Rückfrage vor „Beispiel laden“, wenn schon eigene Angaben da sind (eigener Dialog, kein window.confirm) -->
-  <div class="dlg-hg" id="beispielDlg" hidden>
-    <div class="dlg" role="alertdialog" aria-modal="true" aria-labelledby="beispielDlgH" aria-describedby="beispielDlgT">
-      <h2 id="beispielDlgH" data-t="preset.dlg.h"></h2>
-      <p id="beispielDlgT" data-t="preset.dlg.t"></p>
-      <div class="dlg-knoepfe"><button type="button" class="chip" id="beispielNein" data-t="preset.dlg.nein"></button> <button type="button" class="chip dlg-ja" id="beispielJa" data-t="preset.dlg.ja"></button></div>
-    </div>
-  </div>
 
   <nav class="appnav" id="appnav" aria-label="SoLo">
     <button type="button" data-ansicht="start"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg><span data-t="nav.start"></span></button>

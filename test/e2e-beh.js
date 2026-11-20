@@ -17,7 +17,7 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
   const geb = async (v) => { await p.fill('#gebJahr', v); await p.waitForTimeout(250); };
   const fillNum = async (id, v) => { await p.fill('#' + id, v); await p.press('#' + id, 'Tab'); };
   await p.evaluate(() => document.getElementById('p2').click());
-  await p.click('#p2');
+  await p.evaluate(() => document.getElementById('p2').click());
   // Übersicht und Bedienung
   ok('GdB-Frage erst sichtbar, wenn eine Behinderung angegeben ist', !(await p.isVisible('#gdb')) && await p.isVisible('#bhPerson'));
   ok('Wartezeit-Frage erst bei eingeschränkter Arbeitsfähigkeit sichtbar', !(await p.isVisible('#em5')));
@@ -90,10 +90,9 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
   await fillNum('ek1Brutto', '5000'); c = await card('Wohnberechtigungsschein'); ok('WBS 5.000 € brutto allein: unwahrscheinlich', c.pill === 'nein');
   await fillNum('ek1Brutto', '2000');
 
-  await p.click('#p1');
-  if (await p.isVisible('#beispielDlg')) await p.click('#beispielJa'); // eigene Angaben: erst Rückfrage, dann Beispiel laden
+  await p.evaluate(() => document.getElementById('p1').click());
   ok('Beispiel 1: keine Gesundheits-Unterfragen offen', !(await p.isVisible('#gdb')) && !(await p.isVisible('#em5')));
-  await p.click('#p2'); await sel('bhPerson', 'erwVor25'); await p.check('#bhSelbst'); await sel('gdb', '100'); await sel('blind', 'hoch'); await sel('emStd', 'unter3'); await p.check('#em5'); await sel('pflegegrad', '3');
+  await p.evaluate(() => document.getElementById('p2').click()); await sel('bhPerson', 'erwVor25'); await p.check('#bhSelbst'); await sel('gdb', '100'); await sel('blind', 'hoch'); await sel('emStd', 'unter3'); await p.check('#em5'); await sel('pflegegrad', '3');
   await sel('ausbildung', 'ich'); await p.check('#babBetrieb'); await p.check('#babWohnt'); await fillNum('ek1Brutto', '2000'); await geb('1970');
     // Rundfunk
   await p.check('#b-sozialamt'); c = await card('Befreiung vom Rundfunkbeitrag'); ok('Rundfunk: Sozialamt bezogen => wahrscheinlich', c.pill === 'ja'); await p.uncheck('#b-sozialamt');

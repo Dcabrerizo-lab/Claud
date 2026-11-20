@@ -27,8 +27,8 @@ const names = () => cards().map((c) => c.querySelector('h3').textContent);
 const card = (n) => cards().find((c) => c.querySelector('h3').textContent === n);
 const level = (n) => card(n).querySelector('.pill').className.replace('pill ', '');
 const fire = (el, type) => el.dispatchEvent(new w.Event(type, { bubbles: true }));
-// Beispiel laden; sind schon eigene Angaben da, fragt die App nach – hier bestätigen
-const beispiel = (id) => { d.getElementById(id).click(); if (!d.getElementById('beispielDlg').hidden) d.getElementById('beispielJa').click(); };
+// Beispiel laden (nur noch Testhilfe: unsichtbare Knöpfe in #presets, David 20.11.2026)
+const beispiel = (id) => { d.getElementById(id).click(); };
 const setLang = (c) => { const s = d.getElementById('lang'); s.value = c; fire(s, 'change'); };
 const setSel = (id, v) => { const s = d.getElementById(id); s.value = v; fire(s, 'change'); };
 const setChk = (id, v) => { const c = d.getElementById(id); c.checked = v; fire(c, 'change'); };
@@ -66,25 +66,18 @@ check('Mit Kindern sind Kinder-Fragen sichtbar', [...d.querySelectorAll('.cond-k
 setNum('ek1Brutto', 9000); setNum('ek1Netto', 6500);
 check('Hinweis verschwindet nach eigener Eingabe', d.getElementById('sampleNotice').hidden === true);
 check('Hohes Einkommen: Wohngeld und Kinderzuschlag unwahrscheinlich', level('Wohngeld') === 'nein' && level('Kinderzuschlag') === 'nein');
-// Beispiel laden bei eigenen Angaben: erst Rückfrage im eigenen Dialog, „Abbrechen“ und Esc lassen alles stehen
-d.getElementById('p2').click();
-const dlg = d.getElementById('beispielDlg');
-check('Beispiel über eigene Angaben: Rückfrage-Dialog offen, Fokus auf „Abbrechen“', !dlg.hidden && dlg.querySelector('[role="alertdialog"][aria-modal="true"]') && d.activeElement === d.getElementById('beispielNein'));
-check('Rückfrage: Hintergrund gesperrt (inert)', d.getElementById('cols').hasAttribute('inert'));
-d.getElementById('beispielNein').click();
-check('Rückfrage „Abbrechen“: eigene Angaben bleiben, Hintergrund wieder frei', dlg.hidden && d.getElementById('ek1Brutto').value === '9000' && !d.getElementById('cols').hasAttribute('inert'));
-d.getElementById('p2').click(); dlg.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
-check('Rückfrage Esc: schließt ohne Laden', dlg.hidden && d.getElementById('ek1Brutto').value === '9000');
-d.getElementById('p2').click(); d.getElementById('beispielJa').click();
-check('Rückfrage „Beispiel laden“: Beispiel geladen', dlg.hidden && d.getElementById('ek1Art').value === 'rente');
+check('Keine sichtbaren Beispiele im Leistungs-Check (nur Testhilfe)', d.getElementById('presets').hidden && !d.getElementById('presetLabel') && !d.getElementById('beispielDlg'));
 d.getElementById('p1').click();
-check('Unverändertes Beispiel: kein Dialog beim Wechsel', dlg.hidden && d.getElementById('ek1Art').value !== 'rente');
 // Eingeklappte Karte: zweite Zeile mit Betrag und Art der Stelle statt „Anspruch ist wahrscheinlich“
 const z2 = (id) => d.querySelector('#c-' + id + ' .head2').textContent;
 check('Kartenzeile Wohngeld: ungefährer Betrag und Wohngeldstelle', /ca\. .*€.* im Monat/.test(z2('wohngeld')) && /Wohngeldstelle/.test(z2('wohngeld')) && !/wahrscheinlich/.test(z2('wohngeld')), z2('wohngeld'));
 // Löschen nur an einer Stelle (Einstellungen → Sicherheit und Daten): Zeile sagt, was weg ist; Rückfrage; danach leer
 d.getElementById('p-name').value = 'Test'; fire(d.getElementById('p-name'), 'input');
-check('Leistungs-Check: kein Löschen-Knopf, nur ein Link zu „Sicherheit und Daten“; Löschen-Zeile nennt Formular und Briefdaten', !d.getElementById('clearBtn') && !!d.getElementById('clearLink') && !d.getElementById('presets').contains(d.getElementById('clearLink')) && /Andere Vorgänge bleiben/.test(d.getElementById('clear2').textContent));
+check('Leistungs-Check: „Angaben löschen“ oben in der Leiste von „Deine Angaben“ (vor dem Formular); Löschen-Zeile nennt Formular und Briefdaten', !d.getElementById('clearBtn') && !!d.getElementById('clearLink') && d.getElementById('sfLeiste').contains(d.getElementById('clearLink')) && d.getElementById('clearLink').compareDocumentPosition(d.getElementById('form')) & 4 && /Andere Vorgänge bleiben/.test(d.getElementById('clear2').textContent));
+d.getElementById('clearLink').click();
+check('„Angaben löschen“ oben: dieselbe Rückfrage direkt darunter (Behalten/Löschen)', !!d.querySelector('#schritte #loeschFrage') && /Formular/.test(d.getElementById('loeschFrage').textContent) && d.getElementById('loeschNein').textContent === 'Behalten');
+d.getElementById('loeschNein').click();
+check('„Behalten“: Rückfrage weg, Angaben bleiben', !d.getElementById('loeschFrage') && d.getElementById('p-name').value === 'Test');
 d.getElementById('clear2').click();
 check('Rückfrage nennt genau: Formular und Briefdaten', /Formular/.test(d.getElementById('loeschFrage').textContent) && /Anschrift/.test(d.getElementById('loeschFrage').textContent));
 d.getElementById('loeschJa').click();
@@ -172,8 +165,7 @@ LANGS.forEach((l) => {
   check(l + ': Beschreibung unter der Karte ' + (l === 'de' ? 'fehlt bei Deutsch' : 'vorhanden'), (card('Wohngeld').querySelector('.desc') === null) === (l === 'de'));
   ['p2', 'p3'].forEach((p) => { beispiel(p); });
   check(l + ': Beispiele laden ohne Fehler', errors.length === 0, errors.join('; '));
-  check(l + ': Preset-Knopf übersetzt', d.getElementById('p1').textContent === dict['preset.p1']);
-});
+  });
 check('Sprachwahl wird gemerkt', store['lotse-lang'] === 'so');
 setLang('de');
 

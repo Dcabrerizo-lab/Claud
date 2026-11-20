@@ -1,8 +1,8 @@
 (function () {
   var PRESETS = [
-    { id: 'p1', key: 'preset.p1', v: { adults: 1, kids: 2, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'lohn', ek1Brutto: 2200, ek1Netto: 1750, brutto: 2200, netto: 1750, miete: 950, mietstufe: '3', vermoegen: 3000, gebJahr: 1991, kinder12: false, unterhaltFehlt: true, ausbildung: '', pflegegrad: '', bezug: {} } },
-    { id: 'p2', key: 'preset.p2', v: { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'rente', ek1Brutto: 880, ek1Netto: 780, brutto: 880, netto: 780, miete: 480, mietstufe: '3', vermoegen: 4000, gebJahr: 1955, kinder12: false, unterhaltFehlt: false, ausbildung: '', pflegegrad: '', bezug: {} } },
-    { id: 'p3', key: 'preset.p3', v: { adults: 2, kids: 1, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'lohn', ek1Brutto: 3200, ek1Netto: 2500, ek2Art: 'ohne', brutto: 3200, brutto2: '', netto: 2500, miete: 1100, mietstufe: '5', vermoegen: 8000, gebJahr: 1988, kinder12: false, unterhaltFehlt: false, ausbildung: '', pflegegrad: '', bezug: {} } }
+    { id: 'p1', v: { adults: 1, kids: 2, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'lohn', ek1Brutto: 2200, ek1Netto: 1750, brutto: 2200, netto: 1750, miete: 950, mietstufe: '3', vermoegen: 3000, gebJahr: 1991, kinder12: false, unterhaltFehlt: true, ausbildung: '', pflegegrad: '', bezug: {} } },
+    { id: 'p2', v: { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'rente', ek1Brutto: 880, ek1Netto: 780, brutto: 880, netto: 780, miete: 480, mietstufe: '3', vermoegen: 4000, gebJahr: 1955, kinder12: false, unterhaltFehlt: false, ausbildung: '', pflegegrad: '', bezug: {} } },
+    { id: 'p3', v: { adults: 2, kids: 1, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'lohn', ek1Brutto: 3200, ek1Netto: 2500, ek2Art: 'ohne', brutto: 3200, brutto2: '', netto: 2500, miete: 1100, mietstufe: '5', vermoegen: 8000, gebJahr: 1988, kinder12: false, unterhaltFehlt: false, ausbildung: '', pflegegrad: '', bezug: {} } }
   ];
   var NATIVE = /*NATIVE*/ false; // true in der Store-App (Android und iOS)
   var LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so'];
@@ -555,9 +555,6 @@
     var veraltet = regelnVeraltet();
     $('altNotice').hidden = !veraltet; $('altNotice').textContent = veraltet ? t('alt.hinweis', { stand: Rules.RULES.stand }) : '';
     $('transNotice').hidden = lang === 'de';
-    document.querySelectorAll('#presets button').forEach(function (b) {
-      b.textContent = t(PRESETS.filter(function (p) { return p.id === b.id; })[0].key);
-    });
     buildSelects();
     render();
     if (!$('mappe').hidden) buildMappe();
@@ -613,7 +610,7 @@
   var pr = $('presets');
   PRESETS.forEach(function (p) {
     var b = document.createElement('button');
-    b.type = 'button'; b.className = 'chip'; b.id = p.id;
+    b.type = 'button'; b.className = 'chip'; b.id = p.id; b.textContent = p.id; b.tabIndex = -1; // Beispiele nur noch als Testhilfe (unsichtbar, #presets hidden; David 20.11.2026)
     b.addEventListener('click', function () {
       var laden = function () {
         vgVorBeispiel(); // Beispiel nie in einen gespeicherten Vorgang schreiben: dann öffnet es einen neuen leeren Vorgang
@@ -621,28 +618,11 @@
         edited = false; started = true; pickedUser = {}; $('sampleNotice').hidden = false;
         writeForm(); buildSelects(); render(); save();
       };
-      // Rückfrage nur, wenn das Beispiel wirklich eigene Angaben überschreibt (ein geladenes, unverändertes Beispiel zählt nicht;
-      // ein gespeicherter Vorgang bleibt ohnehin unberührt, weil das Beispiel einen neuen Vorgang öffnet)
-      var gespeichert = tresor && tresor.bereit() && !!tresor.aktiv().name;
-      if (started && edited && !gespeichert) rueckfrage(b, laden); else laden();
+      laden();
     });
     pr.appendChild(b);
   });
 
-  // Rückfrage als eigener Dialog (role="alertdialog"): Fokus bleibt im Dialog, Esc oder „Abbrechen“ schließt, danach Fokus zurück zum Knopf
-  var dlgJa = null, dlgVon = null;
-  function dlgHintergrund(an) { ['cols', 'jump', 'appnav'].forEach(function (id) { var el = $(id); if (!el) return; if (an) el.setAttribute('inert', ''); else el.removeAttribute('inert'); }); }
-  function rueckfrage(von, ja) {
-    dlgJa = ja; dlgVon = von;
-    $('beispielDlg').hidden = false; dlgHintergrund(true);
-    $('beispielNein').focus();
-  }
-  function dlgZu(ok) {
-    var f = dlgJa; dlgJa = null;
-    $('beispielDlg').hidden = true; dlgHintergrund(false);
-    if (ok && f) f();
-    if (dlgVon && dlgVon.focus) dlgVon.focus();
-  }
   // Was „Alle Angaben löschen“ löscht. Neue Teile hier ergänzen: Sprachschlüssel clear.teil.*
   // Ist ein gespeicherter Vorgang geöffnet, nennt der Text ihn: gelöscht wird nur in diesem Vorgang, andere bleiben.
   var LOESCH_TEILE = ['clear.teil.form', 'clear.teil.person'].concat(window.Haushalt ? ['clear.teil.haushalt'] : [], window.Ausziehen ? ['az.h'] : [], window.FristenOrdner ? ['fri.karte'] : [], window.Schulden ? ['sl.ordner'] : [], ['clear.teil.mehr']);
@@ -689,16 +669,6 @@
     nach.parentNode.insertBefore(box, nach.nextSibling);
     tt.tabIndex = -1; tt.focus(); // kein Knopf vorgewählt (NN/g): Fokus auf die Frage
   }
-  $('beispielNein').addEventListener('click', function () { dlgZu(false); });
-  $('beispielJa').addEventListener('click', function () { dlgZu(true); });
-  $('beispielDlg').addEventListener('click', function (e) { if (e.target === $('beispielDlg')) dlgZu(false); });
-  $('beispielDlg').addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') { e.preventDefault(); dlgZu(false); return; }
-    if (e.key === 'Tab') { // nur zwischen den beiden Knöpfen wechseln
-      var a = $('beispielNein'), z = $('beispielJa');
-      if (e.shiftKey && document.activeElement === a) { e.preventDefault(); z.focus(); } else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); }
-    }
-  });
 
   var CHECKS = ['mzG', 'mzGl', 'algZeit', 'grundrente33', 'wfbmEssen', 'teilhabe', 'schwanger', 'ernaehrung', 'warmwasser', 'kinder12', 'kindKrank', 'unterhaltFehlt', 'uvgWechsel', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt', 'uzTitel', 'autoBraucht'];
   var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'ek1bArt', 'ek2bArt', 'bhWeitere', 'baby', 'aufenthalt', 'uvgPartner', 'arbeitSit', 'algMonate', 'krankWochen', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd', 'uzAn', 'wohnart', 'hhAndere', 'euArbeit', 'euJahre'];
@@ -841,8 +811,13 @@
     $('mappeCopy').addEventListener('click', copyMappe);
     // „Drucken“ auch am Ende der Mappe: löst denselben Weg aus wie der Knopf oben (Web: Drucken, App: PDF)
     $('mappePrint2').addEventListener('click', function () { (!$('mappeDruck').hidden ? $('mappeDruck') : $('mappePrint')).click(); });
-    // Löschen gibt es nur an einer Stelle (Einstellungen → Sicherheit und Daten); hier nur der Weg dorthin
-    $('clearLink').addEventListener('click', function () { herkunft = {}; zeigeAnsicht('einst', false); usZeigen('einst', 'sicher', true); });
+    // „Angaben löschen“ oben in „Deine Angaben“ (Leiste von src/schritte.js): dieselbe Rückfrage wie in Sicherheit und Daten, mit Rückgängig
+    $('schritte').addEventListener('click', function (e) {
+      var b = e.target.closest ? e.target.closest('#clearLink') : null; if (!b) return;
+      if (!(tresor && tresor.bereit())) { herkunft = {}; zeigeAnsicht('einst', false); usZeigen('einst', 'sicher', true); return; } // ohne Speicher: Weg zu Sicherheit und Daten
+      var a = tresor.aktiv();
+      loeschFragen($('sfLeiste'), b, loeschEinsTitel(a), loeschWas(), function () { vgLoeschen(a.id, null); }, true);
+    });
     // Anbieter im Impressum: iPhone-App über das Apple-Konto von Natascha Cabrerizo y Polo, Android und Web: David Cabrerizo
     if (NATIVE && window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') { $('anbieterName').textContent = 'Natascha Cabrerizo y Polo'; document.documentElement.classList.add('ios'); }
     $('legalBtn').addEventListener('click', function () { openLegal($('legalBtn')); });

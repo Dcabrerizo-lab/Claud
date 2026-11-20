@@ -42,8 +42,7 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
     await pruefe('Pflegegrad: Ergebnis');
     await p.click('text=Was bedeuten diese Leistungen?'); await pruefe('Erklärseite Pflege'); await p.click('#piZurueck');
     await p.click('text=Zurück zu den Leistungen'); await p.evaluate(() => { localStorage.removeItem('lotse.pflegecheck'); });
-    await p.click('#p1');
-    if (await p.isVisible('#beispielDlg')) { await pruefe('Rückfrage vor dem Beispiel (Dialog)'); await p.click('#beispielJa'); } // eigene Angaben (Pflegegrad): erst Rückfrage
+    await p.evaluate(() => document.getElementById('p1').click());
     await pruefe('Beispiel 1 mit Ergebnis');
     await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'ar'); await pruefe('Arabisch'); await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'de');
     await p.click('#mappeMake'); await pruefe('Antragsmappe'); await p.click('#mappeClose');

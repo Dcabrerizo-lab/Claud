@@ -190,8 +190,23 @@ var Schritte = (function () {
   function knopf(cls, txt, attrs) {
     return '<button type="button" class="' + cls + '"' + (attrs || '') + '>' + txt + '</button>';
   }
-  function linkWeg() {
-    return '<p class="sf-weg">' + knopf('linkbtn', esc(t(weg === 'schritt' ? 'sf.zuAlles' : 'sf.zuSchritt')), ' id="sfWegLink"') + '</p>';
+  // Leiste oben in „Deine Angaben“: Wahl des Weges (immer sichtbar, unabhängig von „Einfache Sprache“) und „Angaben löschen“
+  // (die Rückfrage dazu baut die App, src/app.js). Auf der Auswahlseite nur „Angaben löschen“ (die Karten sind die Wahl).
+  function leiste() {
+    var h = '<div class="sf-leiste" id="sfLeiste">';
+    if (weg) {
+      h += '<div class="sf-umschalter" role="group" aria-label="' + esc(t('sf.wahl.h')) + '">' +
+        knopf('chip', esc(t('sf.wahl.schritt')), ' id="sfWegSchritt" aria-pressed="' + (weg === 'schritt') + '"') +
+        knopf('chip', esc(t('sf.wahl.alles')), ' id="sfWegAlles" aria-pressed="' + (weg === 'alles') + '"') + '</div>';
+    }
+    return h + knopf('linkbtn sf-loeschen', esc(t('l.link')), ' id="clearLink"') + '</div>';
+  }
+  function leisteEinsetzen() {
+    var k = box.querySelector('.sf-kopf');
+    if (k) k.insertAdjacentHTML('afterend', leiste()); else box.insertAdjacentHTML('afterbegin', leiste());
+    var a = box.querySelector('#sfWegSchritt'), b = box.querySelector('#sfWegAlles');
+    if (a) a.addEventListener('click', function () { if (weg !== 'schritt') setzeWeg('schritt', true); });
+    if (b) b.addEventListener('click', function () { if (weg !== 'alles') setzeWeg('alles', true); });
   }
   // Zurück-Knopf im gemeinsamen Aussehen (src/navigation.js, Textknopf „← Zurück“ oben links); eigener Klick: eine Frage zurück
   function zurKnopf(attrs) {
@@ -252,7 +267,6 @@ var Schritte = (function () {
         '<p class="warn" id="sfWarn" role="status" hidden></p><div class="es-nav1">' + knopf('es-btn es-weiter', esc(t('sf.weiter')), ' id="sfWeiter"') +
         (f.skip ? knopf('es-btn es-skip', esc(t(f.skip)), ' id="sfSkip"') : '') + '</div>';
     }
-    h += linkWeg();
     box.innerHTML = h;
     binden(f);
   }
@@ -314,7 +328,6 @@ var Schritte = (function () {
       inp.addEventListener('keydown', function (ev) { if (ev.key === 'Enter') ok(); });
       if (q('#sfSkip')) q('#sfSkip').addEventListener('click', function () { setze(f, ''); weiter(f.id); });
     }
-    box.querySelector('#sfWegLink').addEventListener('click', function () { setzeWeg('alles', true); });
   }
 
   function renderUebersicht() {
@@ -331,18 +344,16 @@ var Schritte = (function () {
       });
       h += '</dl>';
     });
-    h += '<div class="es-nav1">' + knopf('es-btn es-weiter', esc(t('sf.zumErgebnis')), ' id="sfErgebnis"') + '</div>' + linkWeg();
+    h += '<div class="es-nav1">' + knopf('es-btn es-weiter', esc(t('sf.zumErgebnis')), ' id="sfErgebnis"') + '</div>';
     box.innerHTML = h;
     var zb = box.querySelector('#sfZurueck'); if (zb) zb.addEventListener('click', function () { geheZu(zb.getAttribute('data-zu')); });
     box.querySelectorAll('[data-aendern]').forEach(function (b) { b.addEventListener('click', function () { zurUeb = true; geheZu(b.getAttribute('data-aendern')); }); });
     box.querySelector('#sfErgebnis').addEventListener('click', function () { geheZu('ergebnis'); });
-    box.querySelector('#sfWegLink').addEventListener('click', function () { setzeWeg('alles', true); });
   }
 
   function renderErgebnis() {
-    box.innerHTML = '<div class="pa-kopf sf-kopf"><div class="pa-zeile nav-kopf">' + zurKnopf() + '</div></div>' + linkWeg();
+    box.innerHTML = '<div class="pa-kopf sf-kopf"><div class="pa-zeile nav-kopf">' + zurKnopf() + '</div></div>';
     box.querySelector('#sfZurueck').addEventListener('click', function () { geheZu('uebersicht'); });
-    box.querySelector('#sfWegLink').addEventListener('click', function () { setzeWeg('alles', true); });
   }
 
   // Zeichnen und Klassen an der App setzen: sf-an = Formular ausblenden, sf-erg = Ergebnis zeigen
@@ -358,7 +369,8 @@ var Schritte = (function () {
     else if (!Object.keys(ja).length) liste().forEach(function (f) { ja[f.id] = true; }); // Angaben aus dem Formular (oder Beispiel): alle gezeigten Fragen gelten als beantwortet
     if (wahl) renderWahl();
     else if (!schritt) {
-      box.innerHTML = linkWeg(); box.querySelector('#sfWegLink').addEventListener('click', function () { setzeWeg('schritt', true); });
+      box.innerHTML = ''; leisteEinsetzen();
+      if (ctx.nachRender) ctx.nachRender();
       if (fokus) { var fk = ctx.formKopf(); if (fk) { fk.setAttribute('tabindex', '-1'); fk.focus({ preventScroll: true }); } }
       return;
     } else {
@@ -368,6 +380,7 @@ var Schritte = (function () {
       else if (pos === 'ergebnis') renderErgebnis();
       else renderFrage(fr(pos));
     }
+    leisteEinsetzen();
     if (fokus) {
       try { window.scrollTo(0, 0); } catch (e) {}
       var z = pos === 'ergebnis' && schritt ? ctx.ergebnisKopf() : box.querySelector('#sfFrage');

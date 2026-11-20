@@ -59,7 +59,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Nichts als Frist gespeichert', (await p.evaluate(() => localStorage.getItem('lotse.fristen'))) === null);
   await p.click('#briefZurueck');
   // Brief einlesen gibt es nur in den Kacheln: Text einfügen → Werte gelb markiert, Personen aus „Leistungen“
-  await p.click('#appnav [data-ansicht=start]'); await p.click('#goLeistungen'); await p.click('#p1'); await p.click('#appnav [data-ansicht=start]'); await p.click('#goBriefe');
+  await p.click('#appnav [data-ansicht=start]'); await p.click('#goLeistungen'); await p.evaluate(() => document.getElementById('p1').click()); await p.click('#appnav [data-ansicht=start]'); await p.click('#goBriefe');
   ok('Übersicht „Von wem ist der Brief?“: nur Kacheln, kein Scannen, Einfügen oder PDF', await p.isVisible('#briefKacheln') && !(await p.isVisible('#einlesen')) && !(await p.isVisible('#elScan')) && !(await p.isVisible('#elPdf')));
   await p.click('#brief-jc'); await p.click('#elPaste');
   await p.fill('#elText', 'Jobcenter Musterstadt\nDatum: 12.03.2026\nGrundsicherungsgeld nach dem SGB II\nRegelbedarf 563,00 357,00 920,00\nKosten der Unterkunft und Heizung 755,00\nZahlbetrag 1.501,33');

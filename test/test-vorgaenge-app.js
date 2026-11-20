@@ -67,7 +67,6 @@ const offenName = (s) => { const z = s.d.querySelector('#setHaushalte .vg-offen 
   await warte(400);
   const st = JSON.parse(mem['lotse.vorgaenge']).klar;
   const fam = st.liste.find((v) => v.name === 'Familie M.');
-  ck('[vorgaenge] Beispiel bei gespeichertem Vorgang: keine Rückfrage (überschreibt nichts)', d.getElementById('beispielDlg').hidden);
   ck('[vorgaenge] Beispiel öffnet einen neuen Vorgang', st.liste.length === 2 && st.aktiv !== fam.id);
   ck('[vorgaenge] gespeicherter Vorgang bleibt unverändert', JSON.parse(fam.daten['lotse.state']).s.miete === 640, fam.daten);
   ck('[vorgaenge] Beispiel ohne Antragsdaten des gespeicherten Vorgangs', d.getElementById('p-name').value === '');
@@ -92,7 +91,7 @@ const offenName = (s) => { const z = s.d.querySelector('#setHaushalte .vg-offen 
   const c2 = d.getElementById('clear2'), va = d.getElementById('vgAlle');
   ck('[vorgaenge] Löschen: „Nur „Familie M.“ löschen“ nennt, was weg ist', /Nur „Familie M\.“ löschen/.test(c2.textContent) && /Fristen/.test(c2.textContent) && /Andere Vorgänge bleiben/.test(c2.textContent), c2.textContent);
   ck('[vorgaenge] Löschen: „Alles auf diesem Gerät löschen“ nennt Vorgänge und PIN, Sprache bleibt', /Alles auf diesem Gerät löschen/.test(va.textContent) && /PIN/.test(va.textContent) && /Sprache/.test(va.textContent));
-  ck('[vorgaenge] keine Löschen-Knöpfe im Leistungs-Check, nur ein Link dorthin', !d.getElementById('clearBtn') && !!d.getElementById('clearLink'));
+  ck('[vorgaenge] im Leistungs-Check nur der Textknopf „Angaben löschen“ oben (mit Rückfrage)', !d.getElementById('clearBtn') && !!d.getElementById('clearLink'));
   [...d.querySelectorAll('[data-pick]')].slice(0, 1).forEach((cb) => { cb.checked = true; cb.dispatchEvent(new s.w.Event('change', { bubbles: true })); });
   d.getElementById('mappeMake').click(); // Haken gibt es nur in der Antragsmappe
   const hk = d.querySelector('#m-unterlagen input[data-haken]'); hk.checked = true; hk.dispatchEvent(new s.w.Event('change', { bubbles: true }));

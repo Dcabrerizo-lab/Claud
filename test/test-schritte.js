@@ -61,13 +61,14 @@ const ohne = (o) => JSON.stringify(o.results.map((r) => [r.id, r.level, r.tx]));
   check('Beim Öffnen: Auswahl mit zwei Karten, Formular ausgeblendet', A.$('sfWahlSchritt') && A.$('sfWahlAlles') && A.appEl.classList.contains('sf-an') && A.frage() === L['sf.wahl.h']);
   check('Karten: Schritt für Schritt (empfohlen) und Alles auf einer Seite', A.$('sfWahlSchritt').textContent.includes(L['sf.wahl.schritt.t']) && A.$('sfWahlAlles').textContent.includes(L['sf.wahl.alles.t']));
   A.$('sfWahlAlles').click();
-  check('Alles auf einer Seite: Formular sichtbar, kleiner Link „Schritt für Schritt“', !A.appEl.classList.contains('sf-an') && A.$('sfWegLink').textContent === L['sf.zuSchritt'] && store['lotse.checkWeg'] === 'alles');
+  check('Alles auf einer Seite: Formular sichtbar, oben die Wahl (gedrückt: Alles auf einer Seite) und „Angaben löschen“', !A.appEl.classList.contains('sf-an') && A.$('sfWegAlles').getAttribute('aria-pressed') === 'true' && A.$('sfWegSchritt').textContent === L['sf.wahl.schritt'] && !!A.$('clearLink') && A.$('sfLeiste').compareDocumentPosition(A.$('h-form')) & 4 && store['lotse.checkWeg'] === 'alles');
   A = app(store);
   check('Wahl wird pro Gerät gemerkt (keine Auswahl beim nächsten Öffnen)', !A.$('sfWahlSchritt') && !A.appEl.classList.contains('sf-an'));
-  A.$('sfWegLink').click();
+  A.$('sfWegSchritt').click();
   check('Umschalten auf Schritt für Schritt: erste Frage', A.frage() === L['sf.q.adults'] && A.appEl.classList.contains('sf-an') && store['lotse.checkWeg'] === 'schritt');
   check('Erste Frage: kein Zurück, Bereich „Haushalt“, Aufklapper „Warum fragt die App das?“', !A.$('sfZurueck') && A.$('schritte').querySelector('.sf-bereich').textContent === L['sf.b.haus'] && A.$('schritte').querySelector('details.sf-hilfe summary').textContent === L['sf.warum']);
-  check('Link „Alles auf einer Seite zeigen“ oben sichtbar', A.$('sfWegLink').textContent === L['sf.zuAlles']);
+  check('Wahl des Weges oben sichtbar (vor der Frage), „Angaben löschen“ daneben', A.$('sfWegSchritt').getAttribute('aria-pressed') === 'true' && A.$('sfWegAlles').textContent === L['sf.wahl.alles'] && A.$('sfLeiste').compareDocumentPosition(A.$('sfFrage')) & 4 && !!A.$('clearLink'));
+  check('Wahl unabhängig von „Einfache Sprache“: nach dem Umschalten gleich', (() => { A.$('einfacheSpracheBtn').click(); const ok = !!A.$('sfWegSchritt') && A.$('sfWegSchritt').getAttribute('aria-pressed') === 'true' && !!A.$('sfFrage') && !A.appEl.querySelector('#einfach:not([hidden])'); A.$('einfacheSpracheBtn').click(); return ok; })());
 
   // Beratungsmodus ohne eigene Wahl: gleich „Alles auf einer Seite“
   const sb = { 'lotse.beratung': '1' };
@@ -127,11 +128,11 @@ const ohne = (o) => JSON.stringify(o.results.map((r) => [r.id, r.level, r.tx]));
   const s1 = JSON.parse(JSON.stringify(A.solo().state())), e1 = A.solo().eval();
 
   // ---------- 3. Umschalten ohne Verlust, gleiches Ergebnis ----------
-  A.$('sfWegLink').click(); await A.warte();
+  A.$('sfWegAlles').click(); await A.warte();
   check('Umschalten auf „Alles auf einer Seite“: Formular zeigt dieselben Antworten', !A.appEl.classList.contains('sf-an') && A.$('miete').value === '700' && A.$('kids').textContent === '2' && A.$('ek1Art').value === 'lohn' && A.$('b-kindergeld').checked);
   check('Umschalten: Ergebnis identisch', ohne(A.solo().eval()) === ohne(e1));
   A.$('miete').value = '720'; A.fire(A.$('miete'), 'change');
-  A.$('sfWegLink').click(); await A.warte();
+  A.$('sfWegSchritt').click(); await A.warte();
   check('Zurück zu Schritt für Schritt: Änderung im Formular in der Übersicht/Ergebnis', A.solo().state().miete === 720 && A.appEl.classList.contains('sf-an'));
 
   // ---------- 4. Gleiche Antworten im Formular -> gleiches Ergebnis ----------
