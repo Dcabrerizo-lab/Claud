@@ -211,6 +211,19 @@ const Rules = (function () {
     autoPruefen: 15000,
     bafoeg: { freiAllein: 1690, freiPaar: 2540, jeKind: 770, spanne: 1200, vermBis29: 15000, vermAb30: 45000 },
     pflege: { geld: { 2: 347, 3: 599, 4: 800, 5: 990 }, entlastung: 131 },
+    // Pflege-Startkachel „Welche Unterstützung gibt es?“. Beträge oben (pflege, pflegeSach, pflegeTages, entlastungsbudget, beh.verbrauch,
+    // beh.wohnumfeld). Quelle: BMG, Online-Ratgeber Pflege „Verhinderungspflege“, „Pflege zu Hause“, „Weitere Leistungen und Angebote zur
+    // Unterstützung im Alltag“ und „Pflege-Wohngemeinschaften“ (alle Stand 14.9.2026, abgerufen 20.11.2026); §§ 36–45b SGB XI.
+    // wohngruppe: Wohngruppenzuschlag 224 € im Monat ab Pflegegrad 1 (§ 38a SGB XI, BMG „Pflege-Wohngemeinschaften“, Stand 14.9.2026).
+    // Familienentlastende Dienste: laut BMG Beispiel für anerkannte Angebote zur Unterstützung im Alltag (Entlastungsbetrag, § 45a/§ 45b);
+    // Verhinderungspflege „kann auch stundenweise in Anspruch genommen werden“ (BMG „Verhinderungspflege“, Stand 14.9.2026).
+    // Ohne festen Betrag: Kombination (anteilig, § 38), Hausnotruf (Zuschuss nach Hilfsmittelverzeichnis, § 40 Abs. 1), Pflegekurse (§ 45),
+    // Pflegeberatung (§ 7a), Rentenbeiträge (§ 44, nach Pflegegrad und Leistungsart), Pflegezeit (PflegeZG, FPfZG).
+    // Gilt seit 1.1.2025 (Beträge) bzw. 1.7.2025 (gemeinsamer Jahresbetrag); bis zur Prüfung am pruefenAb (oben).
+    // Reform: Entwurf Pflegeneuordnungsgesetz (PNOG), BT-Drs. 21/8869 (hib 873/2026 vom 2.11.2026; BMG-FAQ Stand 28.10.2026), noch nicht beschlossen.
+    // Nach dem Beschluss: status auf 'beschlossen' setzen, Beträge mit Stichtag eintragen und den Reformsatz in der App anpassen.
+    pflegeUnterst: { stand: '14.9.2026', abgerufen: '20.11.2026', quelle: 'Bundesministerium für Gesundheit, Online-Ratgeber Pflege; SGB XI', wohngruppe: 224,
+      reform: { status: 'entwurf', jahr: 2027, drs: '21/8869', datum: '2.11.2026' } },
     // Menschen mit Behinderung. Quellen: § 33b Abs. 3 EStG (Pauschbeträge), § 32a EStG (Grundfreibetrag 2026),
     // ZBFS Bayern, Infoblatt Blindengeld (Stand 1.7.2026), § 40 SGB XI, § 61 SGB IX, § 208 SGB IX, Art. 11 BayWoFG
     beh: {
@@ -1464,6 +1477,43 @@ const Rules = (function () {
     return mk(id, 'ja', 'ja', tx);
   }
 
+  // Übersicht der Pflegeleistungen (Pflege-Startkachel, „Welche Unterstützung gibt es?“): je Leistung ab welchem Pflegegrad sie gilt
+  // (0 = auch ohne Pflegegrad), Betrag je Pflegegrad (null = kein fester Betrag), Einheit (monat, jahr, mass = je Maßnahme), „bis“ = Höchstbetrag,
+  // Art (konto = Geld aufs Konto, budget = die Pflegekasse bezahlt Rechnungen, zuschuss, frei = kostenlos, schutz = Absicherung) und Rechtsgrundlage.
+  // Pflegegrad 1: nur, was dort gilt (§ 28a SGB XI).
+  function pflegeLeistungen() {
+    const je = (b, ab) => { const o = {}; for (let g = 1; g <= 5; g++) o[g] = g >= ab ? (typeof b === 'object' ? b[g] : b) : null; return o; };
+    const U = R.pflegeUnterst;
+    return [
+      { id: 'geld', ab: 2, art: 'konto', betrag: je(R.pflege.geld, 2), einheit: 'monat', bis: false, recht: '§ 37 SGB XI' },
+      { id: 'dienst', ab: 2, art: 'budget', betrag: je(R.pflegeSach, 2), einheit: 'monat', bis: true, recht: '§ 36 SGB XI' },
+      { id: 'entl', ab: 1, art: 'budget', betrag: je(R.pflege.entlastung, 1), einheit: 'monat', bis: true, recht: '§ 45b SGB XI' },
+      { id: 'verh', ab: 2, art: 'budget', betrag: je(R.entlastungsbudget, 2), einheit: 'jahr', bis: true, recht: '§§ 39, 42, 42a SGB XI' },
+      { id: 'tages', ab: 2, art: 'budget', betrag: je(R.pflegeTages, 2), einheit: 'monat', bis: true, recht: '§ 41 SGB XI' },
+      { id: 'kombi', ab: 2, art: 'konto', betrag: null, recht: '§ 38 SGB XI' },
+      { id: 'hilfs', ab: 1, art: 'budget', betrag: je(R.beh.verbrauch, 1), einheit: 'monat', bis: true, recht: '§ 40 Abs. 2 SGB XI' },
+      { id: 'notruf', ab: 1, art: 'zuschuss', betrag: null, recht: '§ 40 Abs. 1 SGB XI' },
+      { id: 'umbau', ab: 1, art: 'zuschuss', betrag: je(R.beh.wohnumfeld, 1), einheit: 'mass', bis: true, recht: '§ 40 Abs. 4 SGB XI' },
+      { id: 'wg', ab: 1, art: 'zuschuss', betrag: je(U.wohngruppe, 1), einheit: 'monat', bis: false, recht: '§ 38a SGB XI' },
+      { id: 'kurs', ab: 0, art: 'frei', betrag: null, recht: '§ 45 SGB XI' },
+      { id: 'beratung', ab: 0, art: 'frei', betrag: null, recht: '§§ 7a, 7c, 37 Abs. 3 SGB XI' },
+      { id: 'rente', ab: 2, art: 'schutz', betrag: null, recht: '§ 44 SGB XI' },
+      { id: 'zeit', ab: 1, art: 'schutz', betrag: null, recht: 'PflegeZG, FPfZG, § 44a SGB XI' }
+    ];
+  }
+  // Was bei einem Pflegegrad gilt (0 = noch keiner): Liste aus pflegeLeistungen, Betrag für diesen Pflegegrad als Zahl
+  function pflegeFuer(pg) {
+    pg = [1, 2, 3, 4, 5].indexOf(Number(pg)) >= 0 ? Number(pg) : 0;
+    return pflegeLeistungen().filter((l) => pg >= l.ab && (pg > 0 || l.ab === 0))
+      .map((l) => ({ ...l, wert: l.betrag && pg ? l.betrag[pg] : null }));
+  }
+  // Kombinationsleistung (§ 38 SGB XI): anteiliges Pflegegeld, wenn der Pflegedienst nur einen Teil des Sachleistungsbudgets nutzt
+  function pflegeKombi(pg, sachGenutzt) {
+    if (!R.pflege.geld[pg]) return 0;
+    const anteil = Math.min(1, Math.max(0, sachGenutzt / R.pflegeSach[pg]));
+    return Math.round(R.pflege.geld[pg] * (1 - anteil) * 100) / 100;
+  }
+
   // Verhinderungspflege, Pflegehilfsmittel, Wohnumfeld (SGB XI)
   function pflegeplus(h) {
     const id = 'pflegeplus';
@@ -1879,7 +1929,7 @@ const Rules = (function () {
     return { h, results: sorted, zusammen: zus };
   }
 
-  return { evaluate, nettoLohn, bruttoAusNetto, nettoRente, bruttoAusNettoRente, lohnAnnahmen, pfaendung, pfaendFreibetrag, pkonto, RULES: R, WG, limits, wgYmax, wgMiete, wgCap, wgHeiz, wgBetrag, roman, sgb2Freibetrag, kizWohnanteil, haushaltsFreibetrag, derive, NAMES, STEPS, RECHT, ZUST_LAND, zustLand };
+  return { evaluate, pflegeLeistungen, pflegeFuer, pflegeKombi, nettoLohn, bruttoAusNetto, nettoRente, bruttoAusNettoRente, lohnAnnahmen, pfaendung, pfaendFreibetrag, pkonto, RULES: R, WG, limits, wgYmax, wgMiete, wgCap, wgHeiz, wgBetrag, roman, sgb2Freibetrag, kizWohnanteil, haushaltsFreibetrag, derive, NAMES, STEPS, RECHT, ZUST_LAND, zustLand };
 })();
 
 if (typeof module !== 'undefined') module.exports = Rules;

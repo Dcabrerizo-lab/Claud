@@ -210,6 +210,10 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Pflegesachleistung und Kombinationsleistung (§§ 36, 38), Tages- und Nachtpflege (§ 41) | ✓ | `pfl-sach` |
 | Rentenversicherung für pflegende Angehörige (§ 44) | ◐ | `pfl-rente` |
 | Pflegezeit, Familienpflegezeit, Pflegeunterstützungsgeld | ◐ | `pfl-zeit` |
+| Pflege-Startkachel „Welche Unterstützung gibt es?“: nur Leistungen des gewählten Pflegegrads (Pflegegrad 1 nach § 28a SGB XI ohne Pflegegeld, Sachleistung, Verhinderungs-/Kurzzeitpflege, Tagespflege, Rentenbeiträge; ohne Pflegegrad nur Pflegekurse und Pflegeberatung) | ✓ | `pu-pg` |
+| Feste Beträge 2026 der Übersicht: Pflegegeld, Sachleistung, Tages-/Nachtpflege, Entlastungsbetrag 131 €, gemeinsamer Jahresbetrag 3.539 € (§ 42a), Pflegehilfsmittel 42 €, Wohnumfeld 4.180 € je Maßnahme, Wohngruppenzuschlag 224 € (§ 38a); Quelle BMG, Online-Ratgeber Pflege, Stand 14.9.2026, abgerufen 20.11.2026 | ✓ | `pu-betrag` |
+| Verhinderungspflege auch stundenweise (BMG „Verhinderungspflege“, Stand 14.9.2026); Familienentlastende Dienste als anerkanntes Angebot zur Unterstützung im Alltag über den Entlastungsbetrag (BMG „Weitere Leistungen und Angebote zur Unterstützung im Alltag“, Stand 14.9.2026); Bezahlung des FED als Verhinderungspflege nur „möglich“ | ✓ | `pu-fed` |
+| Darstellung: „pro Monat“ und „pro Jahr“ getrennt, Alltagswort mit Amtswort in Klammern, Reformentwurf 2027 in einem Satz, Stellen nur als Art (Pflegekasse, Pflegestützpunkt). Erklärtexte nur Deutsch (wie Pflege-Assistent) | ✓ | `pu-ansicht` |
 
 ## Bayerisches Landespflegegeld (BayLPflGG)
 <!-- karten: lpg -->

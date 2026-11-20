@@ -138,5 +138,7 @@
  "ww.regel": "Wohngeld und Kinderzuschlag gehen vor, wenn sie zusammen mit deinem Einkommen für den Bedarf des Haushalts reichen. Reichen sie nicht, gibt es Grundsicherungsgeld.",
  "ww.tipp": "Tipp: Stelle beide Anträge gleichzeitig. Dann geht kein Monat verloren. Die Ämter klären untereinander, welcher Weg gilt.",
  "cb.kindKrank": "Ein Kind ist gerade krank. Deshalb kann ich nicht arbeiten gehen.",
+ "pu.hilfe.t": "Geld und Hilfen von der Pflegekasse. Passend zu deinem Pflegegrad.",
+ "pu.pg.hint": "Das steht im Brief von der Pflegekasse.",
  "home.pflege.t": "Pflegegrad und Leistungen zur Unterstützung bei der Pflege"
 }
