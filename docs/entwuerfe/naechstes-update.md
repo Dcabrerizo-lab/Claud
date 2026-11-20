@@ -34,3 +34,8 @@ Hinweis zur Ergebnisliste: Die Mappe zeigt Schritte und Unterlagen nur für Leis
 
 ## Schon vorgemerkt (siehe STATUS.md)
 Dokumente einlesen, Brief-Hinweis/Quellen, Pflege-Auswahl, Spartipps der Schuldnerberatung u. a.
+
+## Für das Update nach 1.7.0 (David, 20.11.2026)
+- Seite „Deine Angaben“: Sprachauswahl entfernen (Sprache nur noch in Einstellungen und oben).
+- Geld und Schulden neu (PR #76, nach Fable-Prüfung RDG).
+- Beratungsmodus: nur zahlungswürdige Kernfunktionen (siehe berater-mehrwert.md).
