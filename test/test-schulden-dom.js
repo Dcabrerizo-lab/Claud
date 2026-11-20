@@ -1,4 +1,4 @@
-// Schulden-Liste in der echten Oberfläche (dist, JSDOM): Einstieg über Geld sparen → Schulden, Eintragen, Gruppen nach Dringlichkeit,
+// Schulden-Liste in der echten Oberfläche (dist, JSDOM): Einstieg über Geld und Schulden → Meine Schulden-Liste, Eintragen, Gruppen nach Dringlichkeit,
 // Frist, Speichern je Vorgang, „Alle Angaben löschen“ mit Rückgängig, nur Text (kein HTML), Blatt für die Beratung, Haushaltsplan, Mein Ordner, Sprachen.
 'use strict';
 const { JSDOM } = require('jsdom');
@@ -22,9 +22,8 @@ const klick = (el) => el.dispatchEvent(new w.MouseEvent('click', { bubbles: true
 const tx = (e) => e.textContent.replace(/[  ]/g, ' ');
 const I = w.eval('I18N');
 const zurListe = () => {
-  klick($('goSparen'));
-  const k = [...d.querySelectorAll('#spInhalt button.weg')].find((b) => b.textContent.includes(I.de['sp.schulden']));
-  klick(k); klick($('sp-schuldenliste'));
+  klick($('goGeld'));
+  klick(d.querySelector('#spInhalt .gs-liste'));
 };
 const eintragen = (o) => {
   klick($('sl-neu'));
@@ -34,9 +33,9 @@ const eintragen = (o) => {
 setTimeout(() => {
   try {
     w.__solo.lang('de');
-    check('[schuldenliste] keine neue Startkachel (6 bleiben)', d.querySelectorAll('#v-start .sk').length === 6, d.querySelectorAll('#v-start .sk').length);
+    check('[schuldenliste] keine eigene Startkachel (5: Geld und Schulden ist eine Kachel)', d.querySelectorAll('#v-start .sk').length === 5, d.querySelectorAll('#v-start .sk').length);
     zurListe();
-    check('[schuldenliste] Knopf unter „Erste Schritte“ öffnet die Liste', !$('v-schulden').hidden && $('v-sparen').hidden);
+    check('[schuldenliste] Kachel „Meine Schulden-Liste“ in „Geld und Schulden“ öffnet die Liste', !$('v-schulden').hidden && $('v-sparen').hidden);
     check('[schuldenliste] leere Liste mit Einleitung', /Schreib alle Schulden auf/.test($('slInhalt').textContent) && !$('slSumme'));
     // Eintrag anlegen
     eintragen({ g: 'Stadtwerke', art: 'energie', stand: '512,30', st: 'mahnung' });

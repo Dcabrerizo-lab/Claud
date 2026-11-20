@@ -895,7 +895,7 @@
   /* Startseite als Kachel-Raster (Kacheln wie Richtung 3 „Bunt und bildhaft“, Farben aus der warmen Palette; weiße Schrift mind. 4,5:1).
      Spaltenbreite in em: bei 320 px oder großer Schrift bricht das Raster auf eine Spalte um. Jeder Bereich hat seine Farbe. */
   /* Bereichsfarben: siehe Palette oben (--c-*) */
-  .start-raster { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5em), 1fr)); gap: 12px; margin: 18px 0; max-width: 640px; }
+  .start-raster, .sk-raster { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5em), 1fr)); gap: 12px; margin: 18px 0; max-width: 640px; }
   .sk { --c: var(--c-leistungen); display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; gap: 14px; min-height: 150px; width: 100%; padding: 16px; border: 0; border-radius: 26px;
     background: var(--c); color: var(--on-c); font: inherit; text-align: start; cursor: pointer; box-shadow: 0 2px 0 color-mix(in srgb, var(--c) 70%, black); }
   .sk:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
@@ -906,7 +906,7 @@
   .hero-los { display: inline-flex; align-items: center; gap: 8px; min-height: 52px; padding: 0 24px; border-radius: 999px; background: var(--on-c); color: var(--c-leistungen); font-family: var(--font-display); font-weight: 800; font-size: 1.05rem; }
   [dir="rtl"] .pfeil { display: inline-block; transform: scaleX(-1); }
   .start-raster > .sk:last-child:nth-child(even) { grid-column: 1 / -1; min-height: 0; }
-  .sk-briefe { --c: var(--c-briefe); } .sk-pfaendung { --c: var(--c-pfaendung); } .sk-sparen { --c: var(--c-sparen); } .sk-pflege { --c: var(--c-pflege); } .sk-ausziehen { --c: var(--c-ausziehen); }
+  .sk-briefe { --c: var(--c-briefe); } .sk-geld { --c: var(--c-sparen); } .sk-pflege { --c: var(--c-pflege); } .sk-ausziehen { --c: var(--c-ausziehen); }
   .sk-sym { flex: none; width: 48px; height: 48px; border-radius: 16px; display: grid; place-items: center; background: color-mix(in srgb, var(--on-c) 20%, transparent); color: var(--on-c); }
   .sk-sym svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
   .sk-txt { display: grid; gap: 4px; min-width: 0; overflow-wrap: anywhere; hyphens: auto; }
@@ -937,14 +937,26 @@
   .pu-jahr .pu-einheit { background: var(--c-pflege); color: var(--on-c); }
   .pu-art { color: var(--muted); }
   .pu-weitere { margin: 16px 0; } .pu-weitere > summary { font-weight: 600; cursor: pointer; padding: 8px 0; }
-  .app[data-ansicht="sparen"] .weg-sym { background: var(--c-sparen); color: var(--on-c); }
+  .gs-kopf { margin: 0 0 4px; }
+  .gs-box { border: 1px solid var(--line); border-inline-start: 4px solid var(--c-briefe-t); border-radius: var(--r-item); background: var(--surface); padding: 12px 14px; margin: 12px 0; }
+  .gs-box h3 { font-size: 1em; margin: 0 0 4px; }
+  .gs-box p { margin: 0; }
+  .gs-box.gs-schritt { border-inline-start-color: var(--c-leistungen-t); }
   /* ===== Gruppenfarben: innerhalb einer Kachel- bzw. Knopfgruppe keine Farbe doppelt (docs/FARBEN.md, geprüft in tools/kontrast-pruefen.js) ===== */
-  .app[data-ansicht="sparen"] #spInhalt > .weg-liste > .weg:nth-child(1) .weg-sym { background: var(--c-wohngeld); } /* gruppe sparen */
-  .app[data-ansicht="sparen"] #spInhalt > .weg-liste > .weg:nth-child(2) .weg-sym { background: var(--c-briefe); } /* gruppe sparen */
-  .app[data-ansicht="sparen"] #spInhalt > .weg-liste > .weg:nth-child(3) .weg-sym { background: var(--c-sparen); } /* gruppe sparen */
-  .app[data-ansicht="sparen"] #spInhalt > .weg-liste > .weg:nth-child(4) .weg-sym { background: var(--c-sozialamt); } /* gruppe sparen */
-  .app[data-ansicht="sparen"] #spInhalt > .weg-liste > .weg:nth-child(5) .weg-sym { background: var(--c-pfaendung); } /* gruppe sparen */
-  .app[data-ansicht="sparen"] #spInhalt > .weg-liste > .weg:nth-child(6) .weg-sym { background: var(--c-familienkasse); } /* gruppe sparen */
+  #spInhalt .sk-raster > .gs-dringend { --c: var(--c-briefe); } /* gruppe geld */
+  #spInhalt .sk-raster > .gs-bleibt { --c: var(--c-pfaendung); } /* gruppe geld */
+  #spInhalt .sk-raster > .gs-liste { --c: var(--c-sparen); } /* gruppe geld */
+  #spInhalt .sk-raster > .gs-planen { --c: var(--c-familienkasse); } /* gruppe geld */
+  #spInhalt .sk-raster > .gs-sparen { --c: var(--c-wohngeld); } /* gruppe geld */
+  #spInhalt .sk-raster > .gs-hilfe { --c: var(--c-leistungen); } /* gruppe geld */
+  #spInhalt .sk-raster > .gs-d-konto { --c: var(--c-pfaendung); } /* gruppe dringend */
+  #spInhalt .sk-raster > .gs-d-strom { --c: var(--c-wohngeld); } /* gruppe dringend */
+  #spInhalt .sk-raster > .gs-d-mahn { --c: var(--c-briefe); } /* gruppe dringend */
+  #spInhalt .sk-raster > .gs-d-miete { --c: var(--c-ausziehen); } /* gruppe dringend */
+  #spInhalt .sk-raster > .gs-t-strom { --c: var(--c-wohngeld); } /* gruppe sparen */
+  #spInhalt .sk-raster > .gs-t-heizen { --c: var(--c-briefe); } /* gruppe sparen */
+  #spInhalt .sk-raster > .gs-t-essen { --c: var(--c-sparen); } /* gruppe sparen */
+  #spInhalt .sk-raster > .gs-t-vertraege { --c: var(--c-sozialamt); } /* gruppe sparen */
   .app[data-ansicht="pflegestart"] .weg-liste > .weg:nth-child(1) .weg-sym { background: var(--c-pflege); } /* gruppe pflegestart */
   .app[data-ansicht="pflegestart"] .weg-liste > .weg:nth-child(2) .weg-sym { background: var(--c-wohngeld); } /* gruppe pflegestart */
   .app[data-ansicht="pfaendung"] #pfInhalt > .weg-liste > .weg:nth-child(1) .weg-sym { background: var(--c-pfaendung); } /* gruppe pfaendung */
@@ -996,8 +1008,7 @@
       <div class="start-raster">
         <button type="button" class="sk sk-haupt sk-leistungen" id="goLeistungen"><span class="sk-txt"><b data-t="home.leistungen"></b><span class="sk-meta" data-t="home.hero.meta"></span></span><span class="hero-los"><span data-t="home.los"></span><span class="pfeil" aria-hidden="true">→</span></span></button>
         <button type="button" class="sk sk-briefe" id="goBriefe"><span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><span class="sk-txt"><b data-t="home.brief"></b><span data-t="home.brief.t"></span></span></button>
-        <button type="button" class="sk sk-pfaendung" id="goPfaendung"><span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/><path d="M15 3l-3 3-3-3"/></svg></span><span class="sk-txt"><b data-t="home.pfaendung"></b><span data-t="home.pfaendung.t"></span></span></button>
-        <button type="button" class="sk sk-sparen" id="goSparen"><span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 11a7 6 0 0 1 13-2h2v4h-2a7 7 0 0 1-3 3v3h-3v-2h-2v2H7v-3a6 6 0 0 1-2-5z"/><circle cx="15" cy="10" r=".8"/></svg></span><span class="sk-txt"><b data-t="home.sparen"></b><span data-t="home.sparen.t"></span></span></button>
+        <button type="button" class="sk sk-geld" id="goGeld"><span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 11a7 6 0 0 1 13-2h2v4h-2a7 7 0 0 1-3 3v3h-3v-2h-2v2H7v-3a6 6 0 0 1-2-5z"/><circle cx="15" cy="10" r=".8"/></svg></span><span class="sk-txt"><b data-t="home.geld"></b><span data-t="home.geld.t"></span></span></button>
         <button type="button" class="sk sk-pflege" id="goPflege"><span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/><path d="M9 12h6M12 9v6"/></svg></span><span class="sk-txt"><b data-t="home.pflege"></b><span data-t="home.pflege.t"></span></span></button>
         <button type="button" class="sk sk-ausziehen" id="goAusziehen"><span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 11l8-6 8 6v9H4z"/><path d="M10 20v-5h4v5"/><path d="M17 3l2 2-2 2"/></svg></span><span class="sk-txt"><b data-t="az.kachel"></b><span data-t="az.kachel.t"></span></span></button>
       </div>
@@ -1062,10 +1073,10 @@
       </div>
     </section>
 
-    <!-- Geld sparen im Alltag: Themen mit großen Knöpfen -->
+    <!-- Geld und Schulden: 6 Kacheln (Es ist dringend, Was bleibt mir?, Schulden-Liste, Geld planen, Sparen im Alltag, Kostenlose Hilfe) -->
     <section id="v-sparen" class="ansicht" aria-labelledby="h-sparen" hidden>
       <!--ZURUECK-->
-      <h2 id="h-sparen" class="ans-h" data-t="sp.h"></h2>
+      <h2 id="h-sparen" class="ans-h" data-t="home.geld"></h2>
       <div id="spInhalt" class="pf"></div>
     </section>
 
@@ -1078,7 +1089,7 @@
       <p class="warn" id="hbSpeicherMsg" role="alert"></p>
     </section>
 
-    <!-- Schulden-Liste (src/schulden.js): Geld sparen → Schulden und Pfändung → „Meine Schulden-Liste“ -->
+    <!-- Schulden-Liste (src/schulden.js): Geld und Schulden → „Meine Schulden-Liste“ -->
     <section id="v-schulden" class="ansicht" aria-labelledby="h-schulden" hidden>
       <!--ZURUECK-->
       <h2 id="h-schulden" class="ans-h" data-t="sl.h"></h2>
@@ -1602,7 +1613,7 @@
         </div>
       </div>
       <div class="unterseite" id="es-erinnern" data-seite="erinnern" hidden>
-        <div class="pp-kopf"><button type="button" class="btn ghost us-zurueck">← <span data-t="pf.zurueck"></span></button></div>
+        <!--ZURUECK cls=us-zurueck-->
         <h2 class="ans-h" data-t="set.erinnern.h"></h2>
         <div class="set-gruppe" id="friSet">
           <p><button type="button" class="schalter" id="friHinweisBtn" role="switch" aria-checked="true" aria-describedby="friHinweisT"><span class="schalter-t"><span data-t="fri.set.label"></span><span class="schalter-unter" id="friHinweisT" data-t="fri.set.t"></span></span><span class="schalter-zst"></span><span class="schalter-bahn" aria-hidden="true"></span></button></p>

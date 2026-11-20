@@ -20,8 +20,8 @@ const w = dom.window, d = w.document, $ = (id) => d.getElementById(id);
 const setze = (id, v) => { const e = $(id); e.value = v; e.dispatchEvent(new w.Event('input', { bubbles: true })); e.dispatchEvent(new w.Event('change', { bubbles: true })); };
 const klick = (el) => el.dispatchEvent(new w.MouseEvent('click', { bubbles: true }));
 const tx = (e) => e.textContent.replace(/[\u00a0\u202f]/g, ' ');
-// Haushaltsplan öffnen wie in der App: Start → Geld sparen → Thema „Haushaltsplan“
-const zumPlan = () => { klick($('goSparen')); klick([...d.querySelectorAll('#spInhalt button.weg')].find((b) => /Haushaltsplan|Budget|bütçe|Qorshaha|بودجه|الميزانية/i.test(b.textContent)) || [...d.querySelectorAll('#spInhalt button.weg')].pop()); };
+// Haushaltsplan öffnen wie in der App: Start → Geld und Schulden → Kachel „Mein Geld planen“
+const zumPlan = () => { klick($('goGeld')); klick(d.querySelector('#spInhalt .gs-planen')); };
 const knopf = (text, wurzel) => [...(wurzel || d).querySelectorAll('button')].find((b) => b.textContent.trim() === text);
 const haken = (id) => { const e = $(id); e.checked = !e.checked; e.dispatchEvent(new w.Event('change', { bubbles: true })); };
 const GELD = ['mb', 'verm', 'pflege', 'steuer'];

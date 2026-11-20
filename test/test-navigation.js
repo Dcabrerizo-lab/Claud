@@ -90,8 +90,14 @@ const start = (s) => klick(s, s.d.querySelector('#appnav [data-ansicht=start]'))
       ['Leistungen', () => klick(s, $('goLeistungen')), 'leistungen', 'start'],
       ['Brief: Absender-Auswahl', () => klick(s, $('goBriefe')), 'briefe', 'start'],
       ['Brief: Kachel Jobcenter', () => { klick(s, $('goBriefe')); klick(s, $('brief-jc')); }, 'briefe', 'briefe'],
-      ['Pfändung', () => klick(s, $('goPfaendung')), 'pfaendung', 'start'],
-      ['Geld sparen', () => klick(s, $('goSparen')), 'sparen', 'start'],
+      ['Geld und Schulden', () => klick(s, $('goGeld')), 'sparen', 'start'],
+      ['Geld: Es ist dringend', () => { klick(s, $('goGeld')); klick(s, d.querySelector('#spInhalt .gs-dringend')); }, 'sparen', 'sparen'],
+      ['Geld: Dringend – Konto gepfändet', () => { klick(s, $('goGeld')); klick(s, d.querySelector('#spInhalt .gs-dringend')); klick(s, d.querySelector('#spInhalt .gs-d-konto')); }, 'sparen', 'sparen'],
+      ['Geld: Sparen im Alltag', () => { klick(s, $('goGeld')); klick(s, d.querySelector('#spInhalt .gs-sparen')); }, 'sparen', 'sparen'],
+      ['Geld: Sparen – Thema', () => { klick(s, $('goGeld')); klick(s, d.querySelector('#spInhalt .gs-sparen')); klick(s, d.querySelector('#spInhalt .gs-t-strom')); }, 'sparen', 'sparen'],
+      ['Geld: Kostenlose Hilfe', () => { klick(s, $('goGeld')); klick(s, d.querySelector('#spInhalt .gs-hilfe')); }, 'sparen', 'sparen'],
+      ['Geld: Was bleibt mir? (Pfändung)', () => { klick(s, $('goGeld')); klick(s, d.querySelector('#spInhalt .gs-bleibt')); }, 'pfaendung', 'sparen'],
+      ['Pfändung (direkt)', () => hash(s, 'pfaendung'), 'pfaendung', 'start'],
       ['Haushaltsplan', () => hash(s, 'haushalt'), 'haushalt', 'start'],
       ['Schulden-Liste', () => hash(s, 'schulden'), 'schulden', 'start'],
       ['Ich ziehe aus', () => klick(s, $('goAusziehen')), 'ausziehen', 'start'],
@@ -103,6 +109,7 @@ const start = (s) => klick(s, s.d.querySelector('#appnav [data-ansicht=start]'))
       ['Einstellungen: Anzeige', () => w.__solo.unterseite('einst', 'anzeige'), 'einst', 'einst'],
       ['Einstellungen: Sicherheit', () => w.__solo.unterseite('einst', 'sicher'), 'einst', 'einst'],
       ['Einstellungen: Fachleute', () => w.__solo.unterseite('einst', 'fach'), 'einst', 'einst'],
+      ['Einstellungen: Erinnern', () => w.__solo.unterseite('einst', 'erinnern'), 'einst', 'einst'],
       ['Einstellungen: Über', () => w.__solo.unterseite('einst', 'about'), 'einst', 'einst'],
       ['Mein Ordner: Fristen', () => w.__solo.unterseite('ordner', 'fristen'), 'ordner', 'ordner'],
       ['Mein Ordner: Alle Haushalte', () => w.__solo.unterseite('ordner', 'alle'), 'ordner', 'ordner']
@@ -122,15 +129,15 @@ const start = (s) => klick(s, s.d.querySelector('#appnav [data-ansicht=start]'))
 
     // Browser-Zurück und Vorwärts über die History API
     start(s); await warte(80);
-    klick(s, $('goSparen')); await warte();
-    const thema = d.querySelector('#spInhalt button.weg, #spInhalt button.wahl, #spInhalt button');
+    klick(s, $('goGeld')); await warte();
+    const thema = d.querySelector('#spInhalt button.sk, #spInhalt button');
     klick(s, thema); await warte();
     const tief = nav();
-    check('Geld sparen → Thema: zwei Ebenen tief, zwei Verlaufseinträge', tief.ebene.tiefe === 2 && w.Navigation.stand().k === 2, [tief, w.Navigation.stand()]);
+    check('Geld und Schulden → Bereich: zwei Ebenen tief, zwei Verlaufseinträge', tief.ebene.tiefe === 2 && w.Navigation.stand().k === 2, [tief, w.Navigation.stand()]);
     w.history.back(); await warte(80);
-    check('Browser-Zurück: eine Ebene hoch (Themenliste)', nav().ansicht === 'sparen' && nav().ebene.tiefe === 1, nav());
+    check('Browser-Zurück: eine Ebene hoch (Kacheln)', nav().ansicht === 'sparen' && nav().ebene.tiefe === 1, nav());
     w.history.forward(); await warte(80);
-    check('Browser-Vorwärts: Thema wieder offen', nav().ebene.pfad === tief.ebene.pfad, [nav(), tief]);
+    check('Browser-Vorwärts: Bereich wieder offen', nav().ebene.pfad === tief.ebene.pfad, [nav(), tief]);
     w.history.back(); await warte(80); w.history.back(); await warte(80);
     check('Browser-Zurück zweimal: Start', nav().ansicht === 'start' && w.Navigation.stand().k === 0, [nav(), w.Navigation.stand()]);
 
