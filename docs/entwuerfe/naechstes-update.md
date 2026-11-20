@@ -23,9 +23,10 @@ Hinweis zur Ergebnisliste: Die Mappe zeigt Schritte und Unterlagen nur für Leis
 | ganze App – Steuerung am Handy | iOS: seitlich wischen = eine Ebene zurück bzw. wieder vorwärts. Android: Zurück-Taste/-Geste = eine Ebene zurück (heute springt sie teils direkt zur Startseite). Umsetzung über einen gemeinsamen Ebenen-Verlauf (History API), derselbe Weg wie der „← Zurück“-Knopf. |
 | ganze App | Unter jeder Startkachel wieder Kacheln in derselben Form wie die Startseite |
 
-| ganze App – Infotexte | Zu viel Text, Anordnung/Platzierung; prüfen, ob es so viele Infofelder braucht (Prüfbericht folgt: ux-infotexte) |
+| ganze App – Infotexte | Zu viel Text, Anordnung/Platzierung; prüfen, ob es so viele Infofelder braucht (Prüfbericht docs/entwuerfe/ux-infotexte.md: ca. 160 → 45 Infofelder; wartet auf Davids Freigabe) |
 
 ## Inhaltliche Korrekturen
+- Fehler: Brief › Anderer Brief zeigt nach „innerhalb eines Monats“ die Zeile „Frist im Brief: Monats“
 - WBS bei Asylverfahren/Duldung: „Unwahrscheinlich“ (docs/entwuerfe/wbs-aufenthalt.md)
 - Sichere Lücken aus docs/entwuerfe/abhaengigkeiten-pruefung.md: Bildung und Teilhabe, Wohngeld, BAföG, BAB, Hilfe zur Pflege, Eingliederungshilfe, Kindergeld Behinderung
 - Mögliche Lücken klären: Arbeitslosengeld, Blindengeld, Schwerbehindertenausweis bei Asyl
