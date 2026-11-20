@@ -256,6 +256,10 @@
   .ekbox h3 { font-size: 1em; }
   .subbox { border-inline-start: 3px solid var(--line); padding-inline-start: 14px; display: grid; gap: 14px; }
   .warn { color: var(--warn); background: var(--warn-bg); border-radius: 6px; padding: 6px 10px; font-size: 0.9em; }
+  /* Höchstbetrag der Miete beim Wohngeld unter dem Mietfeld: Info-Paar, bei „möglich“ das Paar „Möglich“ (kein Rot: kein Ausschluss) */
+  .mietgrenze { font-size: 0.9em; color: var(--na); background: var(--na-bg); border-inline-start: 4px solid var(--na); border-radius: 6px; padding: 6px 10px; margin: 6px 0 0; }
+  .mietgrenze.moeglich { color: var(--warn); background: var(--warn-bg); border-inline-start-color: var(--warn); }
+  .mietgrenze-mehr { margin-top: 4px; font-size: 0.9em; }
   .card .behoerde { display: grid; gap: 4px; padding: 10px 12px; border-inline-start: 3px solid var(--accent); background: var(--bg); border-radius: 6px; color: var(--ink); }
   .card .behoerde p { margin: 0; }
   .card .behoerde address { font-style: normal; line-height: 1.45; }
@@ -1239,6 +1243,11 @@
               <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="miete"><span aria-hidden="true">€</span></div>
               <span class="hint" id="mieteHint" data-t="miete.hint"></span>
               <p class="warn" id="mieteWarn" hidden></p>
+              <p class="mietgrenze" id="mieteGrenze" aria-live="polite" hidden></p>
+              <details class="mietgrenze-mehr" id="mieteGrenzeMehr" hidden>
+                <summary data-t="wgmax.mehr"></summary>
+                <div class="inner" id="mieteGrenzeInhalt"></div>
+              </details>
             </div>
             <div class="field">
               <label for="heizkosten" data-t="heiz.label"></label>

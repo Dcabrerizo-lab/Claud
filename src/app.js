@@ -325,6 +325,43 @@
     $('mieteWarn').hidden = !mw; $('mieteWarn').textContent = mw;
     var ge = $('gebJahr'), gw = gebUngueltig() && (document.activeElement !== ge || ge.value.trim().length >= 4) ? t('warn.geb') : '';
     $('gebWarn').hidden = !gw; $('gebWarn').textContent = gw;
+    mietgrenzeZeile();
+  }
+  // Höchstbetrag der Miete beim Wohngeld unter dem Mietfeld (Anlage 1 WoGG + Klimakomponente). Nur Anzeige, rechnet nichts Neues
+  // (Rules.wgHoechst nutzt wgCap/wgHeiz wie die Wohngeld-Karte). Mögliche Mietenstufen: Eingabe, sonst aus der PLZ; unbekannt = I bis VII.
+  function mietgrenzeStufen(plz, pick, stufe) {
+    if (/^[1-7]$/.test(String(stufe || ''))) return [Number(stufe)];
+    var r = Plz.available() && /^\d{5}$/.test(String(plz || '')) ? Plz.lookup(plz) : null;
+    if (!r) return [];
+    var c = r.candidates.filter(function (x) { return x.label + '|' + x.kreis + '|' + x.stufe === pick; })[0];
+    if (c && c.stufe) return [c.stufe];
+    if (r.candidates.some(function (x) { return !x.stufe; })) return []; // ein Ort ohne bekannte Stufe: ganze Spanne, sonst falsche Sicherheit
+    var s = []; r.candidates.forEach(function (x) { if (s.indexOf(x.stufe) < 0) s.push(x.stufe); });
+    return s;
+  }
+  function mietgrenzeZeile() {
+    var p = $('mieteGrenze'), d = $('mieteGrenzeMehr'), box = $('mieteGrenzeInhalt');
+    if (!p || !d || !box) return;
+    var stufen = mietgrenzeStufen(state.plz, state.plzPick, state.mietstufe), hatMiete = Number(state.miete) > 0;
+    var zeigen = (hatMiete || stufen.length > 0) && !feldUngueltig('miete');
+    p.hidden = d.hidden = !zeigen;
+    if (!zeigen) { p.textContent = ''; box.textContent = ''; return; }
+    var n = (Number(state.adults) || 0) + (Number(state.kids) || 0) + (Number(state.young) || 0), eig = state.wohnart === 'eigentum';
+    var w = Rules.wgHoechst({ stufen: stufen, n: n, warm: state.miete, heiz: state.heizkosten, eigentum: eig });
+    var istRtl = !!(I18N[lang] && I18N[lang]['meta.dir'] === 'rtl');
+    var E = function (v) { return Fmt.euro(Math.round(v * 100) / 100, lang, istRtl); }, pers = w.n === 1 ? t('wgmax.p1') : t('wgmax.pn', { n: w.n });
+    var eins = w.sv === w.sb, s = [];
+    if (eig && eins) s.push(t('wgmax.eigen', { betrag: E(w.von), stufe: Rules.roman(w.sv), personen: pers }));
+    else if (eins) s.push(t('wgmax.zeile', { betrag: E(w.von), stufe: Rules.roman(w.sv), personen: pers }));
+    else s.push(t(stufen.length ? 'wgmax.zeileSpanne' : 'wgmax.zeileOhne', { von: E(w.von), bis: E(w.bis), sv: Rules.roman(w.sv), sb: Rules.roman(w.sb), personen: pers }));
+    var V = { drunter: w.geschaetzt ? 'wgmax.drunterEtwa' : 'wgmax.drunter', drueber: w.geschaetzt ? 'wgmax.drueberEtwa' : 'wgmax.drueber', nah: 'wgmax.nah', moeglich: 'wgmax.moeglich' };
+    if (w.vergleich) s.push(t(V[w.vergleich], { kalt: E(w.kalt), betrag: E(w.vergleich === 'drueber' ? w.bis : w.von) }));
+    if (state.hhAndere === 'verwandte') s.push(t('wgmax.verwandte'));
+    p.textContent = s.join(' ');
+    p.classList.toggle('moeglich', !eins || w.vergleich === 'moeglich' || w.vergleich === 'nah');
+    var teile = (eig ? [] : ['wgmax.d.kalt']).concat(['wgmax.d.heiz', 'wgmax.d.klima'], eig ? [] : ['wgmax.d.drueber'], ['wgmax.d.personen', 'wgmax.d.ausgeschlossen', 'wgmax.d.stufe', 'wgmax.d.2027']);
+    box.innerHTML = teile.map(function (k) { return '<p>' + esc(t(k, { heiz: E(w.heizKomp), klima: E(w.klima), personen: pers })) + '</p>'; }).join('') +
+      '<p><strong>' + esc(t('wgmax.d.kdu')) + '</strong></p>';
   }
   // Geburtsjahr: 4 Ziffern, 1900 bis heute-15 (wie Ein-Frage-Modus)
   function gebUngueltig() {
@@ -2006,6 +2043,23 @@
   // Ergebnis in Leichter Sprache: nur, was für eine Person mit Behinderung zählt; Beträge grob, mit zuständiger Stelle
   var ES_KARTEN = ['gsa', 'ggeld', 'wohngeld', 'pflege', 'pflegeplus', 'lpg', 'hzp', 'emrente', 'srente', 'rundfunk', 'ausweis', 'eingl', 'blindengeld', 'blh', 'zuzahl', 'kgBeh', 'pausch', 'arbeit'];
   var ES_ICON = { gsa: '💶', ggeld: '💶', wohngeld: '🏠', pflege: '🤝', pflegeplus: '🧺', lpg: '💶', emrente: '👴', srente: '🧓', hzp: '🏥', rundfunk: '📺', ausweis: '🪪', eingl: '🧩', blindengeld: '🦯', blh: '🦮', zuzahl: '💊', kgBeh: '👪', pausch: '🧾', arbeit: '💼' };
+  // Einfache Version: Höchstbetrag der Miete beim Wohngeld (Anlage 1 WoGG + Klimakomponente) unter „Gut zu wissen“.
+  // Eine Person (wie esEingabe), dieselbe Funktion wie im Formular. Bei den Eltern zählt deren Haushalt (§ 5 WoGG): keine Zahl.
+  function esMietgrenze(gut, out, tipps) {
+    var warmEs = es.wohnen === 'allein' && es.miete !== '' ? Number(es.miete) : 0;
+    if (!(warmEs > 0)) return;
+    var zeigt = function (id) { return gut.some(function (x) { return x.id === id; }); };
+    if (zeigt('wohngeld') || (out.zusammen || []).some(function (z) { return z[0] === 'z.gsaWg'; })) {
+      var st = mietgrenzeStufen(es.plz, '', '');
+      var wm = Rules.wgHoechst({ stufen: st, n: 1, warm: warmEs });
+      var eur = function (v) { return Fmt.euro(Math.round(v * 100) / 100, lang, !!(I18N[lang] && I18N[lang]['meta.dir'] === 'rtl')); };
+      if (wm.sv === wm.sb) {
+        tipps.push(t('es.tipp.wgmax', { betrag: eur(wm.von) }) +
+          (wm.vergleich === 'drueber' ? ' ' + t('es.tipp.wgmaxDrueber', { betrag: eur(wm.von) }) : wm.vergleich === 'drunter' ? ' ' + t('es.tipp.wgmaxDrunter') : ''));
+      } else tipps.push(t('es.tipp.wgmaxSpanne', { von: eur(wm.von), bis: eur(wm.bis) }));
+    }
+    if (zeigt('gsa') || zeigt('ggeld')) tipps.push(t('es.tipp.kduAnders'));
+  }
   function esErgebnis(fr) {
     var out = Rules.evaluate(esEingabe());
     lastEs = out;
@@ -2051,6 +2105,7 @@
     if ((out.zusammen || []).some(function (z) { return z[0] === 'z.gsaWg'; })) tipps.unshift(t('es.tipp.wgOderGsa'));
     if (hat('gsa', 'gsa.grundrente') && es.renteJa === 'ja') tipps.push(t('es.tipp.grundrente'));
     if (gut.some(function (x) { return x.id === 'kgBeh'; })) tipps.push(t(es.wohnen === 'eltern' ? 'es.tipp.kgEltern' : 'es.tipp.kgAbzweig'));
+    esMietgrenze(gut, out, tipps);
     var h = '<h2 class="es-q" id="es-q" tabindex="-1">' + esc(t(gut.length ? 'es.erg.h' : 'es.erg.keine')) + '</h2>' +
       (regelnVeraltet() ? '<p class="warn" role="alert">' + esc(t('alt.hinweis', { stand: Rules.RULES.stand })) + '</p>' : '') +
       '<p class="es-h">' + esc(t('es.erg.hinweis')) + '</p>' + gut.map(karte).join('') +
