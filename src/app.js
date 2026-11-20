@@ -16,6 +16,8 @@
   var lastOut = null;
   var lang = 'de';
   var einfachSprache = false; // Schalter „Einfache Sprache“ (Einstellungen): nur auf Deutsch wirksam, Texte aus I18N_EINFACH
+  var beratung = false; // Beratungsmodus (Einstellungen, „Für Fachkräfte“): Paragrafen und Rechtsgrundlagen zeigen; aus = Laienansicht ohne Paragrafen
+  var haken = {}; // Unterlagen-Checkliste: abgehakte Unterlagen je Leistung („id|Schlüssel“), nur auf dem Gerät
   var edited = false;
   var $ = function (id) { return document.getElementById(id); };
 
@@ -36,6 +38,9 @@
     });
     return s;
   }
+
+  // Text für Laien: ohne Beratungsmodus Paragrafen in Klammern ausblenden (Fmt.ohnePara); im Beratungsmodus unverändert
+  function tL(key, p) { var s = t(key, p); return beratung ? s : Fmt.ohnePara(s); }
 
   var parseAmount = Fmt.parse;
 
@@ -352,7 +357,7 @@
       '<div class="zust behoerde" lang="de" dir="ltr"><p><strong>' + esc(t('beh.stelle')) + '</strong></p><address>' + lines.map(esc).join('<br>') + '</address>' +
       (b.haus ? '<p class="small"><bdi>' + esc(t('beh.besuch')) + '</bdi> ' + esc(b.haus.join(', ')) + '</p>' : '') +
       (b.web ? '<p><a href="' + esc(b.web) + '" target="_blank" rel="noopener">' + esc(t('beh.web')) + '</a></p>' : '') + '</div>' +
-      (b.weiter ? '<p class="small">' + esc(t('beh.wgWeiter')) + '</p>' : '') +
+      (b.weiter ? '<p class="small">' + esc(tL('beh.wgWeiter')) + '</p>' : '') +
       '<p class="small">' + esc(b.anschrift ? (b.quelleArt === 'wikipedia' ? t('beh.pruefenWiki', { stand: b.stand || '' }) : b.stand ? t('beh.pruefen', { stand: b.stand }) : t('beh.pruefenKurz')) : t('beh.ohneAdr')) + '</p>';
   }
 
@@ -414,6 +419,7 @@
     buildSelects();
     render();
     if (!$('mappe').hidden) buildMappe();
+    if (!$('ergBlatt').hidden) ebBauen();
     renderScan();
     if (esModus) esRender();
     bereicheText();
@@ -430,6 +436,18 @@
     einfachSprache = !!an;
     if (speichern) Store.set('lotse.einfachSprache', an ? '1' : '0');
     applyLang(); // alle Texte neu zeichnen
+  }
+
+  // Beratungsmodus (Für Fachkräfte): Rechtsgrundlagen und Paragrafen zeigen; Standard aus
+  function beratungSetzen(an, speichern) {
+    beratung = !!an;
+    $('beratungBtn').setAttribute('aria-pressed', String(beratung));
+    if (speichern) Store.set('lotse.beratung', beratung ? '1' : '0');
+    render();
+    if (!$('mappe').hidden) buildMappe();
+    if (!$('ergBlatt').hidden) ebBauen();
+    if (aktAnsicht === 'pfaendung') pfRender(false);
+    if (aktAnsicht === 'sparen') spRender(false);
   }
 
   function regelnVeraltet() { var ab = Rules.RULES.pruefenAb; return !!ab && new Date() >= new Date(ab + 'T00:00:00'); }
@@ -545,6 +563,12 @@
       if (lang !== 'de') return;
       einfacheSpracheSetzen(!einfachSprache, true);
     });
+    $('beratungBtn').addEventListener('click', function () { beratungSetzen(!beratung, true); });
+    $('ebOpen').addEventListener('click', ebOeffnen);
+    $('ebClose').addEventListener('click', ebSchliessen);
+    $('ebKuerzel').addEventListener('input', ebBauen);
+    $('ebDruck').addEventListener('click', function () { ebAusgeben(NATIVE ? (plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen') : 'web'); });
+    if (NATIVE) { $('ebDruck').setAttribute('data-t', plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'f.druck' : 'f.pdf'); $('ebDruck').textContent = t($('ebDruck').getAttribute('data-t')); }
     $('jumpBtn').addEventListener('click', function () {
       var el = $('ergebnis');
       el.scrollIntoView({ behavior: smooth(), block: 'start' });
@@ -557,6 +581,8 @@
         if (x[1] === 'ort' && !/^\d{5}$/.test(String(state.plz || ''))) render();
       });
     });
+    // Geburtsdatum beim Verlassen des Feldes einheitlich als TT.MM.JJJJ (Unklares bleibt wie eingegeben)
+    $('p-geb').addEventListener('change', function () { var f = Fmt.gebDatum($('p-geb').value); if (f !== $('p-geb').value) { $('p-geb').value = f; person.geb = f; save(); } });
     $('mappeMake').addEventListener('click', function () {
       var any = Object.keys(picked).some(function (k) { return picked[k]; });
       if (!any) { $('pickMsg').textContent = t('f.pick0'); return; }
@@ -585,9 +611,12 @@
       try { window.print(); } catch (e) { $('copyMsg').textContent = ''; }
     });
     $('mappeCopy').addEventListener('click', copyMappe);
+    // „Drucken“ auch am Ende der Mappe: löst denselben Weg aus wie der Knopf oben (Web: Drucken, App: PDF)
+    $('mappePrint2').addEventListener('click', function () { (!$('mappeDruck').hidden ? $('mappeDruck') : $('mappePrint')).click(); });
     $('clearBtn').addEventListener('click', function () {
       state = blankState(); person = { name: '', geb: '', strasse: '', ort: '', tel: '' }; picked = {}; pickedUser = {}; started = false;
       ['p-name', 'p-geb', 'p-strasse', 'p-ort', 'p-tel'].forEach(function (id) { $(id).value = ''; });
+      haken = {}; Store.remove('lotse.haken');
       edited = true; $('sampleNotice').hidden = true;
       clearTimeout(saveTimer); clearTimeout(soonTimer); saveTimer = null;
       Store.remove('lotse.state');
@@ -613,6 +642,7 @@
       ap.addListener('backButton', function () {
         if (!$('legal').hidden) closeLegal();
         else if (!$('mappe').hidden) closeMappe();
+        else if (!$('ergBlatt').hidden) ebSchliessen();
         else if ((window.pageYOffset || 0) > 60) window.scrollTo(0, 0);
         else ap.exitApp();
       });
@@ -668,7 +698,7 @@
   function resultText(r) { return r.tx.map(function (x) { return t('t.' + x[0], x[1]); }).join(' '); }
   // Kartentext gegliedert: der wichtigste Satz oben, weitere Hinweise als Punkte darunter (Wortlaut wie resultText)
   function resultHtml(r) {
-    var teile = r.tx.map(function (x) { return t('t.' + x[0], x[1]); });
+    var teile = r.tx.map(function (x) { return tL('t.' + x[0], x[1]); });
     return '<p class="kern">' + esc(teile[0] || '') + '</p>' + (teile.length > 1 ? '<ul class="punkte">' + teile.slice(1).map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : '');
   }
 
@@ -676,15 +706,31 @@
   var HINWEIS_KARTE = { 'z.wgKiz': ['wohngeld', 'kiz'], 'z.gsaWg': ['gsa', 'wohngeld'], 'z.kgZuerst': ['kiz', 'kindergeld'], 'z.ggBezug': ['wohngeld', 'kiz', 'but'] };
   var HINWEIS_ALLE = ['z.stichtag', 'z.verfahren', 'z.grenzen'];
   var kartenHinweise = {}, gutHtml = '';
+  // Beratungsmodus: Rechtsgrundlage der Leistung (Rules.RECHT, deutsch) unter dem Kartentext
+  function rechtHtml(r) { return beratung && r.recht ? '<p class="recht"><strong>' + esc(t('recht.label')) + ':</strong> <span lang="de" dir="ltr">' + esc(r.recht) + '</span></p>' : ''; }
+  // Unterlagen-Checkliste zum Abhaken: eine Fassung für die Karte und die Antragsmappe; Haken bleiben auf dem Gerät (lotse.haken)
+  function unterlagenListe(r) {
+    return '<p class="small muted haken-hint no-print">' + esc(t('haken.hint')) + '</p><ul class="haken-liste">' + r.steps.u.map(function (k) {
+      var key = r.id + '|' + k;
+      return '<li><label class="haken"><input type="checkbox" data-haken="' + esc(key) + '"' + (haken[key] ? ' checked' : '') + '><span>' + esc(tL(k)) + '</span></label></li>';
+    }).join('') + '</ul>';
+  }
+  document.addEventListener('change', function (ev) {
+    var el = ev.target, key = el && el.getAttribute && el.getAttribute('data-haken');
+    if (!key) return;
+    if (el.checked) haken[key] = true; else delete haken[key];
+    document.querySelectorAll('input[data-haken]').forEach(function (cb) { if (cb !== el && cb.getAttribute('data-haken') === key) cb.checked = el.checked; });
+    Store.set('lotse.haken', JSON.stringify(haken));
+  });
   function card(r) {
     var dim = r.level === 'nein' || r.level === 'na';
     var s = r.steps;
     var steps = '';
     if (r.level !== 'nein') {
       steps = '<details><summary>' + esc(t('steps.sum')) + '</summary><div class="inner">' +
-        '<div><div class="lab-s">' + esc(t('steps.wo')) + '</div><p>' + esc(t(s.wo)) + '</p></div>' +
-        '<div><div class="lab-s">' + esc(t('steps.docs')) + '</div>' + listItems(s.u.map(function (k) { return t(k); })) + '</div>' +
-        '<div><div class="lab-s">' + esc(t('steps.tips')) + '</div>' + listItems([t(s.tip)]) + '</div>' +
+        '<div><div class="lab-s">' + esc(t('steps.wo')) + '</div><p>' + esc(tL(s.wo)) + '</p></div>' +
+        '<div><div class="lab-s">' + esc(t('steps.docs')) + '</div>' + unterlagenListe(r) + '</div>' +
+        '<div><div class="lab-s">' + esc(t('steps.tips')) + '</div>' + listItems([tL(s.tip)]) + '</div>' +
         '<p class="small">' + esc(t('steps.note')) + '</p></div></details>';
     }
     var desc = lang === 'de' ? '' : t('n.' + r.id);
@@ -693,7 +739,7 @@
       '<header><div><h3' + (lang === 'de' ? '' : ' lang="de"') + '>' + esc(r.name) + '</h3>' + (desc ? '<div class="desc">' + esc(desc) + '</div>' : '') + '</div>' +
       '<span class="pill ' + r.level + '"><span aria-hidden="true">' + MARK[r.level] + '</span>' + esc(t('lvl.' + r.level)) + '</span></header>' +
       '<p class="head2">' + esc(t('h.' + r.hl)) + '</p><span class="karte-mehr" aria-hidden="true" data-mehr="' + esc(t('karte.mehr')) + '" data-weniger="' + esc(t('karte.weniger')) + '"></span></summary>' +
-      '<div class="body"><div class="txt">' + resultHtml(r) + '</div>' + (kartenHinweise[r.id] || []).map(function (z) { return '<p class="karte-hinweis"><span aria-hidden="true">ⓘ </span>' + esc(t(z[0], z[1])) + '</p>'; }).join('') + '</div>' +
+      '<div class="body"><div class="txt">' + resultHtml(r) + '</div>' + (kartenHinweise[r.id] || []).map(function (z) { return '<p class="karte-hinweis"><span aria-hidden="true">ⓘ </span>' + esc(tL(z[0], z[1])) + '</p>'; }).join('') + rechtHtml(r) + '</div>' +
       zustHtml(r) + steps + '</details></article>';
   }
 
@@ -761,6 +807,7 @@
     var satz = $('resSatz');
     satz.hidden = !(passend > 0);
     satz.textContent = passend === 1 ? t('res.n1') : passend > 1 ? t('res.n', { n: passend }) : '';
+    $('ebOpen').hidden = !(passend > 0);
     $('beratung').hidden = !started;
   }
 
@@ -798,7 +845,7 @@
     out.zusammen.forEach(function (z) { (HINWEIS_KARTE[z[0]] || []).forEach(function (id) { (kartenHinweise[id] = kartenHinweise[id] || []).push(z); }); });
     // „Gut zu wissen für alle Anträge“ steht zwischen den passenden Karten und dem Kasten „Wahrscheinlich nicht passend“
     var alle = out.zusammen.filter(function (z) { return HINWEIS_ALLE.indexOf(z[0]) >= 0; });
-    gutHtml = alle.length ? '<div id="gutWissen"><details class="gutwissen"><summary><span class="gw-titel">' + esc(t('gut.h')) + '</span><span class="karte-mehr" aria-hidden="true" data-mehr="' + esc(t('karte.mehr')) + '" data-weniger="' + esc(t('karte.weniger')) + '"></span></summary>' + listItems(alle.map(function (z) { return t(z[0], z[1]); })) + '</details></div>' : '';
+    gutHtml = alle.length ? '<div id="gutWissen"><details class="gutwissen"><summary><span class="gw-titel">' + esc(t('gut.h')) + '</span><span class="karte-mehr" aria-hidden="true" data-mehr="' + esc(t('karte.mehr')) + '" data-weniger="' + esc(t('karte.weniger')) + '"></span></summary>' + listItems(alle.map(function (z) { return tL(z[0], z[1]); })) + '</details></div>' : '';
     $('cards').innerHTML = kartenHtml(out.results);
     Object.keys(openIds).forEach(function (id) { var d = document.querySelector('#' + id + ' details'); if (d) d.open = true; });
     if (neinOpen) { var nb = document.querySelector('#cards .neinbox'); if (nb) nb.open = true; }
@@ -809,7 +856,7 @@
     var wege = out.zusammen.some(function (z) { return z[0] === 'z.ggVsWg'; });
     var rest = out.zusammen.filter(function (z) { return z[0] !== 'z.ggVsWg' && !HINWEIS_KARTE[z[0]] && HINWEIS_ALLE.indexOf(z[0]) < 0; });
     $('together').innerHTML = (wege ? zweiWege(out.results) : '') + (rest.length
-      ? '<div class="together"><h3>' + esc(t('beachten')) + '</h3>' + listItems(rest.map(function (z) { return t(z[0], z[1]); })) + '</div>'
+      ? '<div class="together"><h3>' + esc(t('beachten')) + '</h3>' + listItems(rest.map(function (z) { return tL(z[0], z[1]); })) + '</div>'
       : '');
 
     document.querySelectorAll('.cond-kids').forEach(function (el) { el.hidden = state.kids === 0; });
@@ -985,7 +1032,7 @@
   function sheetText() {
     var s = state, L = [];
     L.push('Angabenblatt zu meinem Antrag', '(Selbstauskunft aus SoLo – Sozialleistungslotse, Regeln Stand ' + Rules.RULES.stand + ')', '');
-    L.push('Name: ' + blank(person.name), 'Geburtsdatum: ' + blank(person.geb), 'Anschrift: ' + blank(person.strasse) + ', ' + blank(person.ort));
+    L.push('Name: ' + blank(person.name), 'Geburtsdatum: ' + blank(Fmt.gebDatum(person.geb)), 'Anschrift: ' + blank(person.strasse) + ', ' + blank(person.ort));
     if (person.tel && person.tel.trim()) L.push('Telefon: ' + person.tel.trim());
     L.push('', 'Haushalt: ' + haushaltZeile());
     if (s.wohnform === 'heim') L.push('Wohnkosten: laut Wohn- und Betreuungsvertrag des Wohnheims (Betrag liegt dem Vertrag bei)');
@@ -1029,17 +1076,23 @@
   }
   function buildMappe() {
     var ids = pickedIds(), briefe = briefIds();
-    var html = '';
+    var html = '', fh = formsHtml();
+    var nameLang = function (r) { return r.name + (lang === 'de' ? '' : ' (' + t('n.' + r.id) + ')'); };
+    // Übersicht mit Sprungmarken (nur am Bildschirm, nicht im Druck)
+    var inhalt = briefe.map(function (r) { return ['m-brief-' + r.id, t('f.inh.brief', { name: nameLang(r) })]; })
+      .concat([['m-angaben', t('f.inh.angaben')], ['m-unterlagen', t('f.docs')]]).concat(fh ? [['m-formulare', t('f.forms')]] : []);
+    html += '<nav class="mappe-inhalt no-print" aria-labelledby="h-minhalt"><h3 id="h-minhalt">' + esc(t('f.inhalt')) + '</h3><ol>' +
+      inhalt.map(function (x) { return '<li><a href="#' + x[0] + '" data-sprung="' + x[0] + '">' + esc(x[1]) + '</a></li>'; }).join('') + '</ol></nav>';
     briefe.forEach(function (r) {
-      html += empfHtml(r.id) + '<article class="page" lang="de" dir="ltr"><pre id="brief-' + esc(r.id) + '">' + esc(letterText(r.id)) + '</pre></article>';
+      html += empfHtml(r.id) + '<article class="page" id="m-brief-' + esc(r.id) + '" tabindex="-1" lang="de" dir="ltr"><pre id="brief-' + esc(r.id) + '">' + esc(letterText(r.id)) + '</pre></article>';
     });
-    html += '<article class="page" lang="de" dir="ltr"><pre>' + esc(sheetText()) + '</pre></article>';
-    html += '<article class="page docs"><h3>' + esc(t('f.docs')) + '</h3>' + ids.map(function (r) {
+    html += '<article class="page" id="m-angaben" tabindex="-1" lang="de" dir="ltr"><pre>' + esc(sheetText()) + '</pre></article>';
+    html += '<article class="page docs" id="m-unterlagen" tabindex="-1"><h3>' + esc(t('f.docs')) + '</h3>' + ids.map(function (r) {
       var s = r.steps;
-      return '<h3>' + esc(r.name) + (lang === 'de' ? '' : ' (' + esc(t('n.' + r.id)) + ')') + '</h3>' +
-        '<p>' + esc(t(s.wo)) + '</p>' + listItems(s.u.map(function (k) { return t(k); })) + '<p class="tip">' + esc(t(s.tip)) + '</p>';
+      return '<h3>' + esc(nameLang(r)) + '</h3>' +
+        '<p>' + esc(tL(s.wo)) + '</p>' + unterlagenListe(r) + '<p class="tip">' + esc(tL(s.tip)) + '</p>';
     }).join('') + '</article>';
-    html += formsHtml();
+    html += fh.replace('<article class="page docs forms">', '<article class="page docs forms" id="m-formulare" tabindex="-1">');
     $('mappeBody').innerHTML = html;
     // Hinweis, wenn Anschreiben ohne Empfänger-Anschrift bleiben, weil der Wohnort fehlt (Anschriften gibt es für Bayern)
     var ohneOrt = Behoerden.available() && !aktAgs() && (!state.bundesland || state.bundesland === 'BY') &&
@@ -1060,6 +1113,13 @@
       mappeTextNeu();
     });
     $('mappeBody').addEventListener('click', function (ev) {
+      var sp = ev.target && ev.target.closest && ev.target.closest('[data-sprung]');
+      if (sp) {
+        ev.preventDefault();
+        var ziel = $(sp.getAttribute('data-sprung'));
+        if (ziel) { ziel.scrollIntoView({ behavior: smooth(), block: 'start' }); ziel.focus({ preventScroll: true }); }
+        return;
+      }
       var el = ev.target, id = el && el.getAttribute && el.getAttribute('data-empf-reset');
       if (!id) return;
       delete empfEdit[id];
@@ -1103,6 +1163,89 @@
     if (esAltState) { state = esAltState.state; picked = esAltState.picked; pickedUser = esAltState.pickedUser; lastOut = esAltState.lastOut; esAltState = null; render(); }
   }
 
+  // ----- Ergebnisblatt zum Mitgeben: eine Druckseite (Leistung, Einstufung, ungefährer Betrag, Stelle, nächster Schritt), ohne Namen -----
+  // Gleiche Wörter wie auf dem Bildschirm: Betrag ist der Schätzsatz der Karte („Grob geschätzt …“) oder der Satz mit dem festen Betrag;
+  // ohne solchen Satz steht ein Strich (keine eigene Rechnung, keine neuen Zahlen).
+  var EB_SATZ = ['kindergeld.ja', 'uvg.ja', 'pflege.pg1', 'pflege.pg2', 'blindengeld.blind', 'blindengeld.hoch', 'blindengeld.landBetrag', 'blh.betrag'];
+  function ebBetrag(r) {
+    var x = r.tx.filter(function (z) { return z[0].indexOf('schaetz.') === 0; })[0] || r.tx.filter(function (z) { return EB_SATZ.indexOf(z[0]) >= 0; })[0];
+    return x ? tL('t.' + x[0], x[1]) : '–';
+  }
+  function ebStelle(r) {
+    var b = Behoerden.available() ? Behoerden.fuer(r.id, aktAgs()) : null;
+    if (b) return b.name + (b.abt ? ', ' + b.abt : '');
+    return Rules.zustLand(r.id, state.bundesland) || t('zu.' + r.id);
+  }
+  function ebZeilen() {
+    return (lastOut ? lastOut.results : []).filter(function (r) { return r.level === 'ja' || r.level === 'vielleicht'; }).map(function (r) {
+      return { r: r, name: r.name + (lang === 'de' ? '' : ' (' + t('n.' + r.id) + ')'), lvl: t('lvl.' + r.level), betrag: ebBetrag(r), stelle: ebStelle(r), schritt: tL(r.steps.wo) };
+    });
+  }
+  function ebKuerzel() { return String($('ebKuerzel').value || '').replace(/\s+/g, ' ').trim().slice(0, 8); }
+  function ebKopfZeile() { var k = ebKuerzel(); return t('eb.datum', { d: Fmt.datum(new Date(), lang) }) + (k ? ' · ' + t('eb.kuerzelZeile', { k: k }) : ''); }
+  function ebBauen() {
+    var cols = ['eb.col.leistung', 'eb.col.einstufung', 'eb.col.betrag', 'eb.col.stelle', 'eb.col.schritt'];
+    $('ebSeite').innerHTML = '<h2 class="eb-titel">' + esc(t('eb.titel')) + '</h2><p class="eb-kopf">' + esc(ebKopfZeile()) + '</p>' +
+      '<table class="eb-tab"><thead><tr>' + cols.map(function (c) { return '<th scope="col">' + esc(t(c)) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+      ebZeilen().map(function (z) {
+        return '<tr><th scope="row"><span' + (lang === 'de' ? '' : ' lang="de"') + '>' + esc(z.r.name) + '</span>' + (lang === 'de' ? '' : '<br><span class="small">' + esc(t('n.' + z.r.id)) + '</span>') +
+          (beratung && z.r.recht ? '<br><span class="small" lang="de" dir="ltr">' + esc(z.r.recht) + '</span>' : '') + '</th>' +
+          '<td><span class="pill ' + z.r.level + '"><span aria-hidden="true">' + MARK[z.r.level] + '</span>' + esc(z.lvl) + '</span></td><td>' + esc(z.betrag) + '</td><td>' + esc(z.stelle) + '</td><td>' + esc(z.schritt) + '</td></tr>';
+      }).join('') + '</tbody></table>' +
+      '<p class="eb-hinweis">' + esc(t('eb.hinweis', { stand: Rules.RULES.stand })) + '</p>';
+  }
+  var ebZurueck = null;
+  function ebOeffnen() {
+    if (!lastOut) return;
+    ebZurueck = document.activeElement;
+    $('ebMsg').textContent = '';
+    ebBauen();
+    $('ergBlatt').hidden = false;
+    $('app').classList.add('pm');
+    try { window.scrollTo(0, 0); } catch (e) {}
+    var h = $('h-eb'); h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true });
+  }
+  function ebSchliessen() {
+    $('ergBlatt').hidden = true;
+    $('app').classList.remove('pm');
+    if (ebZurueck && ebZurueck.focus) ebZurueck.focus();
+  }
+  function ebPdfSeiten() {
+    var saved = lang;
+    if (pdfRtl()) lang = 'de'; // Arabisch kann pdf-lib nicht setzen: dann deutsch wie bei der Antragsmappe
+    try {
+      var b = [{ t: 'h', text: t('eb.titel') }, { t: 'p', text: ebKopfZeile() }];
+      ebZeilen().forEach(function (z) {
+        b.push({ t: 'h', text: z.name });
+        if (beratung && z.r.recht) b.push({ t: 'small', text: z.r.recht });
+        [['eb.col.einstufung', z.lvl], ['eb.col.betrag', z.betrag], ['eb.col.stelle', z.stelle], ['eb.col.schritt', z.schritt]].forEach(function (x) { b.push({ t: 'li', text: t(x[0]) + ': ' + x[1] }); });
+      });
+      b.push({ t: 'small', text: t('eb.hinweis', { stand: Rules.RULES.stand }) });
+      return [{ blocks: b }];
+    } finally { lang = saved; }
+  }
+  // Web: Druckdialog des Browsers (Druck-CSS zeigt nur die Seite). App: derselbe PDF-Weg wie bei der Antragsmappe (Android drucken, iPhone teilen)
+  function ebAusgeben(art) {
+    var msg = $('ebMsg');
+    if (art === 'web') { try { window.print(); } catch (e) {} return; }
+    var name = 'SoLo-Ergebnis.pdf';
+    msg.textContent = t('f.pdfWorking');
+    var pdf = loadPdfLib().then(function (L) { return L.buildPdf({ pages: ebPdfSeiten(), title: t('eb.titel'), loadFont: function (n) { return fetch('fonts/pdf/' + n).then(function (r) { return r.arrayBuffer(); }).then(function (b) { return new Uint8Array(b); }); } }); });
+    if (art === 'drucken') {
+      var pa = plug('PdfAusgabe');
+      if (!pa) { msg.textContent = t('f.pdfFail'); return; }
+      pdf.then(function (bytes) { return pa.drucken({ data: toBase64(bytes), name: name }); })
+        .then(function () { msg.textContent = pdfRtl() ? t('f.pdfArNote') : ''; }, function (e) { msg.textContent = /abgebrochen/.test(String(e && e.message || e)) ? '' : t('f.pdfFail'); });
+      return;
+    }
+    var fs = plug('Filesystem'), sh = plug('Share');
+    if (!fs || !sh) { msg.textContent = t('f.pdfFail'); return; }
+    pdf.then(function (bytes) { return fs.writeFile({ path: name, data: toBase64(bytes), directory: 'CACHE' }); })
+      .then(function (r) { return sh.share({ title: t('eb.titel'), files: [r.uri] }).then(function () {}, function () {}); })
+      .then(function () { msg.textContent = pdfRtl() ? t('f.pdfArNote') : ''; return fs.deleteFile({ path: name, directory: 'CACHE' }).catch(function () {}); })
+      .catch(function () { msg.textContent = t('f.pdfFail'); });
+  }
+
   // ----- Antragsmappe als PDF (nur App): pdf-lib im WebView, Datei in den Cache, dann Teilen-Dialog (Drucken, Dateien, Mail) -----
   var pdfScript = null;
   function loadPdfLib() {
@@ -1125,9 +1268,9 @@
       pickedIds().forEach(function (r) {
         var s = r.steps;
         blocks.push({ t: 'h', text: r.name + (lang === 'de' ? '' : ' (' + t('n.' + r.id) + ')') });
-        blocks.push({ t: 'p', text: t(s.wo) });
-        s.u.forEach(function (k) { blocks.push({ t: 'li', text: t(k) }); });
-        blocks.push({ t: 'small', text: t(s.tip) });
+        blocks.push({ t: 'p', text: tL(s.wo) });
+        s.u.forEach(function (k) { blocks.push({ t: 'li', text: (haken[r.id + '|' + k] ? '[x] ' : '[ ] ') + tL(k) }); });
+        blocks.push({ t: 'small', text: tL(s.tip) });
       });
       pages.push({ blocks: blocks });
     } finally { lang = saved; }
@@ -1849,7 +1992,7 @@
   }
 
   // Einstellungen: alle gespeicherten Angaben der App löschen (Store-Schlüssel) und die Anzeige auf den Anfangszustand setzen
-  var STORE_SCHLUESSEL = ['lotse.state', 'lotse.einfach', 'lotse.einfachSprache', 'lotse.pflegecheck', 'lotse.lang', 'lotse.ack', 'lotse.fristen'];
+  var STORE_SCHLUESSEL = ['lotse.state', 'lotse.einfach', 'lotse.einfachSprache', 'lotse.beratung', 'lotse.haken', 'lotse.pflegecheck', 'lotse.lang', 'lotse.ack', 'lotse.fristen'];
   state = blankState();
   $('sampleNotice').hidden = true; // Beispiel-Hinweis nur, wenn ein Beispiel geladen ist
   bind();
@@ -1861,6 +2004,8 @@
   // Schaltet nur den Modus „Eine Frage pro Bildschirm“; er gilt im Bereich Leistungen (kein automatischer Sprung dorthin)
   $('einfachBtn').addEventListener('click', function () { esUmschalten(!esModus); });
   Store.get('lotse.einfachSprache', function (v) { if (v === '1') einfacheSpracheSetzen(true, false); });
+  Store.get('lotse.beratung', function (v) { if (v === '1') beratungSetzen(true, false); });
+  Store.get('lotse.haken', function (v) { try { var d = v ? JSON.parse(v) : null; if (d && typeof d === 'object') { haken = d; render(); } } catch (e) {} });
   Store.get('lotse.einfach', function (v) {
     try { var d = v ? JSON.parse(v) : null; if (d && d.es) { es = Object.assign(esLeer(), d.es); if (d.an) esUmschalten(true); } } catch (e) {}
   });
@@ -1873,6 +2018,7 @@
     eval: function () { return Rules.evaluate(state); },
     speichern: function () { flush(); },
     state: function () { return state; },
+    beratung: function (an) { beratungSetzen(an, false); },
     reihe: function (results) { var k = kartenReihe(results); return k.passt.concat(k.neinKern, k.neinSpez).map(function (r) { return r.id; }); }
   };
   // ----- Netto-Helfer: Steuerklasse und Kirchensteuer mit großen Knöpfen wählen, Netto nach Programmablaufplan ausrechnen -----
@@ -2057,7 +2203,7 @@
       var th = SP_THEMEN.filter(function (x) { return x[0] === sp.thema; })[0];
       p(t(th[1]), 'pf-frage');
       var ul = document.createElement('ul'); ul.className = 'sp-liste'; box.appendChild(ul);
-      SP_TIPPS[sp.thema].forEach(function (k) { var li = document.createElement('li'); li.textContent = t(k); ul.appendChild(li); });
+      SP_TIPPS[sp.thema].forEach(function (k) { var li = document.createElement('li'); li.textContent = tL(k); ul.appendChild(li); });
       if (sp.thema === 'essen') { var d2 = document.createElement('div'); d2.className = 'btns'; d2.appendChild(nhKnopf('btn', esc(t('sp.rezepte')), null, function () { sp.rezepte = true; spRender(true); })); box.appendChild(d2); }
       p(t('sp.quellen'), 'small muted');
       zurueck(function () { sp.thema = ''; spRender(true); });
@@ -2083,7 +2229,7 @@
     var tipps = function (keys) {
       var d = document.createElement('details'); d.className = 'pf-tipps';
       var su = document.createElement('summary'); su.textContent = t('steps.tips'); d.appendChild(su);
-      keys.forEach(function (k) { var e = document.createElement('p'); e.className = 'hint'; e.textContent = t(k); d.appendChild(e); });
+      keys.forEach(function (k) { var e = document.createElement('p'); e.className = 'hint'; e.textContent = tL(k); d.appendChild(e); });
       box.appendChild(d);
     };
     var heute = new Date().toISOString().slice(0, 10);
@@ -2094,7 +2240,7 @@
       [['lohn', 'pf.lohn', 'pf.lohn.t', '<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 9v6M18 9v6"/>'], ['konto', 'pf.konto', 'pf.konto.t', '<path d="M3 10l9-6 9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/>']].forEach(function (x) {
         l.appendChild(nhKnopf('weg', '<span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + x[3] + '</svg></span><span class="weg-txt"><b>' + esc(t(x[1])) + '</b><span>' + esc(t(x[2])) + '</span></span>', null, function () { pf.art = x[0]; pf.schritt = 1; pfRender(true); }));
       });
-      p(t('pf.stand'), 'small muted');
+      p(tL('pf.stand'), 'small muted');
       p(t('home.privat'), 'small muted');
       if (fokus) { var f0 = box.querySelector('button'); if (f0) f0.focus(); }
       return;
@@ -2130,8 +2276,8 @@
         p(t('pf.erg.lohn', { p: { eur: e.pfaendbar }, n: { eur: pf.netto } }));
       }
       if (e.ueberHoechst) p(t('pf.erg.hoch', { h: { eur: Rules.RULES.pfaendung.hoechst } }), 'hint');
-      p(t('pf.erg.frei', { f: { eur: e.frei } }), 'small muted');
-      p(t('pf.tipp.unterhalt'), 'hint');
+      p(tL('pf.erg.frei', { f: { eur: e.frei } }), 'small muted');
+      p(tL('pf.tipp.unterhalt'), 'hint');
       tipps(['pf.tipp.einmal', 'pf.tipp.kg', 'pf.tipp.mehr', 'pf.tipp.beratung']);
       var d = knoepfe('btns');
       d.appendChild(nhKnopf('btn', esc(t('pf.konto.weiter')), null, function () { pf.art = 'konto'; pf.schritt = 2; pfRender(true); }));
@@ -2143,7 +2289,7 @@
       var tab = document.createElement('table'); tab.className = 'pf-tab';
       [['pf.k.sockel', k.sockel], ['pf.k.unterhalt', k.unterhalt], ['pf.k.kg', k.kindergeld]].forEach(function (x) { if (!x[1] && x[0] !== 'pf.k.sockel') return; var tr = tab.insertRow(); tr.insertCell().textContent = t(x[0]); tr.insertCell().textContent = E(x[1]); });
       box.appendChild(tab);
-      if (k.unterhalt || k.kindergeld) p(t('pf.tipp.bescheinigung'), 'hint');
+      if (k.unterhalt || k.kindergeld) p(tL('pf.tipp.bescheinigung'), 'hint');
       tipps(['pf.tipp.umwandeln', 'pf.tipp.uebertrag', 'pf.tipp.sozial', 'pf.tipp.kontomehr', 'pf.tipp.beratung']);
       var d2 = knoepfe('btns');
       d2.appendChild(nhKnopf('btn ghost', esc(t('pf.neu')), null, function () { pf = { art: '', schritt: 0, netto: '', pers: null, kg: null, kiz: '' }; pfRender(true); }));
