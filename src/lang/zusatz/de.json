@@ -50,5 +50,8 @@
   "bp.w.kdu": "Miete, Nebenkosten und Heizung, soweit das Jobcenter sie als angemessen anerkennt (§ 22 SGB II).",
   "bp.w.zb": "Der Betrag, der jeden Monat überwiesen wird.",
   "bp.w.bz": "Die Monate, für die der Bescheid gilt. Danach braucht es einen Weiterbewilligungsantrag. Er ist nicht das Datum des Bescheids.",
-  "briefe.schreibenDe": "Schreiben an Ämter, zum Beispiel ein Widerspruch, sind immer auf Deutsch. Die Ämter brauchen sie so."
+  "briefe.schreibenDe": "Schreiben an Ämter, zum Beispiel ein Widerspruch, sind immer auf Deutsch. Die Ämter brauchen sie so.",
+  "sp.vz.link": "Gesund essen mit wenig Geld – Tipps der Verbraucherzentrale",
+  "sp.vz.t": "Seite der Verbraucherzentrale in einfacher Sprache. Öffnet im Browser.",
+  "sp.vz.de": "Die Seite ist auf Deutsch."
 }

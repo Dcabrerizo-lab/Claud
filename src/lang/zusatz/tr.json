@@ -50,5 +50,8 @@
   "bp.w.kdu": "Jobcenter'ın uygun kabul ettiği ölçüde kira, yan giderler ve ısınma (§ 22 SGB II).",
   "bp.w.zb": "Her ay hesabına yatırılan tutar.",
   "bp.w.bz": "Kararın geçerli olduğu aylar. Sonrasında devam başvurusu (Weiterbewilligungsantrag) gerekir. Bu, kararın tarihi değildir.",
-  "briefe.schreibenDe": "Resmî kurumlara yazılan mektuplar, örneğin itiraz, her zaman Almancadır. Kurumlar bunları Almanca ister."
+  "briefe.schreibenDe": "Resmî kurumlara yazılan mektuplar, örneğin itiraz, her zaman Almancadır. Kurumlar bunları Almanca ister.",
+  "sp.vz.link": "Az parayla sağlıklı beslenme – Verbraucherzentrale'den ipuçları",
+  "sp.vz.t": "Tüketici danışma merkezinin sade dilde sayfası. Tarayıcıda açılır.",
+  "sp.vz.de": "Sayfa Almancadır."
 }

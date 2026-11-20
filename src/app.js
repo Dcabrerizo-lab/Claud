@@ -2595,7 +2595,7 @@
     ['mahn', 'gs.d.mahn', '<path d="M4 6h16v12H4z"/><path d="M4 6l8 6 8-6"/><path d="M12 15.5v.5"/>'],
     ['miete', 'gs.d.miete', '<path d="M4 11l8-6 8 6v9H4z"/><path d="M10 20v-5h4v5"/>']
   ];
-  // Sparen im Alltag: nur Strom, Heizen, Essen (mit Rezepten), Verträge; Schulden und Haushaltsplan haben eigene Kacheln
+  // Sparen im Alltag: nur Strom, Heizen, Essen (mit Link zur Verbraucherzentrale), Verträge; Schulden und Haushaltsplan haben eigene Kacheln
   var SP_THEMEN = [
     ['strom', 'sp.strom', 'sp.strom.t', 6, '<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>'],
     ['heizen', 'sp.heizen', 'sp.heizen.t', 5, '<path d="M12 21a6 6 0 0 0 6-6c0-4-3-6-4-10-2 2-3 4-3 6-1-1-2-2-2-4-2 2-3 5-3 8a6 6 0 0 0 6 6z"/>'],
@@ -2616,21 +2616,16 @@
   //  Insolvenz §§ 287, 295, 302, 305 InsO.
   // Fälle unter „Es ist dringend“ (konto, strom, mahn, miete) und unter „Kostenlose Hilfe“ (inkasso, rate, unserioes, insolvenz); jeder Text nur an einer Stelle.
   var SP_SCHULDEN_FAELLE = ['inkasso', 'rate', 'unserioes', 'insolvenz'];
-  // Eigene Rezepte, günstige Grundzutaten, je 4 Portionen; bewusst ohne Preise (Preise ändern sich)
-  var REZEPTE = [
-    ['Linsen-Dal mit Reis', ['250 g rote Linsen', '1 Zwiebel, 1 Knoblauchzehe', '1 Dose gehackte Tomaten', '1 TL Curry, Salz', '250 g Reis'], ['Zwiebel und Knoblauch klein schneiden und in etwas Öl anbraten.', 'Linsen, Tomaten, Curry und 600 ml Wasser dazugeben, 15 Minuten köcheln, bis die Linsen weich sind.', 'Reis nach Packung kochen und mit dem Dal servieren.']],
-    ['Ofengemüse mit Kartoffeln', ['1 kg Kartoffeln', '2 Möhren, 1 Paprika, 1 Zwiebel (oder Gemüse der Saison)', '3 EL Öl, Salz, Paprikapulver', '200 g Quark mit Kräutern'], ['Ofen auf 200 Grad vorheizen.', 'Kartoffeln und Gemüse in Stücke schneiden, mit Öl und Gewürzen mischen.', 'Auf dem Blech 35 Minuten backen, mit Kräuterquark essen.']],
-    ['Nudeln mit Tomaten-Bohnen-Soße', ['400 g Vollkornnudeln', '1 Dose weiße Bohnen', '1 Dose gehackte Tomaten', '1 Zwiebel, Oregano, Salz, Pfeffer'], ['Nudeln nach Packung kochen.', 'Zwiebel anbraten, Tomaten und abgespülte Bohnen dazu, 10 Minuten köcheln und würzen.', 'Mit den Nudeln mischen.']],
-    ['Gemüsesuppe aus Resten', ['Gemüse, das weg muss (zum Beispiel Möhren, Lauch, Kartoffeln, Kohl)', '1 Zwiebel', '1 l Gemüsebrühe', 'Salz, Pfeffer, Petersilie'], ['Gemüse und Zwiebel klein schneiden und kurz in Öl anbraten.', 'Brühe dazugeben und 20 Minuten köcheln.', 'Abschmecken; nach Wunsch pürieren. Reste lassen sich gut einfrieren.']],
-    ['Haferflocken-Frühstück', ['250 g Haferflocken', '750 ml Milch oder Wasser', '2 Äpfel oder Bananen', 'Zimt'], ['Haferflocken mit Milch oder Wasser 5 Minuten unter Rühren köcheln.', 'Obst klein schneiden und darübergeben, mit Zimt bestreuen.', 'Tipp: abends mit kalter Milch ansetzen, morgens fertig.']],
-    ['Kichererbsen-Pfanne mit Ei', ['2 Dosen Kichererbsen', '1 Zwiebel, 1 Paprika', '1 Dose gehackte Tomaten', '4 Eier, Kreuzkümmel, Salz'], ['Zwiebel und Paprika anbraten, Kichererbsen und Tomaten dazugeben, 10 Minuten köcheln.', 'Mit Kreuzkümmel und Salz würzen.', '4 Mulden machen, Eier hineingeben und zugedeckt 6 Minuten garen lassen.']]
-  ];
-  var sp = { bereich: '', fall: '', thema: '', rezepte: false };
+  // Essen: Link zur Verbraucherzentrale statt eigener Rezepte (Entscheidung David 20.11.2026). Verbraucherzentrale Bundesverband,
+  // „So geht gesunde Ernährung mit wenig Geld“ (Seite in einfacher Sprache, Stand der Seite 14.06.2024, abgerufen 20.11.2026).
+  var SP_VZ_URL = 'https://www.verbraucherzentrale.de/lebensmittel/so-geht-gesunde-ernaehrung-mit-wenig-geld-96404';
+
+  var sp = { bereich: '', fall: '', thema: '' };
   // Kachel in der Form der Startseite (Klasse sk): Symbol, Titel, kurzer Text
   function skKachel(cls, sym, titel, text, fn) {
     return nhKnopf('uk-karte ' + cls, '<span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + sym + '</svg></span><span class="sk-txt"><b>' + esc(titel) + '</b>' + (text ? '<span>' + esc(text) + '</span>' : '') + '</span>', null, fn);
   }
-  function gsOeffne(bereich) { sp.bereich = bereich; sp.fall = ''; sp.thema = ''; sp.rezepte = false; }
+  function gsOeffne(bereich) { sp.bereich = bereich; sp.fall = ''; sp.thema = ''; }
   // Sprung aus einer Unteransicht (Pfändung, Haushaltsplan) in einen Teil von „Geld und Schulden“: Herkunft bleibt die der Startkachel,
   // damit „Zurück“ eine Ebene hoch führt (Teil → Kacheln → Startseite) und nicht im Kreis zwischen zwei Ansichten
   function gsSprung(bereich, thema) {
@@ -2690,33 +2685,27 @@
       p(t('sp.schulden.fall'), 'sp-zwischen');
       SP_SCHULDEN_FAELLE.forEach(function (f) { tipp('sp.schulden.' + f, f); });
       box.appendChild(quellenEl([t('sp.schulden.quellen')]));
-    } else if (sp.rezepte) {
-      p(t('sp.rezepte'), 'pf-frage');
-      if (lang !== 'de') p(t('pu.nurDe'), 'pp-hinweis small');
-      REZEPTE.forEach(function (r) {
-        var d = document.createElement('details'); d.className = 'rezept'; d.lang = 'de';
-        d.innerHTML = '<summary>' + esc(r[0]) + '</summary><ul class="sp-liste">' + r[1].map(function (z) { return '<li>' + esc(z) + '</li>'; }).join('') + '</ul><ol class="sp-liste">' + r[2].map(function (z) { return '<li>' + esc(z) + '</li>'; }).join('') + '</ol>';
-        box.appendChild(d);
-      });
-      p(t('sp.rezepte.t'), 'small muted');
     } else if (!sp.thema) {
       p(t('sp.h'), 'pf-frage');
       p(t('sp.wahl'), 'hint');
       var r2 = raster();
-      SP_THEMEN.forEach(function (x) { r2.appendChild(skKachel('gs-t-' + x[0], x[4], t(x[1]), t(x[2]), function () { sp.thema = x[0]; sp.rezepte = false; spRender(true); })); });
+      SP_THEMEN.forEach(function (x) { r2.appendChild(skKachel('gs-t-' + x[0], x[4], t(x[1]), t(x[2]), function () { sp.thema = x[0]; spRender(true); })); });
     } else {
       var th = SP_THEMEN.filter(function (x) { return x[0] === sp.thema; })[0];
       p(t(th[1]), 'pf-frage');
       tippListe(SP_TIPPS[sp.thema], 'sp-tipps', true);
-      if (sp.thema === 'essen') knopf('btn', t('sp.rezepte'), function () { sp.rezepte = true; spRender(true); });
+      if (sp.thema === 'essen') { // Linkkarte (öffnet extern; in der App über das Browser-Plugin, siehe Klick auf a[href])
+        var vz = document.createElement('a'); vz.className = 'uk-karte sp-link-karte'; vz.href = SP_VZ_URL; vz.target = '_blank'; vz.rel = 'noopener'; vz.id = 'sp-vz';
+        vz.innerHTML = '<span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></span><span class="sk-txt"><b>' + esc(t('sp.vz.link')) + '</b><span>' + esc(t('sp.vz.t')) + (lang !== 'de' ? ' ' + esc(t('sp.vz.de')) : '') + '</span></span>';
+        box.appendChild(vz);
+      }
       box.appendChild(quellenEl([t('sp.quellen')]));
     }
     if (fokus) { var h = box.querySelector('.pf-frage'); if (h) { h.setAttribute('tabindex', '-1'); h.focus(); } }
   }
   // Eine Ebene zurück innerhalb von „Geld und Schulden“; false = schon auf der obersten Ebene
   function spEbeneZurueck() {
-    if (sp.rezepte) sp.rezepte = false;
-    else if (sp.fall) sp.fall = '';
+    if (sp.fall) sp.fall = '';
     else if (sp.thema) sp.thema = '';
     else if (sp.bereich) sp.bereich = '';
     else return false;
@@ -2873,7 +2862,7 @@
     var a = aktAnsicht, sub = '', d = 0, x;
     if (a === 'pflege') { d = (pa.antworten && +pa.antworten.pos) || 0; sub = 'q' + d; }
     else if (a === 'pfaendung') { d = pf.schritt; sub = pf.art + d; }
-    else if (a === 'sparen') { d = (sp.bereich ? 1 : 0) + (sp.fall ? 1 : 0) + (sp.thema ? 1 : 0) + (sp.rezepte ? 1 : 0); sub = sp.bereich ? [sp.bereich, sp.fall || sp.thema].filter(Boolean).join('-') + (sp.rezepte ? '-r' : '') : ''; }
+    else if (a === 'sparen') { d = (sp.bereich ? 1 : 0) + (sp.fall ? 1 : 0) + (sp.thema ? 1 : 0); sub = sp.bereich ? [sp.bereich, sp.fall || sp.thema].filter(Boolean).join('-') : ''; }
     else if (a === 'schulden') { x = $('slBlatt'); d = ($('slEingabe') ? 1 : 0) + (x && !x.hidden ? 1 : 0); sub = d ? 'e' + d : ''; }
     else if (a === 'ausziehen') { d = window.Ausziehen && Ausziehen.offen() ? 1 : 0; sub = d ? 'offen' : ''; }
     else if (a === 'briefe') { d = $('checkBox').hidden ? 0 : 1; sub = d ? (briefArt || '') : ''; }
@@ -2909,7 +2898,7 @@
     }
     if ((a === 'einst' || a === 'ordner') && sub) usZeigen(a, sub, true);
     else if (a === 'briefe' && BRIEF_TEIL[sub]) briefOeffnen(sub);
-    else if (a === 'sparen' && sub) { var r = /-r$/.test(sub), sx = sub.replace(/-r$/, '').split('-'); gsOeffne(sx[0]); if (sx[1]) { if (sx[0] === 'dringend') sp.fall = sx[1]; else sp.thema = sx[1]; } sp.rezepte = r; spRender(true); }
+    else if (a === 'sparen' && sub) { var sx = sub.split('-'); gsOeffne(sx[0]); if (sx[1]) { if (sx[0] === 'dringend') sp.fall = sx[1]; else sp.thema = sx[1]; } spRender(true); }
     else if (a === 'pflegestart' && /^pg/.test(sub)) puOeffnen('pg');
     else if (a === 'pflegestart' && /^liste\d$/.test(sub)) puOeffnen('liste', +sub.slice(5));
   }
