@@ -40,8 +40,9 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
     for (let i = 0; i < 6; i++) { const q = await p.textContent('#pa-q'); if (/Wahrscheinlich/.test(q)) break; await p.click(/Probleme|Hilfe|Verhalten/.test(q) ? '#pflegeAssist .es-btn >> nth=1' : '#pflegeAssist .es-btn >> nth=2'); }
     for (let i = 0; i < 40 && !/Wahrscheinlich/.test(await p.textContent('#pa-q')); i++) await p.click('#pflegeAssist .es-btn >> nth=1');
     await pruefe('Pflegegrad: Ergebnis');
-    await p.click('text=Was bedeuten diese Leistungen?'); await pruefe('Erklärseite Pflege'); await p.click('#piZurueck');
-    await p.click('text=Zurück zu den Leistungen'); await p.evaluate(() => { localStorage.removeItem('lotse.pflegecheck'); });
+    // Ergebnisseite (#63): Textlink zurück in den Leistungs-Check, dort öffnet sich die Pflege-Karte; Erklärseite über deren Link
+    await p.click('#pflegeAssist .pa-links button:has-text("Zurück zum Leistungs-Check")'); await p.evaluate(() => { localStorage.removeItem('lotse.pflegecheck'); });
+    await p.evaluate(() => document.querySelector('#c-pflege .pi-link').click()); await pruefe('Erklärseite Pflege'); await p.click('#piZurueck');
     await p.evaluate(() => document.getElementById('p1').click());
     await pruefe('Beispiel 1 mit Ergebnis');
     await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'ar'); await pruefe('Arabisch'); await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'de');
