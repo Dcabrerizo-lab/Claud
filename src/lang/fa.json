@@ -873,7 +873,7 @@
   "t.ggeld.gemischt": "اگر یک نفر به سن بازنشستگی رسیده یا دارای کاهش کامل توان کار است، Sozialamt مسئول اوست. اگر نفر دیگر می‌تواند کار کند، او همراه کودکان به Jobcenter مربوط است (gemischte Bedarfsgemeinschaft). بگذارید هر دو بررسی شوند.",
   "t.krank.minijob": "Minijob (تا {mini} در ماه) از طریق کار بیمه درمانی ندارد. از آن Krankengeld پرداخت نمی‌شود.",
   "t.alg1.minijob": "Minijob (تا {mini} در ماه) بیمه بیکاری ندارد و برای Arbeitslosengeld حساب نمی‌شود. کارهای قبلی با دستمزد بالاتر ممکن است حساب شوند.",
-  "alt.hinweis": "توجه: قوانین این نسخه به تاریخ {stand} است. برای 2027 تا کنون فقط سقف جدید Minijob (633 €) و تعداد روزهای Kinderkrankengeld اعمال شده است. Kindergeld، مبالغ پایه (Regelsätze)، Wohngeld و مبالغ دیگر ممکن است از 1 ژانویه تغییر کرده باشند. لطفاً اپ را به‌روز کنید.",
+  "alt.hinweis": "توجه: قوانین این نسخه به تاریخ {stand} است. برای 2027 فقط بخشی از تغییرات اعمال شده است. مبالغ را نزد اداره مسئول بررسی کنید. لطفاً اپ را به‌روز کنید.",
   "cb.teilhabe": "به دلیل معلولیت برای مدرسه، آموزش حرفه‌ای یا آمادگی شغلی کمک می‌گیرد (مثلاً Berufsbildungswerk، Schulbegleitung). نه: کارگاه (Werkstatt).",
   "bhWeitere.label": "افراد دیگر خانوار با معلولیت شدید",
   "bhWeitere.hint": "فقط کسی که GdB 100 دارد، یا GdB از 50 به بالا و یک Pflegegrad. برای Wohngeld و Wohnberechtigungsschein مهم است.",

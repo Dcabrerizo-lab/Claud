@@ -361,6 +361,11 @@ const Rules = (function () {
   const ab6 = (x) => Math.floor(x * 1e6 + 1e-4) / 1e6;
   // Werte der SV-Rechengrößenverordnung 2027 erst ab 2027 UND nur, wenn sie im BGBl. verkündet ist (R.svrg2027)
   const sv27 = (heute) => heute >= 2027 && R.svrg2027.verkuendet === true;
+  // Einkommensgrenze der Familienversicherung (1/7 der Bezugsgröße, § 10 Abs. 1 Nr. 5 SGB V) für das Jahr heute (Standard: jetzt); 2027 nur nach Verkündung (sv27)
+  function famversGrenze(heute) {
+    const hj = heute ? Number(heute) : (new Date().getFullYear() + new Date().getMonth() / 12);
+    return Math.round((sv27(hj) ? R.famvers.bezug2027 : R.famvers.bezug2026) / 7);
+  }
   function lohnParam(heute) {
     const L = R.lohn, j27 = heute >= 2027, s27 = sv27(heute);
     return { ...L.pap2026, bbgRV: s27 ? L.bbg2027.rv : L.bbg2026.rv, bbgKV: s27 ? L.bbg2027.kv : L.bbg2026.kv, kvz: j27 ? L.kvz2027 : L.kvz2026,
@@ -1632,7 +1637,7 @@ const Rules = (function () {
   function famvers(h) {
     const id = 'famvers';
     if (h.adults === 1 && h.kids === 0 && h.young === 0) return mk(id, 'nein', 'vorausFehlt', [['famvers.keine']]);
-    const grenze = Math.round((sv27(h.heute) ? R.famvers.bezug2027 : R.famvers.bezug2026) / 7);
+    const grenze = famversGrenze(h.heute);
     const tx = [];
     let partnerOk = false;
     if (h.adults === 2) {
@@ -2000,7 +2005,7 @@ const Rules = (function () {
     return { h, results: sorted, zusammen: zus };
   }
 
-  return { evaluate, pflegeLeistungen, pflegeFuer, pflegeKombi, nettoLohn, bruttoAusNetto, nettoRente, bruttoAusNettoRente, lohnAnnahmen, pfaendung, pfaendFreibetrag, pkonto, RULES: R, WG, limits, wgYmax, wgMiete, wgCap, wgHeiz, wgHoechst, wgBetrag, roman, sgb2Freibetrag, kizWohnanteil, haushaltsFreibetrag, derive, NAMES, STEPS, RECHT, ZUST_LAND, zustLand };
+  return { evaluate, famversGrenze, pflegeLeistungen, pflegeFuer, pflegeKombi, nettoLohn, bruttoAusNetto, nettoRente, bruttoAusNettoRente, lohnAnnahmen, pfaendung, pfaendFreibetrag, pkonto, RULES: R, WG, limits, wgYmax, wgMiete, wgCap, wgHeiz, wgHoechst, wgBetrag, roman, sgb2Freibetrag, kizWohnanteil, haushaltsFreibetrag, derive, NAMES, STEPS, RECHT, ZUST_LAND, zustLand };
 })();
 
 if (typeof module !== 'undefined') module.exports = Rules;

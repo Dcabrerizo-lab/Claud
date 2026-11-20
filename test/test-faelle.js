@@ -613,21 +613,43 @@ ck('[recht-geltend] Nach Verkündung (Schalter): ab 2027 neue Grenzen (KV 6.375 
   JSON.stringify(kgBetrag(2027.05)) !== JSON.stringify(kgBetrag(2026.9)) && JSON.stringify(algBetrag(2027.05)) !== JSON.stringify(algBetrag(2026.9)) &&
   JSON.stringify(fvGrenze(2027.05)) === JSON.stringify(E(590)) && JSON.stringify(fvGrenze(2026.9)) === JSON.stringify(E(565)) && JSON.stringify(kkgHoechst(2027.05)) === '"148,75 €"');
 R.RULES.svrg2027.verkuendet = false;
+{ // „Ich ziehe aus“ holt die Grenze über Rules.famversGrenze (mit Schalter), nicht über das Kalenderjahr
+  const aus = [2026.9, 2027.05, 2028.5].map((hj) => R.famversGrenze(hj));
+  R.RULES.svrg2027.verkuendet = true;
+  const an = [2026.9, 2027.05, 2028.5].map((hj) => R.famversGrenze(hj));
+  R.RULES.svrg2027.verkuendet = false;
+  const appSrc = require('fs').readFileSync(require('path').join(__dirname, '..', 'src', 'app.js'), 'utf8');
+  const zeile = (appSrc.match(/famversGrenze: function[^\n]*/) || [''])[0];
+  ck('[recht-geltend] Familienversicherungs-Grenze (auch „Ich ziehe aus“): ab 2027 mit Schalter aus 565 €, mit Schalter an 590 €, 2026 immer 565 €',
+    JSON.stringify(aus) === '[565,565,565]' && JSON.stringify(an) === '[565,590,590]' && /Rules\.famversGrenze\(\)/.test(zeile) && !/getFullYear|bezug2027/.test(zeile), JSON.stringify({ aus, an, zeile }));
+}
 {
   const fsL = require('fs'), pthL = require('path'), dirL = pthL.join(__dirname, '..', 'src', 'lang');
+  const PROGNOSE = {
+    de: /voraussichtlich|geplant|Frühjahr|Entwurf/i, en: /expected|planned|spring|draft/i, fr: /prévu|printemps|projet de loi/i, pl: /przewidyw|planowan|wiosn|projekt/i,
+    ro: /preconizat|planificat|primăvar|proiect/i, ru: /ожида|планиру|весн|проект/i, uk: /очіку|плану|весн|проєкт/i, tr: /bekleni|planlan|ilkbahar|taslak/i,
+    ar: /متوقع|مخطط|الربيع|مشروع/, fa: /پیش‌بینی|برنامه‌ریزی|بهار|پیش‌نویس/, 'fa-AF': /پیش‌بینی|برنامه‌ریزی|بهار|پیش‌نویس/, ps: /اټکل|پلان|پسرلی|مسوده/, so: /la filayo|qorsheysan|gu'ga|qabyo/i
+  };
   const dateien = fsL.readdirSync(dirL).filter((f) => f.endsWith('.json')).map((f) => pthL.join(dirL, f)).concat(['b.json', 'e.json', 'mietgrenze.json'].map((f) => pthL.join(dirL, 'einfach', f)));
   const probleme = [];
   for (const f of dateien) {
     const d = JSON.parse(fsL.readFileSync(f, 'utf8'));
     Object.keys(d).forEach((k) => { if (/^t\.plan\./.test(k) || k === 'wgmax.d.2027') probleme.push(pthL.basename(f) + ': ' + k); });
-    if (/einfach/.test(f)) continue;
+    if (d['alt.hinweis'] && /633|Minijob|Kinderkranken|Kindergeld|Wohngeld/.test(d['alt.hinweis'])) probleme.push(pthL.basename(f) + ': alt.hinweis nennt einzelne 2027-Werte');
+    // Prognose-Wörter (voraussichtlich, geplant, Frühjahr …) in Texten zu geltendem Recht, je Sprache
+    const prog = PROGNOSE[pthL.basename(f, '.json')] || (/einfach/.test(f) ? PROGNOSE.de : null);
+    if (prog) ['t.kg.antraglos', 't.wg.frueh', 'alt.hinweis', 'foot.3'].forEach((k) => { if (d[k] && prog.test(d[k])) probleme.push(pthL.basename(f) + ': ' + k + ' mit Prognose'); });
+    if (/einfach/.test(f)) {
+      // Einfache Sprache (b.json): Minijob-Hinweise ebenfalls mit Platzhalter {mini}
+      ['t.krank.minijob', 't.alg1.minijob'].forEach((k) => { if (k in d && (!/\{mini\}/.test(d[k]) || /603|633/.test(d[k]))) probleme.push(pthL.basename(f) + ': ' + k + ' ohne {mini}'); });
+      if (/b\.json$/.test(f) && !d['t.krank.minijob']) probleme.push('einfach/b.json: fehlt t.krank.minijob');
+      continue;
+    }
     ['t.wg.frueh', 't.kg.antraglos', 'foot.3'].forEach((k) => { if (!d[k]) probleme.push(pthL.basename(f) + ': fehlt ' + k); });
     ['t.krank.minijob', 't.alg1.minijob'].forEach((k) => { if (!/\{mini\}/.test(d[k]) || /603/.test(d[k])) probleme.push(pthL.basename(f) + ': ' + k + ' ohne {mini}'); });
     if (/2027/.test(d['foot.3'])) probleme.push(pthL.basename(f) + ': foot.3 nennt 2027');
   }
-  const de = JSON.parse(fsL.readFileSync(pthL.join(dirL, 'de.json'), 'utf8'));
-  if (/voraussichtlich|geplant|Frühjahr/.test(de['t.kg.antraglos'])) probleme.push('de: t.kg.antraglos mit Prognose');
-  ck('[recht-geltend] Texte in allen 13 Sprachen und Einfacher Sprache: keine Entwurfs-Schlüssel, foot.3 ohne 2027, Minijob-Grenze als Platzhalter', probleme.length === 0, probleme.join('; '));
+  ck('[recht-geltend] Texte in allen 13 Sprachen und Einfacher Sprache: keine Entwurfs-Schlüssel, keine Prognose-Wörter, alt.hinweis neutral, foot.3 ohne 2027, Minijob-Grenze als Platzhalter (auch Einfache Sprache)', probleme.length === 0, probleme.join('; '));
 }
 ck('[recht-geltend] Minijob-Hinweis Krankengeld/Arbeitslosengeld mit der Minijob-Grenze des Jahres (603 € / 633 €)',
   JSON.stringify(res({ arbeitSit: 'krank', krankWochen: 'laeuft', lohnVorher: 500, heute: 2026.9 }).m.krankengeld.tx[0]) === JSON.stringify(['krank.minijob', { mini: E(603) }]) &&

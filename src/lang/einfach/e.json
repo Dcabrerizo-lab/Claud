@@ -52,7 +52,7 @@
  "krankW.ende": "Das Krankengeld endet bald",
  "lohnV.label": "Dein letztes Bruttogehalt im Monat",
  "lohnV.hint": "Die App braucht es, um die Höhe von Arbeitslosengeld oder Krankengeld grob zu schätzen. Du findest es auf der letzten Lohnabrechnung.",
- "alt.hinweis": "Achtung: Die Regeln in dieser Version haben den Stand {stand}. Für 2027 sind bisher nur die neue Minijob-Grenze (633 €) und die Zahl der Kinderkrankentage eingebaut. Kindergeld, Regelsätze, Wohngeld und andere Beträge können sich am 1. Januar geändert haben. Bitte aktualisiere die App.",
+ "alt.hinweis": "Achtung: Die Regeln in dieser Version haben den Stand {stand}. Für 2027 ist nur ein Teil der Änderungen eingebaut. Prüfe Beträge beim zuständigen Amt. Bitte aktualisiere die App.",
  "bhWeitere.hint": "Zähle nur Personen mit GdB 100 (Grad der Behinderung). Zähle auch Personen mit GdB ab 50 und einem Pflegegrad. Das ist wichtig für Wohngeld und den Wohnberechtigungsschein.",
  "aufenthalt.label": "Dein Aufenthalt in Deutschland",
  "aufenthalt.hint": "Das ist wichtig. Menschen im Asylverfahren, mit Duldung oder mit Ausreisepflicht bekommen eigene Leistungen.",

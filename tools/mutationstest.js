@@ -18,6 +18,8 @@ const M = [
   ['Wohngeld: ausgezahlte Beträge der ausführlichen Version wie Brutto behandelt', 'const AUSZ = { alg: 1, kg: 1, eg: 1, wfbm: 1, unt: 1 };', 'const AUSZ = {};'],
   ['2027: antragsloses Kindergeld schon vor dem Inkrafttreten', "r.id === 'kindergeld' && h.heute >= 2027 &&", "r.id === 'kindergeld' &&"],
   ['2027: SV-Rechengrößen ohne Verkündung', "heute >= 2027 && R.svrg2027.verkuendet === true", "heute >= 2027"],
+  ['2027: Familienversicherungs-Grenze ohne Schalter', "return Math.round((sv27(hj) ? R.famvers.bezug2027", "return Math.round((hj >= 2027 ? R.famvers.bezug2027"],
+  ['2027: „Ich ziehe aus“ Familienversicherung nach Kalenderjahr', "famversGrenze: function () { return Fmt.euro(Rules.famversGrenze(), lang,", "famversGrenze: function () { return Fmt.euro(Math.round((new Date().getFullYear() >= 2027 ? Rules.RULES.famvers.bezug2027 : Rules.RULES.famvers.bezug2026) / 7), lang,", 'src/app.js'],
   ['Künftige Leistung: keine zweite Rechnung', '    if (zk) { wg = mitZukunft(', '    if (false) { wg = mitZukunft('],
   ['Künftige Leistung: Elterngeld auch bei Paaren', "h.baby === 'bald' && h.adults === 1 && h.egVor != null", "h.baby === 'bald' && h.egVor != null"],
   ['Künftige Leistung: Lohn bleibt zusätzlich', 'netto: Math.max(0, h.netto - netto1) + betrag, aus1: true', 'netto: h.netto + betrag, aus1: true'],
