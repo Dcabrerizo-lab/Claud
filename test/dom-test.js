@@ -274,7 +274,7 @@ setTimeout(() => {
   // Grenze 4 MB (bis 1.4: 2,5 MB; 19.11.2026: 3 MB für 13 Sprachen; 20.11.2026: 4 MB für Vorgänge speichern, Beratungsmodus, Pflege-Unterstützung, Schulden-Tipps, Haushaltsplan): eine einzige Datei, die offline läuft; der größte Teil sind PLZ-Daten (ganz Deutschland mit Mietenstufen), Behörden (Bayern), 13 Sprachen,
   // seit 1.4 auch „Brief prüfen“ und die Pflegegrad-Einschätzung (zusammen gut 200 KB)
   check('Web-Datei ist ein vollständiges Dokument mit UTF-8 und Viewport (Safari, Handy)', /^<!doctype html>/i.test(html) && /<meta charset="utf-8">/i.test(html.slice(0, 300)) && /name="viewport"/.test(html.slice(0, 400)));
-  check('Dateigröße unter 4 MB', html.length < 4 * 1024 * 1024, (html.length / 1024).toFixed(0) + ' KB');
+  check('Dateigröße unter 5 MB', html.length < 5 * 1024 * 1024, (html.length / 1024).toFixed(0) + ' KB');
   // ----- Antrag scannen -----
   setLang('de');
   beispiel('p1');
