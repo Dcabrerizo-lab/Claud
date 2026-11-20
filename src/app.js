@@ -1191,7 +1191,13 @@
   }
   // Aufgabenliste der Mappe (Vorbild GOV.UK „task list“): nummeriert, je Schritt ein Knopf, Haken „Erledigt“ (lotse.haken, Schlüssel mappe|…).
   // Die Frist (Antrag sichert den Monat) steht sichtbar im letzten Schritt, nie zum Aufklappen.
-  function aufgabenHtml(mitBrief, mitForm, ohneOrt) {
+  // Hinweise je Leistung im Schritt „Abschicken“ (Prüfvermerk 20.11.2026, Gesetzestext abgerufen am 20.11.2026 auf gesetze-im-internet.de):
+  // alg1: Der Brief ersetzt die Arbeitslosmeldung nicht. Arbeitslosmeldung elektronisch im Fachportal oder persönlich (§ 141 Abs. 1 SGB III);
+  //       Arbeitsuchendmeldung spätestens 3 Monate vor dem Ende, bei kürzerer Kenntnis innerhalb von 3 Tagen (§ 38 Abs. 1 SGB III).
+  // srente: Das Anschreiben bittet nur um Rentenauskunft und Beratung (ANTRAG.srente), es ist kein Rentenantrag (§ 99 Abs. 1 SGB VI).
+  function aufgabenHtml(mitBrief, mitForm, ohneOrt, briefe) {
+    var hat = function (id) { return (briefe || []).some(function (r) { return r.id === id; }); };
+    var nurSrente = hat('srente') && briefe.length === 1 && !mitForm;
     var schritt = function (key, titel, text, knopf) {
       var hk = 'mappe|' + key;
       return '<li class="aufgabe"><h3>' + esc(t(titel)) + '</h3>' + (text ? '<p>' + esc(t(text)) + '</p>' : '') + knopf +
@@ -1202,7 +1208,9 @@
       (mitBrief ? schritt('brief', 'f.auf.1', '', (ohneOrt ? '<p class="warn" id="mappeAdrNote">' + esc(t('f.adrFehlt')) + '</p>' : '') + zu('m-brief', 'f.auf.zu1')) : '') +
       (mitForm ? schritt('formular', 'f.auf.2', '', zu('m-formulare', 'f.auf.zu2')) : '') +
       schritt('unterlagen', 'f.auf.3', '', zu('m-unterlagen', 'f.auf.zu3')) +
-      schritt('abschicken', 'f.auf.4', 'f.auf.4.t', '<p class="mappe-stichtag"><strong>' + esc(t('f.stichtag')) + '</strong></p><p><button type="button" class="btn" data-mappe-druck="1">' + esc(t('f.print')) + '</button></p>') +
+      schritt('abschicken', 'f.auf.4', 'f.auf.4.t', (hat('alg1') ? '<p class="warn mappe-alg1" role="note"><strong>' + esc(t('f.alg1.meldung')) + '</strong></p>' : '') +
+        (nurSrente ? '' : '<p class="mappe-stichtag"><strong>' + esc(t('f.stichtag')) + '</strong></p>') +
+        (hat('srente') ? '<p class="mappe-srente"><strong>' + esc(t('f.srente.hinweis')) + '</strong></p>' : '') + '<p><button type="button" class="btn" data-mappe-druck="1">' + esc(t('f.print')) + '</button></p>') +
       '</ol></section>';
   }
   // Brief am Bildschirm: Absender, Empfängerfeld, Rest; der ganze Brief (#brief-ID) nur im Druck
@@ -1333,7 +1341,9 @@
     // Fehlt der Wohnort, kann die App keine Anschriften einsetzen (Anschriften gibt es für Bayern): Hinweis im Schritt „Anschrift eintragen“
     var ohneOrt = Behoerden.available() && !aktAgs() && (!state.bundesland || state.bundesland === 'BY') &&
       ids.some(function (r) { return Behoerden.brauchtKreis(r.id); });
-    html += aufgabenHtml(briefe.length > 0, !!fh, ohneOrt);
+    html += aufgabenHtml(briefe.length > 0, !!fh, ohneOrt, briefe);
+    // Rentenauskunft (srente) ist kein Antrag: Hinweis unter der Erklärung zum formlosen Antrag
+    if ($('introSrente')) $('introSrente').hidden = !briefe.some(function (r) { return r.id === 'srente'; });
     briefe.forEach(function (r) { html += briefSeite(r.id); });
     html += fh.replace('<article class="page docs forms">', '<article class="page docs forms" id="m-formulare" tabindex="-1">');
     html += '<article class="page" id="m-angaben" tabindex="-1" lang="de" dir="ltr"><pre>' + esc(sheetText()) + '</pre></article>';
