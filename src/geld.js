@@ -49,6 +49,8 @@ var Geld = (function () {
   // C4 P-Konto-Bescheinigung: § 903 Abs. 1 und 3 ZPO (Familienkasse, Sozialleistungsträger, Arbeitgeber, Stelle nach § 305 Abs. 1 Nr. 1 InsO;
   // Pflicht zur Ausstellung für Stellen nach Abs. 1 Nr. 1, die Leistungen überweisen; Wortlaut abgerufen 20.11.2026).
   // Die App setzt nur ein, was der Nutzer eingibt; fehlt etwas, bleibt eine Lücke [ … ] zum Ausfüllen. Keine Wertung der Forderung.
+  // Prüfung 20.11.2026: C2 nennt neben § 13a RDG auch § 43d BRAO (gleiche Pflichten für Rechtsanwälte, Wortlaut abgerufen 20.11.2026 auf
+  // https://www.gesetze-im-internet.de/brao/__43d.html) und enthält keine Zahlungsverweigerung mehr (wäre eine Entscheidung im Einzelfall).
   var MUSTER = ['geduld', 'aufst', 'wider', 'pkonto'];
   var LUECKE = { name: '[Dein Name, deine Anschrift]', g: '[Name der Firma oder Stelle]', adr: '[Anschrift aus dem Brief]', az: '[Aktenzeichen oder Kundennummer]', ort: '[Ort]' };
   function zeilen(s) { return String(s || '').replace(/\r\n?/g, '\n').split('\n').map(function (z) { return z.replace(/[\u0000-\u001f\u007f]/g, '').trim(); }).filter(Boolean); }
@@ -69,8 +71,8 @@ var Geld = (function () {
       '- den Grund der Forderung, bei einem Vertrag den Vertragsgegenstand und das Datum des Vertragsschlusses,',
       '- eine Aufstellung von Hauptforderung, Zinsen (Betrag, Zinssatz, Zeitraum) und Kosten (Art, Höhe, Grund),',
       '- die zuständige Aufsichtsbehörde.',
-      'Diese Angaben sehen § 13a Abs. 1 und 2 des Rechtsdienstleistungsgesetzes vor.',
-      'Dieses Schreiben ist kein Anerkenntnis der Forderung. Bis zur Klärung zahle ich nicht.', '', 'Mit freundlichen Grüßen', '', '[Unterschrift]'];
+      'Für Inkassodienstleister sehen § 13a Abs. 1 und 2 des Rechtsdienstleistungsgesetzes diese Angaben vor, für Rechtsanwälte § 43d der Bundesrechtsanwaltsordnung.',
+      'Dieses Schreiben ist kein Anerkenntnis der Forderung. Sobald mir die Angaben vorliegen, prüfe ich die Forderung.', '', 'Mit freundlichen Grüßen', '', '[Unterschrift]'];
     else if (art === 'wider') b = ['Aktenzeichen: ' + az, '', 'Widerspruch gegen Ihre Forderung', '', 'Sehr geehrte Damen und Herren,', '',
       'hiermit widerspreche ich Ihrer Forderung. [Zutreffendes stehen lassen, anderes löschen:]',
       '- Ich habe mit Ihrem Auftraggeber keinen Vertrag geschlossen. Die Forderung ist mir nicht bekannt.',
@@ -197,6 +199,7 @@ var Geld = (function () {
     }
     erg();
     ['ip.w1', 'ip.w2', 'ip.w3'].forEach(function (k) { box.appendChild(ctx.tipp(k, 'ip-warn')); });
+    box.appendChild(el('p', 'small ip-hinweis', t('ip.hinweis'))); // RDG-Grenze: immer sichtbar „Erste Einschätzung, keine Rechtsberatung“
     if (ber()) box.appendChild(berEl('p', 'Prüfhinweise für Fachkräfte: Kostenhinweis vor Raten- oder Stundungsvereinbarung (§ 13a Abs. 3 RDG); Hinweis vor einem Schuldanerkenntnis (§ 13a Abs. 4 RDG); Erstattungsfähigkeit der Inkassokosten höchstens wie bei einem Rechtsanwalt (§ 13e RDG). Abrufdatum 20.11.2026.'));
   }
 
@@ -348,7 +351,7 @@ var Geld = (function () {
   }
   function zuruecksetzen() { st.kc = { i: 0, a: {} }; st.ip = {}; }
   function init(c) { ctx = c; laden(); }
-  function neuLaden() { st = { kc: { i: 0, a: {} }, ip: {}, ms: { art: '', g: '', adr: '', az: '', von: '', absender: '' } }; laden(); }
+  function neuLaden() { st = { kc: { i: 0, a: {} }, ip: {}, ms: { art: '', g: '', adr: '', az: '', von: '', absender: '' } }; pm = { netto: '', pers: 0, kg: 0 }; laden(); } // auch die Pfändungs-Maske leeren: keine Zahlen des vorigen Vorgangs
 
   return {
     // Rechnung (Tests)

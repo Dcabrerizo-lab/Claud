@@ -448,6 +448,7 @@ setTimeout(() => {
     kacheln()[0].click();
     const ipH = [...box.querySelectorAll('.ip-liste input[type=checkbox]')];
     check('[inkasso] Prüfliste: 6 Haken nach § 13a RDG, ohne Fundstelle im Privatmodus, 3 Warnungen', ipH.length === 6 && !box.querySelector('.ber-nur') && box.querySelectorAll('.ip-warn').length === 3);
+    check('[inkasso] Prüfliste: Hinweis „Erste Einschätzung, keine Rechtsberatung“ immer sichtbar (Prüfung 20.11.2026)', !!box.querySelector('.ip-hinweis') && /keine Rechtsberatung/.test(box.querySelector('.ip-hinweis').textContent));
     check('[inkasso] ohne Haken: alles fehlt, Knopf zum Schreiben „Forderungsaufstellung“', box.querySelectorAll('#ip-erg li').length === 6 && !!d.getElementById('ip-zum-schreiben'));
     ipH.forEach((c) => { c.checked = true; c.dispatchEvent(new w.Event('change', { bubbles: true })); });
     check('[inkasso] alle Haken: kein Urteil über die Forderung', d.getElementById('ip-erg').textContent === I18N.de['ip.erg.alle'] && !d.getElementById('ip-zum-schreiben'));
