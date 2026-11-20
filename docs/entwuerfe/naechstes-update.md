@@ -15,6 +15,7 @@ Stand: 20.11.2026 · Wünsche von David, noch nicht umgesetzt
 
 Hinweis zur Ergebnisliste: Die Mappe zeigt Schritte und Unterlagen nur für Leistungen, die man in die Mappe übernimmt. Darauf auf der Karte kurz hinweisen („Unterlagen und nächste Schritte findest du in der Antragsmappe“).
 
+| Ich ziehe aus | Kachel „Für Careleaver“ komplett raus, dazu alle Erwähnungen (Bereichs-Beschreibung, Beratungs-Hinweis mit Careleaver-Beratung/Ombudsstelle, Store-Text, Prüfliste, Tests, Farbe „Beere“ in FARBEN.md wieder frei) |
 | ganze App | Unter jeder Startkachel wieder Kacheln in derselben Form wie die Startseite |
 
 ## Inhaltliche Korrekturen
