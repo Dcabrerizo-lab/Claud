@@ -1,0 +1,19 @@
+name: Schwere Tests (Regeln)
+
+# Rechenregeln geändert (src/rules.js oder die unabhängige Referenz test/referenz.js), auf main angekommen:
+# sofort die großen Rechenprüfungen aus schwer.yml (3 Mio. Haushalte gegen die Referenz, 1 Mio. Logik-Test,
+# vollständiger Mutationstest), statt bis Sonntag zu warten. Etwa 20 Minuten, 5 Linux-Jobs, kein Mac.
+# Browser, Emulator und iOS laufen weiter nur sonntags, vor Releases und auf Knopfdruck.
+on:
+  push:
+    branches: ['main']
+    paths: ['src/rules.js', 'test/referenz.js']
+
+permissions:
+  contents: read
+
+jobs:
+  schwer:
+    uses: ./.github/workflows/schwer.yml
+    with:
+      nur_logik: true
