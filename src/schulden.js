@@ -1,4 +1,4 @@
-// Schulden-Liste (Geld sparen → Schulden und Pfändung). Eigenes Modul: reine Rechnung (Node-Tests) und Oberfläche.
+// Schulden-Liste (Geld und Schulden → Meine Schulden-Liste). Eigenes Modul: reine Rechnung (Node-Tests) und Oberfläche.
 // Alles bleibt auf dem Gerät, je Vorgang (lotse.schulden in Vorgaenge.DATEN; verschlüsselt nur mit PIN). Beträge in Cent.
 // Ausgabe nur per textContent (el()), nie als HTML: auch ein manipulierter Speicherstand kann kein HTML einschleusen.
 // Grundlage: docs/entwuerfe/schuldenliste.md (Prüfvermerk und Entscheidung Koordination vom 20.11.2026).

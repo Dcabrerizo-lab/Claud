@@ -79,13 +79,18 @@ for (const [a, b] of Object.entries(gleich)) {
 // Die Anzahl der Einträge wird mit dem Code verglichen, damit eine neue Kachel nicht ohne eigene Farbe bleibt.
 {
   const lies = (datei) => fs.readFileSync(path.join(__dirname, '..', 'src', datei), 'utf8');
-  const gruppen = { start: BEREICHE.map((b) => 'c-' + b), absender: ABSENDER.map((a) => 'c-' + a) };
+  // Startseite: Farbe jeder Startkachel (class="sk sk-<name>") aus der Regel „.sk-<name> { --c: var(--…); }“; ohne Regel Petrol (Grundfarbe .sk)
+  const startKacheln = [...css.matchAll(/class="sk (?:sk-haupt )?sk-([a-z]+)"/g)].map((m) => m[1]);
+  const startFarbe = (n) => { const m = css.match(new RegExp('\\.sk-' + n + ' \\{ --c: var\\(--([a-z0-9-]+)\\); \\}')); return m ? m[1] : 'c-leistungen'; };
+  const gruppen = { start: startKacheln.map(startFarbe), absender: ABSENDER.map((a) => 'c-' + a) };
   for (const m of css.matchAll(/\{\s*(?:background|--c):\s*var\(--([a-z0-9-]+)\);\s*\}\s*\/\*\s*gruppe ([a-z-]+)\s*\*\//g)) (gruppen[m[2]] = gruppen[m[2]] || []).push(m[1]);
   const app = lies('app.js'), az = lies('ausziehen.js');
   const erwartet = {
-    start: (css.match(/class="sk sk-[a-z]+/g) || []).length,
+    start: (css.match(/class="sk (?:sk-haupt )?sk-[a-z]+/g) || []).length,
     absender: (app.match(/var BRIEFE = \[([\s\S]*?)\n {2}\];/) || ['', ''])[1].split('\n').filter((z) => /^\s*\['/.test(z)).length,
     sparen: (app.match(/var SP_THEMEN = \[([\s\S]*?)\n {2}\];/) || ['', ''])[1].split('\n').filter((z) => /^\s*\['/.test(z)).length,
+    geld: (app.match(/var GS_KACHELN = \[([\s\S]*?)\n {2}\];/) || ['', ''])[1].split('\n').filter((z) => /^\s*\['/.test(z)).length, // Geld und Schulden: 6 Kacheln
+    dringend: (app.match(/var GS_DRINGEND = \[([\s\S]*?)\n {2}\];/) || ['', ''])[1].split('\n').filter((z) => /^\s*\['/.test(z)).length, // Es ist dringend: 4 Fälle
     pflegestart: 2, pfaendung: 2,
     ordner: (app.match(/zeile\('[a-z]+'/g) || []).length, // Mein Ordner: jede Zeile eine eigene Farbe (ID-Selektoren, weil Zeilen nur mit Inhalt erscheinen)
     energie: 2, // Energiekosten-Check im Haushaltsplan: Strom Meerblau, Gas Ziegel (wie „Geld sparen“)

@@ -1,4 +1,4 @@
-// Haushaltsplan und Haushaltsbuch (Bereich „Geld sparen“). Eigenes Modul: reine Rechnung (Node-Tests) und Oberfläche.
+// Haushaltsplan und Haushaltsbuch (Geld und Schulden → Mein Geld planen). Eigenes Modul: reine Rechnung (Node-Tests) und Oberfläche.
 // Alles bleibt auf dem Gerät. Beträge intern in Cent (ganze Zahlen), damit keine Rundungsfehler entstehen.
 // Gemeinsame Felder mit dem Leistungs-Check (Einkommen netto, Miete warm, Unterhalt für die Kinder) liegen nur im Check
 // (eine Datenquelle). Der Plan liest und schreibt sie über ctx.daten() / ctx.setze(); vorhandene Werte nur nach Rückfrage.
