@@ -99,5 +99,9 @@
   "fri.zeile": "Found in the letter: “{zeile}”",
   "fri.feld.fest": "Deadline according to the letter (please check, you can change the day)",
   "fri.feld.fest.fehlt": "Please enter the day of the deadline.",
-  "fri.voll": "The list is full (50 open deadlines). First mark a deadline as done or remove one."
+  "fri.voll": "The list is full (50 open deadlines). First mark a deadline as done or remove one.",
+  "fri.art.wid.offen": "Widerspruch, Einspruch or Klage (objection or court action)",
+  "fri.art.wid.wg": "Widerspruch or Klage against the decision ({stelle})",
+  "fri.wid.offen": "The legal remedy has a different name depending on the office: usually Widerspruch, for child benefit (Kindergeld) Einspruch, and sometimes only a court action (Klage) is possible. What applies to you is stated in the Rechtsbehelfsbelehrung at the end of the letter. Your letter must have arrived there by this day.",
+  "fri.wid.wg": "Housing benefit (Wohngeld): in some federal states there is no Widerspruch. Then only a court action (Klage) at the Verwaltungsgericht is possible, with the same deadline. What applies to you is stated in the Rechtsbehelfsbelehrung at the end of the decision."
 }

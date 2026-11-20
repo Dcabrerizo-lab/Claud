@@ -127,6 +127,16 @@ const ck = (name, c, x) => { n++; if (!c) { fails++; console.log('FAIL', name, x
   ck('[fristen] Später: Folgeantrag in 7 Tagen, spätestens 7 Tage vor Ende, ab Ende morgen', F.spaeterTag(wb, '2027-02-01') === '2027-02-08' && F.spaeterTag(wb, '2027-03-22') === '2027-03-24' && F.spaeterTag(wb, '2027-03-31') === '2027-04-01');
 }
 
+// ---------- Rechtsweg: gleiche Rechnung für alle Stellen, nur das Wort ist je Stelle anders ----------
+{
+  const ende = (st) => F.eintragSauber({ art: 'wid', stelle: st, basis: { datum: '2026-11-10' } }).bis;
+  ck('[fristen] Rechtsweg: Wohngeld, Familienkasse, Jobcenter gleicher Tag (4. Tag, 1 Monat: § 37 SGB X, § 122 AO; § 84 SGG, § 70 VwGO, § 355 AO)', ['wg', 'fk', 'jc', 'pk', 'sa'].every((x) => ende(x) === '2026-12-14'));
+  const DIR = path.join(__dirname, '..', 'src', 'lang');
+  const dateien = fs.readdirSync(path.join(DIR, 'fristen')).map((f) => path.join(DIR, 'fristen', f)).concat(path.join(DIR, 'einfach', 'fristen.json'));
+  const schlecht = dateien.filter((f) => { const L = JSON.parse(fs.readFileSync(f, 'utf8')); return !(/Widerspruch/.test(L['fri.art.wid.offen']) && /Einspruch/.test(L['fri.art.wid.offen']) && /Klage/.test(L['fri.art.wid.offen']) && /Widerspruch/.test(L['fri.art.wid.wg']) && /Klage/.test(L['fri.art.wid.wg']) && /Einspruch/.test(L['fri.wid.offen']) && /Kindergeld/.test(L['fri.wid.offen']) && /Rechtsbehelfsbelehrung/.test(L['fri.wid.offen']) && /Wohngeld/.test(L['fri.wid.wg']) && /Klage/.test(L['fri.wid.wg']) && /Rechtsbehelfsbelehrung/.test(L['fri.wid.wg'])); });
+  ck('[fristen] Rechtsweg: Amtsbegriffe (Widerspruch, Einspruch, Klage, Rechtsbehelfsbelehrung) in allen 13 Sprachen und Einfacher Sprache deutsch', dateien.length === 14 && !schlecht.length, schlecht);
+}
+
 // ---------- Sprachdateien ----------
 {
   const DIR = path.join(__dirname, '..', 'src', 'lang', 'fristen');
