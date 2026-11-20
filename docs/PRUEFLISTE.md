@@ -544,6 +544,7 @@ Brief prüfen → Jobcenter, Sozialamt oder Anderer Brief; keine Rechnung, nur E
 |---|---|---|
 | Jede Karte zeigt Einstufung, Überschrift, Text und jeden Betrag genau wie berechnet, in allen 13 Sprachen; Zählung und Hinweise passen; Speichern und Laden ändert nichts; nirgends NaN, undefined, Platzhalter, negative Beträge oder Rohschlüssel | ✓ | `anzeige-rechnung` |
 | Einfache und ausführliche Version rechnen für dieselbe Person gleich | ✓ | `einfach-gleich` |
+| Einfache Sprache vollständig: jeder deutsche Text hat eine einfache Fassung (oder „=“, wenn der Standardtext schon einfach ist), ohne neue Zahlen oder Platzhalter | ✓ | `einfach-vollstaendig` |
 | Feste Euro-Beträge in Texten, Rechenregeln und Webseite passen zu den Werten der Rechnung | ✓ | `feste-zahlen` |
 | Betragseingaben: deutsche und englische Schreibweise, Eurozeichen, Leerzeichen; negative Beträge (auch mit typografischem Minus) und Datumsangaben werden abgewiesen | ✓ | `eingaben` |
 | Grenzwerte auf den Euro genau (−1 € / Grenze / +1 €): Schonvermögen, Mindesteinkommen, Minijob 2026 und 2027, Einkommensgrenze § 85 SGB XII, Stufen des Freibetrags für Arbeit | ✓ | `grenzen` |
