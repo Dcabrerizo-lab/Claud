@@ -640,9 +640,8 @@
     var ap = plug('App');
     if (ap) {
       ap.addListener('backButton', function () {
-        if (!$('legal').hidden) closeLegal();
+        if (!$('ergBlatt').hidden) ebSchliessen(); else if (!$('legal').hidden) closeLegal();
         else if (!$('mappe').hidden) closeMappe();
-        else if (!$('ergBlatt').hidden) ebSchliessen();
         else if ((window.pageYOffset || 0) > 60) window.scrollTo(0, 0);
         else ap.exitApp();
       });
@@ -2229,7 +2228,7 @@
     var tipps = function (keys) {
       var d = document.createElement('details'); d.className = 'pf-tipps';
       var su = document.createElement('summary'); su.textContent = t('steps.tips'); d.appendChild(su);
-      keys.forEach(function (k) { var e = document.createElement('p'); e.className = 'hint'; e.textContent = tL(k); d.appendChild(e); });
+      keys.forEach(function (k) { var e = document.createElement('p'); e.className = 'hint'; e.textContent = t(k); d.appendChild(e); });
       box.appendChild(d);
     };
     var heute = new Date().toISOString().slice(0, 10);
@@ -2240,7 +2239,7 @@
       [['lohn', 'pf.lohn', 'pf.lohn.t', '<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 9v6M18 9v6"/>'], ['konto', 'pf.konto', 'pf.konto.t', '<path d="M3 10l9-6 9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/>']].forEach(function (x) {
         l.appendChild(nhKnopf('weg', '<span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + x[3] + '</svg></span><span class="weg-txt"><b>' + esc(t(x[1])) + '</b><span>' + esc(t(x[2])) + '</span></span>', null, function () { pf.art = x[0]; pf.schritt = 1; pfRender(true); }));
       });
-      p(tL('pf.stand'), 'small muted');
+      p(t('pf.stand'), 'small muted');
       p(t('home.privat'), 'small muted');
       if (fokus) { var f0 = box.querySelector('button'); if (f0) f0.focus(); }
       return;
@@ -2276,8 +2275,8 @@
         p(t('pf.erg.lohn', { p: { eur: e.pfaendbar }, n: { eur: pf.netto } }));
       }
       if (e.ueberHoechst) p(t('pf.erg.hoch', { h: { eur: Rules.RULES.pfaendung.hoechst } }), 'hint');
-      p(tL('pf.erg.frei', { f: { eur: e.frei } }), 'small muted');
-      p(tL('pf.tipp.unterhalt'), 'hint');
+      p(t('pf.erg.frei', { f: { eur: e.frei } }), 'small muted');
+      p(t('pf.tipp.unterhalt'), 'hint');
       tipps(['pf.tipp.einmal', 'pf.tipp.kg', 'pf.tipp.mehr', 'pf.tipp.beratung']);
       var d = knoepfe('btns');
       d.appendChild(nhKnopf('btn', esc(t('pf.konto.weiter')), null, function () { pf.art = 'konto'; pf.schritt = 2; pfRender(true); }));
@@ -2289,13 +2288,21 @@
       var tab = document.createElement('table'); tab.className = 'pf-tab';
       [['pf.k.sockel', k.sockel], ['pf.k.unterhalt', k.unterhalt], ['pf.k.kg', k.kindergeld]].forEach(function (x) { if (!x[1] && x[0] !== 'pf.k.sockel') return; var tr = tab.insertRow(); tr.insertCell().textContent = t(x[0]); tr.insertCell().textContent = E(x[1]); });
       box.appendChild(tab);
-      if (k.unterhalt || k.kindergeld) p(tL('pf.tipp.bescheinigung'), 'hint');
+      if (k.unterhalt || k.kindergeld) p(t('pf.tipp.bescheinigung'), 'hint');
       tipps(['pf.tipp.umwandeln', 'pf.tipp.uebertrag', 'pf.tipp.sozial', 'pf.tipp.kontomehr', 'pf.tipp.beratung']);
       var d2 = knoepfe('btns');
       d2.appendChild(nhKnopf('btn ghost', esc(t('pf.neu')), null, function () { pf = { art: '', schritt: 0, netto: '', pers: null, kg: null, kiz: '' }; pfRender(true); }));
     }
     if (fokus) { var h = box.querySelector('.pf-frage'); if (h) { h.setAttribute('tabindex', '-1'); h.focus(); } }
   }
+
+  // Laienansicht auch bei der Pfändung: Paragrafen in Klammern aus den Texten nehmen (Beratungsmodus aus); Rechnung und Aufbau bleiben
+  var pfRenderGanz = pfRender;
+  pfRender = function (fokus) {
+    pfRenderGanz(fokus);
+    var box = $('pfInhalt');
+    if (box && !beratung) box.querySelectorAll('p').forEach(function (e) { if (e.children.length === 0 && /§/.test(e.textContent)) e.textContent = Fmt.ohnePara(e.textContent); });
+  };
 
   // ----- Bereiche: Start, Leistungen (Leistungscheck), Brief prüfen -----
   // Beim Öffnen die Startseite; „#leistungen“ und „#briefe“ öffnen den Bereich direkt (Links, Tests).
