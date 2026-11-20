@@ -621,7 +621,9 @@
   /* Startseite als Kachel-Raster (Kacheln wie Richtung 3 „Bunt und bildhaft“, Farben aus der warmen Palette; weiße Schrift mind. 4,5:1).
      Spaltenbreite in em: bei 320 px oder großer Schrift bricht das Raster auf eine Spalte um. Jeder Bereich hat seine Farbe. */
   :root { --c-leistungen: #0f6b5c; --c-briefe: #a14a2f; --c-pfaendung: #7a3b69; --c-sparen: #2f6b3a; --c-pflege: #23507f; }
-  :root { --c-ausziehen: #5b3f8f; } /* „Ich ziehe aus“ (src/ausziehen.js), Hell- und Dunkelmodus; weiße Schrift 8:1 */
+  /* Palette-Ergänzung ausziehen: Werte wie auf Branch claude/farben; Bereichsflächen in Hell und Dunkel gleich, weiße Schrift gemessen:
+     ausziehen 8,2:1, familienkasse 6,5:1, formular 6,5:1. Die Sammel-Sitzung verschiebt den Block in die zentrale Palette. */
+  :root { --c-ausziehen: #5b3f8f; --c-familienkasse: #a2365e; --c-formular: #52606d; }
   .start-raster { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5em), 1fr)); gap: 12px; margin: 18px 0; max-width: 640px; }
   .sk { --c: var(--c-leistungen); display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; gap: 14px; min-height: 150px; width: 100%; padding: 16px; border: 0; border-radius: 26px;
     background: var(--c); color: #fff; font: inherit; text-align: start; cursor: pointer; box-shadow: 0 2px 0 color-mix(in srgb, var(--c) 70%, #000); }

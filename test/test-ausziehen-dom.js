@@ -49,6 +49,9 @@ setTimeout(() => {
     // Herkunft: Geld -> Versicherungen -> Zurück -> Geld
     klick(w, $('az-geh-geld')); klick(w, d.querySelector('#az-p-vers [data-az-weg="vers"]'));
     check('[az-oberflaeche] Versicherungen gestuft', /Unbedingt/.test($('azInhalt').textContent) && /Meist unnötig/.test($('azInhalt').textContent));
+    const unbedingt = [...d.querySelectorAll('#azInhalt .az-stufe')][0].nextElementSibling;
+    check('[az-oberflaeche] Kfz-Haftpflicht unter „Unbedingt“', !!unbedingt.querySelector('#az-p-kfzH'));
+    check('[az-oberflaeche] Auslandsreise-Krankenversicherung unter „Kommt drauf an“', !![...d.querySelectorAll('#azInhalt .az-stufe')][2].nextElementSibling.querySelector('#az-p-auslandKv'));
     check('[az-oberflaeche] Familienversicherung mit Grenze', /mehr als \d{3} € im Monat/.test($('az-p-kv').textContent.replace(/[  ]/g, ' ')), $('az-p-kv').textContent);
     klick(w, d.querySelector('[data-az-zurueck]'));
     check('[az-oberflaeche] Zurück nach Herkunft (Geld)', /Dein Geld im Griff/.test($('azH').textContent));
@@ -56,10 +59,13 @@ setTimeout(() => {
     // Careleaver: Briefvorlage
     klick(w, $('az-geh-care'));
     check('[az-oberflaeche] Careleaver § 41', /§[ \u00a0]41 SGB VIII/.test($('azInhalt').textContent));
+    check('[az-oberflaeche] Careleaver: Krankenversicherung, 7 Punkte', !!$('az-p-careKv') && /0 von 7 erledigt/.test($('azFort').textContent), $('azFort').textContent);
+    check('[az-oberflaeche] Brief: schriftlicher Bescheid, Beispiel-Datum', /schriftlichen Bescheid/.test($('azBrief').value) && /ab meinem 18\. Geburtstag/.test($('azBrief').value));
+    check('[az-oberflaeche] Brief: Zuständigkeit § 86a', /86a Abs\. 4 SGB VIII/.test(d.querySelector('.az-brief').textContent));
     check('[az-oberflaeche] Briefvorlage Deutsch, ohne Anschrift', $('azBrief') && $('azBrief').lang === 'de' && /^An das Jugendamt/.test($('azBrief').value));
     // Hilfen -> Leistungs-Check
     klick(w, d.querySelector('[data-az-zurueck]')); klick(w, $('az-geh-hilfen'));
-    check('[az-oberflaeche] Hilfen „möglich“', d.querySelectorAll('#azInhalt .az-chip').length === 8);
+    check('[az-oberflaeche] Hilfen „möglich“', d.querySelectorAll('#azInhalt .az-chip').length === 9);
     klick(w, d.querySelector('[data-az-weg="check"]'));
     check('[az-oberflaeche] Weg zum Leistungs-Check', !$('v-leistungen').hidden);
     check('[az-oberflaeche] keine Skriptfehler', a.errors.length === 0, a.errors);
