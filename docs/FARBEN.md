@@ -20,17 +20,17 @@ Im übrigen CSS stehen nur Variablen. Ausnahme: Druckstile (`@media print`, Schw
 | Schulden / Pfändung (Mein Lohn, Mein Konto) | `--c-pfaendung` | #7a3b69 Pflaume | #7a3b69 / #f0b4dd |
 | Geld sparen (Themen, Schulden, Haushaltsplan) | `--c-sparen` | #2f6b3a Grün | #2f6b3a / #9fdba8 |
 | Pflege (Auswahl, Unterstützung) | `--c-pflege` | #23507f Blau | #23507f / #a9cbf3 |
-| Ich ziehe aus (neu, Kachel `.sk-ausziehen`, Ansicht `ausziehen`) | `--c-ausziehen` | #4a47a3 Indigo | #4a47a3 / #c3c1ff |
+| Ich ziehe aus (neu, Kachel `.sk-ausziehen`, Ansicht `ausziehen`) | `--c-ausziehen` | #5b3f8f Violett (wie Branch claude/ausziehen) | #5b3f8f / #cdb8f0 |
 
 ## Absender in „Ich habe einen Brief bekommen“
 | Absender | Variable | Farbe | Warum |
 |---|---|---|---|
 | Jobcenter | `--c-jobcenter` | = Leistungen (Petrol) | Bürgergeld ist eine Leistung |
-| Sozialamt | `--c-sozialamt` | #66479a Violett | eigene Farbe |
+| Sozialamt | `--c-sozialamt` | #4a47a3 Indigo | eigene Farbe |
 | Wohngeldstelle | `--c-wohngeld` | #0e6178 Meerblau | eigene Farbe |
 | Familienkasse | `--c-familienkasse` | #a2365e Beere | eigene Farbe (Familie) |
 | Pflegekasse | `--c-pflegekasse` | = Pflege (Blau) | gleiche Sache |
-| Vermieter | `--c-vermieter` | = Ich ziehe aus (Indigo) | Wohnung |
+| Vermieter | `--c-vermieter` | = Ich ziehe aus (Violett) | Wohnung |
 | Anderer Brief / weiß nicht | `--c-anderer` | = Brief bekommen (Ziegel) | allgemeiner Brief |
 | Antragsformular | `--c-formular` | #52606d Schiefer | neutral |
 
