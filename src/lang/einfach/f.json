@@ -178,7 +178,7 @@
   "vg.offen": "=",
   "vg.ohneName": "=",
   "vg.name.label": "=",
-  "vg.name.hint": "Zum Beispiel „Familie M.“ oder Anfangsbuchstaben. Höchstens 24 Zeichen. Schreib am besten keinen ganzen Namen.",
+  "vg.name.hint": "Schreib nur einen kurzen Namen, keinen ganzen Namen. Zum Beispiel „Familie M.“",
   "vg.gespeichert": "Gespeichert als „{name}“. Änderungen speichert die App selbst.",
   "vg.nameFehlt": "Bitte schreib einen kurzen Namen.",
   "vg.umbenennen": "Neuen Namen geben",

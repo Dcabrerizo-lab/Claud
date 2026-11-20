@@ -1041,7 +1041,6 @@ var Haushalt = (function () {
       lb.appendChild(knopf('btn ghost klein', t('hb.buchLoeschen'), function () { rueck = { vorher: JSON.parse(JSON.stringify(daten.buch)), text: t('hb.buchGeloescht') }; daten.buch = []; sichern(); renderBuch('hb-rueck'); }, { id: 'hb-buchLoeschen' }));
       box.appendChild(lb);
     }
-    box.appendChild(el('p', 'small', t('home.privat')));
     if (fokusId && $(fokusId)) $(fokusId).focus();
   }
   function loeschen(e) {

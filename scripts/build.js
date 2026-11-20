@@ -111,6 +111,15 @@ function pruefpaket() {
   return { teile, css: ppStile(stil[1]), js };
 }
 
+// Einfache Sprache für „Brief prüfen“: Wörterbuch src/lang/einfach/brief/brief.json (Schlüssel = deutscher Standardtext), liest vorschau.js als BRIEF_EINFACH
+function briefEinfachJs() {
+  const f = path.join(SRC, 'lang', 'einfach', 'brief', 'brief.json');
+  if (!fs.existsSync(f)) return 'const BRIEF_EINFACH = null;\n';
+  // nur eigene einfache Fassungen ausliefern; "=" (Standardtext gilt) braucht die App nicht
+  const texte = Object.fromEntries(Object.entries(JSON.parse(fs.readFileSync(f, 'utf8')).texte).filter(([, v]) => v !== '='));
+  return 'const BRIEF_EINFACH = ' + JSON.stringify({ texte }) + ';\n';
+}
+
 // opts.native: Store-App (Android/iOS) statt Web
 function render(opts = {}) {
   const pp = pruefpaket();
@@ -139,7 +148,7 @@ function render(opts = {}) {
     .replace('/*SCHRITTE*/\n', () => parts.schritte)
     .replace('<!--PRUEFPAKET-->', () => pp.teile)
     .replace('/*PPSTIL*/\n', () => pp.css)
-    .replace('/*PRUEFPAKET*/\n', () => pp.js)
+    .replace('/*PRUEFPAKET*/\n', () => briefEinfachJs() + pp.js)
     .replace('/*APP*/\n', () => parts.app.replace("'/*VERSION*/'", () => JSON.stringify(require(path.join(ROOT, 'package.json')).version)));
   const left = html.match(/\/\*(RULES|I18N|FMT|PLZ|PLZDATA|BEHOERDEN|BEHOERDENDATA|FORMULARE|VORGAENGE|HAUSHALT|AUSZIEHEN|FRISTEN|SCHULDEN|NAVIGATION|SCHRITTE|APP|PPSTIL|PRUEFPAKET)\*\/|<!--PRUEFPAKET-->/);
   if (left) throw new Error('Platzhalter nicht ersetzt: ' + left[0]);

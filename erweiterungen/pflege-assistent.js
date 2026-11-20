@@ -111,7 +111,7 @@ const PflegeAssistent = (function () {
       const s = liste[a.pos];
       box.replaceChildren();
       if (s.art === 'ergebnis') { zeigeErgebnis(); if (fokus) fokusiere(); return; }
-      let frage = '', hilfe = '', inhalt, weissNicht = null, vorweg = null;
+      let frage = '', hilfe = '', inhalt, weissNicht = null, nachher = null;
       if (s.art === 'alter') {
         frage = T('alter.frage', 'Wie alt ist die Person, die gepflegt wird?');
         const inp = h('input', { id: 'pa-jahre', type: 'number', min: '0', max: '120', inputmode: 'numeric', value: a.alterJahre, 'aria-labelledby': 'pa-q' });
@@ -119,12 +119,13 @@ const PflegeAssistent = (function () {
         const monBox = h('div', { class: 'field', hidden: !(a.alterJahre !== '' && +a.alterJahre < 2) }, h('label', { for: 'pa-monate', text: T('alter.monate', 'Alter in Monaten') }), mon);
         const warn = h('p', { class: 'warn', hidden: true });
         inp.addEventListener('input', () => { monBox.hidden = !(inp.value !== '' && +inp.value < 2); });
-        vorweg = h('div', { class: 'es-karte pa-sogehts' }, h('div', { class: 'es-lvl', text: T('sogehts.titel', 'So geht es') }),
+        // „So geht es“ zugeklappt unter dem Weiter-Knopf (gemeinsames Bauteil details.mehr): die erste Frage steht zuerst
+        nachher = h('details', { class: 'mehr pa-sogehts' }, h('summary', { text: T('sogehts.titel', 'So geht es') }),
             h('ol', { class: 'es-liste' },
               h('li', { text: T('sogehts.1', 'Es gibt 6 Lebensbereiche. Zu jedem kommt zuerst eine Frage mit Ja oder Nein.') }),
               h('li', { text: T('sogehts.2', 'Nur bei „Ja“ folgen genauere Fragen. Unter jeder Frage steht, was zählt.') }),
               h('li', { text: T('sogehts.3', 'Am Ende siehst du, welcher Pflegegrad wahrscheinlich ist.') })),
-            h('p', { class: 'small', text: T('sogehts.klein', 'Es zählt nur Hilfe durch andere Menschen. Hilfsmittel wie Rollator oder Brille zählen als „allein“. Deine Antworten bleiben auf dem Gerät gespeichert, du kannst jederzeit aufhören.') }));
+            h('p', { class: 'small', text: T('sogehts.klein', 'Es zählt nur Hilfe durch andere Menschen. Hilfsmittel wie Rollator oder Brille zählen als „allein“. Du kannst jederzeit aufhören.') }));
         inhalt = h('div', {},
           h('div', { class: 'es-zahl' }, inp, h('span', { text: T('alter.jahre', 'Jahre') })), monBox, warn,
           h('div', { class: 'es-nav1' }, h('button', { type: 'button', class: 'es-btn es-weiter', text: T('weiter', 'Weiter ➜'), onclick: () => {
@@ -167,8 +168,8 @@ const PflegeAssistent = (function () {
         inhalt = knoepfe(F.m5Antworten(s.id), a.m5Wahl[s.id] != null ? a.m5Wahl[s.id] : null, (i) => { a.m5Wahl[s.id] = i; a.m5[s.id] = F.m5Wert(s.id, i); weiter(); });
         weissNicht = () => { delete a.m5[s.id]; delete a.m5Wahl[s.id]; weiter(); };
       }
-      box.append(...[kopf(s, liste), vorweg, h('h2', { class: 'es-q', id: 'pa-q', tabindex: '-1', text: frage }), hilfe ? h('p', { class: 'es-h', text: hilfe }) : null,
-        inhalt, nav(weissNicht)].filter(Boolean));
+      box.append(...[kopf(s, liste), h('h2', { class: 'es-q', id: 'pa-q', tabindex: '-1', text: frage }), hilfe ? h('p', { class: 'es-h', text: hilfe }) : null,
+        inhalt, nachher, nav(weissNicht)].filter(Boolean));
       if (fokus) fokusiere();
     }
     function fokusiere() { const q = box.querySelector('#pa-q'); if (q) { q.focus({ preventScroll: true }); try { box.scrollIntoView({ block: 'start' }); } catch (e) {} } }
