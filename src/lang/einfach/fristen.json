@@ -10,13 +10,13 @@
   "fri.wort.fest.t": "Das Datum steht so im Brief.",
   "fri.wort.gerechnet": "Ausgerechnet",
   "fri.wort.gerechnet.t": "Die App hat das Datum ausgerechnet. Wichtig ist, was im Brief steht.",
-  "fri.wort.ungefaehr.t": "Ein Datum fehlt. Die App rechnet vorsichtig. Schreib das Datum dazu. Dann stimmt es genau.",
+  "fri.wort.ungefaehr.t": "Ein Datum fehlt. Die App rechnet vorsichtig. Die Frist kann später sein, aber nicht früher. Schreib das Datum dazu. Dann stimmt es genau.",
   "fri.wort.offen.t": "Hier fehlt ein Datum. Tipp auf „Datum ändern“. Schreib das Datum dazu.",
   "fri.rechnung": "So hat die App gerechnet",
   "fri.rechnung.wid": "Der Brief ist vom {datum}. Für das Amt kommt ein Brief 4 Tage später an: {bekannt}. Ab dann hast du 1 Monat Zeit. Ist der letzte Tag ein Samstag, Sonntag oder Feiertag? Dann darfst du bis zum nächsten Werktag.",
   "fri.rechnung.wid.ohne": "Das Datum vom Brief fehlt. Die App rechnet ab dem Tag, an dem du den Brief bekommen hast: {bekannt}. Ab dann hast du 1 Monat Zeit.",
   "fri.rechnung.woche": "Du hast den Brief am {bekannt} bekommen. Ab dann hast du so viel Zeit: {dauer}.",
-  "fri.rechnung.woche.ohne": "Der Brief ist vom {datum}. Die App weiß nicht, wann er ankam. Sie rechnet vorsichtig: {dauer}. Schreib dazu, wann der Brief ankam. Dann stimmt es genau.",
+  "fri.rechnung.woche.ohne": "Der Brief ist vom {datum}. Die App weiß nicht, wann er ankam. Sie rechnet vorsichtig ab dem Datum vom Brief: {dauer}. Schreib dazu, wann der Brief ankam. Dann stimmt es genau.",
   "fri.rechnung.zustellung": "Der Brief kam am {datum}. Das Datum steht auf dem gelben Umschlag. Ab dann hast du 2 Wochen Zeit.",
   "fri.rechnung.fest": "Der Tag steht im Brief. Die App ändert ihn nicht.",
   "fri.rechnung.feiertag": "Die App rechnet nur mit Feiertagen in ganz Deutschland. Gibt es in deinem Bundesland noch einen Feiertag? Dann kann es 1 Tag später sein.",
@@ -70,5 +70,11 @@
   "fri.start.spaeter": "Später",
   "fri.start.spaeter.ok": "Die App sagt es dir am {datum} wieder.",
   "fri.set.label": "Beim Öffnen an Termine erinnern",
-  "fri.set.t": "Ein kleiner Hinweis in der App, höchstens 1-mal am Tag. Nicht auf dem Sperr-Bildschirm."
+  "fri.set.t": "Ein kleiner Hinweis in der App, höchstens 1-mal am Tag. Nicht auf dem Sperr-Bildschirm.",
+  "fri.rechnung.woche.brief": "Im Brief steht: Die Zeit läuft ab dem Datum vom Brief. Der Brief ist vom {datum}. Ab dann hast du so viel Zeit: {dauer}.",
+  "fri.rechnung.wid.zugang": "Du hast den Brief am {bekannt} bekommen. Ab dann hast du 1 Monat Zeit.",
+  "fri.zeile": "Das steht im Brief: „{zeile}“",
+  "fri.feld.fest": "Bis wann? (So steht es im Brief. Bitte prüfen.)",
+  "fri.feld.fest.fehlt": "Schreib den Tag dazu.",
+  "fri.voll": "Die Liste ist voll. Es sind schon 50 Termine. Lösch erst einen Termin."
 }

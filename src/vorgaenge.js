@@ -213,11 +213,11 @@ const Vorgaenge = (function () {
       SCHLUESSEL: SCHLUESSEL, DATEN: DATEN,
       hat: function (k) { return DATEN.indexOf(k) >= 0; },
       get: function (k, cb) { if (!bereit) { warte.push([k, cb]); return; } cb(wert(k)); },
-      set: function (k, val) {
-        if (!bereit) return; // vor dem Laden oder gesperrt: nichts überschreiben
-        if (!wertSetzen(c, k, val == null ? null : String(val), jetzt())) return;
+      set: function (k, val) { // false: nicht gespeichert (vor dem Laden oder gesperrt)
+        if (!bereit) return false; // vor dem Laden oder gesperrt: nichts überschreiben
+        if (!wertSetzen(c, k, val == null ? null : String(val), jetzt())) return true; // unverändert
         if (!key) { if (val == null) roh.remove(k); else roh.set(k, String(val), fehler); }
-        speichern();
+        speichern(); return true;
       },
       remove: function (k) { api.set(k, null); },
       bereit: function () { return bereit; },

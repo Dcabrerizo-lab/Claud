@@ -20,7 +20,11 @@ const ck = (name, c, x) => { n++; if (!c) { fails++; console.log('FAIL', name, x
   r = F.rechne({ art: 'mit', basis: { datum: '2026-12-18', erhalten: '2026-12-22', frist: '2W' } });
   ck('[fristen] Mitwirkung 2 Wochen, erhalten Di 22.12.2026 → Di 05.01.2027, Gerechnet', r.bis === '2027-01-05' && r.wort === 'gerechnet', r);
   r = F.rechne({ art: 'mit', basis: { datum: '2026-12-18', frist: '2W' } });
-  ck('[fristen] Mitwirkung ohne Erhalt: ab Briefdatum + 1 (nicht + 4) → Mo 04.01.2027, Ungefähr', r.bis === '2027-01-04' && r.wort === 'ungefaehr' && r.bekannt === '2026-12-19', r);
+  ck('[fristen] Mitwirkung ohne Erhalt: ab Briefdatum (+ 0, nie zu spät) → Mo 04.01.2027, Ungefähr', r.bis === '2027-01-04' && r.wort === 'ungefaehr' && r.bekannt === '2026-12-18', r);
+  r = F.rechne({ art: 'anh', basis: { datum: '2026-12-01', frist: '2W' } });
+  ck('[fristen] Befund 2: Anhörung ohne Erhalt: Briefdatum + 2 Wochen = 15.12.2026 (nicht 16.12.)', r.bis === '2026-12-15' && r.wort === 'ungefaehr', r);
+  r = F.rechne({ art: 'mit', basis: { datum: '2026-12-01', erhalten: '2026-12-04', frist: '2W', abBrief: true } });
+  ck('[fristen] Befund 2: „ab Datum dieses Schreibens“: immer ab Briefdatum, Erhalt zählt nicht, Gerechnet', r.bis === '2026-12-15' && r.wort === 'gerechnet', r);
   r = F.rechne({ art: 'mb', basis: { zugang: '2026-12-11' } });
   ck('[fristen] Mahnbescheid zugestellt Fr 11.12.2026: Feiertage und Wochenende → Mo 28.12.2026', r.bis === '2026-12-28' && r.wort === 'gerechnet', r);
   r = F.rechne({ art: 'zahl', basis: { fest: '2026-12-12' } });
@@ -48,12 +52,30 @@ const ck = (name, c, x) => { n++; if (!c) { fails++; console.log('FAIL', name, x
   let r = F.ausBrief(anh, 'anh', '2026-12-22');
   ck('[fristen] ausBrief „innerhalb von zwei Wochen“ mit Erhalt → gerechnet 05.01.2027', r && r.art === 'anh' && r.basis.frist === '2W' && r.bis === '2027-01-05' && r.wort === 'gerechnet', r);
   r = F.ausBrief(anh, 'anh', null);
-  ck('[fristen] ausBrief nur mit Briefdatum → ungefähr (Briefdatum + 1, nicht + 4)', r && r.wort === 'ungefaehr' && r.bis === '2027-01-04', r);
+  ck('[fristen] ausBrief nur mit Briefdatum → ungefähr (ab Briefdatum, nicht + 4)', r && r.wort === 'ungefaehr' && r.bis === '2027-01-04', r);
   r = F.ausBrief('Bitte reichen Sie die Unterlagen innerhalb von zwei Wochen ein.', 'mit', null);
   ck('[fristen] ausBrief ohne Datum und Erhalt → Datum fehlt', r && r.wort === 'offen' && r.bis === null, r);
   r = F.ausBrief('Datum: 01.12.2026\nBitte reichen Sie die Unterlagen bis zum 15.12.2026 ein.', 'mit', null);
   ck('[fristen] ausBrief „bis zum 15.12.2026“ → fest', r && r.wort === 'fest' && r.bis === '2026-12-15', r);
   ck('[fristen] ausBrief ohne Frist → null', F.ausBrief('Sehr geehrte Damen und Herren', 'mit', null) === null);
+  // Befund 1: nur Zeilen mit Frist-Wort, das früheste Datum, Zeile als Beleg
+  const zwei = 'Jobcenter Musterstadt\nDatum: 01.12.2026\nAnhörung nach § 24 SGB X\nIhnen wurden Leistungen bis zum 31.01.2027 bewilligt.\nSie können sich bis zum 15.12.2026 äußern.';
+  r = F.ausBrief(zwei, 'anh', null);
+  ck('[fristen] Befund 1: „bewilligt bis zum 31.01.2027“ wird übergangen, Frist 15.12.2026 aus der Zeile mit „äußern“', r && r.bis === '2026-12-15' && r.wort === 'fest' && /äußern/.test(r.zeile), r);
+  ck('[fristen] Befund 1: BriefLesen.frist liefert das gleiche Datum', global.BriefLesen.frist(zwei) === '15.12.2026');
+  r = F.ausBrief('Datum: 01.12.2026\nLeistungen sind bis zum 31.01.2027 bewilligt. Sie können sich bis zum 15.12.2026 äußern.', 'anh', null);
+  ck('[fristen] Befund 1: beide Daten in einer Zeile → das früheste', r && r.bis === '2026-12-15', r);
+  ck('[fristen] Befund 1: Datum ohne Frist-Wort (auch „befristet“, „Antragstellung“) → keine Frist', F.ausBrief('Anhörung\nIhre Leistungen sind befristet bis zum 31.01.2027.\nAntragstellung bis zum 31.01.2027 bewilligt.', 'anh', null) === null);
+  r = F.ausBrief('Datum: 01.12.2026\nBitte reichen Sie die Unterlagen bis zum\n15.12.2026 ein.', 'mit', null);
+  ck('[fristen] Befund 1: „bis zum“ am Zeilenende, Datum in der nächsten Zeile', r && r.bis === '2026-12-15', r);
+  r = F.ausBrief('Datum: 01.12.2026\nBitte reichen Sie die Unterlagen bis zum 15.12.2026 ein.', 'mit', null, { fest: '2026-12-10' });
+  ck('[fristen] Befund 1: geänderter Tag aus dem Feld ersetzt den Tag aus dem Brief', r && r.bis === '2026-12-10' && r.wort === 'fest', r);
+  ck('[fristen] Befund 1: Feld geleert → nichts raten', F.ausBrief('Datum: 01.12.2026\nBitte reichen Sie die Unterlagen bis zum 15.12.2026 ein.', 'mit', null, { fest: '' }) === null);
+  // Befund 2: „ab Datum dieses Schreibens“
+  const ab = 'Jobcenter Musterstadt\nDatum: 01.12.2026\nBitte reichen Sie die Unterlagen innerhalb von zwei Wochen ab Datum dieses Schreibens ein.';
+  r = F.ausBrief(ab, 'mit', '2026-12-05');
+  ck('[fristen] Befund 2: ausBrief „ab Datum dieses Schreibens“: abBrief, Erhalt ignoriert, 15.12.2026 Gerechnet', r && r.basis.abBrief === true && r.basis.erhalten === null && r.bis === '2026-12-15' && r.wort === 'gerechnet', r);
+  ck('[fristen] Befund 2: abBrief bleibt beim Speichern erhalten', F.eintragSauber(r).basis.abBrief === true && F.eintragSauber(r).bis === '2026-12-15' && F.eintragSauber({ art: 'wid', basis: { datum: '2026-12-01', abBrief: true } }).basis.abBrief === undefined);
   ck('[fristen] Dauer aus Text', F.dauerAusText('zwei Wochen') === '2W' && F.dauerAusText('14 Tagen') === '14T' && F.dauerAusText('einem Monat') === '1M' && F.dauerAusText('Monats') === '1M' && F.dauerAusText('vielen Tagen') === null);
 }
 
@@ -76,7 +98,9 @@ const ck = (name, c, x) => { n++; if (!c) { fails++; console.log('FAIL', name, x
   viele.e.push({ art: 'eigen', titel: 'alt', basis: { fest: '2026-01-01' }, erledigt: '2026-09-01', neu: 999 });
   viele.e.push({ art: 'eigen', titel: 'frisch', basis: { fest: '2026-01-01' }, erledigt: '2026-11-01', neu: 998 });
   const nm = F.normiere(JSON.stringify(viele), '2026-11-20');
-  ck('[fristen] normiere: höchstens 50, erledigte nach 30 Tagen weg', nm.e.length === 50 && !nm.e.some((e) => e.titel === 'alt') && nm.e.some((e) => e.titel === 'frisch'), nm.e.length);
+  ck('[fristen] normiere: höchstens 50, erledigte nach 30 Tagen weg, bei über 50 zuerst erledigte kürzen', nm.e.length === 50 && !nm.e.some((e) => e.titel === 'alt' || e.titel === 'frisch') && nm.e.every((e) => !e.erledigt), nm.e.length);
+  const vierzig = { v: 1, e: viele.e.slice(0, 40).concat(viele.e.slice(-1)) };
+  ck('[fristen] Befund 5: normiere unter 50: erledigte bleiben', F.normiere(JSON.stringify(vierzig), '2026-11-20').e.some((e) => e.titel === 'frisch'));
   ck('[fristen] normiere: Müll → leer', F.normiere('{kaputt', '2026-11-20').e.length === 0 && F.normiere(null).e.length === 0 && F.normiere('[1,2]').e.length === 0);
   ck('[fristen] normiere: Datum per Regex und echt', F.normiere({ e: [{ art: 'zahl', basis: { fest: '2026-02-30' } }, { art: 'zahl', basis: { fest: '<img>' } }] }).e.every((e) => e.bis === null));
   const wbz = F.normiere({ wb: { 'wb-kiz-2026-12-31': { erledigt: '2026-11-19' }, 'wb-xx-2026-12-31': { erledigt: '2026-11-19' }, 'wb-kiz-2026-01-01': { erledigt: '2026-01-01' } } }, '2026-11-20');
@@ -131,6 +155,15 @@ const ck = (name, c, x) => { n++; if (!c) { fails++; console.log('FAIL', name, x
   const es = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'src', 'lang', 'einfach', 'fristen.json'), 'utf8'));
   const esFremd = Object.keys(es).filter((k) => !(k in de)), esPlatz = Object.keys(es).filter((k) => platz(es[k]) !== platz(de[k]));
   ck('[fristen] Einfache Sprache: nur Schlüssel aus de.json, gleiche Platzhalter', !esFremd.length && !esPlatz.length, { esFremd, esPlatz });
+}
+
+// ---------- Befund 4: Datenschutzerklärungen (alle Kopien) nennen die Fristen ----------
+{
+  const R = (f) => fs.readFileSync(path.join(__dirname, '..', f), 'utf8');
+  const alle = ['datenschutz.html', 'site/datenschutz.html', 'docs/datenschutz.html', 'datenschutz-ios.html', 'site/datenschutz-ios.html', 'docs/datenschutz-ios.html'];
+  ck('[fristen] Befund 4: Datenschutz: Fristen je Vorgang, verschlüsselt nur mit PIN-Sperre, unverschlüsselt nur das Datum des letzten Hinweis-Tags, Löschtext nennt Fristen',
+    alle.every((f) => { const t = R(f); return /Fristen in „Mein Ordner“/.test(t) && /Verschlüsselt sind sie nur, wenn die PIN-Sperre an ist/.test(t) && /unverschlüsselt nur das Datum des letzten Hinweis-Tags/.test(t) && /„Ich ziehe aus“, Fristen\)/.test(t); }));
+  ck('[fristen] Befund 4: fri.karte im Löschtext (LOESCH_TEILE)', /LOESCH_TEILE = [^\n]*'fri\.karte'/.test(R('src/app.js')));
 }
 
 console.log(fails ? `\n${fails} von ${n} Prüfungen fehlgeschlagen` : `Fristen-Test bestanden: ${n} Prüfungen`);

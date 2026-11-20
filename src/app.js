@@ -79,7 +79,7 @@
   }
   var Store = {
     get: function (key, cb) { if (Vorgaenge.DATEN.indexOf(key) >= 0) tr().get(key, cb); else StoreRoh.get(key, cb); },
-    set: function (key, val) { if (Vorgaenge.DATEN.indexOf(key) >= 0) tr().set(key, val); else StoreRoh.set(key, val); },
+    set: function (key, val) { if (Vorgaenge.DATEN.indexOf(key) >= 0) return tr().set(key, val); StoreRoh.set(key, val); }, // false: Vorgang nicht bereit (gesperrt)
     remove: function (key) { if (Vorgaenge.DATEN.indexOf(key) >= 0) tr().remove(key); else StoreRoh.remove(key); }
   };
   var saveTimer = null;
@@ -570,7 +570,7 @@
   }
   // Was „Alle Angaben löschen“ löscht. Neue Teile hier ergänzen: Sprachschlüssel clear.teil.*
   // Ist ein gespeicherter Vorgang geöffnet, nennt der Text ihn: gelöscht wird nur in diesem Vorgang, andere bleiben.
-  var LOESCH_TEILE = ['clear.teil.form', 'clear.teil.person'].concat(window.Haushalt ? ['clear.teil.haushalt'] : [], window.Ausziehen ? ['az.h'] : [], ['clear.teil.mehr']);
+  var LOESCH_TEILE = ['clear.teil.form', 'clear.teil.person'].concat(window.Haushalt ? ['clear.teil.haushalt'] : [], window.Ausziehen ? ['az.h'] : [], window.FristenOrdner ? ['fri.karte'] : [], ['clear.teil.mehr']);
   function loeschWas() {
     var a = tresor && tresor.bereit() ? tresor.aktiv() : null, mehrere = a && tresor.liste().length > 1;
     return t('clear.was') + ' ' + LOESCH_TEILE.map(function (k) { return k === 'az.h' ? '„' + t(k) + '“' : t(k); }).join(' · ') +
@@ -3463,7 +3463,7 @@
   if (window.Ausziehen) Ausziehen.init({ t: t, zeige: oeffneVon, plug: plug, famversGrenze: function () { var R = Rules.RULES.famvers; return Fmt.euro(Math.round((new Date().getFullYear() >= 2027 ? R.bezug2027 : R.bezug2026) / 7), lang, I18N[lang]['meta.dir'] === 'rtl'); } }); // „Ich ziehe aus“ (src/ausziehen.js)
   // Fristen in „Mein Ordner“ (src/fristen.js): je Vorgang (lotse.fristliste in Vorgaenge.DATEN), Hinweis beim Öffnen höchstens einmal am Tag
   if (window.FristenOrdner) {
-    FristenOrdner.speicherOrt({ laden: function (cb) { Store.get('lotse.fristliste', cb); }, schreiben: function (text, cb) { Store.set('lotse.fristliste', text); cb(null); } });
+    FristenOrdner.speicherOrt({ laden: function (cb) { Store.get('lotse.fristliste', cb); }, schreiben: function (text, cb) { cb(Store.set('lotse.fristliste', text) === false ? new Error('nicht gespeichert') : null); } });
     FristenOrdner.init({
       t: tL, lang: function () { return lang; }, datum: function (d) { return Fmt.datum(d, lang); }, roh: StoreRoh, neu: ordnerRender,
       alle: function () {

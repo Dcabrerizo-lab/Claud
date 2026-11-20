@@ -7,7 +7,8 @@
 // Rechnung (Quellen abgerufen am 20.11.2026, Entwurf docs/entwuerfe/fristen.md Abschnitt 4). SoLo nennt immer den frühesten möglichen Tag:
 // - Bescheid per Post: bekannt gegeben am 4. Tag nach Aufgabe zur Post (§ 37 Abs. 2 SGB X, seit 1.1.2025), nicht auf einen Werktag verschoben
 //   (BSG 6.5.2010, B 14 AS 12/09 R). Widerspruch 1 Monat (§ 84 Abs. 1 SGG), Ende nach § 64 SGG.
-// - Anhörung, Mitwirkung (keine Verwaltungsakte): ab dem Tag des Erhalts, sonst ab Briefdatum + 1 („Ungefähr“), §§ 187, 188 BGB, § 26 SGB X.
+// - Anhörung, Mitwirkung (keine Verwaltungsakte): ab dem Tag des Erhalts, sonst ab dem Briefdatum („Ungefähr“, nie ein zu später Tag),
+//   §§ 187, 188 BGB, § 26 SGB X. Sagt der Brief „ab Datum dieses Schreibens“, immer ab dem Briefdatum („Gerechnet“, kein Feld „bekommen am“).
 // - Mahnbescheid, Vollstreckungsbescheid: 2 Wochen ab Zustellung (§ 692 Abs. 1 Nr. 3, § 700, § 339 ZPO), Ende § 222 ZPO.
 // - Ende an Samstag, Sonntag oder Feiertag → nächster Werktag. Nur die 9 bundesweiten Feiertage (Entscheidung des Nutzers, 20.11.2026).
 // - Daten, die im Brief stehen, werden nie verschoben (§ 26 Abs. 3 Satz 2, Abs. 5 SGB X).
@@ -19,7 +20,7 @@
 //     notiz: kurzer Text (höchstens 200 Zeichen), nur als Text angezeigt.
 //   eintrag = { art: 'wid'|'mit'|'anh'|'zahl'|'mb'|'vb'|'termin'|'frist'|'eigen', stelle: 'jc'|'sa'|'wg'|'fk'|'pk'|'vm'|'gericht'|'andere',
 //               titel: (nur bei 'eigen', höchstens 60 Zeichen), bis: 'JJJJ-MM-TT' (fester Tag aus dem Brief, wird nie verschoben),
-//               basis: { datum, erhalten, zugang, frist: '1M'|'2W'|'14T' } (zum Rechnen), quelle: 'brief'|'bescheid'|… (a–z),
+//               basis: { datum, erhalten, zugang, frist: '1M'|'2W'|'14T', abBrief: true (Frist läuft ab Briefdatum) } (zum Rechnen), quelle: 'brief'|'bescheid'|… (a–z),
 //               schluessel: eigener Dublettenschlüssel /^[a-z0-9-]{1,40}$/ (z. B. 'ks-2027-05-31') }
 //   Nur auf ausdrückliche Handlung des Nutzers aufrufen (Knopf), nie automatisch. FristenOrdner.knopf(fn, opt) liefert einen fertigen Knopf.
 var FristenOrdner = (function () {
@@ -84,10 +85,12 @@ var FristenOrdner = (function () {
     if (b.erhalten) return { bekannt: b.erhalten, wort: 'ungefaehr' };
     return null;
   }
-  // Anhörung, Mitwirkung (keine Verwaltungsakte, keine 4-Tage-Regel): Tag des Erhalts, sonst Briefdatum + 1 (früheste Ankunft)
+  // Anhörung, Mitwirkung (keine Verwaltungsakte, keine 4-Tage-Regel): Tag des Erhalts, sonst das Briefdatum (früher kann der Brief
+  // nicht ankommen, also nie ein zu später Tag). „Ab Datum dieses Schreibens“ (abBrief): immer ab dem Briefdatum.
   function zugangEinfach(b) {
+    if (b.abBrief) return b.datum ? { bekannt: b.datum, wort: 'gerechnet' } : null;
     if (b.erhalten) return { bekannt: b.erhalten, wort: 'gerechnet' };
-    if (b.datum) return { bekannt: plusTage(b.datum, 1), wort: 'ungefaehr' };
+    if (b.datum) return { bekannt: b.datum, wort: 'ungefaehr' };
     return null;
   }
   // Ende und Wort einer Frist aus ihrer Grundlage. Ergebnis: { bis, wort, bekannt }
@@ -119,18 +122,23 @@ var FristenOrdner = (function () {
     var m = /^(\d{1,2})\.(\d{1,2})\.(20\d{2})$/.exec(String(s || '').trim()); if (!m) return null;
     var x = m[3] + '-' + zwei(+m[2]) + '-' + zwei(+m[1]); return gueltigerTag(x) ? x : null;
   }
-  // ausBrief(text, art, erhalten) → { art, basis, bis, wort } oder null (keine Frist gefunden)
-  function ausBrief(text, art, erhalten) {
+  // ausBrief(text, art, erhalten, opt) → { art, basis, bis, wort, zeile } oder null (keine Frist gefunden)
+  // Frist nur aus einer Zeile mit Frist-Wort (BriefLesen.fristMitZeile), bei mehreren Daten das früheste. zeile = Beleg zum Anzeigen
+  // (wird nicht gespeichert). opt.fest: vom Nutzer geprüfter Tag (ersetzt den Tag aus dem Brief), opt.datum: Briefdatum, wenn es fehlt.
+  function ausBrief(text, art, erhalten, opt) {
+    opt = opt || {};
     var BL = typeof BriefLesen !== 'undefined' ? BriefLesen : (typeof window !== 'undefined' && window.BriefLesen) || null;
-    if (!BL || !text) return null;
-    var roh = BL.frist(text);
-    if (!roh && BL.andere) { var a = BL.andere(text); roh = a.fristen && a.fristen[0] ? a.fristen[0].frist : null; }
-    if (!roh) return null;
+    if (!BL || !text || !BL.fristMitZeile) return null;
+    var fz = BL.fristMitZeile(text);
+    if (!fz) return null;
     var datum = null; try { datum = BL.lies(text, null).datum || null; } catch (e) { datum = null; }
+    if (!datum && gueltigerTag(opt.datum)) datum = opt.datum;
     var basis = { datum: datum, erhalten: gueltigerTag(erhalten) ? erhalten : null, zugang: null, frist: null, fest: null };
-    var fest = datumAusText(roh);
-    if (fest) basis.fest = fest; else { basis.frist = dauerAusText(roh); if (!basis.frist) return null; }
-    var e = { art: art === 'anh' ? 'anh' : 'mit', basis: basis }, r = rechne(e);
+    var fest = datumAusText(fz.frist);
+    if (fest) basis.fest = 'fest' in opt ? (gueltigerTag(opt.fest) ? opt.fest : null) : fest;
+    else { basis.frist = dauerAusText(fz.frist); if (!basis.frist) return null; if (fz.abBrief) { basis.abBrief = true; basis.erhalten = null; } }
+    if (fest && !basis.fest) return null; // Feld geleert: nichts raten
+    var e = { art: art === 'anh' ? 'anh' : 'mit', basis: basis, zeile: fz.zeile }, r = rechne(e);
     e.bis = r.bis; e.wort = r.wort; e.bekannt = r.bekannt;
     return e;
   }
@@ -155,13 +163,14 @@ var FristenOrdner = (function () {
       quelle: /^[a-z]{1,16}$/.test(x.quelle || '') ? x.quelle : 'hand',
       erledigt: tagOderNull(x.erledigt), spaeter: tagOderNull(x.spaeter), neu: typeof x.neu === 'number' && isFinite(x.neu) ? x.neu : Date.now()
     };
+    if (b.abBrief === true && (e.art === 'mit' || e.art === 'anh')) e.basis.abBrief = true;
     var notiz = textSauber(x.notiz, NOTIZ_MAX); if (notiz) e.notiz = notiz;
     if (typeof x.schluessel === 'string' && /^[a-z0-9-]{1,40}$/.test(x.schluessel)) e.schluessel = x.schluessel;
     if (e.art === 'eigen' && !e.titel) return null;
     var r = rechne(e); e.bis = r.bis; e.wort = r.wort;
     return e;
   }
-  // Laden mit Prüfung: Unbekanntes weg, höchstens 50 Einträge (die neuesten), erledigte nach 30 Tagen weg
+  // Laden mit Prüfung: Unbekanntes weg, erledigte nach 30 Tagen weg, höchstens 50 Einträge (zuerst erledigte kürzen, sonst die ältesten)
   function normiere(json, heute) {
     var d; try { d = typeof json === 'string' ? JSON.parse(json) : json; } catch (e) { d = null; }
     var x = leer();
@@ -169,7 +178,8 @@ var FristenOrdner = (function () {
     var grenze = heute ? plusTage(heute, -ERLEDIGT_TAGE) : null;
     if (Array.isArray(d.e)) {
       d.e.forEach(function (y) { var e = eintragSauber(y); if (e && !(grenze && e.erledigt && e.erledigt < grenze)) x.e.push(e); });
-      x.e.sort(function (a, b) { return b.neu - a.neu; }); x.e = x.e.slice(0, MAX);
+      x.e.sort(function (a, b) { return b.neu - a.neu; });
+      if (x.e.length > MAX) x.e = kuerzen(x.e);
     }
     if (d.wb && typeof d.wb === 'object') Object.keys(d.wb).forEach(function (k) {
       var m = /^wb-(sgb2|sgb12|wohngeld|kiz)-(\d{4}-\d\d-\d\d)$/.exec(k), v = d.wb[k];
@@ -179,6 +189,12 @@ var FristenOrdner = (function () {
       if (z.erledigt || z.spaeter) x.wb[k] = z;
     });
     return x;
+  }
+  // Auf 50 kürzen: offene bleiben (die neuesten), erledigte werden zuerst entfernt. liste: neueste zuerst
+  function kuerzen(liste) {
+    var offen = liste.filter(function (e) { return !e.erledigt; }), erl = liste.filter(function (e) { return e.erledigt; });
+    var behalten = offen.slice(0, MAX).concat(erl.slice(0, Math.max(0, MAX - offen.length)));
+    return liste.filter(function (e) { return behalten.indexOf(e) >= 0; });
   }
   // Dublettenschutz: gleiche Art, Stelle und gleiches Ende (bzw. gleiche Grundlage, solange das Datum fehlt)
   function schluessel(e) {
@@ -226,7 +242,7 @@ var FristenOrdner = (function () {
   // =====================================================================
   // Oberfläche
   // =====================================================================
-  var ctx = null, daten = null, geladen = false, erlaubt = true, uhrTest = null, letzteNeu = null;
+  var ctx = null, daten = null, geladen = false, erlaubt = true, uhrTest = null, letzteNeu = null, ladeNr = 0;
   var speicher = {
     laden: function (cb) { try { cb(localStorage.getItem('lotse.fristliste')); } catch (e) { cb(null); } },
     schreiben: function (text, cb) { try { localStorage.setItem('lotse.fristliste', text); cb(null); } catch (e) { cb(e); } }
@@ -267,8 +283,14 @@ var FristenOrdner = (function () {
     try { var a = ctx.alle ? ctx.alle() : []; a.forEach(function (v) { if (v.aktiv) hh = v.haushalt; }); } catch (e) { hh = null; }
     return daten.e.concat(wbAus(hh, daten, h));
   }
-  function sichern() { speicher.schreiben(JSON.stringify(daten), function () {}); }
-  function aendern() { sichern(); neuZeichnen(); }
+  // Speichern; fertig(ok) meldet, ob es geklappt hat (Speicher voll, gesperrt …)
+  function sichern(fertig) {
+    var ok = true;
+    try { speicher.schreiben(JSON.stringify(daten), function (err) { if (err) ok = false; }); } catch (e) { ok = false; }
+    if (fertig) fertig(ok);
+    return ok;
+  }
+  function aendern() { var ok = sichern(); neuZeichnen(); return ok; }
   function neuZeichnen() {
     if (ctx && ctx.neu) { try { ctx.neu(); } catch (e) {} }
     render();
@@ -300,12 +322,20 @@ var FristenOrdner = (function () {
     var da = daten.e.filter(function (x) { return schluessel(x) === k; })[0];
     if (da) return { s: 'da', id: da.id };
     e.neu = Date.now(); e.erledigt = null; e.spaeter = null;
+    if (daten.e.length >= MAX) {
+      // Liste voll: zuerst erledigte entfernen (die ältesten); sind alle 50 offen, nichts überschreiben
+      if (!daten.e.some(function (x) { return x.erledigt; })) return { s: 'voll' };
+      var erl = daten.e.filter(function (x) { return x.erledigt; }).sort(function (a, b) { return a.neu - b.neu; })[0];
+      daten.e = daten.e.filter(function (x) { return x !== erl; });
+    }
     daten.e.unshift(e);
-    if (daten.e.length > MAX) daten.e = daten.e.slice(0, MAX);
-    letzteNeu = e.id; aendern();
+    var ok = aendern();
+    if (!ok) { daten.e = daten.e.filter(function (x) { return x !== e; }); neuZeichnen(); return { s: 'fehler' }; }
+    letzteNeu = e.id;
     return { s: 'neu', id: e.id, e: e };
   }
-  function hinzu(roh) { var s = hinzuIntern(roh).s; return s === 'fehler' ? false : s; }
+  function hinzu(roh) { var s = hinzuIntern(roh).s; return s === 'neu' || s === 'da' ? s : false; } // 'voll' und Fehler: false
+  function antwort(r) { return r.s === 'da' ? t('fri.schonDa') : r.s === 'voll' ? t('fri.voll') : t('fri.fehler'); }
   function entfernen(id) {
     if (!bereit()) return false;
     var n = daten.e.length; daten.e = daten.e.filter(function (x) { return x.id !== id; });
@@ -313,37 +343,48 @@ var FristenOrdner = (function () {
     aendern(); return true;
   }
 
-  // Meldung mit „Rückgängig“ (10 Sekunden), immer als Text
+  // Meldung mit „Rückgängig“ (10 Sekunden), immer als Text. Nach einem Wechsel des Vorgangs (neuLaden) gilt „Rückgängig“ nicht mehr,
+  // sonst schriebe es in den falschen Vorgang.
   function meldung(box, text, rueck) {
     if (!box) return;
+    clearTimeout(box._uhr); box._uhr = null;
     box.textContent = '';
     box.appendChild(document.createTextNode(text));
     if (rueck) {
+      var nr = ladeNr;
       box.appendChild(document.createTextNode(' '));
-      var b = knopfEl('linkbtn', t('fri.rueck'), function () { clearTimeout(box._uhr); box.textContent = ''; rueck(); });
+      box.classList.add('fri-rueck-box');
+      var b = knopfEl('linkbtn', t('fri.rueck'), function () { clearTimeout(box._uhr); box.textContent = ''; if (nr === ladeNr && bereit()) rueck(); });
       box.appendChild(b);
-      clearTimeout(box._uhr); box._uhr = setTimeout(function () { if (b.parentNode === box) box.removeChild(b); }, 10000);
+      box._uhr = setTimeout(function () { if (b.parentNode === box) box.removeChild(b); }, 10000);
     }
+  }
+  function meldungenLeeren() {
+    Array.prototype.forEach.call(document.querySelectorAll('#friMsg, .fri-merken .msg, .fri-rueck-box'), function (m) { clearTimeout(m._uhr); m._uhr = null; m.textContent = ''; });
+    var s = $('friStart'); if (s && s.getAttribute('data-art') === 'meldung') { var p = s.querySelector('p'); if (p) clearTimeout(p._uhr); s.remove(); }
   }
 
   // ---------- Knopf „Frist merken“ (für „Brief prüfen“ und andere Bereiche) ----------
-  // fn(wert) liefert den Eintrag; opt.feld: 'erhalten' | 'zugang' (Datumsfeld davor, freiwillig)
+  // fn(wert) liefert den Eintrag; opt.feld: 'erhalten' | 'zugang' | 'datum' (Datumsfeld davor, freiwillig) oder 'fest' (Tag aus dem Brief,
+  // vorausgefüllt mit opt.wert, änderbar); opt.zeile: Beleg aus dem Brief (wird nur angezeigt)
   var knopfNr = 0;
   function knopf(fn, opt) {
     opt = opt || {};
     var box = el('div', 'fri-merken'), feld = null, nr = ++knopfNr;
-    if (opt.feld === 'erhalten' || opt.feld === 'zugang') {
+    if (opt.zeile) { var bz = el('p', 'small fri-zeile', t('fri.zeile', { zeile: textSauber(opt.zeile, 160) })); box.appendChild(bz); }
+    if (['erhalten', 'zugang', 'datum', 'fest'].indexOf(opt.feld) >= 0) {
       var f = el('div', 'field'), l = el('label', null, t('fri.feld.' + opt.feld)); l.htmlFor = 'friFeld' + nr;
       feld = el('input'); feld.type = 'date'; feld.id = 'friFeld' + nr;
+      if (gueltigerTag(opt.wert)) feld.value = opt.wert;
       f.appendChild(l); f.appendChild(feld); box.appendChild(f);
     }
     var b = knopfEl('btn ghost klein', t('fri.merken'), function () {
       var wert = feld && gueltigerTag(feld.value) ? feld.value : null;
+      if (opt.feld === 'fest' && !wert) { meldung(m, t('fri.feld.fest.fehlt')); feld.focus(); return; }
       var e = null; try { e = fn(wert); } catch (x) { e = null; }
       var r = hinzuIntern(e);
       if (r.s === 'neu') meldung(m, t('fri.gemerkt', { titel: titelVon(r.e), datum: r.e.bis ? datumText(r.e.bis) : t('fri.wort.offen') }), function () { entfernen(r.id); meldung(m, t('fri.entfernt')); });
-      else if (r.s === 'da') meldung(m, t('fri.schonDa'));
-      else meldung(m, t('fri.fehler'));
+      else meldung(m, antwort(r));
     });
     b.setAttribute('aria-describedby', 'friMerkenT' + nr);
     box.appendChild(b);
@@ -352,10 +393,16 @@ var FristenOrdner = (function () {
     return box;
   }
   // Für Anhörung und Mitwirkung in „Brief prüfen“: nur, wenn eine Frist im Brief steht
+  // Vor dem Speichern: Zeile aus dem Brief und Tag zeigen; ein fester Tag steht im Feld und kann geändert werden.
+  // „Ab Datum dieses Schreibens“: kein Feld „bekommen am“ (nur „Datum des Briefs“, falls es nicht erkannt wurde).
   function briefKnopf(text, art) {
     var probe = ausBrief(text, art, null);
     if (!probe) return null;
-    return knopf(function (erhalten) { var e = ausBrief(text, art, erhalten); if (e) e.quelle = 'brief'; return e; }, { feld: probe.basis.fest ? null : 'erhalten' });
+    var b = probe.basis, feld = b.fest ? 'fest' : b.abBrief ? (b.datum ? null : 'datum') : 'erhalten';
+    return knopf(function (wert) {
+      var e = feld === 'fest' ? ausBrief(text, art, null, { fest: wert }) : feld === 'datum' ? ausBrief(text, art, null, { datum: wert }) : ausBrief(text, art, wert);
+      if (e) { e.quelle = 'brief'; delete e.zeile; } return e;
+    }, { feld: feld, wert: b.fest, zeile: probe.zeile });
   }
 
   // ---------- Liste (Unterseite „Fristen“ in „Mein Ordner“) ----------
@@ -364,8 +411,9 @@ var FristenOrdner = (function () {
     if (e.wort === 'fest') return t('fri.rechnung.fest');
     if (e.wort === 'offen') return t('fri.wort.offen.t');
     var dauer = dauerText(e.art === 'wid' ? b.frist || '1M' : (e.art === 'mb' || e.art === 'vb') ? '2W' : b.frist);
-    if (e.art === 'wid') return b.zugang || b.datum ? t('fri.rechnung.wid', { datum: datumText(b.datum || b.zugang), bekannt: datumText(r.bekannt) }) : t('fri.rechnung.wid.ohne', { bekannt: datumText(r.bekannt) });
+    if (e.art === 'wid') return b.zugang ? t('fri.rechnung.wid.zugang', { bekannt: datumText(r.bekannt) }) : b.datum ? t('fri.rechnung.wid', { datum: datumText(b.datum), bekannt: datumText(r.bekannt) }) : t('fri.rechnung.wid.ohne', { bekannt: datumText(r.bekannt) });
     if (e.art === 'mb' || e.art === 'vb') return t('fri.rechnung.zustellung', { datum: datumText(b.zugang) });
+    if (b.abBrief) return t('fri.rechnung.woche.brief', { datum: datumText(b.datum), dauer: dauer });
     return b.erhalten ? t('fri.rechnung.woche', { bekannt: datumText(b.erhalten), dauer: dauer }) : t('fri.rechnung.woche.ohne', { datum: datumText(b.datum), dauer: dauer });
   }
   function dauerText(f) {
@@ -400,7 +448,8 @@ var FristenOrdner = (function () {
     }
     var btns = el('div', 'btns');
     btns.appendChild(knopfEl('btn ghost klein', t('fri.erledigt'), function () {
-      setzeZustand(e, 'erledigt', heute()); aendern();
+      setzeZustand(e, 'erledigt', heute());
+      if (!aendern()) { setzeZustand(e, 'erledigt', null); neuZeichnen(); meldung($('friMsg'), t('fri.fehler')); return; }
       meldung($('friMsg'), t('fri.erledigt.ok'), function () { setzeZustand(e, 'erledigt', null); aendern(); });
       var hh = $('friH'); if (hh) hh.focus();
     }));
@@ -420,7 +469,7 @@ var FristenOrdner = (function () {
   function aendernForm(art, e, ausloeser) {
     var alt = art.querySelector('form'); if (alt) { alt.remove(); ausloeser.setAttribute('aria-expanded', 'false'); return; }
     ausloeser.setAttribute('aria-expanded', 'true');
-    var b = e.basis, feld = e.wort === 'fest' || ['zahl', 'termin', 'frist', 'eigen'].indexOf(e.art) >= 0 ? 'fest' : e.art === 'wid' ? 'datum' : (e.art === 'mb' || e.art === 'vb') ? 'zugang' : 'erhalten';
+    var b = e.basis, feld = e.wort === 'fest' || ['zahl', 'termin', 'frist', 'eigen'].indexOf(e.art) >= 0 ? 'fest' : e.art === 'wid' || b.abBrief ? 'datum' : (e.art === 'mb' || e.art === 'vb') ? 'zugang' : 'erhalten';
     var f = el('form', 'fri-form'); f.setAttribute('novalidate', '');
     var id = 'friAendern-' + e.id, l = el('label', null, t(feld === 'fest' ? 'fri.eigen.bis' : 'fri.feld.' + feld)); l.htmlFor = id;
     var i = el('input'); i.type = 'date'; i.id = id; i.value = b[feld] || (feld === 'fest' ? e.bis || '' : '');
@@ -451,7 +500,7 @@ var FristenOrdner = (function () {
       ev.preventDefault();
       if (!titelSauber(i1.value) || !gueltigerTag(i2.value)) { m.textContent = t('fri.eigen.fehlt'); (titelSauber(i1.value) ? i2 : i1).focus(); return; }
       var r = hinzuIntern({ art: 'eigen', titel: i1.value, bis: i2.value, quelle: 'hand' });
-      if (r.s === 'da') { m.textContent = t('fri.schonDa'); return; }
+      if (r.s !== 'neu') { m.textContent = antwort(r); return; }
       meldung($('friMsg'), t('fri.gemerkt', { titel: titelSauber(i1.value), datum: datumText(i2.value) }), function () { entfernen(r.id); });
       var hh = $('friH'); if (hh) hh.focus();
     });
@@ -531,15 +580,20 @@ var FristenOrdner = (function () {
     };
     if (eigen) {
       btns.appendChild(knopfEl('btn ghost klein', t('fri.erledigt'), function () {
-        setzeZustand(e, 'erledigt', h); sichern(); if (ctx.neu) ctx.neu(); render();
+        setzeZustand(e, 'erledigt', h);
+        var ok = sichern(); if (!ok) setzeZustand(e, 'erledigt', null);
+        if (ctx.neu) ctx.neu(); render();
         box.setAttribute('data-art', 'meldung'); box.textContent = '';
         var m = el('p'); box.appendChild(m);
+        if (!ok) { meldung(m, t('fri.fehler')); return; }
         meldung(m, t('fri.erledigt.ok'), function () { setzeZustand(e, 'erledigt', null); sichern(); if (ctx.neu) ctx.neu(); render(); startHinweisZeichnen(true); });
         var b0 = m.querySelector('button'); if (b0) b0.focus();
       }));
       btns.appendChild(knopfEl('btn ghost klein', t('fri.start.spaeter'), function () {
-        var tg = spaeterTag(e, h); setzeZustand(e, 'spaeter', tg); sichern(); if (ctx.neu) ctx.neu(); render();
-        box.setAttribute('data-art', 'meldung'); box.textContent = ''; box.appendChild(el('p', null, t('fri.start.spaeter.ok', { datum: datumText(tg) })));
+        var tg = spaeterTag(e, h); setzeZustand(e, 'spaeter', tg);
+        var ok = sichern(); if (!ok) setzeZustand(e, 'spaeter', null);
+        if (ctx.neu) ctx.neu(); render();
+        box.setAttribute('data-art', 'meldung'); box.textContent = ''; box.appendChild(el('p', null, ok ? t('fri.start.spaeter.ok', { datum: datumText(tg) }) : t('fri.fehler')));
       }));
     }
     btns.appendChild(knopfEl('btn ghost klein', t('fri.start.ansehen'), ansehen));
@@ -574,6 +628,7 @@ var FristenOrdner = (function () {
   // Nach einem Wechsel des Vorgangs (oder Löschen): Liste des geöffneten Vorgangs neu lesen, ohne zu schreiben
   function neuLaden() {
     if (!ctx) return;
+    ladeNr++; meldungenLeeren(); letzteNeu = null; // „Rückgängig“ des alten Vorgangs ungültig
     geladen = false;
     speicher.laden(function (v) { daten = normiere(v, heute()); geladen = true; neuZeichnen(); });
   }

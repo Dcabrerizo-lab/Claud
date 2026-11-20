@@ -84,6 +84,14 @@ const E = {
     ck('[fristen-dom] Kurzform in der Liste als Text', ge && ge.querySelector('h3').textContent === 'Wohnkosten senken ' + XSS && /Belege sammeln/.test(ge.querySelector('.fri-notiz').textContent) && !s.d.querySelector('#friListe img'));
     ck('[fristen-dom] Kurzform ohne gültiges Datum: false', FO.hinzu({ art: 'kostensenkung', datum: '31.05.2027' }) === false && FO.hinzu(null) === false);
   }
+  // Befund 6: Widerspruch mit Zustellung: Rechenweg nennt die Zustellung, nicht „Brief vom … vierter Tag“
+  {
+    ck('[fristen-dom] Befund 6: Widerspruch mit Zugang gespeichert', s.w.FristenOrdner.hinzu({ art: 'wid', stelle: 'jc', basis: { zugang: tagIn(-2) } }) === 'neu');
+    const g = JSON.parse(mem['lotse.fristliste']).e.find((e) => e.art === 'wid');
+    const det = s.$('fri-' + g.id).querySelector('details').textContent;
+    ck('[fristen-dom] Befund 6: Rechenweg bei Zustellung passend', /Zugestellt oder persönlich bekommen am/.test(det) && !/vierten Tag/.test(det), det);
+    s.w.FristenOrdner.entfernen(g.id);
+  }
   // Kein Klartext außer Merker: Schlüssel gehört zum Vorgang
   ck('[fristen-dom] lotse.fristliste gehört zu Vorgaenge.DATEN', V.DATEN.indexOf('lotse.fristliste') >= 0);
 
@@ -137,7 +145,59 @@ const E = {
     ck('[fristen-dom] Rückgängig entfernt die gemerkte Frist', JSON.parse(m7['lotse.fristliste']).e.length === 0);
     s.klick(knopf(k, 'Frist merken')); s.klick(knopf(k, 'Frist merken'));
     ck('[fristen-dom] Zweiter Tipp: schon da', /steht schon/.test(k.textContent) && JSON.parse(m7['lotse.fristliste']).e.length === 1);
+    // Befund 3: „Rückgängig“ nach einem Wechsel des Vorgangs schreibt nicht in den falschen Vorgang
+    s.w.FristenOrdner.entfernen(JSON.parse(m7['lotse.fristliste']).e[0].id);
+    s.klick(knopf(k, 'Frist merken'));
+    const alterKnopf = knopf(k.querySelector('.msg'), 'Rückgängig');
+    s.w.FristenOrdner.neuLaden();
+    ck('[fristen-dom] Befund 3: neuLaden leert die Meldungen samt Rückgängig', alterKnopf && !k.querySelector('.msg').textContent && !knopf(k.querySelector('.msg'), 'Rückgängig'));
+    alterKnopf.dispatchEvent(new s.w.MouseEvent('click', { bubbles: true }));
+    ck('[fristen-dom] Befund 3: alter Rückgängig-Knopf ändert nach dem Wechsel nichts', JSON.parse(m7['lotse.fristliste']).e.length === 1);
     ck('[fristen-dom] Alte Namen nicht wieder benutzt', !s.d.querySelector('#v-fristen, [data-ansicht=fristen], #startFristen') && m7['lotse.fristen'] === undefined);
+  }
+
+  // 7b. Befund 1 und 2: Zeile und Tag vor dem Speichern zeigen, Tag änderbar; „ab Datum dieses Schreibens“ ohne Feld „bekommen am“
+  {
+    const m = { 'lotse.ack': '1', 'lotse.fristTag': HEUTE };
+    s = seite(m); await warte(30);
+    const brief = 'Jobcenter Musterstadt\nDatum: 01.12.2026\nAnhörung nach § 24 SGB X\nIhnen wurden Leistungen bis zum 31.01.2027 bewilligt.\nSie können sich bis zum 15.12.2026 äußern.';
+    const k = s.w.FristenOrdner.briefKnopf(brief, 'anh'); s.d.body.appendChild(k);
+    const feld = k.querySelector('input[type=date]');
+    ck('[fristen-dom] Befund 1: Zeile aus dem Brief und Tag (15.12.2026) im Feld sichtbar', /Im Brief gefunden: „Sie können sich bis zum 15\.12\.2026 äußern\.“/.test(k.textContent) && feld && feld.value === '2026-12-15' && /Frist laut Brief/.test(k.textContent), k.textContent);
+    feld.value = '';
+    s.klick(knopf(k, 'Frist merken'));
+    ck('[fristen-dom] Befund 1: leeres Feld → Hinweis, nichts gespeichert', /Tag der Frist/.test(k.textContent) && !m['lotse.fristliste']);
+    feld.value = '2026-12-14';
+    s.klick(knopf(k, 'Frist merken'));
+    const g = JSON.parse(m['lotse.fristliste']).e;
+    ck('[fristen-dom] Befund 1: geänderter Tag gespeichert (Fest), keine Briefzeile gespeichert', g.length === 1 && g[0].bis === '2026-12-14' && g[0].wort === 'fest' && !/äußern|bewilligt/.test(m['lotse.fristliste']), g);
+    const ab = 'Jobcenter Musterstadt\nDatum: 01.12.2026\nAufforderung zur Mitwirkung\nBitte reichen Sie die Unterlagen innerhalb von zwei Wochen ab Datum dieses Schreibens ein.';
+    const k2 = s.w.FristenOrdner.briefKnopf(ab, 'mit'); s.d.body.appendChild(k2);
+    ck('[fristen-dom] Befund 2: „ab Datum dieses Schreibens“: kein Feld „bekommen am“', !k2.querySelector('input') && !/bekommen am/.test(k2.textContent));
+    s.klick(knopf(k2, 'Frist merken'));
+    const g2 = JSON.parse(m['lotse.fristliste']).e.find((e) => e.art === 'mit');
+    ck('[fristen-dom] Befund 2: ab Briefdatum gerechnet: 15.12.2026, Gerechnet', g2 && g2.bis === '2026-12-15' && g2.wort === 'gerechnet' && g2.basis.abBrief === true, g2);
+    // Befund 7: Schreibfehler → kein „Gemerkt“, sondern Fehlermeldung, nichts in der Liste
+    const FO = s.w.FristenOrdner, vorher = m['lotse.fristliste'];
+    FO.speicherOrt({ schreiben: (t, cb) => cb(new Error('voll')) });
+    const k3 = FO.knopf(() => ({ art: 'eigen', titel: 'Test', bis: '2026-12-20' })); s.d.body.appendChild(k3);
+    s.klick(knopf(k3, 'Frist merken'));
+    ck('[fristen-dom] Befund 7: Speichern misslingt → „hat nicht geklappt“, kein „gemerkt“', /nicht geklappt/.test(k3.textContent) && !/gemerkt/.test(k3.textContent) && m['lotse.fristliste'] === vorher);
+    ck('[fristen-dom] Befund 7: Schnittstelle meldet false', FO.hinzu({ art: 'eigen', titel: 'Test2', bis: '2026-12-21' }) === false);
+    FO.speicherOrt({ schreiben: (t, cb) => { m['lotse.fristliste'] = t; cb(null); } });
+    // Befund 5: höchstens 50; voll mit offenen → ablehnen mit „Liste voll“; mit erledigten → erledigte zuerst kürzen
+    let neu = 0; for (let i = 0; i < 60 && FO.hinzu({ art: 'eigen', titel: 'F' + i, bis: '2027-02-01' }) === 'neu'; i++) neu++;
+    const nachher = JSON.parse(m['lotse.fristliste']).e;
+    ck('[fristen-dom] Befund 5: bei 50 offenen kein weiterer Eintrag', nachher.length === 50 && neu === 48, { n: nachher.length, neu });
+    const k4 = FO.knopf(() => ({ art: 'eigen', titel: 'Zu viel', bis: '2027-03-01' })); s.d.body.appendChild(k4);
+    s.klick(knopf(k4, 'Frist merken'));
+    ck('[fristen-dom] Befund 5: Meldung „Liste voll“', /Die Liste ist voll/.test(k4.textContent) && !/Zu viel/.test(m['lotse.fristliste']));
+    s.klick(s.d.querySelector('#appnav button[data-ansicht="ordner"]')); s.klick(s.$('or-fristen'));
+    s.klick(knopf(s.d.querySelector('#friListe .fri-e'), 'Erledigt'));
+    ck('[fristen-dom] Befund 5: ein Eintrag erledigt', JSON.parse(m['lotse.fristliste']).e.filter((e) => e.erledigt).length === 1);
+    ck('[fristen-dom] Befund 5: mit erledigtem Eintrag: neu, erledigter gekürzt', FO.hinzu({ art: 'eigen', titel: 'Passt', bis: '2027-03-01' }) === 'neu' && JSON.parse(m['lotse.fristliste']).e.length === 50 && !JSON.parse(m['lotse.fristliste']).e.some((e) => e.erledigt));
+    // Befund 4: Löschtext nennt die Fristen
+    ck('[fristen-dom] Befund 4: „Alle Angaben löschen“ nennt die Fristen', /Fristen/.test(s.$('clearWas').textContent), s.$('clearWas').textContent);
   }
 
   // 8. Mit PIN, zwei Vorgänge: kein Hinweis vor dem Entsperren, kein Klartext; Frist im anderen Vorgang → nur „Ansehen“
