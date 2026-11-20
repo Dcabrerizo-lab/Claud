@@ -114,7 +114,10 @@ function pruefpaket() {
 // Einfache Sprache für „Brief prüfen“: Wörterbuch src/lang/einfach/brief/brief.json (Schlüssel = deutscher Standardtext), liest vorschau.js als BRIEF_EINFACH
 function briefEinfachJs() {
   const f = path.join(SRC, 'lang', 'einfach', 'brief', 'brief.json');
-  return 'const BRIEF_EINFACH = ' + (fs.existsSync(f) ? JSON.stringify(JSON.parse(fs.readFileSync(f, 'utf8'))) : 'null') + ';\n';
+  if (!fs.existsSync(f)) return 'const BRIEF_EINFACH = null;\n';
+  // nur eigene einfache Fassungen ausliefern; "=" (Standardtext gilt) braucht die App nicht
+  const texte = Object.fromEntries(Object.entries(JSON.parse(fs.readFileSync(f, 'utf8')).texte).filter(([, v]) => v !== '='));
+  return 'const BRIEF_EINFACH = ' + JSON.stringify({ texte }) + ';\n';
 }
 
 // opts.native: Store-App (Android/iOS) statt Web
