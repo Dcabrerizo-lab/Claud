@@ -544,6 +544,7 @@
     document.querySelectorAll('[data-t-ph]').forEach(function (el) { el.setAttribute('placeholder', t(el.getAttribute('data-t-ph'))); });
     $('mappeDeNote').hidden = lang === 'de'; // Hinweis „Brief und Angabenblatt sind auf Deutsch“ nur bei anderer App-Sprache
     $('stand').textContent = t('stand', { stand: Rules.RULES.stand });
+    $('vertrauenT').textContent = t('vertrauen', { stand: Rules.RULES.stand }); // Stand und Herkunft der Zahlen sichtbar am Ergebnis
     $('appVersion').textContent = t('set.version', { v: APPVERSION });
     einfacheSpracheAnzeigen();
     if (window.Haushalt && Haushalt.sprache) Haushalt.sprache(); // Haushaltsplan (src/haushalt.js) in der neuen Sprache zeichnen
@@ -1475,7 +1476,7 @@
       ebZeilen().map(function (z) {
         return '<tr><th scope="row"><span' + (lang === 'de' ? '' : ' lang="de"') + '>' + esc(z.r.name) + '</span>' + (lang === 'de' ? '' : '<br><span class="small">' + esc(t('n.' + z.r.id)) + '</span>') +
           (beratung && z.r.recht ? '<br><span class="small" lang="de" dir="ltr">' + esc(z.r.recht) + '</span>' : '') + '</th>' +
-          '<td><span class="pill ' + z.r.level + '"><span aria-hidden="true">' + MARK[z.r.level] + '</span>' + esc(z.lvl) + '</span></td><td>' + esc(z.betrag) + '</td><td>' + esc(z.stelle) + '</td><td>' + esc(z.schritt) + '</td></tr>';
+          '<td data-l="' + esc(t(cols[1])) + '"><span class="pill ' + z.r.level + '"><span aria-hidden="true">' + MARK[z.r.level] + '</span>' + esc(z.lvl) + '</span></td><td data-l="' + esc(t(cols[2])) + '">' + esc(z.betrag) + '</td><td data-l="' + esc(t(cols[3])) + '">' + esc(z.stelle) + '</td><td data-l="' + esc(t(cols[4])) + '">' + esc(z.schritt) + '</td></tr>'; // data-l: Spaltenname für die Kartenansicht auf dem Handy
       }).join('') + '</tbody></table>' +
       '<p class="eb-hinweis">' + esc(t('eb.hinweis', { stand: Rules.RULES.stand })) + '</p>';
   }
@@ -2516,7 +2517,7 @@
   var sp = { bereich: '', fall: '', thema: '', rezepte: false };
   // Kachel in der Form der Startseite (Klasse sk): Symbol, Titel, kurzer Text
   function skKachel(cls, sym, titel, text, fn) {
-    return nhKnopf('sk ' + cls, '<span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + sym + '</svg></span><span class="sk-txt"><b>' + esc(titel) + '</b>' + (text ? '<span>' + esc(text) + '</span>' : '') + '</span>', null, fn);
+    return nhKnopf('uk-karte ' + cls, '<span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + sym + '</svg></span><span class="sk-txt"><b>' + esc(titel) + '</b>' + (text ? '<span>' + esc(text) + '</span>' : '') + '</span>', null, fn);
   }
   function gsOeffne(bereich) { sp.bereich = bereich; sp.fall = ''; sp.thema = ''; sp.rezepte = false; }
   // Sprung aus einer Unteransicht (Pfändung, Haushaltsplan) in einen Teil von „Geld und Schulden“: Herkunft bleibt die der Startkachel,
@@ -2530,7 +2531,7 @@
     var box = $('spInhalt'); if (!box) return;
     box.innerHTML = '';
     var p = function (txt, cls) { var e = document.createElement('p'); e.className = cls || ''; e.textContent = txt; box.appendChild(e); return e; };
-    var raster = function () { var r = document.createElement('div'); r.className = 'sk-raster'; box.appendChild(r); return r; };
+    var raster = function () { var r = document.createElement('div'); r.className = 'uk-raster'; box.appendChild(r); return r; };
     var knopf = function (cls, txt, fn) { var d = document.createElement('div'); d.className = 'btns'; d.appendChild(nhKnopf(cls, esc(txt), null, fn)); box.appendChild(d); return d.firstChild; };
     var aufklappen = function (titel, txt, fall) { var dt = document.createElement('details'); dt.className = 'pf-tipps sp-fall'; if (fall) dt.setAttribute('data-fall', fall); var su = document.createElement('summary'); su.textContent = titel; dt.appendChild(su); var e = document.createElement('p'); e.className = 'hint'; e.textContent = txt; dt.appendChild(e); box.appendChild(dt); return dt; };
     if (!sp.bereich) {
@@ -2559,7 +2560,7 @@
       var fx = GS_DRINGEND.filter(function (x) { return x[0] === sp.fall; })[0];
       p(t(fx[1]), 'pf-frage');
       [['gs-frist', 'gs.frist', '.frist'], ['gs-schritt', 'gs.schritt', '.schritt']].forEach(function (z) {
-        var d = document.createElement('div'); d.className = 'gs-box ' + z[0];
+        var d = document.createElement('div'); d.className = (z[0] === 'gs-frist' ? 'frist ' : 'gs-box ') + z[0]; if (z[0] === 'gs-frist') d.setAttribute('role', 'note'); // Frist im gemeinsamen Muster .frist (#68)
         var h3 = document.createElement('h3'); h3.textContent = t(z[1]); d.appendChild(h3);
         var e = document.createElement('p'); e.textContent = t('gs.d.' + sp.fall + z[2]); d.appendChild(e);
         box.appendChild(d);
@@ -2850,7 +2851,7 @@
     briefKopf();
     var bk = $('briefKacheln');
     if (!bk.children.length) BRIEFE.forEach(function (x) {
-      var k = document.createElement('button'); k.type = 'button'; k.className = 'kachel'; k.id = 'brief-' + x[0];
+      var k = document.createElement('button'); k.type = 'button'; k.className = 'kachel uk-karte'; k.id = 'brief-' + x[0];
       k.innerHTML = '<span class="kachel-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + x[3] + '</svg></span><b></b><span class="k-t"></span>';
       k.addEventListener('click', function () { briefOeffnen(x[0]); });
       bk.appendChild(k);
@@ -3669,7 +3670,7 @@
       var b = document.createElement('b'); b.textContent = r.titel; d.appendChild(b);
       var p = document.createElement('p'); p.textContent = BriefLesen.ERKLAERUNG[r.art]; d.appendChild(p);
       var fr = BriefLesen.frist(text);
-      if (fr) { var q = document.createElement('p'); q.textContent = t('el.frist', { frist: BriefLesen.fristLesbar ? BriefLesen.fristLesbar(fr) : fr }); d.appendChild(q); }
+      if (fr) { var q = document.createElement('p'); q.className = 'frist frist-wann'; q.setAttribute('role', 'note'); q.textContent = t('el.frist', { frist: BriefLesen.fristLesbar ? BriefLesen.fristLesbar(fr) : fr }); $('elErg').appendChild(q); } // Frist-Muster ganz oben
       var fk = fr && window.FristenOrdner ? FristenOrdner.briefKnopf(text, r.art) : null; if (fk) d.appendChild(fk); // nur auf Knopfdruck merken
       $('elErg').appendChild(d); if (ks) ksZeigen(ks, text); elNachricht(t('el.erkanntOhne', { titel: r.titel })); return;
     }

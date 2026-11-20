@@ -16,18 +16,20 @@
     --accent: #0f6b5c;
     --accent-ink: #ffffff;
     --accent-soft: #dff2ec;
-    --ok: #0f6b5c;     --ok-bg: #dff2ec;
+    /* Farbrollen (Design-Prüfung D1, 20.11.2026): Petrol nur Bedienen, Grün „Wahrscheinlich“, Bernstein „Möglich“/Achtung,
+       Rot nur Frist, Fehler, „fehlt“, Löschen; Tipp ruhig Schiefer-Blau; Fokus eigene Farbe (nur Fokus) */
+    --ok: #2f6b3a;     --ok-bg: #e3f1e4;
     --warn: #8a5a00;   --warn-bg: #fff1d6;
     --bad: #9a3b26;    --bad-bg: #f9e4dc;
     --na: #5f5a52;     --na-bg: #f1ebe2;
-    --hint: #a14a2f;   --hint-bg: #fde8df;
+    --hint: #263a4f;   --hint-bg: #e9f0f6;  --hint-rand: #52606d;  /* Tipp, persönlicher Hinweis (kein Rot mehr) */
     --coral: #ff7a59;
-    --focus: #b4472a;
+    --focus: #16224f;  /* Fokusrahmen: Tiefblau, sonst nirgends benutzt */
     /* ===== Farbpalette: alle Farben der App stehen hier (Zuordnung Bereich -> Farbe: docs/FARBEN.md) =====
        Bereichsfarben: Flächen mit weißer Schrift (--on-c), in hell und dunkel gleich, Kontrast mind. 4,5:1 (tools/kontrast-pruefen.js).
        --c-*-t: dieselbe Bereichsfarbe als Schrift, Rand oder Symbol auf --surface/--bg (im Dunkelmodus aufgehellt). */
     --on-c: #ffffff;
-    --c-leistungen: #0f6b5c; --c-briefe: #a14a2f; --c-pfaendung: #7a3b69; --c-sparen: #2f6b3a; --c-pflege: #23507f; --c-ausziehen: #5b3f8f;
+    --c-leistungen: #13735f; --c-briefe: #b25224; --c-pfaendung: #924e81; --c-sparen: #3e7141; --c-pflege: #3d67a3; --c-ausziehen: #6856bb;
     --c-leistungen-t: #0f6b5c; --c-briefe-t: #a14a2f; --c-pfaendung-t: #7a3b69; --c-sparen-t: #2f6b3a; --c-pflege-t: #23507f; --c-ausziehen-t: #5b3f8f;
     /* Absender in „Ich habe einen Brief bekommen“: gleiche Farbe wie der passende Bereich, sonst eine eigene */
     --c-jobcenter: var(--c-leistungen); --c-sozialamt: #4a47a3; --c-wohngeld: #0e6178; --c-familienkasse: #a2365e;
@@ -43,8 +45,8 @@
     :root:not([data-theme="light"]) {
       --bg: #1b1815; --surface: #26221f; --ink: #f4ede3; --muted: #c4b8a8; --line: #3b342d; --field: #8a7f72;
       --accent: #6fd3bd; --accent-ink: #10221e; --accent-soft: #1a3a33;
-      --ok: #8be0cb; --ok-bg: #173a33; --warn: #f3c56b; --warn-bg: #3a2c10;
-      --bad: #ffab97; --bad-bg: #3d211a; --na: #c4b8a8; --na-bg: #2f2a25; --hint: #ffb398; --hint-bg: #3f2419; --focus: #ffb398;
+      --ok: #9fdba8; --ok-bg: #1c3420; --warn: #f3c56b; --warn-bg: #3a2c10;
+      --bad: #ffab97; --bad-bg: #3d211a; --na: #c4b8a8; --na-bg: #2f2a25; --hint: #dbe6f2; --hint-bg: #243241; --hint-rand: #9fb3c8; --focus: #ffffff;
       --c-leistungen-t: #6fd3bd; --c-briefe-t: #ffb398; --c-pfaendung-t: #f0b4dd; --c-sparen-t: #9fdba8; --c-pflege-t: #a9cbf3; --c-ausziehen-t: #cdb8f0;
       --bad-on: #26221f; --kante: #12100e;
       color-scheme: dark;
@@ -53,8 +55,8 @@
   :root[data-theme="dark"] {
     --bg: #1b1815; --surface: #26221f; --ink: #f4ede3; --muted: #c4b8a8; --line: #3b342d; --field: #8a7f72;
     --accent: #6fd3bd; --accent-ink: #10221e; --accent-soft: #1a3a33;
-    --ok: #8be0cb; --ok-bg: #173a33; --warn: #f3c56b; --warn-bg: #3a2c10;
-    --bad: #ffab97; --bad-bg: #3d211a; --na: #c4b8a8; --na-bg: #2f2a25; --hint: #ffb398; --hint-bg: #3f2419; --focus: #ffb398;
+    --ok: #9fdba8; --ok-bg: #1c3420; --warn: #f3c56b; --warn-bg: #3a2c10;
+    --bad: #ffab97; --bad-bg: #3d211a; --na: #c4b8a8; --na-bg: #2f2a25; --hint: #dbe6f2; --hint-bg: #243241; --hint-rand: #9fb3c8; --focus: #ffffff;
     --c-leistungen-t: #6fd3bd; --c-briefe-t: #ffb398; --c-pfaendung-t: #f0b4dd; --c-sparen-t: #9fdba8; --c-pflege-t: #a9cbf3; --c-ausziehen-t: #cdb8f0;
     --bad-on: #26221f; --kante: #12100e;
     color-scheme: dark;
@@ -146,8 +148,8 @@
   .pa-grad { font-size: 1.9em; }
   /* Ergebnisseite der Einschätzung: Kacheln in der Form der Startseite (höchstens 3) */
   .pa-kacheln { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5em), 1fr)); gap: 12px; margin: 18px 0 8px; }
-  .pa-kacheln > .sk { min-height: 132px; }
-  .pa-kacheln > .sk:last-child:nth-child(3) { grid-column: 1 / -1; min-height: 0; }
+  .pa-kacheln > .uk-karte { min-height: 132px; }
+  .pa-kacheln > .uk-karte:last-child:nth-child(3) { grid-column: 1 / -1; min-height: 0; }
   input.kurz { max-width: 9em; }
   .legende { font-size: 0.85em; color: var(--muted); margin: -4px 0 10px; }
   .info { font-size: 0.85em; background: var(--surface); border-left: 3px solid var(--accent); padding: 6px 10px; margin: 6px 0 0; }
@@ -514,7 +516,7 @@
     font: inherit; font-weight: 700; background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 8px;
     min-height: 48px; padding: 0 20px; cursor: pointer;
   }
-  .btn.ghost { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+  .btn.ghost { background: transparent; color: var(--accent); border: 2px solid var(--accent); }
   .btn:disabled { opacity: .5; cursor: not-allowed; }
   .btns { display: flex; flex-wrap: wrap; gap: 8px 12px; }
   .msg { font-size: 0.9em; color: var(--muted); min-height: 1.4em; }
@@ -944,14 +946,7 @@
   .sk-txt span { font-size: .875rem; line-height: 1.35; }
   .app.big .sk-txt b { font-size: 1.25em; } .app.big .sk-haupt .sk-txt b { font-size: 1.5em; } .app.big .sk-txt span { font-size: .875em; }
   /* Bereichsfarbe auch in den Bereichen: Symbole in Brief prüfen, Schulden, Geld sparen */
-  /* Brief bekommen: jede Absender-Kachel farbig wie die Startkacheln (weiße Schrift, Symbol und Text bleiben) */
-  #briefKacheln .kachel { --c: var(--c-anderer); background: var(--c); color: var(--on-c); border-color: transparent; border-radius: 26px; box-shadow: 0 2px 0 color-mix(in srgb, var(--c) 70%, black); }
-  #briefKacheln .kachel span.k-t { color: var(--on-c); }
-  #briefKacheln .kachel-sym { border-radius: 16px; background: color-mix(in srgb, var(--on-c) 20%, transparent); color: var(--on-c); }
-  #briefKacheln .kachel:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
-  @media (hover: hover) { #briefKacheln .kachel:hover { filter: brightness(1.08); } }
-  #briefKacheln #brief-jc { --c: var(--c-jobcenter); } #briefKacheln #brief-sa { --c: var(--c-sozialamt); } #briefKacheln #brief-wg { --c: var(--c-wohngeld); } #briefKacheln #brief-fk { --c: var(--c-familienkasse); }
-  #briefKacheln #brief-pk { --c: var(--c-pflegekasse); } #briefKacheln #brief-vm { --c: var(--c-vermieter); } #briefKacheln #brief-an { --c: var(--c-anderer); } #briefKacheln #brief-af { --c: var(--c-formular); }
+  /* Brief bekommen: Absender-Kacheln sind weiße Unterkacheln (.uk-karte, Gestaltungs-System unten) */
   .app[data-ansicht="pfaendung"] .weg-sym { background: var(--c-pfaendung); color: var(--on-c); }
   .app[data-ansicht="pfaendung"] .wahl[aria-pressed="true"], .app[data-ansicht="pfaendung"] .wahl.vorschlag { border-color: var(--c-pfaendung-t); }
   .app[data-ansicht="pfaendung"] .wahl[aria-pressed="true"] b::before { color: var(--c-pfaendung-t); }
@@ -965,40 +960,13 @@
   .pu-jahr .pu-einheit { background: var(--c-pflege); color: var(--on-c); }
   .pu-art { color: var(--muted); }
   .pu-weitere { margin: 16px 0; } .pu-weitere > summary { font-weight: 600; cursor: pointer; padding: 8px 0; }
-  .gs-kopf { margin: 0 0 4px; }
   .gs-box { border: 1px solid var(--line); border-inline-start: 4px solid var(--c-briefe-t); border-radius: var(--r-item); background: var(--surface); padding: 12px 14px; margin: 12px 0; }
   .gs-box h3 { font-size: 1em; margin: 0 0 4px; }
   .gs-box p { margin: 0; }
   .gs-box.gs-schritt { border-inline-start-color: var(--c-leistungen-t); }
-  /* ===== Gruppenfarben: innerhalb einer Kachel- bzw. Knopfgruppe keine Farbe doppelt (docs/FARBEN.md, geprüft in tools/kontrast-pruefen.js) ===== */
-  #spInhalt .sk-raster > .gs-dringend { --c: var(--c-briefe); } /* gruppe geld */
-  #spInhalt .sk-raster > .gs-bleibt { --c: var(--c-pfaendung); } /* gruppe geld */
-  #spInhalt .sk-raster > .gs-liste { --c: var(--c-sparen); } /* gruppe geld */
-  #spInhalt .sk-raster > .gs-planen { --c: var(--c-familienkasse); } /* gruppe geld */
-  #spInhalt .sk-raster > .gs-sparen { --c: var(--c-wohngeld); } /* gruppe geld */
-  #spInhalt .sk-raster > .gs-hilfe { --c: var(--c-leistungen); } /* gruppe geld */
-  #spInhalt .sk-raster > .gs-d-konto { --c: var(--c-pfaendung); } /* gruppe dringend */
-  #spInhalt .sk-raster > .gs-d-strom { --c: var(--c-wohngeld); } /* gruppe dringend */
-  #spInhalt .sk-raster > .gs-d-mahn { --c: var(--c-briefe); } /* gruppe dringend */
-  #spInhalt .sk-raster > .gs-d-miete { --c: var(--c-ausziehen); } /* gruppe dringend */
-  #spInhalt .sk-raster > .gs-t-strom { --c: var(--c-wohngeld); } /* gruppe sparen */
-  #spInhalt .sk-raster > .gs-t-heizen { --c: var(--c-briefe); } /* gruppe sparen */
-  #spInhalt .sk-raster > .gs-t-essen { --c: var(--c-sparen); } /* gruppe sparen */
-  #spInhalt .sk-raster > .gs-t-vertraege { --c: var(--c-sozialamt); } /* gruppe sparen */
-  .app[data-ansicht="pflegestart"] .weg-liste > .weg:nth-child(1) .weg-sym { background: var(--c-pflege); } /* gruppe pflegestart */
-  .app[data-ansicht="pflegestart"] .weg-liste > .weg:nth-child(2) .weg-sym { background: var(--c-wohngeld); } /* gruppe pflegestart */
-  #pflegeAssist .pa-k-antrag { --c: var(--c-formular); } /* gruppe pflegeergebnis */
-  #pflegeAssist .pa-k-hilfen { --c: var(--c-pflege); } /* gruppe pflegeergebnis */
-  #pflegeAssist .pa-k-gutachten { --c: var(--c-briefe); } /* gruppe pflegeergebnis */
-  .app[data-ansicht="pfaendung"] #pfInhalt > .weg-liste > .weg:nth-child(1) .weg-sym { background: var(--c-pfaendung); } /* gruppe pfaendung */
-  .app[data-ansicht="pfaendung"] #pfInhalt > .weg-liste > .weg:nth-child(2) .weg-sym { background: var(--c-wohngeld); } /* gruppe pfaendung */
-  .app .az .az-raster > .az-k:nth-child(1) { --c: var(--c-ausziehen); } /* gruppe ausziehen */
-  .app .az .az-raster > .az-k:nth-child(2) { --c: var(--c-formular); } /* gruppe ausziehen */
-  .app .az .az-raster > .az-k:nth-child(3) { --c: var(--c-sparen); } /* gruppe ausziehen */
-  .app .az .az-raster > .az-k:nth-child(4) { --c: var(--c-pflege); } /* gruppe ausziehen */
-  .app .az .az-raster > .az-k:nth-child(5) { --c: var(--c-briefe); } /* gruppe ausziehen */
-  .app .az .az-raster > .az-k:nth-child(6) { --c: var(--c-leistungen); } /* gruppe ausziehen */
-  .app .az .az-raster > .az-k:nth-child(7) { --c: var(--c-familienkasse); } /* gruppe ausziehen */
+  .frist.gs-frist h3 { font-size: var(--fs-s); margin: 0; color: var(--ink); }
+  .app[data-ansicht="sparen"] .weg-sym { background: var(--c-sparen); color: var(--on-c); }
+  /* ===== Symbolfarben in Mein Ordner und im Energie-Check (die Regel „keine Farbe doppelt“ prüft tools/kontrast-pruefen.js nur noch für die Startseite) ===== */
   .app[data-ansicht="ordner"] #or-fristen .zeile-sym { background: var(--c-briefe); } /* gruppe ordner */
   .app[data-ansicht="ordner"] #or-ergebnis .zeile-sym { background: var(--c-leistungen); } /* gruppe ordner */
   .app[data-ansicht="ordner"] #or-mappe .zeile-sym { background: var(--c-formular); } /* gruppe ordner */
@@ -1034,6 +1002,122 @@
   .summary .res-satz { flex-basis: 100%; font-size: 1.05em; font-weight: 700; }
   .summary h2 { font-weight: 900; }
 /*PPSTIL*/
+  /* ===== Gestaltungs-System (Design-Prüfung 20.11.2026, freigegeben; Doku: docs/FARBEN.md) =====
+     Steht nach den Stilen des Prüfpakets, damit es auch für „Brief prüfen“ (.pp) gilt. Nur Variablen, keine neuen Farbwerte. */
+  :root {
+    /* Sechs Schriftstufen. Zusatzangaben (Datum, Plakette, Status) --fs-xs; Hinweise und Fließtext mindestens --fs-s (1 rem). */
+    --fs-xs: .875rem; --fs-s: 1rem; --fs-m: 1.125rem; --fs-l: 1.25rem; --fs-xl: 1.5rem; --fs-xxl: 1.75rem;
+    /* Eckenradien als Stufen: Plakette 6 px, Feld 12 px, Karte 24 px, Kachel 26 px, Knopf Pille */
+    --r-tag: 6px; --r-feld: 12px; --r-kachel: 26px;
+    /* Kalender-Symbol für das Frist-Muster (Maske, Farbe kommt aus background) */
+    --sym-frist: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='5' width='18' height='16' rx='2'/%3E%3Cpath d='M3 10h18M8 3v4M16 3v4M12 13.5v3.5M12 19.6v.1'/%3E%3C/svg%3E");
+  }
+  h1 { font-size: var(--fs-xxl); } h2 { font-size: var(--fs-xl); } h3, legend { font-size: var(--fs-m); }
+  .app.big h1 { font-size: 2.1rem; } .app.big h2 { font-size: 1.8rem; } .app.big h3, .app.big legend { font-size: 1.35rem; }
+  .summary h2 { font-size: var(--fs-xl); }
+  /* Hinweise, Prüf- und Rechtshinweise nie kleiner als 1 rem */
+  .hint, .small, .legende, .info, .card .desc, .card .zust, .recht, .msg, .notice, .warn, .mietgrenze, .eb-hinweis, .foot, .es-wo,
+  .pp .small, .pp .muted, .sc-erkl > summary, .el-ks-ws { font-size: var(--fs-s); }
+  .stand, .sc-tag, .pa-amt, .zeile-st, .presets-label, .pi-kopf, .pi thead th { font-size: var(--fs-xs); }
+  /* Keine automatische Worttrennung in Überschriften, Plaketten, Knöpfen und Kacheln (nur weiche Trennzeichen im Text) */
+  h1, h2, h3, h4, legend, summary, .pill, .btn, .linkbtn, .chip, .zeile-txt b, .hero-los, .frist-wann { hyphens: none; -webkit-hyphens: none; }
+  h1, h2, h3, h4, legend { overflow-wrap: break-word; }
+  /* Arabische Schrift (ar, fa, ps): höhere Zeilen in Überschriften */
+  [dir="rtl"] :is(h1, h2, h3, h4, legend, .sk-txt b, .uk-karte b) { line-height: 1.45; }
+  /* Startseite: Untertitel „Sozialleistungslotse“ erklärt den Namen SoLo */
+  .app[data-ansicht="start"] .top h1 .sub { font-size: var(--fs-m); font-weight: 700; margin-top: 4px; }
+
+  /* --- Fokus: eigene Farbe, nur für den Fokus --- */
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .sk:focus-visible, .uk-karte:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+
+  /* --- Ein Feld-Stil für alle Eingaben (auch Brief prüfen, Mein Ordner, PIN) --- */
+  :is(.app, .vg-sperre) :is(input[type="number"], input[type="text"], input[type="date"], input[type="email"], input[type="tel"], input[type="password"], input[type="search"], input:not([type]), select, textarea) {
+    border: 2px solid var(--field); border-radius: var(--r-feld); background: var(--surface); color: var(--ink);
+  }
+  :is(.app, .vg-sperre) :is(input[type="number"], input[type="text"], input[type="date"], input[type="password"], input:not([type]), select):not(.es-zahl input) { min-height: 48px; }
+  :is(.app, .vg-sperre) :is(input[type="number"], input[type="text"], input[type="date"], input[type="email"], input[type="tel"], input[type="password"], input:not([type]), select, textarea):focus { border-color: var(--accent); }
+  .stepper { border: 2px solid var(--field); border-radius: var(--r-feld); }
+  .vg-form input { min-height: 48px; padding: 6px 14px; }
+
+  /* --- Drei Knopf-Ränge: Hauptknopf (Fläche), Zweitknopf (Rand), Textlink. Chips nur für Auswahl („Beispiel laden“). --- */
+  .pp .btn, .pi-link { background: transparent; color: var(--accent); border: 2px solid var(--accent); border-radius: 999px; font-weight: 700; box-shadow: none; }
+  .pp .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .pi-link-tab { border: 0; }
+  .btn .knopf-sym, .linkbtn .knopf-sym { display: inline-block; width: 1.25em; height: 1.25em; vertical-align: -0.25em; margin-inline-end: 8px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+  .btn:has(.knopf-sym) { display: inline-flex; align-items: center; }
+
+  /* --- Plaketten „Wahrscheinlich / Möglich / Unwahrscheinlich“: eckig, ohne Rand, nicht wie ein Knopf --- */
+  .pill { border: 0; border-radius: var(--r-tag); padding: 3px 8px; font-size: var(--fs-xs); overflow-wrap: normal; word-break: normal; box-shadow: none; }
+
+  /* --- Hinweis-Kästen: Tipp (ruhig), Achtung (--warn), Frist/Fehler (--bad) --- */
+  .karte-hinweis, .hinweis-koralle, .pp-hinweis, .el-erkl { background: var(--hint-bg); color: var(--hint); border-inline-start: 4px solid var(--hint-rand); border-radius: var(--r-feld); }
+  .hinweis-koralle { font-weight: 600; }
+  .hinweis-koralle.beratung > div > p:not(.b-titel) { font-size: var(--fs-s); }
+
+  /* --- Frist: ein festes, auffälliges Muster, immer ganz oben (Brief prüfen, Startseite, Mein Ordner, Bescheide) ---
+     Aufbau: <div class="frist" role="note"><p class="frist-wann">Frist: bis 12.12.2026</p><p>Satz, was zu tun ist.</p></div>
+     Auch ein einzelnes <p class="frist"> geht. Unsichere Erkennung bleibt im Text als „möglich“ gekennzeichnet, in normaler Größe. */
+  .frist, .fri-start { position: relative; display: grid; gap: 6px; margin: 0 0 16px; padding-block: 14px; padding-inline: 56px 16px;
+    background: var(--bad-bg); color: var(--ink); border: 0; border-inline-start: 6px solid var(--bad); border-radius: var(--r-feld); font-size: var(--fs-s); }
+  .frist::before, .fri-start::before, .fri-bis > b::before { content: ""; position: absolute; inset-inline-start: 16px; top: 15px; width: 28px; height: 28px; background: var(--bad);
+    -webkit-mask: var(--sym-frist) center / contain no-repeat; mask: var(--sym-frist) center / contain no-repeat; }
+  .frist p, .fri-start p { margin: 0; }
+  .frist-wann, .fri-start-t, .frist.frist-wann { font-family: var(--font-display); font-size: var(--fs-l); font-weight: 800; line-height: 1.3; color: var(--ink); }
+  .fri-start.vorbei { border-inline-start-color: var(--bad); background: var(--bad-bg); }
+  .fri-e { border-inline-start: 6px solid var(--bad); }
+  .fri-bis > b { position: relative; display: block; padding-inline-start: 34px; font-family: var(--font-display); font-size: var(--fs-l); font-weight: 800; line-height: 1.3; }
+  .fri-bis > b::before { inset-inline-start: 0; top: 1px; width: 24px; height: 24px; }
+  @media (forced-colors: active) { .frist, .fri-start { border: 2px solid CanvasText; } .frist::before, .fri-start::before, .fri-bis > b::before { background: CanvasText; } }
+  @media print { .frist, .fri-start { border: 1pt solid #000; } }
+
+  /* --- Vertrauen: Stand und Herkunft der Zahlen ruhig, aber sichtbar am Ergebnis --- */
+  .vertrauen { display: flex; align-items: center; gap: 8px; flex-basis: 100%; margin: 0; color: var(--muted); font-size: var(--fs-xs); font-weight: 600; }
+  .vertrauen svg { flex: none; width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* --- Startkacheln (nur Startseite farbig); Kante im Dunkelmodus kommt aus der Fläche selbst (mind. 3:1 zum Hintergrund) --- */
+  .sk { border-radius: var(--r-kachel); }
+
+  /* --- Unterkacheln: weiße Karten .uk-karte in Form und Größe der Startkacheln, Symbol in der Bereichsfarbe, keine Farbfläche ---
+     Raster: .uk-raster (wie .start-raster). Jede .sk außerhalb der Startseite wird automatisch so dargestellt (Übergang, bis alle
+     Unterseiten die Klasse .uk-karte tragen). Bereichsfarbe: --uk auf der Ansicht (unten), sonst Petrol. */
+  .uk-raster { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5em), 1fr)); gap: 12px; margin: 16px 0; max-width: 640px; }
+  .uk-raster > :last-child:nth-child(odd) { grid-column: 1 / -1; min-height: 0; }
+  #v-briefe, #v-pruefen, .app[data-ansicht="briefe"] { --uk: var(--c-briefe-t); }
+  #v-sparen, #v-haushalt, #v-schulden { --uk: var(--c-sparen-t); }
+  #v-pfaendung { --uk: var(--c-pfaendung-t); }
+  #v-pflegestart, #v-pflege, #v-pflegeinfo, #pflegeAssist { --uk: var(--c-pflege-t); }
+  #v-ausziehen { --uk: var(--c-ausziehen-t); }
+  .uk-karte, .sk:not(.start-raster > .sk), #spInhalt > .weg-liste > .weg, #pfInhalt > .weg-liste > .weg, .app[data-ansicht="pflegestart"] .weg-liste > .weg {
+    display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; gap: 14px; min-height: 150px; width: 100%; padding: 16px;
+    background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: var(--r-kachel); box-shadow: 0 2px 0 var(--kante);
+    font: inherit; text-align: start; cursor: pointer; filter: none; justify-content: flex-start; gap: 6px; }
+  :is(.uk-karte, .sk:not(.start-raster > .sk), #spInhalt > .weg-liste > .weg, #pfInhalt > .weg-liste > .weg, .app[data-ansicht="pflegestart"] .weg-liste > .weg) > :is(.sk-sym, .kachel-sym, .weg-sym) { margin-bottom: 4px; padding-bottom: 8px; box-sizing: content-box; }
+  @media (hover: hover) {
+    .uk-karte:hover, .sk:not(.start-raster > .sk):hover, #spInhalt > .weg-liste > .weg:hover, #pfInhalt > .weg-liste > .weg:hover, .app[data-ansicht="pflegestart"] .weg-liste > .weg:hover { border-color: var(--accent); filter: none; }
+  }
+  :is(.uk-karte, .sk:not(.start-raster > .sk), #spInhalt > .weg-liste > .weg, #pfInhalt > .weg-liste > .weg, .app[data-ansicht="pflegestart"] .weg-liste > .weg) :is(.sk-sym, .kachel-sym, .weg-sym) {
+    width: 40px; height: 40px; border-radius: 0; background: transparent; color: var(--uk, var(--accent)); display: grid; place-items: center start; }
+  :is(.uk-karte, .sk:not(.start-raster > .sk), #spInhalt > .weg-liste > .weg, #pfInhalt > .weg-liste > .weg, .app[data-ansicht="pflegestart"] .weg-liste > .weg) svg { width: 34px; height: 34px; stroke-width: 1.9; }
+  :is(.uk-karte, .sk:not(.start-raster > .sk), #spInhalt > .weg-liste > .weg, #pfInhalt > .weg-liste > .weg, .app[data-ansicht="pflegestart"] .weg-liste > .weg) :is(b, .sk-txt b, .weg-txt b) {
+    font-family: var(--font-display); font-weight: 800; font-size: var(--fs-m); line-height: 1.25; color: var(--ink); hyphens: auto; -webkit-hyphens: auto; } /* Kachel-Titel: lieber „Wohngeld-stelle“ mit Trennstrich als ein Bruch ohne Strich */
+  :is(.uk-karte, .sk:not(.start-raster > .sk), #spInhalt > .weg-liste > .weg, #pfInhalt > .weg-liste > .weg, .app[data-ansicht="pflegestart"] .weg-liste > .weg) :is(.k-t, .sk-txt > span, .weg-txt > span) {
+    color: var(--muted); font-size: var(--fs-xs); line-height: 1.35; opacity: 1; hyphens: auto; -webkit-hyphens: auto; }
+  .uk-karte .az-fort, .sk:not(.start-raster > .sk) .az-fort { background: var(--accent-soft); color: var(--ink); }
+  #spInhalt > .weg-liste, #pfInhalt > .weg-liste, .app[data-ansicht="pflegestart"] .weg-liste { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5em), 1fr)); gap: 12px; max-width: 640px; }
+  .app.big :is(.uk-karte, .sk:not(.start-raster > .sk)) b { font-size: 1.15em; }
+  @media (forced-colors: active) { .uk-karte, .sk { border: 2px solid CanvasText; } }
+
+  /* --- Ergebnisblatt: auf schmalen Bildschirmen je Leistung eine Karte statt Tabelle (Druck bleibt Tabelle) --- */
+  @media screen and (max-width: 640px) {
+    .eb-tab thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); }
+    .eb-tab, .eb-tab tbody, .eb-tab tr, .eb-tab th, .eb-tab td { display: block; width: auto; }
+    .eb-tab tr { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-feld); padding: 12px 14px; margin: 0 0 12px; }
+    .eb-tab th, .eb-tab td { border: 0; padding: 4px 0; }
+    .eb-tab th[scope="row"] { font-family: var(--font-display); font-size: var(--fs-m); padding-bottom: 6px; }
+    .eb-tab td[data-l]::before { content: attr(data-l); display: block; color: var(--muted); font-size: var(--fs-xs); font-weight: 700; }
+  }
+  /* ===== Ende Gestaltungs-System ===== */
 </style>
 
 <div class="app" id="app" lang="de" dir="ltr">
@@ -1058,7 +1142,7 @@
       <div class="start-raster">
         <button type="button" class="sk sk-haupt sk-leistungen" id="goLeistungen"><span class="sk-txt"><b data-t="home.leistungen"></b><span class="sk-meta" data-t="home.hero.meta"></span></span><span class="hero-los"><span data-t="home.los"></span><span class="pfeil" aria-hidden="true">→</span></span></button>
         <button type="button" class="sk sk-briefe" id="goBriefe"><span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><span class="sk-txt"><b data-t="home.brief"></b><span data-t="home.brief.t"></span></span></button>
-        <button type="button" class="sk sk-geld" id="goGeld"><span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 11a7 6 0 0 1 13-2h2v4h-2a7 7 0 0 1-3 3v3h-3v-2h-2v2H7v-3a6 6 0 0 1-2-5z"/><circle cx="15" cy="10" r=".8"/></svg></span><span class="sk-txt"><b data-t="home.geld"></b><span data-t="home.geld.t"></span></span></button>
+        <button type="button" class="sk sk-geld" id="goGeld"><span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M6 7l9.6-2.9A1 1 0 0 1 17 5v2"/><path d="M21 11h-4.5a2 2 0 0 0 0 4H21"/><circle cx="16.6" cy="13" r=".6"/></svg></span><span class="sk-txt"><b data-t="home.geld"></b><span data-t="home.geld.t"></span></span></button>
         <button type="button" class="sk sk-pflege" id="goPflege"><span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/><path d="M9 12h6M12 9v6"/></svg></span><span class="sk-txt"><b data-t="home.pflege"></b><span data-t="home.pflege.t"></span></span></button>
         <button type="button" class="sk sk-ausziehen" id="goAusziehen"><span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 11l8-6 8 6v9H4z"/><path d="M10 20v-5h4v5"/><path d="M17 3l2 2-2 2"/></svg></span><span class="sk-txt"><b data-t="az.kachel"></b><span data-t="az.kachel.t"></span></span></button>
       </div>
@@ -1072,23 +1156,23 @@
       <h2 id="h-briefe" class="ans-h"></h2>
       <div class="einlesen" id="einlesen" hidden>
         <div class="btns">
-          <button type="button" class="btn" id="elScan"><span aria-hidden="true">📷 </span><span id="elScanT" data-t="el.scan"></span></button>
-          <button type="button" class="btn ghost" id="elPdf"><span aria-hidden="true">📄 </span><span data-t="el.pdf"></span></button>
-          <button type="button" class="btn ghost" id="elPaste" aria-expanded="false" aria-controls="elPasteBox"><span aria-hidden="true">📋 </span><span data-t="el.paste"></span></button>
-          <button type="button" class="btn ghost" id="elSelbst" hidden><span aria-hidden="true">✏️ </span><span data-t="el.selbst"></span></button>
+          <button type="button" class="btn primary" id="elScan"><svg class="knopf-sym" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span id="elScanT" data-t="el.scan"></span></button>
+          <button type="button" class="btn ghost" id="elPdf"><svg class="knopf-sym" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></svg><span data-t="el.pdf"></span></button>
+          <button type="button" class="btn ghost" id="elPaste" aria-expanded="false" aria-controls="elPasteBox"><svg class="knopf-sym" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 10h6M9 14h6M9 18h3"/></svg><span data-t="el.paste"></span></button>
+          <button type="button" class="btn ghost" id="elSelbst" hidden><svg class="knopf-sym" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 20l1-4L16 5l3 3L8 19z"/><path d="M14 7l3 3"/></svg><span data-t="el.selbst"></span></button>
         </div>
         <input type="file" id="elFile" accept="image/*" hidden>
         <input type="file" id="elPdfFile" accept="application/pdf,.pdf" hidden>
         <div class="field" id="elPasteBox" hidden>
           <label for="elText" data-t="el.textLabel"></label>
           <textarea id="elText" lang="de" dir="ltr" autocomplete="off" spellcheck="false"></textarea>
-          <div class="btns"><button type="button" class="btn" id="elLesen" data-t="el.lesen"></button></div>
+          <div class="btns"><button type="button" class="btn primary" id="elLesen" data-t="el.lesen"></button></div>
         </div>
         <p class="small muted" data-t="el.privat"></p>
         <p class="msg" id="elMsg" role="status" aria-live="polite"></p>
         <div id="elErg"></div>
       </div>
-      <div class="kacheln" id="briefKacheln"></div>
+      <div class="kacheln uk-raster" id="briefKacheln"></div>
       <div id="checkBox" class="pp" hidden>
         <p class="pp-hinweis small" id="ppNurDe" data-t="briefe.nurDeutsch" hidden></p>
 <!--PRUEFPAKET-->
@@ -1098,10 +1182,10 @@
           <p data-t="sc.intro"></p>
           <div class="sc-wahl">
             <input type="file" id="sc-file" class="vh" accept="image/*">
-            <label for="sc-file" class="btn ghost sc-foto"><span aria-hidden="true">📷 </span><span data-t="sc.take"></span></label>
+            <label for="sc-file" class="btn ghost sc-foto"><svg class="knopf-sym" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span data-t="sc.take"></span></label>
             <input type="file" id="sc-pdf" class="vh" accept="application/pdf,.pdf">
-            <label for="sc-pdf" class="btn ghost sc-foto"><span aria-hidden="true">📄 </span><span data-t="el.pdf"></span></label>
-            <button type="button" class="btn ghost sc-foto" id="sc-pasteBtn" aria-expanded="false" aria-controls="sc-pasteBox"><span aria-hidden="true">📋 </span><span data-t="el.paste"></span></button>
+            <label for="sc-pdf" class="btn ghost sc-foto"><svg class="knopf-sym" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></svg><span data-t="el.pdf"></span></label>
+            <button type="button" class="btn ghost sc-foto" id="sc-pasteBtn" aria-expanded="false" aria-controls="sc-pasteBox"><svg class="knopf-sym" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 10h6M9 14h6M9 18h3"/></svg><span data-t="el.paste"></span></button>
           </div>
           <div class="field" id="sc-pasteBox" hidden>
             <label for="sc-text" data-t="sc.paste"></label>
@@ -1574,6 +1658,7 @@
           <h2 id="h-res" data-t="res.h"></h2>
           <span class="count" id="count" aria-live="polite"></span>
           <p class="res-satz" id="resSatz" hidden></p>
+          <p class="vertrauen" id="vertrauen"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg><span id="vertrauenT"></span></p>
           <p class="eb-open"><button type="button" class="btn ghost" id="ebOpen" data-t="eb.btn" hidden></button></p>
         </div>
         <p class="legende" id="legende" data-t="legende"></p>

@@ -68,7 +68,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   await tippe('Nein'); await tippe('Nein'); // Bereich 5 und 6
   ok('Ergebnis: 40 Punkte, Pflegegrad 2', /^Wahrscheinlich Pflegegrad 2/.test(await frage()) && /^40 von 100/.test(await p.textContent('#pflegeAssist .pa-punkte')), await frage());
   ok('Ergebnisseite: Hinweis „Das ist eine Einschätzung“', /Das ist eine Einschätzung\. Entscheiden tut die Pflegekasse\./.test(await p.textContent('#pflegeAssist')));
-  ok('Ergebnisseite: höchstens 3 Kacheln', (await p.locator('#pflegeAssist .pa-kacheln > .sk').count()) === 3);
+  ok('Ergebnisseite: höchstens 3 Kacheln', (await p.locator('#pflegeAssist .pa-kacheln > .uk-karte').count()) === 3);
   ok('Ergebnisseite: aus dem Leistungs-Check gekommen, Link zurück dorthin', await p.isVisible('#pflegeAssist .pa-links button:has-text("Zurück zum Leistungs-Check")'));
   // Gleiches Ergebnis wie die Rechnung von pflege.js mit den gespeicherten Antworten
   const vgl = await p.evaluate(() => { const d = JSON.parse(localStorage.getItem('lotse.pflegecheck')); const r = Pflege.rechne(PflegeAssistent.eingabe(d.antworten, null)); return { pg: r.pg, punkte: r.gesamt, text: document.querySelector('#pflegeAssist .pa-punkte').textContent }; });

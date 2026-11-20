@@ -198,7 +198,7 @@ const PflegeAssistent = (function () {
       const txt = (x, k) => { const std = typeof x[k] === 'function' ? x[k](r, pgAktuell) : x[k];
         return x.id && F.istEinfach() ? T('aktion.' + x.id + '.' + k + (k === 'text' && !r.pg && x.id === 'hilfen' ? '0' : ''), std, { pg: r.pg }) : std; };
       const kacheln = sichtbar.filter((x) => x.kachel).slice(0, 3), links = sichtbar.filter((x) => !x.kachel);
-      if (kacheln.length) box.append(h('div', { class: 'pa-kacheln' }, kacheln.map((x) => h('button', { type: 'button', class: 'sk pa-k-' + x.kachel, onclick: tu(x) },
+      if (kacheln.length) box.append(h('div', { class: 'pa-kacheln' }, kacheln.map((x) => h('button', { type: 'button', class: 'uk-karte pa-k-' + x.kachel, onclick: tu(x) },
         h('span', { class: 'sk-sym', 'aria-hidden': 'true' }, symbol(x.sym || [])), h('span', { class: 'sk-txt' }, h('b', { text: txt(x, 'titel') }), x.text ? h('span', { text: txt(x, 'text') }) : null)))));
       box.append(h('ul', { class: 'pa-links' }, links.map((x) => h('li', {}, h('button', { type: 'button', class: 'linkbtn', text: txt(x, 'titel') + ' ›', onclick: tu(x) }))),
         h('li', {}, h('button', { type: 'button', class: 'linkbtn pa-aendern', text: T('erg.aendern', 'Antworten ändern ›'), onclick: zurueck }))));

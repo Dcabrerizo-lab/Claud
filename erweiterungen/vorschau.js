@@ -285,6 +285,7 @@
     let info = hoch ? 'Keine Frist. Mehr Geld gibt es ab dem Monat, in dem der Antrag bei der Pflegekasse eingeht. Deshalb bald abschicken.' : $('pf-datum').value ? fristText($('pf-datum').value) : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.';
     if ((auswahl.length || textKarten.length) && ziel > ist) info = `Mit diesen Änderungen ergäbe sich Pflegegrad ${ziel}. ` + info;
     if (!auswahl.length && !textKarten.length) info = 'Noch keine Bewertung mit höherer Stufe gewählt. ' + info;
+    $('pf-frist').classList.toggle('frist', !hoch && !!$('pf-datum').value); // Frist-Muster nur bei echter Frist
     $('pf-frist').textContent = info;
     merkKnopf('pf', hoch ? null : widEintrag('pk', $('pf-datum').value)); // Höherstufung: keine Frist
   }
@@ -401,6 +402,7 @@ Ergebnis: Pflegegrad 2`;
     const r = BescheidSGB2.pruefe(leseBescheid(), Rules);
     const t = Widerspruch.text({ art: 'sgb2', absender: { name: $('bs-name').value.trim(), strasse: $('bs-anschrift').value.trim(), ort: $('bs-ort').value.trim() }, stelle: { name: $('bs-jc').value.trim() }, bescheidDatum: $('bs-datum').value, zeichen: $('bs-bg').value.trim(), heute: heute(), punkte: Widerspruch.punkteSGB2(r), akteneinsicht: r.gruende.some((g) => g.key === 'kdu') });
     $('bs-wid-text').value = t; $('bs-wid-text').hidden = false; $('bs-wid-copy').hidden = false;
+    $('bs-frist').classList.toggle('frist', !!$('bs-datum').value); // Frist-Muster nur mit Datum
     $('bs-frist').textContent = (r.gruende.length ? '' : 'Es wurde kein Grund gefunden; der Widerspruch hat noch keine Begründung. ') + ($('bs-datum').value ? fristText($('bs-datum').value) : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.');
     merkKnopf('bs', widEintrag('jc', $('bs-datum').value));
   }
@@ -431,6 +433,7 @@ Ergebnis: Pflegegrad 2`;
     const r = BescheidGSA.pruefe(leseGSA(), Rules);
     const t = Widerspruch.text({ art: 'gsa', absender: { name: $('ga-name').value.trim(), strasse: $('ga-anschrift').value.trim(), ort: $('ga-ort').value.trim() }, stelle: { name: $('ga-stelle').value.trim() }, bescheidDatum: $('ga-datum').value, zeichen: $('ga-az').value.trim(), heute: heute(), punkte: Widerspruch.punkteSGB2(r), akteneinsicht: r.gruende.some((g) => g.key === 'kdu') });
     $('ga-wid-text').value = t; $('ga-wid-text').hidden = false; $('ga-wid-copy').hidden = false;
+    $('ga-frist').classList.toggle('frist', !!$('ga-datum').value); // Frist-Muster nur mit Datum
     $('ga-frist').textContent = (r.gruende.length ? '' : 'Es wurde kein Grund gefunden; der Widerspruch hat noch keine Begründung. ') + ($('ga-datum').value ? fristText($('ga-datum').value) : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.');
     merkKnopf('ga', widEintrag('sa', $('ga-datum').value));
   }
@@ -471,6 +474,7 @@ Ergebnis: Pflegegrad 2`;
     const r = BescheidWG.pruefe(leseWG(), Rules);
     const t = Widerspruch.text({ art: 'wohngeld', absender: { name: $('wg-name').value.trim(), strasse: $('wg-anschrift').value.trim(), ort: $('wg-ort').value.trim() }, stelle: { name: $('wg-stelle').value.trim() }, bescheidDatum: $('wg-datum').value, zeichen: $('wg-az').value.trim(), heute: heute(), punkte: Widerspruch.punkteSGB2(r) });
     $('wg-wid-text').value = t; $('wg-wid-text').hidden = false; $('wg-wid-copy').hidden = false;
+    $('wg-frist').classList.toggle('frist', !!$('wg-datum').value); // Frist-Muster nur mit Datum
     $('wg-frist').textContent = (r.gruende.length ? '' : 'Es wurde kein Grund gefunden; der Widerspruch hat noch keine Begründung. ') + ($('wg-datum').value ? fristText($('wg-datum').value) + ' In manchen Bundesländern gibt es beim Wohngeld keinen Widerspruch. Dann ist nur die Klage beim Verwaltungsgericht möglich, mit derselben Frist. Was für dich gilt, steht in der Rechtsbehelfsbelehrung am Ende des Bescheids.' : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.');
     merkKnopf('wg', widEintrag('wg', $('wg-datum').value));
   }
@@ -515,6 +519,7 @@ Ergebnis: Pflegegrad 2`;
     const r = BescheidKiZ.pruefe(leseKiZ(), Rules);
     const t = Widerspruch.text({ art: 'kiz', absender: { name: $('kz-name').value.trim(), strasse: $('kz-anschrift').value.trim(), ort: $('kz-ort').value.trim() }, stelle: { name: 'Familienkasse der Bundesagentur für Arbeit' }, bescheidDatum: $('kz-datum').value, zeichen: $('kz-kgnr').value.trim(), heute: heute(), punkte: Widerspruch.punkteSGB2(r) });
     $('kz-wid-text').value = t; $('kz-wid-text').hidden = false; $('kz-wid-copy').hidden = false;
+    $('kz-frist').classList.toggle('frist', !!$('kz-datum').value); // Frist-Muster nur mit Datum
     $('kz-frist').textContent = (r.gruende.length ? '' : 'Es wurde kein Grund gefunden; der Widerspruch hat noch keine Begründung. ') + ($('kz-datum').value ? fristText($('kz-datum').value) : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.');
     merkKnopf('kz', widEintrag('fk', $('kz-datum').value));
   }
@@ -794,16 +799,20 @@ Ergebnis: Pflegegrad 2`;
     box.replaceChildren();
     if (!String(text || '').trim()) return;
     const r = BriefLesen.andere(text);
-    if (r.mahnbescheid) box.append(h('p', { class: 'note' }, h('strong', { text: 'Das ist wohl ein gerichtlicher Mahnbescheid. ' }), 'Widerspruch nur innerhalb von 2 Wochen ab Zustellung. Mehr dazu unten.'));
-    if (r.vollstreckungsbescheid) box.append(h('p', { class: 'note' }, h('strong', { text: 'Das ist wohl ein Vollstreckungsbescheid. ' }), 'Einspruch nur innerhalb von 2 Wochen ab Zustellung. Frag sofort eine Schuldnerberatung.'));
+    // Frist zuerst und im festen Frist-Muster (.frist, src/template.html „Gestaltungs-System“); Beleg und Prüfhinweis in normaler Größe
+    if (r.fristen.length) {
+      box.append(h('div', { class: 'frist', role: 'note' },
+        h('p', { class: 'frist-wann', text: 'Frist im Brief: ' + BriefLesen.fristLesbar(r.fristen[0].frist) }),
+        h('p', { text: 'So steht es im Brief: „' + r.fristen[0].zeile + '“' }),
+        h('p', { text: 'Bitte die Frist im Brief selbst nachlesen. Die Texterkennung kann sich irren.' })));
+    }
+    if (r.mahnbescheid) box.append(h('p', { class: 'frist', role: 'note' }, h('strong', { text: 'Das ist wohl ein gerichtlicher Mahnbescheid. ' }), 'Widerspruch nur innerhalb von 2 Wochen ab Zustellung. Mehr dazu unten.'));
+    if (r.vollstreckungsbescheid) box.append(h('p', { class: 'frist', role: 'note' }, h('strong', { text: 'Das ist wohl ein Vollstreckungsbescheid. ' }), 'Einspruch nur innerhalb von 2 Wochen ab Zustellung. Frag sofort eine Schuldnerberatung.'));
     // Mahnbescheid/Vollstreckungsbescheid: Tag der Zustellung (gelber Umschlag) erfragen, erst der Tipp merkt die Frist
     if ((r.mahnbescheid || r.vollstreckungsbescheid) && window.FristenOrdner) box.append(window.FristenOrdner.knopf((zugang) => ({ art: r.vollstreckungsbescheid ? 'vb' : 'mb', stelle: 'gericht', basis: { zugang }, quelle: 'brief' }), { feld: 'zugang' }));
     if (r.inkasso) box.append(h('p', { class: 'note' }, h('strong', { text: 'Im Brief steht „Inkasso“. ' }), 'Lies unten, was du prüfen solltest.'));
     if (r.fristen.length) {
-      box.append(h('p', {}, h('strong', { text: 'Frist im Brief: ' + BriefLesen.fristLesbar(r.fristen[0].frist) })),
-        h('p', { class: 'small muted', text: 'So steht es im Brief: „' + r.fristen[0].zeile + '“' }));
       if (r.fristen.length > 1) box.append(h('details', {}, h('summary', { text: 'Weitere Fristen im Brief' }), h('ul', {}, r.fristen.slice(1).map((x) => h('li', { text: BriefLesen.fristLesbar(x.frist) + ': „' + x.zeile + '“' })))));
-      box.append(h('p', { class: 'small', text: 'Bitte die Frist im Brief selbst nachlesen. Die Texterkennung kann sich irren.' }));
       // Fester Tag im Brief: „Frist merken“ (Widerspruch/Einspruch/Klage, Zahlung oder allgemeine Frist); der Brieftext wird nie gespeichert
       const fz = r.fristen[0], fd = /^(\d{1,2})\.(\d{1,2})\.(20\d{2})$/.exec(fz.frist);
       if (fd && window.FristenOrdner && !r.mahnbescheid && !r.vollstreckungsbescheid) {

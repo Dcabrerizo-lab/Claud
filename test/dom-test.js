@@ -406,14 +406,12 @@ setTimeout(() => {
     d.querySelector('#appnav button[data-ansicht="start"]').click();
     d.getElementById('goGeld').click();
     const box = d.getElementById('spInhalt');
-    const kacheln = () => [...box.querySelectorAll('.sk-raster > button.sk')];
+    const kacheln = () => [...box.querySelectorAll('.uk-raster > button.uk-karte')];
     const zur = () => d.querySelector('#v-sparen [data-nav-zurueck]').click();
     const titel = kacheln().map((b) => b.querySelector('b').textContent);
     check('[geld] 6 Kacheln in fester Reihenfolge', titel.join('|') === ['gs.dringend', 'gs.bleibt', 'sl.h', 'gs.planen', 'sp.h', 'gs.hilfe'].map((k) => I18N.de[k]).join('|'), titel.join('|'));
-    check('[geld] Kacheln in der Form der Startseite (sk, Symbol, Titel, Text)', kacheln().every((b) => b.querySelector('.sk-sym svg') && b.querySelector('.sk-txt b') && b.querySelector('.sk-txt span')));
-    const farbe = (b) => w.getComputedStyle(b).getPropertyValue('--c').trim();
-    const farben = kacheln().map(farbe);
-    check('[geld] jede Kachel eine eigene Farbe', farben.every(Boolean) && new Set(farben).size === 6, farben.join());
+    check('[geld] Kacheln in der Form der Startseite (Symbol, Titel, Text)', kacheln().every((b) => b.querySelector('.sk-sym svg') && b.querySelector('.sk-txt b') && b.querySelector('.sk-txt span')));
+    check('[geld] weiße Unterkacheln (uk-karte im uk-raster, Design #68)', kacheln().length === 6 && kacheln().every((b) => b.classList.contains('uk-karte') && !b.classList.contains('sk')));
     // 1 Es ist dringend
     kacheln()[0].click();
     const faelle = kacheln().map((b) => b.className.match(/gs-d-([a-z]+)/)[1]);
@@ -453,14 +451,14 @@ setTimeout(() => {
     Object.keys(I18N).forEach((l) => {
       setLang(l);
       ebenen.forEach((weg) => {
-        while (box.querySelector('.sk-raster') && kacheln().length !== 6 || !box.querySelector('.sk-raster')) zur();
+        while (box.querySelector('.uk-raster') && kacheln().length !== 6 || !box.querySelector('.uk-raster')) zur();
         weg.forEach((i) => kacheln()[i].click());
         if (/\b(gs|sp|pf|home)\.[a-z]|undefined/.test(box.textContent)) roh.push(l + ':' + weg.join('-'));
       });
     });
     check('[geld] In allen 13 Sprachen ohne Rohschlüssel', roh.length === 0, roh.join());
     setLang('de');
-    while (!(box.querySelector('.sk-raster') && kacheln().length === 6)) zur();
+    while (!(box.querySelector('.uk-raster') && kacheln().length === 6)) zur();
     // Konto gepfändet → Pfändungsrechner (Konto) → nach dem Ergebnis „Kostenlose Hilfe“ → Zurück eine Ebene hoch
     kacheln()[0].click(); kacheln()[0].click();
     box.querySelector('.sp-rechner').click();
