@@ -401,6 +401,7 @@
     min-height: 44px; padding: 6px 16px; cursor: pointer; line-height: 1.2;
     min-width: 0; max-width: 100%; flex: 0 1 auto;
   }
+  .jump.am-ergebnis { display: none; }
   @media (min-width: 900px) { .jump { display: none; } .shell { padding-bottom: 40px; } }
 
   /* Bereiche (Start, Leistungen, Brief prüfen) mit Leiste unten; auf breiten Bildschirmen als Reiter unter dem Kopf */
@@ -554,6 +555,8 @@
   /* Brief prüfen: Prüfpaket (Stile aus erweiterungen/vorschau.html, auf .pp beschränkt) */
   .pp-kopf { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 0 0 14px; }
   .pp-kopf .btn { flex: none; }
+  .pf-jetzt { margin: 16px 0; padding: 12px 16px; border-radius: 12px; background: var(--accent-soft); }
+  .pf-jetzt h3 { margin: 0 0 6px; }
   /* Kachel geöffnet: erst die Wahl (scannen, einfügen, selbst eingeben), dann das Formular. Das eigene Textfeld des Pflegegutachtens
      entfällt in der App, weil „Text einfügen“ oben dasselbe tut. */
   #checkBox .pp-teil.pp-zu > :not(:first-child) { display: none !important; }
@@ -737,12 +740,14 @@
 
     <!-- Geld sparen im Alltag: Themen mit großen Knöpfen -->
     <section id="v-sparen" class="ansicht" aria-labelledby="h-sparen" hidden>
+      <div class="pp-kopf"><button type="button" class="btn ghost" data-zurueck="sparen">← <span data-t="pf.zurueck"></span></button></div>
       <h2 id="h-sparen" class="ans-h" data-t="sp.h"></h2>
       <div id="spInhalt" class="pf"></div>
     </section>
 
     <!-- Pfändung: Lohn oder Konto, geführt mit großen Knöpfen -->
     <section id="v-pfaendung" class="ansicht" aria-labelledby="h-pfaendung" hidden>
+      <div class="pp-kopf"><button type="button" class="btn ghost" data-zurueck="pfaendung">← <span data-t="pf.zurueck"></span></button></div>
       <h2 id="h-pfaendung" class="ans-h" data-t="pf.h"></h2>
       <div id="pfInhalt" class="pf"></div>
     </section>

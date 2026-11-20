@@ -550,6 +550,8 @@
       el.scrollIntoView({ behavior: smooth(), block: 'start' });
       el.focus({ preventScroll: true });
     });
+    window.addEventListener('scroll', jumpPruefen, { passive: true });
+    window.addEventListener('resize', jumpPruefen);
     [['p-name', 'name'], ['p-geb', 'geb'], ['p-strasse', 'strasse'], ['p-ort', 'ort'], ['p-tel', 'tel']].forEach(function (x) {
       $(x[0]).addEventListener('input', function () {
         person[x[1]] = $(x[0]).value; save();
@@ -613,7 +615,9 @@
       ap.addListener('backButton', function () {
         if (!$('legal').hidden) closeLegal();
         else if (!$('mappe').hidden) closeMappe();
+        else if (zurueckSchritt()) return;
         else if ((window.pageYOffset || 0) > 60) window.scrollTo(0, 0);
+        else if (aktAnsicht !== 'start') { herkunft = {}; zeigeAnsicht('start', true); }
         else ap.exitApp();
       });
       ap.addListener('appStateChange', function (s) { if (s && !s.isActive) flush(); });
@@ -2035,7 +2039,7 @@
       var l = document.createElement('div'); l.className = 'weg-liste'; box.appendChild(l);
       SP_THEMEN.forEach(function (x) {
         l.appendChild(nhKnopf('weg', '<span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + x[4] + '</svg></span><span class="weg-txt"><b>' + esc(t(x[1])) + '</b><span>' + esc(t(x[2])) + '</span></span>', null, function () {
-          if (x[0] === 'schulden') { zeigeAnsicht('pfaendung', true); return; }
+          if (x[0] === 'schulden') { oeffneVon('pfaendung', true); return; }
           sp.thema = x[0]; sp.rezepte = false; spRender(true);
         }));
       });
@@ -2086,6 +2090,13 @@
       keys.forEach(function (k) { var e = document.createElement('p'); e.className = 'hint'; e.textContent = t(k); d.appendChild(e); });
       box.appendChild(d);
     };
+    var jetzt = function (keys) {
+      var d = document.createElement('div'); d.className = 'pf-jetzt';
+      var h3 = document.createElement('h3'); h3.textContent = t('pf.jetzt.h'); d.appendChild(h3);
+      var ol = document.createElement('ol'); ol.className = 'sp-liste';
+      keys.forEach(function (k) { var li = document.createElement('li'); li.textContent = t(k); ol.appendChild(li); });
+      d.appendChild(ol); box.appendChild(d);
+    };
     var heute = new Date().toISOString().slice(0, 10);
     if (heute > Rules.RULES.pfaendung.gueltigBis) p(t('pf.alt'), 'warn');
     if (!pf.art) {
@@ -2132,7 +2143,8 @@
       if (e.ueberHoechst) p(t('pf.erg.hoch', { h: { eur: Rules.RULES.pfaendung.hoechst } }), 'hint');
       p(t('pf.erg.frei', { f: { eur: e.frei } }), 'small muted');
       p(t('pf.tipp.unterhalt'), 'hint');
-      tipps(['pf.tipp.einmal', 'pf.tipp.kg', 'pf.tipp.mehr', 'pf.tipp.beratung']);
+      jetzt(['pf.tipp.mehr', 'pf.tipp.beratung']);
+      tipps(['pf.tipp.einmal', 'pf.tipp.kg']);
       var d = knoepfe('btns');
       d.appendChild(nhKnopf('btn', esc(t('pf.konto.weiter')), null, function () { pf.art = 'konto'; pf.schritt = 2; pfRender(true); }));
       d.appendChild(nhKnopf('btn ghost', esc(t('pf.neu')), null, function () { pf = { art: '', schritt: 0, netto: '', pers: null, kg: null, kiz: '' }; pfRender(true); }));
@@ -2143,8 +2155,9 @@
       var tab = document.createElement('table'); tab.className = 'pf-tab';
       [['pf.k.sockel', k.sockel], ['pf.k.unterhalt', k.unterhalt], ['pf.k.kg', k.kindergeld]].forEach(function (x) { if (!x[1] && x[0] !== 'pf.k.sockel') return; var tr = tab.insertRow(); tr.insertCell().textContent = t(x[0]); tr.insertCell().textContent = E(x[1]); });
       box.appendChild(tab);
-      if (k.unterhalt || k.kindergeld) p(t('pf.tipp.bescheinigung'), 'hint');
-      tipps(['pf.tipp.umwandeln', 'pf.tipp.uebertrag', 'pf.tipp.sozial', 'pf.tipp.kontomehr', 'pf.tipp.beratung']);
+      var mk = k.unterhalt || k.kindergeld ? 'pf.tipp.bescheinigung' : 'pf.tipp.kontomehr';
+      jetzt(['pf.tipp.umwandeln', mk, 'pf.tipp.beratung']);
+      tipps(['pf.tipp.uebertrag', 'pf.tipp.sozial'].concat(mk === 'pf.tipp.kontomehr' ? [] : ['pf.tipp.kontomehr']));
       var d2 = knoepfe('btns');
       d2.appendChild(nhKnopf('btn ghost', esc(t('pf.neu')), null, function () { pf = { art: '', schritt: 0, netto: '', pers: null, kg: null, kiz: '' }; pfRender(true); }));
     }
@@ -2155,6 +2168,31 @@
   // Beim Öffnen die Startseite; „#leistungen“ und „#briefe“ öffnen den Bereich direkt (Links, Tests).
   var ANSICHTEN = ['start', 'leistungen', 'briefe', 'pflege', 'pflegeinfo', 'einst', 'pfaendung', 'sparen']; // „pflege“: Pflegegrad-Einschätzung, gehört zu Leistungen
   var aktAnsicht = 'leistungen';
+  // Herkunft merken: „Zurück“, Leiste und Android-Taste folgen ihr (keine festen Ziele)
+  var NAV_BEREICHE = ['start', 'leistungen', 'briefe', 'einst'];
+  var herkunft = {};
+  function oeffneVon(ziel, fokus) { if (ziel !== aktAnsicht) herkunft[ziel] = aktAnsicht; zeigeAnsicht(ziel, fokus); }
+  function herkunftVon(a) { var h = herkunft[a]; return h && h !== a && ANSICHTEN.indexOf(h) >= 0 ? h : 'start'; }
+  function navBereich(a) {
+    for (var i = 0; i < 6 && NAV_BEREICHE.indexOf(a) < 0; i++) a = herkunft[a] || (a === 'pflege' || a === 'pflegeinfo' ? 'leistungen' : 'start');
+    return NAV_BEREICHE.indexOf(a) >= 0 ? a : 'start';
+  }
+  function zurueckSchritt() {
+    var a = aktAnsicht, b;
+    if (a === 'pflege') { b = document.querySelector('#pflegeAssist .pa-zur'); if (b) b.click(); else paVerlassen(); return true; }
+    if (a === 'pflegeinfo') { $('piZurueck').click(); return true; }
+    if (a === 'pfaendung') { if (pf.schritt > 0) { pf.schritt--; if (!pf.schritt) pf.art = ''; pfRender(true); } else zurueckZurHerkunft(a); return true; }
+    if (a === 'sparen') { if (sp.rezepte) sp.rezepte = false; else if (sp.thema) sp.thema = ''; else { zurueckZurHerkunft(a); return true; } spRender(true); return true; }
+    if (a === 'briefe' && !$('checkBox').hidden) { $('briefZurueck').click(); return true; }
+    if (a === 'leistungen' && $('es-zurueck')) { $('es-zurueck').click(); return true; }
+    return false;
+  }
+  function jumpPruefen() {
+    var e = $('ergebnis'), j = $('jump'); if (!e || !j) return;
+    var r = e.getBoundingClientRect();
+    j.classList.toggle('am-ergebnis', r.height > 0 && r.top < (window.innerHeight || 0) * 0.6);
+  }
+  function zurueckZurHerkunft(a) { var h = herkunftVon(a); delete herkunft[a]; zeigeAnsicht(h, true); window.scrollTo(0, 0); }
   var BRIEFE = [
     ['jc', 'briefe.jobcenter', 'briefe.jobcenter.t', '<path d="M4 20V9l8-5 8 5v11"/><path d="M9 20v-6h6v6M3 20h18"/>'],
     ['sa', 'briefe.sozialamt', 'briefe.sozialamt.t', '<circle cx="12" cy="7" r="3"/><path d="M5 20c1-4 4-6 7-6s6 2 7 6"/>'],
@@ -2172,7 +2210,8 @@
     if (a !== 'briefe') $('app').classList.remove('brief-offen'); else $('app').classList.toggle('brief-offen', !!briefArt); // in der Pflegegrad-Einschätzung Kopf und Hinweise ausblenden, damit die Frage oben steht
     ANSICHTEN.forEach(function (x) { $('v-' + x).hidden = x !== a; });
     $('jump').hidden = a !== 'leistungen' || esModus;
-    var navA = a === 'pflege' || a === 'pflegeinfo' ? 'leistungen' : a === 'pfaendung' || a === 'sparen' ? 'start' : a;
+    jumpPruefen();
+    var navA = navBereich(a);
     if (a === 'pfaendung') pfRender(false);
     if (a === 'sparen') spRender(false);
     document.querySelectorAll('#appnav button').forEach(function (b) { if (b.getAttribute('data-ansicht') === navA) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
@@ -2246,6 +2285,7 @@
     paSpeichern(); $('pflegegrad').value = state.pflegegrad; touched(); // Auswahlfelder schreibt writeForm nicht
   }
   function heuteIso() { var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+  function paVerlassen() { if (herkunftVon('pflege') === 'leistungen') paZurueck('paStart'); else zurueckZurHerkunft('pflege'); }
   function paOeffnen() {
     if (typeof PflegeAssistent === 'undefined') return;
     $('paNurDe').hidden = lang === 'de';
@@ -2253,7 +2293,7 @@
     PflegeAssistent.start($('pflegeAssist'), {
       pgAktuell: pgJetzt, antworten: pa.antworten,
       speichern: function (a) { pa.antworten = a; paSpeichern(); },
-      abbrechen: function () { paZurueck('paStart'); },
+      abbrechen: paVerlassen,
       aktionen: [
         { text: 'Ergebnis übernehmen', haupt: true, wenn: function (r, pg) { return pg == null; }, fn: function (r) { paUebernehmen(r); paZurueck('c-pflege'); } },
         { text: 'Antrag an die Pflegekasse in die Antragsmappe', zweit: true, wenn: function (r, pg) { return pg == null && r.pg >= 1; }, fn: function (r) {
@@ -2266,6 +2306,7 @@
         { text: 'Zurück zu den Leistungen', fn: function (r) { paUebernehmen(r); paZurueck('paStart'); } }
       ]
     });
+    if (aktAnsicht !== 'pflege' && aktAnsicht !== 'pflegeinfo') herkunft.pflege = aktAnsicht;
     zeigeAnsicht('pflege', false);
     var q = $('pa-q'); if (q) { window.scrollTo(0, 0); q.focus({ preventScroll: true }); }
   }
@@ -2343,7 +2384,7 @@
     var s = d.querySelector('summary'); if (s) s.focus({ preventScroll: true });
   }
   function pflegeInfo(zurueckZu, fokus, abschnitt) {
-    piZurueckZu = zurueckZu || 'leistungen'; piFokus = fokus || null;
+    piZurueckZu = zurueckZu || 'leistungen'; piFokus = fokus || null; herkunft.pflegeinfo = piZurueckZu;
     pflegeInfoBauen(); $('piNurDe').hidden = lang === 'de';
     document.querySelectorAll('#pflegeInfo details').forEach(function (d) { d.open = false; });
     zeigeAnsicht('pflegeinfo', !abschnitt);
@@ -2479,6 +2520,7 @@
   $('briefZurueck').addEventListener('click', function () { elGesammelt = ''; var war = null; document.querySelectorAll('#checkBox .pp-teil').forEach(function (s) { if (!s.hidden) war = s.id; }); briefOeffnen(null); for (var k in BRIEF_TEIL) if (BRIEF_TEIL[k] === war) $('brief-' + k).focus(); });
   document.querySelectorAll('#appnav button').forEach(function (b) { b.addEventListener('click', function () {
     var a = b.getAttribute('data-ansicht');
+    herkunft = {};
     if (a === 'briefe' && aktAnsicht === 'briefe' && !$('checkBox').hidden) { briefOeffnen(null); $('h-briefe') && $('h-briefe').focus(); return; } // nochmal tippen: zurück zur Auswahl
     zeigeAnsicht(a, true);
   }); });
@@ -2490,8 +2532,9 @@
   $('clear2').addEventListener('click', function () { $('clearBtn').click(); $('clear2Msg').textContent = $('clearMsg').textContent; });
   $('goLeistungen').addEventListener('click', function () { zeigeAnsicht('leistungen', true); });
   $('goBriefe').addEventListener('click', function () { zeigeAnsicht('briefe', true); });
-  $('goPfaendung').addEventListener('click', function () { zeigeAnsicht('pfaendung', true); });
-  $('goSparen').addEventListener('click', function () { sp.thema = ''; zeigeAnsicht('sparen', true); });
+  $('goPfaendung').addEventListener('click', function () { oeffneVon('pfaendung', true); });
+  $('goSparen').addEventListener('click', function () { sp.thema = ''; oeffneVon('sparen', true); });
+  document.querySelectorAll('[data-zurueck]').forEach(function (b) { b.addEventListener('click', function () { zurueckZurHerkunft(b.getAttribute('data-zurueck')); }); });
   window.addEventListener('hashchange', function () { var a = location.hash.slice(1); if (ANSICHTEN.indexOf(a) >= 0 && a !== aktAnsicht) zeigeAnsicht(a, true); });
   Store.remove('lotse.fristen'); // Fristen aus 1.3.0 (Build 141) gibt es nicht mehr: gespeicherte Einträge vom Gerät löschen
   zeigeAnsicht((function () { var a = (location.hash || '').slice(1); return ANSICHTEN.indexOf(a) >= 0 ? a : 'start'; })());
