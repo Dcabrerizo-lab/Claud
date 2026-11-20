@@ -6,6 +6,7 @@ const LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'f
 let fehler = 0, n = 0;
 const check = (name, ok, info) => { n++; if (!ok) { fehler++; console.log('FAIL ' + name + (info !== undefined ? ' -> ' + JSON.stringify(info) : '')); } };
 const keys = A.schluessel();
+const zahlen = (s) => String(s).replace(/[٠-٩]/g, (c) => '٠١٢٣٤٥٦٧٨٩'.indexOf(c)).replace(/[۰-۹]/g, (c) => '۰۱۲۳۴۵۶۷۸۹'.indexOf(c)).replace(/\{[^}]*\}/g, ' ').replace(/(\d) (?=\d)/g, '$1').match(/\d+/g)?.sort().join(' ') || '';
 const de = require('../src/lang/ausziehen/de.json');
 
 // az-aufbau: Übersicht höchstens 8 Kacheln, jede Kachel ein Bereich; Checklisten mit Punkten
@@ -50,6 +51,8 @@ LANGS.forEach((l) => {
     check('[az-sprachen] ' + l + ' ' + k, typeof o[k] === 'string' && o[k].trim() && !/^az\./.test(o[k]));
     const ph = (s) => (s.match(/\{\w+\}/g) || []).sort().join();
     if (o[k]) check('[az-sprachen] Platzhalter ' + l + ' ' + k, ph(o[k]) === ph(de[k]), [o[k], de[k]]);
+    // Zahlen (Fristen, Altersgrenzen, Prozente, Telefonnummern) wie im Deutschen; arabische und persische Ziffern zählen mit
+    if (o[k]) check('[az-sprachen] Zahlen ' + l + ' ' + k, zahlen(o[k]) === zahlen(de[k]), [zahlen(de[k]), zahlen(o[k])]);
     // Vorschriften bleiben gleich (deutsch in Klammern)
     if (o[k]) check('[az-sprachen] Vorschriften ' + l + ' ' + k, ((o[k].match(/§ \d+[a-z]?/g) || []).sort().join()) === ((de[k].match(/§ \d+[a-z]?/g) || []).sort().join()), [l, k]);
   });
@@ -60,6 +63,7 @@ Object.keys(ein).forEach((k) => {
   check('[az-sprachen] Einfache Sprache Schlüssel ' + k, k in de);
   const ph = (s) => (s.match(/\{\w+\}/g) || []).sort().join();
   if (k in de) check('[az-sprachen] Einfache Sprache Platzhalter ' + k, ph(ein[k]) === ph(de[k]));
+  if (k in de) check('[az-sprachen] Einfache Sprache Zahlen ' + k, zahlen(ein[k]) === zahlen(de[k]), [zahlen(de[k]), zahlen(ein[k])]);
 });
 check('[az-sprachen] Einfache Sprache deckt die Hauptkacheln ab', A.HAUPT.every((id) => ein['az.' + id + '.h']));
 

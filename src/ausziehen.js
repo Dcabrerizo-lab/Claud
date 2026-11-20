@@ -237,7 +237,8 @@ var Ausziehen = (function () {
     if (art === 'plan' && !hatPlan()) return '';
     return '<button type="button" class="btn ' + (cls || 'ghost') + ' klein" data-az-weg="' + art + '">' + esc(t('az.knopf.' + art)) + '</button>';
   }
-  function quelleHtml(p) { return p.q ? '<p class="az-q">' + esc(t('az.quelle', { q: quelleText(p), d: ABGERUFEN })) + '</p>' : ''; }
+  // Quelle bleibt deutsch und links-nach-rechts, auch in Arabisch, Farsi und Paschtu (sonst springen Klammern und Paragrafen)
+  function quelleHtml(p) { return p.q ? '<p class="az-q">' + esc(t('az.quelle', { q: '@@Q@@', d: ABGERUFEN })).replace('@@Q@@', '<bdi dir="ltr" lang="de">' + esc(quelleText(p)) + '</bdi>') + '</p>' : ''; }
   function punktHtml(p, liste) {
     var ok = liste && daten.ab[p.id];
     var h = '<li class="az-punkt' + (p.warn ? ' warn-p' : '') + (ok ? ' ok' : '') + '" id="az-p-' + p.id + '">';

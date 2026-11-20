@@ -39,7 +39,7 @@ setTimeout(() => {
     check('[az-oberflaeche] Unterseite mit Überschrift', /Bevor du ausziehst/.test($('azH').textContent) && d.activeElement === $('azH'));
     check('[az-oberflaeche] U25-Warnung sichtbar', /Erst fragen, dann unterschreiben/.test(d.querySelector('.az-warn').textContent));
     check('[az-oberflaeche] Weitere Punkte zugeklappt', !!d.querySelector('.az-weitere') && !d.querySelector('.az-weitere').open);
-    check('[az-oberflaeche] Quelle mit Datum', /Quelle: § 551 BGB \(abgerufen am 20\.11\.2026\)/.test($('az-p-vertrag').textContent));
+    check('[az-oberflaeche] Quelle mit Datum', /Quelle: §[ \u00a0]551 BGB \(abgerufen am 20\.11\.2026\)/.test($('az-p-vertrag').textContent));
     const cb = d.querySelector('[data-az-ab="vertrag"]'); cb.checked = true; cb.dispatchEvent(new w.Event('change', { bubbles: true }));
     check('[az-oberflaeche] Haken gespeichert', JSON.parse(mem['lotse.ausziehen']).ab.vertrag === true, mem['lotse.ausziehen']);
     check('[az-oberflaeche] Fortschritt aktualisiert', /1 von 9 erledigt/.test($('azFort').textContent));
@@ -55,7 +55,7 @@ setTimeout(() => {
     klick(w, d.querySelector('[data-az-zurueck]'));
     // Careleaver: Briefvorlage
     klick(w, $('az-geh-care'));
-    check('[az-oberflaeche] Careleaver § 41', /§ 41 SGB VIII/.test($('azInhalt').textContent));
+    check('[az-oberflaeche] Careleaver § 41', /§[ \u00a0]41 SGB VIII/.test($('azInhalt').textContent));
     check('[az-oberflaeche] Briefvorlage Deutsch, ohne Anschrift', $('azBrief') && $('azBrief').lang === 'de' && /^An das Jugendamt/.test($('azBrief').value));
     // Hilfen -> Leistungs-Check
     klick(w, d.querySelector('[data-az-zurueck]')); klick(w, $('az-geh-hilfen'));
