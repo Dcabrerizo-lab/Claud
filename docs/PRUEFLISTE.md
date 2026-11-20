@@ -559,6 +559,7 @@ Brief prüfen → Jobcenter, Sozialamt oder Anderer Brief; keine Rechnung, nur E
 |---|---|---|
 | Jede Karte zeigt Einstufung, Überschrift, Text und jeden Betrag genau wie berechnet, in allen 13 Sprachen; Zählung und Hinweise passen; Speichern und Laden ändert nichts; nirgends NaN, undefined, Platzhalter, negative Beträge oder Rohschlüssel | ✓ | `anzeige-rechnung` |
 | Einfache und ausführliche Version rechnen für dieselbe Person gleich | ✓ | `einfach-gleich` |
+| Leistungs-Check „Schritt für Schritt“: jede Formular-Angabe hat eine Frage, nur nötige Folgefragen, „← Zurück“ eine Frage zurück, Übersicht mit „ändern“, gleiches Ergebnis wie „Alles auf einer Seite“ | ✓ | `schritte` |
 | Einfache Sprache vollständig: jeder deutsche Text hat eine einfache Fassung (oder „=“, wenn der Standardtext schon einfach ist), ohne neue Zahlen oder Platzhalter | ✓ | `einfach-vollstaendig` |
 | Einfache Sprache in der Pflege-Einschätzung: jede Frage, Antwort, jeder Hinweis und jeder Text der Ergebnisseite hat eine einfache Fassung (src/lang/einfach/pflege/pflege.json); Zahlen, Paragrafen und Platzhalter gleich; Antwortstufen, Werte und Punkte unverändert | ✓ | `pflege-einfach` |
 | Feste Euro-Beträge in Texten, Rechenregeln und Webseite passen zu den Werten der Rechnung | ✓ | `feste-zahlen` |

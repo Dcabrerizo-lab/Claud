@@ -18,7 +18,7 @@ const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '
 const MOCK = () => {
   const calls = (window.__calls = []);
   const log = (name) => (o) => { calls.push([name, o]); return Promise.resolve({}); };
-  const store = {};
+  const store = { 'lotse.checkWeg': 'alles' }; // Leistungs-Check: Weg „Alles auf einer Seite“ vorgewählt (src/schritte.js)
   window.Capacitor = {
     getPlatform: () => window.__platform || 'android',
     Plugins: {
@@ -88,6 +88,7 @@ const MOCK = () => {
   await p.click('#appnav [data-ansicht=start]'); await p.click('#goLeistungen');
   ok('Gespeicherte Daten werden über Preferences gelesen', (await calls('Preferences.get')).length > 0);
   ok('Erster Start: Anleitung statt Beispielwerte', (await p.locator('#cards .startcard').count()) === 1 && (await p.inputValue('#ek1Brutto')) === '');
+  if (await p.isVisible('#schritte .sf-w2')) await p.click('#schritte .sf-w2'); // Leistungs-Check: Weg „Alles auf einer Seite“ wählen (src/schritte.js)
   await p.click('#p1');
   ok(KARTEN.length + ' Karten', (await p.locator('#cards .card').count()) === KARTEN.length);
   ok('Schrift lokal geladen', await p.evaluate(async () => { await document.fonts.ready; return [...document.fonts].some((f) => f.status === 'loaded'); }));
@@ -232,6 +233,7 @@ const MOCK = () => {
   const pi = await ctxI.newPage(); await pi.addInitScript(SF_ALLES); await pi.goto(origin + '/index.html#leistungen'); await pi.waitForFunction(() => /Natascha/.test(document.getElementById('legal').textContent), null, { timeout: 5000 }).catch(() => {});
   const legalI = await pi.evaluate(() => document.getElementById('legal').textContent);
   ok('iPhone: Anbieter im Impressum Natascha Cabrerizo y Polo, nicht David', /Anbieter: Natascha Cabrerizo y Polo/.test(legalI.replace(/\s+/g, ' ')) && !/David/.test(legalI), legalI.slice(0, 200));
+  if (await pi.isVisible('#schritte .sf-w2')) await pi.click('#schritte .sf-w2');
   await pi.click('#p1'); await pi.fill('#p-name', 'Test'); await pi.evaluate(() => document.getElementById('mappeMake').click()); await pi.waitForSelector('#mappePrint', { state: 'visible', timeout: 5000 }).catch(() => {});
   ok('iPhone: keine Android-Knöpfe Drucken/Speichern, PDF teilen vorhanden', !(await pi.isVisible('#mappeDruck')) && !(await pi.isVisible('#mappeSpeichern')) && (await pi.isVisible('#mappePrint')));
   await ctxI.close();
