@@ -148,7 +148,7 @@ beispiel('p1');
 
 // Große Schrift
 d.getElementById('bigBtn').click();
-check('Große Schrift schaltet Klasse', d.getElementById('app').classList.contains('big') && d.getElementById('bigBtn').getAttribute('aria-pressed') === 'true');
+check('Große Schrift schaltet Klasse', d.getElementById('app').classList.contains('big') && d.getElementById('bigBtn').getAttribute('aria-checked') === 'true' && d.getElementById('bigBtn').getAttribute('role') === 'switch');
 
 // Leere Eingaben
 ['miete', 'ek1Brutto', 'ek1Netto', 'vermoegen'].forEach((k) => setNum(k, ''));

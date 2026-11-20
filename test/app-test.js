@@ -72,10 +72,10 @@ const MOCK = () => {
   await p.goto(origin + '/index.html');
   await warte(() => !!document.getElementById('v-start') && document.getElementById('v-start').offsetParent !== null && (window.__calls || []).some((c) => c[0] === 'Preferences.remove' && c[1] && c[1].key === 'lotse.fristen'));
   ok('Keine Skriptfehler beim Start', errs.length === 0, errs.join('|'));
-  ok('Start: Startseite mit den vier Reitern', await p.isVisible('#v-start') && (await p.locator('#appnav button').count()) === 4);
+  ok('Start: Startseite mit den drei Reitern', await p.isVisible('#v-start') && (await p.locator('#appnav button').count()) === 3);
   ok('Alte Fristen werden über Preferences gelöscht', (await calls('Preferences.remove')).some((c) => c.key === 'lotse.fristen'));
   // Prüfpaket läuft unter der CSP der App
-  await p.click('#appnav [data-ansicht=briefe]'); await p.click('#brief-jc'); await p.click('#elSelbst'); await p.evaluate(() => document.querySelector('#p-bescheid [id$="-beispiel"]').click());
+  await p.click('#appnav [data-ansicht=start]'); await p.click('#goBriefe'); await p.click('#brief-jc'); await p.click('#elSelbst'); await p.evaluate(() => document.querySelector('#p-bescheid [id$="-beispiel"]').click());
   ok('Brief prüfen rechnet in der App', ((await p.textContent('#p-bescheid')) || '').includes('€'));
   // Widerspruch als PDF teilen (wie die Antragsmappe), mit Hinweis zur Abgabe
   await p.click('#bs-wid-mach'); await p.waitForSelector('#p-bescheid .schreiben-aus [data-aus="teilen"]', { state: 'visible', timeout: 5000 }).catch(() => {});
@@ -83,7 +83,7 @@ const MOCK = () => {
   await p.click('#p-bescheid .schreiben-aus [data-aus="teilen"]'); await warte(() => (window.__calls || []).some((c) => c[0] === 'Filesystem.writeFile' && c[1].path === 'Widerspruch-Jobcenter.pdf') && (window.__calls || []).some((c) => c[0] === 'Share.share'), null, 15000);
   ok('Widerspruch: PDF geschrieben und geteilt', (await calls('Filesystem.writeFile')).some((o) => o.path === 'Widerspruch-Jobcenter.pdf') && (await calls('Share.share')).length >= 1);
   ok('Keine Fristen über Preferences gespeichert', !(await calls('Preferences.set')).some((c) => c.key === 'lotse.fristen'));
-  await p.click('#appnav [data-ansicht=leistungen]');
+  await p.click('#appnav [data-ansicht=start]'); await p.click('#goLeistungen');
   ok('Gespeicherte Daten werden über Preferences gelesen', (await calls('Preferences.get')).length > 0);
   ok('Erster Start: Anleitung statt Beispielwerte', (await p.locator('#cards .startcard').count()) === 1 && (await p.inputValue('#ek1Brutto')) === '');
   await p.click('#p1');
@@ -97,7 +97,7 @@ const MOCK = () => {
   // Foto-Scan: Kamera -> Texterkennung -> Felder, Foto wird danach gelöscht
   await p.click('#p1'); await p.fill('#p-name', 'Maria Muster');
   // „Brief prüfen“: die Übersicht hat kein Scannen; in der Kachel Antragsformular: Kamera → Texterkennung → Felder erklärt
-  await p.click('#appnav [data-ansicht=briefe]'); if (await p.isVisible('#briefZurueck')) await p.click('#briefZurueck');
+  await p.click('#appnav [data-ansicht=start]'); await p.click('#goBriefe'); if (await p.isVisible('#briefZurueck')) await p.click('#briefZurueck');
   ok('Übersicht „Brief prüfen“: kein Scannen oder Einfügen', !(await p.isVisible('#einlesen')));
   await p.click('#brief-af'); await p.click('#sc-take');
   await p.waitForSelector('#scan:not([hidden])', { timeout: 5000 }).catch(() => {});
@@ -134,7 +134,7 @@ const MOCK = () => {
   const vorher = (await calls('Camera.getPhoto')).length;
   await p.click('#sc-take'); await warte((v) => (window.__calls || []).filter((c) => c[0] === 'Camera.getPhoto').length > v, vorher);
   ok('Kachel Antragsformular: eigener Kamera-Knopf', (await calls('Camera.getPhoto')).length === vorher + 1);
-  await p.click('#briefZurueck'); await p.click('#appnav [data-ansicht=leistungen]');
+  await p.click('#briefZurueck'); await p.click('#appnav [data-ansicht=start]'); await p.click('#goLeistungen');
   ok('Leistungsseite: keine Kamera und kein Formular-Hinweis', !(await p.isVisible('#sc-take')) && (await p.locator('#scanVerweis').count()) === 0);
 
   // Wohnort: PLZ -> Mietenstufe und zuständige Stelle mit Anschrift (offline)

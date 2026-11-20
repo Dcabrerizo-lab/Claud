@@ -17,7 +17,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   await p.addInitScript(() => { try { if (!sessionStorage.getItem('erster')) { localStorage.setItem('lotse.fristen', '[{"titel":"Alt","datum":"2026-12-01"}]'); sessionStorage.setItem('erster', '1'); } } catch (e) {} });
   await p.goto(APP); await p.waitForTimeout(300);
   ok('Ohne Adresszusatz öffnet die Startseite', await p.isVisible('#v-start') && !(await p.isVisible('#v-leistungen')));
-  ok('Vier Bereiche, keine Fristen', (await p.locator('#appnav button').count()) === 4 && (await p.locator('#v-fristen, [data-ansicht=fristen], #startFristen').count()) === 0);
+  ok('Drei Bereiche (Start, Mein Ordner, Einstellungen), keine Fristen', (await p.locator('#appnav button').count()) === 3 && (await p.locator('#v-fristen, [data-ansicht=fristen], #startFristen').count()) === 0);
   ok('Alte gespeicherte Fristen werden gelöscht', (await p.evaluate(() => localStorage.getItem('lotse.fristen'))) === null);
   await p.goto(APP + '#fristen'); await p.waitForTimeout(200);
   ok('Alter Link #fristen führt zur Startseite', await p.isVisible('#v-start'));
@@ -46,9 +46,9 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Einmal geöffnet: beim nächsten Mal ist das Formular gleich offen (Eingaben bleiben)', await p.isVisible('#p-bescheid > :nth-child(2)') && !(await p.isVisible('#elSelbst')));
   if (await p.isVisible('#elSelbst')) await p.click('#elSelbst'); await p.evaluate(() => document.querySelector('#p-bescheid [id$="-beispiel"]').click()); await p.waitForTimeout(100);
   ok('Bescheid-Check rechnet in der App', ((await p.textContent('#p-bescheid')) || '').includes('€'));
-  // Nochmal auf „Brief prüfen“ tippen führt zur Auswahl
-  await p.click('#appnav [data-ansicht=briefe]');
-  ok('Erneutes Tippen auf „Brief prüfen“: zurück zur Auswahl', await p.isVisible('#briefKacheln'));
+  // Über Start wieder zu „Brief bekommen“: „Zurück“ führt zur Auswahl
+  await p.click('#appnav [data-ansicht=start]'); await p.click('#goBriefe'); if (await p.isVisible('#briefZurueck')) await p.click('#briefZurueck');
+  ok('Start → Brief bekommen → Zurück: Auswahl', await p.isVisible('#briefKacheln'));
   // Widerspruch mit Bescheiddatum: die Frist steht beim Schreiben, eine Liste gibt es nicht
   await p.click('#brief-pk');
   ok('Pflegekasse: kein zweites Textfeld „Text aus dem Gutachten“', !(await p.isVisible('#pf-text')) && !(await p.isVisible('#pf-lesen')));
@@ -57,7 +57,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Nichts als Frist gespeichert', (await p.evaluate(() => localStorage.getItem('lotse.fristen'))) === null);
   await p.click('#briefZurueck');
   // Brief einlesen gibt es nur in den Kacheln: Text einfügen → Werte gelb markiert, Personen aus „Leistungen“
-  await p.click('#appnav [data-ansicht=leistungen]'); await p.click('#p1'); await p.click('#appnav [data-ansicht=briefe]');
+  await p.click('#appnav [data-ansicht=start]'); await p.click('#goLeistungen'); await p.click('#p1'); await p.click('#appnav [data-ansicht=start]'); await p.click('#goBriefe');
   ok('Übersicht „Von wem ist der Brief?“: nur Kacheln, kein Scannen, Einfügen oder PDF', await p.isVisible('#briefKacheln') && !(await p.isVisible('#einlesen')) && !(await p.isVisible('#elScan')) && !(await p.isVisible('#elPdf')));
   await p.click('#brief-jc'); await p.click('#elPaste');
   await p.fill('#elText', 'Jobcenter Musterstadt\nDatum: 12.03.2026\nGrundsicherungsgeld nach dem SGB II\nRegelbedarf 563,00 357,00 920,00\nKosten der Unterkunft und Heizung 755,00\nZahlbetrag 1.501,33');
@@ -105,12 +105,12 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Antragsformular: Erklärung je Feld zum Aufklappen', (await p.locator('#sc-out details.sc-erkl').count()) >= 5);
   ok('Antragsformular: kein seitliches Scrollen', await breit());
   await p.click('#briefZurueck');
-  await p.click('#appnav [data-ansicht=leistungen]');
+  await p.click('#appnav [data-ansicht=start]'); await p.click('#goLeistungen');
   ok('Leistungsseite: kein Formular-Scannen und kein Verweis darauf', !(await p.isVisible('#scan')) && (await p.locator('#v-leistungen #scanVerweis, #v-leistungen #scan, #v-leistungen [data-t^="sc."]').count()) === 0);
   // Fremde Sprache: Hinweis „nur auf Deutsch“, Bereiche übersetzt
-  await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'tr'); await p.click('#appnav [data-ansicht=briefe]'); await p.click('#brief-wg');
+  await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'tr'); await p.click('#appnav [data-ansicht=start]'); await p.click('#goBriefe'); await p.click('#brief-wg');
   ok('Türkisch: Hinweis, dass die Prüfung nur auf Deutsch ist', await p.isVisible('#ppNurDe'));
-  ok('Türkisch: Leiste übersetzt', (await p.textContent('#appnav')).includes('Mektup kontrol'));
+  ok('Türkisch: Leiste übersetzt', (await p.textContent('#appnav')).includes('Klasörüm'));
   await p.click('#briefZurueck'); await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'de');
   // Auf dem Computer: Reiter oben, ohne seitliches Scrollen
   await p.setViewportSize({ width: 1280, height: 900 });

@@ -220,11 +220,6 @@
   .money input { direction: ltr; text-align: start; }
   [dir="rtl"] .money input { text-align: right; }
   .app.pm .ansicht { display: none !important; }
-  .einst-tabs { display: flex; gap: 8px; margin: 12px 0 16px; flex-wrap: wrap; }
-  .einst-tabs button { border: 1px solid var(--line); background: transparent; color: inherit; font: inherit; font-weight: 700; min-height: 44px; padding: 8px 18px; border-radius: 999px; }
-  .einst-tabs button[aria-selected="true"] { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
-  .einst-pn { display: grid; gap: 12px; max-width: 70ch; }
-  .einst-pn[hidden] { display: none; }
   #legal { display: grid; gap: 16px; max-width: 70ch; }
   #legal[hidden] { display: none; }
   #legal h3 { margin-top: 12px; }
@@ -536,7 +531,7 @@
   @media (min-width: 900px) { .jump { display: none; } .shell { padding-bottom: 40px; } }
 
   /* Bereiche (Start, Leistungen, Brief prüfen) mit Leiste unten; auf breiten Bildschirmen als Reiter unter dem Kopf */
-  .appnav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; display: grid; grid-template-columns: repeat(4, 1fr);
+  .appnav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; display: grid; grid-template-columns: repeat(3, 1fr);
     background: var(--surface); border-top: 1px solid var(--line);
     padding: 4px max(6px, env(safe-area-inset-right, 0px)) calc(4px + env(safe-area-inset-bottom, 0px)) max(6px, env(safe-area-inset-left, 0px)); }
   .appnav button { position: relative; isolation: isolate; border: 0; background: transparent; color: var(--muted); font: inherit; font-size: 0.78rem; font-weight: 700;
@@ -547,7 +542,7 @@
   .shell { padding-bottom: 150px; }
   .jump { bottom: calc(64px + env(safe-area-inset-bottom, 0px)); }
   @media (min-width: 900px) {
-    .appnav { position: static; max-width: 1180px; margin: 0 auto; grid-template-columns: repeat(4, auto); justify-content: start; gap: 8px; background: transparent; border: 0; padding: 0 max(16px, env(safe-area-inset-left, 0px)); }
+    .appnav { position: static; max-width: 1180px; margin: 0 auto; grid-template-columns: repeat(3, auto); justify-content: start; gap: 8px; background: transparent; border: 0; padding: 0 max(16px, env(safe-area-inset-left, 0px)); }
     .appnav button { flex-direction: row; gap: 8px; font-size: 1rem; padding: 8px 16px; border-radius: 999px; min-height: 44px; }
     .appnav button[aria-current="page"] { background: var(--accent-soft); }
     .appnav button[aria-current="page"]::before { display: none; }
@@ -557,6 +552,37 @@
   .ans-h { font-size: 1.5em; margin: 8px 0 12px; }
   .set-gruppe { margin: 0 0 22px; max-width: 60ch; }
   .set-gruppe h3 { margin: 0 0 8px; font-size: 1.05em; }
+  /* Mein Ordner und Einstellungen: Zeilen mit Symbol, Titel, einer Zeile Status und Pfeil; Unterseiten mit „← Zurück“ */
+  .app[data-ansicht="einst"] .top .lead, .app[data-ansicht="ordner"] .top .lead { display: none; }
+  .zeilen { list-style: none; margin: 0 0 16px; padding: 0; display: grid; gap: 10px; max-width: 60ch; }
+  .zeile { display: flex; align-items: center; gap: 14px; width: 100%; min-height: 64px; padding: 12px 16px; border: 1px solid var(--line); border-radius: var(--r-item, 22px); background: var(--surface); color: var(--ink); font: inherit; text-align: start; cursor: pointer; box-shadow: var(--shadow-s); }
+  .zeile:hover { border-color: var(--accent); }
+  .zeile-sym { flex: none; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: var(--accent-soft); color: var(--accent); }
+  .zeile-sym svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+  .zeile-txt { flex: 1; min-width: 0; display: grid; gap: 2px; overflow-wrap: anywhere; }
+  .zeile-txt b { font-weight: 700; line-height: 1.3; }
+  .zeile-st { color: var(--muted); font-size: .9em; line-height: 1.35; }
+  .zeile-pfeil { flex: none; font-size: 1.6em; line-height: 1; color: var(--muted); }
+  [dir="rtl"] .zeile-pfeil { transform: scaleX(-1); }
+  .unterseite[hidden], #einstListe[hidden], #ordnerHaupt[hidden] { display: none; }
+  .ordner-kopf { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; max-width: 60ch; margin: 0 0 16px; padding: 12px 16px; border-radius: var(--r-item, 22px); background: var(--accent-soft); }
+  .ordner-kopf p { margin: 0; flex: 1; min-width: 0; overflow-wrap: anywhere; }
+  .ordner-kopf .vg-kuerzel { font-weight: 900; color: var(--accent); }
+  .ordner-leer { max-width: 60ch; padding: 20px; border: 1px dashed var(--accent); border-radius: var(--r-card, 24px); background: var(--surface); }
+  .ordner-leer p { margin: 0 0 12px; }
+  .es-link { margin: -4px 0 12px; color: var(--muted); }
+  .es-link .linkbtn { padding: 10px 0; font-weight: 700; }
+  /* Schalter (role="switch"): Bahn mit Knopf, dazu „An“ bzw. „Aus“ als Text */
+  .schalter { display: flex; align-items: center; gap: 12px; width: 100%; max-width: 30em; min-height: 52px; padding: 8px 14px; border: 1px solid var(--line); border-radius: var(--r-ctl, 14px); background: var(--surface); color: var(--ink); font: inherit; font-weight: 700; text-align: start; cursor: pointer; }
+  .schalter-t { flex: 1; min-width: 0; }
+  .schalter-zst { flex: none; font-weight: 400; color: var(--muted); font-size: .9em; }
+  .schalter-bahn { flex: none; position: relative; width: 48px; height: 28px; border-radius: 999px; background: var(--na-bg); border: 2px solid var(--field); }
+  .schalter-bahn::after { content: ""; position: absolute; top: 2px; inset-inline-start: 2px; width: 20px; height: 20px; border-radius: 50%; background: var(--field); transition: inset-inline-start .15s; }
+  .schalter[aria-checked="true"] .schalter-bahn { background: var(--accent); border-color: var(--accent); }
+  .schalter[aria-checked="true"] .schalter-bahn::after { inset-inline-start: 22px; background: var(--accent-ink); }
+  .schalter[aria-checked="true"] .schalter-zst { color: var(--accent); font-weight: 700; }
+  .schalter[aria-disabled="true"] { opacity: .6; cursor: not-allowed; }
+  @media (prefers-reduced-motion: reduce) { .schalter-bahn::after { transition: none; } }
   /* Vorgänge (Haushalte): Kürzel-Schild im Kopf, Verwaltung in den Einstellungen, Sperrbildschirm */
   .vg-chip { margin-inline-start: auto; align-self: flex-start; max-width: 11em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-height: 36px; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--accent); background: transparent; color: var(--accent); font: inherit; font-size: 0.85em; font-weight: 700; cursor: pointer; }
   .vg-menu { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 8px 0; }
@@ -680,6 +706,7 @@
   .seg label { border-radius: 9px; min-height: 44px; }
   .seg input:nth-of-type(2) + label { border-inline-start: 0; }
   .seg input:checked + label { box-shadow: var(--shadow-s); }
+  .seg.seg3 { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 30em; background: var(--surface); border-color: var(--line); } /* Hell, Dunkel, wie Gerät (Einstellungen) */
   .stepper button { color: var(--accent); font-weight: 700; }
   .chip { box-shadow: var(--shadow-s); transition: transform .1s ease; }
   .chip:active { transform: scale(.97); }
@@ -997,6 +1024,7 @@
     <div class="cols" id="cols">
       <section aria-labelledby="h-form">
         <h2 id="h-form" style="margin-bottom:12px" data-t="h.form"></h2>
+        <p class="es-link"><span data-t="einfach.vor"></span> <button type="button" class="linkbtn" id="einfachBtn" aria-pressed="false"><span data-t="einfach.btn"></span></button></p>
         <div class="presets-label" id="presetLabel" data-t="preset.label"></div>
         <div class="presets" role="group" aria-labelledby="presetLabel" id="presets" style="margin-bottom:8px"></div>
         <div class="loeschzeile">
@@ -1381,39 +1409,77 @@
 
     </div>
 
-    <!-- Einstellungen: Reiter „Einstellungen“ und „Informationen“ -->
+    <!-- Mein Ordner: ruhige Übersicht über alles Eigene (füllt ordnerRender in app.js). Unterseite „Alle Haushalte und Vorgänge“: Verwaltung (vgRender) -->
+    <section id="v-ordner" class="ansicht" aria-labelledby="h-ordner" hidden>
+      <div id="ordnerHaupt">
+        <h2 id="h-ordner" class="ans-h" data-t="nav.ordner"></h2>
+        <div id="ordnerKopf" class="ordner-kopf" hidden></div>
+        <ul id="ordnerKarten" class="zeilen"></ul>
+        <div id="ordnerLeer" class="ordner-leer" hidden>
+          <p data-t="ordner.leer"></p>
+          <button type="button" class="btn" id="ordnerLos"><span data-t="home.los"></span> <span class="pfeil" aria-hidden="true">→</span></button>
+        </div>
+      </div>
+      <div id="ordnerAlle" class="unterseite" data-seite="alle" hidden>
+        <div class="pp-kopf"><button type="button" class="btn ghost us-zurueck">← <span data-t="pf.zurueck"></span></button></div>
+        <div class="set-gruppe vg-gruppe" id="setHaushalte" hidden></div>
+      </div>
+    </section>
+
+    <!-- Einstellungen: kurze Liste von Zeilen; jede öffnet eine Unterseite mit „← Zurück“ -->
     <section id="v-einst" class="ansicht" aria-labelledby="h-einst" hidden>
-      <h2 id="h-einst" class="ans-h" data-t="nav.einst"></h2>
-      <div class="einst-tabs" role="tablist" aria-label="" data-t-aria="nav.einst">
-        <button type="button" role="tab" id="tab-einst" aria-controls="pn-einst" aria-selected="true" data-t="einst.tab.einst"></button>
-        <button type="button" role="tab" id="tab-info" aria-controls="pn-info" aria-selected="false" tabindex="-1" data-t="einst.tab.info"></button>
+      <div id="einstListe">
+        <h2 id="h-einst" class="ans-h" data-t="nav.einst"></h2>
+        <ul class="zeilen">
+          <li><button type="button" class="zeile" data-seite="anzeige"><span class="zeile-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h7"/><circle cx="18" cy="16" r="3"/></svg></span><span class="zeile-txt"><b data-t="set.anzeige.h"></b><span class="zeile-st" id="stAnzeige"></span></span><span class="zeile-pfeil" aria-hidden="true">›</span></button></li>
+          <li><button type="button" class="zeile" data-seite="sicher"><span class="zeile-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span><span class="zeile-txt"><b data-t="set.sicher.h"></b><span class="zeile-st" id="stSicher"></span></span><span class="zeile-pfeil" aria-hidden="true">›</span></button></li>
+          <li><button type="button" class="zeile" data-seite="fach"><span class="zeile-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="12" rx="2"/><path d="M9 7V5h6v2M4 12h16"/></svg></span><span class="zeile-txt"><b data-t="set.fach.h"></b><span class="zeile-st" id="stFach"></span></span><span class="zeile-pfeil" aria-hidden="true">›</span></button></li>
+          <li><button type="button" class="zeile" data-seite="about"><span class="zeile-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg></span><span class="zeile-txt"><b data-t="set.about.h"></b><span class="zeile-st" id="stAbout"></span></span><span class="zeile-pfeil" aria-hidden="true">›</span></button></li>
+        </ul>
       </div>
-      <div id="pn-einst" role="tabpanel" aria-labelledby="tab-einst" class="einst-pn">
-      <!-- Blöcke: Haushalte und Vorgänge (füllt vgRender in app.js, ohne Speicher ausgeblendet), Anzeige und Sprache, Für Fachkräfte, Über die App -->
-      <div class="set-gruppe vg-gruppe" id="setHaushalte" hidden></div>
-      <div class="set-gruppe">
-        <h3 data-t="set.anzeige.h"></h3>
-        <label class="langpick"><span data-t="lang.label"></span><select id="lang"></select></label>
-        <p><button type="button" class="chip" id="bigBtn" aria-pressed="false" data-t="big"></button></p>
-        <p><button type="button" class="chip" id="einfacheSpracheBtn" aria-pressed="false" aria-describedby="einfacheSpracheT"><span data-t="set.es.label"></span></button></p>
-        <p class="small muted" id="einfacheSpracheT"></p>
-        <p><button type="button" class="chip es-schalter" id="einfachBtn" aria-pressed="false" aria-describedby="einfachBtnT"><span aria-hidden="true">♿</span> <span data-t="einfach.btn"></span></button></p>
-        <p class="small muted" id="einfachBtnT" data-t="set.eine.t"></p>
+      <div class="unterseite" id="es-anzeige" data-seite="anzeige" hidden>
+        <div class="pp-kopf"><button type="button" class="btn ghost us-zurueck">← <span data-t="pf.zurueck"></span></button></div>
+        <h2 class="ans-h" data-t="set.anzeige.h"></h2>
+        <div class="set-gruppe">
+          <label class="langpick"><span data-t="lang.label"></span><select id="lang"></select></label>
+          <p><button type="button" class="schalter" id="bigBtn" role="switch" aria-checked="false"><span class="schalter-t" data-t="big"></span><span class="schalter-zst"></span><span class="schalter-bahn" aria-hidden="true"></span></button></p>
+          <p><button type="button" class="schalter" id="einfacheSpracheBtn" role="switch" aria-checked="false" aria-describedby="einfacheSpracheT"><span class="schalter-t" data-t="set.es.label"></span><span class="schalter-zst"></span><span class="schalter-bahn" aria-hidden="true"></span></button></p>
+          <p class="small muted" id="einfacheSpracheT"></p>
+          <div class="field"><span class="lab" id="lab-thema" data-t="set.thema"></span>
+            <div class="seg seg3" role="radiogroup" aria-labelledby="lab-thema">
+              <input type="radio" name="thema" id="thema-auto" value="" checked><label for="thema-auto" data-t="set.thema.auto"></label>
+              <input type="radio" name="thema" id="thema-hell" value="light"><label for="thema-hell" data-t="set.thema.hell"></label>
+              <input type="radio" name="thema" id="thema-dunkel" value="dark"><label for="thema-dunkel" data-t="set.thema.dunkel"></label>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="set-gruppe" id="setFach">
-        <h3 data-t="set.fach.h"></h3>
-        <p><button type="button" class="chip" id="beratungBtn" aria-pressed="false" aria-describedby="beratungT"><span data-t="set.beratung.label"></span></button></p>
-        <p class="small muted" id="beratungT" data-t="set.beratung.t"></p>
+      <div class="unterseite" id="es-sicher" data-seite="sicher" hidden>
+        <div class="pp-kopf"><button type="button" class="btn ghost us-zurueck">← <span data-t="pf.zurueck"></span></button></div>
+        <h2 class="ans-h" id="h-sicher" data-t="set.sicher.h"></h2>
+        <!-- PIN-Sperre und automatisch löschen füllt vgRender (app.js); „Alle Vorgänge löschen“ in #vgAlleBox -->
+        <div class="set-gruppe" id="setSicher"></div>
+        <div class="set-gruppe">
+          <h3 data-t="set.loeschen.h"></h3>
+          <p><button type="button" class="chip vg-weg" id="clear2" data-t="set.vgLoeschen"></button> <span class="msg" id="clear2Msg" role="status"></span></p>
+          <p class="vg-alle" id="vgAlleBox"></p>
+        </div>
       </div>
-      <div class="set-gruppe">
-        <h3 data-t="set.about.h"></h3>
-        <p class="small muted"><span id="appVersion"></span><br><span class="stand" id="stand"></span></p>
-        <p><button type="button" class="linkbtn" id="legalBtn2" data-t="legal.open"></button></p>
+      <div class="unterseite" id="es-fach" data-seite="fach" hidden>
+        <div class="pp-kopf"><button type="button" class="btn ghost us-zurueck">← <span data-t="pf.zurueck"></span></button></div>
+        <h2 class="ans-h" data-t="set.fach.h"></h2>
+        <div class="set-gruppe" id="setFach">
+          <p><button type="button" class="schalter" id="beratungBtn" role="switch" aria-checked="false" aria-describedby="beratungT"><span class="schalter-t" data-t="set.beratung.label"></span><span class="schalter-zst"></span><span class="schalter-bahn" aria-hidden="true"></span></button></p>
+          <p class="small muted" id="beratungT" data-t="set.beratung.t"></p>
+        </div>
       </div>
-        <p><button type="button" class="chip" id="clear2" data-t="clear.btn"></button> <span class="msg" id="clear2Msg" role="status"></span></p>
-      </div>
-      <div id="pn-info" role="tabpanel" aria-labelledby="tab-info" class="einst-pn" hidden>
-        <h3 data-t="info.h"></h3>
+      <div class="unterseite" id="es-about" data-seite="about" hidden>
+        <div class="pp-kopf"><button type="button" class="btn ghost us-zurueck">← <span data-t="pf.zurueck"></span></button></div>
+        <h2 class="ans-h" data-t="set.about.h"></h2>
+        <div class="set-gruppe">
+          <p class="small muted"><span id="appVersion"></span><br><span class="stand" id="stand"></span></p>
+          <p><button type="button" class="linkbtn" id="legalBtn2" data-t="legal.open"></button></p>
+        </div>
         <div class="rules" id="feedback" hidden>
           <details>
             <summary data-t="fb.h"></summary>
@@ -1473,7 +1539,7 @@
         <div class="foot">
           <p data-t="foot.1"></p>
           <p data-t="foot.3"></p>
-          <p><button type="button" class="linkbtn" id="legalBtn" data-t="legal.open"></button></p>
+          <p hidden><button type="button" class="linkbtn" id="legalBtn" data-t="legal.open"></button></p>
         </div>
       </div>
     </section>
@@ -1568,8 +1634,7 @@
 
   <nav class="appnav" id="appnav" aria-label="SoLo">
     <button type="button" data-ansicht="start"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg><span data-t="nav.start"></span></button>
-    <button type="button" data-ansicht="leistungen"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4M8.5 11l2 2 3.5-4"/></svg><span data-t="nav.leistungen"></span></button>
-    <button type="button" data-ansicht="briefe"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg><span data-t="nav.briefe"></span></button>
+    <button type="button" data-ansicht="ordner"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M3 10h18"/></svg><span data-t="nav.ordner"></span></button>
     <button type="button" data-ansicht="einst"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg><span data-t="nav.einst"></span></button>
   </nav>
 </div>

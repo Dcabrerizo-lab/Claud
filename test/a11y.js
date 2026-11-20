@@ -30,7 +30,7 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
     await p.click('#goBriefe'); await pruefe('Brief prüfen');
     await p.click('#brief-pk'); await pruefe('Brief prüfen: Wahl scannen, einfügen, selbst eingeben'); await p.click('#elSelbst'); await p.evaluate(() => document.getElementById('pf-beispiel').click()); await pruefe('Brief prüfen: Pflegegutachten');
     await p.click('#briefZurueck'); await p.click('#brief-vm'); await pruefe('Brief prüfen: Nebenkosten'); await p.click('#briefZurueck');
-    await p.click('#appnav [data-ansicht=leistungen]');
+    await p.click('#appnav [data-ansicht=start]'); await p.click('#goLeistungen');
     await pruefe('Leistungen (leer)');
     await p.click('#paStart'); await pruefe('Pflegegrad: Alter');
     await p.fill('#pa-jahre', '80'); await p.click('text=Weiter ➜'); await p.click('#pflegeAssist .es-btn >> nth=0');
@@ -45,6 +45,11 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
     await pruefe('Beispiel 1 mit Ergebnis');
     await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'ar'); await pruefe('Arabisch'); await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'de');
     await p.click('#mappeMake'); await pruefe('Antragsmappe'); await p.click('#mappeClose');
+    await p.click('#appnav [data-ansicht=ordner]'); await pruefe('Mein Ordner');
+    await p.click('#or-alle'); await pruefe('Mein Ordner: Alle Haushalte und Vorgänge');
+    await p.click('#appnav [data-ansicht=einst]'); await pruefe('Einstellungen');
+    for (const z of ['anzeige', 'sicher', 'fach', 'about']) { await p.click('#einstListe .zeile[data-seite=' + z + ']'); await pruefe('Einstellungen: ' + z); await p.click('#es-' + z + ' .us-zurueck'); }
+    await p.click('#appnav [data-ansicht=start]'); await p.click('#goLeistungen');
     // Selbsttest: ein Feld ohne Beschriftung muss gemeldet werden (sonst prüft der Test nichts)
     if (schema === 'light') {
       await p.evaluate(() => { const i = document.createElement('input'); i.id = 'a11y-selbsttest'; document.getElementById('form').appendChild(i); });

@@ -456,12 +456,13 @@
     if (esModus) esRender();
     bereicheText();
     vgRender();
+    schalterText(); einstStatus(); ordnerRender();
   }
 
   // Schalter „Einfache Sprache“: gibt es nur auf Deutsch; in anderen Sprachen sichtbar, aber nicht bedienbar (aria-disabled, bleibt per Tastatur erreichbar)
   function einfacheSpracheAnzeigen() {
     var de = lang === 'de', b = $('einfacheSpracheBtn');
-    b.setAttribute('aria-pressed', String(de && einfachSprache));
+    b.setAttribute('aria-checked', String(de && einfachSprache));
     if (de) b.removeAttribute('aria-disabled'); else b.setAttribute('aria-disabled', 'true');
     $('einfacheSpracheT').textContent = t(de ? 'set.es.t' : 'set.es.nurDe');
   }
@@ -474,7 +475,7 @@
   // Beratungsmodus (Für Fachkräfte): Rechtsgrundlagen und Paragrafen zeigen; Standard aus
   function beratungSetzen(an, speichern) {
     beratung = !!an;
-    $('beratungBtn').setAttribute('aria-pressed', String(beratung));
+    $('beratungBtn').setAttribute('aria-checked', String(beratung));
     if (speichern) Store.set('lotse.beratung', beratung ? '1' : '0');
     render();
     if (!$('mappe').hidden) buildMappe();
@@ -641,7 +642,7 @@
     $('bigBtn').addEventListener('click', function () {
       var on = !$('app').classList.contains('big');
       $('app').classList.toggle('big', on); document.documentElement.classList.toggle('big', on);
-      $('bigBtn').setAttribute('aria-pressed', String(on));
+      $('bigBtn').setAttribute('aria-checked', String(on));
       save();
     });
     $('einfacheSpracheBtn').addEventListener('click', function () {
@@ -2471,10 +2472,10 @@
 
   // ----- Bereiche: Start, Leistungen (Leistungscheck), Brief prüfen -----
   // Beim Öffnen die Startseite; „#leistungen“ und „#briefe“ öffnen den Bereich direkt (Links, Tests).
-  var ANSICHTEN = ['start', 'leistungen', 'briefe', 'pflege', 'pflegeinfo', 'pflegestart', 'einst', 'pfaendung', 'sparen', 'haushalt', 'ausziehen']; // „pflege“: Pflegegrad-Einschätzung, gehört zu Leistungen
+  var ANSICHTEN = ['start', 'leistungen', 'briefe', 'pflege', 'pflegeinfo', 'pflegestart', 'einst', 'ordner', 'pfaendung', 'sparen', 'haushalt', 'ausziehen']; // „pflege“: Pflegegrad-Einschätzung, gehört zu Leistungen
   var aktAnsicht = 'leistungen';
   // Herkunft merken: „Zurück“, Leiste und Android-Taste folgen ihr (keine festen Ziele)
-  var NAV_BEREICHE = ['start', 'leistungen', 'briefe', 'einst'];
+  var NAV_BEREICHE = ['start', 'ordner', 'einst']; // Leiste unten; Leistungen und Briefe erreicht man über die Startkacheln (markieren Start)
   var herkunft = {};
   function oeffneVon(ziel, fokus) { if (ziel !== aktAnsicht) herkunft[ziel] = aktAnsicht; zeigeAnsicht(ziel, fokus); }
   function herkunftVon(a) { var h = herkunft[a]; return h && h !== a && ANSICHTEN.indexOf(h) >= 0 ? h : 'start'; }
@@ -2492,6 +2493,8 @@
     if (a === 'ausziehen') { if (window.Ausziehen && Ausziehen.offen()) Ausziehen.zurueck(); else zurueckZurHerkunft(a); return true; }
     if (a === 'briefe' && !$('checkBox').hidden) { $('briefZurueck').click(); return true; }
     if (a === 'leistungen' && $('es-zurueck')) { $('es-zurueck').click(); return true; }
+    if ((a === 'einst' || a === 'ordner') && usOffen(a)) { usZeigen(a, '', true); return true; } // Unterseite: zurück zur Liste
+    if ((a === 'leistungen' || a === 'briefe') && herkunft[a]) { zurueckZurHerkunft(a); return true; } // z. B. aus „Mein Ordner“ gekommen
     return false;
   }
   function jumpPruefen() {
@@ -2525,6 +2528,8 @@
     if (a === 'pfaendung') pfRender(false);
     if (a === 'pflegestart') puRender(false);
     if (a === 'sparen') spRender(false);
+    if (a === 'ordner') ordnerRender();
+    if (a === 'einst') einstStatus();
     document.querySelectorAll('#appnav button').forEach(function (b) { if (b.getAttribute('data-ansicht') === navA) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
     try { if (location.hash !== '#' + a) history.replaceState(null, '', '#' + a); } catch (e) {}
     bereicheText();
@@ -2549,7 +2554,7 @@
   function vgKopieName(n) { var x = n; while (x.length > 1 && Vorgaenge.nameSauber(t('vg.kopieName', { name: x })) !== t('vg.kopieName', { name: x }).replace(/\s+/g, ' ').trim()) x = x.slice(0, -1).trim(); return t('vg.kopieName', { name: x }); }
   function vgName(v) { return v && v.name ? v.name : t('vg.ohneName'); }
   function vgDatum(ms) { return Fmt.datum(new Date(ms), lang); }
-  function vgMsg(txt) { var m = $('vgMsg'); if (m) m.textContent = txt; }
+  function vgMsg(txt) { ['vgMsg', 'vgMsgS'].forEach(function (id) { var m = $(id); if (m) m.textContent = txt; }); } // Meldung in „Alle Haushalte“ und in „Sicherheit und Daten“
   // Oberfläche an festen Stellen einhängen (ohne Änderungen an den Abschnitten anderer Bereiche)
   function vgGeruest() {
     if ($('vgRes')) return;
@@ -2645,7 +2650,7 @@
   }
   function vgBereit() { var s = $('vgSperre'); if (s && !s.hidden) { s.hidden = true; $('app').removeAttribute('aria-hidden'); $('app').inert = false; var h = document.querySelector('h1'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); } } vgRender(); }
   function vgRender() {
-    if (!tresor || !$('pn-einst')) return;
+    if (!tresor || !$('setHaushalte')) return;
     vgGeruest();
     var bereit = tresor.bereit(), liste = tresor.liste(), a = tresor.aktiv();
     // Kopf: Kürzel-Schild nur bei mehr als einem Vorgang
@@ -2662,7 +2667,7 @@
         menu.appendChild(b);
       });
       var vw = vgEl('button', 'linkbtn', t('vg.verwalten')); vw.type = 'button';
-      vw.addEventListener('click', function () { menu.hidden = true; zeigeAnsicht('einst', false); einstReiter('einst'); var h = $('vgH'); if (h) { h.scrollIntoView({ behavior: smooth(), block: 'start' }); h.focus({ preventScroll: true }); } });
+      vw.addEventListener('click', function () { menu.hidden = true; vgAlleOeffnen(); });
       menu.appendChild(vw);
     }
     // Ergebnis: einfacher Einstieg
@@ -2673,12 +2678,14 @@
       else vgSpeichernForm(r, 'vgNameRes', true);
       var rm = vgEl('p', 'msg'); rm.id = 'vgResMsg'; rm.setAttribute('role', 'status'); r.appendChild(rm);
       var zw = vgEl('button', 'linkbtn', t('vg.verwalten')); zw.type = 'button';
-      zw.addEventListener('click', function () { zeigeAnsicht('einst', false); einstReiter('einst'); var h = $('vgH'); if (h) { h.scrollIntoView({ behavior: smooth(), block: 'start' }); h.focus({ preventScroll: true }); } });
+      zw.addEventListener('click', vgAlleOeffnen);
       r.appendChild(zw);
     }
     // Einstellungen: Verwaltung ganz oben
     var g = $('setHaushalte'), alt = document.activeElement && document.activeElement.id, msgAlt = $('vgMsg') ? $('vgMsg').textContent : '';
+    var gs = $('setSicher'); gs.innerHTML = ''; $('vgAlleBox').innerHTML = ''; // Sicherheit und Daten (Einstellungen): automatisch löschen, PIN, alle löschen
     g.innerHTML = ''; g.hidden = false;
+    if (aktAnsicht === 'ordner') ordnerRender();
     if (LOESCH_TEILE) $('clearWas').textContent = loeschWas(); // nennt den geöffneten Vorgang
     var h3 = vgEl('h3', null, t('vg.h')); h3.id = 'vgH'; h3.tabIndex = -1; g.appendChild(h3);
     if (!bereit) return;
@@ -2725,6 +2732,8 @@
     var nb = vgEl('button', 'btn ghost', t('vg.neu')); nb.type = 'button';
     nb.addEventListener('click', function () { flush(); tresor.neu(''); vgNeuLaden(); vgMsg(t('vg.neuOk')); var h = $('vgH'); if (h) h.focus(); });
     g.appendChild(vgEl('p')).appendChild(nb);
+    var msgS = vgEl('p', 'msg', msgAlt); msgS.id = 'vgMsgS'; msgS.setAttribute('role', 'status');
+    g = gs; // ab hier: Unterseite „Sicherheit und Daten“
     // Automatisch löschen
     g.appendChild(vgEl('h4', null, t('vg.auto.h')));
     var al = vgEl('label', 'vg-auto'); al.setAttribute('for', 'vgTage'); al.textContent = t('vg.auto.label');
@@ -2766,8 +2775,9 @@
     }
     var ab = vgEl('button', 'chip vg-weg', t('vg.alleLoeschen')); ab.type = 'button';
     ab.addEventListener('click', function () { if (!window.confirm(t('vg.alleFrage'))) return; angabenLoeschen(true); vgMsg(t('vg.alleOk')); var h = $('vgH'); if (h) h.focus(); });
-    g.appendChild(vgEl('p', 'vg-alle')).appendChild(ab);
-    if (alt && $(alt) && alt !== 'vgMsg') { try { $(alt).focus({ preventScroll: true }); } catch (e) {} }
+    $('vgAlleBox').appendChild(ab); g.appendChild(msgS);
+    if (alt && $(alt) && alt !== 'vgMsg' && alt !== 'vgMsgS') { try { $(alt).focus({ preventScroll: true }); } catch (e) {} }
+    else if (!$('es-sicher').hidden && (!document.activeElement || document.activeElement === document.body)) { var hs = $('h-sicher'); hs.tabIndex = -1; hs.focus({ preventScroll: true }); } // Knopf neu gezeichnet: Fokus auf die Überschrift
   }
   // PIN festlegen, ändern (mitAlt) oder ausschalten (nurAus). Ändern und Ausschalten fragen die bisherige PIN ab.
   function vgPinForm(g, ausloeser, nurAus, mitAlt) {
@@ -2800,6 +2810,81 @@
     ausloeser.parentNode.parentNode.insertBefore(f, ausloeser.parentNode.nextSibling);
     f.querySelector('input').focus();
   }
+  // ----- Unterseiten in „Einstellungen“ und „Mein Ordner“: Liste bzw. Übersicht oder eine Unterseite, „← Zurück“ führt zurück -----
+  var usAktiv = { einst: '', ordner: '' }, usVon = null;
+  function usOffen(a) { return !!usAktiv[a]; }
+  function usZeigen(a, seite, fokus) {
+    var war = usAktiv[a]; usAktiv[a] = seite || '';
+    var liste = a === 'einst' ? $('einstListe') : $('ordnerHaupt');
+    liste.hidden = !!seite;
+    $('v-' + a).querySelectorAll('.unterseite').forEach(function (u) { u.hidden = u.getAttribute('data-seite') !== seite; });
+    if (a === 'einst') einstStatus(); else ordnerRender();
+    if (!fokus) return;
+    try { window.scrollTo(0, 0); } catch (e) {}
+    var ziel;
+    if (seite) { var u = $('v-' + a).querySelector('.unterseite[data-seite="' + seite + '"]'); ziel = u && u.querySelector('h2, h3'); usVon = document.activeElement; }
+    else ziel = (a === 'einst' && war && document.querySelector('#einstListe .zeile[data-seite="' + war + '"]')) || (usVon && document.body.contains(usVon) && !usVon.closest('[hidden]') ? usVon : liste.querySelector('h2'));
+    if (ziel) { if (!/^(BUTTON|A|INPUT|SELECT)$/.test(ziel.tagName)) ziel.setAttribute('tabindex', '-1'); ziel.focus({ preventScroll: true }); }
+  }
+  function vgAlleOeffnen() { herkunft = {}; zeigeAnsicht('ordner', false); usZeigen('ordner', 'alle', true); }
+  // Einstellungen: eine Zeile Status je Bereich
+  function einstStatus() {
+    if (!$('stAnzeige') || !lang) return;
+    var sel = $('lang'), o = sel && sel.options[sel.selectedIndex];
+    var teile = [o ? o.textContent : ''];
+    if ($('app').classList.contains('big')) teile.push(t('big'));
+    if (lang === 'de' && einfachSprache) teile.push(t('set.es.label'));
+    $('stAnzeige').textContent = teile.filter(Boolean).join(' · ');
+    var pin = tresor && tresor.bereit && tresor.bereit() && tresor.pinAn();
+    $('stSicher').textContent = t(pin ? 'vg.pin.an' : 'set.sicher.t');
+    $('stFach').textContent = t('set.beratung.label') + ': ' + t(beratung ? 'set.an' : 'set.aus');
+    $('stAbout').textContent = t('set.version', { v: APPVERSION });
+  }
+  // Mein Ordner: geöffneter Vorgang oben, darunter nur Bereiche mit eigenem Inhalt (Kurzstatus, Sprung); leer: freundlicher Einstieg
+  function ordnerRender() {
+    if (!$('ordnerKarten') || typeof aktAnsicht === 'undefined' || aktAnsicht !== 'ordner') return;
+    var kopf = $('ordnerKopf'), bereit = tresor && tresor.bereit && tresor.bereit();
+    kopf.innerHTML = ''; kopf.hidden = !bereit;
+    if (bereit) {
+      var a = tresor.aktiv(), pk = vgEl('p'), nm = vgEl('span', 'vg-kuerzel', vgName(a));
+      pk.appendChild(document.createTextNode(t('vg.aktiv', { name: '\u0000' }).split('\u0000')[0])); pk.appendChild(nm); pk.appendChild(document.createTextNode(t('vg.aktiv', { name: '\u0000' }).split('\u0000')[1] || ''));
+      var wb = vgEl('button', 'chip', t('ordner.wechseln')); wb.type = 'button'; wb.setAttribute('aria-label', t('vg.wechseln') + ': ' + vgName(a));
+      wb.addEventListener('click', function () { usZeigen('ordner', 'alle', true); });
+      kopf.appendChild(pk); kopf.appendChild(wb);
+    }
+    var ul = $('ordnerKarten'); ul.innerHTML = '';
+    var zeile = function (id, titel, status, sym, fn) {
+      var li = vgEl('li'), b = vgEl('button', 'zeile'); b.type = 'button'; b.id = 'or-' + id;
+      b.innerHTML = '<span class="zeile-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + sym + '</svg></span><span class="zeile-txt"><b></b><span class="zeile-st"></span></span><span class="zeile-pfeil" aria-hidden="true">›</span>';
+      b.querySelector('b').textContent = titel; b.querySelector('.zeile-st').textContent = status;
+      b.addEventListener('click', fn); li.appendChild(b); ul.appendChild(li);
+    };
+    var erg = started && edited && lastOut ? lastOut.results : null;
+    if (erg) {
+      var n = { ja: 0, vielleicht: 0 }; erg.forEach(function (r) { if (r.level in n) n[r.level]++; });
+      var st = [n.ja ? t('c.ja', { n: n.ja }) : '', n.vielleicht ? t('c.vielleicht', { n: n.vielleicht }) : ''].filter(Boolean).join(' · ') || t('c.none');
+      zeile('ergebnis', t('ordner.ergebnis'), st, '<path d="M4 20V10M10 20V4M16 20v-7M2 20h20"/>', function () { oeffneVon('leistungen', false); var e = $('ergebnis'); if (e) { e.scrollIntoView({ block: 'start' }); e.focus({ preventScroll: true }); } });
+      var gew = erg.filter(function (r) { return picked[r.id]; }).length;
+      if (gew) zeile('mappe', t('ordner.mappe'), t('ordner.mappe.n', { n: gew }), '<path d="M4 7a2 2 0 0 1 2-2h3l2 2h7a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M9 13h6"/>', function () { oeffneVon('leistungen', false); $('mappeMake').click(); var hm = $('h-mappe'); if (hm) { hm.setAttribute('tabindex', '-1'); hm.focus({ preventScroll: true }); } });
+    }
+    if (window.Haushalt && Haushalt.rest) {
+      var hr = null; try { hr = Haushalt.rest(); } catch (e) {}
+      if (hr && !hr.leer) zeile('haushalt', t('hb.h'), hr.rest >= 0 ? t('hb.rest', { b: { eur: hr.restEuro } }) : t('hb.fehlt', { b: { eur: -hr.restEuro } }), '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M15 15h2"/>', function () { oeffneVon('haushalt', true); });
+    }
+    // „Ich ziehe aus“ (Branch claude/ausziehen): nur, wenn das Modul den Fortschritt liefert (Ausziehen.stand() -> { n, von })
+    var AZ = window.Ausziehen;
+    if (AZ && typeof AZ.stand === 'function' && ANSICHTEN.indexOf('ausziehen') >= 0) {
+      var az = null; try { az = AZ.stand(); } catch (e) {}
+      if (az && az.von && az.n) zeile('ausziehen', t('ordner.ausziehen'), t('ordner.ausziehen.n', { n: az.n, von: az.von }), '<path d="M4 20V9l8-5 8 5v11"/><path d="M14 14h6M17 11l3 3-3 3"/>', function () { oeffneVon('ausziehen', true); });
+    }
+    if (pa && pa.schaetzung) zeile('pflege', t('ordner.pflege'), paStandText(), '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>', function () { oeffneVon('pflegestart', true); });
+    if (pf && pf.art && pf.schritt > 0) zeile('pfaendung', t('ordner.pfaendung'), t(pf.art === 'lohn' ? 'pf.lohn' : 'pf.konto'), '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/>', function () { oeffneVon('pfaendung', true); });
+    var leer = !ul.children.length;
+    ul.hidden = leer; $('ordnerLeer').hidden = !leer;
+    if (bereit) { var al = vgEl('li'), ab = vgEl('button', 'linkbtn', t('ordner.alle')); ab.type = 'button'; ab.id = 'or-alle'; ab.addEventListener('click', function () { usZeigen('ordner', 'alle', true); }); al.appendChild(ab); var ul2 = $('ordnerAlleLink'); if (!ul2) { ul2 = vgEl('ul', 'zeilen'); ul2.id = 'ordnerAlleLink'; $('ordnerHaupt').appendChild(ul2); } ul2.innerHTML = ''; ul2.appendChild(al); }
+    else if ($('ordnerAlleLink')) $('ordnerAlleLink').innerHTML = '';
+  }
+  // Sperrbildschirm: deckt die App ab, bis die PIN stimmt
   function vgSperreZeigen() {
     var s = $('vgSperre');
     if (!s) { s = vgEl('div', 'vg-sperre'); s.id = 'vgSperre'; s.setAttribute('role', 'dialog'); s.setAttribute('aria-modal', 'true'); s.setAttribute('aria-labelledby', 'vgSperreH'); $('app').parentNode.appendChild(s); }
@@ -3265,14 +3350,26 @@
   document.querySelectorAll('#appnav button').forEach(function (b) { b.addEventListener('click', function () {
     var a = b.getAttribute('data-ansicht');
     herkunft = {};
-    if (a === 'briefe' && aktAnsicht === 'briefe' && !$('checkBox').hidden) { briefOeffnen(null); $('h-briefe') && $('h-briefe').focus(); return; } // nochmal tippen: zurück zur Auswahl
+    if (a === 'einst' || a === 'ordner') usZeigen(a, '', false); // Leiste öffnet immer die Übersicht des Bereichs
     zeigeAnsicht(a, true);
   }); });
-  // Einstellungen: Reiter und Schalter (greifen auf dieselben Funktionen zu wie der Kopf)
-  function einstReiter(r) { ['einst', 'info'].forEach(function (x) { var on = x === r; $('tab-' + x).setAttribute('aria-selected', String(on)); $('tab-' + x).tabIndex = on ? 0 : -1; $('pn-' + x).hidden = !on; }); }
-  $('tab-einst').addEventListener('click', function () { einstReiter('einst'); });
-  $('tab-info').addEventListener('click', function () { einstReiter('info'); });
-  [['tab-einst', 'tab-info'], ['tab-info', 'tab-einst']].forEach(function (p) { $(p[0]).addEventListener('keydown', function (e) { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { $(p[1]).click(); $(p[1]).focus(); } }); });
+  // Einstellungen und Mein Ordner: Zeilen öffnen Unterseiten, „← Zurück“ führt zur Liste (usZeigen, siehe Vorgänge)
+  document.querySelectorAll('#einstListe .zeile').forEach(function (b) { b.addEventListener('click', function () { usZeigen('einst', b.getAttribute('data-seite'), true); }); });
+  document.querySelectorAll('.us-zurueck').forEach(function (b) { b.addEventListener('click', function () { usZeigen(b.closest('.ansicht').id.slice(2), '', true); }); });
+  $('ordnerLos').addEventListener('click', function () { oeffneVon('leistungen', true); });
+  // Hell, Dunkel oder wie das Gerät: nur das Attribut data-theme (Farben im :root) und die Speicherung
+  function themaSetzen(w, speichern) {
+    if (w === 'light' || w === 'dark') document.documentElement.setAttribute('data-theme', w); else { w = ''; document.documentElement.removeAttribute('data-theme'); }
+    document.querySelectorAll('input[name="thema"]').forEach(function (r) { r.checked = r.value === w; });
+    if (speichern) Store.set('lotse.thema', w);
+  }
+  document.querySelectorAll('input[name="thema"]').forEach(function (r) { r.addEventListener('change', function () { if (r.checked) themaSetzen(r.value, true); }); });
+  Store.get('lotse.thema', function (v) { if (v) themaSetzen(v, false); });
+  // Schalter: sichtbares „An“ bzw. „Aus“ folgt aria-checked
+  function schalterText() { document.querySelectorAll('.schalter').forEach(function (b) { var z = b.querySelector('.schalter-zst'); if (z) z.textContent = t(b.getAttribute('aria-checked') === 'true' ? 'set.an' : 'set.aus'); }); }
+  if (window.MutationObserver) new MutationObserver(function () { schalterText(); einstStatus(); }).observe($('v-einst'), { subtree: true, attributes: true, attributeFilter: ['aria-checked'] });
+  document.querySelectorAll('.schalter').forEach(function (b) { b.addEventListener('click', function () { schalterText(); einstStatus(); }); }); // gleich nach dem Umschalten (nach dem eigenen Klick-Handler)
+  schalterText();
   $('clear2').addEventListener('click', function () { $('clearBtn').click(); $('clear2Msg').textContent = $('clearMsg').textContent; });
   $('goLeistungen').addEventListener('click', function () { zeigeAnsicht('leistungen', true); });
   $('goBriefe').addEventListener('click', function () { zeigeAnsicht('briefe', true); });
@@ -3316,7 +3413,7 @@
       if (d.p) person = Object.assign(person, d.p);
       edited = true; $('sampleNotice').hidden = true;
       [['p-name', 'name'], ['p-geb', 'geb'], ['p-strasse', 'strasse'], ['p-ort', 'ort'], ['p-tel', 'tel']].forEach(function (x) { $(x[0]).value = person[x[1]] || ''; });
-      if (d.big) { $('app').classList.add('big'); document.documentElement.classList.add('big'); $('bigBtn').setAttribute('aria-pressed', 'true'); }
+      if (d.big) { $('app').classList.add('big'); document.documentElement.classList.add('big'); $('bigBtn').setAttribute('aria-checked', 'true'); }
       writeForm(); buildSelects(); render();
     } catch (e) {}
   }
