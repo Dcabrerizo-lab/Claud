@@ -249,8 +249,11 @@ const Rules = (function () {
   //  - Höchstbeträge der Miete, Anlage 1 zu § 12 WoGG: Haushaltsgröße 1..5 je Mietenstufe I..VII, Mehrbetrag je weiteres Mitglied
   //  - Klimakomponente, § 12 Abs. 7 WoGG; Heizkostenkomponente (Gesamtbetrag), § 12 Abs. 6 WoGG
   //  - Formel § 19 Abs. 1 WoGG: Wohngeld = 1,15 × (M − (a + b·M + c·Y) × Y), Werte a, b, c: Anlage 2
-  // Stand 19.11.2026: Die Kürzung aus dem Entwurf BT-Drs. 21/8284 entfällt laut Koalitionseinigung vom 11.11.2026, die Dynamisierung
-  // zum 1.1.2027 wird ausgesetzt (Haushaltsbegleitgesetz 2027). Noch nicht endgültig beschlossen; die Werte 2026 gelten weiter.
+  // Stand 20.11.2026: Die Aussetzung der Fortschreibung zum 1.1.2027 steht im Regierungsentwurf BT-Drs. 21/8284 (Art. 1 Nr. 26 g,
+  // neuer § 43 Abs. 11 WoGG), nicht im Haushaltsbegleitgesetz 2027. Der Entwurf ist nicht beschlossen (1. Lesung 8.10.2026,
+  // Anhörung 4.11.2026) und nicht verkündet. Die Kürzung der Heizkostenkomponente soll laut Koalitionseinigung vom 11.11.2026
+  // entfallen (nur Fachmedien, nicht amtlich). Neue Mietenstufen-Zuordnung ab 1.1.2027 nur im Entwurf (Art. 2), Ausgang offen.
+  // Bis zu einer Verkündung gelten die Werte unten weiter (keine Umstellung nach Datum).
   // ---------------------------------------------------------------
   const HOECHST = { 1: [361, 437, 521, 608, 694, 82], 2: [408, 493, 587, 686, 782, 94], 3: [456, 551, 657, 766, 875, 106], 4: [511, 619, 737, 858, 982, 119],
     5: [562, 680, 809, 946, 1080, 129], 6: [615, 745, 887, 1035, 1183, 149], 7: [677, 820, 975, 1139, 1302, 163] };
@@ -267,6 +270,25 @@ const Rules = (function () {
   function wgHeiz(n) {
     const k = Math.min(Math.max(Math.floor(n), 1), 12);
     return k <= 5 ? HEIZ[k - 1] : HEIZ[4] + (k - 5) * HEIZ_WEITER;
+  }
+  // Anzeige „Höchstbetrag der Miete“ (Wohngeld) unter dem Mietfeld und in der Einfachen Version. Rechnet nichts Neues:
+  // wgCap/wgHeiz und dieselbe Näherung der Bruttokaltmiete wie wgMiete (Warmmiete minus Heizkosten, ohne Angabe minus Heizkostenkomponente).
+  // o: { stufen: [1..7] (eine oder mehrere mögliche; leer = alle), n, warm, heiz, eigentum }
+  // Rückgabe: { n, von, bis, sv, sb, heizKomp, klima, kalt, geschaetzt, vergleich }; vergleich: 'drunter' | 'drueber' | 'nah' | 'moeglich' | null
+  function wgHoechst(o) {
+    o = o || {};
+    const n = Math.min(Math.max(Math.floor(Number(o.n)) || 1, 1), 12);
+    let st = (Array.isArray(o.stufen) ? o.stufen : []).map(Number).filter((x) => Number.isInteger(x) && x >= 1 && x <= 7).sort((a, b) => a - b);
+    if (!st.length) st = [1, 2, 3, 4, 5, 6, 7]; // keine oder ungültige Stufen: ganze Spanne
+    const sv = st[0], sb = st[st.length - 1], von = wgCap(sv, n), bis = wgCap(sb, n), heizKomp = wgHeiz(n);
+    const klima = n <= 5 ? KLIMA[n - 1] : KLIMA[4] + (n - 5) * KLIMA_WEITER;
+    const warm = Number(o.warm) > 0 ? Number(o.warm) : 0;
+    const heiz = Number(o.heiz) > 0 && Number(o.heiz) < warm ? Number(o.heiz) : 0; // wie derive(): nur gültig, wenn kleiner als die Warmmiete
+    if (!warm || o.eigentum) return { n, von, bis, sv, sb, heizKomp, klima, kalt: null, geschaetzt: false, vergleich: null };
+    const geschaetzt = !heiz, kalt = Math.max(0, warm - (heiz || heizKomp));
+    let vergleich = kalt > bis ? 'drueber' : kalt <= von ? 'drunter' : 'moeglich';
+    if (sv === sb && geschaetzt && Math.abs(kalt - von) <= 0.1 * von) vergleich = 'nah'; // ±10 % um die Grenze (Gestaltung, keine Rechtsregel)
+    return { n, von, bis, sv, sb, heizKomp, klima, kalt, geschaetzt, vergleich };
   }
   // Höchstes anrechenbares Monatseinkommen Y (nach Pauschalabzug), bei dem bei Miete M noch Wohngeld > 0 bleibt
   // Wohngeld im Monat nach § 19 Abs. 1 WoGG
@@ -1975,7 +1997,7 @@ const Rules = (function () {
     return { h, results: sorted, zusammen: zus };
   }
 
-  return { evaluate, pflegeLeistungen, pflegeFuer, pflegeKombi, nettoLohn, bruttoAusNetto, nettoRente, bruttoAusNettoRente, lohnAnnahmen, pfaendung, pfaendFreibetrag, pkonto, RULES: R, WG, limits, wgYmax, wgMiete, wgCap, wgHeiz, wgBetrag, roman, sgb2Freibetrag, kizWohnanteil, haushaltsFreibetrag, derive, NAMES, STEPS, RECHT, ZUST_LAND, zustLand };
+  return { evaluate, pflegeLeistungen, pflegeFuer, pflegeKombi, nettoLohn, bruttoAusNetto, nettoRente, bruttoAusNettoRente, lohnAnnahmen, pfaendung, pfaendFreibetrag, pkonto, RULES: R, WG, limits, wgYmax, wgMiete, wgCap, wgHeiz, wgHoechst, wgBetrag, roman, sgb2Freibetrag, kizWohnanteil, haushaltsFreibetrag, derive, NAMES, STEPS, RECHT, ZUST_LAND, zustLand };
 })();
 
 if (typeof module !== 'undefined') module.exports = Rules;
