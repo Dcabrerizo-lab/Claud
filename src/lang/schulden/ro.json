@@ -1,10 +1,8 @@
 {
-  "sl.knopf": "Lista mea de datorii",
   "sl.h": "Lista mea de datorii",
   "sl.lead": "Notează toate datoriile, și pe cele față de familie și prieteni. Lista arată ce este important mai întâi. Te ajută și la consilierea pentru datorii.",
   "sl.leer": "Încă nu ai trecut nicio datorie.",
   "sl.neu": "Adaugă o datorie",
-  "sl.privat": "Lista rămâne pe acest dispozitiv, în dosarul deschis. Nu este trimisă pe internet. Este criptată doar dacă setezi un PIN în setări.",
   "sl.sum.gesamt": "Datorii în total: aproximativ {b}",
   "sl.sum.n": "{n} creanțe deschise",
   "sl.sum.raten": "Rate lunare în total: {b}",

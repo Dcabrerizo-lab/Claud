@@ -1,4 +1,4 @@
-// Schulden-Liste in der echten Oberfläche (dist, JSDOM): Einstieg über Geld sparen → Schulden, Eintragen, Gruppen nach Dringlichkeit,
+// Schulden-Liste in der echten Oberfläche (dist, JSDOM): Einstieg über Geld und Schulden → Meine Schulden-Liste, Eintragen, Gruppen nach Dringlichkeit,
 // Frist, Speichern je Vorgang, „Alle Angaben löschen“ mit Rückgängig, nur Text (kein HTML), Blatt für die Beratung, Haushaltsplan, Mein Ordner, Sprachen.
 'use strict';
 const { JSDOM } = require('jsdom');
@@ -22,9 +22,8 @@ const klick = (el) => el.dispatchEvent(new w.MouseEvent('click', { bubbles: true
 const tx = (e) => e.textContent.replace(/[  ]/g, ' ');
 const I = w.eval('I18N');
 const zurListe = () => {
-  klick($('goSparen'));
-  const k = [...d.querySelectorAll('#spInhalt button.weg')].find((b) => b.textContent.includes(I.de['sp.schulden']));
-  klick(k); klick($('sp-schuldenliste'));
+  klick($('goGeld'));
+  klick(d.querySelector('#spInhalt .gs-liste'));
 };
 const eintragen = (o) => {
   klick($('sl-neu'));
@@ -34,9 +33,9 @@ const eintragen = (o) => {
 setTimeout(() => {
   try {
     w.__solo.lang('de');
-    check('[schuldenliste] keine neue Startkachel (6 bleiben)', d.querySelectorAll('#v-start .sk').length === 6, d.querySelectorAll('#v-start .sk').length);
+    check('[schuldenliste] keine eigene Startkachel (5: Geld und Schulden ist eine Kachel)', d.querySelectorAll('#v-start .sk').length === 5, d.querySelectorAll('#v-start .sk').length);
     zurListe();
-    check('[schuldenliste] Knopf unter „Erste Schritte“ öffnet die Liste', !$('v-schulden').hidden && $('v-sparen').hidden);
+    check('[schuldenliste] Kachel „Meine Schulden-Liste“ in „Geld und Schulden“ öffnet die Liste', !$('v-schulden').hidden && $('v-sparen').hidden);
     check('[schuldenliste] leere Liste mit Einleitung', /Schreib alle Schulden auf/.test($('slInhalt').textContent) && !$('slSumme'));
     // Eintrag anlegen
     eintragen({ g: 'Stadtwerke', art: 'energie', stand: '512,30', st: 'mahnung' });
@@ -140,10 +139,8 @@ setTimeout(() => {
     klick(d.querySelector('#appnav button[data-ansicht="start"]'));
     zurListe();
     const vorher = mem['lotse.schulden'];
-    klick($('clearBtn'));
-    check('[schuldenliste] „Alle Angaben löschen“ nennt und leert die Schulden-Liste', /Schulden-Liste/.test(w.eval('I18N').de['sl.ordner']) && !mem['lotse.schulden'], mem['lotse.schulden']);
-    const undo = [...d.querySelectorAll('button')].find((b) => b.textContent.trim() === I.de['clear.undo'] || /Rückgängig/.test(b.textContent));
-    if (undo) { klick(undo); check('[schuldenliste] Rückgängig: Liste wieder da', mem['lotse.schulden'] === vorher && /Inkasso Nord/.test($('slInhalt').textContent)); }
+    klick($('clear2')); klick($('loeschJa'));
+    check('[schuldenliste] „Nur diesen Vorgang löschen“ nennt und leert die Schulden-Liste', /Schulden-Liste/.test($('clear2').textContent) && !mem['lotse.schulden'] && !!vorher, mem['lotse.schulden']);
     check('[schuldenliste] keine Skriptfehler', errors.length === 0, errors);
   } catch (e) { fehler++; console.log('FAIL Ausnahme', e && e.stack); }
   zweiteSeite();
@@ -183,9 +180,8 @@ function zweiteSeite() {
       klick2(oz2);
       klick2($2('sl-druck')); setze2('slKuerzel', 'AN'); klick2($2('slMitNotiz'));
       check('[schuldenliste/vorgang] Blatt mit Kürzel und Notiz', /Kürzel: AN/.test($2('slSeite').textContent) && /Anna-Notiz/.test($2('slSeite').textContent));
-      // Vorgang wechseln über das Schild
-      klick2($2('vgChip'));
-      klick2([...$2('vgMenu').querySelectorAll('button')].find((b) => b.textContent === 'Bert'));
+      // Vorgang wechseln in „Mein Ordner“ (ein Tipp auf die Zeile)
+      klick2(d2.querySelector('#setHaushalte button.vg-zeile[data-vg-name="Bert"]'));
       setTimeout(() => {
         try {
           check('[schuldenliste/vorgang] Wechsel: Blatt geschlossen und geleert', $2('slBlatt').hidden && $2('slSeite').textContent === '' && $2('slBlattBar').textContent === '');
@@ -198,7 +194,7 @@ function zweiteSeite() {
           check('[schuldenliste/vorgang] Wechsel: Kürzel und Notiz-Haken zurückgesetzt', $2('slKuerzel').value === '' && !$2('slMitNotiz').checked && $2('slMitAz').checked && !/Kürzel:/.test($2('slSeite').textContent));
           check('[schuldenliste/vorgang] Blatt ohne Einträge des anderen Vorgangs', /Bank Bert/.test($2('slSeite').textContent) && !/Vermieter Anna/.test($2('slSeite').textContent));
           klick2($2('slBlattZu'));
-          klick2($2('vgChip')); klick2([...$2('vgMenu').querySelectorAll('button')].find((b) => b.textContent === 'Anna'));
+          klick2(d2.querySelector('#setHaushalte button.vg-zeile[data-vg-name="Anna"]'));
           setTimeout(() => {
             try {
               check('[schuldenliste/vorgang] zurück zu Anna: eigene Liste wieder da, Bert nicht', S.daten().liste.length === 1 && S.daten().liste[0].g === 'Vermieter Anna', S.daten());

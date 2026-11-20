@@ -27,8 +27,8 @@ const names = () => cards().map((c) => c.querySelector('h3').textContent);
 const card = (n) => cards().find((c) => c.querySelector('h3').textContent === n);
 const level = (n) => card(n).querySelector('.pill').className.replace('pill ', '');
 const fire = (el, type) => el.dispatchEvent(new w.Event(type, { bubbles: true }));
-// Beispiel laden; sind schon eigene Angaben da, fragt die App nach – hier bestätigen
-const beispiel = (id) => { d.getElementById(id).click(); if (!d.getElementById('beispielDlg').hidden) d.getElementById('beispielJa').click(); };
+// Beispiel laden (nur noch Testhilfe: unsichtbare Knöpfe in #presets, David 20.11.2026)
+const beispiel = (id) => { d.getElementById(id).click(); };
 const setLang = (c) => { const s = d.getElementById('lang'); s.value = c; fire(s, 'change'); };
 const setSel = (id, v) => { const s = d.getElementById(id); s.value = v; fire(s, 'change'); };
 const setChk = (id, v) => { const c = d.getElementById(id); c.checked = v; fire(c, 'change'); };
@@ -47,7 +47,7 @@ check('Zusammenfassung zeigt Anzahl', /\d+ wahrscheinlich/.test(d.getElementById
 check('Unwahrscheinliche Leistungen sind eingeklappt gruppiert', d.querySelector('.neinbox') !== null && d.querySelector('.neinbox').open === false);
 check('Hinweis auf Beispielwerte sichtbar', d.getElementById('sampleNotice').hidden === false);
 check('Übersetzungs-Hinweis bei Deutsch versteckt', d.getElementById('transNotice').hidden === true);
-check('Nächste Schritte vorhanden bei Treffer', card('Wohngeld').querySelector('details') !== null);
+check('Treffer: Hinweis auf Unterlagen und nächste Schritte in der Antragsmappe', /Antragsmappe/.test((card('Wohngeld').querySelector('.karte-mappe') || {}).textContent || ''));
 check('Zusammenspiel-Hinweis Wohngeld und Kinderzuschlag steht in beiden Karten', /kombinieren/.test(d.getElementById('c-wohngeld').textContent) && /kombinieren/.test(d.getElementById('c-kiz').textContent));
 check('Neue Karten vorhanden', ['Grundsicherungsgeld', 'Unterhaltsvorschuss', 'BAföG', 'Pflegegeld und Entlastungsbetrag', 'Kindergeld'].every((n) => names().includes(n)));
 check('Unterhaltsvorschuss im Beispiel 1 wahrscheinlich', level('Unterhaltsvorschuss') === 'ja');
@@ -66,31 +66,22 @@ check('Mit Kindern sind Kinder-Fragen sichtbar', [...d.querySelectorAll('.cond-k
 setNum('ek1Brutto', 9000); setNum('ek1Netto', 6500);
 check('Hinweis verschwindet nach eigener Eingabe', d.getElementById('sampleNotice').hidden === true);
 check('Hohes Einkommen: Wohngeld und Kinderzuschlag unwahrscheinlich', level('Wohngeld') === 'nein' && level('Kinderzuschlag') === 'nein');
-// Beispiel laden bei eigenen Angaben: erst Rückfrage im eigenen Dialog, „Abbrechen“ und Esc lassen alles stehen
-d.getElementById('p2').click();
-const dlg = d.getElementById('beispielDlg');
-check('Beispiel über eigene Angaben: Rückfrage-Dialog offen, Fokus auf „Abbrechen“', !dlg.hidden && dlg.querySelector('[role="alertdialog"][aria-modal="true"]') && d.activeElement === d.getElementById('beispielNein'));
-check('Rückfrage: Hintergrund gesperrt (inert)', d.getElementById('cols').hasAttribute('inert'));
-d.getElementById('beispielNein').click();
-check('Rückfrage „Abbrechen“: eigene Angaben bleiben, Hintergrund wieder frei', dlg.hidden && d.getElementById('ek1Brutto').value === '9000' && !d.getElementById('cols').hasAttribute('inert'));
-d.getElementById('p2').click(); dlg.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
-check('Rückfrage Esc: schließt ohne Laden', dlg.hidden && d.getElementById('ek1Brutto').value === '9000');
-d.getElementById('p2').click(); d.getElementById('beispielJa').click();
-check('Rückfrage „Beispiel laden“: Beispiel geladen', dlg.hidden && d.getElementById('ek1Art').value === 'rente');
+check('Keine sichtbaren Beispiele im Leistungs-Check (nur Testhilfe)', d.getElementById('presets').hidden && !d.getElementById('presetLabel') && !d.getElementById('beispielDlg'));
 d.getElementById('p1').click();
-check('Unverändertes Beispiel: kein Dialog beim Wechsel', dlg.hidden && d.getElementById('ek1Art').value !== 'rente');
 // Eingeklappte Karte: zweite Zeile mit Betrag und Art der Stelle statt „Anspruch ist wahrscheinlich“
 const z2 = (id) => d.querySelector('#c-' + id + ' .head2').textContent;
 check('Kartenzeile Wohngeld: ungefährer Betrag und Wohngeldstelle', /ca\. .*€.* im Monat/.test(z2('wohngeld')) && /Wohngeldstelle/.test(z2('wohngeld')) && !/wahrscheinlich/.test(z2('wohngeld')), z2('wohngeld'));
-// Alle Angaben löschen: sagt, was gelöscht wird; Rückgängig-Leiste stellt alles wieder her
+// Löschen nur an einer Stelle (Einstellungen → Sicherheit und Daten): Zeile sagt, was weg ist; Rückfrage; danach leer
 d.getElementById('p-name').value = 'Test'; fire(d.getElementById('p-name'), 'input');
-check('Löschen-Knopf getrennt von den Beispielen, Text nennt Formular und Briefdaten', !d.getElementById('presets').contains(d.getElementById('clearBtn')) && /Formular/.test(d.getElementById('clearWas').textContent) && /Anschrift/.test(d.getElementById('clearWas').textContent));
-d.getElementById('clearBtn').click();
-check('Löschen: Formular leer, Rückgängig-Leiste sichtbar', d.getElementById('ek1Art').value === '' && d.getElementById('p-name').value === '' && !d.getElementById('undoBar').hidden);
-d.getElementById('undoBtn').click();
-check('Rückgängig: Angaben und Name zurück, Leiste weg', d.getElementById('ek1Brutto').value !== '' && d.getElementById('p-name').value === 'Test' && d.getElementById('undoBar').hidden);
-d.getElementById('clearBtn').click(); setNum('miete', 500);
-check('Neue Eingabe nach dem Löschen: Rückgängig-Leiste verschwindet', d.getElementById('undoBar').hidden);
+check('Leistungs-Check: „Angaben löschen“ oben in der Leiste von „Deine Angaben“ (vor dem Formular); Löschen-Zeile nennt Formular und Briefdaten', !d.getElementById('clearBtn') && !!d.getElementById('clearLink') && d.getElementById('sfLeiste').contains(d.getElementById('clearLink')) && d.getElementById('clearLink').compareDocumentPosition(d.getElementById('form')) & 4 && /Andere Vorgänge bleiben/.test(d.getElementById('clear2').textContent));
+d.getElementById('clearLink').click();
+check('„Angaben löschen“ oben: dieselbe Rückfrage direkt darunter (Behalten/Löschen)', !!d.querySelector('#schritte #loeschFrage') && /Formular/.test(d.getElementById('loeschFrage').textContent) && d.getElementById('loeschNein').textContent === 'Behalten');
+d.getElementById('loeschNein').click();
+check('„Behalten“: Rückfrage weg, Angaben bleiben', !d.getElementById('loeschFrage') && d.getElementById('p-name').value === 'Test');
+d.getElementById('clear2').click();
+check('Rückfrage nennt genau: Formular und Briefdaten', /Formular/.test(d.getElementById('loeschFrage').textContent) && /Anschrift/.test(d.getElementById('loeschFrage').textContent));
+d.getElementById('loeschJa').click();
+check('Löschen nach „Löschen“ in der Rückfrage: Formular leer, Meldung', d.getElementById('ek1Art').value === '' && d.getElementById('p-name').value === '' && /gelöscht/.test(d.getElementById('loeschMsg').textContent));
 d.getElementById('p-name').value = ''; fire(d.getElementById('p-name'), 'input');
 
 // Stepper
@@ -174,8 +165,7 @@ LANGS.forEach((l) => {
   check(l + ': Beschreibung unter der Karte ' + (l === 'de' ? 'fehlt bei Deutsch' : 'vorhanden'), (card('Wohngeld').querySelector('.desc') === null) === (l === 'de'));
   ['p2', 'p3'].forEach((p) => { beispiel(p); });
   check(l + ': Beispiele laden ohne Fehler', errors.length === 0, errors.join('; '));
-  check(l + ': Preset-Knopf übersetzt', d.getElementById('p1').textContent === dict['preset.p1']);
-});
+  });
 check('Sprachwahl wird gemerkt', store['lotse-lang'] === 'so');
 setLang('de');
 
@@ -201,7 +191,7 @@ check('Entweder Formular oder formlos: Wohngeld hat in Bayern einen Formular-Lin
 const formSeite = d.querySelector('#mappeBody .forms');
 check('Amtliche Formulare: Wohngeld als Link auf die amtliche Seite, kein Knopf zum Ausfüllen', !!formSeite && /Antrag auf Wohngeld \(Mietzuschuss\)/.test(formSeite.textContent) && !!formSeite.querySelector('a[href*="stmb.bayern.de"]') && formSeite.textContent.indexOf(I18N.de['f.formsWeb']) >= 0 && !d.getElementById('formsShare'), formSeite && formSeite.textContent.slice(0, 200));
 check('Formular-Link und formloser Brief schließen sich aus: beim Link (Wohngeld Bayern) kein Satz „formloser Antrag in dieser Mappe“', !!formSeite && formSeite.textContent.indexOf(I18N.de['f.formsBrief']) < 0);
-check('Amtliche Formulare: ohne Jobcenter keine Jobcenter-Unterlagenliste', !!formSeite && formSeite.textContent.indexOf(I18N.de['f.formsUnt']) < 0);
+check('Amtliche Formulare: keine eigene Unterlagenliste (eine Liste je Hilfe steht bei den Unterlagen)', !!formSeite && formSeite.textContent.indexOf('Kontoauszüge der letzten 3 Monate') < 0);
 const txt = pages.map((p) => p.textContent).join('\n');
 // Anschrift „91056 Erlangen“ liefert den Wohnort (kein PLZ-Feld ausgefüllt): Empfänger ist die Stadt Erlangen
 check('Brief: Absender, Empfänger (aus der PLZ der Anschrift) und Betreff', /Maria Beispiel/.test(txt) && /Hauptstraße 1/.test(txt) && /Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle/.test(txt) && /Betreff: Antrag auf Unterhaltsvorschuss/.test(txt));
@@ -219,7 +209,10 @@ check('Kopiertext enthält Briefe und Angabenblatt', /Betreff: Antrag auf Unterh
   const brief = () => d.getElementById('brief-uvg').textContent;
   const kopie = () => d.getElementById('mappeText').value;
   check('[empf] Empfängerfeld je Brief, vorbefüllt mit dem Vorschlag der App (Stadt Erlangen, Jugendamt, Anschrift)', !!feld && /^Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle\n.+\n910\d\d Erlangen$/.test(feld.value), feld && feld.value);
-  check('[empf] Feld liegt außerhalb der Briefseite und wird nicht gedruckt', !!feld && !feld.closest('.page') && feld.closest('.empf-edit').classList.contains('no-print'));
+  check('[empf] Feld steht im Anschreiben an der Stelle der Anschrift, wird nicht gedruckt (gedruckt wird der fertige Brief)', !!feld && feld.closest('.page') === d.getElementById('m-brief-uvg') && feld.closest('.empf-edit').classList.contains('no-print') && d.getElementById('brief-uvg').classList.contains('nur-druck'));
+  check('[empf] Anschrift bekannt: steht schon da, Feld erst nach „ändern“', !d.querySelector('[data-empf-zeigen="uvg"]').hidden && d.querySelector('[data-empf-feld="uvg"]').hidden && /Stadt Erlangen/.test(d.querySelector('[data-empf-zeigen="uvg"]').textContent));
+  d.querySelector('[data-empf-aendern="uvg"]').click();
+  check('[empf] „ändern“ öffnet das Feld an derselben Stelle', !d.querySelector('[data-empf-feld="uvg"]').hidden && d.querySelector('[data-empf-zeigen="uvg"]').hidden);
   check('[empf] Nur ein Feld, weil nur ein Brief (Wohngeld hat Formular-Link)', d.querySelectorAll('#mappeBody textarea[data-empf]').length === 1);
   feld.value = 'Landratsamt Musterkreis\nJugendamt\nMusterweg 5\n12345 Musterstadt'; fire(feld, 'input');
   check('[empf] Änderung erscheint sofort im Brief', /\n\nLandratsamt Musterkreis\nJugendamt\nMusterweg 5\n12345 Musterstadt\n\nDatum:/.test(brief()) && !/Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle/.test(brief()), brief().slice(0, 300));
@@ -238,7 +231,7 @@ check('Kopiertext enthält Briefe und Angabenblatt', /Betreff: Antrag auf Unterh
   const link = d.querySelector('#mappeBody .empf-edit a');
   const q = link ? decodeURIComponent(link.getAttribute('href').split('?q=')[1] || '') : '';
   check('[empf] Suchlink: DuckDuckGo, kurzer Suchbegriff und Ortsname ohne Postleitzahl, öffnet extern', !!link && /^https:\/\/duckduckgo\.com\/\?q=/.test(link.getAttribute('href')) && q === 'Unterhaltsvorschussstelle Jugendamt Erlangen' && link.getAttribute('target') === '_blank' && /noopener/.test(link.getAttribute('rel')) && link.textContent === I18N.de['f.empfSuche'], q);
-  check('[empf] Titel und Hinweis in der gewählten Sprache', d.querySelector('#mappeBody .empf-edit label').textContent === I18N.de['f.empfTitel'] && d.querySelector('#mappeBody .empf-edit p.small').textContent === I18N.de['f.empfHinweis']);
+  check('[empf] Titel und Platzhalter in der gewählten Sprache; bei bekannter Anschrift kein Hinweis „Fehlt die Anschrift“', d.querySelector('#mappeBody .empf-edit label').textContent === I18N.de['f.empfTitel'] && d.querySelector('#mappeBody textarea[data-empf]').getAttribute('placeholder') === I18N.de['f.empfPlatz'] && !d.querySelector('#mappeBody .empf-edit p.small'));
   check('[empf] Neue Texte in allen 13 Sprachen vorhanden', ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so'].every((l) => ['f.empfTitel', 'f.empfHinweis', 'f.empfSuche', 'f.empfZurueck'].every((k) => I18N[l] && typeof I18N[l][k] === 'string' && I18N[l][k].length > 5)));
   check('[empf] Keine Skriptfehler', errors.length === 0, errors.join('; '));
 }
@@ -255,7 +248,7 @@ setTimeout(() => {
   check('Kopieren meldet Ergebnis oder zeigt Ersatzfeld', d.getElementById('copyMsg').textContent.length > 0 || d.getElementById('mappeText').hidden === false);
   // Sprache in der Mappe
   setLang('en');
-  const docs = d.querySelector('#mappeBody .docs');
+  const docs = d.getElementById('m-unterlagen');
   check('Mappe wird bei Sprachwechsel neu aufgebaut: Unterlagenliste englisch', /Documents for this benefit/.test(docs.textContent) && /Rental contract or confirmation of rent/.test(docs.textContent), docs.textContent.slice(0, 80));
   check('Brief bleibt bei Sprachwechsel Deutsch', /Betreff: Antrag auf Unterhaltsvorschuss/.test(d.querySelector('#mappeBody .page').textContent));
   setLang('ar');
@@ -271,10 +264,10 @@ setTimeout(() => {
   check('Kein horizontales Scrollen erzwungen', !/min-width:\s*\d{4,}px/.test(html));
   check('Logische statt physische Abstände im Formular (RTL-fähig)', !/\.money input\s*\{[^}]*padding-right/.test(html) && /inset-inline-end/.test(html));
   check('Jedes Formularfeld hat eine Beschriftung', ['miete', 'mietstufe', 'ek1Art', 'ek1Brutto', 'ek1Netto', 'ek2Art', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'vermoegen', 'gebJahr', 'kindEink', 'ausbildung', 'pflegegrad', 'p-name', 'p-geb', 'p-strasse', 'p-ort', 'p-tel'].every((id) => d.querySelector('label[for="' + id + '"]')));
-  // Grenze 5 MB (bis 1.4: 2,5 MB; 19.11.2026: 3 MB für 13 Sprachen; 20.11.2026: 4 MB für Vorgänge speichern, Beratungsmodus, Pflege-Unterstützung, Schulden-Tipps, Haushaltsplan; 20.11.2026 nachmittags: 5 MB für Fristen, Schuldenliste, Energie, Mietgrenze, Kostensenkung, Paar-Einkommen – Entscheidung des Nutzers): eine einzige Datei, die offline läuft; der größte Teil sind PLZ-Daten (ganz Deutschland mit Mietenstufen), Behörden (Bayern), 13 Sprachen,
+  // Grenze 6 MB (Entscheidung David 20.11.2026; davor 5 MB; bis 1.4: 2,5 MB; 19.11.2026: 3 MB für 13 Sprachen; 20.11.2026: 4 MB für Vorgänge speichern, Beratungsmodus, Pflege-Unterstützung, Schulden-Tipps, Haushaltsplan; 20.11.2026 nachmittags: 5 MB für Fristen, Schuldenliste, Energie, Mietgrenze, Kostensenkung, Paar-Einkommen – Entscheidung des Nutzers): eine einzige Datei, die offline läuft; der größte Teil sind PLZ-Daten (ganz Deutschland mit Mietenstufen), Behörden (Bayern), 13 Sprachen,
   // seit 1.4 auch „Brief prüfen“ und die Pflegegrad-Einschätzung (zusammen gut 200 KB)
   check('Web-Datei ist ein vollständiges Dokument mit UTF-8 und Viewport (Safari, Handy)', /^<!doctype html>/i.test(html) && /<meta charset="utf-8">/i.test(html.slice(0, 300)) && /name="viewport"/.test(html.slice(0, 400)));
-  check('Dateigröße unter 5 MB', html.length < 5 * 1024 * 1024, (html.length / 1024).toFixed(0) + ' KB');
+  check('Dateigröße unter 6 MB', html.length < 6 * 1024 * 1024, (html.length / 1024).toFixed(0) + ' KB');
   // ----- Antrag scannen -----
   setLang('de');
   beispiel('p1');
@@ -385,54 +378,113 @@ setTimeout(() => {
   const sicht = () => ['start', 'leistungen', 'briefe', 'pflege', 'pfaendung', 'sparen'].find((x) => !d.getElementById('v-' + x).hidden);
   const navAkt = () => (d.querySelector('#appnav button[aria-current="page"]') || {}).getAttribute?.('data-ansicht');
   d.querySelector('#appnav button[data-ansicht="start"]').click();
-  d.getElementById('goPfaendung').click();
-  check('Start → Pfändung: Leiste markiert Start, oben „← Zurück“', sicht() === 'pfaendung' && navAkt() === 'start' && /← /.test(d.querySelector('[data-zurueck="pfaendung"]').textContent));
-  d.querySelector('[data-zurueck="pfaendung"]').click();
-  check('Pfändung „← Zurück“ führt zur Startseite', sicht() === 'start');
-  d.getElementById('goSparen').click(); d.querySelector('[data-zurueck="sparen"]').click();
-  check('Geld sparen „← Zurück“ führt zur Startseite', sicht() === 'start');
+  // Kopfzeile (Logo, App-Name, Satz „Prüfe in etwa 5 Minuten …“) nur auf der Startseite; sonst sichtbar versteckt, h1 bleibt für Screenreader
+  const kopfVersteckt = () => { const st = w.getComputedStyle(d.querySelector('header.top')); return st.position === 'absolute' && st.width === '1px' && st.overflow === 'hidden'; };
+  check('Kopfzeile mit Logo, Name und Satz „Prüfe in etwa 5 Minuten“ auf der Startseite sichtbar', !kopfVersteckt() && w.getComputedStyle(d.querySelector('.top .lead')).display !== 'none' && !!d.querySelector('.top .kopf-titel h1'));
+  for (const a of ['leistungen', 'ordner', 'einst']) {
+    if (a === 'leistungen') d.getElementById('goLeistungen').click(); else d.querySelector('#appnav button[data-ansicht="' + a + '"]').click();
+    check('Kopfzeile auf „' + a + '“ ausgeblendet, h1 im Dokument, eigene Überschrift sichtbar', kopfVersteckt() && d.querySelectorAll('header.top h1').length === 1 && !!d.querySelector('#v-' + a + ' h2:not([hidden])'));
+  }
+  d.querySelector('#appnav button[data-ansicht="start"]').click();
+  d.getElementById('goGeld').click();
+  check('Start → Geld und Schulden: Leiste markiert Start, oben „← Zurück“ als Textknopf', sicht() === 'sparen' && navAkt() === 'start' && /← /.test(d.querySelector('#v-sparen [data-nav-zurueck]').textContent) && d.querySelector('#v-sparen [data-nav-zurueck]').classList.contains('pa-zur'));
+  d.querySelector('#v-sparen [data-nav-zurueck]').click();
+  check('Geld und Schulden „← Zurück“ führt zur Startseite', sicht() === 'start');
+  check('Startseite: eine Kachel „Geld und Schulden“, keine eigenen Kacheln für Sparen und Pfändung', !!d.getElementById('goGeld') && !d.getElementById('goSparen') && !d.getElementById('goPfaendung') && d.getElementById('goGeld').classList.contains('sk'));
   d.getElementById('goPflege').click();
   if (sicht() === 'pflege') {
     check('Start → Pflege: Leiste markiert Start', navAkt() === 'start');
     d.querySelector('#pflegeAssist .pa-zur').click();
     check('Start → Pflege → „Zurück“ führt zur Startseite', sicht() === 'start');
   }
-  // Geld sparen → Schulden und Pfändung: Knopf zum Rechner oben, 4 erste Schritte, 8 Fälle zum Aufklappen; Verweis im Rechner erst unter dem Ergebnis
+  // Geld und Schulden: 6 Kacheln (Form der Startseite), „Es ist dringend“ mit 4 Fällen (Frist, erster Schritt, Einzelheiten zum Aufklappen),
+  // „Kostenlose Hilfe“ mit Schuldnerberatung, ersten Schritten und 4 Fällen; „Zurück“ immer eine Ebene hoch; Verweis im Rechner erst unter dem Ergebnis
   {
     setLang('de');
-    d.getElementById('goSparen').click();
-    const spB = () => [...d.querySelectorAll('#spInhalt button')];
-    const schuldenK = spB().find((b) => b.textContent.indexOf(I18N.de['sp.schulden']) === 0);
-    check('[schulden] Kachel „Schulden und Pfändung“ in Geld sparen', !!schuldenK);
-    schuldenK.click();
+    d.querySelector('#appnav button[data-ansicht="start"]').click();
+    d.getElementById('goGeld').click();
     const box = d.getElementById('spInhalt');
-    const ersterKnopf = box.querySelector('button');
-    check('[schulden] Ganz oben der Knopf „Ausrechnen, was dir bleibt“', !!ersterKnopf && ersterKnopf.textContent === I18N.de['sp.schulden.pf'] && !ersterKnopf.closest('details'));
-    check('[schulden] Erste Schritte mit 4 Punkten', box.querySelectorAll('ol.sp-liste li').length === 4 && box.querySelector('ol.sp-liste li').textContent === I18N.de['sp.schulden.1']);
-    const faelle = [...box.querySelectorAll('details.sp-fall')].map((x) => x.getAttribute('data-fall'));
-    check('[schulden] Was tun, wenn …: 8 Fälle zum Aufklappen in fester Reihenfolge', faelle.join() === 'inkasso,mahn,konto,strom,miete,rate,unserioes,insolvenz', faelle.join());
-    check('[schulden] Fälle zu Beginn zugeklappt, Mahnbescheid nennt die 2-Wochen-Frist mit Quelle', [...box.querySelectorAll('details.sp-fall')].every((x) => !x.open) && /2 Wochen.*§ 692 ZPO/.test(box.querySelector('[data-fall="mahn"] p').textContent));
+    const kacheln = () => [...box.querySelectorAll('.uk-raster > button.uk-karte')];
+    const zur = () => d.querySelector('#v-sparen [data-nav-zurueck]').click();
+    const titel = kacheln().map((b) => b.querySelector('b').textContent);
+    check('[geld] 6 Kacheln in fester Reihenfolge', titel.join('|') === ['gs.dringend', 'gs.bleibt', 'sl.h', 'gs.planen', 'sp.h', 'gs.hilfe'].map((k) => I18N.de[k]).join('|'), titel.join('|'));
+    check('[geld] Kacheln in der Form der Startseite (Symbol, Titel, Text)', kacheln().every((b) => b.querySelector('.sk-sym svg') && b.querySelector('.sk-txt b') && b.querySelector('.sk-txt span')));
+    check('[geld] weiße Unterkacheln (uk-karte im uk-raster, Design #68)', kacheln().length === 6 && kacheln().every((b) => b.classList.contains('uk-karte') && !b.classList.contains('sk')));
+    // 1 Es ist dringend
+    kacheln()[0].click();
+    const faelle = kacheln().map((b) => b.className.match(/gs-d-([a-z]+)/)[1]);
+    check('[geld] Es ist dringend: Konto, Strom/Gas, Mahnbescheid, Wohnung', faelle.join() === 'konto,strom,mahn,miete', faelle.join());
+    kacheln()[2].click();
+    check('[geld] Mahnbescheid: Frist und erster Schritt oben, Einzelheiten zugeklappt', box.querySelector('.gs-frist p').textContent === I18N.de['gs.d.mahn.frist'] && box.querySelector('.gs-schritt p').textContent === I18N.de['gs.d.mahn.schritt'] && !box.querySelector('details[data-fall="mahn"]').open);
     const fall = (f) => box.querySelector('[data-fall="' + f + '"] p').textContent;
-    check('[schulden-korr] Strom/Gas: 2 Abschläge und 100 €, 4 Wochen Androhung, 8 Werktage, zinsfreie Raten (§§ 41f, 41g EnWG)', /2 Monatsabschlägen und mindestens 100 € .*§ 41f EnWG/.test(fall('strom')) && /4 Wochen vorher angedroht und 8 Werktage/.test(fall('strom')) && /zinsfreie Ratenzahlung .*§ 41g EnWG/.test(fall('strom')) && /Strom und Gas/.test(fall('strom')) && !/StromGVV/.test(fall('strom')));
     check('[schulden-korr] Vollstreckungsbescheid: darf sofort gepfändet werden, Einspruch 2 Wochen (Notfrist), stoppt nicht von selbst; Widerspruch bis zum Vollstreckungsbescheid', /solange das Gericht noch keinen Vollstreckungsbescheid erlassen hat \(§ 694 ZPO\)/.test(fall('mahn')) && /darf sofort gepfändet werden \(§ 700 ZPO\)\. Dagegen hilft nur noch ein Einspruch\. Er muss innerhalb von 2 Wochen/.test(fall('mahn')) && /Notfrist, §§ 700, 339 ZPO/.test(fall('mahn')) && /nicht von selbst.*§ 719 ZPO/.test(fall('mahn')));
-    check('[schulden-korr] Mietschulden: ordentliche Kündigung kann trotz Schonfrist bestehen bleiben', /ordentlich \(mit Frist\) gekündigt.*trotz Zahlung bestehen bleiben/.test(fall('miete')));
+    check('[geld] Mahnbescheid nennt die 2-Wochen-Frist mit Quelle', /2 Wochen.*§ 692 ZPO/.test(box.querySelector('.gs-frist p').textContent));
+    zur();
+    check('[geld] „← Zurück“ aus einem Fall führt zur Auswahl „Es ist dringend“', kacheln().length === 4);
+    kacheln()[1].click();
+    check('[schulden-korr] Strom/Gas: 2 Abschläge und 100 €, 4 Wochen Androhung, 8 Werktage, zinsfreie Raten (§§ 41f, 41g EnWG)', /2 Monatsabschlägen und mindestens 100 € .*§ 41f EnWG/.test(fall('strom')) && /4 Wochen vorher angedroht und 8 Werktage/.test(fall('strom')) && /zinsfreie Ratenzahlung .*§ 41g EnWG/.test(fall('strom')) && /Strom und Gas/.test(fall('strom')) && !/StromGVV/.test(fall('strom')));
+    zur(); kacheln()[3].click();
+    check('[schulden-korr] Mietschulden: ordentliche Kündigung kann trotz Schonfrist bestehen bleiben', /ordentlich \(mit Frist\) gekündigt.*trotz Zahlung bestehen bleiben/.test(fall('miete')) && /§ 569 BGB/.test(box.querySelector('.gs-frist p').textContent));
+    zur(); zur();
+    check('[geld] zweimal „← Zurück“: wieder bei den 6 Kacheln', kacheln().length === 6);
+    // 6 Kostenlose Hilfe
+    kacheln()[5].click();
+    check('[geld] Kostenlose Hilfe: zuerst Schuldnerberatung finden, dann 3 erste Schritte', box.querySelector('.gs-beratung p').textContent === I18N.de['sp.schulden.4'] && box.querySelectorAll('.sp-schritte li').length === 3 && box.querySelector('.sp-schritte li p').textContent === I18N.de['sp.schulden.1']);
+    const hf = [...box.querySelectorAll('details.sp-fall')].map((x) => x.getAttribute('data-fall'));
+    check('[geld] Kostenlose Hilfe: Inkasso, Ratenzahlung, unseriöse Angebote, Privatinsolvenz zum Aufklappen', hf.join() === 'inkasso,rate,unserioes,insolvenz', hf.join());
     check('[schulden] Quellenzeile nennt Verbraucherzentralen, BAG-SB, Caritas/Diakonie und AG SBV', /Verbraucherzentralen.*BAG-SB.*Caritas.*Diakonie.*AG SBV/.test(box.textContent));
-    const roh = Object.keys(I18N).filter((l) => { setLang(l); return /sp\.schulden|pf\.tipps|undefined/.test(d.getElementById('spInhalt').textContent); });
-    check('[schulden] In allen 13 Sprachen ohne Rohschlüssel', roh.length === 0, roh.join());
+    zur();
+    // 5 Sparen im Alltag: nur Strom, Heizen, Essen, Verträge (ohne Schulden, ohne Haushaltsplan, ohne Sperre)
+    kacheln()[4].click();
+    const th = kacheln().map((b) => b.className.match(/gs-t-([a-z]+)/)[1]);
+    check('[geld] Sparen im Alltag: Strom, Heizen, Essen, Verträge (Kacheln)', th.join() === 'strom,heizen,essen,vertraege', th.join());
+    kacheln()[3].click();
+    check('[geld] Verträge ohne Schulden-Text (Sperre steht nur unter „Es ist dringend“)', !/41g/.test(box.textContent) && box.querySelectorAll('.sp-tipps li').length === 5);
+    { const tp = [...box.querySelectorAll('details.tipp')]; check('[geld-tipp] Jeder Tipp: Symbol + kurzer Satz (höchstens 12 Wörter), ausführlicher Text zugeklappt', tp.length === 5 && tp.every((x) => x.querySelector('summary .tipp-sym svg') && x.querySelector('.tipp-kurz').textContent.split(/\s+/).length <= 12 && !x.open && x.querySelector('p').textContent.length > x.querySelector('.tipp-kurz').textContent.length), tp.map((x) => x.querySelector('.tipp-kurz').textContent)); }
+    zur(); kacheln()[2].click();
+    { const vz = d.getElementById('sp-vz'); check('[geld] Essen: keine eigenen Rezepte, Linkkarte zur Verbraucherzentrale (öffnet extern)', !!vz && vz.href === 'https://www.verbraucherzentrale.de/lebensmittel/so-geht-gesunde-ernaehrung-mit-wenig-geld-96404' && vz.target === '_blank' && /Verbraucherzentrale/.test(vz.textContent) && !box.querySelector('.rezept') && !/Rezept/.test(box.textContent)); }
+    zur(); zur(); zur();
+    check('[geld] Zurück aus Sparen-Thema → Themen → Kacheln → Start', sicht() === 'start');
+    // Alle Ebenen in allen Sprachen ohne Rohschlüssel
+    d.getElementById('goGeld').click();
+    const roh = [];
+    const ebenen = [[], [0], [0, 0], [5], [4], [4, 2]];
+    Object.keys(I18N).forEach((l) => {
+      setLang(l);
+      ebenen.forEach((weg) => {
+        while (box.querySelector('.uk-raster') && kacheln().length !== 6 || !box.querySelector('.uk-raster')) zur();
+        weg.forEach((i) => kacheln()[i].click());
+        if (/\b(gs|sp|pf|home)\.[a-z]|undefined/.test(box.textContent)) roh.push(l + ':' + weg.join('-'));
+      });
+    });
+    check('[geld] In allen 13 Sprachen ohne Rohschlüssel', roh.length === 0, roh.join());
     setLang('de');
-    d.querySelector('#spInhalt [data-fall="konto"] button').click();
-    check('[schulden] P-Konto-Fall führt zum Pfändungsrechner', d.getElementById('app').getAttribute('data-ansicht') === 'pfaendung');
+    while (!(box.querySelector('.uk-raster') && kacheln().length === 6)) zur();
+    // Konto gepfändet → Pfändungsrechner (Konto) → nach dem Ergebnis „Kostenlose Hilfe“ → Zurück eine Ebene hoch
+    kacheln()[0].click(); kacheln()[0].click();
+    box.querySelector('.sp-rechner').click();
+    check('[geld] Konto gepfändet führt zum Pfändungsrechner (Konto)', d.getElementById('app').getAttribute('data-ansicht') === 'pfaendung');
     const pfB = () => [...d.querySelectorAll('#pfInhalt button')];
-    check('[schulden] Pfändungsrechner: vor dem Rechnen kein Knopf „Tipps bei Schulden“', !pfB().some((b) => b.textContent === I18N.de['pf.tipps']));
-    pfB().find((b) => b.textContent.indexOf(I18N.de['pf.konto']) === 0).click();
+    check('[geld] Pfändungsrechner: vor dem Rechnen kein Knopf „Kostenlose Hilfe“', !d.querySelector('#pfInhalt .pf-zur-hilfe'));
     pfB().find((b) => b.textContent === '0').click();
     pfB().find((b) => b.textContent === '0').click();
-    const jetztK = [...d.querySelectorAll('#pfInhalt .pf-jetzt li')].map((x) => x.textContent);
+    const jetztK = [...d.querySelectorAll('#pfInhalt .pf-jetzt li p')].map((x) => x.textContent);
     check('[schulden-korr] Konto: Umwandeln innerhalb eines Monats schützt auch gesperrtes Guthaben (§ 899 Abs. 1 ZPO)', jetztK[0] === I18N.de['pf.tipp.umwandeln'] && /innerhalb eines Monats.*schon gesperrte Guthaben geschützt \(§ 899 Abs\. 1 ZPO\)/.test(jetztK[0]), jetztK[0]);
-    const erg = d.querySelector('#pfInhalt .pf-zahl'), tk = pfB().find((b) => b.textContent === I18N.de['pf.tipps']);
-    check('[schulden] Nach dem Rechnen: Knopf „Tipps bei Schulden“ unter dem Ergebnis', !!erg && !!tk && (erg.compareDocumentPosition(tk) & w.Node.DOCUMENT_POSITION_FOLLOWING));
+    const erg = d.querySelector('#pfInhalt .pf-zahl'), tk = d.querySelector('#pfInhalt .pf-zur-hilfe');
+    check('[geld] Nach dem Rechnen: Knopf „Kostenlose Hilfe“ unter dem Ergebnis', !!erg && !!tk && tk.textContent === I18N.de['gs.hilfe'] && (erg.compareDocumentPosition(tk) & w.Node.DOCUMENT_POSITION_FOLLOWING));
     tk.click();
-    check('[schulden] Knopf öffnet die Schulden-Tipps', d.getElementById('app').getAttribute('data-ansicht') === 'sparen' && d.querySelectorAll('#spInhalt details.sp-fall').length === 8);
+    check('[geld] Knopf öffnet „Kostenlose Hilfe“', d.getElementById('app').getAttribute('data-ansicht') === 'sparen' && box.querySelectorAll('details.sp-fall').length === 4);
+    zur();
+    check('[geld] Zurück aus „Kostenlose Hilfe“: 6 Kacheln (kein Kreis zum Rechner)', sicht() === 'sparen' && kacheln().length === 6);
+    zur();
+    check('[geld] Zurück von den 6 Kacheln: Startseite', sicht() === 'start');
+  }
+  // Leistungs-Check: Weg wählen (src/schritte.js, ausführlich in test/test-schritte.js)
+  {
+    const sfBox = d.getElementById('schritte');
+    check('[schritte] Abschnitt „Schritt für Schritt“ vorhanden, Modul geladen', !!sfBox && !!w.Schritte && w.Schritte.FRAGEN.length > 40);
+    check('[schritte] Jede Formular-Angabe hat eine Frage oder gehört zu einer Mehrfachfrage', ['adults', 'kids', 'kidsU6', 'kids14', 'young', 'gebJahr', 'baby', 'egVor', 'aufenthalt', 'euArbeit', 'euJahre', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'bhWeitere', 'emStd', 'em5', 'ernaehrung', 'schwanger', 'arbeitSit', 'algZeit', 'algMonate', 'krankWochen', 'lohnVorher', 'ausbildung', 'wohnart', 'miete', 'heizkosten', 'warmwasser', 'hhAndere', 'plz', 'bundesland', 'mietstufe', 'ek1Art', 'ek1Brutto', 'ek1Netto', 'ek1bArt', 'ek1bBetrag', 'ek2Art', 'ek2Brutto', 'ek2Netto', 'ek2bArt', 'ek2bBetrag', 'zusatzRente', 'grundrente33', 'wfbmEssen', 'unterhalt', 'waisen', 'kindEink', 'uzBetrag', 'uzAn', 'uzTitel', 'vermoegen', 'autoWert', 'autoBraucht', 'uvgWechsel', 'uvgPartner']
+      .every((k) => w.Schritte.FRAGEN.some((f) => f.id === k)) && ['kinder12', 'kindKrank', 'unterhaltFehlt', 'mzG', 'mzGl', 'bhSelbst', 'wfbm', 'teilhabe', 'babBetrieb', 'babWohnt'].every((k) => w.Schritte.FRAGEN.some((f) => (f.felder || []).some((x) => x[0] === k))));
   }
   check('Keine Skriptfehler im gesamten Test', errors.length === 0, errors.join('; '));
   console.log(fails ? '\n' + fails + ' FEHLER' : '\nAlle DOM-Tests bestanden');

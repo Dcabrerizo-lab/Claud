@@ -1,10 +1,8 @@
 {
-  "sl.knopf": "Liiska deymahayga",
   "sl.h": "Liiska deymahayga",
   "sl.lead": "Qor dhammaan deymahaaga, xitaa kuwa qoyska iyo saaxiibada. Liisku wuxuu muujinayaa waxa ugu horreeya ee muhiimka ah. Sidoo kale wuxuu kaa caawinayaa xafiiska latalinta deynta (Schuldnerberatung).",
   "sl.leer": "Weli wax deyn ah lama gelin.",
   "sl.neu": "Ku dar deyn",
-  "sl.privat": "Liisku wuxuu ku jiraa qalabkan, kiiska furan. Internetka laguma diro. Waxaa la sir-qariyaa (encrypted) oo keliya haddii aad dejiso PIN gudaha dejinta.",
   "sl.sum.gesamt": "Deymaha oo dhan: qiyaastii {b}",
   "sl.sum.n": "{n} sheegasho oo furan",
   "sl.sum.raten": "Qaybaha bilaha ah oo dhan: {b}",

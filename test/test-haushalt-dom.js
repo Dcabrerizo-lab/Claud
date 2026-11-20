@@ -20,8 +20,8 @@ const w = dom.window, d = w.document, $ = (id) => d.getElementById(id);
 const setze = (id, v) => { const e = $(id); e.value = v; e.dispatchEvent(new w.Event('input', { bubbles: true })); e.dispatchEvent(new w.Event('change', { bubbles: true })); };
 const klick = (el) => el.dispatchEvent(new w.MouseEvent('click', { bubbles: true }));
 const tx = (e) => e.textContent.replace(/[\u00a0\u202f]/g, ' ');
-// Haushaltsplan öffnen wie in der App: Start → Geld sparen → Thema „Haushaltsplan“
-const zumPlan = () => { klick($('goSparen')); klick([...d.querySelectorAll('#spInhalt button.weg')].find((b) => /Haushaltsplan|Budget|bütçe|Qorshaha|بودجه|الميزانية/i.test(b.textContent)) || [...d.querySelectorAll('#spInhalt button.weg')].pop()); };
+// Haushaltsplan öffnen wie in der App: Start → Geld und Schulden → Kachel „Mein Geld planen“
+const zumPlan = () => { klick($('goGeld')); klick(d.querySelector('#spInhalt .gs-planen')); };
 const knopf = (text, wurzel) => [...(wurzel || d).querySelectorAll('button')].find((b) => b.textContent.trim() === text);
 setTimeout(() => {
   try {
@@ -29,7 +29,7 @@ setTimeout(() => {
     // Check -> Plan: vorausfüllen
     w.__solo.set({ adults: 1, kids: 2, ek1Art: 'rente', ek1Brutto: 1400, ek1Netto: 1210, miete: 700, heizkosten: 90, plz: '90542', bezug: {} });
     zumPlan();
-    check('Ansicht Haushaltsplan offen (Eintrag in „Geld sparen“, kein eigener Zusatzknopf)', !$('v-haushalt').hidden && !$('goHaushalt'));
+    check('Ansicht Haushaltsplan offen (Kachel in „Geld und Schulden“, kein eigener Zusatzknopf)', !$('v-haushalt').hidden && !$('goHaushalt'));
     check('Check -> Plan: Netto übernommen', $('hb-ek1').value === '1210', $('hb-ek1').value);
     check('Check -> Plan: Art übernommen', $('hb-ek1Art').value === 'rente');
     check('Einkommensart „Unterhalt für sich selbst“ auch im Plan wählbar', !!$('hb-ek1Art').querySelector('option[value="unt"]'));
@@ -102,9 +102,9 @@ setTimeout(() => {
     voll = true; setze('hb-sonstEin', '10');
     check('Speicherfehler wird angezeigt (Meldung der Vorgänge-Speicherung)', !$('vgFehler').hidden && /Speicher voll oder gesperrt/.test($('vgFehler').textContent), $('vgFehler').textContent);
     voll = false;
-    // Geld sparen → Schulden → Pfändungsrechner → Zurück führt wieder zu „Geld sparen“ (Herkunft)
-    klick($('goSparen')); klick([...d.querySelectorAll('#spInhalt button.weg')].find((b) => /Schulden/.test(b.textContent))); klick(d.querySelector('#spInhalt .sp-rechner'));
-    check('Schulden-Tipps öffnen den Pfändungsrechner', !$('v-pfaendung').hidden);
+    // Geld und Schulden → „Was bleibt mir?“ → Pfändungsrechner → Zurück führt wieder zu „Geld und Schulden“ (Herkunft)
+    klick($('goGeld')); klick(d.querySelector('#spInhalt .gs-bleibt'));
+    check('Kachel „Was bleibt mir?“ öffnet den Pfändungsrechner', !$('v-pfaendung').hidden);
     { // Pfändung Lohn: „Das tust du jetzt“ beginnt mit den Unterhaltspflichten (§ 850c ZPO)
       const pb = () => [...d.querySelectorAll('#v-pfaendung button')];
       klick(pb().find((b) => /Lohn/.test(b.textContent))); klick(pb().find((b) => b.textContent.trim() === '0'));
@@ -112,8 +112,9 @@ setTimeout(() => {
       const li = d.querySelector('#v-pfaendung .pf-jetzt li');
       check('[schulden-korr] Lohn: erster Schritt prüft, ob alle Unterhaltspflichten berücksichtigt sind', li && /alle Menschen berücksichtigt, denen du Unterhalt zahlst/.test(li.textContent), li && li.textContent);
     }
-    klick(d.querySelector('#v-pfaendung [data-zurueck]'));
-    check('Zurück vom Pfändungsrechner: wieder bei „Geld sparen“', !$('v-sparen').hidden);
+    // „← Zurück“ geht je eine Ebene hoch (Ergebnis → Fragen → Auswahl Lohn/Konto → Herkunft)
+    for (let i = 0; i < 6 && !$('v-pfaendung').hidden; i++) klick(d.querySelector('#v-pfaendung [data-nav-zurueck]'));
+    check('Zurück vom Pfändungsrechner (eine Ebene je Klick): wieder bei „Geld und Schulden“', !$('v-sparen').hidden);
     { // Einkommen geändert: Vorlage „Änderung melden“ nur bei Grundsicherungsgeld oder Sozialhilfe; Text nennt die Regeln je Leistung
       const melden = (bezug) => { w.__solo.set({ adults: 1, kids: 0, ek1Art: 'lohn', ek1Brutto: 2000, ek1Netto: 1500, miete: 500, plz: '90542', bezug }); w.Haushalt.laden({ ekBasis: 100000, ekV: 2 }); zumPlan(); return !!knopf('Änderung dem Amt melden', $('hbHinweise')); };
       check('[hb-korr] Vorlage „Änderung melden“ bei Grundsicherungsgeld', melden({ grundsicherungsgeld: true }));

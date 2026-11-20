@@ -1,4 +1,4 @@
-// Schulden-Liste (Geld sparen → Schulden und Pfändung). Eigenes Modul: reine Rechnung (Node-Tests) und Oberfläche.
+// Schulden-Liste (Geld und Schulden → Meine Schulden-Liste). Eigenes Modul: reine Rechnung (Node-Tests) und Oberfläche.
 // Alles bleibt auf dem Gerät, je Vorgang (lotse.schulden in Vorgaenge.DATEN; verschlüsselt nur mit PIN). Beträge in Cent.
 // Ausgabe nur per textContent (el()), nie als HTML: auch ein manipulierter Speicherstand kann kein HTML einschleusen.
 // Grundlage: docs/entwuerfe/schuldenliste.md (Prüfvermerk und Entscheidung Koordination vom 20.11.2026).
@@ -276,8 +276,8 @@ var Schulden = (function () {
     var fb = el('div', 'sl-frage-platz'); fb.id = 'slFrage'; box.appendChild(fb);
     if (frage && frage.art === 'csv') csvFrageZeigen(fb);
     var m = el('p', 'small'); m.id = 'slExportMsg'; m.setAttribute('aria-live', 'polite'); box.appendChild(m);
-    box.appendChild(el('p', 'small muted', t('sl.privat')));
-    box.appendChild(el('p', 'small muted', t('sp.schulden.quellen')));
+    // Quellen zugeklappt am Seitenende (gemeinsames Bauteil „Quellen und Stand“ aus src/app.js)
+    box.appendChild(window.SoloMehr && window.SoloMehr.quellen ? window.SoloMehr.quellen([t('sp.schulden.quellen')]) : el('p', 'small muted', t('sp.schulden.quellen')));
     fokus(fokusId);
   }
   function fokus(id) { var e = id && $(id); if (e) { try { e.focus(); } catch (x) { /* nicht fokussierbar */ } } }
@@ -507,8 +507,11 @@ var Schulden = (function () {
     }
     var b = el('div', 'btns');
     b.appendChild(knopf('btn', t('f.print'), blattAusgeben, { id: 'slDruck' }));
-    b.appendChild(knopf('btn ghost', t('pf.zurueck'), blattSchliessen, { id: 'slBlattZu' }));
     bar.appendChild(b);
+    // Zurück oben wie überall (src/navigation.js); ohne Navigation (Einzeltests) ein eigener Klick
+    var zu = window.Navigation ? Navigation.kopf(document, t, { id: 'slBlattZu' }) : el('div', 'pa-zeile nav-kopf');
+    if (!window.Navigation) zu.appendChild(knopf('linkbtn pa-zur', '← ' + t('pf.zurueck'), blattSchliessen, { id: 'slBlattZu' }));
+    bar.insertBefore(zu, bar.firstChild);
     var m = el('p', 'msg'); m.id = 'slMsg'; m.setAttribute('role', 'status'); bar.appendChild(m);
     bar.appendChild(el('p', 'small', t('sl.druck.privat')));
   }

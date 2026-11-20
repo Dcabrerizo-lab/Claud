@@ -55,6 +55,9 @@
   .abw p { margin: 0; }
   .abw-kopf { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
   .btns { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+  .card:empty + .rb-erg { display: none; }
+  textarea[hidden] ~ .rb-schreiben { display: none; }
+  details.mehr { margin: 4px 0; }
   details > summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
   .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   @media (max-width: 640px) { .row { grid-template-columns: 1fr; } .freq { grid-template-columns: minmax(0, 1fr) repeat(3, 64px); } .ergebnis { position: static; } }
@@ -96,8 +99,9 @@
   <!-- Pflegegutachten -->
   <section id="p-pflege" role="tabpanel" aria-labelledby="tab-pflege">
     <div class="card">
-      <h2>Pflegegutachten prüfen</h2>
-      <p>SoLo rechnet die Punkte des Gutachtens nach § 15 SGB XI nach und zeigt, wo es knapp ist. Am schnellsten geht es, wenn du das Gutachten scannst oder als PDF wählst: Von Hand sind es rund 60 Bewertungen.</p>
+      <h2 data-t="bp.pf.h">Pflegegutachten prüfen</h2>
+      <p data-t="bp.pf.p">Scanne das Gutachten oder wähle ein PDF. SoLo rechnet die Punkte nach.</p>
+      <details class="mehr"><summary data-t="bp.was">Was prüft SoLo genau?</summary><p>SoLo rechnet die Punkte des Gutachtens nach § 15 SGB XI nach und zeigt, wo es knapp ist. Scannen geht am schnellsten: Von Hand sind es rund 60 Bewertungen.</p></details>
       <label for="pf-text">Text aus dem Gutachten (aus einem PDF kopiert oder vom Foto erkannt)</label>
       <textarea id="pf-text" placeholder="z. B. 1.1 Positionswechsel im Bett  überwiegend selbständig …"></textarea>
       <div class="btns"><button type="button" class="btn primary" id="pf-lesen">Text lesen</button><button type="button" class="btn" id="pf-beispiel">Beispiel laden</button><button type="button" class="btn" id="pf-leeren">Alles leeren</button></div>
@@ -123,6 +127,7 @@
       <div id="pf-module"></div>
     </form>
     <div class="card ergebnis" id="pf-erg" aria-live="polite"></div>
+    <p class="small muted rb-satz rb-erg" data-t="rb.satz">Erste Einschätzung, keine Rechtsberatung. Es entscheidet das Amt, im Streit das Gericht.</p>
     <div class="card" id="pf-erkl"></div>
     <div class="card" id="pf-wid">
       <h2>Widerspruch oder Höherstufung</h2>
@@ -150,29 +155,32 @@
       <textarea id="pf-wid-text" rows="18" readonly hidden></textarea>
       <div class="btns"><button type="button" class="btn" id="pf-wid-copy" hidden>Text kopieren</button></div>
       <p class="small" id="pf-copy-msg" role="status"></p>
+      <p class="small muted rb-satz rb-schreiben" data-t="rb.satz">Erste Einschätzung, keine Rechtsberatung. Es entscheidet das Amt, im Streit das Gericht.</p>
     </div>
   </section>
 
   <!-- Bescheid Grundsicherungsgeld -->
   <section id="p-bescheid" role="tabpanel" aria-labelledby="tab-bescheid" hidden>
     <div class="card">
-      <h2>Bescheid Grundsicherungsgeld prüfen</h2>
-      <p>Trage die Personen der Bedarfsgemeinschaft und die Beträge aus dem Bescheid für einen Monat ein. Zur Bedarfsgemeinschaft gehören du, dein Ehe- oder Lebenspartner und eure unverheirateten Kinder unter 25 im Haushalt (§ 7 Abs. 3 SGB II). SoLo rechnet mit denselben Regeln wie die App nach und zeigt Abweichungen.</p>
-      <details class="begriffe"><summary>Wörter im Bescheid erklärt</summary>
+      <h2 data-t="bp.jc.h">Bescheid Grundsicherungsgeld prüfen</h2>
+      <p data-t="bp.scan.p">Scanne den Bescheid. SoLo rechnet nach und zeigt Abweichungen.</p>
+      <details class="mehr"><summary data-t="bp.was">Was prüft SoLo genau?</summary><p data-t="bp.jc.was">SoLo rechnet die Beträge deines Bescheids für einen Monat nach, mit denselben Regeln wie der Leistungs-Check: Regelbedarfe, Mehrbedarfe, Miete und Heizung und das angerechnete Einkommen. Wo der Bescheid zu deinen Lasten abweicht, zeigt SoLo den Unterschied und den Grund.</p></details>
+      <details class="begriffe"><summary data-t="bp.begriffe">Wörter im Bescheid erklärt</summary>
         <dl>
-          <dt>Bedarfsgemeinschaft</dt><dd>Alle, für die das Jobcenter zusammen rechnet: du, dein Ehe- oder Lebenspartner und eure unverheirateten Kinder unter 25 im Haushalt (§ 7 Abs. 3 SGB II).</dd>
-          <dt>Berechnungsbogen</dt><dd>Die Seiten im Bescheid mit der Rechnung: je Person und Monat, was anerkannt und was als Einkommen abgezogen wird. Meist hinten am Bescheid.</dd>
-          <dt>Regelbedarf</dt><dd>Fester Betrag für den Alltag, zum Beispiel Essen, Kleidung und Strom. Die Höhe hängt vom Alter ab und davon, ob man allein oder als Paar lebt (§ 20 SGB II).</dd>
-          <dt>Mehrbedarf</dt><dd>Zusätzlicher Betrag in besonderen Lagen, zum Beispiel für Alleinerziehende, in der Schwangerschaft oder wenn das Warmwasser in der Wohnung erzeugt wird (§ 21 SGB II).</dd>
-          <dt>KdU (Kosten der Unterkunft und Heizung)</dt><dd>Miete, Nebenkosten und Heizung, soweit das Jobcenter sie als angemessen anerkennt (§ 22 SGB II).</dd>
-          <dt>Zahlbetrag</dt><dd>Der Betrag, der jeden Monat überwiesen wird.</dd>
-          <dt>Bewilligungszeitraum</dt><dd>Die Monate, für die der Bescheid gilt. Danach braucht es einen Weiterbewilligungsantrag. Er ist nicht das Datum des Bescheids.</dd>
+          <dt>Bedarfsgemeinschaft</dt><dd data-t="bp.w.bg">Alle, für die das Jobcenter zusammen rechnet: du, dein Ehe- oder Lebenspartner und eure unverheirateten Kinder unter 25 im Haushalt (§ 7 Abs. 3 SGB II).</dd>
+          <dt>Berechnungsbogen</dt><dd data-t="bp.w.bb">Die Seiten im Bescheid mit der Rechnung: je Person und Monat, was anerkannt und was als Einkommen abgezogen wird. Meist hinten am Bescheid.</dd>
+          <dt>Regelbedarf</dt><dd data-t="bp.w.rb">Fester Betrag für den Alltag, zum Beispiel Essen, Kleidung und Strom. Die Höhe hängt vom Alter ab und davon, ob man allein oder als Paar lebt (§ 20 SGB II).</dd>
+          <dt>Mehrbedarf</dt><dd data-t="bp.w.mb">Zusätzlicher Betrag in besonderen Lagen, zum Beispiel für Alleinerziehende, in der Schwangerschaft oder wenn das Warmwasser in der Wohnung erzeugt wird (§ 21 SGB II).</dd>
+          <dt>KdU (Kosten der Unterkunft und Heizung)</dt><dd data-t="bp.w.kdu">Miete, Nebenkosten und Heizung, soweit das Jobcenter sie als angemessen anerkennt (§ 22 SGB II).</dd>
+          <dt>Zahlbetrag</dt><dd data-t="bp.w.zb">Der Betrag, der jeden Monat überwiesen wird.</dd>
+          <dt>Bewilligungszeitraum</dt><dd data-t="bp.w.bz">Die Monate, für die der Bescheid gilt. Danach braucht es einen Weiterbewilligungsantrag. Er ist nicht das Datum des Bescheids.</dd>
         </dl>
       </details>
       <div class="btns"><button type="button" class="btn" id="bs-beispiel">Beispiel laden</button></div>
     </div>
     <form id="bs-form" onsubmit="return false">
       <fieldset><legend>Personen</legend>
+        <details class="mehr"><summary>Wer gehört dazu?</summary><p>Einzutragen sind alle Personen der Bedarfsgemeinschaft: du, dein Ehe- oder Lebenspartner und eure unverheirateten Kinder unter 25 im Haushalt (§ 7 Abs. 3 SGB II).</p></details>
         <div class="tablewrap" tabindex="0" role="region" aria-label="Personen der Bedarfsgemeinschaft"><table><thead><tr><th>Person</th><th>Alter</th><th>Lohn brutto</th><th>Lohn netto</th><th>anderes Einkommen</th><th>schwanger</th><th><span class="vh">Entfernen</span></th></tr></thead><tbody id="bs-personen"></tbody></table></div>
         <div class="btns"><button type="button" class="btn" id="bs-erw">Erwachsene Person hinzufügen</button><button type="button" class="btn" id="bs-kind">Kind hinzufügen</button></div>
         <label class="check"><input type="checkbox" id="bs-ww"> Warmwasser wird in der Wohnung erzeugt (Durchlauferhitzer, Boiler)</label>
@@ -197,6 +205,7 @@
       </fieldset>
     </form>
     <div class="card" id="bs-erg" aria-live="polite"></div>
+    <p class="small muted rb-satz rb-erg" data-t="rb.satz">Erste Einschätzung, keine Rechtsberatung. Es entscheidet das Amt, im Streit das Gericht.</p>
     <div class="card">
       <h2>Widerspruch vorbereiten</h2>
       <div class="grid2">
@@ -213,21 +222,23 @@
       <textarea id="bs-wid-text" rows="18" readonly hidden></textarea>
       <div class="btns"><button type="button" class="btn" id="bs-wid-copy" hidden>Text kopieren</button></div>
       <p class="small" id="bs-copy-msg" role="status"></p>
+      <p class="small muted rb-satz rb-schreiben" data-t="rb.satz">Erste Einschätzung, keine Rechtsberatung. Es entscheidet das Amt, im Streit das Gericht.</p>
     </div>
   </section>
 
   <!-- Bescheid Grundsicherung im Alter -->
   <section id="p-gsa" role="tabpanel" aria-labelledby="tab-gsa" hidden>
     <div class="card">
-      <h2>Bescheid Grundsicherung im Alter prüfen</h2>
-      <p>Für Grundsicherung im Alter und bei Erwerbsminderung vom Sozialamt. Trage die Beträge für einen Monat ein. SoLo rechnet mit denselben Regeln wie die App nach, dazu mit dem Freibetrag für Betriebs-, Riester- und private Renten.</p>
-      <details class="begriffe"><summary>Wörter im Bescheid erklärt</summary>
+      <h2 data-t="bp.sa.h">Bescheid Grundsicherung im Alter prüfen</h2>
+      <p data-t="bp.scan.p">Scanne den Bescheid. SoLo rechnet nach und zeigt Abweichungen.</p>
+      <details class="mehr"><summary data-t="bp.was">Was prüft SoLo genau?</summary><p>Für Grundsicherung im Alter und bei Erwerbsminderung vom Sozialamt. Trage die Beträge für einen Monat ein. SoLo rechnet mit denselben Regeln wie die App nach, dazu mit dem Freibetrag für Betriebs-, Riester- und private Renten.</p></details>
+      <details class="begriffe"><summary data-t="bp.begriffe">Wörter im Bescheid erklärt</summary>
         <dl>
           <dt>Berechnungsbogen</dt><dd>Die Seiten im Bescheid mit der Rechnung: was anerkannt und was als Einkommen abgezogen wird. Meist hinten am Bescheid.</dd>
           <dt>Regelbedarf (Regelsatz)</dt><dd>Fester Betrag für den Alltag, zum Beispiel Essen, Kleidung und Strom. Die Höhe hängt davon ab, ob man allein oder als Paar lebt (§ 27a SGB XII).</dd>
           <dt>Mehrbedarf</dt><dd>Zusätzlicher Betrag in besonderen Lagen, zum Beispiel mit Merkzeichen G im Schwerbehindertenausweis (§ 30 SGB XII).</dd>
           <dt>KdU (Kosten der Unterkunft und Heizung)</dt><dd>Miete, Nebenkosten und Heizung, soweit das Sozialamt sie als angemessen anerkennt (§ 35 SGB XII).</dd>
-          <dt>Zahlbetrag</dt><dd>Der Betrag, der jeden Monat überwiesen wird.</dd>
+          <dt>Zahlbetrag</dt><dd data-t="bp.w.zb">Der Betrag, der jeden Monat überwiesen wird.</dd>
         </dl>
       </details>
       <div class="btns"><button type="button" class="btn" id="ga-beispiel">Beispiel laden</button></div>
@@ -275,6 +286,7 @@
       </fieldset>
     </form>
     <div class="card" id="ga-erg" aria-live="polite"></div>
+    <p class="small muted rb-satz rb-erg" data-t="rb.satz">Erste Einschätzung, keine Rechtsberatung. Es entscheidet das Amt, im Streit das Gericht.</p>
     <div class="card">
       <h2>Widerspruch vorbereiten</h2>
       <div class="grid2">
@@ -291,14 +303,16 @@
       <textarea id="ga-wid-text" rows="18" readonly hidden></textarea>
       <div class="btns"><button type="button" class="btn" id="ga-wid-copy" hidden>Text kopieren</button></div>
       <p class="small" id="ga-copy-msg" role="status"></p>
+      <p class="small muted rb-satz rb-schreiben" data-t="rb.satz">Erste Einschätzung, keine Rechtsberatung. Es entscheidet das Amt, im Streit das Gericht.</p>
     </div>
   </section>
 
   <!-- Bescheid Wohngeld -->
   <section id="p-wg" role="tabpanel" aria-labelledby="tab-wg" hidden>
     <div class="card">
-      <h2>Wohngeldbescheid prüfen</h2>
-      <p>Trage die Angaben aus dem Wohngeldbescheid ein (Beträge im Monat). SoLo rechnet nach dem Wohngeldgesetz nach. Die Rechnung trifft den amtlichen Wohngeldrechner auf höchstens 1 € genau.</p>
+      <h2 data-t="bp.wg.h">Wohngeldbescheid prüfen</h2>
+      <p data-t="bp.wg.p">Scanne den Wohngeldbescheid. SoLo rechnet nach dem Wohngeldgesetz nach.</p>
+      <details class="mehr"><summary data-t="bp.was">Was prüft SoLo genau?</summary><p>Trage die Angaben aus dem Bescheid ein (Beträge im Monat). Die Rechnung trifft den amtlichen Wohngeldrechner auf höchstens 1 € genau.</p></details>
       <div class="btns"><button type="button" class="btn" id="wg-beispiel">Beispiel laden</button></div>
     </div>
     <form id="wg-form" onsubmit="return false">
@@ -325,6 +339,7 @@
       </fieldset>
     </form>
     <div class="card" id="wg-erg" aria-live="polite"></div>
+    <p class="small muted rb-satz rb-erg" data-t="rb.satz">Erste Einschätzung, keine Rechtsberatung. Es entscheidet das Amt, im Streit das Gericht.</p>
     <div class="card">
       <h2>Widerspruch vorbereiten</h2>
       <div class="grid2">
@@ -341,14 +356,16 @@
       <textarea id="wg-wid-text" rows="18" readonly hidden></textarea>
       <div class="btns"><button type="button" class="btn" id="wg-wid-copy" hidden>Text kopieren</button></div>
       <p class="small" id="wg-copy-msg" role="status"></p>
+      <p class="small muted rb-satz rb-schreiben" data-t="rb.satz">Erste Einschätzung, keine Rechtsberatung. Es entscheidet das Amt, im Streit das Gericht.</p>
     </div>
   </section>
 
   <!-- Bescheid Kinderzuschlag -->
   <section id="p-kiz" role="tabpanel" aria-labelledby="tab-kiz" hidden>
     <div class="card">
-      <h2>Bescheid Kinderzuschlag prüfen</h2>
-      <p>Trage die Durchschnittsbeträge der letzten sechs Monate vor dem Antrag ein. Mit diesem Zeitraum rechnet auch die Familienkasse. SoLo rechnet mit denselben Regeln wie die App nach.</p>
+      <h2 data-t="bp.kz.h">Bescheid Kinderzuschlag prüfen</h2>
+      <p data-t="bp.scan.p">Scanne den Bescheid. SoLo rechnet nach und zeigt Abweichungen.</p>
+      <details class="mehr"><summary data-t="bp.was">Was prüft SoLo genau?</summary><p>Trage die Durchschnittsbeträge der letzten sechs Monate vor dem Antrag ein. Mit diesem Zeitraum rechnet auch die Familienkasse. SoLo rechnet mit denselben Regeln wie die App nach.</p></details>
       <div class="btns"><button type="button" class="btn" id="kz-beispiel">Beispiel laden</button></div>
     </div>
     <form id="kz-form" onsubmit="return false">
@@ -375,6 +392,7 @@
       </fieldset>
     </form>
     <div class="card" id="kz-erg" aria-live="polite"></div>
+    <p class="small muted rb-satz rb-erg" data-t="rb.satz">Erste Einschätzung, keine Rechtsberatung. Es entscheidet das Amt, im Streit das Gericht.</p>
     <div class="card">
       <h2>Widerspruch vorbereiten</h2>
       <div class="grid2">
@@ -390,14 +408,16 @@
       <textarea id="kz-wid-text" rows="18" readonly hidden></textarea>
       <div class="btns"><button type="button" class="btn" id="kz-wid-copy" hidden>Text kopieren</button></div>
       <p class="small" id="kz-copy-msg" role="status"></p>
+      <p class="small muted rb-satz rb-schreiben" data-t="rb.satz">Erste Einschätzung, keine Rechtsberatung. Es entscheidet das Amt, im Streit das Gericht.</p>
     </div>
   </section>
 
   <!-- Nebenkosten -->
   <section id="p-nk" role="tabpanel" aria-labelledby="tab-nk" hidden>
     <div class="card">
-      <h2>Nebenkostenabrechnung prüfen</h2>
-      <p>SoLo prüft Fristen, nicht umlagefähige Posten, die Verteilung nach Wohnfläche, Heizkosten und CO₂-Kosten. Ob ein Betrag zu hoch ist, kann SoLo nicht entscheiden.</p>
+      <h2 data-t="bp.nk.h">Nebenkostenabrechnung prüfen</h2>
+      <p data-t="bp.nk.p">Scanne die Abrechnung. SoLo prüft Fristen und Posten.</p>
+      <details class="mehr"><summary data-t="bp.was">Was prüft SoLo genau?</summary><p>SoLo prüft Fristen, nicht umlagefähige Posten, die Verteilung nach Wohnfläche, Heizkosten und CO₂-Kosten. Ob ein Betrag zu hoch ist, kann SoLo nicht entscheiden.</p></details>
       <div class="btns"><button type="button" class="btn" id="nk-beispiel">Beispiel laden</button></div>
     </div>
     <form id="nk-form" onsubmit="return false">
@@ -430,6 +450,7 @@
       </fieldset>
     </form>
     <div class="card" id="nk-erg" aria-live="polite"></div>
+    <p class="small muted rb-satz rb-erg" data-t="rb.satz">Erste Einschätzung, keine Rechtsberatung. Es entscheidet das Amt, im Streit das Gericht.</p>
     <div class="card">
       <h2>Schreiben erstellen</h2>
       <div class="grid2">
@@ -447,6 +468,7 @@
       <textarea id="nk-text" rows="18" readonly hidden></textarea>
       <div class="btns"><button type="button" class="btn" id="nk-copy" hidden>Text kopieren</button></div>
       <p class="small" id="nk-copy-msg" role="status"></p>
+      <p class="small muted rb-satz rb-schreiben" data-t="rb.satz">Erste Einschätzung, keine Rechtsberatung. Es entscheidet das Amt, im Streit das Gericht.</p>
     </div>
   </section>
 
@@ -454,7 +476,8 @@
   <section id="p-andere" role="tabpanel" aria-labelledby="tab-andere" hidden>
     <div class="card">
       <h2>Anderer Brief oder du weißt es nicht</h2>
-      <p>Scanne den Brief oder füge den Text ein. SoLo sucht eine Frist und zeigt sie nur, wenn sie im Brief steht. Darunter steht, was bei Mahnbescheid und Inkasso wichtig ist.</p>
+      <p>Scanne den Brief oder füge den Text ein. SoLo sucht eine Frist.</p>
+      <details class="mehr"><summary data-t="bp.was">Was prüft SoLo genau?</summary><p>SoLo zeigt eine Frist nur, wenn sie im Brief steht. Weiter unten steht, was bei Mahnbescheid und Inkasso wichtig ist.</p></details>
       <div class="an-eingabe" id="an-eingabe">
         <label for="an-text">Text aus dem Brief</label>
         <textarea id="an-text" lang="de" rows="5" autocomplete="off" spellcheck="false"></textarea>

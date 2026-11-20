@@ -23,7 +23,7 @@ const haken = (id, an) => { const e = $(id); e.checked = an; e.dispatchEvent(new
 const klick = (el) => el.dispatchEvent(new w.MouseEvent('click', { bubbles: true }));
 const tx = (e) => e.textContent.replace(/[  ]/g, ' ');
 const knopf = (text, wurzel) => [...(wurzel || d).querySelectorAll('button')].find((b) => b.textContent.trim() === text);
-const zumPlan = () => { klick($('goSparen')); klick([...d.querySelectorAll('#spInhalt button.weg')].find((b) => /Haushaltsplan|Budget|bütçe|Qorshaha|بودجه|الميزانية/i.test(b.textContent)) || [...d.querySelectorAll('#spInhalt button.weg')].pop()); };
+const zumPlan = () => { klick($('goGeld')); klick(d.querySelector('#spInhalt .gs-planen')); };
 const gespeichert = () => JSON.parse(mem['lotse.haushalt'] || '{}');
 const iso = (tageZurueck) => { const x = new Date(); x.setDate(x.getDate() - tageZurueck); return x.getFullYear() + '-' + String(x.getMonth() + 1).padStart(2, '0') + '-' + String(x.getDate()).padStart(2, '0'); };
 setTimeout(() => {

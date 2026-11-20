@@ -138,18 +138,54 @@ const PflegeFragen = (function () {
     '5.16': 'Zum Beispiel eine Diabetes-Diät, Trinkmengen bei Herzschwäche oder Verbote nach einer Operation.'
   };
 
-  function frage(id) { return (TEXT[id] && TEXT[id][0]) || M5[id] || id; }
-  function hinweis(id) { return (TEXT[id] && TEXT[id][1]) || M5_TIPP[id] || (id.startsWith('5.') ? M5_HINWEIS : ''); }
+  // Einfache Sprache (Schalter in den Einstellungen, nur Deutsch): einfache Fassungen aus src/lang/einfach/pflege/pflege.json,
+  // im Paket als PFLEGE_EINFACH (scripts/build.js), in Node per require. Gleicher Aufbau wie hier; "=" heißt: Standardtext ist schon einfach.
+  // Ausgetauscht werden nur Texte. Stufen, Werte und Punkte bleiben gleich (Prüfung: test/test-pflege-einfach.js).
+  let EINFACH = null;
+  try { EINFACH = typeof PFLEGE_EINFACH !== 'undefined' ? PFLEGE_EINFACH : typeof require === 'function' ? require('../src/lang/einfach/pflege/pflege.json') : null; } catch (e) { EINFACH = null; }
+  let einfach = false;
+  function setEinfach(an) { einfach = !!an && !!EINFACH; }
+  function istEinfach() { return einfach; }
+  // Text an Pfad (z. B. ['text', '1.1', 0]) in Einfacher Sprache, sonst der Standardtext
+  function ein(pfad, std) {
+    if (!einfach) return std;
+    let v = EINFACH;
+    for (const k of pfad) v = v == null ? null : v[k];
+    return typeof v === 'string' && v !== '=' && v.trim() ? v : std;
+  }
+  const fuellen = (s, p) => (p ? s.replace(/\{(\w+)\}/g, (x, k) => (p[k] != null ? String(p[k]) : x)) : s);
+  // Feste Texte der Oberfläche (pflege-assistent.js): Schlüssel, Standardtext mit {Platzhaltern}, Werte
+  function ui(key, std, p) { return fuellen(ein(['ui', key], std), p); }
 
-  // Antwort für Bereich 5 in die Werte von pflege.js übersetzen
-  function m5Antworten(id) { return id === '5.12' ? M5_AUFWENDIG : /^5\.(13|14|15|K)$/.test(id) ? M5_BESUCH : M5_OFT; }
-  function m5Wert(id, antwortIndex) { const a = m5Antworten(id)[antwortIndex]; return a ? Object.assign({}, a.wert) : {}; }
+  function frage(id) {
+    if (TEXT[id]) return ein(['text', id, 0], TEXT[id][0]);
+    if (M5[id]) return ein(['m5', id], M5[id]);
+    return id;
+  }
+  function m5Tipp(id) { return M5_TIPP[id] ? ein(['m5Tipp', id], M5_TIPP[id]) : ''; }
+  function hinweis(id) {
+    if (TEXT[id]) return ein(['text', id, 1], TEXT[id][1]);
+    return m5Tipp(id) || (id.startsWith('5.') ? ein(['m5Hinweis'], M5_HINWEIS) : '');
+  }
+  function vorfrage(m) { return { frage: ein(['vorfrage', m, 0], VORFRAGE[m].frage), hinweis: ein(['vorfrage', m, 1], VORFRAGE[m].hinweis) }; }
+  function kurz(id) { return M5_KURZ[id] ? ein(['m5Kurz', id], M5_KURZ[id]) : id; }
+  function kind() { return ein(['kind'], KIND); }
+  function grundsatz() { return GRUNDSATZ.map((t, i) => ein(['grundsatz', i], t)); }
+  // Antworttexte einer Skala aus pflege.js (sel, fae, hfg, sonde): Reihenfolge und Anzahl bleiben, nur die Worte ändern sich
+  function antwortTexte(skala, std) { return std.map((t, i) => ein(['antworten', skala, i], t)); }
+  function modul(m, std) { return ein(['modul', m], std); }
+
+  // Antwort für Bereich 5 in die Werte von pflege.js übersetzen (Werte immer aus den Standardlisten)
+  function m5Liste(id) { return id === '5.12' ? ['aufwendig', M5_AUFWENDIG] : /^5\.(13|14|15|K)$/.test(id) ? ['besuch', M5_BESUCH] : ['oft', M5_OFT]; }
+  function m5Antworten(id) { const [art, l] = m5Liste(id); return l.map((x, i) => ({ text: ein(['antworten', art, i], x.text), wert: x.wert })); }
+  function m5Wert(id, antwortIndex) { const a = m5Liste(id)[1][antwortIndex]; return a ? Object.assign({}, a.wert) : {}; }
   // „Wie oft …?“-Frage zu einem angekreuzten Punkt
   function m5Oft(id) {
-    if (id === '5.12') return 'Wie oft ist die aufwendige Behandlung zu Hause nötig?';
-    return M5[id].replace(/^Muss jemand /, 'Wie oft muss jemand ');
+    if (id === '5.12') return ein(['m5Oft', '5.12'], 'Wie oft ist die aufwendige Behandlung zu Hause nötig?');
+    return frage(id).replace(/^Muss jemand /, 'Wie oft muss jemand ');
   }
 
-  return { GRUNDSATZ, KIND, VORFRAGE, TEXT, M5, M5_KURZ, M5_HINWEIS, frage, hinweis, m5Wert, m5Antworten, m5Oft };
+  return { GRUNDSATZ, KIND, VORFRAGE, TEXT, M5, M5_KURZ, M5_HINWEIS, M5_TIPP, frage, hinweis, m5Wert, m5Antworten, m5Oft,
+    EINFACH, setEinfach, istEinfach, ui, vorfrage, kurz, kind, grundsatz, antwortTexte, modul, m5Tipp };
 })();
 if (typeof module !== 'undefined') module.exports = PflegeFragen;

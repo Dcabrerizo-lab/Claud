@@ -1,4 +1,4 @@
-// „Ich ziehe aus“: eigener Bereich für junge Menschen (Azubis, Studierende, junge Erwachsene, Careleaver).
+// „Ich ziehe aus“: eigener Bereich für junge Menschen (Azubis, Studierende, junge Erwachsene).
 // Checklisten zum Abhaken, Geld, Kostenfallen, Versicherungen, Hilfen. Alles bleibt auf dem Gerät.
 // Texte: src/lang/ausziehen/<Sprache>.json (Schlüssel „az.*“), Einfache Sprache: src/lang/einfach/ausziehen.json.
 // Quellen: jede Zahl, Frist und Rechtsaussage hat eine Quelle (Q) mit Abrufdatum; die Texte nennen die Vorschrift in Klammern.
@@ -20,7 +20,6 @@ var Ausziehen = (function () {
     sgb2_7: ['§ 7 Abs. 5, § 27 SGB II', GII + '/sgb_2/__7.html'],
     sgb2_28: ['§ 28 Abs. 1 SGB II', GII + '/sgb_2/__28.html'],
     sgb1_60: ['§ 60 SGB I', GII + '/sgb_1/__60.html'],
-    sgb1_14: ['§ 14 SGB I', GII + '/sgb_1/__14.html'],
     sgg84: ['§ 84 SGG', GII + '/sgg/__84.html'],
     wofg27: ['§ 27 WoFG (in Bayern: BayWoFG)', GII + '/wofg/__27.html'],
     dsgvo15: ['Art. 15 Abs. 3 DSGVO', 'eur-lex.europa.eu/eli/reg/2016/679/oj'],
@@ -44,31 +43,23 @@ var Ausziehen = (function () {
     wogg20: ['§ 20 Abs. 2 WoGG', GII + '/wogg/__20.html'],
     estg32: ['§ 32 Abs. 4, § 74 Abs. 1 EStG', GII + '/estg/__74.html'],
     sgb6_48: ['§ 48 Abs. 4 SGB VI', GII + '/sgb_6/__48.html'],
-    sgb8_41: ['§ 41 SGB VIII', GII + '/sgb_8/__41.html'],
-    sgb8_41a: ['§ 41a SGB VIII', GII + '/sgb_8/__41a.html'],
-    sgb8_36b: ['§ 41 Abs. 3, § 36b SGB VIII', GII + '/sgb_8/__36b.html'],
-    sgb8_94: ['§ 92 Abs. 1a, § 93 Abs. 1, § 94 Abs. 3 und 6 (weggefallen) SGB VIII', GII + '/sgb_8/__94.html'],
-    sgb8_86a: ['§ 86a Abs. 4 SGB VIII', GII + '/sgb_8/__86a.html'],
-    sgb8_40: ['§ 40, § 41 Abs. 2 SGB VIII', GII + '/sgb_8/__40.html'],
     sgb8_18: ['§ 18 Abs. 4 SGB VIII', GII + '/sgb_8/__18.html'],
     bgb1610: ['§ 1610 Abs. 2 BGB', GII + '/bgb/__1610.html'],
     bkgg1: ['§ 1 Abs. 2 BKGG', GII + '/bkgg_1996/__1.html'],
-    sgb2_20: ['§ 20 Abs. 3 SGB II', GII + '/sgb_2/__20.html'],
-    sgb8_9a: ['§ 9a SGB VIII', GII + '/sgb_8/__9a.html']
+    sgb2_20: ['§ 20 Abs. 3 SGB II', GII + '/sgb_2/__20.html']
   };
   var ABGERUFEN = '20.11.2026';
 
   // ---------- Inhalt ----------
   // Punkt: id (Texte az.p.<id> und az.p.<id>.t), q: Quellen, mehr: erst unter „Weitere Punkte“, warn: deutlich hervorgehoben,
-  // knopf: Weg in einen anderen Bereich (plan, check, briefe, pfaendung, vers, brief), moeglich: Hilfe mit Einstufung „möglich“
+  // knopf: Weg in einen anderen Bereich (plan, check, briefe, pfaendung, vers), moeglich: Hilfe mit Einstufung „möglich“
   var SYM = {
     vorher: '<path d="M4 11l8-6 8 6v9H4z"/><path d="M9 14l2 2 4-4"/>',
     tage: '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/><path d="M9 15l2 2 4-4"/>',
     geld: '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><circle cx="16" cy="14.5" r="1.5"/>',
     achtung: '<path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17h.01"/>',
     hilfen: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',
-    vers: '<path d="M12 3l8 3v6c0 5-4 8-8 9-4-1-8-4-8-9V6z"/>',
-    care: '<circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.3"/><path d="M3 20c.5-4 3-6 6-6s5.5 2 6 6M15 14c3 0 5 2 5.5 5"/>'
+    vers: '<path d="M12 3l8 3v6c0 5-4 8-8 9-4-1-8-4-8-9V6z"/>'
   };
   var BEREICHE = [
     { id: 'vorher', liste: true, punkte: [
@@ -124,15 +115,6 @@ var Ausziehen = (function () {
       { id: 'but', q: ['sgb2_28'], moeglich: true },
       { id: 'waisenrente', q: ['sgb6_48'], moeglich: true }
     ] },
-    { id: 'care', liste: true, unter: true, punkte: [
-      { id: 'jungVolljaehrig', q: ['sgb8_41'] },
-      { id: 'nachbetreuung', q: ['sgb8_41a'] },
-      { id: 'uebergang', q: ['sgb8_36b'] },
-      { id: 'kostenbeitrag', q: ['sgb8_94'] },
-      { id: 'careKv', q: ['sgb8_40'] },
-      { id: 'beratung', q: ['sgb1_14', 'sgb8_9a'] },
-      { id: 'antrag', q: ['sgb8_41', 'sgb8_86a'], knopf: 'brief' }
-    ] },
     { id: 'vers', unter: true, stufen: [
       { id: 'muss', punkte: [{ id: 'kv', q: ['sgb5_10', 'vzVers'] }, { id: 'phv', q: ['vzVers'] }, { id: 'kfzH', q: ['vzVers'] }] },
       { id: 'sinnvoll', punkte: [{ id: 'bu', q: ['vzVers', 'vvg19'] }] },
@@ -140,16 +122,15 @@ var Ausziehen = (function () {
       { id: 'unnoetig', punkte: [{ id: 'geraete', q: ['vzVers', 'vzhhVers'] }, { id: 'restschuld', q: ['vzhhVers'] }, { id: 'gepaeck', q: ['vzVers', 'vzhhVers'] }] }
     ] }
   ];
-  // Übersicht: 7 Kacheln im 2-Spalten-Raster (Stil der Startseite), jede öffnet ihre Unterseite
-  var HAUPT = ['vorher', 'tage', 'geld', 'vers', 'achtung', 'hilfen', 'care'];
+  // Übersicht: 6 Kacheln im 2-Spalten-Raster (Stil der Startseite), jede öffnet ihre Unterseite
+  var HAUPT = ['vorher', 'tage', 'geld', 'vers', 'achtung', 'hilfen'];
   function bereich(id) { return BEREICHE.filter(function (b) { return b.id === id; })[0] || null; }
   function allePunkte(b) { return b.stufen ? b.stufen.reduce(function (a, s) { return a.concat(s.punkte); }, []) : b.punkte; }
 
   // Alle Textschlüssel (Tests: jede Sprache hat sie, keine Rohschlüssel)
   function schluessel() {
-    var k = ['az.h', 'az.kachel', 'az.kachel.t', 'az.lead', 'az.zurueck', 'az.quelle', 'az.mehrDazu', 'az.weitere', 'az.erledigt', 'az.notiz', 'az.notiz.t',
-      'az.moeglich', 'az.speicherFehler', 'az.u25.warn', 'az.u25.warn.h', 'az.brief.zeigen', 'az.brief.kopieren', 'az.brief.kopiert',
-      'az.brief.hinweis', 'az.brief.label', 'az.knopf.plan', 'az.knopf.check', 'az.knopf.briefe', 'az.knopf.pfaendung', 'az.knopf.vers', 'az.hilfen.check', 'az.vers.tipp', 'az.stand'];
+    var k = ['az.h', 'az.kachel', 'az.kachel.t', 'az.lead', 'az.quelle', 'az.mehrDazu', 'az.weitere', 'az.erledigt', 'az.notiz', 'az.notiz.t',
+      'az.moeglich', 'az.speicherFehler', 'az.u25.warn', 'az.u25.warn.h', 'az.knopf.plan', 'az.knopf.check', 'az.knopf.briefe', 'az.knopf.pfaendung', 'az.knopf.vers', 'az.hilfen.check', 'az.vers.tipp', 'az.stand'];
     BEREICHE.forEach(function (b) {
       k.push('az.' + b.id + '.h', 'az.' + b.id + '.t');
       if (b.stufen) b.stufen.forEach(function (s) { k.push('az.stufe.' + s.id); });
@@ -195,20 +176,6 @@ var Ausziehen = (function () {
     speicher.schreiben(JSON.stringify(daten), function (err) { if (msg) msg.textContent = err ? t('az.speicherFehler') : ''; });
   }
 
-  // ---------- Briefvorlage (Deutsch, für das Jugendamt; nur die Art der Stelle, keine Anschrift) ----------
-  function briefText() {
-    return [
-      'An das Jugendamt', '',
-      'Antrag auf Hilfe für junge Volljährige (§ 41 SGB VIII)', '',
-      'Sehr geehrte Damen und Herren,', '',
-      'hiermit beantrage ich Hilfe für junge Volljährige nach § 41 SGB VIII ab dem ________ (zum Beispiel ab meinem 18. Geburtstag) [oder: die Fortsetzung meiner bisherigen Hilfe über meinen 18. Geburtstag hinaus].', '',
-      'Ich brauche weiter Unterstützung, weil: ________ (zum Beispiel Wohnung, Ausbildung oder Schule, Umgang mit Geld, Post von Ämtern).', '',
-      'Bitte laden Sie mich zu einem Gespräch über den Hilfeplan ein (§ 36 SGB VIII). Bitte bestätigen Sie mir den Eingang dieses Antrags schriftlich und entscheiden Sie mit einem schriftlichen Bescheid.', '',
-      'Mit freundlichen Grüßen', '',
-      'Name, Geburtsdatum', 'Anschrift', 'Telefon oder E-Mail', 'Ort, Datum, Unterschrift'
-    ].join('\n');
-  }
-
   // ---------- Oberfläche ----------
   function t(k, p) { return ctx.t(k, p); }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }).replace(/§ /g, '§\u00a0'); } // „§ 22“ nicht umbrechen
@@ -220,8 +187,8 @@ var Ausziehen = (function () {
     '.az-fort{font-weight:700}' +
     '.az-raster{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,9.5em),1fr));gap:12px;margin:8px 0;max-width:640px}' +
     '.az-raster>.az-k:last-child:nth-child(odd){grid-column:1/-1;min-height:0}.az-raster{min-width:0}' +
-    // Jede Kachel eine eigene Farbe aus der Palette (keine doppelt): Bevor = Violett, Tage = Schiefer, Geld = Grün (Geld sparen), Versicherungen = Blau (Schutz), Finger weg = Ziegel, Hilfen = Petrol (Leistungen), Careleaver = Beere (Familie)
-    '.az .az-k{--c:var(--c-ausziehen);min-height:140px}.az .az-k-tage{--c:var(--c-formular)}.az .az-k-geld{--c:var(--c-sparen)}.az .az-k-vers{--c:var(--c-pflege)}.az .az-k-achtung{--c:var(--c-briefe)}.az .az-k-hilfen{--c:var(--c-leistungen)}.az .az-k-care{--c:var(--c-familienkasse)}.az-k .az-fort{font-weight:700;margin-top:4px;background:rgba(255,255,255,.2);border-radius:999px;padding:2px 10px;justify-self:start}' +
+    // Jede Kachel eine eigene Farbe aus der Palette (keine doppelt): Bevor = Violett, Tage = Schiefer, Geld = Grün (Geld sparen), Versicherungen = Blau (Schutz), Finger weg = Ziegel, Hilfen = Petrol (Leistungen)
+    '.az .az-k{--c:var(--c-ausziehen);min-height:140px}.az .az-k-tage{--c:var(--c-formular)}.az .az-k-geld{--c:var(--c-sparen)}.az .az-k-vers{--c:var(--c-pflege)}.az .az-k-achtung{--c:var(--c-briefe)}.az .az-k-hilfen{--c:var(--c-leistungen)}.az-k .az-fort{font-weight:700;margin-top:4px;background:rgba(255,255,255,.2);border-radius:999px;padding:2px 10px;justify-self:start}' +
     '.az-warn{border:3px solid var(--hint);background:var(--hint-bg);color:var(--ink);border-radius:var(--r-item,16px);padding:14px 16px;display:grid;gap:6px}' +
     '.az-warn b{font-size:1.1em;color:var(--hint)}.az-warn p{margin:0}' +
     '.az-liste{list-style:none;margin:0;padding:0;display:grid;gap:10px}' +
@@ -232,12 +199,11 @@ var Ausziehen = (function () {
     '.az-punkt.ok .az-check span{text-decoration:line-through;text-decoration-thickness:1px;opacity:.75}' +
     '.az-titel{font-weight:700;margin:0}.az-kurz{margin:0}.az-punkt>.az-q{margin:0}.az-punkt>.btns{margin:0}' +
     '.az-punkt details>summary,.az-weitere>summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-weight:600;color:var(--accent)}' +
-    '.az-punkt details p{margin:6px 0}.az-q{font-size:.85em;color:var(--muted)}' +
+    '.az-punkt details p{margin:6px 0}.az-q{font-size:.85em;color:var(--muted)}.az-qliste{margin:0;padding-inline-start:18px}.az-qliste li{margin:4px 0}.az-qliste .az-q{margin:0}' +
     '.az-chip{display:inline-block;font-size:.85em;font-weight:700;border-radius:999px;padding:2px 10px;background:var(--warn-bg);color:var(--warn);justify-self:start}' +
     '.az-stufe{margin:10px 0 0;font-size:1.1em;border-inline-start:6px solid var(--c-ausziehen);padding-inline-start:10px}' +
     '.az-stufe.s-unnoetig{border-color:var(--muted)}' +
     '.az textarea{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--field,var(--line));border-radius:10px;padding:10px 12px;width:100%;min-height:96px;resize:vertical;box-sizing:border-box}' +
-    '.az-brief textarea{min-height:320px;font-size:.95em}' +
     '#azSpeicherMsg:empty{display:none}' +
     '@media (forced-colors:active){.az-warn,.az-k{border:2px solid CanvasText}}';
   function stil() { if ($('azStil')) return; var s = document.createElement('style'); s.id = 'azStil'; s.textContent = STIL; document.head.appendChild(s); }
@@ -248,27 +214,40 @@ var Ausziehen = (function () {
   }
   // Quelle bleibt deutsch und links-nach-rechts, auch in Arabisch, Farsi und Paschtu (sonst springen Klammern und Paragrafen)
   function quelleHtml(p) { return p.q ? '<p class="az-q">' + esc(t('az.quelle', { q: '@@Q@@', d: ABGERUFEN })).replace('@@Q@@', '<bdi dir="ltr" lang="de">' + esc(quelleText(p)) + '</bdi>') + '</p>' : ''; }
+  // „Quellen und Stand“: alle Quellen der Seite zugeklappt am Seitenende (gemeinsames Bauteil details.mehr), je Punkt mit Titel
+  function quellenHtml(b) {
+    var mitQ = allePunkte(b).filter(function (p) { return p.q; });
+    return '<details class="mehr quellen az-quellen" id="azQuellen"><summary>' + esc(t('qs.titel')) + '</summary><p>' + esc(t('az.stand', { d: ABGERUFEN })) + '</p>' +
+      (mitQ.length ? '<ul class="az-qliste">' + mitQ.map(function (p) { return '<li id="az-q-' + p.id + '"><b>' + esc(t('az.p.' + p.id)) + '</b>' + quelleHtml(p) + '</li>'; }).join('') + '</ul>' : '') + '</details>';
+  }
+  // Fließtext eines Info-Punkts: erster Satz sichtbar, Rest zum Aufklappen. Nie, wenn im Rest eine Zahl oder Frist steht (Fristen und Beträge nie verstecken)
+  // Entschieden wird am deutschen Standardtext (deAbsatz), damit keine Übersetzung eine Frist versteckt („one month“).
+  var FRIST_WORT = /\d|Frist|Monat|Woche|Tag/;
+  function ersterSatz(absatz, deAbsatz) {
+    var d = /^(.+?[.!?])\s+(.+)$/.exec(deAbsatz || absatz);
+    if (!d || FRIST_WORT.test(d[2])) return [absatz];
+    var m = /^(.+?[.!?؟])\s+(.+)$/.exec(absatz);
+    if (!m || FRIST_WORT.test(m[2])) return [absatz];
+    return [m[1], m[2]];
+  }
   function punktHtml(p, liste) {
     var ok = liste && daten.ab[p.id];
     var h = '<li class="az-punkt' + (p.warn ? ' warn-p' : '') + (ok ? ' ok' : '') + '" id="az-p-' + p.id + '">';
     if (liste) h += '<label class="az-check"><input type="checkbox" data-az-ab="' + p.id + '"' + (ok ? ' checked' : '') + '><span>' + esc(t('az.p.' + p.id)) + '</span></label>';
     else h += '<p class="az-titel">' + esc(t('az.p.' + p.id)) + '</p>';
     if (p.moeglich) h += '<span class="az-chip">' + esc(t('az.moeglich')) + '</span>';
-    var det = esc(t('az.p.' + p.id + '.t', p.id === 'kv' && ctx.famversGrenze ? { grenze: ctx.famversGrenze() } : null)).split('\n').map(function (s) { return '<p>' + s + '</p>'; }).join('');
-    if (p.knopf === 'brief') {
-      h += '<details class="az-brief"><summary>' + esc(t('az.brief.zeigen')) + '</summary>' + det +
-        '<p class="small">' + esc(t('az.brief.hinweis')) + '</p><label for="azBrief" class="small">' + esc(t('az.brief.label')) + '</label>' +
-        '<textarea id="azBrief" lang="de" dir="ltr" spellcheck="false">' + esc(briefText()) + '</textarea>' +
-        '<div class="btns"><button type="button" class="btn" id="azBriefKopieren">' + esc(t('az.brief.kopieren')) + '</button></div><p class="small" id="azBriefMsg" role="status"></p>' + quelleHtml(p) + '</details>';
-    } else if (!liste) {
+    var roh = t('az.p.' + p.id + '.t', p.id === 'kv' && ctx.famversGrenze ? { grenze: ctx.famversGrenze() } : null).split('\n');
+    var det = roh.map(function (s) { return '<p>' + esc(s) + '</p>'; }).join('');
+    if (!liste) {
       // Info-Punkte: der erste Satzblock gleich sichtbar, der Rest zum Aufklappen
-      var teile = det.split('</p>').filter(Boolean).map(function (x) { return x + '</p>'; });
+      var deRoh = typeof I18N !== 'undefined' && I18N.de && I18N.de['az.p.' + p.id + '.t'];
+      var teile = (roh.length === 1 && deRoh && deRoh.indexOf('\n') < 0 ? ersterSatz(roh[0], deRoh) : roh).map(function (x) { return '<p>' + esc(x) + '</p>'; });
       h += teile[0].replace('<p>', '<p class="az-kurz">');
-      var rest = teile.slice(1).join('') + (p.knopf ? '<div class="btns">' + knopfHtml(p.knopf) + '</div>' : '') + quelleHtml(p);
+      var rest = teile.slice(1).join('') + (p.knopf ? '<div class="btns">' + knopfHtml(p.knopf) + '</div>' : '');
       if (teile.length > 1) h += '<details><summary>' + esc(t('az.mehrDazu')) + '</summary>' + rest + '</details>';
       else h += rest;
     } else {
-      h += '<details><summary>' + esc(t('az.mehrDazu')) + '</summary>' + det + (p.knopf ? '<div class="btns">' + knopfHtml(p.knopf) + '</div>' : '') + quelleHtml(p) + '</details>';
+      h += '<details><summary>' + esc(t('az.mehrDazu')) + '</summary>' + det + (p.knopf ? '<div class="btns">' + knopfHtml(p.knopf) + '</div>' : '') + '</details>';
     }
     return h + '</li>';
   }
@@ -280,13 +259,12 @@ var Ausziehen = (function () {
       h += '<button type="button" class="sk az-k az-k-' + id + '" data-az-geh="' + id + '" id="az-geh-' + id + '"><span class="sk-sym" aria-hidden="true">' + sym(id) + '</span><span class="sk-txt"><b>' + esc(t('az.' + id + '.h')) + '</b><span>' +
         esc(t('az.' + id + '.t')) + '</span>' + (f ? '<span class="az-fort">' + esc(t('az.erledigt', { n: f.n, von: f.von })) + '</span>' : '') + '</span></button>';
     });
-    h += '</div><p class="small muted">' + esc(t('home.privat')) + '</p>';
+    h += '</div>';
     box.innerHTML = h;
     if (fokus) { var b = box.querySelector('#az-geh-' + fokus); if (b) b.focus(); }
   }
   function renderBereich(box, b) {
-    var h = '<div class="btns"><button type="button" class="btn ghost klein" data-az-zurueck>' + esc(t('az.zurueck')) + '</button></div>' +
-      '<h3 class="pf-frage" id="azH" tabindex="-1">' + esc(t('az.' + b.id + '.h')) + '</h3><p class="az-lead">' + esc(t('az.' + b.id + '.t')) + '</p>';
+    var h = '<h3 class="pf-frage" id="azH" tabindex="-1">' + esc(t('az.' + b.id + '.h')) + '</h3><p class="az-lead">' + esc(t('az.' + b.id + '.t')) + '</p>';
     var f = fortschritt(daten, b.id);
     if (f) h += '<p class="az-fort" id="azFort" role="status">' + esc(t('az.erledigt', { n: f.n, von: f.von })) + '</p>';
     if (b.id === 'vorher') h += '<div class="az-warn" role="note"><b>' + esc(t('az.u25.warn.h')) + '</b><p>' + esc(t('az.u25.warn')) + '</p></div>';
@@ -302,9 +280,8 @@ var Ausziehen = (function () {
       h += '<ul class="az-liste">' + oben.map(function (p) { return punktHtml(p, b.liste); }).join('') + '</ul>';
       if (unten.length) h += '<details class="az-weitere"' + (unten.some(function (p) { return daten.ab[p.id]; }) ? ' open' : '') + '><summary>' + esc(t('az.weitere', { n: unten.length })) + '</summary><ul class="az-liste">' + unten.map(function (p) { return punktHtml(p, b.liste); }).join('') + '</ul></details>';
     }
-    if (b.liste) h += '<div class="field"><label for="azNotiz">' + esc(t('az.notiz')) + '</label><textarea id="azNotiz" aria-describedby="azNotizH"></textarea><span class="hint" id="azNotizH">' + esc(t('az.notiz.t')) + '</span></div>';
-    h += '<p class="small muted">' + esc(t('az.stand', { d: ABGERUFEN })) + '</p>';
-    h += '<div class="btns"><button type="button" class="btn ghost" data-az-zurueck>' + esc(t('az.zurueck')) + '</button></div>';
+    if (b.liste) h += '<div class="field"><label for="azNotiz">' + esc(t('az.notiz')) + '</label><textarea id="azNotiz" placeholder="' + esc(t('az.notiz.t')) + '"></textarea></div>';
+    h += quellenHtml(b);
     box.innerHTML = h;
     var n = $('azNotiz'); if (n) n.value = daten.notiz[b.id] || '';
   }
@@ -323,22 +300,14 @@ var Ausziehen = (function () {
     var ziel = { plan: 'haushalt', check: 'leistungen', briefe: 'briefe', pfaendung: 'pfaendung' }[art];
     if (ziel) ctx.zeige(ziel, true);
   }
-  function kopieren() {
-    var ta = $('azBrief'), msg = $('azBriefMsg'); if (!ta) return;
-    var fertig = function () { if (msg) msg.textContent = t('az.brief.kopiert'); };
-    try { if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(ta.value).then(fertig, function () { ta.select(); try { document.execCommand('copy'); fertig(); } catch (e) { /* ohne Kopieren */ } }); return; } } catch (e) { /* weiter */ }
-    ta.select(); try { document.execCommand('copy'); fertig(); } catch (e) { /* ohne Kopieren */ }
-  }
   var notizTimer = null;
   function init(c) {
     ctx = c; daten = leer(); stil();
     var box = $('azInhalt');
     if (box) {
       box.addEventListener('click', function (ev) {
-        var el = ev.target.closest ? ev.target.closest('[data-az-geh],[data-az-weg],[data-az-zurueck],#azBriefKopieren') : null; if (!el) return;
-        if (el.id === 'azBriefKopieren') { kopieren(); return; }
+        var el = ev.target.closest ? ev.target.closest('[data-az-geh],[data-az-weg]') : null; if (!el) return;
         if (el.hasAttribute('data-az-weg')) { weg(el.getAttribute('data-az-weg')); return; }
-        if (el.hasAttribute('data-az-zurueck')) { zurueck(); return; }
         geh(el.getAttribute('data-az-geh'));
       });
       box.addEventListener('change', function (ev) {
@@ -361,7 +330,7 @@ var Ausziehen = (function () {
 
   return {
     // Inhalt und Daten (Tests)
-    BEREICHE: BEREICHE, HAUPT: HAUPT, Q: Q, ABGERUFEN: ABGERUFEN, schluessel: schluessel, normiere: normiere, fortschritt: fortschritt, briefText: briefText, quelleText: quelleText, allePunkte: allePunkte,
+    BEREICHE: BEREICHE, HAUPT: HAUPT, Q: Q, ABGERUFEN: ABGERUFEN, schluessel: schluessel, normiere: normiere, fortschritt: fortschritt, quelleText: quelleText, allePunkte: allePunkte,
     // Oberfläche
     init: init, zeigen: function () { render(); }, zurueck: zurueck, sprache: function () { render(); }, speicherOrt: speicherOrt, oeffnen: function (id) { geh(id); },
     daten: function () { return JSON.parse(JSON.stringify(daten)); }, laden: function (d) { daten = normiere(d); sichern(); render(); },

@@ -2,6 +2,21 @@
 
 Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss steigen). Die Versionsnummer kommt aus dem Build.
 
+## 1.7.0 (ab Versionsnummer 149, November 2026)
+- **Geld und Schulden** sind jetzt eine Kachel auf der Startseite, mit 6 Unterkacheln (z. B. „Es ist dringend“, Schulden-Liste, Haushaltsplan, Kostenlose Hilfe).
+- **Pflege**: Die Pflegegrad-Einschätzung hat eine eigene Ergebnisseite.
+- **Leistungs-Check**: Du wählst, ob du Schritt für Schritt (eine Frage pro Bildschirm) oder alles auf einer Seite ausfüllst.
+- **Zurück** funktioniert überall gleich: ein Zurück-Knopf oben, die Zurück-Taste bei Android und das Wischen beim iPhone führen immer eine Ebene zurück.
+- **Neues Design**: weiße Unterkacheln, einheitliche Felder und Knöpfe, klarere Schriftgrößen.
+- **Weniger Text**: Zuerst steht, was zu tun ist. Einzelheiten stehen zum Aufklappen darunter.
+- **Neue Antragsmappe**.
+- **Mein Ordner** neu: gespeicherte Haushalte (Vorgänge) liegen nur noch dort; Löschen neu gestaltet.
+- **Einfache Sprache überall**: Jeder deutsche Text hat jetzt eine einfache Fassung, auch „Brief prüfen“ und die Pflege-Einschätzung.
+- **Sprachwahl auf der Startseite** oben rechts.
+- **Korrekturen**: Asyl und Duldung (neue Auswahl „Ausreisepflichtig, ohne Duldung“, Einkommensart „Asylbewerberleistungen“), Menschen aus anderen EU-Ländern (Hilfe zur Pflege, Blindenhilfe, BAföG), Krankengeld bei Rente; Hort ohne Beitrag bei Bildung und Teilhabe; Verjährung beim Inkasso genauer erklärt.
+- **Entfernt**: Karte Familienversicherung; Rezepte (stattdessen ein Link zur Verbraucherzentrale); der Teil für Careleaver in „Ich ziehe aus“.
+- **Viele Fehler behoben**, z. B. abgeschnittene Auswahl-Texte auf kleinen Bildschirmen.
+
 ## 1.6.0 (ab Versionsnummer 148, November 2026)
 - Ab Versionsnummer 148: **Fristen-Übersicht** in „Mein Ordner“: Fristen aus Briefen merken (Tag vor dem Speichern prüfen und ändern), Rechenweg sichtbar, erledigte abhaken.
 - Ab Versionsnummer 148: **Schulden-Liste** mit Druckblatt (auch als PDF) und CSV-Export; Haushaltsplan kann mitgedruckt werden.

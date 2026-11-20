@@ -1,10 +1,8 @@
 {
-  "sl.knopf": "Moja lista długów",
   "sl.h": "Moja lista długów",
   "sl.lead": "Zapisz wszystkie długi, także wobec rodziny i przyjaciół. Lista pokazuje, co jest najważniejsze. Pomoże ci też w poradni dłużników.",
   "sl.leer": "Nie wpisano jeszcze żadnych długów.",
   "sl.neu": "Wpisz dług",
-  "sl.privat": "Lista zostaje na tym urządzeniu, w otwartej sprawie. Nie jest wysyłana do internetu. Jest zaszyfrowana tylko wtedy, gdy ustawisz PIN w ustawieniach.",
   "sl.sum.gesamt": "Długi razem: około {b}",
   "sl.sum.n": "{n} otwartych należności",
   "sl.sum.raten": "Raty miesięcznie razem: {b}",

@@ -136,6 +136,10 @@ ok('Vollstreckungsbescheid trotz Zeile „Mahnbescheid zugestellt am …“', VB
 ok('Mahnbescheid mit Hinweis auf möglichen Vollstreckungsbescheid bleibt Mahnbescheid', (() => { const x = L.andere(MB + '\nOhne Widerspruch kann der Antragsteller einen Vollstreckungsbescheid beantragen; dagegen ist Einspruch möglich.'); return x.mahnbescheid && !x.vollstreckungsbescheid; })());
 const fr = L.andere('Bitte zahlen Sie bis zum 10.12.2026.\nGegen diesen Bescheid können Sie innerhalb eines Monats Widerspruch einlegen.');
 ok('Fristen mit Widerspruch, Einspruch oder Klage zuerst', fr.fristen.length === 2 && /Widerspruch/.test(fr.fristen[0].zeile), fr.fristen);
+// Anzeigefehler „Frist im Brief: Monats“ (Brief › Anderer Brief, Bescheid mit „innerhalb eines Monats“): lesbar „1 Monat“
+ok('„innerhalb eines Monats“: Rohwert bleibt für die Fristrechnung, Anzeige „1 Monat“', fr.fristen[0].frist === 'Monats' && L.fristLesbar(fr.fristen[0].frist) === '1 Monat', fr.fristen[0]);
+ok('Frist lesbar: „einer Woche“ → „1 Woche“, „Woche“ → „1 Woche“, „zwei Wochen“ und Datum unverändert', L.fristLesbar('einer Woche') === '1 Woche' && L.fristLesbar('Woche') === '1 Woche' && L.fristLesbar('zwei Wochen') === 'zwei Wochen' && L.fristLesbar('15.12.2026') === '15.12.2026' && L.fristLesbar('einem Monat') === '1 Monat');
+ok('Anhörung mit „innerhalb eines Monats“: frist() liefert den Rohwert, lesbar „1 Monat“', L.fristLesbar(L.frist('Anhörung\nSie haben Gelegenheit, sich innerhalb eines Monats zu äußern.')) === '1 Monat');
 
 console.log(f ? `\n${f} von ${n} Prüfungen fehlgeschlagen` : `Brief einlesen: alle ${n} Prüfungen bestanden`);
 process.exit(f ? 1 : 0);

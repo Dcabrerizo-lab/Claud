@@ -1,4 +1,4 @@
-// Haushaltsplan und Haushaltsbuch (Bereich „Geld sparen“). Eigenes Modul: reine Rechnung (Node-Tests) und Oberfläche.
+// Haushaltsplan und Haushaltsbuch (Geld und Schulden → Mein Geld planen). Eigenes Modul: reine Rechnung (Node-Tests) und Oberfläche.
 // Alles bleibt auf dem Gerät. Beträge intern in Cent (ganze Zahlen), damit keine Rundungsfehler entstehen.
 // Gemeinsame Felder mit dem Leistungs-Check (Einkommen netto, Miete warm, Unterhalt für die Kinder) liegen nur im Check
 // (eine Datenquelle). Der Plan liest und schreibt sie über ctx.daten() / ctx.setze(); vorhandene Werte nur nach Rückfrage.
@@ -1041,7 +1041,6 @@ var Haushalt = (function () {
       lb.appendChild(knopf('btn ghost klein', t('hb.buchLoeschen'), function () { rueck = { vorher: JSON.parse(JSON.stringify(daten.buch)), text: t('hb.buchGeloescht') }; daten.buch = []; sichern(); renderBuch('hb-rueck'); }, { id: 'hb-buchLoeschen' }));
       box.appendChild(lb);
     }
-    box.appendChild(el('p', 'small', t('home.privat')));
     if (fokusId && $(fokusId)) $(fokusId).focus();
   }
   function loeschen(e) {
@@ -1453,7 +1452,9 @@ var Haushalt = (function () {
     PREIS: PREIS, VERBRAUCH_DESTATIS: VERBRAUCH_DESTATIS, TOL: TOL, tageZwischen: tageZwischen, jahresVerbrauch: jahresVerbrauch, gasKwh: gasKwh, jahresKosten: jahresKosten,
     abschlagVergleich: abschlagVergleich, destatisVergleich: destatisVergleich, energieSparte: energieSparte, energieNachzahlung: energieNachzahlung, abschlagBrief: abschlagBrief, dezimalAus: dezimalAus, SAISON_TAGE: SAISON_TAGE, AKTUELL_TAGE: AKTUELL_TAGE,
     // Oberfläche
-    rest: function () { return rechnung(); }, // Kurzstatus für „Mein Ordner“: { rest, restEuro, leer }
+    // Kurzstatus für „Mein Ordner“: { rest, restEuro, leer, ausgefuellt }. ausgefuellt: mindestens eine eigene Ausgabe im Plan (die Miete
+    // kommt aus dem Check und zählt nicht) – sonst wäre „Im Monat bleiben dir …“ nur Einkommen minus Miete, ohne Essen, Strom und Handy.
+    rest: function () { var r = rechnung(); r.ausgefuellt = !!daten && Object.keys(daten.plan.aus || {}).some(function (k) { return k !== 'miete' && daten.plan.aus[k] > 0; }); return r; },
     init: init, zeigen: zeigen, sprache: function () { render(); if (daten) startHinweis(); }, speicherOrt: speicherOrt,
     daten: function () { return JSON.parse(JSON.stringify(daten)); }, laden: function (d) { daten = normiere(d); sichern(); render(); startHinweis(); },
     // Nach einem Wechsel des Vorgangs: Plan des geöffneten Vorgangs aus dem Speicherort lesen (ohne zu schreiben)

@@ -106,10 +106,11 @@ check('Einfache Sprache für die wichtigsten Texte', ['hb.en.knopf', 'hb.en.nach
 const F = require('../src/fmt.js');
 check('Texte ohne Paragrafen vollständig', Object.keys(de).filter((x) => x.startsWith('hb.en.')).every((x) => !/[:,;] *[.)]/.test(F.ohnePara(de[x]))));
 
-// Korrektur sp.vertraege.4 (Prüfvermerk): § 41g EnWG statt § 19 StromGVV/GasGVV; § 24 Abs. 1 bzw. § 22 Abs. 8 SGB II
+// sp.vertraege.4 (Sperre, Energieschulden) entfernt (Entscheidung 20.11.2026: Sparen im Alltag ohne Schulden); die Sperre steht nur unter
+// Geld und Schulden → Es ist dringend (sp.schulden.strom, gs.d.strom.*): § 41g EnWG statt § 19 StromGVV/GasGVV, Darlehen vom Jobcenter
 const LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so'];
-check('[en-korr] sp.vertraege.4 in allen Sprachen korrigiert', LANGS.every((l) => { const s = L(l + '.json')['sp.vertraege.4']; return /§ 41g EnWG/.test(s) && /§ 24 Abs\. 1 SGB II/.test(s) && /§ 22 Abs\. 8 SGB II/.test(s) && !/§ 19/.test(s); }));
-check('sp.vertraege.4 ohne Paragrafen lesbar', (() => { const s = F.ohnePara(L('de.json')['sp.vertraege.4']); return !/§/.test(s) && !/[:,;] *[.)]/.test(s) && /Darlehen/.test(s); })());
+check('[en-korr] sp.vertraege.4 in allen Sprachen entfernt, Sperre nur in sp.schulden.strom und gs.d.strom.schritt (§ 41g EnWG)', LANGS.every((l) => { const j = L(l + '.json'); return !('sp.vertraege.4' in j) && /§ 41g EnWG/.test(j['sp.schulden.strom']) && /§ 41g EnWG/.test(j['gs.d.strom.schritt']) && !/§ 19/.test(j['sp.schulden.strom']); }));
+check('sp.schulden.strom ohne Paragrafen lesbar', (() => { const s = F.ohnePara(L('de.json')['sp.schulden.strom']); return !/§/.test(s) && !/[:,;] *[.)]/.test(s) && /Darlehen/.test(s); })());
 
 // ---------- Korrekturen aus der Code-Prüfung ----------
 // Befund 2: Arbeitspreis mit Gleitkomma-Rest (32,8 · 100 = 3279,9999…) geht beim Speichern/Laden nicht verloren
@@ -148,7 +149,6 @@ check('[en-check] Befund 12: Ablesung genau 31 Tage alt → aktuell', H.energieS
 const NEU = ['hb.en.f.zahl', 'hb.en.saison', 'hb.en.alt'];
 check('[en-check] Befund 6/7/12: Neue Texte in 13 Sprachen und Einfacher Sprache', LANGS.every((l) => NEU.every((x) => (L('haushalt/' + l + '.json')[x] || '').length > 10)) && NEU.every((x) => (E[x] || '').length > 10));
 check('[en-check] Befund 12: Text: Zähler neu ablesen', /Bitte lies den Zähler neu ab/.test(de['hb.en.alt']) && /Bitte lies den Zähler neu ab/.test(E['hb.en.alt']));
-check('[en-korr] Befund 15: tr sp.vertraege.4: „kesintisi tehlikesi mi var?“', /^Elektrik veya gaz kesintisi tehlikesi mi var\?/.test(L('tr.json')['sp.vertraege.4']));
 
 if (fehler) { console.log('\n' + fehler + ' von ' + n + ' Prüfungen fehlgeschlagen'); process.exit(1); }
-console.log('Energie-Test bestanden: ' + n + ' Prüfungen (Hochrechnung, Kosten, Abschlag, Hinweis, Brief, Datenmodell, Texte, sp.vertraege.4)');
+console.log('Energie-Test bestanden: ' + n + ' Prüfungen (Hochrechnung, Kosten, Abschlag, Hinweis, Brief, Datenmodell, Texte, Sperre)');

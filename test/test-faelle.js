@@ -287,10 +287,10 @@ ck('[hzp-voraus] Hilfe zur Pflege: ohne Pflegegrad nein', L({ miete: 500 }, 'hzp
 ck('[hzp-grenze] Hilfe zur Pflege: Paar, Miete 600, Grenze 2 x 563 + 600 + 394,10 = 2.120 €', (() => { const x = T({ adults: 2, pflegegrad: '4', art1: 'rente', brutto: 1500, netto: 1500, miete: 600, vermoegen: 0, gebJahr: 1950, heute: 2026.8 }, 'hzp', 'hzp.unter'); return x && x.grenze === E(2 * 563 + 600 + 0.7 * 563); })());
 ck('Hilfe zur Pflege: Einkommen über der Grenze -> Hinweis auf Eigenanteil', K({ pflegegrad: '3', art1: 'rente', brutto: 2500, netto: 2500, miete: 500, vermoegen: 0, gebJahr: 1950, heute: 2026.8 }, 'hzp')[0] === 'hzp.ueber');
 ck('[hzp-verm] Hilfe zur Pflege: Vermögen über 10.000 € -> nein', L({ pflegegrad: '3', art1: 'rente', brutto: 900, netto: 900, miete: 500, vermoegen: 15000, gebJahr: 1950, heute: 2026.8 }, 'hzp') === 'nein');
-// Asylbewerber: eigene Leistung, kein Grundsicherungsgeld, keine Grundsicherung im Alter, kein Wohngeld, kein Kinderzuschlag (§ 7 Abs. 1 SGB II, § 23 Abs. 2 SGB XII, § 20 WoGG)
+// Asylbewerber: eigene Leistung, kein Grundsicherungsgeld, keine Grundsicherung im Alter, kein Kinderzuschlag (§ 7 Abs. 1 SGB II, § 23 Abs. 2 SGB XII); Wohngeld höchstens möglich (§ 7 Abs. 1 Satz 1 Nr. 8 WoGG); weitere Fälle: test/test-aufenthalt.js
 const asyl = { adults: 2, kids: 2, art1: 'ohne', brutto: 0, netto: 0, miete: 700, vermoegen: 0, gebJahr: 1990, heute: 2026.8, aufenthalt: 'asyl' };
 ck('[asyl-ja] Asyl: Asylbewerberleistungen ja', L(asyl, 'asylblg') === 'ja');
-ck('[asyl-ausschluss] Asyl: Grundsicherungsgeld, Wohngeld, Kinderzuschlag nein', L(asyl, 'ggeld') === 'nein' && K(asyl, 'ggeld')[0] === 'ggeld.asyl' && L(asyl, 'wohngeld') === 'nein' && L(asyl, 'kiz') === 'nein');
+ck('[asyl-ausschluss] Asyl: Grundsicherungsgeld, Kinderzuschlag, Wohnberechtigungsschein nein; Wohngeld nie „wahrscheinlich“ (nur ohne AsylbLG-Bezug, § 7 Abs. 1 Satz 1 Nr. 8 WoGG)', L(asyl, 'ggeld') === 'nein' && K(asyl, 'ggeld')[0] === 'ggeld.asyl' && L(asyl, 'wohngeld') !== 'ja' && L(asyl, 'kiz') === 'nein' && L(asyl, 'wbs') === 'nein');
 ck('Asyl im Rentenalter: keine Grundsicherung im Alter', L({ ...asyl, adults: 1, kids: 0, gebJahr: 1950 }, 'gsa') === 'nein');
 ck('[kg-asyl] [eg-asyl] Asyl: Kindergeld und Elterngeld nur möglich (abhängig vom Aufenthaltstitel)', L(asyl, 'kindergeld') === 'vielleicht' && L({ ...asyl, baby: 'da', egVor: 0 }, 'elterngeld') === 'vielleicht');
 ck('Ohne Asyl: Asylbewerberleistungen nein', L({ ...asyl, aufenthalt: '' }, 'asylblg') === 'nein');
@@ -549,6 +549,7 @@ ck('[kkg-ohne] Kinderkrankengeld: ohne Kind nein, ohne Arbeit oder nur Minijob n
 const butWg = (u6) => K({ kids: 1, kidsU6: u6, art1: 'lohn', brutto: 2600, netto: 1900, miete: 750, mietstufe: '4', vermoegen: 0 }, 'but');
 ck('[but-kita] Wohngeld möglich (noch nicht bezogen): Kita-Hinweis nur mit Kind unter 6', butWg(1).includes('but.kita') && !butWg(0).includes('but.kita'));
 ck('[but-kita] Kita beitragsfrei bei Wohngeld/Kinderzuschlag/Grundsicherung: Hinweis nur mit Kind unter 6', K({ kids: 1, kidsU6: 1, bezug: { wohngeld: true } }, 'but').includes('but.kita') && !K({ kids: 1, bezug: { wohngeld: true } }, 'but').includes('but.kita'));
+ck('[but-hort] Hort ohne Kostenbeitrag (§ 90 Abs. 4, § 22 Abs. 1 SGB VIII): Hinweis nur mit Kind ab 6, auch bei Wohngeld möglich', K({ kids: 1, bezug: { wohngeld: true } }, 'but').includes('but.hort') && !K({ kids: 1, kidsU6: 1, bezug: { wohngeld: true } }, 'but').includes('but.hort') && K({ kids: 2, kidsU6: 1, bezug: { kiz: true } }, 'but').includes('but.hort') && butWg(0).includes('but.hort') && !butWg(1).includes('but.hort'));
 
 // Unterhalt, den die Person selbst zahlt (§ 11b Abs. 1 Satz 1 Nr. 7 SGB II; § 18 WoGG; SGB XII ohne Abzug)
 const S = (o, id) => { const t = res(o).m[id].tx.find((a) => a[0] === 'schaetz.eins'); return t ? Number(t[1].a.replace(/\D/g, '')) : null; };
@@ -603,7 +604,7 @@ ck('[recht-geltend] Wohngeld-Tipp „früh beantragen“ ohne Datumsbedingung, n
 // SV-Rechengrößenverordnung 2027: Bundesrat 20.11.2026, bei Stand 20.11.2026 nicht verkündet -> auch 2027 die Werte 2026
 const kgBetrag = (hj) => res({ arbeitSit: 'krank', krankWochen: 'laeuft', lohnVorher: 7000, heute: hj }).m.krankengeld.tx.find((t) => t[0] === 'schaetz.spanne')[1];
 const algBetrag = (hj) => res({ ...a1, lohnVorher: 9000, heute: hj }).m.alg1.tx.find((t) => t[0] === 'schaetz.spanne')[1];
-const fvGrenze = (hj) => res({ adults: 2, art2: 'lohn', brutto: 2500, brutto2: 700, heute: hj }).m.famvers.tx.find((t) => /^famvers\.partner/.test(t[0]))[1].grenze;
+const fvGrenze = (hj) => E(R.famversGrenze(hj)); // Karte entfernt (20.11.2026), Grenze nutzt noch „Ich ziehe aus“
 const kkgHoechst = (hj) => res({ kids: 1, brutto: 2500, kindKrank: true, heute: hj }).m.kkg.tx[0][1].hoechst;
 ck('[recht-geltend] SV-Rechengrößen 2027 nicht verkündet: Krankengeld, Arbeitslosengeld, Familienversicherung und Kinderkrankengeld 2027 wie 2026',
   R.RULES.svrg2027.verkuendet === false && JSON.stringify(kgBetrag(2027.05)) === JSON.stringify(kgBetrag(2026.9)) && JSON.stringify(algBetrag(2027.05)) === JSON.stringify(algBetrag(2026.9)) &&

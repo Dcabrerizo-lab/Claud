@@ -13,6 +13,8 @@ const read = (f) => fs.readFileSync(path.join(SRC, f), 'utf8');
 
 // Einfache Sprache: src/lang/einfach/*.json (Dateien mit Unterstrich, z. B. _test.json, werden übersprungen) zu einem Objekt
 // I18N_EINFACH zusammenführen. Nur Schlüssel, die es in de.json gibt; andere Schlüssel und Nicht-Texte werden mit Warnung verworfen.
+// Wert "=": Der Standardtext ist schon einfach (kurze Beschriftung, Name, Betrag). Er wird nicht doppelt ausgeliefert;
+// t() nimmt dann den Standardtext. So hat jeder Schlüssel einen Eintrag (Prüfung: test/test-einfach-vollstaendig.js).
 function einfachSource(de) {
   const dir = path.join(SRC, 'lang', 'einfach');
   const out = {};
@@ -22,6 +24,7 @@ function einfachSource(de) {
       Object.keys(o).forEach((k) => {
         if (!Object.prototype.hasOwnProperty.call(de, k)) { console.warn('Warnung: Einfache Sprache (' + f + '): Schlüssel nicht in de.json: ' + k); return; }
         if (typeof o[k] !== 'string') { console.warn('Warnung: Einfache Sprache (' + f + '): Wert ist kein Text: ' + k); return; }
+        if (o[k] === '=') return; // Standardtext gilt
         out[k] = o[k];
       });
     });
@@ -40,6 +43,10 @@ function i18nSource() {
   LANGS.forEach((l) => { const f = path.join(SRC, 'lang', 'schulden', l + '.json'); if (fs.existsSync(f)) Object.assign(all[l], JSON.parse(fs.readFileSync(f, 'utf8'))); });
   // Fristen in „Mein Ordner“ (src/fristen.js): eigene Sprachdateien src/lang/fristen/<Sprache>.json, Schlüssel „fri.*“
   LANGS.forEach((l) => { const f = path.join(SRC, 'lang', 'fristen', l + '.json'); if (fs.existsSync(f)) Object.assign(all[l], JSON.parse(fs.readFileSync(f, 'utf8'))); });
+  // Nachträge aus der Prüfung mit frischen Augen (Brief prüfen, Ergebnis, Sprachwahl): src/lang/zusatz/<Sprache>.json (getrennt, damit parallele Arbeiten nicht kollidieren)
+  LANGS.forEach((l) => { const f = path.join(SRC, 'lang', 'zusatz', l + '.json'); if (fs.existsSync(f)) Object.assign(all[l], JSON.parse(fs.readFileSync(f, 'utf8'))); });
+  // Leistungs-Check Schritt für Schritt (src/schritte.js): eigene Sprachdateien src/lang/schritte/<Sprache>.json, Schlüssel „sf.*“
+  LANGS.forEach((l) => { const f = path.join(SRC, 'lang', 'schritte', l + '.json'); if (fs.existsSync(f)) Object.assign(all[l], JSON.parse(fs.readFileSync(f, 'utf8'))); });
   return 'const I18N = ' + JSON.stringify(all) + ';\nconst I18N_EINFACH = ' + JSON.stringify(einfachSource(all.de)) + ';\nif (typeof module !== "undefined") module.exports = I18N;\n';
 }
 
@@ -99,19 +106,33 @@ function pruefpaket() {
   const stil = html.match(/<style>([\s\S]*?)<\/style>/);
   if (!stil) throw new Error('Prüfpaket: Stile fehlen in vorschau.html');
   const teile = PP_ABSCHNITTE.map((id) => ppAbschnitt(html, id)).join('\n');
-  const js = ['pflege.js', 'pflege-fragen.js', 'pflege-assistent.js', 'brief-lesen.js', 'kostensenkung.js', 'pflege-import.js', 'bescheid-sgb2.js', 'bescheid-gsa.js', 'bescheid-wg.js', 'bescheid-kiz.js', 'fristen.js', 'widerspruch.js', 'nebenkosten.js', 'vorschau.js'].map(ERW).join('\n');
+  // Einfache Sprache der Pflege-Einschätzung (src/lang/einfach/pflege/pflege.json, liest pflege-fragen.js als PFLEGE_EINFACH)
+  const pe = path.join(SRC, 'lang', 'einfach', 'pflege', 'pflege.json');
+  const pflegeEinfach = 'const PFLEGE_EINFACH = ' + (fs.existsSync(pe) ? JSON.stringify(JSON.parse(fs.readFileSync(pe, 'utf8'))) : 'null') + ';\n';
+  const js = pflegeEinfach + ['pflege.js', 'pflege-fragen.js', 'pflege-assistent.js', 'brief-lesen.js', 'kostensenkung.js', 'pflege-import.js', 'bescheid-sgb2.js', 'bescheid-gsa.js', 'bescheid-wg.js', 'bescheid-kiz.js', 'fristen.js', 'widerspruch.js', 'nebenkosten.js', 'vorschau.js'].map(ERW).join('\n');
   return { teile, css: ppStile(stil[1]), js };
+}
+
+// Einfache Sprache für „Brief prüfen“: Wörterbuch src/lang/einfach/brief/brief.json (Schlüssel = deutscher Standardtext), liest vorschau.js als BRIEF_EINFACH
+function briefEinfachJs() {
+  const f = path.join(SRC, 'lang', 'einfach', 'brief', 'brief.json');
+  if (!fs.existsSync(f)) return 'const BRIEF_EINFACH = null;\n';
+  // nur eigene einfache Fassungen ausliefern; "=" (Standardtext gilt) braucht die App nicht
+  const texte = Object.fromEntries(Object.entries(JSON.parse(fs.readFileSync(f, 'utf8')).texte).filter(([, v]) => v !== '='));
+  return 'const BRIEF_EINFACH = ' + JSON.stringify({ texte }) + ';\n';
 }
 
 // opts.native: Store-App (Android/iOS) statt Web
 function render(opts = {}) {
   const pp = pruefpaket();
-  const parts = { rules: read('rules.js'), i18n: i18nSource(), fmt: read('fmt.js'), plz: read('plz.js'), behoerden: read('behoerden.js'), formulare: read('formulare.js'), vorgaenge: read('vorgaenge.js'), haushalt: read('haushalt.js'), ausziehen: read('ausziehen.js'), fristen: read('fristen.js'), schulden: read('schulden.js'), app: read('app.js') };
+  const parts = { rules: read('rules.js'), i18n: i18nSource(), fmt: read('fmt.js'), plz: read('plz.js'), behoerden: read('behoerden.js'), formulare: read('formulare.js'), vorgaenge: read('vorgaenge.js'), haushalt: read('haushalt.js'), ausziehen: read('ausziehen.js'), fristen: read('fristen.js'), schulden: read('schulden.js'), schritte: read('schritte.js'), navigation: read('navigation.js'), app: read('app.js') };
   if (opts.native) {
     if (!parts.app.includes('/*NATIVE*/ false')) throw new Error('Marker /*NATIVE*/ fehlt in src/app.js');
     parts.app = parts.app.replace('/*NATIVE*/ false', 'true');
   }
-  const html = read('template.html')
+  const vorlage = require(path.join(SRC, 'navigation.js')).vorlage(read('template.html')); // gemeinsamer Zurück-Knopf: Marken <!--ZURUECK ...-->
+  if (/<!--ZURUECK/.test(vorlage)) throw new Error('Marke <!--ZURUECK--> mit falscher Schreibweise in src/template.html');
+  const html = vorlage
     .replace('/*RULES*/\n', () => parts.rules)
     .replace('/*I18N*/\n', () => parts.i18n)
     .replace('/*FMT*/\n', () => parts.fmt)
@@ -125,11 +146,13 @@ function render(opts = {}) {
     .replace('/*AUSZIEHEN*/\n', () => parts.ausziehen)
     .replace('/*FRISTEN*/\n', () => parts.fristen)
     .replace('/*SCHULDEN*/\n', () => parts.schulden)
+    .replace('/*NAVIGATION*/\n', () => parts.navigation)
+    .replace('/*SCHRITTE*/\n', () => parts.schritte)
     .replace('<!--PRUEFPAKET-->', () => pp.teile)
     .replace('/*PPSTIL*/\n', () => pp.css)
-    .replace('/*PRUEFPAKET*/\n', () => pp.js)
+    .replace('/*PRUEFPAKET*/\n', () => briefEinfachJs() + pp.js)
     .replace('/*APP*/\n', () => parts.app.replace("'/*VERSION*/'", () => JSON.stringify(require(path.join(ROOT, 'package.json')).version)));
-  const left = html.match(/\/\*(RULES|I18N|FMT|PLZ|PLZDATA|BEHOERDEN|BEHOERDENDATA|FORMULARE|VORGAENGE|HAUSHALT|AUSZIEHEN|FRISTEN|SCHULDEN|APP|PPSTIL|PRUEFPAKET)\*\/|<!--PRUEFPAKET-->/);
+  const left = html.match(/\/\*(RULES|I18N|FMT|PLZ|PLZDATA|BEHOERDEN|BEHOERDENDATA|FORMULARE|VORGAENGE|HAUSHALT|AUSZIEHEN|FRISTEN|SCHULDEN|NAVIGATION|SCHRITTE|APP|PPSTIL|PRUEFPAKET)\*\/|<!--PRUEFPAKET-->/);
   if (left) throw new Error('Platzhalter nicht ersetzt: ' + left[0]);
   return { html, i18n: parts.i18n };
 }

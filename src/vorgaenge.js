@@ -267,6 +267,14 @@ const Vorgaenge = (function () {
         var p = meta && meta.pin; if (!p || !p.ct || !PIN_RE.test(String(pin))) return Promise.resolve(false);
         return kette.then(function () { p = meta.pin; return schluessel(String(pin), unb64(p.salt), p.iter); }).then(function (k) { return entschluesseln(k, p.iv, p.ct).then(function () { return true; }); }).catch(function () { return false; });
       },
+      // Für „Rückgängig“ nach dem Löschen eines Vorgangs: Abbild aller Vorgänge (mit Daten) und Zurückholen
+      sicherung: function () { return bereit ? kopieVon(c) : null; },
+      zurueck: function (alt) {
+        if (!bereit || !gueltig(alt)) return false;
+        c = kopieVon(alt); if (!finde(c, c.aktiv)) c.aktiv = c.liste[0].id;
+        if (!key) klarDatenSchreiben();
+        speichern(); return true;
+      },
       entsperren: entsperren, pinSetzen: pinSetzen, pinAus: pinAus, allesLoeschen: allesLoeschen,
       fertig: function () { return kette; }
     };

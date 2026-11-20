@@ -3,6 +3,8 @@
 // alte gespeicherte Fristen werden gelöscht, kein seitliches Scrollen, keine Skriptfehler, Hinweis bei fremder Sprache.
 'use strict';
 const { chromium } = require('playwright');
+// Leistungs-Check: Weg „Alles auf einer Seite“ vorwählen (sonst erscheint zuerst die Auswahl Schritt für Schritt / Alles auf einer Seite)
+const SF_ALLES = () => { try { if (!localStorage.getItem('lotse.checkWeg')) { localStorage.setItem('lotse.checkWeg', 'alles'); localStorage.setItem('CapacitorStorage.lotse.checkWeg', 'alles'); } } catch (e) {} };
 const path = require('path');
 const APP = 'file://' + path.join(__dirname, '..', 'dist', 'sozialleistungslotse.html');
 let n = 0, f = 0;
@@ -10,7 +12,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
 (async () => {
   const b = await chromium.launch();
   const ctx = await b.newContext({ viewport: { width: 360, height: 760 }, locale: 'de-DE' });
-  const p = await ctx.newPage();
+  const p = await ctx.newPage(); await p.addInitScript(SF_ALLES);
   const fehler = []; p.on('pageerror', (e) => fehler.push(e.message)); p.on('console', (m) => { if (m.type() === 'error') fehler.push(m.text()); });
   const breit = () => p.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth);
   // Gespeicherte Fristen aus Build 141 liegen noch im Speicher: Die App löscht sie beim Start
@@ -24,7 +26,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   await p.click('#goLeistungen');
   ok('Weg „Welche Hilfen“ öffnet den Leistungscheck', await p.isVisible('#form') && (await p.evaluate(() => location.hash)) === '#leistungen');
   await p.click('#appnav [data-ansicht=start]'); await p.click('#goBriefe');
-  ok('Weg „Brief bekommen“ öffnet die Kacheln', await p.isVisible('#briefKacheln') && (await p.locator('#briefKacheln .kachel').count()) === 8); // 8 Kacheln seit „Formular ausfüllen“ (ux-brief)
+  ok('Weg „Brief bekommen“ öffnet die Kacheln', await p.isVisible('#briefKacheln') && (await p.locator('#briefKacheln .kachel').count()) === 7); // 7 Kacheln: „Anderer Brief oder Formular“ ist eine Kachel mit zwei Unterkarten
   const ERWARTET = { jc: 'p-bescheid', sa: 'p-gsa', wg: 'p-wg', fk: 'p-kiz', pk: 'p-pflege', vm: 'p-nk' };
   for (const [k, teil] of Object.entries(ERWARTET)) {
     await p.click('#brief-' + k);
@@ -57,7 +59,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Nichts als Frist gespeichert', (await p.evaluate(() => localStorage.getItem('lotse.fristen'))) === null);
   await p.click('#briefZurueck');
   // Brief einlesen gibt es nur in den Kacheln: Text einfügen → Werte gelb markiert, Personen aus „Leistungen“
-  await p.click('#appnav [data-ansicht=start]'); await p.click('#goLeistungen'); await p.click('#p1'); await p.click('#appnav [data-ansicht=start]'); await p.click('#goBriefe');
+  await p.click('#appnav [data-ansicht=start]'); await p.click('#goLeistungen'); await p.evaluate(() => document.getElementById('p1').click()); await p.click('#appnav [data-ansicht=start]'); await p.click('#goBriefe');
   ok('Übersicht „Von wem ist der Brief?“: nur Kacheln, kein Scannen, Einfügen oder PDF', await p.isVisible('#briefKacheln') && !(await p.isVisible('#einlesen')) && !(await p.isVisible('#elScan')) && !(await p.isVisible('#elPdf')));
   await p.click('#brief-jc'); await p.click('#elPaste');
   await p.fill('#elText', 'Jobcenter Musterstadt\nDatum: 12.03.2026\nGrundsicherungsgeld nach dem SGB II\nRegelbedarf 563,00 357,00 920,00\nKosten der Unterkunft und Heizung 755,00\nZahlbetrag 1.501,33');
@@ -86,7 +88,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Mitwirkung in der Kachel: Erklärung mit Frist', /Unterlagen/.test(await p.textContent('#elErg')) && /15\.05\.2026/.test(await p.textContent('#elErg')));
   await p.click('#briefZurueck');
   // Antragsformular: Kachel zeigt die Formular-Erklärung, Einlesen ist dort nicht doppelt
-  await p.click('#brief-af');
+  await p.click('#brief-ab'); await p.click('#brief-af');
   ok('Kachel Antragsformular zeigt das Formular-Scannen', await p.isVisible('#scan') && !(await p.isVisible('#einlesen')));
   ok('Antragsformular: großer Foto-Knopf statt Dateifeld', await p.isVisible('#scan .sc-foto') && (await p.getAttribute('#sc-file', 'class')).includes('vh'));
   const FORMULAR = 'Antrag auf Wohngeld\n1. Angaben zur antragstellenden Person\nFamilienname, Vorname\nGeburtsdatum\nIBAN\n2. Haushaltsmitglieder\nFamilienstand\n3. Wohnkosten\nGesamtmiete monatlich\nHeizkosten\nWohnfläche in m²\n4. Einkommen\nRenten\nKrankenkasse\nStaatsangehörigkeit\nOrt, Datum, Unterschrift';
@@ -105,11 +107,13 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Antragsformular: Erklärung je Feld zum Aufklappen', (await p.locator('#sc-out details.sc-erkl').count()) >= 5);
   ok('Antragsformular: kein seitliches Scrollen', await breit());
   await p.click('#briefZurueck');
+  ok('Zurück aus dem Antragsformular: eine Ebene hoch zur Kachel „Anderer Brief oder Formular“', await p.isVisible('#brief-af') && !(await p.isVisible('#briefKacheln')));
+  await p.click('#briefZurueck'); // noch eine Ebene hoch: Übersicht „Von wem ist der Brief?“ (sonst bleibt die Unterebene beim nächsten Öffnen stehen)
   await p.click('#appnav [data-ansicht=start]'); await p.click('#goLeistungen');
   ok('Leistungsseite: kein Formular-Scannen und kein Verweis darauf', !(await p.isVisible('#scan')) && (await p.locator('#v-leistungen #scanVerweis, #v-leistungen #scan, #v-leistungen [data-t^="sc."]').count()) === 0);
   // Fremde Sprache: Hinweis „nur auf Deutsch“, Bereiche übersetzt
   await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'tr'); await p.click('#appnav [data-ansicht=start]'); await p.click('#goBriefe'); await p.click('#brief-wg');
-  ok('Türkisch: Hinweis, dass die Prüfung nur auf Deutsch ist', await p.isVisible('#ppNurDe'));
+  ok('Türkisch: Hinweis, dass Schreiben an Ämter auf Deutsch sind', await p.isVisible('#ppNurDe'));
   ok('Türkisch: Leiste übersetzt', (await p.textContent('#appnav')).includes('Klasörüm'));
   await p.click('#briefZurueck'); await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'de');
   // Auf dem Computer: Reiter oben, ohne seitliches Scrollen
@@ -117,8 +121,8 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Computer: Leiste sichtbar und nicht unten fixiert', await p.isVisible('#appnav') && (await p.evaluate(() => getComputedStyle(document.getElementById('appnav')).position)) !== 'fixed');
   ok('Computer: kein seitliches Scrollen', await breit());
   // Ganz ohne Leistungscheck (neues Gerät): keine erfundenen Werte, sondern ein Tipp
-  const ctx2 = await b.newContext({ viewport: { width: 360, height: 760 }, locale: 'de-DE' }); const q = await ctx2.newPage();
-  await q.goto(APP + '#briefe'); await q.waitForTimeout(300); await q.click('#brief-af');
+  const ctx2 = await b.newContext({ viewport: { width: 360, height: 760 }, locale: 'de-DE' }); const q = await ctx2.newPage(); await q.addInitScript(SF_ALLES);
+  await q.goto(APP + '#briefe'); await q.waitForTimeout(300); await q.click('#brief-ab'); await q.click('#brief-af');
   if (!(await q.isVisible('#sc-text'))) await q.click('#sc-pasteBtn'); await q.fill('#sc-text', 'Antrag auf Wohngeld\nGesamtmiete monatlich\nEinkommen\nVermögen\nHaushaltsmitglieder'); await q.click('#sc-local');
   const leer = await q.textContent('#sc-out');
   ok('Ohne Leistungscheck: kein „0 €“, keine Haushaltszeile, aber Tipp', !/€/.test(leer) && !/Erwachsene/.test(leer) && /Leistungscheck/.test(leer), leer.slice(0, 400));

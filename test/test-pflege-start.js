@@ -21,6 +21,8 @@ const check = (n, c, x) => { if (!c) { fails++; console.log('FAIL', n, x === und
 const ansicht = () => d.getElementById('app').getAttribute('data-ansicht');
 const box = () => d.getElementById('puInhalt');
 const knopf = (txt) => [...box().querySelectorAll('button')].find((b) => b.textContent.trim() === txt);
+// gemeinsamer Zurück-Knopf oben (src/navigation.js); die Navigation gleicht den Verlauf danach ab
+const oben = () => d.querySelector('#v-pflegestart [data-nav-zurueck]');
 const offen = () => [...box().querySelectorAll(':scope > .pu-l')].map((s) => s.id.replace('pu-l-', ''));
 const weitere = () => [...box().querySelectorAll('#pu-weitere .pu-l')].map((s) => s.id.replace('pu-l-', ''));
 const de = I18N.de;
@@ -31,13 +33,14 @@ setTimeout(() => {
   check('Kachel „Pflege“ öffnet die Auswahl', ansicht() === 'pflegestart' && !d.getElementById('v-pflegestart').hidden);
   const wege = [...box().querySelectorAll('.weg-liste .weg')];
   check('Auswahl: zwei große Knöpfe, zuerst Unterstützung, dann Einschätzung', wege.length === 2 && wege[0].id === 'pu-hilfe' && wege[1].id === 'pu-schaetzen' && wege[0].textContent.indexOf(de['pu.hilfe']) >= 0 && wege[1].textContent.indexOf(de['pu.schaetzen']) >= 0);
-  knopf(de['pf.zurueck']).click();
+  check('Kein zweiter Zurück-Knopf unten', !knopf(de['pf.zurueck']));
+  oben().click();
   check('Zurück in der Auswahl führt zum Start', ansicht() === 'start');
   d.getElementById('goPflege').click();
   d.getElementById('pu-hilfe').click();
   const pgs = [...box().querySelectorAll('.wahl-raster .wahl')].map((b) => b.getAttribute('data-pg'));
   check('Unterstützung fragt zuerst den Pflegegrad (1–5, noch keiner)', pgs.join() === '1,2,3,4,5,0' && box().textContent.indexOf(de['pu.pg.keiner']) >= 0, pgs);
-  knopf(de['pf.zurueck']).click();
+  oben().click();
   check('Zurück bei der Pflegegrad-Frage führt zur Auswahl', !!d.getElementById('pu-hilfe'));
   d.getElementById('pu-hilfe').click();
   box().querySelector('.wahl[data-pg="3"]').click();
@@ -58,13 +61,13 @@ setTimeout(() => {
   check('[pu-korr] Aufs Konto: Pflegegeld und Wohngruppenzuschlag', /Aufs Konto kommen nur das Pflegegeld und, wer in einer ambulant betreuten Wohngruppe lebt, der Wohngruppenzuschlag/.test(t3));
   check('Stand und Quelle genannt', /Stand der Beträge: 14\.9\.2026 \(Bundesministerium für Gesundheit/.test(t3));
   check('Stellen nur als Art (Pflegekasse, Pflegestützpunkt), keine Anschrift', /Pflegestützpunkt/.test(t3) && !/\b\d{5}\b/.test(t3));
-  knopf(de['pf.zurueck']).click();
+  oben().click();
   box().querySelector('.wahl[data-pg="1"]').click();
   const t1 = box().textContent;
   check('Pflegegrad 1: kein Pflegegeld, keine Verhinderungspflege', !d.getElementById('pu-l-geld') && !d.getElementById('pu-l-verh') && !d.getElementById('pu-l-rente') && /noch kein Pflegegeld/.test(t1));
   check('Pflegegrad 1: Entlastungsbetrag, Hilfsmittel, Umbau, Beratung offen', offen().join() === 'entl,hilfs,umbau,beratung', offen());
   check('Pflegegrad 1: Entlastungsbetrag auch für Pflegedienst bei der Körperpflege', /Pflegegrad 1 darf damit auch ein Pflegedienst/.test(d.getElementById('pu-l-entl').textContent));
-  knopf(de['pf.zurueck']).click();
+  oben().click();
   box().querySelector('.wahl[data-pg="0"]').click();
   check('Ohne Pflegegrad: Beratung und Kurse, Hinweis auf den Antrag', offen().join() === 'beratung,kurs' && /Den Antrag stellst du bei der Pflegekasse/.test(box().textContent) && !d.getElementById('pu-weitere'));
   check('[pu-korr] Ohne Pflegegrad: 10 Arbeitstage kurzzeitige Arbeitsverhinderung (§ 2 PflegeZG), auch bei voraussichtlicher Pflegebedürftigkeit', /bis zu 10 Arbeitstage/.test(box().textContent) && /voraussichtlich/.test(box().textContent));
@@ -79,6 +82,52 @@ setTimeout(() => {
       if (zur) { zur.click(); check('Zurück aus der Einschätzung führt zur Auswahl', ansicht() === 'pflegestart' && !!d.getElementById('pu-hilfe')); }
     }
   }
+  // [pflege-ergebnis] Ergebnisseite der Einschätzung: groß der Pflegegrad, Bedeutung, höchstens 3 Kacheln, gespeichert, Zurück-Wege
+  const pa = () => d.getElementById('pflegeAssist');
+  const titel = () => (d.getElementById('pa-q') || {}).textContent || '';
+  d.getElementById('goPflege').click(); d.getElementById('pu-schaetzen').click();
+  for (let i = 0; i < 120 && !/^Wahrscheinlich/.test(titel()); i++) {
+    const inp = d.getElementById('pa-jahre');
+    if (inp) { inp.value = '84'; [...pa().querySelectorAll('button')].find((b) => /Weiter/.test(b.textContent)).click(); continue; }
+    if (pa().querySelector('[data-m5]')) { pa().querySelector('[data-m5="5.1"]').click(); [...pa().querySelectorAll('button')].find((b) => /Weiter/.test(b.textContent)).click(); continue; }
+    const k = [...pa().querySelectorAll('.es-wahl .es-btn')];
+    if (/^Ja$/.test((k[0] || {}).textContent || '')) k[0].click(); else k[k.length - 1].click();
+  }
+  const pgE = (titel().match(/Pflegegrad (\d)/) || [])[1];
+  check('[pflege-ergebnis] Nach der letzten Frage: Ergebnisseite „Wahrscheinlich Pflegegrad X“', ansicht() === 'pflege' && !!pgE, titel());
+  check('[pflege-ergebnis] Hinweis: nur Einschätzung, Pflegekasse entscheidet', /Das ist eine Einschätzung\. Entscheiden tut die Pflegekasse\./.test(pa().textContent));
+  check('[pflege-ergebnis] Bedeutung mit Beträgen aus den Regeln (Pflegegeld, Pflegedienst)', new RegExp('Pflegegeld: ' + require('../src/rules.js').RULES.pflege.geld[pgE] + ' €').test(pa().querySelector('.pa-bedeutung').textContent) && /Pflegedienst: bis/.test(pa().querySelector('.pa-bedeutung').textContent), pa().querySelector('.pa-bedeutung').textContent);
+  const kach = [...pa().querySelectorAll('.pa-kacheln > .uk-karte')];
+  check('[pflege-ergebnis] Drei Kacheln: Antrag, Was steht mir zu?, Gutachten', kach.length === 3 && kach[0].classList.contains('pa-k-antrag') && kach[1].classList.contains('pa-k-hilfen') && kach[2].classList.contains('pa-k-gutachten') && /Antrag an die Pflegekasse/.test(kach[0].textContent), kach.map((x) => x.textContent));
+  check('[pflege-ergebnis] Keine großen Knöpfe mehr, nur Textlinks', pa().querySelectorAll('.btn').length === 0 && !!pa().querySelector('.pa-aendern'));
+  check('[pflege-ergebnis] Aus der Pflege-Startseite: kein Sprung in den Leistungs-Check', !/Leistungs-Check/.test(pa().textContent));
+  check('[pflege-ergebnis] Punkte je Bereich zum Aufklappen', !!pa().querySelector('details.pa-punkte-box') && !pa().querySelector('details.pa-punkte-box').open);
+  const gesp = JSON.parse(store['lotse.pflegecheck'] || '{}');
+  check('[pflege-ergebnis] Ergebnis automatisch gespeichert', gesp.schaetzung && String(gesp.schaetzung.pg) === pgE, gesp.schaetzung);
+  pa().querySelector('.pa-k-hilfen').click();
+  check('[pflege-ergebnis] „Was steht mir zu?“ zeigt die Unterstützung beim Pflegegrad', ansicht() === 'pflegestart' && new RegExp('Das gibt es bei Pflegegrad ' + pgE).test(box().textContent));
+  d.querySelector('#v-pflegestart [data-nav-zurueck]').click();
+  check('[pflege-ergebnis] „← Zurück“ führt zur Ergebnisseite zurück', ansicht() === 'pflege' && /^Wahrscheinlich/.test(titel()));
+  pa().querySelector('.pa-k-gutachten').click();
+  check('[pflege-ergebnis] Gutachten vergleichen öffnet den Brief der Pflegekasse, Knopf heißt „← Zurück“', ansicht() === 'briefe' && /^← Zurück$/.test(d.getElementById('briefZurueck').textContent.trim()) && !d.getElementById('briefKachelKopf').hidden);
+  d.getElementById('briefZurueck').click();
+  check('[pflege-ergebnis] Aus dem Brief zurück zur Ergebnisseite', ansicht() === 'pflege' && /^Wahrscheinlich/.test(titel()));
+  pa().querySelector('.pa-k-antrag').click();
+  check('[pflege-ergebnis] Antrag: Antragsmappe mit Pflegegeld, oben „← Zurück“', ansicht() === 'leistungen' && !d.getElementById('leistungenKopf').hidden && d.getElementById('pflegegrad').value === 'antrag');
+  d.querySelector('#leistungenKopf [data-nav-zurueck]').click();
+  check('[pflege-ergebnis] Aus der Antragsmappe zurück zur Ergebnisseite', ansicht() === 'pflege' && /^Wahrscheinlich/.test(titel()));
+  pa().querySelector('.pa-zur').click();
+  const le = d.getElementById('pu-letzte');
+  check('[pflege-ergebnis] Pflege-Startseite: „Deine letzte Einschätzung: Pflegegrad X (Datum)“', ansicht() === 'pflegestart' && !!le && new RegExp('Deine letzte Einschätzung: Pflegegrad ' + pgE + ' \\(').test(le.textContent), le && le.textContent);
+  check('[pflege-ergebnis] Pflege-Startseite: weiter genau zwei Kacheln', box().querySelectorAll('.weg-liste .weg').length === 2);
+  le.querySelector('button').click();
+  check('[pflege-ergebnis] „Ergebnis ansehen“ öffnet direkt die Ergebnisseite', ansicht() === 'pflege' && /^Wahrscheinlich/.test(titel()));
+  pa().querySelector('.pa-zur').click(); d.querySelector('#v-pflegestart [data-nav-zurueck]').click();
+  // Aus dem Leistungs-Check: dort gibt es den Weg zurück zur Karte
+  d.getElementById('goLeistungen').click(); d.getElementById('paStart').click();
+  check('[pflege-ergebnis] Aus dem Leistungs-Check: Link „Zurück zum Leistungs-Check“', ansicht() === 'pflege' && /Zurück zum Leistungs-Check/.test(pa().textContent));
+  [...pa().querySelectorAll('.pa-links button')].find((b) => /Leistungs-Check/.test(b.textContent)).click();
+  check('[pflege-ergebnis] Link führt zur Pflegekarte im Leistungs-Check', ansicht() === 'leistungen');
   // Englisch: Auswahl übersetzt, Übersicht mit Hinweis „nur Deutsch“
   const sel = d.getElementById('lang'); sel.value = 'en'; sel.dispatchEvent(new w.Event('change', { bubbles: true }));
   d.getElementById('goPflege').click();

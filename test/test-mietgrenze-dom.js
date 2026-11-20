@@ -112,7 +112,7 @@ tippe('miete', '<img src=x onerror=1>');
 check('HTML im Mietfeld: kein neues Element', d.querySelectorAll('img').length === vorher && !d.querySelector('#mieteGrenze *'));
 // 13) Farben: nur Variablen aus der Palette
 const css = [...d.querySelectorAll('style')].map((s) => s.textContent).join('\n');
-const regeln = css.match(/\.mietgrenze[^{]*\{[^}]*\}/g) || [];
+const regeln = (css.match(/(?:^|\n)\s*\.mietgrenze[^{,]*\{[^}]*\}/g) || []).map((r) => r.trim()); // nur eigene Regeln (nicht Sammelregeln wie die Schriftstufen, #68)
 check('CSS: Regeln vorhanden, nur --na/--warn', regeln.length >= 2 && regeln.every((r) => !/#[0-9a-f]{3,6}\b|rgb/i.test(r) && !/var\(--(?!na\b|na-bg\b|warn\b|warn-bg\b)/.test(r)), regeln.join(' '));
 check('keine Skriptfehler (Formular)', S.errors.length === 0, S.errors.join(' | '));
 

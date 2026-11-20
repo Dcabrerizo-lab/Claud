@@ -1,8 +1,11 @@
 {
  "_info": [
   "Soll-Tabelle für test/test-abhaengigkeiten.js: von welchen Angaben jede Karte abhängen MUSS (haengtAb).",
-  "Erster Stand 20.11.2026 aus dem beobachteten Verhalten übernommen; jede Zeile wird gegen die amtliche Rechtsgrundlage geprüft (docs/entwuerfe/abhaengigkeiten-pruefung.md).",
-  "Ändert eine Code-Änderung eine Abhängigkeit, wird der Test rot: dann Rechtsgrundlage prüfen und diese Tabelle bewusst anpassen."
+  "Erster Stand 20.11.2026 aus dem beobachteten Verhalten übernommen; geprüft gegen die amtliche Rechtsgrundlage (docs/entwuerfe/abhaengigkeiten-pruefung.md). Asyl-Regeln, WBS und neue Angaben (bab, bhPerson, wfbm, kindKrank, einkommen2) ergänzt am 20.11.2026.",
+  "Ändert eine Code-Änderung eine Abhängigkeit, wird der Test rot: dann Rechtsgrundlage prüfen und diese Tabelle bewusst anpassen.",
+  "EU-Ausschluss bei Hilfe zur Pflege, Blindenhilfe und BAföG sowie Krankengeld bei Rente ergänzt am 20.11.2026 (Ausschluss-Regeln mit „wenn“).",
+  "Einkommensart „Asylbewerberleistungen“ (asylblg) ergänzt am 20.11.2026: Wohngeld nein, Rundfunk ja, Bildung und Teilhabe ja.",
+  "Aufenthalt „ausreisepflichtig ohne Duldung“ (ausreise) ergänzt am 20.11.2026: Regeln wie asyl, dazu Wohngeld und WBS nein."
  ],
  "karten": {
   "kindergeld": {
@@ -18,16 +21,18 @@
     "arbeit",
     "aufenthalt",
     "ausbildung",
+    "bab",
     "baby",
     "behinderung",
     "einkommen",
+    "einkommen2",
     "kinder",
     "miete",
     "pflegegrad",
     "vermoegen",
     "wohnart"
    ],
-   "quelle": "Wohngeldgesetz, §§ 12–19 WoGG"
+   "quelle": "Wohngeldgesetz, §§ 12–19 WoGG; Ausbildung § 20 Abs. 2 WoGG; Aufenthalt § 3 Abs. 5, § 7 Abs. 1 Satz 1 Nr. 8 WoGG (https://www.gesetze-im-internet.de/wogg/__7.html, Abruf 20.11.2026)"
   },
   "kiz": {
    "haengtAb": [
@@ -35,10 +40,13 @@
     "arbeit",
     "aufenthalt",
     "baby",
+    "bhPerson",
     "einkommen",
+    "einkommen2",
     "kinder",
     "miete",
-    "vermoegen"
+    "vermoegen",
+    "wfbm"
    ],
    "quelle": "§ 6a BKGG"
   },
@@ -48,11 +56,15 @@
     "arbeit",
     "aufenthalt",
     "ausbildung",
+    "bab",
     "baby",
+    "bhPerson",
     "einkommen",
+    "einkommen2",
     "kinder",
     "miete",
     "vermoegen",
+    "wfbm",
     "wohnart"
    ],
    "quelle": "SGB II, §§ 7, 9, 11–12, 19–22 SGB II"
@@ -63,13 +75,17 @@
     "arbeit",
     "aufenthalt",
     "ausbildung",
+    "bab",
     "baby",
     "behinderung",
+    "bhPerson",
     "einkommen",
+    "einkommen2",
     "kinder",
     "miete",
     "pflegegrad",
-    "vermoegen"
+    "vermoegen",
+    "wfbm"
    ],
    "quelle": "§ 28 SGB II, § 6b BKGG, § 34 SGB XII"
   },
@@ -85,9 +101,11 @@
     "alter",
     "aufenthalt",
     "einkommen",
+    "einkommen2",
     "kinder",
     "miete",
     "vermoegen",
+    "wfbm",
     "wohnart"
    ],
    "quelle": "§§ 41 ff. SGB XII"
@@ -95,12 +113,14 @@
   "bafoeg": {
    "haengtAb": [
     "alter",
+    "aufenthalt",
     "ausbildung",
     "einkommen",
+    "einkommen2",
     "kinder",
     "vermoegen"
    ],
-   "quelle": "BAföG"
+   "quelle": "BAföG; Aufenthalt § 8 Abs. 2a, Abs. 3 BAföG (https://www.gesetze-im-internet.de/baf_g/__8.html, Abruf 20.11.2026); Elterneinkommen §§ 21 ff. BAföG"
   },
   "pflege": {
    "haengtAb": [
@@ -109,13 +129,17 @@
    "quelle": "§§ 36–38, 41, 44, 45b SGB XI"
   },
   "kgBeh": {
-   "haengtAb": [],
-   "quelle": "§ 32 Abs. 4 Satz 1 Nr. 3 EStG"
+   "haengtAb": [
+    "aufenthalt",
+    "bhPerson"
+   ],
+   "quelle": "§ 32 Abs. 4 Satz 1 Nr. 3 EStG; Aufenthalt § 62 Abs. 2 EStG (https://www.gesetze-im-internet.de/estg/__62.html, Abruf 20.11.2026)"
   },
   "emrente": {
    "haengtAb": [
     "alter",
-    "arbeit"
+    "arbeit",
+    "wfbm"
    ],
    "quelle": "§ 43 SGB VI"
   },
@@ -123,8 +147,10 @@
    "haengtAb": [
     "alter",
     "behinderung",
+    "bhPerson",
     "blind",
-    "pflegegrad"
+    "pflegegrad",
+    "wfbm"
    ],
    "quelle": "§§ 90 ff. SGB IX; Kinder mit seelischer Behinderung: § 35a SGB VIII"
   },
@@ -136,18 +162,22 @@
   },
   "ausweis": {
    "haengtAb": [
+    "aufenthalt",
     "behinderung",
+    "bhPerson",
     "blind",
-    "pflegegrad"
+    "pflegegrad",
+    "wfbm"
    ],
-   "quelle": "§§ 2, 152 SGB IX"
+   "quelle": "§§ 2, 152 SGB IX; Aufenthalt „rechtmäßig“ § 2 Abs. 2 SGB IX (https://www.gesetze-im-internet.de/sgb_9_2018/__2.html, Abruf 20.11.2026)"
   },
   "blindengeld": {
    "haengtAb": [
+    "aufenthalt",
     "blind",
     "bundesland"
    ],
-   "quelle": "Landesblindengeldgesetz (Bayern: BayBlindG)"
+   "quelle": "Landesblindengeldgesetz (Bayern: BayBlindG); Aufenthalt § 9 Abs. 1 AsylbLG (https://www.gesetze-im-internet.de/asylblg/__9.html, Abruf 20.11.2026)"
   },
   "blh": {
    "haengtAb": [
@@ -164,8 +194,11 @@
    "quelle": "§§ 39, 40, 42, 42a SGB XI"
   },
   "arbeit": {
-   "haengtAb": [],
-   "quelle": "§ 61 SGB IX"
+   "haengtAb": [
+    "alter",
+    "wfbm"
+   ],
+   "quelle": "§ 61 SGB IX (setzt Anspruch auf Werkstattleistungen nach § 58 SGB IX voraus, in der Regel bis zur Regelaltersgrenze)"
   },
   "rundfunk": {
    "haengtAb": [
@@ -176,30 +209,31 @@
     "baby",
     "blind",
     "einkommen",
+    "einkommen2",
     "kinder",
     "miete",
     "pflegegrad",
-    "vermoegen"
+    "vermoegen",
+    "wfbm"
    ],
    "quelle": "§ 4 RBStV"
   },
   "zuzahl": {
    "haengtAb": [
     "behinderung",
+    "bhPerson",
     "blind",
-    "pflegegrad"
+    "pflegegrad",
+    "wfbm"
    ],
    "quelle": "§ 62 SGB V"
   },
-  "famvers": {
-   "haengtAb": [
-    "kinder"
-   ],
-   "quelle": "§ 10 SGB V"
-  },
   "bab": {
-   "haengtAb": [],
-   "quelle": "§§ 56 ff. SGB III"
+   "haengtAb": [
+    "ausbildung",
+    "bab"
+   ],
+   "quelle": "§§ 56 ff. SGB III; Ausbildung im Betrieb, Wohnen außerhalb der Eltern § 60 Abs. 1 SGB III (https://www.gesetze-im-internet.de/sgb_3/__60.html, Abruf 20.11.2026)"
   },
   "wbs": {
    "haengtAb": [
@@ -207,17 +241,19 @@
     "behinderung",
     "bundesland",
     "einkommen",
+    "einkommen2",
     "kinder",
     "pflegegrad"
    ],
-   "quelle": "§ 27 WoFG, Einkommensgrenze § 9 Abs. 2 WoFG; in Ländern mit eigenem Gesetz Landesrecht"
+   "quelle": "§ 27 WoFG, Einkommensgrenze § 9 Abs. 2 WoFG; in Ländern mit eigenem Gesetz Landesrecht; Aufenthalt § 27 Abs. 2 WoFG (https://www.gesetze-im-internet.de/wofg/__27.html, Abruf 20.11.2026)"
   },
   "alg1": {
    "haengtAb": [
     "alter",
-    "arbeit"
+    "arbeit",
+    "aufenthalt"
    ],
-   "quelle": "§§ 136 ff. SGB III"
+   "quelle": "§§ 136 ff. SGB III; Verfügbarkeit „kann und darf“ § 138 Abs. 5 Nr. 1 SGB III (https://www.gesetze-im-internet.de/sgb_3/__138.html, Abruf 20.11.2026)"
   },
   "krankengeld": {
    "haengtAb": [
@@ -241,10 +277,11 @@
   },
   "hzp": {
    "haengtAb": [
+    "aufenthalt",
     "pflegegrad",
     "vermoegen"
    ],
-   "quelle": "§§ 61 ff. SGB XII"
+   "quelle": "§§ 61 ff. SGB XII; EU-Ausschluss § 23 Abs. 3 SGB XII (https://www.gesetze-im-internet.de/sgb_12/__23.html, Abruf 20.11.2026)"
   },
   "lpg": {
    "haengtAb": [
@@ -256,13 +293,19 @@
   "mutter": {
    "haengtAb": [
     "baby",
-    "einkommen"
+    "einkommen",
+    "einkommen2"
    ],
    "quelle": "§ 19 MuSchG, § 24i SGB V"
   },
   "kkg": {
-   "haengtAb": [],
-   "quelle": "§ 45 SGB V"
+   "haengtAb": [
+    "einkommen",
+    "einkommen2",
+    "kindKrank",
+    "kinder"
+   ],
+   "quelle": "§ 45 SGB V (krankes Kind, Versicherte mit Arbeitseinkommen)"
   },
   "asylblg": {
    "haengtAb": [
@@ -279,7 +322,7 @@
     "ggeld"
    ],
    "hoechstens": "nein",
-   "quelle": "§ 7 Abs. 1 Satz 2 Nr. 3 SGB II – vor Übernahme prüfen"
+   "quelle": "§ 7 Abs. 1 Satz 2 Nr. 3 SGB II (https://www.gesetze-im-internet.de/sgb_2/__7.html)"
   },
   {
    "merkmal": "aufenthalt",
@@ -288,16 +331,7 @@
     "gsa"
    ],
    "hoechstens": "nein",
-   "quelle": "§ 23 Abs. 2 SGB XII – vor Übernahme prüfen"
-  },
-  {
-   "merkmal": "aufenthalt",
-   "wert": "asyl",
-   "karten": [
-    "wohngeld"
-   ],
-   "hoechstens": "nein",
-   "quelle": "§ 7 Abs. 1 Nr. 8 WoGG (nur AsylbLG-Bezug; Fundstelle laut Prüfung 20.11.2026)"
+   "quelle": "§ 23 Abs. 2 SGB XII (https://www.gesetze-im-internet.de/sgb_12/__23.html, Abruf 20.11.2026)"
   },
   {
    "merkmal": "aufenthalt",
@@ -315,19 +349,355 @@
     "wbs"
    ],
    "hoechstens": "nein",
-   "quelle": "§ 27 Abs. 2 Satz 2 WoFG (Ausnahmen z. B. Ausbildungsduldung)"
-  }
- ],
- "bekannt": [
-  {
-   "karte": "wbs",
-   "merkmal": "aufenthalt",
-   "entwurf": "docs/entwuerfe/wbs-aufenthalt.md, nächstes Update"
+   "quelle": "§ 27 Abs. 2 WoFG (https://www.gesetze-im-internet.de/wofg/__27.html, Abruf 20.11.2026); Ausnahmen z. B. Ausbildungsduldung, daher Hinweis; Entscheidung David 20.11.2026"
   },
   {
-   "karte": "wbs",
-   "merkmal": "aufenthalt=asyl",
-   "entwurf": "docs/entwuerfe/wbs-aufenthalt.md, nächstes Update"
+   "merkmal": "aufenthalt",
+   "wert": "asyl",
+   "karten": [
+    "wohngeld"
+   ],
+   "hoechstens": "nein",
+   "quelle": "§ 7 Abs. 1 Satz 1 Nr. 8 WoGG: Einkommensart Asylbewerberleistungen schließt aus (https://www.gesetze-im-internet.de/wogg/__7.html, Abruf 20.11.2026); ohne diese Auswahl normal gerechnet (§ 3 Abs. 5 WoGG, Entscheidung David 20.11.2026)",
+   "wenn": {
+    "art1": [
+     "asylblg"
+    ]
+   }
+  },
+  {
+   "merkmal": "aufenthalt",
+   "wert": "asyl",
+   "karten": [
+    "bafoeg"
+   ],
+   "hoechstens": "vielleicht",
+   "quelle": "§ 8 Abs. 2a, Abs. 3 BAföG (https://www.gesetze-im-internet.de/baf_g/__8.html, Abruf 20.11.2026)"
+  },
+  {
+   "merkmal": "aufenthalt",
+   "wert": "asyl",
+   "karten": [
+    "bab"
+   ],
+   "hoechstens": "vielleicht",
+   "quelle": "§ 60 Abs. 3 SGB III (https://www.gesetze-im-internet.de/sgb_3/__60.html, Abruf 20.11.2026)"
+  },
+  {
+   "merkmal": "aufenthalt",
+   "wert": "asyl",
+   "karten": [
+    "kgBeh"
+   ],
+   "hoechstens": "vielleicht",
+   "quelle": "§ 62 Abs. 2 EStG (https://www.gesetze-im-internet.de/estg/__62.html, Abruf 20.11.2026)"
+  },
+  {
+   "merkmal": "aufenthalt",
+   "wert": "asyl",
+   "karten": [
+    "hzp"
+   ],
+   "hoechstens": "vielleicht",
+   "quelle": "§ 23 Abs. 2 SGB XII, § 2 Abs. 1 und § 6 Abs. 1 AsylbLG (https://www.gesetze-im-internet.de/sgb_12/__23.html, Abruf 20.11.2026)"
+  },
+  {
+   "merkmal": "aufenthalt",
+   "wert": "asyl",
+   "karten": [
+    "eingl"
+   ],
+   "hoechstens": "vielleicht",
+   "quelle": "§ 100 Abs. 2 SGB IX (https://www.gesetze-im-internet.de/sgb_9_2018/__100.html, Abruf 20.11.2026)"
+  },
+  {
+   "merkmal": "aufenthalt",
+   "wert": "asyl",
+   "karten": [
+    "alg1"
+   ],
+   "hoechstens": "vielleicht",
+   "quelle": "§ 138 Abs. 5 Nr. 1 SGB III (https://www.gesetze-im-internet.de/sgb_3/__138.html, Abruf 20.11.2026)"
+  },
+  {
+   "merkmal": "aufenthalt",
+   "wert": "asyl",
+   "karten": [
+    "blindengeld"
+   ],
+   "hoechstens": "vielleicht",
+   "quelle": "§ 9 Abs. 1 AsylbLG, „vergleichbare Landesgesetze“ unklar (https://www.gesetze-im-internet.de/asylblg/__9.html, Abruf 20.11.2026)"
+  },
+  {
+   "merkmal": "aufenthalt",
+   "wert": "asyl",
+   "karten": [
+    "ausweis"
+   ],
+   "hoechstens": "vielleicht",
+   "quelle": "§ 2 Abs. 2 SGB IX, „rechtmäßig“ (https://www.gesetze-im-internet.de/sgb_9_2018/__2.html, Abruf 20.11.2026)"
+  },
+  {
+   "merkmal": "aufenthalt",
+   "wert": "asyl",
+   "karten": [
+    "but"
+   ],
+   "mindestens": "vielleicht",
+   "nurMitKindern": true,
+   "quelle": "§ 3 Abs. 4 AsylbLG: Bildung und Teilhabe auch mit Asylbewerberleistungen (https://www.gesetze-im-internet.de/asylblg/__3.html, Abruf 20.11.2026)"
+  },
+  {
+   "merkmal": "aufenthalt",
+   "wert": "eu",
+   "wenn": {
+    "euArbeit": [
+     "",
+     "nein"
+    ],
+    "euJahre": [
+     "",
+     "unter5"
+    ],
+    "art1": [
+     "rente",
+     "alg",
+     "unt",
+     "ohne"
+    ]
+   },
+   "karten": [
+    "gsa",
+    "hzp",
+    "blh"
+   ],
+   "hoechstens": "nein",
+   "quelle": "§ 23 Abs. 3 Satz 1, 6, 7 SGB XII: EU-Bürger ohne Arbeit, unter 5 Jahren keine Leistungen nach Abs. 1 (umfasst Hilfe zur Pflege und Sozialhilfe im Einzelfall wie Blindenhilfe) und nach dem Vierten Kapitel (https://www.gesetze-im-internet.de/sgb_12/__23.html, Abruf 20.11.2026)"
+  },
+  {
+   "merkmal": "aufenthalt",
+   "wert": "eu",
+   "wenn": {
+    "euArbeit": [
+     "",
+     "nein"
+    ],
+    "euJahre": [
+     "",
+     "unter5"
+    ],
+    "art1": [
+     "rente",
+     "alg",
+     "unt",
+     "ohne"
+    ]
+   },
+   "karten": [
+    "bafoeg"
+   ],
+   "hoechstens": "vielleicht",
+   "quelle": "§ 8 Abs. 1 Nr. 2 bis 4 BAföG: Daueraufenthalt, Arbeitnehmer/Selbstständige und Familienangehörige oder Beschäftigung vor der Ausbildung (https://www.gesetze-im-internet.de/baf_g/__8.html, Abruf 20.11.2026)"
+  },
+  {
+   "merkmal": "arbeit",
+   "wert": "krank",
+   "wenn": {
+    "art1": [
+     "rente"
+    ]
+   },
+   "karten": [
+    "krankengeld"
+   ],
+   "hoechstens": "vielleicht",
+   "quelle": "§ 50 Abs. 1 Satz 1 Nr. 1 und Abs. 2 SGB V: Vollrente beendet, Teilrente kürzt das Krankengeld (https://www.gesetze-im-internet.de/sgb_5/__50.html, Abruf 20.11.2026)"
+  },
+  {
+   "merkmal": "aufenthalt",
+   "wert": "asyl",
+   "wenn": {
+    "art1": [
+     "asylblg"
+    ]
+   },
+   "karten": [
+    "rundfunk"
+   ],
+   "mindestens": "ja",
+   "quelle": "§ 4 Abs. 1 Nr. 4 RBStV: Empfänger von Leistungen nach dem AsylbLG (https://bravors.brandenburg.de/vertraege/rbstv/5, Abruf 20.11.2026)"
+  },
+  {
+   "merkmal": "aufenthalt",
+   "wert": "asyl",
+   "wenn": {
+    "art1": [
+     "asylblg"
+    ]
+   },
+   "nurMitKindern": true,
+   "karten": [
+    "but"
+   ],
+   "mindestens": "ja",
+   "quelle": "§ 3 Abs. 4 AsylbLG (https://www.gesetze-im-internet.de/asylblg/__3.html, Abruf 20.11.2026)"
+  },
+  {
+   "merkmal": "aufenthalt",
+   "wert": "ausreise",
+   "karten": [
+    "ggeld"
+   ],
+   "hoechstens": "nein",
+   "quelle": "§ 7 Abs. 1 Satz 2 Nr. 3 SGB II (https://www.gesetze-im-internet.de/sgb_2/__7.html)"
+  },
+  {
+   "merkmal": "aufenthalt",
+   "wert": "ausreise",
+   "karten": [
+    "gsa"
+   ],
+   "hoechstens": "nein",
+   "quelle": "§ 23 Abs. 2 SGB XII (https://www.gesetze-im-internet.de/sgb_12/__23.html, Abruf 20.11.2026)"
+  },
+  {
+   "merkmal": "aufenthalt",
+   "wert": "ausreise",
+   "karten": [
+    "kiz"
+   ],
+   "hoechstens": "nein",
+   "quelle": "§ 6a Abs. 1 Nr. 1 BKGG (setzt Kindergeld voraus) i. V. m. § 1 Abs. 3 BKGG / § 62 Abs. 2 EStG – vor Übernahme prüfen"
+  },
+  {
+   "merkmal": "aufenthalt",
+   "wert": "ausreise",
+   "karten": [
+    "wbs"
+   ],
+   "hoechstens": "nein",
+   "quelle": "§ 27 Abs. 2 WoFG: ausreisepflichtig ohne Duldung kann keinen Wohnsitz auf längere Dauer begründen (https://www.gesetze-im-internet.de/wofg/__27.html, Abruf 20.11.2026)"
+  },
+  {
+   "merkmal": "aufenthalt",
+   "wert": "ausreise",
+   "karten": [
+    "wohngeld"
+   ],
+   "hoechstens": "nein",
+   "quelle": "§ 3 Abs. 5 Satz 1 Nr. 1 bis 6 WoGG: ausreisepflichtig ohne Duldung nicht genannt, nicht wohngeldberechtigt (https://www.gesetze-im-internet.de/wogg/__3.html, Abruf 20.11.2026)"
+  },
+  {
+   "merkmal": "aufenthalt",
+   "wert": "ausreise",
+   "karten": [
+    "bafoeg"
+   ],
+   "hoechstens": "vielleicht",
+   "quelle": "§ 8 Abs. 2a, Abs. 3 BAföG (https://www.gesetze-im-internet.de/baf_g/__8.html, Abruf 20.11.2026)"
+  },
+  {
+   "merkmal": "aufenthalt",
+   "wert": "ausreise",
+   "karten": [
+    "bab"
+   ],
+   "hoechstens": "vielleicht",
+   "quelle": "§ 60 Abs. 3 SGB III (https://www.gesetze-im-internet.de/sgb_3/__60.html, Abruf 20.11.2026)"
+  },
+  {
+   "merkmal": "aufenthalt",
+   "wert": "ausreise",
+   "karten": [
+    "kgBeh"
+   ],
+   "hoechstens": "vielleicht",
+   "quelle": "§ 62 Abs. 2 EStG (https://www.gesetze-im-internet.de/estg/__62.html, Abruf 20.11.2026)"
+  },
+  {
+   "merkmal": "aufenthalt",
+   "wert": "ausreise",
+   "karten": [
+    "hzp"
+   ],
+   "hoechstens": "vielleicht",
+   "quelle": "§ 23 Abs. 2 SGB XII, § 2 Abs. 1 und § 6 Abs. 1 AsylbLG (https://www.gesetze-im-internet.de/sgb_12/__23.html, Abruf 20.11.2026)"
+  },
+  {
+   "merkmal": "aufenthalt",
+   "wert": "ausreise",
+   "karten": [
+    "eingl"
+   ],
+   "hoechstens": "vielleicht",
+   "quelle": "§ 100 Abs. 2 SGB IX (https://www.gesetze-im-internet.de/sgb_9_2018/__100.html, Abruf 20.11.2026)"
+  },
+  {
+   "merkmal": "aufenthalt",
+   "wert": "ausreise",
+   "karten": [
+    "alg1"
+   ],
+   "hoechstens": "vielleicht",
+   "quelle": "§ 138 Abs. 5 Nr. 1 SGB III (https://www.gesetze-im-internet.de/sgb_3/__138.html, Abruf 20.11.2026)"
+  },
+  {
+   "merkmal": "aufenthalt",
+   "wert": "ausreise",
+   "karten": [
+    "blindengeld"
+   ],
+   "hoechstens": "vielleicht",
+   "quelle": "§ 9 Abs. 1 AsylbLG, „vergleichbare Landesgesetze“ unklar (https://www.gesetze-im-internet.de/asylblg/__9.html, Abruf 20.11.2026)"
+  },
+  {
+   "merkmal": "aufenthalt",
+   "wert": "ausreise",
+   "karten": [
+    "ausweis"
+   ],
+   "hoechstens": "vielleicht",
+   "quelle": "§ 2 Abs. 2 SGB IX, „rechtmäßig“ (https://www.gesetze-im-internet.de/sgb_9_2018/__2.html, Abruf 20.11.2026)"
+  },
+  {
+   "merkmal": "aufenthalt",
+   "wert": "ausreise",
+   "karten": [
+    "but"
+   ],
+   "mindestens": "vielleicht",
+   "nurMitKindern": true,
+   "quelle": "§ 3 Abs. 4 AsylbLG: Bildung und Teilhabe auch mit Asylbewerberleistungen (https://www.gesetze-im-internet.de/asylblg/__3.html, Abruf 20.11.2026)"
+  },
+  {
+   "merkmal": "aufenthalt",
+   "wert": "ausreise",
+   "wenn": {
+    "art1": [
+     "asylblg"
+    ]
+   },
+   "karten": [
+    "rundfunk"
+   ],
+   "mindestens": "ja",
+   "quelle": "§ 4 Abs. 1 Nr. 4 RBStV: Empfänger von Leistungen nach dem AsylbLG (https://bravors.brandenburg.de/vertraege/rbstv/5, Abruf 20.11.2026)"
+  },
+  {
+   "merkmal": "aufenthalt",
+   "wert": "ausreise",
+   "wenn": {
+    "art1": [
+     "asylblg"
+    ]
+   },
+   "nurMitKindern": true,
+   "karten": [
+    "but"
+   ],
+   "mindestens": "ja",
+   "quelle": "§ 3 Abs. 4 AsylbLG (https://www.gesetze-im-internet.de/asylblg/__3.html, Abruf 20.11.2026)"
   }
- ]
+ ],
+ "bekannt": []
 }
