@@ -1,9 +1,23 @@
 # STATUS – SoLo (Sozialleistungslotse)
 
-Stand: 19.11.2026. Letzte Store-Version: 1.4.0, Build 145 (Play-Store-AAB gebaut, nicht veröffentlicht). Nächster VersionCode: 146.
+Stand: 20.11.2026. Letzte gebaute Version: **1.5.0, VersionCode/Build 147** (Play-Store-AAB gebaut, nicht veröffentlicht; iOS zu TestFlight hochgeladen (Build 147, Lauf 44729530498 erfolgreich)). **Nächster VersionCode: 148.**
+Übergabe für neue Sitzungen: zuerst diese Datei, dann `CLAUDE.md` (verbindliche Arbeitsregeln).
 Ausführlicher Verlauf (Erledigtes, alte Pläne): `docs/VERLAUF.md`, Abschnitt „Entwicklungsverlauf“.
 
 ## 1. Stand
+
+### Version 1.5.0 (Build 147, 20.11.2026)
+| Bereich | Inhalt |
+|---|---|
+| Bedienung | Leiste Start \| Mein Ordner \| Einstellungen; Einstellungen als Liste mit Unterseiten; einheitliches Farbkonzept (Palette an einer Stelle) |
+| Mein Ordner | Vorgänge speichern (z. B. je Haushalt), PIN-Sperre (Sichtschutz), automatisches Löschen; Unterlagen-Checkliste, Ergebnisblatt, Antragsmappe mit Übersicht |
+| Beratung | Beratungsmodus (Rechtsgrundlagen mit Paragrafen) |
+| Pflege | Startkachel: Unterstützung oder Einschätzung, Leistungen je Pflegegrad, Beratungsbesuch, Verhinderungspflege durch Angehörige, Wohngruppenzuschlag, 10 Tage Arbeitsverhinderung |
+| Geld | Schulden-Tipps, Haushaltsplan und Haushaltsbuch mit Kassenzettel-Scan und CSV; Einkommensart „Unterhalt für sich selbst“ |
+| Ich ziehe aus | Bereich für junge Menschen inkl. Careleaver (13 Sprachen + Einfache Sprache) |
+| Nutzerprüfung | Verbesserungen und Korrekturen aus der Nutzerprüfung (PR #42) |
+| Store | Texte in `docs/STORE.md` (Stand 147), Änderungen in `docs/AENDERUNGEN.md`; Store-Bilder neu mit `tools/store-bilder.js` |
+| PRs 20.11.2026 | #40, #41, #42 (alle neuen Funktionen), #43, #44, #46 (Release 147) |
 
 ### In `main` (bis PR #26; neuere PRs siehe unten)
 | Bereich | Inhalt |
@@ -40,23 +54,27 @@ Ausführlicher Verlauf (Erledigtes, alte Pläne): `docs/VERLAUF.md`, Abschnitt �
 - Erweiterungen (Prüfpaket) per signierter Lizenzdatei; privater Lizenzschlüssel nie im Repo.
 
 ## 3. Offene Punkte
-- **Werte 2027**: eingebaute Werte 2027 gegen endgültige Beschlüsse prüfen, Programmablaufplan Lohnsteuer 2027 eintragen, Pflege-Kinderlosenzuschlag nach PNOG. Prüfung geplant am 1.12.2026 (geplante Aufgabe).
+- **Parallele Sitzung B** arbeitet auf `claude/b-*`-Branches an den ersten sechs Punkten der Liste unten (Fristen-Übersicht bis zweites Einkommensfeld). Diese Punkte nicht doppelt anfangen; vor Änderungen an `src/app.js`, `src/rules.js`, `src/template.html`, `src/lang/*.json` die `claude/b-*`-Branches ansehen.
+- **Werte 2027**: Prüfung geplant am **1.12.2026** (geplante Aufgabe): eingebaute Werte 2027 gegen endgültige Beschlüsse, Programmablaufplan Lohnsteuer 2027, Pflege-Kinderlosenzuschlag nach PNOG.
 - Pfändungsfreigrenzen zum 1.7.2027 eintragen (`R.pfaendung`, `gueltigBis`, `test/test-netto.js`).
-- pdf.js 4: Umstieg von 3.11.174 (in #28 als offen vermerkt).
-- Architektur: Stichtags-Werte bündeln; `src/app.js` und Sprachdateien aufteilen; Prüfsummen/CSP für die Web-Version.
-- `wgAbzugAuszahlung` Rente: Werte prüfen ([0, 0.06] → etwa [-0.03, 0.09]).
-- Arbeitende Altersrentner (Netto, Anrechnung).
-- Pflegereform 2027 einarbeiten, sobald beschlossen.
-- Musterfälle-Tabelle (`docs/Musterfaelle-Abgleich.csv`) neu erzeugen.
-- Alte Branches auf GitHub löschen (Proxy verbietet Löschen: Nutzer auf github.com) und „Automatically delete head branches“ einschalten.
-- Anschriften: WBS in den 32 bayerischen Ausnahme-Landkreisen (Gemeinde nötig), Bremen; Jobcenter/Landesämter außerhalb Bayerns nur mit belegter Quelle. WBS Saarland aus amtlicher Quelle.
-- Muttersprachliche Prüfung Dari, Farsi, Paschtu, Somali, Französisch; Übersetzung Prüfpaket, Pflege-Assistent, Rezepte; Expertenprüfung Pflege.
-- iOS: TestFlight-Upload klären. Play Store: Build 145 bzw. nächster Build hochladen (nur auf Wunsch).
+- pdf.js 4: Umstieg von 3.11.174.
+- `src/lang/de.json` „lead“ sagt noch „in zwei Minuten“ (Startseite und Store sagen „etwa 5 Minuten“), in allen Sprachen angleichen.
+- `CLAUDE.md` nennt noch „Nächster VersionCode: 147“ → auf 148 setzen (Nutzer entscheidet).
+- Muttersprachliche Prüfung Dari, Farsi, Paschtu, Somali, Französisch; Expertenprüfung Pflege.
+- Play Store: AAB 147 hochladen (nur auf Wunsch). Alte Branches auf github.com löschen.
 
 ## 4. Nächste Schritte
-1. Erledigt: PRs #27–#30, #32, #33 gemergt. Eigene Branches mit `origin/main` aktualisieren.
-2. 1.12.2026: Werte 2027 eintragen, Tests laufen lassen.
-3. Danach Build 146 vom gemergten `main` (nur auf ausdrückliche Anweisung), Store-Texte aus `docs/STORE.md`.
+1. Fristen-Übersicht (Sitzung B)
+2. Schuldenübersicht (Sitzung B)
+3. Energiekosten-Check (Sitzung B)
+4. Mietgrenze Wohngeld (Sitzung B)
+5. Hilfe bei Kostensenkung (Sitzung B)
+6. Zweites Einkommensfeld für Paare (Sitzung B)
+7. Hinweise im Haushaltsbuch zu Mehrbedarfen, Vermögen, Pflege- und Steuer-Belegen
+8. `main` schützen (nur PRs mit grünem Pflicht-Check) und Auto-Merge einschalten – **nicht erledigt**
+9. Stichtagswerte bündeln
+10. `src/app.js` aufteilen
+11. 1.12.2026: geplante Prüfung der Werte 2027, danach Build 148 nur auf ausdrückliche Anweisung
 
 ## 5. Arbeitsregeln
 Siehe `CLAUDE.md` (Branch je Sitzung von `origin/main`, Commit-Fuß, Builds und Store nur auf Anweisung, Schlüssel nie im Repo, Tests).
