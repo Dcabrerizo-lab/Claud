@@ -507,8 +507,11 @@ var Schulden = (function () {
     }
     var b = el('div', 'btns');
     b.appendChild(knopf('btn', t('f.print'), blattAusgeben, { id: 'slDruck' }));
-    b.appendChild(knopf('btn ghost', t('pf.zurueck'), blattSchliessen, { id: 'slBlattZu' }));
     bar.appendChild(b);
+    // Zurück oben wie überall (src/navigation.js); ohne Navigation (Einzeltests) ein eigener Klick
+    var zu = window.Navigation ? Navigation.kopf(document, t, { id: 'slBlattZu' }) : el('div', 'pa-zeile nav-kopf');
+    if (!window.Navigation) zu.appendChild(knopf('linkbtn pa-zur', '← ' + t('pf.zurueck'), blattSchliessen, { id: 'slBlattZu' }));
+    bar.insertBefore(zu, bar.firstChild);
     var m = el('p', 'msg'); m.id = 'slMsg'; m.setAttribute('role', 'status'); bar.appendChild(m);
     bar.appendChild(el('p', 'small', t('sl.druck.privat')));
   }

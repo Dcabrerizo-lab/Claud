@@ -112,7 +112,7 @@ setTimeout(() => {
       const li = d.querySelector('#v-pfaendung .pf-jetzt li');
       check('[schulden-korr] Lohn: erster Schritt prüft, ob alle Unterhaltspflichten berücksichtigt sind', li && /alle Menschen berücksichtigt, denen du Unterhalt zahlst/.test(li.textContent), li && li.textContent);
     }
-    klick(d.querySelector('#v-pfaendung [data-zurueck]'));
+    klick(d.querySelector('#v-pfaendung [data-nav-zurueck]'));
     check('Zurück vom Pfändungsrechner: wieder bei „Geld sparen“', !$('v-sparen').hidden);
     { // Einkommen geändert: Vorlage „Änderung melden“ nur bei Grundsicherungsgeld oder Sozialhilfe; Text nennt die Regeln je Leistung
       const melden = (bezug) => { w.__solo.set({ adults: 1, kids: 0, ek1Art: 'lohn', ek1Brutto: 2000, ek1Netto: 1500, miete: 500, plz: '90542', bezug }); w.Haushalt.laden({ ekBasis: 100000, ekV: 2 }); zumPlan(); return !!knopf('Änderung dem Amt melden', $('hbHinweise')); };

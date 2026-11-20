@@ -46,7 +46,7 @@ setTimeout(() => {
     { const nb = d.querySelector('#appnav [data-ansicht="ordner"]'); if (nb) { klick(w, nb); check('[az-oberflaeche] Mein Ordner zeigt „Ich ziehe aus“ mit Fortschritt', /„Ich ziehe aus“\s*1 von \d+ erledigt/.test($('v-ordner').textContent), $('v-ordner').textContent.slice(0, 200)); klick(w, $('goAusziehen') || nb); klick(w, $('az-geh-vorher')); } }
     check('[az-oberflaeche] Fortschritt aktualisiert', /1 von 9 erledigt/.test($('azFort').textContent));
     const no = $('azNotiz'); no.value = 'Besichtigung Freitag'; no.dispatchEvent(new w.Event('input', { bubbles: true }));
-    klick(w, d.querySelector('[data-az-zurueck]'));
+    klick(w, d.querySelector('#v-ausziehen [data-nav-zurueck]'));
     check('[az-oberflaeche] Zurück zur Übersicht, Fokus auf Kachel', !!$('az-geh-vorher') && d.activeElement === $('az-geh-vorher') && /1 von 9/.test($('az-geh-vorher').textContent));
     // Herkunft: Geld -> Versicherungen -> Zurück -> Geld
     klick(w, $('az-geh-geld')); klick(w, d.querySelector('#az-p-vers [data-az-weg="vers"]'));
@@ -55,9 +55,9 @@ setTimeout(() => {
     check('[az-oberflaeche] Kfz-Haftpflicht unter „Unbedingt“', !!unbedingt.querySelector('#az-p-kfzH'));
     check('[az-oberflaeche] Auslandsreise-Krankenversicherung unter „Kommt drauf an“', !![...d.querySelectorAll('#azInhalt .az-stufe')][2].nextElementSibling.querySelector('#az-p-auslandKv'));
     check('[az-oberflaeche] Familienversicherung mit Grenze', /mehr als \d{3} € im Monat/.test($('az-p-kv').textContent.replace(/[  ]/g, ' ')), $('az-p-kv').textContent);
-    klick(w, d.querySelector('[data-az-zurueck]'));
+    klick(w, d.querySelector('#v-ausziehen [data-nav-zurueck]'));
     check('[az-oberflaeche] Zurück nach Herkunft (Geld)', /Dein Geld im Griff/.test($('azH').textContent));
-    klick(w, d.querySelector('[data-az-zurueck]'));
+    klick(w, d.querySelector('#v-ausziehen [data-nav-zurueck]'));
     // Careleaver: Briefvorlage
     klick(w, $('az-geh-care'));
     check('[az-oberflaeche] Careleaver § 41', /§[ \u00a0]41 SGB VIII/.test($('azInhalt').textContent));
@@ -66,7 +66,7 @@ setTimeout(() => {
     check('[az-oberflaeche] Brief: Zuständigkeit § 86a', /86a Abs\. 4 SGB VIII/.test(d.querySelector('.az-brief').textContent));
     check('[az-oberflaeche] Briefvorlage Deutsch, ohne Anschrift', $('azBrief') && $('azBrief').lang === 'de' && /^An das Jugendamt/.test($('azBrief').value));
     // Hilfen -> Leistungs-Check
-    klick(w, d.querySelector('[data-az-zurueck]')); klick(w, $('az-geh-hilfen'));
+    klick(w, d.querySelector('#v-ausziehen [data-nav-zurueck]')); klick(w, $('az-geh-hilfen'));
     check('[az-oberflaeche] Hilfen „möglich“', d.querySelectorAll('#azInhalt .az-chip').length === 9);
     klick(w, d.querySelector('[data-az-weg="check"]'));
     check('[az-oberflaeche] Weg zum Leistungs-Check', !$('v-leistungen').hidden);

@@ -386,10 +386,10 @@ setTimeout(() => {
   const navAkt = () => (d.querySelector('#appnav button[aria-current="page"]') || {}).getAttribute?.('data-ansicht');
   d.querySelector('#appnav button[data-ansicht="start"]').click();
   d.getElementById('goPfaendung').click();
-  check('Start → Pfändung: Leiste markiert Start, oben „← Zurück“', sicht() === 'pfaendung' && navAkt() === 'start' && /← /.test(d.querySelector('[data-zurueck="pfaendung"]').textContent));
-  d.querySelector('[data-zurueck="pfaendung"]').click();
+  check('Start → Pfändung: Leiste markiert Start, oben „← Zurück“', sicht() === 'pfaendung' && navAkt() === 'start' && /← /.test(d.querySelector('#v-pfaendung [data-nav-zurueck]').textContent));
+  d.querySelector('#v-pfaendung [data-nav-zurueck]').click();
   check('Pfändung „← Zurück“ führt zur Startseite', sicht() === 'start');
-  d.getElementById('goSparen').click(); d.querySelector('[data-zurueck="sparen"]').click();
+  d.getElementById('goSparen').click(); d.querySelector('#v-sparen [data-nav-zurueck]').click();
   check('Geld sparen „← Zurück“ führt zur Startseite', sicht() === 'start');
   d.getElementById('goPflege').click();
   if (sicht() === 'pflege') {

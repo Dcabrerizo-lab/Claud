@@ -26,7 +26,7 @@ const fire = (el, type) => el.dispatchEvent(new w.Event(type, { bubbles: true })
 const setLang = (c) => { const s = $('lang'); s.value = c; fire(s, 'change'); };
 const LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so'];
 const NEU = ['nav.ordner', 'ordner.leer', 'ordner.wechseln', 'ordner.alle', 'ordner.ergebnis', 'ordner.mappe', 'ordner.mappe.n', 'ordner.ausziehen', 'ordner.ausziehen.n', 'ordner.pflege', 'ordner.pfaendung', 'set.sicher.h', 'set.sicher.t', 'set.an', 'set.aus', 'set.thema', 'set.thema.auto', 'set.thema.hell', 'set.thema.dunkel', 'set.loeschen.h', 'set.vgLoeschen', 'set.fach.h', 'set.beratung.label', 'set.beratung.t', 'recht.label', 'haken.hint', 'f.inhalt', 'f.inh.brief', 'f.inh.angaben',
-  'eb.btn', 'eb.h', 'eb.intro', 'eb.kuerzel', 'eb.close', 'eb.titel', 'eb.datum', 'eb.kuerzelZeile', 'eb.col.leistung', 'eb.col.einstufung', 'eb.col.betrag', 'eb.col.stelle', 'eb.col.schritt', 'eb.hinweis'];
+  'eb.btn', 'eb.h', 'eb.intro', 'eb.kuerzel', 'eb.titel', 'eb.datum', 'eb.kuerzelZeile', 'eb.col.leistung', 'eb.col.einstufung', 'eb.col.betrag', 'eb.col.stelle', 'eb.col.schritt', 'eb.hinweis'];
 
 // ---------- Hilfsfunktionen in fmt.js ----------
 check('ohnePara: Paragraf in Klammern weg, Satzzeichen bleibt', Fmt.ohnePara('Überprüfungsantrag (§ 44 SGB X); rückwirkend') === 'Überprüfungsantrag; rückwirkend' && Fmt.ohnePara('mitgenommen (§ 899 ZPO).') === 'mitgenommen.');

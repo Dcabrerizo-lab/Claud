@@ -726,7 +726,6 @@
     });
     $('beratungBtn').addEventListener('click', function () { beratungSetzen(!beratung, true); });
     $('ebOpen').addEventListener('click', ebOeffnen);
-    $('ebClose').addEventListener('click', ebSchliessen);
     $('ebKuerzel').addEventListener('input', ebBauen);
     $('ebDruck').addEventListener('click', function () { ebAusgeben(NATIVE ? (plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen') : 'web'); });
     if (NATIVE) { $('ebDruck').setAttribute('data-t', plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'f.druck' : 'f.pdf'); $('ebDruck').textContent = t($('ebDruck').getAttribute('data-t')); }
@@ -752,7 +751,6 @@
       $('pickMsg').textContent = '';
       openMappe();
     });
-    $('mappeClose').addEventListener('click', closeMappe);
     // App: „PDF teilen“ (auf dem iPhone mit Drucken und In Dateien sichern im Teilen-Dialog); kein zweiter, doppelter Teilen-Knopf
     if (NATIVE) { $('mappePrint').setAttribute('data-t', 'f.pdf'); $('mappePrint').textContent = t('f.pdf'); }
     // Android: eigene Knöpfe zum Drucken und Speichern (dort bietet der Teilen-Dialog das nicht auf jedem Gerät an; iPhone: im Teilen-Dialog enthalten)
@@ -799,7 +797,6 @@
     if (NATIVE && window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') { $('anbieterName').textContent = 'Natascha Cabrerizo y Polo'; document.documentElement.classList.add('ios'); }
     $('legalBtn').addEventListener('click', function () { openLegal($('legalBtn')); });
     $('legalBtn2').addEventListener('click', function () { openLegal($('legalBtn2')); });
-    $('legalClose').addEventListener('click', closeLegal);
     $('firstOk').addEventListener('click', function () { $('firstNotice').hidden = true; Store.set('lotse.ack', '1'); });
     // Links ins Netz öffnen in der App im Systembrowser, Anker innerhalb der Seite bleiben
     document.addEventListener('click', function (e) {
@@ -811,12 +808,10 @@
     window.addEventListener('pagehide', flush);
     var ap = plug('App');
     if (ap) {
+      // Zurück-Taste: Blatt oder Dialog schließen, sonst eine Ebene hoch (dieselbe Navigation wie der Zurück-Knopf); auf der Startseite beenden
       ap.addListener('backButton', function () {
-        if (!$('ergBlatt').hidden) ebSchliessen(); else if (!$('legal').hidden) closeLegal();
-        else if (!$('mappe').hidden) closeMappe();
-        else if (zurueckSchritt()) return;
-        else if ((window.pageYOffset || 0) > 60) window.scrollTo(0, 0);
-        else if (aktAnsicht !== 'start') { herkunft = {}; zeigeAnsicht('start', true); }
+        if (navBereit ? Navigation.zurueck() : ebeneHoch()) return;
+        if ((window.pageYOffset || 0) > 60) window.scrollTo(0, 0);
         else ap.exitApp();
       });
       ap.addListener('appStateChange', function (s) { if (s && !s.isActive) flush(); vgHintergrund(!(s && s.isActive)); });
@@ -1998,7 +1993,11 @@
 
   function esSpeichern() { Store.set('lotse.einfach', JSON.stringify({ es: es, an: esModus })); }
 
-  function esRender() {
+  // Gemeinsamer Zurück-Knopf (src/navigation.js) als Schritt zurück in der einfachen Version; dann den Zurück-Knopf der Seite ausblenden
+  var ES_ZUR = Navigation.kopfHtml({ id: 'es-zurueck', eigen: true });
+  function esKopf() { var k = $('leistungenKopf'); if (k) k.hidden = !!(esModus && $('es-zurueck') && !$('einfach').hidden); }
+  function esRender() { esRenderGanz(); esKopf(); }
+  function esRenderGanz() {
     var box = $('einfach');
     if (!esModus) { box.hidden = true; $('cols').hidden = false; $('notices').hidden = false; $('jump').hidden = !!aktAnsicht && aktAnsicht !== 'leistungen'; $('app').classList.remove('es-an'); return; }
     box.hidden = false; $('cols').hidden = true; $('notices').hidden = true; $('jump').hidden = true;
@@ -2032,9 +2031,8 @@
       }).join('') + '</div><div class="es-nav1"><button type="button" class="es-btn es-weiter" id="es-weiter">' + esc(t('es.weiter')) + ' ➜</button>' +
         '<button type="button" class="es-btn es-skip" id="es-keine">' + esc(t('es.mz.keine')) + '</button></div>';
     }
-    h += '<div class="es-nav">' + (es.schritt > 0 ? '<button type="button" class="chip" id="es-zurueck">← ' + esc(t('es.zurueck')) + '</button>' : '') +
-      '<button type="button" class="chip" id="es-raus">' + esc(t('es.ausfuehrlich')) + '</button></div>';
-    box.innerHTML = h;
+    h += '<div class="es-nav"><button type="button" class="chip" id="es-raus">' + esc(t('es.ausfuehrlich')) + '</button></div>';
+    box.innerHTML = (es.schritt > 0 ? ES_ZUR : '') + h;
     var weiter = function () { es.schritt++; esSpeichern(); esRender(); var q = $('es-q'); if (q) q.focus(); };
     var weg = false;
     box.querySelectorAll('[data-es]').forEach(function (b) { b.addEventListener('click', function () {
@@ -2157,10 +2155,9 @@
       '<button type="button" class="es-btn es-weiter" id="es-mappe">✉️ ' + esc(t('es.briefe')) + '</button>' +
       '<button type="button" class="es-btn" id="es-teilen">📤 ' + esc(t('es.teilen')) + '</button></div>' +
       '<p class="msg" id="es-msg" role="status"></p><textarea class="es-text" id="es-text" hidden readonly></textarea>' +
-      '<div class="es-nav"><button type="button" class="chip" id="es-zurueck">← ' + esc(t('es.zurueck')) + '</button>' +
-      '<button type="button" class="chip" id="es-neu">' + esc(t('es.neu')) + '</button>' +
+      '<div class="es-nav"><button type="button" class="chip" id="es-neu">' + esc(t('es.neu')) + '</button>' +
       '<button type="button" class="chip" id="es-raus">' + esc(t('es.ausfuehrlich')) + '</button></div>';
-    $('einfach').innerHTML = h;
+    $('einfach').innerHTML = ES_ZUR + h;
     // Text zum Teilen: Leistung, Einschätzung, Betrag, zuständige Stelle, Tipps, Hinweis „Schätzung“
     var text = function () {
       var div = document.createElement('div');
@@ -2241,7 +2238,9 @@
     speichern: function () { flush(); },
     state: function () { return state; },
     beratung: function (an) { beratungSetzen(an, false); },
-    reihe: function (results) { var k = kartenReihe(results); return k.passt.concat(k.neinKern, k.neinSpez).map(function (r) { return r.id; }); }
+    reihe: function (results) { var k = kartenReihe(results); return k.passt.concat(k.neinKern, k.neinSpez).map(function (r) { return r.id; }); },
+    nav: function () { return { ebene: navEbene(), ansicht: aktAnsicht }; }, // Navigation (test/test-navigation.js)
+    unterseite: function (a, seite) { if (aktAnsicht !== a) zeigeAnsicht(a, false); usZeigen(a, seite, true); }
   };
   // ----- Netto-Helfer: Steuerklasse und Kirchensteuer mit großen Knöpfen wählen, Netto nach Programmablaufplan ausrechnen -----
   function lohnOpts(i) {
@@ -2278,7 +2277,7 @@
       [['nh.ja', true], ['nh.nein', false], ['nh.weissnicht', false]].forEach(function (x) {
         r.appendChild(nhKnopf('wahl', '<b>' + esc(t(x[0])) + '</b>', null, function () { state['kirche' + i] = x[1]; nhSchritt[i] = 2; nettoHelfer(i); touchedSoon(); box.querySelector('button').focus(); }));
       });
-      var z = document.createElement('div'); z.className = 'btns'; z.appendChild(nhKnopf('btn ghost', esc(t('nh.zurueck')), null, function () { nhSchritt[i] = 0; nettoHelfer(i); })); box.appendChild(z);
+      var z = document.createElement('div'); z.className = 'btns'; z.appendChild(nhKnopf('linkbtn pa-zur', '<span class="nav-pfeil" aria-hidden="true">←</span> ' + esc(t('nh.zurueck')), null, function () { nhSchritt[i] = 0; nettoHelfer(i); })); box.appendChild(z);
       return;
     }
     var e = Rules.nettoLohn(b, lohnOpts(i));
@@ -2301,7 +2300,7 @@
       f.dispatchEvent(new Event('input', { bubbles: true }));
       box.hidden = true; $('ek' + i + 'NhBtn').setAttribute('aria-expanded', 'false'); nhSchritt[i] = 0; f.focus();
     }));
-    bt2.appendChild(nhKnopf('btn ghost', esc(t('nh.zurueck')), null, function () { nhSchritt[i] = 0; nettoHelfer(i); }));
+    bt2.appendChild(nhKnopf('linkbtn pa-zur', '<span class="nav-pfeil" aria-hidden="true">←</span> ' + esc(t('nh.zurueck')), null, function () { nhSchritt[i] = 0; nettoHelfer(i); }));
     box.appendChild(bt2);
   }
   [1, 2].forEach(function (i) {
@@ -2347,7 +2346,7 @@
       });
       var d1 = document.createElement('div'); d1.className = 'btns'; box.appendChild(d1);
       d1.appendChild(nhKnopf('btn', esc(t('pf.weiter')), null, function () { va.schritt = 2; vaRender(); box.querySelector('.pf-frage').focus(); }));
-      d1.appendChild(nhKnopf('btn ghost', esc(t('nh.zurueck')), null, function () { va.schritt = 0; vaRender(); }));
+      d1.appendChild(nhKnopf('linkbtn pa-zur', '<span class="nav-pfeil" aria-hidden="true">←</span> ' + esc(t('nh.zurueck')), null, function () { va.schritt = 0; vaRender(); }));
       return;
     }
     var sum = function (art) { return VA.reduce(function (a, x) { return a + (x[3] === art && va.wahl[x[0]] ? Number(va.wert[x[0]]) || 0 : 0); }, 0); };
@@ -2366,7 +2365,7 @@
       var f = $('vermoegen'); f.value = String(Math.round(z)); f.dispatchEvent(new Event('input', { bubbles: true }));
       box.hidden = true; $('vaBtn').setAttribute('aria-expanded', 'false'); va.schritt = 0; vaInfo(); touchedSoon(); f.focus();
     }));
-    d2.appendChild(nhKnopf('btn ghost', esc(t('nh.zurueck')), null, function () { va.schritt = 1; vaRender(); }));
+    d2.appendChild(nhKnopf('linkbtn pa-zur', '<span class="nav-pfeil" aria-hidden="true">←</span> ' + esc(t('nh.zurueck')), null, function () { va.schritt = 1; vaRender(); }));
   }
   $('vaBtn').addEventListener('click', function () {
     var box = $('va'); box.hidden = !box.hidden; $('vaBtn').setAttribute('aria-expanded', String(!box.hidden));
@@ -2409,7 +2408,6 @@
     var box = $('spInhalt'); if (!box) return;
     box.innerHTML = '';
     var p = function (txt, cls) { var e = document.createElement('p'); e.className = cls || ''; e.textContent = txt; box.appendChild(e); return e; };
-    var zurueck = function (fn) { var d = document.createElement('div'); d.className = 'btns'; d.appendChild(nhKnopf('btn ghost', esc(t('nh.zurueck')), null, fn)); box.appendChild(d); };
     if (!sp.thema) {
       p(t('sp.wahl'), 'pf-frage');
       var l = document.createElement('div'); l.className = 'weg-liste'; box.appendChild(l);
@@ -2432,7 +2430,6 @@
         box.appendChild(d);
       });
       p(t('sp.rezepte.t'), 'small muted');
-      zurueck(function () { sp.rezepte = false; spRender(true); });
     } else if (sp.thema === 'schulden') {
       var zumRechner = function (cls) { var d = document.createElement('div'); d.className = 'btns'; d.appendChild(nhKnopf(cls, esc(t('sp.schulden.pf')), null, function () { oeffneVon('pfaendung', true); })); return d; };
       p(t('sp.schulden'), 'pf-frage');
@@ -2450,7 +2447,6 @@
         box.appendChild(dt);
       });
       p(t('sp.schulden.quellen'), 'small muted');
-      zurueck(function () { sp.thema = ''; spRender(true); });
     } else {
       var th = SP_THEMEN.filter(function (x) { return x[0] === sp.thema; })[0];
       p(t(th[1]), 'pf-frage');
@@ -2458,7 +2454,6 @@
       SP_TIPPS[sp.thema].forEach(function (k) { var li = document.createElement('li'); li.textContent = tL(k); ul.appendChild(li); });
       if (sp.thema === 'essen') { var d2 = document.createElement('div'); d2.className = 'btns'; d2.appendChild(nhKnopf('btn', esc(t('sp.rezepte')), null, function () { sp.rezepte = true; spRender(true); })); box.appendChild(d2); }
       p(t('sp.quellen'), 'small muted');
-      zurueck(function () { sp.thema = ''; spRender(true); });
     }
     if (fokus) { var h = box.querySelector('.pf-frage'); if (h) { h.setAttribute('tabindex', '-1'); h.focus(); } }
   }
@@ -2472,10 +2467,8 @@
     var E = function (x) { return Fmt.euro(Math.round(x * 100) / 100, lang, rtl); };
     var p = function (txt, cls) { var e = document.createElement('p'); e.className = cls || ''; e.textContent = txt; box.appendChild(e); return e; };
     var knoepfe = function (cls) { var d = document.createElement('div'); d.className = cls; box.appendChild(d); return d; };
-    var leiste = function (weiter) {
-      var d = knoepfe('btns');
-      if (weiter) d.appendChild(nhKnopf('btn', esc(t('pf.weiter')), null, weiter));
-      d.appendChild(nhKnopf('btn ghost', esc(t('pf.zurueck')), null, function () { pf.schritt = Math.max(0, pf.schritt - 1); if (!pf.schritt) pf.art = ''; pfRender(true); }));
+    var leiste = function (weiter) { // „← Zurück“ steht oben (src/navigation.js)
+      if (weiter) knoepfe('btns').appendChild(nhKnopf('btn', esc(t('pf.weiter')), null, weiter));
     };
     // Weitere Hinweise zum Aufklappen (erst das Ergebnis, Details danach)
     var tipps = function (keys) {
@@ -2576,7 +2569,7 @@
   var aktAnsicht = 'leistungen';
   // Herkunft merken: „Zurück“, Leiste und Android-Taste folgen ihr (keine festen Ziele)
   var NAV_BEREICHE = ['start', 'ordner', 'einst']; // Leiste unten; Leistungen und Briefe erreicht man über die Startkacheln (markieren Start)
-  var herkunft = {};
+  var herkunft = {}, navBereit = false;
   function oeffneVon(ziel, fokus) { if (ziel !== aktAnsicht) herkunft[ziel] = aktAnsicht; zeigeAnsicht(ziel, fokus); }
   function herkunftVon(a) { var h = herkunft[a]; return h && h !== a && ANSICHTEN.indexOf(h) >= 0 ? h : 'start'; }
   function navBereich(a) {
@@ -2586,17 +2579,72 @@
   function zurueckSchritt() {
     var a = aktAnsicht, b;
     if (a === 'pflege') { b = document.querySelector('#pflegeAssist .pa-zur'); if (b) b.click(); else paVerlassen(); return true; }
-    if (a === 'pflegeinfo') { $('piZurueck').click(); return true; }
+    if (a === 'pflegeinfo') { piZurueckTun(); return true; }
+    if (a === 'pflegestart' && pu.schritt !== 'wahl') { puOeffnen(pu.schritt === 'liste' ? 'pg' : 'wahl'); return true; }
     if (a === 'pfaendung') { if (pf.schritt > 0) { pf.schritt--; if (!pf.schritt) pf.art = ''; pfRender(true); } else zurueckZurHerkunft(a); return true; }
     if (a === 'sparen') { if (sp.rezepte) sp.rezepte = false; else if (sp.thema) sp.thema = ''; else { zurueckZurHerkunft(a); return true; } spRender(true); return true; }
     if (a === 'haushalt') { zurueckZurHerkunft(a); return true; }
     if (a === 'schulden') { if (!(window.Schulden && Schulden.zurueck())) zurueckZurHerkunft(a); return true; }
     if (a === 'ausziehen') { if (window.Ausziehen && Ausziehen.offen()) Ausziehen.zurueck(); else zurueckZurHerkunft(a); return true; }
-    if (a === 'briefe' && !$('checkBox').hidden) { $('briefZurueck').click(); return true; }
+    if (a === 'briefe' && !$('checkBox').hidden) { briefZurueckTun(); return true; }
     if (a === 'leistungen' && $('es-zurueck')) { $('es-zurueck').click(); return true; }
     if ((a === 'einst' || a === 'ordner') && usOffen(a)) { usZeigen(a, '', true); return true; } // Unterseite: zurück zur Liste
     if ((a === 'leistungen' || a === 'briefe') && herkunft[a]) { zurueckZurHerkunft(a); return true; } // z. B. aus „Mein Ordner“ gekommen
     return false;
+  }
+  // ----- Ebenen für die einheitliche Navigation (src/navigation.js): wo bin ich, eine Ebene hoch, wieder vorwärts -----
+  // Tiefe: Start 0, Leiste (Mein Ordner, Einstellungen) 1, sonst Tiefe der Herkunft + 1, dazu die Schritte innerhalb der Ansicht.
+  var herkunftT = {}; // Tiefe der Herkunft beim Öffnen (zeigeAnsicht), damit „hoch“ genau dorthin zurückführt
+  function ansichtTiefe(a, n) {
+    if (a === 'start') return 0;
+    if (NAV_BEREICHE.indexOf(a) >= 0) return 1;
+    var h = herkunftVon(a), r = herkunftT[a];
+    if (herkunft[a] && r && r.von === herkunft[a]) return r.t + 1;
+    return (n > 6 ? 0 : ansichtTiefe(h, (n || 0) + 1)) + 1;
+  }
+  function navEbene() {
+    var a = aktAnsicht, sub = '', d = 0, x;
+    if (a === 'pflege') { d = (pa.antworten && +pa.antworten.pos) || 0; sub = 'q' + d; }
+    else if (a === 'pfaendung') { d = pf.schritt; sub = pf.art + d; }
+    else if (a === 'sparen') { d = (sp.thema ? 1 : 0) + (sp.rezepte ? 1 : 0); sub = sp.thema + (sp.rezepte ? '-r' : ''); }
+    else if (a === 'schulden') { x = $('slBlatt'); d = ($('slEingabe') ? 1 : 0) + (x && !x.hidden ? 1 : 0); sub = d ? 'e' + d : ''; }
+    else if (a === 'ausziehen') { d = window.Ausziehen && Ausziehen.offen() ? 1 : 0; sub = d ? 'offen' : ''; }
+    else if (a === 'briefe') { d = $('checkBox').hidden ? 0 : 1; sub = d ? (briefArt || '') : ''; }
+    else if (a === 'leistungen') { d = esModus && es ? es.schritt || 0 : 0; sub = d ? 'es' + d : ''; }
+    else if (a === 'pflegestart') { d = pu.schritt === 'liste' ? 2 : pu.schritt === 'pg' ? 1 : 0; sub = d ? pu.schritt + (pu.pg == null ? '' : pu.pg) : ''; }
+    else if (a === 'einst' || a === 'ordner') { d = usOffen(a) ? 1 : 0; sub = usAktiv[a]; }
+    return { pfad: a + (sub ? '/' + sub : ''), tiefe: ansichtTiefe(a) + d };
+  }
+  // Eine Ebene hoch; false nur auf der Startseite
+  function ebeneHoch() {
+    if (zurueckSchritt()) return true;
+    if (aktAnsicht === 'start') return false;
+    zurueckZurHerkunft(aktAnsicht); return true;
+  }
+  // Offene Blätter und Dialoge zuerst schließen (Zurück-Taste, Browser-Zurück, Wischen)
+  function blattSchliessen() {
+    if (!$('ergBlatt').hidden) { ebSchliessen(); return true; }
+    if (!$('legal').hidden) { closeLegal(); return true; }
+    if (!$('mappe').hidden) { closeMappe(); return true; }
+    return false;
+  }
+  // Vorwärts (Browser, Wischen vom rechten Rand): die Ebene wieder öffnen, soweit sie sich aus dem Pfad ergibt
+  function navVor(pfad) {
+    var t2 = String(pfad || '').split('/'), a = t2[0], sub = t2[1] || '';
+    if (ANSICHTEN.indexOf(a) < 0 || a === 'pflege') return;
+    if (a !== aktAnsicht) {
+      if (a === 'pflegeinfo') { pflegeInfo(aktAnsicht); return; }
+      if (a === 'einst' || a === 'ordner') usZeigen(a, '', false);
+      if (a === 'pflegestart') pu.schritt = 'wahl';
+      if (a === 'sparen') { sp.thema = ''; sp.rezepte = false; }
+      oeffneVon(a, true);
+      return;
+    }
+    if ((a === 'einst' || a === 'ordner') && sub) usZeigen(a, sub, true);
+    else if (a === 'briefe' && BRIEF_TEIL[sub]) briefOeffnen(sub);
+    else if (a === 'sparen' && sub) { var r = /-r$/.test(sub); sp.thema = sub.replace(/-r$/, ''); sp.rezepte = r; spRender(true); }
+    else if (a === 'pflegestart' && /^pg/.test(sub)) puOeffnen('pg');
+    else if (a === 'pflegestart' && /^liste\d$/.test(sub)) puOeffnen('liste', +sub.slice(5));
   }
   function jumpPruefen() {
     var e = $('ergebnis'), j = $('jump'); if (!e || !j) return;
@@ -2617,7 +2665,10 @@
   function zeigeAnsicht(a, fokus) {
     if (ANSICHTEN.indexOf(a) < 0) a = 'start';
     if (a === 'pflege' && !$('pflegeAssist').children.length) a = 'leistungen'; // Einschätzung nur über ihren Knopf öffnen
+    var vorA = aktAnsicht, vorT = navBereit ? navEbene().tiefe : 0;
     aktAnsicht = a;
+    if (a === 'pflegeinfo' && !herkunft.pflegeinfo) herkunft.pflegeinfo = piZurueckZu; // z. B. über die Adresse #pflegeinfo geöffnet
+    if (a !== vorA && herkunft[a] === vorA) herkunftT[a] = { von: vorA, t: vorT };
     $('app').setAttribute('data-ansicht', a);
     if (a !== 'briefe') $('app').classList.remove('brief-offen'); else $('app').classList.toggle('brief-offen', !!briefArt); // in der Pflegegrad-Einschätzung Kopf und Hinweise ausblenden, damit die Frage oben steht
     ANSICHTEN.forEach(function (x) { $('v-' + x).hidden = x !== a; });
@@ -2633,7 +2684,7 @@
     if (a === 'ordner') ordnerRender();
     if (a === 'einst') einstStatus();
     document.querySelectorAll('#appnav button').forEach(function (b) { if (b.getAttribute('data-ansicht') === navA) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
-    try { if (location.hash !== '#' + a) history.replaceState(null, '', '#' + a); } catch (e) {}
+    if (navBereit) Navigation.melde(); else { try { if (location.hash !== '#' + a) history.replaceState(null, '', '#' + a); } catch (e) {} }
     bereicheText();
     if (fokus) { window.scrollTo(0, 0); var h = $('v-' + a).querySelector('h2'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); } }
   }
@@ -3203,11 +3254,11 @@
     zeigeAnsicht('pflegeinfo', !abschnitt);
     if (abschnitt) piAbschnitt(abschnitt);
   }
-  $('piZurueck').addEventListener('click', function () {
+  function piZurueckTun() {
     zeigeAnsicht(piZurueckZu, false);
     var el = piFokus && $(piFokus);
     var karte = el && el.closest && el.closest('article.card'); if (karte) karteAuf(karte.id); // zurück in die aufgeklappte Karte if (el) { try { el.scrollIntoView({ block: 'center' }); } catch (e) {} if (el.focus) { if (!el.hasAttribute('tabindex') && !/^(BUTTON|A|INPUT)$/.test(el.tagName)) el.setAttribute('tabindex', '-1'); el.focus({ preventScroll: true }); } }
-  });
+  }
   // ----- Pflege-Startkachel: Auswahl „Welche Unterstützung gibt es?“ / „Pflegegrad selbst einschätzen“ -----
   // Unterstützung: erst den Pflegegrad fragen, dann nur zeigen, was dort gilt (Rules.pflegeFuer). Beträge aus den Rechenregeln.
   // Die Erklärtexte gibt es wie den Pflege-Assistenten zurzeit nur auf Deutsch.
@@ -3266,7 +3317,7 @@
     box.innerHTML = '';
     var el = function (tag, text, cls) { var e = document.createElement(tag); if (text != null) e.textContent = text; if (cls) e.className = cls; return e; };
     var p = function (txt, cls) { return box.appendChild(el('p', txt, cls)); };
-    var leiste = function (zurueck) { var d = box.appendChild(el('div', null, 'btns')); d.appendChild(nhKnopf('btn ghost', esc(t('pf.zurueck')), null, zurueck)); return d; };
+    // „← Zurück“ steht oben (gemeinsamer Knopf, src/navigation.js; eine Ebene: Liste → Pflegegrad → Auswahl → Start)
     $('puNurDe').hidden = lang === 'de' || pu.schritt === 'wahl';
     if (pu.schritt === 'wahl') {
       p(t('pu.wahl'), 'pf-frage');
@@ -3278,7 +3329,6 @@
         if (x[0] === 'schaetzen' && typeof PflegeAssistent === 'undefined') b.hidden = true;
         l.appendChild(b);
       });
-      leiste(function () { zeigeAnsicht('start', true); });
     } else if (pu.schritt === 'pg') {
       p(t('pu.pg.q'), 'pf-frage'); p(t('pu.pg.hint'), 'hint');
       var r = box.appendChild(el('div', null, 'wahl-raster'));
@@ -3286,7 +3336,6 @@
         var b = nhKnopf('wahl', '<b>' + esc(n ? String(n) : t('pu.pg.keiner')) + '</b>', pu.pg === n, function () { puOeffnen('liste', n); });
         b.setAttribute('data-pg', String(n)); r.appendChild(b);
       });
-      leiste(function () { puOeffnen('wahl'); });
     } else {
       var pg = pu.pg || 0, liste = Rules.pflegeFuer(pg), tx = puTexte(pg), U = Rules.RULES.pflegeUnterst;
       var top = PU_TOP[Math.min(pg, 2)];
@@ -3326,9 +3375,7 @@
       }
       p('Hilfe bei allen Fragen und beim Antrag: Pflegekasse oder Pflegestützpunkt, kostenlos.', 'hint');
       p('Stand der Beträge: ' + U.stand + ' (' + U.quelle + '). Den genauen Anspruch legt die Pflegekasse fest.', 'small muted');
-      var d2 = box.appendChild(el('div', null, 'btns'));
-      if (!pg && typeof PflegeAssistent !== 'undefined') d2.appendChild(nhKnopf('btn', esc(t('pu.schaetzen')), null, function () { paOeffnen(true); }));
-      d2.appendChild(nhKnopf('btn ghost', esc(t('pf.zurueck')), null, function () { puOeffnen('pg'); }));
+      if (!pg && typeof PflegeAssistent !== 'undefined') box.appendChild(el('div', null, 'btns')).appendChild(nhKnopf('btn', esc(t('pu.schaetzen')), null, function () { paOeffnen(true); }));
     }
     if (fokus) { var h = box.querySelector('.pf-frage'); if (h) { h.setAttribute('tabindex', '-1'); h.focus(); } }
   }
@@ -3341,7 +3388,7 @@
   function briefOeffnen(art) {
     var teil = BRIEF_TEIL[art];
     document.querySelectorAll('#checkBox .pp-teil').forEach(function (s) { s.hidden = s.id !== teil; });
-    $('briefKacheln').hidden = !!teil; $('briefeIntro').hidden = !!teil; $('checkBox').hidden = !teil;
+    $('briefKacheln').hidden = !!teil; $('briefeIntro').hidden = !!teil; $('checkBox').hidden = !teil; $('briefeKopf').hidden = !!teil; $('briefKachelKopf').hidden = !teil; // Zurück oben: zur Absender-Auswahl bzw. eine Ebene hoch
     $('ppNurDe').hidden = lang === 'de';
     if (briefArt !== (teil ? art : null)) { $('elMsg').textContent = ''; $('elErg').textContent = ''; }
     if (!teil) scanBilderSetzen([]);
@@ -3471,7 +3518,7 @@
   if ($('an-eingabe')) $('an-eingabe').hidden = true; // in der App liest das Einlesen oben den Brief
   $('elLesen').addEventListener('click', function () { elGesammelt = ''; textLesen($('elText').value); });
 
-  $('briefZurueck').addEventListener('click', function () { elGesammelt = ''; var war = null; document.querySelectorAll('#checkBox .pp-teil').forEach(function (s) { if (!s.hidden) war = s.id; }); briefOeffnen(null); for (var k in BRIEF_TEIL) if (BRIEF_TEIL[k] === war) $('brief-' + k).focus(); });
+  function briefZurueckTun() { elGesammelt = ''; var war = null; document.querySelectorAll('#checkBox .pp-teil').forEach(function (s) { if (!s.hidden) war = s.id; }); briefOeffnen(null); for (var k in BRIEF_TEIL) if (BRIEF_TEIL[k] === war) $('brief-' + k).focus(); } // „← Zurück“ in einer Kachel (über src/navigation.js)
   document.querySelectorAll('#appnav button').forEach(function (b) { b.addEventListener('click', function () {
     var a = b.getAttribute('data-ansicht');
     herkunft = {};
@@ -3480,7 +3527,6 @@
   }); });
   // Einstellungen und Mein Ordner: Zeilen öffnen Unterseiten, „← Zurück“ führt zur Liste (usZeigen, siehe Vorgänge)
   document.querySelectorAll('#einstListe .zeile').forEach(function (b) { b.addEventListener('click', function () { usZeigen('einst', b.getAttribute('data-seite'), true); }); });
-  document.querySelectorAll('.us-zurueck').forEach(function (b) { b.addEventListener('click', function () { usZeigen(b.closest('.ansicht').id.slice(2), '', true); }); });
   $('ordnerLos').addEventListener('click', function () { oeffneVon('leistungen', true); });
   // Hell, Dunkel oder wie das Gerät: nur das Attribut data-theme (Farben im :root) und die Speicherung
   function themaSetzen(w, speichern) {
@@ -3500,7 +3546,6 @@
   $('goBriefe').addEventListener('click', function () { zeigeAnsicht('briefe', true); });
   $('goPfaendung').addEventListener('click', function () { oeffneVon('pfaendung', true); });
   $('goSparen').addEventListener('click', function () { sp.thema = ''; oeffneVon('sparen', true); });
-  document.querySelectorAll('[data-zurueck]').forEach(function (b) { b.addEventListener('click', function () { zurueckZurHerkunft(b.getAttribute('data-zurueck')); }); });
   // Haushaltsplan und Haushaltsbuch (src/haushalt.js): gemeinsame Felder liegen nur im Check (state), der Plan liest und schreibt sie hier.
   // Gespeichert wird der Plan je Vorgang (lotse.haushalt gehört zu Vorgaenge.DATEN): mit PIN verschlüsselt, mit dem Vorgang kopiert und gelöscht.
   if (window.Haushalt) {
@@ -3561,6 +3606,13 @@
   window.addEventListener('hashchange', function () { var a = location.hash.slice(1); if (ANSICHTEN.indexOf(a) >= 0 && a !== aktAnsicht) zeigeAnsicht(a, true); });
   Store.remove('lotse.fristen'); // Fristen aus 1.3.0 (Build 141) gibt es nicht mehr: gespeicherte Einträge vom Gerät löschen
   zeigeAnsicht((function () { var a = (location.hash || '').slice(1); return ANSICHTEN.indexOf(a) >= 0 ? a : 'start'; })());
+  // Einheitliche Navigation (src/navigation.js): Zurück-Knopf, Android-Taste, Browser-Zurück/-Vorwärts und Wischen auf dem iPhone.
+  // Rand-Wischen in JavaScript nur als Rückfall in der iPhone-App, wenn das native Wischen (MainViewController.swift) fehlt.
+  if (window.Navigation) {
+    Navigation.init({ ebene: navEbene, hoch: ebeneHoch, vor: navVor, schliessen: blattSchliessen,
+      randWischen: NATIVE && !!window.Capacitor && window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios' && !window.SoLoNativWischen });
+    navBereit = true;
+  }
 
   Store.get('lotse.state', stateLaden);
   function stateLaden(v) {

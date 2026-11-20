@@ -21,6 +21,8 @@ const check = (n, c, x) => { if (!c) { fails++; console.log('FAIL', n, x === und
 const ansicht = () => d.getElementById('app').getAttribute('data-ansicht');
 const box = () => d.getElementById('puInhalt');
 const knopf = (txt) => [...box().querySelectorAll('button')].find((b) => b.textContent.trim() === txt);
+// gemeinsamer Zurück-Knopf oben (src/navigation.js); die Navigation gleicht den Verlauf danach ab
+const oben = () => d.querySelector('#v-pflegestart [data-nav-zurueck]');
 const offen = () => [...box().querySelectorAll(':scope > .pu-l')].map((s) => s.id.replace('pu-l-', ''));
 const weitere = () => [...box().querySelectorAll('#pu-weitere .pu-l')].map((s) => s.id.replace('pu-l-', ''));
 const de = I18N.de;
@@ -31,13 +33,14 @@ setTimeout(() => {
   check('Kachel „Pflege“ öffnet die Auswahl', ansicht() === 'pflegestart' && !d.getElementById('v-pflegestart').hidden);
   const wege = [...box().querySelectorAll('.weg-liste .weg')];
   check('Auswahl: zwei große Knöpfe, zuerst Unterstützung, dann Einschätzung', wege.length === 2 && wege[0].id === 'pu-hilfe' && wege[1].id === 'pu-schaetzen' && wege[0].textContent.indexOf(de['pu.hilfe']) >= 0 && wege[1].textContent.indexOf(de['pu.schaetzen']) >= 0);
-  knopf(de['pf.zurueck']).click();
+  check('Kein zweiter Zurück-Knopf unten', !knopf(de['pf.zurueck']));
+  oben().click();
   check('Zurück in der Auswahl führt zum Start', ansicht() === 'start');
   d.getElementById('goPflege').click();
   d.getElementById('pu-hilfe').click();
   const pgs = [...box().querySelectorAll('.wahl-raster .wahl')].map((b) => b.getAttribute('data-pg'));
   check('Unterstützung fragt zuerst den Pflegegrad (1–5, noch keiner)', pgs.join() === '1,2,3,4,5,0' && box().textContent.indexOf(de['pu.pg.keiner']) >= 0, pgs);
-  knopf(de['pf.zurueck']).click();
+  oben().click();
   check('Zurück bei der Pflegegrad-Frage führt zur Auswahl', !!d.getElementById('pu-hilfe'));
   d.getElementById('pu-hilfe').click();
   box().querySelector('.wahl[data-pg="3"]').click();
@@ -58,13 +61,13 @@ setTimeout(() => {
   check('[pu-korr] Aufs Konto: Pflegegeld und Wohngruppenzuschlag', /Aufs Konto kommen nur das Pflegegeld und, wer in einer ambulant betreuten Wohngruppe lebt, der Wohngruppenzuschlag/.test(t3));
   check('Stand und Quelle genannt', /Stand der Beträge: 14\.9\.2026 \(Bundesministerium für Gesundheit/.test(t3));
   check('Stellen nur als Art (Pflegekasse, Pflegestützpunkt), keine Anschrift', /Pflegestützpunkt/.test(t3) && !/\b\d{5}\b/.test(t3));
-  knopf(de['pf.zurueck']).click();
+  oben().click();
   box().querySelector('.wahl[data-pg="1"]').click();
   const t1 = box().textContent;
   check('Pflegegrad 1: kein Pflegegeld, keine Verhinderungspflege', !d.getElementById('pu-l-geld') && !d.getElementById('pu-l-verh') && !d.getElementById('pu-l-rente') && /noch kein Pflegegeld/.test(t1));
   check('Pflegegrad 1: Entlastungsbetrag, Hilfsmittel, Umbau, Beratung offen', offen().join() === 'entl,hilfs,umbau,beratung', offen());
   check('Pflegegrad 1: Entlastungsbetrag auch für Pflegedienst bei der Körperpflege', /Pflegegrad 1 darf damit auch ein Pflegedienst/.test(d.getElementById('pu-l-entl').textContent));
-  knopf(de['pf.zurueck']).click();
+  oben().click();
   box().querySelector('.wahl[data-pg="0"]').click();
   check('Ohne Pflegegrad: Beratung und Kurse, Hinweis auf den Antrag', offen().join() === 'beratung,kurs' && /Den Antrag stellst du bei der Pflegekasse/.test(box().textContent) && !d.getElementById('pu-weitere'));
   check('[pu-korr] Ohne Pflegegrad: 10 Arbeitstage kurzzeitige Arbeitsverhinderung (§ 2 PflegeZG), auch bei voraussichtlicher Pflegebedürftigkeit', /bis zu 10 Arbeitstage/.test(box().textContent) && /voraussichtlich/.test(box().textContent));
