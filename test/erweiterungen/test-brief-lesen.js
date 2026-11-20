@@ -102,5 +102,30 @@ ok('Unbekannter Text: nicht erkannt', L.erkenne('Liebe Oma, vielen Dank für das
 ok('Feste Art aus der Kachel geht vor', L.lies(WG, 'jc').art === 'jc');
 ok('Beträge mit Leerzeichen aus der Texterkennung', L.betraege('Zahlbetrag 1 501,33 EUR')[0] === 1501.33);
 
+// Datum des Bescheids nur aus eindeutigen Mustern, sonst leer (ein falsches Datum verschöbe die Widerspruchsfrist)
+const D = (t) => L.lies(t, 'jc').datum;
+ok('Datum: „Bescheid vom“', D('Jobcenter Musterstadt\nBescheid vom 03.02.2026\nRegelbedarf 563,00') === '2026-02-03');
+ok('Datum: Briefkopf „Ort, den“', D('Jobcenter Musterstadt\nMusterstadt, den 04.02.2026\nRegelbedarf 563,00') === '2026-02-04');
+ok('Datum: nur das Datum in eigener Zeile', D('Jobcenter Musterstadt\n05.02.2026\nRegelbedarf 563,00') === '2026-02-05');
+ok('Kein Datum aus „Ihr Antrag vom“', D('Jobcenter Musterstadt\nIhr Antrag vom 10.01.2026\nRegelbedarf 563,00') === null);
+ok('Kein Datum aus dem Bewilligungszeitraum', D('Jobcenter Musterstadt\nBewilligungszeitraum 01.04.2026 bis 31.03.2027\nRegelbedarf 563,00') === null);
+ok('Kein Datum aus dem Geburtsdatum', D('Jobcenter Musterstadt\nMax Muster, geboren 01.01.2020\nGeburtsdatum: 01.01.2020') === null);
+ok('Kein Datum aus „für die Zeit vom“', D('Leistungen für die Zeit vom 01.04.2026 bis 30.09.2026') === null);
+
+// Anderer Brief: Frist nur mit Beleg, Mahnbescheid und Inkasso
+const MB = `Amtsgericht Coburg – Zentrales Mahngericht
+Mahnbescheid
+Das Gericht hat nicht geprüft, ob dem Antragsteller der Anspruch zusteht.
+Sie können innerhalb von zwei Wochen seit der Zustellung Widerspruch erheben.`;
+const a1 = L.andere(MB);
+ok('Mahnbescheid erkannt', a1.mahnbescheid && !a1.vollstreckungsbescheid, a1);
+ok('Frist mit Beleg', a1.fristen[0] && a1.fristen[0].frist === 'zwei Wochen' && /Widerspruch/.test(a1.fristen[0].zeile), a1.fristen);
+const a2 = L.andere('Muster Inkasso GmbH\nBitte zahlen Sie den Betrag bis zum 15.12.2026.');
+ok('Inkasso erkannt', a2.inkasso && !a2.mahnbescheid);
+ok('Frist mit Datum', a2.fristen[0] && a2.fristen[0].frist === '15.12.2026', a2.fristen);
+const a3 = L.andere('Sehr geehrte Damen und Herren,\nanbei die Unterlagen.');
+ok('Ohne Frist keine Frist', a3.fristen.length === 0 && !a3.inkasso && !a3.mahnbescheid);
+ok('Mahnbescheid nur mit Gericht', !L.andere('Wir drohen mit einem Mahnbescheid.').mahnbescheid);
+
 console.log(f ? `\n${f} von ${n} Prüfungen fehlgeschlagen` : `Brief einlesen: alle ${n} Prüfungen bestanden`);
 process.exit(f ? 1 : 0);
