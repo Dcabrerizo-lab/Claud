@@ -567,6 +567,7 @@
     bereicheText();
     vgRender();
     schalterText(); einstStatus(); ordnerRender();
+    if (typeof PflegeAssistent !== 'undefined' && $('pflegeAssist').firstChild) paStarten(false); // Pflege-Einschätzung (Einfache Sprache) an derselben Stelle neu zeichnen
   }
 
   // Schalter „Einfache Sprache“: gibt es nur auf Deutsch; in anderen Sprachen sichtbar, aber nicht bedienbar (aria-disabled, bleibt per Tastatur erreichbar)
@@ -3330,23 +3331,23 @@
     $('paNurDe').hidden = lang === 'de';
     var pgJetzt = paEchterPg();
     PflegeAssistent.start($('pflegeAssist'), {
-      pgAktuell: pgJetzt, antworten: pa.antworten, ergebnis: zumErgebnis === true,
+      pgAktuell: pgJetzt, antworten: pa.antworten, ergebnis: zumErgebnis === true, einfach: lang === 'de' && einfachSprache,
       speichern: function (a) { pa.antworten = a; paSpeichern(); },
       beimErgebnis: paMerken,
       abbrechen: paVerlassen,
       aktionen: [
-        { kachel: 'antrag', sym: PA_SYM.antrag, titel: 'Antrag an die Pflegekasse', text: 'Mit der Antragsmappe, deine Daten sind schon drin', wenn: function (r, pg) { return pg == null && r.pg >= 1; }, fn: function (r) {
+        { id: 'antrag', kachel: 'antrag', sym: PA_SYM.antrag, titel: 'Antrag an die Pflegekasse', text: 'Mit der Antragsmappe, deine Daten sind schon drin', wenn: function (r, pg) { return pg == null && r.pg >= 1; }, fn: function (r) {
           paUebernehmen(r); picked.pflege = true; pickedUser.pflege = true; if (lastOut) renderPick(lastOut.results);
           paZurueck('mappeMake'); paUnterseite('leistungen'); } },
-        { kachel: 'antrag', sym: PA_SYM.antrag, titel: 'Höherstufung beantragen', text: 'Schreiben an die Pflegekasse mit deinen Antworten', wenn: function (r, pg) { return pg != null && r.pg > pg; }, fn: function (r, a, g) {
+        { id: 'hoeher', kachel: 'antrag', sym: PA_SYM.antrag, titel: 'Höherstufung beantragen', text: 'Schreiben an die Pflegekasse mit deinen Antworten', wenn: function (r, pg) { return pg != null && r.pg > pg; }, fn: function (r, a, g) {
           paUebernehmen(r); zeigeAnsicht('briefe', false); briefOeffnen('pk'); paUnterseite('briefe');
           if (window.PruefpaketPflege) { window.PruefpaketPflege.setze(g, 'hoeher'); briefFormular(); } } },
-        { kachel: 'hilfen', sym: PA_SYM.hilfen, titel: 'Was steht mir zu?', text: function (r) { return r.pg ? 'Unterstützung bei Pflegegrad ' + r.pg : 'Hilfen schon ohne Pflegegrad'; }, fn: function (r) {
+        { id: 'hilfen', kachel: 'hilfen', sym: PA_SYM.hilfen, titel: 'Was steht mir zu?', text: function (r) { return r.pg ? 'Unterstützung bei Pflegegrad ' + r.pg : 'Hilfen schon ohne Pflegegrad'; }, fn: function (r) {
           paUnterseite('pflegestart'); puOeffnen('liste', r.pg || 0, true); } },
-        { kachel: 'gutachten', sym: PA_SYM.gutachten, titel: 'Mit dem Gutachten vergleichen', text: 'Brief der Pflegekasse prüfen', fn: function () {
+        { id: 'gutachten', kachel: 'gutachten', sym: PA_SYM.gutachten, titel: 'Mit dem Gutachten vergleichen', text: 'Brief der Pflegekasse prüfen', fn: function () {
           zeigeAnsicht('briefe', false); briefOeffnen('pk'); paUnterseite('briefe'); } },
         // In den Leistungs-Check nur, wenn man von dort gekommen ist
-        { titel: 'Zurück zum Leistungs-Check', wenn: paVomLeistungsCheck, fn: function (r) { paUebernehmen(r); paRueck = ''; paZurueck('c-pflege'); } }
+        { id: 'zurueck', titel: 'Zurück zum Leistungs-Check', wenn: paVomLeistungsCheck, fn: function (r) { paUebernehmen(r); paRueck = ''; paZurueck('c-pflege'); } }
       ]
     });
   }

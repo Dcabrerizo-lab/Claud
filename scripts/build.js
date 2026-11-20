@@ -102,7 +102,10 @@ function pruefpaket() {
   const stil = html.match(/<style>([\s\S]*?)<\/style>/);
   if (!stil) throw new Error('Prüfpaket: Stile fehlen in vorschau.html');
   const teile = PP_ABSCHNITTE.map((id) => ppAbschnitt(html, id)).join('\n');
-  const js = ['pflege.js', 'pflege-fragen.js', 'pflege-assistent.js', 'brief-lesen.js', 'kostensenkung.js', 'pflege-import.js', 'bescheid-sgb2.js', 'bescheid-gsa.js', 'bescheid-wg.js', 'bescheid-kiz.js', 'fristen.js', 'widerspruch.js', 'nebenkosten.js', 'vorschau.js'].map(ERW).join('\n');
+  // Einfache Sprache der Pflege-Einschätzung (src/lang/einfach/pflege/pflege.json, liest pflege-fragen.js als PFLEGE_EINFACH)
+  const pe = path.join(SRC, 'lang', 'einfach', 'pflege', 'pflege.json');
+  const pflegeEinfach = 'const PFLEGE_EINFACH = ' + (fs.existsSync(pe) ? JSON.stringify(JSON.parse(fs.readFileSync(pe, 'utf8'))) : 'null') + ';\n';
+  const js = pflegeEinfach + ['pflege.js', 'pflege-fragen.js', 'pflege-assistent.js', 'brief-lesen.js', 'kostensenkung.js', 'pflege-import.js', 'bescheid-sgb2.js', 'bescheid-gsa.js', 'bescheid-wg.js', 'bescheid-kiz.js', 'fristen.js', 'widerspruch.js', 'nebenkosten.js', 'vorschau.js'].map(ERW).join('\n');
   return { teile, css: ppStile(stil[1]), js };
 }
 
