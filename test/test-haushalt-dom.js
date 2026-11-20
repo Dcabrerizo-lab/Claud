@@ -32,6 +32,7 @@ setTimeout(() => {
     check('Ansicht Haushaltsplan offen (Eintrag in „Geld sparen“, kein eigener Zusatzknopf)', !$('v-haushalt').hidden && !$('goHaushalt'));
     check('Check -> Plan: Netto übernommen', $('hb-ek1').value === '1210', $('hb-ek1').value);
     check('Check -> Plan: Art übernommen', $('hb-ek1Art').value === 'rente');
+    check('Einkommensart „Unterhalt für sich selbst“ auch im Plan wählbar', !!$('hb-ek1Art').querySelector('option[value="unt"]'));
     check('Check -> Plan: Kindergeld aus Kinderzahl mit Hinweis', $('hb-kg').value === '518' && /2 Kinder/.test($('hb-kg-h').textContent), $('hb-kg').value);
     check('Hinweis „aus deinen Angaben übernommen, änderbar“', /übernommen, änderbar/.test($('hb-ek1-h').textContent));
     check('Ergebnissatz', /bleiben dir etwa 1\.028 €/.test(tx($('hbErgebnis'))), $('hbErgebnis').textContent);
@@ -94,10 +95,16 @@ setTimeout(() => {
     const bald = new Date(); bald.setDate(bald.getDate() + 20);
     setze('hb-wb-kiz', bald.toISOString().slice(0, 10));
     check('Erinnerung an die Weiterbewilligung auf der Startseite', !!$('hbStart') && /Kinderzuschlag/.test($('hbStart').textContent));
+    check('Erinnerung steht unter der Begrüßung, vor den Kacheln', $('hbStart').previousElementSibling && $('hbStart').previousElementSibling.classList.contains('gruss-t') && $('hbStart').nextElementSibling.classList.contains('start-raster'));
     // Speicherfehler abgefangen
     voll = true; setze('hb-sonstEin', '10');
     check('Speicherfehler wird angezeigt (Meldung der Vorgänge-Speicherung)', !$('vgFehler').hidden && /Speicher voll oder gesperrt/.test($('vgFehler').textContent), $('vgFehler').textContent);
     voll = false;
+    // Geld sparen → Schulden → Pfändungsrechner → Zurück führt wieder zu „Geld sparen“ (Herkunft)
+    klick($('goSparen')); klick([...d.querySelectorAll('#spInhalt button.weg')].find((b) => /Schulden/.test(b.textContent))); klick(d.querySelector('#spInhalt .sp-rechner'));
+    check('Schulden-Tipps öffnen den Pfändungsrechner', !$('v-pfaendung').hidden);
+    klick(d.querySelector('#v-pfaendung [data-zurueck]'));
+    check('Zurück vom Pfändungsrechner: wieder bei „Geld sparen“', !$('v-sparen').hidden);
     // Sprachen: kein Rohschlüssel
     ['en', 'ar', 'fa', 'so'].forEach((l) => { w.__solo.lang(l); zumPlan(); check(l + ': keine Rohschlüssel', !/hb\.[a-z]/.test($('v-haushalt').textContent)); });
     check('Keine Skriptfehler', errors.length === 0, errors);

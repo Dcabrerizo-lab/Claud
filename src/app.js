@@ -2331,7 +2331,7 @@
       p(t('sp.rezepte.t'), 'small muted');
       zurueck(function () { sp.rezepte = false; spRender(true); });
     } else if (sp.thema === 'schulden') {
-      var zumRechner = function (cls) { var d = document.createElement('div'); d.className = 'btns'; d.appendChild(nhKnopf(cls, esc(t('sp.schulden.pf')), null, function () { zeigeAnsicht('pfaendung', true); })); return d; };
+      var zumRechner = function (cls) { var d = document.createElement('div'); d.className = 'btns'; d.appendChild(nhKnopf(cls, esc(t('sp.schulden.pf')), null, function () { oeffneVon('pfaendung', true); })); return d; };
       p(t('sp.schulden'), 'pf-frage');
       box.appendChild(zumRechner('btn sp-rechner'));
       p(t('sp.schulden.erst'), 'sp-zwischen');
@@ -3209,7 +3209,7 @@
   });
   $('elPaste').addEventListener('click', function () { var box = $('elPasteBox'); box.hidden = !box.hidden; $('elPaste').setAttribute('aria-expanded', String(!box.hidden)); if (!box.hidden) $('elText').focus(); });
   $('elSelbst').addEventListener('click', function () { briefFormular(true); });
-  if ($('an-pfaendung')) $('an-pfaendung').addEventListener('click', function () { zeigeAnsicht('pfaendung', true); });
+  if ($('an-pfaendung')) $('an-pfaendung').addEventListener('click', function () { oeffneVon('pfaendung', true); });
   if ($('an-eingabe')) $('an-eingabe').hidden = true; // in der App liest das Einlesen oben den Brief
   $('elLesen').addEventListener('click', function () { elGesammelt = ''; textLesen($('elText').value); });
 

@@ -77,6 +77,7 @@ const g = H.ausCheck(s1, 259);
 check('Check -> Plan: Netto, Miete, Kindergeld aus Kinderzahl', g.ek1 === 180000 && g.ek1Art === 'lohn' && g.miete === 75000 && g.kg === 51800 && g.uh === null && !g.zwei, g);
 check('Check -> Plan: nur Brutto -> Netto bleibt leer, Hinweis', (() => { const x = H.ausCheck({ adults: 1, ek1Art: 'rente', ek1Brutto: 1400, ek1Netto: '' }, 259); return x.ek1 === null && x.ek1NurBrutto; })());
 check('Check -> Plan: keine Angaben', H.ausCheck(null, 259).ek1 === null);
+check('Unterhalt für sich selbst (unt): Zahlbetrag ist Einnahme, kein Brutto geschätzt oder verlangt', (() => { const st = { adults: 1, ek1Art: 'unt', ek1Netto: 650, plz: '90542' }; const x = H.ausCheck(st, 259), u = H.uebernahme(st, {}); return x.ek1 === 65000 && x.ek1Art === 'unt' && !x.ek1NurBrutto && u.da.some((d) => d.was === 'ek' && d.art === 'unt' && d.c === 65000) && !u.fehlt.some((f) => f.was === 'brutto'); })());
 check('Check -> Plan: Partner nur bei zwei Erwachsenen', H.ausCheck({ adults: 1, ek2Art: 'lohn', ek2Netto: 900 }, 259).ek2 === null && H.ausCheck({ adults: 2, ek2Art: 'lohn', ek2Netto: 900 }, 259).ek2 === 90000);
 check('Check -> Plan: „Kein Einkommen“ ergibt kein Einkommen', H.ausCheck({ adults: 1, ek1Art: 'ohne', ek1Netto: 500 }, 259).ek1 === null);
 // Plan -> Check: leeres Feld direkt, vorhandener anderer Wert nur nach Rückfrage

@@ -342,7 +342,8 @@
   .hb-ergebnis { font-size: 1.25em; font-weight: 700; margin: 0; padding: 14px 16px; border-radius: var(--r-card, 14px); background: var(--accent-soft); color: var(--ink); }
   .hb-ergebnis.minus { background: color-mix(in srgb, #b3261e 16%, var(--surface)); }
   .hb-karte { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-card, 14px); padding: 16px; display: grid; gap: 12px; min-width: 0; }
-  .hb-karte > legend, .hb-katwahl > legend { font-weight: 700; font-size: 1.05em; padding: 0 4px; }
+  .hb-karte > legend, .hb-katwahl > legend { font-weight: 700; font-size: 1.05em; padding: 0; border-bottom: 0; }
+  .hb-karte > legend { float: left; width: 100%; margin: 0; } /* Überschrift in der Karte statt auf dem Rahmen */
   .hb-katwahl { border: 0; padding: 0; margin: 0; min-width: 0; }
   .hb-kats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
   .hb-kat { display: grid; justify-items: center; gap: 4px; min-height: 92px; padding: 10px 4px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; text-align: center; overflow-wrap: anywhere; }

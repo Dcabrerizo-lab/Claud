@@ -382,7 +382,7 @@ var Haushalt = (function () {
       // Art des Einkommens: wie im Check; eine vorhandene andere Art nur nach Rückfrage ändern
       var sl = el('div', 'field hb-art'), lab = el('label'); lab.htmlFor = 'hb-ek' + i + 'Art'; lab.textContent = t('hb.ek.art'); sl.appendChild(lab);
       var sel = el('select'); sel.id = 'hb-ek' + i + 'Art';
-      [['', 'ek.art.0'], ['lohn', 'ek.art.lohn'], ['selbst', 'ek.art.selbst'], ['rente', 'ek.art.rente'], ['alg', 'ek.art.alg'], ['kg', 'ek.art.kg'], ['eg', 'ek.art.eg'], ['wfbm', 'ek.art.wfbm'], ['ohne', 'ek.art.ohne']]
+      [['', 'ek.art.0'], ['lohn', 'ek.art.lohn'], ['selbst', 'ek.art.selbst'], ['rente', 'ek.art.rente'], ['alg', 'ek.art.alg'], ['kg', 'ek.art.kg'], ['eg', 'ek.art.eg'], ['wfbm', 'ek.art.wfbm'], ['unt', 'ek.art.unt'], ['ohne', 'ek.art.ohne']]
         .forEach(function (o) { var op = el('option'); op.value = o[0]; op.textContent = t(o[1]); sel.appendChild(op); });
       sel.value = art || '';
       sel.addEventListener('change', function () {
@@ -510,7 +510,9 @@ var Haushalt = (function () {
     var e = hinweisElement(wb, startHinweis);
     var b = e.querySelector('.btns'); b.insertBefore(knopf('btn ghost klein', t('hb.kachel'), function () { ctx.zeige('haushalt', true); }), b.firstChild);
     box.appendChild(e);
-    var h = v.querySelector('h2'); if (h && h.nextSibling) v.insertBefore(box, h.nextSibling); else v.appendChild(box);
+    // Unter der Begrüßung (Überschrift und Satz) und vor den Kacheln, damit sie den Gruß nicht trennt und keine anderen Hinweise überdeckt
+    var r = v.querySelector('.start-raster'), h = v.querySelector('h2');
+    if (r) v.insertBefore(box, r); else if (h && h.nextSibling) v.insertBefore(box, h.nextSibling); else v.appendChild(box);
   }
   function bewilligtBox() {
     var d = el('details', 'hb-karte hb-wb'), su = el('summary'); su.textContent = t('hb.wb.h'); d.appendChild(su);
