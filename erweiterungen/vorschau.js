@@ -4,6 +4,9 @@
 (function () {
   'use strict';
   const $ = (id) => document.getElementById(id);
+  // „Keine Rechtsberatung“: immer derselbe Satz (Text rb.satz in src/lang/*.json); in der App aus der gewählten Sprache
+  const RB_SATZ = 'Erste Einschätzung, keine Rechtsberatung. Es entscheidet das Amt, im Streit das Gericht.';
+  const rbSatz = () => (window.SoloMehr && window.SoloMehr.rb ? window.SoloMehr.rb() : RB_SATZ);
   const h = (tag, attrs, ...kids) => {
     const e = document.createElement(tag);
     for (const [k, v] of Object.entries(attrs || {})) {
@@ -621,10 +624,12 @@ Ergebnis: Pflegegrad 2`;
     'kz-b-kiz': 'Auf der ersten Seite: der Kinderzuschlag im Monat für alle Kinder zusammen.',
     'kz-kgnr': 'Oben im Brief, zum Beispiel 123FK456789. Steht auch auf jedem Brief zum Kindergeld.'
   };
+  // Zugeklappt hinter „Wo steht das?“ (gemeinsames Bauteil details.mehr): sichtbar wird nur die Hilfe des angetippten Feldes
   for (const [id, text] of Object.entries(FELD_HILFE)) {
     const el = $(id); if (!el || el.dataset.hilfe) continue;
-    el.dataset.hilfe = '1'; const p = document.createElement('p'); p.className = 'small muted feld-hilfe'; p.id = id + '-hilfe'; p.textContent = text;
-    el.setAttribute('aria-describedby', p.id); el.insertAdjacentElement('afterend', p);
+    el.dataset.hilfe = '1';
+    const d = h('details', { class: 'mehr feld-hilfe', id: id + '-hilfe' }, h('summary', { text: 'Wo steht das?' }), h('p', { text }));
+    el.insertAdjacentElement('afterend', d);
   }
   // Für die App: Gutachten-Prüfung mit den Antworten der eigenen Einschätzung füllen (Leistungsseite → „Brief prüfen“)
   window.PruefpaketPflege = {
@@ -795,9 +800,9 @@ Ergebnis: Pflegegrad 2`;
     if ((r.mahnbescheid || r.vollstreckungsbescheid) && window.FristenOrdner) box.append(window.FristenOrdner.knopf((zugang) => ({ art: r.vollstreckungsbescheid ? 'vb' : 'mb', stelle: 'gericht', basis: { zugang }, quelle: 'brief' }), { feld: 'zugang' }));
     if (r.inkasso) box.append(h('p', { class: 'note' }, h('strong', { text: 'Im Brief steht „Inkasso“. ' }), 'Lies unten, was du prüfen solltest.'));
     if (r.fristen.length) {
-      box.append(h('p', {}, h('strong', { text: 'Frist im Brief: ' + r.fristen[0].frist })),
+      box.append(h('p', {}, h('strong', { text: 'Frist im Brief: ' + BriefLesen.fristLesbar(r.fristen[0].frist) })),
         h('p', { class: 'small muted', text: 'So steht es im Brief: „' + r.fristen[0].zeile + '“' }));
-      if (r.fristen.length > 1) box.append(h('details', {}, h('summary', { text: 'Weitere Fristen im Brief' }), h('ul', {}, r.fristen.slice(1).map((x) => h('li', { text: x.frist + ': „' + x.zeile + '“' })))));
+      if (r.fristen.length > 1) box.append(h('details', {}, h('summary', { text: 'Weitere Fristen im Brief' }), h('ul', {}, r.fristen.slice(1).map((x) => h('li', { text: BriefLesen.fristLesbar(x.frist) + ': „' + x.zeile + '“' })))));
       box.append(h('p', { class: 'small', text: 'Bitte die Frist im Brief selbst nachlesen. Die Texterkennung kann sich irren.' }));
       // Fester Tag im Brief: „Frist merken“ (Widerspruch/Einspruch/Klage, Zahlung oder allgemeine Frist); der Brieftext wird nie gespeichert
       const fz = r.fristen[0], fd = /^(\d{1,2})\.(\d{1,2})\.(20\d{2})$/.exec(fz.frist);
@@ -809,6 +814,7 @@ Ergebnis: Pflegegrad 2`;
       box.append(h('p', {}, h('strong', { text: 'Keine Frist gefunden.' }), ' Das heißt nicht, dass es keine gibt. Suche im Brief nach „bis zum“, „innerhalb von“ oder „binnen“. Im Zweifel frag eine Beratungsstelle.'));
     }
     if (r.art && ARTNAME[r.art] && opt && opt.wechseln) box.append(h('p', {}, 'Das sieht aus wie: ' + ARTNAME[r.art] + '. ', h('button', { type: 'button', class: 'btn ghost', text: 'Diesen Brief genauer prüfen', onclick: () => opt.wechseln(r.art) })));
+    box.append(h('p', { class: 'small muted rb-satz', 'data-t': 'rb.satz', text: rbSatz() })); // unter jedem Prüfergebnis, immer derselbe Satz
   }
   window.PruefpaketAndere = { zeige: zeigeAndere };
   if ($('an-lesen')) $('an-lesen').addEventListener('click', () => zeigeAndere($('an-text').value));

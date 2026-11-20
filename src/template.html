@@ -745,7 +745,28 @@
   .page.docs .tip { font-size: 0.92em; color: var(--papier-ink2); }
   .page .muted { color: var(--papier-ink2); } /* Hinweise auf dem weißen Papier der Mappe, auch im Dunkelmodus lesbar */
   .empf-edit { margin: 12px 0 6px; padding: 10px; border: 1px dashed var(--warn); border-radius: 8px; background: var(--warn-bg); color: var(--ink); }
+  /* Empfänger im Brief: dezent gestrichelt an der Stelle der Anschrift */
+  .empf-im-brief { margin: 4px 0; padding: 8px; border: 1px dashed var(--line); background: transparent; color: var(--papier-ink); font-family: var(--font-body); }
+  .empf-im-brief .small, .empf-im-brief label { color: var(--papier-ink2); }
+  .empf-im-brief a.btn { color: var(--accent); }
+  .empf-zeigen pre { display: inline; font-family: Georgia, 'Times New Roman', serif; }
+  .nur-druck { display: none; }
+  .empf-aendern { font-size: .85em; margin-inline-start: 6px; }
+  .form-karte { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; margin: 12px 0; }
+  .form-karte h4 { margin: 0 0 8px; }
+  .form-karte .form-link { margin: 0 0 8px; }
+  .page .form-karte a.btn, .page .form-karte a.btn:visited { color: var(--accent-ink); text-decoration: none; display: inline-flex; align-items: center; }
+  .empf-im-brief a.btn { display: inline-flex; align-items: center; min-height: 44px; text-decoration: none; }
+  .mappe-ende { display: grid; gap: 10px; }
+  /* Antragsmappe als Aufgabenliste (Vorbild GOV.UK „task list“): nummerierte Schritte, je ein großer Knopf, Status „Erledigt“ */
+  .aufgaben { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; counter-reset: auf; }
+  .aufgabe { counter-increment: auf; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-item); padding: 14px 16px; display: grid; gap: 8px; }
+  .aufgabe h3 { margin: 0; font-size: 1.05em; display: flex; gap: 10px; align-items: baseline; }
+  .aufgabe h3::before { content: counter(auf); flex: none; display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font-size: .9em; }
+  .aufgabe p { margin: 0; }
+  .aufgabe .haken { justify-self: start; }
   .empf-edit .small { color: var(--ink); }
+  .empf-such { margin: 6px 0 0; }
   .empf-edit a { color: var(--accent); }
   .empf-edit textarea { width: 100%; padding: 8px; font: inherit; font-size: 0.95em; direction: ltr; text-align: left; margin-top: 4px; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 6px; }
   .empf-edit .linkbtn { background: none; border: 0; padding: 0; color: inherit; text-decoration: underline; font: inherit; cursor: pointer; }
@@ -757,6 +778,7 @@
   @media print {
     body { background: #fff; }
     .app.pm .no-print { display: none !important; }
+    .app.pm .nur-druck { display: block !important; }
     .app.pm .shell { padding: 0; max-width: none; }
     .page { border: 0; border-radius: 0; padding: 0; break-after: page; }
     .page:last-child { break-after: auto; }
@@ -995,6 +1017,20 @@
   .hinweis-koralle p { margin: 0; }
   .hinweis-koralle.beratung > div { display: grid; gap: 4px; }
   .hinweis-koralle.beratung > div > p:not(.b-titel) { font-weight: 400; color: var(--ink); font-size: .92em; }
+  /* Gemeinsames Info-Bauteil „ⓘ Mehr dazu“ (überall gleich): Text bleibt zu, bis man ihn antippt */
+  details.mehr { border-top: 0; padding-top: 0; margin: 2px 0 0; }
+  details.mehr > summary { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-size: .92em; font-weight: 700; color: var(--accent); cursor: pointer; list-style: none; }
+  details.mehr > summary::-webkit-details-marker { display: none; }
+  details.mehr > summary::before { content: "i"; flex: none; display: inline-grid; place-items: center; width: 20px; height: 20px; border: 2px solid currentColor; border-radius: 50%; font-size: .8em; font-weight: 900; line-height: 1; }
+  details.mehr > summary::after { content: "▸"; font-size: .85em; }
+  details.mehr[open] > summary::after { content: "▾"; }
+  details.mehr > :not(summary) { margin: 0 0 6px; color: var(--muted); font-size: .92em; font-weight: 400; }
+  .form-ende { display: grid; gap: 8px; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); }
+  .rb-satz { margin: 12px 0 0; }
+  .ww-mehr > :not(summary) { color: var(--ink); font-size: 1em; margin-bottom: 10px; }
+  .form-ende .loeschzeile { margin: 0 0 16px; padding-top: 0; border-top: 0; }
+  .form-ende .es-link { margin: 0; }
+  .empf-mehr { margin: 10px 0 4px; }
   .summary .res-satz { flex-basis: 100%; font-size: 1.05em; font-weight: 700; }
   .summary h2 { font-weight: 900; }
 /*PPSTIL*/
@@ -1010,6 +1046,11 @@
     </header>
 
     <main id="inhalt">
+    <!-- Erststart: einmal für jeden Einstieg (gleich welche Kachel), bis „Verstanden“ -->
+    <div class="notice info first" id="firstNotice" role="note" hidden>
+      <p data-t="first.text"></p>
+      <button type="button" class="btn" id="firstOk" data-t="first.ok"></button>
+    </div>
     <!-- Start: was dringend ist, dann die zwei Hauptwege -->
     <section id="v-start" class="ansicht" aria-labelledby="h-start" hidden>
       <h2 id="h-start" class="ans-h gruss" data-t="home.gruss"></h2>
@@ -1029,7 +1070,6 @@
       <!--ZURUECK kid=briefeKopf-->
       <!--ZURUECK id=briefZurueck kid=briefKachelKopf hidden=1-->
       <h2 id="h-briefe" class="ans-h"></h2>
-      <p id="briefeIntro" class="muted" data-t="briefe.t"></p>
       <div class="einlesen" id="einlesen" hidden>
         <div class="btns">
           <button type="button" class="btn" id="elScan"><span aria-hidden="true">📷 </span><span id="elScanT" data-t="el.scan"></span></button>
@@ -1051,7 +1091,6 @@
       <div class="kacheln" id="briefKacheln"></div>
       <div id="checkBox" class="pp" hidden>
         <p class="pp-hinweis small" id="ppNurDe" data-t="briefe.nurDeutsch" hidden></p>
-        <p class="small muted" data-t="briefe.hinweis"></p>
 <!--PRUEFPAKET-->
         <!--SCAN-->
         <section class="scan pp-teil" id="scan" aria-labelledby="h-scan" hidden>
@@ -1069,7 +1108,7 @@
             <textarea id="sc-text" lang="de" dir="ltr" autocomplete="off" spellcheck="false"></textarea>
             <div class="btns"><button type="button" class="btn" id="sc-local" data-t="sc.local"></button></div>
           </div>
-          <p class="small muted" data-t="sc.localNote"></p>
+          <p class="small muted" id="scLocalNote" data-t="sc.localNote"></p>
           <div class="box" id="sc-claudeBox" hidden>
             <p class="hint" data-t="sc.claudeNote"></p>
             <label class="check"><input type="checkbox" id="sc-consent"><span data-t="sc.consent"></span></label>
@@ -1144,10 +1183,6 @@
 
     <div id="v-leistungen" class="ansicht">
     <!--ZURUECK kid=leistungenKopf-->
-    <div class="notice info first" id="firstNotice" role="note" hidden>
-      <p data-t="first.text"></p>
-      <button type="button" class="btn" id="firstOk" data-t="first.ok"></button>
-    </div>
     <div class="notices" id="notices">
       <div class="notice" id="sampleNotice" role="note" data-t="sample"></div>
       <div class="notice info" id="transNotice" role="note" data-t="trans" hidden></div>
@@ -1159,14 +1194,6 @@
     <div class="cols" id="cols">
       <section aria-labelledby="h-form">
         <h2 id="h-form" style="margin-bottom:12px" data-t="h.form"></h2>
-        <p class="es-link"><button type="button" class="linkbtn" id="einfachBtn" aria-pressed="false"><span data-t="einfach.btn"></span></button></p>
-        <div class="presets-label" id="presetLabel" data-t="preset.label"></div>
-        <div class="presets" role="group" aria-labelledby="presetLabel" id="presets" style="margin-bottom:8px"></div>
-        <div class="loeschzeile">
-          <button type="button" class="chip loeschen" id="clearBtn"><span aria-hidden="true">✕ </span><span data-t="clear.btn"></span></button>
-          <p class="small loesch-was" id="clearWas"></p>
-          <span class="msg" id="clearMsg" role="status"></span>
-        </div>
 
         <form id="form" onsubmit="return false" autocomplete="off">
           <fieldset>
@@ -1227,8 +1254,7 @@
             </div>
             <div class="field">
               <label for="gebJahr" data-t="geb.label"></label>
-              <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" id="gebJahr" class="kurz">
-              <span class="hint" data-t="geb.hint"></span>
+              <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" id="gebJahr" class="kurz" data-t-ph="geb.ph">
               <p class="warn" id="gebWarn" hidden></p>
             </div>
             <label class="check"><input type="checkbox" id="schwanger"><span data-t="cb.schwanger"></span></label>
@@ -1239,12 +1265,12 @@
             <div class="field cond-baby">
               <label for="egVor" data-t="egVor.label"></label>
               <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="egVor"><span aria-hidden="true">€</span></div>
-              <span class="hint" data-t="egVor.hint"></span>
+              <details class="mehr"><summary data-t="mehr.was"></summary><p data-t="egVor.hint"></p></details>
             </div>
             <div class="field">
               <label for="aufenthalt" data-t="aufenthalt.label"></label>
               <select id="aufenthalt"></select>
-              <span class="hint" data-t="aufenthalt.hint"></span>
+              <details class="mehr"><summary data-t="mehr.warum"></summary><p data-t="aufenthalt.hint"></p></details>
             </div>
             <div class="subbox cond-eu" hidden>
               <div class="field">
@@ -1260,7 +1286,6 @@
 
           <fieldset>
             <legend data-t="lg.gesund"></legend>
-            <p class="hint" data-t="lg.gesund.hint"></p>
             <label class="check"><input type="checkbox" id="ernaehrung"><span data-t="cb.ernaehrung"></span></label>
             <div class="field">
               <label for="pflegegrad" data-t="pflege.label"></label>
@@ -1280,7 +1305,7 @@
             <div class="field">
               <label for="bhPerson" data-t="bh.person.label"></label>
               <select id="bhPerson"></select>
-              <span class="hint" data-t="bh.person.hint"></span>
+              <details class="mehr"><summary data-t="mehr.wer"></summary><p data-t="bh.person.hint"></p></details>
             </div>
             <div class="subbox cond-bh">
               <div class="field">
@@ -1341,7 +1366,6 @@
             <div class="field">
               <label for="ausbildung" data-t="ausb.label"></label>
               <select id="ausbildung"></select>
-              <span class="hint" data-t="ausb.hint"></span>
             </div>
             <div class="subbox cond-ausbich">
               <div class="checks">
@@ -1360,7 +1384,7 @@
             <div class="field">
               <label for="miete" id="mieteLab" data-t="miete.label"></label>
               <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="miete"><span aria-hidden="true">€</span></div>
-              <span class="hint" id="mieteHint" data-t="miete.hint"></span>
+              <span class="hint" id="mieteHint" data-t="miete.hint.eigen" hidden></span>
               <p class="warn" id="mieteWarn" hidden></p>
               <p class="mietgrenze" id="mieteGrenze" aria-live="polite" hidden></p>
               <details class="mietgrenze-mehr" id="mieteGrenzeMehr" hidden>
@@ -1371,26 +1395,26 @@
             <div class="field">
               <label for="heizkosten" data-t="heiz.label"></label>
               <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="heizkosten"><span aria-hidden="true">€</span></div>
-              <span class="hint" data-t="heiz.hint"></span>
+              <span class="hint" data-t="heiz.kurz"></span>
+              <details class="mehr"><summary data-t="mehr.wo"></summary><p data-t="heiz.hint"></p></details>
               <label class="check"><input type="checkbox" id="warmwasser"><span data-t="cb.warmwasser"></span></label>
             </div>
             <div class="field">
               <label for="hhAndere" data-t="hh.label"></label>
               <select id="hhAndere"></select>
-              <span class="hint" data-t="hh.hint"></span>
+              <span class="hint" id="hhHint" data-t="hh.hint" hidden></span>
             </div>
             <div class="field" id="plzField" hidden>
               <label for="plz" data-t="plz.label"></label>
               <input type="text" id="plz" inputmode="numeric" pattern="[0-9]*" maxlength="5" autocomplete="postal-code">
-              <span class="hint" data-t="plz.hint"></span>
               <div id="plzOut" role="status" aria-live="polite"></div>
             </div>
-            <div class="field">
+            <div class="field" id="blField">
               <label for="bundesland" data-t="bl.label"></label>
               <select id="bundesland"></select>
-              <span class="hint" data-t="bl.hint"></span>
+              <details class="mehr"><summary data-t="mehr.warum"></summary><p data-t="bl.hint"></p></details>
             </div>
-            <div class="field">
+            <div class="field" id="stufeField">
               <label for="mietstufe" data-t="stufe.label"></label>
               <select id="mietstufe"></select>
               <span class="hint"><span data-t="stufe.hint"></span> <a href="https://www.wohngeld.org/mietstufe/" target="_blank" rel="noopener" data-t="stufe.link"></a></span>
@@ -1406,6 +1430,7 @@
                 <label for="ek1Art" data-t="ek.art"></label>
                 <select id="ek1Art"></select>
                 <span class="hint" id="ek1ArtHint"></span>
+                <details class="mehr" id="ek1ArtMehr" hidden><summary data-t="mehr.zwei"></summary><p data-t="ek.art.hint"></p></details>
               </div>
               <div class="field" id="ek1BruttoF" hidden>
                 <label for="ek1Brutto" id="ek1BruttoLab"></label>
@@ -1447,6 +1472,7 @@
                 <label for="ek2Art" data-t="ek.art2"></label>
                 <select id="ek2Art"></select>
                 <span class="hint" id="ek2ArtHint"></span>
+                <details class="mehr" id="ek2ArtMehr" hidden><summary data-t="mehr.zwei"></summary><p data-t="ek.art.hint"></p></details>
               </div>
               <div class="field" id="ek2BruttoF" hidden>
                 <label for="ek2Brutto" id="ek2BruttoLab"></label>
@@ -1479,22 +1505,24 @@
             <div class="field cond-kids">
               <label for="unterhalt" data-t="unterh.label"></label>
               <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="unterhalt"><span aria-hidden="true">€</span></div>
-              <span class="hint" data-t="unterh.hint"></span>
+              <span class="hint" data-t="unterh.kurz"></span>
+              <details class="mehr"><summary data-t="mehr.was"></summary><p data-t="unterh.hint"></p></details>
             </div>
             <div class="field cond-kinder">
               <label for="waisen" data-t="waisen.label"></label>
               <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="waisen"><span aria-hidden="true">€</span></div>
-              <span class="hint" data-t="waisen.hint"></span>
+              <details class="mehr"><summary data-t="mehr.was"></summary><p data-t="waisen.hint"></p></details>
             </div>
             <div class="field cond-kinder">
               <label for="kindEink" data-t="kindEink.label"></label>
               <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="kindEink"><span aria-hidden="true">€</span></div>
-              <span class="hint" data-t="kindEink.hint"></span>
+              <details class="mehr"><summary data-t="mehr.was"></summary><p data-t="kindEink.hint"></p></details>
             </div>
             <div class="field">
               <label for="uzBetrag" data-t="uz.label"></label>
               <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="uzBetrag"><span aria-hidden="true">€</span></div>
-              <span class="hint" data-t="uz.hint"></span>
+              <span class="hint" data-t="uz.kurz"></span>
+              <details class="mehr"><summary data-t="mehr.wer"></summary><p data-t="uz.hint"></p></details>
             </div>
             <div class="subbox cond-uz" hidden>
               <div class="field">
@@ -1512,7 +1540,6 @@
             <div class="field">
               <label for="autoWert" data-t="auto.label"></label>
               <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="autoWert"><span aria-hidden="true">€</span></div>
-              <span class="hint" data-t="auto.hint"></span>
             </div>
             <div class="subbox cond-auto" hidden>
               <label class="check"><input type="checkbox" id="autoBraucht"><span data-t="cb.autoBraucht"></span></label>
@@ -1530,6 +1557,16 @@
             </div>
           </fieldset>
         </form>
+        <div class="form-ende">
+          <p class="es-link"><button type="button" class="linkbtn" id="einfachBtn" aria-pressed="false"><span data-t="einfach.btn"></span></button></p>
+          <div class="presets-label" id="presetLabel" data-t="preset.label"></div>
+          <div class="presets" role="group" aria-labelledby="presetLabel" id="presets" style="margin-bottom:8px"></div>
+          <div class="loeschzeile">
+            <button type="button" class="chip loeschen" id="clearBtn"><span aria-hidden="true">✕ </span><span data-t="clear.btn"></span></button>
+            <details class="mehr"><summary data-t="mehr.loeschen"></summary><p class="loesch-was" id="clearWas"></p></details>
+            <span class="msg" id="clearMsg" role="status"></span>
+          </div>
+        </div>
       </section>
 
       <section class="results" id="ergebnis" aria-labelledby="h-res" tabindex="-1">
@@ -1543,11 +1580,13 @@
         <nav id="overview" class="overview" hidden></nav>
         <div id="together"></div>
         <div id="cards" class="results"></div>
-        <div class="hinweis-koralle beratung" id="beratung" hidden><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg><div><p class="b-titel" data-t="res.beratung"></p><p data-t="foot.2"></p></div></div>
+        <div class="hinweis-koralle beratung" id="beratung" hidden><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg><div><p class="b-titel" data-t="res.beratung"></p><details class="mehr"><summary data-t="mehr.hilfe"></summary><p data-t="foot.2"></p></details></div></div>
+        <p class="small muted rb-satz" id="resRb" data-t="rb.satz"></p>
 
         <section class="helper" id="helper" aria-labelledby="h-helper">
           <h2 id="h-helper" data-t="f.h"></h2>
           <p data-t="f.intro"></p>
+          <details class="mehr"><summary data-t="mehr.formlos"></summary><p data-t="f.intro.mehr"></p></details>
           <div class="two">
             <div class="field"><label for="p-name" data-t="f.name"></label><input type="text" id="p-name" autocomplete="off"></div>
             <div class="field"><label for="p-geb" data-t="f.geb"></label><input type="text" id="p-geb" placeholder="TT.MM.JJJJ" autocomplete="off"></div>
@@ -1756,21 +1795,26 @@
       <h1 class="vh">SoLo</h1>
       <div class="mappe-bar no-print">
         <h2 id="h-mappe" data-t="f.mappe"></h2>
-        <p class="notice info" data-t="f.deNote"></p>
-        <p class="notice info" data-t="f.stichtag"></p>
-        <p class="notice" id="mappeAdrNote" data-t="f.adrFehlt" hidden></p>
+        <p class="notice info" id="mappeDeNote" data-t="f.deNote" hidden></p>
+        <!-- Ein Hauptknopf (Web: Drucken, App: PDF teilen); alles andere unter „Weitere Möglichkeiten“ -->
         <div class="btns">
-          <button type="button" class="btn" id="mappeDruck" data-t="f.druck" hidden></button>
-          <button type="button" class="btn ghost" id="mappeSpeichern" data-t="f.speichern" hidden></button>
           <button type="button" class="btn" id="mappePrint" data-t="f.print"></button>
-          <button type="button" class="btn ghost" id="mappeCopy" data-t="f.copy"></button>
-          <button type="button" class="btn ghost" id="mappeShare" data-t="f.share" hidden></button>
         </div>
+        <details class="mehr mappe-mehr"><summary data-t="f.mehrWege"></summary>
+          <div class="btns">
+            <button type="button" class="btn ghost" id="mappeDruck" data-t="f.druck" hidden></button>
+            <button type="button" class="btn ghost" id="mappeSpeichern" data-t="f.speichern" hidden></button>
+            <button type="button" class="btn ghost" id="mappeCopy" data-t="f.copy"></button>
+            <button type="button" class="btn ghost" id="mappeShare" data-t="f.share" hidden></button>
+          </div>
+        </details>
         <p class="msg" id="copyMsg" role="status"></p>
         <textarea id="mappeText" readonly hidden></textarea>
       </div>
       <div id="mappeBody"></div>
-      <div class="btns no-print mappe-ende"><button type="button" class="btn" id="mappePrint2" data-t="f.print"></button></div>
+      <div class="no-print mappe-ende">
+        <div class="btns"><button type="button" class="btn" id="mappePrint2" data-t="f.print"></button></div>
+      </div>
     </section>
 
     <!-- Ergebnisblatt zum Mitgeben: eine Druckseite ohne Namen (höchstens Kürzel) -->
