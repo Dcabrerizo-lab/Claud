@@ -91,6 +91,8 @@
   "hb.bearbeiten": "Bearbeiten",
   "hb.loeschen": "Löschen",
   "hb.geloescht": "Gelöscht.",
+  "hb.buchLoeschen": "Ganzes Haushaltsbuch löschen",
+  "hb.buchGeloescht": "Haushaltsbuch gelöscht.",
   "hb.beendet": "Die wiederkehrende Ausgabe endet vor diesem Monat.",
   "hb.rueck": "Rückgängig",
   "hb.speicherFehler": "Speichern hat nicht geklappt. Vielleicht ist der Speicher des Geräts voll.",

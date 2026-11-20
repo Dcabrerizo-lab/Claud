@@ -91,6 +91,8 @@
   "hb.bearbeiten": "Modifier",
   "hb.loeschen": "Supprimer",
   "hb.geloescht": "Supprimé.",
+  "hb.buchLoeschen": "Supprimer tout le carnet de dépenses",
+  "hb.buchGeloescht": "Carnet de dépenses supprimé.",
   "hb.beendet": "La dépense récurrente se termine avant ce mois.",
   "hb.rueck": "Annuler la suppression",
   "hb.speicherFehler": "L'enregistrement n'a pas fonctionné. La mémoire de l'appareil est peut-être pleine.",

@@ -528,10 +528,11 @@
   }
   // Was „Alle Angaben löschen“ löscht. Neue Teile hier ergänzen: Sprachschlüssel clear.teil.*
   // Ist ein gespeicherter Vorgang geöffnet, nennt der Text ihn: gelöscht wird nur in diesem Vorgang, andere bleiben.
-  var LOESCH_TEILE = ['clear.teil.form', 'clear.teil.person'].concat(window.Haushalt ? ['clear.teil.haushalt'] : []);
+  var LOESCH_TEILE = ['clear.teil.form', 'clear.teil.person'].concat(window.Haushalt ? ['clear.teil.haushalt'] : [], ['clear.teil.mehr']);
   function loeschWas() {
-    var a = tresor && tresor.bereit() ? tresor.aktiv() : null;
-    return t('clear.was') + ' ' + LOESCH_TEILE.map(function (k) { return t(k); }).join(' · ') + (a && a.name ? ' ' + t('clear.teil.vorgang', { name: a.name }) : '');
+    var a = tresor && tresor.bereit() ? tresor.aktiv() : null, mehrere = a && tresor.liste().length > 1;
+    return t('clear.was') + ' ' + LOESCH_TEILE.map(function (k) { return t(k); }).join(' · ') +
+      (a && a.name ? ' ' + t('clear.teil.vorgang', { name: a.name }) : mehrere ? ' ' + t('clear.teil.offen') : '');
   }
   // Rückgängig-Leiste: bleibt etwa 10 Sekunden; solange der Fokus darin ist, verschwindet sie nicht
   var undoFn = null, undoTimer = null;
@@ -697,25 +698,21 @@
     // „Drucken“ auch am Ende der Mappe: löst denselben Weg aus wie der Knopf oben (Web: Drucken, App: PDF)
     $('mappePrint2').addEventListener('click', function () { (!$('mappeDruck').hidden ? $('mappeDruck') : $('mappePrint')).click(); });
     $('clearBtn').addEventListener('click', function () {
-      // Stand merken: „Rückgängig“ stellt ihn etwa 10 Sekunden lang wieder her
-      // Mit Vorgängen: nur der geöffnete Vorgang wird geleert; Rückgängig gilt nur, solange derselbe Vorgang offen ist
-      var vorher = { state: JSON.parse(JSON.stringify(state)), person: Object.assign({}, person), picked: Object.assign({}, picked), pickedUser: Object.assign({}, pickedUser), started: started, edited: edited, sample: !$('sampleNotice').hidden, haken: Object.assign({}, haken), hh: window.Haushalt ? Haushalt.daten() : null, vg: tresor && tresor.bereit() ? tresor.aktiv().id : null };
-      state = blankState(); person = { name: '', geb: '', strasse: '', ort: '', tel: '' }; picked = {}; pickedUser = {}; started = false;
-      ['p-name', 'p-geb', 'p-strasse', 'p-ort', 'p-tel'].forEach(function (id) { $(id).value = ''; });
-      haken = {}; Store.remove('lotse.haken');
-      edited = true; $('sampleNotice').hidden = true;
-      clearTimeout(saveTimer); clearTimeout(soonTimer); saveTimer = null;
-      Store.remove('lotse.state');
-      writeForm(); buildSelects(); render();
+      // Löscht den ganzen geöffneten Vorgang (angabenLoeschen(false)): Formular, Briefdaten, einfache Version, Pflege-Einschätzung,
+      // Pfändung, Haushaltsplan und Haken. Andere Vorgänge bleiben. „Rückgängig“ stellt ihn etwa 10 Sekunden lang wieder her.
+      flush();
+      var vorher = { daten: {}, picked: Object.assign({}, picked), pickedUser: Object.assign({}, pickedUser), edited: edited, sample: !$('sampleNotice').hidden, vg: tresor && tresor.bereit() ? tresor.aktiv().id : null };
+      var etwas = Object.keys(person).some(function (k) { return person[k]; }) || started;
+      Vorgaenge.DATEN.forEach(function (k) { Store.get(k, function (v) { vorher.daten[k] = v; if (v != null) etwas = true; }); });
+      clearTimeout(soonTimer);
+      angabenLoeschen(false);
       $('clearMsg').textContent = t('clear.done');
-      if (vorher.started || Object.keys(vorher.person).some(function (k) { return vorher.person[k]; })) undoZeigen(function () {
-        if (vorher.vg && !(tresor.bereit() && tresor.aktiv().id === vorher.vg)) return; // anderer Vorgang offen oder gesperrt
-        haken = vorher.haken; if (Object.keys(haken).length) Store.set('lotse.haken', JSON.stringify(haken));
-        if (vorher.hh && window.Haushalt) Haushalt.laden(vorher.hh); // Haushaltsplan und -buch (src/haushalt.js leert sie beim Löschen mit)
-        state = vorher.state; person = vorher.person; picked = vorher.picked; pickedUser = vorher.pickedUser; started = vorher.started; edited = vorher.edited;
-        $('sampleNotice').hidden = !vorher.sample;
-        [['p-name', 'name'], ['p-geb', 'geb'], ['p-strasse', 'strasse'], ['p-ort', 'ort'], ['p-tel', 'tel']].forEach(function (x) { $(x[0]).value = person[x[1]] || ''; });
-        writeForm(); buildSelects(); render(); flush();
+      if (etwas && vorher.vg) undoZeigen(function () {
+        if (!(tresor.bereit() && tresor.aktiv().id === vorher.vg)) return; // anderer Vorgang offen oder gesperrt
+        Vorgaenge.DATEN.forEach(function (k) { if (vorher.daten[k] != null) Store.set(k, vorher.daten[k]); });
+        vgNeuLaden();
+        picked = vorher.picked; pickedUser = vorher.pickedUser; edited = vorher.edited; $('sampleNotice').hidden = !vorher.sample;
+        render(); flush();
         $('clearMsg').textContent = t('clear.undone'); if ($('clear2Msg').textContent) $('clear2Msg').textContent = t('clear.undone');
       });
     });
@@ -2566,6 +2563,7 @@
     ['p-name', 'p-geb', 'p-strasse', 'p-ort', 'p-tel'].forEach(function (id) { $(id).value = ''; });
     $('sampleNotice').hidden = true; $('clearMsg').textContent = '';
     pf = pfLeer(); pa = { antworten: null, schaetzung: null };
+    haken = {}; Store.get('lotse.haken', function (v) { try { var d = v ? JSON.parse(v) : null; if (d && typeof d === 'object') haken = d; } catch (e) {} });
     Store.get('lotse.state', stateLaden);
     if (!started) { writeForm(); buildSelects(); render(); }
     Store.get('lotse.einfach', function (v) {

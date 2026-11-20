@@ -91,6 +91,8 @@
   "hb.bearbeiten": "Modifică",
   "hb.loeschen": "Șterge",
   "hb.geloescht": "Șters.",
+  "hb.buchLoeschen": "Șterge tot caietul de cheltuieli",
+  "hb.buchGeloescht": "Caietul de cheltuieli a fost șters.",
   "hb.beendet": "Cheltuiala recurentă se încheie înainte de această lună.",
   "hb.rueck": "Anulează ștergerea",
   "hb.speicherFehler": "Salvarea nu a reușit. Poate memoria dispozitivului este plină.",

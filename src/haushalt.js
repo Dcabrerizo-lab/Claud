@@ -663,6 +663,12 @@ var Haushalt = (function () {
       r.appendChild(knopf('btn ghost klein', t('hb.rueck'), function () { daten.buch = rueck.vorher; rueck = null; sichern(); renderBuch('hb-neu'); }, { id: 'hb-rueck' }));
       box.appendChild(r);
     }
+    // Ganzes Haushaltsbuch löschen (der Plan bleibt); „Rückgängig“ wie beim einzelnen Eintrag
+    if (daten.buch.length) {
+      var lb = el('div', 'btns');
+      lb.appendChild(knopf('btn ghost klein', t('hb.buchLoeschen'), function () { rueck = { vorher: JSON.parse(JSON.stringify(daten.buch)), text: t('hb.buchGeloescht') }; daten.buch = []; sichern(); renderBuch('hb-rueck'); }, { id: 'hb-buchLoeschen' }));
+      box.appendChild(lb);
+    }
     box.appendChild(el('p', 'small', esc(t('home.privat'))));
     if (fokusId && $(fokusId)) $(fokusId).focus();
   }
@@ -814,7 +820,7 @@ var Haushalt = (function () {
   function init(c) {
     ctx = c; monat = monatVon(isoTag(new Date())); daten = leer();
     ['plan', 'buch', 'ausw'].forEach(function (a) { var b = $('hb-tab-' + a); if (b) b.addEventListener('click', function () { ansicht = a; eingabe = null; render(); }); });
-    var cl = $('clearBtn'); if (cl) cl.addEventListener('click', function () { daten = leer(); offenKat = ''; eingabe = null; rueck = null; speicher.schreiben(JSON.stringify(daten), function () {}); var h = $('hbStart'); if (h) h.remove(); render(); }); // „Alle Angaben löschen“ löscht auch Plan und Haushaltsbuch
+    // „Alle Angaben löschen“ löscht auch Plan und Haushaltsbuch: das erledigt die App über die Vorgänge (lotse.haushalt in Vorgaenge.DATEN, danach neuLaden)
     var go = $('goHaushalt'); if (go) go.addEventListener('click', function () { ctx.zeige('haushalt', true); });
     speicher.laden(function (v) { try { daten = normiere(v ? JSON.parse(v) : null); } catch (e) { daten = leer(); } render(); startHinweis(); });
   }

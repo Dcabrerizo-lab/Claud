@@ -91,6 +91,8 @@
   "hb.bearbeiten": "Edit",
   "hb.loeschen": "Delete",
   "hb.geloescht": "Deleted.",
+  "hb.buchLoeschen": "Delete the whole spending diary",
+  "hb.buchGeloescht": "Spending diary deleted.",
   "hb.beendet": "The recurring expense ends before this month.",
   "hb.rueck": "Undo",
   "hb.speicherFehler": "Saving did not work. Maybe the device storage is full.",

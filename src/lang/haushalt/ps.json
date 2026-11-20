@@ -91,6 +91,8 @@
   "hb.bearbeiten": "سمول",
   "hb.loeschen": "ړنګول",
   "hb.geloescht": "ړنګ شو.",
+  "hb.buchLoeschen": "د لګښتونو ټول کتاب پاک کړه",
+  "hb.buchGeloescht": "د لګښتونو کتاب پاک شو.",
   "hb.beendet": "تکراري لګښت له دې میاشتې مخکې پای ته رسیږي.",
   "hb.rueck": "بېرته",
   "hb.speicherFehler": "ساتل ونه شول. ښايي د وسیلې حافظه ډکه وي.",

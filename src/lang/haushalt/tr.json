@@ -91,6 +91,8 @@
   "hb.bearbeiten": "Düzenle",
   "hb.loeschen": "Sil",
   "hb.geloescht": "Silindi.",
+  "hb.buchLoeschen": "Harcama defterinin tamamını sil",
+  "hb.buchGeloescht": "Harcama defteri silindi.",
   "hb.beendet": "Tekrarlayan harcama bu aydan önce sona erer.",
   "hb.rueck": "Geri al",
   "hb.speicherFehler": "Kaydetme olmadı. Cihazın hafızası dolu olabilir.",

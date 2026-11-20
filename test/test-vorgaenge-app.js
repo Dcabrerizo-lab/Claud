@@ -77,12 +77,16 @@ const knopf = (s, root, text) => [...root.querySelectorAll('button')].find((b) =
   ck('[vorgaenge] Löschen-Text nennt den Haushaltsplan', /Haushaltsplan und Haushaltsbuch/.test(d.getElementById('clearWas').textContent));
 
   // Alle Angaben löschen: Text nennt den Vorgang, Rückgängig stellt ihn wieder her, nach einem Wechsel nicht mehr
-  ck('[vorgaenge] Löschen-Text nennt den geöffneten Vorgang', /Nur in diesem Vorgang \(„Familie M\.“\)/.test(d.getElementById('clearWas').textContent), d.getElementById('clearWas').textContent);
+  ck('[vorgaenge] Löschen-Text nennt den geöffneten Vorgang', /nur der geöffnete Vorgang \(„Familie M\.“\)\. Alle Vorgänge löschst du in den Einstellungen/.test(d.getElementById('clearWas').textContent), d.getElementById('clearWas').textContent);
+  const hk = d.querySelector('input[data-haken]'); hk.checked = true; hk.dispatchEvent(new s.w.Event('change', { bubbles: true }));
+  ck('[vorgaenge] Haken der Checkliste gehören zum Vorgang', !!mem['lotse.haken'] && !!mem['lotse.pfaendung']);
   d.getElementById('clearBtn').click();
+  ck('[vorgaenge] Löschen: ganzer Vorgang leer (Pfändung, Haken, Haushaltsplan)', !mem['lotse.pfaendung'] && !mem['lotse.haken'] && !d.querySelector('input[data-haken]:checked'), Object.keys(mem));
   ck('[vorgaenge] Löschen leert nur den geöffneten Vorgang (auch den Haushaltsplan)', d.getElementById('miete').value === '' && d.getElementById('p-name').value === '' && essen() === undefined && !d.getElementById('undoBar').hidden && chip.textContent === 'Familie M.');
   d.getElementById('undoBtn').click();
   await warte(20);
   ck('[vorgaenge] Rückgängig: Angaben des Vorgangs zurück und gespeichert', d.getElementById('miete').value === '640' && d.getElementById('p-name').value === 'Erika Muster' && JSON.parse(mem['lotse.state']).s.miete === 640);
+  ck('[vorgaenge] Rückgängig: Pfändung und Haken zurück', !!mem['lotse.pfaendung'] && /true/.test(mem['lotse.haken'] || '') && !!d.querySelector('input[data-haken]:checked'));
   ck('[vorgaenge] Rückgängig: Haushaltsplan zurück und gespeichert', essen() === 30000 && /30000/.test(mem['lotse.haushalt'] || ''));
   d.getElementById('clearBtn').click();
   knopf(s, d.getElementById('vgMenu'), 'Ohne Namen').click();

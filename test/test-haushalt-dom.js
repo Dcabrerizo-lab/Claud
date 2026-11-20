@@ -74,6 +74,8 @@ setTimeout(() => {
     klick(knopf('Löschen', d.querySelector('.hb-eintrag')));
     check('Gelöscht', d.querySelectorAll('.hb-eintrag').length === 0);
     klick($('hb-rueck')); check('Rückgängig', d.querySelectorAll('.hb-eintrag').length === 1);
+    klick($('hb-buchLoeschen')); check('Ganzes Haushaltsbuch löschen', d.querySelectorAll('.hb-eintrag').length === 0 && JSON.parse(mem['lotse.haushalt']).buch.length === 0);
+    klick($('hb-rueck')); check('Ganzes Haushaltsbuch: Rückgängig', d.querySelectorAll('.hb-eintrag').length === 1);
     // Hinweise: höchstens 2 sichtbar, Rest aufklappbar, „Nicht mehr zeigen“ bleibt weg
     klick($('hb-neu')); setze('hb-betrag', '300'); klick($('hb-wahl-miete')); setze('hb-notiz', 'Nachzahlung Nebenkosten'); klick($('hb-speichern'));
     klick($('hb-neu')); setze('hb-betrag', '40'); klick($('hb-wahl-kinder')); setze('hb-notiz', 'Klassenfahrt'); klick($('hb-speichern'));

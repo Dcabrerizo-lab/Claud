@@ -91,6 +91,8 @@
   "hb.bearbeiten": "Edytuj",
   "hb.loeschen": "Usuń",
   "hb.geloescht": "Usunięto.",
+  "hb.buchLoeschen": "Usuń cały zeszyt wydatków",
+  "hb.buchGeloescht": "Zeszyt wydatków usunięty.",
   "hb.beendet": "Powtarzający się wydatek kończy się przed tym miesiącem.",
   "hb.rueck": "Cofnij",
   "hb.speicherFehler": "Zapisywanie się nie udało. Może pamięć urządzenia jest pełna.",

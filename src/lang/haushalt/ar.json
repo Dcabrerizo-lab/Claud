@@ -91,6 +91,8 @@
   "hb.bearbeiten": "تعديل",
   "hb.loeschen": "حذف",
   "hb.geloescht": "تم الحذف.",
+  "hb.buchLoeschen": "حذف دفتر المصاريف كله",
+  "hb.buchGeloescht": "تم حذف دفتر المصاريف.",
   "hb.beendet": "ينتهي المصروف المتكرر قبل هذا الشهر.",
   "hb.rueck": "تراجع",
   "hb.speicherFehler": "لم ينجح الحفظ. ربما ذاكرة الجهاز ممتلئة.",

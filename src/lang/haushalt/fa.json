@@ -91,6 +91,8 @@
   "hb.bearbeiten": "ویرایش",
   "hb.loeschen": "حذف",
   "hb.geloescht": "حذف شد.",
+  "hb.buchLoeschen": "پاک کردن کل دفتر هزینه‌ها",
+  "hb.buchGeloescht": "دفتر هزینه‌ها پاک شد.",
   "hb.beendet": "هزینه تکراری پیش از این ماه تمام می‌شود.",
   "hb.rueck": "برگرداندن",
   "hb.speicherFehler": "ذخیره نشد. شاید حافظه دستگاه پر است.",
