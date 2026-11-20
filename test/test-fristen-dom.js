@@ -92,6 +92,17 @@ const E = {
     ck('[fristen-dom] Befund 6: Rechenweg bei Zustellung passend', /Zugestellt oder persönlich bekommen am/.test(det) && !/vierten Tag/.test(det), det);
     s.w.FristenOrdner.entfernen(g.id);
   }
+  // Rechtsweg: Wohngeld „Widerspruch oder Klage“ (je Land kein Widerspruch), Brief ohne Stelle „Widerspruch, Einspruch oder Klage“; Jobcenter und Kinderzuschlag unverändert
+  {
+    const F = s.w.FristenOrdner;
+    ck('[fristen-dom] Rechtsweg: vier Fristen gespeichert', F.hinzu({ art: 'wid', stelle: 'wg', basis: { datum: tagIn(-3) }, quelle: 'bescheid' }) === 'neu' && F.hinzu({ art: 'wid', stelle: 'fk', basis: { datum: tagIn(-4) }, quelle: 'bescheid' }) === 'neu' && F.hinzu({ art: 'wid', bis: tagIn(25), quelle: 'brief' }) === 'neu' && F.hinzu({ art: 'wid', stelle: 'jc', basis: { datum: tagIn(-5) }, quelle: 'bescheid' }) === 'neu');
+    const alle = JSON.parse(mem['lotse.fristliste']).e, txt = (x) => s.$('fri-' + x.id).textContent, kopf = (x) => s.$('fri-' + x.id).querySelector('h3').textContent;
+    const wg = alle.find((e) => e.stelle === 'wg'), fk = alle.find((e) => e.stelle === 'fk'), br = alle.find((e) => e.art === 'wid' && !e.stelle), jc = alle.find((e) => e.art === 'wid' && e.stelle === 'jc');
+    ck('[fristen-dom] Rechtsweg Wohngeld: Titel „Widerspruch oder Klage“, Hinweis auf Länder und Rechtsbehelfsbelehrung', kopf(wg) === 'Widerspruch oder Klage gegen den Bescheid (Wohngeldstelle)' && /In manchen Bundesländern gibt es keinen Widerspruch/.test(txt(wg)) && /Rechtsbehelfsbelehrung am Ende des Bescheids/.test(txt(wg)), txt(wg));
+    ck('[fristen-dom] Rechtsweg Brief ohne Stelle: kein festes Wort, Einspruch beim Kindergeld genannt', kopf(br) === 'Widerspruch, Einspruch oder Klage' && /beim Kindergeld Einspruch/.test(txt(br)) && /Rechtsbehelfsbelehrung am Ende des Briefs/.test(txt(br)) && !/Der Widerspruch muss bis zum Ende/.test(txt(br)), txt(br));
+    ck('[fristen-dom] Rechtsweg Kinderzuschlag und Jobcenter: weiter „Widerspruch“, ohne Länder-Hinweis', kopf(fk) === 'Widerspruch gegen den Bescheid (Familienkasse)' && kopf(jc) === 'Widerspruch gegen den Bescheid (Jobcenter)' && !/Bundesländern|Einspruch/.test(txt(fk).split('So wurde gerechnet')[0]) && !/Bundesländern/.test(txt(jc)), txt(fk));
+    [wg, fk, br, jc].forEach((x) => F.entfernen(x.id));
+  }
   // Kein Klartext außer Merker: Schlüssel gehört zum Vorgang
   ck('[fristen-dom] lotse.fristliste gehört zu Vorgaenge.DATEN', V.DATEN.indexOf('lotse.fristliste') >= 0);
 

@@ -99,5 +99,9 @@
   "fri.zeile": "Znaleziono w piśmie: „{zeile}”",
   "fri.feld.fest": "Termin według pisma (sprawdź, możesz zmienić dzień)",
   "fri.feld.fest.fehlt": "Wpisz dzień terminu.",
-  "fri.voll": "Lista jest pełna (50 otwartych terminów). Najpierw oznacz termin jako załatwiony albo go usuń."
+  "fri.voll": "Lista jest pełna (50 otwartych terminów). Najpierw oznacz termin jako załatwiony albo go usuń.",
+  "fri.art.wid.offen": "Widerspruch, Einspruch lub Klage (sprzeciw lub skarga)",
+  "fri.art.wid.wg": "Widerspruch lub Klage od decyzji ({stelle})",
+  "fri.wid.offen": "Środek odwoławczy nazywa się różnie, zależnie od urzędu: najczęściej Widerspruch, przy zasiłku na dzieci (Kindergeld) Einspruch, a czasem możliwa jest tylko skarga do sądu (Klage). Co dotyczy ciebie, jest napisane w Rechtsbehelfsbelehrung na końcu pisma. Twoje pismo musi tam dotrzeć najpóźniej tego dnia.",
+  "fri.wid.wg": "Dodatek mieszkaniowy (Wohngeld): w niektórych krajach związkowych nie ma Widerspruch. Wtedy możliwa jest tylko skarga (Klage) do Verwaltungsgericht, w tym samym terminie. Co dotyczy ciebie, jest napisane w Rechtsbehelfsbelehrung na końcu decyzji."
 }

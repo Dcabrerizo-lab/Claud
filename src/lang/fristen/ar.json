@@ -99,5 +99,9 @@
   "fri.zeile": "وُجد في الرسالة: «{zeile}»",
   "fri.feld.fest": "المهلة حسب الرسالة (يرجى التحقق، يمكنك تغيير اليوم)",
   "fri.feld.fest.fehlt": "يرجى إدخال يوم المهلة.",
-  "fri.voll": "القائمة ممتلئة (50 مهلة مفتوحة). علّم أولًا مهلة كمنجزة أو احذفها."
+  "fri.voll": "القائمة ممتلئة (50 مهلة مفتوحة). علّم أولًا مهلة كمنجزة أو احذفها.",
+  "fri.art.wid.offen": "Widerspruch أو Einspruch أو Klage (اعتراض أو دعوى)",
+  "fri.art.wid.wg": "Widerspruch أو Klage ضد القرار ({stelle})",
+  "fri.wid.offen": "يختلف اسم طريق الطعن حسب الجهة: غالبًا Widerspruch، وفي إعانة الأطفال (Kindergeld) يسمى Einspruch، وأحيانًا تكون الدعوى أمام المحكمة (Klage) هي الممكنة فقط. ما ينطبق عليك مكتوب في Rechtsbehelfsbelehrung في نهاية الرسالة. يجب أن تكون رسالتك قد وصلت إلى هناك حتى هذا اليوم.",
+  "fri.wid.wg": "إعانة السكن (Wohngeld): في بعض الولايات لا يوجد Widerspruch. عندها تكون الدعوى (Klage) أمام Verwaltungsgericht هي الممكنة فقط، وبالمهلة نفسها. ما ينطبق عليك مكتوب في Rechtsbehelfsbelehrung في نهاية القرار."
 }

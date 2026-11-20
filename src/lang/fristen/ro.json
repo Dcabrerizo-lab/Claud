@@ -99,5 +99,9 @@
   "fri.zeile": "Găsit în scrisoare: „{zeile}”",
   "fri.feld.fest": "Termen conform scrisorii (verifică, poți schimba ziua)",
   "fri.feld.fest.fehlt": "Te rog introdu ziua termenului.",
-  "fri.voll": "Lista este plină (50 de termene deschise). Marchează mai întâi un termen ca rezolvat sau șterge-l."
+  "fri.voll": "Lista este plină (50 de termene deschise). Marchează mai întâi un termen ca rezolvat sau șterge-l.",
+  "fri.art.wid.offen": "Widerspruch, Einspruch sau Klage (contestație sau acțiune în instanță)",
+  "fri.art.wid.wg": "Widerspruch sau Klage împotriva deciziei ({stelle})",
+  "fri.wid.offen": "Calea de atac are alt nume în funcție de instituție: de obicei Widerspruch, la alocația pentru copii (Kindergeld) Einspruch, iar uneori este posibilă doar acțiunea în instanță (Klage). Ce se aplică la tine scrie în Rechtsbehelfsbelehrung, la sfârșitul scrisorii. Scrisoarea ta trebuie să fi ajuns acolo până în această zi.",
+  "fri.wid.wg": "Ajutor pentru locuință (Wohngeld): în unele landuri nu există Widerspruch. Atunci este posibilă doar acțiunea (Klage) la Verwaltungsgericht, cu același termen. Ce se aplică la tine scrie în Rechtsbehelfsbelehrung, la sfârșitul deciziei."
 }

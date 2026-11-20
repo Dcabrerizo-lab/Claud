@@ -99,5 +99,9 @@
   "fri.zeile": "Im Brief gefunden: „{zeile}“",
   "fri.feld.fest": "Frist laut Brief (bitte prüfen, du kannst den Tag ändern)",
   "fri.feld.fest.fehlt": "Bitte trag den Tag der Frist ein.",
-  "fri.voll": "Die Liste ist voll (50 offene Fristen). Erledige oder entferne erst eine Frist."
+  "fri.voll": "Die Liste ist voll (50 offene Fristen). Erledige oder entferne erst eine Frist.",
+  "fri.art.wid.offen": "Widerspruch, Einspruch oder Klage",
+  "fri.art.wid.wg": "Widerspruch oder Klage gegen den Bescheid ({stelle})",
+  "fri.wid.offen": "Das Rechtsmittel heißt je nach Stelle anders: meistens Widerspruch, beim Kindergeld Einspruch, manchmal ist nur die Klage möglich. Was für dich gilt, steht in der Rechtsbehelfsbelehrung am Ende des Briefs. Dein Schreiben muss bis zu diesem Tag dort angekommen sein.",
+  "fri.wid.wg": "Wohngeld: In manchen Bundesländern gibt es keinen Widerspruch. Dann ist nur die Klage beim Verwaltungsgericht möglich, mit derselben Frist. Was für dich gilt, steht in der Rechtsbehelfsbelehrung am Ende des Bescheids."
 }

@@ -99,5 +99,9 @@
   "fri.zeile": "Trouvé dans la lettre : « {zeile} »",
   "fri.feld.fest": "Délai selon la lettre (vérifie, tu peux changer le jour)",
   "fri.feld.fest.fehlt": "Indique le jour du délai.",
-  "fri.voll": "La liste est pleine (50 délais ouverts). Marque d’abord un délai comme fait ou supprime-le."
+  "fri.voll": "La liste est pleine (50 délais ouverts). Marque d’abord un délai comme fait ou supprime-le.",
+  "fri.art.wid.offen": "Widerspruch, Einspruch ou Klage (opposition ou recours)",
+  "fri.art.wid.wg": "Widerspruch ou Klage contre la décision ({stelle})",
+  "fri.wid.offen": "Le recours porte un nom différent selon l’organisme : le plus souvent Widerspruch, pour les allocations familiales (Kindergeld) Einspruch, et parfois seul le recours au tribunal (Klage) est possible. Ce qui vaut pour toi est indiqué dans la Rechtsbehelfsbelehrung à la fin de la lettre. Ton courrier doit y être arrivé au plus tard ce jour-là.",
+  "fri.wid.wg": "Aide au logement (Wohngeld) : dans certains Länder, il n’y a pas de Widerspruch. Seul le recours (Klage) devant le Verwaltungsgericht est alors possible, avec le même délai. Ce qui vaut pour toi est indiqué dans la Rechtsbehelfsbelehrung à la fin de la décision."
 }
