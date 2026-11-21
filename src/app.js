@@ -691,7 +691,7 @@
     var de = lang === 'de', b = $('einfacheSpracheBtn');
     b.setAttribute('aria-checked', String(de && einfachSprache));
     if (de) b.removeAttribute('aria-disabled'); else b.setAttribute('aria-disabled', 'true');
-    $('einfacheSpracheT').textContent = t(de ? 'set.es.t' : 'set.es.nurDe');
+    $('einfacheSpracheT').textContent = de ? '' : t('set.es.nurDe'); // auf Deutsch kein Erklärsatz (Infotexte-Bericht)
     if ($('deNetzBtn')) { $('deNetzBtn').setAttribute('aria-checked', String(!window.DeNetz || DeNetz.an())); $('deNetzT').textContent = t(de ? 'dn.set.nurFremd' : 'dn.set.t'); }
   }
   // Schalter „Wichtige Sätze auch auf Deutsch zeigen“ (Standard an; wirkt nur bei Fremdsprachen)
@@ -3435,9 +3435,10 @@
     }
     // Schritt 1: Zahl der Unterhaltsberechtigten (große Zahlenknöpfe)
     if (pf.schritt === 1) {
-      p(t('pf.pers.q'), 'pf-frage'); p(t('pf.pers.hint'), 'hint');
+      p(t('pf.pers.q'), 'pf-frage');
       var r = knoepfe('wahl-raster');
       [0, 1, 2, 3, 4, 5].forEach(function (n) { r.appendChild(nhKnopf('wahl', '<b>' + esc(n === 5 ? t('pf.mehr') : String(n)) + '</b>', pf.pers === n, function () { pf.pers = n; pf.schritt = 2; pfRender(true); })); });
+      p(t('pf.pers.hint'), 'hint'); // unter die Zahlen: erst die Wahl, dann der Hinweis (Infotexte-Bericht)
       leiste(null);
     } else if (pf.schritt === 2 && pf.art === 'lohn') {
       p(t('pf.netto.q'), 'pf-frage');
@@ -4813,6 +4814,7 @@
   $('goLeistungen').addEventListener('click', function () { zeigeAnsicht('leistungen', true); });
   $('goBriefe').addEventListener('click', function () { if (briefArt) briefOeffnen(null); zeigeAnsicht('briefe', true); }); // immer zuerst „Von wem ist der Brief?“ (UX-Audit B)
   $('goGeld').addEventListener('click', function () { gsOeffne(''); oeffneVon('sparen', true); });
+  if ($('startSicher')) $('startSicher').addEventListener('click', function () { herkunft = {}; zeigeAnsicht('einst', false); usZeigen('einst', 'sicher', true); }); // Datenschutz-Zeile auf Start → Sicherheit und Daten
   // Nicht lesbarer Stand (Haushalt, Schulden, Ausziehen): Rohtext unter <Schlüssel>.defekt im selben Vorgang sichern (mit PIN verschlüsselt wie der Stand selbst)
   function speicherDefekt(key, text) { try { Store.set(key + '.defekt', text); } catch (e) {} } // .defekt gehört zu Vorgaenge.DATEN (PIN, Kopie, Löschen)
   // Haushaltsplan und Haushaltsbuch (src/haushalt.js): gemeinsame Felder liegen nur im Check (state), der Plan liest und schreibt sie hier.

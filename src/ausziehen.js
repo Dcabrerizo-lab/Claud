@@ -130,7 +130,7 @@ var Ausziehen = (function () {
 
   // Alle Textschlüssel (Tests: jede Sprache hat sie, keine Rohschlüssel)
   function schluessel() {
-    var k = ['az.h', 'az.kachel', 'az.kachel.t', 'az.lead', 'az.quelle', 'az.mehrDazu', 'az.weitere', 'az.erledigt', 'az.notiz', 'az.notiz.t',
+    var k = ['az.h', 'az.kachel', 'az.kachel.t', 'az.quelle', 'az.mehrDazu', 'az.weitere', 'az.erledigt', 'az.notiz', 'az.notiz.t',
       'az.moeglich', 'az.speicherFehler', 'az.defekt', 'az.knopf.plan', 'az.knopf.check', 'az.knopf.briefe', 'az.knopf.pfaendung', 'az.knopf.vers', 'az.hilfen.check', 'az.vers.tipp', 'az.stand'];
     BEREICHE.forEach(function (b) {
       k.push('az.' + b.id + '.h', 'az.' + b.id + '.t');
@@ -271,7 +271,7 @@ var Ausziehen = (function () {
   }
 
   function renderEinstieg(box, fokus) {
-    var h = '<p class="az-lead">' + esc(tL('az.lead')) + '</p><div class="az-raster">';
+    var h = '<div class="az-raster">'; // ohne Einleitungssatz: die Kacheln erklären sich (Infotexte-Bericht)
     HAUPT.forEach(function (id) {
       var f = fortschritt(daten, id);
       h += '<button type="button" class="sk az-k az-k-' + id + '" data-az-geh="' + id + '" id="az-geh-' + id + '"><span class="sk-sym" aria-hidden="true">' + sym(id) + '</span><span class="sk-txt"><b>' + esc(tL('az.' + id + '.h')) + '</b><span>' +
