@@ -259,7 +259,7 @@
   "ra.so.2": "Rezerwa na nieprzewidziane wydatki: 10 % dochodów, co najmniej 50 €. U ciebie: {b}",
   "ra.so.3": "Rata: wolna kwota minus rezerwa, ale nie więcej, niż wierzyciele mogliby zająć według tabeli zajęć (u ciebie około {p}). Zaokrąglona w dół do pełnych 5 €. U ciebie: {b}",
   "ra.so.4": "Przy kilku długach ratę dostają najpierw czynsz, prąd, alimenty, grzywny i ubezpieczenie zdrowotne, potem mandaty i urzędy, na końcu banki, windykacja i sprzedaż wysyłkowa. W obrębie grupy dzielimy według wysokości i zaokrąglamy w dół do pełnych euro.",
-  "ra.so.5": "To prosta zasada SoLo, a nie porada prawna. Sam decydujesz, co proponujesz.",
+  "ra.so.5": "To prosta zasada SoLo, a nie porada prawna. Sam(a) decydujesz, co proponujesz.",
   "ra.tipp.kurz": "Proponuj tylko tyle, ile na pewno możesz płacić co miesiąc.",
   "ra.tipp": "Pamiętaj też o kosztach, które pojawiają się od czasu do czasu, np. dopłaty lub naprawy. Lepiej zacznij od małej kwoty. Podwyższyć możesz zawsze później."
 }
