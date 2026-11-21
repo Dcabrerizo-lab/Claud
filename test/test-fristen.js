@@ -31,9 +31,7 @@ const ck = (name, c, x) => { n++; if (!c) { fails++; console.log('FAIL', name, x
   ck('[fristen] Fester Tag an einem Samstag bleibt (12.12.2026), Fest', r.bis === '2026-12-12' && r.wort === 'fest', r);
   r = w(null, null, '2026-11-16');
   ck('[fristen] Widerspruch ohne Datum, erhalten 16.11.2026 → 16.12.2026, Ungefähr', r.bis === '2026-12-16' && r.wort === 'ungefaehr', r);
-  const wb = F.folgeantrag('wohngeld', '2027-03-31');
-  ck('[fristen] Folgeantrag Wohngeld bis 31.03.2027: Hinweis ab 30.01.2027 (−60 Tage)', wb.faellig === '2027-01-30' && F.faellig(wb) === '2027-01-30', wb);
-  ck('[fristen] Folgeantrag Grundsicherungsgeld: 42 Tage Vorlauf', F.folgeantrag('sgb2', '2027-03-31').faellig === '2027-02-17');
+  ck('[fristen] Folgeanträge („Bewilligt bis“) seit 1.9 entfernt', F.folgeantrag === undefined && F.wbAus === undefined && F.VORLAUF_TAGE === undefined && F.ARTEN.indexOf('wb') < 0);
   ck('[fristen] Ohne Datum: Datum fehlt', F.rechne({ art: 'mit', basis: { frist: '2W' } }).wort === 'offen' && F.rechne({ art: 'mb', basis: {} }).bis === null);
   ck('[fristen] Monat: 31.01. → 28.02., Schaltjahr 2028 → 29.02.', F.plusMonate('2027-01-31', 1) === '2027-02-28' && F.plusMonate('2028-01-31', 1) === '2028-02-29' && F.plusMonate('2026-12-15', 1) === '2027-01-15');
   ck('[fristen] 9 bundesweite Feiertage, Ostern 2027 am 28.03.', Object.keys(F.feiertage(2027)).length === 9 && F.ostern(2027) === '2027-03-28');
@@ -87,7 +85,7 @@ const ck = (name, c, x) => { n++; if (!c) { fails++; console.log('FAIL', name, x
   ck('[fristen] Andere Stelle: anderer Schlüssel', F.schluessel(a) !== F.schluessel(F.eintragSauber({ art: 'wid', stelle: 'wg', basis: { datum: '2026-11-10' } })));
   ck('[fristen] Eigener Schlüssel anderer Bereiche', F.schluessel(F.eintragSauber({ art: 'frist', basis: { fest: '2027-05-31' }, schluessel: 'ks-2027-05-31' })) === 'k|ks-2027-05-31');
   ck('[fristen] Unbekannte Art, Stelle, Wort werden verworfen', F.eintragSauber({ art: 'xx' }) === null && F.eintragSauber({ art: 'wid', stelle: '<b>' }).stelle === null && F.eintragSauber({ art: 'eigen', titel: '  ' }) === null);
-  ck('[fristen] wb kann nicht gespeichert werden (wird aus dem Haushaltsplan abgeleitet)', F.eintragSauber({ art: 'wb' }) === null);
+  ck('[fristen] wb (alte Folgeanträge) wird nicht gespeichert', F.eintragSauber({ art: 'wb' }) === null);
   const lang = F.eintragSauber({ art: 'eigen', titel: 'x'.repeat(100) + '\u0000‮', bis: '2026-12-01' });
   ck('[fristen] Titel höchstens 60 Zeichen, ohne Steuerzeichen', lang.titel.length === 60 && !/[\u0000-\u001f]/.test(lang.titel));
   ck('[fristen] Manipuliertes Ende wird neu gerechnet', F.eintragSauber({ art: 'wid', basis: { datum: '2026-11-10' }, bis: '2099-01-01', wort: 'fest' }).bis === '2026-12-14');
@@ -103,10 +101,8 @@ const ck = (name, c, x) => { n++; if (!c) { fails++; console.log('FAIL', name, x
   ck('[fristen] Befund 5: normiere unter 50: erledigte bleiben', F.normiere(JSON.stringify(vierzig), '2026-11-20').e.some((e) => e.titel === 'frisch'));
   ck('[fristen] normiere: Müll → leer', F.normiere('{kaputt', '2026-11-20').e.length === 0 && F.normiere(null).e.length === 0 && F.normiere('[1,2]').e.length === 0);
   ck('[fristen] normiere: Datum per Regex und echt', F.normiere({ e: [{ art: 'zahl', basis: { fest: '2026-02-30' } }, { art: 'zahl', basis: { fest: '<img>' } }] }).e.every((e) => e.bis === null));
-  const wbz = F.normiere({ wb: { 'wb-kiz-2026-12-31': { erledigt: '2026-11-19' }, 'wb-xx-2026-12-31': { erledigt: '2026-11-19' }, 'wb-kiz-2026-01-01': { erledigt: '2026-01-01' } } }, '2026-11-20');
-  ck('[fristen] normiere: Zustand der Folgeanträge geprüft', Object.keys(wbz.wb).join() === 'wb-kiz-2026-12-31', wbz.wb);
-  const abgeleitet = F.wbAus(JSON.stringify({ bewilligt: { kiz: '2026-12-31', wohngeld: 'x' } }), wbz, '2026-11-20');
-  ck('[fristen] Folgeantrag aus dem Haushaltsplan abgeleitet, mit Zustand', abgeleitet.length === 1 && abgeleitet[0].erledigt === '2026-11-19' && abgeleitet[0].id === 'wb-kiz-2026-12-31');
+  const wbz = F.normiere({ e: [{ art: 'zahl', basis: { fest: '2026-12-12' } }], wb: { 'wb-kiz-2026-12-31': { erledigt: '2026-11-19' } } }, '2026-11-20');
+  ck('[fristen] normiere: alter Zustand der Folgeanträge (wb) wird ohne Fehler ignoriert', !('wb' in wbz) && wbz.e.length === 1, wbz);
 }
 
 // ---------- Auswahl für den Hinweis beim Öffnen ----------
@@ -119,12 +115,9 @@ const ck = (name, c, x) => { n++; if (!c) { fails++; console.log('FAIL', name, x
   ck('[fristen] Später = morgen: heute nichts, morgen ja', F.zeigen([e('2026-12-03', { spaeter: '2026-12-02' })], h).length === 0 && F.zeigen([e('2026-12-03', { spaeter: '2026-12-02' })], '2026-12-02').length === 1);
   ck('[fristen] Seit 14 Tagen abgelaufen: ja, seit 15: nein', F.zeigen([e('2026-11-17')], h).length === 1 && F.zeigen([e('2026-11-16')], h).length === 0);
   ck('[fristen] Ohne Datum: nie', F.zeigen([{ art: 'mit', bis: null, wort: 'offen' }], h).length === 0);
-  const wb = Object.assign(F.folgeantrag('wohngeld', '2027-03-31'), { erledigt: null });
-  ck('[fristen] Folgeantrag Wohngeld: am 29.01.2027 nein, ab 30.01.2027 ja', F.zeigen([wb], '2027-01-29').length === 0 && F.zeigen([wb], '2027-01-30').length === 1);
   const s = F.zeigen([e('2026-12-05'), e('2026-12-02', { wort: 'gerechnet' }), e('2026-11-25'), e('2026-12-02'), e('2026-12-01')], h);
   ck('[fristen] Sortierung: abgelaufen vor heute vor morgen, bei gleichem Tag Fest zuerst', s.map((x) => x.bis + x.wort[0]).join() === '2026-11-25f,2026-12-01f,2026-12-02f,2026-12-02g,2026-12-05f', s.map((x) => x.bis + x.wort[0]));
   ck('[fristen] Später: kurze Frist morgen', F.spaeterTag(e('2026-12-05'), h) === '2026-12-02');
-  ck('[fristen] Später: Folgeantrag in 7 Tagen, spätestens 7 Tage vor Ende, ab Ende morgen', F.spaeterTag(wb, '2027-02-01') === '2027-02-08' && F.spaeterTag(wb, '2027-03-22') === '2027-03-24' && F.spaeterTag(wb, '2027-03-31') === '2027-04-01');
 }
 
 // ---------- Rechtsweg: gleiche Rechnung für alle Stellen, nur das Wort ist je Stelle anders ----------

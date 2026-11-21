@@ -472,14 +472,14 @@ setTimeout(() => {
     zur();
     check('[schreiben] „← Zurück“ führt zur Wahl des Musters', !!box.querySelector('.ms-geduld'));
     zur(); zur();
-    // 5 Mein Geld planen: Haushaltsplan, Abschlag prüfen, darunter Sparen im Alltag
+    // 5 Mein Geld planen: Haushaltsplan, darunter Sparen im Alltag („Abschlag prüfen“ steht seit 1.9 auf den Seiten „Strom“ und „Heizen“)
     kacheln()[4].click();
-    check('[geld] Mein Geld planen: Haushaltsplan und Abschlag prüfen, dann Überschrift „Geld sparen im Alltag“', !!box.querySelector('.gs-p-hh') && !!box.querySelector('.gs-p-abschlag') && box.querySelector('.gs-sparen-h').textContent === I18N.de['sp.h']);
+    check('[geld] Mein Geld planen: Haushaltsplan, dann Überschrift „Geld sparen im Alltag“ (kein Abschlag hier)', !!box.querySelector('.gs-p-hh') && !box.querySelector('.gs-p-abschlag') && box.querySelector('.gs-sparen-h').textContent === I18N.de['sp.h']);
     const th = [...box.querySelectorAll('[class*="gs-t-"]')].map((b) => b.className.match(/gs-t-([a-z]+)/)[1]);
     check('[geld] Sparen im Alltag: Strom, Heizen, Essen, Verträge (Kacheln)', th.join() === 'strom,heizen,essen,vertraege', th.join());
     box.querySelector('.gs-t-vertraege').click();
-    check('[geld] Verträge ohne Schulden-Text (Sperre steht nur unter „Es ist dringend“)', !/41g/.test(box.textContent) && box.querySelectorAll('.sp-tipps li').length === 5);
-    { const tp = [...box.querySelectorAll('details.tipp')]; check('[geld-tipp] Jeder Tipp: Symbol + kurzer Satz (höchstens 12 Wörter), ausführlicher Text zugeklappt', tp.length === 5 && tp.every((x) => x.querySelector('summary .tipp-sym svg') && x.querySelector('.tipp-kurz').textContent.split(/\s+/).length <= 12 && !x.open && x.querySelector('p').textContent.length > x.querySelector('.tipp-kurz').textContent.length), tp.map((x) => x.querySelector('.tipp-kurz').textContent)); }
+    check('[geld] Verträge ohne Schulden-Text (Sperre steht nur unter „Es ist dringend“)', !/41g/.test(box.textContent) && box.querySelectorAll('.sp-tipps li').length === 4);
+    { const tp = [...box.querySelectorAll('details.tipp')]; check('[geld-tipp] Jeder Tipp: Symbol + kurzer Satz (höchstens 12 Wörter), ausführlicher Text zugeklappt', tp.length === 4 && tp.every((x) => x.querySelector('summary .tipp-sym svg') && x.querySelector('.tipp-kurz').textContent.split(/\s+/).length <= 12 && !x.open && x.querySelector('p').textContent.length > x.querySelector('.tipp-kurz').textContent.length), tp.map((x) => x.querySelector('.tipp-kurz').textContent)); }
     zur(); box.querySelector('.gs-t-essen').click();
     { const vz = d.getElementById('sp-vz'); check('[geld] Essen: keine eigenen Rezepte, Linkkarte zur Verbraucherzentrale (öffnet extern)', !!vz && vz.href === 'https://www.verbraucherzentrale.de/lebensmittel/so-geht-gesunde-ernaehrung-mit-wenig-geld-96404' && vz.target === '_blank' && /Verbraucherzentrale/.test(vz.textContent) && !box.querySelector('.rezept') && !/Rezept/.test(box.textContent)); }
     zur(); zur();
