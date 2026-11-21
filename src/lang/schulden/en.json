@@ -153,6 +153,8 @@
   "gs.d.strom.brief": "Agree instalments with the supplier",
   "gs.d.strom.brief.lead": "Your bill shows whether you are in basic supply (Grundversorgung). Keep in the letter what applies to you.",
   "gs.gesetze": "Laws on this page: {g}",
+  "gs.energie": "Energy check: instalment and tariff",
+  "gs.energie.t": "Spot back payments early, compare tariffs",
   "gs.d.mahn.liste": "Add to my debt list",
   "pl.abschlag": "Check energy instalment",
   "pl.abschlag.t": "Will you have to pay extra for electricity or gas?",

@@ -153,6 +153,8 @@
   "gs.d.strom.brief": "Stabilește rate cu furnizorul",
   "gs.d.strom.brief.lead": "Pe factură scrie dacă ești în furnizarea de bază (Grundversorgung). Lasă în scrisoare ce ți se potrivește.",
   "gs.gesetze": "Legi pe această pagină: {g}",
+  "gs.energie": "Verificare energie: avans și tarif",
+  "gs.energie.t": "Vezi din timp o plată suplimentară, compară tarifele",
   "gs.d.mahn.liste": "Adaugă în lista mea de datorii",
   "pl.abschlag": "Verifică avansul",
   "pl.abschlag.t": "Te paște o plată suplimentară pentru curent sau gaz?",

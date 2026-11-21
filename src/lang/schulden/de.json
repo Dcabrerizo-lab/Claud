@@ -153,6 +153,8 @@
   "gs.d.strom.brief": "Mit dem Versorger Raten vereinbaren",
   "gs.d.strom.brief.lead": "Ob du in der Grundversorgung bist, steht auf der Rechnung. Lass im Schreiben stehen, was zu dir passt.",
   "gs.gesetze": "Gesetze auf dieser Seite: {g}",
+  "gs.energie": "Energie-Check: Abschlag und Tarif",
+  "gs.energie.t": "Nachzahlung früh erkennen, Tarife vergleichen",
   "gs.d.mahn.liste": "In die Schulden-Liste eintragen",
   "pl.abschlag": "Abschlag prüfen",
   "pl.abschlag.t": "Droht eine Nachzahlung für Strom oder Gas?",

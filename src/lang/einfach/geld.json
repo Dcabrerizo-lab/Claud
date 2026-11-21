@@ -133,5 +133,7 @@
   "gs.d.miete.brief.lead": "Bekommst du Grundsicherungs-Geld? Dann schick den Antrag an das Jobcenter. Sonst an das Sozial-Amt. Das Amt entscheidet. Meistens gibt es das Geld als Darlehen. Das heißt: Du zahlst es später zurück.",
   "gs.d.strom.brief": "Mit dem Versorger Raten ausmachen",
   "gs.d.strom.brief.lead": "Auf der Rechnung steht, ob du in der Grund-Versorgung bist. Lass im Brief nur stehen, was zu dir passt.",
-  "gs.gesetze": "Gesetze auf dieser Seite: {g}"
+  "gs.gesetze": "Gesetze auf dieser Seite: {g}",
+  "gs.energie": "Strom und Gas prüfen",
+  "gs.energie.t": "Musst du bald nachzahlen? Gibt es einen billigeren Tarif?"
 }

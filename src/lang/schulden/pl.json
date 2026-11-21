@@ -153,6 +153,8 @@
   "gs.d.strom.brief": "Uzgodnij raty z dostawcą",
   "gs.d.strom.brief.lead": "Na rachunku jest napisane, czy masz zaopatrzenie podstawowe (Grundversorgung). Zostaw w piśmie to, co cię dotyczy.",
   "gs.gesetze": "Przepisy na tej stronie: {g}",
+  "gs.energie": "Kontrola energii: zaliczka i taryfa",
+  "gs.energie.t": "Wcześnie zauważ dopłatę, porównaj taryfy",
   "gs.d.mahn.liste": "Dodaj do mojej listy długów",
   "pl.abschlag": "Sprawdź zaliczkę",
   "pl.abschlag.t": "Czy grozi dopłata za prąd lub gaz?",

@@ -2808,7 +2808,7 @@
   }
   function pfBescheinigung() { pf = { art: 'besch', schritt: 1, netto: pf.netto, pers: pf.pers, kg: pf.kg, kiz: pf.kiz }; oeffneVon('pfaendung', true); }
   function pfKonto() { pf = { art: 'konto', schritt: 1, netto: pf.netto, pers: pf.pers, kg: pf.kg, kiz: pf.kiz }; oeffneVon('pfaendung', true); }
-  function abschlagPruefen() { gsSprung('sparen', 'strom', 'abschlag'); } // „Abschlag prüfen“ auf der Seite „Strom“: erst die Kacheln Strom/Gas (Haushalt.abschlag)
+  function abschlagPruefen() { gsSprung('sparen', 'energie', 'abschlag-strom'); } // „Abschlag prüfen“: Energie-Check, Rechner Strom (Umschalter Gas im Rechner)
   // Ziele aus dem Krisen-Check, „Bis zum Termin“ und der Schulden-Liste
   function gsZiel(z) {
     if (['mahn', 'geld', 'miete', 'strom', 'konto'].indexOf(z) >= 0) { gsSprung('dringend', '', z); return; }
@@ -2967,19 +2967,27 @@
       if (window.Haushalt) {
         rp.appendChild(skKachel('gs-p-hh', '<path d="M4 7h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a1 1 0 0 1-1-1z"/><path d="M4 7l11-3v3"/><circle cx="16" cy="13.5" r="1"/>', t('hb.kachel'), t('hb.kachel.t'), function () { oeffneVon('haushalt', true); }));
       }
+      if (window.Haushalt && Haushalt.abschlag) rp.appendChild(skKachel('gs-p-energie', EN_WERKZEUGE[0][3], t('gs.energie'), t('gs.energie.t'), function () { sp.thema = 'energie'; spRender(true); })); // Energie-Werkzeuge nur hier (UX-Audit C Nr. 11)
       var h3 = document.createElement('h3'); h3.className = 'gs-sparen-h'; h3.textContent = t('sp.h'); box.appendChild(h3);
       var r2 = raster();
       SP_THEMEN.forEach(function (x) { r2.appendChild(skKachel('gs-t-' + x[0], x[4], t(x[1]), t(x[2]), function () { sp.thema = x[0]; spRender(true); })); });
     } else {
       var th = SP_THEMEN.filter(function (x) { return x[0] === sp.thema; })[0];
-      var enSeite = (sp.thema === 'strom' || sp.thema === 'heizen') && window.Haushalt && Haushalt.abschlag;
+      // Energie-Check (UX-Audit C Nr. 11): die zwei Werkzeuge stehen nur noch einmal (Kachel unter „Mein Geld planen“), Strom/Gas als
+      //  Umschalter im Rechner statt Zwischenseite. sp.fall = '' (Werkzeuge) | 'abschlag-strom', 'tarif-gas' … (Rechner).
+      var enSeite = sp.thema === 'energie' && window.Haushalt && Haushalt.abschlag;
       var wz = sp.fall.split('-'), wzx = EN_WERKZEUGE.filter(function (x) { return x[0] === wz[0]; })[0];
-      if (enSeite && wzx && !wz[1]) { // Werkzeug gewählt: erst Strom oder Gas
+      if (enSeite && !wzx) {
+        p(t('gs.energie'), 'pf-frage');
+        var rw = raster(); EN_WERKZEUGE.forEach(function (x) { rw.appendChild(skKachel('gs-e-' + x[0], x[3], t(x[1]), t(x[2]), function () { sp.fall = x[0] + '-strom'; spRender(true); })); });
+      } else if (enSeite) { // Rechner für eine Sparte, Umschalter Strom/Gas oben
+        if (!wz[1]) wz[1] = 'strom';
         p(t(wzx[1]), 'pf-frage');
-        var re = raster();
-        [['strom', SP_THEMEN[0][4]], ['gas', SP_THEMEN[1][4]]].forEach(function (x) { re.appendChild(skKachel('gs-e-' + wz[0] + '-' + x[0], x[1], t('hb.en.tab.' + x[0]), '', function () { sp.fall = wz[0] + '-' + x[0]; spRender(true); })); });
-      } else if (enSeite && wzx) { // Rechner für eine Sparte
-        p(t(wzx[1]), 'pf-frage');
+        var us = document.createElement('div'); us.className = 'btns gs-e-umschalter'; us.setAttribute('role', 'group'); us.setAttribute('aria-label', t(wzx[1])); box.appendChild(us);
+        ['strom', 'gas'].forEach(function (a) {
+          var b = nhKnopf('chip gs-e-' + wz[0] + '-' + a, esc(t('hb.en.tab.' + a)), null, function () { sp.fall = wz[0] + '-' + a; spRender(false, 'gs-e-' + wz[0] + '-' + a + '-k'); });
+          b.id = 'gs-e-' + wz[0] + '-' + a + '-k'; b.setAttribute('aria-pressed', String(wz[1] === a)); us.appendChild(b);
+        });
         var zb = document.createElement('div'); zb.id = wz[0] === 'tarif' ? 'spTarif' : 'spAbschlag'; box.appendChild(zb);
         if (wz[0] === 'tarif') {
           Haushalt.tarif(zb, wz[1]);
@@ -2989,7 +2997,6 @@
         } else Haushalt.abschlag(zb, wz[1]);
       } else {
         p(t(th[1]), 'pf-frage');
-        if (enSeite) { var rw = raster(); EN_WERKZEUGE.forEach(function (x) { rw.appendChild(skKachel('gs-e-' + x[0], x[3], t(x[1]), t(x[2]), function () { sp.fall = x[0]; spRender(true); })); }); }
         tippListe(SP_TIPPS[sp.thema], 'sp-tipps', true);
         if (sp.thema === 'essen') linkKarte(box, 'sp-vz', SP_VZ_URL, t('sp.vz.link'), t('sp.vz.t'));
         box.appendChild(quellenEl([t('sp.quellen')]));
@@ -3003,8 +3010,7 @@
     if (sp.fall && sp.von) { var von = sp.von; gsOeffne(von); return true; } // Link-Kachel (Gelber Umschlag): zurück zu „Post vom Inkasso“
     if (window.Geld && Geld.zurueck(sp.fall)) return true;
     if (sp.bereich === 'dringend' && /-brief$/.test(sp.fall)) { sp.fall = sp.fall.split('-')[0]; return true; } // Musterschreiben → Notfallseite
-    if (sp.thema && sp.fall.indexOf('-') > 0) sp.fall = sp.fall.split('-')[0]; // Rechner → Kacheln Strom/Gas
-    else if (sp.fall) sp.fall = '';
+    if (sp.fall) sp.fall = ''; // auch Rechner → Werkzeuge des Energie-Checks
     else if (sp.thema) sp.thema = '';
     else if (sp.bereich) sp.bereich = '';
     else return false;
@@ -3174,7 +3180,7 @@
     var a = aktAnsicht, sub = '', d = 0, x;
     if (a === 'pflege') { d = (pa.antworten && +pa.antworten.pos) || 0; sub = 'q' + d; }
     else if (a === 'pfaendung') { d = pf.schritt; sub = pf.art + d; }
-    else if (a === 'sparen') { d = (sp.bereich ? 1 : 0) + (sp.fall ? 1 : 0) + (sp.thema ? 1 : 0) + (sp.thema && sp.fall.indexOf('-') > 0 ? 1 : 0) + (window.Geld ? Geld.tiefe(sp.fall) : 0); sub = sp.bereich ? [sp.bereich, sp.thema, sp.fall].filter(Boolean).join('-') + (window.Geld && Geld.tiefe(sp.fall) ? '-w' : '') : ''; }
+    else if (a === 'sparen') { d = (sp.bereich ? 1 : 0) + (sp.fall ? 1 : 0) + (sp.thema ? 1 : 0) + (/-brief$/.test(sp.fall) ? 1 : 0) + (window.Geld ? Geld.tiefe(sp.fall) : 0); sub = sp.bereich ? [sp.bereich, sp.thema, sp.fall].filter(Boolean).join('-') + (window.Geld && Geld.tiefe(sp.fall) ? '-w' : '') : ''; }
     else if (a === 'schulden') { x = $('slBlatt'); d = ($('slEingabe') ? 1 : 0) + (x && !x.hidden ? 1 : 0); sub = d ? 'e' + d : ''; }
     else if (a === 'ausziehen') { d = window.Ausziehen && Ausziehen.offen() ? 1 : 0; sub = d ? 'offen' : ''; }
     else if (a === 'briefe') { d = $('checkBox').hidden ? 0 : 1; sub = d ? (briefArt || '') : ''; }
@@ -3213,7 +3219,7 @@
     }
     if ((a === 'einst' || a === 'ordner') && sub) usZeigen(a, sub, true);
     else if (a === 'briefe' && BRIEF_TEIL[sub]) briefOeffnen(sub);
-    else if (a === 'sparen' && sub) { var sx = sub.split('-'); if (sx[0] === 'sparen') sx[0] = 'planen'; gsOeffne(sx[0]); if (sx[1]) { if (sx[0] === 'planen') { sp.thema = sx[1]; if (sx[2] && EN_WERKZEUGE.some(function (w) { return w[0] === sx[2]; })) sp.fall = sx[2] + (sx[3] === 'strom' || sx[3] === 'gas' ? '-' + sx[3] : ''); } else sp.fall = sx[1]; } spRender(true); }
+    else if (a === 'sparen' && sub) { var sx = sub.split('-'); if (sx[0] === 'sparen') sx[0] = 'planen'; gsOeffne(sx[0]); if (sx[1]) { if (sx[0] === 'planen') { sp.thema = sx[1]; if (sx[2] && EN_WERKZEUGE.some(function (w) { return w[0] === sx[2]; })) sp.fall = sx[2] + (sx[3] === 'strom' || sx[3] === 'gas' ? '-' + sx[3] : ''); } else sp.fall = sx[1] + (sx[2] === 'brief' ? '-brief' : ''); } spRender(true); }
     else if (a === 'pflegestart' && /^pg/.test(sub)) puOeffnen('pg');
     else if (a === 'pflegestart' && /^liste\d$/.test(sub)) puOeffnen('liste', +sub.slice(5));
   }

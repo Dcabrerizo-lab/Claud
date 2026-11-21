@@ -153,6 +153,8 @@
   "gs.d.strom.brief": "Convenir de mensualités avec le fournisseur",
   "gs.d.strom.brief.lead": "Ta facture indique si tu es en fourniture de base (Grundversorgung). Garde dans la lettre ce qui te concerne.",
   "gs.gesetze": "Lois sur cette page : {g}",
+  "gs.energie": "Bilan énergie : acompte et tarif",
+  "gs.energie.t": "Repérer tôt un rattrapage, comparer les tarifs",
   "gs.d.mahn.liste": "Ajouter à ma liste de dettes",
   "pl.abschlag": "Vérifier l'acompte",
   "pl.abschlag.t": "Risques-tu un supplément pour l'électricité ou le gaz ?",

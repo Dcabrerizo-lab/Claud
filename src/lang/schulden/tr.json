@@ -153,6 +153,8 @@
   "gs.d.strom.brief": "Tedarikçiyle taksit anlaşması yap",
   "gs.d.strom.brief.lead": "Temel tedarikte (Grundversorgung) olup olmadığın faturada yazar. Mektupta sana uyanı bırak.",
   "gs.gesetze": "Bu sayfadaki yasalar: {g}",
+  "gs.energie": "Enerji kontrolü: avans ve tarife",
+  "gs.energie.t": "Ek ödemeyi erken gör, tarifeleri karşılaştır",
   "gs.d.mahn.liste": "Borç listeme ekle",
   "pl.abschlag": "Enerji taksitini kontrol et",
   "pl.abschlag.t": "Elektrik veya gaz için ek ödeme mi gelecek?",
