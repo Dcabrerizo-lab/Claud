@@ -960,8 +960,10 @@
   #checkBox .card > .einlesen { margin-top: 12px; padding: 0; box-shadow: none; background: transparent; }
   #checkBox [id$="-beispiel"] { display: none !important; }
   #checkBox .pp-zu > .card:first-child > .btns, #checkBox .pp-zu > .card:first-child > .msg { display: none !important; }
-  #checkBox .pp-zu .einlesen > .btns { display: grid; gap: 10px; }
-  #checkBox .pp-zu .einlesen > .btns .btn { justify-content: flex-start; min-height: 52px; width: 100%; }
+  /* Eine Hauptaktion (UX-Audit B): Scannen groß über die ganze Breite, PDF / Text / selbst eingeben kleiner darunter */
+  #checkBox .pp-zu .einlesen > .btns { display: flex; flex-wrap: wrap; gap: 8px; }
+  #checkBox .pp-zu .einlesen > .btns #elScan.primary { justify-content: flex-start; min-height: 56px; width: 100%; font-size: 1.05em; }
+  #checkBox .pp-zu .einlesen > .btns .btn.ghost { flex: 1 1 auto; min-height: 44px; }
   .app.brief-offen .notices, .app.brief-offen .first { display: none !important; }
   .einlesen { background: var(--surface); border-radius: var(--r-card); padding: 14px 16px; margin: 0 0 16px; box-shadow: var(--shadow); }
   .einlesen .btns { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 6px; }

@@ -97,13 +97,17 @@ const KostensenkungHilfe = (function () {
     }
     if (ks.stichtag) d.appendChild(neu('p', t('el.ks.stichtag', { datum: ks.stichtag })));
     d.appendChild(neu('p', t(a.ws), 'el-ks-ws'));
+    // Hauptaktion gleich unter Zahlen und Frist (UX-Audit B), nicht erst nach allen Erklärungen
+    const btns = d.appendChild(neu('div', null, 'btns'));
+    const bAntw = btns.appendChild(neu('button', t('el.ks.antwort.btn'), 'btn primary'));
+    bAntw.type = 'button'; bAntw.id = 'ks-antwort'; bAntw.setAttribute('aria-expanded', 'false');
 
+    // „Was du jetzt tun kannst“: vier Aufklapper mit kurzer Überschrift statt vier offener Absätze
     d.appendChild(neu('h3', t('el.ks.tun.h')));
-    const ul = d.appendChild(neu('ul'));
     ['gruende', 'belege', 'beratung', 'umzug'].forEach((k) => {
-      const li = ul.appendChild(neu('li'));
-      li.appendChild(neu('b', t('el.ks.tun.' + k + '.t')));
-      li.appendChild(document.createTextNode(' ' + tL('el.ks.tun.' + k)));
+      const det = d.appendChild(neu('details', null, 'el-ks-tun'));
+      det.appendChild(neu('summary', t('el.ks.tun.' + k + '.t').replace(/\s*[:：]\s*$/, '')));
+      det.appendChild(neu('p', tL('el.ks.tun.' + k)));
     });
     a.details.forEach((k) => {
       const det = d.appendChild(neu('details'));
@@ -112,10 +116,7 @@ const KostensenkungHilfe = (function () {
       inn.appendChild(neu('p', tL('el.ks.d.' + k)));
     });
 
-    // Knöpfe: Antwort entwerfen; Frist übernehmen nur mit dem Fristen-Modul
-    const btns = d.appendChild(neu('div', null, 'btns'));
-    const bAntw = btns.appendChild(neu('button', t('el.ks.antwort.btn'), 'btn'));
-    bAntw.type = 'button'; bAntw.id = 'ks-antwort'; bAntw.setAttribute('aria-expanded', 'false');
+    // Frist merken nur mit dem Fristen-Modul
     const FO = typeof globalThis !== 'undefined' ? globalThis.FristenOrdner : undefined;
     if (FO && typeof FO.hinzu === 'function') {
       const fw = d.appendChild(neu('div', null, 'el-ks-frist'));
@@ -142,7 +143,7 @@ const KostensenkungHilfe = (function () {
     }
 
     // Antwort-Entwurf: Haken (werden nicht gespeichert), Bemühungen, Textfeld mit dem Schreiben
-    const form = d.appendChild(neu('div', null, 'el-ks-antwort')); form.hidden = true;
+    const form = neu('div', null, 'el-ks-antwort'); form.hidden = true; btns.after(form); // Entwurf direkt unter dem Knopf
     const fs = form.appendChild(neu('fieldset'));
     fs.appendChild(neu('legend', t('el.ks.g.h')));
     GRUENDE.forEach((k) => {

@@ -487,6 +487,7 @@
   // Knopf „Frist merken“ unter der Frist (nur in der App mit src/fristen.js; erst der Tipp speichert, nie automatisch)
   function merkKnopf(p, eintrag) {
     const alt = $(p + '-merken'); if (alt) alt.remove();
+    if ($(p + '-fristbox')) return; // „Frist merken“ steht schon oben bei der Frist; kein zweiter Knopf (UX-Audit B)
     if (!eintrag || !window.FristenOrdner || !$(p + '-frist')) return;
     const k = window.FristenOrdner.knopf(() => eintrag);
     k.id = p + '-merken'; $(p + '-frist').after(k);
