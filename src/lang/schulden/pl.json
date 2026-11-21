@@ -244,7 +244,7 @@
   "ra.uebernommen": "Rata jest teraz w piśmie.",
   "ra.ohnePlan": "Wpisz w planie budżetu swoje dochody, czynsz i wydatki na jedzenie. Wtedy zaproponujemy ci ratę.",
   "ra.keine": "Obecnie nie ma miejsca na ratę. Skorzystaj z pomocy poradni dłużników (Schuldnerberatung).",
-  "ra.unpf": "Według tabeli zajęć (Pfändungstabelle) wierzyciele nie mogliby obecnie zająć niczego z twojego dochodu. Dlatego nie proponuj raty, zanim nie skorzystasz z poradni dłużników (Schuldnerberatung). Przy długach za czynsz lub prąd nadal grozi wypowiedzenie najmu lub odcięcie: zajmij się nimi najpierw.",
+  "ra.unpf": "Według tabeli zajęć (Pfändungstabelle) wierzyciele nie mogliby obecnie zająć niczego z twojego dochodu. Dlatego nie proponuj raty, zanim nie skorzystasz z poradni dłużników (Schuldnerberatung). Przy długach za czynsz lub prąd nadal grozi wypowiedzenie najmu lub odcięcie: zajmij się nimi najpierw. To samo dotyczy grzywny (Geldstrafe): zapytaj prokuraturę (Staatsanwaltschaft) o raty.",
   "ra.warn": "Propozycja rat może zostać uznana za uznanie długu. Dlatego najpierw sprawdź, czy roszczenie jest prawidłowe.",
   "ra.auft.h": "Podział na twoje długi (najpierw ważne długi)",
   "ra.auft.g": "Wierzyciel",

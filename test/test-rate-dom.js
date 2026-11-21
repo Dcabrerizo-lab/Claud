@@ -62,6 +62,13 @@ setTimeout(() => {
     check('[rate-dom] Rate bleibt nach dem Wechsel im Schreiben', $('ms-rate').value === '200' && /An|Stadtwerke/.test($('ms-text').value) && /monatlich 200 €/.test($('ms-text').value));
     klick($('ra-uebernehmen'));
     check('[rate-dom] „Übernehmen“ mit gewähltem Gläubiger: dessen Teil (50 €)', $('ms-rate').value === '50' && /monatlich 50 € zu zahlen/.test($('ms-text').value));
+    // 2b. Rate 50 € reicht nur für den Strom (Stufe 1): Inkasso ist „später“ dran – „Übernehmen“ setzt keine Rate von 0 € ins Schreiben (Prüfung PR #105)
+    w.Haushalt.laden({ plan: { kg: null, leist: null, sonst: 300000, aus: { essen: 150000, energie: 65000 } } });
+    zurRate();
+    { const s2 = $('ms-von'); s2.value = 'aaaa01'; s2.dispatchEvent(new w.Event('change', { bubbles: true })); const vor = $('ms-rate').value;
+      klick($('ra-uebernehmen'));
+      check('[rate-dom] „Übernehmen“ bei „später“: keine 0 € im Schreiben, Hinweis auf den Vorrang', $('ms-rate').value === vor && vor !== '0' && !/monatlich 0 €/.test($('ms-text').value) && /Inkasso Nord \(dieses Schreiben\)später/.test(tx($('ra-auft'))) && /Miete, Strom und Geldstrafen kommen zuerst/.test(tx(d.querySelector('.ra-karte [aria-live]'))), [$('ms-rate').value, tx($('ra-auft'))]);
+      const s3 = $('ms-von'); s3.value = 'aaaa02'; s3.dispatchEvent(new w.Event('change', { bubbles: true })); }
     // 3. Kein Spielraum: Hinweis und Knopf zur Schuldnerberatung
     w.Haushalt.laden({ plan: { kg: null, leist: null, sonst: 300000, aus: { essen: 250000 } } });
     zurRate();

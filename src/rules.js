@@ -1915,7 +1915,8 @@ const Rules = (function () {
   // geändert 27.10.2026). Ausweis: Referat Schwerbehindertenfeststellung des LAS (https://las.sachsen-anhalt.de/schwerbehindertenrecht, geändert
   // 03.11.2026); Blindengeld: Referat Schwerbehindertenrecht, LBliGG des LAS (…/schwerbehindertenrecht/schwerbehindertenrecht-lbligg/blinden-gehoerlosengeld,
   // geändert 10.08.2026); Eingliederungshilfe: Träger ist die frühere Sozialagentur, jetzt im LAS (…/themen/hilfe-fuer-menschen-mit-behinderung/
-  // wie-ist-die-eingliederungshilfe-organisiert, geändert 06.08.2026). Ohne Anschrift (nur Name der Stelle).
+  // wie-ist-die-eingliederungshilfe-organisiert, geändert 06.08.2026); den Antrag nimmt aber das Sozialamt vor Ort an („Sprechen Sie dazu bitte mit Ihrem
+  // Sozialamt vor Ort“, …/themen/hilfe-fuer-menschen-mit-behinderung, abgerufen 21.11.2026), darum nennt die App dort das Sozialamt. Ohne Anschrift (nur Name der Stelle).
   // ---------------------------------------------------------------
   const BL_NAME = { BW: 'Baden-Württemberg', BY: 'Bayern', BE: 'Berlin', BB: 'Brandenburg', HB: 'Bremen', HH: 'Hamburg', HE: 'Hessen', MV: 'Mecklenburg-Vorpommern',
     NI: 'Niedersachsen', NW: 'Nordrhein-Westfalen', RP: 'Rheinland-Pfalz', SL: 'Saarland', SN: 'Sachsen', ST: 'Sachsen-Anhalt', SH: 'Schleswig-Holstein', TH: 'Thüringen' };
@@ -1941,7 +1942,7 @@ const Rules = (function () {
     eingl: {
       _: 'Träger der Eingliederungshilfe (meist der Landkreis oder die kreisfreie Stadt; bei seelischer Behinderung von Kindern das Jugendamt)',
       HE: 'Landeswohlfahrtsverband Hessen (Erwachsene), Kreis oder Stadt (Kinder)', NW: 'Landschaftsverband Rheinland bzw. Westfalen-Lippe (Erwachsene), Kreis oder Stadt (Kinder)',
-      SL: 'Landesamt für Soziales', ST: 'Landesamt für Soziales, Jugend und Gesundheit Sachsen-Anhalt (LAS)', BE: 'Bezirksamt (Teilhabefachdienst)'
+      SL: 'Landesamt für Soziales', ST: 'Sozialamt deines Landkreises oder deiner kreisfreien Stadt (Träger: Landesamt für Soziales, Jugend und Gesundheit Sachsen-Anhalt, LAS)', BE: 'Bezirksamt (Teilhabefachdienst)'
     },
     arbeit: { _: 'Träger der Eingliederungshilfe (meist der Landkreis oder die kreisfreie Stadt)', HE: 'Landeswohlfahrtsverband Hessen', NW: 'Landschaftsverband Rheinland bzw. Westfalen-Lippe' },
     hzp: { _: 'Sozialamt deines Kreises oder deiner Stadt' },
