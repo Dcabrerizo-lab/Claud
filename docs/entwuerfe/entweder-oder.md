@@ -73,8 +73,8 @@ Nebenfolgen, die für die Wahl zählen (FW § 12a Rz. 12a.10, 12a.25): Mit Wohng
 | Nr. | Kombination | Verhältnis | Fundstelle | Satz für die App |
 |---|---|---|---|---|
 | 13 | Grundsicherung im Alter/EM oder Hilfe zum Lebensunterhalt + Wohngeld | **schließt aus** | § 7 Abs. 1 Satz 1 Nr. 5 und 6 WoGG | „Grundsicherung vom Sozialamt und Wohngeld gibt es nicht gleichzeitig.“ |
-| 14 | Wohngeld reicht zusammen mit der Rente | **vorrangig** (Sozialhilfe ist nachrangig) | § 2 Abs. 1 SGB XII; § 7 Abs. 1 Satz 3 Nr. 2 WoGG | „Reicht deine Rente mit Wohngeld, geht Wohngeld vor. Das Sozialamt prüft das.“ |
-| 15 | Wohngeld reicht nicht | **Wahl**: Grundsicherung, oder Verzicht und Wohngeld | § 8 Abs. 2 WoGG; WoGVwV Nr. 8.21 | „Reicht es mit Wohngeld nicht, ist Grundsicherung der übliche Weg. Lass beides ausrechnen.“ |
+| 14 | Wohngeld reicht zusammen mit der Rente | **Wahl** (kein Vorrang, der den Anspruch nimmt). Der Nachrang der Sozialhilfe ist keine Ausschlussnorm; Wohngeld, das man bekommen könnte, aber nicht bekommt, ist kein Einkommen. Im SGB XII gibt es keine Pflicht wie § 12a SGB II. Das Sozialamt darf die Grundsicherung deshalb nicht ablehnen; es kann Wohngeld selbst betreiben (§ 95 SGB XII) | § 2 Abs. 1 SGB XII; BSG, Urteil vom 23.03.2021, B 8 SO 2/20 R (https://www.bsg.bund.de/SharedDocs/Entscheidungen/DE/2021/2021_03_23_B_08_SO_02_20_R.html, Abruf 21.11.2026); § 7 Abs. 1 Satz 1 Nr. 5 WoGG | „Grundsicherung im Alter und Wohngeld gibt es nicht gleichzeitig. Lass beides prüfen und frage, welcher Weg dir mehr bringt.“ (Karte Grundsicherung im Alter bleibt mit Stufe und Betrag) |
+| 15 | Wohngeld bringt deutlich weniger als die Grundsicherung | **Wahl**: Grundsicherung, oder Verzicht und Wohngeld | § 8 Abs. 2 WoGG; WoGVwV Nr. 8.21 | „Reicht es mit Wohngeld nicht, ist Grundsicherung der übliche Weg. Lass beides ausrechnen.“ (Wohngeld nur „möglich“) |
 | 16 | Grundsicherung im Alter/EM + Grundsicherungsgeld (dieselbe Person) | **schließt aus**; Zuständigkeit nach Alter und Erwerbsfähigkeit | § 7 Abs. 1 Satz 1 Nr. 1, Abs. 4 SGB II; § 5 Abs. 2 SGB II; § 21 SGB XII | „Kannst du arbeiten und bist noch nicht im Rentenalter, ist das Jobcenter zuständig. Sonst das Sozialamt.“ |
 | 17 | Paar: eine Person im Rentenalter oder dauerhaft voll erwerbsgemindert, die andere erwerbsfähig | **kombinierbar im Haushalt** (je Person eine Stelle); Grundsicherung im Alter/EM geht für die eine Person vor | § 5 Abs. 2 Satz 2, § 19 Abs. 1 Satz 2 SGB II | „In einem Haushalt können zwei Stellen zuständig sein: das Sozialamt für die eine Person, das Jobcenter für die andere.“ |
 | 18 | Grundsicherung vom Sozialamt + Kinderzuschlag | Kinderzuschlag wird nach SGB II geprüft; erweiterter Zugang gesperrt, wenn jemand SGB XII bekommt oder beantragt hat | § 6a Abs. 1 Nr. 3, Abs. 1a Nr. 3 BKGG | „Die Familienkasse prüft, ob Kinderzuschlag neben der Grundsicherung möglich ist.“ (nur Beratungsmodus; nicht pauschal „schließt aus“) |
@@ -149,14 +149,14 @@ Probeläufe mit `Rules.evaluate` auf `origin/main` (Mietenstufe III, kein Vermö
 | Paar, 2 Kinder, 1.500 € brutto, Miete 800 € | Wahrscheinlich, 620 bis 660 € | Möglich, 590 € | Wahrscheinlich, 1.250 € | Lücke rund 40 €: erweiterter Zugang, echte Wahl. Der Tipp „beide gleichzeitig“ würde sie zerstören. |
 | Alleinerziehend, 1 Kind, 1.400 € brutto, Unterhalt fehlt | Wahrscheinlich, 240 bis 340 € | Möglich, 160 € | Wahrscheinlich, 310 € | Dazu Unterhaltsvorschuss „Wahrscheinlich“, der in keiner der drei Rechnungen steckt. |
 | Allein, 1.300 € brutto, Miete 500 € | **Wahrscheinlich, 170 bis 270 €** | – | Wahrscheinlich, 360 € | Wohngeld deckt die Lücke nicht: Wohngeld nur durch Verzicht, mit weniger Geld. |
-| Rentner allein, 900 € Rente, Miete 450 € | Wahrscheinlich, 250 bis 280 € | – | Grundsicherung im Alter: Wahrscheinlich, 210 € | Wohngeld deckt die Lücke: Wohngeld geht vor (§ 2 SGB XII). App sagt nur „frage, was mehr bringt“. |
+| Rentner allein, 900 € Rente, Miete 450 € | Wahrscheinlich, 250 bis 280 € | – | Grundsicherung im Alter: Wahrscheinlich, 210 € | Echte Wahl: Wohngeld nimmt den Anspruch auf Grundsicherung im Alter nicht (BSG 23.03.2021, B 8 SO 2/20 R). „Frage, was mehr bringt“ ist hier richtig. |
 
 | Nr. | Befund | Stelle im Code | Schwere |
 |---|---|---|---|
 | 1 | Drei Karten mit je einem Betrag, teils alle „Wahrscheinlich“. Laien zählen die Beträge zusammen. Die Kachel „Zwei Wege“ ist zugeklappt und steht getrennt von den Karten. | `evaluateKern`, `wohngeld0`, `kizRechnung0`, `ggeldRechnung0`; `zweiWege` in `app.js` | hoch |
 | 2 | `ggeldRechnung0` kennt Wohngeld und Kinderzuschlag nicht. Grundsicherungsgeld bleibt „Wahrscheinlich“ mit Betrag, auch wenn Weg A rechnerisch vorgeht. | `ggeldRechnung0`, `bedarfJa` | hoch |
 | 3 | Tipp „Stelle beide Anträge gleichzeitig. Dann geht kein Monat verloren“ (`ww.tipp`). Ein SGB-II-Antrag sperrt den erweiterten Zugang (§ 6a Abs. 1a Nr. 3 BKGG) und schließt während des Verfahrens vom Wohngeld aus (§ 8 Abs. 1 WoGG; Ausnahme § 7 Abs. 1 Satz 3 Nr. 2). Der Schutz vor Monatsverlust besteht auch ohne Doppelantrag (Regeln Nr. 10 bis 12). | `de.json` `ww.tipp`; ähnlich `kiz.zuNiedrig` („Ein Antrag ist trotzdem möglich“) | hoch |
-| 4 | „Frage, welcher Weg dir mehr bringt“ (`z.ggVsWg`, `z.gsaWg`, `eo.tipp`) klingt nach freier Wahl. Deckt Wohngeld (mit Kinderzuschlag) den Bedarf, gibt es keine Wahl. | `zusammenspiel`, `de.json` | mittel |
+| 4 | „Frage, welcher Weg dir mehr bringt“ (`z.ggVsWg`, `z.gsaWg`, `eo.tipp`) klingt nach freier Wahl. Deckt Wohngeld (mit Kinderzuschlag) den Bedarf, gibt es beim Grundsicherungsgeld keine Wahl. Bei Rente (`z.gsaWg`, `eo.tipp`) ist der Satz richtig (Nr. 14). | `zusammenspiel`, `de.json` | mittel |
 | 5 | Unterhaltsvorschuss „Wahrscheinlich“ wird nicht in Grundsicherungsgeld, Kinderzuschlag und Wohngeld eingerechnet (nur schon gezahlter Unterhalt, `h.kindZahl`). Kein Satz zum Vorrang oder zur Anrechnung. | `unterhaltAnrechenbar`, `kizRechnung0`, `uvgKarte` | mittel |
 | 6 | Wohngeld „Wahrscheinlich“ mit Betrag, obwohl Grundsicherungsgeld höher ist (Wohngeld nur durch Verzicht). Die Plausibilitätsprüfung fängt nur sehr niedrige Einkommen ab. | `wohngeld0` | mittel |
 | 7 | Wer schon Grundsicherungsgeld bezieht, sieht Wohngeld und Kinderzuschlag als „Nein, Ausschluss“. Die App prüft nicht, ob Weg A inzwischen reichen würde (dann wäre der Wechsel sogar Pflicht). `kiz.ausschluss` behauptet pauschal „schließen sich aus“, auch bei Bezug vom Sozialamt. | `wohngeld0` Zeile 1024, `kinderzuschlag` Zeile 1094, `z.ggBezug` | mittel |
@@ -191,7 +191,7 @@ Sätze (Entwurf, Einfache Sprache):
 | `eo.abgelehnt` | „Wird ein Antrag abgelehnt: Stelle sofort den Antrag für den anderen Weg. Dann kann es Geld auch für die Zeit davor geben.“ |
 | `eo.beide` | „Das Bildungspaket und die Kita ohne Elternbeitrag gibt es auf beiden Wegen.“ |
 
-`ww.tipp` ersetzen durch `eo.dringend` und `eo.abgelehnt`. Die Sätze `z.ggVsWg`, `z.gsaWg`, `eo.tipp` („welcher Weg dir mehr bringt“) durch die Lage-Sätze ersetzen.
+`ww.tipp` ersetzen durch `eo.dringend` und `eo.abgelehnt`. Den Satz `z.ggVsWg` durch die Lage-Sätze ersetzen. `z.gsaWg` und `eo.tipp` („welcher Weg dir mehr bringt“) bleiben für Rente (Nr. 14).
 
 ### 6.2 Antragsmappe
 Statt leerer Haken eine Wahl mit einem Knopf je Weg (Optionsfelder, nur einer wählbar):
@@ -202,7 +202,7 @@ Statt leerer Haken eine Wahl mit einem Knopf je Weg (Optionsfelder, nur einer w�
 | „Weg B: Grundsicherungsgeld“ | Grundsicherungsgeld (Bildung und Teilhabe ist dort enthalten) | Lage „B ist üblich“ |
 | „Ich weiß es noch nicht“ | nichts aus der Gruppe; Hinweis auf Beratung und `eo.dringend` | Lage „Kleine Lücke“ und „Unklar“ |
 
-- Für Rente: „Weg A: Wohngeld“ und „Weg B: Grundsicherung im Alter“ nach derselben Logik.
+- Für Rente: „Wohngeld“ und „Grundsicherung im Alter“ im selben Rahmen, aber ohne die Lagen „A geht vor“ und „Unklar“: nur „Wahl“ (beide Karten unverändert) oder „B ist üblich“ (Wohngeld bringt deutlich weniger: Wohngeld „möglich“ mit Verzicht-Hinweis). Die Karte Grundsicherung im Alter wird nie herabgestuft (Nr. 14).
 - Alle anderen Leistungen bleiben Haken wie heute.
 - Die Wahl ist ein Zustand wie `pickedUser`: nur im Arbeitsspeicher bzw. über die vorhandene Speicherung des Vorgangs, kein neuer Speicherort. Texte wie bisher über `esc(t(...))` einsetzen. Auf den Briefen erscheint die Wahl nicht (keine zusätzlichen persönlichen Daten).
 - Eine Vorbelegung ist eine Empfehlung der App. Ob das gewünscht ist oder immer „Ich weiß es noch nicht“ vorbelegt wird, ist eine Entscheidung des Nutzers.
@@ -229,3 +229,10 @@ Statt leerer Haken eine Wahl mit einem Knopf je Weg (Optionsfelder, nur einer w�
 | Rundfunkbefreiung folgt nicht aus Wohngeld oder Kinderzuschlag | gering | Regel Nr. 32, Befund 9 | § 4 Abs. 1, 6 RBStV |
 | `docs/FARBEN.md` fehlt auf `origin/claude/b-entwuerfe` | gering | aus `origin/main` gelesen; Vorschlag nutzt nur vorhandene Zustandsfarben | docs/FARBEN.md (`origin/main`) |
 | WoGVwV nur teilweise gelesen | mittel | als offen gekennzeichnet (Abschnitt 7) | – |
+
+## Prüfvermerk (21.11.2026, zweite Prüfung: Rechenregeln PR #160)
+
+| Befund | Schwere | Korrektur | Quelle |
+|---|---|---|---|
+| Nr. 14 nannte Wohngeld bei Rente „vorrangig“ mit dem Satz „geht Wohngeld vor“. Das stimmt für das Sozialamt nicht: Der Nachrang ist keine Ausschlussnorm, mögliches, nicht bezogenes Wohngeld ist kein Einkommen, eine Pflicht wie § 12a SGB II fehlt | hoch | Nr. 14 auf „Wahl“ geändert, Nr. 15, Probelauf Rentner, Befund 4, Abschnitt 6 (Texte und Rente) angepasst; im Code umgesetzt auf `claude/b-ux-ergebnis` (wegeLage: bei Rente nur „wahl“ oder „bUeblich“) | BSG, Urteil vom 23.03.2021, B 8 SO 2/20 R (bsg.bund.de, Abruf 21.11.2026); § 2 Abs. 1 SGB XII, § 7 Abs. 1 Satz 1 Nr. 5, § 8 Abs. 2 WoGG (gesetze-im-internet.de, Abruf 21.11.2026) |
+| Lage „Wahl“ beim Kinderzuschlag: Der Not-Hinweis `eo.dringend` („Geh zum Jobcenter“) nannte die Folge nicht | mittel | Im Code eigener Text `weg.dringendWahl` mit dem Zusatz „Nach dem Antrag dort gibt es den Kinderzuschlag auf diesem Weg nicht mehr“ | § 6a Abs. 1a Nr. 3 BKGG (Abruf 21.11.2026) |
