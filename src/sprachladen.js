@@ -25,9 +25,11 @@ var SprachLaden = (function () {
     return true;
   }
   // Ist die Sprache sofort benutzbar? Web: parst den Datenblock beim ersten Aufruf (synchron)
+  // Nur Kürzel aus der festen Liste (Unabhängige Prüfung 21.11.2026): sonst gälte z. B. „constructor“ als geladen, weil es das an jedem Objekt gibt
   function da(l) {
-    if (geladen[l]) return true;
-    return gueltig(l) && quelle === 'eingebettet' ? ausBlock(l) : false;
+    if (!gueltig(l)) return false;
+    if (geladen[l] === true) return true;
+    return quelle === 'eingebettet' ? ausBlock(l) : false;
   }
   // Lädt die Sprache (App: Datei lang/xx.js aus dem Paket); fertig(true|false) kommt immer, höchstens nach 15 Sekunden
   function laden(l, fertig) {

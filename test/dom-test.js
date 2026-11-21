@@ -350,6 +350,9 @@ setTimeout(async () => {
     const I = w.eval('I18N')[l];
     check('[sprachladen] Offline-Wechsel nach ' + l + ': sofort übersetzt, alle Texte da', d.getElementById('app').getAttribute('lang') === l && JSON.stringify(I) === JSON.stringify(I18N[l]) && d.querySelector('[data-t="nav.ordner"]') && d.querySelector('[data-t="nav.ordner"]').textContent === I18N[l]['nav.ordner'] && !d.getElementById('sprachFehler'));
   });
+  // Unabhängige Sicherheitsprüfung 21.11.2026: nur Kürzel aus der festen Liste; nichts von „außen“ (Pfad, Objekt-Eigenschaften) gilt als Sprache
+  check('[sprachladen] Nur erlaubte Sprachkürzel: kein Pfad, keine Objekt-Eigenschaft', ['constructor', 'toString', '__proto__', 'hasOwnProperty', '../de', 'de/../ar', 'ar.js', 'AR', '', null, 5].every((x) => w.eval('SprachLaden').da(x) === false) &&
+    w.eval('SprachLaden').dazu('constructor', { 'meta.name': 'x' }) === false && w.eval('SprachLaden').dazu('../x', { 'meta.name': 'x' }) === false && typeof w.eval('I18N').constructor === 'function');
   check('[sprachladen] Arabisch: rechts nach links nach dem Nachladen', (setLang('ar'), d.getElementById('app').getAttribute('dir') === 'rtl'));
   // Fehlerfall: Datenblock fehlt (z. B. beschädigte Datei) → Deutsch und kurzer Hinweis. Eigene kleine Seite: gespeicherte Sprache
   // Französisch, Block für Französisch aus der Datei entfernt; Start und späterer Wechsel zeigen Deutsch mit Hinweis
