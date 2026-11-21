@@ -2,7 +2,7 @@
 
 Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss steigen). Die Versionsnummer kommt aus dem Build.
 
-## Version 1.9.0 (in Vorbereitung, noch nicht gebaut)
+## Version 1.9.0 (VersionCode/Build 151, 21.11.2026)
 
 Stand: Sammelzweig für Update 1.9 (21.11.2026). Versionsnummer (VersionCode) legt David fest.
 
