@@ -3,10 +3,10 @@
 Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss steigen). Die Versionsnummer kommt aus dem Build.
 
 ## Nächste Version (in Arbeit)
+- **„Es ist dringend“ aufgeräumt**: alle Fälle gleich aufgebaut – Frist oben, „Das tust du jetzt“ in Schritten, kurze Tipps zum Aufklappen, Knöpfe, Quellen unten. Konto gepfändet mit Bescheinigung und Grundfreibetrag statt doppeltem Tipp; Strom-/Gassperre in 3 Schritten. „Stimmt der Brief?“: Hinweis „keine Rechtsberatung“ unter dem letzten Tipp.
 - **Brief-Seiten aufgeräumt**: kein großer weißer Rahmen mehr um den Inhalt; „Anderer Brief“ ohne doppelte Überschrift. Beim Jobcenter passt die Überschrift zur Briefart (Einladung, Anhörung, Unterlagen); Bescheid-Erklärungen nur beim Bescheid.
 - **Pflege – Unterstützung nach Pflegegrad**: Einleitung in einem Satz (Rest zum Aufklappen), grüner Knopf „Pflegegrad selbst einschätzen“, Tipp „Kostenlose Hilfe: Pflegekasse oder Pflegestützpunkt“.
 - Aufklapper überall im gleichen Stil ohne Sonderrahmen (Wörter im Bescheid, Eigene Frist, Weitere Punkte, So rechnet der Check); Versicherungs-Stufen ohne Farbbalken; „Über die App“: Stand in einer Zeile.
-- **„Es ist dringend“ aufgeräumt**: alle Fälle gleich aufgebaut – Frist oben, „Das tust du jetzt“ in Schritten, kurze Tipps zum Aufklappen, Knöpfe, Quellen unten. Konto gepfändet mit Bescheinigung und Grundfreibetrag statt doppeltem Tipp; Strom-/Gassperre in 3 Schritten. „Stimmt der Brief?“: Hinweis „keine Rechtsberatung“ unter dem letzten Tipp.
 - **Haushaltsplan aufgeräumt**: Unter der Eingabe steht nichts mehr. Hinweise stehen in der Auswertung, das Druckblatt auch, die Tabelle (CSV) im Haushaltsbuch. Die Übernahme in den Leistungs-Check steht in der Karte, die bei knappem Geld erscheint.
 - **„Bewilligt bis“ entfernt** (auch die Erinnerung an den Folgeantrag in den Fristen). Alte Angaben werden einfach nicht mehr verwendet.
 - **Abschlag prüfen** jetzt auf den Seiten „Strom“ und „Heizen“: erst Strom oder Gas wählen, dann nur die Prüfung (Nachzahlung oder Guthaben, ungefähr). Ohne Musterbrief und Zusatz-Tipps.
