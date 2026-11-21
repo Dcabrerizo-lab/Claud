@@ -142,7 +142,8 @@ const ergebnis = (p) => p.evaluate(() => {
   ok('Schritt für Schritt: eine Frage, großer Antwort-Knopf', await p3.isVisible('#sfFrage') && !(await p3.isVisible('#form')) && (await p3.locator('#schritte .es-btn').first().boundingBox()).height >= 56);
   await p3.click('#schritte [data-i="0"]'); await p3.waitForTimeout(400);
   ok('Nach der Antwort: nächste Frage mit „← Zurück“ oben', await p3.isVisible('#sfZurueck'));
-  await p3.click('#sfWegAlles');
+  ok('Frageseite: oben keine Wegwahl (nur Zurück und Fortschritt)', !(await p3.isVisible('#sfWegAlles')));
+  await p3.evaluate(() => document.getElementById('sfWegAlles').click()); // Umschalten (sichtbar in „Deine Angaben“ und auf der Startwahl)
   ok('Umschalten: Formular sichtbar, Antwort übernommen', await p3.isVisible('#form') && await p3.isChecked('#adults1'));
   await c3.close();
   ok('Keine Skriptfehler', errs.length === 0, errs.join(' | '));
