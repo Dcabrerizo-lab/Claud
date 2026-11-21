@@ -903,13 +903,9 @@
     });
     window.addEventListener('scroll', jumpPruefen, { passive: true });
     window.addEventListener('resize', jumpPruefen);
+    // Absender in der Mappe: dieselben Daten wie in allen anderen Briefen (absenderSetzen)
     [['p-name', 'name'], ['p-geb', 'geb'], ['p-strasse', 'strasse'], ['p-ort', 'ort'], ['p-tel', 'tel']].forEach(function (x) {
-      $(x[0]).addEventListener('input', function () {
-        person[x[1]] = $(x[0]).value; save();
-        if (!$('mappe').hidden) mappeNeuBald(); // Briefe in der Mappe zeigen Name und Anschrift sofort
-        // Die Anschrift kann den Wohnort liefern (PLZ): Karten mit der zuständigen Stelle aktualisieren
-        if (x[1] === 'ort' && !/^\d{5}$/.test(String(state.plz || ''))) render();
-      });
+      $(x[0]).addEventListener('input', function () { absenderSetzen(x[1], $(x[0]).value, $(x[0])); });
     });
     // Geburtsdatum beim Verlassen des Feldes einheitlich als TT.MM.JJJJ (Unklares bleibt wie eingegeben)
     $('p-geb').addEventListener('change', function () { var f = Fmt.gebDatum($('p-geb').value); if (f !== $('p-geb').value) { $('p-geb').value = f; person.geb = f; save(); } });
@@ -917,10 +913,6 @@
     $('cards').addEventListener('click', function (e) {
       if (e.target && e.target.closest && e.target.closest('#mappeMake')) openMappe();
     });
-    // Auswahl der Leistungen in der Mappe: Mappe sofort neu aufbauen
-    $('pick').addEventListener('change', function () { if (!$('mappe').hidden) buildMappe(); });
-    // App: „PDF teilen“ (auf dem iPhone mit Drucken und In Dateien sichern im Teilen-Dialog); kein zweiter, doppelter Teilen-Knopf
-    if (NATIVE) { $('mappePrint').setAttribute('data-t', 'f.pdf'); $('mappePrint').textContent = t('f.pdf'); }
     // Android: eigene Knöpfe zum Drucken und Speichern (dort bietet der Teilen-Dialog das nicht auf jedem Gerät an; iPhone: im Teilen-Dialog enthalten)
     if (NATIVE && plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios')) {
       $('mappeDruck').hidden = false; $('mappeSpeichern').hidden = false; // unter „Weitere Möglichkeiten“; Hauptknopf bleibt „PDF teilen“
@@ -940,8 +932,6 @@
       try { window.print(); } catch (e) { $('copyMsg').textContent = ''; }
     });
     $('mappeCopy').addEventListener('click', copyMappe);
-    // „Drucken“ auch am Ende der Mappe: löst denselben Weg aus wie der Knopf oben (Web: Drucken, App: PDF)
-    $('mappePrint2').addEventListener('click', function () { (!$('mappeDruck').hidden ? $('mappeDruck') : $('mappePrint')).click(); });
     // „Angaben löschen“ oben in „Deine Angaben“ (Leiste von src/schritte.js): dieselbe Rückfrage wie in Sicherheit und Daten, mit Rückgängig
     $('schritte').addEventListener('click', function (e) {
       var b = e.target.closest ? e.target.closest('#clearLink') : null; if (!b) return;
@@ -1032,26 +1022,16 @@
   var kartenHinweise = {}, tippsHtml = '';
   // Beratungsmodus: Rechtsgrundlage der Leistung (Rules.RECHT, deutsch) unter dem Kartentext
   function rechtHtml(r) { return beratung && r.recht ? '<p class="recht"><strong>' + esc(t('recht.label')) + ':</strong> <span lang="de" dir="ltr">' + esc(r.recht) + '</span></p>' : ''; }
-  // Unterlagen-Checkliste zum Abhaken (Antragsmappe); Haken bleiben auf dem Gerät (lotse.haken)
-  // Grundsicherungsgeld: die genaue Liste nach der Lage des Haushalts (src/formulare.js, nur Deutsch) statt der allgemeinen – eine Liste je Hilfe
-  function unterlagenGenau(r) {
-    return '<ul class="haken-liste">' + Formulare.unterlagen(state).map(function (text) {
-      var key = r.id + '|f:' + text.slice(0, 60);
-      return '<li><label class="haken"><input type="checkbox" data-haken="' + esc(key) + '"' + (haken[key] ? ' checked' : '') + '><span>' + esc(text) + '</span></label></li>';
-    }).join('') + '</ul>';
-  }
-  function unterlagenListe(r, ohneHinweis) {
-    return (ohneHinweis ? '' : '<p class="small muted haken-hint no-print">' + esc(t('haken.hint')) + '</p>') + '<ul class="haken-liste">' + r.steps.u.map(function (k) {
-      var key = r.id + '|' + k;
-      return '<li><label class="haken"><input type="checkbox" data-haken="' + esc(key) + '"' + (haken[key] ? ' checked' : '') + '><span>' + esc(tL(k)) + '</span></label></li>';
-    }).join('') + '</ul>';
-  }
+  // Haken (Unterlagen, „Erledigt“) bleiben auf dem Gerät (lotse.haken, Vorgaenge.DATEN). data-haken-alt: frühere Schlüssel derselben Sache
+  // (alte Mappen-Stände: je Leistung „id|u-Schlüssel“); sie zählen als abgehakt und werden beim Abwählen mit entfernt.
   document.addEventListener('change', function (ev) {
     var el = ev.target, key = el && el.getAttribute && el.getAttribute('data-haken');
     if (!key) return;
-    if (el.checked) haken[key] = true; else delete haken[key];
+    if (el.checked) haken[key] = true;
+    else { delete haken[key]; try { (JSON.parse(el.getAttribute('data-haken-alt') || '[]') || []).forEach(function (k) { delete haken[k]; }); } catch (e) {} }
     document.querySelectorAll('input[data-haken]').forEach(function (cb) { if (cb !== el && cb.getAttribute('data-haken') === key) cb.checked = el.checked; });
     Store.set('lotse.haken', JSON.stringify(haken));
+    if (typeof mappeStatus === 'function' && $('mappe') && !$('mappe').hidden) mappeStatus();
   });
   // Zweite Zeile der eingeklappten Karte: bei passenden Leistungen statt „Anspruch ist wahrscheinlich/möglich“ (steht schon im Etikett)
   // der grob geschätzte Betrag (nur wenn die Karte einen ausrechnet) und die Art der zuständigen Stelle. Sonst der Grund wie bisher.
@@ -1142,36 +1122,6 @@
       '<p>' + esc(t('ww.t')) + '</p><div class="ww-wege"><div class="ww-weg"><h4>' + esc(t('ww.a.h')) + '</h4><p>' + esc(t('ww.a.t' + o)) + '</p>' + weg(k ? ['ggeld', 'but'] : ['ggeld']) + '</div>' +
       '<div class="ww-weg"><h4>' + esc(t('ww.b.h' + o)) + '</h4><p>' + esc(t('ww.b.t' + o)) + '</p>' + weg(k ? ['wohngeld', 'kiz', 'but'] : ['wohngeld']) + '</div></div>' +
       '<p class="ww-regel"><b>' + esc(t('ww.regel.h')) + '</b> ' + esc(t('ww.regel' + o)) + '</p></div>', 'zweiWege');
-  }
-
-  // Entweder-oder (Hinweise z.ggVsWg und z.gsaWg, gleiche Bedingung wie die Kacheln „Zwei Wege“ / „Entweder oder“): Wohngeld und Kinderzuschlag gibt es
-  // nicht neben Grundsicherungsgeld, Wohngeld nicht neben Grundsicherung im Alter (§ 7 Abs. 1 WoGG, gesetze-im-internet.de, abgerufen 20.11.2026).
-  // Darum hakt die Antragsmappe keine dieser Leistungen vorab an; der Nutzer wählt selbst (Zeile f.pickWege). Bildung und Teilhabe gibt es auf beiden Wegen.
-  function wegeIds(zusammen) {
-    var z = function (k) { return (zusammen || []).some(function (x) { return x[0] === k; }); }, ids = [];
-    if (z('z.ggVsWg')) ids.push('ggeld', 'wohngeld', 'kiz');
-    if (z('z.gsaWg')) ids.push('gsa', 'wohngeld');
-    return ids;
-  }
-  function renderPick(results, zusammen) {
-    var wege = wegeIds(zusammen);
-    // Keine Briefe für Dinge, die schon da sind: Pflegegrad festgestellt, Grad der Behinderung festgestellt oder beantragt
-    var schonDa = function (id) { return (id === 'pflege' && state.pflegegrad && state.pflegegrad !== 'antrag') || (id === 'ausweis' && !!state.gdb); };
-    var avail = results.filter(function (r) { return (r.level === 'ja' || r.level === 'vielleicht') && ANTRAG[r.id] && !schonDa(r.id); });
-    var next = {};
-    avail.forEach(function (r) { next[r.id] = Object.prototype.hasOwnProperty.call(pickedUser, r.id) ? pickedUser[r.id] : r.level === 'ja' && wege.indexOf(r.id) < 0; });
-    var wegeDa = avail.filter(function (r) { return wege.indexOf(r.id) >= 0; }).length > 1;
-    picked = next;
-    $('pick').innerHTML = avail.length
-      ? avail.map(function (r) {
-          return '<label class="check"><input type="checkbox" data-pick="' + r.id + '"' + (picked[r.id] ? ' checked' : '') + '><span>' + esc(r.name) + (lang === 'de' ? '' : ' (' + esc(t('n.' + r.id)) + ')') + '</span></label>';
-        }).join('') + (wegeDa ? '<p class="small pick-wege" id="pickWege">' + esc(t('f.pickWege')) + '</p>' : '')
-      : '<p class="small">' + esc(t('f.none')) + '</p>';
-    if ($('mappeKnopf')) $('mappeKnopf').hidden = avail.length === 0;
-    $('pickMsg').textContent = '';
-    document.querySelectorAll('[data-pick]').forEach(function (cb) {
-      cb.addEventListener('change', function () { picked[cb.getAttribute('data-pick')] = cb.checked; pickedUser[cb.getAttribute('data-pick')] = cb.checked; });
-    });
   }
 
   // Kopf des Ergebnisses: „Gute Nachrichten!“ nur, wenn mindestens eine Leistung wahrscheinlich ist; Satz mit der Zahl der passenden Hilfen
@@ -1347,44 +1297,11 @@
   function mappeTextNeu() {
     $('mappeText').value = briefIds().map(function (r) { return letterText(r.id); }).concat([sheetText()]).join('\n\n----------------------------------------\n\n');
   }
-  // Aufgabenliste der Mappe (Vorbild GOV.UK „task list“): nummeriert, je Schritt ein Knopf, Haken „Erledigt“ (lotse.haken, Schlüssel mappe|…).
-  // Die Frist (Antrag sichert den Monat) steht sichtbar im letzten Schritt, nie zum Aufklappen.
-  // Hinweise je Leistung im Schritt „Abschicken“ (Prüfvermerk 20.11.2026, Gesetzestext abgerufen am 20.11.2026 auf gesetze-im-internet.de):
-  // alg1: Der Brief ersetzt die Arbeitslosmeldung nicht. Arbeitslosmeldung elektronisch im Fachportal oder persönlich (§ 141 Abs. 1 SGB III);
-  //       Arbeitsuchendmeldung spätestens 3 Monate vor dem Ende, bei kürzerer Kenntnis innerhalb von 3 Tagen (§ 38 Abs. 1 SGB III).
-  // srente: Das Anschreiben bittet nur um Rentenauskunft und Beratung (ANTRAG.srente), es ist kein Rentenantrag (§ 99 Abs. 1 SGB VI).
-  // Mehrere Hilfen: wofür es ein Anschreiben gibt und was über das amtliche Formular läuft
-  function anschreibenFuer(briefe) {
-    var nm = function (r) { return r.name + (lang === 'de' ? '' : ' (' + t('n.' + r.id) + ')'); };
-    var mitBrief = {}; (briefe || []).forEach(function (r) { mitBrief[r.id] = true; });
-    var form = pickedIds().filter(function (r) { return !mitBrief[r.id]; });
-    if (!(briefe || []).length || (briefe.length === 1 && !form.length)) return '';
-    return '<p>' + esc(t(briefe.length === 1 ? 'f.auf.1.eins' : 'f.auf.1.fuer', { liste: briefe.map(nm).join(', ') })) + '</p>' +
-      (form.length ? '<p>' + esc(t('f.auf.1.form', { liste: form.map(nm).join(', ') })) + '</p>' : '');
-  }
-  function aufgabenHtml(mitBrief, mitForm, ohneOrt, briefe) {
-    var hat = function (id) { return (briefe || []).some(function (r) { return r.id === id; }); };
-    var nurSrente = hat('srente') && briefe.length === 1 && !mitForm;
-    var schritt = function (key, titel, text, knopf) {
-      var hk = 'mappe|' + key;
-      return '<li class="aufgabe"><h3>' + esc(t(titel)) + '</h3>' + (text ? '<p>' + esc(t(text)) + '</p>' : '') + knopf +
-        '<label class="haken"><input type="checkbox" data-haken="' + esc(hk) + '"' + (haken[hk] ? ' checked' : '') + '><span>' + esc(t('f.auf.erledigt')) + '</span></label></li>';
-    };
-    var zu = function (ziel, txt) { return '<p><button type="button" class="btn" data-sprung="' + ziel + '">' + esc(t(txt)) + '</button></p>'; };
-    return '<section class="no-print" aria-labelledby="h-auf"><h3 id="h-auf" class="vh">' + esc(t('f.auf.h')) + '</h3><ol class="aufgaben">' +
-      (mitBrief ? schritt('brief', 'f.auf.1', '', anschreibenFuer(briefe) + (ohneOrt ? '<p class="warn" id="mappeAdrNote">' + esc(t('f.adrFehlt')) + '</p>' : '') + zu('m-brief', 'f.auf.zu1')) : '') +
-      (mitForm ? schritt('formular', 'f.auf.2', '', zu('m-formulare', 'f.auf.zu2')) : '') +
-      schritt('unterlagen', 'f.auf.3', '', zu('m-unterlagen', 'f.auf.zu3')) +
-      schritt('abschicken', 'f.auf.4', 'f.auf.4.t', (hat('alg1') ? '<p class="warn mappe-alg1" role="note"><strong>' + esc(t('f.alg1.meldung')) + '</strong></p>' : '') +
-        (nurSrente ? '' : '<p class="mappe-stichtag"><strong>' + esc(t('f.stichtag')) + '</strong></p>') +
-        (hat('srente') ? '<p class="mappe-srente"><strong>' + esc(t('f.srente.hinweis')) + '</strong></p>' : '') + '<p><button type="button" class="btn" data-mappe-druck="1">' + esc(t('f.print')) + '</button></p>') +
-      '</ol></section>';
-  }
-  // Brief am Bildschirm: Absender, Empfängerfeld, Rest; der ganze Brief (#brief-ID) nur im Druck
+  // Brief am Bildschirm (in der Zeile der Leistung hinter „Anschreiben ansehen“): Absender, Empfängerfeld an seiner Stelle, Rest.
+  // Der fertige Brief für den Druck steht unsichtbar in #mappeBody (druckSeiten).
   function briefSeite(id) {
     var b = briefTeile(id);
-    return '<article class="page" id="m-brief-' + esc(id) + '" tabindex="-1" lang="de" dir="ltr"><pre id="brief-' + esc(id) + '" class="nur-druck">' + esc(letterText(id)) + '</pre>' +
-      '<div class="no-print"><pre>' + esc(b.kopf.join('\n')) + '\n</pre>' + empfHtml(id) + '<pre>' + esc(b.rest.join('\n')) + '</pre></div></article>';
+    return '<article class="page" id="m-brief-' + esc(id) + '" tabindex="-1" lang="de" dir="ltr"><pre>' + esc(b.kopf.join('\n')) + '\n</pre>' + empfHtml(id) + '<pre>' + esc(b.rest.join('\n')) + '</pre></article>';
   }
   // Brief in drei Teilen: Absender, Empfänger, Rest. In der Mappe steht das Empfängerfeld am Bildschirm an seiner Stelle im Brief.
   function letterText(id) { var b = briefTeile(id); return b.kopf.concat([''], b.empf, b.rest).join('\n'); }
@@ -1497,6 +1414,55 @@
     return (lastOut ? lastOut.results : []).filter(function (r) { return picked[r.id]; });
   }
 
+  // ----- Auswahl der Hilfen in der Mappe -----
+  // Geld-Leistungen mit Betrag zuerst und vorab angehakt (UX-Prüfung 21.11.2026, Nr. 3); Hilfen ohne Geldbetrag, die man meist erst später
+  // braucht (WBS, Rundfunkbeitrag, Zuzahlungen), stehen zugeklappt unter „Weitere Hilfen“. Schließen sich Leistungen aus (MAPPE_WEGE),
+  // wählt man einen Weg statt leerer Haken (Nr. 2).
+  var PICK_SPAETER = { wbs: 1, rundfunk: 1, zuzahl: 1 };
+  function hatBetrag(r) { return r.tx.some(function (x) { return BETRAG_KURZ[x[0]] || EB_SATZ.indexOf(x[0]) >= 0; }); }
+  var wegWahl = {}; // gewählter Weg je Gruppe (nur für die Sitzung, wie pickedUser)
+  function pickVorschlag(r, wege) {
+    var g = wegGruppeVon(wege, r.id);
+    if (g) return wegIdsVon(g, wegAktiv(g)).indexOf(r.id) >= 0;
+    if (PICK_SPAETER[r.id]) return false;
+    if (r.id === 'but' && (wege || []).some(function (x) { return x.id === 'gg' && wegAktiv(x) === 'b'; })) return false; // im Grundsicherungsgeld enthalten
+    return r.level === 'ja' || hatBetrag(r);
+  }
+  function renderPick(results, zusammen) {
+    // Keine Briefe für Dinge, die schon da sind: Pflegegrad festgestellt, Grad der Behinderung festgestellt oder beantragt
+    var schonDa = function (id) { return (id === 'pflege' && state.pflegegrad && state.pflegegrad !== 'antrag') || (id === 'ausweis' && !!state.gdb); };
+    var avail = results.filter(function (r) { return (r.level === 'ja' || r.level === 'vielleicht') && ANTRAG[r.id] && !schonDa(r.id); });
+    var wege = mappeWege(results, zusammen, avail);
+    var next = {};
+    avail.forEach(function (r) { next[r.id] = Object.prototype.hasOwnProperty.call(pickedUser, r.id) ? pickedUser[r.id] : pickVorschlag(r, wege); });
+    picked = next;
+    var inWeg = {}; wege.forEach(function (g) { g.alle.forEach(function (id) { inWeg[id] = true; }); });
+    var nameLang = function (r) { return esc(r.name) + (lang === 'de' ? '' : ' (' + esc(t('n.' + r.id)) + ')'); };
+    var box = function (r) { return '<label class="check"><input type="checkbox" data-pick="' + r.id + '"' + (picked[r.id] ? ' checked' : '') + '><span>' + nameLang(r) + '</span></label>'; };
+    var vorn = avail.filter(function (r) { return !inWeg[r.id] && !PICK_SPAETER[r.id] && (r.level === 'ja' || hatBetrag(r) || picked[r.id]); });
+    var spaeter = avail.filter(function (r) { return !inWeg[r.id] && vorn.indexOf(r) < 0; });
+    vorn.sort(function (a, b) { return (hatBetrag(b) ? 1 : 0) - (hatBetrag(a) ? 1 : 0); }); // Geld zuerst, sonst Reihenfolge der Karten
+    $('pick').innerHTML = avail.length
+      ? wege.map(wegHtml).join('') + vorn.map(box).join('') +
+        (spaeter.length ? '<details class="mehr pick-spaeter"' + (spaeter.some(function (r) { return picked[r.id]; }) ? ' open' : '') + '><summary>' + esc(t('f.pickWeitere', { n: spaeter.length })) + '</summary><div class="checks">' + spaeter.map(box).join('') + '</div></details>' : '')
+      : '<p class="small">' + esc(t('f.none')) + '</p>';
+    if ($('mappeKnopf')) $('mappeKnopf').hidden = avail.length === 0;
+    $('pickMsg').textContent = '';
+  }
+  // Ein Haken oder ein Weg wurde gewählt (ein Zuhörer für die ganze Auswahl, die Liste wird oft neu gebaut)
+  if ($('pick')) $('pick').addEventListener('change', function (ev) {
+    var el = ev.target;
+    if (el.hasAttribute('data-pick')) { picked[el.getAttribute('data-pick')] = el.checked; pickedUser[el.getAttribute('data-pick')] = el.checked; }
+    else if (el.hasAttribute('data-weg')) {
+      var g = el.getAttribute('data-weg'), w = el.value;
+      wegWahl[g] = w;
+      var gr = (letzteWege || []).filter(function (x) { return x.id === g; })[0];
+      if (gr) gr.alle.forEach(function (id) { var an = wegIdsVon(gr, w).indexOf(id) >= 0; picked[id] = an; pickedUser[id] = an; });
+      if (lastOut) { renderPick(lastOut.results, lastOut.zusammen); var neuR = $('pick').querySelector('input[data-weg="' + g + '"][value="' + w + '"]'); if (neuR) neuR.focus(); }
+    } else return;
+    if (!$('mappe').hidden) buildMappe();
+  });
+
   // Entweder amtliches Formular oder formloser Antrag: Gibt es für eine Leistung einen geprüften Link zum amtlichen Formular,
   // erstellt SoLo keinen formlosen Brief dafür; nur Leistungen ohne Formular-Link bekommen den formlosen Antrag.
   var LINK_FUER = { ggeld: 'ggeld', kiz: 'kiz', kg1: 'kindergeld', kg4: 'kgBeh', wg: 'wohngeld', wbs: 'wbs' };
@@ -1505,61 +1471,215 @@
     formPlan().forEach(function (f) { if (f.art === 'link' && LINK_FUER[f.id]) mitLink[LINK_FUER[f.id]] = true; });
     return pickedIds().filter(function (r) { return !mitLink[r.id]; });
   }
-  var mappeTimer = null;
+
+  // ----- Unterlagen: eine Liste ohne Doppelungen (UX-Prüfung Nr. 6) -----
+  // Jeder Unterlagen-Schlüssel gehört zu einer Sache (Ausweis, Miete, Geburtsurkunde …). Brauchen mehrere gewählte Anträge dieselbe Sache,
+  // steht sie einmal oben („Für alle Anträge“ bzw. „Für mehrere Anträge“); der Rest „Zusätzlich für …“. Es gilt der ausführlichste Text (U_RANG).
+  // Nur Zusammenfassen gleicher Dinge, keine neuen Anforderungen: Texte sind die bisherigen Schlüssel (s.*.u*, u.*) bzw. die genaue Liste des Jobcenters.
+  var U_SACHE = { 'u.ausweis': ['ausweis'], 's.ggeld.u1': ['ausweis'], 's.wohngeld.u3': ['ausweis', 'haushalt'], 'u.haushalt': ['haushalt'],
+    'u.geburtsurkunde': ['geburt'], 's.kindergeld.u2': ['geburt'], 's.uvg.u1': ['geburt'], 's.kindergeld.u1': ['steuerid'], 'u.steuerid': ['steuerid'],
+    's.ggeld.u2': ['miete'], 's.gsa.u2': ['miete'], 's.wohngeld.u1': ['miete'], 'u.mietvertrag': ['miete'], 's.kiz.u3': ['miete'],
+    'u.einkommen': ['einkommen'], 's.uvg.u3': ['einkommen'], 'u.versichertenkarte': ['karte'], 's.pflege.u1': ['karte'], 'u.arzt': ['arzt'], 's.pflege.u3': ['arzt'],
+    'u.lohnabrechnung': ['lohn'], 's.kiz.u1': ['kgbescheid'] };
+  var U_RANG = ['s.ggeld.u1', 's.wohngeld.u3', 'u.ausweis', 'u.haushalt', 's.ggeld.u2', 's.gsa.u2', 's.wohngeld.u1', 'u.mietvertrag', 's.kiz.u3',
+    'u.geburtsurkunde', 's.kindergeld.u2', 's.uvg.u1', 'u.steuerid', 's.kindergeld.u1', 'u.einkommen', 's.uvg.u3', 'u.arzt', 's.pflege.u3', 'u.versichertenkarte', 's.pflege.u1'];
+  // Genaue Liste des Jobcenters (src/formulare.js, nur Deutsch): Punkte, die dieselbe Sache meinen, gehen in der gemeinsamen Liste auf (Text der genauen Liste gewinnt)
+  var U_GENAU = [[/^Personalausweis oder Pass/, 'ausweis'], [/^Mietvertrag oder Mietbescheinigung/, 'miete'], [/^Geburtsurkunden/, 'geburt'], [/^Arbeitsvertrag und Lohnabrechnungen/, 'lohn'], [/^Kindergeldbescheid/, 'kgbescheid']];
+  function unterlagenPlan(ids) {
+    var quellen = [];
+    ids.forEach(function (r) {
+      if (r.id === 'ggeld' && lang === 'de' && typeof Formulare !== 'undefined') Formulare.unterlagen(state).forEach(function (text) {
+        var g = U_GENAU.filter(function (x) { return x[0].test(text); })[0], f = 'f:' + text.slice(0, 60);
+        quellen.push({ rid: r.id, text: text, sachen: [g ? g[1] : f], alt: [r.id + '|' + f], rang: -1 });
+      });
+      else r.steps.u.forEach(function (k) {
+        var rg = U_RANG.indexOf(k);
+        quellen.push({ rid: r.id, key: k, sachen: U_SACHE[k] || [k], alt: [r.id + '|' + k], rang: rg < 0 ? 999 : rg });
+      });
+    });
+    var sachen = {}, reihe = [];
+    quellen.forEach(function (q) {
+      q.sachen.forEach(function (s) {
+        var x = sachen[s];
+        if (!x) { x = sachen[s] = { id: s, rids: {}, best: q, alt: [] }; reihe.push(x); }
+        x.rids[q.rid] = true; if (q.rang < x.best.rang) x.best = q;
+        q.alt.forEach(function (k) { if (x.alt.indexOf(k) < 0) x.alt.push(k); });
+      });
+    });
+    // Gleicher Text für zwei Sachen (z. B. „Ausweise und Angaben zu allen Personen“): nur einmal
+    var punkte = {}, liste = [];
+    reihe.forEach(function (x) {
+      var tk = x.best.key || '#' + x.best.text, p = punkte[tk];
+      if (!p) { p = punkte[tk] = { key: x.best.key, text: x.best.text, rids: {}, sachen: [], alt: [] }; liste.push(p); }
+      Object.keys(x.rids).forEach(function (id) { p.rids[id] = true; });
+      p.sachen.push(x.id);
+      x.alt.forEach(function (k) { if (p.alt.indexOf(k) < 0) p.alt.push(k); });
+    });
+    liste.forEach(function (p) {
+      p.hk = 'u|' + p.sachen[0];
+      p.alt = p.sachen.slice(1).map(function (s) { return 'u|' + s; }).concat(p.alt);
+      p.n = Object.keys(p.rids).length;
+      p.ab = !!haken[p.hk] || p.alt.some(function (k) { return haken[k]; });
+    });
+    var mehrere = ids.length > 1;
+    var gemeinsam = mehrere ? liste.filter(function (p) { return p.n > 1; }) : [];
+    return {
+      gemeinsam: gemeinsam, alle: gemeinsam.every(function (p) { return p.n === ids.length; }), liste: liste,
+      je: ids.map(function (r) { return { r: r, punkte: liste.filter(function (p) { return p.rids[r.id] && gemeinsam.indexOf(p) < 0; }) }; })
+    };
+  }
+  function punktText(p) { return p.key ? tL(p.key) : p.text; }
+  function unterlagenHtml(ids) {
+    var u = unterlagenPlan(ids);
+    var nameLang = function (r) { return r.name + (lang === 'de' ? '' : ' (' + t('n.' + r.id) + ')'); };
+    var li = function (p) {
+      return '<li><label class="haken"><input type="checkbox" data-haken="' + esc(p.hk) + '" data-haken-alt="' + esc(JSON.stringify(p.alt)) + '"' + (p.ab ? ' checked' : '') + '><span' + (p.key || lang === 'de' ? '' : ' lang="de"') + '>' + esc(punktText(p)) + '</span></label></li>';
+    };
+    var h = '';
+    if (u.gemeinsam.length) h += '<h4>' + esc(t(u.alle ? 'f.unt.alle' : 'f.unt.mehrere')) + '</h4><p class="small">' + esc(t('f.unt.kopie')) + '</p><ul class="haken-liste">' + u.gemeinsam.map(li).join('') + '</ul>';
+    u.je.forEach(function (j) {
+      if (!j.punkte.length) return;
+      h += '<h4>' + esc(t(u.gemeinsam.length ? 'f.unt.zus' : 'f.unt.fuer', { name: nameLang(j.r) })) + '</h4><ul class="haken-liste">' + j.punkte.map(li).join('') + '</ul>';
+    });
+    return h + '<p class="small muted">' + esc(t('steps.note')) + '</p>';
+  }
+
+  // ----- Anträge: je Leistung eine Zeile mit genau einer Aktion (UX-Prüfung Nr. 5). Amtliche Formulare zuerst, dann die Anschreiben. -----
+  function formPlan() {
+    if (typeof Formulare === 'undefined') return [];
+    return Formulare.plan(state, person, pickedIds());
+  }
+  // Satz unter dem Formular-Knopf in der App-Sprache (Nr. 10): Schlüssel fw.<Formular>[.<Land>]; ohne Übersetzung der deutsche Satz aus formulare.js
+  function formSatz(f) {
+    // WBS: Bayern, ohne Bundesland und Länder ohne eigenen Hinweis übersetzt; die Sätze für HH, BW, BE, BB, HB, RP, SL bleiben deutsch (Amtswege mit Ortsnamen)
+    var bl = state.bundesland || '', WBS_DE = { HH: 1, BW: 1, BE: 1, BB: 1, HB: 1, RP: 1, SL: 1 };
+    var k = 'fw.' + f.id + (f.id === 'wbs' ? '.' + (!bl ? 'leer' : bl === 'BY' ? 'BY' : WBS_DE[bl] ? 'de' : 'sonst') : f.id === 'wg' ? (f.art === 'link' ? '.by' : '.land') : '');
+    return Object.prototype.hasOwnProperty.call(I18N.de, k) ? { text: t(k), de: false } : { text: f.warum, de: lang !== 'de' };
+  }
+  var HINWEIS_FUER = { gsa: 'gsa', wg: 'wohngeld', wbs: 'wbs' };
+  function antraegeHtml(ids, briefe, ohneOrt) {
+    var nameLang = function (r) { return '<span' + (lang === 'de' ? '' : ' lang="de"') + '>' + esc(r.name) + '</span>' + (lang === 'de' ? '' : ' <span class="small">(' + esc(t('n.' + r.id)) + ')</span>'); };
+    var satzP = function (s) { return '<p class="small"' + (s.de ? ' lang="de" dir="ltr"' : '') + '>' + esc(s.text) + '</p>'; };
+    var hilfe = function (f) { return f.hilfe ? '<details class="mehr"><summary>' + esc(t('mehr.ausfuellen')) + '</summary><div lang="de" dir="ltr">' + listItems(f.hilfe) + '</div></details>' : ''; };
+    var tipp = function (r) { return r ? '<p class="small ant-tipp">' + esc(tL(r.steps.tip)) + '</p>' : ''; };
+    var g = function (id) { return ids.filter(function (r) { return r.id === id; })[0]; };
+    var fp = formPlan(), hinweise = {}, h = '';
+    if (ohneOrt && briefe.length) h += '<p class="warn" id="mappeAdrNote">' + esc(t('f.adrFehlt')) + '</p>';
+    fp.forEach(function (f) {
+      if (f.art !== 'link') { if (HINWEIS_FUER[f.id]) hinweise[HINWEIS_FUER[f.id]] = f; return; }
+      var r = g(LINK_FUER[f.id]);
+      h += '<section class="ant-zeile ant-form" data-ant="f-' + esc(f.id) + '"><h4 lang="de" dir="ltr">' + esc(f.titel) + '</h4>' +
+        '<p class="form-link"><a class="btn" href="' + esc(f.url) + '" target="_blank" rel="noopener">' + esc(t('f.formsLink')) + '</a></p>' + satzP(formSatz(f)) + hilfe(f) + tipp(r) + '</section>';
+    });
+    briefe.forEach(function (r) {
+      var bekannt = empfBekannt(r.id) || Object.prototype.hasOwnProperty.call(empfEdit, r.id);
+      var an = empfZeilen(r.id).filter(function (z) { return z.indexOf('____') < 0; });
+      var f = hinweise[r.id];
+      h += '<section class="ant-zeile ant-brief" data-ant="b-' + esc(r.id) + '"><h4>' + nameLang(r) + '</h4>' +
+        (bekannt && an.length ? '<p class="small ant-an">' + esc(t('f.ant.an', { stelle: an[0] })) + '</p>' : '<p class="small ant-an fehlt">' + esc(t('f.ant.anFehlt')) + '</p>') +
+        (f ? satzP(formSatz(f)) : '') +
+        '<details class="ant-zeigen"><summary class="btn ghost">' + esc(t('f.ant.brief')) + '</summary>' + briefSeite(r.id) + '</details>' + (f ? hilfe(f) : '') + tipp(r) + '</section>';
+    });
+    if (fp.some(function (f) { return f.art === 'link'; })) h += '<p class="small muted">' + esc(t('f.formsCheck')) + '</p>';
+    return h + '<label class="haken"><input type="checkbox" data-haken="mappe|antraege" data-haken-alt="' + esc(JSON.stringify(['mappe|brief', 'mappe|formular'])) + '"' + (antraegeErledigt() ? ' checked' : '') + '><span>' + esc(t('f.auf.erledigt')) + '</span></label>';
+  }
+  // Alte Stände: „Anschreiben“ und „Formular“ waren zwei Schritte; beide erledigt zählt als erledigt
+  function antraegeErledigt() { return !!haken['mappe|antraege'] || (!!haken['mappe|brief'] && !!haken['mappe|formular']) || (!!haken['mappe|brief'] && !formPlan().some(function (f) { return f.art === 'link'; })) || (!!haken['mappe|formular'] && !briefIds().length); }
+  // Schritt „Abschicken“: Frist sichtbar (nie zum Aufklappen), Hinweise je Leistung (Prüfvermerk 20.11.2026, Gesetzestext abgerufen am 20.11.2026
+  // auf gesetze-im-internet.de): alg1: Der Brief ersetzt die Arbeitslosmeldung nicht (§ 141 Abs. 1 SGB III; Arbeitsuchendmeldung § 38 Abs. 1 SGB III).
+  // srente: Das Anschreiben bittet nur um Rentenauskunft und Beratung (ANTRAG.srente), es ist kein Rentenantrag (§ 99 Abs. 1 SGB VI).
+  function abschickenHtml(ids, briefe) {
+    var hat = function (id) { return briefe.some(function (r) { return r.id === id; }); };
+    var nurSrente = hat('srente') && ids.length === 1;
+    return '<p>' + esc(t('f.auf.4.t')) + '</p>' + (hat('alg1') ? '<p class="warn mappe-alg1" role="note"><strong>' + esc(t('f.alg1.meldung')) + '</strong></p>' : '') +
+      (nurSrente ? '' : '<p class="mappe-stichtag"><strong>' + esc(t('f.stichtag')) + '</strong></p>') +
+      (hat('srente') ? '<p class="mappe-srente"><strong>' + esc(t('f.srente.hinweis')) + '</strong></p>' : '');
+  }
+
+  // ----- Druck und PDF: Briefe (förmlich, DIN 5008), Angabenblatt, Unterlagen- und Formularliste; am Bildschirm unsichtbar -----
+  function druckUnterlagen(ids) {
+    // Blöcke für Druck und PDF in der App-Sprache (Arabisch im PDF deutsch, siehe pdfPages)
+    var u = unterlagenPlan(ids), b = [{ t: 'h', text: t('f.docs') }];
+    var nameLang = function (r) { return r.name + (lang === 'de' ? '' : ' (' + t('n.' + r.id) + ')'); };
+    var li = function (p) { return { t: 'li', text: (p.ab ? '[x] ' : '[ ] ') + punktText(p) }; };
+    if (u.gemeinsam.length) { b.push({ t: 'h', sub: true, text: t(u.alle ? 'f.unt.alle' : 'f.unt.mehrere') }); u.gemeinsam.forEach(function (p) { b.push(li(p)); }); }
+    u.je.forEach(function (j) {
+      b.push({ t: 'h', sub: true, text: t(u.gemeinsam.length ? 'f.unt.zus' : 'f.unt.fuer', { name: nameLang(j.r) }) });
+      b.push({ t: 'p', text: tL(j.r.steps.wo) });
+      j.punkte.forEach(function (p) { b.push(li(p)); });
+      b.push({ t: 'small', text: tL(j.r.steps.tip) });
+    });
+    var fl = formPlan().filter(function (f) { return f.art === 'link'; });
+    if (fl.length) { b.push({ t: 'h', sub: true, text: t('f.forms') }); fl.forEach(function (f) { b.push({ t: 'li', text: f.titel + ': ' + f.url }); }); }
+    b.push({ t: 'small', text: t('rb.satz') }); // „Keine Rechtsberatung“ auf jedem Ausdruck
+    return b;
+  }
+  function druckSeitenHtml(ids, briefe) {
+    var blockHtml = function (x) { return x.t === 'h' && !x.sub ? '<h3>' + esc(x.text) + '</h3>' : x.t === 'h' ? '<h4>' + esc(x.text) + '</h4>' : x.t === 'li' ? '<p class="druck-li">' + esc(x.text) + '</p>' : '<p' + (x.t === 'small' ? ' class="small"' : '') + '>' + esc(x.text) + '</p>'; };
+    return briefe.map(function (r) { return '<article class="page nur-druck" lang="de" dir="ltr"><pre id="brief-' + esc(r.id) + '">' + esc(letterText(r.id)) + '</pre></article>'; }).join('') +
+      '<article class="page nur-druck" id="m-angaben" lang="de" dir="ltr"><pre>' + esc(sheetText()) + '</pre></article>' +
+      '<article class="page docs nur-druck" id="m-unterlagen">' + druckUnterlagen(ids).map(blockHtml).join('') + '</article>';
+  }
+
+  // ----- Aufbau der Mappe -----
+  var mappeTimer = null, letzteWege = null;
   function mappeNeuBald() { clearTimeout(mappeTimer); mappeTimer = setTimeout(function () { mappeTimer = null; if (!$('mappe').hidden) buildMappe(); }, 150); }
+  function absenderDa() { return !!(String(person.name || '').trim() && String(person.strasse || '').trim() && String(person.ort || '').trim()); }
+  function statusSetzen(id, text, art) { var el = $(id); if (!el) return; el.textContent = text; el.className = 'auf-status' + (art ? ' ' + art : ''); }
+  function mappeStatus() {
+    var ids = pickedIds();
+    statusSetzen('statAngaben', absenderDa() ? '✓ ' + t('f.st.da') : t('f.st.fehlt'), absenderDa() ? 'ok' : 'fehlt');
+    var n = ids.length;
+    $('titelAntraege').textContent = t('f.auf.antraege', { n: n });
+    statusSetzen('statAntraege', antraegeErledigt() ? '✓ ' + t('f.st.erledigt') : t('f.st.offen'), antraegeErledigt() ? 'ok' : '');
+    var cbs = [].slice.call($('aufUnterlagen').querySelectorAll('input[data-haken^="u|"]')), ab = cbs.filter(function (c) { return c.checked; }).length;
+    var uFertig = !!haken['mappe|unterlagen'] || (cbs.length > 0 && ab === cbs.length);
+    statusSetzen('statUnterlagen', uFertig ? '✓ ' + t('f.st.erledigt') : t('f.st.n', { n: ab, m: cbs.length }), uFertig ? 'ok' : '');
+    statusSetzen('statAbschicken', haken['mappe|abschicken'] ? '✓ ' + t('f.st.erledigt') : t('f.st.offen'), haken['mappe|abschicken'] ? 'ok' : '');
+    var abs = $('mappeAufgaben').querySelector('input[data-haken="mappe|abschicken"]'); if (abs) abs.checked = !!haken['mappe|abschicken'];
+    ['auf-antraege', 'auf-unterlagen', 'auf-abschicken'].forEach(function (x) { $(x).hidden = !n; });
+  }
   function buildMappe() {
     var ids = pickedIds(), briefe = briefIds();
     // Nichts gewählt: Hinweis unter der Auswahl, keine leeren Briefe
     $('pickMsg').textContent = ids.length || !$('pick').querySelector('[data-pick]') ? '' : t('f.pick0');
-    if (!ids.length) { $('mappeBody').innerHTML = ''; mappeTextNeu(); return; }
-    var html = '', fh = formsHtml(); empfHinweisDa = false;
-    var nameLang = function (r) { return r.name + (lang === 'de' ? '' : ' (' + t('n.' + r.id) + ')'); };
-    // Kein Inhaltsverzeichnis: oben eine Aufgabenliste (die Liste ist das Verzeichnis), dann Briefe, Formulare, Angabenblatt, Unterlagen
-    // Fehlt der Wohnort, kann die App keine Anschriften einsetzen (Anschriften gibt es für Bayern): Hinweis im Schritt „Anschrift eintragen“
-    var ohneOrt = Behoerden.available() && !aktAgs() && (!state.bundesland || state.bundesland === 'BY') &&
-      ids.some(function (r) { return Behoerden.brauchtKreis(r.id); });
-    html += aufgabenHtml(briefe.length > 0, !!fh, ohneOrt, briefe);
-    // Rentenauskunft (srente) ist kein Antrag: Hinweis unter der Erklärung zum formlosen Antrag
-    if ($('introSrente')) $('introSrente').hidden = !briefe.some(function (r) { return r.id === 'srente'; });
-    briefe.forEach(function (r) { html += briefSeite(r.id); });
-    html += fh.replace('<article class="page docs forms">', '<article class="page docs forms" id="m-formulare" tabindex="-1">');
-    html += '<article class="page" id="m-angaben" tabindex="-1" lang="de" dir="ltr"><pre>' + esc(sheetText()) + '</pre></article>';
-    html += '<article class="page docs" id="m-unterlagen" tabindex="-1"><h3>' + esc(t('f.docs')) + '</h3>' +
-      '<p class="small">' + esc(t('steps.note')) + '</p><p class="small muted haken-hint no-print">' + esc(t('haken.hint')) + '</p>' + ids.map(function (r) {
-      var s = r.steps;
-      return '<h3>' + esc(nameLang(r)) + '</h3>' +
-        '<p>' + esc(tL(s.wo)) + '</p>' + (r.id === 'ggeld' && lang === 'de' && typeof Formulare !== 'undefined' ? unterlagenGenau(r) : unterlagenListe(r, true)) + '<p class="tip">' + esc(tL(s.tip)) + '</p>';
-    }).join('') + '<p class="small rb-satz">' + esc(t('rb.satz')) + '</p></article>';
-    $('mappeBody').innerHTML = html;
+    var offen = {}; [].slice.call($('aufAntraege').querySelectorAll('details[open]')).forEach(function (d) { var z = d.closest('[data-ant]'); if (z) offen[z.getAttribute('data-ant') + (d.classList.contains('ant-zeigen') ? '' : '|m')] = true; });
+    empfHinweisDa = false;
+    // Fehlt der Wohnort, kann die App keine Anschriften einsetzen (Anschriften gibt es für Bayern): Hinweis über den Anschreiben
+    var ohneOrt = Behoerden.available() && !aktAgs() && (!state.bundesland || state.bundesland === 'BY') && ids.some(function (r) { return Behoerden.brauchtKreis(r.id); });
+    $('aufAntraege').innerHTML = ids.length ? antraegeHtml(ids, briefe, ohneOrt) : '';
+    $('aufUnterlagen').innerHTML = ids.length ? unterlagenHtml(ids) + '<label class="haken"><input type="checkbox" data-haken="mappe|unterlagen"' + (haken['mappe|unterlagen'] ? ' checked' : '') + '><span>' + esc(t('f.auf.erledigt')) + '</span></label>' : '';
+    $('aufAbschicken').innerHTML = ids.length ? abschickenHtml(ids, briefe) : '';
+    [].slice.call($('aufAntraege').querySelectorAll('[data-ant]')).forEach(function (z) {
+      var k = z.getAttribute('data-ant'), dz = z.querySelector('details.ant-zeigen'), dm = z.querySelector('details.mehr');
+      if (dz && offen[k]) dz.open = true; if (dm && offen[k + '|m']) dm.open = true;
+    });
+    $('mappeBody').innerHTML = ids.length ? druckSeitenHtml(ids, briefe) : '';
     mappeTextNeu();
+    mappeStatus();
   }
   // Empfänger bearbeiten: Brief und Kopiertext sofort angleichen, ohne die Mappe neu aufzubauen (Fokus bleibt im Feld)
-  if ($('mappeBody')) {
-    $('mappeBody').addEventListener('input', function (ev) {
+  if ($('mappe')) {
+    $('mappe').addEventListener('input', function (ev) {
       var el = ev.target, id = el && el.getAttribute && el.getAttribute('data-empf');
       if (!id) return;
       empfEdit[id] = el.value;
-      var rb = $('mappeBody').querySelector('[data-empf-resetbox="' + id + '"]');
+      var rb = $('mappe').querySelector('[data-empf-resetbox="' + id + '"]');
       if (rb) rb.hidden = false;
       var pre = $('brief-' + id);
       if (pre) pre.textContent = letterText(id);
-      var zg = $('mappeBody').querySelector('[data-empf-zeigen="' + id + '"] pre');
+      var zg = $('mappe').querySelector('[data-empf-zeigen="' + id + '"] pre');
       if (zg) zg.textContent = empfZeilen(id).join('\n');
+      var an = $('mappe').querySelector('[data-ant="b-' + id + '"] .ant-an'), z1 = empfZeilen(id).filter(function (z) { return z.indexOf('____') < 0; })[0];
+      if (an) { an.textContent = z1 ? t('f.ant.an', { stelle: z1 }) : t('f.ant.anFehlt'); an.classList.toggle('fehlt', !z1); }
       mappeTextNeu();
     });
-    $('mappeBody').addEventListener('click', function (ev) {
-      var sp = ev.target && ev.target.closest && ev.target.closest('[data-sprung]');
-      if (sp) { // Schritt der Aufgabenliste: zum ersten passenden Teil springen
-        var z = sp.getAttribute('data-sprung'), ziel = z === 'm-brief' ? $('mappeBody').querySelector('[id^="m-brief-"]') : $(z);
-        if (ziel) { ziel.scrollIntoView({ behavior: smooth(), block: 'start' }); ziel.focus({ preventScroll: true }); }
-        return;
-      }
-      if (ev.target && ev.target.closest && ev.target.closest('[data-mappe-druck]')) { $('mappePrint2').click(); return; }
+    $('mappe').addEventListener('click', function (ev) {
       var ae = ev.target && ev.target.closest && ev.target.closest('[data-empf-aendern]');
       if (ae) { // „ändern“: Feld an derselben Stelle öffnen
         var aid = ae.getAttribute('data-empf-aendern');
-        $('mappeBody').querySelector('[data-empf-zeigen="' + aid + '"]').hidden = true;
-        $('mappeBody').querySelector('[data-empf-feld="' + aid + '"]').hidden = false;
+        $('mappe').querySelector('[data-empf-zeigen="' + aid + '"]').hidden = true;
+        $('mappe').querySelector('[data-empf-feld="' + aid + '"]').hidden = false;
         $('empf-' + aid).focus();
         return;
       }
@@ -1570,42 +1690,164 @@
     });
   }
 
-  // ----- Amtliche Formulare: Links auf die amtlichen Seiten mit Ausfüllhilfe (SoLo füllt nichts aus) -----
-  function formPlan() {
-    if (typeof Formulare === 'undefined') return [];
-    return Formulare.plan(state, person, pickedIds());
-  }
-  function formsHtml() {
-    var fp = formPlan();
-    if (!fp.length) return '';
-    // Leistungen ohne Formular-Link: Der formlose Antrag steht weiter oben in der Mappe
-    var HINWEIS_FUER = { gsa: 'gsa', wg: 'wohngeld', wbs: 'wbs' }, briefe = {};
-    briefIds().forEach(function (r) { briefe[r.id] = true; });
-    // Je Formular eine Karte: Titel, darunter gleich groß der Link zum amtlichen Formular, dann ein Satz; Ausfüllhilfe zum Aufklappen
-    var h = '<article class="page docs forms"><h3>' + esc(t('f.forms')) + '</h3>' + mehrHtml('<p>' + esc(t('f.formsWeb')) + '</p>', t('mehr.was'));
-    h += fp.map(function (f) {
-      var brief = f.art === 'hinweis' && briefe[HINWEIS_FUER[f.id]] ? '<p><strong>' + esc(t('f.formsBrief')) + '</strong></p>' : '';
-      return '<section class="form-karte" lang="de" dir="ltr"><h4>' + esc(f.titel) + '</h4>' +
-        (f.url ? '<p class="form-link"><a class="btn" href="' + esc(f.url) + '" target="_blank" rel="noopener">' + esc(t('f.formsLink')) + '</a></p>' : '') +
-        '<p>' + esc(f.warum) + '</p>' + brief + (f.hilfe ? mehrHtml('<div>' + listItems(f.hilfe) + '</div>', t('mehr.ausfuellen')) : '') + '</section>';
-    }).join('') + '<p class="tip">' + esc(t('f.formsCheck')) + '</p>';
-    return h + '</article>';
-  }
-
-  function openMappe() {
+  // Mappe öffnen. mit: Leistung, die angehakt sein soll (Knopf „Antrag vorbereiten“ einer Ergebniskarte: data-antrag="<id>").
+  // Gehört sie zu einem Entweder-oder, wird ihr Weg gewählt. Die übrigen Haken bleiben, wie sie sind.
+  function openMappe(mit) {
+    if (mit && lastOut) {
+      var gr = (letzteWege || []).filter(function (g) { return g.alle.indexOf(mit) >= 0; })[0];
+      if (gr) { var w = gr.optionen.filter(function (o) { return o.ids.indexOf(mit) >= 0; })[0]; if (w) { wegWahl[gr.id] = w.id; gr.alle.forEach(function (id) { var an = w.ids.indexOf(id) >= 0; pickedUser[id] = an; }); } }
+      pickedUser[mit] = true;
+      renderPick(lastOut.results, lastOut.zusammen);
+    }
+    absenderVorbelegen();
     buildMappe();
     $('mappe').hidden = false;
     $('app').classList.add('pm');
     $('copyMsg').textContent = '';
     $('mappeText').hidden = true;
+    // Erst was jetzt zählt: der erste offene Schritt ist aufgeklappt, die anderen zu
+    var erster = !absenderDa() ? 'aufAngaben' : !pickedIds().length ? '' : !antraegeErledigt() ? 'aufAntraegeD' : !haken['mappe|unterlagen'] ? 'aufUnterlagenD' : 'aufAbschickenD';
+    ['aufAngaben', 'aufAntraegeD', 'aufUnterlagenD', 'aufAbschickenD'].forEach(function (id) { $(id).open = id === erster; });
+    if (mit) { var z = $('mappe').querySelector('[data-ant$="-' + mit + '"]'); if (z) $('aufAntraegeD').open = true; }
     try { window.scrollTo(0, 0); } catch (e) {}
   }
+  // „Antrag vorbereiten“ (Ergebniskarte, Bereich Ergebnisliste): jedes Element mit data-antrag="<Leistungs-ID>" öffnet die Mappe mit dieser Leistung
+  // Schnittstelle für die Ergebnisliste: window.SoloMappe.oeffnenMit(id) bzw. ein Element mit data-antrag="<id>"
+  function mappeOeffnenMit(id) {
+    if (!lastOut) return;
+    openMappe(id);
+    var hm = $('h-mappe'); if (hm) { hm.setAttribute('tabindex', '-1'); hm.focus({ preventScroll: true }); }
+  }
+  window.SoloMappe = { oeffnenMit: mappeOeffnenMit };
+  document.addEventListener('click', function (ev) {
+    var k = ev.target && ev.target.closest && ev.target.closest('[data-antrag]');
+    if (!k || !lastOut) return;
+    ev.preventDefault();
+    mappeOeffnenMit(k.getAttribute('data-antrag'));
+  });
 
   function closeMappe() {
     $('mappe').hidden = true;
     $('app').classList.remove('pm');
     if (esAltState) { state = esAltState.state; picked = esAltState.picked; pickedUser = esAltState.pickedUser; lastOut = esAltState.lastOut; esAltState = null; render(); }
   }
+
+  // ----- Entweder-oder in der Mappe: Wahl des Wegs statt leerer Haken (UX-Prüfung Nr. 2) -----
+  // Regeln: docs/entwuerfe/entweder-oder.md, Abschnitt 6.2 (Prüfung 21.11.2026): Grundsicherungsgeld und Wohngeld nie gleichzeitig (§ 7 Abs. 1 Satz 1 Nr. 1 WoGG),
+  // Kinderzuschlag nur ohne Grundsicherungsgeld (§ 6a Abs. 1 Nr. 3 BKGG), Vorrang von Wohngeld und Kinderzuschlag (§ 12a SGB II), bei Rente Wohngeld vor
+  // Grundsicherung im Alter (§ 2 SGB XII, § 7 WoGG); alle abgerufen 21.11.2026 auf gesetze-im-internet.de.
+  // Optionsfelder mit beschreibenden Namen; vorbelegt ist der voraussichtlich vorrangige Weg aus der Rechnung der Regeln (out.wege), liegt es knapp oder
+  // ist es unklar: „Ich weiß es noch nicht“ (nichts aus der Gruppe angehakt). Bildung und Teilhabe gibt es auf beiden Wegen, ist aber im
+  // Grundsicherungsgeld enthalten (eigener Haken, bei Grundsicherungsgeld nicht vorab angehakt).
+  // Lage aus src/rules.js (Bereich Ergebnisliste): out.wege = { lage: 'aVor' | 'wahl' | 'bUeblich' | 'unklar', rente, a: [ids], b: [ids] } oder null.
+  // Vorbelegung: aVor → Weg a, bUeblich → Weg b, wahl/unklar → „Ich weiß es noch nicht“ (Puffer 50 € liegt in der Rechnung der Regeln).
+  // Ohne out.wege (älterer Stand der Regeln) gelten die Hinweise z.ggVsWg / z.gsaWg und „Ich weiß es noch nicht“.
+  function mappeWege(results, zusammen, avail) {
+    var da = {}; (avail || []).forEach(function (r) { da[r.id] = r; });
+    var z = function (k) { return (zusammen || []).some(function (x) { return x[0] === k; }); };
+    var w = lastOut && lastOut.wege, gruppen = [];
+    var gruppe = function (id, a, b, nameA, nameB, lage) {
+      a = a.filter(function (x) { return da[x]; }); b = b.filter(function (x) { return da[x]; });
+      if (!a.length || !b.length) return;
+      var optionen = [{ id: 'a', ids: a, name: nameA }, { id: 'b', ids: b, name: nameB }, { id: 'offen', ids: [], name: 'f.weg.offen' }];
+      gruppen.push({ id: id, lage: lage, optionen: optionen, alle: a.concat(b), vorwahl: lage === 'aVor' ? 'a' : lage === 'bUeblich' ? 'b' : 'offen' });
+    };
+    if (w && w.a && w.b) {
+      if (w.rente) gruppe('gsa', w.a, w.b, 'weg.rA', 'weg.rB', w.lage);
+      else gruppe('gg', w.a, w.b, w.a.indexOf('kiz') >= 0 && da.kiz ? 'weg.a' : 'weg.a0', 'weg.b', w.lage);
+    } else if (z('z.ggVsWg')) gruppe('gg', ['wohngeld', 'kiz'], ['ggeld'], da.kiz ? 'weg.a' : 'weg.a0', 'weg.b', 'unklar');
+    else if (z('z.gsaWg')) gruppe('gsa', ['wohngeld'], ['gsa'], 'weg.rA', 'weg.rB', 'unklar');
+    letzteWege = gruppen;
+    return gruppen;
+  }
+  function wegGruppeVon(wege, id) { return (wege || []).filter(function (g) { return g.alle.indexOf(id) >= 0; })[0] || null; }
+  function wegAktiv(g) { return g.optionen.some(function (o) { return o.id === wegWahl[g.id]; }) ? wegWahl[g.id] : g.vorwahl; }
+  function wegIdsVon(g, w) { var o = g.optionen.filter(function (x) { return x.id === w; })[0]; return o ? o.ids : []; }
+  function wegHtml(g) {
+    var akt = wegAktiv(g), r = function (id) { return (lastOut ? lastOut.results : []).filter(function (x) { return x.id === id; })[0]; };
+    var betrag = function (x) { var b = x && x.tx.filter(function (y) { return BETRAG_KURZ[y[0]]; })[0]; return b ? t(BETRAG_KURZ[b[0]], b[1]) : ''; };
+    return '<fieldset class="weg-wahl"><legend>' + esc(t('f.weg.frage')) + '</legend>' + g.optionen.map(function (o) {
+      var bt = o.ids.map(function (id) { var x = r(id), b = betrag(x); return b ? (o.ids.length > 1 ? (x.name + ': ') : '') + b : ''; }).filter(Boolean);
+      return '<label class="check"><input type="radio" name="weg-' + esc(g.id) + '" data-weg="' + esc(g.id) + '" value="' + esc(o.id) + '"' + (o.id === akt ? ' checked' : '') + '><span><span class="weg-name">' + esc(t(o.name)) + '</span>' +
+        (bt.length ? '<span class="small weg-betrag" lang="de">' + esc(bt.join(' · ')) + '</span>' : '') + '</span></label>';
+    }).join('') + '<p class="small">' + esc(t('f.weg.nichtZaehlen')) + '</p>' +
+      // „Ich weiß es noch nicht“: Satz zur Lage (knapp: Warnung zum erweiterten Zugang beim Kinderzuschlag, § 6a Abs. 1a Nr. 3 BKGG), beim Grundsicherungsgeld der Notfall-Satz
+      (akt === 'offen' ? '<p class="small weg-offen">' + esc(t(g.id === 'gg' && g.lage === 'wahl' ? 'f.weg.wahl' : 'f.weg.unklar')) + '</p>' + (g.id === 'gg' ? '<p class="small weg-dringend"><strong>' + esc(t('f.weg.dringend')) + '</strong></p>' : '') : '') + '</fieldset>';
+  }
+
+
+  // ----- Absender: einmal eintragen, überall nutzen (Vorgabe des Inhabers, 21.11.2026) -----
+  // Gespeichert EINMAL im Vorgang: person { name, strasse, ort, geb, tel } in lotse.state (Vorgaenge.DATEN: nur auf dem Gerät, bei PIN mitverschlüsselt,
+  // „Alles löschen“ löscht sie). Alle Briefe der App lesen von hier und schreiben Änderungen hierher zurück:
+  //  Antragsmappe (Anschreiben, Angabenblatt), Brief prüfen: Widerspruch/Antwort an Jobcenter (bs), Sozialamt (ga), Wohngeldstelle (wg),
+  //  Familienkasse (kz), Pflegekasse (pf), Vermieter bzw. Nebenkosten (nk), Kostensenkung (ctx.person), Musterschreiben in Geld und Schulden
+  //  (Bitte um Geduld, Forderungsaufstellung, Widerspruch, P-Konto, Ratenangebot: ctx.absender), Änderungsmitteilung im Haushaltsplan.
+  // Freiwillig: ohne Angaben bleiben im Ausdruck Lücken zum Ausfüllen von Hand.
+  var ABS_FELDER = { name: 'p-name', strasse: 'p-strasse', ort: 'p-ort', geb: 'p-geb', tel: 'p-tel' };
+  var ABS_BRIEF = ['pf', 'bs', 'ga', 'wg', 'kz', 'nk'], ABS_BRIEF_FELD = { name: '-name', strasse: '-anschrift', ort: '-ort' };
+  function absenderWert(f) { return String(person[f] == null ? '' : person[f]); }
+  function absenderZeilen() { return ['name', 'strasse', 'ort'].map(function (f) { return absenderWert(f).trim(); }).filter(Boolean); }
+  function absenderOrt() { return absenderWert('ort').replace(/\b\d{5}\b/g, '').replace(/[,;]/g, ' ').trim(); }
+  function absender() { return { zeilen: absenderZeilen(), ort: absenderOrt() }; }
+  function briefFeld(k, f) { return $(k + ABS_BRIEF_FELD[f]); }
+  // Felder überall angleichen. Alte Stände: Steht in einem Brief-Formular schon ein Absender, der zentral noch fehlt, wird er übernommen.
+  function absenderVerteilen(quelle) {
+    var neu = false;
+    ABS_BRIEF.forEach(function (k) { Object.keys(ABS_BRIEF_FELD).forEach(function (f) { var el = briefFeld(k, f); if (el && !absenderWert(f).trim() && el.value.trim()) { person[f] = el.value.trim(); neu = true; } }); });
+    if (neu) save();
+    Object.keys(ABS_FELDER).forEach(function (f) { var el = $(ABS_FELDER[f]); if (el && el !== quelle && el.value !== absenderWert(f)) el.value = absenderWert(f); });
+    ABS_BRIEF.forEach(function (k) { Object.keys(ABS_BRIEF_FELD).forEach(function (f) { var el = briefFeld(k, f); if (el && el !== quelle && el.value !== absenderWert(f)) el.value = absenderWert(f); }); });
+    document.querySelectorAll('input[data-abs]').forEach(function (el) { if (el !== quelle && el.value !== absenderWert(el.getAttribute('data-abs'))) el.value = absenderWert(el.getAttribute('data-abs')); });
+    document.querySelectorAll('[data-abs-kurz]').forEach(absKurzSetzen);
+    absHoerer.forEach(function (fn) { try { fn(); } catch (e) {} });
+  }
+  var absHoerer = [];
+  function absenderSetzen(f, wert, quelle) {
+    person[f] = wert; save();
+    absenderVerteilen(quelle);
+    if (!$('mappe').hidden) { mappeNeuBald(); mappeStatus(); }
+    // Die Anschrift kann den Wohnort liefern (PLZ): Karten mit der zuständigen Stelle aktualisieren
+    if (f === 'ort' && !/^\d{5}$/.test(String(state.plz || ''))) render();
+  }
+  // Vorausfüllen, was schon bekannt ist: PLZ (und eindeutiger Ort) aus dem Fragebogen, wenn „PLZ und Ort“ noch leer ist. Nie doppelt fragen.
+  function absenderVorbelegen() {
+    if (absenderWert('ort').trim() || !/^\d{5}$/.test(String(state.plz || ''))) return;
+    var r = Plz.available() ? Plz.lookup(state.plz) : null, ort = '';
+    if (r) { var c = r.candidates.filter(function (x) { return x.label + '|' + x.kreis + '|' + x.stufe === state.plzPick; })[0] || (r.candidates.length === 1 ? r.candidates[0] : null); if (c) ort = String(c.label).split(',')[0]; }
+    person.ort = state.plz + (ort ? ' ' + ort : ''); save(); absenderVerteilen();
+  }
+  function absKurzSetzen(el) {
+    var z = absenderZeilen();
+    el.textContent = z.length ? z.join(', ') : t('f.abs.leer');
+    el.classList.toggle('fehlt', !z.length);
+  }
+  // Kompakter Absender-Block für Briefe außerhalb der Mappe (wie der Empfänger: eine Zeile, „ändern“ öffnet die Felder). onChange: Brief neu schreiben.
+  function absenderKasten(onChange) {
+    var box = document.createElement('div'); box.className = 'abs-kasten';
+    var kopf = box.appendChild(document.createElement('p')); kopf.className = 'abs-kopf';
+    var lab = kopf.appendChild(document.createElement('b')); lab.textContent = t('f.abs.titel') + ': ';
+    var kurz = kopf.appendChild(document.createElement('span')); kurz.setAttribute('data-abs-kurz', '1'); absKurzSetzen(kurz);
+    var knopf = kopf.appendChild(document.createElement('button')); knopf.type = 'button'; knopf.className = 'linkbtn abs-aendern'; knopf.textContent = t('f.abs.aendern');
+    var felder = box.appendChild(document.createElement('div')); felder.className = 'abs-felder'; felder.hidden = true;
+    var nr = (absenderKasten.n = (absenderKasten.n || 0) + 1);
+    [['name', 'f.name'], ['strasse', 'f.strasse'], ['ort', 'f.ort']].forEach(function (x) {
+      var f = felder.appendChild(document.createElement('div')); f.className = 'field';
+      var l = f.appendChild(document.createElement('label')); l.textContent = t(x[1]); l.htmlFor = 'abs-' + nr + '-' + x[0];
+      var i = f.appendChild(document.createElement('input')); i.type = 'text'; i.id = l.htmlFor; i.autocomplete = 'off'; i.setAttribute('data-abs', x[0]); i.value = absenderWert(x[0]);
+      i.addEventListener('input', function () { absenderSetzen(x[0], i.value, i); });
+    });
+    var hin = felder.appendChild(document.createElement('p')); hin.className = 'small'; hin.textContent = t('f.abs.hinweis');
+    knopf.addEventListener('click', function () { felder.hidden = !felder.hidden; knopf.setAttribute('aria-expanded', String(!felder.hidden)); if (!felder.hidden) felder.querySelector('input').focus(); });
+    knopf.setAttribute('aria-expanded', 'false');
+    if (onChange) absHoerer.push(function () { if (box.isConnected) onChange(); });
+    return box;
+  }
+  // Brief prüfen (Widerspruch, Antworten): die Absender-Felder sind dieselben Daten, Änderungen gelten für alle Briefe
+  document.addEventListener('input', function (ev) {
+    var el = ev.target, id = el && el.id || '', m = id.match(/^(pf|bs|ga|wg|kz|nk)-(name|anschrift|ort)$/);
+    if (!m) return;
+    absenderSetzen({ name: 'name', anschrift: 'strasse', ort: 'ort' }[m[2]], el.value, el);
+  });
 
   // ----- Ergebnisblatt zum Mitgeben: eine Druckseite (Leistung, Einstufung, ungefährer Betrag, Stelle, nächster Schritt), ohne Namen -----
   // Gleiche Wörter wie auf dem Bildschirm: Betrag ist der Schätzsatz der Karte („Grob geschätzt …“) oder der Satz mit dem festen Betrag;
@@ -1704,23 +1946,12 @@
     return pdfScript;
   }
   function pdfPages() {
-    // Briefe und Angabenblatt sind deutsch. Die Unterlagenliste folgt der Sprache; Arabisch kann pdf-lib nicht setzen, dort bleibt sie deutsch.
+    // Briefe und Angabenblatt sind deutsch. Die Unterlagen- und Formularliste folgt der Sprache; Arabisch kann pdf-lib nicht setzen, dort bleibt sie deutsch.
     var pdfLang = pdfRtl() ? 'de' : lang, saved = lang;
     var pages = briefIds().map(function (r) { return { blocks: [{ t: 'pre', text: letterText(r.id) }] }; });
     pages.push({ blocks: [{ t: 'pre', text: sheetText() }] });
     lang = pdfLang;
-    try {
-      var blocks = [{ t: 'h', text: t('f.docs') }];
-      pickedIds().forEach(function (r) {
-        var s = r.steps;
-        blocks.push({ t: 'h', text: r.name + (lang === 'de' ? '' : ' (' + t('n.' + r.id) + ')') });
-        blocks.push({ t: 'p', text: tL(s.wo) });
-        s.u.forEach(function (k) { blocks.push({ t: 'li', text: (haken[r.id + '|' + k] ? '[x] ' : '[ ] ') + tL(k) }); });
-        blocks.push({ t: 'small', text: tL(s.tip) });
-      });
-      blocks.push({ t: 'small', text: t('rb.satz') }); // „Keine Rechtsberatung“ auf jedem Ausdruck
-      pages.push({ blocks: blocks });
-    } finally { lang = saved; }
+    try { pages.push({ blocks: druckUnterlagen(pickedIds()) }); } finally { lang = saved; }
     return pages;
   }
   function toBase64(bytes) {
@@ -4174,10 +4405,8 @@
     // Erst entscheiden (scannen, einfügen oder selbst eingeben), dann erscheint das Formular der Prüfung
     if (!teil) abVon = false;
     if (teil && art !== 'af' && art !== 'an' && art !== 'ab' && !$(teil).dataset.offen) $(teil).classList.add('pp-zu');
-    // Name und Anschrift aus der Ausfüllhilfe übernehmen, damit man sie für das Schreiben nicht noch einmal tippt (nur leere Felder)
-    ['pf', 'bs', 'ga', 'wg', 'kz', 'nk'].forEach(function (k) {
-      [['-name', person.name], ['-anschrift', person.strasse], ['-ort', person.ort]].forEach(function (x) { var el = $(k + x[0]); if (el && !el.value && x[1]) el.value = x[1]; });
-    }); // einmal geöffnet bleibt das Formular offen (z. B. nach der Pflege-Einschätzung) // Antragsformular: dort sind Foto und Einfügen selbst die Wahl
+    // Gespeicherten Absender einsetzen (einmal eingetragen, gilt für alle Briefe; Änderungen hier gelten ebenfalls für alle)
+    absenderVerteilen(); // einmal geöffnet bleibt das Formular offen (z. B. nach der Pflege-Einschätzung) // Antragsformular: dort sind Foto und Einfügen selbst die Wahl
     elPlatz();
     if (art === 'pk' && window.PruefpaketPflege && typeof PflegeAssistent !== 'undefined') window.PruefpaketPflege.eigene(pa.antworten ? PflegeAssistent.eingabe(pa.antworten, null) : null);
     window.scrollTo(0, 0);
@@ -4353,6 +4582,7 @@
       schreiben: function (text, cb) { Store.set('lotse.haushalt', text); cb(null); } // Speicherfehler meldet der Tresor (vgSpeicherFehler)
     });
     Haushalt.init({
+      absender: absender, absenderKasten: absenderKasten, // gespeicherter Absender für die Änderungsmitteilung
       t: tL, euro: function (x) { return Fmt.euro(x, lang, I18N[lang]['meta.dir'] === 'rtl'); }, euroDe: function (x) { return Fmt.euro(x, 'de'); },
       datum: function (d) { return Fmt.datum(d, lang); }, datumDe: function (d) { return Fmt.datum(d, 'de'); }, locale: function () { return Fmt.LOCALE[lang] || 'de-DE'; },
       daten: function () { return started && edited ? state : null; },
@@ -4422,7 +4652,8 @@
         return r;
       },
       mappeDrucken: window.Schulden ? function () { oeffneVon('schulden', true); Schulden.blatt(); } : null, // Druck: Blatt der Schulden-Liste mit Haushaltsplan und Unterlagenliste
-      textAusgeben: function (text, titel, msg) { if (!NATIVE) { schreibenDrucken(text); return; } schreibenAusgeben({ value: text }, titel, plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen', msg); }
+      textAusgeben: function (text, titel, msg) { if (!NATIVE) { schreibenDrucken(text); return; } schreibenAusgeben({ value: text }, titel, plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen', msg); },
+      absender: absender, absenderKasten: absenderKasten // gespeicherter Absender (einmal eingetragen, gilt für alle Briefe)
     });
   }
   // ----- „Für Klient zusammenstellen“ (src/klient.js, nur Beratungsmodus): Inhalt aus vorhandenen Ergebnissen, kein neuer Rechtsinhalt -----

@@ -259,11 +259,13 @@ var Haushalt = (function () {
     geldHinweis(e, sgb, notizen, out); // Mehrbedarf, Erspartes, Pflege, Steuer: höchstens einer (Funktionen am Ende)
     return out.sort(function (a, b) { return b.prio - a.prio; });
   }
-  function aenderungsBrief(alt, neu, datum) {
-    return ['[Name, Anschrift]', '', 'An: [Jobcenter oder Sozialamt]', '', 'Aktenzeichen bzw. Nummer der Bedarfsgemeinschaft: [_____]', '', 'Mitteilung über eine Änderung meines Einkommens', '',
+  // ich: gespeicherter Absender { zeilen, ort } (einmal eingetragen, gilt für alle Briefe der App); ohne Angaben Lücken zum Ausfüllen von Hand
+  function aenderungsBrief(alt, neu, datum, ich) {
+    var z = ich && ich.zeilen && ich.zeilen.length ? ich.zeilen : ['[Name, Anschrift]'];
+    return z.concat(['', 'An: [Jobcenter oder Sozialamt]', '', 'Aktenzeichen bzw. Nummer der Bedarfsgemeinschaft: [_____]', '', 'Mitteilung über eine Änderung meines Einkommens', '',
       'Sehr geehrte Damen und Herren,', '', 'hiermit teile ich Ihnen nach § 60 Abs. 1 Satz 1 Nr. 2 SGB I mit, dass sich mein Einkommen geändert hat.',
       'Bisher: etwa ' + alt + ' netto im Monat.', 'Neu: etwa ' + neu + ' netto im Monat, ab dem [Datum].', '', 'Nachweise (zum Beispiel die Lohnabrechnung) lege ich bei.', '',
-      'Mit freundlichen Grüßen', '', '[Ort], ' + datum, '[Unterschrift]'].join('\n');
+      'Mit freundlichen Grüßen', '', ((ich && ich.ort) || '[Ort]') + ', ' + datum, '[Unterschrift]']).join('\n');
   }
 
   // ---------- Abschlag prüfen (Strom, Gas) ----------
@@ -608,7 +610,10 @@ var Haushalt = (function () {
       if (bzk.grundsicherungsgeld || bzk.sozialamt) b.appendChild(knopf('btn ghost klein', t('hb.hw.melden'), function () {
         if (d.querySelector('textarea')) return;
         var l = el('label'); l.htmlFor = 'hb-brief'; l.textContent = t('hb.hw.briefLabel'); d.appendChild(l);
-        var ta = el('textarea'); ta.id = 'hb-brief'; ta.rows = 12; ta.lang = 'de'; ta.value = aenderungsBrief(ctx.euroDe(euroGanz(h.alt)), ctx.euroDe(euroGanz(h.neu)), ctx.datumDe(new Date())); d.appendChild(ta);
+        var ta = el('textarea'); ta.id = 'hb-brief'; ta.rows = 12; ta.lang = 'de';
+        var briefNeu = function () { ta.value = aenderungsBrief(ctx.euroDe(euroGanz(h.alt)), ctx.euroDe(euroGanz(h.neu)), ctx.datumDe(new Date()), ctx.absender ? ctx.absender() : null); };
+        if (ctx.absenderKasten) d.appendChild(ctx.absenderKasten(briefNeu)); // gespeicherter Absender, hier änderbar (gilt für alle Briefe)
+        briefNeu(); d.appendChild(ta);
         var m = el('p', 'small'); m.setAttribute('aria-live', 'polite');
         d.appendChild(knopf('btn', t('hb.hw.briefAus'), function () { ctx.textAusgeben(ta.value, 'Aenderungsmitteilung', m); }));
         d.appendChild(m); ta.focus();

@@ -1,7 +1,6 @@
 {
- "f.intro": "Trage deinen Namen und deine Anschrift ein. Du bekommst drei Dinge zum Ausdrucken: einen Antrag, ein Angabenblatt und eine Unterlagenliste.",
  "f.deNote": "Brief und Angabenblatt sind auf Deutsch. Die Ämter brauchen sie so. Du kannst sie unverändert abgeben oder abschicken.",
- "f.stichtag": "Schick den Antrag so früh wie möglich ab. Viele Leistungen gibt es erst ab dem Monat, in dem der Antrag beim Amt ankommt. Manche gibt es erst ab dem Tag. Gibt es ein amtliches Formular? Dann steht der Link unten.",
+ "f.stichtag": "Schick den Antrag so früh wie möglich ab. Viele Leistungen gibt es erst ab dem Monat, in dem der Antrag beim Amt ankommt. Manche gibt es erst ab dem Tag.",
  "f.alg1.meldung": "Arbeitslosengeld: Ein Brief reicht nicht. Du musst dich bei der Agentur für Arbeit arbeitslos melden. Das geht persönlich oder online. Mach das spätestens am ersten Tag ohne Arbeit. Weißt du schon, dass deine Arbeit endet? Dann melde dich 3 Monate vorher arbeitsuchend. Erfährst du es später? Dann innerhalb von 3 Tagen.",
  "f.srente.hinweis": "Altersrente für schwerbehinderte Menschen: Dieser Brief ist kein Antrag. Du fragst damit nur nach einer Rentenauskunft und nach Beratung. Den Antrag auf Rente stellst du danach bei der Deutschen Rentenversicherung.",
  "z.ggBezug": "Du bekommst Grundsicherungsgeld (bis Juni 2026: Bürgergeld). Dazu passen Wohngeld und Kinderzuschlag meist nicht. Das Bildungspaket läuft oft über das Jobcenter.",
@@ -101,13 +100,11 @@
  "z.zuk.eg": "Beantrage Elterngeld nach der Geburt rechtzeitig. Beim Grundsicherungsgeld, Wohngeld und Kinderzuschlag zählt es als Einkommen, wenn es über 300 € liegt. Die Karten zeigen, was sich dann ändert.",
  "z.grenzen": "Die App rechnet diese Dinge nur grob oder gar nicht: die genaue Mietobergrenze deiner Stadt, stark schwankendes Einkommen, Unterhalt von Angehörigen und Sonderfälle beim Aufenthaltsrecht. Trifft etwas davon auf dich zu, lass dich beraten. Das geht zum Beispiel kostenlos bei einer Sozialberatung der Stadt oder der Wohlfahrtsverbände.",
  "z.verfahren": "Nach dem Antrag: Du kannst innerhalb eines Monats Widerspruch gegen einen Bescheid einlegen (§ 84 SGG). Ein älterer Bescheid ist falsch? Dann hilft ein Überprüfungsantrag (§ 44 SGB X). Rückwirkend gibt es dann aber nur für eine begrenzte Zeit Geld. Die Ämter müssen dich beraten (§ 14 SGB I). Du stellst den Antrag bei der falschen Stelle? Dann leitet die Stelle ihn weiter. Er gilt trotzdem (§ 16 SGB I).",
- "f.formsWeb": "Diese Anträge passen zu deinen Angaben. Die Links führen zu den amtlichen Formularen. SoLo füllt nichts aus. Die Ausfüllhilfe sagt dir, was hineingehört.",
  "f.formsCheck": "Die Links führen auf amtliche Seiten. Nimm dort den aktuellen Vordruck (das aktuelle Formular). Für deine Angaben bist du selbst verantwortlich.",
  "f.empfHinweis": "Fehlt die Anschrift? Oder steht nur die Art der Stelle da? Dann trage hier Name und Anschrift der Stelle ein. Die Änderung gilt für das Schreiben zum Kopieren und für das PDF.",
  "sc.tipp": "Tipp: Fülle zuerst den Leistungscheck aus. Dann zeigt die App hier deine Werte zum Abschreiben.",
  "sc.f.aufenthalt": "Staatsangehörigkeit und Aufenthaltsstatus. Das steht im Pass oder im Aufenthaltstitel. Lege eine Kopie dazu, wenn danach gefragt wird.",
  "sc.vorschau": "Dein Formular. Es bleibt nur auf diesem Gerät und wird nicht gespeichert. Tippe darauf, um es größer zu sehen.",
  "sc.kopiert": "Kopiert. Du kannst den Text jetzt in ein Online-Formular oder in ein ausfüllbares PDF einfügen.",
- "f.copyFail": "Kopieren ging nicht. Markiere den Text unten. Kopiere ihn dann von Hand.",
- "f.intro.mehr": "Ein formloser Antrag ist ein kurzer Brief. Damit sicherst du dir deinen Antrag. Das amtliche Formular schickt dir das Amt danach."
+ "f.copyFail": "Kopieren ging nicht. Markiere den Text unten. Kopiere ihn dann von Hand."
 }
