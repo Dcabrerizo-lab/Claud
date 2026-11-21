@@ -145,21 +145,45 @@ fs.symlinkSync(path.join(ROOT, 'app', 'node_modules'), path.join(tmp, 'app', 'no
 const DATEI = (m) => m[3] || 'src/rules.js';
 const ORIG = {};
 M.forEach((m) => { ORIG[DATEI(m)] = ORIG[DATEI(m)] || fs.readFileSync(path.join(ROOT, DATEI(m)), 'utf8'); });
-const TESTS = ['test.js', 'test-netto.js', 'test-strict.js', 'test-beh.js', 'test-faelle.js', 'test-raster.js ' + (process.env.MUT_RASTER || 8000), 'test-pruefliste.js', 'test-einfach-gleich.js 3000', 'test-grenzen.js', 'test-formulare.js', 'test-amtlich.js', 'test-amtlich-wohngeld.js', 'test-ba-beispiele.js', 'test-musterbescheide.js', 'test-paar-einkommen.js', 'test-eigenschaften.js ' + (process.env.MUT_EIGEN || 3000)];
-const laeuft = () => { try { for (const t of TESTS) execSync('node test/' + t, { cwd: tmp, stdio: 'ignore' }); return true; } catch (e) { return false; } };
+// Reihenfolge: billige Tests zuerst, teure (strict, einfach-gleich, raster, eigenschaften) zuletzt. Die Reihenfolge ändert
+// das Ergebnis nicht (entdeckt = irgendein Test rot), nur die Laufzeit.
+const TESTS = ['test.js', 'test-netto.js', 'test-beh.js', 'test-faelle.js', 'test-pruefliste.js', 'test-grenzen.js', 'test-formulare.js', 'test-amtlich.js', 'test-amtlich-wohngeld.js', 'test-ba-beispiele.js', 'test-musterbescheide.js', 'test-musterbescheide-2.js', 'test-paar-einkommen.js', 'test-strict.js', 'test-einfach-gleich.js 3000', 'test-raster.js ' + (process.env.MUT_RASTER || 8000), 'test-eigenschaften.js ' + (process.env.MUT_EIGEN || 3000)];
+// Killer-Test zuerst: tools/mutation-killer.json merkt je Fehler den Test, der ihn zuletzt fand. Der läuft zuerst; findet er
+// den Fehler nicht mehr, laufen alle übrigen Tests wie bisher. Ergebnis je Fehler (entdeckt/nicht entdeckt) bleibt gleich.
+// Neu schreiben: MUT_KILLER_SCHREIBEN=1 (ergänzt tools/mutation-killer.json), MUT_KILLER_AUS=<datei> (nur die eigenen, z. B. Artefakt in CI).
+const KILLER_DATEI = path.join(ROOT, 'tools', 'mutation-killer.json');
+const KILLER = fs.existsSync(KILLER_DATEI) ? JSON.parse(fs.readFileSync(KILLER_DATEI, 'utf8')) : {};
+const finder = (liste) => { for (const t of liste) { try { execSync('node test/' + t, { cwd: tmp, stdio: 'ignore' }); } catch (e) { return t; } } return null; };
+const ohneZahl = (t) => t.split(' ')[0];
+const laeuft = () => finder(TESTS) === null;
 
-let unentdeckt = 0, geprueft = 0;
-TESTS.push('test-musterbescheide-2.js'); // Abgleich 2 (21.11.2026)
+let unentdeckt = 0, geprueft = 0, killerTreffer = 0;
+const neueKiller = {};
 for (const m of MEINE) {
   const [name, alt, neu] = m, datei = DATEI(m), orig = ORIG[datei];
   if (orig.split(alt).length !== 2) { console.log('UNGÜLTIG (Stelle nicht genau einmal gefunden): ' + name); unentdeckt++; continue; }
   fs.writeFileSync(path.join(tmp, datei), orig.replace(alt, neu));
   geprueft++;
-  if (laeuft()) { unentdeckt++; console.log('NICHT ENTDECKT: ' + name); } else console.log('entdeckt: ' + name);
+  const k = TESTS.find((t) => ohneZahl(t) === KILLER[name]);
+  const reihe = k ? [k, ...TESTS.filter((t) => t !== k)] : TESTS;
+  const gefunden = finder(reihe);
+  if (gefunden === null) { unentdeckt++; console.log('NICHT ENTDECKT: ' + name); } else {
+    if (gefunden === k) killerTreffer++;
+    neueKiller[name] = ohneZahl(gefunden);
+    console.log('entdeckt: ' + name + ' (von ' + ohneZahl(gefunden) + ')');
+  }
   fs.writeFileSync(path.join(tmp, datei), orig);
 }
 const sauber = laeuft();
 fs.rmSync(tmp, { recursive: true, force: true });
 if (!sauber) { console.log('Ohne Fehler laufen die Tests nicht durch – erst npm test reparieren.'); process.exit(1); }
+const sortiert = (o) => Object.fromEntries(Object.keys(o).sort().map((x) => [x, o[x]]));
+if (process.env.MUT_KILLER_AUS) fs.writeFileSync(process.env.MUT_KILLER_AUS, JSON.stringify(sortiert(neueKiller), null, 1) + '\n');
+if (process.env.MUT_KILLER_SCHREIBEN === '1') {
+  const alle = { ...KILLER, ...neueKiller };
+  for (const x of Object.keys(alle)) if (!M.some((m) => m[0] === x)) delete alle[x]; // Einträge entfernter Fehler löschen
+  fs.writeFileSync(KILLER_DATEI, JSON.stringify(sortiert(alle), null, 1) + '\n');
+}
+console.log('Killer-Test zuerst: ' + killerTreffer + ' von ' + Object.keys(neueKiller).length + ' entdeckten Fehlern sofort gefunden');
 console.log(unentdeckt ? '\n' + unentdeckt + ' von ' + geprueft + ' eingebauten Fehlern NICHT entdeckt' : '\nMutationstest bestanden: alle ' + geprueft + ' eingebauten Fehler wurden von den Tests entdeckt');
 process.exit(unentdeckt ? 1 : 0);

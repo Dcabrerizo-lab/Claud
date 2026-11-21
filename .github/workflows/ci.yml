@@ -176,6 +176,8 @@ jobs:
         env:
           SHARD: ${{ matrix.shard }}
           SKRIPT: ${{ matrix.skript }}
+          # Zufalls-Klicktest: zu wenig Abdeckung nur als Warnung; die Pflichtbesuche prüft test/e2e-rundgang.js (in e2e:basis)
+          ZUFALL_ABDECKUNG: warnen
         run: |
           if npm run "$SKRIPT"; then exit 0; fi
           echo "::warning title=Browsertest wiederholt::$SKRIPT ${SHARD:+(Teil $SHARD) }ist beim ersten Versuch fehlgeschlagen und wird einmal wiederholt. Bestehen im zweiten Versuch heißt: wackliger Test oder zeitabhängiger Fehler, bitte ansehen."

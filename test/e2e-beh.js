@@ -139,4 +139,4 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
   ok('Keine Konsolen- oder Skriptfehler', errs.length === 0, errs.join(' | '));
   ok('Datenschutz: Die Web-Version ruft während der ganzen Nutzung keinen Server auf', netz.length === 0, netz.slice(0, 5).join(' '));
   await b.close(); console.log(out.join('\n')); if (SHARD.aktiv) console.log('Ausführliche Version' + SHARD.name + ': ' + out.length + ' Prüfungen'); process.exit(out.some((l) => l.startsWith('FAIL')) ? 1 : 0);
-})().catch((e) => { console.log(out.join('\n')); console.log('ABSTURZ', e.message); process.exit(1); });
+})().catch((e) => { console.log(out.join('\n')); console.log('ABSTURZ', e.message, '\n' + String(e.stack || '').split('\n').filter((z) => z.includes('test/')).slice(0, 3).join('\n')); process.exit(1); }); // Stelle im Test mit ausgeben (wackliger Klick, 21.11.2026)
