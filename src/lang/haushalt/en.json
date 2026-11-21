@@ -286,7 +286,7 @@
   "tv.laufzeit.kurz": "Term at most 1 year, with a price guarantee for that time.",
   "tv.laufzeit": "The consumer advice centres (Verbraucherzentrale) recommend a term of about 1 year. The price guarantee should last at least as long. Some price guarantees do not cover all parts of the price. Check this in the contract.",
   "tv.kuendigung.kurz": "Check the notice period of your old contract.",
-  "tv.kuendigung": "The notice period is on your last bill. In basic supply (Grundversorgung) you can cancel with 2 weeks' notice. If the supplier raises the price, you can cancel without notice.",
+  "tv.kuendigung": "The notice period is on your last bill. In basic supply (Grundversorgung) you can cancel with 2 weeks' notice. If the supplier raises the price, you can cancel without notice, with effect from the day the new price applies.",
   "tv.fernwaerme.kurz": "With district heating you cannot change supplier.",
   "tv.fernwaerme": "With district heating, the plant and the pipes belong to the same company. That is why changing supplier is not possible. This comparison is only for electricity and gas.",
   "tv.vz.link": "Changing supplier: how it works – Verbraucherzentrale",

@@ -286,7 +286,7 @@
   "tv.laufzeit.kurz": "Durée de 1 an maximum, avec garantie de prix pour cette durée.",
   "tv.laufzeit": "Les centres de consommateurs (Verbraucherzentrale) conseillent une durée d’environ 1 an. La garantie de prix devrait durer au moins aussi longtemps. Certaines garanties ne couvrent pas toutes les parties du prix. Vérifie-le dans le contrat.",
   "tv.kuendigung.kurz": "Vérifie le délai de résiliation de l’ancien contrat.",
-  "tv.kuendigung": "Le délai de résiliation figure sur ta dernière facture. En fourniture de base (Grundversorgung), tu peux résilier avec un préavis de 2 semaines. Si le fournisseur augmente le prix, tu peux résilier sans préavis.",
+  "tv.kuendigung": "Le délai de résiliation figure sur ta dernière facture. En fourniture de base (Grundversorgung), tu peux résilier avec un préavis de 2 semaines. Si le fournisseur augmente le prix, tu peux résilier sans préavis, avec effet au jour où le nouveau prix s’applique.",
   "tv.fernwaerme.kurz": "Avec le chauffage urbain, tu ne peux pas changer de fournisseur.",
   "tv.fernwaerme": "Avec le chauffage urbain (Fernwärme), la centrale et les conduites appartiennent à la même entreprise. C’est pourquoi un changement n’est pas possible. Cette comparaison ne vaut que pour l’électricité et le gaz.",
   "tv.vz.link": "Changer de fournisseur : mode d’emploi – Verbraucherzentrale",

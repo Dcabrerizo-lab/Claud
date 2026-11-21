@@ -2,6 +2,7 @@ const { JSDOM } = require('jsdom');
 const fs = require('fs');
 const I18N = require('../dist/i18n.js');
 const KARTEN = require('./karten.js');
+const FmtN = require('../src/fmt.js');
 const html = fs.readFileSync(__dirname + '/../dist/sozialleistungslotse.html', 'utf8');
 const errors = [];
 const store = {};
@@ -432,16 +433,18 @@ setTimeout(() => {
     check('[geld] Kacheln in der Form der Startseite (Symbol, Titel, Text)', kacheln().every((b) => b.querySelector('.sk-sym svg') && b.querySelector('.sk-txt b') && b.querySelector('.sk-txt span')));
     check('[geld] weiße Unterkacheln (uk-karte im uk-raster, Design #68)', kacheln().length === 6 && kacheln().every((b) => b.classList.contains('uk-karte') && !b.classList.contains('sk')));
     check('[geld] keine Zeile für Fachkräfte im Privatmodus', !box.querySelector('.ber-nur'));
+    check('[ux-c] Startebene „Geld und Schulden“: großer Bereichstitel, kein Aufgaben-Titel', !d.getElementById('v-sparen').classList.contains('gs-unter') && !box.querySelector('.gs-titel'));
     // 1 Es ist dringend: Krisen-Check zuerst, dann Fälle
     kacheln()[0].click();
     const faelle = kacheln().map((b) => b.className.match(/gs-d-([a-z]+)/)[1]);
     check('[geld] Es ist dringend: Krisen-Check als erste Karte, dann Konto, Strom/Gas, Mahnbescheid, Wohnung, Geldstrafe', faelle.join() === 'check,konto,strom,mahn,miete,geld', faelle.join());
     kacheln()[3].click();
-    check('[geld] Mahnbescheid: Frist und erster Schritt oben, Einzelheiten zugeklappt', box.querySelector('.gs-frist p').textContent === I18N.de['gs.d.mahn.frist'] && box.querySelector('.gs-schritt p').textContent === I18N.de['gs.d.mahn.schritt'] && !box.querySelector('details[data-fall="mahn"]').open);
+    check('[geld] Mahnbescheid: Frist offen (kurz fett, Einzelheiten ohne Paragrafen), erster Schritt oben, Einzelheiten zugeklappt', box.querySelector('.gs-frist .gs-frist-kurz b').textContent === I18N.de['gs.d.mahn.frist.kurz'] && box.querySelector('.gs-frist .gs-frist-lang').textContent === FmtN.ohnePara(I18N.de['gs.d.mahn.frist']) && !box.querySelector('.gs-frist details') && box.querySelector('.gs-schritt p').textContent === I18N.de['gs.d.mahn.schritt'] && !box.querySelector('details[data-fall="mahn"]').open);
     const fall = (f) => box.querySelector('[data-fall="' + f + '"] p').textContent;
     check('[schulden-korr] Vollstreckungsbescheid: darf sofort gepfändet werden, Einspruch 2 Wochen (Notfrist), stoppt nicht von selbst; Widerspruch bis zum Vollstreckungsbescheid', /solange das Gericht noch keinen Vollstreckungsbescheid erlassen hat \(§ 694 ZPO\)/.test(fall('mahn')) && /darf sofort gepfändet werden \(§ 700 ZPO\)\. Dagegen hilft nur noch ein Einspruch\. Er muss innerhalb von 2 Wochen/.test(fall('mahn')) && /Notfrist, §§ 700, 339 ZPO/.test(fall('mahn')) && /nicht von selbst.*§ 719 ZPO/.test(fall('mahn')));
-    check('[geld] Mahnbescheid nennt die 2-Wochen-Frist mit Quelle', /2 Wochen.*§ 692 ZPO/.test(box.querySelector('.gs-frist p').textContent));
-    check('[geld] Mahnbescheid: Knopf „In die Schulden-Liste eintragen“', !!box.querySelector('.gs-in-liste'));
+    check('[ux-c] Seitentitel = Aufgabe: „Mahnbescheid“ als Überschrift, „Geld und Schulden“ als kleine Zeile', d.getElementById('v-sparen').classList.contains('gs-unter') && box.querySelector('.gs-titel').getAttribute('role') === 'heading' && box.querySelector('.gs-titel').textContent === I18N.de['gs.d.mahn']);
+    check('[geld] Mahnbescheid nennt die 2-Wochen-Frist mit Quelle (Paragraf in „Quellen“, UX-Audit C Nr. 18)', /2 Wochen/.test(box.querySelector('.gs-frist-lang').textContent) && !/§/.test(box.querySelector('.gs-frist').textContent) && /Gesetze auf dieser Seite: § 692 ZPO; §§ 700, 339 ZPO/.test(box.querySelector('.quellen').textContent));
+    check('[geld] Mahnbescheid: Knopf „In die Schulden-Liste eintragen“ als Hauptknopf (UX-Audit C)', !!box.querySelector('.gs-in-liste') && !box.querySelector('.gs-in-liste').classList.contains('ghost'));
     // Aufräumen 21.11.2026: alle Fälle gleich aufgebaut – Frist, „Das tust du jetzt“, Knöpfe (Beratungsstelle zuletzt), Quellen
     const aufbau = () => [...box.children].map((e) => (e.className.match(/pf-frage|gs-frist|gs-schritt|gs-tipps|gs-freibetrag|gs-knoepfe|quellen/) || ['?'])[0]).join();
     check('[aufraeumen] Mahnbescheid: Reihenfolge Titel, Frist, Schritte, Knöpfe, Quellen; Beratungsstelle als letzter Knopf', aufbau() === 'pf-frage,gs-frist,gs-schritt,gs-knoepfe,quellen' && box.querySelector('.gs-knoepfe').lastChild.classList.contains('gs-zur-hilfe') && box.querySelectorAll('.gs-schritt li').length === 2 && box.querySelector('.gs-schritt h3').textContent === I18N.de['pf.jetzt.h'], aufbau());
@@ -452,22 +455,31 @@ setTimeout(() => {
     zur();
     check('[geld] „← Zurück“ aus einem Fall führt zur Auswahl „Es ist dringend“', kacheln().length === 6 && !!box.querySelector('.gs-d-check'));
     kacheln()[2].click();
-    { const sx = [...box.querySelectorAll('details.tipp > p')].map((e) => e.textContent).join(' ');
+    { const sx = [...box.querySelectorAll('details.tipp > p, .gs-frist-lang')].map((e) => e.textContent).join(' '); // Frist offen (UX-Audit C Nr. 6)
       check('[schulden-korr] Strom/Gas: 2 Abschläge und 100 €, 4 Wochen Androhung, 8 Werktage, zinsfreie Raten (§§ 41f, 41g EnWG)', /2 Monatsabschlägen und mindestens 100 € .*§ 41f EnWG/.test(fall('strom')) && /4 Wochen vorher angedroht und 8 Werktage/.test(sx) && /zinsfrei anbieten \(§ 41g EnWG\)/.test(sx) && /Strom und Gas/.test(fall('strom')) && !/StromGVV/.test(sx));
       check('[aufraeumen] Strom/Gas: 3 Schritte (Raten, Härte, Darlehen), Tipp „Sperre erst ab …“ darunter, ohne Wiederholung von sp.schulden.strom', [...box.querySelectorAll('.gs-schritt details')].map((x) => x.getAttribute('data-tipp')).join() === 'gs.d.strom.schritt,gs.d.strom.haerte,gs.d.strom.darlehen' && box.querySelector('.gs-tipps [data-tipp="gs.d.strom.grenze"]') && !box.querySelector('[data-tipp="sp.schulden.strom"]') && /Darlehen/.test(sx)); }
     check('[geld] Strom/Gas: Knopf „Abschlag prüfen“', !!box.querySelector('.gs-abschlag'));
+    box.querySelector('.gs-brief').click();
+    { const tx = d.getElementById('ms-text').value; check('[ux-c] Strom/Gas: Muster mit beiden Fällen (Grundversorgung § 41g EnWG / anderer Tarif ohne Anspruch)', /Abwendungsvereinbarung mit zinsfreien Raten \(§ 41g EnWG\)/.test(tx) && /Anderer Tarif: Ich bitte um eine Ratenzahlung\./.test(tx) && box.querySelector('.gs-brief-lead').textContent === I18N.de['gs.d.strom.brief.lead']); }
+    zur();
     zur(); kacheln()[4].click();
-    check('[schulden-korr] Mietschulden: ordentliche Kündigung kann trotz Schonfrist bestehen bleiben', /ordentlich \(mit Frist\) gekündigt.*trotz Zahlung bestehen bleiben/.test(fall('miete')) && /§ 569 BGB/.test(box.querySelector('.gs-frist p').textContent));
+    check('[schulden-korr] Mietschulden: ordentliche Kündigung kann trotz Schonfrist bestehen bleiben', /ordentlich \(mit Frist\) gekündigt.*trotz Zahlung bestehen bleiben/.test(fall('miete')) && /§ 569 BGB/.test(box.querySelector('.quellen').textContent));
+    check('[ux-c] Mietschulden: Frist-Kurztext verleitet nicht zum Abwarten, alle offenen Mieten (Rechtsprüfung 21.11.2026)', box.querySelector('.gs-frist-kurz').textContent === 'Sofort handeln. Warte nicht auf die Klage.' && /Alle offenen Mieten.*2 Monate/.test(box.querySelector('.gs-frist-lang').textContent));
+    box.querySelector('.gs-brief').click();
+    check('[ux-c] Mietschulden: Hauptknopf öffnet Muster „Antrag auf Übernahme der Mietschulden“ (Wortlaut Rechtsprüfung, Empfänger nur als Art der Stelle)', box.querySelector('.pf-frage').textContent === I18N.de['gs.d.miete.brief'] && /ich beantrage die Übernahme meiner Mietschulden, um die Wohnung zu sichern \(Jobcenter: § 22 Abs\. 8 SGB II · Sozialamt: § 36 SGB XII\)\. Mir droht der Verlust der Wohnung\./.test(d.getElementById('ms-text').value) && /\[Name der Firma oder Stelle\]/.test(d.getElementById('ms-text').value) && !d.getElementById('ms-von') && /Darlehen/.test(box.querySelector('.gs-brief-lead').textContent));
+    zur(); check('[ux-c] Zurück aus dem Muster: wieder die Seite Mietschulden', box.querySelector('.pf-frage').textContent === I18N.de['gs.d.miete'] && !!box.querySelector('.gs-frist'));
     zur(); kacheln()[5].click();
-    check('[geld] Geldstrafe: Frist mit § 43 StGB (1 Tag für 2 Tagessätze), Schritt mit § 459a StPO und Art. 293 EGStGB', /1 Tag Haft für 2 Tagessätze \(§ 43 StGB\)/.test(box.querySelector('.gs-frist p').textContent) && /§ 459a StPO/.test(box.querySelector('.gs-schritt p').textContent) && /Art\. 293 EGStGB/.test(box.querySelector('.gs-schritt p').textContent));
+    check('[geld] Geldstrafe: Frist mit § 43 StGB (1 Tag für 2 Tagessätze), Schritt mit § 459a StPO und Art. 293 EGStGB', /1 Tag Haft für 2 Tagessätze/.test(box.querySelector('.gs-frist-lang').textContent) && /§ 43 StGB/.test(box.querySelector('.quellen').textContent) && /§ 459a StPO/.test(box.querySelector('.gs-schritt p').textContent) && /Art\. 293 EGStGB/.test(box.querySelector('.gs-schritt p').textContent));
     zur();
     // Krisen-Check: eine Frage je Bildschirm, Ergebnis höchstens 3 „zuerst“, immer „Beratungsstelle finden“ am Ende
     kacheln()[0].click();
     check('[krisencheck] Frage 1 von 7 mit Ja/Nein und „Weiß nicht – weiter“', /1 von 7/.test(box.querySelector('.kc-nr').textContent) && d.getElementById('kc-q').textContent === I18N.de['kc.q1'] && !!d.getElementById('kc-ja') && !!d.getElementById('kc-nein') && !!d.getElementById('kc-weiter'));
     ['kc-ja', 'kc-nein', 'kc-ja', 'kc-ja', 'kc-ja', 'kc-weiter', 'kc-nein'].forEach((id) => d.getElementById(id).click());
-    const zuerst = [...box.querySelectorAll('ol.kc-liste .uk-karte')].map((b) => b.className.match(/kc-z-([a-z]+)/)[1]);
-    const danach = [...box.querySelectorAll('ul.kc-liste:not(.kc-ende) .uk-karte')].map((b) => b.className.match(/kc-z-([a-z]+)/)[1]);
+    const zuerst = [...box.querySelectorAll('ol.kc-liste:not(.kc-weiter) .uk-karte')].map((b) => b.className.match(/kc-z-([a-z]+)/)[1]);
+    const danach = [...box.querySelectorAll('ol.kc-weiter li:not(.kc-ende) .uk-karte')].map((b) => b.className.match(/kc-z-([a-z]+)/)[1]);
     check('[krisencheck] Ergebnis: Mahnbescheid, Miete, Strom zuerst; Konto danach; am Ende Beratungsstelle finden', zuerst.join() === 'mahn,miete,strom' && danach.join() === 'konto' && !!box.querySelector('.kc-ende .kc-z-finden'), zuerst.join() + '|' + danach.join());
+    check('[ux-c] Krisen-Check-Ergebnis: eine Überschrift, Beratung als 5. Schritt', !box.textContent.includes(I18N.de['kc.h']) && box.querySelectorAll('.pf-frage').length === 1 && box.querySelector('ol.kc-weiter').lastChild.querySelector('.kc-z-finden') && box.querySelector('ol.kc-weiter').start === 4);
+    check('[ux-c] Krisen-Check-Ergebnis: je Karte Frist oder Grund', box.querySelector('.kc-z-mahn').textContent.includes(I18N.de['gs.d.mahn.frist.kurz']) && box.querySelector('.kc-z-miete').textContent.includes(I18N.de['gs.d.miete.frist.kurz']) && box.querySelector('.kc-z-konto').textContent.includes(I18N.de['gs.d.konto.frist.kurz']));
     box.querySelector('.kc-z-miete').click();
     check('[krisencheck] Ergebniskarte springt in den Fall', box.querySelector('.pf-frage').textContent === I18N.de['gs.d.miete']);
     zur(); zur();
@@ -480,7 +492,9 @@ setTimeout(() => {
     check('[inkasso] Prüfliste: 6 Haken nach § 13a RDG, ohne Fundstelle im Privatmodus, 3 Warnungen', ipH.length === 6 && !box.querySelector('.ber-nur') && box.querySelectorAll('.ip-warn').length === 3);
     check('[inkasso] Prüfliste: Hinweis „Erste Einschätzung, keine Rechtsberatung“ immer sichtbar (Prüfung 20.11.2026)', !!box.querySelector('.ip-hinweis') && /keine Rechtsberatung/.test(box.querySelector('.ip-hinweis').textContent));
     check('[inkasso] Prüfliste: Tipps zusammen, Hinweis „keine Rechtsberatung“ erst nach dem letzten Tipp (Aufräumen 21.11.2026)', box.querySelector('.ip-hinweis').previousElementSibling.getAttribute('data-fall') === 'inkasso' && box.querySelector('.ip-hinweis').nextElementSibling.classList.contains('quellen'));
-    check('[inkasso] ohne Haken: alles fehlt, Knopf zum Schreiben „Forderungsaufstellung“', box.querySelectorAll('#ip-erg li').length === 6 && !!d.getElementById('ip-zum-schreiben'));
+    check('[ux-c] Prüfliste ohne Haken: keine zweite Liste derselben 6 Punkte', box.querySelectorAll('#ip-erg li').length === 0 && d.getElementById('ip-erg').textContent === '' && box.textContent.split(I18N.de['ip.1']).length === 2);
+    ipH[0].checked = true; ipH[0].dispatchEvent(new w.Event('change', { bubbles: true }));
+    check('[ux-c] Prüfliste mit 1 Haken: „Nicht angehakt: 5 von 6“, Knopf zur Forderungsaufstellung, keine Liste', /^Nicht angehakt: 5 von 6 Punkten\./.test(d.getElementById('ip-erg').textContent) && !!d.getElementById('ip-zum-schreiben') && box.querySelectorAll('#ip-erg li').length === 0);
     ipH.forEach((c) => { c.checked = true; c.dispatchEvent(new w.Event('change', { bubbles: true })); });
     check('[inkasso] alle Haken: kein Urteil über die Forderung', d.getElementById('ip-erg').textContent === I18N.de['ip.erg.alle'] && !d.getElementById('ip-zum-schreiben'));
     zur(); box.querySelector('.gs-i-gelb').click();
@@ -518,10 +532,13 @@ setTimeout(() => {
     kacheln()[5].click();
     check('[aufr-geld] Unterkarten: finden, Bis zum Termin, Mappe, Ablauf (keine eigene Kachel „unseriöse Anbieter“)', kacheln().map((b) => b.className.match(/gs-h-([a-z]+)/)[1]).join() === 'finden,termin,mappe,ablauf');
     kacheln()[0].click();
-    check('[beratung-kachel] Beratungsstelle finden: ein Text (sl.hilfe.*) und Warnung vor unseriösen Anbietern', box.querySelector('.gs-beratung p').textContent === I18N.de['sl.hilfe.1'] && box.querySelectorAll('.gs-beratung p').length === 5 && !!box.querySelector('details[data-fall="unserioes"]'));
+    check('[beratung-kachel] Beratungsstelle finden: ein Text (sl.hilfe.*) und Warnung vor unseriösen Anbietern', box.querySelector('.gs-beratung p').textContent === I18N.de['sl.hilfe.4'] && ['sl.hilfe.1', 'sl.hilfe.2', 'sl.hilfe.3', 'sl.hilfe.4', 'sl.hilfe.5'].every((k) => box.textContent.includes(I18N.de[k])) && !!box.querySelector('details[data-fall="unserioes"]'));
+    { const su = d.getElementById('sb-suche'), offen = [...box.querySelectorAll('.gs-beratung > p')].map((x) => x.textContent);
+      check('[ux-c] Beratungsstelle finden: Link zur Stellensuche (extern), nur 2 kurze Absätze offen, Suche und Jobcenter/Sozialamt zugeklappt', !!su && su.href === 'https://www.meine-schulden.de/hilfe-finden/stellensuche' && su.target === '_blank' && su.textContent.includes(I18N.de['sb.finden.link']) && su.closest('.gs-beratung') && offen.join('|') === I18N.de['sl.hilfe.4'] + '|' + I18N.de['sl.hilfe.5'] && box.querySelectorAll('details.gs-finden-mehr').length === 2 && [...box.querySelectorAll('details.gs-finden-mehr')].every((x) => !x.open) && box.querySelector('details.gs-finden-mehr').textContent.includes(I18N.de['sl.hilfe.1'])); }
     check('[schulden] Quellenzeile nennt Verbraucherzentralen, BAG-SB, Caritas/Diakonie und AG SBV', /Verbraucherzentralen.*BAG-SB.*Caritas.*Diakonie.*AG SBV/.test(box.textContent));
     zur(); kacheln()[1].click();
     check('[beratung-kachel] Bis zum Termin: 6 Haken, Sprünge zu Geduld-Brief, P-Konto, Liste, Haushaltsplan', box.querySelectorAll('.sb-haken input').length === 6 && box.querySelectorAll('.sb-zeile button').length === 4);
+    check('[ux-c] Bis zum Termin: Knopftexte nennen das Ziel (kein „Öffnen“)', [...box.querySelectorAll('.sb-zeile button')].map((b) => b.textContent).join('|') === [I18N.de['ms.geduld'], I18N.de['sp.schulden.pf'], I18N.de['sl.h'], I18N.de['hb.kachel']].join('|'));
     d.getElementById('sb-w-3').click();
     check('[beratung-kachel] Haken wird je Vorgang gespeichert (lotse.beratung-haken)', /"3":true/.test(store['lotse.beratung-haken'] || ''), store['lotse.beratung-haken']);
     zur(); kacheln()[2].click();
@@ -554,9 +571,10 @@ setTimeout(() => {
     const jetztK = [...d.querySelectorAll('#pfInhalt .pf-jetzt li p')].map((x) => x.textContent);
     check('[schulden-korr] Konto: Umwandeln innerhalb eines Monats schützt auch gesperrtes Guthaben (§ 899 Abs. 1 ZPO)', jetztK[0] === I18N.de['pf.tipp.umwandeln'] && /innerhalb eines Monats.*schon gesperrte Guthaben geschützt \(§ 899 Abs\. 1 ZPO\)/.test(jetztK[0]), jetztK[0]);
     const erg = d.querySelector('#pfInhalt .pf-zahl'), tk = d.querySelector('#pfInhalt .pf-zur-hilfe');
-    check('[geld] Nach dem Rechnen: Knopf „Schuldnerberatung“ unter dem Ergebnis', !!erg && !!tk && tk.textContent === I18N.de['sb.h'] && (erg.compareDocumentPosition(tk) & w.Node.DOCUMENT_POSITION_FOLLOWING));
+    check('[geld] Nach dem Rechnen: Knopf „Schuldnerberatung“ unter dem Ergebnis', !!erg && !!tk && tk.textContent === I18N.de['sb.finden'] && !d.querySelector('#pfInhalt .pf-tab') && (erg.compareDocumentPosition(tk) & w.Node.DOCUMENT_POSITION_FOLLOWING));
     tk.click();
-    check('[geld] Knopf öffnet „Schuldnerberatung“', d.getElementById('app').getAttribute('data-ansicht') === 'sparen' && !!box.querySelector('.gs-h-termin'));
+    check('[geld] Knopf öffnet „Beratungsstelle finden“ (ein Name je Ziel, UX-Audit C)', d.getElementById('app').getAttribute('data-ansicht') === 'sparen' && !!d.getElementById('sb-suche'));
+    zur(); check('[ux-c] Zurück aus „Beratungsstelle finden“: Kacheln der Schuldnerberatung', !!box.querySelector('.gs-h-termin'));
     zur();
     check('[geld] Zurück aus „Schuldnerberatung“: 6 Kacheln (kein Kreis zum Rechner)', sicht() === 'sparen' && kacheln().length === 6);
     zur();

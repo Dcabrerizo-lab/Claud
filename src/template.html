@@ -1095,7 +1095,9 @@
   ol.kc-liste { counter-reset: kc; }
   ol.kc-liste > li { counter-increment: kc; display: grid; grid-template-columns: 2em 1fr; align-items: center; }
   ol.kc-liste > li::before { content: counter(kc) "."; font-weight: 700; font-size: 1.2em; }
-  .kc-alle .check, .ip-liste .check, .sb-haken .check { margin: 6px 0; }
+  .kc-alle .check, .sb-haken .check { margin: 6px 0; }
+  .ip-liste .check { margin: 0; padding: 8px 0; } /* UX-Audit C: Haken-Zeilen enger (Zeile bleibt ≥ 44 px) */
+  .gs-beratung .sp-link-karte { margin: 12px 0; } .ra-trotz { margin-top: 16px; }
   .ip-liste { border: 0; padding: 0; margin: 8px 0; }
   .sb-haken { list-style: none; padding: 0; margin: 8px 0; }
   .sb-zeile { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px; border-bottom: 1px solid var(--line); padding: 6px 0; }
@@ -1111,6 +1113,9 @@
   .frist.gs-frist h3 { font-size: var(--fs-s); margin: 0; color: var(--ink); }
   .frist.gs-frist .tipp-sym { display: none; } /* ein Symbol je Frist (das der .frist), keine doppelte Einrückung */
   .frist.gs-frist .tipp-kurz { font-weight: 700; }
+  #v-sparen.gs-unter .ans-h { font-size: var(--fs-s); font-weight: 600; color: var(--muted); margin-bottom: 0; } /* UX-Audit C Nr. 12: Bereich als kleine Zeile, Aufgabe als Titel */
+  #spInhalt > .gs-titel { font-family: var(--font-display); font-size: 1.45em; font-weight: 800; line-height: 1.25; margin: 2px 0 8px; }
+  .frist.gs-frist p { margin: 4px 0 0; } .frist.gs-frist .gs-frist-lang { font-size: var(--fs-s); } /* UX-Audit C Nr. 6: Frist offen */
   .pf-jetzt.gs-schritt li + li { margin-top: 8px; }
   .gs-freibetrag { margin: 0 0 12px; }
   .gs-tipps { display: grid; gap: 8px; margin: 0 0 12px; }

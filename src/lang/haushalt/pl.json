@@ -286,7 +286,7 @@
   "tv.laufzeit.kurz": "Okres umowy najwyżej 1 rok, z gwarancją ceny na ten czas.",
   "tv.laufzeit": "Centra konsumenckie (Verbraucherzentrale) radzą wybrać umowę na około 1 rok. Gwarancja ceny powinna obowiązywać co najmniej tak długo. Niektóre gwarancje nie obejmują wszystkich części ceny. Sprawdź to w umowie.",
   "tv.kuendigung.kurz": "Sprawdź okres wypowiedzenia starej umowy.",
-  "tv.kuendigung": "Okres wypowiedzenia jest na twoim ostatnim rachunku. W zaopatrzeniu podstawowym (Grundversorgung) możesz wypowiedzieć umowę z 2-tygodniowym terminem. Jeśli dostawca podniesie cenę, możesz wypowiedzieć bez okresu wypowiedzenia.",
+  "tv.kuendigung": "Okres wypowiedzenia jest na twoim ostatnim rachunku. W zaopatrzeniu podstawowym (Grundversorgung) możesz wypowiedzieć umowę z 2-tygodniowym terminem. Jeśli dostawca podniesie cenę, możesz wypowiedzieć bez okresu wypowiedzenia, ze skutkiem na dzień, od którego obowiązuje nowa cena.",
   "tv.fernwaerme.kurz": "Przy cieple systemowym nie możesz zmienić dostawcy.",
   "tv.fernwaerme": "Przy cieple systemowym (Fernwärme) elektrociepłownia i rury należą do tej samej firmy. Dlatego zmiana nie jest możliwa. To porównanie dotyczy tylko prądu i gazu.",
   "tv.vz.link": "Zmiana dostawcy: jak to zrobić – Verbraucherzentrale",

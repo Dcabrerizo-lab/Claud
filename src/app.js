@@ -2713,6 +2713,7 @@
   //  Strom/Gas: sp.schulden.strom in Schritte zerlegt, Wortlaut unverändert (gs.d.strom.haerte, gs.d.strom.darlehen; Darlehen § 22 Abs. 8 SGB II,
   //  § 36 SGB XII) und Tipp gs.d.strom.grenze (§ 41f EnWG: 2 Monatsabschläge, mindestens 100 €; abgerufen 20.11.2026, gesetze-im-internet.de).
   var GS_D_SCHRITTE = { konto: ['gs.d.konto.schritt', 'pf.tipp.bescheinigung'], strom: ['gs.d.strom.schritt', 'gs.d.strom.haerte', 'gs.d.strom.darlehen'], geld: ['gs.d.geld.schritt'] };
+  var GS_BRIEF = { miete: ['gs.d.miete.brief', 'gs.d.miete.brief.lead'], strom: ['gs.d.strom.brief', 'gs.d.strom.brief.lead'] }; // Hauptknopf + Muster (UX-Audit C Nr. 5)
   var GS_D_TIPPS = { strom: ['gs.d.strom.grenze'] };
   // Post vom Inkasso: Prüfliste (§ 13a RDG), Musterschreiben, Raten anbieten, Gerichtspost. „Gelber Umschlag vom Gericht?“ ist nur ein Link:
   //  öffnet direkt die Seite „Es ist dringend → Mahnbescheid vom Gericht“ (keine zweite Fassung); „Zurück“ führt von dort zu „Post vom Inkasso“.
@@ -2775,6 +2776,9 @@
   var TV_TIPPS = ['tv.bonus', 'tv.vorkasse', 'tv.laufzeit', 'tv.kuendigung', 'tv.fernwaerme'];
   // Link zum Anbieterwechsel (neutral, keine Vergleichsportale): Verbraucherzentrale Bundesverband, Seite in einfacher Sprache, Stand 28.10.2026, abgerufen 21.11.2026
   var TV_VZ_URL = 'https://www.verbraucherzentrale.de/de-x-simple/energie/so-koennen-sie-ihren-anbieter-von-strom-und-gas-wechseln-88520';
+  // Beratungsstellen-Suche der Bundesarbeitsgemeinschaft Schuldnerberatung (BAG-SB), meine-schulden.de „Sie suchen eine passende
+  //  Beratungsstelle?“: Suche nach PLZ oder Ort mit Umkreis, Filter „kostenfrei“ (Seite: Letzte Aktualisierung 20.11.2026, abgerufen 21.11.2026).
+  var SB_SUCHE_URL = 'https://www.meine-schulden.de/hilfe-finden/stellensuche';
   function linkKarte(box, id, url, titel, text) { // Linkkarte (öffnet extern; in der App über das Browser-Plugin, siehe Klick auf a[href])
     var vz = document.createElement('a'); vz.className = 'uk-karte sp-link-karte'; vz.href = url; vz.target = '_blank'; vz.rel = 'noopener'; vz.id = id;
     vz.innerHTML = '<span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></span><span class="sk-txt"><b>' + esc(titel) + '</b><span>' + esc(text) + (lang !== 'de' ? ' ' + esc(t('sp.vz.de')) : '') + '</span></span>';
@@ -2804,7 +2808,7 @@
   }
   function pfBescheinigung() { pf = { art: 'besch', schritt: 1, netto: pf.netto, pers: pf.pers, kg: pf.kg, kiz: pf.kiz }; oeffneVon('pfaendung', true); }
   function pfKonto() { pf = { art: 'konto', schritt: 1, netto: pf.netto, pers: pf.pers, kg: pf.kg, kiz: pf.kiz }; oeffneVon('pfaendung', true); }
-  function abschlagPruefen() { gsSprung('sparen', 'strom', 'abschlag'); } // „Abschlag prüfen“ auf der Seite „Strom“: erst die Kacheln Strom/Gas (Haushalt.abschlag)
+  function abschlagPruefen() { gsSprung('sparen', 'energie', 'abschlag-strom'); } // „Abschlag prüfen“: Energie-Check, Rechner Strom (Umschalter Gas im Rechner)
   // Ziele aus dem Krisen-Check, „Bis zum Termin“ und der Schulden-Liste
   function gsZiel(z) {
     if (['mahn', 'geld', 'miete', 'strom', 'konto'].indexOf(z) >= 0) { gsSprung('dringend', '', z); return; }
@@ -2862,6 +2866,15 @@
       p(t('gs.d.wahl'), 'hint');
       var r1 = raster();
       GS_DRINGEND.forEach(function (x) { r1.appendChild(skKachel('gs-d-' + x[0], x[2], t(x[1]), x[3] ? t(x[3]) : '', function () { sp.fall = x[0]; if (x[0] === 'check') Geld.kcStart(); spRender(true); })); });
+    } else if (sp.bereich === 'dringend' && /-brief$/.test(sp.fall)) {
+      // Musterschreiben zur Notfallseite (UX-Audit C Nr. 5, Wortlaut nach docs/entwuerfe/rechtsfragen-rot.md 2a/2b): Miete → Antrag auf
+      //  Übernahme der Mietschulden (§ 22 Abs. 8 SGB II, § 36 SGB XII), Strom/Gas → Bitte um Raten bzw. Abwendungsvereinbarung (§ 41g EnWG).
+      //  Empfänger nur als Art der Stelle (Hinweis gs.d.*.brief.lead), keine Anschrift.
+      var bf = sp.fall.split('-')[0];
+      p(t(GS_BRIEF[bf][0]), 'pf-frage');
+      p(tL(GS_BRIEF[bf][1]), 'hint gs-brief-lead');
+      Geld.schreibenSeite(box, function (id) { spRender(false, id); }, bf);
+      box.appendChild(quellenEl([t('sp.schulden.quellen')]));
     } else if (sp.bereich === 'dringend' && sp.fall === 'check') {
       Geld.krisenCheck(box, function () { spRender(false); var f = $('kc-erg') || $('kc-ja'); if (f) { if (f.id === 'kc-erg') f.focus(); else { var q = $('kc-q'); if (q) { q.tabIndex = -1; q.focus(); } } } });
     } else if (sp.bereich === 'dringend') {
@@ -2871,7 +2884,10 @@
       p(t(fx[1]), 'pf-frage');
       var fd = document.createElement('div'); fd.className = 'frist gs-frist'; fd.setAttribute('role', 'note'); // Frist im gemeinsamen Muster .frist (#68)
       var fh = document.createElement('h3'); fh.textContent = t('gs.frist'); fd.appendChild(fh);
-      tipp('gs.d.' + sp.fall + '.frist', '', fd); box.appendChild(fd);
+      // Frist offen statt zugeklappt (UX-Audit C Nr. 6): kurzer Satz fett, Einzelheiten direkt darunter
+      var fk = document.createElement('p'); fk.className = 'gs-frist-kurz'; var fb = document.createElement('b'); fb.textContent = t('gs.d.' + sp.fall + '.frist.kurz'); fk.appendChild(fb); fd.appendChild(fk);
+      var fl = document.createElement('p'); fl.className = 'gs-frist-lang'; fl.textContent = t('gs.d.' + sp.fall + '.frist'); fd.appendChild(fl);
+      box.appendChild(fd);
       var jd = document.createElement('div'); jd.className = 'pf-jetzt gs-schritt';
       var jh = document.createElement('h3'); jh.textContent = t('pf.jetzt.h'); jd.appendChild(jh);
       var jol = document.createElement('ol'); jol.className = 'tipp-liste'; jd.appendChild(jol);
@@ -2891,9 +2907,18 @@
       var gk = function (cls, txt, fn) { gb.appendChild(nhKnopf(cls, esc(txt), null, fn)); };
       if (sp.fall === 'konto') { gk('btn sp-rechner', t('sp.schulden.pf'), pfKonto); gk('btn ghost gs-besch', t('ms.pkonto'), pfBescheinigung); }
       if (sp.fall === 'strom' && window.Haushalt) gk('btn ghost gs-abschlag', t('pl.abschlag'), abschlagPruefen);
-      if (sp.fall === 'mahn' && window.Schulden) gk('btn ghost gs-in-liste', t('gs.d.mahn.liste'), function () { oeffneVon('schulden', true); Schulden.neu({ st: 'mahnbescheid' }); });
+      if ((sp.fall === 'miete' || sp.fall === 'strom') && window.Geld) { var bfa = sp.fall; gk('btn gs-brief', t(GS_BRIEF[bfa][0]), function () { Geld.schreibenVorbelegen(bfa); sp.fall = bfa + '-brief'; spRender(true); }); }
+      if (sp.fall === 'mahn' && window.Schulden) gk('btn gs-in-liste', t('gs.d.mahn.liste'), function () { oeffneVon('schulden', true); Schulden.neu({ st: 'mahnbescheid' }); });
       gk('btn ghost gs-zur-hilfe', t('sb.finden'), function () { gsOeffne('hilfe'); sp.fall = 'finden'; spRender(true); });
-      box.appendChild(quellenEl(sp.fall === 'konto' ? [t('sp.schulden.quellen'), t('pf.stand')] : [t('sp.schulden.quellen')]));
+      // Laienansicht (UX-Audit C Nr. 18): Paragrafen aus dem offenen Text der Notfallseite (Frist) in die Quellen verschieben. Zugeklappte
+      //  Einzelheiten behalten die Fundstelle (für den Behördengang); im Beratungsmodus bleibt alles im Text.
+      var gsGes = [];
+      if (!beratung) box.querySelectorAll('.gs-frist p').forEach(function (e) {
+        if (e.children.length || !/§|Art\.\s*\d/.test(e.textContent)) return;
+        (e.textContent.match(/\(([^()]*)\)/g) || []).forEach(function (m) { var i = m.search(/§|Art\.\s*\d/); if (i >= 0) { var g = m.slice(i, -1).trim(); if (gsGes.indexOf(g) < 0) gsGes.push(g); } });
+        e.textContent = Fmt.ohnePara(e.textContent);
+      });
+      box.appendChild(quellenEl((sp.fall === 'konto' ? [t('sp.schulden.quellen'), t('pf.stand')] : [t('sp.schulden.quellen')]).concat(gsGes.length ? [t('gs.gesetze', { g: gsGes.join('; ') })] : [])));
     } else if (sp.bereich === 'inkasso' && !sp.fall) {
       p(t('gs.inkasso'), 'pf-frage');
       unterkarten(GS_INKASSO, 'gs-i-');
@@ -2916,9 +2941,18 @@
       if (sp.fall === 'termin') Geld.wartezeit(box);
       else if (sp.fall === 'mappe') Geld.mappe(box);
       else if (sp.fall === 'finden') {
+        // UX-Audit C (21.11.2026): statt Textwand eine klare Handlung – Link zur Stellensuche der BAG-SB (nur Art der Stelle, keine Anschriften
+        //  in der App), Dringend-Satz offen, Suche und Jobcenter/Sozialamt zum Aufklappen. Texte sl.hilfe.1–5 unverändert.
         p(t('sb.finden'), 'pf-frage');
         var hb = document.createElement('div'); hb.className = 'gs-box gs-schritt gs-beratung'; box.appendChild(hb);
-        ['sl.hilfe.1', 'sl.hilfe.4', 'sl.hilfe.5', 'sl.hilfe.2', 'sl.hilfe.3'].forEach(function (k) { var e = document.createElement('p'); e.textContent = t(k); hb.appendChild(e); });
+        var hp = function (k, ziel) { var e = document.createElement('p'); e.textContent = t(k); (ziel || hb).appendChild(e); };
+        hp('sl.hilfe.4');
+        linkKarte(hb, 'sb-suche', SB_SUCHE_URL, t('sb.finden.link'), t('sb.finden.link.t'));
+        hp('sl.hilfe.5');
+        [['sb.finden.so', ['sl.hilfe.1']], ['sb.finden.amt', ['sl.hilfe.2', 'sl.hilfe.3']]].forEach(function (x) {
+          var dm = document.createElement('details'); dm.className = 'mehr gs-finden-mehr'; var sm = document.createElement('summary'); sm.textContent = t(x[0]); dm.appendChild(sm);
+          x[1].forEach(function (k) { hp(k, dm); }); box.appendChild(dm);
+        });
         tipp('sp.schulden.unserioes', 'unserioes');
       } else { // ablauf
         p(t('sb.ablauf'), 'pf-frage');
@@ -2933,19 +2967,27 @@
       if (window.Haushalt) {
         rp.appendChild(skKachel('gs-p-hh', '<path d="M4 7h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a1 1 0 0 1-1-1z"/><path d="M4 7l11-3v3"/><circle cx="16" cy="13.5" r="1"/>', t('hb.kachel'), t('hb.kachel.t'), function () { oeffneVon('haushalt', true); }));
       }
+      if (window.Haushalt && Haushalt.abschlag) rp.appendChild(skKachel('gs-p-energie', EN_WERKZEUGE[0][3], t('gs.energie'), t('gs.energie.t'), function () { sp.thema = 'energie'; spRender(true); })); // Energie-Werkzeuge nur hier (UX-Audit C Nr. 11)
       var h3 = document.createElement('h3'); h3.className = 'gs-sparen-h'; h3.textContent = t('sp.h'); box.appendChild(h3);
       var r2 = raster();
       SP_THEMEN.forEach(function (x) { r2.appendChild(skKachel('gs-t-' + x[0], x[4], t(x[1]), t(x[2]), function () { sp.thema = x[0]; spRender(true); })); });
     } else {
       var th = SP_THEMEN.filter(function (x) { return x[0] === sp.thema; })[0];
-      var enSeite = (sp.thema === 'strom' || sp.thema === 'heizen') && window.Haushalt && Haushalt.abschlag;
+      // Energie-Check (UX-Audit C Nr. 11): die zwei Werkzeuge stehen nur noch einmal (Kachel unter „Mein Geld planen“), Strom/Gas als
+      //  Umschalter im Rechner statt Zwischenseite. sp.fall = '' (Werkzeuge) | 'abschlag-strom', 'tarif-gas' … (Rechner).
+      var enSeite = sp.thema === 'energie' && window.Haushalt && Haushalt.abschlag;
       var wz = sp.fall.split('-'), wzx = EN_WERKZEUGE.filter(function (x) { return x[0] === wz[0]; })[0];
-      if (enSeite && wzx && !wz[1]) { // Werkzeug gewählt: erst Strom oder Gas
+      if (enSeite && !wzx) {
+        p(t('gs.energie'), 'pf-frage');
+        var rw = raster(); EN_WERKZEUGE.forEach(function (x) { rw.appendChild(skKachel('gs-e-' + x[0], x[3], t(x[1]), t(x[2]), function () { sp.fall = x[0] + '-strom'; spRender(true); })); });
+      } else if (enSeite) { // Rechner für eine Sparte, Umschalter Strom/Gas oben
+        if (!wz[1]) wz[1] = 'strom';
         p(t(wzx[1]), 'pf-frage');
-        var re = raster();
-        [['strom', SP_THEMEN[0][4]], ['gas', SP_THEMEN[1][4]]].forEach(function (x) { re.appendChild(skKachel('gs-e-' + wz[0] + '-' + x[0], x[1], t('hb.en.tab.' + x[0]), '', function () { sp.fall = wz[0] + '-' + x[0]; spRender(true); })); });
-      } else if (enSeite && wzx) { // Rechner für eine Sparte
-        p(t(wzx[1]), 'pf-frage');
+        var us = document.createElement('div'); us.className = 'btns gs-e-umschalter'; us.setAttribute('role', 'group'); us.setAttribute('aria-label', t(wzx[1])); box.appendChild(us);
+        ['strom', 'gas'].forEach(function (a) {
+          var b = nhKnopf('chip gs-e-' + wz[0] + '-' + a, esc(t('hb.en.tab.' + a)), null, function () { sp.fall = wz[0] + '-' + a; spRender(false, 'gs-e-' + wz[0] + '-' + a + '-k'); });
+          b.id = 'gs-e-' + wz[0] + '-' + a + '-k'; b.setAttribute('aria-pressed', String(wz[1] === a)); us.appendChild(b);
+        });
         var zb = document.createElement('div'); zb.id = wz[0] === 'tarif' ? 'spTarif' : 'spAbschlag'; box.appendChild(zb);
         if (wz[0] === 'tarif') {
           Haushalt.tarif(zb, wz[1]);
@@ -2955,12 +2997,15 @@
         } else Haushalt.abschlag(zb, wz[1]);
       } else {
         p(t(th[1]), 'pf-frage');
-        if (enSeite) { var rw = raster(); EN_WERKZEUGE.forEach(function (x) { rw.appendChild(skKachel('gs-e-' + x[0], x[3], t(x[1]), t(x[2]), function () { sp.fall = x[0]; spRender(true); })); }); }
         tippListe(SP_TIPPS[sp.thema], 'sp-tipps', true);
         if (sp.thema === 'essen') linkKarte(box, 'sp-vz', SP_VZ_URL, t('sp.vz.link'), t('sp.vz.t'));
         box.appendChild(quellenEl([t('sp.quellen')]));
       }
     }
+    // Seitentitel = Aufgabe (UX-Audit C Nr. 12): auf Unterseiten wird „Geld und Schulden“ zur kleinen Zeile darüber, die Aufgabe zur Überschrift
+    var vs = $('v-sparen'), ti = box.querySelector('.pf-frage');
+    if (vs) vs.classList.toggle('gs-unter', !!sp.bereich);
+    if (ti && sp.bereich) { ti.classList.add('gs-titel'); ti.setAttribute('role', 'heading'); ti.setAttribute('aria-level', '3'); }
     if (fokusId && $(fokusId)) { $(fokusId).focus(); return; }
     if (fokus) { var h = box.querySelector('.pf-frage'); if (h) { h.setAttribute('tabindex', '-1'); h.focus(); } }
   }
@@ -2968,8 +3013,8 @@
   function spEbeneZurueck() {
     if (sp.fall && sp.von) { var von = sp.von; gsOeffne(von); return true; } // Link-Kachel (Gelber Umschlag): zurück zu „Post vom Inkasso“
     if (window.Geld && Geld.zurueck(sp.fall)) return true;
-    if (sp.thema && sp.fall.indexOf('-') > 0) sp.fall = sp.fall.split('-')[0]; // Rechner → Kacheln Strom/Gas
-    else if (sp.fall) sp.fall = '';
+    if (sp.bereich === 'dringend' && /-brief$/.test(sp.fall)) { sp.fall = sp.fall.split('-')[0]; return true; } // Musterschreiben → Notfallseite
+    if (sp.fall) sp.fall = ''; // auch Rechner → Werkzeuge des Energie-Checks
     else if (sp.thema) sp.thema = '';
     else if (sp.bereich) sp.bereich = '';
     else return false;
@@ -3003,14 +3048,14 @@
       d.appendChild(ol); box.appendChild(d);
     };
     // Verweis auf „Geld und Schulden“ → „Schuldnerberatung“: nur unter dem Ergebnis, nicht vor dem Rechnen. „Zurück“ führt von dort eine Ebene hoch.
-    var spVerweis = function () { var d = knoepfe('btns'); d.appendChild(nhKnopf('btn ghost pf-zur-hilfe', esc(t('sb.h')), null, function () { gsSprung('hilfe'); })); };
+    var spVerweis = function () { var d = knoepfe('btns'); d.appendChild(nhKnopf('btn ghost pf-zur-hilfe', esc(t('sb.finden')), null, function () { gsSprung('hilfe', '', 'finden'); })); }; // ein Name je Ziel (UX-Audit C)
     var heute = new Date().toISOString().slice(0, 10);
     if (heute > Rules.RULES.pfaendung.gueltigBis) p(t('pf.alt'), 'warn');
     if (!pf.art) {
       p(t('pf.wahl'), 'pf-frage');
       var l = knoepfe('weg-liste');
       // dritte Karte: Bescheinigung für das P-Konto (Musterschreiben, § 903 ZPO, src/geld.js)
-      [['lohn', 'pf.lohn', 'pf.lohn.t', '<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 9v6M18 9v6"/>'], ['konto', 'pf.konto', 'pf.konto.t', '<path d="M3 10l9-6 9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/>'],
+      [['lohn', 'pf.lohn', 'pf.lohn.t', '<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 9v6M18 9v6"/>'], ['konto', 'pf.konto.rechnen', 'pf.konto.t', '<path d="M3 10l9-6 9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/>'],
         ['besch', 'ms.pkonto', 'ms.pkonto.t', '<path d="M6 3h9l4 4v14H6z"/><path d="M9 14l2 2 4-4"/>']].forEach(function (x) {
         if (x[0] === 'besch' && !window.Geld) return;
         l.appendChild(nhKnopf('weg pf-w-' + x[0], '<span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + x[3] + '</svg></span><span class="weg-txt"><b>' + esc(t(x[1])) + '</b><span>' + esc(t(x[2])) + '</span></span>', null, function () { pf.art = x[0]; pf.schritt = 1; pfRender(true); }));
@@ -3068,9 +3113,12 @@
       var k = Rules.pkonto({ personen: pf.pers, kindergeldKinder: pf.kg });
       p(t('pf.erg.h'), 'pf-frage');
       p(t('pf.erg.konto', { g: { eur: k.gesamt } }), 'pf-zahl');
-      var tab = document.createElement('table'); tab.className = 'pf-tab';
-      [['pf.k.sockel', k.sockel], ['pf.k.unterhalt', k.unterhalt], ['pf.k.kg', k.kindergeld]].forEach(function (x) { if (!x[1] && x[0] !== 'pf.k.sockel') return; var tr = tab.insertRow(); tr.insertCell().textContent = t(x[0]); tr.insertCell().textContent = E(x[1]); });
-      box.appendChild(tab);
+      // Aufschlüsselung nur bei Erhöhung (Unterhalt, Kindergeld); sonst stünde der Grundfreibetrag zweimal da (UX-Audit C)
+      if (k.unterhalt || k.kindergeld) {
+        var tab = document.createElement('table'); tab.className = 'pf-tab';
+        [['pf.k.sockel', k.sockel], ['pf.k.unterhalt', k.unterhalt], ['pf.k.kg', k.kindergeld]].forEach(function (x) { if (!x[1] && x[0] !== 'pf.k.sockel') return; var tr = tab.insertRow(); tr.insertCell().textContent = t(x[0]); tr.insertCell().textContent = E(x[1]); });
+        box.appendChild(tab);
+      }
       var mk = k.unterhalt || k.kindergeld ? 'pf.tipp.bescheinigung' : 'pf.tipp.kontomehr';
       jetzt(['pf.tipp.umwandeln', mk, 'pf.tipp.beratung']);
       tipps(['pf.tipp.uebertrag', 'pf.tipp.sozial'].concat(mk === 'pf.tipp.kontomehr' ? [] : ['pf.tipp.kontomehr']));
@@ -3136,7 +3184,7 @@
     var a = aktAnsicht, sub = '', d = 0, x;
     if (a === 'pflege') { d = (pa.antworten && +pa.antworten.pos) || 0; sub = 'q' + d; }
     else if (a === 'pfaendung') { d = pf.schritt; sub = pf.art + d; }
-    else if (a === 'sparen') { d = (sp.bereich ? 1 : 0) + (sp.fall ? 1 : 0) + (sp.thema ? 1 : 0) + (sp.thema && sp.fall.indexOf('-') > 0 ? 1 : 0) + (window.Geld ? Geld.tiefe(sp.fall) : 0); sub = sp.bereich ? [sp.bereich, sp.thema, sp.fall].filter(Boolean).join('-') + (window.Geld && Geld.tiefe(sp.fall) ? '-w' : '') : ''; }
+    else if (a === 'sparen') { d = (sp.bereich ? 1 : 0) + (sp.fall ? 1 : 0) + (sp.thema ? 1 : 0) + (/-brief$/.test(sp.fall) ? 1 : 0) + (window.Geld ? Geld.tiefe(sp.fall) : 0); sub = sp.bereich ? [sp.bereich, sp.thema, sp.fall].filter(Boolean).join('-') + (window.Geld && Geld.tiefe(sp.fall) ? '-w' : '') : ''; }
     else if (a === 'schulden') { x = $('slBlatt'); d = ($('slEingabe') ? 1 : 0) + (x && !x.hidden ? 1 : 0); sub = d ? 'e' + d : ''; }
     else if (a === 'ausziehen') { d = window.Ausziehen && Ausziehen.offen() ? 1 : 0; sub = d ? 'offen' : ''; }
     else if (a === 'briefe') { d = $('checkBox').hidden ? 0 : 1; sub = d ? (briefArt || '') : ''; }
@@ -3175,7 +3223,7 @@
     }
     if ((a === 'einst' || a === 'ordner') && sub) usZeigen(a, sub, true);
     else if (a === 'briefe' && BRIEF_TEIL[sub]) briefOeffnen(sub);
-    else if (a === 'sparen' && sub) { var sx = sub.split('-'); if (sx[0] === 'sparen') sx[0] = 'planen'; gsOeffne(sx[0]); if (sx[1]) { if (sx[0] === 'planen') { sp.thema = sx[1]; if (sx[2] && EN_WERKZEUGE.some(function (w) { return w[0] === sx[2]; })) sp.fall = sx[2] + (sx[3] === 'strom' || sx[3] === 'gas' ? '-' + sx[3] : ''); } else sp.fall = sx[1]; } spRender(true); }
+    else if (a === 'sparen' && sub) { var sx = sub.split('-'); if (sx[0] === 'sparen') sx[0] = 'planen'; gsOeffne(sx[0]); if (sx[1]) { if (sx[0] === 'planen') { sp.thema = sx[1]; if (sx[2] && EN_WERKZEUGE.some(function (w) { return w[0] === sx[2]; })) sp.fall = sx[2] + (sx[3] === 'strom' || sx[3] === 'gas' ? '-' + sx[3] : ''); } else sp.fall = sx[1] + (sx[2] === 'brief' ? '-brief' : ''); } spRender(true); }
     else if (a === 'pflegestart' && /^pg/.test(sub)) puOeffnen('pg');
     else if (a === 'pflegestart' && /^liste\d$/.test(sub)) puOeffnen('liste', +sub.slice(5));
   }
