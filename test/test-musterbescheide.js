@@ -25,7 +25,7 @@ const nah = (a, b, tol) => Math.abs(a - b) <= (tol == null ? 0.005 : tol);
 const HEUTE = 2026.9;
 const F = R.sgb2Freibetrag;
 const kg = { kindergeld: true };
-const karte = (inp, id) => R.evaluate(Object.assign({ heute: HEUTE, vermoegen: 0, bezug: {} }, inp)).results.find((r) => r.id === id);
+const karte = (inp, id) => R.evaluate(Object.assign({ heute: HEUTE, vermoegen: 0, bezug: {}, ohneWege: true }, inp)) /* je Leistung gegen den Musterbescheid, ohne die Lage der zwei Wege */.results.find((r) => r.id === id);
 const betrag = (k) => { const t = k.tx.find((x) => /^schaetz\./.test(x[0])); return t ? t[1] : null; };
 const eins = (k) => { const b = betrag(k); return b && b.a ? b.a.eur : null; };
 const keys = (k) => k.tx.map((t) => t[0]);

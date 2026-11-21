@@ -50,7 +50,8 @@ spaet.schliessen();
 
 // Rentenalter verschiebt sich mit dem Datum: Jahrgang 1960 (Regelaltersgrenze 66 J. 4 M.) erreicht es je nach Geburtsmonat
 // zwischen Mai 2026 und April 2027: vorher nein, dazwischen möglich (mit Hinweis), danach wahrscheinlich
-const gsa = (heute) => Rules.evaluate({ adults: 1, kids: 0, young: 0, art1: 'rente', brutto: 700, netto: 700, miete: 450, vermoegen: 0, gebJahr: 1960, heute, bezug: {} }).results.find((x) => x.id === 'gsa');
+// ohneWege: geprüft wird nur das Rentenalter, nicht ob Wohngeld vorgeht (zwei Wege, test/test.js)
+const gsa = (heute) => Rules.evaluate({ ohneWege: true, adults: 1, kids: 0, young: 0, art1: 'rente', brutto: 700, netto: 700, miete: 450, vermoegen: 0, gebJahr: 1960, heute, bezug: {} }).results.find((x) => x.id === 'gsa');
 ck('Jahrgang 1960: Anfang 2026 noch nicht im Rentenalter', gsa(2026.2).level === 'nein');
 ck('Jahrgang 1960: Mitte 2026 je nach Geburtsmonat (möglich, mit Hinweis)', gsa(2026.5).level === 'vielleicht' && gsa(2026.5).tx.some((t) => t[0] === 'gsa.grenz'));
 ck('Jahrgang 1960: Mitte 2027 sicher im Rentenalter', gsa(2027.5).level === 'ja');

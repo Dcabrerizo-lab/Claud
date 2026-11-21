@@ -91,8 +91,8 @@ setTimeout(() => {
   const tipp = (el) => !!el && el.matches('details.mehr.tipp') && !el.open && !!el.querySelector('summary .tipp-sym svg') && el.querySelector('summary .tipp-kurz').textContent.split(/\s+/).length <= 12;
   check('[hilfen-aufraeumen] Ergebnis: Beratungsstelle als kurzer Tipp (Symbol + Satz), Verbände zugeklappt; kein blauer Kasten', tipp($('beratung')) && $('beratung').querySelector('.tipp-kurz').textContent === de['res.beratung'] && $('beratung').textContent.includes(de['foot.2']) && !d.querySelector('.hinweis-koralle'));
   check('Ergebnis: f.intro kurz, Erklärung „formloser Antrag“ zugeklappt (jetzt oben in der Antragsmappe)', !/Gerät/.test(de['f.intro']) && !!d.querySelector('#mappe #helper details.mehr'));
-  const ww = $('zweiWege');
-  if (ww) check('[hilfen-aufraeumen] Zwei Wege: kurzer Tipp unter den Karten, Tipp und Wege zugeklappt', tipp(ww) && !!ww.querySelector('.ww-tun') && !!ww.querySelector('.ww-wege') && ($('mappeKnopf').compareDocumentPosition(ww) & w.Node.DOCUMENT_POSITION_FOLLOWING));
+  const ww = $('wege');
+  if (ww) check('[hilfen-aufraeumen] Zwei Wege: sichtbarer Rahmen über dem Hauptknopf (UX-Prüfung 21.11.2026), Einzelheiten zugeklappt', !ww.closest('details') && !!ww.querySelector('details.mehr') && !ww.querySelector('details.mehr').open && ($('mappeKnopf').compareDocumentPosition(ww) & w.Node.DOCUMENT_POSITION_PRECEDING));
   check('[hilfen-aufraeumen] Ergebnis: „Gut zu wissen“ als kurzer Tipp', !$('gutWissen') || tipp($('gutWissen')));
   check('Erst „Verstanden“: Erststart bleibt weg', $('firstNotice').hidden);
   // Antragsmappe als Aufgabenliste
