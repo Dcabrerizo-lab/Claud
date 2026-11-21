@@ -49,6 +49,8 @@ function i18nSource() {
   LANGS.forEach((l) => { const f = path.join(SRC, 'lang', 'schritte', l + '.json'); if (fs.existsSync(f)) Object.assign(all[l], JSON.parse(fs.readFileSync(f, 'utf8'))); });
   // „Für Klient zusammenstellen“ (src/klient.js): eigene Sprachdateien src/lang/klient/<Sprache>.json, Schlüssel „kb.*“
   LANGS.forEach((l) => { const f = path.join(SRC, 'lang', 'klient', l + '.json'); if (fs.existsSync(f)) Object.assign(all[l], JSON.parse(fs.readFileSync(f, 'utf8'))); });
+  // Suche auf der Startseite (src/suche.js): Texte src/lang/suche/<Sprache>.json, Schlüssel „su.*“
+  LANGS.forEach((l) => { const f = path.join(SRC, 'lang', 'suche', l + '.json'); if (fs.existsSync(f)) Object.assign(all[l], JSON.parse(fs.readFileSync(f, 'utf8'))); });
   return 'const I18N = ' + JSON.stringify(all) + ';\nconst I18N_EINFACH = ' + JSON.stringify(einfachSource(all.de)) + ';\nif (typeof module !== "undefined") module.exports = I18N;\n';
 }
 
@@ -124,10 +126,19 @@ function briefEinfachJs() {
   return 'const BRIEF_EINFACH = ' + JSON.stringify({ texte }) + ';\n';
 }
 
+// Alltagswörter und alte Namen für die Suche: src/lang/suche/woerter/<Sprache>.json ({ Ziel-ID: [Wörter] }), in src/suche.js eingesetzt
+function sucheJs() {
+  const dir = path.join(SRC, 'lang', 'suche', 'woerter'), w = {};
+  LANGS.forEach((l) => { const f = path.join(dir, l + '.json'); if (fs.existsSync(f)) w[l] = JSON.parse(fs.readFileSync(f, 'utf8')); });
+  const js = read('suche.js');
+  if (!js.includes('/*SUCHWOERTER*/null')) throw new Error('Marke /*SUCHWOERTER*/ fehlt in src/suche.js');
+  return js.replace('/*SUCHWOERTER*/null', () => JSON.stringify(w));
+}
+
 // opts.native: Store-App (Android/iOS) statt Web
 function render(opts = {}) {
   const pp = pruefpaket();
-  const parts = { rules: read('rules.js'), i18n: i18nSource(), fmt: read('fmt.js'), plz: read('plz.js'), behoerden: read('behoerden.js'), formulare: read('formulare.js'), vorgaenge: read('vorgaenge.js'), haushalt: read('haushalt.js'), ausziehen: read('ausziehen.js'), fristen: read('fristen.js'), schulden: read('schulden.js'), geld: read('geld.js'), schritte: read('schritte.js'), klient: read('klient.js'), navigation: read('navigation.js'), app: read('app.js') };
+  const parts = { rules: read('rules.js'), i18n: i18nSource(), fmt: read('fmt.js'), plz: read('plz.js'), behoerden: read('behoerden.js'), formulare: read('formulare.js'), vorgaenge: read('vorgaenge.js'), haushalt: read('haushalt.js'), ausziehen: read('ausziehen.js'), fristen: read('fristen.js'), schulden: read('schulden.js'), geld: read('geld.js'), schritte: read('schritte.js'), klient: read('klient.js'), suche: sucheJs(), navigation: read('navigation.js'), app: read('app.js') };
   if (opts.native) {
     if (!parts.app.includes('/*NATIVE*/ false')) throw new Error('Marker /*NATIVE*/ fehlt in src/app.js');
     parts.app = parts.app.replace('/*NATIVE*/ false', 'true');
@@ -152,11 +163,12 @@ function render(opts = {}) {
     .replace('/*NAVIGATION*/\n', () => parts.navigation)
     .replace('/*SCHRITTE*/\n', () => parts.schritte)
     .replace('/*KLIENT*/\n', () => parts.klient)
+    .replace('/*SUCHE*/\n', () => parts.suche)
     .replace('<!--PRUEFPAKET-->', () => pp.teile)
     .replace('/*PPSTIL*/\n', () => pp.css)
     .replace('/*PRUEFPAKET*/\n', () => briefEinfachJs() + pp.js)
     .replace('/*APP*/\n', () => parts.app.replace("'/*VERSION*/'", () => JSON.stringify(require(path.join(ROOT, 'package.json')).version)));
-  const left = html.match(/\/\*(RULES|I18N|FMT|PLZ|PLZDATA|BEHOERDEN|BEHOERDENDATA|FORMULARE|VORGAENGE|HAUSHALT|AUSZIEHEN|FRISTEN|SCHULDEN|GELD|NAVIGATION|SCHRITTE|APP|PPSTIL|PRUEFPAKET)\*\/|<!--PRUEFPAKET-->/);
+  const left = html.match(/\/\*(RULES|I18N|FMT|PLZ|PLZDATA|BEHOERDEN|BEHOERDENDATA|FORMULARE|VORGAENGE|HAUSHALT|AUSZIEHEN|FRISTEN|SCHULDEN|GELD|NAVIGATION|SCHRITTE|KLIENT|SUCHE|APP|PPSTIL|PRUEFPAKET)\*\/|<!--PRUEFPAKET-->/);
   if (left) throw new Error('Platzhalter nicht ersetzt: ' + left[0]);
   return { html, i18n: parts.i18n };
 }

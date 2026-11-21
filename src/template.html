@@ -999,6 +999,35 @@
   /* Sprachwahl oben nur auf der Startseite (sonst in den Einstellungen): auf allen anderen Seiten, auch „Deine Angaben“, nicht unsichtbar per Tastatur oder Vorlesefunktion erreichbar */
   .app:not([data-ansicht="start"]) .top .sprach-knopf { display: none; }
   .gruss { font-size: 1.7em; font-weight: 900; margin: 4px 0 6px; }
+  /* Suche auf der Startseite (src/suche.js): dezent, über den Kacheln; Treffer als Zeilen, Symbol in der Bereichsfarbe */
+  .su-suche { max-width: 640px; margin: 0; }
+  .su-feld { position: relative; display: flex; align-items: center; }
+  .su-lupe { position: absolute; inset-inline-start: 14px; width: 20px; height: 20px; fill: none; stroke: var(--muted); stroke-width: 2; stroke-linecap: round; pointer-events: none; }
+  #suFeld { width: 100%; min-height: 46px; padding: 10px 46px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink); font: inherit; -webkit-appearance: none; appearance: none; }
+  #suFeld::placeholder { color: var(--muted); opacity: 1; }
+  #suFeld::-webkit-search-cancel-button { display: none; }
+  .su-leeren { position: absolute; inset-inline-end: 4px; width: 40px; height: 40px; border: 0; border-radius: 50%; background: none; color: var(--muted); font-size: 1.5em; line-height: 1; cursor: pointer; }
+  .su-treffer { margin: 10px 0 0; }
+  .su-treffer .zeilen { margin: 0; gap: 8px; max-width: none; }
+  .su-zeile { min-height: 54px; padding: 8px 14px; text-align: start; font: inherit; cursor: pointer; }
+  .su-zeile .zeile-sym { width: 34px; height: 34px; background: none; }
+  .su-L .zeile-sym { color: var(--c-leistungen-t); }
+  .su-B .zeile-sym { color: var(--c-briefe-t); }
+  .su-G .zeile-sym { color: var(--c-sparen-t); }
+  .su-P .zeile-sym { color: var(--c-pflege-t); }
+  .su-A .zeile-sym { color: var(--c-ausziehen-t); }
+  .su-M .zeile-sym, .su-E .zeile-sym, .su-O .zeile-sym { color: var(--muted); }
+  .su-nichts { margin: 4px 0 8px; color: var(--muted); }
+  #inhalt { position: relative; }
+  .su-lupe-knopf { position: absolute; top: 0; inset-inline-end: 0; z-index: 2; display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--line); border-radius: 50%; background: var(--surface); color: var(--ink); cursor: pointer; }
+  .su-lupe-knopf svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+  .app[data-ansicht="start"] #inhalt > .su-lupe-knopf, .app:not([data-ansicht="start"]) .top .su-lupe-knopf { display: none; }
+  .top .su-lupe-knopf { position: static; align-self: flex-start; flex: none; }
+  .top .sprach-knopf + .su-lupe-knopf { margin-inline-start: -12px; }
+  .app:not([data-ansicht="start"]) #inhalt .pa-zeile { padding-inline-end: 52px; }
+  .su-fenster { position: fixed; inset: 0; z-index: 50; overflow-y: auto; background: var(--bg); padding: max(16px, env(safe-area-inset-top)) 16px 24px; }
+  .su-fenster > * { max-width: 640px; margin-inline: auto; }
+  .su-fenster .su-suche { margin-top: 4px; }
   .gruss-t { color: var(--muted); font-size: 1.05em; margin: 0 0 4px; }
   /* Startseite als Kachel-Raster (Kacheln wie Richtung 3 „Bunt und bildhaft“, Farben aus der warmen Palette; weiße Schrift mind. 4,5:1).
      Spaltenbreite in em: bei 320 px oder großer Schrift bricht das Raster auf eine Spalte um. Jeder Bereich hat seine Farbe. */
@@ -1246,9 +1275,12 @@
         <p class="lead" data-t="lead"></p>
       </div>
       <label class="sprach-knopf"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg><span class="vh" data-t="lang.top"></span><select id="langTop"></select></label>
+      <button type="button" class="su-lupe-knopf" id="suLupeStart" data-t-aria="su.suchen"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></button>
     </header>
 
     <main id="inhalt">
+    <!-- Lupe oben auf allen Seiten außer Start (dort steht sie in der Kopfzeile neben der Sprache): öffnet das Such-Fenster (src/suche.js) -->
+    <button type="button" class="su-lupe-knopf" id="suLupe" data-t-aria="su.suchen"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></button>
     <!-- Erststart: einmal für jeden Einstieg (gleich welche Kachel), bis „Verstanden“ -->
     <div class="notice info first" id="firstNotice" role="note" hidden>
       <p data-t="first.text"></p>
@@ -2053,6 +2085,20 @@
   <div class="undo" id="undoBar" hidden><span id="undoText"></span> <button type="button" id="undoBtn" data-t="clear.undo"></button></div>
   <!-- Rückfrage vor „Beispiel laden“, wenn schon eigene Angaben da sind (eigener Dialog, kein window.confirm) -->
 
+  <!-- Such-Fenster: dasselbe Suchfeld wie auf der Startseite; Zurück, Esc, Android-Zurück und Wischen schließen es -->
+  <div class="su-fenster" id="suFenster" role="dialog" aria-modal="true" aria-labelledby="suFensterH" hidden>
+    <!--ZURUECK id=suZu eigen=1-->
+    <h2 id="suFensterH" class="vh" data-t="su.suchen"></h2>
+    <div id="suFensterPlatz">
+    <!-- Suche (src/suche.js): offline, nichts wird gespeichert oder gesendet -->
+      <form class="su-suche" id="suSuche" role="search" autocomplete="off">
+        <label for="suFeld" class="vh" data-t="su.label"></label>
+        <span class="su-feld"><svg class="su-lupe" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg><input type="search" id="suFeld" data-t-ph="su.label" enterkeyhint="search" autocomplete="off" autocorrect="off" spellcheck="false" aria-describedby="suStatus"><button type="button" class="su-leeren" id="suLeeren" data-t-aria="su.leeren" hidden><span aria-hidden="true">×</span></button></span>
+        <p class="vh" id="suStatus" role="status" aria-live="polite"></p>
+        <div class="su-treffer" id="suTreffer" hidden></div>
+      </form>
+    </div>
+  </div>
   <nav class="appnav" id="appnav" aria-label="SoLo">
     <button type="button" data-ansicht="start"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg><span data-t="nav.start"></span></button>
     <button type="button" data-ansicht="ordner"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M3 10h18"/></svg><span data-t="nav.ordner"></span></button>
@@ -2085,6 +2131,7 @@ Behoerden.init(/*BEHOERDENDATA*/null);
 /*GELD*/
 /*SCHRITTE*/
 /*KLIENT*/
+/*SUCHE*/
 </script>
 <script>
 /*NAVIGATION*/
