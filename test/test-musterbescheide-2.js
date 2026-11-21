@@ -58,7 +58,11 @@ ok('[mb2-wohngeld] VG Bayreuth: zu berücksichtigende Miete 438,00 €', nah(R.w
 
 // ---------------------------------------------------------------- Elterngeld (BMBFSFJ „Elterngeld und Elternzeit“, 10/2025)
 {
-  const eg = (v, extra) => karte(Object.assign({ adults: 1, baby: 'bald', egVor: v, art1: 'lohn', brutto: 2000, netto: 1500, kids: 0 }, extra || {}), 'elterngeld');
+  // Seit 21.11.2026 rechnet SoLo aus dem eingegebenen Netto das Elterngeld-Netto mit den Pauschalen nach § 2f BEEG (Befund E2). Die Broschüre
+  // nennt das Elterngeld-Netto: Eingabe deshalb das Netto, aus dem SoLo genau dieses Elterngeld-Netto (+ 102,50 €) macht (Umkehrung per Halbierung).
+  const nettoFuer = (egNetto, inp) => { let lo = 0, hi = egNetto * 1.2 + 100; for (let i = 0; i < 60; i++) { const m = (lo + hi) / 2; if (R.egNettoAmtlich(R.derive(Object.assign({}, inp, { egVor: m })), m, false) < egNetto) lo = m; else hi = m; } return hi; };
+  const egInp = (extra) => Object.assign({ adults: 1, baby: 'bald', art1: 'lohn', brutto: 2000, netto: 1500, kids: 0 }, extra || {});
+  const eg = (v, extra) => karte(Object.assign(egInp(extra), { egVor: nettoFuer(v, egInp(extra)) }), 'elterngeld');
   const b = (k) => par(k, 'eg.ja').basis.eur;
   // Die Broschüre nennt das Elterngeld-Netto (700 / 2.500 / 2.000 €). Eingabe in SoLo plus 102,50 € (§ 2c Abs. 1 BEEG: 1.230 € / 12)
   ok('[mb2-eg] EG-Br 1.4.2: 802,50 € -> 574 €', nah(b(eg(802.5)), 574, 0.5));
@@ -75,7 +79,17 @@ ok('[mb2-wohngeld] VG Bayreuth: zu berücksichtigende Miete 438,00 €', nah(R.w
 
 // ---------------------------------------------------------------- BAföG (bafög.de Beispiele; §§ 25, 29, 30 BAföG)
 {
-  const el = (netto, extra) => karte(Object.assign({ adults: 2, kids: 0, young: 1, ausbildung: 'kind', einkommen: [{ art: 'lohn', b: netto * 1.4, n: netto, p: 1 }], miete: 900 }, extra || {}), 'bafoeg');
+  // Die Beispiele nennen das Einkommen nach § 21 BAföG. Seit 21.11.2026 rechnet SoLo dieses Einkommen aus Brutto und Netto (Befund B1):
+  // (Brutto − 102,50 €) − 22,3 % davon (höchstens 1.433,33 €) − Steuer (Brutto − Netto − Beiträge). Eingabe deshalb Brutto = 1,4 × Einkommen
+  // und das Netto, bei dem genau dieses Einkommen herauskommt: Netto = Einkommen − Basis + Brutto − Beiträge.
+  const el = (e21, extra) => {
+    const inp = Object.assign({ adults: 2, kids: 0, young: 1, ausbildung: 'kind', miete: 900 }, extra || {});
+    const b = e21 * 1.4, ein = b - 1230 / 12, basis = ein - Math.min(0.223 * ein, 17200 / 12);
+    const sv = R.nettoLohn(b, R.lohnAnnahmen(R.derive(Object.assign({}, inp, { einkommen: [{ art: 'lohn', b, n: e21, p: 1 }] })), 1)).sv;
+    return karte(Object.assign(inp, { einkommen: [{ art: 'lohn', b, n: e21 - basis + b - sv, p: 1 }] }), 'bafoeg');
+  };
+  // Betragsschätzung (unten): wie bisher mit Netto und Brutto = 1,4 × Netto (die Schätzung rechnet mit der Spanne Netto bis § 21)
+  const elN = (netto, extra) => karte(Object.assign({ adults: 2, kids: 0, young: 1, ausbildung: 'kind', einkommen: [{ art: 'lohn', b: netto * 1.4, n: netto, p: 1 }], miete: 900 }, extra || {}), 'bafoeg');
   ok('[mb2-bafoeg] Alexa: 3.106,28 €, zwei Geschwister -> wahrscheinlich', el(3106.28, { kids: 2, kidsU6: 1 }).level === 'ja');
   ok('[mb2-bafoeg] Olga: 2.689,39 € -> möglich', el(2689.39).level === 'vielleicht');
   // Befund 10: § 25 Abs. 4 BAföG. 1.500 € über dem Freibetrag -> Anrechnung 750 €, 105 € bleiben -> nicht „eher nicht“
@@ -103,7 +117,7 @@ ok('[mb2-wohngeld] VG Bayreuth: zu berücksichtigende Miete 438,00 €', nah(R.w
   const wv = (k) => { const w = wohn(k); return w ? [w.a.eur, w.b.eur, w.c.eur, w.d.eur] : null; };
   {
     // 1) Paar, nur das studierende Kind, Netto 2.400 € unter dem Freibetrag 2.540 € (§ 25 Abs. 1 Nr. 1): keine Anrechnung -> nur der Bedarf
-    const k = el(2400);
+    const k = elN(2400);
     ok('[bafoeg-betrag] Paar unter Freibetrag: 534–671 € bei den Eltern, 855–992 € sonst; Spanne 530 bis 1.000 €', k.level === 'ja' && JSON.stringify(wv(k)) === '[534,671,855,992]' && betrag(k).a.eur === 530 && betrag(k).b.eur === 1000, k.tx);
     // 2) Paar, Netto 3.540 €, Lohn ohne Brutto (Liste nur mit Netto): hi = Netto -> (3.540 − 2.540) × 50 % = 500 € Anrechnung;
     //    lo = 80 % × 3.540 − 80 = 2.752 € -> 106 € Anrechnung. Bei den Eltern 534 − 500 = 34 € bis 671 − 106 = 565 €; sonst 355 bis 886 €
@@ -114,7 +128,7 @@ ok('[mb2-wohngeld] VG Bayreuth: zu berücksichtigende Miete 438,00 €', nah(R.w
     ok('[bafoeg-betrag] Elternteil allein: nur Höchstbetrag 1.000 € mit Hinweis', k3.tx.some((t) => t[0] === 'schaetz.bis' && t[1].b.eur === 1000) && !!par(k3, 'bafoeg.andererElternteil'), k3.tx);
     // 4) Geschwisterkind (kann in förderfähiger Ausbildung sein): Paar, Netto 2.900 € <= Freibetrag 2.540 + 770 = 3.310 €, aber ohne den
     //    Freibetrag des Geschwisterkinds (§ 25 Abs. 3) und geteilt auf 2 (§ 11 Abs. 4): (2.900 − 2.540) × 50 % / 2 = 90 € -> untere Grenze 534 − 90 = 444 €
-    const k4 = el(2900, { kids: 1 });
+    const k4 = elN(2900, { kids: 1 });
     ok('[bafoeg-betrag] Geschwisterkind evtl. in Ausbildung: untere Grenze 444 € (bei den Eltern)', k4.level === 'ja' && wv(k4)[0] === 444 && wv(k4)[3] === 992, k4.tx);
   }
   {
