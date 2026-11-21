@@ -3,6 +3,7 @@
 Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss steigen). Die Versionsnummer kommt aus dem Build.
 
 ## Nächste Version (in Arbeit)
+- **„Es ist dringend“ aufgeräumt**: alle Fälle gleich aufgebaut – Frist oben, „Das tust du jetzt“ in Schritten, kurze Tipps zum Aufklappen, Knöpfe, Quellen unten. Konto gepfändet mit Bescheinigung und Grundfreibetrag statt doppeltem Tipp; Strom-/Gassperre in 3 Schritten. „Stimmt der Brief?“: Hinweis „keine Rechtsberatung“ unter dem letzten Tipp.
 - **Raten anbieten mit Empfehlung**: Ist der Haushaltsplan ausgefüllt, schlägt SoLo eine machbare Rate vor („Diese Rate empfehlen wir dir: … € im Monat“, Faustregel: frei minus Puffer 10 % der Einnahmen, mind. 50 €, abgerundet auf 5 €) – mit „Übernehmen“ ins neue Schreiben „Ratenzahlung anbieten“; bei mehreren Schulden Aufteilung nach Höhe der Forderung; ohne Spielraum Verweis auf die Schuldnerberatung.
 
 ## 1.8.0 (ab Versionsnummer 150, November 2026)
