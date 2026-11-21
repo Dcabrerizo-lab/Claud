@@ -1790,11 +1790,9 @@
   function absenderOrt() { return absenderWert('ort').replace(/\b\d{5}\b/g, '').replace(/[,;]/g, ' ').trim(); }
   function absender() { return { zeilen: absenderZeilen(), ort: absenderOrt() }; }
   function briefFeld(k, f) { return $(k + ABS_BRIEF_FELD[f]); }
-  // Felder überall angleichen. Alte Stände: Steht in einem Brief-Formular schon ein Absender, der zentral noch fehlt, wird er übernommen.
+  // Felder überall angleichen (auch leeren: nach „Alles löschen“ oder Vorgangswechsel bleibt nichts vom vorigen Absender stehen).
+  // Alte Stände: Der Absender der Mappe stand schon immer in lotse.state (p) und lädt unverändert; die Brief-Formulare speicherten nichts.
   function absenderVerteilen(quelle) {
-    var neu = false;
-    ABS_BRIEF.forEach(function (k) { Object.keys(ABS_BRIEF_FELD).forEach(function (f) { var el = briefFeld(k, f); if (el && !absenderWert(f).trim() && el.value.trim()) { person[f] = el.value.trim(); neu = true; } }); });
-    if (neu) save();
     Object.keys(ABS_FELDER).forEach(function (f) { var el = $(ABS_FELDER[f]); if (el && el !== quelle && el.value !== absenderWert(f)) el.value = absenderWert(f); });
     ABS_BRIEF.forEach(function (k) { Object.keys(ABS_BRIEF_FELD).forEach(function (f) { var el = briefFeld(k, f); if (el && el !== quelle && el.value !== absenderWert(f)) el.value = absenderWert(f); }); });
     document.querySelectorAll('input[data-abs]').forEach(function (el) { if (el !== quelle && el.value !== absenderWert(el.getAttribute('data-abs'))) el.value = absenderWert(el.getAttribute('data-abs')); });
@@ -3540,6 +3538,7 @@
     // Erst nach dem Leeren von „person“: briefOeffnen trägt Name und Anschrift aus „person“ in die Schreiben ein (sonst stünde der vorige Klient darin)
     einleseResteLeeren(); // nichts vom vorigen Vorgang sichtbar lassen (Scan, Brief, Prüfung, Blatt für Klienten)
     ['p-name', 'p-geb', 'p-strasse', 'p-ort', 'p-tel'].forEach(function (id) { $(id).value = ''; });
+    absenderVerteilen(); // auch die Absender-Felder der Briefe (Widerspruch, Musterschreiben) leeren
     $('sampleNotice').hidden = true;
     pf = pfLeer(); pa = { antworten: null, schaetzung: null };
     haken = {}; Store.get('lotse.haken', function (v) { try { var d = v ? JSON.parse(v) : null; if (d && typeof d === 'object') haken = d; } catch (e) {} });
@@ -3588,7 +3587,7 @@
     // Unabhängige Prüfung 21.11.2026: weitere Zustände, die nicht gespeichert und sonst nicht neu gezeichnet werden
     scanTitel = ''; if ($('sc-consent')) { $('sc-consent').checked = false; if ($('sc-claude')) $('sc-claude').disabled = true; }
     empfEdit = {}; empfHinweisDa = false; // selbst geänderte Empfänger der Briefe in der Antragsmappe
-    if ($('mappeBody')) $('mappeBody').textContent = ''; if ($('mappeText')) { $('mappeText').value = ''; $('mappeText').hidden = true; }
+    ['mappeBody', 'aufAntraege', 'aufUnterlagen', 'aufAbschicken'].forEach(function (id) { if ($(id)) $(id).textContent = ''; }); if ($('mappeText')) { $('mappeText').value = ''; $('mappeText').hidden = true; } // Antragsmappe: Briefe, Unterlagen, Druckseiten
     if ($('ergBlatt') && !$('ergBlatt').hidden) ebSchliessen(); // Ergebnisblatt (Beratung): Kürzel und Tabelle
     if ($('ebKuerzel')) $('ebKuerzel').value = ''; if ($('ebSeite')) $('ebSeite').textContent = ''; if ($('ebMsg')) $('ebMsg').textContent = '';
     va = { schritt: 0, wahl: {}, wert: {} }; // Vermögens-Helfer: Auswahl und Beträge
@@ -4829,6 +4828,7 @@
       // Ein gespeichertes, unverändertes Beispiel (e: false) bleibt ein Beispiel: zählt nicht als eigene Angabe
       started = echt; edited = echt && d.e !== false; $('sampleNotice').hidden = !(echt && d.e === false);
       [['p-name', 'name'], ['p-geb', 'geb'], ['p-strasse', 'strasse'], ['p-ort', 'ort'], ['p-tel', 'tel']].forEach(function (x) { $(x[0]).value = person[x[1]] || ''; });
+      absenderVerteilen();
       if (d.big) { $('app').classList.add('big'); document.documentElement.classList.add('big'); $('bigBtn').setAttribute('aria-checked', 'true'); }
       writeForm(); buildSelects(); render();
       if (window.Schritte) Schritte.laden(d.sf); // Stand von „Schritt für Schritt“ in diesem Vorgang
