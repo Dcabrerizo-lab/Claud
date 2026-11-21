@@ -547,7 +547,7 @@
         h('p', {}, h('strong', { 'data-t': 'bp.vb.achtung.h', text: tA('bp.vb.achtung.h', 'Achtung:') }), ' ' + tA('bp.vb.achtung', 'Der Antrag hält nichts auf. Fordert die Stelle Geld zurück, läuft das weiter. Sprich dann schnell mit einer Beratungsstelle.')),
         h('p', { text: tA('bp.vb.verh', 'Warst du verhindert, ohne dass du etwas dafür kannst (zum Beispiel im Krankenhaus)? Dann schick sofort den Widerspruch und schreib dazu, warum es nicht früher ging („Antrag auf Wiedereinsetzung“). Dafür hast du nur kurz Zeit: {zeit}, nachdem das Hindernis weg ist.', { zeit }) }),
         h('p', { 'data-t': 'bp.vb.erfolg', text: tA('bp.vb.erfolg', 'Ob du Erfolg hast, entscheidet die Stelle. SoLo kann das nicht zusagen.') }),
-        beratung ? h('p', { class: 'small muted', 'data-t': 'bp.vb.quellen', text: tA('bp.vb.quellen', 'Quellen: § 44 SGB X; § 40 Abs. 1 SGB II; § 116a SGB XII; §§ 66, 67, 84 SGG; Wohngeld: §§ 58, 60, 70 VwGO.') }) : null));
+        beratung ? h('p', { class: 'small muted', 'data-t': 'bp.vb.quellen', text: tA('bp.vb.quellen', 'Quellen: (§ 44 SGB X; § 40 Abs. 1 SGB II; § 116a SGB XII; §§ 66, 67, 84 SGG; Wohngeld: §§ 58, 60, 70 VwGO).') }) : null));
   }
   // Feld „Tag, an dem der Brief wirklich ankam“: nur sichtbar, wenn die Frist nach dem Briefdatum vorbei wäre
   function zugangFeld(p, nachher, neu) {
