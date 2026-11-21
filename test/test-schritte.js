@@ -71,7 +71,7 @@ const ohne = (o) => JSON.stringify(o.results.map((r) => [r.id, r.level, r.tx]));
   check('Fortschritt: „Teil 1 von …“ vor dem Abschnitt, dünner Balken', /^Teil 1 von [4-7] · /.test(A.$('schritte').querySelector('.sf-bereich').textContent) && !!A.$('schritte').querySelector('.sf-kopf .es-bar'), A.$('schritte').querySelector('.sf-bereich').textContent);
   check('Umschalten auf Schritt für Schritt: erste Frage', A.frage() === L['sf.q.adults'] && A.appEl.classList.contains('sf-an') && store['lotse.checkWeg'] === 'schritt');
   check('Erste Frage: kein Zurück, Bereich „Haushalt“, Aufklapper „Warum fragt die App das?“', !A.$('sfZurueck') && A.$('schritte').querySelector('.sf-bereich').textContent.endsWith(L['sf.b.haus']) && A.$('schritte').querySelector('details.sf-hilfe summary').textContent === L['sf.warum']);
-  check('Wahl des Weges oben sichtbar (vor der Frage), „Angaben löschen“ daneben', A.$('sfWegSchritt').getAttribute('aria-pressed') === 'true' && A.$('sfWegAlles').textContent === L['sf.wahl.alles'] && A.$('sfLeiste').compareDocumentPosition(A.$('sfFrage')) & 4 && !!A.$('clearLink'));
+  check('Frageseite: oben nur Zurück und Fortschritt – Wegwahl, Kurzer Check und „Angaben löschen“ verborgen (UX-Audit A, Aufgabe 1)', A.$('sfLeiste').hidden && !!A.$('sfWegSchritt') && A.$('sfWegSchritt').getAttribute('aria-pressed') === 'true' && A.$('sfWegAlles').textContent === L['sf.wahl.alles'] && !!A.$('clearLink'));
   check('Wahl unabhängig von „Einfache Sprache“: nach dem Umschalten gleich', (() => { A.$('einfacheSpracheBtn').click(); const ok = !!A.$('sfWegSchritt') && A.$('sfWegSchritt').getAttribute('aria-pressed') === 'true' && !!A.$('sfFrage') && !A.appEl.querySelector('#einfach:not([hidden])'); A.$('einfacheSpracheBtn').click(); return ok; })());
 
   // Beratungsmodus ohne eigene Wahl: gleich „Alles auf einer Seite“
@@ -130,6 +130,7 @@ const ohne = (o) => JSON.stringify(o.results.map((r) => [r.id, r.level, r.tx]));
   })());
   await A.antworte([L['bz.kg']]);
   check('Übersicht: keine Klasse sf-frage (Hinweis wieder sichtbar)', !A.appEl.classList.contains('sf-frage'));
+  check('Übersicht: Wegwahl und „Angaben löschen“ oben sichtbar, vor der Überschrift', !A.$('sfLeiste').hidden && A.$('sfLeiste').compareDocumentPosition(A.$('sfFrage')) & 4 && !!A.$('clearLink'));
   check('Am Ende: Übersicht „Deine Angaben“ mit „ändern“', A.frage() === L['sf.ueb.h'] && A.$('schritte').querySelectorAll('[data-aendern]').length > 10);
   check('Übersicht kürzer: je Abschnitt eine Karte, „Nein/0/nichts“ zugeklappt, Miete sichtbar', (() => {
     const b = A.$('schritte'), rest = [...b.querySelectorAll('details.sf-ueb-rest')];

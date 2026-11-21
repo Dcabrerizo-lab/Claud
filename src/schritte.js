@@ -434,6 +434,9 @@ var Schritte = (function () {
       app.classList.toggle('sf-frage', pos !== 'uebersicht' && pos !== 'ergebnis');
     }
     leisteEinsetzen();
+    // Frageseite: oben nur „Zurück“ und Fortschritt (UX-Audit A, Aufgabe 1). Wegwahl, Kurzer Check und „Angaben löschen“ stehen auf
+    // der Startwahl, in „Deine Angaben“ und im Ergebnis; auf der Frage bleibt die Leiste im Dokument, aber verborgen.
+    var lei = box.querySelector('#sfLeiste'); if (lei) lei.hidden = schritt && pos !== 'uebersicht' && pos !== 'ergebnis';
     if (fokus) {
       try { window.scrollTo(0, 0); } catch (e) {}
       var z = pos === 'ergebnis' && schritt ? ctx.ergebnisKopf() : box.querySelector('#sfFrage');
