@@ -3969,7 +3969,7 @@
     var body = el('tbody');
     zeilen.forEach(function (z) {
       var tr = el('tr'), td0 = el('td'), ln = el('button', null, 'pi-link pi-link-tab'); ln.type = 'button';
-      ln.appendChild(document.createTextNode(t('pfl.pi.z.' + z[0]))); var pf = el('span', ' ›'); pf.setAttribute('aria-hidden', 'true'); ln.appendChild(pf);
+      ln.appendChild(document.createTextNode(t('pfl.pi.z.' + z[0]))); ln.appendChild(document.createTextNode(' ')); var pf = el('span', '›'); pf.className = 'pfeil'; pf.setAttribute('aria-hidden', 'true'); ln.appendChild(pf); // Pfeil wie in claude/b-rot-c2
       ln.addEventListener('click', function () { piAbschnitt(z[3]); }); td0.appendChild(ln); tr.appendChild(td0);
       var td = el('td'); td.appendChild(el('span', t('pfl.pi.art.' + z[2]) + ' · ', z[2])); td.appendChild(document.createTextNode(t('pfl.pi.z.' + z[0] + '.w'))); tr.appendChild(td);
       tr.appendChild(el('td', z[1])); body.appendChild(tr); });
