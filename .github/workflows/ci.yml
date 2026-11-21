@@ -58,7 +58,7 @@ jobs:
           if [ "$code" = false ]; then echo "Nur Markdown/Quellen geändert: teure Jobs werden übersprungen, Pflicht-Check meldet success." | tee -a "$GITHUB_STEP_SUMMARY"; fi
 
   regeln:
-    name: Tests a (Lint, Regeln, Oberfläche, Erweiterungen)
+    name: Tests a (Lint, Regeln, Erweiterungen)
     needs: aenderungen
     if: needs.aenderungen.outputs.code == 'true'
     runs-on: ubuntu-latest
@@ -92,14 +92,44 @@ jobs:
         run: echo 'DPkg::Lock::Timeout "600";' | sudo tee /etc/apt/apt.conf.d/99lock >/dev/null; for i in 1 2 3; do timeout 600 npx playwright install-deps chromium && exit 0; echo "Versuch $i fehlgeschlagen"; sleep 20; done; exit 1
       - name: Lint (nicht deklarierte Namen, unbenutzte Variablen)
         run: npm run lint
-      # Wie „npm test“ (build:web, test:rules, test:dom), nur 3 Tests gleichzeitig: dieselben Testlisten (test/listen/*.txt),
-      # jeder Test als eigener Prozess; rot, sobald einer rot ist, abstürzt oder beendet wird (Tabelle am Ende des Schritts).
+      # „npm test“ ist aufgeteilt: Regeltests hier (3 gleichzeitig), Oberflächentests im Job „Tests a2“ (2 Teile parallel).
+      # Dieselben Testlisten (test/listen/*.txt); rot, sobald ein Test rot ist, abstürzt oder beendet wird (Tabelle im Log).
       - name: Web-Version bauen
         run: npm run build:web
-      - name: Regel- und Oberflächentests (3 gleichzeitig)
-        run: node tools/tests.js regeln oberflaeche -j 3
+      - name: Regeltests (3 gleichzeitig)
+        run: node tools/tests.js regeln -j 3
       - name: Erweiterungen (Prüfpaket, mit Browsertest der Vorschau)
         run: npm run test:erweiterungen
+
+  # Oberflächentests (JSDOM, vorher 6–7 Minuten nacheinander in Teil a) in 2 Teilen auf getrennten Rechnern, je 2 gleichzeitig.
+  # Verteilung nach gemessener Dauer in tools/tests.js (--teil); ein Schritt prüft, dass beide Teile zusammen genau die Liste sind.
+  oberflaeche:
+    name: Tests a2 (Oberfläche ${{ matrix.teil }}/2)
+    needs: aenderungen
+    if: needs.aenderungen.outputs.code == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        teil: [1, 2]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Decken die Teile genau die Liste ab?
+        run: |
+          (node tools/tests.js oberflaeche --teil 1/2 --zeigen | tail -n +2; node tools/tests.js oberflaeche --teil 2/2 --zeigen | tail -n +2) | sort > "$RUNNER_TEMP/teile.txt"
+          node tools/tests.js oberflaeche --zeigen | sort > "$RUNNER_TEMP/alle.txt"
+          diff "$RUNNER_TEMP/teile.txt" "$RUNNER_TEMP/alle.txt" || { echo "::error::Teile der Oberflächentests decken die Liste nicht genau ab"; exit 1; }
+          echo "Teile = Liste ($(wc -l < "$RUNNER_TEMP/alle.txt") Tests)"
+      - name: Web-Version bauen
+        run: npm run build:web
+      - name: Oberflächentests Teil ${{ matrix.teil }}/2 (2 gleichzeitig)
+        run: node tools/tests.js oberflaeche --teil ${{ matrix.teil }}/2 -j 2
 
   # Browsertests in parallelen Teilen (vorher ein Job mit ca. 8 Minuten, davon 5,5 Minuten Zufalls-Klicktest).
   # Die Teile stehen in package.json (e2e:basis, e2e:zufall). Ein Schritt prüft, dass sie zusammen genau test:e2e abdecken
@@ -193,12 +223,12 @@ jobs:
 
   # Abschluss mit dem bisherigen Namen: Pflicht-Check für main (Auto-Merge). Läuft immer (always()).
   # Grün nur, wenn „Änderungen“ erfolgreich war UND
-  #  - bei Code-Änderungen: Teil a, alle Matrix-Teile von b und Android „success“ sind,
+  #  - bei Code-Änderungen: Teil a, beide Teile von a2, alle Matrix-Teile von b und Android „success“ sind,
   #  - bei reinen Doku-Änderungen: diese Jobs „skipped“ (oder success) sind.
   # failure, cancelled oder ein unerwartetes skipped bei Code-Änderungen ergeben rot.
   test:
     name: Tests (Regeln, Oberfläche, Browser, App)
-    needs: [aenderungen, regeln, browser, android]
+    needs: [aenderungen, regeln, oberflaeche, browser, android]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -209,11 +239,12 @@ jobs:
           CODE: ${{ needs.aenderungen.outputs.code }}
           A: ${{ needs.regeln.result }}
           B: ${{ needs.browser.result }}
+          A2: ${{ needs.oberflaeche.result }}
           ANDROID: ${{ needs.android.result }}
         run: |
-          echo "Änderungen: $FILTER (code=$CODE) | Teil a: $A | Teil b (alle Teile): $B | Android: $ANDROID"
+          echo "Änderungen: $FILTER (code=$CODE) | Teil a: $A | Teil a2 (Oberfläche): $A2 | Teil b (alle Teile): $B | Android: $ANDROID"
           [ "$FILTER" = success ] || { echo "::error::Pfadfilter nicht erfolgreich"; exit 1; }
-          for r in "$A" "$B" "$ANDROID"; do
+          for r in "$A" "$A2" "$B" "$ANDROID"; do
             if [ "$CODE" = true ]; then [ "$r" = success ] || { echo "::error::Teiljob nicht bestanden ($r)"; exit 1; }
             else [ "$r" = skipped ] || [ "$r" = success ] || { echo "::error::Teiljob nicht bestanden ($r)"; exit 1; }
             fi
