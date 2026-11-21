@@ -75,7 +75,7 @@ const Rules = (function () {
       kvz2026: 2.9, kvz2027: 2.9, uebergangBis: 2000,
       rente: { kvHalb: 0.073, pv: 0.036 }
     },
-    // Pfändungsfreigrenzenbekanntmachung 2026 (BGBl. 2026 I Nr. 80 vom 26.3.2026), gilt 1.7.2026 bis 30.6.2027: Grundfreibetrag 1.587,40 €,
+    // Pfändungsfreigrenzenbekanntmachung 2026 vom 19.3.2026 (BGBl. 2026 I Nr. 80, ausgegeben 26.3.2026; abgerufen 21.11.2026), gilt 1.7.2026 bis 30.6.2027: Grundfreibetrag 1.587,40 €,
     // Erhöhung für die erste unterhaltsberechtigte Person 597,42 €, für die zweite bis fünfte je 332,83 €, Höchstgrenze 4.866,30 € (§ 850c ZPO)
     // Zinsen, Dividenden, ETF-Ausschüttungen (Jahr): Grundsicherungsgeld bis 100 € im Kalenderjahr frei (§ 1 Abs. 1 Nr. 3 GrusiGV),
     // der Rest zählt als Einkommen (§ 11 SGB II). Wohngeld: Kapitalerträge gehören zum Jahreseinkommen (§ 14 WoGG i. V. m. § 20 EStG),

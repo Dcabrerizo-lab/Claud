@@ -494,7 +494,7 @@ Wird nur das Brutto eingetragen, schätzt die App das Netto. Gilt für alle Kart
 
 | Regel | Status | Test |
 |---|---|---|
-| Pfändbarer Betrag nach § 850c ZPO und Pfändungsfreigrenzenbekanntmachung 2026 (BGBl. 2026 I Nr. 80): Netto auf 10 € abgerundet, 70/50/40/30/20/10 % des Mehrbetrags, wie die amtliche Tabelle | ✓ | `pfaendung-tabelle` |
+| Pfändbarer Betrag nach § 850c ZPO und Pfändungsfreigrenzenbekanntmachung 2026 vom 19.3.2026 (BGBl. 2026 I Nr. 80; nicht Nr. 160, das ist die Bekanntmachung 2024): Netto auf 10 € abgerundet, 70/50/40/30/20/10 % des Mehrbetrags, wie die amtliche Tabelle | ✓ | `pfaendung-tabelle` |
 | Über der Höchstgrenze 4.866,30 € voll pfändbar | ✓ | `pfaendung-hoechst` |
 | P-Konto: 1.590 € automatisch (§ 899 ZPO), Unterhalt und Kindergeld mit Bescheinigung (§§ 902, 903 ZPO) | ✓ | `pkonto` |
 | Pfändung wegen Unterhalt (§ 850d ZPO): andere Freibeträge, Hinweis | ◐ | `pfaendung-tabelle` |
