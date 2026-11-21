@@ -131,7 +131,7 @@ var Ausziehen = (function () {
   // Alle Textschlüssel (Tests: jede Sprache hat sie, keine Rohschlüssel)
   function schluessel() {
     var k = ['az.h', 'az.kachel', 'az.kachel.t', 'az.lead', 'az.quelle', 'az.mehrDazu', 'az.weitere', 'az.erledigt', 'az.notiz', 'az.notiz.t',
-      'az.moeglich', 'az.speicherFehler', 'az.knopf.plan', 'az.knopf.check', 'az.knopf.briefe', 'az.knopf.pfaendung', 'az.knopf.vers', 'az.hilfen.check', 'az.vers.tipp', 'az.stand'];
+      'az.moeglich', 'az.speicherFehler', 'az.defekt', 'az.knopf.plan', 'az.knopf.check', 'az.knopf.briefe', 'az.knopf.pfaendung', 'az.knopf.vers', 'az.hilfen.check', 'az.vers.tipp', 'az.stand'];
     BEREICHE.forEach(function (b) {
       k.push('az.' + b.id + '.h', 'az.' + b.id + '.t');
       if (b.stufen) b.stufen.forEach(function (s) { k.push('az.stufe.' + s.id); });
@@ -155,9 +155,24 @@ var Ausziehen = (function () {
       var p = ctx && ctx.plug && ctx.plug('Preferences');
       if (p) { p.set({ key: SCHLUESSEL, value: text }).then(function () { cb(null); }, function (e) { cb(e || new Error('speichern')); }); return; }
       try { localStorage.setItem(SCHLUESSEL, text); cb(null); } catch (e) { cb(e); }
+    },
+    // Kaputter Stand (nicht lesbar): Rohtext unter <SCHLUESSEL>.defekt sichern, bevor leer gestartet wird
+    defekt: function (text) {
+      var p = ctx && ctx.plug && ctx.plug('Preferences');
+      if (p) { p.set({ key: SCHLUESSEL + '.defekt', value: text }).catch(function () {}); return; }
+      try { localStorage.setItem(SCHLUESSEL + '.defekt', text); } catch (e) {}
     }
   };
-  function speicherOrt(s) { if (s && s.laden) speicher.laden = s.laden; if (s && s.schreiben) speicher.schreiben = s.schreiben; }
+  function speicherOrt(s) { if (s && s.laden) speicher.laden = s.laden; if (s && s.schreiben) speicher.schreiben = s.schreiben; if (s && s.defekt) speicher.defekt = s.defekt; }
+  // Gespeicherten Text lesen. Nicht lesbar (kein JSON-Objekt): alten Rohstand sichern (speicher.defekt), Hinweis zeigen, leer starten.
+  // So wird ein kaputter Stand nie still überschrieben.
+  function lesen(v) {
+    var d = null, kaputt = false;
+    if (v) { try { d = JSON.parse(v); } catch (e) { kaputt = true; } if (!kaputt && (!d || typeof d !== 'object')) kaputt = true; }
+    if (kaputt) { try { speicher.defekt(String(v)); } catch (e) {} }
+    var m = ctx ? $('azSpeicherMsg') : null; if (m) { if (kaputt) m.textContent = t('az.defekt'); else if (m.textContent === t('az.defekt')) m.textContent = ''; }
+    return kaputt ? leer() : normiere(d);
+  }
   var LISTEN_IDS = {};
   BEREICHE.forEach(function (b) { if (b.liste) b.punkte.forEach(function (p) { LISTEN_IDS[p.id] = b.id; }); });
   function normiere(d) {
@@ -321,7 +336,7 @@ var Ausziehen = (function () {
     }
     var go = $('goAusziehen'); if (go) go.addEventListener('click', function () { ansicht = ''; herkunft = []; ctx.zeige('ausziehen', true); });
     // „Alle Angaben löschen“ löscht auch Haken und Notizen: das erledigt die App über die Vorgänge (lotse.ausziehen in Vorgaenge.DATEN, danach neuLaden)
-    speicher.laden(function (v) { try { daten = normiere(v ? JSON.parse(v) : null); } catch (e) { daten = leer(); } render(); });
+    speicher.laden(function (v) { daten = lesen(v); render(); });
   }
 
   return {
@@ -331,7 +346,7 @@ var Ausziehen = (function () {
     init: init, zeigen: function () { render(); }, zurueck: zurueck, sprache: function () { render(); }, speicherOrt: speicherOrt, oeffnen: function (id) { geh(id); },
     daten: function () { return JSON.parse(JSON.stringify(daten)); }, laden: function (d) { daten = normiere(d); sichern(); render(); },
     // Nach einem Wechsel des Vorgangs: Haken und Notizen des geöffneten Vorgangs lesen (ohne zu schreiben); offen: Unterseite geöffnet?
-    neuLaden: function () { speicher.laden(function (v) { try { daten = normiere(v ? JSON.parse(v) : null); } catch (e) { daten = leer(); } render(); }); },
+    neuLaden: function () { speicher.laden(function (v) { daten = lesen(v); render(); }); },
     offen: function () { return !!ansicht; },
     // Für „Mein Ordner“: erledigte und alle Checklistenpunkte über alle Bereiche
     stand: function () { var n = 0, von = 0; if (!daten) return null; BEREICHE.forEach(function (b) { var f = fortschritt(daten, b.id); if (f) { n += f.n; von += f.von; } }); return { n: n, von: von }; }

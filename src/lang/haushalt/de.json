@@ -98,6 +98,7 @@
   "hb.beendet": "Die wiederkehrende Ausgabe endet vor diesem Monat.",
   "hb.rueck": "Rückgängig",
   "hb.speicherFehler": "Speichern hat nicht geklappt. Vielleicht ist der Speicher des Geräts voll.",
+  "hb.defekt": "Dein gespeicherter Haushaltsplan ließ sich nicht lesen. Eine Kopie ist gesichert. Du beginnst mit einem leeren Plan.",
   "hb.ausw.leer": "Für diesen Monat gibt es noch keine Ausgaben. Trag sie unter „Ausgaben“ ein.",
   "hb.ausw.vm": "Vormonat: {b}",
   "hb.ausw.mehr": "{b} mehr als im Vormonat",

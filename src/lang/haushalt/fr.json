@@ -98,6 +98,7 @@
   "hb.beendet": "La dépense récurrente se termine avant ce mois.",
   "hb.rueck": "Annuler la suppression",
   "hb.speicherFehler": "L'enregistrement n'a pas fonctionné. La mémoire de l'appareil est peut-être pleine.",
+  "hb.defekt": "Ton plan de budget enregistré n'a pas pu être lu. Une copie a été conservée. Tu recommences avec un plan vide.",
   "hb.ausw.leer": "Pas encore de dépenses pour ce mois. Saisis-les sous « Dépenses ».",
   "hb.ausw.vm": "Mois précédent : {b}",
   "hb.ausw.mehr": "{b} de plus que le mois précédent",

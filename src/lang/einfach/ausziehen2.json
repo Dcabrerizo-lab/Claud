@@ -10,6 +10,7 @@
   "az.notiz.t": "=",
   "az.moeglich": "=",
   "az.speicherFehler": "Speichern hat nicht geklappt. Deine Haken sind beim Schließen vielleicht weg.",
+  "az.defekt": "Die App konnte deine Haken und Notizen nicht lesen. Eine Kopie ist gesichert. Du fängst ohne Haken an.",
   "az.knopf.plan": "=",
   "az.knopf.check": "=",
   "az.knopf.briefe": "=",

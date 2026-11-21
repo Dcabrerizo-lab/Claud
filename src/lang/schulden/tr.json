@@ -39,6 +39,7 @@
   "sl.fehlt.betrag": "Lütfen tutarı sayı olarak gir, örneğin 120,50.",
   "sl.voll": "Liste dolu. Tamamlanan kayıtları sil.",
   "sl.speicherFehler": "Liste kaydedilemedi.",
+  "sl.defekt": "Kayıtlı borç listen okunamadı. Bir kopyası saklandı. Boş bir listeyle başlıyorsun.",
   "sl.art.miete": "Kira veya konut",
   "sl.art.energie": "Elektrik, gaz, ısınma",
   "sl.art.unterhalt": "Nafaka (Unterhalt)",

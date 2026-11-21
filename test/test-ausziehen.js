@@ -71,5 +71,28 @@ Object.keys(ein).forEach((k) => {
 });
 check('[az-sprachen] Einfache Sprache deckt die Hauptkacheln ab', A.HAUPT.every((id) => ein['az.' + id + '.h']));
 
+// Speicherfehler und kaputte Stände (Auftrag naechstes-update, Technik 1 und 2): Attrappe statt DOM
+{
+  const msg = { textContent: '' }, gesichert = [];
+  const altDoc = global.document;
+  global.document = { getElementById: (id) => (id === 'azSpeicherMsg' ? msg : null), createElement: () => ({}), head: { appendChild() {} } };
+  let roh = '{kaputt', schreibFehler = false;
+  A.speicherOrt({ laden: (cb) => cb(roh), schreiben: (t, cb) => cb(schreibFehler ? new Error('voll') : null), defekt: (t) => gesichert.push(t) });
+  A.init({ t: (k) => k, plug: () => null, zeige() {} });
+  check('[az-defekt] nicht lesbarer Stand: Rohtext unter lotse.ausziehen.defekt gesichert, Hinweis, leer gestartet', gesichert.length === 1 && gesichert[0] === '{kaputt' && msg.textContent === 'az.defekt' && JSON.stringify(A.daten()) === JSON.stringify(A.normiere ? A.normiere(null) : A.daten()), [gesichert, msg.textContent]);
+  roh = '42'; A.neuLaden();
+  check('[az-defekt] gültiges JSON, aber kein Objekt, gilt auch als kaputt', gesichert.length === 2 && gesichert[1] === '42');
+  roh = null; A.neuLaden();
+  check('[az-defekt] leerer Speicher: nichts gesichert, Hinweis verschwindet', gesichert.length === 2 && msg.textContent === '');
+  schreibFehler = true; A.laden({});
+  check('[az-speichern] Schreibfehler wird gemeldet (az.speicherFehler)', msg.textContent === 'az.speicherFehler', msg.textContent);
+  schreibFehler = false; A.laden({});
+  check('[az-speichern] nach erfolgreichem Speichern kein Hinweis', msg.textContent === '');
+  const app = fs.readFileSync(path.join(__dirname, '..', 'src', 'app.js'), 'utf8');
+  check('[az-speichern] src/app.js gibt nicht angenommenes Speichern weiter (kein festes cb(null)) und sichert kaputte Stände', app.includes("cb(Store.set('lotse.ausziehen', text) === false ? new Error('nicht gespeichert') : null)") && app.includes("speicherDefekt('lotse.ausziehen', text)"));
+  check('[az-defekt] lotse.ausziehen.defekt gehört zum Vorgang (PIN, Kopie, Löschen)', require('../src/vorgaenge.js').DATEN.includes('lotse.ausziehen.defekt'));
+  global.document = altDoc;
+}
+
 console.log((fehler ? 'FEHLER: ' + fehler : 'OK') + ' – Ich ziehe aus: ' + n + ' Prüfungen');
 process.exit(fehler ? 1 : 0);

@@ -86,6 +86,7 @@
   "hb.beendet": "Diese Ausgabe jeden Monat hört vor diesem Monat auf.",
   "hb.rueck": "Zurückholen",
   "hb.speicherFehler": "Speichern hat nicht geklappt. Vielleicht ist der Speicher vom Gerät voll.",
+  "hb.defekt": "Die App konnte deinen Haushaltsplan nicht lesen. Eine Kopie ist gesichert. Du fängst mit einem leeren Plan an.",
   "hb.ausw.leer": "Für diesen Monat gibt es noch keine Ausgaben. Schreib sie unter „Ausgaben“ auf.",
   "hb.ausw.vm": "Monat davor: {b}",
   "hb.ausw.mehr": "{b} mehr als im Monat davor",

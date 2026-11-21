@@ -98,6 +98,7 @@
   "hb.beendet": "Powtarzający się wydatek kończy się przed tym miesiącem.",
   "hb.rueck": "Cofnij",
   "hb.speicherFehler": "Zapisywanie się nie udało. Może pamięć urządzenia jest pełna.",
+  "hb.defekt": "Nie udało się odczytać zapisanego planu budżetu. Kopia została zachowana. Zaczynasz od pustego planu.",
   "hb.ausw.leer": "W tym miesiącu nie ma jeszcze wydatków. Wpisz je w „Wydatki”.",
   "hb.ausw.vm": "Poprzedni miesiąc: {b}",
   "hb.ausw.mehr": "o {b} więcej niż w poprzednim miesiącu",

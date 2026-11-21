@@ -407,9 +407,24 @@ var Haushalt = (function () {
       var p = ctx && ctx.plug && ctx.plug('Preferences');
       if (p) { p.set({ key: SCHLUESSEL, value: text }).then(function () { cb(null); }, function (e) { cb(e || new Error('speichern')); }); return; }
       try { localStorage.setItem(SCHLUESSEL, text); cb(null); } catch (e) { cb(e); }
+    },
+    // Kaputter Stand (nicht lesbar): Rohtext unter <SCHLUESSEL>.defekt sichern, bevor leer gestartet wird
+    defekt: function (text) {
+      var p = ctx && ctx.plug && ctx.plug('Preferences');
+      if (p) { p.set({ key: SCHLUESSEL + '.defekt', value: text }).catch(function () {}); return; }
+      try { localStorage.setItem(SCHLUESSEL + '.defekt', text); } catch (e) {}
     }
   };
-  function speicherOrt(s) { if (s && s.laden) speicher.laden = s.laden; if (s && s.schreiben) speicher.schreiben = s.schreiben; }
+  function speicherOrt(s) { if (s && s.laden) speicher.laden = s.laden; if (s && s.schreiben) speicher.schreiben = s.schreiben; if (s && s.defekt) speicher.defekt = s.defekt; }
+  // Gespeicherten Text lesen. Nicht lesbar (kein JSON-Objekt): alten Rohstand sichern (speicher.defekt), Hinweis zeigen, leer starten.
+  // So wird ein kaputter Stand nie still überschrieben.
+  function lesen(v) {
+    var d = null, kaputt = false;
+    if (v) { try { d = JSON.parse(v); } catch (e) { kaputt = true; } if (!kaputt && (!d || typeof d !== 'object')) kaputt = true; }
+    if (kaputt) { try { speicher.defekt(String(v)); } catch (e) {} }
+    var m = ctx ? $('hbSpeicherMsg') : null; if (m) { if (kaputt) m.textContent = t('hb.defekt'); else if (m.textContent === t('hb.defekt')) m.textContent = ''; }
+    return kaputt ? leer() : normiere(d);
+  }
   function normiere(d) {
     var x = leer();
     if (!d || typeof d !== 'object') return x;
@@ -1114,7 +1129,7 @@ var Haushalt = (function () {
     ['plan', 'buch', 'ausw'].forEach(function (a) { var b = $('hb-tab-' + a); if (b) b.addEventListener('click', function () { ansicht = a; eingabe = null; render(); }); });
     // „Alle Angaben löschen“ löscht auch Plan und Haushaltsbuch: das erledigt die App über die Vorgänge (lotse.haushalt in Vorgaenge.DATEN, danach neuLaden)
     var go = $('goHaushalt'); if (go) go.addEventListener('click', function () { ctx.zeige('haushalt', true); });
-    speicher.laden(function (v) { try { daten = normiere(v ? JSON.parse(v) : null); } catch (e) { daten = leer(); } render(); });
+    speicher.laden(function (v) { daten = lesen(v); render(); });
   }
   function zeigen() { ueOffen = false; render(); }
 
@@ -1382,7 +1397,7 @@ var Haushalt = (function () {
     init: init, zeigen: zeigen, sprache: function () { render(); }, speicherOrt: speicherOrt,
     daten: function () { return JSON.parse(JSON.stringify(daten)); }, laden: function (d) { daten = normiere(d); sichern(); render(); },
     // Nach einem Wechsel des Vorgangs: Plan des geöffneten Vorgangs aus dem Speicherort lesen (ohne zu schreiben)
-    neuLaden: function () { offenKat = ''; ueOffen = false; eingabe = null; rueck = null; speicher.laden(function (v) { try { daten = normiere(v ? JSON.parse(v) : null); } catch (e) { daten = leer(); } render(); }); }
+    neuLaden: function () { offenKat = ''; ueOffen = false; eingabe = null; rueck = null; speicher.laden(function (v) { daten = lesen(v); render(); }); }
   };
 })();
 if (typeof module !== 'undefined') module.exports = Haushalt;
