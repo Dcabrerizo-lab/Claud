@@ -169,6 +169,7 @@
   [dir="rtl"] .nav-pfeil { transform: scaleX(-1); }
   /* Deutsch gebliebener Block (lang="de" dir="ltr") in einer RTL-Sprache: Pfeile darin zeigen wieder nach LTR-Art */
   [dir="rtl"] [dir="ltr"] :is(.nav-pfeil, .pfeil, .zeile-pfeil) { transform: none; }
+  [dir="ltr"] [dir="rtl"] :is(.nav-pfeil, .pfeil, .zeile-pfeil) { transform: scaleX(-1); } /* darin wieder RTL (z. B. übersetzter Zurück-Knopf) */
   .pa-wo { font-weight: 700; color: var(--ink); }
   .pa-unten { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 20px; margin-top: 18px; }
   .pa-checks { display: grid; gap: 8px; }
@@ -234,7 +235,7 @@
   /* Übersetzungshinweis nur einmal: auf der Startwahl, „Deine Angaben“ und im Ergebnis, nicht auf jeder Frage (UX-Audit A, Aufgabe 8) */
   .app.sf-frage #transNotice { display: none; }
   /* Hinweis als erstes Element einer Ansicht: Platz für die Lupe oben in der Ecke lassen, nichts darunter verdecken */
-  .nav-kopf[hidden] + .notices > .notice, #v-pflege > .pp-hinweis:first-child { margin-inline-end: 56px; }
+  .nav-kopf[hidden] + .notices > .notice { margin-inline-end: 56px; }
 
   .cols { display: grid; gap: 32px; grid-template-columns: minmax(0, 1fr); }
   @media (min-width: 900px) {

@@ -173,7 +173,7 @@
 })();
 
 // Deutsch gebliebene Teile auszeichnen (UX-Audit, WCAG 3.1.2 „Sprache von Teilen“): Einige Bereiche gibt es nur auf Deutsch
-// (Brief prüfen: Formular, Ergebnis, Widerspruch; Pflege: Übersicht, Einschätzung, Erklärseite). Ist eine andere Sprache gewählt,
+// (Brief prüfen: Formular, Ergebnis, Widerspruch; welche Bereiche, legt src/app.js fest). Ist eine andere Sprache gewählt,
 // bekommt jeder rein deutsche Block lang="de" dir="ltr": Bildschirmleser lesen ihn deutsch, und in Arabisch, Farsi oder Paschtu
 // steht er links nach rechts (sonst falsch gesetzt, z. B. „Abs. 3 SGB II 21 §“, Punkt am Satzanfang).
 // Woher die App weiß, was übersetzt ist: t() in src/app.js meldet jeden übersetzten Text (merke). Elemente mit data-t sind übersetzt.

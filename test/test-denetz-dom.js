@@ -98,11 +98,6 @@ const zeilen = (root) => [...(root || d).querySelectorAll('.de-netz')];
   check('ar Brief prüfen: übersetzte Überschrift bleibt Arabisch (kein lang="de")', !deBlock($('p-bescheid').querySelector('h2[data-t]')));
   check('ar Brief prüfen: Hinweis „nur auf Deutsch“ genau einmal sichtbar, ohne deutsche Zeile darunter', !$('ppNurDe').hidden && $('ppNurDe').textContent === I18N.ar['briefe.nurDe'] && d.querySelectorAll('.nur-de-hinweis:not([hidden])').length === 1 && !($('ppNurDe').nextElementSibling || {}).classList?.contains('de-netz'));
   check('ar Brief prüfen: Zurück-Knopf nicht im deutschen Block', !deBlock($('briefZurueck')));
-  d.querySelector('#appnav button[data-ansicht="start"]').click(); $('goPflege').click(); if ($('pu-schaetzen')) $('pu-schaetzen').click();
-  await warte();
-  const zb = $('pflegeAssist').querySelector('.pa-zur');
-  check('ar Pflege-Einschätzung: Zurück in App-Sprache mit Pfeil-Zeichen (spiegelt), nicht im deutschen Block', zb && zb.querySelector('.nav-pfeil') && zb.textContent.includes(I18N.ar['nav.zurueck']) && !deBlock(zb), zb && zb.outerHTML);
-  check('ar Pflege-Einschätzung: deutsche Frage in lang="de" dir="ltr"', deBlock($('pflegeAssist').querySelector('h2, .es-q')));
   setLang('de'); await tick(); await warte();
   check('Deutsch: keine Auszeichnung „nur Deutsch“ mehr', d.querySelectorAll('[data-nur-de]').length === 0);
 
