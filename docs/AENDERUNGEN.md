@@ -4,6 +4,7 @@ Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss ste
 
 ## Nächste Version (in Arbeit)
 - **„Es ist dringend“ aufgeräumt**: alle Fälle gleich aufgebaut – Frist oben, „Das tust du jetzt“ in Schritten, kurze Tipps zum Aufklappen, Knöpfe, Quellen unten. Konto gepfändet mit Bescheinigung und Grundfreibetrag statt doppeltem Tipp; Strom-/Gassperre in 3 Schritten. „Stimmt der Brief?“: Hinweis „keine Rechtsberatung“ unter dem letzten Tipp.
+- **Ich ziehe aus – „Bevor du ausziehst“**: großer gerahmter Hinweis „Unter 25 und Grundsicherungsgeld?“ entfernt; das Thema steht in der normalen Karte „Unter 25 mit Grundsicherungsgeld: Zusicherung vor der Unterschrift“ (§ 22 Abs. 5 SGB II), jetzt im gleichen Design wie die anderen Karten.
 - **Pflegegrad selbst einschätzen**: Auf der Ergebnisseite zuerst der passende Antrag (**Pflegegrad beantragen** bzw. **Höherstufung beantragen**), dann die neue Kachel **Mit dem Gutachten vergleichen** (Gutachten vom Medizinischen Dienst scannen oder einfügen), dann „Was steht mir zu?“. Die Gutachten-Prüfung zeigt jetzt eine Tabelle: deine Punkte je Bereich neben dem Gutachten, Unterschiede fett. „← Zurück“ führt zur Ergebnisseite.
 
 ## 1.8.0 (ab Versionsnummer 150, November 2026)
