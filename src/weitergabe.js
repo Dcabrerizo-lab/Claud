@@ -457,7 +457,74 @@ var Weitergabe = (function () {
     if (de) de.addEventListener('change', function () { var f = de.files && de.files[0]; ausDateiEin(f); });
   }
 
+  // ---------- SoLo-Datei direkt öffnen (App: Dateizuordnung Android/iOS) ----------
+  // Android (AndroidManifest.xml, MainActivity.java) und iOS (Info.plist) melden eine geöffnete .solo-Datei über das App-Plugin von
+  // Capacitor (appUrlOpen, beim Start getLaunchUrl). Hier nur: Adresse prüfen, Datei mit dem Filesystem-Plugin lesen und an den
+  // vorhandenen Weg „Datei öffnen“ geben (ausDateiEin → ausDatei → start: PIN-Abfrage, Vorschau, neuer Vorgang). Keine eigene Prüfung.
+  // n = { app (Plugin App), fs (Plugin Filesystem), ios (bool), zeigen() („Mein Ordner“ zeigen), merker (sessionStorage) }
+  var nat = null, laufend = {};
+  var MERK = 'solo.geoeffnet';
+  // Erlaubt: Android nur content:// (Leserecht nur für diese Datei), iOS nur file:// mit Endung .solo (Kopie in Documents/Inbox)
+  function nativErlaubt(url, ios) {
+    if (typeof url !== 'string' || !url || url.length > 4096 || /[\u0000-\u001f\u007f\s]/.test(url)) return false;
+    if (ios) return /^file:\/\/\/[^?#]*\.solo$/i.test(url);
+    return /^content:\/\/[^/?#]+\/[^#]*$/i.test(url);
+  }
+  // Kurzer Fingerabdruck der Adresse (FNV-1a): nur zum Wiedererkennen, kein Dateiname im Speicher
+  function adrMerk(url) { var h = 0x811c9dc5; for (var i = 0; i < url.length; i++) { h ^= url.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(16); }
+  // gemerkt: [[Fingerabdruck, Zeit], …] dieser Sitzung (sessionStorage, übersteht das Neuladen der Seite)
+  function gemerkt() { try { var a = JSON.parse((nat.merker && nat.merker.getItem(MERK)) || '[]'); return Array.isArray(a) ? a.filter(Array.isArray) : []; } catch (e) { return []; } }
+  function merken(m) { var a = gemerkt().filter(function (x) { return x[0] !== m; }); a.push([m, Date.now()]); try { if (nat.merker) nat.merker.setItem(MERK, JSON.stringify(a.slice(-20))); } catch (e) {} }
+  var DOPPELT_MS = 10000;
+  // Doppelte Meldungen derselben Adresse nicht zweimal öffnen: Beim Start melden Android und iOS sie über appUrlOpen und getLaunchUrl;
+  // nach dem Neuladen der Seite (z. B. automatisches Sperren) meldet getLaunchUrl die alte Adresse noch einmal (beimStart: nie wieder).
+  // Öffnet jemand dieselbe Datei später bewusst noch einmal (appUrlOpen nach mehr als 10 Sekunden), wird sie wieder geöffnet.
+  function nativOeffnen(url, beimStart) {
+    if (!nat || !ui || !nativErlaubt(url, nat.ios)) return Promise.resolve(false);
+    var m = adrMerk(url), alt = gemerkt().filter(function (x) { return x[0] === m; })[0];
+    if (laufend[url] || (alt && (beimStart || Date.now() - alt[1] < DOPPELT_MS))) return Promise.resolve(false);
+    laufend[url] = true; merken(m);
+    var fs = nat.fs;
+    try { if (nat.zeigen) nat.zeigen(); } catch (e) {}
+    var fertig = function (x) {
+      // iOS: die Kopie in Documents/Inbox gleich wieder löschen (gelesen oder nicht)
+      var w = nat.ios && fs && fs.deleteFile ? Promise.resolve().then(function () { return fs.deleteFile({ path: url }); }).catch(function () {}) : Promise.resolve();
+      return w.then(function () { delete laufend[url]; return x; });
+    };
+    if (!fs || !fs.readFile) { aufklappen(); meldung('kw.f.technik'); return fertig(false); }
+    // Größe vorher (wenn bekannt): zu große Dateien gar nicht erst lesen
+    var gr = fs.stat ? Promise.resolve().then(function () { return fs.stat({ path: url }); }).then(function (s) { return s && typeof s.size === 'number' && s.size >= 0 ? s.size : 0; }, function () { return 0; }) : Promise.resolve(0);
+    return gr.then(function (size) {
+      return ausDateiEin({ size: size, text: function () {
+        return Promise.resolve().then(function () { return fs.readFile({ path: url, encoding: 'utf8' }); })
+          .then(function (r) { if (!r || typeof r.data !== 'string') throw fehler('format'); return r.data; });
+      } });
+    }).then(fertig, function () { return fertig(false); });
+  }
+  // iOS: liegengebliebene Kopien (App beim Lesen beendet) in Documents/Inbox löschen; nur .solo, keine gerade laufende
+  function inboxAufraeumen() {
+    var fs = nat && nat.fs;
+    if (!nat || !nat.ios || !fs || !fs.readdir || !fs.deleteFile) return Promise.resolve();
+    return Promise.resolve().then(function () { return fs.readdir({ path: 'Inbox', directory: 'DOCUMENTS' }); }).then(function (r) {
+      var offen = Object.keys(laufend);
+      return Promise.all(((r && r.files) || []).map(function (f) {
+        var name = f && typeof f === 'object' ? f.name : f;
+        if (typeof name !== 'string' || !/\.solo$/i.test(name) || name.indexOf('/') >= 0) return null;
+        if (offen.some(function (u) { try { return decodeURIComponent(u.split('/').pop()) === name || u.split('/').pop() === name; } catch (e) { return true; } })) return null;
+        return Promise.resolve().then(function () { return fs.deleteFile({ path: 'Inbox/' + name, directory: 'DOCUMENTS' }); }).catch(function () {});
+      }));
+    }).catch(function () {});
+  }
+  function nativInit(n) {
+    if (!n || !n.app || nat) return Promise.resolve();
+    nat = n;
+    try { n.app.addListener('appUrlOpen', function (e) { nativOeffnen(e && e.url); }); } catch (e) {}
+    var start0 = n.app.getLaunchUrl ? Promise.resolve().then(function () { return n.app.getLaunchUrl(); }).then(function (r) { return nativOeffnen(r && r.url, true); }, function () {}) : Promise.resolve();
+    return start0.then(inboxAufraeumen, inboxAufraeumen);
+  }
+
   return { importInit: importInit, importStart: start, importLeeren: importLeeren, ausBild: ausBild, ausDateiEin: ausDateiEin, importSpeichern: speichernImport, scanMoeglich: scanMoeglich,
+    nativInit: nativInit, nativOeffnen: nativOeffnen, nativErlaubt: nativErlaubt,
     PREFIX: PREFIX, ITER: ITER, QR_MAX: QR_MAX, FELDER: FELDER, MAX_INHALT: MAX_INHALT, MAX_DATEI: MAX_DATEI,
     packen: packen, auspacken: auspacken, brauchtPin: brauchtPin, istCode: istCode, datei: datei, ausDatei: ausDatei, pruefen: pruefen,
     pinVorschlag: pinVorschlag, pinOk: pinOk, kannKomprimieren: kannKomprimieren, webCrypto: webCrypto, qrMatrix: qrMatrix, qrSvg: qrSvg,

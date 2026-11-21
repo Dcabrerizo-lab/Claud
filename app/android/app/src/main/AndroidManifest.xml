@@ -18,6 +18,37 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <!--
+              SoLo-Datei (.solo) direkt mit SoLo öffnen (Messenger, Mail, Dateien-App). Android liefert die Datei als content://-Adresse
+              mit Leserecht nur für diese Datei; SoLo braucht dafür keine Speicher-Berechtigung. Für .solo gibt es keinen amtlichen
+              MIME-Typ: Apps melden sie meist als application/octet-stream oder application/json. Darum erscheint SoLo auch bei anderen
+              Dateien dieser Art in der Auswahl; passt der Inhalt nicht, zeigt SoLo nur einen Hinweis (src/weitergabe.js ausDatei).
+              Gelesen wird über den vorhandenen Weg „Von der Beratung bekommen“ mit PIN-Abfrage (src/weitergabe.js nativInit).
+              Teilen an SoLo (SEND) wandelt MainActivity.java in Öffnen (VIEW) um.
+            -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="content" />
+                <data android:mimeType="application/x-solo" />
+                <data android:mimeType="application/octet-stream" />
+                <data android:mimeType="application/json" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="content" android:host="*" android:mimeType="*/*" />
+                <data android:pathPattern=".*\\.solo" />
+                <data android:pathPattern=".*\\..*\\.solo" />
+                <data android:pathPattern=".*\\..*\\..*\\.solo" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="application/x-solo" />
+                <data android:mimeType="application/octet-stream" />
+                <data android:mimeType="application/json" />
+            </intent-filter>
         </activity>
 
         <provider

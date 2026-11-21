@@ -189,6 +189,7 @@ Neu: Suche mit Lupe auf jeder Seite, auch mit Alltagswörtern. Einzelne Vorgäng
 - **Tracking:** Nein.
 - **Exportkontrolle:** In `Info.plist` ist `ITSAppUsesNonExemptEncryption = false` gesetzt (nur Standard-Verschlüsselung des Systems).
 - **Kamera:** Begründung steht in `Info.plist` (`NSCameraUsageDescription`).
+- **Dateityp .solo** (ab nächster Version): `Info.plist` meldet den eigenen Dateityp `com.Sozialleistungslotse.solo` (`CFBundleDocumentTypes`, `UTExportedTypeDeclarations`, `LSSupportsOpeningDocumentsInPlace = false`). Keine neue Berechtigung, keine Datenerfassung: Datenschutz-Angaben bleiben unverändert („keine Daten erfasst“). Android: Dateizuordnung im Manifest ohne neue Berechtigung, Datensicherheit in der Play Console unverändert.
 
 ### Hinweise für die App-Prüfung (App Review Information → Notes)
 
