@@ -1,0 +1,39 @@
+# Differenztest Kinderzuschlag: zufällige Familien im KiZ-Lotsen der Familienkasse und in SoLo (tools/amtlich-vergleich-kiz.js).
+# Nur von Hand. Höflich: höchstens 400 Abfragen, 2,5 s Pause. Ergebnis als Artefakt "amtlich-kiz".
+name: Amtlich KiZ-Vergleich
+
+on:
+  workflow_dispatch:
+    inputs:
+      anzahl:
+        description: 'Zahl der Familien (zusätzlich bis 40 Gegenproben, zusammen höchstens 400)'
+        default: '360'
+
+permissions:
+  contents: read
+
+jobs:
+  vergleich:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - name: Browser installieren (bis zu 3 Versuche)
+        run: for i in 1 2 3; do timeout 300 npx playwright install --with-deps chromium && exit 0; echo "Versuch $i fehlgeschlagen"; sleep 20; done; exit 1
+      - name: KiZ-Lotse abfragen
+        run: node tools/amtlich-vergleich-kiz.js abfragen ${{ inputs.anzahl || '360' }} kiz-lotse.json
+      - name: SoLo gegen KiZ-Lotse
+        if: always()
+        run: node tools/amtlich-vergleich-kiz.js auswerten kiz-lotse.json kiz-auswertung.json | tee kiz-auswertung.txt
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: amtlich-kiz
+          path: |
+            kiz-lotse.json
+            kiz-auswertung.json
+            kiz-auswertung.txt
+          if-no-files-found: warn
