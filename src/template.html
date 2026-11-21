@@ -258,7 +258,12 @@
   .undo button { font: inherit; font-weight: 700; min-height: 44px; padding: 6px 14px; border-radius: 8px; border: 2px solid currentColor; background: transparent; color: inherit; cursor: pointer; }
   @media (min-width: 900px) { .undo { bottom: 16px; } }
   /* Löschen (Einstellungen → Sicherheit und Daten): Zeilen mit Mülleimer, Rückfrage mit rotem Endgültig-Knopf */
-  .loesch-zeile .zeile-sym { color: var(--bad); }
+  .loesch-zeile .zeile-sym { color: var(--bad); background: var(--bad-bg); }
+  /* Löschen sieht nicht aus wie eine Navigationszeile (UX-Audit A, Aufgabe 10): roter Rahmen und Titel, kein Pfeil */
+  .zeile.loesch-zeile { border: 2px solid var(--bad); }
+  .regel-liste details { border-bottom: 1px solid var(--line); padding: 4px 0; } .regel-liste p { margin: 4px 0 10px; }
+  .zeile.loesch-zeile b { color: var(--bad); }
+  .zeile.loesch-zeile:hover { border-color: var(--bad); background: var(--bad-bg); }
   .loesch-frage { max-width: 60ch; margin: 8px 0; padding: 12px 14px; border: 2px solid var(--bad); border-radius: var(--r-item, 16px); background: var(--bad-bg); color: var(--ink); }
   .loesch-frage p { margin: 0 0 6px; }
   .loesch-frage-t { font-weight: 800; }
@@ -724,6 +729,8 @@
     .shell { padding-bottom: 40px; }
   }
   .app.pm ~ .appnav, .app.pm .appnav, .app.pm #v-einstellungen { display: none; }
+  .app.pm.legal-an ~ .appnav, .app.pm.legal-an .appnav { display: grid; } /* Impressum, Datenschutz, Lizenzen: Leiste unten bleibt */
+  .app.legal-an #legal { padding-bottom: 88px; }
   .ans-h { font-size: 1.5em; margin: 8px 0 12px; }
   .set-gruppe { margin: 0 0 22px; max-width: 60ch; }
   .set-gruppe h3 { margin: 0 0 8px; font-size: 1.05em; }
