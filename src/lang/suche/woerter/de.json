@@ -70,7 +70,7 @@
   "g-abschlag": ["Abschlag", "Stromabschlag", "Nachzahlung Strom", "Gasabschlag"],
   "g-tarif": ["Tarif vergleichen", "Stromanbieter wechseln", "Anbieterwechsel", "Gasanbieter", "Stromanbieter"],
   "pflege": ["Pflege", "Angehörige pflegen", "pflegebedürftig"],
-  "p-hilfe": ["Pflegeleistungen", "Pflegedienst", "Tagespflege", "Entlastungsbetrag"],
+  "p-hilfe": ["Pflegeleistungen", "Pflegedienst", "Tagespflege", "Entlastungsbetrag", "Pflegegeld", "Pflegesachleistung", "Verhinderungspflege", "Kurzzeitpflege", "Hausnotruf", "Kombinationsleistung"],
   "p-schaetzen": ["Pflegegrad", "Pflegestufe", "Pflegegrad beantragen", "Pflegegrad berechnen", "Begutachtung"],
   "ausziehen": ["Ausziehen", "erste Wohnung", "eigene Wohnung", "Umzug", "von zu Hause ausziehen"],
   "a-vorher": ["Wohnungssuche", "Mietvertrag", "Kaution", "Erstausstattung", "Wohnungsübergabe"],
@@ -88,5 +88,7 @@
   "e-about": ["Version", "Impressum", "Datenschutz", "Kontakt"],
   "ordner": ["Ordner", "gespeichert", "Vorgänge", "Klienten"],
   "o-fristen": ["Fristen", "Termine", "Frist"],
-  "o-ergebnis": ["Ergebnis", "letztes Ergebnis"]
+  "o-ergebnis": ["Ergebnis", "letztes Ergebnis"],
+  "p-gutachten": ["Gutachten", "Pflegegutachten prüfen", "MD", "Widerspruch Pflegegrad", "Gutachten vergleichen"],
+  "o-import": ["QR-Code", "SoLo-Datei", "Datei von der Beratung", "PIN von der Beratung", "von der Beratung bekommen"]
 }

@@ -4518,9 +4518,10 @@
         d.appendChild(el('p', PU_ART[l.art], 'pu-art small'));
         d.appendChild(el('p', z[1]));
         if (z[3]) d.appendChild(el('p', z[3], 'pu-wichtig'));
-        var m = el('details'); m.appendChild(el('summary', 'Mehr dazu'));
+        var m = el('details'), ms = m.appendChild(el('summary', 'Mehr dazu'));
+        ms.setAttribute('aria-label', 'Mehr dazu: ' + z[0]); // für Screenreader unterscheidbar (UX-Audit D #6)
         z[2].forEach(function (x) { m.appendChild(el('p', x)); });
-        m.appendChild(el('p', 'Rechtsgrundlage: ' + l.recht, 'small muted'));
+        if (beratung) m.appendChild(el('p', 'Rechtsgrundlage: ' + l.recht, 'small muted')); // Paragrafen nur im Beratungsmodus, wie die Einstellung verspricht
         d.appendChild(m);
         ziel.appendChild(d);
       };
@@ -4533,7 +4534,12 @@
       else top.map(finde).filter(Boolean).forEach(function (l) { karte(l, box); });
       // Grüner Hauptknopf unter den Leistungen: Pflegegrad selbst einschätzen (ohne Grad: für den Antrag; mit Grad 1 bis 4: passt ein höherer?).
       // Nicht bei Grad 5 und nicht, wenn die Seite aus der Ergebnisseite der Einschätzung geöffnet wurde.
-      if (pg < 5 && !vonErg && typeof PflegeAssistent !== 'undefined') { var hk = box.appendChild(el('div', null, 'btns pu-haupt')); hk.appendChild(nhKnopf('btn', esc(t('pu.schaetzen')), null, function () { paOeffnen(true); })).id = 'pu-schaetzen-knopf'; }
+      // Mit Pflegegrad (UX-Audit D #5): Nebenknopf „Reicht der Pflegegrad noch? Höherstufung prüfen“ statt grünem Hauptknopf
+      if (pg < 5 && !vonErg && typeof PflegeAssistent !== 'undefined') {
+        var hk = box.appendChild(el('div', null, 'btns pu-haupt'));
+        var hkb = hk.appendChild(nhKnopf(pg ? 'btn ghost' : 'btn', esc(t(pg ? 'pa.hoeher' : 'pu.schaetzen')), null, function () { paOeffnen(true); })); hkb.id = 'pu-schaetzen-knopf';
+        if (lang !== 'de') { hkb.setAttribute('lang', lang); hkb.setAttribute('dir', (I18N[lang] && I18N[lang]['meta.dir']) || 'ltr'); } // übersetzt im deutschen Block
+      }
       var rest = liste.filter(function (l) { return top.indexOf(l.id) < 0; });
       if (rest.length) {
         var w = el('details', null, 'pu-weitere mehr mehr-liste'); w.id = 'pu-weitere';
@@ -4906,10 +4912,12 @@
     else if (id === 'pflege') puOeffnen('wahl');
     else if (id === 'p-hilfe') puOeffnen('pg');
     else if (id === 'p-schaetzen') paOeffnen(true);
+    else if (id === 'p-gutachten') { if (briefArt) briefOeffnen(null); oeffneVon('briefe', false); briefOeffnen('pk'); } // wie Brief → Pflegekasse
     else if (id === 'ausziehen' || k[0] === 'a') { $('goAusziehen').click(); if (k[0] === 'a' && window.Ausziehen) Ausziehen.oeffnen(x); }
     else if (id === 'mappe') { oeffneVon('leistungen', true); var mk = $('mappeMake'); if (mk && !mk.closest('[hidden]')) { try { mk.scrollIntoView({ block: 'center' }); } catch (e) {} mk.focus({ preventScroll: true }); } } // Knopf zur Antragsmappe unter dem Ergebnis (ohne Ergebnis: der Hilfen-Check)
     else if (id === 'einst' || id === 'ordner') { usZeigen(id, '', false); zeigeAnsicht(id, true); }
     else if (k[0] === 'e') { zeigeAnsicht('einst', false); usZeigen('einst', x, true); }
+    else if (id === 'o-import') { usZeigen('ordner', '', false); zeigeAnsicht('ordner', false); var ki = $('kwImport'); if (ki) { ki.open = true; try { ki.scrollIntoView({ block: 'start' }); } catch (x3) {} var ks = ki.querySelector('summary'); if (ks) ks.focus({ preventScroll: true }); } } // „Von der Beratung bekommen“
     else if (id === 'o-fristen') { zeigeAnsicht('ordner', false); usZeigen('ordner', 'fristen', true); }
     else if (id === 'o-ergebnis') { oeffneVon('leistungen', false); var e = $('ergebnis'); if (e) { try { e.scrollIntoView({ block: 'start' }); } catch (x2) {} e.focus({ preventScroll: true }); } }
     if (aktAnsicht !== 'start') { sucheRueck = navEbene().pfad; if (navBereit) Navigation.melde(); }

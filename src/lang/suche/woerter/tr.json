@@ -152,5 +152,21 @@
   "geri ödeme",
   "fazla ödeme",
   "Rückforderung"
+ ],
+ "p-hilfe": [
+  "bakım parası",
+  "evde bakım servisi",
+  "geçici bakım",
+  "kısa süreli bakım"
+ ],
+ "p-gutachten": [
+  "bakım raporu",
+  "raporu kontrol et",
+  "bakım derecesine itiraz"
+ ],
+ "o-import": [
+  "QR kodu",
+  "SoLo dosyası",
+  "danışmadan dosya"
  ]
 }
