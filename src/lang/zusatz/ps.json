@@ -102,5 +102,6 @@
   "plz.wohnort": "د استوګنې ځای: {ort} · Mietenstufe {stufe}",
   "plz.aendern": "بدلول",
   "plz.stimmt": "ځای سم دی؟ Mietenstufe ستا په ښاروالۍ پورې اړه لري، نه په پوستي کوډ.",
-  "plz.was": "Mietenstufe څه ده؟"
+  "plz.was": "Mietenstufe څه ده؟",
+  "vg.ordner.t": "دلته ستا خوندي شوي معلومات او لیکونه دي. هر څه په همدې وسیله پاتې کېږي."
 }

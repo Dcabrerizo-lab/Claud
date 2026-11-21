@@ -102,5 +102,6 @@
   "plz.wohnort": "Miejsce zamieszkania: {ort} · Stopień czynszu {stufe}",
   "plz.aendern": "Zmień",
   "plz.stimmt": "Czy miejscowość się zgadza? Stopień czynszu zależy od twojej gminy, nie od kodu pocztowego.",
-  "plz.was": "Co to jest stopień czynszu?"
+  "plz.was": "Co to jest stopień czynszu?",
+  "vg.ordner.t": "Tutaj są twoje zapisane dane i pisma. Wszystko zostaje na tym urządzeniu."
 }

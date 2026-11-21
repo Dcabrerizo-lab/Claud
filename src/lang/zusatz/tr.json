@@ -102,5 +102,6 @@
   "plz.wohnort": "Oturduğun yer: {ort} · Kira kademesi {stufe}",
   "plz.aendern": "Değiştir",
   "plz.stimmt": "Yer doğru mu? Kira kademesi posta koduna değil, belediyene bağlıdır.",
-  "plz.was": "Kira kademesi nedir?"
+  "plz.was": "Kira kademesi nedir?",
+  "vg.ordner.t": "Kaydettiğin bilgiler ve yazılar burada. Her şey bu cihazda kalır."
 }

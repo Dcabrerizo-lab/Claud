@@ -102,5 +102,6 @@
   "plz.wohnort": "Wohnort: {ort} · Mietenstufe {stufe}",
   "plz.aendern": "Ändern",
   "plz.stimmt": "Stimmt der Ort? Die Mietenstufe hängt von deiner Gemeinde ab, nicht von der Postleitzahl.",
-  "plz.was": "Was ist die Mietenstufe?"
+  "plz.was": "Was ist die Mietenstufe?",
+  "vg.ordner.t": "Hier liegen deine gespeicherten Angaben und Schreiben. Alles bleibt auf diesem Gerät."
 }

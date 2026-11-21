@@ -1074,6 +1074,7 @@
   .su-fenster { position: fixed; inset: 0; z-index: 50; overflow-y: auto; background: var(--bg); padding: max(16px, env(safe-area-inset-top)) 16px 24px; }
   .su-fenster > * { max-width: 640px; margin-inline: auto; }
   .su-fenster .su-suche { margin-top: 4px; }
+  .su-vorschlag { margin-top: 16px; } .su-vorschlag p { color: var(--muted); margin: 0 0 8px; } .su-vorschlag .chips { display: flex; flex-wrap: wrap; gap: 8px; }
   .gruss-t { color: var(--muted); font-size: 1.05em; margin: 0 0 4px; }
   /* Startseite straffen (UX-Audit A, Aufgabe 5): eine Einleitung statt drei – der Satz unter der Begrüßung entfällt sichtbar
      (Element bleibt als Anker für den Fristen-Hinweis); Erststart-Hinweis schmal; Datenschutz-Satz unten nur ohne Erststart-Hinweis */
@@ -1900,6 +1901,7 @@
     <section id="v-ordner" class="ansicht" aria-labelledby="h-ordner" hidden>
       <div id="ordnerHaupt">
         <h2 id="h-ordner" class="ans-h" data-t="nav.ordner"></h2>
+        <p class="small muted ordner-intro" id="ordnerIntro" data-t="vg.ordner.t"></p>
         <div class="vg-gruppe" id="setHaushalte" hidden></div>
         <ul id="ordnerKarten" class="zeilen"></ul>
         <!-- Von der Beratung bekommen (src/weitergabe.js, für alle Nutzer): SoLo-Datei öffnen oder QR-Code scannen → neuer Vorgang -->
@@ -2180,6 +2182,7 @@
         <span class="su-feld"><svg class="su-lupe" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg><input type="search" id="suFeld" data-t-ph="su.label" enterkeyhint="search" autocomplete="off" autocorrect="off" spellcheck="false" aria-describedby="suStatus"><button type="button" class="su-leeren" id="suLeeren" data-t-aria="su.leeren" hidden><span aria-hidden="true">×</span></button></span>
         <p class="vh" id="suStatus" role="status" aria-live="polite"></p>
         <div class="su-treffer" id="suTreffer" hidden></div>
+        <div class="su-vorschlag" id="suVorschlag" hidden></div>
       </form>
     </div>
   </div>

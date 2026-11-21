@@ -102,5 +102,6 @@
   "plz.wohnort": "Place of residence: {ort} · Rent level {stufe}",
   "plz.aendern": "Change",
   "plz.stimmt": "Is the place right? The rent level depends on your municipality, not on the postcode.",
-  "plz.was": "What is the rent level?"
+  "plz.was": "What is the rent level?",
+  "vg.ordner.t": "Your saved details and letters are kept here. Everything stays on this device."
 }

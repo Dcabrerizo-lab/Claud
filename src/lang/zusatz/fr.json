@@ -102,5 +102,6 @@
   "plz.wohnort": "Domicile : {ort} · Niveau de loyer {stufe}",
   "plz.aendern": "Modifier",
   "plz.stimmt": "Le lieu est-il correct ? Le niveau de loyer dépend de ta commune, pas du code postal.",
-  "plz.was": "Qu’est-ce que le niveau de loyer ?"
+  "plz.was": "Qu’est-ce que le niveau de loyer ?",
+  "vg.ordner.t": "Ici se trouvent tes informations et tes courriers enregistrés. Tout reste sur cet appareil."
 }

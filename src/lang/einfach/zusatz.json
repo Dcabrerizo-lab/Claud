@@ -73,5 +73,6 @@
   "plz.wohnort": "=",
   "plz.aendern": "=",
   "plz.stimmt": "Stimmt der Ort? Die Mietenstufe hängt von deinem Ort ab. Nicht von der Postleitzahl.",
-  "plz.was": "="
+  "plz.was": "=",
+  "vg.ordner.t": "Hier sind deine gespeicherten Angaben und Briefe. Alles bleibt auf diesem Gerät."
 }
