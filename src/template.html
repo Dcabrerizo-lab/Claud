@@ -406,6 +406,12 @@
   .sl-leer { margin: 6px 0 0; }
   .sl-summe { border: 1px solid var(--line); border-inline-start: 4px solid var(--c-pfaendung-t); border-radius: var(--r-card, 14px); background: var(--surface); padding: 12px 16px; display: grid; gap: 6px; margin: 8px 0; }
   .sl-summe p { margin: 0; }
+/* Ratenempfehlung (src/geld.js): Gläubiger des aktuellen Schreibens fett und mit Randbalken, zusätzlich als Text markiert */
+.ra-karte { margin: 8px 0 12px; }
+.ra-auft { width: 100%; }
+.ra-auft tr.ra-dies td { font-weight: 700; }
+.ra-auft tr.ra-dies td:first-child { border-inline-start: 4px solid var(--c-sparen-t); padding-inline-start: 8px; }
+.ra-auft tfoot td { font-weight: 700; border-top: 1px solid var(--line); }
   .sl-gesamt { font-size: 1.25em; font-weight: 700; }
   .sl-hh { display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 8px; }
   .sl-fehler { color: var(--bad); font-weight: 700; }
