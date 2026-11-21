@@ -11,7 +11,7 @@ const path = require('path');
 const SF_ALLES = () => { try { if (!localStorage.getItem('lotse.checkWeg')) { localStorage.setItem('lotse.checkWeg', 'alles'); localStorage.setItem('CapacitorStorage.lotse.checkWeg', 'alles'); } } catch (e) {} };
 const APP = 'file://' + path.join(__dirname, '..', 'dist', 'sozialleistungslotse.html');
 let n = 0, fails = 0;
-const ok = (name, c, x) => { n++; if (!c) { fails++; console.log('FAIL [rundgang] ' + name + (x === undefined ? '' : ' -> ' + String(x).slice(0, 300))); } };
+const ok = (name, c, x) => { n++; if (!c) { fails++; console.log('FAIL Rundgang: ' + name + (x === undefined ? '' : ' -> ' + String(x).slice(0, 300))); } };
 
 (async () => {
   const b = await pw[process.env.BROWSER || 'chromium'].launch();
@@ -85,5 +85,5 @@ const ok = (name, c, x) => { n++; if (!c) { fails++; console.log('FAIL [rundgang
 
   await b.close();
   if (fails) { console.log(fails + ' von ' + n + ' Prüfungen FEHLGESCHLAGEN (Rundgang)'); process.exit(1); }
-  console.log('[rundgang] Fester Rundgang bestanden: ' + n + ' Prüfungen (Start, ausführlich mit Karten, Antragsmappe, einfache Version, Mein Ordner, Einstellungen)');
+  console.log('Fester Rundgang bestanden: ' + n + ' Prüfungen (Start, ausführlich mit Karten, Antragsmappe, einfache Version, Mein Ordner, Einstellungen)');
 })().catch((e) => { console.log('ABSTURZ', e.message); process.exit(1); });

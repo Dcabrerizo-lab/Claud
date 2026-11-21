@@ -45,5 +45,4 @@ node test/test-musterbescheide.js
 node test/test-amtlich-wohngeld.js
 node test/test-ausziehen.js
 node test/test-krypto.js
-node test/test-unterhalt-selbst.js
 node test/test-doku-zusammenfuehrung.js

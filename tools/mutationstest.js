@@ -132,9 +132,9 @@ const TEIL = +SHARD[1], ANZAHL = +SHARD[2];
 const MEINE = M.filter((_, i) => i % ANZAHL === TEIL - 1);
 if (ANZAHL > 1) console.log('Teil ' + TEIL + '/' + ANZAHL + ': ' + MEINE.length + ' von ' + M.length + ' Mutationen');
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'mut-'));
-for (const d of ['src', 'test', 'docs', 'dist', 'tools/amtliche-rechner']) fs.cpSync(path.join(ROOT, d), path.join(tmp, d), { recursive: true });
+for (const d of ['src', 'test', 'docs', 'dist', 'erweiterungen', 'tools/amtliche-rechner']) fs.cpSync(path.join(ROOT, d), path.join(tmp, d), { recursive: true });
 // Einzelne Dateien, die die Tests zusätzlich lesen (Name der App, Webseite)
-for (const f of ['site', 'datenschutz.html', 'README.md', 'app/capacitor.config.json', 'app/android/app/src/main/res/values/strings.xml', 'app/android/app/build.gradle', 'app/android/app/src/debug/res/values/strings.xml', 'app/android/app/src/main/AndroidManifest.xml', 'app/ios/App/App/Info.plist', 'app/ios/App/App.xcodeproj/project.pbxproj']) {
+for (const f of ['tools/amtlich-vergleich-wohngeld-kern.js', 'site', 'datenschutz.html', 'README.md', 'app/capacitor.config.json', 'app/android/app/src/main/res/values/strings.xml', 'app/android/app/build.gradle', 'app/android/app/src/debug/res/values/strings.xml', 'app/android/app/src/main/AndroidManifest.xml', 'app/ios/App/App/Info.plist', 'app/ios/App/App.xcodeproj/project.pbxproj']) {
   fs.mkdirSync(path.dirname(path.join(tmp, f)), { recursive: true });
   fs.cpSync(path.join(ROOT, f), path.join(tmp, f), { recursive: true });
 }
@@ -155,7 +155,6 @@ const KILLER_DATEI = path.join(ROOT, 'tools', 'mutation-killer.json');
 const KILLER = fs.existsSync(KILLER_DATEI) ? JSON.parse(fs.readFileSync(KILLER_DATEI, 'utf8')) : {};
 const finder = (liste) => { for (const t of liste) { try { execSync('node test/' + t, { cwd: tmp, stdio: 'ignore' }); } catch (e) { return t; } } return null; };
 const ohneZahl = (t) => t.split(' ')[0];
-const laeuft = () => finder(TESTS) === null;
 
 let unentdeckt = 0, geprueft = 0, killerTreffer = 0;
 const neueKiller = {};
@@ -174,9 +173,9 @@ for (const m of MEINE) {
   }
   fs.writeFileSync(path.join(tmp, datei), orig);
 }
-const sauber = laeuft();
+const sauberRot = finder(TESTS);
 fs.rmSync(tmp, { recursive: true, force: true });
-if (!sauber) { console.log('Ohne Fehler laufen die Tests nicht durch – erst npm test reparieren.'); process.exit(1); }
+if (sauberRot) { console.log('Ohne Fehler laufen die Tests nicht durch (rot: ' + sauberRot + ') – erst npm test reparieren.'); process.exit(1); }
 const sortiert = (o) => Object.fromEntries(Object.keys(o).sort().map((x) => [x, o[x]]));
 if (process.env.MUT_KILLER_AUS) fs.writeFileSync(process.env.MUT_KILLER_AUS, JSON.stringify(sortiert(neueKiller), null, 1) + '\n');
 if (process.env.MUT_KILLER_SCHREIBEN === '1') {
