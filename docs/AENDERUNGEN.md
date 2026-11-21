@@ -2,6 +2,13 @@
 
 Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss steigen). Die Versionsnummer kommt aus dem Build.
 
+## Nächste Version (in Arbeit)
+
+| Bereich | Was ist neu |
+|---|---|
+| **SoLo-Datei direkt öffnen** (Android und iPhone) | Eine SoLo-Datei (.solo) aus Messenger, Mail oder Dateien-App öffnet sich direkt mit SoLo („Öffnen mit“ bzw. „Teilen“ → SoLo). SoLo zeigt „Mein Ordner“ → „Von der Beratung bekommen“ mit der PIN-Abfrage, danach wie bisher Vorschau und Speichern als neuer Vorgang. Gleiche strenge Prüfung wie „Datei öffnen“; eine falsche Datei ergibt nur einen Hinweis. Keine neue Berechtigung, kein Netz. iPhone: SoLo liest eine Kopie und löscht sie gleich danach. Android: Weil .solo kein eigener Dateityp ist, kann SoLo auch bei anderen Dateien (z. B. „application/octet-stream“) in der Auswahl stehen. |
+| **iPhone: stärkerer Speicherschutz** | Die Datei mit den Angaben ist jetzt nur lesbar, solange das iPhone entsperrt ist (Datenschutzklasse „vollständig“ statt „bis zum ersten Entsperren“). Vorhandene Dateien werden beim nächsten Öffnen umgestellt. SoLo speichert beim Verlassen der App sofort; bei gesperrtem Gerät lehnt SoLo das Schreiben ab und meldet es, statt still Daten zu verlieren. |
+
 ## Version 1.9.0 (VersionCode/Build 151, 21.11.2026)
 
 Stand: Sammelzweig für Update 1.9 (21.11.2026). Versionsnummer (VersionCode) legt David fest.

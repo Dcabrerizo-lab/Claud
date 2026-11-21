@@ -5010,6 +5010,12 @@
       // Fristen wie beim Laden prüfen (src/fristen.js normiere): Unbekanntes fällt weg; „Erinnerung beim Öffnen“ gilt dann wie für eigene Fristen
       fristen: function (obj) { try { return JSON.stringify(window.FristenOrdner ? FristenOrdner.normiere(obj) : { v: 1, e: [] }); } catch (e) { return null; } }
     });
+    // SoLo-Datei direkt mit der App öffnen (Dateizuordnung Android/iOS): derselbe Weg wie „Datei öffnen“, mit PIN-Abfrage
+    if (NATIVE && Weitergabe.nativInit) {
+      var ssp = null; try { ssp = window.sessionStorage; } catch (e) { ssp = null; }
+      Weitergabe.nativInit({ app: plug('App'), fs: plug('Filesystem'), ios: !!(window.Capacitor && window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios'),
+        merker: ssp, zeigen: function () { if (aktAnsicht !== 'ordner') zeigeAnsicht('ordner', true); } });
+    }
   }
   window.addEventListener('hashchange', function () { var a = location.hash.slice(1); if (ANSICHTEN.indexOf(a) >= 0 && a !== aktAnsicht) zeigeAnsicht(a, true); });
   if (NATIVE && window.Klient) Klient.cacheAufraeumen(plug('Filesystem')); // liegengebliebene .solo-/PDF-Dateien vom Teilen (src/klient.js)
