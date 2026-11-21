@@ -32,5 +32,5 @@ Sprachen nur bei Bedarf laden (Datei real 6,35 MB, Grenze vorläufig 7 MB Bytes)
 - Fable-Prüfung nur für Beträge, Recht, Sicherheit; Optik ohne Extraprüfung.
 - Neue Wünsche während eines Updates → übernächstes Update, außer David sagt „noch rein“.
 - Nicht ständig nachfragen; alle nötigen Internetseiten dürfen aufgerufen werden.
-- Agenten-Regeln: /home/claude/bau2.md (nur in dieser Sitzung vorhanden – Inhalt: Worktrees unter /home/claude/wt-*, node_modules-Symlink, Maschine 2 Kerne → lokal nur Einzeltests, Commit-Fuß, konflikt-check, PR per gh api REST).
+- Agenten-Regeln: docs/entwuerfe/agenten-regeln.md (Kopie von /home/claude/bau2.md; Inhalt u. a.: Worktrees unter /home/claude/wt-*, node_modules-Symlink, Maschine 2 Kerne → lokal nur Einzeltests, Commit-Fuß, konflikt-check, PR per gh api REST).
 - Technik: In neuen Klonen `git config --add remote.origin.fetch '+refs/heads/claude/*:refs/remotes/origin/claude/*'` setzen, sonst sind origin/claude/* veraltet.
