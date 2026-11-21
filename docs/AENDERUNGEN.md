@@ -2,6 +2,118 @@
 
 Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss steigen). Die Versionsnummer kommt aus dem Build.
 
+## Version 1.9.0 (in Vorbereitung, noch nicht gebaut)
+
+Stand: Sammelzweig für Update 1.9 (21.11.2026). Versionsnummer (VersionCode) legt David fest.
+
+### Neu
+
+| Bereich | Was ist neu |
+|---|---|
+| **Suche** | Lupe oben auf jeder Seite (Startseite: neben der Sprachwahl) öffnet „Was suchst du?“. Findet alle Seiten der App, auch mit Alltagswörtern, alten Namen (z. B. Hartz 4, Mietzuschuss, gelber Brief, Pflegestufe, GEZ, Widerspruch, Einspruch, Rückforderung, Überzahlung) und mit Tippfehlern. Höchstens 6 Treffer. Zurück, Esc, Android-Zurück und Wischen schließen das Fenster. Ganz offline, nichts wird gespeichert. 13 Sprachen und Einfache Sprache. |
+| **Einzelne Vorgänge mit PIN sperren** | Mein Ordner → Bearbeiten → „Mit PIN sperren“ (4–8 Ziffern, empfohlen 6), zusätzlich zur App-PIN. In der Liste steht nur „Gesperrter Vorgang“ mit Schloss. Nach dem Wechseln, nach 2 Minuten im Hintergrund und nach dem Neustart wieder gesperrt. Fristen daraus erscheinen nur, solange er offen ist. Löschen geht ohne PIN (mit Rückfrage). PIN vergessen = Vorgang verloren. Nach mehreren Fehlversuchen kommt eine Wartezeit. |
+| **Bildschirmfoto-Schutz** | Ist die App-PIN an, sind Bildschirmfotos gesperrt (Android) und die Vorschau in der App-Übersicht ist verdeckt (Android und iPhone). Abschaltbar: Einstellungen → „Bildschirmfotos erlauben“. |
+| **Beratungsmodus: „Für Klient zusammenstellen“** | Haken setzen (Ergebnis des Hilfen-Checks, Laufzettel „Das bringst du mit – bis …“, Fristen, Musterschreiben), daraus entsteht ein Blatt, auch in der Sprache des Klienten mit Deutsch daneben oder in Einfacher Sprache. Knöpfe „Drucken“ und „Teilen“ (z. B. Messenger) mit kurzem Datenschutz-Hinweis. Im Privatmodus ändert sich nichts. |
+| **Beratungsmodus: an die SoLo-App des Klienten weitergeben** | Ausgewählte Teile oder der ganze Vorgang gehen per **QR-Code** oder als **SoLo-Datei** (.solo, z. B. per Messenger) an den Klienten. Standard mit PIN (6 Ziffern, mündlich sagen). Ohne PIN Hinweis „Wer den Code oder die Datei hat, kann es lesen.“ Beim Klienten: Mein Ordner → „Von der Beratung bekommen“ → Datei öffnen oder QR-Code scannen → PIN → Vorschau „Das bekommst du“ → Speichern als neuer Vorgang (nichts wird überschrieben). Fremde Dateien werden streng geprüft und nur als Text angezeigt. |
+| **Sicherheitsnetz für Übersetzungen** | Bei einer Fremdsprache steht unter wichtigen Sätzen (Fristen, Warnungen, „keine Rechtsberatung“, Ausschlüsse, Beträge mit Bedingung, Schritte in „Es ist dringend“) klein der deutsche Originalsatz, zum Vergleichen mit dem Brief oder zum Zeigen. Abschaltbar: Einstellungen → Anzeige → „Wichtige Sätze auch auf Deutsch zeigen“ (Standard an). |
+| **Raten anbieten mit Empfehlung** | Ist der Haushaltsplan ausgefüllt (Einnahmen, Miete, Essen), schlägt SoLo eine machbare Rate vor, nie mehr als der pfändbare Betrag (§ 850c ZPO). Bei mehreren Schulden Aufteilung nach Vorrang der Schulden-Liste. Neues Schreiben „Ratenzahlung anbieten“ mit Vorbehalt (kein Anerkenntnis der Forderung, der Zinsen und Kosten). Ist nichts pfändbar: eigener Hinweis und Verweis auf die Schuldnerberatung. |
+| **Tarife vergleichen** (Strom, Gas) | Eigener Tarif gegen ein Angebot, Kosten im Jahr mit und ohne Bonus, kurze Hinweise (Bonus, Vorkasse, Laufzeit, Kündigung, Fernwärme) und Link zur Verbraucherzentrale. Nichts wird gespeichert. |
+| **Pflege: Mit dem Gutachten vergleichen** | Neue Kachel auf der Ergebnisseite der Pflegegrad-Einschätzung: Gutachten des Medizinischen Dienstes scannen oder einfügen. Tabelle zeigt deine Punkte je Bereich neben dem Gutachten, Unterschiede fett. Zuerst steht der passende Antrag (Pflegegrad bzw. Höherstufung beantragen). |
+| **Brief prüfen: erkannte Werte erst prüfen** | Werte aus Foto, PDF oder eingefügtem Text sind gelb markiert: „Bitte vergleiche sie mit dem Brief.“ Erst nach „Werte stimmen“ kommen Vergleich und Widerspruch. Unsichere Werte bei Fotos zusätzlich mit „Schwer zu lesen“. |
+
+### Genauer gerechnet (mit amtlichen Quellen geprüft)
+
+| Leistung | Was sich ändert |
+|---|---|
+| **Wohngeld** | Für Rentner mit kleiner Rente jetzt ein Betrag statt „Einkommen eher zu niedrig“. Grenze dort, wo noch mindestens 10 € bleiben. Mehr als 12 Personen möglich. Lohn der Kinder: Arbeitnehmer-Pauschbetrag und Freibetrag nach § 17 Nr. 4 WoGG je Kind (geprüft mit dem amtlichen Wohngeldrechner: 400 von 400 Haushalten gleich oder in der Spanne). Bescheid-Check kennt den Freibetrag für 33 Jahre Grundrentenzeiten. |
+| **Kinderzuschlag** | Rechnet mit dem geschätzten Wohngeld statt einem festen Betrag. Vermögen knapp über der Grenze heißt „möglich“. Genauer bei Alleinerziehenden mit Altersrente. |
+| **Vermögen bei Paaren** | Freibetrag hängt vom Alter beider ab, deshalb öfter „möglich“ statt „wahrscheinlich“. |
+| **BAföG** | Sagt nicht mehr zu früh „eher nicht“: Vom Einkommen der Eltern über dem Freibetrag bleibt die Hälfte frei; eigenes Vermögen zählt nur über dem Freibetrag (plus 2.300 € je Partner und je Kind), verteilt auf 12 Monate. Kinderbetreuungszuschlag 160 € je Kind. Unter 10 € im Monat keine Zahlung (§ 51 Abs. 4 BAföG). |
+| **Grundsicherung im Alter** | Freibetrag für 33 Jahre Grundrentenzeiten aus der Bruttorente (auch im Bescheid-Check, neues Feld „Rente brutto“). Hinweis, wenn beide das Merkzeichen G haben. |
+| **Hilfe zur Pflege, Blindenhilfe** | Einkommensgrenze mit der ganzen Warmmiete und Familienzuschlag 395 €. |
+| **Blindengeld Bayern** | Bei Pflegegrad 4 und 5: 611,33 €. |
+| **Landespflegegeld** | Hinweis: Das Geld kommt in der Regel bis 31. Januar des Folgejahres (keine feste Zusage). |
+| **Arbeitslosengeld, Krankengeld** | Spanne reicht jetzt auch für Steuerklasse III. |
+| **Rundfunkbeitrag** | Befreiung kann bis zu 3 Jahre rückwirkend gelten (§ 4 Abs. 4 RBStV). |
+| **Zuständige Stellen** | Sachsen-Anhalt: Landesamt für Soziales, Jugend und Gesundheit (LAS) seit 1.4.2026; Eingliederungshilfe beim Sozialamt. Anschriften außerhalb Bayerns nur noch aus amtlichen Seiten: 60 frühere Wikipedia-Anschriften geprüft (32 bestätigt, 15 korrigiert, 13 ohne Beleg → nur Name und Website). |
+
+### Übersichtlicher
+
+| Bereich | Was ist anders |
+|---|---|
+| **Startseite** | Kachel „Pflege“ direkt unter „Welche Hilfen stehen mir zu?“. Auf dem Tablet stehen die vier Kacheln 2 × 2. Datenschutz-Satz als kleine Zeile. |
+| **Hilfen-Check** | Grüner Knopf „Briefe für die Anträge machen“ direkt unter den Ergebnis-Karten; Name und Anschrift fragt erst die Antragsmappe. „Zwei Wege“, „Gut zu wissen“, „Unsicher? Beratungsstelle“ als kurze Tipps zum Aufklappen. Bei „Zwei Wege“ ist in der Antragsmappe keine Leistung vorab angehakt. |
+| **„Es ist dringend“** | Alle Fälle gleich aufgebaut: Frist oben, „Das tust du jetzt“ in Schritten, Tipps zum Aufklappen, Quellen unten. |
+| **Geld und Schulden** | Keine Dopplungen mehr (z. B. „Gelber Umschlag vom Gericht?“ führt direkt zum Mahnbescheid; „Jeder darf nur ein P-Konto haben“). |
+| **Haushaltsplan** | Unter der Eingabe steht nichts mehr, Hinweise stehen in der Auswertung. „Bewilligt bis“ entfernt (auch die Erinnerung an den Folgeantrag). |
+| **Strom und Heizen** | „Abschlag prüfen“ jetzt dort: erst Strom oder Gas wählen, dann die Prüfung (Nachzahlung oder Guthaben, ungefähr). |
+| **Ich ziehe aus** | Großer Kasten „Unter 25 und Grundsicherungsgeld?“ entfernt; Thema in der normalen Karte (§ 22 Abs. 5 SGB II), auch wenn die Familie Grundsicherungsgeld bekommt oder man es nach dem Umzug braucht. |
+| **Briefe und Pflege** | Brief-Seiten ohne großen weißen Rahmen; Überschrift beim Jobcenter passend zur Briefart. Pflege-Seite mit kurzer Einleitung und grünem Knopf „Pflegegrad selbst einschätzen“. Aufklapper überall im gleichen Stil. |
+| **Brief einlesen, Gutachten lesen** | Liest Musterbescheide (Jobcenter, Wohngeld, Grundsicherung im Alter, Nebenkosten) und MD-Gutachten genauer, typische Fehler der Texterkennung (O/0, l/1, Punkt statt Komma) werden erkannt. |
+| **Verträge und Sozialtarife** | Telekom-Sozialtarif entfernt. |
+
+### Korrekturen, Sprachen, Sicherheit
+
+| Bereich | Was ist anders |
+|---|---|
+| **PIN-Schalter repariert** | Die App-PIN lässt sich wieder ausschalten (mit der bisherigen PIN); „Abbrechen“ beim Ein- und Ausschalten. |
+| **PIN-Erklärung ehrlich** | Unter „Neue PIN“ und beim Vorgang-PIN: Die PIN verschlüsselt die Angaben; vergessen = Angaben verloren; Sichtschutz, kein Schutz gegen Fachleute mit Spezialwerkzeug. |
+| **Sprachkorrekturen** | Rund 110 Korrekturen nach Rückübersetzung. Wichtig: Einfache Sprache beim Pflegegutachten („Urin/Stuhl: kann ihn meistens nicht oder nie halten“ – vorher Sinn umgekehrt); Somali: Text zur Zusicherung für unter 25-Jährige; Einspruch, Kündigung, P-Konto und Rundfunk in mehreren Sprachen einheitlich. |
+| **Vorgang wechseln ohne Reste** | Beim Wechsel des Vorgangs wird alles vom vorigen Klienten geleert (Scan, eingefügter Brief, Prüfungen, Namen in Schreiben, Antragsmappe, Blatt für Klienten, Pflege-Einschätzung). |
+| **iPhone: Angaben ohne Sicherung** | Die Angaben liegen in einer eigenen Datei, die iOS nicht in iCloud- oder Finder-Sicherungen aufnehmen soll (Hinweis an iOS, Apple garantiert das nicht). Alte Angaben werden beim ersten Start übernommen. |
+| **Keine Datei-Reste** | Beim Start werden liegengebliebene .solo-, PDF- und CSV-Dateien vom Teilen gelöscht. |
+| **Datenschutzerklärung** | Ergänzt: Einlesen von Briefen und PDF, Zwischenablage, Vorgang-PIN, Weitergabe per QR-Code/Datei (Messenger-Hinweis), Bildschirmfoto-Schutz, Diagnosedaten von Google ML Kit (nur Android), ältere iOS-Sicherungen. |
+| **Große Schrift (200 %)** | Lange Wörter in Kartentiteln werden umgebrochen, kein seitliches Scrollen. |
+| Technik | Gemeinsames Verschlüsselungs-Modul (src/krypto.js), alte verschlüsselte Daten bleiben lesbar. Neue Prüfwerkzeuge gegen amtliche Rechner (Wohngeld, Kinderzuschlag, BAföG, Elterngeld, Pfändung) – nicht in der App. |
+
+## 1.8.0 (ab Versionsnummer 150, November 2026)
+- **Geld und Schulden neu geordnet**: Es ist dringend · Was bleibt mir? · Meine Schulden-Liste · **Post vom Inkasso** · Mein Geld planen (mit Spartipps) · **Schuldnerberatung**.
+- **Krisen-Check „Was ist zuerst dran?“** (7 Fragen) und neuer Fall **Geldstrafe: Haft droht**.
+- **Inkasso-Brief prüfen** (6 Punkte nach § 13a RDG) und **Musterschreiben**: Bitte um Geduld, Forderungsaufstellung, Widerspruch, Bescheinigung für das P-Konto.
+- **Bis zum Termin** und **Beratungsmappe** zum Abhaken (je Vorgang gespeichert); Schulden-Liste mit „Was ist zuerst wichtig?“ oben und Knöpfen je Eintrag.
+- **Schulden-Liste übersichtlicher** (Kacheln oben).
+- Haushaltsplan: bei knappem Geld Karte „Leistungs-Check“ direkt unter dem Ergebnis.
+- **Beratungsmodus**: dichtere Sicht für Fachkräfte (Tabelle, Pfändung auf einer Seite, Gesprächsnotiz, Handzettel); im Privatmodus ändert sich nichts.
+- Alle Kacheln in „Geld und Schulden“ gleich hoch; „Mahnbescheid vom Gericht“ sieht jetzt aus wie die anderen Kacheln, auch in den Übersetzungen.
+- **Sprachwahl** nur noch oben auf der Startseite und in den Einstellungen, nicht mehr auf der Seite „Deine Angaben“.
+- Die Test-App für Android heißt „SoLo Test“ und lässt sich neben der Store-App installieren.
+
+## 1.7.0 (ab Versionsnummer 149, November 2026)
+- **Geld und Schulden** sind jetzt eine Kachel auf der Startseite, mit 6 Unterkacheln (z. B. „Es ist dringend“, Schulden-Liste, Haushaltsplan, Kostenlose Hilfe).
+- **Pflege**: Die Pflegegrad-Einschätzung hat eine eigene Ergebnisseite.
+- **Leistungs-Check**: Du wählst, ob du Schritt für Schritt (eine Frage pro Bildschirm) oder alles auf einer Seite ausfüllst.
+- **Zurück** funktioniert überall gleich: ein Zurück-Knopf oben, die Zurück-Taste bei Android und das Wischen beim iPhone führen immer eine Ebene zurück.
+- **Neues Design**: weiße Unterkacheln, einheitliche Felder und Knöpfe, klarere Schriftgrößen.
+- **Weniger Text**: Zuerst steht, was zu tun ist. Einzelheiten stehen zum Aufklappen darunter.
+- **Neue Antragsmappe**.
+- **Mein Ordner** neu: gespeicherte Haushalte (Vorgänge) liegen nur noch dort; Löschen neu gestaltet.
+- **Einfache Sprache überall**: Jeder deutsche Text hat jetzt eine einfache Fassung, auch „Brief prüfen“ und die Pflege-Einschätzung.
+- **Sprachwahl auf der Startseite** oben rechts.
+- **Korrekturen**: Asyl und Duldung (neue Auswahl „Ausreisepflichtig, ohne Duldung“, Einkommensart „Asylbewerberleistungen“), Menschen aus anderen EU-Ländern (Hilfe zur Pflege, Blindenhilfe, BAföG), Krankengeld bei Rente; Hort ohne Beitrag bei Bildung und Teilhabe; Verjährung beim Inkasso genauer erklärt.
+- **Entfernt**: Karte Familienversicherung; Rezepte (stattdessen ein Link zur Verbraucherzentrale); der Teil für Careleaver in „Ich ziehe aus“.
+- **Viele Fehler behoben**, z. B. abgeschnittene Auswahl-Texte auf kleinen Bildschirmen.
+
+## 1.6.0 (ab Versionsnummer 148, November 2026)
+- Ab Versionsnummer 148: **Fristen-Übersicht** in „Mein Ordner“: Fristen aus Briefen merken (Tag vor dem Speichern prüfen und ändern), Rechenweg sichtbar, erledigte abhaken.
+- Ab Versionsnummer 148: **Schulden-Liste** mit Druckblatt (auch als PDF) und CSV-Export; Haushaltsplan kann mitgedruckt werden.
+- Ab Versionsnummer 148: **Energiekosten-Check** für Strom und Gas: Zählerstände eintragen, Verbrauch und Abschlag vergleichen, Brief zum Senken des Abschlags.
+- Ab Versionsnummer 148: **Höchstbetrag der Miete beim Wohngeld** wird angezeigt (bei unsicherer Mietenstufe als Spanne, „möglich“).
+- Ab Versionsnummer 148: **Hilfe bei Aufforderung zur Senkung der Wohnkosten** (Brief vom Amt lesen, Antwort-Entwurf, Frist merken).
+- Ab Versionsnummer 148: **Zweites Einkommen je Person**: Bei zwei Erwachsenen hat jede Person ein Feld „Weiteres Einkommen“ (Fragebogen, Haushaltsplan, Antragsmappe).
+- Ab Versionsnummer 148: **Hinweise im Haushaltsbuch** zu Mehrbedarf, Erspartem sowie Pflege- und Steuer-Belegen.
+- Ab Versionsnummer 148: **Nur geltendes Recht**: Hinweise auf geplante Änderungen entfernt. Neue Werte erscheinen erst, wenn sie gelten.
+- Ab Versionsnummer 148: Korrekturen bei Mahnbescheid und Stromschulden. Neue Texte in 13 Sprachen und Einfacher Sprache.
+
+## 1.5.0 (ab Versionsnummer 147, November 2026)
+- Ab Versionsnummer 147: **Neue Leiste** Start | Mein Ordner | Einstellungen; Einstellungen als Liste mit Unterseiten (Haushalte, Anzeige, Fachkräfte, Über die App).
+- Ab Versionsnummer 147: **Vorgänge speichern** (z. B. einer je Haushalt) mit freiwilliger PIN-Sperre (Sichtschutz, verschlüsselt auf dem Gerät), Selbstsperre, Rückfrage vor dem Löschen und automatischem Löschen länger nicht geänderter Vorgänge.
+- Ab Versionsnummer 147: **Beratungsmodus** (Rechtsgrundlagen mit Paragrafen bei den Ergebnissen), **Ergebnisblatt** zum Drucken oder Mitgeben, **Unterlagen-Checkliste**, Antragsmappe mit Übersicht.
+- Ab Versionsnummer 147: **Pflege**: Startkachel mit Auswahl Unterstützung oder Einschätzung, Leistungen je Pflegegrad; Beratungsbesuch, Verhinderungspflege durch Angehörige, Wohngruppenzuschlag, 10 Tage Arbeitsverhinderung.
+- Ab Versionsnummer 147: **Geld sparen**: Schulden und Pfändung mit Tipps von Schuldnerberatungen; **Haushaltsplan und Haushaltsbuch** mit Kassenzettel-Scan (Texterkennung auf dem Gerät) und CSV-Export.
+- Ab Versionsnummer 147: neue Einkommensart **„Unterhalt für sich selbst“** (Trennungs-/Ehegattenunterhalt, Unterhalt von den Eltern).
+- Ab Versionsnummer 147: neuer Bereich **„Ich ziehe aus“** für junge Menschen (Azubis, Studierende, junge Erwachsene, Careleaver): Checklisten, Geld, Kostenfallen, Versicherungen, Hilfen; 13 Sprachen und Einfache Sprache.
+- Ab Versionsnummer 147: **einheitliches Farbkonzept** (Palette an einer Stelle, keine Farbe doppelt je Kachelgruppe); Verbesserungen aus der Nutzerprüfung (Zurück-Wege, Rückfrage vor „Beispiel laden“, Rückgängig nach Löschen, Brief prüfen erst bei vollständigen Angaben, Fachwörter erklärt, Kachel „Anderer Brief“, Formularprüfungen); Korrekturen bei Brief-Erkennung, Pfändung, Rechtsgrundlagen und Schulden-Tipps.
+
 ## 1.4.0 (ab Versionsnummer 143, November 2026)
 - Ab Versionsnummer 146: Renten-Netto genauer (Beiträge zur Kranken- und Pflegeversicherung statt Pauschale); Krankenversicherung beim Lohn korrigiert; Netto wird je Person gerechnet; Unterhaltsvorschuss vollständig (Waisenrente, Kind zu 40 % oder mehr beim anderen Elternteil, neue Partnerschaft, Aufenthalt und mehr); Auto bei Grundsicherung im Alter geschützt; Pläne für 2027 aktualisiert; Sicherheits-Updates.
 - Ab Versionsnummer 146: **Neues Design** „Warm und menschlich“: Creme, Petrol, Koralle; runde Karten, Knöpfe als Pille, warmer Dunkelmodus (alle Texte mindestens 4,5:1); Überschriften in Nunito; neues Logo „Sprechblase mit Haken“ als App-Symbol und Startbild. Startseite mit Begrüßung und farbigen Kacheln je Bereich (neu: Kachel „Pflege“), Hinweis „Deine Angaben bleiben bei dir“. Ergebnis mit „Gute Nachrichten!“ (nur wenn etwas wahrscheinlich ist), Zahl der passenden Hilfen und Hinweis auf kostenlose Beratung. Neue Texte in 13 Sprachen und Einfacher Sprache.

@@ -1,0 +1,18 @@
+{
+  "sf.wahl.h": "Wie willst du die Fragen beantworten?",
+  "sf.wahl.hint": "Du kannst immer wechseln. Deine Antworten bleiben da.",
+  "sf.wahl.schritt.t": "Immer nur eine Frage. Das ist leichter.",
+  "sf.wahl.alles.t": "Alle Fragen auf einmal. Für Fach-Leute.",
+  "sf.warum": "Warum fragt die App das?",
+  "sf.ueb.t": "Schau deine Antworten an. Ist etwas falsch? Dann tippe auf „ändern“.",
+  "sf.h.adults": "Partner heißt: Ihr seid verheiratet. Oder ihr lebt fest zusammen in einer Wohnung.",
+  "sf.h.aufenthalt": "Für Menschen im Asyl-Verfahren gibt es eigene Hilfen. Für Menschen aus anderen EU-Ländern gibt es besondere Regeln.",
+  "sf.q.emStd": "Kann eine erwachsene Person wegen Krankheit oder Behinderung nur wenig arbeiten?",
+  "sf.h.em5": "Davon 3 Jahre in den letzten 5 Jahren. Das ist wichtig für die Rente wegen Erwerbs-Minderung.",
+  "sf.q.algZeit": "Hat die Person in den letzten 30 Monaten mindestens 12 Monate gearbeitet und Beiträge gezahlt?",
+  "sf.h.ekArt": "Gibt es zwei Einkommen? Wähle hier das größere. Das zweite fragt die App danach. Kindergeld, Wohngeld und Kinderzuschlag gehören nicht hierher.",
+  "sf.q.brutto.lohn": "Wie viel Lohn gibt es im Monat vor den Abzügen (brutto)?",
+  "sf.h.mietstufe": "Die Mietenstufe ist wichtig für das Wohngeld. Du weißt sie nicht? Dann rechnet die App vorsichtig.",
+  "sf.h.vermoegen": "Geld auf dem Konto, auf dem Sparbuch und in Wertpapieren. Die eigene Wohnung und das Auto zählen hier nicht.",
+  "sf.h.bezug": "Dann zeigt die App: Das bekommst du schon. Und sie prüft, was du noch bekommen kannst."
+}

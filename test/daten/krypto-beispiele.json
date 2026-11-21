@@ -1,0 +1,29 @@
+{
+ "erzeugt": "2026-11-21",
+ "hinweis": "Mit dem Code vor src/krypto.js erzeugt (PBKDF2-SHA-256 600.000, Salz 16, IV 12, AES-GCM 256). Nicht neu erzeugen.",
+ "vorgangSperre": {
+  "mem": {
+   "lotse.state": "{\"s\":{\"miete\":400}}",
+   "lotse.vorgaenge": "{\"v\":1,\"tage\":0,\"zuletzt\":1795264274508,\"klar\":{\"aktiv\":\"72e109262e86\",\"liste\":[{\"id\":\"800d1e205c22\",\"name\":\"\",\"erstellt\":1795264274503,\"geaendert\":1795264274508,\"daten\":null,\"sperre\":{\"salt\":\"l4L4eIXu9pTv6gKbLz9kCA==\",\"iter\":600000,\"iv\":\"xfqVNvdWVsGf0FtV\",\"ct\":\"9muFPpJI0xj0dUqEbUjG4kCHrfIGzt+Cy7i6nb8uVDiKsutwbcrALi/z7qdEgCdPeF2/5luY1sy1ACumpibuP91xO7gKklVcPUHQhFDipkWIFS6V9/2O8WHppO1wQQhgZ6k37VWR1nraW9o74Im/f6E3Te7HHwiwkDa3P2VgRC1g\"}},{\"id\":\"72e109262e86\",\"name\":\"Zweiter\",\"erstellt\":1795264274508,\"geaendert\":1795264274509,\"daten\":null}]}}"
+  },
+  "id": "800d1e205c22",
+  "pin": "24680",
+  "erwartet": "{\"s\":{\"miete\":640},\"p\":{\"strasse\":\"Musterweg 3\"}}",
+  "name": "Familie Beispiel"
+ },
+ "appPin": {
+  "mem": {
+   "lotse.vorgaenge": "{\"v\":1,\"tage\":0,\"zuletzt\":1795264274708,\"pin\":{\"salt\":\"1KSSkDKKqX3vj0wKI7zp+w==\",\"iter\":600000,\"iv\":\"rQoHtG8mM/PC3gJn\",\"ct\":\"bnmc5v8GZPLLI6ReIp/e2rsjyRLp2+MoDf+41jzmc5XiZJjXhiV4CYBBIVhZLTkq2srPtPFEAMs7cHuuBZmEz+jKjD0dNvBTnxDVIDjE/bTLUAvgeDENyYfurcw5MzTn3X3UYKY0DdHE5yJyjrqx3u4ORvWJZEQTk1zhbAui3HQiqc8zK7EEWnTqRTw7hgqZl0DzX5BnOhVEB9YovUiIrGTETCn64Rd7QGlFGmmRMdFUXCV65h599UEHI7fP4sobXhv4cw==\"},\"bis\":0}"
+  },
+  "pin": "97531",
+  "erwartet": "{\"s\":{\"miete\":777}}",
+  "name": "Akte Beispiel"
+ },
+ "weitergabe": {
+  "mitPin": "SOLO:AQPtrYVzVUtEMjeiGhxZfDG_PcKztDgDw3G770D0MAwkKtUAvFSs61MXKXXmLI_U84u3eAds-JXkmcAItYDTx-eyQGpBlei2lY2CU2NFgGAST7qimZH-fwK2Z0LesvtIhMdqYsQn_m4g_E_yHYEe6vgB8fLy93WeGykWJq9mkZESocUXeskgSy6kh-eF_OVpJQ",
+  "pin": "135790",
+  "ohnePin": "SOLO:AQElyLEKwjAUQNFfkTunxWRweKuLH9HlgSEVm1SaF0Vi_13E8ZxORbzD3g-E57olLQlH0RwRLtrqrIsdzjiuai0jhGM4Dd4Pwf8zFqSzrFbjOOv9R_rEK33amG_RJsS2Fnf2_Qs",
+  "name": "Haushalt C",
+  "haken": "{\"wg|u.miet\":true}"
+ }
+}

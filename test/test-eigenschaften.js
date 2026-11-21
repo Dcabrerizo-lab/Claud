@@ -14,6 +14,9 @@ const HEUTE = Number(process.env.HEUTE) || 2026.8; // HEUTE=2027.05 prüft diese
 let seed = 777;
 const rnd = () => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; };
 const pick = (a) => a[Math.floor(rnd() * a.length)];
+let seed2 = 4242; // eigener Strom für die Paar-Listen
+const rnd2 = () => { seed2 = (seed2 * 1103515245 + 12345) % 2147483648; return seed2 / 2147483648; };
+const pick2 = (a) => a[Math.floor(rnd2() * a.length)];
 const RANG = { ja: 3, vielleicht: 2, na: 1, nein: 0 };
 
 const fehler = {};
@@ -26,8 +29,8 @@ const bedarf = (x) => { const t = x && x.tx.find((a) => a[1] && a[1].bedarf); re
 function zufall() {
   const adults = rnd() < 0.5 ? 1 : 2;
   const kids = pick([0, 0, 1, 2, 3]);
-  const art1 = pick(['lohn', 'lohn', 'rente', 'alg', 'ohne']);
-  const art2 = adults === 2 ? pick(['lohn', 'rente', 'ohne']) : '';
+  const art1 = pick(['lohn', 'lohn', 'rente', 'alg', 'unt', 'ohne']);
+  const art2 = adults === 2 ? pick(['lohn', 'rente', 'unt', 'ohne']) : '';
   const b1 = art1 === 'ohne' ? 0 : Math.round(rnd() * 3500);
   const b2 = art2 && art2 !== 'ohne' ? Math.round(rnd() * 2500) : 0;
   const q = (a) => (a === 'lohn' ? 0.72 : 1);
@@ -56,7 +59,12 @@ for (let i = 0; i < N; i++) {
   n++;
   // ---------- Widerspruchsfreiheit ----------
   if (Object.keys(a).filter((k) => k !== '_z').length !== KARTEN.length) melde('Anzahl der Karten', e, Object.keys(a).length);
-  if (e.aufenthalt === 'asyl') ['ggeld', 'gsa', 'wohngeld', 'kiz'].forEach((id) => { if (a[id].level !== 'nein') melde('Asyl: ' + id + ' nicht ausgeschlossen', e, a[id].level); });
+  // Asyl: ausgeschlossen (§ 7 SGB II, § 23 Abs. 2 SGB XII, § 6a BKGG, § 27 Abs. 2 WoFG); Wohngeld nur ohne AsylbLG-Bezug (§ 7 Abs. 1 Satz 1 Nr. 8 WoGG)
+  if (e.aufenthalt === 'asyl') ['ggeld', 'gsa', 'kiz', 'wbs'].forEach((id) => { if (a[id].level !== 'nein') melde('Asyl: ' + id + ' nicht ausgeschlossen', e, a[id].level); });
+  // Wohngeld bei Asyl: nur mit Bezug von Asylbewerberleistungen ausgeschlossen (§ 7 Abs. 1 Satz 1 Nr. 8 WoGG); ohne Bezug rechnet die App
+  // normal, auch „wahrscheinlich“ (§ 3 Abs. 5 WoGG; Entscheidung David 20.11.2026, siehe src/rules.js wohngeld)
+  if (e.aufenthalt === 'asyl' && (e.art1 === 'asylblg' || (e.adults === 2 && e.art2 === 'asylblg')) && a.wohngeld.level !== 'nein') melde('Asyl mit Asylbewerberleistungen: Wohngeld nicht ausgeschlossen', e, a.wohngeld.level);
+  if (e.aufenthalt === 'asyl' && e.kids > 0 && a.but.level === 'nein') melde('Asyl mit Kindern: Bildung und Teilhabe nein (§ 3 Abs. 4 AsylbLG)', e, null);
   if (a.ggeld.level === 'ja' && a.gsa.level === 'ja') melde('Jobcenter und Sozialamt beide wahrscheinlich', e, null);
   if (a.ggeld.level === 'ja' && e.kids > 0 && a.but.level !== 'ja') melde('Grundsicherungsgeld wahrscheinlich, aber Bildung und Teilhabe nicht', e, a.but.level);
   if ((a.wohngeld.level === 'ja' || a.kiz.level === 'ja') && e.kids > 0 && a.but.level === 'nein') melde('Wohngeld/Kinderzuschlag wahrscheinlich, aber Bildung und Teilhabe nein', e, null);
@@ -80,6 +88,44 @@ for (let i = 0; i < N; i++) {
       const unten = (x) => /einkoNiedrig|minEink/.test(x.hl) || (x.tx || []).some((t) => t[0] === 'kiz.mitWg'); // untere Grenze: erst genug Einkommen macht die Leistung möglich
       if (!unten(a[id]) && !unten(b[id]) && betrag(a[id]) !== null && betrag(b[id]) !== null && betrag(b[id]) > betrag(a[id]) + 10) melde('Mehr Einkommen, mehr Geld: ' + id, e, [betrag(a[id]), betrag(b[id])]);
       if (!unten(a[id]) && !unten(b[id]) && RANG[b[id].level] > RANG[a[id].level] && a[id].level !== 'na') melde('Mehr Einkommen, bessere Einstufung: ' + id, e, [a[id].level, b[id].level]);
+    }
+  }
+  // ---------- Monotonie: mehr Unterhalt für sich selbst (Art unt, neben Lohn als Liste) ----------
+  if (e.adults === 1) {
+    const lohn = Math.round(e.brutto * 0.5), unt = Math.round(rnd() * 900);
+    const mitU = (u) => ({ ...e, einkommen: [{ art: 'lohn', b: lohn, n: Math.round(lohn * 0.75) }].concat(u > 0 ? [{ art: 'unt', b: u }] : []) });
+    const u0 = ev(mitU(unt)), u1 = ev(mitU(unt + 150));
+    const unten = (x) => /einkoNiedrig|minEink/.test(x.hl) || (x.tx || []).some((t) => t[0] === 'kiz.mitWg');
+    for (const id of ['ggeld', 'gsa', 'wohngeld', 'kiz', 'bafoeg']) {
+      if (unten(u0[id]) || unten(u1[id])) continue;
+      if (RANG[u1[id].level] > RANG[u0[id].level] && u0[id].level !== 'na') melde('Mehr Unterhalt, bessere Einstufung: ' + id, e, [unt, u0[id].level, u1[id].level]);
+      if (betrag(u0[id]) !== null && betrag(u1[id]) !== null && betrag(u1[id]) > betrag(u0[id]) + 10) melde('Mehr Unterhalt, mehr Geld: ' + id, e, [unt, betrag(u0[id]), betrag(u1[id])]);
+    }
+  }
+  // ---------- Monotonie: Paar mit Einkommensliste (je Person Hauptfeld + zweites Einkommen) ----------
+  // Wird der Betrag eines vorhandenen Eintrags erhöht, steigt die Schätzung von Grundsicherungsgeld, Wohngeld und Kinderzuschlag nie.
+  // Nicht geprüft (bewusst): ein neuer Eintrag einer anderen Art (die Wohngeld-Obergrenze „möglich“ rechnet den höchsten § 16-Abzug der
+  // Person auf ihr ganzes Einkommen und kann dadurch steigen, WoGVwV Nr. 16.11-16.13), Elterngeld über die 300-€-Schwelle (egFreiSGB),
+  // Werkstattlohn (wechselt die zuständige Stelle) und beim Kinderzuschlag die Stufe (mehr Einkommen kann „möglich mit Wohngeld“ zu
+  // „wahrscheinlich“ machen). Eigener Zufallsgenerator, damit die übrigen Haushalte unverändert bleiben.
+  if (e.adults === 2) {
+    const ARTP = ['lohn', 'lohn', 'rente', 'alg', 'kg', 'unt', 'eg'];
+    const liste = [];
+    [1, 2].forEach((p) => {
+      const a1 = pick2(ARTP), b1 = Math.round(rnd2() * (a1 === 'eg' ? 1200 : 2500)) + (a1 === 'eg' ? 301 : 0);
+      liste.push(a1 === 'lohn' ? { p, art: a1, b: b1, n: Math.round(b1 * 0.75) } : { p, art: a1, b: b1 });
+      if (rnd2() < 0.7) { const a2 = pick2(ARTP.filter((x) => x !== 'eg')); liste.push({ p, art: a2, b: Math.round(rnd2() * 700) }); }
+    });
+    const i = Math.floor(rnd2() * liste.length);
+    if (liste[i].art !== 'eg') {
+      const hoeher = liste.map((x, j) => (j !== i ? x : x.n != null ? { ...x, b: x.b + 150, n: Math.round((x.b + 150) * 0.75) } : { ...x, b: x.b + 150 }));
+      const p0 = ev({ ...e, einkommen: liste }), p1 = ev({ ...e, einkommen: hoeher });
+      const unten = (x) => /einkoNiedrig|minEink/.test(x.hl) || (x.tx || []).some((t) => t[0] === 'kiz.mitWg');
+      for (const id of ['ggeld', 'wohngeld', 'kiz']) {
+        if (unten(p0[id]) || unten(p1[id])) continue;
+        if (id !== 'kiz' && RANG[p1[id].level] > RANG[p0[id].level] && p0[id].level !== 'na') melde('Paar-Liste: mehr Einkommen, bessere Einstufung: ' + id, liste, [p0[id].level, p1[id].level]);
+        if (betrag(p0[id]) !== null && betrag(p1[id]) !== null && betrag(p1[id]) > betrag(p0[id]) + 10) melde('Paar-Liste: mehr Einkommen, mehr Geld: ' + id, liste, [betrag(p0[id]), betrag(p1[id])]);
+      }
     }
   }
   // ---------- Monotonie: ein Kind mehr, mehr Miete ----------
@@ -118,4 +164,4 @@ if (arten.length) {
   arten.forEach((a) => console.log('\n- ' + a + ': ' + fehler[a].anzahl + 'x\n  Beispiel: ' + JSON.stringify(fehler[a].beispiel).slice(0, 900)));
   process.exit(1);
 }
-console.log('Eigenschaftstest bestanden: ' + n + ' Haushalte, Monotonie (Einkommen, Kinder, Miete, Vermögen, GdB, Pflegegrad) und Widerspruchsfreiheit der Karten');
+console.log('Eigenschaftstest bestanden: ' + n + ' Haushalte, Monotonie (Einkommen, Paar-Listen, Kinder, Miete, Vermögen, GdB, Pflegegrad) und Widerspruchsfreiheit der Karten');

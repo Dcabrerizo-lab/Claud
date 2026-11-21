@@ -1,0 +1,499 @@
+# Quelle: https://www.md-nord.de/fileadmin/MD-Nord/user_upload/BRi_Pflege_210211.pdf (Begutachtungs-Richtlinien, Kap. 6.2 Formulargutachten Erwachsene, Module 1–6, Seiten 193–202; leeres Formular)
+# Abgerufen: 21.11.2026. Musterbescheid mit erfundenen Daten (keine echten Personen). Text: pdftotext -layout, Seitenumbrüche als Formfeed.
+
+
+4            Module des Begutachtungsinstruments
+
+4.1          Modul 1: Mobilität
+Die Einschätzung richtet sich ausschließlich danach, ob die Person in der Lage ist ohne per-
+sonelle Unterstützung eine Körperhaltung einzunehmen, zu wechseln und sich fortzubewe-
+gen. Zu beurteilen sind hier ausschließlich motorische Aspekte wie Körperkraft, Balance,
+Bewegungskoordination etc. und nicht die zielgerichtete Fortbewegung. Hier werden nicht
+die Folgen kognitiver Beeinträchtigungen auf Planung, Steuerung und Durchführung moto-
+rischer Handlungen abgebildet.
+                                                                                        überwiegend           überwiegend           unselbstän-
+                                                                  selbständig
+                                                                                         selbständig          unselbständig             dig
+
+
+4.1.1 Positionswechsel im Bett                                             0                      1                     2                      3
+
+           Halten einer stabilen Sitzpo-
+4.1.2                                                                      0                      1                     2                      3
+           sition
+
+4.1.3 Umsetzen                                                             0                      1                     2                      3
+
+           Fortbewegen innerhalb des
+4.1.4                                                                      0                      1                     2                      3
+           Wohnbereichs
+
+4.1.5 Treppensteigen                                                       0                      1                     2                      3
+
+
+Erläuterung:
+............................................................................................................................................
+............................................................................................................................................
+
+4.1.6         Besondere Bedarfskonstellation
+Gebrauchsunfähigkeit beider Arme und beider Beine
+      ja                                                                                                                              nein
+
+
+Erläuterung(en): .................................................................................................................
+............................................................................................................................................
+
+
+
+
+    Summe der Einzelpunkte                                                                  Gewichtete Punkte
+
+
+4.2          Modul 2: Kognitive und kommunikative Fähigkeiten
+
+                                                           Seite 194 von 287
+                            Begutachtungs-Richtlinien Pflege – BRi
+
+Die Einschätzung bezieht sich bei den Kriterien 4.2.1 bis 4.2.8 ausschließlich auf kognitive
+Funktionen und Aktivitäten.
+Zu beurteilen sind hier lediglich Aspekte wie Erkennen, Entscheiden oder Steuern etc. und
+nicht die motorische Umsetzung.
+Bei den Kriterien zur Kommunikation 4.2.9 bis 4.2.11 sind auch die Auswirkungen von Hör-
+, Sprech- oder Sprachstörungen zu berücksichtigen.
+
+
+                                                                 Die Fähigkeit ist:
+
+
+                                                  vorhanden/                  in geringem
+                                                               größtenteils                  nicht
+                                                   unbeein-                       Maße
+                                                                vorhanden                 vorhanden
+                                                   trächtigt                   vorhanden
+
+
+        Erkennen von Personen aus dem
+4.2.1                                                     0           1               2        3
+        näheren Umfeld
+
+4.2.2   Örtliche Orientierung                             0           1               2        3
+
+4.2.3   Zeitliche Orientierung                            0           1               2        3
+
+        Erinnern an wesentliche Ereignisse
+4.2.4                                                     0           1               2        3
+        oder Beobachtungen
+
+        Steuern von mehrschrittigen
+4.2.5                                                     0           1               2        3
+        Alltagshandlungen
+
+        Treffen von Entscheidungen im
+4.2.6                                                     0           1               2        3
+        Alltagsleben
+
+        Verstehen von Sachverhalten und
+4.2.7                                                     0           1               2        3
+        Informationen
+
+4.2.8   Erkennen von Risiken und Gefahren                 0           1               2        3
+
+4.2.9   Mitteilen von elementaren Bedürf-
+                                                          0           1               2        3
+        nissen
+
+4.2.10 Verstehen von Aufforderungen                       0           1               2        3
+
+4.2.11 Beteiligen an einem Gespräch                       0           1               2        3
+
+
+
+
+Erläuterung:
+
+                                      Seite 195 von 287
+                                            Begutachtungs-Richtlinien Pflege – BRi
+
+............................................................................................................................................
+............................................................................................................................................
+
+
+
+ Summe der Einzelpunkte                                                                     Gewichtete Punkte
+
+
+4.3          Modul 3: Verhaltensweisen und psychische Problemlagen
+In diesem Modul geht es um Verhaltensweisen und psychische Problemlagen als Folge von
+Gesundheitsproblemen, die immer wieder auftreten und personelle Unterstützung erfor-
+derlich machen.
+Bei Kombination verschiedener Verhaltensweisen wird die Häufigkeit von Ereignissen nur
+einmal erfasst, z. B. nächtliche Unruhe bei Angstzuständen, entweder unter 4.3.2 oder un-
+ter 4.3.10.
+
+                                                                                             selten (ein-         häufig (zwei-
+                                                                                             bis dreimal         mal bis mehr-
+                                                                          nie oder
+                                                                                              innerhalb         mals wöchent-          täglich
+                                                                         sehr selten
+                                                                                               von zwei         lich, aber nicht
+                                                                                              Wochen)               täglich)
+
+4.3.1        Motorisch geprägte Verhaltens-
+                                                                                  0                   1                    3                   5
+             auffälligkeiten
+4.3.2        Nächtliche Unruhe                                                    0                   1                    3                   5
+4.3.3        Selbstschädigendes und autoag-
+                                                                                  0                   1                    3                   5
+             gressives Verhalten
+4.3.4        Beschädigen von Gegenständen                                         0                   1                    3                   5
+4.3.5        Physisch aggressives Verhalten
+                                                                                  0                   1                    3                   5
+             gegenüber anderen Personen
+4.3.6        Verbale Aggression                                                   0                   1                    3                   5
+4.3.7        Andere pflegerelevante vokale
+                                                                                  0                   1                    3                   5
+             Auffälligkeiten
+4.3.8        Abwehr pflegerischer und ande-
+                                                                                  0                   1                    3                   5
+             rer unterstützender Maßnahmen
+4.3.9        Wahnvorstellungen                                                    0                   1                    3                   5
+
+4.3.10 Ängste                                                                     0                   1                    3                   5
+
+4.3.11 Antriebslosigkeit bei depressiver
+                                                                                  0                   1                    3                   5
+       Stimmungslage
+4.3.12 Sozial inadäquate Verhaltenswei-
+                                                                                  0                   1                    3                   5
+       sen
+
+
+
+
+                                                           Seite 196 von 287
+                                            Begutachtungs-Richtlinien Pflege – BRi
+
+
+4.3.13 Sonstige pflegerelevante inadä-
+                                                                                  0                   1                    3                   5
+       quate Handlungen
+
+Erläuterung:
+............................................................................................................................................
+............................................................................................................................................
+............................................................................................................................................
+
+ Summe der Einzelpunkte                                                                     Gewichtete Punkte
+
+
+4.4          Modul 4: Selbstversorgung – Angaben zur Versorgung
+
+Ernährung parenteral oder über Sonde                                                          entfällt (4.4.13 entfällt)
+
+         Parenteral (z. B. Port)                                                       Art der Gabe
+         Perkutane endoskopische Gastrostomie (PEG)                                           Pumpe
+         Perkutane endoskopische Jejunostomie (PEJ)                                           Schwerkraft
+         (Nasale) Magensonde                                                                  Bolusgabe
+
+
+
+Blasenkontrolle/Harnkontinenz
+         ständig kontinent (keine unwillkürlichen Harnabgänge) (4.4.11 entfällt)
+         überwiegend kontinent (maximal einmal täglich unwillkürlicher Harnabgang oder
+         Tröpfcheninkontinenz) (4.4.11 entfällt)
+         überwiegend inkontinent (mehrmals täglich unwillkürliche Harnabgänge)
+         komplett inkontinent
+         suprapubischer Dauerkatheter
+         transurethraler Dauerkatheter
+         Urostoma
+
+Darmkontrolle/Stuhlkontinenz
+         ständig kontinent (keine unwillkürlichen Stuhlabgänge) (4.4.12 entfällt)
+         überwiegend kontinent (gelegentlich unwillkürliche Stuhlabgänge oder nur geringe
+         Stuhlmengen, sogenannte Schmierstühle) (4.4.12 entfällt)
+         überwiegend inkontinent, selten gesteuerte Darmentleerung
+         komplett inkontinent
+
+
+
+                                                           Seite 197 von 287
+                                            Begutachtungs-Richtlinien Pflege – BRi
+
+         Colo-/Ileostoma
+
+
+
+Erläuterung:
+............................................................................................................................................
+............................................................................................................................................
+............................................................................................................................................
+
+
+Modul 4: Selbstversorgung - Bewertung
+Zu bewerten ist, ob die Person die jeweilige Aktivität praktisch durchführen kann. Es ist un-
+erheblich, ob die Beeinträchtigungen der Selbständigkeit aufgrund von Schädigungen so-
+matischer oder mentaler Funktionen bestehen oder ob Teilaspekte bereits in anderen Mo-
+dulen berücksichtigt worden sind.
+
+                                                                                                         überwie-
+                                                                                          überwiegend
+                                                                        selbständig                    gend unselb- unselbständig
+                                                                                           selbständig
+                                                                                                          ständig
+
+
+             Waschen des vorderen
+4.4.1                                                                            0                  1                   2                 3
+             Oberkörpers
+
+             Körperpflege im Bereich des
+4.4.2                                                                            0                  1                   2                 3
+             Kopfes
+
+4.4.3        Waschen des Intimbereichs                                           0                  1                   2                 3
+
+             Duschen und Baden einschließlich
+4.4.4                                                                            0                  1                   2                 3
+             Waschen der Haare
+
+             An- und Auskleiden des
+4.4.5                                                                            0                  1                   2                 3
+             Oberkörpers
+
+             An- und Auskleiden des
+4.4.6                                                                            0                  1                   2                 3
+             Unterkörpers
+
+             Mundgerechtes Zubereiten der
+4.4.7        Nahrung und Eingießen von Ge-                                       0                  1                   2                 3
+             tränken
+
+4.4.8        Essen                                                               0                  3                   6                 9
+
+4.4.9        Trinken                                                             0                  2                   4                 6
+
+
+
+                                                           Seite 198 von 287
+                                            Begutachtungs-Richtlinien Pflege – BRi
+
+
+             Benutzen einer Toilette oder eines
+4.4.10                                                                           0                  2                   4                 6
+             Toilettenstuhls
+
+             Bewältigen der Folgen einer Harni-
+4.4.11       nkontinenz und Umgang mit Dau-                                      0                  1                   2                 3
+             erkatheter und Urostoma
+
+             Bewältigen der Folgen einer
+4.4.12       Stuhlinkontinenz und Umgang mit                                     0                  1                   2                 3
+             Stoma
+
+
+
+                                                                                                      Versorgung mit Hilfe
+                                                                        Versorgung                              täglich zu-
+                                                                                                                            ausschließlich
+                                                                        selbständig        nicht täglich,       sätzlich zu
+                                                                                                                             oder nahezu
+                                                                                         nicht auf Dauer         oraler Er-
+                                                                                                                            ausschließlich
+                                                                                                                 nährung
+
+             Ernährung parenteral oder über
+4.4.13                                                                           0                  0                   6                 3
+             Sonde
+
+
+Erläuterung:
+............................................................................................................................................
+............................................................................................................................................
+
+ Summe der Einzelpunkte                                                                     Gewichtete Punkte
+
+
+4.5             Modul 5: Bewältigung von und selbständiger Umgang mit krankheits-
+                oder therapiebedingten Anforderungen und Belastungen – Angaben
+                zur Versorgung
+Angaben zur ärztlichen und medikamentösen Versorgung
+Arztbesuche                                                                                                                  keine
+……………………………………………………………………………………………………………………….
+Medikamente                                                                                                                  keine
+……………………………………………………………………………………………………………………….
+Angaben zur laufenden Heilmitteltherapie                                                                                     keine
+
+
+         Physikalische Therapie
+
+
+                                                           Seite 199 von 287
+                                            Begutachtungs-Richtlinien Pflege – BRi
+
+
+         Ergotherapie
+         Stimm-, Sprech-, Sprachtherapie
+         Podologie
+............................................................................................................................................
+
+
+Angaben zu behandlungspflegerischen und anderen
+therapeutischen Maßnahmen                                                                                                    keine
+Art/Umfang:
+............................................................................................................................................
+............................................................................................................................................
+............................................................................................................................................
+Spezielle Krankenbeobachtung gemäß Position 24 HKP-Richtlinie                                                 ja                nein
+............................................................................................................................................
+
+
+
+4.5          Modul 5: Bewältigung von und selbständiger Umgang mit krankheits- o-
+             der therapiebedingten Anforderungen und Belastungen - Bewertung
+
+In diesem Modul geht es um die Durchführung ärztlich angeordneter Maßnahmen, die ge-
+zielt auf eine bestehende Erkrankung ausgerichtet und für voraussichtlich mindestens sechs
+Monate erforderlich sind.
+Zu bewerten ist, ob die Person die jeweilige Aktivität praktisch durchführen kann. Es ist un-
+erheblich, ob die Beeinträchtigungen der Selbständigkeit aufgrund von Schädigungen so-
+matischer oder mentaler Funktionen bestehen.
+
+
+
+
+                                                           Seite 200 von 287
+                          Begutachtungs-Richtlinien Pflege – BRi
+
+
+
+
+Bewältigung von und selbständiger Umgang                                Häufigkeit der Hilfe (An-
+                                                                            zahl eintragen)
+mit krankheits- oder therapiebedingten An-
+                                                                Selb-
+forderungen und Belastungen                             Ent-    stän-   pro    pro       pro Mo-
+in Bezug auf:                                           fällt   dig     Tag   Woche        nat
+
+
+4.5.1    Medikation
+
+4.5.2    Injektionen
+
+         Versorgung intravenöser Zugänge
+4.5.3
+         (z. B. Port)
+
+4.5.4    Absaugen und Sauerstoffgabe
+
+         Einreibungen oder Kälte- und Wärmean-
+4.5.5
+         wendungen
+
+         Messung und Deutung von Körperzustän-
+4.5.6
+         den
+
+4.5.7    Körpernahe Hilfsmittel
+
+4.5.8    Verbandswechsel und Wundversorgung
+
+4.5.9    Versorgung mit Stoma
+
+         Regelmäßige Einmalkatheterisierung und
+4.5.10
+         Nutzung von Abführmethoden
+
+         Therapiemaßnahmen in häuslicher Um-
+4.5.11
+         gebung
+
+         Zeit- und technikintensive Maßnahmen
+4.5.12
+         in häuslicher Umgebung
+
+4.5.13   Arztbesuche
+
+         Besuche anderer medizinischer oder the-
+4.5.14   rapeutischer Einrichtungen (bis zu drei
+         Stunden)
+
+
+
+
+                                    Seite 201 von 287
+                                             Begutachtungs-Richtlinien Pflege – BRi
+
+
+                Zeitlich ausgedehnte Besuche anderer
+ 4.5.15         medizinischer oder therapeutischer Ein-
+                richtungen (länger als drei Stunden)
+
+
+Erläuterung:
+............................................................................................................................................
+
+  4.5.16 Einhaltung einer Diät und anderer krankheits- oder therapiebedingter Verhal-
+  tensvorschriften, und zwar:…………………………………………………………………………………………..
+  ………………………………………………………………………………………………………………………………………
+        0 entfällt/nicht erforderlich
+        0 selbständig (Bereitstellen einer Diät reicht aus)
+        1 überwiegend selbständig (Erinnerung/Anleitung ist maximal einmal täglich not-
+          wendig)
+        2 überwiegend unselbständig (benötigt meistens Anleitung/Beaufsichtigung, mehr-
+          mals täglich)
+        3 unselbständig (benötigt immer Anleitung/Beaufsichtigung)
+
+
+Erläuterung:
+.................................................................................................................................................
+
+  Summe der Einzelpunkte                                                                     Gewichtete Punkte
+
+
+
+4.6           Modul 6: Gestaltung des Alltagslebens und sozialer Kontakte
+
+Zu bewerten ist, ob die Person die jeweilige Aktivität praktisch durchführen kann. Es ist un-
+erheblich, ob die Beeinträchtigungen der Selbständigkeit aufgrund von Schädigungen so-
+matischer oder mentaler Funktionen bestehen oder ob Teilaspekte bereits in anderen Mo-
+dulen berücksichtigt worden sind.
+
+
+                                                                                überwiegend           überwiegend
+                                                           selbständig                                                      unselbständig
+                                                                                 selbständig          unselbständig
+
+
+       Gestaltung des Tagesab-
+ 4.6.1 laufs und Anpassung an                                      0                       1                    2                      3
+       Veränderungen
+
+ 4.6.2 Ruhen und Schlafen                                          0                       1                    2                      3
+
+ 4.6.3 Sichbeschäftigen                                            0                       1                    2                      3
+
+
+                                                            Seite 202 von 287
+                                             Begutachtungs-Richtlinien Pflege – BRi
+
+
+       Vornehmen von in die
+ 4.6.4 Zukunft gerichteten Pla-                                    0                       1                    2                      3
+       nungen
+
+            Interaktion mit Personen
+ 4.6.5                                                             0                       1                    2                      3
+            im direkten Kontakt
+
+       Kontaktpflege zu Perso-
+ 4.6.6 nen außerhalb des direk-                                    0                       1                    2                      3
+       ten Umfelds
+
+
+Erläuterung:
+.............................................................................................................................................
+.............................................................................................................................................
+
+  Summe der Einzelpunkte                                                                     Gewichtete Punkte
+
+

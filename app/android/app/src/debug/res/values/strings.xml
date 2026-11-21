@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- Nur Debug-Build (Test-App): eigener Name, damit sie neben der Store-App „SoLo“ erkennbar ist -->
+<resources>
+    <string name="app_name">SoLo Test</string>
+    <string name="title_activity_main">SoLo Test</string>
+</resources>

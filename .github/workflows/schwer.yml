@@ -55,6 +55,8 @@ jobs:
         run: node test/test-eigenschaften.js 1000000
       - name: Dasselbe nach dem Jahreswechsel (Werte 2027, 300.000 Haushalte)
         run: HEUTE=2027.05 node test/test-eigenschaften.js 300000
+      - name: Abhängigkeiten aller Angaben (200.000 Haushalte, 2026 und 2027)
+        run: node test/test-abhaengigkeiten.js 200000 && HEUTE=2027.05 node test/test-abhaengigkeiten.js 100000
 
   mutation:
     name: Mutationstest Teil ${{ matrix.teil }}/3
@@ -86,11 +88,19 @@ jobs:
       - name: Systempakete für den Browser (bei Treffer im Zwischenspeicher)
         if: steps.pwcache.outputs.cache-hit == 'true'
         run: echo 'DPkg::Lock::Timeout "600";' | sudo tee /etc/apt/apt.conf.d/99lock >/dev/null; for i in 1 2 3; do timeout 600 npx playwright install-deps chromium && exit 0; echo "Versuch $i fehlgeschlagen"; sleep 20; done; exit 1
+      # wie „npm test“, nur 3 Tests gleichzeitig (dieselben Testlisten)
       - name: Alle Tests einmal sauber
-        run: npm test
+        run: npm run build:web && node tools/tests.js regeln oberflaeche -j 3
+      # Killer-Test zuerst (tools/mutation-killer.json); die neue Zuordnung liegt als Artefakt bereit (zum Übernehmen ins Repo)
       - name: Eingebaute Fehler müssen alle entdeckt werden (jede 3. Mutation; alle drei Teile zusammen = alle)
-        env: { MUT_RASTER: '60000', MUT_EIGEN: '15000', SHARD: '${{ matrix.teil }}/3' }
+        env: { MUT_RASTER: '60000', MUT_EIGEN: '15000', SHARD: '${{ matrix.teil }}/3', MUT_KILLER_AUS: 'mutation-killer-teil-${{ matrix.teil }}.json' }
         run: node tools/mutationstest.js
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: mutation-killer-teil-${{ matrix.teil }}
+          path: mutation-killer-teil-${{ matrix.teil }}.json
+          if-no-files-found: ignore
 
   browser:
     name: Browsertests ${{ matrix.browser }} Teil ${{ matrix.teil }}/4

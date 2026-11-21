@@ -3,6 +3,8 @@
 // Aufruf: npm run test:app (baut vorher app/www)
 'use strict';
 const { chromium } = require('playwright');
+// Leistungs-Check: Weg „Alles auf einer Seite“ vorwählen (sonst erscheint zuerst die Auswahl Schritt für Schritt / Alles auf einer Seite)
+const SF_ALLES = () => { try { if (!localStorage.getItem('lotse.checkWeg')) { localStorage.setItem('lotse.checkWeg', 'alles'); localStorage.setItem('CapacitorStorage.lotse.checkWeg', 'alles'); } } catch (e) {} };
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
@@ -16,7 +18,7 @@ const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '
 const MOCK = () => {
   const calls = (window.__calls = []);
   const log = (name) => (o) => { calls.push([name, o]); return Promise.resolve({}); };
-  const store = {};
+  const store = { 'lotse.checkWeg': 'alles' }; // Leistungs-Check: Weg „Alles auf einer Seite“ vorgewählt (src/schritte.js)
   window.Capacitor = {
     getPlatform: () => window.__platform || 'android',
     Plugins: {
@@ -57,10 +59,11 @@ const MOCK = () => {
 
   const out = [];
   const ok = (n, c, x) => out.push((c ? 'ok   ' : 'FAIL ') + n + (c ? '' : ' ' + (x || '')));
+  const setzeFeld = (pg, id, v) => pg.evaluate(([i, x]) => { const e = document.getElementById(i); e.value = x; e.dispatchEvent(new Event('input', { bubbles: true })); }, [id, v]); // Felder liegen oben in der Antragsmappe (auch wenn sie zu ist)
   const b = await chromium.launch();
   const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, locale: 'de-DE', serviceWorkers: 'block' });
   await ctx.addInitScript(MOCK);
-  const p = await ctx.newPage();
+  const p = await ctx.newPage(); await p.addInitScript(SF_ALLES);
   const reqs = [], errs = [], csp = [];
   p.on('request', (r) => reqs.push(r.url()));
   p.on('pageerror', (e) => errs.push(e.message));
@@ -72,10 +75,10 @@ const MOCK = () => {
   await p.goto(origin + '/index.html');
   await warte(() => !!document.getElementById('v-start') && document.getElementById('v-start').offsetParent !== null && (window.__calls || []).some((c) => c[0] === 'Preferences.remove' && c[1] && c[1].key === 'lotse.fristen'));
   ok('Keine Skriptfehler beim Start', errs.length === 0, errs.join('|'));
-  ok('Start: Startseite mit den vier Reitern', await p.isVisible('#v-start') && (await p.locator('#appnav button').count()) === 4);
+  ok('Start: Startseite mit den drei Reitern', await p.isVisible('#v-start') && (await p.locator('#appnav button').count()) === 3);
   ok('Alte Fristen werden über Preferences gelöscht', (await calls('Preferences.remove')).some((c) => c.key === 'lotse.fristen'));
   // Prüfpaket läuft unter der CSP der App
-  await p.click('#appnav [data-ansicht=briefe]'); await p.click('#brief-jc'); await p.click('#elSelbst'); await p.evaluate(() => document.querySelector('#p-bescheid [id$="-beispiel"]').click());
+  await p.click('#appnav [data-ansicht=start]'); await p.click('#goBriefe'); await p.click('#brief-jc'); await p.click('#elSelbst'); await p.evaluate(() => document.querySelector('#p-bescheid [id$="-beispiel"]').click());
   ok('Brief prüfen rechnet in der App', ((await p.textContent('#p-bescheid')) || '').includes('€'));
   // Widerspruch als PDF teilen (wie die Antragsmappe), mit Hinweis zur Abgabe
   await p.click('#bs-wid-mach'); await p.waitForSelector('#p-bescheid .schreiben-aus [data-aus="teilen"]', { state: 'visible', timeout: 5000 }).catch(() => {});
@@ -83,10 +86,11 @@ const MOCK = () => {
   await p.click('#p-bescheid .schreiben-aus [data-aus="teilen"]'); await warte(() => (window.__calls || []).some((c) => c[0] === 'Filesystem.writeFile' && c[1].path === 'Widerspruch-Jobcenter.pdf') && (window.__calls || []).some((c) => c[0] === 'Share.share'), null, 15000);
   ok('Widerspruch: PDF geschrieben und geteilt', (await calls('Filesystem.writeFile')).some((o) => o.path === 'Widerspruch-Jobcenter.pdf') && (await calls('Share.share')).length >= 1);
   ok('Keine Fristen über Preferences gespeichert', !(await calls('Preferences.set')).some((c) => c.key === 'lotse.fristen'));
-  await p.click('#appnav [data-ansicht=leistungen]');
+  await p.click('#appnav [data-ansicht=start]'); await p.click('#goLeistungen');
   ok('Gespeicherte Daten werden über Preferences gelesen', (await calls('Preferences.get')).length > 0);
-  ok('Erster Start: Anleitung statt Beispielwerte', (await p.locator('#cards .startcard').count()) === 1 && (await p.inputValue('#ek1Brutto')) === '');
-  await p.click('#p1');
+  ok('Erster Start: keine Karten, kein Kasten „So geht\'s“, keine Beispielwerte', (await p.locator('#cards > *').count()) === 0 && (await p.inputValue('#ek1Brutto')) === '');
+  if (await p.isVisible('#schritte .sf-w2')) await p.click('#schritte .sf-w2'); // Leistungs-Check: Weg „Alles auf einer Seite“ wählen (src/schritte.js)
+  await p.evaluate(() => document.getElementById('p1').click());
   ok(KARTEN.length + ' Karten', (await p.locator('#cards .card').count()) === KARTEN.length);
   ok('Schrift lokal geladen', await p.evaluate(async () => { await document.fonts.ready; return [...document.fonts].some((f) => f.status === 'loaded'); }));
   ok('Hinweis zur Web-Version im Impressum ausgeblendet', await p.evaluate(() => { document.getElementById('legalBtn').click(); const h = document.getElementById('legalWeb').hidden; document.getElementById('legalClose').click(); return h; }));
@@ -95,11 +99,11 @@ const MOCK = () => {
   await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'de');
 
   // Foto-Scan: Kamera -> Texterkennung -> Felder, Foto wird danach gelöscht
-  await p.click('#p1'); await p.fill('#p-name', 'Maria Muster');
+  await p.evaluate(() => document.getElementById('p1').click()); await setzeFeld(p, 'p-name', 'Maria Muster');
   // „Brief prüfen“: die Übersicht hat kein Scannen; in der Kachel Antragsformular: Kamera → Texterkennung → Felder erklärt
-  await p.click('#appnav [data-ansicht=briefe]'); if (await p.isVisible('#briefZurueck')) await p.click('#briefZurueck');
+  await p.click('#appnav [data-ansicht=start]'); await p.click('#goBriefe'); if (await p.isVisible('#briefZurueck')) await p.click('#briefZurueck');
   ok('Übersicht „Brief prüfen“: kein Scannen oder Einfügen', !(await p.isVisible('#einlesen')));
-  await p.click('#brief-af'); await p.click('#sc-take');
+  await p.click('#brief-ab'); await p.click('#brief-af'); await p.click('#sc-take');
   await p.waitForSelector('#scan:not([hidden])', { timeout: 5000 }).catch(() => {});
   ok('Kachel Antragsformular offen', await p.isVisible('#scan'));
   await p.waitForSelector('#sc-out .sc-row', { timeout: 5000 }).catch(() => {});
@@ -134,7 +138,7 @@ const MOCK = () => {
   const vorher = (await calls('Camera.getPhoto')).length;
   await p.click('#sc-take'); await warte((v) => (window.__calls || []).filter((c) => c[0] === 'Camera.getPhoto').length > v, vorher);
   ok('Kachel Antragsformular: eigener Kamera-Knopf', (await calls('Camera.getPhoto')).length === vorher + 1);
-  await p.click('#briefZurueck'); await p.click('#appnav [data-ansicht=leistungen]');
+  await p.click('#briefZurueck'); await p.click('#appnav [data-ansicht=start]'); await p.click('#goLeistungen');
   ok('Leistungsseite: keine Kamera und kein Formular-Hinweis', !(await p.isVisible('#sc-take')) && (await p.locator('#scanVerweis').count()) === 0);
 
   // Wohnort: PLZ -> Mietenstufe und zuständige Stelle mit Anschrift (offline)
@@ -166,7 +170,8 @@ const MOCK = () => {
     ok('PDF-Datei wird nach dem Teilen aus dem Cache gelöscht', (await calls('Filesystem.deleteFile')).some((o) => o.path === 'Antragsmappe.pdf'));
   } else ok('PDF erzeugt', false, await p.textContent('#copyMsg'));
   // Android: Drucken (Druckdialog des Systems) und Speichern (Ordner Downloads) über das native Plugin PdfAusgabe
-  ok('Android: Knöpfe Drucken und PDF speichern sichtbar', (await p.isVisible('#mappeDruck')) && (await p.isVisible('#mappeSpeichern')));
+  await p.evaluate(() => { document.querySelector('#mappe .mappe-mehr').open = true; }); // Drucken/Speichern stehen unter „Weitere Möglichkeiten“
+  ok('Android: Knöpfe Drucken und PDF speichern unter „Weitere Möglichkeiten“ sichtbar', (await p.isVisible('#mappeDruck')) && (await p.isVisible('#mappeSpeichern')));
   await p.click('#mappeDruck');
   await p.waitForFunction(() => !!window.__druck, null, { timeout: 15000 }).catch(() => {});
   const druck = Buffer.from(await p.evaluate(() => window.__druck || ''), 'base64');
@@ -197,15 +202,15 @@ const MOCK = () => {
   // Speichern
   await p.fill('#miete', '777'); await p.press('#miete', 'Tab'); await warte(() => (window.__calls || []).some((c) => c[0] === 'Preferences.set' && /777/.test(c[1].value || '')));
   ok('Eingaben werden über Preferences gespeichert', (await calls('Preferences.set')).some((o) => /777/.test(o.value || '')));
-  await p.evaluate(() => document.getElementById('clearBtn').click());
-  ok('„Alle Angaben löschen“ entfernt gespeicherte Eingaben', (await calls('Preferences.remove')).length > 0);
+  await p.evaluate(() => { document.getElementById('clear2').click(); document.getElementById('loeschJa').click(); });
+  ok('„Nur diesen Vorgang löschen“ entfernt gespeicherte Eingaben', (await calls('Preferences.remove')).length > 0);
 
   // Wohnort nur in der Anschrift der Antragsmappe (PLZ-Feld im Fragebogen leer): App nutzt die PLZ aus „PLZ und Ort“
-  await p.click('#p1'); await p.fill('#plz', ''); await p.fill('#p-name', 'Maria Muster'); await p.fill('#p-ort', '');
+  await p.evaluate(() => document.getElementById('p1').click()); await p.fill('#plz', ''); await setzeFeld(p, 'p-name', 'Maria Muster'); await setzeFeld(p, 'p-ort', '');
   await p.click('#mappeMake');
   ok('Ohne Wohnort: Hinweis in der Mappe, dass die PLZ fehlt', await p.isVisible('#mappeAdrNote'));
   await p.click('#mappeClose');
-  await p.fill('#p-ort', '90542 Eckental'); await warte(() => /Familienkasse Bayern Nord/.test(document.getElementById('c-kindergeld').textContent));
+  await setzeFeld(p, 'p-ort', '90542 Eckental'); await warte(() => /Familienkasse Bayern Nord/.test(document.getElementById('c-kindergeld').textContent));
   ok('PLZ aus der Anschrift: Karte nennt die zuständige Stelle', /Familienkasse Bayern Nord/.test(await p.textContent('#c-kindergeld')));
   await p.click('#mappeMake');
   const brief2 = await p.inputValue('#mappeText');
@@ -213,7 +218,7 @@ const MOCK = () => {
   ok('PLZ aus der Anschrift: kein Hinweis auf fehlende PLZ', !(await p.isVisible('#mappeAdrNote')));
   await p.click('#mappeClose');
   // Mehrere Orte unter einer PLZ: Ortsname aus der Anschrift entscheidet (84032: Altdorf im Lkr. Landshut oder Stadt Landshut)
-  await p.fill('#p-ort', '84032 Altdorf'); await warte(() => /Landratsamt Landshut/.test((document.getElementById('c-wohngeld') || {}).textContent || ''));
+  await setzeFeld(p, 'p-ort', '84032 Altdorf'); await warte(() => /Landratsamt Landshut/.test((document.getElementById('c-wohngeld') || {}).textContent || ''));
   ok('84032 Altdorf: Landratsamt Landshut (nicht Stadt Landshut)', /Landratsamt Landshut/.test(await p.textContent('#c-wohngeld').catch(() => '')));
 
   const net = reqs.filter((u) => !u.startsWith(origin) && !u.startsWith('data:') && !u.startsWith('blob:'));
@@ -226,10 +231,11 @@ const MOCK = () => {
   ok('Android: Anbieter im Impressum David Cabrerizo', (await anbieter()) === 'David Cabrerizo', await anbieter());
   const ctxI = await b.newContext({ viewport: { width: 390, height: 844 }, locale: 'de-DE', serviceWorkers: 'block' });
   await ctxI.addInitScript(() => { window.__platform = 'ios'; }); await ctxI.addInitScript(MOCK);
-  const pi = await ctxI.newPage(); await pi.goto(origin + '/index.html#leistungen'); await pi.waitForFunction(() => /Natascha/.test(document.getElementById('legal').textContent), null, { timeout: 5000 }).catch(() => {});
+  const pi = await ctxI.newPage(); await pi.addInitScript(SF_ALLES); await pi.goto(origin + '/index.html#leistungen'); await pi.waitForFunction(() => /Natascha/.test(document.getElementById('legal').textContent), null, { timeout: 5000 }).catch(() => {});
   const legalI = await pi.evaluate(() => document.getElementById('legal').textContent);
   ok('iPhone: Anbieter im Impressum Natascha Cabrerizo y Polo, nicht David', /Anbieter: Natascha Cabrerizo y Polo/.test(legalI.replace(/\s+/g, ' ')) && !/David/.test(legalI), legalI.slice(0, 200));
-  await pi.click('#p1'); await pi.fill('#p-name', 'Test'); await pi.evaluate(() => document.getElementById('mappeMake').click()); await pi.waitForSelector('#mappePrint', { state: 'visible', timeout: 5000 }).catch(() => {});
+  if (await pi.isVisible('#schritte .sf-w2')) await pi.click('#schritte .sf-w2');
+  await pi.evaluate(() => document.getElementById('p1').click()); await setzeFeld(pi, 'p-name', 'Test'); await pi.evaluate(() => document.getElementById('mappeMake').click()); await pi.waitForSelector('#mappePrint', { state: 'visible', timeout: 5000 }).catch(() => {});
   ok('iPhone: keine Android-Knöpfe Drucken/Speichern, PDF teilen vorhanden', !(await pi.isVisible('#mappeDruck')) && !(await pi.isVisible('#mappeSpeichern')) && (await pi.isVisible('#mappePrint')));
   await ctxI.close();
 

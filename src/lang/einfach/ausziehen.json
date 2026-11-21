@@ -1,0 +1,20 @@
+{
+  "az.lead": "Du ziehst in deine erste eigene Wohnung. Hier steht, was du tun musst. Tippe auf ein Feld.",
+  "az.vorher.h": "Bevor du ausziehst",
+  "az.vorher.t": "Planen, suchen, Vertrag prüfen",
+  "az.tage.h": "Die ersten Tage",
+  "az.tage.t": "Anmelden, Strom, neue Adresse",
+  "az.geld.h": "Dein Geld",
+  "az.geld.t": "Konto und Ordnung",
+  "az.vers.h": "Versicherungen",
+  "az.vers.t": "Was du brauchst. Was du nicht brauchst.",
+  "az.achtung.h": "Finger weg!",
+  "az.achtung.t": "So machst du keine Schulden",
+  "az.hilfen.h": "Geld und Hilfen",
+  "az.hilfen.t": "Das kannst du vielleicht bekommen",
+  "az.p.u25.t": "Frag das Jobcenter. Schreib einen Brief. Mach das vor der Unterschrift. Das gilt auch, wenn deine Familie Grundsicherungsgeld bekommt. Oder wenn du es nach dem Umzug brauchst. Ohne Ja vom Jobcenter (Zusicherung) zahlt es bis 25 oft keine Miete, keine Heizung und keine Möbel. Und du bekommst weniger Geld zum Leben (§ 20 Abs. 3 SGB II).\nDas Jobcenter muss Ja sagen, wenn du nicht bei deinen Eltern wohnen kannst. Zum Beispiel wegen großer Probleme zu Hause. Oder wenn du die Wohnung für die Arbeit brauchst. Oder bei einem anderen, ähnlich wichtigen Grund (§ 22 Abs. 5 SGB II, § 24 Abs. 6 SGB II). Kommst du aus der Jugendhilfe? Dann schreib das in den Antrag.\nDu hast schon unterschrieben? Geh trotzdem sofort zum Jobcenter. Gab es einen wichtigen Grund, warum du nicht warten konntest? Dann geht es vielleicht auch ohne Ja vorher.",
+  "az.p.vertrag.t": "Schau dir die Miete genau an. Kaltmiete ist die Miete ohne Neben-Kosten (Betriebskosten) und ohne Heizung. Mit allem zusammen heißt es Warmmiete.\nDie Kaution ist Geld für den Vermieter als Sicherheit. Sie ist höchstens 3 Kaltmieten. Du darfst sie in 3 Teilen zahlen. Den ersten Teil am Anfang (§ 551 BGB).\nUnterschreib nichts, wenn dich jemand drängt. Frag nach.",
+  "az.p.kaution.t": "Du bekommst Grundsicherungsgeld? Dann kann das Jobcenter die Kaution zahlen. Das ist geliehenes Geld. Du zahlst es später zurück. Dafür musst du vorher fragen.\nAuch den Umzug kann das Jobcenter zahlen. Auch hier: vorher fragen (§ 22 Abs. 6 SGB II).",
+  "az.p.melden.t": "Geh zum Bürgeramt (Meldebehörde). Mach das in den ersten 2 Wochen nach dem Einzug (§ 17 BMG).\nNimm deinen Ausweis mit. Und einen Zettel vom Vermieter (Wohnungsgeberbestätigung). Den muss er dir geben (§ 19 BMG).",
+  "az.p.kv.t": "Bis 25 kannst du bei deinen Eltern mitversichert sein. Das kostet nichts (Familienversicherung). Das geht, wenn deine Eltern gesetzlich versichert sind. Bis 18 immer. Bis 23, wenn du nicht arbeitest. Bis 25 in Schule, Ausbildung, Studium oder Freiwilligendienst (§ 10 SGB V). Ist ein Elternteil privat versichert und verdient viel mehr? Dann geht es manchmal nicht. Frag die Krankenkasse.\nDas hört auf, wenn du selbst versichert bist. Zum Beispiel in einer Ausbildung mit Lohn. Oder wenn du mehr als {grenze} im Monat verdienst (im Minijob gilt die Minijob-Grenze). In der Ausbildung meldet dich dein Arbeitgeber an. Du suchst die Krankenkasse aus."
+}

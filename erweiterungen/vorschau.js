@@ -4,6 +4,14 @@
 (function () {
   'use strict';
   const $ = (id) => document.getElementById(id);
+  // „Keine Rechtsberatung“: immer derselbe Satz (Text rb.satz in src/lang/*.json); in der App aus der gewählten Sprache
+  const RB_SATZ = 'Erste Einschätzung, keine Rechtsberatung. Es entscheidet das Amt, im Streit das Gericht.';
+  const rbSatz = () => (window.SoloMehr && window.SoloMehr.rb ? window.SoloMehr.rb() : RB_SATZ);
+  // Texte in der App-Sprache (src/lang/zusatz/*.json über window.SoloMehr.t); in der Vorschau ohne App der deutsche Text
+  const tA = (k, de, p) => {
+    const x = window.SoloMehr && window.SoloMehr.t ? window.SoloMehr.t(k, p) : null;
+    return x && x !== k ? x : String(de).replace(/\{(\w+)\}/g, (m, n) => (p && p[n] != null ? p[n] : m));
+  };
   const h = (tag, attrs, ...kids) => {
     const e = document.createElement(tag);
     for (const [k, v] of Object.entries(attrs || {})) {
@@ -17,6 +25,109 @@
   const zahl = (s) => String(s).replace('.', ',');
   const heute = () => new Date().toISOString().slice(0, 10);
   const de = (s) => { const [y, m, d] = s.split('-'); return `${d}.${m}.${y}`; };
+
+  // ---------------- Erkannte Werte prüfen ----------------
+  // Werte aus Scan, PDF oder eingefügtem Text sind nur ein Vorschlag: Die Texterkennung kann Ziffern verlesen (z. B. 1.579 statt 1.570)
+  // oder eine falsche Zeile treffen (Höchstbetrag statt Miete). Darum bleiben sie markiert („erkannt – bitte prüfen“), bis der Nutzer
+  // „Werte stimmen“ tippt oder das Feld ändert. Bis dahin zeigt das Ergebnis keinen Vergleich und es entsteht kein Widerspruch.
+  // Teil → [Abschnitt, Formular (Hinweis steht davor), neu zeichnen]
+  const ERK = { bs: ['p-bescheid', 'bs-form', () => zeigeBescheid()], ga: ['p-gsa', 'ga-form', () => zeigeGSA()], wg: ['p-wg', 'wg-form', () => zeigeWG()],
+    kz: ['p-kiz', 'kz-form', () => zeigeKiZ()], nk: ['p-nk', 'nk-form', () => zeigeNK()], pf: ['p-pflege', 'pf-form', () => zeigePflege()] };
+  const erkOffen = {};
+  const erkFelder = (p) => ($(ERK[p][0]) ? [...$(ERK[p][0]).querySelectorAll('.pp-erkannt')] : []);
+  const erkWarte = () => tA('bp.erk.warte', 'Bitte zuerst die erkannten Werte prüfen.');
+  function erkBeschr(el, id, an) { // aria-describedby um eine Kennung ergänzen bzw. sie entfernen, andere bleiben
+    const alt = (el.getAttribute('aria-describedby') || '').split(/\s+/).filter((x) => x && x !== id);
+    if (an) alt.push(id);
+    if (alt.length) el.setAttribute('aria-describedby', alt.join(' ')); else el.removeAttribute('aria-describedby');
+  }
+  function erkFeldWeg(el, p) {
+    el.classList.remove('pp-erkannt', 'pp-unsicher');
+    erkBeschr(el, p + '-erk-t', false); erkBeschr(el, el.id + '-unsicher', false);
+    const u = el.id && $(el.id + '-unsicher'); if (u) u.remove();
+  }
+  function erkHinweis(p) {
+    let d = $(p + '-erk');
+    if (!d) {
+      d = h('div', { class: 'pp-erk-hinweis', id: p + '-erk' },
+        h('p', { id: p + '-erk-t', 'data-t': 'bp.erk.t', text: tA('bp.erk.t', 'Diese Werte hat SoLo aus dem Brief gelesen. Bitte vergleiche sie mit dem Brief.') }),
+        h('button', { type: 'button', class: 'btn', id: p + '-erk-ok', 'data-t': 'bp.erk.ok', text: tA('bp.erk.ok', 'Werte stimmen'), onclick: () => erkFertig(p) }));
+      $(ERK[p][1]).insertAdjacentElement('beforebegin', d);
+    }
+    return d;
+  }
+  // Alle Markierungen eines Teils weg (bestätigt, neu eingelesen oder geleert). neu = false: nicht neu zeichnen
+  function erkFertig(p, neu) {
+    const war = erkOffen[p];
+    erkOffen[p] = false;
+    for (const el of erkFelder(p)) erkFeldWeg(el, p);
+    const d = $(p + '-erk'); if (d) d.hidden = true;
+    if (war && neu !== false) ERK[p][2]();
+  }
+  // Nach dem Einlesen: markierte Felder des Teils sperren das Ergebnis, bis sie bestätigt oder geändert sind.
+  // unsicher: Feld-IDs mit geringer Sicherheit (nur Foto) – zusätzlich farbig und mit kurzem Text „Schwer zu lesen“
+  function erkMarke(p, unsicher) {
+    const felder = erkFelder(p);
+    if (!felder.length) { erkFertig(p, false); return; }
+    erkOffen[p] = true;
+    erkHinweis(p).hidden = false;
+    for (const el of felder) {
+      erkBeschr(el, p + '-erk-t', true);
+      if (el.id && unsicher && unsicher.has(el.id)) {
+        el.classList.add('pp-unsicher');
+        const u = h('p', { class: 'small pp-unsicher-t', id: el.id + '-unsicher', 'data-t': 'bp.erk.feld', text: tA('bp.erk.feld', 'Schwer zu lesen. Bitte genau prüfen.') });
+        el.insertAdjacentElement('afterend', u); erkBeschr(el, u.id, true);
+      }
+      if (el.dataset.erkHoert) continue;
+      el.dataset.erkHoert = '1';
+      // Eigene Änderung = geprüft. Läuft vor der Neuberechnung des Formulars (Ziel-Element vor dem Formular).
+      const weg = () => { if (!el.classList.contains('pp-erkannt')) return; erkFeldWeg(el, p); if (erkOffen[p] && !erkFelder(p).length) erkFertig(p); };
+      el.addEventListener('input', weg); el.addEventListener('change', weg);
+    }
+  }
+  // Im Ergebnis: solange Werte offen sind, nur der Hinweis. true = gesperrt
+  function erkSperre(p, box) {
+    if (!erkOffen[p]) return false;
+    box.append(h('h2', { text: 'Ergebnis' }), h('p', { class: 'pp-erk-warte', 'data-t': 'bp.erk.warte', text: erkWarte() }));
+    return true;
+  }
+  // Plausibilität bei Texterkennung aus einem Foto: welche erkannten Werte unsicher sind.
+  // Spannen sind keine Rechtsgrenzen, nur grobe Grenzen für Monatsbeträge, außerhalb derer ein Lesefehler wahrscheinlich ist.
+  const SPANNE = { 'bs-b-regel': [100, 8000], 'bs-b-ae': [0, 2000], 'bs-b-schw': [0, 1500], 'bs-b-ww': [0, 500], 'bs-b-kdu': [0, 6000], 'bs-b-eink': [0, 15000], 'bs-b-kg': [0, 4000], 'bs-b-zahl': [0, 15000],
+    'bs-miete': [30, 6000], 'bs-heiz': [0, 1500], 'ga-b-regel': [100, 3000], 'ga-b-g': [0, 500], 'ga-b-ww': [0, 200], 'ga-b-kdu': [0, 4000], 'ga-b-eink': [0, 8000], 'ga-b-zahl': [0, 8000], 'ga-miete': [30, 4000], 'ga-heiz': [0, 1000],
+    'wg-b-miete': [30, 4000], 'wg-b-eink': [0, 15000], 'wg-b-wg': [1, 3000], 'wg-kalt': [30, 6000], 'wg-n': [1, 20], 'kz-b-bedarf': [100, 8000], 'kz-b-eink': [0, 15000], 'kz-b-kiz': [1, 4000], 'kz-wohn': [30, 6000],
+    'nk-voraus': [0, 30000], 'nk-heiz': [0, 15000], 'nk-wfl': [5, 500], 'nk-gfl': [5, 200000] };
+  const DATUM_FELD = { jc: 'bs-datum', sa: 'ga-datum', wg: 'wg-datum', fk: 'kz-datum' };
+  const isoGut = (s) => { if (!/^\d{4}-\d\d-\d\d$/.test(String(s || ''))) return false; const d = new Date(s + 'T00:00:00Z'); return !isNaN(d) && d.toISOString().slice(0, 10) === s; };
+  function unsichereFelder(art, r, quelle, jetzt) {
+    const aus = new Set(), f = Object.assign({}, (r && r.felder) || {});
+    const datumId = DATUM_FELD[art]; if (datumId && r && r.datum) f[datumId] = r.datum;
+    const n = (id) => (typeof f[id] === 'number' && isFinite(f[id]) ? f[id] : null);
+    // 1. Konfidenz der Texterkennung (falls verfügbar): Wörter mit Ziffern, die die Erkennung selbst als unsicher meldet
+    const schwach = new Set(((quelle && quelle.unsicher) || []).map((w) => String(w).replace(/\D/g, '')).filter((d) => d.length >= 3));
+    const ziffern = (v) => (typeof v === 'number' ? [String(Math.round(v * 100)), Number.isInteger(v) ? String(v) : ''] : isoGut(v) ? [v.slice(8, 10) + v.slice(5, 7) + v.slice(0, 4)] : [String(v).replace(/\D/g, '')]);
+    if (schwach.size) for (const [id, v] of Object.entries(f)) if (ziffern(v).some((d) => d && schwach.has(d))) aus.add(id);
+    // 2. Wert außerhalb üblicher Spannen
+    for (const [id, [lo, hi]] of Object.entries(SPANNE)) { const v = n(id); if (v != null && (v < lo || v > hi)) aus.add(id); }
+    // 3. Summe passt nicht: Zahlbetrag = Bedarfe + Unterkunft − Einkommen (wie BescheidSGB2/BescheidGSA rechnen), Spielraum 1 €
+    const summe = (plus, minus, zahl) => {
+      if (plus.concat([zahl]).some((id) => n(id) == null && !/-(ae|schw|ww|g)$/.test(id))) return;
+      const s = plus.reduce((a, id) => a + (n(id) || 0), 0) - minus.reduce((a, id) => a + (n(id) || 0), 0);
+      if (Math.abs(Math.max(0, s) - n(zahl)) > 1) plus.concat(minus, [zahl]).filter((id) => n(id) != null).forEach((id) => aus.add(id));
+    };
+    if (art === 'jc') summe(['bs-b-regel', 'bs-b-ae', 'bs-b-schw', 'bs-b-ww', 'bs-b-kdu'], ['bs-b-eink', 'bs-b-kg'], 'bs-b-zahl');
+    if (art === 'sa') summe(['ga-b-regel', 'ga-b-g', 'ga-b-ww', 'ga-b-kdu'], ['ga-b-eink'], 'ga-b-zahl');
+    // 4. Datum: ungültig, in der Zukunft oder älter als 3 Jahre (ein Bescheid so alt ist für die Prüfung unüblich)
+    const heuteIso = (jetzt || new Date()).toISOString().slice(0, 10), vor3 = String(+heuteIso.slice(0, 4) - 3) + heuteIso.slice(4);
+    if (datumId && f[datumId] != null && (!isoGut(f[datumId]) || f[datumId] > heuteIso || f[datumId] < vor3)) aus.add(datumId);
+    // Nebenkosten: Zeitraum höchstens 12 Monate (§ 556 Abs. 3 Satz 1 BGB, gesetze-im-internet.de, abgerufen 21.11.2026), Ende nach Beginn
+    if (f['nk-von'] != null || f['nk-bis'] != null) {
+      const von = f['nk-von'], bis = f['nk-bis'];
+      const tage = isoGut(von) && isoGut(bis) ? (new Date(bis) - new Date(von)) / 864e5 : NaN;
+      if (!(tage > 0 && tage <= 366)) ['nk-von', 'nk-bis'].forEach((id) => { if (f[id] != null) aus.add(id); });
+    }
+    return aus;
+  }
   async function kopiere(textarea, msg) {
     try { const cb = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Clipboard; if (cb) await cb.write({ string: textarea.value }); else await navigator.clipboard.writeText(textarea.value); msg.textContent = 'Kopiert. Du kannst den Text jetzt in ein Schreibprogramm oder eine E-Mail einfügen.'; } catch (e) { textarea.hidden = false; textarea.removeAttribute('readonly'); textarea.select(); msg.textContent = 'Text ist markiert. Bitte mit Strg+C bzw. „Kopieren“ übernehmen.'; textarea.setAttribute('readonly', ''); }
   }
@@ -100,9 +211,11 @@
     $('pf-monate-box').hidden = !(g.alterJahre !== '' && +g.alterJahre < 2);
     $('pf-zeile-5K').hidden = !r.kind;
     box.replaceChildren();
+    if (erkSperre('pf', box)) { zeigeErklaerung(g, r); if ($('pf-ab-info')) $('pf-ab-info').replaceChildren(h('p', { 'data-t': 'bp.erk.warte', text: erkWarte() })); return; }
     box.append(h('h2', { text: 'Ergebnis: das sagt das Gutachten' }),
       h('p', {}, h('span', { class: 'big', text: r.pg ? `Pflegegrad ${r.pg}` : 'Kein Pflegegrad' }), h('span', { class: 'muted', text: ` · ${zahl(r.gesamt)} von 100 Punkten` })),
       leiste(r.gesamt));
+    vergleichTabelle(g, r, box);
     for (const satz of P.zusammenfassung(g, r, Rules)) box.append(h('p', { text: satz }));
     // Bereiche als kleine Tabelle
     const tb = h('tbody', {}, [1, 2, 3, 4, 5, 6].map((m) => { const mo = r.module[m], zaehlt = !(m === 2 || m === 3) || r.zaehlt23 === m; return h('tr', {}, h('td', { text: P.MODUL[m].kurz }), h('td', { text: mo.bereichName }), h('td', { class: 'z', text: zaehlt ? `${zahl(mo.gewichtet)} / ${zahl(P.ANLAGE2[m].gew[4])}` : 'zählt nicht' })); }));
@@ -184,6 +297,36 @@
     if (e16 != null && e16 > g16) { const sk = P.SKALA.sel; ab.push({ typ: 'm5', id: '5.16', titel: '5.16 Diät oder ärztliche Anweisungen einhalten', ist: `„${sk.kurz[g16]}“ (${sk.stufen[g16]})`, soll: `„${sk.kurz[e16]}“ (${sk.stufen[e16]})`, wert: e16 }); }
     return { ab, fehlt };
   }
+  // Eigene Einschätzung neben dem Gutachten: Punkte je Bereich (gewichtet nach Anlage 2 zu § 15 SGB XI, gerechnet von pflege.js), Unterschied hervorgehoben.
+  // Von den Bereichen 2 und 3 zählt nur der höhere (§ 15 Abs. 3 SGB XI); ein Bereich, der nicht zählt, geht mit 0 in den Unterschied ein. Keine eigenen Zahlen.
+  function vergleichTabelle(g, r, box) {
+    if (!eigen || !Object.keys(g.stufen).length) return;
+    const re = P.rechne(eigen);
+    const zaehlt = (x, m) => !(m === 2 || m === 3) || x.zaehlt23 === m;
+    const wert = (x, m) => (zaehlt(x, m) ? x.module[m].gewichtet : 0);
+    const r2 = (x) => Math.round(x * 100) / 100;
+    const diffText = (d) => (d > 0 ? '+' : d < 0 ? '−' : '') + zahl(Math.abs(d));
+    const zelle = (x, m) => (zaehlt(x, m) ? zahl(x.module[m].gewichtet) : tA('bp.vgl.zaehltNicht', 'zählt nicht'));
+    let mehr = 0;
+    const zeilen = [1, 2, 3, 4, 5, 6].map((m) => {
+      const d = r2(wert(re, m) - wert(r, m));
+      if (d > 0) mehr++;
+      return h('tr', { class: d > 0 ? 'pv-mehr' : null, 'data-m': String(m) }, h('td', { text: P.MODUL[m].kurz }), h('td', { class: 'z', text: zelle(re, m) }), h('td', { class: 'z', text: zelle(r, m) }),
+        h('td', { class: 'z' }, d > 0 ? h('strong', { text: diffText(d) }) : diffText(d)));
+    });
+    const dg = r2(re.gesamt - r.gesamt);
+    zeilen.push(h('tr', { class: 'pv-summe' + (dg > 0 ? ' pv-mehr' : '') }, h('th', { scope: 'row', text: tA('bp.vgl.gesamt', 'Zusammen') }), h('td', { class: 'z', text: zahl(re.gesamt) }), h('td', { class: 'z', text: zahl(r.gesamt) }),
+      h('td', { class: 'z' }, dg > 0 ? h('strong', { text: diffText(dg) }) : diffText(dg))));
+    const pgT = (x) => (x.pg ? tA('bp.vgl.pg', 'Pflegegrad {pg}', { pg: x.pg }) : tA('bp.vgl.kein', 'kein Pflegegrad'));
+    const kurz = mehr ? tA('bp.vgl.mehr', 'In {n} von 6 Bereichen gibt das Gutachten weniger Punkte als deine Einschätzung (fett markiert).', { n: mehr }) : tA('bp.vgl.keinMehr', 'In keinem Bereich gibt das Gutachten weniger Punkte als deine Einschätzung.');
+    const titel = tA('bp.vgl.h', 'Vergleich mit deiner Einschätzung');
+    box.append(h('section', { class: 'pv-vergleich', id: 'pf-vgl', 'aria-labelledby': 'pf-vgl-h' }, h('h3', { id: 'pf-vgl-h', text: titel }),
+      h('p', { id: 'pf-vgl-satz', text: tA('bp.vgl.satz', 'Deine Einschätzung: {e}. Gutachten: {g}.', { e: pgT(re), g: pgT(r) }) + ' ' + kurz }),
+      h('div', { class: 'tablewrap', tabindex: '0', role: 'region', 'aria-label': titel }, h('table', { class: 'modtab' },
+        h('thead', {}, h('tr', {}, h('th', { text: tA('bp.vgl.bereich', 'Bereich') }), h('th', { class: 'z', text: tA('bp.vgl.eigen', 'Deine Punkte') }), h('th', { class: 'z', text: tA('bp.vgl.gutachten', 'Gutachten') }), h('th', { class: 'z', text: tA('bp.vgl.diff', 'Unterschied') }))),
+        h('tbody', {}, zeilen))),
+      h('p', { class: 'small muted', text: tA('bp.vgl.klein', 'Punkte nach Gewichtung, wie die Pflegekasse rechnet (§ 15 SGB XI). Plus heißt: Deine Einschätzung gibt dort mehr Punkte. Darunter steht, bei welchen Fragen genau.') })));
+  }
   function zeigeVergleich(g, r) {
     const info = $('pf-ab-info'); if (!info) return;
     info.replaceChildren();
@@ -262,6 +405,7 @@
     $('pf-datum-label').textContent = hoch ? 'Datum der letzten Begutachtung' : 'Datum des Bescheids';
   }
   function machePflegeWiderspruch() {
+    if (erkOffen.pf) { $('pf-frist').textContent = erkWarte(); return; }
     const g = lesePflege(), r = P.rechne(g), hoch = pfArt() === 'hoeher';
     const gewaehlt = [...$('pf-wid-liste').children].filter((z) => z.querySelector('.pw-mit').checked && z.dataset.id);
     const textKarten = gewaehlt.filter((z) => z.dataset.typ);
@@ -282,9 +426,19 @@
     let info = hoch ? 'Keine Frist. Mehr Geld gibt es ab dem Monat, in dem der Antrag bei der Pflegekasse eingeht. Deshalb bald abschicken.' : $('pf-datum').value ? fristText($('pf-datum').value) : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.';
     if ((auswahl.length || textKarten.length) && ziel > ist) info = `Mit diesen Änderungen ergäbe sich Pflegegrad ${ziel}. ` + info;
     if (!auswahl.length && !textKarten.length) info = 'Noch keine Bewertung mit höherer Stufe gewählt. ' + info;
+    $('pf-frist').classList.toggle('frist', !hoch && !!$('pf-datum').value); // Frist-Muster nur bei echter Frist
     $('pf-frist').textContent = info;
+    merkKnopf('pf', hoch ? null : widEintrag('pk', $('pf-datum').value)); // Höherstufung: keine Frist
   }
-  function fristText(datum) { const f = Fristen.widerspruch({ datum }); return `Frist: Der Widerspruch muss spätestens am ${de(f.fristende)} bei der Stelle sein (frühester möglicher Tag).`; }
+  // Knopf „Frist merken“ unter der Frist (nur in der App mit src/fristen.js; erst der Tipp speichert, nie automatisch)
+  function merkKnopf(p, eintrag) {
+    const alt = $(p + '-merken'); if (alt) alt.remove();
+    if (!eintrag || !window.FristenOrdner || !$(p + '-frist')) return;
+    const k = window.FristenOrdner.knopf(() => eintrag);
+    k.id = p + '-merken'; $(p + '-frist').after(k);
+  }
+  const widEintrag = (stelle, datum) => (datum ? { art: 'wid', stelle, basis: { datum }, quelle: 'bescheid' } : null);
+  function fristText(datum) { const f = Fristen.widerspruch({ datum }); return tA('bp.wid.bis', 'Widerspruch bis {datum}', { datum: de(f.fristende) }) + '.'; }
 
   const BEISPIEL_GUTACHTEN = `1.1 Positionswechsel im Bett überwiegend selbständig
 1.3 Umsetzen überwiegend selbständig
@@ -315,20 +469,26 @@ Ergebnis: Pflegegrad 2`;
 
   // ---------------- Bescheid Grundsicherungsgeld ----------------
   let pz = 0;
+  // werte.hh: Zeile aus dem Leistungs-Check (zählt als Person, auch wenn das Alter noch fehlt); werte.gruppe: Altersgruppe als Hinweis im leeren Feld
+  const GRUPPE = { u6: '0–5', '6bis13': '6–13', '14plus': '14–24' };
   function personZeile(rolle, werte) {
     pz++; const n = pz; werte = werte || {};
-    const tr = h('tr', { 'data-rolle': rolle },
+    const tr = h('tr', { 'data-rolle': rolle, 'data-hh': werte.hh ? '1' : null },
       h('td', { text: rolle === 'erw' ? 'Erwachsen' : 'Kind' }),
-      h('td', {}, h('input', { type: 'number', min: '0', max: '99', id: `bp-alter-${n}`, 'aria-label': `Person ${n}: Alter`, value: werte.alter != null ? werte.alter : '' })),
+      h('td', {}, h('input', { type: 'number', min: '0', max: '99', id: `bp-alter-${n}`, 'aria-label': `Person ${n}: Alter`, value: werte.alter != null ? werte.alter : '', placeholder: GRUPPE[werte.gruppe] || null })),
       ...['brutto', 'netto', 'sonstiges'].map((f) => h('td', {}, h('input', { type: 'number', min: '0', step: '0.01', inputmode: 'decimal', id: `bp-${f}-${n}`, 'aria-label': `Person ${n}: ${f === 'sonstiges' ? 'anderes Einkommen (z. B. Unterhalt, Rente)' : 'Lohn ' + f}`, value: werte[f] || '' }))),
       h('td', {}, h('label', { class: 'check' }, h('input', { type: 'checkbox', id: `bp-schw-${n}`, 'aria-label': `Person ${n}: schwanger ab der 13. Woche`, checked: !!werte.schwanger }))),
       h('td', {}, h('button', { type: 'button', class: 'btn', 'aria-label': `Person ${n} entfernen`, onclick: () => { tr.remove(); zeigeBescheid(); } }, '×')));
     $('bs-personen').append(tr);
   }
   const wert = (id) => { const v = $(id).value; return v === '' ? null : +v; };
+  // Eine ganz leere Zeile (kein Alter, kein Einkommen, kein Haken, nicht aus dem Check) ist keine Person: Sie würde sonst als
+  // Partner bzw. Kind mitgerechnet (z. B. Regelbedarfe für zwei statt für eine Person). Fehlendes Alter bleibt leer (kein geratener Wert).
+  const zeileLeer = (tr) => !tr.dataset.hh && [...tr.querySelectorAll('input')].every((el) => (el.type === 'checkbox' ? !el.checked : el.value === ''));
   function leseBescheid() {
-    const personen = [...$('bs-personen').children].map((tr) => { const i = tr.querySelectorAll('input'); return { rolle: tr.dataset.rolle, alter: i[0].value === '' ? (tr.dataset.rolle === 'erw' ? 30 : 0) : +i[0].value, brutto: +i[1].value || 0, netto: +i[2].value || 0, sonstiges: +i[3].value || 0, schwanger: i[4].checked }; });
-    return { personen, warmwasserDezentral: $('bs-ww').checked, miete: { tatsaechlich: wert('bs-miete'), heizung: wert('bs-heiz') },
+    const personen = [...$('bs-personen').children].filter((tr) => !zeileLeer(tr)).map((tr) => { const i = tr.querySelectorAll('input'); return { rolle: tr.dataset.rolle, alter: i[0].value === '' ? '' : +i[0].value, brutto: +i[1].value || 0, netto: +i[2].value || 0, sonstiges: +i[3].value || 0, schwanger: i[4].checked }; });
+    const leereZeilen = personen.length ? [...$('bs-personen').children].filter(zeileLeer).length : 0;
+    return { personen, leereZeilen, warmwasserDezentral: $('bs-ww').checked, miete: { tatsaechlich: wert('bs-miete'), heizung: wert('bs-heiz') },
       bescheid: { regel: wert('bs-b-regel'), mehrAE: wert('bs-b-ae'), mehrSchwanger: wert('bs-b-schw'), mehrWW: wert('bs-b-ww'), kdu: wert('bs-b-kdu'), einkommen: wert('bs-b-eink'), kindergeld: wert('bs-b-kg'), zahlbetrag: wert('bs-b-zahl') } };
   }
   const WIRK = { passt: 'passt', zuWenig: 'zu deinen Lasten', zuViel: 'zu deinen Gunsten', pruefen: 'bitte prüfen', fehlt: 'nicht eingetragen' };
@@ -349,10 +509,40 @@ Ergebnis: Pflegegrad 2`;
     const tb = h('tbody', {}, r.posten.map((p) => h('tr', {}, h('td', {}, p.name, p.recht ? h('span', { class: 'amt small muted', text: ' ' + p.recht }) : null), h('td', { class: 'z', text: eur(p.erwartet) }), h('td', { class: 'z', text: p.bescheid == null ? '–' : eur(p.bescheid) }), h('td', {}, h('span', { class: 'pill ' + p.wirkung, text: WIRK[p.wirkung] })))));
     box.append(h('details', {}, h('summary', { text: 'Alle Posten im Vergleich' }), h('div', { class: 'tablewrap', tabindex: '0', role: 'region', 'aria-label': label }, h('table', {}, h('thead', {}, h('tr', {}, h('th', { text: 'Posten' }), h('th', { class: 'z', text: 'nach SoLo' }), h('th', { class: 'z', text: 'im Bescheid' }), h('th', { text: 'Bewertung' }))), tb))));
   }
+  // Erst vergleichen, wenn die für die Rechnung nötigen Angaben da sind. Sonst nennt SoLo konkret, was fehlt:
+  // Nach dem Einlesen stehen oft nur die Beträge des Bescheids da, und ohne Kinder oder Miete gäbe es einen Fehlalarm.
+  const da = (v) => v != null && v !== '';
+  function fehltNoch(box, liste) {
+    if (!liste.length) return false;
+    box.append(h('h2', { text: 'Ergebnis' }),
+      h('p', { class: 'pp-fehlt-liste' }, h('strong', { text: 'Es fehlen noch: ' }), liste.join(', ') + '.'),
+      h('p', { class: 'small muted', text: 'Erst wenn diese Angaben eingetragen sind, vergleicht SoLo den Bescheid. Vorher wäre das Ergebnis oft falsch.' }));
+    return true;
+  }
+  // Ohne DOM: e wie aus leseBescheid (leere Zeilen schon weggelassen). Das Alter zählt nur bei Kindern (Regelbedarfsstufe);
+  // bei Erwachsenen hängt der Regelbedarf nur davon ab, ob sie allein oder zu zweit sind.
+  function fehltSGB2(e) {
+    const b = e.bescheid, f = [];
+    const kinder = e.personen.filter((p) => p.rolle !== 'erw');
+    if (!e.personen.length) f.push('Personen der Bedarfsgemeinschaft');
+    // Leere Zeile: zählt nicht mit, kann aber ein Partner ohne Einkommen sein – darum erst ausfüllen (Alter) oder mit × entfernen
+    if (e.leereZeilen) f.push('Angaben in der leeren Personenzeile (z. B. das Alter eintragen oder die Zeile mit × entfernen)');
+    if (kinder.some((p) => p.alter === '')) f.push('Alter jedes Kindes');
+    if (!kinder.length && (b.kindergeld > 0 || b.mehrAE > 0)) f.push('Kinder (im Bescheid stehen Kindergeld oder Mehrbedarf für Alleinerziehende)');
+    if (da(b.kdu) || da(b.zahlbetrag)) {
+      if (!da(e.miete.tatsaechlich)) f.push('Miete');
+      if (!da(e.miete.heizung)) f.push('Heizkosten (0, wenn keine)');
+    }
+    if (b.einkommen > 0 && !e.personen.some((p) => p.brutto || p.netto || p.sonstiges)) f.push('Einkommen der Personen (im Bescheid wird Einkommen angerechnet)');
+    if (!Object.values(b).some(da)) f.push('Beträge aus dem Bescheid');
+    return f;
+  }
   function zeigeBescheid() {
     const box = $('bs-erg'); box.replaceChildren();
+    if (erkSperre('bs', box)) return;
     const e = leseBescheid();
     if (!e.personen.length) { box.append(h('p', { text: 'Bitte zuerst die Personen eintragen.' })); return; }
+    if (fehltNoch(box, fehltSGB2(e))) return;
     const r = BescheidSGB2.pruefe(e, Rules);
     box.append(h('h2', { text: 'Ergebnis' }));
     r.hinweise.forEach((t) => box.append(h('p', { class: 'note', text: t })));
@@ -361,24 +551,46 @@ Ergebnis: Pflegegrad 2`;
     if (r.zahlbetrag) box.append(h('p', { class: 'small', text: `Zahlbetrag nach SoLo ${eur(r.zahlbetrag.erwartet)}, im Bescheid ${eur(r.zahlbetrag.bescheid)}.` }));
     box.append(h('p', { class: 'small muted', text: r.grenzen }));
   }
+  // Widerspruch mit Zahlen-Begründung nur, wenn der Vergleich vollständig ist. Fehlen Angaben, entsteht ein fristwahrender Widerspruch
+  // ohne Zahlen („Begründung folgt“), und SoLo sagt, was fehlt. Gleich für alle Bescheid-Prüfungen.
+  function widPunkte(r, fehlt) { return fehlt.length ? [] : Widerspruch.punkteSGB2(r); }
+  function widHinweis(p, r, fehlt, datum, extra) {
+    const el = $(p + '-frist');
+    el.classList.toggle('frist', !!datum); // Frist-Muster nur mit Datum
+    const vor = fehlt.length ? tA('bp.wid.fehlt', 'Es fehlen noch: {liste}. Darum steht im Widerspruch noch keine Begründung mit Zahlen. Er wahrt trotzdem die Frist. Die Begründung reichst du nach.', { liste: fehlt.join(', ') }) + ' '
+      : r.gruende.length ? '' : tA('bp.wid.keinGrund', 'SoLo hat keinen Grund gefunden. Der Widerspruch hat darum noch keine Begründung.') + ' ';
+    el.textContent = vor + (datum ? fristText(datum) + (extra || '') : tA('bp.datum.t', 'Trag das Datum ein. Dann zeigt SoLo sofort, bis wann du Widerspruch einlegen kannst.'));
+  }
   function macheBescheidWiderspruch() {
-    const r = BescheidSGB2.pruefe(leseBescheid(), Rules);
-    const t = Widerspruch.text({ art: 'sgb2', absender: { name: $('bs-name').value.trim(), strasse: $('bs-anschrift').value.trim(), ort: $('bs-ort').value.trim() }, stelle: { name: $('bs-jc').value.trim() }, bescheidDatum: $('bs-datum').value, zeichen: $('bs-bg').value.trim(), heute: heute(), punkte: Widerspruch.punkteSGB2(r), akteneinsicht: r.gruende.some((g) => g.key === 'kdu') });
+    if (erkOffen.bs) { $('bs-frist').textContent = erkWarte(); return; }
+    const e = leseBescheid(), fehlt = fehltSGB2(e);
+    const r = BescheidSGB2.pruefe(e, Rules), punkte = widPunkte(r, fehlt);
+    const t = Widerspruch.text({ art: 'sgb2', absender: { name: $('bs-name').value.trim(), strasse: $('bs-anschrift').value.trim(), ort: $('bs-ort').value.trim() }, stelle: { name: $('bs-jc').value.trim() }, bescheidDatum: $('bs-datum').value, zeichen: $('bs-bg').value.trim(), heute: heute(), punkte, akteneinsicht: !fehlt.length && r.gruende.some((g) => g.key === 'kdu') });
     $('bs-wid-text').value = t; $('bs-wid-text').hidden = false; $('bs-wid-copy').hidden = false;
-    $('bs-frist').textContent = (r.gruende.length ? '' : 'Es wurde kein Grund gefunden; der Widerspruch hat noch keine Begründung. ') + ($('bs-datum').value ? fristText($('bs-datum').value) : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.');
+    widHinweis('bs', r, fehlt, $('bs-datum').value);
+    merkKnopf('bs', widEintrag('jc', $('bs-datum').value));
   }
 
   // ---------------- Bescheid Grundsicherung im Alter ----------------
   function leseGSA() {
     const zwei = $('ga-zahl').value === '2';
-    const person = (i) => ({ renteNetto: +$('ga-rente' + i).value || 0, zusatzRente: +$('ga-zus' + i).value || 0, lohnNetto: +$('ga-lohn' + i).value || 0, sonstiges: +$('ga-sonst' + i).value || 0, versicherungen: +$('ga-vers' + i).value || 0, grundrente33: $('ga-gr' + i).checked, mzG: $('ga-g' + i).checked });
+    const person = (i) => ({ renteNetto: +$('ga-rente' + i).value || 0, renteBrutto: +$('ga-brutto' + i).value || 0, zusatzRente: +$('ga-zus' + i).value || 0, lohnNetto: +$('ga-lohn' + i).value || 0, sonstiges: +$('ga-sonst' + i).value || 0, versicherungen: +$('ga-vers' + i).value || 0, grundrente33: $('ga-gr' + i).checked, mzG: $('ga-g' + i).checked });
     return { personen: zwei ? [person(1), person(2)] : [person(1)], warmwasserDezentral: $('ga-ww').checked, miete: { tatsaechlich: wert('ga-miete'), heizung: wert('ga-heiz') },
       bescheid: { regel: wert('ga-b-regel'), mehrG: wert('ga-b-g'), mehrWW: wert('ga-b-ww'), kdu: wert('ga-b-kdu'), einkommen: wert('ga-b-eink'), zahlbetrag: wert('ga-b-zahl') } };
+  }
+  function fehltGSA(e) {
+    const b = e.bescheid, f = [];
+    if (da(b.kdu) || da(b.zahlbetrag)) { if (!da(e.miete.tatsaechlich)) f.push('Miete'); if (!da(e.miete.heizung)) f.push('Heizkosten (0, wenn keine)'); }
+    if (b.einkommen > 0 && !e.personen.some((p) => p.renteNetto || p.zusatzRente || p.lohnNetto || p.sonstiges)) f.push('Rente oder anderes Einkommen (im Bescheid wird Einkommen angerechnet)');
+    return f;
   }
   function zeigeGSA() {
     $('ga-p2').hidden = $('ga-zahl').value !== '2';
     const box = $('ga-erg'); box.replaceChildren();
-    const r = BescheidGSA.pruefe(leseGSA(), Rules);
+    if (erkSperre('ga', box)) return;
+    const e = leseGSA();
+    if (fehltNoch(box, fehltGSA(e))) return;
+    const r = BescheidGSA.pruefe(e, Rules);
     box.append(h('h2', { text: 'Ergebnis' }),
       h('p', {}, h('span', { class: 'big', text: r.posten.length ? (r.zuWenigImMonat > 0 ? `Vermutlich ${eur(r.zuWenigImMonat)} im Monat zu wenig` : r.gruende.length ? 'Bitte prüfen' : 'Keine Abweichung zu deinen Lasten gefunden') : `Nach SoLo: ${eur(r.erwartet.zahlbetrag)} Grundsicherung im Monat` })),
       h('p', { class: 'small', text: `Nach SoLo: Bedarf ${eur(r.erwartet.bedarf)}, anzurechnendes Einkommen ${eur(r.erwartet.einkommen)}, Zahlbetrag ${eur(r.erwartet.zahlbetrag)}.` }));
@@ -387,15 +599,17 @@ Ergebnis: Pflegegrad 2`;
     box.append(h('p', { class: 'small muted', text: r.grenzen }));
   }
   function macheGSAWiderspruch() {
-    const r = BescheidGSA.pruefe(leseGSA(), Rules);
-    const t = Widerspruch.text({ art: 'gsa', absender: { name: $('ga-name').value.trim(), strasse: $('ga-anschrift').value.trim(), ort: $('ga-ort').value.trim() }, stelle: { name: $('ga-stelle').value.trim() }, bescheidDatum: $('ga-datum').value, zeichen: $('ga-az').value.trim(), heute: heute(), punkte: Widerspruch.punkteSGB2(r), akteneinsicht: r.gruende.some((g) => g.key === 'kdu') });
+    if (erkOffen.ga) { $('ga-frist').textContent = erkWarte(); return; }
+    const e = leseGSA(), fehlt = fehltGSA(e), r = BescheidGSA.pruefe(e, Rules);
+    const t = Widerspruch.text({ art: 'gsa', absender: { name: $('ga-name').value.trim(), strasse: $('ga-anschrift').value.trim(), ort: $('ga-ort').value.trim() }, stelle: { name: $('ga-stelle').value.trim() }, bescheidDatum: $('ga-datum').value, zeichen: $('ga-az').value.trim(), heute: heute(), punkte: widPunkte(r, fehlt), akteneinsicht: !fehlt.length && r.gruende.some((g) => g.key === 'kdu') });
     $('ga-wid-text').value = t; $('ga-wid-text').hidden = false; $('ga-wid-copy').hidden = false;
-    $('ga-frist').textContent = (r.gruende.length ? '' : 'Es wurde kein Grund gefunden; der Widerspruch hat noch keine Begründung. ') + ($('ga-datum').value ? fristText($('ga-datum').value) : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.');
+    widHinweis('ga', r, fehlt, $('ga-datum').value);
+    merkKnopf('ga', widEintrag('sa', $('ga-datum').value));
   }
 
   // ---------------- Bescheid Wohngeld ----------------
   let wz = 0;
-  const ARTEN = [['lohn', 'Lohn'], ['rente', 'Rente'], ['alg', 'Arbeitslosengeld I'], ['eg', 'Elterngeld'], ['ohne', 'nur Unterhalt / kein Einkommen']];
+  const ARTEN = [['lohn', 'Lohn'], ['rente', 'Rente'], ['rente33', 'Rente mit 33 Jahren Grundrentenzeiten'], ['alg', 'Arbeitslosengeld I'], ['eg', 'Elterngeld'], ['ohne', 'nur Unterhalt / kein Einkommen']];
   function wgZeile(w) {
     wz++; const n = wz; w = w || {};
     const art = h('select', { id: `wm-art-${n}`, 'aria-label': `Einkommen ${n}: Art` }, ARTEN.map(([v, t]) => h('option', { value: v, text: t, selected: v === (w.art || 'lohn') })));
@@ -412,20 +626,32 @@ Ergebnis: Pflegegrad 2`;
     return { personen: +$('wg-n').value || 1, stufe: +$('wg-stufe').value, bruttokalt: +$('wg-kalt').value || 0, schwerbehindert: +$('wg-sb').value || 0, alleinerziehend: $('wg-ae').checked, mitglieder,
       bescheid: { miete: wert('wg-b-miete'), einkommen: wert('wg-b-eink'), wohngeld: wert('wg-b-wg') } };
   }
+  function fehltWG(e) {
+    const b = e.bescheid, f = [];
+    if ((da(b.miete) || da(b.wohngeld)) && $('wg-kalt').value === '') f.push('Miete ohne Heizung');
+    if (b.einkommen > 0 && !e.mitglieder.some((m) => m.brutto || m.unterhalt)) f.push('Einkommen im Haushalt (im Bescheid steht ein Gesamteinkommen)');
+    return f;
+  }
   function zeigeWG() {
     const box = $('wg-erg'); box.replaceChildren();
-    const r = BescheidWG.pruefe(leseWG(), Rules);
+    if (erkSperre('wg', box)) return;
+    const e = leseWG();
+    if (fehltNoch(box, fehltWG(e))) return;
+    const r = BescheidWG.pruefe(e, Rules);
     box.append(h('h2', { text: 'Ergebnis' }),
       h('p', {}, h('span', { class: 'big', text: r.posten.length ? (r.zuWenigImMonat > 0 ? `Vermutlich ${eur(r.zuWenigImMonat)} Wohngeld im Monat zu wenig` : r.gruende.length ? 'Abweichung gefunden, bitte prüfen' : 'Keine Abweichung zu deinen Lasten gefunden') : `Nach SoLo: ${eur(r.rechnung.wohngeld)} Wohngeld im Monat` })),
       h('p', { class: 'small', text: `Nach SoLo: Miete ${eur(r.rechnung.miete)} (Höchstbetrag ${eur(r.rechnung.hoechstbetrag)} plus Heizkostenkomponente ${eur(r.rechnung.heizkomponente)}), Einkommen ${eur(r.rechnung.einkommen)}, Wohngeld ${eur(r.rechnung.wohngeld)}.` }));
     if (r.posten.length) abweichungsKarten(box, r, 'Vergleich Wohngeld');
     box.append(h('p', { class: 'small muted', text: r.grenzen }));
   }
+  const WG_KLAGE = 'Wohngeld: In manchen Bundesländern gibt es keinen Widerspruch. Dann ist nur die Klage beim Verwaltungsgericht möglich, mit derselben Frist. Was für dich gilt, steht in der Rechtsbehelfsbelehrung am Ende des Bescheids.';
   function macheWGWiderspruch() {
-    const r = BescheidWG.pruefe(leseWG(), Rules);
-    const t = Widerspruch.text({ art: 'wohngeld', absender: { name: $('wg-name').value.trim(), strasse: $('wg-anschrift').value.trim(), ort: $('wg-ort').value.trim() }, stelle: { name: $('wg-stelle').value.trim() }, bescheidDatum: $('wg-datum').value, zeichen: $('wg-az').value.trim(), heute: heute(), punkte: Widerspruch.punkteSGB2(r) });
+    if (erkOffen.wg) { $('wg-frist').textContent = erkWarte(); return; }
+    const e = leseWG(), fehlt = fehltWG(e), r = BescheidWG.pruefe(e, Rules);
+    const t = Widerspruch.text({ art: 'wohngeld', absender: { name: $('wg-name').value.trim(), strasse: $('wg-anschrift').value.trim(), ort: $('wg-ort').value.trim() }, stelle: { name: $('wg-stelle').value.trim() }, bescheidDatum: $('wg-datum').value, zeichen: $('wg-az').value.trim(), heute: heute(), punkte: widPunkte(r, fehlt) });
     $('wg-wid-text').value = t; $('wg-wid-text').hidden = false; $('wg-wid-copy').hidden = false;
-    $('wg-frist').textContent = (r.gruende.length ? '' : 'Es wurde kein Grund gefunden; der Widerspruch hat noch keine Begründung. ') + ($('wg-datum').value ? fristText($('wg-datum').value) : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.');
+    widHinweis('wg', r, fehlt, $('wg-datum').value, ' ' + tA('fri.wid.wg', WG_KLAGE));
+    merkKnopf('wg', widEintrag('wg', $('wg-datum').value));
   }
 
   // ---------------- Bescheid Kinderzuschlag ----------------
@@ -446,11 +672,21 @@ Ergebnis: Pflegegrad 2`;
     const kinder = [...$('kz-kinder').children].map((tr) => { const i = tr.querySelectorAll('input'); return { alter: i[0].value === '' ? 5 : +i[0].value, unterhalt: +i[1].value || 0, eigenes: +i[2].value || 0 }; });
     return { eltern, kinder, wohnkosten: +$('kz-wohn').value || 0, bescheid: { bedarf: wert('kz-b-bedarf'), einkommen: wert('kz-b-eink'), kiz: wert('kz-b-kiz') } };
   }
+  function fehltKiZ(e) {
+    const b = e.bescheid, f = [];
+    if (!e.kinder.length) f.push('Kinder');
+    if ([...$('kz-kinder').children].some((tr) => tr.querySelector('input').value === '')) f.push('Alter jedes Kindes');
+    if ((da(b.bedarf) || da(b.kiz)) && $('kz-wohn').value === '') f.push('Miete mit Heizung');
+    if (b.einkommen > 0 && !e.eltern.some((x) => x.brutto || x.netto)) f.push('Lohn der Eltern (im Bescheid wird Einkommen angerechnet)');
+    return f;
+  }
   function zeigeKiZ() {
     for (const el of document.querySelectorAll('.kz-zwei')) el.hidden = $('kz-zahl').value !== '2';
     const box = $('kz-erg'); box.replaceChildren();
+    if (erkSperre('kz', box)) return;
     const e = leseKiZ();
     if (!e.kinder.length) { box.append(h('p', { text: 'Bitte zuerst die Kinder eintragen.' })); return; }
+    if (fehltNoch(box, fehltKiZ(e))) return;
     const r = BescheidKiZ.pruefe(e, Rules), q = r.rechnung;
     box.append(h('h2', { text: 'Ergebnis' }),
       h('p', {}, h('span', { class: 'big', text: r.posten.length ? (r.zuWenigImMonat > 0 ? `Vermutlich ${eur(r.zuWenigImMonat)} Kinderzuschlag im Monat zu wenig` : r.gruende.length ? 'Abweichung gefunden, bitte prüfen' : 'Keine Abweichung zu deinen Lasten gefunden') : `Nach SoLo: ${eur(q.kiz)} Kinderzuschlag im Monat` })),
@@ -460,10 +696,12 @@ Ergebnis: Pflegegrad 2`;
     box.append(h('p', { class: 'small muted', text: r.grenzen }));
   }
   function macheKiZWiderspruch() {
-    const r = BescheidKiZ.pruefe(leseKiZ(), Rules);
-    const t = Widerspruch.text({ art: 'kiz', absender: { name: $('kz-name').value.trim(), strasse: $('kz-anschrift').value.trim(), ort: $('kz-ort').value.trim() }, stelle: { name: 'Familienkasse der Bundesagentur für Arbeit' }, bescheidDatum: $('kz-datum').value, zeichen: $('kz-kgnr').value.trim(), heute: heute(), punkte: Widerspruch.punkteSGB2(r) });
+    if (erkOffen.kz) { $('kz-frist').textContent = erkWarte(); return; }
+    const e = leseKiZ(), fehlt = fehltKiZ(e), r = BescheidKiZ.pruefe(e, Rules);
+    const t = Widerspruch.text({ art: 'kiz', absender: { name: $('kz-name').value.trim(), strasse: $('kz-anschrift').value.trim(), ort: $('kz-ort').value.trim() }, stelle: { name: 'Familienkasse der Bundesagentur für Arbeit' }, bescheidDatum: $('kz-datum').value, zeichen: $('kz-kgnr').value.trim(), heute: heute(), punkte: widPunkte(r, fehlt) });
     $('kz-wid-text').value = t; $('kz-wid-text').hidden = false; $('kz-wid-copy').hidden = false;
-    $('kz-frist').textContent = (r.gruende.length ? '' : 'Es wurde kein Grund gefunden; der Widerspruch hat noch keine Begründung. ') + ($('kz-datum').value ? fristText($('kz-datum').value) : 'Tipp: Datum des Bescheids eintragen, dann zeigt SoLo die Frist.');
+    widHinweis('kz', r, fehlt, $('kz-datum').value);
+    merkKnopf('kz', widEintrag('fk', $('kz-datum').value));
   }
 
   // ---------------- Nebenkosten ----------------
@@ -486,6 +724,7 @@ Ergebnis: Pflegegrad 2`;
   const NKW = { ok: ['passt', 'umlagefähig'], nicht: ['zuWenig', 'nicht umlagefähig'], pruefen: ['pruefen', 'bitte prüfen'], unbekannt: ['pruefen', 'unbekannt'] };
   function zeigeNK() {
     const box = $('nk-erg'); box.replaceChildren();
+    if (erkSperre('nk', box)) return;
     const a = leseNK(), r = Nebenkosten.pruefe(a);
     const leist = $('nk-leist').value;
     box.append(h('h2', { text: 'Ergebnis' }));
@@ -533,12 +772,18 @@ Ergebnis: Pflegegrad 2`;
     const t = $('pf-text').value;
     if (!t.trim()) { $('pf-msg').textContent = 'Bitte zuerst Text einfügen.'; return; }
     const im = PflegeImport.lies(t, P);
+    erkFertig('pf', false);
     setzePflege(im);
+    // Erkannte Bewertungen markieren (Inkontinenz: die Beschriftung des Häkchens)
+    for (const id of im.gefunden) { const el = $('pf-' + id); if (el) el.classList.add('pp-erkannt'); }
+    if (im.pgBescheid != null) $('pf-pgb').classList.add('pp-erkannt');
+    for (const id of ['harn', 'stuhl']) if (im.inkontinenz && im.inkontinenz[id]) $('pf-' + id).closest('label').classList.add('pp-erkannt');
+    erkMarke('pf', null);
     $('pf-msg').textContent = `${im.gefunden.length} von ${P.KRITERIEN.length} Bewertungen erkannt${im.pgBescheid ? `, Pflegegrad ${im.pgBescheid} im Text gefunden` : ''}. Bitte jede Zahl mit dem Gutachten vergleichen und korrigieren.`;
     zeigePflege();
   });
-  $('pf-beispiel').addEventListener('click', () => { $('pf-alter').value = 82; $('pf-text').value = BEISPIEL_GUTACHTEN; $('pf-lesen').click(); });
-  $('pf-leeren').addEventListener('click', () => { $('pf-form').reset(); $('pf-form2').reset(); $('pf-text').value = ''; $('pf-msg').textContent = ''; for (const el of document.querySelectorAll('#pf-module input')) { if (el.type === 'checkbox') el.checked = false; else el.value = ''; } zeigePflege(); });
+  $('pf-beispiel').addEventListener('click', () => { $('pf-alter').value = 82; $('pf-text').value = BEISPIEL_GUTACHTEN; $('pf-lesen').click(); erkFertig('pf'); }); // Beispiel: kein Brief, nichts zu prüfen
+  $('pf-leeren').addEventListener('click', () => { erkFertig('pf', false); $('pf-form').reset(); $('pf-form2').reset(); $('pf-text').value = ''; $('pf-msg').textContent = ''; for (const el of document.querySelectorAll('#pf-module input')) { if (el.type === 'checkbox') el.checked = false; else el.value = ''; } zeigePflege(); });
   $('pf-wid-plus').addEventListener('click', () => fuegeWiderspruchHinzu(null, null, false));
   $('pf-wid-mach').addEventListener('click', machePflegeWiderspruch);
   for (const id of ['pf-art-w', 'pf-art-h']) $(id).addEventListener('change', zeigePfArt);
@@ -546,19 +791,19 @@ Ergebnis: Pflegegrad 2`;
   zeigePflege();
   // Wo steht das im Brief? Kurzer Hinweis unter jedem Feld mit Amtsbegriff, damit man den Wert auch ohne Vorwissen findet
   const FELD_HILFE = {
-    'bs-b-regel': 'Im Berechnungsbogen bei „Regelbedarf“, je Person eine Zeile. Hier die Summe aller Personen.',
+    'bs-b-regel': 'Im Berechnungsbogen (die Seiten mit der Rechnung, meist hinten am Bescheid) bei „Regelbedarf“ (fester Betrag für den Alltag), je Person eine Zeile. Hier die Summe aller Personen.',
     'bs-b-ae': 'Im Berechnungsbogen bei „Mehrbedarf“ für Alleinerziehende. Steht dort nichts, leer lassen.',
     'bs-b-schw': 'Im Berechnungsbogen bei „Mehrbedarf“ für Schwangerschaft. Steht dort nichts, leer lassen.',
     'bs-b-ww': 'Im Berechnungsbogen bei „Mehrbedarf“ für Warmwasser (wenn das Wasser mit Strom erwärmt wird). Steht dort nichts, leer lassen.',
-    'bs-b-kdu': 'Im Berechnungsbogen bei „Kosten der Unterkunft und Heizung“ (KdU): der Betrag, den das Jobcenter übernimmt.',
+    'bs-b-kdu': 'Im Berechnungsbogen bei „Kosten der Unterkunft und Heizung“ (KdU, also Miete, Nebenkosten und Heizung): der Betrag, den das Jobcenter übernimmt.',
     'bs-b-eink': 'Im Berechnungsbogen bei „zu berücksichtigendes Einkommen“, also nach Abzug der Freibeträge, ohne Kindergeld.',
     'bs-b-kg': 'Im Berechnungsbogen: Kindergeld, das als Einkommen der Kinder abgezogen wird.',
     'bs-b-zahl': 'Auf der ersten Seite: der Betrag, der jeden Monat überwiesen wird.',
     'bs-bg': 'Oben im Brief, zum Beispiel 123A4567890 (auch „BG-Nummer“).',
-    'ga-b-regel': 'Im Berechnungsbogen bei „Regelbedarf“ bzw. „Regelsatz“, für alle Personen zusammen.',
+    'ga-b-regel': 'Im Berechnungsbogen (die Seiten mit der Rechnung, meist hinten am Bescheid) bei „Regelbedarf“ bzw. „Regelsatz“ (fester Betrag für den Alltag), für alle Personen zusammen.',
     'ga-b-g': 'Im Berechnungsbogen bei „Mehrbedarf“ wegen Merkzeichen G. Steht dort nichts, leer lassen.',
     'ga-b-ww': 'Im Berechnungsbogen bei „Mehrbedarf“ für Warmwasser. Steht dort nichts, leer lassen.',
-    'ga-b-kdu': 'Im Berechnungsbogen bei „Kosten der Unterkunft und Heizung“: der Betrag, den das Amt übernimmt.',
+    'ga-b-kdu': 'Im Berechnungsbogen bei „Kosten der Unterkunft und Heizung“ (KdU, also Miete, Nebenkosten und Heizung): der Betrag, den das Amt übernimmt.',
     'ga-b-eink': 'Im Berechnungsbogen bei „anzurechnendes Einkommen“, zum Beispiel die Rente nach Abzügen.',
     'ga-b-zahl': 'Auf der ersten Seite: der Betrag, der jeden Monat überwiesen wird.',
     'ga-az': 'Oben im Brief neben „Aktenzeichen“ oder „Geschäftszeichen“.',
@@ -571,14 +816,17 @@ Ergebnis: Pflegegrad 2`;
     'kz-b-kiz': 'Auf der ersten Seite: der Kinderzuschlag im Monat für alle Kinder zusammen.',
     'kz-kgnr': 'Oben im Brief, zum Beispiel 123FK456789. Steht auch auf jedem Brief zum Kindergeld.'
   };
+  // Zugeklappt hinter „Wo steht das?“ (gemeinsames Bauteil details.mehr): sichtbar wird nur die Hilfe des angetippten Feldes
   for (const [id, text] of Object.entries(FELD_HILFE)) {
     const el = $(id); if (!el || el.dataset.hilfe) continue;
-    el.dataset.hilfe = '1'; const p = document.createElement('p'); p.className = 'small muted feld-hilfe'; p.id = id + '-hilfe'; p.textContent = text;
-    el.setAttribute('aria-describedby', p.id); el.insertAdjacentElement('afterend', p);
+    el.dataset.hilfe = '1';
+    const d = h('details', { class: 'mehr feld-hilfe', id: id + '-hilfe' }, h('summary', { text: 'Wo steht das?' }), h('p', { text }));
+    el.insertAdjacentElement('afterend', d);
   }
   // Für die App: Gutachten-Prüfung mit den Antworten der eigenen Einschätzung füllen (Leistungsseite → „Brief prüfen“)
   window.PruefpaketPflege = {
     setze(g, art) {
+      erkFertig('pf', false); // Antworten der eigenen Einschätzung, nicht aus dem Brief
       setzePflege(g);
       if (g.alterJahre != null) $('pf-alter').value = g.alterJahre;
       if (g.alterMonate != null) $('pf-monate').value = g.alterMonate;
@@ -587,12 +835,24 @@ Ergebnis: Pflegegrad 2`;
     },
     eigene(g) { eigen = g || null; zeigePflege(); }
   };
+  // Datum des Bescheids nicht sicher erkannt: Feld leer lassen und als „bitte eintragen“ markieren (nie ein anderes Datum raten)
+  function datumFehlt(id) {
+    const el = $(id); el.classList.add('pp-fehlt');
+    let p = $(id + '-fehlt');
+    if (!p) {
+      p = h('p', { class: 'small pp-fehlt-hinweis', id: id + '-fehlt', text: 'Bitte eintragen: Das Datum des Bescheids wurde nicht sicher erkannt. Es steht meist oben rechts im Brief oder hinter „Bescheid vom“.' });
+      el.insertAdjacentElement('afterend', p); el.setAttribute('aria-describedby', p.id);
+      el.addEventListener('input', () => { if (el.value) { el.classList.remove('pp-fehlt'); p.hidden = true; } });
+    }
+    p.hidden = false;
+  }
   // Für die App: erkannte Werte eines eingelesenen Briefs eintragen (erweiterungen/brief-lesen.js) und gelb markieren.
   // hh = Haushalt aus „Leistungen“: { erwachsene: [{ alter, brutto, netto }], kinder: [alter], miete, heiz, stufe, alleinerziehend }
   // Personen werden nur eingetragen, wenn dort noch nichts steht. Ergebnis: Zahl der übernommenen Werte aus dem Brief.
   window.PruefpaketLesen = {
-    fuelle(art, r, hh) {
-      for (const el of document.querySelectorAll('.pp-erkannt')) el.classList.remove('pp-erkannt');
+    // quelle (optional): { foto: true bei Texterkennung aus einem Foto, unsicher: [Wörter, die die Erkennung als unsicher meldet] }
+    fuelle(art, r, hh, quelle) {
+      for (const q of Object.keys(ERK)) erkFertig(q, q !== { jc: 'bs', sa: 'ga', wg: 'wg', fk: 'kz', vm: 'nk' }[art]);
       let n = 0;
       const setze = (id, v) => { const el = $(id); if (!el || v == null || v === '') return; el.value = v; el.classList.add('pp-erkannt'); n++; };
       const leer = (id) => !$(id) || $(id).value === '';
@@ -601,11 +861,12 @@ Ergebnis: Pflegegrad 2`;
       const erw = hh.erwachsene || [], kin = hh.kinder || [];
       // Nur leere Zeilen (z. B. die erste, leere Person) dürfen durch den Haushalt ersetzt werden
       const nurLeer = (tbody) => [...$(tbody).querySelectorAll('input[type="number"]')].every((el) => el.value === '');
+      const kAlter = (k) => (k && typeof k === 'object' ? k.alter : k); // Kinder: { alter, gruppe } (Alter nur, wenn wirklich bekannt)
       if (art === 'jc' && erw.length && nurLeer('bs-personen')) {
         $('bs-personen').replaceChildren();
-        erw.forEach((p) => personZeile('erw', { alter: p.alter, brutto: p.brutto, netto: p.netto }));
-        kin.forEach((a) => personZeile('kind', { alter: a }));
-        fuellen('bs-miete', hh.miete); fuellen('bs-heiz', hh.heiz);
+        erw.forEach((p) => personZeile('erw', { alter: p.alter, brutto: p.brutto, netto: p.netto, hh: true }));
+        kin.forEach((k) => personZeile('kind', { alter: kAlter(k), gruppe: k && k.gruppe, hh: true }));
+        fuellen('bs-miete', hh.miete); fuellen('bs-heiz', hh.heiz); // miete: ohne Heizung (nur, wenn im Check Heizkosten stehen)
       }
       if (art === 'sa') {
         if (erw.length === 2) $('ga-zahl').value = '2';
@@ -623,8 +884,8 @@ Ergebnis: Pflegegrad 2`;
         if (erw[0]) { fuellen('kz-b1', erw[0].brutto); fuellen('kz-n1', erw[0].netto); }
         if (erw[1]) { fuellen('kz-b2', erw[1].brutto); fuellen('kz-n2', erw[1].netto); }
         if (kin.length && nurLeer('kz-kinder')) $('kz-kinder').replaceChildren();
-        if (!$('kz-kinder').children.length) kin.forEach((a) => kzKind({ alter: a }));
-        fuellen('kz-wohn', hh.miete != null ? Math.round(((+hh.miete || 0) + (+hh.heiz || 0)) * 100) / 100 : '');
+        if (!$('kz-kinder').children.length) kin.forEach((k) => kzKind({ alter: kAlter(k) }));
+        fuellen('kz-wohn', hh.warm); // Wohnkosten mit Heizung = Warmmiete aus dem Check
       }
       for (const [id, v] of Object.entries((r && r.felder) || {})) setze(id, v);
       if (art === 'vm' && r && r.posten && r.posten.length) {
@@ -635,6 +896,10 @@ Ergebnis: Pflegegrad 2`;
       }
       const datumId = { jc: 'bs-datum', sa: 'ga-datum', wg: 'wg-datum', fk: 'kz-datum' }[art];
       if (datumId && r && r.datum) setze(datumId, r.datum);
+      else if (datumId && r && leer(datumId)) datumFehlt(datumId);
+      const teil = { jc: 'bs', sa: 'ga', wg: 'wg', fk: 'kz', vm: 'nk' }[art];
+      if (teil) erkMarke(teil, quelle && quelle.foto && r ? unsichereFelder(art, r, quelle) : null);
+      const fp = { jc: 'bs', sa: 'ga', wg: 'wg', fk: 'kz' }[art]; if (fp && fristNeu[fp]) fristNeu[fp]();
       ({ jc: zeigeBescheid, sa: zeigeGSA, wg: zeigeWG, fk: zeigeKiZ, vm: zeigeNK }[art] || (() => {}))();
       return n;
     }
@@ -655,6 +920,81 @@ Ergebnis: Pflegegrad 2`;
   $('bs-wid-mach').addEventListener('click', macheBescheidWiderspruch);
   $('bs-wid-copy').addEventListener('click', () => kopiere($('bs-wid-text'), $('bs-copy-msg')));
   personZeile('erw'); zeigeBescheid();
+
+  // ---------------- Frist ganz oben (alle Bescheid-Prüfungen) ----------------
+  // Datum des Bescheids unter der Überschrift, sofort „Widerspruch bis …“ (.frist). Rechnung: erweiterungen/fristen.js (§ 37 Abs. 2 SGB X,
+  // § 84 Abs. 1, § 64 SGG; gesetze-im-internet.de, abgerufen 20.11.2026). Jobcenter: zuerst die Art des Briefs.
+  const FRIST_OBEN = [['bs', 'p-bescheid', 'jc', 'bs-datum'], ['ga', 'p-gsa', 'sa', 'ga-datum'], ['wg', 'p-wg', 'wg', 'wg-datum'], ['kz', 'p-kiz', 'fk', 'kz-datum']];
+  const ARTWAHL = [['bescheid', 'Bescheid (Entscheidung über Geld)'], ['termin', 'Einladung zu einem Termin'], ['anh', 'Anhörung (das Amt fragt, bevor es entscheidet)'], ['mit', 'Aufforderung, Unterlagen nachzureichen']];
+  const ART_KOPF = { bescheid: ['bp.jc.h', 'Bescheid Grundsicherungsgeld prüfen'], termin: ['bp.art.termin.h', 'Einladung zu einem Termin'], anh: ['bp.art.anh.h', 'Anhörung vor einer Entscheidung'], mit: ['bp.art.mit.h', 'Unterlagen nachreichen'] };
+  const ART_ERKL = { termin: ['fri.art.termin.t', 'Kannst du nicht kommen, sag vorher ab und nenne den Grund.'], anh: ['fri.art.anh.t', 'Du darfst dich bis zu diesem Tag äußern.'], mit: ['fri.art.mit.t', 'Reiche die Unterlagen bis zu diesem Tag ein.'] };
+  function fristOben(p, sec, stelle, datumId) {
+    const karte = $(sec) && $(sec).querySelector('.card'), feld = $(datumId);
+    if (!karte || !feld || $(p + '-fristbox')) return;
+    const box = h('div', { class: 'pp-frist-box', id: p + '-fristbox' });
+    const satz = karte.querySelector('h2 + p');
+    if (satz) satz.insertAdjacentElement('afterend', box); else karte.append(box);
+    // Jobcenter: Art des Briefs
+    let art = 'bescheid';
+    const anders = h('div', { class: 'pp-art-anders', hidden: true });
+    const bescheidTeil = h('div', { class: 'pp-art-bescheid' });
+    if (p === 'bs') {
+      const fs = h('fieldset', { class: 'pp-artwahl' }, h('legend', { 'data-t': 'bp.art.frage', text: tA('bp.art.frage', 'Was für ein Brief ist es?') }));
+      for (const [v, de] of ARTWAHL) fs.append(h('label', { class: 'check' }, h('input', { type: 'radio', name: 'bs-briefart', value: v, checked: v === 'bescheid' }), h('span', { 'data-t': 'bp.art.' + v, text: tA('bp.art.' + v, de) })));
+      fs.addEventListener('change', (ev) => { if (ev.target.name === 'bs-briefart') { art = ev.target.value; zeigeArt(); } });
+      box.append(fs);
+    }
+    // Datum des Bescheids (das vorhandene Feld samt Beschriftung)
+    const lab = document.querySelector(`label[for="${datumId}"]`), wrap = feld.parentElement;
+    if (lab) { lab.setAttribute('data-t', 'bp.datum'); lab.textContent = tA('bp.datum', 'Datum des Bescheids (steht oben rechts im Brief)'); }
+    const aus = h('div', { class: 'pp-frist-aus', 'aria-live': 'polite' });
+    bescheidTeil.append(wrap, aus);
+    box.append(bescheidTeil, anders);
+    const zeigeFrist = () => {
+      aus.replaceChildren();
+      const d = feld.value;
+      if (!/^\d{4}-\d\d-\d\d$/.test(d)) { aus.append(h('p', { class: 'small muted', 'data-t': 'bp.datum.t', text: tA('bp.datum.t', 'Trag das Datum ein. Dann zeigt SoLo sofort, bis wann du Widerspruch einlegen kannst.') })); return; }
+      const f = Fristen.widerspruch({ datum: d });
+      aus.append(h('div', { class: 'frist', role: 'note' },
+        h('p', { class: 'frist-wann', text: tA('bp.wid.bis', 'Widerspruch bis {datum}', { datum: de(f.fristende) }) }),
+        h('p', { text: tA('bp.wid.bis.t', 'Bis zu diesem Tag muss der Widerspruch bei der Stelle sein, die den Bescheid geschickt hat. Gerechnet: Datum des Bescheids plus 4 Tage für die Post, dann ein Monat. Kam der Brief nachweislich später an, endet die Frist später.') }),
+        p === 'wg' ? h('p', { class: 'small', text: tA('fri.wid.wg', WG_KLAGE) }) : null));
+      if (window.FristenOrdner) aus.append(window.FristenOrdner.knopf(() => widEintrag(stelle, feld.value)));
+    };
+    // Einladung, Anhörung, Aufforderung zur Mitwirkung: erster Schritt und der Tag aus dem Brief (kein Nachrechnen des Bescheids)
+    const zeigeArt = () => {
+      const nb = art !== 'bescheid';
+      bescheidTeil.hidden = nb; anders.hidden = !nb;
+      $(sec).classList.toggle('pp-anders', nb);
+      const ein = document.getElementById('einlesen'); if (ein && karte.contains(ein)) ein.hidden = nb;
+      // Überschrift je Briefart; „Scanne den Bescheid …“, „Was prüft SoLo genau?“ und „Wörter im Bescheid“ nur beim Bescheid
+      const kopf = karte.querySelector('h2');
+      if (kopf) { const [hk, hd] = ART_KOPF[art]; kopf.setAttribute('data-t', hk); kopf.textContent = tA(hk, hd); }
+      const scanSatz = karte.querySelector('h2 + p'); if (scanSatz) scanSatz.hidden = nb;
+      karte.querySelectorAll(':scope > details').forEach((d) => { d.hidden = nb; });
+      anders.replaceChildren();
+      if (!nb) return;
+      const [k, deText] = ART_ERKL[art];
+      const tagFeld = h('input', { type: 'date', id: 'bs-art-tag' });
+      const fr = h('div', { 'aria-live': 'polite' });
+      const zeigeTag = () => {
+        fr.replaceChildren();
+        if (!/^\d{4}-\d\d-\d\d$/.test(tagFeld.value)) return;
+        fr.append(h('div', { class: 'frist', role: 'note' }, h('p', { class: 'frist-wann', text: tA(art === 'termin' ? 'bp.art.termin.am' : 'bp.art.bis', art === 'termin' ? 'Termin am {datum}' : 'Antworten bis {datum}', { datum: de(tagFeld.value) }) })));
+        if (window.FristenOrdner) fr.append(window.FristenOrdner.knopf(() => ({ art: art === 'termin' ? 'termin' : art, stelle: 'jc', bis: tagFeld.value, quelle: 'brief' })));
+      };
+      tagFeld.addEventListener('input', zeigeTag); tagFeld.addEventListener('change', zeigeTag);
+      anders.append(...[h('p', { text: tA(k, deText) }),
+        art === 'anh' ? h('p', { class: 'small', text: tA('bp.art.anh.t', 'Eine Anhörung ist noch keine Entscheidung. Erkläre kurz, wie es war, und lege Belege bei. Ein Widerspruch ist erst gegen den Bescheid danach möglich.') }) : null,
+        h('label', { for: 'bs-art-tag', text: tA(art === 'termin' ? 'bp.art.termin.tag' : 'bp.art.tag', art === 'termin' ? 'Wann ist der Termin? (steht im Brief)' : 'Bis wann? (Datum aus dem Brief)') }), tagFeld, fr].filter(Boolean)); // ohne filter stünde „null“ im Text
+    };
+    feld.addEventListener('input', zeigeFrist); feld.addEventListener('change', zeigeFrist);
+    zeigeFrist();
+    // Nach dem Einlesen (PruefpaketLesen.fuelle setzt das Datum ohne Ereignis) die Frist neu zeigen
+    fristNeu[p] = zeigeFrist;
+  }
+  const fristNeu = {};
+  FRIST_OBEN.forEach((x) => fristOben(...x));
 
   $('ga-form').addEventListener('input', zeigeGSA);
   $('ga-form').addEventListener('change', nurAuswahl(zeigeGSA));
@@ -707,17 +1047,94 @@ Ergebnis: Pflegegrad 2`;
     zeigeNK();
   });
   $('nk-ew-mach').addEventListener('click', () => {
+    if (erkOffen.nk) { $('nk-info').textContent = erkWarte(); return; }
     const a = leseNK(), r = Nebenkosten.pruefe(a);
     nkText(Nebenkosten.einwendungen({ absender: { name: $('nk-name').value.trim(), strasse: $('nk-anschrift').value.trim(), ort: $('nk-ort').value.trim() }, vermieter: { name: $('nk-verm').value.trim() }, von: a.von, bis: a.bis, heute: heute(), pruefenMit: $('nk-mitpruefen').checked }, r),
       r.fristen && r.fristen.einwendungBis ? `Einwände bitte bis spätestens ${de(r.fristen.einwendungBis)} schicken, am besten per Einwurf-Einschreiben.` : 'Einwände sind bis 12 Monate nach Erhalt der Abrechnung möglich.');
   });
   $('nk-au-mach').addEventListener('click', () => {
+    if (erkOffen.nk) { $('nk-info').textContent = erkWarte(); return; }
     const a = leseNK(), r = Nebenkosten.pruefe(a), leist = $('nk-leist').value === 'gsa' ? 'gsa' : 'sgb2';
     nkText(Nebenkosten.antragUebernahme({ absender: { name: $('nk-name').value.trim(), strasse: $('nk-anschrift').value.trim(), ort: $('nk-ort').value.trim() }, stelle: { name: $('nk-stelle').value.trim() }, von: a.von, bis: a.bis, heute: heute(), faellig: $('nk-faellig').value, leistung: leist }, r),
       r.ergebnis > 0 ? 'Bitte sofort abgeben, spätestens im Monat der Fälligkeit, mit einer Kopie der Abrechnung.' : 'Laut Abrechnung gibt es keine Nachzahlung. Ein Guthaben bitte trotzdem beim Amt vorlegen.');
   });
   $('nk-copy').addEventListener('click', () => kopiere($('nk-text'), $('nk-copy-msg')));
   nkZeile(); zeigeNK();
+
+  // ---------------- Alles leeren (App: Wechsel des Vorgangs, Löschen) ----------------
+  // Formulare, eingefügte Texte, erkannte Werte, Ergebnisse und fertige Schreiben aller Prüfungen auf den Anfangsstand,
+  // damit beim nächsten Klienten nichts vom vorigen sichtbar bleibt (Sicherheitsprüfung S4, 21.11.2026).
+  function allesLeeren() {
+    // Jobcenter: Art des Briefs zuerst mit Ereignis zurück auf „Bescheid“ (blendet die Teile für Einladung/Anhörung aus)
+    const art = document.querySelector('input[name="bs-briefart"][value="bescheid"]');
+    if (art && !art.checked) { art.checked = true; art.dispatchEvent(new Event('change', { bubbles: true })); }
+    const teile = [...document.querySelectorAll('section[id^="p-"]')];
+    for (const sec of teile) {
+      for (const f of sec.querySelectorAll('form')) f.reset();
+      // auch Felder außerhalb der Formulare (z. B. Datum und Absender in der Frist-Box oben) auf den Anfangswert
+      for (const el of sec.querySelectorAll('input, select')) {
+        if (el.type === 'checkbox' || el.type === 'radio') el.checked = el.defaultChecked;
+        else if (el.tagName === 'SELECT') { for (const o of el.options) o.selected = o.defaultSelected; }
+        else if (el.type !== 'button' && el.type !== 'submit' && el.type !== 'file') el.value = el.defaultValue;
+      }
+      for (const ta of sec.querySelectorAll('textarea')) { ta.value = ''; if (ta.readOnly) ta.hidden = true; }
+      for (const el of sec.querySelectorAll('.pp-erkannt')) el.classList.remove('pp-erkannt');
+      for (const el of sec.querySelectorAll('.pp-fehlt')) el.classList.remove('pp-fehlt');
+      for (const el of sec.querySelectorAll('.pp-fehlt-hinweis')) el.hidden = true;
+      for (const el of sec.querySelectorAll('[role="status"]')) el.textContent = '';
+      delete sec.dataset.offen; // Formular der Prüfung beim nächsten Öffnen wieder erst nach der Wahl (App: briefOeffnen)
+    }
+    for (const id of ['pf-wid-copy', 'bs-wid-copy', 'ga-wid-copy', 'wg-wid-copy', 'kz-wid-copy', 'nk-copy']) if ($(id)) $(id).hidden = true;
+    for (const id of ['pf-msg', 'nk-info']) if ($(id)) $(id).textContent = '';
+    for (const id of ['an-erg', 'pf-wid-liste']) if ($(id)) $(id).replaceChildren();
+    for (const id of ['pf-module']) if ($(id)) for (const el of $(id).querySelectorAll('input')) { if (el.type === 'checkbox') el.checked = false; else el.value = ''; }
+    $('bs-personen').replaceChildren(); personZeile('erw');
+    $('wg-mitglieder').replaceChildren(); wgZeile();
+    $('kz-kinder').replaceChildren();
+    $('nk-posten').replaceChildren(); nkZeile();
+    eigen = null;
+    zeigePfArt(); zeigePflege(); zeigeBescheid(); zeigeGSA(); zeigeWG(); zeigeKiZ(); zeigeNK();
+    for (const f of Object.values(fristNeu)) f();
+  }
+  window.PruefpaketLeeren = allesLeeren;
+
+  // ---------------- Anderer Brief: Frist nur mit Beleg, Hinweise zu Mahnbescheid und Inkasso ----------------
+  // opt.wechseln(art): in der App zur passenden Prüfung wechseln, wenn SoLo die Art des Briefs erkennt
+  const ARTNAME = { jc: 'Bescheid vom Jobcenter', sa: 'Bescheid vom Sozialamt', wg: 'Wohngeldbescheid', fk: 'Bescheid über Kinderzuschlag', pk: 'Brief der Pflegekasse', vm: 'Nebenkostenabrechnung' };
+  function zeigeAndere(text, opt) {
+    const box = (opt && opt.box) || $('an-erg'); if (!box) return;
+    box.replaceChildren();
+    if (!String(text || '').trim()) return;
+    const r = BriefLesen.andere(text);
+    // Frist zuerst und im festen Frist-Muster (.frist, src/template.html „Gestaltungs-System“); Beleg und Prüfhinweis in normaler Größe
+    if (r.fristen.length) {
+      box.append(h('div', { class: 'frist', role: 'note' },
+        h('p', { class: 'frist-wann', text: 'Frist im Brief: ' + BriefLesen.fristLesbar(r.fristen[0].frist) }),
+        h('p', { text: 'So steht es im Brief: „' + r.fristen[0].zeile + '“' }),
+        h('p', { text: 'Bitte die Frist im Brief selbst nachlesen. Die Texterkennung kann sich irren.' })));
+    }
+    if (r.mahnbescheid) box.append(h('p', { class: 'frist', role: 'note' }, h('strong', { text: 'Das ist wohl ein gerichtlicher Mahnbescheid. ' }), 'Widerspruch nur innerhalb von 2 Wochen ab Zustellung. Mehr dazu unten.'));
+    if (r.vollstreckungsbescheid) box.append(h('p', { class: 'frist', role: 'note' }, h('strong', { text: 'Das ist wohl ein Vollstreckungsbescheid. ' }), 'Einspruch nur innerhalb von 2 Wochen ab Zustellung. Frag sofort eine Schuldnerberatung.'));
+    // Mahnbescheid/Vollstreckungsbescheid: Tag der Zustellung (gelber Umschlag) erfragen, erst der Tipp merkt die Frist
+    if ((r.mahnbescheid || r.vollstreckungsbescheid) && window.FristenOrdner) box.append(window.FristenOrdner.knopf((zugang) => ({ art: r.vollstreckungsbescheid ? 'vb' : 'mb', stelle: 'gericht', basis: { zugang }, quelle: 'brief' }), { feld: 'zugang' }));
+    if (r.inkasso) box.append(h('p', { class: 'note' }, h('strong', { text: 'Im Brief steht „Inkasso“. ' }), 'Lies unten, was du prüfen solltest.'));
+    if (r.fristen.length) {
+      if (r.fristen.length > 1) box.append(h('details', {}, h('summary', { text: 'Weitere Fristen im Brief' }), h('ul', {}, r.fristen.slice(1).map((x) => h('li', { text: BriefLesen.fristLesbar(x.frist) + ': „' + x.zeile + '“' })))));
+      // Fester Tag im Brief: „Frist merken“ (Widerspruch/Einspruch/Klage, Zahlung oder allgemeine Frist); der Brieftext wird nie gespeichert
+      const fz = r.fristen[0], fd = /^(\d{1,2})\.(\d{1,2})\.(20\d{2})$/.exec(fz.frist);
+      if (fd && window.FristenOrdner && !r.mahnbescheid && !r.vollstreckungsbescheid) {
+        const art = /Widerspruch|Einspruch|Klage/i.test(fz.zeile) ? 'wid' : /zahl|überweis|Betrag/i.test(fz.zeile) ? 'zahl' : 'frist';
+        box.append(window.FristenOrdner.knopf(() => ({ art, bis: `${fd[3]}-${fd[2].padStart(2, '0')}-${fd[1].padStart(2, '0')}`, quelle: 'brief' })));
+      }
+    } else {
+      box.append(h('p', {}, h('strong', { text: 'Keine Frist gefunden.' }), ' Das heißt nicht, dass es keine gibt. Suche im Brief nach „bis zum“, „innerhalb von“ oder „binnen“. Im Zweifel frag eine Beratungsstelle.'));
+    }
+    if (r.art && ARTNAME[r.art] && opt && opt.wechseln) box.append(h('p', {}, 'Das sieht aus wie: ' + ARTNAME[r.art] + '. ', h('button', { type: 'button', class: 'btn ghost', text: 'Diesen Brief genauer prüfen', onclick: () => opt.wechseln(r.art) })));
+    box.append(h('p', { class: 'small muted rb-satz', 'data-t': 'rb.satz', text: rbSatz() })); // unter jedem Prüfergebnis, immer derselbe Satz
+  }
+  window.PruefpaketAndere = { zeige: zeigeAndere };
+  if ($('an-lesen')) $('an-lesen').addEventListener('click', () => zeigeAndere($('an-text').value));
+  if ($('an-pfaendung') && !$('v-pfaendung')) $('an-pfaendung').hidden = true; // den Pfändungsrechner gibt es nur in der App
 
   if ($('fr-datum')) for (const id of ['fr-datum', 'fr-zugang', 'er-leistung', 'er-ende']) $(id).addEventListener('input', zeigeFristen); // nur in der Vorschau
   // Spaltennamen an jede Zelle hängen (für die Blockansicht auf schmalen Bildschirmen); Tabellen entstehen bei jeder Eingabe neu
@@ -732,6 +1149,68 @@ Ergebnis: Pflegegrad 2`;
   const mo = new MutationObserver(() => { if (!geplant) { geplant = true; setTimeout(() => { geplant = false; beschrifte(); }, 0); } });
   document.querySelectorAll('section[id^="p-"]').forEach((s) => mo.observe(s, { childList: true, subtree: true }));
   beschrifte();
+  // ---------------- Einfache Sprache (nur in der App, nur Deutsch; Schalter in den Einstellungen) ----------------
+  // Wörterbuch src/lang/einfach/brief/brief.json, im Paket als BRIEF_EINFACH (scripts/build.js). Schlüssel = deutscher Standardtext,
+  // {1} {2} … = Werte aus dem Programm. Ersetzt werden nur sichtbare Texte (Textknoten, placeholder, aria-label) unter der Wurzel,
+  // nie Eingaben, nie textarea (Schreiben an Ämter bleiben förmlich), nie Elemente mit data-t (übersetzt die App). Ausschalten stellt alles zurück.
+  const EIN = typeof BRIEF_EINFACH !== 'undefined' && BRIEF_EINFACH && BRIEF_EINFACH.texte ? BRIEF_EINFACH.texte : null;
+  const einNorm = (x) => String(x).replace(/\s+/g, ' ').trim();
+  const einGenau = new Map(), einMuster = [], einTeile = [];
+  if (EIN) for (const [k, v] of Object.entries(EIN)) {
+    if (v === '=' || typeof v !== 'string') continue;
+    if (/\{\d+\}/.test(k)) {
+      const nr = [], quelle = k.split(/(\{\d+\})/).map((t) => { const m = /^\{(\d+)\}$/.exec(t); if (m) { nr.push(m[1]); return '(.+?)'; } return t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }).join('');
+      einMuster.push({ re: new RegExp('^' + quelle + '$'), nr, v });
+    } else { einGenau.set(k, v); if (k.split(' ').length >= 3) einTeile.push([k, v]); }
+  }
+  einTeile.sort((x, y) => y[0].length - x[0].length);
+  function einText(roh) {
+    const n = einNorm(roh); if (!n) return null;
+    if (einGenau.has(n)) return einGenau.get(n);
+    for (const m of einMuster) { const x = m.re.exec(n); if (x) return m.v.replace(/\{(\d+)\}/g, (y, i) => (m.nr.indexOf(i) >= 0 ? x[m.nr.indexOf(i) + 1] : y)); }
+    // zusammengesetzte Texte (z. B. „Kein Grund gefunden. “ + Frist): bekannte ganze Sätze darin ersetzen
+    let r = n; for (const [k, v] of einTeile) if (r.indexOf(k) >= 0) r = r.split(k).join(v);
+    return r !== n ? r : null;
+  }
+  let einAn = false, einMo = null;
+  const einStand = new Map(); // Knoten oder [Element, Attribut] → { orig, ein }
+  const einAus = (el) => !el || el.closest('textarea, script, style, [data-t], [contenteditable="true"]');
+  function einKnoten(n) {
+    if (n.nodeType === 3) {
+      if (einAus(n.parentElement)) return;
+      const alt = einStand.get(n); if (alt && n.nodeValue === alt.ein) return;
+      const e = einText(n.nodeValue); if (e == null) return;
+      const m = /^(\s*)[\s\S]*?(\s*)$/.exec(n.nodeValue), neu = m[1] + e + m[2];
+      einStand.set(n, { orig: n.nodeValue, ein: neu }); n.nodeValue = neu;
+      return;
+    }
+    if (n.nodeType !== 1 || einAus(n)) return;
+    for (const el of [n, ...n.querySelectorAll('[placeholder], [aria-label]')]) for (const a of ['placeholder', 'aria-label']) {
+      if (!el.hasAttribute(a) || einAus(el)) continue;
+      const key = el, schl = a + '@'; const st = (einStand.get(key) || {})[schl];
+      if (st && el.getAttribute(a) === st.ein) continue;
+      const e = einText(el.getAttribute(a)); if (e == null) continue;
+      const o = einStand.get(key) || {}; o[schl] = { orig: el.getAttribute(a), ein: e }; einStand.set(key, o); el.setAttribute(a, e);
+    }
+    const w = document.createTreeWalker(n, 4); for (let t = w.nextNode(); t; t = w.nextNode()) einKnoten(t);
+  }
+  function einZurueck() {
+    for (const [k, v] of einStand) {
+      if (k.nodeType === 3) { if (k.nodeValue === v.ein) k.nodeValue = v.orig; continue; }
+      for (const schl of Object.keys(v)) { const a = schl.slice(0, -1); if (k.getAttribute(a) === v[schl].ein) k.setAttribute(a, v[schl].orig); }
+    }
+    einStand.clear();
+  }
+  function einSetze(an, wurzel) {
+    an = !!an && !!EIN && !!wurzel;
+    if (einMo) { einMo.disconnect(); einMo = null; }
+    if (!an) { if (einAn) einZurueck(); einAn = false; return; }
+    einAn = true;
+    einKnoten(wurzel); beschrifte();
+    einMo = new MutationObserver((liste) => { for (const r of liste) { if (r.type === 'characterData') einKnoten(r.target); else if (r.type === 'attributes') einKnoten(r.target); else r.addedNodes.forEach(einKnoten); } beschrifte(); });
+    einMo.observe(wurzel, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ['placeholder', 'aria-label'] });
+  }
+  window.PruefpaketEinfach = { setze: einSetze, text: (x) => (einAn ? einText(x) || x : x), aktiv: () => einAn };
   if ($('li-demo')) {
     $('li-demo').addEventListener('click', () => zeigeLizenz(DEMO_LIZENZ));
     $('li-datei').addEventListener('change', async (e) => { const f = e.target.files && e.target.files[0]; if (f) zeigeLizenz(await f.text()); });

@@ -1,8 +1,8 @@
 (function () {
   var PRESETS = [
-    { id: 'p1', key: 'preset.p1', v: { adults: 1, kids: 2, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'lohn', ek1Brutto: 2200, ek1Netto: 1750, brutto: 2200, netto: 1750, miete: 950, mietstufe: '3', vermoegen: 3000, gebJahr: 1991, kinder12: false, unterhaltFehlt: true, ausbildung: '', pflegegrad: '', bezug: {} } },
-    { id: 'p2', key: 'preset.p2', v: { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'rente', ek1Brutto: 880, ek1Netto: 780, brutto: 880, netto: 780, miete: 480, mietstufe: '3', vermoegen: 4000, gebJahr: 1955, kinder12: false, unterhaltFehlt: false, ausbildung: '', pflegegrad: '', bezug: {} } },
-    { id: 'p3', key: 'preset.p3', v: { adults: 2, kids: 1, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'lohn', ek1Brutto: 3200, ek1Netto: 2500, ek2Art: 'ohne', brutto: 3200, brutto2: '', netto: 2500, miete: 1100, mietstufe: '5', vermoegen: 8000, gebJahr: 1988, kinder12: false, unterhaltFehlt: false, ausbildung: '', pflegegrad: '', bezug: {} } }
+    { id: 'p1', v: { adults: 1, kids: 2, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'lohn', ek1Brutto: 2200, ek1Netto: 1750, brutto: 2200, netto: 1750, miete: 950, mietstufe: '3', vermoegen: 3000, gebJahr: 1991, kinder12: false, unterhaltFehlt: true, ausbildung: '', pflegegrad: '', bezug: {} } },
+    { id: 'p2', v: { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'rente', ek1Brutto: 880, ek1Netto: 780, brutto: 880, netto: 780, miete: 480, mietstufe: '3', vermoegen: 4000, gebJahr: 1955, kinder12: false, unterhaltFehlt: false, ausbildung: '', pflegegrad: '', bezug: {} } },
+    { id: 'p3', v: { adults: 2, kids: 1, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'lohn', ek1Brutto: 3200, ek1Netto: 2500, ek2Art: 'ohne', brutto: 3200, brutto2: '', netto: 2500, miete: 1100, mietstufe: '5', vermoegen: 8000, gebJahr: 1988, kinder12: false, unterhaltFehlt: false, ausbildung: '', pflegegrad: '', bezug: {} } }
   ];
   var NATIVE = /*NATIVE*/ false; // true in der Store-App (Android und iOS)
   var LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so'];
@@ -16,6 +16,10 @@
   var lastOut = null;
   var lang = 'de';
   var einfachSprache = false; // Schalter „Einfache Sprache“ (Einstellungen): nur auf Deutsch wirksam, Texte aus I18N_EINFACH
+  // Für src/haushalt.js (Druckblatt nur im Beratungsmodus): window.SoloBeratung.an()
+  window.SoloBeratung = { an: function () { return beratung; } };
+  var beratung = false; // Beratungsmodus (Einstellungen, „Für Fachkräfte“): Paragrafen und Rechtsgrundlagen zeigen; aus = Laienansicht ohne Paragrafen
+  var haken = {}; // Unterlagen-Checkliste: abgehakte Unterlagen je Leistung („id|Schlüssel“), nur auf dem Gerät
   var edited = false;
   var $ = function (id) { return document.getElementById(id); };
 
@@ -34,23 +38,43 @@
       var v = p[k];
       return v && typeof v === 'object' && 'eur' in v ? Fmt.euro(v.eur, lang, rtl) : v;
     });
+    if (lang !== 'de' && window.DeNetz) DeNetz.merke(key, s, p); // Sicherheitsnetz: wichtige Sätze auch auf Deutsch (src/denetz.js)
     return s;
   }
+  // Deutscher Originaltext zu einem Schlüssel (Sicherheitsnetz, src/denetz.js): gleiche Parameter, ohne Einfache Sprache
+  function tDe(key, p, ohne) {
+    var l = lang, es = einfachSprache, s;
+    lang = 'de'; einfachSprache = false;
+    try { s = t(key, p); } finally { lang = l; einfachSprache = es; }
+    return ohne ? Fmt.ohnePara(s) : s;
+  }
+
+  // Text für Laien: ohne Beratungsmodus Paragrafen in Klammern ausblenden (Fmt.ohnePara); im Beratungsmodus unverändert
+  function tL(key, p) { var s = t(key, p); return beratung ? s : Fmt.ohnePara(s); }
 
   var parseAmount = Fmt.parse;
 
   // ----- Speicher: Preferences in der App, sonst localStorage -----
-  function plug(name) { try { return window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins[name] || null; } catch (e) { return null; } }
-  var Store = {
+  // iOS: statt Preferences (UserDefaults, geht in iCloud-/Finder-Sicherung) der eigene Speicher ohne Sicherung
+  // (app/ios/App/App/SoloSpeicherPlugin.swift, gleiche Aufrufe, übernimmt die alten Werte beim ersten Start). Android: Preferences (allowBackup="false").
+  function plug(name) {
+    try {
+      var P = window.Capacitor && window.Capacitor.Plugins; if (!P) return null;
+      if (name === 'Preferences' && P.SoloSpeicher) return P.SoloSpeicher;
+      return P[name] || null;
+    } catch (e) { return null; }
+  }
+  var StoreRoh = {
     get: function (key, cb) {
       var p = plug('Preferences');
       if (p) { p.get({ key: key }).then(function (r) { cb(r && r.value); }, function () { cb(null); }); return; }
       try { cb(localStorage.getItem(key)); } catch (e) { cb(null); }
     },
-    set: function (key, val) {
+    set: function (key, val, fehler, ok) { // fehler/ok: nur für die Vorgänge (Speicher voll oder gesperrt melden)
       var p = plug('Preferences');
-      if (p) { p.set({ key: key, value: val }).catch(function () {}); return; }
-      try { localStorage.setItem(key, val); } catch (e) {}
+      if (p) { p.set({ key: key, value: val }).then(function () { if (ok) ok(); }, function () { if (fehler) fehler(); }); return; }
+      try { localStorage.setItem(key, val); } catch (e) { if (fehler) fehler(e); return; }
+      if (ok) ok();
     },
     remove: function (key) {
       var p = plug('Preferences');
@@ -58,12 +82,30 @@
       try { localStorage.removeItem(key); } catch (e) {}
     }
   };
+  // Angaben eines Vorgangs (lotse.state, lotse.einfach, lotse.pflegecheck, lotse.pfaendung) gehen über den Tresor (src/vorgaenge.js)
+  var tresor = null;
+  function tr() {
+    if (!tresor) {
+      tresor = Vorgaenge.tresor(StoreRoh, { gesperrt: function () { if (tresor) vgSperreZeigen(); }, fehler: vgSpeicherFehler, bereit: function () { if (tresor) vgBereit(); },
+        geloescht: function (n, am) { vgHinweis(t('vg.auto.gemeldet', { datum: Fmt.datum(new Date(am), lang), n: String(n) })); },
+        sprung: function (ja) { if (window.confirm(t('vg.auto.sprung'))) ja(); } });
+      if (tresor.gesperrt()) vgSperreZeigen(); else vgRender();
+    }
+    return tresor;
+  }
+  var Store = {
+    get: function (key, cb) { if (Vorgaenge.DATEN.indexOf(key) >= 0) tr().get(key, cb); else StoreRoh.get(key, cb); },
+    set: function (key, val) { if (Vorgaenge.DATEN.indexOf(key) >= 0) return tr().set(key, val); StoreRoh.set(key, val); }, // false: Vorgang nicht bereit (gesperrt)
+    remove: function (key) { if (Vorgaenge.DATEN.indexOf(key) >= 0) tr().remove(key); else StoreRoh.remove(key); }
+  };
   var saveTimer = null;
-  function flush() { clearTimeout(saveTimer); saveTimer = null; Store.set('lotse.state', JSON.stringify({ s: state, p: person, e: edited, big: $('app').classList.contains('big') })); }
+  function flush() { clearTimeout(saveTimer); saveTimer = null; Store.set('lotse.state', JSON.stringify({ s: state, p: person, e: edited, big: $('app').classList.contains('big'), sf: window.Schritte ? Schritte.stand() : null })); Store.set('lotse.pfaendung', JSON.stringify(pf)); }
   function save() { clearTimeout(saveTimer); saveTimer = setTimeout(flush, 300); }
   function smooth() { return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'; }
+  // Erlaubte Arten für das zweite Einkommen einer Person (leer = keins)
+  var EK_ZWEIT = ['', 'lohn', 'selbst', 'rente', 'alg', 'kg', 'eg', 'wfbm', 'unt'];
   function blankState() {
-    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', waisen: '', uvgPartner: '', uvgWechsel: false, kindEink: '', ek1bArt: '', ek1bBetrag: '', zusatzRente: '', baby: '', egVor: '', aufenthalt: '', miete: '', heizkosten: '', mietstufe: '', plz: '', plzPick: '', bundesland: '', vermoegen: '', gebJahr: '', arbeitSit: '', algMonate: '', krankWochen: '', lohnVorher: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', uzBetrag: '', uzAn: '', uzTitel: false, wohnart: '', hhAndere: '', autoWert: '', autoBraucht: false, euArbeit: '', euJahre: '', bezug: {} };
+    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', waisen: '', uvgPartner: '', uvgWechsel: false, kindEink: '', ek1bArt: '', ek1bBetrag: '', ek2bArt: '', ek2bBetrag: '', zusatzRente: '', baby: '', egVor: '', aufenthalt: '', miete: '', heizkosten: '', mietstufe: '', plz: '', plzPick: '', bundesland: '', vermoegen: '', gebJahr: '', arbeitSit: '', algMonate: '', krankWochen: '', lohnVorher: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', uzBetrag: '', uzAn: '', uzTitel: false, wohnart: '', hhAndere: '', autoWert: '', autoBraucht: false, euArbeit: '', euJahre: '', bezug: {} };
   }
 
   function detect() {
@@ -77,6 +119,99 @@
     return 'de';
   }
 
+  // Gemeinsames Info-Bauteil „ⓘ Mehr dazu“ (CSS details.mehr in template.html): einmal gebaut, überall gleich benutzt.
+  // Überschrift immer als Frage, die sagt, was drin ist (z. B. „Wo finde ich das?“), nie nur „Mehr“. Fristen und Beträge nie hier hinein.
+  // text wird nur als Text eingesetzt (textContent bzw. esc), nie als HTML.
+  function mehrEl(text, titel) {
+    var d = document.createElement('details'); d.className = 'mehr';
+    var s = document.createElement('summary'); s.textContent = titel; d.appendChild(s);
+    var p = document.createElement('p'); p.textContent = text; d.appendChild(p);
+    return d;
+  }
+  function mehrHtml(innenHtml, titel) { return '<details class="mehr"><summary>' + esc(titel) + '</summary>' + innenHtml + '</details>'; }
+  // „Quellen und Stand“: eine zugeklappte Zeile am Seitenende (gleiches Bauteil details.mehr) statt offener Quellen-Absätze.
+  // Die Quellen bleiben vollständig, nur zugeklappt. Fristen und Beträge gehören nie hierher.
+  function quellenEl(texte) {
+    var d = document.createElement('details'); d.className = 'mehr quellen';
+    var s = document.createElement('summary'); s.textContent = t('qs.titel'); d.appendChild(s);
+    (texte || []).forEach(function (x) { if (!x) return; var p = document.createElement('p'); p.textContent = x; d.appendChild(p); });
+    return d;
+  }
+  // Ein Tipp in „Geld und Schulden“ und im Pfändungsrechner: Linien-Symbol + ein kurzer Satz (Schlüssel „<key>.kurz“, Handlung zuerst,
+  // Fristen und Beträge stehen darin sichtbar), der ausführliche Text (<key>) zum Aufklappen (gleiches Bauteil details.mehr, Variante .tipp).
+  // Symbole sind feste Pfade (kein Text von außen), Stil wie die Kachel-Symbole (Linie, 24er Raster).
+  var TIPP_SYM = {
+    aus: '<path d="M12 3v9"/><path d="M7 6a8 8 0 1 0 10 0"/>',
+    waesche: '<rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="12" cy="13" r="4.5"/><path d="M7 6h2"/>',
+    topf: '<path d="M4 10h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M2 10h20M9 6h6"/>',
+    thermo: '<path d="M10 14V5a2 2 0 0 1 4 0v9a4 4 0 1 1-4 0z"/><path d="M12 9v7"/>',
+    zaehler: '<path d="M4 17a8 8 0 1 1 16 0"/><path d="M12 17l4-5"/><path d="M4 20h16"/>',
+    hausCheck: '<path d="M4 11l8-6 8 6v9H4z"/><path d="M9 15l2 2 4-4"/>',
+    fenster: '<rect x="5" y="3" width="14" height="18" rx="1"/><path d="M12 3v18M5 12h14"/>',
+    heizung: '<path d="M6 6v12M10 6v12M14 6v12M18 6v12M4 8h16M4 18h16"/>',
+    wind: '<path d="M3 8h11a3 3 0 1 0-3-3M3 12h15a3 3 0 1 1-3 3M3 16h7"/>',
+    einreichen: '<path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M9 14h6M12 11v6"/>',
+    liste: '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>',
+    blatt: '<path d="M5 19c0-8 6-14 14-14 0 8-6 14-14 14z"/><path d="M5 19l8-8"/>',
+    frost: '<path d="M12 3v18M4.2 7.5l15.6 9M4.2 16.5l15.6-9"/>',
+    korb: '<path d="M3 10h18l-2 10H5z"/><path d="M8 10l4-6 4 6"/>',
+    teller: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/>',
+    radio: '<rect x="3" y="8" width="18" height="12" rx="2"/><path d="M7 8l10-5"/><circle cx="15" cy="14" r="2.5"/><path d="M6 13h4M6 16h4"/>',
+    telefon: '<path d="M5 4h4l2 5-3 2a11 11 0 0 0 5 5l2-3 5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 6a2 2 0 0 1 2-2z"/>',
+    ticket: '<path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/><path d="M14 6v12"/>',
+    bank: '<path d="M3 10l9-6 9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/>',
+    schere: '<circle cx="6" cy="7" r="3"/><circle cx="6" cy="17" r="3"/><path d="M8.5 8.5L20 18M8.5 15.5L20 6"/>',
+    person: '<circle cx="12" cy="7" r="3"/><path d="M5 20c1-4 4-6 7-6s6 2 7 6"/>',
+    licht: '<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/>',
+    post: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
+    haus: '<path d="M4 11l8-6 8 6v9H4z"/><path d="M10 20v-5h4v5"/>',
+    stopp: '<circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/>',
+    lupe: '<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/>',
+    kalender: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+    warn: '<path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/>',
+    waage: '<path d="M12 4v16M6 20h12M5 7h14"/><path d="M5 7l-3 6h6zM19 7l-3 6h6z"/>',
+    uhr: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    blitz: '<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>',
+    schild: '<path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6z"/>',
+    beleg: '<path d="M6 3h9l4 4v14H6z"/><path d="M9 14l2 2 4-4"/>',
+    kind: '<circle cx="12" cy="6" r="2.5"/><path d="M8 21v-6l-2-4h12l-2 4v6"/>',
+    weiter: '<path d="M4 12h14M13 6l6 6-6 6"/>',
+    geld: '<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>'
+  };
+  var TIPP_VON = {
+    'sp.strom.1': 'aus', 'sp.strom.2': 'waesche', 'sp.strom.3': 'topf', 'sp.strom.4': 'thermo', 'sp.strom.5': 'zaehler', 'sp.strom.6': 'hausCheck',
+    'sp.heizen.1': 'thermo', 'sp.heizen.2': 'fenster', 'sp.heizen.3': 'heizung', 'sp.heizen.4': 'wind', 'sp.heizen.5': 'einreichen',
+    'sp.essen.1': 'liste', 'sp.essen.2': 'blatt', 'sp.essen.3': 'frost', 'sp.essen.4': 'korb', 'sp.essen.5': 'teller',
+    'sp.vertraege.1': 'radio', 'sp.vertraege.3': 'ticket', 'sp.vertraege.5': 'bank', 'sp.vertraege.6': 'schere',
+    'tv.bonus': 'geld', 'tv.vorkasse': 'warn', 'tv.laufzeit': 'kalender', 'tv.kuendigung': 'uhr', 'tv.fernwaerme': 'heizung',
+    'sp.schulden.1': 'post', 'sp.schulden.2': 'haus', 'sp.schulden.3': 'stopp',
+    'sp.schulden.inkasso': 'lupe', 'sp.schulden.rate': 'kalender', 'sp.schulden.unserioes': 'warn', 'sp.schulden.insolvenz': 'waage',
+    'sp.schulden.strom': 'blitz', 'sp.schulden.mahn': 'waage', 'sp.schulden.miete': 'haus',
+    'gs.d.konto.frist': 'uhr', 'gs.d.konto.schritt': 'bank', 'gs.d.strom.frist': 'uhr', 'gs.d.strom.schritt': 'telefon', 'gs.d.strom.haerte': 'post', 'gs.d.strom.darlehen': 'einreichen', 'gs.d.strom.grenze': 'blitz',
+    'gs.d.mahn.frist': 'uhr', 'gs.d.mahn.schritt': 'post', 'gs.d.miete.frist': 'uhr', 'gs.d.miete.schritt': 'einreichen',
+    'pf.tipp.unterhalt': 'warn', 'pf.tipp.unterhaltspflichten': 'lupe', 'pf.tipp.mehr': 'waage', 'pf.tipp.beratung': 'person', 'pf.tipp.einmal': 'geld',
+    'ip.w1': 'stopp', 'ip.w2': 'kalender', 'ip.w3': 'post', 'sb.ordner': 'liste', 'gs.d.geld.frist': 'uhr', 'gs.d.geld.schritt': 'telefon',
+    'pf.tipp.kg': 'kind', 'pf.tipp.umwandeln': 'bank', 'pf.tipp.bescheinigung': 'beleg', 'pf.tipp.kontomehr': 'waage', 'pf.tipp.uebertrag': 'weiter', 'pf.tipp.sozial': 'schild', 'pu.tipp.beratung': 'person'
+  };
+  // laien: Paragrafen wie bisher nur bei den Spartipps aus dem Text nehmen (tL); sonst bleiben sie stehen
+  function tippEl(key, cls, laien) {
+    var d = document.createElement('details'); d.className = 'mehr tipp' + (cls ? ' ' + cls : ''); d.setAttribute('data-tipp', key);
+    var s = document.createElement('summary');
+    var sym = document.createElement('span'); sym.className = 'tipp-sym'; sym.setAttribute('aria-hidden', 'true');
+    sym.innerHTML = '<svg viewBox="0 0 24 24">' + (TIPP_SYM[TIPP_VON[key]] || TIPP_SYM.liste) + '</svg>'; // feste Pfade aus TIPP_SYM
+    var k = document.createElement('span'); k.className = 'tipp-kurz'; k.textContent = (laien ? tL : t)(key + '.kurz');
+    s.appendChild(sym); s.appendChild(k); d.appendChild(s);
+    var p = document.createElement('p'); p.textContent = (laien ? tL : t)(key); d.appendChild(p);
+    return d;
+  }
+  // Gleicher Tipp als HTML (Ergebnis des Leistungs-Checks wird als Text gebaut): Symbol + kurzer Satz (bereits mit esc), Inhalt zugeklappt.
+  // innen: fertiges, mit esc gebautes HTML; sym: Schlüssel aus TIPP_SYM (feste Pfade)
+  function tippHtml(sym, kurz, innen, id) {
+    return '<details class="mehr tipp"' + (id ? ' id="' + id + '"' : '') + '><summary><span class="tipp-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + (TIPP_SYM[sym] || TIPP_SYM.liste) + '</svg></span>' +
+      '<span class="tipp-kurz">' + esc(kurz) + '</span></summary>' + innen + '</details>';
+  }
+  window.SoloMehr = { el: mehrEl, quellen: quellenEl, tipp: tippEl, rb: function () { return t('rb.satz'); }, t: function (k, p) { return Object.prototype.hasOwnProperty.call(I18N.de, k) ? t(k, p) : null; } }; // auch für die Prüfpakete (erweiterungen/vorschau.js), Schulden-Liste und „Ich ziehe aus“
+
   function fillSelect(id, items, current) {
     var el = $(id);
     el.innerHTML = items.map(function (it) { return '<option value="' + esc(it[0]) + '">' + esc(it[1]) + '</option>'; }).join('');
@@ -86,9 +221,11 @@
   var BUNDESLAENDER = [['BW', 'Baden-Württemberg'], ['BY', 'Bayern'], ['BE', 'Berlin'], ['BB', 'Brandenburg'], ['HB', 'Bremen'], ['HH', 'Hamburg'], ['HE', 'Hessen'], ['MV', 'Mecklenburg-Vorpommern'], ['NI', 'Niedersachsen'], ['NW', 'Nordrhein-Westfalen'], ['RP', 'Rheinland-Pfalz'], ['SL', 'Saarland'], ['SN', 'Sachsen'], ['ST', 'Sachsen-Anhalt'], ['SH', 'Schleswig-Holstein'], ['TH', 'Thüringen']];
 
   // PLZ -> Bundesland und Mietenstufe (Daten sind fest in der App, kein Netz). Ohne Daten bleibt das Feld verborgen.
+  function plzFelder(erkannt) { $('blField').hidden = $('stufeField').hidden = !!erkannt; }
   function plzUpdate(apply) {
     var out = $('plzOut'); out.innerHTML = '';
     $('plzField').hidden = !Plz.available();
+    plzFelder(false);
     if (!Plz.available()) return;
     var raw = String(state.plz || '').replace(/\D/g, '');
     if (raw.length < 5) return;
@@ -112,11 +249,12 @@
       });
       d.appendChild(s2); out.appendChild(d);
     };
-    var src = esc(t('plz.source', { stand: ((Plz.info() && Plz.info().wogv || '').match(/\d+\.\d+\.\d{4}/) || [''])[0] }));
+    var srcText = t('plz.source', { stand: ((Plz.info() && Plz.info().wogv || '').match(/\d+\.\d+\.\d{4}/) || [''])[0] });
+    var src = function () { out.appendChild(mehrEl(srcText, t('beh.quelle'))); };
     if (r.sure) {
       applyStufe(r.stufe);
       say('<strong>' + esc(t('plz.found', { ort: r.candidates[0].label, stufe: Rules.roman(r.stufe) })) + '</strong>');
-      say(src); altBlock(); return;
+      src(); altBlock(); plzFelder(r.bl && r.bl === state.bundesland && String(r.stufe) === String(state.mietstufe)); return;
     }
     if (r.candidates.every(function (c) { return !c.stufe; })) { say(esc(t('plz.unknown'))); return; }
     say(esc(t('plz.ask')));
@@ -137,7 +275,7 @@
       if (c && c.stufe) { state.mietstufe = String(c.stufe); $('mietstufe').value = String(c.stufe); }
       touched();
     });
-    say(src); altBlock();
+    src(); altBlock();
   }
 
   // ----- Folgefragen: nur zeigen, wenn sie passen; ausgeblendete Werte zurücksetzen, damit sie nicht mitrechnen -----
@@ -153,21 +291,28 @@
     if (!state.unterhaltFehlt || state.kids === 0) reset(['uvgWechsel', 'uvgPartner']);
     if (state.adults !== 2) reset(['uvgPartner']);
     if (state.arbeitSit !== 'arbeitslos') reset(['algZeit', 'algMonate']);
-    if (state.adults !== 1 || !state.ek1Art || state.ek1Art === 'ohne') reset(['ek1bArt', 'ek1bBetrag']);
+    // Zweites Einkommen je Person (auch bei Paaren); nur erlaubte Arten (beschädigter Stand -> leer)
+    if (!state.ek1Art || state.ek1Art === 'ohne' || EK_ZWEIT.indexOf(state.ek1bArt) < 0) reset(['ek1bArt', 'ek1bBetrag']);
+    if (state.adults !== 2 || !state.ek2Art || state.ek2Art === 'ohne' || EK_ZWEIT.indexOf(state.ek2bArt) < 0) reset(['ek2bArt', 'ek2bBetrag']);
     if (!state.ek1bArt) reset(['ek1bBetrag']);
-    if (!(state.ek1Art === 'rente' || state.ek2Art === 'rente' || state.ek1bArt === 'rente')) reset(['grundrente33', 'zusatzRente']);
-    if (!(state.wfbm || state.ek1Art === 'wfbm' || state.ek1bArt === 'wfbm')) reset(['wfbmEssen']);
+    if (!state.ek2bArt) reset(['ek2bBetrag']);
+    if (!(state.ek1Art === 'rente' || state.ek2Art === 'rente' || state.ek1bArt === 'rente' || state.ek2bArt === 'rente')) reset(['grundrente33', 'zusatzRente']);
+    if (!(state.wfbm || state.ek1Art === 'wfbm' || state.ek1bArt === 'wfbm' || state.ek2bArt === 'wfbm')) reset(['wfbmEssen']);
     if (state.arbeitSit !== 'krank') reset(['krankWochen']);
     if (!state.arbeitSit) reset(['lohnVorher']);
     if (state.ausbildung !== 'ich') reset(['babBetrieb', 'babWohnt']);
     var ohneUz = !(Number(state.uzBetrag) > 0);
     if (ohneUz) reset(['uzAn', 'uzTitel']);
     if (state.aufenthalt !== 'eu') reset(['euArbeit', 'euJahre']);
+    // Einkommensart „Asylbewerberleistungen“ nur bei Aufenthalt „Asylverfahren oder Duldung“ (sonst Auswahl entfernen)
+    if (!istAsyl()) ['ek1Art', 'ek2Art'].forEach(function (k) { if (state[k] === 'asylblg') reset([k]); });
+    ekArtOptionen();
     if (!(Number(state.autoWert) > 0)) reset(['autoBraucht']);
     // Eigentum: Feld „Miete“ wird zu „Kosten fürs Wohnen“ (Kredit, Nebenkosten, Heizung)
     var eig = state.wohnart === 'eigentum';
     $('mieteLab').setAttribute('data-t', eig ? 'miete.label.eigen' : 'miete.label'); $('mieteLab').textContent = t(eig ? 'miete.label.eigen' : 'miete.label');
-    $('mieteHint').setAttribute('data-t', eig ? 'miete.hint.eigen' : 'miete.hint'); $('mieteHint').textContent = t(eig ? 'miete.hint.eigen' : 'miete.hint');
+    $('mieteHint').hidden = !eig;
+    $('hhHint').hidden = !state.hhAndere;
     var show = function (sel, on) { document.querySelectorAll(sel).forEach(function (el) { el.hidden = !on; }); };
     show('.cond-bh', !!state.bhPerson);
     show('.cond-bh25', state.bhPerson === 'erwVor25');
@@ -175,10 +320,12 @@
     show('.cond-kinder', state.kids + state.young > 0);
     show('.cond-alos', state.arbeitSit === 'arbeitslos');
     show('.cond-baby', !!state.baby);
-    show('.cond-ek1b', state.adults === 1 && !!state.ek1Art && state.ek1Art !== 'ohne');
+    show('.cond-ek1b', !!state.ek1Art && state.ek1Art !== 'ohne');
     show('.cond-ek1bBetrag', !!state.ek1bArt);
-    show('.cond-rente', state.ek1Art === 'rente' || state.ek2Art === 'rente' || state.ek1bArt === 'rente');
-    show('.cond-wfbm', !!state.wfbm || state.ek1Art === 'wfbm' || state.ek1bArt === 'wfbm');
+    show('.cond-ek2b', state.adults === 2 && !!state.ek2Art && state.ek2Art !== 'ohne');
+    show('.cond-ek2bBetrag', !!state.ek2bArt);
+    show('.cond-rente', state.ek1Art === 'rente' || state.ek2Art === 'rente' || state.ek1bArt === 'rente' || state.ek2bArt === 'rente');
+    show('.cond-wfbm', !!state.wfbm || state.ek1Art === 'wfbm' || state.ek1bArt === 'wfbm' || state.ek2bArt === 'wfbm');
     show('.cond-krank', state.arbeitSit === 'krank');
     show('.cond-job', !!state.arbeitSit);
     show('.cond-ausbich', state.ausbildung === 'ich');
@@ -206,8 +353,9 @@
   function ekPerson(i) {
     var art = state['ek' + i + 'Art'], b = state['ek' + i + 'Brutto'], n = state['ek' + i + 'Netto'];
     var leer = function (v) { return v === '' || v == null; };
-    if (!art) return { gesetzt: false, b: '', n: '', arbeit: true, art: '' };
-    if (art === 'ohne') return { gesetzt: true, b: 0, n: 0, arbeit: false, art: art };
+    if (!art || (art === 'asylblg' && !istAsyl())) return { gesetzt: false, b: '', n: '', arbeit: true, art: '' };
+    // Asylbewerberleistungen: kein Betrag (zählt wie „kein Einkommen“); die Regeln erkennen den Bezug an der Art
+    if (art === 'ohne' || art === 'asylblg') return { gesetzt: true, b: 0, n: 0, arbeit: false, art: art };
     var mitBrutto = art === 'lohn' || art === 'rente' || art === 'selbst';
     var nn = leer(n) ? '' : Number(n), bb = mitBrutto ? (leer(b) ? '' : Number(b)) : nn, geschaetzt = false;
     if (mitBrutto && bb === '' && nn !== '' && nn > 0) {
@@ -241,13 +389,34 @@
     state.nichtArbeit = p1.gesetzt && !p1.arbeit;
     state.nichtArbeit2 = p2.gesetzt && !p2.arbeit;
     state.art1 = p1.art; state.art2 = p2.art || '';
-    // Allein: ein zweites Einkommen derselben Person (z. B. Werkstattlohn und Rente) als Liste für die Regeln
-    var b2 = state.ek1bBetrag === '' || state.ek1bBetrag == null ? 0 : Number(state.ek1bBetrag);
-    if (state.adults === 1 && state.ek1bArt && b2 > 0 && p1.gesetzt) {
-      var mitN = p1.art === 'lohn' || p1.art === 'rente' || p1.art === 'selbst';
-      state.einkommen = [mitN ? { art: p1.art, b: p1.b === '' ? 0 : p1.b, n: p1.n === '' ? nettoSchaetzen(p1, 1) : p1.n } : { art: p1.art, b: p1.b === '' ? 0 : p1.b }, { art: state.ek1bArt, b: b2 }];
-    } else delete state.einkommen;
+    // Zweites Einkommen einer Person (z. B. Lohn und Unterhalt, Werkstattlohn und Rente) als Liste für die Regeln, je Person
+    // in fester Reihenfolge: Hauptfeld, dann zweites Einkommen (Werbungskosten beim Wohngeld werden in dieser Reihenfolge verbraucht)
+    state.einkommen = einkommensListe(p1, p2);
+    if (!state.einkommen) delete state.einkommen;
     state.ek1Geschaetzt = !!p1.geschaetzt; state.ek2Geschaetzt = !!p2.geschaetzt;
+  }
+  // Liste { p, art, b, n? } für die Regeln, wenn eine Person ein zweites Einkommen hat; sonst null (Summenfelder wie bisher).
+  // Allein ohne p (gleiche Liste wie früher); Hauptfeld „Kein Einkommen“: kein Eintrag.
+  function einkommensListe(p1, p2) {
+    var zwei = state.adults === 2;
+    // wie folgefragen(): nur mit erlaubter Art und eigenem Hauptfeld (render() baut die Liste vor dem Zurücksetzen)
+    var zweit = function (i) {
+      var a = state['ek' + i + 'bArt'], h = state['ek' + i + 'Art'], b = state['ek' + i + 'bBetrag'];
+      b = b === '' || b == null ? 0 : Number(b);
+      return a && EK_ZWEIT.indexOf(a) >= 0 && h && h !== 'ohne' && b > 0 ? b : 0;
+    };
+    var b1 = zweit(1), b2 = zwei ? zweit(2) : 0;
+    if (!(b1 > 0 || b2 > 0) || !p1.gesetzt || (zwei && !p2.gesetzt)) return null;
+    var liste = [];
+    var add = function (e, i) { if (zwei) e.p = i; liste.push(e); };
+    var haupt = function (p, i) {
+      if (p.art === 'ohne' || p.art === 'asylblg') return;
+      var mitN = p.art === 'lohn' || p.art === 'rente' || p.art === 'selbst';
+      add(mitN ? { art: p.art, b: p.b === '' ? 0 : p.b, n: p.n === '' ? nettoSchaetzen(p, i) : p.n } : { art: p.art, b: p.b === '' ? 0 : p.b }, i);
+    };
+    haupt(p1, 1); if (b1 > 0) add({ art: state.ek1bArt, b: b1 }, 1);
+    if (zwei) { haupt(p2, 2); if (b2 > 0) add({ art: state.ek2bArt, b: b2 }, 2); }
+    return liste;
   }
   // Nur die Felder zeigen, die zur gewählten Art passen; Beschriftung je Art
   function ekFelder() {
@@ -255,10 +424,17 @@
       var art = state['ek' + i + 'Art'];
       var mitBrutto = art === 'lohn' || art === 'rente' || art === 'selbst';
       $('ek' + i + 'BruttoF').hidden = !mitBrutto;
-      $('ek' + i + 'NettoF').hidden = !art || art === 'ohne';
+      $('ek' + i + 'NettoF').hidden = !art || art === 'ohne' || art === 'asylblg';
+      $('ek' + i + 'BruttoLab').textContent = t(art === 'lohn' || art === 'rente' ? 'ek.brutto.' + art : 'ek.brutto');
+      // Zweites Einkommen: eigenes Aufklappfeld je Person; Hinweis auf das Feld nur zu zweit
+      // sichtbar nur der kurze Minijob-Satz; der lange Hinweis auf das zweite Einkommen steht hinter „Mehr dazu“
+      $('ek' + i + 'ArtHint').textContent = art === 'lohn' ? t('ek.art.hint.lohn') : ''; $('ek' + i + 'ArtHint').hidden = art !== 'lohn';
+      $('ek' + i + 'ArtMehr').hidden = !(state.adults === 2 && art && art !== 'ohne' && art !== 'asylblg');
+      var zArt = state['ek' + i + 'bArt'];
+      $('ek' + i + 'bLohnHint').hidden = !(zArt === 'lohn' || zArt === 'selbst');
       $('ek' + i + 'BruttoHint').textContent = art === 'rente' ? t('ek.brutto.hint.rente') : art === 'selbst' ? t('ek.brutto.hint.selbst') : t('ek.brutto.hint.lohn');
-      var bescheid = art === 'alg' || art === 'kg' || art === 'eg' || art === 'wfbm';
-      $('ek' + i + 'NettoLab').textContent = bescheid ? t(art === 'kg' ? 'ek.betrag.kg' : 'ek.betrag') : art === 'selbst' ? t('ek.netto.selbst') : t('ek.netto');
+      var bescheid = art === 'alg' || art === 'kg' || art === 'eg' || art === 'wfbm' || art === 'unt';
+      $('ek' + i + 'NettoLab').textContent = bescheid ? t(art === 'kg' ? 'ek.betrag.kg' : art === 'unt' ? 'ek.betrag.unt' : 'ek.betrag') : art === 'selbst' ? t('ek.netto.selbst') : t('ek.netto');
       $('ek' + i + 'NettoHint').textContent = bescheid ? t('ek.betrag.hint.' + art) : art === 'selbst' ? t('ek.netto.hint.selbst') : t('ek.netto.hint');
       // Plausibilität: Netto größer als Brutto ist fast immer ein Tippfehler; sehr kleine oder sehr große Beträge nachfragen
       var bb = state['ek' + i + 'Brutto'], nn = state['ek' + i + 'Netto'];
@@ -293,9 +469,52 @@
   function weitereWarnungen() {
     var mw = feldUngueltig('miete') || plausi(state.miete, 50, 6000);
     $('mieteWarn').hidden = !mw; $('mieteWarn').textContent = mw;
-    var gj = state.gebJahr, gw = '';
-    if (gj !== '' && gj != null && (gj < 1900 || gj > new Date().getFullYear() - 15)) gw = t('warn.geb');
+    var ge = $('gebJahr'), gw = gebUngueltig() && (document.activeElement !== ge || ge.value.trim().length >= 4) ? t('warn.geb') : '';
     $('gebWarn').hidden = !gw; $('gebWarn').textContent = gw;
+    mietgrenzeZeile();
+  }
+  // Höchstbetrag der Miete beim Wohngeld unter dem Mietfeld (Anlage 1 WoGG + Klimakomponente). Nur Anzeige, rechnet nichts Neues
+  // (Rules.wgHoechst nutzt wgCap/wgHeiz wie die Wohngeld-Karte). Mögliche Mietenstufen: Eingabe, sonst aus der PLZ; unbekannt = I bis VII.
+  function mietgrenzeStufen(plz, pick, stufe) {
+    if (/^[1-7]$/.test(String(stufe || ''))) return [Number(stufe)];
+    var r = Plz.available() && /^\d{5}$/.test(String(plz || '')) ? Plz.lookup(plz) : null;
+    if (!r) return [];
+    var c = r.candidates.filter(function (x) { return x.label + '|' + x.kreis + '|' + x.stufe === pick; })[0];
+    if (c && c.stufe) return [c.stufe];
+    if (r.candidates.some(function (x) { return !x.stufe; })) return []; // ein Ort ohne bekannte Stufe: ganze Spanne, sonst falsche Sicherheit
+    var s = []; r.candidates.forEach(function (x) { if (s.indexOf(x.stufe) < 0) s.push(x.stufe); });
+    return s;
+  }
+  function mietgrenzeZeile() {
+    var p = $('mieteGrenze'), d = $('mieteGrenzeMehr'), box = $('mieteGrenzeInhalt');
+    if (!p || !d || !box) return;
+    var stufen = mietgrenzeStufen(state.plz, state.plzPick, state.mietstufe), hatMiete = Number(state.miete) > 0;
+    var zeigen = (hatMiete || stufen.length > 0) && !feldUngueltig('miete');
+    p.hidden = d.hidden = !zeigen;
+    if (!zeigen) { p.textContent = ''; box.textContent = ''; return; }
+    var n = (Number(state.adults) || 0) + (Number(state.kids) || 0) + (Number(state.young) || 0), eig = state.wohnart === 'eigentum';
+    var w = Rules.wgHoechst({ stufen: stufen, n: n, warm: state.miete, heiz: state.heizkosten, eigentum: eig });
+    var istRtl = !!(I18N[lang] && I18N[lang]['meta.dir'] === 'rtl');
+    var E = function (v) { return Fmt.euro(Math.round(v * 100) / 100, lang, istRtl); }, pers = w.n === 1 ? t('wgmax.p1') : t('wgmax.pn', { n: w.n });
+    var eins = w.sv === w.sb, s = [];
+    if (eig && eins) s.push(t('wgmax.eigen', { betrag: E(w.von), stufe: Rules.roman(w.sv), personen: pers }));
+    else if (eins) s.push(t('wgmax.zeile', { betrag: E(w.von), stufe: Rules.roman(w.sv), personen: pers }));
+    else s.push(t(stufen.length ? 'wgmax.zeileSpanne' : 'wgmax.zeileOhne', { von: E(w.von), bis: E(w.bis), sv: Rules.roman(w.sv), sb: Rules.roman(w.sb), personen: pers }));
+    var V = { drunter: w.geschaetzt ? 'wgmax.drunterEtwa' : 'wgmax.drunter', drueber: w.geschaetzt ? 'wgmax.drueberEtwa' : 'wgmax.drueber', nah: 'wgmax.nah', moeglich: 'wgmax.moeglich' };
+    // Mehrere mögliche Stufen und Miete über dem höchsten Wert: welcher Betrag zählt, hängt von der Stufe ab (Spanne statt festem Betrag)
+    if (!eins && w.vergleich === 'drueber') V.drueber = w.geschaetzt ? 'wgmax.moeglichDrueberEtwa' : 'wgmax.moeglichDrueber';
+    if (w.vergleich) s.push(t(V[w.vergleich], { kalt: E(w.kalt), betrag: E(w.vergleich === 'drueber' ? w.bis : w.von), von: E(w.von), bis: E(w.bis) }));
+    if (state.hhAndere === 'verwandte') s.push(t('wgmax.verwandte'));
+    p.textContent = s.join(' ');
+    p.classList.toggle('moeglich', !eins || w.vergleich === 'moeglich' || w.vergleich === 'nah');
+    var teile = (eig ? [] : ['wgmax.d.kalt']).concat(['wgmax.d.heiz', 'wgmax.d.klima'], eig ? [] : ['wgmax.d.drueber'], ['wgmax.d.personen', 'wgmax.d.ausgeschlossen', 'wgmax.d.stufe']);
+    box.innerHTML = teile.map(function (k) { return '<p>' + esc(t(k, { heiz: E(w.heizKomp), klima: E(w.klima), personen: pers })) + '</p>'; }).join('') +
+      '<p><strong>' + esc(t('wgmax.d.kdu')) + '</strong></p>';
+  }
+  // Geburtsjahr: 4 Ziffern, 1900 bis heute-15 (wie Ein-Frage-Modus)
+  function gebUngueltig() {
+    var r = $('gebJahr').value.trim();
+    return r !== '' && (!/^\d{4}$/.test(r) || r < 1900 || r > new Date().getFullYear() - 15);
   }
   // Gespeicherte Angaben aus der früheren Eingabe (Summen und Haken) übernehmen
   function migriereEinkommen(s) {
@@ -352,17 +571,35 @@
       '<div class="zust behoerde" lang="de" dir="ltr"><p><strong>' + esc(t('beh.stelle')) + '</strong></p><address>' + lines.map(esc).join('<br>') + '</address>' +
       (b.haus ? '<p class="small"><bdi>' + esc(t('beh.besuch')) + '</bdi> ' + esc(b.haus.join(', ')) + '</p>' : '') +
       (b.web ? '<p><a href="' + esc(b.web) + '" target="_blank" rel="noopener">' + esc(t('beh.web')) + '</a></p>' : '') + '</div>' +
-      (b.weiter ? '<p class="small">' + esc(t('beh.wgWeiter')) + '</p>' : '') +
-      '<p class="small">' + esc(b.anschrift ? (b.quelleArt === 'wikipedia' ? t('beh.pruefenWiki', { stand: b.stand || '' }) : b.stand ? t('beh.pruefen', { stand: b.stand }) : t('beh.pruefenKurz')) : t('beh.ohneAdr')) + '</p>';
+      (b.weiter ? '<p class="small">' + esc(tL('beh.wgWeiter')) + '</p>' : '') +
+      (!b.anschrift ? '<p class="small">' + esc(t('beh.ohneAdr')) + '</p>'
+        : '<p class="small">' + esc(t('beh.pruefenKurz')) + '</p>' + (b.stand ? mehrHtml('<p>' + esc(t('beh.pruefen', { stand: b.stand })) + '</p>', t('beh.quelle')) : ''));
   }
 
+  // Aufenthalt „Asylverfahren oder Duldung“ (asyl) oder „ausreisepflichtig ohne Duldung“ (ausreise): beide wie asyl in den Regeln
+  function istAsyl() { return state.aufenthalt === 'asyl' || state.aufenthalt === 'ausreise'; }
+  // Einkommensarten; „Asylbewerberleistungen“ nur bei Aufenthalt „asyl“ (Wohngeld § 7 Abs. 1 Satz 1 Nr. 8 WoGG, Rundfunk § 4 Abs. 1 Nr. 4 RBStV)
+  function ekArtListe() {
+    var ek = [['', t('ek.art.0')], ['lohn', t('ek.art.lohn')], ['selbst', t('ek.art.selbst')], ['rente', t('ek.art.rente')], ['alg', t('ek.art.alg')], ['kg', t('ek.art.kg')], ['eg', t('ek.art.eg')], ['wfbm', t('ek.art.wfbm')], ['unt', t('ek.art.unt')], ['ohne', t('ek.art.ohne')]];
+    if (istAsyl()) ek.splice(ek.length - 1, 0, ['asylblg', t('ek.art.asylblg')]);
+    return ek;
+  }
+  // Auswahl nur neu füllen, wenn sich die Sichtbarkeit von „Asylbewerberleistungen“ ändert
+  function ekArtOptionen() {
+    ['ek1Art', 'ek2Art'].forEach(function (id) {
+      var hat = !!$(id).querySelector('option[value="asylblg"]');
+      if (hat !== istAsyl()) fillSelect(id, ekArtListe(), state[id]);
+    });
+  }
   function buildSelects() {
     var st = [['', t('stufe.unbekannt')]];
     for (var i = 1; i <= 7; i++) st.push([String(i), t('stufe.n', { n: Rules.roman(i) })]);
-    var ek = [['', t('ek.art.0')], ['lohn', t('ek.art.lohn')], ['selbst', t('ek.art.selbst')], ['rente', t('ek.art.rente')], ['alg', t('ek.art.alg')], ['kg', t('ek.art.kg')], ['eg', t('ek.art.eg')], ['wfbm', t('ek.art.wfbm')], ['ohne', t('ek.art.ohne')]];
+    var ek = ekArtListe();
     fillSelect('ek1Art', ek, state.ek1Art);
     fillSelect('ek2Art', ek, state.ek2Art);
-    fillSelect('ek1bArt', [['', t('ek.weiteres.0')]].concat(ek.slice(1).filter(function (x) { return x[0] !== 'ohne'; })), state.ek1bArt);
+    var ekZweit = [['', t('ek.weiteres.0')]].concat(ek.slice(1).filter(function (x) { return x[0] !== 'ohne' && x[0] !== 'asylblg'; }));
+    fillSelect('ek1bArt', ekZweit, state.ek1bArt);
+    fillSelect('ek2bArt', ekZweit, state.ek2bArt);
     fillSelect('mietstufe', st, state.mietstufe);
     fillSelect('bundesland', [['', t('bl.unbekannt')]].concat(BUNDESLAENDER), state.bundesland);
     fillSelect('arbeitSit', [['', t('arbeit.0')], ['arbeitslos', t('arbeit.arbeitslos')], ['krank', t('arbeit.krank')]], state.arbeitSit);
@@ -380,7 +617,7 @@
     fillSelect('gdb', gd, state.gdb);
     fillSelect('baby', [['', t('baby.0')], ['bald', t('baby.bald')], ['da', t('baby.da')]], state.baby);
     fillSelect('uvgPartner', [['', t('uvgPartner.0')], ['neu', t('uvgPartner.neu')], ['ehe', t('uvgPartner.ehe')], ['eltern', t('uvgPartner.eltern')]], state.uvgPartner);
-    fillSelect('aufenthalt', [['', t('aufenthalt.0')], ['eu', t('aufenthalt.eu')], ['asyl', t('aufenthalt.asyl')]], state.aufenthalt);
+    fillSelect('aufenthalt', [['', t('aufenthalt.0')], ['eu', t('aufenthalt.eu')], ['asyl', t('aufenthalt.asyl')], ['ausreise', t('aufenthalt.ausreise')]], state.aufenthalt);
     fillSelect('euArbeit', [['', t('eu.arbeit.0')], ['ja', t('eu.arbeit.ja')], ['nein', t('eu.arbeit.nein')]], state.euArbeit);
     fillSelect('euJahre', [['', t('eu.jahre.0')], ['unter5', t('eu.jahre.unter5')], ['ab5', t('eu.jahre.ab5')]], state.euJahre);
     fillSelect('wohnart', [['', t('wohnart.miete')], ['eigentum', t('wohnart.eigen')]], state.wohnart);
@@ -390,41 +627,64 @@
     fillSelect('uzAn', [['', t('uz.an.0')], ['k1', t('uz.an.k1')], ['k2', t('uz.an.k2')], ['k3', t('uz.an.k3')], ['ex', t('uz.an.ex')], ['exk', t('uz.an.exk')]], state.uzAn);
     fillSelect('emStd', [['', t('bh.em.0')], ['unter3', t('bh.em.unter3')], ['3bis6', t('bh.em.3bis6')], ['unklar', t('bh.em.unklar')]], state.emStd);
     fillSelect('lang', LANGS.map(function (c) { return [c, I18N[c]['meta.name']]; }), lang);
+    // Sprachwahl oben auf der Startseite: jede Sprache in ihrer eigenen Schrift, dazu „Deutsch – Einfache Sprache“
+    fillSelect('langTop', LANGS.map(function (c) { return [c, I18N[c]['meta.name']]; }).concat([['de-einfach', I18N.de['lang.einfach']]]), lang === 'de' && einfachSprache ? 'de-einfach' : lang);
     plzUpdate(false);
   }
 
   function applyLang() {
     var app = $('app');
+    if (window.DeNetz) DeNetz.sprache(); // alte Übersetzungen vergessen
     app.setAttribute('lang', lang);
     document.documentElement.setAttribute('lang', lang);
     document.documentElement.setAttribute('dir', I18N[lang]['meta.dir']);
     app.setAttribute('dir', I18N[lang]['meta.dir']);
     document.querySelectorAll('[data-t]').forEach(function (el) { el.textContent = t(el.getAttribute('data-t')); });
     document.querySelectorAll('[data-t-aria]').forEach(function (el) { el.setAttribute('aria-label', t(el.getAttribute('data-t-aria'))); });
-    $('stand').textContent = t('stand', { stand: Rules.RULES.stand });
+    document.querySelectorAll('[data-t-ph]').forEach(function (el) { el.setAttribute('placeholder', t(el.getAttribute('data-t-ph'))); });
+    $('mappeDeNote').hidden = lang === 'de'; // Hinweis „Brief und Angabenblatt sind auf Deutsch“ nur bei anderer App-Sprache
+    $('stand').textContent = t('stand', { stand: standL() });
+    $('vertrauenT').textContent = t('vertrauen', { stand: standL() }); // Stand und Herkunft der Zahlen sichtbar am Ergebnis
     $('appVersion').textContent = t('set.version', { v: APPVERSION });
     einfacheSpracheAnzeigen();
+    if (window.PruefpaketEinfach) window.PruefpaketEinfach.setze(lang === 'de' && einfachSprache, $('v-briefe')); // „Brief prüfen“ in Einfacher Sprache (src/lang/einfach/brief/brief.json)
+    if (window.Haushalt && Haushalt.sprache) Haushalt.sprache(); // Haushaltsplan (src/haushalt.js) in der neuen Sprache zeichnen
+    if (window.FristenOrdner) FristenOrdner.sprache(); // Fristen in „Mein Ordner“ (src/fristen.js)
+    if (window.Ausziehen && Ausziehen.sprache) Ausziehen.sprache(); // „Ich ziehe aus“ (src/ausziehen.js) in der neuen Sprache zeichnen
+    if (window.Schulden && Schulden.sprache) Schulden.sprache(); // Schulden-Liste (src/schulden.js)
+    if (window.Klient) Klient.sprache(); // „Für Klient zusammenstellen“ (src/klient.js)
+    if (window.Suche) Suche.sprache(); // Suche (Lupe, src/suche.js)
     // Regeln älter als der nächste Stichtag (1. Januar): deutlich darauf hinweisen
     var veraltet = regelnVeraltet();
-    $('altNotice').hidden = !veraltet; $('altNotice').textContent = veraltet ? t('alt.hinweis', { stand: Rules.RULES.stand }) : '';
+    $('altNotice').hidden = !veraltet; $('altNotice').textContent = veraltet ? t('alt.hinweis', { stand: standL() }) : '';
     $('transNotice').hidden = lang === 'de';
-    document.querySelectorAll('#presets button').forEach(function (b) {
-      b.textContent = t(PRESETS.filter(function (p) { return p.id === b.id; })[0].key);
-    });
     buildSelects();
     render();
     if (!$('mappe').hidden) buildMappe();
+    if (!$('ergBlatt').hidden) ebBauen();
     renderScan();
     if (esModus) esRender();
+    if (window.Schritte) Schritte.render(); // Frage für Frage (src/schritte.js) in der neuen Sprache
     bereicheText();
+    vgRender();
+    schalterText(); einstStatus(); ordnerRender();
+    if (typeof PflegeAssistent !== 'undefined' && $('pflegeAssist').firstChild) paStarten(false); // Pflege-Einschätzung (Einfache Sprache) an derselben Stelle neu zeichnen
   }
 
   // Schalter „Einfache Sprache“: gibt es nur auf Deutsch; in anderen Sprachen sichtbar, aber nicht bedienbar (aria-disabled, bleibt per Tastatur erreichbar)
   function einfacheSpracheAnzeigen() {
     var de = lang === 'de', b = $('einfacheSpracheBtn');
-    b.setAttribute('aria-pressed', String(de && einfachSprache));
+    b.setAttribute('aria-checked', String(de && einfachSprache));
     if (de) b.removeAttribute('aria-disabled'); else b.setAttribute('aria-disabled', 'true');
     $('einfacheSpracheT').textContent = t(de ? 'set.es.t' : 'set.es.nurDe');
+    if ($('deNetzBtn')) { $('deNetzBtn').setAttribute('aria-checked', String(!window.DeNetz || DeNetz.an())); $('deNetzT').textContent = t(de ? 'dn.set.nurFremd' : 'dn.set.t'); }
+  }
+  // Schalter „Wichtige Sätze auch auf Deutsch zeigen“ (Standard an; wirkt nur bei Fremdsprachen)
+  function deNetzSetzen(an, speichern) {
+    if (!window.DeNetz) return;
+    if (speichern) Store.set('lotse.deNetz', an ? '1' : '0');
+    DeNetz.setzeAn(an);
+    einfacheSpracheAnzeigen();
   }
   function einfacheSpracheSetzen(an, speichern) {
     einfachSprache = !!an;
@@ -432,6 +692,23 @@
     applyLang(); // alle Texte neu zeichnen
   }
 
+  // Beratungsmodus (Für Fachkräfte): Rechtsgrundlagen und Paragrafen zeigen; Standard aus
+  function beratungSetzen(an, speichern) {
+    beratung = !!an;
+    $('beratungBtn').setAttribute('aria-checked', String(beratung));
+    if (speichern) Store.set('lotse.beratung', beratung ? '1' : '0');
+    render();
+    if (!$('mappe').hidden) buildMappe();
+    if (!$('ergBlatt').hidden) ebBauen();
+    if (window.Klient) Klient.sichtbar(); // aus: Knopf weg, offenes Blatt zu
+    if (aktAnsicht === 'pfaendung') pfRender(false);
+    if (aktAnsicht === 'sparen') spRender(false);
+    if (aktAnsicht === 'haushalt' && window.Haushalt) Haushalt.sprache(); // Druckblatt nur im Beratungsmodus
+    if (an && window.Schritte && !Schritte.weg()) Schritte.wegLaden('', true); // Beratungsmodus: ohne eigene Wahl „Alles auf einer Seite“
+  }
+
+  // Stand der Regeln in der App-Sprache (Monatsname übersetzt, Fmt.monat); das Angabenblatt (Deutsch) nimmt Rules.RULES.stand
+  function standL() { return Fmt.monat(Rules.RULES.stand, lang); }
   function regelnVeraltet() { var ab = Rules.RULES.pruefenAb; return !!ab && new Date() >= new Date(ab + 'T00:00:00'); }
 
   function setLang(c) {
@@ -447,18 +724,71 @@
   var pr = $('presets');
   PRESETS.forEach(function (p) {
     var b = document.createElement('button');
-    b.type = 'button'; b.className = 'chip'; b.id = p.id;
+    b.type = 'button'; b.className = 'chip'; b.id = p.id; b.textContent = p.id; b.tabIndex = -1; // Beispiele nur noch als Testhilfe (unsichtbar, #presets hidden; David 20.11.2026)
     b.addEventListener('click', function () {
-      state = JSON.parse(JSON.stringify(p.v));
-      edited = false; started = true; pickedUser = {}; $('sampleNotice').hidden = false;
-      writeForm(); buildSelects(); render(); save();
+      var laden = function () {
+        vgVorBeispiel(); // Beispiel nie in einen gespeicherten Vorgang schreiben: dann öffnet es einen neuen leeren Vorgang
+        state = JSON.parse(JSON.stringify(p.v));
+        edited = false; started = true; pickedUser = {}; $('sampleNotice').hidden = false;
+        writeForm(); buildSelects(); render(); save();
+      };
+      laden();
     });
     pr.appendChild(b);
   });
 
+  // Was „Alle Angaben löschen“ löscht. Neue Teile hier ergänzen: Sprachschlüssel clear.teil.*
+  // Ist ein gespeicherter Vorgang geöffnet, nennt der Text ihn: gelöscht wird nur in diesem Vorgang, andere bleiben.
+  var LOESCH_TEILE = ['clear.teil.form', 'clear.teil.person'].concat(window.Haushalt ? ['clear.teil.haushalt'] : [], window.Ausziehen ? ['az.h'] : [], window.FristenOrdner ? ['fri.karte'] : [], window.Schulden ? ['sl.ordner'] : [], ['clear.teil.mehr']);
+  function loeschWas() { return t('l.einsWas', { teile: LOESCH_TEILE.map(function (k) { return k === 'az.h' || k === 'sl.ordner' ? '„' + t(k) + '“' : t(k); }).join(', ') }); }
+  function loeschEinsTitel(v) { return v && v.name ? t('l.eins', { name: v.name }) : t('l.einsOhne'); }
+  // Einen Vorgang ganz löschen (Name und alle Angaben in Vorgaenge.DATEN); der letzte wird durch einen leeren ersetzt
+  // Danach etwa 10 Sekunden „Rückgängig“ (holt das Abbild aller Vorgänge zurück; neue Eingaben beenden das Angebot)
+  function vgLoeschen(id, msgEl) {
+    var v = tresor.liste().filter(function (x) { return x.id === id; })[0]; if (!v) return;
+    flush();
+    var sicher = tresor.sicherung(), war = id === tresor.aktiv().id;
+    if (war) { clearTimeout(saveTimer); saveTimer = null; }
+    tresor.loeschen(id);
+    if (war) vgNeuLaden(); else vgRender();
+    var ok = v.name ? t('l.okEins', { name: v.name }) : t('l.okOhne');
+    if (msgEl) msgEl.textContent = ok;
+    undoZeigen(ok, function () {
+      clearTimeout(saveTimer); saveTimer = null;
+      if (!tresor.zurueck(sicher)) return;
+      vgNeuLaden();
+      var m = $('loeschMsg'); if (m) m.textContent = t('l.zurueck');
+    });
+  }
+  // Rückgängig-Leiste: bleibt etwa 10 Sekunden; solange der Fokus darin ist, verschwindet sie nicht
+  var undoFn = null, undoTimer = null;
+  function undoWeg() { clearTimeout(undoTimer); undoFn = null; $('undoBar').hidden = true; }
+  function undoUhr() { clearTimeout(undoTimer); undoTimer = setTimeout(function () { if (!$('undoBar').contains(document.activeElement)) undoWeg(); }, 10000); }
+  function undoZeigen(text, fn) { undoFn = fn; $('undoText').textContent = text; $('undoBar').hidden = false; undoUhr(); }
+  $('undoBtn').addEventListener('click', function () { var f = undoFn; undoWeg(); if (f) f(); });
+  $('undoBar').addEventListener('focusout', undoUhr);
+  // Rückfrage vor dem Löschen: dieselbe klare Aussage, „Abbrechen“ als Hauptknopf, „Ja, endgültig löschen“ rot
+  function loeschFragen(nach, ausloeser, titel, was, ja, mitUndo) {
+    var alt = $('loeschFrage'); if (alt) alt.remove();
+    var box = vgEl('div', 'loesch-frage'); box.id = 'loeschFrage'; box.setAttribute('role', 'group'); box.setAttribute('aria-labelledby', 'loeschFrageT');
+    var tt = vgEl('p', 'loesch-frage-t', titel + '?'); tt.id = 'loeschFrageT'; box.appendChild(tt);
+    box.appendChild(vgEl('p', 'small', was));
+    box.appendChild(vgEl('p', 'small', t(mitUndo ? 'l.kurzZurueck' : 'l.endgueltig')));
+    var bt = vgEl('div', 'btns');
+    var nein = vgEl('button', 'btn ghost', t('l.abbrechen')); nein.type = 'button'; nein.id = 'loeschNein';
+    var jb = vgEl('button', 'btn loesch-ja', t('l.ja')); jb.type = 'button'; jb.id = 'loeschJa';
+    nein.addEventListener('click', function () { box.remove(); if (ausloeser && document.body.contains(ausloeser)) ausloeser.focus(); });
+    jb.addEventListener('click', function () { box.remove(); flush(); ja(); });
+    bt.appendChild(nein); bt.appendChild(jb); box.appendChild(bt);
+    nach.parentNode.insertBefore(box, nach.nextSibling);
+    tt.tabIndex = -1; tt.focus({ preventScroll: true }); // kein Knopf vorgewählt (NN/g): Fokus auf die Frage
+    // Rückfrage ganz in den Blick holen (nicht unter dem Bildrand oder hinter der unteren Leiste; Abstand: scroll-margin in .loesch-frage)
+    try { box.scrollIntoView({ behavior: smooth(), block: 'center' }); } catch (e) { box.scrollIntoView(); }
+  }
+
   var CHECKS = ['mzG', 'mzGl', 'algZeit', 'grundrente33', 'wfbmEssen', 'teilhabe', 'schwanger', 'ernaehrung', 'warmwasser', 'kinder12', 'kindKrank', 'unterhaltFehlt', 'uvgWechsel', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt', 'uzTitel', 'autoBraucht'];
-  var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'ek1bArt', 'bhWeitere', 'baby', 'aufenthalt', 'uvgPartner', 'arbeitSit', 'algMonate', 'krankWochen', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd', 'uzAn', 'wohnart', 'hhAndere', 'euArbeit', 'euJahre'];
-  var NUMS = ['miete', 'heizkosten', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'waisen', 'kindEink', 'lohnVorher', 'ek1bBetrag', 'egVor', 'vermoegen', 'uzBetrag', 'autoWert', 'zusatzRente'];
+  var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'ek1bArt', 'ek2bArt', 'bhWeitere', 'baby', 'aufenthalt', 'uvgPartner', 'arbeitSit', 'algMonate', 'krankWochen', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd', 'uzAn', 'wohnart', 'hhAndere', 'euArbeit', 'euJahre'];
+  var NUMS = ['miete', 'heizkosten', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'waisen', 'kindEink', 'lohnVorher', 'ek1bBetrag', 'ek2bBetrag', 'egVor', 'vermoegen', 'uzBetrag', 'autoWert', 'zusatzRente'];
   var BEZUG = ['grundsicherungsgeld', 'sozialamt', 'wohngeld', 'kiz', 'kindergeld'];
 
   function writeForm() {
@@ -473,10 +803,12 @@
     CHECKS.forEach(function (k) { $(k).checked = !!state[k]; });
     BEZUG.forEach(function (k) { $('b-' + k).checked = !!state.bezug[k]; });
     if ($('vaInfo')) vaInfo();
+    // Aufklappfeld „+ Weiteres Einkommen“ offen, wenn etwas eingetragen ist
+    $('ek1bBox').open = !!state.ek1bArt; $('ek2bBox').open = !!state.ek2bArt;
   }
 
   function touched() {
-    started = true;
+    started = true; if (undoFn) undoWeg(); // nach neuer Eingabe nichts Altes mehr zurückholen
     if (!edited) { edited = true; $('sampleNotice').hidden = true; }
     // Ausgeblendete Felder zurücksetzen, damit keine alten Werte mitrechnen
     if (state.kids === 0) { state.kidsAlter = false; state.kinder12 = false; state.kindKrank = false; if ($('kindKrank')) $('kindKrank').checked = false; state.unterhaltFehlt = false; state.kidsU6 = 0; state.kids14 = 0; $('kinder12').checked = false; $('unterhaltFehlt').checked = false; }
@@ -521,6 +853,12 @@
     CHECKS.forEach(function (k) { $(k).addEventListener('change', function () { state[k] = $(k).checked; touched(); }); });
     BEZUG.forEach(function (k) { $('b-' + k).addEventListener('change', function () { state.bezug[k] = $('b-' + k).checked; touched(); }); });
     $('lang').addEventListener('change', function () { setLang($('lang').value); });
+    $('langTop').addEventListener('change', function () {
+      var v = $('langTop').value, es = v === 'de-einfach';
+      if (es || (v === 'de' && einfachSprache)) { einfachSprache = es; Store.set('lotse.einfachSprache', es ? '1' : '0'); }
+      setLang(es ? 'de' : v);
+      var k = $('langTop'); if (k) k.focus({ preventScroll: true });
+    });
     if ($('sc-take')) $('sc-take').addEventListener('click', function () { runNative(); });
     if ($('sc-local')) $('sc-local').addEventListener('click', function () { runLocal(true); });
     if ($('sc-pasteBtn')) $('sc-pasteBtn').addEventListener('click', function () { var b = $('sc-pasteBox'); b.hidden = !b.hidden; $('sc-pasteBtn').setAttribute('aria-expanded', String(!b.hidden)); if (!b.hidden) $('sc-text').focus(); });
@@ -538,37 +876,47 @@
     $('bigBtn').addEventListener('click', function () {
       var on = !$('app').classList.contains('big');
       $('app').classList.toggle('big', on); document.documentElement.classList.toggle('big', on);
-      $('bigBtn').setAttribute('aria-pressed', String(on));
+      $('bigBtn').setAttribute('aria-checked', String(on));
       save();
     });
     $('einfacheSpracheBtn').addEventListener('click', function () {
       if (lang !== 'de') return;
       einfacheSpracheSetzen(!einfachSprache, true);
     });
+    $('beratungBtn').addEventListener('click', function () { beratungSetzen(!beratung, true); });
+    if ($('deNetzBtn')) $('deNetzBtn').addEventListener('click', function () { deNetzSetzen(!DeNetz.an(), true); });
+    $('ebOpen').addEventListener('click', ebOeffnen);
+    $('ebKuerzel').addEventListener('input', ebBauen);
+    $('ebDruck').addEventListener('click', function () { ebAusgeben(NATIVE ? (plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen') : 'web'); });
+    if (NATIVE) { $('ebDruck').setAttribute('data-t', plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'f.druck' : 'f.pdf'); $('ebDruck').textContent = t($('ebDruck').getAttribute('data-t')); }
     $('jumpBtn').addEventListener('click', function () {
       var el = $('ergebnis');
       el.scrollIntoView({ behavior: smooth(), block: 'start' });
       el.focus({ preventScroll: true });
     });
+    window.addEventListener('scroll', jumpPruefen, { passive: true });
+    window.addEventListener('resize', jumpPruefen);
     [['p-name', 'name'], ['p-geb', 'geb'], ['p-strasse', 'strasse'], ['p-ort', 'ort'], ['p-tel', 'tel']].forEach(function (x) {
       $(x[0]).addEventListener('input', function () {
         person[x[1]] = $(x[0]).value; save();
+        if (!$('mappe').hidden) mappeNeuBald(); // Briefe in der Mappe zeigen Name und Anschrift sofort
         // Die Anschrift kann den Wohnort liefern (PLZ): Karten mit der zuständigen Stelle aktualisieren
         if (x[1] === 'ort' && !/^\d{5}$/.test(String(state.plz || ''))) render();
       });
     });
-    $('mappeMake').addEventListener('click', function () {
-      var any = Object.keys(picked).some(function (k) { return picked[k]; });
-      if (!any) { $('pickMsg').textContent = t('f.pick0'); return; }
-      $('pickMsg').textContent = '';
-      openMappe();
+    // Geburtsdatum beim Verlassen des Feldes einheitlich als TT.MM.JJJJ (Unklares bleibt wie eingegeben)
+    $('p-geb').addEventListener('change', function () { var f = Fmt.gebDatum($('p-geb').value); if (f !== $('p-geb').value) { $('p-geb').value = f; person.geb = f; save(); } });
+    // „Briefe für die Anträge machen“ (entsteht mit den Karten): öffnet die Antragsmappe; Auswahl, Name und Anschrift stehen dort oben
+    $('cards').addEventListener('click', function (e) {
+      if (e.target && e.target.closest && e.target.closest('#mappeMake')) openMappe();
     });
-    $('mappeClose').addEventListener('click', closeMappe);
+    // Auswahl der Leistungen in der Mappe: Mappe sofort neu aufbauen
+    $('pick').addEventListener('change', function () { if (!$('mappe').hidden) buildMappe(); });
     // App: „PDF teilen“ (auf dem iPhone mit Drucken und In Dateien sichern im Teilen-Dialog); kein zweiter, doppelter Teilen-Knopf
     if (NATIVE) { $('mappePrint').setAttribute('data-t', 'f.pdf'); $('mappePrint').textContent = t('f.pdf'); }
     // Android: eigene Knöpfe zum Drucken und Speichern (dort bietet der Teilen-Dialog das nicht auf jedem Gerät an; iPhone: im Teilen-Dialog enthalten)
     if (NATIVE && plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios')) {
-      $('mappeDruck').hidden = false; $('mappeSpeichern').hidden = false; $('mappePrint').classList.add('ghost');
+      $('mappeDruck').hidden = false; $('mappeSpeichern').hidden = false; // unter „Weitere Möglichkeiten“; Hauptknopf bleibt „PDF teilen“
       $('mappeDruck').addEventListener('click', function () { pdfAusgabe('drucken'); });
       $('mappeSpeichern').addEventListener('click', function () { pdfAusgabe('speichern'); });
     }
@@ -585,20 +933,19 @@
       try { window.print(); } catch (e) { $('copyMsg').textContent = ''; }
     });
     $('mappeCopy').addEventListener('click', copyMappe);
-    $('clearBtn').addEventListener('click', function () {
-      state = blankState(); person = { name: '', geb: '', strasse: '', ort: '', tel: '' }; picked = {}; pickedUser = {}; started = false;
-      ['p-name', 'p-geb', 'p-strasse', 'p-ort', 'p-tel'].forEach(function (id) { $(id).value = ''; });
-      edited = true; $('sampleNotice').hidden = true;
-      clearTimeout(saveTimer); clearTimeout(soonTimer); saveTimer = null;
-      Store.remove('lotse.state');
-      writeForm(); buildSelects(); render();
-      $('clearMsg').textContent = t('clear.done');
+    // „Drucken“ auch am Ende der Mappe: löst denselben Weg aus wie der Knopf oben (Web: Drucken, App: PDF)
+    $('mappePrint2').addEventListener('click', function () { (!$('mappeDruck').hidden ? $('mappeDruck') : $('mappePrint')).click(); });
+    // „Angaben löschen“ oben in „Deine Angaben“ (Leiste von src/schritte.js): dieselbe Rückfrage wie in Sicherheit und Daten, mit Rückgängig
+    $('schritte').addEventListener('click', function (e) {
+      var b = e.target.closest ? e.target.closest('#clearLink') : null; if (!b) return;
+      if (!(tresor && tresor.bereit())) { herkunft = {}; zeigeAnsicht('einst', false); usZeigen('einst', 'sicher', true); return; } // ohne Speicher: Weg zu Sicherheit und Daten
+      var a = tresor.aktiv();
+      loeschFragen($('sfLeiste'), b, loeschEinsTitel(a), loeschWas(), function () { vgLoeschen(a.id, null); }, true);
     });
     // Anbieter im Impressum: iPhone-App über das Apple-Konto von Natascha Cabrerizo y Polo, Android und Web: David Cabrerizo
     if (NATIVE && window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') { $('anbieterName').textContent = 'Natascha Cabrerizo y Polo'; document.documentElement.classList.add('ios'); }
     $('legalBtn').addEventListener('click', function () { openLegal($('legalBtn')); });
     $('legalBtn2').addEventListener('click', function () { openLegal($('legalBtn2')); });
-    $('legalClose').addEventListener('click', closeLegal);
     $('firstOk').addEventListener('click', function () { $('firstNotice').hidden = true; Store.set('lotse.ack', '1'); });
     // Links ins Netz öffnen in der App im Systembrowser, Anker innerhalb der Seite bleiben
     document.addEventListener('click', function (e) {
@@ -610,13 +957,13 @@
     window.addEventListener('pagehide', flush);
     var ap = plug('App');
     if (ap) {
+      // Zurück-Taste: Blatt oder Dialog schließen, sonst eine Ebene hoch (dieselbe Navigation wie der Zurück-Knopf); auf der Startseite beenden
       ap.addListener('backButton', function () {
-        if (!$('legal').hidden) closeLegal();
-        else if (!$('mappe').hidden) closeMappe();
-        else if ((window.pageYOffset || 0) > 60) window.scrollTo(0, 0);
+        if (navBereit ? Navigation.zurueck() : ebeneHoch()) return;
+        if ((window.pageYOffset || 0) > 60) window.scrollTo(0, 0);
         else ap.exitApp();
       });
-      ap.addListener('appStateChange', function (s) { if (s && !s.isActive) flush(); });
+      ap.addListener('appStateChange', function (s) { if (s && !s.isActive) flush(); vgHintergrund(!(s && s.isActive)); });
     }
     var kb = plug('Keyboard');
     if (kb) {
@@ -668,32 +1015,72 @@
   function resultText(r) { return r.tx.map(function (x) { return t('t.' + x[0], x[1]); }).join(' '); }
   // Kartentext gegliedert: der wichtigste Satz oben, weitere Hinweise als Punkte darunter (Wortlaut wie resultText)
   function resultHtml(r) {
-    var teile = r.tx.map(function (x) { return t('t.' + x[0], x[1]); });
+    var teile = r.tx.map(function (x) { return tL('t.' + x[0], x[1]); });
     return '<p class="kern">' + esc(teile[0] || '') + '</p>' + (teile.length > 1 ? '<ul class="punkte">' + teile.slice(1).map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : '');
   }
 
   // Hinweise, die zu bestimmten Leistungen gehören, stehen in deren Karte; Hinweise für alle Anträge in „Gut zu wissen“
   var HINWEIS_KARTE = { 'z.wgKiz': ['wohngeld', 'kiz'], 'z.gsaWg': ['gsa', 'wohngeld'], 'z.kgZuerst': ['kiz', 'kindergeld'], 'z.ggBezug': ['wohngeld', 'kiz', 'but'] };
   var HINWEIS_ALLE = ['z.stichtag', 'z.verfahren', 'z.grenzen'];
-  var kartenHinweise = {}, gutHtml = '';
+  var kartenHinweise = {}, tippsHtml = '';
+  // Beratungsmodus: Rechtsgrundlage der Leistung (Rules.RECHT, deutsch) unter dem Kartentext
+  function rechtHtml(r) { return beratung && r.recht ? '<p class="recht"><strong>' + esc(t('recht.label')) + ':</strong> <span lang="de" dir="ltr">' + esc(r.recht) + '</span></p>' : ''; }
+  // Unterlagen-Checkliste zum Abhaken (Antragsmappe); Haken bleiben auf dem Gerät (lotse.haken)
+  // Grundsicherungsgeld: die genaue Liste nach der Lage des Haushalts (src/formulare.js, nur Deutsch) statt der allgemeinen – eine Liste je Hilfe
+  function unterlagenGenau(r) {
+    return '<ul class="haken-liste">' + Formulare.unterlagen(state).map(function (text) {
+      var key = r.id + '|f:' + text.slice(0, 60);
+      return '<li><label class="haken"><input type="checkbox" data-haken="' + esc(key) + '"' + (haken[key] ? ' checked' : '') + '><span>' + esc(text) + '</span></label></li>';
+    }).join('') + '</ul>';
+  }
+  function unterlagenListe(r, ohneHinweis) {
+    return (ohneHinweis ? '' : '<p class="small muted haken-hint no-print">' + esc(t('haken.hint')) + '</p>') + '<ul class="haken-liste">' + r.steps.u.map(function (k) {
+      var key = r.id + '|' + k;
+      return '<li><label class="haken"><input type="checkbox" data-haken="' + esc(key) + '"' + (haken[key] ? ' checked' : '') + '><span>' + esc(tL(k)) + '</span></label></li>';
+    }).join('') + '</ul>';
+  }
+  document.addEventListener('change', function (ev) {
+    var el = ev.target, key = el && el.getAttribute && el.getAttribute('data-haken');
+    if (!key) return;
+    if (el.checked) haken[key] = true; else delete haken[key];
+    document.querySelectorAll('input[data-haken]').forEach(function (cb) { if (cb !== el && cb.getAttribute('data-haken') === key) cb.checked = el.checked; });
+    Store.set('lotse.haken', JSON.stringify(haken));
+  });
+  // Zweite Zeile der eingeklappten Karte: bei passenden Leistungen statt „Anspruch ist wahrscheinlich/möglich“ (steht schon im Etikett)
+  // der grob geschätzte Betrag (nur wenn die Karte einen ausrechnet) und die Art der zuständigen Stelle. Sonst der Grund wie bisher.
+  var BETRAG_KURZ = { 'schaetz.eins': 'karte.betrag.eins', 'schaetz.spanne': 'karte.betrag.spanne', 'schaetz.bis': 'karte.betrag.bis', 'schaetz.mind': 'karte.betrag.mind' };
+  function zeile2(r) {
+    if (r.level !== 'ja' && r.level !== 'vielleicht') return t('h.' + r.hl);
+    var teile = [];
+    if (r.hl !== 'ja' && r.hl !== 'vielleicht') teile.push(t('h.' + r.hl)); // besonderer Grund (z. B. „Einkommen eher zu niedrig“) bleibt
+    var b = r.tx.filter(function (x) { return BETRAG_KURZ[x[0]]; })[0];
+    if (b) teile.push(t(BETRAG_KURZ[b[0]], b[1]));
+    var zl = Rules.zustLand(r.id, state.bundesland), zk = 'zu.' + r.id;
+    if (zl) teile.push(zl); else if (Object.prototype.hasOwnProperty.call(I18N.de, zk)) teile.push(t(zk));
+    return teile.length ? teile.join(' · ') : t('h.' + r.hl);
+  }
+  // Alles, was für ein genaueres Ergebnis fehlt, auf einmal nennen (ohne die fehlt.*-Zeilen der Karte doppelt)
+  var GENAUER = { wohngeld: 1, kiz: 1, ggeld: 1, but: 1 };
+  function genauerHtml(r) {
+    if (!GENAUER[r.id] || (r.level !== 'ja' && r.level !== 'vielleicht')) return '';
+    var schon = {}; r.tx.forEach(function (x) { schon[x[0]] = true; });
+    var f = [];
+    if (r.id !== 'but' && (state.vermoegen === '' || state.vermoegen == null) && !schon['fehlt.vermoegen']) f.push(t('gn.vermoegen'));
+    if (r.id === 'wohngeld' && !state.mietstufe) f.push(t('gn.plz'));
+    if ((state.ek1Geschaetzt || state.ek2Geschaetzt) && !schon['fehlt.einkommen']) f.push(t('gn.brutto'));
+    return f.length ? '<p class="karte-genauer">' + esc(t('gn.liste', { liste: f.join(', ') })) + '</p>' : '';
+  }
   function card(r) {
     var dim = r.level === 'nein' || r.level === 'na';
-    var s = r.steps;
-    var steps = '';
-    if (r.level !== 'nein') {
-      steps = '<details><summary>' + esc(t('steps.sum')) + '</summary><div class="inner">' +
-        '<div><div class="lab-s">' + esc(t('steps.wo')) + '</div><p>' + esc(t(s.wo)) + '</p></div>' +
-        '<div><div class="lab-s">' + esc(t('steps.docs')) + '</div>' + listItems(s.u.map(function (k) { return t(k); })) + '</div>' +
-        '<div><div class="lab-s">' + esc(t('steps.tips')) + '</div>' + listItems([t(s.tip)]) + '</div>' +
-        '<p class="small">' + esc(t('steps.note')) + '</p></div></details>';
-    }
+    // Unterlagen und nächste Schritte stehen nur in der Antragsmappe (m-unterlagen, mit Haken); die Karte verweist kurz darauf
+    var steps = r.level !== 'nein' ? '<p class="small karte-mappe">' + esc(t('karte.mappe')) + '</p>' : '';
     var desc = lang === 'de' ? '' : t('n.' + r.id);
-    // Zuerst nur eine Zeile (Name, Einschätzung, kurzer Satz); ein Tipp klappt Beschreibung, Stelle und nächste Schritte auf
+    // Zuerst nur eine Zeile (Name, Einschätzung, kurzer Satz); ein Tipp klappt Beschreibung und Stelle auf
     return '<article class="card auf' + (dim ? ' dim' : '') + '" data-id="' + r.id + '" id="c-' + r.id + '"><details class="karte"><summary>' +
       '<header><div><h3' + (lang === 'de' ? '' : ' lang="de"') + '>' + esc(r.name) + '</h3>' + (desc ? '<div class="desc">' + esc(desc) + '</div>' : '') + '</div>' +
       '<span class="pill ' + r.level + '"><span aria-hidden="true">' + MARK[r.level] + '</span>' + esc(t('lvl.' + r.level)) + '</span></header>' +
-      '<p class="head2">' + esc(t('h.' + r.hl)) + '</p><span class="karte-mehr" aria-hidden="true" data-mehr="' + esc(t('karte.mehr')) + '" data-weniger="' + esc(t('karte.weniger')) + '"></span></summary>' +
-      '<div class="body"><div class="txt">' + resultHtml(r) + '</div>' + (kartenHinweise[r.id] || []).map(function (z) { return '<p class="karte-hinweis"><span aria-hidden="true">ⓘ </span>' + esc(t(z[0], z[1])) + '</p>'; }).join('') + '</div>' +
+      '<p class="head2">' + esc(beratung ? zeile2(r) : Fmt.ohnePara(zeile2(r))) + '</p><span class="karte-mehr" aria-hidden="true" data-mehr="' + esc(t('karte.mehr')) + '" data-weniger="' + esc(t('karte.weniger')) + '"></span></summary>' +
+      '<div class="body"><div class="txt">' + resultHtml(r) + genauerHtml(r) + '</div>' + (kartenHinweise[r.id] || []).map(function (z) { return '<p class="karte-hinweis"><span aria-hidden="true">ⓘ </span>' + esc(tL(z[0], z[1])) + '</p>'; }).join('') + rechtHtml(r) + '</div>' +
       zustHtml(r) + steps + '</details></article>';
   }
 
@@ -715,7 +1102,9 @@
   }
   function kartenHtml(results) {
     var k = kartenReihe(results), nein = k.neinKern.length + k.neinSpez.length;
-    return k.passt.map(card).join('') + gutHtml + (nein
+    // Grüner Hauptknopf direkt unter den passenden Karten (wie im Kurzen Check); Name und Anschrift fragt erst die Antragsmappe
+    var knopf = '<p class="btns erg-knopf" id="mappeKnopf"><button type="button" class="btn" id="mappeMake">' + esc(t('es.briefe')) + '</button></p>';
+    return k.passt.map(card).join('') + knopf + '<div class="erg-tipps" id="ergTipps">' + tippsHtml + '</div>' + (nein
       ? '<details class="neinbox"><summary>' + esc(t('nein.sum', { n: nein })) + '</summary>' + k.neinKern.map(card).join('') +
         (k.neinSpez.length ? '<details class="spezbox"><summary>' + esc(t('nein.spezial', { n: k.neinSpez.length })) + '</summary>' + k.neinSpez.map(card).join('') + '</details>' : '') +
         '</details>'
@@ -725,29 +1114,54 @@
   // Ergebniskarte aufklappen (Sprung aus der Übersicht, Rückkehr von der Pflege-Einschätzung oder der Erklärseite)
   function karteAuf(id) { var a = id && document.getElementById(id); var d = a && a.classList.contains('auf') && a.querySelector('details.karte'); if (d) d.open = true; }
   // Grundsicherungsgeld oder Wohngeld und Kinderzuschlag: beides zusammen geht nicht. Eine Kachel erklärt die zwei Wege.
-  function zweiWege(results) {
+  function wegLinks(results, ids) {
     var g = function (id) { for (var i = 0; i < results.length; i++) if (results[i].id === id) return results[i]; return null; };
-    var weg = function (ids) { return ids.map(g).filter(function (r) { return r && r.level !== 'nein'; }).map(function (r) {
-      return '<a class="ww-l ' + r.level + '" href="#c-' + r.id + '"><span' + (lang === 'de' ? '' : ' lang="de"') + '>' + esc(r.name) + '</span><span class="pill ' + r.level + '"><span aria-hidden="true">' + MARK[r.level] + '</span>' + esc(t('lvl.' + r.level)) + '</span></a>'; }).join(''); };
-    return '<section class="zweiwege" id="zweiWege" aria-labelledby="h-ww"><h3 id="h-ww">' + esc(t('ww.h')) + '</h3><p class="ww-tun"><b>' + esc(t('ww.tipp')) + '</b></p><p>' + esc(t('ww.t')) + '</p>' +
-      '<div class="ww-wege"><div class="ww-weg"><h4>' + esc(t('ww.a.h')) + '</h4><p>' + esc(t('ww.a.t')) + '</p>' + weg(['ggeld', 'but']) + '</div>' +
-      '<div class="ww-weg"><h4>' + esc(t('ww.b.h')) + '</h4><p>' + esc(t('ww.b.t')) + '</p>' + weg(['wohngeld', 'kiz', 'but']) + '</div></div>' +
-      '<p class="ww-regel"><b>' + esc(t('ww.regel.h')) + '</b> ' + esc(t('ww.regel')) + '</p></section>';
+    return ids.map(g).filter(function (r) { return r && r.level !== 'nein'; }).map(function (r) {
+      return '<a class="ww-l ' + r.level + '" href="#c-' + r.id + '"><span' + (lang === 'de' ? '' : ' lang="de"') + '>' + esc(r.name) + '</span><span class="pill ' + r.level + '"><span aria-hidden="true">' + MARK[r.level] + '</span>' + esc(t('lvl.' + r.level)) + '</span></a>'; }).join('');
+  }
+  // Rente/Erwerbsminderung: Grundsicherung im Alter oder Wohngeld – gibt es nicht gleichzeitig (Hinweis z.gsaWg). Gleicher Aufbau wie „Zwei Wege“,
+  // aber nur mit Aussagen, die schon in der App stehen (z.gsaWg, es.r.gsa, es.r.wohngeld, sp.vertraege.1); keine eigene Vorrangregel.
+  function entwederOder(results) {
+    return tippHtml('waage', tL('eo.h'), '<div><p class="ww-tun"><b>' + esc(tL('eo.tipp')) + '</b></p><p>' + esc(tL('eo.t')) + '</p>' +
+      '<div class="ww-wege"><div class="ww-weg"><h4>' + esc(tL('eo.a.h')) + '</h4><p>' + esc(tL('eo.a.t')) + '</p>' + wegLinks(results, ['gsa']) + '</div>' +
+      '<div class="ww-weg"><h4>' + esc(tL('eo.b.h')) + '</h4><p>' + esc(tL('eo.b.t')) + '</p>' + wegLinks(results, ['wohngeld']) + '</div></div></div>', 'entwederOder');
+  }
+  // Ohne Kinder: Texte mit Endung „0“ (kein Kinderzuschlag, keine Bildung und Teilhabe). Vorrang Wohngeld: § 12a SGB II,
+  // § 7 Abs. 1 WoGG (gesetze-im-internet.de, abgerufen 20.11.2026)
+  function zweiWege(results) {
+    var weg = function (ids) { return wegLinks(results, ids); };
+    var k = (state.kids || 0) + (state.young || 0) > 0, o = k ? '' : '0';
+    return tippHtml('waage', t('ww.h' + o), '<div><p class="ww-tun"><b>' + esc(t('ww.tipp')) + '</b></p>' +
+      '<p>' + esc(t('ww.t')) + '</p><div class="ww-wege"><div class="ww-weg"><h4>' + esc(t('ww.a.h')) + '</h4><p>' + esc(t('ww.a.t' + o)) + '</p>' + weg(k ? ['ggeld', 'but'] : ['ggeld']) + '</div>' +
+      '<div class="ww-weg"><h4>' + esc(t('ww.b.h' + o)) + '</h4><p>' + esc(t('ww.b.t' + o)) + '</p>' + weg(k ? ['wohngeld', 'kiz', 'but'] : ['wohngeld']) + '</div></div>' +
+      '<p class="ww-regel"><b>' + esc(t('ww.regel.h')) + '</b> ' + esc(t('ww.regel' + o)) + '</p></div>', 'zweiWege');
   }
 
-  function renderPick(results) {
+  // Entweder-oder (Hinweise z.ggVsWg und z.gsaWg, gleiche Bedingung wie die Kacheln „Zwei Wege“ / „Entweder oder“): Wohngeld und Kinderzuschlag gibt es
+  // nicht neben Grundsicherungsgeld, Wohngeld nicht neben Grundsicherung im Alter (§ 7 Abs. 1 WoGG, gesetze-im-internet.de, abgerufen 20.11.2026).
+  // Darum hakt die Antragsmappe keine dieser Leistungen vorab an; der Nutzer wählt selbst (Zeile f.pickWege). Bildung und Teilhabe gibt es auf beiden Wegen.
+  function wegeIds(zusammen) {
+    var z = function (k) { return (zusammen || []).some(function (x) { return x[0] === k; }); }, ids = [];
+    if (z('z.ggVsWg')) ids.push('ggeld', 'wohngeld', 'kiz');
+    if (z('z.gsaWg')) ids.push('gsa', 'wohngeld');
+    return ids;
+  }
+  function renderPick(results, zusammen) {
+    var wege = wegeIds(zusammen);
     // Keine Briefe für Dinge, die schon da sind: Pflegegrad festgestellt, Grad der Behinderung festgestellt oder beantragt
     var schonDa = function (id) { return (id === 'pflege' && state.pflegegrad && state.pflegegrad !== 'antrag') || (id === 'ausweis' && !!state.gdb); };
     var avail = results.filter(function (r) { return (r.level === 'ja' || r.level === 'vielleicht') && ANTRAG[r.id] && !schonDa(r.id); });
     var next = {};
-    avail.forEach(function (r) { next[r.id] = Object.prototype.hasOwnProperty.call(pickedUser, r.id) ? pickedUser[r.id] : r.level === 'ja'; });
+    avail.forEach(function (r) { next[r.id] = Object.prototype.hasOwnProperty.call(pickedUser, r.id) ? pickedUser[r.id] : r.level === 'ja' && wege.indexOf(r.id) < 0; });
+    var wegeDa = avail.filter(function (r) { return wege.indexOf(r.id) >= 0; }).length > 1;
     picked = next;
     $('pick').innerHTML = avail.length
       ? avail.map(function (r) {
           return '<label class="check"><input type="checkbox" data-pick="' + r.id + '"' + (picked[r.id] ? ' checked' : '') + '><span>' + esc(r.name) + (lang === 'de' ? '' : ' (' + esc(t('n.' + r.id)) + ')') + '</span></label>';
-        }).join('')
+        }).join('') + (wegeDa ? '<p class="small pick-wege" id="pickWege">' + esc(t('f.pickWege')) + '</p>' : '')
       : '<p class="small">' + esc(t('f.none')) + '</p>';
-    $('mappeMake').disabled = avail.length === 0;
+    if ($('mappeKnopf')) $('mappeKnopf').hidden = avail.length === 0;
+    $('pickMsg').textContent = '';
     document.querySelectorAll('[data-pick]').forEach(function (cb) {
       cb.addEventListener('change', function () { picked[cb.getAttribute('data-pick')] = cb.checked; pickedUser[cb.getAttribute('data-pick')] = cb.checked; });
     });
@@ -761,23 +1175,26 @@
     var satz = $('resSatz');
     satz.hidden = !(passend > 0);
     satz.textContent = passend === 1 ? t('res.n1') : passend > 1 ? t('res.n', { n: passend }) : '';
-    $('beratung').hidden = !started;
+    $('ebOpen').hidden = !(passend > 0);
+    if (window.Klient) Klient.sichtbar(passend > 0); // „Für Klient zusammenstellen“ nur im Beratungsmodus (src/klient.js)
+    $('resRb').hidden = !started; // „Erste Einschätzung, keine Rechtsberatung“ unter jedem Ergebnis
   }
 
   function render() {
     syncEinkommen(); folgefragen(); ekFelder(); weitereWarnungen();
     document.querySelectorAll('.cond-kids').forEach(function (el) { el.hidden = state.kids === 0; });
     document.querySelectorAll('.cond-adults2').forEach(function (el) { el.hidden = state.adults !== 2; });
-    if (!started) {
+    var gu = started && gebUngueltig(); // ungültiges Geburtsjahr: nicht rechnen
+    if (!started || gu) {
       // Erster Start: keine erfundenen Ergebnisse zeigen, sondern erklären, wie es geht
-      $('count').textContent = t('c.leer'); $('jumpText').textContent = t('c.leer');
+      $('count').textContent = $('jumpText').textContent = t(gu ? 'warn.geb' : 'c.leer');
       $('overview').hidden = true; $('together').innerHTML = '';
-      $('cards').innerHTML = '<div class="card startcard"><h3>' + esc(t('start.h')) + '</h3>' + listItems([t('start.1'), t('start.2'), t('start.3')]) + '</div>';
-      $('helper').hidden = true; $('legende').hidden = true; $('feedback').hidden = true;
+      $('cards').innerHTML = gu ? '<div class="card startcard"><p class="warn"><a href="#gebJahr">' + esc(t('warn.geb')) + '</a></p></div>' : ''; // ohne Angaben: kein Kasten „So geht's“
+      $('legende').hidden = true; $('feedback').hidden = true;
       kopfErgebnis(0, 0);
       return;
     }
-    $('helper').hidden = false; $('legende').hidden = false;
+    $('legende').hidden = false;
     var out = Rules.evaluate(state);
     lastOut = out;
     var n = { ja: 0, vielleicht: 0 };
@@ -789,32 +1206,35 @@
     kopfErgebnis(n.ja, n.ja + n.vielleicht);
     $('count').textContent = summary;
     $('jumpText').textContent = summary;
-    var openIds = {}, neinOpen = false, spezOpen = false, gutOpen = false;
+    var openIds = {}, neinOpen = false, spezOpen = false, tippOffen = {};
     document.querySelectorAll('#cards details[open]').forEach(function (d) {
       var a = d.closest('article');
-      if (a) openIds[a.id] = true; else if (d.classList.contains('gutwissen')) gutOpen = true; else if (d.classList.contains('spezbox')) spezOpen = true; else if (d.classList.contains('neinbox')) neinOpen = true;
+      if (a) openIds[a.id] = true; else if (d.classList.contains('tipp') && d.id) tippOffen[d.id] = true; else if (d.classList.contains('spezbox')) spezOpen = true; else if (d.classList.contains('neinbox')) neinOpen = true;
     });
     kartenHinweise = {};
     out.zusammen.forEach(function (z) { (HINWEIS_KARTE[z[0]] || []).forEach(function (id) { (kartenHinweise[id] = kartenHinweise[id] || []).push(z); }); });
-    // „Gut zu wissen für alle Anträge“ steht zwischen den passenden Karten und dem Kasten „Wahrscheinlich nicht passend“
+    // Kurze Tipps unter dem grünen Knopf (Symbol + Satz, Inhalt zugeklappt): Zwei Wege / Entweder oder, „Gut zu wissen für alle Anträge“, Beratungsstelle
     var alle = out.zusammen.filter(function (z) { return HINWEIS_ALLE.indexOf(z[0]) >= 0; });
-    gutHtml = alle.length ? '<div id="gutWissen"><details class="gutwissen"><summary><span class="gw-titel">' + esc(t('gut.h')) + '</span><span class="karte-mehr" aria-hidden="true" data-mehr="' + esc(t('karte.mehr')) + '" data-weniger="' + esc(t('karte.weniger')) + '"></span></summary>' + listItems(alle.map(function (z) { return t(z[0], z[1]); })) + '</details></div>' : '';
+    var wege = out.zusammen.some(function (z) { return z[0] === 'z.ggVsWg'; });
+    var eo = out.zusammen.some(function (z) { return z[0] === 'z.gsaWg'; });
+    tippsHtml = (wege ? zweiWege(out.results) : '') + (eo ? entwederOder(out.results) : '') +
+      (alle.length ? tippHtml('licht', t('gut.h'), listItems(alle.map(function (z) { return tL(z[0], z[1]); })), 'gutWissen') : '') +
+      tippHtml('person', t('res.beratung'), '<p>' + esc(t('foot.2')) + '</p>', 'beratung');
     $('cards').innerHTML = kartenHtml(out.results);
     Object.keys(openIds).forEach(function (id) { var d = document.querySelector('#' + id + ' details'); if (d) d.open = true; });
+    Object.keys(tippOffen).forEach(function (id) { var d = $(id); if (d) d.open = true; });
     if (neinOpen) { var nb = document.querySelector('#cards .neinbox'); if (nb) nb.open = true; }
     if (spezOpen) { var sb = document.querySelector('#cards .spezbox'); if (sb) sb.open = true; }
-    if (gutOpen) { var gw = document.querySelector('#cards .gutwissen'); if (gw) gw.open = true; }
     $('overview').hidden = true; $('overview').innerHTML = ''; // keine Häkchen-Leiste mehr: die Karten selbst sind die Übersicht
     // Hinweise verteilen: zu einer Leistung gehörende in deren Karte, für alle Anträge geltende in „Gut zu wissen“, der Rest bleibt in „Beachten“
-    var wege = out.zusammen.some(function (z) { return z[0] === 'z.ggVsWg'; });
     var rest = out.zusammen.filter(function (z) { return z[0] !== 'z.ggVsWg' && !HINWEIS_KARTE[z[0]] && HINWEIS_ALLE.indexOf(z[0]) < 0; });
-    $('together').innerHTML = (wege ? zweiWege(out.results) : '') + (rest.length
-      ? '<div class="together"><h3>' + esc(t('beachten')) + '</h3>' + listItems(rest.map(function (z) { return t(z[0], z[1]); })) + '</div>'
+    $('together').innerHTML = (rest.length
+      ? '<div class="together"><h3>' + esc(t('beachten')) + '</h3>' + listItems(rest.map(function (z) { return tL(z[0], z[1]); })) + '</div>'
       : '');
 
     document.querySelectorAll('.cond-kids').forEach(function (el) { el.hidden = state.kids === 0; });
     document.querySelectorAll('.cond-adults2').forEach(function (el) { el.hidden = state.adults !== 2; });
-    renderPick(out.results);
+    renderPick(out.results, out.zusammen);
     $('feedback').hidden = false; $('feedbackMail').setAttribute('href', feedbackMail(out.results));
     if (typeof paAnzeigen === 'function') paAnzeigen();
   }
@@ -846,7 +1266,6 @@
     pflegeplus: { stelle: 'Pflegekasse', betreff: 'Antrag auf Verhinderungspflege, Pflegehilfsmittel und Zuschuss zur Wohnumfeldverbesserung', satz: 'hiermit beantrage ich Leistungen der Pflegeversicherung: Verhinderungspflege und Kurzzeitpflege, Pflegehilfsmittel zum Verbrauch und gegebenenfalls einen Zuschuss für wohnumfeldverbessernde Maßnahmen.' },
     arbeit: { stelle: 'Träger der Eingliederungshilfe (in Bayern der Bezirk)', betreff: 'Antrag auf Budget für Arbeit', satz: 'hiermit beantrage ich ein Budget für Arbeit nach § 61 SGB IX.' },
     rundfunk: { stelle: 'ARD ZDF Deutschlandradio Beitragsservice', betreff: 'Antrag auf Befreiung vom Rundfunkbeitrag', satz: 'hiermit beantrage ich die Befreiung vom Rundfunkbeitrag. Den Bescheid über meine Sozialleistung füge ich bei.' },
-    famvers: { stelle: 'Meine Krankenkasse', betreff: 'Antrag auf Familienversicherung', satz: 'hiermit beantrage ich die beitragsfreie Familienversicherung für meine Angehörigen nach § 10 SGB V. Den Fragebogen zur Familienversicherung fülle ich gern aus.' },
     zuzahl: { stelle: 'Meine Krankenkasse', betreff: 'Antrag auf Befreiung von Zuzahlungen', satz: 'hiermit beantrage ich die Befreiung von Zuzahlungen oder die Feststellung der Belastungsgrenze. Bitte prüfen Sie auch, ob ich als chronisch krank gelte.' },
     alg1: { stelle: 'Agentur für Arbeit', betreff: 'Arbeitsuchendmeldung und Antrag auf Arbeitslosengeld', satz: 'hiermit melde ich mich arbeitsuchend und beantrage Arbeitslosengeld. Bitte nennen Sie mir einen Termin für die persönliche Arbeitslosmeldung. Ist mein Leistungsvermögen wegen Krankheit eingeschränkt, bitte ich um Prüfung nach § 145 SGB III.' },
     bab: { stelle: 'Agentur für Arbeit', betreff: 'Antrag auf Berufsausbildungsbeihilfe', satz: 'hiermit beantrage ich Berufsausbildungsbeihilfe für meine Berufsausbildung.' },
@@ -905,29 +1324,78 @@
     var ort = e[1] === false ? '' : suchOrt();
     return 'https://duckduckgo.com/?q=' + encodeURIComponent(e[0] + (ort ? ' ' + ort : ''));
   }
+  // Empfänger direkt im Anschreiben an der Stelle der Anschrift (nur am Bildschirm; gedruckt wird der fertige Brief):
+  // Anschrift bekannt (amtliche Daten, Bayern/PLZ): steht schon da, mit kleinem „ändern“. Sonst ein dezentes, gestricheltes Feld
+  // „Anschrift der Stelle eintragen“ mit dem passenden Suchlink. Nie ein unsicherer Empfänger: ohne Daten nur die Art der Stelle.
+  var empfHinweisDa = false; // Hinweis zum Empfänger nur einmal je Mappe (beim ersten Brief ohne Anschrift)
+  function empfBekannt(id) { var b = Behoerden.available() ? Behoerden.fuer(id, aktAgs()) : null; return !!(b && b.anschrift && b.anschrift.length); }
   function empfHtml(id) {
-    var wert = Object.prototype.hasOwnProperty.call(empfEdit, id) ? empfEdit[id] : empfVorschlag(id).join('\n');
-    return '<div class="empf-edit no-print"><label for="empf-' + esc(id) + '"><strong>' + esc(t('f.empfTitel')) + '</strong></label>' +
-      '<textarea id="empf-' + esc(id) + '" data-empf="' + esc(id) + '" rows="4" lang="de" dir="ltr" autocomplete="off">' + esc(wert) + '</textarea>' +
-      '<p class="small">' + esc(t('f.empfHinweis')) + '</p>' +
-      '<p class="small"><a href="' + esc(empfSuchUrl(id)) + '" target="_blank" rel="noopener">' + esc(t('f.empfSuche')) + '</a>' +
-      '<span data-empf-resetbox="' + esc(id) + '"' + (Object.prototype.hasOwnProperty.call(empfEdit, id) ? '' : ' hidden') + '> · <button type="button" class="linkbtn" data-empf-reset="' + esc(id) + '">' + esc(t('f.empfZurueck')) + '</button></span></p></div>';
+    var eigen = Object.prototype.hasOwnProperty.call(empfEdit, id);
+    var wert = eigen ? empfEdit[id] : empfVorschlag(id).join('\n');
+    var bekannt = empfBekannt(id), zu = bekannt && !eigen;
+    return '<div class="empf-edit empf-im-brief no-print">' +
+      (bekannt ? '<div class="empf-zeigen" data-empf-zeigen="' + esc(id) + '"' + (zu ? '' : ' hidden') + '><pre>' + esc(empfZeilen(id).join('\n')) + '</pre> <button type="button" class="linkbtn empf-aendern" data-empf-aendern="' + esc(id) + '">' + esc(t('f.empfAendern')) + '</button></div>' : '') +
+      '<div class="empf-feld" data-empf-feld="' + esc(id) + '"' + (zu ? ' hidden' : '') + '><label for="empf-' + esc(id) + '" class="vh">' + esc(t('f.empfTitel')) + '</label>' +
+      '<textarea id="empf-' + esc(id) + '" data-empf="' + esc(id) + '" rows="4" lang="de" dir="ltr" autocomplete="off" placeholder="' + esc(t('f.empfPlatz')) + '">' + esc(wert) + '</textarea>' +
+      '<p class="empf-such"><a class="btn ghost" href="' + esc(empfSuchUrl(id)) + '" target="_blank" rel="noopener">' + esc(t('f.empfSuche')) + '</a>' +
+      '<span data-empf-resetbox="' + esc(id) + '"' + (eigen ? '' : ' hidden') + '> <button type="button" class="linkbtn" data-empf-reset="' + esc(id) + '">' + esc(t('f.empfZurueck')) + '</button></span></p>' +
+      (bekannt || empfHinweisDa ? '' : (empfHinweisDa = true, '<p class="small">' + esc(t('f.empfHinweis')) + '</p>')) + '</div></div>';
   }
   function mappeTextNeu() {
     $('mappeText').value = briefIds().map(function (r) { return letterText(r.id); }).concat([sheetText()]).join('\n\n----------------------------------------\n\n');
   }
-  function letterText(id) {
+  // Aufgabenliste der Mappe (Vorbild GOV.UK „task list“): nummeriert, je Schritt ein Knopf, Haken „Erledigt“ (lotse.haken, Schlüssel mappe|…).
+  // Die Frist (Antrag sichert den Monat) steht sichtbar im letzten Schritt, nie zum Aufklappen.
+  // Hinweise je Leistung im Schritt „Abschicken“ (Prüfvermerk 20.11.2026, Gesetzestext abgerufen am 20.11.2026 auf gesetze-im-internet.de):
+  // alg1: Der Brief ersetzt die Arbeitslosmeldung nicht. Arbeitslosmeldung elektronisch im Fachportal oder persönlich (§ 141 Abs. 1 SGB III);
+  //       Arbeitsuchendmeldung spätestens 3 Monate vor dem Ende, bei kürzerer Kenntnis innerhalb von 3 Tagen (§ 38 Abs. 1 SGB III).
+  // srente: Das Anschreiben bittet nur um Rentenauskunft und Beratung (ANTRAG.srente), es ist kein Rentenantrag (§ 99 Abs. 1 SGB VI).
+  // Mehrere Hilfen: wofür es ein Anschreiben gibt und was über das amtliche Formular läuft
+  function anschreibenFuer(briefe) {
+    var nm = function (r) { return r.name + (lang === 'de' ? '' : ' (' + t('n.' + r.id) + ')'); };
+    var mitBrief = {}; (briefe || []).forEach(function (r) { mitBrief[r.id] = true; });
+    var form = pickedIds().filter(function (r) { return !mitBrief[r.id]; });
+    if (!(briefe || []).length || (briefe.length === 1 && !form.length)) return '';
+    return '<p>' + esc(t(briefe.length === 1 ? 'f.auf.1.eins' : 'f.auf.1.fuer', { liste: briefe.map(nm).join(', ') })) + '</p>' +
+      (form.length ? '<p>' + esc(t('f.auf.1.form', { liste: form.map(nm).join(', ') })) + '</p>' : '');
+  }
+  function aufgabenHtml(mitBrief, mitForm, ohneOrt, briefe) {
+    var hat = function (id) { return (briefe || []).some(function (r) { return r.id === id; }); };
+    var nurSrente = hat('srente') && briefe.length === 1 && !mitForm;
+    var schritt = function (key, titel, text, knopf) {
+      var hk = 'mappe|' + key;
+      return '<li class="aufgabe"><h3>' + esc(t(titel)) + '</h3>' + (text ? '<p>' + esc(t(text)) + '</p>' : '') + knopf +
+        '<label class="haken"><input type="checkbox" data-haken="' + esc(hk) + '"' + (haken[hk] ? ' checked' : '') + '><span>' + esc(t('f.auf.erledigt')) + '</span></label></li>';
+    };
+    var zu = function (ziel, txt) { return '<p><button type="button" class="btn" data-sprung="' + ziel + '">' + esc(t(txt)) + '</button></p>'; };
+    return '<section class="no-print" aria-labelledby="h-auf"><h3 id="h-auf" class="vh">' + esc(t('f.auf.h')) + '</h3><ol class="aufgaben">' +
+      (mitBrief ? schritt('brief', 'f.auf.1', '', anschreibenFuer(briefe) + (ohneOrt ? '<p class="warn" id="mappeAdrNote">' + esc(t('f.adrFehlt')) + '</p>' : '') + zu('m-brief', 'f.auf.zu1')) : '') +
+      (mitForm ? schritt('formular', 'f.auf.2', '', zu('m-formulare', 'f.auf.zu2')) : '') +
+      schritt('unterlagen', 'f.auf.3', '', zu('m-unterlagen', 'f.auf.zu3')) +
+      schritt('abschicken', 'f.auf.4', 'f.auf.4.t', (hat('alg1') ? '<p class="warn mappe-alg1" role="note"><strong>' + esc(t('f.alg1.meldung')) + '</strong></p>' : '') +
+        (nurSrente ? '' : '<p class="mappe-stichtag"><strong>' + esc(t('f.stichtag')) + '</strong></p>') +
+        (hat('srente') ? '<p class="mappe-srente"><strong>' + esc(t('f.srente.hinweis')) + '</strong></p>' : '') + '<p><button type="button" class="btn" data-mappe-druck="1">' + esc(t('f.print')) + '</button></p>') +
+      '</ol></section>';
+  }
+  // Brief am Bildschirm: Absender, Empfängerfeld, Rest; der ganze Brief (#brief-ID) nur im Druck
+  function briefSeite(id) {
+    var b = briefTeile(id);
+    return '<article class="page" id="m-brief-' + esc(id) + '" tabindex="-1" lang="de" dir="ltr"><pre id="brief-' + esc(id) + '" class="nur-druck">' + esc(letterText(id)) + '</pre>' +
+      '<div class="no-print"><pre>' + esc(b.kopf.join('\n')) + '\n</pre>' + empfHtml(id) + '<pre>' + esc(b.rest.join('\n')) + '</pre></div></article>';
+  }
+  // Brief in drei Teilen: Absender, Empfänger, Rest. In der Mappe steht das Empfängerfeld am Bildschirm an seiner Stelle im Brief.
+  function letterText(id) { var b = briefTeile(id); return b.kopf.concat([''], b.empf, b.rest).join('\n'); }
+  function briefTeile(id) {
     var a = ANTRAG[id];
-    var L = [
+    var K = [
       blank(person.name), blank(person.strasse), blank(person.ort)
     ];
-    if (person.tel && person.tel.trim()) L.push('Telefon: ' + person.tel.trim());
-    var empf = empfZeilen(id);
-    L.push.apply(L, [''].concat(empf));
+    if (person.tel && person.tel.trim()) K.push('Telefon: ' + person.tel.trim());
+    var L = [];
     L.push('', 'Datum: ' + today(), '', 'Betreff: ' + a.betreff, '', 'Sehr geehrte Damen und Herren,', '',
       a.satz + ' Bitte behandeln Sie dieses Schreiben als meinen Antrag und bestätigen Sie mir den Eingang. Bitte senden Sie mir außerdem die amtlichen Antragsformulare und eine Liste der Unterlagen zu, die Sie von mir benötigen. Die Formulare reiche ich schnellstmöglich nach.',
       '', 'Zu meinem Haushalt gehören: ' + haushaltZeile() + '.', '', 'Mit freundlichen Grüßen', '', '', blank(person.name) + '   (Unterschrift)');
-    return L.join('\n');
+    return { kopf: K, empf: empfZeilen(id), rest: L };
   }
 
   function besond() {
@@ -941,7 +1409,8 @@
     if (s.baby === 'bald') b.push('Ein Baby wird erwartet');
     if (s.baby === 'da') b.push('Baby jünger als 14 Monate');
     if (s.egVor) b.push('Nettoeinkommen vor der Geburt (für das Elterngeld): ' + money(s.egVor) + ' im Monat');
-    if (s.aufenthalt === 'asyl') b.push('Im Asylverfahren, mit Duldung oder ausreisepflichtig');
+    if (s.aufenthalt === 'asyl') b.push('Im Asylverfahren (Aufenthaltsgestattung) oder mit Duldung');
+    if (s.aufenthalt === 'ausreise') b.push('Ausreisepflichtig ohne Duldung');
     if (s.schwanger) b.push('Schwangerschaft (ab der 13. Woche)');
     if (s.ernaehrung) b.push('Krankheitsbedingt kostenaufwändige Ernährung (ärztliche Bescheinigung folgt)');
     if (s.warmwasser) b.push('Warmwasser über Boiler oder Durchlauferhitzer in der Wohnung');
@@ -985,23 +1454,26 @@
   function sheetText() {
     var s = state, L = [];
     L.push('Angabenblatt zu meinem Antrag', '(Selbstauskunft aus SoLo – Sozialleistungslotse, Regeln Stand ' + Rules.RULES.stand + ')', '');
-    L.push('Name: ' + blank(person.name), 'Geburtsdatum: ' + blank(person.geb), 'Anschrift: ' + blank(person.strasse) + ', ' + blank(person.ort));
+    L.push('Name: ' + blank(person.name), 'Geburtsdatum: ' + blank(Fmt.gebDatum(person.geb)), 'Anschrift: ' + blank(person.strasse) + ', ' + blank(person.ort));
     if (person.tel && person.tel.trim()) L.push('Telefon: ' + person.tel.trim());
     L.push('', 'Haushalt: ' + haushaltZeile());
     if (s.wohnform === 'heim') L.push('Wohnkosten: laut Wohn- und Betreuungsvertrag des Wohnheims (Betrag liegt dem Vertrag bei)');
     else if (s.wohnform === 'eltern' && !s.miete) L.push('Wohnt bei den Eltern, zahlt keine Miete');
     else L.push('Warmmiete im Monat: ' + money(s.miete) + (s.mietstufe ? ' (Mietenstufe ' + Rules.roman(Number(s.mietstufe)) + ')' : '') + (Number(String(s.heizkosten).replace(',', '.')) > 0 ? ', davon Heizkosten ' + money(s.heizkosten) : ''));
-    var ARTDE = { lohn: 'Lohn oder Gehalt', rente: 'Rente oder Pension', alg: 'Arbeitslosengeld I', kg: 'Krankengeld', eg: 'Elterngeld', selbst: 'Gewinn aus selbstständiger Arbeit', wfbm: 'Lohn aus der Werkstatt für behinderte Menschen', ohne: 'kein Einkommen' };
+    var ARTDE = { lohn: 'Lohn oder Gehalt', rente: 'Rente oder Pension', alg: 'Arbeitslosengeld I', kg: 'Krankengeld', eg: 'Elterngeld', selbst: 'Gewinn aus selbstständiger Arbeit', wfbm: 'Lohn aus der Werkstatt für behinderte Menschen', unt: 'Unterhalt für sich selbst (Zahlbetrag)', asylblg: 'Leistungen nach dem Asylbewerberleistungsgesetz', ohne: 'kein Einkommen' };
     var ekZeile = function (i, wer) {
       var art = s['ek' + i + 'Art'];
       if (!art) return wer + ': nicht angegeben';
       if (art === 'ohne') return wer + ': kein Einkommen';
+      if (art === 'asylblg') return wer + ': ' + ARTDE.asylblg;
       var teile = [];
       if ((art === 'lohn' || art === 'rente' || art === 'selbst') && !blankVal(s['ek' + i + 'Brutto'])) teile.push('brutto ' + money(s['ek' + i + 'Brutto']));
-      if (!blankVal(s['ek' + i + 'Netto'])) teile.push((art === 'alg' || art === 'kg' || art === 'eg' || art === 'wfbm' ? '' : 'netto ') + money(s['ek' + i + 'Netto']));
-      return wer + ': ' + ARTDE[art] + (teile.length ? ', ' + teile.join(', ') + ' im Monat' : '');
+      if (!blankVal(s['ek' + i + 'Netto'])) teile.push((art === 'alg' || art === 'kg' || art === 'eg' || art === 'wfbm' || art === 'unt' ? '' : 'netto ') + money(s['ek' + i + 'Netto']));
+      var zArt = s['ek' + i + 'bArt'], zB = Number(String(s['ek' + i + 'bBetrag'] == null ? '' : s['ek' + i + 'bBetrag']).replace(',', '.'));
+      var dazu = ARTDE[zArt] && zArt !== 'ohne' && zB > 0 ? '; dazu ' + ARTDE[zArt] + ' ' + money(zB) + ' im Monat' : '';
+      return wer + ': ' + ARTDE[art] + (teile.length ? ', ' + teile.join(', ') + ' im Monat' : '') + dazu;
     };
-    if (Array.isArray(s.einkommen)) L.push('Einkommen: ' + (s.einkommen.length ? s.einkommen.map(function (x) { return ARTDE[x.art] + ' ' + money(x.b); }).join(', ') + ' im Monat' : 'kein Einkommen'));
+    if (Array.isArray(s.einkommen) && s.adults !== 2) L.push('Einkommen: ' + (s.einkommen.length ? s.einkommen.map(function (x) { return ARTDE[x.art] + ' ' + money(x.b); }).join(', ') + ' im Monat' : 'kein Einkommen'));
     else L.push(ekZeile(1, s.adults === 2 ? 'Einkommen (ich)' : 'Einkommen'));
     if (s.adults === 2) L.push(ekZeile(2, 'Einkommen (Partner/in)'));
     if (Number(s.zusatzRente) > 0) L.push('Davon Betriebsrente, Riester-Rente oder private Rente: ' + money(s.zusatzRente) + ' im Monat (Freibetrag nach § 82 Abs. 4 SGB XII)');
@@ -1027,24 +1499,32 @@
     formPlan().forEach(function (f) { if (f.art === 'link' && LINK_FUER[f.id]) mitLink[LINK_FUER[f.id]] = true; });
     return pickedIds().filter(function (r) { return !mitLink[r.id]; });
   }
+  var mappeTimer = null;
+  function mappeNeuBald() { clearTimeout(mappeTimer); mappeTimer = setTimeout(function () { mappeTimer = null; if (!$('mappe').hidden) buildMappe(); }, 150); }
   function buildMappe() {
     var ids = pickedIds(), briefe = briefIds();
-    var html = '';
-    briefe.forEach(function (r) {
-      html += empfHtml(r.id) + '<article class="page" lang="de" dir="ltr"><pre id="brief-' + esc(r.id) + '">' + esc(letterText(r.id)) + '</pre></article>';
-    });
-    html += '<article class="page" lang="de" dir="ltr"><pre>' + esc(sheetText()) + '</pre></article>';
-    html += '<article class="page docs"><h3>' + esc(t('f.docs')) + '</h3>' + ids.map(function (r) {
-      var s = r.steps;
-      return '<h3>' + esc(r.name) + (lang === 'de' ? '' : ' (' + esc(t('n.' + r.id)) + ')') + '</h3>' +
-        '<p>' + esc(t(s.wo)) + '</p>' + listItems(s.u.map(function (k) { return t(k); })) + '<p class="tip">' + esc(t(s.tip)) + '</p>';
-    }).join('') + '</article>';
-    html += formsHtml();
-    $('mappeBody').innerHTML = html;
-    // Hinweis, wenn Anschreiben ohne Empfänger-Anschrift bleiben, weil der Wohnort fehlt (Anschriften gibt es für Bayern)
+    // Nichts gewählt: Hinweis unter der Auswahl, keine leeren Briefe
+    $('pickMsg').textContent = ids.length || !$('pick').querySelector('[data-pick]') ? '' : t('f.pick0');
+    if (!ids.length) { $('mappeBody').innerHTML = ''; mappeTextNeu(); return; }
+    var html = '', fh = formsHtml(); empfHinweisDa = false;
+    var nameLang = function (r) { return r.name + (lang === 'de' ? '' : ' (' + t('n.' + r.id) + ')'); };
+    // Kein Inhaltsverzeichnis: oben eine Aufgabenliste (die Liste ist das Verzeichnis), dann Briefe, Formulare, Angabenblatt, Unterlagen
+    // Fehlt der Wohnort, kann die App keine Anschriften einsetzen (Anschriften gibt es für Bayern): Hinweis im Schritt „Anschrift eintragen“
     var ohneOrt = Behoerden.available() && !aktAgs() && (!state.bundesland || state.bundesland === 'BY') &&
       ids.some(function (r) { return Behoerden.brauchtKreis(r.id); });
-    $('mappeAdrNote').hidden = !ohneOrt;
+    html += aufgabenHtml(briefe.length > 0, !!fh, ohneOrt, briefe);
+    // Rentenauskunft (srente) ist kein Antrag: Hinweis unter der Erklärung zum formlosen Antrag
+    if ($('introSrente')) $('introSrente').hidden = !briefe.some(function (r) { return r.id === 'srente'; });
+    briefe.forEach(function (r) { html += briefSeite(r.id); });
+    html += fh.replace('<article class="page docs forms">', '<article class="page docs forms" id="m-formulare" tabindex="-1">');
+    html += '<article class="page" id="m-angaben" tabindex="-1" lang="de" dir="ltr"><pre>' + esc(sheetText()) + '</pre></article>';
+    html += '<article class="page docs" id="m-unterlagen" tabindex="-1"><h3>' + esc(t('f.docs')) + '</h3>' +
+      '<p class="small">' + esc(t('steps.note')) + '</p><p class="small muted haken-hint no-print">' + esc(t('haken.hint')) + '</p>' + ids.map(function (r) {
+      var s = r.steps;
+      return '<h3>' + esc(nameLang(r)) + '</h3>' +
+        '<p>' + esc(tL(s.wo)) + '</p>' + (r.id === 'ggeld' && lang === 'de' && typeof Formulare !== 'undefined' ? unterlagenGenau(r) : unterlagenListe(r, true)) + '<p class="tip">' + esc(tL(s.tip)) + '</p>';
+    }).join('') + '<p class="small rb-satz">' + esc(t('rb.satz')) + '</p></article>';
+    $('mappeBody').innerHTML = html;
     mappeTextNeu();
   }
   // Empfänger bearbeiten: Brief und Kopiertext sofort angleichen, ohne die Mappe neu aufzubauen (Fokus bleibt im Feld)
@@ -1057,9 +1537,26 @@
       if (rb) rb.hidden = false;
       var pre = $('brief-' + id);
       if (pre) pre.textContent = letterText(id);
+      var zg = $('mappeBody').querySelector('[data-empf-zeigen="' + id + '"] pre');
+      if (zg) zg.textContent = empfZeilen(id).join('\n');
       mappeTextNeu();
     });
     $('mappeBody').addEventListener('click', function (ev) {
+      var sp = ev.target && ev.target.closest && ev.target.closest('[data-sprung]');
+      if (sp) { // Schritt der Aufgabenliste: zum ersten passenden Teil springen
+        var z = sp.getAttribute('data-sprung'), ziel = z === 'm-brief' ? $('mappeBody').querySelector('[id^="m-brief-"]') : $(z);
+        if (ziel) { ziel.scrollIntoView({ behavior: smooth(), block: 'start' }); ziel.focus({ preventScroll: true }); }
+        return;
+      }
+      if (ev.target && ev.target.closest && ev.target.closest('[data-mappe-druck]')) { $('mappePrint2').click(); return; }
+      var ae = ev.target && ev.target.closest && ev.target.closest('[data-empf-aendern]');
+      if (ae) { // „ändern“: Feld an derselben Stelle öffnen
+        var aid = ae.getAttribute('data-empf-aendern');
+        $('mappeBody').querySelector('[data-empf-zeigen="' + aid + '"]').hidden = true;
+        $('mappeBody').querySelector('[data-empf-feld="' + aid + '"]').hidden = false;
+        $('empf-' + aid).focus();
+        return;
+      }
       var el = ev.target, id = el && el.getAttribute && el.getAttribute('data-empf-reset');
       if (!id) return;
       delete empfEdit[id];
@@ -1075,16 +1572,17 @@
   function formsHtml() {
     var fp = formPlan();
     if (!fp.length) return '';
-    var jc = fp.some(function (f) { return f.id === 'ggeld'; });
     // Leistungen ohne Formular-Link: Der formlose Antrag steht weiter oben in der Mappe
     var HINWEIS_FUER = { gsa: 'gsa', wg: 'wohngeld', wbs: 'wbs' }, briefe = {};
     briefIds().forEach(function (r) { briefe[r.id] = true; });
-    var h = '<article class="page docs forms"><h3>' + esc(t('f.forms')) + '</h3><p>' + esc(t('f.formsWeb')) + '</p>';
-    h += '<ul lang="de" dir="ltr">' + fp.map(function (f) {
-      var brief = f.art === 'hinweis' && briefe[HINWEIS_FUER[f.id]] ? (/[.!?]$/.test(f.warum) ? '' : '.') + ' <strong>' + esc(t('f.formsBrief')) + '</strong>' : '';
-      return '<li><strong>' + esc(f.titel) + '</strong> – ' + esc(f.warum) + brief + (f.url ? '<br><a href="' + esc(f.url) + '" target="_blank" rel="noopener">' + esc(t('f.formsLink')) + '</a>' : '') + (f.hilfe ? '<br><em>Ausfüllhilfe:</em>' + listItems(f.hilfe) : '') + '</li>';
-    }).join('') + '</ul><p class="tip">' + esc(t('f.formsCheck')) + '</p>';
-    if (jc) h += '<h3>' + esc(t('f.formsUnt')) + '</h3>' + '<div lang="de" dir="ltr">' + listItems(Formulare.unterlagen(state)) + '</div>';
+    // Je Formular eine Karte: Titel, darunter gleich groß der Link zum amtlichen Formular, dann ein Satz; Ausfüllhilfe zum Aufklappen
+    var h = '<article class="page docs forms"><h3>' + esc(t('f.forms')) + '</h3>' + mehrHtml('<p>' + esc(t('f.formsWeb')) + '</p>', t('mehr.was'));
+    h += fp.map(function (f) {
+      var brief = f.art === 'hinweis' && briefe[HINWEIS_FUER[f.id]] ? '<p><strong>' + esc(t('f.formsBrief')) + '</strong></p>' : '';
+      return '<section class="form-karte" lang="de" dir="ltr"><h4>' + esc(f.titel) + '</h4>' +
+        (f.url ? '<p class="form-link"><a class="btn" href="' + esc(f.url) + '" target="_blank" rel="noopener">' + esc(t('f.formsLink')) + '</a></p>' : '') +
+        '<p>' + esc(f.warum) + '</p>' + brief + (f.hilfe ? mehrHtml('<div>' + listItems(f.hilfe) + '</div>', t('mehr.ausfuellen')) : '') + '</section>';
+    }).join('') + '<p class="tip">' + esc(t('f.formsCheck')) + '</p>';
     return h + '</article>';
   }
 
@@ -1101,6 +1599,91 @@
     $('mappe').hidden = true;
     $('app').classList.remove('pm');
     if (esAltState) { state = esAltState.state; picked = esAltState.picked; pickedUser = esAltState.pickedUser; lastOut = esAltState.lastOut; esAltState = null; render(); }
+  }
+
+  // ----- Ergebnisblatt zum Mitgeben: eine Druckseite (Leistung, Einstufung, ungefährer Betrag, Stelle, nächster Schritt), ohne Namen -----
+  // Gleiche Wörter wie auf dem Bildschirm: Betrag ist der Schätzsatz der Karte („Grob geschätzt …“) oder der Satz mit dem festen Betrag;
+  // ohne solchen Satz steht ein Strich (keine eigene Rechnung, keine neuen Zahlen).
+  var EB_SATZ = ['kindergeld.ja', 'uvg.ja', 'pflege.pg1', 'pflege.pg2', 'blindengeld.blind', 'blindengeld.hoch', 'blindengeld.landBetrag', 'blh.betrag'];
+  function ebBetrag(r) {
+    var x = r.tx.filter(function (z) { return z[0].indexOf('schaetz.') === 0; })[0] || r.tx.filter(function (z) { return EB_SATZ.indexOf(z[0]) >= 0; })[0];
+    return x ? tL('t.' + x[0], x[1]) : '–';
+  }
+  function ebStelle(r) {
+    var b = Behoerden.available() ? Behoerden.fuer(r.id, aktAgs()) : null;
+    if (b) return b.name + (b.abt ? ', ' + b.abt : '');
+    return Rules.zustLand(r.id, state.bundesland) || t('zu.' + r.id);
+  }
+  function ebZeilen() {
+    return (lastOut ? lastOut.results : []).filter(function (r) { return r.level === 'ja' || r.level === 'vielleicht'; }).map(function (r) {
+      return { r: r, name: r.name + (lang === 'de' ? '' : ' (' + t('n.' + r.id) + ')'), lvl: t('lvl.' + r.level), betrag: ebBetrag(r), stelle: ebStelle(r), schritt: tL(r.steps.wo) };
+    });
+  }
+  function ebKuerzel() { return String($('ebKuerzel').value || '').replace(/\s+/g, ' ').trim().slice(0, 8); }
+  function ebKopfZeile() { var k = ebKuerzel(); return t('eb.datum', { d: Fmt.datum(new Date(), lang) }) + (k ? ' · ' + t('eb.kuerzelZeile', { k: k }) : ''); }
+  function ebBauen() {
+    var cols = ['eb.col.leistung', 'eb.col.einstufung', 'eb.col.betrag', 'eb.col.stelle', 'eb.col.schritt'];
+    $('ebSeite').innerHTML = '<h2 class="eb-titel">' + esc(t('eb.titel')) + '</h2><p class="eb-kopf">' + esc(ebKopfZeile()) + '</p>' +
+      '<table class="eb-tab"><thead><tr>' + cols.map(function (c) { return '<th scope="col">' + esc(t(c)) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+      ebZeilen().map(function (z) {
+        return '<tr><th scope="row"><span' + (lang === 'de' ? '' : ' lang="de"') + '>' + esc(z.r.name) + '</span>' + (lang === 'de' ? '' : '<br><span class="small">' + esc(t('n.' + z.r.id)) + '</span>') +
+          (beratung && z.r.recht ? '<br><span class="small" lang="de" dir="ltr">' + esc(z.r.recht) + '</span>' : '') + '</th>' +
+          '<td data-l="' + esc(t(cols[1])) + '"><span class="pill ' + z.r.level + '"><span aria-hidden="true">' + MARK[z.r.level] + '</span>' + esc(z.lvl) + '</span></td><td data-l="' + esc(t(cols[2])) + '">' + esc(z.betrag) + '</td><td data-l="' + esc(t(cols[3])) + '">' + esc(z.stelle) + '</td><td data-l="' + esc(t(cols[4])) + '">' + esc(z.schritt) + '</td></tr>'; // data-l: Spaltenname für die Kartenansicht auf dem Handy
+      }).join('') + '</tbody></table>' +
+      '<p class="eb-hinweis">' + esc(t('eb.hinweis', { stand: standL() })) + '</p>';
+  }
+  var ebZurueck = null;
+  function ebOeffnen() {
+    if (!lastOut) return;
+    ebZurueck = document.activeElement;
+    $('ebMsg').textContent = '';
+    ebBauen();
+    $('ergBlatt').hidden = false;
+    $('app').classList.add('pm');
+    try { window.scrollTo(0, 0); } catch (e) {}
+    var h = $('h-eb'); h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true });
+  }
+  function ebSchliessen() {
+    $('ergBlatt').hidden = true;
+    $('app').classList.remove('pm');
+    if (ebZurueck && ebZurueck.focus) ebZurueck.focus();
+  }
+  function ebPdfSeiten() {
+    var saved = lang;
+    if (pdfRtl()) lang = 'de'; // Arabisch kann pdf-lib nicht setzen: dann deutsch wie bei der Antragsmappe
+    try {
+      var b = [{ t: 'h', text: t('eb.titel') }, { t: 'p', text: ebKopfZeile() }];
+      ebZeilen().forEach(function (z) {
+        b.push({ t: 'h', text: z.name });
+        if (beratung && z.r.recht) b.push({ t: 'small', text: z.r.recht });
+        [['eb.col.einstufung', z.lvl], ['eb.col.betrag', z.betrag], ['eb.col.stelle', z.stelle], ['eb.col.schritt', z.schritt]].forEach(function (x) { b.push({ t: 'li', text: t(x[0]) + ': ' + x[1] }); });
+      });
+      b.push({ t: 'small', text: t('eb.hinweis', { stand: standL() }) });
+      return [{ blocks: b }];
+    } finally { lang = saved; }
+  }
+  // Web: Druckdialog des Browsers (Druck-CSS zeigt nur die Seite). App: derselbe PDF-Weg wie bei der Antragsmappe (Android drucken, iPhone teilen)
+  function ebAusgeben(art) {
+    if (art === 'web') { try { window.print(); } catch (e) {} return; }
+    pdfAusgeben(ebPdfSeiten(), t('eb.titel'), 'SoLo-Ergebnis.pdf', $('ebMsg'), art, pdfRtl());
+  }
+  // PDF bauen und ausgeben (art 'drucken': Android drucken, sonst teilen); Datei danach aus dem Cache löschen. Auch für die Schulden-Liste.
+  function pdfAusgeben(seiten, titel, name, msg, art, arHinweis) {
+    msg.textContent = t('f.pdfWorking');
+    var pdf = loadPdfLib().then(function (L) { return L.buildPdf({ pages: seiten, title: titel, loadFont: function (n) { return fetch('fonts/pdf/' + n).then(function (r) { return r.arrayBuffer(); }).then(function (b) { return new Uint8Array(b); }); } }); });
+    if (art === 'drucken') {
+      var pa = plug('PdfAusgabe');
+      if (!pa) { msg.textContent = t('f.pdfFail'); return; }
+      pdf.then(function (bytes) { return pa.drucken({ data: toBase64(bytes), name: name }); })
+        .then(function () { msg.textContent = arHinweis ? t('f.pdfArNote') : ''; }, function (e) { msg.textContent = /abgebrochen/.test(String(e && e.message || e)) ? '' : t('f.pdfFail'); });
+      return;
+    }
+    var fs = plug('Filesystem'), sh = plug('Share');
+    if (!fs || !sh) { msg.textContent = t('f.pdfFail'); return; }
+    pdf.then(function (bytes) { return fs.writeFile({ path: name, data: toBase64(bytes), directory: 'CACHE' }); })
+      .then(function (r) { return sh.share({ title: titel, files: [r.uri] }).then(function () {}, function () {}); })
+      .then(function () { msg.textContent = arHinweis ? t('f.pdfArNote') : ''; return fs.deleteFile({ path: name, directory: 'CACHE' }).catch(function () {}); })
+      .catch(function () { msg.textContent = t('f.pdfFail'); });
   }
 
   // ----- Antragsmappe als PDF (nur App): pdf-lib im WebView, Datei in den Cache, dann Teilen-Dialog (Drucken, Dateien, Mail) -----
@@ -1125,10 +1708,11 @@
       pickedIds().forEach(function (r) {
         var s = r.steps;
         blocks.push({ t: 'h', text: r.name + (lang === 'de' ? '' : ' (' + t('n.' + r.id) + ')') });
-        blocks.push({ t: 'p', text: t(s.wo) });
-        s.u.forEach(function (k) { blocks.push({ t: 'li', text: t(k) }); });
-        blocks.push({ t: 'small', text: t(s.tip) });
+        blocks.push({ t: 'p', text: tL(s.wo) });
+        s.u.forEach(function (k) { blocks.push({ t: 'li', text: (haken[r.id + '|' + k] ? '[x] ' : '[ ] ') + tL(k) }); });
+        blocks.push({ t: 'small', text: tL(s.tip) });
       });
+      blocks.push({ t: 'small', text: t('rb.satz') }); // „Keine Rechtsberatung“ auf jedem Ausdruck
       pages.push({ blocks: blocks });
     } finally { lang = saved; }
     return pages;
@@ -1215,9 +1799,10 @@
     try { window.print(); } catch (e) {}
     setTimeout(weg, 60000);
   }
-  function schreibenKnoepfe() {
+  // Ein Schreiben (x = [Textfeld, Kopieren-Knopf, Dateiname, Art]); auch für später erzeugte Felder (Kostensenkung: KostensenkungHilfe)
+  function schreibenKnopf(x) {
     var android = NATIVE && plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios');
-    SCHREIBEN.forEach(function (x) {
+    (function () {
       var ta = $(x[0]), copy = $(x[1]); if (!ta || !copy) return;
       var box = document.createElement('div'); box.className = 'schreiben-aus'; box.hidden = true;
       var btns = document.createElement('div'); btns.className = 'btns';
@@ -1235,8 +1820,9 @@
       var reihe = copy.closest('.btns') || copy; reihe.parentNode.insertBefore(box, reihe.nextSibling);
       // sichtbar, sobald das Schreiben erstellt ist (die Prüfung zeigt dann das Textfeld)
       new MutationObserver(function () { box.hidden = ta.hidden; }).observe(ta, { attributes: true, attributeFilter: ['hidden'] });
-    });
+    })();
   }
+  function schreibenKnoepfe() { SCHREIBEN.forEach(schreibenKnopf); }
   schreibenKnoepfe();
 
   function copyMappe() {
@@ -1411,7 +1997,7 @@
 
   // ----- PDF lesen (pdf.js von Mozilla): digitale PDFs liefern ihren Text direkt; eingescannte Seiten (nur Bild, kein Text)
   // werden auf dem Gerät zu einem Bild und gehen durch dieselbe Texterkennung wie ein Foto. Die Datei verlässt das Gerät nicht.
-  var PDFJS_VER = '3.11.174', PDF_MAX_SEITEN = 12, pdfjsLaden = null;
+  var PDFJS_VER = '3.11.174', PDF_MAX_SEITEN = 12, pdfjsLaden = null, pdfMitBild = false;
   function ladePdfjs() {
     if (window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
     if (pdfjsLaden) return pdfjsLaden;
@@ -1466,7 +2052,8 @@
         return doc.getPage(i).then(function (page) {
           return page.getTextContent().then(function (tc) {
             var t1 = pdfZeilen(tc.items);
-            return t1.replace(/\s/g, '').length >= 40 ? t1 : seiteAlsBild(page).then(bildText); // kaum Text: eingescannte Seite
+            if (t1.replace(/\s/g, '').length >= 40) return t1;
+            pdfMitBild = true; return seiteAlsBild(page).then(bildText); // kaum Text: eingescannte Seite
           });
         }).then(function (t1) { texte.push(t1); return naechste(); });
       }
@@ -1475,10 +2062,14 @@
   }
   function istPdf(f) { return !!f && (/pdf/i.test(f.type || '') || /\.pdf$/i.test(f.name || '')); }
 
+  // Zuletzt von Tesseract als unsicher gemeldete Wörter mit Ziffern (Konfidenz unter 70 von 100); „Brief prüfen“ markiert passende Werte farbig.
+  // Die Texterkennung des Geräts (ML Kit / Vision) liefert keine Konfidenz, dort gelten nur Plausibilitätsregeln (erweiterungen/vorschau.js).
+  var ocrUnsicher = [];
   function ocr(file) {
     var work = loadTess().then(function (T) {
       return T.createWorker('deu', 1, { langPath: 'https://cdn.jsdelivr.net/npm/@tesseract.js-data/deu/4.0.0_best_int' }).then(function (w) {
-        return w.recognize(file).then(function (r) { return w.terminate().then(function () { return r.data.text; }, function () { return r.data.text; }); });
+        return w.recognize(file).then(function (r) {
+          try { ocrUnsicher = ocrUnsicher.concat(((r.data && r.data.words) || []).filter(function (x) { return x && x.confidence < 70 && /\d/.test(x.text || ''); }).map(function (x) { return x.text; })); } catch (e) {} return w.terminate().then(function () { return r.data.text; }, function () { return r.data.text; }); });
       });
     });
     var limit = new Promise(function (_, rej) { setTimeout(function () { rej(new Error('timeout')); }, 120000); });
@@ -1651,7 +2242,11 @@
 
   function esSpeichern() { Store.set('lotse.einfach', JSON.stringify({ es: es, an: esModus })); }
 
-  function esRender() {
+  // Gemeinsamer Zurück-Knopf (src/navigation.js) als Schritt zurück in der einfachen Version; dann den Zurück-Knopf der Seite ausblenden
+  var ES_ZUR = Navigation.kopfHtml({ id: 'es-zurueck', eigen: true });
+  function esKopf() { var k = $('leistungenKopf'), sf = $('sfZurueck'); if (k) k.hidden = !!((esModus && $('es-zurueck') && !$('einfach').hidden) || (sf && !$('schritte').hidden)); } // ein Zurück-Knopf: der der Fragenfolge, sonst der der Seite
+  function esRender() { esRenderGanz(); esKopf(); }
+  function esRenderGanz() {
     var box = $('einfach');
     if (!esModus) { box.hidden = true; $('cols').hidden = false; $('notices').hidden = false; $('jump').hidden = !!aktAnsicht && aktAnsicht !== 'leistungen'; $('app').classList.remove('es-an'); return; }
     box.hidden = false; $('cols').hidden = true; $('notices').hidden = true; $('jump').hidden = true;
@@ -1685,9 +2280,8 @@
       }).join('') + '</div><div class="es-nav1"><button type="button" class="es-btn es-weiter" id="es-weiter">' + esc(t('es.weiter')) + ' ➜</button>' +
         '<button type="button" class="es-btn es-skip" id="es-keine">' + esc(t('es.mz.keine')) + '</button></div>';
     }
-    h += '<div class="es-nav">' + (es.schritt > 0 ? '<button type="button" class="chip" id="es-zurueck">← ' + esc(t('es.zurueck')) + '</button>' : '') +
-      '<button type="button" class="chip" id="es-raus">' + esc(t('es.ausfuehrlich')) + '</button></div>';
-    box.innerHTML = h;
+    h += '<div class="es-nav"><button type="button" class="chip" id="es-raus">' + esc(t('es.ausfuehrlich')) + '</button></div>';
+    box.innerHTML = (es.schritt > 0 ? ES_ZUR : '') + h;
     var weiter = function () { es.schritt++; esSpeichern(); esRender(); var q = $('es-q'); if (q) q.focus(); };
     var weg = false;
     box.querySelectorAll('[data-es]').forEach(function (b) { b.addEventListener('click', function () {
@@ -1738,6 +2332,23 @@
   // Ergebnis in Leichter Sprache: nur, was für eine Person mit Behinderung zählt; Beträge grob, mit zuständiger Stelle
   var ES_KARTEN = ['gsa', 'ggeld', 'wohngeld', 'pflege', 'pflegeplus', 'lpg', 'hzp', 'emrente', 'srente', 'rundfunk', 'ausweis', 'eingl', 'blindengeld', 'blh', 'zuzahl', 'kgBeh', 'pausch', 'arbeit'];
   var ES_ICON = { gsa: '💶', ggeld: '💶', wohngeld: '🏠', pflege: '🤝', pflegeplus: '🧺', lpg: '💶', emrente: '👴', srente: '🧓', hzp: '🏥', rundfunk: '📺', ausweis: '🪪', eingl: '🧩', blindengeld: '🦯', blh: '🦮', zuzahl: '💊', kgBeh: '👪', pausch: '🧾', arbeit: '💼' };
+  // Einfache Version: Höchstbetrag der Miete beim Wohngeld (Anlage 1 WoGG + Klimakomponente) unter „Gut zu wissen“.
+  // Eine Person (wie esEingabe), dieselbe Funktion wie im Formular. Bei den Eltern zählt deren Haushalt (§ 5 WoGG): keine Zahl.
+  function esMietgrenze(gut, out, tipps) {
+    var warmEs = es.wohnen === 'allein' && es.miete !== '' ? Number(es.miete) : 0;
+    if (!(warmEs > 0)) return;
+    var zeigt = function (id) { return gut.some(function (x) { return x.id === id; }); };
+    if (zeigt('wohngeld') || (out.zusammen || []).some(function (z) { return z[0] === 'z.gsaWg'; })) {
+      var st = mietgrenzeStufen(es.plz, '', '');
+      var wm = Rules.wgHoechst({ stufen: st, n: 1, warm: warmEs });
+      var eur = function (v) { return Fmt.euro(Math.round(v * 100) / 100, lang, !!(I18N[lang] && I18N[lang]['meta.dir'] === 'rtl')); };
+      if (wm.sv === wm.sb) {
+        tipps.push(t('es.tipp.wgmax', { betrag: eur(wm.von) }) +
+          (wm.vergleich === 'drueber' ? ' ' + t('es.tipp.wgmaxDrueber', { betrag: eur(wm.von) }) : wm.vergleich === 'drunter' ? ' ' + t('es.tipp.wgmaxDrunter') : ''));
+      } else tipps.push(t('es.tipp.wgmaxSpanne', { von: eur(wm.von), bis: eur(wm.bis) }));
+    }
+    if (zeigt('gsa') || zeigt('ggeld')) tipps.push(t('es.tipp.kduAnders'));
+  }
   function esErgebnis(fr) {
     var out = Rules.evaluate(esEingabe());
     lastEs = out;
@@ -1783,8 +2394,9 @@
     if ((out.zusammen || []).some(function (z) { return z[0] === 'z.gsaWg'; })) tipps.unshift(t('es.tipp.wgOderGsa'));
     if (hat('gsa', 'gsa.grundrente') && es.renteJa === 'ja') tipps.push(t('es.tipp.grundrente'));
     if (gut.some(function (x) { return x.id === 'kgBeh'; })) tipps.push(t(es.wohnen === 'eltern' ? 'es.tipp.kgEltern' : 'es.tipp.kgAbzweig'));
+    esMietgrenze(gut, out, tipps);
     var h = '<h2 class="es-q" id="es-q" tabindex="-1">' + esc(t(gut.length ? 'es.erg.h' : 'es.erg.keine')) + '</h2>' +
-      (regelnVeraltet() ? '<p class="warn" role="alert">' + esc(t('alt.hinweis', { stand: Rules.RULES.stand })) + '</p>' : '') +
+      (regelnVeraltet() ? '<p class="warn" role="alert">' + esc(t('alt.hinweis', { stand: standL() })) + '</p>' : '') +
       '<p class="es-h">' + esc(t('es.erg.hinweis')) + '</p>' + gut.map(karte).join('') +
       (tipps.length ? '<div class="es-tipps"><h3 class="es-sub">💡 ' + esc(t('es.erg.tipps')) + '</h3><ul>' + tipps.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div>' : '') +
       (schon.length ? '<h3 class="es-sub">' + esc(t('es.erg.schon')) + '</h3><ul class="es-liste">' + schon.map(function (x) { return '<li>' + (ES_ICON[x.id] || '•') + ' ' + esc(t('es.n.' + x.id)) + '</li>'; }).join('') + '</ul>' : '') +
@@ -1792,10 +2404,9 @@
       '<button type="button" class="es-btn es-weiter" id="es-mappe">✉️ ' + esc(t('es.briefe')) + '</button>' +
       '<button type="button" class="es-btn" id="es-teilen">📤 ' + esc(t('es.teilen')) + '</button></div>' +
       '<p class="msg" id="es-msg" role="status"></p><textarea class="es-text" id="es-text" hidden readonly></textarea>' +
-      '<div class="es-nav"><button type="button" class="chip" id="es-zurueck">← ' + esc(t('es.zurueck')) + '</button>' +
-      '<button type="button" class="chip" id="es-neu">' + esc(t('es.neu')) + '</button>' +
+      '<div class="es-nav"><button type="button" class="chip" id="es-neu">' + esc(t('es.neu')) + '</button>' +
       '<button type="button" class="chip" id="es-raus">' + esc(t('es.ausfuehrlich')) + '</button></div>';
-    $('einfach').innerHTML = h;
+    $('einfach').innerHTML = ES_ZUR + h;
     // Text zum Teilen: Leistung, Einschätzung, Betrag, zuständige Stelle, Tipps, Hinweis „Schätzung“
     var text = function () {
       var div = document.createElement('div');
@@ -1824,7 +2435,7 @@
       picked = {}; pickedUser = {};
       out.results.forEach(function (x) { pickedUser[x.id] = false; });
       gut.forEach(function (x) { if (ANTRAG[x.id]) pickedUser[x.id] = x.level === 'ja'; });
-      lastOut = out; renderPick(out.results);
+      lastOut = out; renderPick(out.results, out.zusammen);
       openMappe();
       var hm = $('h-mappe'); if (hm) { hm.setAttribute('tabindex', '-1'); hm.focus({ preventScroll: true }); }
     });
@@ -1841,26 +2452,49 @@
   function esUmschalten(an) {
     esModus = an;
     if (an && !es) es = esLeer();
-    $('einfachBtn').setAttribute('aria-pressed', String(an));
+    if ($('einfachBtn')) $('einfachBtn').setAttribute('aria-pressed', String(an));
     esSpeichern(); esRender();
+    if (window.Schritte) Schritte.render(); // Kurzer Check an: Frage für Frage ausblenden
     if (aktAnsicht === 'einst') return; // in den Einstellungen nur den Modus schalten; Fokus bleibt am Schalter, der Modus gilt im Bereich Leistungen
     try { window.scrollTo(0, 0); } catch (e) {}
     var q = an ? $('es-q') : $('h-form'); if (q) { q.setAttribute('tabindex', '-1'); q.focus({ preventScroll: true }); }
   }
 
   // Einstellungen: alle gespeicherten Angaben der App löschen (Store-Schlüssel) und die Anzeige auf den Anfangszustand setzen
-  var STORE_SCHLUESSEL = ['lotse.state', 'lotse.einfach', 'lotse.einfachSprache', 'lotse.pflegecheck', 'lotse.lang', 'lotse.ack', 'lotse.fristen'];
+  var STORE_SCHLUESSEL = ['lotse.state', 'lotse.einfach', 'lotse.einfachSprache', 'lotse.beratung', 'lotse.haken', 'lotse.pflegecheck', 'lotse.lang', 'lotse.ack', 'lotse.fristen', 'lotse.fristTag', 'lotse.fristHinweis', 'lotse.checkWeg', 'lotse.deNetz'];
   state = blankState();
   $('sampleNotice').hidden = true; // Beispiel-Hinweis nur, wenn ein Beispiel geladen ist
   bind();
   writeForm();
+  if (window.DeNetz) DeNetz.init({ lang: function () { return lang; }, de: tDe, t: t, wurzel: function () { return $('app'); } });
   lang = detect();
   applyLang();
   initClaude();
 
   // Schaltet nur den Modus „Eine Frage pro Bildschirm“; er gilt im Bereich Leistungen (kein automatischer Sprung dorthin)
-  $('einfachBtn').addEventListener('click', function () { esUmschalten(!esModus); });
+  // Knopf „Kurzer Check …“ steht oben als Wahl (src/schritte.js baut ihn neu): Klick über das Dokument
+  document.addEventListener('click', function (e) { if (e.target && e.target.closest && e.target.closest('#einfachBtn')) esUmschalten(!esModus); });
   Store.get('lotse.einfachSprache', function (v) { if (v === '1') einfacheSpracheSetzen(true, false); });
+  Store.get('lotse.deNetz', function (v) { if (v === '0') deNetzSetzen(false, false); });
+  Store.get('lotse.beratung', function (v) { if (v === '1') beratungSetzen(true, false); });
+  // ----- Leistungs-Check: Weg wählen (Schritt für Schritt oder Alles auf einer Seite), Modul src/schritte.js -----
+  // Beide Wege schreiben in denselben Zustand (state). Die Wahl gilt pro Gerät (lotse.checkWeg, nicht im Vorgang).
+  if (window.Schritte) {
+    Schritte.init({
+      t: t, state: function () { return state; }, begonnen: function () { return started; },
+      geaendert: function (id) { writeForm(); if (id === 'plz') plzUpdate(true); buildSelects(); touched(); },
+      speichern: save, app: function () { return $('app'); },
+      formKopf: function () { return $('h-form'); }, ergebnisKopf: function () { return $('h-res'); },
+      euro: function (v) { return Fmt.euro(v, lang, !!(I18N[lang] && I18N[lang]['meta.dir'] === 'rtl')); }, parse: parseAmount, roman: Rules.roman,
+      plz: function (p) { return Plz.lookup ? Plz.lookup(p) : null; }, plzDa: function () { return !!(Plz.available && Plz.available()); },
+      laender: function () { return BUNDESLAENDER; }, kurzAn: function () { return esModus; },
+      wegSpeichern: function (w) { if (w) Store.set('lotse.checkWeg', w); else Store.remove('lotse.checkWeg'); },
+      nachRender: function () { esKopf(); if (navBereit) Navigation.melde(); },
+      verzoegerung: window.__SOLO_TEST__ ? 0 : 250
+    }, $('schritte'));
+    Store.get('lotse.checkWeg', function (v) { Schritte.wegLaden(v, beratung); });
+  }
+  Store.get('lotse.haken', function (v) { try { var d = v ? JSON.parse(v) : null; if (d && typeof d === 'object') { haken = d; render(); } } catch (e) {} });
   Store.get('lotse.einfach', function (v) {
     try { var d = v ? JSON.parse(v) : null; if (d && d.es) { es = Object.assign(esLeer(), d.es); if (d.an) esUmschalten(true); } } catch (e) {}
   });
@@ -1873,7 +2507,10 @@
     eval: function () { return Rules.evaluate(state); },
     speichern: function () { flush(); },
     state: function () { return state; },
-    reihe: function (results) { var k = kartenReihe(results); return k.passt.concat(k.neinKern, k.neinSpez).map(function (r) { return r.id; }); }
+    beratung: function (an) { beratungSetzen(an, false); },
+    reihe: function (results) { var k = kartenReihe(results); return k.passt.concat(k.neinKern, k.neinSpez).map(function (r) { return r.id; }); },
+    nav: function () { return { ebene: navEbene(), ansicht: aktAnsicht }; }, // Navigation (test/test-navigation.js)
+    unterseite: function (a, seite) { if (aktAnsicht !== a) zeigeAnsicht(a, false); usZeigen(a, seite, true); }
   };
   // ----- Netto-Helfer: Steuerklasse und Kirchensteuer mit großen Knöpfen wählen, Netto nach Programmablaufplan ausrechnen -----
   function lohnOpts(i) {
@@ -1910,7 +2547,7 @@
       [['nh.ja', true], ['nh.nein', false], ['nh.weissnicht', false]].forEach(function (x) {
         r.appendChild(nhKnopf('wahl', '<b>' + esc(t(x[0])) + '</b>', null, function () { state['kirche' + i] = x[1]; nhSchritt[i] = 2; nettoHelfer(i); touchedSoon(); box.querySelector('button').focus(); }));
       });
-      var z = document.createElement('div'); z.className = 'btns'; z.appendChild(nhKnopf('btn ghost', esc(t('nh.zurueck')), null, function () { nhSchritt[i] = 0; nettoHelfer(i); })); box.appendChild(z);
+      var z = document.createElement('div'); z.className = 'btns'; z.appendChild(nhKnopf('linkbtn pa-zur', '<span class="nav-pfeil" aria-hidden="true">←</span> ' + esc(t('nh.zurueck')), null, function () { nhSchritt[i] = 0; nettoHelfer(i); })); box.appendChild(z);
       return;
     }
     var e = Rules.nettoLohn(b, lohnOpts(i));
@@ -1933,7 +2570,7 @@
       f.dispatchEvent(new Event('input', { bubbles: true }));
       box.hidden = true; $('ek' + i + 'NhBtn').setAttribute('aria-expanded', 'false'); nhSchritt[i] = 0; f.focus();
     }));
-    bt2.appendChild(nhKnopf('btn ghost', esc(t('nh.zurueck')), null, function () { nhSchritt[i] = 0; nettoHelfer(i); }));
+    bt2.appendChild(nhKnopf('linkbtn pa-zur', '<span class="nav-pfeil" aria-hidden="true">←</span> ' + esc(t('nh.zurueck')), null, function () { nhSchritt[i] = 0; nettoHelfer(i); }));
     box.appendChild(bt2);
   }
   [1, 2].forEach(function (i) {
@@ -1979,7 +2616,7 @@
       });
       var d1 = document.createElement('div'); d1.className = 'btns'; box.appendChild(d1);
       d1.appendChild(nhKnopf('btn', esc(t('pf.weiter')), null, function () { va.schritt = 2; vaRender(); box.querySelector('.pf-frage').focus(); }));
-      d1.appendChild(nhKnopf('btn ghost', esc(t('nh.zurueck')), null, function () { va.schritt = 0; vaRender(); }));
+      d1.appendChild(nhKnopf('linkbtn pa-zur', '<span class="nav-pfeil" aria-hidden="true">←</span> ' + esc(t('nh.zurueck')), null, function () { va.schritt = 0; vaRender(); }));
       return;
     }
     var sum = function (art) { return VA.reduce(function (a, x) { return a + (x[3] === art && va.wahl[x[0]] ? Number(va.wert[x[0]]) || 0 : 0); }, 0); };
@@ -1998,71 +2635,310 @@
       var f = $('vermoegen'); f.value = String(Math.round(z)); f.dispatchEvent(new Event('input', { bubbles: true }));
       box.hidden = true; $('vaBtn').setAttribute('aria-expanded', 'false'); va.schritt = 0; vaInfo(); touchedSoon(); f.focus();
     }));
-    d2.appendChild(nhKnopf('btn ghost', esc(t('nh.zurueck')), null, function () { va.schritt = 1; vaRender(); }));
+    d2.appendChild(nhKnopf('linkbtn pa-zur', '<span class="nav-pfeil" aria-hidden="true">←</span> ' + esc(t('nh.zurueck')), null, function () { va.schritt = 1; vaRender(); }));
   }
   $('vaBtn').addEventListener('click', function () {
     var box = $('va'); box.hidden = !box.hidden; $('vaBtn').setAttribute('aria-expanded', String(!box.hidden));
     if (!box.hidden) { va.schritt = 0; vaRender(); var f = box.querySelector('button'); if (f) f.focus(); }
   });
 
-  // ----- Geld sparen im Alltag: erst Thema wählen (große Knöpfe), dann Tipps; Rezepte (selbst geschrieben, nur Deutsch) -----
+  // ----- Geld und Schulden (Startkachel, Ansicht „sparen“): 6 Kacheln in der Form der Startseite. Reihenfolge nach dem Ablauf der
+  //  Schuldnerberatung: erst sichern, dann ordnen, dann antworten, dann planen, dann Hilfe (Konzept docs/entwuerfe/geld-schulden-konzept.md,
+  //  Entscheidung David 20.11.2026: Krisen-Check als erste Karte in „Es ist dringend“, eigene Kachel „Post vom Inkasso“, „Sparen im Alltag“
+  //  unter „Mein Geld planen“, „Kostenlose Hilfe“ heißt jetzt „Schuldnerberatung“). „Was bleibt mir?“ und „Meine Schulden-Liste“ öffnen eigene
+  //  Ansichten (pfaendung, schulden); „Zurück“ führt von dort hierher (Herkunft). Neue Teile in src/geld.js.
+  //  Klasse gs-sparen an „Mein Geld planen“: dort liegen die Themen von „Geld sparen im Alltag“ (Kacheln gs-t-*).
+  var GS_KACHELN = [
+    ['dringend', 'gs.dringend', 'gs.dringend.t', '<path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/>'],
+    ['bleibt', 'gs.bleibt', 'home.pfaendung.t', '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/><path d="M15 3l-3 3-3-3"/>'],
+    ['liste', 'sl.h', 'gs.liste.t', '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>'],
+    ['inkasso', 'gs.inkasso', 'gs.inkasso.t', '<path d="M3 6h13v10H3z"/><path d="M3 6l6.5 5L16 6"/><circle cx="17" cy="16" r="3"/><path d="M19.2 18.2L22 21"/>'],
+    ['planen', 'gs.planen', 'gs.planen.t', '<path d="M4 7h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a1 1 0 0 1-1-1z"/><path d="M4 7l11-3v3"/><circle cx="16" cy="13.5" r="1"/>'],
+    ['hilfe', 'sb.h', 'sb.h.t', '<circle cx="9" cy="8" r="3"/><path d="M3 20c1-4 3-6 6-6s5 2 6 6"/><path d="M14 4h7v5h-4l-2 2V9h-1z"/>']
+  ];
+  // Es ist dringend: zuerst der Krisen-Check, dann je Fall Frist und erster Schritt, Einzelheiten zum Aufklappen (Texte sp.schulden.<fall>).
+  //  konto: § 850k Abs. 1 und 2 ZPO (Umwandlung, 4. Geschäftstag), § 899 Abs. 1 ZPO (Umwandlung binnen eines Monats schützt gesperrtes Guthaben);
+  //  „Jeder darf nur ein P-Konto haben“ (im Schritt gs.d.konto.schritt, aufklappbar): § 850k Abs. 3 Satz 1 ZPO „Jede Person darf nur ein
+  //  Pfändungsschutzkonto unterhalten.“ (https://www.gesetze-im-internet.de/zpo/__850k.html, abgerufen 21.11.2026; früher Abs. 8 a. F.);
+  //  strom: §§ 41f, 41g EnWG; mahn: §§ 692 Abs. 1 Nr. 3, 694, 700, 339 ZPO; miete: § 569 Abs. 3 Nr. 2 BGB, § 22 Abs. 8 SGB II, § 36 SGB XII
+  //  (alle abgerufen 20.11.2026 auf gesetze-im-internet.de).
+  //  geld (Geldstrafe, Texte gs.d.geld.*, inhaltlich wie sl.warum.geldstrafe): § 43 StGB (2 Tagessätze = 1 Tag Ersatzfreiheitsstrafe),
+  //  § 459a StPO (Zahlungserleichterungen durch die Vollstreckungsbehörde), § 451 Abs. 1 StPO (Staatsanwaltschaft ist Vollstreckungsbehörde),
+  //  Art. 293 EGStGB (Abwendung durch freie Arbeit, Landesverordnung) – Wortlaut abgerufen 20.11.2026 auf gesetze-im-internet.de.
+  var GS_DRINGEND = [
+    ['check', 'kc.h', '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>', 'kc.h.t'],
+    ['konto', 'pf.konto', '<path d="M3 10l9-6 9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/>'],
+    ['strom', 'gs.d.strom', '<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>'],
+    ['mahn', 'gs.d.mahn', '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>'],
+    ['miete', 'gs.d.miete', '<path d="M4 11l8-6 8 6v9H4z"/><path d="M10 20v-5h4v5"/>'],
+    ['geld', 'gs.d.geld', '<path d="M12 4v16M6 20h12M5 7h14"/><path d="M5 7l-3 6h6zM19 7l-3 6h6z"/>']
+  ];
+  // Schritte je Fall unter „Das tust du jetzt“ (Standard: erster Schritt + sp.schulden.<fall>) und kurze Tipps darunter (Aufräumen 21.11.2026).
+  //  Konto: Bescheinigung für den höheren Freibetrag (pf.tipp.bescheinigung, § 903 ZPO) statt sp.schulden.konto (wiederholte nur Umwandeln und Rechner).
+  //  Strom/Gas: sp.schulden.strom in Schritte zerlegt, Wortlaut unverändert (gs.d.strom.haerte, gs.d.strom.darlehen; Darlehen § 22 Abs. 8 SGB II,
+  //  § 36 SGB XII) und Tipp gs.d.strom.grenze (§ 41f EnWG: 2 Monatsabschläge, mindestens 100 €; abgerufen 20.11.2026, gesetze-im-internet.de).
+  var GS_D_SCHRITTE = { konto: ['gs.d.konto.schritt', 'pf.tipp.bescheinigung'], strom: ['gs.d.strom.schritt', 'gs.d.strom.haerte', 'gs.d.strom.darlehen'], geld: ['gs.d.geld.schritt'] };
+  var GS_D_TIPPS = { strom: ['gs.d.strom.grenze'] };
+  // Post vom Inkasso: Prüfliste (§ 13a RDG), Musterschreiben, Raten anbieten, Gerichtspost. „Gelber Umschlag vom Gericht?“ ist nur ein Link:
+  //  öffnet direkt die Seite „Es ist dringend → Mahnbescheid vom Gericht“ (keine zweite Fassung); „Zurück“ führt von dort zu „Post vom Inkasso“.
+  var GS_INKASSO = [
+    ['pruef', 'ip.h', 'ip.h.t', '<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5M8.5 11l2 2 3.5-3.5"/>'],
+    ['schreiben', 'ms.h', 'ms.h.t', '<path d="M6 3h9l4 4v14H6z"/><path d="M9 17l1-3 6-6 2 2-6 6z"/>'],
+    ['rate', 'gs.rate', 'gs.rate.t', '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>'],
+    ['gelb', 'gs.gelb', 'gs.gelb.t', '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>']
+  ];
+  // Schuldnerberatung: Beratungsstelle finden (sl.hilfe.1–5, mit dem Tipp zu unseriösen Anbietern), Bis zum Termin, Beratungsmappe, Ablauf und
+  //  Privatinsolvenz. Eigene Kachel „Vorsicht: unseriöse Anbieter“ entfernt (Aufräumen 21.11.2026): ihr einziger Inhalt war derselbe Tipp.
+  //  Ablauf (sb.ablauf.lead): AG SBV „Konzept Soziale Schuldnerberatung“ (2018), S. 10–14; Privatinsolvenz §§ 287, 305 InsO (abgerufen 20.11.2026).
+  var GS_HILFE = [
+    ['finden', 'sb.finden', 'sb.finden.t', '<path d="M12 21s-6-6.5-6-11a6 6 0 0 1 12 0c0 4.5-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/>'],
+    ['termin', 'sb.termin', 'sb.termin.t', '<path d="M7 3h10M7 21h10M8 3c0 5 8 5 8 9s-8 4-8 9M16 3c0 5-8 5-8 9s8 4 8 9"/>'],
+    ['mappe', 'sb.mappe', 'sb.mappe.t', '<path d="M3 6h7l2 2h9v11H3z"/><path d="M8 13h8"/>'],
+    ['ablauf', 'sb.ablauf', 'sb.ablauf.t', '<circle cx="5" cy="18" r="2"/><circle cx="12" cy="9" r="2"/><circle cx="19" cy="15" r="2"/><path d="M6.5 16.5l4-6M13.5 10.5l4 3"/>']
+  ];
+  // Sparen im Alltag (jetzt unter „Mein Geld planen“): Strom, Heizen, Essen (mit Link zur Verbraucherzentrale), Verträge
   var SP_THEMEN = [
     ['strom', 'sp.strom', 'sp.strom.t', 6, '<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>'],
     ['heizen', 'sp.heizen', 'sp.heizen.t', 5, '<path d="M12 21a6 6 0 0 0 6-6c0-4-3-6-4-10-2 2-3 4-3 6-1-1-2-2-2-4-2 2-3 5-3 8a6 6 0 0 0 6 6z"/>'],
     ['essen', 'sp.essen', 'sp.essen.t', 5, '<path d="M4 11h16a8 8 0 0 1-16 0zM8 7c0-2 2-2 2-4M12 7c0-2 2-2 2-4"/>'],
-    ['vertraege', 'sp.vertraege', 'sp.vertraege.t', 6, '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>'],
-    ['schulden', 'sp.schulden', 'sp.schulden.t', 0, '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/>']
+    ['vertraege', 'sp.vertraege', 'sp.vertraege.t', 4, '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>']
   ];
-  var SP_TIPPS = { strom: ['sp.strom.1', 'sp.strom.2', 'sp.strom.3', 'sp.strom.4', 'sp.strom.5', 'sp.strom.6'], heizen: ['sp.heizen.1', 'sp.heizen.2', 'sp.heizen.3', 'sp.heizen.4', 'sp.heizen.5'],
-    essen: ['sp.essen.1', 'sp.essen.2', 'sp.essen.3', 'sp.essen.4', 'sp.essen.5'], vertraege: ['sp.vertraege.1', 'sp.vertraege.2', 'sp.vertraege.3', 'sp.vertraege.4', 'sp.vertraege.5', 'sp.vertraege.6'] };
-  // Eigene Rezepte, günstige Grundzutaten, je 4 Portionen; bewusst ohne Preise (Preise ändern sich)
-  var REZEPTE = [
-    ['Linsen-Dal mit Reis', ['250 g rote Linsen', '1 Zwiebel, 1 Knoblauchzehe', '1 Dose gehackte Tomaten', '1 TL Curry, Salz', '250 g Reis'], ['Zwiebel und Knoblauch klein schneiden und in etwas Öl anbraten.', 'Linsen, Tomaten, Curry und 600 ml Wasser dazugeben, 15 Minuten köcheln, bis die Linsen weich sind.', 'Reis nach Packung kochen und mit dem Dal servieren.']],
-    ['Ofengemüse mit Kartoffeln', ['1 kg Kartoffeln', '2 Möhren, 1 Paprika, 1 Zwiebel (oder Gemüse der Saison)', '3 EL Öl, Salz, Paprikapulver', '200 g Quark mit Kräutern'], ['Ofen auf 200 Grad vorheizen.', 'Kartoffeln und Gemüse in Stücke schneiden, mit Öl und Gewürzen mischen.', 'Auf dem Blech 35 Minuten backen, mit Kräuterquark essen.']],
-    ['Nudeln mit Tomaten-Bohnen-Soße', ['400 g Vollkornnudeln', '1 Dose weiße Bohnen', '1 Dose gehackte Tomaten', '1 Zwiebel, Oregano, Salz, Pfeffer'], ['Nudeln nach Packung kochen.', 'Zwiebel anbraten, Tomaten und abgespülte Bohnen dazu, 10 Minuten köcheln und würzen.', 'Mit den Nudeln mischen.']],
-    ['Gemüsesuppe aus Resten', ['Gemüse, das weg muss (zum Beispiel Möhren, Lauch, Kartoffeln, Kohl)', '1 Zwiebel', '1 l Gemüsebrühe', 'Salz, Pfeffer, Petersilie'], ['Gemüse und Zwiebel klein schneiden und kurz in Öl anbraten.', 'Brühe dazugeben und 20 Minuten köcheln.', 'Abschmecken; nach Wunsch pürieren. Reste lassen sich gut einfrieren.']],
-    ['Haferflocken-Frühstück', ['250 g Haferflocken', '750 ml Milch oder Wasser', '2 Äpfel oder Bananen', 'Zimt'], ['Haferflocken mit Milch oder Wasser 5 Minuten unter Rühren köcheln.', 'Obst klein schneiden und darübergeben, mit Zimt bestreuen.', 'Tipp: abends mit kalter Milch ansetzen, morgens fertig.']],
-    ['Kichererbsen-Pfanne mit Ei', ['2 Dosen Kichererbsen', '1 Zwiebel, 1 Paprika', '1 Dose gehackte Tomaten', '4 Eier, Kreuzkümmel, Salz'], ['Zwiebel und Paprika anbraten, Kichererbsen und Tomaten dazugeben, 10 Minuten köcheln.', 'Mit Kreuzkümmel und Salz würzen.', '4 Mulden machen, Eier hineingeben und zugedeckt 6 Minuten garen lassen.']]
+  // Reihenfolge: die wirksamsten Tipps zuerst; Tipps mit Frist oder Nachzahlung stehen vorn. Jeder Tipp: Symbol + kurzer Satz, Rest zum Aufklappen.
+  var SP_TIPPS = { strom: ['sp.strom.6', 'sp.strom.5', 'sp.strom.1', 'sp.strom.2', 'sp.strom.3', 'sp.strom.4'], heizen: ['sp.heizen.5', 'sp.heizen.1', 'sp.heizen.2', 'sp.heizen.3', 'sp.heizen.4'],
+    essen: ['sp.essen.5', 'sp.essen.4', 'sp.essen.1', 'sp.essen.2', 'sp.essen.3'], vertraege: ['sp.vertraege.1', 'sp.vertraege.6', 'sp.vertraege.5', 'sp.vertraege.3'] };
+  // Schulden: Tipps nach gemeinnützigen Schuldnerberatungen, sinngemäß in eigenen Worten. Quellen (abgerufen 20.11.2026):
+  //  Verbraucherzentralen: verbraucherzentrale.nrw „Erste Schritte, wenn die Schulden drücken“; verbraucherzentrale.de „Gerichtliches Mahnverfahren:
+  //  Was tun bei einem Mahnbescheid?“, „Ratenvereinbarung beim Inkasso“, „Schuldnerberatungen: So erkennen Sie unseriöse Angebote“, „Privatinsolvenz –
+  //  in 3 Jahren schuldenfrei?“, „5 Wege: So erhalten Sie eine P-Konto-Bescheinigung“; BAG-SB: meine-schulden.de (Beratungsstellen-Suche, Inkassobriefe,
+  //  P-Konto, Mahnverfahren, Insolvenz); Caritas: caritas.de „Mietschulden: Tipps“, „Professionelle Hilfe gibt es bei der Schuldnerberatung“;
+  //  AG SBV (Wohlfahrtsverbände, BAG-SB, Verbraucherzentralen): „Konzept Soziale Schuldnerberatung“.
+  //  Gesetze: Verjährung §§ 195, 199 BGB (Beginn mit Schluss des Jahres der Entstehung, § 199 Abs. 1 BGB, Wortlaut abgerufen 20.11.2026);
+  //  Mahnbescheid § 692 Abs. 1 Nr. 3 ZPO, Einspruch §§ 700, 339 ZPO; P-Konto §§ 850k, 899, 903 ZPO;
+  //  Energiesperre §§ 41f, 41g EnWG (Strom und Gas; abgerufen 20.11.2026); Darlehen § 22 Abs. 8 SGB II, § 36 SGB XII; Kündigung § 543 Abs. 2 Nr. 3, Schonfrist § 569 Abs. 3 Nr. 2 BGB;
+  //  Insolvenz §§ 287, 295, 302, 305 InsO. Prüfliste und Warnungen zu Inkasso: § 13a Abs. 1, 3, 4 RDG (Wortlaut abgerufen 20.11.2026).
+  // Inkasso (sp.schulden.inkasso): Verjährung 3 Jahre (§ 195 BGB) ab Schluss des Jahres der Entstehung (§ 199 Abs. 1 BGB); Neubeginn bei Anerkenntnis,
+  // z. B. Abschlagszahlung (§ 212 Abs. 1 Nr. 1 BGB); 30 Jahre bei rechtskräftig festgestellten Ansprüchen, z. B. Urteil, Vollstreckungsbescheid
+  // (§ 197 Abs. 1 Nr. 3 BGB). https://www.gesetze-im-internet.de/bgb/__195.html, __197.html, __199.html, __212.html, Abruf 20.11.2026
+  // Essen: Link zur Verbraucherzentrale statt eigener Rezepte (Entscheidung David 20.11.2026). Verbraucherzentrale Bundesverband,
+  // „So geht gesunde Ernährung mit wenig Geld“ (Seite in einfacher Sprache, Stand der Seite 14.06.2024, abgerufen 20.11.2026).
+  var SP_VZ_URL = 'https://www.verbraucherzentrale.de/lebensmittel/so-geht-gesunde-ernaehrung-mit-wenig-geld-96404';
+  // Seiten „Strom“ und „Heizen“: zwei Werkzeuge als Kacheln (Abschlag prüfen, Tarife vergleichen), danach je Werkzeug die Kacheln Strom und Gas.
+  // sp.fall = 'abschlag' | 'tarif' (Kacheln Strom/Gas) bzw. 'abschlag-strom', 'tarif-gas' … (Rechner). „Zurück“ führt je eine Ebene hoch.
+  var EN_WERKZEUGE = [
+    ['abschlag', 'pl.abschlag', 'pl.abschlag.t', '<path d="M13 2L4 14h7l-1 8 9-12h-7z"/><circle cx="18" cy="18" r="4"/><path d="M18 16v2l1.2 1"/>'],
+    ['tarif', 'hb.tv.kachel', 'hb.tv.kachel.t', '<path d="M4 7h11M4 7l3-3M4 7l3 3M20 17H9M20 17l-3-3M20 17l-3 3"/>']
   ];
-  var sp = { thema: '', rezepte: false };
-  function spRender(fokus) {
+  // Tarife vergleichen: Hinweise (Tipp-Komponente). Quellen (abgerufen 21.11.2026):
+  //  Bonus nur im 1. Jahr: Verbraucherzentrale Bundesverband, „Was Sie bei Bonus-Tarifen für Strom und Gas beachten sollten“ (Stand 05.08.2026);
+  //  „So finden Sie den passenden Strom- oder Gastarif“ (Stand 29.07.2026): Bonus nicht einrechnen, Laufzeit etwa 1 Jahr mit Preisgarantie.
+  //  Keine Vorkasse, keine Pakettarife: Verbraucherzentrale Rheinland-Pfalz, „Stromanbieterwechsel“ (Stand 03/2020); Vorkasse auch Verbraucherzentrale
+  //  Hamburg, „Strom und Gas: So wechseln Sie den Anbieter“ (Stand 04.09.2025; Laufzeit höchstens 12 Monate, Preisgarantie für die Erstlaufzeit).
+  //  Kündigungsfrist steht auf der letzten Rechnung; Grundversorgung 2 Wochen: Verbraucherzentrale Bundesverband, „So können Sie Ihren Anbieter von Strom
+  //  und Gas wechseln“ (einfache Sprache, Stand 28.10.2026); „So läuft der Anbieterwechsel bei Strom und Gas ab“ (Stand 11.11.2026): 14 Tage.
+  //  Fernwärme: „Bei Fernwärme ist der Wechsel des Wärmelieferanten nicht möglich“ (Verbraucherzentrale Bundesverband, „Fernwärme: Kosten sparen
+  //  und gleichzeitig das Klima schonen“, Stand 09.07.2025).
+  var TV_TIPPS = ['tv.bonus', 'tv.vorkasse', 'tv.laufzeit', 'tv.kuendigung', 'tv.fernwaerme'];
+  // Link zum Anbieterwechsel (neutral, keine Vergleichsportale): Verbraucherzentrale Bundesverband, Seite in einfacher Sprache, Stand 28.10.2026, abgerufen 21.11.2026
+  var TV_VZ_URL = 'https://www.verbraucherzentrale.de/de-x-simple/energie/so-koennen-sie-ihren-anbieter-von-strom-und-gas-wechseln-88520';
+  function linkKarte(box, id, url, titel, text) { // Linkkarte (öffnet extern; in der App über das Browser-Plugin, siehe Klick auf a[href])
+    var vz = document.createElement('a'); vz.className = 'uk-karte sp-link-karte'; vz.href = url; vz.target = '_blank'; vz.rel = 'noopener'; vz.id = id;
+    vz.innerHTML = '<span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></span><span class="sk-txt"><b>' + esc(titel) + '</b><span>' + esc(text) + (lang !== 'de' ? ' ' + esc(t('sp.vz.de')) : '') + '</span></span>';
+    box.appendChild(vz);
+  }
+
+  var sp = { bereich: '', fall: '', thema: '', von: '' }; // von: Bereich, aus dem eine Link-Kachel kam (Zurück dorthin)
+  // Kachel in der Form der Startseite (Klasse sk): Symbol, Titel, kurzer Text
+  // Deutscher Amtsbegriff in Klammern in einer Übersetzung (z. B. „(Mahnbescheid)“): als lang="de" auszeichnen, damit er wie deutscher
+  // Text getrennt wird (mit Trennstrich, auch in Arabisch/Persisch richtig herum) statt mitten im Wort ohne Strich umzubrechen (schmale Kachel, 390 px)
+  function kachelTitel(titel) {
+    var h = esc(titel);
+    return lang === 'de' ? h : h.replace(/\(([A-Za-zÄÖÜäöüß][A-Za-zÄÖÜäöüß\u00AD\- ]{7,})\)/g, '<bdi lang="de" dir="ltr">($1)</bdi>');
+  }
+  function skKachel(cls, sym, titel, text, fn) {
+    return nhKnopf('uk-karte ' + cls, '<span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + sym + '</svg></span><span class="sk-txt"><b>' + kachelTitel(titel) + '</b>' + (text ? '<span>' + esc(text) + '</span>' : '') + '</span>', null, fn);
+  }
+  function gsOeffne(bereich) { sp.bereich = bereich; sp.fall = ''; sp.thema = ''; sp.von = ''; if (bereich === 'dringend' && window.Geld) Geld.kcStart(); }
+  // Sprung aus einer Unteransicht (Pfändung, Haushaltsplan, Schulden-Liste) in einen Teil von „Geld und Schulden“: Herkunft bleibt die der
+  // Startkachel, damit „Zurück“ eine Ebene hoch führt (Teil → Kacheln → Startseite) und nicht im Kreis zwischen zwei Ansichten
+  function gsSprung(bereich, thema, fall) {
+    if (bereich === 'sparen') bereich = 'planen'; // „Sparen im Alltag“ liegt unter „Mein Geld planen“
+    gsOeffne(bereich); sp.thema = thema || ''; sp.fall = fall || '';
+    if (aktAnsicht === 'sparen') { spRender(true); return; }
+    if (!herkunft.sparen || herkunft.sparen === aktAnsicht) herkunft.sparen = 'start';
+    zeigeAnsicht('sparen', true);
+  }
+  function pfBescheinigung() { pf = { art: 'besch', schritt: 1, netto: pf.netto, pers: pf.pers, kg: pf.kg, kiz: pf.kiz }; oeffneVon('pfaendung', true); }
+  function pfKonto() { pf = { art: 'konto', schritt: 1, netto: pf.netto, pers: pf.pers, kg: pf.kg, kiz: pf.kiz }; oeffneVon('pfaendung', true); }
+  function abschlagPruefen() { gsSprung('sparen', 'strom', 'abschlag'); } // „Abschlag prüfen“ auf der Seite „Strom“: erst die Kacheln Strom/Gas (Haushalt.abschlag)
+  // Ziele aus dem Krisen-Check, „Bis zum Termin“ und der Schulden-Liste
+  function gsZiel(z) {
+    if (['mahn', 'geld', 'miete', 'strom', 'konto'].indexOf(z) >= 0) { gsSprung('dringend', '', z); return; }
+    if (z === 'essen') { oeffneVon('leistungen', true); return; }
+    if (z === 'liste') { oeffneVon('schulden', true); return; }
+    if (z === 'haushalt') { oeffneVon('haushalt', true); return; }
+    if (z === 'pkonto-rechner') { pfKonto(); return; }
+    if (z === 'finden') { gsSprung('hilfe', '', 'finden'); return; }
+    if (z === 'inkasso') { gsSprung('inkasso'); return; }
+    if (z === 'pruef') { gsSprung('inkasso', '', 'pruef'); return; }
+    if (z === 'hilfe') { gsSprung('hilfe'); return; }
+    if (z === 'geduld' || z === 'aufst') { Geld.schreibenVorbelegen(z); gsSprung('inkasso', '', 'schreiben'); }
+  }
+  function spRender(fokus, fokusId) {
     var box = $('spInhalt'); if (!box) return;
     box.innerHTML = '';
     var p = function (txt, cls) { var e = document.createElement('p'); e.className = cls || ''; e.textContent = txt; box.appendChild(e); return e; };
-    var zurueck = function (fn) { var d = document.createElement('div'); d.className = 'btns'; d.appendChild(nhKnopf('btn ghost', esc(t('nh.zurueck')), null, fn)); box.appendChild(d); };
-    if (!sp.thema) {
-      p(t('sp.wahl'), 'pf-frage');
-      var l = document.createElement('div'); l.className = 'weg-liste'; box.appendChild(l);
-      SP_THEMEN.forEach(function (x) {
-        l.appendChild(nhKnopf('weg', '<span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + x[4] + '</svg></span><span class="weg-txt"><b>' + esc(t(x[1])) + '</b><span>' + esc(t(x[2])) + '</span></span>', null, function () {
-          if (x[0] === 'schulden') { zeigeAnsicht('pfaendung', true); return; }
-          sp.thema = x[0]; sp.rezepte = false; spRender(true);
+    var raster = function () { var r = document.createElement('div'); r.className = 'uk-raster'; box.appendChild(r); return r; };
+    var knopf = function (cls, txt, fn) { var d = document.createElement('div'); d.className = 'btns'; d.appendChild(nhKnopf(cls, esc(txt), null, fn)); box.appendChild(d); return d.firstChild; };
+    var tipp = function (key, fall, ziel, laien) { var dt = tippEl(key, fall ? 'sp-fall' : '', laien); if (fall) dt.setAttribute('data-fall', fall); (ziel || box).appendChild(dt); return dt; };
+    var tippListe = function (keys, cls, laien) { var ul = document.createElement('ul'); ul.className = 'tipp-liste ' + cls; box.appendChild(ul); keys.forEach(function (k) { var li = document.createElement('li'); tipp(k, '', li, laien); ul.appendChild(li); }); return ul; };
+    var neu = function (id) { spRender(false, id); };
+    // Unterkarten [id, Titel, Untertitel, Symbol]; „Gelber Umschlag“ springt direkt zum Fall Mahnbescheid (Zurück: wieder hierher)
+    var unterkarten = function (liste, prefix) {
+      var r = raster();
+      liste.forEach(function (x) {
+        r.appendChild(skKachel(prefix + x[0], x[3], t(x[1]), t(x[2]), function () {
+          if (x[0] === 'gelb') { gsOeffne('dringend'); sp.fall = 'mahn'; sp.von = 'inkasso'; spRender(true); return; }
+          sp.fall = x[0]; if (x[0] === 'schreiben') Geld.schreibenVorbelegen(''); spRender(true);
         }));
       });
-      p(t('home.privat'), 'small muted');
-      if (fokus) { var f0 = box.querySelector('button'); if (f0) f0.focus(); }
+    };
+    if (!sp.bereich) {
+      p(t('pf.wahl'), 'pf-frage');
+      if (beratung) { // Beratungsmodus (B4): geöffneter Vorgang und schneller Wechsel über „Mein Ordner“ (nur Deutsch)
+        var va = tresor && tresor.bereit() ? tresor.aktiv() : null, kz = document.createElement('p'); kz.className = 'ber-nur small gs-klient';
+        kz.appendChild(document.createTextNode('Klient (Vorgang): ' + (va && va.name ? va.name : 'ohne Namen') + ' · '));
+        var wb = document.createElement('button'); wb.type = 'button'; wb.className = 'linkbtn'; wb.id = 'gs-klient-wechseln'; wb.textContent = 'wechseln';
+        wb.addEventListener('click', function () { herkunft = {}; zeigeAnsicht('ordner', true); }); kz.appendChild(wb); box.appendChild(kz);
+      }
+      var r0 = raster();
+      GS_KACHELN.forEach(function (x) {
+        if (x[0] === 'liste' && !window.Schulden) return;
+        r0.appendChild(skKachel('gs-' + x[0] + (x[0] === 'planen' ? ' gs-sparen' : ''), x[3], t(x[1]), t(x[2]), function () {
+          if (x[0] === 'bleibt') { oeffneVon('pfaendung', true); return; }
+          if (x[0] === 'liste') { oeffneVon('schulden', true); return; }
+          gsOeffne(x[0]); spRender(true);
+        }));
+      });
+      if (fokus) { var f0 = box.querySelector('.uk-raster button'); if (f0) f0.focus(); }
       return;
     }
-    if (sp.rezepte) {
-      p(t('sp.rezepte'), 'pf-frage');
-      if (lang !== 'de') p(t('briefe.nurDeutsch'), 'pp-hinweis small');
-      REZEPTE.forEach(function (r) {
-        var d = document.createElement('details'); d.className = 'rezept'; d.lang = 'de';
-        d.innerHTML = '<summary>' + esc(r[0]) + '</summary><ul class="sp-liste">' + r[1].map(function (z) { return '<li>' + esc(z) + '</li>'; }).join('') + '</ul><ol class="sp-liste">' + r[2].map(function (z) { return '<li>' + esc(z) + '</li>'; }).join('') + '</ol>';
-        box.appendChild(d);
+    if (sp.bereich === 'dringend' && !sp.fall) {
+      p(t('gs.dringend'), 'pf-frage');
+      p(t('gs.d.wahl'), 'hint');
+      var r1 = raster();
+      GS_DRINGEND.forEach(function (x) { r1.appendChild(skKachel('gs-d-' + x[0], x[2], t(x[1]), x[3] ? t(x[3]) : '', function () { sp.fall = x[0]; if (x[0] === 'check') Geld.kcStart(); spRender(true); })); });
+    } else if (sp.bereich === 'dringend' && sp.fall === 'check') {
+      Geld.krisenCheck(box, function () { spRender(false); var f = $('kc-erg') || $('kc-ja'); if (f) { if (f.id === 'kc-erg') f.focus(); else { var q = $('kc-q'); if (q) { q.tabIndex = -1; q.focus(); } } } });
+    } else if (sp.bereich === 'dringend') {
+      var fx = GS_DRINGEND.filter(function (x) { return x[0] === sp.fall; })[0];
+      // Alle Fälle gleich aufgebaut (Aufräumen 21.11.2026): Frist (.frist) → „Das tust du jetzt“ (Schritte, Einzelheiten zum Aufklappen)
+      // → Knöpfe (nächster Schritt in der App, zuletzt Beratungsstelle) → Quellen. Texte unverändert, nur geordnet.
+      p(t(fx[1]), 'pf-frage');
+      var fd = document.createElement('div'); fd.className = 'frist gs-frist'; fd.setAttribute('role', 'note'); // Frist im gemeinsamen Muster .frist (#68)
+      var fh = document.createElement('h3'); fh.textContent = t('gs.frist'); fd.appendChild(fh);
+      tipp('gs.d.' + sp.fall + '.frist', '', fd); box.appendChild(fd);
+      var jd = document.createElement('div'); jd.className = 'pf-jetzt gs-schritt';
+      var jh = document.createElement('h3'); jh.textContent = t('pf.jetzt.h'); jd.appendChild(jh);
+      var jol = document.createElement('ol'); jol.className = 'tipp-liste'; jd.appendChild(jol);
+      (GS_D_SCHRITTE[sp.fall] || ['gs.d.' + sp.fall + '.schritt', 'sp.schulden.' + sp.fall]).forEach(function (k, i) {
+        var li = document.createElement('li'); tipp(k, i && k.indexOf('sp.schulden.') === 0 ? sp.fall : '', li); jol.appendChild(li);
       });
-      p(t('sp.rezepte.t'), 'small muted');
-      zurueck(function () { sp.rezepte = false; spRender(true); });
+      box.appendChild(jd);
+      if (GS_D_TIPPS[sp.fall]) { var gt = document.createElement('div'); gt.className = 'gs-tipps'; box.appendChild(gt); GS_D_TIPPS[sp.fall].forEach(function (k) { tipp(k, sp.fall, gt); }); }
+      if (sp.fall === 'konto') { // Grundfreibetrag aus den geprüften Werten (Rules.RULES.pfaendung, Pfändungsfreigrenzenbekanntmachung 2026, § 899 Abs. 1 ZPO)
+        var kf = Rules.pkonto({ personen: 0, kindergeldKinder: 0 }), rtlK = I18N[lang] && I18N[lang]['meta.dir'] === 'rtl';
+        if (new Date().toISOString().slice(0, 10) <= Rules.RULES.pfaendung.gueltigBis) {
+          var ft = document.createElement('table'); ft.className = 'pf-tab gs-freibetrag'; var fr0 = ft.insertRow();
+          fr0.insertCell().textContent = t('pf.k.sockel'); fr0.insertCell().textContent = Fmt.euro(kf.sockel, lang, rtlK); box.appendChild(ft);
+        }
+      }
+      var gb = document.createElement('div'); gb.className = 'btns gs-knoepfe'; box.appendChild(gb);
+      var gk = function (cls, txt, fn) { gb.appendChild(nhKnopf(cls, esc(txt), null, fn)); };
+      if (sp.fall === 'konto') { gk('btn sp-rechner', t('sp.schulden.pf'), pfKonto); gk('btn ghost gs-besch', t('ms.pkonto'), pfBescheinigung); }
+      if (sp.fall === 'strom' && window.Haushalt) gk('btn ghost gs-abschlag', t('pl.abschlag'), abschlagPruefen);
+      if (sp.fall === 'mahn' && window.Schulden) gk('btn ghost gs-in-liste', t('gs.d.mahn.liste'), function () { oeffneVon('schulden', true); Schulden.neu({ st: 'mahnbescheid' }); });
+      gk('btn ghost gs-zur-hilfe', t('sb.finden'), function () { gsOeffne('hilfe'); sp.fall = 'finden'; spRender(true); });
+      box.appendChild(quellenEl(sp.fall === 'konto' ? [t('sp.schulden.quellen'), t('pf.stand')] : [t('sp.schulden.quellen')]));
+    } else if (sp.bereich === 'inkasso' && !sp.fall) {
+      p(t('gs.inkasso'), 'pf-frage');
+      unterkarten(GS_INKASSO, 'gs-i-');
+    } else if (sp.bereich === 'inkasso' && sp.fall === 'pruef') {
+      Geld.pruefliste(box, neu);
+      // Hinweise zusammen: Inkasso-Tipp direkt nach den Warnungen, „Erste Einschätzung, keine Rechtsberatung“ (ip.hinweis) darunter
+      var ipH = box.querySelector('.ip-hinweis'); box.insertBefore(tippEl('sp.schulden.inkasso', 'sp-fall'), ipH).setAttribute('data-fall', 'inkasso');
+      box.appendChild(quellenEl([t('sp.schulden.quellen')]));
+    } else if (sp.bereich === 'inkasso' && sp.fall === 'schreiben') {
+      Geld.schreibenSeite(box, neu);
+    } else if (sp.bereich === 'inkasso' && sp.fall === 'rate') {
+      p(t('gs.rate'), 'pf-frage');
+      Geld.rateSeite(box, neu); // Ratenempfehlung aus dem Haushaltsplan und Schreiben „Ratenzahlung anbieten“ (src/geld.js)
+      tipp('sp.schulden.rate', 'rate');
+      box.appendChild(quellenEl([t('sp.schulden.quellen')]));
+    } else if (sp.bereich === 'hilfe' && !sp.fall) {
+      p(t('sb.h'), 'pf-frage');
+      unterkarten(GS_HILFE, 'gs-h-');
+    } else if (sp.bereich === 'hilfe') {
+      if (sp.fall === 'termin') Geld.wartezeit(box);
+      else if (sp.fall === 'mappe') Geld.mappe(box);
+      else if (sp.fall === 'finden') {
+        p(t('sb.finden'), 'pf-frage');
+        var hb = document.createElement('div'); hb.className = 'gs-box gs-schritt gs-beratung'; box.appendChild(hb);
+        ['sl.hilfe.1', 'sl.hilfe.4', 'sl.hilfe.5', 'sl.hilfe.2', 'sl.hilfe.3'].forEach(function (k) { var e = document.createElement('p'); e.textContent = t(k); hb.appendChild(e); });
+        tipp('sp.schulden.unserioes', 'unserioes');
+      } else { // ablauf
+        p(t('sb.ablauf'), 'pf-frage');
+        p(t('sb.ablauf.lead'), 'hint');
+        tippListe(['sp.schulden.1', 'sp.schulden.2', 'sp.schulden.3'], 'sp-schritte');
+        tipp('sp.schulden.insolvenz', 'insolvenz');
+      }
+      box.appendChild(quellenEl([t('sp.schulden.quellen')]));
+    } else if (!sp.thema) { // Mein Geld planen: Haushaltsplan, darunter die Themen von „Geld sparen im Alltag“
+      p(t('gs.planen'), 'pf-frage');
+      var rp = raster();
+      if (window.Haushalt) {
+        rp.appendChild(skKachel('gs-p-hh', '<path d="M4 7h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a1 1 0 0 1-1-1z"/><path d="M4 7l11-3v3"/><circle cx="16" cy="13.5" r="1"/>', t('hb.kachel'), t('hb.kachel.t'), function () { oeffneVon('haushalt', true); }));
+      }
+      var h3 = document.createElement('h3'); h3.className = 'gs-sparen-h'; h3.textContent = t('sp.h'); box.appendChild(h3);
+      var r2 = raster();
+      SP_THEMEN.forEach(function (x) { r2.appendChild(skKachel('gs-t-' + x[0], x[4], t(x[1]), t(x[2]), function () { sp.thema = x[0]; spRender(true); })); });
     } else {
       var th = SP_THEMEN.filter(function (x) { return x[0] === sp.thema; })[0];
-      p(t(th[1]), 'pf-frage');
-      var ul = document.createElement('ul'); ul.className = 'sp-liste'; box.appendChild(ul);
-      SP_TIPPS[sp.thema].forEach(function (k) { var li = document.createElement('li'); li.textContent = t(k); ul.appendChild(li); });
-      if (sp.thema === 'essen') { var d2 = document.createElement('div'); d2.className = 'btns'; d2.appendChild(nhKnopf('btn', esc(t('sp.rezepte')), null, function () { sp.rezepte = true; spRender(true); })); box.appendChild(d2); }
-      p(t('sp.quellen'), 'small muted');
-      zurueck(function () { sp.thema = ''; spRender(true); });
+      var enSeite = (sp.thema === 'strom' || sp.thema === 'heizen') && window.Haushalt && Haushalt.abschlag;
+      var wz = sp.fall.split('-'), wzx = EN_WERKZEUGE.filter(function (x) { return x[0] === wz[0]; })[0];
+      if (enSeite && wzx && !wz[1]) { // Werkzeug gewählt: erst Strom oder Gas
+        p(t(wzx[1]), 'pf-frage');
+        var re = raster();
+        [['strom', SP_THEMEN[0][4]], ['gas', SP_THEMEN[1][4]]].forEach(function (x) { re.appendChild(skKachel('gs-e-' + wz[0] + '-' + x[0], x[1], t('hb.en.tab.' + x[0]), '', function () { sp.fall = wz[0] + '-' + x[0]; spRender(true); })); });
+      } else if (enSeite && wzx) { // Rechner für eine Sparte
+        p(t(wzx[1]), 'pf-frage');
+        var zb = document.createElement('div'); zb.id = wz[0] === 'tarif' ? 'spTarif' : 'spAbschlag'; box.appendChild(zb);
+        if (wz[0] === 'tarif') {
+          Haushalt.tarif(zb, wz[1]);
+          tippListe(TV_TIPPS, 'sp-tipps tv-tipps', true);
+          linkKarte(box, 'tv-vz', TV_VZ_URL, t('tv.vz.link'), t('tv.vz.t'));
+          box.appendChild(quellenEl([t('tv.quellen')]));
+        } else Haushalt.abschlag(zb, wz[1]);
+      } else {
+        p(t(th[1]), 'pf-frage');
+        if (enSeite) { var rw = raster(); EN_WERKZEUGE.forEach(function (x) { rw.appendChild(skKachel('gs-e-' + x[0], x[3], t(x[1]), t(x[2]), function () { sp.fall = x[0]; spRender(true); })); }); }
+        tippListe(SP_TIPPS[sp.thema], 'sp-tipps', true);
+        if (sp.thema === 'essen') linkKarte(box, 'sp-vz', SP_VZ_URL, t('sp.vz.link'), t('sp.vz.t'));
+        box.appendChild(quellenEl([t('sp.quellen')]));
+      }
     }
+    if (fokusId && $(fokusId)) { $(fokusId).focus(); return; }
     if (fokus) { var h = box.querySelector('.pf-frage'); if (h) { h.setAttribute('tabindex', '-1'); h.focus(); } }
+  }
+  // Eine Ebene zurück innerhalb von „Geld und Schulden“; false = schon auf der obersten Ebene
+  function spEbeneZurueck() {
+    if (sp.fall && sp.von) { var von = sp.von; gsOeffne(von); return true; } // Link-Kachel (Gelber Umschlag): zurück zu „Post vom Inkasso“
+    if (window.Geld && Geld.zurueck(sp.fall)) return true;
+    if (sp.thema && sp.fall.indexOf('-') > 0) sp.fall = sp.fall.split('-')[0]; // Rechner → Kacheln Strom/Gas
+    else if (sp.fall) sp.fall = '';
+    else if (sp.thema) sp.thema = '';
+    else if (sp.bereich) sp.bereich = '';
+    else return false;
+    return true;
   }
 
   // ----- Pfändung: erst wählen (Lohn oder Konto), dann Schritt für Schritt; Rechnung in Rules.pfaendung / Rules.pkonto -----
@@ -2074,29 +2950,43 @@
     var E = function (x) { return Fmt.euro(Math.round(x * 100) / 100, lang, rtl); };
     var p = function (txt, cls) { var e = document.createElement('p'); e.className = cls || ''; e.textContent = txt; box.appendChild(e); return e; };
     var knoepfe = function (cls) { var d = document.createElement('div'); d.className = cls; box.appendChild(d); return d; };
-    var leiste = function (weiter) {
-      var d = knoepfe('btns');
-      if (weiter) d.appendChild(nhKnopf('btn', esc(t('pf.weiter')), null, weiter));
-      d.appendChild(nhKnopf('btn ghost', esc(t('pf.zurueck')), null, function () { pf.schritt = Math.max(0, pf.schritt - 1); if (!pf.schritt) pf.art = ''; pfRender(true); }));
+    var leiste = function (weiter) { // „← Zurück“ steht oben (src/navigation.js)
+      if (weiter) knoepfe('btns').appendChild(nhKnopf('btn', esc(t('pf.weiter')), null, weiter));
     };
     // Weitere Hinweise zum Aufklappen (erst das Ergebnis, Details danach)
+    // Jeder Hinweis: Symbol + kurzer Satz, Einzelheiten zum Aufklappen (tippEl)
     var tipps = function (keys) {
-      var d = document.createElement('details'); d.className = 'pf-tipps';
-      var su = document.createElement('summary'); su.textContent = t('steps.tips'); d.appendChild(su);
-      keys.forEach(function (k) { var e = document.createElement('p'); e.className = 'hint'; e.textContent = t(k); d.appendChild(e); });
+      var d = document.createElement('div'); d.className = 'pf-tipps';
+      keys.forEach(function (k) { d.appendChild(tippEl(k)); });
       box.appendChild(d);
     };
+    var jetzt = function (keys) {
+      var d = document.createElement('div'); d.className = 'pf-jetzt';
+      var h3 = document.createElement('h3'); h3.textContent = t('pf.jetzt.h'); d.appendChild(h3);
+      var ol = document.createElement('ol'); ol.className = 'tipp-liste';
+      keys.forEach(function (k) { var li = document.createElement('li'); li.appendChild(tippEl(k)); ol.appendChild(li); });
+      d.appendChild(ol); box.appendChild(d);
+    };
+    // Verweis auf „Geld und Schulden“ → „Schuldnerberatung“: nur unter dem Ergebnis, nicht vor dem Rechnen. „Zurück“ führt von dort eine Ebene hoch.
+    var spVerweis = function () { var d = knoepfe('btns'); d.appendChild(nhKnopf('btn ghost pf-zur-hilfe', esc(t('sb.h')), null, function () { gsSprung('hilfe'); })); };
     var heute = new Date().toISOString().slice(0, 10);
     if (heute > Rules.RULES.pfaendung.gueltigBis) p(t('pf.alt'), 'warn');
     if (!pf.art) {
       p(t('pf.wahl'), 'pf-frage');
       var l = knoepfe('weg-liste');
-      [['lohn', 'pf.lohn', 'pf.lohn.t', '<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 9v6M18 9v6"/>'], ['konto', 'pf.konto', 'pf.konto.t', '<path d="M3 10l9-6 9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/>']].forEach(function (x) {
-        l.appendChild(nhKnopf('weg', '<span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + x[3] + '</svg></span><span class="weg-txt"><b>' + esc(t(x[1])) + '</b><span>' + esc(t(x[2])) + '</span></span>', null, function () { pf.art = x[0]; pf.schritt = 1; pfRender(true); }));
+      // dritte Karte: Bescheinigung für das P-Konto (Musterschreiben, § 903 ZPO, src/geld.js)
+      [['lohn', 'pf.lohn', 'pf.lohn.t', '<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 9v6M18 9v6"/>'], ['konto', 'pf.konto', 'pf.konto.t', '<path d="M3 10l9-6 9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/>'],
+        ['besch', 'ms.pkonto', 'ms.pkonto.t', '<path d="M6 3h9l4 4v14H6z"/><path d="M9 14l2 2 4-4"/>']].forEach(function (x) {
+        if (x[0] === 'besch' && !window.Geld) return;
+        l.appendChild(nhKnopf('weg pf-w-' + x[0], '<span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + x[3] + '</svg></span><span class="weg-txt"><b>' + esc(t(x[1])) + '</b><span>' + esc(t(x[2])) + '</span></span>', null, function () { pf.art = x[0]; pf.schritt = 1; pfRender(true); }));
       });
-      p(t('pf.stand'), 'small muted');
-      p(t('home.privat'), 'small muted');
+      if (beratung && window.Geld) Geld.pfMaske(box, Rules, E, parseAmount); // Beratungsmodus (B2): alles auf einer Seite mit Rechenweg
       if (fokus) { var f0 = box.querySelector('button'); if (f0) f0.focus(); }
+      return;
+    }
+    if (pf.art === 'besch') {
+      Geld.schreibenSeite(box, function (id) { pfRender(false); if (id && $(id)) $(id).focus(); }, 'pkonto');
+      if (fokus) { var hb0 = box.querySelector('.pf-frage'); if (hb0) { hb0.setAttribute('tabindex', '-1'); hb0.focus(); } }
       return;
     }
     // Schritt 1: Zahl der Unterhaltsberechtigten (große Zahlenknöpfe)
@@ -2131,11 +3021,14 @@
       }
       if (e.ueberHoechst) p(t('pf.erg.hoch', { h: { eur: Rules.RULES.pfaendung.hoechst } }), 'hint');
       p(t('pf.erg.frei', { f: { eur: e.frei } }), 'small muted');
-      p(t('pf.tipp.unterhalt'), 'hint');
-      tipps(['pf.tipp.einmal', 'pf.tipp.kg', 'pf.tipp.mehr', 'pf.tipp.beratung']);
+      box.appendChild(tippEl('pf.tipp.unterhalt', 'tipp-warn'));
+      jetzt(['pf.tipp.unterhaltspflichten', 'pf.tipp.mehr', 'pf.tipp.beratung']); // zuerst: alle Unterhaltspflichten berücksichtigt? (§ 850c ZPO)
+      tipps(['pf.tipp.einmal', 'pf.tipp.kg']);
       var d = knoepfe('btns');
       d.appendChild(nhKnopf('btn', esc(t('pf.konto.weiter')), null, function () { pf.art = 'konto'; pf.schritt = 2; pfRender(true); }));
       d.appendChild(nhKnopf('btn ghost', esc(t('pf.neu')), null, function () { pf = { art: '', schritt: 0, netto: '', pers: null, kg: null, kiz: '' }; pfRender(true); }));
+      spVerweis();
+      box.appendChild(quellenEl([t('pf.stand')])); // Quelle der Werte unter dem Ergebnis, zugeklappt
     } else {
       var k = Rules.pkonto({ personen: pf.pers, kindergeldKinder: pf.kg });
       p(t('pf.erg.h'), 'pf-frage');
@@ -2143,18 +3036,120 @@
       var tab = document.createElement('table'); tab.className = 'pf-tab';
       [['pf.k.sockel', k.sockel], ['pf.k.unterhalt', k.unterhalt], ['pf.k.kg', k.kindergeld]].forEach(function (x) { if (!x[1] && x[0] !== 'pf.k.sockel') return; var tr = tab.insertRow(); tr.insertCell().textContent = t(x[0]); tr.insertCell().textContent = E(x[1]); });
       box.appendChild(tab);
-      if (k.unterhalt || k.kindergeld) p(t('pf.tipp.bescheinigung'), 'hint');
-      tipps(['pf.tipp.umwandeln', 'pf.tipp.uebertrag', 'pf.tipp.sozial', 'pf.tipp.kontomehr', 'pf.tipp.beratung']);
+      var mk = k.unterhalt || k.kindergeld ? 'pf.tipp.bescheinigung' : 'pf.tipp.kontomehr';
+      jetzt(['pf.tipp.umwandeln', mk, 'pf.tipp.beratung']);
+      tipps(['pf.tipp.uebertrag', 'pf.tipp.sozial'].concat(mk === 'pf.tipp.kontomehr' ? [] : ['pf.tipp.kontomehr']));
       var d2 = knoepfe('btns');
       d2.appendChild(nhKnopf('btn ghost', esc(t('pf.neu')), null, function () { pf = { art: '', schritt: 0, netto: '', pers: null, kg: null, kiz: '' }; pfRender(true); }));
+      spVerweis();
+      box.appendChild(quellenEl([t('pf.stand')]));
     }
     if (fokus) { var h = box.querySelector('.pf-frage'); if (h) { h.setAttribute('tabindex', '-1'); h.focus(); } }
   }
 
+  // Laienansicht auch bei der Pfändung: Paragrafen in Klammern aus den Texten nehmen (Beratungsmodus aus); Rechnung und Aufbau bleiben
+  var pfRenderGanz = pfRender;
+  pfRender = function (fokus) {
+    pfRenderGanz(fokus);
+    var box = $('pfInhalt');
+    if (box && !beratung) box.querySelectorAll('p').forEach(function (e) { if (e.children.length === 0 && !e.closest('.quellen, .tipp') && /§/.test(e.textContent)) e.textContent = Fmt.ohnePara(e.textContent); });
+  };
+
   // ----- Bereiche: Start, Leistungen (Leistungscheck), Brief prüfen -----
   // Beim Öffnen die Startseite; „#leistungen“ und „#briefe“ öffnen den Bereich direkt (Links, Tests).
-  var ANSICHTEN = ['start', 'leistungen', 'briefe', 'pflege', 'pflegeinfo', 'einst', 'pfaendung', 'sparen']; // „pflege“: Pflegegrad-Einschätzung, gehört zu Leistungen
+  var ANSICHTEN = ['start', 'leistungen', 'briefe', 'pflege', 'pflegeinfo', 'pflegestart', 'einst', 'ordner', 'pfaendung', 'sparen', 'haushalt', 'ausziehen', 'schulden']; // „pflege“: Pflegegrad-Einschätzung, gehört zu Leistungen
   var aktAnsicht = 'leistungen';
+  // Herkunft merken: „Zurück“, Leiste und Android-Taste folgen ihr (keine festen Ziele)
+  var NAV_BEREICHE = ['start', 'ordner', 'einst']; // Leiste unten; Leistungen und Briefe erreicht man über die Startkacheln (markieren Start)
+  var herkunft = {}, navBereit = false;
+  function oeffneVon(ziel, fokus) { if (ziel !== aktAnsicht) herkunft[ziel] = aktAnsicht; zeigeAnsicht(ziel, fokus); }
+  function herkunftVon(a) { var h = herkunft[a]; return h && h !== a && ANSICHTEN.indexOf(h) >= 0 ? h : 'start'; }
+  function navBereich(a) {
+    for (var i = 0; i < 6 && NAV_BEREICHE.indexOf(a) < 0; i++) a = herkunft[a] || (a === 'pflege' || a === 'pflegeinfo' ? 'leistungen' : 'start');
+    return NAV_BEREICHE.indexOf(a) >= 0 ? a : 'start';
+  }
+  function zurueckSchritt() {
+    var a = aktAnsicht, b;
+    if (sucheRueck && navEbene().pfad === sucheRueck) { sucheZurStart(); return true; } // von einem Suchtreffer: Zurück führt zur Startseite mit offenem Such-Fenster
+    if (paRueck && a === paRueck && (a !== 'pflegestart' || pu.schritt === 'liste')) { if (a === 'briefe') briefOeffnen(null); paErgebnisZeigen(); return true; } // Unterseite der Pflege-Ergebnisseite
+    if (a === 'pflege') { b = document.querySelector('#pflegeAssist .pa-zur'); if (b) b.click(); else paVerlassen(); return true; }
+    if (a === 'pflegeinfo') { piZurueckTun(); return true; }
+    if (a === 'pflegestart' && pu.schritt !== 'wahl') { puOeffnen(pu.schritt === 'liste' ? 'pg' : 'wahl'); return true; }
+    if (a === 'pfaendung') { if (pf.schritt > 0) { pf.schritt--; if (!pf.schritt) pf.art = ''; pfRender(true); } else zurueckZurHerkunft(a); return true; }
+    if (a === 'sparen') { if (spEbeneZurueck()) spRender(true); else zurueckZurHerkunft(a); return true; }
+    if (a === 'haushalt') { zurueckZurHerkunft(a); return true; }
+    if (a === 'schulden') { if (!(window.Schulden && Schulden.zurueck())) zurueckZurHerkunft(a); return true; }
+    if (a === 'ausziehen') { if (window.Ausziehen && Ausziehen.offen()) Ausziehen.zurueck(); else zurueckZurHerkunft(a); return true; }
+    if (a === 'briefe' && !$('checkBox').hidden) { briefZurueckTun(); return true; }
+    if (a === 'leistungen' && !esModus && window.Schritte && Schritte.zurueck()) return true; // Frage für Frage: eine Frage zurück
+    if (a === 'leistungen' && $('es-zurueck')) { $('es-zurueck').click(); return true; }
+    if ((a === 'einst' || a === 'ordner') && usOffen(a)) { usZeigen(a, '', true); return true; } // Unterseite: zurück zur Liste
+    if ((a === 'leistungen' || a === 'briefe') && herkunft[a]) { zurueckZurHerkunft(a); return true; } // z. B. aus „Mein Ordner“ gekommen
+    return false;
+  }
+  // ----- Ebenen für die einheitliche Navigation (src/navigation.js): wo bin ich, eine Ebene hoch, wieder vorwärts -----
+  // Tiefe: Start 0, Leiste (Mein Ordner, Einstellungen) 1, sonst Tiefe der Herkunft + 1, dazu die Schritte innerhalb der Ansicht.
+  var herkunftT = {}; // Tiefe der Herkunft beim Öffnen (zeigeAnsicht), damit „hoch“ genau dorthin zurückführt
+  function ansichtTiefe(a, n) {
+    if (a === 'start') return 0;
+    if (NAV_BEREICHE.indexOf(a) >= 0) return 1;
+    var h = herkunftVon(a), r = herkunftT[a];
+    if (herkunft[a] && r && r.von === herkunft[a]) return r.t + 1;
+    return (n > 6 ? 0 : ansichtTiefe(h, (n || 0) + 1)) + 1;
+  }
+  function navEbene() {
+    var a = aktAnsicht, sub = '', d = 0, x;
+    if (a === 'pflege') { d = (pa.antworten && +pa.antworten.pos) || 0; sub = 'q' + d; }
+    else if (a === 'pfaendung') { d = pf.schritt; sub = pf.art + d; }
+    else if (a === 'sparen') { d = (sp.bereich ? 1 : 0) + (sp.fall ? 1 : 0) + (sp.thema ? 1 : 0) + (sp.thema && sp.fall.indexOf('-') > 0 ? 1 : 0) + (window.Geld ? Geld.tiefe(sp.fall) : 0); sub = sp.bereich ? [sp.bereich, sp.thema, sp.fall].filter(Boolean).join('-') + (window.Geld && Geld.tiefe(sp.fall) ? '-w' : '') : ''; }
+    else if (a === 'schulden') { x = $('slBlatt'); d = ($('slEingabe') ? 1 : 0) + (x && !x.hidden ? 1 : 0); sub = d ? 'e' + d : ''; }
+    else if (a === 'ausziehen') { d = window.Ausziehen && Ausziehen.offen() ? 1 : 0; sub = d ? 'offen' : ''; }
+    else if (a === 'briefe') { d = $('checkBox').hidden ? 0 : 1; sub = d ? (briefArt || '') : ''; }
+    else if (a === 'leistungen') { d = esModus && es ? es.schritt || 0 : 0; sub = d ? 'es' + d : ''; if (!d && window.Schritte && (x = Schritte.tiefe())) { d = x; sub = 'sf-' + Schritte.pos(); } }
+    else if (a === 'pflegestart') { d = pu.schritt === 'liste' ? 2 : pu.schritt === 'pg' ? 1 : 0; sub = d ? pu.schritt + (pu.pg == null ? '' : pu.pg) : ''; }
+    else if (a === 'einst' || a === 'ordner') { d = usOffen(a) ? 1 : 0; sub = usAktiv[a]; }
+    return { pfad: a + (sub ? '/' + sub : ''), tiefe: ansichtTiefe(a) + d };
+  }
+  // Eine Ebene hoch; false nur auf der Startseite
+  function ebeneHoch() {
+    if (zurueckSchritt()) return true;
+    if (aktAnsicht === 'start') return false;
+    zurueckZurHerkunft(aktAnsicht); return true;
+  }
+  // Offene Blätter und Dialoge zuerst schließen (Zurück-Taste, Browser-Zurück, Wischen)
+  function blattSchliessen() {
+    if (window.Suche && Suche.schliessen(true)) return true; // Such-Fenster (Lupe) zuerst; man bleibt auf der Seite
+    if (!$('ergBlatt').hidden) { ebSchliessen(); return true; }
+    if (window.Klient && Klient.offen()) { Klient.schliessen(); return true; }
+    if (window.Schulden && Schulden.blattOffen && Schulden.blattOffen() && aktAnsicht !== 'schulden') { Schulden.zurueck(); return true; }
+    if (!$('legal').hidden) { closeLegal(); return true; }
+    if (!$('mappe').hidden) { closeMappe(); return true; }
+    return false;
+  }
+  // Vorwärts (Browser, Wischen vom rechten Rand): die Ebene wieder öffnen, soweit sie sich aus dem Pfad ergibt
+  function navVor(pfad) {
+    var t2 = String(pfad || '').split('/'), a = t2[0], sub = t2[1] || '';
+    if (ANSICHTEN.indexOf(a) < 0 || a === 'pflege') return;
+    if (a !== aktAnsicht) {
+      if (a === 'pflegeinfo') { pflegeInfo(aktAnsicht); return; }
+      if (a === 'einst' || a === 'ordner') usZeigen(a, '', false);
+      if (a === 'pflegestart') pu.schritt = 'wahl';
+      if (a === 'sparen') gsOeffne('');
+      oeffneVon(a, true);
+      return;
+    }
+    if ((a === 'einst' || a === 'ordner') && sub) usZeigen(a, sub, true);
+    else if (a === 'briefe' && BRIEF_TEIL[sub]) briefOeffnen(sub);
+    else if (a === 'sparen' && sub) { var sx = sub.split('-'); if (sx[0] === 'sparen') sx[0] = 'planen'; gsOeffne(sx[0]); if (sx[1]) { if (sx[0] === 'planen') { sp.thema = sx[1]; if (sx[2] && EN_WERKZEUGE.some(function (w) { return w[0] === sx[2]; })) sp.fall = sx[2] + (sx[3] === 'strom' || sx[3] === 'gas' ? '-' + sx[3] : ''); } else sp.fall = sx[1]; } spRender(true); }
+    else if (a === 'pflegestart' && /^pg/.test(sub)) puOeffnen('pg');
+    else if (a === 'pflegestart' && /^liste\d$/.test(sub)) puOeffnen('liste', +sub.slice(5));
+  }
+  function jumpPruefen() {
+    var e = $('ergebnis'), j = $('jump'); if (!e || !j) return;
+    var r = e.getBoundingClientRect();
+    j.classList.toggle('am-ergebnis', r.height > 0 && r.top < (window.innerHeight || 0) * 0.6);
+  }
+  function zurueckZurHerkunft(a) { var h = herkunftVon(a); delete herkunft[a]; zeigeAnsicht(h, true); window.scrollTo(0, 0); }
   var BRIEFE = [
     ['jc', 'briefe.jobcenter', 'briefe.jobcenter.t', '<path d="M4 20V9l8-5 8 5v11"/><path d="M9 20v-6h6v6M3 20h18"/>'],
     ['sa', 'briefe.sozialamt', 'briefe.sozialamt.t', '<circle cx="12" cy="7" r="3"/><path d="M5 20c1-4 4-6 7-6s6 2 7 6"/>'],
@@ -2162,22 +3157,43 @@
     ['fk', 'briefe.familienkasse', 'briefe.familienkasse.t', '<circle cx="8" cy="8" r="2.5"/><circle cx="16" cy="8" r="2.5"/><path d="M4 20c.5-3 2-5 4-5M20 20c-.5-3-2-5-4-5M9 20c.5-2 1.5-3 3-3s2.5 1 3 3"/>'],
     ['pk', 'briefe.pflegekasse', 'briefe.pflegekasse.t', '<path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/>'],
     ['vm', 'briefe.vermieter', 'briefe.vermieter.t', '<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/>'],
+    // Eine Kachel für „anderer Brief“ und „Antragsformular“: erst einlesen (die App erkennt Formular oder Brief), darunter die Wahl von Hand
+    ['ab', 'briefe.ab', 'briefe.ab.t', '<path d="M3 7h12v10H3z"/><path d="M3 7l6 5 6-5"/><path d="M17 5h4v14h-6"/><path d="M18 9h2M18 12h2"/>']
+  ];
+  // Unterkarten der Kachel „ab“ (weiße Karten, manuelle Wahl)
+  var BRIEFE_UNTER = [
+    ['an', 'briefe.andere', 'briefe.andere.t', '<path d="M4 6h16v12H4z"/><path d="M4 6l8 6 8-6"/><path d="M12 15.5v.5"/>'],
     ['af', 'briefe.formular', 'briefe.formular.t', '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h5M8 16h3"/><path d="M13.5 16l1.8 1.8 3.2-3.6"/>']
   ];
+  var abVon = false; // „Anderer Brief“ oder „Formular“ über die gemeinsame Kachel geöffnet: „Zurück“ führt dorthin
   function zeigeAnsicht(a, fokus) {
     if (ANSICHTEN.indexOf(a) < 0) a = 'start';
     if (a === 'pflege' && !$('pflegeAssist').children.length) a = 'leistungen'; // Einschätzung nur über ihren Knopf öffnen
+    var vorA = aktAnsicht, vorT = navBereit ? navEbene().tiefe : 0;
+    paRueckPruefen(a); // Rückweg zur Pflege-Ergebnisseite nur auf der Unterseite selbst
     aktAnsicht = a;
+    if (a === 'start') sucheRueck = '';
+    if (window.Suche && Suche.offen()) Suche.schliessen(false); // Such-Fenster zu, wenn die App die Ansicht wechselt (z. B. Leiste, Link)
+    if (a === 'pflegeinfo' && !herkunft.pflegeinfo) herkunft.pflegeinfo = piZurueckZu; // z. B. über die Adresse #pflegeinfo geöffnet
+    if (a !== vorA && herkunft[a] === vorA) herkunftT[a] = { von: vorA, t: vorT };
     $('app').setAttribute('data-ansicht', a);
     if (a !== 'briefe') $('app').classList.remove('brief-offen'); else $('app').classList.toggle('brief-offen', !!briefArt); // in der Pflegegrad-Einschätzung Kopf und Hinweise ausblenden, damit die Frage oben steht
     ANSICHTEN.forEach(function (x) { $('v-' + x).hidden = x !== a; });
     $('jump').hidden = a !== 'leistungen' || esModus;
-    var navA = a === 'pflege' || a === 'pflegeinfo' ? 'leistungen' : a === 'pfaendung' || a === 'sparen' ? 'start' : a;
+    jumpPruefen();
+    var navA = navBereich(a);
+    if (a === 'haushalt' && window.Haushalt) Haushalt.zeigen();
+    if (a === 'ausziehen' && window.Ausziehen) Ausziehen.zeigen();
+    if (a === 'schulden' && window.Schulden) Schulden.zeigen();
     if (a === 'pfaendung') pfRender(false);
+    if (a === 'pflegestart') puRender(false);
     if (a === 'sparen') spRender(false);
+    if (a === 'ordner') ordnerRender();
+    if (a === 'einst') einstStatus();
     document.querySelectorAll('#appnav button').forEach(function (b) { if (b.getAttribute('data-ansicht') === navA) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
-    try { if (location.hash !== '#' + a) history.replaceState(null, '', '#' + a); } catch (e) {}
+    if (navBereit) Navigation.melde(); else { try { if (location.hash !== '#' + a) history.replaceState(null, '', '#' + a); } catch (e) {} }
     bereicheText();
+    if (a === 'leistungen' && window.Schritte && !esModus) { Schritte.zeigen(fokus); fokus = false; } // Auswahl des Weges oder Frage für Frage; setzt den Fokus selbst
     if (fokus) { window.scrollTo(0, 0); var h = $('v-' + a).querySelector('h2'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); } }
   }
   function bereicheText() {
@@ -2185,13 +3201,565 @@
     briefKopf();
     var bk = $('briefKacheln');
     if (!bk.children.length) BRIEFE.forEach(function (x) {
-      var k = document.createElement('button'); k.type = 'button'; k.className = 'kachel'; k.id = 'brief-' + x[0];
+      var k = document.createElement('button'); k.type = 'button'; k.className = 'kachel uk-karte'; k.id = 'brief-' + x[0];
       k.innerHTML = '<span class="kachel-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + x[3] + '</svg></span><b></b><span class="k-t"></span>';
       k.addEventListener('click', function () { briefOeffnen(x[0]); });
       bk.appendChild(k);
     });
     BRIEFE.forEach(function (x) { var k = $('brief-' + x[0]); k.querySelector('b').textContent = t(x[1]); k.querySelector('.k-t').textContent = t(x[2]); });
+    var ab = $('abUnter');
+    if (ab && !ab.children.length) BRIEFE_UNTER.forEach(function (x) {
+      var k = nhKnopf('weg ab-karte', '<span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + x[3] + '</svg></span><span class="weg-txt"><b></b><span></span></span>', null, function () { abVon = true; briefOeffnen(x[0]); });
+      k.id = 'brief-' + x[0]; ab.appendChild(k);
+    });
+    BRIEFE_UNTER.forEach(function (x) { var k = $('brief-' + x[0]); if (!k) return; k.querySelector('b').textContent = t(x[1]); k.querySelector('.weg-txt span').textContent = t(x[2]); });
   }
+  // ----- Vorgänge (Haushalte): speichern, öffnen, umbenennen, kopieren, löschen; PIN-Sperre; automatisch löschen (src/vorgaenge.js) -----
+  // In der Oberfläche heißt es „Vorgang“ bzw. „Haushalt“. Wer nur einen Vorgang hat, sieht nur den Knopf „Vorgang speichern“.
+  function vgEl(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+  // „Name (Kopie)“: erst den Namen kürzen, damit der Zusatz ganz bleibt
+  function vgKopieName(n) { var x = n; while (x.length > 1 && Vorgaenge.nameSauber(t('vg.kopieName', { name: x })) !== t('vg.kopieName', { name: x }).replace(/\s+/g, ' ').trim()) x = x.slice(0, -1).trim(); return t('vg.kopieName', { name: x }); }
+  function vgName(v) { return v && v.name ? v.name : t('vg.ohneName'); }
+  function vgDatum(ms) { return Fmt.datum(new Date(ms), lang); }
+  function vgMsg(txt) { var m = $(aktAnsicht === 'einst' ? 'vgMsgS' : 'vgMsg'); if (m) m.textContent = txt; } // Meldung in „Mein Ordner“ und in „Sicherheit und Daten“
+  // Oberfläche an festen Stellen einhängen (ohne Änderungen an den Abschnitten anderer Bereiche)
+  function vgGeruest() {
+    if ($('vgFehler')) return;
+    var f = vgEl('div', 'notice warn vg-fehler'); f.id = 'vgFehler'; f.setAttribute('role', 'alert'); f.hidden = true; $('inhalt').insertBefore(f, $('inhalt').firstChild);
+  }
+  function vgSpeicherFehler() { vgGeruest(); var f = $('vgFehler'); f.textContent = t('vg.fehler.speicher'); f.hidden = false; }
+  // Meldung nach automatischem Löschen (oben im Inhalt, gleiche Stelle wie die Speicher-Meldung)
+  function vgHinweis(txt) { var go = function () { vgGeruest(); var f = $('vgFehler'); f.textContent = txt; f.hidden = false; }; if ($('inhalt')) go(); else setTimeout(go, 0); }
+  // Neu laden (Sperren); in Tests ersetzbar
+  function vgNeuStart() { if (window.__soloNeuStart) window.__soloNeuStart(); else { try { location.reload(); } catch (e) {} } }
+  function vgSperrenJetzt() { flush(); tresor.fertig().then(vgNeuStart); }
+  // Bildschirmfoto-Schutz: mit App-PIN Standard an (Android FLAG_SECURE, iOS Abdeckung im App-Wechsler), Einstellung „Bildschirmfotos erlauben“
+  // (lotse.fotosErlaubt, nur Einstellung, kein Inhalt). Plugin SoloSchutz nur in der App (MainActivity.java / SoloSpeicherPlugin.swift).
+  var fotosErlaubt = false, schutzStand = null;
+  StoreRoh.get('lotse.fotosErlaubt', function (v) { fotosErlaubt = v === '1'; schutzAnwenden(); });
+  function schutzAnwenden() {
+    var p = plug('SoloSchutz'); if (!p) return;
+    var an = !!(tresor && tresor.pinAn() && !fotosErlaubt);
+    if (an === schutzStand) return;
+    schutzStand = an;
+    try { Promise.resolve(p.setzen({ an: an })).catch(function () { schutzStand = null; }); } catch (e) { schutzStand = null; }
+  }
+  // Automatisch sperren: nach etwa 2 Minuten im Hintergrund (nur mit PIN). Vorher speichern, dann neu laden (Sperrbildschirm).
+  var VG_SPERRE_MS = 120000, vgHinterAb = 0;
+  function vgHintergrund(weg) {
+    if (weg) { vgHinterAb = Date.now(); return; }
+    var war = vgHinterAb; vgHinterAb = 0;
+    if (war && tresor && tresor.bereit() && (tresor.pinAn() || tresor.aktiv().gesperrt) && Date.now() - war >= VG_SPERRE_MS) vgSperrenJetzt(); // auch ein einzeln gesperrter Vorgang ist danach wieder zu
+    else if (war && Date.now() - war >= VG_SPERRE_MS && window.FristenOrdner) FristenOrdner.startHinweis(); // „Öffnen“ nach 2 Minuten im Hintergrund (höchstens einmal am Tag)
+  }
+  document.addEventListener('visibilitychange', function () { vgHintergrund(document.visibilityState === 'hidden'); });
+  // Mit PIN schneller speichern: beim Verlassen eines Feldes sofort
+  document.addEventListener('focusout', function (e) { if (tresor && tresor.bereit() && (tresor.pinAn() || tresor.aktiv().gesperrt) && e.target && /^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName) && saveTimer) flush(); });
+  // Web: in einem anderen Fenster geändert -> neu laden, damit nichts überschrieben wird
+  window.addEventListener('storage', function (e) { if (e.key === Vorgaenge.SCHLUESSEL) { clearTimeout(saveTimer); saveTimer = null; vgNeuStart(); } });
+  // Angaben des geöffneten Vorgangs neu laden (nach Wechsel, neuem Vorgang, Löschen)
+  function vgNeuLaden() {
+    if (!$('mappe').hidden) closeMappe();
+    state = blankState(); person = { name: '', geb: '', strasse: '', ort: '', tel: '' }; picked = {}; pickedUser = {}; started = false; edited = false;
+    // Erst nach dem Leeren von „person“: briefOeffnen trägt Name und Anschrift aus „person“ in die Schreiben ein (sonst stünde der vorige Klient darin)
+    einleseResteLeeren(); // nichts vom vorigen Vorgang sichtbar lassen (Scan, Brief, Prüfung, Blatt für Klienten)
+    ['p-name', 'p-geb', 'p-strasse', 'p-ort', 'p-tel'].forEach(function (id) { $(id).value = ''; });
+    $('sampleNotice').hidden = true;
+    pf = pfLeer(); pa = { antworten: null, schaetzung: null };
+    haken = {}; Store.get('lotse.haken', function (v) { try { var d = v ? JSON.parse(v) : null; if (d && typeof d === 'object') haken = d; } catch (e) {} });
+    if (window.Schritte) Schritte.laden(null);
+    Store.get('lotse.state', stateLaden);
+    if (!started) { writeForm(); buildSelects(); render(); }
+    Store.get('lotse.einfach', function (v) {
+      var d = null; try { d = v ? JSON.parse(v) : null; } catch (e) {}
+      es = d && d.es ? Object.assign(esLeer(), d.es) : (esModus ? esLeer() : null);
+      if (esModus) esRender();
+    });
+    Store.get('lotse.pflegecheck', function (v) {
+      try { var d = v ? JSON.parse(v) : null; if (d && typeof d === 'object') { pa.antworten = d.antworten || null; pa.schaetzung = d.schaetzung || null; } } catch (e) {}
+      paAnzeigen();
+      if (aktAnsicht === 'pflege' && typeof PflegeAssistent !== 'undefined') paStarten(); // Einschätzung gerade sichtbar (z. B. „Rückgängig“): mit den Antworten dieses Vorgangs neu beginnen
+    });
+    Store.get('lotse.pfaendung', pfLaden);
+    if (aktAnsicht === 'pfaendung') pfRender(false);
+    if (window.Haushalt && Haushalt.neuLaden) Haushalt.neuLaden(); // jeder Vorgang hat seinen eigenen Haushaltsplan
+    if (window.Ausziehen && Ausziehen.neuLaden) Ausziehen.neuLaden(); // und eigene Haken und Notizen bei „Ich ziehe aus“
+    if (window.FristenOrdner) FristenOrdner.neuLaden(); // und eigene Fristen
+    if (window.Schulden && Schulden.neuLaden) Schulden.neuLaden(); // und eine eigene Schulden-Liste
+    if (window.Geld) Geld.neuLaden(); // und eigene Haken unter „Schuldnerberatung“ (Bis zum Termin, Beratungsmappe)
+    vgRender();
+  }
+  // Alle vorgangsbezogenen Zustände außerhalb des Speichers (nur im Arbeitsspeicher oder in Feldern), die beim Wechsel des Vorgangs,
+  // bei „Alle Angaben löschen“ und beim Löschen geleert werden. Gespeicherte Angaben lädt vgNeuLaden danach neu.
+  //   Antragsformular: Scan-Ergebnis (scanFound), Vorschaubilder (scanBilder, Blob-Adressen freigeben), eingefügter Text (sc-text), Dateiauswahl
+  //   Brief prüfen: gesammelter Brieftext (elGesammelt), eingefügter Text (elText), Meldung und Ergebnis (elMsg, elErg), geöffnete Kachel,
+  //                 Formulare, Ergebnisse und Schreiben der Prüfungen (PruefpaketLeeren in erweiterungen/vorschau.js)
+  //   Beratung: offenes Blatt „Für Klient zusammenstellen“ (Klient.schliessen vergisst Daten anderer Vorgänge)
+  //   Antragsmappe: selbst geänderte Empfänger (empfEdit), Brieftexte (mappeBody, mappeText); Ergebnisblatt: Kürzel und Tabelle
+  //   Vermögens-Helfer (va), Pflege-Unterstützung (pu), gezeichnete Pflegegrad-Einschätzung (pflegeAssist), Einwilligung „Scan mit Claude“
+  //   Von der Beratung bekommen: Vorschau, PIN-Abfrage und entschlüsselter Inhalt einer fremden Datei (kwImpBox)
+  //   Pfändung, Pflege-Einschätzung (Antworten), Haushalt, Fristen, Schulden, Ausziehen, Geld, Schritte: setzen vgNeuLaden bzw. die Module selbst zurück
+  function einleseResteLeeren() {
+    scanFound = []; scanBilderSetzen([]); renderScan(); scanMsg('');
+    ['sc-text', 'sc-file', 'sc-pdf', 'elText', 'elFile', 'elPdfFile'].forEach(function (id) { var e = $(id); if (e) e.value = ''; });
+    [['sc-pasteBox', 'sc-pasteBtn'], ['elPasteBox', 'elPaste']].forEach(function (x) { var b = $(x[0]), k = $(x[1]); if (b) b.hidden = true; if (k) k.setAttribute('aria-expanded', 'false'); });
+    elGesammelt = ''; if ($('elMsg')) $('elMsg').textContent = ''; if ($('elErg')) $('elErg').textContent = '';
+    if (window.PruefpaketLeeren) window.PruefpaketLeeren();
+    if (window.PruefpaketPflege) window.PruefpaketPflege.eigene(null);
+    if (briefArt) { var y = window.scrollY || 0; briefOeffnen(null); try { window.scrollTo(0, y); } catch (e) {} }
+    abVon = false;
+    if (window.Klient && Klient.offen()) Klient.schliessen();
+    // Unabhängige Prüfung 21.11.2026: weitere Zustände, die nicht gespeichert und sonst nicht neu gezeichnet werden
+    scanTitel = ''; if ($('sc-consent')) { $('sc-consent').checked = false; if ($('sc-claude')) $('sc-claude').disabled = true; }
+    empfEdit = {}; empfHinweisDa = false; // selbst geänderte Empfänger der Briefe in der Antragsmappe
+    if ($('mappeBody')) $('mappeBody').textContent = ''; if ($('mappeText')) { $('mappeText').value = ''; $('mappeText').hidden = true; }
+    if ($('ergBlatt') && !$('ergBlatt').hidden) ebSchliessen(); // Ergebnisblatt (Beratung): Kürzel und Tabelle
+    if ($('ebKuerzel')) $('ebKuerzel').value = ''; if ($('ebSeite')) $('ebSeite').textContent = ''; if ($('ebMsg')) $('ebMsg').textContent = '';
+    va = { schritt: 0, wahl: {}, wert: {} }; // Vermögens-Helfer: Auswahl und Beträge
+    if ($('va')) { $('va').hidden = true; $('va').textContent = ''; } if ($('vaBtn')) $('vaBtn').setAttribute('aria-expanded', 'false'); if ($('vaInfo')) vaInfo();
+    pu = { schritt: 'wahl', pg: null }; // Pflege-Unterstützung: gewählter Pflegegrad
+    // Pflegegrad-Einschätzung: die gezeichneten Fragen und Antworten gehören zum vorigen Vorgang (sonst über „Zurück“ wieder sichtbar,
+    // und „Weiter“ würde sie in den neuen Vorgang speichern). Leer: zeigeAnsicht öffnet die Seite nur über ihren Knopf neu.
+    if ($('pflegeAssist')) $('pflegeAssist').textContent = '';
+    paVonStart = false; paRueck = '';
+    // „Von der Beratung bekommen“ (src/weitergabe.js): offene Vorschau oder PIN-Abfrage einer fremden Datei schließen (vergisst den entschlüsselten Inhalt)
+    // importLeeren verwirft auch ein Entschlüsseln, das gerade noch läuft (sonst erschiene die Vorschau erst nach dem Wechsel)
+    if (window.Weitergabe && Weitergabe.importLeeren) Weitergabe.importLeeren();
+    var vg = $('vgGForm'); if (vg) vg.remove(); // offene PIN-Abfrage eines Vorgangs (getippte PIN, Kurzname)
+  }
+  function pfLeer() { return { art: '', schritt: 0, netto: '', pers: null, kg: null, kiz: '' }; }
+  function pfLaden(v) {
+    var d = null; try { d = v ? JSON.parse(v) : null; } catch (e) {}
+    pf = pfLeer();
+    if (d && typeof d === 'object') Object.keys(pf).forEach(function (k) { if (Object.prototype.hasOwnProperty.call(d, k)) pf[k] = d[k]; });
+    if (['', 'lohn', 'konto'].indexOf(pf.art) < 0) pf = pfLeer();
+  }
+  function vgVorBeispiel() {
+    if (!tresor || !tresor.bereit() || !tresor.aktiv().name) return;
+    flush(); tresor.neu(''); vgNeuLaden();
+  }
+  function vgOeffnen(id) {
+    flush(); if (undoFn) undoWeg(); // Rückgängig gehört zum vorher geöffneten Vorgang
+    if (tresor.oeffnen(id)) { vgNeuLaden(); vgMsg(t('vg.geoeffnet', { name: vgName(tresor.aktiv()) })); }
+  }
+  // Für „Alle Angaben löschen“ (Rückfrage und Rückgängig: claude/ux-ergebnis): alle=false leert nur den geöffneten Vorgang
+  // (Name bleibt), alle=true löscht alle Vorgänge, die PIN und die Einstellung „automatisch löschen“ bleibt.
+  function angabenLoeschen(alle) {
+    clearTimeout(saveTimer); saveTimer = null;
+    if (alle) tresor.allesLoeschen(); else Vorgaenge.DATEN.forEach(function (k) { Store.remove(k); });
+    if (alle) StoreRoh.remove('lotse.fristTag'); // Merker der Fristen (nur ein Datum); die Einstellung lotse.fristHinweis bleibt wie die PIN
+    vgNeuLaden();
+  }
+  function vgBereit() { var s = $('vgSperre'); if (s && !s.hidden) { s.hidden = true; $('app').removeAttribute('aria-hidden'); $('app').inert = false; var h = document.querySelector('h1'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); } } vgRender(); }
+  // Vorgänge (Profile) nur in „Mein Ordner“ (Muster: Netflix-Profilauswahl, Google-Kontowechsel): eine klare Liste mit
+  // Initialen-Kreis, der geöffnete Vorgang markiert, Wechseln mit einem Tipp, „+ Neuen Vorgang anlegen“ als letzte Zeile,
+  // Umbenennen/Kopie/Löschen erst nach „Bearbeiten“. Gespeichert wird automatisch in den geöffneten Vorgang.
+  // Mit nur einem Vorgang: keine Liste, nur „+ Weiteren Vorgang anlegen“. PIN und automatisch löschen: Einstellungen → Sicherheit und Daten.
+  var vgBearb = false, vgFormAuf = false;
+  function vgKuerzel(v) { var n = v && v.name ? v.name : ''; var w = n.replace(/[^\p{L}\p{N} ]/gu, ' ').trim().split(/\s+/).filter(Boolean); return w.length ? (w[0].charAt(0) + (w[1] ? w[1].charAt(0) : '')).toUpperCase() : '?'; }
+  function vgAnlegen(feld) {
+    var n = Vorgaenge.nameSauber(feld.value);
+    if (!n) { vgMsg(t('vg.nameFehlt')); feld.focus(); return; }
+    flush();
+    var a = tresor.aktiv();
+    // Ein leerer Vorgang ohne Namen (nichts eingegeben) bekommt nur den Namen, statt einen zweiten leeren anzulegen
+    if (!a.name && !started && tresor.liste().length === 1) { tresor.umbenennen(a.id, n); vgFormAuf = false; vgRender(); }
+    else { tresor.neu(n); vgFormAuf = false; vgNeuLaden(); }
+    vgMsg(t('vg.geoeffnet', { name: n })); var h = $('vgH'); if (h) h.focus();
+  }
+  function vgRender() {
+    schutzAnwenden();
+    if (!tresor || !$('setHaushalte')) return;
+    vgGeruest();
+    var bereit = tresor.bereit(), liste = tresor.liste(), a = tresor.aktiv();
+    var g = $('setHaushalte'), alt = document.activeElement && document.activeElement.id, msgAlt = $('vgMsg') ? $('vgMsg').textContent : '';
+    var gs = $('setSicher'); gs.innerHTML = ''; // Sicherheit und Daten (Einstellungen): automatisch löschen, PIN, alle löschen
+    g.innerHTML = ''; g.hidden = !bereit;
+    if (aktAnsicht === 'ordner') ordnerRender();
+    if (!bereit) return;
+    var mehrere = liste.length > 1;
+    if (!mehrere) vgBearb = false;
+    var kopfZ = vgEl('div', 'vg-kopf');
+    var h3 = vgEl('h3', null, t('vg.liste.h')); h3.id = 'vgH'; h3.tabIndex = -1; kopfZ.appendChild(h3);
+    if (mehrere) {
+      var bb = vgEl('button', 'chip', t(vgBearb ? 'vg.fertig' : 'vg.bearbeiten')); bb.type = 'button'; bb.id = 'vgBearb'; bb.setAttribute('aria-pressed', String(vgBearb));
+      bb.addEventListener('click', function () { vgBearb = !vgBearb; vgRender(); var x = $('vgBearb'); if (x) x.focus(); });
+      kopfZ.appendChild(bb);
+    }
+    if (!mehrere && Vorgaenge.webCrypto() && a.name && !a.gesperrt) { // ein Vorgang mit Namen: Sperren ohne „Bearbeiten“
+      var se = vgEl('button', 'chip', t('vgp.sperren')); se.type = 'button'; se.id = 'vgGSperrenEins'; se.setAttribute('aria-expanded', 'false');
+      se.addEventListener('click', function () { vgGForm(kopfZ, se, liste[0], 'sperren'); });
+      kopfZ.appendChild(se);
+    }
+    g.appendChild(kopfZ);
+    if (!mehrere) h3.classList.add('vh'); // ein Vorgang: keine Liste, Überschrift nur für Screenreader
+    var msg = vgEl('p', 'msg', msgAlt); msg.id = 'vgMsg'; msg.setAttribute('role', 'status');
+    var ul = vgEl('ul', 'vg-liste');
+    if (mehrere) liste.forEach(function (v) {
+      var offen = v.id === a.id, zu = v.gesperrt && !v.offen, li = vgEl('li', (offen ? 'vg-offen' : '') + (v.gesperrt ? ' vg-gesperrt' : ''));
+      var z = vgEl(offen ? 'div' : 'button', 'vg-zeile'); if (!offen) { z.type = 'button'; z.addEventListener('click', function () { if (zu) { vgGForm(li, z, v, 'oeffnen'); return; } vgOeffnen(v.id); var h = $('vgH'); if (h) h.focus(); }); }
+      if (zu) z.setAttribute('aria-expanded', 'false');
+      z.setAttribute('data-vg-name', zu ? vgGTitel(v) : vgName(v));
+      if (offen) z.setAttribute('aria-current', 'true');
+      if (v.gesperrt) z.appendChild(vgSchloss()); else z.appendChild(vgEl('span', 'vg-kreis', vgKuerzel(v))).setAttribute('aria-hidden', 'true');
+      // Gesperrt und zu: nur neutraler Titel (und ein freiwilliger Kurzname), kein Datum
+      var tx = vgEl('span', 'vg-txt'); tx.appendChild(vgEl('b', null, zu ? t('vgp.titel') : vgName(v)));
+      var st = vgEl('span', 'vg-st', offen ? t(v.gesperrt ? 'vgp.st.offen' : 'vg.offen') : zu ? (v.name || t('vgp.st.zu')) : t('vg.geaendert', { datum: vgDatum(v.geaendert) }));
+      tx.appendChild(st);
+      if (v.ablauf && !zu) tx.appendChild(vgEl('span', 'vg-st vg-ablauf', t('vg.loeschtAm', { datum: vgDatum(v.ablauf) })));
+      z.appendChild(tx);
+      z.appendChild(vgEl('span', offen ? 'vg-haken' : 'zeile-pfeil', offen ? '✓' : '›')).setAttribute('aria-hidden', 'true');
+      li.appendChild(z);
+      if (vgBearb) {
+        var btns = vgEl('div', 'btns');
+        var knopf = function (key, fn, cls) { var b = vgEl('button', cls || 'chip', t(key)); b.type = 'button'; b.setAttribute('aria-label', t(key) + ': ' + (zu ? vgGTitel(v) : vgName(v))); b.addEventListener('click', fn); btns.appendChild(b); return b; };
+        if (v.gesperrt) { // gesperrt: nur Sperre aufheben (mit PIN) und Löschen (ohne PIN, mit Rückfrage)
+          var ak = knopf('vgp.aufheben', function () { vgGForm(li, ak, v, 'aufheben'); }); ak.setAttribute('aria-expanded', 'false');
+          var lg = knopf('vg.loeschen', function () {
+            loeschFragen(li, lg, loeschEinsTitel({ name: zu ? vgGTitel(v) : v.name }), loeschWas(), function () { vgLoeschen(v.id, $('vgMsg')); var h = $('vgH'); if (h) h.focus(); }, true);
+          }, 'chip vg-weg');
+          li.appendChild(btns); ul.appendChild(li); return;
+        }
+        knopf('vg.umbenennen', function () {
+          var neuN = vgEl('form', 'vg-form vg-umb'); neuN.setAttribute('novalidate', '');
+          var l = vgEl('label', null, t('vg.name.label')); l.setAttribute('for', 'vgUmb-' + v.id);
+          var i = vgEl('input'); i.id = 'vgUmb-' + v.id; i.type = 'text'; i.maxLength = Vorgaenge.NAME_MAX; i.value = v.name; i.setAttribute('autocomplete', 'off');
+          var ok = vgEl('button', 'btn', t('vg.umbenennen')); ok.type = 'submit';
+          neuN.appendChild(l); neuN.appendChild(i); neuN.appendChild(ok);
+          neuN.addEventListener('submit', function (e) { e.preventDefault(); if (tresor.umbenennen(v.id, i.value)) { vgRender(); vgMsg(t('vg.gespeichert', { name: Vorgaenge.nameSauber(i.value) })); } else { vgMsg(t('vg.nameFehlt')); i.focus(); } });
+          li.appendChild(neuN); i.focus();
+        });
+        knopf('vg.kopie', function () {
+          flush();
+          if (tresor.kopie(v.id, vgKopieName(vgName(v)))) { vgNeuLaden(); vgMsg(t('vg.geoeffnet', { name: vgName(tresor.aktiv()) })); var h = $('vgH'); if (h) h.focus(); }
+        });
+        if (Vorgaenge.webCrypto()) { var sk = knopf('vgp.sperren', function () { vgGForm(li, sk, v, 'sperren'); }); sk.setAttribute('aria-expanded', 'false'); }
+        var lk = knopf('vg.loeschen', function () {
+          loeschFragen(li, lk, loeschEinsTitel(v), loeschWas(), function () { vgLoeschen(v.id, $('vgMsg')); var h = $('vgH'); if (h) h.focus(); }, true);
+        }, 'chip vg-weg');
+        li.appendChild(btns);
+      }
+      ul.appendChild(li);
+    });
+    // „+ Neuen Vorgang anlegen“ (bei einem Vorgang: „+ Weiteren Vorgang anlegen“): öffnet ein kleines Feld für den Namen
+    var pl = vgEl('li', 'vg-plus-li');
+    var pb = vgEl('button', 'vg-zeile vg-plus'); pb.type = 'button'; pb.id = 'vgPlus'; pb.setAttribute('aria-expanded', String(vgFormAuf));
+    pb.appendChild(vgEl('span', 'vg-kreis', '+')).setAttribute('aria-hidden', 'true');
+    pb.appendChild(vgEl('span', 'vg-txt')).appendChild(vgEl('b', null, t(mehrere ? 'vg.plus' : 'vg.plusWeiter')));
+    pb.addEventListener('click', function () { vgFormAuf = !vgFormAuf; vgRender(); var f = vgFormAuf ? $('vgNameNeu') : $('vgPlus'); if (f) f.focus(); });
+    pl.appendChild(pb);
+    if (vgFormAuf) {
+      var f = vgEl('form', 'vg-form'); f.setAttribute('novalidate', ''); f.id = 'vgNeuForm';
+      var l = vgEl('label', null, t('vg.name.label')); l.setAttribute('for', 'vgNameNeu');
+      var i = vgEl('input'); i.id = 'vgNameNeu'; i.type = 'text'; i.maxLength = Vorgaenge.NAME_MAX; i.setAttribute('autocomplete', 'off'); i.setAttribute('aria-describedby', 'vgNameNeuH');
+      var hh = vgEl('p', 'small muted', t('vg.name.hint') + ' ' + t('vg.neu.t')); hh.id = 'vgNameNeuH';
+      var b = vgEl('button', 'btn', t('vg.anlegen')); b.type = 'submit';
+      f.appendChild(l); f.appendChild(i); f.appendChild(hh); f.appendChild(b);
+      f.addEventListener('submit', function (e) { e.preventDefault(); vgAnlegen(i); });
+      pl.appendChild(f);
+    }
+    ul.appendChild(pl);
+    g.appendChild(ul); g.appendChild(msg);
+    var zs = vgEl('button', 'linkbtn small', t('vg.zuSicher')); zs.type = 'button'; zs.id = 'vgZuSicher';
+    zs.addEventListener('click', function () { herkunft = {}; zeigeAnsicht('einst', false); usZeigen('einst', 'sicher', true); });
+    g.appendChild(vgEl('p', 'vg-sicher')).appendChild(zs);
+    var msgS = vgEl('p', 'msg', msgAlt); msgS.id = 'vgMsgS'; msgS.setAttribute('role', 'status');
+    g = gs; // ab hier: Unterseite „Sicherheit und Daten“ – je Funktion eine Zeile im Aussehen der Schalter, Erklärungen unter „Mehr dazu“
+    // Automatisch löschen: eine Zeile mit Auswahl
+    var al = vgEl('label', 'schalter set-zeile'); al.setAttribute('for', 'vgTage');
+    var alt1 = vgEl('span', 'schalter-t', t('vg.auto.h')); alt1.appendChild(vgEl('span', 'schalter-unter', t('vg.auto.unter'))); al.appendChild(alt1);
+    var sel = vgEl('select'); sel.id = 'vgTage'; sel.setAttribute('aria-label', t('vg.auto.h') + ': ' + t('vg.auto.label'));
+    Vorgaenge.TAGE.forEach(function (n) { var o = vgEl('option', null, n ? t('vg.auto.tage', { n: String(n) }) : t('vg.auto.nie')); o.value = String(n); sel.appendChild(o); });
+    sel.value = String(tresor.tage());
+    sel.addEventListener('change', function () {
+      // Vorher fragen, wenn die neue Frist sofort Vorgänge löscht (mit Anzahl)
+      var neuT = Number(sel.value), jetzt = Date.now();
+      var n = neuT > 0 ? tresor.liste().filter(function (v) { return jetzt >= Vorgaenge.ablauf(v, neuT); }).length : 0;
+      if (n && !window.confirm(t('vg.auto.frage', { n: String(n) }))) { sel.value = String(tresor.tage()); return; }
+      flush(); var vorher = tresor.aktiv().id;
+      tresor.tage(neuT);
+      // Geöffneter Vorgang gelöscht: alte Angaben nicht in den nächsten Vorgang schreiben, sondern dessen Angaben laden
+      if (tresor.aktiv().id !== vorher) { clearTimeout(saveTimer); saveTimer = null; vgNeuLaden(); }
+      vgRender(); vgMsg(n ? t('vg.auto.weg', { n: String(n) }) : t('vg.auto.ok')); var s2 = $('vgTage'); if (s2) s2.focus();
+    });
+    al.appendChild(sel); g.appendChild(vgEl('p')).appendChild(al);
+    // PIN-Sperre: ein Schalter; an -> „Jetzt sperren“ und „PIN ändern“; die kurze Erklärung (vg.pin.erkl) erst unter dem Feld zum Festlegen
+    var webOk = Vorgaenge.webCrypto(), pinAn = webOk && tresor.pinAn();
+    var ps = vgEl('button', 'schalter'); ps.type = 'button'; ps.id = 'vgPinSchalter'; ps.setAttribute('role', 'switch'); ps.setAttribute('aria-checked', String(!!pinAn));
+    var pst = vgEl('span', 'schalter-t', t('vg.pin.h')); pst.appendChild(vgEl('span', 'schalter-unter', t(webOk ? 'vg.pin.unter' : 'vg.pin.nicht'))); ps.appendChild(pst);
+    ps.appendChild(vgEl('span', 'schalter-zst', t(pinAn ? 'set.an' : 'set.aus'))); ps.appendChild(vgEl('span', 'schalter-bahn')).setAttribute('aria-hidden', 'true');
+    if (!webOk) ps.setAttribute('aria-disabled', 'true');
+    // Tippen auf den Schalter öffnet das passende Feld (an: bisherige PIN zum Ausschalten; aus: neue PIN festlegen).
+    // Ist dieses Feld schon offen, schließt erneutes Tippen es wieder (wie „Abbrechen“): der Schalter bleibt im echten Zustand.
+    // Früher fokussierte erneutes Tippen nur das Feld, und ein Abbrechen gab es nicht: der Schalter wirkte „festgeklemmt“ (Fehler 1.8.0).
+    ps.addEventListener('click', function () {
+      if (!webOk) return;
+      var art = tresor.pinAn() ? 'aus' : 'neu', offen = $('vgPinForm');
+      if (offen && offen.getAttribute('data-ausloeser') === 'vgPinSchalter' && offen.getAttribute('data-art') === art) { vgPinFormZu(offen); return; }
+      if (art === 'aus') vgPinForm(g, ps, true); else vgPinForm(g, ps);
+    });
+    g.appendChild(vgEl('p')).appendChild(ps);
+    if (pinAn) {
+      var pb = vgEl('div', 'btns');
+      var sp = vgEl('button', 'btn ghost', t('vg.pin.sperren')); sp.type = 'button';
+      sp.addEventListener('click', vgSperrenJetzt);
+      var ae = vgEl('button', 'btn ghost', t('vg.pin.aendern')); ae.type = 'button'; ae.setAttribute('aria-expanded', 'false');
+      ae.id = 'vgPinAendern';
+      ae.addEventListener('click', function () { var o = $('vgPinForm'); if (o && o.getAttribute('data-art') === 'aendern') vgPinFormZu(o); else vgPinForm(g, ae, false, true); });
+      pb.appendChild(sp); pb.appendChild(ae); g.appendChild(pb);
+      if (plug('SoloSchutz')) { // nur in der App: Bildschirmfotos und Vorschau im App-Wechsler
+        var fs = vgEl('button', 'schalter'); fs.type = 'button'; fs.id = 'vgFotos'; fs.setAttribute('role', 'switch'); fs.setAttribute('aria-checked', String(fotosErlaubt));
+        var fst = vgEl('span', 'schalter-t', t('vg.fotos.h')); fst.appendChild(vgEl('span', 'schalter-unter', t(fotosErlaubt ? 'vg.fotos.an' : 'vg.fotos.aus'))); fs.appendChild(fst);
+        fs.appendChild(vgEl('span', 'schalter-zst', t(fotosErlaubt ? 'set.an' : 'set.aus'))); fs.appendChild(vgEl('span', 'schalter-bahn')).setAttribute('aria-hidden', 'true');
+        fs.addEventListener('click', function () {
+          fotosErlaubt = !fotosErlaubt; StoreRoh.set('lotse.fotosErlaubt', fotosErlaubt ? '1' : '0'); schutzAnwenden();
+          fs.setAttribute('aria-checked', String(fotosErlaubt)); fs.querySelector('.schalter-zst').textContent = t(fotosErlaubt ? 'set.an' : 'set.aus');
+          fs.querySelector('.schalter-unter').textContent = t(fotosErlaubt ? 'vg.fotos.an' : 'vg.fotos.aus');
+        });
+        g.appendChild(vgEl('p')).appendChild(fs);
+      }
+    }
+    var md = vgEl('details', 'set-mehr'); md.appendChild(vgEl('summary', null, t('vg.mehrDazu')));
+    md.appendChild(vgEl('p', 'small', t('vg.pin.t'))); md.appendChild(vgEl('p', 'small', t('vg.auto.t')));
+    g.appendChild(md);
+    g.appendChild(msgS);
+    // Löschen: höchstens zwei klare Zeilen mit Mülleimer; jede sagt, was genau weg ist; danach eine Rückfrage
+    var ll = $('loeschListe'); ll.innerHTML = '';
+    var lz = function (id, titel, was, fn, lang2) { // was: kurz in der Zeile; lang2: genaue Liste in der Rückfrage
+      var li = vgEl('li'), b = vgEl('button', 'zeile loesch-zeile'); b.type = 'button'; b.id = id;
+      b.innerHTML = '<span class="zeile-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg></span><span class="zeile-txt"><b></b><span class="zeile-st"></span></span>';
+      b.querySelector('b').textContent = titel; b.querySelector('.zeile-st').textContent = was;
+      b.addEventListener('click', function () { loeschFragen(li, b, titel, lang2 || was, fn, id === 'clear2'); });
+      li.appendChild(b); ll.appendChild(li);
+    };
+    lz('clear2', loeschEinsTitel(a), t('l.einsKurz'), function () { vgLoeschen(a.id, $('loeschMsg')); }, loeschWas());
+    lz('vgAlle', t('l.alle'), t('l.alleWas'), function () { angabenLoeschen(true); vgFormAuf = false; vgBearb = false; $('loeschMsg').textContent = t('l.okAlle'); var h = $('h-sicher'); if (h) h.focus(); });
+    if (alt && $(alt) && alt !== 'vgMsg' && alt !== 'vgMsgS') { try { $(alt).focus({ preventScroll: true }); } catch (e) {} }
+    else if (!$('es-sicher').hidden && (!document.activeElement || document.activeElement === document.body)) { var hs = $('h-sicher'); hs.tabIndex = -1; hs.focus({ preventScroll: true }); } // Knopf neu gezeichnet: Fokus auf die Überschrift
+  }
+  // ----- Einzelne Vorgänge mit eigener PIN sperren (Vorgaenge: gSperren, gOeffnen, gAufheben) -----
+  // Gesperrt: in der Liste nur „Gesperrter Vorgang“ und Schloss (Kurzname nur, wenn ausdrücklich eingetragen). Öffnen verlangt die PIN;
+  // nach dem Wechsel und dem Neustart ist er wieder zu. Fristen darin erscheinen nur, solange er geöffnet ist. Löschen geht ohne PIN.
+  function vgGTitel(v) { return v.name ? t('vgp.titel') + ' ' + v.name : t('vgp.titel'); }
+  function vgSchloss() {
+    var k = vgEl('span', 'vg-kreis vg-schloss'); k.setAttribute('aria-hidden', 'true');
+    var ns = 'http://www.w3.org/2000/svg', svg = document.createElementNS(ns, 'svg'); svg.setAttribute('viewBox', '0 0 24 24');
+    [['rect', { x: '5', y: '11', width: '14', height: '10', rx: '2' }], ['path', { d: 'M8 11V8a4 4 0 0 1 8 0v3' }]].forEach(function (x) {
+      var e = document.createElementNS(ns, x[0]); Object.keys(x[1]).forEach(function (n) { e.setAttribute(n, x[1][n]); }); svg.appendChild(e);
+    });
+    k.appendChild(svg); return k;
+  }
+  // art: 'sperren' (PIN zweimal, freiwilliger Kurzname, kurze Erklärung), 'oeffnen' oder 'aufheben' (PIN einmal)
+  function vgGForm(nach, ausloeser, v, art) {
+    var alt = $('vgGForm'); if (alt) { var gleich = alt.getAttribute('data-vg') === v.id + art; alt.remove(); document.querySelectorAll('[aria-expanded="true"]').forEach(function (x) { if (x.closest('#setHaushalte')) x.setAttribute('aria-expanded', 'false'); }); if (gleich) { ausloeser.focus(); return; } }
+    ausloeser.setAttribute('aria-expanded', 'true');
+    var f = vgEl('form', 'vg-form vg-gform'); f.id = 'vgGForm'; f.setAttribute('novalidate', ''); f.setAttribute('data-vg', v.id + art);
+    var feld = function (id, key, max, typ) {
+      var l = vgEl('label', null, t(key)); l.setAttribute('for', id);
+      var i = vgEl('input'); i.id = id; i.type = typ || 'password'; i.setAttribute('autocomplete', 'off'); i.maxLength = max;
+      if (!typ) i.setAttribute('inputmode', 'numeric');
+      f.appendChild(l); f.appendChild(i); return i;
+    };
+    var p1 = feld('vgGPin', art === 'sperren' ? 'vgp.pinNeu' : 'vgp.pin', 8), p2 = art === 'sperren' ? feld('vgGPin2', 'vg.pin.label2', 8) : null, kurz = null;
+    if (art === 'sperren') {
+      kurz = feld('vgGKurz', 'vgp.kurz', Vorgaenge.NAME_MAX, 'text'); kurz.setAttribute('aria-describedby', 'vgGKurzH');
+      var kh = vgEl('p', 'small muted', t('vgp.kurz.t')); kh.id = 'vgGKurzH'; f.appendChild(kh);
+      var er = vgEl('ul', 'small vg-gerkl'); ['vgp.t0', 'vgp.t1', 'vgp.t2', 'vgp.t3'].forEach(function (k) { er.appendChild(vgEl('li', null, t(k))); }); f.appendChild(er);
+    } else f.appendChild(vgEl('p', 'small muted', t('vgp.vergessen')));
+    var b = vgEl('button', 'btn', t(art === 'sperren' ? 'vgp.sperren' : art === 'oeffnen' ? 'vgp.oeffnen' : 'vgp.aufheben')); b.type = 'submit'; f.appendChild(b);
+    var m = vgEl('p', 'msg'); m.setAttribute('role', 'status'); f.appendChild(m);
+    var warten = function (ms) { b.disabled = true; m.textContent = t('vg.sperre.warten', { s: String(Math.ceil(ms / 1000)) }); setTimeout(function () { if (document.body.contains(b)) { b.disabled = false; m.textContent = ''; } }, ms); };
+    f.addEventListener('submit', function (e) {
+      e.preventDefault(); if (b.disabled) return;
+      var pin = p1.value;
+      if (!Vorgaenge.VPIN_RE.test(pin)) { m.textContent = t('vgp.format'); p1.focus(); return; }
+      if (p2 && pin !== p2.value) { m.textContent = t('vg.pin.ungleich'); p2.focus(); return; }
+      b.disabled = true; m.textContent = t('vg.bitte');
+      if (undoFn) undoWeg(); // „Rückgängig“ (nach Löschen) holt keinen Stand von vor dem Sperren zurück
+      flush(); var vorher = tresor.aktiv().id;
+      if (art === 'sperren') {
+        tresor.gSperren(v.id, pin, kurz.value).then(function (ok) {
+          p1.value = ''; p2.value = '';
+          if (!ok) { b.disabled = false; m.textContent = t('vg.fehler.speicher'); return; }
+          if (tresor.aktiv().id !== vorher) { clearTimeout(saveTimer); saveTimer = null; vgNeuLaden(); } else vgRender(); // der geöffnete wurde gesperrt: ein anderer ist jetzt offen
+          vgMsg(t('vgp.ok')); var h = $('vgH'); if (h) h.focus();
+        });
+        return;
+      }
+      tresor[art === 'oeffnen' ? 'gOeffnen' : 'gAufheben'](v.id, pin).then(function (r) {
+        p1.value = '';
+        if (!r.ok) { b.disabled = false; m.textContent = t('vg.sperre.falsch'); if (r.warten) warten(r.warten); p1.focus(); return; }
+        if (undoFn) undoWeg();
+        if (tresor.aktiv().id !== vorher) { clearTimeout(saveTimer); saveTimer = null; vgNeuLaden(); } else vgRender();
+        vgMsg(art === 'oeffnen' ? t('vg.geoeffnet', { name: vgName(tresor.aktiv()) }) : t('vgp.aufgehoben')); var h = $('vgH'); if (h) h.focus();
+      });
+    });
+    if (nach.tagName === 'LI') nach.appendChild(f); else nach.parentNode.insertBefore(f, nach.nextSibling);
+    var rest = tresor.gWarten(v.id); if (rest > 0) warten(rest);
+    p1.focus();
+  }
+  // PIN festlegen, ändern (mitAlt) oder ausschalten (nurAus). Ändern und Ausschalten fragen die bisherige PIN ab.
+  // PIN-Feld schließen, ohne etwas zu ändern (Abbrechen): Schalter und Speicher bleiben, wie sie sind
+  function vgPinFormZu(f) {
+    var a = f && $(f.getAttribute('data-ausloeser')); if (f) f.remove();
+    if (a) { if (a.id === 'vgPinSchalter') a.setAttribute('aria-checked', String(!!tresor.pinAn())); else a.setAttribute('aria-expanded', 'false'); a.focus(); }
+  }
+  function vgPinForm(g, ausloeser, nurAus, mitAlt) {
+    var art = nurAus ? 'aus' : (mitAlt ? 'aendern' : 'neu');
+    var alt = $('vgPinForm'); if (alt) { if (alt.getAttribute('data-art') === art) { alt.querySelector('input').focus(); return; } vgPinFormZu(alt); }
+    if (ausloeser.id !== 'vgPinSchalter') ausloeser.setAttribute('aria-expanded', 'true'); // role=switch kennt kein aria-expanded
+    var f = vgEl('form', 'vg-form'); f.id = 'vgPinForm'; f.setAttribute('novalidate', ''); f.setAttribute('data-art', art); f.setAttribute('data-ausloeser', ausloeser.id);
+    var felder = (nurAus || mitAlt ? [['vgPin0', 'vg.pin.alt']] : []).concat(nurAus ? [] : [['vgPin1', 'vg.pin.label'], ['vgPin2', 'vg.pin.label2']]);
+    felder.forEach(function (x) {
+      var l = vgEl('label', null, t(x[1])); l.setAttribute('for', x[0]);
+      var i = vgEl('input'); i.id = x[0]; i.type = 'password'; i.setAttribute('inputmode', 'numeric'); i.setAttribute('autocomplete', 'off'); i.maxLength = 12;
+      f.appendChild(l); f.appendChild(i);
+      // Kurze Erklärung direkt unter dem Feld für die neue PIN (Festlegen und Ändern). Inhalt nach Code: Sperrbildschirm deckt die ganze App ab (vgSperreZeigen, inert), AES-GCM-Verschlüsselung
+      // auf dem Gerät, die PIN selbst wird nie gespeichert, ohne richtige PIN lässt sich nichts entschlüsseln (keine Wiederherstellung, keine Biometrie).
+      if (x[0] === 'vgPin1') { var hw = vgEl('p', 'hint', t('vg.pin.erkl')); hw.id = 'vgPinHinweis'; i.setAttribute('aria-describedby', 'vgPinHinweis'); f.appendChild(hw); }
+    });
+    var bz = vgEl('div', 'btns'); f.appendChild(bz);
+    var b = vgEl('button', 'btn', t(nurAus ? 'vg.pin.aus' : 'vg.pin.speichern')); b.type = 'submit'; bz.appendChild(b);
+    var ab = vgEl('button', 'btn ghost', t('l.abbrechen')); ab.type = 'button'; ab.id = 'vgPinAbbr'; bz.appendChild(ab);
+    ab.addEventListener('click', function () { vgPinFormZu(f); });
+    var m = vgEl('p', 'msg'); m.setAttribute('role', 'status'); f.appendChild(m);
+    f.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var p0 = $('vgPin0') ? $('vgPin0').value : null, p1 = $('vgPin1') ? $('vgPin1').value : '', p2 = $('vgPin2') ? $('vgPin2').value : '';
+      if (!nurAus) {
+        if (!Vorgaenge.PIN_RE.test(p1)) { m.textContent = t('vg.pin.kurz'); $('vgPin1').focus(); return; }
+        if (p1 !== p2) { m.textContent = t('vg.pin.ungleich'); $('vgPin2').focus(); return; }
+      }
+      b.disabled = true; m.textContent = t('vg.bitte');
+      flush();
+      (p0 === null ? Promise.resolve(true) : tresor.pinPruefen(p0)).then(function (richtig) {
+        if (!richtig) { b.disabled = false; m.textContent = t('vg.pin.altFalsch'); $('vgPin0').value = ''; $('vgPin0').focus(); return; }
+        if (nurAus) return tresor.pinAus().then(function () { vgRender(); vgMsg(t('vg.pin.ausOk')); var h = $('h-sicher'); if (h) h.focus(); });
+        return tresor.pinSetzen(p1).then(function (ok) { vgRender(); vgMsg(t(ok ? 'vg.pin.ok' : 'vg.fehler.speicher')); var h = $('h-sicher'); if (h) h.focus(); });
+      });
+    });
+    ausloeser.parentNode.parentNode.insertBefore(f, ausloeser.parentNode.nextSibling);
+    f.querySelector('input').focus();
+    try { f.scrollIntoView({ block: 'nearest', behavior: smooth() }); } catch (e) {} // auf dem Handy: Feld und Knöpfe über der Tastatur sichtbar
+  }
+  // ----- Unterseiten in „Einstellungen“ und „Mein Ordner“: Liste bzw. Übersicht oder eine Unterseite, „← Zurück“ führt zurück -----
+  var usAktiv = { einst: '', ordner: '' }, usVon = null;
+  function usOffen(a) { return !!usAktiv[a]; }
+  function usZeigen(a, seite, fokus) {
+    var war = usAktiv[a]; usAktiv[a] = seite || '';
+    var liste = a === 'einst' ? $('einstListe') : $('ordnerHaupt');
+    liste.hidden = !!seite;
+    $('v-' + a).querySelectorAll('.unterseite').forEach(function (u) { u.hidden = u.getAttribute('data-seite') !== seite; });
+    if (a === 'einst') einstStatus(); else ordnerRender();
+    if (!fokus) return;
+    try { window.scrollTo(0, 0); } catch (e) {}
+    var ziel;
+    if (seite) { var u = $('v-' + a).querySelector('.unterseite[data-seite="' + seite + '"]'); ziel = u && u.querySelector('h2, h3'); usVon = document.activeElement; }
+    else ziel = (a === 'einst' && war && document.querySelector('#einstListe .zeile[data-seite="' + war + '"]')) || (usVon && document.body.contains(usVon) && !usVon.closest('[hidden]') ? usVon : liste.querySelector('h2'));
+    if (ziel) { if (!/^(BUTTON|A|INPUT|SELECT)$/.test(ziel.tagName)) ziel.setAttribute('tabindex', '-1'); ziel.focus({ preventScroll: true }); }
+  }
+  // Einstellungen: eine Zeile Status je Bereich
+  function einstStatus() {
+    if (!$('stAnzeige') || !lang) return;
+    var sel = $('lang'), o = sel && sel.options[sel.selectedIndex];
+    var teile = [o ? o.textContent : ''];
+    if ($('app').classList.contains('big')) teile.push(t('big'));
+    if (lang === 'de' && einfachSprache) teile.push(t('set.es.label'));
+    $('stAnzeige').textContent = teile.filter(Boolean).join(' · ');
+    var pin = tresor && tresor.bereit && tresor.bereit() && tresor.pinAn();
+    $('stSicher').textContent = t(pin ? 'vg.pin.an' : 'set.sicher.t') + ' · ' + t('set.sicher.loeschen');
+    $('stFach').textContent = t('set.beratung.label') + ': ' + t(beratung ? 'set.an' : 'set.aus');
+    $('stAbout').textContent = t('set.version', { v: APPVERSION });
+    var fb = $('friHinweisBtn'); if ($('stErinnern') && fb) $('stErinnern').textContent = t(fb.getAttribute('aria-checked') === 'true' ? 'set.an' : 'set.aus');
+  }
+  // Mein Ordner: geöffneter Vorgang oben, darunter nur Bereiche mit eigenem Inhalt (Kurzstatus, Sprung); die Vorgänge darunter füllt vgRender
+  function ordnerRender() {
+    if (!$('ordnerKarten') || typeof aktAnsicht === 'undefined' || aktAnsicht !== 'ordner') return;
+    var ul = $('ordnerKarten'); ul.innerHTML = '';
+    var zeile = function (id, titel, status, sym, fn) {
+      var li = vgEl('li'), b = vgEl('button', 'zeile'); b.type = 'button'; b.id = 'or-' + id;
+      b.innerHTML = '<span class="zeile-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + sym + '</svg></span><span class="zeile-txt"><b></b><span class="zeile-st"></span></span><span class="zeile-pfeil" aria-hidden="true">›</span>';
+      b.querySelector('b').textContent = titel; b.querySelector('.zeile-st').textContent = status;
+      b.addEventListener('click', fn); li.appendChild(b); ul.appendChild(li);
+    };
+    // Fristen (src/fristen.js): als erste Zeile, nur mit mindestens einer offenen Frist; die Liste ist eine Unterseite
+    var fo = null; if (window.FristenOrdner) { try { fo = FristenOrdner.stand(); } catch (e) {} FristenOrdner.render(); }
+    if (fo) zeile('fristen', t('fri.karte'), fo.text, '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', function () { usZeigen('ordner', 'fristen', true); });
+    var erg = started && edited && lastOut ? lastOut.results : null;
+    if (erg) {
+      var n = { ja: 0, vielleicht: 0 }; erg.forEach(function (r) { if (r.level in n) n[r.level]++; });
+      var st = [n.ja ? t('c.ja', { n: n.ja }) : '', n.vielleicht ? t('c.vielleicht', { n: n.vielleicht }) : ''].filter(Boolean).join(' · ') || t('c.none');
+      zeile('ergebnis', t('ordner.ergebnis'), st, '<path d="M4 20V10M10 20V4M16 20v-7M2 20h20"/>', function () { oeffneVon('leistungen', false); var e = $('ergebnis'); if (e) { e.scrollIntoView({ block: 'start' }); e.focus({ preventScroll: true }); } });
+      var gew = erg.filter(function (r) { return picked[r.id]; }).length;
+      if (gew) zeile('mappe', t('ordner.mappe'), t('ordner.mappe.n', { n: gew }), '<path d="M4 7a2 2 0 0 1 2-2h3l2 2h7a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M9 13h6"/>', function () { oeffneVon('leistungen', false); $('mappeMake').click(); var hm = $('h-mappe'); if (hm) { hm.setAttribute('tabindex', '-1'); hm.focus({ preventScroll: true }); } });
+    }
+    if (window.Haushalt && Haushalt.rest) {
+      var hr = null; try { hr = Haushalt.rest(); } catch (e) {}
+      if (hr && !hr.leer && hr.ausgefuellt !== false) zeile('haushalt', t('hb.h'), hr.rest >= 0 ? t('hb.rest', { b: { eur: hr.restEuro } }) : t('hb.fehlt', { b: { eur: -hr.restEuro } }), '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M15 15h2"/>', function () { oeffneVon('haushalt', true); });
+    }
+    // Schulden-Liste: nur die Zahl der offenen Einträge (keine Summe) und die nächste Frist, solange es die Fristen in „Mein Ordner“ (src/fristen.js, FristenOrdner) nicht gibt
+    if (window.Schulden && Schulden.kurz) {
+      var sk = null; try { sk = Schulden.kurz(); } catch (e) {}
+      if (sk && sk.n) zeile('schulden', t('sl.ordner'), t('sl.ordner.st', { n: sk.n }) + (sk.frist && !window.FristenOrdner ? ' · ' + t('sl.ordner.frist', { d: Fmt.datum(new Date(+sk.frist.slice(0, 4), +sk.frist.slice(5, 7) - 1, +sk.frist.slice(8, 10)), lang) }) : ''), '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>', function () { oeffneVon('schulden', true); });
+    }
+    // „Ich ziehe aus“ (Branch claude/ausziehen): nur, wenn das Modul den Fortschritt liefert (Ausziehen.stand() -> { n, von })
+    var AZ = window.Ausziehen;
+    if (AZ && typeof AZ.stand === 'function' && ANSICHTEN.indexOf('ausziehen') >= 0) {
+      var az = null; try { az = AZ.stand(); } catch (e) {}
+      if (az && az.von && az.n) zeile('ausziehen', t('ordner.ausziehen'), t('ordner.ausziehen.n', { n: az.n, von: az.von }), '<path d="M4 20V9l8-5 8 5v11"/><path d="M14 14h6M17 11l3 3-3 3"/>', function () { oeffneVon('ausziehen', true); });
+    }
+    if (pa && pa.schaetzung) zeile('pflege', t('ordner.pflege'), paStandText(), '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>', function () { oeffneVon('pflegestart', true); });
+    // Blatt von der Beratung (Weitergabe per QR-Code/SoLo-Datei): beim Laden erneut streng geprüft, angezeigt nur als Text
+    if (window.Weitergabe && window.Klient && tresor && tresor.bereit()) {
+      var kbRoh = null; Store.get('lotse.klient-blatt', function (v) { kbRoh = v; });
+      var kbDoc = null; try { var kbP = kbRoh ? Weitergabe.pruefen({ s: 1, typ: 'auswahl', blatt: JSON.parse(kbRoh) }) : null; kbDoc = kbP && kbP.blatt; } catch (e) { kbDoc = null; }
+      if (kbDoc) zeile('beratung', t('kw.ordner'), t('kw.ordner.st', { n: kbDoc.abschnitte.length }), '<path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7M14 3v5h5"/>', function () { Klient.zeigen(kbDoc); });
+    }
+    if (pf && pf.art && pf.schritt > 0) zeile('pfaendung', t('ordner.pfaendung'), t(pf.art === 'lohn' ? 'pf.lohn' : 'pf.konto'), '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/>', function () { oeffneVon('pfaendung', true); });
+    ul.hidden = !ul.children.length;
+  }
+  // Sperrbildschirm: deckt die App ab, bis die PIN stimmt
+  function vgSperreZeigen() {
+    schutzAnwenden();
+    var s = $('vgSperre');
+    if (!s) { s = vgEl('div', 'vg-sperre'); s.id = 'vgSperre'; s.setAttribute('role', 'dialog'); s.setAttribute('aria-modal', 'true'); s.setAttribute('aria-labelledby', 'vgSperreH'); $('app').parentNode.appendChild(s); }
+    s.innerHTML = ''; s.hidden = false; s.setAttribute('lang', lang); s.setAttribute('dir', I18N[lang]['meta.dir']);
+    $('app').setAttribute('aria-hidden', 'true'); $('app').inert = true;
+    var box = vgEl('div', 'vg-sperre-box');
+    var h = vgEl('h2', null, t('vg.sperre.h')); h.id = 'vgSperreH'; box.appendChild(h);
+    box.appendChild(vgEl('p', null, t('vg.sperre.t')));
+    var f = vgEl('form'); f.setAttribute('novalidate', '');
+    var l = vgEl('label', null, t('vg.pin.feld')); l.setAttribute('for', 'vgPinEin');
+    var i = vgEl('input'); i.id = 'vgPinEin'; i.type = 'password'; i.setAttribute('inputmode', 'numeric'); i.setAttribute('autocomplete', 'off'); i.maxLength = 12;
+    var b = vgEl('button', 'btn', t('vg.sperre.los')); b.type = 'submit';
+    var m = vgEl('p', 'msg'); m.id = 'vgSperreMsg'; m.setAttribute('role', 'alert');
+    f.appendChild(l); f.appendChild(i); f.appendChild(b); f.appendChild(m); box.appendChild(f);
+    var warte = function (ms) {
+      b.disabled = true; m.textContent = t('vg.sperre.warten', { s: String(Math.ceil(ms / 1000)) });
+      setTimeout(function () { b.disabled = false; m.textContent = ''; }, ms);
+    };
+    f.addEventListener('submit', function (e) {
+      e.preventDefault(); if (b.disabled) return;
+      b.disabled = true; m.textContent = t('vg.bitte');
+      tresor.entsperren(i.value).then(function (r) {
+        i.value = '';
+        if (r.ok) return;
+        b.disabled = false; m.textContent = t('vg.sperre.falsch');
+        if (r.warten) warte(r.warten);
+        i.focus();
+      });
+    });
+    var d = vgEl('details', 'vg-vergessen'); d.appendChild(vgEl('summary', null, t('vg.sperre.vergessen')));
+    d.appendChild(vgEl('p', null, t('vg.sperre.vergessen.t')));
+    var wb = vgEl('button', 'btn ghost', t('vg.sperre.loeschen')); wb.type = 'button';
+    wb.addEventListener('click', function () { if (!window.confirm(t('vg.alleFrage'))) return; tresor.allesLoeschen(); vgNeuLaden(); });
+    d.appendChild(wb); box.appendChild(d);
+    s.appendChild(box);
+    var rest = tresor ? tresor.sperrRest() : 0; if (rest > 0) warte(rest);
+    try { i.focus(); } catch (e) {}
+  }
+  Store.get('lotse.pfaendung', pfLaden);
+
   // ----- Pflegegrad selbst einschätzen (geführt; Rechnung und Texte aus erweiterungen/pflege*.js) -----
   var pa = { antworten: null, schaetzung: null };
   function paSpeichern() { Store.set('lotse.pflegecheck', JSON.stringify(pa)); }
@@ -2240,37 +3808,83 @@
     var el = $(ziel) || $('paStart');
     if (el) { try { el.scrollIntoView({ block: 'center' }); } catch (e) {} if (el.focus) el.focus({ preventScroll: true }); }
   }
+  // Ergebnis der Einschätzung merken (automatisch auf der Ergebnisseite). Das Datum bleibt, solange sich das Ergebnis nicht ändert.
+  function paMerken(r) {
+    var punkte = Math.round(r.gesamt * 100) / 100, alt = pa.schaetzung;
+    if (alt && alt.pg === r.pg && alt.punkte === punkte) return;
+    pa.schaetzung = { pg: r.pg, punkte: punkte, datum: heuteIso() };
+    paSpeichern(); paAnzeigen();
+  }
+  // In den Fragebogen übernehmen (nur, wenn man zum Antrag oder zurück in den Leistungs-Check geht)
   function paUebernehmen(r) {
-    pa.schaetzung = { pg: r.pg, punkte: Math.round(r.gesamt * 100) / 100, datum: heuteIso() };
+    paMerken(r);
     if (r.pg >= 1 && !paEchterPg() && state.pflegegrad !== 'antrag') state.pflegegrad = 'antrag';
-    paSpeichern(); $('pflegegrad').value = state.pflegegrad; touched(); // Auswahlfelder schreibt writeForm nicht
+    $('pflegegrad').value = state.pflegegrad; touched(); // Auswahlfelder schreibt writeForm nicht
   }
   function heuteIso() { var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
-  function paOeffnen() {
-    if (typeof PflegeAssistent === 'undefined') return;
+  var paVonStart = false; // Einschätzung aus der Pflege-Startkachel geöffnet: „Zurück“ führt zur Auswahl
+  var paRueck = ''; // Unterseite, die aus der Ergebnisseite geöffnet wurde ('briefe', 'leistungen', 'pflegestart'): „← Zurück“ führt zur Ergebnisseite
+  function paVomLeistungsCheck() { return !paVonStart && herkunftVon('pflege') === 'leistungen'; }
+  function paVerlassen() { if (aktAnsicht === 'pflege' && sucheRueck.indexOf('pflege/') === 0) { sucheZurStart(); return; } paRueck = ''; if (paVonStart) puOeffnen('wahl'); else if (herkunftVon('pflege') === 'leistungen') paZurueck('paStart'); else zurueckZurHerkunft('pflege'); }
+  // Unterseite der Ergebnisseite öffnen: Rückweg merken
+  function paUnterseite(ziel) { paRueck = ziel; if (aktAnsicht === ziel) paRueckPruefen(ziel); }
+  // Beim Ansichtswechsel: Rückweg nur auf der Unterseite selbst (der gemeinsame „← Zurück“ führt dann über zurueckSchritt zur Ergebnisseite)
+  function paRueckPruefen(a) {
+    if (paRueck && a !== paRueck) paRueck = '';
+    var k = $('leistungenKopf'); if (k) k.classList.toggle('pa-fest', paRueck === 'leistungen' && a === 'leistungen');
+  }
+  // Kachel-Symbole (Pfade): Antrag wie „Mappe“ in Mein Ordner, Unterstützung wie in der Pflege-Auswahl, Gutachten wie ein Formular
+  var PA_SYM = {
+    antrag: ['M4 7a2 2 0 0 1 2-2h3l2 2h7a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z', 'M9 13h6'],
+    hilfen: ['M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z', 'M9 12h6M12 9v6'],
+    gutachten: ['M7 3h10a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z', 'M8 8h8M8 12h5', 'M13.5 16l1.8 1.8 3.2-3.6']
+  };
+  function paStarten(zumErgebnis) {
     $('paNurDe').hidden = lang === 'de';
     var pgJetzt = paEchterPg();
     PflegeAssistent.start($('pflegeAssist'), {
-      pgAktuell: pgJetzt, antworten: pa.antworten,
+      pgAktuell: pgJetzt, antworten: pa.antworten, ergebnis: zumErgebnis === true, einfach: lang === 'de' && einfachSprache,
       speichern: function (a) { pa.antworten = a; paSpeichern(); },
-      abbrechen: function () { paZurueck('paStart'); },
+      beimErgebnis: paMerken,
+      abbrechen: paVerlassen,
+      // Reihenfolge (David 21.11.2026): zuerst der passende Antrag (noch kein Pflegegrad: beantragen; Einschätzung höher: Höherstufung),
+      // dann „Mit dem Gutachten vergleichen“, dann „Was steht mir zu?“. Höchstens 3 Kacheln.
       aktionen: [
-        { text: 'Ergebnis übernehmen', haupt: true, wenn: function (r, pg) { return pg == null; }, fn: function (r) { paUebernehmen(r); paZurueck('c-pflege'); } },
-        { text: 'Antrag an die Pflegekasse in die Antragsmappe', zweit: true, wenn: function (r, pg) { return pg == null && r.pg >= 1; }, fn: function (r) {
-          paUebernehmen(r); picked.pflege = true; pickedUser.pflege = true; if (lastOut) renderPick(lastOut.results); paZurueck('mappeMake'); } },
-        { text: 'Antrag auf Höherstufung schreiben', haupt: true, wenn: function (r, pg) { return pg != null && r.pg > pg; }, fn: function (r, a, g) {
-          paUebernehmen(r); zeigeAnsicht('briefe', false); briefOeffnen('pk'); if (window.PruefpaketPflege) { window.PruefpaketPflege.setze(g, 'hoeher'); briefFormular(); } } },
-        { text: 'Mit dem Gutachten der Pflegekasse vergleichen', fn: function (r) {
-          paUebernehmen(r); zeigeAnsicht('briefe', false); briefOeffnen('pk'); } },
-        { text: 'Was bedeuten diese Leistungen?', fn: function () { pflegeInfo('pflege', 'pa-q'); } },
-        { text: 'Zurück zu den Leistungen', fn: function (r) { paUebernehmen(r); paZurueck('paStart'); } }
+        { id: 'antrag', kachel: 'antrag', sym: PA_SYM.antrag, titel: 'Pflegegrad beantragen', text: 'Mit der Antragsmappe, deine Daten sind schon drin', wenn: function (r, pg) { return pg == null && r.pg >= 1; }, fn: function (r) {
+          paUebernehmen(r); picked.pflege = true; pickedUser.pflege = true; if (lastOut) renderPick(lastOut.results, lastOut.zusammen);
+          paZurueck('mappeMake'); paUnterseite('leistungen'); } },
+        { id: 'hoeher', kachel: 'antrag', sym: PA_SYM.antrag, titel: 'Höherstufung beantragen', text: 'Schreiben an die Pflegekasse mit deinen Antworten', wenn: function (r, pg) { return pg != null && r.pg > pg; }, fn: function (r, a, g) {
+          paUebernehmen(r); zeigeAnsicht('briefe', false); briefOeffnen('pk'); paUnterseite('briefe');
+          if (window.PruefpaketPflege) { window.PruefpaketPflege.setze(g, 'hoeher'); briefFormular(); } } },
+        // Nach dem Antrag (falls passend): mit dem Gutachten vergleichen. Öffnet die Gutachten-Prüfung (wie Brief → Pflegekasse); briefOeffnen('pk') übergibt die Antworten
+        // dieser Einschätzung (PruefpaketPflege.eigene), die Prüfung zeigt dann eigene Punkte je Bereich neben dem Gutachten. „← Zurück“ führt hierher.
+        { id: 'gutachten', kachel: 'gutachten', sym: PA_SYM.gutachten, titel: 'Mit dem Gutachten vergleichen', text: 'Gutachten vom Medizinischen Dienst scannen oder einfügen', fn: function () {
+          zeigeAnsicht('briefe', false); briefOeffnen('pk'); paUnterseite('briefe'); } },
+        { id: 'hilfen', kachel: 'hilfen', sym: PA_SYM.hilfen, titel: 'Was steht mir zu?', text: function (r) { return r.pg ? 'Unterstützung bei Pflegegrad ' + r.pg : 'Hilfen schon ohne Pflegegrad'; }, fn: function (r) {
+          paUnterseite('pflegestart'); puOeffnen('liste', r.pg || 0, true); } },
+        // In den Leistungs-Check nur, wenn man von dort gekommen ist
+        { id: 'zurueck', titel: 'Zurück zum Leistungs-Check', wenn: paVomLeistungsCheck, fn: function (r) { paUebernehmen(r); paRueck = ''; paZurueck('c-pflege'); } }
       ]
     });
+  }
+  // Von einer Unterseite zurück zur Ergebnisseite; die Herkunft der Einschätzung bleibt
+  function paErgebnisZeigen() {
+    if (typeof PflegeAssistent === 'undefined') return;
+    paRueck = '';
+    paStarten(true);
     zeigeAnsicht('pflege', false);
     var q = $('pa-q'); if (q) { window.scrollTo(0, 0); q.focus({ preventScroll: true }); }
   }
-  $('paStart').addEventListener('click', paOeffnen);
-  $('goPflege').addEventListener('click', function () { if (typeof PflegeAssistent === 'undefined') zeigeAnsicht('leistungen', true); else paOeffnen(); }); // Startkachel Pflege: Pflegegrad selbst einschätzen
+  function paOeffnen(vonStart, zumErgebnis) {
+    if (typeof PflegeAssistent === 'undefined') return;
+    paVonStart = vonStart === true; paRueck = '';
+    if (aktAnsicht !== 'pflege' && aktAnsicht !== 'pflegeinfo') herkunft.pflege = aktAnsicht; // vor dem Start: die Ergebnisseite fragt die Herkunft ab
+    paStarten(zumErgebnis);
+    zeigeAnsicht('pflege', false);
+    var q = $('pa-q'); if (q) { window.scrollTo(0, 0); q.focus({ preventScroll: true }); }
+  }
+  $('paStart').addEventListener('click', function () { paOeffnen(); });
+  $('goPflege').addEventListener('click', function () { puOeffnen('wahl'); }); // Startkachel Pflege: Auswahl Unterstützung / Einschätzung
   window.SoLoPflegeStart = paOeffnen; // „Pflegegrad selbst einschätzen“ aus der Gutachten-Prüfung
   // Sprung zu einer Ergebniskarte (Übersicht oben, Kachel „Zwei Wege“): Karte aufklappen
   $('ergebnis').addEventListener('click', function (e) { var a = e.target.closest && e.target.closest('a[href^="#c-"]'); if (a) karteAuf(a.getAttribute('href').slice(1)); });
@@ -2278,13 +3892,14 @@
   // ----- Erklärseite: So funktionieren die Leistungen der Pflegekasse (Beträge aus den Rechenregeln) -----
   var piZurueckZu = 'leistungen', piFokus = null;
   function piEuro(x) { return Number(x).toLocaleString('de-DE', { maximumFractionDigits: 0 }) + ' €'; }
+  // Beratungsbesuch: § 37 Abs. 3 Satz 1 SGB XI (gesetze-im-internet.de, abgerufen 20.11.2026): Pflegegrad 2–5 halbjährlich Pflicht, 4 und 5 auf Wunsch vierteljährlich
   function pflegeInfoBauen() {
     var R = Rules.RULES, box = $('pflegeInfo');
     if (box.children.length) return;
     var el = function (tag, text, cls) { var e = document.createElement(tag); if (text != null) e.textContent = text; if (cls) e.className = cls; return e; };
     var je = function (o) { return [2, 3, 4, 5].map(function (g) { return 'PG ' + g + ': ' + piEuro(o[g]); }).join(' · '); };
     box.appendChild(el('h2', 'So funktionieren die Leistungen der Pflegekasse')).id = 'h-pflegeinfo';
-    box.appendChild(el('p', 'Nur das Pflegegeld kommt aufs Konto. Alles andere sind Budgets: Die Pflegekasse bezahlt damit Hilfe, Dienste oder Lieferungen, meistens gegen Rechnung. Wer die Budgets nicht nutzt, verschenkt Geld.', 'lead'));
+    box.appendChild(el('p', 'Aufs Konto kommen nur das Pflegegeld und, wer in einer ambulant betreuten Wohngruppe lebt, der Wohngruppenzuschlag. Alles andere sind Budgets: Die Pflegekasse bezahlt damit Hilfe, Dienste oder Lieferungen, meistens gegen Rechnung. Wer die Budgets nicht nutzt, verschenkt Geld.', 'lead'));
     var zeilen = [
       ['Pflegegeld', 'Geld aufs Konto, jeden Monat', je(R.pflege.geld), 'geld', 'pi-geld'],
       ['Pflegedienst (Pflegesachleistung)', 'Budget: Der Pflegedienst rechnet direkt mit der Pflegekasse ab', 'bis ' + je(R.pflegeSach), 'budget', 'pi-dienst'],
@@ -2310,7 +3925,7 @@
     };
     abschnitt('pi-geld', 'Pflegegeld: Geld für die Pflege durch Angehörige', [
       'Wenn Angehörige, Freunde oder Nachbarn pflegen, zahlt die Pflegekasse ab Pflegegrad 2 jeden Monat Pflegegeld aufs Konto der gepflegten Person. Sie kann frei entscheiden, wofür sie es verwendet, zum Beispiel als Dankeschön an die Pflegeperson.',
-      'Pflicht: Bei Pflegegrad 2 und 3 einmal im halben Jahr, bei Pflegegrad 4 und 5 einmal im Vierteljahr kommt eine kostenlose Pflegeberatung ins Haus. Fällt sie aus, kann die Pflegekasse das Pflegegeld kürzen.']);
+      'Pflicht: Bei Pflegegrad 2 bis 5 kommt einmal im halben Jahr eine kostenlose Beratung ins Haus. Bei Pflegegrad 4 und 5 geht das auf Wunsch auch jedes Vierteljahr. Fällt die Pflicht-Beratung aus, kann die Pflegekasse das Pflegegeld kürzen.']);
     abschnitt('pi-dienst', 'Pflegedienst: Sachleistung und Kombination', [
       'Kommt ein Pflegedienst, rechnet er direkt mit der Pflegekasse ab. Du bekommst dafür kein Geld, aber auch keine Rechnung, solange das Budget reicht.',
       'Nutzt der Pflegedienst nur einen Teil des Budgets, zahlt die Pflegekasse den Rest anteilig als Pflegegeld aus. Das heißt Kombinationsleistung.']);
@@ -2321,7 +3936,8 @@
       ['Haushaltshilfe, Einkaufen, Begleitung zum Arzt', 'Betreuung zu Hause oder in einer Betreuungsgruppe', 'Eigenanteile bei Tages- oder Kurzzeitpflege']);
     abschnitt('pi-verh', 'Verhinderungspflege und Kurzzeitpflege: Vertretung für die Pflegeperson', [
       'Ab Pflegegrad 2 haben beide einen gemeinsamen Jahresbetrag von ' + piEuro(R.entlastungsbudget) + '. Auch das ist kein Geld aufs Konto: Die Pflegekasse bezahlt damit die Vertretung.',
-      'Verhinderungspflege: Die Pflegeperson macht Urlaub, ist krank oder braucht ein paar Stunden Pause. Dann pflegt jemand anderes zu Hause, zum Beispiel ein Pflegedienst, Bekannte oder Nachbarn. Bei nahen Verwandten zahlt die Pflegekasse weniger; frag dort nach.',
+      'Verhinderungspflege: Die Pflegeperson macht Urlaub, ist krank oder braucht ein paar Stunden Pause. Dann pflegt jemand anderes zu Hause, zum Beispiel ein Pflegedienst, Bekannte oder Nachbarn.',
+      'Vertreten nahe Angehörige oder Personen aus demselben Haushalt (nicht beruflich), zahlt die Pflegekasse höchstens das Doppelte des monatlichen Pflegegeldes. Nachgewiesene Kosten wie Fahrt oder Verdienstausfall können dazukommen (bis zum Jahresbetrag).',
       'Kurzzeitpflege: Die gepflegte Person wohnt für eine Zeit in einer Pflegeeinrichtung, zum Beispiel nach einem Krankenhausaufenthalt.',
       'Während der Vertretung zahlt die Pflegekasse bis zu 8 Wochen im Jahr die Hälfte des Pflegegelds weiter. Wer nur stundenweise vertreten wird (weniger als 8 Stunden am Tag), behält das volle Pflegegeld.',
       'Tipp: Den Antrag kannst du auch nachträglich stellen. Hebe alle Rechnungen und Quittungen auf.']);
@@ -2333,7 +3949,7 @@
       'Wer mindestens 10 Stunden in der Woche an mindestens 2 Tagen pflegt und höchstens 30 Stunden arbeitet, für den zahlt die Pflegekasse Rentenbeiträge.',
       'In der Steuererklärung gibt es den Pflege-Pauschbetrag.',
       'Pflegeberatung ist kostenlos, bei der Pflegekasse oder im Pflegestützpunkt. Dort hilft man auch beim Antrag.']);
-    box.appendChild(el('p', 'Stand der Beträge: ' + (R.stand || 'November 2026') + '. Den genauen Anspruch legt die Pflegekasse fest.', 'small muted'));
+    box.appendChild(quellenEl(['Stand der Beträge: ' + (R.stand || 'November 2026') + '. Den genauen Anspruch legt die Pflegekasse fest.']));
   }
   // Abschnitt aufklappen, hinscrollen und den Fokus auf seine Überschrift setzen
   function piAbschnitt(id) {
@@ -2343,33 +3959,174 @@
     var s = d.querySelector('summary'); if (s) s.focus({ preventScroll: true });
   }
   function pflegeInfo(zurueckZu, fokus, abschnitt) {
-    piZurueckZu = zurueckZu || 'leistungen'; piFokus = fokus || null;
+    piZurueckZu = zurueckZu || 'leistungen'; piFokus = fokus || null; herkunft.pflegeinfo = piZurueckZu;
     pflegeInfoBauen(); $('piNurDe').hidden = lang === 'de';
     document.querySelectorAll('#pflegeInfo details').forEach(function (d) { d.open = false; });
     zeigeAnsicht('pflegeinfo', !abschnitt);
     if (abschnitt) piAbschnitt(abschnitt);
   }
-  $('piZurueck').addEventListener('click', function () {
+  function piZurueckTun() {
     zeigeAnsicht(piZurueckZu, false);
     var el = piFokus && $(piFokus);
     var karte = el && el.closest && el.closest('article.card'); if (karte) karteAuf(karte.id); // zurück in die aufgeklappte Karte if (el) { try { el.scrollIntoView({ block: 'center' }); } catch (e) {} if (el.focus) { if (!el.hasAttribute('tabindex') && !/^(BUTTON|A|INPUT)$/.test(el.tagName)) el.setAttribute('tabindex', '-1'); el.focus({ preventScroll: true }); } }
-  });
+  }
+  // ----- Pflege-Startkachel: Auswahl „Welche Unterstützung gibt es?“ / „Pflegegrad selbst einschätzen“ -----
+  // Unterstützung: erst den Pflegegrad fragen, dann nur zeigen, was dort gilt (Rules.pflegeFuer). Beträge aus den Rechenregeln.
+  // Die Erklärtexte gibt es wie den Pflege-Assistenten zurzeit nur auf Deutsch.
+  var pu = { schritt: 'wahl', pg: null };
+  var PU_TOP = { 0: ['beratung', 'kurs'], 1: ['entl', 'hilfs', 'umbau', 'beratung'], 2: ['geld', 'dienst', 'entl', 'verh', 'tages'] };
+  var PU_ART = { konto: 'Geld aufs Konto', budget: 'Budget: Die Pflegekasse bezahlt', zuschuss: 'Zuschuss', frei: 'Kostenlos', schutz: 'Absicherung' };
+  var PU_EINHEIT = { monat: 'pro Monat', jahr: 'pro Jahr', mass: 'je Maßnahme' };
+  function puTexte(pg) {
+    var R = Rules.RULES;
+    var kombiPg = pg >= 2 ? pg : 2, halb = R.pflegeSach[kombiPg] / 2;
+    var e2 = function (x) { return Number(x).toLocaleString('de-DE', { minimumFractionDigits: x % 1 ? 2 : 0, maximumFractionDigits: 2 }) + ' €'; };
+    return {
+      geld: ['Geld für die Pflege zu Hause (Pflegegeld)', 'Kommt aufs Konto, wenn Angehörige, Freunde oder Nachbarn pflegen. Die gepflegte Person entscheidet frei, wofür sie es verwendet.',
+        ['Pflicht: Bei Pflegegrad 2 bis 5 kommt einmal im halben Jahr eine kostenlose Beratung ins Haus. Bei Pflegegrad 4 und 5 geht das auf Wunsch auch jedes Vierteljahr. Fällt die Pflicht-Beratung aus, kann die Pflegekasse das Pflegegeld kürzen.']],
+      dienst: ['Pflegedienst kommt ins Haus (Pflegesachleistung)', 'Kein Geld aufs Konto: Der Pflegedienst rechnet bis zu diesem Betrag direkt mit der Pflegekasse ab.',
+        ['Geht statt Pflegegeld oder zusammen damit (siehe „Pflegedienst und Pflegegeld gemischt“).',
+          'Was der Pflegedienst in einem Monat nicht braucht, kannst du bis zu 40 % des Betrags auch für anerkannte Hilfen im Alltag nutzen (Umwandlung). Die Rechnungen reichst du bei der Pflegekasse ein.']],
+      entl: ['Geld für Hilfe im Alltag (Entlastungsbetrag)', 'Kein Geld aufs Konto: Die Pflegekasse bezahlt damit Rechnungen anerkannter Anbieter, zum Beispiel für Haushaltshilfe, Betreuung oder Begleitung.',
+        (pg === 1 ? ['Bei Pflegegrad 1 darf damit auch ein Pflegedienst zum Beispiel bei der Körperpflege helfen.'] : []).concat([
+          'Auch für Tages- und Nachtpflege oder Kurzzeitpflege, zum Beispiel für den Eigenanteil.',
+          'Auch ein Familienentlastender Dienst (FED) kann so bezahlt werden, wenn er in deinem Bundesland anerkannt ist. Das sind Dienste, die Familien mit einem Angehörigen mit Behinderung stundenweise entlasten, zum Beispiel mit Betreuung.',
+          'Nicht genutzte Beträge sammeln sich an. Was am Jahresende übrig ist, kannst du noch bis zum 30. Juni des nächsten Jahres nutzen.'])],
+      verh: ['Vertretung, wenn die Pflegeperson ausfällt (Verhinderungs- und Kurzzeitpflege)', 'Ein gemeinsames Budget pro Jahr für beides. Kein Geld aufs Konto: Die Pflegekasse bezahlt damit die Vertretung.',
+        ['Verhinderungspflege: Die Pflegeperson hat Urlaub, ist krank oder braucht eine Pause. Dann pflegt jemand anderes zu Hause, zum Beispiel ein Pflegedienst, eine Einzelpflegekraft oder Ehrenamtliche. Höchstens 8 Wochen im Jahr.',
+          'Das geht auch stundenweise, zum Beispiel für einen Nachmittag. Stundenweise Betreuung bieten unter anderem Familienentlastende Dienste an. Eine Bezahlung als Verhinderungspflege ist möglich: Frag vorher bei der Pflegekasse nach.',
+          'Kurzzeitpflege: Die gepflegte Person wohnt für eine Zeit in einer Pflegeeinrichtung, zum Beispiel nach dem Krankenhaus. Höchstens 8 Wochen im Jahr.',
+          'Während der Vertretung zahlt die Pflegekasse bis zu 8 Wochen im Jahr die Hälfte des Pflegegeldes weiter.',
+          'Vertreten nahe Angehörige oder Personen aus demselben Haushalt (nicht beruflich), zahlt die Pflegekasse höchstens das Doppelte des monatlichen Pflegegeldes. Nachgewiesene Kosten wie Fahrt oder Verdienstausfall können dazukommen (bis zum Jahresbetrag).', // § 39 Abs. 3 SGB XI (abgerufen 20.11.2026)
+          'Rechnungen aufheben: Die Erstattung kannst du nachträglich beantragen, spätestens bis zum Ende des folgenden Jahres.']],
+      tages: ['Tagespflege oder Nachtpflege (teilstationäre Pflege)', 'Die Person ist tagsüber oder nachts in einer Einrichtung. Die Einrichtung rechnet bis zu diesem Betrag direkt mit der Pflegekasse ab.',
+        ['Gibt es zusätzlich: Pflegegeld und Pflegedienst werden dafür nicht gekürzt.', 'Die Fahrt zur Einrichtung gehört dazu. Essen und Unterkunft zahlst du selbst; dafür kann der Entlastungsbetrag helfen.']],
+      kombi: ['Pflegedienst und Pflegegeld gemischt (Kombinationsleistung)', 'Nutzt der Pflegedienst nur einen Teil seines Budgets, kommt der Rest anteilig als Pflegegeld aufs Konto.',
+        ['Beispiel Pflegegrad ' + kombiPg + ': Der Pflegedienst nutzt die Hälfte (' + e2(halb) + '). Dann kommen noch ' + e2(Rules.pflegeKombi(kombiPg, halb)) + ' Pflegegeld im Monat aufs Konto.']],
+      hilfs: ['Pflegebox mit Handschuhen und Co. (Pflegehilfsmittel zum Verbrauch)', 'Zum Beispiel Einmalhandschuhe, Desinfektion oder Bettschutz. Meist kommt eine Lieferung, der Anbieter rechnet mit der Pflegekasse ab.',
+        ['Ein Pflegebett gibt es meist leihweise; den Antrag stellst du bei der Pflegekasse.']],
+      notruf: ['Notrufknopf für zu Hause (Hausnotruf)', 'Ein Zuschuss der Pflegekasse ist möglich, wenn die Person oft allein ist und im Notfall Hilfe rufen können muss.', []],
+      umbau: ['Umbau der Wohnung (wohnumfeldverbessernde Maßnahmen)', 'Zuschuss zum Beispiel für eine bodengleiche Dusche, Haltegriffe oder einen Treppenlift. Wichtig: vor dem Umbau beantragen, mit Kostenvoranschlag.',
+        ['Wohnen mehrere Pflegebedürftige zusammen, gibt es den Zuschuss für jede Person, zusammen bis zum Vierfachen.']],
+      wg: ['Zuschlag für Pflege-Wohngemeinschaften (Wohngruppenzuschlag)', 'Für eine Pflege-WG mit mindestens 3 Pflegebedürftigen und einer gemeinsam beauftragten Kraft für Alltag und Organisation (Präsenzkraft). Das Geld ist für diese Kraft gedacht.', []],
+      kurs: ['Kostenlose Kurse für Angehörige (Pflegekurse)', 'Pflege lernen, zum Beispiel richtig heben und lagern. Auch zu Hause möglich. Kostenlos, auch ohne Pflegegrad.', []],
+      beratung: ['Kostenlose Beratung (Pflegeberatung)', 'Bei der Pflegekasse oder im Pflegestützpunkt. Dort hilft man beim Antrag und beim Planen der Hilfen.',
+        ['Pflegeberatung steht allen zu, die Leistungen bekommen oder beantragt haben. Angehörige können dabei sein.']],
+      rente: ['Rente für pflegende Angehörige (Rentenversicherungsbeiträge)', 'Wer ohne Bezahlung mindestens 10 Stunden pro Woche an mindestens 2 Tagen pflegt und höchstens 30 Stunden pro Woche arbeitet: Die Pflegekasse zahlt Rentenbeiträge. Das bringt Rentenpunkte.',
+        ['Wie viel, hängt vom Pflegegrad ab und davon, ob Pflegegeld, Pflegedienst oder beides genutzt wird. Gib die Pflegeperson bei der Pflegekasse an; sie prüft das.']],
+      zeit: ['Frei von der Arbeit für die Pflege (Pflegezeit, Familienpflegezeit)', 'Bis 10 Arbeitstage frei, wenn plötzlich Pflege zu organisieren ist, mit Pflegeunterstützungsgeld. Pflegezeit bis 6 Monate, Familienpflegezeit bis 24 Monate.',
+        ['Pflegezeit und Familienpflegezeit gelten nur in größeren Betrieben. Frag beim Arbeitgeber nach.']]
+    };
+  }
+  function puOeffnen(schritt, pg, vonErgebnis) {
+    pu.schritt = schritt || 'wahl';
+    if (!vonErgebnis && paRueck === 'pflegestart') paRueck = ''; // aus der Pflege-Ergebnisseite: „Zurück“ führt dorthin
+    if (pg != null) pu.pg = pg;
+    if (aktAnsicht === 'pflegestart') puRender(true); else zeigeAnsicht('pflegestart', true);
+  }
+  function puRender(fokus) {
+    var box = $('puInhalt'); if (!box) return;
+    box.innerHTML = '';
+    var el = function (tag, text, cls) { var e = document.createElement(tag); if (text != null) e.textContent = text; if (cls) e.className = cls; return e; };
+    var p = function (txt, cls) { return box.appendChild(el('p', txt, cls)); };
+    // „← Zurück“ steht oben (gemeinsamer Knopf, src/navigation.js; eine Ebene: Liste → Pflegegrad → Auswahl → Start)
+    $('puNurDe').hidden = lang === 'de' || pu.schritt === 'wahl';
+    var vonErg = paRueck === 'pflegestart' && pu.schritt === 'liste'; // aus der Pflege-Ergebnisseite geöffnet
+    if (pu.schritt === 'wahl') {
+      p(t('pu.wahl'), 'pf-frage');
+      // Letzte Einschätzung mit Knopf zum Ansehen der Ergebnisseite
+      if (pa.schaetzung && typeof PflegeAssistent !== 'undefined') {
+        var le = box.appendChild(el('div', null, 'es-karte pu-letzte')); le.id = 'pu-letzte';
+        le.appendChild(el('p', t(pa.schaetzung.pg ? 'pu.letzte' : 'pu.letzte0', { pg: String(pa.schaetzung.pg), datum: datumKurz(pa.schaetzung.datum) })));
+        le.appendChild(nhKnopf('btn ghost', esc(t('pu.letzte.ansehen')), null, function () { paOeffnen(true, true); }));
+      }
+      var l = box.appendChild(el('div', null, 'weg-liste'));
+      [['hilfe', 'pu.hilfe', 'pu.hilfe.t', '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/><path d="M9 12h6M12 9v6"/>', function () { puOeffnen('pg'); }],
+        ['schaetzen', 'pu.schaetzen', 'pu.schaetzen.t', '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h5M8 16h3"/><path d="M13.5 16l1.8 1.8 3.2-3.6"/>', function () { paOeffnen(true); }]].forEach(function (x) {
+        var b = nhKnopf('weg', '<span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + x[3] + '</svg></span><span class="weg-txt"><b>' + esc(t(x[1])) + '</b><span>' + esc(t(x[2])) + '</span></span>', null, x[4]);
+        b.id = 'pu-' + x[0];
+        if (x[0] === 'schaetzen' && typeof PflegeAssistent === 'undefined') b.hidden = true;
+        l.appendChild(b);
+      });
+    } else if (pu.schritt === 'pg') {
+      p(t('pu.pg.q'), 'pf-frage'); p(t('pu.pg.hint'), 'hint');
+      var r = box.appendChild(el('div', null, 'wahl-raster'));
+      [1, 2, 3, 4, 5, 0].forEach(function (n) {
+        var b = nhKnopf('wahl', '<b>' + esc(n ? String(n) : t('pu.pg.keiner')) + '</b>', pu.pg === n, function () { puOeffnen('liste', n); });
+        b.setAttribute('data-pg', String(n)); r.appendChild(b);
+      });
+    } else {
+      var pg = pu.pg || 0, liste = Rules.pflegeFuer(pg), tx = puTexte(pg), U = Rules.RULES.pflegeUnterst;
+      var top = PU_TOP[Math.min(pg, 2)];
+      p(pg ? 'Das gibt es bei Pflegegrad ' + pg : 'Das gibt es ohne Pflegegrad', 'pf-frage');
+      // Einleitung: ein Satz sichtbar, der Rest zum Aufklappen (gleiches Bauteil details.mehr); Inhalt unverändert
+      var einl = function (satz, titel, rest) {
+        p(satz, 'hint pu-einl');
+        var m = box.appendChild(el('details', null, 'mehr pu-einl-mehr')); m.appendChild(el('summary', titel));
+        rest.forEach(function (x) { m.appendChild(el('p', x)); });
+      };
+      if (pg >= 2) einl('Das meiste sind Budgets: Die Pflegekasse bezahlt damit Hilfe, meistens gegen Rechnung.', 'Was kommt aufs Konto?',
+        ['Aufs Konto kommen nur das Pflegegeld und, wer in einer ambulant betreuten Wohngruppe lebt, der Wohngruppenzuschlag. Wer die Budgets nicht nutzt, verschenkt Hilfe.']);
+      else if (pg === 1) einl('Bei Pflegegrad 1 gibt es noch kein Pflegegeld und keinen Pflegedienst als Sachleistung.', 'Was gibt es stattdessen?',
+        ['Es gibt aber Budgets und Zuschüsse. Die Pflegekasse bezahlt damit Hilfe, meistens gegen Rechnung.']);
+      else {
+        // § 2 PflegeZG mit § 7 Abs. 4 Satz 2 PflegeZG (gesetze-im-internet.de, abgerufen 20.11.2026): gilt schon bei voraussichtlicher Pflegebedürftigkeit
+        einl('Geld und Budgets der Pflegekasse gibt es erst mit einem Pflegegrad; diese Hilfen gibt es schon vorher.', 'Wie bekomme ich einen Pflegegrad?',
+          ['Den Antrag stellst du bei der Pflegekasse; ein Anruf genügt.', 'Tritt die Pflege plötzlich ein, dürfen Angehörige bis zu 10 Arbeitstage der Arbeit fernbleiben, um die Pflege zu organisieren. Das gilt schon, wenn ein Pflegegrad voraussichtlich kommt. Als Lohnersatz gibt es auf Antrag das Pflegeunterstützungsgeld der Pflegekasse.']);
+      }
+      var karte = function (l, ziel) {
+        var z = tx[l.id], d = el('section', null, 'pu-l pu-' + l.art); d.id = 'pu-l-' + l.id;
+        d.appendChild(el('h3', z[0]));
+        if (l.wert != null) {
+          var b = el('p', null, 'pu-betrag' + (l.einheit === 'jahr' ? ' pu-jahr' : ''));
+          b.appendChild(el('b', (l.bis ? 'bis ' : '') + piEuro(l.wert)));
+          b.appendChild(document.createTextNode(' '));
+          b.appendChild(el('span', PU_EINHEIT[l.einheit], 'pu-einheit'));
+          d.appendChild(b);
+        }
+        d.appendChild(el('p', PU_ART[l.art], 'pu-art small'));
+        d.appendChild(el('p', z[1]));
+        var m = el('details'); m.appendChild(el('summary', 'Mehr dazu'));
+        z[2].forEach(function (x) { m.appendChild(el('p', x)); });
+        m.appendChild(el('p', 'Rechtsgrundlage: ' + l.recht, 'small muted'));
+        d.appendChild(m);
+        ziel.appendChild(d);
+      };
+      top.map(function (id) { return liste.filter(function (l) { return l.id === id; })[0]; }).filter(Boolean).forEach(function (l) { karte(l, box); });
+      // Grüner Hauptknopf unter den Leistungen: Pflegegrad selbst einschätzen (ohne Grad: für den Antrag; mit Grad 1 bis 4: passt ein höherer?).
+      // Nicht bei Grad 5 und nicht, wenn die Seite aus der Ergebnisseite der Einschätzung geöffnet wurde.
+      if (pg < 5 && !vonErg && typeof PflegeAssistent !== 'undefined') { var hk = box.appendChild(el('div', null, 'btns pu-haupt')); hk.appendChild(nhKnopf('btn', esc(t('pu.schaetzen')), null, function () { paOeffnen(true); })).id = 'pu-schaetzen-knopf'; }
+      var rest = liste.filter(function (l) { return top.indexOf(l.id) < 0; });
+      if (rest.length) {
+        var w = el('details', null, 'pu-weitere mehr mehr-liste'); w.id = 'pu-weitere';
+        w.appendChild(el('summary', 'Weitere Leistungen (' + rest.length + ')'));
+        rest.forEach(function (l) { karte(l, w); });
+        box.appendChild(w);
+      }
+      // Pflegeberatung ist kostenlos: § 7a Abs. 1 SGB XI, Pflegestützpunkte § 7c SGB XI (gesetze-im-internet.de, abgerufen 21.11.2026)
+      box.appendChild(tippEl('pu.tipp.beratung'));
+      box.appendChild(quellenEl(['Stand der Beträge: ' + U.stand + ' (' + U.quelle + '). Den genauen Anspruch legt die Pflegekasse fest.']));
+    }
+    if (fokus) { var h = box.querySelector('.pf-frage'); if (h) { h.setAttribute('tabindex', '-1'); h.focus(); } }
+  }
+
   Store.get('lotse.pflegecheck', function (v) { try { var d = v ? JSON.parse(v) : null; if (d && typeof d === 'object') { pa.antworten = d.antworten || null; pa.schaetzung = d.schaetzung || null; } } catch (e) {} paAnzeigen(); });
 
   // Brief prüfen: Kachel öffnet den passenden Teil des Prüfpakets (Abschnitte aus erweiterungen/vorschau.html)
-  var BRIEF_TEIL = { jc: 'p-bescheid', sa: 'p-gsa', wg: 'p-wg', fk: 'p-kiz', pk: 'p-pflege', vm: 'p-nk', af: 'scan' };
+  var BRIEF_TEIL = { jc: 'p-bescheid', sa: 'p-gsa', wg: 'p-wg', fk: 'p-kiz', pk: 'p-pflege', vm: 'p-nk', an: 'p-andere', af: 'scan', ab: 'abWahl' };
   var briefArt = null;
   function briefOeffnen(art) {
     var teil = BRIEF_TEIL[art];
     document.querySelectorAll('#checkBox .pp-teil').forEach(function (s) { s.hidden = s.id !== teil; });
-    $('briefKacheln').hidden = !!teil; $('briefeIntro').hidden = !!teil; $('checkBox').hidden = !teil;
+    $('briefKacheln').hidden = !!teil; $('checkBox').hidden = !teil; $('briefeKopf').hidden = !!teil; $('briefKachelKopf').hidden = !teil; // Zurück oben: zur Absender-Auswahl bzw. eine Ebene hoch
     $('ppNurDe').hidden = lang === 'de';
     if (briefArt !== (teil ? art : null)) { $('elMsg').textContent = ''; $('elErg').textContent = ''; }
     if (!teil) scanBilderSetzen([]);
     briefArt = teil ? art : null; briefKopf();
     $('app').classList.toggle('brief-offen', !!teil); // in einer Kachel Logo und Sprachwahl ausblenden, damit die Wahl oben steht
     // Erst entscheiden (scannen, einfügen oder selbst eingeben), dann erscheint das Formular der Prüfung
-    if (teil && art !== 'af' && !$(teil).dataset.offen) $(teil).classList.add('pp-zu');
+    if (!teil) abVon = false;
+    if (teil && art !== 'af' && art !== 'an' && art !== 'ab' && !$(teil).dataset.offen) $(teil).classList.add('pp-zu');
     // Name und Anschrift aus der Ausfüllhilfe übernehmen, damit man sie für das Schreiben nicht noch einmal tippt (nur leere Felder)
     ['pf', 'bs', 'ga', 'wg', 'kz', 'nk'].forEach(function (k) {
       [['-name', person.name], ['-anschrift', person.strasse], ['-ort', person.ort]].forEach(function (x) { var el = $(k + x[0]); if (el && !el.value && x[1]) el.value = x[1]; });
@@ -2377,15 +4134,16 @@
     elPlatz();
     if (art === 'pk' && window.PruefpaketPflege && typeof PflegeAssistent !== 'undefined') window.PruefpaketPflege.eigene(pa.antworten ? PflegeAssistent.eingabe(pa.antworten, null) : null);
     window.scrollTo(0, 0);
-    var h = teil && $(teil).querySelector('h2'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
+    var h = teil && ($(teil).querySelector('h2') || $('h-briefe')); if (h) { // „Anderer Brief“: nur die Seitenüberschrift (keine zweite)
+      h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
   }
   // ----- Brief einlesen: scannen (Kamera und Texterkennung auf dem Gerät) oder Text einfügen; erweiterungen/brief-lesen.js -----
   // Ohne geöffnete Kachel erkennt die App Absender und Art selbst; in einer Kachel ist die Art bekannt.
   var elGesammelt = '', elBusy = false;
   // Überschrift oben: ohne Kachel „Von wem ist der Brief?“, in einer Kachel das, was gewählt wurde
   function briefKopf() {
-    var x = null; BRIEFE.forEach(function (b) { if (b[0] === briefArt) x = b; });
-    $('h-briefe').textContent = !x ? t('briefe.h') : briefArt === 'af' ? t(x[1]) : t('briefe.von', { name: t(x[1]) });
+    var x = null; BRIEFE.concat(BRIEFE_UNTER).forEach(function (b) { if (b[0] === briefArt) x = b; });
+    $('h-briefe').textContent = !x ? t('briefe.h') : briefArt === 'af' || briefArt === 'an' || briefArt === 'ab' ? t(x[1]) : t('briefe.von', { name: t(x[1]) });
   }
   // In einer Kachel: Formular der Prüfung zeigen (nach der Wahl „selbst eingeben“ oder nach dem Einlesen)
   function briefFormular(fokus) {
@@ -2399,46 +4157,67 @@
     var sec = briefArt && briefArt !== 'af' && $(BRIEF_TEIL[briefArt]), karte = sec && sec.querySelector('.card');
     if (!karte) { box.hidden = true; return; }
     box.hidden = false;
-    karte.appendChild(box);
+    var satz = karte.querySelector('.pp-frist-box') || karte.querySelector('h2 + p') || karte.querySelector(':scope > p'); // „Anderer Brief“ hat keine eigene Überschrift // erster Satz (bei Bescheiden: Frist und Art des Briefs); Details stehen darunter
+    if (satz) satz.insertAdjacentElement('afterend', box); else karte.appendChild(box);
     $('elSelbst').hidden = !sec || !sec.classList.contains('pp-zu');
     $('elScanT').textContent = t(elGesammelt ? 'el.mehr' : briefArt ? 'el.scanHier' : 'el.scan');
   }
   function elNachricht(text) { $('elMsg').textContent = text || ''; }
   function zahlOderLeer(v) { var x = parseAmount(String(v == null ? '' : v)); return isFinite(x) && x > 0 ? x : ''; }
   // Haushalt aus „Leistungen“, damit die Prüfung nicht alles neu abfragt (nur wenn dort schon etwas eingetragen ist)
+  // Nur echte Eingaben, kein erfundenes Alter. Check: Warmmiete; miete = ohne Heizung (nur mit Heizkosten), warm = Warmmiete.
   function haushalt() {
     if (!started) return { erwachsene: [], kinder: [] };
-    var alter = state.gebJahr ? new Date().getFullYear() - (+state.gebJahr) : 40;
+    var alter = state.gebJahr ? new Date().getFullYear() - (+state.gebJahr) : '';
     var erw = [{ alter: alter, brutto: zahlOderLeer(state.ek1Brutto), netto: zahlOderLeer(state.ek1Netto) }];
-    if (state.adults === 2) erw.push({ alter: alter, brutto: zahlOderLeer(state.ek2Brutto), netto: zahlOderLeer(state.ek2Netto) });
+    if (state.adults === 2) erw.push({ alter: '', brutto: zahlOderLeer(state.ek2Brutto), netto: zahlOderLeer(state.ek2Netto) });
     var kinder = [], u6 = state.kidsU6 || 0, k14 = state.kids14 || 0, rest = Math.max(0, (state.kids || 0) - u6 - k14), i;
-    for (i = 0; i < u6; i++) kinder.push(3);
-    for (i = 0; i < rest; i++) kinder.push(9);
-    for (i = 0; i < k14; i++) kinder.push(15);
-    return { erwachsene: erw, kinder: kinder, miete: zahlOderLeer(state.miete), heiz: zahlOderLeer(state.heizkosten), stufe: state.mietstufe || '', alleinerziehend: state.adults === 1 && (state.kids || 0) > 0 };
+    for (i = 0; i < u6; i++) kinder.push({ alter: '', gruppe: 'u6' });
+    for (i = 0; i < rest; i++) kinder.push({ alter: '', gruppe: state.kidsAlter ? '6bis13' : '' });
+    for (i = 0; i < k14; i++) kinder.push({ alter: '', gruppe: '14plus' });
+    var warm = zahlOderLeer(state.miete), heiz = zahlOderLeer(state.heizkosten);
+    var kalt = warm !== '' && heiz !== '' && heiz < warm ? Math.round((warm - heiz) * 100) / 100 : '';
+    return { erwachsene: erw, kinder: kinder, miete: kalt, warm: warm, heiz: kalt !== '' ? heiz : '', stufe: state.mietstufe || '', alleinerziehend: state.adults === 1 && (state.kids || 0) > 0 };
   }
+  function ppEin(x) { return window.PruefpaketEinfach ? window.PruefpaketEinfach.text(x) : x; } // Brief-Art (brief-lesen.js) in Einfacher Sprache
   function textLesen(text) {
     if (!text || !text.trim()) { elNachricht(t('el.leer')); return; }
+    // Gemeinsame Kachel „Anderer Brief oder Formular“: Formular erkannt → Formular erklären, sonst → Brief (Frist, Mahnung, Inkasso; von dort Wechsel zur genauen Prüfung)
+    if (briefArt === 'ab') { var ea = BriefLesen.erkenne(text); abVon = true; briefOeffnen(ea.art === 'af' ? 'af' : 'an'); abVon = true; }
     var r = BriefLesen.lies(text, briefArt || null);
     // Auch in einer Kachel: Anhörung oder Aufforderung zur Mitwirkung erkennen und erklären statt nachzurechnen
     var e0 = briefArt ? BriefLesen.erkenne(text) : null;
     if (e0 && (e0.art === 'anh' || e0.art === 'mit')) r = BriefLesen.lies(text, null);
     $('elErg').textContent = '';
+    // Aufforderung zur Senkung der Wohn- oder Heizkosten: Erklärung statt Nachrechnung (erweiterungen/kostensenkung.js)
+    var ks = BriefLesen.kostensenkung ? BriefLesen.kostensenkung(text) : null;
+    if (ks && !ks.ist) ks = null;
+    if (ks && !ks.anhoerung && (!briefArt || briefArt === 'jc' || briefArt === 'sa' || briefArt === 'an')) {
+      if (!briefArt && ks.traeger) briefOeffnen(ks.traeger); // ohne Kachel nur mit erkanntem Absender, nie geraten
+      ksZeigen(ks, text); elNachricht(t('el.erkanntOhne', { titel: t(ks.heiz ? 'el.ks.titelHeiz' : 'el.ks.titel') })); return;
+    }
+    // Anderer Brief: Frist mit Beleg suchen, Mahnbescheid und Inkasso erkennen (Anhörung und Mitwirkung erklärt der Teil darunter)
+    if (briefArt === 'an' && r.art !== 'anh' && r.art !== 'mit') { elNachricht(''); if (window.PruefpaketAndere) window.PruefpaketAndere.zeige(text, { box: $('elErg'), wechseln: function (art) { var tx = text; briefOeffnen(art); textLesen(tx); } }); return; }
     if (!r.art) { elNachricht(t('el.unbekannt')); return; }
     if (r.art === 'anh' || r.art === 'mit') {
       var d = document.createElement('div'); d.className = 'el-erkl';
-      var b = document.createElement('b'); b.textContent = r.titel; d.appendChild(b);
+      var b = document.createElement('b'); b.textContent = ppEin(r.titel); d.appendChild(b);
       var p = document.createElement('p'); p.textContent = BriefLesen.ERKLAERUNG[r.art]; d.appendChild(p);
       var fr = BriefLesen.frist(text);
-      if (fr) { var q = document.createElement('p'); q.textContent = t('el.frist', { frist: fr }); d.appendChild(q); }
-      $('elErg').appendChild(d); elNachricht(t('el.erkanntOhne', { titel: r.titel })); return;
+      if (fr) { var q = document.createElement('p'); q.className = 'frist frist-wann'; q.setAttribute('role', 'note'); q.textContent = t('el.frist', { frist: BriefLesen.fristLesbar ? BriefLesen.fristLesbar(fr) : fr }); $('elErg').appendChild(q); } // Frist-Muster ganz oben
+      var fk = fr && window.FristenOrdner ? FristenOrdner.briefKnopf(text, r.art) : null; if (fk) d.appendChild(fk); // nur auf Knopfdruck merken
+      $('elErg').appendChild(d); if (ks) ksZeigen(ks, text); elNachricht(t('el.erkanntOhne', { titel: ppEin(r.titel) })); return;
     }
     if (!briefArt) briefOeffnen(r.art);
-    if (r.art === 'pk') { $('pf-text').value = text; $('pf-lesen').click(); briefFormular(); elNachricht(t('el.erkanntPk', { titel: r.titel })); return; }
-    if (r.art === 'af') { setScanResult(scanFromText(text)); elNachricht(t('el.erkanntOhne', { titel: r.titel })); return; }
-    var n = window.PruefpaketLesen ? window.PruefpaketLesen.fuelle(r.art, r, haushalt()) : 0;
+    if (r.art === 'pk') { $('pf-text').value = text; $('pf-lesen').click(); briefFormular(); elNachricht(t('el.erkanntPk', { titel: ppEin(r.titel) })); return; }
+    if (r.art === 'af') { setScanResult(scanFromText(text)); elNachricht(t('el.erkanntOhne', { titel: ppEin(r.titel) })); return; }
+    var n = window.PruefpaketLesen ? window.PruefpaketLesen.fuelle(r.art, r, haushalt(), elQuelle) : 0;
     briefFormular();
-    elNachricht(n ? t('el.erkannt', { titel: r.titel, n: String(n) }) : t('el.keineWerte', { titel: r.titel }));
+    elNachricht(n ? t('el.erkannt', { titel: ppEin(r.titel), n: String(n) }) : t('el.keineWerte', { titel: ppEin(r.titel) }));
+  }
+  function ksZeigen(ks, text) {
+    if (!window.KostensenkungHilfe) return;
+    window.KostensenkungHilfe.zeige($('elErg'), ks, { t: t, tL: tL, person: person, kennungen: BriefLesen.kennungen ? BriefLesen.kennungen(text) : {}, briefArt: briefArt, schreibenKnopf: schreibenKnopf, heute: new Date() });
   }
   // Foto aufnehmen und auf dem Gerät lesen (App), Foto danach löschen; im Browser: Bild wählen und mit Tesseract lesen
   function fotoText() {
@@ -2452,62 +4231,326 @@
       }).then(function (r) { weg(); res(((r && r.lines) || []).join('\n')); }, function (e) { weg(); rej(e); });
     });
   }
-  function elFertig(text) { elBusy = false; $('elScan').disabled = false; elGesammelt = (elGesammelt ? elGesammelt + '\n' : '') + text; elPlatz(); textLesen(elGesammelt); }
+  // Woher der gelesene Text stammt: Foto (Texterkennung) oder Text/PDF. Bei Fotos prüft „Brief prüfen“ zusätzlich die Plausibilität.
+  var elQuelle = { foto: false, unsicher: [] };
+  function elQuelleNeu(foto) { if (!elGesammelt) elQuelle = { foto: false, unsicher: [] }; if (foto) elQuelle.foto = true; ocrUnsicher = []; }
+  function elFertig(text) { elQuelle.unsicher = elQuelle.unsicher.concat(ocrUnsicher); ocrUnsicher = []; elBusy = false; $('elScan').disabled = false; elGesammelt = (elGesammelt ? elGesammelt + '\n' : '') + text; elPlatz(); textLesen(elGesammelt); }
   function elFehler(e) { elBusy = false; $('elScan').disabled = false; elNachricht(/cancel/i.test(String(e && (e.message || e) || '')) ? '' : t('el.fehler')); }
   $('elScan').addEventListener('click', function () {
     if (elBusy) return;
-    if (NATIVE) { elBusy = true; $('elScan').disabled = true; elNachricht(t('el.lese')); fotoText().then(elFertig, elFehler); return; }
+    if (NATIVE) { elBusy = true; $('elScan').disabled = true; elNachricht(t('el.lese')); elQuelleNeu(true); fotoText().then(elFertig, elFehler); return; }
     $('elFile').value = ''; $('elFile').click();
   });
   $('elPdf').addEventListener('click', function () { if (elBusy) return; $('elPdfFile').value = ''; $('elPdfFile').click(); });
   $('elPdfFile').addEventListener('change', function () {
     var f = $('elPdfFile').files && $('elPdfFile').files[0]; if (!f || elBusy) return;
     elBusy = true; $('elScan').disabled = true; $('elPdf').disabled = true;
+    var vorher = elQuelle; elQuelle = { foto: false, unsicher: [] }; ocrUnsicher = []; pdfMitBild = false;
     pdfLesen(f, function (i, n) { elNachricht(t('el.pdfSeite', { n: String(i), m: String(n) })); }).then(function (text) {
-      $('elPdf').disabled = false; elGesammelt = ''; elFertig(text);
-    }, function () { elBusy = false; $('elScan').disabled = false; $('elPdf').disabled = false; elNachricht(t('el.pdfFehler')); });
+      $('elPdf').disabled = false; elGesammelt = ''; if (pdfMitBild) elQuelle.foto = true; elFertig(text);
+    }, function () { elQuelle = vorher; elBusy = false; $('elScan').disabled = false; $('elPdf').disabled = false; elNachricht(t('el.pdfFehler')); });
   });
   $('elFile').addEventListener('change', function () {
     var f = $('elFile').files && $('elFile').files[0]; if (!f) return;
-    elBusy = true; $('elScan').disabled = true; elNachricht(t('el.lese'));
+    elBusy = true; $('elScan').disabled = true; elNachricht(t('el.lese')); elQuelleNeu(true);
     ocr(f).then(elFertig, elFehler);
   });
   $('elPaste').addEventListener('click', function () { var box = $('elPasteBox'); box.hidden = !box.hidden; $('elPaste').setAttribute('aria-expanded', String(!box.hidden)); if (!box.hidden) $('elText').focus(); });
-  $('elSelbst').addEventListener('click', function () { briefFormular(true); });
-  $('elLesen').addEventListener('click', function () { elGesammelt = ''; textLesen($('elText').value); });
+  // „Werte selbst eingeben“: Haushalt aus dem Check genauso vorbefüllen wie beim Einlesen (nur leere Felder, nur echte Eingaben)
+  $('elSelbst').addEventListener('click', function () {
+    if (window.PruefpaketLesen && ['jc', 'sa', 'wg', 'fk'].indexOf(briefArt) >= 0) window.PruefpaketLesen.fuelle(briefArt, null, haushalt());
+    briefFormular(true);
+  });
+  if ($('an-pfaendung')) $('an-pfaendung').addEventListener('click', function () { oeffneVon('pfaendung', true); });
+  if ($('an-eingabe')) $('an-eingabe').hidden = true; // in der App liest das Einlesen oben den Brief
+  // Antragsformular: Hinweis auf das Nachladen der Texterkennung gilt nur für die Web-Version; in der App liest das Gerät selbst
+  if (NATIVE && $('scLocalNote')) { $('scLocalNote').setAttribute('data-t', 'el.privat'); $('scLocalNote').textContent = t('el.privat'); }
+  $('elLesen').addEventListener('click', function () { elGesammelt = ''; elQuelle = { foto: false, unsicher: [] }; textLesen($('elText').value); });
 
-  $('briefZurueck').addEventListener('click', function () { elGesammelt = ''; var war = null; document.querySelectorAll('#checkBox .pp-teil').forEach(function (s) { if (!s.hidden) war = s.id; }); briefOeffnen(null); for (var k in BRIEF_TEIL) if (BRIEF_TEIL[k] === war) $('brief-' + k).focus(); });
+  function briefZurueckTun() {
+    elGesammelt = ''; var war = null, k, art = null; document.querySelectorAll('#checkBox .pp-teil').forEach(function (s) { if (!s.hidden) war = s.id; });
+    for (k in BRIEF_TEIL) if (BRIEF_TEIL[k] === war) art = k;
+    if (abVon && (art === 'an' || art === 'af')) { briefOeffnen('ab'); var u = $('brief-' + art); if (u) u.focus(); return; } // eine Ebene hoch: zur gemeinsamen Kachel
+    briefOeffnen(null);
+    var z = $('brief-' + (art === 'an' || art === 'af' ? 'ab' : art)); if (z) z.focus();
+  } // „← Zurück“ in einer Kachel (über src/navigation.js)
   document.querySelectorAll('#appnav button').forEach(function (b) { b.addEventListener('click', function () {
     var a = b.getAttribute('data-ansicht');
-    if (a === 'briefe' && aktAnsicht === 'briefe' && !$('checkBox').hidden) { briefOeffnen(null); $('h-briefe') && $('h-briefe').focus(); return; } // nochmal tippen: zurück zur Auswahl
+    herkunft = {};
+    if (a === 'einst' || a === 'ordner') usZeigen(a, '', false); // Leiste öffnet immer die Übersicht des Bereichs
     zeigeAnsicht(a, true);
   }); });
-  // Einstellungen: Reiter und Schalter (greifen auf dieselben Funktionen zu wie der Kopf)
-  function einstReiter(r) { ['einst', 'info'].forEach(function (x) { var on = x === r; $('tab-' + x).setAttribute('aria-selected', String(on)); $('tab-' + x).tabIndex = on ? 0 : -1; $('pn-' + x).hidden = !on; }); }
-  $('tab-einst').addEventListener('click', function () { einstReiter('einst'); });
-  $('tab-info').addEventListener('click', function () { einstReiter('info'); });
-  [['tab-einst', 'tab-info'], ['tab-info', 'tab-einst']].forEach(function (p) { $(p[0]).addEventListener('keydown', function (e) { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { $(p[1]).click(); $(p[1]).focus(); } }); });
-  $('clear2').addEventListener('click', function () { $('clearBtn').click(); $('clear2Msg').textContent = $('clearMsg').textContent; });
+  // Einstellungen und Mein Ordner: Zeilen öffnen Unterseiten, „← Zurück“ führt zur Liste (usZeigen, siehe Vorgänge)
+  document.querySelectorAll('#einstListe .zeile').forEach(function (b) { b.addEventListener('click', function () { usZeigen('einst', b.getAttribute('data-seite'), true); }); });
+  // Hell, Dunkel oder wie das Gerät: nur das Attribut data-theme (Farben im :root) und die Speicherung
+  function themaSetzen(w, speichern) {
+    if (w === 'light' || w === 'dark') document.documentElement.setAttribute('data-theme', w); else { w = ''; document.documentElement.removeAttribute('data-theme'); }
+    document.querySelectorAll('input[name="thema"]').forEach(function (r) { r.checked = r.value === w; });
+    if (speichern) Store.set('lotse.thema', w);
+  }
+  document.querySelectorAll('input[name="thema"]').forEach(function (r) { r.addEventListener('change', function () { if (r.checked) themaSetzen(r.value, true); }); });
+  Store.get('lotse.thema', function (v) { if (v) themaSetzen(v, false); });
+  // Schalter: sichtbares „An“ bzw. „Aus“ folgt aria-checked
+  function schalterText() { document.querySelectorAll('.schalter').forEach(function (b) { var z = b.querySelector('.schalter-zst'); if (z) z.textContent = t(b.getAttribute('aria-checked') === 'true' ? 'set.an' : 'set.aus'); }); }
+  if (window.MutationObserver) new MutationObserver(function () { schalterText(); einstStatus(); }).observe($('v-einst'), { subtree: true, attributes: true, attributeFilter: ['aria-checked'] });
+  document.querySelectorAll('.schalter').forEach(function (b) { b.addEventListener('click', function () { schalterText(); einstStatus(); }); }); // gleich nach dem Umschalten (nach dem eigenen Klick-Handler)
+  schalterText();
   $('goLeistungen').addEventListener('click', function () { zeigeAnsicht('leistungen', true); });
   $('goBriefe').addEventListener('click', function () { zeigeAnsicht('briefe', true); });
-  $('goPfaendung').addEventListener('click', function () { zeigeAnsicht('pfaendung', true); });
-  $('goSparen').addEventListener('click', function () { sp.thema = ''; zeigeAnsicht('sparen', true); });
+  $('goGeld').addEventListener('click', function () { gsOeffne(''); oeffneVon('sparen', true); });
+  // Haushaltsplan und Haushaltsbuch (src/haushalt.js): gemeinsame Felder liegen nur im Check (state), der Plan liest und schreibt sie hier.
+  // Gespeichert wird der Plan je Vorgang (lotse.haushalt gehört zu Vorgaenge.DATEN): mit PIN verschlüsselt, mit dem Vorgang kopiert und gelöscht.
+  if (window.Haushalt) {
+    Haushalt.speicherOrt({
+      laden: function (cb) { Store.get('lotse.haushalt', cb); },
+      schreiben: function (text, cb) { Store.set('lotse.haushalt', text); cb(null); } // Speicherfehler meldet der Tresor (vgSpeicherFehler)
+    });
+    Haushalt.init({
+      t: tL, euro: function (x) { return Fmt.euro(x, lang, I18N[lang]['meta.dir'] === 'rtl'); }, euroDe: function (x) { return Fmt.euro(x, 'de'); },
+      datum: function (d) { return Fmt.datum(d, lang); }, datumDe: function (d) { return Fmt.datum(d, 'de'); }, locale: function () { return Fmt.LOCALE[lang] || 'de-DE'; },
+      daten: function () { return started && edited ? state : null; },
+      ergebnis: function () { try { return started && edited ? Rules.evaluate(state).results : null; } catch (e) { return null; } },
+      grenzen: function () { try { return started && edited ? Rules.evaluate(state).grenzen : null; } catch (e) { return null; } },
+      setze: function (werte) { if (started && !edited) state = blankState(); Object.assign(state, werte); writeForm(); buildSelects(); touched(); },
+      zeige: oeffneVon, regeln: function () { return Rules.RULES; }, plug: plug, nativ: NATIVE,
+      sparen: function (thema) { gsSprung('sparen', thema); }, // Auswertung: „Mehr Spartipps“ → Geld und Schulden → Sparen im Alltag
+      foto: NATIVE ? fotoText : null, bild: ocr,
+      textAusgeben: function (text, titel, msg) { if (!NATIVE) { schreibenDrucken(text); return; } schreibenAusgeben({ value: text }, titel, plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen', msg); }
+    });
+  }
+  // „Ich ziehe aus“: Haken und Notizen je Vorgang (lotse.ausziehen in Vorgaenge.DATEN), mit PIN verschlüsselt, kopiert und gelöscht
+  if (window.Ausziehen) Ausziehen.speicherOrt({ laden: function (cb) { Store.get('lotse.ausziehen', cb); }, schreiben: function (text, cb) { Store.set('lotse.ausziehen', text); cb(null); } });
+  if (window.Ausziehen) Ausziehen.init({ t: t, zeige: oeffneVon, plug: plug, famversGrenze: function () { return Fmt.euro(Rules.famversGrenze(), lang, I18N[lang]['meta.dir'] === 'rtl'); } }); // „Ich ziehe aus“ (src/ausziehen.js)
+  // Fristen in „Mein Ordner“ (src/fristen.js): je Vorgang (lotse.fristliste in Vorgaenge.DATEN), Hinweis beim Öffnen höchstens einmal am Tag
+  if (window.FristenOrdner) {
+    FristenOrdner.speicherOrt({ laden: function (cb) { Store.get('lotse.fristliste', cb); }, schreiben: function (text, cb) { cb(Store.set('lotse.fristliste', text) === false ? new Error('nicht gespeichert') : null); } });
+    FristenOrdner.init({
+      t: tL, lang: function () { return lang; }, datum: function (d) { return Fmt.datum(d, lang); }, roh: StoreRoh, neu: ordnerRender,
+      alle: function () {
+        if (!tresor || !tresor.bereit()) return [];
+        return tresor.ueberall('lotse.fristliste').map(function (v) { return { id: v.id, name: v.name, aktiv: v.aktiv, fristliste: v.wert }; });
+      },
+      ablauf: function () { var a = tresor && tresor.bereit() ? tresor.aktiv() : null; return a && a.ablauf ? new Date(a.ablauf) : null; },
+      oeffneVorgang: vgOeffnen,
+      zeigeListe: function () { herkunft = {}; zeigeAnsicht('ordner', false); usZeigen('ordner', 'fristen', true); }
+    });
+  }
+  // Schulden-Liste (src/schulden.js): je Vorgang (lotse.schulden in Vorgaenge.DATEN), mit PIN verschlüsselt, kopiert und gelöscht.
+  // Das Blatt für die Beratung ist deutsch (tDe, ohne Einfache Sprache); App: PDF wie das Ergebnisblatt, Web: Druckdialog.
+  if (window.Schulden) {
+    Schulden.speicherOrt({ laden: function (cb) { Store.get('lotse.schulden', cb); }, schreiben: function (text, cb) { Store.set('lotse.schulden', text); cb(null); } });
+    Schulden.init({
+      t: tL, tDe: function (k, p) { var l = lang, e = einfachSprache; lang = 'de'; einfachSprache = false; try { return t(k, p); } finally { lang = l; einfachSprache = e; } },
+      lang: function () { return lang; }, euro: function (x) { return Fmt.euro(x, lang, I18N[lang]['meta.dir'] === 'rtl'); }, euroDe: function (x) { return Fmt.euro(x, 'de'); },
+      datum: function (d) { return Fmt.datum(d, lang); }, datumDe: function (d) { return Fmt.datum(d, 'de'); }, zeige: oeffneVon, plug: plug, nativ: NATIVE,
+      haushalt: function () { if (!window.Haushalt) return null; var r = Haushalt.rest(), d = Haushalt.daten(); return { rest: r, raten: d && d.plan && d.plan.aus && d.plan.aus.raten || 0 }; },
+      pdf: function (seiten, titel, name, msg) { pdfAusgeben(seiten, titel, name, msg, plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen', false); },
+      beratung: function () { return beratung; },
+      kachel: skKachel, // große Kacheln oben wie in „Geld und Schulden“
+      // Knöpfe je Eintrag: „Stimmt der Brief?“ und „Schreiben“ (src/geld.js); „Schuldnerberatung“ statt der Aufklapper
+      geld: function (was, e) { if (!window.Geld) return; if (was === 'schreiben') { Geld.schreibenVorbelegen('', e); gsSprung('inkasso', '', 'schreiben'); } else if (was === 'pruef') gsSprung('inkasso', '', 'pruef'); else gsSprung('hilfe'); }
+    });
+    // Fristende aus dem Rechenkern der Fristen (src/fristen.js), wenn vorhanden; sonst rechnet die Liste selbst (Rückfall auch bei ungültigem Ergebnis)
+    var FO = window.FristenOrdner;
+    if (FO && (typeof FO.endeTage === 'function' || typeof FO.endeWochen === 'function')) Schulden.fristRechner(function (zu, tage) {
+      if (typeof FO.endeTage === 'function') return FO.endeTage(zu, tage);
+      return tage % 7 ? null : FO.endeWochen(zu, tage / 7);
+    });
+  }
+  // Geld und Schulden, neue Teile (src/geld.js): Haken „Bis zum Termin“ und „Beratungsmappe“ je Vorgang (lotse.beratung-haken in Vorgaenge.DATEN)
+  if (window.Geld) {
+    Geld.speicherOrt({ laden: function (cb) { Store.get('lotse.beratung-haken', cb); }, schreiben: function (text) { Store.set('lotse.beratung-haken', text); } });
+    Geld.init({
+      t: t, tDe: tDe, lang: function () { return lang; }, beratung: function () { return beratung; }, datumDe: function (d) { return Fmt.datum(d, 'de'); },
+      kachel: function (cls, sym, titel, text, fn) { return skKachel(cls, TIPP_SYM[sym] || TIPP_SYM.liste, titel, text, fn); }, tipp: function (k, cls) { return tippEl(k, cls); },
+      ziel: gsZiel, schreibenOeffnen: function (art) { Geld.schreibenVorbelegen(art); sp.fall = 'schreiben'; spRender(true); },
+      schulden: function () { var d = window.Schulden && Schulden.daten(); return d ? d.liste.filter(function (e) { return e.st !== 'erledigt'; }) : []; },
+      planFertig: function () { return !!(window.Haushalt && Haushalt.rest().ausgefuellt); },
+      // nur lesen: { ein, aus, rest, wesentlich, kindergeld } in Cent (Ratenvorschlag). personen: Unterhaltsberechtigte für die Pfändungstabelle
+      // (§ 850c Abs. 2 ZPO) – aus dem Pfändungsrechner, sonst Partner und Kinder im Haushalt aus dem Check
+      haushalt: function () {
+        if (!window.Haushalt) return null;
+        var r = Haushalt.rest();
+        r.personen = pf.pers !== null ? pf.pers : Math.min(5, (state.adults === 2 ? 1 : 0) + (state.kids | 0) + (state.young | 0));
+        return r;
+      },
+      mappeDrucken: window.Schulden ? function () { oeffneVon('schulden', true); Schulden.blatt(); } : null, // Druck: Blatt der Schulden-Liste mit Haushaltsplan und Unterlagenliste
+      textAusgeben: function (text, titel, msg) { if (!NATIVE) { schreibenDrucken(text); return; } schreibenAusgeben({ value: text }, titel, plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen', msg); }
+    });
+  }
+  // ----- „Für Klient zusammenstellen“ (src/klient.js, nur Beratungsmodus): Inhalt aus vorhandenen Ergebnissen, kein neuer Rechtsinhalt -----
+  // Anderer Vorgang: dessen Angaben nur für die Dauer des Aufrufs einsetzen (Rechnen, Texte), danach den geöffneten Stand zurück. Nichts wird gespeichert.
+  function kbMitVorgang(daten, fn) {
+    if (!daten) return fn(null);
+    var alt = { s: state, p: person, h: haken, o: lastOut };
+    var lies = function (k) { var v = daten[k]; if (v == null) return null; if (typeof v !== 'string') return v; try { return JSON.parse(v); } catch (e) { return null; } };
+    try {
+      var d = lies('lotse.state'), hk = lies('lotse.haken');
+      state = Object.assign(blankState(), d && d.s ? migriereEinkommen(migriereFragen(JSON.parse(JSON.stringify(d.s)))) : {}); state.bezug = d && d.s && d.s.bezug || {};
+      person = Object.assign({ name: '', geb: '', strasse: '', ort: '', tel: '' }, d && d.p || {});
+      haken = hk && typeof hk === 'object' ? hk : {};
+      lastOut = d && d.s ? Rules.evaluate(state) : null;
+      return fn(daten);
+    } finally { state = alt.s; person = alt.p; haken = alt.h; lastOut = alt.o; }
+  }
+  function kbInhalt(daten) {
+    return kbMitVorgang(daten, function (d) {
+      var ohne = Fmt.ohnePara, out = { hilfen: [], unterlagen: [], fristen: [], briefe: [] };
+      if (!lastOut || (!d && !started)) return out;
+      out.hilfen = ebZeilen().map(function (z) { return { id: z.r.id, name: z.name, lvl: z.lvl, betrag: ohne(z.betrag), stelle: z.stelle, schritt: ohne(z.schritt) }; });
+      out.unterlagen = lastOut.results.filter(function (r) { return (r.level === 'ja' || r.level === 'vielleicht') && r.steps && r.steps.u; }).map(function (r) {
+        return { id: r.id, name: r.name + (lang === 'de' ? '' : ' (' + t('n.' + r.id) + ')'), items: r.steps.u.filter(function (k) { return !haken[r.id + '|' + k]; }).map(function (k) { return ohne(t(k)); }) };
+      });
+      if (window.FristenOrdner && FristenOrdner.offeneTexte) { try { out.fristen = d ? FristenOrdner.offeneTexte(d['lotse.fristliste'] || null) : FristenOrdner.offeneTexte(); } catch (e) { out.fristen = []; } }
+      if (!d) out.briefe = briefIds().map(function (r) { return { id: r.id, name: r.name, text: letterText(r.id) }; }); // Musterschreiben nur aus dem geöffneten Vorgang (Antragsmappe)
+      return out;
+    });
+  }
+  // ----- Suche (Lupe oben auf jeder Seite, src/suche.js): Treffer öffnen die Seite über die vorhandenen Wege; „Zurück“ führt zur Startseite mit Suche -----
+  var sucheRueck = ''; // Ebene (navEbene().pfad), die ein Suchtreffer geöffnet hat
+  function sucheTitel(z, de) {
+    var k = z[2];
+    if (k.indexOf('N:') === 0) return de || lang === 'de' ? Rules.NAMES[k.slice(2)] : t('n.' + k.slice(2));
+    return de ? (I18N.de[k] || '') : t(k);
+  }
+  function sucheZurStart() {
+    var a = aktAnsicht;
+    if (a === 'sparen') gsOeffne('');
+    if (a === 'einst' || a === 'ordner') usZeigen(a, '', false);
+    if (a === 'briefe' && briefArt) briefOeffnen(null);
+    if (a === 'pflegestart') pu.schritt = 'wahl';
+    if (a === 'pfaendung') { pf.art = ''; pf.schritt = 0; }
+    if (a === 'ausziehen' && window.Ausziehen) for (var i = 0; i < 6 && Ausziehen.offen(); i++) Ausziehen.zurueck();
+    herkunft = {}; sucheRueck = '';
+    zeigeAnsicht('start', false);
+    window.scrollTo(0, 0);
+    Suche.fokus();
+  }
+  function sucheGehe(id) {
+    var k = id.split('-'), x = k.slice(1).join('-'), DR = ['konto', 'strom', 'mahn', 'miete', 'check'];
+    // Aus dem Such-Fenster (Lupe) direkt von der aktuellen Seite aus öffnen, ohne Umweg über die Startseite (der Verlauf würde sonst zurückspringen);
+    // „Zurück“ führt trotzdem zur Startseite mit Suche (sucheRueck)
+    if (aktAnsicht !== 'start') { herkunft = {}; if (aktAnsicht === 'einst' || aktAnsicht === 'ordner') usZeigen(aktAnsicht, '', false); if (aktAnsicht === 'briefe' && briefArt) briefOeffnen(null); }
+    if (id === 'check') oeffneVon('leistungen', true);
+    else if (k[0] === 'l') { // Leistung: Hilfen-Check; gibt es schon ein Ergebnis, direkt zur Karte der Leistung
+      oeffneVon('leistungen', true);
+      var c = $('c-' + x); if (c && !c.closest('[hidden]')) { var d = c.closest('details:not(.karte)'); if (d) d.open = true; karteAuf('c-' + x); try { c.scrollIntoView({ block: 'start' }); } catch (e) {} var s = c.querySelector('summary'); if (s) s.focus({ preventScroll: true }); }
+    }
+    else if (id === 'brief') oeffneVon('briefe', true);
+    else if (k[0] === 'b') { if (briefArt) briefOeffnen(null); oeffneVon('briefe', false); briefOeffnen(x); }
+    else if (id === 'geld') { gsOeffne(''); oeffneVon('sparen', true); }
+    else if (id === 'g-bleibt' || id === 'g-lohn') { pf = { art: id === 'g-lohn' ? 'lohn' : '', schritt: id === 'g-lohn' ? 1 : 0, netto: pf.netto, pers: pf.pers, kg: pf.kg, kiz: pf.kiz }; oeffneVon('pfaendung', true); }
+    else if (id === 'g-pkonto') pfBescheinigung();
+    else if (id === 'g-liste') oeffneVon('schulden', true);
+    else if (id === 'g-haushalt') oeffneVon('haushalt', true);
+    else if (id === 'g-dringend' || id === 'g-inkasso' || id === 'g-hilfe' || id === 'g-planen') gsSprung(x);
+    else if (id === 'g-geldstrafe' || DR.indexOf(x) >= 0) gsSprung('dringend', '', id === 'g-geldstrafe' ? 'geld' : x);
+    else if (['pruef', 'schreiben', 'rate'].indexOf(x) >= 0) { if (x === 'schreiben') Geld.schreibenVorbelegen(''); gsSprung('inkasso', '', x); }
+    else if (['finden', 'termin', 'ablauf'].indexOf(x) >= 0 || id === 'g-bmappe') gsSprung('hilfe', '', id === 'g-bmappe' ? 'mappe' : x);
+    else if (k[1] === 'sp') gsSprung('planen', k[2]);
+    else if (id === 'g-abschlag' || id === 'g-tarif') gsSprung('planen', 'strom', x);
+    else if (id === 'pflege') puOeffnen('wahl');
+    else if (id === 'p-hilfe') puOeffnen('pg');
+    else if (id === 'p-schaetzen') paOeffnen(true);
+    else if (id === 'ausziehen' || k[0] === 'a') { $('goAusziehen').click(); if (k[0] === 'a' && window.Ausziehen) Ausziehen.oeffnen(x); }
+    else if (id === 'mappe') { oeffneVon('leistungen', true); var mk = $('mappeMake'); if (mk && !mk.closest('[hidden]')) { try { mk.scrollIntoView({ block: 'center' }); } catch (e) {} mk.focus({ preventScroll: true }); } } // Knopf zur Antragsmappe unter dem Ergebnis (ohne Ergebnis: der Hilfen-Check)
+    else if (id === 'einst' || id === 'ordner') { usZeigen(id, '', false); zeigeAnsicht(id, true); }
+    else if (k[0] === 'e') { zeigeAnsicht('einst', false); usZeigen('einst', x, true); }
+    else if (id === 'o-fristen') { zeigeAnsicht('ordner', false); usZeigen('ordner', 'fristen', true); }
+    else if (id === 'o-ergebnis') { oeffneVon('leistungen', false); var e = $('ergebnis'); if (e) { try { e.scrollIntoView({ block: 'start' }); } catch (x2) {} e.focus({ preventScroll: true }); } }
+    if (aktAnsicht !== 'start') { sucheRueck = navEbene().pfad; if (navBereit) Navigation.melde(); }
+  }
+  if (window.Suche) {
+    Suche.init({ t: t, lang: function () { return lang; }, schluessel: function () { return lang + (lang === 'de' && einfachSprache ? '-e' : ''); },
+      titel: function (z) { return sucheTitel(z, false); }, titelDe: function (z) { return sucheTitel(z, true); },
+      gehe: sucheGehe, check: function () { sucheGehe('check'); } });
+    Suche.sprache();
+  }
+  if (window.Klient) {
+    Klient.init({
+      t: t, lang: function () { return lang; }, beratung: function () { return beratung; },
+      sprachen: function () { return Array.prototype.map.call($('lang').options, function (o) { return { code: o.value, name: o.textContent }; }); },
+      inSprache: function (l, ein, fn) { var a = lang, e = einfachSprache; lang = I18N[l] ? l : 'de'; einfachSprache = !!ein; try { return fn(); } finally { lang = a; einfachSprache = e; } },
+      inhalt: kbInhalt,
+      vorgaenge: function () {
+        if (!tresor || !tresor.bereit()) return [];
+        var a = tresor.aktiv(); return tresor.liste().map(function (v) { return { id: v.id, name: v.name, aktiv: !!a && v.id === a.id, gesperrt: !!v.gesperrt }; });
+      },
+      daten: function (id) { // offener anderer Vorgang: Werte nur lesen
+        var o = {}; if (!tresor || !tresor.bereit()) return o;
+        Vorgaenge.DATEN.forEach(function (k) { tresor.ueberall(k).forEach(function (v) { if (v.id === id && v.wert != null) o[k] = v.wert; }); });
+        return o;
+      },
+      // Gesperrter Vorgang: nur im Speicher entschlüsseln (Schnittstelle aus dem PIN-Zweig: tresor.oeffneGesperrt bzw. Vorgaenge.oeffneGesperrt), nie zurückschreiben
+      oeffneGesperrt: function (id, pin) {
+        var f = tresor && typeof tresor.oeffneGesperrt === 'function' ? tresor.oeffneGesperrt.bind(tresor) : (typeof Vorgaenge.oeffneGesperrt === 'function' ? Vorgaenge.oeffneGesperrt : null);
+        // Ergebnis laut PIN-Zweig: { id, name, daten }; nur daten werden verwendet (nur im Speicher)
+        return f ? Promise.resolve(f(id, pin)).then(function (r) { return r && r.daten && typeof r.daten === 'object' ? r.daten : r; }) : Promise.reject(new Error('nicht verfügbar'));
+      },
+      datum: function (d, l) { var x = d instanceof Date ? d : new Date(String(d) + 'T12:00:00'); return Fmt.datum(x, l); },
+      rtl: function (l) { return !!(I18N[l] && I18N[l]['meta.dir'] === 'rtl'); },
+      native: function () { return NATIVE; },
+      druckArt: function () { return NATIVE ? (plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen') : 'web'; },
+      pdf: function (seiten, titel, name, msg, art, rtlHinweis) { pdfAusgeben(seiten, titel, name, msg, art, rtlHinweis); },
+      blatt: function (an) { $('app').classList.toggle('pm', !!an); if (an) { try { window.scrollTo(0, 0); } catch (e) {} } },
+      // Weitergabe (src/weitergabe.js): gespeicherte Eingaben des geöffneten Vorgangs (nur lesen) und Datei über das Teilen-Menü der App
+      vorgangDaten: function () {
+        var o = {}; if (!tresor || !tresor.bereit()) return o;
+        flush(); var a = tresor.aktiv(); if (!a) return o;
+        Vorgaenge.DATEN.forEach(function (k) { tresor.ueberall(k).forEach(function (v) { if (v.id === a.id && v.wert != null) o[k] = v.wert; }); });
+        return o;
+      },
+      nativDatei: function (name, text, msg) {
+        var fs = plug('Filesystem'), sh = plug('Share');
+        if (!fs || !sh) { msg.textContent = t('f.pdfFail'); return Promise.resolve(); }
+        return fs.writeFile({ path: name, data: text, directory: 'CACHE', encoding: 'utf8' })
+          .then(function (r) { return sh.share({ title: name, files: [r.uri] }).then(function () {}, function () {}); })
+          .then(function () { return fs.deleteFile({ path: name, directory: 'CACHE' }).catch(function () {}); })
+          .catch(function () { msg.textContent = t('f.pdfFail'); });
+      }
+    });
+  }
+  // Von der Beratung bekommen (src/weitergabe.js, für alle Nutzer): SoLo-Datei oder QR-Code → neuer Vorgang (bestehende nie überschreiben)
+  if (window.Weitergabe) {
+    Weitergabe.importInit({
+      t: t, bereit: function () { return !!(tresor && tresor.bereit()); },
+      importieren: function (name, daten) { flush(); var id = tresor.importieren(name, daten); if (id) vgRender(); return id; },
+      oeffnen: function (id) { vgOeffnen(id); },
+      // Fristen wie beim Laden prüfen (src/fristen.js normiere): Unbekanntes fällt weg; „Erinnerung beim Öffnen“ gilt dann wie für eigene Fristen
+      fristen: function (obj) { try { return JSON.stringify(window.FristenOrdner ? FristenOrdner.normiere(obj) : { v: 1, e: [] }); } catch (e) { return null; } }
+    });
+  }
   window.addEventListener('hashchange', function () { var a = location.hash.slice(1); if (ANSICHTEN.indexOf(a) >= 0 && a !== aktAnsicht) zeigeAnsicht(a, true); });
+  if (NATIVE && window.Klient) Klient.cacheAufraeumen(plug('Filesystem')); // liegengebliebene .solo-/PDF-Dateien vom Teilen (src/klient.js)
   Store.remove('lotse.fristen'); // Fristen aus 1.3.0 (Build 141) gibt es nicht mehr: gespeicherte Einträge vom Gerät löschen
   zeigeAnsicht((function () { var a = (location.hash || '').slice(1); return ANSICHTEN.indexOf(a) >= 0 ? a : 'start'; })());
+  // Einheitliche Navigation (src/navigation.js): Zurück-Knopf, Android-Taste, Browser-Zurück/-Vorwärts und Wischen auf dem iPhone.
+  // Rand-Wischen in JavaScript nur als Rückfall in der iPhone-App, wenn das native Wischen (MainViewController.swift) fehlt.
+  if (window.Navigation) {
+    Navigation.init({ ebene: navEbene, hoch: ebeneHoch, vor: navVor, schliessen: blattSchliessen,
+      randWischen: NATIVE && !!window.Capacitor && window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios' && !window.SoLoNativWischen });
+    navBereit = true;
+  }
 
-  Store.get('lotse.state', function (v) {
+  Store.get('lotse.state', stateLaden);
+  function stateLaden(v) {
     if (!v) return;
     try {
       var d = JSON.parse(v);
       if (!d || !d.s) return;
-      var b = blankState();
-      state = Object.assign(b, migriereEinkommen(migriereFragen(d.s))); state.bezug = d.s.bezug || {}; started = true;
+      var b = blankState(), leer = blankState();
+      state = Object.assign(b, migriereEinkommen(migriereFragen(d.s))); state.bezug = d.s.bezug || {};
+      if (!/^\d{4}$/.test(String(state.gebJahr))) state.gebJahr = ''; // nur so, wie das Feld es speichert (4 Ziffern); Manipuliertes verwerfen
       if (d.p) person = Object.assign(person, d.p);
-      edited = true; $('sampleNotice').hidden = true;
+      // Nur echte Angaben zählen: ein leer gespeicherter Stand (App zweimal geöffnet, nichts eingegeben) bleibt „nicht begonnen“
+      var echt = Object.keys(leer).some(function (k) { return k !== 'bezug' && String(state[k] == null ? '' : state[k]) !== String(leer[k]); }) ||
+        Object.keys(state.bezug).some(function (k) { return state.bezug[k]; }) || Object.keys(person).some(function (k) { return person[k]; });
+      // Ein gespeichertes, unverändertes Beispiel (e: false) bleibt ein Beispiel: zählt nicht als eigene Angabe
+      started = echt; edited = echt && d.e !== false; $('sampleNotice').hidden = !(echt && d.e === false);
       [['p-name', 'name'], ['p-geb', 'geb'], ['p-strasse', 'strasse'], ['p-ort', 'ort'], ['p-tel', 'tel']].forEach(function (x) { $(x[0]).value = person[x[1]] || ''; });
-      if (d.big) { $('app').classList.add('big'); document.documentElement.classList.add('big'); $('bigBtn').setAttribute('aria-pressed', 'true'); }
+      if (d.big) { $('app').classList.add('big'); document.documentElement.classList.add('big'); $('bigBtn').setAttribute('aria-checked', 'true'); }
       writeForm(); buildSelects(); render();
+      if (window.Schritte) Schritte.laden(d.sf); // Stand von „Schritt für Schritt“ in diesem Vorgang
     } catch (e) {}
-  });
+  }
 })();

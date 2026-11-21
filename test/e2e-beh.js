@@ -1,4 +1,6 @@
 const chromium = require('playwright')[process.env.BROWSER || 'chromium']; // BROWSER=firefox oder webkit für andere Browser
+// Leistungs-Check: Weg „Alles auf einer Seite“ vorwählen (sonst erscheint zuerst die Auswahl Schritt für Schritt / Alles auf einer Seite)
+const SF_ALLES = () => { try { if (!localStorage.getItem('lotse.checkWeg')) { localStorage.setItem('lotse.checkWeg', 'alles'); localStorage.setItem('CapacitorStorage.lotse.checkWeg', 'alles'); } } catch (e) {} };
 const KARTEN = require('./karten.js');
 const SHARD = require('./shard.js'); // SHARD=k/n: nur jede n-te Sprache (Fälle davor laufen in jedem Teil)
 const out = []; const ok = (n, c, x) => out.push((c ? 'ok   ' : 'FAIL ') + n + (c ? '' : ' ' + (x || '')));
@@ -6,7 +8,7 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
 (async () => {
   const b = await chromium.launch();
   const ctx = await b.newContext({ viewport: { width: 390, height: 900 }, locale: 'de-DE', deviceScaleFactor: 1 });
-  const p = await ctx.newPage(); const errs = [];
+  const p = await ctx.newPage(); await p.addInitScript(SF_ALLES); const errs = [];
   const netz = []; p.on('request', (r) => { if (!/^(file|data|blob):/.test(r.url())) netz.push(r.url()); });
   p.on('pageerror', (e) => errs.push(e.message)); p.on('console', (m) => { if (m.type() === 'error' && !/ERR_TUNNEL|ERR_NAME|ERR_INTERNET|fonts.g/.test(m.text())) errs.push(m.text()); });
   await p.goto('file://' + file + '#leistungen');
@@ -15,7 +17,7 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
   const geb = async (v) => { await p.fill('#gebJahr', v); await p.waitForTimeout(250); };
   const fillNum = async (id, v) => { await p.fill('#' + id, v); await p.press('#' + id, 'Tab'); };
   await p.evaluate(() => document.getElementById('p2').click());
-  await p.click('#p2');
+  await p.evaluate(() => document.getElementById('p2').click());
   // Übersicht und Bedienung
   ok('GdB-Frage erst sichtbar, wenn eine Behinderung angegeben ist', !(await p.isVisible('#gdb')) && await p.isVisible('#bhPerson'));
   ok('Wartezeit-Frage erst bei eingeschränkter Arbeitsfähigkeit sichtbar', !(await p.isVisible('#em5')));
@@ -88,19 +90,19 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
   await fillNum('ek1Brutto', '5000'); c = await card('Wohnberechtigungsschein'); ok('WBS 5.000 € brutto allein: unwahrscheinlich', c.pill === 'nein');
   await fillNum('ek1Brutto', '2000');
 
-  await p.click('#p1');
+  await p.evaluate(() => document.getElementById('p1').click());
   ok('Beispiel 1: keine Gesundheits-Unterfragen offen', !(await p.isVisible('#gdb')) && !(await p.isVisible('#em5')));
-  await p.click('#p2'); await sel('bhPerson', 'erwVor25'); await p.check('#bhSelbst'); await sel('gdb', '100'); await sel('blind', 'hoch'); await sel('emStd', 'unter3'); await p.check('#em5'); await sel('pflegegrad', '3');
+  await p.evaluate(() => document.getElementById('p2').click()); await sel('bhPerson', 'erwVor25'); await p.check('#bhSelbst'); await sel('gdb', '100'); await sel('blind', 'hoch'); await sel('emStd', 'unter3'); await p.check('#em5'); await sel('pflegegrad', '3');
   await sel('ausbildung', 'ich'); await p.check('#babBetrieb'); await p.check('#babWohnt'); await fillNum('ek1Brutto', '2000'); await geb('1970');
     // Rundfunk
   await p.check('#b-sozialamt'); c = await card('Befreiung vom Rundfunkbeitrag'); ok('Rundfunk: Sozialamt bezogen => wahrscheinlich', c.pill === 'ja'); await p.uncheck('#b-sozialamt');
 
   // Mappe
+  await p.click('#mappeMake'); // grüner Knopf unter den Karten; Name, Anschrift und Auswahl stehen oben in der Mappe
   await p.fill('#p-name', 'Maria Muster'); await p.fill('#p-strasse', 'Hauptstr. 1'); await p.fill('#p-ort', '91054 Erlangen');
   const picks = await p.evaluate(() => [...document.querySelectorAll('[data-pick]')].map((x) => x.getAttribute('data-pick')));
   ok('Pauschbetrag erscheint nicht in der Mappenauswahl, Blindengeld schon', !picks.includes('pausch') && picks.includes('blindengeld') && picks.includes('kgBeh'), picks.join());
   await p.evaluate(() => document.querySelectorAll('[data-pick]').forEach((x) => { if (!x.checked) x.click(); }));
-  await p.click('#mappeMake');
   const txt = await p.inputValue('#mappeText');
   ok('Kindergeld für Kind mit Behinderung: Formular-Link statt formlosem Brief', !txt.includes('Antrag auf Kindergeld für ein volljähriges Kind mit Behinderung') && (await p.$$eval('#mappeBody .forms a[href]', (e) => e.some((x) => /formulare-erwachsene-mit-behinderungen/.test(x.href)))));
   ['Rente wegen Erwerbsminderung', 'Blindengeld nach dem Bayerischen Blindengeldgesetz', 'Wohnberechtigungsschein', 'Berufsausbildungsbeihilfe', 'Eingliederungshilfe'].forEach((s) => ok('Mappe enthält "' + s + '"', txt.includes(s)));
@@ -121,7 +123,7 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
     const labs = await p.evaluate(() => ['bhPerson', 'gdb', 'blind', 'emStd'].every((i) => [...document.getElementById(i).options].every((o) => o.textContent.trim().length > 0)));
     ok('Sprache ' + l + ': alle Auswahlfelder beschriftet', labs);
     const cut = await p.evaluate(() => { const versteckt = [...document.querySelectorAll('.subbox[hidden], .cond-kinder[hidden], .cond-kids[hidden], .cond-adults2[hidden], [id$="BruttoF"][hidden], [id$="NettoF"][hidden]')]; versteckt.forEach((e) => { e.hidden = false; }); const out = []; const sp = document.createElement('span'); sp.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap'; document.body.appendChild(sp);
-      document.querySelectorAll('select').forEach((s) => { if (s.id === 'lang' || !s.clientWidth) return; const cs = getComputedStyle(s); sp.style.font = cs.font; const avail = s.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 12; // Reserve: Schriften in der CI sind etwas breiter
+      document.querySelectorAll('select').forEach((s) => { if (s.id === 'lang' || !s.clientWidth) return; const cs = getComputedStyle(s); sp.style.font = cs.font; const avail = s.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - (s.id === 'langTop' ? 0 : 12); // Reserve: Schriften in der CI sind etwas breiter (langTop wächst mit dem Text mit, width:auto; dort schneidet nur die Obergrenze ab)
         [...s.options].forEach((o) => { sp.textContent = o.textContent; if (sp.offsetWidth > avail) out.push(s.id + ': ' + o.textContent); }); }); sp.remove(); versteckt.forEach((e) => { e.hidden = true; }); return out; });
     ok('Sprache ' + l + ': keine abgeschnittenen Auswahl-Einträge (390 px)', cut.length === 0, cut.join(' | '));
     const ov = await p.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
@@ -137,4 +139,4 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
   ok('Keine Konsolen- oder Skriptfehler', errs.length === 0, errs.join(' | '));
   ok('Datenschutz: Die Web-Version ruft während der ganzen Nutzung keinen Server auf', netz.length === 0, netz.slice(0, 5).join(' '));
   await b.close(); console.log(out.join('\n')); if (SHARD.aktiv) console.log('Ausführliche Version' + SHARD.name + ': ' + out.length + ' Prüfungen'); process.exit(out.some((l) => l.startsWith('FAIL')) ? 1 : 0);
-})().catch((e) => { console.log(out.join('\n')); console.log('ABSTURZ', e.message); process.exit(1); });
+})().catch((e) => { console.log(out.join('\n')); console.log('ABSTURZ', e.message, '\n' + String(e.stack || '').split('\n').filter((z) => z.includes('test/')).slice(0, 3).join('\n')); process.exit(1); }); // Stelle im Test mit ausgeben (wackliger Klick, 21.11.2026)

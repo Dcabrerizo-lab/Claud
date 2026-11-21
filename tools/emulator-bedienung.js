@@ -5,7 +5,7 @@
 'use strict';
 const { _android: android } = require('playwright');
 const { execSync } = require('child_process');
-const PKG = 'com.Sozialleistungslotse';
+const PKG = 'com.Sozialleistungslotse.test'; // Debug-APK = Test-App (applicationIdSuffix ".test")
 const KARTEN = require('../test/karten.js');
 const phase = process.argv[2] || 'vorher';
 let n = 0, fails = 0;
@@ -28,14 +28,14 @@ const warte = (ms) => new Promise((r) => setTimeout(r, ms));
   const sichtbar = (sel) => p.evaluate((s) => { const e = document.querySelector(s); return !!(e && e.offsetParent !== null); }, sel);
   const tippe = (sel, wert) => p.evaluate(([s, w]) => { const e = document.querySelector(s); e.focus(); e.value = w; e.dispatchEvent(new Event('input', { bubbles: true })); e.dispatchEvent(new Event('change', { bubbles: true })); e.blur(); }, [sel, wert]);
   await da('#cards', 60000);
-  await p.evaluate(() => { const b = document.querySelector('#appnav [data-ansicht=leistungen]'); if (b) b.click(); });
+  await p.evaluate(() => { const b = document.getElementById('goLeistungen'); if (b) b.click(); });
   await warte(1500);
   ok('Native App erkannt (Capacitor)', await p.evaluate(() => !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform())));
 
   if (phase === 'vorher') {
     if (await sichtbar('#firstOk')) await p.evaluate(() => document.getElementById('firstOk').click());
     await p.evaluate(() => document.getElementById('p2').click()); await warte(800);
-    await p.evaluate(() => { const b = document.querySelector('#appnav [data-ansicht=leistungen]'); if (b) b.click(); }); await warte(500);
+    await p.evaluate(() => { const b = document.getElementById('goLeistungen'); if (b) b.click(); }); await warte(500);
     ok('Beispiel-Haushalt: alle ' + KARTEN.length + ' Karten', (await p.locator('#cards .card:not(.startcard)').count()) === KARTEN.length);
     await tippe('#ek1Brutto', '2100'); await warte(500);
     await tippe('#p-name', 'Maria Muster'); await tippe('#p-strasse', 'Hauptstr. 1'); await tippe('#p-ort', '91054 Erlangen');

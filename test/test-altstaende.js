@@ -34,6 +34,11 @@ const FAELLE = [
     feld: ['emStd', 'unter3'] },
   { name: 'Version vom 12.11.2026 (vor „Unterhalt, den du zahlst“)', alt: { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'kg', ek1Brutto: '', ek1Netto: 1300, ek2Art: '', ek2Brutto: '', ek2Netto: '', unterhalt: '', kindEink: '', ek1bArt: '', ek1bBetrag: '', baby: '', egVor: '', aufenthalt: '', miete: 650, mietstufe: '2', plz: '', plzPick: '', bundesland: 'BY', vermoegen: 3000, gebJahr: 1971, arbeitSit: 'krank', algMonate: '', krankWochen: 'laeuft', lohnVorher: 2600, ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: 'unklar', bezug: {} },
     neu: null, feld: ['ek1Netto', '1300'] },
+  // Paar vor dem zweiten Einkommen für Paare (ohne ek2bArt/ek2bBetrag; ek1b wurde bei Paaren zurückgesetzt): gleiches Ergebnis
+  { name: 'Version vom 20.11.2026 (Paar ohne zweites Einkommen)', alt: { adults: 2, kids: 1, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'lohn', ek1Brutto: 2100, ek1Netto: 1560, ek2Art: 'unt', ek2Brutto: '', ek2Netto: 400, unterhalt: '', kindEink: '', ek1bArt: '', ek1bBetrag: '', baby: '', egVor: '', aufenthalt: '', miete: 900, mietstufe: '3', plz: '', plzPick: '', bundesland: 'BY', vermoegen: 2000, gebJahr: 1984, arbeitSit: '', algMonate: '', krankWochen: '', lohnVorher: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', uzBetrag: '', uzAn: '', uzTitel: false, wohnart: '', hhAndere: '', autoWert: '', autoBraucht: false, euArbeit: '', euJahre: '', bezug: {} },
+    neu: null, feld: ['ek2Netto', '400'] },
+  { name: 'heutiges Format mit zweitem Einkommen der Partnerin', alt: { adults: 2, kids: 1, kidsU6: 1, kids14: 0, young: 0, ek1Art: 'lohn', ek1Brutto: 1800, ek1Netto: 1350, ek1bArt: 'unt', ek1bBetrag: 200, ek2Art: 'alg', ek2Netto: 700, ek2bArt: 'lohn', ek2bBetrag: 300, miete: 950, mietstufe: '4', vermoegen: 1000, gebJahr: 1988, bezug: {} },
+    neu: null, feld: ['ek2bBetrag', '300'] },
   { name: 'heutiges Format', alt: { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'rente', ek1Brutto: 1100, ek1Netto: 980, miete: 520, mietstufe: '3', vermoegen: 4000, gebJahr: 1955, uzBetrag: 200, uzAn: 'ex', uzTitel: true, pflegegrad: '2', bezug: {} },
     neu: null, feld: ['uzBetrag', '200'] }
 ];
@@ -47,13 +52,25 @@ FAELLE.forEach((f) => {
   ck('[altstaende] ' + f.name + ': Name in der Antragsmappe übernommen', s.d.getElementById('p-name').value === 'Test');
 });
 
+// Leer gespeicherter Stand (App zweimal geöffnet, nichts eingegeben): nicht als bearbeitet werten, kein „4 möglich“
+{
+  const blank = seite({ 'lotse.ack': '1' }).w.__solo.state();
+  const z = seite({ 'lotse.state': JSON.stringify({ s: blank, p: { name: '', geb: '', strasse: '', ort: '', tel: '' }, e: true, big: false }), 'lotse.ack': '1', 'lotse-lang': 'de' });
+  const I = require('../dist/i18n.js');
+  ck('[altstaende] leer gespeicherter Stand: Check zeigt „noch keine Angaben“, keine Einstufungen', z.d.getElementById('count').textContent === I.de['c.leer'] && z.d.querySelectorAll('#cards .pill').length === 0, z.d.getElementById('count').textContent);
+  const bsp = seite({ 'lotse.state': JSON.stringify({ s: Object.assign({}, blank, { ek1Art: 'lohn', ek1Brutto: 2200, ek1Netto: 1750, miete: 950 }), p: {}, e: false }), 'lotse.ack': '1', 'lotse-lang': 'de' });
+  ck('[altstaende] gespeichertes Beispiel (e: false) bleibt Beispiel: Hinweis sichtbar, nicht als eigene Angabe', !bsp.d.getElementById('sampleNotice').hidden && bsp.w.__solo.state().ek1Netto === 1750);
+  const ordner = z.d.getElementById('v-ordner');
+  ck('[altstaende] leer gespeicherter Stand: Ordner ohne Einstufung „möglich“', !ordner || !/\d+ (möglich|wahrscheinlich)/.test(ordner.textContent) && !z.w.__solo.state().ek1Art, ordner && ordner.textContent.slice(0, 200));
+}
+
 // Antragsmappe mit jeder Einkommensart (auch später ergänzten wie „selbstständig“): kein „undefined“ im Angabenblatt
 {
   const probe = seite({ 'lotse.ack': '1' });
   const arten = [...probe.d.getElementById('ek1Art').options].map((o) => o.value).filter(Boolean);
   ck('[altstaende] Einkommensarten gefunden', arten.length >= 8, arten.join(' '));
   arten.forEach((art) => {
-    const m = seite({ 'lotse.state': JSON.stringify({ s: { adults: 2, kids: 1, ek1Art: art, ek1Brutto: 1500, ek1Netto: 1100, ek2Art: art, ek2Brutto: 900, ek2Netto: 700, miete: 700, mietstufe: '3', vermoegen: 100, bezug: {} }, p: { name: 'Test' }, e: true }), 'lotse.ack': '1' });
+    const m = seite({ 'lotse.state': JSON.stringify({ s: { adults: 2, kids: 1, ek1Art: art, ek1Brutto: 1500, ek1Netto: 1100, ek2Art: art, ek2Brutto: 900, ek2Netto: 700, ek1bArt: art === 'ohne' ? '' : art, ek1bBetrag: 100, ek2bArt: art === 'ohne' ? '' : art, ek2bBetrag: 50, miete: 700, mietstufe: '3', vermoegen: 100, bezug: {} }, p: { name: 'Test' }, e: true }), 'lotse.ack': '1' });
     m.d.querySelectorAll('[data-pick]').forEach((cb) => { cb.checked = true; cb.dispatchEvent(new m.w.Event('change', { bubbles: true })); });
     m.d.getElementById('mappeMake').click();
     const txt = m.d.getElementById('mappeBody').textContent;

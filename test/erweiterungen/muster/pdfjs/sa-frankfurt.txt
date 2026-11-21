@@ -1,0 +1,149 @@
+# Quelle: https://www.frankfurtpass.de/files/Musterbescheid_Grundsicherung.pdf (Stadt Frankfurt am Main, Musterbescheid SGB XII vom 03.06.2025)
+# Abgerufen: 21.11.2026. Text wie in der App gelesen: pdf.js 3.11.174 + pdfZeilen aus src/app.js (tools/scan-muster.js --pdf).
+Formular
+-Nr. 15161
+Stand 02/2024
+Hausanschrift: siehe oben Seite 1 von 3
+Telefon Rathausvermittlung: (0 69) 2 12 01
+B E S C H E I D
+über die Gewährung von Leistungen
+nach dem Sozialgesetzbuch XII (SGB XII)
+Sehr geehrte Frau Nachname,
+aufgrund Ihres Antrages erhalten Sie und die in diesem Bescheid genannten Personen unter
+Berücksichtigung der wirtschaftlichen und persönlichen Verhältnisse folgende Leistungen
+Grundsicherung im Alter und bei Erwerbsminderung
+Nachname, Vorname
+Ab 06/2025 bis 05/2026 monatlich 563,00 €
+Juni 2025
+A. Bedarf
+Regelbedarf gem. SGB XII 563,00 €
+Regelbedarf (GS) Nachname, Vorname; *Geburtsdatum 563,00 €
+A. Summe Bedarf 563,00 €
+B. Einkommen
+B. Summe anrechenb. Einkommen 0,00 €
+Lfd. Anspruch 563,00 €
+Vorgemerkte Nachzahlung 563,00 €
+Übersicht der Kosten der Unterkunft
+Monatlich ab dem 01.06.2025:
+Beschreibung Tatsächl. Kosten Abzüge Anerk. Kosten Pro Person
+(1 Personen) (1 Personen)
+DER MAGISTRAT
+Sozialrathaus
+Stadtverwaltung (Amt 51), 60275 Frankfurt am Main
+Frau
+Vorname Nachname
+Straße Hausnummer
+PLZ Frankfurt am Main
+Auskunft erteilt Zimmer
+Sachbearbeitung Nummer
+Telefon Durchwahl Telefax
+(069) 212 - xx (069) 212 - xx
+E-Mail
+PLZ Dienstgebäude
+Frankf
+Unser Zeichen / Aktenzeichen
+Aktenzeichen
+Datum
+03.06.2025
+Formular
+-Nr. 15161
+Stand 02/2024
+Hausanschrift: siehe oben Seite 2 von 3
+Telefon Rathausvermittlung: (0 69) 2 12 01
+Gesamtkosten 0,00 € 0,00 € 0,00 € 0,00 €
+Zahlungsansprüche
+Monat Zahlungsempfänger Beschreibung Zahlweg Mtl. Betrag
+Jun 25-
+Mai 26
+Nachname, Vorname Lfd. Anspruch, 404696 Per Barzahlung 563,00 €
+Allgemeine Hinweise und Rechtsbehelfsbelehrung
+Der gesamte Bedarf des notwendigen Lebensunterhaltes ist durch den Regelbedarf, die
+Mehrbedarfe, ggf. den Bedarf für Kranken- und Pflegeversicherung, die Bedarfe für Unterkunft und
+Heizung sowie die Bedarfe für Bildung und Teilhabe abgedeckt.
+Der Regelbedarf umfasst insbesondere Lebensmittel, Produkte der Körperpflege und der laufenden
+Haushaltsführung, Kosten für die Gesundheitspflege, die Anschaffung von Kleidung, Schuhen,
+Haushaltsgeräten/-gegenständen sowie Kosten für Haushaltsenergie (Beleuchtung, Betrieb
+elektrischer Geräte und Kochen) und persönliche Bedürfnisse des täglichen Lebens.
+Zu den Sonderbedarfen zählen
+ Erstausstattungen für die Wohnung einschließlich Haushaltsgeräten,
+ Erstausstattungen für Bekleidung einschließlich bei Schwangerschaft und Geburt,
+ Anschaffung & Reparaturen von orthopädischen Schuhen und
+ Reparaturen von therapeutischen Geräten & Ausrüstungen sowie die Miete von therapeutischen
+Geräten.
+Kosten der Unterkunft
+Bedarfe für Unterkunft und Heizung werden in Höhe der tatsächlichen Aufwendungen anerkannt,
+insofern sie angemessen sind.
+Die angemessenen Vorauszahlungen (Abschläge) für Neben-/ Betriebskosten und Heizkosten
+werden in der geforderten Höhe berücksichtigt. Die Betriebs- und Heizkostenabrechnungen sind von
+Ihnen umgehend vorzulegen, sobald Sie diese erhalten. Wir werden diese auf ihre Angemessenheit
+prüfen. Sofern sich aus der Abrechnung ein Guthaben ergibt, wird dieses im Zuflussmonat bei der
+Leistungsberechnung berücksichtigt. Nachzahlungen werden im Fälligkeitsmonat anerkannt.
+Soweit die Warmwassererzeugung dezentral bereitet wird, steht Ihnen ein pauschalierter
+Mehrbedarf zur Deckung dieser Kosten zu. Im Einzelfall können höhere Kosten übernommen
+werden, insofern diese angemessen sind und tatsächlich anfallen.
+Sollten die Heizkostenvorauszahlungen auch die Kosten für die Warmwassererzeugung beinhalten,
+wird der Mehrbedarf zur Vermeidung von Doppelleistungen wieder abgezogen.
+Kosten für Kochen und sonstige Haushaltsenergie (Beleuchtung, Betrieb elektrischer Geräte) sind
+keine Kosten der Unterkunft, sie sind mit den Regelbedarfen abgegolten.
+Bildung und Teilhabe
+Hinweis: Aus technischen Gründen erhalten Sie diese Information auch, wenn keine Kinder in Ihrem
+Haushalt leben.
+Leistungen aus dem Bildungs- und Teilhabepaket "BuT" Umfasst Leistungen für soziale und
+kulturelle Teilhabe, Kita- oder Klassenfahrten, eintägige Ausflüge mit Kita oder Schule,
+gemeinschaftliche Mittagsverpflegung in Kita oder Schule, Schülerbeförderung und Schulbedarf.
+Wenn Sie Leistungen der Bildung und Teilhabe für Ihr Kind bzw. Ihre Kinder in Anspruch nehmen
+möchten, genügt eine formlose Mitteilung.
+Weitere Informationen zu Leistungen für Bildung und Teilhabe erhalten Sie von Ihrer
+Sachbearbeitung oder per BuT-Hotline: 069/212-33133.
+Mehrbedarfe
+Für Menschen mit Gehbehinderung (Merkzeichen G oder aG), werdende Mütter, Alleinerziehende,
+für Menschen mit Behinderung in Schulbildung, schulischer oder hochschulischer Ausbildung, für
+kostenaufwändige Ernährung, bei gemeinschaftlicher Mittagsverpflegung und für die Ausleihe oder
+Formular
+-Nr. 15161
+Stand 02/2024
+Hausanschrift: siehe oben Seite 3 von 3
+Telefon Rathausvermittlung: (0 69) 2 12 01
+Anschaffung von Lernmitteln sowie für einmalige, unabweisbare, besondere Bedarfe können
+Mehrbedarfe anerkannt werden.
+Wenden Sie sich im Bedarfsfall an die für Sie zuständige Sachbearbeitung (siehe Briefkopf).
+Vorbehalte, Hinweise und Mitwirkungspflichten
+Sie sind verpflichtet, alle Änderungen in Ihren wirtschaftlichen und persönlichen Verhältnissen oder
+Änderungen in den Verhältnissen Ihrer Haushaltsmitglieder unverzüglich und unaufgefordert
+mitzuteilen. Ihre Mitwirkungspflichten ergeben sich aus den §§ 60 ff. Sozialgesetzbuch (SGB) Erstes
+Buch (I). Hierzu zählen vor allem Änderungen der Familien-, Einkommens- und
+Vermögensverhältnisse, Zuzug bzw. Auszug von Haushaltsangehörigen, Wohnungswechsel,
+Änderung der Miethöhe, Änderungen von Heizkosten- und Nebenkostenforderungen, Änderung des
+Wohnsitzes, eine Änderung des ausländerrechtlichen Aufenthaltsstatus, die Aufnahme in einem
+Krankenhaus o. ä.
+Wissentlich falsche oder unvollständige Angaben können strafrechtlich verfolgt werden
+(§ 263 Strafgesetzbuch – Betrug).
+Leistungsberechtigte, die sich länger als vier Wochen ununterbrochen im Ausland aufhalten, können
+nach Ablauf der vierten Woche bis zu ihrer nachgewiesenen Rückkehr ins Inland keine Leistungen
+erhalten. Daher sind geplante Auslandsaufenthalte von mehr als vierwöchiger Dauer vor der Abfahrt
+schriftlich anzuzeigen.
+Frankfurt-Pass
+Der Frankfurt-Pass ist eine freiwillige und kostenlose Leistung der Stadt Frankfurt am Main für
+Personen mit geringem Einkommen. Damit erhalten Sie viele Vergünstigungen. Weitere
+Informationen hierzu erhalten Sie von Ihrer Sachbearbeitung oder auf unserer Webseite:
+https://frankfurt.de/ Stichwort „Frankfurt-Pass“
+Rechtsbehelfsbelehrung
+Gegen diesen Bescheid können Sie innerhalb eines Monats nach Bekanntgabe Widerspruch beim
+Magistrat der Stadt Frankfurt am Main
+– Jugend- und Sozialamt –
+(unter der im Briefkopf angegebenen Adresse)
+erheben. Sie können den Widerspruch auch beim Magistrat der Stadt Frankfurt am Main, Rechtsamt,
+Fachbereich 3, Sandgasse 6, 60311 Frankfurt am Main, erheben. In diesem Fall wird Ihr
+Widerspruch zunächst an uns zur Überprüfung weitergeleitet.
+Der Widerspruch ist schriftlich, in elektronischer Form nach § 36a Abs. 2 des Sozialgesetzbuch I
+(SGB I), schriftformersetzend nach § 36a Abs. 2a SGB I sowie nach § 9a Abs. 5 des
+Onlinezugangsgesetzes (OZG) oder zur Niederschrift einzureichen.
+Hinweise:
+Die elektronische Form wird durch Übermittlung eines elektronischen Dokuments gewahrt, das für
+die Bearbeitung durch die Behörde geeignet ist und
+ von der verantwortenden Person qualifiziert elektronisch signiert ist oder
+ von der verantwortenden Person signiert und auf einem sicheren Übermittlungsweg gem.
+§ 36a Abs. 2a SGB I oder § 9a Abs. 5 OZG eingereicht wird.
+Ein per einfacher E-Mail eingelegter Widerspruch ist nicht formgerecht und damit unzulässig.
+Mit freundlichen Grüßen
+Im Auftrag

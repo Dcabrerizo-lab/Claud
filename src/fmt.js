@@ -8,6 +8,17 @@ const Fmt = (function () {
   function datum(d, lang) {
     try { return d.toLocaleDateString(DATUM[lang] || LOCALE[lang] || 'de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/[\u200e\u200f\u061c]/g, ''); } catch (e) { return d.toLocaleDateString('de-DE'); }
   }
+  // Stand der Regeln („November 2026“) in der gewählten Sprache: Monatsname aus dem Gerät (Intl), sonst „11/2026“; Deutsch bleibt, wie es ist
+  var MONATE = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+  function monat(stand, lang) {
+    var m = /^([A-Za-zä]+) (\d{4})$/.exec(String(stand || '')), i = m ? MONATE.indexOf(m[1]) : -1;
+    if (i < 0 || lang === 'de' || !LOCALE[lang]) return String(stand || '');
+    try {
+      var f = new Intl.DateTimeFormat(LOCALE[lang], { month: 'long', year: 'numeric', timeZone: 'UTC' });
+      if (f.resolvedOptions().locale.split('-')[0] === lang.split('-')[0]) return f.format(new Date(Date.UTC(+m[2], i, 15))).replace(/[\u200e\u200f\u061c]/g, '');
+    } catch (e) { /* Gerät ohne Sprachdaten */ }
+    return (i + 1) + '/' + m[2];
+  }
   var NF = {};
 
   // Ein Betrag als Text, z. B. euro(1674, 'en') -> „€1,674“, euro(242.7, 'de') -> „242,70 €“. Cent nur, wenn nötig.
@@ -39,6 +50,28 @@ const Fmt = (function () {
     return isFinite(n) && n >= 0 ? n : '';
   }
 
-  return { euro: euro, parse: parse, datum: datum, LOCALE: LOCALE };
+  // Laienansicht (Beratungsmodus aus): Paragrafen in Klammern ausblenden, z. B. „… Überprüfungsantrag (§ 44 SGB X); …“ -> „… Überprüfungsantrag; …“.
+  // Steht vor dem Paragrafen ein Begriff („(Nahtlosigkeit, § 145 SGB III)“), bleibt der Begriff stehen. Texte ohne § bleiben unverändert.
+  function ohnePara(s) {
+    return String(s).replace(/\s*\(([^()]*)\)/g, function (m, inh) {
+      var i = inh.search(/§|Art\.\s*\d/);
+      if (i < 0) return m;
+      var vor = inh.slice(0, i).replace(/[\s,;،؛]+$/, '');
+      return vor ? ' (' + vor + ')' : '';
+    });
+  }
+  // Geburtsdatum einheitlich als TT.MM.JJJJ: „1.2.1985“, „01021985“, „1985-02-01“, „1/2/1985“. Unklares (z. B. zweistellige Jahre) bleibt wie eingegeben.
+  function gebDatum(v) {
+    var s = String(v == null ? '' : v).trim(), m, t, mo, j;
+    if ((m = s.match(/^(\d{1,2})[./ -](\d{1,2})[./ -](\d{4})$/))) { t = +m[1]; mo = +m[2]; j = +m[3]; }
+    else if ((m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/))) { j = +m[1]; mo = +m[2]; t = +m[3]; }
+    else if ((m = s.match(/^(\d{2})(\d{2})(\d{4})$/))) { t = +m[1]; mo = +m[2]; j = +m[3]; }
+    else return s;
+    var d = new Date(Date.UTC(j, mo - 1, t));
+    if (j < 1900 || j > 2100 || d.getUTCFullYear() !== j || d.getUTCMonth() !== mo - 1 || d.getUTCDate() !== t) return s;
+    return (t < 10 ? '0' : '') + t + '.' + (mo < 10 ? '0' : '') + mo + '.' + j;
+  }
+
+  return { euro: euro, parse: parse, datum: datum, monat: monat, ohnePara: ohnePara, gebDatum: gebDatum, LOCALE: LOCALE };
 })();
 if (typeof module !== 'undefined') module.exports = Fmt;

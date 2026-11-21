@@ -48,10 +48,24 @@
   .krit .pkt { float: right; margin-left: 10px; font-variant-numeric: tabular-nums; color: var(--muted); }
   .opt { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin: 8px 0; }
   .feld-hilfe { margin: 2px 0 0; font-size: .8em; }
+  .pp-fehlt { border: 2px solid var(--warn) !important; }
+  .pp-fehlt-hinweis { margin: 4px 0 0; color: var(--warn); font-weight: 600; }
+  /* Aus dem Brief gelesene Werte: Markierung am Feld, bis sie bestätigt oder geändert sind (App: Farben --mark-* in src/template.html) */
+  .pp-erkannt { background: var(--mark-bg, var(--warn-bg)); border-color: var(--mark-line, var(--warn)); }
+  .pp-erkannt.pp-unsicher { background: var(--warn-bg); border: 2px solid var(--warn); }
+  label.pp-erkannt { border-radius: 10px; padding-inline: 6px; border: 1px solid var(--mark-line, var(--warn)); }
+  .pp-unsicher-t { margin: 2px 0 0; color: var(--warn); font-weight: 600; }
+  .pp-erk-hinweis { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin: 0 0 14px; padding: 2px 0 2px 12px; border-inline-start: 4px solid var(--mark-line, var(--warn)); }
+  .pp-erk-hinweis p { margin: 0; flex: 1 1 16em; }
+  .pp-erk-hinweis[hidden] { display: none; }
+  .begriffe { margin: 8px 0 0; } .begriffe dt { font-weight: 600; margin-top: 6px; } .begriffe dd { margin: 0 0 4px; }
   .abw { display: grid; gap: 4px; }
   .abw p { margin: 0; }
   .abw-kopf { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
   .btns { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+  .card:empty + .rb-erg { display: none; }
+  textarea[hidden] ~ .rb-schreiben { display: none; }
+  details.mehr { margin: 4px 0; }
   details > summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
   .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   @media (max-width: 640px) { .row { grid-template-columns: 1fr; } .freq { grid-template-columns: minmax(0, 1fr) repeat(3, 64px); } .ergebnis { position: static; } }
@@ -85,6 +99,7 @@
     <button type="button" role="tab" id="tab-wg" aria-controls="p-wg" aria-selected="false" tabindex="-1">Bescheid Wohngeld</button>
     <button type="button" role="tab" id="tab-kiz" aria-controls="p-kiz" aria-selected="false" tabindex="-1">Bescheid Kinderzuschlag</button>
     <button type="button" role="tab" id="tab-nk" aria-controls="p-nk" aria-selected="false" tabindex="-1">Nebenkosten</button>
+    <button type="button" role="tab" id="tab-andere" aria-controls="p-andere" aria-selected="false" tabindex="-1">Anderer Brief</button>
     <button type="button" role="tab" id="tab-fristen" aria-controls="p-fristen" aria-selected="false" tabindex="-1">Fristen</button>
     <button type="button" role="tab" id="tab-lizenz" aria-controls="p-lizenz" aria-selected="false" tabindex="-1">Profi-Lizenz</button>
   </nav>
@@ -92,8 +107,9 @@
   <!-- Pflegegutachten -->
   <section id="p-pflege" role="tabpanel" aria-labelledby="tab-pflege">
     <div class="card">
-      <h2>Pflegegutachten prüfen</h2>
-      <p>SoLo rechnet die Punkte des Gutachtens nach § 15 SGB XI nach und zeigt, wo es knapp ist. Am schnellsten geht es, wenn du das Gutachten scannst oder als PDF wählst: Von Hand sind es rund 60 Bewertungen.</p>
+      <h2 data-t="bp.pf.h">Pflegegutachten prüfen</h2>
+      <p data-t="bp.pf.p">Scanne das Gutachten oder wähle ein PDF. SoLo rechnet die Punkte nach.</p>
+      <details class="mehr"><summary data-t="bp.was">Was prüft SoLo genau?</summary><p>SoLo rechnet die Punkte des Gutachtens nach § 15 SGB XI nach und zeigt, wo es knapp ist. Scannen geht am schnellsten: Von Hand sind es rund 60 Bewertungen.</p></details>
       <label for="pf-text">Text aus dem Gutachten (aus einem PDF kopiert oder vom Foto erkannt)</label>
       <textarea id="pf-text" placeholder="z. B. 1.1 Positionswechsel im Bett  überwiegend selbständig …"></textarea>
       <div class="btns"><button type="button" class="btn primary" id="pf-lesen">Text lesen</button><button type="button" class="btn" id="pf-beispiel">Beispiel laden</button><button type="button" class="btn" id="pf-leeren">Alles leeren</button></div>
@@ -119,6 +135,7 @@
       <div id="pf-module"></div>
     </form>
     <div class="card ergebnis" id="pf-erg" aria-live="polite"></div>
+    <p class="small muted rb-satz rb-erg" data-t="rb.satz">Erste Einschätzung, keine Rechtsberatung. Es entscheidet das Amt, im Streit das Gericht.</p>
     <div class="card" id="pf-erkl"></div>
     <div class="card" id="pf-wid">
       <h2>Widerspruch oder Höherstufung</h2>
@@ -146,18 +163,32 @@
       <textarea id="pf-wid-text" rows="18" readonly hidden></textarea>
       <div class="btns"><button type="button" class="btn" id="pf-wid-copy" hidden>Text kopieren</button></div>
       <p class="small" id="pf-copy-msg" role="status"></p>
+      <p class="small muted rb-satz rb-schreiben" data-t="rb.satz">Erste Einschätzung, keine Rechtsberatung. Es entscheidet das Amt, im Streit das Gericht.</p>
     </div>
   </section>
 
   <!-- Bescheid Grundsicherungsgeld -->
   <section id="p-bescheid" role="tabpanel" aria-labelledby="tab-bescheid" hidden>
     <div class="card">
-      <h2>Bescheid Grundsicherungsgeld prüfen</h2>
-      <p>Trage die Personen der Bedarfsgemeinschaft und die Beträge aus dem Bescheid für einen Monat ein. SoLo rechnet mit denselben Regeln wie die App nach und zeigt Abweichungen.</p>
+      <h2 data-t="bp.jc.h">Bescheid Grundsicherungsgeld prüfen</h2>
+      <p data-t="bp.scan.p">Scanne den Bescheid. SoLo rechnet nach und zeigt Abweichungen.</p>
+      <details class="mehr"><summary data-t="bp.was">Was prüft SoLo genau?</summary><p data-t="bp.jc.was">SoLo rechnet die Beträge deines Bescheids für einen Monat nach, mit denselben Regeln wie der Leistungs-Check: Regelbedarfe, Mehrbedarfe, Miete und Heizung und das angerechnete Einkommen. Wo der Bescheid zu deinen Lasten abweicht, zeigt SoLo den Unterschied und den Grund.</p></details>
+      <details class="mehr begriffe"><summary data-t="bp.begriffe">Wörter im Bescheid erklärt</summary>
+        <dl>
+          <dt>Bedarfsgemeinschaft</dt><dd data-t="bp.w.bg">Alle, für die das Jobcenter zusammen rechnet: du, dein Ehe- oder Lebenspartner und eure unverheirateten Kinder unter 25 im Haushalt (§ 7 Abs. 3 SGB II).</dd>
+          <dt>Berechnungsbogen</dt><dd data-t="bp.w.bb">Die Seiten im Bescheid mit der Rechnung: je Person und Monat, was anerkannt und was als Einkommen abgezogen wird. Meist hinten am Bescheid.</dd>
+          <dt>Regelbedarf</dt><dd data-t="bp.w.rb">Fester Betrag für den Alltag, zum Beispiel Essen, Kleidung und Strom. Die Höhe hängt vom Alter ab und davon, ob man allein oder als Paar lebt (§ 20 SGB II).</dd>
+          <dt>Mehrbedarf</dt><dd data-t="bp.w.mb">Zusätzlicher Betrag in besonderen Lagen, zum Beispiel für Alleinerziehende, in der Schwangerschaft oder wenn das Warmwasser in der Wohnung erzeugt wird (§ 21 SGB II).</dd>
+          <dt>KdU (Kosten der Unterkunft und Heizung)</dt><dd data-t="bp.w.kdu">Miete, Nebenkosten und Heizung, soweit das Jobcenter sie als angemessen anerkennt (§ 22 SGB II).</dd>
+          <dt>Zahlbetrag</dt><dd data-t="bp.w.zb">Der Betrag, der jeden Monat überwiesen wird.</dd>
+          <dt>Bewilligungszeitraum</dt><dd data-t="bp.w.bz">Die Monate, für die der Bescheid gilt. Danach braucht es einen Weiterbewilligungsantrag. Er ist nicht das Datum des Bescheids.</dd>
+        </dl>
+      </details>
       <div class="btns"><button type="button" class="btn" id="bs-beispiel">Beispiel laden</button></div>
     </div>
     <form id="bs-form" onsubmit="return false">
       <fieldset><legend>Personen</legend>
+        <details class="mehr"><summary>Wer gehört dazu?</summary><p>Einzutragen sind alle Personen der Bedarfsgemeinschaft: du, dein Ehe- oder Lebenspartner und eure unverheirateten Kinder unter 25 im Haushalt (§ 7 Abs. 3 SGB II).</p></details>
         <div class="tablewrap" tabindex="0" role="region" aria-label="Personen der Bedarfsgemeinschaft"><table><thead><tr><th>Person</th><th>Alter</th><th>Lohn brutto</th><th>Lohn netto</th><th>anderes Einkommen</th><th>schwanger</th><th><span class="vh">Entfernen</span></th></tr></thead><tbody id="bs-personen"></tbody></table></div>
         <div class="btns"><button type="button" class="btn" id="bs-erw">Erwachsene Person hinzufügen</button><button type="button" class="btn" id="bs-kind">Kind hinzufügen</button></div>
         <label class="check"><input type="checkbox" id="bs-ww"> Warmwasser wird in der Wohnung erzeugt (Durchlauferhitzer, Boiler)</label>
@@ -182,6 +213,7 @@
       </fieldset>
     </form>
     <div class="card" id="bs-erg" aria-live="polite"></div>
+    <p class="small muted rb-satz rb-erg" data-t="rb.satz">Erste Einschätzung, keine Rechtsberatung. Es entscheidet das Amt, im Streit das Gericht.</p>
     <div class="card">
       <h2>Widerspruch vorbereiten</h2>
       <div class="grid2">
@@ -198,14 +230,25 @@
       <textarea id="bs-wid-text" rows="18" readonly hidden></textarea>
       <div class="btns"><button type="button" class="btn" id="bs-wid-copy" hidden>Text kopieren</button></div>
       <p class="small" id="bs-copy-msg" role="status"></p>
+      <p class="small muted rb-satz rb-schreiben" data-t="rb.satz">Erste Einschätzung, keine Rechtsberatung. Es entscheidet das Amt, im Streit das Gericht.</p>
     </div>
   </section>
 
   <!-- Bescheid Grundsicherung im Alter -->
   <section id="p-gsa" role="tabpanel" aria-labelledby="tab-gsa" hidden>
     <div class="card">
-      <h2>Bescheid Grundsicherung im Alter prüfen</h2>
-      <p>Für Grundsicherung im Alter und bei Erwerbsminderung vom Sozialamt. Trage die Beträge für einen Monat ein. SoLo rechnet mit denselben Regeln wie die App nach, dazu mit dem Freibetrag für Betriebs-, Riester- und private Renten.</p>
+      <h2 data-t="bp.sa.h">Bescheid Grundsicherung im Alter prüfen</h2>
+      <p data-t="bp.scan.p">Scanne den Bescheid. SoLo rechnet nach und zeigt Abweichungen.</p>
+      <details class="mehr"><summary data-t="bp.was">Was prüft SoLo genau?</summary><p>Für Grundsicherung im Alter und bei Erwerbsminderung vom Sozialamt. Trage die Beträge für einen Monat ein. SoLo rechnet mit denselben Regeln wie die App nach, dazu mit dem Freibetrag für Betriebs-, Riester- und private Renten.</p></details>
+      <details class="mehr begriffe"><summary data-t="bp.begriffe">Wörter im Bescheid erklärt</summary>
+        <dl>
+          <dt>Berechnungsbogen</dt><dd>Die Seiten im Bescheid mit der Rechnung: was anerkannt und was als Einkommen abgezogen wird. Meist hinten am Bescheid.</dd>
+          <dt>Regelbedarf (Regelsatz)</dt><dd>Fester Betrag für den Alltag, zum Beispiel Essen, Kleidung und Strom. Die Höhe hängt davon ab, ob man allein oder als Paar lebt (§ 27a SGB XII).</dd>
+          <dt>Mehrbedarf</dt><dd>Zusätzlicher Betrag in besonderen Lagen, zum Beispiel mit Merkzeichen G im Schwerbehindertenausweis (§ 30 SGB XII).</dd>
+          <dt>KdU (Kosten der Unterkunft und Heizung)</dt><dd>Miete, Nebenkosten und Heizung, soweit das Sozialamt sie als angemessen anerkennt (§ 35 SGB XII).</dd>
+          <dt>Zahlbetrag</dt><dd data-t="bp.w.zb">Der Betrag, der jeden Monat überwiesen wird.</dd>
+        </dl>
+      </details>
       <div class="btns"><button type="button" class="btn" id="ga-beispiel">Beispiel laden</button></div>
     </div>
     <form id="ga-form" onsubmit="return false">
@@ -220,6 +263,7 @@
       <fieldset id="ga-p1"><legend>Person 1</legend>
         <div class="grid2">
           <div><label for="ga-rente1">Gesetzliche Rente (nach Kranken- und Pflegeversicherung)</label><input type="number" id="ga-rente1" min="0" step="0.01" inputmode="decimal"></div>
+          <div><label for="ga-brutto1">Gesetzliche Rente brutto (wichtig bei 33 Jahren Grundrentenzeiten)</label><input type="number" id="ga-brutto1" min="0" step="0.01" inputmode="decimal"></div>
           <div><label for="ga-zus1">Betriebsrente, Riester-Rente oder private Rente</label><input type="number" id="ga-zus1" min="0" step="0.01" inputmode="decimal"></div>
           <div><label for="ga-lohn1">Lohn netto (z. B. Minijob)</label><input type="number" id="ga-lohn1" min="0" step="0.01" inputmode="decimal"></div>
           <div><label for="ga-sonst1">Anderes Einkommen</label><input type="number" id="ga-sonst1" min="0" step="0.01" inputmode="decimal"></div>
@@ -231,6 +275,7 @@
       <fieldset id="ga-p2" hidden><legend>Person 2 (Ehe- oder Lebenspartner)</legend>
         <div class="grid2">
           <div><label for="ga-rente2">Gesetzliche Rente (nach Kranken- und Pflegeversicherung)</label><input type="number" id="ga-rente2" min="0" step="0.01" inputmode="decimal"></div>
+          <div><label for="ga-brutto2">Gesetzliche Rente brutto (wichtig bei 33 Jahren Grundrentenzeiten)</label><input type="number" id="ga-brutto2" min="0" step="0.01" inputmode="decimal"></div>
           <div><label for="ga-zus2">Betriebsrente, Riester-Rente oder private Rente</label><input type="number" id="ga-zus2" min="0" step="0.01" inputmode="decimal"></div>
           <div><label for="ga-lohn2">Lohn netto (z. B. Minijob)</label><input type="number" id="ga-lohn2" min="0" step="0.01" inputmode="decimal"></div>
           <div><label for="ga-sonst2">Anderes Einkommen</label><input type="number" id="ga-sonst2" min="0" step="0.01" inputmode="decimal"></div>
@@ -251,6 +296,7 @@
       </fieldset>
     </form>
     <div class="card" id="ga-erg" aria-live="polite"></div>
+    <p class="small muted rb-satz rb-erg" data-t="rb.satz">Erste Einschätzung, keine Rechtsberatung. Es entscheidet das Amt, im Streit das Gericht.</p>
     <div class="card">
       <h2>Widerspruch vorbereiten</h2>
       <div class="grid2">
@@ -267,20 +313,22 @@
       <textarea id="ga-wid-text" rows="18" readonly hidden></textarea>
       <div class="btns"><button type="button" class="btn" id="ga-wid-copy" hidden>Text kopieren</button></div>
       <p class="small" id="ga-copy-msg" role="status"></p>
+      <p class="small muted rb-satz rb-schreiben" data-t="rb.satz">Erste Einschätzung, keine Rechtsberatung. Es entscheidet das Amt, im Streit das Gericht.</p>
     </div>
   </section>
 
   <!-- Bescheid Wohngeld -->
   <section id="p-wg" role="tabpanel" aria-labelledby="tab-wg" hidden>
     <div class="card">
-      <h2>Wohngeldbescheid prüfen</h2>
-      <p>Trage die Angaben aus dem Wohngeldbescheid ein (Beträge im Monat). SoLo rechnet nach dem Wohngeldgesetz nach. Die Rechnung trifft den amtlichen Wohngeldrechner auf höchstens 1 € genau.</p>
+      <h2 data-t="bp.wg.h">Wohngeldbescheid prüfen</h2>
+      <p data-t="bp.wg.p">Scanne den Wohngeldbescheid. SoLo rechnet nach dem Wohngeldgesetz nach.</p>
+      <details class="mehr"><summary data-t="bp.was">Was prüft SoLo genau?</summary><p>Trage die Angaben aus dem Bescheid ein (Beträge im Monat). Die Rechnung trifft den amtlichen Wohngeldrechner auf höchstens 1 € genau.</p></details>
       <div class="btns"><button type="button" class="btn" id="wg-beispiel">Beispiel laden</button></div>
     </div>
     <form id="wg-form" onsubmit="return false">
       <fieldset><legend>Haushalt und Miete</legend>
         <div class="grid2">
-          <div><label for="wg-n">Personen im Haushalt</label><input type="number" id="wg-n" min="1" max="12" step="1" inputmode="numeric" value="1"></div>
+          <div><label for="wg-n">Personen im Haushalt</label><input type="number" id="wg-n" min="1" max="20" step="1" inputmode="numeric" value="1"></div>
           <div><label for="wg-stufe">Mietenstufe (steht im Bescheid)</label><select id="wg-stufe"><option value="1">I</option><option value="2">II</option><option value="3" selected>III</option><option value="4">IV</option><option value="5">V</option><option value="6">VI</option><option value="7">VII</option></select></div>
           <div><label for="wg-kalt">Miete mit Nebenkosten, ohne Heizung</label><input type="number" id="wg-kalt" min="0" step="0.01" inputmode="decimal"></div>
           <div><label for="wg-sb">Personen mit Schwerbehinderung (GdB 100, oder ab 50 mit Pflegegrad)</label><input type="number" id="wg-sb" min="0" max="12" step="1" inputmode="numeric" value="0"></div>
@@ -301,6 +349,7 @@
       </fieldset>
     </form>
     <div class="card" id="wg-erg" aria-live="polite"></div>
+    <p class="small muted rb-satz rb-erg" data-t="rb.satz">Erste Einschätzung, keine Rechtsberatung. Es entscheidet das Amt, im Streit das Gericht.</p>
     <div class="card">
       <h2>Widerspruch vorbereiten</h2>
       <div class="grid2">
@@ -317,14 +366,16 @@
       <textarea id="wg-wid-text" rows="18" readonly hidden></textarea>
       <div class="btns"><button type="button" class="btn" id="wg-wid-copy" hidden>Text kopieren</button></div>
       <p class="small" id="wg-copy-msg" role="status"></p>
+      <p class="small muted rb-satz rb-schreiben" data-t="rb.satz">Erste Einschätzung, keine Rechtsberatung. Es entscheidet das Amt, im Streit das Gericht.</p>
     </div>
   </section>
 
   <!-- Bescheid Kinderzuschlag -->
   <section id="p-kiz" role="tabpanel" aria-labelledby="tab-kiz" hidden>
     <div class="card">
-      <h2>Bescheid Kinderzuschlag prüfen</h2>
-      <p>Trage die Durchschnittsbeträge der letzten sechs Monate vor dem Antrag ein. Mit diesem Zeitraum rechnet auch die Familienkasse. SoLo rechnet mit denselben Regeln wie die App nach.</p>
+      <h2 data-t="bp.kz.h">Bescheid Kinderzuschlag prüfen</h2>
+      <p data-t="bp.scan.p">Scanne den Bescheid. SoLo rechnet nach und zeigt Abweichungen.</p>
+      <details class="mehr"><summary data-t="bp.was">Was prüft SoLo genau?</summary><p>Trage die Durchschnittsbeträge der letzten sechs Monate vor dem Antrag ein. Mit diesem Zeitraum rechnet auch die Familienkasse. SoLo rechnet mit denselben Regeln wie die App nach.</p></details>
       <div class="btns"><button type="button" class="btn" id="kz-beispiel">Beispiel laden</button></div>
     </div>
     <form id="kz-form" onsubmit="return false">
@@ -351,6 +402,7 @@
       </fieldset>
     </form>
     <div class="card" id="kz-erg" aria-live="polite"></div>
+    <p class="small muted rb-satz rb-erg" data-t="rb.satz">Erste Einschätzung, keine Rechtsberatung. Es entscheidet das Amt, im Streit das Gericht.</p>
     <div class="card">
       <h2>Widerspruch vorbereiten</h2>
       <div class="grid2">
@@ -366,14 +418,16 @@
       <textarea id="kz-wid-text" rows="18" readonly hidden></textarea>
       <div class="btns"><button type="button" class="btn" id="kz-wid-copy" hidden>Text kopieren</button></div>
       <p class="small" id="kz-copy-msg" role="status"></p>
+      <p class="small muted rb-satz rb-schreiben" data-t="rb.satz">Erste Einschätzung, keine Rechtsberatung. Es entscheidet das Amt, im Streit das Gericht.</p>
     </div>
   </section>
 
   <!-- Nebenkosten -->
   <section id="p-nk" role="tabpanel" aria-labelledby="tab-nk" hidden>
     <div class="card">
-      <h2>Nebenkostenabrechnung prüfen</h2>
-      <p>SoLo prüft Fristen, nicht umlagefähige Posten, die Verteilung nach Wohnfläche, Heizkosten und CO₂-Kosten. Ob ein Betrag zu hoch ist, kann SoLo nicht entscheiden.</p>
+      <h2 data-t="bp.nk.h">Nebenkostenabrechnung prüfen</h2>
+      <p data-t="bp.nk.p">Scanne die Abrechnung. SoLo prüft Fristen und Posten.</p>
+      <details class="mehr"><summary data-t="bp.was">Was prüft SoLo genau?</summary><p>SoLo prüft Fristen, nicht umlagefähige Posten, die Verteilung nach Wohnfläche, Heizkosten und CO₂-Kosten. Ob ein Betrag zu hoch ist, kann SoLo nicht entscheiden.</p></details>
       <div class="btns"><button type="button" class="btn" id="nk-beispiel">Beispiel laden</button></div>
     </div>
     <form id="nk-form" onsubmit="return false">
@@ -406,6 +460,7 @@
       </fieldset>
     </form>
     <div class="card" id="nk-erg" aria-live="polite"></div>
+    <p class="small muted rb-satz rb-erg" data-t="rb.satz">Erste Einschätzung, keine Rechtsberatung. Es entscheidet das Amt, im Streit das Gericht.</p>
     <div class="card">
       <h2>Schreiben erstellen</h2>
       <div class="grid2">
@@ -423,10 +478,59 @@
       <textarea id="nk-text" rows="18" readonly hidden></textarea>
       <div class="btns"><button type="button" class="btn" id="nk-copy" hidden>Text kopieren</button></div>
       <p class="small" id="nk-copy-msg" role="status"></p>
+      <p class="small muted rb-satz rb-schreiben" data-t="rb.satz">Erste Einschätzung, keine Rechtsberatung. Es entscheidet das Amt, im Streit das Gericht.</p>
     </div>
   </section>
 
   <!-- Fristen -->
+  <section id="p-andere" role="tabpanel" aria-labelledby="tab-andere" hidden>
+    <div class="card">
+      <h2>Anderer Brief oder du weißt es nicht</h2>
+      <p>Scanne den Brief oder füge den Text ein. SoLo sucht eine Frist.</p>
+      <details class="mehr"><summary data-t="bp.was">Was prüft SoLo genau?</summary><p>SoLo zeigt eine Frist nur, wenn sie im Brief steht. Weiter unten steht, was bei Mahnbescheid und Inkasso wichtig ist.</p></details>
+      <div class="an-eingabe" id="an-eingabe">
+        <label for="an-text">Text aus dem Brief</label>
+        <textarea id="an-text" lang="de" rows="5" autocomplete="off" spellcheck="false"></textarea>
+        <div class="btns"><button type="button" class="btn" id="an-lesen">Frist suchen</button></div>
+      </div>
+      <div id="an-erg" aria-live="polite"></div>
+    </div>
+    <div class="card">
+      <h2>Gelber Brief vom Amtsgericht: Mahnbescheid</h2>
+      <p><strong>Wenn die Forderung nicht oder nicht ganz stimmt: Widerspruch innerhalb von 2 Wochen ab Zustellung.</strong> Den Widerspruch schickst du an das Gericht, das den Mahnbescheid geschickt hat. Nimm das beigefügte Formular.</p>
+      <details><summary>Mehr dazu</summary>
+        <ul>
+          <li>Das Gericht hat nicht geprüft, ob die Forderung stimmt.</li>
+          <li>Das Datum der Zustellung steht meist auf dem Umschlag. Hebe den Umschlag auf.</li>
+          <li>Wenn du nichts tust, kann ein Vollstreckungsbescheid kommen. Damit darf gepfändet werden.</li>
+          <li>Gegen einen Vollstreckungsbescheid gibt es den Einspruch, auch nur innerhalb von 2 Wochen ab Zustellung.</li>
+          <li>Stimmt die Forderung, zahle sie in dieser Frist oder frage eine Schuldnerberatung.</li>
+        </ul>
+        <p class="small muted">Quelle: Zivilprozessordnung § 692 Abs. 1 Nr. 2 bis 5, § 694, § 700 Abs. 1 mit § 339 Abs. 1, § 180 (gesetze-im-internet.de, abgerufen am 20.11.2026).</p>
+      </details>
+    </div>
+    <div class="card">
+      <h2>Brief vom Inkassobüro</h2>
+      <p>Ein Inkassobüro ist kein Amt und kein Gericht. Zahle nicht sofort. Prüfe zuerst ruhig:</p>
+      <ul>
+        <li>Kennst du die Forderung? Hast du sie vielleicht schon bezahlt?</li>
+        <li>Stimmen Name, Betrag und der ursprüngliche Gläubiger?</li>
+        <li>Unbekannter Absender oder fremdes Konto? Dann kann es Betrug sein. Frag nach, bevor du zahlst.</li>
+      </ul>
+      <p>Stimmt die Forderung nicht, schreib das dem Inkassobüro. Bei Fragen hilft eine Schuldnerberatung.</p>
+    </div>
+    <div class="card">
+      <h2>Kostenlose Hilfe</h2>
+      <ul>
+        <li><strong>Schuldnerberatung</strong> von Stadt, Landkreis oder Wohlfahrtsverband: bei Schulden, Inkasso, Mahnbescheid, Pfändung.</li>
+        <li><strong>Sozialberatung</strong> eines Wohlfahrtsverbands: bei Briefen von Ämtern.</li>
+        <li><strong>Migrationsberatung</strong>: wenn du wenig Deutsch sprichst.</li>
+      </ul>
+      <p class="small muted">Die Beratung bei diesen Stellen ist meist kostenlos. Frag bei der Terminvereinbarung nach.</p>
+      <div class="btns"><button type="button" class="btn ghost" id="an-pfaendung">Pfändung: Was muss mir bleiben? (Rechner)</button></div>
+    </div>
+  </section>
+
   <section id="p-fristen" role="tabpanel" aria-labelledby="tab-fristen" hidden>
     <div class="card">
       <h2>Widerspruchsfrist</h2>

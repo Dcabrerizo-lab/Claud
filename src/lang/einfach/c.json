@@ -1,7 +1,9 @@
 {
- "f.intro": "Trage deine Daten ein. Du bekommst drei Dinge zum Ausdrucken: einen formlosen Antrag, ein Angabenblatt und eine Unterlagenliste. Deine Daten bleiben auf deinem Gerät. Ein formloser Antrag ist ein kurzer Brief. Damit sicherst du dir deinen Antrag. Das amtliche Formular schickt dir das Amt danach.",
+ "f.intro": "Trage deinen Namen und deine Anschrift ein. Du bekommst drei Dinge zum Ausdrucken: einen Antrag, ein Angabenblatt und eine Unterlagenliste.",
  "f.deNote": "Brief und Angabenblatt sind auf Deutsch. Die Ämter brauchen sie so. Du kannst sie unverändert abgeben oder abschicken.",
- "f.stichtag": "Wenn es ein amtliches Formular gibt, findest du unten den Link dazu. Für die anderen Leistungen liegt ein formloser Antrag in der Mappe. Er gilt als Antrag. Er sichert den Monat, in dem er beim Amt ankommt.",
+ "f.stichtag": "Schick den Antrag so früh wie möglich ab. Viele Leistungen gibt es erst ab dem Monat, in dem der Antrag beim Amt ankommt. Manche gibt es erst ab dem Tag. Gibt es ein amtliches Formular? Dann steht der Link unten.",
+ "f.alg1.meldung": "Arbeitslosengeld: Ein Brief reicht nicht. Du musst dich bei der Agentur für Arbeit arbeitslos melden. Das geht persönlich oder online. Mach das spätestens am ersten Tag ohne Arbeit. Weißt du schon, dass deine Arbeit endet? Dann melde dich 3 Monate vorher arbeitsuchend. Erfährst du es später? Dann innerhalb von 3 Tagen.",
+ "f.srente.hinweis": "Altersrente für schwerbehinderte Menschen: Dieser Brief ist kein Antrag. Du fragst damit nur nach einer Rentenauskunft und nach Beratung. Den Antrag auf Rente stellst du danach bei der Deutschen Rentenversicherung.",
  "z.ggBezug": "Du bekommst Grundsicherungsgeld (bis Juni 2026: Bürgergeld). Dazu passen Wohngeld und Kinderzuschlag meist nicht. Das Bildungspaket läuft oft über das Jobcenter.",
  "z.wgKiz": "Du kannst Wohngeld und Kinderzuschlag zusammen bekommen. Beantrage beides, auch wenn bei einem das Einkommen knapp ist.",
  "z.gsaWg": "Grundsicherung im Alter und Wohngeld gibt es nicht gleichzeitig. Lass beides prüfen. Frage, welcher Weg dir mehr bringt.",
@@ -33,8 +35,8 @@
  "s.pflege.u2": "Angaben, bei welchen Dingen im Alltag du Hilfe brauchst",
  "s.pflege.u3": "Berichte vom Arzt oder Entlassbriefe aus dem Krankenhaus",
  "s.pflege.tip": "Der Medizinische Dienst kommt zu dir nach Hause. Führe vorher ein Pflegetagebuch.",
- "sc.intro": "Die App erklärt dir jedes Feld in einfachen Worten. Sie zeigt auch, was du aus deinem Check abschreiben kannst. Das Formular füllt die App nicht für dich aus.",
- "sc.localNote": "Das ist die Standard-Einstellung: Die App liest das Foto nur auf deinem Gerät. Das Foto wird nirgends hingeschickt. Dafür lädt die Texterkennung einmal ein Programm aus dem Internet.",
+ "sc.intro": "Die App erklärt dir jedes Feld. Ausfüllen musst du das Formular selbst.",
+ "sc.localNote": "Die App liest das Foto nur auf deinem Gerät. Dafür lädt die Texterkennung einmal ein Programm aus dem Internet.",
  "sc.claudeNote": "Das ist freiwillig: Claude kann das Foto genauer lesen. Dann wird das Foto an Claude gesendet. Es zählt zu deiner Claude-Nutzung. Wähle nur Unterlagen, die du senden willst.",
  "sc.ocrFail": "Die Texterkennung auf dem Gerät geht hier nicht. Füge den Text des Formulars ein.",
  "sc.claudeFail": "Claude konnte das Formular nicht lesen. Versuche es später noch einmal. Oder füge den Text ein.",
@@ -68,7 +70,7 @@
  "s.pflegeplus.tip": "Stelle den Antrag für Umbauten, bevor die Arbeiten anfangen.",
  "s.arbeit.tip": "Das Budget gibt es erst, wenn ein Arbeitgeber dir einen Arbeitsvertrag anbietet. Dieser muss sozialversicherungspflichtig sein. Du bekommst dann Tariflohn oder den ortsüblichen Lohn.",
  "s.rundfunk.wo": "Beim Beitragsservice von ARD, ZDF und Deutschlandradio. Schicke das Formular und den Bescheid über deine Sozialleistung mit.",
- "s.rundfunk.tip": "Stelle den Antrag innerhalb von zwei Monaten nach dem Bescheid. Die Befreiung gilt auch für Ehepartner oder Lebenspartner in derselben Wohnung.",
+ "s.rundfunk.tip": "Stelle den Antrag bald. Die Befreiung gilt ab dem Monat, ab dem dein Bescheid gilt. Das geht auch rückwirkend, aber höchstens 3 Jahre vor dem Monat von deinem Antrag. Die Befreiung gilt auch für Ehepartner oder Lebenspartner in derselben Wohnung.",
  "s.zuzahl.tip": "Sammle alle Quittungen über Zuzahlungen. Hast du die Belastungsgrenze erreicht, stellt die Krankenkasse eine Befreiung aus. Sie gilt für den Rest des Jahres.",
  "s.bab.wo": "Bei der Agentur für Arbeit. Du kannst online, schriftlich oder persönlich beantragen.",
  "s.bab.tip": "Stelle den Antrag vor dem Beginn der Ausbildung. Stellst du ihn später, zahlt das Amt erst ab dem Antragsmonat. Der BAB-Rechner der Bundesagentur für Arbeit zeigt dir die Höhe.",
@@ -106,5 +108,6 @@
  "sc.f.aufenthalt": "Staatsangehörigkeit und Aufenthaltsstatus. Das steht im Pass oder im Aufenthaltstitel. Lege eine Kopie dazu, wenn danach gefragt wird.",
  "sc.vorschau": "Dein Formular. Es bleibt nur auf diesem Gerät und wird nicht gespeichert. Tippe darauf, um es größer zu sehen.",
  "sc.kopiert": "Kopiert. Du kannst den Text jetzt in ein Online-Formular oder in ein ausfüllbares PDF einfügen.",
- "f.copyFail": "Kopieren ging nicht. Markiere den Text unten. Kopiere ihn dann von Hand."
+ "f.copyFail": "Kopieren ging nicht. Markiere den Text unten. Kopiere ihn dann von Hand.",
+ "f.intro.mehr": "Ein formloser Antrag ist ein kurzer Brief. Damit sicherst du dir deinen Antrag. Das amtliche Formular schickt dir das Amt danach."
 }

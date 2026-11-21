@@ -1,0 +1,59 @@
+# Prüft nur, ob die iOS-App kompiliert (Swift-Dateien, Xcode-Projekt, Capacitor-Plugins) – ohne eigenen Mac.
+# Baut für den Simulator. KEINE Signatur, KEIN Upload, keine Secrets, keine Store-Aktion.
+# Start: automatisch bei Pull Requests, die app/ios/** ändern, oder von Hand (Actions -> „iOS Kompilierprüfung“ -> Run workflow).
+name: iOS Kompilierprüfung
+
+on:
+  workflow_dispatch:
+    inputs:
+      rechner:
+        description: 'Mac-Rechner'
+        required: false
+        default: 'macos-15'
+        type: choice
+        options: ['macos-15', 'macos-15-intel', 'macos-26']
+  pull_request:
+    paths:
+      - 'app/ios/**'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-build-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  kompilieren:
+    runs-on: ${{ inputs.rechner || 'macos-15' }}
+    timeout-minutes: 45
+    steps:
+      - name: Neuestes Xcode 26 wählen (sonst das voreingestellte)
+        run: |
+          X=$(ls -d /Applications/Xcode_26*.app 2>/dev/null | sort -V | tail -1)
+          if [ -n "$X" ]; then sudo xcode-select -s "$X/Contents/Developer"; else echo "::warning::Kein Xcode 26 auf diesem Runner, nehme das voreingestellte"; fi
+          xcodebuild -version
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with: { node-version: 22, cache: npm, cache-dependency-path: app/package-lock.json }
+      - run: npm ci
+      - run: npm ci
+        working-directory: app
+      - run: npm run build:app
+      - name: Für den Simulator bauen (ohne Signatur)
+        working-directory: app/ios/App
+        run: |
+          set -o pipefail
+          xcodebuild -project App.xcodeproj -scheme App -configuration Debug \
+            -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath "$RUNNER_TEMP/dd" \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
+            build 2>&1 | tee "$RUNNER_TEMP/xcodebuild.log" | grep -E "error:|warning: unre|\*\* BUILD|CompileSwift|SwiftCompile|^/.*\.swift:[0-9]+" | tail -200
+      - name: Fehler und Warnungen der eigenen Swift-Dateien zeigen
+        if: always()
+        run: |
+          L="$RUNNER_TEMP/xcodebuild.log"
+          [ -f "$L" ] || { echo "kein Protokoll"; exit 0; }
+          echo "--- Fehler"; grep -E "error:" "$L" | sort -u | head -80 || true
+          echo "--- Warnungen in App/"; grep -E "/App/App/[A-Za-z]+\.swift:[0-9]+:[0-9]+: warning:" "$L" | sort -u | head -80 || true
+          echo "--- Ende"; tail -5 "$L"

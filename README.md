@@ -1,12 +1,12 @@
 # SoLo – Sozialleistungslotse
 
-Orientierungscheck für 32 Sozialleistungen in Deutschland (Leistungskarten, Liste in `test/karten.js`): Familie, Wohnen, Grundsicherung, Pflege, Behinderung, Rente, Ausbildung, Krankenversicherung. Es gibt eine Web-Version und Store-Apps für Android und iOS. Alles läuft auf dem Gerät: keine Server, keine Konten, kein Tracking.
+Orientierungscheck für 31 Sozialleistungen in Deutschland (Leistungskarten, Liste in `test/karten.js`): Familie, Wohnen, Grundsicherung, Pflege, Behinderung, Rente, Ausbildung, Krankenversicherung. Es gibt eine Web-Version und Store-Apps für Android und iOS. Alles läuft auf dem Gerät: keine Server, keine Konten, kein Tracking.
 
 ## Was die App kann
 
 | Bereich | Inhalt |
 |---|---|
-| Leistungen prüfen | 32 Karten (u. a. Wohngeld, Kinderzuschlag, Grundsicherungsgeld, Grundsicherung im Alter, Kostenlose Familienversicherung nach § 10 SGB V): „wahrscheinlich“, „möglich“ oder „unwahrscheinlich“, grobe Höhe, zuständige Stelle, Unterlagen. Hinweise auf einmalige Hilfen (Erstausstattung, Umzug, Schwangerschaft) in den Karten Grundsicherungsgeld und Grundsicherung im Alter. |
+| Leistungen prüfen | 31 Karten (u. a. Wohngeld, Kinderzuschlag, Grundsicherungsgeld, Grundsicherung im Alter): „wahrscheinlich“, „möglich“ oder „unwahrscheinlich“, grobe Höhe, zuständige Stelle, Unterlagen. Hinweise auf einmalige Hilfen (Erstausstattung, Umzug, Schwangerschaft) in den Karten Grundsicherungsgeld und Grundsicherung im Alter. |
 | Netto aus Brutto | Lohnsteuer, Soli, Kirchensteuer nach amtlichem Programmablaufplan 2026, Sozialabgaben mit Übergangsbereich (`test/test-netto.js`) |
 | Ersparnisse | Aufteilung nach Art (Konto, ETF, Bausparen, Versicherungen, Riester/Rürup/Betriebsrente, Zinsen); geschützte Altersvorsorge zählt nicht, Zinsen als Einkommen (`test/test-ersparnis.js`) |
 | Schulden | Pfändung von Lohn (§ 850c ZPO, Tabelle 2026, gilt bis 30.6.2027) und P-Konto (§§ 899, 902 ZPO) |
