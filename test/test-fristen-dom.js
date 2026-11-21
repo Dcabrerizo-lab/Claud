@@ -233,7 +233,8 @@ const E = {
     ck('[fristen-dom] Nach dem Entsperren: Hinweis über alle Vorgänge mit Vorgangsname', st && /Geheimtitel/.test(st.textContent) && /Vorgang: Oma/.test(st.textContent), st && st.textContent);
     ck('[fristen-dom] Frist in anderem Vorgang: nur „Ansehen“', st && knopf(st, 'Ansehen') && !knopf(st, 'Erledigt') && !knopf(st, 'Später erinnern'));
     ck('[fristen-dom] „und 1 weitere“', st && /und 1 weitere/.test(st.textContent));
-    ck('[fristen-dom] Mit PIN: Merker nur Datum, sonst nichts im Klartext', m8['lotse.fristTag'] === HEUTE && !Object.values(m8).some((v) => /Geheimtitel|Oma/.test(v)));
+    // „Oma“ nur als eigenes Wort: Base64-Geheimtext enthält die drei Zeichen zufällig (~1:1000 Läufe), Klartext im JSON stünde in Anführungszeichen
+    ck('[fristen-dom] Mit PIN: Merker nur Datum, sonst nichts im Klartext', m8['lotse.fristTag'] === HEUTE && !Object.values(m8).some((v) => /Geheimtitel|(?<![A-Za-z0-9+/=])Oma(?![A-Za-z0-9+/=])/.test(v)));
     s.klick(knopf(st, 'Ansehen'));
     await warte(30);
     ck('[fristen-dom] Ansehen: öffnet den Vorgang und die Liste', !s.$('ordnerFristen').hidden && /Geheimtitel/.test(s.$('friListe').textContent) && !s.$('friStart'));
