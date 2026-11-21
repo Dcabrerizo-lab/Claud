@@ -117,7 +117,7 @@ async function zurueck(d) { const v = d.getElementById('v-' + d.defaultView.__so
   check('DOM: Suchbereich role=search, Trefferzahl aria-live', d.getElementById('suSuche').getAttribute('role') === 'search' && status.getAttribute('aria-live') === 'polite');
   tippe(w, d, 'Mietzuschuss');
   let zeilen = [...box.querySelectorAll('button.su-zeile')];
-  check('DOM: Treffer als Zeilen mit Symbol und Bereich', zeilen.length >= 1 && zeilen.length <= 6 && zeilen[0].querySelector('.zeile-sym svg') && zeilen[0].querySelector('.zeile-st').textContent === 'Hilfen-Check', zeilen.map((z) => z.textContent));
+  check('DOM: Treffer als Zeilen mit Symbol und Bereich', zeilen.length >= 1 && zeilen.length <= 6 && zeilen[0].querySelector('.zeile-sym svg') && zeilen[0].querySelector('.zeile-st').textContent === 'Leistungs-Check', zeilen.map((z) => z.textContent));
   check('DOM: erster Treffer Wohngeld', zeilen[0].querySelector('b').textContent === 'Wohngeld' && zeilen[0].getAttribute('data-ziel') === 'l-wohngeld');
   check('DOM: Trefferzahl im Status', /Treffer$/.test(status.textContent), status.textContent);
   // Tastatur

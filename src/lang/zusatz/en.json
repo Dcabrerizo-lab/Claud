@@ -61,6 +61,7 @@
   "bp.vb.verh": "Were you prevented without it being your fault (for example in hospital)? Then send the objection at once and write why it was not possible earlier (“Antrag auf Wiedereinsetzung”, request to restore the deadline). You only have a short time for this: {zeit} after the obstacle is gone.",
   "bp.vb.2w": "2 weeks",
   "bp.vb.1m": "1 month",
+  "wg.plzStufe": "Calculated with rent level {stufe} for {ort}. If your address belongs to a different municipality, the amount can be different.",
   "bp.vb.erfolg": "Whether you succeed is decided by the office. SoLo cannot promise it.",
   "bp.vb.quellen": "Sources: (§ 44 SGB X; § 40 Abs. 1 SGB II; § 116a SGB XII; §§ 66, 67, 84 SGG; Wohngeld: §§ 58, 60, 70 VwGO).",
   "bp.vb.zugang": "Day the letter really arrived (if later)",

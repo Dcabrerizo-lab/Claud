@@ -77,7 +77,7 @@ Nur iPhone. Braucht ein Gerät mit **installierter 1.8.0 und gespeicherten Angab
 | 6.2 | Web-Inspektor → Konsole: `Capacitor.Plugins.SoloSpeicher.info()` | Ergebnis enthält `ohneSicherung: true` (und `bereit: true`, `ausweich: false`) | – | |
 | 6.3 | Angabe ändern, App schließen, neu öffnen | Änderung gespeichert | – | |
 | 6.4 | Neuinstallation (App löschen, neu installieren), 6.2 wiederholen | `ohneSicherung: true`, App startet leer | – | |
-| 6.5 | Einstellungen → „Alle Vorgänge löschen“ | Alles weg, auch nach Neustart | – | |
+| 6.5 | Einstellungen → „Alles auf diesem Gerät löschen“ | Alles weg, auch nach Neustart | – | |
 
 Bei `ohneSicherung: false` oder `ausweich: true`: nicht veröffentlichen, Ergebnis an Claude geben.
 

@@ -61,6 +61,7 @@
   "bp.vb.verh": "Warst du verhindert, ohne dass du etwas dafür kannst (zum Beispiel im Krankenhaus)? Dann schick sofort den Widerspruch und schreib dazu, warum es nicht früher ging („Antrag auf Wiedereinsetzung“). Dafür hast du nur kurz Zeit: {zeit}, nachdem das Hindernis weg ist.",
   "bp.vb.2w": "2 Wochen",
   "bp.vb.1m": "1 Monat",
+  "wg.plzStufe": "Gerechnet mit Mietenstufe {stufe} für {ort}. Gehört deine Adresse zu einer anderen Gemeinde, kann der Betrag anders sein.",
   "bp.vb.erfolg": "Ob du Erfolg hast, entscheidet die Stelle. SoLo kann das nicht zusagen.",
   "bp.vb.quellen": "Quellen: (§ 44 SGB X; § 40 Abs. 1 SGB II; § 116a SGB XII; §§ 66, 67, 84 SGG; Wohngeld: §§ 58, 60, 70 VwGO).",
   "bp.vb.zugang": "Tag, an dem der Brief wirklich ankam (falls später)",

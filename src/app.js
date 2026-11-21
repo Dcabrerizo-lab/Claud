@@ -1088,6 +1088,16 @@
     if ((state.ek1Geschaetzt || state.ek2Geschaetzt) && !schon['fehlt.einkommen']) f.push(t('gn.brutto'));
     return f.length ? '<p class="karte-genauer">' + esc(t('gn.liste', { liste: f.join(', ') })) + '</p>' : '';
   }
+  // Wohngeld: Mietenstufe kommt aus der PLZ (Liste, nicht amtlich je Adresse) – sichtbar sagen, womit gerechnet wurde
+  // (Rechtsprüfung 21.11.2026, rechtsfragen-rot.md Frage 4). Nicht, wenn die Person die Stufe selbst anders gewählt hat.
+  function wgStufeHtml(r) {
+    if (r.id !== 'wohngeld' || (r.level !== 'ja' && r.level !== 'vielleicht') || !state.mietstufe || !Plz.available() || !/^\d{5}$/.test(String(state.plz || ''))) return '';
+    var x = Plz.lookup(state.plz); if (!x || state.plzOrt === 'nein') return '';
+    var c = x.sure ? x.candidates[0] : x.candidates.filter(function (y) { return y.label + '|' + y.kreis + '|' + y.stufe === state.plzPick; })[0];
+    var stufe = x.sure ? x.stufe : c && c.stufe;
+    if (!c || !stufe || String(stufe) !== String(state.mietstufe)) return '';
+    return '<p class="karte-hinweis wg-stufe"><span aria-hidden="true">ⓘ </span>' + esc(t('wg.plzStufe', { stufe: Rules.roman(stufe), ort: '@@ORT@@' })).replace('@@ORT@@', '<bdi lang="de" dir="ltr">' + esc(c.label) + '</bdi>') + '</p>';
+  }
   // Zuständige Stelle in einer Zeile (Name und Ort), die ganze Anschrift steht unter „Mehr dazu“ (zustHtml)
   function zustKurz(r) {
     var b = Behoerden.available() ? Behoerden.fuer(r.id, aktAgs()) : null;
@@ -1113,7 +1123,7 @@
       '<header><div><h3' + (lang === 'de' ? '' : ' lang="de"') + '>' + esc(r.name) + '</h3>' + (desc ? '<div class="desc">' + esc(desc) + '</div>' : '') + '</div>' +
       '<span class="pill ' + r.level + '"><span aria-hidden="true">' + MARK[r.level] + '</span>' + esc(t('lvl.' + r.level)) + '</span></header>' +
       '<p class="head2">' + esc(beratung ? zeile2(r) : Fmt.ohnePara(zeile2(r))) + '</p><span class="karte-mehr" aria-hidden="true" data-mehr="' + esc(t('karte.mehr')) + '" data-weniger="' + esc(t('karte.weniger')) + '"></span></summary>' +
-      '<div class="body"><div class="txt"><p class="kern">' + esc(teile[0] || '') + '</p></div>' +
+      '<div class="body"><div class="txt"><p class="kern">' + esc(teile[0] || '') + '</p>' + wgStufeHtml(r) + '</div>' +
       (antragMoeglich(r) ? '<p class="btns karte-antrag"><button type="button" class="btn" data-antrag="' + esc(r.id) + '">' + esc(t('akt.antrag')) + '</button></p>' : '') +
       (r.level === 'nein' ? '' : zustKurz(r)) +
       '<details class="mehr karte-details"><summary>' + esc(t('karte.details')) + '</summary>' + mehr + '</details></div></details></article>';
