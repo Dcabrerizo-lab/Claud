@@ -1,6 +1,7 @@
-// Store-Bilder erzeugen: zuerst npm run build:app, dann node tools/store-bilder.js (Ergebnis in store-bilder/)
-// Rohe Aufnahmen der Store-App (app/www, mit nachgeahmten Capacitor-Plugins), damit die Knöpfe der App zu sehen sind
-// (Antragsmappe: Android Drucken, PDF speichern, PDF teilen; iPhone PDF teilen). Danach mit Überschrift in die Store-Formate gesetzt.
+// Store-Bilder erzeugen: zuerst npm run build:app, dann node tools/store-bilder.js (Ergebnis in store-bilder/, nicht im Repo)
+// Rohe Aufnahmen der Store-App (app/www, mit nachgeahmten Capacitor-Plugins, Android), Musterdaten („Maria Muster“, Musterbescheid, Muster-Fristen).
+// Danach mit Überschrift in die Store-Formate gesetzt: play (1080 x 1920, 8 Bilder), ios-6.9 (1320 x 2868) und ios-6.5 (1242 x 2688, je 9 Bilder).
+// Die Aufnahme steht ganz im Rahmen (samt Leiste unten), nichts wird abgeschnitten. DEBUG=1 legt bei einem Fehler store-bilder/fehler.png ab.
 // Logo: tools/logo/sprechblase.svg. Farbe der Bilder passend zum Design „Warm und menschlich“ (Petrol, Creme, Koralle).
 const { chromium } = require('playwright');
 const fs = require('fs');
@@ -23,70 +24,90 @@ const VERLAUF = 'linear-gradient(160deg,#13806e,#0a4f44)';
   const APP = 'http://localhost:' + srv.address().port + '/index.html';
   const b = await chromium.launch();
   const neu = async (pl) => { const c = await b.newContext({ viewport: { width: 390, height: 760 }, deviceScaleFactor: 3, locale: 'de-DE' }); await c.addInitScript(MOCK, pl); return c.newPage(); };
-  // iPhone: Antragsmappe mit „PDF teilen“ (Drucken und Sichern stecken im Teilen-Dialog)
-  { const pi = await neu('ios'); await pi.goto(APP + '#leistungen'); await pi.click('#firstOk').catch(() => {}); await pi.evaluate(() => document.getElementById('p1').click()); await pi.fill('#p-name', 'Maria Muster');
-    await pi.fill('#p-strasse', 'Hauptstr. 1'); await pi.fill('#p-ort', '91054 Erlangen'); await pi.press('#p-ort', 'Tab'); await pi.waitForTimeout(300);
-    await pi.click('#mappeMake'); await pi.evaluate(() => window.scrollTo(0, 0)); await pi.waitForTimeout(300); await pi.screenshot({ path: D + 'roh-6-mappe-ios.png' }); await pi.context().close(); }
-  const p = await neu('android');
-  const roh = async (name, fn) => { await fn(); await p.waitForTimeout(300); await p.screenshot({ path: D + 'roh-' + name + '.png' }); };
+  // Seit 1.9: Name und Anschrift erst in der Antragsmappe (#helper), beim Leistungs-Check zuerst die Wahl „Schritt für Schritt / Alles auf einer Seite“
+  // (#sfWegSchritt, #sfWegAlles; gemerkt in lotse.checkWeg). Fristen kommen nur per Knopf „Frist merken“ aus „Brief prüfen“ in „Mein Ordner“.
+  const p = await neu('android'); p.setDefaultTimeout(8000);
+  const fehler = []; p.on('pageerror', (e) => fehler.push(e.message));
+  const roh = async (name, fn) => { await fn(); await p.waitForTimeout(400); await p.screenshot({ path: D + 'roh-' + name + '.png' }); };
   const zu = async (sel, off = 0) => p.evaluate(([s, o]) => { const e = document.querySelector(s); window.scrollTo(0, e.getBoundingClientRect().top + window.scrollY - o); }, [sel, off]);
   const oben = () => p.evaluate(() => window.scrollTo(0, 0));
+  const start = async () => { await p.click('#appnav [data-ansicht=start]'); await oben(); };
+  const sprache = (x) => p.evaluate((l) => { const s = document.getElementById('lang'); s.value = l; s.dispatchEvent(new Event('change', { bubbles: true })); }, x);
+  const datum = (n) => new Date(Date.now() + n * 864e5); // Fristen relativ zu heute, damit sie offen sind
+  const tt = (d) => d.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
-  await p.goto(APP);
-  await roh('1-start', async () => { await p.click('#appnav [data-ansicht=start]'); await oben(); });
-  // Leistungscheck mit Beispiel
-  await p.click('#appnav [data-ansicht=start]'); await p.click('#goLeistungen');
-  await p.click('#firstOk').catch(() => {});
-  await p.evaluate(() => document.getElementById('p1').click());
-  await p.fill('#p-name', 'Maria Muster'); await p.fill('#p-strasse', 'Hauptstr. 1'); await p.fill('#p-ort', '91054 Erlangen'); await p.press('#p-ort', 'Tab');
-  if (await p.isVisible('#plz')) await p.fill('#plz', '91054');
-  await p.waitForTimeout(300);
-  await roh('2-ergebnis', async () => { await zu('#ergebnis', 10); });
-  await roh('3-brief', async () => { await p.click('#appnav [data-ansicht=start]'); await p.click('#goBriefe'); await zu('#einfachBtn', 10); });
+  globalThis.__p = p;
+  await p.goto(APP); await p.click('#firstOk').catch(() => {});
+  await roh('1-start', async () => { await start(); await zu('#goLeistungen', 120); }); // Begrüßung, großer Knopf und die Kacheln mit Text
+  // Leistungs-Check: erst die Wahl des Wegs (neu in 1.9), für die übrigen Bilder „Alles auf einer Seite“
+  await p.click('#goLeistungen'); await roh('9-weg', oben); await p.click('#sfWahlAlles');
+  // Brief prüfen: Musterbescheid nachrechnen (Beispiel), dann zwei Fristen merken (Unterlagen nachreichen, Widerspruch gegen Bescheid)
+  await start(); await p.click('#goBriefe');
   await roh('4-bescheid', async () => {
     await p.click('#brief-jc'); if (await p.isVisible('#elSelbst')) await p.click('#elSelbst');
     await p.evaluate(() => document.querySelector('#p-bescheid [id$="-beispiel"]').click());
     await zu('#bs-erg', 10);
   });
+  await p.click('#briefZurueck'); await p.click('#brief-jc'); await p.check('input[value=mit]');
+  await p.fill('#bs-art-tag', datum(12).toISOString().slice(0, 10)); await p.press('#bs-art-tag', 'Tab');
+  await p.click('.fri-merken button:has-text("Frist merken")');
+  await p.click('#briefZurueck'); await p.click('#brief-jc'); await p.check('input[value=bescheid]'); await p.click('#elPaste');
+  await p.fill('#elText', 'Jobcenter Musterstadt\nDatum: ' + tt(datum(-3)) + '\nBescheid über Leistungen zur Sicherung des Lebensunterhalts\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch erhoben werden.');
+  await p.click('#elLesen'); await p.waitForTimeout(300);
+  await p.click('.fri-merken button:has-text("Frist merken")');
   await p.click('#briefZurueck');
-  await p.click('#appnav [data-ansicht=start]'); await p.click('#goLeistungen');
-  await roh('5-pflege', async () => {
-    await p.click('#paStart'); await p.fill('#pa-jahre', '81'); await p.click('#pflegeAssist .es-weiter'); await p.click('#pflegeAssist .es-btn:has-text("Ja")'); await oben();
+  // Leistungs-Check (Weg „Alles auf einer Seite“) mit Musterhaushalt (verstecktes Beispiel p1) und PLZ
+  await start(); await p.click('#goLeistungen');
+  await p.evaluate(() => document.getElementById('p1').click());
+  await p.fill('#plz', '91054'); await p.press('#plz', 'Tab');
+  if (await p.isVisible('#plzPick')) await p.selectOption('#plzPick', { index: 2 });
+  await roh('2-ergebnis', async () => { await zu('#ergebnis', 10); });
+  // Antragsmappe: Musterdaten eintragen, Bild zeigt die Schritte (Anschreiben, Formulare, Unterlagen, Abschicken)
+  await roh('6-mappe', async () => {
+    await p.click('#mappeMake'); await p.fill('#p-name', 'Maria Muster'); await p.fill('#p-geb', '01.01.1991'); await p.fill('#p-strasse', 'Hauptstr. 1'); await p.fill('#p-ort', '91054 Erlangen');
+    await p.press('#p-ort', 'Tab'); await p.waitForTimeout(300); await zu('#mappeBody', 10);
   });
-  await p.click('#appnav [data-ansicht=start]'); await p.click('#goLeistungen');
-  await roh('6-mappe', async () => { await p.click('#mappeMake'); await oben(); });
   await p.click('#mappeClose');
-  await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'ar');
-  await roh('13-sprachen', async () => { await zu('#ergebnis', 10); });
-  await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'de');
-  await p.evaluate(() => document.getElementById('einfachBtn').click());
-  await p.addStyleTag({ content: '.top{display:none!important}' }); // Kopfzeile nur für das Bild ausblenden
-  await p.fill('#es-in', '1990'); await p.click('#es-weiter');
-  await roh('7-einfach', async () => { await zu('.es-top', 16); });
+  // Geld und Schulden: Es ist dringend → Konto gepfändet (Frist und erster Schritt)
+  await roh('3-dringend', async () => { await start(); await p.click('#goGeld'); await p.click('#v-geld button:has-text("Es ist dringend"), button:has-text("Es ist dringend")'); await p.click('button:has-text("Mein Konto ist gepfändet")'); await oben(); });
+  // Pflege: Leistungen bei Pflegegrad 3
+  await roh('5-pflege', async () => { await start(); await p.click('#goPflege'); await p.click('#pu-hilfe'); await p.locator('button:visible', { hasText: /^3$/ }).first().click(); await oben(); });
+  // Mein Ordner → Fristen
+  await roh('7-fristen', async () => { await p.click('#appnav [data-ansicht=ordner]'); await p.click('#or-fristen'); await oben(); });
+  // Arabisch: Ergebnis
+  await start(); await p.click('#goLeistungen'); await sprache('ar');
+  await roh('8-sprachen', async () => { await zu('#ergebnis', 10); });
+  await sprache('de');
+  if (fehler.length) throw new Error('Skriptfehler in der App: ' + fehler.join(' | '));
 
   // In Store-Formate setzen
   const MOTIVE = [
     ['1-start', 'Hilfen finden, Briefe prüfen', 'Alles an einem Ort, ohne Anmeldung'],
     ['2-ergebnis', require('../test/karten.js').length + ' Leistungen geprüft', 'Mit grober Höhe und klarer Einschätzung'],
-    ['3-brief', 'Brief vom Amt bekommen?', 'Scannen, als PDF oder Text einfügen'],
+    ['3-dringend', 'Schulden? Erst das Dringende', 'Bei Pfändung, Sperre oder Mahnbescheid: Frist und erster Schritt'],
     ['4-bescheid', 'Bescheid nachgerechnet', 'Abweichungen mit Paragraf, Widerspruch als PDF'],
-    ['5-pflege', 'Pflegegrad selbst einschätzen', 'Eine Frage pro Bildschirm, mit Erklärung'],
-    ['6-mappe', 'Anträge fertig zum Abschicken', 'Formlose Anträge und Angabenblatt als PDF'],
-    ['7-einfach', 'Auch in einfacher Sprache', 'Eine Frage pro Bildschirm, große Knöpfe'],
-    ['13-sprachen', 'In 13 Sprachen', 'Amtsbegriffe bleiben deutsch, damit du sie wiedererkennst']];
+    ['5-pflege', 'Was steht dir bei Pflege zu?', 'Leistungen je Pflegegrad, Pflegegrad selbst einschätzen'],
+    ['6-mappe', 'Anträge fertig zum Abschicken', 'Schritt für Schritt: Anschreiben, Formulare, Unterlagen'],
+    ['7-fristen', 'Fristen im Blick', 'In „Mein Ordner“: was bis wann zu tun ist'],
+    ['8-sprachen', 'In 13 Sprachen', 'Amtsbegriffe bleiben deutsch, damit du sie wiedererkennst'],
+    ['9-weg', 'Eine Frage pro Seite', 'Oder alles auf einer Seite, wie es dir lieber ist', 'nurIos']]; // Play: höchstens 8 Bilder
   const FORMATE = [['play', 1080, 1920], ['ios-6.9', 1320, 2868], ['ios-6.5', 1242, 2688]];
   const p2 = await b.newPage();
   for (const [fmt, w, h] of FORMATE) {
     fs.rmSync(D + fmt, { recursive: true, force: true }); fs.mkdirSync(D + fmt, { recursive: true });
-    for (const [n, titel, unter] of MOTIVE) {
-      const roh = fmt.startsWith('ios') && fs.existsSync(D + 'roh-' + n + '-ios.png') ? 'roh-' + n + '-ios.png' : 'roh-' + n + '.png';
-      const img = 'data:image/png;base64,' + fs.readFileSync(D + roh).toString('base64');
+    for (const [n, titel, unter, nur] of MOTIVE) {
+      if (nur === 'nurIos' && !fmt.startsWith('ios')) continue;
+      const img = 'data:image/png;base64,' + fs.readFileSync(D + 'roh-' + n + '.png').toString('base64');
       await p2.setViewportSize({ width: w, height: h });
       await p2.setContent(`<html><body style="margin:0;width:${w}px;height:${h}px;background:${VERLAUF};font-family:system-ui,sans-serif;color:#fff;overflow:hidden;display:flex;flex-direction:column;align-items:center">
         <div style="padding:${h * 0.045}px ${w * 0.07}px ${h * 0.025}px;text-align:center"><div style="font-size:${w * 0.072}px;font-weight:800;line-height:1.15">${titel}</div>
         <div style="font-size:${w * 0.038}px;opacity:.92;margin-top:${h * 0.012}px;line-height:1.3">${unter}</div></div>
-        <div style="flex:1;width:${w * 0.82}px;border-radius:${w * 0.05}px ${w * 0.05}px 0 0;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35);background:#fff">
-        <img src="${img}" style="width:100%;display:block"></div></body></html>`);
+        <div style="flex:1;min-height:0;width:100%;display:flex;justify-content:center;align-items:center;padding-bottom:${h * 0.035}px;box-sizing:border-box" id="rahmen">
+        <img src="${img}" id="bild" style="border-radius:${w * 0.045}px;box-shadow:0 20px 60px rgba(0,0,0,.35);background:#fff;display:block"></div></body></html>`); // ganzer Bildschirm samt Leiste, nichts abgeschnitten
+      // Bild so groß wie möglich, ohne Rand und ohne Abschneiden (Seitenverhältnis der Aufnahme bleibt)
+      await p2.evaluate((mw) => new Promise((ok) => { const i = document.getElementById('bild'); const f = () => { const r = document.getElementById('rahmen'); const cs = getComputedStyle(r);
+        const hh = r.clientHeight - parseFloat(cs.paddingBottom); const k = Math.min(mw / i.naturalWidth, hh / i.naturalHeight); i.style.width = Math.floor(i.naturalWidth * k) + 'px'; i.style.height = Math.floor(i.naturalHeight * k) + 'px'; ok(); };
+        if (i.complete) f(); else i.onload = f; }), w * 0.82);
       await p2.waitForTimeout(100);
       await p2.screenshot({ path: D + fmt + '/' + n + '.png' });
     }
@@ -109,5 +130,5 @@ const VERLAUF = 'linear-gradient(160deg,#13806e,#0a4f44)';
   await p2.screenshot({ path: D + 'play-werbegrafik-1024x500.png' });
   await b.close(); srv.close();
   console.log('fertig');
-})().catch((e) => { console.log('FEHLER', e.message); process.exit(1); });
+})().catch(async (e) => { console.log('FEHLER', e.message.split('\n')[0]); if (process.env.DEBUG && globalThis.__p) await globalThis.__p.screenshot({ path: D + 'fehler.png' }); process.exit(1); });
 
