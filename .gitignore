@@ -1,4 +1,4 @@
-node_modules/
+node_modules
 dist/
 app/www/
 app/android/app/build/
@@ -11,3 +11,4 @@ app/ios/App/Pods/
 .DS_Store
 store-bilder/
 __pycache__/
+test/listen/.betroffen.txt

@@ -14,6 +14,7 @@
 //        liest amtlich-<art>*.json (Ausgabe der Abfrage), rechnet mit SoLo, listet Abweichungen > 1 € bzw. andere Einschätzung
 const fs = require('fs'), path = require('path');
 const R = require('../src/rules.js');
+const Ref = require('../test/referenz.js');
 const HEUTE = 2026.9;
 const N = { bafoeg: 200, elterngeld: 300, pfaendung: 300 };
 
@@ -80,11 +81,17 @@ function bafoegSolo(f) {
   }
   const r = R.evaluate(inp).results.find((x) => x.id === 'bafoeg');
   const vt = r.tx.find((t) => t[0] === 'bafoeg.vermTeil');
-  return { level: r.level, hl: r.hl, keys: r.tx.map((t) => t[0]), vermMonat: vt ? (vt[1].monat && vt[1].monat.eur != null ? vt[1].monat.eur : Number(String(vt[1].monat).replace(/[^\d]/g, ''))) : null };
+  // Betragsschätzung (seit Update BAföG-Betrag): Spanne [von, bis] in €; „bis etwa“ -> von 0; keine Schätzung oder „eher nicht“ -> [0, 0].
+  // Dazu die Spanne je Wohnsituation (bafoeg.betragWohnen: a–b bei den Eltern, c–d nicht bei den Eltern).
+  const sch = r.tx.find((t) => /^schaetz\./.test(t[0])), bw = r.tx.find((t) => t[0] === 'bafoeg.betragWohnen');
+  const spanne = r.level === 'nein' || !sch ? [0, 0] : sch[0] === 'schaetz.eins' ? [sch[1].a.eur, sch[1].a.eur] : sch[0] === 'schaetz.spanne' ? [sch[1].a.eur, sch[1].b.eur] : [0, sch[1].b.eur];
+  const wohnen = bw ? { eltern: [bw[1].a.eur, bw[1].b.eur], aus: [bw[1].c.eur, bw[1].d.eur] } : null;
+  return { level: r.level, hl: r.hl, keys: r.tx.map((t) => t[0]), spanne, wohnen, vermMonat: vt ? (vt[1].monat && vt[1].monat.eur != null ? vt[1].monat.eur : Number(String(vt[1].monat).replace(/[^\d]/g, ''))) : null };
 }
 function egSolo(f) {
   const kids = f.geschwister ? 2 : 0;
-  const e = R.evaluate({ baby: 'bald', egVor: f.vorher, art1: 'lohn', brutto: 2000, netto: 1500, heute: HEUTE, kids, kidsU6: kids }).results.find((r) => r.id === 'elterngeld');
+  // Teilzeit (Netto nach der Geburt) und Mehrlinge rechnet SoLo seit 21.11.2026 mit (§ 2 Abs. 3, § 2a Abs. 4 BEEG)
+  const e = R.evaluate({ baby: 'bald', egVor: f.vorher, egNach: f.nachher || '', egKinder: f.kinder > 1 ? String(f.kinder) : '', art1: 'lohn', brutto: 2000, netto: 1500, heute: HEUTE, kids, kidsU6: kids }).results.find((r) => r.id === 'elterngeld');
   const p = e.tx[0][1];
   return { basis: p.basis.eur, plus: p.plus.eur }; // SoLo zeigt volle Euro
 }
@@ -100,12 +107,12 @@ const eur = (x) => (x == null ? '–' : Number(x).toLocaleString('de-DE', { mini
 
 function auswerten(dir) {
   const erg = { bafoeg: null, elterngeld: null, pfaendung: null };
-  // BAföG: SoLo nennt keinen Betrag, nur eine Einschätzung. Regeln: „wahrscheinlich“ -> amtlich > 0 €; „eher nicht“ -> amtlich 0 €
+  // BAföG: Einschätzung und (seit Update BAföG-Betrag) geschätzte Spanne. Regeln: „wahrscheinlich“ -> amtlich > 0 €; „eher nicht“ -> amtlich 0 €
   // (unter 10 € wird nicht ausgezahlt, § 51 Abs. 4 BAföG); „möglich“ ist immer vereinbar. Zeigt SoLo die monatliche Minderung durch
   // Vermögen (bafoeg.vermTeil), muss amtlich Bedarf − Minderung herauskommen (± 1 €), wenn sonst nichts angerechnet wird.
   const B = lies(dir, 'bafoeg');
   if (B.length) {
-    const z = { n: B.length, ohne: 0, gleich: 0, anders: [], moeglichPos: 0, moeglichNull: 0, ja: 0, nein: 0, vermGeprueft: 0, hinweise: [] };
+    const z = { n: B.length, ohne: 0, gleich: 0, anders: [], moeglichPos: 0, moeglichNull: 0, ja: 0, nein: 0, vermGeprueft: 0, betragGeprueft: 0, betragBreite: [], hinweise: [] };
     for (const x of B) {
       if (!x.amtlich || x.amtlich.anspruch == null) { z.ohne++; continue; }
       const s = bafoegSolo(x.f), a = x.amtlich.anspruch, pos = a >= 10;
@@ -118,20 +125,35 @@ function auswerten(dir) {
         const soll = Math.max(0, x.amtlich.bedarf - s.vermMonat);
         if (Math.abs(soll - a) > 1) fehler = 'Minderung durch Vermögen: SoLo ' + eur(s.vermMonat) + '/Monat, amtlich Bedarf ' + eur(x.amtlich.bedarf) + ' − Anspruch ' + eur(a) + ' = ' + eur(x.amtlich.bedarf - a);
       }
+      // Betrag: Der amtliche Anspruch muss in SoLos Spanne liegen, und in der Spanne der passenden Wohnsituation. Toleranz 0 €:
+      // SoLo rundet die Grenzen schon nach außen auf 10 € (untere ab, obere auf), der amtliche Betrag ist nach § 51 Abs. 3 auf volle Euro
+      // gerundet; die Teilspannen je Wohnsituation rechnen mit demselben § 51 (gerundet, unter 10 € = 0 €).
+      if (!fehler) {
+        z.betragGeprueft++;
+        if (s.spanne[1] > s.spanne[0]) z.betragBreite.push(s.spanne[1] - s.spanne[0]);
+        if (a < s.spanne[0] || a > s.spanne[1]) fehler = 'Betrag: amtlich ' + eur(a) + ' außerhalb der SoLo-Spanne ' + eur(s.spanne[0]) + ' bis ' + eur(s.spanne[1]);
+        else if (s.wohnen) {
+          const w = x.f.beiEltern ? s.wohnen.eltern : s.wohnen.aus;
+          if (a < w[0] || a > w[1]) fehler = 'Betrag: amtlich ' + eur(a) + ' außerhalb der Spanne ' + (x.f.beiEltern ? 'bei den Eltern ' : 'eigene Wohnung ') + eur(w[0]) + ' bis ' + eur(w[1]);
+        }
+      }
       if (fehler) z.anders.push({ i: x.i, f: x.f, solo: s, amtlich: x.amtlich, fehler }); else z.gleich++;
     }
     erg.bafoeg = z;
   }
-  // Elterngeld: Basiselterngeld auf 1 € genau. Teilzeit (Netto nach der Geburt) und Mehrlinge fragt SoLo nicht ab -> getrennt gezählt.
+  // Elterngeld (Basiselterngeld). SoLo rechnet nach § 2c Abs. 1 BEEG mit 102,50 € Abzug (1.230 € / 12), der Schnellrechner mit 83,33 €
+  // (Entscheidung David, 21.11.2026). Kein Toleranzband: amtlich muss auf den Cent der Formel mit 83,33 € entsprechen, SoLo auf den Euro der
+  // Formel mit 102,50 €; bei festem Satz Differenz = −Satz × 19,17 €, bei Mindest-/Höchstbetrag 0 € (test/referenz.js, egAbgleich).
+  // Teilzeit (Netto nach der Geburt) und Mehrlinge rechnet SoLo mit; getrennt gezählt, damit Fehler auffallen.
   const E = lies(dir, 'elterngeld');
   if (E.length) {
-    const z = { n: E.length, ohne: 0, einfach: { n: 0, gleich: 0, anders: [] }, teilzeit: { n: 0, anders: [] }, mehrlinge: { n: 0, anders: [] } };
+    const z = { n: E.length, ohne: 0, einfach: { n: 0, gleich: 0, anders: [] }, teilzeit: { n: 0, gleich: 0, anders: [] }, mehrlinge: { n: 0, gleich: 0, anders: [] } };
     for (const x of E) {
       if (x.amtlich == null) { z.ohne++; continue; }
-      const s = egSolo(x.f), d = Math.round((s.basis - x.amtlich) * 100) / 100;
+      const s = egSolo(x.f), d = Math.round((s.basis - x.amtlich) * 100) / 100, a = Ref.egAbgleich(x.f, s.basis, x.amtlich);
       const g = x.f.kinder > 1 ? z.mehrlinge : x.f.nachher ? z.teilzeit : z.einfach;
       g.n++;
-      if (Math.abs(d) > 1) g.anders.push({ i: x.i, f: x.f, solo: s.basis, amtlich: x.amtlich, diff: d }); else if (g.gleich != null) g.gleich++;
+      if (a.fehler) g.anders.push({ i: x.i, f: x.f, solo: s.basis, amtlich: x.amtlich, diff: d, erwartet: a.diff, fehler: a.fehler }); else g.gleich++;
     }
     erg.elterngeld = z;
   }
@@ -158,7 +180,7 @@ function bericht(erg) {
   if (erg.bafoeg) {
     const z = erg.bafoeg;
     L.push('## BAföG', '', '| | Anzahl |', '|---|---|', '| Fälle | ' + z.n + ' |', '| amtlich ohne Ergebnis | ' + z.ohne + ' |', '| SoLo „wahrscheinlich“ | ' + z.ja + ' |', '| SoLo „eher nicht“ | ' + z.nein + ' |',
-      '| SoLo „möglich“, amtlich Anspruch | ' + z.moeglichPos + ' |', '| SoLo „möglich“, amtlich 0 € | ' + z.moeglichNull + ' |', '| Vermögensminderung in € geprüft | ' + z.vermGeprueft + ' |', '| **Widersprüche** | **' + z.anders.length + '** |', '');
+      '| SoLo „möglich“, amtlich Anspruch | ' + z.moeglichPos + ' |', '| SoLo „möglich“, amtlich 0 € | ' + z.moeglichNull + ' |', '| Vermögensminderung in € geprüft | ' + z.vermGeprueft + ' |', '| Betrag in SoLos Spanne geprüft | ' + z.betragGeprueft + ' |', '| Breite der Spanne (Median) | ' + (z.betragBreite.length ? eur(z.betragBreite.slice().sort((p, q) => p - q)[z.betragBreite.length >> 1]) : '–') + ' |', '| **Widersprüche** | **' + z.anders.length + '** |', '');
     if (z.anders.length) {
       L.push('| Nr. | Fall | SoLo | amtlich | Befund |', '|---|---|---|---|---|');
       z.anders.slice(0, 60).forEach((a) => L.push('| ' + a.i + ' | ' + fb(a.f) + ' | ' + a.solo.level + ' (' + a.solo.keys.join(', ') + ') | ' + eur(a.amtlich.anspruch) + ' (Bedarf ' + eur(a.amtlich.bedarf) + ') | ' + a.fehler + ' |'));
@@ -167,13 +189,13 @@ function bericht(erg) {
   }
   if (erg.elterngeld) {
     const z = erg.elterngeld;
-    L.push('## Elterngeld (Basiselterngeld, Schnellrechner)', '', '| Gruppe | Fälle | Abweichung > 1 € |', '|---|---|---|',
+    L.push('## Elterngeld (Basiselterngeld, Schnellrechner)', '', 'SoLo zieht nach § 2c Abs. 1 BEEG 102,50 € ab (1.230 € / 12), der Schnellrechner 83,33 €. Gezählt wird nur, was sich daraus nicht genau erklärt.', '', '| Gruppe | Fälle | nicht aus dem Pauschbetrag erklärt |', '|---|---|---|',
       '| ohne Teilzeit, ohne Mehrlinge (mit/ohne Geschwisterbonus) | ' + z.einfach.n + ' | ' + z.einfach.anders.length + ' |',
       '| Teilzeit nach der Geburt | ' + z.teilzeit.n + ' | ' + z.teilzeit.anders.length + ' |', '| Mehrlinge | ' + z.mehrlinge.n + ' | ' + z.mehrlinge.anders.length + ' |', '| amtlich ohne Ergebnis | ' + z.ohne + ' | |', '');
     for (const [name, g] of [['ohne Teilzeit/Mehrlinge', z.einfach], ['Teilzeit', z.teilzeit], ['Mehrlinge', z.mehrlinge]]) {
       if (!g.anders.length) continue;
-      L.push('### Abweichungen: ' + name, '', '| Nr. | Netto vorher | Netto nachher | Geschwister | Kinder | SoLo | amtlich | Differenz |', '|---|---|---|---|---|---|---|---|');
-      g.anders.slice(0, 25).forEach((a) => L.push('| ' + a.i + ' | ' + a.f.vorher + ' | ' + (a.f.nachher || '–') + ' | ' + (a.f.geschwister ? 'ja' : 'nein') + ' | ' + (a.f.kinder || 1) + ' | ' + eur(a.solo) + ' | ' + eur(a.amtlich) + ' | ' + eur(a.diff) + ' |'));
+      L.push('### Abweichungen: ' + name, '', '| Nr. | Netto vorher | Netto nachher | Geschwister | Kinder | SoLo | amtlich | Differenz | erwartete Differenz | Grund |', '|---|---|---|---|---|---|---|---|---|---|');
+      g.anders.slice(0, 25).forEach((a) => L.push('| ' + a.i + ' | ' + a.f.vorher + ' | ' + (a.f.nachher || '–') + ' | ' + (a.f.geschwister ? 'ja' : 'nein') + ' | ' + (a.f.kinder || 1) + ' | ' + eur(a.solo) + ' | ' + eur(a.amtlich) + ' | ' + eur(a.diff) + ' | ' + eur(a.erwartet) + ' | ' + a.fehler + ' |'));
       if (g.anders.length > 25) L.push('', '… und ' + (g.anders.length - 25) + ' weitere');
       L.push('');
     }

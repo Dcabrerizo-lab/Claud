@@ -27,6 +27,8 @@ function regelaltersgrenze(jahr) {
 }
 
 // Haushalt aus den Eingaben aufbauen: Liste der Personen mit Rolle, Alter(sgruppe) und Einkommen
+// Kinder der Geburt bei schon laufendem Elterngeld (Baby ist da): Zwillinge 2, Drillinge oder mehr 3 (§ 10 Abs. 4 BEEG)
+function egMehrlinge(e) { return e && e.baby === 'da' ? Math.min(3, Math.max(1, Number(e.egKinder) | 0)) : 1; }
 function haushalt(e) {
   const erwachsene = e.adults === 2 ? 2 : 1;
   const kinder = Math.max(0, e.kids | 0), jung = Math.max(0, e.young | 0);
@@ -102,7 +104,7 @@ function elternEinkommenSGB2(h) {
   h.p.forEach((x) => {
     if (x.art === 'lohn') abzug += freibetragArbeit(x.brutto, h.kinder > 0);
     else if (x.art !== 'ohne' && x.brutto > 0) abzug += 30; // Versicherungspauschale
-    if (x.art === 'eg' && x.brutto > 300) abzug += 300; // § 10 Abs. 5 BEEG
+    if (x.art === 'eg' && x.brutto > 300 * egMehrlinge(h.e)) abzug += 300; // § 10 Abs. 5 BEEG: nur mit Einkommen vor der Geburt, bei Mehrlingen nicht vervielfacht
   });
   if (h.uzFest) abzug += h.uz; // § 11b Abs. 1 Satz 1 Nr. 7 SGB II
   return Math.max(0, h.netto - abzug);
@@ -227,7 +229,7 @@ function wohngeld(h) {
   const pg = ['1', '2', '3', '4', '5'].indexOf(String(e.pflegegrad)) >= 0;
   let frei = (gdb === 100 || (gdb >= 50 && pg) ? 150 : 0) + (h.erwachsene === 1 && h.kinder > 0 ? 110 : 0);
   frei += Math.min(4, Math.max(0, e.bhWeitere | 0)) * 150; // weitere schwerbehinderte Haushaltsmitglieder
-  frei += h.p.reduce((s, x) => s + (x.art === 'eg' ? Math.min(300, x.brutto) : 0), 0);
+  frei += h.p.reduce((s, x) => s + (x.art === 'eg' ? Math.min(300 * egMehrlinge(e), x.brutto) : 0), 0); // § 10 Abs. 1 und 4 BEEG
   // § 17a WoGG: Grundrentenfreibetrag je Rente, nur auf die gesetzliche Rente (ohne enthaltene Betriebs-, Riester- oder private Rente)
   if (e.grundrente33) {
     let offenWG = zahl(e.zusatzRente);
@@ -270,7 +272,7 @@ function minderungElternKiZ(h, bedarf) {
   let anders = 0;
   h.p.forEach((x) => {
     const n = s > 0 ? h.netto * x.brutto / s : h.netto / h.p.length;
-    if (['rente', 'alg', 'kg', 'eg'].indexOf(x.art) >= 0) anders += n - 30 * (x.brutto > 0 ? 1 : 0) - (x.art === 'eg' && x.brutto > 300 ? 300 : 0);
+    if (['rente', 'alg', 'kg', 'eg'].indexOf(x.art) >= 0) anders += n - 30 * (x.brutto > 0 ? 1 : 0) - (x.art === 'eg' && x.brutto > 300 * egMehrlinge(h.e) ? 300 : 0);
   });
   anders = Math.min(gesamt, Math.max(0, anders));
   if (anders <= bedarf) return 0.45 * Math.max(0, gesamt - bedarf);
@@ -326,8 +328,21 @@ function kizBetrag0(h) {
   const ms = mehrSonst(h), bm = behMehrSGB2(h);
   const bedarfEltern = h.regelEltern + h.mehrAE + ms.eltern + (h.e.bhPerson === 'erwNach25' ? bm.sicher : 0) + h.miete * anteilEltern;
   const kindAnr = h.unterhalt + h.waisen + h.uvg + Math.max(0, h.kindEink - h.mini);
-  const kiz = Math.max(0, max - minderungElternKiZ(h, bedarfEltern) - 0.45 * kindAnr);
-  if (kiz <= 0) return { level: 'nein' };
+  const kizMit = (mehrAE, anr) => Math.max(0, max - minderungElternKiZ(h, bedarfEltern - h.mehrAE + mehrAE) - Math.min(max, 0.45 * anr));
+  const kiz = kizMit(h.mehrAE, kindAnr);
+  if (kiz <= 0) {
+    // Alter nur grob bekannt: 36 % Mehrbedarf möglich, wenn ein Kind 6-13 ist (vielleicht 6) oder zwei Kinder da sind (beide vielleicht unter 16)
+    const aeHoch = h.erwachsene === 1 && h.kinder > 0 && h.u6 === 0 && 0.12 * h.kinder < 0.36 && (h.mitte >= 1 || h.kinder >= 2) ? 0.36 * RB[1] : h.mehrAE;
+    if (kizMit(aeHoch, kindAnr) > 0) return { level: 'vielleicht' };
+    // DA-KiZ 20.02.2026 C.2.2.1 Abs. 3 Satz 3: 30 € Versicherungspauschale vom Einkommen des Kindes, falls versichert -> knapp „möglich“
+    // (§ 6 Abs. 1 Nr. 2 Grundsicherungsgeld-Verordnung; nur Unterhalt, Unterhaltsvorschuss, Waisenrente, nicht Lohn der Kinder)
+    const zahl = h.unterhalt + h.waisen + h.uvg, lohn = Math.max(0, h.kindEink - h.mini), zahlKnapp = Math.max(0, zahl - 30 * h.kids);
+    if (zahl > 0 && kizMit(aeHoch, zahlKnapp + lohn) > 0) return { level: 'vielleicht' };
+    // Lohn der Kinder: je Kind ab 14 Jahren 603 € und bis zu 164 € Freibetrag (§ 11b Abs. 2b, Abs. 3 Satz 2 Nr. 2 und 3, Satz 4 SGB II:
+    // 30 % von 480 € + 10 % von 200 €; DA-KiZ C.2.2.1 Abs. 3 Satz 9-11) -> „möglich“
+    if (lohn > 0 && kizMit(aeHoch, zahlKnapp + Math.max(0, h.kindEink - Math.max(1, h.k14 + h.jung) * (h.mini + 164))) > 0) return { level: 'vielleicht' };
+    return { level: 'nein' };
+  }
   // § 6a Abs. 1 Nr. 3 BKGG: mit dem Kinderzuschlag nicht mehr hilfebedürftig (bereinigtes Einkommen, Kindergeld, Kinderzuschlag; ein mögliches Wohngeld als fester Puffer von 300 € –
   // die App schätzt es genauer, die Einstufung bleibt dabei „möglich“, nur der Hinweis wechselt)
   const mitKiz = elternEinkommenSGB2(h) + (h.kinder + h.jung) * KG + h.unterhalt + h.waisen + h.uvg + h.kindEink + kiz, bedarfAlle = h.regel + h.miete + h.mehrAE + ms.sicher + bm.sicher;
@@ -354,7 +369,7 @@ function einkommenSGB12(e, h) {
   for (const x of posten) {
     if (x.art === 'wfbm') { const lohn = Math.max(0, x.n - 52); const frei = Math.min(lohn, rs1 / 8 + 0.5 * Math.max(0, lohn - rs1 / 8)); summe += lohn - frei; }
     else if (x.art === 'lohn') summe += x.n - Math.min(0.3 * x.n, 0.5 * rs1);
-    else if (x.art === 'eg') summe += Math.max(0, x.n - ((x.b != null ? x.b : x.n) > 300 ? 300 : 0));
+    else if (x.art === 'eg') summe += Math.max(0, x.n - ((x.b != null ? x.b : x.n) > 300 * egMehrlinge(e) ? 300 : 0));
     else if (x.art === 'rente') {
       const zus = Math.min(offen, Math.max(0, x.n)); offen -= zus;
       const zusB = Math.min(offenB, Math.max(0, x.b || 0)); offenB -= zusB;
@@ -470,7 +485,16 @@ function bafoeg0(e) {
     // den höchsten Bedarf (475 + 380 + 185 + 48 = 1.088 €, §§ 13, 13a Abs. 2) übersteigt
     const anteil = 0.5 - 0.05 * Math.max(0, h.kids - 1);
     // § 51 Abs. 3, 4 BAföG: unter 10 € (gerundet, also ungerundet unter 9,50 €) kein BAföG -> Grenze 1.088 − 9,50 €
-    return { level: h.netto <= frei ? 'ja' : anteil <= 0 || (h.netto - frei) * anteil <= 1088 - 9.5 ? 'vielleicht' : 'nein', frei };
+    // § 11 Abs. 4 BAföG: Sind j Geschwister ebenfalls in förderfähiger Ausbildung, entfällt für sie der Freibetrag 770 € (und die 5 %),
+    // das Einkommen wird auf 1 + j Auszubildende geteilt. „nein“ nur, wenn es für jedes j = 0 … Geschwister nicht reicht.
+    // Elterngeld: bis 300 € frei (§ 10 Abs. 1 BEEG); Unterhalt für sich selbst nur versteuert (zählt hier nicht).
+    const eink = h.netto - h.p.reduce((s, x) => s + (x.art === 'eg' ? Math.min(300, x.brutto) : 0), 0) - (e.art1 === 'unt' ? h.brutto - h.brutto2 : 0) - (h.erwachsene === 2 && e.art2 === 'unt' ? h.brutto2 : 0);
+    let reicht = false;
+    for (let j = 0; j <= Math.max(0, h.kids - 1); j++) {
+      const mit = Math.max(0, h.kids - 1) - j, fj = (h.erwachsene === 2 ? 2540 : 1690) + mit * 770, qj = 0.5 - 0.05 * mit;
+      if (qj <= 0 || Math.max(0, eink - fj) * qj / (1 + j) <= 1088 - 9.5) reicht = true;
+    }
+    return { level: h.netto <= frei ? 'ja' : anteil <= 0 || (h.netto - frei) * anteil <= 1088 - 9.5 || reicht ? 'vielleicht' : 'nein', frei };
   }
   if (h.gruppe === '50+') return { level: 'nein' };
   if (h.gruppe === '40-49' && !(h.jahre && h.jahre < 45)) return { level: 'vielleicht' };
@@ -531,15 +555,64 @@ function krankengeld(e) {
 
 
 // ---------- Elterngeld (§ 2 BEEG, wörtlich: 0,1 Prozentpunkte je volle 2 € Abstand) ----------
-function elterngeld(nettoVorher, geschwister) {
-  // § 2c Abs. 1 BEEG: Elterngeld-Netto = Netto minus 1/12 des Arbeitnehmer-Pauschbetrags (1.000 €), wie der Elterngeldrechner des Bundes
-  const n = Math.max(0, nettoVorher - 1000 / 12);
+const EG_PAUSCH = 1230 / 12;         // Gesetz: 102,50 € (gesetze-im-internet.de/beeg/__2c.html, /estg/__9a.html, abgerufen 21.11.2026)
+const EG_PAUSCH_RECHNER = 1000 / 12; // Elterngeld-Schnellrechner des Bundes (familienportal.de): 83,33 €, aus 1.033 abgefragten Fällen auf den Cent belegt
+function elterngeld(nettoVorher, geschwister, weitere) {
+  // weitere: { nachher (Netto nach der Geburt bei Teilzeit), mehrlinge (Kinder der Geburt) }
+  const w = weitere || {};
+  // § 2c Abs. 1 BEEG: Netto minus 1/12 des Arbeitnehmer-Pauschbetrags. Nach dem Gesetz 1.230 € (§ 9a Satz 1 Nr. 1 Buchst. a EStG in der Fassung
+  // vom 1. Januar des Jahres vor der Geburt, Satz 4), also 102,50 €. w.pausch nur für den Abgleich mit dem Schnellrechner des Bundes (egAbgleich).
+  const pausch = w.pausch != null ? w.pausch : EG_PAUSCH;
+  const n = Math.max(0, nettoVorher - pausch);
   let prozent = 67;
   if (n < 1000) prozent = Math.min(100, 67 + Math.floor((1000 - n) / 2) * 0.1);
   if (n > 1200) prozent = Math.max(65, 67 - Math.floor((n - 1200) / 2) * 0.1);
-  let basis = Math.min(1800, Math.max(300, n * prozent / 100));
-  if (geschwister >= 2) basis = basis + Math.max(75, basis / 10); // § 2a BEEG Geschwisterbonus (zwei Kinder unter 6)
-  return { basis, plus: basis / 2, monate: 14 };
+  const bonusSicher = geschwister >= 2; // § 2a BEEG Geschwisterbonus (zwei Kinder unter 6)
+  const zuschlag = 300 * Math.max(0, (w.mehrlinge || 1) - 1); // § 2a Abs. 4: je 300 € ab dem zweiten Kind der Geburt
+  // Basiselterngeld ohne Einkommen nach der Geburt (§ 2 Abs. 1, 4) mit Bonus und Mehrlingszuschlag
+  const ohneArbeit = (() => { const g = Math.min(1800, Math.max(300, n * prozent / 100)); return g + (bonusSicher ? Math.max(75, g / 10) : 0) + zuschlag; })();
+  if (!(w.nachher > 0)) return { basis: ohneArbeit, plus: ohneArbeit / 2, monate: 14 };
+  // § 2 Abs. 3: Prozentsatz auf den Unterschied der Einkommen; vorher höchstens 2.770 €
+  const unterschied = Math.max(0, Math.min(n, 2770) - Math.max(0, w.nachher - pausch));
+  const roh = Math.min(1800, unterschied * prozent / 100);
+  const g1 = Math.max(300, roh);
+  const basis = g1 + (bonusSicher ? Math.max(75, g1 / 10) : 0) + zuschlag;
+  // § 4a Abs. 2: halbe Mindestbeträge und halber Mehrlingszuschlag; insgesamt höchstens die Hälfte des Basiselterngelds ohne Arbeit
+  const g2 = Math.max(150, roh);
+  const plus = Math.min(ohneArbeit / 2, g2 + (bonusSicher ? Math.max(37.5, g2 / 10) : 0) + zuschlag / 2);
+  return { basis, plus, monate: 14 };
+}
+// Abgleich mit dem Elterngeld-Schnellrechner des Bundes. SoLo rechnet nach dem Gesetz mit 102,50 € Abzug, der Schnellrechner mit 83,33 €
+// (Entscheidung David, 21.11.2026). Der Unterschied wird nicht geduldet, sondern erklärt:
+//  1. Das amtliche Ergebnis muss auf den Cent der Formel mit 83,33 € entsprechen (sonst rechnet der Schnellrechner anders als angenommen).
+//  2. SoLo (volle Euro) muss der gleichen Formel mit 102,50 € entsprechen, also amtlich + erwartete Differenz.
+//  3. Die erwartete Differenz wird, wo der Prozentsatz auf beiden Seiten gleich ist, zusätzlich geschlossen nachgerechnet:
+//     −Satz × 19,17 € (230 € / 12; mit Geschwisterbonus über dem Mindestbonus × 1,1), 0 € bei Mindest- oder Höchstbetrag auf beiden Seiten.
+//     Bei Teilzeit hebt sich der Abzug im Unterschied der Einkommen auf (0 €), außer am Deckel 2.770 € oder wenn das Netto danach unter dem Abzug liegt.
+//     Im gleitenden Bereich (Satz ändert sich je 2 €) gibt es keine einfache Formel; dort gilt nur 1. und 2.
+// f: { vorher, nachher, geschwister, kinder } wie in den gespeicherten Fällen. Rückgabe: { fehler (Text oder null), diff, gruppe }.
+function egAbgleich(f, solo, amtlich) {
+  const g = f.geschwister ? 2 : 0, w = { nachher: f.nachher, mehrlinge: f.kinder }, D = EG_PAUSCH - EG_PAUSCH_RECHNER;
+  const rechner = elterngeld(f.vorher, g, Object.assign({ pausch: EG_PAUSCH_RECHNER }, w)).basis, gesetz = elterngeld(f.vorher, g, w).basis;
+  const diff = Math.round((gesetz - rechner) * 100) / 100;
+  const satz = (n) => (n < 1000 ? Math.min(100, 67 + Math.floor((1000 - n) / 2) * 0.1) : n > 1200 ? Math.max(65, 67 - Math.floor((n - 1200) / 2) * 0.1) : 67) / 100;
+  const n0 = Math.max(0, f.vorher - EG_PAUSCH_RECHNER), n1 = Math.max(0, f.vorher - EG_PAUSCH), q = satz(n1);
+  // Kern (ohne Bonus und Zuschlag) auf beiden Seiten, nur für die Einordnung in die Gruppen
+  const kern = (n, p) => (f.nachher > 0 ? Math.max(0, Math.min(n, 2770) - Math.max(0, f.nachher - p)) : n) * satz(n);
+  const k0 = kern(n0, EG_PAUSCH_RECHNER), k1 = kern(n1, EG_PAUSCH);
+  const bonus = (k) => (g >= 2 && k >= 750 ? 1.1 : 1);
+  let gruppe = 'gleitend', soll = null;
+  if ((k0 <= 300 && k1 <= 300) || (k0 >= 1800 && k1 >= 1800)) { gruppe = 'grenze'; soll = 0; }
+  else if (satz(n0) === q && k0 > 300 && k1 > 300 && k0 < 1800 && k1 < 1800 && bonus(k0) === bonus(k1)) {
+    if (!(f.nachher > 0)) { gruppe = 'satz'; soll = -q * D * bonus(k1); }
+    else if (n0 <= 2770 && f.nachher >= EG_PAUSCH) { gruppe = 'teilzeit'; soll = 0; }                   // Abzug hebt sich auf
+    else if (n1 >= 2770 && f.nachher >= EG_PAUSCH) { gruppe = 'teilzeit'; soll = q * D * bonus(k1); } // vorher gedeckelt, nachher 19,17 € weniger
+  }
+  let fehler = null;
+  if (Math.abs(rechner - amtlich) > 0.011) fehler = 'Schnellrechner ' + amtlich + ' € passt nicht zur Formel mit 83,33 € Abzug (' + rechner.toFixed(2) + ' €)';
+  else if (Math.abs(solo - gesetz) > 0.5 + 1e-6) fehler = 'SoLo ' + solo + ' €, erwartet ' + gesetz.toFixed(2) + ' € = amtlich ' + amtlich + ' € ' + (diff < 0 ? '− ' : '+ ') + Math.abs(diff).toFixed(2) + ' € (Abzug 102,50 statt 83,33 €)';
+  else if (soll != null && Math.abs(gesetz - rechner - soll) > 0.005) fehler = 'Differenz ' + diff + ' € statt ' + soll.toFixed(2) + ' € (' + gruppe + ', Satz ' + (q * 100).toFixed(1) + ' %)';
+  return { fehler, diff, gruppe, gesetz, rechner };
 }
 // ---------- Einkommensgrenze § 85 SGB XII (Hilfe zur Pflege, Blindenhilfe) und Schonvermögen ----------
 function grenze85(e) {
@@ -570,7 +643,8 @@ function kuenftig(e) {
   const a = arbeitslosengeld(e), k = krankengeld(e);
   if (a.level === 'ja' && e.arbeitSit === 'arbeitslos' && a.spanne) { art = 'alg'; betrag = (a.spanne[0] + a.spanne[1]) / 2; }
   else if ((k.level === 'ja' || k.level === 'vielleicht') && (e.krankWochen === 'unter6' || e.krankWochen === 'laeuft') && k.spanne) { art = 'kg'; betrag = (k.spanne[0] + k.spanne[1]) / 2; }
-  else if (e.baby === 'bald' && h.erwachsene === 1 && !leer(e.egVor)) { art = 'eg'; betrag = runde10(elterngeld(zahl(e.egVor), Math.min(Math.max(0, e.kidsU6 | 0), Math.max(0, e.kids | 0))).basis); }
+  else if (e.baby === 'bald' && h.erwachsene === 1 && !leer(e.egVor) && !(zahl(e.egNach) > 0) && !(Number(e.egKinder) > 1)) { // nicht bei Teilzeit/Mehrlingen (§ 10 Abs. 4 BEEG)
+    art = 'eg'; betrag = runde10(elterngeld(zahl(e.egVor), Math.min(Math.max(0, e.kidsU6 | 0), Math.max(0, e.kids | 0))).basis); }
   if (!art || !(betrag > 0)) return null;
   const lohn1 = h.brutto - h.brutto2;
   const netto1 = h.erwachsene === 1 ? h.netto : h.brutto > 0 ? h.netto * lohn1 / h.brutto : 0;
@@ -588,4 +662,4 @@ function kduGrenze(e) {
   return hoechst(st, n) * 1.1 + heiz(n);
 }
 
-module.exports = { kappe, euAus, kduGrenze, kuenftig, zusammen, elterngeld, grenze85, schon90, ASYL_NEIN, ASYL_MOEGLICH, haushalt, grundsicherungsgeld, wohngeld, kinderzuschlag, grundsicherungAlter, unterhaltsvorschuss, bafoeg, arbeitslosengeld, krankengeld, regelaltersgrenze, freibetragArbeit, RB };
+module.exports = { kappe, euAus, kduGrenze, kuenftig, zusammen, elterngeld, egAbgleich, EG_PAUSCH, EG_PAUSCH_RECHNER, grenze85, schon90, ASYL_NEIN, ASYL_MOEGLICH, haushalt, grundsicherungsgeld, wohngeld, kinderzuschlag, grundsicherungAlter, unterhaltsvorschuss, bafoeg, arbeitslosengeld, krankengeld, regelaltersgrenze, freibetragArbeit, RB };

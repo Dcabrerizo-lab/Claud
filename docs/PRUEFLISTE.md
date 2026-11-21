@@ -132,6 +132,10 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Regel | Status | Test |
 |---|---|---|
 | Höchstbetrag, Mindesteinkommen, 45 % Minderung, Vermögen; Einkommen der Eltern nach § 11b SGB II; Mehrbedarf Alleinerziehende | ✓ | `kiz-formel` |
+| Einkommen der Kinder (Unterhalt, Unterhaltsvorschuss) ohne Abzüge zu 45 %, je Kind höchstens bis 0 (§ 6a Abs. 3 BKGG; DA-KiZ Stand 20.02.2026 C.2.2.1 Abs. 3 und 5, Beispiele Mia, Frau T., Ehepaar X., Patchwork; abgerufen 21.11.2026); die 9 Widerspruchsfälle zum KiZ-Lotsen (der Lotse rechnet Einkommen der Kinder nicht ein); knapp (reicht mit 30 € Versicherungspauschale je Kind) -> „möglich“ mit Hinweis; sonst „eher nicht“ mit Erklärung | ✓ | `kiz-kindeink` |
+| Lohn der Kinder (Ausbildung): SoLo zieht nur 603 € ab; die Familienkasse zieht je Kind 603 € und bis zu 164 € Freibetrag ab (§ 11b Abs. 2b, Abs. 3 Satz 4 SGB II; DA-KiZ C.2.2.1 Abs. 3 Satz 9-11; abgerufen 21.11.2026) -> reicht es damit, „möglich“; Hinweis im Bescheid-Check. Versicherungspauschale 30 € nur bei Unterhalt, Unterhaltsvorschuss, Waisenrente (§ 6 Abs. 1 Nr. 2 Grundsicherungsgeld-Verordnung, früher Bürgergeld-V) | ◐ | `kiz-kindlohn` |
+| Alter der Kinder nur grob bekannt: geschätzter Kinderzuschlag als Spanne (sicherer Mehrbedarf bis 36 %), der Bescheid-Check mit genauem Alter liegt darin | ✓ | `kiz-spanne` |
+| Mehrbedarf Alleinerziehende: zwei Kinder von 14 bis 17 können beide unter 16 sein (36 %, § 21 Abs. 3 Nr. 1 SGB II) -> nie fälschlich „eher nicht“ | ✓ | `kiz-ae16` |
 | Kinderzuschlag muss Hilfebedürftigkeit beenden (§ 6a Abs. 1 Nr. 3 BKGG): bereinigtes Einkommen + Kindergeld + Kinderzuschlag; reicht es nur mit Wohngeld: „möglich“, beides beantragen; 40 Familien ohne Widerspruch zum KiZ-Lotsen | ✓ | `amtlich-kiz` |
 | Mehrbedarfe der Eltern im Bedarf der Eltern (Schwangerschaft, Warmwasser, 35 % Teilhabe) | ✓ | `kiz-mehr` |
 | Vermögensgrenze 40.000 € für die erste, 15.000 € je weitere Person (§ 6a Abs. 3 BKGG, bleibt trotz Grundsicherungsreform) | ✓ | `kiz-verm` |
@@ -211,12 +215,13 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | EU-Bürger ohne Arbeit, unter 5 Jahren: BAföG nur mit Daueraufenthaltsrecht, als Arbeitnehmer/Selbstständiger oder Familienangehöriger oder nach Beschäftigung (§ 8 Abs. 1 Nr. 2 bis 4 BAföG): höchstens „möglich“ mit Hinweis, Arbeit der Eltern kennt die App nicht (Abruf 20.11.2026) | ◐ | `bafoeg-eu` |
 | Auto zählt zum Vermögen (§ 27) | ✓ | `auto` |
 | Elternfreibeträge (§ 25) und Grenzbereich | ✓ | `bafoeg-eltern` |
-| Einkommen über dem Freibetrag: 50 % und 5 % je Kind mit Freibetrag anrechnungsfrei (§ 25 Abs. 4 BAföG); „eher nicht“ erst, wenn die Anrechnung den höchsten Bedarf 1.088 € übersteigt (475 + 380 € nach § 13, 185 + 48 € nach § 13a Abs. 2; bafög.de nennt 992 € mit § 13a Abs. 1), Befund 10 (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-bafoeg`, `bafoeg-eltern` |
+| Einkommen über dem Freibetrag: 50 % und 5 % je Kind mit Freibetrag anrechnungsfrei (§ 25 Abs. 4 BAföG); „eher nicht“ erst, wenn die Anrechnung den höchsten Bedarf 1.088 € übersteigt (475 + 380 € nach § 13, 185 + 48 € nach § 13a Abs. 2; bafög.de nennt 992 € mit § 13a Abs. 1), Befund 10 (Abgleich 2, Abruf 21.11.2026); seit Update BAföG-Betrag auch dann, wenn Geschwister in förderfähiger Ausbildung wären (§ 11 Abs. 4: geteilt, ohne 770 €) | ✓ | `mb2-bafoeg`, `bafoeg-eltern` |
 | Unterhalt eines Elternteils für sich selbst: Einkommen nach § 21 Abs. 1 BAföG nur mit Realsplitting (§ 22 Nr. 1a EStG); entscheidet er über die Grenze, höchstens „möglich“ | ◐ | `unt-bafoeg` |
 | Höhe der Elternfreibeträge 2026: 2.540 € (verheiratet), 1.690 € (je Elternteil sonst), 770 € je weiteres Kind | ✓ (mehrere Quellen übereinstimmend; Änderung erst zum Sommersemester 2027 geplant, nur Wohnpauschale) | `bafoeg-eltern` |
-| Vermögensfreibetrag 15.000 € bis zum 30. Geburtstag, danach 45.000 € (§ 29) | ✓ | `bafoeg-verm` |
+| Vermögensfreibetrag 15.000 € bis zum 30. Geburtstag, danach 45.000 € (§ 29); zusätzlich 2.300 € nur für Ehe- oder eingetragene Lebenspartner und je eigenes Kind (§ 29 Abs. 1 Nr. 2, 3): Einstufung mit dem größten Freibetrag, Betrag als Spanne, Text `bafoeg.vermTeil`/`bafoeg.vermEvtl` (Abruf 21.11.2026) | ✓ | `bafoeg-verm`, `bafoeg-betrag` |
 | Vermögen über dem Freibetrag: nur der Rest, geteilt durch 12 Monate Bewilligungszeitraum, mindert das BAföG (§ 30 BAföG, bafög.de Beispiel „Stefan“): „möglich“ mit Hinweis und Betrag im Monat, „eher nicht“ erst über 12 × 1.088 €, Befund 11 (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-bafoeg`, `bafoeg-verm`, `auto` |
-| Altersgrenze 45 bei Beginn (§ 10 Abs. 3), Ausnahmen möglich | ✓ | `bafoeg-alter` |
+| Altersgrenze bei Beginn: 45. Lebensjahr noch nicht vollendet, also unter 45 (§ 10 Abs. 3, Abruf 21.11.2026), Ausnahmen möglich | ✓ | `bafoeg-alter` |
+| Grob geschätzter Betrag (nur Studium): Bedarf 475 € + 59/380 € Wohnen (§ 13), + 0 / 102 + 35 / bis 185 + 48 € KV/PV (§ 13a), + 160 € je eigenem Kind unter 14 (§ 14b) minus Anrechnung: Eltern §§ 21, 25 (Einkommen über 2.540/1.690 € + 770 € je Kind, davon 50 % − 5 % je Kind), Geschwister in Ausbildung § 11 Abs. 4 (Spanne über alle Fälle), eigenes Einkommen § 23 (389 € frei, Bek. 18.11.2025, BGBl. 2025 I Nr. 279), Ehegatte § 25 Abs. 1 Nr. 2, Vermögen §§ 29, 30; § 51 Abs. 3, 4 (Rundung, unter 10 € nichts). Unbekanntes als Spanne; Elternteil allein und Studierende unter 37 (§ 11 Abs. 3 Nr. 2: maßgeblich ist das Alter bei Beginn des Ausbildungsabschnitts, die App kennt nur das Alter heute): nur „bis etwa“. Annahme im Text `bafoeg.kindHinweis`: Erwachsene im Haushalt sind die Eltern, Einkommen wie heute. Amtlicher Abgleich (BAföG Digital, 200 Fälle, 21.11.2026): alle amtlichen Beträge in SoLos Spanne (`tools/amtlich-vergleich-bafoeg-eg.js`) | ✓ | `bafoeg-betrag` |
 | Betriebliche Ausbildung: kein BAföG, sondern Berufsausbildungsbeihilfe | ✓ | `bafoeg-betrieb` |
 
 ## Berufsausbildungsbeihilfe (§§ 56 ff. SGB III)
@@ -400,11 +405,13 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 |---|---|---|
 | Beispiele der Broschüre „Elterngeld und Elternzeit“ (10/2025): 574 €, 1.625 €, Geschwisterbonus 1.430 € (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-eg` |
 | Basiselterngeld 67 %, Ersatzrate bis 100 % unter 1.000 €, bis 65 % über 1.200 € (§ 2 Abs. 2); mindestens 300 €, höchstens 1.800 €; ElterngeldPlus halb so hoch, doppelt so lange (§ 4a); bis zu 14 Monate (§ 4) | ✓ | `eg-satz` |
-| Elterngeld-Netto: Netto minus ein Zwölftel des Arbeitnehmer-Pauschbetrags (§ 2c Abs. 1 BEEG, 83,33 €); 33 Einkommen gleich wie der Elterngeldrechner des Bundes | ✓ | `amtlich-elterngeld` |
+| Elterngeld-Netto: Netto minus ein Zwölftel des Arbeitnehmer-Pauschbetrags (§ 2c Abs. 1 BEEG i. V. m. § 9a EStG: 1.230 € / 12 = 102,50 €; Entscheidung David 21.11.2026: Gesetz gilt). Unterschied zum Elterngeld-Schnellrechner des Bundes (rechnet mit 83,33 €) genau erklärt: bei festem Satz SoLo um Satz × 19,17 € niedriger, bei Mindest- und Höchstbetrag gleich | ✓ | `amtlich-elterngeld` |
 | Geschwisterbonus 10 %, mindestens 75 € (§ 2a BEEG): bei zwei Kindern unter 6 eingerechnet, bei einem als Hinweis (unter 3?); amtlich geprüft | ✓ | `amtlich-elterngeld` |
 | Einkommensgrenze 175.000 € zu versteuerndes Einkommen (§ 1 Abs. 8); Mutterschaftsgeld wird angerechnet (§ 3) | ◐ | `eg-hinweise` |
 | Ausländer: Anspruch abhängig vom Aufenthaltstitel (§ 1 Abs. 7) | ◐ | `eg-asyl` |
-| Geschwisterbonus, Mehrlingszuschlag (§ 2a) | ○ (Anzahl und Alter der Geschwister werden nicht abgefragt; Spanne reicht bis 1.800 €) | |
+| Mehrlingszuschlag 300 € je weiteres Kind der Geburt, auch neben dem Geschwisterbonus (§ 2a Abs. 4); Kinder der Geburt zählen nicht als Geschwister (§ 2a Abs. 1 Satz 2); beim ElterngeldPlus halbiert (§ 4a Abs. 2 Satz 3 Nr. 3) (Abruf 21.11.2026) | ✓ | `eg-mehrlinge` |
+| Teilzeit nach der Geburt: Prozentsatz nach dem Einkommen vorher auf den Unterschied, Einkommen vorher höchstens 2.770 € (§ 2 Abs. 3), mindestens 300 € (§ 2 Abs. 4); ElterngeldPlus höchstens die Hälfte des Basiselterngelds ohne Einkommen, Mindestbetrag und Mindest-Geschwisterbonus halbiert (§ 4a Abs. 2) (Abruf 21.11.2026) | ✓ | `eg-teilzeit` |
+| Teilzeit: Hinweis auf höchstens 32 Wochenstunden (§ 1 Abs. 6 Nr. 1); schon laufendes Elterngeld bei Mehrlingen: Freibetrag beim Wohngeld 300 € je Kind der Geburt (§ 10 Abs. 4), bei Grundsicherung, Sozialhilfe und Kinderzuschlag nicht vervielfacht und nur über Mindestbetrag plus Mehrlingszuschlag (§ 10 Abs. 5; Richtlinien zum BEEG 07/2026 Nr. 10.4, 10.5.2) (Abruf 21.11.2026) | ✓ | `eg-mehrlinge-frei` |
 
 ## Mutterschaftsgeld (MuSchG, § 24i SGB V)
 <!-- karten: mutter -->
@@ -494,7 +501,7 @@ Wird nur das Brutto eingetragen, schätzt die App das Netto. Gilt für alle Kart
 
 | Regel | Status | Test |
 |---|---|---|
-| Pfändbarer Betrag nach § 850c ZPO und Pfändungsfreigrenzenbekanntmachung 2026 (BGBl. 2026 I Nr. 80): Netto auf 10 € abgerundet, 70/50/40/30/20/10 % des Mehrbetrags, wie die amtliche Tabelle | ✓ | `pfaendung-tabelle` |
+| Pfändbarer Betrag nach § 850c ZPO und Pfändungsfreigrenzenbekanntmachung 2026 vom 19.3.2026 (BGBl. 2026 I Nr. 80; nicht Nr. 160, das ist die Bekanntmachung 2024): Netto auf 10 € abgerundet, 70/50/40/30/20/10 % des Mehrbetrags, wie die amtliche Tabelle | ✓ | `pfaendung-tabelle` |
 | Über der Höchstgrenze 4.866,30 € voll pfändbar | ✓ | `pfaendung-hoechst` |
 | P-Konto: 1.590 € automatisch (§ 899 ZPO), Unterhalt und Kindergeld mit Bescheinigung (§§ 902, 903 ZPO) | ✓ | `pkonto` |
 | Pfändung wegen Unterhalt (§ 850d ZPO): andere Freibeträge, Hinweis | ◐ | `pfaendung-tabelle` |

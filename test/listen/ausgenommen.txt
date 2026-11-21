@@ -1,0 +1,3 @@
+# Testdateien test/test-*.js, die bewusst in keiner Liste stehen (je Zeile: Pfad, dann # Grund).
+# Format wie die anderen Listen; diese Liste wird nie ausgeführt.
+test/test-unterhalt-selbst.js   # läuft innerhalb von test/test-faelle.js (require)

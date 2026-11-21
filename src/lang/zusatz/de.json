@@ -1,7 +1,7 @@
 {
   "t.ggeld.vermAlter": "Ob euer Vermögen unter dem Freibetrag liegt, hängt vom Alter beider Erwachsenen ab. Der Freibetrag gilt je Person und ist bei Jüngeren kleiner. Das Jobcenter prüft das.",
   "t.kiz.vermKnapp": "Euer Vermögen liegt knapp über der Grenze. Dann wird nur der Kinderzuschlag im ersten Monat gekürzt, danach gibt es ihn voll. Die Familienkasse rechnet das genau aus.",
-  "t.gsa.mzGBeide": "Haben beide das Merkzeichen G, gibt es für jede Person einen Mehrbedarf von etwa {betrag}. Der Betrag ist dann höher.",
+  "t.gsa.mzGBeide": "Haben beide das Merkzeichen G, kann es für jede Person einen Mehrbedarf von etwa {betrag} geben. Der Betrag ist dann höher. Das Sozialamt prüft das.",
   "ww.h0": "Zwei Wege: Grundsicherungsgeld oder Wohngeld",
   "ww.a.t0": "Deckt den ganzen Bedarf: Regelbedarf, Miete und Heizung, dazu die Krankenversicherung. Dafür gibt es Pflichten: Unterlagen, Termine und Arbeitssuche.",
   "ww.b.h0": "Weg 2: Wohngeld",
@@ -95,5 +95,5 @@
   "bp.vgl.pg": "Pflegegrad {pg}",
   "bp.vgl.kein": "kein Pflegegrad",
   "bp.vgl.klein": "Punkte nach Gewichtung, wie die Pflegekasse rechnet (§ 15 SGB XI). Plus heißt: Deine Einschätzung gibt dort mehr Punkte. Darunter steht, bei welchen Fragen genau.",
-  "t.bafoeg.vermTeil": "Das Vermögen liegt über dem Freibetrag von {verm}. Es zählt nur der Teil darüber: Verteilt auf 12 Monate mindert er das BAföG um etwa {monat} im Monat. Das Amt für Ausbildungsförderung rechnet genau."
+  "t.bafoeg.vermTeil": "Das Vermögen liegt über dem Freibetrag von {verm}. Zusätzliche 2.300 € gibt es nur für Ehe- oder eingetragene Lebenspartner und für jedes eigene Kind. Es zählt nur der Teil über dem Freibetrag: Verteilt auf 12 Monate mindert er das BAföG um etwa {monat} im Monat. Das Amt für Ausbildungsförderung rechnet genau."
 }
