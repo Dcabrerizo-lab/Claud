@@ -132,6 +132,9 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Regel | Status | Test |
 |---|---|---|
 | Höchstbetrag, Mindesteinkommen, 45 % Minderung, Vermögen; Einkommen der Eltern nach § 11b SGB II; Mehrbedarf Alleinerziehende | ✓ | `kiz-formel` |
+| Einkommen der Kinder (Unterhalt, Unterhaltsvorschuss) ohne Abzüge zu 45 %, je Kind höchstens bis 0 (§ 6a Abs. 3 BKGG; DA-KiZ Stand 20.02.2026 C.2.2.1 Abs. 3 und 5, Beispiele Mia, Frau T., Ehepaar X., Patchwork; abgerufen 21.11.2026); die 9 Widerspruchsfälle zum KiZ-Lotsen (der Lotse rechnet Einkommen der Kinder nicht ein); knapp (reicht mit 30 € Versicherungspauschale je Kind) -> „möglich“ mit Hinweis; sonst „eher nicht“ mit Erklärung | ✓ | `kiz-kindeink` |
+| Alter der Kinder nur grob bekannt: geschätzter Kinderzuschlag als Spanne (sicherer Mehrbedarf bis 36 %), der Bescheid-Check mit genauem Alter liegt darin | ✓ | `kiz-spanne` |
+| Mehrbedarf Alleinerziehende: zwei Kinder von 14 bis 17 können beide unter 16 sein (36 %, § 21 Abs. 3 Nr. 1 SGB II) -> nie fälschlich „eher nicht“ | ✓ | `kiz-ae16` |
 | Kinderzuschlag muss Hilfebedürftigkeit beenden (§ 6a Abs. 1 Nr. 3 BKGG): bereinigtes Einkommen + Kindergeld + Kinderzuschlag; reicht es nur mit Wohngeld: „möglich“, beides beantragen; 40 Familien ohne Widerspruch zum KiZ-Lotsen | ✓ | `amtlich-kiz` |
 | Mehrbedarfe der Eltern im Bedarf der Eltern (Schwangerschaft, Warmwasser, 35 % Teilhabe) | ✓ | `kiz-mehr` |
 | Vermögensgrenze 40.000 € für die erste, 15.000 € je weitere Person (§ 6a Abs. 3 BKGG, bleibt trotz Grundsicherungsreform) | ✓ | `kiz-verm` |

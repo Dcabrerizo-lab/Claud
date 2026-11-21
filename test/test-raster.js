@@ -122,7 +122,8 @@ function pruefe(e) {
   const k = { ...k0, level: Ref.kappe(e, 'kiz', lev(k0, Ref.kinderzuschlag)) };
   if (r.kiz.level !== k.level) melde('Kinderzuschlag: Einstufung', e, { app: r.kiz.level, ref: k.level, kiz: k.kiz });
   else if (k0.kiz != null && (k0.level === 'ja' || (k0.level === 'vielleicht' && r.kiz.hl !== 'einkoNiedrig'))) {
-    const s = zahlAus(r.kiz, 'schaetz.eins', 'a');
+    // Alter nur grob bekannt: Spanne, ihr unterer Wert ist die Rechnung mit dem sicheren Mehrbedarf
+    const s = zahlAus(r.kiz, 'schaetz.eins', 'a') ?? zahlAus(r.kiz, 'schaetz.spanne', 'a');
     if (s !== Math.max(10, Math.round(k.kiz / 10) * 10)) melde('Kinderzuschlag: geschätzter Betrag', e, { app: s, ref: k.kiz });
   }
   // Grundsicherung im Alter und bei Erwerbsminderung

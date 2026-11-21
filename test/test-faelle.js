@@ -588,7 +588,7 @@ ck('[zuk-einkommen] Ohne Kinder kein Kinderzuschlag, auch kein Hinweis', L(zAlg,
 const zKg = { kids: 1, art1: 'lohn', brutto: 2500, netto: 1800, miete: 700, mietstufe: 4, vermoegen: 1000, arbeitSit: 'krank', krankWochen: 'unter6', lohnVorher: 2500 };
 // Krankengeld: min(70 % brutto, 90 % netto) minus 12,5 % Beiträge: 1.180 bis 1.530 € (oben 70 % brutto), Mitte 1.360 €, statt des Lohns
 ck('[zuk-einkommen] Krankgeschrieben (Lohnfortzahlung): Krankengeld 1.360 € ersetzt den Lohn, Grundsicherungsgeld danach wahrscheinlich -> „möglich“, Kinderzuschlag höher',
-  L({ ...zKg, arbeitSit: '' }, 'ggeld') !== 'ja' && L(zKg, 'ggeld') === 'vielleicht' && ZR(zKg, 'ggeld').tx.some((t) => t[0] === 'zuk.kg' && t[1].a === E(1360)) && K(zKg, 'ggeld').includes('zuk.ohneLohn') && K(zKg, 'kiz').includes('zuk.betragEins'));
+  L({ ...zKg, arbeitSit: '' }, 'ggeld') !== 'ja' && L(zKg, 'ggeld') === 'vielleicht' && ZR(zKg, 'ggeld').tx.some((t) => t[0] === 'zuk.kg' && t[1].a === E(1360)) && K(zKg, 'ggeld').includes('zuk.ohneLohn') && (K(zKg, 'kiz').includes('zuk.betragEins') || K(zKg, 'kiz').includes('zuk.betragSpanne')));
 const zEg = { art1: 'lohn', brutto: 2350, netto: 1600, miete: 650, mietstufe: 3, vermoegen: 1000, baby: 'bald', egVor: 1600 };
 // Elterngeld: 1.600 € Netto - 83,33 € (§ 2c BEEG) = 1.516,67 € -> Untergrenze 65 %: 986 € (wie Elterngeldrechner des Bundes)
 ck('[zuk-einkommen] Baby kommt bald (alleinstehend): Elterngeld rund 990 € statt Lohn, Wohngeld danach wahrscheinlich',
@@ -732,6 +732,62 @@ ck('[eu] EU-Bürger: Grundsicherung im Alter ausgeschlossen (§ 23 SGB XII) unte
   const gr = { art1: 'rente', brutto: 700, netto: 620, miete: 450, mietstufe: 3, heute: 2026.9 };
   ck('[kiz-rentner] Grundsicherungsgeld: nur Rente mit 63 -> möglich mit Hinweis Sozialamt; mit 40 (Witwenrente) wahrscheinlich',
     L({ ...gr, gebJahr: 1963 }, 'ggeld') === 'vielleicht' && K({ ...gr, gebJahr: 1963 }, 'ggeld').includes('ggeld.vorgezogen') && L({ ...gr, gebJahr: 1986 }, 'ggeld') === 'ja');
+}
+
+// [kiz-kindeink] Einkommen der Kinder beim Kinderzuschlag (Prüfung 21.11.2026, docs/entwuerfe/pruefungen-21-11/kiz.md).
+// Quelle: § 6a Abs. 3 BKGG; DA-KiZ Stand 20.02.2026 (https://www.arbeitsagentur.de/datei/fw-bkgg_ba023130.pdf, Abruf 21.11.2026)
+// C.2.2.1 Abs. 3 und 5: Unterhalt und Unterhaltsvorschuss ohne Abzüge (außer 30 € Versicherungspauschale, wenn versichert), davon 45 %.
+// Erwartungen von Hand: Bedarf = 563 + Mehrbedarf + Wohnanteil (Tabelle C.3.1.2), Einkommen = Netto - Freibetrag (378 € mit Kind).
+{
+  const RS = require('../src/rules.js'), BK = require('../erweiterungen/bescheid-kiz.js');
+  // DA-KiZ-Beispiele (Bescheid-Check rechnet je Kind genau)
+  const mia = BK.rechne({ eltern: [{ brutto: 3000, netto: 2100 }], kinder: [{ alter: 17, unterhalt: 400 }], wohnkosten: 700 }, RS);
+  ck('[kiz-kindeink] DA-KiZ C.2.2.2.3 Beispiel Mia: Unterhalt 400 € x 45 % = 180 €, Kinderzuschlag 297 - 180 = 117 €', mia.jeKind[0] === 117, mia.jeKind);
+  // C.3.2.1.3 Abs. 4 Beispiel Frau T.: Kinder 8 und 11, Miete 400 €, Unterhalt (eigener) 450 € + Erwerb 600 € (Brutto 1.000 €, Netto 928 €, Freibetrag 328 €)
+  const frauT = BK.rechne({ eltern: [{ brutto: 1000, netto: 928, sonstiges: 450 }], kinder: [{ alter: 8 }, { alter: 11 }], wohnkosten: 400 }, RS);
+  ck('[kiz-kindeink] DA-KiZ Beispiel Frau T.: Bedarf 1.017,68 €, 32,32 € darüber, Minderung 14,54 €', frauT.bedarf === 1017.68 && frauT.ueber === 32.32 && frauT.minderung === 14.54 && frauT.kiz === 579.46, frauT);
+  // C.3.2.1.3 Abs. 5 Beispiel Ehepaar X.: Rente 1.450 € (1.480 € - 30 € Pauschale), Erwerb 300 €, Bedarf 1.412 €, drei Kinder -> 718 €
+  const ehepaarX = BK.rechne({ eltern: [{ sonstiges: 1480 }, { brutto: 500, netto: 480 }], kinder: [{ alter: 12 }, { alter: 14 }, { alter: 16 }], wohnkosten: 400 / 0.62 }, RS);
+  ck('[kiz-kindeink] DA-KiZ Beispiel Ehepaar X.: 891 - 38 - 135 = 718 €', ehepaarX.bedarf === 1412 && ehepaarX.minderung === 173 && ehepaarX.kiz === 718, ehepaarX);
+  // C.3.2.1.3 Abs. 6 Beispiel Patchwork: Kind 8 mit 100 € Einkommen -> 252 €, Kind 5 -> 297 €, Elterneinkommen 100 € über dem Bedarf 1.438 € -> 504 €
+  const patch = BK.rechne({ eltern: [{ brutto: 2000, netto: 1916 }, {}], kinder: [{ alter: 8, unterhalt: 100 }, { alter: 5 }], wohnkosten: 600 }, RS);
+  ck('[kiz-kindeink] DA-KiZ Beispiel Patchwork: 252 + 297 = 549, minus 45 = 504 €', patch.bedarf === 1438 && patch.jeKind.join() === '252,297' && patch.kiz === 504, patch);
+  const patchH = { adults: 2, kids: 2, kidsU6: 1, kids14: 0, art1: 'lohn', art2: 'ohne', brutto: 2000, brutto2: 0, netto: 1916, unterhalt: 100, miete: 600, mietstufe: 3, vermoegen: 0, bezug: { kindergeld: true }, heute: 2026.9 };
+  const patchS = res(patchH).m.kiz.tx.find((t) => t[0] === 'schaetz.eins');
+  ck('[kiz-kindeink] Hauptrechner, Patchwork-Beispiel: wahrscheinlich, etwa 500 € (504 € gerundet)', L(patchH, 'kiz') === 'ja' && patchS && patchS[1].a === E(500), JSON.stringify(res(patchH).m.kiz.tx));
+  // Die 9 Widerspruchsfälle aus dem Differenztest (alleinerziehend; Unterhalt je Kind; Warmmiete). KiZ-Lotse: „Aussicht auf Erfolg“, weil er
+  // das Einkommen der Kinder nicht einrechnet. Erwartet (DA-KiZ): Bescheid-Rechnung, ohne Unterhalt, Einstufung im Hauptrechner.
+  // Fall: [Alter, Brutto, Netto, Unterhalt je Kind, Warmmiete, Bedarf Eltern, KiZ mit Unterhalt, KiZ ohne Unterhalt, Einstufung, Hinweis]
+  const W = [
+    [60, [12, 14], 4460, 2988, 350, 1060, 1433.48, 0, 64.57, 'nein', 'kiz.kindEinkNein'],   // 2610 - 1433,48 = 1176,52 x 45 % = 529,43 > 2 x 139,50
+    [145, [6, 4], 3860, 2658, 200, 910, 1338.98, 0, 170.54, 'vielleicht', 'kiz.knappKindEink'], // 414 - 423,46 < 0; mit 30 € Pauschale 441 - 423,46 > 0
+    [153, [4, 10, 15], 4540, 3039, 200, 960, 1274.48, 0, 267.07, 'vielleicht', 'kiz.knappKindEink'], // 621 - 623,93 < 0; mit Pauschale 661,50 - 623,93 > 0
+    [157, [5], 3570, 2488, 299, 1240, 1720.48, 0, 121.72, 'vielleicht', 'kiz.knappKindEink'], // 162,45 - 175,28 < 0; mit Pauschale 175,95 - 175,28 > 0
+    [221, [15], 3740, 2584, 227, 1200, 1554.56, 0, 3.85, 'nein', 'kiz.kindEinkNein'],      // 12 % Mehrbedarf; 297 - 293,15 = 3,85 ohne Unterhalt
+    [248, [16, 6], 3890, 2675, 394, 1070, 1439.78, 0, 208.25, 'nein', 'kiz.kindEinkNein'],
+    [251, [14], 3320, 2346, 394, 1060, 1446.76, 0, 62.44, 'nein', 'kiz.kindEinkNein'],
+    [258, [11, 0], 4570, 3047, 299, 1140, 1483.88, 0, 60.7, 'nein', 'kiz.kindEinkNein'],
+    [271, [8, 13, 14, 14], 4660, 3112, 450, 1190, 1380.64, 0, 578.99, 'nein', 'kiz.kindEinkNein'], // 48 % Mehrbedarf, Wohnanteil 46 %
+  ];
+  for (const [nr, alter, brutto, netto, uh, miete, bedarf, mit, ohne, level, hinweis] of W) {
+    const b = (u) => BK.rechne({ eltern: [{ brutto, netto }], kinder: alter.map((a) => ({ alter: a, unterhalt: u })), wohnkosten: miete }, RS);
+    const bm = b(uh), bo = b(0);
+    ck('[kiz-kindeink] Fall ' + nr + ': Bescheid-Rechnung Bedarf ' + bedarf + ', KiZ ' + mit + ' (ohne Unterhalt ' + ohne + ')', bm.bedarf === bedarf && bm.kiz === mit && bo.kiz === ohne, [bm.bedarf, bm.kiz, bo.kiz]);
+    const h = { adults: 1, kids: alter.length, kidsU6: alter.filter((a) => a < 6).length, kids14: alter.filter((a) => a >= 14).length, art1: 'lohn', brutto, netto, unterhalt: uh * alter.length, unterhaltFehlt: false, miete, mietstufe: 3, vermoegen: 3000, gebJahr: 1988, bezug: { kindergeld: true }, heute: 2026.9 };
+    ck('[kiz-kindeink] Fall ' + nr + ': Hauptrechner ' + level + ' mit Hinweis ' + hinweis, L(h, 'kiz') === level && K(h, 'kiz').includes(hinweis), L(h, 'kiz') + ' ' + K(h, 'kiz').join());
+  }
+  // Ohne Unterhalt kein Hinweis auf das Einkommen der Kinder; weit über der Grenze bleibt „eher nicht“ ohne Hinweis
+  const ohneUh = { adults: 1, kids: 1, kidsU6: 0, kids14: 1, art1: 'lohn', brutto: 4700, netto: 3200, miete: 900, mietstufe: 3, vermoegen: 0, bezug: { kindergeld: true }, heute: 2026.9 };
+  ck('[kiz-kindeink] Ohne Unterhalt: „eher nicht“, kein Hinweis zum Einkommen der Kinder', L(ohneUh, 'kiz') === 'nein' && !K(ohneUh, 'kiz').some((k) => /kindEink/.test(k)), K(ohneUh, 'kiz').join());
+  // [kiz-spanne] Alter grob (Kind 6-13 kann 6 sein): Spanne; Bescheid-Check mit genauem Alter liegt darin (interner Fall 30: Kind 6, Unterhalt 227 €)
+  const sp = { adults: 1, kids: 1, kidsU6: 0, kids14: 0, art1: 'lohn', brutto: 2500, netto: 1869, unterhalt: 227, unterhaltFehlt: false, miete: 1060, mietstufe: 3, vermoegen: 0, bezug: { kindergeld: true }, heute: 2026.9 };
+  const spT = res(sp).m.kiz.tx.find((t) => t[0] === 'schaetz.spanne');
+  const sp6 = BK.rechne({ eltern: [{ brutto: 2500, netto: 1869 }], kinder: [{ alter: 6, unterhalt: 227 }], wohnkosten: 1060 }, RS).kiz;
+  ck('[kiz-spanne] Kind 6-13: Spanne, Bescheid-Rechnung für ein 6-jähriges Kind (36 %) liegt darin', !!spT && parseInt(spT[1].a.replace(/\D/g, ''), 10) <= sp6 && parseInt(spT[1].b.replace(/\D/g, ''), 10) >= sp6 - 5, JSON.stringify(spT) + ' ' + sp6);
+  // [kiz-ae16] Zwei Kinder von 14 bis 17 können beide unter 16 sein (36 % Mehrbedarf): nie fälschlich „eher nicht“ (Kinder 14 und 15)
+  const ae16 = BK.rechne({ eltern: [{ brutto: 4500, netto: 2998 }], kinder: [{ alter: 14 }, { alter: 15 }], wohnkosten: 900 }, RS);
+  const ae16H = { adults: 1, kids: 2, kidsU6: 0, kids14: 2, art1: 'lohn', brutto: 4500, netto: 2998, miete: 900, mietstufe: 3, vermoegen: 0, bezug: { kindergeld: true }, heute: 2026.9 };
+  ck('[kiz-ae16] Kinder 14 und 15: Bescheid-Rechnung mit 36 % 14,71 € (594 - 45 % von 2.620 - 1.332,68), Hauptrechner „möglich“ statt „eher nicht“', ae16.mehrAE === 202.68 && ae16.kiz === 14.71 && L(ae16H, 'kiz') === 'vielleicht' && K(ae16H, 'kiz').includes('kiz.ae7'), [ae16.kiz, L(ae16H, 'kiz')]);
 }
 
 console.log(fails ? '\n' + fails + ' von ' + n + ' FEHLGESCHLAGEN' : '\nFall-Tests bestanden: ' + n + ' Prüfungen');

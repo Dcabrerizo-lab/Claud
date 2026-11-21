@@ -66,7 +66,9 @@ function solo(f) {
     unterhalt: f.uh * nk, miete: f.miete, heizkosten: f.heiz, mietstufe: '3', vermoegen: f.vermoegen, gebJahr: 1988, bezug: { kindergeld: true }, heute: HEUTE };
   if (!f.partner && f.uh > 0) inp.unterhaltFehlt = false;
   const k = R.evaluate(inp).results.find((r) => r.id === 'kiz');
-  const sch = k.tx.find((t) => t[0] === 'schaetz.eins');
+  // Schätzung als Betrag oder (Alter der Kinder nur grob bekannt) als Spanne: { eur } bzw. { eur: unten, bis: oben }
+  const t = k.tx.find((x) => x[0] === 'schaetz.eins' || x[0] === 'schaetz.spanne');
+  const sch = t ? [t[0], { a: t[0] === 'schaetz.eins' ? t[1].a : { eur: t[1].a.eur, bis: t[1].b.eur } }] : null;
   const eltern = [{ brutto: f.brutto, netto: f.netto }]; if (f.partner) eltern.push(f.pBrutto ? { brutto: f.pBrutto, netto: f.pNetto } : {});
   const b = K.rechne({ eltern, kinder: f.alter.map((a) => ({ alter: a, unterhalt: f.uh })), wohnkosten: f.miete }, R);
   return { level: k.level, hl: k.hl, schaetzung: sch ? sch[1].a : null, bescheidKiz: b.kiz, bedarfEltern: b.bedarf, einkEltern: b.einkEltern };
@@ -157,26 +159,31 @@ function auswerten(IN) {
   const d = JSON.parse(fs.readFileSync(IN, 'utf8'));
   if (d.length && d[0].f && d[0].f.variante) return auswertenGegenprobe(d);
   const haupt = d.filter((x) => x.f.gegenprobeZu === undefined), gp = d.filter((x) => x.f.gegenprobeZu !== undefined);
-  const z = { gleich: 0, moeglich: 0, widerspruch: 0, offen: 0, lotseJa: 0, lotseNein: 0 }; const wider = [], moeglich = [], grundAnders = [], intern = [];
+  const z = { gleich: 0, moeglich: 0, widerspruch: 0, kindEink: 0, offen: 0, lotseJa: 0, lotseNein: 0 }; const wider = [], moeglich = [], grundAnders = [], intern = [], kindEink = [];
   const soloGrund = { minEink: 'Mindesteinkommen', einkoNiedrig: 'Hilfebedürftigkeit bleibt', einkoHoch: 'Einkommen zu hoch' };
   for (const x of haupt) {
     const s = solo(x.f);
     // Interne Gegenprobe: Hauptrechner (Schätzung auf 10 €) gegen Bescheid-Check (auf den Cent) – beide SoLo
-    if (s.schaetzung && Math.abs(s.schaetzung.eur - Math.max(10, Math.round(s.bescheidKiz / 10) * 10)) > 10) intern.push({ i: x.i, f: x.f, s });
+    const bk = Math.max(10, Math.round(s.bescheidKiz / 10) * 10);
+    if (s.schaetzung && (bk < s.schaetzung.eur - 10 || bk > (s.schaetzung.bis || s.schaetzung.eur) + 10)) intern.push({ i: x.i, f: x.f, s });
     if (x.amtlich === null) { z.offen++; continue; }
     x.amtlich === 'ja' ? z.lotseJa++ : z.lotseNein++;
     if (s.level === 'vielleicht') { z.moeglich++; moeglich.push({ i: x.i, f: x.f, s, amtlich: x.amtlich, grund: grund(x.text || '') }); continue; }
     if ((s.level === 'ja') === (x.amtlich === 'ja')) {
       z.gleich++;
       if (x.amtlich === 'nein' && soloGrund[s.hl] && soloGrund[s.hl] !== grund(x.text || '')) grundAnders.push({ i: x.i, f: x.f, s, lotseGrund: grund(x.text || '') });
+    } else if (x.amtlich === 'ja' && x.f.uh > 0 && solo(Object.assign({}, x.f, { uh: 0 })).level !== 'nein') {
+      // Erklärt: Der KiZ-Lotse rechnet Einkommen der Kinder nicht ein (Gegenproben 14.11. und 21.11.2026); die Familienkasse rechnet
+      // es nach § 6a Abs. 3 BKGG und DA-KiZ C.2.2.1 Abs. 5 zu 45 % an. Ohne Unterhalt stimmt SoLo mit dem Lotsen überein.
+      z.kindEink++; kindEink.push({ i: x.i, f: x.f, s });
     } else { z.widerspruch++; wider.push({ i: x.i, f: x.f, s, amtlich: x.amtlich, text: x.text }); }
   }
   // Gegenprobe Unterhalt
   const gpErg = gp.map((x) => { const o = d.find((y) => y.i === x.f.gegenprobeZu); if (!o) return null; return { mit: o && o.amtlich, ohne: x.amtlich, soloMit: solo(o.f).level, soloOhne: solo(x.f).level, f: o.f }; }).filter(Boolean);
   const lotseReagiert = gpErg.filter((g) => g.mit && g.ohne && g.mit !== g.ohne).length;
-  const res = { n: haupt.length, z, wider, moeglich, grundAnders, intern, gegenprobe: { n: gpErg.length, lotseReagiert, soloReagiert: gpErg.filter((g) => g.soloMit !== g.soloOhne).length, faelle: gpErg } };
+  const res = { n: haupt.length, z, wider, kindEink, moeglich, grundAnders, intern, gegenprobe: { n: gpErg.length, lotseReagiert, soloReagiert: gpErg.filter((g) => g.soloMit !== g.soloOhne).length, faelle: gpErg } };
   console.log('KiZ-Lotse vs. SoLo: ' + res.n + ' Familien | Lotse ja ' + z.lotseJa + ', nein ' + z.lotseNein + ', ohne Ergebnis ' + z.offen);
-  console.log('  gleich ' + z.gleich + ', SoLo „möglich“ ' + z.moeglich + ', WIDERSPRUCH ' + z.widerspruch + ', Grund anders ' + grundAnders.length + ', intern (Hauptrechner vs. Bescheid-Check > 10 €) ' + intern.length);
+  console.log('  gleich ' + z.gleich + ', SoLo „möglich“ ' + z.moeglich + ', WIDERSPRUCH ' + z.widerspruch + ', erklärt durch Einkommen der Kinder ' + z.kindEink + ', Grund anders ' + grundAnders.length + ', intern (Hauptrechner vs. Bescheid-Check > 10 €) ' + intern.length);
   console.log('  Gegenprobe Unterhalt: ' + gpErg.length + ' Paare, Lotse ändert Ergebnis in ' + lotseReagiert + ', SoLo in ' + res.gegenprobe.soloReagiert);
   wider.forEach((w) => console.log('  WIDERSPRUCH ' + JSON.stringify({ i: w.i, f: w.f, solo: w.s, lotse: w.amtlich, text: (w.text || '').slice(0, 140) })));
   return res;

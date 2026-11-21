@@ -70,9 +70,15 @@ const BescheidKiZ = (function () {
     const hinweise = [];
     if (!r.mindestOk) hinweise.push(`Die Eltern brauchen mindestens ${eur(r.minEink)} Bruttoeinkommen im Monat (Mindesteinkommensgrenze). Darunter gibt es keinen Kinderzuschlag.`);
     const k = posten.find((p) => p.key === 'kiz');
+    // Einkommen der Kinder ohne Abzüge, außer 30 € Versicherungspauschale, wenn das Kind versichert ist (DA-KiZ Stand 20.02.2026 C.2.2.1
+    // Abs. 3 Satz 3, https://www.arbeitsagentur.de/datei/fw-bkgg_ba023130.pdf, Abruf 21.11.2026; § 6 Abs. 1 Nr. 1 Bürgergeld-V). SoLo zieht sie
+    // nicht ab; bewilligt die Familienkasse etwas mehr, kann das der Grund sein (45 % von 30 € = 13,50 € je Kind mit Einkommen).
+    const mitEink = (e.kinder || []).filter((x) => x && (z(x.unterhalt) > 0 || z(x.eigenes) > R0(Rules).minijob)).length;
+    if (k && k.wirkung === 'zuViel' && mitEink) hinweise.push(`Hat ein Kind eine eigene Versicherung (zum Beispiel Haftpflicht), zieht die Familienkasse von seinem Einkommen vorher 30 € im Monat ab. Dann ist ein um bis zu ${eur(13.5 * mitEink)} höherer Kinderzuschlag richtig.`);
     return { rechnung: r, posten, hinweise, gruende: posten.filter((p) => p.grund), zuWenigImMonat: k && k.wirkung === 'zuWenig' ? k.diff : 0,
       grenzen: 'Die Familienkasse rechnet mit dem Durchschnitt der letzten sechs Monate vor dem Antrag (§ 6a Abs. 8 BKGG). Bitte diese Beträge eintragen. Nicht geprüft: Vermögen, Mehrbedarfe außer Alleinerziehenden, Selbständige, Wohngeld als Einkommen, Bildung und Teilhabe.' };
   }
+  function R0(Rules) { return Rules.RULES; }
   function eur(x) { return (Math.round(x * 100) / 100).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €'; }
   return { rechne, pruefe };
 })();
