@@ -25,6 +25,10 @@ const VERBOTEN = '#mappePrint, #mappeShare, #mappeCopy, #feedbackMail, #sc-take,
   const b = await browserTyp.launch();
   const ctx = await b.newContext({ viewport: { width: 390, height: 800 }, locale: 'de-DE' });
   const p = await ctx.newPage(); await p.addInitScript(SF_ALLES);
+  // Druckdialog ersetzen: window.print() öffnet in Firefox/WebKit ohne Bildschirm einen Druckdialog, der die Seite anhält
+  // (keine Animationsbilder mehr). Danach wartet jeder Klick vergeblich auf „sichtbar und ruhig“ und der Test hängt z. B. in
+  // der Antragsmappe fest. Druckknöpfe ohne feste Kennung (Mappe unten, je Formular „Drucken“) erreicht VERBOTEN nicht.
+  await p.addInitScript(() => { window.print = () => { window.__druckAufrufe = (window.__druckAufrufe || 0) + 1; }; });
   const fehler = [];
   const log = [];
   p.on('pageerror', (e) => fehler.push('Skriptfehler: ' + e.message + ' | nach: ' + log.slice(-6).join(' > ')));
@@ -35,7 +39,14 @@ const VERBOTEN = '#mappePrint, #mappeShare, #mappeCopy, #feedbackMail, #sc-take,
 
   // Zum Leistungs-Check: seit der neuen Leiste (Start | Mein Ordner | Einstellungen) über die Startkachel
   // Offenes Such-Fenster (src/suche.js) macht Inhalt und Leiste inert: vor festen Besuchen schließen
-  const zuLeistungen = async () => { await p.evaluate(() => { if (window.Suche && Suche.offen && Suche.offen()) Suche.schliessen(false); const s = document.querySelector('#appnav [data-ansicht=start]'); if (s) s.click(); const g = document.getElementById('goLeistungen'); if (g) g.click(); }); await p.waitForTimeout(150); };
+  // Nacheinander mit Pause: „Start“ geht im Verlauf zurück (history.go, Rücksprung kommt verzögert); ein Klick auf die Kachel im
+  // selben Moment wird sonst vom Rücksprung überholt und man landet abwechselnd wieder auf Start. Schon im Bereich: nichts tun.
+  const zuLeistungen = async () => {
+    const da = await p.evaluate(() => { if (window.Suche && Suche.offen && Suche.offen()) Suche.schliessen(false); const v = document.getElementById('v-leistungen'); if (v && !v.hidden && !v.closest('[hidden]')) return true; const s = document.querySelector('#appnav [data-ansicht=start]'); if (s) s.click(); return false; });
+    if (da) return;
+    await p.waitForTimeout(150);
+    await p.evaluate(() => { const g = document.getElementById('goLeistungen'); if (g) g.click(); }); await p.waitForTimeout(150);
+  };
   const zustand = async () => p.evaluate(() => {
     const vis = (el) => !!el && el.offsetParent !== null && !el.closest('[hidden]');
     const es = document.querySelector('.es-wahl, #es-weiter, .es-ergebnis, .es-karte');
@@ -69,7 +80,7 @@ const VERBOTEN = '#mappePrint, #mappeShare, #mappeCopy, #feedbackMail, #sc-take,
       const r = rnd();
       // Feste Besuche, damit jeder Lauf sicher alle Bereiche prüft: einfache Version und Antragsmappe
       if ((s % 100 === 25 || einfachNochmal > 0) && !imEinfach) { einfachNochmal = s % 100 === 25 ? 10 : einfachNochmal - 1; schritt = 'Einfache Version (fest)'; await p.evaluate(() => { if (window.Suche && Suche.offen && Suche.offen()) Suche.schliessen(false); }); for (const zu of ['#mappeClose', '#legalClose']) if (await p.isVisible(zu)) await p.click(zu, { timeout: 1000 }); await zuLeistungen(); if (!(await p.locator('#es-raus').first().isVisible())) await p.evaluate(() => document.getElementById('einfachBtn').click()); } // vorher Mappe oder Impressum schließen und zum Bereich Leistungen (sonst bleibt die einfache Version unsichtbar); klappt es nicht, bis zu 10 Schritte erneut
-      else if (s % 200 === 150 || mappeNochmal > 0) { mappeNochmal = s % 200 === 150 ? 10 : mappeNochmal - 1; schritt = 'Antragsmappe (fest)'; await p.evaluate(() => { if (window.Suche && Suche.offen && Suche.offen()) Suche.schliessen(false); }); for (const zu of ['#mappeClose', '#legalClose']) if (await p.isVisible(zu)) await p.click(zu, { timeout: 1000 }); await zuLeistungen(); if (await p.locator('#es-raus').first().isVisible()) { await p.locator('#es-raus').first().click({ timeout: 1000 }); await p.waitForTimeout(150); } if (!(await p.isVisible('#mappeMake')) || await p.isDisabled('#mappeMake')) { await p.evaluate(() => document.getElementById('p1').click()).catch(() => {}); if (await p.isVisible('#beispielJa')) await p.click('#beispielJa', { timeout: 1000 }); await p.waitForTimeout(150); } /* noch kein Ergebnis (Mappe-Bereich erscheint erst mit Ergebnis) oder nichts auswählbar: Beispiel laden */ await p.evaluate(() => { const c = [...document.querySelectorAll('[data-pick]')]; if (c.length && !c.some((x) => x.checked)) c[0].click(); }); /* alles abgewählt: eine Leistung wählen */ if (await p.isVisible('#mappeMake')) await p.click('#mappeMake', { timeout: 1000 }); } // erst zum Bereich Leistungen (es gibt jetzt mehr Bereiche), dann die einfache Version verlassen
+      else if (s % 200 === 150 || mappeNochmal > 0) { mappeNochmal = s % 200 === 150 ? 10 : mappeNochmal - 1; schritt = 'Antragsmappe (fest)'; await p.evaluate(() => { if (window.Suche && Suche.offen && Suche.offen()) Suche.schliessen(false); }); for (const zu of ['#mappeClose', '#legalClose']) if (await p.isVisible(zu)) await p.click(zu, { timeout: 1000 }); await zuLeistungen(); if (await p.locator('#es-raus').first().isVisible()) { await p.locator('#es-raus').first().click({ timeout: 1000 }); await p.waitForTimeout(150); } if (!(await p.isVisible('#mappeMake')) && await p.isVisible('#sfErgebnis')) { await p.click('#sfErgebnis', { timeout: 1000 }); await p.waitForTimeout(150); } /* Weg „Schritt für Schritt“ (per Zufall gewählt): Knopf zur Mappe steht erst auf der Ergebnisseite, über die Übersicht dorthin */ if (!(await p.isVisible('#mappeMake')) && await p.isVisible('#sfWegAlles')) { await p.click('#sfWegAlles', { timeout: 1000 }); await p.waitForTimeout(150); } /* mitten in den Fragen: auf „Alles auf einer Seite“ wechseln */ if (!(await p.isVisible('#mappeMake')) || await p.isDisabled('#mappeMake')) { await p.evaluate(() => document.getElementById('p1').click()).catch(() => {}); if (await p.isVisible('#beispielJa')) await p.click('#beispielJa', { timeout: 1000 }); await p.waitForTimeout(150); } /* noch kein Ergebnis (Mappe-Bereich erscheint erst mit Ergebnis) oder nichts auswählbar: Beispiel laden */ await p.evaluate(() => { const c = [...document.querySelectorAll('[data-pick]')]; if (c.length && !c.some((x) => x.checked)) c[0].click(); }); /* alles abgewählt: eine Leistung wählen */ if (await p.isVisible('#mappeMake')) await p.click('#mappeMake', { timeout: 1000 }); } // erst zum Bereich Leistungen (es gibt jetzt mehr Bereiche), dann die einfache Version verlassen
       else if (r < 0.01) { schritt = 'Neu laden'; await p.reload(); await p.click('#firstOk', { timeout: 500 }).catch(() => {}); }
       else if (r < 0.045 && !imEinfach) { schritt = 'Einfache Version'; if (true) await p.evaluate(() => document.getElementById('einfachBtn').click()); }
       else if (r < 0.055) { schritt = 'Antragsmappe'; if (await p.isVisible('#mappeMake')) await p.click('#mappeMake', { timeout: 1000 }); }
