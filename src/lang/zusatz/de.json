@@ -1,7 +1,7 @@
 {
   "t.ggeld.vermAlter": "Ob euer Vermögen unter dem Freibetrag liegt, hängt vom Alter beider Erwachsenen ab. Der Freibetrag gilt je Person und ist bei Jüngeren kleiner. Das Jobcenter prüft das.",
   "t.kiz.vermKnapp": "Euer Vermögen liegt knapp über der Grenze. Dann wird nur der Kinderzuschlag im ersten Monat gekürzt, danach gibt es ihn voll. Die Familienkasse rechnet das genau aus.",
-  "t.gsa.mzGBeide": "Haben beide das Merkzeichen G, gibt es für jede Person einen Mehrbedarf von etwa {betrag}. Der Betrag ist dann höher.",
+  "t.gsa.mzGBeide": "Haben beide das Merkzeichen G, kann es für jede Person einen Mehrbedarf von etwa {betrag} geben. Der Betrag ist dann höher. Das Sozialamt prüft das.",
   "ww.h0": "Zwei Wege: Grundsicherungsgeld oder Wohngeld",
   "ww.a.t0": "Deckt den ganzen Bedarf: Regelbedarf, Miete und Heizung, dazu die Krankenversicherung. Dafür gibt es Pflichten: Unterlagen, Termine und Arbeitssuche.",
   "ww.b.h0": "Weg 2: Wohngeld",
