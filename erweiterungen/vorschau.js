@@ -182,10 +182,10 @@
       d.querySelector('.pf-zahl').textContent = ` · ${x} von ${n} eingetragen`;
     }
   }
-  // Oben: die eigene Einschätzung aus SoLo (falls vorhanden), damit man weiß, womit verglichen wird
+  // Oben (nach „Wer wird gepflegt?“, vor den Werten aus dem Gutachten): die eigene Einschätzung aus SoLo, damit man weiß, womit verglichen wird
   function zeigeEigenOben() {
     let k = $('pf-eigen-oben');
-    if (!k) { k = h('div', { class: 'card pf-eigen-oben', id: 'pf-eigen-oben', hidden: true }); $('pf-form').insertAdjacentElement('beforebegin', k); }
+    if (!k) { k = h('div', { class: 'card pf-eigen-oben', id: 'pf-eigen-oben', hidden: true }); $('pf-form').insertAdjacentElement('afterend', k); }
     k.replaceChildren(); k.hidden = !eigen;
     if (!eigen) return;
     const r = P.rechne(eigen);

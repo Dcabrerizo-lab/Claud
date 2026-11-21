@@ -164,7 +164,7 @@ setTimeout(() => {
   check('[rot-d] Gutachten: 6 Bereiche zugeklappt mit „x von n eingetragen“', ber.length === 6 && ber.every((x) => !x.open && /· \d+ von \d+ eingetragen$/.test(x.querySelector('summary').textContent)));
   d.getElementById('pf-alter').value = '';
   w.PruefpaketPflege.eigene({ stufen: { '1.1': 2 }, m5: {}, inkontinenz: { harn: false, stuhl: false }, alterJahre: '82' });
-  check('[rot-d] Gutachten: eigene Einschätzung oben, Alter 82 übernommen, „Alles leeren“ nicht mehr oben', !d.getElementById('pf-eigen-oben').hidden && /^Deine Einschätzung in SoLo/.test(d.getElementById('pf-eigen-oben').textContent) && d.getElementById('pf-eigen-oben').nextElementSibling.id === 'pf-form' && d.getElementById('pf-alter').value === '82' && !!d.getElementById('pf-leeren').closest('.pf-leeren-zeile'));
+  check('[rot-d] Gutachten: eigene Einschätzung oben, Alter 82 übernommen, „Alles leeren“ nicht mehr oben', !d.getElementById('pf-eigen-oben').hidden && /^Deine Einschätzung in SoLo/.test(d.getElementById('pf-eigen-oben').textContent) && d.getElementById('pf-eigen-oben').nextElementSibling.id === 'pf-form2' && d.getElementById('pf-alter').value === '82' && !!d.getElementById('pf-leeren').closest('.pf-leeren-zeile'));
   check('Keine Skriptfehler im Test', errors.length === 0, errors.join('; '));
   console.log(fails ? fails + ' FEHLER (Pflege-Start)' : '[pflege-start] Pflege-Startkachel: Auswahl, Pflegegrad, Übersicht und Zurück-Wege stimmen');
   process.exit(fails ? 1 : 0);
