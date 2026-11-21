@@ -1,0 +1,180 @@
+# Quelle: https://verbraucherzentrale-energieberatung.de/wp-content/uploads/2019/02/Beispiel-Nebenkostenabrechnung-gesamt.pdf (Verbraucherzentrale Energieberatung, Beispielabrechnung 2022)
+# Abgerufen: 21.11.2026. Text wie in der App gelesen: pdf.js 3.11.174 + pdfZeilen aus src/app.js (tools/scan-muster.js --pdf).
+Nebenkostenabrechnung
+Erstellt im Auftrag von Maxim Mustermann
+Maxim Mustermann, Musterstraße 2, 23456 Ahrensbök
+Berta Beispiel Wohnung 01 |EG links
+Beispielplatz 1 Beispielplatz 1
+12345 Berlin 12345 Berlin
+Abrechnungszeitraum: 01.01.2022 – 31.12.2022
+Abrechnung erstellt am 25.01.2023
+Sehr geehrte Frau Beispiel,
+Detaillierte Kostenaufstellung
+Brennstoffkosten Art Datum
+Menge
+in Liter
+Preis
+in Euro
+Betrag
++ Anfangsbestand
++ Rechnung
++ Rechnung
+- Restbestand
+Summe
+leichtes
+Heizöl 11.02.2022
+23.11.2022
+5.400,00
++ 3.001,00
++ 4.000,00
+- 6.000,00
+6.401,00
+2.692,38
+1.240,99
+2.113,44
+2.940,49
+3.106,32
+weitere Kosten
++ Schornsteinfeger
++ Wartung
++ Betriebsstrom
++
+Abrechnungsservice
+Summe
+26.01.2022
+14.04.2022
+09.01.2023
+76,50
+180,88
+252,50
+456,61
+966,49
+Kosten für Heizung und Wassererwärmung 4.072,81 4.072,81 (1)
+Kosten nur für Heizung
+Miete Messanlage 156,13 156,13 (2)
+Kosten nur für Warmwasser
+Miete Messanlage 115,25 115,25 (3)
+für Ihre Wohnung am Beispielplatz 1, 12345 Berlin haben wir
+Ihren Kostenanteil errechnet: 534,96 Euro
+Abzüglich der vereinbarten Vorauszahlungen: - 540,00 Euro
+Ihr Guthaben: - 5,04 Euro
+1
+2
+Kosten für Kaltwasser
++ Kalt- und
+Abwasser
++
+Abrechnungsservice
++ Miete Messanlage
+Summe
+17.01.2023 2.222,00
+61,41
+41,22
+2.324,63
+Kosten für Kaltwasser 2.324,63 2.324,63 (4)
+Nutzerbezogene Kosten 48,79 48,79
+Gesamtkosten für Wohnung 01 |EG links, Beispielplatz 1, 12345
+Berlin
+6.717, 61
+Kostentrennung in Heizung und Warmwasser gemäß § 9 (3)
+Heizkostenverordnung
+Kosten für Heizung und Warmwassererwärmung 4.072,81 (1)
+Der Energieverbrauch für die Wassererwärmung wird
+über einen vorerfassenden Wärmezähler gemessen.
+Der Kostenanteil errechnet sich wie folgt:
+B = Q2 /H Q = 18.570 kWh
+H = 10 kWh
+(Heizwert pro Liter leichtes
+Heizöl)
+B = 1.857,00 Liter leichtes Heizöl für die
+Wassererwärmung
+Kosten Heizung/Warmwassererwärmung: 4.072,81
+Euro/
+6.401,00
+Liter
+= 0,6363
+Euro/Liter
+Leichtes Heizöl für Warmwasser: 1.857,00
+Liter
+x 0,6363
+Euro/Liter
+= 1.181,61
+Kosten für Wassererwärmung 1.181,61 - 1.181,61
++ Kosten gemäß (3)
+= Kostensumme für Warmwasser
+115,25
+1.296,86 1.296,86
+(5)
+verbleibende Kosten 2.891,20
+Kosten für Heizung 2.891,20
++ Kosten gemäß (2)
+= Kostensumme für Heizung
+156,13
+3.047,33 3.047,33
+(6)
+3
+4
+Verteilung der Kosten
+Kostenart Betrag : Gesamteinheiten = Kosten je Einheit
+x Ihre
+Einheiten
+= Ihre Kosten
+Gesamtkosten 6.717,61
+Kosten für Warmwasser
+30 % Grundkosten
+70 % Verbrauchskosten
+1.296,86
+389,06
+907,80
+468,87 m² Wohnfläche
+200,382 m³ Wasser
+0,82978224
+4,53034704
+58,93
+11,441
+48,90
+51,83
+(5)
+Kosten für Heizung
+30 % Grundkosten
+70 % Verbrauchskosten
+3.047,33
+914,20
+2.133,13
+468,87 m² Wohnfläche
+42.547
+Verbrauchswerte
+1,94979419
+0,05013585
+58,93
+1.909
+114,90
+95,71
+(6)
+Kosten für Kaltwasser 2.324,63 493,512 m³ Wasser 4,71038192 47,221 222,43 (4)
+Nutzerbezogene Kosten 48,79
+Darstellung der Lohn und
+Fahrtkosten
+1,19
+Ihre Gesamtkosten 534,96
+Ihre Vorauszahlung - 540,00 -
+Ihr Guthaben 5,04
+Darstellung der haushaltsnahen Dienstleistungen
+Handwerkerrechnung
+Art der
+Aufwendung
+Zeitraum/ Rechnung
+vom
+Betrag in Euro
+Davon Lohn- und
+Fahrtkosten
+Ihr Anteil Lohn- und Fahrtkosten
+in Euro
+Schornsteinfeger 26.01.2022 76,50 76,50 5,49
+Wartung 14.04.2022 180,88 180,88 12,95
+Summe 18,44
+5
+6
+7
+8
+9

@@ -1,0 +1,71 @@
+[
+ {
+  "datei": "jc-buergergeld-nuernberg.txt",
+  "art": "jc",
+  "datum": "2023-02-08",
+  "felder": {
+   "bs-b-regel": 1250,
+   "bs-b-ww": 24.92,
+   "bs-heiz": 90,
+   "bs-miete": 900,
+   "bs-b-kdu": 990,
+   "bs-b-kg": 250,
+   "bs-b-eink": 370,
+   "bs-b-zahl": 1644.92,
+   "bs-bg": "73514//0000002",
+   "bs-jc": "Jobcenter Nürnberg-Stadt, Richard-Wagner-Platz 5, 90443 Nürnberg"
+  }
+ },
+ {
+  "datei": "wg-frankfurt.txt",
+  "art": "wg",
+  "datum": "2025-06-03",
+  "felder": {
+   "wg-b-wg": 355,
+   "wg-b-eink": 1503.85,
+   "wg-b-miete": 912.4,
+   "wg-kalt": 790,
+   "wg-n": 2,
+   "wg-az": "64.4-412000",
+   "wg-stelle": "Stadtverwaltung (Amt 64), 60322 Frankfurt am Main"
+  }
+ },
+ {
+  "datei": "sa-frankfurt.txt",
+  "art": "sa",
+  "datum": "2025-06-03",
+  "felder": {
+   "ga-b-regel": 563,
+   "ga-b-eink": 0,
+   "ga-b-zahl": 563,
+   "ga-stelle": "Stadtverwaltung (Amt 51), 60275 Frankfurt am Main"
+  }
+ },
+ {
+  "datei": "vm-verbraucherzentrale.txt",
+  "art": "vm",
+  "felder": {
+   "nk-voraus": 540,
+   "nk-von": "2022-01-01",
+   "nk-bis": "2022-12-31"
+  }
+ },
+ {
+  "datei": "vm-docutain.txt",
+  "art": "vm",
+  "felder": {
+   "nk-voraus": 360,
+   "nk-heiz": 1004.64
+  },
+  "posten": 4
+ },
+ {
+  "datei": "fk-merkblatt-beispiel.txt",
+  "fest": "fk",
+  "art": "fk",
+  "felder": {
+   "kz-b-bedarf": 1570
+  },
+  "hinweis": "Merkblatt-Beispiel ist kein Bescheid (Fließtext, nennt auch Wohngeld): Art fest wie über die Kachel Kinderzuschlag"
+ }
+]
