@@ -480,7 +480,9 @@ setTimeout(() => {
     check('[inkasso] Prüfliste: 6 Haken nach § 13a RDG, ohne Fundstelle im Privatmodus, 3 Warnungen', ipH.length === 6 && !box.querySelector('.ber-nur') && box.querySelectorAll('.ip-warn').length === 3);
     check('[inkasso] Prüfliste: Hinweis „Erste Einschätzung, keine Rechtsberatung“ immer sichtbar (Prüfung 20.11.2026)', !!box.querySelector('.ip-hinweis') && /keine Rechtsberatung/.test(box.querySelector('.ip-hinweis').textContent));
     check('[inkasso] Prüfliste: Tipps zusammen, Hinweis „keine Rechtsberatung“ erst nach dem letzten Tipp (Aufräumen 21.11.2026)', box.querySelector('.ip-hinweis').previousElementSibling.getAttribute('data-fall') === 'inkasso' && box.querySelector('.ip-hinweis').nextElementSibling.classList.contains('quellen'));
-    check('[inkasso] ohne Haken: alles fehlt, Knopf zum Schreiben „Forderungsaufstellung“', box.querySelectorAll('#ip-erg li').length === 6 && !!d.getElementById('ip-zum-schreiben'));
+    check('[ux-c] Prüfliste ohne Haken: keine zweite Liste derselben 6 Punkte', box.querySelectorAll('#ip-erg li').length === 0 && d.getElementById('ip-erg').textContent === '' && box.textContent.split(I18N.de['ip.1']).length === 2);
+    ipH[0].checked = true; ipH[0].dispatchEvent(new w.Event('change', { bubbles: true }));
+    check('[ux-c] Prüfliste mit 1 Haken: „Nicht angehakt: 5 von 6“, Knopf zur Forderungsaufstellung, keine Liste', /^Nicht angehakt: 5 von 6 Punkten\./.test(d.getElementById('ip-erg').textContent) && !!d.getElementById('ip-zum-schreiben') && box.querySelectorAll('#ip-erg li').length === 0);
     ipH.forEach((c) => { c.checked = true; c.dispatchEvent(new w.Event('change', { bubbles: true })); });
     check('[inkasso] alle Haken: kein Urteil über die Forderung', d.getElementById('ip-erg').textContent === I18N.de['ip.erg.alle'] && !d.getElementById('ip-zum-schreiben'));
     zur(); box.querySelector('.gs-i-gelb').click();
@@ -518,7 +520,9 @@ setTimeout(() => {
     kacheln()[5].click();
     check('[aufr-geld] Unterkarten: finden, Bis zum Termin, Mappe, Ablauf (keine eigene Kachel „unseriöse Anbieter“)', kacheln().map((b) => b.className.match(/gs-h-([a-z]+)/)[1]).join() === 'finden,termin,mappe,ablauf');
     kacheln()[0].click();
-    check('[beratung-kachel] Beratungsstelle finden: ein Text (sl.hilfe.*) und Warnung vor unseriösen Anbietern', box.querySelector('.gs-beratung p').textContent === I18N.de['sl.hilfe.1'] && box.querySelectorAll('.gs-beratung p').length === 5 && !!box.querySelector('details[data-fall="unserioes"]'));
+    check('[beratung-kachel] Beratungsstelle finden: ein Text (sl.hilfe.*) und Warnung vor unseriösen Anbietern', box.querySelector('.gs-beratung p').textContent === I18N.de['sl.hilfe.4'] && ['sl.hilfe.1', 'sl.hilfe.2', 'sl.hilfe.3', 'sl.hilfe.4', 'sl.hilfe.5'].every((k) => box.textContent.includes(I18N.de[k])) && !!box.querySelector('details[data-fall="unserioes"]'));
+    { const su = d.getElementById('sb-suche'), offen = [...box.querySelectorAll('.gs-beratung > p')].map((x) => x.textContent);
+      check('[ux-c] Beratungsstelle finden: Link zur Stellensuche (extern), nur 2 kurze Absätze offen, Suche und Jobcenter/Sozialamt zugeklappt', !!su && su.href === 'https://www.meine-schulden.de/hilfe-finden/stellensuche' && su.target === '_blank' && su.textContent.includes(I18N.de['sb.finden.link']) && su.closest('.gs-beratung') && offen.join('|') === I18N.de['sl.hilfe.4'] + '|' + I18N.de['sl.hilfe.5'] && box.querySelectorAll('details.gs-finden-mehr').length === 2 && [...box.querySelectorAll('details.gs-finden-mehr')].every((x) => !x.open) && box.querySelector('details.gs-finden-mehr').textContent.includes(I18N.de['sl.hilfe.1'])); }
     check('[schulden] Quellenzeile nennt Verbraucherzentralen, BAG-SB, Caritas/Diakonie und AG SBV', /Verbraucherzentralen.*BAG-SB.*Caritas.*Diakonie.*AG SBV/.test(box.textContent));
     zur(); kacheln()[1].click();
     check('[beratung-kachel] Bis zum Termin: 6 Haken, Sprünge zu Geduld-Brief, P-Konto, Liste, Haushaltsplan', box.querySelectorAll('.sb-haken input').length === 6 && box.querySelectorAll('.sb-zeile button').length === 4);

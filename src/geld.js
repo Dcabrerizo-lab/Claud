@@ -265,8 +265,10 @@ var Geld = (function () {
       out.textContent = '';
       var f = ipFehlend(st.ip);
       if (!f.length) { out.appendChild(el('p', 'ok', t('ip.erg.alle'))); return; }
-      out.appendChild(el('p', '', t('ip.erg.fehlt')));
-      var ul = out.appendChild(el('ul', 'sp-liste')); f.forEach(function (k) { ul.appendChild(el('li', '', t('ip.' + k))); });
+      // UX-Audit C (21.11.2026): ohne Haken keine zweite Liste derselben 6 Punkte; ab dem ersten Haken nur die Zahl der offenen Punkte
+      // (die offenen Punkte stehen ungehakt direkt darüber) und der Knopf zur Forderungsaufstellung
+      if (f.length === IP.length) return;
+      out.appendChild(el('p', 'ip-fehlt', t('ip.erg.n', { n: String(f.length), m: String(IP.length) })));
       btns(out).appendChild(knopf('btn', t('ms.aufst'), function () { ctx.schreibenOeffnen('aufst'); }, { id: 'ip-zum-schreiben' }));
     }
     erg();
@@ -349,8 +351,14 @@ var Geld = (function () {
       btns(wo).appendChild(knopf('btn ghost klein', t('hb.kachel'), function () { ctx.ziel('haushalt'); }, { id: 'ra-zum-plan' }));
     } else if (e.art === 'keine' || e.art === 'unpfaendbar') {
       // unpfaendbar: Nach der Pfändungstabelle (§ 850c ZPO) wäre vom Einkommen nichts pfändbar – kein Ratenvorschlag, sondern Beratung zuerst
+      // UX-Audit C (21.11.2026): Abraten vorne, Hauptknopf „Beratungsstelle finden“; Hinweis zur Anerkennung und Ratenformular erst nach
+      // bewusster Entscheidung (zugeklappt „Trotzdem ein Ratenschreiben machen“). Bleibt nach Eingaben offen (st.ms.trotz).
       wo.appendChild(el('p', 'warn ra-keine', t(e.art === 'keine' ? 'ra.keine' : 'ra.unpf'))).id = 'ra-keine';
-      btns(wo).appendChild(knopf('btn ghost', t('sb.h'), function () { ctx.ziel('hilfe'); }, { id: 'ra-zur-beratung' }));
+      btns(wo).appendChild(knopf('btn', t('sb.finden'), function () { ctx.ziel('finden'); }, { id: 'ra-zur-beratung' }));
+      var tr = box.appendChild(el('details', 'mehr ra-trotz')); tr.id = 'ra-trotz'; tr.open = !!m.trotz;
+      tr.appendChild(el('summary', '', t('ra.trotz')));
+      tr.addEventListener('toggle', function () { m.trotz = tr.open; });
+      box = tr;
     } else {
       var k = wo.appendChild(el('div', 'hb-karte ra-karte'));
       var erg = k.appendChild(el('p', 'hb-ergebnis', t('ra.empf', { b: eurCent(e.rate) }))); erg.id = 'ra-betrag';

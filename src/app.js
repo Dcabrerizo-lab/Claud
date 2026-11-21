@@ -2775,6 +2775,9 @@
   var TV_TIPPS = ['tv.bonus', 'tv.vorkasse', 'tv.laufzeit', 'tv.kuendigung', 'tv.fernwaerme'];
   // Link zum Anbieterwechsel (neutral, keine Vergleichsportale): Verbraucherzentrale Bundesverband, Seite in einfacher Sprache, Stand 28.10.2026, abgerufen 21.11.2026
   var TV_VZ_URL = 'https://www.verbraucherzentrale.de/de-x-simple/energie/so-koennen-sie-ihren-anbieter-von-strom-und-gas-wechseln-88520';
+  // Beratungsstellen-Suche der Bundesarbeitsgemeinschaft Schuldnerberatung (BAG-SB), meine-schulden.de „Sie suchen eine passende
+  //  Beratungsstelle?“: Suche nach PLZ oder Ort mit Umkreis, Filter „kostenfrei“ (Seite: Letzte Aktualisierung 20.11.2026, abgerufen 21.11.2026).
+  var SB_SUCHE_URL = 'https://www.meine-schulden.de/hilfe-finden/stellensuche';
   function linkKarte(box, id, url, titel, text) { // Linkkarte (öffnet extern; in der App über das Browser-Plugin, siehe Klick auf a[href])
     var vz = document.createElement('a'); vz.className = 'uk-karte sp-link-karte'; vz.href = url; vz.target = '_blank'; vz.rel = 'noopener'; vz.id = id;
     vz.innerHTML = '<span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></span><span class="sk-txt"><b>' + esc(titel) + '</b><span>' + esc(text) + (lang !== 'de' ? ' ' + esc(t('sp.vz.de')) : '') + '</span></span>';
@@ -2916,9 +2919,18 @@
       if (sp.fall === 'termin') Geld.wartezeit(box);
       else if (sp.fall === 'mappe') Geld.mappe(box);
       else if (sp.fall === 'finden') {
+        // UX-Audit C (21.11.2026): statt Textwand eine klare Handlung – Link zur Stellensuche der BAG-SB (nur Art der Stelle, keine Anschriften
+        //  in der App), Dringend-Satz offen, Suche und Jobcenter/Sozialamt zum Aufklappen. Texte sl.hilfe.1–5 unverändert.
         p(t('sb.finden'), 'pf-frage');
         var hb = document.createElement('div'); hb.className = 'gs-box gs-schritt gs-beratung'; box.appendChild(hb);
-        ['sl.hilfe.1', 'sl.hilfe.4', 'sl.hilfe.5', 'sl.hilfe.2', 'sl.hilfe.3'].forEach(function (k) { var e = document.createElement('p'); e.textContent = t(k); hb.appendChild(e); });
+        var hp = function (k, ziel) { var e = document.createElement('p'); e.textContent = t(k); (ziel || hb).appendChild(e); };
+        hp('sl.hilfe.4');
+        linkKarte(hb, 'sb-suche', SB_SUCHE_URL, t('sb.finden.link'), t('sb.finden.link.t'));
+        hp('sl.hilfe.5');
+        [['sb.finden.so', ['sl.hilfe.1']], ['sb.finden.amt', ['sl.hilfe.2', 'sl.hilfe.3']]].forEach(function (x) {
+          var dm = document.createElement('details'); dm.className = 'mehr gs-finden-mehr'; var sm = document.createElement('summary'); sm.textContent = t(x[0]); dm.appendChild(sm);
+          x[1].forEach(function (k) { hp(k, dm); }); box.appendChild(dm);
+        });
         tipp('sp.schulden.unserioes', 'unserioes');
       } else { // ablauf
         p(t('sb.ablauf'), 'pf-frage');

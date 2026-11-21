@@ -1095,7 +1095,9 @@
   ol.kc-liste { counter-reset: kc; }
   ol.kc-liste > li { counter-increment: kc; display: grid; grid-template-columns: 2em 1fr; align-items: center; }
   ol.kc-liste > li::before { content: counter(kc) "."; font-weight: 700; font-size: 1.2em; }
-  .kc-alle .check, .ip-liste .check, .sb-haken .check { margin: 6px 0; }
+  .kc-alle .check, .sb-haken .check { margin: 6px 0; }
+  .ip-liste .check { margin: 0; padding: 8px 0; } /* UX-Audit C: Haken-Zeilen enger (Zeile bleibt ≥ 44 px) */
+  .gs-beratung .sp-link-karte { margin: 12px 0; } .ra-trotz { margin-top: 16px; }
   .ip-liste { border: 0; padding: 0; margin: 8px 0; }
   .sb-haken { list-style: none; padding: 0; margin: 8px 0; }
   .sb-zeile { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px; border-bottom: 1px solid var(--line); padding: 6px 0; }
