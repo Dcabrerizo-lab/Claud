@@ -1034,6 +1034,11 @@
   .sl-tabelle { margin: 8px 0; }
   .sp-link-karte { text-decoration: none; min-height: 0; margin: 16px 0; max-width: 640px; }
   .frist.gs-frist h3 { font-size: var(--fs-s); margin: 0; color: var(--ink); }
+  .frist.gs-frist .tipp-sym { display: none; } /* ein Symbol je Frist (das der .frist), keine doppelte Einrückung */
+  .frist.gs-frist .tipp-kurz { font-weight: 700; }
+  .pf-jetzt.gs-schritt li + li { margin-top: 8px; }
+  .gs-freibetrag { margin: 0 0 12px; }
+  .gs-tipps { display: grid; gap: 8px; margin: 0 0 12px; }
   .app[data-ansicht="sparen"] .weg-sym { background: var(--c-sparen); color: var(--on-c); }
   /* ===== Symbolfarben in Mein Ordner und im Energie-Check (die Regel „keine Farbe doppelt“ prüft tools/kontrast-pruefen.js nur noch für die Startseite) ===== */
   .app[data-ansicht="ordner"] #or-fristen .zeile-sym { background: var(--c-briefe); } /* gruppe ordner */
