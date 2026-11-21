@@ -61,6 +61,7 @@
   "vgp.pin": "PIN do tej sprawy (od 4 do 8 cyfr)",
   "vgp.kurz": "Nazwa na liście (dobrowolnie)",
   "vgp.kurz.t": "Widoczna dla każdego bez PIN-u. Puste pole: widać tylko „Zablokowana sprawa”.",
+  "vgp.t0": "To osłona przed wzrokiem, a nie ochrona przed fachowcami ze specjalnymi narzędziami.",
   "vgp.t1": "Bez PIN-u nawet my nie możemy jej otworzyć.",
   "vgp.t2": "Terminy z niej widzisz tylko, gdy jest otwarta.",
   "vgp.t3": "Zapomniany PIN? Wtedy sprawa przepada.",

@@ -6,6 +6,7 @@
   "vgp.pin": "PIN für diesen Vorgang. 4 bis 8 Ziffern.",
   "vgp.kurz": "Name in der Liste. Das musst du nicht.",
   "vgp.kurz.t": "Diesen Namen sieht jeder, auch ohne PIN. Lässt du es leer, steht da nur „Gesperrter Vorgang“.",
+  "vgp.t0": "Das ist ein Sichtschutz. Gegen Fachleute mit Spezial-Werkzeug hilft er nicht sicher.",
   "vgp.t1": "Ohne PIN können auch wir ihn nicht öffnen.",
   "vgp.t2": "Fristen darin siehst du nur, wenn er offen ist.",
   "vgp.t3": "PIN vergessen? Dann ist der Vorgang weg.",

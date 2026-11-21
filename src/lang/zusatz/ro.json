@@ -61,6 +61,7 @@
   "vgp.pin": "PIN pentru acest dosar (între 4 și 8 cifre)",
   "vgp.kurz": "Nume în listă (opțional)",
   "vgp.kurz.t": "Vizibil pentru oricine fără PIN. Lasă gol: apare doar „Dosar blocat”.",
+  "vgp.t0": "Aceasta este o protecție la privire, nu o protecție împotriva specialiștilor cu unelte speciale.",
   "vgp.t1": "Fără PIN, nici noi nu îl putem deschide.",
   "vgp.t2": "Termenele din el le vezi doar cât timp este deschis.",
   "vgp.t3": "Ai uitat PIN-ul? Atunci dosarul este pierdut.",

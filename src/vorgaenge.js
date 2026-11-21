@@ -142,9 +142,11 @@ const Vorgaenge = (function () {
         return verschluesseln(o.key, { name: o.name, daten: d }).then(function (e) { sp.iv = e.iv; sp.ct = e.ct; }, fehler);
       }).then(speichernRoh);
     }
-    // Ist der geöffnete Vorgang gesperrt (aber nicht mit PIN geöffnet), einen offenen nehmen oder einen neuen leeren anlegen
+    // Ist der geöffnete Vorgang gesperrt (aber nicht mit PIN geöffnet), einen offenen nehmen oder einen neuen leeren anlegen.
+    // Ein mit PIN geöffneter gesperrter Vorgang bleibt geöffnet: sonst stünden die Angaben des dann gewählten Vorgangs weder
+    // unter den bisherigen Schlüsseln noch in lotse.vorgaenge (Datenverlust nach dem Neustart).
     function offenWaehlen() {
-      if (!gesp(aktiv(c))) return false;
+      if (!gesp(aktiv(c)) || gOffen(aktiv(c))) return false;
       var o = c.liste.filter(function (v) { return !gesp(v); })[0];
       if (!o) { o = neu('', {}, jetzt()); c.liste.push(o); }
       c.aktiv = o.id; return true;
@@ -279,7 +281,13 @@ const Vorgaenge = (function () {
     function gFalsch(v) {
       var sp = v.sperre; sp.fehl = (sp.fehl || 0) + 1;
       var w = wartezeit(sp.fehl); sp.bis = w ? jetzt() + w : 0;
-      return speichern().then(function () { throw { falsch: true, warten: w }; });
+      return speichernRoh().then(function () { throw { falsch: true, warten: w }; }); // läuft schon in der Kette (gVersuch)
+    }
+    // Ein PIN-Versuch nach dem anderen (in der Schreibkette): mehrere gleichzeitig gestartete Versuche können die Wartezeit nicht umgehen
+    function gVersuch(v, pin) {
+      var p = kette.then(function () { return gEntschluesseln(v, pin); });
+      kette = p.then(function () { return true; }, function () { return true; });
+      return p;
     }
     function gErgebnis(e) { return { ok: false, warten: e && e.warten || 0, falsch: !!(e && e.falsch) }; }
     // Vorgang mit eigener PIN sperren. kurz: freiwilliger Kurzname, der ohne PIN in der Liste steht (sonst neutral).
@@ -311,19 +319,20 @@ const Vorgaenge = (function () {
       var v = bereit && finde(c, id);
       if (!v || !gesp(v)) return Promise.resolve({ ok: false });
       if (gOffen(v)) return Promise.resolve({ ok: true });
-      return kette.then(function () { return gEntschluesseln(v, pin); }).then(function (r) {
+      return gVersuch(v, pin).then(function (r) {
         if (!finde(c, id) || !gesp(v)) return { ok: false };
         c.aktiv = id; gSchliessen(); // anderer gesperrter Vorgang war offen: wieder zu
         offenG = { id: id, key: r.k, name: r.name }; v.daten = r.daten;
-        if (!key) klarDatenEntfernen(); // der bisher geöffnete steht jetzt mit seinen Angaben in lotse.vorgaenge
-        speichern(); return { ok: true };
+        // der bisher geöffnete steht jetzt mit seinen Angaben in lotse.vorgaenge: erst das schreiben, dann die bisherigen Schlüssel leeren
+        var k = speichern(); if (!key) k.then(function (ok) { if (ok && !klarAktiv()) klarDatenEntfernen(); });
+        return { ok: true };
       }, gErgebnis);
     }
     // Sperre aufheben (PIN nötig): Name und Angaben stehen danach wieder wie bei jedem anderen Vorgang
     function gAufheben(id, pin) {
       var v = bereit && finde(c, id);
       if (!v || !gesp(v)) return Promise.resolve({ ok: false });
-      return kette.then(function () { return gEntschluesseln(v, pin); }).then(function (r) {
+      return gVersuch(v, pin).then(function (r) {
         if (!finde(c, id) || !gesp(v)) return { ok: false };
         var daten = gOffen(v) && v.daten ? v.daten : r.daten;
         if (gOffen(v)) offenG = null;
@@ -338,7 +347,7 @@ const Vorgaenge = (function () {
     function oeffneGesperrt(id, pin) {
       var v = bereit && finde(c, id);
       if (!v || !gesp(v)) return Promise.reject(new Error('nicht gesperrt'));
-      return kette.then(function () { return gEntschluesseln(v, pin); }).then(function (r) {
+      return gVersuch(v, pin).then(function (r) {
         var d = gOffen(v) && v.daten ? v.daten : r.daten; // geöffnet: neuester Stand aus dem Speicher
         return { id: id, name: r.name, daten: kopieVon(d) };
       }, function (e) { var x = new Error(e && e.falsch ? 'falsche PIN' : 'warten'); x.warten = e && e.warten || 0; x.falsch = !!(e && e.falsch); throw x; });
@@ -408,7 +417,11 @@ const Vorgaenge = (function () {
       sicherung: function () { return bereit ? kopieVon(c) : null; },
       zurueck: function (alt) {
         if (!bereit || !gueltig(alt)) return false;
-        c = kopieVon(alt); if (!finde(c, c.aktiv)) c.aktiv = c.liste[0].id;
+        var vor = c; c = kopieVon(alt);
+        // Rückgängig ändert nie eine Sperre: was jetzt gesperrt ist, bleibt gesperrt (nicht der Klartext von vorher), was inzwischen
+        // entsperrt wurde, bleibt offen, und der Fehlversuchszähler wird nicht zurückgesetzt. Sonst gilt der Stand von jetzt.
+        c.liste = c.liste.map(function (v) { var h = finde(vor, v.id); return h && (gesp(h) || gesp(v)) ? h : v; });
+        if (!finde(c, c.aktiv)) c.aktiv = c.liste[0].id;
         c.liste.forEach(function (v) { if (gesp(v) && !gOffen(v)) v.daten = null; }); // Angaben gesperrter Vorgänge nur, solange geöffnet
         if (offenG && c.aktiv !== offenG.id) { var vo = finde(c, offenG.id); if (vo) vo.daten = null; offenG = null; }
         offenWaehlen();

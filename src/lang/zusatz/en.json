@@ -61,6 +61,7 @@
   "vgp.pin": "PIN for this case (4 to 8 digits)",
   "vgp.kurz": "Name in the list (optional)",
   "vgp.kurz.t": "Visible to anyone without the PIN. Leave empty: only “Locked case” is shown.",
+  "vgp.t0": "This is a privacy screen, not protection against experts with special tools.",
   "vgp.t1": "Without the PIN, not even we can open it.",
   "vgp.t2": "You only see deadlines in it while it is open.",
   "vgp.t3": "Forgot the PIN? Then the case is lost.",

@@ -145,6 +145,61 @@ const GEHEIM = 'Geheimstrasse 7', NAME = 'Familie Geheim';
     ck('[vorgang-pin] Speicher voll: nicht gesperrt, Angaben bleiben', ok === false && !t.liste()[0].gesperrt && t.aktiv().id === id && holen(t, 'lotse.state') === '{"y":2}' && t.liste().length === 1);
   }
 
+  // Sicherheitsprüfung PR #90: ein mit PIN geöffneter gesperrter Vorgang bleibt geöffnet, wenn ein anderer gesperrt oder gelöscht wird;
+  // die Angaben der übrigen Vorgänge überstehen den Neustart (vorher: weder unter den bisherigen Schlüsseln noch in lotse.vorgaenge)
+  for (const art of ['sperren', 'loeschen']) {
+    const s = speicher({}), t = oeffne(s);
+    const a = t.aktiv().id; t.umbenennen(a, 'A'); t.set('lotse.state', '{"A":1}');
+    const b = t.neu('B'); t.set('lotse.state', '{"B":1}');
+    const c3 = t.neu('C'); t.set('lotse.state', '{"C":1}'); await t.fertig();
+    await t.gSperren(a, '1234'); await t.fertig(); await t.gOeffnen(a, '1234'); await t.fertig();
+    if (art === 'sperren') await t.gSperren(b, '5678'); else t.loeschen(b);
+    await t.fertig(); await t.fertig();
+    ck('[vorgang-pin] geöffneter gesperrter Vorgang bleibt offen (' + art + ' eines anderen)', t.aktiv().id === a && holen(t, 'lotse.state') === '{"A":1}' && !alles(s).includes('{"A":1}') && !alles(s).includes('{\\"A\\":1}'));
+    const t2 = oeffne(s); await t2.fertig();
+    ck('[vorgang-pin] Angaben des dritten Vorgangs nach Neustart noch da (' + art + ')', t2.aktiv().id === c3 && holen(t2, 'lotse.state') === '{"C":1}');
+  }
+  // Rückgängig (nach Löschen) hebt keine Sperre auf und setzt den Fehlversuchszähler nicht zurück
+  {
+    const s = speicher({}), t = oeffne(s);
+    const a = t.aktiv().id; t.umbenennen(a, NAME); t.set('lotse.state', JSON.stringify({ p: { strasse: GEHEIM } }));
+    const b = t.neu('B'); t.neu('C'); await t.fertig();
+    const sich = t.sicherung(); t.loeschen(b);
+    await t.gSperren(a, '1234'); await t.fertig();
+    for (let i = 0; i < 5; i++) await t.gOeffnen(a, '0000');
+    t.zurueck(sich); await t.fertig();
+    ck('[vorgang-pin] Rückgängig nach dem Sperren: bleibt gesperrt, nichts im Klartext, gelöschter Vorgang wieder da', t.liste().find((v) => v.id === a).gesperrt && !alles(s).includes(GEHEIM) && !alles(s).includes(NAME) && !!t.liste().find((v) => v.id === b));
+    ck('[vorgang-pin] Rückgängig setzt die Wartezeit nicht zurück', t.gWarten(a) > 0 && JSON.parse(s.mem['lotse.vorgaenge']).klar.liste.find((v) => v.id === a).sperre.fehl === 5);
+    // umgekehrt: Sperre nach der Sicherung aufgehoben und geändert -> Rückgängig holt nicht den alten gesperrten Stand
+    const s2 = speicher({}), u = oeffne(s2);
+    const x = u.aktiv().id; u.set('lotse.state', '{"x":1}'); const y = u.neu('Y'); await u.fertig();
+    await u.gSperren(x, '1234'); await u.fertig();
+    const sich2 = u.sicherung(); u.loeschen(y);
+    await u.gAufheben(x, '1234'); u.oeffnen(x); u.set('lotse.state', '{"x":2}'); await u.fertig();
+    u.zurueck(sich2); await u.fertig(); await u.fertig();
+    ck('[vorgang-pin] Rückgängig nach dem Aufheben: neuer Stand bleibt', !u.liste().find((v) => v.id === x).gesperrt && u.ueberall('lotse.state').find((v) => v.id === x).wert === '{"x":2}');
+  }
+  // Viele Versuche gleichzeitig: nach 5 Fehlversuchen greift die Wartezeit trotzdem
+  {
+    const s = speicher({}), t = oeffne(s);
+    const a = t.aktiv().id; t.set('lotse.state', '{"A":1}'); t.neu('B'); await t.fertig();
+    await t.gSperren(a, '1234'); await t.fertig();
+    const r = await Promise.all(Array.from({ length: 12 }, (_, i) => t.oeffneGesperrt(a, String(2000 + i)).then(() => 'ok', (e) => (e.falsch ? 'falsch' : 'warten'))));
+    ck('[vorgang-pin] gleichzeitige Versuche: nur 5 geprüft, dann Wartezeit', r.filter((x) => x === 'falsch').length === 5 && r.filter((x) => x === 'warten').length === 7, r.join(','));
+    let spaet = null; try { await t.oeffneGesperrt(a, '1234'); } catch (e) { spaet = e; }
+    ck('[vorgang-pin] in der Wartezeit auch richtige PIN nicht (oeffneGesperrt)', spaet && spaet.warten > 0 && !spaet.falsch);
+  }
+  // Öffnen bei vollem Speicher: die bisherigen Klartext-Schlüssel des vorher geöffneten Vorgangs bleiben, bis lotse.vorgaenge geschrieben ist
+  {
+    const s = speicher({}), t = oeffne(s, { fehler: () => {} });
+    const a = t.aktiv().id; t.set('lotse.state', '{"A":1}'); const b = t.neu('B'); t.set('lotse.state', '{"B":1}'); await t.fertig();
+    await t.gSperren(a, '1234'); await t.fertig();
+    s.voll = true; await t.gOeffnen(a, '1234'); await t.fertig(); await t.fertig();
+    ck('[vorgang-pin] Öffnen bei vollem Speicher: Angaben des anderen Vorgangs nicht verloren', s.mem['lotse.state'] === '{"B":1}');
+    const t2 = oeffne(s); await t2.fertig();
+    ck('[vorgang-pin] danach Neustart: anderer Vorgang vollständig', t2.aktiv().id === b && holen(t2, 'lotse.state') === '{"B":1}');
+  }
+
   if (fails) { console.log(fails + ' von ' + n + ' Prüfungen fehlgeschlagen'); process.exit(1); }
   console.log('Vorgang-PIN-Test bestanden: ' + n + ' Prüfungen');
 })();

@@ -3171,7 +3171,7 @@
   }
   document.addEventListener('visibilitychange', function () { vgHintergrund(document.visibilityState === 'hidden'); });
   // Mit PIN schneller speichern: beim Verlassen eines Feldes sofort
-  document.addEventListener('focusout', function (e) { if (tresor && tresor.pinAn() && tresor.bereit() && e.target && /^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName) && saveTimer) flush(); });
+  document.addEventListener('focusout', function (e) { if (tresor && tresor.bereit() && (tresor.pinAn() || tresor.aktiv().gesperrt) && e.target && /^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName) && saveTimer) flush(); });
   // Web: in einem anderen Fenster geändert -> neu laden, damit nichts überschrieben wird
   window.addEventListener('storage', function (e) { if (e.key === Vorgaenge.SCHLUESSEL) { clearTimeout(saveTimer); saveTimer = null; vgNeuStart(); } });
   // Angaben des geöffneten Vorgangs neu laden (nach Wechsel, neuem Vorgang, Löschen)
@@ -3416,7 +3416,7 @@
     if (art === 'sperren') {
       kurz = feld('vgGKurz', 'vgp.kurz', Vorgaenge.NAME_MAX, 'text'); kurz.setAttribute('aria-describedby', 'vgGKurzH');
       var kh = vgEl('p', 'small muted', t('vgp.kurz.t')); kh.id = 'vgGKurzH'; f.appendChild(kh);
-      var er = vgEl('ul', 'small vg-gerkl'); ['vgp.t1', 'vgp.t2', 'vgp.t3'].forEach(function (k) { er.appendChild(vgEl('li', null, t(k))); }); f.appendChild(er);
+      var er = vgEl('ul', 'small vg-gerkl'); ['vgp.t0', 'vgp.t1', 'vgp.t2', 'vgp.t3'].forEach(function (k) { er.appendChild(vgEl('li', null, t(k))); }); f.appendChild(er);
     } else f.appendChild(vgEl('p', 'small muted', t('vgp.vergessen')));
     var b = vgEl('button', 'btn', t(art === 'sperren' ? 'vgp.sperren' : art === 'oeffnen' ? 'vgp.oeffnen' : 'vgp.aufheben')); b.type = 'submit'; f.appendChild(b);
     var m = vgEl('p', 'msg'); m.setAttribute('role', 'status'); f.appendChild(m);
@@ -3427,6 +3427,7 @@
       if (!Vorgaenge.VPIN_RE.test(pin)) { m.textContent = t('vgp.format'); p1.focus(); return; }
       if (p2 && pin !== p2.value) { m.textContent = t('vg.pin.ungleich'); p2.focus(); return; }
       b.disabled = true; m.textContent = t('vg.bitte');
+      if (undoFn) undoWeg(); // „Rückgängig“ (nach Löschen) holt keinen Stand von vor dem Sperren zurück
       flush(); var vorher = tresor.aktiv().id;
       if (art === 'sperren') {
         tresor.gSperren(v.id, pin, kurz.value).then(function (ok) {
