@@ -41,3 +41,13 @@ Dokumente einlesen, Brief-Hinweis/Quellen, Pflege-Auswahl, Spartipps der Schuldn
 - Seite „Deine Angaben“: Sprachauswahl entfernen (Sprache nur noch in Einstellungen und oben).
 - Geld und Schulden neu (PR #76, nach Fable-Prüfung RDG).
 - Beratungsmodus: nur zahlungswürdige Kernfunktionen (siehe berater-mehrwert.md).
+
+## Update nach 1.9 (Plan, Stand 21.11.2026 13:20)
+Quelle: docs/entwuerfe/pruefungen-21-11/ (bedienung.md, sicherheit.md, technik.md, richtigkeit.md, Abgleich Runde 1/2, Seiten-Audit).
+- Sprachen nur bei Bedarf laden (App ca. 3,9 MB kleiner, Start fast doppelt so schnell) – Entscheidung David: A (jetzt Grenze 7 MB in Bytes, Umbau im nächsten Update).
+- QR-Scanner nativ (iPhone), .solo-Datei direkt mit SoLo öffnen – mit Gerätetest (TestFlight/Test-App).
+- Abgleich amtliche Rechner (Wohngeld, KiZ, BAföG/Elterngeld) – Befunde beheben, Rechenplan je Leistung, unabhängige Referenzrechnung vervollständigen, Fachleute-Prüfung.
+- Bedienung: Pflegegrad-Einschätzung übersetzen (ar u. a., Pfeilrichtung RTL), „Ich ziehe aus“ Paragrafen nur im Beratungsmodus, Hilfen-Check: weniger Bedienelemente je Frage, Mein Ordner leer → klarer Einstieg + „Frist eintragen“ immer erreichbar, Jobcenter-Brief Foto-Knopf sichtbar, Antragsmappe kürzen + Drucken ans Ende, Einfache Sprache bei Brief-Seiten, Unterlagen-Liste ohne Doppelungen, Blatt für die Akte, QR-Knopf früher.
+- Sicherheit (mittel/niedrig): PIN-Länge/Zähler, Cache-Reste, CSP ohne unsafe-inline, Web-CSP + SRI, pdf.js-Update (CVE-2024-4367), Suchlink ohne Ort/PLZ, ML-Kit-Diagnose prüfen (Gerätetest).
+- Technik: Speicherfehler ehrlich melden (Haushalt/Schulden/Ausziehen), kaputte Daten nicht still überschreiben, pflege.js hebel() beschleunigen, jumpPruefen drosseln.
+- Richtigkeit gering (siehe richtigkeit.md), BAföG H1/H2/H4, Abgleich-Hinweise.
