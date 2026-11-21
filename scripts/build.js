@@ -127,7 +127,9 @@ function briefEinfachJs() {
 // opts.native: Store-App (Android/iOS) statt Web
 function render(opts = {}) {
   const pp = pruefpaket();
-  const parts = { rules: read('rules.js'), i18n: i18nSource(), fmt: read('fmt.js'), plz: read('plz.js'), behoerden: read('behoerden.js'), formulare: read('formulare.js'), vorgaenge: read('vorgaenge.js'), haushalt: read('haushalt.js'), ausziehen: read('ausziehen.js'), fristen: read('fristen.js'), schulden: read('schulden.js'), geld: read('geld.js'), schritte: read('schritte.js'), klient: read('klient.js'), weitergabe: read('weitergabe.js'), qrcode: read('vendor/qrcode.js'), navigation: read('navigation.js'), app: read('app.js') };
+  const parts = { rules: read('rules.js'), i18n: i18nSource(), fmt: read('fmt.js'), plz: read('plz.js'), behoerden: read('behoerden.js'), formulare: read('formulare.js'), vorgaenge: read('vorgaenge.js'), haushalt: read('haushalt.js'), ausziehen: read('ausziehen.js'), fristen: read('fristen.js'), schulden: read('schulden.js'), geld: read('geld.js'), schritte: read('schritte.js'), klient: read('klient.js'), navigation: read('navigation.js'), app: read('app.js') };
+  // Weitergabe an den Klienten (src/weitergabe.js) mit QR-Code-Erzeugung (src/vendor/qrcode.js: qrcode-generator 2.0.4, MIT, Kazuhiko Arase), offline gebündelt
+  parts.weitergabe = read('weitergabe.js'); parts.qrcode = read(path.join('vendor', 'qrcode.js'));
   if (opts.native) {
     if (!parts.app.includes('/*NATIVE*/ false')) throw new Error('Marker /*NATIVE*/ fehlt in src/app.js');
     parts.app = parts.app.replace('/*NATIVE*/ false', 'true');
@@ -143,6 +145,8 @@ function render(opts = {}) {
     .replace('/*BEHOERDEN*/\n', () => parts.behoerden)
     .replace('/*BEHOERDENDATA*/null', () => (opts.plz === false ? 'null' : behoerdenData()))
     .replace('/*FORMULARE*/\n', () => parts.formulare)
+    .replace('/*QRCODE*/\n', () => parts.qrcode)
+    .replace('/*WEITERGABE*/\n', () => parts.weitergabe)
     .replace('/*VORGAENGE*/\n', () => parts.vorgaenge)
     .replace('/*HAUSHALT*/\n', () => parts.haushalt)
     .replace('/*AUSZIEHEN*/\n', () => parts.ausziehen)
@@ -152,13 +156,11 @@ function render(opts = {}) {
     .replace('/*NAVIGATION*/\n', () => parts.navigation)
     .replace('/*SCHRITTE*/\n', () => parts.schritte)
     .replace('/*KLIENT*/\n', () => parts.klient)
-    .replace('/*QRCODE*/\n', () => parts.qrcode) // QR-Code (qrcode-generator 2.0.4, MIT, Kazuhiko Arase), offline gebündelt
-    .replace('/*WEITERGABE*/\n', () => parts.weitergabe)
     .replace('<!--PRUEFPAKET-->', () => pp.teile)
     .replace('/*PPSTIL*/\n', () => pp.css)
     .replace('/*PRUEFPAKET*/\n', () => briefEinfachJs() + pp.js)
     .replace('/*APP*/\n', () => parts.app.replace("'/*VERSION*/'", () => JSON.stringify(require(path.join(ROOT, 'package.json')).version)));
-  const left = html.match(/\/\*(RULES|I18N|FMT|PLZ|PLZDATA|BEHOERDEN|BEHOERDENDATA|FORMULARE|VORGAENGE|HAUSHALT|AUSZIEHEN|FRISTEN|SCHULDEN|GELD|NAVIGATION|SCHRITTE|KLIENT|QRCODE|WEITERGABE|APP|PPSTIL|PRUEFPAKET)\*\/|<!--PRUEFPAKET-->/);
+  const left = html.match(/\/\*(RULES|I18N|FMT|PLZ|PLZDATA|BEHOERDEN|BEHOERDENDATA|FORMULARE|VORGAENGE|HAUSHALT|AUSZIEHEN|FRISTEN|SCHULDEN|GELD|NAVIGATION|SCHRITTE|APP|PPSTIL|PRUEFPAKET)\*\/|<!--PRUEFPAKET-->/);
   if (left) throw new Error('Platzhalter nicht ersetzt: ' + left[0]);
   return { html, i18n: parts.i18n };
 }
