@@ -145,5 +145,12 @@
   "sf.q.autoWert": "Roughly how much is your car worth?",
   "sf.q.autoBraucht": "Is the car needed because of a disability or for getting to work?",
   "sf.q.bezug": "What do you already receive?",
-  "sf.h.bezug": "The app then shows these benefits as “already received” and checks what else is possible."
+  "sf.h.bezug": "The app then shows these benefits as “already received” and checks what else is possible.",
+  "sf.mehrere": "You can choose more than one answer",
+  "sf.oder": "or",
+  "sf.teil": "Part {n} of {m}",
+  "sf.q.plzOrt": "Is your place of residence right?",
+  "sf.a.ortJa": "Yes, that's right",
+  "sf.a.ortNein": "No, a different place",
+  "sf.h.plzOrt": "The rent level depends on your municipality, not on the postcode. It decides how much rent counts at most for Wohngeld. The Wohngeldstelle decides with binding effect."
 }

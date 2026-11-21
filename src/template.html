@@ -111,6 +111,20 @@
   .es-nav1 { display: grid; gap: 12px; margin-top: 16px; }
   .es-weiter { justify-content: center; background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
   .es-skip { justify-content: center; }
+  .warn.fehler { background: var(--bad-bg); color: var(--bad); border-inline-start: 4px solid var(--bad); } /* Eingabefehler am Feld (Leistungs-Check) */
+  /* Mehrfachauswahl (Leistungs-Check, Kurzer Check): Kästchen mit Haken statt gefülltem Knopf, damit klar ist: mehrere Antworten gehen */
+  .es-mehrere { font-weight: 600; color: var(--ink); margin: 0 0 10px; }
+  .es-mehr .es-btn { position: relative; }
+  .es-kasten { flex: none; width: 26px; height: 26px; border: 2px solid var(--field); border-radius: 6px; background: var(--surface); display: grid; place-items: center; }
+  .es-kasten::after { content: ""; width: 7px; height: 13px; border: solid transparent; border-width: 0 3px 3px 0; transform: translateY(-2px) rotate(45deg); }
+  .es-mehr .es-btn.an { background: var(--accent-soft); color: var(--ink); border-color: var(--accent); }
+  .es-mehr .es-btn.an .es-kasten { background: var(--accent); border-color: var(--accent); }
+  .es-mehr .es-btn.an .es-kasten::after { border-color: var(--accent-ink); }
+  .es-klein.es-mehr .es-btn { padding-top: 34px; }
+  .es-klein.es-mehr .es-kasten { position: absolute; top: 8px; inset-inline-start: 8px; width: 22px; height: 22px; }
+  .es-oder { display: flex; align-items: center; gap: 12px; color: var(--muted); margin: 14px 0 12px; }
+  .es-oder::before, .es-oder::after { content: ""; flex: 1; border-top: 1px solid var(--line); }
+  .es-mehr .es-oder { margin: 2px 0; }
   .es-nav { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
   .es-karte { background: var(--surface); border: 2px solid var(--line); border-radius: 14px; padding: 14px 16px; margin-bottom: 14px; }
   .es-karte.ja { border-color: var(--ok); }
@@ -158,6 +172,9 @@
   .pu-wichtig { font-weight: 600; }
   #paNurDe { margin-inline-end: 52px; } /* oben in der Einschätzung: nicht unter die Lupe schieben */
   [dir="rtl"] .nav-pfeil { transform: scaleX(-1); }
+  /* Deutsch gebliebener Block (lang="de" dir="ltr") in einer RTL-Sprache: Pfeile darin zeigen wieder nach LTR-Art */
+  [dir="rtl"] [dir="ltr"] :is(.nav-pfeil, .pfeil, .zeile-pfeil) { transform: none; }
+  [dir="ltr"] [dir="rtl"] :is(.nav-pfeil, .pfeil, .zeile-pfeil) { transform: scaleX(-1); } /* darin wieder RTL (z. B. übersetzter Zurück-Knopf) */
   .pa-wo { font-weight: 700; color: var(--ink); }
   .pa-unten { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 20px; margin-top: 18px; }
   .pa-checks { display: grid; gap: 8px; }
@@ -220,6 +237,10 @@
   }
   .notice.info { background: var(--na-bg); color: var(--na); }
   .notices { margin-bottom: 8px; }
+  /* Übersetzungshinweis nur einmal: auf der Startwahl, „Deine Angaben“ und im Ergebnis, nicht auf jeder Frage (UX-Audit A, Aufgabe 8) */
+  .app.sf-frage #transNotice { display: none; }
+  /* Hinweis als erstes Element einer Ansicht: Platz für die Lupe oben in der Ecke lassen, nichts darunter verdecken */
+  .nav-kopf[hidden] + .notices > .notice { margin-inline-end: 56px; }
 
   .cols { display: grid; gap: 32px; grid-template-columns: minmax(0, 1fr); }
   @media (min-width: 900px) {
@@ -1211,6 +1232,8 @@
   details.mehr > summary::before { content: "i"; flex: none; display: inline-grid; place-items: center; width: 20px; height: 20px; border: 2px solid currentColor; border-radius: 50%; font-size: .8em; font-weight: 900; line-height: 1; }
   details.mehr > summary::after { content: "▸"; font-size: .85em; }
   details.mehr[open] > summary::after { content: "▾"; }
+  [dir="rtl"] details.mehr:not([open]) > summary::after { content: "◂"; } /* zugeklappt zeigt der Pfeil in Leserichtung */
+  [dir="rtl"] [dir="ltr"] details.mehr:not([open]) > summary::after { content: "▸"; }
   details.mehr.quellen { margin-top: 18px; } /* „Quellen und Stand“: immer letzte Zeile der Seite */
   /* Tipp (Geld und Schulden, Pfändung): Linien-Symbol + kurzer Satz, Einzelheiten zum Aufklappen (src/app.js tippEl) */
   details.mehr.tipp { border: 1px solid var(--line); border-radius: var(--r-item); background: var(--surface); padding: 2px 12px; margin: 8px 0; }
@@ -1421,7 +1444,7 @@
       </div>
       <div class="kacheln uk-raster" id="briefKacheln"></div>
       <div id="checkBox" class="pp" hidden>
-        <p class="pp-hinweis small" id="ppNurDe" data-t="briefe.schreibenDe" hidden></p>
+        <p class="pp-hinweis small no-denetz nur-de-hinweis" id="ppNurDe" data-t="briefe.nurDe" hidden></p>
 <!--PRUEFPAKET-->
         <!-- Gemeinsame Kachel „Anderer Brief oder Formular“: erst einlesen (die App erkennt Formular oder Brief), darunter die Wahl von Hand -->
         <section class="pp-teil" id="abWahl" aria-labelledby="h-briefe" hidden>
@@ -1503,20 +1526,20 @@
     <section id="v-pflegestart" class="ansicht" aria-labelledby="h-pflegestart" hidden>
       <!--ZURUECK-->
       <h2 id="h-pflegestart" class="ans-h" data-t="home.pflege"></h2>
-      <p class="pp-hinweis small" id="puNurDe" data-t="pu.nurDe" hidden></p>
+      <p class="pp-hinweis small no-denetz nur-de-hinweis" id="puNurDe" data-t="pu.nurDe" hidden></p>
       <div id="puInhalt" class="pf pu"></div>
     </section>
 
     <!-- Pflegegrad selbst einschätzen (geführt, eine Frage pro Bildschirm) -->
     <section id="v-pflege" class="ansicht" aria-label="Pflegegrad" hidden>
-      <p class="pp-hinweis small" id="paNurDe" data-t="pu.nurDe" hidden></p>
+      <p class="pp-hinweis small no-denetz nur-de-hinweis" id="paNurDe" data-t="pu.nurDe" hidden></p>
       <div id="pflegeAssist" class="pa"></div>
     </section>
 
     <!-- Erklärseite: So funktionieren die Leistungen der Pflegekasse -->
     <section id="v-pflegeinfo" class="ansicht" aria-labelledby="h-pflegeinfo" hidden>
       <!--ZURUECK id=piZurueck-->
-      <p class="pp-hinweis small" id="piNurDe" data-t="pu.nurDe" hidden></p>
+      <p class="pp-hinweis small no-denetz nur-de-hinweis" id="piNurDe" data-t="pu.nurDe" hidden></p>
       <div id="pflegeInfo" class="pi"></div>
     </section>
 
@@ -1524,7 +1547,7 @@
     <!--ZURUECK kid=leistungenKopf-->
     <div class="notices" id="notices">
       <div class="notice" id="sampleNotice" role="note" data-t="sample"></div>
-      <div class="notice info" id="transNotice" role="note" data-t="trans" hidden></div>
+      <div class="notice info no-denetz" id="transNotice" role="note" data-t="trans" hidden></div>
       <div class="notice" id="altNotice" role="alert" hidden></div>
     </div>
 

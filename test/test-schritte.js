@@ -59,14 +59,17 @@ const ohne = (o) => JSON.stringify(o.results.map((r) => [r.id, r.level, r.tx]));
   let store = {};
   let A = app(store);
   check('Beim Öffnen: Auswahl mit zwei Karten, Formular ausgeblendet', A.$('sfWahlSchritt') && A.$('sfWahlAlles') && A.appEl.classList.contains('sf-an') && A.frage() === L['sf.wahl.h']);
+  check('Startwahl: keine Klasse sf-frage (Übersetzungshinweis sichtbar)', !A.appEl.classList.contains('sf-frage'));
   check('Karten: Schritt für Schritt (empfohlen) und Alles auf einer Seite', A.$('sfWahlSchritt').textContent.includes(L['sf.wahl.schritt.t']) && A.$('sfWahlAlles').textContent.includes(L['sf.wahl.alles.t']));
   A.$('sfWahlAlles').click();
   check('Alles auf einer Seite: Formular sichtbar, oben die Wahl (gedrückt: Alles auf einer Seite) und „Angaben löschen“', !A.appEl.classList.contains('sf-an') && A.$('sfWegAlles').getAttribute('aria-pressed') === 'true' && A.$('sfWegSchritt').textContent === L['sf.wahl.schritt'] && !!A.$('clearLink') && A.$('sfLeiste').compareDocumentPosition(A.$('h-form')) & 4 && store['lotse.checkWeg'] === 'alles');
   A = app(store);
   check('Wahl wird pro Gerät gemerkt (keine Auswahl beim nächsten Öffnen)', !A.$('sfWahlSchritt') && !A.appEl.classList.contains('sf-an'));
   A.$('sfWegSchritt').click();
+  check('Frageseite: Klasse sf-frage (Übersetzungshinweis nur auf Startwahl, Übersicht und Ergebnis)', A.appEl.classList.contains('sf-frage') && A.frage() === L['sf.q.adults']);
+  check('Fortschritt: „Teil 1 von …“ vor dem Abschnitt, dünner Balken', /^Teil 1 von [4-7] · /.test(A.$('schritte').querySelector('.sf-bereich').textContent) && !!A.$('schritte').querySelector('.sf-kopf .es-bar'), A.$('schritte').querySelector('.sf-bereich').textContent);
   check('Umschalten auf Schritt für Schritt: erste Frage', A.frage() === L['sf.q.adults'] && A.appEl.classList.contains('sf-an') && store['lotse.checkWeg'] === 'schritt');
-  check('Erste Frage: kein Zurück, Bereich „Haushalt“, Aufklapper „Warum fragt die App das?“', !A.$('sfZurueck') && A.$('schritte').querySelector('.sf-bereich').textContent === L['sf.b.haus'] && A.$('schritte').querySelector('details.sf-hilfe summary').textContent === L['sf.warum']);
+  check('Erste Frage: kein Zurück, Bereich „Haushalt“, Aufklapper „Warum fragt die App das?“', !A.$('sfZurueck') && A.$('schritte').querySelector('.sf-bereich').textContent.endsWith(L['sf.b.haus']) && A.$('schritte').querySelector('details.sf-hilfe summary').textContent === L['sf.warum']);
   check('Wahl des Weges oben sichtbar (vor der Frage), „Angaben löschen“ daneben', A.$('sfWegSchritt').getAttribute('aria-pressed') === 'true' && A.$('sfWegAlles').textContent === L['sf.wahl.alles'] && A.$('sfLeiste').compareDocumentPosition(A.$('sfFrage')) & 4 && !!A.$('clearLink'));
   check('Wahl unabhängig von „Einfache Sprache“: nach dem Umschalten gleich', (() => { A.$('einfacheSpracheBtn').click(); const ok = !!A.$('sfWegSchritt') && A.$('sfWegSchritt').getAttribute('aria-pressed') === 'true' && !!A.$('sfFrage') && !A.appEl.querySelector('#einfach:not([hidden])'); A.$('einfacheSpracheBtn').click(); return ok; })());
 
@@ -80,7 +83,10 @@ const ohne = (o) => JSON.stringify(o.results.map((r) => [r.id, r.level, r.tx]));
   A = app(store);
   const gesehen = [];
   const lauf = async (antworten) => { for (const a of antworten) { gesehen.push(A.frage()); await A.antworte(a); } };
-  await lauf([L['sf.a.allein'], 0, 0, '1985', L['sf.a.nein'], L['baby.0'], L['aufenthalt.0'],
+  await lauf([L['sf.a.allein'], 0, 0]);
+  A.$('sfIn').value = '19'; A.$('sfWeiter').click(); await A.warte();
+  check('Eingabefehler: Meldung in Fehlerfarbe am Feld, Feld aria-invalid und aria-describedby', !A.$('sfWarn').hidden && A.$('sfWarn').classList.contains('fehler') && A.$('sfIn').getAttribute('aria-invalid') === 'true' && A.$('sfIn').getAttribute('aria-describedby') === 'sfWarn');
+  await lauf(['1985', L['sf.a.nein'], L['baby.0'], L['aufenthalt.0'],
     L['pflege.0'], L['bh.person.0'], L['bh.em.0'], L['sf.a.nein'],
     L['arbeit.0'], L['ausb.0'], L['wohnart.miete'], '650', '80', L['sf.a.nein'], L['hh.0']]);
   const q = (k) => L[k];
@@ -89,6 +95,11 @@ const ohne = (o) => JSON.stringify(o.results.map((r) => [r.id, r.level, r.tx]));
   check('Nicht arbeitslos: keine Fragen zum Arbeitslosengeld', !gesehen.includes(q('sf.q.algZeit')) && !gesehen.includes(q('sf.q.lohnVorher')));
   // PLZ (wenn Daten da), sonst Bundesland/Mietenstufe
   if (A.frage() === q('sf.q.plz')) await A.antworte('93047');
+  check('PLZ eindeutig: Frage „Stimmt dein Wohnort?“ mit Ort und Mietenstufe sichtbar (nur Vorbelegung, Rechtsprüfung Frage 4)', A.frage() === q('sf.q.plzOrt') && /Regensburg/.test(A.$('schritte').querySelector('.sf-info').textContent) && /Mietenstufe [IV]+/.test(A.$('schritte').querySelector('.sf-info').textContent), A.frage());
+  await A.antworte(L['sf.a.ortNein']);
+  check('Anderer Ort: Mietenstufe wird gefragt', A.frage() === q('sf.q.mietstufe'), A.frage());
+  A.$('sfZurueck').click(); await A.warte();
+  await A.antworte(L['sf.a.ortJa']);
   check('PLZ Regensburg: Bundesland und Mietenstufe nicht gefragt (kommen aus der PLZ)', A.frage() === q('sf.q.ekArt') && A.solo().state().bundesland === 'BY' && !!A.solo().state().mietstufe, A.frage());
   await A.antworte(L['ek.art.lohn']);
   check('Lohn: Frage nach Brutto', A.frage() === q('sf.q.brutto.lohn'));
@@ -107,7 +118,17 @@ const ohne = (o) => JSON.stringify(o.results.map((r) => [r.id, r.level, r.tx]));
   await A.antworte('2000'); await A.antworte('skip'); await A.antworte('weiter');
   await A.antworte('skip'); await A.antworte('3000'); await A.antworte('skip');
   check('Leistungen, die man schon bekommt (Mehrfachauswahl)', A.frage() === q('sf.q.bezug'));
+  check('Mehrfachauswahl sieht anders aus: Zeile „Mehrere Antworten möglich“, Kästchen (role=checkbox), „Nichts davon“ nach „oder“ vor „Weiter“', (() => {
+    const box = A.$('schritte'), opt = [...box.querySelectorAll('[data-k]')], n = A.$('sfNichts');
+    return A.$('sfMehrere').textContent === L['sf.mehrere'] && opt.length > 1 && opt.every((b) => b.getAttribute('role') === 'checkbox' && b.getAttribute('aria-checked') === 'false' && b.querySelector('.es-kasten')) &&
+      n.getAttribute('role') === 'checkbox' && !!box.querySelector('.es-oder') && (opt[opt.length - 1].compareDocumentPosition(n) & 4) && (n.compareDocumentPosition(A.$('sfWeiter')) & 4);
+  })());
+  check('Mehrfachauswahl: Antippen setzt den Haken (aria-checked), zweites Antippen nimmt ihn weg, Frage bleibt', (() => {
+    const b = A.$('schritte').querySelector('[data-k]'); b.click(); const an = b.getAttribute('aria-checked') === 'true' && b.classList.contains('an'); b.click();
+    return an && b.getAttribute('aria-checked') === 'false' && A.frage() === q('sf.q.bezug');
+  })());
   await A.antworte([L['bz.kg']]);
+  check('Übersicht: keine Klasse sf-frage (Hinweis wieder sichtbar)', !A.appEl.classList.contains('sf-frage'));
   check('Am Ende: Übersicht „Deine Angaben“ mit „ändern“', A.frage() === L['sf.ueb.h'] && A.$('schritte').querySelectorAll('[data-aendern]').length > 10);
   check('Übersicht zeigt die Antworten', /650/.test(A.$('schritte').textContent) && A.$('schritte').textContent.includes(L['ek.art.lohn']) && A.$('schritte').textContent.includes(L['bz.kg']));
   // ändern -> nach Weiter zurück zur Übersicht

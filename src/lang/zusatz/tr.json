@@ -77,7 +77,6 @@
   "bp.w.kdu": "Jobcenter'ın uygun kabul ettiği ölçüde kira, yan giderler ve ısınma (§ 22 SGB II).",
   "bp.w.zb": "Her ay hesabına yatırılan tutar.",
   "bp.w.bz": "Kararın geçerli olduğu aylar. Sonrasında devam başvurusu (Weiterbewilligungsantrag) gerekir. Bu, kararın tarihi değildir.",
-  "briefe.schreibenDe": "Resmî kurumlara yazılan mektuplar, örneğin itiraz, her zaman Almancadır. Kurumlar bunları Almanca ister.",
   "sp.vz.link": "Az parayla sağlıklı beslenme – Verbraucherzentrale'den ipuçları",
   "sp.vz.t": "Tüketici danışma merkezinin sade dilde sayfası. Tarayıcıda açılır.",
   "sp.vz.de": "Sayfa Almancadır.",
@@ -115,5 +114,10 @@
   "bp.vgl.pg": "bakım derecesi (Pflegegrad) {pg}",
   "bp.vgl.kein": "bakım derecesi (Pflegegrad) yok",
   "bp.vgl.klein": "Pflegekasse’nin hesapladığı gibi ağırlıklı puanlar (§ 15 SGB XI). Artı şu demek: senin değerlendirmen orada daha fazla puan veriyor. Aşağıda tam olarak hangi sorularda olduğu yazıyor.",
-  "t.bafoeg.vermTeil": "Varlığın {verm} muafiyet tutarının üzerinde. Ek 2.300 € yalnızca eş veya kayıtlı hayat arkadaşı ve her öz çocuğun için verilir. Yalnızca muafiyeti aşan kısım sayılır: 12 aya bölünür ve BAföG'u ayda yaklaşık {monat} azaltır. Kesin hesabı Amt für Ausbildungsförderung yapar."
+  "t.bafoeg.vermTeil": "Varlığın {verm} muafiyet tutarının üzerinde. Ek 2.300 € yalnızca eş veya kayıtlı hayat arkadaşı ve her öz çocuğun için verilir. Yalnızca muafiyeti aşan kısım sayılır: 12 aya bölünür ve BAföG'u ayda yaklaşık {monat} azaltır. Kesin hesabı Amt für Ausbildungsförderung yapar.",
+  "briefe.nurDe": "Form ve sonuç şimdilik sadece Almanca. Resmî kurumlara yazılan mektuplar her zaman Almancadır.",
+  "plz.wohnort": "Oturduğun yer: {ort} · Kira kademesi {stufe}",
+  "plz.aendern": "Değiştir",
+  "plz.stimmt": "Yer doğru mu? Kira kademesi posta koduna değil, belediyene bağlıdır.",
+  "plz.was": "Kira kademesi nedir?"
 }

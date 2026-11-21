@@ -85,6 +85,22 @@ const zeilen = (root) => [...(root || d).querySelectorAll('.de-netz')];
   btn.click(); await tick();
   check('Schalter wieder an: Zeilen wieder da', zeilen(box()).length > 0 && store['lotse.deNetz'] === '1');
 
+  // Nur deutsch vorhandene Bereiche (NurDeutsch in src/denetz.js): in RTL lang="de" dir="ltr", Hinweis „nur auf Deutsch“ einmal, Zurück richtig herum
+  const warte = () => new Promise((r) => setTimeout(r, 80));
+  setLang('ar'); await tick();
+  d.querySelector('#appnav button[data-ansicht="start"]').click(); $('goBriefe').click(); $('brief-jc').click();
+  if (!$('elSelbst').hidden) $('elSelbst').click();
+  await warte();
+  const form = $('bs-form'), deBlock = (el) => { const l = el && el.closest('[lang]'); return !!l && l.getAttribute('lang') === 'de' && l.closest('[dir]').getAttribute('dir') === 'ltr'; };
+  check('ar Brief prüfen: deutsches Formular steht in lang="de" dir="ltr"', deBlock(form.querySelector('legend')) && deBlock(form.querySelector('label[for="bs-miete"]')), form.outerHTML.slice(0, 120));
+  check('ar Brief prüfen: Formular als ganzer Block ausgezeichnet, nicht jede Zeile einzeln', form.getAttribute('lang') === 'de' || form.querySelectorAll('[data-nur-de]').length < 12, form.querySelectorAll('[data-nur-de]').length);
+  if (process.env.ZEIG) console.log([...$('checkBox').querySelectorAll('[data-nur-de]')].filter((e) => !e.closest('[hidden]')).map((e) => e.tagName + '#' + e.id + '.' + e.className + ' ' + e.textContent.trim().slice(0, 40)).join('\n'));
+  check('ar Brief prüfen: übersetzte Überschrift bleibt Arabisch (kein lang="de")', !deBlock($('p-bescheid').querySelector('h2[data-t]')));
+  check('ar Brief prüfen: Hinweis „nur auf Deutsch“ genau einmal sichtbar, ohne deutsche Zeile darunter', !$('ppNurDe').hidden && $('ppNurDe').textContent === I18N.ar['briefe.nurDe'] && d.querySelectorAll('.nur-de-hinweis:not([hidden])').length === 1 && !($('ppNurDe').nextElementSibling || {}).classList?.contains('de-netz'));
+  check('ar Brief prüfen: Zurück-Knopf nicht im deutschen Block', !deBlock($('briefZurueck')));
+  setLang('de'); await tick(); await warte();
+  check('Deutsch: keine Auszeichnung „nur Deutsch“ mehr', d.querySelectorAll('[data-nur-de]').length === 0);
+
   // Zurück auf Deutsch → keine Zeile
   setLang('de'); await tick();
   mahnbescheid(); await tick();

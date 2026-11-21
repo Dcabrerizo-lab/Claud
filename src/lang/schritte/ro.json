@@ -145,5 +145,12 @@
   "sf.q.autoWert": "Cât valorează aproximativ mașina ta?",
   "sf.q.autoBraucht": "Este mașina necesară din cauza unei dizabilități sau pentru drumul la muncă?",
   "sf.q.bezug": "Ce primiți deja?",
-  "sf.h.bezug": "Aplicația arată atunci aceste prestații ca „deja primite” și verifică ce mai este posibil în plus."
+  "sf.h.bezug": "Aplicația arată atunci aceste prestații ca „deja primite” și verifică ce mai este posibil în plus.",
+  "sf.mehrere": "Poți alege mai multe răspunsuri",
+  "sf.oder": "sau",
+  "sf.teil": "Partea {n} din {m}",
+  "sf.q.plzOrt": "Domiciliul tău e corect?",
+  "sf.a.ortJa": "Da, e corect",
+  "sf.a.ortNein": "Nu, altă localitate",
+  "sf.h.plzOrt": "Treapta de chirie depinde de comuna ta, nu de codul poștal. De ea depinde cât din chirie se ia în calcul cel mult la Wohngeld. Decizia obligatorie o ia Wohngeldstelle."
 }

@@ -145,5 +145,12 @@
   "sf.q.autoWert": "Wie viel ist dein Auto ungefähr wert?",
   "sf.q.autoBraucht": "Wird das Auto wegen einer Behinderung oder für den Weg zur Arbeit gebraucht?",
   "sf.q.bezug": "Was bekommt ihr schon?",
-  "sf.h.bezug": "Dann zeigt die App diese Leistungen als „schon vorhanden“ und prüft, was zusätzlich möglich ist."
+  "sf.h.bezug": "Dann zeigt die App diese Leistungen als „schon vorhanden“ und prüft, was zusätzlich möglich ist.",
+  "sf.mehrere": "Mehrere Antworten möglich",
+  "sf.oder": "oder",
+  "sf.teil": "Teil {n} von {m}",
+  "sf.q.plzOrt": "Stimmt dein Wohnort?",
+  "sf.a.ortJa": "Ja, stimmt",
+  "sf.a.ortNein": "Nein, anderer Ort",
+  "sf.h.plzOrt": "Die Mietenstufe hängt von deiner Gemeinde ab, nicht von der Postleitzahl. Danach richtet sich, wie viel Miete beim Wohngeld höchstens zählt. Verbindlich entscheidet die Wohngeldstelle."
 }

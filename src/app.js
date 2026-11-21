@@ -31,6 +31,7 @@
     var s = Object.prototype.hasOwnProperty.call(d, key) ? d[key] : (Object.prototype.hasOwnProperty.call(I18N.de, key) ? I18N.de[key] : key);
     if (einfachSprache && lang === 'de' && typeof I18N_EINFACH !== 'undefined' && Object.prototype.hasOwnProperty.call(I18N_EINFACH, key)) s = I18N_EINFACH[key];
     var rtl = d['meta.dir'] === 'rtl';
+    var echt = lang !== 'de' && s !== I18N.de[key] && Object.prototype.hasOwnProperty.call(d, key); // wirklich übersetzt (nicht der deutsche Text als Ersatz)
     // {eur:100000}: fester Betrag im Text; {name}: Parameter, Beträge sind Objekte { eur: Zahl }
     s = s.replace(/\{eur:(\d+(?:\.\d+)?)\}/g, function (m, n) { return Fmt.euro(Number(n), lang, rtl); });
     if (p) s = s.replace(/\{(\w+)\}/g, function (m, k) {
@@ -38,6 +39,7 @@
       var v = p[k];
       return v && typeof v === 'object' && 'eur' in v ? Fmt.euro(v.eur, lang, rtl) : v;
     });
+    if (echt && window.NurDeutsch) window.NurDeutsch.merke(s); // übersetzt: nicht als Deutsch auszeichnen (src/denetz.js, NurDeutsch)
     if (lang !== 'de' && window.DeNetz) DeNetz.merke(key, s, p); // Sicherheitsnetz: wichtige Sätze auch auf Deutsch (src/denetz.js)
     return s;
   }
@@ -111,7 +113,7 @@
   // Erlaubte Arten für das zweite Einkommen einer Person (leer = keins)
   var EK_ZWEIT = ['', 'lohn', 'selbst', 'rente', 'alg', 'kg', 'eg', 'wfbm', 'unt'];
   function blankState() {
-    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', waisen: '', uvgPartner: '', uvgWechsel: false, kindEink: '', ek1bArt: '', ek1bBetrag: '', ek2bArt: '', ek2bBetrag: '', zusatzRente: '', baby: '', egVor: '', egKinder: '', egNach: '', aufenthalt: '', miete: '', heizkosten: '', mietstufe: '', plz: '', plzPick: '', bundesland: '', vermoegen: '', gebJahr: '', arbeitSit: '', algMonate: '', krankWochen: '', lohnVorher: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', uzBetrag: '', uzAn: '', uzTitel: false, wohnart: '', hhAndere: '', autoWert: '', autoBraucht: false, euArbeit: '', euJahre: '', bezug: {} };
+    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', waisen: '', uvgPartner: '', uvgWechsel: false, kindEink: '', ek1bArt: '', ek1bBetrag: '', ek2bArt: '', ek2bBetrag: '', zusatzRente: '', baby: '', egVor: '', egKinder: '', egNach: '', aufenthalt: '', miete: '', heizkosten: '', mietstufe: '', plz: '', plzPick: '', plzOrt: '', bundesland: '', vermoegen: '', gebJahr: '', arbeitSit: '', algMonate: '', krankWochen: '', lohnVorher: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', uzBetrag: '', uzAn: '', uzTitel: false, wohnart: '', hhAndere: '', autoWert: '', autoBraucht: false, euArbeit: '', euJahre: '', bezug: {} };
   }
 
   function detect() {
@@ -256,11 +258,16 @@
       d.appendChild(s2); out.appendChild(d);
     };
     var srcText = t('plz.source', { stand: ((Plz.info() && Plz.info().wogv || '').match(/\d+\.\d+\.\d{4}/) || [''])[0] });
-    var src = function () { out.appendChild(mehrEl(srcText, t('beh.quelle'))); };
+    var src = function () { out.appendChild(mehrEl(srcText, t('plz.was'))); };
     if (r.sure) {
+      // Rechtsprüfung 21.11.2026 (Frage 4): Stufe aus der PLZ nur als Vorbelegung, Ort und Stufe sichtbar, Ändern möglich
       applyStufe(r.stufe);
-      say('<strong>' + esc(t('plz.found', { ort: r.candidates[0].label, stufe: Rules.roman(r.stufe) })) + '</strong>');
-      src(); altBlock(); plzFelder(r.bl && r.bl === state.bundesland && String(r.stufe) === String(state.mietstufe)); return;
+      var zeile = say('<strong>' + esc(t('plz.wohnort', { ort: r.candidates[0].label, stufe: Rules.roman(state.mietstufe || r.stufe) })) + '</strong> ');
+      var aend = document.createElement('button'); aend.type = 'button'; aend.className = 'linkbtn plz-aendern'; aend.id = 'plzAendern'; aend.textContent = t('plz.aendern');
+      aend.addEventListener('click', function () { plzFelder(false); aend.hidden = true; $('mietstufe').focus(); });
+      zeile.appendChild(aend);
+      say(esc(t('plz.stimmt')));
+      src(); altBlock(); plzFelder(r.bl && r.bl === state.bundesland && String(r.stufe) === String(state.mietstufe) && state.plzOrt !== 'nein'); aend.hidden = !$('stufeField').hidden; return;
     }
     if (r.candidates.every(function (c) { return !c.stufe; })) { say(esc(t('plz.unknown'))); return; }
     say(esc(t('plz.ask')));
@@ -642,6 +649,7 @@
   function applyLang() {
     var app = $('app');
     if (window.DeNetz) DeNetz.sprache(); // alte Übersetzungen vergessen
+    if (window.NurDeutsch) window.NurDeutsch.sprache(); // deutsche Blöcke nach dem Neuzeichnen neu auszeichnen
     app.setAttribute('lang', lang);
     document.documentElement.setAttribute('lang', lang);
     document.documentElement.setAttribute('dir', I18N[lang]['meta.dir']);
@@ -856,7 +864,7 @@
       $(k).addEventListener('change', function () { clearTimeout(soonTimer); state[k] = parseAmount($(k).value); touched(); });
       $(k).addEventListener('blur', function () { $(k).value = state[k] === '' ? '' : String(state[k]).replace('.', ','); });
     });
-    $('plz').addEventListener('input', function () { state.plz = $('plz').value.replace(/\D/g, '').slice(0, 5); state.plzPick = ''; plzUpdate(true); touched(); });
+    $('plz').addEventListener('input', function () { state.plz = $('plz').value.replace(/\D/g, '').slice(0, 5); state.plzPick = ''; state.plzOrt = ''; plzUpdate(true); touched(); });
     SELECTS.forEach(function (k) { $(k).addEventListener('change', function () { state[k] = $(k).value; touched(); }); });
     CHECKS.forEach(function (k) { $(k).addEventListener('change', function () { state[k] = $(k).checked; touched(); }); });
     BEZUG.forEach(function (k) { $('b-' + k).addEventListener('change', function () { state.bezug[k] = $('b-' + k).checked; touched(); }); });
@@ -2596,6 +2604,9 @@
   // Gemeinsamer Zurück-Knopf (src/navigation.js) als Schritt zurück in der einfachen Version; dann den Zurück-Knopf der Seite ausblenden
   var ES_ZUR = Navigation.kopfHtml({ id: 'es-zurueck', eigen: true });
   function esKopf() { var k = $('leistungenKopf'), sf = $('sfZurueck'); if (k) k.hidden = !!((esModus && $('es-zurueck') && !$('einfach').hidden) || (sf && !$('schritte').hidden)); } // ein Zurück-Knopf: der der Fragenfolge, sonst der der Seite
+  // Mehrfachauswahl im Kurzen Check: Hinweiszeile und „Nichts davon“ / „Keine Buchstaben“ nach „oder“ (Kästchen wie die Antworten)
+  function esMehrKopf() { return '<p class="es-h es-mehrere" id="es-mehrere">' + esc(t('sf.mehrere')) + '</p>'; }
+  function esMehrNichts(id, txt) { return '<p class="es-oder" aria-hidden="true"><span>' + esc(t('sf.oder')) + '</span></p><div class="es-wahl es-mehr"><button type="button" class="es-btn es-nichts" id="' + id + '"><span class="es-kasten" aria-hidden="true"></span><span>' + esc(txt) + '</span></button></div>'; }
   function esRender() { esRenderGanz(); esKopf(); }
   function esRenderGanz() {
     var box = $('einfach');
@@ -2617,19 +2628,18 @@
     } else if (f.art === 'zahl') {
       h += '<div class="es-zahl"><input id="es-in" type="text" inputmode="numeric" autocomplete="off" aria-labelledby="es-q" value="' + esc(es[f.id]) + '"' + (f.max ? ' maxlength="' + f.max + '"' : '') + '>' + (f.id === 'geb' || f.id === 'plz' ? '' : '<span aria-hidden="true">€</span>') + '</div>' +
         '<p class="warn" id="es-warn" hidden></p>' +
-        '<div class="es-nav1"><button type="button" class="es-btn es-weiter" id="es-weiter">' + esc(t('es.weiter')) + ' ➜</button>' +
+        '<div class="es-nav1"><button type="button" class="es-btn es-weiter" id="es-weiter">' + esc(t('es.weiter')) + ' <span class="pfeil" aria-hidden="true">➜</span></button>' +
         (f.id !== 'geb' ? '<button type="button" class="es-btn es-skip" id="es-skip">' + esc(t(f.optional ? 'es.ueberspringen' : 'es.weissNicht')) + '</button>' : '') + '</div>';
     } else if (f.art === 'schon') {
       es.schon = es.schon || {};
-      h += '<div class="es-wahl" role="group" aria-labelledby="es-q">' + SCHON.map(function (x) {
-        return '<button type="button" class="es-btn' + (es.schon[x[0]] ? ' an' : '') + '" data-schon="' + x[0] + '" aria-pressed="' + (es.schon[x[0]] ? 'true' : 'false') + '"><span class="es-ico" aria-hidden="true">' + x[1] + '</span><span>' + esc(t('es.schon.' + x[0])) + '</span></button>';
-      }).join('') + '</div><div class="es-nav1"><button type="button" class="es-btn es-weiter" id="es-weiter">' + esc(t('es.weiter')) + ' ➜</button>' +
-        '<button type="button" class="es-btn es-skip" id="es-nichts">' + esc(t('es.schon.nichts')) + '</button></div>';
+      // Mehrfachauswahl: Kästchen, „Mehrere Antworten möglich“, „Nichts davon“ nach „oder“ (wie src/schritte.js)
+      h += esMehrKopf() + '<div class="es-wahl es-mehr" role="group" aria-labelledby="es-q" aria-describedby="es-mehrere">' + SCHON.map(function (x) {
+        return '<button type="button" role="checkbox" class="es-btn' + (es.schon[x[0]] ? ' an' : '') + '" data-schon="' + x[0] + '" aria-checked="' + (es.schon[x[0]] ? 'true' : 'false') + '"><span class="es-kasten" aria-hidden="true"></span><span class="es-ico" aria-hidden="true">' + x[1] + '</span><span>' + esc(t('es.schon.' + x[0])) + '</span></button>';
+      }).join('') + '</div>' + esMehrNichts('es-nichts', t('es.schon.nichts')) + '<div class="es-nav1"><button type="button" class="es-btn es-weiter" id="es-weiter">' + esc(t('es.weiter')) + ' <span class="pfeil" aria-hidden="true">➜</span></button></div>';
     } else if (f.art === 'mz') {
-      h += '<div class="es-wahl es-klein" role="group" aria-labelledby="es-q">' + MZ.map(function (m) {
-        return '<button type="button" class="es-btn' + (es.mz[m] ? ' an' : '') + '" data-mz="' + m + '" aria-pressed="' + (es.mz[m] ? 'true' : 'false') + '"><span class="es-mz">' + m + '</span><span class="es-mzt">' + esc(t('es.mz.' + m)) + '</span></button>';
-      }).join('') + '</div><div class="es-nav1"><button type="button" class="es-btn es-weiter" id="es-weiter">' + esc(t('es.weiter')) + ' ➜</button>' +
-        '<button type="button" class="es-btn es-skip" id="es-keine">' + esc(t('es.mz.keine')) + '</button></div>';
+      h += esMehrKopf() + '<div class="es-wahl es-klein es-mehr" role="group" aria-labelledby="es-q" aria-describedby="es-mehrere">' + MZ.map(function (m) {
+        return '<button type="button" role="checkbox" class="es-btn' + (es.mz[m] ? ' an' : '') + '" data-mz="' + m + '" aria-checked="' + (es.mz[m] ? 'true' : 'false') + '"><span class="es-kasten" aria-hidden="true"></span><span class="es-mz">' + m + '</span><span class="es-mzt">' + esc(t('es.mz.' + m)) + '</span></button>';
+      }).join('') + '</div>' + esMehrNichts('es-keine', t('es.mz.keine')) + '<div class="es-nav1"><button type="button" class="es-btn es-weiter" id="es-weiter">' + esc(t('es.weiter')) + ' <span class="pfeil" aria-hidden="true">➜</span></button></div>';
     }
     h += '<div class="es-nav"><button type="button" class="chip" id="es-raus">' + esc(t('es.ausfuehrlich')) + '</button></div>';
     box.innerHTML = (es.schritt > 0 ? ES_ZUR : '') + h;
@@ -2644,8 +2654,8 @@
     }); });
     if ($('es-keine')) $('es-keine').addEventListener('click', function () { es.mz = {}; weiter(); });
     if ($('es-nichts')) $('es-nichts').addEventListener('click', function () { es.schon = {}; weiter(); });
-    box.querySelectorAll('[data-schon]').forEach(function (b) { b.addEventListener('click', function () { var k = b.getAttribute('data-schon'); es.schon[k] = !es.schon[k]; b.classList.toggle('an', es.schon[k]); b.setAttribute('aria-pressed', String(es.schon[k])); esSpeichern(); }); });
-    box.querySelectorAll('[data-mz]').forEach(function (b) { b.addEventListener('click', function () { var m = b.getAttribute('data-mz'); es.mz[m] = !es.mz[m]; b.classList.toggle('an', es.mz[m]); b.setAttribute('aria-pressed', String(es.mz[m])); esSpeichern(); }); });
+    box.querySelectorAll('[data-schon]').forEach(function (b) { b.addEventListener('click', function () { var k = b.getAttribute('data-schon'); es.schon[k] = !es.schon[k]; b.classList.toggle('an', es.schon[k]); b.setAttribute('aria-checked', String(es.schon[k])); esSpeichern(); }); });
+    box.querySelectorAll('[data-mz]').forEach(function (b) { b.addEventListener('click', function () { var m = b.getAttribute('data-mz'); es.mz[m] = !es.mz[m]; b.classList.toggle('an', es.mz[m]); b.setAttribute('aria-checked', String(es.mz[m])); esSpeichern(); }); });
     if ($('es-in')) {
       var inp = $('es-in');
       var pruef = function () {
@@ -2818,6 +2828,8 @@
   bind();
   writeForm();
   if (window.DeNetz) DeNetz.init({ lang: function () { return lang; }, de: tDe, t: t, wurzel: function () { return $('app'); } });
+  // Nur deutsch vorhandene Bereiche (Brief prüfen; Pflege zeichnet seine Bereiche selbst aus): rein deutsche Blöcke mit lang="de" dir="ltr" auszeichnen (src/denetz.js, NurDeutsch)
+  if (window.NurDeutsch) window.NurDeutsch.init({ lang: function () { return lang; }, bereiche: function () { return ['checkBox'].map($); } });
   lang = detect();
   applyLang();
   initClaude();
@@ -4210,7 +4222,7 @@
       PI_LINKS[id].forEach(function (x) {
         var bt = document.createElement('button'); bt.type = 'button'; bt.className = 'pi-link';
         bt.setAttribute('aria-label', t('pa.erklaerung') + ': ' + x[1]);
-        bt.appendChild(document.createTextNode(x[1])); var pf = document.createElement('span'); pf.setAttribute('aria-hidden', 'true'); pf.textContent = ' ›'; bt.appendChild(pf);
+        bt.appendChild(document.createTextNode(x[1])); bt.appendChild(document.createTextNode(' ')); var pf = document.createElement('span'); pf.className = 'pfeil'; pf.setAttribute('aria-hidden', 'true'); pf.textContent = '›'; bt.appendChild(pf);
         bt.addEventListener('click', function () { pflegeInfo('leistungen', id, x[0]); });
         w.appendChild(bt);
       });
@@ -4330,7 +4342,7 @@
     var body = el('tbody');
     zeilen.forEach(function (z) {
       var tr = el('tr'), td0 = el('td'), ln = el('button', null, 'pi-link pi-link-tab'); ln.type = 'button';
-      ln.appendChild(document.createTextNode(z[0])); var pf = el('span', ' ›'); pf.setAttribute('aria-hidden', 'true'); ln.appendChild(pf);
+      ln.appendChild(document.createTextNode(z[0])); ln.appendChild(document.createTextNode(' ')); var pf = el('span', '›'); pf.className = 'pfeil'; pf.setAttribute('aria-hidden', 'true'); ln.appendChild(pf);
       ln.addEventListener('click', function () { piAbschnitt(z[4]); }); td0.appendChild(ln); tr.appendChild(td0); var td = el('td'); td.appendChild(el('span', z[3] === 'geld' ? 'Geld · ' : 'Budget · ', z[3])); td.appendChild(document.createTextNode(z[1].replace(/^Budget: |^Geld aufs Konto, /, function (m) { return m === 'Geld aufs Konto, ' ? 'aufs Konto, ' : ''; }))); tr.appendChild(td); tr.appendChild(el('td', z[2])); body.appendChild(tr); });
     tb.appendChild(body); tw.appendChild(tb); box.appendChild(tw);
     var abschnitt = function (id, titel, absaetze, liste) {

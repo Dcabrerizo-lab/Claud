@@ -145,5 +145,12 @@
   "sf.q.autoWert": "Combien vaut ta voiture environ ?",
   "sf.q.autoBraucht": "La voiture est-elle nécessaire à cause d’un handicap ou pour aller au travail ?",
   "sf.q.bezug": "Que recevez-vous déjà (toi et ton foyer) ?",
-  "sf.h.bezug": "L’application affiche alors ces prestations comme « déjà perçues » et vérifie ce qui est possible en plus."
+  "sf.h.bezug": "L’application affiche alors ces prestations comme « déjà perçues » et vérifie ce qui est possible en plus.",
+  "sf.mehrere": "Tu peux choisir plusieurs réponses",
+  "sf.oder": "ou",
+  "sf.teil": "Partie {n} sur {m}",
+  "sf.q.plzOrt": "Ton lieu de domicile est-il correct ?",
+  "sf.a.ortJa": "Oui, c’est correct",
+  "sf.a.ortNein": "Non, un autre lieu",
+  "sf.h.plzOrt": "Le niveau de loyer dépend de ta commune, pas du code postal. Il détermine le loyer maximal pris en compte pour le Wohngeld. La décision qui fait foi revient à la Wohngeldstelle."
 }

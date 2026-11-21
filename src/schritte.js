@@ -103,6 +103,10 @@ var Schritte = (function () {
     { id: 'warmwasser', b: 'wohnen', art: 'wahl', q: 'sf.q.warmwasser', opts: JN },
     { id: 'hhAndere', b: 'wohnen', art: 'wahl', q: 'sf.q.hhAndere', h: 'sf.h.hhAndere', opts: [['', 'hh.0'], ['wg', 'hh.wg'], ['verwandte', 'hh.verwandte']] },
     { id: 'plz', b: 'wohnen', art: 'zahl', ziffern: 5, skip: 'sf.weissNicht', q: 'sf.q.plz', h: 'sf.h.plz', wenn: function () { return !!(ctx.plzDa && ctx.plzDa()); } },
+    // Stufe aus der PLZ ist nur eine Vorbelegung (Rechtsprüfung 21.11.2026, Frage 4): Ort und Stufe zeigen, Nutzer bestätigt oder wählt selbst
+    { id: 'plzOrt', b: 'wohnen', art: 'wahl', q: 'sf.q.plzOrt', h: 'sf.h.plzOrt', opts: [['ja', 'sf.a.ortJa'], ['nein', 'sf.a.ortNein']],
+      info: function (s) { var r = plzInfo(s); return r && r.sure ? t('plz.wohnort', { ort: r.candidates[0].label, stufe: ctx.roman(r.stufe) }) : ''; },
+      wenn: function (s) { var r = plzInfo(s); return !!(r && r.sure && r.stufe); } },
     { id: 'plzPick', b: 'wohnen', art: 'wahl', q: 'sf.q.plzPick', deutsch: true,
       wenn: function (s) { var r = plzInfo(s); return !!(r && !r.sure && r.candidates.some(function (c) { return c.stufe; })); },
       opts: function (s) {
@@ -116,7 +120,7 @@ var Schritte = (function () {
       wenn: function (s) { var r = plzInfo(s); return !(r && r.bl); },
       opts: function () { return [['', 'bl.unbekannt']].concat(ctx.laender().map(function (x) { return [x[0], function () { return x[1]; }]; })); } },
     { id: 'mietstufe', b: 'wohnen', art: 'wahl', q: 'sf.q.mietstufe', h: 'sf.h.mietstufe', klein: true,
-      wenn: function (s) { var r = plzInfo(s); if (!r) return true; if (r.sure) return false; var c = r.candidates.filter(function (x) { return x.label + '|' + x.kreis + '|' + x.stufe === s.plzPick; })[0]; return !(c && c.stufe); },
+      wenn: function (s) { var r = plzInfo(s); if (!r) return true; if (r.sure) return s.plzOrt === 'nein'; var c = r.candidates.filter(function (x) { return x.label + '|' + x.kreis + '|' + x.stufe === s.plzPick; })[0]; return !(c && c.stufe); },
       opts: [['', 'stufe.unbekannt']].concat([1, 2, 3, 4, 5, 6, 7].map(function (n) { return [String(n), function () { return t('stufe.n', { n: ctx.roman(n) }); }]; })) }
   ].concat(ekFragen(1), ekFragen(2), [
     { id: 'zusatzRente', b: 'geld', art: 'zahl', euro: true, skip: 'sf.keine', q: 'sf.q.zusatzRente', h: 'sf.h.zusatzRente', wenn: hatRente },
@@ -155,7 +159,11 @@ var Schritte = (function () {
       s[f.id] = Math.max(0, Math.min(f.max(s), Number(v) || 0));
       if (f.id === 'kids' || f.id === 'kidsU6') { s.kidsU6 = Math.min(s.kidsU6 || 0, s.kids); s.kids14 = Math.min(s.kids14 || 0, s.kids - s.kidsU6); }
       if (f.id === 'kids14') s.kidsAlter = true; // wie im Formular: Frage „14 bis 17“ beantwortet
-    } else if (f.id === 'plz') { s.plz = v; s.plzPick = ''; }
+    } else if (f.id === 'plz') { s.plz = v; s.plzPick = ''; s.plzOrt = ''; }
+    else if (f.id === 'plzOrt') {
+      s.plzOrt = v;
+      var rp = plzInfo(s); if (v === 'ja' && rp && rp.sure && rp.stufe) s.mietstufe = String(rp.stufe); // bestätigt: Stufe aus der Liste
+    }
     else if (f.id === 'plzPick') {
       s.plzPick = v;
       var c = (opts(f, s).filter(function (o) { return o[0] === v; })[0] || [])[2];
@@ -216,11 +224,23 @@ var Schritte = (function () {
   function zurKnopf(attrs) {
     return knopf('linkbtn pa-zur', '<span class="nav-pfeil" aria-hidden="true">←</span> <span data-t="nav.zurueck">' + esc(t('nav.zurueck')) + '</span>', ' id="sfZurueck"' + (attrs || ''));
   }
-  function kopf(zurueckZu, bereich) {
+  // anteil (0–1): dünner Balken unter der Zeile, wie im Kurzen Check und in der Pflege-Einschätzung
+  function kopf(zurueckZu, bereich, anteil) {
     return '<div class="es-top pa-kopf sf-kopf"><div class="pa-zeile nav-kopf">' +
       (zurueckZu ? zurKnopf(' data-zu="' + esc(zurueckZu) + '"') : '<span></span>') +
-      (bereich ? '<span class="es-prog sf-bereich">' + esc(bereich) + '</span>' : '') + '</div></div>';
+      (bereich ? '<span class="es-prog sf-bereich">' + esc(bereich) + '</span>' : '') + '</div>' +
+      (anteil != null ? '<div class="es-bar" aria-hidden="true"><span style="width:' + Math.round(100 * anteil) + '%"></span></div>' : '') + '</div>';
   }
+  // Fortschritt nach Abschnitten (Haushalt, Gesundheit, …): die Zahl der Fragen schwankt je nach Antworten, die Abschnitte kaum
+  // (GOV.UK: kurz „Teil 2 von 5“). Gezählt werden nur Abschnitte mit mindestens einer Frage für diesen Fall.
+  function teil(f) {
+    var bs = [];
+    liste().forEach(function (x) { if (bs.indexOf(x.b) < 0) bs.push(x.b); });
+    var n = bs.indexOf(f.b) + 1;
+    return { n: n, m: bs.length, anteil: bs.length > 1 ? (n - 1) / bs.length : 0 };
+  }
+  // Antwort mit Kästchen (Mehrfachauswahl); der Haken erscheint über CSS bei .an
+  function mehrInhalt(txt) { return '<span class="es-kasten" aria-hidden="true"></span><span>' + esc(txt) + '</span>'; }
   function hilfe(key) {
     if (!key) return '';
     return '<details class="sf-hilfe"><summary>' + esc(t('sf.warum')) + '</summary><p>' + esc(t(key)) + '</p></details>';
@@ -228,6 +248,7 @@ var Schritte = (function () {
   function anzeigeWert(f, s) {
     if (f.art === 'mehr') { var an = felder(f, s).filter(function (x) { return feldWert(f, s, x[0]); }); return an.length ? an.map(function (x) { return t(x[1]); }).join(' · ') : t('sf.nichts'); }
     if (f.art === 'zaehler') return String(s[f.id] || 0);
+    if (f.info && f.info(s)) return f.info(s) + (s[f.id] === 'nein' ? ' – ' + t('sf.a.ortNein') : ''); // Wohnort und Mietenstufe in „Deine Angaben“
     var v = s[f.id];
     if (f.art === 'zahl') return v === '' || v == null ? t('sf.leer') : (f.euro ? ctx.euro(Number(v)) : String(v));
     var o = opts(f, s).filter(function (x) { return x[0] === v || String(x[0]) === String(v); })[0];
@@ -248,9 +269,11 @@ var Schritte = (function () {
 
   function renderFrage(f) {
     var s = S();
-    var bereich = t('sf.b.' + f.b) + (f.wer && f.wer(s) ? ' · ' + f.wer(s) : '');
-    var h = kopf(vorige(f.id) || (zurUeb ? 'uebersicht' : ''), bereich) +
-      '<h2 class="es-q" id="sfFrage" tabindex="-1">' + esc(t(wert(f, s, f.q))) + '</h2>' + hilfe(wert(f, s, f.h));
+    var tl = teil(f);
+    var bereich = (tl.n ? t('sf.teil', { n: tl.n, m: tl.m }) + ' · ' : '') + t('sf.b.' + f.b) + (f.wer && f.wer(s) ? ' · ' + f.wer(s) : '');
+    var h = kopf(vorige(f.id) || (zurUeb ? 'uebersicht' : ''), bereich, tl.anteil) +
+      '<h2 class="es-q" id="sfFrage" tabindex="-1">' + esc(t(wert(f, s, f.q))) + '</h2>' +
+      (f.info && f.info(s) ? '<p class="es-h sf-info"><strong>' + esc(f.info(s)) + '</strong></p>' : '') + hilfe(wert(f, s, f.h));
     if (f.art === 'wahl') {
       var o = opts(f, s), v = s[f.id];
       h += '<div class="es-wahl' + (f.klein || o.length > 5 ? ' es-klein' : '') + '" role="group" aria-labelledby="sfFrage"' + (f.deutsch ? ' lang="de"' : '') + '>' + o.map(function (x, i) {
@@ -259,10 +282,16 @@ var Schritte = (function () {
       }).join('') + '</div>';
       if (ja[f.id]) h += '<div class="es-nav1">' + knopf('es-btn es-weiter', esc(t('sf.weiter')), ' id="sfWeiter"') + '</div>';
     } else if (f.art === 'mehr') {
-      h += '<div class="es-wahl" role="group" aria-labelledby="sfFrage">' + felder(f, s).map(function (x) {
-        var an = feldWert(f, s, x[0]);
-        return knopf('es-btn' + (an ? ' an' : ''), '<span>' + esc(t(x[1])) + '</span>', ' data-k="' + esc(x[0]) + '" aria-pressed="' + an + '"');
-      }).join('') + '</div><div class="es-nav1">' + knopf('es-btn es-weiter', esc(t('sf.weiter')), ' id="sfWeiter"') + knopf('es-btn es-skip', esc(t('sf.nichts')), ' id="sfNichts"') + '</div>';
+      // Mehrfachauswahl sichtbar anders als Einfachauswahl (GOV.UK „Checkboxes“): Kästchen mit Haken, Zeile „Mehrere Antworten möglich“,
+      // „Nichts davon“ als letzte Antwort nach „oder“ (springt weiter), dann „Weiter“
+      var nichts = ja[f.id] && !felder(f, s).some(function (x) { return feldWert(f, s, x[0]); });
+      h += '<p class="es-h es-mehrere" id="sfMehrere">' + esc(t('sf.mehrere')) + '</p>' +
+        '<div class="es-wahl es-mehr" role="group" aria-labelledby="sfFrage" aria-describedby="sfMehrere">' + felder(f, s).map(function (x) {
+          var an = feldWert(f, s, x[0]);
+          return knopf('es-btn' + (an ? ' an' : ''), mehrInhalt(t(x[1])), ' role="checkbox" data-k="' + esc(x[0]) + '" aria-checked="' + an + '"');
+        }).join('') + '<p class="es-oder" aria-hidden="true"><span>' + esc(t('sf.oder')) + '</span></p>' +
+        knopf('es-btn es-nichts' + (nichts ? ' an' : ''), mehrInhalt(t('sf.nichts')), ' role="checkbox" id="sfNichts" aria-checked="' + !!nichts + '"') +
+        '</div><div class="es-nav1">' + knopf('es-btn es-weiter', esc(t('sf.weiter')), ' id="sfWeiter"') + '</div>';
     } else if (f.art === 'zaehler') {
       h += '<div class="sf-zaehler" role="group" aria-labelledby="sfFrage" dir="ltr">' + knopf('es-btn', '−', ' id="sfMinus" aria-label="' + esc(t('sf.weniger')) + '"') +
         '<output id="sfZahl" aria-live="polite">' + (s[f.id] || 0) + '</output>' + knopf('es-btn', '+', ' id="sfPlus" aria-label="' + esc(t('sf.mehr')) + '"') + '</div>' +
@@ -296,7 +325,8 @@ var Schritte = (function () {
         b.addEventListener('click', function () {
           var k = b.getAttribute('data-k'), s2 = S(), an;
           if (f.bezug) { s2.bezug = s2.bezug || {}; an = s2.bezug[k] = !s2.bezug[k]; } else an = s2[k] = !s2[k];
-          b.classList.toggle('an', an); b.setAttribute('aria-pressed', String(an));
+          b.classList.toggle('an', an); b.setAttribute('aria-checked', String(an));
+          var n = q('#sfNichts'); n.classList.remove('an'); n.setAttribute('aria-checked', 'false');
           ja[f.id] = true; ctx.geaendert(f.id);
         });
       });
@@ -304,7 +334,9 @@ var Schritte = (function () {
       q('#sfNichts').addEventListener('click', function () {
         var s2 = S();
         f.felder.forEach(function (x) { if (f.bezug) { s2.bezug = s2.bezug || {}; s2.bezug[x[0]] = false; } else s2[x[0]] = false; });
-        ja[f.id] = true; ctx.geaendert(f.id); weiter(f.id);
+        box.querySelectorAll('[data-k]').forEach(function (x) { x.classList.remove('an'); x.setAttribute('aria-checked', 'false'); });
+        var n = q('#sfNichts'); n.classList.add('an'); n.setAttribute('aria-checked', 'true');
+        ja[f.id] = true; ctx.geaendert(f.id); setTimeout(function () { weiter(f.id); }, VERZ);
       });
     } else if (f.art === 'zaehler') {
       var zeig = function () { q('#sfZahl').textContent = S()[f.id] || 0; };
@@ -315,18 +347,20 @@ var Schritte = (function () {
       var inp = q('#sfIn');
       var ok = function () {
         var raw = inp.value.trim(), v, w = q('#sfWarn');
-        if (raw === '') { w.textContent = t(f.ziffern === 4 ? 'sf.warn.geb' : f.ziffern === 5 ? 'sf.warn.plz' : 'sf.warn.zahl'); w.hidden = false; inp.focus(); return; }
+        // Meldung am Feld (GOV.UK Error message): echte Fehler in Fehlerfarbe und mit aria-invalid; „ungewöhnlich hoch“ nur als Hinweis
+        var melde = function (txt, echt) { w.textContent = txt; w.hidden = false; w.classList.toggle('fehler', !!echt); inp.setAttribute('aria-describedby', 'sfWarn'); if (echt) inp.setAttribute('aria-invalid', 'true'); else inp.removeAttribute('aria-invalid'); inp.focus(); };
+        if (raw === '') { melde(t(f.ziffern === 4 ? 'sf.warn.geb' : f.ziffern === 5 ? 'sf.warn.plz' : 'sf.warn.zahl'), true); return; }
         if (f.ziffern) {
           var d = raw.replace(/\D/g, '');
           var gut = d.length === f.ziffern && (f.ziffern !== 4 || (Number(d) >= 1900 && Number(d) <= new Date().getFullYear()));
-          if (!gut) { w.textContent = t(f.ziffern === 4 ? 'sf.warn.geb' : 'sf.warn.plz'); w.hidden = false; inp.focus(); return; }
+          if (!gut) { melde(t(f.ziffern === 4 ? 'sf.warn.geb' : 'sf.warn.plz'), true); return; }
           v = f.ziffern === 4 ? Number(d) : d;
         } else {
           v = ctx.parse(raw);
-          if (v === '' || !(v >= 0)) { w.textContent = t('sf.warn.zahl'); w.hidden = false; inp.focus(); return; }
+          if (v === '' || !(v >= 0)) { melde(t('sf.warn.zahl'), true); return; }
           // Ungewöhnlich hoch (z. B. 45000 statt 450): einmal nachfragen; beim zweiten Tippen auf Weiter gilt die Zahl
           var grenze = f.id === 'vermoegen' || f.id === 'autoWert' ? 1000000 : 15000;
-          if (v > grenze && warnOk !== f.id + ':' + v) { warnOk = f.id + ':' + v; w.textContent = t('sf.warn.hoch', { v: ctx.euro(v) }); w.hidden = false; inp.focus(); return; }
+          if (v > grenze && warnOk !== f.id + ':' + v) { warnOk = f.id + ':' + v; melde(t('sf.warn.hoch', { v: ctx.euro(v) }), false); return; }
         }
         setze(f, v); weiter(f.id);
       };
@@ -369,6 +403,7 @@ var Schritte = (function () {
     var wahl = !weg, schritt = weg === 'schritt';
     app.classList.toggle('sf-an', !kurz && (wahl || schritt));
     app.classList.toggle('sf-erg', !kurz && schritt && pos === 'ergebnis');
+    app.classList.remove('sf-frage'); // auf einer Frageseite (unten gesetzt): Übersetzungshinweis ausblenden (src/template.html)
     box.hidden = !!kurz;
     if (kurz) return;
     if (!ctx.begonnen()) { ja = {}; if (pos === 'uebersicht' || pos === 'ergebnis') pos = ''; }
@@ -385,6 +420,7 @@ var Schritte = (function () {
       if (pos === 'uebersicht') renderUebersicht();
       else if (pos === 'ergebnis') renderErgebnis();
       else renderFrage(fr(pos));
+      app.classList.toggle('sf-frage', pos !== 'uebersicht' && pos !== 'ergebnis');
     }
     leisteEinsetzen();
     if (fokus) {
