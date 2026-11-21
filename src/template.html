@@ -230,6 +230,10 @@
   }
   .notice.info { background: var(--na-bg); color: var(--na); }
   .notices { margin-bottom: 8px; }
+  /* Übersetzungshinweis nur einmal: auf der Startwahl, „Deine Angaben“ und im Ergebnis, nicht auf jeder Frage (UX-Audit A, Aufgabe 8) */
+  .app.sf-frage #transNotice { display: none; }
+  /* Hinweis als erstes Element einer Ansicht: Platz für die Lupe oben in der Ecke lassen, nichts darunter verdecken */
+  .nav-kopf[hidden] + .notices > .notice, #v-pflege > .pp-hinweis:first-child { margin-inline-end: 56px; }
 
   .cols { display: grid; gap: 32px; grid-template-columns: minmax(0, 1fr); }
   @media (min-width: 900px) {

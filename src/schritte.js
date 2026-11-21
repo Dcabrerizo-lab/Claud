@@ -380,6 +380,7 @@ var Schritte = (function () {
     var wahl = !weg, schritt = weg === 'schritt';
     app.classList.toggle('sf-an', !kurz && (wahl || schritt));
     app.classList.toggle('sf-erg', !kurz && schritt && pos === 'ergebnis');
+    app.classList.remove('sf-frage'); // auf einer Frageseite (unten gesetzt): Übersetzungshinweis ausblenden (src/template.html)
     box.hidden = !!kurz;
     if (kurz) return;
     if (!ctx.begonnen()) { ja = {}; if (pos === 'uebersicht' || pos === 'ergebnis') pos = ''; }
@@ -396,6 +397,7 @@ var Schritte = (function () {
       if (pos === 'uebersicht') renderUebersicht();
       else if (pos === 'ergebnis') renderErgebnis();
       else renderFrage(fr(pos));
+      app.classList.toggle('sf-frage', pos !== 'uebersicht' && pos !== 'ergebnis');
     }
     leisteEinsetzen();
     if (fokus) {
