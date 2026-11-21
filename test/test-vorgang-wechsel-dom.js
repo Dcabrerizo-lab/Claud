@@ -68,6 +68,52 @@ const wechsel = (s, name) => { ordner(s); s.d.querySelector('#setHaushalte butto
   ck('[wechsel] Brieftext steht in keinem Speicher', !Object.values(mem).some((v) => typeof v === 'string' && v.indexOf('Erika Muster') >= 0 && v.indexOf('0911 123456') >= 0));
   ck('[wechsel] keine Fehler', s.errors.length === 0, s.errors);
 
+  // ---------- S4, unabhängige Prüfung 21.11.2026: weitere Reste (Name in den Schreiben, Empfänger der Mappe, Ergebnisblatt, Pflege-Einschätzung) ----------
+  {
+    const mem3 = { 'lotse.ack': '1', 'lotse-lang': 'de', 'lotse.beratung': '1' };
+    const u = seite(mem3), e = (id) => u.d.getElementById(id), tippe = (el, v) => { el.value = v; el.dispatchEvent(new u.w.Event('input', { bubbles: true })); };
+    await warte(50);
+    e('p1').click(); await warte(20); // Beispiel (Testhilfe) im ersten, namenlosen Vorgang
+    tippe(e('p-name'), 'Anton Vorher'); tippe(e('p-strasse'), 'Altgasse 7'); tippe(e('p-ort'), '91056 Erlangen');
+    // Antragsmappe: Empfänger eines Briefs selbst ändern
+    e('mappeMake').click();
+    const empf = u.d.querySelector('#mappeBody textarea[data-empf]');
+    ck('[wechsel2] Vorbereitung: Mappe mit Brief und Empfängerfeld', !!empf && /Anton Vorher/.test(e('mappeText').value), e('mappeBody').textContent.slice(0, 80));
+    const empfId = empf ? empf.getAttribute('data-empf') : '';
+    if (empf) tippe(empf, 'Amt von Anton\nGeheimweg 9\n91056 Erlangen');
+    // Ergebnisblatt mit Kürzel
+    klick(u, e('mappeClose') || u.d.querySelector('#mappe .nav-zurueck, #mappe button'));
+    if (e('ebOpen') && !e('ebOpen').hidden) { e('ebOpen').click(); tippe(e('ebKuerzel'), 'AV-77'); }
+    ck('[wechsel2] Vorbereitung: Ergebnisblatt mit Kürzel', /AV-77/.test(e('ebSeite').textContent), e('ebSeite').textContent.slice(0, 60));
+    // Pflegegrad-Einschätzung begonnen
+    u.w.SoLoPflegeStart(); await warte(10);
+    if (e('pa-jahre')) tippe(e('pa-jahre'), '77');
+    ck('[wechsel2] Vorbereitung: Pflegegrad-Einschätzung gezeichnet', e('pflegeAssist').children.length > 0 && !!e('pa-jahre'));
+    // Brief prüfen → Jobcenter geöffnet: Name und Anschrift stehen im Schreiben
+    klick(u, e('goBriefe')); klick(u, e('brief-jc'));
+    ck('[wechsel2] Vorbereitung: Name von A im Schreiben der Prüfung', e('bs-name').value === 'Anton Vorher' && e('bs-anschrift').value === 'Altgasse 7');
+    // Vermögens-Helfer offen
+    if (e('vaBtn')) e('vaBtn').click();
+    anlegen(u, 'Klient B'); await warte(30);
+    const mitA = [...u.d.querySelectorAll('input, textarea')].filter((i) => /Anton Vorher|Altgasse 7|Geheimweg 9|AV-77/.test(i.value)).map((i) => i.id || i.name);
+    ck('[wechsel2] B: Name, Anschrift, Empfänger und Kürzel von A in keinem Feld (auch nicht in den Schreiben der Prüfungen)', mitA.length === 0, mitA);
+    const sichtText = e('app').textContent;
+    ck('[wechsel2] B: nichts von A im Text der Seite', !/Anton Vorher|Altgasse 7|Geheimweg 9|AV-77/.test(sichtText), (sichtText.match(/.{30}(Anton Vorher|Altgasse 7|Geheimweg 9|AV-77).{20}/) || [''])[0]);
+    ck('[wechsel2] B: Ergebnisblatt zu und leer, Kürzel leer', e('ergBlatt').hidden && e('ebKuerzel').value === '' && e('ebSeite').textContent === '');
+    ck('[wechsel2] B: Mappe leer (Briefe und Kopiertext)', e('mappe').hidden && e('mappeBody').textContent === '' && e('mappeText').value === '');
+    ck('[wechsel2] B: Pflegegrad-Einschätzung von A nicht mehr gezeichnet', e('pflegeAssist').children.length === 0);
+    u.w.location.hash = '#pflege'; await warte(20);
+    ck('[wechsel2] B: „Zurück“ zur Einschätzung zeigt keine Antworten von A', e('v-pflege').hidden || !e('pa-jahre') || e('pa-jahre').value !== '77');
+    ck('[wechsel2] B: Vermögens-Helfer zu und leer', !e('va') || (e('va').hidden && e('va').textContent === '' && e('vaBtn').getAttribute('aria-expanded') === 'false'));
+    // In B dieselbe Mappe: Empfänger wieder der Vorschlag, nicht die Änderung aus A
+    u.w.location.hash = '#leistungen'; await warte(10);
+    e('p1').click(); await warte(20); // legt wegen des Namens „Klient B“ einen weiteren, leeren Vorgang an (noch ein Wechsel)
+    e('mappeMake').click();
+    const empf2 = empfId ? u.d.querySelector('#mappeBody textarea[data-empf="' + empfId + '"]') : null;
+    ck('[wechsel2] Neuer Vorgang, gleiche Hilfe: Empfänger ist wieder der Vorschlag', !!empf2 && !/Geheimweg|Anton/.test(empf2.value) && !/Geheimweg|Anton Vorher/.test(e('mappeText').value), empf2 && empf2.value);
+    ck('[wechsel2] keine Fehler', u.errors.length === 0, u.errors);
+  }
+
   // ---------- S2: Bildschirmfoto-Schutz ----------
   const schutz = [], mem2 = { 'lotse.ack': '1', 'lotse-lang': 'de' };
   const t = seite(mem2, schutz), $$ = (id) => t.d.getElementById(id);
@@ -87,6 +133,19 @@ const wechsel = (s, name) => { ordner(s); s.d.querySelector('#setHaushalte butto
   ck('[schutz] erlaubt: Schutz aus, Einstellung gespeichert (ohne Inhalt)', schutz[schutz.length - 1] === false && mem2['lotse.fotosErlaubt'] === '1' && $$('vgFotos').getAttribute('aria-checked') === 'true');
   if ($$('vgFotos')) klick(t, $$('vgFotos'));
   ck('[schutz] wieder verboten: Schutz an', schutz[schutz.length - 1] === true && mem2['lotse.fotosErlaubt'] === '0');
+  // Neustart mit PIN (gesperrt): Schutz schon auf dem Sperrbildschirm an; Einstellung „erlauben“ gilt nach dem Neustart weiter
+  const schutzN = [], n1 = seite(mem2, schutzN); await warte(120);
+  ck('[schutz] Neustart mit PIN: Sperrbildschirm, Schutz an', !!n1.d.getElementById('vgSperre') && !n1.d.getElementById('vgSperre').hidden && schutzN[schutzN.length - 1] === true, schutzN);
+  mem2['lotse.fotosErlaubt'] = '1';
+  const schutzE = [], n2 = seite(mem2, schutzE); await warte(120);
+  ck('[schutz] Neustart mit PIN und „erlauben“: Schutz bleibt aus', !!n2.d.getElementById('vgSperre') && schutzE.length > 0 && schutzE[schutzE.length - 1] === false, schutzE); // kurz „an“ ist erlaubt (sichere Vorgabe, bis die Einstellung gelesen ist)
+  mem2['lotse.fotosErlaubt'] = '0';
+  // PIN ausschalten: Schutz geht aus, Schalter verschwindet
+  if ($$('vgPinSchalter')) klick(t, $$('vgPinSchalter'));
+  if ($$('vgPinAlt')) { $$('vgPinAlt').value = '482915'; }
+  const pf = $$('vgPinForm'); if (pf) { const p1 = pf.querySelector('input'); if (p1) p1.value = '482915'; pf.dispatchEvent(new t.w.Event('submit', { bubbles: true, cancelable: true })); }
+  for (let i = 0; i < 100 && schutz[schutz.length - 1] !== false; i++) await warte(50);
+  ck('[schutz] PIN aus: Schutz aus, kein Schalter mehr', schutz[schutz.length - 1] === false && !$$('vgFotos'), schutz.slice(-3));
   ck('[schutz] ohne Plugin (Web) kein Schalter', !seite({ 'lotse.ack': '1' }).d.getElementById('vgFotos'));
   ck('[schutz] keine Fehler', t.errors.length === 0, t.errors);
 

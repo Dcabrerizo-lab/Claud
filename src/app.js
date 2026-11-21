@@ -3219,8 +3219,9 @@
   // Angaben des geöffneten Vorgangs neu laden (nach Wechsel, neuem Vorgang, Löschen)
   function vgNeuLaden() {
     if (!$('mappe').hidden) closeMappe();
-    einleseResteLeeren(); // nichts vom vorigen Vorgang sichtbar lassen (Scan, Brief, Prüfung, Blatt für Klienten)
     state = blankState(); person = { name: '', geb: '', strasse: '', ort: '', tel: '' }; picked = {}; pickedUser = {}; started = false; edited = false;
+    // Erst nach dem Leeren von „person“: briefOeffnen trägt Name und Anschrift aus „person“ in die Schreiben ein (sonst stünde der vorige Klient darin)
+    einleseResteLeeren(); // nichts vom vorigen Vorgang sichtbar lassen (Scan, Brief, Prüfung, Blatt für Klienten)
     ['p-name', 'p-geb', 'p-strasse', 'p-ort', 'p-tel'].forEach(function (id) { $(id).value = ''; });
     $('sampleNotice').hidden = true;
     pf = pfLeer(); pa = { antworten: null, schaetzung: null };
@@ -3233,7 +3234,11 @@
       es = d && d.es ? Object.assign(esLeer(), d.es) : (esModus ? esLeer() : null);
       if (esModus) esRender();
     });
-    Store.get('lotse.pflegecheck', function (v) { try { var d = v ? JSON.parse(v) : null; if (d && typeof d === 'object') { pa.antworten = d.antworten || null; pa.schaetzung = d.schaetzung || null; } } catch (e) {} paAnzeigen(); });
+    Store.get('lotse.pflegecheck', function (v) {
+      try { var d = v ? JSON.parse(v) : null; if (d && typeof d === 'object') { pa.antworten = d.antworten || null; pa.schaetzung = d.schaetzung || null; } } catch (e) {}
+      paAnzeigen();
+      if (aktAnsicht === 'pflege' && typeof PflegeAssistent !== 'undefined') paStarten(); // Einschätzung gerade sichtbar (z. B. „Rückgängig“): mit den Antworten dieses Vorgangs neu beginnen
+    });
     Store.get('lotse.pfaendung', pfLaden);
     if (aktAnsicht === 'pfaendung') pfRender(false);
     if (window.Haushalt && Haushalt.neuLaden) Haushalt.neuLaden(); // jeder Vorgang hat seinen eigenen Haushaltsplan
@@ -3249,7 +3254,10 @@
   //   Brief prüfen: gesammelter Brieftext (elGesammelt), eingefügter Text (elText), Meldung und Ergebnis (elMsg, elErg), geöffnete Kachel,
   //                 Formulare, Ergebnisse und Schreiben der Prüfungen (PruefpaketLeeren in erweiterungen/vorschau.js)
   //   Beratung: offenes Blatt „Für Klient zusammenstellen“ (Klient.schliessen vergisst Daten anderer Vorgänge)
-  //   Pfändung, Pflege-Einschätzung, Haushalt, Fristen, Schulden, Ausziehen, Geld, Schritte: setzen vgNeuLaden bzw. die Module selbst zurück
+  //   Antragsmappe: selbst geänderte Empfänger (empfEdit), Brieftexte (mappeBody, mappeText); Ergebnisblatt: Kürzel und Tabelle
+  //   Vermögens-Helfer (va), Pflege-Unterstützung (pu), gezeichnete Pflegegrad-Einschätzung (pflegeAssist), Einwilligung „Scan mit Claude“
+  //   Von der Beratung bekommen: Vorschau, PIN-Abfrage und entschlüsselter Inhalt einer fremden Datei (kwImpBox)
+  //   Pfändung, Pflege-Einschätzung (Antworten), Haushalt, Fristen, Schulden, Ausziehen, Geld, Schritte: setzen vgNeuLaden bzw. die Module selbst zurück
   function einleseResteLeeren() {
     scanFound = []; scanBilderSetzen([]); renderScan(); scanMsg('');
     ['sc-text', 'sc-file', 'sc-pdf', 'elText', 'elFile', 'elPdfFile'].forEach(function (id) { var e = $(id); if (e) e.value = ''; });
@@ -3260,6 +3268,23 @@
     if (briefArt) { var y = window.scrollY || 0; briefOeffnen(null); try { window.scrollTo(0, y); } catch (e) {} }
     abVon = false;
     if (window.Klient && Klient.offen()) Klient.schliessen();
+    // Unabhängige Prüfung 21.11.2026: weitere Zustände, die nicht gespeichert und sonst nicht neu gezeichnet werden
+    scanTitel = ''; if ($('sc-consent')) { $('sc-consent').checked = false; if ($('sc-claude')) $('sc-claude').disabled = true; }
+    empfEdit = {}; empfHinweisDa = false; // selbst geänderte Empfänger der Briefe in der Antragsmappe
+    if ($('mappeBody')) $('mappeBody').textContent = ''; if ($('mappeText')) { $('mappeText').value = ''; $('mappeText').hidden = true; }
+    if ($('ergBlatt') && !$('ergBlatt').hidden) ebSchliessen(); // Ergebnisblatt (Beratung): Kürzel und Tabelle
+    if ($('ebKuerzel')) $('ebKuerzel').value = ''; if ($('ebSeite')) $('ebSeite').textContent = ''; if ($('ebMsg')) $('ebMsg').textContent = '';
+    va = { schritt: 0, wahl: {}, wert: {} }; // Vermögens-Helfer: Auswahl und Beträge
+    if ($('va')) { $('va').hidden = true; $('va').textContent = ''; } if ($('vaBtn')) $('vaBtn').setAttribute('aria-expanded', 'false'); if ($('vaInfo')) vaInfo();
+    pu = { schritt: 'wahl', pg: null }; // Pflege-Unterstützung: gewählter Pflegegrad
+    // Pflegegrad-Einschätzung: die gezeichneten Fragen und Antworten gehören zum vorigen Vorgang (sonst über „Zurück“ wieder sichtbar,
+    // und „Weiter“ würde sie in den neuen Vorgang speichern). Leer: zeigeAnsicht öffnet die Seite nur über ihren Knopf neu.
+    if ($('pflegeAssist')) $('pflegeAssist').textContent = '';
+    paVonStart = false; paRueck = '';
+    // „Von der Beratung bekommen“ (src/weitergabe.js): offene Vorschau oder PIN-Abfrage einer fremden Datei schließen (vergisst den entschlüsselten Inhalt)
+    var ia = $('kwImpAbbr'); if (ia) ia.click();
+    var ib = $('kwImpBox'); if (ib) { ib.textContent = ''; ib.hidden = true; } if ($('kwImpMsg')) $('kwImpMsg').textContent = '';
+    ['kwDateiEin', 'kwFotoEin'].forEach(function (id) { var e = $(id); if (e) e.value = ''; });
   }
   function pfLeer() { return { art: '', schritt: 0, netto: '', pers: null, kg: null, kiz: '' }; }
   function pfLaden(v) {
