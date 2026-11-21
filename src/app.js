@@ -4248,7 +4248,7 @@
     else if (id === 'p-hilfe') puOeffnen('pg');
     else if (id === 'p-schaetzen') paOeffnen(true);
     else if (id === 'ausziehen' || k[0] === 'a') { $('goAusziehen').click(); if (k[0] === 'a' && window.Ausziehen) Ausziehen.oeffnen(x); }
-    else if (id === 'mappe') { oeffneVon('leistungen', true); if (!$('helper').hidden) { try { $('helper').scrollIntoView({ block: 'start' }); } catch (e) {} var hh = $('h-helper'); hh.setAttribute('tabindex', '-1'); hh.focus({ preventScroll: true }); } }
+    else if (id === 'mappe') { oeffneVon('leistungen', true); var mk = $('mappeMake'); if (mk && !mk.closest('[hidden]')) { try { mk.scrollIntoView({ block: 'center' }); } catch (e) {} mk.focus({ preventScroll: true }); } } // Knopf zur Antragsmappe unter dem Ergebnis (ohne Ergebnis: der Hilfen-Check)
     else if (id === 'einst' || id === 'ordner') { usZeigen(id, '', false); zeigeAnsicht(id, true); }
     else if (k[0] === 'e') { zeigeAnsicht('einst', false); usZeigen('einst', x, true); }
     else if (id === 'o-fristen') { zeigeAnsicht('ordner', false); usZeigen('ordner', 'fristen', true); }
