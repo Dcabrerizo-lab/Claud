@@ -1,4 +1,10 @@
 {
+  "briefe.nurDe": "Formularz i wynik są na razie tylko po niemiecku. Pisma do urzędów są zawsze po niemiecku.",
+  "plz.wohnort": "Miejsce zamieszkania: {ort} · Stopień czynszu {stufe}",
+  "plz.aendern": "Zmień",
+  "plz.stimmt": "Czy miejscowość się zgadza? Stopień czynszu zależy od twojej gminy, nie od kodu pocztowego.",
+  "plz.was": "Co to jest stopień czynszu?",
+  "vg.ordner.t": "Tutaj są twoje zapisane dane i pisma. Wszystko zostaje na tym urządzeniu.",
   "t.ggeld.vermAlter": "To, czy wasz majątek mieści się w kwocie wolnej, zależy od wieku obojga dorosłych. Kwota wolna obowiązuje na osobę i jest niższa dla młodszych osób. Jobcenter to sprawdza.",
   "t.kiz.vermKnapp": "Wasz majątek jest tylko trochę powyżej granicy. Wtedy obniża się tylko Kinderzuschlag za pierwszy miesiąc, potem przysługuje w pełnej wysokości. Familienkasse wylicza dokładną kwotę.",
   "t.gsa.mzGBeide": "Jeśli oboje macie Merkzeichen G (znak G), każda osoba może dostać dodatkowe zapotrzebowanie (Mehrbedarf) w wysokości około {betrag}. Kwota jest wtedy wyższa. Sprawdza to Sozialamt.",
@@ -97,11 +103,5 @@
   "bp.vgl.pg": "stopień opieki (Pflegegrad) {pg}",
   "bp.vgl.kein": "brak stopnia opieki (Pflegegrad)",
   "bp.vgl.klein": "Punkty ważone, tak jak liczy Pflegekasse (§ 15 SGB XI). Plus oznacza: Twoja ocena daje tam więcej punktów. Poniżej widać, przy których pytaniach dokładnie.",
-  "t.bafoeg.vermTeil": "Majątek przekracza kwotę wolną {verm}. Dodatkowe 2300 € przysługują tylko na małżonka lub zarejestrowanego partnera i na każde własne dziecko. Liczy się tylko nadwyżka ponad kwotę wolną: rozłożona na 12 miesięcy zmniejsza BAföG o około {monat} miesięcznie. Dokładnie wylicza to Amt für Ausbildungsförderung.",
-  "briefe.nurDe": "Formularz i wynik są na razie tylko po niemiecku. Pisma do urzędów są zawsze po niemiecku.",
-  "plz.wohnort": "Miejsce zamieszkania: {ort} · Stopień czynszu {stufe}",
-  "plz.aendern": "Zmień",
-  "plz.stimmt": "Czy miejscowość się zgadza? Stopień czynszu zależy od twojej gminy, nie od kodu pocztowego.",
-  "plz.was": "Co to jest stopień czynszu?",
-  "vg.ordner.t": "Tutaj są twoje zapisane dane i pisma. Wszystko zostaje na tym urządzeniu."
+  "t.bafoeg.vermTeil": "Majątek przekracza kwotę wolną {verm}. Dodatkowe 2300 € przysługują tylko na małżonka lub zarejestrowanego partnera i na każde własne dziecko. Liczy się tylko nadwyżka ponad kwotę wolną: rozłożona na 12 miesięcy zmniejsza BAföG o około {monat} miesięcznie. Dokładnie wylicza to Amt für Ausbildungsförderung."
 }

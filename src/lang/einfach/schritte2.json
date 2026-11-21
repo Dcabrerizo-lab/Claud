@@ -1,4 +1,13 @@
 {
+  "sf.mehrere": "Du kannst mehr als eine Antwort wählen.",
+  "sf.oder": "=",
+  "sf.teil": "=",
+  "sf.q.plzOrt": "=",
+  "sf.a.ortJa": "=",
+  "sf.a.ortNein": "=",
+  "sf.h.plzOrt": "Die Mietenstufe hängt von deinem Ort ab. Nicht von der Postleitzahl. Danach richtet sich, wie viel Miete beim Wohngeld höchstens zählt. Die Wohngeldstelle entscheidet.",
+  "sf.ueb.rest": "=",
+  "sf.wahl.kurz.t": "Wenige Fragen. Für eine Person.",
   "sf.wahl.schritt": "=",
   "sf.wahl.alles": "=",
   "sf.weiter": "=",
@@ -129,14 +138,5 @@
   "sf.q.vermoegen": "=",
   "sf.q.autoWert": "=",
   "sf.q.autoBraucht": "=",
-  "sf.q.bezug": "=",
-  "sf.mehrere": "Du kannst mehr als eine Antwort wählen.",
-  "sf.oder": "=",
-  "sf.teil": "=",
-  "sf.q.plzOrt": "=",
-  "sf.a.ortJa": "=",
-  "sf.a.ortNein": "=",
-  "sf.h.plzOrt": "Die Mietenstufe hängt von deinem Ort ab. Nicht von der Postleitzahl. Danach richtet sich, wie viel Miete beim Wohngeld höchstens zählt. Die Wohngeldstelle entscheidet.",
-  "sf.ueb.rest": "=",
-  "sf.wahl.kurz.t": "Wenige Fragen. Für eine Person."
+  "sf.q.bezug": "="
 }

@@ -1,4 +1,10 @@
 {
+  "briefe.nurDe": "The form and the result are only available in German for now. Letters to authorities are always in German.",
+  "plz.wohnort": "Place of residence: {ort} · Rent level {stufe}",
+  "plz.aendern": "Change",
+  "plz.stimmt": "Is the place right? The rent level depends on your municipality, not on the postcode.",
+  "plz.was": "What is the rent level?",
+  "vg.ordner.t": "Your saved details and letters are kept here. Everything stays on this device.",
   "t.ggeld.vermAlter": "Whether your assets are below the protected amount depends on the age of both adults. The protected amount applies per person and is smaller for younger people. The Jobcenter checks this.",
   "t.kiz.vermKnapp": "Your assets are just above the limit. Then only the Kinderzuschlag for the first month is reduced; after that you get it in full. The Familienkasse calculates the exact amount.",
   "t.gsa.mzGBeide": "If both of you have the Merkzeichen G (mark G), each person can get an additional allowance (Mehrbedarf) of about {betrag}. The amount is then higher. The Sozialamt checks this.",
@@ -97,11 +103,5 @@
   "bp.vgl.pg": "care level (Pflegegrad) {pg}",
   "bp.vgl.kein": "no care level (Pflegegrad)",
   "bp.vgl.klein": "Weighted points, as the Pflegekasse calculates them (§ 15 SGB XI). Plus means: your estimate gives more points there. Below you can see which questions exactly.",
-  "t.bafoeg.vermTeil": "Your assets are above the allowance of {verm}. An extra €2,300 is only allowed for a spouse or registered civil partner and for each of your own children. Only the part above the allowance counts: spread over 12 months, it reduces BAföG by about {monat} a month. The Amt für Ausbildungsförderung calculates the exact amount.",
-  "briefe.nurDe": "The form and the result are only available in German for now. Letters to authorities are always in German.",
-  "plz.wohnort": "Place of residence: {ort} · Rent level {stufe}",
-  "plz.aendern": "Change",
-  "plz.stimmt": "Is the place right? The rent level depends on your municipality, not on the postcode.",
-  "plz.was": "What is the rent level?",
-  "vg.ordner.t": "Your saved details and letters are kept here. Everything stays on this device."
+  "t.bafoeg.vermTeil": "Your assets are above the allowance of {verm}. An extra €2,300 is only allowed for a spouse or registered civil partner and for each of your own children. Only the part above the allowance counts: spread over 12 months, it reduces BAföG by about {monat} a month. The Amt für Ausbildungsförderung calculates the exact amount."
 }

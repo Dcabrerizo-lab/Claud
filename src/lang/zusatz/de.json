@@ -1,4 +1,10 @@
 {
+  "briefe.nurDe": "Formular und Ergebnis gibt es zurzeit nur auf Deutsch. Schreiben an Ämter sind immer auf Deutsch.",
+  "plz.wohnort": "Wohnort: {ort} · Mietenstufe {stufe}",
+  "plz.aendern": "Ändern",
+  "plz.stimmt": "Stimmt der Ort? Die Mietenstufe hängt von deiner Gemeinde ab, nicht von der Postleitzahl.",
+  "plz.was": "Was ist die Mietenstufe?",
+  "vg.ordner.t": "Hier liegen deine gespeicherten Angaben und Schreiben. Alles bleibt auf diesem Gerät.",
   "t.ggeld.vermAlter": "Ob euer Vermögen unter dem Freibetrag liegt, hängt vom Alter beider Erwachsenen ab. Der Freibetrag gilt je Person und ist bei Jüngeren kleiner. Das Jobcenter prüft das.",
   "t.kiz.vermKnapp": "Euer Vermögen liegt knapp über der Grenze. Dann wird nur der Kinderzuschlag im ersten Monat gekürzt, danach gibt es ihn voll. Die Familienkasse rechnet das genau aus.",
   "t.gsa.mzGBeide": "Haben beide das Merkzeichen G, kann es für jede Person einen Mehrbedarf von etwa {betrag} geben. Der Betrag ist dann höher. Das Sozialamt prüft das.",
@@ -97,11 +103,5 @@
   "bp.vgl.pg": "Pflegegrad {pg}",
   "bp.vgl.kein": "kein Pflegegrad",
   "bp.vgl.klein": "Punkte nach Gewichtung, wie die Pflegekasse rechnet (§ 15 SGB XI). Plus heißt: Deine Einschätzung gibt dort mehr Punkte. Darunter steht, bei welchen Fragen genau.",
-  "t.bafoeg.vermTeil": "Das Vermögen liegt über dem Freibetrag von {verm}. Zusätzliche 2.300 € gibt es nur für Ehe- oder eingetragene Lebenspartner und für jedes eigene Kind. Es zählt nur der Teil über dem Freibetrag: Verteilt auf 12 Monate mindert er das BAföG um etwa {monat} im Monat. Das Amt für Ausbildungsförderung rechnet genau.",
-  "briefe.nurDe": "Formular und Ergebnis gibt es zurzeit nur auf Deutsch. Schreiben an Ämter sind immer auf Deutsch.",
-  "plz.wohnort": "Wohnort: {ort} · Mietenstufe {stufe}",
-  "plz.aendern": "Ändern",
-  "plz.stimmt": "Stimmt der Ort? Die Mietenstufe hängt von deiner Gemeinde ab, nicht von der Postleitzahl.",
-  "plz.was": "Was ist die Mietenstufe?",
-  "vg.ordner.t": "Hier liegen deine gespeicherten Angaben und Schreiben. Alles bleibt auf diesem Gerät."
+  "t.bafoeg.vermTeil": "Das Vermögen liegt über dem Freibetrag von {verm}. Zusätzliche 2.300 € gibt es nur für Ehe- oder eingetragene Lebenspartner und für jedes eigene Kind. Es zählt nur der Teil über dem Freibetrag: Verteilt auf 12 Monate mindert er das BAföG um etwa {monat} im Monat. Das Amt für Ausbildungsförderung rechnet genau."
 }

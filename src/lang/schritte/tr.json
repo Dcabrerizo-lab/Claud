@@ -1,4 +1,13 @@
 {
+  "sf.mehrere": "Birden fazla cevap seçebilirsin",
+  "sf.oder": "veya",
+  "sf.teil": "Bölüm {n} / {m}",
+  "sf.q.plzOrt": "Oturduğun yer doğru mu?",
+  "sf.a.ortJa": "Evet, doğru",
+  "sf.a.ortNein": "Hayır, başka bir yer",
+  "sf.h.plzOrt": "Kira kademesi posta koduna değil, belediyene bağlıdır. Wohngeld’de en fazla ne kadar kiranın sayılacağı buna göre belirlenir. Bağlayıcı kararı Wohngeldstelle verir.",
+  "sf.ueb.rest": "Hayır, 0 veya bilgi yok ({n})",
+  "sf.wahl.kurz.t": "Birkaç soru, tek kişi için",
   "sf.wahl.h": "Soruları nasıl cevaplamak istersin?",
   "sf.wahl.hint": "İstediğin zaman değiştirebilirsin. Cevapların kaybolmaz.",
   "sf.wahl.schritt": "Adım adım",
@@ -145,14 +154,5 @@
   "sf.q.autoWert": "Araban yaklaşık ne kadar eder?",
   "sf.q.autoBraucht": "Araba engel nedeniyle veya işe gitmek için gerekli mi?",
   "sf.q.bezug": "Şu an neler alıyorsunuz (sen ve hanen)?",
-  "sf.h.bezug": "Uygulama bu yardımları „zaten alınıyor“ olarak gösterir ve ek olarak nelerin mümkün olduğunu kontrol eder.",
-  "sf.mehrere": "Birden fazla cevap seçebilirsin",
-  "sf.oder": "veya",
-  "sf.teil": "Bölüm {n} / {m}",
-  "sf.q.plzOrt": "Oturduğun yer doğru mu?",
-  "sf.a.ortJa": "Evet, doğru",
-  "sf.a.ortNein": "Hayır, başka bir yer",
-  "sf.h.plzOrt": "Kira kademesi posta koduna değil, belediyene bağlıdır. Wohngeld’de en fazla ne kadar kiranın sayılacağı buna göre belirlenir. Bağlayıcı kararı Wohngeldstelle verir.",
-  "sf.ueb.rest": "Hayır, 0 veya bilgi yok ({n})",
-  "sf.wahl.kurz.t": "Birkaç soru, tek kişi için"
+  "sf.h.bezug": "Uygulama bu yardımları „zaten alınıyor“ olarak gösterir ve ek olarak nelerin mümkün olduğunu kontrol eder."
 }

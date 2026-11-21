@@ -1,4 +1,10 @@
 {
+  "briefe.nurDe": "Das Formular und das Ergebnis gibt es nur auf Deutsch. Briefe an Ämter sind immer auf Deutsch.",
+  "plz.wohnort": "=",
+  "plz.aendern": "=",
+  "plz.stimmt": "Stimmt der Ort? Die Mietenstufe hängt von deinem Ort ab. Nicht von der Postleitzahl.",
+  "plz.was": "=",
+  "vg.ordner.t": "Hier sind deine gespeicherten Angaben und Briefe. Alles bleibt auf diesem Gerät.",
   "ww.h0": "=",
   "ww.a.t0": "Es deckt den ganzen Bedarf: Regelbedarf, Miete und Heizung. Dazu kommt die Krankenversicherung. Dafür hast du Pflichten: Unterlagen abgeben, Termine einhalten und Arbeit suchen.",
   "ww.b.h0": "=",
@@ -68,11 +74,5 @@
   "bp.vgl.zaehltNicht": "=",
   "bp.vgl.pg": "=",
   "bp.vgl.kein": "=",
-  "bp.vgl.klein": "So rechnet die Pflegekasse. Plus heißt: Du gibst dort mehr Punkte als das Gutachten. Weiter unten steht, bei welchen Fragen.",
-  "briefe.nurDe": "Das Formular und das Ergebnis gibt es nur auf Deutsch. Briefe an Ämter sind immer auf Deutsch.",
-  "plz.wohnort": "=",
-  "plz.aendern": "=",
-  "plz.stimmt": "Stimmt der Ort? Die Mietenstufe hängt von deinem Ort ab. Nicht von der Postleitzahl.",
-  "plz.was": "=",
-  "vg.ordner.t": "Hier sind deine gespeicherten Angaben und Briefe. Alles bleibt auf diesem Gerät."
+  "bp.vgl.klein": "So rechnet die Pflegekasse. Plus heißt: Du gibst dort mehr Punkte als das Gutachten. Weiter unten steht, bei welchen Fragen."
 }

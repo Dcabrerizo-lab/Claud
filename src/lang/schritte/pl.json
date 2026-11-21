@@ -1,4 +1,13 @@
 {
+  "sf.mehrere": "Możesz wybrać kilka odpowiedzi",
+  "sf.oder": "lub",
+  "sf.teil": "Część {n} z {m}",
+  "sf.q.plzOrt": "Czy twoje miejsce zamieszkania się zgadza?",
+  "sf.a.ortJa": "Tak, zgadza się",
+  "sf.a.ortNein": "Nie, inna miejscowość",
+  "sf.h.plzOrt": "Stopień czynszu zależy od twojej gminy, nie od kodu pocztowego. Od niego zależy, ile czynszu najwyżej liczy się przy Wohngeld. Wiążąco decyduje Wohngeldstelle.",
+  "sf.ueb.rest": "Nie, 0 lub brak odpowiedzi ({n})",
+  "sf.wahl.kurz.t": "Kilka pytań, dla jednej osoby",
   "sf.wahl.h": "Jak chcesz odpowiadać na pytania?",
   "sf.wahl.hint": "Możesz to zmienić w każdej chwili. Twoje odpowiedzi zostaną zachowane.",
   "sf.wahl.schritt": "Krok po kroku",
@@ -145,14 +154,5 @@
   "sf.q.autoWert": "Ile mniej więcej jest wart twój samochód?",
   "sf.q.autoBraucht": "Czy samochód jest potrzebny z powodu niepełnosprawności lub do dojazdu do pracy?",
   "sf.q.bezug": "Co już otrzymujecie?",
-  "sf.h.bezug": "Aplikacja pokaże te świadczenia jako „już otrzymywane” i sprawdzi, co jest możliwe dodatkowo.",
-  "sf.mehrere": "Możesz wybrać kilka odpowiedzi",
-  "sf.oder": "lub",
-  "sf.teil": "Część {n} z {m}",
-  "sf.q.plzOrt": "Czy twoje miejsce zamieszkania się zgadza?",
-  "sf.a.ortJa": "Tak, zgadza się",
-  "sf.a.ortNein": "Nie, inna miejscowość",
-  "sf.h.plzOrt": "Stopień czynszu zależy od twojej gminy, nie od kodu pocztowego. Od niego zależy, ile czynszu najwyżej liczy się przy Wohngeld. Wiążąco decyduje Wohngeldstelle.",
-  "sf.ueb.rest": "Nie, 0 lub brak odpowiedzi ({n})",
-  "sf.wahl.kurz.t": "Kilka pytań, dla jednej osoby"
+  "sf.h.bezug": "Aplikacja pokaże te świadczenia jako „już otrzymywane” i sprawdzi, co jest możliwe dodatkowo."
 }

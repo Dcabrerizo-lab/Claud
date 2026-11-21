@@ -1,4 +1,10 @@
 {
+  "briefe.nurDe": "Formularul și rezultatul există deocamdată doar în limba germană. Scrisorile către autorități sunt mereu în limba germană.",
+  "plz.wohnort": "Domiciliu: {ort} · Treapta de chirie {stufe}",
+  "plz.aendern": "Schimbă",
+  "plz.stimmt": "Localitatea e corectă? Treapta de chirie depinde de comuna ta, nu de codul poștal.",
+  "plz.was": "Ce este treapta de chirie?",
+  "vg.ordner.t": "Aici sunt datele și scrisorile tale salvate. Totul rămâne pe acest dispozitiv.",
   "t.ggeld.vermAlter": "Dacă averea voastră se încadrează în suma protejată depinde de vârsta ambilor adulți. Suma protejată se aplică pentru fiecare persoană și este mai mică pentru cei mai tineri. Jobcenter verifică acest lucru.",
   "t.kiz.vermKnapp": "Averea voastră este puțin peste limită. Atunci se reduce doar Kinderzuschlag pentru prima lună, apoi îl primiți integral. Familienkasse calculează suma exactă.",
   "t.gsa.mzGBeide": "Dacă amândoi aveți Merkzeichen G (mențiunea G), fiecare persoană poate primi un necesar suplimentar (Mehrbedarf) de aproximativ {betrag}. Suma este atunci mai mare. Sozialamt verifică acest lucru.",
@@ -97,11 +103,5 @@
   "bp.vgl.pg": "grad de îngrijire (Pflegegrad) {pg}",
   "bp.vgl.kein": "fără grad de îngrijire (Pflegegrad)",
   "bp.vgl.klein": "Puncte ponderate, așa cum calculează Pflegekasse (§ 15 SGB XI). Plus înseamnă: estimarea ta dă acolo mai multe puncte. Mai jos vezi la ce întrebări exact.",
-  "t.bafoeg.vermTeil": "Averea depășește suma scutită de {verm}. Cei 2.300 € în plus se acordă doar pentru soț/soție sau partener înregistrat și pentru fiecare copil propriu. Contează doar partea de peste suma scutită: împărțită pe 12 luni, reduce BAföG cu aproximativ {monat} pe lună. Amt für Ausbildungsförderung calculează exact.",
-  "briefe.nurDe": "Formularul și rezultatul există deocamdată doar în limba germană. Scrisorile către autorități sunt mereu în limba germană.",
-  "plz.wohnort": "Domiciliu: {ort} · Treapta de chirie {stufe}",
-  "plz.aendern": "Schimbă",
-  "plz.stimmt": "Localitatea e corectă? Treapta de chirie depinde de comuna ta, nu de codul poștal.",
-  "plz.was": "Ce este treapta de chirie?",
-  "vg.ordner.t": "Aici sunt datele și scrisorile tale salvate. Totul rămâne pe acest dispozitiv."
+  "t.bafoeg.vermTeil": "Averea depășește suma scutită de {verm}. Cei 2.300 € în plus se acordă doar pentru soț/soție sau partener înregistrat și pentru fiecare copil propriu. Contează doar partea de peste suma scutită: împărțită pe 12 luni, reduce BAföG cu aproximativ {monat} pe lună. Amt für Ausbildungsförderung calculează exact."
 }
