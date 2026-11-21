@@ -4226,6 +4226,7 @@
     });
   }
   window.addEventListener('hashchange', function () { var a = location.hash.slice(1); if (ANSICHTEN.indexOf(a) >= 0 && a !== aktAnsicht) zeigeAnsicht(a, true); });
+  if (NATIVE && window.Klient) Klient.cacheAufraeumen(plug('Filesystem')); // liegengebliebene .solo-/PDF-Dateien vom Teilen (src/klient.js)
   Store.remove('lotse.fristen'); // Fristen aus 1.3.0 (Build 141) gibt es nicht mehr: gespeicherte Einträge vom Gerät löschen
   zeigeAnsicht((function () { var a = (location.hash || '').slice(1); return ANSICHTEN.indexOf(a) >= 0 ? a : 'start'; })());
   // Einheitliche Navigation (src/navigation.js): Zurück-Knopf, Android-Taste, Browser-Zurück/-Vorwärts und Wischen auf dem iPhone.

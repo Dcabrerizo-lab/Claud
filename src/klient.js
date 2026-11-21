@@ -295,7 +295,24 @@ var Klient = (function () {
     var s = $('kbTeilen'); if (s) s.addEventListener('click', teilen);
   }
 
+  // Reste vom Teilen: Die App schreibt .solo- und PDF-Dateien (und Seitenbilder beim Einlesen) kurz in ihren eigenen Cache
+  // (Capacitor Filesystem, Directory.Cache = 'CACHE') und löscht sie nach dem Teilen. Wird die App dabei beendet, bleiben sie liegen.
+  // Beim Start: nur Dateien direkt im App-Cache mit diesen Endungen bzw. diesem Namen löschen, keine Ordner, nichts außerhalb.
+  var CACHE_RESTE = /^[^/\\]+\.(?:solo|pdf)$|^solo-pdfseite-\d+\.jpg$/i;
+  function cacheAufraeumen(fsys) {
+    if (!fsys || typeof fsys.readdir !== 'function' || typeof fsys.deleteFile !== 'function') return Promise.resolve(0);
+    return Promise.resolve().then(function () { return fsys.readdir({ path: '', directory: 'CACHE' }); }).then(function (r) {
+      var namen = ((r && r.files) || []).filter(function (f) { // Filesystem ab Version 5: { name, type }; ältere: nur der Name
+        var n = typeof f === 'string' ? f : f && f.name;
+        return typeof n === 'string' && !(f && f.type === 'directory') && CACHE_RESTE.test(n);
+      }).map(function (f) { return typeof f === 'string' ? f : f.name; });
+      return Promise.all(namen.map(function (n) {
+        return Promise.resolve().then(function () { return fsys.deleteFile({ path: n, directory: 'CACHE' }); }).then(function () { return 1; }, function () { return 0; });
+      })).then(function (a) { return a.reduce(function (x, y) { return x + y; }, 0); });
+    }).catch(function () { return 0; });
+  }
+
   return { init: init, oeffnen: oeffnen, schliessen: schliessen, offen: function () { return offen; }, sichtbar: sichtbar, sprache: sprachWechsel,
-    dokument: function () { return dokument(); }, pdfSeiten: pdfSeiten, teilen: teilen, drucken: drucken };
+    dokument: function () { return dokument(); }, pdfSeiten: pdfSeiten, teilen: teilen, drucken: drucken, cacheAufraeumen: cacheAufraeumen };
 })();
 if (typeof module !== 'undefined') module.exports = Klient;
