@@ -55,6 +55,6 @@ Geplante Änderung, noch nicht beschlossen: Entwurf 30. BAföG-Änderungsgesetz 
 | Sehr hohe Löhne über der Pauschal-Höchstgrenze 17.200 €/Jahr und Krankenkasse mit hohem Zusatzbeitrag: Einkommen nach § 21 kann rund 20 € über dem Netto liegen (Anrechnung rund 10 € mehr) | gering | durch Abrunden auf 10 € meist gedeckt |
 | Studierende mit Lohn ohne Rentenversicherungspflicht (16,5 % statt 22,3 %, § 21 Abs. 2 Nr. 2): Anrechnung bis rund 6 % des Lohns höher | gering | selten; untere Grenze mit 16,5 % rechnen |
 | Über 25, allein, ohne eigenen Kassenbeitrag (z. B. familienversichert wegen Behinderung): untere Grenze 137 € zu hoch | gering | selten |
-| `bafoeg.ab30` in 11 weiteren Sprachen noch „bekommt BAföG ohne …“ | gering | bei nächster Übersetzungsrunde angleichen |
+| `bafoeg.ab30` in 11 weiteren Sprachen noch „bekommt BAföG ohne …“ | erledigt | alle 13 Sprachen „Einkommen der Eltern zählt dann nicht“ (Rückübersetzung geprüft), Einfache Sprache war schon so |
 | Neue Übersetzungen (ar, fa, fa-AF, ps, so) nicht von Muttersprachlern geprüft | gering | Gegenlesen |
 | Amtlicher Abgleich (200 Fälle) nach der Korrektur nicht neu gelaufen; die Spanne ist nur breiter geworden | gering | Workflow bei Gelegenheit neu starten |
