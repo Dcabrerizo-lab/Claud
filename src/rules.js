@@ -267,7 +267,16 @@ const Rules = (function () {
     // eigenem Kind unter 14 im Haushalt erhöht den Bedarf (kindZuschlag; Alter unbekannt -> für jedes Kind, vorsichtige Seite).
     // § 51 Abs. 3 und 4 BAföG (https://www.gesetze-im-internet.de/baf_g/__51.html, Abruf 21.11.2026): auf volle Euro gerundet,
     // monatliche Beträge unter 10 € werden nicht gezahlt (minZahlung). „Eher nicht“ erst, wenn selbst ungerundet weniger als 9,50 € blieben.
-    bafoeg: { freiAllein: 1690, freiPaar: 2540, jeKind: 770, anrechFrei: 0.5, anrechFreiKind: 0.05, bedarfMax: 1088, bwzMonate: 12, vermBis29: 15000, vermAb30: 45000, vermJePerson: 2300, kindZuschlag: 160, minZahlung: 10 },
+    // Grobe Betragsschätzung (nur für ein Studium), alle Fundstellen https://www.gesetze-im-internet.de/baf_g/, Abruf 21.11.2026:
+    // grund 475 € (§ 13 Abs. 1 Nr. 2), Wohnen bei den Eltern 59 € / nicht bei den Eltern 380 € (§ 13 Abs. 2), Kranken- und Pflegeversicherung
+    // § 13a Abs. 1 und 3: 102 + 35 € (kvStud), Abs. 2 (u. a. ab 30, Abs. 3 Satz 4): 185 + 48 € (kvAb30); familienversichert 0 €.
+    // Einkommen § 21 Abs. 1 und 2: Einkünfte (Lohn minus Arbeitnehmer-Pauschbetrag 1.230 €/Jahr, § 9a EStG) minus Steuer minus Sozialpauschale
+    // 22,3 %, höchstens 17.200 €/Jahr (Abs. 2 Nr. 1). Eigenes Einkommen § 23 Abs. 1: 389 € frei (Bekanntmachung vom 18.11.2025,
+    // BGBl. 2025 I Nr. 279, ab 1.1.2026, https://www.recht.bund.de/bgbl/1/2025/279/VO.html, Abruf 21.11.2026), dazu 850 € für den
+    // Ehegatten oder Lebenspartner und 770 € je Kind. Einkommen des Ehegatten oder Lebenspartners: Freibetrag 1.690 € (§ 25 Abs. 1 Nr. 2),
+    // vom Rest 50 % frei (§ 25 Abs. 4).
+    bafoeg: { freiAllein: 1690, freiPaar: 2540, jeKind: 770, anrechFrei: 0.5, anrechFreiKind: 0.05, bedarfMax: 1088, bwzMonate: 12, vermBis29: 15000, vermAb30: 45000, vermJePerson: 2300, kindZuschlag: 160, minZahlung: 10,
+      grund: 475, wohnEltern: 59, wohnAus: 380, kvStud: 137, kvAb30: 233, wkJahr: 1230, pausch: 0.223, pauschMaxJahr: 17200, freiEigen: 389, freiEigenPartner: 850 },
     pflege: { geld: { 2: 347, 3: 599, 4: 800, 5: 990 }, entlastung: 131 },
     // Pflege-Startkachel „Welche Unterstützung gibt es?“. Beträge oben (pflege, pflegeSach, pflegeTages, entlastungsbudget, beh.verbrauch,
     // beh.wohnumfeld). Quelle: BMG, Online-Ratgeber Pflege „Verhinderungspflege“, „Pflege zu Hause“, „Weitere Leistungen und Angebote zur
@@ -1439,6 +1448,108 @@ const Rules = (function () {
   }
   // § 51 Abs. 3 und 4 BAföG: Anrechnung, ab der sicher nichts mehr gezahlt wird (Rest ungerundet unter 9,50 € -> gerundet unter 10 €)
   const bafoegNullGrenze = (bedarf) => bedarf - R.bafoeg.minZahlung + 0.5;
+  // ---- BAföG: grobe Betragsschätzung (Spanne) ----
+  // Formel (Fundstellen siehe R.bafoeg, gesetze-im-internet.de/baf_g, Abruf 21.11.2026):
+  //   Betrag = Bedarf (§§ 13, 13a, 14b) − Anrechnung Einkommen der Eltern (§§ 21, 24, 25, § 11 Abs. 4) bzw. eigenes Einkommen (§ 23),
+  //            Einkommen des Ehegatten (§ 25) und Vermögen (§§ 29, 30); auf volle Euro gerundet, unter 10 € keine Zahlung (§ 51 Abs. 3, 4).
+  // Was die App nicht weiß, geht als Spanne ein: Wohnen bei den Eltern oder nicht, Kranken-/Pflegeversicherung, Geschwister in
+  // förderfähiger Ausbildung (Freibetrag 770 € oder Teilung des Einkommens), Einkommen nach § 21 statt Netto, Trauschein, eigene Kinder.
+  // Die untere Grenze nimmt jeweils den ungünstigsten Fall, die obere den günstigsten. Gilt nur für ein Studium (Schulen: andere Sätze).
+  const BAF = R.bafoeg;
+  const bafZahl = (bedarf, anr) => { const x = Math.round(bedarf - anr); return x >= BAF.minZahlung ? x : 0; };
+  function bafBedarf(h, ich) {
+    // § 13a: familienversichert 0 € (bis 25 nach § 10 SGB V, über den Ehegatten ohne Altersgrenze); sonst 102 + 35 €, ab 30 bis 185 + 48 €
+    const famMoeglich = !ich || h.adults === 2 || !(h.alterJahre >= 25);
+    const kvMin = famMoeglich ? 0 : BAF.kvStud, kvMax = ich && h.gruppe !== '<30' ? BAF.kvAb30 : BAF.kvStud;
+    // § 14b: 160 € je eigenem Kind unter 14 im Haushalt; sicher nur Kinder unter 6 bei Alleinstehenden, höchstens alle Kinder unter 14
+    const zMin = ich && h.adults === 1 ? h.kidsU6 * BAF.kindZuschlag : 0;
+    const zMax = ich ? (h.kidsAlter ? h.kids - h.kids14 : h.kids) * BAF.kindZuschlag : 0;
+    const wE = BAF.grund + BAF.wohnEltern, wA = BAF.grund + BAF.wohnAus;
+    return { eltern: [wE + kvMin + zMin, wE + kvMax + zMax], aus: [wA + kvMin + zMin, wA + kvMax + zMax] };
+  }
+  // Einkommen je Person (Brutto b, Netto n) aus den Angaben; ohne Liste wird das Netto nach dem Brutto aufgeteilt
+  function bafPers(h) {
+    if (h.liste) return h.pers.map((x) => ({ art: x[0], b: x[1], n: x[2], selbst: !!x[4], p: x[5] || 1 }));
+    return h.pers.map((x, i) => ({ art: x[0], b: x[1], n: h.brutto > 0 ? h.netto * x[1] / h.brutto : (i === 0 ? h.netto : 0), selbst: !!x[4], p: i + 1 }));
+  }
+  // Monatliches Einkommen nach § 21 BAföG [lo, hi] aus dem heutigen Einkommen. hi: nie kleiner als das Netto (Sozialpauschale 22,3 %
+  // bzw. 16,5 %/38,8 % ist mindestens so hoch wie die tatsächlichen Beiträge), lo: Lohn nach § 21 (Steuer = Brutto − Netto − Beiträge);
+  // Studierende selbst (Werkstudenten zahlen weniger Beiträge): Steuer höchstens Brutto − Netto. Andere Einkommen: Elterngeld bis 300 € frei
+  // (§ 10 Abs. 1 BEEG), Unterhalt für sich selbst zählt nur versteuert (lo 0), Rente lo 80 %, sonst lo 50 % (Annahme, vorsichtig).
+  function bafEink(h, nurP, student) {
+    const ps = bafPers(h).filter((x) => !nurP || x.p === nurP);
+    let lo = 0, hi = 0, untHi = 0;
+    const L = ps.filter((x) => x.art === 'lohn' && !x.selbst && x.b > 0);
+    if (L.length) {
+      const bL = L.reduce((a, x) => a + x.b, 0), nL = Math.max(0, L.reduce((a, x) => a + x.n, 0));
+      const basis = L.reduce((a, x) => { const e = Math.max(0, x.b - BAF.wkJahr / 12); return a + e - Math.min(e * BAF.pausch, BAF.pauschMaxJahr / 12); }, 0);
+      const sv = student ? 0 : L.reduce((a, x) => a + svMonat(x.b, lohnAnnahmen(h, x.p)), 0);
+      const recht = Math.max(0, basis - Math.max(0, bL - nL - sv));
+      lo += student ? recht : Math.min(recht, nL); hi += student ? basis : Math.max(recht, nL);
+    }
+    ps.forEach((x) => {
+      if (L.indexOf(x) >= 0 || x.art === 'ohne') return;
+      const n = Math.max(0, x.n);
+      hi += n;
+      if (x.art === 'unt') untHi += n;
+      const nEg = Math.max(0, n - R.elterngeldFrei);
+      // Lohn ohne Brutto: Sozialpauschale 22,3 % und Arbeitnehmer-Pauschbetrag statt der echten Beiträge -> lo 80 % minus 80 € (Annahme)
+      lo += x.art === 'eg' ? nEg : x.art === 'unt' ? 0 : x.art === 'rente' ? 0.8 * n : x.art === 'lohn' && !x.selbst ? Math.max(0, 0.8 * n - 80) : 0.5 * n;
+    });
+    return { lo, hi, untHi };
+  }
+  // Spanne in Text-Schlüssel: untere Grenze auf 10 € ab-, obere aufgerundet (die Spanne enthält den gerechneten Wert sicher)
+  function bafSchaetz(min, max) {
+    const a = Math.floor(min / 10) * 10, b = Math.ceil(max / 10) * 10;
+    if (max < BAF.minZahlung) return null;
+    if (min < BAF.minZahlung) return ['schaetz.bis', { b: eur(b) }];
+    return a >= b ? ['schaetz.eins', { a: eur(a) }] : ['schaetz.spanne', { a: eur(a), b: eur(b) }];
+  }
+  const bafWohnTx = (bd, aMax, aMin) => ['bafoeg.betragWohnen', { a: eur(bafZahl(bd.eltern[0], aMax)), b: eur(bafZahl(bd.eltern[1], aMin)), c: eur(bafZahl(bd.aus[0], aMax)), d: eur(bafZahl(bd.aus[1], aMin)) }];
+  // Anrechnung des Elterneinkommens E bei ns Geschwistern, davon k in förderfähiger Ausbildung (§ 25 Abs. 1, 3, 4; § 11 Abs. 4)
+  function bafAnrEltern(h, E, k) {
+    const ns = Math.max(0, h.children - 1), mitFb = ns - k;
+    const fb = (h.adults === 2 ? BAF.freiPaar : BAF.freiAllein) + mitFb * BAF.jeKind;
+    const q = Math.max(0, BAF.anrechFrei - BAF.anrechFreiKind * mitFb);
+    return Math.max(0, E - fb) * q / (1 + k);
+  }
+  // eMitte: Einkommen für die Einstufung „eher nicht“ (Netto wie bisher, ohne Unterhalt für sich selbst, Elterngeld bis 300 € frei)
+  function bafAnrElternSpanne(h, eMitte) {
+    const e = bafEink(h, 0, false), ns = Math.max(0, h.children - 1);
+    let aMin = Infinity, aMax = 0, aMitteMin = Infinity;
+    for (let k = 0; k <= ns; k++) {
+      aMin = Math.min(aMin, bafAnrEltern(h, e.lo, k)); aMax = Math.max(aMax, bafAnrEltern(h, e.hi, k));
+      aMitteMin = Math.min(aMitteMin, bafAnrEltern(h, eMitte == null ? e.lo : eMitte, k));
+    }
+    // eigenes Einkommen der Kinder (kindEink): vorsichtig voll auf die untere Grenze; anderer Elternteil bei Alleinstehenden unbekannt
+    aMax += h.kindEink || 0;
+    if (h.adults === 1) aMax = Infinity;
+    return { aMin, aMax, aMitteMin };
+  }
+  function bafSchaetzKind(h) {
+    const bd = bafBedarf(h, false), s = bafAnrElternSpanne(h);
+    const sch = bafSchaetz(bafZahl(bd.eltern[0], s.aMax), bafZahl(bd.aus[1], s.aMin));
+    if (!sch) return [];
+    return [sch, bafWohnTx(bd, s.aMax, s.aMin), ['bafoeg.schule']].concat(h.adults === 1 ? [['bafoeg.andererElternteil']] : [], [['bafoeg.kindHinweis']]);
+  }
+  // Studierende selbst: eigenes Einkommen (§ 23), Einkommen des Ehegatten (§ 25 Abs. 1 Nr. 2, Abs. 4), Vermögen (§§ 29, 30)
+  function bafSchaetzIch(h, vermMin, vermMax) {
+    const bd = bafBedarf(h, true);
+    const ab30 = h.gruppe === '30-39' || h.gruppe === '40-49';
+    const ei = bafEink(h, h.adults === 2 ? 1 : 0, true);
+    const fbMin = BAF.freiEigen, fbMax = BAF.freiEigen + (h.adults === 2 ? BAF.freiEigenPartner : 0) + h.children * BAF.jeKind;
+    let aMax = Math.max(0, ei.hi - ei.untHi - fbMin) + ei.untHi + vermMax / BAF.bwzMonate;
+    const aMin = Math.max(0, ei.lo - fbMax) + vermMin / BAF.bwzMonate;
+    if (h.adults === 2) { const ep = bafEink(h, 2, false); aMax += Math.max(0, ep.hi - BAF.freiAllein) * BAF.anrechFrei; }
+    // § 11 Abs. 3 Nr. 2 (Abruf 21.11.2026): Das Einkommen der Eltern bleibt nur außer Betracht, wer BEI BEGINN des Ausbildungsabschnitts
+    // schon 30 war. Die App kennt nur das Alter heute. Sicher genug erst ab 37 (30 + längste Regelstudienzeit rund 6 1/2 Jahre) oder in
+    // der Gruppe 40 bis 49; sonst (unter 37, Alter unbekannt) untere Grenze 0 = „bis etwa“. Vermögen nicht angegeben: ebenso.
+    const beginnAb30 = h.gruppe === '40-49' || (ab30 && h.alterJahre >= 37);
+    if (!beginnAb30 || h.fehlt.vermoegen) aMax = Infinity;
+    const sch = bafSchaetz(bafZahl(bd.eltern[0], aMax), bafZahl(bd.aus[1], aMin));
+    if (!sch) return [];
+    return [sch, bafWohnTx(bd, aMax, aMin), ['bafoeg.schule']];
+  }
   function bafoeg0(h) {
     const id = 'bafoeg';
     if (!h.ausbildung) return mk(id, 'nein', 'vorausFehlt', [['bafoeg.keine']]);
@@ -1447,15 +1558,19 @@ const Rules = (function () {
       if (h.children === 0) return mk(id, 'nein', 'vorausFehlt', [['bafoeg.keinKind']]);
       const fb = (h.adults === 2 ? R.bafoeg.freiPaar : R.bafoeg.freiAllein) + Math.max(0, h.children - 1) * R.bafoeg.jeKind;
       const p = { fb: eur(fb) };
-      if (h.netto <= fb) return mk(id, 'ja', 'ja', [['bafoeg.kindJa', p]]);
+      if (h.netto <= fb) return mk(id, 'ja', 'ja', [['bafoeg.kindJa', p]].concat(bafSchaetzKind(h)));
       // Unterhalt eines Elternteils für sich selbst zählt beim BAföG nur, wenn er versteuert wird (Realsplitting, § 21 Abs. 1 BAföG
       // i. V. m. § 22 Nr. 1a EStG): ohne ihn unter der Grenze -> höchstens „möglich“
       const untE = (h.pers || []).reduce((a, x) => a + (x[0] === 'unt' ? (h.liste ? x[2] : x[1]) : 0), 0);
       // § 25 Abs. 4 BAföG: angerechnet wird nur der Teil über dem Freibetrag, davon 50 % minus 5 % je Kind mit Freibetrag (Abruf 21.11.2026).
-      // „Eher nicht“ erst, wenn diese Anrechnung den höchsten Bedarf (bedarfMax) übersteigt; geteilt auf mehrere Geschwister in Ausbildung
-      // (§ 11 Abs. 4) wäre sie kleiner -> darunter „möglich“
+      // „Eher nicht“ erst, wenn diese Anrechnung den höchsten Bedarf (bedarfMax) übersteigt, und zwar auch dann, wenn Geschwister in
+      // förderfähiger Ausbildung sind (dann kein Freibetrag 770 € für sie, Einkommen geteilt nach § 11 Abs. 4); sonst „möglich“
       const quote = R.bafoeg.anrechFrei - R.bafoeg.anrechFreiKind * Math.max(0, h.children - 1);
-      if (quote <= 0 || (h.netto - untE - fb) * quote <= bafoegNullGrenze(R.bafoeg.bedarfMax)) return mk(id, 'vielleicht', 'vielleicht', [['bafoeg.kindRand', p]]);
+      const egFrei = (h.pers || []).reduce((a, x) => a + (x[0] === 'eg' ? Math.min(R.elterngeldFrei, h.liste ? x[2] : x[1]) : 0), 0);
+      const kleinste = bafAnrElternSpanne(h, h.netto - untE - egFrei).aMitteMin;
+      if (quote <= 0 || (h.netto - untE - fb) * quote <= bafoegNullGrenze(R.bafoeg.bedarfMax) || kleinste <= bafoegNullGrenze(R.bafoeg.bedarfMax)) {
+        return mk(id, 'vielleicht', 'vielleicht', [['bafoeg.kindRand', p]].concat(bafSchaetzKind(h)));
+      }
       return mk(id, 'nein', 'einkoHoch', [['bafoeg.kindNein', p]]);
     }
     // ich selbst: Elterneinkommen unbekannt
@@ -1463,16 +1578,23 @@ const Rules = (function () {
     if (h.gruppe === '50+' || (h.gruppe === '40-49' && !bafoegAlter(h))) {
       return mk(id, h.gruppe === '50+' ? 'nein' : 'vielleicht', h.gruppe === '50+' ? 'vorausFehlt' : 'vielleicht', [['bafoeg.alter']]);
     }
-    // § 29 Abs. 1: 15.000 € bis zur Vollendung des 30. Lebensjahres (sonst 45.000 €), dazu 2.300 € je Partner und je Kind
-    const vermGrenze = (h.gruppe === '<30' ? R.bafoeg.vermBis29 : R.bafoeg.vermAb30)
-      + R.bafoeg.vermJePerson * ((h.adults === 2 ? 1 : 0) + h.children);
+    // § 29 Abs. 1 (Abruf 21.11.2026): 15.000 € bis zur Vollendung des 30. Lebensjahres (sonst 45.000 €), dazu 2.300 € NUR für den
+    // Ehegatten oder Lebenspartner und je Kind des Auszubildenden. Trauschein und eigene Kinder fragt die App nicht: Einstufung mit dem
+    // größten Freibetrag (vermGrenze), Betrag als Spanne zwischen kleinstem (vermBasis) und größtem Freibetrag.
+    const vermBasis = h.gruppe === '<30' ? R.bafoeg.vermBis29 : R.bafoeg.vermAb30;
+    const vermGrenze = vermBasis + R.bafoeg.vermJePerson * ((h.adults === 2 ? 1 : 0) + h.children);
     const bedarfIch = R.bafoeg.bedarfMax + R.bafoeg.kindZuschlag * h.children; // § 14b Kinderbetreuungszuschlag
     // § 30 BAföG (Abruf 21.11.2026): nur der Betrag über dem Freibetrag, geteilt durch 12 Monate, mindert das BAföG. „Eher nicht“ erst,
     // wenn das mehr ist als der höchste Bedarf; darunter „möglich“ mit Hinweis
-    const vermUeber = h.vermoegen + (h.autoWert || 0) - vermGrenze;
+    const verm = h.vermoegen + (h.autoWert || 0);
+    const vermUeber = verm - vermGrenze, vermUeberMax = Math.max(0, verm - vermBasis);
     if (vermUeber / R.bafoeg.bwzMonate > bafoegNullGrenze(bedarfIch)) return mk(id, 'nein', 'vermHoch', [['bafoeg.vermHoch', { verm: eur(vermGrenze) }]]);
-    if (vermUeber > 0) return mk(id, 'vielleicht', 'vielleicht', [['bafoeg.vermTeil', { verm: eur(vermGrenze), monat: eur(Math.round(vermUeber / R.bafoeg.bwzMonate)) }], ['bafoeg.ich']]);
-    return mk(id, 'vielleicht', 'vielleicht', [['bafoeg.ich']]);
+    const sch = bafSchaetzIch(h, Math.max(0, vermUeber), vermUeberMax);
+    // ab 30 (§ 11 Abs. 3 Nr. 2): Hinweis, dass das Einkommen der Eltern dann nicht zählt; sonst der bisherige Hinweis auf die Eltern
+    const ichTx = h.gruppe === '30-39' || h.gruppe === '40-49' ? [['bafoeg.ab30']] : [['bafoeg.ich']];
+    if (vermUeber > 0) return mk(id, 'vielleicht', 'vielleicht', [['bafoeg.vermTeil', { verm: eur(vermGrenze), monat: eur(Math.round(vermUeber / R.bafoeg.bwzMonate)) }]].concat(ichTx, sch));
+    if (vermUeberMax > 0) return mk(id, 'vielleicht', 'vielleicht', [['bafoeg.vermEvtl', { verm: eur(vermBasis), monat: eur(Math.round(vermUeberMax / R.bafoeg.bwzMonate)) }]].concat(ichTx, sch));
+    return mk(id, 'vielleicht', 'vielleicht', ichTx.concat(sch));
   }
 
   // ---------------------------------------------------------------
@@ -2262,6 +2384,18 @@ const Rules = (function () {
 
   // Ersparnisse mit unsicherem Schutz: Lebens-/Rentenversicherung (alle Karten) und geförderte Altersvorsorge (nur BAföG, dort nicht
   // ausdrücklich geschützt). Bringt der unsichere Teil eine Karte über die Vermögensgrenze, wird „wahrscheinlich“ zu „möglich“ mit Hinweis.
+  // BAföG-Spanne, wenn unsicher geschützte Ersparnisse mitzählen könnten: untere Grenze aus der Rechnung mit diesen Ersparnissen
+  // (dort „eher nicht“ -> untere Grenze 0, also „bis etwa“)
+  function bafUnsicher(tx, pess) {
+    const i = tx.findIndex((t) => t[0] === 'schaetz.spanne' || t[0] === 'schaetz.eins');
+    if (i < 0) return tx;
+    const b = tx[i][0] === 'schaetz.eins' ? tx[i][1].a : tx[i][1].b;
+    const pr = pess && pess.results.find((x) => x.id === 'bafoeg');
+    const ps = pr && pr.level !== 'nein' ? pr.tx.find((t) => t[0] === 'schaetz.spanne' || t[0] === 'schaetz.eins') : null;
+    const neu = ps && ps[1].a.eur < b.eur ? ['schaetz.spanne', { a: ps[1].a, b }] : ps ? tx[i] : ['schaetz.bis', { b }];
+    // Die Aufteilung nach Wohnsituation entfällt hier (ihre unteren Werte gelten ohne diese Ersparnisse)
+    return tx.slice(0, i).concat([neu], tx.slice(i + 1)).filter((t) => t[0] !== 'bafoeg.betragWohnen');
+  }
   function evaluate(inp) {
     const out = evaluateKern(inp);
     const lv = num(inp.vermLV), av = num(inp.vermAV);
@@ -2275,7 +2409,7 @@ const Rules = (function () {
       const key = zuHoch(p2, r.id) ? 'verm.lvUnsicher' : r.id === 'bafoeg' && zuHoch(p3, r.id) ? 'verm.avUnsicher' : '';
       if (!key) return r;
       const level = 'vielleicht';
-      return Object.assign({}, r, { level, hl: r.level === level ? r.hl : level, tx: r.tx.concat([[key]]) });
+      return Object.assign({}, r, { level, hl: r.level === level ? r.hl : level, tx: (r.id === 'bafoeg' ? bafUnsicher(r.tx, p3 || p2) : r.tx).concat([[key]]) });
     }).sort((a, b) => ORDER[a.level] - ORDER[b.level] || a.order - b.order);
     return out;
   }
