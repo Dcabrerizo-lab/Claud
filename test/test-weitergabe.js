@@ -89,6 +89,13 @@ const vorgang = { s: 1, typ: 'vorgang', name: 'Haushalt B', datum: '2026-11-21',
   // HTML bleibt Text (nicht verboten, nur nie als HTML angezeigt): Rundreise unverändert
   const html = JSON.parse(JSON.stringify(auswahl)); html.blatt.titel.k = '<img src=x onerror=alert(1)>';
   ck('HTML-Zeichen bleiben reiner Text (Anzeige nur mit textContent)', (await W.auspacken(await W.packen(html, null))).blatt.titel.k === '<img src=x onerror=alert(1)>');
+  // Echte gespeicherte Formen (Pflege-Einschätzung, einfache Version, Pfändungsschutz) werden von der strengen Prüfung angenommen
+  const echt = { s: 1, typ: 'vorgang', name: 'A', daten: {
+    'lotse.pflegecheck': JSON.stringify({ antworten: { v: 2, alterJahre: '70', alterMonate: '', vor: { 1: true, 2: false, 4: true, 5: true }, stufen: { '1.1': 2, '4.1': 3, '5.16': 1 }, m5: { '5.1': { tag: 2 }, '5.12': { taeglich: true } }, m5Hilfe: { '5.1': true }, m5Wahl: { '5.1': 2 }, inkontinenz: { harn: true, stuhl: false }, ink: 1, sonde: null, k4K: false, pos: 14 }, schaetzung: { pg: 2, punkte: 31.25, datum: '2026-11-21' } }),
+    'lotse.einfach': JSON.stringify({ es: { schritt: 4, geb: '1960', wohnen: 'miete', miete: '500', gdb: '50', mz: { G: true }, schon: { wg: true }, plz: '90542' }, an: true }),
+    'lotse.pfaendung': JSON.stringify({ art: 'konto', schritt: 3, netto: 1500.5, pers: 2, kg: 1, kiz: '' }),
+    'lotse.state': JSON.stringify({ s: { adults: 2, kids: 1, miete: '650', uvgWechsel: false, bezug: { wg: true } }, p: { name: 'Max' }, e: true, big: false, sf: { pos: 'uebersicht', ja: ['kinder'] } }) } };
+  ck('Echte gespeicherte Formen werden angenommen (Rundreise mit PIN)', JSON.stringify((await W.auspacken(await W.packen(echt, pin), pin)).daten) === JSON.stringify(echt.daten));
   ck('Gleiche PBKDF2-Werte wie Vorgangs-PIN (600 000)', W.ITER === 600000);
   console.log(fails ? fails + ' Fehler' : '[weitergabe] alle Prüfungen bestanden');
   process.exit(fails ? 1 : 0);

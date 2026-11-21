@@ -223,6 +223,8 @@ var Klient = (function () {
   function kwMsg(text) { var m = $('kwMsg'); if (m) m.textContent = text || ''; }
   var FEHLER = { zuGross: 'kw.f.zuGross', technik: 'kw.f.technik', schema: 'kw.f.schema' };
   function codeBauen() {
+    // Weitergeben gibt es nur im Beratungsmodus und nur aus der geöffneten Zusammenstellung (nicht aus einem empfangenen Blatt)
+    if (!ctx || !ctx.beratung() || !offen || fremd || !W()) return Promise.reject(Object.assign(new Error('technik'), { art: 'technik' }));
     var i = inhaltFuerWeitergabe();
     if (!i) return Promise.reject(Object.assign(new Error('leer'), { art: 'leer' }));
     kwMsg(t('kw.bitte'));
@@ -236,7 +238,8 @@ var Klient = (function () {
       if (!svg) { kwMsg(t('kw.f.qrGross')); return false; }
       box.appendChild(svg);
       box.appendChild(el('p', 'small', t('kw.qr.hilfe')));
-      if (mitPin) box.appendChild(el('p', 'small kw-pinwdh', t('kw.pin.sagen', { pin: pinText() })));
+      // Die PIN steht bewusst nicht beim QR-Code: ein Foto des Codes soll die PIN nicht mit enthalten
+      if (mitPin) box.appendChild(el('p', 'small kw-pinwdh', t('kw.pin.hinweis')));
       box.hidden = false; kwMsg('');
       return true;
     }, function (e) { kwMsg(t(e && e.art === 'leer' ? 'kb.leer' : FEHLER[e && e.art] || 'kw.f.technik')); return false; });

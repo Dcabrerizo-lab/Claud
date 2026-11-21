@@ -55,7 +55,8 @@ const dateiWaehlen = (w, input, text) => { Object.defineProperty(input, 'files',
   [...d.querySelectorAll('#kbUnterlagen input[data-kb]')].slice(1).forEach((c) => { c.checked = false; fire(w, c, 'change'); });
   const pinB = $('kwPin').textContent.replace(' ', '');
   $('kwQrBtn').click();
-  check('QR-Code zeigen: SVG sichtbar (Version ≤ 25), Hilfe und PIN-Hinweis', await bis(() => !$('kwQr').hidden && $('kwQr').querySelector('svg')) && +$('kwQr').querySelector('svg').getAttribute('data-version') <= 25 && $('kwQr').textContent.includes(DE['kw.qr.hilfe']) && $('kwQr').textContent.includes(pinB.slice(0, 3)), $('kwMsg').textContent);
+  check('QR-Code zeigen: SVG sichtbar (Version ≤ 25), Hilfe und Hinweis „PIN mündlich sagen“', await bis(() => !$('kwQr').hidden && $('kwQr').querySelector('svg')) && +$('kwQr').querySelector('svg').getAttribute('data-version') <= 25 && $('kwQr').textContent.includes(DE['kw.qr.hilfe']) && $('kwQr').textContent.includes(DE['kw.pin.hinweis']), $('kwMsg').textContent);
+  check('PIN steht nicht beim QR-Code (ein Foto des Codes enthält die PIN nicht)', !$('kwQr').textContent.replace(/\s/g, '').includes(pinB));
   // Inhalt (b) prüfen: nur Gewähltes, keine Angaben
   const ib = w.Klient.inhaltFuerWeitergabe();
   check('Inhalt (b): Blatt-Daten mit nur einer Hilfe, keine gespeicherten Eingaben', ib.typ === 'auswahl' && !ib.daten && ib.blatt.abschnitte.find((a) => a.teil === 'hilfen').zeilen.filter((z) => z.art === 'h3').length === 1);

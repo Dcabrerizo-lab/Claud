@@ -6,12 +6,16 @@
 //   { s: 1, typ: 'auswahl', name, datum, blatt: { l, rtl, zwei, titel, kopf, abschnitte }, fristen?: { v: 1, e: [...] } }
 //      blatt = Daten des Blatts aus „Für Klient zusammenstellen“ (Textpaare, kein HTML, keine PDF); die App des Klienten zeichnet es neu.
 // Kode: 'SOLO:' + base64url( [1 (Version), Merker (1 = komprimiert, 2 = mit PIN), (Salz 16, IV 12,) Daten] ).
-//   Kompression: deflate-raw (CompressionStream), nur wenn vorhanden und kleiner.
+//   Kompression: deflate-raw (CompressionStream), nur wenn vorhanden und kleiner. Entpackt wird in kleinen Stücken und nur bis 512 KB
+//   (Schutz vor Kompressions-Bomben: nie alles auf einmal in den Entpacker geben).
 //   PIN: AES-GCM-256, Schlüssel aus PBKDF2-HMAC-SHA-256 mit 600 000 Durchläufen, Salz 16 Byte, IV 12 Byte – dieselben Werte wie die PIN
 //   der Vorgänge (src/vorgaenge.js, ITER; OWASP Password Storage Cheat Sheet, abgerufen am 21.11.2026). Eine 6-stellige PIN ist ein
-//   Sichtschutz, kein Schutz gegen Fachleute mit viel Rechenzeit (so steht es auch in der App).
+//   Sichtschutz, kein Schutz gegen Fachleute mit viel Rechenzeit (so steht es auch in der App). Die zwei Kopf-Bytes (Version, Merker)
+//   sind als „additionalData“ mit geschützt: wer sie verändert, bekommt „PIN stimmt nicht“.
 // Datei (.solo): { "format": "solo", "v": 1, "code": "SOLO:…" }.
-// Prüfung beim Öffnen: nur bekannte Felder, feste Größen, Texte ohne Steuerzeichen. Angezeigt wird alles nur mit textContent.
+// Prüfung beim Öffnen: nur bekannte Felder, feste Größen und Datentypen, Texte ohne Steuerzeichen, keine Schlüssel, die es an jedem
+// Objekt schon gibt (__proto__, constructor, toString …). Angezeigt wird alles nur mit textContent. Dateien von Fremden sind Angriffsfläche:
+// test/test-weitergabe-boese.js.
 var Weitergabe = (function () {
   'use strict';
   var PREFIX = 'SOLO:';
@@ -26,14 +30,22 @@ var Weitergabe = (function () {
   var FELDER = ['lotse.state', 'lotse.einfach', 'lotse.pflegecheck', 'lotse.pfaendung', 'lotse.haushalt', 'lotse.haken', 'lotse.ausziehen', 'lotse.fristliste', 'lotse.schulden'];
   var TEILE = ['hilfen', 'unterlagen', 'fristen', 'briefe'];
   var ZEILEN = ['h', 'h3', 'p', 'li', 'small', 'pre'];
-  var VERBOTEN = ['__proto__', 'constructor', 'prototype'];
+  var MAX_BILD = 30 * 1024 * 1024; // Foto mit QR-Code höchstens 30 MB
+  var STUECK = 1024; // Entpacken: so viele Byte auf einmal in den Entpacker (deflate bläht höchstens rund 1032-fach auf, also rund 1 MB je Stück)
+  // Schlüssel, die es an jedem Objekt schon gibt (__proto__, constructor, toString, valueOf, hasOwnProperty …), sind in fremden Daten verboten:
+  // sie könnten Prototypen verändern oder die App beim Umwandeln in Text abstürzen lassen
+  function schluesselOk(n) { return typeof n === 'string' && /^[\w.|:-]{1,80}$/.test(n) && n !== 'prototype' && !(n in Object.prototype); }
 
   function fehler(art) { var e = new Error(art); e.art = art; return e; }
   function istObj(o) { return !!o && typeof o === 'object' && !Array.isArray(o); }
   function nurFelder(o, erlaubt) { return Object.keys(o).every(function (k) { return erlaubt.indexOf(k) >= 0; }); }
+  function einfach(v) { return v == null || typeof v === 'boolean' || (typeof v === 'number' && isFinite(v)) || (typeof v === 'string' && v.length <= 200); }
+  function flach(o) { return istObj(o) && Object.keys(o).every(function (k) { return einfach(o[k]); }); }
   function zufall(n) { var a = new Uint8Array(n); globalThis.crypto.getRandomValues(a); return a; }
   function tagOk(s) { return typeof s === 'string' && /^\d{4}-\d\d-\d\d$/.test(s); }
-  function steuerOk(s, mitZeilen) { return !(mitZeilen ? /[\u0000-\u0008\u000b-\u001f\u007f-\u009f\u2028\u2029]/ : /[\u0000-\u001f\u007f-\u009f\u2028\u2029]/).test(s); }
+  // Keine Steuerzeichen und keine Zeichen, die die Schreibrichtung umkehren (U+202A–U+202E: Text könnte anders aussehen, als er ist).
+  // U+2066–U+2069 bleiben erlaubt: die App setzt sie selbst um Zahlen in Sprachen von rechts nach links (src/fmt.js).
+  function steuerOk(s, mitZeilen) { return !(mitZeilen ? /[\u0000-\u0008\u000b-\u001f\u007f-\u009f\u2028\u2029\u202a-\u202e]/ : /[\u0000-\u001f\u007f-\u009f\u2028\u2029\u202a-\u202e]/).test(s); }
 
   // ---------- base64url ----------
   function b64url(u8) {
@@ -55,14 +67,26 @@ var Weitergabe = (function () {
 
   // ---------- Kompression (deflate-raw) ----------
   function kannKomprimieren() { return typeof globalThis.CompressionStream === 'function' && typeof globalThis.DecompressionStream === 'function'; }
+  // max > 0 (Entpacken fremder Daten): Eingabe in kleinen Stücken, nach jedem Stück wird gewartet, bis der Leser nachgekommen ist.
+  // So liegt nie mehr als rund 1 MB entpackt im Speicher, auch wenn 700 KB Kode mehrere 100 MB ergeben würden.
   function strom(bytes, Art, max) {
-    var s = new Art('deflate-raw'), w = s.writable.getWriter(), r = s.readable.getReader(), teile = [], n = 0;
-    w.write(bytes).catch(function () {}); w.close().catch(function () {});
+    var s = new Art('deflate-raw'), w = s.writable.getWriter(), r = s.readable.getReader(), teile = [], n = 0, stopp = false, st = max ? STUECK : 65536;
+    function schreiben(i) {
+      if (stopp) return Promise.resolve();
+      if (i >= bytes.length) return w.close();
+      return w.ready.then(function () { return stopp ? null : w.write(bytes.subarray(i, i + st)); }).then(function () { return schreiben(i + st); });
+    }
+    schreiben(0).catch(function () {});
     function weiter() {
       return r.read().then(function (x) {
         if (x.done) return verbinden(teile);
         n += x.value.length;
-        if (max && n > max) { try { r.cancel(); } catch (e) {} throw fehler('zuGross'); }
+        if (max && n > max) {
+          stopp = true; teile = [];
+          try { r.cancel().catch(function () {}); } catch (e) {}
+          try { w.abort().catch(function () {}); } catch (e) {}
+          throw fehler('zuGross');
+        }
         teile.push(x.value); return weiter();
       });
     }
@@ -103,8 +127,9 @@ var Weitergabe = (function () {
       var merker = (x.z ? 1 : 0) | (pin != null ? 2 : 0);
       if (pin == null) return PREFIX + b64url(verbinden([new Uint8Array([1, merker]), x.d]));
       var salz = zufall(SALZ), iv = zufall(IV);
-      return schluessel(pin, salz).then(function (k) { return globalThis.crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, k, x.d); })
-        .then(function (ct) { return PREFIX + b64url(verbinden([new Uint8Array([1, merker]), salz, iv, new Uint8Array(ct)])); });
+      var kopfB = new Uint8Array([1, merker]);
+      return schluessel(pin, salz).then(function (k) { return globalThis.crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv, additionalData: kopfB }, k, x.d); })
+        .then(function (ct) { return PREFIX + b64url(verbinden([kopfB, salz, iv, new Uint8Array(ct)])); });
     });
   }
   function kopf(code) {
@@ -128,7 +153,7 @@ var Weitergabe = (function () {
       if (pin == null || pin === '') return Promise.reject(fehler('pin'));
       if (!webCrypto()) return Promise.reject(fehler('technik'));
       var salz = k.b.subarray(2, 2 + SALZ), iv = k.b.subarray(2 + SALZ, 2 + SALZ + IV), ct = k.b.subarray(2 + SALZ + IV);
-      daten = schluessel(String(pin), salz).then(function (key) { return globalThis.crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv }, key, ct); })
+      daten = schluessel(String(pin), salz).then(function (key) { return globalThis.crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv, additionalData: k.b.slice(0, 2) }, key, ct); })
         .then(function (pt) { return new Uint8Array(pt); }, function () { throw fehler('pinFalsch'); });
     } else daten = Promise.resolve(k.b.subarray(2));
     return daten.then(function (d) {
@@ -168,17 +193,47 @@ var Weitergabe = (function () {
     if (Array.isArray(x)) return x.length <= 500 && x.every(function (y) { return tiefOk(y, t + 1); });
     if (typeof x !== 'object') return false;
     var k = Object.keys(x);
-    return k.length <= 300 && k.every(function (n) { return /^[\w.|:-]{1,80}$/.test(n) && VERBOTEN.indexOf(n) < 0 && tiefOk(x[n], t + 1); });
+    return k.length <= 300 && k.every(function (n) { return schluesselOk(n) && tiefOk(x[n], t + 1); });
   }
+  // Gespeicherte Angaben des Leistungs-Checks: s = einfache Werte (wie src/app.js blankState), bezug = Ja/Nein je Leistung,
+  // sf = Stand von „Frage für Frage“ (src/schritte.js stand()), p = Briefdaten
   function stateOk(j) {
     if (!istObj(j) || !nurFelder(j, ['s', 'p', 'e', 'big', 'sf']) || !istObj(j.s)) return false;
-    if (j.p != null && (!istObj(j.p) || !nurFelder(j.p, ['name', 'geb', 'strasse', 'ort', 'tel']) || !Object.keys(j.p).every(function (k) { return typeof j.p[k] === 'string' && j.p[k].length <= 200; }))) return false;
+    if ((j.e != null && typeof j.e !== 'boolean') || (j.big != null && typeof j.big !== 'boolean')) return false;
+    if (j.p != null && (!istObj(j.p) || !nurFelder(j.p, ['name', 'geb', 'strasse', 'ort', 'tel']) || !Object.keys(j.p).every(function (k) { return typeof j.p[k] === 'string' && j.p[k].length <= 200 && steuerOk(j.p[k], false); }))) return false;
+    if (j.sf != null && (!istObj(j.sf) || !nurFelder(j.sf, ['pos', 'ja']) || (j.sf.pos != null && (typeof j.sf.pos !== 'string' || j.sf.pos.length > 80)) ||
+      (j.sf.ja != null && (!Array.isArray(j.sf.ja) || j.sf.ja.length > 300 || !j.sf.ja.every(function (x) { return typeof x === 'string' && x.length <= 80; }))))) return false;
     return Object.keys(j.s).every(function (k) {
       var v = j.s[k];
       if (k === 'bezug') return v == null || (istObj(v) && Object.keys(v).every(function (b) { return typeof v[b] === 'boolean'; }));
-      return v == null || typeof v === 'boolean' || (typeof v === 'number' && isFinite(v)) || (typeof v === 'string' && v.length <= 200) || (Array.isArray(v) && tiefOk(v, 2));
+      return einfach(v);
     });
   }
+  // Einfache Version (src/app.js esLeer): einfache Werte, dazu flache Listen zum Ankreuzen (mz, schon)
+  function einfachOk(j) {
+    if (!istObj(j) || !nurFelder(j, ['es', 'an']) || (j.an != null && typeof j.an !== 'boolean')) return false;
+    return j.es == null || (istObj(j.es) && Object.keys(j.es).every(function (k) { return einfach(j.es[k]) || flach(j.es[k]); }));
+  }
+  // Pfändungsschutz (src/app.js pfLeer): nur die bekannten Felder mit einfachen Werten
+  function pfaendungOk(j) {
+    return istObj(j) && nurFelder(j, ['art', 'schritt', 'netto', 'pers', 'kg', 'kiz']) && Object.keys(j).every(function (k) { return einfach(j[k]); }) &&
+      (j.art == null || ['', 'lohn', 'konto'].indexOf(j.art) >= 0) && (j.schritt == null || (typeof j.schritt === 'number' && j.schritt >= 0 && j.schritt <= 20 && j.schritt === Math.floor(j.schritt)));
+  }
+  // Pflege-Einschätzung: Antworten wie erweiterungen/pflege-assistent.js neu() (Listen sind Objekte mit einfachen Werten, nie null) und Ergebnis { pg, punkte, datum }
+  function oderFlach(v) { return einfach(v) || flach(v) || (Array.isArray(v) && v.length <= 50 && v.every(einfach)); }
+  function antwortenOk(a) {
+    if (!istObj(a) || !nurFelder(a, ['v', 'alterJahre', 'alterMonate', 'vor', 'stufen', 'm5', 'm5Hilfe', 'm5Wahl', 'inkontinenz', 'ink', 'sonde', 'k4K', 'pos'])) return false;
+    if (!['v', 'alterJahre', 'alterMonate', 'k4K', 'pos'].every(function (k) { return einfach(a[k]); }) || (a.pos != null && !(typeof a.pos === 'number' && a.pos >= 0 && a.pos <= 500 && a.pos === Math.floor(a.pos)))) return false;
+    if (!['vor', 'stufen', 'm5Hilfe', 'inkontinenz'].every(function (k) { return a[k] === undefined || flach(a[k]); })) return false;
+    if (!['m5', 'm5Wahl'].every(function (k) { return a[k] === undefined || (istObj(a[k]) && Object.keys(a[k]).every(function (n) { return oderFlach(a[k][n]); })); })) return false;
+    return oderFlach(a.ink) && oderFlach(a.sonde);
+  }
+  function pflegeOk(j) {
+    return istObj(j) && nurFelder(j, ['antworten', 'schaetzung']) && (j.antworten == null || antwortenOk(j.antworten)) &&
+      (j.schaetzung == null || (flach(j.schaetzung) && nurFelder(j.schaetzung, ['pg', 'punkte', 'datum']) && (j.schaetzung.datum == null || tagOk(j.schaetzung.datum))));
+  }
+  var FELD_OK = { 'lotse.state': stateOk, 'lotse.einfach': einfachOk, 'lotse.pfaendung': pfaendungOk, 'lotse.pflegecheck': pflegeOk, 'lotse.fristliste': function (j) { return fristenOk(j); },
+    'lotse.haushalt': istObj, 'lotse.haken': istObj, 'lotse.ausziehen': istObj, 'lotse.schulden': istObj };
   function fristenOk(f) { return istObj(f) && nurFelder(f, ['v', 'e']) && f.v === 1 && Array.isArray(f.e) && f.e.length <= 50 && f.e.every(function (e) { return istObj(e) && tiefOk(e, 2); }); }
   function text(s, max, zeilen) {
     if (typeof s !== 'string' || s.length > max || !steuerOk(s, zeilen)) return null;
@@ -220,8 +275,7 @@ var Weitergabe = (function () {
         if (FELDER.indexOf(k) < 0 || typeof v !== 'string' || v.length > MAX_FELD) return null;
         try { j = JSON.parse(v); } catch (e) { return null; }
         if (!tiefOk(j, 0)) return null;
-        if (k === 'lotse.state' && !stateOk(j)) return null;
-        if (k === 'lotse.fristliste' && !fristenOk(j)) return null;
+        if (!FELD_OK[k](j)) return null; // je Feld die bekannte Form (Haushalt, Haken, „Ich ziehe aus“, Schulden prüft zusätzlich das jeweilige Modul beim Laden)
         d[k] = v; n++;
       }
       if (!n) return null;
@@ -375,6 +429,8 @@ var Weitergabe = (function () {
   function scanMoeglich() { return typeof globalThis.BarcodeDetector === 'function' && typeof globalThis.createImageBitmap === 'function'; }
   function ausBild(datei) {
     if (!datei) return Promise.resolve(false);
+    boxWeg(); aufklappen(); meldung('');
+    if (datei.size > MAX_BILD || (datei.type && !/^image\//.test(datei.type))) { meldung('kw.imp.keinCode'); return Promise.resolve(false); }
     meldung('kw.bitte');
     var det;
     try { det = new globalThis.BarcodeDetector({ formats: ['qr_code'] }); } catch (e) { meldung('kw.imp.keinScan'); return Promise.resolve(false); }
@@ -386,6 +442,7 @@ var Weitergabe = (function () {
   }
   function ausDateiEin(datei) {
     if (!datei) return Promise.resolve(false);
+    boxWeg(); aufklappen(); meldung(''); // alte Vorschau oder Meldung nie neben einer neuen Datei stehen lassen
     if (datei.size > MAX_DATEI) { meldung('kw.imp.f.zuGross'); return Promise.resolve(false); }
     var lesen = typeof datei.text === 'function' ? datei.text() : new Promise(function (res, rej) { var r = new FileReader(); r.onload = function () { res(String(r.result)); }; r.onerror = rej; r.readAsText(datei); });
     return lesen.then(function (txt) {
