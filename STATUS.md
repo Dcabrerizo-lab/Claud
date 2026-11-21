@@ -1,6 +1,6 @@
 # STATUS – SoLo (Sozialleistungslotse)
 
-Stand: 21.11.2026. Letzte gebaute Version: **1.8.0, VersionCode/Build 150** (Android von David hochgeladen, iOS Build 150 in TestFlight). **Im Bau: 1.9.0 / 151** (auf `main`, Bau von David am 21.11.2026 beauftragt: Android, iOS, Browser). **Nächster VersionCode: 151** (nach dem Bau 152).
+Stand: 21.11.2026. Letzte gebaute Version: **1.9.0, VersionCode/Build 151** (Android: signiertes Play-Bundle gebaut, Upload durch David; iOS Build 151 in TestFlight). **Nächster VersionCode: 152**.
 Übergabe für neue Sitzungen: zuerst diese Datei, dann `CLAUDE.md` (verbindliche Arbeitsregeln).
 Ausführlicher Verlauf (Erledigtes, alte Pläne): `docs/VERLAUF.md`, Abschnitt „Entwicklungsverlauf“.
 
@@ -70,13 +70,12 @@ Ausführlicher Verlauf (Erledigtes, alte Pläne): `docs/VERLAUF.md`, Abschnitt �
 - pdf.js 4: Umstieg von 3.11.174.
 - `src/lang/de.json` „lead“ sagt noch „in zwei Minuten“ (Startseite und Store sagen „etwa 5 Minuten“), in allen Sprachen angleichen.
 - Muttersprachliche Prüfung Dari, Farsi, Paschtu, Somali, Französisch; Expertenprüfung Pflege.
-- Build 151 (Version 1.9.0): von David beauftragt (21.11.2026); erst bauen, wenn die schweren Tests auf `main` grün sind. Danach hier „Letzte gebaute Version“ und den nächsten VersionCode (152) eintragen.
 - Play Store: AAB hochladen (nur auf Wunsch). Alte Branches auf github.com löschen.
 
 ## 4. Nächste Schritte
 Erledigt (in 1.6.0): Aufgaben 1–7 – Fristen-Übersicht, Schulden-Liste, Energiekosten-Check, Mietgrenze Wohngeld, Hilfe bei Kostensenkung, zweites Einkommen je Person, Hinweise im Haushaltsbuch.
 
-1. Build 151 (Version 1.9.0) vom gemergten Stand auf `main`, nach grünen schweren Tests
+1. Erledigt: Build 151 (Version 1.9.0) gebaut am 21.11.2026 (Play-Bundle, Test-APK, Web; iOS über TestFlight). Play-Upload durch David.
 2. Vollprüfungen am 1.12.2026 (mit Werten 2027) und am 20.12.2026
 3. `main` schützen (nur PRs mit grünem Pflicht-Check) und Auto-Merge einschalten – **nicht erledigt**
 4. Stichtagswerte bündeln
