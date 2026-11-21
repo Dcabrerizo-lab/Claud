@@ -197,7 +197,12 @@ const MMIN = [54, 67, 79, 92, 103, 103, 115, 128, 140, 152, 187, 298], YMIN = [3
 const wg = (n, M, Y) => { const i = Math.min(n, 12) - 1, [a, b, c] = ABC[i]; M = Math.max(M, MMIN[i]); Y = Math.max(Y, YMIN[i]); return 1.15 * (M - (a + b * M + c * Y) * Y); };
 // Werbungskosten-Pauschbetrag (§ 9a EStG) beim Wohngeld: Arbeit (auch Werkstatt) 1.230 €, Rente 102 € im Jahr; nicht bei Selbstständigen
 const werbung = (x) => Math.min(x.brutto, x.selbst ? 0 : x.art === 'lohn' || x.art === 'wfbm' ? 1230 / 12 : x.art === 'rente' ? 102 / 12 : 0);
-function yGrenze(n, M) { let lo = 0, hi = 30000; for (let i = 0; i < 80; i++) { const m = (lo + hi) / 2; if (wg(n, M, m) > 0) lo = m; else hi = m; } return lo; }
+// § 21 Nr. 1 WoGG: unter 10 € kein Wohngeld; gerundet auf volle Euro (Anlage 3 Nr. 3) -> Grenze bei 9,50 € ungerundet
+const WG_MIN = 9.5;
+// § 19 Abs. 3 WoGG: über 12 Personen je weiteres Mitglied 65 € mehr, höchstens bis zur Miete
+const ueber12 = (n, w, M) => (n > 12 && w > 0 ? Math.min(w + 65 * (Math.floor(n) - 12), M) : w);
+const wgRoh = (n, M, Y) => { const w = wg(n, M, Y); return w >= WG_MIN ? ueber12(n, w, M) : 0; };
+function yGrenze(n, M) { let lo = 0, hi = 30000; for (let i = 0; i < 80; i++) { const m = (lo + hi) / 2; if (wg(n, M, m) >= WG_MIN) lo = m; else hi = m; } return lo; }
 // Bruttokaltmiete = Warmmiete minus angegebene Heizkosten (sonst Heizkostenkomponente als Näherung), höchstens Höchstbetrag; dazu die Heizkostenkomponente
 const mieteWG = (st, n, warm, faktor, hk) => Math.min(faktor * Math.max(0, warm - (hk > 0 && hk < warm ? hk : heiz(n))), hoechst(st, n)) + heiz(n);
 const ABZUG = { lohn: [0.1, 0.3], rente: [0.1, 0.2], kg: [0.1, 0.2], alg: [0, 0], eg: [0, 0], wfbm: [0, 0.1], ohne: [0, 0] };
@@ -229,7 +234,7 @@ function wohngeld(h) {
     for (const x of h.p) {
       if (x.art !== 'rente') continue;
       const davon = Math.min(offenWG, x.brutto); offenWG -= davon;
-      frei += Math.min(100 + 0.3 * Math.max(0, x.brutto - davon - 100), 0.5 * RB[1]);
+      frei += Math.min(Math.max(0, x.brutto - davon), 100 + 0.3 * Math.max(0, x.brutto - davon - 100), 0.5 * RB[1]); // § 17a Abs. 1 Satz 2: nie mehr als die Rente
     }
   }
   // Lohn der Kinder je Kind: Arbeitnehmer-Pauschbetrag 1.230 €/Jahr (§ 14 Abs. 1 WoGG, § 9a EStG) und Freibetrag 1.200 €/Jahr (§ 17 Nr. 4
@@ -243,10 +248,13 @@ function wohngeld(h) {
   const yOpt = Math.max(0, h.p.reduce((s, x) => s + (x.brutto - werbung(x)) * (1 - abzugAus(x, 1)), 0) + plus + kindGuenstig - frei - uzGuenstig);
   if (yOpt > yMaxHi) return { level: 'nein' };
   let level = yPess <= yMaxLo ? 'ja' : 'vielleicht';
-  const mittel = h.netto + h.kinder * KG + h.unterhalt + h.waisen + h.uvg + h.kindEink - h.uz;
-  if (mittel < 0.8 * (h.regel + h.miete + h.mehrAE)) level = 'vielleicht'; // App: ohne weitere Mehrbedarfe
+  // Plausibilitätsprüfung Nr. 15.01 WoGVwV: Einnahmen plus vorsichtig geschätztes Wohngeld (Stufe I ohne Angabe) decken die ganze Miete
+  // und 80 % der Regelbedarfe (ohne Mehrbedarfe)
+  const wgVors = wgRoh(n, mieteWG(st || 1, n, h.miete, 1, hk), yPess);
+  const mittel = h.netto + h.kinder * KG + h.unterhalt + h.waisen + h.uvg + h.kindEink - h.uz + wgVors;
+  if (mittel < h.miete + 0.8 * h.regel) level = 'vielleicht';
   let betrag = null;
-  if (st) { const M = mieteWG(st, n, h.miete, 1, hk); betrag = [Math.max(0, runde10(wg(n, M, yPess))), Math.max(0, runde10(wg(n, M, yOpt)))]; }
+  if (st) { const M = mieteWG(st, n, h.miete, 1, hk); betrag = [Math.max(0, runde10(wgRoh(n, M, yPess))), Math.max(0, runde10(wgRoh(n, M, yOpt)))]; }
   return { level, yPess, yOpt, betrag };
 }
 
@@ -300,17 +308,26 @@ function kinderzuschlag(h) {
 }
 function kizBetrag(h) {
   const vermGrenze = h.personen <= 2 ? 55000 : 70000 + 15000 * (h.personen - 3);
-  if (h.vermoegen > vermGrenze) return { level: 'nein' };
   if (h.brutto < (h.erwachsene === 2 ? 900 : 600)) return { level: 'nein' };
+  // § 6a Abs. 3 Satz 5-7 BKGG: Vermögen über der Grenze mindert nur den ersten Monat; kleiner als der Monatsbetrag -> höchstens „möglich“
+  const r = kizBetrag0(h), ueber = h.vermoegen - vermGrenze;
+  if (!(ueber > 0)) return r;
+  if (!(r.kiz > ueber)) return { level: 'nein' };
+  return r.level === 'ja' ? { ...r, level: 'vielleicht' } : r;
+}
+function kizBetrag0(h) {
   const max = 297 * h.kids;
-  // Wohnanteil der Eltern: Tabelle DA-KiZ C.3.1.2 (Stand 20.02.2026)
-  const anteilEltern = (h.erwachsene === 1 ? [1, 77, 63, 53, 46, 40, 36, 33, 30, 27, 25] : [1, 83, 71, 62, 55, 50, 45, 41, 38, 35, 33])[Math.min(h.kids, 10)] / (h.kids ? 100 : 1);
+  // Wohnanteil der Eltern: Tabelle DA-KiZ C.3.1.2 (Stand 20.02.2026); alleinerziehend nur mit Altersrente: Kopfteil (DA-KiZ D.2 Abs. 1 Satz 9-11)
+  const mitEink = h.p.filter((x) => x.brutto > 0);
+  const rentnerAllein = h.erwachsene === 1 && h.rente && mitEink.length > 0 && mitEink.every((x) => x.art === 'rente');
+  const anteilEltern = rentnerAllein ? 1 / h.personen : (h.erwachsene === 1 ? [1, 77, 63, 53, 46, 40, 36, 33, 30, 27, 25] : [1, 83, 71, 62, 55, 50, 45, 41, 38, 35, 33])[Math.min(h.kids, 10)] / (h.kids ? 100 : 1);
   const ms = mehrSonst(h), bm = behMehrSGB2(h);
   const bedarfEltern = h.regelEltern + h.mehrAE + ms.eltern + (h.e.bhPerson === 'erwNach25' ? bm.sicher : 0) + h.miete * anteilEltern;
   const kindAnr = h.unterhalt + h.waisen + h.uvg + Math.max(0, h.kindEink - h.mini);
   const kiz = Math.max(0, max - minderungElternKiZ(h, bedarfEltern) - 0.45 * kindAnr);
   if (kiz <= 0) return { level: 'nein' };
-  // § 6a Abs. 1 Nr. 3 BKGG: mit dem Kinderzuschlag nicht mehr hilfebedürftig (bereinigtes Einkommen, Kindergeld, Kinderzuschlag, 300 € für ein mögliches Wohngeld)
+  // § 6a Abs. 1 Nr. 3 BKGG: mit dem Kinderzuschlag nicht mehr hilfebedürftig (bereinigtes Einkommen, Kindergeld, Kinderzuschlag; ein mögliches Wohngeld als fester Puffer von 300 € –
+  // die App schätzt es genauer, die Einstufung bleibt dabei „möglich“, nur der Hinweis wechselt)
   const mitKiz = elternEinkommenSGB2(h) + (h.kinder + h.jung) * KG + h.unterhalt + h.waisen + h.uvg + h.kindEink + kiz, bedarfAlle = h.regel + h.miete + h.mehrAE + ms.sicher + bm.sicher;
   if (mitKiz + 300 < bedarfAlle) return { level: 'vielleicht', kiz };
   if (mitKiz < bedarfAlle) return { level: 'vielleicht', kiz, mitWg: true }; // nur zusammen mit Wohngeld
@@ -330,7 +347,7 @@ function einkommenSGB12(e, h) {
   const rs1 = RB[1];
   let summe = 0;
   // Betriebs-, Riester- oder private Rente (in der Rente enthalten): § 82 Abs. 4 SGB XII, 100 € + 30 % des Rests, höchstens RS1/2
-  let offen = zahl(e.zusatzRente);
+  let offen = zahl(e.zusatzRente), offenB = zahl(e.zusatzRente);
   const staffel = (x) => (x <= 0 ? 0 : Math.min(x, 100 + 0.3 * Math.max(0, x - 100), 0.5 * rs1));
   for (const x of posten) {
     if (x.art === 'wfbm') { const lohn = Math.max(0, x.n - 52); const frei = Math.min(lohn, rs1 / 8 + 0.5 * Math.max(0, lohn - rs1 / 8)); summe += lohn - frei; }
@@ -338,7 +355,10 @@ function einkommenSGB12(e, h) {
     else if (x.art === 'eg') summe += Math.max(0, x.n - ((x.b != null ? x.b : x.n) > 300 ? 300 : 0));
     else if (x.art === 'rente') {
       const zus = Math.min(offen, Math.max(0, x.n)); offen -= zus;
-      summe += x.n - (e.grundrente33 ? staffel(x.n - zus) : 0) - staffel(zus); // § 82a nur gesetzliche Rente, § 82 Abs. 4 Zusatzrente
+      const zusB = Math.min(offenB, Math.max(0, x.b || 0)); offenB -= zusB;
+      // § 82a Abs. 1 SGB XII: Freibetrag aus der gesetzlichen Bruttorente (mindestens Netto), höchstens die Netto-Rente selbst
+      const gesN = x.n - zus, gesB = Math.max(gesN, (x.b || 0) - zusB);
+      summe += x.n - (e.grundrente33 ? Math.min(gesN, staffel(gesB)) : 0) - staffel(zus); // § 82a nur gesetzliche Rente, § 82 Abs. 4 Zusatzrente
     }
     else if (x.art !== 'ohne') summe += x.n;
   }
@@ -444,14 +464,22 @@ function bafoeg0(e) {
   if (a === 'kind') {
     if (h.kids === 0) return { level: 'nein' };
     const frei = (h.erwachsene === 2 ? 2540 : 1690) + Math.max(0, h.kids - 1) * 770;
-    return { level: h.netto <= frei ? 'ja' : h.netto <= frei + 1200 ? 'vielleicht' : 'nein', frei };
+    // § 25 Abs. 4 BAföG: vom Einkommen über dem Freibetrag 50 % frei, je weiteres Kind mit Freibetrag 5 % mehr; „nein“ erst, wenn der Rest
+    // den höchsten Bedarf (475 + 380 + 185 + 48 = 1.088 €, §§ 13, 13a Abs. 2) übersteigt
+    const anteil = 0.5 - 0.05 * Math.max(0, h.kids - 1);
+    return { level: h.netto <= frei ? 'ja' : anteil <= 0 || (h.netto - frei) * anteil <= 1088 ? 'vielleicht' : 'nein', frei };
   }
   if (h.gruppe === '50+') return { level: 'nein' };
   if (h.gruppe === '40-49' && !(h.jahre && h.jahre < 45)) return { level: 'vielleicht' };
-  if (h.vermoegen + zahl(h.e.autoWert) > (h.gruppe === '<30' ? 15000 : 45000)) return { level: 'nein' };
+  // §§ 29, 30 BAföG: nur der Betrag über dem Freibetrag, verteilt auf 12 Monate, mindert den Bedarf (höchstens 1.088 €)
+  if ((h.vermoegen + zahl(h.e.autoWert) - (h.gruppe === '<30' ? 15000 : 45000)) / 12 > 1088) return { level: 'nein' };
   return { level: 'vielleicht' };
 }
 
+// Lohnsteuer Steuerklasse III: Ausnahme von der Unabhängigkeit. Die Lohnsteuer kommt aus der Umsetzung des Programmablaufplans in
+// src/rules.js (nettoLohn), die test/test-netto.js selbst gegen veröffentlichte Werte und eine Rechnung zu Fuß prüft.
+const lohnIII = (lohn, e) => require('../src/rules.js').nettoLohn(lohn, { stkl: 3, heute: e.heute ? Number(e.heute) : undefined });
+const lstIII = (lohn, e) => { const t = lohnIII(lohn, e); return t.lst + t.soli; };
 // ---------- Arbeitslosengeld I (§§ 137, 147, 149 SGB III) ----------
 function arbeitslosengeld(e) {
   const h = haushalt(e);
@@ -473,7 +501,8 @@ function arbeitslosengeld(e) {
   let dauer = null;
   if (m) dauer = m >= 48 && alter >= 58 ? 24 : m >= 36 && alter >= 55 ? 18 : m >= 30 && alter >= 50 ? 15 : m >= 24 ? 12 : m >= 20 ? 10 : m >= 16 ? 8 : 6;
   const lohn = Math.min(zahl(e.lohnVorher), 8450);
-  const oben = lohn <= 2000 ? 0.8 : 0.72; // Netto bei kleinem Brutto höher
+  // Netto bei kleinem Brutto höher; oben mindestens das Leistungsentgelt in Steuerklasse III (§ 153 SGB III: 20 % SV-Pauschale + Lohnsteuer)
+  const oben = Math.max(lohn <= 2000 ? 0.8 : 0.72, lohn > 0 ? (0.8 * lohn - lstIII(lohn, e)) / lohn : 0);
   const spanne = lohn > 0 ? [runde10(lohn * 0.6 * satz / 100), runde10(lohn * oben * satz / 100)] : null;
   return { level: 'ja', satz, dauer, spanne };
 }
@@ -491,7 +520,8 @@ function krankengeld(e) {
   const kg = (q) => runde10(Math.min(0.7 * lohn, 0.9 * lohn * q) * 0.875);
   // § 50 Abs. 1 und 2 SGB V: Rente (erste Person) beendet oder kürzt das Krankengeld -> höchstens „möglich“
   const rente = h.p[0].art === 'rente' && h.p[0].brutto > 0;
-  return { level: e.krankWochen === 'unter6' || rente ? 'vielleicht' : 'ja', spanne: lohn > 0 ? [kg(0.6), kg(lohn <= 2000 ? 0.8 : 0.72)] : null };
+  const nIII = lohn > 0 ? lohnIII(lohn, e).netto / lohn : 0; // echtes Netto Steuerklasse III als obere Grenze (§ 47 Abs. 1 SGB V)
+  return { level: e.krankWochen === 'unter6' || rente ? 'vielleicht' : 'ja', spanne: lohn > 0 ? [kg(0.6), kg(Math.max(lohn <= 2000 ? 0.8 : 0.72, nIII))] : null };
 }
 
 
@@ -509,7 +539,8 @@ function elterngeld(nettoVorher, geschwister) {
 // ---------- Einkommensgrenze § 85 SGB XII (Hilfe zur Pflege, Blindenhilfe) und Schonvermögen ----------
 function grenze85(e) {
   const personen = (e.adults === 2 ? 2 : 1) + Math.max(0, e.kids | 0) + Math.max(0, e.young | 0);
-  return 2 * RB[1] + zahl(e.miete) + 0.7 * RB[1] * (personen - 1);
+  // § 85 Abs. 1 SGB XII: Unterkunft mit Heizung (BSG 30.04.2020, B 8 SO 1/19 R), Familienzuschlag 70 % auf volle Euro aufgerundet
+  return 2 * RB[1] + zahl(e.miete) + Math.ceil(0.7 * RB[1]) * (personen - 1);
 }
 function schon90(e) { return 10000 * (e.adults === 2 ? 2 : 1) + 500 * (Math.max(0, e.kids | 0) + Math.max(0, e.young | 0)); }
 // ---------- Asylbewerber: Ausschlüsse (§ 7 Abs. 1 SGB II, § 23 Abs. 2 SGB XII, § 7 WoGG, § 6a BKGG mit § 62 EStG) ----------

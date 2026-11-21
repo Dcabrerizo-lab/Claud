@@ -81,6 +81,38 @@ const ok = (name, c, info) => { n++; console.log((c ? 'ok   ' : 'FEHLER ') + nam
     ok(`${schema}: Bescheid-Widerspruch mit beiden Gründen`, /Mehrbedarf für Alleinerziehende/.test(bt) && /Angerechnetes Einkommen/.test(bt));
     await p.click('[aria-label="Person 2 entfernen"], #bs-personen tr:nth-child(2) button');
     ok(`${schema}: Person entfernen rechnet neu`, !(await p.textContent('#bs-erg')).includes('163,12'));
+    // Erkannte Werte (Scan/PDF/Text): markiert, Ergebnis erst nach „Werte stimmen“ oder eigener Änderung
+    const bsFrei = async () => { const t = await p.textContent('#bs-erg'); return /^Ergebnis/.test(t) && !/Bitte zuerst/.test(t); }; // Vergleich oder „Es fehlen noch“
+    const heuteIso = new Date().toISOString().slice(0, 10);
+    const fuelle = (felder, quelle) => p.evaluate(([f, d, q]) => window.PruefpaketLesen.fuelle('jc', { felder: f, datum: d, posten: [] }, null, q), [felder, heuteIso, quelle]);
+    await fuelle({ 'bs-b-regel': 1310, 'bs-b-kdu': 800, 'bs-b-eink': 500, 'bs-b-kg': 518, 'bs-b-zahl': 1092 }, { foto: true, unsicher: ['1.092'] });
+    ok(`${schema}: Erkannt: Hinweiszeile oben sichtbar`, await p.isVisible('#bs-erk') && /aus dem Brief gelesen/.test(await p.textContent('#bs-erk')));
+    ok(`${schema}: Erkannt: Felder markiert`, await p.evaluate(() => ['bs-b-regel', 'bs-b-kdu', 'bs-b-zahl', 'bs-datum'].every((id) => document.getElementById(id).classList.contains('pp-erkannt'))));
+    ok(`${schema}: Erkannt: Ergebnis wartet`, /Bitte zuerst die erkannten Werte prüfen/.test(await p.textContent('#bs-erg')) && !(await p.$('#bs-erg .big')));
+    ok(`${schema}: Foto: unsicheres Wort (Konfidenz) nur am Zahlbetrag farbig`, await p.evaluate(() => document.getElementById('bs-b-zahl').classList.contains('pp-unsicher') && !!document.getElementById('bs-b-zahl-unsicher') && !document.getElementById('bs-b-regel').classList.contains('pp-unsicher')));
+    ok(`${schema}: Foto: unsicher hebt sich farbig ab`, await p.evaluate(() => getComputedStyle(document.getElementById('bs-b-zahl')).borderTopWidth !== getComputedStyle(document.getElementById('bs-b-regel')).borderTopWidth));
+    await axe('Bescheid mit erkannten Werten');
+    await p.click('#bs-wid-mach');
+    ok(`${schema}: Erkannt: kein Widerspruch vor der Prüfung`, /Bitte zuerst die erkannten Werte prüfen/.test(await p.textContent('#bs-frist')));
+    await p.fill('#bs-b-regel', '1310');
+    ok(`${schema}: Erkannt: geändertes Feld ohne Markierung, Rest bleibt`, await p.evaluate(() => !document.getElementById('bs-b-regel').classList.contains('pp-erkannt') && document.getElementById('bs-b-kdu').classList.contains('pp-erkannt')) && /Bitte zuerst/.test(await p.textContent('#bs-erg')));
+    await p.click('#bs-erk-ok');
+    ok(`${schema}: Werte stimmen: Markierung weg, Ergebnis da`, !(await p.isVisible('#bs-erk')) && await p.evaluate(() => !document.querySelector('#p-bescheid .pp-erkannt, #p-bescheid .pp-unsicher-t')) && await bsFrei(), (await p.textContent('#bs-erg')).slice(0, 200));
+    // Summe passt nicht (Foto, ohne Konfidenz): beteiligte Werte farbig; Text eingefügt: keine Plausibilitätsmarkierung
+    await fuelle({ 'bs-b-regel': 1310, 'bs-b-kdu': 800, 'bs-b-eink': 500, 'bs-b-kg': 518, 'bs-b-zahl': 1579 }, { foto: true, unsicher: [] });
+    ok(`${schema}: Foto: Summe passt nicht → beteiligte Werte unsicher`, await p.evaluate(() => ['bs-b-regel', 'bs-b-kdu', 'bs-b-zahl'].every((id) => document.getElementById(id).classList.contains('pp-unsicher'))));
+    await fuelle({ 'bs-b-regel': 1310, 'bs-b-kdu': 800, 'bs-b-zahl': 1579 }, { foto: false, unsicher: [] });
+    ok(`${schema}: Text: nur „erkannt“, nicht „unsicher“`, await p.evaluate(() => !document.querySelector('#p-bescheid .pp-unsicher') && document.getElementById('bs-b-zahl').classList.contains('pp-erkannt')));
+    await p.fill('#bs-b-regel', '1310'); await p.fill('#bs-b-kdu', '800'); await p.fill('#bs-b-zahl', '1092'); await p.fill('#bs-datum', heuteIso);
+    ok(`${schema}: Alle erkannten Felder selbst geändert: Ergebnis da`, !(await p.isVisible('#bs-erk')) && await bsFrei());
+    // Pflegegutachten aus Text: Bewertungen markiert, Ergebnis nach Bestätigung
+    await p.click('#tab-pflege');
+    await p.click('#pf-lesen');
+    ok(`${schema}: Gutachten gelesen: Hinweis und Markierung`, await p.isVisible('#pf-erk') && (await p.locator('#p-pflege .pp-erkannt').count()) > 5);
+    ok(`${schema}: Gutachten: Ergebnis wartet`, /Bitte zuerst die erkannten Werte prüfen/.test(await p.textContent('#pf-erg')) && !(await p.$('#pf-erg .big')));
+    await p.click('#pf-erk-ok');
+    ok(`${schema}: Gutachten: nach „Werte stimmen“ Pflegegrad sichtbar`, !!(await p.$('#pf-erg .big')) && (await p.locator('#p-pflege .pp-erkannt').count()) === 0);
+    await p.click('#tab-bescheid');
     // Grundsicherung im Alter
     await p.click('#tab-gsa');
     await p.click('#ga-beispiel');

@@ -7,7 +7,7 @@
 const fs = require('fs');
 const path = require('path');
 const DIR = path.join(__dirname, '..', 'src', 'lang');
-const UNTER = ['haushalt', 'ausziehen', 'schulden', 'fristen', 'schritte', 'zusatz', 'klient'];
+const UNTER = ['haushalt', 'ausziehen', 'schulden', 'fristen', 'schritte', 'zusatz', 'klient', 'suche'];
 
 // Ausnahmen (kurz und begründet): technische Angaben, kein sichtbarer Text
 const AUSNAHMEN = {

@@ -50,6 +50,14 @@
   .feld-hilfe { margin: 2px 0 0; font-size: .8em; }
   .pp-fehlt { border: 2px solid var(--warn) !important; }
   .pp-fehlt-hinweis { margin: 4px 0 0; color: var(--warn); font-weight: 600; }
+  /* Aus dem Brief gelesene Werte: Markierung am Feld, bis sie bestätigt oder geändert sind (App: Farben --mark-* in src/template.html) */
+  .pp-erkannt { background: var(--mark-bg, var(--warn-bg)); border-color: var(--mark-line, var(--warn)); }
+  .pp-erkannt.pp-unsicher { background: var(--warn-bg); border: 2px solid var(--warn); }
+  label.pp-erkannt { border-radius: 10px; padding-inline: 6px; border: 1px solid var(--mark-line, var(--warn)); }
+  .pp-unsicher-t { margin: 2px 0 0; color: var(--warn); font-weight: 600; }
+  .pp-erk-hinweis { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin: 0 0 14px; padding: 2px 0 2px 12px; border-inline-start: 4px solid var(--mark-line, var(--warn)); }
+  .pp-erk-hinweis p { margin: 0; flex: 1 1 16em; }
+  .pp-erk-hinweis[hidden] { display: none; }
   .begriffe { margin: 8px 0 0; } .begriffe dt { font-weight: 600; margin-top: 6px; } .begriffe dd { margin: 0 0 4px; }
   .abw { display: grid; gap: 4px; }
   .abw p { margin: 0; }
@@ -255,6 +263,7 @@
       <fieldset id="ga-p1"><legend>Person 1</legend>
         <div class="grid2">
           <div><label for="ga-rente1">Gesetzliche Rente (nach Kranken- und Pflegeversicherung)</label><input type="number" id="ga-rente1" min="0" step="0.01" inputmode="decimal"></div>
+          <div><label for="ga-brutto1">Gesetzliche Rente brutto (wichtig bei 33 Jahren Grundrentenzeiten)</label><input type="number" id="ga-brutto1" min="0" step="0.01" inputmode="decimal"></div>
           <div><label for="ga-zus1">Betriebsrente, Riester-Rente oder private Rente</label><input type="number" id="ga-zus1" min="0" step="0.01" inputmode="decimal"></div>
           <div><label for="ga-lohn1">Lohn netto (z. B. Minijob)</label><input type="number" id="ga-lohn1" min="0" step="0.01" inputmode="decimal"></div>
           <div><label for="ga-sonst1">Anderes Einkommen</label><input type="number" id="ga-sonst1" min="0" step="0.01" inputmode="decimal"></div>
@@ -266,6 +275,7 @@
       <fieldset id="ga-p2" hidden><legend>Person 2 (Ehe- oder Lebenspartner)</legend>
         <div class="grid2">
           <div><label for="ga-rente2">Gesetzliche Rente (nach Kranken- und Pflegeversicherung)</label><input type="number" id="ga-rente2" min="0" step="0.01" inputmode="decimal"></div>
+          <div><label for="ga-brutto2">Gesetzliche Rente brutto (wichtig bei 33 Jahren Grundrentenzeiten)</label><input type="number" id="ga-brutto2" min="0" step="0.01" inputmode="decimal"></div>
           <div><label for="ga-zus2">Betriebsrente, Riester-Rente oder private Rente</label><input type="number" id="ga-zus2" min="0" step="0.01" inputmode="decimal"></div>
           <div><label for="ga-lohn2">Lohn netto (z. B. Minijob)</label><input type="number" id="ga-lohn2" min="0" step="0.01" inputmode="decimal"></div>
           <div><label for="ga-sonst2">Anderes Einkommen</label><input type="number" id="ga-sonst2" min="0" step="0.01" inputmode="decimal"></div>
@@ -318,7 +328,7 @@
     <form id="wg-form" onsubmit="return false">
       <fieldset><legend>Haushalt und Miete</legend>
         <div class="grid2">
-          <div><label for="wg-n">Personen im Haushalt</label><input type="number" id="wg-n" min="1" max="12" step="1" inputmode="numeric" value="1"></div>
+          <div><label for="wg-n">Personen im Haushalt</label><input type="number" id="wg-n" min="1" max="20" step="1" inputmode="numeric" value="1"></div>
           <div><label for="wg-stufe">Mietenstufe (steht im Bescheid)</label><select id="wg-stufe"><option value="1">I</option><option value="2">II</option><option value="3" selected>III</option><option value="4">IV</option><option value="5">V</option><option value="6">VI</option><option value="7">VII</option></select></div>
           <div><label for="wg-kalt">Miete mit Nebenkosten, ohne Heizung</label><input type="number" id="wg-kalt" min="0" step="0.01" inputmode="decimal"></div>
           <div><label for="wg-sb">Personen mit Schwerbehinderung (GdB 100, oder ab 50 mit Pflegegrad)</label><input type="number" id="wg-sb" min="0" max="12" step="1" inputmode="numeric" value="0"></div>

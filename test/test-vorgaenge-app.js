@@ -139,8 +139,8 @@ const offenName = (s) => { const z = s.d.querySelector('#setHaushalte .vg-offen 
   { // Kurze Erklärung direkt unter dem Feld „Neue PIN“: dezente Hinweiszeile, mit dem Feld verknüpft, höchstens 3 kurze Sätze
     const hw = d.getElementById('vgPinHinweis'), p1 = d.getElementById('vgPin1');
     ck('[vorgaenge] PIN festlegen: Erklärung direkt unter dem Feld (Hinweiszeile, kein Kasten)', hw && p1.nextElementSibling === hw && hw.className === 'hint' && p1.getAttribute('aria-describedby') === 'vgPinHinweis');
-    ck('[vorgaenge] PIN-Erklärung: ganze App gesperrt, Verschlüsselung, PIN merken, vergessen = niemand kann öffnen', hw && /sperrt die ganze App/.test(hw.textContent) && /verschlüsselt/.test(hw.textContent) && /Merke dir die PIN/.test(hw.textContent) && /niemand die Angaben öffnen/.test(hw.textContent));
-    ck('[vorgaenge] PIN-Erklärung nicht dauerhaft in Sicherheit sichtbar', !/Merke dir die PIN gut, sie/.test(d.getElementById('setSicher').textContent.replace(d.getElementById('vgPinForm').textContent, '')));
+    ck('[vorgaenge] PIN-Erklärung: ganze App gesperrt, Verschlüsselung, vergessen = kein Zugang, Sichtschutz (kein Versprechen „auch wir nicht“)', hw && /sperrt die ganze App/.test(hw.textContent) && /verschlüsselt/.test(hw.textContent) && /Vergisst du sie, kommst du nicht mehr an deine Angaben/.test(hw.textContent) && /Sichtschutz, kein Schutz gegen Fachleute/.test(hw.textContent) && !/auch wir nicht|niemand/.test(hw.textContent));
+    ck('[vorgaenge] PIN-Erklärung nicht dauerhaft in Sicherheit sichtbar', !/Vergisst du sie, kommst du/.test(d.getElementById('setSicher').textContent.replace(d.getElementById('vgPinForm').textContent, '')));
     const I = require('../dist/i18n.js'), texte = Object.keys(I).map((l) => [l, I[l]['vg.pin.erkl']]);
     texte.push(['einfach', JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'src', 'lang', 'einfach', 'e.json'), 'utf8'))['vg.pin.erkl']]);
     texte.forEach(([l, tx]) => {

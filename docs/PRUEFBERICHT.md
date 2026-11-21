@@ -123,9 +123,9 @@ Was keine Sicherung leisten kann: Die Prüfliste ist nur so vollständig wie das
 - **Mittagessen in der Werkstatt (§ 42b Abs. 2 SGB XII):** wird nicht als Zahl gerechnet, sondern verbreitert den Bereich „möglich“.
 - **Wohnheim in Bayern:** Für die Grundsicherung zeigt die App den Bezirk als zuständige Stelle (Leistungen aus einer Hand). Bitte fachlich bestätigen lassen.
 - **Kinderzuschlag:** Der Wohnkostenanteil der Eltern ist eine Näherung an den Existenzminimumbericht.
-- **Wohngeld:** Die Grenze „Einkommen eher zu niedrig“ (80 % des Bedarfs) ist eine Faustregel ohne Rechtsgrundlage und als solche gekennzeichnet.
+- **Wohngeld:** Die Grenze „Einkommen eher zu niedrig“ folgt seit 21.11.2026 der Plausibilitätsprüfung Nr. 15.01 WoGVwV (BMI-Hinweise 11.03.2020): Einnahmen plus geschätztes Wohngeld müssen die Miete und 80 % der Regelbedarfe decken. Sie führt nur zu „möglich“, nie zu einer Absage.
 - **Elterngeld Plus:** Für die Hälfte des Freibetrags (150 €) gibt es keine eigene Auswahl.
-- **Grundrentenfreibetrag beim Wohngeld (§ 17a WoGG):** ist nicht eingerechnet. Das Wohngeld kann dadurch etwas höher sein.
+- **Grundrentenfreibetrag beim Wohngeld (§ 17a WoGG):** in der App (Haken „33 Jahre Grundrentenzeiten“) und seit 21.11.2026 auch im Bescheid-Check eingerechnet.
 
 Ergänzend zeigt `docs/PRUEFLISTE.md` vom Gesetz her für jede Regel, ob die App sie kennt, auch die noch fehlenden.
 
@@ -154,6 +154,44 @@ Bekannte, bewusst vorsichtige Abweichung: Beim Grundsicherungsgeld lässt SoLo E
 über 300 € liegt. Das Gesetz (§ 10 Abs. 5 BEEG) lässt auch beim Mindestbetrag so viel frei, wie vor der Geburt verdient wurde
 (FW-Beispiel: 250 € frei). SoLo zählt hier also eher zu viel Einkommen und nennt eher zu wenig Grundsicherungsgeld, nie zu viel.
 
+## Abgleich Runde 2 mit amtlichen Rechenbeispielen (21.11.2026)
+
+84 weitere Fälle (Merkblätter, Broschüren, Weisungen, zwei Urteile, Gesetzestexte); 6 Befunde behoben, jede Korrektur am amtlichen Text geprüft (Abruf 21.11.2026). Feste Tests: `test/test-musterbescheide-2.js`; Mutationen für Nr. 10, 12, 14 in `tools/mutationstest.js`.
+
+| Nr. | Korrektur | Quelle |
+|---|---|---|
+| 10 | BAföG Elterneinkommen: Anrechnung 50 % (plus 5 % je Kind mit Freibetrag) des Betrags über dem Freibetrag; „eher nicht“ erst über dem höchsten Bedarf 1.088 € | § 25 Abs. 4, §§ 13, 13a BAföG; bafög.de |
+| 11 | BAföG Vermögen: nur der Betrag über 15.000 / 45.000 €, geteilt durch 12 Monate | §§ 29, 30 BAföG; bafög.de Beispiel „Stefan“ |
+| 12 | Blindengeld Bayern Pflegegrad 3 bis 5: einheitlich 33 % des Pflegegeldes von Pflegegrad 3 (197,67 €) | Art. 4 Abs. 1 Satz 2 BayBlindG; ZBFS-Infoblatt 7/2026 |
+| 13 | Arbeitslosengeld/Krankengeld: obere Grenze mindestens Netto Steuerklasse III (beim Arbeitslosengeld 20 % Pauschale + Lohnsteuer) | § 153 SGB III; Merkblatt 1 Abschnitt 4; § 47 SGB V |
+| 14 | Grundrentenfreibetrag Grundsicherung aus der Bruttorente, App und Bescheid-Check | § 82a Abs. 1 SGB XII; BT-Drs. 19/27495 S. 16 f.; DRV „Die Grundsicherung“ 5/2026 S. 18 |
+| 15 | Einkommensgrenze Hilfe zur Pflege/Blindenhilfe: Familienzuschlag aufgerundet (395 €). Unterkunft bleibt mit Heizung (siehe Prüfvermerk) | § 85 Abs. 1 Nr. 2 und 3 SGB XII; BSG 30.04.2020, B 8 SO 1/19 R |
+| H3 | Landespflegegeld: Auszahlung in der Regel bis 31. Januar des Folgejahres im Antragshinweis | Art. 2 Abs. 4 Satz 2, Art. 3 Abs. 1 BayLPflGG |
+
+Nicht umgesetzt (im Bericht gelassen): H1 (Unterhaltsvorschuss 12/13 Jahre in der internen Schätzung), H2 (Arbeitnehmer-Pauschbetrag beim WBS, Landesrecht je Land), H4 (Frage nach Geschwisterkind unter 3).
+
+## Prüfvermerk (21.11.2026)
+
+Unabhängige Prüfung von PR #99 (Abgleich 2, Befunde 10 bis 15 und H3). Alle Paragrafen und Zahlen neu am amtlichen Text abgerufen (21.11.2026). Korrekturen sind eingebaut und mit Tests belegt (`test/test-musterbescheide-2.js`).
+
+| Befund | Schwere | Korrektur | Quelle (Abruf 21.11.2026) |
+|---|---|---|---|
+| Nr. 15 war in einem Teil falsch: Die Einkommensgrenze wurde auf „Unterkunft ohne Heizung“ umgestellt (Beleg nur ein Infoblatt aus Berlin). Das Bundessozialgericht sagt das Gegenteil: Heizkosten gehören dazu. Folge wäre gewesen: Grenze bis über 100 € zu niedrig, Text „über der Grenze“ statt „unter der Grenze“. | mittel | Zurückgenommen: wieder die ganze Warmmiete (App, Referenz, Tests, Prüfliste). Geblieben ist der aufgerundete Familienzuschlag 395 €. Hinweis in der Prüfliste, dass manche Träger ohne Heizung rechnen. | BSG 30.04.2020, B 8 SO 1/19 R, Leitsatz (bsg.bund.de); § 85 Abs. 1 Nr. 2 und 3 SGB XII (gesetze-im-internet.de, Heizung dort nicht genannt) |
+| H3: „Das Geld kommt spätestens bis zum 31. Januar“ war eine feste Zusage. Der Antrag ist aber noch bis 3 Monate nach Jahresende möglich; dann kann das Geld später kommen. | niedrig | „in der Regel bis zum 31. Januar“ in 13 Sprachen und in Einfacher Sprache; Test ergänzt. | Art. 2 Abs. 4 Satz 2 und Art. 3 Abs. 1 Satz 1 BayLPflGG, Fassung ab 01.01.2026 (gesetze-bayern.de) |
+| Nr. 14: Die Bruttorente war nur mit dem Beispiel der Rentenversicherung belegt. Dort greift der Deckel 281,50 €, es beweist Brutto also nicht. | niedrig (nur Beleg) | Regel stimmt, Beleg ergänzt. | § 82a Abs. 1 SGB XII; Antwort der Bundesregierung BT-Drs. 19/27495 S. 16 f. (dserver.bundestag.de); Meldung der Rentenversicherung vom 03.03.2023 |
+| Nr. 13, Referenz: `test/referenz.js` holt die Lohnsteuer Steuerklasse III jetzt aus `src/rules.js`. An dieser Stelle ist die Referenz nicht mehr unabhängig (im Code vermerkt; die Lohnsteuer prüft `test/test-netto.js`). | niedrig | Fester Anker ergänzt, der nicht an der Lohnsteuer hängt: 2.400 € brutto ergibt genau 960 bis 1.290 € (ohne Kind oben 1.150 €), Pauschale 20 %. | § 153 Abs. 1 SGB III (gesetze-im-internet.de) |
+| Krankengeld-Test nannte betanet als Quelle (nicht amtlich). | niedrig | Als Rechnung zu Fuß nach dem Gesetz bezeichnet (Test und Prüfliste). | § 47 Abs. 1 SGB V |
+| Nr. 10, 11 (BAföG), Nr. 12 (Blindengeld), Nr. 13 (20 % Pauschale), Nr. 15 (Aufrundung), Landespflegegeld 500 € | ohne Befund | keine | § 25 Abs. 1, 3, 4, § 13 Abs. 1 und 2, § 13a Abs. 1 und 2, §§ 29, 30 BAföG; Art. 4 Abs. 1 und 4 BayBlindG; § 37 Abs. 1 SGB XI (347 / 599 / 800 / 990 €); § 153 SGB III; Art. 2 BayLPflGG |
+
+Geänderte Testerwartungen geprüft: Alle Änderungen folgen den Korrekturen (keine Erwartung nur „passend gemacht“). Keine Werte ab 1.1.2027 vorgezogen. Keine Änderung an Speicherung, Farben oder Startkacheln.
+
+Offen (bewusst nicht geändert):
+- BAföG: Beträge unter 10 € im Monat werden nicht gezahlt (§ 51 Abs. 4 BAföG). Die Grenze für „eher nicht“ liegt deshalb um bis zu 10 € zu hoch (Seite „möglich“, keine falsche Zusage).
+- BAföG Vermögen: 2.300 € Freibetrag je Ehegatte und Kind (§ 29 Abs. 1 Nr. 2 und 3) rechnet die App nicht mit (vorsichtige Seite, „eher nicht“ etwas zu früh bei Studierenden mit Familie).
+- Arbeitslosengeld und Krankengeld: Die obere Grenze mit Steuerklasse III gilt auch für Alleinstehende, die diese Klasse fast nie haben. Die Spanne ist dort oben zu weit; die Mitte liegt aber näher am echten Wert als vorher.
+- Landespflegegeld: Die Antragsfrist steht jetzt klar im Gesetz (3 Monate nach Ende des Pflegegeldjahres, Art. 3 Abs. 1 Satz 1). Der Text sagt weiter „es gibt eine Frist; welche, sagt dir das Landesamt“. Kann man in einem eigenen Auftrag konkret nennen.
+- Die Broschüre der Rentenversicherung (S. 18) war am 21.11.2026 nicht im Volltext abrufbar (nur Stand 01.05.2026, 20. Auflage bestätigt).
+
 ## Großer und schwerer Abgleich mit amtlichen Rechnern (14.11.2026)
 
 Auf GitHub automatisch abgefragt, Ergebnisse als feste Testfälle in `test/amtlich-gross-*.json` (geprüft von `test/test-amtlich.js`):
@@ -167,6 +205,33 @@ Auf GitHub automatisch abgefragt, Ergebnisse als feste Testfälle in `test/amtli
 Gefundene und behobene Fehler: Kind von 6 Jahren (Mehrbedarf Alleinerziehende 36 % bis unter 7), Wohnanteil der Eltern beim Kinderzuschlag (amtliche Tabelle statt Näherung).
 Einschränkung des KiZ-Lotsen: Er berücksichtigt Einkommen der Kinder nicht (2.000 € Unterhalt oder Lohn ohne Wirkung). SoLo rechnet es nach § 6a Abs. 3 BKGG zu 45 % an (DA-KiZ-Beispiele in `test/test-ba-beispiele.js`); im Abgleich wird dafür ohne Unterhalt verglichen. Mit Unterhalt wären es 122 Fälle, in denen SoLo gesetzeskonform vorsichtiger ist als der Lotse.
 Statistisch (Dreierregel, 95 %): Fehlerrate beim Wohngeldbetrag unter 0,05 %, beim Elterngeld unter 0,3 %, falsches Ja/Nein beim Kinderzuschlag unter 0,08 %.
+
+**Abgleich mit Musterbescheiden und amtlichen Rechenbeispielen (21. November 2026):** 43 Fälle aus veröffentlichten Bescheiden und Beispielrechnungen (Familienkasse, Bundesagentur, Städte Frankfurt, Hannover, München, Bochum, Bundesbau- und Familienministerium). Kein schwerer Fehler. 9 Befunde behoben: Wohngeld-Mindesteinkommen zählt das Wohngeld mit (Nr. 15.01 WoGVwV); Vermögen bei Paaren je Person (§ 12 Abs. 2 SGB II); Grundrentenfreibetrag im Bescheid-Check (§ 17a WoGG); Kinderzuschlag mit geschätztem Wohngeld und erweitertem Zugang (§ 6a Abs. 1a BKGG), Vermögen knapp über der Grenze (§ 6a Abs. 3 BKGG), Altersrentner mit Kopfteil (DA-KiZ D.2); Wohngeld über 12 Personen (§ 19 Abs. 3 WoGG); Einkommensgrenze bei 10 € Wohngeld (§ 21 Nr. 1 WoGG); Hinweis Merkzeichen G bei Paaren (§ 30 Abs. 1 SGB XII). Feste Tests: `test/test-musterbescheide.js`.
+
+## Prüfvermerk (21.11.2026)
+
+Unabhängige Inhaltsprüfung von PR #96 (Korrekturen nach dem Abgleich mit Musterbescheiden). Alle Fundstellen am 21.11.2026 selbst abgerufen. Es gilt das Recht 2026; nichts aus dem Entwurf für 2027 (BR-Drs. 474/26, BT-Drs. 21/8284, Inkrafttreten laut Entwurf 1.1.2027) ist vorweggenommen.
+
+| Befund | Schwere | Korrektur | Quelle |
+|---|---|---|---|
+| Wohngeld-Mindesteinkommen zählt das Wohngeld mit; 100 % Miete und 80 % Regelbedarf, ohne Mehrbedarfe; nur „möglich“, nie Absage | stimmt | Quelle ergänzt: Die amtlich veröffentlichte Vorschrift nennt „Einnahmen zuzüglich Wohngeld“ und 80 % des Bedarfs. Die genauere Rechnung (100 % Miete, 80 % Regelbedarf) steht nur in den BMI-Hinweisen vom 11.03.2020. Diese sind nicht amtlich veröffentlicht (nur Kopie). Die App nimmt die strengere Lesart, also die vorsichtige Seite. Test mit dem BMI-Beispiel ergänzt | WoGVwV 28.06.2017 Nr. 15.01 Abs. 1, https://www.verwaltungsvorschriften-im-internet.de/bsvwvbund_28062017_SWII4.htm |
+| Grenze bei 10 € Wohngeld (ungerundet 9,50 €) | stimmt | keine | § 21 Nr. 1 WoGG, Anlage 3 Nr. 3 WoGG, https://www.gesetze-im-internet.de/wogg/__21.html, https://www.gesetze-im-internet.de/wogg/anlage_3.html |
+| 65 € je weitere Person ab der 13., höchstens bis zur Miete; Rechnung mit den Werten für 12 Personen | stimmt | keine | § 19 Abs. 3 WoGG, https://www.gesetze-im-internet.de/wogg/__19.html; WoGVwV Nr. 19.31 |
+| Grundrentenfreibetrag im Bescheid-Check: Bei einer Rente unter 100 € war der Freibetrag höher als die Rente (100 €). Das Gesetz zieht ihn „vom Einkommen aus der gesetzlichen Rente“ ab | niedrig | Freibetrag höchstens so hoch wie die Rente, im Bescheid-Check und in der App; 2 Tests | § 17a Abs. 1 Satz 2 WoGG, https://www.gesetze-im-internet.de/wogg/__17a.html |
+| Vermögen bei Paaren: Freibetrag je Person nach eigenem Alter, nicht ausgeschöpfte Beträge werden übertragen; über der kleinsten möglichen Summe nur „möglich“ mit Hinweis | stimmt | keine | § 12 Abs. 2 SGB II, https://www.gesetze-im-internet.de/sgb_2/__12.html |
+| Kinderzuschlag: geschätztes (fiktives) Wohngeld und erweiterter Zugang (höchstens 100 € fehlen, Freibeträge aus Arbeit mindestens 100 €) | stimmt | keine; beides führt nur zu „möglich“ | § 6a Abs. 1 Satz 2 und 3, Abs. 1a BKGG, https://www.gesetze-im-internet.de/bkgg_1996/__6a.html; DA-KiZ 20.02.2026 C.4.1 Abs. 7, C.4.2 |
+| Kinderzuschlag: Vermögen knapp über der Grenze mindert nur den ersten Monat | stimmt | keine | § 6a Abs. 3 Satz 6 und 7, Abs. 6 Satz 5 BKGG; DA-KiZ C.2.2.2.3 |
+| Kinderzuschlag, alleinerziehend mit Altersrente: Rente zählt nur über dem eigenen Bedarf mit Kopfteil der Miete, der Rest mindert voll | stimmt | keine | DA-KiZ 20.02.2026 D.2 Abs. 1 Satz 9 bis 11, Beispiel 2, https://www.arbeitsagentur.de/datei/fw-bkgg_ba023130.pdf |
+| Geänderte alte Testerwartung: Altersrentner 1.450 € Rente (1.300 € ausgezahlt), Miete 800 €, Kind 16 mit Unterhaltsvorschuss → „eher nicht“ | stimmt | Von Hand nachgerechnet: 1.300 − 30 − (563 + 67,56 + 400) = 239,44 € mindern voll, bleiben 57,56 €; 45 % von 394 € Unterhaltsvorschuss sind 177,30 €, also 0 €. Ohne Unterhaltsvorschuss „möglich“, 60 €. Beide Fälle als feste Tests | DA-KiZ D.2; § 6a Abs. 3 Satz 3, Abs. 6 Satz 4 BKGG |
+| Merkzeichen G bei Paaren: Hinweis, 17 % der Regelbedarfsstufe je Person | stimmt | keine | § 30 Abs. 1 SGB XII, https://www.gesetze-im-internet.de/sgb_12/__30.html |
+| Neue Hinweise in 13 Sprachen und Einfacher Sprache | stimmt | keine; sinngleich, Platzhalter {betrag} überall vorhanden | Durchsicht |
+| Sicherheit und Datenschutz | ohne Befund | keine; keine neue Speicherung, keine neue Ausgabe von Eingaben, neue Auswahl im Bescheid-Check als fester Text | Durchsicht des Diffs |
+
+Offen (nicht in diesem PR gelöst):
+- Mehr als 12 Personen und für 12 Personen gerechnetes Wohngeld unter 10 €: Die App zeigt dann kein Wohngeld. Ob der Zuschlag von 65 € trotzdem greift, sagt das Gesetz nicht eindeutig. Sehr seltener Fall.
+- Grundsicherungsgeld ohne Altersangabe: Die App rechnet mit 10.000 € je Erwachsenem und sagt darüber „eher nicht“. Bei Personen ab 40 liegt die Grenze höher. Das war schon vor diesem PR so.
+- Hinweis „danach gibt es ihn voll“ (Kinderzuschlag, Vermögen knapp): gemeint ist „ohne Kürzung wegen Vermögen“, nicht der Höchstbetrag.
+- Wenn das Wohngeld-Gesetz für 2027 verkündet ist: Formel, Heizkostenkomponente und die Grenze bei 10 € neu prüfen.
 
 ## Prüfvermerk (21.11.2026) – PR #110 Wohngeld: Lohn der Kinder
 
