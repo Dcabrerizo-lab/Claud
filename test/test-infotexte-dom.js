@@ -40,10 +40,22 @@ setTimeout(() => {
   check('Feldhilfen hinter „Wo steht das?“, alle zu', [...d.querySelectorAll('#p-bescheid .feld-hilfe')].every((x) => x.tagName === 'DETAILS' && !x.open && x.querySelector('summary').textContent === 'Wo steht das?') && d.querySelectorAll('#p-bescheid .feld-hilfe').length >= 8);
   check('Datenschutz am Scan-Knopf, ohne „Wert vergleichen“', /gelöscht/.test(de['el.privat']) && !/vergleichen/.test(de['el.privat']));
   check('„Keine Rechtsberatung“ erst unter dem Prüfergebnis (leer: ausgeblendet per CSS)', !!d.querySelector('#bs-erg + .rb-erg') && !!d.querySelector('#bs-wid-text ~ .rb-schreiben'));
+  // Briefart Einladung/Anhörung: Überschrift passt, Bescheid-Aufklapper und „Scanne den Bescheid“ ausgeblendet, kein „null“ im Text
+  const artWahl = (v) => { const r = d.querySelector('input[name="bs-briefart"][value="' + v + '"]'); r.checked = true; r.dispatchEvent(new w.Event('change', { bubbles: true })); };
+  const bsDet = () => [...karte.querySelectorAll(':scope > details')];
+  check('[brief-art] Bescheid: Überschrift „Bescheid … prüfen“, beide Aufklapper sichtbar', karte.querySelector('h2').textContent === de['bp.jc.h'] && bsDet().length === 2 && bsDet().every((x) => !x.hidden));
+  artWahl('termin');
+  check('[brief-art] Einladung: Überschrift „Einladung zu einem Termin“, Bescheid-Teile weg', karte.querySelector('h2').textContent === de['bp.art.termin.h'] && bsDet().every((x) => x.hidden) && satz.hidden && !/null/.test(karte.textContent), karte.querySelector('h2').textContent);
+  artWahl('anh');
+  check('[brief-art] Anhörung: eigene Überschrift', karte.querySelector('h2').textContent === de['bp.art.anh.h'] && bsDet().every((x) => x.hidden));
+  artWahl('bescheid');
+  check('[brief-art] zurück zu Bescheid: alles wieder da', karte.querySelector('h2').textContent === de['bp.jc.h'] && bsDet().every((x) => !x.hidden) && !satz.hidden);
+  check('[brief-rahmen] Einstieg der Brief-Stellen ohne großen Rahmen (CSS)', /#checkBox\.pp \.pp-teil > \.card:first-child \{ background: transparent; box-shadow: none;/.test(html));
   $('briefZurueck').click();
   // Eine Kachel „Anderer Brief oder Formular“: erst einlesen, darunter zwei Unterkarten zur Wahl von Hand
   check('Brief-Übersicht: 7 Kacheln, „Anderer Brief oder Formular“ statt zwei Kacheln', d.querySelectorAll('#briefKacheln .kachel').length === 7 && !!$('brief-ab') && !$('briefKacheln').contains($('brief-an')) && !$('briefKacheln').contains($('brief-af')) && $('brief-ab').querySelector('b').textContent === de['briefe.ab']);
   $('brief-ab').click();
+  check('[brief-ab] „Anderer Brief“: nur eine Überschrift (die der Seite)', !$('abWahl').querySelector('h2') && $('abWahl').getAttribute('aria-labelledby') === 'h-briefe');
   check('Gemeinsame Kachel: Einlesen oben, darunter „Brief mit Frist oder Mahnung“ und „Antragsformular ausfüllen“', !$('abWahl').hidden && $('abWahl').contains($('einlesen')) && !$('einlesen').hidden && $('abWahl').compareDocumentPosition($('abUnter')) & w.Node.DOCUMENT_POSITION_CONTAINED_BY && $('einlesen').compareDocumentPosition($('abUnter')) & w.Node.DOCUMENT_POSITION_FOLLOWING && $('brief-an').textContent.includes(de['briefe.andere']) && $('brief-af').textContent.includes(de['briefe.formular']));
   $('elPaste').click(); $('elText').value = 'Antrag auf Wohngeld\nBitte ankreuzen\nFamilienname, Vorname\nGeburtsdatum\nIBAN\nOrt, Datum\nUnterschrift des Antragstellers'; $('elLesen').click();
   check('Gemeinsame Kachel: ein Formular wird erkannt und erklärt (Formular-Teil offen)', !$('scan').hidden && $('abWahl').hidden, $('elMsg').textContent);
