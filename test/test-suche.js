@@ -35,6 +35,9 @@ check('toleranz je Wortlänge', Suche.toleranz(3) === 0 && Suche.toleranz(5) ===
   ['Musterschreiben', 'g-schreiben'], ['Privatinsolvenz', 'g-ablauf'], ['Kaution', 'a-vorher'], ['Antragsmappe', 'mappe'], ['Jobcenter', 'b-jc']].forEach(([q, id]) => {
   check('Deutsch: „' + q + '“ → ' + id, unter('de', q, id, 2), Suche.suche(idx.de, q).slice(0, 3));
 });
+// 21.11.2026: Widerspruch -> Briefe (Bescheid prüfen, Widerspruch schreiben), Rückforderung -> Brief vom Jobcenter; „Brille“ ohne passendes Ziel (kein Eintrag)
+[['Widerspruch', 'brief'], ['Einspruch', 'brief'], ['Rückforderung', 'b-jc'], ['Überzahlung', 'b-jc']].forEach(([q, id]) => check('Deutsch: „' + q + '“ → ' + id, unter('de', q, id, 3), Suche.suche(idx.de, q).slice(0, 3)));
+[['en', 'objection', 'brief'], ['tr', 'itiraz', 'brief'], ['ru', 'переплата', 'b-jc'], ['uk', 'заперечення', 'brief'], ['ar', 'اعتراض', 'brief'], ['pl', 'Rückforderung', 'b-jc']].forEach(([l, q, id]) => check(l + ': „' + q + '“ → ' + id, unter(l, q, id, 3), Suche.suche(idx[l], q).slice(0, 3)));
 check('Kita-Gebühren findet den Hilfen-Check', unter('de', 'Kita-Gebühren', 'check'), Suche.suche(idx.de, 'Kita-Gebühren'));
 check('Pfändung: Konto gepfändet zuerst', erster('de', 'Konto gepfändet') === 'g-konto' && erster('de', 'Pfändung Konto') === 'g-konto');
 // Tippfehler, Umlaute, Teilwörter, Groß/Klein
