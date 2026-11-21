@@ -292,7 +292,7 @@ for (let i = 0; i < 20000; i++) {
     if (!ok) melde('Asyl: ' + id + ' höchstens möglich, sonst wie ohne Asyl', e, { app: x.level, ohneAsyl: r[id].level });
   });
   // [asyl-bezug] Wohngeld bei Asyl ohne Bezug: Hinweis vorn, wenn nicht ausgeschlossen. Mit Einkommensart „Asylbewerberleistungen“:
-  // Wohngeld nein (§ 7 Abs. 1 Satz 1 Nr. 8 WoGG), Rundfunk ja (§ 4 Abs. 1 Nr. 4 RBStV), Karte Asylbewerberleistungen „bekommst du schon“,
+  // Wohngeld nein (§ 7 Abs. 1 Satz 1 Nr. 8 WoGG), Rundfunk ja (§ 4 Abs. 1 Nr. 4 RBeitrStV), Karte Asylbewerberleistungen „bekommst du schon“,
   // Bildung und Teilhabe mit Kindern ja (§ 3 Abs. 4 AsylbLG)
   { const w = a.find((y) => y.id === 'wohngeld'); if ((w.level === 'ja' || w.level === 'vielleicht') && w.tx[0][0] !== 'wohngeld.asyl') melde('Asyl: Wohngeld-Hinweis', e, { app: w.tx[0] }); }
   if (!Array.isArray(e.einkommen)) {
