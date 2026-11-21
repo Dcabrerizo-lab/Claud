@@ -70,5 +70,18 @@
   "vgp.ok": "Dosya kilitlendi.",
   "vgp.aufgehoben": "Kilit kaldırıldı.",
   "vgp.st.offen": "Açık. Geçiş yapınca yeniden kilitlenir.",
-  "vgp.st.zu": "Açmak için PIN gir"
+  "vgp.st.zu": "Açmak için PIN gir",
+  "bp.vgl.h": "Kendi değerlendirmenle karşılaştırma",
+  "bp.vgl.satz": "Senin değerlendirmen: {e}. Rapor: {g}.",
+  "bp.vgl.mehr": "6 alanın {n} tanesinde rapor, senin değerlendirmenden daha az puan veriyor (kalın yazılı).",
+  "bp.vgl.keinMehr": "Hiçbir alanda rapor, senin değerlendirmenden daha az puan vermiyor.",
+  "bp.vgl.bereich": "Alan",
+  "bp.vgl.eigen": "Senin puanların",
+  "bp.vgl.gutachten": "Rapor",
+  "bp.vgl.diff": "Fark",
+  "bp.vgl.gesamt": "Toplam",
+  "bp.vgl.zaehltNicht": "sayılmaz",
+  "bp.vgl.pg": "bakım derecesi (Pflegegrad) {pg}",
+  "bp.vgl.kein": "bakım derecesi (Pflegegrad) yok",
+  "bp.vgl.klein": "Pflegekasse’nin hesapladığı gibi ağırlıklı puanlar (§ 15 SGB XI). Artı şu demek: senin değerlendirmen orada daha fazla puan veriyor. Aşağıda tam olarak hangi sorularda olduğu yazıyor."
 }

@@ -70,5 +70,18 @@
   "vgp.ok": "The case is locked.",
   "vgp.aufgehoben": "The lock has been removed.",
   "vgp.st.offen": "Open. It will be locked again when you switch.",
-  "vgp.st.zu": "Enter PIN to open"
+  "vgp.st.zu": "Enter PIN to open",
+  "bp.vgl.h": "Comparison with your own estimate",
+  "bp.vgl.satz": "Your estimate: {e}. Assessment: {g}.",
+  "bp.vgl.mehr": "In {n} of 6 areas the assessment gives fewer points than your estimate (marked in bold).",
+  "bp.vgl.keinMehr": "In no area does the assessment give fewer points than your estimate.",
+  "bp.vgl.bereich": "Area",
+  "bp.vgl.eigen": "Your points",
+  "bp.vgl.gutachten": "Assessment",
+  "bp.vgl.diff": "Difference",
+  "bp.vgl.gesamt": "Total",
+  "bp.vgl.zaehltNicht": "does not count",
+  "bp.vgl.pg": "care level (Pflegegrad) {pg}",
+  "bp.vgl.kein": "no care level (Pflegegrad)",
+  "bp.vgl.klein": "Weighted points, as the Pflegekasse calculates them (§ 15 SGB XI). Plus means: your estimate gives more points there. Below you can see which questions exactly."
 }
