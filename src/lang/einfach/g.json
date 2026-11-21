@@ -352,7 +352,7 @@
   "sp.schulden.strom.kurz": "=",
   "gs.d.strom.grenze": "Eine Sperre ist erst erlaubt, wenn du 2 Monatsabschläge und mindestens 100 € schuldest (§ 41f EnWG). Das gilt für Strom und Gas.",
   "gs.d.strom.grenze.kurz": "=",
-  "gs.d.strom.haerte": "Trifft dich die Sperre besonders hart? Zum Beispiel wegen Krankheit oder kleiner Kinder? Dann schreib das dem Versorger.",
+  "gs.d.strom.haerte": "Trifft dich die Sperre besonders hart? Zum Beispiel wegen Krankheit oder kleiner Kinder? Dann schreib das dem Versorger. Kannst du bald zahlen? Zum Beispiel, weil du beim Jobcenter oder Sozial-Amt Hilfe beantragt hast? Dann schreib das auch. Leg einen Nachweis dazu.",
   "gs.d.strom.haerte.kurz": "Bei Krankheit oder kleinen Kindern dem Versorger schreiben.",
   "gs.d.strom.darlehen": "Bekommst du Grundsicherungsgeld oder Sozialhilfe? Dann beantrage beim Jobcenter oder Sozialamt ein Darlehen für die Energieschulden. Auch sonst kann das Sozialamt vielleicht helfen.",
   "gs.d.strom.darlehen.kurz": "Du bekommst Grundsicherungsgeld oder Sozialhilfe? Dann beim Amt ein Darlehen beantragen.",

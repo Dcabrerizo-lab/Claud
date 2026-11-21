@@ -184,7 +184,7 @@
   "ip.hinweis": "İlk değerlendirme, hukuki danışmanlık değildir. Liste yalnızca mektupta hangi bilgilerin bulunduğunu gösterir. Ödemek zorunda olup olmadığını kontrol etmez.",
   "ip.w1": "Borç ikrarı imzalarsan, daha sonra alacağın olmadığına, ödendiğine veya zamanaşımına uğradığına çoğu zaman itiraz edemezsin. Inkasso seni bu konuda uyarmak zorundadır (§ 13a Abs. 4 RDG). Önce bir danışma yerine kontrol ettir.",
   "ip.w1.kurz": "Borç ikrarı imzalama.",
-  "ip.w2": "Taksit veya erteleme anlaşmasından önce Inkasso sana yazılı olarak bunun hangi masraflara yol açtığını söylemek zorundadır (§ 13a Abs. 3 RDG). Bunu öğrenmeden söz verme.",
+  "ip.w2": "Taksit veya erteleme anlaşmasından önce Inkasso sana metin biçiminde (örneğin mektup veya e-posta) bunun hangi masraflara yol açtığını söylemek zorundadır (§ 13a Abs. 3 RDG). Bunu öğrenmeden söz verme.",
   "ip.w2.kurz": "Taksit çoğu zaman ek masraf getirir: önce sor, sonra kabul et.",
   "ip.w3": "Ödeme emri (Mahnbescheid) mahkemeden sarı zarfla gelir. İtiraz yalnızca mahkemeye yapılır, en iyisi 2 hafta içinde (§ 692 ZPO), Inkasso'ya değil.",
   "ip.w3.kurz": "Mahkemeden sarı zarf: süre 2 hafta.",
