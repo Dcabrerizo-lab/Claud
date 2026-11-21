@@ -370,7 +370,8 @@ setTimeout(async () => {
     const sF = dF.getElementById('lang'); sF.value = 'uk'; sF.dispatchEvent(new domF.window.Event('change', { bubbles: true }));
     check('[sprachladen] Andere Sprache geht danach, Hinweis weg', dF.getElementById('app').getAttribute('lang') === 'uk' && !hF());
     sF.value = 'fr'; sF.dispatchEvent(new domF.window.Event('change', { bubbles: true }));
-    await new Promise((r) => setTimeout(r, 30));
+    // Rückmeldung kommt über setTimeout; vorher geplante Zeichen-Timer (Bündel) können länger als 30 ms brauchen: bis 2 s warten
+    for (let i = 0; i < 40 && !hF(); i++) await new Promise((r) => setTimeout(r, 50));
     check('[sprachladen] Sprache lädt nicht (beim Wechsel): Deutsch und Hinweis', dF.getElementById('app').getAttribute('lang') === 'de' && !!hF());
     domF.window.close();
   }
