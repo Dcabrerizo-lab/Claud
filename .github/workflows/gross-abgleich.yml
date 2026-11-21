@@ -12,8 +12,16 @@ on:
 permissions:
   contents: read
 
+# Nicht doppelt bei den Behörden-Rechnern abfragen: höchstens ein Lauf je Zweig gleichzeitig (ein neuer wartet, bricht nichts ab).
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   abfragen:
+    # Nicht bei Merge-Commits starten: ein Merge in einen Bündel-Zweig enthält die Auftragsdatei schon und würde dieselben
+    # Abfragen wiederholen (21.11.2026: 9 von 16 Läufen). Neuer Auftrag: Auftragsdatei in einem normalen Commit ändern.
+    if: github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'Merge')
     runs-on: ubuntu-latest
     timeout-minutes: 240
     strategy:
@@ -58,7 +66,7 @@ jobs:
 
   auswerten:
     needs: abfragen
-    if: always()
+    if: always() && needs.abfragen.result != 'skipped'
     runs-on: ubuntu-latest
     permissions:
       contents: write
