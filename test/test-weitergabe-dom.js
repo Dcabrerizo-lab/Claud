@@ -112,13 +112,16 @@ const dateiWaehlen = (w, input, text) => { Object.defineProperty(input, 'files',
   $2('kwImpName').value = 'Familie <b>X</b>';
   $2('kwImpSpeichern').click();
   check('Gespeichert als neuer Vorgang (Meldung)', await bis(() => $2('kwImpOk')) && $2('kwImpOk').textContent.includes('Familie <b>X</b>') && !$2('kwImpOk').querySelector('b'));
+  await bis(() => JSON.parse(store['lotse.vorgaenge'] || '{"klar":{"liste":[]}}').klar.liste.length > vorher); // Speichern läuft über die Schreibkette (Vorgaenge), ein Takt später
   const nachher = JSON.parse(store['lotse.vorgaenge']).klar;
   check('Neuer Vorgang angelegt, eigener Vorgang bleibt geöffnet und unverändert', nachher.liste.length === vorher + 1 && store['lotse.state'] === eigenerStand && nachher.liste[nachher.liste.length - 1].daten['lotse.state'] === ia.daten['lotse.state']);
   // Datei (b) ohne PIN: Blatt + Fristen-Rückfrage
+  const vorher2 = JSON.parse(store['lotse.vorgaenge'] || '{"klar":{"liste":[]}}').klar.liste.length;
   dateiWaehlen(w2, $2('kwDateiEin'), dateiOhne);
   check('Datei ohne PIN: gleich die Vorschau', await bis(() => $2('kwImpTeile')) && !$2('kwImpPin'));
   $2('kwImpSpeichern').click();
   await bis(() => $2('kwImpOk'));
+  await bis(() => JSON.parse(store['lotse.vorgaenge'] || '{"klar":{"liste":[]}}').klar.liste.length > vorher2);
   const liste = JSON.parse(store['lotse.vorgaenge']).klar.liste, neu = liste[liste.length - 1];
   check('Blatt als Daten im neuen Vorgang (lotse.klient-blatt)', !!neu.daten['lotse.klient-blatt'] && JSON.parse(neu.daten['lotse.klient-blatt']).abschnitte.length >= 1);
   // Öffnen → Mein Ordner zeigt „Von deiner Beratung“

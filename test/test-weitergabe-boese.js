@@ -153,8 +153,10 @@ const modulVarianten = typVarianten.map((v, i) => ({ s: 1, typ: 'vorgang', name:
     dateiWaehlen(w, $('kwDateiEin'), W.datei(typeof inhalt === 'string' ? inhalt : roh(inhalt)));
     if (!await bis(() => $('kwImpTeile') || ($('kwImpMsg').textContent && $('kwImpMsg').textContent !== DE['kw.bitte']), 4000) || !$('kwImpTeile')) return null;
     if (haken) haken();
+    const vorher = JSON.parse(store['lotse.vorgaenge'] || '{"klar":{"liste":[]}}').klar.liste.length;
     $('kwImpSpeichern').click();
     if (!await bis(() => $('kwImpOk'), 4000)) return null;
+    await bis(() => JSON.parse(store['lotse.vorgaenge'] || '{"klar":{"liste":[]}}').klar.liste.length > vorher, 4000); // Speichern läuft über die Schreibkette (Vorgaenge), ein Takt später
     const l = JSON.parse(store['lotse.vorgaenge']).klar.liste;
     return l[l.length - 1];
   };
@@ -222,7 +224,8 @@ const modulVarianten = typVarianten.map((v, i) => ({ s: 1, typ: 'vorgang', name:
   const fr = d.querySelector('#kwImpTeile input[data-kwimp="lotse.fristliste"]');
   check('Fristen: eigener, abwählbarer Haken in der Vorschau mit Hinweis auf die Erinnerung', !!fr && fr.parentNode.textContent === DE['kw.imp.fristen']);
   fr.checked = false; fire(w, fr, 'change');
-  $('kwImpSpeichern').click(); await bis(() => $('kwImpOk'));
+  const vorF = JSON.parse(store['lotse.vorgaenge'] || '{"klar":{"liste":[]}}').klar.liste.length;
+  $('kwImpSpeichern').click(); await bis(() => $('kwImpOk')); await bis(() => JSON.parse(store['lotse.vorgaenge'] || '{"klar":{"liste":[]}}').klar.liste.length > vorF);
   let l = JSON.parse(store['lotse.vorgaenge']).klar.liste, letzter = l[l.length - 1];
   check('Fristen ohne Haken: nicht übernommen', !letzter.daten['lotse.fristliste'] && !!letzter.daten['lotse.haken']);
   const mitHaken = await importiere(mitFrist);
