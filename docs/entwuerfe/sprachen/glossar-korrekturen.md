@@ -1,6 +1,6 @@
 # Glossar-Korrekturen nach der Du-Prüfung (21.11.2026)
 
-Branch `claude/b-glossar` (Basis `claude/b-buendel-n2`). Geändert: nur bestehende Schlüssel in `src/lang/**` (56 Stellen, 15 Dateien) und diese Datei.
+Branch `claude/b-glossar` (Basis `claude/b-buendel-n2`). Geändert: nur bestehende Schlüssel in `src/lang/**` (55 Stellen, 15 Dateien) und diese Datei.
 `glossar.json` / `glossar.md` liegen auf `claude/b-entwuerfe` und `claude/b-sprachverfahren`, nicht auf diesem Branch. Die Korrekturen unten gelten für diese Dateien und gehen ihnen vor, bis sie dort eingetragen sind.
 
 Alle Quellen abgerufen am 21.11.2026. „amtlich“ = Bundesbehörde oder Bundesministerium.
@@ -32,7 +32,7 @@ Alle Quellen abgerufen am 21.11.2026. „amtlich“ = Bundesbehörde oder Bundes
 | tr | `ausziehen: az.p.u25.t` | „anne baban“ → „ailen“ (deutsch: „deine Familie“, nicht „deine Eltern“) |
 | tr | `uz.an.exk`, `schritte: sf.h.uzBetrag` | „eski eş“ → „eski eş veya partner“ (deutsch: „frühere Partner“, auch unverheiratet) |
 | fr | `az.p.kv.t`, `az.p.kindergeld.t`, `az.p.wohngeld.t`, `t.wohngeld.ausreise`, `t.wbs.ausreise`, `t.uvg.wechsel`, `t.gsa.eltern`, `t.wohngeld.eltern`, `nh.s1`, `nh.s2`, `ek.art.selbst`, `eu.arbeit.label`, `aufenthalt.eu`, `sl.stufe.3`, `sl.warum.kranken` | Form mit „(e)“ wie schon sonst in der Datei (marié(e), déclaré(e)) |
-| fr | `az.p.haftpflicht.t`, `az.p.phv.t`, `az.p.hausrat.t`, `eo.a.t`, `sp.vertraege.1`, `hb.hw.tarif`, `t.alg1.keine`, `t.kindergeld.mehr`, `f.alg1.meldung`, `s.alg1.wo`, `uz.an.ex` | neutral umgestellt: „te faire exonérer“, „l'assurance de tes parents te couvre“, „s'inscrire au chômage (arbeitslos)“ |
+| fr | `az.p.haftpflicht.t`, `az.p.phv.t`, `az.p.hausrat.t`, `eo.a.t`, `sp.vertraege.1`, `hb.hw.tarif`, `t.alg1.keine`, `f.alg1.meldung`, `s.alg1.wo`, `uz.an.ex` | neutral umgestellt: „te faire exonérer“, „l'assurance de tes parents te couvre“, „s'inscrire au chômage (arbeitslos)“ |
 | fr | `f.alg1.meldung`, `s.alg1.wo`, `s.alg1.tip`, `t.alg1.melden`, `az.p.kindergeld.t` | „demandeur d'emploi“ → „demandeur(se) d'emploi (arbeitsuchend)“. Grundwort wie im Merkblatt KG 2 französisch („inscrit comme demandeur d'emploi“). https://www.arbeitsagentur.de/datei/kg2-f-merkblattkindergeld_ba035400.pdf |
 
 Bewusst nicht geändert (tr): `t.bab.ja` „eşinin“ und `t.uz.wg` „eski eş“. Der deutsche Text sagt „Partner“, meint dort aber rechtlich Ehe- oder Lebenspartner. Diese beiden Rechtsaussagen wurden hier nicht gegen das Gesetz nachgeprüft.
@@ -45,4 +45,6 @@ Bewusst nicht geändert (tr): `t.bab.ja` „eşinin“ und `t.uz.wg` „eski eş
 | uk: „строк“ als Wort der Rechtssprache | Das ukrainische Zivilgesetzbuch (zakon.rada.gov.ua) war nicht abrufbar (Verbindung abgebrochen). Belegt ist nur die Verwendung bei Germany4Ukraine. |
 | ru/uk/pl: Muttersprachler-Prüfung der neuen Formulierungen | Keine unabhängige Prüfung in dieser Sitzung. |
 | uk: „Minijob“ steht in 5 Texten nur deutsch, in 9 als „мініджоб“ | Beides ist zulässig; nicht vereinheitlicht. |
+| fr: `t.kindergeld.mehr` („inscrits comme chômeurs“) | Nicht angefasst: `claude/b-regeln-h12` schreibt diesen Satz inhaltlich neu; eine zweite Änderung hier gäbe nur einen Konflikt. |
+| Zusammenführen | Konflikt-Check meldet Überschneidungen mit `claude/b-regeln-h12` (`haushalt/fr.json` hb.hw.tarif neben hb.hw.tarif.d), `claude/b-ux-ergebnis` (`fr.json` eo.a.t) und `claude/b-ux-mappe` (`fr.json`, `ru.json` f.alg1.meldung neben f.stichtag). Kein Konflikt mit `main` und `claude/test-update-naechstes`. Auflösung: jeweils beide Änderungen übernehmen. |
 | fr: Suchwörter (`suche/woerter/fr.json`, z. B. „chômeur“) und Aussagen über Dritte („un colocataire non exonéré“) | Bewusst männlich gelassen: Suchwörter müssen zu Eingaben passen. |
