@@ -6,6 +6,11 @@ const axePfad = require.resolve('axe-core/axe.min.js');
 const ROOT = path.join(__dirname, '..', '..');
 const APP = path.join(ROOT, 'dist', 'sozialleistungslotse.html');
 let n = 0, f = 0;
+// Feste Daten kippen mit der Zeit (Frist vorbei): Bescheid immer vor 5 Tagen, erwartetes Fristende aus erweiterungen/fristen.js
+const FR = require('../../erweiterungen/fristen.js');
+const vorTagen = (t) => new Date(Date.now() - t * 864e5).toISOString().slice(0, 10);
+const deD = (s) => s.split('-').reverse().join('.'), reD = (s) => deD(s).replace(/\./g, '\\.');
+const BESCHEID = vorTagen(5), BIS = deD(FR.widerspruch({ datum: BESCHEID }).fristende);
 const ok = (name, c, info) => { n++; console.log((c ? 'ok   ' : 'FEHLER ') + name + (c || info === undefined ? '' : ' ' + JSON.stringify(info))); if (!c) f++; };
 (async () => {
   const appVorher = fs.existsSync(APP) ? fs.statSync(APP).mtimeMs : null;
@@ -55,13 +60,13 @@ const ok = (name, c, info) => { n++; console.log((c ? 'ok   ' : 'FEHLER ') + nam
     const uebern = p.locator('#pf-erg .opt button').first();
     if (await uebern.count()) { await uebern.click(); ok(`${schema}: Kombination in Widerspruch übernommen`, (await p.locator('#pf-wid-liste .opt').count()) >= 1); }
     await p.fill('#pf-name', '<img src=x onerror="window.__x=1">Erika');
-    await p.fill('#pf-datum', '2026-11-16');
+    await p.fill('#pf-datum', BESCHEID);
     await p.locator('#pf-wid-liste textarea').first().fill('Sie braucht jeden Tag Hilfe.').catch(() => {});
     await p.click('#pf-wid-mach');
     const wt = await p.inputValue('#pf-wid-text');
-    ok(`${schema}: Pflege-Widerspruch erstellt`, /Widerspruch gegen den Bescheid über die Feststellung des Pflegegrades vom 16\.11\.2026/.test(wt));
+    ok(`${schema}: Pflege-Widerspruch erstellt`, new RegExp('Widerspruch gegen den Bescheid über die Feststellung des Pflegegrades vom ' + reD(BESCHEID)).test(wt));
     ok(`${schema}: eingeschleuster Code nur als Text`, wt.includes('<img src=x') && !(await p.evaluate(() => window.__x)));
-    ok(`${schema}: Frist angezeigt`, /21\.12\.2026/.test(await p.textContent('#pf-frist')));
+    ok(`${schema}: Frist angezeigt`, (await p.textContent('#pf-frist')).includes(BIS));
     await p.check('#pf-art-h');
     ok(`${schema}: Höherstufung: Datumsfeld heißt jetzt letzte Begutachtung`, /letzten Begutachtung/.test(await p.textContent('#pf-datum-label')));
     await p.click('#pf-wid-mach');
@@ -75,7 +80,7 @@ const ok = (name, c, info) => { n++; console.log((c ? 'ok   ' : 'FEHLER ') + nam
     await p.click('#bs-beispiel');
     ok(`${schema}: Bescheid-Beispiel 163,12 € zu wenig`, (await p.textContent('#bs-erg .big')).includes('163,12 €'), await p.textContent('#bs-erg .big'));
     await axe('Bescheid mit Ergebnis');
-    await p.fill('#bs-datum', '2026-11-16');
+    await p.fill('#bs-datum', BESCHEID);
     await p.click('#bs-wid-mach');
     const bt = await p.inputValue('#bs-wid-text');
     ok(`${schema}: Bescheid-Widerspruch mit beiden Gründen`, /Mehrbedarf für Alleinerziehende/.test(bt) && /Angerechnetes Einkommen/.test(bt));
@@ -122,9 +127,9 @@ const ok = (name, c, info) => { n++; console.log((c ? 'ok   ' : 'FEHLER ') + nam
     await p.selectOption('#ga-zahl', '2');
     ok(`${schema}: Paar zeigt Person 2`, await p.isVisible('#ga-rente2'));
     await p.selectOption('#ga-zahl', '1');
-    await p.fill('#ga-datum', '2026-11-16');
+    await p.fill('#ga-datum', BESCHEID);
     await p.click('#ga-wid-mach');
-    ok(`${schema}: Widerspruch Grundsicherung im Alter`, /Grundsicherung im Alter und bei Erwerbsminderung vom 16\.11\.2026/.test(await p.inputValue('#ga-wid-text')));
+    ok(`${schema}: Widerspruch Grundsicherung im Alter`, new RegExp('Grundsicherung im Alter und bei Erwerbsminderung vom ' + reD(BESCHEID)).test(await p.inputValue('#ga-wid-text')));
     // Wohngeld
     await p.click('#tab-wg');
     await p.click('#wg-beispiel');
@@ -133,9 +138,9 @@ const ok = (name, c, info) => { n++; console.log((c ? 'ok   ' : 'FEHLER ') + nam
     ok(`${schema}: Wohngeld-Beispiel: Anzeige = Rechnung (${wgBig})`, wgSoll > 0 && wgBig.includes(String(wgSoll).replace('.', ',')), { wgBig, wgSoll });
     ok(`${schema}: Wohngeld: Heizkostenkomponente als Grund`, /Heizkostenkomponente/.test(await p.textContent('#wg-erg')));
     await axe('Wohngeld mit Ergebnis');
-    await p.fill('#wg-datum', '2026-11-16');
+    await p.fill('#wg-datum', BESCHEID);
     await p.click('#wg-wid-mach');
-    ok(`${schema}: Wohngeld-Widerspruch`, /Widerspruch gegen den Wohngeldbescheid vom 16\.11\.2026/.test(await p.inputValue('#wg-wid-text')));
+    ok(`${schema}: Wohngeld-Widerspruch`, new RegExp('Widerspruch gegen den Wohngeldbescheid vom ' + reD(BESCHEID)).test(await p.inputValue('#wg-wid-text')));
     // Kinderzuschlag
     await p.click('#tab-kiz');
     ok(`${schema}: Kinderzuschlag ohne Kinder: Hinweis`, /Kinder eintragen/.test(await p.textContent('#kz-erg')));
@@ -146,9 +151,9 @@ const ok = (name, c, info) => { n++; console.log((c ? 'ok   ' : 'FEHLER ') + nam
     await p.selectOption('#kz-zahl', '1');
     ok(`${schema}: ein Elternteil blendet Felder für Elternteil 2 aus`, !(await p.isVisible('#kz-b2')));
     await p.selectOption('#kz-zahl', '2');
-    await p.fill('#kz-datum', '2026-11-16');
+    await p.fill('#kz-datum', BESCHEID);
     await p.click('#kz-wid-mach');
-    ok(`${schema}: Kinderzuschlag-Widerspruch`, /Widerspruch gegen den Bescheid über den Kinderzuschlag vom 16\.11\.2026/.test(await p.inputValue('#kz-wid-text')) && /Familienkasse/.test(await p.inputValue('#kz-wid-text')));
+    ok(`${schema}: Kinderzuschlag-Widerspruch`, new RegExp('Widerspruch gegen den Bescheid über den Kinderzuschlag vom ' + reD(BESCHEID)).test(await p.inputValue('#kz-wid-text')) && /Familienkasse/.test(await p.inputValue('#kz-wid-text')));
     // Nebenkosten
     await p.click('#tab-nk');
     await p.click('#nk-beispiel');
@@ -162,8 +167,8 @@ const ok = (name, c, info) => { n++; console.log((c ? 'ok   ' : 'FEHLER ') + nam
     ok(`${schema}: Antrag an das Jobcenter`, /§ 22 Abs\. 1 SGB II/.test(await p.inputValue('#nk-text')));
     // Fristen
     await p.click('#tab-fristen');
-    await p.fill('#fr-datum', '2026-11-16');
-    ok(`${schema}: Frist 21.12.2026`, (await p.textContent('#fr-erg')).includes('21.12.2026'));
+    await p.fill('#fr-datum', BESCHEID);
+    ok(`${schema}: Frist ${BIS}`, (await p.textContent('#fr-erg')).includes(BIS));
     await p.fill('#er-ende', '2027-06-30');
     ok(`${schema}: Erinnerung 19.05.2027`, (await p.textContent('#er-erg')).includes('19.05.2027'));
     await axe('Fristen');
