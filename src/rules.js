@@ -25,7 +25,10 @@ const Rules = (function () {
       // Keine Beträge im Gesetzestext (§ 21 Nr. 3 WoGG: nur "erhebliches Vermögen"); die Beträge sind die Regelvermutung der Verwaltungsvorschrift (nur Sekundärquellen)
       vermoegenErste: 60000,
       vermoegenJeWeitere: 30000,
-      // Plausibilitätsprüfung Nr. 15.01 WoGVwV (BMI-Hinweise vom 11.03.2020 zu Nr. 15.01 Abs. 1 Satz 6-9 mit Beispiel;
+      // Plausibilitätsprüfung Nr. 15.01 WoGVwV. Amtlich veröffentlicht: WoGVwV vom 28.06.2017 Nr. 15.01 Abs. 1 Satz 3 („Einnahmen zuzüglich
+      // eines zu leistenden Wohngeldes 80 Prozent des Bedarfs nach dem SGB XII“;
+      // https://www.verwaltungsvorschriften-im-internet.de/bsvwvbund_28062017_SWII4.htm, Abruf 21.11.2026). Die strengere Lesart unten stammt aus
+      // den BMI-Hinweisen vom 11.03.2020 zu Nr. 15.01 Abs. 1 Satz 6-9 mit Beispiel (nicht amtlich veröffentlicht, nur als Kopie abrufbar:
       // https://www.tacheles-sozialhilfe.de/files/Weisungen/WoGG/200311-hinweisezurplausibilittsprfung_geschwaerzt.pdf, Abruf 21.11.2026):
       // Einnahmen EINSCHLIESSLICH des zu leistenden Wohngelds (auch Kindergeld, Kinderzuschlag) müssen 100 % der Gesamtmiete und rund 80 %
       // der Regelbedarfe decken; Mehrbedarfe zählen nicht. Unterschreitung heißt nicht Ablehnung: die Person muss darlegen, wovon sie lebt (Abs. 2).
@@ -965,8 +968,9 @@ const Rules = (function () {
     // der Kinder mit Freibetrag (§ 17 Nr. 4 WoGG); Elterngeld bis 300 € frei (§ 10 Abs. 1 BEEG); Freibeträge nach § 17 WoGG.
     // § 17a WoGG: Grundrentenfreibetrag bei 33 Jahren Grundrentenzeiten (100 € + 30 % des Rests, höchstens 50 % RS1)
     // Betriebs-, Riester- oder private Rente zählt beim Wohngeld wie Rente, bekommt aber keinen Grundrentenfreibetrag
+    // Der Freibetrag wird „vom Einkommen aus der gesetzlichen Rente“ abgezogen (§ 17a Abs. 1 Satz 2 WoGG): nie höher als diese Rente (Prüfung 21.11.2026)
     const zusWG = zusatzVerteilt(h, pers.map((x) => x[1]));
-    const grFrei = h.grundrente33 ? pers.reduce((a, x, i) => a + (x[0] === 'rente' ? Math.min(R.grundrente.sockel + R.grundrente.quote * Math.max(0, x[1] - zusWG[i] - R.grundrente.sockel), R.grundrente.max * R.regelbedarf.alleinstehend) : 0), 0) : 0;
+    const grFrei = h.grundrente33 ? pers.reduce((a, x, i) => a + (x[0] === 'rente' ? Math.min(Math.max(0, x[1] - zusWG[i]), R.grundrente.sockel + R.grundrente.quote * Math.max(0, x[1] - zusWG[i] - R.grundrente.sockel), R.grundrente.max * R.regelbedarf.alleinstehend) : 0), 0) : 0;
     const extra = (h.kindZahl || 0) + Math.max(0, (h.kindEink || 0) - R.wgKindFrei) + (h.kapWG || 0) - freib - grFrei;
     const yPess = Math.max(0, yA + extra - (h.uzWGpess || 0)), yOpt = Math.max(0, yB + extra - (h.uzWGopt || 0));
 
