@@ -203,7 +203,9 @@ var Geld = (function () {
     if (ber()) box.appendChild(berEl('p', 'Prüfhinweise für Fachkräfte: Kostenhinweis vor Raten- oder Stundungsvereinbarung (§ 13a Abs. 3 RDG); Hinweis vor einem Schuldanerkenntnis (§ 13a Abs. 4 RDG); Erstattungsfähigkeit der Inkassokosten höchstens wie bei einem Rechtsanwalt (§ 13e RDG). Abrufdatum 20.11.2026.'));
   }
 
-  // Musterschreiben: erst wählen (Kacheln), dann Felder und Text. fest: Muster vorgegeben (P-Konto aus „Was bleibt mir?“)
+  // Musterschreiben: erst wählen (Kacheln), dann Felder und Text. fest: Muster vorgegeben (P-Konto aus „Was bleibt mir?“).
+  // Unter „Schreiben an Gläubiger“ keine Kachel P-Konto-Bescheinigung (Aufräumen 21.11.2026): geht nicht an Gläubiger und steht unter „Was bleibt mir?“.
+  // Hinweis „Die Anschrift fehlt noch“ (ms-ohne-adr) erst beim Drucken/Teilen, wenn das Feld leer ist, nicht schon vor der Eingabe.
   function schreibenSeite(box, neu, fest) {
     var m = st.ms;
     if (fest) m.art = fest;
@@ -211,7 +213,7 @@ var Geld = (function () {
       frage(box, t('ms.h'));
       box.appendChild(el('p', 'hint', t('ms.wahl')));
       var r = raster(box);
-      MUSTER.forEach(function (a) { r.appendChild(ctx.kachel('ms-' + a, { geduld: 'uhr', aufst: 'lupe', wider: 'stopp', pkonto: 'beleg' }[a], t('ms.' + a), t('ms.' + a + '.t'), function () { m.art = a; neu(); })); });
+      MUSTER.filter(function (a) { return a !== 'pkonto'; }).forEach(function (a) { r.appendChild(ctx.kachel('ms-' + a, { geduld: 'uhr', aufst: 'lupe', wider: 'stopp', pkonto: 'beleg' }[a], t('ms.' + a), t('ms.' + a + '.t'), function () { m.art = a; neu(); })); });
       box.appendChild(el('p', 'small muted', t('ms.hinweis')));
       return;
     }
@@ -240,19 +242,22 @@ var Geld = (function () {
     };
     feld('ms-g', 'g', t('ms.g'));
     feld('ms-adr', 'adr', t('ms.adr'), true);
-    var ohne = box.appendChild(el('p', 'small warn')); ohne.id = 'ms-ohne-adr';
+    var ohne = box.appendChild(el('p', 'small warn')); ohne.id = 'ms-ohne-adr'; ohne.hidden = true; ohne.setAttribute('aria-live', 'polite');
     feld('ms-az', 'az', t('ms.az'));
     if (ber()) { var fb = feld('ms-abs', 'absender', 'Absender-Zusatz (z. B. „vertreten durch …“)'); fb.closest('.field').classList.add('ber-nur'); }
     var lt = el('label', '', t('ms.text')); lt.htmlFor = 'ms-text'; box.appendChild(lt);
     if (ctx.lang() !== 'de') box.appendChild(el('p', 'small hint', t('ms.de')));
     var ta = el('textarea', 'ms-text'); ta.id = 'ms-text'; ta.rows = 16; ta.lang = 'de'; ta.dir = 'ltr'; box.appendChild(ta);
     var msg = el('p', 'small'); msg.setAttribute('aria-live', 'polite');
-    btns(box).appendChild(knopf('btn', t('hb.hw.briefAus'), function () { ctx.textAusgeben(ta.value, 'Schreiben', msg); }, { id: 'ms-aus' }));
+    btns(box).appendChild(knopf('btn', t('hb.hw.briefAus'), function () { ohneAdr(true); ctx.textAusgeben(ta.value, 'Schreiben', msg); }, { id: 'ms-aus' }));
     box.appendChild(msg);
     box.appendChild(el('p', 'small ms-hinweis', t('ms.hinweis')));
     function text() {
       ta.value = schreiben(m.art, { g: m.g, adr: m.adr, az: m.az, absender: ber() ? m.absender : '', datum: ctx.datumDe ? ctx.datumDe(new Date()) : '' });
-      ohne.textContent = zeilen(m.adr).length ? '' : t('ms.ohneAdr'); ohne.hidden = !ohne.textContent;
+      ohneAdr(false);
+    }
+    function ohneAdr(ausgeben) { // beim Ausgeben einblenden, beim Eintragen der Anschrift wieder ausblenden
+      if (zeilen(m.adr).length) { ohne.textContent = ''; ohne.hidden = true; } else if (ausgeben) { ohne.textContent = t('ms.ohneAdr'); ohne.hidden = false; }
     }
     text();
   }

@@ -1457,7 +1457,7 @@
   "gs.frist": "Frist",
   "gs.d.konto.frist": "Innerhalb eines Monats, nachdem die Pfändung bei der Bank angekommen ist. Dann ist auch schon gesperrtes Guthaben geschützt (§ 899 Abs. 1 ZPO).",
   "gs.d.konto.frist.kurz": "Innerhalb von 1 Monat nach der Pfändung umwandeln.",
-  "gs.d.konto.schritt": "Lass dein Girokonto sofort bei deiner Bank in ein P-Konto umwandeln. Die Bank muss das spätestens ab dem 4. Geschäftstag nach deinem Antrag tun (§ 850k ZPO).",
+  "gs.d.konto.schritt": "Lass dein Girokonto sofort bei deiner Bank in ein P-Konto umwandeln. Die Bank muss das spätestens ab dem 4. Geschäftstag nach deinem Antrag tun (§ 850k ZPO). Jeder darf nur ein P-Konto haben (§ 850k Abs. 3 ZPO).",
   "gs.d.konto.schritt.kurz": "Girokonto sofort in ein P-Konto umwandeln lassen.",
   "gs.d.strom.frist": "Die Sperre muss 4 Wochen vorher angedroht und 8 Werktage vorher angekündigt werden (§ 41f EnWG).",
   "gs.d.strom.frist.kurz": "Sperre: 4 Wochen vorher androhen, 8 Werktage vorher ankündigen.",

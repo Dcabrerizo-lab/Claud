@@ -1457,7 +1457,7 @@
   "gs.frist": "Termen",
   "gs.d.konto.frist": "În decurs de o lună după ce poprirea a ajuns la bancă. Atunci sunt protejați și banii deja blocați (§ 899 Abs. 1 ZPO).",
   "gs.d.konto.frist.kurz": "Transformă contul în 1 lună de la poprire.",
-  "gs.d.konto.schritt": "Cere imediat băncii să transforme contul curent în cont protejat împotriva popririi (P-Konto). Banca trebuie să facă asta cel târziu din a 4-a zi lucrătoare după cererea ta (§ 850k ZPO).",
+  "gs.d.konto.schritt": "Cere imediat băncii să transforme contul curent în cont protejat împotriva popririi (P-Konto). Banca trebuie să facă asta cel târziu din a 4-a zi lucrătoare după cererea ta (§ 850k ZPO). Fiecare poate avea un singur P-Konto (§ 850k Abs. 3 ZPO).",
   "gs.d.konto.schritt.kurz": "Transformă imediat contul curent în P-Konto.",
   "gs.d.strom.frist": "Deconectarea trebuie anunțată ca amenințare cu 4 săptămâni înainte și confirmată cu 8 zile lucrătoare înainte (§ 41f EnWG).",
   "gs.d.strom.frist.kurz": "Debranșare: amenințare cu 4 săptămâni înainte, anunț cu 8 zile lucrătoare.",
