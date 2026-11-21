@@ -19,7 +19,7 @@
   "fri.wort.offen.t": "Dla tego terminu brakuje daty. Proszę dotknąć „Zmień datę” i wpisać ją.",
   "fri.rechnung": "Jak to obliczono",
   "fri.rechnung.wid": "Pismo z dnia {datum}. Pismo wysłane pocztą uważa się za doręczone czwartego dnia potem: {bekannt}. Od tego dnia jeden miesiąc. Jeśli koniec wypada w sobotę, niedzielę lub święto, termin kończy się w następnym dniu roboczym.",
-  "fri.rechnung.wid.ohne": "Brakuje daty pisma. Aplikacja liczy od dnia, w którym je otrzymałeś/otrzymałaś: {bekannt}. Od tego dnia jeden miesiąc. Jeśli koniec wypada w sobotę, niedzielę lub święto, termin kończy się w następnym dniu roboczym.",
+  "fri.rechnung.wid.ohne": "Brakuje daty pisma. Aplikacja liczy od dnia, w którym je Państwo otrzymali: {bekannt}. Od tego dnia jeden miesiąc. Jeśli koniec wypada w sobotę, niedzielę lub święto, termin kończy się w następnym dniu roboczym.",
   "fri.rechnung.woche": "Pismo otrzymane {bekannt}. Od następnego dnia: {dauer}. Jeśli koniec wypada w sobotę, niedzielę lub święto, termin kończy się w następnym dniu roboczym.",
   "fri.rechnung.woche.ohne": "Pismo z dnia {datum}. Nie wpisano, kiedy dotarło. Dlatego aplikacja liczy ostrożnie od daty pisma: {dauer}. Proszę wpisać, kiedy pismo dotarło, wtedy wynik będzie dokładny.",
   "fri.rechnung.zustellung": "Doręczono {datum} (data na żółtej kopercie). Od tego dnia dwa tygodnie. Jeśli koniec wypada w sobotę, niedzielę lub święto, termin kończy się w następnym dniu roboczym.",
