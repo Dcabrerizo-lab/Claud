@@ -206,7 +206,8 @@ const Rules = (function () {
       ST: [['allgemeine Grenze', 1], ['Landesprogramme', 1.2]],
       TH: [['allgemeine Grenze', 1], ['Förderrichtlinie', 1.4]]
     },
-    // Freibetrag beim Wohngeld für eigenes Einkommen von Kindern (16 bis 24 Jahre): 1.200 € im Jahr (§ 17 Nr. 4 WoGG)
+    // Freibetrag beim Wohngeld für eigene Einnahmen aus Erwerbstätigkeit jedes Kindes unter 25 Jahren, das Haushaltsmitglied ist:
+    // höchstens 1.200 € im Jahr je Kind (§ 17 Nr. 4 WoGG, https://www.gesetze-im-internet.de/wogg/__17.html, Abruf 21.11.2026)
     wgKindFrei: 100,
     // Werbungskosten-Pauschbeträge im Jahr (§ 9a Satz 1 Nr. 1 und 3 EStG), beim Wohngeld vom Einkommen abgezogen (§ 14 Abs. 1 WoGG)
     wgWerbung: { lohn: 1230, rente: 102 },
@@ -985,8 +986,20 @@ const Rules = (function () {
     // Der Freibetrag wird „vom Einkommen aus der gesetzlichen Rente“ abgezogen (§ 17a Abs. 1 Satz 2 WoGG): nie höher als diese Rente (Prüfung 21.11.2026)
     const zusWG = zusatzVerteilt(h, pers.map((x) => x[1]));
     const grFrei = h.grundrente33 ? pers.reduce((a, x, i) => a + (x[0] === 'rente' ? Math.min(Math.max(0, x[1] - zusWG[i]), R.grundrente.sockel + R.grundrente.quote * Math.max(0, x[1] - zusWG[i] - R.grundrente.sockel), R.grundrente.max * R.regelbedarf.alleinstehend) : 0), 0) : 0;
-    const extra = (h.kindZahl || 0) + Math.max(0, (h.kindEink || 0) - R.wgKindFrei) + (h.kapWG || 0) - freib - grFrei;
-    const yPess = Math.max(0, yA + extra - (h.uzWGpess || 0)), yOpt = Math.max(0, yB + extra - (h.uzWGopt || 0));
+    // Eigenes Einkommen der Kinder (Minijob, Ausbildung): je Kind erst der Arbeitnehmer-Pauschbetrag 1.230 €/Jahr, höchstens bis zur Höhe
+    // der Einnahmen (§ 14 Abs. 1 WoGG: positive Einkünfte nach § 2 EStG, bei Minijob „abzüglich der Werbungskosten“; § 9a Satz 1 Nr. 1
+    // Buchst. a und Satz 2 EStG), dann der Freibetrag § 17 Nr. 4 WoGG je Kind (höchstens 1.200 €/Jahr). Abruf gesetze-im-internet.de
+    // (wogg/__14.html, wogg/__17.html, estg/__9a.html) am 21.11.2026; bestätigt mit dem amtlichen Wohngeldrechner des BMWSB (Differenztest
+    // 21.11.2026). Die App kennt nur die Summe: „wahrscheinlich“ (yPess) wie ein einziges verdienendes Kind, „möglich“ (yOpt) verteilt auf
+    // alle Kinder ab 6 Jahren und jungen Erwachsenen (je Kind ein Pauschbetrag und ein Freibetrag).
+    const kindAbzug = R.wgWerbung.lohn / 12 + R.wgKindFrei;
+    const kindNOpt = Math.max(1, (h.kids || 0) - (h.kidsU6 || 0) + (h.young || 0));
+    // Über der Minijob-Grenze ist der eingegebene Betrag („so viel wie ankommt“) kleiner als der Bruttolohn, von dem das Wohngeld ausgeht
+    // (brutto minus Pauschbetrag, dann 10 % je Abzugsart, § 16 WoGG). Vorsichtige Schätzung dort ohne Pauschbetrag, sonst zu günstig.
+    const kindAbzugPess = (h.kindEink || 0) > h.minijob ? R.wgKindFrei : kindAbzug;
+    const kindPess = Math.max(0, (h.kindEink || 0) - kindAbzugPess), kindOpt = Math.max(0, (h.kindEink || 0) - kindNOpt * kindAbzug);
+    const extra = (h.kindZahl || 0) + (h.kapWG || 0) - freib - grFrei;
+    const yPess = Math.max(0, yA + extra + kindPess - (h.uzWGpess || 0)), yOpt = Math.max(0, yB + extra + kindOpt - (h.uzWGopt || 0));
 
     return { yMaxLo, yMaxHi, lo, hi, yPess, yOpt };
   }

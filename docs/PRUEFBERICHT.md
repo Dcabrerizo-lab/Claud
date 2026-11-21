@@ -280,3 +280,18 @@ Geprüft und in Ordnung:
 | Übersetzungen (Stichprobe en, tr, ar, uk) | sinngleich; Zahlen und Paragrafen in allen Sprachen gleich (`test-sprachen-zahlen`) | |
 
 Offen: Die neuen Sätze in ar, fa, fa-AF, ps, so sind nicht von Muttersprachlern gelesen. Ob der Vorbehalt im Ratenschreiben im Einzelfall trägt, entscheidet ein Gericht; die App sagt das nicht zu.
+
+## Prüfvermerk (21.11.2026) – PR #110 Wohngeld: Lohn der Kinder
+
+Unabhängige Prüfung. Gesetzestexte am 21.11.2026 direkt abgerufen (gesetze-im-internet.de).
+
+| Befund | Schwere | Korrektur | Quelle |
+|---|---|---|---|
+| Freibetrag § 17 Nr. 4 WoGG: Einnahmen aus Erwerbstätigkeit jedes Kindes eines Haushaltsmitglieds, höchstens 1.200 € im Jahr, Kind ist Haushaltsmitglied und unter 25. Keine Ausbildungs-Voraussetzung, kein Mindestalter. Umsetzung „je Kind“ stimmt | in Ordnung | keine | https://www.gesetze-im-internet.de/wogg/__17.html |
+| Arbeitnehmer-Pauschbetrag 1.230 € im Jahr (102,50 € im Monat), höchstens bis zur Höhe der Einnahmen; gilt beim Wohngeld über § 14 Abs. 1 WoGG (Einkünfte nach § 2 EStG; Minijob „abzüglich der Aufwendungen“). Stand 2026, nichts für 2027 vorweggenommen | in Ordnung | keine | https://www.gesetze-im-internet.de/estg/__9a.html, https://www.gesetze-im-internet.de/wogg/__14.html |
+| Ausbildungsvergütung über der Minijob-Grenze: Die App fragt die Auszahlung ab. Das Wohngeld rechnet vom Brutto (minus Pauschbetrag, dann je 10 % nach § 16 WoGG). Mit vollem Pauschbetrag auf die Auszahlung war die Schätzung „wahrscheinlich“ um etwa 25–35 € Einkommen zu günstig (rund 10 € Wohngeld) | mittel | Vorsichtige Schätzung über der Minijob-Grenze ohne Pauschbetrag (`src/rules.js`, `test/referenz.js`, neue Mutation). Obere Schätzung unverändert | § 16 WoGG, https://www.gesetze-im-internet.de/wogg/__16.html (nicht neu abgerufen: Rechenweg wie im vorhandenen Code) |
+| Test `wg-kindeink`: Text „100 € frei“ passte nicht zur neuen Regel, Grenze 202,50 € ungeprüft | gering | Text berichtigt, Prüfung mit 202 € ergänzt | – |
+| Differenzlauf Startwert 2611 (400 Haushalte, GitHub-Lauf 44902358680) mit dem korrigierten Stand nachgerechnet: 379 auf den Euro gleich, 21 innerhalb der Grenze (Zahl verdienender Kinder unbekannt), 0 Abweichungen | in Ordnung | keine | Artefakt `amtlich-wohngeld` |
+| Der amtliche Rechner zieht den Freibetrag nicht über das Einkommen des Kindes hinaus ab (Fälle mit 90–150 € Kinderlohn stimmen auf den Euro). SoLo rechnet genauso | in Ordnung | keine | Differenzlauf |
+| `erweiterungen/bescheid-wg.js`: Pauschbetrag gilt dort schon je Mitglied mit Lohn; Freibetrag für Kinder steht weiter unter „Nicht geprüft“. Kein Widerspruch | in Ordnung | keine | – |
+| Offen: Bestätigungslauf Startwert 2612 (GitHub-Lauf 44905512224) lief bei der Prüfung noch. Der Differenztest enthält nur Minijobs bis 600 €, keine Ausbildungsvergütung mit Abzügen | offen | Ergebnis abwarten | – |

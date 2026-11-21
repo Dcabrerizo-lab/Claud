@@ -237,10 +237,15 @@ function wohngeld(h) {
       frei += Math.min(Math.max(0, x.brutto - davon), 100 + 0.3 * Math.max(0, x.brutto - davon - 100), 0.5 * RB[1]); // § 17a Abs. 1 Satz 2: nie mehr als die Rente
     }
   }
-  const plus = h.unterhalt + h.waisen + h.uvg + Math.max(0, h.kindEink - 100);
+  // Lohn der Kinder je Kind: Arbeitnehmer-Pauschbetrag 1.230 €/Jahr (§ 14 Abs. 1 WoGG, § 9a EStG) und Freibetrag 1.200 €/Jahr (§ 17 Nr. 4
+  // WoGG). Nur die Summe bekannt: vorsichtig ein verdienendes Kind, günstig verteilt auf alle Kinder ab 6 und jungen Erwachsenen.
+  const kindAb = 1230 / 12 + 1200 / 12, kindN = Math.max(1, h.kinder - h.u6 + h.jung);
+  const plus = h.unterhalt + h.waisen + h.uvg;
+  // Über der Minijob-Grenze (Ausbildungsvergütung, Auszahlung < Brutto): vorsichtig ohne Pauschbetrag
+  const kindVorsichtig = Math.max(0, h.kindEink - (h.kindEink > h.mini ? 100 : kindAb)), kindGuenstig = Math.max(0, h.kindEink - kindN * kindAb);
   const uzVorsichtig = h.uzFest ? Math.min(h.uz, h.uzDeckel) : 0, uzGuenstig = h.uzFest ? h.uz : Math.min(h.uz, h.uzDeckel);
-  const yPess = Math.max(0, h.p.reduce((s, x) => s + (x.brutto - werbung(x)) * (1 - abzugAus(x, 0)), 0) + plus - frei - uzVorsichtig);
-  const yOpt = Math.max(0, h.p.reduce((s, x) => s + (x.brutto - werbung(x)) * (1 - abzugAus(x, 1)), 0) + plus - frei - uzGuenstig);
+  const yPess = Math.max(0, h.p.reduce((s, x) => s + (x.brutto - werbung(x)) * (1 - abzugAus(x, 0)), 0) + plus + kindVorsichtig - frei - uzVorsichtig);
+  const yOpt = Math.max(0, h.p.reduce((s, x) => s + (x.brutto - werbung(x)) * (1 - abzugAus(x, 1)), 0) + plus + kindGuenstig - frei - uzGuenstig);
   if (yOpt > yMaxHi) return { level: 'nein' };
   let level = yPess <= yMaxLo ? 'ja' : 'vielleicht';
   // Plausibilitätsprüfung Nr. 15.01 WoGVwV: Einnahmen plus vorsichtig geschätztes Wohngeld (Stufe I ohne Angabe) decken die ganze Miete
