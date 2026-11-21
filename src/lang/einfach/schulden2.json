@@ -8,6 +8,7 @@
   "sl.fehlt.betrag": "Bitte schreib den Betrag als Zahl. Zum Beispiel 120,50.",
   "sl.voll": "Die Liste ist voll. Lösche Einträge, die erledigt sind.",
   "sl.speicherFehler": "Die App konnte die Liste nicht speichern.",
+  "sl.defekt": "Die App konnte deine Schulden-Liste nicht lesen. Eine Kopie ist gesichert. Du fängst mit einer leeren Liste an.",
   "sl.art.energie": "=",
   "sl.st.mahnung": "=",
   "sl.prio.h": "=",

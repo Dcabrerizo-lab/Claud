@@ -901,8 +901,10 @@
       el.scrollIntoView({ behavior: smooth(), block: 'start' });
       el.focus({ preventScroll: true });
     });
-    window.addEventListener('scroll', jumpPruefen, { passive: true });
-    window.addEventListener('resize', jumpPruefen);
+    // „Zum Ergebnis“: nicht bei jedem Scrollen messen (getBoundingClientRect erzwingt Layout), sondern beobachten. Die obere 60 % des
+    // Fensters sind der Bereich (rootMargin unten -40 %); ohne IntersectionObserver wie bisher über scroll/resize.
+    if (window.IntersectionObserver && $('ergebnis')) new window.IntersectionObserver(function (en) { jumpSetzen(en[en.length - 1].boundingClientRect); }, { rootMargin: '0px 0px -40% 0px' }).observe($('ergebnis'));
+    else { window.addEventListener('scroll', jumpPruefen, { passive: true }); window.addEventListener('resize', jumpPruefen); }
     [['p-name', 'name'], ['p-geb', 'geb'], ['p-strasse', 'strasse'], ['p-ort', 'ort'], ['p-tel', 'tel']].forEach(function (x) {
       $(x[0]).addEventListener('input', function () {
         person[x[1]] = $(x[0]).value; save();
@@ -3179,11 +3181,8 @@
     else if (a === 'pflegestart' && /^pg/.test(sub)) puOeffnen('pg');
     else if (a === 'pflegestart' && /^liste\d$/.test(sub)) puOeffnen('liste', +sub.slice(5));
   }
-  function jumpPruefen() {
-    var e = $('ergebnis'), j = $('jump'); if (!e || !j) return;
-    var r = e.getBoundingClientRect();
-    j.classList.toggle('am-ergebnis', r.height > 0 && r.top < (window.innerHeight || 0) * 0.6);
-  }
+  function jumpPruefen() { var e = $('ergebnis'); if (e) jumpSetzen(e.getBoundingClientRect()); }
+  function jumpSetzen(r) { var j = $('jump'); if (j && r) j.classList.toggle('am-ergebnis', r.height > 0 && r.top < (window.innerHeight || 0) * 0.6); }
   function zurueckZurHerkunft(a) { var h = herkunftVon(a); delete herkunft[a]; zeigeAnsicht(h, true); window.scrollTo(0, 0); }
   var BRIEFE = [
     ['jc', 'briefe.jobcenter', 'briefe.jobcenter.t', '<path d="M4 20V9l8-5 8 5v11"/><path d="M9 20v-6h6v6M3 20h18"/>'],
@@ -4345,12 +4344,16 @@
   $('goLeistungen').addEventListener('click', function () { zeigeAnsicht('leistungen', true); });
   $('goBriefe').addEventListener('click', function () { zeigeAnsicht('briefe', true); });
   $('goGeld').addEventListener('click', function () { gsOeffne(''); oeffneVon('sparen', true); });
+  // Nicht lesbarer Stand (Haushalt, Schulden, Ausziehen): Rohtext unter <Schlüssel>.defekt im selben Vorgang sichern (mit PIN verschlüsselt wie der Stand selbst)
+  function speicherDefekt(key, text) { try { Store.set(key + '.defekt', text); } catch (e) {} } // .defekt gehört zu Vorgaenge.DATEN (PIN, Kopie, Löschen)
   // Haushaltsplan und Haushaltsbuch (src/haushalt.js): gemeinsame Felder liegen nur im Check (state), der Plan liest und schreibt sie hier.
   // Gespeichert wird der Plan je Vorgang (lotse.haushalt gehört zu Vorgaenge.DATEN): mit PIN verschlüsselt, mit dem Vorgang kopiert und gelöscht.
   if (window.Haushalt) {
     Haushalt.speicherOrt({
       laden: function (cb) { Store.get('lotse.haushalt', cb); },
-      schreiben: function (text, cb) { Store.set('lotse.haushalt', text); cb(null); } // Speicherfehler meldet der Tresor (vgSpeicherFehler)
+      // nicht angenommen (Vorgang gesperrt oder nicht bereit): wie bei den Fristen melden; Fehler beim Schreiben meldet zusätzlich der Tresor (vgSpeicherFehler)
+      schreiben: function (text, cb) { cb(Store.set('lotse.haushalt', text) === false ? new Error('nicht gespeichert') : null); },
+      defekt: function (text) { speicherDefekt('lotse.haushalt', text); }
     });
     Haushalt.init({
       t: tL, euro: function (x) { return Fmt.euro(x, lang, I18N[lang]['meta.dir'] === 'rtl'); }, euroDe: function (x) { return Fmt.euro(x, 'de'); },
@@ -4366,7 +4369,7 @@
     });
   }
   // „Ich ziehe aus“: Haken und Notizen je Vorgang (lotse.ausziehen in Vorgaenge.DATEN), mit PIN verschlüsselt, kopiert und gelöscht
-  if (window.Ausziehen) Ausziehen.speicherOrt({ laden: function (cb) { Store.get('lotse.ausziehen', cb); }, schreiben: function (text, cb) { Store.set('lotse.ausziehen', text); cb(null); } });
+  if (window.Ausziehen) Ausziehen.speicherOrt({ laden: function (cb) { Store.get('lotse.ausziehen', cb); }, schreiben: function (text, cb) { cb(Store.set('lotse.ausziehen', text) === false ? new Error('nicht gespeichert') : null); }, defekt: function (text) { speicherDefekt('lotse.ausziehen', text); } });
   if (window.Ausziehen) Ausziehen.init({ t: t, zeige: oeffneVon, plug: plug, famversGrenze: function () { return Fmt.euro(Rules.famversGrenze(), lang, I18N[lang]['meta.dir'] === 'rtl'); } }); // „Ich ziehe aus“ (src/ausziehen.js)
   // Fristen in „Mein Ordner“ (src/fristen.js): je Vorgang (lotse.fristliste in Vorgaenge.DATEN), Hinweis beim Öffnen höchstens einmal am Tag
   if (window.FristenOrdner) {
@@ -4385,7 +4388,7 @@
   // Schulden-Liste (src/schulden.js): je Vorgang (lotse.schulden in Vorgaenge.DATEN), mit PIN verschlüsselt, kopiert und gelöscht.
   // Das Blatt für die Beratung ist deutsch (tDe, ohne Einfache Sprache); App: PDF wie das Ergebnisblatt, Web: Druckdialog.
   if (window.Schulden) {
-    Schulden.speicherOrt({ laden: function (cb) { Store.get('lotse.schulden', cb); }, schreiben: function (text, cb) { Store.set('lotse.schulden', text); cb(null); } });
+    Schulden.speicherOrt({ laden: function (cb) { Store.get('lotse.schulden', cb); }, schreiben: function (text, cb) { cb(Store.set('lotse.schulden', text) === false ? new Error('nicht gespeichert') : null); }, defekt: function (text) { speicherDefekt('lotse.schulden', text); } });
     Schulden.init({
       t: tL, tDe: function (k, p) { var l = lang, e = einfachSprache; lang = 'de'; einfachSprache = false; try { return t(k, p); } finally { lang = l; einfachSprache = e; } },
       lang: function () { return lang; }, euro: function (x) { return Fmt.euro(x, lang, I18N[lang]['meta.dir'] === 'rtl'); }, euroDe: function (x) { return Fmt.euro(x, 'de'); },

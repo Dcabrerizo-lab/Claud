@@ -119,5 +119,24 @@ for (const l of LANGS) {
   ck('[schuldenliste] ' + l + ': sp.schulden.mahn nennt §§ 692, 694, 700, 339, 719 ZPO und 2 Wochen nicht mehr als hartes Ende', ['692', '694', '700', '339', '719'].every((z) => m.includes(z)) && (l !== 'de' || (/solange/.test(m) && /sofort gepfändet/.test(m) && !/muss innerhalb von 2 Wochen nach der Zustellung beim Gericht ankommen \(§ 692/.test(m))));
 }
 
+// Speicherfehler und kaputte Stände (Auftrag naechstes-update, Technik 1 und 2): Attrappe statt DOM
+{
+  const msg = { textContent: '' }, gesichert = [];
+  const altDoc = global.document;
+  global.document = { getElementById: (id) => (id === 'slSpeicherMsg' ? msg : null), createElement: () => ({}), head: { appendChild() {} } };
+  let roh = '{kaputt';
+  S.speicherOrt({ laden: (cb) => cb(roh), schreiben: (t, cb) => cb(null), defekt: (t) => gesichert.push(t) });
+  S.init({ t: (k) => k, plug: () => null, zeige() {} });
+  ck('[sl-defekt] nicht lesbarer Stand: Rohtext unter lotse.schulden.defekt gesichert, Hinweis, leer gestartet', gesichert.length === 1 && gesichert[0] === '{kaputt' && msg.textContent === 'sl.defekt' && JSON.stringify(S.daten()) === JSON.stringify(S.normiere ? S.normiere(null) : S.daten()), [gesichert, msg.textContent]);
+  roh = '42'; S.neuLaden();
+  ck('[sl-defekt] gültiges JSON, aber kein Objekt, gilt auch als kaputt', gesichert.length === 2 && gesichert[1] === '42');
+  roh = null; S.neuLaden();
+  ck('[sl-defekt] leerer Speicher: nichts gesichert, Hinweis verschwindet', gesichert.length === 2 && msg.textContent === '');
+  const app = fs.readFileSync(path.join(__dirname, '..', 'src', 'app.js'), 'utf8');
+  ck('[sl-speichern] src/app.js gibt nicht angenommenes Speichern weiter (kein festes cb(null)) und sichert kaputte Stände', app.includes("cb(Store.set('lotse.schulden', text) === false ? new Error('nicht gespeichert') : null)") && app.includes("speicherDefekt('lotse.schulden', text)"));
+  ck('[sl-defekt] lotse.schulden.defekt gehört zum Vorgang (PIN, Kopie, Löschen)', require('../src/vorgaenge.js').DATEN.includes('lotse.schulden.defekt'));
+  global.document = altDoc;
+}
+
 if (fehler) { console.log('\n' + fehler + ' von ' + n + ' FEHLGESCHLAGEN'); process.exit(1); }
 console.log('Schulden-Liste-Test bestanden: ' + n + ' Prüfungen');

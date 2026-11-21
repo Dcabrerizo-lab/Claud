@@ -39,6 +39,7 @@
   "sl.fehlt.betrag": "Please enter the amount as a number, for example 120,50.",
   "sl.voll": "The list is full. Delete entries that are settled.",
   "sl.speicherFehler": "The list could not be saved.",
+  "sl.defekt": "Your saved debt list could not be read. A copy has been kept. You are starting with an empty list.",
   "sl.art.miete": "Rent or housing",
   "sl.art.energie": "Electricity, gas, heating",
   "sl.art.unterhalt": "Maintenance (Unterhalt)",

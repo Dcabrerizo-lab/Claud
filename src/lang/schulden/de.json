@@ -39,6 +39,7 @@
   "sl.fehlt.betrag": "Bitte gib den Betrag als Zahl ein, zum Beispiel 120,50.",
   "sl.voll": "Die Liste ist voll. Lösche erledigte Einträge.",
   "sl.speicherFehler": "Die Liste konnte nicht gespeichert werden.",
+  "sl.defekt": "Deine gespeicherte Schulden-Liste ließ sich nicht lesen. Eine Kopie ist gesichert. Du beginnst mit einer leeren Liste.",
   "sl.art.miete": "Miete oder Wohnung",
   "sl.art.energie": "Strom, Gas, Heizung",
   "sl.art.unterhalt": "Unterhalt",

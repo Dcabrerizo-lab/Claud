@@ -39,6 +39,7 @@
   "sl.fehlt.betrag": "Saisis le montant en chiffres, par exemple 120,50.",
   "sl.voll": "La liste est pleine. Supprime les entrées réglées.",
   "sl.speicherFehler": "La liste n’a pas pu être enregistrée.",
+  "sl.defekt": "Ta liste de dettes enregistrée n'a pas pu être lue. Une copie a été conservée. Tu recommences avec une liste vide.",
   "sl.art.miete": "Loyer ou logement",
   "sl.art.energie": "Électricité, gaz, chauffage",
   "sl.art.unterhalt": "Pension alimentaire (Unterhalt)",

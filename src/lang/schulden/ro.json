@@ -39,6 +39,7 @@
   "sl.fehlt.betrag": "Te rugăm să introduci suma ca număr, de exemplu 120,50.",
   "sl.voll": "Lista este plină. Șterge intrările rezolvate.",
   "sl.speicherFehler": "Lista nu a putut fi salvată.",
+  "sl.defekt": "Lista de datorii salvată nu a putut fi citită. O copie a fost păstrată. Începi cu o listă goală.",
   "sl.art.miete": "Chirie sau locuință",
   "sl.art.energie": "Curent, gaz, încălzire",
   "sl.art.unterhalt": "Pensie de întreținere (Unterhalt)",

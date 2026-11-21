@@ -11,7 +11,8 @@ const Vorgaenge = (function () {
   var K = typeof Krypto !== 'undefined' ? Krypto : require('./krypto.js');
   var zuletzt = null; // zuletzt angelegter Tresor (die App hat genau einen): für Vorgaenge.oeffneGesperrt
   var SCHLUESSEL = 'lotse.vorgaenge';
-  var DATEN = ['lotse.state', 'lotse.einfach', 'lotse.pflegecheck', 'lotse.pfaendung', 'lotse.haushalt', 'lotse.haken', 'lotse.ausziehen', 'lotse.fristliste', 'lotse.schulden', 'lotse.beratung-haken', 'lotse.klient-blatt'];
+  var DATEN = ['lotse.state', 'lotse.einfach', 'lotse.pflegecheck', 'lotse.pfaendung', 'lotse.haushalt', 'lotse.haken', 'lotse.ausziehen', 'lotse.fristliste', 'lotse.schulden', 'lotse.beratung-haken', 'lotse.klient-blatt',
+    'lotse.haushalt.defekt', 'lotse.schulden.defekt', 'lotse.ausziehen.defekt']; // .defekt: nicht lesbarer alter Stand (gesichert statt überschrieben)
   // lotse.klient-blatt: Blatt, das die Beratung per QR-Code/SoLo-Datei weitergegeben hat (src/weitergabe.js), nur Daten, kein HTML
   var ITER = K.ITER; // PBKDF2-HMAC-SHA-256, 600 000 Durchläufe (src/krypto.js)
   var NAME_MAX = 24;

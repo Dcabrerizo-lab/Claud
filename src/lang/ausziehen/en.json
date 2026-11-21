@@ -11,6 +11,7 @@
   "az.notiz.t": "For example dates, names or questions",
   "az.moeglich": "possible",
   "az.speicherFehler": "Saving did not work. Your ticks may be lost when you close the app.",
+  "az.defekt": "Your saved ticks and notes could not be read. A copy has been kept. You are starting without ticks.",
   "az.knopf.plan": "Go to the budget plan",
   "az.knopf.check": "Check in the benefits check",
   "az.knopf.briefe": "Check a letter",

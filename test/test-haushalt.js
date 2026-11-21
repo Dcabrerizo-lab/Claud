@@ -170,5 +170,52 @@ if (fs.existsSync(ef)) { const E = JSON.parse(fs.readFileSync(ef, 'utf8')); cons
   check('[hb-tipps] Handy: Kündigung nach Mindestlaufzeit mit einem Monat Frist (§ 56 TKG)', /einem Monat/.test(de['hb.tipp.handy']) && /§ 56/.test(de['hb.quelle.handy']));
 }
 
+// Speicherfehler und kaputte Stände (Auftrag naechstes-update, Technik 1 und 2): Attrappe statt DOM
+{
+  const msg = { textContent: '' }, gesichert = [];
+  const altDoc = global.document;
+  global.document = { getElementById: (id) => (id === 'hbSpeicherMsg' ? msg : null), createElement: () => ({}), head: { appendChild() {} } };
+  let roh = '{kaputt', schreibFehler = false;
+  H.speicherOrt({ laden: (cb) => cb(roh), schreiben: (t, cb) => cb(schreibFehler ? new Error('voll') : null), defekt: (t) => gesichert.push(t) });
+  H.init({ t: (k) => k, plug: () => null, zeige() {} });
+  check('[hb-defekt] nicht lesbarer Stand: Rohtext unter lotse.haushalt.defekt gesichert, Hinweis, leer gestartet', gesichert.length === 1 && gesichert[0] === '{kaputt' && msg.textContent === 'hb.defekt' && JSON.stringify(H.daten()) === JSON.stringify(H.normiere ? H.normiere(null) : H.daten()), [gesichert, msg.textContent]);
+  roh = '42'; H.neuLaden();
+  check('[hb-defekt] gültiges JSON, aber kein Objekt, gilt auch als kaputt', gesichert.length === 2 && gesichert[1] === '42');
+  roh = null; H.neuLaden();
+  check('[hb-defekt] leerer Speicher: nichts gesichert, Hinweis verschwindet', gesichert.length === 2 && msg.textContent === '');
+  schreibFehler = true; H.laden({});
+  check('[hb-speichern] Schreibfehler wird gemeldet (hb.speicherFehler)', msg.textContent === 'hb.speicherFehler', msg.textContent);
+  schreibFehler = false; H.laden({});
+  check('[hb-speichern] nach erfolgreichem Speichern kein Hinweis', msg.textContent === '');
+  const app = fs.readFileSync(path.join(__dirname, '..', 'src', 'app.js'), 'utf8');
+  check('[hb-speichern] src/app.js gibt nicht angenommenes Speichern weiter (kein festes cb(null)) und sichert kaputte Stände', app.includes("cb(Store.set('lotse.haushalt', text) === false ? new Error('nicht gespeichert') : null)") && app.includes("speicherDefekt('lotse.haushalt', text)"));
+  check('[hb-defekt] lotse.haushalt.defekt gehört zum Vorgang (PIN, Kopie, Löschen)', require('../src/vorgaenge.js').DATEN.includes('lotse.haushalt.defekt'));
+  global.document = altDoc;
+}
+
+// „Zum Ergebnis“ (src/app.js, Technik 3): beobachtet mit IntersectionObserver statt bei jedem Scrollen zu messen; Rückfall scroll/resize
+{
+  const app = fs.readFileSync(path.join(__dirname, '..', 'src', 'app.js'), 'utf8');
+  const zeile = (app.match(/^ *if \(window\.IntersectionObserver && \$\('ergebnis'\)\).*\n *else \{.*\}\n/m) || [''])[0];
+  const fn = (app.match(/^ *function jumpPruefen\(\) \{.*\}\n *function jumpSetzen\(r\) \{.*\}\n/m) || [''])[0];
+  check('[app-jump] IntersectionObserver mit Rückfall, kein scroll-Handler mit getBoundingClientRect, wenn vorhanden', !!zeile && !!fn);
+  const lauf = (mitIO) => {
+    const cls = {}, hoerer = [], beob = [];
+    const el = { ergebnis: { getBoundingClientRect: () => ({ top: 100, height: 50 }) }, jump: { classList: { toggle: (c, an) => { cls[c] = an; } } } };
+    const win = { innerHeight: 1000, addEventListener: (e) => hoerer.push(e) };
+    if (mitIO) win.IntersectionObserver = function (cb, opt) { this.observe = (x) => beob.push({ cb, opt, x }); };
+    new Function('window', '$', fn + zeile)(win, (id) => el[id]);
+    return { cls, hoerer, beob };
+  };
+  const a = lauf(true);
+  check('[app-jump] mit IntersectionObserver: kein Scroll-Hörer, Bereich obere 60 %', a.hoerer.length === 0 && a.beob.length === 1 && a.beob[0].opt.rootMargin === '0px 0px -40% 0px');
+  a.beob[0].cb([{ boundingClientRect: { top: 700, height: 50 } }]); const unten = a.cls['am-ergebnis'];
+  a.beob[0].cb([{ boundingClientRect: { top: -300, height: 50 } }]); const oben = a.cls['am-ergebnis'];
+  a.beob[0].cb([{ boundingClientRect: { top: 0, height: 0 } }]);
+  check('[app-jump] Ergebnis unten: aus; darüber gescrollt: an; ausgeblendet: aus', unten === false && oben === true && a.cls['am-ergebnis'] === false);
+  const b = lauf(false);
+  check('[app-jump] ohne IntersectionObserver: Rückfall über scroll und resize', b.hoerer.join() === 'scroll,resize' && b.beob.length === 0);
+}
+
 if (fehler) { console.log('\n' + fehler + ' von ' + n + ' Prüfungen fehlgeschlagen'); process.exit(1); }
 console.log('Haushalt-Test bestanden: ' + n + ' Prüfungen (Rechnung, Kategorien, Monatswechsel, Rundung, Kassenzettel, Übernahme, Hinweise, Sprachen)');

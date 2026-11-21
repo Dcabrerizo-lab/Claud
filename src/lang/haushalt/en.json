@@ -98,6 +98,7 @@
   "hb.beendet": "The recurring expense ends before this month.",
   "hb.rueck": "Undo",
   "hb.speicherFehler": "Saving did not work. Maybe the device storage is full.",
+  "hb.defekt": "Your saved budget plan could not be read. A copy has been kept. You are starting with an empty plan.",
   "hb.ausw.leer": "No expenses for this month yet. Enter them under “Spending”.",
   "hb.ausw.vm": "Previous month: {b}",
   "hb.ausw.mehr": "{b} more than the previous month",

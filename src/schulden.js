@@ -219,15 +219,26 @@ var Schulden = (function () {
   var SCHLUESSEL = 'lotse.schulden';
   var speicher = {
     laden: function (cb) { try { cb(localStorage.getItem(SCHLUESSEL)); } catch (e) { cb(null); } },
-    schreiben: function (txt, cb) { try { localStorage.setItem(SCHLUESSEL, txt); cb(null); } catch (e) { cb(e); } }
+    schreiben: function (txt, cb) { try { localStorage.setItem(SCHLUESSEL, txt); cb(null); } catch (e) { cb(e); } },
+    // Kaputter Stand (nicht lesbar): Rohtext unter lotse.schulden.defekt sichern, bevor leer gestartet wird
+    defekt: function (txt) { try { localStorage.setItem(SCHLUESSEL + '.defekt', txt); } catch (e) {} }
   };
-  function speicherOrt(s) { if (s && s.laden) speicher.laden = s.laden; if (s && s.schreiben) speicher.schreiben = s.schreiben; }
+  function speicherOrt(s) { if (s && s.laden) speicher.laden = s.laden; if (s && s.schreiben) speicher.schreiben = s.schreiben; if (s && s.defekt) speicher.defekt = s.defekt; }
+  // Gespeicherten Text lesen. Nicht lesbar (kein JSON-Objekt): alten Rohstand sichern (speicher.defekt), Hinweis zeigen, leer starten.
+  // So wird ein kaputter Stand nie still überschrieben.
+  function lesen(v) {
+    var d = null, kaputt = false;
+    if (v) { try { d = JSON.parse(v); } catch (e) { kaputt = true; } if (!kaputt && (!d || typeof d !== 'object')) kaputt = true; }
+    if (kaputt) { try { speicher.defekt(String(v)); } catch (e) {} }
+    var m = ctx ? $('slSpeicherMsg') : null; if (m) { if (kaputt) m.textContent = t('sl.defekt'); else if (m.textContent === t('sl.defekt')) m.textContent = ''; }
+    return kaputt ? leer() : normiere(d);
+  }
   function sichern() {
     var m = $('slSpeicherMsg');
     speicher.schreiben(JSON.stringify(daten), function (err) { if (m) m.textContent = err ? t('sl.speicherFehler') : ''; });
   }
   function laden(fertig) {
-    speicher.laden(function (v) { try { daten = normiere(v ? JSON.parse(v) : null); } catch (e) { daten = leer(); } if (fertig) fertig(); });
+    speicher.laden(function (v) { daten = lesen(v); if (fertig) fertig(); });
   }
 
   // ----- Liste -----

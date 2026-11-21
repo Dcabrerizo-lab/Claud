@@ -98,6 +98,7 @@
   "hb.beendet": "Tekrarlayan harcama bu aydan önce sona erer.",
   "hb.rueck": "Geri al",
   "hb.speicherFehler": "Kaydetme olmadı. Cihazın hafızası dolu olabilir.",
+  "hb.defekt": "Kayıtlı bütçe planın okunamadı. Bir kopyası saklandı. Boş bir planla başlıyorsun.",
   "hb.ausw.leer": "Bu ay için henüz harcama yok. „Harcamalar“ altında gir.",
   "hb.ausw.vm": "Önceki ay: {b}",
   "hb.ausw.mehr": "Önceki aydan {b} fazla",

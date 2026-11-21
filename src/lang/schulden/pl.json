@@ -39,6 +39,7 @@
   "sl.fehlt.betrag": "Wpisz kwotę jako liczbę, na przykład 120,50.",
   "sl.voll": "Lista jest pełna. Usuń załatwione wpisy.",
   "sl.speicherFehler": "Nie udało się zapisać listy.",
+  "sl.defekt": "Nie udało się odczytać zapisanej listy długów. Kopia została zachowana. Zaczynasz od pustej listy.",
   "sl.art.miete": "Czynsz lub mieszkanie",
   "sl.art.energie": "Prąd, gaz, ogrzewanie",
   "sl.art.unterhalt": "Alimenty (Unterhalt)",

@@ -98,6 +98,7 @@
   "hb.beendet": "Cheltuiala recurentă se încheie înainte de această lună.",
   "hb.rueck": "Anulează ștergerea",
   "hb.speicherFehler": "Salvarea nu a reușit. Poate memoria dispozitivului este plină.",
+  "hb.defekt": "Planul de buget salvat nu a putut fi citit. O copie a fost păstrată. Începi cu un plan gol.",
   "hb.ausw.leer": "Pentru această lună nu există încă cheltuieli. Introdu-le la „Cheltuieli”.",
   "hb.ausw.vm": "Luna anterioară: {b}",
   "hb.ausw.mehr": "cu {b} mai mult decât luna anterioară",
