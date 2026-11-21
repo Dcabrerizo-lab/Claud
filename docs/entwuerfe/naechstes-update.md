@@ -51,3 +51,22 @@ Quelle: docs/entwuerfe/pruefungen-21-11/ (bedienung.md, sicherheit.md, technik.m
 - Sicherheit (mittel/niedrig): PIN-Länge/Zähler, Cache-Reste, CSP ohne unsafe-inline, Web-CSP + SRI, pdf.js-Update (CVE-2024-4367), Suchlink ohne Ort/PLZ, ML-Kit-Diagnose prüfen (Gerätetest).
 - Technik: Speicherfehler ehrlich melden (Haushalt/Schulden/Ausziehen), kaputte Daten nicht still überschreiben, pflege.js hebel() beschleunigen, jumpPruefen drosseln.
 - Richtigkeit gering (siehe richtigkeit.md), BAföG H1/H2/H4, Abgleich-Hinweise.
+
+## Ergänzung 21.11. 14:40 – weitere offene Themen (vollständig)
+- **Elterngeld:** Mehrlingszuschlag 300 € je weiteres Kind fehlt; Teilzeit-Rechnung (bis 1.389 € zu hoch); ElterngeldPlus gegen amtlichen Rechner prüfen.
+- **BAföG:** statt nur „möglich“ einen Betrag/eine Spanne zeigen (113/200 Fälle „möglich“); Text bafoeg.vermTeil (2.300 € nur bei Ehe/Lebenspartnerschaft und eigenen Kindern).
+- **Kinderzuschlag:** Bericht des Differenztests (Workflow amtlich-kiz, PR #103 gemergt) auswerten, Befunde beheben.
+- **Pfändung:** BGBl.-Fundstelle in src/rules.js prüfen (weicht von Justiz NRW ab).
+- **Daten aus Bescheiden übernehmen** in Deine Angaben / Haushaltsplan / Vorgang (Liste „Das haben wir gefunden“ mit Haken, nichts ungefragt) – von David noch nicht entschieden, vorschlagen.
+- **Bescheidprüfung für Privatleute:** Grundprüfung frei, Vergleichstabelle mit Rechenweg nur mit Lizenz? – offen, zusammen mit Lizenzschutz besprechen.
+- **Lizenzschutz Beratungsmodus** (Gespräch mit David zuerst): Empfehlung Online-Freischaltung mit Plätzen + Name der Einrichtung auf Ausdrucken.
+- **Weitergabe:** QR-Scanner nativ (iPhone), .solo-Datei direkt mit SoLo öffnen, Web-Fassung mit eigener Adresse (QR ohne App), PDF mit PIN (Bibliothek nötig), „Sofort sperren“-Option (Kamera/Teilen-Problem lösen), Kamera-Fotos beim Start aufräumen.
+- **Sprachen:** Begriffe nach Glossar vereinheitlichen, höfliche Anrede tr/ru/uk/fr/pl, Dari-Wortschatz (435 Texte), Rundfunk „eingetragene Lebenspartner“ in so/ps, Pflegegrad-Einschätzung auf Arabisch u. a. übersetzen (+ RTL-Pfeile), Einfache Sprache auf Brief-Seiten.
+- **Sprachen nur bei Bedarf laden** (App real 6,35 MB → ca. 2,5 MB, Start fast doppelt so schnell).
+- **Bedienung (Top-Punkte):** „Ich ziehe aus“ Paragrafen nur im Beratungsmodus; Hilfen-Check weniger Bedienelemente je Frage; Mein Ordner leer → klarer Einstieg, „Frist eintragen“ immer erreichbar; Jobcenter-Brief Foto-Knopf sichtbar; Antragsmappe kürzen, Drucken ans Ende; Unterlagen-Liste ohne Doppelungen; Blatt für die Akte; QR-Knopf früher.
+- **Sicherheit mittel/niedrig:** CSP ohne unsafe-inline, Web-CSP + SRI, pdf.js-Update (CVE-2024-4367), PIN-Länge/Zähler, Suchlink ohne Ort/PLZ, ML-Kit-Netzwerk (Gerätetest), iOS Schutzklasse Complete.
+- **Technik:** Speicherfehler ehrlich melden; kaputte Daten nicht still überschreiben; pflege.js hebel() und jumpPruefen beschleunigen; Werkzeug anschriften-uebernehmen.js gegen Wikipedia sperren.
+- **Richtigkeit:** Rest „gering“ aus richtigkeit.md; Rechenplan je Leistung + vollständig unabhängige Referenzrechnung; Fachleute-Prüfung (2–3 Berater) wenn möglich.
+- **Später/optional:** KI-Chat nur als freiwillige Zusatzfunktion mit geprüften SoLo-Inhalten; Nutzertest mit 5 Personen; RDG-Prüfung durch Anwalt; Muttersprachler (keine bekannt).
+- **Gerätetest vor Veröffentlichung** (Liste vorbereiten): App-PIN/Vorgang-PIN, Bildschirmfoto-Schutz, Teilen/Messenger, SoLo-Datei/QR, Kamera-Scan, iOS-Speicher-Umzug, ML-Kit-Netzwerk.
+- **Hinweis Veröffentlichung:** Im Store-Stand 1.8.0 steckt der kritische Fehler „Urin/Stuhl … meistens oder nie“ (Einfache Sprache Pflege) und das schwache Brief-Einlesen → Update 1.9 bald veröffentlichen (Build nur auf Davids Anweisung).
