@@ -103,7 +103,11 @@ async function zurueck(d) { const v = d.getElementById('v-' + d.defaultView.__so
   await warte(120);
   const feld = d.getElementById('suFeld'), status = d.getElementById('suStatus'), box = d.getElementById('suTreffer');
   const lab = d.querySelector('label[for="suFeld"]');
-  check('DOM: Feld auf der Startseite über den Kacheln', feld && feld.closest('#v-start') && feld.compareDocumentPosition(d.querySelector('.start-raster')) & w.Node.DOCUMENT_POSITION_FOLLOWING);
+  const fen = d.getElementById('suFenster'), lupeS = d.getElementById('suLupeStart');
+  const sichtbar = (el) => w.getComputedStyle(el).display !== 'none';
+  check('Startseite: kein sichtbares Suchfeld, nur die Lupe in der Kopfzeile', fen.hidden && fen.contains(feld) && !d.getElementById('v-start').contains(feld) && lupeS.closest('header.top') && sichtbar(lupeS) && lupeS.getAttribute('aria-label') === 'Suchen');
+  lupeS.focus(); lupeS.click(); await warte(30);
+  check('Startseite: Lupe öffnet das Such-Fenster, Fokus im Feld', !fen.hidden && d.activeElement === feld);
   check('DOM: Beschriftung „Was suchst du?“ (label) und Platzhalter', lab && lab.textContent === 'Was suchst du?' && feld.placeholder === 'Was suchst du?');
   check('DOM: Suchbereich role=search, Trefferzahl aria-live', d.getElementById('suSuche').getAttribute('role') === 'search' && status.getAttribute('aria-live') === 'polite');
   tippe(w, d, 'Mietzuschuss');
@@ -124,7 +128,7 @@ async function zurueck(d) { const v = d.getElementById('v-' + d.defaultView.__so
   d.getElementById('suCheck').click(); await warte(60);
   check('DOM: Knopf öffnet den Hilfen-Check', w.__solo.nav().ansicht === 'leistungen');
   await zurueck(d);
-  check('DOM: Zurück → Startseite mit Suche (Text bleibt)', w.__solo.nav().ansicht === 'start' && feld.value === 'xqzjvvk' && d.activeElement === feld, w.__solo.nav());
+  check('DOM: Zurück → Startseite mit Such-Fenster (Text bleibt)', w.__solo.nav().ansicht === 'start' && !fen.hidden && feld.value === 'xqzjvvk' && d.activeElement === feld, w.__solo.nav());
   // Leeren und Escape
   d.getElementById('suLeeren').click();
   check('DOM: Leeren-Knopf leert Feld und Treffer', feld.value === '' && box.hidden && d.getElementById('suLeeren').hidden);
@@ -148,16 +152,17 @@ async function zurueck(d) { const v = d.getElementById('v-' + d.defaultView.__so
     if (id === 'a-vorher') check('DOM: Ich ziehe aus → Bevor du ausziehst offen', nav.ebene.pfad === 'ausziehen/offen', nav.ebene.pfad);
     await zurueck(d);
     const n2 = w.__solo.nav();
-    check('DOM: Zurück von ' + id + ' → Startseite mit Suche', n2.ansicht === 'start' && feld.value === q && box.querySelector('button[data-ziel="' + id + '"]') && d.activeElement === feld, n2);
+    check('DOM: Zurück von ' + id + ' → Startseite mit Suche', n2.ansicht === 'start' && !fen.hidden && feld.value === q && box.querySelector('button[data-ziel="' + id + '"]') && d.activeElement === feld, n2);
   }
+  feld.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); await warte(30);
+  check('DOM: Esc schließt das Fenster auf der Startseite, Fokus auf die Lupe', fen.hidden && d.activeElement === lupeS);
   // Danach öffnet die Startkachel „Geld und Schulden“ wieder die Übersicht (kein alter Unterstand)
   d.getElementById('goGeld').click(); await warte(60);
   check('DOM: Startkachel Geld danach auf der obersten Ebene', w.__solo.nav().ebene.pfad === 'sparen', w.__solo.nav().ebene.pfad);
   await zurueck(d);
   // Lupe auf allen anderen Seiten: Such-Fenster mit demselben Feld
-  const lupe = d.getElementById('suLupe'), fen = d.getElementById('suFenster');
-  const sichtbar = (el) => w.getComputedStyle(el).display !== 'none';
-  check('Lupe: auf der Startseite ausgeblendet (sichtbares Feld genügt)', w.__solo.nav().ansicht === 'start' && !sichtbar(lupe));
+  const lupe = d.getElementById('suLupe');
+  check('Lupe: auf der Startseite nur eine Lupe (die in der Kopfzeile)', w.__solo.nav().ansicht === 'start' && !sichtbar(lupe) && sichtbar(lupeS));
   check('Lupe: aria-label „Suchen“', lupe.getAttribute('aria-label') === 'Suchen' && fen.getAttribute('role') === 'dialog' && fen.getAttribute('aria-modal') === 'true');
   d.getElementById('goGeld').click(); await warte(60);
   d.querySelector('#spInhalt .gs-inkasso').click(); await warte(60);
@@ -166,7 +171,7 @@ async function zurueck(d) { const v = d.getElementById('v-' + d.defaultView.__so
   lupe.focus(); lupe.click(); await warte(30);
   check('Lupe: Fenster offen, Fokus im Feld, Feld im Fenster', !fen.hidden && d.activeElement === feld && fen.contains(feld) && d.getElementById('inhalt').inert);
   feld.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); await warte(30);
-  check('Lupe: Esc schließt, Seite bleibt, Fokus zurück auf Lupe, Feld wieder auf der Startseite', fen.hidden && w.__solo.nav().ebene.pfad === vorher && d.activeElement === lupe && d.getElementById('v-start').contains(feld) && !d.getElementById('inhalt').inert, [w.__solo.nav().ebene.pfad, d.activeElement && d.activeElement.id]);
+  check('Lupe: Esc schließt, Seite bleibt, Fokus zurück auf Lupe, Feld wieder auf der Startseite', fen.hidden && w.__solo.nav().ebene.pfad === vorher && d.activeElement === lupe && fen.contains(feld) && !d.getElementById('inhalt').inert, [w.__solo.nav().ebene.pfad, d.activeElement && d.activeElement.id]);
   lupe.click(); await warte(30);
   cap.listener.backButton(); await warte(60);
   check('Lupe: Android-Zurück schließt nur das Fenster', fen.hidden && w.__solo.nav().ebene.pfad === vorher, w.__solo.nav().ebene.pfad);
@@ -180,7 +185,8 @@ async function zurueck(d) { const v = d.getElementById('v-' + d.defaultView.__so
   tb.click(); await warte(100);
   check('Lupe: Treffer öffnet die Seite und schließt das Fenster', fen.hidden && w.__solo.nav().ansicht === 'leistungen', w.__solo.nav());
   await zurueck(d);
-  check('Lupe: Zurück vom Treffer → Startseite mit Suche', w.__solo.nav().ansicht === 'start' && feld.value === 'Klassenfahrt' && d.getElementById('v-start').contains(feld), w.__solo.nav());
+  check('Lupe: Zurück vom Treffer → Startseite mit Suche', w.__solo.nav().ansicht === 'start' && feld.value === 'Klassenfahrt' && !fen.hidden, w.__solo.nav());
+  d.getElementById('suZu').click(); await warte(30);
   // Einstellungen und Mein Ordner (Leiste unten), tiefere Ebene
   d.querySelector('#appnav button[data-ansicht="einst"]').click(); await warte(60);
   d.querySelector('#einstListe .zeile[data-seite="sicher"]').click(); await warte(60);
@@ -190,6 +196,7 @@ async function zurueck(d) { const v = d.getElementById('v-' + d.defaultView.__so
   check('Lupe: aus Einstellungen zum Mahnbescheid', w.__solo.nav().ebene.pfad.indexOf('sparen/dringend') === 0, w.__solo.nav().ebene.pfad);
   await zurueck(d);
   check('Lupe: danach Zurück → Start', w.__solo.nav().ansicht === 'start');
+  d.getElementById('suZu').click(); await warte(30);
   check('DOM: Suchbegriffe werden nicht gespeichert', !Object.values(mem).some((v) => /Lohnpf|Antragsmappe|xqzjvvk/.test(v)), Object.keys(mem));
   check('DOM: keine Fehler', errors.length === 0, errors);
 
@@ -197,6 +204,7 @@ async function zurueck(d) { const v = d.getElementById('v-' + d.defaultView.__so
   const a = starte('ar');
   await warte(120);
   const fa = a.d.getElementById('suFeld');
+  a.d.getElementById('suLupeStart').click(); await warte(30);
   check('RTL: Seite dir=rtl, Platzhalter arabisch', a.d.documentElement.getAttribute('dir') === 'rtl' && fa.placeholder === I18N.ar['su.label'], fa.placeholder);
   tippe(a.w, a.d, 'مساعدة السكن');
   const az = a.d.querySelector('#suTreffer button.su-zeile');

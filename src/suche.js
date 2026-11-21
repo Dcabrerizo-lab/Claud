@@ -1,4 +1,4 @@
-// Suche auf der Startseite: kleines Feld „Was suchst du?“ über den Kacheln, Treffer führen direkt zur Seite.
+// Suche: Lupe oben auf jeder Seite (Startseite: in der Kopfzeile) öffnet ein Such-Fenster „Was suchst du?“; Treffer führen direkt zur Seite.
 // - Offline: kein Server, keine Daten nach außen, die Suchbegriffe werden nirgends gespeichert (nur im Eingabefeld, solange die App offen ist).
 // - Index: alle Ziele der App (ZIELE unten) mit dem Seitentitel der gewählten Sprache, dem deutschen Titel und den Alltagswörtern
 //   aus src/lang/suche/woerter/<Sprache>.json (beim Bauen als WOERTER eingesetzt; alte Namen wie „Hartz 4“, „Pflegestufe“, „GEZ“).
@@ -181,23 +181,21 @@ var Suche = (function () {
   }
   function gehe(id) { if (offen()) schliessen(false); app.gehe(id); }
   // ---------- Such-Fenster auf allen anderen Seiten (Lupe oben): dasselbe Feld mit denselben Treffern ----------
-  // Das Formular wird ins Fenster verschoben und beim Schließen zurück auf die Startseite (eine Suche, ein Stand).
-  var platz = null, vorFokus = null;
+  // Das Suchfeld steht nur im Fenster (Entscheidung David 21.11.2026: auch auf der Startseite nur die Lupe). Text und Treffer bleiben,
+  // solange die App offen ist (nur im Feld, nie gespeichert).
+  var vorFokus = null;
   function offen() { var f = $('suFenster'); return !!f && !f.hidden; }
   function sperre(an) { ['inhalt', 'appnav'].forEach(function (id) { var e = $(id); if (e) { e.inert = an; if (an) e.setAttribute('aria-hidden', 'true'); else e.removeAttribute('aria-hidden'); } }); }
   function oeffnen() {
-    var f = $('suFenster'), form = $('suSuche'); if (!f || !form || offen()) return;
+    var f = $('suFenster'); if (!f || offen()) return;
     vorFokus = document.activeElement;
-    platz = { eltern: form.parentNode, vor: form.nextSibling };
-    $('suFensterPlatz').appendChild(form);
     f.hidden = false; sperre(true);
     zeigen();
     try { $('suFeld').focus({ preventScroll: true }); } catch (e) { $('suFeld').focus(); }
   }
   function schliessen(fokusZurueck) {
-    var f = $('suFenster'), form = $('suSuche'); if (!offen()) return false;
+    var f = $('suFenster'); if (!offen()) return false;
     f.hidden = true; sperre(false);
-    if (platz) { platz.eltern.insertBefore(form, platz.vor); platz = null; }
     if (fokusZurueck !== false && vorFokus && document.body.contains(vorFokus) && vorFokus.focus) { try { vorFokus.focus({ preventScroll: true }); } catch (e) { vorFokus.focus(); } }
     vorFokus = null;
     return true;
@@ -210,7 +208,7 @@ var Suche = (function () {
     $('suSuche').addEventListener('keydown', tasten);
     $('suSuche').addEventListener('submit', function (ev) { ev.preventDefault(); });
     $('suLeeren').addEventListener('click', leeren);
-    var lupe = $('suLupe'); if (lupe) lupe.addEventListener('click', oeffnen);
+    document.querySelectorAll('.su-lupe-knopf').forEach(function (b) { b.addEventListener('click', oeffnen); });
     var fe = $('suFenster'); if (fe) fe.addEventListener('keydown', function (ev) { if (ev.key === 'Escape') { ev.preventDefault(); schliessen(true); } });
     var zu = $('suZu'); if (zu) zu.addEventListener('click', function () { schliessen(true); });
   }
@@ -219,8 +217,8 @@ var Suche = (function () {
     if (!$('suFeld') || !app) return; // Platzhalter und Beschriftung setzt applyLang (data-t-ph, data-t-aria)
     idx = null; zeigen();
   }
-  // Zurück von einem Treffer: Feld mit Text und Treffern bleibt, Fokus ins Feld
-  function fokus() { var f = $('suFeld'); if (f) { try { f.focus({ preventScroll: true }); } catch (e) { f.focus(); } } }
+  // Zurück von einem Treffer (Startseite): Such-Fenster wieder offen, Text und Treffer wie vorher; Schließen setzt den Fokus auf die Lupe
+  function fokus() { var l = $('suLupeStart'); if (l) l.focus({ preventScroll: true }); oeffnen(); }
 
   return { ZIELE: ZIELE, BEREICHE: BEREICHE, LEISTUNGEN: LEISTUNGEN, WOERTER: WOERTER, norm: norm, dist: dist, toleranz: toleranz, wortGuete: wortGuete, index: index, suche: suche,
     init: init, zeigen: zeigen, sprache: sprache, fokus: fokus, offen: offen, oeffnen: oeffnen, schliessen: schliessen };

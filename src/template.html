@@ -995,7 +995,7 @@
   .app:not([data-ansicht="start"]) .top .sprach-knopf { display: none; }
   .gruss { font-size: 1.7em; font-weight: 900; margin: 4px 0 6px; }
   /* Suche auf der Startseite (src/suche.js): dezent, über den Kacheln; Treffer als Zeilen, Symbol in der Bereichsfarbe */
-  .su-suche { max-width: 640px; margin: 14px 0 0; }
+  .su-suche { max-width: 640px; margin: 0; }
   .su-feld { position: relative; display: flex; align-items: center; }
   .su-lupe { position: absolute; inset-inline-start: 14px; width: 20px; height: 20px; fill: none; stroke: var(--muted); stroke-width: 2; stroke-linecap: round; pointer-events: none; }
   #suFeld { width: 100%; min-height: 46px; padding: 10px 46px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink); font: inherit; -webkit-appearance: none; appearance: none; }
@@ -1016,7 +1016,9 @@
   #inhalt { position: relative; }
   .su-lupe-knopf { position: absolute; top: 0; inset-inline-end: 0; z-index: 2; display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--line); border-radius: 50%; background: var(--surface); color: var(--ink); cursor: pointer; }
   .su-lupe-knopf svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
-  .app[data-ansicht="start"] .su-lupe-knopf { display: none; }
+  .app[data-ansicht="start"] #inhalt > .su-lupe-knopf, .app:not([data-ansicht="start"]) .top .su-lupe-knopf { display: none; }
+  .top .su-lupe-knopf { position: static; align-self: flex-start; flex: none; }
+  .top .sprach-knopf + .su-lupe-knopf { margin-inline-start: -12px; }
   .app:not([data-ansicht="start"]) #inhalt .pa-zeile { padding-inline-end: 52px; }
   .su-fenster { position: fixed; inset: 0; z-index: 50; overflow-y: auto; background: var(--bg); padding: max(16px, env(safe-area-inset-top)) 16px 24px; }
   .su-fenster > * { max-width: 640px; margin-inline: auto; }
@@ -1275,10 +1277,11 @@
         <p class="lead" data-t="lead"></p>
       </div>
       <label class="sprach-knopf"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg><span class="vh" data-t="lang.top"></span><select id="langTop"></select></label>
+      <button type="button" class="su-lupe-knopf" id="suLupeStart" data-t-aria="su.suchen"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></button>
     </header>
 
     <main id="inhalt">
-    <!-- Lupe oben auf allen Seiten außer Start: öffnet das Such-Fenster (src/suche.js) -->
+    <!-- Lupe oben auf allen Seiten außer Start (dort steht sie in der Kopfzeile neben der Sprache): öffnet das Such-Fenster (src/suche.js) -->
     <button type="button" class="su-lupe-knopf" id="suLupe" data-t-aria="su.suchen"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></button>
     <!-- Erststart: einmal für jeden Einstieg (gleich welche Kachel), bis „Verstanden“ -->
     <div class="notice info first" id="firstNotice" role="note" hidden>
@@ -1289,13 +1292,6 @@
     <section id="v-start" class="ansicht" aria-labelledby="h-start" hidden>
       <h2 id="h-start" class="ans-h gruss" data-t="home.gruss"></h2>
       <p class="gruss-t" data-t="home.gruss.t"></p>
-      <!-- Suche (src/suche.js): offline, nichts wird gespeichert oder gesendet -->
-      <form class="su-suche" id="suSuche" role="search" autocomplete="off">
-        <label for="suFeld" class="vh" data-t="su.label"></label>
-        <span class="su-feld"><svg class="su-lupe" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg><input type="search" id="suFeld" data-t-ph="su.label" enterkeyhint="search" autocomplete="off" autocorrect="off" spellcheck="false" aria-describedby="suStatus"><button type="button" class="su-leeren" id="suLeeren" data-t-aria="su.leeren" hidden><span aria-hidden="true">×</span></button></span>
-        <p class="vh" id="suStatus" role="status" aria-live="polite"></p>
-        <div class="su-treffer" id="suTreffer" hidden></div>
-      </form>
       <div class="start-raster">
         <button type="button" class="sk sk-haupt sk-leistungen" id="goLeistungen"><span class="sk-txt"><b data-t="home.leistungen"></b><span class="sk-meta" data-t="home.hero.meta"></span></span><span class="hero-los"><span data-t="home.los"></span><span class="pfeil" aria-hidden="true">→</span></span></button>
         <button type="button" class="sk sk-pflege" id="goPflege"><span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/><path d="M9 12h6M12 9v6"/></svg></span><span class="sk-txt"><b data-t="home.pflege"></b><span data-t="home.pflege.t"></span></span></button>
@@ -2101,7 +2097,15 @@
   <div class="su-fenster" id="suFenster" role="dialog" aria-modal="true" aria-labelledby="suFensterH" hidden>
     <!--ZURUECK id=suZu eigen=1-->
     <h2 id="suFensterH" class="vh" data-t="su.suchen"></h2>
-    <div id="suFensterPlatz"></div>
+    <div id="suFensterPlatz">
+    <!-- Suche (src/suche.js): offline, nichts wird gespeichert oder gesendet -->
+      <form class="su-suche" id="suSuche" role="search" autocomplete="off">
+        <label for="suFeld" class="vh" data-t="su.label"></label>
+        <span class="su-feld"><svg class="su-lupe" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg><input type="search" id="suFeld" data-t-ph="su.label" enterkeyhint="search" autocomplete="off" autocorrect="off" spellcheck="false" aria-describedby="suStatus"><button type="button" class="su-leeren" id="suLeeren" data-t-aria="su.leeren" hidden><span aria-hidden="true">×</span></button></span>
+        <p class="vh" id="suStatus" role="status" aria-live="polite"></p>
+        <div class="su-treffer" id="suTreffer" hidden></div>
+      </form>
+    </div>
   </div>
   <nav class="appnav" id="appnav" aria-label="SoLo">
     <button type="button" data-ansicht="start"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg><span data-t="nav.start"></span></button>

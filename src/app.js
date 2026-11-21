@@ -629,7 +629,7 @@
     if (window.Ausziehen && Ausziehen.sprache) Ausziehen.sprache(); // „Ich ziehe aus“ (src/ausziehen.js) in der neuen Sprache zeichnen
     if (window.Schulden && Schulden.sprache) Schulden.sprache(); // Schulden-Liste (src/schulden.js)
     if (window.Klient) Klient.sprache(); // „Für Klient zusammenstellen“ (src/klient.js)
-    if (window.Suche) Suche.sprache(); // Suche auf der Startseite (src/suche.js)
+    if (window.Suche) Suche.sprache(); // Suche (Lupe, src/suche.js)
     // Regeln älter als der nächste Stichtag (1. Januar): deutlich darauf hinweisen
     var veraltet = regelnVeraltet();
     $('altNotice').hidden = !veraltet; $('altNotice').textContent = veraltet ? t('alt.hinweis', { stand: standL() }) : '';
@@ -3008,7 +3008,7 @@
   }
   function zurueckSchritt() {
     var a = aktAnsicht, b;
-    if (sucheRueck && navEbene().pfad === sucheRueck) { sucheZurStart(); return true; } // von einem Suchtreffer: Zurück führt zur Startseite mit Suche
+    if (sucheRueck && navEbene().pfad === sucheRueck) { sucheZurStart(); return true; } // von einem Suchtreffer: Zurück führt zur Startseite mit offenem Such-Fenster
     if (paRueck && a === paRueck && (a !== 'pflegestart' || pu.schritt === 'liste')) { if (a === 'briefe') briefOeffnen(null); paErgebnisZeigen(); return true; } // Unterseite der Pflege-Ergebnisseite
     if (a === 'pflege') { b = document.querySelector('#pflegeAssist .pa-zur'); if (b) b.click(); else paVerlassen(); return true; }
     if (a === 'pflegeinfo') { piZurueckTun(); return true; }
@@ -4182,7 +4182,7 @@
       return out;
     });
   }
-  // ----- Suche auf der Startseite (src/suche.js): Treffer öffnen die Seite über die vorhandenen Wege; „Zurück“ führt zur Startseite mit Suche -----
+  // ----- Suche (Lupe oben auf jeder Seite, src/suche.js): Treffer öffnen die Seite über die vorhandenen Wege; „Zurück“ führt zur Startseite mit Suche -----
   var sucheRueck = ''; // Ebene (navEbene().pfad), die ein Suchtreffer geöffnet hat
   function sucheTitel(z, de) {
     var k = z[2];
