@@ -295,6 +295,10 @@ var Klient = (function () {
     var s = $('kbTeilen'); if (s) s.addEventListener('click', teilen);
   }
 
+  return { init: init, oeffnen: oeffnen, schliessen: schliessen, offen: function () { return offen; }, sichtbar: sichtbar, sprache: sprachWechsel,
+    dokument: function () { return dokument(); }, pdfSeiten: pdfSeiten, teilen: teilen, drucken: drucken };
+})();
+Klient.cacheAufraeumen = (function () {
   // Reste vom Teilen: Die App schreibt .solo- und PDF-Dateien (und Seitenbilder beim Einlesen) kurz in ihren eigenen Cache
   // (Capacitor Filesystem, Directory.Cache = 'CACHE') und löscht sie nach dem Teilen. Wird die App dabei beendet, bleiben sie liegen.
   // Beim Start: nur Dateien direkt im App-Cache mit diesen Endungen bzw. diesem Namen löschen, keine Ordner, nichts außerhalb.
@@ -311,8 +315,6 @@ var Klient = (function () {
       })).then(function (a) { return a.reduce(function (x, y) { return x + y; }, 0); });
     }).catch(function () { return 0; });
   }
-
-  return { init: init, oeffnen: oeffnen, schliessen: schliessen, offen: function () { return offen; }, sichtbar: sichtbar, sprache: sprachWechsel,
-    dokument: function () { return dokument(); }, pdfSeiten: pdfSeiten, teilen: teilen, drucken: drucken, cacheAufraeumen: cacheAufraeumen };
+  return cacheAufraeumen;
 })();
 if (typeof module !== 'undefined') module.exports = Klient;
