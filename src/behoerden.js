@@ -70,7 +70,13 @@ const Behoerden = (function () {
     if (ags && !has(D.kreise, ags) && D.de && has(D.de.kreise, ags)) {
       var e = D.de.kreise[ags];
       if (z.typ !== 'kreis' || (e.typ !== 'stadt' && id !== 'gsa' && id !== 'wohngeld')) return null;
-      return { name: e.name, abt: z.abt, anschrift: e.anschrift || null, haus: null, web: e.web || '', quelle: e.quelle || 'Wikidata', quelleArt: e.quelleArt || '', stand: e.stand || '',
+      // Anschrift nur aus amtlicher Quelle (Impressum der Behörde). Aus Wikipedia übernommene Anschriften zeigt die App nicht (Projektregel: jede
+      // Anschrift braucht eine amtliche Quelle; Prüfung Richtigkeit 21.11.2026) – dann nur Name und Website der Behörde (beh.ohneAdr).
+      // Am 21.11.2026 wurden die 60 früheren Wikipedia-Anschriften gegen die Website der Behörde geprüft: 47 mit Impressum/Kontaktseite als
+      // Quelle (bestätigt oder korrigiert), 13 weiter ohne Anschrift (Website nicht abrufbar). Liste: docs/PRUEFLISTE.md, Zeile beh-de.
+      // Großkunden-PLZ oder Postfach (z. B. „48127 Münster“) erscheinen so, wie die Behörde sie als Postanschrift nennt (auch einzeilig).
+      var amtlich = e.quelleArt === 'impressum';
+      return { name: e.name, abt: z.abt, anschrift: amtlich && e.anschrift || null, haus: null, web: e.web || '', quelle: amtlich ? e.quelle || '' : 'Wikidata', quelleArt: amtlich ? 'impressum' : '', stand: amtlich ? e.stand || '' : '',
         weiter: id === 'wohngeld' && e.typ !== 'stadt' };
     }
     if (!ags || !has(D.kreise, ags)) return null;

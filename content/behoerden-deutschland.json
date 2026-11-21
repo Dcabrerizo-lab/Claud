@@ -1,5 +1,5 @@
 {
- "stand": "Website laut Wikidata (CC0), abgerufen 10.11.2026; Anschriften: Impressum der Behörden und Wikipedia (Handy-Abruf), geprüft (PLZ im Land, Abgleich beider Quellen)",
+ "stand": "Website laut Wikidata (CC0), abgerufen 10.11.2026; Anschriften: nur Impressum oder Kontaktseite der Behörde selbst (abgerufen 11.11.2026 bzw. 21.11.2026); Anschriften ohne amtlichen Beleg (früher Wikipedia) werden nicht gezeigt",
  "kreise": {
   "10041": {
    "name": "Regionalverband Saarbrücken",
@@ -111,12 +111,12 @@
    "typ": "stadt",
    "wiki": "Frankfurt (Oder)",
    "anschrift": [
-    "Am Marktplatz 1",
+    "Marktplatz 1",
     "15230 Frankfurt (Oder)"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Frankfurt_%28Oder%29",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.frankfurt-oder.de/Schnellnavigation/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "12054": {
    "name": "Stadt Potsdam",
@@ -283,9 +283,9 @@
     "Heinrich-Heine-Straße 1",
     "03149 Forst (Lausitz)"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Landkreis_Spree-Nei%C3%9Fe",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.lkspn.de/impressum.html",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "12072": {
    "name": "Landkreis Teltow-Fläming",
@@ -426,9 +426,9 @@
     "Markt 1",
     "09111 Chemnitz"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Chemnitz",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.chemnitz.de/de/impressum",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "14521": {
    "name": "Erzgebirgskreis",
@@ -488,12 +488,12 @@
    "typ": "stadt",
    "wiki": "Dresden",
    "anschrift": [
-    "Dr.-Külz-Ring 19",
+    "Rathausplatz 1",
     "01067 Dresden"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Dresden",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.dresden.de/de/sonstiges/impressum.php",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "14625": {
    "name": "Landkreis Bautzen",
@@ -543,9 +543,9 @@
     "Schloßhof 2/4",
     "01796 Pirna"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Landkreis_S%C3%A4chsische_Schweiz-Osterzgebirge",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.landratsamt-pirna.de/impressum.html",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "14713": {
    "name": "Stadt Leipzig",
@@ -582,9 +582,9 @@
     "Schloßstraße 27",
     "04860 Torgau"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Landkreis_Nordsachsen",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.landkreis-nordsachsen.de/kontakt",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "15001": {
    "name": "Stadt Dessau-Roßlau",
@@ -634,9 +634,9 @@
     "Karl-Marx-Straße 32",
     "29410 Salzwedel"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Altmarkkreis_Salzwedel",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.altmarkkreis-salzwedel.de/global/impressum.aspx",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "15082": {
    "name": "Anhalt-Bitterfeld",
@@ -736,11 +736,11 @@
    "wiki": "Salzlandkreis",
    "anschrift": [
     "Karlsplatz 37",
-    "06406 Bernburg"
+    "06406 Bernburg (Saale)"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Salzlandkreis",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.salzlandkreis.de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "15090": {
    "name": "Landkreis Stendal",
@@ -813,12 +813,12 @@
    "typ": "stadt",
    "wiki": "Suhl",
    "anschrift": [
-    "Am Marktplatz 1",
+    "Marktplatz 1",
     "98527 Suhl"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Suhl",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.suhl.eu/impressum",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "16055": {
    "name": "Stadt Weimar",
@@ -1024,9 +1024,9 @@
     "Oschitzer Straße 4",
     "07907 Schleiz"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Saale-Orla-Kreis",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.saale-orla-kreis.de/de/impressum.html",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "16076": {
    "name": "Landkreis Greiz",
@@ -1089,9 +1089,9 @@
     "Pulverwiesen 11",
     "73728 Esslingen am Neckar"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Landkreis_Esslingen",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.landkreis-esslingen.de/start/service/kontakt.html",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "08117": {
    "name": "Landkreis Göppingen",
@@ -1128,9 +1128,9 @@
     "Alter Postplatz 10",
     "71332 Waiblingen"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Rems-Murr-Kreis",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.rems-murr-kreis.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "08121": {
    "name": "Stadt Heilbronn",
@@ -1180,9 +1180,9 @@
     "Münzstraße 1",
     "74523 Schwäbisch Hall"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Landkreis_Schw%C3%A4bisch_Hall",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.lrasha.de/landratsamt/impressum-service/inhalt",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "08128": {
    "name": "Main-Tauber-Kreis",
@@ -1206,9 +1206,9 @@
     "Felsenstraße 36",
     "89518 Heidenheim an der Brenz"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Landkreis_Heidenheim",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.landkreis-heidenheim.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "08136": {
    "name": "Ostalbkreis",
@@ -1219,9 +1219,9 @@
     "Stuttgarter Straße 41",
     "73430 Aalen"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Ostalbkreis",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.ostalbkreis.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "08211": {
    "name": "Stadt Baden-Baden",
@@ -1232,9 +1232,9 @@
     "Marktplatz 2",
     "76530 Baden-Baden"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Baden-Baden",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.baden-baden.de/3766823",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "08212": {
    "name": "Stadt Karlsruhe",
@@ -1310,9 +1310,9 @@
     "Neckarelzer Straße 7",
     "74821 Mosbach"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Neckar-Odenwald-Kreis",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.neckar-odenwald-kreis.de/Impressum.html",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "08226": {
    "name": "Rhein-Neckar-Kreis",
@@ -1401,9 +1401,9 @@
     "Stadtstraße 2",
     "79104 Freiburg im Breisgau"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Landkreis_Breisgau-Hochschwarzwald",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.breisgau-hochschwarzwald.de/Start/Service_Seiten/Impressum.html",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "08316": {
    "name": "Landkreis Emmendingen",
@@ -1414,9 +1414,9 @@
     "Bahnhofstraße 2–4",
     "79312 Emmendingen"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Landkreis_Emmendingen",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.landkreis-emmendingen.de/kultur-freizeit-aktuelles/impressum-service/erklaerung-zur-barrierefreiheit",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "08317": {
    "name": "Ortenaukreis",
@@ -1437,12 +1437,12 @@
    "typ": "kreis",
    "wiki": "Landkreis Rottweil",
    "anschrift": [
-    "Königstraße 36",
+    "Marienstraße 2",
     "78628 Rottweil"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Landkreis_Rottweil",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.landkreis-rottweil.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "08326": {
    "name": "Schwarzwald-Baar-Kreis",
@@ -1645,12 +1645,12 @@
    "typ": "stadt",
    "wiki": "Bremerhaven",
    "anschrift": [
-    "Hinrich-Schmalfeldt-Straße 30",
-    "27576 Bremerhaven"
+    "Postfach 21 03 60",
+    "27524 Bremerhaven"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Bremerhaven",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.bremerhaven.de/de/impressum.5567.html",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "06411": {
    "name": "Stadt Darmstadt",
@@ -1658,12 +1658,12 @@
    "typ": "stadt",
    "wiki": "Darmstadt",
    "anschrift": [
-    "Luisenplatz 5",
+    "Luisenplatz 5 A",
     "64283 Darmstadt"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Darmstadt",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.darmstadt.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "06412": {
    "name": "Stadt Frankfurt am Main",
@@ -1895,9 +1895,9 @@
     "Goldhelg 20",
     "36341 Lauterbach"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Vogelsbergkreis",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.vogelsbergkreis.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "06611": {
    "name": "Stadt Kassel",
@@ -1999,9 +1999,9 @@
     "Platz der Deutschen Einheit 1",
     "38100 Braunschweig"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Braunschweig",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.braunschweig.de/impressum.php",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "03102": {
    "name": "Stadt Salzgitter",
@@ -2129,9 +2129,9 @@
     "Hildesheimer Straße 20",
     "30169 Hannover"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Region_Hannover",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://serviceportal.region-hannover.de/portal/seiten/impressum-serviceportal-region-hannover-900000014-20001.html",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "03251": {
    "name": "Landkreis Diepholz",
@@ -2207,9 +2207,9 @@
     "Jahnstraße 20",
     "31655 Stadthagen"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Landkreis_Schaumburg",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.schaumburg.de/Kurzmen%C3%BC/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "03351": {
    "name": "Landkreis Celle",
@@ -2282,12 +2282,12 @@
    "typ": "kreis",
    "wiki": "Landkreis Osterholz",
    "anschrift": [
-    "Am Osterholze 2a",
+    "Osterholzer Straße 23",
     "27711 Osterholz-Scharmbeck"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Landkreis_Osterholz",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.landkreis-osterholz.de/portal/seiten/Seite-901000870-21000.html",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "03357": {
    "name": "Rotenburg (Wümme)",
@@ -2387,11 +2387,11 @@
    "wiki": "Oldenburg (Oldb)",
    "anschrift": [
     "Markt 1",
-    "26122 Oldenburg (Oldb)"
+    "26105 Oldenburg"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Oldenburg_%28Oldb%29",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.oldenburg.de/metanavigation/impressum.html",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "03404": {
    "name": "Stadt Osnabrück",
@@ -2584,9 +2584,9 @@
     "Marktplatz 2",
     "40213 Düsseldorf"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/D%C3%BCsseldorf",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.duesseldorf.de/infonav/impressum",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "05112": {
    "name": "Stadt Duisburg",
@@ -2607,12 +2607,11 @@
    "typ": "stadt",
    "wiki": "Essen",
    "anschrift": [
-    "Porscheplatz 1",
-    "45127 Essen"
+    "45121 Essen"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Essen",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.essen.de/kontakt.de.html",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "05114": {
    "name": "Stadt Krefeld",
@@ -2789,12 +2788,12 @@
    "typ": "stadt",
    "wiki": "Köln",
    "anschrift": [
-    "Rathausplatz 2",
+    "Historisches Rathaus",
     "50667 Köln"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/K%C3%B6ln",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.stadt-koeln.de/service/kontakt/impressum",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "05316": {
    "name": "Stadt Leverkusen",
@@ -2945,12 +2944,11 @@
    "typ": "stadt",
    "wiki": "Münster",
    "anschrift": [
-    "Klemensstraße 10",
-    "48143 Münster"
+    "48127 Münster"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/M%C3%BCnster",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.stadt-muenster.de/kontakt",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "05554": {
    "name": "Kreis Borken",
@@ -2987,9 +2985,9 @@
     "Kurt-Schumacher-Allee 1",
     "45657 Recklinghausen"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Kreis_Recklinghausen",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.kreis-re.de/Inhalte/Allgemein/Impressum.asp",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "05566": {
    "name": "Kreis Steinfurt",
@@ -3039,9 +3037,9 @@
     "Herzebrocker Straße 140",
     "33334 Gütersloh"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Kreis_G%C3%BCtersloh",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.kreis-guetersloh.de/impressum-datenschutz/",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "05758": {
    "name": "Kreis Herford",
@@ -3052,9 +3050,9 @@
     "Amtshausstraße 3",
     "32051 Herford"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Kreis_Herford",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.kreis-herford.de/Startseite/Impressum/",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "05762": {
    "name": "Kreis Höxter",
@@ -3114,12 +3112,12 @@
    "typ": "stadt",
    "wiki": "Bochum",
    "anschrift": [
-    "Willy-Brandt-Platz 2–6",
-    "44787 Bochum"
+    "Willy-Brandt-Platz 2-6",
+    "44777 Bochum"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Bochum",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.bochum.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "05913": {
    "name": "Stadt Dortmund",
@@ -3127,12 +3125,12 @@
    "typ": "stadt",
    "wiki": "Dortmund",
    "anschrift": [
-    "Friedensplatz 1",
-    "44135 Dortmund"
+    "Südwall 2-4",
+    "44122 Dortmund"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Dortmund",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.dortmund.de/allgemeines/",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "05914": {
    "name": "Stadt Hagen",
@@ -3273,9 +3271,9 @@
     "Willi-Hörter-Platz 1",
     "56068 Koblenz"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Koblenz",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.koblenz.de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "07131": {
    "name": "Landkreis Ahrweiler",
@@ -3325,9 +3323,9 @@
     "Schneewiesenstraße 25",
     "55765 Birkenfeld"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Landkreis_Birkenfeld",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.landkreis-birkenfeld.de/Impressum-1.htm",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "07135": {
    "name": "Landkreis Cochem-Zell",
@@ -3390,9 +3388,9 @@
     "Insel Silberau 1",
     "56130 Bad Ems"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Rhein-Lahn-Kreis",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.rhein-lahn-kreis.de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "07143": {
    "name": "Westerwaldkreis",
@@ -3530,12 +3528,12 @@
    "typ": "stadt",
    "wiki": "Mainz",
    "anschrift": [
-    "Löwenhofstraße 1",
+    "Große Bleiche 46/Löwenhofstraße 1",
     "55116 Mainz"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Mainz",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.mainz.de/impressum",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "07316": {
    "name": "Stadt Neustadt an der Weinstraße",
@@ -3559,9 +3557,9 @@
     "Exerzierplatzstraße 17",
     "66953 Pirmasens"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Pirmasens",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.pirmasens.de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "07318": {
    "name": "Stadt Speyer",
@@ -3572,9 +3570,9 @@
     "Maximilianstraße 100",
     "67346 Speyer"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Speyer",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.speyer.de/de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "07319": {
    "name": "Stadt Worms",
@@ -3598,9 +3596,9 @@
     "Herzogstraße 1",
     "66482 Zweibrücken"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Zweibr%C3%BCcken",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.zweibruecken.de/de/verwaltung/impressum/",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "07331": {
    "name": "Landkreis Alzey-Worms",
@@ -3712,12 +3710,12 @@
    "typ": "kreis",
    "wiki": "Landkreis Mainz-Bingen",
    "anschrift": [
-    "Georg-Rückert-Straße 11",
+    "Konrad-Adenauer-Straße 34",
     "55218 Ingelheim am Rhein"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Landkreis_Mainz-Bingen",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.mainz-bingen.de/de/impressum/",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "07340": {
    "name": "Südwestpfalz",
@@ -3754,9 +3752,9 @@
     "Fleethörn 9",
     "24103 Kiel"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Kiel",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.kiel.de/de/_info/impressum.php",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "01003": {
    "name": "Stadt Lübeck",
@@ -3845,9 +3843,9 @@
     "Kurt-Wagener-Straße 11",
     "25337 Elmshorn"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Kreis_Pinneberg",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://www.kreis-pinneberg.de/Impressum.html",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "01057": {
    "name": "Kreis Plön",

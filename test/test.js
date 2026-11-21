@@ -402,5 +402,15 @@ check('Alle Schlüssel der Oberfläche (' + ui.size + ') existieren', uiMissing.
 const unused = deKeys.filter((k) => !used.has(k) && !ui.has(k) && !k.startsWith('meta.') && !/^(pflege\.n|stufe\.n|gruppe\.\d|ausb\.|adults\.|n\.|lvl\.|c\.)/.test(k));
 console.log('Hinweis, nicht verwendete Schlüssel:', unused.length ? unused.join(', ') : 'keine');
 
+// Prüfung Richtigkeit 21.11.2026: Rundfunk rückwirkend bis 3 Jahre (§ 4 Abs. 4 RBStV), keine Zwei-Monats-Frist; Sachsen-Anhalt LAS (las.sachsen-anhalt.de)
+{
+  const EF = require('../src/lang/einfach/c.json'), R2 = require('../src/rules.js');
+  check('[rf-frist] Rundfunk: rückwirkend höchstens 3 Jahre, keine Zwei-Monats-Frist (Standard und Einfache Sprache)', /3 Jahre/.test(I18N.de['s.rundfunk.tip']) && !/zwei Monaten/.test(I18N.de['s.rundfunk.tip']) && /3 Jahre/.test(EF['s.rundfunk.tip']) && !/zwei Monaten/.test(EF['s.rundfunk.tip']));
+  // Eingliederungshilfe: Träger ist das LAS, den Antrag nimmt das Sozialamt vor Ort an (las.sachsen-anhalt.de/themen/hilfe-fuer-menschen-mit-behinderung, abgerufen 21.11.2026)
+  check('[zust-land] Sachsen-Anhalt: Eingliederungshilfe beim Sozialamt vor Ort (Träger LAS)', /^Sozialamt deines Landkreises oder deiner kreisfreien Stadt \(Träger: Landesamt/.test(R2.zustLand('eingl', 'ST')));
+  check('[zwei-wege] Zeile in der Antragsmappe widerspricht dem Tipp „beide Anträge“ nicht (alle 13 Sprachen übersetzt)', /Beantragen kannst du trotzdem beides\./.test(I18N.de['f.pickWege']) && /Beantragen kannst du trotzdem beides\./.test(require('../src/lang/einfach/f.json')['f.pickWege']) && Object.keys(I18N).every((l) => l === 'de' || (I18N[l]['f.pickWege'] && I18N[l]['f.pickWege'] !== I18N.de['f.pickWege'])));
+  check('[zust-land] Sachsen-Anhalt: LAS für Ausweis, Blindengeld, Eingliederungshilfe; keine Sozialagentur mehr', ['ausweis', 'blindengeld', 'eingl'].every((id) => /Landesamt für Soziales, Jugend und Gesundheit Sachsen-Anhalt/.test(R2.zustLand(id, 'ST'))) && !/Sozialagentur|Landesverwaltungsamt/.test(JSON.stringify(R2.ZUST_LAND)));
+}
+
 console.log(fails ? '\n' + fails + ' FEHLER' : '\nAlle Tests bestanden');
 process.exit(fails ? 1 : 0);

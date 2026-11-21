@@ -1369,7 +1369,15 @@ var Haushalt = (function () {
     // Oberfläche
     // Kurzstatus für „Mein Ordner“: { rest, restEuro, leer, ausgefuellt }. ausgefuellt: mindestens eine eigene Ausgabe im Plan (die Miete
     // kommt aus dem Check und zählt nicht) – sonst wäre „Im Monat bleiben dir …“ nur Einkommen minus Miete, ohne Essen, Strom und Handy.
-    rest: function () { var r = rechnung(); r.ausgefuellt = !!daten && Object.keys(daten.plan.aus || {}).some(function (k) { return k !== 'miete' && daten.plan.aus[k] > 0; }); return r; },
+    // wesentlich (Ratenvorschlag, Prüfung Richtigkeit 21.11.2026): Einnahmen, Wohnen (Miete) und Lebenshaltung (Essen) stehen im Plan – sonst
+    // käme ein viel zu hoher Vorschlag heraus. kindergeld: Kindergeld im Plan in Cent (unpfändbar, § 76 EStG; zählt nicht zum pfändbaren Einkommen).
+    rest: function () {
+      var r = rechnung(), a = daten ? planAus() : {};
+      r.ausgefuellt = !!daten && Object.keys(daten.plan.aus || {}).some(function (k) { return k !== 'miete' && daten.plan.aus[k] > 0; });
+      r.wesentlich = !!daten && r.ein > 0 && a.miete > 0 && a.essen > 0;
+      r.kindergeld = daten ? (daten.plan.kg !== null ? daten.plan.kg : geteilte().kg) || 0 : 0;
+      return r;
+    },
     abschlag: function (ziel, art) { abschlagBox(ziel, art); }, tarif: function (ziel, art) { tarifBox(ziel, art); }, // Seiten „Strom“ und „Heizen“ (src/app.js)
     init: init, zeigen: zeigen, sprache: function () { render(); }, speicherOrt: speicherOrt,
     daten: function () { return JSON.parse(JSON.stringify(daten)); }, laden: function (d) { daten = normiere(d); sichern(); render(); },

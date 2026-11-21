@@ -251,3 +251,32 @@ Unabhängige Prüfung von PR #104 (Branch claude/b-rest-19, nur eigener Anteil g
 Offen (nicht in diesem PR gelöst):
 - Hinweis „Freibetrag von …“ (bafoeg.vermTeil): Bei Paaren und Kindern nennt die App den Freibetrag mit 2.300 € je Person als festen Wert. Er gilt nur bei Ehe oder Lebenspartnerschaft und für eigene Kinder. Ohne diese liegt der echte Freibetrag tiefer und die Kürzung höher. Das Ergebnis bleibt „möglich“. Ein Zusatz im Text (13 Sprachen, Einfache Sprache) wäre ein eigener Auftrag.
 - Fotos der Kamera (Brief prüfen) löscht die App direkt nach dem Lesen. Bleibt eines nach einem Abbruch liegen, räumt der Start es nicht auf (Name kommt vom Kamera-Plugin, nicht geprüft).
+
+## Prüfvermerk (21.11.2026) – PR #105 „Richtigkeit“ (Branch `claude/b-richtigkeit-fix`)
+
+Unabhängige Inhaltsprüfung der Korrekturen zu den Befunden 1 bis 8 der Prüfung Richtigkeit. Alle Quellen am 21.11.2026 abgerufen.
+
+| Befund | Schwere | Korrektur | Quelle |
+|---|---|---|---|
+| Sachsen-Anhalt, Eingliederungshilfe: Als Stelle (und Empfänger im Anschreiben) stand das Landesamt (LAS). Das LAS ist Träger, den Antrag nimmt aber das Sozialamt vor Ort an. | mittel | `ZUST_LAND.eingl.ST`: „Sozialamt deines Landkreises oder deiner kreisfreien Stadt (Träger: LAS)“; Test `zust-land`, Prüfliste angepasst | las.sachsen-anhalt.de/themen/hilfe-fuer-menschen-mit-behinderung („Sprechen Sie dazu bitte mit Ihrem Sozialamt vor Ort“) |
+| Hinweis „nichts pfändbar“ (`ra.unpf`): „Biete keine Rate an“ nannte nur Miete und Strom als Ausnahme. Bei einer Geldstrafe droht ohne Ratenabsprache Ersatzfreiheitsstrafe. | mittel | Satz ergänzt (13 Sprachen und Einfache Sprache): Das gilt auch für eine Geldstrafe, Raten bei der Staatsanwaltschaft erfragen; Test `rate-pf` | § 43 StGB, § 459a StPO (gesetze-im-internet.de, Abruf 20.11.2026 laut Prüfliste) |
+| „Übernehmen“ setzte 0 € ins Ratenschreiben, wenn der gewählte Gläubiger laut Aufteilung erst „später“ dran ist. | mittel | Dann wird nichts eingesetzt, es erscheint der Hinweis auf den Vorrang; Test `rate-dom` | Code `src/geld.js` |
+| Ratenschreiben: Vorbehalt war mit „Soweit ich die Forderung noch nicht prüfen konnte oder sie bestreite“ eingeschränkt. Das lässt den Umkehrschluss zu, der Rest sei anerkannt. | gering | Jetzt: „ohne Anerkennung einer Rechtspflicht. Es ist kein Anerkenntnis der Forderung, insbesondere nicht von Zinsen und Kosten.“ Hinweis `ra.warn` bleibt, weil der Vorbehalt im Einzelfall nicht sicher trägt (vor allem, wenn dann gezahlt wird). | § 212 Abs. 1 Nr. 1 BGB (gesetze-im-internet.de) |
+| Antragsmappe: Zeile „nur entweder oder“ konnte so gelesen werden, dass man nur einen Antrag stellen soll. Der Tipp darüber rät zu beiden Anträgen. | gering | Satz ergänzt (13 Sprachen und Einfache Sprache): „Beantragen kannst du trotzdem beides.“ Test `zwei-wege` | § 7 Abs. 1 Satz 1 und 3 WoGG, § 12a Satz 1 und 2 Nr. 2 SGB II (gesetze-im-internet.de) |
+
+Geprüft und in Ordnung:
+
+| Thema | Ergebnis | Quelle |
+|---|---|---|
+| Pfändungswerte in `Rules.pfaendung` (1.587,40 €, 597,42 €, 332,83 €, Höchstbetrag 4.866,30 €, gültig 1.7.2026 bis 30.6.2027) | stimmen | Pfändungsfreigrenzenbekanntmachung 2026, BGBl. 2026 I Nr. 80 (recht.bund.de); § 850c ZPO |
+| Ratenvorschlag erst mit Einnahmen, Miete und Essen; Obergrenze pfändbarer Betrag; Aufteilung nach Stufen | passt zum Code und zu den Texten; bleibt Faustregel ohne Rechtsaussage. Grob: Einnahmen des Plans gelten als Arbeitseinkommen, Unterhaltsgläubiger können mehr pfänden (§ 850d ZPO). | § 850c ZPO |
+| Rundfunkbeitrag: Befreiung rückwirkend, höchstens 3 Jahre vor dem Antragsmonat | stimmt | § 4 Abs. 4 Satz 2 RBStV (gesetze-bayern.de, Dokument RBeitrStV-4) |
+| Unterhalt beim Wohngeld: ohne Titel bis 3.000 € bzw. 6.000 € im Jahr, mit Titel, Notarvertrag oder Bescheid der festgelegte Betrag | stimmt | § 18 Satz 1 und 2 WoGG |
+| Einfache Sprache Miete: mehr als eine Monatsmiete, Nachzahlung bis 2 Monate nach der Räumungsklage, einmal in 2 Jahren | stimmt | § 543 Abs. 2 Satz 1 Nr. 3, § 569 Abs. 3 Nr. 1 und 2 BGB |
+| Einfache Sprache Strom: 2 Abschläge und 100 €, 4 Wochen, 8 Werktage | stimmt | § 41f Abs. 1, 3 und 5 EnWG |
+| Sachsen-Anhalt: LAS seit 1.4.2026 für Ausweis und Blindengeld | stimmt | las.sachsen-anhalt.de (Startseite, /schwerbehindertenrecht, Blinden- und Gehörlosengeld mit Antragsformularen) |
+| Zwei Wege: Wohngeld und Grundsicherungsgeld bzw. Grundsicherung im Alter schließen sich aus; beide Anträge zugleich sind zulässig | stimmt | § 7 Abs. 1 WoGG, § 12a SGB II |
+| Anschriften aus Wikipedia werden nicht mehr gezeigt | stimmt (Code `src/behoerden.js`, Test `beh-de`) | Projektregel |
+| Übersetzungen (Stichprobe en, tr, ar, uk) | sinngleich; Zahlen und Paragrafen in allen Sprachen gleich (`test-sprachen-zahlen`) | |
+
+Offen: Die neuen Sätze in ar, fa, fa-AF, ps, so sind nicht von Muttersprachlern gelesen. Ob der Vorbehalt im Ratenschreiben im Einzelfall trägt, entscheidet ein Gericht; die App sagt das nicht zu.
