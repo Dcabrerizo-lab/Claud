@@ -45,6 +45,9 @@
   "bp.erk.ok": "Qiimuhu waa sax",
   "bp.erk.warte": "Fadlan marka hore hubi qiimaha la aqoonsaday.",
   "bp.erk.feld": "Way adag tahay in la akhriyo. Fadlan si fiican u hubi.",
+  "bp.an.frist": "Muddada warqadda ku qoran: {frist}",
+  "bp.an.zeile": "Sidan ayaa warqadda ku qoran: „{zeile}“",
+  "bp.an.pruefen": "Fadlan adigu muddada ka akhri warqadda. Aqoonsiga qoraalka wuu qaldami karaa.",
   "bp.pf.h": "Hubi qiimaynta daryeelka",
   "bp.pf.p": "Iskaan garee qiimaynta ama dooro PDF. SoLo ayaa dib u xisaabinaya dhibcaha.",
   "bp.sa.h": "Hubi go'aanka sugnaanta aasaasiga ah ee gabowga (Grundsicherung im Alter)",
@@ -98,8 +101,5 @@
   "bp.vgl.pg": "heerka daryeelka (Pflegegrad) {pg}",
   "bp.vgl.kein": "heer daryeel (Pflegegrad) ma jiro",
   "bp.vgl.klein": "Dhibco miisaaman, sida Pflegekasse u xisaabiso (§ 15 SGB XI). Calaamadda (+) waxay ka dhigan tahay: qiimayntaadu halkaas dhibco ka badan ayay bixisaa. Hoos waxaa ku qoran su’aalaha ay si gaar ah u khusayso.",
-  "t.bafoeg.vermTeil": "Hantidaadu waxay ka badan tahay qadarka la cafiyay ee {verm}. 2.300 € dheeraad ah waxaa la bixiyaa oo keliya xaas ama lammaane diiwaangashan iyo carruur kasta oo adiga kuu dhalatay. Kaliya qaybta ka sarreysa qadarka la cafiyay ayaa la xisaabiyaa: waxaa loo qaybiyaa 12 bilood, waxayna BAföG ka dhimaysaa qiyaastii {monat} bishiiba. Amt für Ausbildungsförderung ayaa si sax ah u xisaabiya.",
-  "bp.an.frist": "Muddada warqadda ku qoran: {frist}",
-  "bp.an.zeile": "Sidan ayaa warqadda ku qoran: „{zeile}“",
-  "bp.an.pruefen": "Fadlan adigu muddada ka akhri warqadda. Aqoonsiga qoraalka wuu qaldami karaa."
+  "t.bafoeg.vermTeil": "Hantidaadu waxay ka badan tahay qadarka la cafiyay ee {verm}. 2.300 € dheeraad ah waxaa la bixiyaa oo keliya xaas ama lammaane diiwaangashan iyo carruur kasta oo adiga kuu dhalatay. Kaliya qaybta ka sarreysa qadarka la cafiyay ayaa la xisaabiyaa: waxaa loo qaybiyaa 12 bilood, waxayna BAföG ka dhimaysaa qiyaastii {monat} bishiiba. Amt für Ausbildungsförderung ayaa si sax ah u xisaabiya."
 }

@@ -45,6 +45,9 @@
   "bp.erk.ok": "Wartości się zgadzają",
   "bp.erk.warte": "Najpierw sprawdź rozpoznane wartości.",
   "bp.erk.feld": "Trudno odczytać. Sprawdź dokładnie.",
+  "bp.an.frist": "Termin w piśmie: {frist}",
+  "bp.an.zeile": "Tak jest napisane w piśmie: „{zeile}”",
+  "bp.an.pruefen": "Sprawdź termin w piśmie samodzielnie. Rozpoznawanie tekstu może się mylić.",
   "bp.pf.h": "Sprawdź orzeczenie o opiece",
   "bp.pf.p": "Zeskanuj orzeczenie albo wybierz PDF. SoLo przeliczy punkty.",
   "bp.sa.h": "Sprawdź decyzję o zabezpieczeniu podstawowym na starość (Grundsicherung im Alter)",
@@ -98,8 +101,5 @@
   "bp.vgl.pg": "stopień opieki (Pflegegrad) {pg}",
   "bp.vgl.kein": "brak stopnia opieki (Pflegegrad)",
   "bp.vgl.klein": "Punkty ważone, tak jak liczy Pflegekasse (§ 15 SGB XI). Plus oznacza: Twoja ocena daje tam więcej punktów. Poniżej widać, przy których pytaniach dokładnie.",
-  "t.bafoeg.vermTeil": "Majątek przekracza kwotę wolną {verm}. Dodatkowe 2300 € przysługują tylko na małżonka lub zarejestrowanego partnera i na każde własne dziecko. Liczy się tylko nadwyżka ponad kwotę wolną: rozłożona na 12 miesięcy zmniejsza BAföG o około {monat} miesięcznie. Dokładnie wylicza to Amt für Ausbildungsförderung.",
-  "bp.an.frist": "Termin w piśmie: {frist}",
-  "bp.an.zeile": "Tak jest napisane w piśmie: „{zeile}”",
-  "bp.an.pruefen": "Sprawdź termin w piśmie samodzielnie. Rozpoznawanie tekstu może się mylić."
+  "t.bafoeg.vermTeil": "Majątek przekracza kwotę wolną {verm}. Dodatkowe 2300 € przysługują tylko na małżonka lub zarejestrowanego partnera i na każde własne dziecko. Liczy się tylko nadwyżka ponad kwotę wolną: rozłożona na 12 miesięcy zmniejsza BAföG o około {monat} miesięcznie. Dokładnie wylicza to Amt für Ausbildungsförderung."
 }

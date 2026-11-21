@@ -45,6 +45,9 @@
   "bp.erk.ok": "Values are correct",
   "bp.erk.warte": "Please check the recognised values first.",
   "bp.erk.feld": "Hard to read. Please check carefully.",
+  "bp.an.frist": "Deadline in the letter: {frist}",
+  "bp.an.zeile": "This is what the letter says: “{zeile}”",
+  "bp.an.pruefen": "Please check the deadline in the letter yourself. The text recognition can make mistakes.",
   "bp.pf.h": "Check a care assessment",
   "bp.pf.p": "Scan the assessment or choose a PDF. SoLo recalculates the points.",
   "bp.sa.h": "Check a decision on basic income support in old age (Grundsicherung im Alter)",
@@ -98,8 +101,5 @@
   "bp.vgl.pg": "care level (Pflegegrad) {pg}",
   "bp.vgl.kein": "no care level (Pflegegrad)",
   "bp.vgl.klein": "Weighted points, as the Pflegekasse calculates them (§ 15 SGB XI). Plus means: your estimate gives more points there. Below you can see which questions exactly.",
-  "t.bafoeg.vermTeil": "Your assets are above the allowance of {verm}. An extra €2,300 is only allowed for a spouse or registered civil partner and for each of your own children. Only the part above the allowance counts: spread over 12 months, it reduces BAföG by about {monat} a month. The Amt für Ausbildungsförderung calculates the exact amount.",
-  "bp.an.frist": "Deadline in the letter: {frist}",
-  "bp.an.zeile": "This is what the letter says: “{zeile}”",
-  "bp.an.pruefen": "Please check the deadline in the letter yourself. The text recognition can make mistakes."
+  "t.bafoeg.vermTeil": "Your assets are above the allowance of {verm}. An extra €2,300 is only allowed for a spouse or registered civil partner and for each of your own children. Only the part above the allowance counts: spread over 12 months, it reduces BAföG by about {monat} a month. The Amt für Ausbildungsförderung calculates the exact amount."
 }

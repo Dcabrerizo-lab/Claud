@@ -45,6 +45,9 @@
   "bp.erk.ok": "Değerler doğru",
   "bp.erk.warte": "Lütfen önce tanınan değerleri kontrol et.",
   "bp.erk.feld": "Okunması zor. Lütfen dikkatle kontrol et.",
+  "bp.an.frist": "Mektuptaki süre: {frist}",
+  "bp.an.zeile": "Mektupta şöyle yazıyor: „{zeile}“",
+  "bp.an.pruefen": "Lütfen süreyi mektuptan kendin kontrol et. Metin tanıma yanılabilir.",
   "bp.pf.h": "Bakım raporunu kontrol et",
   "bp.pf.p": "Raporu tara veya bir PDF seç. SoLo puanları yeniden hesaplar.",
   "bp.sa.h": "Yaşlılıkta temel güvence (Grundsicherung im Alter) kararını kontrol et",
@@ -98,8 +101,5 @@
   "bp.vgl.pg": "bakım derecesi (Pflegegrad) {pg}",
   "bp.vgl.kein": "bakım derecesi (Pflegegrad) yok",
   "bp.vgl.klein": "Pflegekasse’nin hesapladığı gibi ağırlıklı puanlar (§ 15 SGB XI). Artı şu demek: senin değerlendirmen orada daha fazla puan veriyor. Aşağıda tam olarak hangi sorularda olduğu yazıyor.",
-  "t.bafoeg.vermTeil": "Varlığın {verm} muafiyet tutarının üzerinde. Ek 2.300 € yalnızca eş veya kayıtlı hayat arkadaşı ve her öz çocuğun için verilir. Yalnızca muafiyeti aşan kısım sayılır: 12 aya bölünür ve BAföG'u ayda yaklaşık {monat} azaltır. Kesin hesabı Amt für Ausbildungsförderung yapar.",
-  "bp.an.frist": "Mektuptaki süre: {frist}",
-  "bp.an.zeile": "Mektupta şöyle yazıyor: „{zeile}“",
-  "bp.an.pruefen": "Lütfen süreyi mektuptan kendin kontrol et. Metin tanıma yanılabilir."
+  "t.bafoeg.vermTeil": "Varlığın {verm} muafiyet tutarının üzerinde. Ek 2.300 € yalnızca eş veya kayıtlı hayat arkadaşı ve her öz çocuğun için verilir. Yalnızca muafiyeti aşan kısım sayılır: 12 aya bölünür ve BAföG'u ayda yaklaşık {monat} azaltır. Kesin hesabı Amt für Ausbildungsförderung yapar."
 }

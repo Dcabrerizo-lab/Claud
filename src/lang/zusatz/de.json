@@ -45,6 +45,9 @@
   "bp.erk.ok": "Werte stimmen",
   "bp.erk.warte": "Bitte zuerst die erkannten Werte prüfen.",
   "bp.erk.feld": "Schwer zu lesen. Bitte genau prüfen.",
+  "bp.an.frist": "Frist im Brief: {frist}",
+  "bp.an.zeile": "So steht es im Brief: „{zeile}“",
+  "bp.an.pruefen": "Bitte lies die Frist im Brief selbst nach. Die Texterkennung kann sich irren.",
   "bp.pf.h": "Pflegegutachten prüfen",
   "bp.pf.p": "Scanne das Gutachten oder wähle ein PDF. SoLo rechnet die Punkte nach.",
   "bp.sa.h": "Bescheid Grundsicherung im Alter prüfen",
@@ -98,8 +101,5 @@
   "bp.vgl.pg": "Pflegegrad {pg}",
   "bp.vgl.kein": "kein Pflegegrad",
   "bp.vgl.klein": "Punkte nach Gewichtung, wie die Pflegekasse rechnet (§ 15 SGB XI). Plus heißt: Deine Einschätzung gibt dort mehr Punkte. Darunter steht, bei welchen Fragen genau.",
-  "t.bafoeg.vermTeil": "Das Vermögen liegt über dem Freibetrag von {verm}. Zusätzliche 2.300 € gibt es nur für Ehe- oder eingetragene Lebenspartner und für jedes eigene Kind. Es zählt nur der Teil über dem Freibetrag: Verteilt auf 12 Monate mindert er das BAföG um etwa {monat} im Monat. Das Amt für Ausbildungsförderung rechnet genau.",
-  "bp.an.frist": "Frist im Brief: {frist}",
-  "bp.an.zeile": "So steht es im Brief: „{zeile}“",
-  "bp.an.pruefen": "Bitte lies die Frist im Brief selbst nach. Die Texterkennung kann sich irren."
+  "t.bafoeg.vermTeil": "Das Vermögen liegt über dem Freibetrag von {verm}. Zusätzliche 2.300 € gibt es nur für Ehe- oder eingetragene Lebenspartner und für jedes eigene Kind. Es zählt nur der Teil über dem Freibetrag: Verteilt auf 12 Monate mindert er das BAföG um etwa {monat} im Monat. Das Amt für Ausbildungsförderung rechnet genau."
 }
