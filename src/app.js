@@ -47,7 +47,15 @@
   var parseAmount = Fmt.parse;
 
   // ----- Speicher: Preferences in der App, sonst localStorage -----
-  function plug(name) { try { return window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins[name] || null; } catch (e) { return null; } }
+  // iOS: statt Preferences (UserDefaults, geht in iCloud-/Finder-Sicherung) der eigene Speicher ohne Sicherung
+  // (app/ios/App/App/SoloSpeicherPlugin.swift, gleiche Aufrufe, übernimmt die alten Werte beim ersten Start). Android: Preferences (allowBackup="false").
+  function plug(name) {
+    try {
+      var P = window.Capacitor && window.Capacitor.Plugins; if (!P) return null;
+      if (name === 'Preferences' && P.SoloSpeicher) return P.SoloSpeicher;
+      return P[name] || null;
+    } catch (e) { return null; }
+  }
   var StoreRoh = {
     get: function (key, cb) {
       var p = plug('Preferences');
@@ -3184,6 +3192,17 @@
   // Neu laden (Sperren); in Tests ersetzbar
   function vgNeuStart() { if (window.__soloNeuStart) window.__soloNeuStart(); else { try { location.reload(); } catch (e) {} } }
   function vgSperrenJetzt() { flush(); tresor.fertig().then(vgNeuStart); }
+  // Bildschirmfoto-Schutz: mit App-PIN Standard an (Android FLAG_SECURE, iOS Abdeckung im App-Wechsler), Einstellung „Bildschirmfotos erlauben“
+  // (lotse.fotosErlaubt, nur Einstellung, kein Inhalt). Plugin SoloSchutz nur in der App (MainActivity.java / SoloSpeicherPlugin.swift).
+  var fotosErlaubt = false, schutzStand = null;
+  StoreRoh.get('lotse.fotosErlaubt', function (v) { fotosErlaubt = v === '1'; schutzAnwenden(); });
+  function schutzAnwenden() {
+    var p = plug('SoloSchutz'); if (!p) return;
+    var an = !!(tresor && tresor.pinAn() && !fotosErlaubt);
+    if (an === schutzStand) return;
+    schutzStand = an;
+    try { Promise.resolve(p.setzen({ an: an })).catch(function () { schutzStand = null; }); } catch (e) { schutzStand = null; }
+  }
   // Automatisch sperren: nach etwa 2 Minuten im Hintergrund (nur mit PIN). Vorher speichern, dann neu laden (Sperrbildschirm).
   var VG_SPERRE_MS = 120000, vgHinterAb = 0;
   function vgHintergrund(weg) {
@@ -3200,6 +3219,7 @@
   // Angaben des geöffneten Vorgangs neu laden (nach Wechsel, neuem Vorgang, Löschen)
   function vgNeuLaden() {
     if (!$('mappe').hidden) closeMappe();
+    einleseResteLeeren(); // nichts vom vorigen Vorgang sichtbar lassen (Scan, Brief, Prüfung, Blatt für Klienten)
     state = blankState(); person = { name: '', geb: '', strasse: '', ort: '', tel: '' }; picked = {}; pickedUser = {}; started = false; edited = false;
     ['p-name', 'p-geb', 'p-strasse', 'p-ort', 'p-tel'].forEach(function (id) { $(id).value = ''; });
     $('sampleNotice').hidden = true;
@@ -3222,6 +3242,24 @@
     if (window.Schulden && Schulden.neuLaden) Schulden.neuLaden(); // und eine eigene Schulden-Liste
     if (window.Geld) Geld.neuLaden(); // und eigene Haken unter „Schuldnerberatung“ (Bis zum Termin, Beratungsmappe)
     vgRender();
+  }
+  // Alle vorgangsbezogenen Zustände außerhalb des Speichers (nur im Arbeitsspeicher oder in Feldern), die beim Wechsel des Vorgangs,
+  // bei „Alle Angaben löschen“ und beim Löschen geleert werden. Gespeicherte Angaben lädt vgNeuLaden danach neu.
+  //   Antragsformular: Scan-Ergebnis (scanFound), Vorschaubilder (scanBilder, Blob-Adressen freigeben), eingefügter Text (sc-text), Dateiauswahl
+  //   Brief prüfen: gesammelter Brieftext (elGesammelt), eingefügter Text (elText), Meldung und Ergebnis (elMsg, elErg), geöffnete Kachel,
+  //                 Formulare, Ergebnisse und Schreiben der Prüfungen (PruefpaketLeeren in erweiterungen/vorschau.js)
+  //   Beratung: offenes Blatt „Für Klient zusammenstellen“ (Klient.schliessen vergisst Daten anderer Vorgänge)
+  //   Pfändung, Pflege-Einschätzung, Haushalt, Fristen, Schulden, Ausziehen, Geld, Schritte: setzen vgNeuLaden bzw. die Module selbst zurück
+  function einleseResteLeeren() {
+    scanFound = []; scanBilderSetzen([]); renderScan(); scanMsg('');
+    ['sc-text', 'sc-file', 'sc-pdf', 'elText', 'elFile', 'elPdfFile'].forEach(function (id) { var e = $(id); if (e) e.value = ''; });
+    [['sc-pasteBox', 'sc-pasteBtn'], ['elPasteBox', 'elPaste']].forEach(function (x) { var b = $(x[0]), k = $(x[1]); if (b) b.hidden = true; if (k) k.setAttribute('aria-expanded', 'false'); });
+    elGesammelt = ''; if ($('elMsg')) $('elMsg').textContent = ''; if ($('elErg')) $('elErg').textContent = '';
+    if (window.PruefpaketLeeren) window.PruefpaketLeeren();
+    if (window.PruefpaketPflege) window.PruefpaketPflege.eigene(null);
+    if (briefArt) { var y = window.scrollY || 0; briefOeffnen(null); try { window.scrollTo(0, y); } catch (e) {} }
+    abVon = false;
+    if (window.Klient && Klient.offen()) Klient.schliessen();
   }
   function pfLeer() { return { art: '', schritt: 0, netto: '', pers: null, kg: null, kiz: '' }; }
   function pfLaden(v) {
@@ -3264,6 +3302,7 @@
     vgMsg(t('vg.geoeffnet', { name: n })); var h = $('vgH'); if (h) h.focus();
   }
   function vgRender() {
+    schutzAnwenden();
     if (!tresor || !$('setHaushalte')) return;
     vgGeruest();
     var bereit = tresor.bereit(), liste = tresor.liste(), a = tresor.aktiv();
@@ -3387,6 +3426,17 @@
       ae.id = 'vgPinAendern';
       ae.addEventListener('click', function () { var o = $('vgPinForm'); if (o && o.getAttribute('data-art') === 'aendern') vgPinFormZu(o); else vgPinForm(g, ae, false, true); });
       pb.appendChild(sp); pb.appendChild(ae); g.appendChild(pb);
+      if (plug('SoloSchutz')) { // nur in der App: Bildschirmfotos und Vorschau im App-Wechsler
+        var fs = vgEl('button', 'schalter'); fs.type = 'button'; fs.id = 'vgFotos'; fs.setAttribute('role', 'switch'); fs.setAttribute('aria-checked', String(fotosErlaubt));
+        var fst = vgEl('span', 'schalter-t', t('vg.fotos.h')); fst.appendChild(vgEl('span', 'schalter-unter', t(fotosErlaubt ? 'vg.fotos.an' : 'vg.fotos.aus'))); fs.appendChild(fst);
+        fs.appendChild(vgEl('span', 'schalter-zst', t(fotosErlaubt ? 'set.an' : 'set.aus'))); fs.appendChild(vgEl('span', 'schalter-bahn')).setAttribute('aria-hidden', 'true');
+        fs.addEventListener('click', function () {
+          fotosErlaubt = !fotosErlaubt; StoreRoh.set('lotse.fotosErlaubt', fotosErlaubt ? '1' : '0'); schutzAnwenden();
+          fs.setAttribute('aria-checked', String(fotosErlaubt)); fs.querySelector('.schalter-zst').textContent = t(fotosErlaubt ? 'set.an' : 'set.aus');
+          fs.querySelector('.schalter-unter').textContent = t(fotosErlaubt ? 'vg.fotos.an' : 'vg.fotos.aus');
+        });
+        g.appendChild(vgEl('p')).appendChild(fs);
+      }
     }
     var md = vgEl('details', 'set-mehr'); md.appendChild(vgEl('summary', null, t('vg.mehrDazu')));
     md.appendChild(vgEl('p', 'small', t('vg.pin.t'))); md.appendChild(vgEl('p', 'small', t('vg.auto.t')));
@@ -3522,6 +3572,7 @@
   }
   // Sperrbildschirm: deckt die App ab, bis die PIN stimmt
   function vgSperreZeigen() {
+    schutzAnwenden();
     var s = $('vgSperre');
     if (!s) { s = vgEl('div', 'vg-sperre'); s.id = 'vgSperre'; s.setAttribute('role', 'dialog'); s.setAttribute('aria-modal', 'true'); s.setAttribute('aria-labelledby', 'vgSperreH'); $('app').parentNode.appendChild(s); }
     s.innerHTML = ''; s.hidden = false; s.setAttribute('lang', lang); s.setAttribute('dir', I18N[lang]['meta.dir']);

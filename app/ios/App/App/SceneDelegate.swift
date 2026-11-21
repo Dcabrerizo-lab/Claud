@@ -14,6 +14,30 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         SceneDelegateProxy.shared.scene(scene, willConnectTo: session, options: connectionOptions)
     }
 
+    // Vorschau im App-Wechsler verdecken, wenn die App-PIN an ist (SoloSchutzPlugin.aktiv, gesetzt aus src/app.js)
+    private var abdeckung: UIView?
+
+    func sceneWillResignActive(_ scene: UIScene) {
+        guard SoloSchutzPlugin.aktiv, abdeckung == nil, let w = window else { return }
+        let v = UIView(frame: w.bounds)
+        v.backgroundColor = .systemBackground
+        v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        if let bild = UIImage(named: "Splash") {
+            let iv = UIImageView(image: bild)
+            iv.contentMode = .scaleAspectFill
+            iv.frame = v.bounds
+            iv.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            v.addSubview(iv)
+        }
+        w.addSubview(v)
+        abdeckung = v
+    }
+
+    func sceneDidBecomeActive(_ scene: UIScene) {
+        abdeckung?.removeFromSuperview()
+        abdeckung = nil
+    }
+
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         SceneDelegateProxy.shared.scene(scene, openURLContexts: URLContexts)
     }
