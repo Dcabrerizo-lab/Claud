@@ -98,11 +98,11 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
   await p.check('#b-sozialamt'); c = await card('Befreiung vom Rundfunkbeitrag'); ok('Rundfunk: Sozialamt bezogen => wahrscheinlich', c.pill === 'ja'); await p.uncheck('#b-sozialamt');
 
   // Mappe
+  await p.click('#mappeMake'); // grüner Knopf unter den Karten; Name, Anschrift und Auswahl stehen oben in der Mappe
   await p.fill('#p-name', 'Maria Muster'); await p.fill('#p-strasse', 'Hauptstr. 1'); await p.fill('#p-ort', '91054 Erlangen');
   const picks = await p.evaluate(() => [...document.querySelectorAll('[data-pick]')].map((x) => x.getAttribute('data-pick')));
   ok('Pauschbetrag erscheint nicht in der Mappenauswahl, Blindengeld schon', !picks.includes('pausch') && picks.includes('blindengeld') && picks.includes('kgBeh'), picks.join());
   await p.evaluate(() => document.querySelectorAll('[data-pick]').forEach((x) => { if (!x.checked) x.click(); }));
-  await p.click('#mappeMake');
   const txt = await p.inputValue('#mappeText');
   ok('Kindergeld für Kind mit Behinderung: Formular-Link statt formlosem Brief', !txt.includes('Antrag auf Kindergeld für ein volljähriges Kind mit Behinderung') && (await p.$$eval('#mappeBody .forms a[href]', (e) => e.some((x) => /formulare-erwachsene-mit-behinderungen/.test(x.href)))));
   ['Rente wegen Erwerbsminderung', 'Blindengeld nach dem Bayerischen Blindengeldgesetz', 'Wohnberechtigungsschein', 'Berufsausbildungsbeihilfe', 'Eingliederungshilfe'].forEach((s) => ok('Mappe enthält "' + s + '"', txt.includes(s)));

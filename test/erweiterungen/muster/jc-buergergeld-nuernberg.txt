@@ -1,0 +1,333 @@
+# Quelle: https://www.buergergeld.org/wp-content/uploads/buergergeld-bescheid-muster.pdf (Musterbescheid Jobcenter Nürnberg-Stadt, Stand Februar 2023; Erläuterungsanhang weggelassen)
+# Abgerufen: 21.11.2026. Musterbescheid mit erfundenen Daten (keine echten Personen). Text: pdftotext -layout, Seitenumbrüche als Formfeed.
+Persönliche Vorsprachen:
+Richard-Wagner-Platz 5, 90443 Nürnberg
+
+
+
+
+                                                                      2
+Jobcenter Nürnberg-Stadt, Richard-Wagner-Platz 5, 90443 Nürnberg
+
+
+                                                                                        Mein Zeichen: 12345
+                                                                                        BG-Nummer: 73514//0000002
+Herrn                                                                                   (Bei jeder Antwort bitte angeben)
+Hans Müller
+Clarsbacher Straße 67                                                                   Telefon:          +49911/4007-100
+90419 Nürnberg                                                                         Telefax:
+                                                                                       E-Mail:
+                                                                                       Datum:              08.02.2023
+
+
+Bewilligung von Leistungen zur Sicherung des Lebensunterhalts
+
+Sehr geehrter Herr Müller,
+
+auf Ihren Antrag vom 15.01.2023 bewillige ich Ihnen und den mit Ihnen in einer Bedarfsgemeinschaft lebenden
+Personen für die Zeit vom 01.01.2023 bis 31.12.2023 folgende Leistungen:
+Monatlicher Gesamtbetrag für Januar 2023 bis Dezember 2023 in Höhe von                                                       1.644,92 Euro
+                                                                                                    Zeitraum            Gesamtbetrag in Euro
+
+ Müller, Hans; 735D123001                                                                           01/23 - 12/23                            646,05
+ Müller, Gertrud; 735D123002                                                                        01/23 - 12/23                            646,05
+ Müller, Hanna; 735D123003                                                                          01/23 - 12/23                            352,82
+
+Auszahlung der Leistung:
+ Zahlungsempfänger                                    Zeitraum                             Zahlweg                               Zahlbetrag
+                                                                                                                                 monatlich in
+                                                                                                                                 Euro
+ Müller, Hans                                         01/23                                DE06 8605 5592 1812 1214 12                  674,92
+                                                      02/23                                DE06 8605 5592 1812 1214 12                       712,92
+
+                                                      03/23 – 07/23                        DE06 8605 5592 1812 1214 12                       654,92
+                                                      08/23                                DE06 8605 5592 1812 1214 12                       770,92
+
+                                                      09/23 - 12/23                        DE06 8605 5592 1812 1214 12                       654,92
+
+ Abweichende Zahlungsempfänger                        Zeitraum                             Zahlweg                               Zahlbetrag
+                                                                                                                                 monatlich in
+                                                                                                                                 Euro
+ Franken GmbH,                                        01/23 - 12/23                        DE82 7004 0041 0151 8885 00                  990,00
+ Wohnungsbaugesellschaft
+
+Die Leistungen werden monatlich im Voraus gezahlt.
+Wie sich die Leistungen nach dem Zweiten Buch Sozialgesetzbuch - SGB II im Einzelnen zusammensetzen,
+können Sie dem beiliegenden Berechnungsbogen entnehmen.
+
+
+  Dienstgebäude                              Telefon                      Öffnungszeiten                       Bankverbindung
+  Richard-Wagner-Platz 5                     +49911/4007-100              Mo. - Fr. 8.30 - 12.30 Uhr           BA-Service-Haus
+  90443 Nürnberg                             Telefax                      Notfälle 8.30 - 9.00 Uhr             Bundesbank
+                                             +49911/3268-199              Termine nur nach Vereinbarung        BIC: MARKDEF1760
+                                             Internet                                                          IBAN:DE50760000000076001617
+                                             www.arbeitsagentur.de
+
+
+
+
+                                                                                                           Stand: Februar 2023
+Kranken-, Pflege- und Rentenversicherung:
+Müller, Hans, geb. 03.05.1988; Kundennummer 735D123001
+Kranken- und Pflegeversicherung          01.01.2023 - 31.12.2023     AOK BAYERN
+Rentenversicherung                       01.01.2023 - 31.12.2023     Meldung an Deutsche Rentenversicherung
+
+Müller, Gertrud, geb. 27.07.1991; Kundennummer 735D123002
+Kranken- und Pflegeversicherung          01.01.2023 - 31.12.2023     AOK BAYERN
+Rentenversicherung                       01.01.2023 - 31.12.2023     Meldung an Deutsche Rentenversicherung
+
+Rechtsbehelfsbelehrung:
+
+Gegen diesen Bescheid kann jede betroffene Person oder ein von dieser bevollmächtigter Dritter innerhalb eines
+Monats nach Bekanntgabe Widerspruch erheben.
+Für minderjährige oder nicht geschäftsfähige Personen handelt deren gesetzlicher Vertreter.
+Für die Erhebung des Widerspruchs stehen folgende Möglichkeiten zur Verfügung:
+
+1. Schriftlich oder zur Niederschrift
+Der Widerspruch kann schriftlich bei der im Briefkopf genannten Stelle eingelegt werden. Auch kann die im
+Briefkopf genannte Stelle aufgesucht und der Widerspruch dort schriftlich aufgenommen werden.
+
+2. Auf elektronischem Weg
+
+2.1 Durch E-Mail mit qualifizierter elektronischer Signatur an die im Briefkopf genannte Stelle. Hierfür wird
+eine qualifizierte elektronische Signaturkarte benötigt.
+
+2.2 Durch De-Mail in der Sendevariante mit bestätigter sicherer Anmeldung, wenn die im Briefkopf
+genannte Stelle ebenfalls über eine De-Mail-Adresse verfügt. Dafür wird eine De-Mail-Adresse benötigt.
+
+2.3 Durch Übermittelung mittels elektronischen Dokuments, das mit einer qualifizierten elektronischen
+Signatur versehen ist, über ein EGVP-Postfach oder das besondere Anwaltspostfach (beA) an das im SAFE-
+Verzeichnis (sichere Verzeichnisdienste) gelistete besondere Behördenpostfach (beBPo) der im Briefkopf
+genannten Stelle. Dafür wird ein EGVP-Postfach beziehungsweise ein besonderes Anwaltspostfach benötigt.
+
+2.4 Über das Kundenportal der Bundesagentur für Arbeit. Dafür wird ein neuer elektronischer
+Personalausweis (nPA) oder eine eID-Karte oder ein elektronischer Aufenthaltstitel (eAT) benötigt. Hierbei
+kann die Funktion "Widerspruch einlegen" über die Internetseite https://www.arbeitsagentur.de/eservices
+genutzt werden. Außerdem ist die Anmeldung mit dem eigenen Benutzernamen und Passwort erforderlich.
+
+
+Mit freundlichen Grüßen
+im Auftrag
+
+
+
+
+Schon gewusst?
+Wichtige Anliegen können Sie auch einfach online erledigen:
+www.jobcenter.digital
+Anlagen
+Ergänzende Erläuterungen
+Berechnungsbogen
+Bescheinigung zur Vorlage bei dem Beitragsservice von ARD, ZDF und Deutschlandradio
+Hinweis: Einen "Musterbescheid zum Bürgergeld" mit Erläuterungen finden Sie auf der Internetseite >>
+www.jobcenter.digital > Downloads >> weitere Downloads.
+
+
+
+
+                                                                                    Stand: Februar 2023
+Ergänzende Erläuterungen
+Bei den aufgeführten Erläuterungen handelt es sich nicht um eine abschließende Auflistung. Weitere
+Informationen entnehmen Sie bitte dem Merkblatt SGB II - Grundsicherung für Arbeitsuchende. Das Merkblatt ist
+auch im Internet unter www.jobcenter.digital abrufbar.
+•   Die Leistungen wurden nach den persönlichen und wirtschaftlichen Verhältnissen aller Mitglieder der
+    Bedarfsgemeinschaft berechnet, die Sie bei der Antragstellung angegeben und nachgewiesen haben.
+•   Beachten Sie bitte, dass Leistungen ab dem Ersten des Monats gewährt werden, in dem der Antrag gestellt
+    wird. Um Unterbrechungen des Leistungsbezugs zu vermeiden, müssen Sie rechtzeitig vor Ablauf des
+    aktuellen Bewilligungsabschnittes bei dem zuständigen Leistungsträger einen weiteren Antrag stellen.
+•   Soweit die Höhe der Regelbedarfe zum Jahreswechsel rechtlich angepasst wird, berücksichtigt Ihr
+    Jobcenter diese gesetzliche Änderung entsprechend. Sollte Ihnen vor dem Jahreswechsel noch ein Bescheid
+    mit den alten Regelbedarfen zugehen, bedarf es keines gesonderten Antrags beziehungsweise keiner
+    Einlegung eines Rechtsbehelfes (Widerspruch). Zum Jahresende erhalten Sie automatisch von Ihrem
+    Jobcenter einen entsprechenden Bescheid mit den angepassten Beträgen.
+•   Die Leistungen umfassen in der Regel auch die zu berücksichtigenden Bedarfe für Unterkunft und Heizung.
+    Sie sind selbst dafür verantwortlich, Ihren Zahlungsverpflichtungen gegenüber Vermieter/Eigentümer und
+    Energielieferanten nachzukommen.
+•   Ändert sich in Ihren persönlichen und wirtschaftlichen Verhältnissen etwas, das sich auf Ihre Leistungen
+    auswirken kann, müssen Sie dies ohne Aufforderung dem Jobcenter unverzüglich mitteilen. Bitte benutzen
+    Sie dafür den Vordruck "Veränderungsmitteilung" und legen entsprechende Nachweise bei oder teilen Sie
+    die Veränderung online unter www.jobcenter.digital mit.
+•   Sie müssen grundsätzlich unter der von Ihnen angegebenen Anschrift für Ihr Jobcenter persönlich und
+    auf dem Postweg erreichbar sein und das Jobcenter täglich ohne unzumutbaren Aufwand aufsuchen
+    können. Sie sind verpflichtet, den Zeitraum und die Dauer einer geplanten Ortsabwesenheit mit Ihrem
+    persönlichen Ansprechpartner vorher abzustimmen. Eine unerlaubte Abwesenheit und/ oder die
+    Nichterreichbarkeit unter der von Ihnen angegebenen Anschrift kann dazu führen, dass Ihr Anspruch auf
+    Bürgergeld wegfällt und die Leistungen zurückgefordert werden.
+    Weitere Informationen zu Ihren Meldepflichten, Erreichbarkeit und Urlaub sowie den Rechtsfolgen finden
+    Sie im Merkblatt SGB II.
+•   Die Leistungen werden in der Regel für ein Jahr bewilligt und monatlich im Voraus gezahlt. Anspruch
+    besteht für jeden Kalendertag. Der Monat wird mit 30 Tagen berechnet. Stehen Leistungen nur für einen
+    Teil eines Monats zu, wird die Leistung anteilig erbracht.
+•   Aus datenschutzrechtlichen Gründen werden die Leistungen auf dem Überweisungsträger wie folgt
+    ausgewiesen:
+    Verwendungszweck 1 = Bedarfsgemeinschaft Nummer / Dienststellennummer des Jobcenters
+    Verwendungszweck 2 = 1 / + Summe BA-Leistungen in Euro
+    Verwendungszweck 3 = 2 / + Summe kommunaler Leistungen in Euro.
+
+
+
+
+                                                                              Stand: Februar 2023
+Anlage zum Bescheid vom 08.02.2023
+Vertreter der Bedarfsgemeinschaft: Müller, Hans
+Berechnung der Leistungen für Januar 2023 bis Dezember 2023:
+Höhe der monatlichen Bedarfe in Euro
+                                   Gesamtbedarf
+Familienname                                                Müller            Müller              Müller
+Vorname                                                     Hans              Gertrud             Hanna
+Geburtsdatum                                                03.05.1988        27.07.1991          15.12.2015
+Kundennummer                                                735D123001        735D123002          735D123003
+
+Regelbedarf                                     1.250,00             451,00              451,00               348,00
+Mehrbedarf                                         24,92              10,37               10,37                 4,18
+Warmwassererzeugung
+Grundmiete                                        750,00             250,00              250,00               250,00
+Heizkosten                                         90,00              30,00               30,00                30,00
+Nebenkosten                                       150,00              50,00               50,00                50,00
+
+Gesamtbedarf                                    2.264,92             791,37              791,37               682,18
+Die Bedarfe für Unterkunft und Heizung werden zu gleichen Teilen auf die Mitglieder der Haushaltsgemeinschaft aufgeteilt.
+Geringe Abweichungen sind möglich, wenn der Gesamtbetrag der Bedarfe für Unterkunft und Heizung nicht exakt durch die Personenanzahl
+teilbar ist.
+
+Zu berücksichtigendes monatliches Einkommen in Euro
+                                        Gesamtbetrag        735D123001           735D123002       735D123003
+Einkommen aus Erwerbstätigkeit
+Brutto                                             500,00               500,00
+Netto                                              400,00               400,00
+Abzüglich Freibetrag                               180,00               180,00
+auf das Erwerbseinkommen
+Zwischensumme                                      220,00               220,00
+Erwerbseinkommen
+sonstiges Einkommen
+Arbeitslosengeld                                   180,00                                180,00
+Kindergeld                                         250,00                                                   250,00
+Gesamteinkommen                                    650,00               220,00           180,00             250,00
+Abzüglich Absetzungen                               30,00                                 30,00
+vom Gesamteinkommen
+zu berücksichtigendes                              620,00               220,00           150,00             250,00
+Gesamteinkommen
+Bei Erwerbseinkommen bis zu 400,00 Euro werden die Absetzbeträge für Werbungskosten, Versicherungsbeiträge und eine geförderte
+Altersvorsorge unabhängig von der tatsächlichen Höhe mit einem Betrag in Höhe von 100,00 Euro (Grundabsetzungsbetrag) berücksichtigt.
+Bei Erwerbseinkommen über 400,00 Euro werden die tatsächlichen Absetzbeträge für Werbungskosten, Versicherungsbeiträge und eine
+geförderte Altersvorsorge, mindestens aber 100,00 Euro berücksichtigt.
+Auf das monatliche Bruttoeinkommen aus Erwerbstätigkeit über 100 Euro bis 1.000 Euro wird ein Freibetrag in Höhe von 20 Prozent
+gewährt. Auf das Bruttoeinkommen über 1.000 Euro bis 1.200 Euro ein weiterer Freibetrag in Höhe von 10 Prozent. Wenn Sie ein
+minderjähriges Kind haben oder mit einem minderjährigen Kind in der Bedarfsgemeinschaft leben wird der Freibetrag in Höhe von
+10 Prozent bis zu einem Bruttoeinkommen von 1.500 Euro gewährt.
+
+Berücksichtigung des personenbezogenen Einkommens in Euro
+                                  Gesamtbetrag         735D123001         735D123002          735D123003
+
+Gesamtbedarf                                  682,18                                                      682,18
+
+Personenbezogenes                             250,00                                                      250,00
+Einkommen
+Bedarf                                        432,18                                                      432,18
+
+Einkommen wird grundsätzlich anteilig bedarfsbezogen auf alle Mitglieder der Bedarfsgemeinschaft verteilt. Ausgenommen von der
+Verteilung ist das Einkommen von Kindern. Kindeseinkommen wird nur vom Bedarf des Kindes abgezogen. Die Verteilung des Kindergeldes
+richtet sich nach dem ungedeckten Bedarf des Kindes. Beträge, die das Kind nicht zur Deckung des eigenen Bedarfes benötigt, werden als
+Einkommen des Kindergeldberechtigten berücksichtigt und in die Verteilung einbezogen.
+
+
+
+
+                                                                                                  Stand: Februar 2023
+Berücksichtigung des verteilbaren Einkommens in Euro
+                                   Gesamtbetrag          735D123001           735D123002           735D123003
+
+Einkommen                                      370,00               220,00               150,00
+
+Anteil verteilbares                            370,00               145,32               145,32                79,36
+Einkommen
+In einer Bedarfsgemeinschaft ist jede Person im Verhältnis ihres individuellen Bedarfs zum Gesamtbedarf der Bedarfsgemeinschaft
+hilfebedürftig. Die Einkommensverteilung auf die Personen in der Bedarfsgemeinschaft erfolgt nach deren individuellen Bedarfsanteilen.
+Hierzu wird für die Berechnung des auf die Einzelperson zu verteilenden Einkommens das gesamte verteilbare Einkommen mit dem zu
+berücksichtigenden Bedarf der Einzelperson multipliziert und durch den verbleibenden Gesamtbedarf der Bedarfsgemeinschaft dividiert.
+
+
+Höhe der monatlich zustehenden Leistungen nach Berücksichtigung von Einkommen in Euro
+                                   Anspruch              735D123001           735D123002           735D123003
+
+Regelbedarf                                     630,00               305,68               305,68                18,64
+
+Mehrbedarf                                       24,92                10,37                10,37                 4,18
+Warmwassererzeugung
+KdU - Miete/Eigentum                            990,00               330,00               330,00              330,00
+
+Summe                                         1.644,92               646,05               646,05              352,82
+
+Anzurechnendes Einkommen deckt zunächst die Bedarfe zur Sicherung des Lebensunterhaltes. Das nach dieser Anrechnung verbleibende
+Einkommen deckt die Bedarfe für Unterkunft und Heizung.
+
+
+
+
+                                                                                                    Stand: Februar 2023
+                                                                                                      Jobcenter Nürnberg-Stadt
+                                                                                                        Richard-Wagner-Platz 5
+                                                                                                               90443 Nürnberg
+
+
+
+
+                                                                                            Bescheid wurde erstellt am: 08.02.2023
+
+
+      Bescheinigung über Leistungsbezug zur Vorlage bei dem Beitragsservice
+                      von ARD, ZDF und Deutschlandradio
+
+   Vorname                   Hans
+
+   Name                      Müller
+
+                             Clarsbacher Straße 67
+   Straße
+
+                             90419 Nürnberg
+   Ort
+
+
+
+                                                    Empfänger von Bürgergeld
+                                            einschließlich Leistungen nach § 22 SGB II
+
+Für die Bedarfsgemeinschaft des o.g. werden Leistungen für folgende Zeiten bewilligt:
+
+                                                        01.01.2023 bis 31.12.2023
+
+Diese Bescheinigung wurde maschinell erstellt und ist ohne Unterschrift gültig.
+
+                                                          ZUR INFORMATION:
+Wenn Sie von der Rundfunkbeitragspflicht befreit werden möchten, senden Sie diese Bescheinigung an folgende Adresse:
+
+ARD, ZDF und Deutschlandradio
+Beitragsservice
+50656 Köln
+
+                                                                Wichtig:
+
+Geben Sie unbedingt Ihre 9-stellige Beitragsnummer an, unter der Ihre Wohnung beim Beitragsservice
+angemeldet ist.
+
+
+Beitragsnummer:
+
+Bei Fragen zu der Befreiung von der Rundfunkbeitragspflicht wenden Sie sich bitte unmittelbar an den Beitragsservice von
+ARD, ZDF und Deutschlandradio.
+
+
+
+
+ Dienstgebäude                  Telefon                               Öffnungszeiten                      Bankverbindung
+ Richard-Wagner-Platz 5         +49911/4007-100                       Mo. - Fr. 8.30 - 12.30 Uhr          BA-Service-Haus
+ 90443 Nürnberg                 Telefax                               Notfälle 8.30 - 9.00 Uhr            Bundesbank
+                                +49911/3268-199                       Termine nur nach Vereinbarung       BIC: MARKDEF1760
+                                Internet                                                                  IBAN:DE50760000000076001617
+                                www.arbeitsagentur.de
+
+
+
+
+                                                                                                      Stand: Februar 2023
