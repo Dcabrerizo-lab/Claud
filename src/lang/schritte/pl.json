@@ -148,5 +148,9 @@
   "sf.h.bezug": "Aplikacja pokaże te świadczenia jako „już otrzymywane” i sprawdzi, co jest możliwe dodatkowo.",
   "sf.mehrere": "Możesz wybrać kilka odpowiedzi",
   "sf.oder": "lub",
-  "sf.teil": "Część {n} z {m}"
+  "sf.teil": "Część {n} z {m}",
+  "sf.q.plzOrt": "Czy twoje miejsce zamieszkania się zgadza?",
+  "sf.a.ortJa": "Tak, zgadza się",
+  "sf.a.ortNein": "Nie, inna miejscowość",
+  "sf.h.plzOrt": "Stopień czynszu zależy od twojej gminy, nie od kodu pocztowego. Od niego zależy, ile czynszu najwyżej liczy się przy Wohngeld. Wiążąco decyduje Wohngeldstelle."
 }

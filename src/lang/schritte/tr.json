@@ -148,5 +148,9 @@
   "sf.h.bezug": "Uygulama bu yardımları „zaten alınıyor“ olarak gösterir ve ek olarak nelerin mümkün olduğunu kontrol eder.",
   "sf.mehrere": "Birden fazla cevap seçebilirsin",
   "sf.oder": "veya",
-  "sf.teil": "Bölüm {n} / {m}"
+  "sf.teil": "Bölüm {n} / {m}",
+  "sf.q.plzOrt": "Oturduğun yer doğru mu?",
+  "sf.a.ortJa": "Evet, doğru",
+  "sf.a.ortNein": "Hayır, başka bir yer",
+  "sf.h.plzOrt": "Kira kademesi posta koduna değil, belediyene bağlıdır. Wohngeld’de en fazla ne kadar kiranın sayılacağı buna göre belirlenir. Bağlayıcı kararı Wohngeldstelle verir."
 }

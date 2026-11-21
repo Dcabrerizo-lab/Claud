@@ -95,6 +95,11 @@ const ohne = (o) => JSON.stringify(o.results.map((r) => [r.id, r.level, r.tx]));
   check('Nicht arbeitslos: keine Fragen zum Arbeitslosengeld', !gesehen.includes(q('sf.q.algZeit')) && !gesehen.includes(q('sf.q.lohnVorher')));
   // PLZ (wenn Daten da), sonst Bundesland/Mietenstufe
   if (A.frage() === q('sf.q.plz')) await A.antworte('93047');
+  check('PLZ eindeutig: Frage „Stimmt dein Wohnort?“ mit Ort und Mietenstufe sichtbar (nur Vorbelegung, Rechtsprüfung Frage 4)', A.frage() === q('sf.q.plzOrt') && /Regensburg/.test(A.$('schritte').querySelector('.sf-info').textContent) && /Mietenstufe [IV]+/.test(A.$('schritte').querySelector('.sf-info').textContent), A.frage());
+  await A.antworte(L['sf.a.ortNein']);
+  check('Anderer Ort: Mietenstufe wird gefragt', A.frage() === q('sf.q.mietstufe'), A.frage());
+  A.$('sfZurueck').click(); await A.warte();
+  await A.antworte(L['sf.a.ortJa']);
   check('PLZ Regensburg: Bundesland und Mietenstufe nicht gefragt (kommen aus der PLZ)', A.frage() === q('sf.q.ekArt') && A.solo().state().bundesland === 'BY' && !!A.solo().state().mietstufe, A.frage());
   await A.antworte(L['ek.art.lohn']);
   check('Lohn: Frage nach Brutto', A.frage() === q('sf.q.brutto.lohn'));

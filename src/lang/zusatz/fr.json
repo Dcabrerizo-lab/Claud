@@ -98,5 +98,9 @@
   "bp.vgl.kein": "aucun degré de dépendance (Pflegegrad)",
   "bp.vgl.klein": "Points pondérés, comme les calcule la Pflegekasse (§ 15 SGB XI). Plus signifie : ton estimation donne plus de points à cet endroit. En dessous, tu vois quelles questions exactement.",
   "t.bafoeg.vermTeil": "Le patrimoine dépasse l'abattement de {verm}. Les 2 300 € supplémentaires ne sont accordés que pour un conjoint ou partenaire enregistré et pour chacun de tes propres enfants. Seule la partie au-dessus de l'abattement compte : répartie sur 12 mois, elle réduit le BAföG d'environ {monat} par mois. L'Amt für Ausbildungsförderung fait le calcul exact.",
-  "briefe.nurDe": "Le formulaire et le résultat existent pour l’instant seulement en allemand. Les lettres aux administrations sont toujours en allemand."
+  "briefe.nurDe": "Le formulaire et le résultat existent pour l’instant seulement en allemand. Les lettres aux administrations sont toujours en allemand.",
+  "plz.wohnort": "Domicile : {ort} · Niveau de loyer {stufe}",
+  "plz.aendern": "Modifier",
+  "plz.stimmt": "Le lieu est-il correct ? Le niveau de loyer dépend de ta commune, pas du code postal.",
+  "plz.was": "Qu’est-ce que le niveau de loyer ?"
 }

@@ -103,6 +103,10 @@ var Schritte = (function () {
     { id: 'warmwasser', b: 'wohnen', art: 'wahl', q: 'sf.q.warmwasser', opts: JN },
     { id: 'hhAndere', b: 'wohnen', art: 'wahl', q: 'sf.q.hhAndere', h: 'sf.h.hhAndere', opts: [['', 'hh.0'], ['wg', 'hh.wg'], ['verwandte', 'hh.verwandte']] },
     { id: 'plz', b: 'wohnen', art: 'zahl', ziffern: 5, skip: 'sf.weissNicht', q: 'sf.q.plz', h: 'sf.h.plz', wenn: function () { return !!(ctx.plzDa && ctx.plzDa()); } },
+    // Stufe aus der PLZ ist nur eine Vorbelegung (Rechtsprüfung 21.11.2026, Frage 4): Ort und Stufe zeigen, Nutzer bestätigt oder wählt selbst
+    { id: 'plzOrt', b: 'wohnen', art: 'wahl', q: 'sf.q.plzOrt', h: 'sf.h.plzOrt', opts: [['ja', 'sf.a.ortJa'], ['nein', 'sf.a.ortNein']],
+      info: function (s) { var r = plzInfo(s); return r && r.sure ? t('plz.wohnort', { ort: r.candidates[0].label, stufe: ctx.roman(r.stufe) }) : ''; },
+      wenn: function (s) { var r = plzInfo(s); return !!(r && r.sure && r.stufe); } },
     { id: 'plzPick', b: 'wohnen', art: 'wahl', q: 'sf.q.plzPick', deutsch: true,
       wenn: function (s) { var r = plzInfo(s); return !!(r && !r.sure && r.candidates.some(function (c) { return c.stufe; })); },
       opts: function (s) {
@@ -116,7 +120,7 @@ var Schritte = (function () {
       wenn: function (s) { var r = plzInfo(s); return !(r && r.bl); },
       opts: function () { return [['', 'bl.unbekannt']].concat(ctx.laender().map(function (x) { return [x[0], function () { return x[1]; }]; })); } },
     { id: 'mietstufe', b: 'wohnen', art: 'wahl', q: 'sf.q.mietstufe', h: 'sf.h.mietstufe', klein: true,
-      wenn: function (s) { var r = plzInfo(s); if (!r) return true; if (r.sure) return false; var c = r.candidates.filter(function (x) { return x.label + '|' + x.kreis + '|' + x.stufe === s.plzPick; })[0]; return !(c && c.stufe); },
+      wenn: function (s) { var r = plzInfo(s); if (!r) return true; if (r.sure) return s.plzOrt === 'nein'; var c = r.candidates.filter(function (x) { return x.label + '|' + x.kreis + '|' + x.stufe === s.plzPick; })[0]; return !(c && c.stufe); },
       opts: [['', 'stufe.unbekannt']].concat([1, 2, 3, 4, 5, 6, 7].map(function (n) { return [String(n), function () { return t('stufe.n', { n: ctx.roman(n) }); }]; })) }
   ].concat(ekFragen(1), ekFragen(2), [
     { id: 'zusatzRente', b: 'geld', art: 'zahl', euro: true, skip: 'sf.keine', q: 'sf.q.zusatzRente', h: 'sf.h.zusatzRente', wenn: hatRente },
@@ -155,7 +159,11 @@ var Schritte = (function () {
       s[f.id] = Math.max(0, Math.min(f.max(s), Number(v) || 0));
       if (f.id === 'kids' || f.id === 'kidsU6') { s.kidsU6 = Math.min(s.kidsU6 || 0, s.kids); s.kids14 = Math.min(s.kids14 || 0, s.kids - s.kidsU6); }
       if (f.id === 'kids14') s.kidsAlter = true; // wie im Formular: Frage „14 bis 17“ beantwortet
-    } else if (f.id === 'plz') { s.plz = v; s.plzPick = ''; }
+    } else if (f.id === 'plz') { s.plz = v; s.plzPick = ''; s.plzOrt = ''; }
+    else if (f.id === 'plzOrt') {
+      s.plzOrt = v;
+      var rp = plzInfo(s); if (v === 'ja' && rp && rp.sure && rp.stufe) s.mietstufe = String(rp.stufe); // bestätigt: Stufe aus der Liste
+    }
     else if (f.id === 'plzPick') {
       s.plzPick = v;
       var c = (opts(f, s).filter(function (o) { return o[0] === v; })[0] || [])[2];
@@ -240,6 +248,7 @@ var Schritte = (function () {
   function anzeigeWert(f, s) {
     if (f.art === 'mehr') { var an = felder(f, s).filter(function (x) { return feldWert(f, s, x[0]); }); return an.length ? an.map(function (x) { return t(x[1]); }).join(' · ') : t('sf.nichts'); }
     if (f.art === 'zaehler') return String(s[f.id] || 0);
+    if (f.info && f.info(s)) return f.info(s) + (s[f.id] === 'nein' ? ' – ' + t('sf.a.ortNein') : ''); // Wohnort und Mietenstufe in „Deine Angaben“
     var v = s[f.id];
     if (f.art === 'zahl') return v === '' || v == null ? t('sf.leer') : (f.euro ? ctx.euro(Number(v)) : String(v));
     var o = opts(f, s).filter(function (x) { return x[0] === v || String(x[0]) === String(v); })[0];
@@ -263,7 +272,8 @@ var Schritte = (function () {
     var tl = teil(f);
     var bereich = (tl.n ? t('sf.teil', { n: tl.n, m: tl.m }) + ' · ' : '') + t('sf.b.' + f.b) + (f.wer && f.wer(s) ? ' · ' + f.wer(s) : '');
     var h = kopf(vorige(f.id) || (zurUeb ? 'uebersicht' : ''), bereich, tl.anteil) +
-      '<h2 class="es-q" id="sfFrage" tabindex="-1">' + esc(t(wert(f, s, f.q))) + '</h2>' + hilfe(wert(f, s, f.h));
+      '<h2 class="es-q" id="sfFrage" tabindex="-1">' + esc(t(wert(f, s, f.q))) + '</h2>' +
+      (f.info && f.info(s) ? '<p class="es-h sf-info"><strong>' + esc(f.info(s)) + '</strong></p>' : '') + hilfe(wert(f, s, f.h));
     if (f.art === 'wahl') {
       var o = opts(f, s), v = s[f.id];
       h += '<div class="es-wahl' + (f.klein || o.length > 5 ? ' es-klein' : '') + '" role="group" aria-labelledby="sfFrage"' + (f.deutsch ? ' lang="de"' : '') + '>' + o.map(function (x, i) {

@@ -113,7 +113,7 @@
   // Erlaubte Arten für das zweite Einkommen einer Person (leer = keins)
   var EK_ZWEIT = ['', 'lohn', 'selbst', 'rente', 'alg', 'kg', 'eg', 'wfbm', 'unt'];
   function blankState() {
-    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', waisen: '', uvgPartner: '', uvgWechsel: false, kindEink: '', ek1bArt: '', ek1bBetrag: '', ek2bArt: '', ek2bBetrag: '', zusatzRente: '', baby: '', egVor: '', egKinder: '', egNach: '', aufenthalt: '', miete: '', heizkosten: '', mietstufe: '', plz: '', plzPick: '', bundesland: '', vermoegen: '', gebJahr: '', arbeitSit: '', algMonate: '', krankWochen: '', lohnVorher: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', uzBetrag: '', uzAn: '', uzTitel: false, wohnart: '', hhAndere: '', autoWert: '', autoBraucht: false, euArbeit: '', euJahre: '', bezug: {} };
+    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', waisen: '', uvgPartner: '', uvgWechsel: false, kindEink: '', ek1bArt: '', ek1bBetrag: '', ek2bArt: '', ek2bBetrag: '', zusatzRente: '', baby: '', egVor: '', egKinder: '', egNach: '', aufenthalt: '', miete: '', heizkosten: '', mietstufe: '', plz: '', plzPick: '', plzOrt: '', bundesland: '', vermoegen: '', gebJahr: '', arbeitSit: '', algMonate: '', krankWochen: '', lohnVorher: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', uzBetrag: '', uzAn: '', uzTitel: false, wohnart: '', hhAndere: '', autoWert: '', autoBraucht: false, euArbeit: '', euJahre: '', bezug: {} };
   }
 
   function detect() {
@@ -258,11 +258,16 @@
       d.appendChild(s2); out.appendChild(d);
     };
     var srcText = t('plz.source', { stand: ((Plz.info() && Plz.info().wogv || '').match(/\d+\.\d+\.\d{4}/) || [''])[0] });
-    var src = function () { out.appendChild(mehrEl(srcText, t('beh.quelle'))); };
+    var src = function () { out.appendChild(mehrEl(srcText, t('plz.was'))); };
     if (r.sure) {
+      // Rechtsprüfung 21.11.2026 (Frage 4): Stufe aus der PLZ nur als Vorbelegung, Ort und Stufe sichtbar, Ändern möglich
       applyStufe(r.stufe);
-      say('<strong>' + esc(t('plz.found', { ort: r.candidates[0].label, stufe: Rules.roman(r.stufe) })) + '</strong>');
-      src(); altBlock(); plzFelder(r.bl && r.bl === state.bundesland && String(r.stufe) === String(state.mietstufe)); return;
+      var zeile = say('<strong>' + esc(t('plz.wohnort', { ort: r.candidates[0].label, stufe: Rules.roman(state.mietstufe || r.stufe) })) + '</strong> ');
+      var aend = document.createElement('button'); aend.type = 'button'; aend.className = 'linkbtn plz-aendern'; aend.id = 'plzAendern'; aend.textContent = t('plz.aendern');
+      aend.addEventListener('click', function () { plzFelder(false); aend.hidden = true; $('mietstufe').focus(); });
+      zeile.appendChild(aend);
+      say(esc(t('plz.stimmt')));
+      src(); altBlock(); plzFelder(r.bl && r.bl === state.bundesland && String(r.stufe) === String(state.mietstufe) && state.plzOrt !== 'nein'); aend.hidden = !$('stufeField').hidden; return;
     }
     if (r.candidates.every(function (c) { return !c.stufe; })) { say(esc(t('plz.unknown'))); return; }
     say(esc(t('plz.ask')));
@@ -858,7 +863,7 @@
       $(k).addEventListener('change', function () { clearTimeout(soonTimer); state[k] = parseAmount($(k).value); touched(); });
       $(k).addEventListener('blur', function () { $(k).value = state[k] === '' ? '' : String(state[k]).replace('.', ','); });
     });
-    $('plz').addEventListener('input', function () { state.plz = $('plz').value.replace(/\D/g, '').slice(0, 5); state.plzPick = ''; plzUpdate(true); touched(); });
+    $('plz').addEventListener('input', function () { state.plz = $('plz').value.replace(/\D/g, '').slice(0, 5); state.plzPick = ''; state.plzOrt = ''; plzUpdate(true); touched(); });
     SELECTS.forEach(function (k) { $(k).addEventListener('change', function () { state[k] = $(k).value; touched(); }); });
     CHECKS.forEach(function (k) { $(k).addEventListener('change', function () { state[k] = $(k).checked; touched(); }); });
     BEZUG.forEach(function (k) { $('b-' + k).addEventListener('change', function () { state.bezug[k] = $('b-' + k).checked; touched(); }); });
