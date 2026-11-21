@@ -140,7 +140,7 @@ setTimeout(() => {
   check('[pflege-ergebnis] Pflege-Startseite: „Deine letzte Einschätzung: Pflegegrad X (Datum)“', ansicht() === 'pflegestart' && !!le && new RegExp('Deine letzte Einschätzung: Pflegegrad ' + pgE + ' \\(').test(le.textContent), le && le.textContent);
   check('[pflege-ergebnis] Pflege-Startseite: weiter genau zwei Kacheln', box().querySelectorAll('.weg-liste .weg').length === 2);
   le.querySelector('button').click();
-  check('[pflege-ergebnis] „Ergebnis ansehen“ öffnet direkt die Ergebnisseite', ansicht() === 'pflege' && /^Wahrscheinlich/.test(titel()));
+  check('[pflege-ergebnis] „Ergebnis zeigen“ öffnet direkt die Ergebnisseite', ansicht() === 'pflege' && /^Wahrscheinlich/.test(titel()));
   pa().querySelector('.pa-zur').click(); d.querySelector('#v-pflegestart [data-nav-zurueck]').click();
   // Aus dem Leistungs-Check: dort gibt es den Weg zurück zur Karte
   d.getElementById('goLeistungen').click(); d.getElementById('paStart').click();
@@ -152,13 +152,13 @@ setTimeout(() => {
   d.getElementById('goPflege').click();
   check('Englisch: Auswahl übersetzt', d.getElementById('pu-hilfe').textContent.indexOf(I18N.en['pu.hilfe']) >= 0);
   d.getElementById('pu-hilfe').click(); box().querySelector('.wahl[data-pg="2"]').click();
-  check('Englisch: Hinweis „nur Deutsch“ sichtbar', d.getElementById('puNurDe').hidden === false && d.getElementById('puNurDe').textContent === I18N.en['pu.nurDe']);
-  check('[rot-d] Englisch: deutsche Übersicht als lang=de dir=ltr ausgezeichnet', box().getAttribute('lang') === 'de' && box().getAttribute('dir') === 'ltr');
+  check('[pflege-sprachen] Englisch: Übersicht übersetzt (Überschrift, Pflegegeld), kein Hinweis „nur Deutsch“', d.getElementById('puNurDe').hidden === true && box().querySelector('.pf-frage').textContent === I18N.en['pfl.pu.h'].replace('{pg}', '2') && d.querySelector('#pu-l-geld h3').textContent === I18N.en['pfl.pu.geld.t'], box().querySelector('.pf-frage').textContent);
+  check('[pflege-sprachen] Englisch: Übersicht nicht mehr als Deutsch ausgezeichnet', !box().hasAttribute('lang') && !box().hasAttribute('dir'));
   // Arabisch: Einschätzung bleibt Deutsch, aber als lang=de dir=ltr; „Zurück“ arabisch in RTL
   sel.value = 'ar'; sel.dispatchEvent(new w.Event('change', { bubbles: true }));
   d.getElementById('goPflege').click(); d.getElementById('pu-schaetzen').click();
   const zk = pa().querySelector('.pa-zur');
-  check('[rot-d] Arabisch: Einschätzung lang=de dir=ltr, Zurück arabisch und rtl', pa().getAttribute('lang') === 'de' && pa().getAttribute('dir') === 'ltr' && zk.getAttribute('lang') === 'ar' && zk.getAttribute('dir') === 'rtl' && zk.textContent.indexOf(I18N.ar['nav.zurueck']) >= 0, zk && zk.outerHTML);
+  check('[pflege-sprachen] Arabisch: Einschätzung übersetzt (Überschrift arabisch, kein Deutsch), nicht als Deutsch ausgezeichnet, Zurück arabisch', !pa().hasAttribute('lang') && /[\u0600-\u06FF]/.test(pa().querySelector('#pa-q').textContent) && !/Wahrscheinlich|Wie alt/.test(pa().textContent) && zk.textContent.indexOf(I18N.ar['nav.zurueck']) >= 0 && d.getElementById('paNurDe').hidden, pa().querySelector('#pa-q') && pa().querySelector('#pa-q').textContent);
   // Gutachten vergleichen (UX-Audit D #3): Bereiche zugeklappt mit Zähler, eigene Einschätzung oben, Alter übernommen
   const ber = [...d.querySelectorAll('#pf-module details.pf-bereich')];
   check('[rot-d] Gutachten: 6 Bereiche zugeklappt mit „x von n eingetragen“', ber.length === 6 && ber.every((x) => !x.open && /· \d+ von \d+ eingetragen$/.test(x.querySelector('summary').textContent)));
@@ -168,6 +168,38 @@ setTimeout(() => {
   d.getElementById('pf-alter').value = '';
   w.PruefpaketPflege.eigene({ stufen: { '1.1': 2 }, m5: {}, inkontinenz: { harn: false, stuhl: false }, alterJahre: '82' });
   check('[rot-d] Gutachten: eigene Einschätzung oben, Alter 82 übernommen, „Alles leeren“ nicht mehr oben', !d.getElementById('pf-eigen-oben').hidden && /^Deine Einschätzung in SoLo/.test(d.getElementById('pf-eigen-oben').textContent) && d.getElementById('pf-eigen-oben').nextElementSibling.id === 'pf-form2' && d.getElementById('pf-alter').value === '82' && !!d.getElementById('pf-leeren').closest('.pf-leeren-zeile'));
+  // src/lang/pflege/de.json stimmt mit den deutschen Standardtexten der Einschätzung im Code überein (eine Quelle für die Übersetzung)
+  { const F = require('../erweiterungen/pflege-fragen.js'), P = require('../erweiterungen/pflege.js'), PD = require('../src/lang/pflege/de.json'), ab = [];
+    const soll = (k, v) => { if (PD[k] !== v) ab.push(k); };
+    for (const [id, v] of Object.entries(F.TEXT)) { soll('pfl.text.' + id + '.0', v[0]); soll('pfl.text.' + id + '.1', v[1]); }
+    for (const [id, v] of Object.entries(F.M5)) soll('pfl.m5.' + id, v);
+    for (const [id, v] of Object.entries(F.M5_KURZ)) soll('pfl.m5Kurz.' + id, v);
+    for (const [m, v] of Object.entries(F.VORFRAGE)) { soll('pfl.vorfrage.' + m + '.0', v.frage); soll('pfl.vorfrage.' + m + '.1', v.hinweis); }
+    for (const s of ['sel', 'fae', 'hfg', 'sonde']) P.SKALA[s].kurz.forEach((v, i) => soll('pfl.antworten.' + s + '.' + i, v));
+    const src = fs.readFileSync(path.join(__dirname, '..', 'erweiterungen', 'pflege-assistent.js'), 'utf8');
+    for (const m of src.matchAll(/T\('([a-zA-Z0-9.]+)', '((?:[^'\\]|\\.)*)'/g)) if (!m[1].startsWith('aktion.')) soll('pfl.ui.' + m[1], m[2]);
+    check('[pflege-sprachen] src/lang/pflege/de.json = deutsche Standardtexte im Code', ab.length === 0, ab.slice(0, 5)); }
+  // Somali und Paschtu (Entscheidung David 21.11.2026): Pflege-Seiten vorerst Deutsch mit Hinweis „nur auf Deutsch“ und lang=de dir=ltr,
+  // bis Muttersprachler geprüft haben (Entwürfe in docs/entwuerfe/sprachen/pflege-wartet/); Arabisch ist übersetzt
+  {
+    const sel2 = d.getElementById('lang');
+    const wechsel = (l) => { sel2.value = l; sel2.dispatchEvent(new w.Event('change', { bubbles: true })); };
+    const uebersicht = (l) => {
+      wechsel(l); d.getElementById('goPflege').click(); d.getElementById('pu-hilfe').click(); box().querySelector('.wahl[data-pg="2"]').click();
+      return { frage: box().querySelector('.pf-frage').textContent, geld: d.querySelector('#pu-l-geld h3').textContent, hinweis: !d.getElementById('puNurDe').hidden, lang: box().getAttribute('lang'), dir: box().getAttribute('dir') };
+    };
+    for (const l of ['so', 'ps']) {
+      const u = uebersicht(l);
+      check('[pflege-fallback] ' + l + ': Pflege-Übersicht auf Deutsch, mit Hinweis „nur auf Deutsch“, lang=de dir=ltr', u.frage === de['pfl.pu.h'].replace('{pg}', '2') && u.geld === de['pfl.pu.geld.t'] && u.hinweis && u.lang === 'de' && u.dir === 'ltr' && !!I18N[l]['pu.nurDe'] && d.getElementById('puNurDe').textContent === I18N[l]['pu.nurDe'], u);
+      oben().click(); oben().click(); d.getElementById('pu-schaetzen').click(); // Liste → Pflegegrad → Auswahl
+      check('[pflege-fallback] ' + l + ': Einschätzung auf Deutsch, lang=de dir=ltr, Hinweis sichtbar', pa().getAttribute('lang') === 'de' && pa().getAttribute('dir') === 'ltr' && !d.getElementById('paNurDe').hidden && !/[؀-ۿ]/.test(titel()), titel());
+      pa().querySelector('.pa-zur').click();
+    }
+    const a = uebersicht('ar');
+    check('[pflege-fallback] ar: Pflege-Übersicht auf Arabisch, ohne Hinweis, nicht als Deutsch ausgezeichnet', a.frage === I18N.ar['pfl.pu.h'].replace('{pg}', '2') && /[؀-ۿ]/.test(a.frage) && a.geld === I18N.ar['pfl.pu.geld.t'] && !a.hinweis && !a.lang && !a.dir, a);
+    oben().click(); oben().click();
+    wechsel('de');
+  }
   check('Keine Skriptfehler im Test', errors.length === 0, errors.join('; '));
   console.log(fails ? fails + ' FEHLER (Pflege-Start)' : '[pflege-start] Pflege-Startkachel: Auswahl, Pflegegrad, Übersicht und Zurück-Wege stimmen');
   process.exit(fails ? 1 : 0);

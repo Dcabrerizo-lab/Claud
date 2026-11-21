@@ -136,6 +136,6 @@
   "pu.pg.hint": "Das steht im Brief von der Pflegekasse.",
   "pu.letzte": "Deine letzte Einschätzung: Pflegegrad {pg}. Vom {datum}.",
   "pu.letzte0": "Deine letzte Einschätzung: kein Pflegegrad. Vom {datum}.",
-  "pu.letzte.ansehen": "Ergebnis ansehen",
+  "pu.letzte.ansehen": "Ergebnis zeigen",
   "home.pflege.t": "Pflegegrad und Leistungen zur Unterstützung bei der Pflege"
 }

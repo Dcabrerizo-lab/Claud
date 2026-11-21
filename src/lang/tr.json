@@ -1442,7 +1442,7 @@
   "pu.nurDe": "Bu genel bakış şu anda yalnızca Almanca mevcut.",
   "pu.letzte": "Son tahminin: Pflegegrad (bakım derecesi) {pg} ({datum})",
   "pu.letzte0": "Son tahminin: Pflegegrad (bakım derecesi) yok ({datum})",
-  "pu.letzte.ansehen": "Sonucu gör",
+  "pu.letzte.ansehen": "Sonucu göster",
   "sp.h": "Günlük hayatta para biriktir",
   "home.geld": "Para ve borçlar",
   "home.geld.t": "Borçlar, haciz, hane bütçesi, tasarruf ipuçları ve ücretsiz yardım.",

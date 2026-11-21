@@ -282,15 +282,20 @@ check('Jedes Ergebnis hat Namen und Schritte', ev({}).results.every((r) => r.nam
 const LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so'];
 check('Dreizehn Sprachen vorhanden', LANGS.every((l) => I18N[l]) && Object.keys(I18N).length === 13);
 const deKeys = Object.keys(I18N.de);
+// Gewollt fehlend (Fallback Deutsch, Hinweis „nur auf Deutsch“): Pflege-Texte in Somali und Paschtu – Entscheidung David 21.11.2026,
+// erst nach Prüfung durch Muttersprachler (Entwürfe in docs/entwuerfe/sprachen/pflege-wartet/)
+const PFLEGE_KEYS = Object.keys(require('../src/lang/pflege/de.json'));
+const FALLBACK_DE = { so: PFLEGE_KEYS, ps: PFLEGE_KEYS };
 LANGS.forEach((l) => {
   const ks = Object.keys(I18N[l]);
-  const missing = deKeys.filter((k) => !(k in I18N[l]));
+  if (FALLBACK_DE[l]) check(l + ': Pflege-Texte fehlen ganz (Fallback Deutsch), keine halbe Übersetzung', FALLBACK_DE[l].every((k) => !(k in I18N[l])), FALLBACK_DE[l].filter((k) => k in I18N[l]).slice(0, 5).join(','));
+  const missing = deKeys.filter((k) => !(k in I18N[l]) && !(FALLBACK_DE[l] || []).includes(k));
   const extra = ks.filter((k) => !(k in I18N.de));
   check(l + ': alle ' + deKeys.length + ' Schlüssel vorhanden, keine überzähligen', missing.length === 0 && extra.length === 0, 'fehlt: ' + missing.join(',') + ' extra: ' + extra.join(','));
   const empty = ks.filter((k) => !String(I18N[l][k]).trim() && !(l === 'de' && k.startsWith('n.')));
   check(l + ': keine leeren Texte', empty.length === 0, empty.join(','));
   const ph = (s) => (String(s).match(/\{\w+\}/g) || []).sort().join('');
-  const bad = deKeys.filter((k) => ph(I18N.de[k]) !== ph(I18N[l][k]));
+  const bad = deKeys.filter((k) => (k in I18N[l] || !(FALLBACK_DE[l] || []).includes(k)) && ph(I18N.de[k]) !== ph(I18N[l][k]));
   check(l + ': Platzhalter stimmen mit Deutsch überein', bad.length === 0, bad.map((k) => k + ' de=' + ph(I18N.de[k]) + ' ' + l + '=' + ph(I18N[l][k])).join(' | '));
 });
 { const F = require('../src/fmt.js'); const d = new Date(2026, 10, 19);
@@ -359,6 +364,7 @@ LANGS.filter((l) => l !== 'de').forEach((l) => {
   deKeys.forEach((k) => {
     // reine Erklärtexte dürfen den Begriff übersetzen; Karten, Hinweise und Ämter behalten ihn
     if (k.startsWith('n.') || k.startsWith('meta.') || ['brutto.hint', 't.kindergeld.keinKind', 't.gsa.voraus'].includes(k)) return;
+    if (!(k in I18N[l]) && (FALLBACK_DE[l] || []).includes(k)) return; // Fallback Deutsch: dort steht der deutsche Text
     TERMS.forEach((term) => { if (I18N.de[k].includes(term) && !I18N[l][k].includes(term)) lost.push(k + ':' + term); });
   });
   check(l + ': deutsche Amtsbegriffe bleiben erhalten', lost.length === 0, lost.join(', '));

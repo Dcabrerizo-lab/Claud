@@ -345,11 +345,13 @@ setTimeout(async () => {
   // Grenze 6 MB (Entscheidung David 20.11.2026; davor 5 MB; bis 1.4: 2,5 MB; 19.11.2026: 3 MB für 13 Sprachen; 20.11.2026: 4 MB für Vorgänge speichern, Beratungsmodus, Pflege-Unterstützung, Schulden-Tipps, Haushaltsplan; 20.11.2026 nachmittags: 5 MB für Fristen, Schuldenliste, Energie, Mietgrenze, Kostensenkung, Paar-Einkommen – Entscheidung des Nutzers): eine einzige Datei, die offline läuft; der größte Teil sind PLZ-Daten (ganz Deutschland mit Mietenstufen), Behörden (Bayern), 13 Sprachen,
   // seit 1.4 auch „Brief prüfen“ und die Pflegegrad-Einschätzung (zusammen gut 200 KB)
   check('Web-Datei ist ein vollständiges Dokument mit UTF-8 und Viewport (Safari, Handy)', /^<!doctype html>/i.test(html) && /<meta charset="utf-8">/i.test(html.slice(0, 300)) && /name="viewport"/.test(html.slice(0, 400)));
-  // 21.11.2026: in Bytes gemessen (Buffer.byteLength, UTF-8) statt in Zeichen; Grenze vorläufig 7 MB – Entscheidung David steht noch aus
+  // 21.11.2026: in Bytes gemessen (Buffer.byteLength, UTF-8) statt in Zeichen.
+  // Grenze ganze Datei 8 MB (Entscheidung David 21.11.2026; davor vorläufig 7 MB), weil Pflege-Übersicht, Erklärseite und Einschätzung jetzt
+  // in den Sprachen eingebettet sind (src/lang/pflege); Startgrenze 3 MB bleibt.
   // 21.11.2026 (Sprachen nur bei Bedarf, Entscheidung David „A“): Die Web-Datei enthält weiter alle 13 Sprachen (offline, eine Datei),
-  // aber die 12 Fremdsprachen als JSON-Datenblöcke, die erst beim Wechsel geparst werden. Ehrliche Grenzen: ganze Datei < 7 MB,
+  // aber die 12 Fremdsprachen als JSON-Datenblöcke, die erst beim Wechsel geparst werden. Ehrliche Grenzen: ganze Datei < 8 MB,
   // beim Start geparster Teil (ohne Datenblöcke) < 3 MB (gemessen 2,8 MB; davon PLZ-Daten, Behörden, Deutsch, Programm).
-  check('Dateigröße unter 7 MB (Bytes, alle Sprachen offline in der Datei)', Buffer.byteLength(html, 'utf8') < 7 * 1024 * 1024, (Buffer.byteLength(html, 'utf8') / 1024).toFixed(0) + ' KB');
+  check('Dateigröße unter 8 MB (Bytes, alle Sprachen offline in der Datei)', Buffer.byteLength(html, 'utf8') < 8 * 1024 * 1024, (Buffer.byteLength(html, 'utf8') / 1024).toFixed(0) + ' KB');
   const sprachBloecke = html.match(/<script type="application\/json" id="solo-sprache-[^"]+">[^<]*<\/script>\n/g) || [];
   const startTeil = sprachBloecke.reduce((a, b) => a.replace(b, ''), html);
   check('[sprachladen] Beim Start geparster Teil unter 3 MB (Fremdsprachen erst beim Wechsel)', Buffer.byteLength(startTeil, 'utf8') < 3 * 1024 * 1024, (Buffer.byteLength(startTeil, 'utf8') / 1024).toFixed(0) + ' KB');
