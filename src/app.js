@@ -629,6 +629,7 @@
     if (window.Ausziehen && Ausziehen.sprache) Ausziehen.sprache(); // „Ich ziehe aus“ (src/ausziehen.js) in der neuen Sprache zeichnen
     if (window.Schulden && Schulden.sprache) Schulden.sprache(); // Schulden-Liste (src/schulden.js)
     if (window.Klient) Klient.sprache(); // „Für Klient zusammenstellen“ (src/klient.js)
+    if (window.Suche) Suche.sprache(); // Suche auf der Startseite (src/suche.js)
     // Regeln älter als der nächste Stichtag (1. Januar): deutlich darauf hinweisen
     var veraltet = regelnVeraltet();
     $('altNotice').hidden = !veraltet; $('altNotice').textContent = veraltet ? t('alt.hinweis', { stand: standL() }) : '';
@@ -3007,6 +3008,7 @@
   }
   function zurueckSchritt() {
     var a = aktAnsicht, b;
+    if (sucheRueck && navEbene().pfad === sucheRueck) { sucheZurStart(); return true; } // von einem Suchtreffer: Zurück führt zur Startseite mit Suche
     if (paRueck && a === paRueck && (a !== 'pflegestart' || pu.schritt === 'liste')) { if (a === 'briefe') briefOeffnen(null); paErgebnisZeigen(); return true; } // Unterseite der Pflege-Ergebnisseite
     if (a === 'pflege') { b = document.querySelector('#pflegeAssist .pa-zur'); if (b) b.click(); else paVerlassen(); return true; }
     if (a === 'pflegeinfo') { piZurueckTun(); return true; }
@@ -3054,6 +3056,7 @@
   }
   // Offene Blätter und Dialoge zuerst schließen (Zurück-Taste, Browser-Zurück, Wischen)
   function blattSchliessen() {
+    if (window.Suche && Suche.schliessen(true)) return true; // Such-Fenster (Lupe) zuerst; man bleibt auf der Seite
     if (!$('ergBlatt').hidden) { ebSchliessen(); return true; }
     if (window.Klient && Klient.offen()) { Klient.schliessen(); return true; }
     if (window.Schulden && Schulden.blattOffen && Schulden.blattOffen() && aktAnsicht !== 'schulden') { Schulden.zurueck(); return true; }
@@ -3107,6 +3110,7 @@
     var vorA = aktAnsicht, vorT = navBereit ? navEbene().tiefe : 0;
     paRueckPruefen(a); // Rückweg zur Pflege-Ergebnisseite nur auf der Unterseite selbst
     aktAnsicht = a;
+    if (a === 'start') sucheRueck = '';
     if (a === 'pflegeinfo' && !herkunft.pflegeinfo) herkunft.pflegeinfo = piZurueckZu; // z. B. über die Adresse #pflegeinfo geöffnet
     if (a !== vorA && herkunft[a] === vorA) herkunftT[a] = { von: vorA, t: vorT };
     $('app').setAttribute('data-ansicht', a);
@@ -3608,7 +3612,7 @@
   var paVonStart = false; // Einschätzung aus der Pflege-Startkachel geöffnet: „Zurück“ führt zur Auswahl
   var paRueck = ''; // Unterseite, die aus der Ergebnisseite geöffnet wurde ('briefe', 'leistungen', 'pflegestart'): „← Zurück“ führt zur Ergebnisseite
   function paVomLeistungsCheck() { return !paVonStart && herkunftVon('pflege') === 'leistungen'; }
-  function paVerlassen() { paRueck = ''; if (paVonStart) puOeffnen('wahl'); else if (herkunftVon('pflege') === 'leistungen') paZurueck('paStart'); else zurueckZurHerkunft('pflege'); }
+  function paVerlassen() { if (aktAnsicht === 'pflege' && sucheRueck.indexOf('pflege/') === 0) { sucheZurStart(); return; } paRueck = ''; if (paVonStart) puOeffnen('wahl'); else if (herkunftVon('pflege') === 'leistungen') paZurueck('paStart'); else zurueckZurHerkunft('pflege'); }
   // Unterseite der Ergebnisseite öffnen: Rückweg merken
   function paUnterseite(ziel) { paRueck = ziel; if (aktAnsicht === ziel) paRueckPruefen(ziel); }
   // Beim Ansichtswechsel: Rückweg nur auf der Unterseite selbst (der gemeinsame „← Zurück“ führt dann über zurueckSchritt zur Ergebnisseite)
@@ -4177,6 +4181,66 @@
       if (!d) out.briefe = briefIds().map(function (r) { return { id: r.id, name: r.name, text: letterText(r.id) }; }); // Musterschreiben nur aus dem geöffneten Vorgang (Antragsmappe)
       return out;
     });
+  }
+  // ----- Suche auf der Startseite (src/suche.js): Treffer öffnen die Seite über die vorhandenen Wege; „Zurück“ führt zur Startseite mit Suche -----
+  var sucheRueck = ''; // Ebene (navEbene().pfad), die ein Suchtreffer geöffnet hat
+  function sucheTitel(z, de) {
+    var k = z[2];
+    if (k.indexOf('N:') === 0) return de || lang === 'de' ? Rules.NAMES[k.slice(2)] : t('n.' + k.slice(2));
+    return de ? (I18N.de[k] || '') : t(k);
+  }
+  function sucheZurStart() {
+    var a = aktAnsicht;
+    if (a === 'sparen') gsOeffne('');
+    if (a === 'einst' || a === 'ordner') usZeigen(a, '', false);
+    if (a === 'briefe' && briefArt) briefOeffnen(null);
+    if (a === 'pflegestart') pu.schritt = 'wahl';
+    if (a === 'pfaendung') { pf.art = ''; pf.schritt = 0; }
+    if (a === 'ausziehen' && window.Ausziehen) for (var i = 0; i < 6 && Ausziehen.offen(); i++) Ausziehen.zurueck();
+    herkunft = {}; sucheRueck = '';
+    zeigeAnsicht('start', false);
+    window.scrollTo(0, 0);
+    Suche.fokus();
+  }
+  function sucheGehe(id) {
+    var k = id.split('-'), x = k.slice(1).join('-'), DR = ['konto', 'strom', 'mahn', 'miete', 'check'];
+    // Aus dem Such-Fenster (Lupe) direkt von der aktuellen Seite aus öffnen, ohne Umweg über die Startseite (der Verlauf würde sonst zurückspringen);
+    // „Zurück“ führt trotzdem zur Startseite mit Suche (sucheRueck)
+    if (aktAnsicht !== 'start') { herkunft = {}; if (aktAnsicht === 'einst' || aktAnsicht === 'ordner') usZeigen(aktAnsicht, '', false); if (aktAnsicht === 'briefe' && briefArt) briefOeffnen(null); }
+    if (id === 'check') oeffneVon('leistungen', true);
+    else if (k[0] === 'l') { // Leistung: Hilfen-Check; gibt es schon ein Ergebnis, direkt zur Karte der Leistung
+      oeffneVon('leistungen', true);
+      var c = $('c-' + x); if (c && !c.closest('[hidden]')) { var d = c.closest('details:not(.karte)'); if (d) d.open = true; karteAuf('c-' + x); try { c.scrollIntoView({ block: 'start' }); } catch (e) {} var s = c.querySelector('summary'); if (s) s.focus({ preventScroll: true }); }
+    }
+    else if (id === 'brief') oeffneVon('briefe', true);
+    else if (k[0] === 'b') { if (briefArt) briefOeffnen(null); oeffneVon('briefe', false); briefOeffnen(x); }
+    else if (id === 'geld') { gsOeffne(''); oeffneVon('sparen', true); }
+    else if (id === 'g-bleibt' || id === 'g-lohn') { pf = { art: id === 'g-lohn' ? 'lohn' : '', schritt: id === 'g-lohn' ? 1 : 0, netto: pf.netto, pers: pf.pers, kg: pf.kg, kiz: pf.kiz }; oeffneVon('pfaendung', true); }
+    else if (id === 'g-pkonto') pfBescheinigung();
+    else if (id === 'g-liste') oeffneVon('schulden', true);
+    else if (id === 'g-haushalt') oeffneVon('haushalt', true);
+    else if (id === 'g-dringend' || id === 'g-inkasso' || id === 'g-hilfe' || id === 'g-planen') gsSprung(x);
+    else if (id === 'g-geldstrafe' || DR.indexOf(x) >= 0) gsSprung('dringend', '', id === 'g-geldstrafe' ? 'geld' : x);
+    else if (['pruef', 'schreiben', 'rate'].indexOf(x) >= 0) { if (x === 'schreiben') Geld.schreibenVorbelegen(''); gsSprung('inkasso', '', x); }
+    else if (['finden', 'termin', 'ablauf'].indexOf(x) >= 0 || id === 'g-bmappe') gsSprung('hilfe', '', id === 'g-bmappe' ? 'mappe' : x);
+    else if (k[1] === 'sp') gsSprung('planen', k[2]);
+    else if (id === 'g-abschlag' || id === 'g-tarif') gsSprung('planen', 'strom', x);
+    else if (id === 'pflege') puOeffnen('wahl');
+    else if (id === 'p-hilfe') puOeffnen('pg');
+    else if (id === 'p-schaetzen') paOeffnen(true);
+    else if (id === 'ausziehen' || k[0] === 'a') { $('goAusziehen').click(); if (k[0] === 'a' && window.Ausziehen) Ausziehen.oeffnen(x); }
+    else if (id === 'mappe') { oeffneVon('leistungen', true); if (!$('helper').hidden) { try { $('helper').scrollIntoView({ block: 'start' }); } catch (e) {} var hh = $('h-helper'); hh.setAttribute('tabindex', '-1'); hh.focus({ preventScroll: true }); } }
+    else if (id === 'einst' || id === 'ordner') { usZeigen(id, '', false); zeigeAnsicht(id, true); }
+    else if (k[0] === 'e') { zeigeAnsicht('einst', false); usZeigen('einst', x, true); }
+    else if (id === 'o-fristen') { zeigeAnsicht('ordner', false); usZeigen('ordner', 'fristen', true); }
+    else if (id === 'o-ergebnis') { oeffneVon('leistungen', false); var e = $('ergebnis'); if (e) { try { e.scrollIntoView({ block: 'start' }); } catch (x2) {} e.focus({ preventScroll: true }); } }
+    if (aktAnsicht !== 'start') { sucheRueck = navEbene().pfad; if (navBereit) Navigation.melde(); }
+  }
+  if (window.Suche) {
+    Suche.init({ t: t, lang: function () { return lang; }, schluessel: function () { return lang + (lang === 'de' && einfachSprache ? '-e' : ''); },
+      titel: function (z) { return sucheTitel(z, false); }, titelDe: function (z) { return sucheTitel(z, true); },
+      gehe: sucheGehe, check: function () { sucheGehe('check'); } });
+    Suche.sprache();
   }
   if (window.Klient) {
     Klient.init({
