@@ -63,12 +63,13 @@ setTimeout(() => {
   check('[pu-korr] Aufs Konto: Pflegegeld und Wohngruppenzuschlag', /Aufs Konto kommen nur das Pflegegeld und, wer in einer ambulant betreuten Wohngruppe lebt, der Wohngruppenzuschlag/.test(t3));
   check('Stand und Quelle genannt', /Stand der Beträge: 14\.9\.2026 \(Bundesministerium für Gesundheit/.test(t3));
   check('Stellen nur als Art (Pflegekasse, Pflegestützpunkt), keine Anschrift', /Pflegestützpunkt/.test(t3) && !/\b\d{5}\b/.test(t3));
+  check('[rot-d] „Mehr dazu“ mit eindeutigem aria-label, ohne Beratungsmodus keine Paragrafen', d.querySelector('#pu-l-geld summary').getAttribute('aria-label') === 'Mehr dazu: Geld für die Pflege zu Hause (Pflegegeld)' && !/Rechtsgrundlage/.test(t3));
   const einl = box().querySelector('.pu-einl');
   check('[pu-aufr] Einleitung: ein Satz sichtbar, Rest zum Aufklappen (zu)', einl && einl.textContent.split(/[.!?](\s|$)/).filter((x) => x && x.trim()).length === 1 && box().querySelector('.pu-einl-mehr') && !box().querySelector('.pu-einl-mehr').open, einl && einl.textContent);
   const tipp = box().querySelector('details.tipp[data-tipp="pu.tipp.beratung"]');
   check('[pu-aufr] Hinweis Pflegekasse/Pflegestützpunkt als Tipp mit Symbol', tipp && tipp.querySelector('.tipp-sym svg') && tipp.querySelector('.tipp-kurz').textContent === de['pu.tipp.beratung.kurz']);
   const hk = d.getElementById('pu-schaetzen-knopf');
-  check('[pu-aufr] Grüner Hauptknopf „Pflegegrad selbst einschätzen“ direkt unter den Leistungen', hk && hk.className === 'btn' && hk.textContent === de['pu.schaetzen'] && (hk.parentElement.previousElementSibling.classList.contains('pu-l') || hk.parentElement.previousElementSibling.classList.contains('pu-gruppe')) && hk.parentElement.nextElementSibling.id === 'pu-weitere');
+  check('[pu-aufr] Mit Pflegegrad: Nebenknopf „Höherstufung prüfen“ direkt unter den Leistungen', hk && hk.className === 'btn ghost' && hk.textContent === de['pa.hoeher'] && (hk.parentElement.previousElementSibling.classList.contains('pu-l') || hk.parentElement.previousElementSibling.classList.contains('pu-gruppe')) && hk.parentElement.nextElementSibling.id === 'pu-weitere');
   oben().click();
   box().querySelector('.wahl[data-pg="1"]').click();
   const t1 = box().textContent;
@@ -161,9 +162,12 @@ setTimeout(() => {
   // Gutachten vergleichen (UX-Audit D #3): Bereiche zugeklappt mit Zähler, eigene Einschätzung oben, Alter übernommen
   const ber = [...d.querySelectorAll('#pf-module details.pf-bereich')];
   check('[rot-d] Gutachten: 6 Bereiche zugeklappt mit „x von n eingetragen“', ber.length === 6 && ber.every((x) => !x.open && /· \d+ von \d+ eingetragen$/.test(x.querySelector('summary').textContent)));
+  d.getElementById('pf-alter').value = '1'; d.getElementById('pf-monate').value = '10'; d.getElementById('pf-alter').dispatchEvent(new w.Event('input', { bubbles: true }));
+  check('[rot-d] Gutachten: Kind unter 18 Monaten – Bereich 5 klappt mit der neuen Frage auf', !d.getElementById('pf-zeile-5K').hidden && d.getElementById('pf-bereich-5').open);
+  d.getElementById('pf-monate').value = '';
   d.getElementById('pf-alter').value = '';
   w.PruefpaketPflege.eigene({ stufen: { '1.1': 2 }, m5: {}, inkontinenz: { harn: false, stuhl: false }, alterJahre: '82' });
-  check('[rot-d] Gutachten: eigene Einschätzung oben, Alter 82 übernommen, „Alles leeren“ nicht mehr oben', !d.getElementById('pf-eigen-oben').hidden && /^Deine Einschätzung in SoLo/.test(d.getElementById('pf-eigen-oben').textContent) && d.getElementById('pf-eigen-oben').nextElementSibling.id === 'pf-form' && d.getElementById('pf-alter').value === '82' && !!d.getElementById('pf-leeren').closest('.pf-leeren-zeile'));
+  check('[rot-d] Gutachten: eigene Einschätzung oben, Alter 82 übernommen, „Alles leeren“ nicht mehr oben', !d.getElementById('pf-eigen-oben').hidden && /^Deine Einschätzung in SoLo/.test(d.getElementById('pf-eigen-oben').textContent) && d.getElementById('pf-eigen-oben').nextElementSibling.id === 'pf-form2' && d.getElementById('pf-alter').value === '82' && !!d.getElementById('pf-leeren').closest('.pf-leeren-zeile'));
   check('Keine Skriptfehler im Test', errors.length === 0, errors.join('; '));
   console.log(fails ? fails + ' FEHLER (Pflege-Start)' : '[pflege-start] Pflege-Startkachel: Auswahl, Pflegegrad, Übersicht und Zurück-Wege stimmen');
   process.exit(fails ? 1 : 0);

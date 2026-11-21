@@ -146,5 +146,21 @@
   "restituire",
   "plată în plus",
   "Rückforderung"
+ ],
+ "p-hilfe": [
+  "indemnizație de îngrijire",
+  "serviciu de îngrijire la domiciliu",
+  "îngrijire de înlocuire",
+  "îngrijire pe termen scurt"
+ ],
+ "p-gutachten": [
+  "expertiză de îngrijire",
+  "verifică expertiza",
+  "contestație grad de îngrijire"
+ ],
+ "o-import": [
+  "cod QR",
+  "fișier SoLo",
+  "fișier de la consiliere"
  ]
 }

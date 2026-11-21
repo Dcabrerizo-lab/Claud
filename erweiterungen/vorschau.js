@@ -201,10 +201,10 @@
       d.classList.toggle('pf-b-pruefen', pruefen);
     }
   }
-  // Oben: die eigene Einschätzung aus SoLo (falls vorhanden), damit man weiß, womit verglichen wird
+  // Oben (nach „Wer wird gepflegt?“, vor den Werten aus dem Gutachten): die eigene Einschätzung aus SoLo, damit man weiß, womit verglichen wird
   function zeigeEigenOben() {
     let k = $('pf-eigen-oben');
-    if (!k) { k = h('div', { class: 'card pf-eigen-oben', id: 'pf-eigen-oben', hidden: true }); $('pf-form').insertAdjacentElement('beforebegin', k); }
+    if (!k) { k = h('div', { class: 'card pf-eigen-oben', id: 'pf-eigen-oben', hidden: true }); $('pf-form').insertAdjacentElement('afterend', k); }
     k.replaceChildren(); k.hidden = !eigen;
     if (!eigen) return;
     const r = P.rechne(eigen);
@@ -247,7 +247,9 @@
   function zeigePflege() {
     const g = lesePflege(), r = P.rechne(g), box = $('pf-erg');
     $('pf-monate-box').hidden = !(g.alterJahre !== '' && +g.alterJahre < 2);
+    const war5K = $('pf-zeile-5K').hidden;
     $('pf-zeile-5K').hidden = !r.kind;
+    if (war5K && r.kind && $('pf-bereich-5')) $('pf-bereich-5').open = true; // neue Frage (Kind unter 18 Monaten): Bereich 5 aufklappen, damit man sie sieht
     pfZaehlen(); zeigeEigenOben();
     box.replaceChildren();
     if (erkSperre('pf', box)) { zeigeErklaerung(g, r); if ($('pf-ab-info')) $('pf-ab-info').replaceChildren(h('p', { 'data-t': 'bp.erk.warte', text: erkWarte() })); return; }
@@ -898,7 +900,7 @@ Ergebnis: Pflegegrad 2`;
     erkFertig('pf', false);
     setzePflege(im);
     // Erkannte Bewertungen markieren (Inkontinenz: die Beschriftung des Häkchens)
-    for (const id of im.gefunden) { const el = $('pf-' + id); if (el) el.classList.add('pp-erkannt'); }
+    for (const id of im.gefunden) { const el = $('pf-' + id); if (el) { el.classList.add('pp-erkannt'); const b = el.closest('details.pf-bereich'); if (b) b.open = true; } } // Bereiche mit erkannten Werten aufklappen: man soll sie prüfen
     if (im.pgBescheid != null) $('pf-pgb').classList.add('pp-erkannt');
     for (const id of ['harn', 'stuhl']) if (im.inkontinenz && im.inkontinenz[id]) $('pf-' + id).closest('label').classList.add('pp-erkannt');
     erkMarke('pf', null);
