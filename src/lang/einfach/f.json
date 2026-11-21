@@ -199,7 +199,7 @@
   "vg.auto.sprung": "Die Uhr vom Gerät ist mehr als ein Jahr weiter als beim letzten Öffnen. Stimmt das Datum? Dann lösche jetzt die alten Vorgänge. Bei „Abbrechen“ löscht die App nichts.",
   "vg.pin.h": "PIN-Sperre (damit andere nichts sehen)",
   "vg.fotos.h": "Bildschirm-Fotos erlauben",
-  "vg.fotos.aus": "Jetzt aus: Niemand kann ein Foto vom Bildschirm machen (Android). In der Liste der offenen Apps ist SoLo verdeckt.",
+  "vg.fotos.aus": "Jetzt aus: Die App lässt keine Bildschirm-Fotos zu (nur bei Android). In der Liste der offenen Apps ist SoLo verdeckt.",
   "vg.fotos.an": "Jetzt an: Fotos vom Bildschirm sind möglich. SoLo ist in der Liste der offenen Apps zu sehen.",
   "vg.pin.nicht": "Die PIN-Sperre gibt es auf diesem Gerät nicht.",
   "vg.pin.label": "Neue PIN (4 bis 12 Ziffern, am besten 6)",

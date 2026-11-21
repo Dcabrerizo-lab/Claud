@@ -12,6 +12,10 @@ for (const f of ['datenschutz.html', 'site/datenschutz.html', 'docs/datenschutz.
   const x = R(f);
   ck(f + ': Haushaltsbuch nur auf dem Gerät, CSV nur auf Wunsch und dann unverschlüsselt, Kassenzettel wie Formularfoto', /Haushaltsplan und Haushaltsbuch<\/strong>/.test(x) && /CSV-Datei entsteht nur, wenn du sie selbst teilst; sie ist dann unverschlüsselt/.test(x) && /Kassenzettels wird wie das Foto eines Formulars/.test(x));
   ck(f + ': „Alle Angaben löschen“ löscht den geöffneten Vorgang, alle Vorgänge in den Einstellungen, Löschen beim nächsten Öffnen', /„Alle Angaben löschen“ löscht den geöffneten Vorgang/.test(x) && /Alle Vorgänge löschen/.test(x) && /beim nächsten Öffnen der App/.test(x));
+  // Unabhängige Prüfung 21.11.2026: nichts versprechen, was nicht gilt
+  ck(f + ': iOS-Sicherung ohne Garantie (nur Hinweis an iOS), Rückfall genannt', /Hinweis an iOS/.test(x) && /Apple garantiert nicht/.test(x) && !/von der iCloud- und der Finder-Sicherung ausgenommen ist/.test(x) && !/are not included in cloud backups/.test(x));
+  ck(f + ': ML Kit mit Quelle und Abrufdatum, Gerätetest offen', /developers\.google\.com\/ml-kit\/android-data-disclosure/.test(x) && /abgerufen am 21\.11\.2026/.test(x) && /prüfen wir noch auf einem Testgerät/.test(x));
+  ck(f + ': Suchlink (DuckDuckGo mit Ort) und Dateien nach dem Deinstallieren genannt', /DuckDuckGo/.test(x) && /bleiben dort, bis du sie selbst löschst/.test(x) && !/werden alle Daten gelöscht/.test(x));
   ck(f + ': PIN-Sperre als Sichtschutz, 6-stellige PIN empfohlen', /Sichtschutz/.test(x) && /6-stellige PIN/.test(x));
 }
 ck('Store-Texte nennen beide Datenschutz-Adressen', /datenschutz-ios\.html/.test(R('docs/STORE.md')) && /Claud\/datenschutz\.html/.test(R('docs/STORE.md')));
