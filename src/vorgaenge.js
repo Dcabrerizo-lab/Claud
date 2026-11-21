@@ -7,17 +7,19 @@
 // Kurzname. Geprüft wird die PIN nur über die erfolgreiche Entschlüsselung (kein Hash). Geöffnet stehen die Angaben nur im Speicher;
 // beim Wechsel zu einem anderen Vorgang und nach dem Neustart ist der Vorgang wieder gesperrt.
 const Vorgaenge = (function () {
+  // Krypto-Bausteine aus src/krypto.js (in der App davor eingebunden, in Node per require)
+  var K = typeof Krypto !== 'undefined' ? Krypto : require('./krypto.js');
   var zuletzt = null; // zuletzt angelegter Tresor (die App hat genau einen): für Vorgaenge.oeffneGesperrt
   var SCHLUESSEL = 'lotse.vorgaenge';
   var DATEN = ['lotse.state', 'lotse.einfach', 'lotse.pflegecheck', 'lotse.pfaendung', 'lotse.haushalt', 'lotse.haken', 'lotse.ausziehen', 'lotse.fristliste', 'lotse.schulden', 'lotse.beratung-haken', 'lotse.klient-blatt'];
   // lotse.klient-blatt: Blatt, das die Beratung per QR-Code/SoLo-Datei weitergegeben hat (src/weitergabe.js), nur Daten, kein HTML
-  var ITER = 600000; // PBKDF2-HMAC-SHA-256: Empfehlung OWASP Password Storage Cheat Sheet (Stand 2023/2026)
+  var ITER = K.ITER; // PBKDF2-HMAC-SHA-256, 600 000 Durchläufe (src/krypto.js)
   var NAME_MAX = 24;
   var TAG = 86400000;
   var PIN_RE = /^\d{4,12}$/;
   var VPIN_RE = /^\d{4,8}$/; // PIN für einen einzelnen Vorgang: 4 bis 8 Ziffern
 
-  function zufall(n) { var a = new Uint8Array(n); globalThis.crypto.getRandomValues(a); return a; }
+  var zufall = K.zufall;
   function neueId() { return Array.prototype.map.call(zufall(6), function (b) { return (b + 256).toString(16).slice(1); }).join(''); }
   function kopieVon(o) { return o == null ? o : JSON.parse(JSON.stringify(o)); }
 
@@ -67,17 +69,9 @@ const Vorgaenge = (function () {
   function wartezeit(fehl) { return fehl < 5 ? 0 : Math.min(15 * 60000, 30000 * Math.pow(2, fehl - 5)); }
 
   // ----- Verschlüsselung (WebCrypto) -----
-  function b64(u8) { var s = ''; for (var i = 0; i < u8.length; i++) s += String.fromCharCode(u8[i]); return btoa(s); }
-  function unb64(s) { var b = atob(s), u = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u; }
-  function schluessel(pin, salt, iter) {
-    var sc = globalThis.crypto && globalThis.crypto.subtle;
-    if (!sc) return Promise.reject(new Error('kein WebCrypto'));
-    return sc.importKey('raw', new TextEncoder().encode(String(pin)), 'PBKDF2', false, ['deriveKey']).then(function (k) {
-      return sc.deriveKey({ name: 'PBKDF2', salt: salt, iterations: iter, hash: 'SHA-256' }, k, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
-    });
-  }
+  var b64 = K.b64, unb64 = K.unb64, schluessel = K.schluessel, webCrypto = K.webCrypto;
   function verschluesseln(key, obj) {
-    var iv = zufall(12);
+    var iv = zufall(K.IV);
     return globalThis.crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, key, new TextEncoder().encode(JSON.stringify(obj)))
       .then(function (ct) { return { iv: b64(iv), ct: b64(new Uint8Array(ct)) }; });
   }
@@ -85,7 +79,6 @@ const Vorgaenge = (function () {
     return globalThis.crypto.subtle.decrypt({ name: 'AES-GCM', iv: unb64(iv) }, key, unb64(ct))
       .then(function (pt) { return JSON.parse(new TextDecoder().decode(pt)); });
   }
-  function webCrypto() { try { return !!(globalThis.crypto && globalThis.crypto.subtle && globalThis.TextEncoder); } catch (e) { return false; } }
 
   // ----- Tresor: verbindet die Vorgänge mit dem Gerätespeicher -----
   // roh: { get(key, cb), set(key, val, fehler, ok), remove(key) }
@@ -238,7 +231,7 @@ const Vorgaenge = (function () {
     }
     function pinSetzen(pin) {
       if (!bereit || !PIN_RE.test(String(pin))) return Promise.resolve(false);
-      var salt = zufall(16), iter = opt.iter || ITER;
+      var salt = zufall(K.SALZ), iter = opt.iter || ITER;
       return schluessel(pin, salt, iter).then(function (k) {
         var vorher = !key;
         key = k; meta.pin = { salt: b64(salt), iter: iter };
@@ -296,7 +289,7 @@ const Vorgaenge = (function () {
     function gSperren(id, pin, kurz) {
       var v = bereit && finde(c, id);
       if (!v || gesp(v) || !VPIN_RE.test(String(pin))) return Promise.resolve(false);
-      var salt = zufall(16), iter = opt.iter || ITER;
+      var salt = zufall(K.SALZ), iter = opt.iter || ITER;
       var p = kette.then(function () {
         return schluessel(String(pin), salt, iter).then(function (k) { return verschluesseln(k, { name: v.name, daten: v.daten || {} }); });
       }).then(function (e) {

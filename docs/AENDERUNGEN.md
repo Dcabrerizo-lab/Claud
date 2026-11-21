@@ -32,6 +32,7 @@ Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss ste
 - **Keine Datei-Reste mehr**: Beim Start der App werden liegengebliebene .solo- und PDF-Dateien vom Teilen aus dem App-eigenen Zwischenspeicher gelöscht (z. B. wenn die App beim Teilen beendet wurde).
 - **Startseite auf dem Tablet**: Die vier Kacheln unter „Welche Hilfen stehen mir zu?“ stehen jetzt 2 × 2 – „Ich ziehe aus“ bleibt nicht mehr allein und schmal in der zweiten Reihe. Am Handy unverändert.
 - **Große Schrift (200 %)**: Lange Wörter in den Titeln der Ergebnis-Karten werden umgebrochen, die Seite scrollt nicht mehr seitlich.
+- Technik: Die Verschlüsselung (PIN der Vorgänge und Weitergabe per QR-Code/SoLo-Datei) nutzt jetzt ein gemeinsames Modul (src/krypto.js) mit unveränderten Werten; ältere verschlüsselte Daten bleiben lesbar (geprüft mit gespeicherten Beispielen).
 
 ## 1.8.0 (ab Versionsnummer 150, November 2026)
 - **Geld und Schulden neu geordnet**: Es ist dringend · Was bleibt mir? · Meine Schulden-Liste · **Post vom Inkasso** · Mein Geld planen (mit Spartipps) · **Schuldnerberatung**.

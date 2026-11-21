@@ -145,6 +145,8 @@ function render(opts = {}) {
   }
   // Weitergabe an den Klienten (src/weitergabe.js) mit QR-Code-Erzeugung (src/vendor/qrcode.js: qrcode-generator 2.0.4, MIT, Kazuhiko Arase), offline gebündelt
   parts.weitergabe = read('weitergabe.js'); parts.qrcode = read(path.join('vendor', 'qrcode.js'));
+  // Gemeinsame Verschlüsselung (src/krypto.js) für Weitergabe und Vorgänge: steht vor beiden, im selben Skript wie die Weitergabe
+  parts.weitergabe = read('krypto.js') + parts.weitergabe;
   const vorlage = require(path.join(SRC, 'navigation.js')).vorlage(read('template.html')); // gemeinsamer Zurück-Knopf: Marken <!--ZURUECK ...-->
   if (/<!--ZURUECK/.test(vorlage)) throw new Error('Marke <!--ZURUECK--> mit falscher Schreibweise in src/template.html');
   const html = vorlage
