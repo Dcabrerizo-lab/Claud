@@ -1716,6 +1716,8 @@ const Rules = (function () {
     res.tx.push(['rundfunk.mehr']);
     return res;
   }
+  // Antragszeit (Text s.rundfunk.tip): Die Befreiung beginnt mit dem Ersten des Monats, in dem der Nachweis gilt, rückwirkend höchstens drei Jahre vor dem
+  // Ersten des Antragsmonats (§ 4 Abs. 4 Satz 1 und 2 RBStV, gesetze-bayern.de Dokument RBeitrStV-4, abgerufen 21.11.2026) – keine Zwei-Monats-Frist.
   function rundfunk0(h, gg, gsa, w) {
     const id = 'rundfunk';
     if (h.bezug.grundsicherungsgeld || h.bezug.sozialamt) return mk(id, 'ja', 'ja', [['rundfunk.bezug']]);
@@ -1908,6 +1910,12 @@ const Rules = (function () {
   // ---------------------------------------------------------------
   // Zuständige Stellen außerhalb Bayerns (ohne Anschrift). Nur Einträge, die als gesichert gelten; sonst die allgemeine Angabe ('_').
   // In Bayern nennt die App die Stelle mit Anschrift (behoerden.js). Bitte fachlich prüfen (Prüfliste).
+  // Sachsen-Anhalt (Prüfung Richtigkeit 21.11.2026, alle Seiten abgerufen 21.11.2026): Seit 1.4.2026 nimmt das Landesamt für Soziales, Jugend und
+  // Gesundheit (LAS) die Aufgaben der Sozialagentur und der Abteilung Soziales des Landesverwaltungsamts wahr (https://las.sachsen-anhalt.de/,
+  // geändert 27.10.2026). Ausweis: Referat Schwerbehindertenfeststellung des LAS (https://las.sachsen-anhalt.de/schwerbehindertenrecht, geändert
+  // 03.11.2026); Blindengeld: Referat Schwerbehindertenrecht, LBliGG des LAS (…/schwerbehindertenrecht/schwerbehindertenrecht-lbligg/blinden-gehoerlosengeld,
+  // geändert 10.08.2026); Eingliederungshilfe: Träger ist die frühere Sozialagentur, jetzt im LAS (…/themen/hilfe-fuer-menschen-mit-behinderung/
+  // wie-ist-die-eingliederungshilfe-organisiert, geändert 06.08.2026). Ohne Anschrift (nur Name der Stelle).
   // ---------------------------------------------------------------
   const BL_NAME = { BW: 'Baden-Württemberg', BY: 'Bayern', BE: 'Berlin', BB: 'Brandenburg', HB: 'Bremen', HH: 'Hamburg', HE: 'Hessen', MV: 'Mecklenburg-Vorpommern',
     NI: 'Niedersachsen', NW: 'Nordrhein-Westfalen', RP: 'Rheinland-Pfalz', SL: 'Saarland', SN: 'Sachsen', ST: 'Sachsen-Anhalt', SH: 'Schleswig-Holstein', TH: 'Thüringen' };
@@ -1918,12 +1926,12 @@ const Rules = (function () {
       HB: 'Amt für Versorgung und Integration Bremen', HH: 'Versorgungsamt Hamburg', HE: 'Hessisches Amt für Versorgung und Soziales',
       MV: 'Landesamt für Gesundheit und Soziales (LAGuS)', NI: 'Niedersächsisches Landesamt für Soziales, Jugend und Familie', NW: 'Kreis bzw. kreisfreie Stadt (Versorgungsamt)',
       RP: 'Landesamt für Soziales, Jugend und Versorgung', SL: 'Landesamt für Soziales', SN: 'Landratsamt bzw. kreisfreie Stadt (Versorgungsamt)',
-      ST: 'Landesverwaltungsamt Sachsen-Anhalt (Versorgungsamt)', SH: 'Landesamt für soziale Dienste'
+      ST: 'Landesamt für Soziales, Jugend und Gesundheit Sachsen-Anhalt (LAS)', SH: 'Landesamt für soziale Dienste'
     },
     blindengeld: {
       _: 'Stelle für das Landesblindengeld (das Sozialamt deines Kreises oder deiner Stadt sagt dir, wer zuständig ist)',
       BE: 'Landesamt für Gesundheit und Soziales (LAGeSo)', HE: 'Landeswohlfahrtsverband Hessen', NW: 'Landschaftsverband Rheinland bzw. Westfalen-Lippe',
-      ST: 'Sozialagentur Sachsen-Anhalt', BW: 'Landratsamt bzw. Stadtkreis'
+      ST: 'Landesamt für Soziales, Jugend und Gesundheit Sachsen-Anhalt (LAS)', BW: 'Landratsamt bzw. Stadtkreis'
     },
     elterngeld: {
       _: 'Elterngeldstelle deines Kreises oder deiner Stadt',
@@ -1933,7 +1941,7 @@ const Rules = (function () {
     eingl: {
       _: 'Träger der Eingliederungshilfe (meist der Landkreis oder die kreisfreie Stadt; bei seelischer Behinderung von Kindern das Jugendamt)',
       HE: 'Landeswohlfahrtsverband Hessen (Erwachsene), Kreis oder Stadt (Kinder)', NW: 'Landschaftsverband Rheinland bzw. Westfalen-Lippe (Erwachsene), Kreis oder Stadt (Kinder)',
-      SL: 'Landesamt für Soziales', ST: 'Sozialagentur Sachsen-Anhalt', BE: 'Bezirksamt (Teilhabefachdienst)'
+      SL: 'Landesamt für Soziales', ST: 'Landesamt für Soziales, Jugend und Gesundheit Sachsen-Anhalt (LAS)', BE: 'Bezirksamt (Teilhabefachdienst)'
     },
     arbeit: { _: 'Träger der Eingliederungshilfe (meist der Landkreis oder die kreisfreie Stadt)', HE: 'Landeswohlfahrtsverband Hessen', NW: 'Landschaftsverband Rheinland bzw. Westfalen-Lippe' },
     hzp: { _: 'Sozialamt deines Kreises oder deiner Stadt' },
@@ -1958,6 +1966,8 @@ const Rules = (function () {
     const u = { u: eur(h.uzBetrag) };
     results.forEach(function (r) {
       if (r.level === 'na' || (r.level === 'nein' && r.hl !== 'einkoHoch' && r.hl !== 'einkoNiedrig')) return;
+      // § 18 WoGG (abgerufen 21.11.2026): ohne Titel Höchstbeträge 3.000 €/Jahr je Kind bzw. 6.000 €/Jahr für frühere Partner; mit notarieller
+      // Vereinbarung, Unterhaltstitel oder Bescheid der dort festgelegte Betrag (Satz 2) – Text t.uz.wg und einfach/b.json gleichlautend.
       if (r.id === 'wohngeld') r.tx = r.tx.concat([['uz.wg', u]]);
       else if (r.id === 'kiz' || r.id === 'ggeld') r.tx = r.tx.concat([[h.uzTitel ? 'uz.sgb2Titel' : 'uz.sgb2Ohne', u]], r.id === 'ggeld' && r.level !== 'nein' ? [['uz.selbstbehalt']] : []);
       else if (r.id === 'gsa') r.tx = r.tx.concat([['uz.gsa', u], ['uz.selbstbehalt']]);

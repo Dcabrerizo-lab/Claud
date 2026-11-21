@@ -557,7 +557,7 @@
       (b.web ? '<p><a href="' + esc(b.web) + '" target="_blank" rel="noopener">' + esc(t('beh.web')) + '</a></p>' : '') + '</div>' +
       (b.weiter ? '<p class="small">' + esc(tL('beh.wgWeiter')) + '</p>' : '') +
       (!b.anschrift ? '<p class="small">' + esc(t('beh.ohneAdr')) + '</p>'
-        : '<p class="small">' + esc(t('beh.pruefenKurz')) + '</p>' + (b.quelleArt === 'wikipedia' || b.stand ? mehrHtml('<p>' + esc(b.quelleArt === 'wikipedia' ? t('beh.pruefenWiki', { stand: b.stand || '' }) : t('beh.pruefen', { stand: b.stand })) + '</p>', t('beh.quelle')) : ''));
+        : '<p class="small">' + esc(t('beh.pruefenKurz')) + '</p>' + (b.stand ? mehrHtml('<p>' + esc(t('beh.pruefen', { stand: b.stand })) + '</p>', t('beh.quelle')) : ''));
   }
 
   // Aufenthalt „Asylverfahren oder Duldung“ (asyl) oder „ausreisepflichtig ohne Duldung“ (ausreise): beide wie asyl in den Regeln
@@ -1110,17 +1110,28 @@
       '<p class="ww-regel"><b>' + esc(t('ww.regel.h')) + '</b> ' + esc(t('ww.regel' + o)) + '</p></div>', 'zweiWege');
   }
 
-  function renderPick(results) {
+  // Entweder-oder (Hinweise z.ggVsWg und z.gsaWg, gleiche Bedingung wie die Kacheln „Zwei Wege“ / „Entweder oder“): Wohngeld und Kinderzuschlag gibt es
+  // nicht neben Grundsicherungsgeld, Wohngeld nicht neben Grundsicherung im Alter (§ 7 Abs. 1 WoGG, gesetze-im-internet.de, abgerufen 20.11.2026).
+  // Darum hakt die Antragsmappe keine dieser Leistungen vorab an; der Nutzer wählt selbst (Zeile f.pickWege). Bildung und Teilhabe gibt es auf beiden Wegen.
+  function wegeIds(zusammen) {
+    var z = function (k) { return (zusammen || []).some(function (x) { return x[0] === k; }); }, ids = [];
+    if (z('z.ggVsWg')) ids.push('ggeld', 'wohngeld', 'kiz');
+    if (z('z.gsaWg')) ids.push('gsa', 'wohngeld');
+    return ids;
+  }
+  function renderPick(results, zusammen) {
+    var wege = wegeIds(zusammen);
     // Keine Briefe für Dinge, die schon da sind: Pflegegrad festgestellt, Grad der Behinderung festgestellt oder beantragt
     var schonDa = function (id) { return (id === 'pflege' && state.pflegegrad && state.pflegegrad !== 'antrag') || (id === 'ausweis' && !!state.gdb); };
     var avail = results.filter(function (r) { return (r.level === 'ja' || r.level === 'vielleicht') && ANTRAG[r.id] && !schonDa(r.id); });
     var next = {};
-    avail.forEach(function (r) { next[r.id] = Object.prototype.hasOwnProperty.call(pickedUser, r.id) ? pickedUser[r.id] : r.level === 'ja'; });
+    avail.forEach(function (r) { next[r.id] = Object.prototype.hasOwnProperty.call(pickedUser, r.id) ? pickedUser[r.id] : r.level === 'ja' && wege.indexOf(r.id) < 0; });
+    var wegeDa = avail.filter(function (r) { return wege.indexOf(r.id) >= 0; }).length > 1;
     picked = next;
     $('pick').innerHTML = avail.length
       ? avail.map(function (r) {
           return '<label class="check"><input type="checkbox" data-pick="' + r.id + '"' + (picked[r.id] ? ' checked' : '') + '><span>' + esc(r.name) + (lang === 'de' ? '' : ' (' + esc(t('n.' + r.id)) + ')') + '</span></label>';
-        }).join('')
+        }).join('') + (wegeDa ? '<p class="small pick-wege" id="pickWege">' + esc(t('f.pickWege')) + '</p>' : '')
       : '<p class="small">' + esc(t('f.none')) + '</p>';
     if ($('mappeKnopf')) $('mappeKnopf').hidden = avail.length === 0;
     $('pickMsg').textContent = '';
@@ -1196,7 +1207,7 @@
 
     document.querySelectorAll('.cond-kids').forEach(function (el) { el.hidden = state.kids === 0; });
     document.querySelectorAll('.cond-adults2').forEach(function (el) { el.hidden = state.adults !== 2; });
-    renderPick(out.results);
+    renderPick(out.results, out.zusammen);
     $('feedback').hidden = false; $('feedbackMail').setAttribute('href', feedbackMail(out.results));
     if (typeof paAnzeigen === 'function') paAnzeigen();
   }
@@ -2392,7 +2403,7 @@
       picked = {}; pickedUser = {};
       out.results.forEach(function (x) { pickedUser[x.id] = false; });
       gut.forEach(function (x) { if (ANTRAG[x.id]) pickedUser[x.id] = x.level === 'ja'; });
-      lastOut = out; renderPick(out.results);
+      lastOut = out; renderPick(out.results, out.zusammen);
       openMappe();
       var hm = $('h-mappe'); if (hm) { hm.setAttribute('tabindex', '-1'); hm.focus({ preventScroll: true }); }
     });
@@ -3652,7 +3663,7 @@
       // dann „Mit dem Gutachten vergleichen“, dann „Was steht mir zu?“. Höchstens 3 Kacheln.
       aktionen: [
         { id: 'antrag', kachel: 'antrag', sym: PA_SYM.antrag, titel: 'Pflegegrad beantragen', text: 'Mit der Antragsmappe, deine Daten sind schon drin', wenn: function (r, pg) { return pg == null && r.pg >= 1; }, fn: function (r) {
-          paUebernehmen(r); picked.pflege = true; pickedUser.pflege = true; if (lastOut) renderPick(lastOut.results);
+          paUebernehmen(r); picked.pflege = true; pickedUser.pflege = true; if (lastOut) renderPick(lastOut.results, lastOut.zusammen);
           paZurueck('mappeMake'); paUnterseite('leistungen'); } },
         { id: 'hoeher', kachel: 'antrag', sym: PA_SYM.antrag, titel: 'Höherstufung beantragen', text: 'Schreiben an die Pflegekasse mit deinen Antworten', wenn: function (r, pg) { return pg != null && r.pg > pg; }, fn: function (r, a, g) {
           paUebernehmen(r); zeigeAnsicht('briefe', false); briefOeffnen('pk'); paUnterseite('briefe');
@@ -4163,7 +4174,14 @@
       ziel: gsZiel, schreibenOeffnen: function (art) { Geld.schreibenVorbelegen(art); sp.fall = 'schreiben'; spRender(true); },
       schulden: function () { var d = window.Schulden && Schulden.daten(); return d ? d.liste.filter(function (e) { return e.st !== 'erledigt'; }) : []; },
       planFertig: function () { return !!(window.Haushalt && Haushalt.rest().ausgefuellt); },
-      haushalt: function () { return window.Haushalt ? Haushalt.rest() : null; }, // nur lesen: { ein, aus, rest, ausgefuellt } in Cent (Ratenempfehlung)
+      // nur lesen: { ein, aus, rest, wesentlich, kindergeld } in Cent (Ratenvorschlag). personen: Unterhaltsberechtigte für die Pfändungstabelle
+      // (§ 850c Abs. 2 ZPO) – aus dem Pfändungsrechner, sonst Partner und Kinder im Haushalt aus dem Check
+      haushalt: function () {
+        if (!window.Haushalt) return null;
+        var r = Haushalt.rest();
+        r.personen = pf.pers !== null ? pf.pers : Math.min(5, (state.adults === 2 ? 1 : 0) + (state.kids | 0) + (state.young | 0));
+        return r;
+      },
       mappeDrucken: window.Schulden ? function () { oeffneVon('schulden', true); Schulden.blatt(); } : null, // Druck: Blatt der Schulden-Liste mit Haushaltsplan und Unterlagenliste
       textAusgeben: function (text, titel, msg) { if (!NATIVE) { schreibenDrucken(text); return; } schreibenAusgeben({ value: text }, titel, plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen', msg); }
     });

@@ -378,6 +378,8 @@ var Schulden = (function () {
       if (!f.ohneDatum) li.appendChild(el('p', 'small muted', t('sl.frist.ungefaehr')));
     } else if (st === 'dringend') li.appendChild(el('p', 'warn', t('sl.dringend')));
     if (st !== 'erledigt') {
+      // sl.warum.miete/energie (auch Einfache Sprache, inhaltsgleich seit Prüfung 21.11.2026): Schonfrist § 569 Abs. 3 Nr. 2 BGB, Sperre erst ab
+      // 2 Abschlägen und 100 €, Androhung 4 Wochen, Ankündigung 8 Werktage (§ 41f Abs. 1, 3, 5 EnWG); beide Wortlaute abgerufen 21.11.2026 (gesetze-im-internet.de).
       var w = aufklapp(t('sl.warum.s')), as = artStufe(e.art);
       w.appendChild(el('p', 'hint', t(as === 3 ? 'sl.warum.rest' : 'sl.warum.' + e.art)));
       li.appendChild(w);

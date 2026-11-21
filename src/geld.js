@@ -89,36 +89,71 @@ var Geld = (function () {
   // Ratenzahlung anbieten (Seite „Raten anbieten“, mit Ratenempfehlung). rate: Betrag in Euro, so wie der Nutzer ihn einträgt oder übernimmt.
   // Kostenfrage: Vor einer Raten- oder Stundungsvereinbarung muss ein Inkassodienstleister auf die Kosten hinweisen (§ 13a Abs. 3 RDG, Wortlaut
   // abgerufen 20.11.2026 auf https://www.gesetze-im-internet.de/rdg/__13a.html); das Schreiben fragt deshalb allgemein nach den Kosten.
+  // Vorbehalt: Ein Anerkenntnis „durch Abschlagszahlung, Zinszahlung, Sicherheitsleistung oder in anderer Weise“ lässt die Verjährung neu beginnen
+  // (§ 212 Abs. 1 Nr. 1 BGB, Wortlaut abgerufen 21.11.2026 auf https://www.gesetze-im-internet.de/bgb/__212.html). Das Schreiben sagt deshalb vorsichtig,
+  // dass das Angebot ohne Anerkennung einer Rechtspflicht erfolgt (wie „kein Anerkenntnis“ im Muster „Forderungsaufstellung“); ob das im Einzelfall
+  // trägt, ist offen – darum bleibt der Hinweis ra.warn (vorher „Stimmt der Brief?“).
   function rateText(v) { var r = einzeilig(v, 12).replace(/[^0-9.,]/g, ''); return r ? r + ' €' : '[Betrag] €'; }
   function rateSchreiben(f) {
     return ['Aktenzeichen: ' + (einzeilig(f.az, 60) || LUECKE.az), '', 'Angebot einer Ratenzahlung', '', 'Sehr geehrte Damen und Herren,', '',
       'ich kann Ihre Forderung zurzeit nicht auf einmal bezahlen. Ich biete Ihnen an, monatlich ' + rateText(f.rate) + ' zu zahlen, erstmals zum [Datum der ersten Rate].',
+      'Dieses Angebot mache ich ohne Anerkennung einer Rechtspflicht. Soweit ich die Forderung noch nicht prüfen konnte oder sie bestreite, ist es kein Anerkenntnis, insbesondere nicht von Zinsen und Kosten.',
       'Bitte bestätigen Sie mir die Ratenzahlung schriftlich. Teilen Sie mir vorher mit, ob durch die Vereinbarung Kosten entstehen.',
       'Solange ich die Raten pünktlich zahle, bitte ich Sie, von weiteren Maßnahmen abzusehen.', '', 'Mit freundlichen Grüßen', '', '[Unterschrift]'];
   }
 
-  // ---------- Rate empfehlen (SoLo-Faustregel, keine Rechtsaussage; Auftrag David 21.11.2026) ----------
+  // ---------- Rate vorschlagen (SoLo-Faustregel, keine Rechtsaussage; Auftrag David 21.11.2026, korrigiert nach Prüfung Richtigkeit 21.11.2026) ----------
   // Es gibt keine gesetzliche Formel für eine „machbare“ Rate. SoLo rechnet so (alles in Cent, ganzzahlig):
   //  frei   = monatliche Einnahmen − monatliche Ausgaben aus dem Haushaltsplan (Haushalt.rest(), nur gelesen)
   //  Puffer = 10 % der Einnahmen (auf den Cent aufgerundet), mindestens 50 € – für Unvorhergesehenes (Nachzahlung, Reparatur)
-  //  Rate   = frei − Puffer, abgerundet auf volle 5 €; unter 5 € keine Empfehlung, sondern Verweis auf die Schuldnerberatung
-  //  Mehrere offene Schulden mit Betrag: Gesamtrate anteilig nach Höhe der Forderung, je Gläubiger auf ganze Euro abgerundet
-  //  (die Summe der Teile ist also nie größer als die Gesamtrate; ein Rest von wenigen Euro bleibt ungeteilt).
-  // „Ausgefüllt“ heißt: Einnahmen eingetragen und mindestens eine eigene Ausgabe außer der Miete (Haushalt.rest().ausgefuellt).
+  //  Obergrenze = pfändbarer Betrag nach der Pfändungstabelle (§ 850c ZPO mit den geprüften Werten 2026 in Rules.pfaendung, Wortlaut § 850c
+  //    abgerufen 21.11.2026 auf https://www.gesetze-im-internet.de/zpo/__850c.html): mehr als das könnten alle Gläubiger zusammen auch mit einer
+  //    Lohnpfändung nicht bekommen. Grundlage grob: Einnahmen des Plans ohne Kindergeld (§ 76 EStG), Unterhaltsberechtigte aus dem Pfändungsrechner
+  //    oder dem Check (Partner und Kinder im Haushalt). Unterhaltsgläubiger können mehr pfänden (§ 850d ZPO) – das ersetzt keine Beratung.
+  //  Rate   = min(frei − Puffer, pfändbar), abgerundet auf volle 5 €; unter 5 € keine Empfehlung: „keine“ (kein Spielraum) oder
+  //    „unpfaendbar“ (nach der Tabelle nichts pfändbar) – beide mit Verweis auf die Schuldnerberatung.
+  //  Mehrere offene Schulden mit Betrag: Reihenfolge wie in der Schulden-Liste (Schulden.artStufe: 1 Miete, Strom, Unterhalt, Geldstrafe,
+  //    Krankenversicherung; 2 Bußgeld, Amt; 3 Banken, Inkasso, Versand – Texte sl.kopf.1–3, sl.prio.lead). Die Rate geht zuerst an Stufe 1,
+  //    was dort nicht gebraucht wird an Stufe 2, dann an Stufe 3; innerhalb einer Stufe anteilig nach Höhe der Forderung, je Gläubiger
+  //    höchstens die Forderung, auf ganze Euro abgerundet (die Summe der Teile ist nie größer als die Gesamtrate).
+  // „Ausgefüllt“ heißt: Einnahmen, Miete und Essen stehen im Plan (Haushalt.rest().wesentlich); nur eine beliebige Ausgabe reicht nicht.
   var RATE = { pufferAnteil: 10, pufferMin: 5000, schritt: 500 };
   function forderung(e) { var b = e && (typeof e.stand === 'number' ? e.stand : typeof e.anfang === 'number' ? e.anfang : null); return b > 0 ? b : 0; }
+  // Module im Browser global (Rules ist als const deklariert, also nicht an window), in Node über require
+  function stufeVon(e) { var S = typeof Schulden !== 'undefined' ? Schulden : typeof require === 'function' ? require('./schulden.js') : null; return S && S.artStufe ? S.artStufe(e && e.art) : 3; }
+  // Pfändbarer Betrag im Monat in Cent (Lohnpfändung, § 850c ZPO): netto in Cent, personen = Unterhaltsberechtigte (0–5)
+  function pfaendbarCent(nettoCent, personen) {
+    var R = typeof Rules !== 'undefined' ? Rules : require('./rules.js');
+    return Math.round(R.pfaendung(Math.max(0, nettoCent) / 100, Math.min(5, Math.max(0, personen | 0))).pfaendbar * 100);
+  }
   function rateEmpfehlung(hh, liste) {
-    if (!hh || !(hh.ein > 0) || !hh.ausgefuellt) return { art: 'ohnePlan' };
+    if (!hh || !(hh.ein > 0) || !hh.wesentlich) return { art: 'ohnePlan' };
     var ein = Math.round(hh.ein), aus = hh.aus > 0 ? Math.round(hh.aus) : 0;
     var frei = ein - aus, puffer = Math.max(Math.ceil(ein * RATE.pufferAnteil / 100), RATE.pufferMin);
-    var roh = frei - puffer, rate = roh > 0 ? Math.floor(roh / RATE.schritt) * RATE.schritt : 0;
-    var r = { art: rate >= RATE.schritt ? 'rate' : 'keine', ein: ein, aus: aus, frei: frei, puffer: puffer, rate: rate >= RATE.schritt ? rate : 0, teile: [] };
+    // pfaendbar (Cent) nur, wenn schon berechnet übergeben (Tests der reinen Rechnung); sonst aus der Pfändungstabelle
+    var pf = typeof hh.pfaendbar === 'number' ? hh.pfaendbar : pfaendbarCent(ein - (hh.kindergeld > 0 ? Math.round(hh.kindergeld) : 0), hh.personen);
+    var roh = Math.min(frei - puffer, pf), rate = roh > 0 ? Math.floor(roh / RATE.schritt) * RATE.schritt : 0;
+    var art = rate >= RATE.schritt ? 'rate' : pf < RATE.schritt ? 'unpfaendbar' : 'keine';
+    var r = { art: art, ein: ein, aus: aus, frei: frei, puffer: puffer, pfaendbar: pf, gedeckelt: frei - puffer > pf, rate: art === 'rate' ? rate : 0, teile: [] };
     if (r.art !== 'rate') return r;
     var mit = (liste || []).filter(function (e) { return e && e.st !== 'erledigt' && forderung(e) > 0; });
     if (mit.length < 2) return r;
-    var gesamt = mit.reduce(function (a, e) { return a + forderung(e); }, 0), euro = r.rate / 100;
-    r.gesamt = gesamt;
-    r.teile = mit.map(function (e) { return { id: e.id, g: e.g, forderung: forderung(e), rate: Math.floor(euro * forderung(e) / gesamt) * 100 }; });
+    r.gesamt = mit.reduce(function (a, e) { return a + forderung(e); }, 0);
+    var rest = r.rate / 100, teil = {};
+    [1, 2, 3].forEach(function (s) {
+      var gr = mit.filter(function (e) { return stufeVon(e) === s; });
+      var summe = gr.reduce(function (a, e) { return a + forderung(e); }, 0);
+      if (!gr.length || rest <= 0) return;
+      var verteilt = 0;
+      gr.forEach(function (e) {
+        var euro = summe / 100 <= rest ? Math.floor(forderung(e) / 100) : Math.floor(rest * forderung(e) / summe);
+        teil[e.id] = euro; verteilt += euro;
+      });
+      rest -= verteilt;
+    });
+    r.vorrang = mit.some(function (e) { return stufeVon(e) < 3; });
+    r.teile = mit.map(function (e) { return { id: e.id, g: e.g, forderung: forderung(e), stufe: stufeVon(e), rate: (teil[e.id] || 0) * 100 }; })
+      .sort(function (x, y) { return x.stufe - y.stufe; });
     return r;
   }
 
@@ -312,15 +347,18 @@ var Geld = (function () {
     if (e.art === 'ohnePlan') {
       var v = wo.appendChild(el('p', 'small ra-ohne', t('ra.ohnePlan'))); v.id = 'ra-ohne';
       btns(wo).appendChild(knopf('btn ghost klein', t('hb.kachel'), function () { ctx.ziel('haushalt'); }, { id: 'ra-zum-plan' }));
-    } else if (e.art === 'keine') {
-      wo.appendChild(el('p', 'warn ra-keine', t('ra.keine'))).id = 'ra-keine';
+    } else if (e.art === 'keine' || e.art === 'unpfaendbar') {
+      // unpfaendbar: Nach der Pfändungstabelle (§ 850c ZPO) wäre vom Einkommen nichts pfändbar – kein Ratenvorschlag, sondern Beratung zuerst
+      wo.appendChild(el('p', 'warn ra-keine', t(e.art === 'keine' ? 'ra.keine' : 'ra.unpf'))).id = 'ra-keine';
       btns(wo).appendChild(knopf('btn ghost', t('sb.h'), function () { ctx.ziel('hilfe'); }, { id: 'ra-zur-beratung' }));
     } else {
       var k = wo.appendChild(el('div', 'hb-karte ra-karte'));
       var erg = k.appendChild(el('p', 'hb-ergebnis', t('ra.empf', { b: eurCent(e.rate) }))); erg.id = 'ra-betrag';
       var msg = el('p', 'small'); msg.setAttribute('aria-live', 'polite');
       btns(k).appendChild(knopf('btn', t('ra.uebernehmen'), function () {
-        m.rate = String(e.rate / 100);
+        // Schreiben an einen Gläubiger aus der Aufteilung: dessen Teil, sonst die Gesamtrate
+        var mein = e.teile.filter(function (x) { return !!m.von && x.id === m.von; })[0];
+        m.rate = String((mein ? mein.rate : e.rate) / 100);
         var f = document.getElementById('ms-rate'); if (f) { f.value = m.rate; f.dispatchEvent(new Event('input')); f.focus(); }
         msg.textContent = t('ra.uebernommen');
       }, { id: 'ra-uebernehmen' }));
@@ -335,15 +373,16 @@ var Geld = (function () {
           var tr = tb.insertRow(), dies = !!m.von && x.id === m.von;
           if (dies) tr.className = 'ra-dies';
           tr.insertCell().textContent = x.g + (dies ? ' (' + t('ra.auft.dies') + ')' : '');
-          tr.insertCell().textContent = t('ra.betrag', { b: eurCent(x.rate) });
+          tr.insertCell().textContent = x.rate ? t('ra.betrag', { b: eurCent(x.rate) }) : t('ra.auft.spaeter');
         });
         var fuss = tab.createTFoot().insertRow();
         fuss.insertCell().textContent = t('ra.auft.gesamt'); fuss.insertCell().textContent = t('ra.betrag', { b: eurCent(e.rate) });
+        if (e.vorrang) k.appendChild(el('p', 'small ra-vor', t('ra.vor'))).id = 'ra-vor';
       }
       var so = k.appendChild(el('details', 'mehr ra-so')); so.appendChild(el('summary', '', t('ra.so')));
       so.appendChild(el('p', '', t('ra.so.1', { a: eurCent(e.ein), b: eurCent(e.aus), c: eurCent(e.frei) })));
       so.appendChild(el('p', '', t('ra.so.2', { b: eurCent(e.puffer) })));
-      so.appendChild(el('p', '', t('ra.so.3', { b: eurCent(e.rate) })));
+      so.appendChild(el('p', '', t('ra.so.3', { p: eurCent(e.pfaendbar), b: eurCent(e.rate) })));
       if (e.teile.length) so.appendChild(el('p', '', t('ra.so.4')));
       so.appendChild(el('p', 'small', t('ra.so.5')));
       k.appendChild(ctx.tipp('ra.tipp', 'ra-tipp'));
@@ -449,7 +488,7 @@ var Geld = (function () {
   return {
     // Rechnung (Tests)
     KC: KC, KC_ZUERST: KC_ZUERST, krisenErgebnis: krisenErgebnis, IP: IP.map(function (x) { return x[0]; }), ipFehlend: ipFehlend, MUSTER: MUSTER, schreiben: schreiben,
-    LUECKE: LUECKE, WARTEN: WARTEN, hakenNormiere: hakenNormiere, RATE: RATE, rateEmpfehlung: rateEmpfehlung,
+    LUECKE: LUECKE, WARTEN: WARTEN, hakenNormiere: hakenNormiere, RATE: RATE, rateEmpfehlung: rateEmpfehlung, pfaendbarCent: pfaendbarCent,
     // Oberfläche
     init: init, speicherOrt: speicherOrt, neuLaden: neuLaden, krisenCheck: krisenCheck, pruefliste: pruefliste, schreibenSeite: schreibenSeite,
     schreibenVorbelegen: schreibenVorbelegen, rateSeite: rateSeite, wartezeit: wartezeit, mappe: mappe, pfMaske: pfMaske, tiefe: tiefe, zurueck: zurueck, zuruecksetzen: zuruecksetzen,
