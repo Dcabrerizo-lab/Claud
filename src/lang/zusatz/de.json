@@ -78,6 +78,9 @@
   "vgp.t3": "PIN vergessen? Dann ist der Vorgang verloren.",
   "vgp.vergessen": "PIN vergessen? Dann ist der Vorgang verloren. Löschen geht ohne PIN.",
   "vgp.format": "Die PIN muss 6 bis 8 Ziffern haben.",
+  "vg.pin.einfach": "Diese PIN ist leicht zu erraten (zum Beispiel 123456 oder 111111). Bitte nimm eine andere.",
+  "vg.lesefehler": "Deine Angaben lassen sich gerade nicht lesen. Entsperre das Gerät und öffne SoLo noch einmal. Bis dahin speichert SoLo nichts, damit nichts verloren geht.",
+  "f.empfSucheOrt": "Die Suche enthält keine Angaben von dir. Schreib deinen Ort in der Suchmaschine selbst dazu.",
   "vgp.ok": "Der Vorgang ist gesperrt.",
   "vgp.aufgehoben": "Die Sperre ist aufgehoben.",
   "vgp.st.offen": "Geöffnet. Beim Wechseln wird er wieder gesperrt.",
@@ -95,8 +98,5 @@
   "bp.vgl.pg": "Pflegegrad {pg}",
   "bp.vgl.kein": "kein Pflegegrad",
   "bp.vgl.klein": "Punkte nach Gewichtung, wie die Pflegekasse rechnet (§ 15 SGB XI). Plus heißt: Deine Einschätzung gibt dort mehr Punkte. Darunter steht, bei welchen Fragen genau.",
-  "t.bafoeg.vermTeil": "Das Vermögen liegt über dem Freibetrag von {verm}. Es zählt nur der Teil darüber: Verteilt auf 12 Monate mindert er das BAföG um etwa {monat} im Monat. Das Amt für Ausbildungsförderung rechnet genau.",
-  "vg.pin.einfach": "Diese PIN ist leicht zu erraten (zum Beispiel 123456 oder 111111). Bitte nimm eine andere.",
-  "vg.lesefehler": "Deine Angaben lassen sich gerade nicht lesen. Entsperre das Gerät und öffne SoLo noch einmal. Bis dahin speichert SoLo nichts, damit nichts verloren geht.",
-  "f.empfSucheOrt": "Die Suche enthält keine Angaben von dir. Schreib deinen Ort in der Suchmaschine selbst dazu."
+  "t.bafoeg.vermTeil": "Das Vermögen liegt über dem Freibetrag von {verm}. Es zählt nur der Teil darüber: Verteilt auf 12 Monate mindert er das BAföG um etwa {monat} im Monat. Das Amt für Ausbildungsförderung rechnet genau."
 }

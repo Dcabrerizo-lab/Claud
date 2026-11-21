@@ -78,6 +78,9 @@
   "vgp.t3": "PIN-ka ma illowday? Markaas kiisku wuu lumay.",
   "vgp.vergessen": "PIN-ka ma illowday? Markaas kiisku wuu lumay. PIN la'aan waad tirtiri kartaa.",
   "vgp.format": "PIN-ku waa inuu yeeshaa 6 ilaa 8 lambar.",
+  "vg.pin.einfach": "PIN-kan si fudud ayaa loo qiyaasi karaa (tusaale 123456 ama 111111). Fadlan dooro mid kale.",
+  "vg.lesefehler": "Xogtaada hadda lama akhrin karo. Fur qufulka qalabka oo mar kale fur SoLo. Ilaa markaas SoLo waxba ma kaydiyo, si aanay waxba u lumin.",
+  "f.empfSucheOrt": "Raadintu kuma jiraan wax xog ah oo adiga kugu saabsan. Magaaladaada adigu ku dar mashiinka raadinta.",
   "vgp.ok": "Kiisku waa xiran yahay.",
   "vgp.aufgehoben": "Qufulka waa laga qaaday.",
   "vgp.st.offen": "Furan. Marka aad beddesho mar kale ayuu xirmayaa.",
@@ -95,8 +98,5 @@
   "bp.vgl.pg": "heerka daryeelka (Pflegegrad) {pg}",
   "bp.vgl.kein": "heer daryeel (Pflegegrad) ma jiro",
   "bp.vgl.klein": "Dhibco miisaaman, sida Pflegekasse u xisaabiso (§ 15 SGB XI). Calaamadda (+) waxay ka dhigan tahay: qiimayntaadu halkaas dhibco ka badan ayay bixisaa. Hoos waxaa ku qoran su’aalaha ay si gaar ah u khusayso.",
-  "t.bafoeg.vermTeil": "Hantidaadu waxay ka badan tahay qadarka la cafiyay ee {verm}. Kaliya qaybta ka sarreysa ayaa la xisaabiyaa: waxaa loo qaybiyaa 12 bilood, waxayna BAföG ka dhimaysaa qiyaastii {monat} bishiiba. Amt für Ausbildungsförderung ayaa si sax ah u xisaabiya.",
-  "vg.pin.einfach": "PIN-kan si fudud ayaa loo qiyaasi karaa (tusaale 123456 ama 111111). Fadlan dooro mid kale.",
-  "vg.lesefehler": "Xogtaada hadda lama akhrin karo. Fur qufulka qalabka oo mar kale fur SoLo. Ilaa markaas SoLo waxba ma kaydiyo, si aanay waxba u lumin.",
-  "f.empfSucheOrt": "Raadintu kuma jiraan wax xog ah oo adiga kugu saabsan. Magaaladaada adigu ku dar mashiinka raadinta."
+  "t.bafoeg.vermTeil": "Hantidaadu waxay ka badan tahay qadarka la cafiyay ee {verm}. Kaliya qaybta ka sarreysa ayaa la xisaabiyaa: waxaa loo qaybiyaa 12 bilood, waxayna BAföG ka dhimaysaa qiyaastii {monat} bishiiba. Amt für Ausbildungsförderung ayaa si sax ah u xisaabiya."
 }

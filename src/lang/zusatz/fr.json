@@ -78,6 +78,9 @@
   "vgp.t3": "PIN oublié ? Le dossier est alors perdu.",
   "vgp.vergessen": "PIN oublié ? Le dossier est alors perdu. Tu peux le supprimer sans PIN.",
   "vgp.format": "Le code PIN doit comporter 6 à 8 chiffres.",
+  "vg.pin.einfach": "Ce code PIN est facile à deviner (par exemple 123456 ou 111111). Choisis-en un autre.",
+  "vg.lesefehler": "Tes données ne peuvent pas être lues pour le moment. Déverrouille l'appareil et rouvre SoLo. D'ici là, SoLo n'enregistre rien, pour que rien ne se perde.",
+  "f.empfSucheOrt": "La recherche ne contient aucune de tes données. Ajoute toi-même ta ville dans le moteur de recherche.",
   "vgp.ok": "Le dossier est verrouillé.",
   "vgp.aufgehoben": "Le verrou est retiré.",
   "vgp.st.offen": "Ouvert. Il sera de nouveau verrouillé quand tu changes.",
@@ -95,8 +98,5 @@
   "bp.vgl.pg": "degré de dépendance (Pflegegrad) {pg}",
   "bp.vgl.kein": "aucun degré de dépendance (Pflegegrad)",
   "bp.vgl.klein": "Points pondérés, comme les calcule la Pflegekasse (§ 15 SGB XI). Plus signifie : ton estimation donne plus de points à cet endroit. En dessous, tu vois quelles questions exactement.",
-  "t.bafoeg.vermTeil": "Le patrimoine dépasse l'abattement de {verm}. Seule la partie au-dessus compte : répartie sur 12 mois, elle réduit le BAföG d'environ {monat} par mois. L'Amt für Ausbildungsförderung fait le calcul exact.",
-  "vg.pin.einfach": "Ce code PIN est facile à deviner (par exemple 123456 ou 111111). Choisis-en un autre.",
-  "vg.lesefehler": "Tes données ne peuvent pas être lues pour le moment. Déverrouille l'appareil et rouvre SoLo. D'ici là, SoLo n'enregistre rien, pour que rien ne se perde.",
-  "f.empfSucheOrt": "La recherche ne contient aucune de tes données. Ajoute toi-même ta ville dans le moteur de recherche."
+  "t.bafoeg.vermTeil": "Le patrimoine dépasse l'abattement de {verm}. Seule la partie au-dessus compte : répartie sur 12 mois, elle réduit le BAföG d'environ {monat} par mois. L'Amt für Ausbildungsförderung fait le calcul exact."
 }

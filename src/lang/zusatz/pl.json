@@ -78,6 +78,9 @@
   "vgp.t3": "Zapomniany PIN? Wtedy sprawa przepada.",
   "vgp.vergessen": "Zapomniany PIN? Wtedy sprawa przepada. Usunąć ją można bez PIN-u.",
   "vgp.format": "PIN musi mieć od 6 do 8 cyfr.",
+  "vg.pin.einfach": "Ten PIN łatwo odgadnąć (na przykład 123456 albo 111111). Wybierz inny.",
+  "vg.lesefehler": "Twoich danych nie można teraz odczytać. Odblokuj urządzenie i otwórz SoLo ponownie. Do tego czasu SoLo niczego nie zapisuje, żeby nic nie przepadło.",
+  "f.empfSucheOrt": "Wyszukiwanie nie zawiera twoich danych. Swoją miejscowość dopisz sam w wyszukiwarce.",
   "vgp.ok": "Sprawa jest zablokowana.",
   "vgp.aufgehoben": "Blokada została usunięta.",
   "vgp.st.offen": "Otwarta. Po przełączeniu znów zostanie zablokowana.",
@@ -95,8 +98,5 @@
   "bp.vgl.pg": "stopień opieki (Pflegegrad) {pg}",
   "bp.vgl.kein": "brak stopnia opieki (Pflegegrad)",
   "bp.vgl.klein": "Punkty ważone, tak jak liczy Pflegekasse (§ 15 SGB XI). Plus oznacza: Twoja ocena daje tam więcej punktów. Poniżej widać, przy których pytaniach dokładnie.",
-  "t.bafoeg.vermTeil": "Majątek przekracza kwotę wolną {verm}. Liczy się tylko nadwyżka: rozłożona na 12 miesięcy zmniejsza BAföG o około {monat} miesięcznie. Dokładnie wylicza to Amt für Ausbildungsförderung.",
-  "vg.pin.einfach": "Ten PIN łatwo odgadnąć (na przykład 123456 albo 111111). Wybierz inny.",
-  "vg.lesefehler": "Twoich danych nie można teraz odczytać. Odblokuj urządzenie i otwórz SoLo ponownie. Do tego czasu SoLo niczego nie zapisuje, żeby nic nie przepadło.",
-  "f.empfSucheOrt": "Wyszukiwanie nie zawiera twoich danych. Swoją miejscowość dopisz sam w wyszukiwarce."
+  "t.bafoeg.vermTeil": "Majątek przekracza kwotę wolną {verm}. Liczy się tylko nadwyżka: rozłożona na 12 miesięcy zmniejsza BAföG o około {monat} miesięcznie. Dokładnie wylicza to Amt für Ausbildungsförderung."
 }

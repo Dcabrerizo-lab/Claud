@@ -78,6 +78,9 @@
   "vgp.t3": "PIN’i mi unuttun? O zaman dosya kaybolur.",
   "vgp.vergessen": "PIN’i mi unuttun? O zaman dosya kaybolur. PIN olmadan silebilirsin.",
   "vgp.format": "PIN 6 ile 8 rakam olmalı.",
+  "vg.pin.einfach": "Bu PIN kolay tahmin edilir (örneğin 123456 veya 111111). Lütfen başka bir PIN seç.",
+  "vg.lesefehler": "Bilgilerin şu anda okunamıyor. Cihazın kilidini aç ve SoLo'yu yeniden aç. O zamana kadar SoLo hiçbir şey kaydetmez, böylece hiçbir şey kaybolmaz.",
+  "f.empfSucheOrt": "Arama senin bilgilerini içermez. Yaşadığın yeri arama motorunda kendin ekle.",
   "vgp.ok": "Dosya kilitlendi.",
   "vgp.aufgehoben": "Kilit kaldırıldı.",
   "vgp.st.offen": "Açık. Geçiş yapınca yeniden kilitlenir.",
@@ -95,8 +98,5 @@
   "bp.vgl.pg": "bakım derecesi (Pflegegrad) {pg}",
   "bp.vgl.kein": "bakım derecesi (Pflegegrad) yok",
   "bp.vgl.klein": "Pflegekasse’nin hesapladığı gibi ağırlıklı puanlar (§ 15 SGB XI). Artı şu demek: senin değerlendirmen orada daha fazla puan veriyor. Aşağıda tam olarak hangi sorularda olduğu yazıyor.",
-  "t.bafoeg.vermTeil": "Varlığınız {verm} muafiyet tutarının üzerinde. Yalnızca aşan kısım sayılır: 12 aya bölünür ve BAföG'u ayda yaklaşık {monat} azaltır. Kesin hesabı Amt für Ausbildungsförderung yapar.",
-  "vg.pin.einfach": "Bu PIN kolay tahmin edilir (örneğin 123456 veya 111111). Lütfen başka bir PIN seç.",
-  "vg.lesefehler": "Bilgilerin şu anda okunamıyor. Cihazın kilidini aç ve SoLo'yu yeniden aç. O zamana kadar SoLo hiçbir şey kaydetmez, böylece hiçbir şey kaybolmaz.",
-  "f.empfSucheOrt": "Arama senin bilgilerini içermez. Yaşadığın yeri arama motorunda kendin ekle."
+  "t.bafoeg.vermTeil": "Varlığınız {verm} muafiyet tutarının üzerinde. Yalnızca aşan kısım sayılır: 12 aya bölünür ve BAföG'u ayda yaklaşık {monat} azaltır. Kesin hesabı Amt für Ausbildungsförderung yapar."
 }
