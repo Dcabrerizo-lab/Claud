@@ -409,7 +409,7 @@ var FristenOrdner = (function () {
     var ab = ctx.ablauf ? ctx.ablauf() : null;
     if (ab && e.bis) { var abTag = ab.getFullYear() + '-' + zwei(ab.getMonth() + 1) + '-' + zwei(ab.getDate()); if (abTag < e.bis) art.appendChild(el('p', 'small warn', t('fri.vorgangWeg', { datum: datumText(abTag), bis: datumText(e.bis) }))); }
     if (e.art !== 'eigen') {
-      var d = el('details', 'fri-det'), su = el('summary', null, t('fri.rechnung')); d.appendChild(su);
+      var d = el('details', 'fri-det mehr'), su = el('summary', null, t('fri.rechnung')); d.appendChild(su);
       d.appendChild(el('p', null, t('fri.wort.' + e.wort + '.t')));
       if (e.wort !== 'fest' && e.wort !== 'offen') d.appendChild(el('p', null, rechnungText(e)));
       else if (e.wort === 'fest') d.appendChild(el('p', null, t('fri.rechnung.fest')));
@@ -457,7 +457,7 @@ var FristenOrdner = (function () {
     i.focus();
   }
   function eigenForm(box) {
-    var d = el('details', 'fri-eigen'), su = el('summary', null, t('fri.eigen')); d.appendChild(su);
+    var d = el('details', 'fri-eigen mehr mehr-block'), su = el('summary', null, t('fri.eigen')); d.appendChild(su);
     var f = el('form', 'fri-form'); f.setAttribute('novalidate', '');
     var l1 = el('label', null, t('fri.eigen.titel')); l1.htmlFor = 'friEigenTitel';
     var i1 = el('input'); i1.type = 'text'; i1.id = 'friEigenTitel'; i1.maxLength = TITEL_MAX; i1.setAttribute('autocomplete', 'off');
@@ -487,7 +487,7 @@ var FristenOrdner = (function () {
     offen.forEach(function (e) { box.appendChild(eintragEl(e, h)); });
     eigenForm(box);
     if (fertig.length) {
-      var d = el('details', 'fri-fertig'), su = el('summary', null, t('fri.erledigtListe', { n: String(fertig.length) })); d.appendChild(su);
+      var d = el('details', 'fri-fertig mehr mehr-liste'), su = el('summary', null, t('fri.erledigtListe', { n: String(fertig.length) })); d.appendChild(su);
       d.appendChild(el('p', 'small muted', t('fri.erledigtListe.t')));
       var ul = el('ul', 'fri-fertig-l');
       fertig.forEach(function (e) {
