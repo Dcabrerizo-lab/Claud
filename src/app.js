@@ -2680,6 +2680,8 @@
     if (z === 'pkonto-rechner') { pfKonto(); return; }
     if (z === 'finden') { gsSprung('hilfe', '', 'finden'); return; }
     if (z === 'inkasso') { gsSprung('inkasso'); return; }
+    if (z === 'pruef') { gsSprung('inkasso', '', 'pruef'); return; }
+    if (z === 'hilfe') { gsSprung('hilfe'); return; }
     if (z === 'geduld' || z === 'aufst') { Geld.schreibenVorbelegen(z); gsSprung('inkasso', '', 'schreiben'); }
   }
   function spRender(fokus, fokusId) {
@@ -2755,10 +2757,8 @@
       Geld.schreibenSeite(box, neu);
     } else if (sp.bereich === 'inkasso' && sp.fall === 'rate') {
       p(t('gs.rate'), 'pf-frage');
+      Geld.rateSeite(box, neu); // Ratenempfehlung aus dem Haushaltsplan und Schreiben „Ratenzahlung anbieten“ (src/geld.js)
       tipp('sp.schulden.rate', 'rate');
-      var hr = window.Haushalt ? Haushalt.rest() : null, hd = window.Haushalt ? Haushalt.daten() : null; // frei vor Raten wie in der Schulden-Liste (Schulden.vergleich)
-      if (hr && !hr.leer) p(t('sl.hh.frei', { b: { eur: Math.round((hr.rest + (hd && hd.plan && hd.plan.aus && hd.plan.aus.raten > 0 ? hd.plan.aus.raten : 0)) / 100) } }), 'gs-frei'); else p(t('sl.hh.keiner'), 'small');
-      if (window.Haushalt) knopf('btn ghost gs-zum-plan', t('hb.kachel'), function () { oeffneVon('haushalt', true); });
       box.appendChild(quellenEl([t('sp.schulden.quellen')]));
     } else if (sp.bereich === 'hilfe' && !sp.fall) {
       p(t('sb.h'), 'pf-frage');
@@ -4046,6 +4046,7 @@
       ziel: gsZiel, schreibenOeffnen: function (art) { Geld.schreibenVorbelegen(art); sp.fall = 'schreiben'; spRender(true); },
       schulden: function () { var d = window.Schulden && Schulden.daten(); return d ? d.liste.filter(function (e) { return e.st !== 'erledigt'; }) : []; },
       planFertig: function () { return !!(window.Haushalt && Haushalt.rest().ausgefuellt); },
+      haushalt: function () { return window.Haushalt ? Haushalt.rest() : null; }, // nur lesen: { ein, aus, rest, ausgefuellt } in Cent (Ratenempfehlung)
       mappeDrucken: window.Schulden ? function () { oeffneVon('schulden', true); Schulden.blatt(); } : null, // Druck: Blatt der Schulden-Liste mit Haushaltsplan und Unterlagenliste
       textAusgeben: function (text, titel, msg) { if (!NATIVE) { schreibenDrucken(text); return; } schreibenAusgeben({ value: text }, titel, plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen', msg); }
     });
