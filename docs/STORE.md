@@ -211,17 +211,18 @@ Die App ist eine Orientierungshilfe, keine Rechtsberatung und keine App einer Be
 
 Benötigt: Play mindestens 2 Handy-Screenshots (höchstens 8) und eine Werbegrafik (1024 × 500); iOS 6,9″ (1320 × 2868) und 6,5″ (1242 × 2688), optional iPad (höchstens 10 je Größe).
 
-Die Bilder sind zuletzt für Version 1.5.0 mit `node tools/store-bilder.js` erzeugt (20.11.2026, neues Design mit Leiste Start | Mein Ordner | Einstellungen; Ausgabe nach `store-bilder/`: Motive in allen drei Formaten, Werbegrafik, Symbol 512 × 512, Logo 1024 × 1024). Sie liegen in den Paketen unter `Store-Bilder`.
+Die Bilder sind zuletzt für Version 1.9.0 (Build 151) mit `node tools/store-bilder.js` erzeugt (21.11.2026; vorher `npm run build:app`; Ausgabe nach `store-bilder/`, nicht im Repo: `play/` 1080 × 1920 mit 8 Bildern, `ios-6.9/` 1320 × 2868 und `ios-6.5/` 1242 × 2688 mit je 9 Bildern, dazu Werbegrafik 1024 × 500, Symbol 512 × 512, Logo 1024 × 1024). Nur Musterdaten („Maria Muster“, Musterbescheid, Muster-Fristen). Sie liegen in den Paketen unter `Store-Bilder`.
 
-Bildschirme im neuen Design (Vorschlag, 8 Motive; Überschrift auf dem Bild in Klammern):
+Motive (Überschrift auf dem Bild in Klammern; Reihenfolge = Dateiname):
 
-1. Startseite mit den großen Kacheln („Hilfen finden, Briefe prüfen“)
-2. Ergebnis mit den Karten („31 Leistungen geprüft“)
-3. Antragsmappe mit Stelle, Unterlagen zum Abhaken und Tipp („Nächste Schritte und Unterlagen“)
-4. Netto aus Brutto oder Pfändung/P-Konto („Rund ums Geld“)
-5. Brief prüfen: Kacheln nach Absender und Ergebnis mit Abweichung („Bescheid nachgerechnet“)
-6. Antragsmappe („Anträge fertig zum Abschicken“)
-7. Einfache Sprache („Auch in Einfacher Sprache“)
-8. Sprache Arabisch oder Türkisch („In 13 Sprachen“)
+1. Startseite mit Begrüßung und Kacheln („Hilfen finden, Briefe prüfen“)
+2. Ergebnis des Leistungs-Checks mit Karten („31 Leistungen geprüft“)
+3. Geld und Schulden → Es ist dringend → Konto gepfändet: Frist und erster Schritt („Schulden? Erst das Dringende“)
+4. Brief prüfen: Musterbescheid nachgerechnet, Abweichungen mit Paragraf („Bescheid nachgerechnet“)
+5. Pflege: Leistungen bei Pflegegrad 3 („Was steht dir bei Pflege zu?“)
+6. Antragsmappe als Schritt-Liste („Anträge fertig zum Abschicken“)
+7. Mein Ordner → Fristen mit zwei gemerkten Fristen („Fristen im Blick“)
+8. Ergebnis auf Arabisch („In 13 Sprachen“)
+9. Nur iOS: Wahl „Schritt für Schritt / Alles auf einer Seite“ („Eine Frage pro Seite“)
 
 Auf keinem Bild Wappen, Behördenlogos oder Formulierungen, die nach einer offiziellen Behörden-App aussehen.
