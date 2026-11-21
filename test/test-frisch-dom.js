@@ -92,11 +92,11 @@ setTimeout(() => {
 
     // ---------- S5: „Zwei Wege“ ohne Kinder ----------
     w.__solo.set({ adults: 1, kids: 0, young: 0, ek1Art: 'lohn', ek1Brutto: 1800, ek1Netto: 1400, miete: 650, mietstufe: '5', vermoegen: 0, bezug: {} });
-    let ww = $('zweiWege');
-    check('S5: Kasten „Zwei Wege“ erscheint (Grundsicherungsgeld und Wohngeld möglich)', !!ww);
+    let ww = $('wege');
+    check('S5: Rahmen „Entweder oder“ erscheint (Grundsicherungsgeld und Wohngeld möglich)', !!ww);
     check('S5: ohne Kinder: kein Kinderzuschlag, nichts „für die Kinder“', !!ww && !/Kinderzuschlag|Kinder/.test(ww.textContent), ww && ww.textContent);
     w.__solo.set({ adults: 1, kids: 1, young: 0, ek1Art: 'lohn', ek1Brutto: 1800, ek1Netto: 1400, miete: 750, mietstufe: '5', vermoegen: 0, bezug: {} });
-    ww = $('zweiWege');
+    ww = $('wege');
     check('S5: mit Kind: Kinderzuschlag genannt', !ww || /Kinderzuschlag/.test(ww.textContent));
 
     // ---------- Nur Netto: alles Fehlende auf einmal ----------

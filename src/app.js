@@ -1177,7 +1177,8 @@
     var reihe = vor === 'b' ? ['b', 'a'] : ['a', 'b'];
     var kinder = (state.kids || 0) + (state.young || 0) > 0;
     var beideBetrag = !!(w.aBetrag && w.bBetrag);
-    var mehr = (w.rente ? [] : ['weg.kv', 'weg.dringend']).concat(['weg.abgelehnt'], kinder && !w.rente ? ['weg.beide'] : []);
+    var mitKiz = w.a.indexOf('kiz') >= 0;
+    var mehr = (w.rente ? [] : (mitKiz ? ['weg.kv'] : []).concat(['weg.dringend'])).concat(['weg.abgelehnt'], kinder && !w.rente ? ['weg.beide'] : []);
     return '<section class="wege" id="wege" aria-labelledby="h-wege"><h3 id="h-wege">' + esc(t('weg.h')) + '</h3>' +
       '<p class="wege-lage">' + esc(wegLageSatz(w)) + '</p>' +
       gruppe(reihe[0]) + '<p class="weg-oder"><span>' + esc(t('weg.oder')) + '</span></p>' + gruppe(reihe[1]) +
@@ -2621,7 +2622,11 @@
     speichern: function () { flush(); },
     state: function () { return state; },
     beratung: function (an) { beratungSetzen(an, false); },
-    reihe: function (results) { var k = kartenReihe(results); return k.passt.concat(k.neinKern, k.neinSpez).map(function (r) { return r.id; }); },
+    reihe: function (results, wege) {
+      var k = kartenReihe(results), w = wege === undefined ? (lastOut && lastOut.results === results ? lastOut.wege : null) : wege, inWeg = {}, vorn = [];
+      if (w) { var vor = w.lage === 'bUeblich' ? [w.b, w.a] : [w.a, w.b]; vor.forEach(function (ids) { ids.forEach(function (id) { if (k.passt.some(function (r) { return r.id === id; })) { vorn.push(id); inWeg[id] = true; } }); }); }
+      return vorn.concat(k.passt.filter(function (r) { return !inWeg[r.id]; }).concat(k.neinKern, k.neinSpez).map(function (r) { return r.id; }));
+    },
     nav: function () { return { ebene: navEbene(), ansicht: aktAnsicht }; }, // Navigation (test/test-navigation.js)
     unterseite: function (a, seite) { if (aktAnsicht !== a) zeigeAnsicht(a, false); usZeigen(a, seite, true); }
   };

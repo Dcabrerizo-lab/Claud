@@ -48,7 +48,7 @@ check('Zusammenfassung zeigt Anzahl', /\d+ wahrscheinlich/.test(d.getElementById
 check('Unwahrscheinliche Leistungen sind eingeklappt gruppiert', d.querySelector('.neinbox') !== null && d.querySelector('.neinbox').open === false);
 check('Hinweis auf Beispielwerte sichtbar', d.getElementById('sampleNotice').hidden === false);
 check('Übersetzungs-Hinweis bei Deutsch versteckt', d.getElementById('transNotice').hidden === true);
-check('Treffer: Hinweis auf Unterlagen und nächste Schritte in der Antragsmappe', /Antragsmappe/.test((card('Wohngeld').querySelector('.karte-mappe') || {}).textContent || ''));
+check('Treffer: aufgeklappte Karte mit Knopf „Antrag vorbereiten“ (öffnet die Antragsmappe mit dieser Leistung)', ((card('Wohngeld').querySelector('[data-antrag="wohngeld"]') || {}).textContent || '') === I18N.de['akt.antrag']);
 check('Zusammenspiel-Hinweis Wohngeld und Kinderzuschlag steht in beiden Karten', /kombinieren/.test(d.getElementById('c-wohngeld').textContent) && /kombinieren/.test(d.getElementById('c-kiz').textContent));
 check('Neue Karten vorhanden', ['Grundsicherungsgeld', 'Unterhaltsvorschuss', 'BAföG', 'Pflegegeld und Entlastungsbetrag', 'Kindergeld'].every((n) => names().includes(n)));
 check('Unterhaltsvorschuss im Beispiel 1 wahrscheinlich', level('Unterhaltsvorschuss') === 'ja');
@@ -57,8 +57,8 @@ check('Unterhaltsvorschuss im Beispiel 1 wahrscheinlich', level('Unterhaltsvorsc
 beispiel('p2');
 check('Beispiel 2: Grundsicherung im Alter wahrscheinlich', level('Grundsicherung im Alter und bei voller Erwerbsminderung') === 'ja', pills() + '');
 check('Beispiel 2 füllt Formular und Auswahlfelder', d.getElementById('ek1Art').value === 'rente' && d.getElementById('ek1Brutto').value === '880' && d.getElementById('gebJahr').value === '1955' && d.getElementById('mietstufe').value === '3');
-check('Beispiel 2: Kasten „Entweder oder“ mit Links zu beiden Karten', !!d.getElementById('entwederOder') && !!d.querySelector('#entwederOder a[href="#c-gsa"]') && !!d.querySelector('#entwederOder a[href="#c-wohngeld"]') && !d.getElementById('zweiWege'));
-check('Beispiel 2: Entweder-oder-Hinweis in den Karten Grundsicherung im Alter und Wohngeld', /nicht gleichzeitig/.test(d.getElementById('c-gsa').textContent) && /nicht gleichzeitig/.test(d.getElementById('c-wohngeld').textContent));
+check('[wege] Beispiel 2: Rahmen „Entweder oder“ mit den Karten Grundsicherung im Alter und Wohngeld, „oder“ dazwischen', !!d.querySelector('#wege #c-gsa') && !!d.querySelector('#wege #c-wohngeld') && !!d.querySelector('#wege .weg-oder'));
+check('[wege] Beispiel 2: Satz zur Lage sichtbar (nicht zugeklappt), Namen beschreibend statt „Weg 1/2“', d.querySelector('#wege .wege-lage').textContent.length > 20 && !d.querySelector('#wege .wege-lage').closest('details') && !/Weg [12]/.test(d.getElementById('wege').textContent));
 check('Ohne Kinder sind Kinder-Fragen ausgeblendet', [...d.querySelectorAll('.cond-kids')].every((e) => e.hidden === true));
 
 // Eingabe ändern
@@ -180,7 +180,7 @@ const WEGE = ['ggeld', 'wohngeld', 'kiz', 'gsa'], wegeZeile = d.getElementById('
 check('Haken sind nur bei wahrscheinlichen Leistungen vorgesetzt (außer bei „entweder oder“)', pickBoxes().every((cb) => cb.checked === (level(cb.closest('label').textContent.trim()) === 'ja' && !(wegeZeile && WEGE.includes(cb.getAttribute('data-pick'))))) && pickBoxes().some((cb) => cb.checked));
 {
   const ids = pickBoxes().map((cb) => cb.getAttribute('data-pick')), an = (id) => { const c = d.querySelector('[data-pick="' + id + '"]'); return !!c && c.checked; };
-  const zweiWege = !!d.getElementById('zweiWege') || /Zwei Wege/.test(d.getElementById('ergebnis').textContent);
+  const zweiWege = !!d.getElementById('wege');
   check('[zwei-wege] Beispiel 1 zeigt „Zwei Wege“ und bietet Grundsicherungsgeld und Wohngeld an', zweiWege && ids.includes('ggeld') && ids.includes('wohngeld'), ids.join());
   check('[zwei-wege] Grundsicherungsgeld, Wohngeld und Kinderzuschlag nicht vorab angehakt, Zeile „nur entweder oder“ sichtbar', !an('ggeld') && !an('wohngeld') && !an('kiz') && !!wegeZeile && wegeZeile.textContent === I18N.de['f.pickWege'], ids.map((i) => i + ':' + an(i)).join());
 }
@@ -188,7 +188,7 @@ check('Mappe ist anfangs geschlossen', d.getElementById('mappe').hidden === true
 // nichts gewählt
 pickBoxes().forEach((cb) => { cb.checked = false; fire(cb, 'change'); });
 d.getElementById('mappeMake').click();
-check('[hilfen-aufraeumen] Grüner Knopf „Briefe für die Anträge machen“ direkt unter den passenden Karten, kein Kasten „Ausfüllhilfe“ im Ergebnis', (() => { const k = d.getElementById('mappeKnopf'), letzte = cards().filter((c) => /pill (ja|vielleicht)/.test(c.querySelector('.pill').className)).pop(); return k && !k.hidden && k.previousElementSibling === letzte && d.getElementById('mappeMake').textContent === I18N.de['es.briefe'] && !d.getElementById('ergebnis').contains(d.getElementById('p-name')); })());
+check('[hilfen-aufraeumen] Grüner Knopf „Antrag vorbereiten“ direkt unter den passenden Karten, kein Kasten „Ausfüllhilfe“ im Ergebnis', (() => { const k = d.getElementById('mappeKnopf'), letzte = cards().filter((c) => /pill (ja|vielleicht)/.test(c.querySelector('.pill').className)).pop(); return k && !k.hidden && (k.previousElementSibling === letzte || k.previousElementSibling.contains(letzte)) && d.getElementById('mappeMake').textContent === I18N.de['akt.antrag'] && !d.getElementById('ergebnis').contains(d.getElementById('p-name')); })());
 check('[hilfen-aufraeumen] Ohne Auswahl: Mappe öffnet mit Auswahl, Name und Anschrift oben und einem Hinweis, keine leeren Briefe', d.getElementById('mappe').hidden === false && d.getElementById('mappe').contains(d.getElementById('p-name')) && d.getElementById('pickMsg').textContent === I18N.de['f.pick0'] && !d.querySelector('#mappeBody .page'));
 // Wohngeld und Unterhaltsvorschuss wählen
 pickBoxes().filter((cb) => ['wohngeld', 'uvg'].includes(cb.getAttribute('data-pick'))).forEach((cb) => { cb.checked = true; fire(cb, 'change'); });
