@@ -96,5 +96,6 @@
   "kb.weg.blatt": "Comme feuille : sur papier ou en fichier",
   "kb.vorschau": "Afficher l'aperçu de la feuille",
   "kb.vorschau.zu": "Masquer l'aperçu",
-  "kw.qr.zuViel": "C'est trop pour un QR code. Partage-le comme fichier SoLo ou coche moins d'éléments."
+  "kw.qr.zuViel": "C'est trop pour un QR code. Partage-le comme fichier SoLo ou coche moins d'éléments.",
+  "kw.imp.pinZeigen": "Afficher le PIN"
 }

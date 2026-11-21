@@ -111,7 +111,8 @@ const dateiWaehlen = (w, input, text) => { Object.defineProperty(input, 'files',
   dateiWaehlen(w2, $2('kwDateiEin'), dateiA);
   check('Datei mit PIN: PIN-Abfrage', await bis(() => $2('kwImpPin')));
   $2('kwImpPin').value = pinA === '000000' ? '111111' : '000000'; $2('kwImpPinOk').click();
-  check('Falsche PIN: Meldung, Abfrage bleibt', await bis(() => $2('kwImpMsg').textContent === DE['kw.imp.pinFalsch']) && !!$2('kwImpPin'));
+  check('Falsche PIN: Meldung, Abfrage bleibt', await bis(() => $2('kwImpPinFehler') && !$2('kwImpPinFehler').hidden) && !!$2('kwImpPin') && $2('kwImpMsg').textContent === '');
+  check('[rot-d] Falsche PIN: Meldung rot am Feld, Feld nicht geleert, „PIN zeigen“ schaltet um', !$2('kwImpPinFehler').hidden && $2('kwImpPinFehler').textContent === DE['kw.imp.pinFalsch'] && $2('kwImpPin').getAttribute('aria-invalid') === 'true' && $2('kwImpPin').value !== '' && ($2('kwImpPinZeigen').click(), $2('kwImpPin').type === 'text'));
   $2('kwImpPin').value = pinA; $2('kwImpPinOk').click();
   check('Richtige PIN: Vorschau „Das bekommst du“ mit Haken', await bis(() => $2('kwImpTeile')) && $2('kwImpBox').textContent.includes(DE['kw.imp.vorschau']) && [...d2.querySelectorAll('#kwImpTeile input')].every((c) => c.checked));
   const vorher = JSON.parse(store['lotse.vorgaenge'] || '{"klar":{"liste":[1]}}').klar.liste.length;

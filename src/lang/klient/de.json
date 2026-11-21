@@ -96,5 +96,6 @@
   "kb.weg.blatt": "Als Blatt: auf Papier oder als Datei",
   "kb.vorschau": "Vorschau des Blatts zeigen",
   "kb.vorschau.zu": "Vorschau ausblenden",
-  "kw.qr.zuViel": "Für einen QR-Code ist das zu viel. Teile es als SoLo-Datei oder hake weniger an."
+  "kw.qr.zuViel": "Für einen QR-Code ist das zu viel. Teile es als SoLo-Datei oder hake weniger an.",
+  "kw.imp.pinZeigen": "PIN zeigen"
 }
