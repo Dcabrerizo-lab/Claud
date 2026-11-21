@@ -7,6 +7,8 @@ R=repos/Dcabrerizo-lab/claud
 b=$(git rev-parse --abbrev-ref HEAD)
 [ "$b" = main ] && { echo "Nicht von main aus."; exit 1; }
 [ -n "$(git status --porcelain --untracked-files=no)" ] && { echo "Ungesicherte Änderungen: erst committen."; exit 1; }
+# Schnelltest vor dem Push (ca. 1–2 Min.: Lint, Regeltests, betroffene Oberflächentests); überspringen nur mit OHNE_VORTEST=1
+if [ "${OHNE_VORTEST:-0}" != 1 ]; then npm run -s test:vor-push >/tmp/solo-vor-push.log 2>&1 || { tail -40 /tmp/solo-vor-push.log; echo "Schnelltest ROT – nicht gepusht (Log: /tmp/solo-vor-push.log)."; exit 1; }; fi
 tools/konflikt-check.sh | grep -q "KONFLIKT mit origin/main" && { echo "Konflikt mit main: erst git merge origin/main, lösen, testen."; exit 1; }
 git -c push.negotiate=true push -q -u origin "$b" 2>&1 | grep -v '^remote:' || true
 pr=$(gh api "$R/pulls?head=Dcabrerizo-lab:$b&state=open" --jq '.[0].number // empty')

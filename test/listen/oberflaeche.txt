@@ -1,0 +1,33 @@
+# Oberflächentests mit JSDOM (npm run test:dom). Eine Zeile je Test, Reihenfolge egal (laufen auch parallel).
+# Neuer Test: eine Zeile anhängen. Datei wird per .gitattributes (merge=union) konfliktfrei zusammengeführt.
+node test/dom-test.js
+node test/test-einkommen-app.js
+node test/test-jahreswechsel.js
+node test/test-sicherheit.js
+node test/test-anzeige.js
+node test/test-altstaende.js
+node test/test-vorgaenge-app.js
+node test/test-weitergabe-dom.js
+node test/test-weitergabe-boese.js
+node test/test-beratung.js
+node test/test-pflege-start.js
+node test/test-haushalt-dom.js
+node test/test-ausziehen-dom.js
+node test/test-mietgrenze-dom.js
+node test/test-energie-dom.js
+node test/test-kostensenkung-dom.js
+node test/test-fristen-dom.js
+node test/test-schulden-dom.js
+node test/test-haushalt-geld-dom.js
+node test/test-schritte.js
+node test/test-infotexte-dom.js
+node test/test-brief-einfach.js
+node test/test-navigation.js
+node test/test-frisch-dom.js
+node test/test-rate-dom.js
+node test/test-klient-dom.js
+node test/test-suche.js
+node test/test-vorgang-pin-dom.js
+node test/test-vorgang-wechsel-dom.js
+node test/test-denetz-dom.js
+node test/test-cache-reste.js
