@@ -1960,7 +1960,7 @@
 
   // ----- PDF lesen (pdf.js von Mozilla): digitale PDFs liefern ihren Text direkt; eingescannte Seiten (nur Bild, kein Text)
   // werden auf dem Gerät zu einem Bild und gehen durch dieselbe Texterkennung wie ein Foto. Die Datei verlässt das Gerät nicht.
-  var PDFJS_VER = '3.11.174', PDF_MAX_SEITEN = 12, pdfjsLaden = null;
+  var PDFJS_VER = '3.11.174', PDF_MAX_SEITEN = 12, pdfjsLaden = null, pdfMitBild = false;
   function ladePdfjs() {
     if (window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
     if (pdfjsLaden) return pdfjsLaden;
@@ -2015,7 +2015,8 @@
         return doc.getPage(i).then(function (page) {
           return page.getTextContent().then(function (tc) {
             var t1 = pdfZeilen(tc.items);
-            return t1.replace(/\s/g, '').length >= 40 ? t1 : seiteAlsBild(page).then(bildText); // kaum Text: eingescannte Seite
+            if (t1.replace(/\s/g, '').length >= 40) return t1;
+            pdfMitBild = true; return seiteAlsBild(page).then(bildText); // kaum Text: eingescannte Seite
           });
         }).then(function (t1) { texte.push(t1); return naechste(); });
       }
@@ -2024,10 +2025,14 @@
   }
   function istPdf(f) { return !!f && (/pdf/i.test(f.type || '') || /\.pdf$/i.test(f.name || '')); }
 
+  // Zuletzt von Tesseract als unsicher gemeldete Wörter mit Ziffern (Konfidenz unter 70 von 100); „Brief prüfen“ markiert passende Werte farbig.
+  // Die Texterkennung des Geräts (ML Kit / Vision) liefert keine Konfidenz, dort gelten nur Plausibilitätsregeln (erweiterungen/vorschau.js).
+  var ocrUnsicher = [];
   function ocr(file) {
     var work = loadTess().then(function (T) {
       return T.createWorker('deu', 1, { langPath: 'https://cdn.jsdelivr.net/npm/@tesseract.js-data/deu/4.0.0_best_int' }).then(function (w) {
-        return w.recognize(file).then(function (r) { return w.terminate().then(function () { return r.data.text; }, function () { return r.data.text; }); });
+        return w.recognize(file).then(function (r) {
+          try { ocrUnsicher = ocrUnsicher.concat(((r.data && r.data.words) || []).filter(function (x) { return x && x.confidence < 70 && /\d/.test(x.text || ''); }).map(function (x) { return x.text; })); } catch (e) {} return w.terminate().then(function () { return r.data.text; }, function () { return r.data.text; }); });
       });
     });
     var limit = new Promise(function (_, rej) { setTimeout(function () { rej(new Error('timeout')); }, 120000); });
@@ -4092,7 +4097,7 @@
     if (!briefArt) briefOeffnen(r.art);
     if (r.art === 'pk') { $('pf-text').value = text; $('pf-lesen').click(); briefFormular(); elNachricht(t('el.erkanntPk', { titel: ppEin(r.titel) })); return; }
     if (r.art === 'af') { setScanResult(scanFromText(text)); elNachricht(t('el.erkanntOhne', { titel: ppEin(r.titel) })); return; }
-    var n = window.PruefpaketLesen ? window.PruefpaketLesen.fuelle(r.art, r, haushalt()) : 0;
+    var n = window.PruefpaketLesen ? window.PruefpaketLesen.fuelle(r.art, r, haushalt(), elQuelle) : 0;
     briefFormular();
     elNachricht(n ? t('el.erkannt', { titel: ppEin(r.titel), n: String(n) }) : t('el.keineWerte', { titel: ppEin(r.titel) }));
   }
@@ -4112,24 +4117,28 @@
       }).then(function (r) { weg(); res(((r && r.lines) || []).join('\n')); }, function (e) { weg(); rej(e); });
     });
   }
-  function elFertig(text) { elBusy = false; $('elScan').disabled = false; elGesammelt = (elGesammelt ? elGesammelt + '\n' : '') + text; elPlatz(); textLesen(elGesammelt); }
+  // Woher der gelesene Text stammt: Foto (Texterkennung) oder Text/PDF. Bei Fotos prüft „Brief prüfen“ zusätzlich die Plausibilität.
+  var elQuelle = { foto: false, unsicher: [] };
+  function elQuelleNeu(foto) { if (!elGesammelt) elQuelle = { foto: false, unsicher: [] }; if (foto) elQuelle.foto = true; ocrUnsicher = []; }
+  function elFertig(text) { elQuelle.unsicher = elQuelle.unsicher.concat(ocrUnsicher); ocrUnsicher = []; elBusy = false; $('elScan').disabled = false; elGesammelt = (elGesammelt ? elGesammelt + '\n' : '') + text; elPlatz(); textLesen(elGesammelt); }
   function elFehler(e) { elBusy = false; $('elScan').disabled = false; elNachricht(/cancel/i.test(String(e && (e.message || e) || '')) ? '' : t('el.fehler')); }
   $('elScan').addEventListener('click', function () {
     if (elBusy) return;
-    if (NATIVE) { elBusy = true; $('elScan').disabled = true; elNachricht(t('el.lese')); fotoText().then(elFertig, elFehler); return; }
+    if (NATIVE) { elBusy = true; $('elScan').disabled = true; elNachricht(t('el.lese')); elQuelleNeu(true); fotoText().then(elFertig, elFehler); return; }
     $('elFile').value = ''; $('elFile').click();
   });
   $('elPdf').addEventListener('click', function () { if (elBusy) return; $('elPdfFile').value = ''; $('elPdfFile').click(); });
   $('elPdfFile').addEventListener('change', function () {
     var f = $('elPdfFile').files && $('elPdfFile').files[0]; if (!f || elBusy) return;
     elBusy = true; $('elScan').disabled = true; $('elPdf').disabled = true;
+    var vorher = elQuelle; elQuelle = { foto: false, unsicher: [] }; ocrUnsicher = []; pdfMitBild = false;
     pdfLesen(f, function (i, n) { elNachricht(t('el.pdfSeite', { n: String(i), m: String(n) })); }).then(function (text) {
-      $('elPdf').disabled = false; elGesammelt = ''; elFertig(text);
-    }, function () { elBusy = false; $('elScan').disabled = false; $('elPdf').disabled = false; elNachricht(t('el.pdfFehler')); });
+      $('elPdf').disabled = false; elGesammelt = ''; if (pdfMitBild) elQuelle.foto = true; elFertig(text);
+    }, function () { elQuelle = vorher; elBusy = false; $('elScan').disabled = false; $('elPdf').disabled = false; elNachricht(t('el.pdfFehler')); });
   });
   $('elFile').addEventListener('change', function () {
     var f = $('elFile').files && $('elFile').files[0]; if (!f) return;
-    elBusy = true; $('elScan').disabled = true; elNachricht(t('el.lese'));
+    elBusy = true; $('elScan').disabled = true; elNachricht(t('el.lese')); elQuelleNeu(true);
     ocr(f).then(elFertig, elFehler);
   });
   $('elPaste').addEventListener('click', function () { var box = $('elPasteBox'); box.hidden = !box.hidden; $('elPaste').setAttribute('aria-expanded', String(!box.hidden)); if (!box.hidden) $('elText').focus(); });
@@ -4142,7 +4151,7 @@
   if ($('an-eingabe')) $('an-eingabe').hidden = true; // in der App liest das Einlesen oben den Brief
   // Antragsformular: Hinweis auf das Nachladen der Texterkennung gilt nur für die Web-Version; in der App liest das Gerät selbst
   if (NATIVE && $('scLocalNote')) { $('scLocalNote').setAttribute('data-t', 'el.privat'); $('scLocalNote').textContent = t('el.privat'); }
-  $('elLesen').addEventListener('click', function () { elGesammelt = ''; textLesen($('elText').value); });
+  $('elLesen').addEventListener('click', function () { elGesammelt = ''; elQuelle = { foto: false, unsicher: [] }; textLesen($('elText').value); });
 
   function briefZurueckTun() {
     elGesammelt = ''; var war = null, k, art = null; document.querySelectorAll('#checkBox .pp-teil').forEach(function (s) { if (!s.hidden) war = s.id; });
