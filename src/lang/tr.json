@@ -1459,7 +1459,7 @@
   "gs.frist": "Süre",
   "gs.d.konto.frist": "Haciz bankaya ulaştıktan sonraki bir ay içinde. O zaman bloke edilmiş para da korunur (§ 899 Abs. 1 ZPO).",
   "gs.d.konto.frist.kurz": "Hacizden sonra 1 ay içinde dönüştür.",
-  "gs.d.konto.schritt": "Cari hesabını hemen bankanda haciz korumalı hesaba (P-Konto) çevirt. Banka bunu en geç başvurundan sonraki 4. iş gününden itibaren yapmak zorundadır (§ 850k ZPO).",
+  "gs.d.konto.schritt": "Cari hesabını hemen bankanda haciz korumalı hesaba (P-Konto) çevirt. Banka bunu en geç başvurundan sonraki 4. iş gününden itibaren yapmak zorundadır (§ 850k ZPO). Herkes sadece bir P-Konto’ya sahip olabilir (§ 850k Abs. 3 ZPO).",
   "gs.d.konto.schritt.kurz": "Vadesiz hesabını hemen P-Konto’ya çevirt.",
   "gs.d.strom.frist": "Kesinti 4 hafta önceden uyarılmalı ve 8 iş günü önceden duyurulmalıdır (§ 41f EnWG).",
   "gs.d.strom.frist.kurz": "Kesinti: 4 hafta önce uyarı, 8 iş günü önce duyuru.",

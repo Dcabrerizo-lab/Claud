@@ -427,6 +427,7 @@ setTimeout(() => {
     check('[aufraeumen] Mahnbescheid: Reihenfolge Titel, Frist, Schritte, Knöpfe, Quellen; Beratungsstelle als letzter Knopf', aufbau() === 'pf-frage,gs-frist,gs-schritt,gs-knoepfe,quellen' && box.querySelector('.gs-knoepfe').lastChild.classList.contains('gs-zur-hilfe') && box.querySelectorAll('.gs-schritt li').length === 2 && box.querySelector('.gs-schritt h3').textContent === I18N.de['pf.jetzt.h'], aufbau());
     zur(); kacheln()[1].click();
     check('[aufraeumen] Konto: Schritte Umwandeln und Bescheinigung (§ 903 ZPO), Grundfreibetrag aus Rules, kein doppelter P-Konto-Tipp', aufbau() === 'pf-frage,gs-frist,gs-schritt,gs-freibetrag,gs-knoepfe,quellen' && [...box.querySelectorAll('.gs-schritt details')].map((x) => x.getAttribute('data-tipp')).join() === 'gs.d.konto.schritt,pf.tipp.bescheinigung' && /§ 903 ZPO/.test(box.querySelector('.gs-schritt li:nth-child(2) p').textContent) && box.querySelector('.gs-freibetrag td:last-child').textContent.replace(/\s/g, '') === '1.590€' && !box.querySelector('[data-tipp="sp.schulden.konto"]'), aufbau());
+    check('[aufr-geld] Konto: „Jeder darf nur ein P-Konto haben“ aufklappbar beim Schritt Umwandeln (§ 850k Abs. 3 ZPO)', /nur ein P-Konto haben \(§ 850k Abs\. 3 ZPO\)/.test(box.querySelector('.gs-schritt [data-tipp="gs.d.konto.schritt"] p').textContent) && !/nur ein P-Konto/.test(box.querySelector('.gs-schritt [data-tipp="gs.d.konto.schritt"] summary').textContent));
     [2, 4, 5].forEach((i) => { zur(); kacheln()[i].click(); check('[aufraeumen] Fall ' + i + ': gleicher Aufbau', aufbau() === (i === 2 ? 'pf-frage,gs-frist,gs-schritt,gs-tipps,gs-knoepfe,quellen' : 'pf-frage,gs-frist,gs-schritt,gs-knoepfe,quellen'), aufbau()); });
     zur();
     check('[geld] „← Zurück“ aus einem Fall führt zur Auswahl „Es ist dringend“', kacheln().length === 6 && !!box.querySelector('.gs-d-check'));
@@ -462,11 +463,21 @@ setTimeout(() => {
     check('[inkasso] ohne Haken: alles fehlt, Knopf zum Schreiben „Forderungsaufstellung“', box.querySelectorAll('#ip-erg li').length === 6 && !!d.getElementById('ip-zum-schreiben'));
     ipH.forEach((c) => { c.checked = true; c.dispatchEvent(new w.Event('change', { bubbles: true })); });
     check('[inkasso] alle Haken: kein Urteil über die Forderung', d.getElementById('ip-erg').textContent === I18N.de['ip.erg.alle'] && !d.getElementById('ip-zum-schreiben'));
-    zur(); kacheln()[1].click();
-    check('[inkasso] Schreiben: 4 Muster zur Wahl', kacheln().map((b) => b.className.match(/ms-([a-z]+)/)[1]).join() === 'geduld,aufst,wider,pkonto');
+    zur(); box.querySelector('.gs-i-gelb').click();
+    check('[aufr-geld] Gelber Umschlag: öffnet direkt die Seite Mahnbescheid (keine zweite Fassung)', box.querySelector('.pf-frage').textContent === I18N.de['gs.d.mahn'] && !!box.querySelector('.gs-frist') && box.querySelectorAll('.gs-i-gelb').length === 0);
+    zur();
+    check('[aufr-geld] Gelber Umschlag: „Zurück“ führt zu „Post vom Inkasso“', !!box.querySelector('.gs-i-pruef') && !!box.querySelector('.gs-i-gelb'));
+    kacheln()[1].click();
+    check('[aufr-geld] Schreiben an Gläubiger: 3 Muster, keine P-Konto-Bescheinigung (steht unter „Was bleibt mir?“)', kacheln().map((b) => b.className.match(/ms-([a-z]+)/)[1]).join() === 'geduld,aufst,wider' && !box.querySelector('.ms-pkonto'));
     kacheln()[1].click();
     const ta = d.getElementById('ms-text');
-    check('[schreiben] Forderungsaufstellung: deutscher Text mit Lücken, Hinweis „keine Rechtsberatung“, Anschrift fehlt', ta && ta.lang === 'de' && /§ 13a Abs\. 1 und 2/.test(ta.value) && /\[Anschrift aus dem Brief\]/.test(ta.value) && /keine Rechtsberatung/.test(box.querySelector('.ms-hinweis').textContent) && !d.getElementById('ms-ohne-adr').hidden);
+    check('[schreiben] Forderungsaufstellung: deutscher Text mit Lücken, Hinweis „keine Rechtsberatung“', ta && ta.lang === 'de' && /§ 13a Abs\. 1 und 2/.test(ta.value) && /\[Anschrift aus dem Brief\]/.test(ta.value) && /keine Rechtsberatung/.test(box.querySelector('.ms-hinweis').textContent));
+    check('[aufr-geld] „Die Anschrift fehlt noch“ nicht schon vor der Eingabe', !(() => { const o = d.getElementById('ms-ohne-adr'); return !o.hidden && !o.closest('.ms-ohne-box').hidden; })());
+    w.print = () => {}; d.getElementById('ms-aus').click();
+    check('[aufr-geld] „Die Anschrift fehlt noch“ erst beim Drucken/Teilen, wenn die Anschrift leer ist', (() => { const o = d.getElementById('ms-ohne-adr'); return !o.hidden && !o.closest('.ms-ohne-box').hidden; })() && d.getElementById('ms-ohne-adr').textContent === I18N.de['ms.ohneAdr']);
+    { const aIn = d.getElementById('ms-adr'); aIn.value = 'Musterstraße 1'; aIn.dispatchEvent(new w.Event('input', { bubbles: true })); }
+    check('[aufr-geld] Anschrift eingetragen: Hinweis verschwindet', !(() => { const o = d.getElementById('ms-ohne-adr'); return !o.hidden && !o.closest('.ms-ohne-box').hidden; })());
+    d.documentElement.classList.remove('druckt-brief');
     const gIn = d.getElementById('ms-g'); gIn.value = 'Muster <b>Inkasso</b> GmbH'; gIn.dispatchEvent(new w.Event('input', { bubbles: true }));
     check('[schreiben] Eingabe nur als Text eingesetzt', /Muster <b>Inkasso<\/b> GmbH/.test(ta.value) && !box.querySelector('b b'));
     zur();
@@ -485,7 +496,7 @@ setTimeout(() => {
     zur(); zur();
     // 6 Schuldnerberatung
     kacheln()[5].click();
-    check('[beratung-kachel] Unterkarten: finden, Bis zum Termin, Mappe, Ablauf, unseriöse Anbieter', kacheln().map((b) => b.className.match(/gs-h-([a-z]+)/)[1]).join() === 'finden,termin,mappe,ablauf,unser');
+    check('[aufr-geld] Unterkarten: finden, Bis zum Termin, Mappe, Ablauf (keine eigene Kachel „unseriöse Anbieter“)', kacheln().map((b) => b.className.match(/gs-h-([a-z]+)/)[1]).join() === 'finden,termin,mappe,ablauf');
     kacheln()[0].click();
     check('[beratung-kachel] Beratungsstelle finden: ein Text (sl.hilfe.*) und Warnung vor unseriösen Anbietern', box.querySelector('.gs-beratung p').textContent === I18N.de['sl.hilfe.1'] && box.querySelectorAll('.gs-beratung p').length === 5 && !!box.querySelector('details[data-fall="unserioes"]'));
     check('[schulden] Quellenzeile nennt Verbraucherzentralen, BAG-SB, Caritas/Diakonie und AG SBV', /Verbraucherzentralen.*BAG-SB.*Caritas.*Diakonie.*AG SBV/.test(box.textContent));
@@ -499,7 +510,7 @@ setTimeout(() => {
     check('[geld] Zurück aus Schuldnerberatung → Kacheln', kacheln().length === 6);
     // Alle Ebenen in allen Sprachen ohne Rohschlüssel
     const roh = [];
-    const ebenen = [[], [0], [0, 0], [0, 5], [3], [3, 0], [3, 1], [3, 1, 3], [4], [5], [5, 1], [5, 2], [5, 3]];
+    const ebenen = [[], [0], [0, 0], [0, 5], [3], [3, 0], [3, 1], [3, 1, 2], [3, 3], [4], [5], [5, 1], [5, 2], [5, 3]];
     Object.keys(I18N).forEach((l) => {
       setLang(l);
       ebenen.forEach((weg) => {

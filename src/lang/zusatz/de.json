@@ -56,5 +56,18 @@
   "briefe.schreibenDe": "Schreiben an Ämter, zum Beispiel ein Widerspruch, sind immer auf Deutsch. Die Ämter brauchen sie so.",
   "sp.vz.link": "Gesund essen mit wenig Geld – Tipps der Verbraucherzentrale",
   "sp.vz.t": "Seite der Verbraucherzentrale in einfacher Sprache. Öffnet im Browser.",
-  "sp.vz.de": "Die Seite ist auf Deutsch."
+  "sp.vz.de": "Die Seite ist auf Deutsch.",
+  "bp.vgl.h": "Vergleich mit deiner Einschätzung",
+  "bp.vgl.satz": "Deine Einschätzung: {e}. Gutachten: {g}.",
+  "bp.vgl.mehr": "In {n} von 6 Bereichen gibt das Gutachten weniger Punkte als deine Einschätzung (fett markiert).",
+  "bp.vgl.keinMehr": "In keinem Bereich gibt das Gutachten weniger Punkte als deine Einschätzung.",
+  "bp.vgl.bereich": "Bereich",
+  "bp.vgl.eigen": "Deine Punkte",
+  "bp.vgl.gutachten": "Gutachten",
+  "bp.vgl.diff": "Unterschied",
+  "bp.vgl.gesamt": "Zusammen",
+  "bp.vgl.zaehltNicht": "zählt nicht",
+  "bp.vgl.pg": "Pflegegrad {pg}",
+  "bp.vgl.kein": "kein Pflegegrad",
+  "bp.vgl.klein": "Punkte nach Gewichtung, wie die Pflegekasse rechnet (§ 15 SGB XI). Plus heißt: Deine Einschätzung gibt dort mehr Punkte. Darunter steht, bei welchen Fragen genau."
 }

@@ -56,5 +56,18 @@
   "briefe.schreibenDe": "Waraaqaha loo diro hay'adaha dowladda, tusaale ahaan diidmo, had iyo jeer waa Jarmal. Hay'aduhu sidaas ayay ugu baahan yihiin.",
   "sp.vz.link": "Cunto caafimaad leh oo lacag yar – talooyin ka yimid Verbraucherzentrale",
   "sp.vz.t": "Bogga xarunta la-talinta macaamiisha oo luqad fudud ah. Wuxuu ku furmaa browser-ka.",
-  "sp.vz.de": "Boggu waa Jarmal."
+  "sp.vz.de": "Boggu waa Jarmal.",
+  "bp.vgl.h": "Isbarbardhig qiimayntaada",
+  "bp.vgl.satz": "Qiimayntaada: {e}. Warbixinta: {g}.",
+  "bp.vgl.mehr": "{n} ka mid ah 6 qaybood warbixintu waxay bixisaa dhibco ka yar qiimayntaada (far waaweyn).",
+  "bp.vgl.keinMehr": "Qayb kasta warbixintu ma bixiso dhibco ka yar qiimayntaada.",
+  "bp.vgl.bereich": "Qaybta",
+  "bp.vgl.eigen": "Dhibcahaaga",
+  "bp.vgl.gutachten": "Warbixinta",
+  "bp.vgl.diff": "Farqiga",
+  "bp.vgl.gesamt": "Wadarta",
+  "bp.vgl.zaehltNicht": "lama tiriyo",
+  "bp.vgl.pg": "heerka daryeelka (Pflegegrad) {pg}",
+  "bp.vgl.kein": "heer daryeel (Pflegegrad) ma jiro",
+  "bp.vgl.klein": "Dhibco miisaaman, sida Pflegekasse u xisaabiso (§ 15 SGB XI). Lagu daray (+) waxay ka dhigan tahay: qiimayntaadu halkaas dhibco badan ayay bixisaa. Hoos waxaad ku arkaysaa su’aalaha saxda ah."
 }

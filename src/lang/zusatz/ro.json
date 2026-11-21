@@ -56,5 +56,18 @@
   "briefe.schreibenDe": "Scrisorile către autorități, de exemplu o contestație, sunt mereu în limba germană. Autoritățile au nevoie de ele așa.",
   "sp.vz.link": "Mâncare sănătoasă cu bani puțini – sfaturi de la Verbraucherzentrale",
   "sp.vz.t": "Pagina centrului pentru protecția consumatorilor în limbaj simplu. Se deschide în browser.",
-  "sp.vz.de": "Pagina este în limba germană."
+  "sp.vz.de": "Pagina este în limba germană.",
+  "bp.vgl.h": "Comparație cu estimarea ta",
+  "bp.vgl.satz": "Estimarea ta: {e}. Expertiza: {g}.",
+  "bp.vgl.mehr": "În {n} din 6 domenii expertiza dă mai puține puncte decât estimarea ta (marcat îngroșat).",
+  "bp.vgl.keinMehr": "În niciun domeniu expertiza nu dă mai puține puncte decât estimarea ta.",
+  "bp.vgl.bereich": "Domeniu",
+  "bp.vgl.eigen": "Punctele tale",
+  "bp.vgl.gutachten": "Expertiza",
+  "bp.vgl.diff": "Diferență",
+  "bp.vgl.gesamt": "Total",
+  "bp.vgl.zaehltNicht": "nu contează",
+  "bp.vgl.pg": "grad de îngrijire (Pflegegrad) {pg}",
+  "bp.vgl.kein": "fără grad de îngrijire (Pflegegrad)",
+  "bp.vgl.klein": "Puncte ponderate, așa cum calculează Pflegekasse (§ 15 SGB XI). Plus înseamnă: estimarea ta dă acolo mai multe puncte. Mai jos vezi la ce întrebări exact."
 }
