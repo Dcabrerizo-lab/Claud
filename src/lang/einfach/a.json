@@ -49,7 +49,7 @@
  "t.bafoeg.kindNein": "Das Einkommen ist deutlich höher als der Freibetrag von etwa {fb} im Monat. Wahrscheinlich bleibt nichts übrig.",
  "t.bafoeg.ich": "BAföG hängt vor allem vom Einkommen der Eltern ab. Das fragen wir hier nicht ab. Manchmal zählt es nicht. Lass es vom Amt für Ausbildungsförderung ausrechnen.",
  "t.bafoeg.vermHoch": "Dein Vermögen ist höher als die Grenze von {verm}.",
- "t.bafoeg.alter": "BAföG gibt es in der Regel nur, wenn du bei Beginn der Ausbildung höchstens 45 Jahre alt bist. Bei manchen Studiengängen gilt eine niedrigere Grenze. Frage beim Amt nach.",
+ "t.bafoeg.alter": "BAföG gibt es in der Regel nur, wenn du bei Beginn der Ausbildung noch nicht 45 Jahre alt bist. Es gibt Ausnahmen. Frage beim Amt nach.",
  "t.pflege.keiner": "Du hast keinen Pflegegrad angegeben. Brauchst du dauerhaft Hilfe im Alltag? Dann kannst du bei der Pflegekasse einen Pflegegrad beantragen.",
  "t.pflege.antrag": "Ein Pflegegrad ist beantragt oder wäre möglich. Die Pflegekasse lässt ihn begutachten. Ab Pflegegrad 2 gibt es Pflegegeld, wenn Angehörige pflegen.",
  "t.pflege.pg1": "Bei Pflegegrad 1 gibt es den Entlastungsbetrag von {ent} im Monat. Du bekommst das Geld nicht auf dein Konto. Die Pflegekasse bezahlt damit anerkannte Hilfen im Alltag. Zum Beispiel Haushaltshilfe oder Betreuung. Pflegegeld gibt es erst ab Pflegegrad 2.",

@@ -122,7 +122,8 @@ function pruefe(e) {
   const k = { ...k0, level: Ref.kappe(e, 'kiz', lev(k0, Ref.kinderzuschlag)) };
   if (r.kiz.level !== k.level) melde('Kinderzuschlag: Einstufung', e, { app: r.kiz.level, ref: k.level, kiz: k.kiz });
   else if (k0.kiz != null && (k0.level === 'ja' || (k0.level === 'vielleicht' && r.kiz.hl !== 'einkoNiedrig'))) {
-    const s = zahlAus(r.kiz, 'schaetz.eins', 'a');
+    // Alter nur grob bekannt: Spanne, ihr unterer Wert ist die Rechnung mit dem sicheren Mehrbedarf
+    const s = zahlAus(r.kiz, 'schaetz.eins', 'a') ?? zahlAus(r.kiz, 'schaetz.spanne', 'a');
     if (s !== Math.max(10, Math.round(k.kiz / 10) * 10)) melde('Kinderzuschlag: geschätzter Betrag', e, { app: s, ref: k.kiz });
   }
   // Grundsicherung im Alter und bei Erwerbsminderung
@@ -245,6 +246,21 @@ for (let vor = 0; vor <= 3000; vor += 1) {
   const t = Rules.evaluate(e).results.find((x) => x.id === 'elterngeld').tx.find((x) => x[0] === 'eg.ja');
   const ref = Ref.elterngeld(vor);
   if (!t || t[1].basis.eur !== Math.round(ref.basis) || t[1].plus.eur !== Math.round(ref.plus) || t[1].monate !== ref.monate) melde('Elterngeld: Betrag', e, { app: t && t[1], ref });
+}
+// Elterngeld mit Teilzeit und Mehrlingen (§ 2 Abs. 3, § 2a, § 4a BEEG): Netto vorher und nachher im Raster, Zwillinge/Drillinge, mit und ohne Geschwisterbonus
+for (let vor = 0; vor <= 6000; vor += 37) {
+  for (const nach of [0, 50, 300, 700, 1200, 2000, 2860, 3500]) {
+    for (const kinder of [1, 2, 3]) {
+      for (const gs of [0, 2]) {
+        schwelle++; n++;
+        const e = { adults: 1, kids: gs, kidsU6: gs, young: 0, baby: 'bald', egVor: vor, egNach: nach || '', egKinder: String(kinder), bezug: {} };
+        const t = Rules.evaluate(e).results.find((x) => x.id === 'elterngeld').tx.find((x) => x[0] === 'eg.ja');
+        const ref = Ref.elterngeld(vor, gs, { nachher: nach, mehrlinge: kinder });
+        const nah = (a, b) => Math.abs(a - b) <= 0.5 + 1e-9; // auf den Euro wie angezeigt; genau x,50 € darf je nach Gleitkomma auf- oder abrunden
+        if (!t || !nah(t[1].basis.eur, ref.basis) || !nah(t[1].plus.eur, ref.plus)) melde('Elterngeld Teilzeit/Mehrlinge: Betrag', e, { app: t && t[1], ref });
+      }
+    }
+  }
 }
 // Hilfe zur Pflege und Blindenhilfe: Einkommensgrenze § 85 SGB XII, Schonvermögen; Asylbewerber: Ausschlüsse
 for (let i = 0; i < 20000; i++) {

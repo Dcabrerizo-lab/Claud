@@ -1,6 +1,6 @@
 # STATUS – SoLo (Sozialleistungslotse)
 
-Stand: 20.11.2026. Letzte gebaute Version: **1.5.0, VersionCode/Build 147** (Play-Store-AAB gebaut, nicht veröffentlicht; iOS zu TestFlight hochgeladen (Build 147, Lauf 44729530498 erfolgreich)). **In Vorbereitung: 1.6.0 / 148** (Version, Store-Texte und Änderungen eingetragen; noch nicht gebaut). **Nächster VersionCode: 148.**
+Stand: 21.11.2026. Letzte gebaute Version: **1.9.0, VersionCode/Build 151** (21.11.2026 vom Stand c445f64 auf `main`: Android-AAB signiert, Signatur C8:E4:5D:61, an David übergeben – Upload in die Play Console macht David; iOS Build 151 zu TestFlight hochgeladen, Lauf 44924913170 erfolgreich; Browser-Datei übergeben). **Nächster VersionCode: 152.**
 Übergabe für neue Sitzungen: zuerst diese Datei, dann `CLAUDE.md` (verbindliche Arbeitsregeln).
 Ausführlicher Verlauf (Erledigtes, alte Pläne): `docs/VERLAUF.md`, Abschnitt „Entwicklungsverlauf“.
 
@@ -54,10 +54,10 @@ Ausführlicher Verlauf (Erledigtes, alte Pläne): `docs/VERLAUF.md`, Abschnitt �
 - Anschrift nur bei bekannter PLZ. Außerhalb Bayerns nur Kreis/Stadt mit Anschrift; Wohngeld: Kreisanschrift + Weiterleitung (§ 16 SGB I). WBS: Gemeinde zuständig. Kranken-, Pflege-, Rentenversicherung: keine Anschrift (Träger hängt von der Person ab).
 - Kein Vorlesen, keine mitgelieferten Formulare (nur geprüfte amtliche Links). Fristen: seit 1.6.0 Fristen-Übersicht in „Mein Ordner“ (frühere Entscheidung „keine Fristen-Kalender“ damit geändert).
 - **Nur geltendes Recht** (Entscheidung 20.11.2026): Die App zeigt keine Hinweise auf geplante Änderungen. Werte 2027 erscheinen erst ab 1.1.2027.
-- Größengrenze der App-Datei: 5 MB (Entscheidung 20.11.2026).
+- Größengrenze der App-Datei: vorläufig 7 MB in Bytes (Entscheidung 21.11.2026; vorher 5 bzw. 6 MB); Sprachen nur bei Bedarf laden im nächsten Update.
 - Mietobergrenze nur als Orientierung (§ 12 WoGG +10 % + Heizung).
 - Netto: Steuerklasse III für Paar mit einem Einkommen (vorsichtige Annahme).
-- Elterngeld: Pauschale 1.000 €/12 wie der amtliche Rechner.
+- Elterngeld: Pauschbetrag nach § 2c BEEG (1.230 €/12 = 102,50 €), nicht wie der Bundes-Schnellrechner (1.000 €/12) – Entscheidung David 21.11.2026, umgesetzt im Update nach 1.9.
 - Lange Tests (e2e, App) laufen nur auf GitHub. Schwere Tests jeden Sonntag automatisch (`schwer.yml`).
 - Teststufen (Entscheidung 20.11.2026): Bei jedem PR nur die normale CI (Regeln, Oberfläche, Browser, App, Android-Bau). Die schweren Tests (`schwer.yml`: Safari, Firefox, Emulator, Mutationstest, Raster) laufen **einmal vor jedem Release auf dem fertigen Stand von `main`** und sonntags automatisch – nicht mehr für jeden einzelnen PR. Ausnahme: PRs, die die Testumgebung selbst ändern (Workflows, Testskripte). Erst bauen, wenn der Lauf auf `main` grün ist.
 - Gradle 9 zurückgestellt: nicht kompatibel mit AGP 8.13 (Build fand Abhängigkeiten nicht).
@@ -70,13 +70,13 @@ Ausführlicher Verlauf (Erledigtes, alte Pläne): `docs/VERLAUF.md`, Abschnitt �
 - pdf.js 4: Umstieg von 3.11.174.
 - `src/lang/de.json` „lead“ sagt noch „in zwei Minuten“ (Startseite und Store sagen „etwa 5 Minuten“), in allen Sprachen angleichen.
 - Muttersprachliche Prüfung Dari, Farsi, Paschtu, Somali, Französisch; Expertenprüfung Pflege.
-- Build 148 (Version 1.6.0): vom Nutzer freigegeben; erst bauen, wenn die schweren Tests auf `main` grün sind. Danach hier „Letzte gebaute Version“ und den nächsten VersionCode (149) eintragen, auch in `CLAUDE.md`.
+- Version 1.9.0 (Build 151) gebaut (21.11.2026). Offen bei David: AAB in die Play Console hochladen, TestFlight-Build freigeben, Store-Texte/-Fotos eintragen, Play-Datensicherheit korrigieren (ML Kit sendet Diagnosedaten, siehe docs/STORE.md).
 - Play Store: AAB hochladen (nur auf Wunsch). Alte Branches auf github.com löschen.
 
 ## 4. Nächste Schritte
 Erledigt (in 1.6.0): Aufgaben 1–7 – Fristen-Übersicht, Schulden-Liste, Energiekosten-Check, Mietgrenze Wohngeld, Hilfe bei Kostensenkung, zweites Einkommen je Person, Hinweise im Haushaltsbuch.
 
-1. Build 148 (Version 1.6.0) vom gemergten Stand auf `main`, nach grünen schweren Tests
+1. Nächstes Update (Sammelzweig `claude/test-update-naechstes`) fertigstellen
 2. Vollprüfungen am 1.12.2026 (mit Werten 2027) und am 20.12.2026
 3. `main` schützen (nur PRs mit grünem Pflicht-Check) und Auto-Merge einschalten – **nicht erledigt**
 4. Stichtagswerte bündeln

@@ -222,18 +222,19 @@ const E = {
     t.set('lotse.fristliste', liste([Object.assign({}, E.bald, { titel: '' }), { id: 'b9', art: 'eigen', titel: 'Geheimtitel', basis: { fest: tagIn(2) }, neu: 9 }]));
     const omaId = t.aktiv().id;
     t.oeffnen(t.liste()[0].id);
-    await t.fertig(); await t.pinSetzen('2580'); await t.fertig();
+    await t.fertig(); await t.pinSetzen('258013'); await t.fertig();
     ck('[fristen-dom] PIN: Fristen nicht im Klartext gespeichert', !Object.values(m8).some((v) => /Geheimtitel|Vermieter|"art"/.test(v)) && !m8['lotse.fristliste']);
     s = seite(m8); await warte(50);
     ck('[fristen-dom] Gesperrt: kein Hinweis, Merker noch von gestern', !s.$('friStart') && m8['lotse.fristTag'] === GESTERN);
-    s.$('vgPinEin').value = '2580';
+    s.$('vgPinEin').value = '258013';
     s.$('vgPinEin').form.dispatchEvent(new s.w.Event('submit', { bubbles: true, cancelable: true }));
     for (let i = 0; i < 100 && !s.$('friStart'); i++) await warte(50);
     st = s.$('friStart');
     ck('[fristen-dom] Nach dem Entsperren: Hinweis über alle Vorgänge mit Vorgangsname', st && /Geheimtitel/.test(st.textContent) && /Vorgang: Oma/.test(st.textContent), st && st.textContent);
     ck('[fristen-dom] Frist in anderem Vorgang: nur „Ansehen“', st && knopf(st, 'Ansehen') && !knopf(st, 'Erledigt') && !knopf(st, 'Später erinnern'));
     ck('[fristen-dom] „und 1 weitere“', st && /und 1 weitere/.test(st.textContent));
-    ck('[fristen-dom] Mit PIN: Merker nur Datum, sonst nichts im Klartext', m8['lotse.fristTag'] === HEUTE && !Object.values(m8).some((v) => /Geheimtitel|Oma/.test(v)));
+    // „Oma“ nur als eigenes Wort: Base64-Geheimtext enthält die drei Zeichen zufällig (~1:1000 Läufe), Klartext im JSON stünde in Anführungszeichen
+    ck('[fristen-dom] Mit PIN: Merker nur Datum, sonst nichts im Klartext', m8['lotse.fristTag'] === HEUTE && !Object.values(m8).some((v) => /Geheimtitel|(?<![A-Za-z0-9+/=])Oma(?![A-Za-z0-9+/=])/.test(v)));
     s.klick(knopf(st, 'Ansehen'));
     await warte(30);
     ck('[fristen-dom] Ansehen: öffnet den Vorgang und die Liste', !s.$('ordnerFristen').hidden && /Geheimtitel/.test(s.$('friListe').textContent) && !s.$('friStart'));

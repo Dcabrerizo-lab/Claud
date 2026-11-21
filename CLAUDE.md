@@ -25,7 +25,7 @@
 ## Builds und Store
 - **Builds nur auf ausdrückliche Anweisung starten.** Nie von selbst.
 - Keine Store-Aktionen (Play Console, App Store, TestFlight) ohne Freigabe.
-- Upload-Schlüssel (`upload.jks`) und Passwort liegen NIE im Repo, nie im Chat, nie in Commits. Nutzer reicht sie bei Bedarf als Zip an. In den Scratchpad entpacken. Signatur-SHA beginnt mit `C8:E4:5D:61`. Nächster VersionCode: 148.
+- Upload-Schlüssel (`upload.jks`) und Passwort liegen NIE im Repo, nie im Chat, nie in Commits. Nutzer reicht sie bei Bedarf als Zip an. In den Scratchpad entpacken. Signatur-SHA beginnt mit `C8:E4:5D:61`. Nächster VersionCode: 152 (zuletzt gebaut: 1.9.0 / 151 am 21.11.2026).
 - Lizenz-Privatschlüssel des Prüfpakets nie ins Repo.
 - Build: `tools/paket-bauen.sh <VC> <Ordner> <jks> <pwdatei>` (`OHNE_TESTS=1` überspringt Tests).
 

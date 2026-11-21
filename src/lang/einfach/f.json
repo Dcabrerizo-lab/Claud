@@ -203,7 +203,7 @@
   "vg.fotos.aus": "Jetzt aus: Die App lässt keine Bildschirm-Fotos zu (nur bei Android). In der Liste der offenen Apps ist SoLo verdeckt.",
   "vg.fotos.an": "Jetzt an: Fotos vom Bildschirm sind möglich. SoLo ist in der Liste der offenen Apps zu sehen.",
   "vg.pin.nicht": "Die PIN-Sperre gibt es auf diesem Gerät nicht.",
-  "vg.pin.label": "Neue PIN (4 bis 12 Ziffern, am besten 6)",
+  "vg.pin.label": "=",
   "vg.pin.label2": "=",
   "vg.pin.alt": "Deine alte PIN",
   "vg.pin.altFalsch": "Die alte PIN stimmt nicht.",

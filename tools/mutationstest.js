@@ -29,7 +29,11 @@ const M = [
   ['Unterhalt: Wohngeld ohne Titel schon vorsichtig abgezogen', 'const uzWGpess = uzTitel ? Math.min(uzBetrag, uzCap) : 0,', 'const uzWGpess = Math.min(uzBetrag, uzCap),'],
   ['Elterngeld: Untergrenze 65 % fehlt', 'q = Math.max(E.satzHoch, E.satz - Math.floor', 'q = Math.max(0, E.satz - Math.floor'],
   ['Elterngeld: 0,1 Punkte je 4 statt 2 €', 'Math.floor((E.grenzeUnten - n) / 2)', 'Math.floor((E.grenzeUnten - n) / 4)'],
-  ['Elterngeld: Mindestbetrag 300 € fehlt', 'return Math.min(E.max, Math.max(E.min, n * q));', 'return Math.min(E.max, n * q);'],
+  ['Elterngeld: Mindestbetrag 300 € fehlt', '    kern = Math.max(E.min * f, kern);', '    kern = Math.max(0, kern);'],
+  ['Elterngeld: Teilzeit-Deckel 2.770 € fehlt', 'Math.min(n, E.deckel)', 'n'],
+  ['Elterngeld: Mehrlingszuschlag fehlt', 'return kern + bonus + E.mehrling * f * Math.max(0, (o.kinder || 1) - 1);', 'return kern + bonus;'],
+  ['Elterngeld: ElterngeldPlus ohne Obergrenze (§ 4a Abs. 2 Satz 2)', 'if (o.plus) kern = Math.min(kern, Math.max(E.min, ohne) / 2);', 'if (o.plus) kern = kern / 2;'],
+  ['Elterngeld: Mindestbeträge beim ElterngeldPlus nicht halbiert', 'const f = o.plus ? 0.5 : 1;', 'const f = 1;'],
   ['Elterngeld: 12 statt 14 Monate', 'const monate = R.eg.monate + R.eg.partner;', 'const monate = R.eg.monate;'],
   // Abgleich 2 (21.11.2026): Befunde 10, 12, 14
   ['BAföG: Vermögensfreibetrag je Partner und Kind fehlt (§ 29 Abs. 1 Nr. 2, 3)', '+ R.bafoeg.vermJePerson * ((h.adults === 2 ? 1 : 0) + h.children);', '+ 0;'],
@@ -55,6 +59,8 @@ const M = [
   ['Wohngeld: Mindestwerte Anlage 3 fehlen', '    M = Math.max(M, WG_MMIN[wgIdx(n)]); Y = Math.max(Y, WG_YMIN[wgIdx(n)]);', ''],
   ['Wohngeld: Werbungskostenpauschale fehlt', '    wgWerbung: { lohn: 1230, rente: 102 },', '    wgWerbung: { lohn: 0, rente: 0 },'],
   ['Elterngeld: Pauschbetrag § 2c BEEG fehlt', '    const n = Math.max(0, netto - E.pausch);', '    const n = Math.max(0, netto);'],
+  ['Elterngeld: Pauschbetrag 1.000 € (Schnellrechner) statt 1.230 € (§ 2c Abs. 1 Satz 4 BEEG)', 'eg: { pausch: 1230 / 12, bonus', 'eg: { pausch: 1000 / 12, bonus'],
+  ['Elterngeld: Pauschbetrag beim Netto nach der Geburt fehlt (§ 2 Abs. 1 Satz 3 BEEG)', 'Math.max(0, o.nach - E.pausch)', 'o.nach'],
   // Abgleich Musterbescheide 21.11.2026: Befund 1 (Plausibilitätsprüfung Nr. 15.01 WoGVwV mit Wohngeld) und Befund 2 (Vermögen Paar je Person, § 12 Abs. 2 SGB II)
   ['Wohngeld: Mindesteinkommen ohne das Wohngeld selbst (Befund 1)', "- (h.uzBetrag || 0) + wgVorsichtig(h, yPess);", "- (h.uzBetrag || 0);"],
   ['Grundsicherungsgeld: Paar-Vermögen mit Freibetrag der ältesten Person für beide (Befund 2)', "return h.adults === 2 && vMin && h.vermoegen > vMin ? hoechstensMoeglich(r, 'ggeld.vermAlter') : r;", 'return r;'],
@@ -87,7 +93,9 @@ const M = [
   ['ALG I: Sperrzeit 8 statt 12 Wochen', 'sperrWochen: 12', 'sperrWochen: 8'],
   ['ALG I: Nebeneinkommen 100 statt 165 €', 'nebenFrei: 165', 'nebenFrei: 100'],
   ['Kindergeld: Hinweis 21/25 fehlt', "[['kindergeld.ja', { kg: eur(R.kindergeld) }], ['kindergeld.mehr']]", "[['kindergeld.ja', { kg: eur(R.kindergeld) }]]"],
-  ['Wohngeld: Elterngeld 300 € zählt doch', "const zaehlt = x[0] === 'eg' ? Math.max(0, x[1] - R.elterngeldFrei) : x[1] - wkHier;", 'const zaehlt = x[1] - wkHier;'],
+  ['Wohngeld: Elterngeld 300 € zählt doch', "const zaehlt = x[0] === 'eg' ? Math.max(0, x[1] - R.elterngeldFrei * (h.egMehr || 1)) : x[1] - wkHier;", 'const zaehlt = x[1] - wkHier;'],
+  ['Wohngeld: Elterngeld-Freibetrag bei Mehrlingen nicht vervielfacht (§ 10 Abs. 4 BEEG)', "Math.max(0, x[1] - R.elterngeldFrei * (h.egMehr || 1))", 'Math.max(0, x[1] - R.elterngeldFrei)'],
+  ['Grundsicherungsgeld: Mehrlingszuschlag gilt als Einkommen vor der Geburt (§ 10 Abs. 5 BEEG)', 'const egOhneArbeit = R.elterngeldFrei + R.eg.mehrling * (egMehr - 1);', 'const egOhneArbeit = R.elterngeldFrei;'],
   ['Wohngeld: Freibetrag Alleinerziehende fehlt', 'if (h.alleinerz) freib += R.wohngeld.freibetragAlleinerzMonat;', ''],
   ['Wohngeld: Freibetrag Kindereinkommen fehlt', 'wgKindFrei: 100', 'wgKindFrei: 0'],
   ['Wohngeld: Lohn der Kinder ohne Arbeitnehmer-Pauschbetrag (§ 14 Abs. 1 WoGG, § 9a EStG)', 'const kindAbzug = R.wgWerbung.lohn / 12 + R.wgKindFrei;', 'const kindAbzug = R.wgKindFrei;'],
@@ -110,7 +118,7 @@ const M = [
   ['Grundsicherung im Alter: Freibetrag für Arbeit je Einkommen statt je Person', 'const p = h.liste ? x[5] : i + 1; lohnP[p]', 'const p = i; lohnP[p]'],
   ['Arbeitslosengeld: als zweites Einkommen nicht als „beziehst du schon“ erkannt', "|| (h.pers || []).some((x) => x[0] === 'alg' && x[1] > 0)) return", ') return'],
   ['Grundsicherung: Freibetrag größer als die Rente', 'const freiStaffel = (x, p, rs1) => (x > 0 ? Math.min(p.sockel + p.quote * Math.max(0, x - p.sockel), p.max * rs1, x) : 0);', 'const freiStaffel = (x, p, rs1) => (x > 0 ? Math.min(p.sockel + p.quote * Math.max(0, x - p.sockel), p.max * rs1) : 0);'],
-  ['Grundsicherungsgeld: Elterngeld 300 € nicht frei', "egFreiSGB: sumIf((a, b) => a === 'eg' && b > R.elterngeldFrei ? R.elterngeldFrei : 0)", "egFreiSGB: sumIf(() => 0)"],
+  ['Grundsicherungsgeld: Elterngeld 300 € nicht frei', "egFreiSGB: sumIf((a, b) => a === 'eg' && b > egOhneArbeit ? R.elterngeldFrei : 0)", "egFreiSGB: sumIf(() => 0)"],
   ['Grundsicherungsgeld: Unterhalt ohne Deckel', 'return Math.min(eink, Math.max(0, kinderBedarf - h.children * R.kindergeld));', 'return eink;'],
   ['Blindengeld: Pflegegrad 2 mit 33 %', 'h.pflegegrad === 2 ? 0.46 * R.pflege.geld[2]', 'h.pflegegrad === 2 ? 0.33 * R.pflege.geld[2]'],
   ['Zuzahlung: chronisch schon ab GdB 50', 'if (gdbNum(h) >= 60 || h.pflegegrad >= 3)', 'if (gdbNum(h) >= 50 || h.pflegegrad >= 3)'],
@@ -132,9 +140,9 @@ const TEIL = +SHARD[1], ANZAHL = +SHARD[2];
 const MEINE = M.filter((_, i) => i % ANZAHL === TEIL - 1);
 if (ANZAHL > 1) console.log('Teil ' + TEIL + '/' + ANZAHL + ': ' + MEINE.length + ' von ' + M.length + ' Mutationen');
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'mut-'));
-for (const d of ['src', 'test', 'docs', 'dist', 'tools/amtliche-rechner']) fs.cpSync(path.join(ROOT, d), path.join(tmp, d), { recursive: true });
+for (const d of ['src', 'test', 'docs', 'dist', 'erweiterungen', 'tools/amtliche-rechner']) fs.cpSync(path.join(ROOT, d), path.join(tmp, d), { recursive: true });
 // Einzelne Dateien, die die Tests zusätzlich lesen (Name der App, Webseite)
-for (const f of ['site', 'datenschutz.html', 'README.md', 'app/capacitor.config.json', 'app/android/app/src/main/res/values/strings.xml', 'app/android/app/build.gradle', 'app/android/app/src/debug/res/values/strings.xml', 'app/android/app/src/main/AndroidManifest.xml', 'app/ios/App/App/Info.plist', 'app/ios/App/App.xcodeproj/project.pbxproj']) {
+for (const f of ['tools/amtlich-vergleich-wohngeld-kern.js', 'site', 'datenschutz.html', 'README.md', 'app/capacitor.config.json', 'app/android/app/src/main/res/values/strings.xml', 'app/android/app/build.gradle', 'app/android/app/src/debug/res/values/strings.xml', 'app/android/app/src/main/AndroidManifest.xml', 'app/ios/App/App/Info.plist', 'app/ios/App/App.xcodeproj/project.pbxproj']) {
   fs.mkdirSync(path.dirname(path.join(tmp, f)), { recursive: true });
   fs.cpSync(path.join(ROOT, f), path.join(tmp, f), { recursive: true });
 }
@@ -145,21 +153,53 @@ fs.symlinkSync(path.join(ROOT, 'app', 'node_modules'), path.join(tmp, 'app', 'no
 const DATEI = (m) => m[3] || 'src/rules.js';
 const ORIG = {};
 M.forEach((m) => { ORIG[DATEI(m)] = ORIG[DATEI(m)] || fs.readFileSync(path.join(ROOT, DATEI(m)), 'utf8'); });
-const TESTS = ['test.js', 'test-netto.js', 'test-strict.js', 'test-beh.js', 'test-faelle.js', 'test-raster.js ' + (process.env.MUT_RASTER || 8000), 'test-pruefliste.js', 'test-einfach-gleich.js 3000', 'test-grenzen.js', 'test-formulare.js', 'test-amtlich.js', 'test-amtlich-wohngeld.js', 'test-ba-beispiele.js', 'test-musterbescheide.js', 'test-paar-einkommen.js', 'test-eigenschaften.js ' + (process.env.MUT_EIGEN || 3000)];
-const laeuft = () => { try { for (const t of TESTS) execSync('node test/' + t, { cwd: tmp, stdio: 'ignore' }); return true; } catch (e) { return false; } };
+// Reihenfolge: billige Tests zuerst, teure (strict, einfach-gleich, raster, eigenschaften) zuletzt. Die Reihenfolge ändert
+// das Ergebnis nicht (entdeckt = irgendein Test rot), nur die Laufzeit.
+const TESTS = ['test.js', 'test-netto.js', 'test-beh.js', 'test-faelle.js', 'test-pruefliste.js', 'test-grenzen.js', 'test-formulare.js', 'test-amtlich.js', 'test-amtlich-wohngeld.js', 'test-ba-beispiele.js', 'test-musterbescheide.js', 'test-musterbescheide-2.js', 'test-paar-einkommen.js', 'test-strict.js', 'test-einfach-gleich.js 3000', 'test-raster.js ' + (process.env.MUT_RASTER || 8000), 'test-eigenschaften.js ' + (process.env.MUT_EIGEN || 3000)];
+// Killer-Test zuerst: tools/mutation-killer.json merkt je Fehler den Test, der ihn zuletzt fand. Der läuft zuerst; findet er
+// den Fehler nicht mehr, laufen alle übrigen Tests wie bisher. Ergebnis je Fehler (entdeckt/nicht entdeckt) bleibt gleich.
+// Neu schreiben: MUT_KILLER_SCHREIBEN=1 (ergänzt tools/mutation-killer.json), MUT_KILLER_AUS=<datei> (nur die eigenen, z. B. Artefakt in CI).
+const KILLER_DATEI = path.join(ROOT, 'tools', 'mutation-killer.json');
+const KILLER = fs.existsSync(KILLER_DATEI) ? JSON.parse(fs.readFileSync(KILLER_DATEI, 'utf8')) : {};
+const finder = (liste) => { for (const t of liste) { try { execSync('node test/' + t, { cwd: tmp, stdio: 'ignore' }); } catch (e) { return t; } } return null; };
+const ohneZahl = (t) => t.split(' ')[0];
+// Erst ohne Mutation: ist der saubere Lauf schon rot (z. B. Datei nicht in die Kopie aufgenommen), wäre jedes „entdeckt“
+// wertlos (Lauf 44912420018: alle Fehler „entdeckt“, erst am Ende fiel der rote Grundlauf auf). Deshalb vorher prüfen und abbrechen.
+const grundRot = finder(TESTS);
+if (grundRot) {
+  console.log('Ohne Fehler laufen die Tests nicht durch (rot: ' + grundRot + ') – erst npm test reparieren oder fehlende Datei in die Kopierliste oben aufnehmen. Ausgabe:');
+  try { execSync('node test/' + grundRot, { cwd: tmp, stdio: 'inherit' }); } catch (e) { /* Ausgabe steht oben */ }
+  fs.rmSync(tmp, { recursive: true, force: true });
+  process.exit(1);
+}
 
-let unentdeckt = 0, geprueft = 0;
-TESTS.push('test-musterbescheide-2.js'); // Abgleich 2 (21.11.2026)
+let unentdeckt = 0, geprueft = 0, killerTreffer = 0;
+const neueKiller = {};
 for (const m of MEINE) {
   const [name, alt, neu] = m, datei = DATEI(m), orig = ORIG[datei];
   if (orig.split(alt).length !== 2) { console.log('UNGÜLTIG (Stelle nicht genau einmal gefunden): ' + name); unentdeckt++; continue; }
   fs.writeFileSync(path.join(tmp, datei), orig.replace(alt, neu));
   geprueft++;
-  if (laeuft()) { unentdeckt++; console.log('NICHT ENTDECKT: ' + name); } else console.log('entdeckt: ' + name);
+  const k = TESTS.find((t) => ohneZahl(t) === KILLER[name]);
+  const reihe = k ? [k, ...TESTS.filter((t) => t !== k)] : TESTS;
+  const gefunden = finder(reihe);
+  if (gefunden === null) { unentdeckt++; console.log('NICHT ENTDECKT: ' + name); } else {
+    if (gefunden === k) killerTreffer++;
+    neueKiller[name] = ohneZahl(gefunden);
+    console.log('entdeckt: ' + name + ' (von ' + ohneZahl(gefunden) + ')');
+  }
   fs.writeFileSync(path.join(tmp, datei), orig);
 }
-const sauber = laeuft();
+const sauberRot = finder(TESTS);
 fs.rmSync(tmp, { recursive: true, force: true });
-if (!sauber) { console.log('Ohne Fehler laufen die Tests nicht durch – erst npm test reparieren.'); process.exit(1); }
+if (sauberRot) { console.log('Ohne Fehler laufen die Tests nicht durch (rot: ' + sauberRot + ') – erst npm test reparieren.'); process.exit(1); }
+const sortiert = (o) => Object.fromEntries(Object.keys(o).sort().map((x) => [x, o[x]]));
+if (process.env.MUT_KILLER_AUS) fs.writeFileSync(process.env.MUT_KILLER_AUS, JSON.stringify(sortiert(neueKiller), null, 1) + '\n');
+if (process.env.MUT_KILLER_SCHREIBEN === '1') {
+  const alle = { ...KILLER, ...neueKiller };
+  for (const x of Object.keys(alle)) if (!M.some((m) => m[0] === x)) delete alle[x]; // Einträge entfernter Fehler löschen
+  fs.writeFileSync(KILLER_DATEI, JSON.stringify(sortiert(alle), null, 1) + '\n');
+}
+console.log('Killer-Test zuerst: ' + killerTreffer + ' von ' + Object.keys(neueKiller).length + ' entdeckten Fehlern sofort gefunden');
 console.log(unentdeckt ? '\n' + unentdeckt + ' von ' + geprueft + ' eingebauten Fehlern NICHT entdeckt' : '\nMutationstest bestanden: alle ' + geprueft + ' eingebauten Fehler wurden von den Tests entdeckt');
 process.exit(unentdeckt ? 1 : 0);
