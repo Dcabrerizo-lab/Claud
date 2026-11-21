@@ -1061,6 +1061,43 @@ Ergebnis: Pflegegrad 2`;
   $('nk-copy').addEventListener('click', () => kopiere($('nk-text'), $('nk-copy-msg')));
   nkZeile(); zeigeNK();
 
+  // ---------------- Alles leeren (App: Wechsel des Vorgangs, Löschen) ----------------
+  // Formulare, eingefügte Texte, erkannte Werte, Ergebnisse und fertige Schreiben aller Prüfungen auf den Anfangsstand,
+  // damit beim nächsten Klienten nichts vom vorigen sichtbar bleibt (Sicherheitsprüfung S4, 21.11.2026).
+  function allesLeeren() {
+    // Jobcenter: Art des Briefs zuerst mit Ereignis zurück auf „Bescheid“ (blendet die Teile für Einladung/Anhörung aus)
+    const art = document.querySelector('input[name="bs-briefart"][value="bescheid"]');
+    if (art && !art.checked) { art.checked = true; art.dispatchEvent(new Event('change', { bubbles: true })); }
+    const teile = [...document.querySelectorAll('section[id^="p-"]')];
+    for (const sec of teile) {
+      for (const f of sec.querySelectorAll('form')) f.reset();
+      // auch Felder außerhalb der Formulare (z. B. Datum und Absender in der Frist-Box oben) auf den Anfangswert
+      for (const el of sec.querySelectorAll('input, select')) {
+        if (el.type === 'checkbox' || el.type === 'radio') el.checked = el.defaultChecked;
+        else if (el.tagName === 'SELECT') { for (const o of el.options) o.selected = o.defaultSelected; }
+        else if (el.type !== 'button' && el.type !== 'submit' && el.type !== 'file') el.value = el.defaultValue;
+      }
+      for (const ta of sec.querySelectorAll('textarea')) { ta.value = ''; if (ta.readOnly) ta.hidden = true; }
+      for (const el of sec.querySelectorAll('.pp-erkannt')) el.classList.remove('pp-erkannt');
+      for (const el of sec.querySelectorAll('.pp-fehlt')) el.classList.remove('pp-fehlt');
+      for (const el of sec.querySelectorAll('.pp-fehlt-hinweis')) el.hidden = true;
+      for (const el of sec.querySelectorAll('[role="status"]')) el.textContent = '';
+      delete sec.dataset.offen; // Formular der Prüfung beim nächsten Öffnen wieder erst nach der Wahl (App: briefOeffnen)
+    }
+    for (const id of ['pf-wid-copy', 'bs-wid-copy', 'ga-wid-copy', 'wg-wid-copy', 'kz-wid-copy', 'nk-copy']) if ($(id)) $(id).hidden = true;
+    for (const id of ['pf-msg', 'nk-info']) if ($(id)) $(id).textContent = '';
+    for (const id of ['an-erg', 'pf-wid-liste']) if ($(id)) $(id).replaceChildren();
+    for (const id of ['pf-module']) if ($(id)) for (const el of $(id).querySelectorAll('input')) { if (el.type === 'checkbox') el.checked = false; else el.value = ''; }
+    $('bs-personen').replaceChildren(); personZeile('erw');
+    $('wg-mitglieder').replaceChildren(); wgZeile();
+    $('kz-kinder').replaceChildren();
+    $('nk-posten').replaceChildren(); nkZeile();
+    eigen = null;
+    zeigePfArt(); zeigePflege(); zeigeBescheid(); zeigeGSA(); zeigeWG(); zeigeKiZ(); zeigeNK();
+    for (const f of Object.values(fristNeu)) f();
+  }
+  window.PruefpaketLeeren = allesLeeren;
+
   // ---------------- Anderer Brief: Frist nur mit Beleg, Hinweise zu Mahnbescheid und Inkasso ----------------
   // opt.wechseln(art): in der App zur passenden Prüfung wechseln, wenn SoLo die Art des Briefs erkennt
   const ARTNAME = { jc: 'Bescheid vom Jobcenter', sa: 'Bescheid vom Sozialamt', wg: 'Wohngeldbescheid', fk: 'Bescheid über Kinderzuschlag', pk: 'Brief der Pflegekasse', vm: 'Nebenkostenabrechnung' };

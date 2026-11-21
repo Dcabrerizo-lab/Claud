@@ -3,6 +3,8 @@
 // [wg-kind-wk] Arbeitnehmer-Pauschbetrag 1.230 €/Jahr beim Lohn der Kinder (§ 14 Abs. 1 WoGG, § 9a Satz 1 Nr. 1 Buchst. a EStG),
 // [wg-kind-frei] Freibetrag § 17 Nr. 4 WoGG je Kind (höchstens 1.200 €/Jahr). Verglichen wird auf den Euro (±1 €), nur Fälle, die SoLo
 // genau abbilden kann: obere Schätzung mit allen Kindern verdienend, untere Schätzung mit einem verdienenden Kind.
+// Nr. 96 (Lauf 2612): Der Freibetrag (höchstens die eigenen Einnahmen) mindert im amtlichen Rechner auch den Unterhalt desselben Kindes;
+// § 13 Abs. 1 WoGG zieht die Freibeträge von der Summe der Jahreseinkommen ab. SoLo: nur obere Schätzung, höchstens bis zum Kinder-Einkommen.
 const path = require('path');
 const V = require(path.join(__dirname, '../tools/amtlich-vergleich-wohngeld-kern.js'));
 const D = require('./amtlich-wohngeld-kinderlohn.json');
