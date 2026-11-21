@@ -158,7 +158,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Kind: Erklärungen erwähnen den Vergleich mit gesunden Kindern', true);
   // Fremde Sprache: Hinweis „nur auf Deutsch“
   await p.click('text=Später weitermachen'); await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'tr'); await p.click('#paStart');
-  ok('Türkisch: Hinweis, dass die Einschätzung auf Deutsch ist', await p.isVisible('#paNurDe'));
+  ok('Türkisch: Einschätzung übersetzt, kein Hinweis „nur Deutsch“', !(await p.isVisible('#paNurDe')) && !/Wie alt|Wahrscheinlich|Bereich \d/.test(await p.textContent('#pflegeAssist')), await p.textContent('#pflegeAssist'));
   ok('Keine Skriptfehler', fehler.length === 0, fehler);
   await b.close();
   console.log(f ? `\n${f} von ${n} Prüfungen fehlgeschlagen` : `Pflegegrad-Einschätzung in der App: ${n} Prüfungen bestanden (Ablauf, Rechnung, Übernahme, Höherstufung, Säugling, Sprache)`);
