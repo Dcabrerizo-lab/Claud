@@ -722,7 +722,8 @@ const Rules = (function () {
       mehrAE = Math.min(p, R.mehr.aeMax) * R.regelbedarf.alleinstehend;
       // Gefragt wird nur nach Kindern unter 6. Ein Kind von 6 bis 13 kann noch 6 sein (36 % gelten bis unter 7):
       // für „eher nicht“ rechnet SoLo deshalb auch mit 36 % (mehrAEhoch), damit kein Anspruch fälschlich verneint wird.
-      if (kidsU6 === 0 && kids - kids14 >= 1 && p < R.mehr.ae36) mehrAEhoch = Math.min(R.mehr.ae36, R.mehr.aeMax) * R.regelbedarf.alleinstehend;
+      // Ebenso zwei Kinder von 14 bis 17: Beide können noch 14 oder 15 sein (zwei Kinder unter 16, § 21 Abs. 3 Nr. 1 SGB II, Abruf 21.11.2026).
+      if (kidsU6 === 0 && (kids - kids14 >= 1 || kids >= 2) && p < R.mehr.ae36) mehrAEhoch = Math.min(R.mehr.ae36, R.mehr.aeMax) * R.regelbedarf.alleinstehend;
     }
     if (!mehrAEhoch) mehrAEhoch = mehrAE;
     // Regelaltersgrenze aus dem Geburtsjahr der ältesten erwachsenen Person: sicher erreicht, oder je nach Geburtsmonat (grenz)
@@ -1172,15 +1173,45 @@ const Rules = (function () {
     const bemessung = h.regelElt + (h.mehrAE || 0) + mehrEltern + h.miete * elternAnteil;
     // Einkommen der Eltern nach § 11b SGB II (Freibetrag für Arbeit usw.); Einkommen der Kinder (Unterhalt, Unterhaltsvorschuss,
     // eigenes Einkommen über der Minijob-Grenze) mindert den Kinderzuschlag um 45 % (§ 6a Abs. 3 und 6 BKGG)
+    // Geprüft am 21.11.2026 gegen die Durchführungsanweisung (DA-KiZ, Stand 20.02.2026, https://www.arbeitsagentur.de/datei/fw-bkgg_ba023130.pdf,
+    // Abruf 21.11.2026): C.2.2.1 Abs. 3 Satz 3 „Diese Einkünfte der Kinder sind in der Regel ohne Abzüge oder Absetzbeträge zu berücksichtigen
+    // (Ausnahme: Pauschale nach § 6 Bürgergeld-V, soweit eine entsprechende Versicherung abgeschlossen wurde)“ (heute § 6 Abs. 1 Nr. 2 Grundsicherungsgeld-Verordnung); Abs. 5: 45 % davon mindern den
+    // Kinderzuschlag des Kindes (Beispiele Felix 280 € -> 126 €, Mia Unterhalt 400 € -> 297 - 180 = 117 €). Die Minderung wegen Elterneinkommens
+    // kommt danach auf die Summe (C.2 Satz 4-6). Der KiZ-Lotse der Familienkasse rechnet das Einkommen der Kinder nicht ein (Differenztest 21.11.2026,
+    // docs/entwuerfe/pruefungen-21-11/kiz.md): Er zeigt dann „Aussicht auf Erfolg“, wo die Familienkasse nach der DA-KiZ nichts zahlt.
+    // Gleich verteilt gedacht: Je Kind höchstens der Höchstbetrag (Bescheid-Check rechnet je Kind genau).
     const kindAnr = (h.kindZahl || 0) + Math.max(0, (h.kindEink || 0) - h.minijob);
-    const est = Math.max(0, gmax - kizMinderungEltern(h, bemessung) - R.kiz.anrechnung * kindAnr);
+    const estMit = (bed, anr) => Math.max(0, gmax - kizMinderungEltern(h, bed) - Math.min(gmax, R.kiz.anrechnung * anr));
+    const est = estMit(bemessung, kindAnr);
     const gesamtBedarf = h.regel + h.miete + (h.mehrAE || 0) + maK.fest + mbK.fest;
+    // Alter der Kinder nur grob bekannt (unter 6, 6-13, 14-17): Mit 36 % Mehrbedarf (Kind unter 7 oder zwei bis drei Kinder unter 16,
+    // § 21 Abs. 3 Nr. 1 SGB II) wäre der Kinderzuschlag höher. Dann zeigt SoLo eine Spanne; der Bescheid-Check rechnet mit dem genauen Alter.
+    const bemHoch = bemessung - (h.mehrAE || 0) + (h.mehrAEhoch || 0);
+    const estHoch = estMit(bemHoch, kindAnr);
 
     const mkE = (level, hl, tx) => Object.defineProperty(mk(id, level, hl, tx), 'est', { value: est }); // nicht aufzählbar: nur für kizRechnung
     if (est <= 0) {
       // Kind vielleicht erst 6 Jahre (Mehrbedarf 36 % statt 12 %): dann ist Kinderzuschlag möglich
-      const estHoch = Math.max(0, gmax - kizMinderungEltern(h, bemessung - (h.mehrAE || 0) + (h.mehrAEhoch || 0)) - R.kiz.anrechnung * kindAnr);
       if (estHoch > 0) return mk(id, 'vielleicht', 'vielleicht', [['kiz.ae7']]);
+      // Knapp wegen Unterhalt, Unterhaltsvorschuss oder Waisenrente der Kinder: Hat ein minderjähriges Kind eine eigene Versicherung, zieht
+      // die Familienkasse vorher 30 € im Monat ab (DA-KiZ C.2.2.1 Abs. 3 Satz 3; § 6 Abs. 1 Nr. 2 Grundsicherungsgeld-Verordnung, früher
+      // Bürgergeld-V, https://www.gesetze-im-internet.de/algiiv_2008/__6.html, Abruf 21.11.2026; bei volljährigen Kindern nach Nr. 1 auch
+      // ohne Nachweis; R.versPauschale). SoLo fragt das nicht: reicht es dann, „möglich“. Grenze: 45 % von 30 € = 13,50 € je Kind.
+      // Die Pauschale gilt nicht für Lohn der Kinder (dort 603 € statt der Beträge nach § 11b Abs. 1 Nr. 3-5 SGB II).
+      const kz = h.kindZahl || 0, ke = h.kindEink || 0, keAnr = Math.max(0, ke - h.minijob);
+      const kzKnapp = Math.max(0, kz - R.versPauschale * h.children);
+      if (kz > 0 && estMit(bemHoch, kzKnapp + keAnr) > 0) return mk(id, 'vielleicht', 'vielleicht', [['kiz.knappKindEink']]);
+      // Lohn der Kinder (Ausbildung, Schülerjob): Die Familienkasse zieht je Kind 603 € ab und dazu den Freibetrag nach § 11b Abs. 3 SGB II
+      // ohne die erste Stufe (30 % von 520 bis 1.000 €, 10 % bis 1.200 € = höchstens 164 €; § 11b Abs. 2b und Abs. 3 Satz 4 SGB II,
+      // DA-KiZ C.2.2.1 Abs. 3 Satz 9-11, Abruf 21.11.2026). SoLo kennt nur die Summe für alle Kinder und zieht 603 € einmal ab.
+      // Reicht es mit diesen Abzügen für jedes Kind ab 14 Jahren, ist Kinderzuschlag „möglich“ (nie fälschlich „eher nicht“).
+      if (ke > h.minijob) {
+        const nErw = Math.max(1, (h.kids14 || 0) + (h.young || 0));
+        const frei = sgb2Freibetrag(1200, false) - sgb2Freibetrag(520, false);
+        if (estMit(bemHoch, kzKnapp + Math.max(0, ke - nErw * (h.minijob + frei))) > 0) return mk(id, 'vielleicht', 'vielleicht', [['kiz.rand', { max: eur(R.kiz.max) }]]);
+      }
+      // Ohne Unterhalt der Kinder gäbe es Kinderzuschlag: bleibt „eher nicht“, mit Erklärung (Online-Rechner ohne dieses Einkommen zeigen mehr)
+      if (kz > 0 && estMit(bemHoch, keAnr) > 0) return mk(id, 'nein', 'einkoHoch', [['kiz.zuHoch'], ['kiz.kindEinkNein']]);
       return mk(id, 'nein', 'einkoHoch', [['kiz.zuHoch']]);
     }
     // Hilfebedürftigkeit muss mit dem Kinderzuschlag enden (§ 6a Abs. 1 Nr. 3 BKGG): bereinigtes Einkommen nach SGB II (mit Freibetrag
@@ -1193,8 +1224,9 @@ const Rules = (function () {
     const erweitert = haushaltsFreibetrag(h) >= R.kiz.erweitert ? R.kiz.erweitert : 0;
     if (mitKiz + wgVorsichtig(h) + erweitert < gesamtBedarf) return mkE('vielleicht', 'einkoNiedrig', [['kiz.zuNiedrig']]);
     // Reicht es nur mit zusätzlichem Wohngeld, ist der Kinderzuschlag offen: beides beantragen
-    if (mitKiz < gesamtBedarf) return mkE('vielleicht', 'vielleicht', [['kiz.mitWg', { max: eur(R.kiz.max) }], ['schaetz.eins', { a: eur(Math.max(10, r10(est))) }]]);
-    const sch = ['schaetz.eins', { a: eur(Math.max(10, r10(est))) }];
+    const lo = Math.max(10, r10(est)), hi = Math.max(10, r10(estHoch));
+    const sch = hi > lo ? ['schaetz.spanne', { a: eur(lo), b: eur(hi) }] : ['schaetz.eins', { a: eur(lo) }];
+    if (mitKiz < gesamtBedarf) return mkE('vielleicht', 'vielleicht', [['kiz.mitWg', { max: eur(R.kiz.max) }], sch]);
     if (est >= R.kiz.ampelGruenAb) return mkE('ja', 'ja', [['kiz.ja', { max: eur(R.kiz.max) }], sch]);
     return mkE('vielleicht', 'vielleicht', [['kiz.rand', { max: eur(R.kiz.max) }], sch]);
   }

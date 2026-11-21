@@ -70,6 +70,18 @@ const BescheidKiZ = (function () {
     const hinweise = [];
     if (!r.mindestOk) hinweise.push(`Die Eltern brauchen mindestens ${eur(r.minEink)} Bruttoeinkommen im Monat (Mindesteinkommensgrenze). Darunter gibt es keinen Kinderzuschlag.`);
     const k = posten.find((p) => p.key === 'kiz');
+    // Unterhalt und Unterhaltsvorschuss der Kinder ohne Abzüge, außer 30 € Versicherungspauschale, wenn das Kind versichert ist (DA-KiZ Stand
+    // 20.02.2026 C.2.2.1 Abs. 3 Satz 3, https://www.arbeitsagentur.de/datei/fw-bkgg_ba023130.pdf; § 6 Abs. 1 Nr. 2 Grundsicherungsgeld-Verordnung,
+    // früher Bürgergeld-V, https://www.gesetze-im-internet.de/algiiv_2008/__6.html; Abruf 21.11.2026). SoLo zieht sie nicht ab; bewilligt die
+    // Familienkasse etwas mehr, kann das der Grund sein (45 % von 30 € = 13,50 € je Kind mit Unterhalt).
+    const R = Rules.RULES;
+    const mitUh = (e.kinder || []).filter((x) => x && z(x.unterhalt) > 0).length;
+    if (k && k.wirkung === 'zuViel' && mitUh) hinweise.push(`Hat ein Kind eine eigene Versicherung (zum Beispiel Haftpflicht), zieht die Familienkasse von seinem Unterhalt vorher 30 € im Monat ab. Dann ist ein um bis zu ${eur(R.kiz.anrechnung * R.versPauschale * mitUh)} höherer Kinderzuschlag richtig.`);
+    // Lohn der Kinder: Die Familienkasse zieht außer der Minijob-Grenze (603 €) noch einen Freibetrag ab (§ 11b Abs. 3 SGB II ohne die erste
+    // Stufe, höchstens 164 €; DA-KiZ C.2.2.1 Abs. 3 Satz 9-11). SoLo zieht nur die 603 € ab (45 % von 164 € = 73,80 € je Kind mit Lohn).
+    const mitLohn = (e.kinder || []).filter((x) => x && z(x.eigenes) > R.minijob).length;
+    const lohnFrei = Rules.sgb2Freibetrag(1200, false) - Rules.sgb2Freibetrag(520, false);
+    if (k && k.wirkung === 'zuViel' && mitLohn) hinweise.push(`Verdient ein Kind eigenes Geld (zum Beispiel in der Ausbildung), zieht die Familienkasse außer ${eur(R.minijob)} noch einen Freibetrag ab (bis zu ${eur(lohnFrei)}). Dann ist ein um bis zu ${eur(R.kiz.anrechnung * lohnFrei * mitLohn)} höherer Kinderzuschlag richtig.`);
     return { rechnung: r, posten, hinweise, gruende: posten.filter((p) => p.grund), zuWenigImMonat: k && k.wirkung === 'zuWenig' ? k.diff : 0,
       grenzen: 'Die Familienkasse rechnet mit dem Durchschnitt der letzten sechs Monate vor dem Antrag (§ 6a Abs. 8 BKGG). Bitte diese Beträge eintragen. Nicht geprüft: Vermögen, Mehrbedarfe außer Alleinerziehenden, Selbständige, Wohngeld als Einkommen, Bildung und Teilhabe.' };
   }
