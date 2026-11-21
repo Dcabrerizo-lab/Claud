@@ -192,7 +192,7 @@
   "ip.hinweis": "Première estimation, pas un conseil juridique. La liste montre seulement quelles informations figurent dans la lettre. Elle ne vérifie pas si tu dois payer.",
   "ip.w1": "Avec une reconnaissance de dette, tu ne peux souvent plus contester plus tard que la créance n'existe pas, a été payée ou est prescrite. La société doit t'en informer (§ 13a Abs. 4 RDG). Fais-la d'abord vérifier par un service de conseil.",
   "ip.w1.kurz": "Ne signe pas de reconnaissance de dette.",
-  "ip.w2": "Avant un accord d'échelonnement ou de report, la société doit t'indiquer sous forme de texte (par exemple lettre ou e-mail) les frais qu'il entraîne (§ 13a Abs. 3 RDG). N'accepte qu'une fois que tu les connais.",
+  "ip.w2": "Avant un accord d'échelonnement ou de report, la société de recouvrement doit t'indiquer sous forme de texte (par exemple lettre ou e-mail) les frais qu'il entraîne (§ 13a Abs. 3 RDG). N'accepte qu'une fois que tu les connais.",
   "ip.w2.kurz": "Les mensualités coûtent souvent plus : demande d'abord.",
   "ip.w3": "Une injonction de payer (Mahnbescheid) arrive du tribunal dans une enveloppe jaune. Tu ne peux t'y opposer qu'auprès du tribunal, de préférence dans les 2 semaines (§ 692 ZPO), pas auprès de la société de recouvrement.",
   "ip.w3.kurz": "Enveloppe jaune du tribunal : délai de 2 semaines.",

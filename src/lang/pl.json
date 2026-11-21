@@ -1645,7 +1645,7 @@
   "t.wohngeld.verzichtKiz": "Wohngeld i Kinderzuschlag prawdopodobnie nie wystarczą dla twojego gospodarstwa domowego. Wtedy zwykłą drogą jest Grundsicherungsgeld. Możesz zamiast tego wziąć Wohngeld, ale zwykle dostaniesz mniej pieniędzy.",
   "t.wohngeld.verzichtGsa": "Razem z twoją emeryturą Wohngeld prawdopodobnie nie wystarczy. Wtedy zwykłą drogą jest Grundsicherung im Alter. Możesz zamiast tego wziąć Wohngeld, ale zwykle dostaniesz mniej pieniędzy.",
   "f.auf.angaben": "Twoje dane do pism",
-  "f.abs.hinweis": "Wystarczy wpisać raz – dane trafią do wszystkich pism w aplikacji. Zostają tylko na twoim urządzeniu. Bez danych na wydruku zostaną puste miejsca do ręcznego wypełnienia.",
+  "f.abs.hinweis": "Wystarczy wpisać raz – dane trafią do wszystkich pism w aplikacji. Zostają na twoim urządzeniu. Bez danych na wydruku zostaną puste miejsca do ręcznego wypełnienia.",
   "f.abs.mehr": "Data urodzenia i telefon (dobrowolnie)",
   "f.abs.titel": "Nadawca",
   "f.abs.leer": "jeszcze nie wpisano (dobrowolnie)",
