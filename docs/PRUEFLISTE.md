@@ -538,6 +538,8 @@ Geld und Schulden → „Meine Schulden-Liste“. Grundlage: docs/entwuerfe/schu
 | Fristende: Zustellung + 14 Tage, Wochenende und 9 bundesweite Feiertage → nächster Werktag (§ 222 Abs. 2 ZPO), als „ungefähr“ gekennzeichnet (Landesfeiertage fehlen); Rechenkern austauschbar (`Schulden.fristRechner`); abgelaufene Frist eigener Text; `Schulden.fristen()` liefert `mb`/`vb` ohne Gläubigernamen für den Dublettenschutz | ✓ | `schuldenliste` |
 | Speicherung nur über `lotse.schulden` in `Vorgaenge.DATEN` (je Vorgang, mit PIN verschlüsselt, „Alle Angaben löschen“); Ausgabe nur als Text; „Mein Ordner“ nur Anzahl, keine Summe; Blatt für die Beratung deutsch, ohne Namen, Aktenzeichen/Anschriften/Notizen per Haken; CSV wie das Haushaltsbuch mit Schutz gegen Formeln | ✓ | `schuldenliste` |
 | 13 Sprachen und Einfache Sprache: alle Schlüssel, gleiche Platzhalter, Zahlen und Paragraphen | ✓ | `schuldenliste` |
+| Speicherfehler gemeldet (auch „nicht angenommen“, z. B. Vorgang gesperrt; src/app.js gibt den Fehler weiter) | ✓ | `sl-speichern` |
+| Nicht lesbarer Stand: Rohtext unter `lotse.schulden.defekt` im Vorgang gesichert (Vorgaenge.DATEN, mit PIN verschlüsselt), Hinweis, dann leer; nie still überschrieben | ✓ | `sl-defekt` |
 
 
 ## Haushaltsplan und Haushaltsbuch (src/haushalt.js)
@@ -559,6 +561,9 @@ Geld und Schulden → „Meine Schulden-Liste“. Grundlage: docs/entwuerfe/schu
 | Beleg-Häkchen je Buchung (Steuer/Pflegekasse), Belegliste je Kalenderjahr (nur bis heute, wiederkehrende Buchungen ohne künftige Monate, kein Jahr nach dem laufenden) mit Druck und CSV (Formel-Schutz), Pflege-Hinweis: Belege des laufenden Kalenderjahres, bis 30.6. auch des Vorjahres, Pflege-Belege: Entlastungsbetrag 131 € (§ 45b SGB XI, Reste bis 30.6. des Folgejahres), Verbrauchs-Pflegehilfsmittel 42 € (§ 40 Abs. 2 SGB XI), gemeinsamer Jahresbetrag (§ 42a SGB XI); abgerufen 20.11.2026 | ✓ | `hb-belege`, `hb-belege-heute`, `hb-pflege-fenster`, `hb-bereinigen` |
 | Nur geltendes Recht: kein Hinweis auf Gesetzentwürfe (Pflegeneuordnungsgesetz, BT-Drs. 21/8869), auch nicht als „Entwurf“; Pflege-Hinweis vor und ab 1.1.2027 gleich (Regel des Nutzers, 20.11.2026) | ✓ | `hb-pflege-recht`, `hb-entwurf` |
 | Steuer-Hinweis (§ 35a EStG 20 %, höchstens 4.000 € / 1.200 €, nur unbar; § 33, § 33b, § 9a EStG; abgerufen 20.11.2026), nicht bei Grundsicherungsgeld/Sozialhilfe ohne Lohn oder Selbstständigkeit; nicht für schon als Beleg (Steuer oder Pflegekasse) markierte Buchungen; Bar-Warnung nur bei Handwerker/Haushaltshilfe | ✓ | `hb-steuer`, `hb-bar` |
+| Speicherfehler gemeldet (auch „nicht angenommen“, z. B. Vorgang gesperrt; src/app.js gibt den Fehler weiter) | ✓ | `hb-speichern` |
+| Nicht lesbarer Stand: Rohtext unter `lotse.haushalt.defekt` im Vorgang gesichert (Vorgaenge.DATEN, mit PIN verschlüsselt), Hinweis, dann leer; nie still überschrieben | ✓ | `hb-defekt` |
+| „Zum Ergebnis“ (src/app.js): IntersectionObserver statt Messen bei jedem Scrollen, Rückfall scroll/resize | ✓ | `app-jump` |
 
 ## Ich ziehe aus (src/ausziehen.js)
 
@@ -576,6 +581,7 @@ Eigener Bereich für junge Menschen; keine Rechnung, nur Hinweise. Quellen mit A
 | Hilfen nur „möglich“: BAB (§ 56, § 60 SGB III), BAföG (§ 2), Wohngeld-Ausschluss (§ 20 Abs. 2 WoGG), Kindergeld bis 18/21/25 und Abzweigung (§ 32 Abs. 4, § 74 EStG), Kindergeld für sich selbst (§ 1 Abs. 2 BKGG), Unterhalt der Eltern bis Ende der ersten Ausbildung (§ 1610 Abs. 2 BGB, Beratung § 18 Abs. 4 SGB VIII), Grundsicherungsgeld (§ 7 Abs. 5, § 22, § 24, § 27 SGB II), Bildung und Teilhabe (§ 28 SGB II), Waisenrente bis 18 immer, in Ausbildung oder Freiwilligendienst bis 27 (§ 48 Abs. 4 SGB VI) | ✓ | `az-aufbau`, `az-oberflaeche` |
 | Abhaken und Notizen lokal (`lotse.ausziehen`, Schnittstelle `Ausziehen.speicherOrt`), nur bekannte Einträge, Speicherfehler gemeldet, „Alle Angaben löschen“ leert alles | ✓ | `az-speichern`, `az-oberflaeche` |
 | 13 Sprachen und Einfache Sprache: alle Schlüssel, gleiche Platzhalter und Vorschriften, keine Rohschlüssel | ✓ | `az-sprachen`, `az-oberflaeche` |
+| Nicht lesbarer Stand: Rohtext unter `lotse.ausziehen.defekt` im Vorgang gesichert (Vorgaenge.DATEN, mit PIN verschlüsselt), Hinweis, dann leer; nie still überschrieben | ✓ | `az-defekt` |
 
 ## Fristen in „Mein Ordner“ (src/fristen.js)
 
