@@ -94,10 +94,12 @@ Wichtig: SoLo ist eine Orientierung, keine Rechtsberatung. Über deinen Anspruch
 
 ### Neuigkeiten in dieser Version (max. 500)
 
+Nur Deutsch (weitere Sprachen für die Neuigkeiten sind in dieser Datei nicht angelegt).
+
 ```
-Neu: Geld und Schulden neu geordnet. „Was ist zuerst dran?“ zeigt in 7 Fragen, was eilt. Neuer Fall „Geldstrafe: Haft droht“. Post vom Inkasso: prüfen, ob alle Pflichtangaben im Brief stehen, mit Musterschreiben. Schuldnerberatung: Stelle finden, Checkliste bis zum Termin, Beratungsmappe. Beratungsmodus mit Tabelle und Gesprächsnotiz. Schulden-Liste übersichtlicher. Sprachwahl auf der Startseite und in den Einstellungen. Kleine Fehler behoben. Weiter alles offline auf deinem Gerät.
+Neu: Suche mit Lupe auf jeder Seite, auch mit Alltagswörtern. Einzelne Vorgänge mit eigener PIN sperren. Mit App-PIN Schutz vor Bildschirmfotos. Beratung: Blatt für Klienten, Weitergabe per QR-Code oder SoLo-Datei. Raten anbieten mit Empfehlung, Tarife vergleichen, Pflegegutachten vergleichen. Wichtige Sätze in Fremdsprachen auch auf Deutsch. Wohngeld, Kinderzuschlag, BAföG und weitere Leistungen genauer. Übersetzungen verbessert, Fehler behoben. Weiter alles offline auf deinem Gerät.
 ```
-(486 Zeichen)
+(489 Zeichen; Entwurf für 1.9.0, noch nicht gebaut. Text von 1.8.0 steht im Git-Verlauf.)
 
 ### Kategorie und Tags (Vorschlag)
 
@@ -162,9 +164,9 @@ Wohngeld,Bürgergeld,Grundsicherung,Kinderzuschlag,Bescheid,Widerspruch,Pflegegr
 Gleicher Text wie „Neuigkeiten in dieser Version“ bei Google Play:
 
 ```
-Neu: Geld und Schulden neu geordnet. „Was ist zuerst dran?“ zeigt in 7 Fragen, was eilt. Neuer Fall „Geldstrafe: Haft droht“. Post vom Inkasso: prüfen, ob alle Pflichtangaben im Brief stehen, mit Musterschreiben. Schuldnerberatung: Stelle finden, Checkliste bis zum Termin, Beratungsmappe. Beratungsmodus mit Tabelle und Gesprächsnotiz. Schulden-Liste übersichtlicher. Sprachwahl auf der Startseite und in den Einstellungen. Kleine Fehler behoben. Weiter alles offline auf deinem Gerät.
+Neu: Suche mit Lupe auf jeder Seite, auch mit Alltagswörtern. Einzelne Vorgänge mit eigener PIN sperren. Mit App-PIN Schutz vor Bildschirmfotos. Beratung: Blatt für Klienten, Weitergabe per QR-Code oder SoLo-Datei. Raten anbieten mit Empfehlung, Tarife vergleichen, Pflegegutachten vergleichen. Wichtige Sätze in Fremdsprachen auch auf Deutsch. Wohngeld, Kinderzuschlag, BAföG und weitere Leistungen genauer. Übersetzungen verbessert, Fehler behoben. Weiter alles offline auf deinem Gerät.
 ```
-(486 Zeichen)
+(489 Zeichen; Entwurf für 1.9.0, noch nicht gebaut. Text von 1.8.0 steht im Git-Verlauf.)
 
 ### URLs
 
