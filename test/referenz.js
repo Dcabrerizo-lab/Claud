@@ -666,4 +666,110 @@ function kduGrenze(e) {
   return hoechst(st, n) * 1.1 + heiz(n);
 }
 
-module.exports = { kappe, euAus, kduGrenze, kuenftig, zusammen, elterngeld, egAbgleich, EG_PAUSCH, EG_PAUSCH_RECHNER, grenze85, schon90, ASYL_NEIN, ASYL_MOEGLICH, haushalt, grundsicherungsgeld, wohngeld, kinderzuschlag, grundsicherungAlter, unterhaltsvorschuss, bafoeg, arbeitslosengeld, krankengeld, regelaltersgrenze, freibetragArbeit, RB };
+// ---------- Wohnberechtigungsschein (neu 21.11.2026, Rechenplan docs/rechenplan/wbs.md) ----------
+// Eigene Tabelle aus docs/WBS-GRENZEN.md (Jahreseinkommen in Euro: allein, zwei Personen, je weitere Person, je Kind, höchster Stufenfaktor).
+// Bayern: Art. 4 Abs. 1 BayWoBindG (17.500 / 27.500 / 5.000 / 1.300 €) und Art. 11 Abs. 1 BayWoFG (28.300 / 43.200 / 10.700 / 3.200 €).
+// Bund: § 9 Abs. 2 WoFG. SH: Zuschlag 3.000 € (1 Person) / 2.000 € (2 Personen), RP und SH auf volle 100 € aufgerundet.
+const WBS_TAB = {
+  BW: [60350, 60350, 9000, 0, 0], BE: [16800, 25200, 5740, 700, 220 / 140], BB: [18500, 26000, 5800, 2000, 0], HB: [13200, 19800, 4510, 550, 160 / 110],
+  HH: [19200, 28800, 6560, 800, 240 / 160], HE: [20146, 30565, 6948, 924, 0], MV: [25800, 38700, 8800, 1500, 27000 / 25800], NI: [21250, 28750, 3750, 3750, 0],
+  NW: [23540, 28350, 6530, 860, 1.4], RP: [19998.91, 28665.10, 6666.31, 1333.25, 1.6], SH: [19945.94, 29918.91, 6925.68, 831.08, 1.4], SN: [20520, 30780, 7011, 855, 0],
+  ST: [12000, 18000, 4100, 500, 1.2], TH: [14400, 21600, 5000, 1000, 1.4]
+};
+const WBS_BY = [17500, 27500, 5000, 1300], WBS_BY_MAX = [28300, 43200, 10700, 3200], WBS_BUND = [12000, 18000, 4100, 500];
+// Freibeträge Schwerbehinderung nach dem Muster § 24 Abs. 1 WoFG: 4.500 € (GdB 100 oder ab 80 mit Pflegebedarf), 2.100 € (GdB unter 80 mit Pflegebedarf)
+function wbsFrei(e) {
+  const g = e.gdb === 'H' ? 100 : Number(e.gdb) || (e.behinderung ? 100 : 0), pg = Number(e.pflegegrad) > 0;
+  return (g === 100 || (g >= 80 && pg) ? 4500 : g >= 50 && pg ? 2100 : 0) + Math.min(4, Math.max(0, e.bhWeitere | 0)) * 2100;
+}
+// opt.gesetz: „Nein“-Schwelle nach §§ 21–24 WoFG mit Werbungskosten-Pauschbetrag je Erwerbstätigem (1.230 €, § 9a EStG) und – auch in
+// Bayern – gezahltem Unterhalt (§ 24 Abs. 2 WoFG). Ohne opt: Konvention der App (bekannte Befunde WBS1, WBS2).
+function wbs(e, opt) {
+  if (e.aufenthalt === 'ausreise' || e.aufenthalt === 'asyl') return { level: 'nein' };
+  const ges = !!(opt && opt.gesetz);
+  const erw = e.adults === 2 ? 2 : 1, kinder = Math.max(0, e.kids | 0) + Math.max(0, e.young | 0), n = erw + kinder;
+  const jahr = (zahl(e.brutto) + (kinder > 0 ? zahl(e.kindEink) : 0)) * 12;
+  const grenze = (t) => (n <= 1 ? t[0] : t[1] + (n - 2) * t[2]) + kinder * t[3];
+  const lohnLeute = (e.art1 === 'lohn' && zahl(e.brutto) - (erw === 2 ? zahl(e.brutto2) : 0) > 0 ? 1 : 0) + (erw === 2 && e.art2 === 'lohn' && zahl(e.brutto2) > 0 ? 1 : 0);
+  const wk = ges ? Math.min(jahr, 1230 * lohnLeute) : 0;
+  const land = e.bundesland || 'BY';
+  if (land === 'BY') {
+    const g = grenze(WBS_BY), max = grenze(WBS_BY_MAX);
+    const nachAbzug = (jahr - wk) * 0.7 - wbsFrei(e) - (ges ? zahl(e.uzBetrag) * 12 : 0);
+    if (jahr <= g) return { level: 'ja', grenze: g };
+    return { level: nachAbzug <= max ? 'vielleicht' : 'nein', grenze: g };
+  }
+  const t = WBS_TAB[land];
+  if (!t) return { level: jahr <= grenze(WBS_BUND) ? 'ja' : 'vielleicht', grenze: grenze(WBS_BUND) };
+  let g = grenze(t);
+  if (land === 'SH') g += n <= 1 ? 3000 : n === 2 ? 2000 : 0;
+  if (land === 'RP' || land === 'SH') g = Math.ceil(Math.round(g * 100) / 100 / 100) * 100;
+  if (jahr <= g) return { level: 'ja', grenze: g };
+  const nachAbzug = (jahr - wk) * 0.7 - wbsFrei(e) - zahl(e.uzBetrag) * 12;
+  return { level: t[4] && nachAbzug > g * t[4] * 1.05 ? 'nein' : 'vielleicht', grenze: g };
+}
+
+// ---------- Pfändung (neu 21.11.2026, Rechenplan docs/rechenplan/pfaendung.md) ----------
+// § 850c ZPO mit der Pfändungsfreigrenzenbekanntmachung 2026 (BGBl. 2026 I Nr. 80, gültig 1.7.2026 bis 30.6.2027), in Cent gerechnet
+const PF_CENT = { grund: 158740, erste: 59742, weitere: 33283, hoechst: 486630 };
+function pfaendung(netto, personen) {
+  const u = Math.min(5, Math.max(0, personen | 0));
+  const freiC = PF_CENT.grund + (u > 0 ? PF_CENT.erste + (u - 1) * PF_CENT.weitere : 0);
+  const nettoC = Math.round(Math.max(0, Number(netto) || 0) * 100);
+  const zehntel = u === 0 ? 7 : 6 - u; // § 850c Abs. 3: 7/10, bei Unterhalt 5, 4, 3, 2, 1 Zehntel pfändbar
+  const stufeC = Math.floor(Math.min(nettoC, PF_CENT.hoechst) / 1000) * 1000; // amtliche Tabelle in 10-€-Stufen
+  let pf = stufeC > freiC ? Math.round((stufeC - freiC) * zehntel / 10) : 0;
+  if (nettoC > PF_CENT.hoechst) pf += nettoC - PF_CENT.hoechst; // über der Höchstgrenze voll pfändbar
+  return { pfaendbar: pf / 100, frei: freiC / 100 };
+}
+// P-Konto: § 899 Abs. 1 ZPO (Grundfreibetrag auf volle 10 € aufgerundet), § 902 Satz 1 Nr. 1 und 5 ZPO (Unterhalt, Kindergeld, Kinderzuschlag)
+function pkonto(personen, kgKinder, kiz) {
+  const u = Math.min(5, Math.max(0, personen | 0));
+  const sockel = Math.ceil(PF_CENT.grund / 1000) * 10;
+  const unterhaltC = u > 0 ? PF_CENT.erste + (u - 1) * PF_CENT.weitere : 0;
+  return Math.round(sockel * 100 + unterhaltC + Math.max(0, kgKinder | 0) * KG * 100 + Math.round(Math.max(0, Number(kiz) || 0) * 100)) / 100;
+}
+
+// ---------- Vergleich App ↔ Referenz über Zufallsfälle (WBS, Pfändung, P-Konto) ----------
+// Anzahl: Umgebungsvariable REFERENZ_FAELLE (Standard 300, wenige Sekunden; schwere Tests später 50000). Seed: REFERENZ_SEED (Standard 20261121).
+// Bekannte Befunde (docs/rechenplan/wbs.md WBS1, WBS2) werden als erwartete Abweichung gezählt, nicht als Fehler.
+function vergleich(Rules, anzahl, seed) {
+  const N = anzahl || Number(process.env.REFERENZ_FAELLE) || 300;
+  const SEED = seed != null ? seed : (process.env.REFERENZ_SEED ? Number(process.env.REFERENZ_SEED) : 20261121);
+  let s = SEED >>> 0;
+  const rnd = () => { s = (s * 1103515245 + 12345) % 2147483648; return s / 2147483648; };
+  const pick = (a) => a[Math.floor(rnd() * a.length)];
+  const fehler = [], erwartet = {};
+  const LAENDER = ['BY', 'BY', 'BY', 'BW', 'BE', 'BB', 'HB', 'HH', 'HE', 'MV', 'NI', 'NW', 'RP', 'SL', 'SN', 'ST', 'SH', 'TH'];
+  for (let i = 0; i < N; i++) {
+    const adults = pick([1, 2]), kids = pick([0, 0, 1, 2, 3]), young = pick([0, 0, 1]);
+    const b1 = pick([0, 900, 1500, 2100, 2800, 3600, Math.round(rnd() * 600) * 10]), b2 = adults === 2 ? pick([0, 0, 800, 1600, Math.round(rnd() * 300) * 10]) : 0;
+    const e = { adults, kids, young, art1: pick(['lohn', 'lohn', 'rente', 'ohne']), art2: adults === 2 ? pick(['lohn', 'ohne']) : '', brutto: b1 + b2, brutto2: adults === 2 ? b2 : '',
+      netto: Math.round((b1 + b2) * 0.75), miete: 700, vermoegen: 0, bundesland: pick(LAENDER), kindEink: kids + young > 0 && rnd() < 0.2 ? pick([300, 700]) : '',
+      gdb: pick(['', '', '', '50', '80', '100']), pflegegrad: pick(['', '', '2']), bhWeitere: pick([0, 0, 0, 1]), uzBetrag: rnd() < 0.2 ? pick([200, 400]) : '', uzTitel: true, uzAn: 'k1', bezug: {}, gebJahr: 1985 };
+    if (e.art1 === 'ohne') { e.brutto = b2; e.netto = Math.round(b2 * 0.75); }
+    const app = Rules.evaluate(e).results.find((x) => x.id === 'wbs').level;
+    const ref = wbs(e).level, refG = wbs(e, { gesetz: true }).level;
+    if (app !== ref) fehler.push({ art: 'WBS', seed: SEED, fall: i, e, app, ref });
+    else if (refG !== ref) {
+      const k = (e.bundesland || 'BY') === 'BY' && zahl(e.uzBetrag) > 0 && wbs({ ...e, uzBetrag: '' }, { gesetz: true }).level === ref ? 'wbs-by-unterhalt' : 'wbs-werbungskosten';
+      erwartet[k] = (erwartet[k] || 0) + 1;
+    }
+    const netto = pick([Math.round(rnd() * 600000) / 100, Math.round(rnd() * 200000 + 150000) / 100, 1587.4, 1590, 4866.3, 4870, 5200.55]), pers = pick([0, 1, 2, 3, 4, 5, 6]);
+    const pa = Rules.pfaendung(netto, pers), pr = pfaendung(netto, pers);
+    if (Math.abs(pa.pfaendbar - pr.pfaendbar) > 0.005 || Math.abs(pa.frei - pr.frei) > 0.005) fehler.push({ art: 'Pfändung', seed: SEED, fall: i, netto, pers, app: pa, ref: pr });
+    const kgK = pick([0, 1, 2, 3]), kiz = pick([0, 0, 297, 150.5]);
+    const ka = Rules.pkonto({ personen: pers, kindergeldKinder: kgK, kiz }).gesamt, kr = pkonto(pers, kgK, kiz);
+    if (Math.abs(ka - kr) > 0.005) fehler.push({ art: 'P-Konto', seed: SEED, fall: i, pers, kgK, kiz, app: ka, ref: kr });
+  }
+  return { anzahl: N, seed: SEED, fehler, erwartet };
+}
+
+if (require.main === module) {
+  const v = vergleich(require('../src/rules.js'));
+  console.log('Referenz WBS/Pfändung/P-Konto: ' + v.anzahl + ' Fälle, Seed ' + v.seed + ', Fehler ' + v.fehler.length + ', erwartete Abweichungen (Befunde) ' + JSON.stringify(v.erwartet));
+  v.fehler.slice(0, 5).forEach((f) => console.log('ABWEICHUNG', JSON.stringify(f)));
+  process.exit(v.fehler.length ? 1 : 0);
+}
+
+module.exports = { wbs, pfaendung, pkonto, vergleich, kappe, euAus, kduGrenze, kuenftig, zusammen, elterngeld, egAbgleich, EG_PAUSCH, EG_PAUSCH_RECHNER, grenze85, schon90, ASYL_NEIN, ASYL_MOEGLICH, haushalt, grundsicherungsgeld, wohngeld, kinderzuschlag, grundsicherungAlter, unterhaltsvorschuss, bafoeg, arbeitslosengeld, krankengeld, regelaltersgrenze, freibetragArbeit, RB };
