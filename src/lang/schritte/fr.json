@@ -147,5 +147,6 @@
   "sf.q.bezug": "Que recevez-vous déjà ?",
   "sf.h.bezug": "L’application affiche alors ces prestations comme « déjà perçues » et vérifie ce qui est possible en plus.",
   "sf.mehrere": "Tu peux choisir plusieurs réponses",
-  "sf.oder": "ou"
+  "sf.oder": "ou",
+  "sf.teil": "Partie {n} sur {m}"
 }

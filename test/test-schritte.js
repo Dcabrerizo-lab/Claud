@@ -67,8 +67,9 @@ const ohne = (o) => JSON.stringify(o.results.map((r) => [r.id, r.level, r.tx]));
   check('Wahl wird pro Gerät gemerkt (keine Auswahl beim nächsten Öffnen)', !A.$('sfWahlSchritt') && !A.appEl.classList.contains('sf-an'));
   A.$('sfWegSchritt').click();
   check('Frageseite: Klasse sf-frage (Übersetzungshinweis nur auf Startwahl, Übersicht und Ergebnis)', A.appEl.classList.contains('sf-frage') && A.frage() === L['sf.q.adults']);
+  check('Fortschritt: „Teil 1 von …“ vor dem Abschnitt, dünner Balken', /^Teil 1 von [4-7] · /.test(A.$('schritte').querySelector('.sf-bereich').textContent) && !!A.$('schritte').querySelector('.sf-kopf .es-bar'), A.$('schritte').querySelector('.sf-bereich').textContent);
   check('Umschalten auf Schritt für Schritt: erste Frage', A.frage() === L['sf.q.adults'] && A.appEl.classList.contains('sf-an') && store['lotse.checkWeg'] === 'schritt');
-  check('Erste Frage: kein Zurück, Bereich „Haushalt“, Aufklapper „Warum fragt die App das?“', !A.$('sfZurueck') && A.$('schritte').querySelector('.sf-bereich').textContent === L['sf.b.haus'] && A.$('schritte').querySelector('details.sf-hilfe summary').textContent === L['sf.warum']);
+  check('Erste Frage: kein Zurück, Bereich „Haushalt“, Aufklapper „Warum fragt die App das?“', !A.$('sfZurueck') && A.$('schritte').querySelector('.sf-bereich').textContent.endsWith(L['sf.b.haus']) && A.$('schritte').querySelector('details.sf-hilfe summary').textContent === L['sf.warum']);
   check('Wahl des Weges oben sichtbar (vor der Frage), „Angaben löschen“ daneben', A.$('sfWegSchritt').getAttribute('aria-pressed') === 'true' && A.$('sfWegAlles').textContent === L['sf.wahl.alles'] && A.$('sfLeiste').compareDocumentPosition(A.$('sfFrage')) & 4 && !!A.$('clearLink'));
   check('Wahl unabhängig von „Einfache Sprache“: nach dem Umschalten gleich', (() => { A.$('einfacheSpracheBtn').click(); const ok = !!A.$('sfWegSchritt') && A.$('sfWegSchritt').getAttribute('aria-pressed') === 'true' && !!A.$('sfFrage') && !A.appEl.querySelector('#einfach:not([hidden])'); A.$('einfacheSpracheBtn').click(); return ok; })());
 

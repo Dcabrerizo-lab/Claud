@@ -147,5 +147,6 @@
   "sf.q.bezug": "Ce primiți deja?",
   "sf.h.bezug": "Aplicația arată atunci aceste prestații ca „deja primite” și verifică ce mai este posibil în plus.",
   "sf.mehrere": "Poți alege mai multe răspunsuri",
-  "sf.oder": "sau"
+  "sf.oder": "sau",
+  "sf.teil": "Partea {n} din {m}"
 }

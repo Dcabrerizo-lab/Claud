@@ -147,5 +147,6 @@
   "sf.q.bezug": "Co już otrzymujecie?",
   "sf.h.bezug": "Aplikacja pokaże te świadczenia jako „już otrzymywane” i sprawdzi, co jest możliwe dodatkowo.",
   "sf.mehrere": "Możesz wybrać kilka odpowiedzi",
-  "sf.oder": "lub"
+  "sf.oder": "lub",
+  "sf.teil": "Część {n} z {m}"
 }

@@ -147,5 +147,6 @@
   "sf.q.bezug": "What do you already receive?",
   "sf.h.bezug": "The app then shows these benefits as “already received” and checks what else is possible.",
   "sf.mehrere": "You can choose more than one answer",
-  "sf.oder": "or"
+  "sf.oder": "or",
+  "sf.teil": "Part {n} of {m}"
 }

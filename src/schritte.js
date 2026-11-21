@@ -216,10 +216,20 @@ var Schritte = (function () {
   function zurKnopf(attrs) {
     return knopf('linkbtn pa-zur', '<span class="nav-pfeil" aria-hidden="true">←</span> <span data-t="nav.zurueck">' + esc(t('nav.zurueck')) + '</span>', ' id="sfZurueck"' + (attrs || ''));
   }
-  function kopf(zurueckZu, bereich) {
+  // anteil (0–1): dünner Balken unter der Zeile, wie im Kurzen Check und in der Pflege-Einschätzung
+  function kopf(zurueckZu, bereich, anteil) {
     return '<div class="es-top pa-kopf sf-kopf"><div class="pa-zeile nav-kopf">' +
       (zurueckZu ? zurKnopf(' data-zu="' + esc(zurueckZu) + '"') : '<span></span>') +
-      (bereich ? '<span class="es-prog sf-bereich">' + esc(bereich) + '</span>' : '') + '</div></div>';
+      (bereich ? '<span class="es-prog sf-bereich">' + esc(bereich) + '</span>' : '') + '</div>' +
+      (anteil != null ? '<div class="es-bar" aria-hidden="true"><span style="width:' + Math.round(100 * anteil) + '%"></span></div>' : '') + '</div>';
+  }
+  // Fortschritt nach Abschnitten (Haushalt, Gesundheit, …): die Zahl der Fragen schwankt je nach Antworten, die Abschnitte kaum
+  // (GOV.UK: kurz „Teil 2 von 5“). Gezählt werden nur Abschnitte mit mindestens einer Frage für diesen Fall.
+  function teil(f) {
+    var bs = [];
+    liste().forEach(function (x) { if (bs.indexOf(x.b) < 0) bs.push(x.b); });
+    var n = bs.indexOf(f.b) + 1;
+    return { n: n, m: bs.length, anteil: bs.length > 1 ? (n - 1) / bs.length : 0 };
   }
   // Antwort mit Kästchen (Mehrfachauswahl); der Haken erscheint über CSS bei .an
   function mehrInhalt(txt) { return '<span class="es-kasten" aria-hidden="true"></span><span>' + esc(txt) + '</span>'; }
@@ -250,8 +260,9 @@ var Schritte = (function () {
 
   function renderFrage(f) {
     var s = S();
-    var bereich = t('sf.b.' + f.b) + (f.wer && f.wer(s) ? ' · ' + f.wer(s) : '');
-    var h = kopf(vorige(f.id) || (zurUeb ? 'uebersicht' : ''), bereich) +
+    var tl = teil(f);
+    var bereich = (tl.n ? t('sf.teil', { n: tl.n, m: tl.m }) + ' · ' : '') + t('sf.b.' + f.b) + (f.wer && f.wer(s) ? ' · ' + f.wer(s) : '');
+    var h = kopf(vorige(f.id) || (zurUeb ? 'uebersicht' : ''), bereich, tl.anteil) +
       '<h2 class="es-q" id="sfFrage" tabindex="-1">' + esc(t(wert(f, s, f.q))) + '</h2>' + hilfe(wert(f, s, f.h));
     if (f.art === 'wahl') {
       var o = opts(f, s), v = s[f.id];

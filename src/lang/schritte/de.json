@@ -147,5 +147,6 @@
   "sf.q.bezug": "Was bekommt ihr schon?",
   "sf.h.bezug": "Dann zeigt die App diese Leistungen als „schon vorhanden“ und prüft, was zusätzlich möglich ist.",
   "sf.mehrere": "Mehrere Antworten möglich",
-  "sf.oder": "oder"
+  "sf.oder": "oder",
+  "sf.teil": "Teil {n} von {m}"
 }
