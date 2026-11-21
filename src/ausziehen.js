@@ -51,7 +51,7 @@ var Ausziehen = (function () {
   var ABGERUFEN = '20.11.2026';
 
   // ---------- Inhalt ----------
-  // Punkt: id (Texte az.p.<id> und az.p.<id>.t), q: Quellen, mehr: erst unter „Weitere Punkte“, warn: deutlich hervorgehoben,
+  // Punkt: id (Texte az.p.<id> und az.p.<id>.t), q: Quellen, mehr: erst unter „Weitere Punkte“,
   // knopf: Weg in einen anderen Bereich (plan, check, briefe, pfaendung, vers), moeglich: Hilfe mit Einstufung „möglich“
   var SYM = {
     vorher: '<path d="M4 11l8-6 8 6v9H4z"/><path d="M9 14l2 2 4-4"/>',
@@ -64,7 +64,7 @@ var Ausziehen = (function () {
   var BEREICHE = [
     { id: 'vorher', liste: true, punkte: [
       { id: 'leisten', knopf: 'plan' },
-      { id: 'u25', warn: true, q: ['sgb2_22_5', 'sgb2_24', 'sgb2_20'] },
+      { id: 'u25', q: ['sgb2_22_5', 'sgb2_24', 'sgb2_20'] },
       { id: 'suche', q: ['wofg27'], knopf: 'check' },
       { id: 'vertrag', q: ['bgb551'] },
       { id: 'uebergabe' },
@@ -130,7 +130,7 @@ var Ausziehen = (function () {
   // Alle Textschlüssel (Tests: jede Sprache hat sie, keine Rohschlüssel)
   function schluessel() {
     var k = ['az.h', 'az.kachel', 'az.kachel.t', 'az.lead', 'az.quelle', 'az.mehrDazu', 'az.weitere', 'az.erledigt', 'az.notiz', 'az.notiz.t',
-      'az.moeglich', 'az.speicherFehler', 'az.u25.warn', 'az.u25.warn.h', 'az.knopf.plan', 'az.knopf.check', 'az.knopf.briefe', 'az.knopf.pfaendung', 'az.knopf.vers', 'az.hilfen.check', 'az.vers.tipp', 'az.stand'];
+      'az.moeglich', 'az.speicherFehler', 'az.knopf.plan', 'az.knopf.check', 'az.knopf.briefe', 'az.knopf.pfaendung', 'az.knopf.vers', 'az.hilfen.check', 'az.vers.tipp', 'az.stand'];
     BEREICHE.forEach(function (b) {
       k.push('az.' + b.id + '.h', 'az.' + b.id + '.t');
       if (b.stufen) b.stufen.forEach(function (s) { k.push('az.stufe.' + s.id); });
@@ -189,11 +189,8 @@ var Ausziehen = (function () {
     '.az-raster>.az-k:last-child:nth-child(odd){grid-column:1/-1;min-height:0}.az-raster{min-width:0}' +
     // Jede Kachel eine eigene Farbe aus der Palette (keine doppelt): Bevor = Violett, Tage = Schiefer, Geld = Grün (Geld sparen), Versicherungen = Blau (Schutz), Finger weg = Ziegel, Hilfen = Petrol (Leistungen)
     '.az .az-k{--c:var(--c-ausziehen);min-height:140px}.az .az-k-tage{--c:var(--c-formular)}.az .az-k-geld{--c:var(--c-sparen)}.az .az-k-vers{--c:var(--c-pflege)}.az .az-k-achtung{--c:var(--c-briefe)}.az .az-k-hilfen{--c:var(--c-leistungen)}.az-k .az-fort{font-weight:700;margin-top:4px;background:rgba(255,255,255,.2);border-radius:999px;padding:2px 10px;justify-self:start}' +
-    '.az-warn{border:3px solid var(--hint);background:var(--hint-bg);color:var(--ink);border-radius:var(--r-item,16px);padding:14px 16px;display:grid;gap:6px}' +
-    '.az-warn b{font-size:1.1em;color:var(--hint)}.az-warn p{margin:0}' +
     '.az-liste{list-style:none;margin:0;padding:0;display:grid;gap:10px}' +
     '.az-punkt{border:1px solid var(--line);border-radius:14px;background:var(--surface);padding:12px 14px;display:grid;gap:6px}' +
-    '.az-punkt.warn-p{border:2px solid var(--hint)}' +
     '.az-check{display:flex;gap:12px;align-items:flex-start;min-height:44px;cursor:pointer;font-weight:700}' +
     '.az-check input{flex:none;width:26px;height:26px;margin:2px 0 0;accent-color:var(--accent)}' +
     '.az-punkt.ok .az-check span{text-decoration:line-through;text-decoration-thickness:1px;opacity:.75}' +
@@ -205,7 +202,7 @@ var Ausziehen = (function () {
     '.az-stufe.s-unnoetig{border-color:var(--muted)}' +
     '.az textarea{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--field,var(--line));border-radius:10px;padding:10px 12px;width:100%;min-height:96px;resize:vertical;box-sizing:border-box}' +
     '#azSpeicherMsg:empty{display:none}' +
-    '@media (forced-colors:active){.az-warn,.az-k{border:2px solid CanvasText}}';
+    '@media (forced-colors:active){.az-k{border:2px solid CanvasText}}';
   function stil() { if ($('azStil')) return; var s = document.createElement('style'); s.id = 'azStil'; s.textContent = STIL; document.head.appendChild(s); }
 
   function knopfHtml(art, cls) {
@@ -232,7 +229,7 @@ var Ausziehen = (function () {
   }
   function punktHtml(p, liste) {
     var ok = liste && daten.ab[p.id];
-    var h = '<li class="az-punkt' + (p.warn ? ' warn-p' : '') + (ok ? ' ok' : '') + '" id="az-p-' + p.id + '">';
+    var h = '<li class="az-punkt' + (ok ? ' ok' : '') + '" id="az-p-' + p.id + '">';
     if (liste) h += '<label class="az-check"><input type="checkbox" data-az-ab="' + p.id + '"' + (ok ? ' checked' : '') + '><span>' + esc(t('az.p.' + p.id)) + '</span></label>';
     else h += '<p class="az-titel">' + esc(t('az.p.' + p.id)) + '</p>';
     if (p.moeglich) h += '<span class="az-chip">' + esc(t('az.moeglich')) + '</span>';
@@ -267,7 +264,6 @@ var Ausziehen = (function () {
     var h = '<h3 class="pf-frage" id="azH" tabindex="-1">' + esc(t('az.' + b.id + '.h')) + '</h3><p class="az-lead">' + esc(t('az.' + b.id + '.t')) + '</p>';
     var f = fortschritt(daten, b.id);
     if (f) h += '<p class="az-fort" id="azFort" role="status">' + esc(t('az.erledigt', { n: f.n, von: f.von })) + '</p>';
-    if (b.id === 'vorher') h += '<div class="az-warn" role="note"><b>' + esc(t('az.u25.warn.h')) + '</b><p>' + esc(t('az.u25.warn')) + '</p></div>';
     if (b.id === 'geld' && hatPlan()) h += '<div class="btns">' + knopfHtml('plan', 'primary') + '</div>';
     if (b.id === 'hilfen') h += '<div class="btns">' + knopfHtml('check', 'primary').replace(esc(t('az.knopf.check')), esc(t('az.hilfen.check'))) + '</div>';
     if (b.stufen) {

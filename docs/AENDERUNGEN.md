@@ -4,6 +4,7 @@ Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss ste
 
 ## Nächste Version (in Arbeit)
 - **„Es ist dringend“ aufgeräumt**: alle Fälle gleich aufgebaut – Frist oben, „Das tust du jetzt“ in Schritten, kurze Tipps zum Aufklappen, Knöpfe, Quellen unten. Konto gepfändet mit Bescheinigung und Grundfreibetrag statt doppeltem Tipp; Strom-/Gassperre in 3 Schritten. „Stimmt der Brief?“: Hinweis „keine Rechtsberatung“ unter dem letzten Tipp.
+- **Ich ziehe aus – „Bevor du ausziehst“**: großer gerahmter Hinweis „Unter 25 und Grundsicherungsgeld?“ entfernt; das Thema steht in der normalen Karte „Unter 25 mit Grundsicherungsgeld: Zusicherung vor der Unterschrift“ (§ 22 Abs. 5 SGB II), jetzt im gleichen Design wie die anderen Karten.
 - **Raten anbieten mit Empfehlung**: Ist der Haushaltsplan ausgefüllt, schlägt SoLo eine machbare Rate vor („Diese Rate empfehlen wir dir: … € im Monat“, Faustregel: frei minus Puffer 10 % der Einnahmen, mind. 50 €, abgerundet auf 5 €) – mit „Übernehmen“ ins neue Schreiben „Ratenzahlung anbieten“; bei mehreren Schulden Aufteilung nach Höhe der Forderung; ohne Spielraum Verweis auf die Schuldnerberatung.
 
 ## 1.8.0 (ab Versionsnummer 150, November 2026)
