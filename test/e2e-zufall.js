@@ -40,8 +40,9 @@ const VERBOTEN = '#mappePrint, #mappeShare, #mappeCopy, #feedbackMail, #sc-take,
     const es = document.querySelector('.es-wahl, #es-weiter, .es-ergebnis, .es-karte');
     const esModus = !!document.querySelector('#es-raus') && vis(document.querySelector('#es-raus'));
     const text = document.body.innerText;
+    // leer: ohne Angaben gibt es keine Karten und keinen Kasten „So geht's“ mehr (Legende verborgen)
     return {
-      esModus, esInhalt: !!es, karten: document.querySelectorAll('#cards .card').length, mappe: vis(document.getElementById('mappe')),
+      esModus, esInhalt: !!es, karten: document.querySelectorAll('#cards .card').length, leer: document.getElementById('legende').hidden, mappe: vis(document.getElementById('mappe')),
       legal: vis(document.getElementById('legal')), breite: document.documentElement.scrollWidth - window.innerWidth,
       kaputt: (text.match(/\bNaN\b|\bundefined\b|\bInfinity\b|\[object Object\]|\{[a-zA-Z]\w*\}/) || [''])[0],
       stelle: (() => { const m = text.match(/\bNaN\b|\bundefined\b|\bInfinity\b|\[object Object\]|\{[a-zA-Z]\w*\}/); return m ? text.slice(Math.max(0, m.index - 50), m.index + 50) : ''; })()
@@ -98,7 +99,7 @@ const VERBOTEN = '#mappePrint, #mappeShare, #mappeCopy, #feedbackMail, #sc-take,
     if (z.kaputt) fehler.push('Kaputte Anzeige „' + z.kaputt + '“: …' + z.stelle.replace(/\s+/g, ' ') + '… | nach: ' + log.slice(-6).join(' > '));
     if (z.breite > 2) fehler.push('Seitliches Scrollen (' + z.breite + ' px) | nach: ' + log.slice(-6).join(' > '));
     if (z.esModus && !z.esInhalt && !z.mappe && !z.legal) fehler.push('Einfache Version ohne Frage und ohne Ergebnis | nach: ' + log.slice(-6).join(' > '));
-    if (!z.esModus && !z.mappe && !z.legal && z.karten === 0) fehler.push('Ausführliche Version ohne Karten und ohne Startanleitung | nach: ' + log.slice(-6).join(' > '));
+    if (!z.esModus && !z.mappe && !z.legal && z.karten === 0 && !z.leer) fehler.push('Ausführliche Version mit Ergebnis, aber ohne Karten | nach: ' + log.slice(-6).join(' > '));
     if (fehler.length >= 5) break;
   }
   await b.close();
