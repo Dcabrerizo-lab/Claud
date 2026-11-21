@@ -4,7 +4,12 @@
 # Auswertung lokal: node tools/amtlich-vergleich-wohngeld.js <amtlich-wohngeld.json>
 name: Amtlich Wohngeld (Differenztest)
 
+# GitHub startet workflow_dispatch nur für Workflows, die schon auf main liegen. Bis dahin startet ein Push, der
+# tools/amtliche-rechner/wg-differenz-auftrag.txt ändert (Zeile: "<modus> <anzahl> <startwert>"), denselben Lauf auf Arbeitszweigen.
 on:
+  push:
+    branches-ignore: ['main']
+    paths: ['tools/amtliche-rechner/wg-differenz-auftrag.txt']
   workflow_dispatch:
     inputs:
       anzahl:
@@ -24,21 +29,28 @@ jobs:
   abfragen:
     runs-on: ubuntu-latest
     timeout-minutes: 150
+    env:
+      MODUS: ${{ inputs.modus }}
+      ANZAHL: ${{ inputs.anzahl }}
+      START: ${{ inputs.startwert }}
     steps:
       - uses: actions/checkout@v7
+      - name: Auftrag lesen (bei Push aus der Auftragsdatei)
+        if: github.event_name == 'push'
+        run: read m n s < tools/amtliche-rechner/wg-differenz-auftrag.txt; echo "MODUS=$m" >> "$GITHUB_ENV"; echo "ANZAHL=$n" >> "$GITHUB_ENV"; echo "START=$s" >> "$GITHUB_ENV"
       - uses: actions/setup-node@v7
         with: { node-version: 22, cache: npm }
       - run: npm ci
       - name: Browser installieren (bis zu 3 Versuche)
         run: for i in 1 2 3; do timeout 300 npx playwright install --with-deps chromium && exit 0; echo "Versuch $i fehlgeschlagen"; sleep 20; done; exit 1
       - name: Formularfelder erkunden
-        if: inputs.modus == 'erkunden'
+        if: env.MODUS == 'erkunden'
         run: mkdir -p out && node tools/amtliche-rechner/wg-erkunden.js out/wg-felder.json
       - name: Amtlichen Rechner abfragen
-        if: inputs.modus != 'erkunden'
-        run: mkdir -p out && node tools/amtliche-rechner/wg-differenz.js "${{ inputs.anzahl }}" "${{ inputs.startwert }}" out/amtlich-wohngeld.json
+        if: env.MODUS != 'erkunden'
+        run: mkdir -p out && node tools/amtliche-rechner/wg-differenz.js "$ANZAHL" "$START" out/amtlich-wohngeld.json
       - name: SoLo gegen amtliche Ergebnisse
-        if: inputs.modus != 'erkunden'
+        if: env.MODUS != 'erkunden'
         run: node tools/amtlich-vergleich-wohngeld.js out/amtlich-wohngeld.json --md out/wohngeld-vergleich.md || true
       - uses: actions/upload-artifact@v7
         if: always()
