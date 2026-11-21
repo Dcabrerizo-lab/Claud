@@ -40,7 +40,7 @@
   "sf.a.paar": "Avec un ou une partenaire",
   "sf.a.asylblg": "Prestations pour demandeurs d’asile (Asylbewerberleistungen)",
   "sf.a.ausreise": "Obligation de quitter le territoire, sans Duldung (tolérance)",
-  "sf.q.adults": "Vis-tu seul·e ou avec un ou une partenaire ?",
+  "sf.q.adults": "Vis-tu seul(e) ou avec un ou une partenaire ?",
   "sf.h.adults": "Il s’agit d’un mariage, d’un partenariat enregistré ou d’une relation stable dans le même logement. L’application pose ensuite des questions sur les enfants.",
   "sf.q.kids": "Combien d’enfants de moins de 18 ans vivent avec toi ?",
   "sf.q.kidsU6": "Combien d’entre eux ont moins de 6 ans ?",
@@ -144,6 +144,6 @@
   "sf.h.vermoegen": "Comptes, livrets d’épargne, titres. Ne pas compter : le logement que tu habites et la voiture.",
   "sf.q.autoWert": "Combien vaut ta voiture environ ?",
   "sf.q.autoBraucht": "La voiture est-elle nécessaire à cause d’un handicap ou pour aller au travail ?",
-  "sf.q.bezug": "Que reçois-tu déjà ?",
+  "sf.q.bezug": "Que recevez-vous déjà (toi et ton foyer) ?",
   "sf.h.bezug": "L’application affiche alors ces prestations comme « déjà perçues » et vérifie ce qui est possible en plus."
 }
