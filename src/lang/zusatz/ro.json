@@ -75,6 +75,7 @@
   "bp.wg.h": "Verifică decizia privind Wohngeld",
   "bp.wg.p": "Scanează decizia privind Wohngeld. SoLo recalculează după Legea ajutorului pentru locuință.",
   "bp.kz.h": "Verifică decizia privind Kinderzuschlag",
+  "bp.kz.kg": "SoLo nu verifică aici Kindergeld. Acolo calea se numește Einspruch, nu Widerspruch.",
   "bp.nk.h": "Verifică decontul costurilor suplimentare (Nebenkostenabrechnung)",
   "bp.nk.p": "Scanează decontul. SoLo verifică termenele și pozițiile.",
   "bp.w.bg": "Toți cei pe care Jobcenter îi calculează împreună: tu, soțul sau partenerul tău și copiii voștri necăsătoriți sub 25 de ani din gospodărie (§ 7 Abs. 3 SGB II).",

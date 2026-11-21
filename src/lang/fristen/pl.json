@@ -52,6 +52,7 @@
   "fri.erledigtListe.t": "Załatwione terminy znikają po 30 dniach.",
   "fri.vorgangWeg": "Uwaga: ta sprawa zostanie automatycznie usunięta {datum}, czyli przed terminem {bis}. Termin też wtedy przepadnie. „Usuwaj automatycznie” możesz zmienić w ustawieniach.",
   "fri.merken": "Zapamiętaj termin",
+  "fri.gemerktKnopf": "Zapisano ✓",
   "fri.merken.t": "Termin trafi do „Mój folder”. Zostaje na twoim urządzeniu.",
   "fri.gemerkt": "Zapamiętano w „Mój folder”: {titel}, do {datum}.",
   "fri.schonDa": "Ten termin jest już w „Mój folder”.",

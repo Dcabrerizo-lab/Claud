@@ -75,6 +75,7 @@
   "bp.wg.h": "Vérifier une décision de Wohngeld",
   "bp.wg.p": "Scanne la décision de Wohngeld. SoLo recalcule selon la loi sur l’aide au logement.",
   "bp.kz.h": "Vérifier une décision de Kinderzuschlag",
+  "bp.kz.kg": "SoLo ne vérifie pas le Kindergeld ici. Pour le Kindergeld, la voie s’appelle Einspruch, pas Widerspruch.",
   "bp.nk.h": "Vérifier un décompte de charges (Nebenkostenabrechnung)",
   "bp.nk.p": "Scanne le décompte. SoLo vérifie les délais et les postes.",
   "bp.w.bg": "Toutes les personnes que le Jobcenter compte ensemble : toi, ton conjoint ou partenaire et vos enfants non mariés de moins de 25 ans dans le foyer (§ 7 Abs. 3 SGB II).",

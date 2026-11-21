@@ -75,6 +75,7 @@
   "bp.wg.h": "Check a housing benefit (Wohngeld) decision",
   "bp.wg.p": "Scan the Wohngeld decision. SoLo recalculates it under the Housing Benefit Act.",
   "bp.kz.h": "Check a child supplement (Kinderzuschlag) decision",
+  "bp.kz.kg": "SoLo does not check Kindergeld here. For Kindergeld the way is called Einspruch, not Widerspruch.",
   "bp.nk.h": "Check a service charge statement (Nebenkostenabrechnung)",
   "bp.nk.p": "Scan the statement. SoLo checks deadlines and items.",
   "bp.w.bg": "Everyone the Jobcenter calculates together – you, your spouse or partner and your unmarried children under 25 in the household (§ 7 Abs. 3 SGB II).",

@@ -75,6 +75,7 @@
   "bp.wg.h": "د Wohngeld پرېکړه وګوره",
   "bp.wg.p": "د Wohngeld پرېکړه سکن کړه. SoLo د کور د مرستې د قانون له مخې بیا حسابوي.",
   "bp.kz.h": "د Kinderzuschlag پرېکړه وګوره",
+  "bp.kz.kg": "SoLo دلته Kindergeld نه ګوري. هلته لاره Einspruch بلل کېږي، نه Widerspruch.",
   "bp.nk.h": "د اړخیزو لګښتونو حساب (Nebenkostenabrechnung) وګوره",
   "bp.nk.p": "حساب سکن کړه. SoLo مودې او توکي ګوري.",
   "bp.w.bg": "ټول هغه کسان چې Jobcenter یې یوځای حسابوي: ته، ستا مېړه، ښځه یا ملګری او ستاسو له 25 کلونو کم عمر نا واده شوي ماشومان په کور کې (§ 7 Abs. 3 SGB II).",

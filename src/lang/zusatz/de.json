@@ -75,6 +75,7 @@
   "bp.wg.h": "Wohngeldbescheid prüfen",
   "bp.wg.p": "Scanne den Wohngeldbescheid. SoLo rechnet nach dem Wohngeldgesetz nach.",
   "bp.kz.h": "Bescheid Kinderzuschlag prüfen",
+  "bp.kz.kg": "Kindergeld prüft SoLo hier nicht. Dort heißt der Weg Einspruch, nicht Widerspruch.",
   "bp.nk.h": "Nebenkostenabrechnung prüfen",
   "bp.nk.p": "Scanne die Abrechnung. SoLo prüft Fristen und Posten.",
   "bp.w.bg": "Alle, für die das Jobcenter zusammen rechnet: du, dein Ehe- oder Lebenspartner und eure unverheirateten Kinder unter 25 im Haushalt (§ 7 Abs. 3 SGB II).",

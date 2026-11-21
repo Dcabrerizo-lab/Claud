@@ -75,6 +75,7 @@
   "bp.wg.h": "Sprawdź decyzję o Wohngeld",
   "bp.wg.p": "Zeskanuj decyzję o Wohngeld (Wohngeldbescheid). SoLo przeliczy ją według ustawy o dodatku mieszkaniowym (Wohngeldgesetz).",
   "bp.kz.h": "Sprawdź decyzję o Kinderzuschlag",
+  "bp.kz.kg": "SoLo nie sprawdza tutaj Kindergeld. Tam droga nazywa się Einspruch, a nie Widerspruch.",
   "bp.nk.h": "Sprawdź rozliczenie kosztów dodatkowych (Nebenkostenabrechnung)",
   "bp.nk.p": "Zeskanuj rozliczenie. SoLo sprawdzi terminy i pozycje.",
   "bp.w.bg": "Wszyscy, których Jobcenter liczy razem: ty, twój małżonek lub partner i wasze dzieci niepozostające w związku małżeńskim poniżej 25 lat w gospodarstwie domowym (§ 7 Abs. 3 SGB II).",

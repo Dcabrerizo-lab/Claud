@@ -51,6 +51,7 @@
   "bp.wg.h": "Wohngeld kararını kontrol et",
   "bp.wg.p": "Kira yardımı kararını (Wohngeldbescheid) tara. SoLo, Kira Yardımı Kanunu'na (Wohngeldgesetz) göre yeniden hesaplar.",
   "bp.kz.h": "Kinderzuschlag kararını kontrol et",
+  "bp.kz.kg": "SoLo burada Kindergeld'i kontrol etmez. Orada yolun adı Widerspruch değil, Einspruch'tur.",
   "bp.nk.h": "Yan gider hesabını (Nebenkostenabrechnung) kontrol et",
   "bp.nk.p": "Hesabı tara. SoLo süreleri ve kalemleri kontrol eder.",
   "bp.w.bg": "Jobcenter'ın birlikte hesapladığı herkes: sen, eşin veya hayat arkadaşın ve hanedeki 25 yaşından küçük evlenmemiş çocuklarınız (§ 7 Abs. 3 SGB II).",

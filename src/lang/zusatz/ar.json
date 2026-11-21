@@ -75,6 +75,7 @@
   "bp.wg.h": "فحص قرار Wohngeld",
   "bp.wg.p": "امسح قرار Wohngeld ضوئيًا. يعيد SoLo الحساب وفق قانون بدل السكن.",
   "bp.kz.h": "فحص قرار Kinderzuschlag",
+  "bp.kz.kg": "لا يفحص SoLo هنا Kindergeld. هناك يُسمّى الطريق Einspruch وليس Widerspruch.",
   "bp.nk.h": "فحص كشف التكاليف الجانبية (Nebenkostenabrechnung)",
   "bp.nk.p": "امسح الكشف ضوئيًا. يفحص SoLo المهل والبنود.",
   "bp.w.bg": "كل من يحسبهم الـ Jobcenter معًا: أنت وزوجك أو شريك حياتك وأولادكم غير المتزوجين دون 25 سنة في المنزل (§ 7 Abs. 3 SGB II).",

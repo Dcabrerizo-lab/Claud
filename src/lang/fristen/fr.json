@@ -52,6 +52,7 @@
   "fri.erledigtListe.t": "Les délais faits disparaissent après 30 jours.",
   "fri.vorgangWeg": "Attention : ce dossier sera supprimé automatiquement le {datum}, donc avant le délai du {bis}. Le délai sera alors perdu aussi. Tu peux modifier « Supprimer automatiquement » dans les paramètres.",
   "fri.merken": "Retenir le délai",
+  "fri.gemerktKnopf": "Enregistré ✓",
   "fri.merken.t": "Le délai va dans « Mon dossier ». Il reste sur ton appareil.",
   "fri.gemerkt": "Retenu dans « Mon dossier » : {titel}, jusqu’au {datum}.",
   "fri.schonDa": "Ce délai est déjà dans « Mon dossier ».",
