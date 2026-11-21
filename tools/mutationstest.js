@@ -155,6 +155,15 @@ const KILLER_DATEI = path.join(ROOT, 'tools', 'mutation-killer.json');
 const KILLER = fs.existsSync(KILLER_DATEI) ? JSON.parse(fs.readFileSync(KILLER_DATEI, 'utf8')) : {};
 const finder = (liste) => { for (const t of liste) { try { execSync('node test/' + t, { cwd: tmp, stdio: 'ignore' }); } catch (e) { return t; } } return null; };
 const ohneZahl = (t) => t.split(' ')[0];
+// Erst ohne Mutation: ist der saubere Lauf schon rot (z. B. Datei nicht in die Kopie aufgenommen), wäre jedes „entdeckt“
+// wertlos (Lauf 44912420018: alle Fehler „entdeckt“, erst am Ende fiel der rote Grundlauf auf). Deshalb vorher prüfen und abbrechen.
+const grundRot = finder(TESTS);
+if (grundRot) {
+  console.log('Ohne Fehler laufen die Tests nicht durch (rot: ' + grundRot + ') – erst npm test reparieren oder fehlende Datei in die Kopierliste oben aufnehmen. Ausgabe:');
+  try { execSync('node test/' + grundRot, { cwd: tmp, stdio: 'inherit' }); } catch (e) { /* Ausgabe steht oben */ }
+  fs.rmSync(tmp, { recursive: true, force: true });
+  process.exit(1);
+}
 
 let unentdeckt = 0, geprueft = 0, killerTreffer = 0;
 const neueKiller = {};
