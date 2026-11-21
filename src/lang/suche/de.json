@@ -1,5 +1,6 @@
 {
   "su.label": "Was suchst du?",
+  "su.haeufig": "Häufig gesucht",
   "su.leeren": "Suche leeren",
   "su.n": "{n} Treffer",
   "su.n1": "1 Treffer",
@@ -7,6 +8,5 @@
   "su.b.leistungen": "Hilfen-Check",
   "su.b.briefe": "Briefe",
   "su.b.mappe": "Antrag",
-  "su.suchen": "Suchen",
-  "su.haeufig": "Häufig gesucht"
+  "su.suchen": "Suchen"
 }

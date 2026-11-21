@@ -1,5 +1,6 @@
 {
   "su.label": "Ne arıyorsun?",
+  "su.haeufig": "Sık arananlar",
   "su.leeren": "Aramayı temizle",
   "su.n": "{n} sonuç",
   "su.n1": "1 sonuç",
@@ -7,6 +8,5 @@
   "su.b.leistungen": "Yardım kontrolü",
   "su.b.briefe": "Mektuplar",
   "su.b.mappe": "Başvuru",
-  "su.suchen": "Ara",
-  "su.haeufig": "Sık arananlar"
+  "su.suchen": "Ara"
 }

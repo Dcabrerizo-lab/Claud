@@ -1,5 +1,6 @@
 {
   "su.label": "Was suchst du?",
+  "su.haeufig": "=",
   "su.leeren": "Suche leer machen",
   "su.n": "=",
   "su.n1": "=",
@@ -7,6 +8,5 @@
   "su.b.leistungen": "=",
   "su.b.briefe": "=",
   "su.b.mappe": "=",
-  "su.suchen": "=",
-  "su.haeufig": "="
+  "su.suchen": "="
 }

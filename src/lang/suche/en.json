@@ -1,5 +1,6 @@
 {
   "su.label": "What are you looking for?",
+  "su.haeufig": "Often searched",
   "su.leeren": "Clear search",
   "su.n": "{n} results",
   "su.n1": "1 result",
@@ -7,6 +8,5 @@
   "su.b.leistungen": "Benefits check",
   "su.b.briefe": "Letters",
   "su.b.mappe": "Application",
-  "su.suchen": "Search",
-  "su.haeufig": "Often searched"
+  "su.suchen": "Search"
 }

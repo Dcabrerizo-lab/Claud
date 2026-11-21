@@ -1,5 +1,6 @@
 {
   "su.label": "Maxaad raadinaysaa?",
+  "su.haeufig": "Inta badan la raadiyo",
   "su.leeren": "Tirtir raadinta",
   "su.n": "{n} natiijo",
   "su.n1": "1 natiijo",
@@ -7,6 +8,5 @@
   "su.b.leistungen": "Hubinta gargaarka",
   "su.b.briefe": "Warqado",
   "su.b.mappe": "Codsi",
-  "su.suchen": "Raadi",
-  "su.haeufig": "Inta badan la raadiyo"
+  "su.suchen": "Raadi"
 }

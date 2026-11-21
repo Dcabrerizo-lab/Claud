@@ -1,5 +1,6 @@
 {
   "su.label": "څه لټوې؟",
+  "su.haeufig": "ډېر لټول شوي",
   "su.leeren": "لټون پاکول",
   "su.n": "{n} پایلې",
   "su.n1": "1 پایله",
@@ -7,6 +8,5 @@
   "su.b.leistungen": "د مرستو کتنه",
   "su.b.briefe": "لیکونه",
   "su.b.mappe": "غوښتنلیک",
-  "su.suchen": "لټون",
-  "su.haeufig": "ډېر لټول شوي"
+  "su.suchen": "لټون"
 }
