@@ -164,11 +164,33 @@ Bekannte, bewusst vorsichtige Abweichung: Beim Grundsicherungsgeld lässt SoLo E
 | 11 | BAföG Vermögen: nur der Betrag über 15.000 / 45.000 €, geteilt durch 12 Monate | §§ 29, 30 BAföG; bafög.de Beispiel „Stefan“ |
 | 12 | Blindengeld Bayern Pflegegrad 3 bis 5: einheitlich 33 % des Pflegegeldes von Pflegegrad 3 (197,67 €) | Art. 4 Abs. 1 Satz 2 BayBlindG; ZBFS-Infoblatt 7/2026 |
 | 13 | Arbeitslosengeld/Krankengeld: obere Grenze mindestens Netto Steuerklasse III (beim Arbeitslosengeld 20 % Pauschale + Lohnsteuer) | § 153 SGB III; Merkblatt 1 Abschnitt 4; § 47 SGB V |
-| 14 | Grundrentenfreibetrag Grundsicherung aus der Bruttorente, App und Bescheid-Check | § 82a Abs. 1 SGB XII; DRV „Die Grundsicherung“ 5/2026 S. 18 |
-| 15 | Einkommensgrenze Hilfe zur Pflege/Blindenhilfe: Unterkunft ohne Heizung, Familienzuschlag aufgerundet (395 €) | § 85 Abs. 1 SGB XII; Infoblatt Nr. 37 Pflegestützpunkte Berlin |
-| H3 | Landespflegegeld: Auszahlung bis 31. Januar des Folgejahres im Antragshinweis | Art. 2 Abs. 4 BayLPflGG |
+| 14 | Grundrentenfreibetrag Grundsicherung aus der Bruttorente, App und Bescheid-Check | § 82a Abs. 1 SGB XII; BT-Drs. 19/27495 S. 16 f.; DRV „Die Grundsicherung“ 5/2026 S. 18 |
+| 15 | Einkommensgrenze Hilfe zur Pflege/Blindenhilfe: Familienzuschlag aufgerundet (395 €). Unterkunft bleibt mit Heizung (siehe Prüfvermerk) | § 85 Abs. 1 Nr. 2 und 3 SGB XII; BSG 30.04.2020, B 8 SO 1/19 R |
+| H3 | Landespflegegeld: Auszahlung in der Regel bis 31. Januar des Folgejahres im Antragshinweis | Art. 2 Abs. 4 Satz 2, Art. 3 Abs. 1 BayLPflGG |
 
-Nicht umgesetzt (im Bericht gelassen): H1 (Unterhaltsvorschuss 12/13 Jahre in der internen Schätzung), H2 (Arbeitnehmer-Pauschbetrag beim WBS, Landesrecht je Land), H4 (Frage nach Geschwisterkind unter 3). Ohne Angabe der Heizkosten zieht die Grenze nach § 85 die Heizkostenkomponente des Wohngelds ab (Näherung, vorsichtige Seite).
+Nicht umgesetzt (im Bericht gelassen): H1 (Unterhaltsvorschuss 12/13 Jahre in der internen Schätzung), H2 (Arbeitnehmer-Pauschbetrag beim WBS, Landesrecht je Land), H4 (Frage nach Geschwisterkind unter 3).
+
+## Prüfvermerk (21.11.2026)
+
+Unabhängige Prüfung von PR #99 (Abgleich 2, Befunde 10 bis 15 und H3). Alle Paragrafen und Zahlen neu am amtlichen Text abgerufen (21.11.2026). Korrekturen sind eingebaut und mit Tests belegt (`test/test-musterbescheide-2.js`).
+
+| Befund | Schwere | Korrektur | Quelle (Abruf 21.11.2026) |
+|---|---|---|---|
+| Nr. 15 war in einem Teil falsch: Die Einkommensgrenze wurde auf „Unterkunft ohne Heizung“ umgestellt (Beleg nur ein Infoblatt aus Berlin). Das Bundessozialgericht sagt das Gegenteil: Heizkosten gehören dazu. Folge wäre gewesen: Grenze bis über 100 € zu niedrig, Text „über der Grenze“ statt „unter der Grenze“. | mittel | Zurückgenommen: wieder die ganze Warmmiete (App, Referenz, Tests, Prüfliste). Geblieben ist der aufgerundete Familienzuschlag 395 €. Hinweis in der Prüfliste, dass manche Träger ohne Heizung rechnen. | BSG 30.04.2020, B 8 SO 1/19 R, Leitsatz (bsg.bund.de); § 85 Abs. 1 Nr. 2 und 3 SGB XII (gesetze-im-internet.de, Heizung dort nicht genannt) |
+| H3: „Das Geld kommt spätestens bis zum 31. Januar“ war eine feste Zusage. Der Antrag ist aber noch bis 3 Monate nach Jahresende möglich; dann kann das Geld später kommen. | niedrig | „in der Regel bis zum 31. Januar“ in 13 Sprachen und in Einfacher Sprache; Test ergänzt. | Art. 2 Abs. 4 Satz 2 und Art. 3 Abs. 1 Satz 1 BayLPflGG, Fassung ab 01.01.2026 (gesetze-bayern.de) |
+| Nr. 14: Die Bruttorente war nur mit dem Beispiel der Rentenversicherung belegt. Dort greift der Deckel 281,50 €, es beweist Brutto also nicht. | niedrig (nur Beleg) | Regel stimmt, Beleg ergänzt. | § 82a Abs. 1 SGB XII; Antwort der Bundesregierung BT-Drs. 19/27495 S. 16 f. (dserver.bundestag.de); Meldung der Rentenversicherung vom 03.03.2023 |
+| Nr. 13, Referenz: `test/referenz.js` holt die Lohnsteuer Steuerklasse III jetzt aus `src/rules.js`. An dieser Stelle ist die Referenz nicht mehr unabhängig (im Code vermerkt; die Lohnsteuer prüft `test/test-netto.js`). | niedrig | Fester Anker ergänzt, der nicht an der Lohnsteuer hängt: 2.400 € brutto ergibt genau 960 bis 1.290 € (ohne Kind oben 1.150 €), Pauschale 20 %. | § 153 Abs. 1 SGB III (gesetze-im-internet.de) |
+| Krankengeld-Test nannte betanet als Quelle (nicht amtlich). | niedrig | Als Rechnung zu Fuß nach dem Gesetz bezeichnet (Test und Prüfliste). | § 47 Abs. 1 SGB V |
+| Nr. 10, 11 (BAföG), Nr. 12 (Blindengeld), Nr. 13 (20 % Pauschale), Nr. 15 (Aufrundung), Landespflegegeld 500 € | ohne Befund | keine | § 25 Abs. 1, 3, 4, § 13 Abs. 1 und 2, § 13a Abs. 1 und 2, §§ 29, 30 BAföG; Art. 4 Abs. 1 und 4 BayBlindG; § 37 Abs. 1 SGB XI (347 / 599 / 800 / 990 €); § 153 SGB III; Art. 2 BayLPflGG |
+
+Geänderte Testerwartungen geprüft: Alle Änderungen folgen den Korrekturen (keine Erwartung nur „passend gemacht“). Keine Werte ab 1.1.2027 vorgezogen. Keine Änderung an Speicherung, Farben oder Startkacheln.
+
+Offen (bewusst nicht geändert):
+- BAföG: Beträge unter 10 € im Monat werden nicht gezahlt (§ 51 Abs. 4 BAföG). Die Grenze für „eher nicht“ liegt deshalb um bis zu 10 € zu hoch (Seite „möglich“, keine falsche Zusage).
+- BAföG Vermögen: 2.300 € Freibetrag je Ehegatte und Kind (§ 29 Abs. 1 Nr. 2 und 3) rechnet die App nicht mit (vorsichtige Seite, „eher nicht“ etwas zu früh bei Studierenden mit Familie).
+- Arbeitslosengeld und Krankengeld: Die obere Grenze mit Steuerklasse III gilt auch für Alleinstehende, die diese Klasse fast nie haben. Die Spanne ist dort oben zu weit; die Mitte liegt aber näher am echten Wert als vorher.
+- Landespflegegeld: Die Antragsfrist steht jetzt klar im Gesetz (3 Monate nach Ende des Pflegegeldjahres, Art. 3 Abs. 1 Satz 1). Der Text sagt weiter „es gibt eine Frist; welche, sagt dir das Landesamt“. Kann man in einem eigenen Auftrag konkret nennen.
+- Die Broschüre der Rentenversicherung (S. 18) war am 21.11.2026 nicht im Volltext abrufbar (nur Stand 01.05.2026, 20. Auflage bestätigt).
 
 ## Großer und schwerer Abgleich mit amtlichen Rechnern (14.11.2026)
 

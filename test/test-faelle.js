@@ -286,7 +286,8 @@ ck('Elterngeld ohne Kind: nein; ohne Betrag: möglich mit Spanne', L({ miete: 50
 ck('Elterngeld schon bezogen: na', L({ baby: 'da', einkommen: [{ art: 'eg', b: 400 }], miete: 500 }, 'elterngeld') === 'na');
 // Hilfe zur Pflege: Einkommensgrenze 2 x 563 + Miete + 70 % von 563 je weiterer Person
 ck('[hzp-voraus] Hilfe zur Pflege: ohne Pflegegrad nein', L({ miete: 500 }, 'hzp') === 'nein');
-ck('[hzp-grenze] Hilfe zur Pflege: Paar, Miete 600 davon Heizung 80, Grenze 2 x 563 + 520 + 395 (aufgerundet) = 2.041 €', (() => { const x = T({ adults: 2, pflegegrad: '4', art1: 'rente', brutto: 1500, netto: 1500, miete: 600, heizkosten: 80, vermoegen: 0, gebJahr: 1950, heute: 2026.8 }, 'hzp', 'hzp.unter'); return x && x.grenze === E(2041); })());
+// § 85 Abs. 1 SGB XII: Heizkosten gehören zur Unterkunft (BSG 30.04.2020, B 8 SO 1/19 R), Familienzuschlag 70 % aufgerundet (394,10 -> 395 €)
+ck('[hzp-grenze] Hilfe zur Pflege: Paar, Warmmiete 600 (davon Heizung 80, zählt mit), Grenze 2 x 563 + 600 + 395 (aufgerundet) = 2.121 €', (() => { const x = T({ adults: 2, pflegegrad: '4', art1: 'rente', brutto: 1500, netto: 1500, miete: 600, heizkosten: 80, vermoegen: 0, gebJahr: 1950, heute: 2026.8 }, 'hzp', 'hzp.unter'); const y = T({ adults: 2, pflegegrad: '4', art1: 'rente', brutto: 1500, netto: 1500, miete: 600, vermoegen: 0, gebJahr: 1950, heute: 2026.8 }, 'hzp', 'hzp.unter'); return x && y && x.grenze === E(2121) && y.grenze === E(2121); })());
 ck('Hilfe zur Pflege: Einkommen über der Grenze -> Hinweis auf Eigenanteil', K({ pflegegrad: '3', art1: 'rente', brutto: 2500, netto: 2500, miete: 500, vermoegen: 0, gebJahr: 1950, heute: 2026.8 }, 'hzp')[0] === 'hzp.ueber');
 ck('[hzp-verm] Hilfe zur Pflege: Vermögen über 10.000 € -> nein', L({ pflegegrad: '3', art1: 'rente', brutto: 900, netto: 900, miete: 500, vermoegen: 15000, gebJahr: 1950, heute: 2026.8 }, 'hzp') === 'nein');
 // Asylbewerber: eigene Leistung, kein Grundsicherungsgeld, keine Grundsicherung im Alter, kein Kinderzuschlag (§ 7 Abs. 1 SGB II, § 23 Abs. 2 SGB XII); Wohngeld höchstens möglich (§ 7 Abs. 1 Satz 1 Nr. 8 WoGG); weitere Fälle: test/test-aufenthalt.js
@@ -299,7 +300,7 @@ ck('Ohne Asyl: Asylbewerberleistungen nein', L({ ...asyl, aufenthalt: '' }, 'asy
 
 // ---------- Blindenhilfe (§ 72 SGB XII) ----------
 const blind = { art1: 'rente', brutto: 900, netto: 900, miete: 450, vermoegen: 0, gebJahr: 1960, heute: 2026.8, bhPerson: 'erwNach25', gdb: '100', blind: 'blind' };
-ck('Blindenhilfe: blind, wenig Einkommen -> möglich, unter der Grenze 2 x 563 + 450 − 110,40 (Heizkostenkomponente) = 1.466 €', L(blind, 'blh') === 'vielleicht' && T(blind, 'blh', 'blh.unter') && T(blind, 'blh', 'blh.unter').grenze === E(1466) && K(blind, 'blh').includes('blh.bayern'));
+ck('Blindenhilfe: blind, wenig Einkommen -> möglich, unter der Grenze 2 x 563 + 450 (Warmmiete, BSG B 8 SO 1/19 R) = 1.576 €', L(blind, 'blh') === 'vielleicht' && T(blind, 'blh', 'blh.unter') && T(blind, 'blh', 'blh.unter').grenze === E(2 * 563 + 450) && K(blind, 'blh').includes('blh.bayern'));
 ck('[blh-grenze] Blindenhilfe: über der Grenze höchstens 40 % angerechnet', T({ ...blind, brutto: 2500, netto: 2500 }, 'blh', 'blh.ueber').prozent === 40);
 ck('[blh-voraus] Blindenhilfe: hochgradig sehbehindert -> nein; nicht blind -> nein', L({ ...blind, blind: 'hoch' }, 'blh') === 'nein' && K({ ...blind, blind: 'hoch' }, 'blh')[0] === 'blh.hoch' && L({ ...blind, blind: '' }, 'blh') === 'nein');
 ck('[blh-verm] Blindenhilfe: Vermögen 15.000 € -> nein', L({ ...blind, vermoegen: 15000 }, 'blh') === 'nein');

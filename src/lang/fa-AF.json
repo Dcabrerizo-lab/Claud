@@ -997,7 +997,7 @@
   "t.lpg.land": "Landespflegegeld فقط در بایرن وجود دارد.",
   "t.lpg.keine": "Landespflegegeld در بایرن از Pflegegrad 2 به بعد داده می‌شود.",
   "t.lpg.ja": "در بایرن از Pflegegrad 2 به بعد Landespflegegeld داده می‌شود: {betrag} در سال (از {stand})، بدون وابستگی به عاید. این علاوه بر Pflegegeld از Pflegekasse است.",
-  "t.lpg.antrag": "درخواست را یک بار در Bayerisches Landesamt für Pflege می‌دهید، بعد از آن پول هر سال می‌آید. زود درخواست بدهید، چون یک مهلت وجود دارد؛ کدام مهلت، Landesamt به شما می‌گوید. پول هر سال حداکثر تا 31 جنوری سال بعد واریز می‌شود.",
+  "t.lpg.antrag": "درخواست را یک بار در Bayerisches Landesamt für Pflege می‌دهید، بعد از آن پول هر سال می‌آید. زود درخواست بدهید، چون یک مهلت وجود دارد؛ کدام مهلت، Landesamt به شما می‌گوید. پول هر سال معمولاً تا 31 جنوری سال بعد واریز می‌شود.",
   "t.lpg.pflegeAntrag": "به محض این‌که Pflegegrad از 2 به بالا تعیین شود، در بایرن علاوه بر آن Landespflegegeld داده می‌شود: {betrag} در سال.",
   "t.kindergeld.familiengeld": "فقط در بایرن: برای اطفالی که تا آخر 2024 تولد شده‌اند، تا روز تولد 3 سالگی هنوز Familiengeld داده می‌شود ({betrag} در ماه، از طفل 3ام به بعد {ab3}) و در صورت رفتن به شیرخوارگاه (Krippe) تا {krippe} Krippengeld در ماه، نظر به عاید. برای اطفالی که از 2025 به بعد تولد شده‌اند، هیچ‌کدام دیگر وجود ندارد.",
   "t.ausweis.gl": "ناشنوا (Merkzeichen Gl): در بعضی ایالت‌ها یک Gehörlosengeld جداگانه وجود دارد، مثلاً در Hessen و Sachsen-Anhalt؛ در بایرن نه. از Versorgungsamt ایالت خود بپرسید.",

@@ -97,17 +97,21 @@ ok('[mb2-wohngeld] VG Bayreuth: zu berücksichtigende Miete 438,00 €', nah(R.w
 // ---------------------------------------------------------------- Pflege
 ok('[mb2-pflege] Kombinationsleistung PG 3, Pflegedienst 1.092,81 € -> 161,73 €', nah(R.pflegeKombi(3, 1092.81), 161.73));
 
-// ---------------------------------------------------------------- Hilfe zur Pflege, Blindenhilfe (§ 85 SGB XII; Pflegestützpunkte Berlin, Infoblatt Nr. 37)
+// ---------------------------------------------------------------- Hilfe zur Pflege, Blindenhilfe (§ 85 Abs. 1 SGB XII; BSG 30.04.2020, B 8 SO 1/19 R)
+// Prüfung 21.11.2026: Heizkosten gehören zu den Aufwendungen für die Unterkunft (BSG-Leitsatz). Der erste Stand von Befund 15 („ohne Heizung“,
+// nach dem Infoblatt Nr. 37 der Pflegestützpunkte Berlin) ist zurückgenommen; geblieben ist der aufgerundete Familienzuschlag (395 €).
 {
   const hz = (o) => karte(Object.assign({ adults: 1, kids: 0, einkommen: [{ art: 'rente', b: 1700, n: 1500, p: 1 }], pflegegrad: '3', gebJahr: 1945 }, o), 'hzp');
   const g = (k) => k.tx[0][1].grenze.eur;
-  ok('[mb2-hzp] Berlin: allein, Unterkunft ohne Heizung 500 € -> 1.626 €', g(hz({ miete: 580, heizkosten: 80 })) === 1626, g(hz({ miete: 580, heizkosten: 80 })));
-  ok('[mb2-hzp] Befund 15: Ehepaar 2.021 € (Familienzuschlag 395 € aufgerundet)', g(hz({ adults: 2, miete: 580, heizkosten: 80 })) === 2021, g(hz({ adults: 2, miete: 580, heizkosten: 80 })));
+  ok('[mb2-hzp] allein, Unterkunft 500 € -> 2 × 563 + 500 = 1.626 €', g(hz({ miete: 500 })) === 1626, g(hz({ miete: 500 })));
+  ok('[mb2-hzp] Befund 15: Ehepaar 2.021 € (Familienzuschlag 395 € aufgerundet, § 85 Abs. 1 Nr. 3)', g(hz({ adults: 2, miete: 500 })) === 2021, g(hz({ adults: 2, miete: 500 })));
   const k3 = hz({ miete: 600, heizkosten: 100, einkommen: [{ art: 'rente', b: 1900, n: 1680, p: 1 }] });
-  ok('[mb2-hzp] Befund 15: Warmmiete 600 € davon Heizung 100 €, Netto 1.680 € -> Grenze 1.626 €, darüber', g(k3) === 1626 && k3.tx[0][0] === 'hzp.ueber', k3.tx);
-  ok('[mb2-hzp] Befund 15: ohne Heizkosten minus Heizkostenkomponente (1 Person 110,40 €)', g(hz({ miete: 610.4 })) === 1626, g(hz({ miete: 610.4 })));
+  ok('[mb2-hzp] BSG B 8 SO 1/19 R: Warmmiete 600 € davon Heizung 100 €, Netto 1.680 € -> Grenze 1.726 €, darunter', g(k3) === 1726 && k3.tx[0][0] === 'hzp.unter', k3.tx);
+  ok('[mb2-hzp] Heizkosten-Angabe ändert die Grenze nicht', g(hz({ miete: 600 })) === 1726 && g(hz({ miete: 600, heizkosten: 250 })) === 1726);
+  const k4 = hz({ miete: 600, heizkosten: 100, einkommen: [{ art: 'rente', b: 1960, n: 1727, p: 1 }] });
+  ok('[mb2-hzp] 1 € über der Grenze -> Text „darüber“, weiter möglich', k4.tx[0][0] === 'hzp.ueber' && k4.level === 'vielleicht', k4.tx);
   const bl = karte({ adults: 1, kids: 0, einkommen: [{ art: 'rente', b: 1900, n: 1680, p: 1 }], miete: 600, heizkosten: 100, blind: 'blind', gdb: '100', gebJahr: 1960, bundesland: 'BY' }, 'blh');
-  ok('[mb2-blh] Befund 15: Blindenhilfe gleiche Grenze ohne Heizung', bl.tx[0][0] === 'blh.ueber' && bl.tx[0][1].grenze.eur === 1626, bl.tx[0]);
+  ok('[mb2-blh] Blindenhilfe: gleiche Grenze mit Heizung (1.726 €)', bl.tx[0][0] === 'blh.unter' && bl.tx[0][1].grenze.eur === 1726, bl.tx[0]);
   const v = (verm) => hz({ adults: 2, miete: 500, vermoegen: verm });
   ok('[mb2-hzp] Schonvermögen Ehepaar 20.000 €', v(20000).level === 'vielleicht' && v(20500).hl === 'vermHoch');
 }
@@ -129,6 +133,8 @@ ok('[mb2-pflege] Kombinationsleistung PG 3, Pflegedienst 1.092,81 € -> 161,73 
   const l = (land, pg) => karte({ adults: 1, kids: 0, einkommen: [{ art: 'rente', b: 1200, n: 1060, p: 1 }], miete: 500, pflegegrad: pg || '2', gebJahr: 1945, bundesland: land }, 'lpg');
   ok('[mb2-lpg] PG 2 in Bayern 500 €, Hessen nein', l('BY').level === 'ja' && l('BY').tx[0][1].betrag.eur === 500 && l('HE').level === 'nein');
   ok('[mb2-lpg] H3: Auszahlung bis 31. Januar (Art. 2 Abs. 4 Satz 2) in allen Sprachen', Object.keys(I18N).every((x) => /31/.test(I18N[x]['t.lpg.antrag'])));
+  // Prüfung 21.11.2026: keine feste Zusage („spätestens“), weil der Antrag noch bis 3 Monate nach Jahresende möglich ist (Art. 3 Abs. 1 Satz 1)
+  ok('[mb2-lpg] H3: „in der Regel“ statt „spätestens“', /in der Regel bis zum 31\. Januar/.test(I18N.de['t.lpg.antrag']) && !/spätestens/.test(I18N.de['t.lpg.antrag']) && /usually/.test(I18N.en['t.lpg.antrag']) && !/at the latest/.test(I18N.en['t.lpg.antrag']));
 }
 
 // ---------------------------------------------------------------- Arbeitslosengeld, Krankengeld (Merkblatt 1 BA; § 153 SGB III; § 47 SGB V)
@@ -138,11 +144,15 @@ ok('[mb2-pflege] Kombinationsleistung PG 3, Pflegedienst 1.092,81 € -> 161,73 
   // Befund 13: amtliches Beispiel 2.400 € brutto, Steuerklasse III, Kind: 1.286,40 € im Monat muss in der Spanne liegen
   const sp = betrag(al({ algMonate: 12, lohnVorher: 2400, adults: 2, kids: 1, kidsAlter: true }));
   ok('[mb2-alg] Befund 13: Merkblatt 1 Abschnitt 4: 1.286,40 € in der Spanne', sp && sp.a.eur <= 1286.4 && sp.b.eur >= 1286.4, sp);
+  // Fester Anker (Prüfung 21.11.2026): bei 2.400 € fällt in Steuerklasse III keine Lohnsteuer an -> oben genau 2.400 × 80 % × 67 % = 1.286,40 -> 1.290 €;
+  // ohne Kind 2.400 × 80 % × 60 % = 1.152 -> 1.150 €; unten 2.400 × 60 % × 67 % = 964,80 -> 960 €. Hängt nicht an der Lohnsteuer-Umsetzung.
+  ok('[mb2-alg] Befund 13: 2.400 € -> genau 960 bis 1.290 € (mit Kind), oben 1.150 € (ohne Kind)', sp.a.eur === 960 && sp.b.eur === 1290 && betrag(al({ algMonate: 12, lohnVorher: 2400 })).b.eur === 1150, sp);
+  ok('[mb2-alg] Sozialversicherungspauschale 20 % (§ 153 Abs. 1 Satz 2 Nr. 1 SGB III)', U.alg.svPausch === 0.2);
   // Obere Grenze nie über 80 % (ohne Lohnsteuer) und bei hohem Lohn unter 80 % (Lohnsteuer Klasse III)
   const hoch = betrag(al({ algMonate: 12, lohnVorher: 8000, kids: 1 }));
   ok('[mb2-alg] Befund 13: 8.000 € brutto, Kind: oben unter 67 % × 80 % (Lohnsteuer III abgezogen)', hoch.b.eur < 0.67 * 0.8 * 8000 - 100 && hoch.b.eur > 0.67 * 0.72 * 8000, hoch);
   const kg = betrag(karte({ adults: 1, kids: 1, kidsAlter: true, art1: 'lohn', brutto: 3000, netto: 2100, miete: 700, arbeitSit: 'krank', krankWochen: 'laeuft', lohnVorher: 3000, gebJahr: 1966 }, 'krankengeld'));
-  ok('[mb2-krank] betanet-Beispiel 3.000 €: 1.655,70 € in der Spanne', kg.a.eur <= 1655.7 && kg.b.eur >= 1655.7, kg);
+  ok('[mb2-krank] § 47 Abs. 1 SGB V zu Fuß: brutto 3.000 €, netto 2.100 € -> 90 % netto 1.890 € minus Beiträge = rund 1.655 € in der Spanne', kg.a.eur <= 1655.7 && kg.b.eur >= 1655.7, kg);
   const kg2 = betrag(karte({ adults: 2, kids: 1, kidsAlter: true, art1: 'lohn', brutto: 2400, netto: 1900, miete: 700, arbeitSit: 'krank', krankWochen: 'laeuft', lohnVorher: 2400, gebJahr: 1980 }, 'krankengeld'));
   // Steuerklasse III, 2.400 €: Netto rund 1.890 €; 90 % = 1.700 € > 70 % brutto 1.680 € -> 1.680 × 0,875 = 1.470 €
   ok('[mb2-krank] Befund 13: 2.400 € Steuerklasse III -> 1.470 € in der Spanne', kg2.a.eur <= 1470 && kg2.b.eur >= 1470, kg2);

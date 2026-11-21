@@ -68,7 +68,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Unterhalt für die Person selbst: voll Einkommen (§ 82 Abs. 1 SGB XII), kein Freibetrag nach § 82 Abs. 3 | ✓ | `unt-sgb12` |
 | Werkstattlohn: Arbeitsförderungsgeld frei, 1/8 RS1 + 50 % frei (§ 82 Abs. 2 Nr. 5, Abs. 3 Satz 2) | ✓ | `gsa-wfbm` |
 | Grundrentenfreibetrag (§ 82a) | ✓ | `gsa-grundrente` |
-| Grundrentenfreibetrag aus der Bruttorente (§ 82a Abs. 1: „aus der gesetzlichen Rente“; DRV „Die Grundsicherung“ 5/2026 S. 18), höchstens die Netto-Rente; Bescheid-Check mit Feld „Rente brutto“, ohne Brutto Hinweis; amtliche Beispiele Gerda M., Max B./Inge M., Harald F., Befund 14 (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-gsa` |
+| Grundrentenfreibetrag aus der Bruttorente (§ 82a Abs. 1: „aus der gesetzlichen Rente“; Antwort der Bundesregierung BT-Drs. 19/27495 S. 16 f.: „Der auf die Bruttorente anzuwendende Grundrentenfreibetrag“; DRV „Die Grundsicherung“ 5/2026 S. 18), höchstens die Netto-Rente; Bescheid-Check mit Feld „Rente brutto“, ohne Brutto Hinweis; amtliche Beispiele Gerda M., Max B./Inge M., Harald F., Befund 14 (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-gsa` |
 | Freibetrag für Betriebs-, Riester- und private Rente (§ 82 Abs. 4), Grundrentenfreibetrag nur auf die gesetzliche Rente | ✓ | `gsa-zusatzrente` |
 | Kinderzuschlag: anderes Elterneinkommen über dem Bedarf voll, Arbeitseinkommen zu 45 % (§ 6a Abs. 6 BKGG) | ✓ | `kiz-anderes` |
 | Versicherungspauschale 30 € einmal je Person, nicht neben Arbeitseinkommen (§ 6 Bürgergeld-V, § 11b Abs. 2 SGB II) | ✓ | `vpausch-person` |
@@ -242,7 +242,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
-| Auszahlung bis 31. Januar des Folgejahres (Art. 2 Abs. 4 Satz 2 BayLPflGG), Satz im Antragshinweis in allen Sprachen; PG 2 in Bayern 500 €, anderes Land nein, Hinweis H3 (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-lpg` |
+| Auszahlung bis 31. Januar des Folgejahres (Art. 2 Abs. 4 Satz 2 BayLPflGG), Satz im Antragshinweis in allen Sprachen, als „in der Regel“ (Antrag bis 3 Monate nach Jahresende möglich, Art. 3 Abs. 1 Satz 1); PG 2 in Bayern 500 €, anderes Land nein, Hinweis H3 (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-lpg` |
 | Ab Pflegegrad 2, Hauptwohnsitz Bayern, unabhängig vom Einkommen; ab dem Pflegegeldjahr 2026 500 € im Jahr (vorher 1.000 €) | ✓ | `lpg-ja` |
 | Nur in Bayern; ohne Pflegegrad 2 nein, bei laufendem Pflegegrad-Antrag möglich | ✓ | `lpg-voraus` |
 | Antrag einmal beim Bayerischen Landesamt für Pflege; Antragsfrist | ◐ (Fristangaben der Quellen widersprüchlich; die App rät zum baldigen Antrag) | `lpg-ja` |
@@ -257,7 +257,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | EU-Bürger ohne Arbeit, unter 5 Jahren: keine Leistungen nach § 23 Abs. 1 SGB XII, Ausnahmen Härte und nach 5 Jahren (§ 23 Abs. 3 Satz 1, 6, 7 SGB XII): „unwahrscheinlich“ wie Grundsicherung im Alter, Hinweis Sozialhilfe (Abruf 20.11.2026) | ✓ | `sh-eu` |
 | Voraussetzung Pflegegrad 2–5 oder laufender Antrag (§ 61a) | ✓ | `hzp-voraus` |
 | Einkommensgrenze: 2 × Regelsatz Stufe 1 + Wohnkosten + 70 % Familienzuschlag (§ 85) | ✓ | `hzp-grenze` |
-| Einkommensgrenze mit Unterkunft ohne Heizung (Infoblatt Nr. 37 Pflegestützpunkte Berlin 12/2025; ohne Angabe minus Heizkostenkomponente wie beim Wohngeld), Familienzuschlag auf volle Euro aufgerundet (395 €, § 85 Abs. 1 Nr. 3), Befund 15 (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-hzp` |
+| Einkommensgrenze: Unterkunft mit Heizung, also ganze Warmmiete (BSG 30.04.2020, B 8 SO 1/19 R, Leitsatz; § 85 nennt die Heizung nicht; manche Träger rechnen ohne Heizung, z. B. Infoblatt Nr. 37 Pflegestützpunkte Berlin 12/2025, deshalb Karte „möglich“ und „etwa“), Familienzuschlag auf volle Euro aufgerundet (395 €, § 85 Abs. 1 Nr. 3), Befund 15 (Abgleich 2 und Prüfung, Abruf 21.11.2026) | ✓ | `mb2-hzp` |
 | Schonvermögen 10.000 € je Erwachsenem, 500 € je unterhaltener Person | ✓ | `hzp-verm` |
 | Heim: Eigenanteil; Unterhalt der Kinder erst ab 100.000 € (§ 94 Abs. 1a) | ◐ | `hzp-heim` |
 | Höhe: hängt von den tatsächlichen Pflegekosten ab | ○ (Kosten werden nicht abgefragt; Karte zeigt „möglich“) | |
@@ -319,7 +319,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Nur für blinde Menschen (§ 72 Abs. 5), nicht bei hochgradiger Sehbehinderung | ✓ | `blh-voraus` |
 | Landesblindengeld wird voll angerechnet (§ 72 Abs. 1 Satz 2); in Bayern meist nur ein kleiner Unterschiedsbetrag | ◐ | `blh-land` |
 | Einkommensgrenze wie bei Hilfe zur Pflege (§ 85), darüber höchstens 40 % eingesetzt (§ 87 Abs. 1 Satz 3) | ✓ | `blh-grenze` |
-| Unterkunft ohne Heizung wie bei Hilfe zur Pflege, Befund 15 (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-blh` |
+| Unterkunft mit Heizung wie bei Hilfe zur Pflege (BSG B 8 SO 1/19 R), Befund 15 (Abgleich 2 und Prüfung, Abruf 21.11.2026) | ✓ | `mb2-blh` |
 | EU-Bürger ohne Arbeit, unter 5 Jahren: Blindenhilfe wie Hilfe zur Pflege ausgeschlossen (§ 23 Abs. 3 SGB XII), Ausnahmen Härte und nach 5 Jahren (Abruf 20.11.2026) | ✓ | `sh-eu` |
 | Schonvermögen 10.000 € je Erwachsenem | ✓ | `blh-verm` |
 | Unter 18 Jahren halber Betrag (§ 72 Abs. 2), Anrechnung von Pflegegeld (§ 72 Abs. 1 Satz 3), Kürzung im Heim (§ 72 Abs. 4) | ◐ | `blh-hinweise` |
@@ -348,7 +348,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
-| Krankengeld: obere Grenze mit dem Netto Steuerklasse III (§ 47 Abs. 1 SGB V); Beispiel betanet 3.000 € (1.655,70 €) in der Spanne, Befund 13 (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-krank` |
+| Krankengeld: obere Grenze mit dem Netto Steuerklasse III (§ 47 Abs. 1 SGB V); Rechnung zu Fuß nach § 47 Abs. 1 SGB V (brutto 3.000 €, netto 2.100 €: rund 1.655 €) in der Spanne, Befund 13 (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-krank` |
 | 2027: Werte der Sozialversicherungs-Rechengrößenverordnung 2027 (BR-Drs. 576/26, Zustimmung Bundesrat 20.11.2026) erst ab 2027 und nur nach Verkündung im BGBl. (Schalter `svrg2027`; Stand 20.11.2026: nicht verkündet, daher auch 2027 Werte 2026): KV-Grenze 6.375 € (Krankengeld, Netto), RV-Grenze 8.850 € (Arbeitslosengeld, Netto), Bezugsgröße 4.130 € (Familienversicherung 590 €, nur noch in „Ich ziehe aus“), Kinderkrankengeld höchstens 148,75 € | ✓ | `recht-geltend` |
 | Minijob-Hinweis bei Krankengeld und Arbeitslosengeld nennt die Grenze des Jahres (2026: 603 €, ab 2027: 633 €), keine feste Zahl im Text | ✓ | `recht-geltend` |
 | Krankengeld 70 % brutto, höchstens 90 % netto, Beitragsbemessungsgrenze (§ 47) | ✓ | `kv-kg` |

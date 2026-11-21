@@ -997,7 +997,7 @@
   "t.lpg.land": "Landespflegegeld یوازې په بایرن کې شته.",
   "t.lpg.keine": "Landespflegegeld په بایرن کې له Pflegegrad 2 څخه ورکول کېږي.",
   "t.lpg.ja": "په بایرن کې له Pflegegrad 2 څخه Landespflegegeld شته: په کال کې {betrag} (له {stand} څخه)، پرته له عاید ته کتلو. دا د Pflegekasse په Pflegegeld سربېره ورکول کېږي.",
-  "t.lpg.antrag": "غوښتنلیک یو ځل په Bayerisches Landesamt für Pflege کې ورکوئ، وروسته پیسې هر کال راځي. ژر یې ورکړئ، ځکه چې موده (Frist) لري؛ کومه موده، Landesamt درته وايي. د یوه کال پیسې تر ټولو وروسته د راتلونکي کال د جنورۍ تر 31 پورې راځي.",
+  "t.lpg.antrag": "غوښتنلیک یو ځل په Bayerisches Landesamt für Pflege کې ورکوئ، وروسته پیسې هر کال راځي. ژر یې ورکړئ، ځکه چې موده (Frist) لري؛ کومه موده، Landesamt درته وايي. د یوه کال پیسې معمولاً د راتلونکي کال د جنورۍ تر 31 پورې راځي.",
   "t.lpg.pflegeAntrag": "کله چې له 2 څخه Pflegegrad وټاکل شي، په بایرن کې سربېره Landespflegegeld شته: په کال کې {betrag}.",
   "t.kindergeld.familiengeld": "یوازې په بایرن کې: د هغو ماشومانو لپاره چې د 2024 تر پایه زېږېدلي، تر 3. کلیزې پورې لا هم Familiengeld شته (په میاشت کې {betrag}، له 3. ماشوم څخه {ab3}) او د Krippe (وړکتون) په حالت کې په میاشت کې تر {krippe} پورې Krippengeld، د عاید له مخې. د هغو ماشومانو لپاره چې له 2025 څخه زېږېدلي، دواړه نور نشته.",
   "t.ausweis.gl": "کوڼ (Merkzeichen Gl): په ځینو ایالتونو کې جلا Gehörlosengeld شته، د بېلګې په توګه په Hessen او Sachsen-Anhalt کې؛ په بایرن کې نشته. ستاسو د ایالت له Versorgungsamt څخه وپوښتئ.",

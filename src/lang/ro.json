@@ -997,7 +997,7 @@
   "t.lpg.land": "Landespflegegeld există doar în Bavaria.",
   "t.lpg.keine": "În Bavaria, Landespflegegeld se acordă de la gradul de îngrijire 2.",
   "t.lpg.ja": "În Bavaria există Landespflegegeld de la gradul de îngrijire 2: {betrag} pe an (din {stand}), indiferent de venit. Se plătește pe lângă Pflegegeld de la Pflegekasse.",
-  "t.lpg.antrag": "Cererea o depui o singură dată la Bayerisches Landesamt für Pflege, apoi banii vin în fiecare an. Depune-o curând, există un termen; care anume îți spune Landesamt. Banii pentru un an vin cel târziu până la 31 ianuarie a anului următor.",
+  "t.lpg.antrag": "Cererea o depui o singură dată la Bayerisches Landesamt für Pflege, apoi banii vin în fiecare an. Depune-o curând, există un termen; care anume îți spune Landesamt. Banii pentru un an vin de obicei până la 31 ianuarie a anului următor.",
   "t.lpg.pflegeAntrag": "De îndată ce se stabilește un grad de îngrijire 2 sau mai mare, Bavaria plătește în plus Landespflegegeld: {betrag} pe an.",
   "t.kindergeld.familiengeld": "Doar în Bavaria: pentru copiii născuți până la sfârșitul lui 2024 există încă Familiengeld până la a 3-a aniversare ({betrag} pe lună, de la al 3-lea copil {ab3}) și, la creșă, până la {krippe} Krippengeld pe lună în funcție de venit. Pentru copiii născuți din 2025 nu mai există niciunul.",
   "t.ausweis.gl": "Surd (mențiunea Gl): unele landuri plătesc propriul Gehörlosengeld, de exemplu Hessa și Saxonia-Anhalt; Bavaria nu. Întreabă la Versorgungsamt din landul tău.",

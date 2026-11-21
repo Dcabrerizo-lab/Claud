@@ -517,9 +517,8 @@ function elterngeld(nettoVorher, geschwister) {
 // ---------- Einkommensgrenze § 85 SGB XII (Hilfe zur Pflege, Blindenhilfe) und Schonvermögen ----------
 function grenze85(e) {
   const personen = (e.adults === 2 ? 2 : 1) + Math.max(0, e.kids | 0) + Math.max(0, e.young | 0);
-  // § 85 Abs. 1 SGB XII: Unterkunft ohne Heizung (ohne Angabe minus Heizkostenkomponente), Familienzuschlag 70 % aufgerundet
-  const hk = zahl(e.heizkosten), miete = zahl(e.miete);
-  return 2 * RB[1] + Math.max(0, miete - (hk > 0 && hk < miete ? hk : heiz(personen))) + Math.ceil(0.7 * RB[1]) * (personen - 1);
+  // § 85 Abs. 1 SGB XII: Unterkunft mit Heizung (BSG 30.04.2020, B 8 SO 1/19 R), Familienzuschlag 70 % auf volle Euro aufgerundet
+  return 2 * RB[1] + zahl(e.miete) + Math.ceil(0.7 * RB[1]) * (personen - 1);
 }
 function schon90(e) { return 10000 * (e.adults === 2 ? 2 : 1) + 500 * (Math.max(0, e.kids | 0) + Math.max(0, e.young | 0)); }
 // ---------- Asylbewerber: Ausschlüsse (§ 7 Abs. 1 SGB II, § 23 Abs. 2 SGB XII, § 7 WoGG, § 6a BKGG mit § 62 EStG) ----------
