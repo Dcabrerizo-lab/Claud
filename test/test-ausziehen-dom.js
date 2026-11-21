@@ -37,7 +37,7 @@ setTimeout(() => {
     check('[az-oberflaeche] Fortschritt auf Kachel', /0 von 9 erledigt/.test($('az-geh-vorher').textContent), $('az-geh-vorher').textContent);
     klick(w, $('az-geh-vorher'));
     check('[az-oberflaeche] Unterseite mit Überschrift', /Bevor du ausziehst/.test($('azH').textContent) && d.activeElement === $('azH'));
-    check('[az-oberflaeche] U25-Warnung sichtbar', /Erst fragen, dann unterschreiben/.test(d.querySelector('.az-warn').textContent));
+    check('[az-oberflaeche] kein großer U25-Kasten, U25-Punkt im normalen Kartenstil', !d.querySelector('.az-warn') && !!$('az-p-u25') && !$('az-p-u25').classList.contains('warn-p') && /Zusicherung/.test($('az-p-u25').textContent));
     check('[az-oberflaeche] Weitere Punkte zugeklappt', !!d.querySelector('.az-weitere') && !d.querySelector('.az-weitere').open);
     check('[az-oberflaeche] Quelle mit Datum in „Quellen und Stand“ am Seitenende, zugeklappt', /Quelle: §[ \u00a0]551 BGB \(abgerufen am 20\.11\.2026\)/.test($('az-q-vertrag').textContent) && $('azQuellen').contains($('az-q-vertrag')) && !$('azQuellen').open && !/Quelle:/.test($('az-p-vertrag').textContent));
     const cb = d.querySelector('[data-az-ab="vertrag"]'); cb.checked = true; cb.dispatchEvent(new w.Event('change', { bubbles: true }));

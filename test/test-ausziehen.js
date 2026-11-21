@@ -20,7 +20,7 @@ const farbe = (id) => { const m = quelltext.match(new RegExp('\\.az-k-' + id + '
 const farben = A.HAUPT.map(farbe);
 check('[az-aufbau] jede Kachel eine eigene Palettenfarbe', new Set(farben).size === A.HAUPT.length, farben);
 check('[az-aufbau] keine Hex-Farben im Modul', !/#[0-9a-fA-F]{6}\b/.test(quelltext));
-check('[az-aufbau] U25-Warnung als Punkt', A.BEREICHE[0].punkte.some((p) => p.id === 'u25' && p.warn));
+check('[az-aufbau] U25-Zusicherung als Punkt (§ 22 Abs. 5 SGB II)', A.BEREICHE[0].punkte.some((p) => p.id === 'u25' && p.q.indexOf('sgb2_22_5') >= 0));
 check('[az-aufbau] Hilfen alle „möglich“', A.BEREICHE.find((b) => b.id === 'hilfen').punkte.every((p) => p.moeglich));
 
 // az-quellen: jede Quelle existiert; Texte mit § oder Zahl haben eine Quelle; Zahlen im Text stehen so in der Quelle bzw. sind belegt
