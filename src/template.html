@@ -907,9 +907,10 @@
   .aufgabe > details > summary::-webkit-details-marker { display: none; }
   .aufgabe > details > summary::before { content: counter(auf); flex: none; display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font-size: .9em; }
   .auf-titel { flex: 1; min-width: 0; hyphens: none; overflow-wrap: anywhere; }
-  .auf-status { flex: none; min-width: 0; font-size: var(--fs-xs); font-weight: 400; color: var(--muted); max-width: 40%; text-align: end; overflow-wrap: anywhere; }
+  .auf-status { flex: 0 1 auto; min-width: 0; font-size: var(--fs-xs); font-weight: 400; color: var(--muted); max-width: 40%; text-align: end; overflow-wrap: anywhere; }
   .auf-status.ok { color: var(--ok); font-weight: 700; }
   .auf-status.fehlt { color: var(--bad); font-weight: 700; }
+  #mappe :is(h2, h3, h4, summary, legend, label, .weg-name) { overflow-wrap: anywhere; } /* Systemschrift 200 %: lange Wörter umbrechen statt seitlich zu scrollen (UX-Nachprüfung 22.11.2026, Nr. 6) */
   .auf-inhalt { display: grid; gap: 10px; padding: 0 16px 14px; }
   .auf-inhalt > p, .auf-inhalt h4 { margin: 0; }
   .auf-inhalt h4 { margin-top: 6px; }
