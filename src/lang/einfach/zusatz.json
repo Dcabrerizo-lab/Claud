@@ -69,5 +69,8 @@
   "bp.vgl.zaehltNicht": "=",
   "bp.vgl.pg": "=",
   "bp.vgl.kein": "=",
-  "bp.vgl.klein": "So rechnet die Pflegekasse. Plus heißt: Du gibst dort mehr Punkte als das Gutachten. Weiter unten steht, bei welchen Fragen."
+  "bp.vgl.klein": "So rechnet die Pflegekasse. Plus heißt: Du gibst dort mehr Punkte als das Gutachten. Weiter unten steht, bei welchen Fragen.",
+  "vg.pin.einfach": "Diese PIN ist zu leicht. Zum Beispiel 123456 oder 111111. Bitte nimm eine andere PIN.",
+  "vg.lesefehler": "SoLo kann deine Angaben gerade nicht lesen. Entsperre dein Handy. Öffne SoLo dann noch einmal. Bis dahin speichert SoLo nichts. So geht nichts verloren.",
+  "f.empfSucheOrt": "In der Suche steht nichts von dir. Schreib deinen Ort selbst dazu."
 }

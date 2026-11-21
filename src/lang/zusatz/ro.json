@@ -68,8 +68,8 @@
   "vgp.sperren": "Blochează cu PIN",
   "vgp.aufheben": "Elimină blocarea",
   "vgp.oeffnen": "Deschide",
-  "vgp.pin": "PIN pentru acest dosar (între 4 și 8 cifre)",
-  "vgp.pinNeu": "PIN pentru acest dosar (între 4 și 8 cifre, recomandat: 6)",
+  "vgp.pin": "PIN pentru acest dosar",
+  "vgp.pinNeu": "PIN pentru acest dosar (între 6 și 8 cifre)",
   "vgp.kurz": "Nume în listă (opțional)",
   "vgp.kurz.t": "Vizibil pentru oricine fără PIN. Lasă gol: apare doar „Dosar blocat”.",
   "vgp.t0": "Aceasta este o protecție la privire, nu o protecție împotriva specialiștilor cu unelte speciale.",
@@ -77,7 +77,7 @@
   "vgp.t2": "Termenele din el le vezi doar cât timp este deschis.",
   "vgp.t3": "Ai uitat PIN-ul? Atunci dosarul este pierdut.",
   "vgp.vergessen": "Ai uitat PIN-ul? Atunci dosarul este pierdut. Îl poți șterge fără PIN.",
-  "vgp.format": "PIN-ul trebuie să aibă între 4 și 8 cifre.",
+  "vgp.format": "PIN-ul trebuie să aibă între 6 și 8 cifre.",
   "vgp.ok": "Dosarul este blocat.",
   "vgp.aufgehoben": "Blocarea a fost eliminată.",
   "vgp.st.offen": "Deschis. La schimbare se blochează din nou.",
@@ -95,5 +95,8 @@
   "bp.vgl.pg": "grad de îngrijire (Pflegegrad) {pg}",
   "bp.vgl.kein": "fără grad de îngrijire (Pflegegrad)",
   "bp.vgl.klein": "Puncte ponderate, așa cum calculează Pflegekasse (§ 15 SGB XI). Plus înseamnă: estimarea ta dă acolo mai multe puncte. Mai jos vezi la ce întrebări exact.",
-  "t.bafoeg.vermTeil": "Averea depășește suma scutită de {verm}. Contează doar partea de peste: împărțită pe 12 luni, reduce BAföG cu aproximativ {monat} pe lună. Amt für Ausbildungsförderung calculează exact."
+  "t.bafoeg.vermTeil": "Averea depășește suma scutită de {verm}. Contează doar partea de peste: împărțită pe 12 luni, reduce BAföG cu aproximativ {monat} pe lună. Amt für Ausbildungsförderung calculează exact.",
+  "vg.pin.einfach": "Acest PIN este ușor de ghicit (de exemplu 123456 sau 111111). Te rugăm să alegi altul.",
+  "vg.lesefehler": "Datele tale nu pot fi citite acum. Deblochează dispozitivul și deschide din nou SoLo. Până atunci SoLo nu salvează nimic, ca să nu se piardă nimic.",
+  "f.empfSucheOrt": "Căutarea nu conține datele tale. Adaugă singur localitatea în motorul de căutare."
 }

@@ -21,7 +21,7 @@ const alles = (s) => Object.values(s.mem).join('\n');
 const GEHEIM = 'Geheimstrasse 7', NAME = 'Familie Geheim';
 
 (async () => {
-  ck('[vorgang-pin] PIN für einen Vorgang: 4 bis 8 Ziffern', V.VPIN_RE.test('1234') && V.VPIN_RE.test('12345678') && !V.VPIN_RE.test('123') && !V.VPIN_RE.test('123456789') && !V.VPIN_RE.test('12a4'));
+  ck('[vorgang-pin] PIN für einen Vorgang (Entsperren): 4 bis 8 Ziffern', V.VPIN_RE.test('1234') && V.VPIN_RE.test('12345678') && !V.VPIN_RE.test('123') && !V.VPIN_RE.test('123456789') && !V.VPIN_RE.test('12a4'));
   ck('[vorgang-pin] PBKDF2 mindestens 210.000 Durchläufe', V.ITER >= 210000);
 
   // Ohne App-PIN: Vorgang sperren, öffnen, schließen, Sperre aufheben
@@ -34,10 +34,10 @@ const GEHEIM = 'Geheimstrasse 7', NAME = 'Familie Geheim';
     t.oeffnen(id); await t.fertig();
     ck('[vorgang-pin] vorher: Angaben im Klartext gespeichert', alles(s).includes(GEHEIM));
     ck('[vorgang-pin] falsches Format wird abgelehnt', (await t.gSperren(id, '12')) === false && (await t.gSperren(id, '123456789')) === false);
-    ck('[vorgang-pin] sperren klappt', await t.gSperren(id, '4711'));
+    ck('[vorgang-pin] sperren klappt', await t.gSperren(id, '471108'));
     await t.fertig();
     ck('[vorgang-pin] nach dem Sperren: Name und Angaben nirgends im Klartext', !alles(s).includes(GEHEIM) && !alles(s).includes(NAME) && !alles(s).includes('2027-01-10'), alles(s));
-    ck('[vorgang-pin] PIN nicht gespeichert', !alles(s).includes('4711'));
+    ck('[vorgang-pin] PIN nicht gespeichert', !alles(s).includes('471108'));
     ck('[vorgang-pin] gesperrter Vorgang war offen: jetzt ist ein anderer geöffnet', t.aktiv().id === id2 && holen(t, 'lotse.state') === '{"s":{"miete":400}}' && s.mem['lotse.state'] === '{"s":{"miete":400}}');
     const g = t.liste().find((v) => v.id === id);
     ck('[vorgang-pin] Liste: gesperrt, neutral (kein Name)', g.gesperrt && !g.offen && g.name === '');
@@ -52,7 +52,7 @@ const GEHEIM = 'Geheimstrasse 7', NAME = 'Familie Geheim';
     for (let i = 0; i < 3; i++) await t.gOeffnen(id, '0000');
     r = await t.gOeffnen(id, '0000');
     ck('[vorgang-pin] 5 Fehlversuche: Wartezeit', !r.ok && r.warten === 30000 && t.gWarten(id) > 0);
-    r = await t.gOeffnen(id, '4711');
+    r = await t.gOeffnen(id, '471108');
     ck('[vorgang-pin] während der Wartezeit auch die richtige PIN nicht', !r.ok && r.warten > 0);
     JSON.parse(s.mem['lotse.vorgaenge']); // Fehlversuche stehen mit im Speicher
     ck('[vorgang-pin] Fehlversuche gespeichert', JSON.parse(s.mem['lotse.vorgaenge']).klar.liste.find((v) => v.id === id).sperre.fehl === 5);
@@ -91,16 +91,16 @@ const GEHEIM = 'Geheimstrasse 7', NAME = 'Familie Geheim';
     const s = speicher({}), t = oeffne(s);
     t.umbenennen(t.aktiv().id, NAME); t.set('lotse.state', JSON.stringify({ p: { strasse: GEHEIM } }));
     const id = t.aktiv().id, id2 = t.neu('Zweiter'); t.oeffnen(id);
-    await t.gSperren(id, '13579'); await t.fertig();
+    await t.gSperren(id, '135792'); await t.fertig();
     const vorher = s.mem['lotse.vorgaenge'];
-    const r = await V.oeffneGesperrt(id, '13579'); await t.fertig();
+    const r = await V.oeffneGesperrt(id, '135792'); await t.fertig();
     ck('[vorgang-pin] oeffneGesperrt: Name und Daten', r.id === id && r.name === NAME && JSON.parse(r.daten['lotse.state']).p.strasse === GEHEIM);
     ck('[vorgang-pin] oeffneGesperrt: nichts zurückgeschrieben, nicht geöffnet', s.mem['lotse.vorgaenge'] === vorher && !alles(s).includes(GEHEIM) && t.aktiv().id === id2 && !t.liste().find((v) => v.id === id).offen);
     r.daten['lotse.state'] = 'x';
-    ck('[vorgang-pin] oeffneGesperrt: Kopie, Änderung wirkt nicht', (await t.oeffneGesperrt(id, '13579')).daten['lotse.state'] !== 'x');
+    ck('[vorgang-pin] oeffneGesperrt: Kopie, Änderung wirkt nicht', (await t.oeffneGesperrt(id, '135792')).daten['lotse.state'] !== 'x');
     let fehl = null; try { await V.oeffneGesperrt(id, '0000'); } catch (e) { fehl = e; }
     ck('[vorgang-pin] oeffneGesperrt: falsche PIN -> reject', fehl && fehl.falsch === true);
-    let fehl2 = null; try { await V.oeffneGesperrt(id2, '13579'); } catch (e) { fehl2 = e; }
+    let fehl2 = null; try { await V.oeffneGesperrt(id2, '135792'); } catch (e) { fehl2 = e; }
     ck('[vorgang-pin] oeffneGesperrt: nicht gesperrter Vorgang -> reject', !!fehl2);
   }
 
@@ -109,7 +109,7 @@ const GEHEIM = 'Geheimstrasse 7', NAME = 'Familie Geheim';
     const s = speicher({}), t = oeffne(s);
     t.set('lotse.state', '{"x":1}'); const a = t.aktiv().id;
     const b = t.kopie(a, 'B');
-    await t.gSperren(a, '1234'); await t.gSperren(b, '1234'); await t.fertig();
+    await t.gSperren(a, '482910'); await t.gSperren(b, '482910'); await t.fertig();
     const l = JSON.parse(s.mem['lotse.vorgaenge']).klar.liste.filter((v) => v.sperre).map((v) => v.sperre);
     ck('[vorgang-pin] zwei gesperrte Vorgänge: verschiedenes Salz, verschiedener IV', l.length === 2 && l[0].salt !== l[1].salt && l[0].iv !== l[1].iv && l[0].ct !== l[1].ct);
     ck('[vorgang-pin] alle gesperrt: neuer leerer Vorgang geöffnet', !t.aktiv().gesperrt && t.liste().length === 3 && s.mem['lotse.state'] === undefined);
@@ -117,7 +117,7 @@ const GEHEIM = 'Geheimstrasse 7', NAME = 'Familie Geheim';
     ck('[vorgang-pin] Löschen ohne PIN', t.loeschen(a) && t.liste().length === 2);
     // Rückgängig nach Löschen: wieder gesperrt, ohne Angaben im Speicher
     const sich = t.sicherung(); t.loeschen(b); t.zurueck(sich); await t.fertig();
-    ck('[vorgang-pin] Rückgängig: wieder gesperrt', t.liste().find((v) => v.id === b).gesperrt && (await t.gOeffnen(b, '1234')).ok && holen(t, 'lotse.state') === '{"x":1}');
+    ck('[vorgang-pin] Rückgängig: wieder gesperrt', t.liste().find((v) => v.id === b).gesperrt && (await t.gOeffnen(b, '482910')).ok && holen(t, 'lotse.state') === '{"x":1}');
   }
 
   // Mit App-PIN: gesperrter Vorgang zusätzlich mit eigener PIN, App-PIN aus: bleibt gesperrt
@@ -125,14 +125,14 @@ const GEHEIM = 'Geheimstrasse 7', NAME = 'Familie Geheim';
     const s = speicher({}), t = oeffne(s);
     t.umbenennen(t.aktiv().id, NAME); t.set('lotse.state', JSON.stringify({ p: { strasse: GEHEIM } }));
     const id = t.aktiv().id; t.neu('Zweiter');
-    await t.pinSetzen('999999');
-    await t.gSperren(id, '4321'); await t.fertig();
+    await t.pinSetzen('990817');
+    await t.gSperren(id, '432187'); await t.fertig();
     const t2 = oeffne(s);
-    await t2.entsperren('999999');
+    await t2.entsperren('990817');
     ck('[vorgang-pin] App-PIN entsperrt: Vorgang bleibt einzeln gesperrt', t2.bereit() && t2.liste().find((v) => v.id === id).gesperrt && t2.ueberall('lotse.state').find((v) => v.id === id).wert === null);
     await t2.pinAus(); await t2.fertig();
     ck('[vorgang-pin] App-PIN aus: gesperrter Vorgang weiter verschlüsselt', !alles(s).includes(GEHEIM) && !alles(s).includes(NAME) && t2.liste().find((v) => v.id === id).gesperrt);
-    const r = await t2.gOeffnen(id, '4321'); await t2.fertig();
+    const r = await t2.gOeffnen(id, '432187'); await t2.fertig();
     ck('[vorgang-pin] danach mit Vorgangs-PIN zu öffnen, nichts im Klartext', r.ok && JSON.parse(holen(t2, 'lotse.state')).p.strasse === GEHEIM && !alles(s).includes(GEHEIM));
   }
 
@@ -141,7 +141,7 @@ const GEHEIM = 'Geheimstrasse 7', NAME = 'Familie Geheim';
     const s = speicher({}), t = oeffne(s, { fehler: () => {} });
     t.umbenennen(t.aktiv().id, NAME); t.set('lotse.state', '{"y":2}'); await t.fertig();
     const id = t.aktiv().id; s.voll = true;
-    const ok = await t.gSperren(id, '1234');
+    const ok = await t.gSperren(id, '482910');
     ck('[vorgang-pin] Speicher voll: nicht gesperrt, Angaben bleiben', ok === false && !t.liste()[0].gesperrt && t.aktiv().id === id && holen(t, 'lotse.state') === '{"y":2}' && t.liste().length === 1);
   }
 
@@ -152,8 +152,8 @@ const GEHEIM = 'Geheimstrasse 7', NAME = 'Familie Geheim';
     const a = t.aktiv().id; t.umbenennen(a, 'A'); t.set('lotse.state', '{"A":1}');
     const b = t.neu('B'); t.set('lotse.state', '{"B":1}');
     const c3 = t.neu('C'); t.set('lotse.state', '{"C":1}'); await t.fertig();
-    await t.gSperren(a, '1234'); await t.fertig(); await t.gOeffnen(a, '1234'); await t.fertig();
-    if (art === 'sperren') await t.gSperren(b, '5678'); else t.loeschen(b);
+    await t.gSperren(a, '482910'); await t.fertig(); await t.gOeffnen(a, '482910'); await t.fertig();
+    if (art === 'sperren') await t.gSperren(b, '567813'); else t.loeschen(b);
     await t.fertig(); await t.fertig();
     ck('[vorgang-pin] geöffneter gesperrter Vorgang bleibt offen (' + art + ' eines anderen)', t.aktiv().id === a && holen(t, 'lotse.state') === '{"A":1}' && !alles(s).includes('{"A":1}') && !alles(s).includes('{\\"A\\":1}'));
     const t2 = oeffne(s); await t2.fertig();
@@ -165,7 +165,7 @@ const GEHEIM = 'Geheimstrasse 7', NAME = 'Familie Geheim';
     const a = t.aktiv().id; t.umbenennen(a, NAME); t.set('lotse.state', JSON.stringify({ p: { strasse: GEHEIM } }));
     const b = t.neu('B'); t.neu('C'); await t.fertig();
     const sich = t.sicherung(); t.loeschen(b);
-    await t.gSperren(a, '1234'); await t.fertig();
+    await t.gSperren(a, '482910'); await t.fertig();
     for (let i = 0; i < 5; i++) await t.gOeffnen(a, '0000');
     t.zurueck(sich); await t.fertig();
     ck('[vorgang-pin] Rückgängig nach dem Sperren: bleibt gesperrt, nichts im Klartext, gelöschter Vorgang wieder da', t.liste().find((v) => v.id === a).gesperrt && !alles(s).includes(GEHEIM) && !alles(s).includes(NAME) && !!t.liste().find((v) => v.id === b));
@@ -173,9 +173,9 @@ const GEHEIM = 'Geheimstrasse 7', NAME = 'Familie Geheim';
     // umgekehrt: Sperre nach der Sicherung aufgehoben und geändert -> Rückgängig holt nicht den alten gesperrten Stand
     const s2 = speicher({}), u = oeffne(s2);
     const x = u.aktiv().id; u.set('lotse.state', '{"x":1}'); const y = u.neu('Y'); await u.fertig();
-    await u.gSperren(x, '1234'); await u.fertig();
+    await u.gSperren(x, '482910'); await u.fertig();
     const sich2 = u.sicherung(); u.loeschen(y);
-    await u.gAufheben(x, '1234'); u.oeffnen(x); u.set('lotse.state', '{"x":2}'); await u.fertig();
+    await u.gAufheben(x, '482910'); u.oeffnen(x); u.set('lotse.state', '{"x":2}'); await u.fertig();
     u.zurueck(sich2); await u.fertig(); await u.fertig();
     ck('[vorgang-pin] Rückgängig nach dem Aufheben: neuer Stand bleibt', !u.liste().find((v) => v.id === x).gesperrt && u.ueberall('lotse.state').find((v) => v.id === x).wert === '{"x":2}');
   }
@@ -183,18 +183,18 @@ const GEHEIM = 'Geheimstrasse 7', NAME = 'Familie Geheim';
   {
     const s = speicher({}), t = oeffne(s);
     const a = t.aktiv().id; t.set('lotse.state', '{"A":1}'); t.neu('B'); await t.fertig();
-    await t.gSperren(a, '1234'); await t.fertig();
+    await t.gSperren(a, '482910'); await t.fertig();
     const r = await Promise.all(Array.from({ length: 12 }, (_, i) => t.oeffneGesperrt(a, String(2000 + i)).then(() => 'ok', (e) => (e.falsch ? 'falsch' : 'warten'))));
     ck('[vorgang-pin] gleichzeitige Versuche: nur 5 geprüft, dann Wartezeit', r.filter((x) => x === 'falsch').length === 5 && r.filter((x) => x === 'warten').length === 7, r.join(','));
-    let spaet = null; try { await t.oeffneGesperrt(a, '1234'); } catch (e) { spaet = e; }
+    let spaet = null; try { await t.oeffneGesperrt(a, '482910'); } catch (e) { spaet = e; }
     ck('[vorgang-pin] in der Wartezeit auch richtige PIN nicht (oeffneGesperrt)', spaet && spaet.warten > 0 && !spaet.falsch);
   }
   // Öffnen bei vollem Speicher: die bisherigen Klartext-Schlüssel des vorher geöffneten Vorgangs bleiben, bis lotse.vorgaenge geschrieben ist
   {
     const s = speicher({}), t = oeffne(s, { fehler: () => {} });
     const a = t.aktiv().id; t.set('lotse.state', '{"A":1}'); const b = t.neu('B'); t.set('lotse.state', '{"B":1}'); await t.fertig();
-    await t.gSperren(a, '1234'); await t.fertig();
-    s.voll = true; await t.gOeffnen(a, '1234'); await t.fertig(); await t.fertig();
+    await t.gSperren(a, '482910'); await t.fertig();
+    s.voll = true; await t.gOeffnen(a, '482910'); await t.fertig(); await t.fertig();
     ck('[vorgang-pin] Öffnen bei vollem Speicher: Angaben des anderen Vorgangs nicht verloren', s.mem['lotse.state'] === '{"B":1}');
     const t2 = oeffne(s); await t2.fertig();
     ck('[vorgang-pin] danach Neustart: anderer Vorgang vollständig', t2.aktiv().id === b && holen(t2, 'lotse.state') === '{"B":1}');

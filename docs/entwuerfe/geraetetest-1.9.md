@@ -102,6 +102,24 @@ Ergebnis an Claude geben: Danach werden Datenschutzerklärung und Store-Angaben 
 | 8.3 | Sprache Somali → Ich ziehe aus → Karte „Unter 25“ (optional) | Text vorhanden, nichts abgeschnitten | | |
 | 8.4 | Sprache Arabisch → Fristen oder „Es ist dringend“ | Unter wichtigen Sätzen klein der deutsche Satz; abschaltbar unter Einstellungen → Anzeige und Sprache | | |
 
+## 9. Sicherheitspunkte mittel/niedrig (nächstes Update, Branch claude/b-sicherheit-mittel)
+
+Nur am Gerät prüfbar. Im Code umgesetzt, aber ohne Gerätetest.
+
+| Nr. | Schritte | Erwartet | Android | iOS |
+|---|---|---|---|---|
+| 9.1 | Brief prüfen → „PDF wählen“: ein digitales PDF und ein eingescanntes PDF (pdf.js 6.5.438, neu) | Text bzw. Seitenbild wird gelesen; keine Fehlermeldung. iPhone möglichst auch mit iOS 15 oder 16 | | |
+| 9.2 | Ganze App einmal durchklicken (Start, Hilfen-Check, Mappe, Brief prüfen, Einstellungen) | Alles bedienbar (Skripte liegen jetzt als eigene Dateien, strenge CSP ohne Inline-Skripte); Enter in einem Formularfeld lädt die App nicht neu | | |
+| 9.3 | Beratung → QR-Code scannen → Foto vom Code. Danach mit Dateimanager oder `adb shell ls /sdcard/Android/data/<Paket>/files/Pictures` nachsehen | Ordner enthält kein `JPEG_…jpg` mehr (Foto nach dem Lesen gelöscht); ebenso nach Neustart der App | | – |
+| 9.4 | Neue PIN „123456“ oder „4711“ festlegen (App-PIN und Vorgang-PIN) | Abgelehnt mit Meldung; „482910“ geht. Eine vorher festgelegte 4-stellige PIN entsperrt weiter | | |
+| 9.5 | Antragsmappe ohne bekannte Anschrift → „Zuständige Stelle … suchen“ | Browser öffnet DuckDuckGo nur mit dem Suchbegriff (kein Ort, keine PLZ); Hinweis „Ort selbst dazuschreiben“ steht beim Link | | |
+| 9.6 | iPhone neu starten, NICHT entsperren; SoLo nicht öffnen. Dann entsperren und SoLo öffnen (Xcode-Log optional) | Angaben vollständig da. Falls einmal „Deine Angaben lassen sich gerade nicht lesen …“ erscheint: verschwindet nach dem Entsperren von selbst, nichts geht verloren | – | |
+
+Nur dokumentiert, nicht im Code geändert (braucht Gerät oder Entscheidung):
+- ML Kit (Android): Netzwerk-Mitschnitt wie Abschnitt 7. Danach Datenschutzerklärung, STORE.md und Play-Formular „Datensicherheit“ angleichen.
+- iOS-Datenschutzklasse: Die Datei der Angaben (SoloSpeicherPlugin.swift) hat weiter „bis zum ersten Entsperren“. Ein Wechsel auf `NSFileProtectionComplete` (Entitlement Data Protection) schützt das gesperrte Gerät besser, aber dann kann SoLo im Hintergrund bei gesperrtem Gerät nicht speichern (Speichern beim Verlassen der App kann scheitern). Erst am Gerät testen: Speichern beim Sperren, Wechsel in den Hintergrund, Sperre nach 2 Minuten.
+- PIN-Schlüssel an Android Keystore / iOS Keychain binden (Schutz gegen Kopie des Speichers): großer Umbau, vorgemerkt.
+
 ## Ergebnis
 
 | Gerät | Modell / Systemversion | Build | Datum | Tester | Alles ✓? |

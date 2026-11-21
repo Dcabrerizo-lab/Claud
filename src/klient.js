@@ -479,4 +479,26 @@ Klient.cacheAufraeumen = (function () {
   }
   return cacheAufraeumen;
 })();
+Klient.fotosAufraeumen = (function () {
+  // Android: Fotos der Kamera liegen nicht im Cache, sondern im App-eigenen Bilderordner (getExternalFilesDir(DIRECTORY_PICTURES),
+  // Capacitor Filesystem: Directory.External = 'EXTERNAL', Unterordner „Pictures“). Dort legen ab:
+  //   - die Dateiauswahl der WebView mit Kamera („QR-Code scannen“, src/weitergabe.js), Capacitor BridgeWebChromeClient.createImageFile,
+  //   - das Kamera-Plugin (Foto eines Formulars), CameraUtils.createImageFile,
+  // beide mit dem Namen JPEG_<JJJJMMTT>_<HHMMSS>_<Zufallszahl>.jpg (File.createTempFile). Die WebView löscht ihr Foto nicht
+  // (Schlussprüfung 21.11.2026, P3). Gelöscht werden nur Dateien mit genau diesem Namen, keine Ordner, nichts außerhalb.
+  // Aufruf: nach dem Einlesen eines QR-Fotos und beim App-Start (Reste nach einem Abbruch). Nur Android (src/app.js).
+  var FOTO = /^JPEG_\d{8}_\d{6}_\d+\.jpg$/;
+  return function fotosAufraeumen(fsys) {
+    if (!fsys || typeof fsys.readdir !== 'function' || typeof fsys.deleteFile !== 'function') return Promise.resolve(0);
+    return Promise.resolve().then(function () { return fsys.readdir({ path: 'Pictures', directory: 'EXTERNAL' }); }).then(function (r) {
+      var namen = ((r && r.files) || []).filter(function (f) {
+        var n = typeof f === 'string' ? f : f && f.name;
+        return typeof n === 'string' && !(f && f.type === 'directory') && FOTO.test(n);
+      }).map(function (f) { return typeof f === 'string' ? f : f.name; });
+      return Promise.all(namen.map(function (n) {
+        return Promise.resolve().then(function () { return fsys.deleteFile({ path: 'Pictures/' + n, directory: 'EXTERNAL' }); }).then(function () { return 1; }, function () { return 0; });
+      })).then(function (a) { return a.reduce(function (x, y) { return x + y; }, 0); });
+    }).catch(function () { return 0; });
+  };
+})();
 if (typeof module !== 'undefined') module.exports = Klient;

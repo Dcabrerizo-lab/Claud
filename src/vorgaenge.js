@@ -16,8 +16,32 @@ const Vorgaenge = (function () {
   var ITER = K.ITER; // PBKDF2-HMAC-SHA-256, 600 000 Durchläufe (src/krypto.js)
   var NAME_MAX = 24;
   var TAG = 86400000;
+  // PIN_RE / VPIN_RE: was zum Entsperren angenommen wird (auch ältere PINs mit 4 oder 5 Ziffern bleiben gültig).
+  // Neue PINs (pinSetzen, gSperren): mindestens 6 Ziffern und keine leicht zu ratende Folge (pinNeuPruefen).
+  // Grund: Wer den Gerätespeicher kopieren kann, probiert 4 Ziffern (10 000 Möglichkeiten) auch mit 600 000 Durchläufen schnell durch;
+  // 6 Ziffern sind 100-mal so viele (Sicherheitsprüfung 21.11.2026, S7).
   var PIN_RE = /^\d{4,12}$/;
-  var VPIN_RE = /^\d{4,8}$/; // PIN für einen einzelnen Vorgang: 4 bis 8 Ziffern
+  var VPIN_RE = /^\d{4,8}$/; // PIN für einen einzelnen Vorgang (Entsperren): 4 bis 8 Ziffern
+  var PIN_NEU_MIN = 6;
+  // Leicht zu raten: alle Ziffern gleich (000000), Ziffernfolge auf- oder absteigend (123456, 987654, auch über 9→0: 789012),
+  // zwei Ziffern im Wechsel (121212) oder ein Block, der sich wiederholt (123123, 1212 12)
+  function pinEinfach(pin) {
+    var s = String(pin), n = s.length, i, auf = true, ab = true;
+    for (i = 1; i < n; i++) {
+      var d = (Number(s[i]) - Number(s[i - 1]) + 10) % 10;
+      if (d !== 1) auf = false;
+      if (d !== 9) ab = false;
+    }
+    if (auf || ab) return true;
+    for (var l = 1; l <= n / 2; l++) { if (n % l === 0 && s.slice(0, l).repeat(n / l) === s) return true; }
+    return false;
+  }
+  // Neue PIN prüfen: '' = in Ordnung, 'laenge' = zu kurz/zu lang/keine Ziffern, 'einfach' = leicht zu raten. max: 12 (App-PIN) oder 8 (Vorgang)
+  function pinNeuPruefen(pin, max) {
+    var s = String(pin == null ? '' : pin);
+    if (!new RegExp('^\\d{' + PIN_NEU_MIN + ',' + (max || 12) + '}$').test(s)) return 'laenge';
+    return pinEinfach(s) ? 'einfach' : '';
+  }
 
   var zufall = K.zufall;
   function neueId() { return Array.prototype.map.call(zufall(6), function (b) { return (b + 256).toString(16).slice(1); }).join(''); }
@@ -67,6 +91,8 @@ const Vorgaenge = (function () {
   function spaetestens(c, tage) { return tage > 0 ? Math.max.apply(null, c.liste.map(function (v) { return ablauf(v, tage); })) : 0; }
   // Schutz gegen schnelles Durchprobieren: die ersten 4 Fehlversuche ohne Wartezeit, dann 30 s, verdoppelt bis höchstens 15 Minuten
   function wartezeit(fehl) { return fehl < 5 ? 0 : Math.min(15 * 60000, 30000 * Math.pow(2, fehl - 5)); }
+  // Uhr, die sich nicht verstellen lässt (seit dem Start der Seite): für die Wartezeit nach Fehlversuchen im laufenden Betrieb
+  function monoton() { try { if (globalThis.performance && typeof globalThis.performance.now === 'function') return globalThis.performance.now(); } catch (e) {} return Date.now(); }
 
   // ----- Verschlüsselung (WebCrypto) -----
   var b64 = K.b64, unb64 = K.unb64, schluessel = K.schluessel, webCrypto = K.webCrypto;
@@ -86,6 +112,14 @@ const Vorgaenge = (function () {
   function tresor(roh, opt) {
     opt = opt || {};
     var meta = null, c = null, key = null, offenG = null, bereit = false, warte = [], kette = Promise.resolve(true), geplant = false;
+    // sperrtGerade: der geöffnete Vorgang wird gerade gesperrt. Bis die Oberfläche neu geladen ist, nimmt set() nichts an
+    // (sonst könnte ein verzögertes Speichern die Angaben des gesperrten Vorgangs in den danach geöffneten schreiben; Prüfung 21.11.2026, P4).
+    var sperrtGerade = false;
+    // Fehlversuche der App-PIN zusätzlich im Arbeitsspeicher mit einer Uhr, die sich nicht verstellen lässt: Zurücksetzen des Zählers
+    // im Speicher oder Vorstellen der Geräteuhr verkürzt die Wartezeit nicht, solange die App läuft (S7). Gegen eine Kopie des Speichers
+    // hilft das nicht; dafür bräuchte es Android Keystore / iOS Keychain (vorgemerkt).
+    var fehlMem = 0, sperreMono = 0;
+    var mono = function () { return opt.mono ? opt.mono() : monoton(); };
     var jetzt = function () { return opt.jetzt ? opt.jetzt() : Date.now(); };
     var fehler = function () { if (opt.fehler) opt.fehler(); };
     function setzen(k, v) { return new Promise(function (res) { roh.set(k, v, function () { fehler(); res(false); }, function () { res(true); }); }); }
@@ -177,8 +211,20 @@ const Vorgaenge = (function () {
       return n;
     }
 
+    // Lesefehler (z. B. iOS: Datei vor dem ersten Entsperren nach dem Einschalten nicht lesbar): nicht wie „leer“ behandeln, sonst würde
+    // ein leerer Stand gespeichert und die Angaben überschrieben (Prüfung 21.11.2026, P6). Bis zum erfolgreichen Lesen bleibt der Tresor
+    // nicht bereit (set() nimmt nichts an); opt.lesefehler(nochmal) meldet es, nochmal() liest erneut. roh.get(key, cb, fehler):
+    // der dritte Aufruf ist freiwillig (ohne ihn gilt wie bisher null = leer).
+    var lesend = false;
+    function lesefehler() {
+      lesend = false;
+      if (opt.lesefehler) opt.lesefehler(function () { if (!bereit && !lesend) init(); });
+    }
     function init() {
+      if (lesend) return;
+      lesend = true;
       roh.get(SCHLUESSEL, function (v) {
+        lesend = false;
         meta = parse(v) || { v: 1, tage: 0 };
         if (meta.pin) {
           // Alles abgelaufen: ohne PIN löschen (das Ablaufdatum steht unverschlüsselt, die Angaben nicht)
@@ -193,46 +239,65 @@ const Vorgaenge = (function () {
           klarDatenEntfernen(); bereit = true; klarDatenSchreiben(); abgelaufenePruefen(true); speichern(); fertig(); return;
         }
         // Daten des geöffneten Vorgangs aus den bisherigen Schlüsseln (auch Speicherstände von vor den Vorgängen)
-        var d = {}, offen = DATEN.length;
+        var d = {}, offen = DATEN.length, kaputt = false;
+        lesend = true;
         DATEN.forEach(function (k) {
           roh.get(k, function (x) {
             if (x != null) d[k] = x;
             if (--offen) return;
+            lesend = false;
+            if (kaputt) { c = null; lesefehler(); return; }
             aktiv(c).daten = d;
             bereit = true; abgelaufenePruefen(true); fertig();
+          }, function () {
+            kaputt = true;
+            if (--offen) return;
+            c = null; lesefehler();
           });
         });
-      });
+      }, lesefehler);
     }
 
-    function sperrRest() { return meta && meta.sperreBis ? Math.max(0, meta.sperreBis - jetzt()) : 0; }
+    // Restliche Wartezeit: höchstens die Wartezeit zum Zähler (Geräteuhr zurückgestellt: keine Sperre für Tage), mindestens der Rest im Arbeitsspeicher
+    function sperrRest() {
+      var r = meta && meta.sperreBis ? Math.max(0, Math.min(meta.sperreBis - jetzt(), wartezeit(meta.fehl || 0))) : 0;
+      return Math.max(r, sperreMono ? Math.max(0, sperreMono - mono()) : 0);
+    }
+    // Ein Versuch nach dem anderen (in der Schreibkette, wie gVersuch): gleichzeitig gestartete Versuche umgehen die Wartezeit nicht (S17)
     function entsperren(pin) {
+      var p = kette.then(function () { return entsperrenJetzt(pin); });
+      kette = p.then(function () { return true; }, function () { return true; });
+      return p;
+    }
+    function entsperrenJetzt(pin) {
+      if (bereit || !meta || !meta.pin) return Promise.resolve({ ok: !!bereit });
       var rest = sperrRest();
       if (rest > 0) return Promise.resolve({ ok: false, warten: rest });
       var p = meta.pin;
-      return schluessel(pin, unb64(p.salt), p.iter).then(function (k) {
+      return schluessel(String(pin), unb64(p.salt), p.iter).then(function (k) {
         return entschluesseln(k, p.iv, p.ct).then(function (obj) {
           if (!gueltig(obj)) throw new Error('ungültig');
           return { k: k, obj: obj };
         });
       }).then(function (r) {
         // außerhalb des Fehlerzweigs: ein Fehler beim Anzeigen zählt nicht als falsche PIN
-        key = r.k; c = r.obj; meta.fehl = 0; meta.sperreBis = 0;
+        key = r.k; c = r.obj; meta.fehl = 0; meta.sperreBis = 0; fehlMem = 0; sperreMono = 0;
         if (!finde(c, c.aktiv)) c.aktiv = c.liste[0].id;
         offenWaehlen();
         bereit = true; abgelaufenePruefen(true); speichern(); fertig();
         return { ok: true };
       }, function () {
-        meta.fehl = (meta.fehl || 0) + 1;
+        fehlMem = Math.max(fehlMem, meta.fehl || 0) + 1;
+        meta.fehl = fehlMem;
         var w = wartezeit(meta.fehl);
-        meta.sperreBis = w ? jetzt() + w : 0;
+        meta.sperreBis = w ? jetzt() + w : 0; sperreMono = w ? mono() + w : 0;
         return setzen(SCHLUESSEL, JSON.stringify(meta)).then(function () { return { ok: false, warten: w }; });
       });
     }
     function pinSetzen(pin) {
-      if (!bereit || !PIN_RE.test(String(pin))) return Promise.resolve(false);
+      if (!bereit || pinNeuPruefen(pin, 12)) return Promise.resolve(false); // neue PIN: 6 bis 12 Ziffern, nicht leicht zu raten
       var salt = zufall(K.SALZ), iter = opt.iter || ITER;
-      return schluessel(pin, salt, iter).then(function (k) {
+      return schluessel(String(pin), salt, iter).then(function (k) {
         var vorher = !key;
         key = k; meta.pin = { salt: b64(salt), iter: iter };
         return kette.then(speichernJetzt).then(function (ok) {
@@ -288,8 +353,9 @@ const Vorgaenge = (function () {
     // Ist es der geöffnete Vorgang, wird danach ein anderer geöffnet (oder ein neuer leerer angelegt): gesperrt heißt sofort zu.
     function gSperren(id, pin, kurz) {
       var v = bereit && finde(c, id);
-      if (!v || gesp(v) || !VPIN_RE.test(String(pin))) return Promise.resolve(false);
+      if (!v || gesp(v) || pinNeuPruefen(pin, 8)) return Promise.resolve(false); // neue PIN: 6 bis 8 Ziffern, nicht leicht zu raten
       var salt = zufall(K.SALZ), iter = opt.iter || ITER;
+      if (c.aktiv === id) sperrtGerade = true; // der geöffnete Vorgang: bis die Oberfläche neu geladen ist, nichts mehr annehmen
       var p = kette.then(function () {
         return schluessel(String(pin), salt, iter).then(function (k) { return verschluesseln(k, { name: v.name, daten: v.daten || {} }); });
       }).then(function (e) {
@@ -305,6 +371,9 @@ const Vorgaenge = (function () {
           return false;
         });
       }, function () { fehler(); return false; });
+      // Erst wenn das Ergebnis feststeht, wieder annehmen. Die App lädt die Oberfläche in der direkt folgenden Reaktion auf das Ergebnis neu
+      // (Mikroaufgabe, vor jedem Zeitgeber und jeder Eingabe), also ohne Lücke für ein verzögertes Speichern.
+      p = p.then(function (ok) { sperrtGerade = false; return ok; }, function () { sperrtGerade = false; return false; });
       kette = p.then(function () { return true; }, function () { return true; }); // nachfolgende Schreibvorgänge erst danach
       return p;
     }
@@ -353,6 +422,7 @@ const Vorgaenge = (function () {
       get: function (k, cb) { if (!bereit) { warte.push([k, cb]); return; } cb(wert(k)); },
       set: function (k, val) { // false: nicht gespeichert (vor dem Laden oder gesperrt)
         if (!bereit) return false; // vor dem Laden oder gesperrt: nichts überschreiben
+        if (sperrtGerade) return false; // der geöffnete Vorgang wird gerade gesperrt: Angaben aus der alten Oberfläche nicht übernehmen
         if (!wertSetzen(c, k, val == null ? null : String(val), jetzt())) return true; // unverändert
         if (klarAktiv()) { if (val == null) roh.remove(k); else roh.set(k, String(val), fehler); }
         speichern(); return true;
@@ -413,6 +483,7 @@ const Vorgaenge = (function () {
         meta.tage = [0, 30, 90].indexOf(Number(n)) >= 0 ? Number(n) : 0;
         abgelaufenePruefen(); speichern(); return meta.tage;
       },
+      sperrtGerade: function () { return sperrtGerade; },
       pinPruefen: function (pin) {
         var p = meta && meta.pin; if (!p || !p.ct || !PIN_RE.test(String(pin))) return Promise.resolve(false);
         return kette.then(function () { p = meta.pin; return schluessel(String(pin), unb64(p.salt), p.iter); }).then(function (k) { return entschluesseln(k, p.iv, p.ct).then(function () { return true; }); }).catch(function () { return false; });
@@ -445,6 +516,6 @@ const Vorgaenge = (function () {
   function oeffneGesperrtAussen(id, pin) { return zuletzt ? zuletzt.oeffneGesperrt(id, pin) : Promise.reject(new Error('kein Tresor')); }
   return { tresor: tresor, oeffneGesperrt: oeffneGesperrtAussen, DATEN: DATEN, SCHLUESSEL: SCHLUESSEL, neu: neu, leer: leer, kopie: kopie, loeschen: loeschen, wertSetzen: wertSetzen, ablauf: ablauf, aufraeumen: aufraeumen,
     wartezeit: wartezeit, nameSauber: nameSauber, schluessel: schluessel, verschluesseln: verschluesseln, entschluesseln: entschluesseln,
-    webCrypto: webCrypto, ITER: ITER, NAME_MAX: NAME_MAX, PIN_RE: PIN_RE, VPIN_RE: VPIN_RE, TAGE: [0, 30, 90] };
+    webCrypto: webCrypto, ITER: ITER, NAME_MAX: NAME_MAX, PIN_RE: PIN_RE, VPIN_RE: VPIN_RE, PIN_NEU_MIN: PIN_NEU_MIN, pinEinfach: pinEinfach, pinNeuPruefen: pinNeuPruefen, TAGE: [0, 30, 90] };
 })();
 if (typeof module !== 'undefined') module.exports = Vorgaenge;
