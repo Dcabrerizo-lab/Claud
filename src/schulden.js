@@ -612,7 +612,7 @@ var Schulden = (function () {
     a.appendChild(el('p', 'eb-kopf', kopfZeile()));
     var spalten = ['nr', 'glaeubiger', 'art'].concat(blattOpt.az ? ['az'] : [], ['anfang', 'jetzt', 'rate', 'faellig', 'stand'], blattOpt.notiz ? ['notiz'] : []);
     var tab = el('table', 'eb-tab'), th = el('thead'), tr = el('tr');
-    spalten.forEach(function (k) { var c = el('th', '', de('sl.col.' + k)); c.scope = 'col'; tr.appendChild(c); });
+    spalten.forEach(function (k) { var c = el('th', ['nr', 'az', 'anfang', 'jetzt', 'rate', 'faellig'].indexOf(k) >= 0 ? 'eb-zahl' : '', de('sl.col.' + k)); c.scope = 'col'; tr.appendChild(c); });
     th.appendChild(tr); tab.appendChild(th);
     var tb = el('tbody');
     blattZeilen().forEach(function (e, i) {
@@ -622,8 +622,13 @@ var Schulden = (function () {
         if (k === 'glaeubiger') {
           c.scope = 'row'; c.appendChild(el('span', '', e.g));
           if (blattOpt.adr && e.adr) e.adr.split('\n').forEach(function (zl) { c.appendChild(el('br')); c.appendChild(el('span', 'small', zl)); });
-        } else c.textContent = k === 'nr' ? String(i + 1) : k === 'art' ? artName(e.art, de) : k === 'az' ? e.az : k === 'anfang' ? (e.anfang === null ? '' : eurDe(e.anfang)) :
+        } else {
+          // Beschriftung je Feld für die Karten-Ansicht auf schmalen Bildschirmen (UX-Audit C Nr. 9: Beträge waren ohne Bezeichnung)
+          if (k === 'nr') c.className = 'eb-nr'; else c.setAttribute('data-l', de('sl.col.' + k));
+          if (['anfang', 'jetzt', 'rate', 'faellig'].indexOf(k) >= 0) c.className = 'eb-zahl';
+          c.textContent = k === 'nr' ? String(i + 1) : k === 'art' ? artName(e.art, de) : k === 'az' ? e.az : k === 'anfang' ? (e.anfang === null ? '' : eurDe(e.anfang)) :
           k === 'jetzt' ? z.jetzt : k === 'rate' ? (e.rate > 0 ? eurDe(e.rate) : '') : k === 'faellig' ? datum(e.faellig, true) : k === 'stand' ? z.stand : e.n;
+        }
         r.appendChild(c);
       });
       tb.appendChild(r);

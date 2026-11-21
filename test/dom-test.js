@@ -126,6 +126,17 @@ check('Zwei Erwachsene werden übernommen', cards().length === KARTEN.length);
 beispiel('p1');
 const vis = (id) => !d.getElementById(id).hidden;
 check('Lohn: Brutto- und Netto-Feld sichtbar', vis('ek1BruttoF') && vis('ek1NettoF') && d.getElementById('ek1NettoLab').textContent === I18N.de['ek.netto']);
+{ // UX-Audit C Nr. 15: „Netto ausrechnen“ direkt unter dem Brutto, Ergebnis als Schätzung in vollen Euro, Übernahme nur per Knopf
+  const nf = d.getElementById('ek1NhF'), nv = d.getElementById('ek1Netto').value, bv = d.getElementById('ek1Brutto').value;
+  check('[ux-c] Netto-Helfer steht direkt unter dem Brutto-Feld', nf.previousElementSibling === d.getElementById('ek1BruttoF') && nf.nextElementSibling === d.getElementById('ek1NettoF'));
+  setNum('ek1Brutto', 3000); d.getElementById('ek1NhBtn').click();
+  d.querySelector('#ek1Nh .wahl-liste button').click(); [...d.querySelectorAll('#ek1Nh .wahl-raster button')][1].click();
+  const z = d.querySelector('#ek1Nh .pf-zahl');
+  check('[ux-c] Netto-Helfer: „ungefähr … (geschätzt)“, volle Euro, Netto-Feld erst nach „Übernehmen“', !!z && /^ungefähr [\d.]+ € im Monat \(geschätzt\)$/.test(z.textContent.replace(/\s/g, ' ')) && d.getElementById('ek1Netto').value === nv, z && z.textContent);
+  [...d.querySelectorAll('#ek1Nh .btns button')].find((b) => b.textContent === I18N.de['nh.uebernehmen']).click();
+  check('[ux-c] Netto-Helfer: Übernahme als ganze Euro', /^\d+$/.test(d.getElementById('ek1Netto').value), d.getElementById('ek1Netto').value);
+  setNum('ek1Brutto', bv); setNum('ek1Netto', nv);
+}
 setSel('ek1Art', 'alg');
 check('Arbeitslosengeld I: kein Brutto-Feld, Betrag laut Bescheid mit Hinweis auf Tagesbetrag', !vis('ek1BruttoF') && vis('ek1NettoF') && d.getElementById('ek1NettoLab').textContent === I18N.de['ek.betrag'] && /Agentur für Arbeit/.test(d.getElementById('ek1NettoHint').textContent));
 setSel('ek1Art', 'kg');
