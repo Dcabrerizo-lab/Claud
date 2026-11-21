@@ -1,6 +1,8 @@
 # Differenztest Kinderzuschlag: zufällige Familien im KiZ-Lotsen der Familienkasse und in SoLo (tools/amtlich-vergleich-kiz.js).
 # Von Hand (workflow_dispatch, sobald die Datei auf main liegt) oder durch Ändern von tools/amtliche-rechner/kiz-vergleich-auftrag.txt
 # auf einem Arbeitszweig (GitHub erlaubt workflow_dispatch nur für Workflows auf main). Höflich: höchstens 400 Abfragen, 2,5 s Pause. Ergebnis als Artefakt "amtlich-kiz".
+# Steht in der Auftragsdatei eine Zeile „gegenprobe: 60,145,…“, fragt der Lauf nur diese Fälle ab (je mit, ohne und mit hohem Unterhalt).
+# Zeit: etwa 24 s je Abfrage, 400 Abfragen also rund 160 min. Das Werkzeug hört nach KIZ_ZEIT_MIN Minuten geordnet auf; die Auswertung läuft immer.
 name: Amtlich KiZ-Vergleich
 
 on:
@@ -19,7 +21,7 @@ permissions:
 jobs:
   vergleich:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 200
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -28,7 +30,14 @@ jobs:
       - name: Browser installieren (bis zu 3 Versuche)
         run: for i in 1 2 3; do timeout 300 npx playwright install --with-deps chromium && exit 0; echo "Versuch $i fehlgeschlagen"; sleep 20; done; exit 1
       - name: KiZ-Lotse abfragen
-        run: node tools/amtlich-vergleich-kiz.js abfragen ${{ inputs.anzahl || '360' }} kiz-lotse.json
+        timeout-minutes: 180
+        env:
+          KIZ_ZEIT_MIN: '170'
+          ANZAHL: ${{ inputs.anzahl || '360' }}
+        run: |
+          LISTE=$(sed -n 's/^gegenprobe: *//p' tools/amtliche-rechner/kiz-vergleich-auftrag.txt | head -1 | tr -cd '0-9,')
+          if [ -n "$LISTE" ] && [ "${{ github.event_name }}" = "push" ]; then node tools/amtlich-vergleich-kiz.js gegenprobe "$LISTE" kiz-lotse.json
+          else node tools/amtlich-vergleich-kiz.js abfragen "$ANZAHL" kiz-lotse.json; fi
       - name: SoLo gegen KiZ-Lotse
         if: always()
         run: node tools/amtlich-vergleich-kiz.js auswerten kiz-lotse.json kiz-auswertung.json | tee kiz-auswertung.txt
