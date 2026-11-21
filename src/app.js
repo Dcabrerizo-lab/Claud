@@ -3134,6 +3134,7 @@
     paRueckPruefen(a); // Rückweg zur Pflege-Ergebnisseite nur auf der Unterseite selbst
     aktAnsicht = a;
     if (a === 'start') sucheRueck = '';
+    if (window.Suche && Suche.offen()) Suche.schliessen(false); // Such-Fenster zu, wenn die App die Ansicht wechselt (z. B. Leiste, Link)
     if (a === 'pflegeinfo' && !herkunft.pflegeinfo) herkunft.pflegeinfo = piZurueckZu; // z. B. über die Adresse #pflegeinfo geöffnet
     if (a !== vorA && herkunft[a] === vorA) herkunftT[a] = { von: vorA, t: vorT };
     $('app').setAttribute('data-ansicht', a);
@@ -4338,8 +4339,7 @@
     else if (id === 'p-hilfe') puOeffnen('pg');
     else if (id === 'p-schaetzen') paOeffnen(true);
     else if (id === 'ausziehen' || k[0] === 'a') { $('goAusziehen').click(); if (k[0] === 'a' && window.Ausziehen) Ausziehen.oeffnen(x); }
-    // Antragsmappe: seit dem aufgeräumten Hilfen-Check (#95) über den grünen Knopf „Briefe … machen“ unter den Karten; ohne Ergebnis nur der Leistungs-Check
-    else if (id === 'mappe') { oeffneVon('leistungen', true); var mk = $('mappeMake'); if (mk && !mk.closest('[hidden]')) { try { mk.scrollIntoView({ block: 'center' }); } catch (e) {} mk.focus({ preventScroll: true }); } }
+    else if (id === 'mappe') { oeffneVon('leistungen', true); var mk = $('mappeMake'); if (mk && !mk.closest('[hidden]')) { try { mk.scrollIntoView({ block: 'center' }); } catch (e) {} mk.focus({ preventScroll: true }); } } // Knopf zur Antragsmappe unter dem Ergebnis (ohne Ergebnis: der Hilfen-Check)
     else if (id === 'einst' || id === 'ordner') { usZeigen(id, '', false); zeigeAnsicht(id, true); }
     else if (k[0] === 'e') { zeigeAnsicht('einst', false); usZeigen('einst', x, true); }
     else if (id === 'o-fristen') { zeigeAnsicht('ordner', false); usZeigen('ordner', 'fristen', true); }
