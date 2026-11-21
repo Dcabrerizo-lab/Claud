@@ -1371,6 +1371,7 @@
   "pf.lohn": "My wages are garnished",
   "pf.lohn.t": "Also pension or unemployment benefit. The employer or the agency pays part to the creditor.",
   "pf.konto": "My account is garnished",
+  "pf.konto.rechnen": "Work out the allowance on the protected account (P-Konto)",
   "pf.konto.t": "The bank blocks money. On a P-account an allowance stays free.",
   "pf.stand": "Values from 1.7.2026 to 30.6.2027 (garnishment exemption notice 2026, § 850c ZPO).",
   "pf.alt": "Note: the garnishment table is set anew every year on 1 July. These values may be out of date.",

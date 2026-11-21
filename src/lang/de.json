@@ -1371,6 +1371,7 @@
   "pf.lohn": "Mein Lohn wird gepfändet",
   "pf.lohn.t": "Auch Rente oder Arbeitslosengeld. Der Arbeitgeber oder die Kasse zahlt einen Teil an den Gläubiger.",
   "pf.konto": "Mein Konto ist gepfändet",
+  "pf.konto.rechnen": "Freibetrag auf dem P-Konto ausrechnen",
   "pf.konto.t": "Die Bank sperrt Geld. Auf einem P-Konto bleibt ein Freibetrag.",
   "pf.stand": "Werte vom 1.7.2026 bis 30.6.2027 (Pfändungsfreigrenzenbekanntmachung 2026, § 850c ZPO).",
   "pf.alt": "Achtung: Die Pfändungstabelle wird jedes Jahr zum 1. Juli neu festgelegt. Diese Werte sind vielleicht nicht mehr aktuell.",

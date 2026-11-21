@@ -193,7 +193,7 @@ var Geld = (function () {
   // Krisen-Check. ziele(art) öffnet das Ziel einer Ergebniskarte.
   function krisenCheck(box, neu) {
     var a = st.kc.a;
-    frage(box, t('kc.h'));
+    if (ber() || st.kc.i < KC.length) frage(box, t('kc.h')); // Ergebnis (Laien): nur eine Überschrift „Das ist zuerst dran“ (UX-Audit C)
     if (ber()) { // Beratungsmodus: alle 7 Fragen auf einer Seite, Ergebnis darunter, als Gesprächsnotiz druckbar
       var fs = box.appendChild(el('fieldset', 'kc-alle ber-nur'));
       KC.forEach(function (k, i) {
@@ -224,17 +224,19 @@ var Geld = (function () {
     essen: ['kc.essen', 'geld'], inkasso: ['gs.inkasso', 'lupe'], liste: ['sl.h', 'liste'], finden: ['sb.finden', 'person'] };
   function ergebnisZeigen(box, a) {
     var e = krisenErgebnis(a), keinJa = e.zuerst[0] === 'liste';
-    var h = el('h3', 'kc-erg', t('kc.erg')); h.id = 'kc-erg'; h.tabIndex = -1; box.appendChild(h);
+    var h = el(ber() ? 'h3' : 'p', ber() ? 'kc-erg' : 'kc-erg pf-frage', t('kc.erg')); h.id = 'kc-erg'; h.tabIndex = -1; box.appendChild(h);
     if (keinJa) box.appendChild(el('p', '', t('kc.keins')));
     var ol = box.appendChild(el('ol', 'kc-liste'));
     var karte = function (ziel, liste) { var li = el('li'); li.appendChild(ctx.kachel('kc-z-' + ziel, KC_KARTE[ziel][1], t(KC_KARTE[ziel][0]), ber() && KC_NORM[ziel] ? KC_NORM[ziel] : '', function () { ctx.ziel(ziel); })); liste.appendChild(li); };
     e.zuerst.forEach(function (z) { karte(z, ol); });
+    var letzte = ol;
     if (e.danach.length) {
       box.appendChild(el('h3', 'kc-danach', t('kc.danach')));
-      var ul = box.appendChild(el('ul', 'kc-liste'));
-      e.danach.forEach(function (z) { karte(z, ul); });
+      // „Danach“ zählt weiter (4., 5. …); „Beratungsstelle finden“ ist immer der letzte nummerierte Schritt (UX-Audit C, 21.11.2026)
+      letzte = box.appendChild(el('ol', 'kc-liste kc-weiter')); letzte.start = e.zuerst.length + 1; letzte.style.counterReset = 'kc ' + e.zuerst.length;
+      e.danach.forEach(function (z) { karte(z, letzte); });
     }
-    var ue = box.appendChild(el('ul', 'kc-liste kc-ende')); karte(e.ende, ue);
+    karte(e.ende, letzte); letzte.lastChild.className = 'kc-ende';
     box.appendChild(el('p', 'small muted', t('kc.hinweis')));
   }
   function notiz(a) {
@@ -404,6 +406,8 @@ var Geld = (function () {
 
   // Bis zum Termin: 6 Haken, je Zeile ein Sprung. Haken 4 (Liste) und 5 (Haushaltsplan) setzen sich von selbst.
   var W_ZIEL = { '1': 'geduld', '2': 'pkonto-rechner', '4': 'liste', '5': 'haushalt' };
+  // Knopftext = Ziel (UX-Audit C, WCAG 2.4.4/2.4.6) statt dreimal „Öffnen“
+  var W_KNOPF = { '1': 'ms.geduld', '2': 'sp.schulden.pf', '4': 'sl.h', '5': 'hb.kachel' };
   function wartezeit(box) {
     frage(box, t('sb.termin'));
     box.appendChild(el('p', 'hint', t('sb.w.lead')));
@@ -414,7 +418,7 @@ var Geld = (function () {
       c.checked = !!(haken.w[k] || auto[k]); if (auto[k]) c.disabled = true;
       c.addEventListener('change', function () { if (c.checked) haken.w[k] = true; else delete haken.w[k]; sichern(); });
       l.appendChild(c); l.appendChild(el('span', '', t('sb.w' + k))); li.appendChild(l);
-      if (W_ZIEL[k]) li.appendChild(knopf('btn ghost klein', t('sb.oeffnen'), function () { ctx.ziel(W_ZIEL[k]); }, { id: 'sb-w-' + k + '-los', 'aria-label': t('sb.oeffnen') + ': ' + t('sb.w' + k) }));
+      if (W_ZIEL[k]) li.appendChild(knopf('btn ghost klein', t(W_KNOPF[k]), function () { ctx.ziel(W_ZIEL[k]); }, { id: 'sb-w-' + k + '-los' }));
     });
     handzettelKnopf(box, 'sb-handzettel');
   }

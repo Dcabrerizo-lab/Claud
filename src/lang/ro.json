@@ -1371,6 +1371,7 @@
   "pf.lohn": "Salariul meu este poprit",
   "pf.lohn.t": "Și pensia sau ajutorul de șomaj. Angajatorul sau casa plătește o parte creditorului.",
   "pf.konto": "Contul meu este poprit",
+  "pf.konto.rechnen": "Calculează suma protejată pe contul protejat (P-Konto)",
   "pf.konto.t": "Banca blochează banii. Pe un cont P rămâne o sumă protejată.",
   "pf.stand": "Valori de la 1.7.2026 până la 30.6.2027 (anunțul privind limitele de poprire 2026, § 850c ZPO).",
   "pf.alt": "Atenție: tabelul de poprire se stabilește din nou în fiecare an la 1 iulie. Aceste valori pot fi depășite.",

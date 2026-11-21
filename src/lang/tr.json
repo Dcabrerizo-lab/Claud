@@ -1371,6 +1371,7 @@
   "pf.lohn": "Maaşıma haciz var",
   "pf.lohn.t": "Emekli maaşı veya işsizlik parası da olabilir. İşveren veya kurum bir kısmını alacaklıya öder.",
   "pf.konto": "Hesabıma haciz var",
+  "pf.konto.rechnen": "Korumalı hesapta (P-Konto) korunan tutarı hesapla",
   "pf.konto.t": "Banka parayı bloke eder. P-hesapta bir muafiyet tutarı kalır.",
   "pf.stand": "1.7.2026 ile 30.6.2027 arası değerler (2026 haciz muafiyet sınırları duyurusu, § 850c ZPO).",
   "pf.alt": "Dikkat: Haciz tablosu her yıl 1 Temmuz'da yeniden belirlenir. Bu değerler güncel olmayabilir.",

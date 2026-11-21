@@ -1371,6 +1371,7 @@
   "pf.lohn": "Moje wynagrodzenie jest zajęte",
   "pf.lohn.t": "Także emerytura lub zasiłek dla bezrobotnych. Pracodawca lub kasa przekazuje część wierzycielowi.",
   "pf.konto": "Moje konto jest zajęte",
+  "pf.konto.rechnen": "Oblicz kwotę wolną na koncie chronionym (P-Konto)",
   "pf.konto.t": "Bank blokuje pieniądze. Na koncie P zostaje kwota wolna.",
   "pf.stand": "Wartości od 1.7.2026 do 30.6.2027 (obwieszczenie o kwotach wolnych od zajęcia 2026, § 850c ZPO).",
   "pf.alt": "Uwaga: tabela zajęć jest ustalana co roku na nowo od 1 lipca. Te wartości mogą być nieaktualne.",

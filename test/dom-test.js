@@ -441,7 +441,7 @@ setTimeout(() => {
     const fall = (f) => box.querySelector('[data-fall="' + f + '"] p').textContent;
     check('[schulden-korr] Vollstreckungsbescheid: darf sofort gepfändet werden, Einspruch 2 Wochen (Notfrist), stoppt nicht von selbst; Widerspruch bis zum Vollstreckungsbescheid', /solange das Gericht noch keinen Vollstreckungsbescheid erlassen hat \(§ 694 ZPO\)/.test(fall('mahn')) && /darf sofort gepfändet werden \(§ 700 ZPO\)\. Dagegen hilft nur noch ein Einspruch\. Er muss innerhalb von 2 Wochen/.test(fall('mahn')) && /Notfrist, §§ 700, 339 ZPO/.test(fall('mahn')) && /nicht von selbst.*§ 719 ZPO/.test(fall('mahn')));
     check('[geld] Mahnbescheid nennt die 2-Wochen-Frist mit Quelle', /2 Wochen.*§ 692 ZPO/.test(box.querySelector('.gs-frist p').textContent));
-    check('[geld] Mahnbescheid: Knopf „In die Schulden-Liste eintragen“', !!box.querySelector('.gs-in-liste'));
+    check('[geld] Mahnbescheid: Knopf „In die Schulden-Liste eintragen“ als Hauptknopf (UX-Audit C)', !!box.querySelector('.gs-in-liste') && !box.querySelector('.gs-in-liste').classList.contains('ghost'));
     // Aufräumen 21.11.2026: alle Fälle gleich aufgebaut – Frist, „Das tust du jetzt“, Knöpfe (Beratungsstelle zuletzt), Quellen
     const aufbau = () => [...box.children].map((e) => (e.className.match(/pf-frage|gs-frist|gs-schritt|gs-tipps|gs-freibetrag|gs-knoepfe|quellen/) || ['?'])[0]).join();
     check('[aufraeumen] Mahnbescheid: Reihenfolge Titel, Frist, Schritte, Knöpfe, Quellen; Beratungsstelle als letzter Knopf', aufbau() === 'pf-frage,gs-frist,gs-schritt,gs-knoepfe,quellen' && box.querySelector('.gs-knoepfe').lastChild.classList.contains('gs-zur-hilfe') && box.querySelectorAll('.gs-schritt li').length === 2 && box.querySelector('.gs-schritt h3').textContent === I18N.de['pf.jetzt.h'], aufbau());
@@ -465,9 +465,10 @@ setTimeout(() => {
     kacheln()[0].click();
     check('[krisencheck] Frage 1 von 7 mit Ja/Nein und „Weiß nicht – weiter“', /1 von 7/.test(box.querySelector('.kc-nr').textContent) && d.getElementById('kc-q').textContent === I18N.de['kc.q1'] && !!d.getElementById('kc-ja') && !!d.getElementById('kc-nein') && !!d.getElementById('kc-weiter'));
     ['kc-ja', 'kc-nein', 'kc-ja', 'kc-ja', 'kc-ja', 'kc-weiter', 'kc-nein'].forEach((id) => d.getElementById(id).click());
-    const zuerst = [...box.querySelectorAll('ol.kc-liste .uk-karte')].map((b) => b.className.match(/kc-z-([a-z]+)/)[1]);
-    const danach = [...box.querySelectorAll('ul.kc-liste:not(.kc-ende) .uk-karte')].map((b) => b.className.match(/kc-z-([a-z]+)/)[1]);
+    const zuerst = [...box.querySelectorAll('ol.kc-liste:not(.kc-weiter) .uk-karte')].map((b) => b.className.match(/kc-z-([a-z]+)/)[1]);
+    const danach = [...box.querySelectorAll('ol.kc-weiter li:not(.kc-ende) .uk-karte')].map((b) => b.className.match(/kc-z-([a-z]+)/)[1]);
     check('[krisencheck] Ergebnis: Mahnbescheid, Miete, Strom zuerst; Konto danach; am Ende Beratungsstelle finden', zuerst.join() === 'mahn,miete,strom' && danach.join() === 'konto' && !!box.querySelector('.kc-ende .kc-z-finden'), zuerst.join() + '|' + danach.join());
+    check('[ux-c] Krisen-Check-Ergebnis: eine Überschrift, Beratung als 5. Schritt', !box.textContent.includes(I18N.de['kc.h']) && box.querySelectorAll('.pf-frage').length === 1 && box.querySelector('ol.kc-weiter').lastChild.querySelector('.kc-z-finden') && box.querySelector('ol.kc-weiter').start === 4);
     box.querySelector('.kc-z-miete').click();
     check('[krisencheck] Ergebniskarte springt in den Fall', box.querySelector('.pf-frage').textContent === I18N.de['gs.d.miete']);
     zur(); zur();
@@ -526,6 +527,7 @@ setTimeout(() => {
     check('[schulden] Quellenzeile nennt Verbraucherzentralen, BAG-SB, Caritas/Diakonie und AG SBV', /Verbraucherzentralen.*BAG-SB.*Caritas.*Diakonie.*AG SBV/.test(box.textContent));
     zur(); kacheln()[1].click();
     check('[beratung-kachel] Bis zum Termin: 6 Haken, Sprünge zu Geduld-Brief, P-Konto, Liste, Haushaltsplan', box.querySelectorAll('.sb-haken input').length === 6 && box.querySelectorAll('.sb-zeile button').length === 4);
+    check('[ux-c] Bis zum Termin: Knopftexte nennen das Ziel (kein „Öffnen“)', [...box.querySelectorAll('.sb-zeile button')].map((b) => b.textContent).join('|') === [I18N.de['ms.geduld'], I18N.de['sp.schulden.pf'], I18N.de['sl.h'], I18N.de['hb.kachel']].join('|'));
     d.getElementById('sb-w-3').click();
     check('[beratung-kachel] Haken wird je Vorgang gespeichert (lotse.beratung-haken)', /"3":true/.test(store['lotse.beratung-haken'] || ''), store['lotse.beratung-haken']);
     zur(); kacheln()[2].click();
@@ -558,9 +560,10 @@ setTimeout(() => {
     const jetztK = [...d.querySelectorAll('#pfInhalt .pf-jetzt li p')].map((x) => x.textContent);
     check('[schulden-korr] Konto: Umwandeln innerhalb eines Monats schützt auch gesperrtes Guthaben (§ 899 Abs. 1 ZPO)', jetztK[0] === I18N.de['pf.tipp.umwandeln'] && /innerhalb eines Monats.*schon gesperrte Guthaben geschützt \(§ 899 Abs\. 1 ZPO\)/.test(jetztK[0]), jetztK[0]);
     const erg = d.querySelector('#pfInhalt .pf-zahl'), tk = d.querySelector('#pfInhalt .pf-zur-hilfe');
-    check('[geld] Nach dem Rechnen: Knopf „Schuldnerberatung“ unter dem Ergebnis', !!erg && !!tk && tk.textContent === I18N.de['sb.h'] && (erg.compareDocumentPosition(tk) & w.Node.DOCUMENT_POSITION_FOLLOWING));
+    check('[geld] Nach dem Rechnen: Knopf „Schuldnerberatung“ unter dem Ergebnis', !!erg && !!tk && tk.textContent === I18N.de['sb.finden'] && !d.querySelector('#pfInhalt .pf-tab') && (erg.compareDocumentPosition(tk) & w.Node.DOCUMENT_POSITION_FOLLOWING));
     tk.click();
-    check('[geld] Knopf öffnet „Schuldnerberatung“', d.getElementById('app').getAttribute('data-ansicht') === 'sparen' && !!box.querySelector('.gs-h-termin'));
+    check('[geld] Knopf öffnet „Beratungsstelle finden“ (ein Name je Ziel, UX-Audit C)', d.getElementById('app').getAttribute('data-ansicht') === 'sparen' && !!d.getElementById('sb-suche'));
+    zur(); check('[ux-c] Zurück aus „Beratungsstelle finden“: Kacheln der Schuldnerberatung', !!box.querySelector('.gs-h-termin'));
     zur();
     check('[geld] Zurück aus „Schuldnerberatung“: 6 Kacheln (kein Kreis zum Rechner)', sicht() === 'sparen' && kacheln().length === 6);
     zur();

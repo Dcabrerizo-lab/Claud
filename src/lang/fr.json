@@ -1371,6 +1371,7 @@
   "pf.lohn": "Mon salaire est saisi",
   "pf.lohn.t": "Aussi retraite ou allocation chômage. L'employeur ou la caisse verse une partie au créancier.",
   "pf.konto": "Mon compte est saisi",
+  "pf.konto.rechnen": "Calculer le montant protégé sur le compte protégé (P-Konto)",
   "pf.konto.t": "La banque bloque l'argent. Sur un compte P, un montant protégé reste disponible.",
   "pf.stand": "Valeurs du 1.7.2026 au 30.6.2027 (avis sur les seuils de saisie 2026, § 850c ZPO).",
   "pf.alt": "Attention : le barème de saisie est fixé chaque année au 1er juillet. Ces valeurs ne sont peut-être plus à jour.",
