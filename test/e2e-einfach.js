@@ -68,7 +68,9 @@ const ergebnis = (p) => p.evaluate(() => {
   await p.click('#mappeClose');
 
   // Speichern: nach Neuladen weiter in der einfachen Version beim Ergebnis
-  await p.reload(); await p.waitForTimeout(300);
+  // „Schließen“ der Mappe geht asynchron im Verlauf zurück (history.go, src/navigation.js): erst abwarten, dann neu laden (sonst Wettlauf)
+  await p.waitForSelector('#einfach', { state: 'visible', timeout: 15000 }).catch(() => {}); await p.waitForTimeout(500);
+  await p.reload(); await p.waitForSelector('#es-neu', { state: 'visible', timeout: 15000 }).catch(() => {});
   ok('Nach Neuladen: einfache Version und Ergebnis noch da', await p.isVisible('#einfach') && /Das kannst du bekommen/.test(await p.textContent('#einfach')));
 
   // Plausibilität: Werkstattlohn 810 € wird einmal nachgefragt

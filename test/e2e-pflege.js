@@ -151,8 +151,14 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   const s2 = await p.inputValue('#pf-wid-text');
   ok('Schreiben enthält Bereich 5 und Inkontinenz mit Beschreibung', /5\.1 Medikamente richten und geben: .*1-mal am Tag, .*3-mal am Tag\. Dreimal täglich Tabletten richten\./.test(s2) && /Harninkontinenz/.test(s2), s2.slice(0, 900));
   // Säugling: Frage 4.K
-  await p.evaluate(() => { localStorage.removeItem('lotse.pflegecheck'); location.hash = '#leistungen'; }); await p.reload(); await sichtbar('#paStart');
-  await p.click('#paStart'); await p.fill('#pa-jahre', '1');
+  // Neu laden auf der Leistungsseite. Nicht „location.hash = …“ und gleich reload(): Der Hash-Wechsel aus „Brief prüfen“ ist eine Ebene
+  // höher, die Navigation geht dafür asynchron im Verlauf zurück (history.go, src/navigation.js). Lädt der Test währenddessen neu,
+  // steht die Seite je nach Zeitpunkt noch auf #briefe und #paStart ist unsichtbar (CI: Klick-Timeout an #paStart, beim Neustart grün).
+  // Deshalb: Speicher leeren, Seite verlassen und frisch mit #leistungen öffnen, dann auf den sichtbaren Knopf warten.
+  await p.evaluate(() => localStorage.removeItem('lotse.pflegecheck'));
+  await p.goto('about:blank'); await p.goto(APP + '#leistungen');
+  await p.waitForSelector('#paStart', { state: 'visible', timeout: 15000 });
+  await p.click('#paStart'); await p.waitForSelector('#pa-jahre', { state: 'visible', timeout: 15000 }); await p.fill('#pa-jahre', '1');
   ok('Unter 2 Jahren: Monate werden gefragt', await p.isVisible('#pa-monate'));
   await p.fill('#pa-monate', '10'); await p.click('text=Weiter ➜');
   await tippe('Nein'); await tippe('Nein'); await tippe('Nein'); await tippe('Ja');
