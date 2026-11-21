@@ -302,14 +302,16 @@ setTimeout(async () => {
   check('[sprachladen] Arabisch: rechts nach links nach dem Nachladen', (setLang('ar'), d.getElementById('app').getAttribute('dir') === 'rtl'));
   // Fehlerfall: Datenblock fehlt (z. B. beschädigte Datei) → Deutsch und kurzer Hinweis
   setLang('de');
-  const frBlock = d.getElementById('solo-sprache-fr'), frVor = frBlock && frBlock.nextSibling, frEltern = frBlock && frBlock.parentNode;
+  // eine noch nicht geparste Sprache nehmen (geparste Blöcke sind schon entfernt)
+  const frBlock = d.querySelector('script[id^="solo-sprache-"]'), fehlL = frBlock ? frBlock.id.replace('solo-sprache-', '') : 'fr';
+  const frVor = frBlock && frBlock.nextSibling, frEltern = frBlock && frBlock.parentNode;
   if (frBlock) frBlock.remove();
-  setLang('fr');
+  setLang(fehlL);
   await new Promise((r) => setTimeout(r, 30));
-  check('[sprachladen] Sprache lädt nicht: Deutsch und Hinweis', d.getElementById('app').getAttribute('lang') === 'de' && d.getElementById('lang').value === 'de' && !!d.getElementById('sprachFehler') && /Deutsch/.test(d.getElementById('sprachFehler').textContent) && d.querySelector('[data-t="nav.ordner"]').textContent === I18N.de['nav.ordner'], d.getElementById('sprachFehler') && d.getElementById('sprachFehler').textContent);
+  check('[sprachladen] Sprache lädt nicht: Deutsch und Hinweis', !!frBlock && d.getElementById('app').getAttribute('lang') === 'de' && d.getElementById('lang').value === 'de' && !!d.getElementById('sprachFehler') && /Deutsch/.test(d.getElementById('sprachFehler').textContent) && d.querySelector('[data-t="nav.ordner"]').textContent === I18N.de['nav.ordner'], d.getElementById('sprachFehler') && d.getElementById('sprachFehler').textContent);
   if (frBlock) frEltern.insertBefore(frBlock, frVor);
-  setLang('fr');
-  check('[sprachladen] Danach geht die Sprache wieder, Hinweis weg', d.getElementById('app').getAttribute('lang') === 'fr' && !d.getElementById('sprachFehler'));
+  setLang(fehlL);
+  check('[sprachladen] Danach geht die Sprache wieder, Hinweis weg', !!frBlock && d.getElementById('app').getAttribute('lang') === fehlL && !d.getElementById('sprachFehler'), fehlL);
   setLang('de');
   // ----- Antrag scannen -----
   setLang('de');
@@ -330,7 +332,7 @@ setTimeout(async () => {
   check('Scan: IBAN wird nie vorausgefüllt, steht in der Liste zum Selbst-Eintragen (zum Abhaken)', !rowOf('IBAN').querySelector('bdi') && !!rowOf('IBAN').querySelector('input[type=checkbox]') && /selbst/.test(d.getElementById('sc-out').textContent));
   check('Scan: Antragswort "Antrag auf Wohngeld" ist kein Feld', !rowOf('Antrag auf Wohngeld'));
   setLang('tr');
-  check('Scan: Erklärung folgt der Sprache (Türkisch), Wert bleibt deutsch', /adınız/.test(rowOf('Name, Vorname').textContent) && rowOf('Name, Vorname').querySelector('bdi').textContent === 'Maria Muster');
+  check('Scan: Erklärung folgt der Sprache (Türkisch), Wert bleibt deutsch', /adın/.test(rowOf('Name, Vorname').textContent) && rowOf('Name, Vorname').querySelector('bdi').textContent === 'Maria Muster');
   setLang('ar');
   check('Scan: Arabisch rendert, Formularzeile bleibt ltr/de', rowOf('Name, Vorname').querySelector('.sc-lab').getAttribute('dir') === 'ltr');
   setLang('de');
