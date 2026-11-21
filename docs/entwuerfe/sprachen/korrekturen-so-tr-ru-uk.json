@@ -1,0 +1,33 @@
+{
+  "so": {
+    "ausziehen/az.p.u25.t": "Qoraal ku weydii Jobcenter kahor intaadan saxiixin heshiiska kirada. Tani sidoo kale way khusaysaa haddii qoyskaagu helo Grundsicherungsgeld ama aad u baahan doonto guuritaanka kadib. Oggolaansho (Zusicherung) la'aan, ilaa aad 25 jir ka noqoto Jobcenter inta badan ma bixiyo kirada, kululaynta iyo qalabka guriga ee ugu horreeya. Sidoo kale waxaad helaysaa lacag ka yar oo nolosha ah (§ 20 Abs. 3 SGB II).\nJobcenter waa inuu oggolaadaa haddii aadan sababo bulsho oo culus awgood ula noolaan karin waalidkaa, haddii guriga loogu baahan yahay shaqo awgeed, ama ay jirto sabab kale oo sidaas oo kale muhiim u ah (§ 22 Abs. 5 SGB II, § 24 Abs. 6 SGB II). Haddii aad ka timid caawimada dhallinyarada (Jugendhilfe), ku qor codsigaaga Jobcenter.\nHore ma u saxiixday? Haddana isla markiiba aad Jobcenter. Haddii sabab muhiim ah awgeed aadan sugi karin, Jobcenter wuu ka tanaasuli karaa oggolaanshaha.",
+    "klient/kw.wie.t": "PIN-ka waxaa nuxurka lagu sireeyaa, PIN la'aanna lama akhrin karo. Tani waa ka ilaalin indhaha dadka kale oo keliya: PIN 6 lambar ah si hubaal ah ugama ilaaliyo khubaro haysta awood xisaabeed oo badan. Waxba kama gudbaan server, nuxurka oo dhan wuxuu ku jiraa koodhka ama faylka.",
+    "haushalt/tv.kuendigung": "Muddada joojintu waxay ku qoran tahay biilkaagii ugu dambeeyay. Sahayda aasaasiga ah (Grundversorgung) waxaad ku joojin kartaa ogeysiis 2 toddobaad ah. Haddii shirkaddu qiimaha kordhiso, waad joojin kartaa isla markiiba, adigoon sugin muddada ogeysiiska.",
+    "schulden/sl.warum.miete": "Deynta kirada awgeed mulkiiluhu wuu joojin karaa heshiiska ogeysiis la'aan: haddii 2 goor oo bixin oo isku xigta lagugu leeyahay wax ka badan hal bil oo kiro ah, ama muddo dheer lagugu leeyahay 2 bilood oo kiro ah. Haddii aad wax walba bixiso ugu dambeyn 2 bilood kadib gaarsiinta dacwadda guri-ka-saaridda, ama xafiisku ballan qaado inuu bixiyo, joojinta ogeysiis la'aanta ahi way buraysaa, laakiin hal mar oo keliya 2 sanaba. Haddii mulkiiluhu sidoo kale si caadi ah (muddo leh) u joojiyay, joojintaasi way sii jiri kartaa inkasta oo la bixiyay. Jobcenter ama Sozialamt waxay qaadi karaan deynta kirada, badanaa sida amaah.",
+    "el.ks.keinWs": "Caadi ahaan warqaddan diidmo (Widerspruch) kama gudbin kartid: waa ogeysiis, maaha go'aan. Haddii xafiisku goor dambe bixiyo wax ka yar, waxaa imaan doona go'aan (Bescheid). Kaas waxaad ka gudbin kartaa diidmo (Widerspruch) hal bil gudaheed. Haddana hadda ka jawaab, taasi goor dambe way ku caawin doontaa.",
+    "el.ks.wsDoch": "Warqaddaada waxaa ku qoran inaad diidmo (Widerspruch) gudbin karto. Markaas waxaa laga yaabaa inay horeba go'aan (Bescheid) tahay. Muddada diidmada caadi ahaan waa hal bil laga bilaabo marka aad warqadda hesho. Si degdeg ah warqadda u tus xarun la-talin.",
+    "sp.schulden.mahn.kurz": "Kadib Vollstreckungsbescheid: racfaan (Einspruch) 2 toddobaad gudahood.",
+    "schulden/ra.keine": "Hadda lacag kuuma harayso oo aad qayb-qayb ugu bixiso. Ka raadso caawimo latalinta deynta (Schuldnerberatung).",
+    "s.rundfunk.tip": "Codsiga dhaqso u gudbi. Ka dhaafiddu waxay ansax tahay laga bilaabo bisha uu Bescheid-kaagu ansax noqdo, xitaa dib u noqosho, laakiin ugu badnaan 3 sano ka hor bisha codsigaaga. Ka dhaafiddu waxay sidoo kale khusaysaa ninkaaga ama xaaskaaga ama lammaanahaaga nolosha ee isla guriga kula deggan.",
+    "zusatz/bp.vgl.klein": "Dhibco miisaaman, sida Pflegekasse u xisaabiso (§ 15 SGB XI). Calaamadda (+) waxay ka dhigan tahay: qiimayntaadu halkaas dhibco ka badan ayay bixisaa. Hoos waxaa ku qoran su’aalaha ay si gaar ah u khusayso."
+  },
+  "tr": {
+    "klient/kw.wie.t": "PIN ile içerik şifrelenir ve PIN olmadan okunamaz. Bu yalnızca meraklı bakışlara karşı bir korumadır: 6 haneli bir PIN, çok fazla işlem gücüne sahip uzmanlara karşı güvenli koruma sağlamaz. Hiçbir şey bir sunucudan geçmez, içeriğin tamamı kodda veya dosyadadır.",
+    "haushalt/tv.kuendigung": "Fesih süresi son faturanda yazar. Temel tedarikte (Grundversorgung) 2 hafta önceden bildirerek feshedebilirsin. Sağlayıcı fiyatı artırırsa süre beklemeden hemen feshedebilirsin.",
+    "schulden/sl.warum.miete": "Kira borcunda ev sahibi bildirimsiz (derhal) fesih yapabilir: art arda 2 vadede bir aylık kiradan fazla borçluysan veya daha uzun bir sürede 2 aylık kira borcun varsa. Tahliye davasının tebliğinden en geç 2 ay sonra her şeyi öder veya kurum ödemeyi üstlenirse bildirimsiz fesih geçersiz olur, ama 2 yılda sadece bir kez. Ev sahibi ayrıca süreli fesih de yaptıysa, bu fesih ödemeye rağmen geçerli kalabilir. Jobcenter veya sosyal yardım dairesi (Sozialamt) kira borcunu üstlenebilir, çoğunlukla kredi olarak.",
+    "gs.d.miete.frist": "Kira borcu nedeniyle bildirimsiz (derhal) fesihten sonra: Tahliye davasının tebliğinden en geç 2 ay sonra ödersen veya resmî kurum borçları üstlenirse fesih geçersiz olur (§ 569 BGB).",
+    "fristen/fri.merken.t": "Süre „Klasörüm“e eklenir. Cihazında kalır.",
+    "fristen/fri.gemerkt": "„Klasörüm“e kaydedildi: {titel}, son gün {datum}.",
+    "fristen/fri.schonDa": "Bu süre zaten „Klasörüm“de var."
+  },
+  "ru": {
+    "haushalt/tv.kuendigung": "Срок расторжения указан в последнем счёте. При базовом снабжении (Grundversorgung) можно расторгнуть договор за 2 недели. Если поставщик повышает цену, можно расторгнуть договор сразу, без соблюдения срока.",
+    "gs.d.miete.frist": "После расторжения договора без предупреждения из-за долгов по аренде: если вы заплатите не позднее 2 месяцев после вручения иска о выселении или ведомство возьмёт долги на себя, расторжение теряет силу (§ 569 BGB).",
+    "sp.schulden.mahn.kurz": "После Vollstreckungsbescheid: протест (Einspruch) в течение 2 недель."
+  },
+  "uk": {
+    "haushalt/tv.kuendigung": "Строк розірвання вказано в останньому рахунку. У базовому постачанні (Grundversorgung) можна розірвати договір за 2 тижні. Якщо постачальник підвищує ціну, можна розірвати договір одразу, без дотримання строку.",
+    "gs.d.miete.frist": "Після розірвання договору без попередження через борги з оренди: якщо ви сплатите не пізніше 2 місяців після вручення позову про виселення або відомство візьме борги на себе, розірвання втрачає силу (§ 569 BGB).",
+    "sp.schulden.mahn.kurz": "Після Vollstreckungsbescheid: скарга (Einspruch) протягом 2 тижнів."
+  }
+}

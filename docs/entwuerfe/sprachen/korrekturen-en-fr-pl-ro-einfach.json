@@ -1,0 +1,222 @@
+{
+ "_stand": "2026-11-21, geprüft gegen origin/claude/test-update-1.9 (38023de, enthält Bündel 1) sowie b-rest-19, b-anschriften-amtlich, b-sicherheit-19, b-suche",
+ "_hinweis": "Nur kritisch und mittel. 'datei' = Fundort im Repo. 'neu' = vorgeschlagener Text. Bei 'texte' ist 'schluessel' der deutsche Quelltext (Zuordnung in einfach/brief/brief.json).",
+ "korrekturen": [
+  {
+   "schwere": "kritisch",
+   "sprache": "einfach",
+   "datei": "src/lang/einfach/brief/brief.json",
+   "schluessel": "Harn: überwiegend oder vollständig inkontinent, oder Katheter/Urostoma",
+   "alt": "Urin: kann ihn meistens oder nie halten, oder hat Katheter oder Urostoma",
+   "neu": "Urin: kann ihn meistens nicht oder nie halten, oder hat Katheter oder Urostoma",
+   "grund": "Sinnumkehr: 'kann ihn meistens halten' = kontinent. Steht schon auf main."
+  },
+  {
+   "schwere": "kritisch",
+   "sprache": "einfach",
+   "datei": "src/lang/einfach/brief/brief.json",
+   "schluessel": "Stuhl: überwiegend oder vollständig inkontinent, oder Stoma",
+   "alt": "Stuhl: kann ihn meistens oder nie halten, oder hat ein Stoma",
+   "neu": "Stuhl: kann ihn meistens nicht oder nie halten, oder hat ein Stoma",
+   "grund": "Sinnumkehr wie oben. Steht schon auf main."
+  },
+  {
+   "schwere": "mittel",
+   "sprache": "en",
+   "datei": "src/lang/en.json",
+   "schluessel": "sp.schulden.mahn.kurz",
+   "alt": "After a Vollstreckungsbescheid: objection within 2 weeks.",
+   "neu": "After a Vollstreckungsbescheid: appeal (Einspruch) within 2 weeks.",
+   "grund": "Einspruch mit dem Wort für Widerspruch übersetzt; Langtext sagt 'appeal (Einspruch)'."
+  },
+  {
+   "schwere": "mittel",
+   "sprache": "fr",
+   "datei": "src/lang/fr.json",
+   "schluessel": "sp.schulden.mahn.kurz",
+   "alt": "Après un Vollstreckungsbescheid : opposition sous 2 semaines.",
+   "neu": "Après un Vollstreckungsbescheid : opposition (Einspruch) sous 2 semaines.",
+   "grund": "Ohne deutschen Begriff nicht von Widerspruch unterscheidbar."
+  },
+  {
+   "schwere": "mittel",
+   "sprache": "pl",
+   "datei": "src/lang/pl.json",
+   "schluessel": "sp.schulden.mahn.kurz",
+   "alt": "Po Vollstreckungsbescheid: sprzeciw w ciągu 2 tygodni.",
+   "neu": "Po Vollstreckungsbescheid: zarzut (Einspruch) w ciągu 2 tygodni.",
+   "grund": "'sprzeciw' = Widerspruch; Langtext nutzt 'zarzut (Einspruch)'."
+  },
+  {
+   "schwere": "mittel",
+   "sprache": "ro",
+   "datei": "src/lang/ro.json",
+   "schluessel": "sp.schulden.mahn.kurz",
+   "alt": "După Vollstreckungsbescheid: opoziție în 2 săptămâni.",
+   "neu": "După Vollstreckungsbescheid: contestație (Einspruch) în 2 săptămâni.",
+   "grund": "'opoziție' = Widerspruch; Langtext nutzt 'contestație (Einspruch)'."
+  },
+  {
+   "schwere": "mittel",
+   "sprache": "pl",
+   "datei": "src/lang/pl.json (Branch b-anschriften-amtlich)",
+   "schluessel": "s.rundfunk.tip",
+   "alt": "… Zwolnienie obejmuje też małżonka lub partnera w tym samym mieszkaniu.",
+   "neu": "… Zwolnienie obejmuje też małżonka lub zarejestrowanego partnera (Lebenspartner) w tym samym mieszkaniu.",
+   "grund": "Lebenspartner = eingetragene Lebenspartnerschaft; 'partner' umfasst auch nichteheliche Partner (keine Befreiung)."
+  },
+  {
+   "schwere": "mittel",
+   "sprache": "ro",
+   "datei": "src/lang/ro.json (Branch b-anschriften-amtlich)",
+   "schluessel": "s.rundfunk.tip",
+   "alt": "… Scutirea acoperă și soțul/soția sau partenerul din aceeași locuință.",
+   "neu": "… Scutirea acoperă și soțul/soția sau partenerul înregistrat (Lebenspartner) din aceeași locuință.",
+   "grund": "wie pl."
+  },
+  {
+   "schwere": "mittel",
+   "sprache": "fr",
+   "datei": "src/lang/fr.json",
+   "schluessel": "pf.tipp.umwandeln.kurz",
+   "alt": "Fais ouvrir un P-Konto dans un délai de 1 mois.",
+   "neu": "Fais transformer ton compte en P-Konto dans un délai de 1 mois.",
+   "grund": "'ouvrir' = neues Konto eröffnen; geschützt wird das gesperrte Guthaben nur bei Umwandlung des gepfändeten Kontos."
+  },
+  {
+   "schwere": "mittel",
+   "sprache": "pl",
+   "datei": "src/lang/pl.json",
+   "schluessel": "pf.tipp.umwandeln.kurz",
+   "alt": "W ciągu 1 miesiąca załóż P-Konto.",
+   "neu": "W ciągu 1 miesiąca przekształć swoje konto w P-Konto.",
+   "grund": "wie fr."
+  },
+  {
+   "schwere": "mittel",
+   "sprache": "ro",
+   "datei": "src/lang/ro.json",
+   "schluessel": "pf.tipp.umwandeln.kurz",
+   "alt": "Deschide un P-Konto în 1 lună.",
+   "neu": "Transformă-ți contul în P-Konto în 1 lună.",
+   "grund": "wie fr."
+  },
+  {
+   "schwere": "mittel",
+   "sprache": "einfach",
+   "datei": "src/lang/einfach/ausziehen.json",
+   "schluessel": "az.p.u25.t",
+   "alt": "… Oder wenn du die Wohnung für die Arbeit brauchst (§ 22 Abs. 5 SGB II, § 24 Abs. 6 SGB II). …",
+   "neu": "… Oder wenn du die Wohnung für die Arbeit brauchst. Oder bei einem anderen, ähnlich wichtigen Grund (§ 22 Abs. 5 SGB II, § 24 Abs. 6 SGB II). …",
+   "grund": "Dritter Anspruchsgrund ('ähnlich wichtiger Grund') fehlt."
+  },
+  {
+   "schwere": "mittel",
+   "sprache": "einfach",
+   "datei": "src/lang/einfach/schulden.json (test-update: Kurzfassung; b-anschriften: Langfassung)",
+   "schluessel": "sl.warum.miete",
+   "alt": "test-update: 'Hast du Miet-Schulden von mehr als einer Monats-Miete? Dann kann der Vermieter dir kündigen. Du kannst die Wohnung verlieren. Das Jobcenter oder Sozial-Amt kann helfen.'",
+   "neu": "Du schuldest an 2 Terminen hintereinander mehr als eine Monats-Miete? Oder über längere Zeit 2 Monats-Mieten? Dann kann der Vermieter fristlos kündigen. Zahlst du alles spätestens 2 Monate, nachdem die Räumungs-Klage bei dir angekommen ist? Oder verspricht das Amt, es zu zahlen? Dann gilt die fristlose Kündigung nicht mehr. Das geht nur einmal in 2 Jahren. Achtung: Hat der Vermieter auch normal gekündigt (mit Frist)? Dann kann diese Kündigung trotzdem bleiben. Das Jobcenter oder Sozial-Amt kann die Miet-Schulden zahlen, meistens als Darlehen.",
+   "grund": "Bedingungen, Heilung durch Zahlung, 'einmal in 2 Jahren' und Vorbehalt ordentliche Kündigung fehlen (b-anschriften-Fassung: nur der Vorbehalt fehlt)."
+  },
+  {
+   "schwere": "mittel",
+   "sprache": "einfach",
+   "datei": "src/lang/einfach/schulden.json",
+   "schluessel": "sl.warum.energie",
+   "alt": "test-update: ohne 2 Abschläge/100 €, ohne 4 Wochen/8 Werktage, ohne Härtefall; b-anschriften: ohne Mahnung und ohne Härtefall",
+   "neu": "Hast du Strom- oder Gas-Schulden? Die Firma darf erst sperren, wenn sie dich gemahnt hat und du mindestens 2 Monats-Beträge und mindestens 100 € schuldest. Sie muss es dir 4 Wochen vorher schreiben und 8 Werk-Tage vorher noch einmal sagen. Trifft dich die Sperre besonders hart, zum Beispiel weil du krank bist? Dann darf sie nicht sperren. Schreib das der Firma. Beim Grund-Versorger kannst du Raten ohne Zinsen verlangen. Bekommst du Geld vom Jobcenter oder Sozial-Amt? Dann frag dort nach einem Darlehen. Das Amt entscheidet im Einzelfall.",
+   "grund": "Schwellen und Härtefall-Ausnahme fehlen."
+  },
+  {
+   "schwere": "mittel",
+   "sprache": "einfach",
+   "datei": "src/lang/einfach/schulden.json",
+   "schluessel": "sl.warum.kranken",
+   "alt": "Schulden bei der Kranken-Kasse? … Mach Raten mit der Kasse aus. Dann bezahlt sie wieder alles.",
+   "neu": "Schulden bei der Kranken-Kasse für 2 Monate? Dann bezahlt die Kasse vielleicht nur noch das Nötigste, zum Beispiel bei starken Schmerzen oder in der Schwangerschaft. Bekommst du Grundsicherungsgeld oder Sozialhilfe? Dann gilt das nicht. Mach Raten mit der Kasse aus. Zahlst du die Raten pünktlich, bezahlt sie wieder alles.",
+   "grund": "Bedingung 'Raten pünktlich' und Ausnahme für Hilfebedürftige fehlen."
+  },
+  {
+   "schwere": "mittel",
+   "sprache": "einfach",
+   "datei": "src/lang/einfach/kostensenkung.json",
+   "schluessel": "el.ks.kern",
+   "alt": "Dieser Brief kürzt meistens noch kein Geld. Das Amt zahlt die Miete meistens noch 6 Monate weiter. Danach zahlt es vielleicht weniger.",
+   "neu": "Dieser Brief kürzt meistens noch kein Geld. Das Amt zahlt die Miete meistens weiter, solange du sie nicht senken kannst. Das sind meistens höchstens 6 Monate. Danach zahlt es vielleicht nur noch bis zur Grenze.",
+   "grund": "Klingt nach sicheren 6 Monaten; Original: solange Senkung nicht möglich, höchstens 6 Monate."
+  },
+  {
+   "schwere": "mittel",
+   "sprache": "einfach",
+   "datei": "src/lang/einfach/kostensenkung.json",
+   "schluessel": "el.ks.tun.umzug",
+   "alt": "Frag vorher das Amt. Sonst zahlt das Amt vielleicht nicht die ganze neue Miete. …",
+   "neu": "Frag vorher das Amt. Unterschreib erst, wenn das Amt Ja gesagt hat. Sonst zahlt das Amt vielleicht nicht die ganze neue Miete. Umzugs-Kosten und Kaution zahlt das Amt nur, wenn es vorher Ja gesagt hat. Bist du jünger als 25? Dann ist das besonders wichtig. Ohne Ja vom Amt zahlt es nach dem Umzug vielleicht gar keine Miete.",
+   "grund": "Bedingung für Umzugskosten/Kaution fehlt."
+  },
+  {
+   "schwere": "mittel",
+   "sprache": "einfach",
+   "datei": "src/lang/einfach/kostensenkung.json",
+   "schluessel": "el.ks.d.karenz",
+   "alt": "… höchstens das 1,5-fache vom normalen Betrag …",
+   "neu": "Im ersten Jahr zahlt das Amt die Miete ohne Heizung meistens ganz. Aber höchstens das 1,5-fache der Grenze an deinem Ort. Was darüber liegt, zahlt das Amt meistens sofort nicht. Bei Kindern oder wenn es nicht anders geht, sind Ausnahmen möglich. Das freie erste Jahr gilt nicht, wenn die Miete über der Mietpreisbremse liegt, über einer Höchstgrenze pro Quadratmeter, oder wenn das Amt für diese Wohnung schon einmal nur die Grenze gezahlt hat. Die 6 Monate fangen meistens erst nach dem ersten Jahr an.",
+   "grund": "Ausnahmen vom Karenzjahr fehlen; 'normaler Betrag' unklar."
+  },
+  {
+   "schwere": "mittel",
+   "sprache": "einfach",
+   "datei": "src/lang/einfach/kostensenkung.json",
+   "schluessel": "el.ks.d.sa",
+   "alt": "Beim Sozialamt ist es fast genauso. Im ersten Jahr zahlt es die Miete meistens ganz. Dann hast du meistens 6 Monate Zeit. Vor einem Umzug musst du das Sozialamt fragen.",
+   "neu": "Beim Sozialamt ist es fast genauso. Im ersten Jahr zahlt es die Miete ohne Heizung meistens ganz, aber höchstens das 1,5-fache der Grenze. Danach hast du meistens höchstens 6 Monate Zeit. Hast du vorher Geld vom Jobcenter bekommen? Dann zählt die Zeit dort mit. Vor einem Umzug musst du das Sozialamt fragen.",
+   "grund": "1,5-fach-Grenze und Anrechnung der Jobcenter-Karenzzeit fehlen."
+  },
+  {
+   "schwere": "mittel",
+   "sprache": "einfach",
+   "datei": "src/lang/einfach/haushalt.json",
+   "schluessel": "hb.hw.mb.schwanger.d",
+   "alt": "… Bis zum Monat der Geburt. …",
+   "neu": "… Bis zum Ende von dem Monat, in dem das Kind geboren wird. …",
+   "grund": "Mehrdeutig (kann als 'vor dem Geburtsmonat' gelesen werden)."
+  },
+  {
+   "schwere": "mittel",
+   "sprache": "einfach",
+   "datei": "src/lang/einfach/haushalt.json",
+   "schluessel": "hb.hw.steuer.d",
+   "alt": "Das gilt für: Hilfe im Haushalt, Handwerker, Arzt-Kosten, Sachen für die Arbeit. Höchstens {a} oder {hw} im Jahr. …",
+   "neu": "Hilfe im Haushalt, Pflege und Handwerker: 20 % der Arbeits-Kosten gehen von der Steuer ab. Höchstens {a} oder {hw} im Jahr. Nur mit Rechnung und Überweisung, nicht bar. Arzt-Kosten zählen erst ab einer bestimmten Höhe. Wer pflegt, bekommt vielleicht {p2}, {p3} oder {p4}. Sachen für die Arbeit zählen erst über {wk}. Hast du wenig Einkommen? Dann bringt es oft nichts.",
+   "grund": "Höchstbeträge fälschlich auch für Arzt-Kosten/Arbeitsmittel; 20 % fehlt."
+  },
+  {
+   "schwere": "mittel",
+   "sprache": "einfach",
+   "datei": "src/lang/einfach/mietgrenze.json",
+   "schluessel": "wgmax.d.heiz",
+   "alt": "… {heiz} im Monat. Das ist bei allen gleich. …",
+   "neu": "… {heiz} im Monat. Der Betrag hängt nur davon ab, wie viele Personen im Haushalt leben. …",
+   "grund": "Falsch: Betrag hängt von der Personenzahl ab ({personen} im Original)."
+  },
+  {
+   "schwere": "mittel",
+   "sprache": "einfach",
+   "datei": "src/lang/einfach/brief/brief.json (nur test-update-1.9, b-rest-19)",
+   "schluessel": "Rente mit 33 Jahren Grundrentenzeiten",
+   "alt": "Rente nach 33 Jahren Arbeit (Grundrente)",
+   "neu": "Rente mit mindestens 33 Jahren Grundrenten-Zeiten (zum Beispiel Arbeit, Kinder-Erziehung, Pflege)",
+   "grund": "Grundrentenzeiten sind nicht nur Arbeit."
+  },
+  {
+   "schwere": "mittel",
+   "sprache": "einfach",
+   "datei": "src/lang/einfach/brief/brief.json (nur test-update-1.9, b-rest-19)",
+   "schluessel": "Gesetzliche Rente brutto (wichtig bei 33 Jahren Grundrentenzeiten)",
+   "alt": "Rente von der Rentenversicherung vor Abzügen (wichtig bei Grundrente nach 33 Jahren)",
+   "neu": "Rente von der Rentenversicherung vor Abzügen (wichtig bei mindestens 33 Jahren Grundrenten-Zeiten)",
+   "grund": "'Grundrente nach 33 Jahren' kann als Alter 33 oder 33 Arbeitsjahre missverstanden werden."
+  }
+ ]
+}

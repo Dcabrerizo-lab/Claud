@@ -63,3 +63,7 @@ Sprachen nur bei Bedarf laden (Datei real 6,35 MB, Grenze vorläufig 7 MB Bytes)
 - Pfändung (Justiz NRW, 300 Fälle): 300/300 auf den Cent; BGBl.-Fundstelle in src/rules.js prüfen (weicht von Justiz NRW ab).
 - KiZ: Bericht steht aus (Agent lief noch, PR #103).
 Berichte: /home/claude/ausgabe/amtlich/ (alte Sitzung) – Kopien in docs/entwuerfe/pruefungen-21-11/ nachlegen.
+
+## Sprachen (21.11.)
+- Glossar amtlicher Begriffe: docs/entwuerfe/sprachen/glossar.json/.md, Abgleich glossar-abgleich.md/.json (Abweichungen: ar 89, so 73, ps 54, fa-AF 48, fa 47 …). Fürs nächste Update: Begriffe je Sprache vereinheitlichen (z. B. ar „Frist“ = مهلة statt موعد; „Bescheid“ in fa/fa-AF/ps/so übersetzen statt deutsch lassen; en decision vs notice; pl sprzeciw), höfliche Anrede, Dari-Wortschatz.
+- Für fa-AF, ps, so gibt es keine amtlichen Übersetzungen (nur Integreat) → besonders vorsichtig, Deutsch-Netz (#112) als Absicherung.
