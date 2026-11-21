@@ -348,26 +348,20 @@
   .card.auf > details.karte > summary::-webkit-details-marker { display: none; }
   .card.auf > details.karte > summary .head2 { color: var(--muted); font-weight: 600; }
   .karte-mehr::after { content: attr(data-mehr) " ▾"; color: var(--accent); font-weight: 700; font-size: .9em; }
-  details.karte[open] .karte-mehr::after, details.gutwissen[open] .karte-mehr::after { content: attr(data-weniger) " ▴"; }
+  details.karte[open] .karte-mehr::after { content: attr(data-weniger) " ▴"; }
   .card.auf > details.karte > :not(summary) { margin: 0 18px; }
   .card.auf > details.karte > :last-child { margin-bottom: 16px; }
   .card.auf > details.karte[open] > summary { padding-bottom: 8px; }
   .card.auf .body, .card.auf .zust { margin-bottom: 10px; }
-  /* Zwei Wege: Grundsicherungsgeld oder Wohngeld und Kinderzuschlag */
-  .zweiwege { background: var(--surface); border: 2px solid var(--accent); border-radius: var(--r-card); padding: 16px 18px; display: grid; gap: 10px; margin-bottom: 16px; }
+  /* Zwei Wege / Entweder oder: kurzer Tipp (details.mehr.tipp), darin die beiden Wege */
   .ww-wege { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
   .ww-weg { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; gap: 6px; align-content: start; }
   .ww-weg h4 { margin: 0; font-size: 1em; }
   .ww-l { display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 44px; color: var(--ink); text-decoration: none; border-top: 1px dashed var(--line); padding-top: 6px; }
   .ww-l > span:first-child { text-decoration: underline; text-decoration-color: var(--accent); }
   .ww-regel { margin: 0; }
-  .ww-tun { margin: 0; background: var(--ok-bg); color: var(--ink); border-radius: 8px; padding: 8px 12px; }
+  .ww-tun { margin: 0; }
   .karte-hinweis { background: var(--hint-bg); color: var(--hint); border-radius: 14px; padding: 8px 12px; margin: 8px 0 0; }
-  .gutwissen { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-card); padding: 4px 18px; }
-  .gutwissen > summary { min-height: 48px; color: var(--ink); display: grid; gap: 4px; padding: 12px 0; list-style: none; cursor: pointer; }
-  .gutwissen > summary::-webkit-details-marker { display: none; }
-  .gw-titel { font-weight: 700; }
-  .gutwissen ul { margin: 0 0 12px; padding-inline-start: 20px; display: grid; gap: 8px; }
   /* Beratungsmodus: Rechtsgrundlage; Unterlagen-Checkliste; Übersicht der Mappe; Ergebnisblatt */
   .recht { margin: 8px 0 0; font-size: 0.92em; color: var(--muted); }
   .haken-liste { list-style: none; padding: 0; margin: 4px 0; display: grid; gap: 4px; }
@@ -565,9 +559,17 @@
   .together { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 10px; }
   .together ul { margin: 0; padding-inline-start: 20px; display: grid; gap: 8px; }
 
-  .helper { background: var(--surface); border: 2px solid var(--accent); border-radius: var(--r-card); padding: 18px; display: grid; gap: 16px; }
-  .helper .two { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); }
-  @media (min-width: 560px) { .helper .two { grid-template-columns: 1fr 1fr; } }
+  /* Antragsmappe: Angaben für die Briefe (ohne Kasten), Name und Anschrift erst hier */
+  .mappe-angaben { display: grid; gap: 16px; }
+  .mappe-angaben > p { margin: 0; }
+  .mappe-angaben .two { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 560px) { .mappe-angaben .two { grid-template-columns: 1fr 1fr; } }
+  /* Ergebnis: grüner Hauptknopf direkt unter den passenden Karten, darunter kurze Tipps */
+  .erg-knopf { margin: 4px 0 8px; }
+  .erg-knopf .btn { width: 100%; }
+  .erg-tipps { display: grid; gap: 0; margin: 0 0 8px; }
+  details.mehr.tipp > :is(div, ul, ol) { color: var(--ink); font-size: .95em; margin: 0 0 10px; }
+  details.mehr.tipp ul { padding-inline-start: 20px; display: grid; gap: 6px; }
   .btn {
     font: inherit; font-weight: 700; background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 8px;
     min-height: 48px; padding: 0 20px; cursor: pointer;
@@ -631,7 +633,7 @@
      Auswahlfelder werden nicht breiter als ihre Spalte, die Regeltabelle steht auf schmalen Bildschirmen untereinander. */
   .app { overflow-wrap: anywhere; hyphens: auto; }
   .results, .card, fieldset, .field, .cols > *, form, .formgrid, .checks, .ekbox, .subbox, .card .behoerde, details .inner, details ul,
-  .neinbox, .together, .together ul, .helper, .scan, .scan .box, .sc-list, .sc-row, .foot, #legal, #mappe, .es-nav1 { grid-template-columns: minmax(0, 1fr); }
+  .neinbox, .together, .together ul, .mappe-angaben, .scan, .scan .box, .sc-list, .sc-row, .foot, #legal, #mappe, .es-nav1 { grid-template-columns: minmax(0, 1fr); }
   .seg { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .seg label { white-space: normal; text-align: center; }
   select { max-width: 100%; min-width: 0; overflow: hidden; text-overflow: ellipsis; } /* WebKit: langer Eintrag läuft sonst über die Spalte hinaus */
@@ -1079,11 +1081,6 @@
   .app[data-ansicht="ordner"] #or-schulden .zeile-sym { background: var(--c-sparen); } /* gruppe ordner */
   .app[data-ansicht="ordner"] #or-schulden .zeile-sym { color: var(--on-c); }
   /* ===== Ende Gruppenfarben ===== */
-  .hinweis-koralle { display: flex; gap: 12px; align-items: flex-start; background: var(--hint-bg); color: var(--hint); border-radius: var(--r-item); padding: 14px 16px; margin: 4px 0 0; font-weight: 700; }
-  .hinweis-koralle > svg { flex: none; width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; margin-top: 1px; }
-  .hinweis-koralle p { margin: 0; }
-  .hinweis-koralle.beratung > div { display: grid; gap: 4px; }
-  .hinweis-koralle.beratung > div > p:not(.b-titel) { font-weight: 400; color: var(--ink); font-size: .92em; }
   /* Gemeinsames Info-Bauteil „ⓘ Mehr dazu“ (überall gleich): Text bleibt zu, bis man ihn antippt */
   details.mehr { border-top: 0; padding-top: 0; margin: 2px 0 0; }
   details.mehr > summary { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-size: .92em; font-weight: 700; color: var(--accent); cursor: pointer; list-style: none; }
@@ -1109,11 +1106,11 @@
      .mehr-liste („Weitere Punkte (4)“, „Weitere Leistungen“, Erledigt-Liste) ohne i-Symbol, weil darin Karten stehen */
   details.mehr.mehr-block > :not(summary), details.mehr.mehr-liste > :not(summary) { color: var(--ink); font-size: 1em; margin: 0 0 10px; }
   details.mehr.mehr-liste > summary::before { content: none; display: none; }
-  .form-ende { display: grid; gap: 8px; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); }
   .rb-satz { margin: 12px 0 0; }
-  .ww-mehr > :not(summary) { color: var(--ink); font-size: 1em; margin-bottom: 10px; }
-  .form-ende .loeschzeile { margin: 0 0 16px; padding-top: 0; border-top: 0; }
-  .form-ende .es-link { margin: 0; }
+  .sf-leiste .sf-kurz { flex-basis: 100%; margin: 0; }
+  /* Startseite: Datenschutz als kleine Zeile ohne Kasten */
+  .start-sicher { display: flex; gap: 8px; align-items: center; margin: 14px 0 0; color: var(--muted); font-size: var(--fs-xs); }
+  .start-sicher > svg { flex: none; width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
   .empf-mehr { margin: 10px 0 4px; }
   .summary .res-satz { flex-basis: 100%; font-size: 1.05em; font-weight: 700; }
   .summary h2 { font-weight: 900; }
@@ -1168,9 +1165,7 @@
   .pill { border: 0; border-radius: var(--r-tag); padding: 3px 8px; font-size: var(--fs-xs); overflow-wrap: normal; word-break: normal; box-shadow: none; }
 
   /* --- Hinweis-Kästen: Tipp (ruhig), Achtung (--warn), Frist/Fehler (--bad) --- */
-  .karte-hinweis, .hinweis-koralle, .pp-hinweis, .el-erkl { background: var(--hint-bg); color: var(--hint); border-inline-start: 4px solid var(--hint-rand); border-radius: var(--r-feld); }
-  .hinweis-koralle { font-weight: 600; }
-  .hinweis-koralle.beratung > div > p:not(.b-titel) { font-size: var(--fs-s); }
+  .karte-hinweis, .pp-hinweis, .el-erkl { background: var(--hint-bg); color: var(--hint); border-inline-start: 4px solid var(--hint-rand); border-radius: var(--r-feld); }
 
   /* --- Frist: ein festes, auffälliges Muster, immer ganz oben (Brief prüfen, Startseite, Mein Ordner, Bescheide) ---
      Aufbau: <div class="frist" role="note"><p class="frist-wann">Frist: bis 12.12.2026</p><p>Satz, was zu tun ist.</p></div>
@@ -1267,7 +1262,7 @@
         <button type="button" class="sk sk-geld" id="goGeld"><span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M6 7l9.6-2.9A1 1 0 0 1 17 5v2"/><path d="M21 11h-4.5a2 2 0 0 0 0 4H21"/><circle cx="16.6" cy="13" r=".6"/></svg></span><span class="sk-txt"><b data-t="home.geld"></b><span data-t="home.geld.t"></span></span></button>
         <button type="button" class="sk sk-ausziehen" id="goAusziehen"><span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 11l8-6 8 6v9H4z"/><path d="M10 20v-5h4v5"/><path d="M17 3l2 2-2 2"/></svg></span><span class="sk-txt"><b data-t="az.kachel"></b><span data-t="az.kachel.t"></span></span></button>
       </div>
-      <p class="hinweis-koralle"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg><span data-t="home.sicher"></span></p>
+      <p class="start-sicher"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg><span data-t="home.sicher"></span></p>
     </section>
 
     <!-- Brief prüfen: nach Absender -->
@@ -1773,9 +1768,6 @@
             </div>
           </fieldset>
         </form>
-        <div class="form-ende">
-          <p class="es-link"><button type="button" class="linkbtn" id="einfachBtn" aria-pressed="false"><span data-t="einfach.btn"></span></button></p>
-        </div>
       </section>
 
       <section class="results" id="ergebnis" aria-labelledby="h-res" tabindex="-1">
@@ -1791,27 +1783,7 @@
         <nav id="overview" class="overview" hidden></nav>
         <div id="together"></div>
         <div id="cards" class="results"></div>
-        <div class="hinweis-koralle beratung" id="beratung" hidden><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg><div><p class="b-titel" data-t="res.beratung"></p><details class="mehr"><summary data-t="mehr.hilfe"></summary><p data-t="foot.2"></p></details></div></div>
         <p class="small muted rb-satz" id="resRb" data-t="rb.satz"></p>
-
-        <section class="helper" id="helper" aria-labelledby="h-helper">
-          <h2 id="h-helper" data-t="f.h"></h2>
-          <p data-t="f.intro"></p>
-          <details class="mehr"><summary data-t="mehr.formlos"></summary><p data-t="f.intro.mehr"></p><p data-t="f.srente.hinweis" id="introSrente" hidden></p></details>
-          <div class="two">
-            <div class="field"><label for="p-name" data-t="f.name"></label><input type="text" id="p-name" autocomplete="off"></div>
-            <div class="field"><label for="p-geb" data-t="f.geb"></label><input type="text" id="p-geb" placeholder="TT.MM.JJJJ" autocomplete="off"></div>
-            <div class="field"><label for="p-strasse" data-t="f.strasse"></label><input type="text" id="p-strasse" autocomplete="off"></div>
-            <div class="field"><label for="p-ort" data-t="f.ort"></label><input type="text" id="p-ort" autocomplete="off"></div>
-            <div class="field"><label for="p-tel" data-t="f.tel"></label><input type="text" id="p-tel" inputmode="tel" autocomplete="off"></div>
-          </div>
-          <div class="field">
-            <span class="lab" data-t="f.which"></span>
-            <div class="checks" id="pick"></div>
-          </div>
-          <div class="btns"><button type="button" class="btn" id="mappeMake" data-t="f.make"></button></div>
-          <p class="msg" id="pickMsg" role="status"></p>
-        </section>
 
       </section>
     </div>
@@ -2012,6 +1984,23 @@
         <p class="msg" id="copyMsg" role="status"></p>
         <textarea id="mappeText" readonly hidden></textarea>
       </div>
+      <!-- Angaben für die Briefe: erst hier abgefragt (früher Kasten „Ausfüllhilfe“ unter dem Ergebnis); gespeichert wie bisher nur auf dem Gerät -->
+      <section class="mappe-angaben no-print" id="helper" aria-label="Angaben">
+        <p data-t="f.intro"></p>
+        <details class="mehr"><summary data-t="mehr.formlos"></summary><p data-t="f.intro.mehr"></p><p data-t="f.srente.hinweis" id="introSrente" hidden></p></details>
+        <div class="two">
+          <div class="field"><label for="p-name" data-t="f.name"></label><input type="text" id="p-name" autocomplete="off"></div>
+          <div class="field"><label for="p-geb" data-t="f.geb"></label><input type="text" id="p-geb" placeholder="TT.MM.JJJJ" autocomplete="off"></div>
+          <div class="field"><label for="p-strasse" data-t="f.strasse"></label><input type="text" id="p-strasse" autocomplete="off"></div>
+          <div class="field"><label for="p-ort" data-t="f.ort"></label><input type="text" id="p-ort" autocomplete="off"></div>
+          <div class="field"><label for="p-tel" data-t="f.tel"></label><input type="text" id="p-tel" inputmode="tel" autocomplete="off"></div>
+        </div>
+        <div class="field">
+          <span class="lab" data-t="f.which"></span>
+          <div class="checks" id="pick"></div>
+        </div>
+        <p class="msg" id="pickMsg" role="status"></p>
+      </section>
       <div id="mappeBody"></div>
       <div class="no-print mappe-ende">
         <div class="btns"><button type="button" class="btn" id="mappePrint2" data-t="f.print"></button></div>
