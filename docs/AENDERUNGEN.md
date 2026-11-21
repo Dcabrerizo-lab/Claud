@@ -8,6 +8,7 @@ Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss ste
 - **„Bewilligt bis“ entfernt** (auch die Erinnerung an den Folgeantrag in den Fristen). Alte Angaben werden einfach nicht mehr verwendet.
 - **Abschlag prüfen** jetzt auf den Seiten „Strom“ und „Heizen“: erst Strom oder Gas wählen, dann nur die Prüfung (Nachzahlung oder Guthaben, ungefähr). Ohne Musterbrief und Zusatz-Tipps.
 - **Neu: Tarife vergleichen** (Strom oder Gas): eigener Tarif gegen ein Angebot, Kosten im Jahr mit und ohne Bonus. Dazu kurze Hinweise (Bonus, Vorkasse, Laufzeit, Kündigung, Fernwärme) und ein Link zur Verbraucherzentrale. Es wird nichts gespeichert.
+- **Ich ziehe aus – „Bevor du ausziehst“**: großer gerahmter Hinweis „Unter 25 und Grundsicherungsgeld?“ entfernt; das Thema steht in der normalen Karte „Unter 25 mit Grundsicherungsgeld: Zusicherung vor der Unterschrift“ (§ 22 Abs. 5 SGB II), jetzt im gleichen Design wie die anderen Karten.
 
 ## 1.8.0 (ab Versionsnummer 150, November 2026)
 - **Geld und Schulden neu geordnet**: Es ist dringend · Was bleibt mir? · Meine Schulden-Liste · **Post vom Inkasso** · Mein Geld planen (mit Spartipps) · **Schuldnerberatung**.
