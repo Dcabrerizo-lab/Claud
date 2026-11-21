@@ -188,5 +188,24 @@ ck('MB-SGB2 9.2: Freibetrag Minijob 603 € = 208,90 €', nah(F(603, false), 20
   ck('[kiz-rentner-kopf] DA-KiZ D.2 Bsp. 1: 560 € (amtlich 561 €)', eins(p) === 560, p);
 }
 
+// ---------- Unabhängige Prüfung PR #96 (21.11.2026) ----------
+{
+  // § 17a Abs. 1 Satz 2 WoGG: Freibetrag „vom Einkommen aus der gesetzlichen Rente“, also nie höher als die Rente selbst
+  const kl = BWG.rechne({ personen: 1, stufe: 3, bruttokalt: 400, mitglieder: [{ art: 'rente33', brutto: 60, abzug: 10 }, { art: 'alg', brutto: 700, abzug: 0 }] }, R);
+  ck('[bwg-17a] Rente 60 € mit Grundrentenzeiten: Freibetrag 60 € (nicht 100 €)', nah(kl.freibetraege, 60) && nah(kl.einkommen, 46.35 + 700 - 60), kl);
+  ck('[bwg-17a] Rente 100 € -> 100 €; Rente 1.470 € -> Höchstbetrag 281,50 €', nah(BWG.rechne({ personen: 1, stufe: 3, bruttokalt: 400, mitglieder: [{ art: 'rente33', brutto: 100, abzug: 10 }] }, R).freibetraege, 100)
+    && nah(BWG.rechne({ personen: 1, stufe: 3, bruttokalt: 400, mitglieder: [{ art: 'rente33', brutto: 1470, abzug: 10 }] }, R).freibetraege, 281.5));
+  // Plausibilitätsprüfung: Beispiel der BMI-Hinweise vom 11.03.2020 (Rente 500 €, Gesamtmiete 400 €, Stufe III): nicht plausibel.
+  // Mit den Werten 2026 bleibt es dabei: 500 + rund 330 Wohngeld < 400 + 80 % von 563
+  const bmi = karte({ adults: 1, kids: 0, alter: true, art1: 'rente', brutto: 500, netto: 500, miete: 400, mietstufe: '3' }, 'wohngeld');
+  ck('[wg-plaus] BMI-Beispiel (Rente 500 €, Miete 400 €): „Einkommen eher zu niedrig“, nie Absage, Betrag sichtbar', bmi.level === 'vielleicht' && bmi.hl === 'einkoNiedrig' && !!betrag(bmi), bmi);
+  // DA-KiZ D.2 Abs. 1 Satz 9-11 von Hand: Rente 1.300 € netto − 30 − (563 + 67,56 + 800/2) = 239,44 € mindern voll -> 57,56 €;
+  // mit Unterhaltsvorschuss 394 € × 45 % = 177,30 € bleibt nichts („eher nicht“); ohne Unterhaltsvorschuss 60 € („möglich“)
+  const rk = { adults: 1, kids: 1, kids14: 1, kidsAlter: true, alter: true, art1: 'rente', brutto: 1450, netto: 1300, miete: 800, mietstufe: 3 };
+  const ohne = karte(rk, 'kiz'), mit = karte(Object.assign({ unterhaltFehlt: true }, rk), 'kiz');
+  ck('[kiz-rentner-kopf] Altersrentner 1.450 €, Kind 16, ohne Unterhaltsvorschuss: „möglich“, 60 €', ohne.level === 'vielleicht' && eins(ohne) === 60, ohne);
+  ck('[kiz-rentner-kopf] derselbe Fall mit Unterhaltsvorschuss: „eher nicht“ (Einkommen zu hoch)', mit.level === 'nein' && mit.hl === 'einkoHoch', mit);
+}
+
 console.log((fails ? 'FEHLER' : 'ok') + ' – Musterbescheide und amtliche Beispiele: ' + (n - fails) + '/' + n + ' bestanden');
 process.exit(fails ? 1 : 0);

@@ -38,7 +38,8 @@ const BescheidWG = (function () {
     for (const m of f.mitglieder || []) {
       const b = z(m.brutto);
       if (b > 0 && (m.art === 'rente33' || (m.art === 'rente' && m.grundrente33))) {
-        grFrei += Math.min(R.grundrente.sockel + R.grundrente.quote * Math.max(0, b - R.grundrente.sockel), R.grundrente.max * R.regelbedarf.alleinstehend);
+        // Freibetrag „vom Einkommen aus der gesetzlichen Rente“ (§ 17a Abs. 1 Satz 2 WoGG): nie höher als die Rente selbst
+        grFrei += Math.min(b, R.grundrente.sockel + R.grundrente.quote * Math.max(0, b - R.grundrente.sockel), R.grundrente.max * R.regelbedarf.alleinstehend);
       }
       let anr = 0;
       if (b > 0) {
