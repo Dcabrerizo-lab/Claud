@@ -943,7 +943,7 @@
   .empf-edit textarea { width: 100%; padding: 8px; font: inherit; font-size: 0.95em; direction: ltr; text-align: left; margin-top: 4px; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 6px; }
   .empf-edit .linkbtn { background: none; border: 0; padding: 0; color: inherit; text-decoration: underline; font: inherit; cursor: pointer; }
   #mappeText { width: 100%; min-height: 160px; padding: 10px; font: inherit; font-size: 0.9em; direction: ltr; }
-  .app.pm .top, .app.pm .notices, .app.pm .cols, .app.pm .foot, .app.pm .jump, .app.pm .first, .app.pm .einfach { display: none !important; }
+  .app.pm .su-lupe-knopf, .app.pm .top, .app.pm .notices, .app.pm .cols, .app.pm .foot, .app.pm .jump, .app.pm .first, .app.pm .einfach { display: none !important; }
 
   /* Briefränder nach DIN 5008 (links 25 mm, sonst 20 mm), unabhängig von den Randeinstellungen des Browsers */
   @page { size: A4; margin: 20mm 20mm 20mm 25mm; }
@@ -1403,7 +1403,13 @@
     .eb-tab th, .eb-tab td { border: 0; padding: 4px 0; }
     .eb-tab th[scope="row"] { font-family: var(--font-display); font-size: var(--fs-m); padding-bottom: 6px; }
     .eb-tab td[data-l]::before { content: attr(data-l); display: block; color: var(--muted); font-size: var(--fs-xs); font-weight: 700; }
+    .sl-blatt .eb-tab td:empty { display: none; } /* Schulden-Blatt: leere Felder in der Karte weglassen (UX-Audit C Nr. 9) */
+    .sl-blatt .eb-tab td.eb-nr { display: none; }
   }
+  /* Schulden-Blatt (UX-Audit C Nr. 9): Zahlen und Daten nicht mitten im Wert umbrechen, Spaltenköpfe nicht im Wort trennen, Anschrift klein */
+  .sl-blatt .eb-tab th, .sl-blatt .eb-tab td { overflow-wrap: break-word; hyphens: manual; -webkit-hyphens: manual; }
+  .sl-blatt .eb-tab td.eb-zahl, .sl-blatt .eb-tab th.eb-zahl { white-space: nowrap; }
+  .sl-blatt .eb-tab th .small { font-size: .85em; font-family: inherit; }
   /* ===== Ende Gestaltungs-System ===== */
 </style>
 
@@ -1833,12 +1839,12 @@
                 <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="ek1Brutto"><span aria-hidden="true">€</span></div>
                 <span class="hint" id="ek1BruttoHint"></span>
               </div>
+              <div class="nh-wrap" id="ek1NhF" hidden><button type="button" class="btn ghost nh-btn" id="ek1NhBtn" aria-expanded="false" aria-controls="ek1Nh" data-t="nh.btn"></button><div class="nh" id="ek1Nh" hidden></div></div>
               <div class="field" id="ek1NettoF" hidden>
                 <label for="ek1Netto" id="ek1NettoLab"></label>
                 <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="ek1Netto"><span aria-hidden="true">€</span></div>
                 <span class="hint" id="ek1NettoHint"></span>
               </div>
-              <div class="nh-wrap" id="ek1NhF" hidden><button type="button" class="btn ghost nh-btn" id="ek1NhBtn" aria-expanded="false" aria-controls="ek1Nh" data-t="nh.btn"></button><div class="nh" id="ek1Nh" hidden></div></div>
               <p class="warn" id="ek1Warn" role="status" hidden></p>
               <details class="ek-mehr cond-ek1b" id="ek1bBox">
                 <summary data-t="ek.weiteres.auf"></summary>
@@ -1875,12 +1881,12 @@
                 <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="ek2Brutto"><span aria-hidden="true">€</span></div>
                 <span class="hint" id="ek2BruttoHint"></span>
               </div>
+              <div class="nh-wrap" id="ek2NhF" hidden><button type="button" class="btn ghost nh-btn" id="ek2NhBtn" aria-expanded="false" aria-controls="ek2Nh" data-t="nh.btn"></button><div class="nh" id="ek2Nh" hidden></div></div>
               <div class="field" id="ek2NettoF" hidden>
                 <label for="ek2Netto" id="ek2NettoLab"></label>
                 <div class="money"><input type="text" inputmode="decimal" pattern="[0-9.,]*" autocomplete="off" id="ek2Netto"><span aria-hidden="true">€</span></div>
                 <span class="hint" id="ek2NettoHint"></span>
               </div>
-              <div class="nh-wrap" id="ek2NhF" hidden><button type="button" class="btn ghost nh-btn" id="ek2NhBtn" aria-expanded="false" aria-controls="ek2Nh" data-t="nh.btn"></button><div class="nh" id="ek2Nh" hidden></div></div>
               <p class="warn" id="ek2Warn" role="status" hidden></p>
               <details class="ek-mehr cond-ek2b" id="ek2bBox">
                 <summary data-t="ek.weiteres.auf"></summary>

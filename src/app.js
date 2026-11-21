@@ -2951,7 +2951,7 @@
     }
     var e = Rules.nettoLohn(b, lohnOpts(i));
     p(t('nh.erg'), 'pf-frage');
-    p(t('nh.wert', { n: { eur: e.netto } }), 'pf-zahl');
+    p(t('nh.wert', { n: { eur: Math.round(e.netto) } }), 'pf-zahl'); // volle Euro, als Schätzung gekennzeichnet (UX-Audit C Nr. 15)
     if (!e.sv && !e.lst) p(t('nh.minijob'), 'hint');
     else {
       var tab = document.createElement('table'); tab.className = 'pf-tab';
@@ -2965,7 +2965,7 @@
     p(t('nh.basis', { k: Rules.roman(lohnOpts(i).stkl) }), 'small muted');
     var bt2 = document.createElement('div'); bt2.className = 'btns';
     bt2.appendChild(nhKnopf('btn', esc(t('nh.uebernehmen')), null, function () {
-      var f = $('ek' + i + 'Netto'); f.value = String(e.netto).replace('.', ',');
+      var f = $('ek' + i + 'Netto'); f.value = String(Math.round(e.netto)); // erst nach Tipp auf „Übernehmen“
       f.dispatchEvent(new Event('input', { bubbles: true }));
       box.hidden = true; $('ek' + i + 'NhBtn').setAttribute('aria-expanded', 'false'); nhSchritt[i] = 0; f.focus();
     }));
@@ -3015,7 +3015,7 @@
       });
       var d1 = document.createElement('div'); d1.className = 'btns'; box.appendChild(d1);
       d1.appendChild(nhKnopf('btn', esc(t('pf.weiter')), null, function () { va.schritt = 2; vaRender(); box.querySelector('.pf-frage').focus(); }));
-      d1.appendChild(nhKnopf('linkbtn pa-zur', '<span class="nav-pfeil" aria-hidden="true">←</span> ' + esc(t('nh.zurueck')), null, function () { va.schritt = 0; vaRender(); }));
+      d1.appendChild(nhKnopf('btn ghost va-auswahl', esc(t('va.aendern')), null, function () { va.schritt = 0; vaRender(); var f0 = box.querySelector('button'); if (f0) f0.focus(); })); // kein zweites „Zurück“ im Helfer (UX-Audit C Nr. 15)
       return;
     }
     var sum = function (art) { return VA.reduce(function (a, x) { return a + (x[3] === art && va.wahl[x[0]] ? Number(va.wert[x[0]]) || 0 : 0); }, 0); };
@@ -3034,7 +3034,7 @@
       var f = $('vermoegen'); f.value = String(Math.round(z)); f.dispatchEvent(new Event('input', { bubbles: true }));
       box.hidden = true; $('vaBtn').setAttribute('aria-expanded', 'false'); va.schritt = 0; vaInfo(); touchedSoon(); f.focus();
     }));
-    d2.appendChild(nhKnopf('linkbtn pa-zur', '<span class="nav-pfeil" aria-hidden="true">←</span> ' + esc(t('nh.zurueck')), null, function () { va.schritt = 1; vaRender(); }));
+    d2.appendChild(nhKnopf('btn ghost va-betraege', esc(t('va.betraegeAendern')), null, function () { va.schritt = 1; vaRender(); var f1 = box.querySelector('input'); if (f1) f1.focus(); }));
   }
   $('vaBtn').addEventListener('click', function () {
     var box = $('va'); box.hidden = !box.hidden; $('vaBtn').setAttribute('aria-expanded', String(!box.hidden));

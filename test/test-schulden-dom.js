@@ -84,6 +84,7 @@ setTimeout(() => {
     const seite = $('slSeite');
     check('[schuldenliste] Blatt offen, Fokus auf der Überschrift, Ansicht ausgeblendet', !$('slBlatt').hidden && d.activeElement === $('h-slb') && $('app').classList.contains('pm'));
     check('[schuldenliste] Blatt: kein HTML aus Eingaben, Notiz standardmäßig nicht gedruckt', !seite.querySelector('img') && !seite.textContent.includes('Notiz geheim') && seite.textContent.includes('Stadtwerke'));
+    check('[ux-c] Blatt: jedes Feld mit Beschriftung für die Karten-Ansicht (390 px), Zahlen ohne Umbruch', [...seite.querySelectorAll('tbody td')].every((c) => c.classList.contains('eb-nr') || c.getAttribute('data-l')) && !!seite.querySelector('tbody td.eb-zahl[data-l="' + I.de['sl.col.jetzt'] + '"]'));
     setze('slKuerzel', 'AB'); klick($('slMitNotiz'));
     check('[schuldenliste] Kürzel erscheint, Notiz mit Haken', /Kürzel: AB/.test(seite.textContent) && seite.textContent.includes('Notiz geheim'));
     check('[schuldenliste] Aktenzeichen standardmäßig gedruckt, Haken nimmt es heraus', seite.textContent.includes('KD-4711') && (klick($('slMitAz')), !seite.textContent.includes('KD-4711')) && (klick($('slMitAz')), seite.textContent.includes('KD-4711')));
