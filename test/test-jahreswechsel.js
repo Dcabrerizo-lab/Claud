@@ -31,13 +31,13 @@ function seite(iso, vorbelegt) {
 
 const vor = seite('2026-12-31T22:00:00');
 ck('31.12.2026: kein Hinweis auf veraltete Regeln', vor.d.getElementById('altNotice').hidden === true);
-ck('31.12.2026: App startet ohne Skriptfehler', !!vor.d.querySelector('#cards .startcard') && vor.errors.length === 0, vor.errors.join('; '));
+ck('31.12.2026: App startet ohne Skriptfehler', vor.d.getElementById('cards').innerHTML === '' && vor.errors.length === 0, vor.errors.join('; '));
 vor.schliessen(); // JSDOM-Fenster freigeben (sonst wächst der Speicher bei vielen Seiten auf mehrere GB)
 
 const nach = seite('2027-01-01T08:00:00');
 const alt = nach.d.getElementById('altNotice');
 ck('1.1.2027: deutlicher Hinweis auf veraltete Regeln, neutral (nur ein Teil eingearbeitet, Beträge bei der Stelle prüfen, keine Einzelwerte)', alt.hidden === false && /2026/.test(alt.textContent) && /nur ein Teil/.test(alt.textContent) && /zuständigen Stelle/.test(alt.textContent) && !/633|Minijob/.test(alt.textContent), alt.textContent);
-ck('1.1.2027: App startet weiter ohne Skriptfehler', !!nach.d.querySelector('#cards .startcard') && nach.errors.length === 0, nach.errors.join('; '));
+ck('1.1.2027: App startet weiter ohne Skriptfehler', nach.d.getElementById('cards').innerHTML === '' && nach.errors.length === 0, nach.errors.join('; '));
 // Eingabe nach dem Jahreswechsel: Karten erscheinen, keine Fehler
 const kinder = nach.d.querySelector('[data-step="kids"][data-d="1"]');
 if (kinder) kinder.click();

@@ -63,8 +63,7 @@ setTimeout(() => {
   // Leistungs-Check: erste Frage zuerst
   d.querySelector('#appnav [data-ansicht=start]') && d.querySelector('#appnav [data-ansicht=start]').click();
   $('goLeistungen').click();
-  const formEnde = d.querySelector('.form-ende');
-  check('Kurzer Check steht nach dem Formular; keine sichtbaren Beispiele', formEnde && $('form').compareDocumentPosition(formEnde) & w.Node.DOCUMENT_POSITION_FOLLOWING && formEnde.contains($('einfachBtn')) && $('presets').hidden);
+  check('Kurzer Check als Wahl oben (vor dem Formular, nicht am Formularende); keine sichtbaren Beispiele', !d.querySelector('.form-ende') && $('einfachBtn') && $('einfachBtn').compareDocumentPosition($('form')) & w.Node.DOCUMENT_POSITION_FOLLOWING && $('presets').hidden);
   check('Löschen: Textknopf oben in „Deine Angaben“ (vor dem Formular)', !$('clearBtn') && $('clearLink').classList.contains('linkbtn') && $('clearLink').compareDocumentPosition($('form')) & w.Node.DOCUMENT_POSITION_FOLLOWING);
   const hinweise = [...d.querySelectorAll('#form .hint')].filter(sichtbar);
   check('Formular leer: höchstens 8 sichtbare Feldhinweise', hinweise.length <= 8, hinweise.map((x) => x.textContent.slice(0, 30)));
@@ -77,15 +76,17 @@ setTimeout(() => {
   // Beispiel laden: Ergebnis
   $('p1').click();
   check('Ergebnis: „Keine Rechtsberatung“ als eine Zeile unter der Liste', !$('resRb').hidden && $('resRb').textContent === de['rb.satz']);
-  check('Ergebnis: Namen der Verbände hinter „Mehr dazu“', !!d.querySelector('#beratung details.mehr') && !d.querySelector('#beratung details.mehr').open);
-  check('Ergebnis: f.intro kurz, Erklärung „formloser Antrag“ zugeklappt', !/Gerät/.test(de['f.intro']) && !!d.querySelector('#helper details.mehr'));
+  const tipp = (el) => !!el && el.matches('details.mehr.tipp') && !el.open && !!el.querySelector('summary .tipp-sym svg') && el.querySelector('summary .tipp-kurz').textContent.split(/\s+/).length <= 12;
+  check('[hilfen-aufraeumen] Ergebnis: Beratungsstelle als kurzer Tipp (Symbol + Satz), Verbände zugeklappt; kein blauer Kasten', tipp($('beratung')) && $('beratung').querySelector('.tipp-kurz').textContent === de['res.beratung'] && $('beratung').textContent.includes(de['foot.2']) && !d.querySelector('.hinweis-koralle'));
+  check('Ergebnis: f.intro kurz, Erklärung „formloser Antrag“ zugeklappt (jetzt oben in der Antragsmappe)', !/Gerät/.test(de['f.intro']) && !!d.querySelector('#mappe #helper details.mehr'));
   const ww = $('zweiWege');
-  if (ww) check('Zwei Wege: sichtbar nur Titel und Tipp, Wege zugeklappt', !!ww.querySelector('.ww-tun') && ww.querySelector('details.mehr') && !ww.querySelector('details.mehr').open && ww.querySelector('details.mehr').contains(ww.querySelector('.ww-wege')));
+  if (ww) check('[hilfen-aufraeumen] Zwei Wege: kurzer Tipp unter den Karten, Tipp und Wege zugeklappt', tipp(ww) && !!ww.querySelector('.ww-tun') && !!ww.querySelector('.ww-wege') && ($('mappeKnopf').compareDocumentPosition(ww) & w.Node.DOCUMENT_POSITION_FOLLOWING));
+  check('[hilfen-aufraeumen] Ergebnis: „Gut zu wissen“ als kurzer Tipp', !$('gutWissen') || tipp($('gutWissen')));
   check('Erst „Verstanden“: Erststart bleibt weg', $('firstNotice').hidden);
   // Antragsmappe als Aufgabenliste
+  $('mappeMake').click();
   $('p-name').value = 'Test'; $('p-name').dispatchEvent(new w.Event('input', { bubbles: true }));
   d.querySelectorAll('#pick input').forEach((c) => { if (!c.checked) c.click(); });
-  $('mappeMake').click();
   const auf = [...d.querySelectorAll('#mappeBody .aufgabe')];
   check('Mappe: nummerierte Aufgabenliste mit Knopf und „Erledigt“ je Schritt', auf.length >= 3 && auf.every((a) => a.querySelector('button.btn') && a.querySelector('input[data-haken^="mappe|"]')), auf.length);
   check('Mappe: Frist (Antrag sichert den Monat) sichtbar im letzten Schritt, nicht zum Aufklappen', /Monat/.test(auf[auf.length - 1].textContent) && !auf[auf.length - 1].querySelector('.mappe-stichtag').closest('details'));

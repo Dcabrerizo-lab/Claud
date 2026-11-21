@@ -77,7 +77,7 @@ zeilenE[2].click();
 check('Beratungsmodus: Schalter standardmäßig aus', $('beratungBtn').getAttribute('aria-checked') === 'false' && $('beratungBtn').getAttribute('role') === 'switch' && $('beratungBtn').querySelector('.schalter-t').textContent === 'Beratungsmodus' && $('beratungT').textContent === I18N.de['set.beratung.t']);
 d.querySelector('#appnav [data-ansicht="start"]').click(); $('goLeistungen').click();
 check('Startkachel Leistungen: Leiste markiert Start', navAkt() === 'start' && !$('v-leistungen').hidden);
-check('Kurzer Check als dezenter Link am Anfang des Leistungs-Checks, ohne „Lieber Schritt für Schritt?“', $('einfachBtn').closest('.es-link') && $('einfachBtn').closest('#cols') && $('einfachBtn').closest('.es-link').textContent.trim() === I18N.de['einfach.btn'] && !/Schritt für Schritt/.test($('einfachBtn').closest('.es-link').textContent));
+check('[hilfen-aufraeumen] Kurzer Check als Wahl oben im Leistungs-Check (Wahl-Karte oder Leiste über „Deine Angaben“), nicht am Formularende', $('einfachBtn') && $('einfachBtn').closest('#schritte') && $('einfachBtn').textContent.trim() === I18N.de['einfach.btn'] && !$('cols').contains($('einfachBtn')));
 check('Schlüssel einfach.vor in keiner Sprache mehr', LANGS.every((l) => !I18N[l] || !('einfach.vor' in I18N[l])));
 check('Vor dem ersten Ergebnis kein Knopf „Ergebnis mitgeben“', $('ebOpen').hidden === true);
 

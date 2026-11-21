@@ -4,6 +4,7 @@ Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss ste
 
 ## Nächste Version (in Arbeit)
 - **„Es ist dringend“ aufgeräumt**: alle Fälle gleich aufgebaut – Frist oben, „Das tust du jetzt“ in Schritten, kurze Tipps zum Aufklappen, Knöpfe, Quellen unten. Konto gepfändet mit Bescheinigung und Grundfreibetrag statt doppeltem Tipp; Strom-/Gassperre in 3 Schritten. „Stimmt der Brief?“: Hinweis „keine Rechtsberatung“ unter dem letzten Tipp.
+- **Hilfen-Check übersichtlicher**: grüner Knopf „Briefe für die Anträge machen“ direkt unter den Ergebnis-Karten; Name und Anschrift fragt erst die Antragsmappe (großer Kasten „Ausfüllhilfe“ entfällt). „Zwei Wege“, „Gut zu wissen“ und „Unsicher? Beratungsstelle“ als kurze Tipps zum Aufklappen. Ohne Angaben kein Kasten „So geht's“; „Kurzer Check für Menschen mit Behinderung“ als Wahl oben. Startseite: Datenschutz-Satz als kleine Zeile.
 
 ## 1.8.0 (ab Versionsnummer 150, November 2026)
 - **Geld und Schulden neu geordnet**: Es ist dringend · Was bleibt mir? · Meine Schulden-Liste · **Post vom Inkasso** · Mein Geld planen (mit Spartipps) · **Schuldnerberatung**.

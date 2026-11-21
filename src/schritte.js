@@ -197,7 +197,9 @@ var Schritte = (function () {
     if (weg) {
       h += '<div class="sf-umschalter" role="group" aria-label="' + esc(t('sf.wahl.h')) + '">' +
         knopf('chip', esc(t('sf.wahl.schritt')), ' id="sfWegSchritt" aria-pressed="' + (weg === 'schritt') + '"') +
-        knopf('chip', esc(t('sf.wahl.alles')), ' id="sfWegAlles" aria-pressed="' + (weg === 'alles') + '"') + '</div>';
+        knopf('chip', esc(t('sf.wahl.alles')), ' id="sfWegAlles" aria-pressed="' + (weg === 'alles') + '"') + '</div>' +
+        // Kurzer Check für Menschen mit Behinderung: dritte Wahl oben (Klick behandelt src/app.js über die Kennung einfachBtn)
+        '<p class="es-link sf-kurz">' + knopf('linkbtn', '<span data-t="einfach.btn">' + esc(t('einfach.btn')) + '</span>', ' id="einfachBtn" aria-pressed="false"') + '</p>';
     }
     return h + knopf('linkbtn sf-loeschen', esc(t('l.link')), ' id="clearLink"') + '</div>';
   }
@@ -235,6 +237,8 @@ var Schritte = (function () {
       '<p class="es-h">' + esc(t('sf.wahl.hint')) + '</p><div class="uk-raster sf-wahl">' +
       knopf('uk-karte sf-w1', '<span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19h4v-4h4v-4h4V7h3"/></svg></span><span class="weg-txt"><b>' + esc(t('sf.wahl.schritt')) + '</b><span>' + esc(t('sf.wahl.schritt.t')) + '</span></span>', ' id="sfWahlSchritt"') +
       knopf('uk-karte sf-w2', '<span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h8"/></svg></span><span class="weg-txt"><b>' + esc(t('sf.wahl.alles')) + '</b><span>' + esc(t('sf.wahl.alles.t')) + '</span></span>', ' id="sfWahlAlles"') +
+      // dritte Wahl: Kurzer Check für Menschen mit Behinderung (gleiche Logik wie bisher, Klick in src/app.js)
+      knopf('uk-karte sf-w3', '<span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="4.5" r="2"/><path d="M12 7v6h5l2 6"/><path d="M9 10a6 6 0 1 0 6.5 9"/></svg></span><span class="weg-txt"><b data-t="einfach.btn">' + esc(t('einfach.btn')) + '</b></span>', ' id="einfachBtn" aria-pressed="false"') +
       '</div>';
     box.querySelector('#sfWahlSchritt').addEventListener('click', function () { setzeWeg('schritt', true); });
     box.querySelector('#sfWahlAlles').addEventListener('click', function () { setzeWeg('alles', true); });

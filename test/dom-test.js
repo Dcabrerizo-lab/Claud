@@ -39,7 +39,7 @@ check('Startsprache folgt dem Browser (Deutsch)', d.getElementById('lang').value
 check('Sprachwahl bietet 13 Sprachen', d.getElementById('lang').options.length === 13);
 check('Sprachwahl nur in Einstellungen und Kopfzeile, nicht in „Deine Angaben“', d.getElementById('lang').closest('#v-einst') !== null && d.querySelectorAll('#v-leistungen select[id^="lang"], #v-leistungen .langpick').length === 0 && /\.app:not\(\[data-ansicht="start"\]\) \.top \.sprach-knopf \{ display: none; \}/.test([...d.querySelectorAll('style')].map((s) => s.textContent).join('')));
 check('Start ohne Beispielwerte: leeres Formular', d.getElementById('ek1Brutto').value === '' && d.getElementById('miete').value === '');
-check('Start zeigt Anleitung statt Karten', d.querySelector('#cards .startcard') !== null && cards().length === 0, d.getElementById('cards').innerHTML.slice(0, 200));
+check('[hilfen-aufraeumen] Start ohne Karten und ohne Kasten „So geht\'s“', d.getElementById('cards').innerHTML === '' && cards().length === 0, d.getElementById('cards').innerHTML.slice(0, 200));
 check('Start: Beispiel-Hinweis versteckt', d.getElementById('sampleNotice').hidden === true);
 beispiel('p1');
 check(KARTEN.length + ' Ergebnis-Karten', cards().length === KARTEN.length, cards().length);
@@ -180,7 +180,8 @@ check('Mappe ist anfangs geschlossen', d.getElementById('mappe').hidden === true
 // nichts gewählt
 pickBoxes().forEach((cb) => { cb.checked = false; fire(cb, 'change'); });
 d.getElementById('mappeMake').click();
-check('Ohne Auswahl erscheint ein Hinweis, keine Mappe', d.getElementById('mappe').hidden === true && d.getElementById('pickMsg').textContent === I18N.de['f.pick0']);
+check('[hilfen-aufraeumen] Grüner Knopf „Briefe für die Anträge machen“ direkt unter den passenden Karten, kein Kasten „Ausfüllhilfe“ im Ergebnis', (() => { const k = d.getElementById('mappeKnopf'), letzte = cards().filter((c) => /pill (ja|vielleicht)/.test(c.querySelector('.pill').className)).pop(); return k && !k.hidden && k.previousElementSibling === letzte && d.getElementById('mappeMake').textContent === I18N.de['es.briefe'] && !d.getElementById('ergebnis').contains(d.getElementById('p-name')); })());
+check('[hilfen-aufraeumen] Ohne Auswahl: Mappe öffnet mit Auswahl, Name und Anschrift oben und einem Hinweis, keine leeren Briefe', d.getElementById('mappe').hidden === false && d.getElementById('mappe').contains(d.getElementById('p-name')) && d.getElementById('pickMsg').textContent === I18N.de['f.pick0'] && !d.querySelector('#mappeBody .page'));
 // Wohngeld und Unterhaltsvorschuss wählen
 pickBoxes().filter((cb) => ['wohngeld', 'uvg'].includes(cb.getAttribute('data-pick'))).forEach((cb) => { cb.checked = true; fire(cb, 'change'); });
 const set = (id, v) => { d.getElementById(id).value = v; fire(d.getElementById(id), 'input'); };
