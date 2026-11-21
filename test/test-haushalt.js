@@ -138,8 +138,7 @@ const DIR = path.join(__dirname, '..', 'src', 'lang', 'haushalt');
 const de = JSON.parse(fs.readFileSync(path.join(DIR, 'de.json'), 'utf8'));
 const LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so'];
 const ph = (s) => (String(s).match(/\{\w+\}/g) || []).sort().join();
-const AR = '٠١٢٣٤٥٦٧٨٩', FA = '۰۱۲۳۴۵۶۷۸۹';
-const zahlen = (s) => (String(s).replace(/[٠-٩]/g, (x) => AR.indexOf(x)).replace(/[۰-۹]/g, (x) => FA.indexOf(x)).replace(/\{[^}]*\}/g, ' ').match(/\d+/g) || []).sort().join();
+const { zahlen } = require('./hilf-zahlen.js'); // gemeinsame Zählfunktion (auch test-sprachen-zahlen.js)
 LANGS.forEach((l) => {
   const f = path.join(DIR, l + '.json');
   if (!fs.existsSync(f)) { check(l + ': Datei vorhanden', false); return; }
