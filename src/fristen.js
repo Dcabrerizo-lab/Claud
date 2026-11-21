@@ -508,6 +508,16 @@ var FristenOrdner = (function () {
     return { text: text, n: offen.length, bald: !!(e.bis && diff(h, e.bis) <= BALD) };
   }
 
+  // Für „Für Klient zusammenstellen“ (src/klient.js): offene Fristen als Text, sortiert. Ohne Argument die des geöffneten Vorgangs,
+  //  sonst aus einer gespeicherten Liste (lotse.fristliste eines anderen Vorgangs; nur gelesen, nie geschrieben). Texte in der aktuellen Sprache.
+  function offeneTexte(roh) {
+    if (!ctx) return [];
+    var h = heute(), liste;
+    if (roh === undefined) liste = aktivListe();
+    else liste = normiere(roh, h).e;
+    return offeneSortiert(liste).map(function (e) { return { id: e.id, text: e.bis ? titelVon(e) + ': ' + datumText(e.bis) : titelVon(e) + ': ' + t('fri.wort.offen') }; });
+  }
+
   // ---------- Hinweis beim Öffnen (Startseite) ----------
   function auswahlAlle(h) {
     var out = [], vg = [];
@@ -610,7 +620,7 @@ var FristenOrdner = (function () {
     dauerAusText: dauerAusText, zeigen: zeigen, spaeterTag: spaeterTag, schluessel: schluessel, normiere: normiere, eintragSauber: eintragSauber,
     ARTEN: ARTEN, STELLEN: STELLEN, WORTE: WORTE, MAX: MAX, TITEL_MAX: TITEL_MAX,
     // Oberfläche
-    speicherOrt: speicherOrt, init: init, neuLaden: neuLaden, render: render, stand: stand, startHinweis: startHinweis,
+    speicherOrt: speicherOrt, init: init, neuLaden: neuLaden, render: render, stand: stand, offeneTexte: offeneTexte, startHinweis: startHinweis,
     neu: function () { if (bereit()) neuZeichnen(); },
     sprache: function () { if (!bereit()) return; render(); var s = $('friStart'); if (s && s.getAttribute('data-art') === 'hinweis') startHinweisZeichnen(false); },
     // Schnittstelle für andere Bereiche
