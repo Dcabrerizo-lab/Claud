@@ -370,19 +370,29 @@ var Schritte = (function () {
     }
   }
 
+  // Antwort ohne Inhalt: „Nein“, 0, leer, „Nichts davon“ oder die erste Auswahl mit leerem Wert („keine“, „nein“)
+  function leer(f, s) {
+    if (f.art === 'mehr') return !felder(f, s).some(function (x) { return feldWert(f, s, x[0]); });
+    var v = s[f.id];
+    if (f.id === 'adults' || f.id === 'plzOrt') return false;
+    return v === '' || v == null || v === false || v === 0 || v === '0';
+  }
   function renderUebersicht() {
     var s = S(), l = liste(), h = kopf(vorige('uebersicht'), '') +
       '<h2 class="es-q" id="sfFrage" tabindex="-1">' + esc(t('sf.ueb.h')) + '</h2><p class="es-h">' + esc(t('sf.ueb.t')) + '</p>';
     var bereiche = [];
     l.forEach(function (f) { if (bereiche.indexOf(f.b) < 0) bereiche.push(f.b); });
+    // Je Abschnitt eine Karte; Antworten mit „Nein“, 0 oder ohne Angabe zusammen zugeklappt (UX-Audit A, Aufgabe 6), „ändern“ bleibt je Zeile
+    var zeile = function (f) {
+      var wer = f.wer && f.wer(s) ? f.wer(s) + ': ' : '';
+      return '<div class="sf-zeile"><dt>' + esc(wer + t(wert(f, s, f.q))) + '</dt><dd' + (f.deutsch ? ' lang="de"' : '') + '>' + esc(ja[f.id] ? anzeigeWert(f, s) : t('sf.offen')) + '</dd><dd class="sf-aendern">' +
+        knopf('linkbtn', esc(t(ja[f.id] ? 'sf.aendern' : 'sf.beantworten')) + '<span class="vh"> ' + esc(t(wert(f, s, f.q))) + '</span>', ' data-aendern="' + esc(f.id) + '"') + '</dd></div>';
+    };
     bereiche.forEach(function (b) {
-      h += '<h3 class="sf-ueb-b">' + esc(t('sf.b.' + b)) + '</h3><dl class="sf-ueb">';
-      l.filter(function (f) { return f.b === b; }).forEach(function (f) {
-        var wer = f.wer && f.wer(s) ? f.wer(s) + ': ' : '';
-        h += '<div class="sf-zeile"><dt>' + esc(wer + t(wert(f, s, f.q))) + '</dt><dd' + (f.deutsch ? ' lang="de"' : '') + '>' + esc(ja[f.id] ? anzeigeWert(f, s) : t('sf.offen')) + '</dd><dd class="sf-aendern">' +
-          knopf('linkbtn', esc(t(ja[f.id] ? 'sf.aendern' : 'sf.beantworten')) + '<span class="vh"> ' + esc(t(wert(f, s, f.q))) + '</span>', ' data-aendern="' + esc(f.id) + '"') + '</dd></div>';
-      });
-      h += '</dl>';
+      var fs = l.filter(function (f) { return f.b === b; });
+      var rest = fs.filter(function (f) { return ja[f.id] && leer(f, s); }), haupt = fs.filter(function (f) { return rest.indexOf(f) < 0; });
+      h += '<section class="sf-ueb-karte"><h3 class="sf-ueb-b">' + esc(t('sf.b.' + b)) + '</h3>' + (haupt.length ? '<dl class="sf-ueb">' + haupt.map(zeile).join('') + '</dl>' : '') +
+        (rest.length ? '<details class="mehr sf-ueb-rest"><summary>' + esc(t('sf.ueb.rest', { n: rest.length })) + '</summary><dl class="sf-ueb">' + rest.map(zeile).join('') + '</dl></details>' : '') + '</section>';
     });
     h += '<div class="es-nav1">' + knopf('es-btn es-weiter', esc(t('sf.zumErgebnis')), ' id="sfErgebnis"') + '</div>';
     box.innerHTML = h;

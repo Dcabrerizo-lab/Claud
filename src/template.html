@@ -150,7 +150,10 @@
   .sf-zaehler { display: flex; align-items: center; gap: 16px; }
   .sf-zaehler .es-btn { width: 72px; justify-content: center; font-size: 1.6em; }
   .sf-zaehler output { font-size: 2em; font-weight: 700; min-width: 2ch; text-align: center; }
-  .sf-ueb-b { margin: 18px 0 6px; font-size: 1.05em; }
+  .sf-ueb-b { margin: 0 0 6px; font-size: 1.05em; }
+  .sf-ueb-karte { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-card); padding: 12px 16px; margin: 0 0 12px; }
+  .sf-ueb-karte .sf-zeile:last-child { border-bottom: 0; }
+  .sf-ueb-rest { margin-top: 6px; }
   .sf-ueb { margin: 0; border-top: 1px solid var(--line); }
   .sf-zeile { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; padding: 10px 0; border-bottom: 1px solid var(--line); }
   .sf-zeile dt { grid-column: 1; font-size: .9em; color: var(--muted); }

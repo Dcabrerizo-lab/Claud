@@ -152,5 +152,6 @@
   "sf.q.plzOrt": "Stimmt dein Wohnort?",
   "sf.a.ortJa": "Ja, stimmt",
   "sf.a.ortNein": "Nein, anderer Ort",
-  "sf.h.plzOrt": "Die Mietenstufe hängt von deiner Gemeinde ab, nicht von der Postleitzahl. Danach richtet sich, wie viel Miete beim Wohngeld höchstens zählt. Verbindlich entscheidet die Wohngeldstelle."
+  "sf.h.plzOrt": "Die Mietenstufe hängt von deiner Gemeinde ab, nicht von der Postleitzahl. Danach richtet sich, wie viel Miete beim Wohngeld höchstens zählt. Verbindlich entscheidet die Wohngeldstelle.",
+  "sf.ueb.rest": "Nein, 0 oder nichts angegeben ({n})"
 }

@@ -130,6 +130,10 @@ const ohne = (o) => JSON.stringify(o.results.map((r) => [r.id, r.level, r.tx]));
   await A.antworte([L['bz.kg']]);
   check('Übersicht: keine Klasse sf-frage (Hinweis wieder sichtbar)', !A.appEl.classList.contains('sf-frage'));
   check('Am Ende: Übersicht „Deine Angaben“ mit „ändern“', A.frage() === L['sf.ueb.h'] && A.$('schritte').querySelectorAll('[data-aendern]').length > 10);
+  check('Übersicht kürzer: je Abschnitt eine Karte, „Nein/0/nichts“ zugeklappt, Miete sichtbar', (() => {
+    const b = A.$('schritte'), rest = [...b.querySelectorAll('details.sf-ueb-rest')];
+    return b.querySelectorAll('.sf-ueb-karte').length >= 4 && rest.length > 0 && rest.every((x) => !x.open && x.querySelector('[data-aendern]')) && !b.querySelector('[data-aendern="miete"]').closest('details');
+  })());
   check('Übersicht zeigt die Antworten', /650/.test(A.$('schritte').textContent) && A.$('schritte').textContent.includes(L['ek.art.lohn']) && A.$('schritte').textContent.includes(L['bz.kg']));
   // ändern -> nach Weiter zurück zur Übersicht
   A.$('schritte').querySelector('[data-aendern="miete"]').click(); await A.warte();
