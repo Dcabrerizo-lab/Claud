@@ -477,7 +477,7 @@
   "vg.auto.sprung": "Ceasul dispozitivului este cu peste un an înainte față de ultima deschidere. Data este corectă? Atunci șterge acum dosarele expirate. La „Anulare” nu se șterge nimic.",
   "vg.pin.h": "Blocare cu PIN (protecție la privire)",
   "vg.pin.t": "Cu un PIN, datele salvate pe acest dispozitiv sunt criptate. Cine îți ia telefonul în mână nu le vede fără PIN. Aceasta este o protecție la privire, nu o protecție împotriva specialiștilor cu unelte speciale. După 2 minute în fundal, SoLo se blochează singur.",
-  "vg.pin.vergessen": "Important: dacă uiți PIN-ul, nimeni nu poate recupera datele, nici noi. Atunci rămâne doar: ștergi totul și începi din nou.",
+  "vg.pin.erkl": "PIN-ul blochează toată aplicația și criptează datele tale. Ține minte bine PIN-ul, nu este salvat nicăieri. Dacă îl uiți, nimeni nu poate deschide datele, nici noi.",
   "vg.pin.nicht": "Blocarea cu PIN nu este disponibilă pe acest dispozitiv.",
   "vg.pin.label": "PIN nou (între 4 și 12 cifre, recomandat: 6)",
   "vg.pin.label2": "PIN-ul încă o dată",

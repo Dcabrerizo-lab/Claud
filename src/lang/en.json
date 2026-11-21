@@ -477,7 +477,7 @@
   "vg.auto.sprung": "The device clock is more than a year ahead of the last time you opened the app. Is the date correct? Then delete expired cases now. With “Cancel” nothing is deleted.",
   "vg.pin.h": "PIN lock (privacy screen)",
   "vg.pin.t": "With a PIN, the saved details on this device are encrypted. Someone who picks up your phone cannot see them without the PIN. This is a privacy screen, not protection against experts with special tools. After 2 minutes in the background, SoLo locks itself.",
-  "vg.pin.vergessen": "Important: If you forget the PIN, nobody can recover the details, not even us. The only option then: delete everything and start again.",
+  "vg.pin.erkl": "The PIN locks the whole app and encrypts your details. Remember the PIN well, it is not saved anywhere. If you forget it, nobody can open the details, not even us.",
   "vg.pin.nicht": "The PIN lock is not available on this device.",
   "vg.pin.label": "New PIN (4 to 12 digits, 6 recommended)",
   "vg.pin.label2": "PIN again",

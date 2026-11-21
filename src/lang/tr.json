@@ -477,7 +477,7 @@
   "vg.auto.sprung": "Cihaz saati son açılıştan bir yıldan fazla ileri. Tarih doğru mu? O zaman süresi dolan dosyaları şimdi sil. „İptal“ ile hiçbir şey silinmez.",
   "vg.pin.h": "PIN kilidi (göz koruması)",
   "vg.pin.t": "PIN ile bu cihazdaki kayıtlı bilgiler şifrelenir. Telefonunu eline alan biri PIN olmadan onları göremez. Bu bir göz korumasıdır, özel araçları olan uzmanlara karşı koruma değildir. SoLo arka planda 2 dakika kaldıktan sonra kendini kilitler.",
-  "vg.pin.vergessen": "Önemli: PIN'i unutursan bilgileri kimse geri getiremez, biz de. O zaman tek yol: her şeyi silip yeniden başlamak.",
+  "vg.pin.erkl": "PIN tüm uygulamayı kilitler ve bilgilerini şifreler. PIN'i iyi hatırla, hiçbir yere kaydedilmez. Unutursan bilgileri kimse açamaz, biz de açamayız.",
   "vg.pin.nicht": "PIN kilidi bu cihazda kullanılamıyor.",
   "vg.pin.label": "Yeni PIN (4 ile 12 rakam, önerilen: 6)",
   "vg.pin.label2": "PIN'i tekrar gir",

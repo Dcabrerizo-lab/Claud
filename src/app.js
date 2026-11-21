@@ -3345,20 +3345,29 @@
       vgRender(); vgMsg(n ? t('vg.auto.weg', { n: String(n) }) : t('vg.auto.ok')); var s2 = $('vgTage'); if (s2) s2.focus();
     });
     al.appendChild(sel); g.appendChild(vgEl('p')).appendChild(al);
-    // PIN-Sperre: ein Schalter; an -> „Jetzt sperren“ und „PIN ändern“; die Warnung „PIN vergessen“ erst im Feld zum Festlegen
+    // PIN-Sperre: ein Schalter; an -> „Jetzt sperren“ und „PIN ändern“; die kurze Erklärung (vg.pin.erkl) erst unter dem Feld zum Festlegen
     var webOk = Vorgaenge.webCrypto(), pinAn = webOk && tresor.pinAn();
     var ps = vgEl('button', 'schalter'); ps.type = 'button'; ps.id = 'vgPinSchalter'; ps.setAttribute('role', 'switch'); ps.setAttribute('aria-checked', String(!!pinAn));
     var pst = vgEl('span', 'schalter-t', t('vg.pin.h')); pst.appendChild(vgEl('span', 'schalter-unter', t(webOk ? 'vg.pin.unter' : 'vg.pin.nicht'))); ps.appendChild(pst);
     ps.appendChild(vgEl('span', 'schalter-zst', t(pinAn ? 'set.an' : 'set.aus'))); ps.appendChild(vgEl('span', 'schalter-bahn')).setAttribute('aria-hidden', 'true');
     if (!webOk) ps.setAttribute('aria-disabled', 'true');
-    ps.addEventListener('click', function () { if (!webOk) return; if (tresor.pinAn()) vgPinForm(g, ps, true); else vgPinForm(g, ps); });
+    // Tippen auf den Schalter öffnet das passende Feld (an: bisherige PIN zum Ausschalten; aus: neue PIN festlegen).
+    // Ist dieses Feld schon offen, schließt erneutes Tippen es wieder (wie „Abbrechen“): der Schalter bleibt im echten Zustand.
+    // Früher fokussierte erneutes Tippen nur das Feld, und ein Abbrechen gab es nicht: der Schalter wirkte „festgeklemmt“ (Fehler 1.8.0).
+    ps.addEventListener('click', function () {
+      if (!webOk) return;
+      var art = tresor.pinAn() ? 'aus' : 'neu', offen = $('vgPinForm');
+      if (offen && offen.getAttribute('data-ausloeser') === 'vgPinSchalter' && offen.getAttribute('data-art') === art) { vgPinFormZu(offen); return; }
+      if (art === 'aus') vgPinForm(g, ps, true); else vgPinForm(g, ps);
+    });
     g.appendChild(vgEl('p')).appendChild(ps);
     if (pinAn) {
       var pb = vgEl('div', 'btns');
       var sp = vgEl('button', 'btn ghost', t('vg.pin.sperren')); sp.type = 'button';
       sp.addEventListener('click', vgSperrenJetzt);
       var ae = vgEl('button', 'btn ghost', t('vg.pin.aendern')); ae.type = 'button'; ae.setAttribute('aria-expanded', 'false');
-      ae.addEventListener('click', function () { vgPinForm(g, ae, false, true); });
+      ae.id = 'vgPinAendern';
+      ae.addEventListener('click', function () { var o = $('vgPinForm'); if (o && o.getAttribute('data-art') === 'aendern') vgPinFormZu(o); else vgPinForm(g, ae, false, true); });
       pb.appendChild(sp); pb.appendChild(ae); g.appendChild(pb);
     }
     var md = vgEl('details', 'set-mehr'); md.appendChild(vgEl('summary', null, t('vg.mehrDazu')));
@@ -3380,18 +3389,29 @@
     else if (!$('es-sicher').hidden && (!document.activeElement || document.activeElement === document.body)) { var hs = $('h-sicher'); hs.tabIndex = -1; hs.focus({ preventScroll: true }); } // Knopf neu gezeichnet: Fokus auf die Überschrift
   }
   // PIN festlegen, ändern (mitAlt) oder ausschalten (nurAus). Ändern und Ausschalten fragen die bisherige PIN ab.
+  // PIN-Feld schließen, ohne etwas zu ändern (Abbrechen): Schalter und Speicher bleiben, wie sie sind
+  function vgPinFormZu(f) {
+    var a = f && $(f.getAttribute('data-ausloeser')); if (f) f.remove();
+    if (a) { if (a.id === 'vgPinSchalter') a.setAttribute('aria-checked', String(!!tresor.pinAn())); else a.setAttribute('aria-expanded', 'false'); a.focus(); }
+  }
   function vgPinForm(g, ausloeser, nurAus, mitAlt) {
-    var alt = $('vgPinForm'); if (alt) { if (alt.getAttribute('data-art') === (nurAus ? 'aus' : 'neu')) { alt.querySelector('input').focus(); return; } alt.remove(); }
-    ausloeser.setAttribute('aria-expanded', 'true');
-    var f = vgEl('form', 'vg-form'); f.id = 'vgPinForm'; f.setAttribute('novalidate', ''); f.setAttribute('data-art', nurAus ? 'aus' : 'neu');
+    var art = nurAus ? 'aus' : (mitAlt ? 'aendern' : 'neu');
+    var alt = $('vgPinForm'); if (alt) { if (alt.getAttribute('data-art') === art) { alt.querySelector('input').focus(); return; } vgPinFormZu(alt); }
+    if (ausloeser.id !== 'vgPinSchalter') ausloeser.setAttribute('aria-expanded', 'true'); // role=switch kennt kein aria-expanded
+    var f = vgEl('form', 'vg-form'); f.id = 'vgPinForm'; f.setAttribute('novalidate', ''); f.setAttribute('data-art', art); f.setAttribute('data-ausloeser', ausloeser.id);
     var felder = (nurAus || mitAlt ? [['vgPin0', 'vg.pin.alt']] : []).concat(nurAus ? [] : [['vgPin1', 'vg.pin.label'], ['vgPin2', 'vg.pin.label2']]);
     felder.forEach(function (x) {
       var l = vgEl('label', null, t(x[1])); l.setAttribute('for', x[0]);
       var i = vgEl('input'); i.id = x[0]; i.type = 'password'; i.setAttribute('inputmode', 'numeric'); i.setAttribute('autocomplete', 'off'); i.maxLength = 12;
       f.appendChild(l); f.appendChild(i);
+      // Kurze Erklärung direkt unter dem Feld für die neue PIN (Festlegen und Ändern). Inhalt nach Code: Sperrbildschirm deckt die ganze App ab (vgSperreZeigen, inert), AES-GCM-Verschlüsselung
+      // auf dem Gerät, die PIN selbst wird nie gespeichert, ohne richtige PIN lässt sich nichts entschlüsseln (keine Wiederherstellung, keine Biometrie).
+      if (x[0] === 'vgPin1') { var hw = vgEl('p', 'hint', t('vg.pin.erkl')); hw.id = 'vgPinHinweis'; i.setAttribute('aria-describedby', 'vgPinHinweis'); f.appendChild(hw); }
     });
-    if (!nurAus && !mitAlt) f.appendChild(vgEl('p', 'warn', t('vg.pin.vergessen'))); // Warnung erst beim Festlegen, nicht dauerhaft
-    var b = vgEl('button', 'btn', t(nurAus ? 'vg.pin.aus' : 'vg.pin.speichern')); b.type = 'submit'; f.appendChild(b);
+    var bz = vgEl('div', 'btns'); f.appendChild(bz);
+    var b = vgEl('button', 'btn', t(nurAus ? 'vg.pin.aus' : 'vg.pin.speichern')); b.type = 'submit'; bz.appendChild(b);
+    var ab = vgEl('button', 'btn ghost', t('l.abbrechen')); ab.type = 'button'; ab.id = 'vgPinAbbr'; bz.appendChild(ab);
+    ab.addEventListener('click', function () { vgPinFormZu(f); });
     var m = vgEl('p', 'msg'); m.setAttribute('role', 'status'); f.appendChild(m);
     f.addEventListener('submit', function (e) {
       e.preventDefault();
@@ -3410,6 +3430,7 @@
     });
     ausloeser.parentNode.parentNode.insertBefore(f, ausloeser.parentNode.nextSibling);
     f.querySelector('input').focus();
+    try { f.scrollIntoView({ block: 'nearest', behavior: smooth() }); } catch (e) {} // auf dem Handy: Feld und Knöpfe über der Tastatur sichtbar
   }
   // ----- Unterseiten in „Einstellungen“ und „Mein Ordner“: Liste bzw. Übersicht oder eine Unterseite, „← Zurück“ führt zurück -----
   var usAktiv = { einst: '', ordner: '' }, usVon = null;
