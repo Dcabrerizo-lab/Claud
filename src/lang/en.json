@@ -1049,7 +1049,7 @@
   "uz.an.ex": "Former spouse or partner",
   "uz.an.exk": "Former partner and children",
   "cb.uzTitel": "The amount is fixed: by a court decision, a Jugendamt certificate (Jugendamtsurkunde) or a notarial agreement",
-  "t.uz.wg": "Maintenance you pay ({u} per month) is deducted from income (§ 18 WoGG). Without a fixed amount, at most 250 € per month per child and 500 € for a former partner; with a court decision, Jugendamtsurkunde, notarial agreement or official notice, the amount fixed there. The app calculates cautiously: without a fixed amount the deduction only counts for “possible”. Bring proof of the payments.",
+  "t.uz.wg": "Maintenance you pay ({u} per month) is deducted from income (§ 18 WoGG). Without a fixed amount, at most 250 € per month per child and 500 € for a former partner; with a court decision, Jugendamtsurkunde, notarial agreement or official decision (Bescheid), the amount fixed there. The app calculates cautiously: without a fixed amount the deduction only counts for “possible”. Bring proof of the payments.",
   "t.uz.sgb2Titel": "Maintenance you pay ({u} per month) is deducted from income because the amount is fixed (§ 11b SGB II). Only what is actually paid is deducted. Bring bank statements as proof.",
   "t.uz.sgb2Ohne": "The maintenance you pay ({u} per month) is only deducted here if the amount is fixed: by a court decision, a Jugendamtsurkunde or a notarial agreement (§ 11b SGB II). For children the Jugendamt certifies maintenance free of charge. The app therefore calculates without a deduction.",
   "t.uz.gsa": "Maintenance you pay ({u} per month) is usually not deducted from income for this benefit.",
