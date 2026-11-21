@@ -46,7 +46,7 @@ const E = {
   ck('[fristen-dom] lädt ohne Skriptfehler', !s.errors.length, s.errors);
   let st = s.$('friStart');
   ck('[fristen-dom] Hinweis beim Öffnen: dringendste Frist', st && /^Frist: Zahlen bis \(Vermieter\) – bis \w\w\., \d\d\.\d\d\.\d{4} \(noch 3 Tage\)\.$/.test(st.querySelector('.fri-start-t').textContent), st && st.textContent);
-  ck('[fristen-dom] Hinweis unter der Begrüßung, vor den Kacheln, role=status, Bernstein', st && st.previousElementSibling.classList.contains('gruss-t') && st.nextElementSibling.classList.contains('start-raster') && st.getAttribute('role') === 'status' && st.classList.contains('bald'));
+  ck('[fristen-dom] Hinweis unter der Begrüßung, vor den Kacheln, role=status, Bernstein', st && st.previousElementSibling.id === 'h-start' && st.nextElementSibling.classList.contains('start-raster') && st.getAttribute('role') === 'status' && st.classList.contains('bald'));
   ck('[fristen-dom] Drei Knöpfe, kein Schließen-Kreuz', st && ['Erledigt', 'Später erinnern', 'Ansehen'].every((x) => knopf(st, x)) && !/×/.test(st.textContent));
   ck('[fristen-dom] Nur ein Hinweis (kein #hbStart)', !s.$('hbStart'));
   ck('[fristen-dom] Merker lotse.fristTag = heute, nur JJJJ-MM-TT', mem['lotse.fristTag'] === HEUTE && /^\d{4}-\d\d-\d\d$/.test(mem['lotse.fristTag']));
