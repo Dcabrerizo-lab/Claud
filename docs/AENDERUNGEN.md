@@ -3,6 +3,7 @@
 Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss steigen). Die Versionsnummer kommt aus dem Build.
 
 ## Nächste Version (in Arbeit)
+- **Einzelne Vorgänge mit PIN sperren** (Mein Ordner → Bearbeiten → „Mit PIN sperren“): zusätzlich zur App-PIN. Gesperrt steht in der Liste nur „Gesperrter Vorgang“ mit Schloss (Kurzname nur, wenn man ihn einträgt). Öffnen nur mit PIN (4–8 Ziffern); nach dem Wechseln, nach 2 Minuten im Hintergrund und nach dem Neustart wieder gesperrt. Fristen daraus erscheinen nur, solange er offen ist. Löschen geht ohne PIN (mit Rückfrage). PIN vergessen = Vorgang verloren.
 - **„Es ist dringend“ aufgeräumt**: alle Fälle gleich aufgebaut – Frist oben, „Das tust du jetzt“ in Schritten, kurze Tipps zum Aufklappen, Knöpfe, Quellen unten. Konto gepfändet mit Bescheinigung und Grundfreibetrag statt doppeltem Tipp; Strom-/Gassperre in 3 Schritten. „Stimmt der Brief?“: Hinweis „keine Rechtsberatung“ unter dem letzten Tipp.
 
 ## 1.8.0 (ab Versionsnummer 150, November 2026)

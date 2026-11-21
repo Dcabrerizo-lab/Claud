@@ -53,5 +53,21 @@
   "briefe.schreibenDe": "Les lettres aux administrations, par exemple une opposition, sont toujours en allemand. Les administrations en ont besoin ainsi.",
   "sp.vz.link": "Bien manger avec peu d'argent – conseils de la Verbraucherzentrale",
   "sp.vz.t": "Page du centre de conseil aux consommateurs en langage simple. S'ouvre dans le navigateur.",
-  "sp.vz.de": "La page est en allemand."
+  "sp.vz.de": "La page est en allemand.",
+  "vgp.titel": "Dossier verrouillé",
+  "vgp.sperren": "Verrouiller avec un PIN",
+  "vgp.aufheben": "Retirer le verrou",
+  "vgp.oeffnen": "Ouvrir",
+  "vgp.pin": "PIN pour ce dossier (4 à 8 chiffres)",
+  "vgp.kurz": "Nom dans la liste (facultatif)",
+  "vgp.kurz.t": "Visible par tous sans PIN. Laisser vide : seul « Dossier verrouillé » s’affiche.",
+  "vgp.t1": "Sans PIN, même nous ne pouvons pas l’ouvrir.",
+  "vgp.t2": "Tu ne vois ses délais que lorsqu’il est ouvert.",
+  "vgp.t3": "PIN oublié ? Le dossier est alors perdu.",
+  "vgp.vergessen": "PIN oublié ? Le dossier est alors perdu. Tu peux le supprimer sans PIN.",
+  "vgp.format": "Le code PIN doit comporter 4 à 8 chiffres.",
+  "vgp.ok": "Le dossier est verrouillé.",
+  "vgp.aufgehoben": "Le verrou est retiré.",
+  "vgp.st.offen": "Ouvert. Il sera de nouveau verrouillé quand tu changes.",
+  "vgp.st.zu": "Saisir le PIN pour ouvrir"
 }

@@ -3128,7 +3128,7 @@
   function vgHintergrund(weg) {
     if (weg) { vgHinterAb = Date.now(); return; }
     var war = vgHinterAb; vgHinterAb = 0;
-    if (war && tresor && tresor.pinAn() && tresor.bereit() && Date.now() - war >= VG_SPERRE_MS) vgSperrenJetzt();
+    if (war && tresor && tresor.bereit() && (tresor.pinAn() || tresor.aktiv().gesperrt) && Date.now() - war >= VG_SPERRE_MS) vgSperrenJetzt(); // auch ein einzeln gesperrter Vorgang ist danach wieder zu
     else if (war && Date.now() - war >= VG_SPERRE_MS && window.FristenOrdner) FristenOrdner.startHinweis(); // „Öffnen“ nach 2 Minuten im Hintergrund (höchstens einmal am Tag)
   }
   document.addEventListener('visibilitychange', function () { vgHintergrund(document.visibilityState === 'hidden'); });
@@ -3220,26 +3220,40 @@
       bb.addEventListener('click', function () { vgBearb = !vgBearb; vgRender(); var x = $('vgBearb'); if (x) x.focus(); });
       kopfZ.appendChild(bb);
     }
+    if (!mehrere && Vorgaenge.webCrypto() && a.name && !a.gesperrt) { // ein Vorgang mit Namen: Sperren ohne „Bearbeiten“
+      var se = vgEl('button', 'chip', t('vgp.sperren')); se.type = 'button'; se.id = 'vgGSperrenEins'; se.setAttribute('aria-expanded', 'false');
+      se.addEventListener('click', function () { vgGForm(kopfZ, se, liste[0], 'sperren'); });
+      kopfZ.appendChild(se);
+    }
     g.appendChild(kopfZ);
     if (!mehrere) h3.classList.add('vh'); // ein Vorgang: keine Liste, Überschrift nur für Screenreader
     var msg = vgEl('p', 'msg', msgAlt); msg.id = 'vgMsg'; msg.setAttribute('role', 'status');
     var ul = vgEl('ul', 'vg-liste');
     if (mehrere) liste.forEach(function (v) {
-      var offen = v.id === a.id, li = vgEl('li', offen ? 'vg-offen' : '');
-      var z = vgEl(offen ? 'div' : 'button', 'vg-zeile'); if (!offen) { z.type = 'button'; z.addEventListener('click', function () { vgOeffnen(v.id); var h = $('vgH'); if (h) h.focus(); }); }
-      z.setAttribute('data-vg-name', vgName(v));
+      var offen = v.id === a.id, zu = v.gesperrt && !v.offen, li = vgEl('li', (offen ? 'vg-offen' : '') + (v.gesperrt ? ' vg-gesperrt' : ''));
+      var z = vgEl(offen ? 'div' : 'button', 'vg-zeile'); if (!offen) { z.type = 'button'; z.addEventListener('click', function () { if (zu) { vgGForm(li, z, v, 'oeffnen'); return; } vgOeffnen(v.id); var h = $('vgH'); if (h) h.focus(); }); }
+      if (zu) z.setAttribute('aria-expanded', 'false');
+      z.setAttribute('data-vg-name', zu ? vgGTitel(v) : vgName(v));
       if (offen) z.setAttribute('aria-current', 'true');
-      z.appendChild(vgEl('span', 'vg-kreis', vgKuerzel(v))).setAttribute('aria-hidden', 'true');
-      var tx = vgEl('span', 'vg-txt'); tx.appendChild(vgEl('b', null, vgName(v)));
-      var st = vgEl('span', 'vg-st', offen ? t('vg.offen') : t('vg.geaendert', { datum: vgDatum(v.geaendert) }));
+      if (v.gesperrt) z.appendChild(vgSchloss()); else z.appendChild(vgEl('span', 'vg-kreis', vgKuerzel(v))).setAttribute('aria-hidden', 'true');
+      // Gesperrt und zu: nur neutraler Titel (und ein freiwilliger Kurzname), kein Datum
+      var tx = vgEl('span', 'vg-txt'); tx.appendChild(vgEl('b', null, zu ? t('vgp.titel') : vgName(v)));
+      var st = vgEl('span', 'vg-st', offen ? t(v.gesperrt ? 'vgp.st.offen' : 'vg.offen') : zu ? (v.name || t('vgp.st.zu')) : t('vg.geaendert', { datum: vgDatum(v.geaendert) }));
       tx.appendChild(st);
-      if (v.ablauf) tx.appendChild(vgEl('span', 'vg-st vg-ablauf', t('vg.loeschtAm', { datum: vgDatum(v.ablauf) })));
+      if (v.ablauf && !zu) tx.appendChild(vgEl('span', 'vg-st vg-ablauf', t('vg.loeschtAm', { datum: vgDatum(v.ablauf) })));
       z.appendChild(tx);
       z.appendChild(vgEl('span', offen ? 'vg-haken' : 'zeile-pfeil', offen ? '✓' : '›')).setAttribute('aria-hidden', 'true');
       li.appendChild(z);
       if (vgBearb) {
         var btns = vgEl('div', 'btns');
-        var knopf = function (key, fn, cls) { var b = vgEl('button', cls || 'chip', t(key)); b.type = 'button'; b.setAttribute('aria-label', t(key) + ': ' + vgName(v)); b.addEventListener('click', fn); btns.appendChild(b); return b; };
+        var knopf = function (key, fn, cls) { var b = vgEl('button', cls || 'chip', t(key)); b.type = 'button'; b.setAttribute('aria-label', t(key) + ': ' + (zu ? vgGTitel(v) : vgName(v))); b.addEventListener('click', fn); btns.appendChild(b); return b; };
+        if (v.gesperrt) { // gesperrt: nur Sperre aufheben (mit PIN) und Löschen (ohne PIN, mit Rückfrage)
+          var ak = knopf('vgp.aufheben', function () { vgGForm(li, ak, v, 'aufheben'); }); ak.setAttribute('aria-expanded', 'false');
+          var lg = knopf('vg.loeschen', function () {
+            loeschFragen(li, lg, loeschEinsTitel({ name: zu ? vgGTitel(v) : v.name }), loeschWas(), function () { vgLoeschen(v.id, $('vgMsg')); var h = $('vgH'); if (h) h.focus(); }, true);
+          }, 'chip vg-weg');
+          li.appendChild(btns); ul.appendChild(li); return;
+        }
         knopf('vg.umbenennen', function () {
           var neuN = vgEl('form', 'vg-form vg-umb'); neuN.setAttribute('novalidate', '');
           var l = vgEl('label', null, t('vg.name.label')); l.setAttribute('for', 'vgUmb-' + v.id);
@@ -3253,6 +3267,7 @@
           flush();
           if (tresor.kopie(v.id, vgKopieName(vgName(v)))) { vgNeuLaden(); vgMsg(t('vg.geoeffnet', { name: vgName(tresor.aktiv()) })); var h = $('vgH'); if (h) h.focus(); }
         });
+        if (Vorgaenge.webCrypto()) { var sk = knopf('vgp.sperren', function () { vgGForm(li, sk, v, 'sperren'); }); sk.setAttribute('aria-expanded', 'false'); }
         var lk = knopf('vg.loeschen', function () {
           loeschFragen(li, lk, loeschEinsTitel(v), loeschWas(), function () { vgLoeschen(v.id, $('vgMsg')); var h = $('vgH'); if (h) h.focus(); }, true);
         }, 'chip vg-weg');
@@ -3335,6 +3350,66 @@
     lz('vgAlle', t('l.alle'), t('l.alleWas'), function () { angabenLoeschen(true); vgFormAuf = false; vgBearb = false; $('loeschMsg').textContent = t('l.okAlle'); var h = $('h-sicher'); if (h) h.focus(); });
     if (alt && $(alt) && alt !== 'vgMsg' && alt !== 'vgMsgS') { try { $(alt).focus({ preventScroll: true }); } catch (e) {} }
     else if (!$('es-sicher').hidden && (!document.activeElement || document.activeElement === document.body)) { var hs = $('h-sicher'); hs.tabIndex = -1; hs.focus({ preventScroll: true }); } // Knopf neu gezeichnet: Fokus auf die Überschrift
+  }
+  // ----- Einzelne Vorgänge mit eigener PIN sperren (Vorgaenge: gSperren, gOeffnen, gAufheben) -----
+  // Gesperrt: in der Liste nur „Gesperrter Vorgang“ und Schloss (Kurzname nur, wenn ausdrücklich eingetragen). Öffnen verlangt die PIN;
+  // nach dem Wechsel und dem Neustart ist er wieder zu. Fristen darin erscheinen nur, solange er geöffnet ist. Löschen geht ohne PIN.
+  function vgGTitel(v) { return v.name ? t('vgp.titel') + ' ' + v.name : t('vgp.titel'); }
+  function vgSchloss() {
+    var k = vgEl('span', 'vg-kreis vg-schloss'); k.setAttribute('aria-hidden', 'true');
+    var ns = 'http://www.w3.org/2000/svg', svg = document.createElementNS(ns, 'svg'); svg.setAttribute('viewBox', '0 0 24 24');
+    [['rect', { x: '5', y: '11', width: '14', height: '10', rx: '2' }], ['path', { d: 'M8 11V8a4 4 0 0 1 8 0v3' }]].forEach(function (x) {
+      var e = document.createElementNS(ns, x[0]); Object.keys(x[1]).forEach(function (n) { e.setAttribute(n, x[1][n]); }); svg.appendChild(e);
+    });
+    k.appendChild(svg); return k;
+  }
+  // art: 'sperren' (PIN zweimal, freiwilliger Kurzname, kurze Erklärung), 'oeffnen' oder 'aufheben' (PIN einmal)
+  function vgGForm(nach, ausloeser, v, art) {
+    var alt = $('vgGForm'); if (alt) { var gleich = alt.getAttribute('data-vg') === v.id + art; alt.remove(); document.querySelectorAll('[aria-expanded="true"]').forEach(function (x) { if (x.closest('#setHaushalte')) x.setAttribute('aria-expanded', 'false'); }); if (gleich) { ausloeser.focus(); return; } }
+    ausloeser.setAttribute('aria-expanded', 'true');
+    var f = vgEl('form', 'vg-form vg-gform'); f.id = 'vgGForm'; f.setAttribute('novalidate', ''); f.setAttribute('data-vg', v.id + art);
+    var feld = function (id, key, max, typ) {
+      var l = vgEl('label', null, t(key)); l.setAttribute('for', id);
+      var i = vgEl('input'); i.id = id; i.type = typ || 'password'; i.setAttribute('autocomplete', 'off'); i.maxLength = max;
+      if (!typ) i.setAttribute('inputmode', 'numeric');
+      f.appendChild(l); f.appendChild(i); return i;
+    };
+    var p1 = feld('vgGPin', 'vgp.pin', 8), p2 = art === 'sperren' ? feld('vgGPin2', 'vg.pin.label2', 8) : null, kurz = null;
+    if (art === 'sperren') {
+      kurz = feld('vgGKurz', 'vgp.kurz', Vorgaenge.NAME_MAX, 'text'); kurz.setAttribute('aria-describedby', 'vgGKurzH');
+      var kh = vgEl('p', 'small muted', t('vgp.kurz.t')); kh.id = 'vgGKurzH'; f.appendChild(kh);
+      var er = vgEl('ul', 'small vg-gerkl'); ['vgp.t1', 'vgp.t2', 'vgp.t3'].forEach(function (k) { er.appendChild(vgEl('li', null, t(k))); }); f.appendChild(er);
+    } else f.appendChild(vgEl('p', 'small muted', t('vgp.vergessen')));
+    var b = vgEl('button', 'btn', t(art === 'sperren' ? 'vgp.sperren' : art === 'oeffnen' ? 'vgp.oeffnen' : 'vgp.aufheben')); b.type = 'submit'; f.appendChild(b);
+    var m = vgEl('p', 'msg'); m.setAttribute('role', 'status'); f.appendChild(m);
+    var warten = function (ms) { b.disabled = true; m.textContent = t('vg.sperre.warten', { s: String(Math.ceil(ms / 1000)) }); setTimeout(function () { if (document.body.contains(b)) { b.disabled = false; m.textContent = ''; } }, ms); };
+    f.addEventListener('submit', function (e) {
+      e.preventDefault(); if (b.disabled) return;
+      var pin = p1.value;
+      if (!Vorgaenge.VPIN_RE.test(pin)) { m.textContent = t('vgp.format'); p1.focus(); return; }
+      if (p2 && pin !== p2.value) { m.textContent = t('vg.pin.ungleich'); p2.focus(); return; }
+      b.disabled = true; m.textContent = t('vg.bitte');
+      flush(); var vorher = tresor.aktiv().id;
+      if (art === 'sperren') {
+        tresor.gSperren(v.id, pin, kurz.value).then(function (ok) {
+          p1.value = ''; p2.value = '';
+          if (!ok) { b.disabled = false; m.textContent = t('vg.fehler.speicher'); return; }
+          if (tresor.aktiv().id !== vorher) { clearTimeout(saveTimer); saveTimer = null; vgNeuLaden(); } else vgRender(); // der geöffnete wurde gesperrt: ein anderer ist jetzt offen
+          vgMsg(t('vgp.ok')); var h = $('vgH'); if (h) h.focus();
+        });
+        return;
+      }
+      tresor[art === 'oeffnen' ? 'gOeffnen' : 'gAufheben'](v.id, pin).then(function (r) {
+        p1.value = '';
+        if (!r.ok) { b.disabled = false; m.textContent = t('vg.sperre.falsch'); if (r.warten) warten(r.warten); p1.focus(); return; }
+        if (undoFn) undoWeg();
+        if (tresor.aktiv().id !== vorher) { clearTimeout(saveTimer); saveTimer = null; vgNeuLaden(); } else vgRender();
+        vgMsg(art === 'oeffnen' ? t('vg.geoeffnet', { name: vgName(tresor.aktiv()) }) : t('vgp.aufgehoben')); var h = $('vgH'); if (h) h.focus();
+      });
+    });
+    if (nach.tagName === 'LI') nach.appendChild(f); else nach.parentNode.insertBefore(f, nach.nextSibling);
+    var rest = tresor.gWarten(v.id); if (rest > 0) warten(rest);
+    p1.focus();
   }
   // PIN festlegen, ändern (mitAlt) oder ausschalten (nurAus). Ändern und Ausschalten fragen die bisherige PIN ab.
   function vgPinForm(g, ausloeser, nurAus, mitAlt) {
