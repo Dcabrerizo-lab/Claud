@@ -1,7 +1,7 @@
 # Store-Angaben
 
 Texte und Antworten zum Kopieren in die Google Play Console und App Store Connect.
-Stand: Version **1.8.0**, VersionCode/Build **150** (21.11.2026).
+Stand: Version **1.9.0**, VersionCode/Build **151** (21.11.2026).
 Alles muss zur [Datenschutzerklärung](../datenschutz.html) passen. Bei Änderungen an der App beide Stellen prüfen.
 Jedes Textfeld steht in einem eigenen Kasten zum Kopieren. Die Zahl in Klammern darunter ist die Zeichenzahl (per Skript gezählt, Leerzeichen und Zeilenumbrüche mitgezählt).
 Store-Texte nur auf Deutsch (bisher keine englischen Einträge).
@@ -10,7 +10,7 @@ Store-Texte nur auf Deutsch (bisher keine englischen Einträge).
 
 | Feld | Wert |
 |---|---|
-| Version | 1.8.0 (VersionCode/Build 150) |
+| Version | 1.9.0 (VersionCode/Build 151) |
 | Kategorie | Play: *Finanzen* · iOS: *Finanzen* (Zweitkategorie *Dienstprogramme*) |
 | Altersfreigabe | Ab 0 / 4+ (keine kritischen Inhalte) |
 | Preis | 1,49 € einmalig (Play Console: „Mit Google Play monetarisieren“), keine In-App-Käufe, keine Werbung, kein Abo. Tester bekommen Gutscheincodes. |
@@ -99,7 +99,7 @@ Nur Deutsch (weitere Sprachen für die Neuigkeiten sind in dieser Datei nicht an
 ```
 Neu: Suche mit Lupe auf jeder Seite, auch mit Alltagswörtern. Einzelne Vorgänge mit eigener PIN sperren. Mit App-PIN Schutz vor Bildschirmfotos. Beratung: Blatt für Klienten, Weitergabe per QR-Code oder SoLo-Datei. Raten anbieten mit Empfehlung, Tarife vergleichen, Pflegegutachten vergleichen. Wichtige Sätze in Fremdsprachen auch auf Deutsch. Wohngeld, Kinderzuschlag, BAföG und weitere Leistungen genauer. Übersetzungen verbessert, Fehler behoben. Weiter alles offline auf deinem Gerät.
 ```
-(489 Zeichen; Entwurf für 1.9.0, noch nicht gebaut. Text von 1.8.0 steht im Git-Verlauf.)
+(489 Zeichen; Version 1.9.0, Build 151. Text von 1.8.0 steht im Git-Verlauf.)
 
 ### Kategorie und Tags (Vorschlag)
 
@@ -169,7 +169,7 @@ Gleicher Text wie „Neuigkeiten in dieser Version“ bei Google Play:
 ```
 Neu: Suche mit Lupe auf jeder Seite, auch mit Alltagswörtern. Einzelne Vorgänge mit eigener PIN sperren. Mit App-PIN Schutz vor Bildschirmfotos. Beratung: Blatt für Klienten, Weitergabe per QR-Code oder SoLo-Datei. Raten anbieten mit Empfehlung, Tarife vergleichen, Pflegegutachten vergleichen. Wichtige Sätze in Fremdsprachen auch auf Deutsch. Wohngeld, Kinderzuschlag, BAföG und weitere Leistungen genauer. Übersetzungen verbessert, Fehler behoben. Weiter alles offline auf deinem Gerät.
 ```
-(489 Zeichen; Entwurf für 1.9.0, noch nicht gebaut. Text von 1.8.0 steht im Git-Verlauf.)
+(489 Zeichen; Version 1.9.0, Build 151. Text von 1.8.0 steht im Git-Verlauf.)
 
 ### URLs
 
