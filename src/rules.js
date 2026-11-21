@@ -1518,8 +1518,11 @@ const Rules = (function () {
     let aMax = Math.max(0, ei.hi - ei.untHi - fbMin) + ei.untHi + vermMax / BAF.bwzMonate;
     const aMin = Math.max(0, ei.lo - fbMax) + vermMin / BAF.bwzMonate;
     if (h.adults === 2) { const ep = bafEink(h, 2, false); aMax += Math.max(0, ep.hi - BAF.freiAllein) * BAF.anrechFrei; }
-    // unter 30 (oder Alter unbekannt) zählt das Einkommen der Eltern (§ 11 Abs. 3 Nr. 2): untere Grenze 0; Vermögen nicht angegeben: ebenso
-    if (!ab30 || h.fehlt.vermoegen) aMax = Infinity;
+    // § 11 Abs. 3 Nr. 2 (Abruf 21.11.2026): Das Einkommen der Eltern bleibt nur außer Betracht, wer BEI BEGINN des Ausbildungsabschnitts
+    // schon 30 war. Die App kennt nur das Alter heute. Sicher genug erst ab 37 (30 + längste Regelstudienzeit rund 6 1/2 Jahre) oder in
+    // der Gruppe 40 bis 49; sonst (unter 37, Alter unbekannt) untere Grenze 0 = „bis etwa“. Vermögen nicht angegeben: ebenso.
+    const beginnAb30 = h.gruppe === '40-49' || (ab30 && h.alterJahre >= 37);
+    if (!beginnAb30 || h.fehlt.vermoegen) aMax = Infinity;
     const sch = bafSchaetz(bafZahl(bd.eltern[0], aMax), bafZahl(bd.aus[1], aMin));
     if (!sch) return [];
     return [sch, bafWohnTx(bd, aMax, aMin), ['bafoeg.schule']];

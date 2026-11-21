@@ -117,23 +117,31 @@ ok('[mb2-wohngeld] VG Bayreuth: zu berücksichtigende Miete 438,00 €', nah(R.w
     ok('[bafoeg-betrag] Geschwisterkind evtl. in Ausbildung: untere Grenze 444 € (bei den Eltern)', k4.level === 'ja' && wv(k4)[0] === 444 && wv(k4)[3] === 992, k4.tx);
   }
   {
-    // 5) Studierende selbst, 36 Jahre, allein, eigene Wohnung offen, Vermögen 46.000 €, kein Einkommen (amtlicher Fall Nr. 150: Anspruch 922 €,
+    // 5) Studierende selbst, 38 Jahre, allein, eigene Wohnung offen, Vermögen 46.000 €, kein Einkommen (amtlicher Fall Nr. 150: Anspruch 922 €,
     //    Bedarf 1.005 €). § 29: 45.000 € frei, § 30: 1.000 € / 12 = 83,33 €. KV ab 30: 137 bis 233 € (§ 13a), nicht familienversichert (ab 25).
     //    Bei den Eltern: 671 − 83,33 = 588 € bis 767 − 83,33 = 684 €; sonst 992 − 83,33 = 909 € bis 1.088 − 83,33 = 1.005 €. Amtlich 922 € liegt darin.
-    const s = karte({ adults: 1, kids: 0, ausbildung: 'ich', einkommen: [], gebJahr: 1990, vermoegen: 46000 }, 'bafoeg');
+    const s = karte({ adults: 1, kids: 0, ausbildung: 'ich', einkommen: [], gebJahr: 1988, vermoegen: 46000 }, 'bafoeg');
     ok('[bafoeg-betrag] Ab 30, Vermögen 46.000 €: 588–684 € / 909–1.005 € (amtlich 922 €), Hinweis ab 30', JSON.stringify(wv(s)) === '[588,684,909,1005]' && betrag(s).a.eur === 580 && betrag(s).b.eur === 1010 && !!par(s, 'bafoeg.ab30') && par(s, 'bafoeg.vermTeil').monat.eur === 83, s.tx);
     // 6) Unter 30: Einkommen der Eltern zählt (§ 11 Abs. 3 Nr. 2 umgekehrt) -> nur Höchstbetrag 992 € -> „bis etwa 1.000 €“
     const u = karte({ adults: 1, kids: 0, ausbildung: 'ich', einkommen: [], gebJahr: 2004, vermoegen: 0 }, 'bafoeg');
     ok('[bafoeg-betrag] Unter 30: nur „bis etwa 1.000 €“', u.tx.some((t) => t[0] === 'schaetz.bis' && t[1].b.eur === 1000) && !!par(u, 'bafoeg.ich'), u.tx);
     // 7) § 29 Abs. 1 Nr. 2: 2.300 € nur für Ehe-/Lebenspartner. Ab 30, mit Partner ohne Einkommen, Vermögen 46.000 €: unter 47.300 € (kein
     //    vermTeil), aber über 45.000 € -> Hinweis vermEvtl, bis zu 83 € im Monat weniger; Bedarf mit Partner: familienversichert möglich (0 €)
-    const p = karte({ adults: 2, kids: 0, ausbildung: 'ich', einkommen: [{ art: 'ohne', b: 0, p: 2 }], gebJahr: 1990, vermoegen: 46000 }, 'bafoeg');
+    const p = karte({ adults: 2, kids: 0, ausbildung: 'ich', einkommen: [{ art: 'ohne', b: 0, p: 2 }], gebJahr: 1988, vermoegen: 46000 }, 'bafoeg');
     const pe = par(p, 'bafoeg.vermEvtl');
     ok('[bafoeg-betrag] § 29: 2.300 € nur mit Trauschein -> Hinweis bis 83 €, Spanne 534 − 83 bis 1.088', !par(p, 'bafoeg.vermTeil') && pe && pe.verm.eur === 45000 && pe.monat.eur === 83 && wv(p)[0] === 451 && wv(p)[3] === 1088, p.tx);
     // 8) Eigenes Einkommen § 23: Lohn 1.000 € brutto / 1.000 € netto (Werkstudent ohne Steuer): (1.000 − 102,50) × (1 − 0,223) = 697,36 €
     //    − 389 € Freibetrag = 308,36 € Anrechnung. Ab 30, kein Vermögen: sonst 992 − 308 = 684 € bis 1.088 − 308 = 780 €
-    const w = karte({ adults: 1, kids: 0, ausbildung: 'ich', einkommen: [{ art: 'lohn', b: 1000, n: 1000, p: 1 }], gebJahr: 1990, vermoegen: 0 }, 'bafoeg');
+    const w = karte({ adults: 1, kids: 0, ausbildung: 'ich', einkommen: [{ art: 'lohn', b: 1000, n: 1000, p: 1 }], gebJahr: 1988, vermoegen: 0 }, 'bafoeg');
     ok('[bafoeg-betrag] Eigenes Einkommen 1.000 €: Anrechnung 308 € -> 684 bis 780 € (eigene Wohnung)', wv(w)[2] === 684 && wv(w)[3] === 780, w.tx);
+    // 8a) Prüfung 21.11.2026: § 11 Abs. 3 Nr. 2 stellt auf das Alter BEI BEGINN des Ausbildungsabschnitts ab. Wer heute 31 oder 36 ist, kann mit
+    //    unter 30 begonnen haben -> Einkommen der Eltern zählt -> keine untere Grenze („bis etwa“). Erst ab 37 (und 40 bis 49) eine Spanne.
+    const j31 = karte({ adults: 1, kids: 0, ausbildung: 'ich', einkommen: [], gebJahr: 1995, vermoegen: 0 }, 'bafoeg');
+    const j36 = karte({ adults: 1, kids: 0, ausbildung: 'ich', einkommen: [], gebJahr: 1990, vermoegen: 0 }, 'bafoeg');
+    const j37 = karte({ adults: 1, kids: 0, ausbildung: 'ich', einkommen: [], gebJahr: 1989, vermoegen: 0 }, 'bafoeg');
+    const bis = (k) => k.tx.some((t) => t[0] === 'schaetz.bis' && t[1].b.eur === 1090);
+    ok('[bafoeg-betrag] 31 und 36 Jahre: nur „bis etwa 1.090 €“ (Beginn vor 30 möglich), ab 37: 670 bis 1.090 €', bis(j31) && bis(j36) && wv(j31)[0] === 0 && !!par(j31, 'bafoeg.ab30') && betrag(j37).a.eur === 670 && betrag(j37).b.eur === 1090, [j31.tx, j36.tx, j37.tx]);
+    ok('[bafoeg-alter] Text: unter 45 (§ 10 Abs. 3: 45. Lebensjahr noch nicht vollendet), nicht „höchstens 45“', /noch nicht 45 Jahre alt/.test(I18N.de['t.bafoeg.alter']) && !/höchstens 45/.test(I18N.de['t.bafoeg.alter']));
     // 9) Neue Texte in allen Sprachen, Platzhalter erhalten
     const neu = { 'bafoeg.betragWohnen': ['{a}', '{b}', '{c}', '{d}'], 'bafoeg.vermEvtl': ['{verm}', '{monat}'], 'bafoeg.schule': [], 'bafoeg.andererElternteil': [], 'bafoeg.kindHinweis': [], 'bafoeg.ab30': [] };
     ok('[bafoeg-betrag] neue Texte in allen Sprachen mit Platzhaltern', Object.keys(I18N).every((l) => Object.keys(neu).every((k) => typeof I18N[l]['t.' + k] === 'string' && neu[k].every((ph) => I18N[l]['t.' + k].includes(ph)))));
