@@ -47,6 +47,8 @@ function i18nSource() {
   LANGS.forEach((l) => { const f = path.join(SRC, 'lang', 'zusatz', l + '.json'); if (fs.existsSync(f)) Object.assign(all[l], JSON.parse(fs.readFileSync(f, 'utf8'))); });
   // Leistungs-Check Schritt für Schritt (src/schritte.js): eigene Sprachdateien src/lang/schritte/<Sprache>.json, Schlüssel „sf.*“
   LANGS.forEach((l) => { const f = path.join(SRC, 'lang', 'schritte', l + '.json'); if (fs.existsSync(f)) Object.assign(all[l], JSON.parse(fs.readFileSync(f, 'utf8'))); });
+  // „Für Klient zusammenstellen“ (src/klient.js): eigene Sprachdateien src/lang/klient/<Sprache>.json, Schlüssel „kb.*“
+  LANGS.forEach((l) => { const f = path.join(SRC, 'lang', 'klient', l + '.json'); if (fs.existsSync(f)) Object.assign(all[l], JSON.parse(fs.readFileSync(f, 'utf8'))); });
   return 'const I18N = ' + JSON.stringify(all) + ';\nconst I18N_EINFACH = ' + JSON.stringify(einfachSource(all.de)) + ';\nif (typeof module !== "undefined") module.exports = I18N;\n';
 }
 
@@ -125,7 +127,7 @@ function briefEinfachJs() {
 // opts.native: Store-App (Android/iOS) statt Web
 function render(opts = {}) {
   const pp = pruefpaket();
-  const parts = { rules: read('rules.js'), i18n: i18nSource(), fmt: read('fmt.js'), plz: read('plz.js'), behoerden: read('behoerden.js'), formulare: read('formulare.js'), vorgaenge: read('vorgaenge.js'), haushalt: read('haushalt.js'), ausziehen: read('ausziehen.js'), fristen: read('fristen.js'), schulden: read('schulden.js'), geld: read('geld.js'), schritte: read('schritte.js'), navigation: read('navigation.js'), app: read('app.js') };
+  const parts = { rules: read('rules.js'), i18n: i18nSource(), fmt: read('fmt.js'), plz: read('plz.js'), behoerden: read('behoerden.js'), formulare: read('formulare.js'), vorgaenge: read('vorgaenge.js'), haushalt: read('haushalt.js'), ausziehen: read('ausziehen.js'), fristen: read('fristen.js'), schulden: read('schulden.js'), geld: read('geld.js'), schritte: read('schritte.js'), klient: read('klient.js'), navigation: read('navigation.js'), app: read('app.js') };
   if (opts.native) {
     if (!parts.app.includes('/*NATIVE*/ false')) throw new Error('Marker /*NATIVE*/ fehlt in src/app.js');
     parts.app = parts.app.replace('/*NATIVE*/ false', 'true');
@@ -149,6 +151,7 @@ function render(opts = {}) {
     .replace('/*GELD*/\n', () => parts.geld)
     .replace('/*NAVIGATION*/\n', () => parts.navigation)
     .replace('/*SCHRITTE*/\n', () => parts.schritte)
+    .replace('/*KLIENT*/\n', () => parts.klient)
     .replace('<!--PRUEFPAKET-->', () => pp.teile)
     .replace('/*PPSTIL*/\n', () => pp.css)
     .replace('/*PRUEFPAKET*/\n', () => briefEinfachJs() + pp.js)
