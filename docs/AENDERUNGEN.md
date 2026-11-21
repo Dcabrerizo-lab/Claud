@@ -2,6 +2,12 @@
 
 Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss steigen). Die Versionsnummer kommt aus dem Build.
 
+## Nächste Version (in Arbeit)
+- **Haushaltsplan aufgeräumt**: Unter der Eingabe steht nichts mehr. Hinweise stehen in der Auswertung, das Druckblatt auch, die Tabelle (CSV) im Haushaltsbuch. Die Übernahme in den Leistungs-Check steht in der Karte, die bei knappem Geld erscheint.
+- **„Bewilligt bis“ entfernt** (auch die Erinnerung an den Folgeantrag in den Fristen). Alte Angaben werden einfach nicht mehr verwendet.
+- **Abschlag prüfen** jetzt auf den Seiten „Strom“ und „Heizen“: erst Strom oder Gas wählen, dann nur die Prüfung (Nachzahlung oder Guthaben, ungefähr). Ohne Musterbrief und Zusatz-Tipps.
+- **Neu: Tarife vergleichen** (Strom oder Gas): eigener Tarif gegen ein Angebot, Kosten im Jahr mit und ohne Bonus. Dazu kurze Hinweise (Bonus, Vorkasse, Laufzeit, Kündigung, Fernwärme) und ein Link zur Verbraucherzentrale. Es wird nichts gespeichert.
+
 ## 1.8.0 (ab Versionsnummer 150, November 2026)
 - **Geld und Schulden neu geordnet**: Es ist dringend · Was bleibt mir? · Meine Schulden-Liste · **Post vom Inkasso** · Mein Geld planen (mit Spartipps) · **Schuldnerberatung**.
 - **Krisen-Check „Was ist zuerst dran?“** (7 Fragen) und neuer Fall **Geldstrafe: Haft droht**.
