@@ -291,55 +291,30 @@ const Pflege = (function () {
       if (gewinn > 0) m5opts.push({ gewinn, schritte, wege: w, bereich: b });
     }
     proModul[5] = m5opts;
-    // Kombinationen: Module 2 und 3 zählen gemeinsam (der höhere gewichtete Wert).
-    // Schnell und speicherarm: erst nur Schritte, Gewinn und die gewählten Indizes merken (keine Objekte je Kombination),
-    // die Wege erst für die Kombinationen bauen, die beim Auswählen wirklich angesehen werden. Reihenfolge und Ergebnis wie zuvor
-    // (verschachtelte Schleifen Modul 1 außen bis Modul 6 innen; Sortierung stabil: Schritte aufsteigend, Gewinn absteigend, sonst Fundreihenfolge).
+    // Kombinationen: Module 2 und 3 zählen gemeinsam (der höhere gewichtete Wert)
     const ziel = res.fehltBisNaechster;
+    const best = [];
     const ms = [1, 2, 3, 4, 5, 6];
-    const [L1, L2, L3, L4, L5, L6] = ms.map((m) => proModul[m]);
-    const g2 = res.module[2].gewichtet, g3 = res.module[3].gewichtet, m23 = res.m23, grenze = ziel - 1e-9;
-    // Fundnummer i = Indizes (a..f) als eine Zahl; je Schrittzahl ein Eimer mit Fundnummer und Gewinn (Fundreihenfolge bleibt erhalten)
-    const n2 = L2.length, n3 = L3.length, n4 = L4.length, n5 = L5.length, n6 = L6.length;
-    const eimerI = [], eimerG = [];
-    for (let a = 0; a < L1.length; a++) { const o1 = L1[a];
-      for (let b = 0; b < n2; b++) { const o2 = L2[b], w2 = g2 + o2.gewinn;
-        for (let c = 0; c < n3; c++) { const o3 = L3[c], w3 = g3 + o3.gewinn, s123 = o1.schritte + o2.schritte + o3.schritte, v123 = o1.gewinn + (Math.max(w2, w3) - m23), i123 = (a * n2 + b) * n3 + c;
-          for (let d = 0; d < n4; d++) { const o4 = L4[d], v4 = v123 + o4.gewinn, s4 = s123 + o4.schritte, i4 = i123 * n4 + d;
-            for (let e = 0; e < n5; e++) { const o5 = L5[e], v5 = v4 + o5.gewinn, s5 = s4 + o5.schritte, i5 = (i4 * n5 + e) * n6;
-              for (let f = 0; f < n6; f++) { const o6 = L6[f];
-                const gewinn = v5 + o6.gewinn; // gleiche Summierreihenfolge wie zuvor: M1 + (M2/3) + M4 + M5 + M6
-                const schritte = s5 + o6.schritte;
-                if (schritte > 0 && gewinn >= grenze) {
-                  if (!eimerI[schritte]) { eimerI[schritte] = []; eimerG[schritte] = []; }
-                  eimerI[schritte].push(i5 + f); eimerG[schritte].push(r2(gewinn));
-                }
-              }
-            }
-          }
-        }
+    const rek = (i, wahl) => {
+      if (i === ms.length) {
+        const w2 = res.module[2].gewichtet + wahl[2].gewinn, w3 = res.module[3].gewichtet + wahl[3].gewinn;
+        const gewinn = wahl[1].gewinn + (Math.max(w2, w3) - res.m23) + wahl[4].gewinn + wahl[5].gewinn + wahl[6].gewinn;
+        const schritte = ms.reduce((s, m) => s + wahl[m].schritte, 0);
+        if (schritte > 0 && gewinn >= ziel - 1e-9) best.push({ schritte, gewinn: r2(gewinn), wege: ms.flatMap((m) => wahl[m].wege.map((x) => Object.assign({ modul: m }, x))) });
+        return;
       }
-    }
-    const kombi = (i, schritte, gewinn) => {
-      const idx = [];
-      for (const n of [n6, n5, n4, n3, n2]) { idx.unshift(i % n); i = Math.floor(i / n); }
-      idx.unshift(i);
-      return { schritte, gewinn, wege: ms.flatMap((m, j) => [L1, L2, L3, L4, L5, L6][j][idx[j]].wege.map((x) => Object.assign({ modul: m }, x))) };
+      for (const o of proModul[ms[i]]) { wahl[ms[i]] = o; rek(i + 1, wahl); }
     };
+    rek(0, {});
+    best.sort((x, y) => x.schritte - y.schritte || y.gewinn - x.gewinn);
     // nur Kombinationen, die keine Obermenge einer besseren sind; höchstens 5
     const out = [];
     const teile = (x) => new Set(x.wege.map((w) => w.id + '>' + (w.nach != null ? w.nach : w.plus)));
-    // Eimer nach Schrittzahl aufsteigend; innerhalb eines Eimers Gewinn absteigend, bei Gleichstand Fundreihenfolge. Nur so viele Eimer sortieren wie nötig.
-    for (let s = 1; s < eimerI.length && out.length < 5; s++) {
-      const EI = eimerI[s], EG = eimerG[s]; if (!EI) continue;
-      const reihe = EI.map((_, k) => k).sort((x, y) => EG[y] - EG[x] || x - y);
-      for (const k of reihe) {
-        if (out.length >= 5) break;
-        const b = kombi(EI[k], s, EG[k]);
-        const tb = teile(b);
-        if (out.some((o) => [...teile(o)].every((x) => tb.has(x)))) continue; // Obermenge einer schon gezeigten Kombination
-        out.push(b);
-      }
+    for (const b of best) {
+      if (out.length >= 5) break;
+      const tb = teile(b);
+      if (out.some((o) => [...teile(o)].every((x) => tb.has(x)))) continue; // Obermenge einer schon gezeigten Kombination
+      out.push(b);
     }
     return { moeglich: out.length > 0, minSchritte: out.length ? out[0].schritte : null, optionen: out };
   }
