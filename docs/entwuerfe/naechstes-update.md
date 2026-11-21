@@ -70,3 +70,8 @@ Quelle: docs/entwuerfe/pruefungen-21-11/ (bedienung.md, sicherheit.md, technik.m
 - **Später/optional:** KI-Chat nur als freiwillige Zusatzfunktion mit geprüften SoLo-Inhalten; Nutzertest mit 5 Personen; RDG-Prüfung durch Anwalt; Muttersprachler (keine bekannt).
 - **Gerätetest vor Veröffentlichung** (Liste vorbereiten): App-PIN/Vorgang-PIN, Bildschirmfoto-Schutz, Teilen/Messenger, SoLo-Datei/QR, Kamera-Scan, iOS-Speicher-Umzug, ML-Kit-Netzwerk.
 - **Hinweis Veröffentlichung:** Im Store-Stand 1.8.0 steckt der kritische Fehler „Urin/Stuhl … meistens oder nie“ (Einfache Sprache Pflege) und das schwache Brief-Einlesen → Update 1.9 bald veröffentlichen (Build nur auf Davids Anweisung).
+
+## Effizienz-Umbau (aus docs/entwuerfe/effizienz.md, U-Punkte)
+- Feste Euro-Beträge in Texten (19 + 4) → Platzhalter aus zentraler Wertetabelle (Werte mit gültig ab/bis + Quelle), am besten zur Vollprüfung am 1.12.; Faktenblatt aus den Werten erzeugen.
+- PRUEFLISTE.md in Einzeldateien je Bereich (Konfliktschwerpunkt), Sprachdateien-Struktur prüfen.
+- Arbeitsweise: Rechenplan zuerst von Fable prüfen lassen, Referenzrechnung von zweitem Agenten unabhängig bauen.
