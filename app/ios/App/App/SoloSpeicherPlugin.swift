@@ -47,6 +47,7 @@ public class SoloSpeicherPlugin: CAPPlugin, CAPBridgedPlugin {
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(geschuetztWeg), name: UIApplication.protectedDataWillBecomeUnavailableNotification, object: nil)
         nc.addObserver(self, selector: #selector(geschuetztDa), name: UIApplication.protectedDataDidBecomeAvailableNotification, object: nil)
+        nc.addObserver(self, selector: #selector(wiederAktiv), name: UIApplication.didBecomeActiveNotification, object: nil)
         let frei: Bool = Thread.isMainThread ? UIApplication.shared.isProtectedDataAvailable : true
         warteschlange.sync {
             self.gesperrt = !frei
@@ -56,6 +57,12 @@ public class SoloSpeicherPlugin: CAPPlugin, CAPBridgedPlugin {
 
     @objc private func geschuetztWeg() { warteschlange.async { self.gesperrt = true } }
     @objc private func geschuetztDa() { warteschlange.async { self.gesperrt = false } }
+    /// App wieder im Vordergrund: Stand neu abfragen (Unabhängige Prüfung 21.11.2026). Wird das Gerät entsperrt, während die App angehalten ist,
+    /// kommt die Meldung „wieder verfügbar“ nicht sicher an; ohne diese Abfrage bliebe gesperrt = true und jedes Speichern würde abgelehnt.
+    @objc private func wiederAktiv() {
+        let frei: Bool = Thread.isMainThread ? UIApplication.shared.isProtectedDataAvailable : true
+        warteschlange.async { self.gesperrt = !frei }
+    }
 
     /// Schutzklasse .complete nachträglich setzen (Dateien aus der Zeit vor dem 21.11.2026)
     private static func schutzSetzen(_ url: URL) {

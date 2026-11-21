@@ -11,6 +11,8 @@ import com.getcapacitor.BridgeActivity;
 public class MainActivity extends BridgeActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        // Activity wird wiederhergestellt (Android hatte sie beendet): der Intent ist der alte, die Datei wurde schon angeboten
+        if (savedInstanceState != null) alteDateiVergessen(getIntent());
         soloDateiAusIntent(getIntent()); // vor super.onCreate: Capacitor liest die Start-Adresse beim Anlegen der Bridge
         // Eigene Plugins vor super.onCreate registrieren
         registerPlugin(TextRecognitionPlugin.class);
@@ -37,12 +39,7 @@ public class MainActivity extends BridgeActivity {
         if (intent == null) return;
         String aktion = intent.getAction();
         if ((intent.getFlags() & Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) != 0) {
-            if (Intent.ACTION_VIEW.equals(aktion) || Intent.ACTION_SEND.equals(aktion)) {
-                intent.setAction(Intent.ACTION_MAIN);
-                intent.setDataAndType(null, null);
-                intent.removeExtra(Intent.EXTRA_STREAM);
-                intent.setClipData(null);
-            }
+            alteDateiVergessen(intent);
             return;
         }
         if (!Intent.ACTION_SEND.equals(aktion)) return;
@@ -53,6 +50,18 @@ public class MainActivity extends BridgeActivity {
         if (datei == null || !"content".equals(datei.getScheme())) return;
         intent.setAction(Intent.ACTION_VIEW);
         intent.setDataAndType(datei, intent.getType());
+    }
+
+    /** Alten Öffnen- oder Teilen-Intent zu einem normalen Start machen: keine Adresse, keine Datei. */
+    static void alteDateiVergessen(Intent intent) {
+        if (intent == null) return;
+        String aktion = intent.getAction();
+        if (Intent.ACTION_VIEW.equals(aktion) || Intent.ACTION_SEND.equals(aktion)) {
+            intent.setAction(Intent.ACTION_MAIN);
+            intent.setDataAndType(null, null);
+            intent.removeExtra(Intent.EXTRA_STREAM);
+            intent.setClipData(null);
+        }
     }
 
     @SuppressWarnings("deprecation")
