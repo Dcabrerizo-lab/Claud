@@ -597,7 +597,7 @@
   .sc-titel span { color: var(--muted); font-weight: 400; }
   .sc-labs { margin: 0; padding-inline-start: 1.1em; display: grid; gap: 2px; }
 
-  .rules { background: transparent; border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px; }
+  .rules { background: transparent; margin: 8px 0; } /* „So rechnet der Check“: Aufklapper ohne eigenen Rahmen (wie überall details.mehr) */
   .rules details { border-top: 0; padding-top: 0; }
   .rules table { width: 100%; border-collapse: collapse; font-size: 0.92em; margin-top: 8px; }
   .rules th, .rules td { text-align: start; padding: 8px 8px 8px 0; padding-inline: 0 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
@@ -889,6 +889,8 @@
   #checkBox .pp-teil.pp-zu > :not(:first-child), #checkBox .pp-teil.pp-anders > :not(:first-child) { display: none !important; }
   /* Brief prüfen wie der Rest der App: runde weiße Karten mit Schatten statt eckiger Kästen */
   #checkBox.pp .card { border: 0; border-radius: var(--r-card); box-shadow: var(--shadow); padding: 20px; }
+  /* Der Einstieg jeder Brief-Stelle steht direkt auf der Seite wie die anderen Seiten (kein großer weißer Rahmen um den ganzen Inhalt) */
+  #checkBox.pp .pp-teil > .card:first-child { background: transparent; box-shadow: none; border-radius: 0; padding: 0; }
   #checkBox.pp fieldset { border-radius: var(--r-feld); }
   .pp-frist-box { display: grid; gap: 10px; margin: 12px 0 4px; }
   .pp-frist-box .frist { margin: 0; }
@@ -1080,6 +1082,10 @@
   .gs-box details.mehr.tipp, .frist details.mehr.tipp, .pf-jetzt details.mehr.tipp { border: 0; background: none; padding: 0; margin: 0; }
   details.mehr.tipp.tipp-warn { border-color: var(--warn); }
   details.mehr > :not(summary) { margin: 0 0 6px; color: var(--muted); font-size: .92em; font-weight: 400; }
+  /* Gleiches Aufklapp-Bauteil ohne Sonderrahmen: .mehr-block (Formular, Rechenweg) zeigt den Inhalt in normaler Schrift,
+     .mehr-liste („Weitere Punkte (4)“, „Weitere Leistungen“, Erledigt-Liste) ohne i-Symbol, weil darin Karten stehen */
+  details.mehr.mehr-block > :not(summary), details.mehr.mehr-liste > :not(summary) { color: var(--ink); font-size: 1em; margin: 0 0 10px; }
+  details.mehr.mehr-liste > summary::before { content: none; display: none; }
   .form-ende { display: grid; gap: 8px; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); }
   .rb-satz { margin: 12px 0 0; }
   .ww-mehr > :not(summary) { color: var(--ink); font-size: 1em; margin-bottom: 10px; }
@@ -1269,9 +1275,8 @@
         <p class="pp-hinweis small" id="ppNurDe" data-t="briefe.schreibenDe" hidden></p>
 <!--PRUEFPAKET-->
         <!-- Gemeinsame Kachel „Anderer Brief oder Formular“: erst einlesen (die App erkennt Formular oder Brief), darunter die Wahl von Hand -->
-        <section class="pp-teil" id="abWahl" aria-labelledby="h-abWahl" hidden>
+        <section class="pp-teil" id="abWahl" aria-labelledby="h-briefe" hidden>
           <div class="card">
-            <h2 id="h-abWahl" data-t="briefe.ab"></h2>
             <p data-t="briefe.ab.lead"></p>
             <p class="ab-oder" data-t="briefe.ab.wahl"></p>
             <div class="weg-liste" id="abUnter"></div>
@@ -1863,11 +1868,11 @@
         <!--ZURUECK cls=us-zurueck-->
         <h2 class="ans-h" data-t="set.about.h"></h2>
         <div class="set-gruppe">
-          <p class="small muted"><span id="appVersion"></span><br><span class="stand" id="stand"></span></p>
+          <p class="small muted"><span id="appVersion"></span><br><span class="stand"><span id="stand"></span> <span data-t="foot.3"></span></span></p>
           <p><button type="button" class="linkbtn" id="legalBtn2" data-t="legal.open"></button></p>
         </div>
         <div class="rules" id="feedback" hidden>
-          <details>
+          <details class="mehr mehr-block">
             <summary data-t="fb.h"></summary>
             <div class="inner">
               <p data-t="fb.text"></p>
@@ -1878,7 +1883,7 @@
         </div>
 
         <div class="rules">
-          <details>
+          <details class="mehr mehr-block">
             <summary data-t="rules.sum"></summary>
             <div class="inner">
               <p data-t="rules.intro"></p>
@@ -1924,7 +1929,6 @@
 
         <div class="foot">
           <p data-t="foot.1"></p>
-          <p data-t="foot.3"></p>
           <p hidden><button type="button" class="linkbtn" id="legalBtn" data-t="legal.open"></button></p>
         </div>
       </div>

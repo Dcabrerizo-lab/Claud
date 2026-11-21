@@ -771,6 +771,7 @@ Ergebnis: Pflegegrad 2`;
   // § 84 Abs. 1, § 64 SGG; gesetze-im-internet.de, abgerufen 20.11.2026). Jobcenter: zuerst die Art des Briefs.
   const FRIST_OBEN = [['bs', 'p-bescheid', 'jc', 'bs-datum'], ['ga', 'p-gsa', 'sa', 'ga-datum'], ['wg', 'p-wg', 'wg', 'wg-datum'], ['kz', 'p-kiz', 'fk', 'kz-datum']];
   const ARTWAHL = [['bescheid', 'Bescheid (Entscheidung über Geld)'], ['termin', 'Einladung zu einem Termin'], ['anh', 'Anhörung (das Amt fragt, bevor es entscheidet)'], ['mit', 'Aufforderung, Unterlagen nachzureichen']];
+  const ART_KOPF = { bescheid: ['bp.jc.h', 'Bescheid Grundsicherungsgeld prüfen'], termin: ['bp.art.termin.h', 'Einladung zu einem Termin'], anh: ['bp.art.anh.h', 'Anhörung vor einer Entscheidung'], mit: ['bp.art.mit.h', 'Unterlagen nachreichen'] };
   const ART_ERKL = { termin: ['fri.art.termin.t', 'Kannst du nicht kommen, sag vorher ab und nenne den Grund.'], anh: ['fri.art.anh.t', 'Du darfst dich bis zu diesem Tag äußern.'], mit: ['fri.art.mit.t', 'Reiche die Unterlagen bis zu diesem Tag ein.'] };
   function fristOben(p, sec, stelle, datumId) {
     const karte = $(sec) && $(sec).querySelector('.card'), feld = $(datumId);
@@ -811,6 +812,11 @@ Ergebnis: Pflegegrad 2`;
       bescheidTeil.hidden = nb; anders.hidden = !nb;
       $(sec).classList.toggle('pp-anders', nb);
       const ein = document.getElementById('einlesen'); if (ein && karte.contains(ein)) ein.hidden = nb;
+      // Überschrift je Briefart; „Scanne den Bescheid …“, „Was prüft SoLo genau?“ und „Wörter im Bescheid“ nur beim Bescheid
+      const kopf = karte.querySelector('h2');
+      if (kopf) { const [hk, hd] = ART_KOPF[art]; kopf.setAttribute('data-t', hk); kopf.textContent = tA(hk, hd); }
+      const scanSatz = karte.querySelector('h2 + p'); if (scanSatz) scanSatz.hidden = nb;
+      karte.querySelectorAll(':scope > details').forEach((d) => { d.hidden = nb; });
       anders.replaceChildren();
       if (!nb) return;
       const [k, deText] = ART_ERKL[art];
@@ -823,9 +829,9 @@ Ergebnis: Pflegegrad 2`;
         if (window.FristenOrdner) fr.append(window.FristenOrdner.knopf(() => ({ art: art === 'termin' ? 'termin' : art, stelle: 'jc', bis: tagFeld.value, quelle: 'brief' })));
       };
       tagFeld.addEventListener('input', zeigeTag); tagFeld.addEventListener('change', zeigeTag);
-      anders.append(h('p', { text: tA(k, deText) }),
+      anders.append(...[h('p', { text: tA(k, deText) }),
         art === 'anh' ? h('p', { class: 'small', text: tA('bp.art.anh.t', 'Eine Anhörung ist noch keine Entscheidung. Erkläre kurz, wie es war, und lege Belege bei. Ein Widerspruch ist erst gegen den Bescheid danach möglich.') }) : null,
-        h('label', { for: 'bs-art-tag', text: tA(art === 'termin' ? 'bp.art.termin.tag' : 'bp.art.tag', art === 'termin' ? 'Wann ist der Termin? (steht im Brief)' : 'Bis wann? (Datum aus dem Brief)') }), tagFeld, fr);
+        h('label', { for: 'bs-art-tag', text: tA(art === 'termin' ? 'bp.art.termin.tag' : 'bp.art.tag', art === 'termin' ? 'Wann ist der Termin? (steht im Brief)' : 'Bis wann? (Datum aus dem Brief)') }), tagFeld, fr].filter(Boolean)); // ohne filter stünde „null“ im Text
     };
     feld.addEventListener('input', zeigeFrist); feld.addEventListener('change', zeigeFrist);
     zeigeFrist();

@@ -3,6 +3,9 @@
 Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss steigen). Die Versionsnummer kommt aus dem Build.
 
 ## Nächste Version (in Arbeit)
+- **Brief-Seiten aufgeräumt**: kein großer weißer Rahmen mehr um den Inhalt; „Anderer Brief“ ohne doppelte Überschrift. Beim Jobcenter passt die Überschrift zur Briefart (Einladung, Anhörung, Unterlagen); Bescheid-Erklärungen nur beim Bescheid.
+- **Pflege – Unterstützung nach Pflegegrad**: Einleitung in einem Satz (Rest zum Aufklappen), grüner Knopf „Pflegegrad selbst einschätzen“, Tipp „Kostenlose Hilfe: Pflegekasse oder Pflegestützpunkt“.
+- Aufklapper überall im gleichen Stil ohne Sonderrahmen (Wörter im Bescheid, Eigene Frist, Weitere Punkte, So rechnet der Check); Versicherungs-Stufen ohne Farbbalken; „Über die App“: Stand in einer Zeile.
 - **„Es ist dringend“ aufgeräumt**: alle Fälle gleich aufgebaut – Frist oben, „Das tust du jetzt“ in Schritten, kurze Tipps zum Aufklappen, Knöpfe, Quellen unten. Konto gepfändet mit Bescheinigung und Grundfreibetrag statt doppeltem Tipp; Strom-/Gassperre in 3 Schritten. „Stimmt der Brief?“: Hinweis „keine Rechtsberatung“ unter dem letzten Tipp.
 
 ## 1.8.0 (ab Versionsnummer 150, November 2026)
