@@ -197,7 +197,12 @@ const MMIN = [54, 67, 79, 92, 103, 103, 115, 128, 140, 152, 187, 298], YMIN = [3
 const wg = (n, M, Y) => { const i = Math.min(n, 12) - 1, [a, b, c] = ABC[i]; M = Math.max(M, MMIN[i]); Y = Math.max(Y, YMIN[i]); return 1.15 * (M - (a + b * M + c * Y) * Y); };
 // Werbungskosten-Pauschbetrag (§ 9a EStG) beim Wohngeld: Arbeit (auch Werkstatt) 1.230 €, Rente 102 € im Jahr; nicht bei Selbstständigen
 const werbung = (x) => Math.min(x.brutto, x.selbst ? 0 : x.art === 'lohn' || x.art === 'wfbm' ? 1230 / 12 : x.art === 'rente' ? 102 / 12 : 0);
-function yGrenze(n, M) { let lo = 0, hi = 30000; for (let i = 0; i < 80; i++) { const m = (lo + hi) / 2; if (wg(n, M, m) > 0) lo = m; else hi = m; } return lo; }
+// § 21 Nr. 1 WoGG: unter 10 € kein Wohngeld; gerundet auf volle Euro (Anlage 3 Nr. 3) -> Grenze bei 9,50 € ungerundet
+const WG_MIN = 9.5;
+// § 19 Abs. 3 WoGG: über 12 Personen je weiteres Mitglied 65 € mehr, höchstens bis zur Miete
+const ueber12 = (n, w, M) => (n > 12 && w > 0 ? Math.min(w + 65 * (Math.floor(n) - 12), M) : w);
+const wgRoh = (n, M, Y) => { const w = wg(n, M, Y); return w >= WG_MIN ? ueber12(n, w, M) : 0; };
+function yGrenze(n, M) { let lo = 0, hi = 30000; for (let i = 0; i < 80; i++) { const m = (lo + hi) / 2; if (wg(n, M, m) >= WG_MIN) lo = m; else hi = m; } return lo; }
 // Bruttokaltmiete = Warmmiete minus angegebene Heizkosten (sonst Heizkostenkomponente als Näherung), höchstens Höchstbetrag; dazu die Heizkostenkomponente
 const mieteWG = (st, n, warm, faktor, hk) => Math.min(faktor * Math.max(0, warm - (hk > 0 && hk < warm ? hk : heiz(n))), hoechst(st, n)) + heiz(n);
 const ABZUG = { lohn: [0.1, 0.3], rente: [0.1, 0.2], kg: [0.1, 0.2], alg: [0, 0], eg: [0, 0], wfbm: [0, 0.1], ohne: [0, 0] };
@@ -229,7 +234,7 @@ function wohngeld(h) {
     for (const x of h.p) {
       if (x.art !== 'rente') continue;
       const davon = Math.min(offenWG, x.brutto); offenWG -= davon;
-      frei += Math.min(100 + 0.3 * Math.max(0, x.brutto - davon - 100), 0.5 * RB[1]);
+      frei += Math.min(Math.max(0, x.brutto - davon), 100 + 0.3 * Math.max(0, x.brutto - davon - 100), 0.5 * RB[1]); // § 17a Abs. 1 Satz 2: nie mehr als die Rente
     }
   }
   const plus = h.unterhalt + h.waisen + h.uvg + Math.max(0, h.kindEink - 100);
@@ -238,10 +243,13 @@ function wohngeld(h) {
   const yOpt = Math.max(0, h.p.reduce((s, x) => s + (x.brutto - werbung(x)) * (1 - abzugAus(x, 1)), 0) + plus - frei - uzGuenstig);
   if (yOpt > yMaxHi) return { level: 'nein' };
   let level = yPess <= yMaxLo ? 'ja' : 'vielleicht';
-  const mittel = h.netto + h.kinder * KG + h.unterhalt + h.waisen + h.uvg + h.kindEink - h.uz;
-  if (mittel < 0.8 * (h.regel + h.miete + h.mehrAE)) level = 'vielleicht'; // App: ohne weitere Mehrbedarfe
+  // Plausibilitätsprüfung Nr. 15.01 WoGVwV: Einnahmen plus vorsichtig geschätztes Wohngeld (Stufe I ohne Angabe) decken die ganze Miete
+  // und 80 % der Regelbedarfe (ohne Mehrbedarfe)
+  const wgVors = wgRoh(n, mieteWG(st || 1, n, h.miete, 1, hk), yPess);
+  const mittel = h.netto + h.kinder * KG + h.unterhalt + h.waisen + h.uvg + h.kindEink - h.uz + wgVors;
+  if (mittel < h.miete + 0.8 * h.regel) level = 'vielleicht';
   let betrag = null;
-  if (st) { const M = mieteWG(st, n, h.miete, 1, hk); betrag = [Math.max(0, runde10(wg(n, M, yPess))), Math.max(0, runde10(wg(n, M, yOpt)))]; }
+  if (st) { const M = mieteWG(st, n, h.miete, 1, hk); betrag = [Math.max(0, runde10(wgRoh(n, M, yPess))), Math.max(0, runde10(wgRoh(n, M, yOpt)))]; }
   return { level, yPess, yOpt, betrag };
 }
 
@@ -295,17 +303,26 @@ function kinderzuschlag(h) {
 }
 function kizBetrag(h) {
   const vermGrenze = h.personen <= 2 ? 55000 : 70000 + 15000 * (h.personen - 3);
-  if (h.vermoegen > vermGrenze) return { level: 'nein' };
   if (h.brutto < (h.erwachsene === 2 ? 900 : 600)) return { level: 'nein' };
+  // § 6a Abs. 3 Satz 5-7 BKGG: Vermögen über der Grenze mindert nur den ersten Monat; kleiner als der Monatsbetrag -> höchstens „möglich“
+  const r = kizBetrag0(h), ueber = h.vermoegen - vermGrenze;
+  if (!(ueber > 0)) return r;
+  if (!(r.kiz > ueber)) return { level: 'nein' };
+  return r.level === 'ja' ? { ...r, level: 'vielleicht' } : r;
+}
+function kizBetrag0(h) {
   const max = 297 * h.kids;
-  // Wohnanteil der Eltern: Tabelle DA-KiZ C.3.1.2 (Stand 20.02.2026)
-  const anteilEltern = (h.erwachsene === 1 ? [1, 77, 63, 53, 46, 40, 36, 33, 30, 27, 25] : [1, 83, 71, 62, 55, 50, 45, 41, 38, 35, 33])[Math.min(h.kids, 10)] / (h.kids ? 100 : 1);
+  // Wohnanteil der Eltern: Tabelle DA-KiZ C.3.1.2 (Stand 20.02.2026); alleinerziehend nur mit Altersrente: Kopfteil (DA-KiZ D.2 Abs. 1 Satz 9-11)
+  const mitEink = h.p.filter((x) => x.brutto > 0);
+  const rentnerAllein = h.erwachsene === 1 && h.rente && mitEink.length > 0 && mitEink.every((x) => x.art === 'rente');
+  const anteilEltern = rentnerAllein ? 1 / h.personen : (h.erwachsene === 1 ? [1, 77, 63, 53, 46, 40, 36, 33, 30, 27, 25] : [1, 83, 71, 62, 55, 50, 45, 41, 38, 35, 33])[Math.min(h.kids, 10)] / (h.kids ? 100 : 1);
   const ms = mehrSonst(h), bm = behMehrSGB2(h);
   const bedarfEltern = h.regelEltern + h.mehrAE + ms.eltern + (h.e.bhPerson === 'erwNach25' ? bm.sicher : 0) + h.miete * anteilEltern;
   const kindAnr = h.unterhalt + h.waisen + h.uvg + Math.max(0, h.kindEink - h.mini);
   const kiz = Math.max(0, max - minderungElternKiZ(h, bedarfEltern) - 0.45 * kindAnr);
   if (kiz <= 0) return { level: 'nein' };
-  // § 6a Abs. 1 Nr. 3 BKGG: mit dem Kinderzuschlag nicht mehr hilfebedürftig (bereinigtes Einkommen, Kindergeld, Kinderzuschlag, 300 € für ein mögliches Wohngeld)
+  // § 6a Abs. 1 Nr. 3 BKGG: mit dem Kinderzuschlag nicht mehr hilfebedürftig (bereinigtes Einkommen, Kindergeld, Kinderzuschlag; ein mögliches Wohngeld als fester Puffer von 300 € –
+  // die App schätzt es genauer, die Einstufung bleibt dabei „möglich“, nur der Hinweis wechselt)
   const mitKiz = elternEinkommenSGB2(h) + (h.kinder + h.jung) * KG + h.unterhalt + h.waisen + h.uvg + h.kindEink + kiz, bedarfAlle = h.regel + h.miete + h.mehrAE + ms.sicher + bm.sicher;
   if (mitKiz + 300 < bedarfAlle) return { level: 'vielleicht', kiz };
   if (mitKiz < bedarfAlle) return { level: 'vielleicht', kiz, mitWg: true }; // nur zusammen mit Wohngeld
