@@ -333,7 +333,12 @@ function kizBetrag0(h) {
     const aeHoch = h.erwachsene === 1 && h.kinder > 0 && h.u6 === 0 && 0.12 * h.kinder < 0.36 && (h.mitte >= 1 || h.kinder >= 2) ? 0.36 * RB[1] : h.mehrAE;
     if (kizMit(aeHoch, kindAnr) > 0) return { level: 'vielleicht' };
     // DA-KiZ 20.02.2026 C.2.2.1 Abs. 3 Satz 3: 30 € Versicherungspauschale vom Einkommen des Kindes, falls versichert -> knapp „möglich“
-    if (kindAnr > 0 && kizMit(aeHoch, kindAnr - Math.min(kindAnr, 30 * h.kids)) > 0) return { level: 'vielleicht' };
+    // (§ 6 Abs. 1 Nr. 2 Grundsicherungsgeld-Verordnung; nur Unterhalt, Unterhaltsvorschuss, Waisenrente, nicht Lohn der Kinder)
+    const zahl = h.unterhalt + h.waisen + h.uvg, lohn = Math.max(0, h.kindEink - h.mini), zahlKnapp = Math.max(0, zahl - 30 * h.kids);
+    if (zahl > 0 && kizMit(aeHoch, zahlKnapp + lohn) > 0) return { level: 'vielleicht' };
+    // Lohn der Kinder: je Kind ab 14 Jahren 603 € und bis zu 164 € Freibetrag (§ 11b Abs. 2b, Abs. 3 Satz 2 Nr. 2 und 3, Satz 4 SGB II:
+    // 30 % von 480 € + 10 % von 200 €; DA-KiZ C.2.2.1 Abs. 3 Satz 9-11) -> „möglich“
+    if (lohn > 0 && kizMit(aeHoch, zahlKnapp + Math.max(0, h.kindEink - Math.max(1, h.k14 + h.jung) * (h.mini + 164))) > 0) return { level: 'vielleicht' };
     return { level: 'nein' };
   }
   // § 6a Abs. 1 Nr. 3 BKGG: mit dem Kinderzuschlag nicht mehr hilfebedürftig (bereinigtes Einkommen, Kindergeld, Kinderzuschlag; ein mögliches Wohngeld als fester Puffer von 300 € –

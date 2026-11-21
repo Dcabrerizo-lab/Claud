@@ -779,6 +779,17 @@ ck('[eu] EU-Bürger: Grundsicherung im Alter ausgeschlossen (§ 23 SGB XII) unte
   // Ohne Unterhalt kein Hinweis auf das Einkommen der Kinder; weit über der Grenze bleibt „eher nicht“ ohne Hinweis
   const ohneUh = { adults: 1, kids: 1, kidsU6: 0, kids14: 1, art1: 'lohn', brutto: 4700, netto: 3200, miete: 900, mietstufe: 3, vermoegen: 0, bezug: { kindergeld: true }, heute: 2026.9 };
   ck('[kiz-kindeink] Ohne Unterhalt: „eher nicht“, kein Hinweis zum Einkommen der Kinder', L(ohneUh, 'kiz') === 'nein' && !K(ohneUh, 'kiz').some((k) => /kindEink/.test(k)), K(ohneUh, 'kiz').join());
+  // [kiz-kindlohn] Lohn der Kinder (Prüfvermerk 21.11.2026, docs/entwuerfe/pruefungen-21-11/kiz-pr127.md): Die Familienkasse zieht 603 € ab und
+  // dazu bis zu 164 € Freibetrag (§ 11b Abs. 2b und Abs. 3 Satz 4 SGB II; DA-KiZ C.2.2.1 Abs. 3 Satz 9-11). SoLo zieht nur 603 € ab.
+  // Von Hand: Kind 16, Bedarf 563 + 67,56 + 77 % von 900 = 1.323,56 €; Einkommen 2.300 - 378 = 1.922 €; Minderung 45 % von 598,44 = 269,30 €.
+  // Lohn 700 €: SoLo 297 - 45 % von 97 = 253,35 € -> 0 €; mit Freibetrag (höchstens 164 €) 297 - 269,30 > 0 -> „möglich“, kein Unterhalt-Text.
+  const lohnK = { adults: 1, kids: 1, kidsU6: 0, kids14: 1, art1: 'lohn', brutto: 3300, netto: 2300, kindEink: 700, miete: 900, mietstufe: 3, vermoegen: 0, bezug: { kindergeld: true }, heute: 2026.9 };
+  ck('[kiz-kindlohn] Kind mit 700 € Lohn, knapp: „möglich“ (Freibetrag des Kindes nicht gerechnet), kein Hinweis auf Unterhalt', L(lohnK, 'kiz') === 'vielleicht' && K(lohnK, 'kiz').includes('kiz.rand') && !K(lohnK, 'kiz').some((k) => /kindEink/.test(k)), L(lohnK, 'kiz') + ' ' + K(lohnK, 'kiz').join());
+  ck('[kiz-kindlohn] Kind mit 1.500 € Lohn: „eher nicht“ ohne Hinweis auf Unterhalt (297 - 45 % von 733 < 269,30)', L({ ...lohnK, kindEink: 1500 }, 'kiz') === 'nein' && !K({ ...lohnK, kindEink: 1500 }, 'kiz').some((k) => /kindEink/.test(k)), K({ ...lohnK, kindEink: 1500 }, 'kiz').join());
+  const lohnB = BK.pruefe({ eltern: [{ brutto: 3300, netto: 2300 }], kinder: [{ alter: 16, eigenes: 700 }], wohnkosten: 900, bescheid: { kiz: 60 } }, RS);
+  ck('[kiz-kindlohn] Bescheid-Check: Hinweis auf den Freibetrag (bis 73,80 € mehr), nicht auf die Versicherung', lohnB.hinweise.length === 1 && /164,00 €/.test(lohnB.hinweise[0]) && /73,80 €/.test(lohnB.hinweise[0]), lohnB.hinweise);
+  const uhB = BK.pruefe({ eltern: [{ brutto: 3000, netto: 2100 }], kinder: [{ alter: 17, unterhalt: 400 }, { alter: 10 }], wohnkosten: 700, bescheid: { kiz: 600 } }, RS);
+  ck('[kiz-kindeink] Bescheid-Check: Hinweis auf 30 € Versicherung nur für das Kind mit Unterhalt (13,50 €)', uhB.hinweise.some((t) => /13,50 €/.test(t)) && !uhB.hinweise.some((t) => /164/.test(t)), uhB.hinweise);
   // [kiz-spanne] Alter grob (Kind 6-13 kann 6 sein): Spanne; Bescheid-Check mit genauem Alter liegt darin (interner Fall 30: Kind 6, Unterhalt 227 €)
   const sp = { adults: 1, kids: 1, kidsU6: 0, kids14: 0, art1: 'lohn', brutto: 2500, netto: 1869, unterhalt: 227, unterhaltFehlt: false, miete: 1060, mietstufe: 3, vermoegen: 0, bezug: { kindergeld: true }, heute: 2026.9 };
   const spT = res(sp).m.kiz.tx.find((t) => t[0] === 'schaetz.spanne');

@@ -16,7 +16,7 @@ DA-KiZ Stand 20.02.2026 (arbeitsagentur.de/datei/fw-bkgg_ba023130.pdf).
 | Punkt | Regel | Fundstelle |
 |---|---|---|
 | Einkommen des Kindes | mindert nur den Kinderzuschlag **dieses** Kindes, um 45 % | § 6a Abs. 3 BKGG; DA-KiZ C.2.2.1 Abs. 1 und 5 |
-| Abzüge davon | „in der Regel ohne Abzüge oder Absetzbeträge“, Ausnahme 30 € Versicherungspauschale, wenn das Kind versichert ist | DA-KiZ C.2.2.1 Abs. 3 Satz 3 |
+| Abzüge davon | „in der Regel ohne Abzüge oder Absetzbeträge“, Ausnahme 30 € Versicherungspauschale, wenn das Kind versichert ist | DA-KiZ C.2.2.1 Abs. 3 Satz 3; § 6 Abs. 1 Nr. 2 Grundsicherungsgeld-Verordnung (früher Bürgergeld-V) |
 | Kindergeld, Wohngeld | zählen nicht als Einkommen des Kindes | DA-KiZ C.2.2.1 Abs. 2 |
 | Reihenfolge | erst jedes Kind (höchstens bis 0), dann Summe minus 45 % des Elterneinkommens über dem Bedarf | DA-KiZ C.2 Satz 4-6 |
 | Bedarf der Eltern | Regelbedarf + Mehrbedarf Alleinerziehende + Wohnanteil nach Tabelle (z. B. 63 % bei 2 Kindern) | DA-KiZ C.3.1.1 und C.3.1.2 |
@@ -79,14 +79,16 @@ fälschlich „eher nicht“ sagen (Kinderzuschlag und Grundsicherungsgeld). Tes
 
 - Gegenproben kommen direkt nach ihrer Familie; das Werkzeug hört nach 105 min geordnet auf (Workflow-Zeitlimit 120 min bleibt; Vorgabe:
   Workflow nicht ändern). Damit passen etwa 260 Abfragen, Paare sind immer vollständig.
-- Zeile `gegenprobe: 60,145,…` in der Auftragsdatei: ein push-Lauf fragt nur diese Familien ab (je 3 Abfragen, höchstens 13 Familien).
+- Eine Zeile `gegenprobe: 60,145,…` in der Auftragsdatei bewirkt: ein push-Lauf fragt nur diese Familien ab (je 3 Abfragen, höchstens 13 Familien).
+  Die Auftragsdatei steht im PR wieder auf dem Stand der Basis (Prüfung 21.11.2026), damit beim Zusammenführen kein Lauf startet.
+  Fallliste von Lauf 2 nur hier: `60,145,153,157,221,248,251,258,271`.
 - Widersprüche, die nur am Einkommen der Kinder liegen, zählt die Auswertung getrennt.
 
 ## Offen
 
 | Punkt | Warum offen |
 |---|---|
-| Ausbildungsvergütung der Kinder: SoLo zieht nur 603 € ab, nicht den Erwerbstätigenfreibetrag darüber (DA-KiZ C.2.2.1 Abs. 3 Satz 9-11) | zu vorsichtig (nie zu optimistisch); eigener Auftrag |
+| Ausbildungsvergütung der Kinder: SoLo zieht nur 603 € ab, nicht den Erwerbstätigenfreibetrag darüber (DA-KiZ C.2.2.1 Abs. 3 Satz 9-11) | seit der Prüfung (kiz-pr127.md): reicht es mit dem Freibetrag (höchstens 164 € je Kind), „möglich“ statt „eher nicht“; genaue Rechnung bleibt eigener Auftrag |
 | Kind deckt mit 45 % seines Einkommens und Kindergeld den eigenen Bedarf → zählt nicht mehr mit (DA-KiZ B.3 Abs. 2) | seltener Fall, Wohnanteil ändert sich |
 | Unterhalt sehr ungleich verteilt (ein Kind über 660 €) | Hauptrechner kennt nur die Summe; Bescheid-Check rechnet je Kind |
-| Auftragsdatei enthält noch die Zeile `gegenprobe:` | Entfernen würde einen vollen Lauf auslösen; beim Zusammenführen entfernen oder stehen lassen (nur push-Läufe) |
+| Auftragsdatei | erledigt: im PR auf den Stand der Basis zurückgesetzt (Commit mit `[skip ci]`, damit auch dieser Push keinen Lauf startet) |

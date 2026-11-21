@@ -1143,7 +1143,7 @@ const Rules = (function () {
     // eigenes Einkommen über der Minijob-Grenze) mindert den Kinderzuschlag um 45 % (§ 6a Abs. 3 und 6 BKGG)
     // Geprüft am 21.11.2026 gegen die Durchführungsanweisung (DA-KiZ, Stand 20.02.2026, https://www.arbeitsagentur.de/datei/fw-bkgg_ba023130.pdf,
     // Abruf 21.11.2026): C.2.2.1 Abs. 3 Satz 3 „Diese Einkünfte der Kinder sind in der Regel ohne Abzüge oder Absetzbeträge zu berücksichtigen
-    // (Ausnahme: Pauschale nach § 6 Bürgergeld-V, soweit eine entsprechende Versicherung abgeschlossen wurde)“; Abs. 5: 45 % davon mindern den
+    // (Ausnahme: Pauschale nach § 6 Bürgergeld-V, soweit eine entsprechende Versicherung abgeschlossen wurde)“ (heute § 6 Abs. 1 Nr. 2 Grundsicherungsgeld-Verordnung); Abs. 5: 45 % davon mindern den
     // Kinderzuschlag des Kindes (Beispiele Felix 280 € -> 126 €, Mia Unterhalt 400 € -> 297 - 180 = 117 €). Die Minderung wegen Elterneinkommens
     // kommt danach auf die Summe (C.2 Satz 4-6). Der KiZ-Lotse der Familienkasse rechnet das Einkommen der Kinder nicht ein (Differenztest 21.11.2026,
     // docs/entwuerfe/pruefungen-21-11/kiz.md): Er zeigt dann „Aussicht auf Erfolg“, wo die Familienkasse nach der DA-KiZ nichts zahlt.
@@ -1161,14 +1161,25 @@ const Rules = (function () {
     if (est <= 0) {
       // Kind vielleicht erst 6 Jahre (Mehrbedarf 36 % statt 12 %): dann ist Kinderzuschlag möglich
       if (estHoch > 0) return mk(id, 'vielleicht', 'vielleicht', [['kiz.ae7']]);
-      // Knapp wegen des Einkommens der Kinder: Hat ein Kind eine eigene Versicherung, zieht die Familienkasse vorher 30 € im Monat ab
-      // (DA-KiZ C.2.2.1 Abs. 3 Satz 3, § 6 Abs. 1 Nr. 1 Bürgergeld-V, R.versPauschale). SoLo fragt das nicht: reicht es dann, „möglich“.
-      // Grenze damit begründet: 45 % von 30 € = 13,50 € je Kind mit Einkommen.
-      if (kindAnr > 0) {
-        if (estMit(bemHoch, Math.max(0, kindAnr - Math.min(kindAnr, R.versPauschale * h.children))) > 0) return mk(id, 'vielleicht', 'vielleicht', [['kiz.knappKindEink']]);
-        // Ohne Einkommen der Kinder gäbe es Kinderzuschlag: bleibt „eher nicht“, mit Erklärung (Online-Rechner ohne dieses Einkommen zeigen mehr)
-        if (estMit(bemHoch, 0) > 0) return mk(id, 'nein', 'einkoHoch', [['kiz.zuHoch'], ['kiz.kindEinkNein']]);
+      // Knapp wegen Unterhalt, Unterhaltsvorschuss oder Waisenrente der Kinder: Hat ein minderjähriges Kind eine eigene Versicherung, zieht
+      // die Familienkasse vorher 30 € im Monat ab (DA-KiZ C.2.2.1 Abs. 3 Satz 3; § 6 Abs. 1 Nr. 2 Grundsicherungsgeld-Verordnung, früher
+      // Bürgergeld-V, https://www.gesetze-im-internet.de/algiiv_2008/__6.html, Abruf 21.11.2026; bei volljährigen Kindern nach Nr. 1 auch
+      // ohne Nachweis; R.versPauschale). SoLo fragt das nicht: reicht es dann, „möglich“. Grenze: 45 % von 30 € = 13,50 € je Kind.
+      // Die Pauschale gilt nicht für Lohn der Kinder (dort 603 € statt der Beträge nach § 11b Abs. 1 Nr. 3-5 SGB II).
+      const kz = h.kindZahl || 0, ke = h.kindEink || 0, keAnr = Math.max(0, ke - h.minijob);
+      const kzKnapp = Math.max(0, kz - R.versPauschale * h.children);
+      if (kz > 0 && estMit(bemHoch, kzKnapp + keAnr) > 0) return mk(id, 'vielleicht', 'vielleicht', [['kiz.knappKindEink']]);
+      // Lohn der Kinder (Ausbildung, Schülerjob): Die Familienkasse zieht je Kind 603 € ab und dazu den Freibetrag nach § 11b Abs. 3 SGB II
+      // ohne die erste Stufe (30 % von 520 bis 1.000 €, 10 % bis 1.200 € = höchstens 164 €; § 11b Abs. 2b und Abs. 3 Satz 4 SGB II,
+      // DA-KiZ C.2.2.1 Abs. 3 Satz 9-11, Abruf 21.11.2026). SoLo kennt nur die Summe für alle Kinder und zieht 603 € einmal ab.
+      // Reicht es mit diesen Abzügen für jedes Kind ab 14 Jahren, ist Kinderzuschlag „möglich“ (nie fälschlich „eher nicht“).
+      if (ke > h.minijob) {
+        const nErw = Math.max(1, (h.kids14 || 0) + (h.young || 0));
+        const frei = sgb2Freibetrag(1200, false) - sgb2Freibetrag(520, false);
+        if (estMit(bemHoch, kzKnapp + Math.max(0, ke - nErw * (h.minijob + frei))) > 0) return mk(id, 'vielleicht', 'vielleicht', [['kiz.rand', { max: eur(R.kiz.max) }]]);
       }
+      // Ohne Unterhalt der Kinder gäbe es Kinderzuschlag: bleibt „eher nicht“, mit Erklärung (Online-Rechner ohne dieses Einkommen zeigen mehr)
+      if (kz > 0 && estMit(bemHoch, keAnr) > 0) return mk(id, 'nein', 'einkoHoch', [['kiz.zuHoch'], ['kiz.kindEinkNein']]);
       return mk(id, 'nein', 'einkoHoch', [['kiz.zuHoch']]);
     }
     // Hilfebedürftigkeit muss mit dem Kinderzuschlag enden (§ 6a Abs. 1 Nr. 3 BKGG): bereinigtes Einkommen nach SGB II (mit Freibetrag
