@@ -38,7 +38,15 @@
       var v = p[k];
       return v && typeof v === 'object' && 'eur' in v ? Fmt.euro(v.eur, lang, rtl) : v;
     });
+    if (lang !== 'de' && window.DeNetz) DeNetz.merke(key, s, p); // Sicherheitsnetz: wichtige Sätze auch auf Deutsch (src/denetz.js)
     return s;
+  }
+  // Deutscher Originaltext zu einem Schlüssel (Sicherheitsnetz, src/denetz.js): gleiche Parameter, ohne Einfache Sprache
+  function tDe(key, p, ohne) {
+    var l = lang, es = einfachSprache, s;
+    lang = 'de'; einfachSprache = false;
+    try { s = t(key, p); } finally { lang = l; einfachSprache = es; }
+    return ohne ? Fmt.ohnePara(s) : s;
   }
 
   // Text für Laien: ohne Beratungsmodus Paragrafen in Klammern ausblenden (Fmt.ohnePara); im Beratungsmodus unverändert
@@ -618,6 +626,7 @@
 
   function applyLang() {
     var app = $('app');
+    if (window.DeNetz) DeNetz.sprache(); // alte Übersetzungen vergessen
     app.setAttribute('lang', lang);
     document.documentElement.setAttribute('lang', lang);
     document.documentElement.setAttribute('dir', I18N[lang]['meta.dir']);
@@ -660,6 +669,14 @@
     b.setAttribute('aria-checked', String(de && einfachSprache));
     if (de) b.removeAttribute('aria-disabled'); else b.setAttribute('aria-disabled', 'true');
     $('einfacheSpracheT').textContent = t(de ? 'set.es.t' : 'set.es.nurDe');
+    if ($('deNetzBtn')) { $('deNetzBtn').setAttribute('aria-checked', String(!window.DeNetz || DeNetz.an())); $('deNetzT').textContent = t(de ? 'dn.set.nurFremd' : 'dn.set.t'); }
+  }
+  // Schalter „Wichtige Sätze auch auf Deutsch zeigen“ (Standard an; wirkt nur bei Fremdsprachen)
+  function deNetzSetzen(an, speichern) {
+    if (!window.DeNetz) return;
+    if (speichern) Store.set('lotse.deNetz', an ? '1' : '0');
+    DeNetz.setzeAn(an);
+    einfacheSpracheAnzeigen();
   }
   function einfacheSpracheSetzen(an, speichern) {
     einfachSprache = !!an;
@@ -859,6 +876,7 @@
       einfacheSpracheSetzen(!einfachSprache, true);
     });
     $('beratungBtn').addEventListener('click', function () { beratungSetzen(!beratung, true); });
+    if ($('deNetzBtn')) $('deNetzBtn').addEventListener('click', function () { deNetzSetzen(!DeNetz.an(), true); });
     $('ebOpen').addEventListener('click', ebOeffnen);
     $('ebKuerzel').addEventListener('input', ebBauen);
     $('ebDruck').addEventListener('click', function () { ebAusgeben(NATIVE ? (plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen') : 'web'); });
@@ -2424,11 +2442,12 @@
   }
 
   // Einstellungen: alle gespeicherten Angaben der App löschen (Store-Schlüssel) und die Anzeige auf den Anfangszustand setzen
-  var STORE_SCHLUESSEL = ['lotse.state', 'lotse.einfach', 'lotse.einfachSprache', 'lotse.beratung', 'lotse.haken', 'lotse.pflegecheck', 'lotse.lang', 'lotse.ack', 'lotse.fristen', 'lotse.fristTag', 'lotse.fristHinweis', 'lotse.checkWeg'];
+  var STORE_SCHLUESSEL = ['lotse.state', 'lotse.einfach', 'lotse.einfachSprache', 'lotse.beratung', 'lotse.haken', 'lotse.pflegecheck', 'lotse.lang', 'lotse.ack', 'lotse.fristen', 'lotse.fristTag', 'lotse.fristHinweis', 'lotse.checkWeg', 'lotse.deNetz'];
   state = blankState();
   $('sampleNotice').hidden = true; // Beispiel-Hinweis nur, wenn ein Beispiel geladen ist
   bind();
   writeForm();
+  if (window.DeNetz) DeNetz.init({ lang: function () { return lang; }, de: tDe, t: t, wurzel: function () { return $('app'); } });
   lang = detect();
   applyLang();
   initClaude();
@@ -2437,6 +2456,7 @@
   // Knopf „Kurzer Check …“ steht oben als Wahl (src/schritte.js baut ihn neu): Klick über das Dokument
   document.addEventListener('click', function (e) { if (e.target && e.target.closest && e.target.closest('#einfachBtn')) esUmschalten(!esModus); });
   Store.get('lotse.einfachSprache', function (v) { if (v === '1') einfacheSpracheSetzen(true, false); });
+  Store.get('lotse.deNetz', function (v) { if (v === '0') deNetzSetzen(false, false); });
   Store.get('lotse.beratung', function (v) { if (v === '1') beratungSetzen(true, false); });
   // ----- Leistungs-Check: Weg wählen (Schritt für Schritt oder Alles auf einer Seite), Modul src/schritte.js -----
   // Beide Wege schreiben in denselben Zustand (state). Die Wahl gilt pro Gerät (lotse.checkWeg, nicht im Vorgang).

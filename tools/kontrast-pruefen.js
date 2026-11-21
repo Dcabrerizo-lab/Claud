@@ -56,6 +56,7 @@ const paare = [
   ...BEREICHE.map((b) => ['Bereich ' + b + ': Farbe als Schrift auf Karte', 'c-' + b + '-t', 'surface', 4.5]),
   ...BEREICHE.map((b) => ['Bereich ' + b + ': Farbe als Schrift auf Hintergrund', 'c-' + b + '-t', 'bg', 4.5]),
   ...ABSENDER.map((a) => ['Absender ' + a + ': weiße Schrift auf Kachel', 'on-c', 'c-' + a, 4.5]),
+  ['Deutsch-Zeile (Sicherheitsnetz) auf Hintergrund', 'muted', 'bg', 4.5], ['Deutsch-Zeile auf Karte', 'muted', 'surface', 4.5], ['Deutsch-Zeile auf Tipp-Fläche', 'muted', 'hint-bg', 4.5], ['Deutsch-Zeile auf Achtung-Fläche', 'muted', 'warn-bg', 4.5], ['Deutsch-Zeile auf Frist-Fläche', 'ink', 'bad-bg', 4.5],
   ['Pflege: Einheit (Monat)', 'c-pflege-t', { mix: ['c-pflege', 0.14, 'surface'] }, 4.5],
 ];
 

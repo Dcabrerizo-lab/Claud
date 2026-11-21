@@ -1225,6 +1225,11 @@
   .fri-bis > b::before { inset-inline-start: 0; top: 1px; width: 24px; height: 24px; }
   @media (forced-colors: active) { .frist, .fri-start { border: 2px solid CanvasText; } .frist::before, .fri-start::before, .fri-bis > b::before { background: CanvasText; } }
   @media print { .frist, .fri-start { border: 1pt solid #000; } }
+  /* Sicherheitsnetz für Übersetzungen (src/denetz.js): deutscher Originalsatz klein und gedämpft unter wichtigen Sätzen, kein Kasten */
+  .de-netz { display: block; margin: 2px 0 0; font-size: var(--fs-xs); font-weight: 400; line-height: 1.35; color: var(--muted); text-align: start; }
+  [dir="rtl"] .de-netz { text-align: right; }
+  .frist .de-netz, .fri-start .de-netz, .warn .de-netz, .notice .de-netz { color: inherit; } /* farbige Flächen: Schrift der Fläche (Kontrast geprüft), nur kleiner */
+  .de-netz-v { font-style: italic; }
 
   /* --- Vertrauen: Stand und Herkunft der Zahlen ruhig, aber sichtbar am Ergebnis --- */
   .vertrauen { display: flex; align-items: center; gap: 8px; flex-basis: 100%; margin: 0; color: var(--muted); font-size: var(--fs-xs); font-weight: 600; }
@@ -1881,6 +1886,7 @@
           <label class="langpick set-zeile"><span class="schalter-t" data-t="lang.label"></span><select id="lang"></select></label>
           <p><button type="button" class="schalter" id="bigBtn" role="switch" aria-checked="false"><span class="schalter-t" data-t="big"></span><span class="schalter-zst"></span><span class="schalter-bahn" aria-hidden="true"></span></button></p>
           <p><button type="button" class="schalter" id="einfacheSpracheBtn" role="switch" aria-checked="false" aria-describedby="einfacheSpracheT"><span class="schalter-t"><span data-t="set.es.label"></span><span class="schalter-unter" id="einfacheSpracheT"></span></span><span class="schalter-zst"></span><span class="schalter-bahn" aria-hidden="true"></span></button></p>
+          <p><button type="button" class="schalter" id="deNetzBtn" role="switch" aria-checked="true" aria-describedby="deNetzT"><span class="schalter-t"><span data-t="dn.set.label"></span><span class="schalter-unter" id="deNetzT"></span></span><span class="schalter-zst"></span><span class="schalter-bahn" aria-hidden="true"></span></button></p>
           <div class="field"><span class="lab" id="lab-thema" data-t="set.thema"></span>
             <div class="seg seg3" role="radiogroup" aria-labelledby="lab-thema">
               <input type="radio" name="thema" id="thema-auto" value="" checked><label for="thema-auto" data-t="set.thema.auto"></label>
@@ -2155,6 +2161,7 @@ Behoerden.init(/*BEHOERDENDATA*/null);
 /*SCHRITTE*/
 /*KLIENT*/
 /*SUCHE*/
+/*DENETZ*/
 </script>
 <script>
 /*NAVIGATION*/
