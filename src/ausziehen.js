@@ -193,7 +193,7 @@ var Ausziehen = (function () {
     '.az-liste{list-style:none;margin:0;padding:0;display:grid;gap:10px}' +
     '.az-punkt{border:1px solid var(--line);border-radius:14px;background:var(--surface);padding:12px 14px;display:grid;gap:6px}' +
     '.az-check{display:flex;gap:12px;align-items:flex-start;min-height:44px;cursor:pointer;font-weight:700}' +
-    '.az-check input{flex:none;width:26px;height:26px;margin:2px 0 0;accent-color:var(--accent)}' +
+    '.az-check input{flex:none;width:32px;height:32px;margin:0;accent-color:var(--accent)}' +
     '.az-punkt.ok .az-check span{text-decoration:line-through;text-decoration-thickness:1px;opacity:.75}' +
     '.az-titel{font-weight:700;margin:0}.az-kurz{margin:0}.az-punkt>.az-q{margin:0}.az-punkt>.btns{margin:0}' +
     '.az-punkt details>summary,.az-weitere>summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-weight:600;color:var(--accent)}' +
