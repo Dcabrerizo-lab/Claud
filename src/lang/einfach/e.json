@@ -34,7 +34,7 @@
   "vg.pin.unter": "Mit PIN kannst nur du deine Angaben auf diesem Gerät öffnen",
   "karte.mappe": "Welche Unterlagen du brauchst und was du als Nächstes tust, steht in der Antragsmappe.",
   "vg.pin.t": "Mit einer PIN sind deine Angaben auf diesem Gerät verschlüsselt. Das heißt: Ohne PIN kann sie niemand lesen. Zum Beispiel, wenn jemand dein Handy nimmt. Das ist ein Sichtschutz. Gegen Fachleute mit Spezial-Werkzeug hilft er nicht sicher. Nach 2 Minuten im Hintergrund sperrt sich SoLo von selbst.",
-  "vg.pin.erkl": "Die PIN sperrt die ganze App. Merk dir die PIN gut. Vergisst du sie, kann niemand die Angaben öffnen.",
+  "vg.pin.erkl": "Die PIN sperrt die ganze App. Vergisst du sie, kommst du nicht mehr an deine Angaben. Das ist ein Sichtschutz, kein sicherer Schutz gegen Fachleute.",
   "vg.auto.t": "Bei jedem Vorgang steht das Datum. Nach diesem Datum löscht die App den Vorgang. Das passiert, wenn du die App das nächste Mal öffnest.",
   "vg.sperre.vergessen.t": "Ohne PIN kann man die Angaben nicht öffnen. Du kannst alles löschen und neu anfangen.",
   "vg.fehler.speicher": "Speichern geht gerade nicht. Der Speicher ist voll oder gesperrt. Deine Angaben sind weg, wenn du die App schließt.",

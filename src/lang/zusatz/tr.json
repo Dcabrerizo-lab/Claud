@@ -69,6 +69,7 @@
   "vgp.aufheben": "Kilidi kaldır",
   "vgp.oeffnen": "Aç",
   "vgp.pin": "Bu dosya için PIN (4 ile 8 rakam)",
+  "vgp.pinNeu": "Bu dosya için PIN (4 ile 8 rakam, önerilen: 6)",
   "vgp.kurz": "Listedeki ad (isteğe bağlı)",
   "vgp.kurz.t": "PIN olmadan herkes görebilir. Boş bırakırsan yalnızca „Kilitli dosya“ görünür.",
   "vgp.t0": "Bu bir göz korumasıdır, özel araçları olan uzmanlara karşı koruma değildir.",

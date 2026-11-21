@@ -69,6 +69,7 @@
   "vgp.aufheben": "Remove lock",
   "vgp.oeffnen": "Open",
   "vgp.pin": "PIN for this case (4 to 8 digits)",
+  "vgp.pinNeu": "PIN for this case (4 to 8 digits, 6 recommended)",
   "vgp.kurz": "Name in the list (optional)",
   "vgp.kurz.t": "Visible to anyone without the PIN. Leave empty: only “Locked case” is shown.",
   "vgp.t0": "This is a privacy screen, not protection against experts with special tools.",

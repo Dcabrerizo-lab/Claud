@@ -69,6 +69,7 @@
   "vgp.aufheben": "Sperre aufheben",
   "vgp.oeffnen": "Öffnen",
   "vgp.pin": "PIN für diesen Vorgang (4 bis 8 Ziffern)",
+  "vgp.pinNeu": "PIN für diesen Vorgang (4 bis 8 Ziffern, empfohlen: 6)",
   "vgp.kurz": "Name in der Liste (freiwillig)",
   "vgp.kurz.t": "Ohne PIN für alle sichtbar. Leer lassen: Es steht nur „Gesperrter Vorgang“ da.",
   "vgp.t0": "Das ist ein Sichtschutz, kein Schutz gegen Fachleute mit Spezialwerkzeug.",

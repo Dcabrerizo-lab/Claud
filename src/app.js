@@ -3453,7 +3453,7 @@
       if (!typ) i.setAttribute('inputmode', 'numeric');
       f.appendChild(l); f.appendChild(i); return i;
     };
-    var p1 = feld('vgGPin', 'vgp.pin', 8), p2 = art === 'sperren' ? feld('vgGPin2', 'vg.pin.label2', 8) : null, kurz = null;
+    var p1 = feld('vgGPin', art === 'sperren' ? 'vgp.pinNeu' : 'vgp.pin', 8), p2 = art === 'sperren' ? feld('vgGPin2', 'vg.pin.label2', 8) : null, kurz = null;
     if (art === 'sperren') {
       kurz = feld('vgGKurz', 'vgp.kurz', Vorgaenge.NAME_MAX, 'text'); kurz.setAttribute('aria-describedby', 'vgGKurzH');
       var kh = vgEl('p', 'small muted', t('vgp.kurz.t')); kh.id = 'vgGKurzH'; f.appendChild(kh);

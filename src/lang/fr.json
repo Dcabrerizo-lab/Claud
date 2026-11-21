@@ -475,7 +475,7 @@
   "vg.auto.sprung": "L’horloge de l’appareil a plus d’un an d’avance sur la dernière ouverture. La date est-elle juste ? Alors supprimer maintenant les dossiers expirés. Avec « Annuler », rien n’est supprimé.",
   "vg.pin.h": "Verrouillage par code PIN (protection contre les regards)",
   "vg.pin.t": "Avec un code PIN, les données enregistrées sur cet appareil sont chiffrées. Une personne qui prend ton téléphone ne peut pas les voir sans le code. C’est une protection contre les regards, pas contre des experts équipés d’outils spéciaux. Après 2 minutes en arrière-plan, SoLo se verrouille tout seul.",
-  "vg.pin.erkl": "Le code PIN verrouille toute l’appli et chiffre tes données. Retiens bien le code PIN, il n’est enregistré nulle part. Si tu l’oublies, personne ne peut ouvrir les données, pas même nous.",
+  "vg.pin.erkl": "Le code PIN verrouille toute l’appli et chiffre tes données. Si tu l’oublies, tu ne peux plus accéder à tes données. C’est une protection contre les regards, pas contre des experts outillés.",
   "vg.pin.nicht": "Le verrouillage par code PIN n’est pas disponible sur cet appareil.",
   "vg.pin.label": "Nouveau code PIN (4 à 12 chiffres, 6 recommandés)",
   "vg.pin.label2": "Code PIN encore une fois",

@@ -205,10 +205,12 @@ var Klient = (function () {
       Promise.resolve().then(function () { return ctx.oeffneGesperrt(id, p); }).then(function (daten) {
         if (!daten || typeof daten !== 'object') throw new Error('leer');
         nehmen(id, daten);
-      }, function () {
+      }, function (e) {
         sel.value = vorher; pinBox.hidden = true;
-        var m = $('kbPinMsg') || pm; m.textContent = t('kb.pinFalsch');
-        var g = $('kbVgMsg'); if (g) g.textContent = t('kb.pinFalsch');
+        // Wartezeit nach Fehlversuchen (Vorgaenge.oeffneGesperrt: reject ohne falsch, mit warten in ms) ist keine falsche PIN
+        var tx = e && !e.falsch && e.warten > 0 ? t('vg.sperre.warten', { s: String(Math.ceil(e.warten / 1000)) }) : t('kb.pinFalsch');
+        var m = $('kbPinMsg') || pm; m.textContent = tx;
+        var g = $('kbVgMsg'); if (g) g.textContent = tx;
       });
     });
     wrap.appendChild(f);

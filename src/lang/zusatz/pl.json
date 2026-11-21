@@ -69,6 +69,7 @@
   "vgp.aufheben": "Usuń blokadę",
   "vgp.oeffnen": "Otwórz",
   "vgp.pin": "PIN do tej sprawy (od 4 do 8 cyfr)",
+  "vgp.pinNeu": "PIN do tej sprawy (od 4 do 8 cyfr, zalecane: 6)",
   "vgp.kurz": "Nazwa na liście (dobrowolnie)",
   "vgp.kurz.t": "Widoczna dla każdego bez PIN-u. Puste pole: widać tylko „Zablokowana sprawa”.",
   "vgp.t0": "To osłona przed wzrokiem, a nie ochrona przed fachowcami ze specjalnymi narzędziami.",

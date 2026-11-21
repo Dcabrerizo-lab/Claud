@@ -52,6 +52,7 @@ const speicherText = () => Object.values(mem).join('\n');
   ck('[vorgang-pin-dom] Formular: PIN, PIN noch einmal, freiwilliger Kurzname, 4 kurze Sätze', !!f && f.querySelectorAll('input[type=password][inputmode=numeric]').length === 2 && !!d.getElementById('vgGKurz') && f.querySelectorAll('.vg-gerkl li').length === 4 && [...f.querySelectorAll('.vg-gerkl li')].every((li) => li.textContent.split(/\s+/).length <= 12));
   ck('[vorgang-pin-dom] Erklärung ohne falsche Zusage: Sichtschutz, kein Schutz gegen Fachleute', /Sichtschutz, kein Schutz gegen Fachleute/.test(f.textContent));
   ck('[vorgang-pin-dom] Erklärung nennt Verlust bei vergessener PIN', /PIN vergessen\? Dann ist der Vorgang verloren\./.test(f.textContent));
+  ck('[vorgang-pin-dom] PIN-Feld beim Sperren: Hinweis „empfohlen: 6“', f.querySelector('label[for=vgGPin]').textContent === 'PIN für diesen Vorgang (4 bis 8 Ziffern, empfohlen: 6)');
   d.getElementById('vgGPin').value = '12'; submit(f);
   ck('[vorgang-pin-dom] zu kurze PIN: Hinweis', /4 bis 8 Ziffern/.test(f.querySelector('.msg').textContent));
   d.getElementById('vgGPin').value = '482910'; d.getElementById('vgGPin2').value = '482911'; submit(f);
@@ -69,6 +70,7 @@ const speicherText = () => Object.values(mem).join('\n');
   // Öffnen: falsche PIN, dann richtige
   g.querySelector('button.vg-zeile').click();
   const fo = d.getElementById('vgGForm');
+  ck('[vorgang-pin-dom] PIN-Feld beim Öffnen ohne Empfehlung', fo && fo.querySelector('label[for=vgGPin]').textContent === 'PIN für diesen Vorgang (4 bis 8 Ziffern)');
   ck('[vorgang-pin-dom] Tipp auf gesperrten Vorgang: nur PIN-Feld', !!fo && fo.querySelectorAll('input').length === 1 && !d.getElementById('vgGPin2'));
   d.getElementById('vgGPin').value = '000000'; submit(fo);
   await bis(() => /stimmt nicht/.test(fo.querySelector('.msg').textContent));

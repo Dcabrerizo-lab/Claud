@@ -69,6 +69,7 @@
   "vgp.aufheben": "Elimină blocarea",
   "vgp.oeffnen": "Deschide",
   "vgp.pin": "PIN pentru acest dosar (între 4 și 8 cifre)",
+  "vgp.pinNeu": "PIN pentru acest dosar (între 4 și 8 cifre, recomandat: 6)",
   "vgp.kurz": "Nume în listă (opțional)",
   "vgp.kurz.t": "Vizibil pentru oricine fără PIN. Lasă gol: apare doar „Dosar blocat”.",
   "vgp.t0": "Aceasta este o protecție la privire, nu o protecție împotriva specialiștilor cu unelte speciale.",
