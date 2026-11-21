@@ -221,6 +221,8 @@ var Schritte = (function () {
       (zurueckZu ? zurKnopf(' data-zu="' + esc(zurueckZu) + '"') : '<span></span>') +
       (bereich ? '<span class="es-prog sf-bereich">' + esc(bereich) + '</span>' : '') + '</div></div>';
   }
+  // Antwort mit Kästchen (Mehrfachauswahl); der Haken erscheint über CSS bei .an
+  function mehrInhalt(txt) { return '<span class="es-kasten" aria-hidden="true"></span><span>' + esc(txt) + '</span>'; }
   function hilfe(key) {
     if (!key) return '';
     return '<details class="sf-hilfe"><summary>' + esc(t('sf.warum')) + '</summary><p>' + esc(t(key)) + '</p></details>';
@@ -259,10 +261,16 @@ var Schritte = (function () {
       }).join('') + '</div>';
       if (ja[f.id]) h += '<div class="es-nav1">' + knopf('es-btn es-weiter', esc(t('sf.weiter')), ' id="sfWeiter"') + '</div>';
     } else if (f.art === 'mehr') {
-      h += '<div class="es-wahl" role="group" aria-labelledby="sfFrage">' + felder(f, s).map(function (x) {
-        var an = feldWert(f, s, x[0]);
-        return knopf('es-btn' + (an ? ' an' : ''), '<span>' + esc(t(x[1])) + '</span>', ' data-k="' + esc(x[0]) + '" aria-pressed="' + an + '"');
-      }).join('') + '</div><div class="es-nav1">' + knopf('es-btn es-weiter', esc(t('sf.weiter')), ' id="sfWeiter"') + knopf('es-btn es-skip', esc(t('sf.nichts')), ' id="sfNichts"') + '</div>';
+      // Mehrfachauswahl sichtbar anders als Einfachauswahl (GOV.UK „Checkboxes“): Kästchen mit Haken, Zeile „Mehrere Antworten möglich“,
+      // „Nichts davon“ als letzte Antwort nach „oder“ (springt weiter), dann „Weiter“
+      var nichts = ja[f.id] && !felder(f, s).some(function (x) { return feldWert(f, s, x[0]); });
+      h += '<p class="es-h es-mehrere" id="sfMehrere">' + esc(t('sf.mehrere')) + '</p>' +
+        '<div class="es-wahl es-mehr" role="group" aria-labelledby="sfFrage" aria-describedby="sfMehrere">' + felder(f, s).map(function (x) {
+          var an = feldWert(f, s, x[0]);
+          return knopf('es-btn' + (an ? ' an' : ''), mehrInhalt(t(x[1])), ' role="checkbox" data-k="' + esc(x[0]) + '" aria-checked="' + an + '"');
+        }).join('') + '<p class="es-oder" aria-hidden="true"><span>' + esc(t('sf.oder')) + '</span></p>' +
+        knopf('es-btn es-nichts' + (nichts ? ' an' : ''), mehrInhalt(t('sf.nichts')), ' role="checkbox" id="sfNichts" aria-checked="' + !!nichts + '"') +
+        '</div><div class="es-nav1">' + knopf('es-btn es-weiter', esc(t('sf.weiter')), ' id="sfWeiter"') + '</div>';
     } else if (f.art === 'zaehler') {
       h += '<div class="sf-zaehler" role="group" aria-labelledby="sfFrage" dir="ltr">' + knopf('es-btn', '−', ' id="sfMinus" aria-label="' + esc(t('sf.weniger')) + '"') +
         '<output id="sfZahl" aria-live="polite">' + (s[f.id] || 0) + '</output>' + knopf('es-btn', '+', ' id="sfPlus" aria-label="' + esc(t('sf.mehr')) + '"') + '</div>' +
@@ -296,7 +304,8 @@ var Schritte = (function () {
         b.addEventListener('click', function () {
           var k = b.getAttribute('data-k'), s2 = S(), an;
           if (f.bezug) { s2.bezug = s2.bezug || {}; an = s2.bezug[k] = !s2.bezug[k]; } else an = s2[k] = !s2[k];
-          b.classList.toggle('an', an); b.setAttribute('aria-pressed', String(an));
+          b.classList.toggle('an', an); b.setAttribute('aria-checked', String(an));
+          var n = q('#sfNichts'); n.classList.remove('an'); n.setAttribute('aria-checked', 'false');
           ja[f.id] = true; ctx.geaendert(f.id);
         });
       });
@@ -304,7 +313,9 @@ var Schritte = (function () {
       q('#sfNichts').addEventListener('click', function () {
         var s2 = S();
         f.felder.forEach(function (x) { if (f.bezug) { s2.bezug = s2.bezug || {}; s2.bezug[x[0]] = false; } else s2[x[0]] = false; });
-        ja[f.id] = true; ctx.geaendert(f.id); weiter(f.id);
+        box.querySelectorAll('[data-k]').forEach(function (x) { x.classList.remove('an'); x.setAttribute('aria-checked', 'false'); });
+        var n = q('#sfNichts'); n.classList.add('an'); n.setAttribute('aria-checked', 'true');
+        ja[f.id] = true; ctx.geaendert(f.id); setTimeout(function () { weiter(f.id); }, VERZ);
       });
     } else if (f.art === 'zaehler') {
       var zeig = function () { q('#sfZahl').textContent = S()[f.id] || 0; };

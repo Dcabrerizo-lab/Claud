@@ -107,6 +107,15 @@ const ohne = (o) => JSON.stringify(o.results.map((r) => [r.id, r.level, r.tx]));
   await A.antworte('2000'); await A.antworte('skip'); await A.antworte('weiter');
   await A.antworte('skip'); await A.antworte('3000'); await A.antworte('skip');
   check('Leistungen, die man schon bekommt (Mehrfachauswahl)', A.frage() === q('sf.q.bezug'));
+  check('Mehrfachauswahl sieht anders aus: Zeile „Mehrere Antworten möglich“, Kästchen (role=checkbox), „Nichts davon“ nach „oder“ vor „Weiter“', (() => {
+    const box = A.$('schritte'), opt = [...box.querySelectorAll('[data-k]')], n = A.$('sfNichts');
+    return A.$('sfMehrere').textContent === L['sf.mehrere'] && opt.length > 1 && opt.every((b) => b.getAttribute('role') === 'checkbox' && b.getAttribute('aria-checked') === 'false' && b.querySelector('.es-kasten')) &&
+      n.getAttribute('role') === 'checkbox' && !!box.querySelector('.es-oder') && (opt[opt.length - 1].compareDocumentPosition(n) & 4) && (n.compareDocumentPosition(A.$('sfWeiter')) & 4);
+  })());
+  check('Mehrfachauswahl: Antippen setzt den Haken (aria-checked), zweites Antippen nimmt ihn weg, Frage bleibt', (() => {
+    const b = A.$('schritte').querySelector('[data-k]'); b.click(); const an = b.getAttribute('aria-checked') === 'true' && b.classList.contains('an'); b.click();
+    return an && b.getAttribute('aria-checked') === 'false' && A.frage() === q('sf.q.bezug');
+  })());
   await A.antworte([L['bz.kg']]);
   check('Am Ende: Übersicht „Deine Angaben“ mit „ändern“', A.frage() === L['sf.ueb.h'] && A.$('schritte').querySelectorAll('[data-aendern]').length > 10);
   check('Übersicht zeigt die Antworten', /650/.test(A.$('schritte').textContent) && A.$('schritte').textContent.includes(L['ek.art.lohn']) && A.$('schritte').textContent.includes(L['bz.kg']));

@@ -129,5 +129,7 @@
   "sf.q.vermoegen": "=",
   "sf.q.autoWert": "=",
   "sf.q.autoBraucht": "=",
-  "sf.q.bezug": "="
+  "sf.q.bezug": "=",
+  "sf.mehrere": "Du kannst mehr als eine Antwort wählen.",
+  "sf.oder": "="
 }

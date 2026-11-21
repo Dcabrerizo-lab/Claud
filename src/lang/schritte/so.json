@@ -145,5 +145,7 @@
   "sf.q.autoWert": "Baabuurkaagu qiyaastii intee ayuu qiimihiisu yahay?",
   "sf.q.autoBraucht": "Baabuurka ma loo baahan yahay naafonimo awgeed ama tagitaanka shaqada?",
   "sf.q.bezug": "Maxaad hadda heshaan?",
-  "sf.h.bezug": "Markaas app-ku wuxuu gargaarradan u muujiyaa „horay loo helay“ wuxuuna hubiyaa waxa kale ee suurtagal ah."
+  "sf.h.bezug": "Markaas app-ku wuxuu gargaarradan u muujiyaa „horay loo helay“ wuxuuna hubiyaa waxa kale ee suurtagal ah.",
+  "sf.mehrere": "Waxaad dooran kartaa jawaabo badan",
+  "sf.oder": "ama"
 }

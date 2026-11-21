@@ -145,5 +145,7 @@
   "sf.q.autoWert": "Wie viel ist dein Auto ungefähr wert?",
   "sf.q.autoBraucht": "Wird das Auto wegen einer Behinderung oder für den Weg zur Arbeit gebraucht?",
   "sf.q.bezug": "Was bekommt ihr schon?",
-  "sf.h.bezug": "Dann zeigt die App diese Leistungen als „schon vorhanden“ und prüft, was zusätzlich möglich ist."
+  "sf.h.bezug": "Dann zeigt die App diese Leistungen als „schon vorhanden“ und prüft, was zusätzlich möglich ist.",
+  "sf.mehrere": "Mehrere Antworten möglich",
+  "sf.oder": "oder"
 }

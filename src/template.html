@@ -111,6 +111,19 @@
   .es-nav1 { display: grid; gap: 12px; margin-top: 16px; }
   .es-weiter { justify-content: center; background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
   .es-skip { justify-content: center; }
+  /* Mehrfachauswahl (Leistungs-Check, Kurzer Check): Kästchen mit Haken statt gefülltem Knopf, damit klar ist: mehrere Antworten gehen */
+  .es-mehrere { font-weight: 600; color: var(--ink); margin: 0 0 10px; }
+  .es-mehr .es-btn { position: relative; }
+  .es-kasten { flex: none; width: 26px; height: 26px; border: 2px solid var(--field); border-radius: 6px; background: var(--surface); display: grid; place-items: center; }
+  .es-kasten::after { content: ""; width: 7px; height: 13px; border: solid transparent; border-width: 0 3px 3px 0; transform: translateY(-2px) rotate(45deg); }
+  .es-mehr .es-btn.an { background: var(--accent-soft); color: var(--ink); border-color: var(--accent); }
+  .es-mehr .es-btn.an .es-kasten { background: var(--accent); border-color: var(--accent); }
+  .es-mehr .es-btn.an .es-kasten::after { border-color: var(--accent-ink); }
+  .es-klein.es-mehr .es-btn { padding-top: 34px; }
+  .es-klein.es-mehr .es-kasten { position: absolute; top: 8px; inset-inline-start: 8px; width: 22px; height: 22px; }
+  .es-oder { display: flex; align-items: center; gap: 12px; color: var(--muted); margin: 14px 0 12px; }
+  .es-oder::before, .es-oder::after { content: ""; flex: 1; border-top: 1px solid var(--line); }
+  .es-mehr .es-oder { margin: 2px 0; }
   .es-nav { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
   .es-karte { background: var(--surface); border: 2px solid var(--line); border-radius: 14px; padding: 14px 16px; margin-bottom: 14px; }
   .es-karte.ja { border-color: var(--ok); }

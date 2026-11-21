@@ -145,5 +145,7 @@
   "sf.q.autoWert": "Arabanız yaklaşık ne kadar eder?",
   "sf.q.autoBraucht": "Araba engel nedeniyle veya işe gitmek için gerekli mi?",
   "sf.q.bezug": "Şu an neler alıyorsunuz?",
-  "sf.h.bezug": "Uygulama bu yardımları „zaten alınıyor“ olarak gösterir ve ek olarak nelerin mümkün olduğunu kontrol eder."
+  "sf.h.bezug": "Uygulama bu yardımları „zaten alınıyor“ olarak gösterir ve ek olarak nelerin mümkün olduğunu kontrol eder.",
+  "sf.mehrere": "Birden fazla cevap seçebilirsin",
+  "sf.oder": "veya"
 }

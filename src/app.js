@@ -2280,6 +2280,9 @@
   // Gemeinsamer Zurück-Knopf (src/navigation.js) als Schritt zurück in der einfachen Version; dann den Zurück-Knopf der Seite ausblenden
   var ES_ZUR = Navigation.kopfHtml({ id: 'es-zurueck', eigen: true });
   function esKopf() { var k = $('leistungenKopf'), sf = $('sfZurueck'); if (k) k.hidden = !!((esModus && $('es-zurueck') && !$('einfach').hidden) || (sf && !$('schritte').hidden)); } // ein Zurück-Knopf: der der Fragenfolge, sonst der der Seite
+  // Mehrfachauswahl im Kurzen Check: Hinweiszeile und „Nichts davon“ / „Keine Buchstaben“ nach „oder“ (Kästchen wie die Antworten)
+  function esMehrKopf() { return '<p class="es-h es-mehrere" id="es-mehrere">' + esc(t('sf.mehrere')) + '</p>'; }
+  function esMehrNichts(id, txt) { return '<p class="es-oder" aria-hidden="true"><span>' + esc(t('sf.oder')) + '</span></p><div class="es-wahl es-mehr"><button type="button" class="es-btn es-nichts" id="' + id + '"><span class="es-kasten" aria-hidden="true"></span><span>' + esc(txt) + '</span></button></div>'; }
   function esRender() { esRenderGanz(); esKopf(); }
   function esRenderGanz() {
     var box = $('einfach');
@@ -2301,19 +2304,18 @@
     } else if (f.art === 'zahl') {
       h += '<div class="es-zahl"><input id="es-in" type="text" inputmode="numeric" autocomplete="off" aria-labelledby="es-q" value="' + esc(es[f.id]) + '"' + (f.max ? ' maxlength="' + f.max + '"' : '') + '>' + (f.id === 'geb' || f.id === 'plz' ? '' : '<span aria-hidden="true">€</span>') + '</div>' +
         '<p class="warn" id="es-warn" hidden></p>' +
-        '<div class="es-nav1"><button type="button" class="es-btn es-weiter" id="es-weiter">' + esc(t('es.weiter')) + ' ➜</button>' +
+        '<div class="es-nav1"><button type="button" class="es-btn es-weiter" id="es-weiter">' + esc(t('es.weiter')) + ' <span class="pfeil" aria-hidden="true">➜</span></button>' +
         (f.id !== 'geb' ? '<button type="button" class="es-btn es-skip" id="es-skip">' + esc(t(f.optional ? 'es.ueberspringen' : 'es.weissNicht')) + '</button>' : '') + '</div>';
     } else if (f.art === 'schon') {
       es.schon = es.schon || {};
-      h += '<div class="es-wahl" role="group" aria-labelledby="es-q">' + SCHON.map(function (x) {
-        return '<button type="button" class="es-btn' + (es.schon[x[0]] ? ' an' : '') + '" data-schon="' + x[0] + '" aria-pressed="' + (es.schon[x[0]] ? 'true' : 'false') + '"><span class="es-ico" aria-hidden="true">' + x[1] + '</span><span>' + esc(t('es.schon.' + x[0])) + '</span></button>';
-      }).join('') + '</div><div class="es-nav1"><button type="button" class="es-btn es-weiter" id="es-weiter">' + esc(t('es.weiter')) + ' ➜</button>' +
-        '<button type="button" class="es-btn es-skip" id="es-nichts">' + esc(t('es.schon.nichts')) + '</button></div>';
+      // Mehrfachauswahl: Kästchen, „Mehrere Antworten möglich“, „Nichts davon“ nach „oder“ (wie src/schritte.js)
+      h += esMehrKopf() + '<div class="es-wahl es-mehr" role="group" aria-labelledby="es-q" aria-describedby="es-mehrere">' + SCHON.map(function (x) {
+        return '<button type="button" role="checkbox" class="es-btn' + (es.schon[x[0]] ? ' an' : '') + '" data-schon="' + x[0] + '" aria-checked="' + (es.schon[x[0]] ? 'true' : 'false') + '"><span class="es-kasten" aria-hidden="true"></span><span class="es-ico" aria-hidden="true">' + x[1] + '</span><span>' + esc(t('es.schon.' + x[0])) + '</span></button>';
+      }).join('') + '</div>' + esMehrNichts('es-nichts', t('es.schon.nichts')) + '<div class="es-nav1"><button type="button" class="es-btn es-weiter" id="es-weiter">' + esc(t('es.weiter')) + ' <span class="pfeil" aria-hidden="true">➜</span></button></div>';
     } else if (f.art === 'mz') {
-      h += '<div class="es-wahl es-klein" role="group" aria-labelledby="es-q">' + MZ.map(function (m) {
-        return '<button type="button" class="es-btn' + (es.mz[m] ? ' an' : '') + '" data-mz="' + m + '" aria-pressed="' + (es.mz[m] ? 'true' : 'false') + '"><span class="es-mz">' + m + '</span><span class="es-mzt">' + esc(t('es.mz.' + m)) + '</span></button>';
-      }).join('') + '</div><div class="es-nav1"><button type="button" class="es-btn es-weiter" id="es-weiter">' + esc(t('es.weiter')) + ' ➜</button>' +
-        '<button type="button" class="es-btn es-skip" id="es-keine">' + esc(t('es.mz.keine')) + '</button></div>';
+      h += esMehrKopf() + '<div class="es-wahl es-klein es-mehr" role="group" aria-labelledby="es-q" aria-describedby="es-mehrere">' + MZ.map(function (m) {
+        return '<button type="button" role="checkbox" class="es-btn' + (es.mz[m] ? ' an' : '') + '" data-mz="' + m + '" aria-checked="' + (es.mz[m] ? 'true' : 'false') + '"><span class="es-kasten" aria-hidden="true"></span><span class="es-mz">' + m + '</span><span class="es-mzt">' + esc(t('es.mz.' + m)) + '</span></button>';
+      }).join('') + '</div>' + esMehrNichts('es-keine', t('es.mz.keine')) + '<div class="es-nav1"><button type="button" class="es-btn es-weiter" id="es-weiter">' + esc(t('es.weiter')) + ' <span class="pfeil" aria-hidden="true">➜</span></button></div>';
     }
     h += '<div class="es-nav"><button type="button" class="chip" id="es-raus">' + esc(t('es.ausfuehrlich')) + '</button></div>';
     box.innerHTML = (es.schritt > 0 ? ES_ZUR : '') + h;
@@ -2328,8 +2330,8 @@
     }); });
     if ($('es-keine')) $('es-keine').addEventListener('click', function () { es.mz = {}; weiter(); });
     if ($('es-nichts')) $('es-nichts').addEventListener('click', function () { es.schon = {}; weiter(); });
-    box.querySelectorAll('[data-schon]').forEach(function (b) { b.addEventListener('click', function () { var k = b.getAttribute('data-schon'); es.schon[k] = !es.schon[k]; b.classList.toggle('an', es.schon[k]); b.setAttribute('aria-pressed', String(es.schon[k])); esSpeichern(); }); });
-    box.querySelectorAll('[data-mz]').forEach(function (b) { b.addEventListener('click', function () { var m = b.getAttribute('data-mz'); es.mz[m] = !es.mz[m]; b.classList.toggle('an', es.mz[m]); b.setAttribute('aria-pressed', String(es.mz[m])); esSpeichern(); }); });
+    box.querySelectorAll('[data-schon]').forEach(function (b) { b.addEventListener('click', function () { var k = b.getAttribute('data-schon'); es.schon[k] = !es.schon[k]; b.classList.toggle('an', es.schon[k]); b.setAttribute('aria-checked', String(es.schon[k])); esSpeichern(); }); });
+    box.querySelectorAll('[data-mz]').forEach(function (b) { b.addEventListener('click', function () { var m = b.getAttribute('data-mz'); es.mz[m] = !es.mz[m]; b.classList.toggle('an', es.mz[m]); b.setAttribute('aria-checked', String(es.mz[m])); esSpeichern(); }); });
     if ($('es-in')) {
       var inp = $('es-in');
       var pruef = function () {

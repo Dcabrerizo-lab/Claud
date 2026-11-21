@@ -145,5 +145,7 @@
   "sf.q.autoWert": "Ile mniej więcej jest wart Państwa samochód?",
   "sf.q.autoBraucht": "Czy samochód jest potrzebny z powodu niepełnosprawności lub do dojazdu do pracy?",
   "sf.q.bezug": "Co już otrzymujecie?",
-  "sf.h.bezug": "Aplikacja pokaże te świadczenia jako „już otrzymywane” i sprawdzi, co jest możliwe dodatkowo."
+  "sf.h.bezug": "Aplikacja pokaże te świadczenia jako „już otrzymywane” i sprawdzi, co jest możliwe dodatkowo.",
+  "sf.mehrere": "Możesz wybrać kilka odpowiedzi",
+  "sf.oder": "lub"
 }

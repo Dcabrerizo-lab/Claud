@@ -145,5 +145,7 @@
   "sf.q.autoWert": "Cât valorează aproximativ mașina ta?",
   "sf.q.autoBraucht": "Este mașina necesară din cauza unei dizabilități sau pentru drumul la muncă?",
   "sf.q.bezug": "Ce primiți deja?",
-  "sf.h.bezug": "Aplicația arată atunci aceste prestații ca „deja primite” și verifică ce mai este posibil în plus."
+  "sf.h.bezug": "Aplicația arată atunci aceste prestații ca „deja primite” și verifică ce mai este posibil în plus.",
+  "sf.mehrere": "Poți alege mai multe răspunsuri",
+  "sf.oder": "sau"
 }
