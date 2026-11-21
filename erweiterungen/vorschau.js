@@ -164,7 +164,7 @@
   function baueModule() {
     const box = $('pf-module');
     for (const m of [1, 2, 3, 4, 5, 6]) {
-      const fs = h('fieldset', {}, h('legend', { text: `Bereich ${m}: ${P.MODUL[m].kurz}` }), h('p', { class: 'small muted', text: `Im Gutachten: „${P.MODUL[m].name}“. ${P.MODUL[m].leicht}. Gewichtung ${P.MODUL[m].gewicht}.` }));
+      const fs = h('fieldset', {}, h('legend', { class: 'vh', text: `Bereich ${m}: ${P.MODUL[m].kurz}` }), h('p', { class: 'small muted', text: `Im Gutachten: „${P.MODUL[m].name}“. ${P.MODUL[m].leicht}. Gewichtung ${P.MODUL[m].gewicht}.` }));
       if (m === 5) {
         fs.append(h('p', { class: 'small', text: 'Trage ein, wie oft jemand helfen muss, weil die Person es nicht selbst kann. Was sie selbst schafft, zählt nicht.' }));
         fs.append(h('div', { class: 'freq kopf' }, h('span', { text: 'Hilfe' }), h('span', { text: 'pro Tag' }), h('span', { text: 'pro Woche' }), h('span', { text: 'pro Monat' })));
@@ -187,7 +187,26 @@
           fs.append(h('div', { class: 'row' }, h('label', { for: 'pf-' + k.id }, `${k.id} ${k.leicht}`, h('span', { class: 'amt', text: k.name + (k.faktor ? ` (zählt ${k.faktor}-fach)` : '') })), sel));
         }
       }
-      box.append(fs);
+      // Aufgabenliste statt 48 Auswahllisten untereinander (UX-Audit B): je Bereich eine zugeklappte Zeile mit Stand, aufklappen zum Prüfen
+      box.append(h('details', { class: 'pf-bereich', id: `pf-bereich-${m}`, 'data-m': String(m) },
+        h('summary', {}, h('span', { class: 'pf-b-name', text: `Bereich ${m}: ${P.MODUL[m].kurz}` }), h('span', { class: 'pf-b-stand', id: `pf-bereich-${m}-stand` })), fs));
+    }
+  }
+  // Stand je Bereich in der Zeile: „3 von 5 eingetragen“, bei Bereich 5 die Zahl der Hilfen; „bitte prüfen“, solange erkannte Werte offen sind
+  function pflegeStand() {
+    for (const m of [1, 2, 3, 4, 5, 6]) {
+      const d = $(`pf-bereich-${m}`), el = $(`pf-bereich-${m}-stand`); if (!d || !el) continue;
+      let txt;
+      if (m === 5) {
+        const n = [...d.querySelectorAll('input[type="number"]')].filter((x) => x.value !== '' && +x.value > 0).length + ($('pf-5.12-taeglich').checked ? 1 : 0) + (+$('pf-5.16').value > 0 ? 1 : 0);
+        txt = n ? `${n} ${n === 1 ? 'Angabe' : 'Angaben'}` : 'keine Hilfe eingetragen';
+      } else {
+        const ks = P.KRITERIEN.filter((x) => x.m === m), n = ks.filter((k) => $('pf-' + k.id).value !== '').length;
+        txt = `${n} von ${ks.length} eingetragen`;
+      }
+      const pruefen = d.querySelector('.pp-erkannt');
+      el.textContent = txt + (pruefen ? ' · bitte prüfen' : '');
+      d.classList.toggle('pf-b-pruefen', !!pruefen);
     }
   }
   function lesePflege() {
@@ -225,6 +244,7 @@
   }
   function zeigePflege() {
     const g = lesePflege(), r = P.rechne(g), box = $('pf-erg');
+    pflegeStand();
     $('pf-monate-box').hidden = !(g.alterJahre !== '' && +g.alterJahre < 2);
     $('pf-zeile-5K').hidden = !r.kind;
     box.replaceChildren();
@@ -254,8 +274,11 @@
   }
   // Das Gutachten einfach erklärt: jede eingetragene Bewertung mit ihrer Bedeutung im Alltag
   function zeigeErklaerung(g, r) {
-    const box = $('pf-erkl'); box.replaceChildren();
-    box.append(h('h2', { text: 'Das Gutachten einfach erklärt' }), h('p', { class: 'small muted', text: 'Hier steht jede Bewertung aus dem Gutachten mit dem, was sie im Alltag bedeutet. Stimmt etwas nicht mit dem Alltag überein, ist das ein Grund für einen Widerspruch.' }));
+    const box = $('pf-erkl'), offen = !!($('pf-erkl-mehr') && $('pf-erkl-mehr').open); box.replaceChildren();
+    // Zugeklappt: die Erklärung jeder Bewertung ist lang (bis zu 48 Einträge) und nur Nachschlagen
+    const inhalt = h('div', {});
+    box.append(h('h2', { text: 'Das Gutachten einfach erklärt' }), h('p', { class: 'small muted', text: 'Hier steht jede Bewertung aus dem Gutachten mit dem, was sie im Alltag bedeutet. Stimmt etwas nicht mit dem Alltag überein, ist das ein Grund für einen Widerspruch.' }),
+      h('details', { class: 'mehr', id: 'pf-erkl-mehr', open: offen }, h('summary', { text: 'Alle Bewertungen erklärt ansehen' }), inhalt));
     let leer = true;
     for (const z of P.erklaerung(g, r)) {
       const sek = h('section', { 'aria-labelledby': `erk-${z.modul}` }, h('h3', { id: `erk-${z.modul}`, text: `${z.modul}. ${z.kurz}` }), h('p', { class: 'small', text: z.satz }));
@@ -266,7 +289,7 @@
           k.stufe ? h('span', { class: 'stufe', text: `Im Gutachten: „${k.stufe}“` }) : null, h('p', { text: k.bedeutung })));
       }
       if (!eintraege.length) sek.append(h('p', { class: 'small muted', text: z.modul === 5 ? 'Keine Hilfe eingetragen.' : 'Noch keine Bewertung eingetragen.' }));
-      box.append(sek);
+      inhalt.append(sek);
     }
     box.hidden = leer;
   }

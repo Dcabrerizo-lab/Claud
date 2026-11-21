@@ -60,6 +60,12 @@
   .pp-erk-hinweis[hidden] { display: none; }
   .pp-erk-fehlt { flex: 1 1 100%; } .pp-erk-fehlt p { margin: 0 0 4px; }
   .pp-erk-unten[hidden] { display: none; }
+  /* Pflegegutachten: je Bereich eine Zeile mit Stand (Aufgabenliste), aufklappen zum Prüfen */
+  .pf-bereich { border: 1px solid var(--line); border-radius: 10px; margin: 8px 0; padding: 0 12px; }
+  .pf-bereich > summary { flex-wrap: wrap; gap: 2px 10px; padding: 8px 0; }
+  .pf-bereich .pf-b-stand { font-weight: 400; color: var(--muted); font-size: .92em; }
+  .pf-bereich.pf-b-pruefen { border-color: var(--mark-line, var(--warn)); }
+  .pf-bereich > fieldset { border: 0; padding: 0; margin: 0 0 10px; }
   .begriffe { margin: 8px 0 0; } .begriffe dt { font-weight: 600; margin-top: 6px; } .begriffe dd { margin: 0 0 4px; }
   .abw { display: grid; gap: 4px; }
   .abw p { margin: 0; }
