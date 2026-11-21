@@ -4,7 +4,7 @@ Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss ste
 
 ## Nächste Version (in Arbeit)
 - **„Es ist dringend“ aufgeräumt**: alle Fälle gleich aufgebaut – Frist oben, „Das tust du jetzt“ in Schritten, kurze Tipps zum Aufklappen, Knöpfe, Quellen unten. Konto gepfändet mit Bescheinigung und Grundfreibetrag statt doppeltem Tipp; Strom-/Gassperre in 3 Schritten. „Stimmt der Brief?“: Hinweis „keine Rechtsberatung“ unter dem letzten Tipp.
-- **Ich ziehe aus – „Bevor du ausziehst“**: großer gerahmter Hinweis „Unter 25 und Grundsicherungsgeld?“ entfernt; das Thema steht in der normalen Karte „Unter 25 mit Grundsicherungsgeld: Zusicherung vor der Unterschrift“ (§ 22 Abs. 5 SGB II), jetzt im gleichen Design wie die anderen Karten.
+- **Ich ziehe aus – „Bevor du ausziehst“**: großer gerahmter Hinweis „Unter 25 und Grundsicherungsgeld?“ entfernt; das Thema steht in der normalen Karte „Unter 25 mit Grundsicherungsgeld: Zusicherung vor der Unterschrift“ (§ 22 Abs. 5 SGB II), jetzt im gleichen Design wie die anderen Karten. Die Karte sagt jetzt auch: Das gilt, wenn deine Familie Grundsicherungsgeld bekommt oder du es nach dem Umzug brauchst.
 
 ## 1.8.0 (ab Versionsnummer 150, November 2026)
 - **Geld und Schulden neu geordnet**: Es ist dringend · Was bleibt mir? · Meine Schulden-Liste · **Post vom Inkasso** · Mein Geld planen (mit Spartipps) · **Schuldnerberatung**.
