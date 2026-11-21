@@ -538,7 +538,7 @@ Geld und Schulden → „Meine Schulden-Liste“. Grundlage: docs/entwuerfe/schu
 | Fristende: Zustellung + 14 Tage, Wochenende und 9 bundesweite Feiertage → nächster Werktag (§ 222 Abs. 2 ZPO), als „ungefähr“ gekennzeichnet (Landesfeiertage fehlen); Rechenkern austauschbar (`Schulden.fristRechner`); abgelaufene Frist eigener Text; `Schulden.fristen()` liefert `mb`/`vb` ohne Gläubigernamen für den Dublettenschutz | ✓ | `schuldenliste` |
 | Speicherung nur über `lotse.schulden` in `Vorgaenge.DATEN` (je Vorgang, mit PIN verschlüsselt, „Alle Angaben löschen“); Ausgabe nur als Text; „Mein Ordner“ nur Anzahl, keine Summe; Blatt für die Beratung deutsch, ohne Namen, Aktenzeichen/Anschriften/Notizen per Haken; CSV wie das Haushaltsbuch mit Schutz gegen Formeln | ✓ | `schuldenliste` |
 | 13 Sprachen und Einfache Sprache: alle Schlüssel, gleiche Platzhalter, Zahlen und Paragraphen | ✓ | `schuldenliste` |
-| Speicherfehler gemeldet (auch „nicht angenommen“, z. B. Vorgang gesperrt; src/app.js gibt den Fehler weiter) | ✓ | `sl-speichern` |
+| Schulden-Liste: Speicherfehler gemeldet (auch „nicht angenommen“, z. B. Vorgang gesperrt; src/app.js gibt den Fehler weiter) | ✓ | `sl-speichern` |
 | Nicht lesbarer Stand: Rohtext unter `lotse.schulden.defekt` im Vorgang gesichert (Vorgaenge.DATEN, mit PIN verschlüsselt), Hinweis, dann leer; nie still überschrieben | ✓ | `sl-defekt` |
 
 
@@ -561,7 +561,7 @@ Geld und Schulden → „Meine Schulden-Liste“. Grundlage: docs/entwuerfe/schu
 | Beleg-Häkchen je Buchung (Steuer/Pflegekasse), Belegliste je Kalenderjahr (nur bis heute, wiederkehrende Buchungen ohne künftige Monate, kein Jahr nach dem laufenden) mit Druck und CSV (Formel-Schutz), Pflege-Hinweis: Belege des laufenden Kalenderjahres, bis 30.6. auch des Vorjahres, Pflege-Belege: Entlastungsbetrag 131 € (§ 45b SGB XI, Reste bis 30.6. des Folgejahres), Verbrauchs-Pflegehilfsmittel 42 € (§ 40 Abs. 2 SGB XI), gemeinsamer Jahresbetrag (§ 42a SGB XI); abgerufen 20.11.2026 | ✓ | `hb-belege`, `hb-belege-heute`, `hb-pflege-fenster`, `hb-bereinigen` |
 | Nur geltendes Recht: kein Hinweis auf Gesetzentwürfe (Pflegeneuordnungsgesetz, BT-Drs. 21/8869), auch nicht als „Entwurf“; Pflege-Hinweis vor und ab 1.1.2027 gleich (Regel des Nutzers, 20.11.2026) | ✓ | `hb-pflege-recht`, `hb-entwurf` |
 | Steuer-Hinweis (§ 35a EStG 20 %, höchstens 4.000 € / 1.200 €, nur unbar; § 33, § 33b, § 9a EStG; abgerufen 20.11.2026), nicht bei Grundsicherungsgeld/Sozialhilfe ohne Lohn oder Selbstständigkeit; nicht für schon als Beleg (Steuer oder Pflegekasse) markierte Buchungen; Bar-Warnung nur bei Handwerker/Haushaltshilfe | ✓ | `hb-steuer`, `hb-bar` |
-| Speicherfehler gemeldet (auch „nicht angenommen“, z. B. Vorgang gesperrt; src/app.js gibt den Fehler weiter) | ✓ | `hb-speichern` |
+| Haushaltsplan: Speicherfehler gemeldet (auch „nicht angenommen“, z. B. Vorgang gesperrt; src/app.js gibt den Fehler weiter) | ✓ | `hb-speichern` |
 | Nicht lesbarer Stand: Rohtext unter `lotse.haushalt.defekt` im Vorgang gesichert (Vorgaenge.DATEN, mit PIN verschlüsselt), Hinweis, dann leer; nie still überschrieben | ✓ | `hb-defekt` |
 | „Zum Ergebnis“ (src/app.js): IntersectionObserver statt Messen bei jedem Scrollen, Rückfall scroll/resize | ✓ | `app-jump` |
 
