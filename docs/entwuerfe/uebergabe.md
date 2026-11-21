@@ -1,4 +1,6 @@
-# Übergabe an die nächste Sitzung (Stand 21.11.2026, 14:00)
+# Übergabe an die nächste Sitzung (Stand 21.11.2026, 14:55)
+
+> **NEU 14:55: Alle Pakete sind in claude/test-update-1.9 gemergt (#102, #111, #113, #115), kein PR mehr offen.** Die Tabelle „Offene PRs“ unten ist damit erledigt. Nächster Schritt: Abschnitt „Danach (Abschluss 1.9)“ ab Punkt 2. Hilfsskripte (Konflikte lösen, mergen bei grünen Pflicht-Checks): docs/entwuerfe/werkzeuge/. Offen: Bericht des KiZ-Differenztests (Workflow amtlich-kiz, Ergebnisse als Actions-Artefakt) auswerten; lange Differenztest-Läufe aus #113 auf Grün prüfen.
 
 **Zuerst lesen:** CLAUDE.md, STATUS.md, diese Datei, docs/entwuerfe/naechstes-update.md (Abschnitt „Update nach 1.9“), docs/entwuerfe/pruefungen-21-11/.
 
