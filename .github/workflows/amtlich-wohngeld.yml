@@ -1,0 +1,45 @@
+# Differenztest Wohngeld: SoLo gegen den amtlichen Wohngeldrechner des BMWSB (Wohngeld-Plus-Rechner ab 1.1.2025, Rechtsstand 2026).
+# Nur von Hand (workflow_dispatch). Ein einziger Rechner, nacheinander, mindestens 2 s Pause je Abfrage (robots.txt: Crawl-delay 1),
+# höchstens 400 Haushalte je Lauf. Ergebnis: Artefakt "amtlich-wohngeld" (JSON mit Eingaben und amtlichem Betrag) und Auswertung.
+# Auswertung lokal: node tools/amtlich-vergleich-wohngeld.js <amtlich-wohngeld.json>
+name: Amtlich Wohngeld (Differenztest)
+
+on:
+  workflow_dispatch:
+    inputs:
+      anzahl:
+        description: 'Zahl der Haushalte (höchstens 400)'
+        default: '400'
+      startwert:
+        description: 'Startwert des Zufallsgenerators (gleicher Wert = gleiche Haushalte)'
+        default: '2611'
+      modus:
+        description: 'abfrage oder erkunden (nur Formularfelder speichern)'
+        default: 'abfrage'
+
+permissions:
+  contents: read
+
+jobs:
+  abfragen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - name: Browser installieren (bis zu 3 Versuche)
+        run: for i in 1 2 3; do timeout 300 npx playwright install --with-deps chromium && exit 0; echo "Versuch $i fehlgeschlagen"; sleep 20; done; exit 1
+      - name: Formularfelder erkunden
+        if: inputs.modus == 'erkunden'
+        run: mkdir -p out && node tools/amtliche-rechner/wg-erkunden.js out/wg-felder.json
+      - name: Amtlichen Rechner abfragen
+        if: inputs.modus != 'erkunden'
+        run: mkdir -p out && node tools/amtliche-rechner/wg-differenz.js "${{ inputs.anzahl }}" "${{ inputs.startwert }}" out/amtlich-wohngeld.json
+      - name: SoLo gegen amtliche Ergebnisse
+        if: inputs.modus != 'erkunden'
+        run: node tools/amtlich-vergleich-wohngeld.js out/amtlich-wohngeld.json --md out/wohngeld-vergleich.md || true
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with: { name: amtlich-wohngeld, path: 'out/**' }
