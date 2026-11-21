@@ -1064,6 +1064,12 @@
   .su-fenster > * { max-width: 640px; margin-inline: auto; }
   .su-fenster .su-suche { margin-top: 4px; }
   .gruss-t { color: var(--muted); font-size: 1.05em; margin: 0 0 4px; }
+  /* Startseite straffen (UX-Audit A, Aufgabe 5): eine Einleitung statt drei – der Satz unter der Begrüßung entfällt sichtbar
+     (Element bleibt als Anker für den Fristen-Hinweis); Erststart-Hinweis schmal; Datenschutz-Satz unten nur ohne Erststart-Hinweis */
+  #v-start .gruss-t { display: none; }
+  #firstNotice { padding-block: 10px; }
+  #firstNotice p { margin: 0 0 8px; font-size: .95em; }
+  #firstNotice:not([hidden]) ~ #v-start .start-sicher { display: none; }
   /* Startseite als Kachel-Raster (Kacheln wie Richtung 3 „Bunt und bildhaft“, Farben aus der warmen Palette; weiße Schrift mind. 4,5:1).
      Spaltenbreite in em: bei 320 px oder großer Schrift bricht das Raster auf eine Spalte um. Jeder Bereich hat seine Farbe. */
   /* Bereichsfarben: siehe Palette oben (--c-*) */
