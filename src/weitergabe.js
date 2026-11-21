@@ -1,0 +1,412 @@
+// Weitergabe an den Klienten (QR-Code und SoLo-Datei): Kodierung, Prüfung und QR-Bild. Läuft in der App und in Node (Tests).
+// Kein Server: Der Inhalt steht vollständig im QR-Code bzw. in der Datei. Nichts geht automatisch irgendwohin.
+//
+// Inhalt (JSON, „s“ = Version des Inhalts):
+//   { s: 1, typ: 'vorgang', name, datum, daten: { 'lotse.state': '<JSON-Text>', … } }   ganzer Vorgang mit gespeicherten Eingaben
+//   { s: 1, typ: 'auswahl', name, datum, blatt: { l, rtl, zwei, titel, kopf, abschnitte }, fristen?: { v: 1, e: [...] } }
+//      blatt = Daten des Blatts aus „Für Klient zusammenstellen“ (Textpaare, kein HTML, keine PDF); die App des Klienten zeichnet es neu.
+// Kode: 'SOLO:' + base64url( [1 (Version), Merker (1 = komprimiert, 2 = mit PIN), (Salz 16, IV 12,) Daten] ).
+//   Kompression: deflate-raw (CompressionStream), nur wenn vorhanden und kleiner.
+//   PIN: AES-GCM-256, Schlüssel aus PBKDF2-HMAC-SHA-256 mit 600 000 Durchläufen, Salz 16 Byte, IV 12 Byte – dieselben Werte wie die PIN
+//   der Vorgänge (src/vorgaenge.js, ITER; OWASP Password Storage Cheat Sheet, abgerufen am 21.11.2026). Eine 6-stellige PIN ist ein
+//   Sichtschutz, kein Schutz gegen Fachleute mit viel Rechenzeit (so steht es auch in der App).
+// Datei (.solo): { "format": "solo", "v": 1, "code": "SOLO:…" }.
+// Prüfung beim Öffnen: nur bekannte Felder, feste Größen, Texte ohne Steuerzeichen. Angezeigt wird alles nur mit textContent.
+var Weitergabe = (function () {
+  'use strict';
+  var PREFIX = 'SOLO:';
+  var ITER = 600000, SALZ = 16, IV = 12;
+  var MAX_INHALT = 512 * 1024; // entpackter Inhalt (JSON) höchstens 512 KB
+  var MAX_CODE = 1024 * 1024; // Kode höchstens 1 MB Text
+  var MAX_DATEI = 2 * 1024 * 1024; // Datei höchstens 2 MB
+  var MAX_FELD = 200 * 1024; // ein gespeicherter Wert (JSON-Text) höchstens 200 KB
+  var QR_MAX = 25; // größte QR-Version, die noch sicher vom Bildschirm gescannt wird (Fehlerkorrektur L)
+  var LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so'];
+  // Gespeicherte Eingaben eines Vorgangs, die weitergegeben werden dürfen (Teil von Vorgaenge.DATEN; ohne die Haken der Beraterin)
+  var FELDER = ['lotse.state', 'lotse.einfach', 'lotse.pflegecheck', 'lotse.pfaendung', 'lotse.haushalt', 'lotse.haken', 'lotse.ausziehen', 'lotse.fristliste', 'lotse.schulden'];
+  var TEILE = ['hilfen', 'unterlagen', 'fristen', 'briefe'];
+  var ZEILEN = ['h', 'h3', 'p', 'li', 'small', 'pre'];
+  var VERBOTEN = ['__proto__', 'constructor', 'prototype'];
+
+  function fehler(art) { var e = new Error(art); e.art = art; return e; }
+  function istObj(o) { return !!o && typeof o === 'object' && !Array.isArray(o); }
+  function nurFelder(o, erlaubt) { return Object.keys(o).every(function (k) { return erlaubt.indexOf(k) >= 0; }); }
+  function zufall(n) { var a = new Uint8Array(n); globalThis.crypto.getRandomValues(a); return a; }
+  function tagOk(s) { return typeof s === 'string' && /^\d{4}-\d\d-\d\d$/.test(s); }
+  function steuerOk(s, mitZeilen) { return !(mitZeilen ? /[\u0000-\u0008\u000b-\u001f\u007f-\u009f\u2028\u2029]/ : /[\u0000-\u001f\u007f-\u009f\u2028\u2029]/).test(s); }
+
+  // ---------- base64url ----------
+  function b64url(u8) {
+    var s = '', n = 0x8000;
+    for (var i = 0; i < u8.length; i += n) s += String.fromCharCode.apply(null, u8.subarray(i, i + n));
+    return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  }
+  function unb64url(s) {
+    if (typeof s !== 'string' || !/^[A-Za-z0-9_-]*$/.test(s)) throw fehler('format');
+    var b = atob(s.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((s.length + 3) % 4));
+    var u = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) u[i] = b.charCodeAt(i);
+    return u;
+  }
+  function verbinden(teile) {
+    var n = teile.reduce(function (a, t) { return a + t.length; }, 0), u = new Uint8Array(n), p = 0;
+    teile.forEach(function (t) { u.set(t, p); p += t.length; });
+    return u;
+  }
+
+  // ---------- Kompression (deflate-raw) ----------
+  function kannKomprimieren() { return typeof globalThis.CompressionStream === 'function' && typeof globalThis.DecompressionStream === 'function'; }
+  function strom(bytes, Art, max) {
+    var s = new Art('deflate-raw'), w = s.writable.getWriter(), r = s.readable.getReader(), teile = [], n = 0;
+    w.write(bytes).catch(function () {}); w.close().catch(function () {});
+    function weiter() {
+      return r.read().then(function (x) {
+        if (x.done) return verbinden(teile);
+        n += x.value.length;
+        if (max && n > max) { try { r.cancel(); } catch (e) {} throw fehler('zuGross'); }
+        teile.push(x.value); return weiter();
+      });
+    }
+    return weiter();
+  }
+  function packenZ(bytes) { return strom(bytes, globalThis.CompressionStream, 0); }
+  function entpackenZ(bytes) {
+    return strom(bytes, globalThis.DecompressionStream, MAX_INHALT).catch(function (e) { throw e && e.art === 'zuGross' ? e : fehler('kaputt'); });
+  }
+
+  // ---------- Verschlüsselung (WebCrypto) ----------
+  function webCrypto() { try { return !!(globalThis.crypto && globalThis.crypto.subtle && globalThis.TextEncoder); } catch (e) { return false; } }
+  function schluessel(pin, salz) {
+    var sc = globalThis.crypto.subtle;
+    return sc.importKey('raw', new TextEncoder().encode(String(pin)), 'PBKDF2', false, ['deriveKey']).then(function (k) {
+      return sc.deriveKey({ name: 'PBKDF2', salt: salz, iterations: ITER, hash: 'SHA-256' }, k, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+    });
+  }
+  function pinOk(pin) { return typeof pin === 'string' && /^\d{4,12}$/.test(pin); }
+  // Vorschlag: 6 Ziffern, gleichverteilt (ohne Modulo-Verzerrung)
+  function pinVorschlag() {
+    var a = new Uint32Array(1), max = Math.floor(4294967296 / 1000000) * 1000000;
+    do { globalThis.crypto.getRandomValues(a); } while (a[0] >= max);
+    return String(a[0] % 1000000 + 1000000).slice(1);
+  }
+
+  // ---------- Kodieren und Dekodieren ----------
+  // packen(inhalt, pin|null) → Promise<'SOLO:…'>
+  function packen(inhalt, pin) {
+    var sauber = pruefen(inhalt);
+    if (!sauber) return Promise.reject(fehler('schema'));
+    if (pin != null && !pinOk(pin)) return Promise.reject(fehler('pin'));
+    if (pin != null && !webCrypto()) return Promise.reject(fehler('technik'));
+    var roh = new TextEncoder().encode(JSON.stringify(sauber));
+    if (roh.length > MAX_INHALT) return Promise.reject(fehler('zuGross'));
+    var z = kannKomprimieren() ? packenZ(roh).then(function (k) { return k.length < roh.length ? { d: k, z: true } : { d: roh, z: false }; }, function () { return { d: roh, z: false }; }) : Promise.resolve({ d: roh, z: false });
+    return z.then(function (x) {
+      var merker = (x.z ? 1 : 0) | (pin != null ? 2 : 0);
+      if (pin == null) return PREFIX + b64url(verbinden([new Uint8Array([1, merker]), x.d]));
+      var salz = zufall(SALZ), iv = zufall(IV);
+      return schluessel(pin, salz).then(function (k) { return globalThis.crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, k, x.d); })
+        .then(function (ct) { return PREFIX + b64url(verbinden([new Uint8Array([1, merker]), salz, iv, new Uint8Array(ct)])); });
+    });
+  }
+  function kopf(code) {
+    if (typeof code !== 'string') throw fehler('format');
+    code = code.trim();
+    if (code.length > MAX_CODE) throw fehler('zuGross');
+    if (code.indexOf(PREFIX) !== 0) throw fehler('format');
+    var b = unb64url(code.slice(PREFIX.length));
+    if (b.length < 3 || b[0] !== 1 || (b[1] & ~3)) throw fehler('format');
+    if ((b[1] & 2) && b.length < 2 + SALZ + IV + 17) throw fehler('format');
+    return { b: b, z: !!(b[1] & 1), pin: !!(b[1] & 2) };
+  }
+  function brauchtPin(code) { try { return kopf(code).pin; } catch (e) { return false; } }
+  function istCode(code) { try { kopf(code); return true; } catch (e) { return false; } }
+  // auspacken(code, pin) → Promise<geprüfter Inhalt>; Fehler mit .art: format, pin (PIN nötig), pinFalsch, zuGross, kaputt, schema, technik
+  function auspacken(code, pin) {
+    var k;
+    try { k = kopf(code); } catch (e) { return Promise.reject(e); }
+    var daten;
+    if (k.pin) {
+      if (pin == null || pin === '') return Promise.reject(fehler('pin'));
+      if (!webCrypto()) return Promise.reject(fehler('technik'));
+      var salz = k.b.subarray(2, 2 + SALZ), iv = k.b.subarray(2 + SALZ, 2 + SALZ + IV), ct = k.b.subarray(2 + SALZ + IV);
+      daten = schluessel(String(pin), salz).then(function (key) { return globalThis.crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv }, key, ct); })
+        .then(function (pt) { return new Uint8Array(pt); }, function () { throw fehler('pinFalsch'); });
+    } else daten = Promise.resolve(k.b.subarray(2));
+    return daten.then(function (d) {
+      if (!k.z) { if (d.length > MAX_INHALT) throw fehler('zuGross'); return d; }
+      if (!kannKomprimieren()) throw fehler('technik');
+      return entpackenZ(d);
+    }).then(function (d) {
+      var o;
+      try { o = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(d)); } catch (e) { throw fehler('kaputt'); }
+      var p = pruefen(o);
+      if (!p) throw fehler('schema');
+      return p;
+    });
+  }
+
+  // ---------- Datei (.solo) ----------
+  function datei(code) { return JSON.stringify({ format: 'solo', v: 1, code: code }); }
+  // Text aus einer Datei (oder ein eingefügter Kode) → Kode; sonst Fehler 'format' bzw. 'zuGross'
+  function ausDatei(text) {
+    if (typeof text !== 'string') throw fehler('format');
+    if (text.length > MAX_DATEI) throw fehler('zuGross');
+    var s = text.replace(/^﻿/, '').trim();
+    if (s.indexOf(PREFIX) === 0) { kopf(s); return s; }
+    var o; try { o = JSON.parse(s); } catch (e) { throw fehler('format'); }
+    if (!istObj(o) || !nurFelder(o, ['format', 'v', 'code']) || o.format !== 'solo' || o.v !== 1) throw fehler('format');
+    kopf(o.code);
+    return o.code.trim();
+  }
+
+  // ---------- Prüfung des Inhalts (streng) ----------
+  // Beliebiger gespeicherter Wert: begrenzte Tiefe und Größe, nur einfache Typen, harmlose Schlüssel, Texte ohne Steuerzeichen
+  function tiefOk(x, t) {
+    if (t > 8) return false;
+    if (x === null || typeof x === 'boolean') return true;
+    if (typeof x === 'number') return isFinite(x);
+    if (typeof x === 'string') return x.length <= 5000 && steuerOk(x, true);
+    if (Array.isArray(x)) return x.length <= 500 && x.every(function (y) { return tiefOk(y, t + 1); });
+    if (typeof x !== 'object') return false;
+    var k = Object.keys(x);
+    return k.length <= 300 && k.every(function (n) { return /^[\w.|:-]{1,80}$/.test(n) && VERBOTEN.indexOf(n) < 0 && tiefOk(x[n], t + 1); });
+  }
+  function stateOk(j) {
+    if (!istObj(j) || !nurFelder(j, ['s', 'p', 'e', 'big', 'sf']) || !istObj(j.s)) return false;
+    if (j.p != null && (!istObj(j.p) || !nurFelder(j.p, ['name', 'geb', 'strasse', 'ort', 'tel']) || !Object.keys(j.p).every(function (k) { return typeof j.p[k] === 'string' && j.p[k].length <= 200; }))) return false;
+    return Object.keys(j.s).every(function (k) {
+      var v = j.s[k];
+      if (k === 'bezug') return v == null || (istObj(v) && Object.keys(v).every(function (b) { return typeof v[b] === 'boolean'; }));
+      return v == null || typeof v === 'boolean' || (typeof v === 'number' && isFinite(v)) || (typeof v === 'string' && v.length <= 200) || (Array.isArray(v) && tiefOk(v, 2));
+    });
+  }
+  function fristenOk(f) { return istObj(f) && nurFelder(f, ['v', 'e']) && f.v === 1 && Array.isArray(f.e) && f.e.length <= 50 && f.e.every(function (e) { return istObj(e) && tiefOk(e, 2); }); }
+  function text(s, max, zeilen) {
+    if (typeof s !== 'string' || s.length > max || !steuerOk(s, zeilen)) return null;
+    return s;
+  }
+  function zeileOk(z) {
+    if (!istObj(z) || !nurFelder(z, ['art', 'k', 'de']) || ZEILEN.indexOf(z.art) < 0) return null;
+    var max = z.art === 'pre' ? 20000 : 2000, pre = z.art === 'pre';
+    var k = text(z.k, max, pre); if (k == null || !k.length) return null;
+    var de = z.de == null ? null : text(z.de, max, pre); if (z.de != null && de == null) return null;
+    return { art: z.art, k: k, de: de };
+  }
+  function blattOk(b) {
+    if (!istObj(b) || !nurFelder(b, ['l', 'rtl', 'zwei', 'titel', 'kopf', 'abschnitte'])) return null;
+    if (LANGS.indexOf(b.l) < 0 || typeof b.rtl !== 'boolean' || typeof b.zwei !== 'boolean' || !Array.isArray(b.abschnitte)) return null;
+    if (!b.abschnitte.length || b.abschnitte.length > TEILE.length) return null;
+    var titel = zeileOk(b.titel), kz = zeileOk(b.kopf); if (!titel || !kz) return null;
+    var gesehen = [], ab = [];
+    for (var i = 0; i < b.abschnitte.length; i++) {
+      var a = b.abschnitte[i];
+      if (!istObj(a) || !nurFelder(a, ['teil', 'h', 'zeilen']) || TEILE.indexOf(a.teil) < 0 || gesehen.indexOf(a.teil) >= 0 || !Array.isArray(a.zeilen) || a.zeilen.length > 600) return null;
+      var h = zeileOk(a.h); if (!h) return null;
+      var z = a.zeilen.map(zeileOk); if (z.some(function (x) { return !x; })) return null;
+      gesehen.push(a.teil); ab.push({ teil: a.teil, h: h, zeilen: z });
+    }
+    return { l: b.l, rtl: b.rtl, zwei: b.zwei, titel: titel, kopf: kz, abschnitte: ab };
+  }
+  // pruefen(o) → bereinigte Kopie (nur bekannte Felder) oder null
+  function pruefen(o) {
+    if (!istObj(o) || o.s !== 1 || !nurFelder(o, ['s', 'typ', 'name', 'datum', 'daten', 'blatt', 'fristen'])) return null;
+    var name = o.name == null ? '' : text(o.name, 24, false); if (name == null) return null;
+    if (o.datum != null && !tagOk(o.datum)) return null;
+    var r = { s: 1, typ: o.typ, name: name, datum: o.datum || null };
+    if (o.typ === 'vorgang') {
+      if (!istObj(o.daten) || o.blatt !== undefined || o.fristen !== undefined) return null;
+      var d = {}, n = 0, keys = Object.keys(o.daten);
+      for (var i = 0; i < keys.length; i++) {
+        var k = keys[i], v = o.daten[k], j;
+        if (FELDER.indexOf(k) < 0 || typeof v !== 'string' || v.length > MAX_FELD) return null;
+        try { j = JSON.parse(v); } catch (e) { return null; }
+        if (!tiefOk(j, 0)) return null;
+        if (k === 'lotse.state' && !stateOk(j)) return null;
+        if (k === 'lotse.fristliste' && !fristenOk(j)) return null;
+        d[k] = v; n++;
+      }
+      if (!n) return null;
+      r.daten = d;
+    } else if (o.typ === 'auswahl') {
+      if (o.daten !== undefined) return null;
+      var b = blattOk(o.blatt); if (!b) return null;
+      r.blatt = b;
+      if (o.fristen != null) { if (!fristenOk(o.fristen)) return null; r.fristen = { v: 1, e: JSON.parse(JSON.stringify(o.fristen.e)) }; }
+    } else return null;
+    return r;
+  }
+
+  // ---------- QR-Code (qrcode-generator, MIT, src/vendor/qrcode.js; offline gebündelt) ----------
+  function qrLib() {
+    if (typeof globalThis.qrcode === 'function') return globalThis.qrcode;
+    try { if (typeof require === 'function') return require('./vendor/qrcode.js'); } catch (e) {}
+    return null;
+  }
+  // qrMatrix(code) → { n (Module je Seite), version, dunkel(r, c) } oder null (zu groß für Version ≤ QR_MAX)
+  function qrMatrix(code) {
+    var Q = qrLib(); if (!Q || typeof code !== 'string') return null;
+    var q;
+    try { q = Q(0, 'L'); q.addData(code, 'Byte'); q.make(); } catch (e) { return null; }
+    var n = q.getModuleCount(), version = (n - 17) / 4;
+    if (version > QR_MAX) return null;
+    return { n: n, version: version, dunkel: function (r, c) { return q.isDark(r, c); } };
+  }
+  // SVG-Element (nur DOM-Aufbau, kein innerHTML): schwarz auf weiß mit Ruhezone 4 Module
+  function qrSvg(doc, code, titel) {
+    var m = qrMatrix(code); if (!m) return null;
+    var NS = 'http://www.w3.org/2000/svg', rand = 4, g = m.n + 2 * rand, d = [];
+    for (var r = 0; r < m.n; r++) for (var c = 0; c < m.n; c++) if (m.dunkel(r, c)) d.push('M' + (c + rand) + ' ' + (r + rand) + 'h1v1h-1z');
+    var svg = doc.createElementNS(NS, 'svg');
+    svg.setAttribute('viewBox', '0 0 ' + g + ' ' + g); svg.setAttribute('role', 'img'); svg.setAttribute('shape-rendering', 'crispEdges');
+    svg.setAttribute('data-version', String(m.version));
+    if (titel) svg.setAttribute('aria-label', titel);
+    var bg = doc.createElementNS(NS, 'rect'); bg.setAttribute('width', String(g)); bg.setAttribute('height', String(g)); bg.setAttribute('fill', '#fff');
+    var p = doc.createElementNS(NS, 'path'); p.setAttribute('d', d.join('')); p.setAttribute('fill', '#000');
+    svg.appendChild(bg); svg.appendChild(p);
+    return svg;
+  }
+
+
+  // ---------- Öffnen beim Klienten (Mein Ordner, für alle Nutzer): Datei oder QR-Code → Vorschau → neuer Vorgang ----------
+  // ctx = { t, bereit() (Speicher offen, nicht gesperrt), importieren(name, daten) → id|null, oeffnen(id), fristen(obj) → bereinigte Liste (JSON-Text) }
+  var ui = null, code = null, inhalt = null;
+  function $(id) { return document.getElementById(id); }
+  function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+  function knopf(cls, txt, id, fn) { var b = el('button', cls, txt); b.type = 'button'; if (id) b.id = id; b.addEventListener('click', fn); return b; }
+  function tt(k, p) { return ui.t(k, p); }
+  function meldung(k, p) { var m = $('kwImpMsg'); if (m) m.textContent = k ? tt(k, p) : ''; }
+  var IMP_FEHLER = { format: 'kw.imp.f.format', zuGross: 'kw.imp.f.zuGross', kaputt: 'kw.imp.f.format', schema: 'kw.imp.f.format', technik: 'kw.f.technik', pinFalsch: 'kw.imp.pinFalsch' };
+  function box() { var b = $('kwImpBox'); if (b) { b.textContent = ''; b.hidden = false; } return b; }
+  function boxWeg() { var b = $('kwImpBox'); if (b) { b.textContent = ''; b.hidden = true; } code = null; inhalt = null; }
+  function aufklappen() { var d = $('kwImport'); if (d && 'open' in d) d.open = true; }
+  // Einstieg mit einem Kode (aus Datei oder QR-Code)
+  function start(c) {
+    boxWeg(); aufklappen();
+    try { kopf(c); } catch (e) { meldung(IMP_FEHLER[e.art] || 'kw.imp.f.format'); return Promise.resolve(false); }
+    code = c.trim(); meldung('');
+    if (!brauchtPin(code)) return entpacken(null);
+    var b = box(), f = el('form'); f.setAttribute('novalidate', '');
+    var l = el('label', null, tt('kw.imp.pin')), i = el('input');
+    i.type = 'password'; i.id = 'kwImpPin'; i.setAttribute('inputmode', 'numeric'); i.setAttribute('autocomplete', 'off'); i.maxLength = 12; l.setAttribute('for', 'kwImpPin');
+    var ok = el('button', 'btn', tt('kw.imp.pinOk')); ok.type = 'submit'; ok.id = 'kwImpPinOk';
+    f.appendChild(el('p', 'small', tt('kw.imp.pinT'))); f.appendChild(l); f.appendChild(i); f.appendChild(ok);
+    f.appendChild(knopf('btn ghost', tt('kw.imp.abbrechen'), 'kwImpAbbr', function () { boxWeg(); meldung(''); }));
+    f.addEventListener('submit', function (e) { e.preventDefault(); var p = String(i.value || ''); i.value = ''; ok.disabled = true; entpacken(p).then(function () { ok.disabled = false; }); });
+    b.appendChild(f);
+    try { i.focus(); } catch (e) {}
+    return Promise.resolve(true);
+  }
+  function entpacken(p) {
+    meldung('kw.bitte');
+    return auspacken(code, p).then(function (o) { inhalt = o; meldung(''); vorschau(); return true; }, function (e) {
+      meldung(IMP_FEHLER[e && e.art] || 'kw.imp.f.format');
+      if (!(e && e.art === 'pinFalsch')) boxWeg();
+      return false;
+    });
+  }
+  function teileVon(o) { // [{ id, text, an }] für die Haken der Vorschau
+    var out = [];
+    if (o.typ === 'vorgang') {
+      var seen = {};
+      FELDER.forEach(function (k) {
+        if (!o.daten[k]) return;
+        var key = 'kw.teil.' + k.replace('lotse.', '');
+        if (k === 'lotse.fristliste') { out.push({ id: k, text: tt('kw.imp.fristen'), frist: true }); return; }
+        if (seen[key]) { seen[key].ids.push(k); return; }
+        seen[key] = { id: k, ids: [k], text: tt(key) }; out.push(seen[key]);
+      });
+    } else {
+      o.blatt.abschnitte.forEach(function (a, i) { out.push({ id: 'a' + i, text: a.h.k }); });
+      if (o.fristen && o.fristen.e.length) out.push({ id: 'fristen', text: tt('kw.imp.fristen'), frist: true });
+    }
+    return out;
+  }
+  function vorschau() {
+    var b = box(), o = inhalt;
+    b.appendChild(el('h3', null, tt('kw.imp.vorschau')));
+    b.appendChild(el('p', 'small', tt(o.typ === 'vorgang' ? 'kw.imp.typ.vorgang' : 'kw.imp.typ.auswahl')));
+    var f = el('fieldset', 'kb-gruppe'); f.id = 'kwImpTeile'; f.appendChild(el('legend', null, tt('kw.imp.haken')));
+    teileVon(o).forEach(function (x) {
+      var lab = el('label', 'check'), cb = el('input');
+      cb.type = 'checkbox'; cb.checked = true; cb.setAttribute('data-kwimp', x.id); if (x.ids) cb.setAttribute('data-ids', x.ids.join(' '));
+      lab.appendChild(cb); lab.appendChild(el('span', null, x.text)); f.appendChild(lab);
+    });
+    b.appendChild(f);
+    var fn = el('div', 'field'), nl = el('label', null, tt('kw.imp.name')), ni = el('input');
+    ni.type = 'text'; ni.id = 'kwImpName'; ni.maxLength = 24; ni.value = o.name || ''; ni.setAttribute('autocomplete', 'off'); nl.setAttribute('for', 'kwImpName');
+    fn.appendChild(nl); fn.appendChild(ni); b.appendChild(fn);
+    b.appendChild(el('p', 'small', tt('kw.imp.neu')));
+    var btns = el('div', 'btns');
+    btns.appendChild(knopf('btn', tt('kw.imp.speichern'), 'kwImpSpeichern', speichernImport));
+    btns.appendChild(knopf('btn ghost', tt('kw.imp.abbrechen'), 'kwImpAbbr', function () { boxWeg(); meldung(''); }));
+    b.appendChild(btns);
+    var h = b.querySelector('h3'); if (h) { h.setAttribute('tabindex', '-1'); try { h.focus({ preventScroll: true }); } catch (e) {} }
+  }
+  function gewaehlteIds() {
+    var a = {};
+    Array.prototype.forEach.call(document.querySelectorAll('#kwImpTeile input[data-kwimp]'), function (cb) {
+      if (!cb.checked) return;
+      (cb.getAttribute('data-ids') || cb.getAttribute('data-kwimp')).split(' ').forEach(function (id) { a[id] = true; });
+    });
+    return a;
+  }
+  function speichernImport() {
+    var o = inhalt; if (!o || !ui) return null;
+    if (!ui.bereit()) { meldung('kw.imp.f.speicher'); return null; }
+    var w = gewaehlteIds(), d = {};
+    if (o.typ === 'vorgang') {
+      FELDER.forEach(function (k) { if (w[k] && o.daten[k]) d[k] = k === 'lotse.fristliste' ? ui.fristen(JSON.parse(o.daten[k])) : o.daten[k]; });
+    } else {
+      var ab = o.blatt.abschnitte.filter(function (a, i) { return w['a' + i]; });
+      if (ab.length) d['lotse.klient-blatt'] = JSON.stringify({ l: o.blatt.l, rtl: o.blatt.rtl, zwei: o.blatt.zwei, titel: o.blatt.titel, kopf: o.blatt.kopf, abschnitte: ab });
+      if (w.fristen && o.fristen) d['lotse.fristliste'] = ui.fristen(o.fristen);
+    }
+    Object.keys(d).forEach(function (k) { if (d[k] == null) delete d[k]; });
+    if (!Object.keys(d).length) { meldung('kw.imp.nichts'); return null; }
+    var name = String(($('kwImpName') || {}).value || o.name || '').replace(/[\u0000-\u001f\u007f]/g, '').trim().slice(0, 24) || tt('kw.imp.standardName');
+    var id = ui.importieren(name, d);
+    if (!id) { meldung('kw.imp.f.speicher'); return null; }
+    var b = box();
+    var m = el('p', 'kw-ok', tt('kw.imp.ok', { name: name })); m.id = 'kwImpOk'; m.setAttribute('role', 'status'); b.appendChild(m);
+    b.appendChild(knopf('btn', tt('kw.imp.oeffnen'), 'kwImpOeffnen', function () { boxWeg(); meldung(''); ui.oeffnen(id); }));
+    code = null; inhalt = null; meldung('');
+    return id;
+  }
+  // QR-Code von einem Foto lesen (BarcodeDetector; im Browser und Android-WebView, wo vorhanden). Sonst Hinweis: Datei nehmen.
+  function scanMoeglich() { return typeof globalThis.BarcodeDetector === 'function' && typeof globalThis.createImageBitmap === 'function'; }
+  function ausBild(datei) {
+    if (!datei) return Promise.resolve(false);
+    meldung('kw.bitte');
+    var det;
+    try { det = new globalThis.BarcodeDetector({ formats: ['qr_code'] }); } catch (e) { meldung('kw.imp.keinScan'); return Promise.resolve(false); }
+    return globalThis.createImageBitmap(datei).then(function (bild) { return det.detect(bild); }).then(function (treffer) {
+      var t = (treffer || []).map(function (x) { return x && x.rawValue; }).filter(function (v) { return typeof v === 'string' && istCode(v); })[0];
+      if (!t) { meldung('kw.imp.keinCode'); return false; }
+      return start(t);
+    }, function () { meldung('kw.imp.keinCode'); return false; });
+  }
+  function ausDateiEin(datei) {
+    if (!datei) return Promise.resolve(false);
+    if (datei.size > MAX_DATEI) { meldung('kw.imp.f.zuGross'); return Promise.resolve(false); }
+    var lesen = typeof datei.text === 'function' ? datei.text() : new Promise(function (res, rej) { var r = new FileReader(); r.onload = function () { res(String(r.result)); }; r.onerror = rej; r.readAsText(datei); });
+    return lesen.then(function (txt) {
+      var c; try { c = ausDatei(txt); } catch (e) { meldung(IMP_FEHLER[e.art] || 'kw.imp.f.format'); return false; }
+      return start(c);
+    }, function () { meldung('kw.imp.f.format'); return false; });
+  }
+  function importInit(c) {
+    ui = c;
+    var sc = $('kwScan'), da = $('kwDatei'), de = $('kwDateiEin'), fo = $('kwFotoEin');
+    if (sc && fo) sc.addEventListener('click', function () { if (!scanMoeglich()) { aufklappen(); meldung('kw.imp.keinScan'); return; } meldung(''); fo.value = ''; fo.click(); });
+    if (fo) fo.addEventListener('change', function () { var f = fo.files && fo.files[0]; fo.value = ''; ausBild(f); });
+    if (da && de) da.addEventListener('click', function () { meldung(''); de.value = ''; de.click(); });
+    if (de) de.addEventListener('change', function () { var f = de.files && de.files[0]; ausDateiEin(f); });
+  }
+
+  return { importInit: importInit, importStart: start, ausBild: ausBild, ausDateiEin: ausDateiEin, importSpeichern: speichernImport, scanMoeglich: scanMoeglich,
+    PREFIX: PREFIX, ITER: ITER, QR_MAX: QR_MAX, FELDER: FELDER, MAX_INHALT: MAX_INHALT, MAX_DATEI: MAX_DATEI,
+    packen: packen, auspacken: auspacken, brauchtPin: brauchtPin, istCode: istCode, datei: datei, ausDatei: ausDatei, pruefen: pruefen,
+    pinVorschlag: pinVorschlag, pinOk: pinOk, kannKomprimieren: kannKomprimieren, webCrypto: webCrypto, qrMatrix: qrMatrix, qrSvg: qrSvg,
+    b64url: b64url, unb64url: unb64url };
+})();
+if (typeof globalThis !== 'undefined') globalThis.Weitergabe = Weitergabe;
+if (typeof module !== 'undefined') module.exports = Weitergabe;
