@@ -498,7 +498,6 @@ var Haushalt = (function () {
   function renderPlan(fokusId) {
     var box = $('hbInhalt'); box.innerHTML = '';
     var g = geteilte(), p = daten.plan, s = check();
-    box.appendChild(el('p', 'hb-lead', t('hb.plan.lead')));
     var erg = el('p', 'hb-ergebnis'); erg.id = 'hbErgebnis'; erg.setAttribute('aria-live', 'polite'); box.appendChild(erg);
     // Brücke zum Leistungs-Check (Konzept U7, AG SBV „Konzept Soziale Schuldnerberatung“ 2018, S. 12: Existenzsicherung durch mehr Einkommen):
     // bei Fehlbetrag oder knappem Plan als Karte direkt unter dem Ergebnis statt in der Hinweisliste
@@ -517,10 +516,11 @@ var Haushalt = (function () {
 
     // Einnahmen
     var fs = el('fieldset', 'hb-karte'); fs.appendChild(el('legend', '', t('hb.ein')));
+    fs.appendChild(el('p', 'hint', t('hb.geteilt'))); // einmal für den ganzen Block statt an jedem Feld (Infotexte-Bericht)
     [1, 2].forEach(function (i) {
       if (i === 2 && !g.zwei) return;
       var art = g['ek' + i + 'Art'], c = g['ek' + i];
-      var hint = g['ek' + i + 'NurBrutto'] ? t('hb.ek.nurBrutto') : c !== null ? t('hb.uebernommen') + ' ' + t('hb.geteilt') : t('hb.ek.hint') + ' ' + t('hb.geteilt');
+      var hint = g['ek' + i + 'NurBrutto'] ? t('hb.ek.nurBrutto') : c !== null ? t('hb.uebernommen') : t('hb.ek.hint');
       var f = geldFeld('hb-ek' + i, t(i === 1 ? 'hb.ek1' : 'hb.ek2'), c, hint, function (neu, inp, feld) {
         geteiltSetzen(feld, 'ek' + i + 'Netto', geteilte()['ek' + i], neu, inp);
       });
@@ -547,7 +547,7 @@ var Haushalt = (function () {
       var zArt = g['ek' + i + 'bArt'];
       if (zArt) {
         var zc = g['ek' + i + 'b'];
-        fs.appendChild(geldFeld('hb-ek' + i + 'b', t(i === 1 ? 'hb.ek1b' : 'hb.ek2b'), zc, t('ek.art.' + zArt) + '. ' + (zc !== null ? t('hb.uebernommen') + ' ' : '') + t('hb.geteilt'), function (neu, inp, feld) {
+        fs.appendChild(geldFeld('hb-ek' + i + 'b', t(i === 1 ? 'hb.ek1b' : 'hb.ek2b'), zc, t('ek.art.' + zArt) + '.' + (zc !== null ? ' ' + t('hb.uebernommen') : ''), function (neu, inp, feld) {
           geteiltSetzen(feld, 'ek' + i + 'bBetrag', geteilte()['ek' + i + 'b'], neu, inp);
         }));
       }
@@ -556,7 +556,7 @@ var Haushalt = (function () {
     fs.appendChild(geldFeld('hb-kg', t('hb.kg'), kgC, p.kg === null && g.kg !== null ? t('hb.kg.aus', { n: String(g.kinder), b: { eur: kindergeldEuro() } }) + ' ' + t('hb.uebernommen') : '', function (neu) {
       p.kg = neu === g.kg ? null : neu; sichern(); aktual();
     }));
-    fs.appendChild(geldFeld('hb-uh', t('hb.uh'), g.uh, (g.uh !== null ? t('hb.uebernommen') + ' ' : '') + t('hb.geteilt'), function (neu, inp, feld) {
+    fs.appendChild(geldFeld('hb-uh', t('hb.uh'), g.uh, g.uh !== null ? t('hb.uebernommen') : '', function (neu, inp, feld) {
       geteiltSetzen(feld, 'unterhalt', geteilte().uh, neu, inp);
     }));
     fs.appendChild(geldFeld('hb-leist', t('hb.leist'), p.leist, '', function (neu) { p.leist = neu; sichern(); aktual(); }));
@@ -565,7 +565,6 @@ var Haushalt = (function () {
 
     // Feste Ausgaben: große Knöpfe mit Symbol; ein Tipp öffnet das Feld darunter
     var fa = el('fieldset', 'hb-karte'); fa.appendChild(el('legend', '', t('hb.aus')));
-    fa.appendChild(el('p', 'hint', t('hb.aus.t')));
     var grid = el('div', 'hb-kats'), aus = planAus();
     KAT.forEach(function (k) {
       var b = el('button', 'hb-kat'); b.type = 'button'; b.id = 'hb-kat-' + k[0];
@@ -577,7 +576,7 @@ var Haushalt = (function () {
     fa.appendChild(grid);
     if (offenKat) {
       var wrap = el('div', 'hb-katfeld'); wrap.id = 'hb-katFeld';
-      var k = offenKat, hint = k === 'miete' ? t('hb.k.miete.t') + ' ' + (g.miete !== null ? t('hb.uebernommen') + ' ' : '') + t('hb.geteilt') : '';
+      var k = offenKat, hint = k === 'miete' ? t('hb.k.miete.t') + ' ' + (g.miete !== null ? t('hb.uebernommen') + ' ' : '') + t('hb.geteilt') : ''; // Miete liegt nicht im Block Einnahmen: Hinweis hier einmal
       wrap.appendChild(geldFeld('hb-aus-' + k, t('hb.betrag.f', { k: katName(k) }), k === 'miete' ? g.miete : (daten.plan.aus[k] === undefined ? null : daten.plan.aus[k]), hint, function (neu, inp, feld) {
         if (k === 'miete') { geteiltSetzen(feld, 'miete', geteilte().miete, neu, inp); return; }
         if (neu === null) delete daten.plan.aus[k]; else daten.plan.aus[k] = neu;
