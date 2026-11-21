@@ -109,7 +109,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Kinderzuschlag/Grundsicherungsgeld: Mehrbedarf Alleinerziehende 36 % bei Kind unter 7; Kind von 6-13 kann 6 sein -> nie fälschlich „eher nicht“ (§ 21 Abs. 3 SGB II) | ✓ | `kiz-ae7` |
 | Freibetrag 1.800 € je schwerbehinderter Person (GdB 100 oder Schwerbehinderung mit Pflege, § 17 Nr. 1) | ✓ | `wg-schwerb` |
 | Freibetrag Alleinerziehende 1.320 € (§ 17 Nr. 3) | ✓ | `wg-ae` |
-| Einkommen von Kindern unter 25: je Kind Arbeitnehmer-Pauschbetrag 102,50 €/Monat (§ 14 Abs. 1 WoGG, § 9a EStG) und Freibetrag bis 100 €/Monat (§ 17 Nr. 4); nur Summe bekannt: „wahrscheinlich“ wie ein verdienendes Kind (über der Minijob-Grenze vorsichtig ohne Pauschbetrag, weil die Auszahlung kleiner ist als das Brutto), obere Schätzung verteilt auf alle Kinder ab 6; 12 Fälle auf den Euro gleich wie der amtliche Wohngeldrechner | ✓ | `wg-kindeink`, `wg-kind-wk`, `wg-kind-frei` |
+| Einkommen von Kindern unter 25: je Kind Arbeitnehmer-Pauschbetrag 102,50 €/Monat (§ 14 Abs. 1 WoGG, § 9a EStG) und Freibetrag bis 100 €/Monat (§ 17 Nr. 4); nur Summe bekannt: „wahrscheinlich“ wie ein verdienendes Kind (über der Minijob-Grenze vorsichtig ohne Pauschbetrag, weil die Auszahlung kleiner ist als das Brutto), obere Schätzung verteilt auf alle Kinder ab 6, dort mindert der Freibetrag auch Unterhalt, Waisenrente und Unterhaltsvorschuss der Kinder (höchstens bis zu deren Höhe, § 13 Abs. 1 WoGG); 13 Fälle auf den Euro gleich wie der amtliche Wohngeldrechner | ✓ | `wg-kindeink`, `wg-kind-wk`, `wg-kind-frei` |
 | Elterngeld bis 300 € frei (§ 10 Abs. 1 BEEG) | ✓ | `wg-eg300` |
 | Pflegegeld, Kindergeld und Kinderzuschlag kein Einkommen (§ 14) | ✓ | `wg-keinEink` |
 | Grundrentenfreibetrag (§ 17a) | ✓ | `wg-grundrente` |
