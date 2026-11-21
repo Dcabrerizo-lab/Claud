@@ -45,6 +45,25 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   const out = await p.textContent('#sc-out');
   ok('Antragsformular aus PDF: Formularname und Felder erklärt', /Erkannt: Antrag auf Wohngeld/.test(out) && /Heizkosten/.test(out) && /Krankenkasse/.test(out), out.slice(0, 300));
   ok('Antragsformular aus PDF: Vorschau der Seite über der Liste', (await p.locator('#sc-out .sc-vorschau .sc-bild img').count()) >= 1);
+  // PDF mit Fax-Bild (CCITT, übliches Format von Schwarz-Weiß-Scans): pdf.js 6 braucht dafür den Dekoder jbig2.wasm. Die Web-Version holt ihn
+  // von jsDelivr, nur mit Prüfsumme (hier dieselbe Datei aus app/node_modules). Ohne Dekoder bliebe das Bild in der Vorschau weiß (Prüfung PR 138).
+  // Das PDF hat auch digitalen Text: so braucht der Test keine Texterkennung aus dem Netz.
+  let wasmGeladen = 0;
+  await p.route('https://cdn.jsdelivr.net/npm/pdfjs-dist@6.5.438/wasm/**', (r) => {
+    wasmGeladen++; const name = r.request().url().split('/').pop();
+    r.fulfill({ path: path.join(PDFJS, '..', '..', 'wasm', name), contentType: 'application/wasm', headers: { 'Access-Control-Allow-Origin': '*' } });
+  });
+  const dunkel = () => p.evaluate(async () => {
+    const im = document.querySelector('#sc-out .sc-vorschau .sc-bild img'); if (!im) return -1;
+    await im.decode().catch(() => {});
+    const c = document.createElement('canvas'); c.width = im.naturalWidth; c.height = im.naturalHeight; const x = c.getContext('2d'); x.drawImage(im, 0, 0);
+    const d = x.getImageData(0, 0, c.width, c.height).data; let z = 0; for (let i = 0; i < d.length; i += 4) if (d[i] < 100) z++; return z;
+  });
+  const nurText = await dunkel(); // Vorschau des rein digitalen Formulars: nur wenige dunkle Punkte (Schrift)
+  await p.setInputFiles('#sc-pdf', path.join(__dirname, 'daten', 'text-ccitt.pdf'));
+  let mitBild = -1;
+  for (let i = 0; i < 60 && !(mitBild > 4000); i++) { await p.waitForTimeout(500); mitBild = await dunkel().catch(() => -1); } // neue Vorschau abwarten
+  ok('PDF mit Fax-Bild: Dekoder mit Prüfsumme geladen, Bild in der Vorschau sichtbar', wasmGeladen >= 1 && mitBild > 4000 && mitBild > nurText * 2, { wasmGeladen, mitBild, nurText });
   ok('Kein seitliches Scrollen', await p.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth));
   ok('Keine Skriptfehler', fehler.length === 0, fehler);
   await b.close(); fs.rmSync(tmp, { recursive: true, force: true });

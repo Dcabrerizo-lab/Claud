@@ -94,13 +94,24 @@ async function weitere() {
   const appPkg = require('../app/package.json');
   const ab = (v, min) => { const a = v.split('.').map(Number), b = min.split('.').map(Number); for (let i = 0; i < 3; i++) { if (a[i] !== b[i]) return a[i] > b[i]; } return true; };
   ck('[pdfjs] Version mindestens 4.2.67 (CVE-2024-4367 behoben), gleich in src/app.js, app/package.json und scripts/build-app.js', ab(ver, '4.2.67') && appPkg.devDependencies['pdfjs-dist'] === ver && buildApp.includes("const PDFJS_VER = '" + ver + "'"), [ver, appPkg.devDependencies['pdfjs-dist']]);
-  const aufrufe = [...app.matchAll(/getDocument\((\{[^}]*\})\)/g)].map((m) => m[1]);
+  const aufrufe = [...app.matchAll(/getDocument\(pdfOptionen\((\{[^}]*\})\)\)/g)].map((m) => m[1]);
   ck('[pdfjs] jeder getDocument-Aufruf mit isEvalSupported: false', aufrufe.length >= 2 && aufrufe.every((x) => /isEvalSupported: false/.test(x)), aufrufe);
+  // Prüfung PR 138: pdf.js 6 hat die Dekoder für Fax-Bilder (CCITT), JBIG2 und JPEG 2000 nicht mehr im Programm. Ohne sie bleiben eingescannte
+  // Seiten weiß. Jeder Aufruf geht über pdfOptionen (eigene Klasse zum Laden, im Browser nur zwei Dateien und nur mit Prüfsumme).
+  ck('[pdfjs] kein getDocument-Aufruf ohne pdfOptionen (Bild-Dekoder für eingescannte PDFs)', (app.match(/getDocument\(/g) || []).length === aufrufe.length, (app.match(/getDocument\(/g) || []).length);
+  const wasmSri = [...((app.match(/var PDFJS_WASM = \{([\s\S]*?)\};/) || [])[1] || '').matchAll(/'([\w.]+)': '(sha512-[A-Za-z0-9+/]{86}==)'/g)].map((m) => [m[1], m[2]]);
+  ck('[pdfjs] Bild-Dekoder: jbig2.wasm und openjpeg.wasm mit Prüfsumme, im Browser per fetch mit integrity, sonst nichts nachladen', wasmSri.map((x) => x[0]).join() === 'jbig2.wasm,openjpeg.wasm' &&
+    /o\.useWorkerFetch = false; o\.BinaryDataFactory = PdfDaten;/.test(app) && /hasOwnProperty\.call\(PDFJS_WASM, name\)\) return Promise\.reject/.test(app) &&
+    /fetch\(pdfWasmBasis\(\) \+ name, NATIVE \? \{\} : \{ integrity: PDFJS_WASM\[name\], mode: 'cors', credentials: 'omit' \}\)/.test(app), wasmSri);
+  ck('[pdfjs] App-Build liefert die Bild-Dekoder mit Lizenztexten mit', ['jbig2.wasm', 'jbig2_nowasm_fallback.js', 'openjpeg.wasm', 'openjpeg_nowasm_fallback.js', 'LICENSE_JBIG2', 'LICENSE_OPENJPEG'].every((f) => buildApp.includes("'" + f + "'")));
+  ck('[csp-web] blob: bei den Skripten (Datei direkt geöffnet: pdf.js läuft ohne Worker aus der geprüften blob-Adresse)', teil(csp, 'script-src').includes('blob:') && teil(csp, 'worker-src').includes('blob:'));
   ck('[pdfjs] Web lädt die Ausgabe „legacy“ derselben Version von jsDelivr', app.includes("'https://cdn.jsdelivr.net/npm/pdfjs-dist@' + PDFJS_VER + '/legacy/build/'"));
   const pdfjsDir = path.join(ROOT, 'app', 'node_modules', 'pdfjs-dist');
   if (fs.existsSync(path.join(pdfjsDir, 'package.json')) && pdfSri) { // nur wo app/node_modules installiert ist (CI-Schritt mit App-Abhängigkeiten)
     const h = (f) => 'sha512-' + crypto.createHash('sha512').update(fs.readFileSync(path.join(pdfjsDir, 'legacy', 'build', f))).digest('base64');
     ck('[sri] Prüfsummen passen zu den Dateien aus app/node_modules', h('pdf.min.mjs') === pdfSri[1] && h('pdf.worker.min.mjs') === pdfSri[2]);
+    const hw = (f) => 'sha512-' + crypto.createHash('sha512').update(fs.readFileSync(path.join(pdfjsDir, 'wasm', f))).digest('base64');
+    ck('[sri] Prüfsummen der Bild-Dekoder passen zu den Dateien aus app/node_modules', wasmSri.length === 2 && wasmSri.every((x) => hw(x[0]) === x[1]));
   }
 
   // S8: App-CSP ohne 'unsafe-inline' für Skripte; die Vorlage erfüllt die Voraussetzungen (nur einfache <script>-Blöcke, keine Ereignisattribute außer onsubmit="return false")

@@ -108,7 +108,8 @@ Nur am Gerät prüfbar. Im Code umgesetzt, aber ohne Gerätetest.
 
 | Nr. | Schritte | Erwartet | Android | iOS |
 |---|---|---|---|---|
-| 9.1 | Brief prüfen → „PDF wählen“: ein digitales PDF und ein eingescanntes PDF (pdf.js 6.5.438, neu) | Text bzw. Seitenbild wird gelesen; keine Fehlermeldung. iPhone möglichst auch mit iOS 15 oder 16 | | |
+| 9.1 | Brief prüfen → „PDF wählen“: ein digitales PDF und ein eingescanntes PDF (pdf.js 6.5.438, neu). Beim eingescannten PDF möglichst einen Schwarz-Weiß-Scan vom Kopierer oder aus einer Scan-App nehmen (Fax-Bild/CCITT oder JBIG2) | Text bzw. Seitenbild wird gelesen; keine Fehlermeldung; die Vorschau zeigt die Seite, nicht ein weißes Blatt | | |
+| 9.1a | Dasselbe auf einem älteren Gerät: iPhone mit iOS 15, 16 oder 17 (vor 17.4) und Android 7 (WebView höchstens 119) | **Offen (Prüfung PR 138):** pdf.js 6.5.438 läuft laut Mozilla erst ab Safari 18 und Chrome 125. Erwartet wird hier die Meldung „Die PDF-Datei ließ sich nicht lesen …“; Foto und Text einfügen gehen weiter. Ergebnis notieren: davon hängt ab, ob 6.5.438 bleibt, die Mindestversion steigt oder 3.11.174 zurückkommt | | |
 | 9.2 | Ganze App einmal durchklicken (Start, Hilfen-Check, Mappe, Brief prüfen, Einstellungen) | Alles bedienbar (Skripte liegen jetzt als eigene Dateien, strenge CSP ohne Inline-Skripte); Enter in einem Formularfeld lädt die App nicht neu | | |
 | 9.3 | Beratung → QR-Code scannen → Foto vom Code. Danach mit Dateimanager oder `adb shell ls /sdcard/Android/data/<Paket>/files/Pictures` nachsehen | Ordner enthält kein `JPEG_…jpg` mehr (Foto nach dem Lesen gelöscht); ebenso nach Neustart der App | | – |
 | 9.4 | Neue PIN „123456“ oder „4711“ festlegen (App-PIN und Vorgang-PIN) | Abgelehnt mit Meldung; „482910“ geht. Eine vorher festgelegte 4-stellige PIN entsperrt weiter | | |

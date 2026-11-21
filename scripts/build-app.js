@@ -83,7 +83,7 @@ fs.copyFileSync(need(path.join(NOTO, '700Bold', 'NotoSans_700Bold.ttf')), path.j
 // Amtliche Formulare werden nicht mehr mitgeliefert (nur Links auf die amtlichen Seiten); alte Kopien entfernen
 fs.rmSync(path.join(WWW, 'formulare'), { recursive: true, force: true });
 
-// PDF lesen (Mozilla pdf.js 6.5.438, Apache-2.0, Ausgabe „legacy“ für ältere WebViews): Text aus digitalen PDFs, Seitenbilder aus
+// PDF lesen (Mozilla pdf.js 6.5.438, Apache-2.0, Ausgabe „legacy“; laut Mozilla Chrome 125+ und Safari 18+, siehe src/app.js): Text aus digitalen PDFs, Seitenbilder aus
 // eingescannten PDFs für die Texterkennung. Liegt lokal in der App (offline); im Browser wird dieselbe Datei bei Bedarf von jsDelivr geladen.
 // Die Dateien heißen in der App .js statt .mjs: Android und iOS liefern .mjs je nach Version nicht sicher als JavaScript aus
 // (iOS: WebViewAssetHandler kennt die Endung nicht in jeder Version); src/app.js lädt sie trotzdem als Modul (type="module").
@@ -93,6 +93,14 @@ if (pdfjsPkg.version !== PDFJS_VER) throw new Error('App-Build: pdfjs-dist ' + p
 fs.mkdirSync(path.join(WWW, 'pdfjs'), { recursive: true });
 for (const f of ['pdf.min', 'pdf.worker.min']) fs.copyFileSync(need(path.join(MODS, 'pdfjs-dist', 'legacy', 'build', f + '.mjs'), 'cd app && npm install'), path.join(WWW, 'pdfjs', f + '.js'));
 fs.copyFileSync(need(path.join(MODS, 'pdfjs-dist', 'LICENSE')), path.join(WWW, 'pdfjs', 'LICENSE'));
+// Bild-Dekoder für eingescannte PDFs (Fax/CCITT und JBIG2: PDFium, BSD 3-Clause; JPEG 2000: OpenJPEG, BSD 2-Clause), mit Lizenztexten.
+// pdf.js 6 hat sie nicht mehr im Programm; ohne sie bleiben so eingescannte Seiten weiß (src/app.js, PDFJS_WASM). Die Dateien
+// *_nowasm_fallback.js sind dieselben Dekoder als JavaScript, falls die WebView WebAssembly im Worker nicht zulässt.
+fs.rmSync(path.join(WWW, 'pdfjs', 'wasm'), { recursive: true, force: true });
+fs.mkdirSync(path.join(WWW, 'pdfjs', 'wasm'), { recursive: true });
+for (const f of ['jbig2.wasm', 'jbig2_nowasm_fallback.js', 'openjpeg.wasm', 'openjpeg_nowasm_fallback.js', 'LICENSE_JBIG2', 'LICENSE_PDFJS_JBIG2', 'LICENSE_OPENJPEG', 'LICENSE_PDFJS_OPENJPEG']) {
+  fs.copyFileSync(need(path.join(MODS, 'pdfjs-dist', 'wasm', f), 'cd app && npm install'), path.join(WWW, 'pdfjs', 'wasm', f));
+}
 
 // PDF-Modul bündeln (pdf-lib + fontkit, MIT)
 require(need(path.join(MODS, 'esbuild'))).buildSync({
