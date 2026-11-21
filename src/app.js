@@ -168,8 +168,8 @@
     'sp.vertraege.1': 'radio', 'sp.vertraege.2': 'telefon', 'sp.vertraege.3': 'ticket', 'sp.vertraege.5': 'bank', 'sp.vertraege.6': 'schere',
     'sp.schulden.1': 'post', 'sp.schulden.2': 'haus', 'sp.schulden.3': 'stopp',
     'sp.schulden.inkasso': 'lupe', 'sp.schulden.rate': 'kalender', 'sp.schulden.unserioes': 'warn', 'sp.schulden.insolvenz': 'waage',
-    'sp.schulden.konto': 'schild', 'sp.schulden.strom': 'blitz', 'sp.schulden.mahn': 'waage', 'sp.schulden.miete': 'haus',
-    'gs.d.konto.frist': 'uhr', 'gs.d.konto.schritt': 'bank', 'gs.d.strom.frist': 'uhr', 'gs.d.strom.schritt': 'telefon',
+    'sp.schulden.strom': 'blitz', 'sp.schulden.mahn': 'waage', 'sp.schulden.miete': 'haus',
+    'gs.d.konto.frist': 'uhr', 'gs.d.konto.schritt': 'bank', 'gs.d.strom.frist': 'uhr', 'gs.d.strom.schritt': 'telefon', 'gs.d.strom.haerte': 'post', 'gs.d.strom.darlehen': 'einreichen', 'gs.d.strom.grenze': 'blitz',
     'gs.d.mahn.frist': 'uhr', 'gs.d.mahn.schritt': 'post', 'gs.d.miete.frist': 'uhr', 'gs.d.miete.schritt': 'einreichen',
     'pf.tipp.unterhalt': 'warn', 'pf.tipp.unterhaltspflichten': 'lupe', 'pf.tipp.mehr': 'waage', 'pf.tipp.beratung': 'person', 'pf.tipp.einmal': 'geld',
     'ip.w1': 'stopp', 'ip.w2': 'kalender', 'ip.w3': 'post', 'sb.ordner': 'liste', 'gs.d.geld.frist': 'uhr', 'gs.d.geld.schritt': 'telefon',
@@ -2604,6 +2604,12 @@
     ['miete', 'gs.d.miete', '<path d="M4 11l8-6 8 6v9H4z"/><path d="M10 20v-5h4v5"/>'],
     ['geld', 'gs.d.geld', '<path d="M12 4v16M6 20h12M5 7h14"/><path d="M5 7l-3 6h6zM19 7l-3 6h6z"/>']
   ];
+  // Schritte je Fall unter „Das tust du jetzt“ (Standard: erster Schritt + sp.schulden.<fall>) und kurze Tipps darunter (Aufräumen 21.11.2026).
+  //  Konto: Bescheinigung für den höheren Freibetrag (pf.tipp.bescheinigung, § 903 ZPO) statt sp.schulden.konto (wiederholte nur Umwandeln und Rechner).
+  //  Strom/Gas: sp.schulden.strom in Schritte zerlegt, Wortlaut unverändert (gs.d.strom.haerte, gs.d.strom.darlehen; Darlehen § 22 Abs. 8 SGB II,
+  //  § 36 SGB XII) und Tipp gs.d.strom.grenze (§ 41f EnWG: 2 Monatsabschläge, mindestens 100 €; abgerufen 20.11.2026, gesetze-im-internet.de).
+  var GS_D_SCHRITTE = { konto: ['gs.d.konto.schritt', 'pf.tipp.bescheinigung'], strom: ['gs.d.strom.schritt', 'gs.d.strom.haerte', 'gs.d.strom.darlehen'], geld: ['gs.d.geld.schritt'] };
+  var GS_D_TIPPS = { strom: ['gs.d.strom.grenze'] };
   // Post vom Inkasso: Prüfliste (§ 13a RDG), Musterschreiben, Raten anbieten, Gerichtspost (Sprung zum Mahnbescheid)
   var GS_INKASSO = [
     ['pruef', 'ip.h', 'ip.h.t', '<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5M8.5 11l2 2 3.5-3.5"/>'],
@@ -2730,26 +2736,41 @@
       Geld.krisenCheck(box, function () { spRender(false); var f = $('kc-erg') || $('kc-ja'); if (f) { if (f.id === 'kc-erg') f.focus(); else { var q = $('kc-q'); if (q) { q.tabIndex = -1; q.focus(); } } } });
     } else if (sp.bereich === 'dringend') {
       var fx = GS_DRINGEND.filter(function (x) { return x[0] === sp.fall; })[0];
+      // Alle Fälle gleich aufgebaut (Aufräumen 21.11.2026): Frist (.frist) → „Das tust du jetzt“ (Schritte, Einzelheiten zum Aufklappen)
+      // → Knöpfe (nächster Schritt in der App, zuletzt Beratungsstelle) → Quellen. Texte unverändert, nur geordnet.
       p(t(fx[1]), 'pf-frage');
-      [['gs-frist', 'gs.frist', '.frist'], ['gs-schritt', 'gs.schritt', '.schritt']].forEach(function (z) {
-        var d = document.createElement('div'); d.className = (z[0] === 'gs-frist' ? 'frist ' : 'gs-box ') + z[0]; if (z[0] === 'gs-frist') d.setAttribute('role', 'note'); // Frist im gemeinsamen Muster .frist (#68)
-        var h3 = document.createElement('h3'); h3.textContent = t(z[1]); d.appendChild(h3);
-        tipp('gs.d.' + sp.fall + z[2], '', d);
-        box.appendChild(d);
+      var fd = document.createElement('div'); fd.className = 'frist gs-frist'; fd.setAttribute('role', 'note'); // Frist im gemeinsamen Muster .frist (#68)
+      var fh = document.createElement('h3'); fh.textContent = t('gs.frist'); fd.appendChild(fh);
+      tipp('gs.d.' + sp.fall + '.frist', '', fd); box.appendChild(fd);
+      var jd = document.createElement('div'); jd.className = 'pf-jetzt gs-schritt';
+      var jh = document.createElement('h3'); jh.textContent = t('pf.jetzt.h'); jd.appendChild(jh);
+      var jol = document.createElement('ol'); jol.className = 'tipp-liste'; jd.appendChild(jol);
+      (GS_D_SCHRITTE[sp.fall] || ['gs.d.' + sp.fall + '.schritt', 'sp.schulden.' + sp.fall]).forEach(function (k, i) {
+        var li = document.createElement('li'); tipp(k, i && k.indexOf('sp.schulden.') === 0 ? sp.fall : '', li); jol.appendChild(li);
       });
-      // je Fall genau ein nächster Schritt in der App
-      if (sp.fall === 'konto') { knopf('btn sp-rechner', t('sp.schulden.pf'), pfKonto); knopf('btn ghost gs-besch', t('ms.pkonto'), pfBescheinigung); }
-      if (sp.fall === 'strom' && window.Haushalt) knopf('btn ghost gs-abschlag', t('pl.abschlag'), abschlagPruefen);
-      if (sp.fall === 'mahn' && window.Schulden) knopf('btn ghost gs-in-liste', t('gs.d.mahn.liste'), function () { oeffneVon('schulden', true); Schulden.neu({ st: 'mahnbescheid' }); });
-      if (sp.fall !== 'geld') tipp('sp.schulden.' + sp.fall, sp.fall);
-      knopf('btn ghost gs-zur-hilfe', t('sb.finden'), function () { gsOeffne('hilfe'); sp.fall = 'finden'; spRender(true); });
-      box.appendChild(quellenEl([t('sp.schulden.quellen')]));
+      box.appendChild(jd);
+      if (GS_D_TIPPS[sp.fall]) { var gt = document.createElement('div'); gt.className = 'gs-tipps'; box.appendChild(gt); GS_D_TIPPS[sp.fall].forEach(function (k) { tipp(k, sp.fall, gt); }); }
+      if (sp.fall === 'konto') { // Grundfreibetrag aus den geprüften Werten (Rules.RULES.pfaendung, Pfändungsfreigrenzenbekanntmachung 2026, § 899 Abs. 1 ZPO)
+        var kf = Rules.pkonto({ personen: 0, kindergeldKinder: 0 }), rtlK = I18N[lang] && I18N[lang]['meta.dir'] === 'rtl';
+        if (new Date().toISOString().slice(0, 10) <= Rules.RULES.pfaendung.gueltigBis) {
+          var ft = document.createElement('table'); ft.className = 'pf-tab gs-freibetrag'; var fr0 = ft.insertRow();
+          fr0.insertCell().textContent = t('pf.k.sockel'); fr0.insertCell().textContent = Fmt.euro(kf.sockel, lang, rtlK); box.appendChild(ft);
+        }
+      }
+      var gb = document.createElement('div'); gb.className = 'btns gs-knoepfe'; box.appendChild(gb);
+      var gk = function (cls, txt, fn) { gb.appendChild(nhKnopf(cls, esc(txt), null, fn)); };
+      if (sp.fall === 'konto') { gk('btn sp-rechner', t('sp.schulden.pf'), pfKonto); gk('btn ghost gs-besch', t('ms.pkonto'), pfBescheinigung); }
+      if (sp.fall === 'strom' && window.Haushalt) gk('btn ghost gs-abschlag', t('pl.abschlag'), abschlagPruefen);
+      if (sp.fall === 'mahn' && window.Schulden) gk('btn ghost gs-in-liste', t('gs.d.mahn.liste'), function () { oeffneVon('schulden', true); Schulden.neu({ st: 'mahnbescheid' }); });
+      gk('btn ghost gs-zur-hilfe', t('sb.finden'), function () { gsOeffne('hilfe'); sp.fall = 'finden'; spRender(true); });
+      box.appendChild(quellenEl(sp.fall === 'konto' ? [t('sp.schulden.quellen'), t('pf.stand')] : [t('sp.schulden.quellen')]));
     } else if (sp.bereich === 'inkasso' && !sp.fall) {
       p(t('gs.inkasso'), 'pf-frage');
       unterkarten(GS_INKASSO, 'gs-i-');
     } else if (sp.bereich === 'inkasso' && sp.fall === 'pruef') {
       Geld.pruefliste(box, neu);
-      tipp('sp.schulden.inkasso', 'inkasso');
+      // Hinweise zusammen: Inkasso-Tipp direkt nach den Warnungen, „Erste Einschätzung, keine Rechtsberatung“ (ip.hinweis) darunter
+      var ipH = box.querySelector('.ip-hinweis'); box.insertBefore(tippEl('sp.schulden.inkasso', 'sp-fall'), ipH).setAttribute('data-fall', 'inkasso');
       box.appendChild(quellenEl([t('sp.schulden.quellen')]));
     } else if (sp.bereich === 'inkasso' && sp.fall === 'schreiben') {
       Geld.schreibenSeite(box, neu);
