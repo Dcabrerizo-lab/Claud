@@ -710,7 +710,6 @@
     if (window.Klient) Klient.sichtbar(); // aus: Knopf weg, offenes Blatt zu
     if (aktAnsicht === 'pfaendung') pfRender(false);
     if (aktAnsicht === 'sparen') spRender(false);
-    if (aktAnsicht === 'ausziehen' && window.Ausziehen) Ausziehen.zeigen(); // „Ich ziehe aus“: Paragrafen nur im Beratungsmodus
     if (aktAnsicht === 'haushalt' && window.Haushalt) Haushalt.sprache(); // Druckblatt nur im Beratungsmodus
     if (an && window.Schritte && !Schritte.weg()) Schritte.wegLaden('', true); // Beratungsmodus: ohne eigene Wahl „Alles auf einer Seite“
   }
@@ -2513,7 +2512,6 @@
   Store.get('lotse.einfachSprache', function (v) { if (v === '1') einfacheSpracheSetzen(true, false); });
   Store.get('lotse.deNetz', function (v) { if (v === '0') deNetzSetzen(false, false); });
   Store.get('lotse.beratung', function (v) { if (v === '1') beratungSetzen(true, false); });
-  if (window.Ausziehen && Ausziehen.beratungAbfrage) Ausziehen.beratungAbfrage(function () { return beratung; }); // „Ich ziehe aus“: Paragrafen nur im Beratungsmodus
   // ----- Leistungs-Check: Weg wählen (Schritt für Schritt oder Alles auf einer Seite), Modul src/schritte.js -----
   // Beide Wege schreiben in denselben Zustand (state). Die Wahl gilt pro Gerät (lotse.checkWeg, nicht im Vorgang).
   if (window.Schritte) {

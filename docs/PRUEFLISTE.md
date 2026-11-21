@@ -567,7 +567,6 @@ Eigener Bereich für junge Menschen; keine Rechnung, nur Hinweise. Quellen mit A
 | Regel | Status | Test |
 |---|---|---|
 | Übersicht mit 6 Kacheln (2 Spalten, jede Kachel eine eigene Palettenfarbe, keine Hex-Werte im Modul), Unterseiten mit „Zurück“ (Herkunft gemerkt), Checklisten mit Fortschritt, wichtige Punkte offen, weitere zum Aufklappen | ✓ | `az-aufbau`, `az-oberflaeche` |
-| Paragrafen nur im Beratungsmodus: ohne Beratungsmodus Texte ohne „(§ …)“ (Fmt.ohnePara wie im Rest der App, Begriff vor dem Paragrafen bleibt), Quellen am Seitenende vollständig; Umschalten zeichnet neu | ✓ | `az-paragrafen` |
 | Unter 25 mit Grundsicherungsgeld: Zusicherung vor Vertragsschluss, Pflicht-Gründe, keine Erstausstattung ohne Zusicherung, weniger Regelbedarf (§ 22 Abs. 5, § 24 Abs. 6, § 20 Abs. 3 SGB II), Verzicht bei wichtigem Grund, deutliche Warnung | ✓ | `az-aufbau`, `az-oberflaeche` |
 | Kaution höchstens 3 Kaltmieten ohne Betriebskosten, 3 Monatsraten (§ 551 BGB); Kaution als Darlehen, Umzugskosten mit Zusicherung (§ 22 Abs. 6 SGB II); Erstausstattung vor dem Kauf beantragen (§ 24 Abs. 3, § 37 SGB II) | ✓ | `az-quellen` |
 | Ummelden in 2 Wochen, Wohnungsgeberbestätigung (§ 17 Abs. 1, § 19 BMG); Grundversorgung melden (§ 2 StromGVV); Rundfunk je Wohnung, Befreiung nur auf Antrag und nur für die Person (§ 2, § 4 Abs. 1 RBeitrStV); Laufzeit 24 Monate, danach jederzeit kündbar (§ 56 TKG); Kfz-Anschrift unverzüglich (§ 15 FZV); Steuer-ID an Arbeitgeber (§ 39e Abs. 4 EStG) | ✓ | `az-quellen` |
