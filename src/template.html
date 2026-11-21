@@ -150,13 +150,17 @@
   .sf-zaehler { display: flex; align-items: center; gap: 16px; }
   .sf-zaehler .es-btn { width: 72px; justify-content: center; font-size: 1.6em; }
   .sf-zaehler output { font-size: 2em; font-weight: 700; min-width: 2ch; text-align: center; }
-  .sf-ueb-b { margin: 18px 0 6px; font-size: 1.05em; }
+  .sf-ueb-b { margin: 0 0 6px; font-size: 1.05em; }
+  .sf-ueb-karte { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-card); padding: 12px 16px; margin: 0 0 12px; }
+  .sf-ueb-karte .sf-zeile:last-child { border-bottom: 0; }
+  .sf-ueb-rest { margin-top: 6px; }
   .sf-ueb { margin: 0; border-top: 1px solid var(--line); }
   .sf-zeile { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; padding: 10px 0; border-bottom: 1px solid var(--line); }
   .sf-zeile dt { grid-column: 1; font-size: .9em; color: var(--muted); }
   .sf-zeile dd { grid-column: 1; margin: 0; font-weight: 600; overflow-wrap: anywhere; }
   .sf-zeile dd.sf-aendern { grid-column: 2; grid-row: 1 / span 2; align-self: center; font-weight: 400; }
   .sf-wahl .weg-txt span { opacity: .85; }
+  .sf-wahl .sf-w1 { border: 2px solid var(--accent); } .sf-wahl .sf-w2, .sf-wahl .sf-w3 { border-color: var(--line); } /* empfohlen hervorgehoben (UX-Audit A, Aufgabe 11) */
   .sf-wahl .weg-sym { color: var(--on-c); }
   /* Pflegegrad-Einschätzung: Frage ganz oben, eine Spalte, Zurück oben, Links unten */
   .app[data-ansicht="pflege"] .notices, .app[data-ansicht="pflege"] .first { display: none !important; }
@@ -260,7 +264,12 @@
   .undo button { font: inherit; font-weight: 700; min-height: 44px; padding: 6px 14px; border-radius: 8px; border: 2px solid currentColor; background: transparent; color: inherit; cursor: pointer; }
   @media (min-width: 900px) { .undo { bottom: 16px; } }
   /* Löschen (Einstellungen → Sicherheit und Daten): Zeilen mit Mülleimer, Rückfrage mit rotem Endgültig-Knopf */
-  .loesch-zeile .zeile-sym { color: var(--bad); }
+  .loesch-zeile .zeile-sym { color: var(--bad); background: var(--bad-bg); }
+  /* Löschen sieht nicht aus wie eine Navigationszeile (UX-Audit A, Aufgabe 10): roter Rahmen und Titel, kein Pfeil */
+  .zeile.loesch-zeile { border: 2px solid var(--bad); }
+  .regel-liste details { border-bottom: 1px solid var(--line); padding: 4px 0; } .regel-liste p { margin: 4px 0 10px; }
+  .zeile.loesch-zeile b { color: var(--bad); }
+  .zeile.loesch-zeile:hover { border-color: var(--bad); background: var(--bad-bg); }
   .loesch-frage { max-width: 60ch; margin: 8px 0; padding: 12px 14px; border: 2px solid var(--bad); border-radius: var(--r-item, 16px); background: var(--bad-bg); color: var(--ink); }
   .loesch-frage p { margin: 0 0 6px; }
   .loesch-frage-t { font-weight: 800; }
@@ -752,6 +761,8 @@
     .shell { padding-bottom: 40px; }
   }
   .app.pm ~ .appnav, .app.pm .appnav, .app.pm #v-einstellungen { display: none; }
+  .app.pm.legal-an ~ .appnav, .app.pm.legal-an .appnav { display: grid; } /* Impressum, Datenschutz, Lizenzen: Leiste unten bleibt */
+  .app.legal-an #legal { padding-bottom: 88px; }
   .ans-h { font-size: 1.5em; margin: 8px 0 12px; }
   .set-gruppe { margin: 0 0 22px; max-width: 60ch; }
   .set-gruppe h3 { margin: 0 0 8px; font-size: 1.05em; }
@@ -1132,7 +1143,14 @@
   .su-fenster { position: fixed; inset: 0; z-index: 50; overflow-y: auto; background: var(--bg); padding: max(16px, env(safe-area-inset-top)) 16px 24px; }
   .su-fenster > * { max-width: 640px; margin-inline: auto; }
   .su-fenster .su-suche { margin-top: 4px; }
+  .su-vorschlag { margin-top: 16px; } .su-vorschlag p { color: var(--muted); margin: 0 0 8px; } .su-vorschlag .chips { display: flex; flex-wrap: wrap; gap: 8px; }
   .gruss-t { color: var(--muted); font-size: 1.05em; margin: 0 0 4px; }
+  /* Startseite straffen (UX-Audit A, Aufgabe 5): eine Einleitung statt drei – der Satz unter der Begrüßung entfällt sichtbar
+     (Element bleibt als Anker für den Fristen-Hinweis); Erststart-Hinweis schmal; Datenschutz-Satz unten nur ohne Erststart-Hinweis */
+  #v-start .gruss-t { display: none; }
+  #firstNotice { padding-block: 10px; }
+  #firstNotice p { margin: 0 0 8px; font-size: .95em; }
+  #firstNotice:not([hidden]) ~ #v-start .start-sicher { display: none; }
   /* Startseite als Kachel-Raster (Kacheln wie Richtung 3 „Bunt und bildhaft“, Farben aus der warmen Palette; weiße Schrift mind. 4,5:1).
      Spaltenbreite in em: bei 320 px oder großer Schrift bricht das Raster auf eine Spalte um. Jeder Bereich hat seine Farbe. */
   /* Bereichsfarben: siehe Palette oben (--c-*) */
@@ -1957,6 +1975,7 @@
     <section id="v-ordner" class="ansicht" aria-labelledby="h-ordner" hidden>
       <div id="ordnerHaupt">
         <h2 id="h-ordner" class="ans-h" data-t="nav.ordner"></h2>
+        <p class="small muted ordner-intro" id="ordnerIntro" data-t="vg.ordner.t"></p>
         <div class="vg-gruppe" id="setHaushalte" hidden></div>
         <ul id="ordnerKarten" class="zeilen"></ul>
         <!-- Von der Beratung bekommen (src/weitergabe.js, für alle Nutzer): SoLo-Datei öffnen oder QR-Code scannen → neuer Vorgang -->
@@ -2262,6 +2281,7 @@
         <span class="su-feld"><svg class="su-lupe" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg><input type="search" id="suFeld" data-t-ph="su.label" enterkeyhint="search" autocomplete="off" autocorrect="off" spellcheck="false" aria-describedby="suStatus"><button type="button" class="su-leeren" id="suLeeren" data-t-aria="su.leeren" hidden><span aria-hidden="true">×</span></button></span>
         <p class="vh" id="suStatus" role="status" aria-live="polite"></p>
         <div class="su-treffer" id="suTreffer" hidden></div>
+        <div class="su-vorschlag" id="suVorschlag" hidden></div>
       </form>
     </div>
   </div>

@@ -137,6 +137,7 @@ async function zurueck(d) { const v = d.getElementById('v-' + d.defaultView.__so
   // Leeren und Escape
   d.getElementById('suLeeren').click();
   check('DOM: Leeren-Knopf leert Feld und Treffer', feld.value === '' && box.hidden && d.getElementById('suLeeren').hidden);
+  check('DOM: leeres Feld zeigt häufige Begriffe; Tippen sucht danach', (() => { const v = d.getElementById('suVorschlag'), b = v && v.querySelector('button.chip'); if (!b || v.hidden) return false; b.click(); const ok = feld.value === b.textContent && !box.hidden && !!box.querySelector('button[data-ziel]') && v.hidden; d.getElementById('suLeeren').click(); return ok; })());
 
   // Navigation zu Zielen und zurück
   const ziele = [['gelber Brief', 'g-mahn', 'sparen'], ['Konto gesperrt', 'g-konto', 'sparen'], ['Musterschreiben', 'g-schreiben', 'sparen'], ['Tarife vergleichen', 'g-tarif', 'sparen'],

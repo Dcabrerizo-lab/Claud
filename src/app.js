@@ -803,7 +803,7 @@
     var alt = $('loeschFrage'); if (alt) alt.remove();
     var box = vgEl('div', 'loesch-frage'); box.id = 'loeschFrage'; box.setAttribute('role', 'group'); box.setAttribute('aria-labelledby', 'loeschFrageT');
     var tt = vgEl('p', 'loesch-frage-t', titel + '?'); tt.id = 'loeschFrageT'; box.appendChild(tt);
-    box.appendChild(vgEl('p', 'small', was));
+    if (was) box.appendChild(vgEl('p', 'small', was)); // nur die genaue Liste, nicht noch einmal der Text der Zeile
     box.appendChild(vgEl('p', 'small', t(mitUndo ? 'l.kurzZurueck' : 'l.endgueltig')));
     var bt = vgEl('div', 'btns');
     var nein = vgEl('button', 'btn ghost', t('l.abbrechen')); nein.type = 'button'; nein.id = 'loeschNein';
@@ -1017,11 +1017,11 @@
   function openLegal(von) {
     legalRueck = von && von.focus ? von : $('legalBtn');
     $('legalWeb').hidden = NATIVE;
-    $('legal').hidden = false; $('app').classList.add('pm');
+    $('legal').hidden = false; $('app').classList.add('pm', 'legal-an'); // Leiste unten bleibt sichtbar (UX-Audit A, Aufgabe 10)
     try { window.scrollTo(0, 0); } catch (e) {}
     $('legalClose').focus();
   }
-  function closeLegal() { $('legal').hidden = true; $('app').classList.remove('pm'); (legalRueck || $('legalBtn')).focus(); }
+  function closeLegal() { $('legal').hidden = true; $('app').classList.remove('pm', 'legal-an'); (legalRueck || $('legalBtn')).focus(); }
 
   // ----- Ergebnis -----
   function listItems(a) { return '<ul>' + a.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>'; }
@@ -2843,6 +2843,18 @@
   bind();
   writeForm();
   if (window.DeNetz) DeNetz.init({ lang: function () { return lang; }, de: tDe, t: t, wurzel: function () { return $('app'); } });
+  // „So rechnet der Check“ (Über die App): statt einer langen Tabelle (≈ 1.900 Wörter in einem Stück) je Leistung ein Aufklapper
+  // (UX-Audit A, Aufgabe 10). Inhalt unverändert aus der Vorlage (fester Text, keine Eingaben).
+  (function () {
+    var tb = document.querySelector('#es-about .rules .scroll table'); if (!tb) return;
+    var l = document.createElement('div'); l.className = 'regel-liste';
+    tb.querySelectorAll('tr').forEach(function (tr) {
+      var th = tr.querySelector('th'), td = tr.querySelector('td'); if (!th || !td) return;
+      var d = document.createElement('details'); d.className = 'mehr mehr-liste'; var su = document.createElement('summary'); su.textContent = th.textContent;
+      var p = document.createElement('p'); p.innerHTML = td.innerHTML; d.appendChild(su); d.appendChild(p); l.appendChild(d);
+    });
+    tb.parentNode.replaceChild(l, tb);
+  })();
   // Nur deutsch vorhandene Bereiche (Brief prüfen; Pflege zeichnet seine Bereiche selbst aus): rein deutsche Blöcke mit lang="de" dir="ltr" auszeichnen (src/denetz.js, NurDeutsch)
   if (window.NurDeutsch) window.NurDeutsch.init({ lang: function () { return lang; }, bereiche: function () { return ['checkBox'].map($); } });
   lang = detect();
@@ -3601,6 +3613,7 @@
     if (a === 'pflege' && !$('pflegeAssist').children.length) a = 'leistungen'; // Einschätzung nur über ihren Knopf öffnen
     var vorA = aktAnsicht, vorT = navBereit ? navEbene().tiefe : 0;
     paRueckPruefen(a); // Rückweg zur Pflege-Ergebnisseite nur auf der Unterseite selbst
+    if ($('app').classList.contains('legal-an')) { $('legal').hidden = true; $('app').classList.remove('pm', 'legal-an'); } // Leiste unten aus dem Impressum heraus
     aktAnsicht = a;
     if (a === 'start') sucheRueck = '';
     if (window.Suche && Suche.offen()) Suche.schliessen(false); // Such-Fenster zu, wenn die App die Ansicht wechselt (z. B. Leiste, Link)
@@ -3969,7 +3982,7 @@
       var li = vgEl('li'), b = vgEl('button', 'zeile loesch-zeile'); b.type = 'button'; b.id = id;
       b.innerHTML = '<span class="zeile-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg></span><span class="zeile-txt"><b></b><span class="zeile-st"></span></span>';
       b.querySelector('b').textContent = titel; b.querySelector('.zeile-st').textContent = was;
-      b.addEventListener('click', function () { loeschFragen(li, b, titel, lang2 || was, fn, id === 'clear2'); });
+      b.addEventListener('click', function () { loeschFragen(li, b, titel, lang2 || '', fn, id === 'clear2'); });
       li.appendChild(b); ll.appendChild(li);
     };
     lz('clear2', loeschEinsTitel(a), t('l.einsKurz'), function () { vgLoeschen(a.id, $('loeschMsg')); }, loeschWas());

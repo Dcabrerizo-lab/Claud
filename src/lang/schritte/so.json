@@ -152,5 +152,7 @@
   "sf.q.plzOrt": "Meesha aad degan tahay ma sax baa?",
   "sf.a.ortJa": "Haa, waa sax",
   "sf.a.ortNein": "Maya, meel kale",
-  "sf.h.plzOrt": "Mietenstufe waxay ku xiran tahay degmadaada, ma aha lambarka boostada. Waxay go'aamisaa inta ugu badan ee kirada lagu xisaabiyo Wohngeld. Go'aanka waajibka ah waxaa leh Wohngeldstelle."
+  "sf.h.plzOrt": "Mietenstufe waxay ku xiran tahay degmadaada, ma aha lambarka boostada. Waxay go'aamisaa inta ugu badan ee kirada lagu xisaabiyo Wohngeld. Go'aanka waajibka ah waxaa leh Wohngeldstelle.",
+  "sf.ueb.rest": "Maya, 0 ama waxba lama sheegin ({n})",
+  "sf.wahl.kurz.t": "Su’aalo yar, hal qof"
 }

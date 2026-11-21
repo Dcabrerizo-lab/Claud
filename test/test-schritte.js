@@ -60,6 +60,7 @@ const ohne = (o) => JSON.stringify(o.results.map((r) => [r.id, r.level, r.tx]));
   let A = app(store);
   check('Beim Öffnen: Auswahl mit zwei Karten, Formular ausgeblendet', A.$('sfWahlSchritt') && A.$('sfWahlAlles') && A.appEl.classList.contains('sf-an') && A.frage() === L['sf.wahl.h']);
   check('Startwahl: keine Klasse sf-frage (Übersetzungshinweis sichtbar)', !A.appEl.classList.contains('sf-frage'));
+  check('Startwahl ohne Angaben: kein „Angaben löschen“; Kurzer Check mit Untertitel', !A.$('clearLink') && A.$('schritte').querySelector('.sf-w3').textContent.includes(L['sf.wahl.kurz.t']));
   check('Karten: Schritt für Schritt (empfohlen) und Alles auf einer Seite', A.$('sfWahlSchritt').textContent.includes(L['sf.wahl.schritt.t']) && A.$('sfWahlAlles').textContent.includes(L['sf.wahl.alles.t']));
   A.$('sfWahlAlles').click();
   check('Alles auf einer Seite: Formular sichtbar, oben die Wahl (gedrückt: Alles auf einer Seite) und „Angaben löschen“', !A.appEl.classList.contains('sf-an') && A.$('sfWegAlles').getAttribute('aria-pressed') === 'true' && A.$('sfWegSchritt').textContent === L['sf.wahl.schritt'] && !!A.$('clearLink') && A.$('sfLeiste').compareDocumentPosition(A.$('h-form')) & 4 && store['lotse.checkWeg'] === 'alles');
@@ -130,6 +131,10 @@ const ohne = (o) => JSON.stringify(o.results.map((r) => [r.id, r.level, r.tx]));
   await A.antworte([L['bz.kg']]);
   check('Übersicht: keine Klasse sf-frage (Hinweis wieder sichtbar)', !A.appEl.classList.contains('sf-frage'));
   check('Am Ende: Übersicht „Deine Angaben“ mit „ändern“', A.frage() === L['sf.ueb.h'] && A.$('schritte').querySelectorAll('[data-aendern]').length > 10);
+  check('Übersicht kürzer: je Abschnitt eine Karte, „Nein/0/nichts“ zugeklappt, Miete sichtbar', (() => {
+    const b = A.$('schritte'), rest = [...b.querySelectorAll('details.sf-ueb-rest')];
+    return b.querySelectorAll('.sf-ueb-karte').length >= 4 && rest.length > 0 && rest.every((x) => !x.open && x.querySelector('[data-aendern]')) && !b.querySelector('[data-aendern="miete"]').closest('details');
+  })());
   check('Übersicht zeigt die Antworten', /650/.test(A.$('schritte').textContent) && A.$('schritte').textContent.includes(L['ek.art.lohn']) && A.$('schritte').textContent.includes(L['bz.kg']));
   // ändern -> nach Weiter zurück zur Übersicht
   A.$('schritte').querySelector('[data-aendern="miete"]').click(); await A.warte();

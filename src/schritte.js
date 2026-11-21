@@ -211,6 +211,7 @@ var Schritte = (function () {
         // Kurzer Check für Menschen mit Behinderung: dritte Wahl oben (Klick behandelt src/app.js über die Kennung einfachBtn)
         '<p class="es-link sf-kurz">' + knopf('linkbtn', '<span data-t="einfach.btn">' + esc(t('einfach.btn')) + '</span>', ' id="einfachBtn" aria-pressed="false"') + '</p>';
     }
+    if (!weg && !ctx.begonnen()) return h + '</div>'; // Startwahl ohne Angaben: nichts zu löschen (UX-Audit A, Aufgabe 11)
     return h + knopf('linkbtn sf-loeschen', esc(t('l.link')), ' id="clearLink"') + '</div>';
   }
   function leisteEinsetzen() {
@@ -261,7 +262,7 @@ var Schritte = (function () {
       knopf('uk-karte sf-w1', '<span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19h4v-4h4v-4h4V7h3"/></svg></span><span class="weg-txt"><b>' + esc(t('sf.wahl.schritt')) + '</b><span>' + esc(t('sf.wahl.schritt.t')) + '</span></span>', ' id="sfWahlSchritt"') +
       knopf('uk-karte sf-w2', '<span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h8"/></svg></span><span class="weg-txt"><b>' + esc(t('sf.wahl.alles')) + '</b><span>' + esc(t('sf.wahl.alles.t')) + '</span></span>', ' id="sfWahlAlles"') +
       // dritte Wahl: Kurzer Check für Menschen mit Behinderung (gleiche Logik wie bisher, Klick in src/app.js)
-      knopf('uk-karte sf-w3', '<span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="4.5" r="2"/><path d="M12 7v6h5l2 6"/><path d="M9 10a6 6 0 1 0 6.5 9"/></svg></span><span class="weg-txt"><b data-t="einfach.btn">' + esc(t('einfach.btn')) + '</b></span>', ' id="einfachBtn" aria-pressed="false"') +
+      knopf('uk-karte sf-w3', '<span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="4.5" r="2"/><path d="M12 7v6h5l2 6"/><path d="M9 10a6 6 0 1 0 6.5 9"/></svg></span><span class="weg-txt"><b data-t="einfach.btn">' + esc(t('einfach.btn')) + '</b><span>' + esc(t('sf.wahl.kurz.t')) + '</span></span>', ' id="einfachBtn" aria-pressed="false"') +
       '</div>';
     box.querySelector('#sfWahlSchritt').addEventListener('click', function () { setzeWeg('schritt', true); });
     box.querySelector('#sfWahlAlles').addEventListener('click', function () { setzeWeg('alles', true); });
@@ -370,19 +371,29 @@ var Schritte = (function () {
     }
   }
 
+  // Antwort ohne Inhalt: „Nein“, 0, leer, „Nichts davon“ oder die erste Auswahl mit leerem Wert („keine“, „nein“)
+  function leer(f, s) {
+    if (f.art === 'mehr') return !felder(f, s).some(function (x) { return feldWert(f, s, x[0]); });
+    var v = s[f.id];
+    if (f.id === 'adults' || f.id === 'plzOrt') return false;
+    return v === '' || v == null || v === false || v === 0 || v === '0';
+  }
   function renderUebersicht() {
     var s = S(), l = liste(), h = kopf(vorige('uebersicht'), '') +
       '<h2 class="es-q" id="sfFrage" tabindex="-1">' + esc(t('sf.ueb.h')) + '</h2><p class="es-h">' + esc(t('sf.ueb.t')) + '</p>';
     var bereiche = [];
     l.forEach(function (f) { if (bereiche.indexOf(f.b) < 0) bereiche.push(f.b); });
+    // Je Abschnitt eine Karte; Antworten mit „Nein“, 0 oder ohne Angabe zusammen zugeklappt (UX-Audit A, Aufgabe 6), „ändern“ bleibt je Zeile
+    var zeile = function (f) {
+      var wer = f.wer && f.wer(s) ? f.wer(s) + ': ' : '';
+      return '<div class="sf-zeile"><dt>' + esc(wer + t(wert(f, s, f.q))) + '</dt><dd' + (f.deutsch ? ' lang="de"' : '') + '>' + esc(ja[f.id] ? anzeigeWert(f, s) : t('sf.offen')) + '</dd><dd class="sf-aendern">' +
+        knopf('linkbtn', esc(t(ja[f.id] ? 'sf.aendern' : 'sf.beantworten')) + '<span class="vh"> ' + esc(t(wert(f, s, f.q))) + '</span>', ' data-aendern="' + esc(f.id) + '"') + '</dd></div>';
+    };
     bereiche.forEach(function (b) {
-      h += '<h3 class="sf-ueb-b">' + esc(t('sf.b.' + b)) + '</h3><dl class="sf-ueb">';
-      l.filter(function (f) { return f.b === b; }).forEach(function (f) {
-        var wer = f.wer && f.wer(s) ? f.wer(s) + ': ' : '';
-        h += '<div class="sf-zeile"><dt>' + esc(wer + t(wert(f, s, f.q))) + '</dt><dd' + (f.deutsch ? ' lang="de"' : '') + '>' + esc(ja[f.id] ? anzeigeWert(f, s) : t('sf.offen')) + '</dd><dd class="sf-aendern">' +
-          knopf('linkbtn', esc(t(ja[f.id] ? 'sf.aendern' : 'sf.beantworten')) + '<span class="vh"> ' + esc(t(wert(f, s, f.q))) + '</span>', ' data-aendern="' + esc(f.id) + '"') + '</dd></div>';
-      });
-      h += '</dl>';
+      var fs = l.filter(function (f) { return f.b === b; });
+      var rest = fs.filter(function (f) { return ja[f.id] && leer(f, s); }), haupt = fs.filter(function (f) { return rest.indexOf(f) < 0; });
+      h += '<section class="sf-ueb-karte"><h3 class="sf-ueb-b">' + esc(t('sf.b.' + b)) + '</h3>' + (haupt.length ? '<dl class="sf-ueb">' + haupt.map(zeile).join('') + '</dl>' : '') +
+        (rest.length ? '<details class="mehr sf-ueb-rest"><summary>' + esc(t('sf.ueb.rest', { n: rest.length })) + '</summary><dl class="sf-ueb">' + rest.map(zeile).join('') + '</dl></details>' : '') + '</section>';
     });
     h += '<div class="es-nav1">' + knopf('es-btn es-weiter', esc(t('sf.zumErgebnis')), ' id="sfErgebnis"') + '</div>';
     box.innerHTML = h;

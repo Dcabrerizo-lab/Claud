@@ -122,5 +122,6 @@
   "plz.wohnort": "محل زندگی: {ort} · Mietenstufe {stufe}",
   "plz.aendern": "تغییر",
   "plz.stimmt": "جای درست است؟ Mietenstufe به شاروالی تو مربوط است، نه به کود پستی.",
-  "plz.was": "Mietenstufe چیست؟"
+  "plz.was": "Mietenstufe چیست؟",
+  "vg.ordner.t": "معلومات و نامه‌های ذخیره‌شده‌ات اینجا هستند. همه چیز روی همین دستگاه می‌ماند."
 }

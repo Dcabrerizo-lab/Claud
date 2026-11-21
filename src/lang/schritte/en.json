@@ -152,5 +152,7 @@
   "sf.q.plzOrt": "Is your place of residence right?",
   "sf.a.ortJa": "Yes, that's right",
   "sf.a.ortNein": "No, a different place",
-  "sf.h.plzOrt": "The rent level depends on your municipality, not on the postcode. It decides how much rent counts at most for Wohngeld. The Wohngeldstelle decides with binding effect."
+  "sf.h.plzOrt": "The rent level depends on your municipality, not on the postcode. It decides how much rent counts at most for Wohngeld. The Wohngeldstelle decides with binding effect.",
+  "sf.ueb.rest": "No, 0 or nothing given ({n})",
+  "sf.wahl.kurz.t": "A few questions, for one person"
 }

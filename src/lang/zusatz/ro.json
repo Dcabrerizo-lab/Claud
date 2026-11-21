@@ -122,5 +122,6 @@
   "plz.wohnort": "Domiciliu: {ort} · Treapta de chirie {stufe}",
   "plz.aendern": "Schimbă",
   "plz.stimmt": "Localitatea e corectă? Treapta de chirie depinde de comuna ta, nu de codul poștal.",
-  "plz.was": "Ce este treapta de chirie?"
+  "plz.was": "Ce este treapta de chirie?",
+  "vg.ordner.t": "Aici sunt datele și scrisorile tale salvate. Totul rămâne pe acest dispozitiv."
 }
