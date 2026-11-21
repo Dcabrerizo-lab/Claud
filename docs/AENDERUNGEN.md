@@ -4,7 +4,12 @@ Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss ste
 
 ## Nächste Version (in Arbeit)
 - **„Es ist dringend“ aufgeräumt**: alle Fälle gleich aufgebaut – Frist oben, „Das tust du jetzt“ in Schritten, kurze Tipps zum Aufklappen, Knöpfe, Quellen unten. Konto gepfändet mit Bescheinigung und Grundfreibetrag statt doppeltem Tipp; Strom-/Gassperre in 3 Schritten. „Stimmt der Brief?“: Hinweis „keine Rechtsberatung“ unter dem letzten Tipp.
+- **Haushaltsplan aufgeräumt**: Unter der Eingabe steht nichts mehr. Hinweise stehen in der Auswertung, das Druckblatt auch, die Tabelle (CSV) im Haushaltsbuch. Die Übernahme in den Leistungs-Check steht in der Karte, die bei knappem Geld erscheint.
+- **„Bewilligt bis“ entfernt** (auch die Erinnerung an den Folgeantrag in den Fristen). Alte Angaben werden einfach nicht mehr verwendet.
+- **Abschlag prüfen** jetzt auf den Seiten „Strom“ und „Heizen“: erst Strom oder Gas wählen, dann nur die Prüfung (Nachzahlung oder Guthaben, ungefähr). Ohne Musterbrief und Zusatz-Tipps.
+- **Neu: Tarife vergleichen** (Strom oder Gas): eigener Tarif gegen ein Angebot, Kosten im Jahr mit und ohne Bonus. Dazu kurze Hinweise (Bonus, Vorkasse, Laufzeit, Kündigung, Fernwärme) und ein Link zur Verbraucherzentrale. Es wird nichts gespeichert.
 - **Ich ziehe aus – „Bevor du ausziehst“**: großer gerahmter Hinweis „Unter 25 und Grundsicherungsgeld?“ entfernt; das Thema steht in der normalen Karte „Unter 25 mit Grundsicherungsgeld: Zusicherung vor der Unterschrift“ (§ 22 Abs. 5 SGB II), jetzt im gleichen Design wie die anderen Karten.
+- **Raten anbieten mit Empfehlung**: Ist der Haushaltsplan ausgefüllt, schlägt SoLo eine machbare Rate vor („Diese Rate empfehlen wir dir: … € im Monat“, Faustregel: frei minus Puffer 10 % der Einnahmen, mind. 50 €, abgerundet auf 5 €) – mit „Übernehmen“ ins neue Schreiben „Ratenzahlung anbieten“; bei mehreren Schulden Aufteilung nach Höhe der Forderung; ohne Spielraum Verweis auf die Schuldnerberatung.
 - **Pflegegrad selbst einschätzen**: Auf der Ergebnisseite zuerst der passende Antrag (**Pflegegrad beantragen** bzw. **Höherstufung beantragen**), dann die neue Kachel **Mit dem Gutachten vergleichen** (Gutachten vom Medizinischen Dienst scannen oder einfügen), dann „Was steht mir zu?“. Die Gutachten-Prüfung zeigt jetzt eine Tabelle: deine Punkte je Bereich neben dem Gutachten, Unterschiede fett. „← Zurück“ führt zur Ergebnisseite.
 
 ## 1.8.0 (ab Versionsnummer 150, November 2026)

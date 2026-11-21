@@ -54,7 +54,13 @@ setTimeout(() => {
     // Plan -> Check: leeres Feld direkt (Unterhalt)
     setze('hb-uh', '200');
     check('Leeres Feld im Check direkt gefüllt', w.__solo.state().unterhalt === 200);
-    // Übernahme-Liste und Markierung
+    // Unter der Eingabe steht nichts mehr (seit 1.9): keine Hinweise, kein „Bewilligt bis“, kein Druck/CSV, kein Abschlag-Knopf
+    check('Unter der Eingabe nichts mehr', !$('hbHinweise') && !d.querySelector('#hbInhalt .hb-wb') && !$('hb-wb-kiz') && !d.querySelector('#hbInhalt .hb-export') && !d.querySelector('#hbInhalt .hb-ue-knopf'));
+    klick($('hb-kat-energie')); check('Kein Abschlag-Knopf mehr unter „Strom und Gas“', !$('hb-en-knopf') && !$('hbEnergie')); klick(knopf('Fertig'));
+    check('Nicht knapp: keine Brücke zum Check', $('hbBruecke').hidden);
+    // Übernahme-Liste und Markierung: in der Brücke, wenn der Plan knapp ist
+    klick($('hb-kat-essen')); setze('hb-aus-essen', '1300');
+    check('Knapp: Brücke mit Übernahme-Knopf', !$('hbBruecke').hidden && !!$('hb-bruecke-check'));
     klick(knopf('Mit diesen Angaben Leistungen prüfen'));
     const ue = $('hbUe');
     check('Übernahme: übernommen / fehlt', /Lohn oder Gehalt: 1\.300 € netto/.test(tx(ue)) && /Brutto-Betrag/.test(ue.textContent), ue.textContent);
@@ -65,6 +71,7 @@ setTimeout(() => {
     check('Fehlendes Brutto markiert', $('ek1Brutto').closest('.field').classList.contains('hb-fehlt'));
     check('Kindergeld-Bezug nach Bestätigung gesetzt', w.__solo.state().bezug.kindergeld === true);
     setze('ek1Brutto', '1800'); check('Markierung verschwindet nach Eingabe', !$('ek1Brutto').closest('.field').classList.contains('hb-fehlt'));
+    zumPlan(); if (!$('hb-aus-essen')) klick($('hb-kat-essen')); setze('hb-aus-essen', ''); klick(knopf('Fertig'));
     // Haushaltsbuch: eintragen, löschen, rückgängig
     zumPlan(); klick($('hb-tab-buch'));
     klick($('hb-neu')); ['1', '2', ',', '5'].forEach((z) => klick([...d.querySelectorAll('.hb-taste')].find((b) => b.textContent === z)));
@@ -90,14 +97,13 @@ setTimeout(() => {
     check('Nicht mehr zeigen: weg', !d.querySelector('#hbHinweise > #' + erster));
     klick($('hb-tab-plan')); klick($('hb-tab-ausw'));
     check('Nicht mehr zeigen: bleibt weg', !d.querySelector('#hbHinweise #' + erster) && Object.keys(JSON.parse(mem['lotse.haushalt']).weg).length === 1);
-    // Weiterbewilligung: Hinweis beim Öffnen auf der Startseite
+    // Druckblatt in der Auswertung, CSV im Haushaltsbuch (früher unter der Eingabe)
+    const ber = w.SoloBeratung && typeof w.SoloBeratung.an === 'function' ? !!w.SoloBeratung.an() : null;
+    check('Auswertung: Druckblatt (wenn der Beratungsmodus an ist oder es ihn nicht gibt)', !!$('hb-drucken') === (ber !== false), ber);
+    klick($('hb-tab-buch')); check('Haushaltsbuch: CSV-Export', !!$('hb-csv'));
     klick($('hb-tab-plan'));
-    const bald = new Date(); bald.setDate(bald.getDate() + 20);
-    setze('hb-wb-kiz', bald.toISOString().slice(0, 10));
-    // Nur ein Hinweis: Fristen (src/fristen.js) übernimmt den Folgeantrag (Hinweis #friStart beim Öffnen, höchstens einmal am Tag; test-fristen-dom.js)
-    check('Kein eigener Haushalts-Hinweis mehr (#hbStart)', !$('hbStart'));
-    const fs0 = w.FristenOrdner.stand();
-    check('Folgeantrag steht in den Fristen von „Mein Ordner“', fs0 && /Kinderzuschlag/.test(fs0.text), fs0);
+    // „Bewilligt bis“ entfernt: kein eigener Hinweis, keine Folgeanträge in den Fristen
+    check('Kein eigener Haushalts-Hinweis (#hbStart)', !$('hbStart'));
     // Speicherfehler abgefangen
     voll = true; setze('hb-sonstEin', '10');
     check('Speicherfehler wird angezeigt (Meldung der Vorgänge-Speicherung)', !$('vgFehler').hidden && /Speicher voll oder gesperrt/.test($('vgFehler').textContent), $('vgFehler').textContent);
@@ -116,7 +122,7 @@ setTimeout(() => {
     for (let i = 0; i < 6 && !$('v-pfaendung').hidden; i++) klick(d.querySelector('#v-pfaendung [data-nav-zurueck]'));
     check('Zurück vom Pfändungsrechner (eine Ebene je Klick): wieder bei „Geld und Schulden“', !$('v-sparen').hidden);
     { // Einkommen geändert: Vorlage „Änderung melden“ nur bei Grundsicherungsgeld oder Sozialhilfe; Text nennt die Regeln je Leistung
-      const melden = (bezug) => { w.__solo.set({ adults: 1, kids: 0, ek1Art: 'lohn', ek1Brutto: 2000, ek1Netto: 1500, miete: 500, plz: '90542', bezug }); w.Haushalt.laden({ ekBasis: 100000, ekV: 2 }); zumPlan(); return !!knopf('Änderung dem Amt melden', $('hbHinweise')); };
+      const melden = (bezug) => { w.__solo.set({ adults: 1, kids: 0, ek1Art: 'lohn', ek1Brutto: 2000, ek1Netto: 1500, miete: 500, plz: '90542', bezug }); w.Haushalt.laden({ ekBasis: 100000, ekV: 2 }); zumPlan(); klick($('hb-tab-ausw')); const r = !!knopf('Änderung dem Amt melden', $('hbHinweise')); klick($('hb-tab-plan')); return r; }; // Hinweise stehen in der Auswertung
       check('[hb-korr] Vorlage „Änderung melden“ bei Grundsicherungsgeld', melden({ grundsicherungsgeld: true }));
       check('[hb-korr] keine Vorlage bei Wohngeld (eigene Regel)', !melden({ wohngeld: true }));
       check('[hb-korr] Meldepflicht-Text: § 60 SGB I, Wohngeld 15 %, Kinderzuschlag erst beim nächsten Antrag', /§ 60 Abs\. 1 SGB I.*mehr als 15 % .*§ 27 Abs\. 3 WoGG.*Kinderzuschlag.*nächsten Antrag/.test(w.I18N ? w.I18N.de['hb.hw.ek.d'] : require('../dist/i18n.js').de['hb.hw.ek.d']));
@@ -125,8 +131,9 @@ setTimeout(() => {
       w.__solo.set({ adults: 1, kids: 0, ek1Art: 'lohn', ek1Brutto: 1300, ek1Netto: 1000, ek1bArt: 'unt', ek1bBetrag: 400, miete: 500, plz: '90542', bezug: { grundsicherungsgeld: true } });
       w.Haushalt.laden({ ekBasis: 100000 }); zumPlan();
       check('[paar-ek] Haushaltsplan: zweites Einkommen als eigene Zeile', $('hb-ek1b') && $('hb-ek1b').value === '400', $('hb-ek1b') && $('hb-ek1b').value);
+      klick($('hb-tab-ausw'));
       check('[paar-ek] Alter Stand ohne ekV: Basis einmal angeglichen (1.400 €), kein Hinweis „Einkommen geändert“', w.Haushalt.daten().ekBasis === 140000 && w.Haushalt.daten().ekV === 2 && !$('hb-hw-ek'), w.Haushalt.daten());
-      w.Haushalt.laden({});
+      klick($('hb-tab-plan')); w.Haushalt.laden({});
     }
     // Sprachen: kein Rohschlüssel
     ['en', 'ar', 'fa', 'so'].forEach((l) => { w.__solo.lang(l); zumPlan(); check(l + ': keine Rohschlüssel', !/hb\.[a-z]/.test($('v-haushalt').textContent)); });

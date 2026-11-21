@@ -1,6 +1,6 @@
-// Energiekosten-Check in der echten Oberfläche (dist, JSDOM): Knopf nur unter „Strom und Gas“, Ergebnis vor den Eingaben,
-// Gas-Reiter nur mit eigenem Gasvertrag, Abschlag in den Plan, Warmwasser als gemeinsames Feld mit dem Check (Rückfrage),
-// Texte je nach Leistung, Brief, Hinweis im Plan, Fehler, Speichern über den Vorgangswechsel, Sprachen ohne Rohschlüssel.
+// Abschlag prüfen und Tarife vergleichen in der echten Oberfläche (dist, JSDOM), seit 1.9 auf den Seiten „Strom“ und „Heizen“:
+// Kacheln (Werkzeug → Strom/Gas → Rechner), „Zurück“ je eine Ebene hoch, Ergebnis vor den Eingaben, keine Zusätze (Brief, Tipps, Nebenfelder),
+// Fehler, Speichern über den Vorgangswechsel, Tarifvergleich mit/ohne Bonus, Hinweise und Link zur Verbraucherzentrale, Sprachen ohne Rohschlüssel.
 'use strict';
 const { JSDOM } = require('jsdom');
 const fs = require('fs'), path = require('path');
@@ -22,106 +22,113 @@ const setze = (id, v) => { const e = $(id); e.value = v; e.dispatchEvent(new w.E
 const haken = (id, an) => { const e = $(id); e.checked = an; e.dispatchEvent(new w.Event('change', { bubbles: true })); };
 const klick = (el) => el.dispatchEvent(new w.MouseEvent('click', { bubbles: true }));
 const tx = (e) => e.textContent.replace(/[  ]/g, ' ');
-const knopf = (text, wurzel) => [...(wurzel || d).querySelectorAll('button')].find((b) => b.textContent.trim() === text);
 const zumPlan = () => { klick($('goGeld')); klick(d.querySelector('#spInhalt .gs-planen')); klick(d.querySelector('#spInhalt .gs-p-hh')); }; // „Mein Geld planen“ → Karte Haushaltsplan
+const sp = (sel) => d.querySelector('#spInhalt ' + sel);
+const zuSeite = (thema) => { klick($('goGeld')); klick(sp('.gs-planen')); klick(sp('.gs-t-' + thema)); }; // „Mein Geld planen“ → Seite „Strom“ bzw. „Heizen“
+const zumRechner = (wz, art, thema) => { zuSeite(thema || 'strom'); klick(sp('.gs-e-' + wz)); klick(sp('.gs-e-' + wz + '-' + art)); };
+const zurueck = () => klick(d.querySelector('#v-sparen [data-nav-zurueck]'));
 const gespeichert = () => JSON.parse(mem['lotse.haushalt'] || '{}');
 const iso = (tageZurueck) => { const x = new Date(); x.setDate(x.getDate() - tageZurueck); return x.getFullYear() + '-' + String(x.getMonth() + 1).padStart(2, '0') + '-' + String(x.getDate()).padStart(2, '0'); };
 setTimeout(() => {
   try {
     w.__solo.lang('de');
     w.__solo.set({ adults: 1, kids: 0, miete: 500, heizkosten: 60, plz: '90542', bezug: { grundsicherungsgeld: true } });
-    zumPlan();
-    check('Kein Energie-Knopf, solange „Strom und Gas“ zu ist', !$('hb-en-knopf'));
-    klick($('hb-kat-miete')); check('Kein Energie-Knopf bei anderer Kategorie', !$('hb-en-knopf'));
-    klick($('hb-kat-energie'));
-    check('Knopf unter „Strom und Gas“', !!$('hb-en-knopf') && $('hb-en-knopf').getAttribute('aria-expanded') === 'false' && /Abschlag prüfen/.test($('hb-en-knopf').textContent));
-    check('Keine neue Startkachel', !d.querySelector('.sk-energie'));
-    klick($('hb-en-knopf'));
-    check('Box offen, Fokus auf Überschrift', !!$('hbEnergie') && d.activeElement === $('hb-en-h') && $('hb-en-knopf').getAttribute('aria-expanded') === 'true');
-    check('Ergebnis steht vor den Eingaben (aria-live)', !!($('hbEnErgebnis').compareDocumentPosition($('hb-en-a')) & w.Node.DOCUMENT_POSITION_FOLLOWING) && $('hbEnErgebnis').getAttribute('aria-live') === 'polite');
-    check('Ohne Gasvertrag kein Gas-Reiter', !$('hb-en-tab-gas'));
-    // Abschlag → Plan (Feld leer: direkt übernommen)
+    // Haushaltsplan: unter „Strom und Gas“ kein Abschlag-Knopf mehr
+    zumPlan(); klick($('hb-kat-energie'));
+    check('Haushaltsplan: kein Abschlag-Knopf, keine Energie-Box', !$('hb-en-knopf') && !$('hbEnergie'));
+    // Seite „Strom“: zwei Kacheln (Abschlag prüfen, Tarife vergleichen) vor den Spartipps
+    zuSeite('strom');
+    check('Seite Strom: Kacheln „Abschlag prüfen“ und „Tarife vergleichen“ vor den Tipps', !!sp('.gs-e-abschlag') && !!sp('.gs-e-tarif') && /Abschlag prüfen/.test(sp('.gs-e-abschlag').textContent) && /Tarife vergleichen/.test(sp('.gs-e-tarif').textContent) &&
+      !!(sp('.gs-e-tarif').compareDocumentPosition(sp('.sp-tipps')) & w.Node.DOCUMENT_POSITION_FOLLOWING) && !$('hbEnergie'));
+    zuSeite('heizen');
+    check('Seite Heizen: dieselben Kacheln', !!sp('.gs-e-abschlag') && !!sp('.gs-e-tarif'));
+    zuSeite('essen');
+    check('Seite Essen: keine Energie-Kacheln', !sp('.gs-e-abschlag') && !sp('.gs-e-tarif'));
+    // Abschlag prüfen: erst Strom oder Gas (Kacheln), dann nur die Prüfung
+    zuSeite('strom'); klick(sp('.gs-e-abschlag'));
+    check('Abschlag: Kacheln Strom und Gas', !!sp('.gs-e-abschlag-strom') && !!sp('.gs-e-abschlag-gas') && sp('.gs-e-abschlag-strom').classList.contains('uk-karte') && !$('hbEnergie'));
+    klick(sp('.gs-e-abschlag-strom'));
+    check('Strom: Rechner offen, Ergebnis vor den Eingaben (aria-live)', !!$('hbEnergie') && !!($('hbEnErgebnis').compareDocumentPosition($('hb-en-a')) & w.Node.DOCUMENT_POSITION_FOLLOWING) && $('hbEnErgebnis').getAttribute('aria-live') === 'polite');
+    check('Keine Zusätze: keine Heizart-Auswahl, keine Reiter, kein Warmwasser, keine Personen, keine aufklappbaren Extras', !$('hb-en-heiz') && !$('hb-en-tab-gas') && !$('hb-en-ww') && !$('hb-en-personen') && !d.querySelector('#hbEnergie details') && !d.querySelector('.hb-en-nz, .hb-en-dv, .hb-en-sperre, .hb-en-tipps'));
+    check('Keine Spartipps unter dem Rechner', !sp('.sp-tipps'));
     setze('hb-en-a', '65');
-    check('Abschlag in den Plan übernommen', gespeichert().plan.aus.energie === 6500 && gespeichert().energie.strom.a === 6500, gespeichert().plan);
-    check('Ohne Verbrauch: „fehlt noch“, keine Nachzahlung', /fehlt noch/.test(tx($('hbEnErgebnis'))) && !/Nachzahlung/.test(tx($('hbEnErgebnis'))));
+    check('Abschlag ohne Verbrauch: „fehlt noch“', /fehlt noch/.test(tx($('hbEnErgebnis'))) && d.activeElement === $('hb-en-a'));
     setze('hb-en-z1', '10000'); setze('hb-en-d1', iso(100)); setze('hb-en-z2', '10500'); setze('hb-en-d2', iso(10));
-    check('Mit Durchschnittspreis: Schätzung direkt unter dem Ergebnis', /Durchschnittspreis 37,97 Cent/.test(tx($('hbEnErgebnis'))) && /2\.028 kWh/.test(tx($('hbEnErgebnis'))), tx($('hbEnErgebnis')));
-    check('Schätzung: kein Brief, kein Plan-Hinweis', !$('hb-en-brief') && !$('hb-hw-energie'));
-    setze('hb-en-ap', '36,5');
-    check('Grundpreis fehlt: Hinweis', /Grundpreis fehlt/.test(tx($('hbEnErgebnis'))));
-    setze('hb-en-gp', '12');
+    check('Ohne Preis: Schätzung mit Durchschnittspreis', /Durchschnittspreis 37,97 Cent/.test(tx($('hbEnErgebnis'))));
+    setze('hb-en-ap', '36,5'); setze('hb-en-gp', '12');
     const erg = d.querySelector('.hb-en-erg');
-    check('Nachzahlung möglich: ungefähr 104 €', erg.classList.contains('nach') && /Möglich: Nachzahlung von ungefähr 104 €/.test(tx(erg)), tx(erg));
-    check('Vorschlag 74 € im Monat', /Passender Abschlag: etwa 74 €/.test(tx($('hbEnErgebnis'))));
-    check('Vergleich mit dem Durchschnitt (1 Person), ohne Urteil', /Ein Haushalt mit 1 Person braucht im Schnitt etwa 2\.105 kWh/.test(tx($('hbEnErgebnis'))) && /stromspiegel\.de/.test(tx($('hbEnErgebnis'))));
-    check('Plan-Hinweis bei belastbarer Nachzahlung', !!$('hb-hw-energie') && /104 €/.test(tx($('hb-hw-energie'))));
-    klick($('hb-en-brief'));
-    check('Brief: erhöhen, ohne Paragraf, mit Zählerstand', /erhöhen/.test($('hb-en-briefText').value) && !/§/.test($('hb-en-briefText').value) && /10500 kWh/.test($('hb-en-briefText').value) && d.activeElement === $('hb-en-briefText'));
-    // Texte je nach Leistung
-    const nz = d.querySelector('.hb-en-nz');
-    check('Grundsicherungsgeld: Strom aus dem Regelbedarf, Darlehen erst nach Raten', !!nz && /im Regelbedarf enthalten/.test(nz.textContent) && /Regelbedarf ist für Strom/.test(nz.textContent));
-    check('Ohne Paragrafen außerhalb des Beratungsmodus', !/§/.test(nz.textContent));
-    check('Sperre-Abschnitt mit Abwendungsvereinbarung', /Abwendungsvereinbarung/.test(d.querySelector('.hb-en-sperre').textContent));
-    // Gasvertrag: Reiter, Heizkosten-Text
-    setze('hb-en-heiz', 'gas');
-    check('Mit Gasvertrag: Reiter Strom | Gas', !!$('hb-en-tab-gas') && $('hb-en-tab-strom').getAttribute('aria-pressed') === 'true');
-    check('Heizkosten-Nachzahlung im Fälligkeitsmonat', /im Monat, in dem sie fällig ist/.test(d.querySelector('.hb-en-nz').textContent));
-    klick($('hb-en-tab-gas'));
-    check('Gas-Reiter: eigene Felder, Fokus bleibt', $('hb-en-tab-gas').getAttribute('aria-pressed') === 'true' && d.activeElement === $('hb-en-tab-gas') && $('hb-en-weg').value === 'rechnung' && !!$('hb-en-m3'));
-    check('Gas: kein Stromvergleich', !d.querySelector('.hb-en-dv'));
-    klick($('hb-en-tab-strom'));
-    setze('hb-en-heiz', 'strom');
-    check('Heizung mit Strom: kein Vergleich mit dem Haushaltsstrom', !d.querySelector('.hb-en-dv') && !$('hb-en-tab-gas'));
-    check('[en-check] Befund 6: Heizung mit Strom, 90 Tage: ungenau mit Jahreszeit-Hinweis, kein Brief, kein Plan-Hinweis', /Beim Heizen ist der Verbrauch im Winter/.test(tx($('hbEnErgebnis'))) && !$('hb-en-brief') && !$('hb-hw-energie'), tx($('hbEnErgebnis')));
-    setze('hb-en-heiz', 'miete');
-    // Warmwasser: dasselbe Feld wie im Check
-    haken('hb-en-ww', true);
-    check('Warmwasser leer im Check → direkt geschrieben', w.__solo.state().warmwasser === true && $('hb-en-ww').checked);
-    check('Warmwasser: Mehrbedarf-Hinweis mit Knopf zum Check', /Mehrbedarf/.test(d.querySelector('.hb-en-nz').textContent) && !!knopf('Zum Leistungs-Check', d.querySelector('.hb-en-nz')));
-    haken('hb-en-ww', false);
-    check('Warmwasser anders im Check → Rückfrage', !!d.querySelector('#hbEnergie .hb-frage') && w.__solo.state().warmwasser === true);
-    klick(knopf('Nein, behalten')); check('Nein: bleibt', w.__solo.state().warmwasser === true && $('hb-en-ww').checked);
-    haken('hb-en-ww', false); klick(knopf('Ja, ändern')); check('Ja: im Check geändert', w.__solo.state().warmwasser === false);
-    // Anderer Abschlag: Plan-Feld nur nach Rückfrage
-    setze('hb-en-a', '100');
-    check('Plan-Wert vorhanden → Rückfrage', !!d.querySelector('#hbEnergie .hb-frage') && gespeichert().plan.aus.energie === 6500 && /Guthaben/.test(tx($('hbEnErgebnis'))));
-    klick(knopf('Ja, ändern'));
-    check('Ja: Plan übernimmt 100 €; Guthaben als Info (nicht grün)', gespeichert().plan.aus.energie === 10000 && d.querySelector('.hb-en-erg').classList.contains('gut') && !$('hb-hw-energie'));
-    // Eingabefehler
+    check('Nachzahlung möglich, ungefährer Betrag, Kosten im Jahr, kein Vorschlag, kein Brief', erg.classList.contains('nach') && /^Möglich: Nachzahlung von ungefähr \d+ €/.test(tx(erg)) && /Kosten im Jahr/.test(tx($('hbEnErgebnis'))) && !d.querySelector('.hb-en-vorschlag') && !$('hb-en-brief'), tx(erg));
+    check('Gespeichert in lotse.haushalt', gespeichert().energie.strom.a === 6500 && gespeichert().energie.strom.ap === 36.5);
+    check('Plan nicht verändert (keine Übernahme)', gespeichert().plan.aus.energie === undefined);
+    haken('hb-en-heizt', true);
+    check('Heizen mit Strom (90 Tage): ungenau mit Jahreszeit-Hinweis', gespeichert().energie.heiz === 'strom' && /Beim Heizen ist der Verbrauch im Winter/.test(tx($('hbEnErgebnis'))));
+    haken('hb-en-heizt', false);
+    check('Haken weg: wieder belastbar', gespeichert().energie.heiz === '' && !/Beim Heizen/.test(tx($('hbEnErgebnis'))));
     setze('hb-en-z2', '9000');
     check('Zählerstand rückwärts: Fehler, kein Ergebnis', d.querySelector('.hb-en-erg').classList.contains('fehler') && /kleiner als der alte/.test(tx($('hbEnErgebnis'))));
     setze('hb-en-z2', '10500');
-    // Vorgangswechsel: Daten bleiben
+    setze('hb-en-a', '100');
+    check('Guthaben als Info (nicht grün)', d.querySelector('.hb-en-erg').classList.contains('gut'));
+    setze('hb-en-a', '65');
+    // Zurück: eine Ebene hoch zu den Kacheln Strom/Gas, dann zu den Werkzeugen
+    zurueck();
+    check('Zurück: Kacheln Strom/Gas', !!sp('.gs-e-abschlag-strom') && !$('hbEnergie'));
+    klick(sp('.gs-e-abschlag-gas'));
+    check('Gas: eigene Felder (Rechnung, m³)', !!$('hbEnergie') && $('hb-en-weg').value === 'rechnung' && !!$('hb-en-m3') && !$('hb-en-heizt'));
+    zurueck(); zurueck();
+    check('Zurück zweimal: Seite Strom mit Werkzeug-Kacheln', !!sp('.gs-e-abschlag') && !!sp('.sp-tipps'));
+    // Strom-/Gassperre droht: Knopf „Abschlag prüfen“ führt zu den Kacheln Strom/Gas
+    klick($('goGeld')); klick(sp('.gs-dringend')); klick(sp('.gs-d-strom')); klick(sp('.gs-abschlag'));
+    check('Sperre droht → Abschlag prüfen: Kacheln Strom/Gas', !!sp('.gs-e-abschlag-strom') && !!sp('.gs-e-abschlag-gas'));
+    // Tarife vergleichen
+    zumRechner('tarif', 'strom');
+    check('Tarif: Rechner offen, Hinweise, Link zur Verbraucherzentrale', !!$('hbTarif') && d.querySelectorAll('#spInhalt .tv-tipps details.tipp').length === 5 && /verbraucherzentrale\.de/.test($('tv-vz').href) && /fehlt noch/.test(tx($('hbTvErgebnis'))));
+    check('Tarif: Hinweise zum Aufklappen, kurz', [...d.querySelectorAll('#spInhalt .tv-tipps .tipp-kurz')].every((k) => k.textContent.trim().split(/\s+/).length <= 12));
+    setze('hb-tv-kwh', '2500'); setze('hb-tv-eigen-ap', '40'); setze('hb-tv-eigen-gp', '15');
+    setze('hb-tv-angebot-ap', '32'); setze('hb-tv-angebot-gp', '12');
+    let te = tx($('hbTvErgebnis'));
+    check('Tarif ohne Bonus: Angebot 236 € günstiger, Kosten beider', /ungefähr 236 € im Jahr günstiger/.test(te) && /dein Tarif 1\.180 €, das Angebot 944 €/.test(te) && d.querySelector('#hbTvErgebnis .hb-en-erg').classList.contains('passt') && d.activeElement === $('hb-tv-angebot-gp'), te);
+    setze('hb-tv-bonus', '300');
+    te = tx($('hbTvErgebnis'));
+    check('Tarif mit Bonus: 1. Jahr 536 € günstiger, ab 2. Jahr 236 €', /Im 1\. Jahr \(mit Bonus\): Das Angebot ist ungefähr 536 € günstiger/.test(te) && /Ab dem 2\. Jahr \(ohne Bonus\): ungefähr 236 € günstiger/.test(te), te);
+    setze('hb-tv-angebot-ap', '45');
+    te = tx($('hbTvErgebnis'));
+    check('Tarif: Angebot teurer ab dem 2. Jahr (Warnfarbe), 1. Jahr günstiger', /Im 1\. Jahr \(mit Bonus\): Das Angebot ist ungefähr 211 € günstiger/.test(te) && /Ab dem 2\. Jahr \(ohne Bonus\): ungefähr 89 € teurer/.test(te), te);
+    check('Tarif: nichts gespeichert', !/hb-tv|tarif/.test(mem['lotse.haushalt'] || '') && !Object.keys(mem).some((k) => /tarif/i.test(k)));
+    setze('hb-tv-eigen-ap', '0');
+    check('Tarif: Arbeitspreis 0 → Fehlermeldung unter dem Feld', !!$('hb-tv-eigen-ap-f'));
+    zurueck();
+    check('Tarif: Zurück zu den Kacheln Strom/Gas', !!sp('.gs-e-tarif-strom') && !!sp('.gs-e-tarif-gas'));
+    // Vorgangswechsel: Abschlag-Daten bleiben
     w.Haushalt.neuLaden();
   } catch (e) { fehler++; console.log('FAIL Ausnahme: ' + e.stack); }
   setTimeout(teil2, 100);
 }, 300);
 function teil2() {
   try {
-    zumPlan();
-    check('Nach neuLaden: Box zu, Daten erhalten', !$('hbEnergie') && gespeichert().energie.strom.z1 === 10000 && gespeichert().energie.strom.ap === 36.5);
-    klick($('hb-kat-energie')); klick($('hb-en-knopf'));
-    check('Wieder geöffnet: Werte da', $('hb-en-z1').value === '10000' && $('hb-en-ap').value === '36,5');
-    // Befund 7: Preis mit 3 Nachkommastellen, sichtbare Fehlermeldung unter dem Feld
+    zumRechner('abschlag', 'strom');
+    check('Nach neuLaden: Daten erhalten', gespeichert().energie.strom.z1 === 10000 && gespeichert().energie.strom.ap === 36.5 && $('hb-en-z1').value === '10000' && $('hb-en-ap').value === '36,5');
+    // Befund 7: Preis mit mehr als 4 Nachkommastellen, sichtbare Fehlermeldung unter dem Feld
     setze('hb-en-ap', '32,87555');
     check('[en-check] Befund 7: 5 Nachkommastellen: Fehlermeldung unter dem Feld, nichts gespeichert', !!$('hb-en-ap-f') && /Diese Zahl passt nicht/.test($('hb-en-ap-f').textContent) && $('hb-en-ap').getAttribute('aria-invalid') === 'true' && /hb-en-ap-f/.test($('hb-en-ap').getAttribute('aria-describedby') || '') && gespeichert().energie.strom.ap === 36.5);
     setze('hb-en-ap', '32,875');
     check('[en-check] Befund 7: 32,875 ct angenommen und angezeigt', gespeichert().energie.strom.ap === 32.875 && $('hb-en-ap').value === '32,875' && !$('hb-en-ap-f'));
     setze('hb-en-ap', '36,5');
-    // Befund 12: alte Ablesung → kein Brief, kein Plan-Hinweis, Bitte um neue Ablesung
+    // Befund 12: alte Ablesung → Bitte um neue Ablesung
     setze('hb-en-d2', iso(40));
-    check('[en-check] Befund 12: Ablesung 40 Tage alt: „Bitte lies den Zähler neu ab“, kein Brief, kein Plan-Hinweis', /Bitte lies den Zähler neu ab/.test(tx($('hbEnErgebnis'))) && !$('hb-en-brief') && !$('hb-hw-energie'), tx($('hbEnErgebnis')));
+    check('[en-check] Befund 12: Ablesung 40 Tage alt: „Bitte lies den Zähler neu ab“', /Bitte lies den Zähler neu ab/.test(tx($('hbEnErgebnis'))), tx($('hbEnErgebnis')));
     setze('hb-en-d2', iso(10));
-    check('[en-check] Befund 12: Aktuelle Ablesung: Brief wieder da', !!$('hb-en-brief') && !/Bitte lies den Zähler neu ab/.test(tx($('hbEnErgebnis'))));
-    // Ohne Grundsicherungsgeld, Heizung mit Gas: Antrag im Fälligkeitsmonat
-    w.__solo.set({ adults: 2, kids: 1, miete: 600, plz: '90542', bezug: {} }); zumPlan(); if (!$('hb-en-knopf')) klick($('hb-kat-energie'));
-    if (!$('hbEnergie')) klick($('hb-en-knopf'));
-    setze('hb-en-heiz', 'gas');
-    const nz2 = d.querySelector('.hb-en-nz');
-    check('Ohne Leistung: Heizkosten-Text „Antrag im Fälligkeitsmonat“, kein Regelbedarf-Text', !!nz2 && /Stell den Antrag noch in dem Monat/.test(nz2.textContent) && !/im Regelbedarf enthalten/.test(nz2.textContent) && !/Regelbedarf ist für Strom/.test(nz2.textContent));
-    check('3 Personen: Vergleichswert 3 oder mehr', /3 oder mehr Personen braucht im Schnitt etwa 5\.411 kWh/.test(tx($('hbEnErgebnis'))), tx($('hbEnErgebnis')));
+    check('[en-check] Befund 12: Aktuelle Ablesung: kein Hinweis', !/Bitte lies den Zähler neu ab/.test(tx($('hbEnErgebnis'))));
+    // Alte Daten (personen, bewilligt) ohne Fehler ignoriert
+    w.Haushalt.laden({ bewilligt: { kiz: '2027-01-31' }, energie: { heiz: 'gas', personen: 3, strom: { a: 5000 } } });
+    check('Alte Felder (bewilligt, personen) verworfen', !('bewilligt' in w.Haushalt.daten()) && !('personen' in w.Haushalt.daten().energie) && w.Haushalt.daten().energie.strom.a === 5000);
     // Sprachen: keine Rohschlüssel
-    ['en', 'ar', 'fa', 'so', 'uk'].forEach((l) => { w.__solo.lang(l); zumPlan(); if (!$('hb-en-knopf')) klick($('hb-kat-energie')); if (!$('hbEnergie')) klick($('hb-en-knopf')); check(l + ': Box ohne Rohschlüssel', !!$('hbEnergie') && !/hb\.en\.|sp\.[a-z]+\.\d/.test($('hbEnergie').textContent)); });
+    ['en', 'ar', 'fa', 'so', 'uk'].forEach((l) => {
+      w.__solo.lang(l); zumRechner('abschlag', 'gas');
+      check(l + ': Abschlag ohne Rohschlüssel', !!$('hbEnergie') && !/hb\.en\.|hb\.tv\.|tv\.[a-z]/.test($('spInhalt').textContent));
+      zumRechner('tarif', 'strom');
+      check(l + ': Tarif ohne Rohschlüssel', !!$('hbTarif') && !/hb\.en\.|hb\.tv\.|tv\.[a-z]|pl\.abschlag/.test($('spInhalt').textContent));
+    });
     w.__solo.lang('de');
     check('Keine Skriptfehler', !errors.length, errors);
   } catch (e) { fehler++; console.log('FAIL Ausnahme: ' + e.stack); }

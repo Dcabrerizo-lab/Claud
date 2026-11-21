@@ -233,8 +233,6 @@ var Haushalt = (function () {
     nk: /nebenkosten|nachzahlung|betriebskosten|heizkostenabrechnung/i,
     kaputt: /kaputt|reparatur|waschmaschine|k(ü|ue)hlschrank|herd\b|backofen|trockner|sp(ü|ue)lmaschine|haushaltsger(ä|ae)t|bett\b|matratze/i
   };
-  var VORLAUF_TAGE = { sgb2: 42, sgb12: 42, wohngeld: 60, kiz: 42 }; // wie erweiterungen/fristen.js (Erinnerung vor dem Ende des Bewilligungszeitraums)
-  function tageBis(heute, iso) { var a = new Date(heute.getFullYear(), heute.getMonth(), heute.getDate()), b = new Date(+iso.slice(0, 4), +iso.slice(5, 7) - 1, +iso.slice(8, 10)); return Math.round((b - a) / 86400000); }
   function hinweisListe(e) {
     var weg = e.weg || {}, out = [], lv = e.ergebnis || {}, bz = e.bezug || {};
     var offen = function (id) { return lv[id] === 'ja' || lv[id] === 'vielleicht'; };
@@ -242,12 +240,6 @@ var Haushalt = (function () {
     var katSumme = function (k) { return (e.aus && e.aus[k] || 0) + (e.eintraege || []).filter(function (x) { return x.k === k; }).reduce(function (a, x) { return a + x.c; }, 0); };
     var sgb = !!(bz.grundsicherungsgeld || bz.sozialamt) || offen('ggeld') || offen('gsa');
     var add = function (id, prio, extra) { if (!weg[id]) out.push(Object.assign({ id: id, prio: prio }, extra || {})); };
-    // 6. Weiterbewilligung: kurz vor dem Ende des Bewilligungszeitraums
-    Object.keys(e.bewilligt || {}).forEach(function (l) {
-      var ende = e.bewilligt[l]; if (!/^\d{4}-\d\d-\d\d$/.test(ende || '')) return;
-      var tage = tageBis(e.heute || new Date(), ende);
-      if (tage >= 0 && tage <= (VORLAUF_TAGE[l] || 42)) add('wb-' + l + '-' + ende, 100, { art: 'wb', leistung: l, ende: ende });
-    });
     // 5. Einkommen hat sich deutlich geändert (mindestens ein Zehntel; reiner Auslöser, keine Grenze aus einem Gesetz)
     if (e.ekBasis > 0 && e.ekJetzt !== null && e.ekJetzt !== undefined && Math.abs(e.ekJetzt - e.ekBasis) >= e.ekBasis / 10) add('ek', 90, { art: 'ek', alt: e.ekBasis, neu: e.ekJetzt });
     // Es bleibt wenig übrig: Leistungen prüfen
@@ -259,8 +251,6 @@ var Haushalt = (function () {
     if (sgb && (WORTE.kaputt.test(notizen) || gross)) add('kaputt', 60, { art: 'kaputt' });
     // 2. Bildung und Teilhabe: Ausgaben für Kinder; nicht, wenn der Check es sicher ausschließt
     if ((katSumme('kinder') > 0 || WORTE.but.test(notizen)) && lv.but !== 'nein' && !(e.kinder === 0 && e.ergebnis)) add('but', 50, { art: 'but' });
-    // Energie: Nachzahlung möglich (nur belastbar geschätzt: eigener Preis, nicht ungenau; Summe vom Aufrufer, siehe energieNachzahlung)
-    if (e.energieNach > 0) add('energie', 75, { art: 'energie', b: e.energieNach });
     // Raten und Schulden
     if (katSumme('raten') > 0) add('schulden', 45, { art: 'schulden' });
     // 1. Sozialtarife und Rundfunkbeitrag: Ausgaben für Handy, Mobilität, Strom oder Rundfunk; nur bei passender Leistung oder knappem Plan
@@ -276,14 +266,10 @@ var Haushalt = (function () {
       'Mit freundlichen Grüßen', '', '[Ort], ' + datum, '[Unterschrift]'].join('\n');
   }
 
-  // ---------- Energiekosten-Check (Strom, Gas): Abschlag prüfen ----------
-  // Entwurf docs/entwuerfe/energie.md (geprüft 20.11.2026). Nur Schätzung, Ergebnis immer „möglich“ bzw. „ungefähr“.
+  // ---------- Abschlag prüfen (Strom, Gas) ----------
+  // Entwurf docs/entwuerfe/energie.md (geprüft 20.11.2026); seit 1.9 schlank auf der Seite „Strom“ (nur die Prüfung des Abschlags). Nur Schätzung, Ergebnis immer „möglich“ bzw. „ungefähr“.
   // Destatis PM Nr. 345 vom 30.09.2026, 1. Hj. 2026, Durchschnittspreis private Haushalte mit Grundpreis, Steuern, Abgaben; abgerufen 20.11.2026
   var PREIS = { strom: 37.97, gas: 11.58, stand: '2026-1' }; // ct/kWh
-  // Destatis, UGR, „Stromverbrauch der privaten Haushalte nach Haushaltsgrößenklassen“, Berichtsjahr 2021 (Stand 27.09.2023), kWh je Haushalt
-  // (Strom insgesamt, auch Haushalte, die mit Strom heizen); abgerufen 20.11.2026. Nur Orientierung, kein Urteil „hoch/niedrig“.
-  // Stromspiegel-Klassen (co2online) bewusst NICHT eingebaut: Nutzung nur mit schriftlicher Erlaubnis (Prüfvermerk Nr. 2); nur Hinweis auf stromspiegel.de.
-  var VERBRAUCH_DESTATIS = { jahr: 2021, kwh: [2105, 3470, 5411] }; // 1, 2, 3 und mehr Personen
   var TOL = { cent: 3000, anteil: 0.05 }; // „passt ungefähr“: Faustregel von SoLo, keine Grenze aus einem Gesetz
   var ISO = /^\d{4}-\d\d-\d\d$/;
   var SAISON_TAGE = 330, AKTUELL_TAGE = 31; // Faustregeln von SoLo (keine Grenzen aus einem Gesetz)
@@ -328,14 +314,9 @@ var Haushalt = (function () {
     var art = Math.abs(diff) <= Math.max(TOL.cent, TOL.anteil * kostenCent) ? 'passt' : diff > 0 ? 'nach' : 'gut';
     return { gezahlt: gezahlt, diff: diff, betrag: Math.abs(diff), art: art, vorschlag: Math.ceil(kostenCent / n / 100) * 100 };
   }
-  function destatisVergleich(personen) {
-    var p = Math.floor(Number(personen) || 0); if (p < 1) return null;
-    var i = Math.min(p, 3) - 1;
-    return { klasse: i + 1, kwh: VERBRAUCH_DESTATIS.kwh[i], jahr: VERBRAUCH_DESTATIS.jahr };
-  }
   // Eine Sparte (Strom oder Gas) ausrechnen. x = gespeicherte Angaben (energie.strom bzw. energie.gas)
   // heiz = Art der Heizung (energie.heiz). Gas und Heizen mit Strom schwanken stark über das Jahr: Hochrechnung aus Zählerständen
-  // erst ab SAISON_TAGE belastbar (sonst „ungenau“, kein Plan-Hinweis, kein Brief). Ablesung älter als AKTUELL_TAGE: kein Brief, kein Plan-Hinweis.
+  // erst ab SAISON_TAGE belastbar (sonst „ungenau“). Ablesung älter als AKTUELL_TAGE: Hinweis „neu ablesen“.
   function energieSparte(x, art, heuteIso, heiz) {
     x = x || {};
     var m3 = art === 'gas' && !!x.m3, h = heuteIso || isoTag(new Date());
@@ -350,23 +331,6 @@ var Haushalt = (function () {
     r.vergleich = r.kosten ? abschlagVergleich(r.kosten.cent, x.a, x.n) : null;
     r.belastbar = !!(r.vergleich && !r.kosten.geschaetzt && !r.kosten.gpFehlt && !v.ungenau && r.aktuell);
     return r;
-  }
-  // Summe der belastbar geschätzten Nachzahlungen (Strom und, wenn mit eigenem Gasvertrag geheizt wird, Gas); 0 = kein Hinweis im Plan
-  function energieNachzahlung(en, heuteIso) {
-    if (!en) return 0;
-    return (en.heiz === 'gas' ? ['strom', 'gas'] : ['strom']).reduce(function (a, s) {
-      var r = energieSparte(en[s], s, heuteIso, en.heiz);
-      return a + (r.belastbar && r.vergleich.art === 'nach' ? r.vergleich.diff : 0);
-    }, 0);
-  }
-  // Brief an den Versorger (nur Deutsch, nur Platzhalter für persönliche Daten). o = { art: 'nach'|'gut', datum, stand, einheit, kwh, neu }
-  function abschlagBrief(o) {
-    var satz = o.art === 'gut' ?
-      'Mein Verbrauch ist damit voraussichtlich geringer als bei der Berechnung meines Abschlags angenommen. Bitte prüfen Sie das und senken Sie meinen monatlichen Abschlag auf etwa ' + o.neu + ' (§ 41b Abs. 3 Satz 2 EnWG bzw. § 13 Abs. 1 Satz 4 StromGVV/GasGVV).' :
-      'Damit ich keine hohe Nachzahlung bekomme, bitte ich Sie, meinen monatlichen Abschlag auf etwa ' + o.neu + ' zu erhöhen.';
-    return ['[Name, Anschrift]', '', 'An: [Name des Strom- bzw. Gasversorgers]', '', 'Kundennummer: [_____]   Zählernummer: [_____]', '', 'Bitte um Anpassung meines Abschlags', '',
-      'Sehr geehrte Damen und Herren,', '', 'mein aktueller Zählerstand am ' + o.datum + ' ist ' + o.stand + ' ' + o.einheit + '. Daraus ergibt sich ein Verbrauch von etwa ' + o.kwh + ' kWh im Jahr.',
-      satz, 'Bitte bestätigen Sie mir die Änderung in Textform.', '', 'Mit freundlichen Grüßen', '', '[Ort], ' + o.datum, '[Unterschrift]'].join('\n');
   }
   // Preis und Umrechnungsfaktor: bis zu 4 Nachkommastellen (z. B. 32,875 ct oder 10,934 kWh/m³). Toleranzvergleich wegen Gleitkomma (32,8 · 100 ≠ 3280).
   var STELLEN = 4;
@@ -383,14 +347,13 @@ var Haushalt = (function () {
   function leerEnergie() {
     var s = function (weg) { return { a: null, n: 12, weg: weg, z1: null, d1: '', z2: null, d2: '', jahr: null, ap: null, gp: null }; };
     var g = s('rechnung'); g.m3 = false; g.faktor = null;
-    return { heiz: '', personen: null, strom: s('zaehler'), gas: g };
+    return { heiz: '', strom: s('zaehler'), gas: g };
   }
   function normiereEnergie(d) {
     var x = leerEnergie();
     if (!d || typeof d !== 'object') return x;
     var ganz = function (v) { return typeof v === 'number' && isFinite(v) && v >= 0 && v === Math.floor(v) ? v : null; };
     if (['miete', 'gas', 'strom', 'andere'].indexOf(d.heiz) >= 0) x.heiz = d.heiz;
-    var p = ganz(d.personen); x.personen = p >= 1 && p <= 20 ? p : null;
     ['strom', 'gas'].forEach(function (s) {
       var q = d[s], z = x[s]; if (!q || typeof q !== 'object') return;
       ['a', 'gp', 'z1', 'z2', 'jahr'].forEach(function (k) { z[k] = ganz(q[k]); });
@@ -403,17 +366,34 @@ var Haushalt = (function () {
     return x;
   }
 
+  // ---------- Tarife vergleichen (Strom, Gas): eigener Tarif gegen ein Angebot. Nur Rechnung, keine Speicherung. ----------
+  // Jahreskosten = Verbrauch (kWh) × Arbeitspreis (ct/kWh) + 12 × Grundpreis (Cent im Monat), auf ganze Cent gerundet.
+  // Bonus zählt nur im 1. Jahr: „nur im ersten Belieferungsjahr so niedrig“, ab dem 2. Jahr oft teuer (Verbraucherzentrale Bundesverband,
+  // „Was Sie bei Bonus-Tarifen für Strom und Gas beachten sollten“, Stand 05.08.2026, abgerufen 21.11.2026). Kein Urteil über Anbieter.
+  function tarifKosten(kwh, ap, gpCent) {
+    if (!(zahlOk(kwh) && kwh > 0) || !(typeof ap === 'number' && ap > 0) || !zahlOk(gpCent)) return null;
+    return Math.round(kwh * ap + 12 * gpCent);
+  }
+  // o = { kwh, eigen: { ap, gp }, angebot: { ap, gp, bonus } } (ap ct/kWh, gp und bonus in Cent). diff > 0: das Angebot ist günstiger.
+  function tarifVergleich(o) {
+    o = o || {}; var e = o.eigen || {}, a = o.angebot || {};
+    var k1 = tarifKosten(o.kwh, e.ap, e.gp), k2 = tarifKosten(o.kwh, a.ap, a.gp);
+    if (k1 === null || k2 === null) return null;
+    var bonus = zahlOk(a.bonus) ? Math.round(a.bonus) : 0, jahr1 = Math.max(0, k2 - bonus);
+    return { eigen: k1, angebot: k2, bonus: bonus, angebot1: jahr1, diff1: k1 - jahr1, diff2: k1 - k2 };
+  }
+
   // =====================================================================
   // Oberfläche
   // =====================================================================
-  var ctx = null, daten = null, ansicht = 'plan', monat = '', offenKat = '', eingabe = null, rueck = null, ueOffen = false, scanLaeuft = false, enOffen = false, enSparte = 'strom';
+  var ctx = null, daten = null, ansicht = 'plan', monat = '', offenKat = '', eingabe = null, rueck = null, ueOffen = false, scanLaeuft = false;
   var $ = function (id) { return document.getElementById(id); };
   function t(k, p) { return ctx.t(k, p); }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function eur(cent) { return ctx.euro((cent || 0) / 100); }
   function katName(k) { return t('hb.k.' + k); }
   function katSym(k) { var x = KAT.filter(function (a) { return a[0] === k; })[0] || KAT[8]; return '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + x[1] + '</svg>'; }
-  function leer() { return { v: 1, plan: { kg: null, leist: null, sonst: null, aus: {} }, buch: [], weg: {}, bewilligt: {}, ekBasis: null, ekV: 2, energie: leerEnergie() }; }
+  function leer() { return { v: 1, plan: { kg: null, leist: null, sonst: null, aus: {} }, buch: [], weg: {}, ekBasis: null, ekV: 2, energie: leerEnergie() }; }
 
   // ----- Speicherung: eine kleine Schnittstelle, später leicht an „Vorgänge“ anzubinden (Haushalt.speicherOrt) -----
   var SCHLUESSEL = 'lotse.haushalt';
@@ -435,11 +415,10 @@ var Haushalt = (function () {
     if (!d || typeof d !== 'object') return x;
     if (d.plan && typeof d.plan === 'object') { ['kg', 'leist', 'sonst'].forEach(function (k) { x.plan[k] = typeof d.plan[k] === 'number' ? d.plan[k] : null; }); if (d.plan.aus) KAT_IDS.forEach(function (k) { if (k !== 'miete' && typeof d.plan.aus[k] === 'number') x.plan.aus[k] = d.plan.aus[k]; }); }
     if (d.weg && typeof d.weg === 'object') Object.keys(d.weg).forEach(function (k) { if (d.weg[k] === true) x.weg[k] = true; });
-    if (d.bewilligt && typeof d.bewilligt === 'object') ['sgb2', 'sgb12', 'wohngeld', 'kiz'].forEach(function (k) { if (/^\d{4}-\d\d-\d\d$/.test(d.bewilligt[k] || '')) x.bewilligt[k] = d.bewilligt[k]; });
     if (typeof d.ekBasis === 'number') x.ekBasis = d.ekBasis;
+    x.energie = normiereEnergie(d.energie); // alte Felder (personen, bewilligt) werden verworfen
     // ekV 2: ekBasis enthält das zweite Einkommen. Ältere Stände (ohne ekV) werden in hinweisDaten() einmal angeglichen.
     x.ekV = d.ekV === 2 ? 2 : 1;
-    x.energie = normiereEnergie(d.energie);
     if (Array.isArray(d.buch)) x.buch = d.buch.filter(function (e) { return e && /^\d{4}-\d\d-\d\d$/.test(e.d) && typeof e.c === 'number' && e.c > 0; }).map(buchungBereinigen);
     return x;
   }
@@ -513,9 +492,10 @@ var Haushalt = (function () {
       if (!bruecke.hidden) {
         bruecke.appendChild(el('p', 'hb-bruecke-t', t('hb.hw.knapp')));
         bruecke.appendChild(el('p', 'small', t('hb.hw.knapp.d')));
-        var bb = el('div', 'btns'); bb.appendChild(knopf('btn', t('hb.zumCheck'), function () { ctx.zeige('leistungen', true); }, { id: 'hb-bruecke-check' })); bruecke.appendChild(bb);
+        // Übernahme in den Leistungs-Check (was übernommen ist, was fehlt) direkt in der Karte, nicht mehr unter der Eingabe
+        if (ueOffen) bruecke.appendChild(uebernahmeBox(s));
+        else { var bb = el('div', 'btns'); bb.appendChild(knopf('btn', t('hb.pruefen'), function () { ueOffen = true; renderPlan('hb-ue-h'); }, { id: 'hb-bruecke-check', 'aria-expanded': 'false' })); bruecke.appendChild(bb); }
       }
-      var h = $('hbHinweise'); if (h) hinweise(h, r);
     };
 
     // Einnahmen
@@ -586,29 +566,13 @@ var Haushalt = (function () {
         if (neu === null) delete daten.plan.aus[k]; else daten.plan.aus[k] = neu;
         sichern(); renderPlan('hb-aus-' + k);
       }));
-      if (k === 'energie') { // Energiekosten-Check: Knopf unter dem Betragsfeld, Box zum Aufklappen
-        wrap.appendChild(knopf('btn ghost', t('hb.en.knopf'), function () { enOffen = !enOffen; renderPlan(enOffen ? 'hb-en-h' : 'hb-en-knopf'); }, { id: 'hb-en-knopf', 'aria-expanded': String(enOffen), 'aria-controls': 'hbEnergie' }));
-        if (enOffen) wrap.appendChild(energieBox());
-      }
       wrap.appendChild(knopf('btn ghost', t('hb.fertig'), function () { var war = offenKat; offenKat = ''; renderPlan('hb-kat-' + war); }));
       fa.appendChild(wrap);
     }
     box.appendChild(fa);
 
-    var hw = el('div', 'hb-hinweise'); hw.id = 'hbHinweise'; box.appendChild(hw);
-    box.appendChild(bewilligtBox());
-    // Übernahme in den Leistungs-Check
-    var ue = el('div', 'btns hb-ue-knopf');
-    ue.appendChild(knopf('btn', t('hb.pruefen'), function () { ueOffen = true; renderPlan('hb-ue-h'); }, { 'aria-expanded': String(ueOffen) }));
-    box.appendChild(ue);
-    if (ueOffen) box.appendChild(uebernahmeBox(s));
-    // Fachkräfte: Druckblatt (wenn der Beratungsmodus an ist oder es ihn noch nicht gibt); CSV-Export
-    var ex = el('div', 'btns hb-export');
-    if (beratung() !== false) ex.appendChild(knopf('btn ghost', t('hb.drucken'), drucken));
-    ex.appendChild(knopf('btn ghost', t('hb.csv'), exportCsv));
-    box.appendChild(ex);
-    var em = el('p', 'small'); em.id = 'hbExportMsg'; em.setAttribute('aria-live', 'polite'); box.appendChild(em);
     aktual();
+    hinweisDaten(rechnung()); // Einkommen als Vergleichsbasis merken (Hinweis „Einkommen geändert“ steht in der Auswertung)
     if (fokusId && $(fokusId)) $(fokusId).focus();
   }
   function hinweisDaten(r) {
@@ -621,23 +585,21 @@ var Haushalt = (function () {
     if (res) { lv = {}; res.forEach(function (x) { lv[x.id] = x.level; }); }
     return hinweisListe({ aus: planAus(), eintraege: monatsEintraege(daten.buch, monat).concat(monatsEintraege(daten.buch, monatPlus(monat, -1))),
       knapp: !r.leer && r.knapp, ein: r.ein, ekBasis: daten.ekBasis, ekJetzt: ekJetzt, bezug: s && s.bezug, ergebnis: lv, kinder: s ? Number(s.kids) || 0 : null,
-      bewilligt: daten.bewilligt, heute: new Date(), weg: daten.weg, geld: geldDaten(r), energieNach: energieNachzahlung(daten.energie, heuteIso()) });
+      heute: new Date(), weg: daten.weg, geld: geldDaten(r) });
   }
   function leistungName(l) { return t('hb.wb.' + l); }
   function hinweisElement(h, neuZeichnen) {
     if (GELD_ARTEN.indexOf(h.art) >= 0) return geldHinweisElement(h, neuZeichnen);
     var d = el('div', 'hb-hinweis'); d.id = 'hb-hw-' + h.art;
-    var txt = h.art === 'wb' ? t('hb.hw.wb', { l: leistungName(h.leistung), d: ctx.datum(new Date(+h.ende.slice(0, 4), +h.ende.slice(5, 7) - 1, +h.ende.slice(8, 10))) }) :
-      h.art === 'ek' ? t('hb.hw.ek', { alt: { eur: euroGanz(h.alt) }, neu: { eur: euroGanz(h.neu) } }) : h.art === 'tarif' && !h.rundfunk ? t('hb.hw.tarif0') : t('hb.hw.' + h.art);
+    var txt = h.art === 'ek' ? t('hb.hw.ek', { alt: { eur: euroGanz(h.alt) }, neu: { eur: euroGanz(h.neu) } }) : h.art === 'tarif' && !h.rundfunk ? t('hb.hw.tarif0') : t('hb.hw.' + h.art);
     d.appendChild(el('p', '', txt));
     var det = el('details', 'hb-hw-det'), su = el('summary'); su.textContent = t('hb.hw.mehr'); det.appendChild(su);
-    det.appendChild(el('p', 'small', t('hb.hw.' + (h.art === 'tarif' && !h.rundfunk ? 'tarif0' : h.art) + '.d', h.b ? { b: { eur: euroGanz(h.b) } } : undefined)));
+    det.appendChild(el('p', 'small', t('hb.hw.' + (h.art === 'tarif' && !h.rundfunk ? 'tarif0' : h.art) + '.d')));
     d.appendChild(det);
     var b = el('div', 'btns');
     var weg = function () { daten.weg[h.id] = true; if (h.art === 'ek') daten.ekBasis = h.neu; sichern(); neuZeichnen(); };
     if (h.art === 'knapp' || h.art === 'but') b.appendChild(knopf('btn ghost klein', t('hb.zumCheck'), function () { ctx.zeige('leistungen', true); }));
     if (h.art === 'schulden') b.appendChild(knopf('btn ghost klein', t('hb.zuSchulden'), function () { ctx.zeige(window.Schulden ? 'schulden' : 'pfaendung', true); })); // Raten im Plan → Schulden-Liste (Konzept U7)
-    if (h.art === 'energie') b.appendChild(knopf('btn ghost klein', t('hb.en.knopf'), enOeffnen));
     if (h.art === 'nk') b.appendChild(knopf('btn ghost klein', t('hb.hw.brief'), function () { ctx.zeige('briefe', true); }));
     if (h.art === 'ek') {
       b.appendChild(knopf('btn ghost klein', t('hb.hw.neuPruefen'), function () { daten.ekBasis = h.neu; sichern(); ctx.zeige('leistungen', true); }));
@@ -652,7 +614,7 @@ var Haushalt = (function () {
         d.appendChild(m); ta.focus();
       }));
     }
-    b.appendChild(knopf('btn ghost klein', t(h.art === 'wb' ? 'hb.hw.erledigt' : 'hb.hw.weg'), weg));
+    b.appendChild(knopf('btn ghost klein', t('hb.hw.weg'), weg));
     d.appendChild(b);
     return d;
   }
@@ -665,34 +627,6 @@ var Haushalt = (function () {
       liste.slice(2).forEach(function (h) { d.appendChild(hinweisElement(h, neu)); });
       box.appendChild(d);
     }
-  }
-  // Beim Öffnen der App: Erinnerung an den Weiterbewilligungsantrag oben auf der Startseite (nur in der App, keine Mitteilung)
-  function startHinweis() {
-    if (ctx && ctx.fristenNeu) { var a0 = $('hbStart'); if (a0) a0.remove(); ctx.fristenNeu(); return; } // nur ein Hinweis: Fristen (src/fristen.js) übernimmt den Folgeantrag
-    var v = $('v-start'); if (!v) return;
-    var alt = $('hbStart'); if (alt) alt.remove();
-    var wb = hinweisListe({ bewilligt: daten.bewilligt, heute: new Date(), weg: daten.weg }).filter(function (h) { return h.art === 'wb'; })[0];
-    if (!wb) return;
-    var box = el('div', 'hb-hinweise hb-start'); box.id = 'hbStart';
-    var e = hinweisElement(wb, startHinweis);
-    var b = e.querySelector('.btns'); b.insertBefore(knopf('btn ghost klein', t('hb.kachel'), function () { ctx.zeige('haushalt', true); }), b.firstChild);
-    box.appendChild(e);
-    // Unter der Begrüßung (Überschrift und Satz) und vor den Kacheln, damit sie den Gruß nicht trennt und keine anderen Hinweise überdeckt
-    var r = v.querySelector('.start-raster'), h = v.querySelector('h2');
-    if (r) v.insertBefore(box, r); else if (h && h.nextSibling) v.insertBefore(box, h.nextSibling); else v.appendChild(box);
-  }
-  function bewilligtBox() {
-    var d = el('details', 'hb-karte hb-wb'), su = el('summary'); su.textContent = t('hb.wb.h'); d.appendChild(su);
-    if (Object.keys(daten.bewilligt).length) d.open = true;
-    d.appendChild(el('p', 'hint', t('hb.wb.t')));
-    ['sgb2', 'sgb12', 'wohngeld', 'kiz'].forEach(function (l) {
-      var f = el('div', 'field'), lab = el('label'); lab.htmlFor = 'hb-wb-' + l; lab.textContent = t('hb.wb.bis', { l: leistungName(l) }); f.appendChild(lab);
-      var i = el('input'); i.type = 'date'; i.id = 'hb-wb-' + l; i.value = daten.bewilligt[l] || '';
-      i.addEventListener('change', function () { if (/^\d{4}-\d\d-\d\d$/.test(i.value)) daten.bewilligt[l] = i.value; else delete daten.bewilligt[l]; sichern(); var h = $('hbHinweise'); if (h) hinweise(h, rechnung()); startHinweis(); });
-      f.appendChild(i); d.appendChild(f);
-    });
-    d.appendChild(el('p', 'small', t('hb.wb.quelle')));
-    return d;
   }
   function uebernahmeBox(s) {
     var u = uebernahme(s, { kg: daten.plan.kg !== null ? daten.plan.kg : geteilte().kg, energie: daten.plan.aus.energie || 0, leist: daten.plan.leist || 0 });
@@ -746,8 +680,10 @@ var Haushalt = (function () {
     if (erstes) { try { erstes.scrollIntoView({ block: 'center' }); } catch (e) {} }
   }
 
-  // ----- Energiekosten-Check (im Plan unter „Strom und Gas“; keine eigene Kachel) -----
-  var SYM_EN = { strom: KAT[1][1], gas: '<path d="M12 21a6 6 0 0 0 6-6c0-4-3-6-4-10-2 2-3 4-3 6-1-1-2-2-2-4-2 2-3 5-3 8a6 6 0 0 0 6 6z"/>' }; // wie „Geld sparen“ (Strom, Heizen)
+  // ----- Abschlag prüfen und Tarife vergleichen (Strom, Gas): auf den Seiten „Strom“ und „Heizen“ in „Geld und Schulden“ (src/app.js), nicht im Plan -----
+  // Abschlag: Daten bleiben in lotse.haushalt (daten.energie), damit sie je Vorgang verschlüsselt, kopiert und gelöscht werden.
+  // Tarifvergleich: nur im Speicher, solange die App offen ist (nichts wird gespeichert).
+  var enZiel = null, enArt = 'strom', tvZiel = null, tvArt = 'strom', tv = { strom: null, gas: null };
   function zahlAus(v) {
     if (v === null || v === undefined || String(v).trim() === '') return null;
     var F = typeof Fmt !== 'undefined' ? Fmt : require('./fmt.js'), n = F.parse(String(v));
@@ -781,19 +717,12 @@ var Haushalt = (function () {
     s.value = wert; s.addEventListener('change', function () { onWert(s.value, s, f); }); f.appendChild(s);
     return f;
   }
-  function personenZahl() {
-    var s = check();
-    if (s) { var n = (Number(s.adults) || 0) + (Number(s.kids) || 0) + (Number(s.young) || 0); if (n > 0) return n; }
-    return daten.energie.personen;
-  }
-  function enSparten() { return daten.energie.heiz === 'gas' ? ['strom', 'gas'] : ['strom']; }
-  function enAktiv() { return enSparten().indexOf(enSparte) >= 0 ? enSparte : 'strom'; }
-  function enBezugSgb() { var bz = (check() || {}).bezug || {}; return !!(bz.grundsicherungsgeld || bz.sozialamt); }
   function heuteIso() { return isoTag(new Date()); }
-  // Ergebnis (das Wichtigste zuerst): Wort, Betrag, Vorschlag, Hinweise zur Genauigkeit, Vergleich
+  function sparte(a) { return a === 'gas' ? 'gas' : 'strom'; }
+  // Ergebnis (das Wichtigste zuerst): Wort mit Betrag (Nachzahlung oder Guthaben), Verbrauch, Hinweise zur Genauigkeit
   function enErgebnis(box) {
     box.innerHTML = '';
-    var art = enAktiv(), x = daten.energie[art], r = energieSparte(x, art, heuteIso(), daten.energie.heiz), v = r.verbrauch;
+    var art = enArt, x = daten.energie[art], r = energieSparte(x, art, heuteIso(), daten.energie.heiz), v = r.verbrauch;
     var wort = el('p', 'hb-en-erg'); box.appendChild(wort);
     var fehlt = [];
     if (!(x.a > 0)) fehlt.push(t('hb.en.abschlag'));
@@ -811,60 +740,28 @@ var Haushalt = (function () {
       var c = r.vergleich;
       wort.classList.add(c.art); wort.textContent = c.art === 'passt' ? t('hb.en.passt') : t('hb.en.' + c.art, { b: { eur: euroGanz(c.betrag) } });
       if (r.kosten.geschaetzt) box.appendChild(el('p', 'hb-en-schaetz', t('hb.en.schaetz', { ct: zahlText(PREIS[art]) })));
-      if (c.art !== 'passt') box.appendChild(el('p', 'hb-en-vorschlag', t('hb.en.vorschlag', { b: { eur: c.vorschlag / 100 } })));
       box.appendChild(el('p', '', t('hb.en.kosten', { b: { eur: euroGanz(r.kosten.cent) }, a: { eur: euroGanz(c.gezahlt) } })));
       if (r.kosten.gpFehlt) box.appendChild(el('p', 'hint', t('hb.en.gp.fehlt')));
       box.appendChild(el('p', 'small', t('hb.en.hinweis')));
     }
-    // Vergleich mit dem amtlichen Durchschnitt: nur Strom, nicht bei Heizung mit Strom; nur die Zahl, kein Urteil
-    var dv = destatisVergleich(personenZahl());
-    if (art === 'strom' && daten.energie.heiz !== 'strom' && dv && r.kwh !== null) {
-      box.appendChild(el('p', 'hb-en-dv', t('hb.en.dv.zeile', { n: t(['hb.en.dv.n1', 'hb.en.dv.n2', 'hb.en.dv.n3'][dv.klasse - 1]), kwh: zahlLokal(dv.kwh) })));
-      box.appendChild(el('p', 'small', t('hb.en.dv.quelle') + ' ' + t('hb.en.dv.link')));
-    }
     return r;
   }
-  function enDetails(cls, sum, kinder) {
-    var d = el('details', 'hb-en-det ' + cls), s = el('summary'); s.textContent = sum; d.appendChild(s);
-    kinder.forEach(function (k) { if (k) d.appendChild(typeof k === 'string' ? el('p', '', k) : k); });
-    return d;
-  }
-  function enSetze(fn, fokusId) { fn(daten.energie); sichern(); renderPlan(fokusId); }
-  // Abschläge in den Plan („Strom und Gas“) übernehmen: leer → schreiben, anderer Wert → fragen
-  function enPlanUebernahme(feld, fokusId) {
-    var en = daten.energie, neu = enSparten().reduce(function (a, s) { return a + (en[s].a > 0 ? en[s].a : 0); }, 0);
-    var alt = daten.plan.aus.energie === undefined ? null : daten.plan.aus.energie;
-    if (!(neu > 0)) { renderPlan(fokusId); return; }
-    var a = aenderung(alt, neu), schreib = function () { daten.plan.aus.energie = neu; sichern(); renderPlan(fokusId); };
-    if (a === 'gleich') { renderPlan(fokusId); return; }
-    if (a === 'schreiben') { schreib(); return; }
-    var e = $('hbEnErgebnis'); if (e) enErgebnis(e);
-    fragen(feld, t('hb.en.frage.plan', { alt: eur(alt), neu: eur(neu) }), schreib, function () { renderPlan(fokusId); });
-  }
-  function energieBox() {
-    var en = daten.energie, art = enAktiv(), x = en[art], sgb = enBezugSgb(), p = 'hb-en-';
+  function enNeu(fokusId) { if (enZiel && enZiel.isConnected) abschlagBox(enZiel, enArt, fokusId); if (tvZiel && tvZiel.isConnected) tarifBox(tvZiel, tvArt); }
+  function enSetze(fn, fokusId) { fn(daten.energie); sichern(); enNeu(fokusId); }
+  // Zeichnet „Abschlag prüfen“ für eine Sparte (die Wahl Strom/Gas sind Kacheln in src/app.js). Nur, was die Prüfung braucht:
+  // Abschlag, Anzahl, Verbrauch (Zähler oder Rechnung), Preis. Heizen mit Strom: nur, damit die Hochrechnung aus Zählerständen richtig „ungenau“ meldet.
+  function abschlagBox(ziel, art, fokusId) {
+    enZiel = ziel; enArt = sparte(art); ziel.innerHTML = '';
+    if (!daten) return;
+    art = enArt;
+    var en = daten.energie, x = en[art], p = 'hb-en-';
     var box = el('section', 'hb-karte hb-en'); box.id = 'hbEnergie';
-    var h = el('h3', 'hb-h3', t('hb.en.h')); h.id = 'hb-en-h'; h.tabIndex = -1; box.appendChild(h);
+    var h = el('h3', 'hb-h3', t('hb.en.tab.' + art)); h.id = 'hb-en-h'; h.tabIndex = -1; box.appendChild(h);
     box.appendChild(el('p', 'hint', t('hb.en.lead')));
     var erg = el('div', 'hb-en-ergebnis'); erg.id = 'hbEnErgebnis'; erg.setAttribute('aria-live', 'polite'); box.appendChild(erg);
-    var r = enErgebnis(erg);
-    // Eingaben
-    box.appendChild(auswahl(p + 'heiz', t('hb.en.heiz'), en.heiz, [['', '–'], ['miete', t('hb.en.heiz.miete')], ['gas', t('hb.en.heiz.gas')], ['strom', t('hb.en.heiz.strom')], ['andere', t('hb.en.heiz.andere')]],
-      function (w) { enSetze(function (e) { e.heiz = w; }, p + 'heiz'); }));
-    if (en.heiz === 'gas') {
-      var tabs = el('div', 'hb-en-tabs'); tabs.setAttribute('role', 'group'); tabs.setAttribute('aria-label', t('hb.en.h'));
-      ['strom', 'gas'].forEach(function (s) {
-        var b = el('button', 'hb-en-tab'); b.type = 'button'; b.id = p + 'tab-' + s; b.setAttribute('aria-pressed', String(s === art));
-        b.innerHTML = '<span class="hb-sym"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + SYM_EN[s] + '</svg></span><span>' + esc(t('hb.en.tab.' + s)) + '</span>';
-        b.addEventListener('click', function () { enSparte = s; renderPlan(b.id); });
-        tabs.appendChild(b);
-      });
-      box.appendChild(tabs);
-    }
+    enErgebnis(erg);
     var fs = el('fieldset', 'hb-en-felder'); fs.appendChild(el('legend', '', t('hb.en.tab.' + art)));
-    fs.appendChild(geldFeld(p + 'a', t('hb.en.abschlag'), x.a, t('hb.en.abschlag.t'), function (neu, inp, feld) {
-      x.a = neu > 0 ? neu : null; sichern(); enPlanUebernahme(feld, p + 'a');
-    }));
+    fs.appendChild(geldFeld(p + 'a', t('hb.en.abschlag'), x.a, t('hb.en.abschlag.t'), function (neu) { enSetze(function () { x.a = neu > 0 ? neu : null; }, p + 'a'); }));
     fs.appendChild(auswahl(p + 'n', t('hb.en.anzahl'), String(x.n), [['12', t('hb.en.anzahl.12')], ['11', t('hb.en.anzahl.11')]], function (w) { enSetze(function () { x.n = w === '11' ? 11 : 12; }, p + 'n'); }));
     fs.appendChild(auswahl(p + 'weg', t('hb.en.weg'), x.weg, [['zaehler', t('hb.en.weg.zaehler')], ['rechnung', t('hb.en.weg.rechnung')]], function (w) { enSetze(function () { x.weg = w; }, p + 'weg'); }));
     if (art === 'gas') {
@@ -889,6 +786,11 @@ var Haushalt = (function () {
       fs.appendChild(datum('d1', t('hb.en.d1')));
       fs.appendChild(zahlFeld(p + 'z2', t('hb.en.z2').replace('kWh', einheit), x.z2, t('hb.en.z2.t'), einheit, ganzSetzen('z2', p + 'z2')));
       fs.appendChild(datum('d2', t('hb.en.d2')));
+      if (art === 'strom') {
+        var lh = el('label', 'check'), ch = el('input'); ch.type = 'checkbox'; ch.id = p + 'heizt'; ch.checked = en.heiz === 'strom';
+        ch.addEventListener('change', function () { enSetze(function (e) { e.heiz = ch.checked ? 'strom' : e.heiz === 'strom' ? '' : e.heiz; }, p + 'heizt'); });
+        lh.appendChild(ch); lh.appendChild(el('span', '', t('hb.en.heiztStrom'))); fs.appendChild(lh);
+      }
     } else {
       fs.appendChild(zahlFeld(p + 'jahr', t('hb.en.jahr').replace('kWh', einheit), x.jahr, '', einheit, ganzSetzen('jahr', p + 'jahr')));
     }
@@ -897,64 +799,59 @@ var Haushalt = (function () {
       enSetze(function () { x.ap = n; }, p + 'ap');
     }, true));
     fs.appendChild(geldFeld(p + 'gp', t('hb.en.gp'), x.gp, t('hb.en.preis.t'), function (neu) { enSetze(function () { x.gp = neu; }, p + 'gp'); }));
-    // Warmwasser mit Strom: dasselbe Feld wie im Leistungs-Check (eine Datenquelle)
-    var s = check(), lw = el('label', 'check'), cw = el('input'); cw.type = 'checkbox'; cw.id = p + 'ww'; cw.checked = !!(s && s.warmwasser);
-    var fw = el('div', 'field');
-    cw.addEventListener('change', function () {
-      var alt = !!((check() || {}).warmwasser), neu = cw.checked, schreib = function () { ctx.setze({ warmwasser: neu }); renderPlan(p + 'ww'); };
-      if (!alt || alt === neu) { schreib(); return; }
-      fragen(fw, t('hb.en.frage.ww'), schreib, function () { cw.checked = alt; cw.focus(); });
-    });
-    lw.appendChild(cw); lw.appendChild(el('span', '', t('hb.en.ww'))); fw.appendChild(lw); fw.appendChild(el('span', 'hint', t('hb.en.ww.t'))); fs.appendChild(fw);
-    if (!s) fs.appendChild(zahlFeld(p + 'personen', t('hb.en.personen'), en.personen, '', '', function (n, inp, f) {
-      if (n !== null && !(n >= 1 && n <= 20)) { feldFehler(inp, f); return; }
-      enSetze(function (e) { e.personen = n === null ? null : Math.round(n); }, p + 'personen');
-    }));
     box.appendChild(fs);
-
-    // Details zum Aufklappen (Reihenfolge = Wichtigkeit)
-    var anp = enDetails('hb-en-anp', t('hb.en.anp.s'), [t('hb.en.anp.t'), sgb && en.heiz === 'gas' ? t('hb.en.anp.sgb') : '']);
-    if (r.belastbar && r.vergleich.art !== 'passt' && x.weg === 'zaehler') {
-      var bb = el('div', 'btns');
-      bb.appendChild(knopf('btn ghost', t('hb.en.anp.brief'), function () {
-        if (anp.querySelector('textarea')) return;
-        var l = el('label'); l.htmlFor = 'hb-en-briefText'; l.textContent = t('hb.en.anp.briefLabel'); anp.appendChild(l);
-        var ta = el('textarea'); ta.id = 'hb-en-briefText'; ta.rows = 14; ta.lang = 'de';
-        ta.value = abschlagBrief({ art: r.vergleich.art, datum: ctx.datumDe(new Date(+x.d2.slice(0, 4), +x.d2.slice(5, 7) - 1, +x.d2.slice(8, 10))), stand: String(x.z2), einheit: einheit,
-          kwh: r.kwh.toLocaleString('de-DE'), neu: ctx.euroDe(r.vergleich.vorschlag / 100) });
-        anp.appendChild(ta);
-        var m = el('p', 'small'); m.setAttribute('aria-live', 'polite');
-        anp.appendChild(knopf('btn', t('hb.hw.briefAus'), function () { ctx.textAusgeben(ta.value, 'Abschlag', m); }));
-        anp.appendChild(m); ta.focus();
-      }, { id: p + 'brief' }));
-      anp.appendChild(bb);
-    }
-    box.appendChild(anp);
-    var heizt = en.heiz === 'gas' || en.heiz === 'strom', ww = !!(s && s.warmwasser), st1 = ctx.regeln && ctx.regeln().regelbedarf && ctx.regeln().regelbedarf.alleinstehend;
-    var allein = s && Number(s.adults) === 1 && (Number(s.kids) || 0) + (Number(s.young) || 0) === 0;
-    var rbE = st1 ? regelbedarfAnteile(st1).filter(function (a) { return a.k === 'energie'; })[0] : null;
-    var nz = [sgb ? t('hb.en.nz.strom.sgb') : '', sgb && heizt ? t('hb.en.nz.heiz.sgb') : '', !sgb && heizt ? t('hb.en.nz.heiz.ohne') : '', ww ? t('hb.en.nz.ww') : '',
-      allein && rbE ? t('hb.en.nz.rb', { p: String(rbE.prozent), b: { eur: rbE.euro } }) : ''];
-    if (nz.some(Boolean)) {
-      var nzd = enDetails('hb-en-nz', t('hb.en.nz.s'), nz);
-      if (ww) { var nb = el('div', 'btns'); nb.appendChild(knopf('btn ghost klein', t('hb.zumCheck'), function () { ctx.zeige('leistungen', true); })); nzd.appendChild(nb); }
-      box.appendChild(nzd);
-    }
-    box.appendChild(enDetails('hb-en-sperre', t('hb.en.sperre.s'), [t('sp.schulden.strom'), t('hb.en.sperre.raten')]));
-    box.appendChild(enDetails('hb-en-ssc', t('hb.en.ssc.s'), [t('sp.strom.6'), t('hb.en.ssc')]));
-    var thema = art === 'gas' || en.heiz === 'strom' ? 'heizen' : 'strom', ul = el('ul', 'hb-liste');
-    [1, 2, 3, 4, 5].forEach(function (i) { ul.appendChild(el('li', '', t('sp.' + thema + '.' + i))); });
-    var tip = enDetails('hb-en-tipps', t('hb.en.tipps.s'), [ul, el('p', 'small', t('sp.quellen'))]);
-    if (ctx.sparen) { var tb = el('div', 'btns'); tb.appendChild(knopf('btn ghost klein', t('hb.en.mehrTipps'), function () { ctx.sparen(thema); })); tip.appendChild(tb); }
-    box.appendChild(tip);
-    box.appendChild(enDetails('hb-en-wie', t('hb.en.wie.s'), [t('hb.en.wie', { tolEur: { eur: TOL.cent / 100 }, tolProz: String(TOL.anteil * 100) })]));
-    return box;
+    ziel.appendChild(box);
+    if (fokusId && $(fokusId)) $(fokusId).focus();
   }
-  // Zeile fürs Druckblatt (Fachkräfte): nur belastbares Ergebnis, keine Zählerstände oder Nummern
-  function enOeffnen() { ansicht = 'plan'; offenKat = 'energie'; enOffen = true; render('hb-en-h'); }
-  function energieZeile() {
-    var b = energieNachzahlung(daten.energie, heuteIso());
-    return b > 0 ? t('hb.en.druck', { b: { eur: euroGanz(b) } }) : '';
+
+  // Zeichnet „Tarife vergleichen“ für eine Sparte: Verbrauch, eigener Tarif, ein Angebot (mit Bonus im 1. Jahr). Ergebnis oben.
+  function tvLeer() { return { kwh: null, eigen: { ap: null, gp: null }, angebot: { ap: null, gp: null, bonus: null } }; }
+  function tarifBox(ziel, art, fokusId) {
+    tvZiel = ziel; tvArt = sparte(art); ziel.innerHTML = '';
+    if (!ctx) return;
+    var d = tv[tvArt] || (tv[tvArt] = tvLeer()), p = 'hb-tv-';
+    var neu = function (fn, id) { fn(); tarifBox(ziel, tvArt, id); };
+    var box = el('section', 'hb-karte hb-en hb-tv'); box.id = 'hbTarif';
+    var h = el('h3', 'hb-h3', t('hb.en.tab.' + tvArt)); h.id = 'hb-tv-h'; h.tabIndex = -1; box.appendChild(h);
+    box.appendChild(el('p', 'hint', t('hb.tv.lead')));
+    // Ergebnis
+    var erg = el('div', 'hb-en-ergebnis'); erg.id = 'hbTvErgebnis'; erg.setAttribute('aria-live', 'polite'); box.appendChild(erg);
+    var r = tarifVergleich(d), wort = el('p', 'hb-en-erg'); erg.appendChild(wort);
+    if (!r) {
+      var fehlt = [];
+      if (!(d.kwh > 0)) fehlt.push(t('hb.tv.kwh'));
+      if (!(d.eigen.ap > 0) || d.eigen.gp === null) fehlt.push(t('hb.tv.eigen'));
+      if (!(d.angebot.ap > 0) || d.angebot.gp === null) fehlt.push(t('hb.tv.angebot'));
+      wort.classList.add('offen'); wort.textContent = t('hb.en.fehlt', { was: fehlt.join(', ') });
+    } else {
+      var K = { jahr: ['hb.tv.jahr.billiger', 'hb.tv.jahr.teurer', 'hb.tv.jahr.gleich'], j1: ['hb.tv.j1.billiger', 'hb.tv.j1.teurer', 'hb.tv.j1.gleich'], j2: ['hb.tv.j2.billiger', 'hb.tv.j2.teurer', 'hb.tv.j2.gleich'] };
+      var urteil = function (diff, k) { var b = euroGanz(Math.abs(diff)); return b === 0 ? ['', t(k[2])] : diff > 0 ? ['passt', t(k[0], { b: { eur: b } })] : ['nach', t(k[1], { b: { eur: b } })]; };
+      var u1 = urteil(r.diff1, r.bonus > 0 ? K.j1 : K.jahr);
+      if (u1[0]) wort.classList.add(u1[0]);
+      wort.textContent = u1[1];
+      if (r.bonus > 0) { var u2 = urteil(r.diff2, K.j2); erg.appendChild(el('p', 'hb-tv-j2', u2[1])); }
+      erg.appendChild(el('p', '', t('hb.tv.kosten', { a: { eur: euroGanz(r.eigen) }, b: { eur: euroGanz(r.angebot) } })));
+      erg.appendChild(el('p', 'small', t('hb.tv.hinweis')));
+    }
+    // Eingaben
+    box.appendChild(zahlFeld(p + 'kwh', t('hb.tv.kwh'), d.kwh, t('hb.tv.kwh.t'), 'kWh', function (n, inp, f) {
+      if (n !== null && !(n > 0 && n < 1000000)) { feldFehler(inp, f); return; }
+      neu(function () { d.kwh = n === null ? null : Math.round(n); }, p + 'kwh');
+    }));
+    var tarif = function (wer, mitBonus) {
+      var fs = el('fieldset', 'hb-en-felder'), x = d[wer]; fs.appendChild(el('legend', '', t('hb.tv.' + wer)));
+      fs.appendChild(zahlFeld(p + wer + '-ap', t('hb.en.ap'), x.ap, '', 'ct', function (n, inp, f) {
+        if (n !== null && !(n > 0 && n < 200)) { feldFehler(inp, f); return; }
+        neu(function () { x.ap = n; }, p + wer + '-ap');
+      }, true));
+      fs.appendChild(geldFeld(p + wer + '-gp', t('hb.en.gp'), x.gp, '', function (c) { neu(function () { x.gp = c !== null && c >= 0 ? c : null; }, p + wer + '-gp'); }));
+      if (mitBonus) fs.appendChild(geldFeld(p + 'bonus', t('hb.tv.bonus'), x.bonus, t('hb.tv.bonus.t'), function (c) { neu(function () { x.bonus = c > 0 ? c : null; }, p + 'bonus'); }));
+      return fs;
+    };
+    box.appendChild(tarif('eigen', false));
+    box.appendChild(tarif('angebot', true));
+    ziel.appendChild(box);
+    if (fokusId && $(fokusId)) $(fokusId).focus();
   }
 
   // ----- Beratungsmodus (Schalter aus claude/beratung-hilfen): Abfrage, ob es ihn gibt; sonst null = immer anbieten -----
@@ -971,8 +868,13 @@ var Haushalt = (function () {
     z.push('  = ' + eur(r.ein), '', t('hb.aus'));
     var aus = planAus(); KAT_IDS.forEach(function (k) { if (aus[k]) z.push('  ' + katName(k) + ': ' + eur(aus[k])); });
     z.push('  = ' + eur(r.aus), '', ergebnisSatz(r));
-    var ez = energieZeile(); if (ez) z.push(ez);
     return z.join('\n');
+  }
+  // Druckblatt des Plans für Fachkräfte (Beratungsmodus an oder nicht vorhanden): in der Auswertung, nicht mehr unter der Eingabe
+  function druckKnopf(box) {
+    if (beratung() === false) return;
+    var ex = el('div', 'btns hb-export'); ex.appendChild(knopf('btn ghost', t('hb.drucken'), drucken, { id: 'hb-drucken' })); box.appendChild(ex);
+    var em = el('p', 'small'); em.id = 'hbExportMsg'; em.setAttribute('aria-live', 'polite'); box.appendChild(em);
   }
   function drucken() { ctx.textAusgeben(planText(), t('hb.druck.h'), $('hbExportMsg')); } // Druck-CSS wie bei den Schreiben (#druckBrief)
   function exportCsv() {
@@ -1047,8 +949,10 @@ var Haushalt = (function () {
     // Ganzes Haushaltsbuch löschen (der Plan bleibt); „Rückgängig“ wie beim einzelnen Eintrag
     if (daten.buch.length) {
       var lb = el('div', 'btns');
+      lb.appendChild(knopf('btn ghost klein', t('hb.csv'), exportCsv, { id: 'hb-csv' })); // Export des Haushaltsbuchs (früher unter dem Plan)
       lb.appendChild(knopf('btn ghost klein', t('hb.buchLoeschen'), function () { rueck = { vorher: JSON.parse(JSON.stringify(daten.buch)), text: t('hb.buchGeloescht') }; daten.buch = []; sichern(); renderBuch('hb-rueck'); }, { id: 'hb-buchLoeschen' }));
       box.appendChild(lb);
+      var em = el('p', 'small'); em.id = 'hbExportMsg'; em.setAttribute('aria-live', 'polite'); box.appendChild(em);
     }
     if (fokusId && $(fokusId)) $(fokusId).focus();
   }
@@ -1150,7 +1054,7 @@ var Haushalt = (function () {
     var box = $('hbInhalt'); box.innerHTML = '';
     monatsLeiste(box, renderAusw);
     var aw = auswertung(daten.buch, monat);
-    if (!aw.zeilen.length) { box.appendChild(el('p', 'muted', t('hb.ausw.leer'))); box.appendChild(belegBox()); if (fokusId && $(fokusId)) $(fokusId).focus(); return; }
+    if (!aw.zeilen.length) { box.appendChild(el('p', 'muted', t('hb.ausw.leer'))); box.appendChild(belegBox()); druckKnopf(box); var hw0 = el('div', 'hb-hinweise'); hw0.id = 'hbHinweise'; box.appendChild(hw0); hinweise(hw0, rechnung()); if (fokusId && $(fokusId)) $(fokusId).focus(); return; }
     var max = aw.zeilen.reduce(function (a, z) { return Math.max(a, z.c, z.vor); }, 1);
     var ul = el('ul', 'hb-balken');
     aw.zeilen.forEach(function (z) {
@@ -1176,7 +1080,7 @@ var Haushalt = (function () {
       tp.forEach(function (k) {
         var li = el('li'); li.innerHTML = '<b>' + esc(katName(k)) + '</b><p>' + esc(t('hb.tipp.' + k)) + '</p><p class="small">' + esc(t('hb.quelle', { q: t('hb.quelle.' + k) })) + '</p>';
         if (k === 'raten') li.appendChild(knopf('btn ghost', t('hb.zuSchulden'), function () { ctx.zeige('pfaendung', true); }));
-        if (k === 'energie') li.appendChild(knopf('btn ghost', t('hb.en.knopf'), enOeffnen));
+        if (k === 'energie' && ctx.sparen) li.appendChild(knopf('btn ghost', t('hb.en.mehrTipps'), function () { ctx.sparen('strom'); })); // Strom-Spartipps in „Geld und Schulden“
         if (k === 'kinder' || k === 'miete') li.appendChild(knopf('btn ghost', t('hb.zumCheck'), function () { ctx.zeige('leistungen', true); }));
         tl.appendChild(li);
       });
@@ -1193,12 +1097,14 @@ var Haushalt = (function () {
       box.appendChild(d);
     }
     box.appendChild(belegBox());
+    druckKnopf(box);
     var hw = el('div', 'hb-hinweise'); hw.id = 'hbHinweise'; box.appendChild(hw); hinweise(hw, rechnung());
     if (fokusId && $(fokusId)) $(fokusId).focus();
   }
 
   // ----- Rahmen: drei Reiter -----
   function render(fokusId) {
+    enNeu();
     if (!ctx || !$('hbInhalt') || !daten) return;
     ['plan', 'buch', 'ausw'].forEach(function (a) { var b = $('hb-tab-' + a); if (b) { b.setAttribute('aria-pressed', String(a === ansicht)); b.textContent = t('hb.tab.' + a); } });
     if (ansicht === 'buch') renderBuch(fokusId); else if (ansicht === 'ausw') renderAusw(fokusId); else renderPlan(fokusId);
@@ -1208,7 +1114,7 @@ var Haushalt = (function () {
     ['plan', 'buch', 'ausw'].forEach(function (a) { var b = $('hb-tab-' + a); if (b) b.addEventListener('click', function () { ansicht = a; eingabe = null; render(); }); });
     // „Alle Angaben löschen“ löscht auch Plan und Haushaltsbuch: das erledigt die App über die Vorgänge (lotse.haushalt in Vorgaenge.DATEN, danach neuLaden)
     var go = $('goHaushalt'); if (go) go.addEventListener('click', function () { ctx.zeige('haushalt', true); });
-    speicher.laden(function (v) { try { daten = normiere(v ? JSON.parse(v) : null); } catch (e) { daten = leer(); } render(); startHinweis(); });
+    speicher.laden(function (v) { try { daten = normiere(v ? JSON.parse(v) : null); } catch (e) { daten = leer(); } render(); });
   }
   function zeigen() { ueOffen = false; render(); }
 
@@ -1456,19 +1362,19 @@ var Haushalt = (function () {
     KAT: KAT_IDS, zuCent: zuCent, euroGanz: euroGanz, planRechnung: planRechnung, monatPlus: monatPlus, monatsEintraege: monatsEintraege,
     nachKategorie: nachKategorie, auswertung: auswertung, tipps: tipps, kassenzettel: kassenzettel, csv: csv, regelbedarfAnteile: regelbedarfAnteile, RBEG5: RBEG5,
     pflegeFenster: pflegeFenster, belegListe: belegListe, belegSumme: belegSumme, belegCsv: belegCsv, vermNah: vermNah, WORTE_GELD: WORTE_GELD,
-    ausCheck: ausCheck, aenderung: aenderung, uebernahme: uebernahme, normiere: normiere, hinweisListe: hinweisListe, aenderungsBrief: aenderungsBrief, VORLAUF_TAGE: VORLAUF_TAGE,
-    // Energiekosten-Check (Rechnung)
-    PREIS: PREIS, VERBRAUCH_DESTATIS: VERBRAUCH_DESTATIS, TOL: TOL, tageZwischen: tageZwischen, jahresVerbrauch: jahresVerbrauch, gasKwh: gasKwh, jahresKosten: jahresKosten,
-    abschlagVergleich: abschlagVergleich, destatisVergleich: destatisVergleich, energieSparte: energieSparte, energieNachzahlung: energieNachzahlung, abschlagBrief: abschlagBrief, dezimalAus: dezimalAus, SAISON_TAGE: SAISON_TAGE, AKTUELL_TAGE: AKTUELL_TAGE,
+    ausCheck: ausCheck, aenderung: aenderung, uebernahme: uebernahme, normiere: normiere, hinweisListe: hinweisListe, aenderungsBrief: aenderungsBrief,
+    // Abschlag prüfen (Rechnung)
+    PREIS: PREIS, TOL: TOL, tageZwischen: tageZwischen, jahresVerbrauch: jahresVerbrauch, gasKwh: gasKwh, jahresKosten: jahresKosten,
+    abschlagVergleich: abschlagVergleich, energieSparte: energieSparte, tarifKosten: tarifKosten, tarifVergleich: tarifVergleich, dezimalAus: dezimalAus, SAISON_TAGE: SAISON_TAGE, AKTUELL_TAGE: AKTUELL_TAGE,
     // Oberfläche
     // Kurzstatus für „Mein Ordner“: { rest, restEuro, leer, ausgefuellt }. ausgefuellt: mindestens eine eigene Ausgabe im Plan (die Miete
     // kommt aus dem Check und zählt nicht) – sonst wäre „Im Monat bleiben dir …“ nur Einkommen minus Miete, ohne Essen, Strom und Handy.
     rest: function () { var r = rechnung(); r.ausgefuellt = !!daten && Object.keys(daten.plan.aus || {}).some(function (k) { return k !== 'miete' && daten.plan.aus[k] > 0; }); return r; },
-    init: init, zeigen: zeigen, sprache: function () { render(); if (daten) startHinweis(); }, speicherOrt: speicherOrt,
-    energie: function () { if (daten) enOeffnen(); }, // „Abschlag prüfen“ direkt aus „Mein Geld planen“ und „Strom- oder Gassperre droht“
-    daten: function () { return JSON.parse(JSON.stringify(daten)); }, laden: function (d) { daten = normiere(d); sichern(); render(); startHinweis(); },
+    abschlag: function (ziel, art) { abschlagBox(ziel, art); }, tarif: function (ziel, art) { tarifBox(ziel, art); }, // Seiten „Strom“ und „Heizen“ (src/app.js)
+    init: init, zeigen: zeigen, sprache: function () { render(); }, speicherOrt: speicherOrt,
+    daten: function () { return JSON.parse(JSON.stringify(daten)); }, laden: function (d) { daten = normiere(d); sichern(); render(); },
     // Nach einem Wechsel des Vorgangs: Plan des geöffneten Vorgangs aus dem Speicherort lesen (ohne zu schreiben)
-    neuLaden: function () { offenKat = ''; enOffen = false; eingabe = null; rueck = null; speicher.laden(function (v) { try { daten = normiere(v ? JSON.parse(v) : null); } catch (e) { daten = leer(); } render(); startHinweis(); }); }
+    neuLaden: function () { offenKat = ''; ueOffen = false; eingabe = null; rueck = null; speicher.laden(function (v) { try { daten = normiere(v ? JSON.parse(v) : null); } catch (e) { daten = leer(); } render(); }); }
   };
 })();
 if (typeof module !== 'undefined') module.exports = Haushalt;
