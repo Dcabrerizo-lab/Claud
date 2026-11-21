@@ -34,7 +34,7 @@
   "bp.art.termin.h": "Randevuya davet",
   "bp.art.anh.h": "Karardan önce dinleme (Anhörung)",
   "bp.art.mit.h": "Belgeleri gönderme",
-  "bp.art.anh.t": "Dinleme henüz bir karar değildir. Ne olduğunu kısaca açıklayın ve kanıt ekleyin. İtiraz ancak sonraki karara karşı yapılabilir.",
+  "bp.art.anh.t": "Görüş bildirme çağrısı (Anhörung) henüz bir karar değildir. Ne olduğunu kısaca açıklayın ve kanıt ekleyin. İtiraz ancak sonraki karara karşı yapılabilir.",
   "bp.art.termin.am": "Randevu: {datum}",
   "bp.art.bis": "Süre: {datum} tarihine kadar",
   "bp.art.termin.tag": "Randevu ne zaman? (mektupta yazar)",
