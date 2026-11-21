@@ -4204,12 +4204,24 @@
     var sec = briefArt && briefArt !== 'af' && $(BRIEF_TEIL[briefArt]), karte = sec && sec.querySelector('.card');
     if (!karte) { box.hidden = true; return; }
     box.hidden = false;
-    var satz = karte.querySelector('.pp-frist-box') || karte.querySelector('h2 + p') || karte.querySelector(':scope > p'); // „Anderer Brief“ hat keine eigene Überschrift // erster Satz (bei Bescheiden: Frist und Art des Briefs); Details stehen darunter
+    // Scannen zuerst (UX-Audit B): direkt unter dem ersten Satz, vor Art des Briefs und Datum (das Datum wird beim Scan erkannt)
+    var satz = karte.querySelector('h2 + p') || karte.querySelector('.pp-frist-box') || karte.querySelector(':scope > p'); // „Anderer Brief“ hat keine eigene Überschrift
     if (satz) satz.insertAdjacentElement('afterend', box); else karte.appendChild(box);
     $('elSelbst').hidden = !sec || !sec.classList.contains('pp-zu');
     $('elScanT').textContent = t(elGesammelt ? 'el.mehr' : briefArt ? 'el.scanHier' : 'el.scan');
+    // Nach dem ersten Scan ist „Weitere Seite scannen“ nur noch zweitrangig; Hauptaktion ist dann „Werte prüfen“ in der Meldung
+    $('elScan').classList.toggle('primary', !elGesammelt); $('elScan').classList.toggle('ghost', !!elGesammelt);
   }
-  function elNachricht(text) { $('elMsg').textContent = text || ''; }
+  // Meldung über dem Einlesen. ok: Brief erkannt → Hinweis als Banner mit Knopf „Werte prüfen“ (springt zu den erkannten Werten)
+  var EL_TEIL = { jc: 'bs', sa: 'ga', wg: 'wg', fk: 'kz', vm: 'nk', pk: 'pf' };
+  function elNachricht(text, ok) {
+    var m = $('elMsg'); m.textContent = text || ''; m.classList.toggle('el-banner', !!(ok && text));
+    var p = ok && text && EL_TEIL[briefArt], ziel = p && ($(p + '-erk') && !$(p + '-erk').hidden ? $(p + '-erk') : $(p + '-form'));
+    if (!ziel) return;
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'btn primary'; b.id = 'elZuWerten'; b.textContent = t('el.zuWerten');
+    b.addEventListener('click', function () { ziel.scrollIntoView({ block: 'start' }); var f = ziel.querySelector('button, input, select'); if (f) f.focus({ preventScroll: true }); });
+    m.appendChild(document.createElement('br')); m.appendChild(b);
+  }
   function zahlOderLeer(v) { var x = parseAmount(String(v == null ? '' : v)); return isFinite(x) && x > 0 ? x : ''; }
   // Haushalt aus „Leistungen“, damit die Prüfung nicht alles neu abfragt (nur wenn dort schon etwas eingetragen ist)
   // Nur echte Eingaben, kein erfundenes Alter. Check: Warmmiete; miete = ohne Heizung (nur mit Heizkosten), warm = Warmmiete.
@@ -4256,11 +4268,11 @@
       $('elErg').appendChild(d); if (ks) ksZeigen(ks, text); elNachricht(t('el.erkanntOhne', { titel: ppEin(r.titel) })); return;
     }
     if (!briefArt) briefOeffnen(r.art);
-    if (r.art === 'pk') { $('pf-text').value = text; $('pf-lesen').click(); briefFormular(); elNachricht(t('el.erkanntPk', { titel: ppEin(r.titel) })); return; }
+    if (r.art === 'pk') { $('pf-text').value = text; $('pf-lesen').click(); briefFormular(); elNachricht(t('el.erkanntPk', { titel: ppEin(r.titel) }), true); return; }
     if (r.art === 'af') { setScanResult(scanFromText(text)); elNachricht(t('el.erkanntOhne', { titel: ppEin(r.titel) })); return; }
     var n = window.PruefpaketLesen ? window.PruefpaketLesen.fuelle(r.art, r, haushalt(), elQuelle) : 0;
     briefFormular();
-    elNachricht(n ? t('el.erkannt', { titel: ppEin(r.titel), n: String(n) }) : t('el.keineWerte', { titel: ppEin(r.titel) }));
+    elNachricht(n ? t('el.erkannt', { titel: ppEin(r.titel), n: String(n) }) : t('el.keineWerte', { titel: ppEin(r.titel) }), true);
   }
   function ksZeigen(ks, text) {
     if (!window.KostensenkungHilfe) return;

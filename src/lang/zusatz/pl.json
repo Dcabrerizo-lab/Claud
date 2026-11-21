@@ -45,6 +45,8 @@
   "bp.erk.ok": "Wartości się zgadzają",
   "bp.erk.warte": "Najpierw proszę sprawdzić rozpoznane wartości.",
   "bp.erk.feld": "Trudno odczytać. Proszę sprawdzić dokładnie.",
+  "bp.erk.fehlt": "Brakuje jeszcze:",
+  "bp.erk.zu": "Przejdź do danych",
   "bp.pf.h": "Sprawdź orzeczenie o opiece",
   "bp.pf.p": "Proszę zeskanować orzeczenie albo wybrać PDF. SoLo przeliczy punkty.",
   "bp.sa.h": "Sprawdź decyzję o zabezpieczeniu podstawowym na starość (Grundsicherung im Alter)",

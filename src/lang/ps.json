@@ -1223,6 +1223,7 @@
   "sc.f.kv": "ستاسو Krankenkasse او ستاسو د بیمې نمبر (Versichertennummer). دواړه ستاسو د بیمې په کارت (Versichertenkarte) کې لیکل شوي.",
   "sc.f.aufenthalt": "تابعیت او د اقامې حالت. دا په پاسپورټ یا Aufenthaltstitel کې لیکل شوي. که وپوښتل شي، یوه کاپي ورسره ضمیمه کړئ.",
   "el.selbst": "ارقام پخپله ولیکئ",
+  "el.zuWerten": "ارزښتونه وګوره",
   "briefe.von": "لیک له: {name}",
   "el.pdf": "PDF وټاکئ",
   "el.pdfSeite": "د {m} څخه {n} پاڼه لوستل کېږي …",

@@ -1223,6 +1223,7 @@
   "sc.f.kv": "Sağlık sigortanız (Krankenkasse) ve sigorta numaranız. İkisi de sigorta kartında yazar.",
   "sc.f.aufenthalt": "Vatandaşlık ve oturum durumu. Pasaportta veya oturum belgesinde (Aufenthaltstitel) yazar. İstenirse bir kopya ekleyin.",
   "el.selbst": "Değerleri kendiniz girin",
+  "el.zuWerten": "Değerleri kontrol et",
   "briefe.von": "Mektubu gönderen: {name}",
   "el.pdf": "PDF seç",
   "el.pdfSeite": "Sayfa {n} / {m} okunuyor …",

@@ -45,6 +45,8 @@
   "bp.erk.ok": "Values are correct",
   "bp.erk.warte": "Please check the recognised values first.",
   "bp.erk.feld": "Hard to read. Please check carefully.",
+  "bp.erk.fehlt": "Still missing:",
+  "bp.erk.zu": "Go to the details",
   "bp.pf.h": "Check a care assessment",
   "bp.pf.p": "Scan the assessment or choose a PDF. SoLo recalculates the points.",
   "bp.sa.h": "Check a decision on basic income support in old age (Grundsicherung im Alter)",

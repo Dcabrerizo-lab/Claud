@@ -45,6 +45,8 @@
   "bp.erk.ok": "Değerler doğru",
   "bp.erk.warte": "Lütfen önce tanınan değerleri kontrol edin.",
   "bp.erk.feld": "Okunması zor. Lütfen dikkatle kontrol edin.",
+  "bp.erk.fehlt": "Ayrıca eksik:",
+  "bp.erk.zu": "Bilgilere git",
   "bp.pf.h": "Bakım raporunu kontrol edin",
   "bp.pf.p": "Raporu tarayın veya bir PDF seçin. SoLo puanları yeniden hesaplar.",
   "bp.sa.h": "Yaşlılıkta temel güvence (Grundsicherung im Alter) kararını kontrol edin",

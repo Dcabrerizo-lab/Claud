@@ -45,6 +45,8 @@
   "bp.erk.ok": "Valorile sunt corecte",
   "bp.erk.warte": "Te rugăm să verifici mai întâi valorile recunoscute.",
   "bp.erk.feld": "Greu de citit. Te rugăm să verifici atent.",
+  "bp.erk.fehlt": "Mai lipsește:",
+  "bp.erk.zu": "Mergi la date",
   "bp.pf.h": "Verifică expertiza de îngrijire",
   "bp.pf.p": "Scanează expertiza sau alege un PDF. SoLo recalculează punctele.",
   "bp.sa.h": "Verifică decizia privind asigurarea de bază la bătrânețe (Grundsicherung im Alter)",

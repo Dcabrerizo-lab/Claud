@@ -1223,6 +1223,7 @@
   "sc.f.kv": "Votre caisse d'assurance maladie (Krankenkasse) et votre numéro d'assuré. Les deux figurent sur votre carte d'assuré.",
   "sc.f.aufenthalt": "Nationalité et statut de séjour. Cela figure dans le passeport ou dans le titre de séjour (Aufenthaltstitel). Joignez une copie si elle est demandée.",
   "el.selbst": "Saisir les valeurs soi-même",
+  "el.zuWerten": "Vérifie les valeurs",
   "briefe.von": "Lettre de : {name}",
   "el.pdf": "Choisir un PDF",
   "el.pdfSeite": "Lecture de la page {n} sur {m} …",

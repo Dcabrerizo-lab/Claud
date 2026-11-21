@@ -1223,6 +1223,7 @@
   "sc.f.kv": "Your health insurance fund (Krankenkasse) and your insurance number. Both are on your health insurance card.",
   "sc.f.aufenthalt": "Nationality and residence status (Aufenthaltstitel). This is in your passport or residence permit. Add a copy if asked.",
   "el.selbst": "Enter the values yourself",
+  "el.zuWerten": "Check the values",
   "briefe.von": "Letter from: {name}",
   "el.pdf": "Choose a PDF",
   "el.pdfSeite": "Reading page {n} of {m} …",

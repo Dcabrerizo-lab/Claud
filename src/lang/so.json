@@ -1223,6 +1223,7 @@
   "sc.f.kv": "Krankenkasse-gaaga iyo lambarka caymiskaaga (Versichertennummer). Labaduba waxay ku qoran yihiin kaadhkaaga caymiska.",
   "sc.f.aufenthalt": "Dhalashada (jinsiyadda) iyo xaaladda deganaanshaha. Waxay ku qoran tahay baasaboorka ama Aufenthaltstitel. Ku lifaaq koobi, haddii la weydiiyo.",
   "el.selbst": "Adigu geli qiimayaasha",
+  "el.zuWerten": "Hubi qiimayaasha",
   "briefe.von": "Warqad ka timid: {name}",
   "el.pdf": "Dooro PDF",
   "el.pdfSeite": "Bogga {n} ee {m} waa la akhrinayaa …",

@@ -45,6 +45,8 @@
   "bp.erk.ok": "Les valeurs sont justes",
   "bp.erk.warte": "Vérifiez d’abord les valeurs reconnues.",
   "bp.erk.feld": "Difficile à lire. Vérifiez bien.",
+  "bp.erk.fehlt": "Il manque encore :",
+  "bp.erk.zu": "Aller aux informations",
   "bp.pf.h": "Vérifier une expertise de dépendance",
   "bp.pf.p": "Scannez l’expertise ou choisissez un PDF. SoLo recalcule les points.",
   "bp.sa.h": "Vérifier une décision de minimum vieillesse (Grundsicherung im Alter)",

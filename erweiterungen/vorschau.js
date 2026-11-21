@@ -46,15 +46,31 @@
     erkBeschr(el, p + '-erk-t', false); erkBeschr(el, el.id + '-unsicher', false);
     const u = el.id && $(el.id + '-unsicher'); if (u) u.remove();
   }
+  // Erst prüfen, dann bestätigen (GOV.UK „Check answers“): Hinweis über den Werten, Knopf „Werte stimmen“ darunter (nach dem letzten Formular).
+  // Fehlende Angaben stehen schon im Hinweis oben, mit Sprung zum Formular (GOV.UK Error summary), nicht erst unten im Ergebnis.
+  const ERK_ENDE = { pf: 'pf-form2' };
   function erkHinweis(p) {
     let d = $(p + '-erk');
     if (!d) {
       d = h('div', { class: 'pp-erk-hinweis', id: p + '-erk' },
         h('p', { id: p + '-erk-t', 'data-t': 'bp.erk.t', text: tA('bp.erk.t', 'Diese Werte hat SoLo aus dem Brief gelesen. Bitte vergleiche sie mit dem Brief.') }),
-        h('button', { type: 'button', class: 'btn', id: p + '-erk-ok', 'data-t': 'bp.erk.ok', text: tA('bp.erk.ok', 'Werte stimmen'), onclick: () => erkFertig(p) }));
+        h('div', { class: 'pp-erk-fehlt', id: p + '-erk-fehlt', hidden: true }));
       $(ERK[p][1]).insertAdjacentElement('beforebegin', d);
+      const unten = h('div', { class: 'btns pp-erk-unten', id: p + '-erk-unten' },
+        h('button', { type: 'button', class: 'btn primary', id: p + '-erk-ok', 'data-t': 'bp.erk.ok', text: tA('bp.erk.ok', 'Werte stimmen'), onclick: () => erkFertig(p) }));
+      $(ERK_ENDE[p] || ERK[p][1]).insertAdjacentElement('afterend', unten);
     }
     return d;
+  }
+  // Solange erkannte Werte offen sind: was danach noch fehlt, oben im Hinweis (mit Sprung zum Formular)
+  function erkFehlt(p, liste) {
+    const box = $(p + '-erk-fehlt'); if (!box) return;
+    box.replaceChildren();
+    box.hidden = !(erkOffen[p] && liste && liste.length);
+    if (box.hidden) return;
+    const zu = () => { const f = $(ERK[p][1]), el = f.querySelector('input, select'); f.scrollIntoView({ block: 'start' }); if (el) el.focus({ preventScroll: true }); };
+    box.append(h('p', { class: 'pp-fehlt-liste' }, h('strong', { 'data-t': 'bp.erk.fehlt', text: tA('bp.erk.fehlt', 'Außerdem fehlt noch:') }), ' ' + liste.join(', ') + '.'),
+      h('button', { type: 'button', class: 'linkbtn', 'data-t': 'bp.erk.zu', text: tA('bp.erk.zu', 'Zu den Angaben'), onclick: zu }));
   }
   // Alle Markierungen eines Teils weg (bestätigt, neu eingelesen oder geleert). neu = false: nicht neu zeichnen
   function erkFertig(p, neu) {
@@ -62,6 +78,7 @@
     erkOffen[p] = false;
     for (const el of erkFelder(p)) erkFeldWeg(el, p);
     const d = $(p + '-erk'); if (d) d.hidden = true;
+    const u = $(p + '-erk-unten'); if (u) u.hidden = true;
     if (war && neu !== false) ERK[p][2]();
   }
   // Nach dem Einlesen: markierte Felder des Teils sperren das Ergebnis, bis sie bestätigt oder geändert sind.
@@ -70,7 +87,7 @@
     const felder = erkFelder(p);
     if (!felder.length) { erkFertig(p, false); return; }
     erkOffen[p] = true;
-    erkHinweis(p).hidden = false;
+    erkHinweis(p).hidden = false; $(p + '-erk-unten').hidden = false;
     for (const el of felder) {
       erkBeschr(el, p + '-erk-t', true);
       if (el.id && unsicher && unsicher.has(el.id)) {
@@ -539,7 +556,7 @@ Ergebnis: Pflegegrad 2`;
   }
   function zeigeBescheid() {
     const box = $('bs-erg'); box.replaceChildren();
-    if (erkSperre('bs', box)) return;
+    if (erkOffen.bs) erkFehlt('bs', fehltSGB2(leseBescheid())); if (erkSperre('bs', box)) return;
     const e = leseBescheid();
     if (!e.personen.length) { box.append(h('p', { text: 'Bitte zuerst die Personen eintragen.' })); return; }
     if (fehltNoch(box, fehltSGB2(e))) return;
@@ -587,7 +604,7 @@ Ergebnis: Pflegegrad 2`;
   function zeigeGSA() {
     $('ga-p2').hidden = $('ga-zahl').value !== '2';
     const box = $('ga-erg'); box.replaceChildren();
-    if (erkSperre('ga', box)) return;
+    if (erkOffen.ga) erkFehlt('ga', fehltGSA(leseGSA())); if (erkSperre('ga', box)) return;
     const e = leseGSA();
     if (fehltNoch(box, fehltGSA(e))) return;
     const r = BescheidGSA.pruefe(e, Rules);
@@ -634,7 +651,7 @@ Ergebnis: Pflegegrad 2`;
   }
   function zeigeWG() {
     const box = $('wg-erg'); box.replaceChildren();
-    if (erkSperre('wg', box)) return;
+    if (erkOffen.wg) erkFehlt('wg', fehltWG(leseWG())); if (erkSperre('wg', box)) return;
     const e = leseWG();
     if (fehltNoch(box, fehltWG(e))) return;
     const r = BescheidWG.pruefe(e, Rules);
@@ -683,7 +700,7 @@ Ergebnis: Pflegegrad 2`;
   function zeigeKiZ() {
     for (const el of document.querySelectorAll('.kz-zwei')) el.hidden = $('kz-zahl').value !== '2';
     const box = $('kz-erg'); box.replaceChildren();
-    if (erkSperre('kz', box)) return;
+    if (erkOffen.kz) erkFehlt('kz', fehltKiZ(leseKiZ())); if (erkSperre('kz', box)) return;
     const e = leseKiZ();
     if (!e.kinder.length) { box.append(h('p', { text: 'Bitte zuerst die Kinder eintragen.' })); return; }
     if (fehltNoch(box, fehltKiZ(e))) return;

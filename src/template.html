@@ -950,6 +950,9 @@
   .pp .pp-erkannt { background: var(--mark-bg) !important; border-color: var(--mark-line) !important; color: var(--mark-ink) !important; } /* !important: die Feldstile des Prüfpakets sind spezifischer */
   .pp .pp-erkannt.pp-unsicher { background: var(--warn-bg) !important; border: 2px solid var(--warn) !important; color: var(--ink) !important; } /* Foto: schwer lesbar oder unplausibel */
   .el-erkl { background: var(--warn-bg); border-radius: 12px; padding: 10px 14px; margin-top: 8px; }
+  .el-banner { background: var(--ok-bg); color: var(--ink); border-inline-start: 4px solid var(--ok); border-radius: 12px; padding: 10px 14px; font-weight: 600; }
+  .el-banner .btn { margin-top: 8px; }
+  #elMsg:empty { display: none; }
   /* Aufforderung zur Senkung der Wohnkosten (erweiterungen/kostensenkung.js): Rand in der Farbe des Absenders */
   .el-ks { border-inline-start: 4px solid var(--c-briefe-t); display: grid; gap: 8px; }
   .el-ks[data-traeger="jc"] { border-inline-start-color: var(--c-leistungen-t); }
@@ -1327,6 +1330,7 @@
       <!--ZURUECK id=briefZurueck kid=briefKachelKopf hidden=1-->
       <h2 id="h-briefe" class="ans-h"></h2>
       <div class="einlesen" id="einlesen" hidden>
+        <p class="msg" id="elMsg" role="status" aria-live="polite"></p>
         <div class="btns">
           <button type="button" class="btn primary" id="elScan"><svg class="knopf-sym" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span id="elScanT" data-t="el.scan"></span></button>
           <button type="button" class="btn ghost" id="elPdf"><svg class="knopf-sym" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></svg><span data-t="el.pdf"></span></button>
@@ -1341,7 +1345,6 @@
           <div class="btns"><button type="button" class="btn primary" id="elLesen" data-t="el.lesen"></button></div>
         </div>
         <p class="small muted" data-t="el.privat"></p>
-        <p class="msg" id="elMsg" role="status" aria-live="polite"></p>
         <div id="elErg"></div>
       </div>
       <div class="kacheln uk-raster" id="briefKacheln"></div>

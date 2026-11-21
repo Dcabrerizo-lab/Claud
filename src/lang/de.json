@@ -1223,6 +1223,7 @@
   "sc.f.kv": "Deine Krankenkasse und deine Versichertennummer. Beides steht auf deiner Versichertenkarte.",
   "sc.f.aufenthalt": "Staatsangehörigkeit und Aufenthaltsstatus. Das steht im Pass oder im Aufenthaltstitel. Lege eine Kopie bei, wenn danach gefragt wird.",
   "el.selbst": "Werte selbst eingeben",
+  "el.zuWerten": "Werte prüfen",
   "briefe.von": "Brief von: {name}",
   "el.pdf": "PDF wählen",
   "el.pdfSeite": "Seite {n} von {m} wird gelesen …",

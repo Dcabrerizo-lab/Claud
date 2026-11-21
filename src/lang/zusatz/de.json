@@ -45,6 +45,8 @@
   "bp.erk.ok": "Werte stimmen",
   "bp.erk.warte": "Bitte zuerst die erkannten Werte prüfen.",
   "bp.erk.feld": "Schwer zu lesen. Bitte genau prüfen.",
+  "bp.erk.fehlt": "Außerdem fehlt noch:",
+  "bp.erk.zu": "Zu den Angaben",
   "bp.pf.h": "Pflegegutachten prüfen",
   "bp.pf.p": "Scanne das Gutachten oder wähle ein PDF. SoLo rechnet die Punkte nach.",
   "bp.sa.h": "Bescheid Grundsicherung im Alter prüfen",
