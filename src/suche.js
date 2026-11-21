@@ -32,13 +32,13 @@ var Suche = (function () {
     ['g-rate', 'G', 'gs.rate'], ['g-hilfe', 'G', 'sb.h'], ['g-finden', 'G', 'sb.finden'], ['g-termin', 'G', 'sb.termin'], ['g-bmappe', 'G', 'sb.mappe'],
     ['g-ablauf', 'G', 'sb.ablauf'], ['g-planen', 'G', 'gs.planen'], ['g-haushalt', 'G', 'hb.kachel'], ['g-sp-strom', 'G', 'sp.strom'], ['g-sp-heizen', 'G', 'sp.heizen'],
     ['g-sp-essen', 'G', 'sp.essen'], ['g-sp-vertraege', 'G', 'sp.vertraege'], ['g-abschlag', 'G', 'pl.abschlag'], ['g-tarif', 'G', 'hb.tv.kachel'],
-    ['pflege', 'P', 'home.pflege'], ['p-hilfe', 'P', 'pu.hilfe'], ['p-schaetzen', 'P', 'pu.schaetzen'],
+    ['pflege', 'P', 'home.pflege'], ['p-hilfe', 'P', 'pu.hilfe'], ['p-schaetzen', 'P', 'pu.schaetzen'], ['p-gutachten', 'P', 'su.p.gutachten'],
     ['ausziehen', 'A', 'az.kachel'], ['a-vorher', 'A', 'az.vorher.h'], ['a-tage', 'A', 'az.tage.h'], ['a-geld', 'A', 'az.geld.h'], ['a-vers', 'A', 'az.vers.h'],
     ['a-achtung', 'A', 'az.achtung.h'], ['a-hilfen', 'A', 'az.hilfen.h'],
     ['mappe', 'M', 'ordner.mappe'],
     ['einst', 'E', 'nav.einst'], ['e-anzeige', 'E', 'set.anzeige.h'], ['e-erinnern', 'E', 'set.erinnern.h'], ['e-sicher', 'E', 'set.sicher.h'],
     ['e-fach', 'E', 'set.fach.h'], ['e-about', 'E', 'set.about.h'],
-    ['ordner', 'O', 'nav.ordner'], ['o-fristen', 'O', 'fri.h'], ['o-ergebnis', 'O', 'ordner.ergebnis']
+    ['ordner', 'O', 'nav.ordner'], ['o-fristen', 'O', 'fri.h'], ['o-ergebnis', 'O', 'ordner.ergebnis'], ['o-import', 'O', 'kw.imp.h']
   ]);
 
   // ---------- Vergleich ----------

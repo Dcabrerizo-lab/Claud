@@ -167,5 +167,21 @@
   "overpayment",
   "pay back Jobcenter",
   "Rückforderung"
+ ],
+ "p-hilfe": [
+  "care allowance",
+  "home care service",
+  "respite care",
+  "short-term care"
+ ],
+ "p-gutachten": [
+  "care assessment report",
+  "check assessment",
+  "objection care level"
+ ],
+ "o-import": [
+  "QR code",
+  "SoLo file",
+  "file from counselling"
  ]
 }

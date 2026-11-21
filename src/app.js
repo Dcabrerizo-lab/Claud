@@ -4522,10 +4522,12 @@
     else if (id === 'pflege') puOeffnen('wahl');
     else if (id === 'p-hilfe') puOeffnen('pg');
     else if (id === 'p-schaetzen') paOeffnen(true);
+    else if (id === 'p-gutachten') { if (briefArt) briefOeffnen(null); oeffneVon('briefe', false); briefOeffnen('pk'); } // wie Brief → Pflegekasse
     else if (id === 'ausziehen' || k[0] === 'a') { $('goAusziehen').click(); if (k[0] === 'a' && window.Ausziehen) Ausziehen.oeffnen(x); }
     else if (id === 'mappe') { oeffneVon('leistungen', true); var mk = $('mappeMake'); if (mk && !mk.closest('[hidden]')) { try { mk.scrollIntoView({ block: 'center' }); } catch (e) {} mk.focus({ preventScroll: true }); } } // Knopf zur Antragsmappe unter dem Ergebnis (ohne Ergebnis: der Hilfen-Check)
     else if (id === 'einst' || id === 'ordner') { usZeigen(id, '', false); zeigeAnsicht(id, true); }
     else if (k[0] === 'e') { zeigeAnsicht('einst', false); usZeigen('einst', x, true); }
+    else if (id === 'o-import') { usZeigen('ordner', '', false); zeigeAnsicht('ordner', false); var ki = $('kwImport'); if (ki) { ki.open = true; try { ki.scrollIntoView({ block: 'start' }); } catch (x3) {} var ks = ki.querySelector('summary'); if (ks) ks.focus({ preventScroll: true }); } } // „Von der Beratung bekommen“
     else if (id === 'o-fristen') { zeigeAnsicht('ordner', false); usZeigen('ordner', 'fristen', true); }
     else if (id === 'o-ergebnis') { oeffneVon('leistungen', false); var e = $('ergebnis'); if (e) { try { e.scrollIntoView({ block: 'start' }); } catch (x2) {} e.focus({ preventScroll: true }); } }
     if (aktAnsicht !== 'start') { sucheRueck = navEbene().pfad; if (navBereit) Navigation.melde(); }
