@@ -163,6 +163,7 @@
   const P = Pflege;
   function baueModule() {
     const box = $('pf-module');
+    // Jeder Bereich zugeklappt (UX-Audit D #3: sonst 64 Auswahllisten untereinander); Überschrift zeigt, wie viel eingetragen ist
     for (const m of [1, 2, 3, 4, 5, 6]) {
       const fs = h('fieldset', {}, h('legend', { class: 'vh', text: `Bereich ${m}: ${P.MODUL[m].kurz}` }), h('p', { class: 'small muted', text: `Im Gutachten: „${P.MODUL[m].name}“. ${P.MODUL[m].leicht}. Gewichtung ${P.MODUL[m].gewicht}.` }));
       if (m === 5) {
@@ -187,27 +188,28 @@
           fs.append(h('div', { class: 'row' }, h('label', { for: 'pf-' + k.id }, `${k.id} ${k.leicht}`, h('span', { class: 'amt', text: k.name + (k.faktor ? ` (zählt ${k.faktor}-fach)` : '') })), sel));
         }
       }
-      // Aufgabenliste statt 48 Auswahllisten untereinander (UX-Audit B): je Bereich eine zugeklappte Zeile mit Stand, aufklappen zum Prüfen
-      box.append(h('details', { class: 'pf-bereich', id: `pf-bereich-${m}`, 'data-m': String(m) },
-        h('summary', {}, h('span', { class: 'pf-b-name', text: `Bereich ${m}: ${P.MODUL[m].kurz}` }), h('span', { class: 'pf-b-stand', id: `pf-bereich-${m}-stand` })), fs));
+      box.append(h('details', { class: 'pf-bereich', id: 'pf-bereich-' + m, 'data-m': m }, h('summary', {}, h('span', { text: `Bereich ${m}: ${P.MODUL[m].kurz}` }), h('span', { class: 'pf-zahl muted small' })), fs));
     }
   }
-  // Stand je Bereich in der Zeile: „3 von 5 eingetragen“, bei Bereich 5 die Zahl der Hilfen; „bitte prüfen“, solange erkannte Werte offen sind
-  function pflegeStand() {
-    for (const m of [1, 2, 3, 4, 5, 6]) {
-      const d = $(`pf-bereich-${m}`), el = $(`pf-bereich-${m}-stand`); if (!d || !el) continue;
-      let txt;
-      if (m === 5) {
-        const n = [...d.querySelectorAll('input[type="number"]')].filter((x) => x.value !== '' && +x.value > 0).length + ($('pf-5.12-taeglich').checked ? 1 : 0) + (+$('pf-5.16').value > 0 ? 1 : 0);
-        txt = n ? `${n} ${n === 1 ? 'Angabe' : 'Angaben'}` : 'keine Hilfe eingetragen';
-      } else {
-        const ks = P.KRITERIEN.filter((x) => x.m === m), n = ks.filter((k) => $('pf-' + k.id).value !== '').length;
-        txt = `${n} von ${ks.length} eingetragen`;
-      }
-      const pruefen = d.querySelector('.pp-erkannt');
-      el.textContent = txt + (pruefen ? ' · bitte prüfen' : '');
-      d.classList.toggle('pf-b-pruefen', !!pruefen);
+  function pfZaehlen() {
+    for (const d of document.querySelectorAll('#pf-module details.pf-bereich')) {
+      const m = +d.dataset.m; let n = 0, x = 0;
+      if (m === 5) for (const z of d.querySelectorAll('.freq:not(.kopf)')) { if (z.hidden) continue; n++; if ([...z.querySelectorAll('input')].some((i) => (i.type === 'checkbox' ? i.checked : i.value !== ''))) x++; }
+      else for (const sel of d.querySelectorAll('select')) { n++; if (sel.value !== '') x++; }
+      const pruefen = !!d.querySelector('.pp-erkannt'); // aus dem Brief gelesen, noch nicht bestätigt (UX-Audit B)
+      d.querySelector('.pf-zahl').textContent = ` · ${x} von ${n} eingetragen` + (pruefen ? ' · bitte prüfen' : '');
+      d.classList.toggle('pf-b-pruefen', pruefen);
     }
+  }
+  // Oben: die eigene Einschätzung aus SoLo (falls vorhanden), damit man weiß, womit verglichen wird
+  function zeigeEigenOben() {
+    let k = $('pf-eigen-oben');
+    if (!k) { k = h('div', { class: 'card pf-eigen-oben', id: 'pf-eigen-oben', hidden: true }); $('pf-form').insertAdjacentElement('beforebegin', k); }
+    k.replaceChildren(); k.hidden = !eigen;
+    if (!eigen) return;
+    const r = P.rechne(eigen);
+    k.append(h('p', {}, h('strong', { text: r.pg ? `Deine Einschätzung in SoLo: Pflegegrad ${r.pg}` : 'Deine Einschätzung in SoLo: kein Pflegegrad' }), h('span', { class: 'muted', text: ` · ${zahl(r.gesamt)} von 100 Punkten` })),
+      h('p', { class: 'small', text: 'Trage darunter die Werte aus dem Gutachten ein, Bereich für Bereich. SoLo zeigt dann jede Bewertung, die im Gutachten niedriger ist.' }));
   }
   function lesePflege() {
     const stufen = {};
@@ -244,9 +246,9 @@
   }
   function zeigePflege() {
     const g = lesePflege(), r = P.rechne(g), box = $('pf-erg');
-    pflegeStand();
     $('pf-monate-box').hidden = !(g.alterJahre !== '' && +g.alterJahre < 2);
     $('pf-zeile-5K').hidden = !r.kind;
+    pfZaehlen(); zeigeEigenOben();
     box.replaceChildren();
     if (erkSperre('pf', box)) { zeigeErklaerung(g, r); if ($('pf-ab-info')) $('pf-ab-info').replaceChildren(h('p', { 'data-t': 'bp.erk.warte', text: erkWarte() })); return; }
     box.append(h('h2', { text: 'Ergebnis: das sagt das Gutachten' }),
@@ -955,7 +957,13 @@ Ergebnis: Pflegegrad 2`;
       if (art === 'hoeher') $('pf-art-h').checked = true; else if (art === 'widerspruch') $('pf-art-w').checked = true;
       zeigePfArt(); zeigePflege();
     },
-    eigene(g) { eigen = g || null; zeigePflege(); }
+    eigene(g) {
+      eigen = g || null;
+      // Alter aus der Einschätzung übernehmen, wenn noch keins eingetragen ist (UX-Audit D #3)
+      if (eigen && eigen.alterJahre != null && eigen.alterJahre !== '' && !$('pf-alter').value) $('pf-alter').value = eigen.alterJahre;
+      if (eigen && eigen.alterMonate != null && eigen.alterMonate !== '' && !$('pf-monate').value) $('pf-monate').value = eigen.alterMonate;
+      zeigePflege();
+    }
   };
   // Datum des Bescheids nicht sicher erkannt: Feld leer lassen und als „bitte eintragen“ markieren (nie ein anderes Datum raten)
   function datumFehlt(id) {

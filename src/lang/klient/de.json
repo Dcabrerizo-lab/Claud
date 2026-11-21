@@ -89,5 +89,12 @@
   "kw.imp.nichts": "Nichts ausgewählt.",
   "kw.imp.f.format": "Das ist keine gültige SoLo-Datei.",
   "kw.imp.f.zuGross": "Die Datei ist zu groß.",
-  "kw.imp.f.speicher": "Speichern geht gerade nicht. Ist SoLo gesperrt? Bitte entsperren und noch einmal versuchen."
+  "kw.imp.f.speicher": "Speichern geht gerade nicht. Ist SoLo gesperrt? Bitte entsperren und noch einmal versuchen.",
+  "kb.s1": "1 · Was bekommt dein Klient?",
+  "kb.s2": "2 · Wie gibst du es weiter?",
+  "kb.zaehler": "{titel} ({n} von {m})",
+  "kb.weg.blatt": "Als Blatt: auf Papier oder als Datei",
+  "kb.vorschau": "Vorschau des Blatts zeigen",
+  "kb.vorschau.zu": "Vorschau ausblenden",
+  "kw.qr.zuViel": "Für einen QR-Code ist das zu viel. Teile es als SoLo-Datei oder hake weniger an."
 }

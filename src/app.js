@@ -3891,6 +3891,7 @@
     var pgJetzt = paEchterPg();
     PflegeAssistent.start($('pflegeAssist'), {
       pgAktuell: pgJetzt, antworten: pa.antworten, ergebnis: zumErgebnis === true, einfach: lang === 'de' && einfachSprache,
+      app: { lang: lang, dir: (I18N[lang] && I18N[lang]['meta.dir']) || 'ltr', zurueck: t('nav.zurueck') }, // fremde Sprache: Inhalt lang=de dir=ltr, „Zurück“ übersetzt
       speichern: function (a) { pa.antworten = a; paSpeichern(); },
       beimErgebnis: paMerken,
       abbrechen: paVerlassen,
@@ -3986,8 +3987,10 @@
       'Verhinderungspflege: Die Pflegeperson macht Urlaub, ist krank oder braucht ein paar Stunden Pause. Dann pflegt jemand anderes zu Hause, zum Beispiel ein Pflegedienst, Bekannte oder Nachbarn.',
       'Vertreten nahe Angehörige oder Personen aus demselben Haushalt (nicht beruflich), zahlt die Pflegekasse höchstens das Doppelte des monatlichen Pflegegeldes. Nachgewiesene Kosten wie Fahrt oder Verdienstausfall können dazukommen (bis zum Jahresbetrag).',
       'Kurzzeitpflege: Die gepflegte Person wohnt für eine Zeit in einer Pflegeeinrichtung, zum Beispiel nach einem Krankenhausaufenthalt.',
-      'Während der Vertretung zahlt die Pflegekasse bis zu 8 Wochen im Jahr die Hälfte des Pflegegelds weiter. Wer nur stundenweise vertreten wird (weniger als 8 Stunden am Tag), behält das volle Pflegegeld.',
-      'Tipp: Den Antrag kannst du auch nachträglich stellen. Hebe alle Rechnungen und Quittungen auf.']);
+      // Rechtsprüfung 21.11.2026 (docs/entwuerfe/rechtsfragen-rot.md, Frage 3): volles Pflegegeld bei stundenweiser Vertretung steht nicht im Gesetz
+      // (§ 37 Abs. 2 SGB XI; BMG „Verhinderungspflege“ nur „auch stundenweise“) → nur „möglich“. Frist: § 39 Abs. 1 Satz 2 SGB XI.
+      'Während der Vertretung zahlt die Pflegekasse bis zu 8 Wochen im Jahr die Hälfte des Pflegegelds weiter. Wird nur stundenweise vertreten (weniger als 8 Stunden am Tag), kann das volle Pflegegeld weiterlaufen. Frag dazu bei deiner Pflegekasse nach.',
+      'Tipp: Den Antrag kannst du auch nachträglich stellen, spätestens bis zum Ende des folgenden Jahres. Hebe alle Rechnungen und Quittungen auf.']);
     abschnitt('pi-hilfs', 'Pflegehilfsmittel und Umbau der Wohnung', [
       'Pflegehilfsmittel zum Verbrauch, zum Beispiel Einmalhandschuhe, Desinfektion oder Bettschutz, gibt es bis ' + piEuro(R.beh.verbrauch) + ' im Monat. Meist kommt eine Box nach Hause, die der Anbieter mit der Pflegekasse abrechnet.',
       'Größere Hilfsmittel wie ein Pflegebett oder ein Rollator werden meist leihweise gestellt.',
@@ -4008,6 +4011,7 @@
   function pflegeInfo(zurueckZu, fokus, abschnitt) {
     piZurueckZu = zurueckZu || 'leistungen'; piFokus = fokus || null; herkunft.pflegeinfo = piZurueckZu;
     pflegeInfoBauen(); $('piNurDe').hidden = lang === 'de';
+    if (lang !== 'de') { $('pflegeInfo').setAttribute('lang', 'de'); $('pflegeInfo').setAttribute('dir', 'ltr'); } else { $('pflegeInfo').removeAttribute('lang'); $('pflegeInfo').removeAttribute('dir'); }
     document.querySelectorAll('#pflegeInfo details').forEach(function (d) { d.open = false; });
     zeigeAnsicht('pflegeinfo', !abschnitt);
     if (abschnitt) piAbschnitt(abschnitt);
@@ -4021,7 +4025,13 @@
   // Unterstützung: erst den Pflegegrad fragen, dann nur zeigen, was dort gilt (Rules.pflegeFuer). Beträge aus den Rechenregeln.
   // Die Erklärtexte gibt es wie den Pflege-Assistenten zurzeit nur auf Deutsch.
   var pu = { schritt: 'wahl', pg: null };
-  var PU_TOP = { 0: ['beratung', 'kurs'], 1: ['entl', 'hilfs', 'umbau', 'beratung'], 2: ['geld', 'dienst', 'entl', 'verh', 'tages'] };
+  var PU_TOP = { 0: ['beratung', 'kurs'], 1: ['entl', 'hilfs', 'umbau', 'beratung'], 2: ['geld', 'dienst', 'kombi', 'entl', 'verh', 'tages'] };
+  // Ab Pflegegrad 2 (UX-Audit D #4, Rechtsprüfung 21.11.2026 Frage 3): erst die Wahl „Wer pflegt?“ (Pflegegeld, Pflegedienst, gemischt),
+  // dann was zusätzlich geht (kein Geld aufs Konto). Beträge aus den Regeln, „bis“ bei Budgets.
+  var PU_GRUPPEN = [
+    { id: 'pu-wer', titel: 'Wer pflegt? Du kannst wählen:', teile: [['geld', 'Familie, Freunde oder Nachbarn pflegen'], ['dienst', 'Ein Pflegedienst pflegt'], ['kombi', 'Beides gemischt']] },
+    { id: 'pu-zusatz', titel: 'Zusätzlich (kein Geld aufs Konto, die Pflegekasse bezahlt Rechnungen):', teile: [['entl'], ['verh'], ['tages']] }
+  ];
   var PU_ART = { konto: 'Geld aufs Konto', budget: 'Budget: Die Pflegekasse bezahlt', zuschuss: 'Zuschuss', frei: 'Kostenlos', schutz: 'Absicherung' };
   var PU_EINHEIT = { monat: 'pro Monat', jahr: 'pro Jahr', mass: 'je Maßnahme' };
   function puTexte(pg) {
@@ -4030,7 +4040,9 @@
     var e2 = function (x) { return Number(x).toLocaleString('de-DE', { minimumFractionDigits: x % 1 ? 2 : 0, maximumFractionDigits: 2 }) + ' €'; };
     return {
       geld: ['Geld für die Pflege zu Hause (Pflegegeld)', 'Kommt aufs Konto, wenn Angehörige, Freunde oder Nachbarn pflegen. Die gepflegte Person entscheidet frei, wofür sie es verwendet.',
-        ['Pflicht: Bei Pflegegrad 2 bis 5 kommt einmal im halben Jahr eine kostenlose Beratung ins Haus. Bei Pflegegrad 4 und 5 geht das auf Wunsch auch jedes Vierteljahr. Fällt die Pflicht-Beratung aus, kann die Pflegekasse das Pflegegeld kürzen.']],
+        ['Bei Pflegegrad 4 und 5 geht das auf Wunsch auch jedes Vierteljahr.'],
+        // sichtbar unter dem Betrag (§ 37 Abs. 3 SGB XI; Wortlaut Rechtsprüfung 21.11.2026: „kann kürzen“)
+        'Mit Pflegegeld kommt einmal im halben Jahr eine kostenlose Pflicht-Beratung ins Haus. Fällt sie aus, kann die Pflegekasse das Pflegegeld kürzen.'],
       dienst: ['Pflegedienst kommt ins Haus (Pflegesachleistung)', 'Kein Geld aufs Konto: Der Pflegedienst rechnet bis zu diesem Betrag direkt mit der Pflegekasse ab.',
         ['Geht statt Pflegegeld oder zusammen damit (siehe „Pflegedienst und Pflegegeld gemischt“).',
           'Was der Pflegedienst in einem Monat nicht braucht, kannst du bis zu 40 % des Betrags auch für anerkannte Hilfen im Alltag nutzen (Umwandlung). Die Rechnungen reichst du bei der Pflegekasse ein.']],
@@ -4049,7 +4061,8 @@
       tages: ['Tagespflege oder Nachtpflege (teilstationäre Pflege)', 'Die Person ist tagsüber oder nachts in einer Einrichtung. Die Einrichtung rechnet bis zu diesem Betrag direkt mit der Pflegekasse ab.',
         ['Gibt es zusätzlich: Pflegegeld und Pflegedienst werden dafür nicht gekürzt.', 'Die Fahrt zur Einrichtung gehört dazu. Essen und Unterkunft zahlst du selbst; dafür kann der Entlastungsbetrag helfen.']],
       kombi: ['Pflegedienst und Pflegegeld gemischt (Kombinationsleistung)', 'Nutzt der Pflegedienst nur einen Teil seines Budgets, kommt der Rest anteilig als Pflegegeld aufs Konto.',
-        ['Beispiel Pflegegrad ' + kombiPg + ': Der Pflegedienst nutzt die Hälfte (' + e2(halb) + '). Dann kommen noch ' + e2(Rules.pflegeKombi(kombiPg, halb)) + ' Pflegegeld im Monat aufs Konto.']],
+        ['Beispiel Pflegegrad ' + kombiPg + ': Der Pflegedienst nutzt die Hälfte (' + e2(halb) + '). Dann kommen noch ' + e2(Rules.pflegeKombi(kombiPg, halb)) + ' Pflegegeld im Monat aufs Konto.'],
+        'An die Aufteilung bist du 6 Monate gebunden.'], // § 38 Satz 3 SGB XI (Rechtsprüfung 21.11.2026, Frage 3)
       hilfs: ['Pflegebox mit Handschuhen und Co. (Pflegehilfsmittel zum Verbrauch)', 'Zum Beispiel Einmalhandschuhe, Desinfektion oder Bettschutz. Meist kommt eine Lieferung, der Anbieter rechnet mit der Pflegekasse ab.',
         ['Ein Pflegebett gibt es meist leihweise; den Antrag stellst du bei der Pflegekasse.']],
       notruf: ['Notrufknopf für zu Hause (Hausnotruf)', 'Ein Zuschuss der Pflegekasse ist möglich, wenn die Person oft allein ist und im Notfall Hilfe rufen können muss.', []],
@@ -4078,6 +4091,8 @@
     var p = function (txt, cls) { return box.appendChild(el('p', txt, cls)); };
     // „← Zurück“ steht oben (gemeinsamer Knopf, src/navigation.js; eine Ebene: Liste → Pflegegrad → Auswahl → Start)
     $('puNurDe').hidden = lang === 'de' || pu.schritt === 'wahl';
+    // Übersicht nach Pflegegrad ist nur Deutsch: in anderen Sprachen als lang="de" dir="ltr" auszeichnen (Satzzeichen und Beträge kippen sonst in RTL)
+    if (lang !== 'de' && pu.schritt === 'liste') { box.setAttribute('lang', 'de'); box.setAttribute('dir', 'ltr'); } else { box.removeAttribute('lang'); box.removeAttribute('dir'); }
     var vonErg = paRueck === 'pflegestart' && pu.schritt === 'liste'; // aus der Pflege-Ergebnisseite geöffnet
     if (pu.schritt === 'wahl') {
       p(t('pu.wahl'), 'pf-frage');
@@ -4121,8 +4136,9 @@
         einl('Geld und Budgets der Pflegekasse gibt es erst mit einem Pflegegrad; diese Hilfen gibt es schon vorher.', 'Wie bekomme ich einen Pflegegrad?',
           ['Den Antrag stellst du bei der Pflegekasse; ein Anruf genügt.', 'Tritt die Pflege plötzlich ein, dürfen Angehörige bis zu 10 Arbeitstage der Arbeit fernbleiben, um die Pflege zu organisieren. Das gilt schon, wenn ein Pflegegrad voraussichtlich kommt. Als Lohnersatz gibt es auf Antrag das Pflegeunterstützungsgeld der Pflegekasse.']);
       }
-      var karte = function (l, ziel) {
+      var karte = function (l, ziel, wer) {
         var z = tx[l.id], d = el('section', null, 'pu-l pu-' + l.art); d.id = 'pu-l-' + l.id;
+        if (wer) d.appendChild(el('p', wer, 'pu-wer-wer'));
         d.appendChild(el('h3', z[0]));
         if (l.wert != null) {
           var b = el('p', null, 'pu-betrag' + (l.einheit === 'jahr' ? ' pu-jahr' : ''));
@@ -4133,13 +4149,20 @@
         }
         d.appendChild(el('p', PU_ART[l.art], 'pu-art small'));
         d.appendChild(el('p', z[1]));
+        if (z[3]) d.appendChild(el('p', z[3], 'pu-wichtig'));
         var m = el('details'); m.appendChild(el('summary', 'Mehr dazu'));
         z[2].forEach(function (x) { m.appendChild(el('p', x)); });
         m.appendChild(el('p', 'Rechtsgrundlage: ' + l.recht, 'small muted'));
         d.appendChild(m);
         ziel.appendChild(d);
       };
-      top.map(function (id) { return liste.filter(function (l) { return l.id === id; })[0]; }).filter(Boolean).forEach(function (l) { karte(l, box); });
+      var finde = function (id) { return liste.filter(function (l) { return l.id === id; })[0]; };
+      if (pg >= 2) PU_GRUPPEN.forEach(function (g) {
+        var sec = box.appendChild(el('section', null, 'pu-gruppe')); sec.id = g.id;
+        sec.appendChild(el('h3', g.titel, 'pu-gruppe-h'));
+        g.teile.forEach(function (x) { var l = finde(x[0]); if (l) karte(l, sec, x[1]); });
+      });
+      else top.map(finde).filter(Boolean).forEach(function (l) { karte(l, box); });
       // Grüner Hauptknopf unter den Leistungen: Pflegegrad selbst einschätzen (ohne Grad: für den Antrag; mit Grad 1 bis 4: passt ein höherer?).
       // Nicht bei Grad 5 und nicht, wenn die Seite aus der Ergebnisseite der Einschätzung geöffnet wurde.
       if (pg < 5 && !vonErg && typeof PflegeAssistent !== 'undefined') { var hk = box.appendChild(el('div', null, 'btns pu-haupt')); hk.appendChild(nhKnopf('btn', esc(t('pu.schaetzen')), null, function () { paOeffnen(true); })).id = 'pu-schaetzen-knopf'; }
@@ -4151,7 +4174,7 @@
         box.appendChild(w);
       }
       // Pflegeberatung ist kostenlos: § 7a Abs. 1 SGB XI, Pflegestützpunkte § 7c SGB XI (gesetze-im-internet.de, abgerufen 21.11.2026)
-      box.appendChild(tippEl('pu.tipp.beratung'));
+      var tp = box.appendChild(tippEl('pu.tipp.beratung')); if (lang !== 'de') { tp.setAttribute('lang', lang); tp.setAttribute('dir', (I18N[lang] && I18N[lang]['meta.dir']) || 'ltr'); } // übersetzter Tipp in App-Sprache
       box.appendChild(quellenEl(['Stand der Beträge: ' + U.stand + ' (' + U.quelle + '). Den genauen Anspruch legt die Pflegekasse fest.']));
     }
     if (fokus) { var h = box.querySelector('.pf-frage'); if (h) { h.setAttribute('tabindex', '-1'); h.focus(); } }
