@@ -1,3 +1,1 @@
 Differenztest KiZ-Lotse, Lauf 1 (21.11.2026)
-Lauf 2 (21.11.2026): nur Gegenprobe Unterhalt für die 9 Widerspruchsfälle (je mit, ohne, 1.000 € je Kind = 27 Abfragen)
-gegenprobe: 60,145,153,157,221,248,251,258,271
