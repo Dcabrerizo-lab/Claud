@@ -41,7 +41,10 @@ Object.keys(R.sgb2.schon).filter((g) => g).forEach((g) => {
 // Kinderzuschlag: Vermögen und Mindesteinkommen
 [[1, 1], [2, 1], [2, 3]].forEach(([a, k]) => {
   const p = a + k, v = p <= 2 ? R.kiz.vermZwei : R.kiz.vermDrei + R.kiz.vermJeWeiteres * (p - 3);
-  drei('Kinderzuschlag Vermögen, ' + p + ' Personen', v, (x) => res({ adults: a, kids: k, brutto: 2400, netto: 1800, vermoegen: x }, 'kiz').hl === 'vermHoch', NUR_UEBER);
+  // Über der Grenze: nein oder (wenn weniger als ein Monatsbetrag darüber, § 6a Abs. 3 Satz 7 BKGG) nur „möglich“ mit Hinweis
+  const kz = (x) => res({ adults: a, kids: k, brutto: 2400, netto: 1800, vermoegen: x }, 'kiz');
+  drei('Kinderzuschlag Vermögen, ' + p + ' Personen', v, (x) => kz(x).hl === 'vermHoch' || (kz(x).level === 'vielleicht' && kz(x).tx[0][0] === 'kiz.vermKnapp'), NUR_UEBER);
+  ck('[grenzen] Kinderzuschlag Vermögen über Grenze + höchstem Monatsbetrag (' + E(v + R.kiz.max * k + 1) + '), ' + p + ' Personen -> nein', kz(v + R.kiz.max * k + 1).hl === 'vermHoch');
 });
 drei('Kinderzuschlag Mindesteinkommen Alleinerziehende', R.kiz.minAlleinerziehend, (x) => res({ kids: 1, art1: 'lohn', brutto: x, netto: Math.round(x * 0.8) }, 'kiz').hl === 'minEink', NUR_UNTER);
 drei('Kinderzuschlag Mindesteinkommen Paar', R.kiz.minPaar, (x) => res({ adults: 2, kids: 1, art1: 'lohn', art2: 'ohne', brutto: x, netto: Math.round(x * 0.8) }, 'kiz').hl === 'minEink', NUR_UNTER);

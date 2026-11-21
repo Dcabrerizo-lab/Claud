@@ -27,7 +27,9 @@ ck('F2 Hinweis GSA statt Wohngeld', res(f2).z.includes('z.gsaWg'));
 const f3 = { alter: true, nichtArbeit: true, brutto: 900, miete: 600, mietstufe: 3, vermoegen: 20000, pflegegrad: '3' };
 ck('F3 GSA wegen Vermögen nein', L(f3, 'gsa') === 'nein' && K(f3, 'gsa')[0] === 'gsa.verm');
 ck('F3 Pflegegeld 599 + 131', L(f3, 'pflege') === 'ja' && P(f3, 'pflege', 'geld') === '599 €' && P(f3, 'pflege', 'ent') === '131 €');
-ck('F3 Wohngeld-Text ohne Verweis auf Grundsicherung', K(f3, 'wohngeld')[0] === 'wohngeld.zuNiedrigVerm');
+// Seit 21.11.2026 zählt das Wohngeld bei der Plausibilitätsprüfung mit (Nr. 15.01 WoGVwV): mit 900 € Rente reicht es, deshalb hier 400 €
+ck('F3 Wohngeld: 900 € Rente plus Wohngeld reicht für Miete und 80 % Regelbedarf -> kein „Einkommen eher zu niedrig“', res(f3).m.wohngeld.hl !== 'einkoNiedrig', K(f3, 'wohngeld'));
+ck('F3 Wohngeld-Text ohne Verweis auf Grundsicherung (Rente 400 €)', K({ ...f3, brutto: 400 }, 'wohngeld')[0] === 'wohngeld.zuNiedrigVerm', K({ ...f3, brutto: 400 }, 'wohngeld'));
 ck('F3 Eingliederungshilfe nicht vorgeschlagen (nur Pflegegrad im Alter)', L(f3, 'eingl') === 'nein');
 ck('F3 Verhinderungspflege ja', L(f3, 'pflegeplus') === 'ja');
 // 4 Paar, 2 Kinder, 4.000 € brutto gesamt
@@ -527,7 +529,7 @@ ck('[gg-studium] Studium mit 44: kein Grundsicherungsgeld (BAföG-Alter); mit 46
 ck('[bafoeg-alter] BAföG mit 44 normal geprüft, mit 46 nur möglich (Altersgrenze 45), mit 50 nein', K({ ausbildung: 'ich', gebJahr: 1982, heute: 2026.8 }, 'bafoeg')[0] === 'bafoeg.ich' && K({ ausbildung: 'ich', gebJahr: 1980, heute: 2026.8 }, 'bafoeg')[0] === 'bafoeg.alter' && L({ ausbildung: 'ich', gebJahr: 1976, heute: 2026.8 }, 'bafoeg') === 'nein');
 ck('[gg-verm] Alte gespeicherte Altersgruppen werden übernommen', L(ohne({ miete: 400, vermoegen: 6000, alterGruppe: '<31' }), 'ggeld') === 'nein' && L(ohne({ miete: 400, vermoegen: 15000, alterGruppe: '51+' }), 'ggeld') !== 'nein');
 
-ck('[kiz-verm] Kinderzuschlag: Vermögen 55.000 € bei 2 Personen erlaubt (40.000 + 15.000), 55.001 € nicht', L({ kids: 1, art1: 'lohn', brutto: 2200, netto: 1580, miete: 700, mietstufe: '3', vermoegen: 55000 }, 'kiz') === 'ja' && K({ kids: 1, art1: 'lohn', brutto: 2200, netto: 1580, miete: 700, mietstufe: '3', vermoegen: 55001 }, 'kiz')[0] === 'kiz.verm');
+ck('[kiz-verm] Kinderzuschlag: Vermögen 55.000 € bei 2 Personen erlaubt (40.000 + 15.000), 55.001 € nur 1. Monat gekürzt (möglich), 55.298 € nicht', L({ kids: 1, art1: 'lohn', brutto: 2200, netto: 1580, miete: 700, mietstufe: '3', vermoegen: 55000 }, 'kiz') === 'ja' && K({ kids: 1, art1: 'lohn', brutto: 2200, netto: 1580, miete: 700, mietstufe: '3', vermoegen: 55001 }, 'kiz')[0] === 'kiz.vermKnapp' && L({ kids: 1, art1: 'lohn', brutto: 2200, netto: 1580, miete: 700, mietstufe: '3', vermoegen: 55001 }, 'kiz') === 'vielleicht' && K({ kids: 1, art1: 'lohn', brutto: 2200, netto: 1580, miete: 700, mietstufe: '3', vermoegen: 55298 }, 'kiz')[0] === 'kiz.verm');
 // ---------- Landesleistungen (Phase 2) ----------
 ck('[lpg-ja] Bayerisches Landespflegegeld: Pflegegrad 2 in Bayern 500 € im Jahr, mit Hinweis auf den Antrag beim Landesamt', L({ pflegegrad: '2', bundesland: 'BY' }, 'lpg') === 'ja' && T({ pflegegrad: '2', bundesland: 'BY' }, 'lpg', 'lpg.ja').betrag === E(500) && K({ pflegegrad: '4' }, 'lpg').includes('lpg.antrag'));
 ck('[lpg-voraus] Landespflegegeld: Pflegegrad 1 nein, laufender Antrag möglich, außerhalb Bayerns nein', L({ pflegegrad: '1', bundesland: 'BY' }, 'lpg') === 'nein' && L({ pflegegrad: 'antrag', bundesland: 'BY' }, 'lpg') === 'vielleicht' && L({ pflegegrad: '3', bundesland: 'NW' }, 'lpg') === 'nein' && K({ pflegegrad: '3', bundesland: 'NW' }, 'lpg')[0] === 'lpg.land');
@@ -702,8 +704,11 @@ ck('[eu] EU-Bürger: Grundsicherung im Alter ausgeschlossen (§ 23 SGB XII) unte
   ck('[kiz-rentner] Rentner (Regelaltersgrenze) allein mit Kind 13 (Alter angegeben) -> nein, Verweis auf Wohngeld und Grundsicherung im Alter',
     L({ ...rk, kidsAlter: true }, 'kiz') === 'nein' && K({ ...rk, kidsAlter: true }, 'kiz')[0] === 'kiz.rentnerAllein');
   ck('[kiz-rentner] Rentner allein mit Kind unter 6 (Alter damit bekannt) -> nein', L({ ...rk, kidsU6: 1 }, 'kiz') === 'nein');
+  // Rente 1.100 € (bei 1.450 € verbraucht die Rente über dem eigenen Bedarf mit KOPFTEIL der Miete den Kinderzuschlag, DA-KiZ D.2 Abs. 1 Satz 9-11)
   ck('[kiz-rentner] Rentner allein mit Kind 16 (14 bis 17) -> nur möglich, Hinweis „nur wenn ein Kind 15 oder älter“',
-    L({ ...rk, kids14: 1, kidsAlter: true }, 'kiz') === 'vielleicht' && K({ ...rk, kids14: 1, kidsAlter: true }, 'kiz')[0] === 'kiz.nurAb15');
+    L({ ...rk, brutto: 1100, netto: 1000, kids14: 1, kidsAlter: true }, 'kiz') === 'vielleicht' && K({ ...rk, brutto: 1100, netto: 1000, kids14: 1, kidsAlter: true }, 'kiz')[0] === 'kiz.nurAb15', K({ ...rk, brutto: 1100, netto: 1000, kids14: 1, kidsAlter: true }, 'kiz'));
+  ck('[kiz-rentner] Rentner allein, Rente 1.450 €, Kind 16 mit Unterhaltsvorschuss: Rente über eigenem Bedarf (Kopfteil 400 €) und 45 % UVG verbrauchen den Kinderzuschlag',
+    L({ ...rk, kids14: 1, kidsAlter: true }, 'kiz') === 'nein');
   ck('[kiz-rentner] Rentner allein, Kinderalter nicht angegeben -> nur möglich (keine falsche Absage)', L(rk, 'kiz') === 'vielleicht' && K(rk, 'kiz')[0] === 'kiz.nurAb15');
   ck('[kiz-rentner] Rentner allein mit Kind und jungem Erwachsenen (18-24, erwerbsfähig) -> normale Rechnung ohne Hinweis',
     L({ ...rk, young: 1, kidsAlter: true }, 'kiz') !== 'nein' && !K({ ...rk, young: 1, kidsAlter: true }, 'kiz').includes('kiz.nurAb15'));

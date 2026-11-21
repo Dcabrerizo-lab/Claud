@@ -475,7 +475,7 @@
   "vg.auto.sprung": "Die Uhrzeit des Geräts ist mehr als ein Jahr weiter als beim letzten Öffnen. Stimmt das Datum? Dann jetzt abgelaufene Vorgänge löschen. Bei „Abbrechen“ wird nichts gelöscht.",
   "vg.pin.h": "PIN-Sperre (Sichtschutz)",
   "vg.pin.t": "Mit einer PIN werden die gespeicherten Angaben auf diesem Gerät verschlüsselt. Wer dein Handy in die Hand bekommt, sieht sie ohne PIN nicht. Das ist ein Sichtschutz, kein Schutz gegen Fachleute mit Spezialwerkzeug. Nach 2 Minuten im Hintergrund sperrt sich SoLo von selbst.",
-  "vg.pin.erkl": "Die PIN sperrt die ganze App und verschlüsselt deine Angaben. Merke dir die PIN gut, sie wird nirgends gespeichert. Vergisst du sie, kann niemand die Angaben öffnen, auch wir nicht.",
+  "vg.pin.erkl": "Die PIN sperrt die ganze App und verschlüsselt deine Angaben. Vergisst du sie, kommst du nicht mehr an deine Angaben. Das ist ein Sichtschutz, kein Schutz gegen Fachleute mit Spezialwerkzeug.",
   "vg.pin.nicht": "Die PIN-Sperre ist auf diesem Gerät nicht verfügbar.",
   "vg.pin.label": "Neue PIN (4 bis 12 Ziffern, empfohlen: 6)",
   "vg.pin.label2": "PIN noch einmal",

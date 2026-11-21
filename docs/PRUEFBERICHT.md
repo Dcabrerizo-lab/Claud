@@ -123,9 +123,9 @@ Was keine Sicherung leisten kann: Die Prüfliste ist nur so vollständig wie das
 - **Mittagessen in der Werkstatt (§ 42b Abs. 2 SGB XII):** wird nicht als Zahl gerechnet, sondern verbreitert den Bereich „möglich“.
 - **Wohnheim in Bayern:** Für die Grundsicherung zeigt die App den Bezirk als zuständige Stelle (Leistungen aus einer Hand). Bitte fachlich bestätigen lassen.
 - **Kinderzuschlag:** Der Wohnkostenanteil der Eltern ist eine Näherung an den Existenzminimumbericht.
-- **Wohngeld:** Die Grenze „Einkommen eher zu niedrig“ (80 % des Bedarfs) ist eine Faustregel ohne Rechtsgrundlage und als solche gekennzeichnet.
+- **Wohngeld:** Die Grenze „Einkommen eher zu niedrig“ folgt seit 21.11.2026 der Plausibilitätsprüfung Nr. 15.01 WoGVwV (BMI-Hinweise 11.03.2020): Einnahmen plus geschätztes Wohngeld müssen die Miete und 80 % der Regelbedarfe decken. Sie führt nur zu „möglich“, nie zu einer Absage.
 - **Elterngeld Plus:** Für die Hälfte des Freibetrags (150 €) gibt es keine eigene Auswahl.
-- **Grundrentenfreibetrag beim Wohngeld (§ 17a WoGG):** ist nicht eingerechnet. Das Wohngeld kann dadurch etwas höher sein.
+- **Grundrentenfreibetrag beim Wohngeld (§ 17a WoGG):** in der App (Haken „33 Jahre Grundrentenzeiten“) und seit 21.11.2026 auch im Bescheid-Check eingerechnet.
 
 Ergänzend zeigt `docs/PRUEFLISTE.md` vom Gesetz her für jede Regel, ob die App sie kennt, auch die noch fehlenden.
 
@@ -205,3 +205,30 @@ Auf GitHub automatisch abgefragt, Ergebnisse als feste Testfälle in `test/amtli
 Gefundene und behobene Fehler: Kind von 6 Jahren (Mehrbedarf Alleinerziehende 36 % bis unter 7), Wohnanteil der Eltern beim Kinderzuschlag (amtliche Tabelle statt Näherung).
 Einschränkung des KiZ-Lotsen: Er berücksichtigt Einkommen der Kinder nicht (2.000 € Unterhalt oder Lohn ohne Wirkung). SoLo rechnet es nach § 6a Abs. 3 BKGG zu 45 % an (DA-KiZ-Beispiele in `test/test-ba-beispiele.js`); im Abgleich wird dafür ohne Unterhalt verglichen. Mit Unterhalt wären es 122 Fälle, in denen SoLo gesetzeskonform vorsichtiger ist als der Lotse.
 Statistisch (Dreierregel, 95 %): Fehlerrate beim Wohngeldbetrag unter 0,05 %, beim Elterngeld unter 0,3 %, falsches Ja/Nein beim Kinderzuschlag unter 0,08 %.
+
+**Abgleich mit Musterbescheiden und amtlichen Rechenbeispielen (21. November 2026):** 43 Fälle aus veröffentlichten Bescheiden und Beispielrechnungen (Familienkasse, Bundesagentur, Städte Frankfurt, Hannover, München, Bochum, Bundesbau- und Familienministerium). Kein schwerer Fehler. 9 Befunde behoben: Wohngeld-Mindesteinkommen zählt das Wohngeld mit (Nr. 15.01 WoGVwV); Vermögen bei Paaren je Person (§ 12 Abs. 2 SGB II); Grundrentenfreibetrag im Bescheid-Check (§ 17a WoGG); Kinderzuschlag mit geschätztem Wohngeld und erweitertem Zugang (§ 6a Abs. 1a BKGG), Vermögen knapp über der Grenze (§ 6a Abs. 3 BKGG), Altersrentner mit Kopfteil (DA-KiZ D.2); Wohngeld über 12 Personen (§ 19 Abs. 3 WoGG); Einkommensgrenze bei 10 € Wohngeld (§ 21 Nr. 1 WoGG); Hinweis Merkzeichen G bei Paaren (§ 30 Abs. 1 SGB XII). Feste Tests: `test/test-musterbescheide.js`.
+
+## Prüfvermerk (21.11.2026)
+
+Unabhängige Inhaltsprüfung von PR #96 (Korrekturen nach dem Abgleich mit Musterbescheiden). Alle Fundstellen am 21.11.2026 selbst abgerufen. Es gilt das Recht 2026; nichts aus dem Entwurf für 2027 (BR-Drs. 474/26, BT-Drs. 21/8284, Inkrafttreten laut Entwurf 1.1.2027) ist vorweggenommen.
+
+| Befund | Schwere | Korrektur | Quelle |
+|---|---|---|---|
+| Wohngeld-Mindesteinkommen zählt das Wohngeld mit; 100 % Miete und 80 % Regelbedarf, ohne Mehrbedarfe; nur „möglich“, nie Absage | stimmt | Quelle ergänzt: Die amtlich veröffentlichte Vorschrift nennt „Einnahmen zuzüglich Wohngeld“ und 80 % des Bedarfs. Die genauere Rechnung (100 % Miete, 80 % Regelbedarf) steht nur in den BMI-Hinweisen vom 11.03.2020. Diese sind nicht amtlich veröffentlicht (nur Kopie). Die App nimmt die strengere Lesart, also die vorsichtige Seite. Test mit dem BMI-Beispiel ergänzt | WoGVwV 28.06.2017 Nr. 15.01 Abs. 1, https://www.verwaltungsvorschriften-im-internet.de/bsvwvbund_28062017_SWII4.htm |
+| Grenze bei 10 € Wohngeld (ungerundet 9,50 €) | stimmt | keine | § 21 Nr. 1 WoGG, Anlage 3 Nr. 3 WoGG, https://www.gesetze-im-internet.de/wogg/__21.html, https://www.gesetze-im-internet.de/wogg/anlage_3.html |
+| 65 € je weitere Person ab der 13., höchstens bis zur Miete; Rechnung mit den Werten für 12 Personen | stimmt | keine | § 19 Abs. 3 WoGG, https://www.gesetze-im-internet.de/wogg/__19.html; WoGVwV Nr. 19.31 |
+| Grundrentenfreibetrag im Bescheid-Check: Bei einer Rente unter 100 € war der Freibetrag höher als die Rente (100 €). Das Gesetz zieht ihn „vom Einkommen aus der gesetzlichen Rente“ ab | niedrig | Freibetrag höchstens so hoch wie die Rente, im Bescheid-Check und in der App; 2 Tests | § 17a Abs. 1 Satz 2 WoGG, https://www.gesetze-im-internet.de/wogg/__17a.html |
+| Vermögen bei Paaren: Freibetrag je Person nach eigenem Alter, nicht ausgeschöpfte Beträge werden übertragen; über der kleinsten möglichen Summe nur „möglich“ mit Hinweis | stimmt | keine | § 12 Abs. 2 SGB II, https://www.gesetze-im-internet.de/sgb_2/__12.html |
+| Kinderzuschlag: geschätztes (fiktives) Wohngeld und erweiterter Zugang (höchstens 100 € fehlen, Freibeträge aus Arbeit mindestens 100 €) | stimmt | keine; beides führt nur zu „möglich“ | § 6a Abs. 1 Satz 2 und 3, Abs. 1a BKGG, https://www.gesetze-im-internet.de/bkgg_1996/__6a.html; DA-KiZ 20.02.2026 C.4.1 Abs. 7, C.4.2 |
+| Kinderzuschlag: Vermögen knapp über der Grenze mindert nur den ersten Monat | stimmt | keine | § 6a Abs. 3 Satz 6 und 7, Abs. 6 Satz 5 BKGG; DA-KiZ C.2.2.2.3 |
+| Kinderzuschlag, alleinerziehend mit Altersrente: Rente zählt nur über dem eigenen Bedarf mit Kopfteil der Miete, der Rest mindert voll | stimmt | keine | DA-KiZ 20.02.2026 D.2 Abs. 1 Satz 9 bis 11, Beispiel 2, https://www.arbeitsagentur.de/datei/fw-bkgg_ba023130.pdf |
+| Geänderte alte Testerwartung: Altersrentner 1.450 € Rente (1.300 € ausgezahlt), Miete 800 €, Kind 16 mit Unterhaltsvorschuss → „eher nicht“ | stimmt | Von Hand nachgerechnet: 1.300 − 30 − (563 + 67,56 + 400) = 239,44 € mindern voll, bleiben 57,56 €; 45 % von 394 € Unterhaltsvorschuss sind 177,30 €, also 0 €. Ohne Unterhaltsvorschuss „möglich“, 60 €. Beide Fälle als feste Tests | DA-KiZ D.2; § 6a Abs. 3 Satz 3, Abs. 6 Satz 4 BKGG |
+| Merkzeichen G bei Paaren: Hinweis, 17 % der Regelbedarfsstufe je Person | stimmt | keine | § 30 Abs. 1 SGB XII, https://www.gesetze-im-internet.de/sgb_12/__30.html |
+| Neue Hinweise in 13 Sprachen und Einfacher Sprache | stimmt | keine; sinngleich, Platzhalter {betrag} überall vorhanden | Durchsicht |
+| Sicherheit und Datenschutz | ohne Befund | keine; keine neue Speicherung, keine neue Ausgabe von Eingaben, neue Auswahl im Bescheid-Check als fester Text | Durchsicht des Diffs |
+
+Offen (nicht in diesem PR gelöst):
+- Mehr als 12 Personen und für 12 Personen gerechnetes Wohngeld unter 10 €: Die App zeigt dann kein Wohngeld. Ob der Zuschlag von 65 € trotzdem greift, sagt das Gesetz nicht eindeutig. Sehr seltener Fall.
+- Grundsicherungsgeld ohne Altersangabe: Die App rechnet mit 10.000 € je Erwachsenem und sagt darüber „eher nicht“. Bei Personen ab 40 liegt die Grenze höher. Das war schon vor diesem PR so.
+- Hinweis „danach gibt es ihn voll“ (Kinderzuschlag, Vermögen knapp): gemeint ist „ohne Kürzung wegen Vermögen“, nicht der Höchstbetrag.
+- Wenn das Wohngeld-Gesetz für 2027 verkündet ist: Formel, Heizkostenkomponente und die Grenze bei 10 € neu prüfen.
