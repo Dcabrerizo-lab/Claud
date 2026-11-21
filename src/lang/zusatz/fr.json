@@ -98,5 +98,8 @@
   "bp.vgl.pg": "degré de dépendance (Pflegegrad) {pg}",
   "bp.vgl.kein": "aucun degré de dépendance (Pflegegrad)",
   "bp.vgl.klein": "Points pondérés, comme les calcule la Pflegekasse (§ 15 SGB XI). Plus signifie : ton estimation donne plus de points à cet endroit. En dessous, tu vois quelles questions exactement.",
-  "t.bafoeg.vermTeil": "Le patrimoine dépasse l'abattement de {verm}. Les 2 300 € supplémentaires ne sont accordés que pour un conjoint ou partenaire enregistré et pour chacun de tes propres enfants. Seule la partie au-dessus de l'abattement compte : répartie sur 12 mois, elle réduit le BAföG d'environ {monat} par mois. L'Amt für Ausbildungsförderung fait le calcul exact."
+  "t.bafoeg.vermTeil": "Le patrimoine dépasse l'abattement de {verm}. Les 2 300 € supplémentaires ne sont accordés que pour un conjoint ou partenaire enregistré et pour chacun de tes propres enfants. Seule la partie au-dessus de l'abattement compte : répartie sur 12 mois, elle réduit le BAföG d'environ {monat} par mois. L'Amt für Ausbildungsförderung fait le calcul exact.",
+  "bp.an.frist": "Délai indiqué dans la lettre : {frist}",
+  "bp.an.zeile": "Voici ce que dit la lettre : « {zeile} »",
+  "bp.an.pruefen": "Vérifie toi-même le délai dans la lettre. La reconnaissance de texte peut se tromper."
 }

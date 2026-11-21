@@ -2,5 +2,8 @@
   "bp.erk.t": "SoLo hat diese Werte aus dem Brief gelesen. Schau im Brief nach, ob sie stimmen.",
   "bp.erk.ok": "=",
   "bp.erk.warte": "Prüf zuerst die Werte aus dem Brief.",
-  "bp.erk.feld": "Schlecht zu lesen. Bitte genau nachsehen."
+  "bp.erk.feld": "Schlecht zu lesen. Bitte genau nachsehen.",
+  "bp.an.frist": "=",
+  "bp.an.zeile": "=",
+  "bp.an.pruefen": "Lies die Frist bitte selbst im Brief nach. Die App kann sich beim Lesen irren."
 }

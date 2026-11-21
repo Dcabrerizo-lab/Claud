@@ -1109,9 +1109,9 @@ Ergebnis: Pflegegrad 2`;
     // Frist zuerst und im festen Frist-Muster (.frist, src/template.html „Gestaltungs-System“); Beleg und Prüfhinweis in normaler Größe
     if (r.fristen.length) {
       box.append(h('div', { class: 'frist', role: 'note' },
-        h('p', { class: 'frist-wann', text: 'Frist im Brief: ' + BriefLesen.fristLesbar(r.fristen[0].frist) }),
-        h('p', { text: 'So steht es im Brief: „' + r.fristen[0].zeile + '“' }),
-        h('p', { text: 'Bitte die Frist im Brief selbst nachlesen. Die Texterkennung kann sich irren.' })));
+        h('p', { class: 'frist-wann', text: tA('bp.an.frist', 'Frist im Brief: {frist}', { frist: BriefLesen.fristLesbar(r.fristen[0].frist) }) }),
+        h('p', { text: tA('bp.an.zeile', 'So steht es im Brief: „{zeile}“', { zeile: r.fristen[0].zeile }) }),
+        h('p', { text: tA('bp.an.pruefen', 'Bitte lies die Frist im Brief selbst nach. Die Texterkennung kann sich irren.') })));
     }
     if (r.mahnbescheid) box.append(h('p', { class: 'frist', role: 'note' }, h('strong', { text: 'Das ist wohl ein gerichtlicher Mahnbescheid. ' }), 'Widerspruch nur innerhalb von 2 Wochen ab Zustellung. Mehr dazu unten.'));
     if (r.vollstreckungsbescheid) box.append(h('p', { class: 'frist', role: 'note' }, h('strong', { text: 'Das ist wohl ein Vollstreckungsbescheid. ' }), 'Einspruch nur innerhalb von 2 Wochen ab Zustellung. Frag sofort eine Schuldnerberatung.'));

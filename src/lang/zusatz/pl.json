@@ -98,5 +98,8 @@
   "bp.vgl.pg": "stopień opieki (Pflegegrad) {pg}",
   "bp.vgl.kein": "brak stopnia opieki (Pflegegrad)",
   "bp.vgl.klein": "Punkty ważone, tak jak liczy Pflegekasse (§ 15 SGB XI). Plus oznacza: Twoja ocena daje tam więcej punktów. Poniżej widać, przy których pytaniach dokładnie.",
-  "t.bafoeg.vermTeil": "Majątek przekracza kwotę wolną {verm}. Dodatkowe 2300 € przysługują tylko na małżonka lub zarejestrowanego partnera i na każde własne dziecko. Liczy się tylko nadwyżka ponad kwotę wolną: rozłożona na 12 miesięcy zmniejsza BAföG o około {monat} miesięcznie. Dokładnie wylicza to Amt für Ausbildungsförderung."
+  "t.bafoeg.vermTeil": "Majątek przekracza kwotę wolną {verm}. Dodatkowe 2300 € przysługują tylko na małżonka lub zarejestrowanego partnera i na każde własne dziecko. Liczy się tylko nadwyżka ponad kwotę wolną: rozłożona na 12 miesięcy zmniejsza BAföG o około {monat} miesięcznie. Dokładnie wylicza to Amt für Ausbildungsförderung.",
+  "bp.an.frist": "Termin w piśmie: {frist}",
+  "bp.an.zeile": "Tak jest napisane w piśmie: „{zeile}”",
+  "bp.an.pruefen": "Sprawdź termin w piśmie samodzielnie. Rozpoznawanie tekstu może się mylić."
 }

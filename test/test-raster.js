@@ -300,6 +300,17 @@ for (let i = 0; i < 20000; i++) {
   { const ua = a.find((y) => y.id === 'uvg').level, ur = Ref.unterhaltsvorschuss({ ...e, aufenthalt: 'asyl' }).level; if (ua !== ur || ua === 'ja') melde('Asyl: Unterhaltsvorschuss', e, { app: ua, ref: ur }); }
 }
 
+// Neue unabhängige Referenz für WBS, Pfändung und P-Konto (docs/rechenplan/): REFERENZ_FAELLE Zufallsfälle (Standard 300), Seed REFERENZ_SEED
+// (Standard 20261121, steht bei jeder Abweichung dabei). Bekannte Befunde (WBS1 Werbungskosten, WBS2 Unterhalt in Bayern) zählen als erwartet.
+{
+  const v = Ref.vergleich(Rules);
+  v.fehler.forEach((f) => melde('Referenz ' + f.art + ' (Seed ' + f.seed + ', Fall ' + f.fall + ')', f.e || { netto: f.netto, pers: f.pers }, { app: f.app, ref: f.ref }));
+  // Befund WBS1 nachgestellt: allein, 3.400 € brutto, Bayern -> App „unwahrscheinlich“, nach §§ 21–24 WoFG mit Werbungskosten „möglich“
+  const b1 = { adults: 1, kids: 0, young: 0, art1: 'lohn', brutto: 3400, netto: 2400, bundesland: 'BY', bezug: {}, gebJahr: 1985, miete: 700, vermoegen: 0 };
+  if (Ref.wbs(b1).level !== 'nein' || Ref.wbs(b1, { gesetz: true }).level !== 'vielleicht') melde('Referenz WBS: Befund WBS1 nicht mehr nachstellbar (behoben? Rechenplan anpassen)', b1, {});
+  console.log('Referenz WBS/Pfändung/P-Konto: ' + v.anzahl + ' Fälle, Seed ' + v.seed + ', erwartete Abweichungen ' + JSON.stringify(v.erwartet));
+}
+
 const arten = Object.keys(fehler);
 if (arten.length) {
   console.log('ABWEICHUNGEN zwischen App und Referenz (' + n + ' Haushalte):');
