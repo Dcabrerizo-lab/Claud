@@ -64,11 +64,14 @@
       return P[name] || null;
     } catch (e) { return null; }
   }
+  function androidApp() { try { return !!(NATIVE && window.Capacitor && window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'android'); } catch (e) { return false; } }
   var StoreRoh = {
-    get: function (key, cb) {
+    // fehler (nur die Vorgänge): Lesen ist fehlgeschlagen, z. B. iOS-Datei vor dem ersten Entsperren nicht lesbar (SoloSpeicherPlugin.swift
+    // lehnt dann ab). Das ist nicht „leer“: sonst würde ein leerer Stand gespeichert (Prüfung 21.11.2026, P6). Ohne fehler wie bisher null.
+    get: function (key, cb, fehler) {
       var p = plug('Preferences');
-      if (p) { p.get({ key: key }).then(function (r) { cb(r && r.value); }, function () { cb(null); }); return; }
-      try { cb(localStorage.getItem(key)); } catch (e) { cb(null); }
+      if (p) { p.get({ key: key }).then(function (r) { cb(r && r.value); }, function () { if (fehler) fehler(); else cb(null); }); return; }
+      try { cb(localStorage.getItem(key)); } catch (e) { cb(null); } // Browser ohne Speicher (gesperrt): wie bisher leer, nichts wird dauerhaft gespeichert
     },
     set: function (key, val, fehler, ok) { // fehler/ok: nur für die Vorgänge (Speicher voll oder gesperrt melden)
       var p = plug('Preferences');
@@ -88,7 +91,8 @@
     if (!tresor) {
       tresor = Vorgaenge.tresor(StoreRoh, { gesperrt: function () { if (tresor) vgSperreZeigen(); }, fehler: vgSpeicherFehler, bereit: function () { if (tresor) vgBereit(); },
         geloescht: function (n, am) { vgHinweis(t('vg.auto.gemeldet', { datum: Fmt.datum(new Date(am), lang), n: String(n) })); },
-        sprung: function (ja) { if (window.confirm(t('vg.auto.sprung'))) ja(); } });
+        sprung: function (ja) { if (window.confirm(t('vg.auto.sprung'))) ja(); },
+        lesefehler: vgLesefehler });
       if (tresor.gesperrt()) vgSperreZeigen(); else vgRender();
     }
     return tresor;
@@ -98,6 +102,8 @@
     set: function (key, val) { if (Vorgaenge.DATEN.indexOf(key) >= 0) return tr().set(key, val); StoreRoh.set(key, val); }, // false: Vorgang nicht bereit (gesperrt)
     remove: function (key) { if (Vorgaenge.DATEN.indexOf(key) >= 0) tr().remove(key); else StoreRoh.remove(key); }
   };
+  // App-Build: onsubmit="return false" wird zu data-kein-senden (CSP ohne Inline-Skripte, scripts/build-app.js); Absenden hier verhindern
+  document.addEventListener('submit', function (e) { var f = e.target; if (f && f.hasAttribute && f.hasAttribute('data-kein-senden')) e.preventDefault(); });
   var saveTimer = null;
   function flush() { clearTimeout(saveTimer); saveTimer = null; Store.set('lotse.state', JSON.stringify({ s: state, p: person, e: edited, big: $('app').classList.contains('big'), sf: window.Schritte ? Schritte.stand() : null })); Store.set('lotse.pfaendung', JSON.stringify(pf)); }
   function save() { clearTimeout(saveTimer); saveTimer = setTimeout(flush, 300); }
@@ -1300,8 +1306,9 @@
     return z.length ? z : ['____________________'];
   }
   // Suche nach der zuständigen Stelle im Internet (öffnet den Browser; die App selbst bleibt offline).
-  // Kurze Begriffe, wie die Ämter sich selbst nennen, plus Wohnort: so landen die Seiten der Stellen oben in der Trefferliste.
-  // ort: false = Stelle hängt nicht vom Wohnort ab (Kasse, Bundesstelle), dann ohne Ort suchen.
+  // Kurze Begriffe, wie die Ämter sich selbst nennen. Ohne Wohnort und ohne Postleitzahl in der Adresse: Angaben des Nutzers gehören
+  // nicht in URLs (der Suchanbieter erführe sonst Wohnort und gesuchte Leistung; Sicherheitsprüfung 21.11.2026, S13).
+  // Den Ort tippt der Nutzer bei Bedarf selbst in der Suchmaschine dazu (Hinweis f.empfSucheOrt neben dem Link).
   var SUCHE = {
     kindergeld: ['Familienkasse'], kiz: ['Familienkasse Kinderzuschlag'], kgBeh: ['Familienkasse'],
     wohngeld: ['Wohngeldstelle'], wbs: ['Wohnberechtigungsschein beantragen'], but: ['Bildung und Teilhabe Antrag'],
@@ -1310,20 +1317,14 @@
     asylblg: ['Asylbewerberleistungen Sozialamt'], eingl: ['Eingliederungshilfe Antrag'], arbeit: ['Budget für Arbeit Eingliederungshilfe'],
     ausweis: ['Schwerbehindertenausweis beantragen Versorgungsamt'], blindengeld: ['Blindengeld Antrag'],
     alg1: ['Agentur für Arbeit'], bab: ['Agentur für Arbeit Berufsausbildungsbeihilfe'],
-    lpg: ['Landespflegegeld Antrag Landesamt für Pflege', false], rundfunk: ['Rundfunkbeitrag Befreiung Antrag', false],
-    pflege: ['Pflegekasse Antrag Pflegegrad', false], pflegeplus: ['Pflegekasse Verhinderungspflege Antrag', false],
-    mutter: ['Mutterschaftsgeld Antrag', false], kkg: ['Kinderkrankengeld Krankenkasse', false], zuzahl: ['Zuzahlungsbefreiung Krankenkasse', false],
+    lpg: ['Landespflegegeld Antrag Landesamt für Pflege'], rundfunk: ['Rundfunkbeitrag Befreiung Antrag'],
+    pflege: ['Pflegekasse Antrag Pflegegrad'], pflegeplus: ['Pflegekasse Verhinderungspflege Antrag'],
+    mutter: ['Mutterschaftsgeld Antrag'], kkg: ['Kinderkrankengeld Krankenkasse'], zuzahl: ['Zuzahlungsbefreiung Krankenkasse'],
     srente: ['Deutsche Rentenversicherung Beratungsstelle'], emrente: ['Deutsche Rentenversicherung Beratungsstelle']
   };
-  function suchOrt() {
-    // Ortsname aus der Anschrift (ohne Postleitzahl), sonst die Postleitzahl aus dem Fragebogen
-    var o = String(person.ort || '').replace(/\b\d{5}\b/g, '').replace(/[,;]/g, ' ').trim();
-    return o || (/^\d{5}$/.test(String(state.plz || '')) ? String(state.plz) : '');
-  }
   function empfSuchUrl(id) {
     var e = SUCHE[id] || [ANTRAG[id].stelle];
-    var ort = e[1] === false ? '' : suchOrt();
-    return 'https://duckduckgo.com/?q=' + encodeURIComponent(e[0] + (ort ? ' ' + ort : ''));
+    return 'https://duckduckgo.com/?q=' + encodeURIComponent(e[0]); // nur der feste Suchbegriff, keine Angaben aus Anschrift oder Fragebogen
   }
   // Empfänger direkt im Anschreiben an der Stelle der Anschrift (nur am Bildschirm; gedruckt wird der fertige Brief):
   // Anschrift bekannt (amtliche Daten, Bayern/PLZ): steht schon da, mit kleinem „ändern“. Sonst ein dezentes, gestricheltes Feld
@@ -1340,6 +1341,7 @@
       '<textarea id="empf-' + esc(id) + '" data-empf="' + esc(id) + '" rows="4" lang="de" dir="ltr" autocomplete="off" placeholder="' + esc(t('f.empfPlatz')) + '">' + esc(wert) + '</textarea>' +
       '<p class="empf-such"><a class="btn ghost" href="' + esc(empfSuchUrl(id)) + '" target="_blank" rel="noopener">' + esc(t('f.empfSuche')) + '</a>' +
       '<span data-empf-resetbox="' + esc(id) + '"' + (eigen ? '' : ' hidden') + '> <button type="button" class="linkbtn" data-empf-reset="' + esc(id) + '">' + esc(t('f.empfZurueck')) + '</button></span></p>' +
+      '<p class="hint empf-such-ort">' + esc(t('f.empfSucheOrt')) + '</p>' +
       (bekannt || empfHinweisDa ? '' : (empfHinweisDa = true, '<p class="small">' + esc(t('f.empfHinweis')) + '</p>')) + '</div></div>';
   }
   function mappeTextNeu() {
@@ -1992,6 +1994,8 @@
     return new Promise(function (res, rej) {
       if (window.Tesseract) return res(window.Tesseract);
       var sc = document.createElement('script');
+      // Prüfsumme (SRI, sha512 wie bei cdnjs angegeben, am 21.11.2026 an der Datei nachgerechnet): eine veränderte Datei wird nicht ausgeführt
+      sc.integrity = TESS_SRI; sc.crossOrigin = 'anonymous';
       sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.1.1/tesseract.min.js';
       sc.onload = function () { window.Tesseract ? res(window.Tesseract) : rej(new Error('missing')); };
       sc.onerror = function () { rej(new Error('load')); };
@@ -2001,15 +2005,42 @@
 
   // ----- PDF lesen (pdf.js von Mozilla): digitale PDFs liefern ihren Text direkt; eingescannte Seiten (nur Bild, kein Text)
   // werden auf dem Gerät zu einem Bild und gehen durch dieselbe Texterkennung wie ein Foto. Die Datei verlässt das Gerät nicht.
+  // pdf.js 3.11.174 (Mozilla, Apache-2.0), dieselbe Fassung wie bisher. Entscheidung 21.11.2026 (Prüfung PR 138): kein Umstieg auf 4+/6.
+  //  - Grund: pdf.js 6.5.438 läuft laut Mozilla erst ab Chrome 125 und Safari 18 (FAQ „Which browsers/environments are supported?“,
+  //    github.com/mozilla/pdf.js/wiki/Frequently-Asked-Questions, abgerufen 21.11.2026); schon ab 4.x steht „static {}“ im Code (Safari ab 16.4).
+  //    Die iOS-App läuft ab iOS 15, viele Nutzer haben ältere iPhones: dort ließe sich keine PDF-Datei mehr lesen.
+  //  - Lücke CVE-2024-4367 (Schadcode beim Öffnen einer PDF, betroffen bis 4.1.392, behoben in 4.2.67): Mozilla nennt als Abhilfe
+  //    „Set the option isEvalSupported to false“ (GitHub-Sicherheitshinweis GHSA-wgrm-67xf-hhpq, github.com/mozilla/pdf.js/security/advisories,
+  //    abgerufen 21.11.2026). Deshalb steht isEvalSupported: false an JEDEM getDocument-Aufruf (test/test-sicherheit.js prüft das);
+  //    zusätzlich verbietet die CSP von App und Web-Version eval für JavaScript.
+  //  - pdf.js 4+/6 erst, wenn eine iOS-Mindestversion ab 17.4 entschieden ist (übernächstes Update, docs/entwuerfe/geraetetest-1.9.md).
+  // 3.11.174 hat die Bild-Dekoder (Fax/CCITT, JBIG2, JPEG 2000) im Programm: keine Zusatzdateien nötig (test/app-test.js, test/e2e-pdf.js).
+  // App: mitgelieferte Dateien (app/www/pdfjs/), offline. Browser: von cdnjs, mit Prüfsumme (SRI): das Programm über integrity am Skript,
+  // der Worker wird mit integrity geladen und als blob-Adresse gestartet. Prüfsummen am 21.11.2026 an den Dateien aus npm
+  // (pdfjs-dist 3.11.174, build/) berechnet, mit den Dateien von cdnjs (Byte für Byte) und den Angaben von cdnjs (api.cdnjs.com) verglichen.
   var PDFJS_VER = '3.11.174', PDF_MAX_SEITEN = 12, pdfjsLaden = null, pdfMitBild = false;
+  var PDFJS_SRI = { lib: 'sha512-q+4liFwdPC/bNdhUpZx6aXDx/h77yEQtn4I1slHydcbZK34nLaR3cAeYSJshoxIOq3mjEf7xJE8YWIUHMn+oCQ==', worker: 'sha512-BbrZ76UNZq5BhH7LL7pn9A4TKQpQeNCHOo65/akfelcIBbcVvYWOFQKPXIrykE3qZxYjmDX573oa4Ywsc7rpTw==' };
+  var TESS_SRI = 'sha512-mpQLT7yiRJ06RkhNTYhVnvvr3c71il3h+wEI16ICc+fnFHxrBRoJrMmDJ8iBY04+U/FgTj7xah5Vbltq5pg+aQ==';
   function ladePdfjs() {
     if (window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
     if (pdfjsLaden) return pdfjsLaden;
     var basis = NATIVE ? 'pdfjs/' : 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/' + PDFJS_VER + '/'; // App: mitgeliefert, offline
     pdfjsLaden = new Promise(function (res, rej) {
-      var s = document.createElement('script'); s.src = basis + 'pdf.min.js';
-      s.onload = function () { var L = window.pdfjsLib; if (!L) { pdfjsLaden = null; rej(new Error('pdfjs')); return; } L.GlobalWorkerOptions.workerSrc = basis + 'pdf.worker.min.js'; res(L); };
-      s.onerror = function () { pdfjsLaden = null; rej(new Error('load')); };
+      var weg = function (e) { pdfjsLaden = null; rej(e); };
+      var s = document.createElement('script');
+      if (!NATIVE) { s.integrity = PDFJS_SRI.lib; s.crossOrigin = 'anonymous'; }
+      s.src = basis + 'pdf.min.js';
+      s.onload = function () {
+        var L = window.pdfjsLib; if (!L) { weg(new Error('pdfjs')); return; }
+        if (NATIVE) { L.GlobalWorkerOptions.workerSrc = basis + 'pdf.worker.min.js'; res(L); return; }
+        fetch(basis + 'pdf.worker.min.js', { integrity: PDFJS_SRI.worker, mode: 'cors', credentials: 'omit' }).then(function (r) {
+          if (!r.ok) throw new Error('worker');
+          return r.blob();
+        }).then(function (b) {
+          L.GlobalWorkerOptions.workerSrc = URL.createObjectURL(new Blob([b], { type: 'text/javascript' })); res(L);
+        }).catch(function () { weg(new Error('worker')); });
+      };
+      s.onerror = function () { weg(new Error('load')); };
       document.head.appendChild(s);
     });
     return pdfjsLaden;
@@ -3232,6 +3263,15 @@
     var f = vgEl('div', 'notice warn vg-fehler'); f.id = 'vgFehler'; f.setAttribute('role', 'alert'); f.hidden = true; $('inhalt').insertBefore(f, $('inhalt').firstChild);
   }
   function vgSpeicherFehler() { vgGeruest(); var f = $('vgFehler'); f.textContent = t('vg.fehler.speicher'); f.hidden = false; }
+  // Angaben gerade nicht lesbar (iOS vor dem ersten Entsperren u. Ä.): Hinweis zeigen, nichts speichern, in Abständen und beim
+  // Zurückkehren in die App erneut lesen. Nach erfolgreichem Lesen verschwindet der Hinweis (vgBereit).
+  var vgLeseNochmal = null, vgLeseTimer = null;
+  function vgLesefehler(nochmal) {
+    vgLeseNochmal = nochmal;
+    vgHinweis(t('vg.lesefehler'));
+    clearTimeout(vgLeseTimer); vgLeseTimer = setTimeout(function () { var n = vgLeseNochmal; vgLeseNochmal = null; if (n) n(); }, 5000);
+  }
+  function vgLeseWieder() { var n = vgLeseNochmal; if (!n) return; vgLeseNochmal = null; clearTimeout(vgLeseTimer); n(); }
   // Meldung nach automatischem Löschen (oben im Inhalt, gleiche Stelle wie die Speicher-Meldung)
   function vgHinweis(txt) { var go = function () { vgGeruest(); var f = $('vgFehler'); f.textContent = txt; f.hidden = false; }; if ($('inhalt')) go(); else setTimeout(go, 0); }
   // Neu laden (Sperren); in Tests ersetzbar
@@ -3256,7 +3296,7 @@
     if (war && tresor && tresor.bereit() && (tresor.pinAn() || tresor.aktiv().gesperrt) && Date.now() - war >= VG_SPERRE_MS) vgSperrenJetzt(); // auch ein einzeln gesperrter Vorgang ist danach wieder zu
     else if (war && Date.now() - war >= VG_SPERRE_MS && window.FristenOrdner) FristenOrdner.startHinweis(); // „Öffnen“ nach 2 Minuten im Hintergrund (höchstens einmal am Tag)
   }
-  document.addEventListener('visibilitychange', function () { vgHintergrund(document.visibilityState === 'hidden'); });
+  document.addEventListener('visibilitychange', function () { vgHintergrund(document.visibilityState === 'hidden'); if (document.visibilityState !== 'hidden') vgLeseWieder(); });
   // Mit PIN schneller speichern: beim Verlassen eines Feldes sofort
   document.addEventListener('focusout', function (e) { if (tresor && tresor.bereit() && (tresor.pinAn() || tresor.aktiv().gesperrt) && e.target && /^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName) && saveTimer) flush(); });
   // Web: in einem anderen Fenster geändert -> neu laden, damit nichts überschrieben wird
@@ -3354,7 +3394,7 @@
     if (alle) StoreRoh.remove('lotse.fristTag'); // Merker der Fristen (nur ein Datum); die Einstellung lotse.fristHinweis bleibt wie die PIN
     vgNeuLaden();
   }
-  function vgBereit() { var s = $('vgSperre'); if (s && !s.hidden) { s.hidden = true; $('app').removeAttribute('aria-hidden'); $('app').inert = false; var h = document.querySelector('h1'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); } } vgRender(); }
+  function vgBereit() { clearTimeout(vgLeseTimer); vgLeseNochmal = null; var vf = $('vgFehler'); if (vf && vf.textContent === t('vg.lesefehler')) vf.hidden = true; var s = $('vgSperre'); if (s && !s.hidden) { s.hidden = true; $('app').removeAttribute('aria-hidden'); $('app').inert = false; var h = document.querySelector('h1'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); } } vgRender(); }
   // Vorgänge (Profile) nur in „Mein Ordner“ (Muster: Netflix-Profilauswahl, Google-Kontowechsel): eine klare Liste mit
   // Initialen-Kreis, der geöffnete Vorgang markiert, Wechseln mit einem Tipp, „+ Neuen Vorgang anlegen“ als letzte Zeile,
   // Umbenennen/Kopie/Löschen erst nach „Bearbeiten“. Gespeichert wird automatisch in den geöffneten Vorgang.
@@ -3576,7 +3616,9 @@
     f.addEventListener('submit', function (e) {
       e.preventDefault(); if (b.disabled) return;
       var pin = p1.value;
-      if (!Vorgaenge.VPIN_RE.test(pin)) { m.textContent = t('vgp.format'); p1.focus(); return; }
+      // Neue PIN: 6 bis 8 Ziffern, nicht leicht zu raten. Öffnen/Aufheben: auch ältere PINs mit 4 oder 5 Ziffern (sonst zählt die Eingabe als falsch)
+      var pf = art === 'sperren' ? Vorgaenge.pinNeuPruefen(pin, 8) : (Vorgaenge.VPIN_RE.test(pin) ? '' : 'falsch');
+      if (pf) { m.textContent = t(pf === 'einfach' ? 'vg.pin.einfach' : pf === 'falsch' ? 'vg.sperre.falsch' : 'vgp.format'); p1.focus(); return; }
       if (p2 && pin !== p2.value) { m.textContent = t('vg.pin.ungleich'); p2.focus(); return; }
       b.disabled = true; m.textContent = t('vg.bitte');
       if (undoFn) undoWeg(); // „Rückgängig“ (nach Löschen) holt keinen Stand von vor dem Sperren zurück
@@ -3631,7 +3673,8 @@
       e.preventDefault();
       var p0 = $('vgPin0') ? $('vgPin0').value : null, p1 = $('vgPin1') ? $('vgPin1').value : '', p2 = $('vgPin2') ? $('vgPin2').value : '';
       if (!nurAus) {
-        if (!Vorgaenge.PIN_RE.test(p1)) { m.textContent = t('vg.pin.kurz'); $('vgPin1').focus(); return; }
+        var pf = Vorgaenge.pinNeuPruefen(p1, 12); // neue PIN: 6 bis 12 Ziffern, nicht leicht zu raten (src/vorgaenge.js)
+        if (pf) { m.textContent = t(pf === 'einfach' ? 'vg.pin.einfach' : 'vg.pin.kurz'); $('vgPin1').focus(); return; }
         if (p1 !== p2) { m.textContent = t('vg.pin.ungleich'); $('vgPin2').focus(); return; }
       }
       b.disabled = true; m.textContent = t('vg.bitte');
@@ -4520,12 +4563,14 @@
       t: t, bereit: function () { return !!(tresor && tresor.bereit()); },
       importieren: function (name, daten) { flush(); var id = tresor.importieren(name, daten); if (id) vgRender(); return id; },
       oeffnen: function (id) { vgOeffnen(id); },
+      fotoWeg: function () { if (androidApp() && window.Klient) Klient.fotosAufraeumen(plug('Filesystem')); }, // Foto vom QR-Code (Android) nach dem Lesen löschen
       // Fristen wie beim Laden prüfen (src/fristen.js normiere): Unbekanntes fällt weg; „Erinnerung beim Öffnen“ gilt dann wie für eigene Fristen
       fristen: function (obj) { try { return JSON.stringify(window.FristenOrdner ? FristenOrdner.normiere(obj) : { v: 1, e: [] }); } catch (e) { return null; } }
     });
   }
   window.addEventListener('hashchange', function () { var a = location.hash.slice(1); if (ANSICHTEN.indexOf(a) >= 0 && a !== aktAnsicht) zeigeAnsicht(a, true); });
   if (NATIVE && window.Klient) Klient.cacheAufraeumen(plug('Filesystem')); // liegengebliebene .solo-/PDF-Dateien vom Teilen (src/klient.js)
+  if (androidApp() && window.Klient) Klient.fotosAufraeumen(plug('Filesystem')); // liegengebliebene Kamerafotos (QR-Code, Formular) im App-Bilderordner
   Store.remove('lotse.fristen'); // Fristen aus 1.3.0 (Build 141) gibt es nicht mehr: gespeicherte Einträge vom Gerät löschen
   zeigeAnsicht((function () { var a = (location.hash || '').slice(1); return ANSICHTEN.indexOf(a) >= 0 ? a : 'start'; })());
   // Einheitliche Navigation (src/navigation.js): Zurück-Knopf, Android-Taste, Browser-Zurück/-Vorwärts und Wischen auf dem iPhone.

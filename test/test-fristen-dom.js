@@ -222,11 +222,11 @@ const E = {
     t.set('lotse.fristliste', liste([Object.assign({}, E.bald, { titel: '' }), { id: 'b9', art: 'eigen', titel: 'Geheimtitel', basis: { fest: tagIn(2) }, neu: 9 }]));
     const omaId = t.aktiv().id;
     t.oeffnen(t.liste()[0].id);
-    await t.fertig(); await t.pinSetzen('2580'); await t.fertig();
+    await t.fertig(); await t.pinSetzen('258013'); await t.fertig();
     ck('[fristen-dom] PIN: Fristen nicht im Klartext gespeichert', !Object.values(m8).some((v) => /Geheimtitel|Vermieter|"art"/.test(v)) && !m8['lotse.fristliste']);
     s = seite(m8); await warte(50);
     ck('[fristen-dom] Gesperrt: kein Hinweis, Merker noch von gestern', !s.$('friStart') && m8['lotse.fristTag'] === GESTERN);
-    s.$('vgPinEin').value = '2580';
+    s.$('vgPinEin').value = '258013';
     s.$('vgPinEin').form.dispatchEvent(new s.w.Event('submit', { bubbles: true, cancelable: true }));
     for (let i = 0; i < 100 && !s.$('friStart'); i++) await warte(50);
     st = s.$('friStart');

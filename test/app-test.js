@@ -132,6 +132,22 @@ const MOCK = () => {
     ok('Eingescanntes PDF: Felder erklärt', /Erkannt: Antrag auf Wohngeld/.test(await p.textContent('#sc-out')));
     await p.setInputFiles('#sc-pdf', path.join(tmp, 'digital.pdf')); await warte(() => /Gesamtmiete monatlich/.test(document.getElementById('sc-out').textContent), null, 15000);
     ok('Digitales PDF in der App: Text direkt gelesen, keine Texterkennung nötig', (await calls('TextRecognition.recognize')).length === vorRec + 1 && /Gesamtmiete monatlich/.test(await p.textContent('#sc-out')));
+    // Eingescannte PDFs mit Fax-Bild (CCITT, übliches Format von Schwarz-Weiß-Scans) und JPEG 2000: pdf.js 3.11.174 hat die Dekoder im Programm.
+    // Bei einem Umstieg auf pdf.js 5+/6 müssten sie eigens mitgeliefert werden, sonst bliebe die Seite weiß (Prüfung PR 138).
+    for (const [datei, art] of [['scan-ccitt.pdf', 'Fax-Bild (CCITT)'], ['scan-jpx.pdf', 'JPEG 2000']]) {
+      const vor = (await calls('TextRecognition.recognize')).length;
+      await p.setInputFiles('#sc-pdf', path.join(__dirname, 'daten', datei));
+      await p.waitForFunction((v) => (window.__calls || []).filter((c) => c[0] === 'TextRecognition.recognize').length > v || /nicht lesen/.test(document.getElementById('sc-msg').textContent), vor, { timeout: 30000 }).catch(() => {});
+      await warte(() => !document.getElementById('sc-take').disabled, null, 15000);
+      const letzte = (await calls('TextRecognition.recognize')).slice(vor).pop();
+      const dunkel = letzte ? await p.evaluate(async (pfad) => {
+        const name = pfad.split('/').pop(), b64 = (window.__files || {})[name]; if (!b64) return -1;
+        const im = new Image(); im.src = 'data:image/jpeg;base64,' + b64; await im.decode();
+        const c = document.createElement('canvas'); c.width = im.naturalWidth; c.height = im.naturalHeight; const x = c.getContext('2d'); x.drawImage(im, 0, 0);
+        const d = x.getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 0; i < d.length; i += 4) if (d[i] < 100) n++; return n;
+      }, letzte.path) : -2;
+      ok('Eingescanntes PDF mit ' + art + ': Seitenbild zeigt die Schrift (nicht weiß)', dunkel > 2000, { dunkel, msg: await p.textContent('#sc-msg') });
+    }
     fs.rmSync(tmp, { recursive: true, force: true });
   }
   // Direkt in der Kachel: eigener Kamera-Knopf
