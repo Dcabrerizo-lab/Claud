@@ -83,7 +83,10 @@ const ohne = (o) => JSON.stringify(o.results.map((r) => [r.id, r.level, r.tx]));
   A = app(store);
   const gesehen = [];
   const lauf = async (antworten) => { for (const a of antworten) { gesehen.push(A.frage()); await A.antworte(a); } };
-  await lauf([L['sf.a.allein'], 0, 0, '1985', L['sf.a.nein'], L['baby.0'], L['aufenthalt.0'],
+  await lauf([L['sf.a.allein'], 0, 0]);
+  A.$('sfIn').value = '19'; A.$('sfWeiter').click(); await A.warte();
+  check('Eingabefehler: Meldung in Fehlerfarbe am Feld, Feld aria-invalid und aria-describedby', !A.$('sfWarn').hidden && A.$('sfWarn').classList.contains('fehler') && A.$('sfIn').getAttribute('aria-invalid') === 'true' && A.$('sfIn').getAttribute('aria-describedby') === 'sfWarn');
+  await lauf(['1985', L['sf.a.nein'], L['baby.0'], L['aufenthalt.0'],
     L['pflege.0'], L['bh.person.0'], L['bh.em.0'], L['sf.a.nein'],
     L['arbeit.0'], L['ausb.0'], L['wohnart.miete'], '650', '80', L['sf.a.nein'], L['hh.0']]);
   const q = (k) => L[k];

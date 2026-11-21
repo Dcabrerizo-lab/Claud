@@ -337,18 +337,20 @@ var Schritte = (function () {
       var inp = q('#sfIn');
       var ok = function () {
         var raw = inp.value.trim(), v, w = q('#sfWarn');
-        if (raw === '') { w.textContent = t(f.ziffern === 4 ? 'sf.warn.geb' : f.ziffern === 5 ? 'sf.warn.plz' : 'sf.warn.zahl'); w.hidden = false; inp.focus(); return; }
+        // Meldung am Feld (GOV.UK Error message): echte Fehler in Fehlerfarbe und mit aria-invalid; „ungewöhnlich hoch“ nur als Hinweis
+        var melde = function (txt, echt) { w.textContent = txt; w.hidden = false; w.classList.toggle('fehler', !!echt); inp.setAttribute('aria-describedby', 'sfWarn'); if (echt) inp.setAttribute('aria-invalid', 'true'); else inp.removeAttribute('aria-invalid'); inp.focus(); };
+        if (raw === '') { melde(t(f.ziffern === 4 ? 'sf.warn.geb' : f.ziffern === 5 ? 'sf.warn.plz' : 'sf.warn.zahl'), true); return; }
         if (f.ziffern) {
           var d = raw.replace(/\D/g, '');
           var gut = d.length === f.ziffern && (f.ziffern !== 4 || (Number(d) >= 1900 && Number(d) <= new Date().getFullYear()));
-          if (!gut) { w.textContent = t(f.ziffern === 4 ? 'sf.warn.geb' : 'sf.warn.plz'); w.hidden = false; inp.focus(); return; }
+          if (!gut) { melde(t(f.ziffern === 4 ? 'sf.warn.geb' : 'sf.warn.plz'), true); return; }
           v = f.ziffern === 4 ? Number(d) : d;
         } else {
           v = ctx.parse(raw);
-          if (v === '' || !(v >= 0)) { w.textContent = t('sf.warn.zahl'); w.hidden = false; inp.focus(); return; }
+          if (v === '' || !(v >= 0)) { melde(t('sf.warn.zahl'), true); return; }
           // Ungewöhnlich hoch (z. B. 45000 statt 450): einmal nachfragen; beim zweiten Tippen auf Weiter gilt die Zahl
           var grenze = f.id === 'vermoegen' || f.id === 'autoWert' ? 1000000 : 15000;
-          if (v > grenze && warnOk !== f.id + ':' + v) { warnOk = f.id + ':' + v; w.textContent = t('sf.warn.hoch', { v: ctx.euro(v) }); w.hidden = false; inp.focus(); return; }
+          if (v > grenze && warnOk !== f.id + ':' + v) { warnOk = f.id + ':' + v; melde(t('sf.warn.hoch', { v: ctx.euro(v) }), false); return; }
         }
         setze(f, v); weiter(f.id);
       };
