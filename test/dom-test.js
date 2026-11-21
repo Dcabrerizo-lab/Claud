@@ -291,11 +291,50 @@ check('[drucken] Ein Knopf „Drucken oder teilen“ im Schritt „Abschicken“
   // Datenschutz (Sicherheitsprüfung 21.11.2026, S13): kein Ort und keine PLZ in der Adresse, nur der feste Suchbegriff; Hinweis, den Ort selbst dazuzuschreiben
   check('[empf] Suchlink: DuckDuckGo, nur kurzer Suchbegriff ohne Ort und PLZ, öffnet extern', !!link && /^https:\/\/duckduckgo\.com\/\?q=/.test(link.getAttribute('href')) && q === 'Unterhaltsvorschussstelle Jugendamt' && !/Erlangen|\d{5}/.test(link.getAttribute('href')) && link.getAttribute('target') === '_blank' && /noopener/.test(link.getAttribute('rel')) && link.textContent === I18N.de['f.empfSuche'], q);
   const ortHinweis = d.querySelector('#mappe .empf-edit .empf-such-ort');
-  check('[empf] Suchlink: Hinweis „Ort selbst dazuschreiben“ beim Link, in allen 13 Sprachen und Einfacher Sprache', !!ortHinweis && ortHinweis.textContent === I18N.de['f.empfSucheOrt'] && ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so'].every((l) => typeof I18N[l]['f.empfSucheOrt'] === 'string' && I18N[l]['f.empfSucheOrt'].length > 20) && typeof require('../src/lang/einfach/vorgang-pin.json')['f.empfSucheOrt'] === 'string');
+  check('[empf] Suchlink: Hinweis „Ort selbst dazuschreiben“ beim Link, in allen 13 Sprachen und Einfacher Sprache', !!ortHinweis && ortHinweis.textContent === I18N.de['f.empfKurz'] && ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so'].every((l) => typeof I18N[l]['f.empfKurz'] === 'string' && I18N[l]['f.empfKurz'].length > 20) && typeof require('../src/lang/einfach/ux-fix.json')['f.empfKurz'] === 'string');
+  // UX-Nachprüfung 22.11.2026, Nr. 4: ein kurzer Satz statt zwei Absätzen, Knopf kurz („Anschrift im Internet suchen“)
+  check('[empf] Unter dem Suchlink nur ein kurzer Satz, Knopf „Anschrift im Internet suchen“', d.querySelectorAll('#mappe .empf-edit .empf-such ~ p').length === 1 && I18N.de['f.empfSuche'] === 'Anschrift im Internet suchen' && I18N.de['f.empfKurz'].length < 90);
   check('[empf] Keine Suchadresse in der ganzen Mappe enthält Ort oder PLZ', [...d.querySelectorAll('#mappe a[href*="duckduckgo"]')].every((a) => !/Erlangen|91052|\d{5}/.test(decodeURIComponent(a.getAttribute('href')))));
   check('[empf] Titel und Platzhalter in der gewählten Sprache; bei bekannter Anschrift kein Hinweis „Fehlt die Anschrift“', d.querySelector('#mappe .empf-edit label').textContent === I18N.de['f.empfTitel'] && d.querySelector('#mappe textarea[data-empf]').getAttribute('placeholder') === I18N.de['f.empfPlatz'] && !d.querySelector('#mappe .empf-edit p.small'));
   check('[empf] Neue Texte in allen 13 Sprachen vorhanden', ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so'].every((l) => ['f.empfTitel', 'f.empfHinweis', 'f.empfSuche', 'f.empfZurueck'].every((k) => I18N[l] && typeof I18N[l][k] === 'string' && I18N[l][k].length > 5)));
   check('[empf] Keine Skriptfehler', errors.length === 0, errors.join('; '));
+}
+// ---------- UX-Nachprüfung 22.11.2026 (docs/entwuerfe/ux-nachpruefung.md) ----------
+{
+  // Nr. 5: Einkommen von Wohngeld und Kinderzuschlag in einem Punkt, Zeiträume je Leistung; Ausweis in der gemeinsamen Liste
+  const a = wegRadios().find((r) => r.value === 'a'); a.checked = true; fire(a, 'change');
+  const gemeinsam = () => { const h = d.querySelector('#aufUnterlagen h4'); const ul = h && h.nextElementSibling && h.nextElementSibling.nextElementSibling; return ul ? [...ul.querySelectorAll('li')].map((x) => x.textContent.trim()) : []; };
+  const li = [...d.querySelectorAll('#aufUnterlagen .haken-liste li')].map((x) => x.textContent.trim());
+  const ek = li.filter((x) => /Einkommen/i.test(x));
+  const mitKiz = !!d.querySelector('[data-pick="kiz"]') || wegRadios().length > 0 && /Kinderzuschlag/.test(d.querySelector('.weg-wahl').textContent);
+  check('[ux-einkommen] Ein Punkt zum Einkommen mit Zeitraum je Leistung (Wohngeld 12 Monate' + (mitKiz ? ', Kinderzuschlag 6 Monate' : '') + ')', ek.length === 1 && ek[0].includes(I18N.de['u.eink.wg']) && (!mitKiz || ek[0].includes(I18N.de['u.eink.kiz'])) && !li.includes(I18N.de['s.wohngeld.u2']) && !li.includes(I18N.de['s.kiz.u2']), li.join(' | '));
+  check('[ux-einkommen] Ausweis steht in der gemeinsamen Liste', gemeinsam().some((x) => /Ausweis/.test(x)), gemeinsam().join(' | '));
+  check('[ux-einkommen] Gemeinsamer Text in allen 13 Sprachen mit denselben Zeiträumen', LANGS.every((l) => /12/.test(I18N[l]['u.eink.wg']) && /\b6\b|6-/.test(I18N[l]['u.eink.kiz']) && /\{basis\}/.test(I18N[l]['u.eink.mit']) && /\{teile\}/.test(I18N[l]['u.eink.mit'])));
+  // Nr. 2: „Ich weiß es noch nicht“ → Zeile „Weg noch nicht gewählt“, Knopf „Weg wählen“, Tipp; Zähler im Titel
+  const o = wegRadios().find((r) => r.value === 'offen'); o.checked = true; fire(o, 'change');
+  const zeile = d.querySelector('#aufAntraege .ant-weg-offen');
+  check('[ux-weg-offen] Weg offen: Zeile „Weg noch nicht gewählt“ zuerst in „Anträge stellen“, mit Knopf und Tipp', !!zeile && zeile === d.querySelector('#aufAntraege .ant-zeile') && zeile.textContent.includes(I18N.de['f.weg.nochNicht']) && zeile.querySelector('[data-weg-waehlen]').textContent === I18N.de['f.weg.waehlen'] && zeile.textContent.includes(I18N.de['f.weg.tippGg']));
+  check('[ux-weg-offen] Titel zählt den offenen Weg mit', /\+ 1 offen\)$/.test(d.getElementById('titelAntraege').textContent), d.getElementById('titelAntraege').textContent);
+  check('[ux-weg-offen] Tipp empfiehlt keinen Antrag beim Jobcenter oder Sozialamt', !/Stell (den|einen|zuerst)|beantrag|Jobcenter|Sozialamt/i.test(I18N.de['f.weg.tippGg'] + I18N.de['f.weg.tippGsa']));
+  zeile.querySelector('[data-weg-waehlen]').click();
+  check('[ux-weg-offen] „Weg wählen“ setzt den Fokus auf die Weg-Wahl', d.activeElement && d.activeElement.getAttribute('data-weg') === zeile.getAttribute('data-ant-weg'));
+  const a2 = wegRadios().find((r) => r.value === 'a'); a2.checked = true; fire(a2, 'change');
+  check('[ux-weg-offen] Weg gewählt: Zeile weg, Titel ohne „offen“', !d.querySelector('#aufAntraege .ant-weg-offen') && !/offen/.test(d.getElementById('titelAntraege').textContent));
+  check('[ux-weg-offen] Neue Texte in allen 13 Sprachen (Du bzw. höflich in fa/fa-AF/ps)', LANGS.every((l) => ['f.weg.nochNicht', 'f.weg.waehlen', 'f.weg.tippGg', 'f.weg.tippGsa', 'f.weg.zeile', 'f.auf.antraegeOffen', 'akt.ergDrucken', 'f.empfKurz'].every((k) => typeof I18N[l][k] === 'string' && I18N[l][k].length > 2)) && /\{n\}/.test(I18N.ar['f.auf.antraegeOffen']) && /\{m\}/.test(I18N.ps['f.auf.antraegeOffen']));
+  // Nr. 1: Knopf „Antrag vorbereiten“ in einer Ergebniskarte öffnet die Mappe mit dieser Leistung
+  d.getElementById('mappeClose').click();
+  check('[ux-karte] Mappe geschlossen', d.getElementById('mappe').hidden === true);
+  const kb = d.querySelector('[data-pick="kindergeld"]'); if (kb) { kb.checked = false; fire(kb, 'change'); }
+  const knopf = d.querySelector('#cards [data-antrag="kindergeld"]');
+  if (knopf) { const det = knopf.closest('details'); if (det) det.open = true; knopf.click(); }
+  check('[ux-karte] Karte Kindergeld: „Antrag vorbereiten“ öffnet die Mappe, Kindergeld angehakt, „Anträge stellen“ offen', !!knopf && d.getElementById('mappe').hidden === false && d.querySelector('[data-pick="kindergeld"]').checked && d.getElementById('aufAntraegeD').open && !!d.querySelector('#aufAntraege [data-ant$="-kg1"], #aufAntraege [data-ant$="-kindergeld"]'));
+  d.getElementById('mappeClose').click();
+  const kz = d.querySelector('#cards [data-antrag="ggeld"]');
+  if (kz) { kz.click(); check('[ux-karte] Karte Grundsicherungsgeld: Mappe mit Weg „Grundsicherungsgeld“ gewählt', d.getElementById('mappe').hidden === false && !!wegRadios().find((r) => r.value === 'b' && r.checked)); d.getElementById('mappeClose').click(); }
+  const a3 = wegRadios().find((r) => r.value === 'a'); if (a3) { a3.checked = true; fire(a3, 'change'); }
+  if (kb) { const k2 = d.querySelector('[data-pick="kindergeld"]'); k2.checked = false; fire(k2, 'change'); }
+  check('[ux-karte] Keine Skriptfehler', errors.length === 0, errors.join('; '));
+  d.getElementById('mappeMake').click();
 }
 // ---------- Absender: einmal eintragen, überall nutzen ----------
 {
@@ -339,7 +378,7 @@ setTimeout(async () => {
   check('Titel ist ein Name', title === 'SoLo – Sozialleistungslotse');
   check('Dunkelmodus doppelt definiert', (html.match(/color-scheme: dark/g) || []).length >= 2);
   check('Kein horizontales Scrollen erzwungen', !/min-width:\s*\d{4,}px/.test(html));
-  check('Große Schrift: Kartentitel brechen lange Wörter um (kein seitliches Scrollen)', /\.card header > div \{ min-width: 0;/.test(html) && /\.card header h3 \{ overflow-wrap: break-word; hyphens: manual;/.test(html));
+  check('Große Schrift: Kartentitel brechen lange Wörter um (kein seitliches Scrollen)', /\.card header > div \{ min-width: 0;/.test(html) && /\.card header h3 \{ overflow-wrap: anywhere; hyphens: manual;/.test(html) && /\.auf-titel \{[^}]*overflow-wrap: anywhere/.test(html) && /\.ant-zeile h4 \{[^}]*overflow-wrap: anywhere/.test(html));
   check('Logische statt physische Abstände im Formular (RTL-fähig)', !/\.money input\s*\{[^}]*padding-right/.test(html) && /inset-inline-end/.test(html));
   check('Jedes Formularfeld hat eine Beschriftung', ['miete', 'mietstufe', 'ek1Art', 'ek1Brutto', 'ek1Netto', 'ek2Art', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'vermoegen', 'gebJahr', 'kindEink', 'ausbildung', 'pflegegrad', 'p-name', 'p-geb', 'p-strasse', 'p-ort', 'p-tel'].every((id) => d.querySelector('label[for="' + id + '"]')));
   // Grenze 6 MB (Entscheidung David 20.11.2026; davor 5 MB; bis 1.4: 2,5 MB; 19.11.2026: 3 MB für 13 Sprachen; 20.11.2026: 4 MB für Vorgänge speichern, Beratungsmodus, Pflege-Unterstützung, Schulden-Tipps, Haushaltsplan; 20.11.2026 nachmittags: 5 MB für Fristen, Schuldenliste, Energie, Mietgrenze, Kostensenkung, Paar-Einkommen – Entscheidung des Nutzers): eine einzige Datei, die offline läuft; der größte Teil sind PLZ-Daten (ganz Deutschland mit Mietenstufen), Behörden (Bayern), 13 Sprachen,

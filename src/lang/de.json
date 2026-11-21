@@ -1111,7 +1111,7 @@
   "f.formsLink": "Amtliches Formular öffnen",
   "f.empfTitel": "Empfänger des Schreibens (du kannst ihn ändern)",
   "f.empfHinweis": "Fehlt die Anschrift oder steht nur die Art der Stelle da? Trage hier Name und Anschrift der Stelle ein. Die Änderung gilt für das Schreiben zum Kopieren und als PDF.",
-  "f.empfSuche": "Zuständige Stelle und Anschrift im Internet suchen",
+  "f.empfSuche": "Anschrift im Internet suchen",
   "f.empfZurueck": "Vorschlag der App wiederherstellen",
   "t.kiz.mitWg": "Kinderzuschlag (bis {max} je Kind) hilft dir nur zusammen mit Wohngeld, ohne Grundsicherungsgeld auszukommen. Beantrage beides; die Familienkasse prüft das zusammen.",
   "heiz.label": "Davon Heizkosten im Monat (freiwillig)",

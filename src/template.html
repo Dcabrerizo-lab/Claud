@@ -38,7 +38,7 @@
     --mark-bg: #fff6d6; --mark-line: #e0b100; --mark-ink: #18202e;  /* vom Brief erkanntes Feld */
     --overlay: rgba(0, 0, 0, .45);
     --kante: var(--line);  /* weiche Kante unter Karten */
-    --papier: #ffffff; --papier-ink: #111111; --papier-ink2: #333333; --papier-link: #0b3d91;  /* Antragsmappe: Papier bleibt weiß */
+    --papier: #ffffff; --papier-ink: #111111; --papier-ink2: #333333; --papier-link: #0b3d91; --papier-accent: #0f6b5c;  /* Antragsmappe: Papier bleibt weiß (papier-accent = --accent hell, auch im Dunkelmodus auf Weiß) */
     color-scheme: light;
   }
   @media (prefers-color-scheme: dark) {
@@ -879,7 +879,7 @@
   }
   .page h3 { font-family: var(--font-display); font-size: 1.1em; margin-bottom: 12px; color: var(--papier-ink); }
   .page a, .page a:visited { color: var(--papier-link); }
-  #mappe .page .empf-such a, #mappe .page .empf-such a:visited { color: var(--papier-link); } #mappe .page .small, #mappe .page .muted, #mappe .page .hint { color: var(--papier-ink2); } #mappe .page details.mehr > summary { color: var(--papier-link); } #mappe .page details.mehr > :not(summary) { color: var(--papier-ink); } /* Empfängerfeld (#67): auch im Dunkelmodus auf weißem Papier lesbar */
+  #mappe .page .empf-such a, #mappe .page .empf-such a:visited { color: var(--papier-accent); border-color: var(--papier-accent); } /* Suchlink-Knopf in --accent (UX-Nachprüfung 22.11.2026, Nr. 4) */ #mappe .page .small, #mappe .page .muted, #mappe .page .hint { color: var(--papier-ink2); } #mappe .page details.mehr > summary { color: var(--papier-link); } #mappe .page details.mehr > :not(summary) { color: var(--papier-ink); } /* Empfängerfeld (#67): auch im Dunkelmodus auf weißem Papier lesbar */
   .page pre { margin: 0; white-space: pre-wrap; font: inherit; direction: ltr; text-align: left; }
   .page.docs { font-family: var(--font-body); }
   .page.docs ul { margin: 4px 0 12px; padding-inline-start: 20px; }
@@ -898,6 +898,7 @@
   .form-karte .form-link { margin: 0 0 8px; }
   .page .form-karte a.btn, .page .form-karte a.btn:visited { color: var(--accent-ink); text-decoration: none; display: inline-flex; align-items: center; }
   .empf-im-brief a.btn { display: inline-flex; align-items: center; min-height: 44px; text-decoration: none; }
+  .empf-im-brief a.btn { padding-inline: 12px; font-size: .95em; } .empf-im-brief .empf-such-ort { margin-top: 6px; } /* Suchlink-Knopf möglichst einzeilig (UX-Nachprüfung 22.11.2026, Nr. 4) */
   .mappe-ende { display: grid; gap: 10px; }
   /* Antragsmappe als Aufgabenliste (Vorbild GOV.UK „Complete multiple tasks“, NHS task list): jede Zeile klappt ihren Inhalt auf, Status rechts */
   .aufgaben { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; counter-reset: auf; }
@@ -905,8 +906,8 @@
   .aufgabe > details > summary { display: flex; gap: 10px; align-items: center; min-height: 56px; padding: 10px 16px; cursor: pointer; list-style: none; font-weight: 700; }
   .aufgabe > details > summary::-webkit-details-marker { display: none; }
   .aufgabe > details > summary::before { content: counter(auf); flex: none; display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font-size: .9em; }
-  .auf-titel { flex: 1; min-width: 0; hyphens: none; }
-  .auf-status { flex: none; font-size: var(--fs-xs); font-weight: 400; color: var(--muted); max-width: 40%; text-align: end; }
+  .auf-titel { flex: 1; min-width: 0; hyphens: none; overflow-wrap: anywhere; }
+  .auf-status { flex: none; min-width: 0; font-size: var(--fs-xs); font-weight: 400; color: var(--muted); max-width: 40%; text-align: end; overflow-wrap: anywhere; }
   .auf-status.ok { color: var(--ok); font-weight: 700; }
   .auf-status.fehlt { color: var(--bad); font-weight: 700; }
   .auf-inhalt { display: grid; gap: 10px; padding: 0 16px 14px; }
@@ -918,13 +919,14 @@
   .mappe-wahl h3 { margin: 0; font-size: var(--fs-m); }
   .weg-wahl { border: 1px solid var(--hint-rand); background: var(--hint-bg); border-radius: var(--r-item); padding: 8px 14px 10px; margin: 0 0 6px; display: grid; gap: 0; }
   .weg-wahl legend { font-weight: 700; padding: 0 4px; }
+  .weg-wahl > legend { float: left; width: 100%; padding: 0; margin: 0 0 6px; border-bottom: 0; } /* Überschrift im Kasten statt auf dem Rahmen (wie .hb-karte) */
   .weg-wahl p { margin: 4px 0 0; color: var(--ink); }
   .weg-wahl .check > span { display: grid; gap: 2px; }
   .weg-name { font-weight: 700; }
   .pick-spaeter { margin-top: 4px; }
   .ant-zeile { border-top: 1px solid var(--line); padding-top: 10px; display: grid; gap: 6px; }
   .ant-zeile:first-child { border-top: 0; padding-top: 0; }
-  .ant-zeile h4 { margin: 0; font-size: var(--fs-m); hyphens: none; }
+  .ant-zeile h4 { margin: 0; font-size: var(--fs-m); hyphens: none; overflow-wrap: anywhere; }
   .ant-zeile p { margin: 0; }
   .ant-zeile .form-link { margin: 0; }
   .ant-an.fehlt { color: var(--bad); }
@@ -1001,7 +1003,7 @@
   .card header > div { min-width: 0; flex: 1 1 auto; } /* Breite nach dem Titel: passt die Plakette nicht daneben, rückt sie darunter (kein Umbruch mitten im Wort) */
   .card .desc, .es-karte h3 { overflow-wrap: anywhere; hyphens: auto; }
   /* Kartentitel ohne Trennstrich (UX-Prüfung 21.11.2026: „Grundsiche-rungsgeld“); die Plakette rückt bei Bedarf unter den Titel */
-  .card header h3 { overflow-wrap: break-word; hyphens: manual; -webkit-hyphens: manual; }
+  .card header h3 { overflow-wrap: anywhere; hyphens: manual; -webkit-hyphens: manual; } /* anywhere: Notumbruch auch bei Systemschrift 200 % (UX-Nachprüfung 22.11.2026, Nr. 6) */
   .together { border-inline-start-color: var(--accent); }
   .pill { border: 0; padding: 5px 12px; }
   .card .behoerde { border-radius: var(--r-ctl); border-inline-start-width: 4px; }
@@ -2187,8 +2189,8 @@
             <p class="small" data-t="f.abs.hinweis"></p>
             <div class="abs-felder">
               <div class="field"><label for="p-name" data-t="f.name"></label><input type="text" id="p-name" autocomplete="off"></div>
-              <div class="field"><label for="p-strasse" data-t="f.strasse"></label><input type="text" id="p-strasse" autocomplete="off"></div>
-              <div class="field"><label for="p-ort" data-t="f.ort"></label><input type="text" id="p-ort" autocomplete="off"></div>
+              <div class="field"><label for="p-strasse" data-t="f.strasse"></label><input type="text" id="p-strasse" autocomplete="off" dir="ltr"></div>
+              <div class="field"><label for="p-ort" data-t="f.ort"></label><input type="text" id="p-ort" autocomplete="off" dir="ltr"></div>
               <p class="warn" id="mappeAdrNote" data-t="f.adrFehlt" hidden></p>
               <details class="mehr"><summary data-t="f.abs.mehr"></summary>
                 <div class="abs-felder">

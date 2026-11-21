@@ -124,5 +124,17 @@
   "bp.vgl.pg": "stopień opieki (Pflegegrad) {pg}",
   "bp.vgl.kein": "brak stopnia opieki (Pflegegrad)",
   "bp.vgl.klein": "Punkty ważone, tak jak liczy Pflegekasse (§ 15 SGB XI). Plus oznacza: Twoja ocena daje tam więcej punktów. Poniżej widać, przy których pytaniach dokładnie.",
-  "t.bafoeg.vermTeil": "Majątek przekracza kwotę wolną {verm}. Dodatkowe 2300 € przysługują tylko na małżonka lub zarejestrowanego partnera i na każde własne dziecko. Liczy się tylko nadwyżka ponad kwotę wolną: rozłożona na 12 miesięcy zmniejsza BAföG o około {monat} miesięcznie. Dokładnie wylicza to Amt für Ausbildungsförderung."
+  "t.bafoeg.vermTeil": "Majątek przekracza kwotę wolną {verm}. Dodatkowe 2300 € przysługują tylko na małżonka lub zarejestrowanego partnera i na każde własne dziecko. Liczy się tylko nadwyżka ponad kwotę wolną: rozłożona na 12 miesięcy zmniejsza BAföG o około {monat} miesięcznie. Dokładnie wylicza to Amt für Ausbildungsförderung.",
+  "akt.ergDrucken": "Drukuj lub udostępnij wynik",
+  "f.weg.zeile": "{a} lub {b}",
+  "f.weg.nochNicht": "Droga jeszcze nie wybrana",
+  "f.weg.waehlen": "Wybierz drogę",
+  "f.weg.tippGsa": "Wskazówka: Grundsicherung im Alter i Wohngeld nie przysługują jednocześnie. Poproś o sprawdzenie obu i zapytaj, która droga da ci więcej.",
+  "f.weg.tippGg": "Wskazówka: Obu dróg nie można łączyć. Urzędy sprawdzają, która droga dotyczy ciebie. Zapytaj tam, a potem wybierz tu swoją drogę.",
+  "f.auf.antraegeOffen": "Złożyć wnioski ({n} + {m} otwarte)",
+  "f.empfKurz": "Swoją miejscowość dopisz w wyszukiwarce sam(a) i wpisz adres powyżej.",
+  "u.eink.basis": "Dowody dochodów",
+  "u.eink.mit": "{basis} ({teile})",
+  "u.eink.wg": "do Wohngeld od wszystkich w gospodarstwie, zwykle z ostatnich 12 miesięcy",
+  "u.eink.kiz": "do Kinderzuschlag od rodziców, zwykle z ostatnich 6 miesięcy"
 }

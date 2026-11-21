@@ -124,5 +124,17 @@
   "bp.vgl.pg": "heerka daryeelka (Pflegegrad) {pg}",
   "bp.vgl.kein": "heer daryeel (Pflegegrad) ma jiro",
   "bp.vgl.klein": "Dhibco miisaaman, sida Pflegekasse u xisaabiso (§ 15 SGB XI). Calaamadda (+) waxay ka dhigan tahay: qiimayntaadu halkaas dhibco ka badan ayay bixisaa. Hoos waxaa ku qoran su’aalaha ay si gaar ah u khusayso.",
-  "t.bafoeg.vermTeil": "Hantidaadu waxay ka badan tahay qadarka la cafiyay ee {verm}. 2.300 € dheeraad ah waxaa la bixiyaa oo keliya xaas ama lammaane diiwaangashan iyo carruur kasta oo adiga kuu dhalatay. Kaliya qaybta ka sarreysa qadarka la cafiyay ayaa la xisaabiyaa: waxaa loo qaybiyaa 12 bilood, waxayna BAföG ka dhimaysaa qiyaastii {monat} bishiiba. Amt für Ausbildungsförderung ayaa si sax ah u xisaabiya."
+  "t.bafoeg.vermTeil": "Hantidaadu waxay ka badan tahay qadarka la cafiyay ee {verm}. 2.300 € dheeraad ah waxaa la bixiyaa oo keliya xaas ama lammaane diiwaangashan iyo carruur kasta oo adiga kuu dhalatay. Kaliya qaybta ka sarreysa qadarka la cafiyay ayaa la xisaabiyaa: waxaa loo qaybiyaa 12 bilood, waxayna BAföG ka dhimaysaa qiyaastii {monat} bishiiba. Amt für Ausbildungsförderung ayaa si sax ah u xisaabiya.",
+  "akt.ergDrucken": "Daabac ama la wadaag natiijada",
+  "f.weg.zeile": "{a} ama {b}",
+  "f.weg.nochNicht": "Waddada weli lama dooran",
+  "f.weg.waehlen": "Dooro waddada",
+  "f.weg.tippGsa": "Talo: Grundsicherung im Alter iyo Wohngeld isku mar lama helo. Labadaba ha la hubiyo, weydiina waddada kuu keenaysa wax badan.",
+  "f.weg.tippGg": "Talo: Labada waddo isku mar lama helo. Xafiisyadu waxay hubiyaan waddada adiga kuu khuseysa. Halkaas ka weydii, kadibna halkan ka dooro waddadaada.",
+  "f.auf.antraegeOffen": "Codsiyada gudbi ({n} + {m} furan)",
+  "f.empfKurz": "Magaaladaada adigu ku dar raadinta oo cinwaanka kor ku qor.",
+  "u.eink.basis": "Caddaynta dakhliga",
+  "u.eink.mit": "{basis} ({teile})",
+  "u.eink.wg": "Wohngeld: dhammaan xubnaha qoyska, inta badan 12-kii bilood ee u dambeeyay",
+  "u.eink.kiz": "Kinderzuschlag: waalidiinta, inta badan 6-dii bilood ee u dambeeyay"
 }

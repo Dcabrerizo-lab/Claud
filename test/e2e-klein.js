@@ -83,6 +83,35 @@ const pruefen = () => {
       await ctx.close();
     }
   }
+  // UX-Nachprüfung 22.11.2026, Nr. 6: Systemschrift 200 % auf 390 px mit den Fällen der Prüfung (A alleinerziehend, B Rentnerin, C Paar mit 3 Kindern):
+  // Ergebnis mit allen Karten aufgeklappt und Antragsmappe mit allen Schritten offen werden nicht breiter als der Bildschirm.
+  const FAELLE = {
+    A: { adults: 1, kids: 2, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'lohn', ek1Brutto: '1700', ek1Netto: '1250', miete: '850', plz: '91054', vermoegen: '0', bezug: {} },
+    B: { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'rente', ek1Brutto: '960', ek1Netto: '880', miete: '520', plz: '90542', vermoegen: '0', gebJahr: '1955', pflegegrad: '2', bezug: {} },
+    C: { adults: 2, kids: 3, kidsU6: 1, kids14: 0, young: 0, ek1Art: 'lohn', ek1Brutto: '2900', ek1Netto: '2150', ek2Art: 'ohne', miete: '1150', plz: '90402', vermoegen: '0', bezug: {} }
+  };
+  for (const [name, hh] of Object.entries(FAELLE)) {
+    if (!SHARD.nimm(++fall)) continue;
+    const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, locale: 'de-DE', deviceScaleFactor: 1 });
+    await ctx.addInitScript((hh) => { try { localStorage.setItem('lotse-lang', 'de'); localStorage.setItem('lotse.ack', '1'); localStorage.setItem('lotse.state', JSON.stringify({ s: hh, p: {}, e: true })); } catch (e) {} }, hh);
+    const p = await ctx.newPage(); await p.addInitScript(SF_ALLES);
+    const err = []; p.on('pageerror', (e) => err.push(e.message));
+    await p.goto(APP + '#leistungen');
+    await p.addStyleTag({ content: 'html { font-size: 200% !important; }' });
+    await p.evaluate(() => document.querySelectorAll('#cards details').forEach((d) => { d.open = true; }));
+    await p.waitForTimeout(250);
+    const breit = () => ({ sw: document.documentElement.scrollWidth, wer: [...document.querySelectorAll('body *')].filter((e) => e.getBoundingClientRect().right > 391 && e.getBoundingClientRect().width > 0 && !e.closest('[hidden]')).slice(0, 3).map((e) => e.tagName + '.' + e.className + ' „' + (e.textContent || '').trim().slice(0, 30) + '“') });
+    const e1 = await p.evaluate(breit), sichtbar = await p.isVisible('#cards .card');
+    ok(`system200 390px Fall ${name}: Ergebnis (alle Karten offen) sichtbar und höchstens 390 px breit`, sichtbar && e1.sw <= 390 && err.length === 0, e1.sw + ' ' + e1.wer.join(' ; ') + err.join('; '));
+    if (await p.locator('#mappeMake').count()) {
+      await p.evaluate(() => document.getElementById('mappeMake').click());
+      await p.evaluate(() => document.querySelectorAll('#mappe details').forEach((d) => { d.open = true; }));
+      await p.waitForTimeout(250);
+      const e2 = await p.evaluate(breit);
+      ok(`system200 390px Fall ${name}: Antragsmappe (alles offen) höchstens 390 px breit`, e2.sw <= 390 && err.length === 0, e2.sw + ' ' + e2.wer.join(' ; ') + err.join('; '));
+    } else ok(`system200 390px Fall ${name}: Knopf „Antrag vorbereiten“ da`, false);
+    await ctx.close();
+  }
   await b.close();
   console.log(fails ? `\n${fails} von ${n} FEHLGESCHLAGEN` : `Kleinbild-Test${SHARD.name} bestanden: ${n} Prüfungen (320 px, 13 Sprachen, normal, große Schrift, Systemschrift 200 %)`);
   process.exit(fails ? 1 : 0);

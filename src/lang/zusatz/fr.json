@@ -124,5 +124,17 @@
   "bp.vgl.pg": "degré de dépendance (Pflegegrad) {pg}",
   "bp.vgl.kein": "aucun degré de dépendance (Pflegegrad)",
   "bp.vgl.klein": "Points pondérés, comme les calcule la Pflegekasse (§ 15 SGB XI). Plus signifie : ton estimation donne plus de points à cet endroit. En dessous, tu vois quelles questions exactement.",
-  "t.bafoeg.vermTeil": "Le patrimoine dépasse l'abattement de {verm}. Les 2 300 € supplémentaires ne sont accordés que pour un conjoint ou partenaire enregistré et pour chacun de tes propres enfants. Seule la partie au-dessus de l'abattement compte : répartie sur 12 mois, elle réduit le BAföG d'environ {monat} par mois. L'Amt für Ausbildungsförderung fait le calcul exact."
+  "t.bafoeg.vermTeil": "Le patrimoine dépasse l'abattement de {verm}. Les 2 300 € supplémentaires ne sont accordés que pour un conjoint ou partenaire enregistré et pour chacun de tes propres enfants. Seule la partie au-dessus de l'abattement compte : répartie sur 12 mois, elle réduit le BAföG d'environ {monat} par mois. L'Amt für Ausbildungsförderung fait le calcul exact.",
+  "akt.ergDrucken": "Imprimer ou partager le résultat",
+  "f.weg.zeile": "{a} ou {b}",
+  "f.weg.nochNicht": "Voie pas encore choisie",
+  "f.weg.waehlen": "Choisir la voie",
+  "f.weg.tippGsa": "Conseil : on ne peut pas toucher la Grundsicherung im Alter et le Wohngeld en même temps. Fais vérifier les deux et demande quelle voie te rapporte le plus.",
+  "f.weg.tippGg": "Conseil : les deux voies ne se cumulent pas. Les services vérifient quelle voie s’applique à toi. Renseigne-toi auprès d’eux, puis choisis ta voie ici.",
+  "f.auf.antraegeOffen": "Faire les demandes ({n} + {m} en attente)",
+  "f.empfKurz": "Ajoute toi-même ta ville dans la recherche et inscris l’adresse plus haut.",
+  "u.eink.basis": "Justificatifs de revenus",
+  "u.eink.mit": "{basis} ({teile})",
+  "u.eink.wg": "pour le Wohngeld de tous les membres du foyer, en général des 12 derniers mois",
+  "u.eink.kiz": "pour le Kinderzuschlag des parents, en général des 6 derniers mois"
 }

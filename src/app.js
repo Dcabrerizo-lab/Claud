@@ -940,7 +940,10 @@
       var z = e.target && e.target.closest ? e.target : null; if (!z) return;
       if (z.closest('#mappeMake')) openMappe();
       else if (z.closest('#ebOpen')) ebOeffnen();
-      else if (z.closest('[data-antrag]') && !window.SoloMappe) antragFuer(z.closest('[data-antrag]').getAttribute('data-antrag')); // mit Antragsmappe (SoloMappe) übernimmt deren Klick-Handler
+      else if (z.closest('[data-antrag]')) { // „Antrag vorbereiten“ in einer Karte: Mappe mit dieser Leistung öffnen
+        var aid = z.closest('[data-antrag]').getAttribute('data-antrag');
+        if (window.SoloMappe && window.SoloMappe.oeffnenMit) window.SoloMappe.oeffnenMit(aid); else antragFuer(aid);
+      }
     });
     // Android: eigene Knöpfe zum Drucken und Speichern (dort bietet der Teilen-Dialog das nicht auf jedem Gerät an; iPhone: im Teilen-Dialog enthalten)
     if (NATIVE && plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios')) {
@@ -1149,9 +1152,9 @@
     var k = kartenReihe(results), nein = k.neinKern.length + k.neinSpez.length;
     var inWeg = {}; if (wege) wege.a.concat(wege.b).forEach(function (id) { inWeg[id] = true; });
     var dazu = k.passt.filter(function (r) { return !inWeg[r.id]; });
-    // Grüner Hauptknopf „Antrag vorbereiten“ direkt unter den passenden Karten (öffnet die Antragsmappe), darunter „Drucken oder teilen“ (Ergebnisblatt)
+    // Grüner Hauptknopf „Antrag vorbereiten“ direkt unter den passenden Karten (öffnet die Antragsmappe), darunter „Ergebnis drucken oder teilen“ (Ergebnisblatt; eigener Name, die Mappe druckt die Briefe)
     var knopf = '<div class="btns erg-knopf" id="mappeKnopf"><button type="button" class="btn" id="mappeMake">' + esc(t('akt.antrag')) + '</button>' +
-      '<button type="button" class="btn ghost" id="ebOpen">' + esc(t('akt.drucken')) + '</button></div>';
+      '<button type="button" class="btn ghost" id="ebOpen">' + esc(t('akt.ergDrucken')) + '</button></div>';
     return (wege ? wegeHtml(results, wege) + (dazu.length ? '<h3 class="dazu-h">' + esc(t('weg.dazu')) + '</h3>' : '') : '') +
       dazu.map(card).join('') + knopf + '<div class="erg-tipps" id="ergTipps">' + tippsHtml + '</div>' + (nein
       ? '<details class="neinbox"><summary>' + esc(t('nein.sum', { n: nein })) + '</summary>' + k.neinKern.map(card).join('') +
@@ -1185,8 +1188,10 @@
   function wegeHtml(results, w) {
     var g = function (id) { for (var i = 0; i < results.length; i++) if (results[i].id === id) return results[i]; return null; };
     var vor = w.lage === 'aVor' ? 'a' : w.lage === 'bUeblich' ? 'b' : '';
+    // Summe nicht doppelt: steht der Betrag dieses Wegs schon im Kopfsatz „Am meisten bringt dir …“, fehlt er hier (UX-Nachprüfung 22.11.2026, Feinschliff)
+    var top = meistTop({ results: results, wege: w }), imKopf = top && top.seite;
     var gruppe = function (seite) {
-      var ids = seite === 'a' ? w.a : w.b, bet = wegBetrag(seite === 'a' ? w.aBetrag : w.bBetrag);
+      var ids = seite === 'a' ? w.a : w.b, bet = imKopf === seite ? '' : wegBetrag(seite === 'a' ? w.aBetrag : w.bBetrag);
       var karten = ids.map(g).filter(Boolean), pill = vor === seite ? '<span class="pill ja"><span aria-hidden="true">✓</span>' + esc(t('weg.pill')) + '</span>' : '';
       // Eine Leistung: Name und Betrag stehen schon auf der Karte, über ihr nur die Plakette des voraussichtlichen Wegs
       var kopf = karten.length > 1 ? '<div class="weg-kopf"><h4>' + esc(wegName(w, seite)) + '</h4>' + pill + (bet ? '<p class="weg-betrag">' + esc(t('weg.zusammen', { betrag: bet })) + '</p>' : '') + '</div>'
@@ -1220,7 +1225,7 @@
     var p = s[1];
     return s[0] === 'schaetz.spanne' ? { lo: p.a, hi: p.b, mind: false } : s[0] === 'schaetz.eins' ? { lo: p.a, hi: p.a, mind: false } : s[0] === 'schaetz.bis' ? { lo: p.b, hi: p.b, mind: true } : { lo: p.a, hi: p.a, mind: true };
   }
-  function meistSatz(out) {
+  function meistTop(out) {
     var w = out.wege, inWeg = {}, kand = [];
     if (w) w.a.concat(w.b).forEach(function (id) { inWeg[id] = true; });
     out.results.forEach(function (r) {
@@ -1229,14 +1234,17 @@
     });
     if (w) {
       var a = w.aBetrag, bb = w.bBetrag;
-      if (w.lage === 'aVor' && a) kand.push({ was: wegName(w, 'a'), b: a });
-      else if (w.lage === 'bUeblich' && bb) kand.push({ was: wegName(w, 'b'), b: bb });
+      if (w.lage === 'aVor' && a) kand.push({ was: wegName(w, 'a'), b: a, seite: 'a' });
+      else if (w.lage === 'bUeblich' && bb) kand.push({ was: wegName(w, 'b'), b: bb, seite: 'b' });
       else if (a && bb) kand.push({ was: t('weg.einer', { a: wegName(w, 'a'), b: wegName(w, 'b') }), b: { lo: a.lo.eur < bb.lo.eur ? a.lo : bb.lo, hi: a.hi.eur > bb.hi.eur ? a.hi : bb.hi, mind: a.mind || bb.mind } });
     }
-    if (!kand.length) return '';
+    if (!kand.length) return null;
     kand.sort(function (x, y) { return y.b.hi.eur - x.b.hi.eur; });
-    var top = kand[0];
-    return t('res.meist', { was: top.was, betrag: wegBetrag(top.b) });
+    return kand[0];
+  }
+  function meistSatz(out) {
+    var top = meistTop(out);
+    return top ? t('res.meist', { was: top.was, betrag: wegBetrag(top.b) }) : '';
   }
   function kopfErgebnis(ja, passend, out) {
     var h = $('h-res'), key = ja > 0 ? 'res.gut' : 'res.h';
@@ -1368,7 +1376,7 @@
   // Suche nach der zuständigen Stelle im Internet (öffnet den Browser; die App selbst bleibt offline).
   // Kurze Begriffe, wie die Ämter sich selbst nennen. Ohne Wohnort und ohne Postleitzahl in der Adresse: Angaben des Nutzers gehören
   // nicht in URLs (der Suchanbieter erführe sonst Wohnort und gesuchte Leistung; Sicherheitsprüfung 21.11.2026, S13).
-  // Den Ort tippt der Nutzer bei Bedarf selbst in der Suchmaschine dazu (Hinweis f.empfSucheOrt neben dem Link).
+  // Den Ort tippt der Nutzer bei Bedarf selbst in der Suchmaschine dazu (Hinweis f.empfKurz unter dem Link).
   var SUCHE = {
     kindergeld: ['Familienkasse'], kiz: ['Familienkasse Kinderzuschlag'], kgBeh: ['Familienkasse'],
     wohngeld: ['Wohngeldstelle'], wbs: ['Wohnberechtigungsschein beantragen'], but: ['Bildung und Teilhabe Antrag'],
@@ -1401,8 +1409,7 @@
       '<textarea id="empf-' + esc(id) + '" data-empf="' + esc(id) + '" rows="4" lang="de" dir="ltr" autocomplete="off" placeholder="' + esc(t('f.empfPlatz')) + '">' + esc(wert) + '</textarea>' +
       '<p class="empf-such"><a class="btn ghost" href="' + esc(empfSuchUrl(id)) + '" target="_blank" rel="noopener">' + esc(t('f.empfSuche')) + '</a>' +
       '<span data-empf-resetbox="' + esc(id) + '"' + (eigen ? '' : ' hidden') + '> <button type="button" class="linkbtn" data-empf-reset="' + esc(id) + '">' + esc(t('f.empfZurueck')) + '</button></span></p>' +
-      '<p class="hint empf-such-ort">' + esc(t('f.empfSucheOrt')) + '</p>' +
-      (bekannt || empfHinweisDa ? '' : (empfHinweisDa = true, '<p class="small">' + esc(t('f.empfHinweis')) + '</p>')) + '</div></div>';
+      '<p class="hint empf-such-ort">' + esc(t('f.empfKurz')) + '</p></div></div>'; // ein kurzer Satz statt zwei Absätzen (UX-Nachprüfung 22.11.2026, Nr. 4)
   }
   function mappeTextNeu() {
     $('mappeText').value = briefIds().map(function (r) { return letterText(r.id); }).concat([sheetText()]).join('\n\n----------------------------------------\n\n');
@@ -1589,8 +1596,9 @@
   var U_SACHE = { 'u.ausweis': ['ausweis'], 's.ggeld.u1': ['ausweis'], 's.wohngeld.u3': ['ausweis', 'haushalt'], 'u.haushalt': ['haushalt'],
     'u.geburtsurkunde': ['geburt'], 's.kindergeld.u2': ['geburt'], 's.uvg.u1': ['geburt'], 's.kindergeld.u1': ['steuerid'], 'u.steuerid': ['steuerid'],
     's.ggeld.u2': ['miete'], 's.gsa.u2': ['miete'], 's.wohngeld.u1': ['miete'], 'u.mietvertrag': ['miete'], 's.kiz.u3': ['miete'],
-    'u.einkommen': ['einkommen'], 's.uvg.u3': ['einkommen'], 'u.versichertenkarte': ['karte'], 's.pflege.u1': ['karte'], 'u.arzt': ['arzt'], 's.pflege.u3': ['arzt'],
+    'u.einkommen': ['einkommen'], 's.uvg.u3': ['einkommen'], 's.wohngeld.u2': ['einkommen'], 's.kiz.u2': ['einkommen'], 'u.versichertenkarte': ['karte'], 's.pflege.u1': ['karte'], 'u.arzt': ['arzt'], 's.pflege.u3': ['arzt'],
     'u.lohnabrechnung': ['lohn'], 's.kiz.u1': ['kgbescheid'] };
+  var U_EINK_ALT = { 's.wohngeld.u2': 1, 's.kiz.u2': 1 }; // früher eigene Punkte: alte Haken („u|<Schlüssel>“) gelten weiter
   var U_RANG = ['s.ggeld.u1', 's.wohngeld.u3', 'u.ausweis', 'u.haushalt', 's.ggeld.u2', 's.gsa.u2', 's.wohngeld.u1', 'u.mietvertrag', 's.kiz.u3',
     'u.geburtsurkunde', 's.kindergeld.u2', 's.uvg.u1', 'u.steuerid', 's.kindergeld.u1', 'u.einkommen', 's.uvg.u3', 'u.arzt', 's.pflege.u3', 'u.versichertenkarte', 's.pflege.u1'];
   // Genaue Liste des Jobcenters (src/formulare.js, nur Deutsch): Punkte, die dieselbe Sache meinen, gehen in der gemeinsamen Liste auf (Text der genauen Liste gewinnt)
@@ -1604,7 +1612,7 @@
       });
       else r.steps.u.forEach(function (k) {
         var rg = U_RANG.indexOf(k);
-        quellen.push({ rid: r.id, key: k, sachen: U_SACHE[k] || [k], alt: [r.id + '|' + k], rang: rg < 0 ? 999 : rg });
+        quellen.push({ rid: r.id, key: k, sachen: U_SACHE[k] || [k], alt: [r.id + '|' + k].concat(U_EINK_ALT[k] ? ['u|' + k] : []), rang: rg < 0 ? 999 : rg });
       });
     });
     var sachen = {}, reihe = [];
@@ -1629,16 +1637,31 @@
       p.hk = 'u|' + p.sachen[0];
       p.alt = p.sachen.slice(1).map(function (s) { return 'u|' + s; }).concat(p.alt);
       p.n = Object.keys(p.rids).length;
+      if (p.sachen.indexOf('einkommen') >= 0) p.eink = einkTeile(p.alt);
       p.ab = !!haken[p.hk] || p.alt.some(function (k) { return haken[k]; });
     });
     var mehrere = ids.length > 1;
-    var gemeinsam = mehrere ? liste.filter(function (p) { return p.n > 1; }) : [];
+    // Ausweis steht bei mehreren Anträgen in der gemeinsamen Liste (UX-Nachprüfung 22.11.2026, Nr. 5): nur verschoben, keine neue Anforderung
+    var gemeinsam = mehrere ? liste.filter(function (p) { return p.n > 1 || p.sachen.indexOf('ausweis') >= 0; }) : [];
     return {
       gemeinsam: gemeinsam, alle: gemeinsam.every(function (p) { return p.n === ids.length; }), liste: liste,
       je: ids.map(function (r) { return { r: r, punkte: liste.filter(function (p) { return p.rids[r.id] && gemeinsam.indexOf(p) < 0; }) }; })
     };
   }
-  function punktText(p) { return p.key ? tL(p.key) : p.text; }
+  // Einkommen: Wohngeld (s.wohngeld.u2, meist 12 Monate) und Kinderzuschlag (s.kiz.u2, meist 6 Monate) in einem Punkt, Zeiträume je Leistung
+  // genau wie in den bisherigen Einzeltexten. Grundtext „Nachweise über Einkommen und Vermögen“ (u.einkommen), wenn ein Antrag ihn braucht.
+  function einkTeile(alt) {
+    var hat = function (k) { return alt.some(function (a) { return a.slice(a.indexOf('|') + 1) === k; }); };
+    var teile = [];
+    if (hat('s.wohngeld.u2')) teile.push('u.eink.wg');
+    if (hat('s.kiz.u2')) teile.push('u.eink.kiz');
+    var quellen = alt.filter(function (a) { return a.indexOf('u|') !== 0; }).length;
+    return teile.length && quellen > 1 ? { basis: hat('u.einkommen') ? 'u.einkommen' : 'u.eink.basis', teile: teile } : null;
+  }
+  function punktText(p) {
+    if (p.eink) return t('u.eink.mit', { basis: tL(p.eink.basis), teile: p.eink.teile.map(function (k) { return t(k); }).join('; ') });
+    return p.key ? tL(p.key) : p.text;
+  }
   function unterlagenHtml(ids) {
     var u = unterlagenPlan(ids);
     var nameLang = function (r) { return r.name + (lang === 'de' ? '' : ' (' + t('n.' + r.id) + ')'); };
@@ -1673,7 +1696,7 @@
     var hilfe = function (f) { return f.hilfe ? '<details class="mehr"><summary>' + esc(t('mehr.ausfuellen')) + '</summary><div lang="de" dir="ltr">' + listItems(f.hilfe) + '</div></details>' : ''; };
     var tipp = function (r) { return r ? '<p class="small ant-tipp">' + esc(tL(r.steps.tip)) + '</p>' : ''; };
     var g = function (id) { return ids.filter(function (r) { return r.id === id; })[0]; };
-    var fp = formPlan(), hinweise = {}, h = '';
+    var fp = formPlan(), hinweise = {}, h = wegeOffenHtml();
     fp.forEach(function (f) {
       if (f.art !== 'link') { if (HINWEIS_FUER[f.id]) hinweise[HINWEIS_FUER[f.id]] = f; return; }
       var r = g(LINK_FUER[f.id]);
@@ -1691,6 +1714,22 @@
     });
     if (fp.some(function (f) { return f.art === 'link'; })) h += '<p class="small muted">' + esc(t('f.formsCheck')) + '</p>';
     return h + '<label class="haken"><input type="checkbox" data-haken="mappe|antraege" data-haken-alt="' + esc(JSON.stringify(['mappe|brief', 'mappe|formular'])) + '"' + (antraegeErledigt() ? ' checked' : '') + '><span>' + esc(t('f.auf.erledigt')) + '</span></label>';
+  }
+  // Entweder-oder mit „Ich weiß es noch nicht“ (UX-Nachprüfung 22.11.2026, Nr. 2): oben in „Anträge stellen“ eine Zeile „Weg noch nicht gewählt“
+  // mit Knopf „Weg wählen“ (springt zur Weg-Wahl) und einem sachlichen Tipp ohne Empfehlung eines Wegs. Rechtslage: docs/entwuerfe/entweder-oder.md
+  // (Stand 21.11.2026): Rente: Grundsicherung im Alter und Wohngeld nie gleichzeitig, echte Wahl (§ 7 Abs. 1 Satz 1 Nr. 5 WoGG, § 2 SGB XII,
+  // BSG B 8 SO 2/20 R; Satz nach Nr. 14). Sonst: Wohngeld/Kinderzuschlag und Grundsicherungsgeld nicht zusammen (§ 7 Abs. 1 Satz 1 Nr. 1 WoGG,
+  // § 6a Abs. 1 Nr. 3 BKGG); die Stellen prüfen den Vorrang (§ 12a SGB II; Nr. 2). Bewusst kein „Stell zuerst den Antrag bei …“: Ein Antrag auf
+  // Grundsicherungsgeld sperrt den erweiterten Zugang zum Kinderzuschlag (§ 6a Abs. 1a Nr. 3 BKGG).
+  function wegeOffen() { return (letzteWege || []).filter(function (g) { return wegAktiv(g) === 'offen'; }); }
+  function wegeOffenHtml() {
+    return wegeOffen().map(function (g) {
+      var nm = function (id) { var o = g.optionen.filter(function (x) { return x.id === id; })[0]; return o ? t(o.name) : ''; };
+      return '<section class="ant-zeile ant-weg-offen" data-ant-weg="' + esc(g.id) + '"><h4>' + esc(t('f.weg.zeile', { a: nm('a'), b: nm('b') })) + '</h4>' +
+        '<p class="small ant-an fehlt">' + esc(t('f.weg.nochNicht')) + '</p>' +
+        '<p class="btns"><button type="button" class="btn ghost" data-weg-waehlen="' + esc(g.id) + '">' + esc(t('f.weg.waehlen')) + '</button></p>' +
+        '<p class="small ant-tipp">' + esc(t(g.id === 'gsa' ? 'f.weg.tippGsa' : 'f.weg.tippGg')) + '</p></section>';
+    }).join('');
   }
   // Alte Stände: „Anschreiben“ und „Formular“ waren zwei Schritte; beide erledigt zählt als erledigt
   function antraegeErledigt() { return !!haken['mappe|antraege'] || (!!haken['mappe|brief'] && !!haken['mappe|formular']) || (!!haken['mappe|brief'] && !formPlan().some(function (f) { return f.art === 'link'; })) || (!!haken['mappe|formular'] && !briefIds().length); }
@@ -1738,8 +1777,8 @@
   function mappeStatus() {
     var ids = pickedIds();
     statusSetzen('statAngaben', absenderDa() ? '✓ ' + t('f.st.da') : t('f.st.fehlt'), absenderDa() ? 'ok' : 'fehlt');
-    var n = ids.length;
-    $('titelAntraege').textContent = t('f.auf.antraege', { n: n });
+    var n = ids.length, m = n ? wegeOffen().length : 0;
+    $('titelAntraege').textContent = m ? t('f.auf.antraegeOffen', { n: n, m: m }) : t('f.auf.antraege', { n: n });
     statusSetzen('statAntraege', antraegeErledigt() ? '✓ ' + t('f.st.erledigt') : t('f.st.offen'), antraegeErledigt() ? 'ok' : '');
     var cbs = [].slice.call($('aufUnterlagen').querySelectorAll('input[data-haken^="u|"]')), ab = cbs.filter(function (c) { return c.checked; }).length;
     var uFertig = !!haken['mappe|unterlagen'] || (cbs.length > 0 && ab === cbs.length);
@@ -1785,6 +1824,12 @@
       mappeTextNeu();
     });
     $('mappe').addEventListener('click', function (ev) {
+      var ww = ev.target && ev.target.closest && ev.target.closest('[data-weg-waehlen]');
+      if (ww) { // „Weg wählen“: zur Weg-Wahl oben in der Mappe, Fokus auf die erste Möglichkeit
+        var r1 = $('pick').querySelector('input[data-weg="' + ww.getAttribute('data-weg-waehlen') + '"]');
+        if (r1) { var fs = r1.closest('fieldset') || r1; try { fs.scrollIntoView({ behavior: smooth(), block: 'start' }); } catch (e) {} r1.focus({ preventScroll: true }); }
+        return;
+      }
       var ae = ev.target && ev.target.closest && ev.target.closest('[data-empf-aendern]');
       if (ae) { // „ändern“: Feld an derselben Stelle öffnen
         var aid = ae.getAttribute('data-empf-aendern');
@@ -1801,8 +1846,7 @@
   }
 
   // „Antrag vorbereiten“ an einer Ergebniskarte: Antragsmappe mit dieser Leistung angehakt. Gehört die Leistung zu einem der zwei Wege,
-  // werden die Leistungen des anderen Wegs abgewählt (beides zusammen gibt es nicht). Bietet die Antragsmappe eine eigene Schnittstelle
-  // (window.SoloMappe mit Klick-Handler für data-antrag), übernimmt sie den Klick.
+  // werden die Leistungen des anderen Wegs abgewählt (beides zusammen gibt es nicht). Ersatzweg, falls window.SoloMappe fehlt.
   function antragFuer(id) {
     var w = lastOut && lastOut.wege;
     if (w) { var andere = w.a.indexOf(id) >= 0 ? w.b : w.b.indexOf(id) >= 0 ? w.a : []; andere.forEach(function (x) { pickedUser[x] = false; }); }
