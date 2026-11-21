@@ -3891,6 +3891,7 @@
     var pgJetzt = paEchterPg();
     PflegeAssistent.start($('pflegeAssist'), {
       pgAktuell: pgJetzt, antworten: pa.antworten, ergebnis: zumErgebnis === true, einfach: lang === 'de' && einfachSprache,
+      app: { lang: lang, dir: (I18N[lang] && I18N[lang]['meta.dir']) || 'ltr', zurueck: t('nav.zurueck') }, // fremde Sprache: Inhalt lang=de dir=ltr, „Zurück“ übersetzt
       speichern: function (a) { pa.antworten = a; paSpeichern(); },
       beimErgebnis: paMerken,
       abbrechen: paVerlassen,
@@ -4008,6 +4009,7 @@
   function pflegeInfo(zurueckZu, fokus, abschnitt) {
     piZurueckZu = zurueckZu || 'leistungen'; piFokus = fokus || null; herkunft.pflegeinfo = piZurueckZu;
     pflegeInfoBauen(); $('piNurDe').hidden = lang === 'de';
+    if (lang !== 'de') { $('pflegeInfo').setAttribute('lang', 'de'); $('pflegeInfo').setAttribute('dir', 'ltr'); } else { $('pflegeInfo').removeAttribute('lang'); $('pflegeInfo').removeAttribute('dir'); }
     document.querySelectorAll('#pflegeInfo details').forEach(function (d) { d.open = false; });
     zeigeAnsicht('pflegeinfo', !abschnitt);
     if (abschnitt) piAbschnitt(abschnitt);
@@ -4078,6 +4080,8 @@
     var p = function (txt, cls) { return box.appendChild(el('p', txt, cls)); };
     // „← Zurück“ steht oben (gemeinsamer Knopf, src/navigation.js; eine Ebene: Liste → Pflegegrad → Auswahl → Start)
     $('puNurDe').hidden = lang === 'de' || pu.schritt === 'wahl';
+    // Übersicht nach Pflegegrad ist nur Deutsch: in anderen Sprachen als lang="de" dir="ltr" auszeichnen (Satzzeichen und Beträge kippen sonst in RTL)
+    if (lang !== 'de' && pu.schritt === 'liste') { box.setAttribute('lang', 'de'); box.setAttribute('dir', 'ltr'); } else { box.removeAttribute('lang'); box.removeAttribute('dir'); }
     var vonErg = paRueck === 'pflegestart' && pu.schritt === 'liste'; // aus der Pflege-Ergebnisseite geöffnet
     if (pu.schritt === 'wahl') {
       p(t('pu.wahl'), 'pf-frage');
@@ -4151,7 +4155,7 @@
         box.appendChild(w);
       }
       // Pflegeberatung ist kostenlos: § 7a Abs. 1 SGB XI, Pflegestützpunkte § 7c SGB XI (gesetze-im-internet.de, abgerufen 21.11.2026)
-      box.appendChild(tippEl('pu.tipp.beratung'));
+      var tp = box.appendChild(tippEl('pu.tipp.beratung')); if (lang !== 'de') { tp.setAttribute('lang', lang); tp.setAttribute('dir', (I18N[lang] && I18N[lang]['meta.dir']) || 'ltr'); } // übersetzter Tipp in App-Sprache
       box.appendChild(quellenEl(['Stand der Beträge: ' + U.stand + ' (' + U.quelle + '). Den genauen Anspruch legt die Pflegekasse fest.']));
     }
     if (fokus) { var h = box.querySelector('.pf-frage'); if (h) { h.setAttribute('tabindex', '-1'); h.focus(); } }

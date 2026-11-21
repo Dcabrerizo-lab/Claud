@@ -150,6 +150,12 @@ setTimeout(() => {
   check('Englisch: Auswahl übersetzt', d.getElementById('pu-hilfe').textContent.indexOf(I18N.en['pu.hilfe']) >= 0);
   d.getElementById('pu-hilfe').click(); box().querySelector('.wahl[data-pg="2"]').click();
   check('Englisch: Hinweis „nur Deutsch“ sichtbar', d.getElementById('puNurDe').hidden === false && d.getElementById('puNurDe').textContent === I18N.en['pu.nurDe']);
+  check('[rot-d] Englisch: deutsche Übersicht als lang=de dir=ltr ausgezeichnet', box().getAttribute('lang') === 'de' && box().getAttribute('dir') === 'ltr');
+  // Arabisch: Einschätzung bleibt Deutsch, aber als lang=de dir=ltr; „Zurück“ arabisch in RTL
+  sel.value = 'ar'; sel.dispatchEvent(new w.Event('change', { bubbles: true }));
+  d.getElementById('goPflege').click(); d.getElementById('pu-schaetzen').click();
+  const zk = pa().querySelector('.pa-zur');
+  check('[rot-d] Arabisch: Einschätzung lang=de dir=ltr, Zurück arabisch und rtl', pa().getAttribute('lang') === 'de' && pa().getAttribute('dir') === 'ltr' && zk.getAttribute('lang') === 'ar' && zk.getAttribute('dir') === 'rtl' && zk.textContent.indexOf(I18N.ar['nav.zurueck']) >= 0, zk && zk.outerHTML);
   check('Keine Skriptfehler im Test', errors.length === 0, errors.join('; '));
   console.log(fails ? fails + ' FEHLER (Pflege-Start)' : '[pflege-start] Pflege-Startkachel: Auswahl, Pflegegrad, Übersicht und Zurück-Wege stimmen');
   process.exit(fails ? 1 : 0);
