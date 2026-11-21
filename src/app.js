@@ -727,12 +727,27 @@
   function standL() { return Fmt.monat(Rules.RULES.stand, lang); }
   function regelnVeraltet() { var ab = Rules.RULES.pruefenAb; return !!ab && new Date() >= new Date(ab + 'T00:00:00'); }
 
-  function setLang(c) {
-    if (!I18N[c]) return;
+  // Sprachen nur bei Bedarf (src/sprachladen.js): true = sofort da; sonst laden und danach erneut setLang (Fehler: Deutsch + Hinweis)
+  var sprachWunsch = null;
+  function spracheBereit(c, ohneFokus) {
+    if (typeof SprachLaden === 'undefined' || SprachLaden.da(c)) return true;
+    sprachWunsch = c;
+    SprachLaden.laden(c, function (ok) {
+      if (sprachWunsch !== c) return; // inzwischen andere Sprache gewählt
+      sprachWunsch = null;
+      if (ok) setLang(c, ohneFokus); else { lang = 'de'; applyLang(); SprachLaden.hinweis(c); }
+    });
+    return false;
+  }
+  function setLang(c, ohneFokus) {
+    if (!I18N[c] || !spracheBereit(c, ohneFokus)) return;
+    sprachWunsch = null;
+    if (typeof SprachLaden !== 'undefined') SprachLaden.hinweisWeg();
     lang = c;
     try { localStorage.setItem('lotse-lang', c); } catch (e) {}
     Store.set('lotse.lang', c);
     applyLang();
+    if (ohneFokus) return;
     var h = document.querySelector('h1'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
   }
 
@@ -2831,6 +2846,7 @@
   // Nur deutsch vorhandene Bereiche (Brief prüfen; Pflege zeichnet seine Bereiche selbst aus): rein deutsche Blöcke mit lang="de" dir="ltr" auszeichnen (src/denetz.js, NurDeutsch)
   if (window.NurDeutsch) window.NurDeutsch.init({ lang: function () { return lang; }, bereiche: function () { return ['checkBox'].map($); } });
   lang = detect();
+  if (!spracheBereit(lang, true)) lang = 'de'; // Startsprache noch nicht geladen: erst Deutsch, dann die Sprache
   applyLang();
   initClaude();
 
@@ -4944,7 +4960,7 @@
     Klient.init({
       t: t, lang: function () { return lang; }, beratung: function () { return beratung; },
       sprachen: function () { return Array.prototype.map.call($('lang').options, function (o) { return { code: o.value, name: o.textContent }; }); },
-      inSprache: function (l, ein, fn) { var a = lang, e = einfachSprache; lang = I18N[l] ? l : 'de'; einfachSprache = !!ein; try { return fn(); } finally { lang = a; einfachSprache = e; } },
+      inSprache: function (l, ein, fn) { var a = lang, e = einfachSprache; lang = I18N[l] && (typeof SprachLaden === 'undefined' || SprachLaden.da(l) || (SprachLaden.laden(l, function (ok) { if (ok) Klient.sprache(); }), false)) ? l : 'de'; einfachSprache = !!ein; try { return fn(); } finally { lang = a; einfachSprache = e; } },
       inhalt: kbInhalt,
       vorgaenge: function () {
         if (!tresor || !tresor.bereit()) return [];

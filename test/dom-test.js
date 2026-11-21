@@ -308,7 +308,7 @@ check('Druck: feste Briefränder (DIN 5008) per @page, unabhängig vom Browser',
   check('Rückmeldung: keine persönlichen Angaben (Name, Anschrift, Geburtsdatum, Einkommen, Miete) in der E-Mail', !/Maria|Beispiel|Hauptstraße|Erlangen|1985|2\.?200|1\.?750|950/.test(href), href);
 }
 d.getElementById('mappeCopy').click();
-setTimeout(() => {
+setTimeout(async () => {
   check('Kopieren meldet Ergebnis oder zeigt Ersatzfeld', d.getElementById('copyMsg').textContent.length > 0 || d.getElementById('mappeText').hidden === false);
   // Sprache in der Mappe
   setLang('en');
@@ -334,7 +334,47 @@ setTimeout(() => {
   // seit 1.4 auch „Brief prüfen“ und die Pflegegrad-Einschätzung (zusammen gut 200 KB)
   check('Web-Datei ist ein vollständiges Dokument mit UTF-8 und Viewport (Safari, Handy)', /^<!doctype html>/i.test(html) && /<meta charset="utf-8">/i.test(html.slice(0, 300)) && /name="viewport"/.test(html.slice(0, 400)));
   // 21.11.2026: in Bytes gemessen (Buffer.byteLength, UTF-8) statt in Zeichen; Grenze vorläufig 7 MB – Entscheidung David steht noch aus
-  check('Dateigröße unter 7 MB (Bytes, vorläufig)', Buffer.byteLength(html, 'utf8') < 7 * 1024 * 1024, (Buffer.byteLength(html, 'utf8') / 1024).toFixed(0) + ' KB');
+  // 21.11.2026 (Sprachen nur bei Bedarf, Entscheidung David „A“): Die Web-Datei enthält weiter alle 13 Sprachen (offline, eine Datei),
+  // aber die 12 Fremdsprachen als JSON-Datenblöcke, die erst beim Wechsel geparst werden. Ehrliche Grenzen: ganze Datei < 7 MB,
+  // beim Start geparster Teil (ohne Datenblöcke) < 3 MB (gemessen 2,8 MB; davon PLZ-Daten, Behörden, Deutsch, Programm).
+  check('Dateigröße unter 7 MB (Bytes, alle Sprachen offline in der Datei)', Buffer.byteLength(html, 'utf8') < 7 * 1024 * 1024, (Buffer.byteLength(html, 'utf8') / 1024).toFixed(0) + ' KB');
+  const sprachBloecke = html.match(/<script type="application\/json" id="solo-sprache-[^"]+">[^<]*<\/script>\n/g) || [];
+  const startTeil = sprachBloecke.reduce((a, b) => a.replace(b, ''), html);
+  check('[sprachladen] Beim Start geparster Teil unter 3 MB (Fremdsprachen erst beim Wechsel)', Buffer.byteLength(startTeil, 'utf8') < 3 * 1024 * 1024, (Buffer.byteLength(startTeil, 'utf8') / 1024).toFixed(0) + ' KB');
+  check('[sprachladen] 12 Fremdsprachen als Datenblöcke, Deutsch nicht', sprachBloecke.length === 12 && !/id="solo-sprache-de"/.test(html));
+  check('[sprachladen] Datenblöcke ohne „<“ im Inhalt (kein vorzeitiges </script>)', sprachBloecke.every((b) => b.replace(/^<script[^>]*>/, '').replace(/<\/script>\n$/, '').indexOf('<') < 0));
+  check('[sprachladen] Startskript: nur Deutsch vollständig, andere Sprachen nur Name und Schreibrichtung', Object.keys(I18N).filter((l) => l !== 'de').every((l) => w.eval('I18N')[l] === undefined || Object.keys(w.eval('I18N')[l]).every((k) => k.startsWith('meta.')) || w.eval('SprachLaden').da(l)) && Object.keys(w.eval('I18N').de).length === Object.keys(I18N.de).length);
+  // Sprachwechsel ohne Netz: JSDOM lädt hier nichts nach (keine Ressourcen) – die Texte kommen nur aus der Datei selbst
+  ['ar', 'uk', 'so'].forEach((l) => {
+    setLang(l);
+    const I = w.eval('I18N')[l];
+    check('[sprachladen] Offline-Wechsel nach ' + l + ': sofort übersetzt, alle Texte da', d.getElementById('app').getAttribute('lang') === l && JSON.stringify(I) === JSON.stringify(I18N[l]) && d.querySelector('[data-t="nav.ordner"]') && d.querySelector('[data-t="nav.ordner"]').textContent === I18N[l]['nav.ordner'] && !d.getElementById('sprachFehler'));
+  });
+  check('[sprachladen] Arabisch: rechts nach links nach dem Nachladen', (setLang('ar'), d.getElementById('app').getAttribute('dir') === 'rtl'));
+  // Fehlerfall: Datenblock fehlt (z. B. beschädigte Datei) → Deutsch und kurzer Hinweis. Eigene kleine Seite: gespeicherte Sprache
+  // Französisch, Block für Französisch aus der Datei entfernt; Start und späterer Wechsel zeigen Deutsch mit Hinweis
+  {
+    const ohneFr = html.replace(/<script type="application\/json" id="solo-sprache-fr">[^<]*<\/script>\n/, '');
+    const st = { 'lotse-lang': 'fr' }, fehlerF = [];
+    const domF = new JSDOM('<!doctype html><html><head><meta charset="utf-8"></head><body>' + ohneFr + '</body></html>', {
+      runScripts: 'dangerously', pretendToBeVisual: true,
+      beforeParse(x) {
+        x.addEventListener('error', (e) => fehlerF.push(String(e.error || e.message)));
+        x.HTMLElement.prototype.scrollIntoView = function () {}; x.scrollTo = function () {};
+        Object.defineProperty(x, 'localStorage', { value: { getItem: (k) => (k in st ? st[k] : null), setItem: (k, v) => { st[k] = String(v); } }, configurable: true });
+      }
+    });
+    await new Promise((r) => setTimeout(r, 50));
+    const dF = domF.window.document, hF = () => dF.getElementById('sprachFehler');
+    check('[sprachladen] Sprache lädt nicht (beim Start): Deutsch und Hinweis', ohneFr.length < html.length && dF.getElementById('app').getAttribute('lang') === 'de' && dF.getElementById('lang').value === 'de' && !!hF() && /Deutsch/.test(hF().textContent) && dF.querySelector('[data-t="nav.ordner"]').textContent === I18N.de['nav.ordner'] && fehlerF.length === 0, (hF() && hF().textContent) + ' ' + fehlerF.join('|'));
+    const sF = dF.getElementById('lang'); sF.value = 'uk'; sF.dispatchEvent(new domF.window.Event('change', { bubbles: true }));
+    check('[sprachladen] Andere Sprache geht danach, Hinweis weg', dF.getElementById('app').getAttribute('lang') === 'uk' && !hF());
+    sF.value = 'fr'; sF.dispatchEvent(new domF.window.Event('change', { bubbles: true }));
+    await new Promise((r) => setTimeout(r, 30));
+    check('[sprachladen] Sprache lädt nicht (beim Wechsel): Deutsch und Hinweis', dF.getElementById('app').getAttribute('lang') === 'de' && !!hF());
+    domF.window.close();
+  }
+  setLang('de');
   // ----- Antrag scannen -----
   setLang('de');
   beispiel('p1');
