@@ -1180,7 +1180,9 @@
     var kinder = (state.kids || 0) + (state.young || 0) > 0;
     var beideBetrag = !!(w.aBetrag && w.bBetrag);
     var mitKiz = w.a.indexOf('kiz') >= 0;
-    var mehr = (w.rente ? [] : (mitKiz ? ['weg.kv'] : []).concat(['weg.dringend'])).concat(['weg.abgelehnt'], kinder && !w.rente ? ['weg.beide'] : []);
+    // Lage „wahl“ (erweiterter Zugang zum Kinderzuschlag): Der Not-Hinweis nennt die Folge des Antrags beim Jobcenter. Wer Leistungen nach dem
+    // SGB II beantragt hat, verliert diesen Zugang (§ 6a Abs. 1a Nr. 3 BKGG, gesetze-im-internet.de, Abruf 21.11.2026)
+    var mehr = (w.rente ? [] : (mitKiz ? ['weg.kv'] : []).concat([w.lage === 'wahl' ? 'weg.dringendWahl' : 'weg.dringend'])).concat(['weg.abgelehnt'], kinder && !w.rente ? ['weg.beide'] : []);
     return '<section class="wege" id="wege" aria-labelledby="h-wege"><h3 id="h-wege">' + esc(t('weg.h')) + '</h3>' +
       '<p class="wege-lage">' + esc(wegLageSatz(w)) + '</p>' +
       gruppe(reihe[0]) + '<p class="weg-oder"><span>' + esc(t('weg.oder')) + '</span></p>' + gruppe(reihe[1]) +

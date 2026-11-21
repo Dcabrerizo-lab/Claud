@@ -1641,6 +1641,7 @@
   "weg.mehr": "İki yol hakkında daha fazla bilgi",
   "weg.kv": "Grundsicherungsgeld ile Jobcenter üzerinden sağlık sigortan olur. Wohngeld ve Kinderzuschlag ile kendi sigortan gerekir, örneğin işin üzerinden.",
   "weg.dringend": "Şu anda yemek veya kira için paran yok mu? Jobcenter'e git. Önce o öder ve gerisini diğer kurumlarla halleder.",
+  "weg.dringendWahl": "Şu anda yemek veya kira için paran yok mu? Jobcenter'e git. Önce o öder. Önemli: Orada başvuru yaptıktan sonra Kinderzuschlag'ı bu yolla artık alamazsın.",
   "weg.abgelehnt": "Bir başvuru reddedilirse hemen diğer yol için başvur. O zaman önceki süre için de para alabilirsin.",
   "weg.beide": "Bildung und Teilhabe (eğitim ve katılım paketi) ve veli katkı payı olmadan kreş, iki yolda da vardır.",
   "weg.dazu": "Ayrıca şunlar da söz konusu olabilir",
