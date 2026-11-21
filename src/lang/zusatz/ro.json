@@ -53,5 +53,8 @@
   "briefe.schreibenDe": "Scrisorile către autorități, de exemplu o contestație, sunt mereu în limba germană. Autoritățile au nevoie de ele așa.",
   "sp.vz.link": "Mâncare sănătoasă cu bani puțini – sfaturi de la Verbraucherzentrale",
   "sp.vz.t": "Pagina centrului pentru protecția consumatorilor în limbaj simplu. Se deschide în browser.",
-  "sp.vz.de": "Pagina este în limba germană."
+  "sp.vz.de": "Pagina este în limba germană.",
+  "t.ggeld.vermAlter": "Dacă averea voastră se încadrează în suma protejată depinde de vârsta ambilor adulți. Suma protejată se aplică pentru fiecare persoană și este mai mică pentru cei mai tineri. Jobcenter verifică acest lucru.",
+  "t.kiz.vermKnapp": "Averea voastră este puțin peste limită. Atunci se reduce doar Kinderzuschlag pentru prima lună, apoi îl primiți integral. Familienkasse calculează suma exactă.",
+  "t.gsa.mzGBeide": "Dacă amândoi aveți Merkzeichen G (mențiunea G), fiecare persoană primește un necesar suplimentar (Mehrbedarf) de aproximativ {betrag}. Suma este atunci mai mare."
 }

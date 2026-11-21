@@ -53,5 +53,8 @@
   "briefe.schreibenDe": "Letters to authorities, for example an objection, are always in German. The authorities need them that way.",
   "sp.vz.link": "Eating healthily on little money – tips from the Verbraucherzentrale",
   "sp.vz.t": "Page of the consumer advice centre in plain language. Opens in the browser.",
-  "sp.vz.de": "The page is in German."
+  "sp.vz.de": "The page is in German.",
+  "t.ggeld.vermAlter": "Whether your assets are below the protected amount depends on the age of both adults. The protected amount applies per person and is smaller for younger people. The Jobcenter checks this.",
+  "t.kiz.vermKnapp": "Your assets are just above the limit. Then only the Kinderzuschlag for the first month is reduced; after that you get it in full. The Familienkasse calculates the exact amount.",
+  "t.gsa.mzGBeide": "If both of you have the Merkzeichen G (mark G), each person gets an additional allowance (Mehrbedarf) of about {betrag}. The amount is then higher."
 }

@@ -53,5 +53,8 @@
   "briefe.schreibenDe": "Les lettres aux administrations, par exemple une opposition, sont toujours en allemand. Les administrations en ont besoin ainsi.",
   "sp.vz.link": "Bien manger avec peu d'argent – conseils de la Verbraucherzentrale",
   "sp.vz.t": "Page du centre de conseil aux consommateurs en langage simple. S'ouvre dans le navigateur.",
-  "sp.vz.de": "La page est en allemand."
+  "sp.vz.de": "La page est en allemand.",
+  "t.ggeld.vermAlter": "Si votre patrimoine est inférieur au montant protégé dépend de l’âge des deux adultes. Le montant protégé s’applique par personne et il est plus faible pour les plus jeunes. Le Jobcenter le vérifie.",
+  "t.kiz.vermKnapp": "Votre patrimoine dépasse à peine la limite. Dans ce cas, seul le Kinderzuschlag du premier mois est réduit ; ensuite, il est versé en entier. La Familienkasse calcule le montant exact.",
+  "t.gsa.mzGBeide": "Si vous avez tous les deux le Merkzeichen G (mention G), chaque personne reçoit un besoin supplémentaire (Mehrbedarf) d’environ {betrag}. Le montant est alors plus élevé."
 }

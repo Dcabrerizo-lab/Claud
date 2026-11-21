@@ -53,5 +53,8 @@
   "briefe.schreibenDe": "Resmî kurumlara yazılan mektuplar, örneğin itiraz, her zaman Almancadır. Kurumlar bunları Almanca ister.",
   "sp.vz.link": "Az parayla sağlıklı beslenme – Verbraucherzentrale'den ipuçları",
   "sp.vz.t": "Tüketici danışma merkezinin sade dilde sayfası. Tarayıcıda açılır.",
-  "sp.vz.de": "Sayfa Almancadır."
+  "sp.vz.de": "Sayfa Almancadır.",
+  "t.ggeld.vermAlter": "Varlığınızın muaf tutar altında kalıp kalmadığı iki yetişkinin de yaşına bağlıdır. Muaf tutar kişi başına geçerlidir ve daha gençler için daha düşüktür. Bunu Jobcenter kontrol eder.",
+  "t.kiz.vermKnapp": "Varlığınız sınırın biraz üzerinde. Bu durumda sadece ilk ayın Kinderzuschlag’ı azaltılır, sonra tam ödenir. Kesin tutarı Familienkasse hesaplar.",
+  "t.gsa.mzGBeide": "İkinizde de Merkzeichen G (G işareti) varsa, her kişi yaklaşık {betrag} ek ihtiyaç (Mehrbedarf) alır. O zaman tutar daha yüksektir."
 }

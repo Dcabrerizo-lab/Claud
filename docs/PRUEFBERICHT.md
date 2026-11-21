@@ -123,9 +123,9 @@ Was keine Sicherung leisten kann: Die Prüfliste ist nur so vollständig wie das
 - **Mittagessen in der Werkstatt (§ 42b Abs. 2 SGB XII):** wird nicht als Zahl gerechnet, sondern verbreitert den Bereich „möglich“.
 - **Wohnheim in Bayern:** Für die Grundsicherung zeigt die App den Bezirk als zuständige Stelle (Leistungen aus einer Hand). Bitte fachlich bestätigen lassen.
 - **Kinderzuschlag:** Der Wohnkostenanteil der Eltern ist eine Näherung an den Existenzminimumbericht.
-- **Wohngeld:** Die Grenze „Einkommen eher zu niedrig“ (80 % des Bedarfs) ist eine Faustregel ohne Rechtsgrundlage und als solche gekennzeichnet.
+- **Wohngeld:** Die Grenze „Einkommen eher zu niedrig“ folgt seit 21.11.2026 der Plausibilitätsprüfung Nr. 15.01 WoGVwV (BMI-Hinweise 11.03.2020): Einnahmen plus geschätztes Wohngeld müssen die Miete und 80 % der Regelbedarfe decken. Sie führt nur zu „möglich“, nie zu einer Absage.
 - **Elterngeld Plus:** Für die Hälfte des Freibetrags (150 €) gibt es keine eigene Auswahl.
-- **Grundrentenfreibetrag beim Wohngeld (§ 17a WoGG):** ist nicht eingerechnet. Das Wohngeld kann dadurch etwas höher sein.
+- **Grundrentenfreibetrag beim Wohngeld (§ 17a WoGG):** in der App (Haken „33 Jahre Grundrentenzeiten“) und seit 21.11.2026 auch im Bescheid-Check eingerechnet.
 
 Ergänzend zeigt `docs/PRUEFLISTE.md` vom Gesetz her für jede Regel, ob die App sie kennt, auch die noch fehlenden.
 
@@ -167,3 +167,5 @@ Auf GitHub automatisch abgefragt, Ergebnisse als feste Testfälle in `test/amtli
 Gefundene und behobene Fehler: Kind von 6 Jahren (Mehrbedarf Alleinerziehende 36 % bis unter 7), Wohnanteil der Eltern beim Kinderzuschlag (amtliche Tabelle statt Näherung).
 Einschränkung des KiZ-Lotsen: Er berücksichtigt Einkommen der Kinder nicht (2.000 € Unterhalt oder Lohn ohne Wirkung). SoLo rechnet es nach § 6a Abs. 3 BKGG zu 45 % an (DA-KiZ-Beispiele in `test/test-ba-beispiele.js`); im Abgleich wird dafür ohne Unterhalt verglichen. Mit Unterhalt wären es 122 Fälle, in denen SoLo gesetzeskonform vorsichtiger ist als der Lotse.
 Statistisch (Dreierregel, 95 %): Fehlerrate beim Wohngeldbetrag unter 0,05 %, beim Elterngeld unter 0,3 %, falsches Ja/Nein beim Kinderzuschlag unter 0,08 %.
+
+**Abgleich mit Musterbescheiden und amtlichen Rechenbeispielen (21. November 2026):** 43 Fälle aus veröffentlichten Bescheiden und Beispielrechnungen (Familienkasse, Bundesagentur, Städte Frankfurt, Hannover, München, Bochum, Bundesbau- und Familienministerium). Kein schwerer Fehler. 9 Befunde behoben: Wohngeld-Mindesteinkommen zählt das Wohngeld mit (Nr. 15.01 WoGVwV); Vermögen bei Paaren je Person (§ 12 Abs. 2 SGB II); Grundrentenfreibetrag im Bescheid-Check (§ 17a WoGG); Kinderzuschlag mit geschätztem Wohngeld und erweitertem Zugang (§ 6a Abs. 1a BKGG), Vermögen knapp über der Grenze (§ 6a Abs. 3 BKGG), Altersrentner mit Kopfteil (DA-KiZ D.2); Wohngeld über 12 Personen (§ 19 Abs. 3 WoGG); Einkommensgrenze bei 10 € Wohngeld (§ 21 Nr. 1 WoGG); Hinweis Merkzeichen G bei Paaren (§ 30 Abs. 1 SGB XII). Feste Tests: `test/test-musterbescheide.js`.

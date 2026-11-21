@@ -53,5 +53,8 @@
   "briefe.schreibenDe": "Pisma do urzędów, na przykład sprzeciw, są zawsze po niemiecku. Urzędy potrzebują ich w tej formie.",
   "sp.vz.link": "Zdrowe jedzenie za małe pieniądze – porady Verbraucherzentrale",
   "sp.vz.t": "Strona centrali konsumenckiej w prostym języku. Otwiera się w przeglądarce.",
-  "sp.vz.de": "Strona jest po niemiecku."
+  "sp.vz.de": "Strona jest po niemiecku.",
+  "t.ggeld.vermAlter": "To, czy wasz majątek mieści się w kwocie wolnej, zależy od wieku obojga dorosłych. Kwota wolna obowiązuje na osobę i jest niższa dla młodszych osób. Jobcenter to sprawdza.",
+  "t.kiz.vermKnapp": "Wasz majątek jest tylko trochę powyżej granicy. Wtedy obniża się tylko Kinderzuschlag za pierwszy miesiąc, potem przysługuje w pełnej wysokości. Familienkasse wylicza dokładną kwotę.",
+  "t.gsa.mzGBeide": "Jeśli oboje macie Merkzeichen G (znak G), każda osoba dostaje dodatkowe zapotrzebowanie (Mehrbedarf) w wysokości około {betrag}. Kwota jest wtedy wyższa."
 }

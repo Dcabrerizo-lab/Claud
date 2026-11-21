@@ -53,5 +53,8 @@
   "briefe.schreibenDe": "Schreiben an Ämter, zum Beispiel ein Widerspruch, sind immer auf Deutsch. Die Ämter brauchen sie so.",
   "sp.vz.link": "Gesund essen mit wenig Geld – Tipps der Verbraucherzentrale",
   "sp.vz.t": "Seite der Verbraucherzentrale in einfacher Sprache. Öffnet im Browser.",
-  "sp.vz.de": "Die Seite ist auf Deutsch."
+  "sp.vz.de": "Die Seite ist auf Deutsch.",
+  "t.ggeld.vermAlter": "Ob euer Vermögen unter dem Freibetrag liegt, hängt vom Alter beider Erwachsenen ab. Der Freibetrag gilt je Person und ist bei Jüngeren kleiner. Das Jobcenter prüft das.",
+  "t.kiz.vermKnapp": "Euer Vermögen liegt knapp über der Grenze. Dann wird nur der Kinderzuschlag im ersten Monat gekürzt, danach gibt es ihn voll. Die Familienkasse rechnet das genau aus.",
+  "t.gsa.mzGBeide": "Haben beide das Merkzeichen G, gibt es für jede Person einen Mehrbedarf von etwa {betrag}. Der Betrag ist dann höher."
 }
