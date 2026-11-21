@@ -57,7 +57,7 @@ setTimeout(() => {
     check('[ks] Frist mit Beleg', box && /31\.05\.2027/.test(box.textContent) && /So steht es im Brief/.test(box.textContent));
     check('[ks] kein Widerspruch gegen den Hinweis', box && /keinen Widerspruch/.test(box.querySelector('.el-ks-ws').textContent));
     check('[ks] Laienansicht ohne Paragrafen', box && !/§/.test(box.querySelector('p:nth-of-type(1)').textContent));
-    check('[ks] Details zum Aufklappen', box && box.querySelectorAll('details').length === 5, box && box.querySelectorAll('details').length);
+    check('[ks] Details zum Aufklappen', box && box.querySelectorAll('details:not(.el-ks-tun)').length === 5 && box.querySelectorAll('details.el-ks-tun').length === 4, box && box.querySelectorAll('details').length); // dazu 4 Aufklapper „Was du jetzt tun kannst“
     check('[ks] kein Deckel bei 690/540', box && !box.querySelector('.el-ks-deckel'));
     check('[ks] Bescheid-Formular bleibt zu', $('p-bescheid').classList.contains('pp-zu'));
     check('[ks] kein eingeschleustes Bild', !d.querySelector('#elErg img'));
@@ -83,7 +83,7 @@ setTimeout(() => {
     check('[ks] danach wieder automatisch', !/Attest/.test($('ks-text').value));
     // Sozialamt
     box = lies(w, d, 'sa', KS_SA);
-    check('[ks] Sozialamt: Detail Sozialamt', box && box.querySelectorAll('details').length === 6 && box.getAttribute('data-traeger') === 'sa');
+    check('[ks] Sozialamt: Detail Sozialamt', box && box.querySelectorAll('details:not(.el-ks-tun)').length === 6 && box.getAttribute('data-traeger') === 'sa');
     klick(w, $('ks-antwort')); $('ks-g-wirt').checked = true; $('ks-g-wirt').dispatchEvent(new w.Event('change', { bubbles: true }));
     check('[ks] Sozialamt-Entwurf: § 35, kein SGB II', /§ 35 Abs\. 3 Satz 3 SGB XII/.test($('ks-text').value) && !/SGB II\b/.test($('ks-text').value), $('ks-text').value);
     // Anderer Brief

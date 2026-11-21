@@ -78,7 +78,7 @@ setTimeout(() => {
 
     // ---------- S2: Frist ganz oben, vor „Widerspruch erstellen“; Art des Briefs ----------
     const karte = $('p-bescheid').querySelector('.card'), box = $('bs-fristbox');
-    check('S2: Frist-Bereich in der ersten Karte, vor dem Einlesen', !!box && karte.contains(box) && karte.contains($('bs-datum')) && !!(box.compareDocumentPosition($('einlesen')) & 4));
+    check('S2: Frist-Bereich in der ersten Karte, nach dem Einlesen (Scannen zuerst, UX-Audit B)', !!box && karte.contains(box) && karte.contains($('bs-datum')) && !!($('einlesen').compareDocumentPosition(box) & 4));
     check('S2: Datum 12.11.2026 -> „Widerspruch bis 16.12.2026“ im Frist-Muster', !!box.querySelector('.frist .frist-wann') && /16\.12\.2026/.test(box.querySelector('.frist-wann').textContent), box.textContent.slice(0, 200));
     check('S2: Frist steht vor dem Knopf „Widerspruch erstellen“', !!(box.compareDocumentPosition($('bs-wid-mach')) & 4));
     const anh = box.querySelector('input[name="bs-briefart"][value="anh"]');
