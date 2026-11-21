@@ -4,6 +4,16 @@
 
 **Zuerst lesen:** CLAUDE.md, STATUS.md, diese Datei, docs/entwuerfe/naechstes-update.md (Abschnitt „Update nach 1.9“), docs/entwuerfe/pruefungen-21-11/.
 
+## Umbau der Arbeitsabläufe (21.11., fertig, PR #116 + #121 in claude/test-update-1.9)
+- PR-Check 3:55 Min statt 8,5–9 Min (Oberflächentests in 2 parallelen Jobs).
+- Testlisten stehen in test/listen/*.txt (eine Zeile je Test, merge=union) – NICHT mehr in package.json eintragen. tools/tests.js meldet vergessene Tests.
+- Vor jedem Push Pflicht: `npm run test:vor-push` (~40 s); `npm run test:betroffen` testet nur Betroffenes; tools/pr-fertig.sh macht Schnelltest + Push.
+- konflikt-check prüft nur gegen main, test-update-* und Zweige mit offenem PR (kein ux-formular-Fehlalarm mehr).
+- Amtliche Vergleichs-Workflows starten nicht mehr bei Merge-Commits. KiZ-Vergleich: Zeitbudget-Variante auf claude/b-kiz-abgleich übernehmen (lief in 11 Min grün).
+- Gemeinsamer Zahlen-Test für alle Sprachordner; Mutationstest „Killer zuerst“ (111/111 erkannt); e2e-rundgang.js feste Pflichtbesuche.
+- Offen: Wackler in e2e-beh.js (Klick-Zeitüberschreitung, Stelle im Log); Repo-Einstellungen für David: Branch-Schutz main, „Allow auto-merge“, „Automatically delete head branches“.
+- Berichte: docs/entwuerfe/beschleunigung.md, effizienz.md, zweige-pruefung.md.
+
 ## Wo wir stehen
 - Store: Version 1.8.0 (VC 150) – Android hochgeladen von David, iOS Build 150 in TestFlight. main = Stand 1.8.0.
 - Laufendes Update („1.9“) sammelt sich auf **claude/test-update-1.9** (Draft-PR #78-Nachfolger, Basis main). Davids Vorgabe: **für dieses Update NICHT bauen** (weder Android noch Apple); fertig machen → Schlussprüfung → schwere Tests → auf main mergen → direkt mit dem nächsten Update weitermachen.

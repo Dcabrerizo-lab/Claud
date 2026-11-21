@@ -75,5 +75,3 @@ Quelle: docs/entwuerfe/pruefungen-21-11/ (bedienung.md, sicherheit.md, technik.m
 - Feste Euro-Beträge in Texten (19 + 4) → Platzhalter aus zentraler Wertetabelle (Werte mit gültig ab/bis + Quelle), am besten zur Vollprüfung am 1.12.; Faktenblatt aus den Werten erzeugen.
 - PRUEFLISTE.md in Einzeldateien je Bereich (Konfliktschwerpunkt), Sprachdateien-Struktur prüfen.
 - Arbeitsweise: Rechenplan zuerst von Fable prüfen lassen, Referenzrechnung von zweitem Agenten unabhängig bauen.
-- Beschleunigung (docs/entwuerfe/beschleunigung.md, noch offen): test-anzeige.js (3,8 GB) und test-jahreswechsel.js (3,2 GB) Seite je Datum/Sprache wiederverwenden bzw. JSDOM-Fenster schließen (je ca. 100 s → 30 s, danach CI mit 4 gleichzeitig); 10 Lint-Warnungen (toter Code) entfernen, dann `--max-warnings 0`; wackligen Klick in e2e-beh.js beheben (Stelle steht jetzt im Log); Mutationstest „Killer“-Zuordnung aus dem Artefakt des nächsten schweren Laufs übernehmen; Testlisten nach Muster finden statt pflegen.
-- Repo-Einstellungen (nur David/Inhaber): Auto-Merge erlauben, main schützen mit Pflicht-Check „Tests (Regeln, Oberfläche, Browser, App)“, „Branches nach Merge löschen“ an.
