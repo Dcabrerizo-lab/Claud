@@ -67,8 +67,12 @@ const ergebnis = (p) => p.evaluate(() => {
   ok('A: Mappe sichtbar, Ergebnis der einfachen Version ausgeblendet', await p.isVisible('#h-mappe') && !(await p.isVisible('#einfach')));
   await p.click('#mappeClose');
 
-  // Speichern: nach Neuladen weiter in der einfachen Version beim Ergebnis
-  await p.reload(); await p.waitForTimeout(300);
+  // Speichern: nach Neuladen weiter in der einfachen Version beim Ergebnis. Erst neu laden, wenn die Navigation fertig ist: „Schließen“
+  // der Mappe geht eine Ebene hoch, src/navigation.js geht dafür asynchron im Verlauf zurück (history.go). Ein reload() mitten darin
+  // landete je nach Zeitpunkt auf einem anderen Eintrag (CI: Klick-Timeout an #es-neu, beim Neustart grün). Danach auf den Knopf warten statt 300 ms.
+  await p.waitForSelector('#einfach', { state: 'visible', timeout: 15000 });
+  await p.waitForFunction(() => { const w = window, u = location.href + '|' + (history.state && history.state.i); if (w.__u !== u) { w.__u = u; w.__t = Date.now(); return false; } return Date.now() - w.__t > 2000; }, null, { timeout: 15000, polling: 100 });
+  await p.reload(); await p.waitForSelector('#es-neu', { state: 'visible', timeout: 15000 }).catch(() => {});
   ok('Nach Neuladen: einfache Version und Ergebnis noch da', await p.isVisible('#einfach') && /Das kannst du bekommen/.test(await p.textContent('#einfach')));
 
   // Plausibilität: Werkstattlohn 810 € wird einmal nachgefragt
@@ -152,4 +156,4 @@ const ergebnis = (p) => p.evaluate(() => {
   const f = out.filter((x) => x.startsWith('FAIL')).length;
   console.log(f ? '\n' + f + ' FEHLER' : '\nEinfache Version' + SHARD.name + ': alle ' + out.length + ' Prüfungen bestanden');
   process.exit(f ? 1 : 0);
-})().catch((e) => { console.log('ABSTURZ', e.message); process.exit(1); });
+})().catch((e) => { console.log(out.join('\n')); console.log('ABSTURZ', e.message, '\n' + String(e.stack || '').split('\n').filter((z) => z.includes('test/')).slice(0, 3).join('\n')); process.exit(1); }); // Stelle im Test mit ausgeben
