@@ -132,9 +132,9 @@ const TEIL = +SHARD[1], ANZAHL = +SHARD[2];
 const MEINE = M.filter((_, i) => i % ANZAHL === TEIL - 1);
 if (ANZAHL > 1) console.log('Teil ' + TEIL + '/' + ANZAHL + ': ' + MEINE.length + ' von ' + M.length + ' Mutationen');
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'mut-'));
-for (const d of ['src', 'test', 'docs', 'dist', 'tools/amtliche-rechner']) fs.cpSync(path.join(ROOT, d), path.join(tmp, d), { recursive: true });
+for (const d of ['src', 'test', 'docs', 'dist', 'erweiterungen', 'tools/amtliche-rechner']) fs.cpSync(path.join(ROOT, d), path.join(tmp, d), { recursive: true });
 // Einzelne Dateien, die die Tests zusätzlich lesen (Name der App, Webseite)
-for (const f of ['site', 'datenschutz.html', 'README.md', 'app/capacitor.config.json', 'app/android/app/src/main/res/values/strings.xml', 'app/android/app/build.gradle', 'app/android/app/src/debug/res/values/strings.xml', 'app/android/app/src/main/AndroidManifest.xml', 'app/ios/App/App/Info.plist', 'app/ios/App/App.xcodeproj/project.pbxproj']) {
+for (const f of ['site', 'datenschutz.html', 'tools/amtlich-vergleich-wohngeld-kern.js', 'README.md', 'app/capacitor.config.json', 'app/android/app/src/main/res/values/strings.xml', 'app/android/app/build.gradle', 'app/android/app/src/debug/res/values/strings.xml', 'app/android/app/src/main/AndroidManifest.xml', 'app/ios/App/App/Info.plist', 'app/ios/App/App.xcodeproj/project.pbxproj']) {
   fs.mkdirSync(path.dirname(path.join(tmp, f)), { recursive: true });
   fs.cpSync(path.join(ROOT, f), path.join(tmp, f), { recursive: true });
 }
@@ -145,11 +145,19 @@ fs.symlinkSync(path.join(ROOT, 'app', 'node_modules'), path.join(tmp, 'app', 'no
 const DATEI = (m) => m[3] || 'src/rules.js';
 const ORIG = {};
 M.forEach((m) => { ORIG[DATEI(m)] = ORIG[DATEI(m)] || fs.readFileSync(path.join(ROOT, DATEI(m)), 'utf8'); });
-const TESTS = ['test.js', 'test-netto.js', 'test-strict.js', 'test-beh.js', 'test-faelle.js', 'test-raster.js ' + (process.env.MUT_RASTER || 8000), 'test-pruefliste.js', 'test-einfach-gleich.js 3000', 'test-grenzen.js', 'test-formulare.js', 'test-amtlich.js', 'test-amtlich-wohngeld.js', 'test-ba-beispiele.js', 'test-musterbescheide.js', 'test-paar-einkommen.js', 'test-eigenschaften.js ' + (process.env.MUT_EIGEN || 3000)];
-const laeuft = () => { try { for (const t of TESTS) execSync('node test/' + t, { cwd: tmp, stdio: 'ignore' }); return true; } catch (e) { return false; } };
+const TESTS = ['test.js', 'test-netto.js', 'test-strict.js', 'test-beh.js', 'test-faelle.js', 'test-raster.js ' + (process.env.MUT_RASTER || 8000), 'test-pruefliste.js', 'test-einfach-gleich.js 3000', 'test-grenzen.js', 'test-formulare.js', 'test-amtlich.js', 'test-amtlich-wohngeld.js', 'test-ba-beispiele.js', 'test-musterbescheide.js', 'test-paar-einkommen.js', 'test-eigenschaften.js ' + (process.env.MUT_EIGEN || 3000), 'test-musterbescheide-2.js'];
+let gescheitert = '';
+const laeuft = () => { for (const t of TESTS) { try { execSync('node test/' + t, { cwd: tmp, stdio: 'ignore' }); } catch (e) { gescheitert = t; return false; } } return true; };
+
+// Erst ohne Mutation: scheitert schon der saubere Lauf (z. B. weil eine Datei nicht in die Kopie kam), wäre jedes „entdeckt“ wertlos.
+if (!laeuft()) {
+  console.log('Ohne Fehler laufen die Tests nicht durch (' + gescheitert + ' in ' + tmp + ') – erst npm test reparieren oder fehlende Datei oben in die Kopierliste aufnehmen.');
+  try { execSync('node test/' + gescheitert, { cwd: tmp, stdio: 'inherit' }); } catch (e) { /* Ausgabe oben */ }
+  fs.rmSync(tmp, { recursive: true, force: true });
+  process.exit(1);
+}
 
 let unentdeckt = 0, geprueft = 0;
-TESTS.push('test-musterbescheide-2.js'); // Abgleich 2 (21.11.2026)
 for (const m of MEINE) {
   const [name, alt, neu] = m, datei = DATEI(m), orig = ORIG[datei];
   if (orig.split(alt).length !== 2) { console.log('UNGÜLTIG (Stelle nicht genau einmal gefunden): ' + name); unentdeckt++; continue; }
@@ -160,6 +168,6 @@ for (const m of MEINE) {
 }
 const sauber = laeuft();
 fs.rmSync(tmp, { recursive: true, force: true });
-if (!sauber) { console.log('Ohne Fehler laufen die Tests nicht durch – erst npm test reparieren.'); process.exit(1); }
+if (!sauber) { console.log('Ohne Fehler laufen die Tests nicht durch (' + gescheitert + ') – erst npm test reparieren.'); process.exit(1); }
 console.log(unentdeckt ? '\n' + unentdeckt + ' von ' + geprueft + ' eingebauten Fehlern NICHT entdeckt' : '\nMutationstest bestanden: alle ' + geprueft + ' eingebauten Fehler wurden von den Tests entdeckt');
 process.exit(unentdeckt ? 1 : 0);
