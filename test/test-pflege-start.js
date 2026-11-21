@@ -162,6 +162,9 @@ setTimeout(() => {
   // Gutachten vergleichen (UX-Audit D #3): Bereiche zugeklappt mit Zähler, eigene Einschätzung oben, Alter übernommen
   const ber = [...d.querySelectorAll('#pf-module details.pf-bereich')];
   check('[rot-d] Gutachten: 6 Bereiche zugeklappt mit „x von n eingetragen“', ber.length === 6 && ber.every((x) => !x.open && /· \d+ von \d+ eingetragen$/.test(x.querySelector('summary').textContent)));
+  d.getElementById('pf-alter').value = '1'; d.getElementById('pf-monate').value = '10'; d.getElementById('pf-alter').dispatchEvent(new w.Event('input', { bubbles: true }));
+  check('[rot-d] Gutachten: Kind unter 18 Monaten – Bereich 5 klappt mit der neuen Frage auf', !d.getElementById('pf-zeile-5K').hidden && d.getElementById('pf-bereich-5').open);
+  d.getElementById('pf-monate').value = '';
   d.getElementById('pf-alter').value = '';
   w.PruefpaketPflege.eigene({ stufen: { '1.1': 2 }, m5: {}, inkontinenz: { harn: false, stuhl: false }, alterJahre: '82' });
   check('[rot-d] Gutachten: eigene Einschätzung oben, Alter 82 übernommen, „Alles leeren“ nicht mehr oben', !d.getElementById('pf-eigen-oben').hidden && /^Deine Einschätzung in SoLo/.test(d.getElementById('pf-eigen-oben').textContent) && d.getElementById('pf-eigen-oben').nextElementSibling.id === 'pf-form2' && d.getElementById('pf-alter').value === '82' && !!d.getElementById('pf-leeren').closest('.pf-leeren-zeile'));
