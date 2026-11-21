@@ -4158,7 +4158,8 @@
       // Gesperrter Vorgang: nur im Speicher entschlüsseln (Schnittstelle aus dem PIN-Zweig: tresor.oeffneGesperrt bzw. Vorgaenge.oeffneGesperrt), nie zurückschreiben
       oeffneGesperrt: function (id, pin) {
         var f = tresor && typeof tresor.oeffneGesperrt === 'function' ? tresor.oeffneGesperrt.bind(tresor) : (typeof Vorgaenge.oeffneGesperrt === 'function' ? Vorgaenge.oeffneGesperrt : null);
-        return f ? Promise.resolve(f(id, pin)) : Promise.reject(new Error('nicht verfügbar'));
+        // Ergebnis laut PIN-Zweig: { id, name, daten }; nur daten werden verwendet (nur im Speicher)
+        return f ? Promise.resolve(f(id, pin)).then(function (r) { return r && r.daten && typeof r.daten === 'object' ? r.daten : r; }) : Promise.reject(new Error('nicht verfügbar'));
       },
       datum: function (d, l) { var x = d instanceof Date ? d : new Date(String(d) + 'T12:00:00'); return Fmt.datum(x, l); },
       rtl: function (l) { return !!(I18N[l] && I18N[l]['meta.dir'] === 'rtl'); },
