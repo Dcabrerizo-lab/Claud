@@ -55,3 +55,11 @@ Sprachen nur bei Bedarf laden (Datei real 6,35 MB, Grenze vorläufig 7 MB Bytes)
 | Lizenzschutz Berater | noch offen – erst mit David besprechen |
 | Muttersprachler | keine verfügbar → Rückübersetzung (Fable) + amtliches Glossar + Deutsch-Netz; „mit Fehlern darf nichts veröffentlicht werden“ |
 | Termine | Vorprüfung Update 2027 am 1.12.2026, Prüfung am 20.12.2026 (geplante Aufgaben) |
+
+## Befunde amtliche Rechner (21.11., fürs nächste Update beheben, mit Fable-Prüfung)
+- Wohngeld: behoben (#110), 400/400.
+- BAföG (BAföG Digital, 200 Fälle): 0 Widersprüche mit Stand inkl. #99/#104. SoLo zeigt keinen Betrag, 113/200 „möglich“ → Betrag/Spanne prüfen.
+- Elterngeld (Schnellrechner, 300 Fälle): ohne Teilzeit/Mehrlinge 180/180 gleich. FEHLER: Mehrlingszuschlag 300 € je weiteres Kind fehlt (§ 2a Abs. 4 BEEG). Teilzeit: SoLo bis 1.389 € zu hoch (nur Hinweis „anteilig weniger“) → richtig rechnen. ElterngeldPlus nicht geprüft.
+- Pfändung (Justiz NRW, 300 Fälle): 300/300 auf den Cent; BGBl.-Fundstelle in src/rules.js prüfen (weicht von Justiz NRW ab).
+- KiZ: Bericht steht aus (Agent lief noch, PR #103).
+Berichte: /home/claude/ausgabe/amtlich/ (alte Sitzung) – Kopien in docs/entwuerfe/pruefungen-21-11/ nachlegen.
