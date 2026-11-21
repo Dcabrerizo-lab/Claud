@@ -2503,7 +2503,6 @@
   bind();
   writeForm();
   if (window.DeNetz) DeNetz.init({ lang: function () { return lang; }, de: tDe, t: t, wurzel: function () { return $('app'); } });
-  if (window.Ausziehen && Ausziehen.beratungAbfrage) Ausziehen.beratungAbfrage(function () { return beratung; }); // „Ich ziehe aus“: Paragrafen nur im Beratungsmodus
   lang = detect();
   applyLang();
   initClaude();
@@ -2514,6 +2513,7 @@
   Store.get('lotse.einfachSprache', function (v) { if (v === '1') einfacheSpracheSetzen(true, false); });
   Store.get('lotse.deNetz', function (v) { if (v === '0') deNetzSetzen(false, false); });
   Store.get('lotse.beratung', function (v) { if (v === '1') beratungSetzen(true, false); });
+  if (window.Ausziehen && Ausziehen.beratungAbfrage) Ausziehen.beratungAbfrage(function () { return beratung; }); // „Ich ziehe aus“: Paragrafen nur im Beratungsmodus
   // ----- Leistungs-Check: Weg wählen (Schritt für Schritt oder Alles auf einer Seite), Modul src/schritte.js -----
   // Beide Wege schreiben in denselben Zustand (state). Die Wahl gilt pro Gerät (lotse.checkWeg, nicht im Vorgang).
   if (window.Schritte) {
