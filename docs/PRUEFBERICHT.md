@@ -186,8 +186,8 @@ Unabhängige Prüfung von PR #99 (Abgleich 2, Befunde 10 bis 15 und H3). Alle Pa
 Geänderte Testerwartungen geprüft: Alle Änderungen folgen den Korrekturen (keine Erwartung nur „passend gemacht“). Keine Werte ab 1.1.2027 vorgezogen. Keine Änderung an Speicherung, Farben oder Startkacheln.
 
 Offen (bewusst nicht geändert):
-- BAföG: Beträge unter 10 € im Monat werden nicht gezahlt (§ 51 Abs. 4 BAföG). Die Grenze für „eher nicht“ liegt deshalb um bis zu 10 € zu hoch (Seite „möglich“, keine falsche Zusage).
-- BAföG Vermögen: 2.300 € Freibetrag je Ehegatte und Kind (§ 29 Abs. 1 Nr. 2 und 3) rechnet die App nicht mit (vorsichtige Seite, „eher nicht“ etwas zu früh bei Studierenden mit Familie).
+- ~~BAföG: Beträge unter 10 € im Monat werden nicht gezahlt (§ 51 Abs. 4 BAföG).~~ Erledigt 21.11.2026 (Branch claude/b-rest-19): Grenze jetzt Bedarf − 9,50 € (§ 51 Abs. 3 Rundung, Abs. 4).
+- ~~BAföG Vermögen: 2.300 € Freibetrag je Ehegatte und Kind (§ 29 Abs. 1 Nr. 2 und 3) fehlte.~~ Erledigt 21.11.2026 (Branch claude/b-rest-19), dazu Kinderbetreuungszuschlag 160 € je Kind beim Bedarf (§ 14b); Ehe und eigene Kinder werden nicht abgefragt -> vorsichtig mitgerechnet.
 - Arbeitslosengeld und Krankengeld: Die obere Grenze mit Steuerklasse III gilt auch für Alleinstehende, die diese Klasse fast nie haben. Die Spanne ist dort oben zu weit; die Mitte liegt aber näher am echten Wert als vorher.
 - Landespflegegeld: Die Antragsfrist steht jetzt klar im Gesetz (3 Monate nach Ende des Pflegegeldjahres, Art. 3 Abs. 1 Satz 1). Der Text sagt weiter „es gibt eine Frist; welche, sagt dir das Landesamt“. Kann man in einem eigenen Auftrag konkret nennen.
 - Die Broschüre der Rentenversicherung (S. 18) war am 21.11.2026 nicht im Volltext abrufbar (nur Stand 01.05.2026, 20. Auflage bestätigt).

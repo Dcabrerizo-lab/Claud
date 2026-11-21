@@ -233,7 +233,14 @@ const Rules = (function () {
     // (mit 102 + 35 € nach § 13a Abs. 1, Flyer und FAQ, Abruf 21.11.2026); 1.088 € ist die vorsichtige Seite (eher „möglich“ als „eher nicht“).
     // Vermögen § 29 Abs. 1 Nr. 1: 15.000 € bis zur Vollendung des 30. Lebensjahres, danach 45.000 €; § 30: nur der Betrag darüber,
     // geteilt durch die Monate des Bewilligungszeitraums (in der Regel 12 Monate, § 50 Abs. 3), mindert den Bedarf (bafög.de Beispiel „Stefan“).
-    bafoeg: { freiAllein: 1690, freiPaar: 2540, jeKind: 770, anrechFrei: 0.5, anrechFreiKind: 0.05, bedarfMax: 1088, bwzMonate: 12, vermBis29: 15000, vermAb30: 45000 },
+    // § 29 Abs. 1 Nr. 2 und 3 BAföG (https://www.gesetze-im-internet.de/baf_g/__29.html, Abruf 21.11.2026): zusätzlich 2.300 € frei
+    // für den Ehegatten oder Lebenspartner und für jedes Kind des Auszubildenden (vermJePerson). Ob der Partner verheiratet ist und die
+    // Kinder eigene sind, fragt die App nicht: sie rechnet den Freibetrag mit (vorsichtige Seite, eher „möglich“ als „eher nicht“).
+    // § 14b Abs. 1 BAföG (https://www.gesetze-im-internet.de/baf_g/__14b.html, Abruf 21.11.2026): Kinderbetreuungszuschlag 160 € je
+    // eigenem Kind unter 14 im Haushalt erhöht den Bedarf (kindZuschlag; Alter unbekannt -> für jedes Kind, vorsichtige Seite).
+    // § 51 Abs. 3 und 4 BAföG (https://www.gesetze-im-internet.de/baf_g/__51.html, Abruf 21.11.2026): auf volle Euro gerundet,
+    // monatliche Beträge unter 10 € werden nicht gezahlt (minZahlung). „Eher nicht“ erst, wenn selbst ungerundet weniger als 9,50 € blieben.
+    bafoeg: { freiAllein: 1690, freiPaar: 2540, jeKind: 770, anrechFrei: 0.5, anrechFreiKind: 0.05, bedarfMax: 1088, bwzMonate: 12, vermBis29: 15000, vermAb30: 45000, vermJePerson: 2300, kindZuschlag: 160, minZahlung: 10 },
     pflege: { geld: { 2: 347, 3: 599, 4: 800, 5: 990 }, entlastung: 131 },
     // Pflege-Startkachel „Welche Unterstützung gibt es?“. Beträge oben (pflege, pflegeSach, pflegeTages, entlastungsbudget, beh.verbrauch,
     // beh.wohnumfeld). Quelle: BMG, Online-Ratgeber Pflege „Verhinderungspflege“, „Pflege zu Hause“, „Weitere Leistungen und Angebote zur
@@ -1302,6 +1309,8 @@ const Rules = (function () {
     const r = asylHoechstens(h, bafoeg0(h), 'bafoeg.asyl');
     return euAusschluss(h) ? hoechstensMoeglich(r, 'bafoeg.eu') : r;
   }
+  // § 51 Abs. 3 und 4 BAföG: Anrechnung, ab der sicher nichts mehr gezahlt wird (Rest ungerundet unter 9,50 € -> gerundet unter 10 €)
+  const bafoegNullGrenze = (bedarf) => bedarf - R.bafoeg.minZahlung + 0.5;
   function bafoeg0(h) {
     const id = 'bafoeg';
     if (!h.ausbildung) return mk(id, 'nein', 'vorausFehlt', [['bafoeg.keine']]);
@@ -1318,7 +1327,7 @@ const Rules = (function () {
       // „Eher nicht“ erst, wenn diese Anrechnung den höchsten Bedarf (bedarfMax) übersteigt; geteilt auf mehrere Geschwister in Ausbildung
       // (§ 11 Abs. 4) wäre sie kleiner -> darunter „möglich“
       const quote = R.bafoeg.anrechFrei - R.bafoeg.anrechFreiKind * Math.max(0, h.children - 1);
-      if (quote <= 0 || (h.netto - untE - fb) * quote <= R.bafoeg.bedarfMax) return mk(id, 'vielleicht', 'vielleicht', [['bafoeg.kindRand', p]]);
+      if (quote <= 0 || (h.netto - untE - fb) * quote <= bafoegNullGrenze(R.bafoeg.bedarfMax)) return mk(id, 'vielleicht', 'vielleicht', [['bafoeg.kindRand', p]]);
       return mk(id, 'nein', 'einkoHoch', [['bafoeg.kindNein', p]]);
     }
     // ich selbst: Elterneinkommen unbekannt
@@ -1326,11 +1335,14 @@ const Rules = (function () {
     if (h.gruppe === '50+' || (h.gruppe === '40-49' && !bafoegAlter(h))) {
       return mk(id, h.gruppe === '50+' ? 'nein' : 'vielleicht', h.gruppe === '50+' ? 'vorausFehlt' : 'vielleicht', [['bafoeg.alter']]);
     }
-    const vermGrenze = h.gruppe === '<30' ? R.bafoeg.vermBis29 : R.bafoeg.vermAb30; // § 29: 15.000 € bis zur Vollendung des 30. Lebensjahres
+    // § 29 Abs. 1: 15.000 € bis zur Vollendung des 30. Lebensjahres (sonst 45.000 €), dazu 2.300 € je Partner und je Kind
+    const vermGrenze = (h.gruppe === '<30' ? R.bafoeg.vermBis29 : R.bafoeg.vermAb30)
+      + R.bafoeg.vermJePerson * ((h.adults === 2 ? 1 : 0) + h.children);
+    const bedarfIch = R.bafoeg.bedarfMax + R.bafoeg.kindZuschlag * h.children; // § 14b Kinderbetreuungszuschlag
     // § 30 BAföG (Abruf 21.11.2026): nur der Betrag über dem Freibetrag, geteilt durch 12 Monate, mindert das BAföG. „Eher nicht“ erst,
     // wenn das mehr ist als der höchste Bedarf; darunter „möglich“ mit Hinweis
     const vermUeber = h.vermoegen + (h.autoWert || 0) - vermGrenze;
-    if (vermUeber / R.bafoeg.bwzMonate > R.bafoeg.bedarfMax) return mk(id, 'nein', 'vermHoch', [['bafoeg.vermHoch', { verm: eur(vermGrenze) }]]);
+    if (vermUeber / R.bafoeg.bwzMonate > bafoegNullGrenze(bedarfIch)) return mk(id, 'nein', 'vermHoch', [['bafoeg.vermHoch', { verm: eur(vermGrenze) }]]);
     if (vermUeber > 0) return mk(id, 'vielleicht', 'vielleicht', [['bafoeg.vermTeil', { verm: eur(vermGrenze), monat: eur(Math.round(vermUeber / R.bafoeg.bwzMonate)) }], ['bafoeg.ich']]);
     return mk(id, 'vielleicht', 'vielleicht', [['bafoeg.ich']]);
   }
