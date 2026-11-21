@@ -225,7 +225,7 @@ const PflegeAssistent = (function () {
       box.append(h('details', { class: 'pa-info pa-punkte-box' }, h('summary', { text: T('erg.punkteTitel', 'Punkte je Bereich') }),
         h('p', { class: 'pa-punkte', text: T('erg.punkte', '{p} von 100 Punkten.', { p: zahl(r.gesamt) }) }), bar, knapp,
         h('div', { class: 'tablewrap', tabindex: '0', role: 'region', 'aria-label': T('erg.punkteTitel', 'Punkte je Bereich') }, h('table', {}, h('thead', {}, h('tr', {}, h('th', { text: T('erg.bereich', 'Bereich') }), h('th', { class: 'z', text: T('erg.punkteSp', 'Punkte') }))), tb)),
-        h('p', { class: 'small', text: T('erg.grenzen', 'Ab 12,5 Punkten gibt es Pflegegrad 1, ab 27 Pflegegrad 2, ab 47,5 Pflegegrad 3, ab 70 Pflegegrad 4, ab 90 Pflegegrad 5. Von den Bereichen 2 und 3 zählt nur der höhere. Grundlage: § 15 SGB XI.') })));
+        h('p', { class: 'small', text: T('erg.grenzen', 'Ab 12,5 Punkten gibt es Pflegegrad 1, ab 27 Pflegegrad 2, ab 47,5 Pflegegrad 3, ab 70 Pflegegrad 4, ab 90 Pflegegrad 5. Von den Bereichen 2 und 3 zählt nur der höhere (§ 15 SGB XI).') })));
       box.append(h('details', { class: 'pa-info' }, h('summary', { text: T('erg.tippTitel', 'Tipp für den Termin mit dem Gutachter') }),
         h('p', { text: T('erg.tipp', 'Führe eine Woche lang ein Pflegetagebuch: Was war nötig, wie oft, wie lange? Lege beim Termin Arztberichte und den Medikamentenplan bereit, und sei dabei, wenn möglich. Zeige keine besseren Seiten als im Alltag.') })));
     }

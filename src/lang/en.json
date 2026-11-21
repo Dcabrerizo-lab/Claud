@@ -1463,7 +1463,7 @@
   "pu.nurDe": "This overview is currently only available in German.",
   "pu.letzte": "Your last estimate: Pflegegrad (care level) {pg} ({datum})",
   "pu.letzte0": "Your last estimate: no Pflegegrad (care level) ({datum})",
-  "pu.letzte.ansehen": "View result",
+  "pu.letzte.ansehen": "Show result",
   "sp.h": "Saving money every day",
   "home.geld": "Money and debts",
   "home.geld.t": "Debts, garnishment, household budget, saving tips and free help.",

@@ -283,7 +283,8 @@ setTimeout(() => {
   // seit 1.4 auch „Brief prüfen“ und die Pflegegrad-Einschätzung (zusammen gut 200 KB)
   check('Web-Datei ist ein vollständiges Dokument mit UTF-8 und Viewport (Safari, Handy)', /^<!doctype html>/i.test(html) && /<meta charset="utf-8">/i.test(html.slice(0, 300)) && /name="viewport"/.test(html.slice(0, 400)));
   // 21.11.2026: in Bytes gemessen (Buffer.byteLength, UTF-8) statt in Zeichen; Grenze vorläufig 7 MB – Entscheidung David steht noch aus
-  check('Dateigröße unter 7 MB (Bytes, vorläufig)', Buffer.byteLength(html, 'utf8') < 7 * 1024 * 1024, (Buffer.byteLength(html, 'utf8') / 1024).toFixed(0) + ' KB');
+  // 21.11.2026: Grenze 7 → 8 MB, weil Pflege-Übersicht, Erklärseite und Einschätzung jetzt in 13 Sprachen eingebettet sind (src/lang/pflege, rund 620 KB)
+  check('Dateigröße unter 8 MB (Bytes, vorläufig)', Buffer.byteLength(html, 'utf8') < 8 * 1024 * 1024, (Buffer.byteLength(html, 'utf8') / 1024).toFixed(0) + ' KB');
   // ----- Antrag scannen -----
   setLang('de');
   beispiel('p1');

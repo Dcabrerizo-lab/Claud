@@ -140,7 +140,7 @@ setTimeout(() => {
   check('[pflege-ergebnis] Pflege-Startseite: „Deine letzte Einschätzung: Pflegegrad X (Datum)“', ansicht() === 'pflegestart' && !!le && new RegExp('Deine letzte Einschätzung: Pflegegrad ' + pgE + ' \\(').test(le.textContent), le && le.textContent);
   check('[pflege-ergebnis] Pflege-Startseite: weiter genau zwei Kacheln', box().querySelectorAll('.weg-liste .weg').length === 2);
   le.querySelector('button').click();
-  check('[pflege-ergebnis] „Ergebnis ansehen“ öffnet direkt die Ergebnisseite', ansicht() === 'pflege' && /^Wahrscheinlich/.test(titel()));
+  check('[pflege-ergebnis] „Ergebnis zeigen“ öffnet direkt die Ergebnisseite', ansicht() === 'pflege' && /^Wahrscheinlich/.test(titel()));
   pa().querySelector('.pa-zur').click(); d.querySelector('#v-pflegestart [data-nav-zurueck]').click();
   // Aus dem Leistungs-Check: dort gibt es den Weg zurück zur Karte
   d.getElementById('goLeistungen').click(); d.getElementById('paStart').click();

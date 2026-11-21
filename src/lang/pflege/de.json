@@ -242,7 +242,7 @@
   "pfl.ui.erg.punkte": "{p} von 100 Punkten.",
   "pfl.ui.erg.bereich": "Bereich",
   "pfl.ui.erg.punkteSp": "Punkte",
-  "pfl.ui.erg.grenzen": "Ab 12,5 Punkten gibt es Pflegegrad 1, ab 27 Pflegegrad 2, ab 47,5 Pflegegrad 3, ab 70 Pflegegrad 4, ab 90 Pflegegrad 5. Von den Bereichen 2 und 3 zählt nur der höhere. Grundlage: § 15 SGB XI.",
+  "pfl.ui.erg.grenzen": "Ab 12,5 Punkten gibt es Pflegegrad 1, ab 27 Pflegegrad 2, ab 47,5 Pflegegrad 3, ab 70 Pflegegrad 4, ab 90 Pflegegrad 5. Von den Bereichen 2 und 3 zählt nur der höhere (§ 15 SGB XI).",
   "pfl.ui.erg.tippTitel": "Tipp für den Termin mit dem Gutachter",
   "pfl.ui.erg.tipp": "Führe eine Woche lang ein Pflegetagebuch: Was war nötig, wie oft, wie lange? Lege beim Termin Arztberichte und den Medikamentenplan bereit, und sei dabei, wenn möglich. Zeige keine besseren Seiten als im Alltag.",
   "pfl.ui.bed.geld": "Pflegegeld: {b} im Monat aufs Konto, wenn Angehörige pflegen",
