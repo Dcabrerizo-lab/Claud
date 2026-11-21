@@ -59,6 +59,7 @@ const MOCK = () => {
 
   const out = [];
   const ok = (n, c, x) => out.push((c ? 'ok   ' : 'FAIL ') + n + (c ? '' : ' ' + (x || '')));
+  const setzeFeld = (pg, id, v) => pg.evaluate(([i, x]) => { const e = document.getElementById(i); e.value = x; e.dispatchEvent(new Event('input', { bubbles: true })); }, [id, v]); // Felder liegen oben in der Antragsmappe (auch wenn sie zu ist)
   const b = await chromium.launch();
   const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, locale: 'de-DE', serviceWorkers: 'block' });
   await ctx.addInitScript(MOCK);
@@ -87,7 +88,7 @@ const MOCK = () => {
   ok('Keine Fristen über Preferences gespeichert', !(await calls('Preferences.set')).some((c) => c.key === 'lotse.fristen'));
   await p.click('#appnav [data-ansicht=start]'); await p.click('#goLeistungen');
   ok('Gespeicherte Daten werden über Preferences gelesen', (await calls('Preferences.get')).length > 0);
-  ok('Erster Start: Anleitung statt Beispielwerte', (await p.locator('#cards .startcard').count()) === 1 && (await p.inputValue('#ek1Brutto')) === '');
+  ok('Erster Start: keine Karten, kein Kasten „So geht\'s“, keine Beispielwerte', (await p.locator('#cards > *').count()) === 0 && (await p.inputValue('#ek1Brutto')) === '');
   if (await p.isVisible('#schritte .sf-w2')) await p.click('#schritte .sf-w2'); // Leistungs-Check: Weg „Alles auf einer Seite“ wählen (src/schritte.js)
   await p.evaluate(() => document.getElementById('p1').click());
   ok(KARTEN.length + ' Karten', (await p.locator('#cards .card').count()) === KARTEN.length);
@@ -98,7 +99,7 @@ const MOCK = () => {
   await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'de');
 
   // Foto-Scan: Kamera -> Texterkennung -> Felder, Foto wird danach gelöscht
-  await p.evaluate(() => document.getElementById('p1').click()); await p.fill('#p-name', 'Maria Muster');
+  await p.evaluate(() => document.getElementById('p1').click()); await setzeFeld(p, 'p-name', 'Maria Muster');
   // „Brief prüfen“: die Übersicht hat kein Scannen; in der Kachel Antragsformular: Kamera → Texterkennung → Felder erklärt
   await p.click('#appnav [data-ansicht=start]'); await p.click('#goBriefe'); if (await p.isVisible('#briefZurueck')) await p.click('#briefZurueck');
   ok('Übersicht „Brief prüfen“: kein Scannen oder Einfügen', !(await p.isVisible('#einlesen')));
@@ -205,11 +206,11 @@ const MOCK = () => {
   ok('„Nur diesen Vorgang löschen“ entfernt gespeicherte Eingaben', (await calls('Preferences.remove')).length > 0);
 
   // Wohnort nur in der Anschrift der Antragsmappe (PLZ-Feld im Fragebogen leer): App nutzt die PLZ aus „PLZ und Ort“
-  await p.evaluate(() => document.getElementById('p1').click()); await p.fill('#plz', ''); await p.fill('#p-name', 'Maria Muster'); await p.fill('#p-ort', '');
+  await p.evaluate(() => document.getElementById('p1').click()); await p.fill('#plz', ''); await setzeFeld(p, 'p-name', 'Maria Muster'); await setzeFeld(p, 'p-ort', '');
   await p.click('#mappeMake');
   ok('Ohne Wohnort: Hinweis in der Mappe, dass die PLZ fehlt', await p.isVisible('#mappeAdrNote'));
   await p.click('#mappeClose');
-  await p.fill('#p-ort', '90542 Eckental'); await warte(() => /Familienkasse Bayern Nord/.test(document.getElementById('c-kindergeld').textContent));
+  await setzeFeld(p, 'p-ort', '90542 Eckental'); await warte(() => /Familienkasse Bayern Nord/.test(document.getElementById('c-kindergeld').textContent));
   ok('PLZ aus der Anschrift: Karte nennt die zuständige Stelle', /Familienkasse Bayern Nord/.test(await p.textContent('#c-kindergeld')));
   await p.click('#mappeMake');
   const brief2 = await p.inputValue('#mappeText');
@@ -217,7 +218,7 @@ const MOCK = () => {
   ok('PLZ aus der Anschrift: kein Hinweis auf fehlende PLZ', !(await p.isVisible('#mappeAdrNote')));
   await p.click('#mappeClose');
   // Mehrere Orte unter einer PLZ: Ortsname aus der Anschrift entscheidet (84032: Altdorf im Lkr. Landshut oder Stadt Landshut)
-  await p.fill('#p-ort', '84032 Altdorf'); await warte(() => /Landratsamt Landshut/.test((document.getElementById('c-wohngeld') || {}).textContent || ''));
+  await setzeFeld(p, 'p-ort', '84032 Altdorf'); await warte(() => /Landratsamt Landshut/.test((document.getElementById('c-wohngeld') || {}).textContent || ''));
   ok('84032 Altdorf: Landratsamt Landshut (nicht Stadt Landshut)', /Landratsamt Landshut/.test(await p.textContent('#c-wohngeld').catch(() => '')));
 
   const net = reqs.filter((u) => !u.startsWith(origin) && !u.startsWith('data:') && !u.startsWith('blob:'));
@@ -234,7 +235,7 @@ const MOCK = () => {
   const legalI = await pi.evaluate(() => document.getElementById('legal').textContent);
   ok('iPhone: Anbieter im Impressum Natascha Cabrerizo y Polo, nicht David', /Anbieter: Natascha Cabrerizo y Polo/.test(legalI.replace(/\s+/g, ' ')) && !/David/.test(legalI), legalI.slice(0, 200));
   if (await pi.isVisible('#schritte .sf-w2')) await pi.click('#schritte .sf-w2');
-  await pi.evaluate(() => document.getElementById('p1').click()); await pi.fill('#p-name', 'Test'); await pi.evaluate(() => document.getElementById('mappeMake').click()); await pi.waitForSelector('#mappePrint', { state: 'visible', timeout: 5000 }).catch(() => {});
+  await pi.evaluate(() => document.getElementById('p1').click()); await setzeFeld(pi, 'p-name', 'Test'); await pi.evaluate(() => document.getElementById('mappeMake').click()); await pi.waitForSelector('#mappePrint', { state: 'visible', timeout: 5000 }).catch(() => {});
   ok('iPhone: keine Android-Knöpfe Drucken/Speichern, PDF teilen vorhanden', !(await pi.isVisible('#mappeDruck')) && !(await pi.isVisible('#mappeSpeichern')) && (await pi.isVisible('#mappePrint')));
   await ctxI.close();
 

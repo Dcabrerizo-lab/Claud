@@ -146,6 +146,7 @@
     bank: '<path d="M3 10l9-6 9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/>',
     schere: '<circle cx="6" cy="7" r="3"/><circle cx="6" cy="17" r="3"/><path d="M8.5 8.5L20 18M8.5 15.5L20 6"/>',
     person: '<circle cx="12" cy="7" r="3"/><path d="M5 20c1-4 4-6 7-6s6 2 7 6"/>',
+    licht: '<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/>',
     post: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
     haus: '<path d="M4 11l8-6 8 6v9H4z"/><path d="M10 20v-5h4v5"/>',
     stopp: '<circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/>',
@@ -186,6 +187,12 @@
     s.appendChild(sym); s.appendChild(k); d.appendChild(s);
     var p = document.createElement('p'); p.textContent = (laien ? tL : t)(key); d.appendChild(p);
     return d;
+  }
+  // Gleicher Tipp als HTML (Ergebnis des Leistungs-Checks wird als Text gebaut): Symbol + kurzer Satz (bereits mit esc), Inhalt zugeklappt.
+  // innen: fertiges, mit esc gebautes HTML; sym: Schlüssel aus TIPP_SYM (feste Pfade)
+  function tippHtml(sym, kurz, innen, id) {
+    return '<details class="mehr tipp"' + (id ? ' id="' + id + '"' : '') + '><summary><span class="tipp-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + (TIPP_SYM[sym] || TIPP_SYM.liste) + '</svg></span>' +
+      '<span class="tipp-kurz">' + esc(kurz) + '</span></summary>' + innen + '</details>';
   }
   window.SoloMehr = { el: mehrEl, quellen: quellenEl, tipp: tippEl, rb: function () { return t('rb.satz'); }, t: function (k, p) { return Object.prototype.hasOwnProperty.call(I18N.de, k) ? t(k, p) : null; } }; // auch für die Prüfpakete (erweiterungen/vorschau.js), Schulden-Liste und „Ich ziehe aus“
 
@@ -865,18 +872,19 @@
     [['p-name', 'name'], ['p-geb', 'geb'], ['p-strasse', 'strasse'], ['p-ort', 'ort'], ['p-tel', 'tel']].forEach(function (x) {
       $(x[0]).addEventListener('input', function () {
         person[x[1]] = $(x[0]).value; save();
+        if (!$('mappe').hidden) mappeNeuBald(); // Briefe in der Mappe zeigen Name und Anschrift sofort
         // Die Anschrift kann den Wohnort liefern (PLZ): Karten mit der zuständigen Stelle aktualisieren
         if (x[1] === 'ort' && !/^\d{5}$/.test(String(state.plz || ''))) render();
       });
     });
     // Geburtsdatum beim Verlassen des Feldes einheitlich als TT.MM.JJJJ (Unklares bleibt wie eingegeben)
     $('p-geb').addEventListener('change', function () { var f = Fmt.gebDatum($('p-geb').value); if (f !== $('p-geb').value) { $('p-geb').value = f; person.geb = f; save(); } });
-    $('mappeMake').addEventListener('click', function () {
-      var any = Object.keys(picked).some(function (k) { return picked[k]; });
-      if (!any) { $('pickMsg').textContent = t('f.pick0'); return; }
-      $('pickMsg').textContent = '';
-      openMappe();
+    // „Briefe für die Anträge machen“ (entsteht mit den Karten): öffnet die Antragsmappe; Auswahl, Name und Anschrift stehen dort oben
+    $('cards').addEventListener('click', function (e) {
+      if (e.target && e.target.closest && e.target.closest('#mappeMake')) openMappe();
     });
+    // Auswahl der Leistungen in der Mappe: Mappe sofort neu aufbauen
+    $('pick').addEventListener('change', function () { if (!$('mappe').hidden) buildMappe(); });
     // App: „PDF teilen“ (auf dem iPhone mit Drucken und In Dateien sichern im Teilen-Dialog); kein zweiter, doppelter Teilen-Knopf
     if (NATIVE) { $('mappePrint').setAttribute('data-t', 'f.pdf'); $('mappePrint').textContent = t('f.pdf'); }
     // Android: eigene Knöpfe zum Drucken und Speichern (dort bietet der Teilen-Dialog das nicht auf jedem Gerät an; iPhone: im Teilen-Dialog enthalten)
@@ -987,7 +995,7 @@
   // Hinweise, die zu bestimmten Leistungen gehören, stehen in deren Karte; Hinweise für alle Anträge in „Gut zu wissen“
   var HINWEIS_KARTE = { 'z.wgKiz': ['wohngeld', 'kiz'], 'z.gsaWg': ['gsa', 'wohngeld'], 'z.kgZuerst': ['kiz', 'kindergeld'], 'z.ggBezug': ['wohngeld', 'kiz', 'but'] };
   var HINWEIS_ALLE = ['z.stichtag', 'z.verfahren', 'z.grenzen'];
-  var kartenHinweise = {}, gutHtml = '';
+  var kartenHinweise = {}, tippsHtml = '';
   // Beratungsmodus: Rechtsgrundlage der Leistung (Rules.RECHT, deutsch) unter dem Kartentext
   function rechtHtml(r) { return beratung && r.recht ? '<p class="recht"><strong>' + esc(t('recht.label')) + ':</strong> <span lang="de" dir="ltr">' + esc(r.recht) + '</span></p>' : ''; }
   // Unterlagen-Checkliste zum Abhaken (Antragsmappe); Haken bleiben auf dem Gerät (lotse.haken)
@@ -1067,7 +1075,9 @@
   }
   function kartenHtml(results) {
     var k = kartenReihe(results), nein = k.neinKern.length + k.neinSpez.length;
-    return k.passt.map(card).join('') + gutHtml + (nein
+    // Grüner Hauptknopf direkt unter den passenden Karten (wie im Kurzen Check); Name und Anschrift fragt erst die Antragsmappe
+    var knopf = '<p class="btns erg-knopf" id="mappeKnopf"><button type="button" class="btn" id="mappeMake">' + esc(t('es.briefe')) + '</button></p>';
+    return k.passt.map(card).join('') + knopf + '<div class="erg-tipps" id="ergTipps">' + tippsHtml + '</div>' + (nein
       ? '<details class="neinbox"><summary>' + esc(t('nein.sum', { n: nein })) + '</summary>' + k.neinKern.map(card).join('') +
         (k.neinSpez.length ? '<details class="spezbox"><summary>' + esc(t('nein.spezial', { n: k.neinSpez.length })) + '</summary>' + k.neinSpez.map(card).join('') + '</details>' : '') +
         '</details>'
@@ -1085,19 +1095,19 @@
   // Rente/Erwerbsminderung: Grundsicherung im Alter oder Wohngeld – gibt es nicht gleichzeitig (Hinweis z.gsaWg). Gleicher Aufbau wie „Zwei Wege“,
   // aber nur mit Aussagen, die schon in der App stehen (z.gsaWg, es.r.gsa, es.r.wohngeld, sp.vertraege.1); keine eigene Vorrangregel.
   function entwederOder(results) {
-    return '<section class="zweiwege" id="entwederOder" aria-labelledby="h-eo"><h3 id="h-eo">' + esc(tL('eo.h')) + '</h3><p class="ww-tun"><b>' + esc(tL('eo.tipp')) + '</b></p><p>' + esc(tL('eo.t')) + '</p>' +
+    return tippHtml('waage', tL('eo.h'), '<div><p class="ww-tun"><b>' + esc(tL('eo.tipp')) + '</b></p><p>' + esc(tL('eo.t')) + '</p>' +
       '<div class="ww-wege"><div class="ww-weg"><h4>' + esc(tL('eo.a.h')) + '</h4><p>' + esc(tL('eo.a.t')) + '</p>' + wegLinks(results, ['gsa']) + '</div>' +
-      '<div class="ww-weg"><h4>' + esc(tL('eo.b.h')) + '</h4><p>' + esc(tL('eo.b.t')) + '</p>' + wegLinks(results, ['wohngeld']) + '</div></div></section>';
+      '<div class="ww-weg"><h4>' + esc(tL('eo.b.h')) + '</h4><p>' + esc(tL('eo.b.t')) + '</p>' + wegLinks(results, ['wohngeld']) + '</div></div></div>', 'entwederOder');
   }
   // Ohne Kinder: Texte mit Endung „0“ (kein Kinderzuschlag, keine Bildung und Teilhabe). Vorrang Wohngeld: § 12a SGB II,
   // § 7 Abs. 1 WoGG (gesetze-im-internet.de, abgerufen 20.11.2026)
   function zweiWege(results) {
     var weg = function (ids) { return wegLinks(results, ids); };
     var k = (state.kids || 0) + (state.young || 0) > 0, o = k ? '' : '0';
-    return '<section class="zweiwege" id="zweiWege" aria-labelledby="h-ww"><h3 id="h-ww">' + esc(t('ww.h' + o)) + '</h3><p class="ww-tun"><b>' + esc(t('ww.tipp')) + '</b></p>' +
-      '<details class="mehr ww-mehr"><summary>' + esc(t('mehr.wege')) + '</summary><p>' + esc(t('ww.t')) + '</p><div class="ww-wege"><div class="ww-weg"><h4>' + esc(t('ww.a.h')) + '</h4><p>' + esc(t('ww.a.t' + o)) + '</p>' + weg(k ? ['ggeld', 'but'] : ['ggeld']) + '</div>' +
+    return tippHtml('waage', t('ww.h' + o), '<div><p class="ww-tun"><b>' + esc(t('ww.tipp')) + '</b></p>' +
+      '<p>' + esc(t('ww.t')) + '</p><div class="ww-wege"><div class="ww-weg"><h4>' + esc(t('ww.a.h')) + '</h4><p>' + esc(t('ww.a.t' + o)) + '</p>' + weg(k ? ['ggeld', 'but'] : ['ggeld']) + '</div>' +
       '<div class="ww-weg"><h4>' + esc(t('ww.b.h' + o)) + '</h4><p>' + esc(t('ww.b.t' + o)) + '</p>' + weg(k ? ['wohngeld', 'kiz', 'but'] : ['wohngeld']) + '</div></div>' +
-      '<p class="ww-regel"><b>' + esc(t('ww.regel.h')) + '</b> ' + esc(t('ww.regel' + o)) + '</p></details></section>';
+      '<p class="ww-regel"><b>' + esc(t('ww.regel.h')) + '</b> ' + esc(t('ww.regel' + o)) + '</p></div>', 'zweiWege');
   }
 
   function renderPick(results) {
@@ -1112,7 +1122,8 @@
           return '<label class="check"><input type="checkbox" data-pick="' + r.id + '"' + (picked[r.id] ? ' checked' : '') + '><span>' + esc(r.name) + (lang === 'de' ? '' : ' (' + esc(t('n.' + r.id)) + ')') + '</span></label>';
         }).join('')
       : '<p class="small">' + esc(t('f.none')) + '</p>';
-    $('mappeMake').disabled = avail.length === 0;
+    if ($('mappeKnopf')) $('mappeKnopf').hidden = avail.length === 0;
+    $('pickMsg').textContent = '';
     document.querySelectorAll('[data-pick]').forEach(function (cb) {
       cb.addEventListener('change', function () { picked[cb.getAttribute('data-pick')] = cb.checked; pickedUser[cb.getAttribute('data-pick')] = cb.checked; });
     });
@@ -1128,7 +1139,6 @@
     satz.textContent = passend === 1 ? t('res.n1') : passend > 1 ? t('res.n', { n: passend }) : '';
     $('ebOpen').hidden = !(passend > 0);
     if (window.Klient) Klient.sichtbar(passend > 0); // „Für Klient zusammenstellen“ nur im Beratungsmodus (src/klient.js)
-    $('beratung').hidden = !started;
     $('resRb').hidden = !started; // „Erste Einschätzung, keine Rechtsberatung“ unter jedem Ergebnis
   }
 
@@ -1141,12 +1151,12 @@
       // Erster Start: keine erfundenen Ergebnisse zeigen, sondern erklären, wie es geht
       $('count').textContent = $('jumpText').textContent = t(gu ? 'warn.geb' : 'c.leer');
       $('overview').hidden = true; $('together').innerHTML = '';
-      $('cards').innerHTML = gu ? '<div class="card startcard"><p class="warn"><a href="#gebJahr">' + esc(t('warn.geb')) + '</a></p></div>' : '<div class="card startcard"><h3>' + esc(t('start.h')) + '</h3>' + listItems([t('start.1'), t('start.2'), t('start.3')]) + '</div>';
-      $('helper').hidden = true; $('legende').hidden = true; $('feedback').hidden = true;
+      $('cards').innerHTML = gu ? '<div class="card startcard"><p class="warn"><a href="#gebJahr">' + esc(t('warn.geb')) + '</a></p></div>' : ''; // ohne Angaben: kein Kasten „So geht's“
+      $('legende').hidden = true; $('feedback').hidden = true;
       kopfErgebnis(0, 0);
       return;
     }
-    $('helper').hidden = false; $('legende').hidden = false;
+    $('legende').hidden = false;
     var out = Rules.evaluate(state);
     lastOut = out;
     var n = { ja: 0, vielleicht: 0 };
@@ -1158,27 +1168,29 @@
     kopfErgebnis(n.ja, n.ja + n.vielleicht);
     $('count').textContent = summary;
     $('jumpText').textContent = summary;
-    var openIds = {}, neinOpen = false, spezOpen = false, gutOpen = false;
+    var openIds = {}, neinOpen = false, spezOpen = false, tippOffen = {};
     document.querySelectorAll('#cards details[open]').forEach(function (d) {
       var a = d.closest('article');
-      if (a) openIds[a.id] = true; else if (d.classList.contains('gutwissen')) gutOpen = true; else if (d.classList.contains('spezbox')) spezOpen = true; else if (d.classList.contains('neinbox')) neinOpen = true;
+      if (a) openIds[a.id] = true; else if (d.classList.contains('tipp') && d.id) tippOffen[d.id] = true; else if (d.classList.contains('spezbox')) spezOpen = true; else if (d.classList.contains('neinbox')) neinOpen = true;
     });
     kartenHinweise = {};
     out.zusammen.forEach(function (z) { (HINWEIS_KARTE[z[0]] || []).forEach(function (id) { (kartenHinweise[id] = kartenHinweise[id] || []).push(z); }); });
-    // „Gut zu wissen für alle Anträge“ steht zwischen den passenden Karten und dem Kasten „Wahrscheinlich nicht passend“
+    // Kurze Tipps unter dem grünen Knopf (Symbol + Satz, Inhalt zugeklappt): Zwei Wege / Entweder oder, „Gut zu wissen für alle Anträge“, Beratungsstelle
     var alle = out.zusammen.filter(function (z) { return HINWEIS_ALLE.indexOf(z[0]) >= 0; });
-    gutHtml = alle.length ? '<div id="gutWissen"><details class="gutwissen"><summary><span class="gw-titel">' + esc(t('gut.h')) + '</span><span class="karte-mehr" aria-hidden="true" data-mehr="' + esc(t('karte.mehr')) + '" data-weniger="' + esc(t('karte.weniger')) + '"></span></summary>' + listItems(alle.map(function (z) { return tL(z[0], z[1]); })) + '</details></div>' : '';
+    var wege = out.zusammen.some(function (z) { return z[0] === 'z.ggVsWg'; });
+    var eo = out.zusammen.some(function (z) { return z[0] === 'z.gsaWg'; });
+    tippsHtml = (wege ? zweiWege(out.results) : '') + (eo ? entwederOder(out.results) : '') +
+      (alle.length ? tippHtml('licht', t('gut.h'), listItems(alle.map(function (z) { return tL(z[0], z[1]); })), 'gutWissen') : '') +
+      tippHtml('person', t('res.beratung'), '<p>' + esc(t('foot.2')) + '</p>', 'beratung');
     $('cards').innerHTML = kartenHtml(out.results);
     Object.keys(openIds).forEach(function (id) { var d = document.querySelector('#' + id + ' details'); if (d) d.open = true; });
+    Object.keys(tippOffen).forEach(function (id) { var d = $(id); if (d) d.open = true; });
     if (neinOpen) { var nb = document.querySelector('#cards .neinbox'); if (nb) nb.open = true; }
     if (spezOpen) { var sb = document.querySelector('#cards .spezbox'); if (sb) sb.open = true; }
-    if (gutOpen) { var gw = document.querySelector('#cards .gutwissen'); if (gw) gw.open = true; }
     $('overview').hidden = true; $('overview').innerHTML = ''; // keine Häkchen-Leiste mehr: die Karten selbst sind die Übersicht
     // Hinweise verteilen: zu einer Leistung gehörende in deren Karte, für alle Anträge geltende in „Gut zu wissen“, der Rest bleibt in „Beachten“
-    var wege = out.zusammen.some(function (z) { return z[0] === 'z.ggVsWg'; });
     var rest = out.zusammen.filter(function (z) { return z[0] !== 'z.ggVsWg' && !HINWEIS_KARTE[z[0]] && HINWEIS_ALLE.indexOf(z[0]) < 0; });
-    var eo = out.zusammen.some(function (z) { return z[0] === 'z.gsaWg'; });
-    $('together').innerHTML = (wege ? zweiWege(out.results) : '') + (eo ? entwederOder(out.results) : '') + (rest.length
+    $('together').innerHTML = (rest.length
       ? '<div class="together"><h3>' + esc(t('beachten')) + '</h3>' + listItems(rest.map(function (z) { return tL(z[0], z[1]); })) + '</div>'
       : '');
 
@@ -1449,8 +1461,13 @@
     formPlan().forEach(function (f) { if (f.art === 'link' && LINK_FUER[f.id]) mitLink[LINK_FUER[f.id]] = true; });
     return pickedIds().filter(function (r) { return !mitLink[r.id]; });
   }
+  var mappeTimer = null;
+  function mappeNeuBald() { clearTimeout(mappeTimer); mappeTimer = setTimeout(function () { mappeTimer = null; if (!$('mappe').hidden) buildMappe(); }, 150); }
   function buildMappe() {
     var ids = pickedIds(), briefe = briefIds();
+    // Nichts gewählt: Hinweis unter der Auswahl, keine leeren Briefe
+    $('pickMsg').textContent = ids.length || !$('pick').querySelector('[data-pick]') ? '' : t('f.pick0');
+    if (!ids.length) { $('mappeBody').innerHTML = ''; mappeTextNeu(); return; }
     var html = '', fh = formsHtml(); empfHinweisDa = false;
     var nameLang = function (r) { return r.name + (lang === 'de' ? '' : ' (' + t('n.' + r.id) + ')'); };
     // Kein Inhaltsverzeichnis: oben eine Aufgabenliste (die Liste ist das Verzeichnis), dann Briefe, Formulare, Angabenblatt, Unterlagen
@@ -2397,7 +2414,7 @@
   function esUmschalten(an) {
     esModus = an;
     if (an && !es) es = esLeer();
-    $('einfachBtn').setAttribute('aria-pressed', String(an));
+    if ($('einfachBtn')) $('einfachBtn').setAttribute('aria-pressed', String(an));
     esSpeichern(); esRender();
     if (window.Schritte) Schritte.render(); // Kurzer Check an: Frage für Frage ausblenden
     if (aktAnsicht === 'einst') return; // in den Einstellungen nur den Modus schalten; Fokus bleibt am Schalter, der Modus gilt im Bereich Leistungen
@@ -2416,7 +2433,8 @@
   initClaude();
 
   // Schaltet nur den Modus „Eine Frage pro Bildschirm“; er gilt im Bereich Leistungen (kein automatischer Sprung dorthin)
-  $('einfachBtn').addEventListener('click', function () { esUmschalten(!esModus); });
+  // Knopf „Kurzer Check …“ steht oben als Wahl (src/schritte.js baut ihn neu): Klick über das Dokument
+  document.addEventListener('click', function (e) { if (e.target && e.target.closest && e.target.closest('#einfachBtn')) esUmschalten(!esModus); });
   Store.get('lotse.einfachSprache', function (v) { if (v === '1') einfacheSpracheSetzen(true, false); });
   Store.get('lotse.beratung', function (v) { if (v === '1') beratungSetzen(true, false); });
   // ----- Leistungs-Check: Weg wählen (Schritt für Schritt oder Alles auf einer Seite), Modul src/schritte.js -----
