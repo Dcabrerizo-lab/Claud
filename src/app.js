@@ -3302,7 +3302,7 @@
       vgRender(); vgMsg(n ? t('vg.auto.weg', { n: String(n) }) : t('vg.auto.ok')); var s2 = $('vgTage'); if (s2) s2.focus();
     });
     al.appendChild(sel); g.appendChild(vgEl('p')).appendChild(al);
-    // PIN-Sperre: ein Schalter; an -> „Jetzt sperren“ und „PIN ändern“; die Warnung „PIN vergessen“ erst im Feld zum Festlegen
+    // PIN-Sperre: ein Schalter; an -> „Jetzt sperren“ und „PIN ändern“; die kurze Erklärung (vg.pin.erkl) erst unter dem Feld zum Festlegen
     var webOk = Vorgaenge.webCrypto(), pinAn = webOk && tresor.pinAn();
     var ps = vgEl('button', 'schalter'); ps.type = 'button'; ps.id = 'vgPinSchalter'; ps.setAttribute('role', 'switch'); ps.setAttribute('aria-checked', String(!!pinAn));
     var pst = vgEl('span', 'schalter-t', t('vg.pin.h')); pst.appendChild(vgEl('span', 'schalter-unter', t(webOk ? 'vg.pin.unter' : 'vg.pin.nicht'))); ps.appendChild(pst);
@@ -3346,8 +3346,10 @@
       var l = vgEl('label', null, t(x[1])); l.setAttribute('for', x[0]);
       var i = vgEl('input'); i.id = x[0]; i.type = 'password'; i.setAttribute('inputmode', 'numeric'); i.setAttribute('autocomplete', 'off'); i.maxLength = 12;
       f.appendChild(l); f.appendChild(i);
+      // Kurze Erklärung direkt unter dem Feld für die neue PIN (Festlegen und Ändern). Inhalt nach Code: Sperrbildschirm deckt die ganze App ab (vgSperreZeigen, inert), AES-GCM-Verschlüsselung
+      // auf dem Gerät, die PIN selbst wird nie gespeichert, ohne richtige PIN lässt sich nichts entschlüsseln (keine Wiederherstellung, keine Biometrie).
+      if (x[0] === 'vgPin1') { var hw = vgEl('p', 'hint', t('vg.pin.erkl')); hw.id = 'vgPinHinweis'; i.setAttribute('aria-describedby', 'vgPinHinweis'); f.appendChild(hw); }
     });
-    if (!nurAus && !mitAlt) f.appendChild(vgEl('p', 'warn', t('vg.pin.vergessen'))); // Warnung erst beim Festlegen, nicht dauerhaft
     var b = vgEl('button', 'btn', t(nurAus ? 'vg.pin.aus' : 'vg.pin.speichern')); b.type = 'submit'; f.appendChild(b);
     var m = vgEl('p', 'msg'); m.setAttribute('role', 'status'); f.appendChild(m);
     f.addEventListener('submit', function (e) {

@@ -477,7 +477,7 @@
   "vg.auto.sprung": "Saacadda qalabku waxay ka horraysaa in ka badan sanad marki ugu dambeysay ee la furay. Taariikhdu ma saxbaa? Markaas hadda tirtir kiisaska dhacay. „Jooji“ waxba lama tirtirayo.",
   "vg.pin.h": "Quful PIN (ka ilaalin indhaha)",
   "vg.pin.t": "PIN-ka, xogta lagu kaydiyay qalabkan waa la sir-qariyaa. Qofka gacanta ku dhiga taleefankaaga ma arki karo iyada PIN la'aan. Tani waa ka ilaalin indhaha, ma aha ilaalin ka dhan ah khubaro qalab gaar ah haysta. Kadib 2 daqiiqo oo gadaal ah, SoLo way is xidhaysaa.",
-  "vg.pin.vergessen": "Muhiim: Haddii aad illowdo PIN-ka, qofna ma soo celin karo xogta, xitaa annaga. Markaas waxa kaliya ee hadhay: tirtir wax walba oo dib u bilow.",
+  "vg.pin.erkl": "PIN-ku wuxuu qufulaa app-ka oo dhan, xogtaadana sir ka dhigaa. PIN-ka si fiican u xasuuso, meelna laguma kaydiyo. Haddii aad illowdo, qofna ma furi karo xogta, xitaa annaga.",
   "vg.pin.nicht": "Quful PIN laguma heli karo qalabkan.",
   "vg.pin.label": "PIN cusub (4 ilaa 12 lambar, lagu taliyay: 6)",
   "vg.pin.label2": "PIN-ka mar kale",

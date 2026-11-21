@@ -4,6 +4,7 @@ Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss ste
 
 ## Nächste Version (in Arbeit)
 - **„Es ist dringend“ aufgeräumt**: alle Fälle gleich aufgebaut – Frist oben, „Das tust du jetzt“ in Schritten, kurze Tipps zum Aufklappen, Knöpfe, Quellen unten. Konto gepfändet mit Bescheinigung und Grundfreibetrag statt doppeltem Tipp; Strom-/Gassperre in 3 Schritten. „Stimmt der Brief?“: Hinweis „keine Rechtsberatung“ unter dem letzten Tipp.
+- **PIN festlegen mit kurzer Erklärung**: Unter dem Feld „Neue PIN“ steht in 3 kurzen Sätzen, dass die PIN die ganze App sperrt und die Angaben verschlüsselt, dass man sie sich merken muss und dass bei vergessener PIN niemand die Angaben öffnen kann (13 Sprachen und Einfache Sprache).
 
 ## 1.8.0 (ab Versionsnummer 150, November 2026)
 - **Geld und Schulden neu geordnet**: Es ist dringend · Was bleibt mir? · Meine Schulden-Liste · **Post vom Inkasso** · Mein Geld planen (mit Spartipps) · **Schuldnerberatung**.
