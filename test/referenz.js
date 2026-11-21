@@ -232,10 +232,14 @@ function wohngeld(h) {
       frei += Math.min(100 + 0.3 * Math.max(0, x.brutto - davon - 100), 0.5 * RB[1]);
     }
   }
-  const plus = h.unterhalt + h.waisen + h.uvg + Math.max(0, h.kindEink - 100);
+  // Lohn der Kinder je Kind: Arbeitnehmer-Pauschbetrag 1.230 €/Jahr (§ 14 Abs. 1 WoGG, § 9a EStG) und Freibetrag 1.200 €/Jahr (§ 17 Nr. 4
+  // WoGG). Nur die Summe bekannt: vorsichtig ein verdienendes Kind, günstig verteilt auf alle Kinder ab 6 und jungen Erwachsenen.
+  const kindAb = 1230 / 12 + 1200 / 12, kindN = Math.max(1, h.kinder - h.u6 + h.jung);
+  const plus = h.unterhalt + h.waisen + h.uvg;
+  const kindVorsichtig = Math.max(0, h.kindEink - kindAb), kindGuenstig = Math.max(0, h.kindEink - kindN * kindAb);
   const uzVorsichtig = h.uzFest ? Math.min(h.uz, h.uzDeckel) : 0, uzGuenstig = h.uzFest ? h.uz : Math.min(h.uz, h.uzDeckel);
-  const yPess = Math.max(0, h.p.reduce((s, x) => s + (x.brutto - werbung(x)) * (1 - abzugAus(x, 0)), 0) + plus - frei - uzVorsichtig);
-  const yOpt = Math.max(0, h.p.reduce((s, x) => s + (x.brutto - werbung(x)) * (1 - abzugAus(x, 1)), 0) + plus - frei - uzGuenstig);
+  const yPess = Math.max(0, h.p.reduce((s, x) => s + (x.brutto - werbung(x)) * (1 - abzugAus(x, 0)), 0) + plus + kindVorsichtig - frei - uzVorsichtig);
+  const yOpt = Math.max(0, h.p.reduce((s, x) => s + (x.brutto - werbung(x)) * (1 - abzugAus(x, 1)), 0) + plus + kindGuenstig - frei - uzGuenstig);
   if (yOpt > yMaxHi) return { level: 'nein' };
   let level = yPess <= yMaxLo ? 'ja' : 'vielleicht';
   const mittel = h.netto + h.kinder * KG + h.unterhalt + h.waisen + h.uvg + h.kindEink - h.uz;
