@@ -1,4 +1,8 @@
 {
+  "bp.erk.t": "SoLo a citit aceste valori din scrisoare. Te rugăm să le compari cu scrisoarea.",
+  "bp.erk.ok": "Valorile sunt corecte",
+  "bp.erk.warte": "Te rugăm să verifici mai întâi valorile recunoscute.",
+  "bp.erk.feld": "Greu de citit. Te rugăm să verifici atent.",
   "ww.h0": "Două căi: Grundsicherungsgeld sau Wohngeld",
   "ww.a.t0": "Acoperă tot necesarul: nevoia standard, chiria și încălzirea, plus asigurarea de sănătate. În schimb există obligații: documente, întâlniri și căutarea unui loc de muncă.",
   "ww.b.h0": "Calea 2: Wohngeld",
@@ -69,9 +73,5 @@
   "bp.vgl.zaehltNicht": "nu contează",
   "bp.vgl.pg": "grad de îngrijire (Pflegegrad) {pg}",
   "bp.vgl.kein": "fără grad de îngrijire (Pflegegrad)",
-  "bp.vgl.klein": "Puncte ponderate, așa cum calculează Pflegekasse (§ 15 SGB XI). Plus înseamnă: estimarea ta dă acolo mai multe puncte. Mai jos vezi la ce întrebări exact.",
-  "bp.erk.t": "SoLo a citit aceste valori din scrisoare. Te rugăm să le compari cu scrisoarea.",
-  "bp.erk.ok": "Valorile sunt corecte",
-  "bp.erk.warte": "Te rugăm să verifici mai întâi valorile recunoscute.",
-  "bp.erk.feld": "Greu de citit. Te rugăm să verifici atent."
+  "bp.vgl.klein": "Puncte ponderate, așa cum calculează Pflegekasse (§ 15 SGB XI). Plus înseamnă: estimarea ta dă acolo mai multe puncte. Mai jos vezi la ce întrebări exact."
 }

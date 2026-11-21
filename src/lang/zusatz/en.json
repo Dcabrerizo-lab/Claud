@@ -1,4 +1,8 @@
 {
+  "bp.erk.t": "SoLo read these values from the letter. Please compare them with the letter.",
+  "bp.erk.ok": "Values are correct",
+  "bp.erk.warte": "Please check the recognised values first.",
+  "bp.erk.feld": "Hard to read. Please check carefully.",
   "ww.h0": "Two routes: Grundsicherungsgeld or housing benefit (Wohngeld)",
   "ww.a.t0": "Covers your whole need: standard rate, rent and heating, plus health insurance. In return there are duties: documents, appointments and looking for work.",
   "ww.b.h0": "Route 2: housing benefit (Wohngeld)",
@@ -69,9 +73,5 @@
   "bp.vgl.zaehltNicht": "does not count",
   "bp.vgl.pg": "care level (Pflegegrad) {pg}",
   "bp.vgl.kein": "no care level (Pflegegrad)",
-  "bp.vgl.klein": "Weighted points, as the Pflegekasse calculates them (§ 15 SGB XI). Plus means: your estimate gives more points there. Below you can see which questions exactly.",
-  "bp.erk.t": "SoLo read these values from the letter. Please compare them with the letter.",
-  "bp.erk.ok": "Values are correct",
-  "bp.erk.warte": "Please check the recognised values first.",
-  "bp.erk.feld": "Hard to read. Please check carefully."
+  "bp.vgl.klein": "Weighted points, as the Pflegekasse calculates them (§ 15 SGB XI). Plus means: your estimate gives more points there. Below you can see which questions exactly."
 }

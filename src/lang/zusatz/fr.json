@@ -1,4 +1,8 @@
 {
+  "bp.erk.t": "SoLo a lu ces valeurs dans la lettre. Compare-les avec la lettre.",
+  "bp.erk.ok": "Les valeurs sont justes",
+  "bp.erk.warte": "Vérifie d’abord les valeurs reconnues.",
+  "bp.erk.feld": "Difficile à lire. Vérifie bien.",
   "ww.h0": "Deux voies : Grundsicherungsgeld ou Wohngeld",
   "ww.a.t0": "Couvre tout le besoin : forfait de base, loyer et chauffage, plus l’assurance maladie. En échange, il y a des obligations : documents, rendez-vous et recherche d’emploi.",
   "ww.b.h0": "Voie 2 : Wohngeld",
@@ -69,9 +73,5 @@
   "bp.vgl.zaehltNicht": "ne compte pas",
   "bp.vgl.pg": "degré de dépendance (Pflegegrad) {pg}",
   "bp.vgl.kein": "aucun degré de dépendance (Pflegegrad)",
-  "bp.vgl.klein": "Points pondérés, comme les calcule la Pflegekasse (§ 15 SGB XI). Plus signifie : ton estimation donne plus de points à cet endroit. En dessous, tu vois quelles questions exactement.",
-  "bp.erk.t": "SoLo a lu ces valeurs dans la lettre. Compare-les avec la lettre.",
-  "bp.erk.ok": "Les valeurs sont justes",
-  "bp.erk.warte": "Vérifie d’abord les valeurs reconnues.",
-  "bp.erk.feld": "Difficile à lire. Vérifie bien."
+  "bp.vgl.klein": "Points pondérés, comme les calcule la Pflegekasse (§ 15 SGB XI). Plus signifie : ton estimation donne plus de points à cet endroit. En dessous, tu vois quelles questions exactement."
 }
