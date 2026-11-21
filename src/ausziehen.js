@@ -64,6 +64,7 @@ var Ausziehen = (function () {
   var BEREICHE = [
     { id: 'vorher', liste: true, punkte: [
       { id: 'leisten', knopf: 'plan' },
+      // § 22 Abs. 5 SGB II: gilt für alle unter 25, die nach dem Umzug Bürgergeld/Grundsicherungsgeld brauchen (auch wenn bisher die Familie es bekommt); https://www.gesetze-im-internet.de/sgb_2/__22.html, abgerufen 21.11.2026
       { id: 'u25', q: ['sgb2_22_5', 'sgb2_24', 'sgb2_20'] },
       { id: 'suche', q: ['wofg27'], knopf: 'check' },
       { id: 'vertrag', q: ['bgb551'] },
