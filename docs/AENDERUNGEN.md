@@ -35,7 +35,7 @@ Stand: Sammelzweig für Update 1.9 (21.11.2026). Versionsnummer (VersionCode) le
 | **Landespflegegeld** | Hinweis: Das Geld kommt in der Regel bis 31. Januar des Folgejahres (keine feste Zusage). |
 | **Arbeitslosengeld, Krankengeld** | Spanne reicht jetzt auch für Steuerklasse III. |
 | **Rundfunkbeitrag** | Befreiung kann bis zu 3 Jahre rückwirkend gelten (§ 4 Abs. 4 RBStV). |
-| **Zuständige Stellen** | Sachsen-Anhalt: Landesamt für Soziales, Jugend und Gesundheit (LAS) seit 1.4.2026; Eingliederungshilfe beim Sozialamt. Anschriften außerhalb Bayerns nur noch aus amtlichen Seiten: 60 frühere Wikipedia-Anschriften geprüft (32 bestätigt, 15 korrigiert, 13 ohne Beleg → nur Name und Website). |
+| **Zuständige Stellen** | Sachsen-Anhalt: Landesamt für Soziales, Jugend und Gesundheit (LAS) seit 1.4.2026; Eingliederungshilfe beim Sozialamt. Anschriften außerhalb Bayerns nur noch aus amtlichen Seiten: 60 frühere Wikipedia-Anschriften geprüft (33 bestätigt, 15 korrigiert, 12 ohne Beleg → nur Name und Website; Nachprüfung 21.11.2026: Solingen bestätigt, Website gesperrt oder nicht abrufbar bei den übrigen 12). |
 
 ### Übersichtlicher
 
