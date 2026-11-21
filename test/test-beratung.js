@@ -25,7 +25,7 @@ const check = (n, c, x) => { if (!c) { fails++; console.log('FAIL', n, x || '');
 const fire = (el, type) => el.dispatchEvent(new w.Event(type, { bubbles: true }));
 const setLang = (c) => { const s = $('lang'); s.value = c; fire(s, 'change'); };
 const LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so'];
-const NEU = ['nav.ordner', 'vg.liste.h', 'vg.plus', 'vg.plusWeiter', 'vg.anlegen', 'vg.neu.t', 'vg.bearbeiten', 'vg.fertig', 'vg.zuSicher', 'akt.antrag', 'ordner.ergebnis', 'ordner.mappe', 'ordner.mappe.n', 'ordner.ausziehen', 'ordner.ausziehen.n', 'ordner.pflege', 'ordner.pfaendung', 'set.sicher.h', 'set.sicher.t', 'set.an', 'set.aus', 'set.thema', 'set.thema.auto', 'set.thema.hell', 'set.thema.dunkel', 'set.loeschen.h', 'l.eins', 'l.alle', 'l.ja', 'set.fach.h', 'set.beratung.label', 'set.beratung.t', 'recht.label', 'haken.hint', ,
+const NEU = ['nav.ordner', 'vg.liste.h', 'vg.plus', 'vg.plusWeiter', 'vg.anlegen', 'vg.neu.t', 'vg.bearbeiten', 'vg.fertig', 'vg.zuSicher', 'akt.antrag', 'ordner.ergebnis', 'ordner.mappe', 'ordner.mappe.n', 'ordner.ausziehen', 'ordner.ausziehen.n', 'ordner.pflege', 'ordner.pfaendung', 'set.sicher.h', 'set.sicher.t', 'set.an', 'set.aus', 'set.thema', 'set.thema.auto', 'set.thema.hell', 'set.thema.dunkel', 'set.loeschen.h', 'l.eins', 'l.alle', 'l.ja', 'set.fach.h', 'set.beratung.label', 'set.beratung.t', 'recht.label',
   'akt.drucken', 'eb.h', 'eb.intro', 'eb.kuerzel', 'eb.titel', 'eb.datum', 'eb.kuerzelZeile', 'eb.col.leistung', 'eb.col.einstufung', 'eb.col.betrag', 'eb.col.stelle', 'eb.col.schritt', 'eb.hinweis'];
 
 // ---------- Hilfsfunktionen in fmt.js ----------
@@ -127,29 +127,31 @@ check('Beratungsmodus wieder aus: Paragrafen weg', !/§/.test(d.getElementById('
 // ---------- Unterlagen-Checkliste (ersetzt die Listen in Karte und Mappe) ----------
 const wgHaken = () => [...d.querySelectorAll('#c-wohngeld input[data-haken]')];
 check('[karte-mappe] Karte: keine Unterlagen und nächsten Schritte, dafür der Knopf „Antrag vorbereiten“ (Antragsmappe)', wgHaken().length === 0 && !d.querySelector('#c-wohngeld .haken-liste') && d.querySelector('#c-wohngeld [data-antrag="wohngeld"]').textContent === I18N.de['akt.antrag']);
+// Wohngeld (als Haken oder als Weg „Wohngeld und Kinderzuschlag“) und Unterhaltsvorschuss wählen
 [...d.querySelectorAll('[data-pick]')].forEach((cb) => { cb.checked = ['wohngeld', 'uvg'].includes(cb.getAttribute('data-pick')); fire(cb, 'change'); });
+{ const ra = d.querySelector('#pick input[data-weg][value="a"]'); if (ra) { ra.checked = true; fire(ra, 'change'); } }
 $('p-geb').value = '1.2.1985'; fire($('p-geb'), 'input'); fire($('p-geb'), 'change');
 check('Geburtsdatum wird beim Verlassen des Feldes einheitlich formatiert', $('p-geb').value === '01.02.1985');
 $('mappeMake').click();
-const mh = () => [...d.querySelectorAll('#m-unterlagen input[data-haken="wohngeld|s.wohngeld.u1"]')];
-check('[karte-mappe] Mappe: Checkliste mit Haken, Stelle und Tipp je Leistung', mh().length === 1 && !mh()[0].checked && d.querySelectorAll('#m-unterlagen .haken-liste').length === 2 && $('m-unterlagen').textContent.includes(I18N.de['s.wohngeld.wo']) && $('m-unterlagen').textContent.includes(I18N.de['steps.note']));
+// Unterlagen: eine Liste ohne Doppelungen; Haken je Sache (u|…), alte Haken (id|Schlüssel) zählen weiter
+const mh = () => [...d.querySelectorAll('#aufUnterlagen input[data-haken^="u|"]')];
+check('[karte-mappe] Mappe: Unterlagen zum Abhaken, Hinweis „genaue Liste nennt die Stelle“', mh().length >= 3 && mh().every((c) => !c.checked) && $('aufUnterlagen').textContent.includes(I18N.de['steps.note']));
 mh()[0].checked = true; fire(mh()[0], 'change');
-check('Haken in der Mappe wird auf dem Gerät gespeichert', JSON.parse(store['lotse.haken'] || '{}')['wohngeld|s.wohngeld.u1'] === true);
+check('Haken in der Mappe wird auf dem Gerät gespeichert', JSON.parse(store['lotse.haken'] || '{}')[mh()[0].getAttribute('data-haken')] === true);
+check('Druck/PDF: Unterlagenliste mit Stelle und Tipp je Leistung', $('m-unterlagen').textContent.includes(I18N.de['s.uvg.wo']) && $('m-unterlagen').textContent.includes(I18N.de['s.uvg.tip']));
 
-// ---------- Antragsmappe: Übersicht, Drucken am Ende, Geburtsdatum ----------
-// Mappe (Vorgabe David 20.11.2026): kein Inhaltsverzeichnis, ein Hauptknopf, Formulare direkt nach den Briefen
-check('Mappe: kein Inhaltsverzeichnis mehr (die Aufgabenliste ist das Verzeichnis)', !d.querySelector('#mappeBody .mappe-inhalt') && !!d.querySelector('#mappeBody .aufgaben'));
-check('Mappe: oben ein Hauptknopf, Kopieren und Teilen unter „Weitere Möglichkeiten“', !$('mappePrint').closest('details') && $('mappeCopy').closest('details.mappe-mehr') && $('mappeShare').closest('details.mappe-mehr') && $('mappeDruck').closest('details.mappe-mehr'));
-{ const teile = [...d.querySelectorAll('#mappeBody > .page')].map((p) => p.id); const f = teile.indexOf('m-formulare');
-  check('Mappe: amtliche Formulare direkt nach den Briefen', f < 0 || teile.slice(0, f).every((x) => /^m-brief-/.test(x)), teile.join(', ')); }
-gedruckt = 0; $('mappePrint2').click();
-check('Mappe: „Drucken“ auch am Ende', !!$('mappePrint2') && $('mappePrint2').textContent === I18N.de['f.print'] && gedruckt === 1 && $('mappePrint2').closest('#mappe') && $('mappePrint2').closest('.no-print'));
+// ---------- Antragsmappe: Aufgabenliste, ein Ausgabe-Knopf, Geburtsdatum ----------
+check('Mappe: kein Inhaltsverzeichnis (die Aufgabenliste ist das Verzeichnis)', !d.querySelector('#mappe .mappe-inhalt') && !!d.querySelector('#mappe .aufgaben') && !d.querySelector('[data-sprung]'));
+check('Mappe: ein Hauptknopf „Drucken oder teilen“ im letzten Schritt; Kopieren und Teilen unter „Weitere Möglichkeiten“', !$('mappePrint').closest('details.mappe-mehr') && !!$('mappePrint').closest('#auf-abschicken') && $('mappeCopy').closest('details.mappe-mehr') && $('mappeShare').closest('details.mappe-mehr') && $('mappeDruck').closest('details.mappe-mehr') && !$('mappePrint2'));
+gedruckt = 0; $('mappePrint').click();
+check('Mappe: „Drucken oder teilen“ druckt (Web)', gedruckt === 1);
 check('Angabenblatt: Geburtsdatum TT.MM.JJJJ', /Geburtsdatum: 01\.02\.1985/.test($('m-angaben').textContent));
 {
   // Altes Format im Speicher (z. B. „1985-02-01“): im Angabenblatt trotzdem einheitlich
   $('p-geb').value = '1985-02-01'; fire($('p-geb'), 'input'); setLang('de');
   check('Angabenblatt: Geburtsdatum aus ISO-Schreibweise wird TT.MM.JJJJ', /Geburtsdatum: 01\.02\.1985/.test($('m-angaben').textContent));
 }
+const nGew = d.querySelectorAll('#aufAntraege .ant-zeile').length;
 $('mappeClose').click();
 // ---------- Mein Ordner ----------
 d.querySelector('#appnav [data-ansicht="ordner"]').click();
@@ -159,7 +161,7 @@ d.querySelector('#appnav [data-ansicht="ordner"]').click();
 const orZ = () => [...d.querySelectorAll('#ordnerKarten .zeile')].map((b) => b.id);
 check('Mein Ordner: Leiste markiert Mein Ordner, kein Kopftext', navAkt() === 'ordner' && !$('v-ordner').hidden && w.getComputedStyle(d.querySelector('header.top')).position === 'absolute');
 check('[navigation] Mein Ordner: Vorgänge oben, ohne Kopfzeile „Geöffnet“ und ohne „Wechseln“', !$('ordnerKopf') && $('setHaushalte').compareDocumentPosition($('ordnerKarten')) === 4);
-check('Mein Ordner: letztes Ergebnis mit Zähler und Antragsmappe mit Auswahl', orZ()[0] === 'or-ergebnis' && /wahrscheinlich|möglich/.test($('or-ergebnis').textContent) && /Ausgewählt: 2/.test(($('or-mappe') || {}).textContent || ''), orZ().join());
+check('Mein Ordner: letztes Ergebnis mit Zähler und Antragsmappe mit Auswahl', orZ()[0] === 'or-ergebnis' && /wahrscheinlich|möglich/.test($('or-ergebnis').textContent) && new RegExp('Ausgewählt: ' + nGew).test(($('or-mappe') || {}).textContent || ''), orZ().join());
 check('Mein Ordner: keine Fristen, kein leerer Bereich (Pflege, Pfändung ohne Angaben)', !$('or-fristen') && !/Frist/.test($('ordnerHaupt').textContent) && !$('or-pflege') && !$('or-pfaendung'));
 $('or-ergebnis').click();
 check('Sprung zum Ergebnis: Leistungen offen, Leiste markiert Mein Ordner (Herkunft)', !$('v-leistungen').hidden && navAkt() === 'ordner');

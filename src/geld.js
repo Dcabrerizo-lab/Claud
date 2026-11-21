@@ -55,11 +55,14 @@ var Geld = (function () {
   var LUECKE = { name: '[Dein Name, deine Anschrift]', g: '[Name der Firma oder Stelle]', adr: '[Anschrift aus dem Brief]', az: '[Aktenzeichen oder Kundennummer]', ort: '[Ort]' };
   function zeilen(s) { return String(s || '').replace(/\r\n?/g, '\n').split('\n').map(function (z) { return z.replace(/[\u0000-\u001f\u007f]/g, '').trim(); }).filter(Boolean); }
   function einzeilig(s, max) { return String(s || '').replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, max || 120); }
-  // f = { g, adr, az, datum, absender } (alles Text vom Nutzer); Ergebnis: fertiger Brief als Text
+  // f = { g, adr, az, datum, absender, ich, ichOrt } (alles Text vom Nutzer); Ergebnis: fertiger Brief als Text.
+  // ich: Zeilen des gespeicherten Absenders (Name, Straße, PLZ und Ort; einmal eingetragen, gilt für alle Briefe der App), ichOrt: Ort ohne PLZ.
+  // Ohne Angaben bleiben Lücken zum Ausfüllen von Hand.
   function schreiben(art, f) {
     f = f || {};
     var g = einzeilig(f.g) || LUECKE.g, adr = zeilen(f.adr).slice(0, 6), az = einzeilig(f.az, 60) || LUECKE.az;
-    var kopf = [LUECKE.name].concat(f.absender ? [einzeilig(f.absender)] : [], ['', g], adr.length ? adr : [LUECKE.adr], ['', LUECKE.ort + ', ' + (einzeilig(f.datum, 20) || '[Datum]'), '']);
+    var ich = (f.ich || []).map(function (z) { return einzeilig(z); }).filter(Boolean).slice(0, 4);
+    var kopf = (ich.length ? ich : [LUECKE.name]).concat(f.absender ? [einzeilig(f.absender)] : [], ['', g], adr.length ? adr : [LUECKE.adr], ['', (einzeilig(f.ichOrt, 60) || LUECKE.ort) + ', ' + (einzeilig(f.datum, 20) || '[Datum]'), '']);
     var b;
     if (art === 'geduld') b = ['Aktenzeichen: ' + az, '', 'Bitte um Geduld', '', 'Sehr geehrte Damen und Herren,', '',
       'ich bereite zurzeit eine Beratung bei einer Schuldnerberatungsstelle vor. Dort verschaffe ich mir einen Überblick über alle Forderungen und meine Möglichkeiten.',
@@ -329,6 +332,7 @@ var Geld = (function () {
       i.addEventListener('input', function () { m[k] = i.value; text(); });
       f.appendChild(i); return i;
     };
+    if (ctx.absenderKasten) box.appendChild(ctx.absenderKasten(function () { text(); }, 'ms')); // gespeicherter Absender, hier änderbar (gilt für alle Briefe)
     feld('ms-g', 'g', t('ms.g'));
     feld('ms-adr', 'adr', t('ms.adr'), true);
     var ohneBox = box.appendChild(el('div', 'ms-ohne-box')); ohneBox.hidden = true; // erst beim Drucken/Teilen sichtbar (dann blendet text() den Hinweis aus, sobald die Anschrift da ist)
@@ -344,7 +348,8 @@ var Geld = (function () {
     box.appendChild(msg);
     box.appendChild(el('p', 'small ms-hinweis', t('ms.hinweis')));
     function text() {
-      ta.value = schreiben(m.art, { g: m.g, adr: m.adr, az: m.az, rate: m.rate, absender: ber() ? m.absender : '', datum: ctx.datumDe ? ctx.datumDe(new Date()) : '' });
+      var ab = ctx.absender ? ctx.absender() : { zeilen: [], ort: '' };
+      ta.value = schreiben(m.art, { g: m.g, adr: m.adr, az: m.az, rate: m.rate, absender: ber() ? m.absender : '', datum: ctx.datumDe ? ctx.datumDe(new Date()) : '', ich: ab.zeilen, ichOrt: ab.ort });
       ohne.textContent = zeilen(m.adr).length ? '' : t('ms.ohneAdr'); ohne.hidden = !ohne.textContent;
     }
     text();

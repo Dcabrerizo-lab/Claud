@@ -55,7 +55,8 @@ const ergebnis = (p) => p.evaluate(() => {
   ok('A: Tipp Wertmarke (G, mit Grundsicherung kostenlos) und Kindergeld-Antrag durch die Eltern', /Wertmarke/.test(e.text) && /Antrag auf Kindergeld stellen deine Eltern/.test(e.text));
   // Antragsmappe: nur passende Briefe vorausgewählt, ausführliche Angaben bleiben unverändert
   await p.click('#es-mappe');
-  const picks = await p.evaluate(() => [...document.querySelectorAll('[data-pick]')].filter((x) => x.checked).map((x) => x.getAttribute('data-pick')));
+  // Haken und gewählter Weg (Grundsicherung im Alter kann als Optionsfeld „Wohngeld / Grundsicherung im Alter“ erscheinen)
+  const picks = await p.evaluate(() => [...document.querySelectorAll('[data-pick]')].filter((x) => x.checked).map((x) => x.getAttribute('data-pick')).concat([...document.querySelectorAll('#pick input[data-weg="gsa"][value="b"]:checked')].map(() => 'gsa')));
   ok('A: Mappe wählt Grundsicherung und Kindergeld vor, keinen Wohnberechtigungsschein', picks.includes('gsa') && picks.includes('kgBeh') && !picks.includes('wbs'), picks.join());
   const txt = await p.inputValue('#mappeText');
   ok('A: Brief an das Sozialamt mit Werkstatt und Eltern im Angabenblatt', /Grundsicherung im Alter und bei Erwerbsminderung/.test(txt) && /Werkstatt/.test(txt) && /Wohnt bei den Eltern/.test(txt));

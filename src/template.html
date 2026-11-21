@@ -848,13 +848,44 @@
   .page .form-karte a.btn, .page .form-karte a.btn:visited { color: var(--accent-ink); text-decoration: none; display: inline-flex; align-items: center; }
   .empf-im-brief a.btn { display: inline-flex; align-items: center; min-height: 44px; text-decoration: none; }
   .mappe-ende { display: grid; gap: 10px; }
-  /* Antragsmappe als Aufgabenliste (Vorbild GOV.UK „task list“): nummerierte Schritte, je ein großer Knopf, Status „Erledigt“ */
+  /* Antragsmappe als Aufgabenliste (Vorbild GOV.UK „Complete multiple tasks“, NHS task list): jede Zeile klappt ihren Inhalt auf, Status rechts */
   .aufgaben { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; counter-reset: auf; }
-  .aufgabe { counter-increment: auf; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-item); padding: 14px 16px; display: grid; gap: 8px; }
-  .aufgabe h3 { margin: 0; font-size: 1.05em; display: flex; gap: 10px; align-items: baseline; }
-  .aufgabe h3::before { content: counter(auf); flex: none; display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font-size: .9em; }
-  .aufgabe p { margin: 0; }
+  .aufgabe { counter-increment: auf; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-item); }
+  .aufgabe > details > summary { display: flex; gap: 10px; align-items: center; min-height: 56px; padding: 10px 16px; cursor: pointer; list-style: none; font-weight: 700; }
+  .aufgabe > details > summary::-webkit-details-marker { display: none; }
+  .aufgabe > details > summary::before { content: counter(auf); flex: none; display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font-size: .9em; }
+  .auf-titel { flex: 1; min-width: 0; hyphens: none; }
+  .auf-status { flex: none; font-size: var(--fs-xs); font-weight: 400; color: var(--muted); max-width: 40%; text-align: end; }
+  .auf-status.ok { color: var(--ok); font-weight: 700; }
+  .auf-status.fehlt { color: var(--bad); font-weight: 700; }
+  .auf-inhalt { display: grid; gap: 10px; padding: 0 16px 14px; }
+  .auf-inhalt > p, .auf-inhalt h4 { margin: 0; }
+  .auf-inhalt h4 { margin-top: 6px; }
   .aufgabe .haken { justify-self: start; }
+  .abs-felder { display: grid; gap: 12px; }
+  .mappe-wahl { display: grid; gap: 4px; }
+  .mappe-wahl h3 { margin: 0; font-size: var(--fs-m); }
+  .weg-wahl { border: 1px solid var(--hint-rand); background: var(--hint-bg); border-radius: var(--r-item); padding: 8px 14px 10px; margin: 0 0 6px; display: grid; gap: 0; }
+  .weg-wahl legend { font-weight: 700; padding: 0 4px; }
+  .weg-wahl p { margin: 4px 0 0; color: var(--ink); }
+  .weg-wahl .check > span { display: grid; gap: 2px; }
+  .weg-name { font-weight: 700; }
+  .pick-spaeter { margin-top: 4px; }
+  .ant-zeile { border-top: 1px solid var(--line); padding-top: 10px; display: grid; gap: 6px; }
+  .ant-zeile:first-child { border-top: 0; padding-top: 0; }
+  .ant-zeile h4 { margin: 0; font-size: var(--fs-m); hyphens: none; }
+  .ant-zeile p { margin: 0; }
+  .ant-zeile .form-link { margin: 0; }
+  .ant-an.fehlt { color: var(--bad); }
+  .ant-zeigen > summary { justify-self: start; display: inline-flex; align-items: center; min-height: 44px; list-style: none; cursor: pointer; }
+  .ant-zeigen > summary::-webkit-details-marker { display: none; }
+  .ant-zeigen[open] > summary { margin-bottom: 8px; }
+  .page .form-karte a.btn, .ant-zeile a.btn, .ant-zeile a.btn:visited { color: var(--accent-ink); text-decoration: none; display: inline-flex; align-items: center; }
+  .abs-kasten { border: 1px dashed var(--line); border-radius: 10px; padding: 8px 12px; margin: 8px 0; display: grid; gap: 8px; }
+  .abs-kopf { margin: 0; }
+  .abs-kopf .fehlt { color: var(--muted); font-style: italic; }
+  .abs-aendern { margin-inline-start: 6px; min-height: 44px; }
+  .druck-li { margin: 2px 0; }
   .empf-edit .small { color: var(--ink); }
   .empf-such { margin: 6px 0 0; }
   .empf-edit a { color: var(--accent); }
@@ -2064,43 +2095,64 @@
       <h1 class="vh">SoLo</h1>
       <div class="mappe-bar no-print">
         <h2 id="h-mappe" data-t="f.mappe"></h2>
-        <p class="notice info" id="mappeDeNote" data-t="f.deNote" hidden></p>
-        <!-- Ein Hauptknopf (Web: Drucken, App: PDF teilen); alles andere unter „Weitere Möglichkeiten“ -->
-        <div class="btns">
-          <button type="button" class="btn" id="mappePrint" data-t="f.print"></button>
-        </div>
-        <details class="mehr mappe-mehr"><summary data-t="f.mehrWege"></summary>
-          <div class="btns">
-            <button type="button" class="btn ghost" id="mappeDruck" data-t="f.druck" hidden></button>
-            <button type="button" class="btn ghost" id="mappeSpeichern" data-t="f.speichern" hidden></button>
-            <button type="button" class="btn ghost" id="mappeCopy" data-t="f.copy"></button>
-            <button type="button" class="btn ghost" id="mappeShare" data-t="f.share" hidden></button>
-          </div>
-        </details>
-        <p class="msg" id="copyMsg" role="status"></p>
-        <textarea id="mappeText" readonly hidden></textarea>
+        <p class="small" id="mappeDeNote" data-t="f.deNote" hidden></p>
       </div>
-      <!-- Angaben für die Briefe: erst hier abgefragt (früher Kasten „Ausfüllhilfe“ unter dem Ergebnis); gespeichert wie bisher nur auf dem Gerät -->
-      <section class="mappe-angaben no-print" id="helper" aria-label="Angaben">
-        <p data-t="f.intro"></p>
-        <details class="mehr"><summary data-t="mehr.formlos"></summary><p data-t="f.intro.mehr"></p><p data-t="f.srente.hinweis" id="introSrente" hidden></p></details>
-        <div class="two">
-          <div class="field"><label for="p-name" data-t="f.name"></label><input type="text" id="p-name" autocomplete="off"></div>
-          <div class="field"><label for="p-geb" data-t="f.geb"></label><input type="text" id="p-geb" placeholder="TT.MM.JJJJ" autocomplete="off"></div>
-          <div class="field"><label for="p-strasse" data-t="f.strasse"></label><input type="text" id="p-strasse" autocomplete="off"></div>
-          <div class="field"><label for="p-ort" data-t="f.ort"></label><input type="text" id="p-ort" autocomplete="off"></div>
-          <div class="field"><label for="p-tel" data-t="f.tel"></label><input type="text" id="p-tel" inputmode="tel" autocomplete="off"></div>
-        </div>
-        <div class="field">
-          <span class="lab" data-t="f.which"></span>
-          <div class="checks" id="pick"></div>
-        </div>
+      <!-- Antragsmappe als Aufgabenliste (Vorbild GOV.UK „Complete multiple tasks“, NHS „task list“): Jede Zeile enthält ihren Inhalt selbst (aufklappbar),
+           Status rechts, Haken „Erledigt“. Briefe, Angabenblatt und Unterlagenliste für den Druck stehen unsichtbar in #mappeBody. -->
+      <section class="mappe-wahl no-print" id="helper" aria-labelledby="h-wahl">
+        <h3 id="h-wahl" class="lab" data-t="f.which"></h3>
+        <div class="checks" id="pick"></div>
         <p class="msg" id="pickMsg" role="status"></p>
       </section>
+      <ol class="aufgaben no-print" id="mappeAufgaben">
+        <!-- 1 Absender: einmal eintragen, gilt für alle Briefe der App (person in lotse.state, Vorgaenge.DATEN) -->
+        <li class="aufgabe" id="auf-angaben"><details id="aufAngaben">
+          <summary><span class="auf-titel" data-t="f.auf.angaben"></span><span class="auf-status" id="statAngaben"></span></summary>
+          <div class="auf-inhalt">
+            <p class="small" data-t="f.abs.hinweis"></p>
+            <div class="abs-felder">
+              <div class="field"><label for="p-name" data-t="f.name"></label><input type="text" id="p-name" autocomplete="off"></div>
+              <div class="field"><label for="p-strasse" data-t="f.strasse"></label><input type="text" id="p-strasse" autocomplete="off"></div>
+              <div class="field"><label for="p-ort" data-t="f.ort"></label><input type="text" id="p-ort" autocomplete="off"></div>
+              <p class="warn" id="mappeAdrNote" data-t="f.adrFehlt" hidden></p>
+              <details class="mehr"><summary data-t="f.abs.mehr"></summary>
+                <div class="abs-felder">
+                  <div class="field"><label for="p-geb" data-t="f.geb"></label><input type="text" id="p-geb" placeholder="TT.MM.JJJJ" autocomplete="off"></div>
+                  <div class="field"><label for="p-tel" data-t="f.tel"></label><input type="text" id="p-tel" inputmode="tel" autocomplete="off"></div>
+                </div>
+              </details>
+            </div>
+          </div>
+        </details></li>
+        <li class="aufgabe" id="auf-antraege"><details id="aufAntraegeD">
+          <summary><span class="auf-titel" id="titelAntraege"></span><span class="auf-status" id="statAntraege"></span></summary>
+          <div class="auf-inhalt" id="aufAntraege"></div>
+        </details></li>
+        <li class="aufgabe" id="auf-unterlagen"><details id="aufUnterlagenD">
+          <summary><span class="auf-titel" data-t="f.auf.3"></span><span class="auf-status" id="statUnterlagen"></span></summary>
+          <div class="auf-inhalt" id="aufUnterlagen"></div>
+        </details></li>
+        <li class="aufgabe" id="auf-abschicken"><details id="aufAbschickenD">
+          <summary><span class="auf-titel" data-t="f.auf.4"></span><span class="auf-status" id="statAbschicken"></span></summary>
+          <div class="auf-inhalt">
+            <div id="aufAbschicken"></div>
+            <!-- Ein Name für die Ausgabe: „Drucken oder teilen“ (Web: Druckdialog, App: PDF teilen); alles andere unter „Weitere Möglichkeiten“ -->
+            <div class="btns"><button type="button" class="btn" id="mappePrint" data-t="akt.drucken"></button></div>
+            <details class="mehr mappe-mehr"><summary data-t="f.mehrWege"></summary>
+              <div class="btns">
+                <button type="button" class="btn ghost" id="mappeDruck" data-t="f.druck" hidden></button>
+                <button type="button" class="btn ghost" id="mappeSpeichern" data-t="f.speichern" hidden></button>
+                <button type="button" class="btn ghost" id="mappeCopy" data-t="f.copy"></button>
+                <button type="button" class="btn ghost" id="mappeShare" data-t="f.share" hidden></button>
+              </div>
+            </details>
+            <p class="msg" id="copyMsg" role="status"></p>
+            <textarea id="mappeText" readonly hidden></textarea>
+            <label class="haken"><input type="checkbox" data-haken="mappe|abschicken"><span data-t="f.auf.erledigt"></span></label>
+          </div>
+        </details></li>
+      </ol>
       <div id="mappeBody"></div>
-      <div class="no-print mappe-ende">
-        <div class="btns"><button type="button" class="btn" id="mappePrint2" data-t="f.print"></button></div>
-      </div>
     </section>
 
     <!-- Ergebnisblatt zum Mitgeben: eine Druckseite ohne Namen (höchstens Kürzel) -->

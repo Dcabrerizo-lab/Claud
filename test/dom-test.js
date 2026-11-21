@@ -172,84 +172,132 @@ LANGS.forEach((l) => {
 check('Sprachwahl wird gemerkt', store['lotse-lang'] === 'so');
 setLang('de');
 
-// ---------- Ausfüllhilfe ----------
+// ---------- Antragsmappe (Aufgabenliste, UX-Prüfung 21.11.2026) ----------
 beispiel('p1');
 const pickBoxes = () => [...d.querySelectorAll('[data-pick]')];
 const okCount = cards().filter((c) => /pill (ja|vielleicht)/.test(c.querySelector('.pill').className)).length;
-check('Auswahl für die Ausfüllhilfe nennt alle passenden Leistungen', pickBoxes().length === okCount && okCount >= 4, pickBoxes().length + ' vs ' + okCount);
-// Entweder oder (Grundsicherungsgeld oder Wohngeld/Kinderzuschlag, § 7 Abs. 1 WoGG): keine dieser Leistungen vorab angehakt, Zeile f.pickWege
-const WEGE = ['ggeld', 'wohngeld', 'kiz', 'gsa'], wegeZeile = d.getElementById('pickWege');
-check('Haken sind nur bei wahrscheinlichen Leistungen vorgesetzt (außer bei „entweder oder“)', pickBoxes().every((cb) => cb.checked === (level(cb.closest('label').textContent.trim()) === 'ja' && !(wegeZeile && WEGE.includes(cb.getAttribute('data-pick'))))) && pickBoxes().some((cb) => cb.checked));
+const wegRadios = () => [...d.querySelectorAll('#pick input[type=radio][data-weg]')];
+check('Auswahl für die Mappe nennt die passenden Leistungen (Haken, Weg-Leistungen als Optionsfeld)', pickBoxes().length >= 3 && pickBoxes().length <= okCount, pickBoxes().length + ' vs ' + okCount);
 {
+  // Entweder oder (§ 7 Abs. 1 WoGG, § 6a BKGG, § 12a SGB II): Optionsfelder statt leerer Haken; „Ich weiß es noch nicht“ als dritte Wahl
   const ids = pickBoxes().map((cb) => cb.getAttribute('data-pick')), an = (id) => { const c = d.querySelector('[data-pick="' + id + '"]'); return !!c && c.checked; };
-  const zweiWege = !!d.getElementById('wege');
-  check('[zwei-wege] Beispiel 1 zeigt „Zwei Wege“ und bietet Grundsicherungsgeld und Wohngeld an', zweiWege && ids.includes('ggeld') && ids.includes('wohngeld'), ids.join());
-  check('[zwei-wege] Grundsicherungsgeld, Wohngeld und Kinderzuschlag nicht vorab angehakt, Zeile „nur entweder oder“ sichtbar', !an('ggeld') && !an('wohngeld') && !an('kiz') && !!wegeZeile && wegeZeile.textContent === I18N.de['f.pickWege'], ids.map((i) => i + ':' + an(i)).join());
+  const radios = wegRadios(), werte = radios.map((r) => r.value).join();
+  check('[weg] Beispiel 1: Wahl des Wegs mit drei Optionsfeldern (a, b, Ich weiß es noch nicht), genau eins gewählt', radios.length === 3 && werte === 'a,b,offen' && radios.filter((r) => r.checked).length === 1, werte);
+  check('[weg] Beschreibende Namen statt „Weg A/B“', !/Weg [AB12]\b/.test(d.getElementById('pick').textContent) && d.getElementById('pick').textContent.indexOf(I18N.de['f.weg.offen']) >= 0);
+  check('[weg] Satz „Beträge nicht zusammenzählen“ steht bei der Wahl', d.querySelector('.weg-wahl').textContent.indexOf(I18N.de['weg.nichtZaehlen']) >= 0);
+  check('[weg] Weg-Leistungen haben keine eigenen Haken', !ids.includes('ggeld') && !ids.includes('wohngeld') && !ids.includes('kiz'), ids.join());
+  check('[vorauswahl] Geld-Leistungen mit Betrag vorab angehakt (Kindergeld, Unterhaltsvorschuss), WBS/Rundfunk nicht', an('kindergeld') && an('uvg') && !an('wbs') && !an('rundfunk'), ids.map((i) => i + ':' + an(i)).join());
+  check('[vorauswahl] WBS und Rundfunk zugeklappt unter „Weitere Hilfen“', !!d.querySelector('#pick .pick-spaeter [data-pick="wbs"]'));
+  check('[vorauswahl] Kein Satz „siehe Tipp oben“ mehr', !/Tipp oben/.test(d.getElementById('pick').textContent) && !('f.pickWege' in I18N.de));
+  // Weg „Ich weiß es noch nicht“: nichts aus der Gruppe, Notfall-Satz
+  const offen = radios.find((r) => r.value === 'offen'); offen.checked = true; fire(offen, 'change');
+  check('[weg] „Ich weiß es noch nicht“: Satz zur Lage und Notfall-Satz', d.getElementById('pick').textContent.indexOf(I18N.de['weg.dringend']) >= 0);
+  const a = wegRadios().find((r) => r.value === 'a'); a.checked = true; fire(a, 'change');
 }
 check('Mappe ist anfangs geschlossen', d.getElementById('mappe').hidden === true);
 // nichts gewählt
+wegRadios().filter((r) => r.value === 'offen').forEach((r) => { r.checked = true; fire(r, 'change'); });
 pickBoxes().forEach((cb) => { cb.checked = false; fire(cb, 'change'); });
 d.getElementById('mappeMake').click();
 check('[hilfen-aufraeumen] Grüner Knopf „Antrag vorbereiten“ direkt unter den passenden Karten, kein Kasten „Ausfüllhilfe“ im Ergebnis', (() => { const k = d.getElementById('mappeKnopf'), letzte = cards().filter((c) => /pill (ja|vielleicht)/.test(c.querySelector('.pill').className)).pop(); return k && !k.hidden && (k.previousElementSibling === letzte || k.previousElementSibling.contains(letzte)) && d.getElementById('mappeMake').textContent === I18N.de['akt.antrag'] && !d.getElementById('ergebnis').contains(d.getElementById('p-name')); })());
-check('[hilfen-aufraeumen] Ohne Auswahl: Mappe öffnet mit Auswahl, Name und Anschrift oben und einem Hinweis, keine leeren Briefe', d.getElementById('mappe').hidden === false && d.getElementById('mappe').contains(d.getElementById('p-name')) && d.getElementById('pickMsg').textContent === I18N.de['f.pick0'] && !d.querySelector('#mappeBody .page'));
-// Wohngeld und Unterhaltsvorschuss wählen
-pickBoxes().filter((cb) => ['wohngeld', 'uvg'].includes(cb.getAttribute('data-pick'))).forEach((cb) => { cb.checked = true; fire(cb, 'change'); });
+check('Ohne Auswahl: Mappe öffnet mit Auswahl und Hinweis, keine leeren Briefe, Schritte 2–4 ausgeblendet', d.getElementById('mappe').hidden === false && d.getElementById('pickMsg').textContent === I18N.de['f.pick0'] && !d.querySelector('#mappeBody .page') && d.getElementById('auf-antraege').hidden && d.getElementById('auf-unterlagen').hidden);
+check('[aufgaben] Erster Punkt der Aufgabenliste: „Deine Angaben für die Briefe“ mit Status „fehlt noch“, aufgeklappt', d.querySelector('#mappeAufgaben > li').id === 'auf-angaben' && d.getElementById('statAngaben').textContent === I18N.de['f.st.fehlt'] && d.getElementById('aufAngaben').open);
+check('[absender] Kompakt: Name, Straße, PLZ und Ort sichtbar; Geburtsdatum und Telefon unter „mehr“', !d.getElementById('p-name').closest('details.mehr') && !!d.getElementById('p-geb').closest('details.mehr') && !!d.getElementById('p-tel').closest('details.mehr'));
+// Wohngeld (Weg a) und Unterhaltsvorschuss wählen
+{ const a = wegRadios().find((r) => r.value === 'a'); a.checked = true; fire(a, 'change'); }
+pickBoxes().filter((cb) => ['uvg'].includes(cb.getAttribute('data-pick'))).forEach((cb) => { cb.checked = true; fire(cb, 'change'); });
+pickBoxes().filter((cb) => ['kindergeld', 'but'].includes(cb.getAttribute('data-pick'))).forEach((cb) => { cb.checked = false; fire(cb, 'change'); });
 const set = (id, v) => { d.getElementById(id).value = v; fire(d.getElementById(id), 'input'); };
 set('p-name', 'Maria Beispiel'); set('p-geb', '01.02.1985'); set('p-strasse', 'Hauptstraße 1'); set('p-ort', '91056 Erlangen'); set('p-tel', '0123 456');
 d.getElementById('mappeMake').click();
 check('Mappe öffnet sich und ersetzt die Seite', d.getElementById('mappe').hidden === false && d.getElementById('app').classList.contains('pm'));
+check('[aufgaben] Status: Angaben eingetragen, Anträge offen; erster offener Schritt (Anträge) aufgeklappt, Rest zu', /eingetragen/.test(d.getElementById('statAngaben').textContent) && d.getElementById('statAntraege').textContent === I18N.de['f.st.offen'] && d.getElementById('aufAntraegeD').open && !d.getElementById('aufAngaben').open && !d.getElementById('aufUnterlagenD').open);
+check('[aufgaben] Kein Inhaltsverzeichnis mit Sprungknöpfen', !d.querySelector('#mappe [data-sprung]') && !d.getElementById('mappePrint2'));
+const zeilen = [...d.querySelectorAll('#aufAntraege .ant-zeile')];
+check('[antraege] Formulare vor den Briefen: Wohngeld (Formular), Kinderzuschlag (Formular), dann Unterhaltsvorschuss (Anschreiben)', zeilen.length >= 2 && zeilen[0].classList.contains('ant-form') && zeilen[zeilen.length - 1].getAttribute('data-ant') === 'b-uvg', zeilen.map((z) => z.getAttribute('data-ant')).join());
+check('[antraege] Je Leistung genau eine Aktion (Formular-Link oder „Anschreiben ansehen“)', zeilen.every((z) => [...z.querySelectorAll('a.btn, summary.btn')].filter((x) => !x.closest('.page')).length === 1), zeilen.map((z) => z.getAttribute('data-ant') + ':' + [...z.querySelectorAll('a.btn, summary.btn')].map((x) => x.textContent).join('+')).join(' | '));
+const wgZeile = d.querySelector('[data-ant="f-wg"]');
+check('[antraege] Wohngeld: Link auf die amtliche Seite, Satz unter dem Knopf, Ausfüllhilfe zum Aufklappen', !!wgZeile && !!wgZeile.querySelector('a[href*="stmb.bayern.de"]') && wgZeile.textContent.indexOf(I18N.de['fw.wg.by']) >= 0 && !!wgZeile.querySelector('details.mehr'));
+const uvgZeile = d.querySelector('[data-ant="b-uvg"]');
+check('[antraege] Anschreiben-Zeile nennt den Empfänger, Brief zugeklappt', !!uvgZeile && /^An: Stadt Erlangen/.test(uvgZeile.querySelector('.ant-an').textContent) && !uvgZeile.querySelector('details.ant-zeigen').open);
 const pages = [...d.querySelectorAll('#mappeBody .page')];
-check('Entweder Formular oder formlos: Wohngeld hat in Bayern einen Formular-Link, also nur ein Brief (Unterhaltsvorschuss), Angabenblatt, Unterlagenliste, Formulare', pages.length === 4, pages.length);
-const formSeite = d.querySelector('#mappeBody .forms');
-check('Amtliche Formulare: Wohngeld als Link auf die amtliche Seite, kein Knopf zum Ausfüllen', !!formSeite && /Antrag auf Wohngeld \(Mietzuschuss\)/.test(formSeite.textContent) && !!formSeite.querySelector('a[href*="stmb.bayern.de"]') && formSeite.textContent.indexOf(I18N.de['f.formsWeb']) >= 0 && !d.getElementById('formsShare'), formSeite && formSeite.textContent.slice(0, 200));
-check('Formular-Link und formloser Brief schließen sich aus: beim Link (Wohngeld Bayern) kein Satz „formloser Antrag in dieser Mappe“', !!formSeite && formSeite.textContent.indexOf(I18N.de['f.formsBrief']) < 0);
-check('Amtliche Formulare: keine eigene Unterlagenliste (eine Liste je Hilfe steht bei den Unterlagen)', !!formSeite && formSeite.textContent.indexOf('Kontoauszüge der letzten 3 Monate') < 0);
+check('Druck: ein Brief (Unterhaltsvorschuss), Angabenblatt, Unterlagen- und Formularliste; alles nur im Druck', pages.length === 3 && pages.every((p) => p.classList.contains('nur-druck')), pages.length);
 const txt = pages.map((p) => p.textContent).join('\n');
-// Anschrift „91056 Erlangen“ liefert den Wohnort (kein PLZ-Feld ausgefüllt): Empfänger ist die Stadt Erlangen
 check('Brief: Absender, Empfänger (aus der PLZ der Anschrift) und Betreff', /Maria Beispiel/.test(txt) && /Hauptstraße 1/.test(txt) && /Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle/.test(txt) && /Betreff: Antrag auf Unterhaltsvorschuss/.test(txt));
 check('Kein formloser Brief für Wohngeld, weil es den Formular-Link gibt', !/Betreff: Antrag auf Wohngeld/.test(txt));
-check('Brief: bittet um Eingangsbestätigung und Formulare', /bestätigen Sie mir den Eingang/.test(txt) && /Antragsformulare/.test(txt));
+check('Brief: bittet um Eingangsbestätigung und Formulare (förmlich)', /bestätigen Sie mir den Eingang/.test(txt) && /Antragsformulare/.test(txt) && /Sehr geehrte Damen und Herren/.test(txt));
 check('Brief auf Deutsch und links nach rechts gesetzt', pages[0].getAttribute('lang') === 'de' && pages[0].getAttribute('dir') === 'ltr');
 check('Angabenblatt enthält Haushalt, Miete, Einkommen', /Angabenblatt/.test(txt) && /Warmmiete im Monat: 950 €/.test(txt) && /Einkommen: Lohn oder Gehalt, brutto 2\.200 €, netto 1\.750 € im Monat/.test(txt) && /Kinder unter 18 Jahren: 2/.test(txt) && /Geburtsdatum: 01\.02\.1985/.test(txt));
-check('Angabenblatt nennt Selbstauskunft-Hinweis', /Selbstauskunft/.test(txt));
+check('Druck: Formularliste mit Adresse der amtlichen Seite', /Antrag auf Wohngeld \(Mietzuschuss\): https:\/\/www\.stmb\.bayern\.de/.test(txt));
+check('Druck: „Keine Rechtsberatung“', txt.indexOf(I18N.de['rb.satz']) >= 0);
 check('Leere Felder werden zu Strichen statt "undefined"', !/undefined|null/.test(txt));
 check('Kopiertext enthält Briefe und Angabenblatt', /Betreff: Antrag auf Unterhaltsvorschuss/.test(d.getElementById('mappeText').value) && /Angabenblatt/.test(d.getElementById('mappeText').value));
+// Unterlagen: eine Liste ohne Doppelungen
+{
+  const li = [...d.querySelectorAll('#aufUnterlagen .haken-liste li')].map((x) => x.textContent.trim());
+  check('[unterlagen] Keine Doppelungen', new Set(li).size === li.length, li.join(' | '));
+  check('[unterlagen] „Für alle/mehrere Anträge“ zuerst, dann „Zusätzlich für …“', /^(Für alle Anträge|Für mehrere Anträge)$/.test(d.querySelector('#aufUnterlagen h4').textContent) && [...d.querySelectorAll('#aufUnterlagen h4')].slice(1).every((h) => /^Zusätzlich für /.test(h.textContent)), [...d.querySelectorAll('#aufUnterlagen h4')].map((h) => h.textContent).join(' | '));
+  const cb = d.querySelector('#aufUnterlagen input[data-haken^="u|"]'); cb.checked = true; fire(cb, 'change');
+  check('[unterlagen] Haken zählt im Status („1 von n“) und wird gespeichert', /^1 von \d+$/.test(d.getElementById('statUnterlagen').textContent) && JSON.parse(store['lotse.haken'] || '{}')[cb.getAttribute('data-haken')] === true, d.getElementById('statUnterlagen').textContent);
+  cb.checked = false; fire(cb, 'change');
+}
+check('[drucken] Ein Knopf „Drucken oder teilen“ im Schritt „Abschicken“, nicht oben', d.getElementById('mappePrint').textContent === I18N.de['akt.drucken'] && !!d.getElementById('mappePrint').closest('#auf-abschicken') && d.querySelectorAll('#mappe button.btn:not(.ghost)').length === 1);
+// Weg wechseln: andere Anträge, andere Unterlagen
+{
+  const b = wegRadios().find((r) => r.value === 'b'); b.checked = true; fire(b, 'change');
+  check('[weg] Grundsicherungsgeld gewählt: Formular des Jobcenters statt Wohngeld', !!d.querySelector('[data-ant="f-ggeld"]') && !d.querySelector('[data-ant="f-wg"]'));
+  const a = wegRadios().find((r) => r.value === 'a'); a.checked = true; fire(a, 'change');
+}
 // ---------- Empfänger bearbeitbar und Suchlink ----------
 {
-  const feld = d.querySelector('#mappeBody textarea[data-empf="uvg"]');
-  check('[empf] Vor einer Änderung kein Knopf „Wiederherstellen“ sichtbar', d.querySelector('#mappeBody [data-empf-resetbox="uvg"]').hidden === true);
+  const feld = d.querySelector('#mappe textarea[data-empf="uvg"]');
+  check('[empf] Vor einer Änderung kein Knopf „Wiederherstellen“ sichtbar', d.querySelector('#mappe [data-empf-resetbox="uvg"]').hidden === true);
   const brief = () => d.getElementById('brief-uvg').textContent;
   const kopie = () => d.getElementById('mappeText').value;
   check('[empf] Empfängerfeld je Brief, vorbefüllt mit dem Vorschlag der App (Stadt Erlangen, Jugendamt, Anschrift)', !!feld && /^Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle\n.+\n910\d\d Erlangen$/.test(feld.value), feld && feld.value);
-  check('[empf] Feld steht im Anschreiben an der Stelle der Anschrift, wird nicht gedruckt (gedruckt wird der fertige Brief)', !!feld && feld.closest('.page') === d.getElementById('m-brief-uvg') && feld.closest('.empf-edit').classList.contains('no-print') && d.getElementById('brief-uvg').classList.contains('nur-druck'));
+  check('[empf] Feld steht im Anschreiben an der Stelle der Anschrift, wird nicht gedruckt (gedruckt wird der fertige Brief)', !!feld && feld.closest('.page') === d.getElementById('m-brief-uvg') && !!feld.closest('.no-print') && !!d.getElementById('brief-uvg').closest('.nur-druck'));
   check('[empf] Anschrift bekannt: steht schon da, Feld erst nach „ändern“', !d.querySelector('[data-empf-zeigen="uvg"]').hidden && d.querySelector('[data-empf-feld="uvg"]').hidden && /Stadt Erlangen/.test(d.querySelector('[data-empf-zeigen="uvg"]').textContent));
   d.querySelector('[data-empf-aendern="uvg"]').click();
   check('[empf] „ändern“ öffnet das Feld an derselben Stelle', !d.querySelector('[data-empf-feld="uvg"]').hidden && d.querySelector('[data-empf-zeigen="uvg"]').hidden);
-  check('[empf] Nur ein Feld, weil nur ein Brief (Wohngeld hat Formular-Link)', d.querySelectorAll('#mappeBody textarea[data-empf]').length === 1);
+  check('[empf] Nur ein Feld, weil nur ein Brief (Wohngeld hat Formular-Link)', d.querySelectorAll('#mappe textarea[data-empf]').length === 1);
   feld.value = 'Landratsamt Musterkreis\nJugendamt\nMusterweg 5\n12345 Musterstadt'; fire(feld, 'input');
-  check('[empf] Änderung erscheint sofort im Brief', /\n\nLandratsamt Musterkreis\nJugendamt\nMusterweg 5\n12345 Musterstadt\n\nDatum:/.test(brief()) && !/Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle/.test(brief()), brief().slice(0, 300));
+  check('[empf] Änderung erscheint sofort im Brief und in der Zeile „An:“', /\n\nLandratsamt Musterkreis\nJugendamt\nMusterweg 5\n12345 Musterstadt\n\nDatum:/.test(brief()) && !/Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle/.test(brief()) && /Landratsamt Musterkreis/.test(d.querySelector('[data-ant="b-uvg"] .ant-an').textContent), brief().slice(0, 300));
   check('[empf] Änderung erscheint im Kopiertext (auch Grundlage für PDF)', /Landratsamt Musterkreis\nJugendamt\nMusterweg 5\n12345 Musterstadt/.test(kopie()) && /Angabenblatt/.test(kopie()));
-  check('[empf] Fokus und Feld bleiben beim Tippen erhalten (Mappe wird nicht neu aufgebaut)', d.querySelector('#mappeBody textarea[data-empf="uvg"]') === feld);
+  check('[empf] Fokus und Feld bleiben beim Tippen erhalten (Mappe wird nicht neu aufgebaut)', d.querySelector('#mappe textarea[data-empf="uvg"]') === feld);
   check('[empf] Absender, Betreff und Text bleiben unverändert', /Maria Beispiel/.test(brief()) && /Betreff: Antrag auf Unterhaltsvorschuss/.test(brief()) && /bestätigen Sie mir den Eingang/.test(brief()));
   feld.value = '  \n \n'; fire(feld, 'input');
   check('[empf] Leeres Feld: Linie zum Ausfüllen statt leerem Empfänger', /\n\n____________________\n\nDatum:/.test(brief()), brief().slice(0, 200));
   feld.value = '<img src=x onerror="window.__xss=1">\nTest'; fire(feld, 'input');
-  check('[empf] Eingabe wird nie als HTML ausgeführt', !w.__xss && !d.querySelector('#brief-uvg img') && /<img src=x/.test(brief()));
-  const reset = d.querySelector('#mappeBody [data-empf-reset="uvg"]');
+  check('[empf] Eingabe wird nie als HTML ausgeführt', !w.__xss && !d.querySelector('#brief-uvg img') && !d.querySelector('.ant-an img') && /<img src=x/.test(brief()));
+  const reset = d.querySelector('#mappe [data-empf-reset="uvg"]');
   check('[empf] Knopf „Vorschlag wiederherstellen“ erscheint nach einer Änderung', !!reset && reset.textContent === I18N.de['f.empfZurueck'] && !reset.closest('[data-empf-resetbox]').hidden);
   if (reset) reset.click();
-  const feld2 = d.querySelector('#mappeBody textarea[data-empf="uvg"]');
-  check('[empf] Wiederherstellen: Vorschlag wieder im Feld, im Brief und im Kopiertext, Knopf weg', !!feld2 && /^Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle/.test(feld2.value) && /Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle/.test(brief()) && /Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle/.test(kopie()) && d.querySelector('#mappeBody [data-empf-resetbox="uvg"]').hidden === true);
-  const link = d.querySelector('#mappeBody .empf-edit a');
+  const feld2 = d.querySelector('#mappe textarea[data-empf="uvg"]');
+  check('[empf] Wiederherstellen: Vorschlag wieder im Feld, im Brief und im Kopiertext, Knopf weg', !!feld2 && /^Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle/.test(feld2.value) && /Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle/.test(brief()) && /Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle/.test(kopie()) && d.querySelector('#mappe [data-empf-resetbox="uvg"]').hidden === true);
+  const link = d.querySelector('#mappe .empf-edit a');
   const q = link ? decodeURIComponent(link.getAttribute('href').split('?q=')[1] || '') : '';
   // Datenschutz (Sicherheitsprüfung 21.11.2026, S13): kein Ort und keine PLZ in der Adresse, nur der feste Suchbegriff; Hinweis, den Ort selbst dazuzuschreiben
   check('[empf] Suchlink: DuckDuckGo, nur kurzer Suchbegriff ohne Ort und PLZ, öffnet extern', !!link && /^https:\/\/duckduckgo\.com\/\?q=/.test(link.getAttribute('href')) && q === 'Unterhaltsvorschussstelle Jugendamt' && !/Erlangen|\d{5}/.test(link.getAttribute('href')) && link.getAttribute('target') === '_blank' && /noopener/.test(link.getAttribute('rel')) && link.textContent === I18N.de['f.empfSuche'], q);
-  const ortHinweis = d.querySelector('#mappeBody .empf-edit .empf-such-ort');
+  const ortHinweis = d.querySelector('#mappe .empf-edit .empf-such-ort');
   check('[empf] Suchlink: Hinweis „Ort selbst dazuschreiben“ beim Link, in allen 13 Sprachen und Einfacher Sprache', !!ortHinweis && ortHinweis.textContent === I18N.de['f.empfSucheOrt'] && ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so'].every((l) => typeof I18N[l]['f.empfSucheOrt'] === 'string' && I18N[l]['f.empfSucheOrt'].length > 20) && typeof require('../src/lang/einfach/vorgang-pin.json')['f.empfSucheOrt'] === 'string');
-  check('[empf] Keine Suchadresse in der ganzen Mappe enthält Ort oder PLZ', [...d.querySelectorAll('#mappeBody a[href*="duckduckgo"]')].every((a) => !/Erlangen|91052|\d{5}/.test(decodeURIComponent(a.getAttribute('href')))));
-  check('[empf] Titel und Platzhalter in der gewählten Sprache; bei bekannter Anschrift kein Hinweis „Fehlt die Anschrift“', d.querySelector('#mappeBody .empf-edit label').textContent === I18N.de['f.empfTitel'] && d.querySelector('#mappeBody textarea[data-empf]').getAttribute('placeholder') === I18N.de['f.empfPlatz'] && !d.querySelector('#mappeBody .empf-edit p.small'));
+  check('[empf] Keine Suchadresse in der ganzen Mappe enthält Ort oder PLZ', [...d.querySelectorAll('#mappe a[href*="duckduckgo"]')].every((a) => !/Erlangen|91052|\d{5}/.test(decodeURIComponent(a.getAttribute('href')))));
+  check('[empf] Titel und Platzhalter in der gewählten Sprache; bei bekannter Anschrift kein Hinweis „Fehlt die Anschrift“', d.querySelector('#mappe .empf-edit label').textContent === I18N.de['f.empfTitel'] && d.querySelector('#mappe textarea[data-empf]').getAttribute('placeholder') === I18N.de['f.empfPlatz'] && !d.querySelector('#mappe .empf-edit p.small'));
   check('[empf] Neue Texte in allen 13 Sprachen vorhanden', ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so'].every((l) => ['f.empfTitel', 'f.empfHinweis', 'f.empfSuche', 'f.empfZurueck'].every((k) => I18N[l] && typeof I18N[l][k] === 'string' && I18N[l][k].length > 5)));
   check('[empf] Keine Skriptfehler', errors.length === 0, errors.join('; '));
+}
+// ---------- Absender: einmal eintragen, überall nutzen ----------
+{
+  // Brief prüfen: Felder der Widerspruchs-/Antwortschreiben bekommen die Angaben; Änderung dort gilt für alle
+  const bsName = d.getElementById('bs-name');
+  if (bsName) {
+    d.getElementById('mappeClose').click();
+    const k = d.getElementById('brief-jc'); if (k) k.click();
+    check('[absender] Widerspruch Jobcenter: Name und Anschrift eingesetzt', bsName.value === 'Maria Beispiel' && d.getElementById('bs-anschrift').value === 'Hauptstraße 1' && d.getElementById('bs-ort').value === '91056 Erlangen', bsName.value);
+    bsName.value = 'Maria Neu'; fire(bsName, 'input');
+    check('[absender] Änderung im Widerspruch gilt für alle (Mappe, andere Briefe)', d.getElementById('p-name').value === 'Maria Neu' && (!d.getElementById('kz-name') || d.getElementById('kz-name').value === 'Maria Neu'));
+    bsName.value = 'Maria Beispiel'; fire(bsName, 'input');
+    d.getElementById('mappeMake').click();
+  }
 }
 check('Web-Version: Anbieter im Impressum David Cabrerizo', d.getElementById('anbieterName').textContent === 'David Cabrerizo');
 check('Druck: feste Briefränder (DIN 5008) per @page, unabhängig vom Browser', /@page\s*\{[^}]*size:\s*A4[^}]*margin:\s*20mm 20mm 20mm 25mm/.test(d.documentElement.innerHTML));
@@ -264,11 +312,12 @@ setTimeout(() => {
   check('Kopieren meldet Ergebnis oder zeigt Ersatzfeld', d.getElementById('copyMsg').textContent.length > 0 || d.getElementById('mappeText').hidden === false);
   // Sprache in der Mappe
   setLang('en');
-  const docs = d.getElementById('m-unterlagen');
-  check('Mappe wird bei Sprachwechsel neu aufgebaut: Unterlagenliste englisch', /Documents for this benefit/.test(docs.textContent) && /Rental contract or confirmation of rent/.test(docs.textContent), docs.textContent.slice(0, 80));
+  const docs = d.getElementById('aufUnterlagen');
+  check('Mappe wird bei Sprachwechsel neu aufgebaut: Unterlagenliste englisch', /^(For all applications|For several applications)/.test(docs.textContent) && /Birth certificate|Rental|tenancy/i.test(docs.textContent), docs.textContent.slice(0, 120));
+  check('Formular-Satz in der App-Sprache (nicht mehr deutsch)', d.querySelector('[data-ant="f-wg"]').textContent.indexOf(I18N.en['fw.wg.by']) >= 0);
   check('Brief bleibt bei Sprachwechsel Deutsch', /Betreff: Antrag auf Unterhaltsvorschuss/.test(d.querySelector('#mappeBody .page').textContent));
   setLang('ar');
-  check('Arabisch: Mappe-Leiste rechts nach links, Brief bleibt links nach rechts', d.getElementById('app').getAttribute('dir') === 'rtl' && d.querySelector('#mappeBody .page').getAttribute('dir') === 'ltr');
+  check('Arabisch: Mappe rechts nach links, Brief bleibt links nach rechts', d.getElementById('app').getAttribute('dir') === 'rtl' && d.querySelector('#mappeBody .page').getAttribute('dir') === 'ltr' && d.getElementById('m-brief-uvg').getAttribute('dir') === 'ltr');
   setLang('de');
   d.getElementById('mappeClose').click();
   check('Mappe lässt sich schließen', d.getElementById('mappe').hidden === true && !d.getElementById('app').classList.contains('pm'));
