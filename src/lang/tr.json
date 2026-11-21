@@ -199,7 +199,7 @@
   "t.gsa.verm": "{schon} üzerindeki parasal varlık önce kullanılmalıdır. Kendi oturduğun ev veya makul bir araba sayılmaz.",
   "t.bafoeg.keine": "Okulda, meslek eğitiminde veya üniversitede kimseyi belirtmedin.",
   "t.bafoeg.keinKind": "Hanede çocuk belirtmedin.",
-  "t.bafoeg.kindJa": "Ebeveynlerin geliri aylık net yaklaşık {fb} muafiyet tutarının altında. BAföG üniversite, meslek yüksekokulları ve bazı okullar için verilir, örneğin çocuk ebeveynlerle yaşamıyorsa.",
+  "t.bafoeg.kindJa": "Ebeveynlerin geliri aylık yaklaşık {fb} muafiyet tutarının altında. BAföG üniversite, meslek yüksekokulları ve bazı okullar için verilir, örneğin çocuk ebeveynlerle yaşamıyorsa.",
   "t.bafoeg.kindRand": "Gelir aylık yaklaşık {fb} muafiyet tutarının üzerinde. BAföG o zaman azaltılır ama yine de çıkabilir. Daire tam hesaplar.",
   "t.bafoeg.kindNein": "Gelir aylık yaklaşık {fb} muafiyet tutarının çok üzerinde. Büyük olasılıkla bir şey kalmaz.",
   "t.bafoeg.ich": "BAföG esas olarak ebeveynlerin gelirine bağlıdır, bu kontrol bunu sormaz. Bazı durumlarda sayılmaz. Amt für Ausbildungsförderung’a hesaplat.",

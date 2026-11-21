@@ -199,7 +199,7 @@
   "t.gsa.verm": "Activele financiare peste {schon} trebuie folosite mai întâi. O casă în care locuiești și o mașină rezonabilă nu se iau în calcul.",
   "t.bafoeg.keine": "Nu ai indicat pe nimeni la școală, în formare sau la studii.",
   "t.bafoeg.keinKind": "Nu ai indicat un copil în gospodărie.",
-  "t.bafoeg.kindJa": "Venitul părinților este sub suma scutită de aproximativ {fb} net pe lună. BAföG se acordă pentru studii, școli profesionale și anumite școli, de exemplu dacă copilul nu locuiește cu părinții.",
+  "t.bafoeg.kindJa": "Venitul părinților este sub suma scutită de aproximativ {fb} pe lună. BAföG se acordă pentru studii, școli profesionale și anumite școli, de exemplu dacă copilul nu locuiește cu părinții.",
   "t.bafoeg.kindRand": "Venitul este peste suma scutită de aproximativ {fb} pe lună. BAföG se reduce atunci, dar poate totuși să se acorde. Autoritatea calculează exact.",
   "t.bafoeg.kindNein": "Venitul este clar peste suma scutită de aproximativ {fb} pe lună. Probabil nu rămâne nimic.",
   "t.bafoeg.ich": "BAföG depinde în principal de venitul părinților, pe care această verificare nu îl cere. În unele cazuri nu se ia în calcul. Cere ca Amt für Ausbildungsförderung să calculeze.",

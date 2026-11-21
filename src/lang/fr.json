@@ -199,7 +199,7 @@
   "t.gsa.verm": "Le patrimoine financier au-delà de {schon} doit d'abord être utilisé. Une maison où tu habites toi-même ou une voiture raisonnable ne comptent pas.",
   "t.bafoeg.keine": "Tu n'as indiqué personne à l'école, en formation ou en études.",
   "t.bafoeg.keinKind": "Tu n'as pas indiqué d'enfant dans le foyer.",
-  "t.bafoeg.kindJa": "Le revenu des parents est inférieur à l'abattement d'environ {fb} net par mois. L'aide aux études (BAföG) est versée pour les études supérieures, les écoles professionnelles supérieures (Fachschulen) et certaines écoles, par exemple si l'enfant n'habite pas chez ses parents.",
+  "t.bafoeg.kindJa": "Le revenu des parents est inférieur à l'abattement d'environ {fb} par mois. L'aide aux études (BAföG) est versée pour les études supérieures, les écoles professionnelles supérieures (Fachschulen) et certaines écoles, par exemple si l'enfant n'habite pas chez ses parents.",
   "t.bafoeg.kindRand": "Le revenu dépasse l'abattement d'environ {fb} par mois. Le BAföG est alors réduit, mais peut quand même être versé. Le service calcule précisément.",
   "t.bafoeg.kindNein": "Le revenu dépasse nettement l'abattement d'environ {fb} par mois. Il ne restera probablement rien.",
   "t.bafoeg.ich": "L'aide aux études (BAföG) dépend surtout du revenu des parents, que ce test ne demande pas. Dans certains cas, il n'est pas pris en compte. Fais faire le calcul par l'Amt für Ausbildungsförderung (service des aides aux études).",

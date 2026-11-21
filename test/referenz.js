@@ -501,7 +501,7 @@ function svAN(b, h, e) {
 // ja: sonst Netto; nein: Lohn wie oben, Unterhalt für sich selbst ab, Elterngeld bis 300 € ab.
 function einkBaf21(h, e) {
   const s = h.p.reduce((a, x) => a + x.brutto, 0);
-  let ja = 0, nein = 0;
+  let ja = 0, nein = 0, basisL = 0, steuerL = 0, bruttoL = 0, zahlL = 0;
   h.p.forEach((x, i) => {
     const n = s > 0 ? h.netto * x.brutto / s : (i === 0 ? h.netto : 0);
     const unt = (i === 0 ? e.art1 : e.art2) === 'unt';
@@ -509,11 +509,21 @@ function einkBaf21(h, e) {
     if (x.art === 'lohn' && !x.selbst && !unt && x.brutto > 0) {
       const ein = Math.max(0, x.brutto - 1230 / 12), basis = ein - Math.min(0.223 * ein, 17200 / 12);
       const steuer = x.aus ? 0 : Math.max(0, x.brutto - n - svAN(x.brutto, h, e));
-      const v = Math.max(0, basis - steuer);
-      ja += x.aus ? n : v; nein += v; return;
+      nein += Math.max(0, basis - steuer);
+      if (x.aus) ja += n; else { basisL += basis; steuerL += steuer; bruttoL += x.brutto; zahlL++; }
+      return;
     }
     ja += n; nein += n - (unt ? x.brutto : x.art === 'eg' ? Math.min(300, x.brutto) : 0);
   });
+  // Prüfung 21.11.2026: Für „ja“ zählt als Steuer höchstens die Lohnsteuer laut Steuerbescheid (§ 21 Abs. 1 Satz 3 Nr. 3 BAföG): verheiratete
+  // Eltern (nur für sie gilt der Freibetrag 2.540 €, § 25 Abs. 1 Nr. 1) mit Splittingtarif auf den gemeinsamen Lohn (Steuerklasse III, zweiter
+  // Arbeitnehmer-Pauschbetrag vorab abgezogen), allein Steuerklasse II mit Kind, sonst I. Die Lohnsteuer selbst kommt aus der Lohnrechnung
+  // der App (Programmablaufplan, eigener Test test-lohn); Annahmen zur Pflegeversicherung wie dort.
+  if (zahlL) {
+    const RJ = require('../src/rules.js'), o = RJ.lohnAnnahmen(RJ.derive(e), 1);
+    const amt = h.erwachsene === 2 ? RJ.nettoLohn(Math.max(0, bruttoL - (zahlL - 1) * 1230 / 12), { ...o, stkl: 3 }).lst : RJ.nettoLohn(bruttoL, o).lst;
+    ja += Math.max(0, basisL - Math.min(steuerL, amt));
+  }
   return { ja, nein };
 }
 function bafoeg0(e) {
@@ -751,7 +761,8 @@ function wbsFrei(e) {
 function wbsFreiBY(e) {
   const g = e.gdb === 'H' ? 100 : Number(e.gdb) || (e.behinderung ? 100 : 0);
   const uz = zahl(e.uzBetrag) * 12;
-  const wer = { k1: [1, 0], k2: [2, 0], k3: [3, 0], ex: [0, 1], exk: [1, 1] }[e.uzAn];
+  // Prüfung 21.11.2026: „3 oder mehr Kinder“ (k3) und „frühere Partner und Kinder“ (exk) ohne Deckel, weil die Zahl der Kinder fehlt
+  const wer = { k1: [1, 0], k2: [2, 0], ex: [0, 1] }[e.uzAn];
   const deckel = wer ? wer[0] * 4000 + wer[1] * 6000 : Infinity;
   return (g >= 50 ? 4000 : 0) + Math.min(4, Math.max(0, e.bhWeitere | 0)) * 4000 + (e.uzTitel ? uz : Math.min(uz, deckel));
 }
