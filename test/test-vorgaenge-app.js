@@ -94,7 +94,7 @@ const offenName = (s) => { const z = s.d.querySelector('#setHaushalte .vg-offen 
   ck('[vorgaenge] im Leistungs-Check nur der Textknopf „Angaben löschen“ oben (mit Rückfrage)', !d.getElementById('clearBtn') && !!d.getElementById('clearLink'));
   [...d.querySelectorAll('[data-pick]')].slice(0, 1).forEach((cb) => { cb.checked = true; cb.dispatchEvent(new s.w.Event('change', { bubbles: true })); });
   d.getElementById('mappeMake').click(); // Haken gibt es nur in der Antragsmappe
-  const hk = d.querySelector('#m-unterlagen input[data-haken]'); hk.checked = true; hk.dispatchEvent(new s.w.Event('change', { bubbles: true }));
+  const hk = d.querySelector('#aufUnterlagen input[data-haken]'); hk.checked = true; hk.dispatchEvent(new s.w.Event('change', { bubbles: true }));
   ck('[vorgaenge] Haken der Checkliste gehören zum Vorgang', !!mem['lotse.haken'] && !!mem['lotse.pfaendung']);
   d.getElementById('mappeClose').click();
   d.querySelector('#appnav [data-ansicht="einst"]').click(); d.querySelector('#einstListe .zeile[data-seite="sicher"]').click();

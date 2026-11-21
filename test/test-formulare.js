@@ -93,5 +93,18 @@ ck('Keine Formular-Dateien mehr in der App', !require('fs').existsSync(require('
 const u = F.unterlagen({ adults: 1, kids: 2, ek1Art: 'lohn', miete: 850 });
 ck('Unterlagen: Ausweis, Kontoauszüge, Mietvertrag, Lohnabrechnungen', ['Personalausweis', 'Kontoauszüge', 'Mietvertrag', 'Lohnabrechnungen'].every((w) => u.join(' ').indexOf(w) >= 0));
 
+// Satz unter dem Formular-Knopf in der Antragsmappe (fw.*, übersetzt): der deutsche Text ist derselbe wie in formulare.js (keine zweite Fassung)
+{
+  const de = require('../src/lang/de.json');
+  const ja = (id) => [{ id, level: 'ja' }];
+  const satz = (s, res, id) => (finde(F.plan(s, PERSON, res), id) || {}).warum;
+  const paare = [
+    ['fw.ggeld', satz({ adults: 1 }, ja('ggeld'), 'ggeld')], ['fw.kiz', satz({ kids: 1 }, ja('kiz'), 'kiz')],
+    ['fw.wg.by', satz({ bundesland: 'BY' }, ja('wohngeld'), 'wg')], ['fw.wg.land', satz({ bundesland: 'HE' }, ja('wohngeld'), 'wg')],
+    ['fw.kg1', satz({ kids: 1 }, ja('kindergeld'), 'kg1')], ['fw.kg18', satz({ young: 1 }, ja('kindergeld'), 'kg18')], ['fw.kg4', satz({}, ja('kgBeh'), 'kg4')],
+    ['fw.gsa', satz({}, ja('gsa'), 'gsa')], ['fw.wbs.BY', satz({ bundesland: 'BY' }, ja('wbs'), 'wbs')], ['fw.wbs.sonst', satz({ bundesland: 'HE' }, ja('wbs'), 'wbs')], ['fw.wbs.leer', satz({}, ja('wbs'), 'wbs')]];
+  paare.forEach(([k, w]) => ck('Mappe: ' + k + ' gleich dem Satz in formulare.js', de[k] === w, [de[k], w]));
+}
+
 console.log(fails ? fails + ' von ' + n + ' Formular-Prüfungen FALSCH' : 'Formulare: alle ' + n + ' Prüfungen bestanden (nur geprüfte amtliche Links und Hinweise)');
 process.exit(fails ? 1 : 0);

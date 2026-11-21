@@ -42,7 +42,7 @@ const Fristen = (function () {
   function widerspruch({ datum, zugang }) {
     const bekanntgabe = zugang || plusTage(datum, 4);
     const ende = werktag(einMonat(bekanntgabe));
-    return { bekanntgabe, fristende: ende, hinweis: 'Der Widerspruch muss bis zu diesem Tag bei der Stelle eingegangen sein (Einwurf in den Briefkasten der Stelle, Fax oder persönlich mit Eingangsstempel). Fehlt im Bescheid die Rechtsbehelfsbelehrung, gilt ein Jahr (§ 66 SGG).' };
+    return { bekanntgabe, fristende: ende, hinweis: 'Der Widerspruch muss bis zu diesem Tag bei der Stelle eingegangen sein (Einwurf in den Briefkasten der Stelle, Fax oder persönlich mit Eingangsstempel). Fehlt die Rechtsbehelfsbelehrung oder ist sie falsch, gilt ein Jahr (§ 66 SGG, beim Wohngeld § 58 VwGO).' };
   }
 
   // Erinnerung an den Folgeantrag: leistung = 'sgb2' | 'wohngeld' | 'kiz'; ende = letzter Tag des Bewilligungszeitraums

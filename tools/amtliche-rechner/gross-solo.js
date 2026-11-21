@@ -13,8 +13,10 @@ function kiz(f) {
   const inp = { adults: f.partner ? 2 : 1, kids: nk, kidsU6: f.alter.filter((a) => a < 6).length, kids14: f.alter.filter((a) => a >= 14).length, art1: 'lohn', art2: pB > 0 ? 'lohn' : 'ohne', brutto: f.brutto + pB, brutto2: pB, netto: f.netto + pN, unterhalt: (f.uh || 0) * nk, miete: f.miete, mietstufe: '3', vermoegen: 0, gebJahr: 1988, bezug: { kindergeld: true }, heute: HEUTE };
   return R.evaluate(inp).results.find((r) => r.id === 'kiz').level;
 }
+// Eingaben für das Elterngeld (auch für egAbgleich: Elterngeld-Netto nach § 2f BEEG, Befund E2)
+const egInp = (f) => ({ baby: 'bald', egVor: f.vorher, art1: 'lohn', brutto: 2000, netto: 1500, heute: HEUTE, kids: f.geschwister ? 2 : 0, kidsU6: f.geschwister ? 2 : 0 });
 function eg(f) {
-  const e = R.evaluate({ baby: 'bald', egVor: f.vorher, art1: 'lohn', brutto: 2000, netto: 1500, heute: HEUTE, kids: f.geschwister ? 2 : 0, kidsU6: f.geschwister ? 2 : 0 }).results.find((r) => r.id === 'elterngeld');
+  const e = R.evaluate(egInp(f)).results.find((r) => r.id === 'elterngeld');
   return e.tx[0][1].basis.eur;
 }
-module.exports = { wg, kiz, eg };
+module.exports = { wg, kiz, eg, egInp };

@@ -32,13 +32,13 @@ var Suche = (function () {
     ['g-rate', 'G', 'gs.rate'], ['g-hilfe', 'G', 'sb.h'], ['g-finden', 'G', 'sb.finden'], ['g-termin', 'G', 'sb.termin'], ['g-bmappe', 'G', 'sb.mappe'],
     ['g-ablauf', 'G', 'sb.ablauf'], ['g-planen', 'G', 'gs.planen'], ['g-haushalt', 'G', 'hb.kachel'], ['g-sp-strom', 'G', 'sp.strom'], ['g-sp-heizen', 'G', 'sp.heizen'],
     ['g-sp-essen', 'G', 'sp.essen'], ['g-sp-vertraege', 'G', 'sp.vertraege'], ['g-abschlag', 'G', 'pl.abschlag'], ['g-tarif', 'G', 'hb.tv.kachel'],
-    ['pflege', 'P', 'home.pflege'], ['p-hilfe', 'P', 'pu.hilfe'], ['p-schaetzen', 'P', 'pu.schaetzen'],
+    ['pflege', 'P', 'home.pflege'], ['p-hilfe', 'P', 'pu.hilfe'], ['p-schaetzen', 'P', 'pu.schaetzen'], ['p-gutachten', 'P', 'su.p.gutachten'],
     ['ausziehen', 'A', 'az.kachel'], ['a-vorher', 'A', 'az.vorher.h'], ['a-tage', 'A', 'az.tage.h'], ['a-geld', 'A', 'az.geld.h'], ['a-vers', 'A', 'az.vers.h'],
     ['a-achtung', 'A', 'az.achtung.h'], ['a-hilfen', 'A', 'az.hilfen.h'],
     ['mappe', 'M', 'ordner.mappe'],
     ['einst', 'E', 'nav.einst'], ['e-anzeige', 'E', 'set.anzeige.h'], ['e-erinnern', 'E', 'set.erinnern.h'], ['e-sicher', 'E', 'set.sicher.h'],
     ['e-fach', 'E', 'set.fach.h'], ['e-about', 'E', 'set.about.h'],
-    ['ordner', 'O', 'nav.ordner'], ['o-fristen', 'O', 'fri.h'], ['o-ergebnis', 'O', 'ordner.ergebnis']
+    ['ordner', 'O', 'nav.ordner'], ['o-fristen', 'O', 'fri.h'], ['o-ergebnis', 'O', 'ordner.ergebnis'], ['o-import', 'O', 'kw.imp.h']
   ]);
 
   // ---------- Vergleich ----------
@@ -141,11 +141,26 @@ var Suche = (function () {
     if (!idx || idxFuer !== s) { idx = index({ lang: app.lang(), titel: app.titel, titelDe: app.titelDe }); idxFuer = s; }
     return idx;
   }
+  // Leeres Feld: häufige Begriffe als Knöpfe (UX-Audit A, Aufgabe 12). Amtsbegriffe auf Deutsch, die Suche findet sie in jeder Sprache.
+  var VORSCHLAEGE = ['Wohngeld', 'Kindergeld', 'Pflegegrad', 'Bescheid', 'Mahnung'];
+  function vorschlaege(an) {
+    var v = $('suVorschlag'); if (!v) return;
+    v.hidden = !an; if (!an || v.firstChild) return;
+    var p = document.createElement('p'); p.id = 'suVorschlagH'; p.textContent = app.t('su.haeufig'); v.appendChild(p);
+    var c = document.createElement('div'); c.className = 'chips'; c.setAttribute('role', 'group'); c.setAttribute('aria-labelledby', 'suVorschlagH');
+    VORSCHLAEGE.forEach(function (w) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.lang = 'de'; b.textContent = w;
+      b.addEventListener('click', function () { var f = $('suFeld'); f.value = w; zeigen(); f.focus(); });
+      c.appendChild(b);
+    });
+    v.appendChild(c);
+  }
   function zeigen() {
     var feld = $('suFeld'), box = $('suTreffer'), status = $('suStatus'); if (!feld || !box) return;
     var text = feld.value;
     box.textContent = '';
     $('suLeeren').hidden = !text;
+    vorschlaege(norm(text).replace(/ /g, '').length < 2);
     if (norm(text).replace(/ /g, '').length < 2) { box.hidden = true; status.textContent = ''; return; }
     var tr = suche(aktIndex(), text, 6);
     box.hidden = false;
@@ -215,7 +230,7 @@ var Suche = (function () {
   // Nach Sprachwechsel: Platzhalter und Treffer in der neuen Sprache
   function sprache() {
     if (!$('suFeld') || !app) return; // Platzhalter und Beschriftung setzt applyLang (data-t-ph, data-t-aria)
-    idx = null; zeigen();
+    idx = null; var v = $('suVorschlag'); if (v) v.textContent = ''; zeigen(); // Vorschläge mit neuer Überschrift
   }
   // Zurück von einem Treffer (Startseite): Such-Fenster wieder offen, Text und Treffer wie vorher; Schließen setzt den Fokus auf die Lupe
   function fokus() { var l = $('suLupeStart'); if (l) l.focus({ preventScroll: true }); oeffnen(); }

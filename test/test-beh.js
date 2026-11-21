@@ -130,6 +130,9 @@ const WB = [
   [{ adults: 1 }, 17500], [{ adults: 2 }, 27500], [{ adults: 2, kids: 1 }, 27500 + 5000 + 1300], [{ adults: 1, kids: 2 }, 27500 + 5000 + 2600],
   [{ adults: 2, kids: 2 }, 27500 + 10000 + 2600], [{ adults: 1, kids: 1 }, 27500 + 1300]
 ];
+// Vor den 30 % zieht das Amt beim Lohn den Arbeitnehmer-Pauschbetrag ab (Art. 6 Abs. 1 BayWoFG mit § 9a Satz 1 Nr. 1 Buchst. a EStG: 1.230 €,
+// abgerufen 21.11.2026); hier eine Person mit Lohn. Brutto im Monat, bei dem nach Pauschbetrag und 30 % genau g übrig bleibt:
+const WK = 1230, NACH = (g) => (g / 0.7 + WK) / 12;
 const WMAX = (p, c) => (p <= 1 ? 28300 : 43200 + (p - 2) * 10700) + c * 3200;
 WB.forEach(([o, g]) => {
   const j = g / 12;
@@ -137,13 +140,14 @@ WB.forEach(([o, g]) => {
   const hh = { ...o, brutto: j - 1 };
   check('WBS Grenze ' + JSON.stringify(o) + ' = ' + g, get(hh, 'wbs').level === 'ja' && get(hh, 'wbs').tx[0][1].grenze === eur(g), JSON.stringify(get(hh, 'wbs').tx));
   check('WBS knapp über Grenze => nur "möglich" (mit 30-%-Abzug darunter)', lv({ ...o, brutto: j + 100 }, 'wbs') === 'vielleicht' && txKeys({ ...o, brutto: j + 100 }, 'wbs')[0] === 'wbs.rand');
-  check('WBS über der 30-%-Abzugsgrenze, unter Art.-11-Höchstwert => möglich (Gebiet)', lv({ ...o, brutto: j / 0.7 + 50 }, 'wbs') === 'vielleicht' && txKeys({ ...o, brutto: j / 0.7 + 50 }, 'wbs')[0] === 'wbs.gebiet');
-  check('WBS über Höchstwert nach Abzug => nein', lv({ ...o, brutto: mx / 0.7 / 12 + 50 }, 'wbs') === 'nein' && get({ ...o, brutto: mx / 0.7 / 12 + 50 }, 'wbs').tx[0][1].grenze === eur(mx));
-  check('WBS knapp unter dem Höchstwert nach Abzug => möglich', lv({ ...o, brutto: mx / 0.7 / 12 - 20 }, 'wbs') === 'vielleicht');
+  check('WBS über der 30-%-Abzugsgrenze, unter Art.-11-Höchstwert => möglich (Gebiet)', lv({ ...o, brutto: NACH(g) + 50 }, 'wbs') === 'vielleicht' && txKeys({ ...o, brutto: NACH(g) + 50 }, 'wbs')[0] === 'wbs.gebiet');
+  check('WBS über Höchstwert nach Abzug => nein', lv({ ...o, brutto: NACH(mx) + 50 }, 'wbs') === 'nein' && get({ ...o, brutto: NACH(mx) + 50 }, 'wbs').tx[0][1].grenze === eur(mx));
+  check('WBS knapp unter dem Höchstwert nach Abzug => möglich', lv({ ...o, brutto: NACH(mx) - 20 }, 'wbs') === 'vielleicht');
 });
-// Freibeträge nach dem Muster § 24 WoFG: GdB 100 oder ab 80 mit Pflegegrad 4.500 €, unter 80 mit Pflegegrad 2.100 €, ohne Pflegegrad (GdB 50-90) 0 €
-check('WBS: GdB 100 erweitert die "möglich"-Spanne um 4.500 € im Jahr', lv({ adults: 1, brutto: (28300 + 4500) / 0.7 / 12 - 5, gdb: '100' }, 'wbs') === 'vielleicht' && lv({ adults: 1, brutto: (28300 + 4500) / 0.7 / 12 + 20, gdb: '100' }, 'wbs') === 'nein' && lv({ adults: 1, brutto: 28300 / 0.7 / 12 + 20 }, 'wbs') === 'nein');
-check('WBS: GdB 50 mit Pflegegrad 2.100 €, GdB 50 ohne Pflegegrad kein Freibetrag', lv({ adults: 1, brutto: (28300 + 2100) / 0.7 / 12 - 5, gdb: '50', pflegegrad: '2' }, 'wbs') === 'vielleicht' && lv({ adults: 1, brutto: 28300 / 0.7 / 12 + 20, gdb: '50' }, 'wbs') === 'nein');
+// Bayern: Art. 5 Abs. 2 Nr. 1 BayWoFG (über Art. 4 Abs. 1 BayWoBindG; gesetze-bayern.de, Abruf 21.11.2026): 4.000 € je Person mit GdB ab 50,
+// ohne Pflegegrad (bis 21.11.2026 nach dem Muster § 24 WoFG 4.500 / 2.100 € nur mit Pflegegrad; Befund WBS4)
+check('WBS Bayern: GdB 100 erweitert die "möglich"-Spanne um 4.000 € im Jahr', lv({ adults: 1, brutto: NACH(28300 + 4000) - 5, gdb: '100' }, 'wbs') === 'vielleicht' && lv({ adults: 1, brutto: NACH(28300 + 4000) + 20, gdb: '100' }, 'wbs') === 'nein' && lv({ adults: 1, brutto: NACH(28300) + 20 }, 'wbs') === 'nein');
+check('WBS Bayern: GdB 50 ohne Pflegegrad ebenfalls 4.000 €, Pflegegrad ändert nichts', lv({ adults: 1, brutto: NACH(28300 + 4000) - 5, gdb: '50' }, 'wbs') === 'vielleicht' && lv({ adults: 1, brutto: NACH(28300 + 4000) + 20, gdb: '50', pflegegrad: '2' }, 'wbs') === 'nein');
 check('WBS: Einkommen 0 => ja', lv({ brutto: 0 }, 'wbs') === 'ja');
 // Monotonie: mehr Einkommen kann das Ergebnis nur verschlechtern
 {

@@ -149,5 +149,21 @@
   "zwrot pieniędzy",
   "nadpłata",
   "Rückforderung"
+ ],
+ "p-hilfe": [
+  "zasiłek pielęgnacyjny",
+  "opieka domowa",
+  "opieka zastępcza",
+  "opieka krótkoterminowa"
+ ],
+ "p-gutachten": [
+  "orzeczenie o opiece",
+  "sprawdzić orzeczenie",
+  "sprzeciw stopień opieki"
+ ],
+ "o-import": [
+  "kod QR",
+  "plik SoLo",
+  "plik z poradni"
  ]
 }

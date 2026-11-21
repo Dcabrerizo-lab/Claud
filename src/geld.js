@@ -55,11 +55,14 @@ var Geld = (function () {
   var LUECKE = { name: '[Dein Name, deine Anschrift]', g: '[Name der Firma oder Stelle]', adr: '[Anschrift aus dem Brief]', az: '[Aktenzeichen oder Kundennummer]', ort: '[Ort]' };
   function zeilen(s) { return String(s || '').replace(/\r\n?/g, '\n').split('\n').map(function (z) { return z.replace(/[\u0000-\u001f\u007f]/g, '').trim(); }).filter(Boolean); }
   function einzeilig(s, max) { return String(s || '').replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, max || 120); }
-  // f = { g, adr, az, datum, absender } (alles Text vom Nutzer); Ergebnis: fertiger Brief als Text
+  // f = { g, adr, az, datum, absender, ich, ichOrt } (alles Text vom Nutzer); Ergebnis: fertiger Brief als Text.
+  // ich: Zeilen des gespeicherten Absenders (Name, Straße, PLZ und Ort; einmal eingetragen, gilt für alle Briefe der App), ichOrt: Ort ohne PLZ.
+  // Ohne Angaben bleiben Lücken zum Ausfüllen von Hand.
   function schreiben(art, f) {
     f = f || {};
     var g = einzeilig(f.g) || LUECKE.g, adr = zeilen(f.adr).slice(0, 6), az = einzeilig(f.az, 60) || LUECKE.az;
-    var kopf = [LUECKE.name].concat(f.absender ? [einzeilig(f.absender)] : [], ['', g], adr.length ? adr : [LUECKE.adr], ['', LUECKE.ort + ', ' + (einzeilig(f.datum, 20) || '[Datum]'), '']);
+    var ich = (f.ich || []).map(function (z) { return einzeilig(z); }).filter(Boolean).slice(0, 4);
+    var kopf = (ich.length ? ich : [LUECKE.name]).concat(f.absender ? [einzeilig(f.absender)] : [], ['', g], adr.length ? adr : [LUECKE.adr], ['', (einzeilig(f.ichOrt, 60) || LUECKE.ort) + ', ' + (einzeilig(f.datum, 20) || '[Datum]'), '']);
     var b;
     if (art === 'geduld') b = ['Aktenzeichen: ' + az, '', 'Bitte um Geduld', '', 'Sehr geehrte Damen und Herren,', '',
       'ich bereite zurzeit eine Beratung bei einer Schuldnerberatungsstelle vor. Dort verschaffe ich mir einen Überblick über alle Forderungen und meine Möglichkeiten.',
@@ -79,6 +82,16 @@ var Geld = (function () {
       '- Ich habe den Betrag bereits am [Datum] bezahlt. Einen Beleg lege ich bei.',
       'Ich erkenne die Forderung nicht an. Bitte stellen Sie Ihre Mahnungen ein und bestätigen Sie mir das schriftlich.', '', 'Mit freundlichen Grüßen', '', '[Unterschrift]'];
     else if (art === 'rate') b = rateSchreiben(f);
+    // Notfall-Muster (UX-Audit C Nr. 5). Wortlaut der Kernsätze aus docs/entwuerfe/rechtsfragen-rot.md 2a/2b (Rechtsprüfung 21.11.2026):
+    //  Miete: § 22 Abs. 8 SGB II (Jobcenter, Fassung G v. 16.4.2026), § 36 Abs. 1 SGB XII (Sozialamt). Strom/Gas: § 41g Abs. 1 EnWG
+    //  (Abwendungsvereinbarung mit zinsfreien Raten nur in der Grundversorgung; sonst nur Bitte, kein Anspruch). Abruf 21.11.2026.
+    else if (art === 'miete') b = ['Aktenzeichen oder Nummer der Bedarfsgemeinschaft: ' + az, '', 'Antrag auf Übernahme meiner Mietschulden', '', 'Sehr geehrte Damen und Herren,', '',
+      'ich beantrage die Übernahme meiner Mietschulden, um die Wohnung zu sichern (Jobcenter: § 22 Abs. 8 SGB II · Sozialamt: § 36 SGB XII). Mir droht der Verlust der Wohnung.',
+      'Die Kündigung, die Aufstellung der Mietschulden und, falls vorhanden, die Räumungsklage lege ich bei. Bitte entscheiden Sie schnell.', '', 'Mit freundlichen Grüßen', '', '[Unterschrift]'];
+    else if (art === 'strom') b = ['Kundennummer: ' + az, '', 'Androhung einer Sperre: Bitte um Ratenzahlung', '', 'Sehr geehrte Damen und Herren,', '',
+      '[Zutreffendes stehen lassen, anderes löschen:]',
+      '- Grundversorgung: Ich habe Ihre Androhung vom [Datum] erhalten. Bitte schicken Sie mir ein Angebot für eine Abwendungsvereinbarung mit zinsfreien Raten (§ 41g EnWG).',
+      '- Anderer Tarif: Ich bitte um eine Ratenzahlung.', '', 'Mit freundlichen Grüßen', '', '[Unterschrift]'];
     else b = ['Kundennummer oder Aktenzeichen: ' + az, '', 'Antrag auf eine Bescheinigung für mein Pfändungsschutzkonto (§ 903 ZPO)', '', 'Sehr geehrte Damen und Herren,', '',
       'mein Konto ist ein Pfändungsschutzkonto (P-Konto). Damit meine Bank die höheren Freibeträge berücksichtigt, bitte ich Sie um eine Bescheinigung nach § 903 ZPO.',
       'Bitte bescheinigen Sie, soweit Ihnen bekannt: die Höhe und Art der Leistungen, die Sie auf mein Konto überweisen, und den Zeitraum sowie die Zahl der Personen, denen ich Unterhalt gewähre, mit dem Geburtsdatum minderjähriger Kinder.',
@@ -193,7 +206,7 @@ var Geld = (function () {
   // Krisen-Check. ziele(art) öffnet das Ziel einer Ergebniskarte.
   function krisenCheck(box, neu) {
     var a = st.kc.a;
-    frage(box, t('kc.h'));
+    if (ber() || st.kc.i < KC.length) frage(box, t('kc.h')); // Ergebnis (Laien): nur eine Überschrift „Das ist zuerst dran“ (UX-Audit C)
     if (ber()) { // Beratungsmodus: alle 7 Fragen auf einer Seite, Ergebnis darunter, als Gesprächsnotiz druckbar
       var fs = box.appendChild(el('fieldset', 'kc-alle ber-nur'));
       KC.forEach(function (k, i) {
@@ -222,19 +235,24 @@ var Geld = (function () {
   }
   var KC_KARTE = { mahn: ['gs.d.mahn', 'post'], geld: ['gs.d.geld', 'waage'], miete: ['gs.d.miete', 'haus'], strom: ['gs.d.strom', 'blitz'], konto: ['pf.konto', 'bank'],
     essen: ['kc.essen', 'geld'], inkasso: ['gs.inkasso', 'lupe'], liste: ['sl.h', 'liste'], finden: ['sb.finden', 'person'] };
+  // Je Ergebniskarte eine Zeile Frist oder Grund (UX-Audit C Nr. 7), nur vorhandene, geprüfte Kurztexte der Notfallseiten
+  var KC_GRUND = { mahn: 'gs.d.mahn.frist.kurz', geld: 'gs.d.geld.frist.kurz', miete: 'gs.d.miete.frist.kurz', strom: 'gs.d.strom.schritt.kurz', konto: 'gs.d.konto.frist.kurz',
+    inkasso: 'gs.inkasso.t', finden: 'sb.finden.t' };
   function ergebnisZeigen(box, a) {
     var e = krisenErgebnis(a), keinJa = e.zuerst[0] === 'liste';
-    var h = el('h3', 'kc-erg', t('kc.erg')); h.id = 'kc-erg'; h.tabIndex = -1; box.appendChild(h);
+    var h = el(ber() ? 'h3' : 'p', ber() ? 'kc-erg' : 'kc-erg pf-frage', t('kc.erg')); h.id = 'kc-erg'; h.tabIndex = -1; box.appendChild(h);
     if (keinJa) box.appendChild(el('p', '', t('kc.keins')));
     var ol = box.appendChild(el('ol', 'kc-liste'));
-    var karte = function (ziel, liste) { var li = el('li'); li.appendChild(ctx.kachel('kc-z-' + ziel, KC_KARTE[ziel][1], t(KC_KARTE[ziel][0]), ber() && KC_NORM[ziel] ? KC_NORM[ziel] : '', function () { ctx.ziel(ziel); })); liste.appendChild(li); };
+    var karte = function (ziel, liste) { var li = el('li'); li.appendChild(ctx.kachel('kc-z-' + ziel, KC_KARTE[ziel][1], t(KC_KARTE[ziel][0]), ber() && KC_NORM[ziel] ? KC_NORM[ziel] : KC_GRUND[ziel] ? t(KC_GRUND[ziel]) : '', function () { ctx.ziel(ziel); })); liste.appendChild(li); };
     e.zuerst.forEach(function (z) { karte(z, ol); });
+    var letzte = ol;
     if (e.danach.length) {
       box.appendChild(el('h3', 'kc-danach', t('kc.danach')));
-      var ul = box.appendChild(el('ul', 'kc-liste'));
-      e.danach.forEach(function (z) { karte(z, ul); });
+      // „Danach“ zählt weiter (4., 5. …); „Beratungsstelle finden“ ist immer der letzte nummerierte Schritt (UX-Audit C, 21.11.2026)
+      letzte = box.appendChild(el('ol', 'kc-liste kc-weiter')); letzte.start = e.zuerst.length + 1; letzte.style.counterReset = 'kc ' + e.zuerst.length;
+      e.danach.forEach(function (z) { karte(z, letzte); });
     }
-    var ue = box.appendChild(el('ul', 'kc-liste kc-ende')); karte(e.ende, ue);
+    karte(e.ende, letzte); letzte.lastChild.className = 'kc-ende';
     box.appendChild(el('p', 'small muted', t('kc.hinweis')));
   }
   function notiz(a) {
@@ -265,8 +283,10 @@ var Geld = (function () {
       out.textContent = '';
       var f = ipFehlend(st.ip);
       if (!f.length) { out.appendChild(el('p', 'ok', t('ip.erg.alle'))); return; }
-      out.appendChild(el('p', '', t('ip.erg.fehlt')));
-      var ul = out.appendChild(el('ul', 'sp-liste')); f.forEach(function (k) { ul.appendChild(el('li', '', t('ip.' + k))); });
+      // UX-Audit C (21.11.2026): ohne Haken keine zweite Liste derselben 6 Punkte; ab dem ersten Haken nur die Zahl der offenen Punkte
+      // (die offenen Punkte stehen ungehakt direkt darüber) und der Knopf zur Forderungsaufstellung
+      if (f.length === IP.length) return;
+      out.appendChild(el('p', 'ip-fehlt', t('ip.erg.n', { n: String(f.length), m: String(IP.length) })));
       btns(out).appendChild(knopf('btn', t('ms.aufst'), function () { ctx.schreibenOeffnen('aufst'); }, { id: 'ip-zum-schreiben' }));
     }
     erg();
@@ -289,11 +309,11 @@ var Geld = (function () {
       box.appendChild(el('p', 'small muted', t('ms.hinweis')));
       return;
     }
-    if (m.art === 'rate') box.appendChild(el('h3', 'ms-rate-h', t('ms.rate'))); else frage(box, t('ms.' + m.art));
+    if (m.art === 'rate') box.appendChild(el('h3', 'ms-rate-h', t('ms.rate'))); else if (m.art !== 'miete' && m.art !== 'strom') frage(box, t('ms.' + m.art)); // Notfall-Muster: Titel setzt die Notfallseite
     if (m.art === 'pkonto') box.appendChild(el('p', 'hint', t('ms.pkonto.lead')));
     if (m.art === 'wider') box.appendChild(el('p', 'warn', t('ms.wider.warn')));
     var liste = ctx.schulden ? ctx.schulden() : [];
-    if (liste.length && m.art !== 'pkonto') {
+    if (liste.length && m.art !== 'pkonto' && m.art !== 'miete') { // Antrag ans Amt: kein Gläubiger aus der Liste
       var f0 = box.appendChild(el('div', 'field')), l0 = el('label', '', t('ms.liste')); l0.htmlFor = 'ms-von'; f0.appendChild(l0);
       var s0 = el('select'); s0.id = 'ms-von'; var o0 = el('option', '', t('ms.liste.leer')); o0.value = ''; s0.appendChild(o0);
       liste.forEach(function (e) { var o = el('option', '', e.g); o.value = e.id; s0.appendChild(o); });
@@ -312,6 +332,7 @@ var Geld = (function () {
       i.addEventListener('input', function () { m[k] = i.value; text(); });
       f.appendChild(i); return i;
     };
+    if (ctx.absenderKasten) box.appendChild(ctx.absenderKasten(function () { text(); }, 'ms')); // gespeicherter Absender, hier änderbar (gilt für alle Briefe)
     feld('ms-g', 'g', t('ms.g'));
     feld('ms-adr', 'adr', t('ms.adr'), true);
     var ohneBox = box.appendChild(el('div', 'ms-ohne-box')); ohneBox.hidden = true; // erst beim Drucken/Teilen sichtbar (dann blendet text() den Hinweis aus, sobald die Anschrift da ist)
@@ -327,7 +348,8 @@ var Geld = (function () {
     box.appendChild(msg);
     box.appendChild(el('p', 'small ms-hinweis', t('ms.hinweis')));
     function text() {
-      ta.value = schreiben(m.art, { g: m.g, adr: m.adr, az: m.az, rate: m.rate, absender: ber() ? m.absender : '', datum: ctx.datumDe ? ctx.datumDe(new Date()) : '' });
+      var ab = ctx.absender ? ctx.absender() : { zeilen: [], ort: '' };
+      ta.value = schreiben(m.art, { g: m.g, adr: m.adr, az: m.az, rate: m.rate, absender: ber() ? m.absender : '', datum: ctx.datumDe ? ctx.datumDe(new Date()) : '', ich: ab.zeilen, ichOrt: ab.ort });
       ohne.textContent = zeilen(m.adr).length ? '' : t('ms.ohneAdr'); ohne.hidden = !ohne.textContent;
     }
     text();
@@ -349,8 +371,14 @@ var Geld = (function () {
       btns(wo).appendChild(knopf('btn ghost klein', t('hb.kachel'), function () { ctx.ziel('haushalt'); }, { id: 'ra-zum-plan' }));
     } else if (e.art === 'keine' || e.art === 'unpfaendbar') {
       // unpfaendbar: Nach der Pfändungstabelle (§ 850c ZPO) wäre vom Einkommen nichts pfändbar – kein Ratenvorschlag, sondern Beratung zuerst
+      // UX-Audit C (21.11.2026): Abraten vorne, Hauptknopf „Beratungsstelle finden“; Hinweis zur Anerkennung und Ratenformular erst nach
+      // bewusster Entscheidung (zugeklappt „Trotzdem ein Ratenschreiben machen“). Bleibt nach Eingaben offen (st.ms.trotz).
       wo.appendChild(el('p', 'warn ra-keine', t(e.art === 'keine' ? 'ra.keine' : 'ra.unpf'))).id = 'ra-keine';
-      btns(wo).appendChild(knopf('btn ghost', t('sb.h'), function () { ctx.ziel('hilfe'); }, { id: 'ra-zur-beratung' }));
+      btns(wo).appendChild(knopf('btn', t('sb.finden'), function () { ctx.ziel('finden'); }, { id: 'ra-zur-beratung' }));
+      var tr = box.appendChild(el('details', 'mehr ra-trotz')); tr.id = 'ra-trotz'; tr.open = !!m.trotz;
+      tr.appendChild(el('summary', '', t('ra.trotz')));
+      tr.addEventListener('toggle', function () { m.trotz = tr.open; });
+      box = tr;
     } else {
       var k = wo.appendChild(el('div', 'hb-karte ra-karte'));
       var erg = k.appendChild(el('p', 'hb-ergebnis', t('ra.empf', { b: eurCent(e.rate) }))); erg.id = 'ra-betrag';
@@ -396,6 +424,8 @@ var Geld = (function () {
 
   // Bis zum Termin: 6 Haken, je Zeile ein Sprung. Haken 4 (Liste) und 5 (Haushaltsplan) setzen sich von selbst.
   var W_ZIEL = { '1': 'geduld', '2': 'pkonto-rechner', '4': 'liste', '5': 'haushalt' };
+  // Knopftext = Ziel (UX-Audit C, WCAG 2.4.4/2.4.6) statt dreimal „Öffnen“
+  var W_KNOPF = { '1': 'ms.geduld', '2': 'sp.schulden.pf', '4': 'sl.h', '5': 'hb.kachel' };
   function wartezeit(box) {
     frage(box, t('sb.termin'));
     box.appendChild(el('p', 'hint', t('sb.w.lead')));
@@ -406,7 +436,7 @@ var Geld = (function () {
       c.checked = !!(haken.w[k] || auto[k]); if (auto[k]) c.disabled = true;
       c.addEventListener('change', function () { if (c.checked) haken.w[k] = true; else delete haken.w[k]; sichern(); });
       l.appendChild(c); l.appendChild(el('span', '', t('sb.w' + k))); li.appendChild(l);
-      if (W_ZIEL[k]) li.appendChild(knopf('btn ghost klein', t('sb.oeffnen'), function () { ctx.ziel(W_ZIEL[k]); }, { id: 'sb-w-' + k + '-los', 'aria-label': t('sb.oeffnen') + ': ' + t('sb.w' + k) }));
+      if (W_ZIEL[k]) li.appendChild(knopf('btn ghost klein', t(W_KNOPF[k]), function () { ctx.ziel(W_ZIEL[k]); }, { id: 'sb-w-' + k + '-los' }));
     });
     handzettelKnopf(box, 'sb-handzettel');
   }

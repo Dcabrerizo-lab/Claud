@@ -3,7 +3,8 @@
 const R = require('./rules-de.js');
 const KARTEN = require('./karten.js');
 require('./test-unterhalt-selbst.js'); // Musterfälle „Unterhalt für sich selbst“ (eigene Datei, läuft mit den Fall-Tests)
-const base = { adults: 1, kids: 0, young: 0, brutto: 0, brutto2: 0, netto: '', miete: 0, vermoegen: 0, bezug: {} };
+// ohneWege: Handrechnungen je Leistung (ohne die Lage der zwei Wege; die prüft test/test.js)
+const base = { ohneWege: true, adults: 1, kids: 0, young: 0, brutto: 0, brutto2: 0, netto: '', miete: 0, vermoegen: 0, bezug: {} };
 let n = 0, fails = 0;
 const ck = (name, c, x) => { n++; if (!c) { fails++; console.log('FAIL', name, x === undefined ? '' : x); } };
 const res = (o) => { const r = R.evaluate({ ...base, ...o }); const m = {}; r.results.forEach((x) => { m[x.id] = x; }); return { m, z: r.zusammen.map((a) => a[0]) }; };
@@ -270,6 +271,16 @@ ck('[wg-grundrente] Wohngeld: Grundrentenfreibetrag (§ 17a WoGG) wirkt', JSON.s
   ck('[wbs-stufen] Unter der Grundgrenze: niedrigste Stufe; Länder mit nur einer Grenze ohne Stufenliste; „eher nicht“ ohne Stufen',
     /stufeDu:WBS 140/.test(st(W('BE', 1000))) && st(W('HE', 1000)) === '' && st(W('BE', 9000)) === '' && W('BE', 9000).level === 'nein', [st(W('BE', 1000)), st(W('HE', 1000)), W('BE', 9000).level].join(' | '));
   ck('[wbs-stufen] Höchste Stufe jedes Landes = Faktor „hoch“ (Grenze für „eher nicht“)', Object.keys(R.RULES.wbsStufen).every((bl) => { const S = R.RULES.wbsStufen[bl], L = R.RULES.wbsLand[bl]; const f = S[S.length - 1][1]; return Math.abs((typeof f === 'number' ? f : f.ein / L.ein) - L.hoch) < 0.001 && S[0][1] === 1; })); }
+// WBS: Arbeitnehmer-Pauschbetrag 1.230 € je Person mit Lohn vor den 30 % (Art. 6 Abs. 1 und 3 BayWoFG, § 21 WoFG, § 9a EStG; Abgleich Runde 2, H2)
+{ const W = (o) => R.evaluate(Object.assign({ adults: 1, art1: 'lohn', miete: 600, heute: 2026.9 }, o)).results.find((x) => x.id === 'wbs');
+  const k = (r) => r.tx.map((t) => t[0] + (t[1] && t[1].name ? ':' + t[1].name : '')).join(' ');
+  ck('[wbs-werbung] Schleswig-Holstein, allein, 34.080 € Lohn: (34.080 − 1.230) × 0,7 = 22.995 € ≤ 23.000 € -> nach Abzügen 1. Förderweg (SH-WBS, Fußnote)',
+    /stufeVielleicht:1\. Förderweg/.test(k(W({ brutto: 2840, netto: 2000, bundesland: 'SH' }))), k(W({ brutto: 2840, netto: 2000, bundesland: 'SH' })));
+  ck('[wbs-werbung] Bayern, allein, 25.800 € Lohn: (25.800 − 1.230) × 0,7 = 17.199 € ≤ 17.500 € -> „möglich“ mit Grundgrenze (wbs.rand), selbstständig nicht',
+    k(W({ brutto: 2150, netto: 1500 })) === 'wbs.rand wbs.abzug' && k(W({ brutto: 2150, netto: 1500, art1: 'selbst' })) === 'wbs.gebiet wbs.abzug', k(W({ brutto: 2150, netto: 1500 })));
+  ck('[wbs-werbung] Bayern, allein, 41.400 € Lohn: (41.400 − 1.230) × 0,7 = 28.119 € ≤ 28.300 € -> nicht „eher nicht“; selbstständig 41.400 € und Lohn 42.600 € „eher nicht“',
+    W({ brutto: 3450, netto: 2300 }).level === 'vielleicht' && W({ brutto: 3450, netto: 2300, art1: 'selbst' }).level === 'nein' && W({ brutto: 3550, netto: 2300 }).level === 'nein');
+  ck('[wbs-werbung] „wahrscheinlich“ bleibt beim Brutto: 17.520 € Lohn allein in Bayern nur „möglich“', W({ brutto: 1460, netto: 1100 }).level === 'vielleicht'); }
 
 // Heizkosten (freiwillig): Wohngeld rechnet mit der Bruttokaltmiete = Warmmiete minus Heizkosten (ohne Angabe: Heizkostenkomponente)
 // 1 Person, Stufe III, 500 € warm, 1.200 € Lohn: mit 60 € Heizung Kaltmiete 440 € -> M = 440 + 110,40; Y = (1.200 - 102,50) x 0,7 -> 340 € (wie amtlicher Rechner)
@@ -282,39 +293,44 @@ ck('[wg-grundrente] Wohngeld: Grundrentenfreibetrag (§ 17a WoGG) wirkt', JSON.s
 // Erwartungen von Hand aus dem Gesetz (gesetze-im-internet.de/beeg/__2.html, __2c.html, abgerufen 21.11.2026), nicht aus rules.js. Der Schnellrechner
 // des Bundes zieht nur 83,33 € ab und zeigt mehr (400 / 621 / 681 / 921 €); SoLo rechnet nach dem Gesetz (Entscheidung David, 21.11.2026):
 //  500 €: 397,50 × 97,1 % = 385,97 -> 386 €; 900 €: 797,50 × 77,1 % = 614,87 -> 615 €; 1.100 €: 997,50 × 67,1 % = 669,32 -> 669 €;
-//  1.500 €: 1.397,50 × 65 % = 908,38 -> 908 €; 0 €: Mindestbetrag 300 €; 3.000 €: Höchstbetrag 1.800 €
+//  1.500 €: seit 21.11.2026 Elterngeld-Netto nach § 2f BEEG (Befund E2): Brutto 2.039 € (Steuerklasse I, kinderlos), echte Beiträge 21,75 % = 443,48 €,
+//  Pauschale 21 % = 428,19 € -> 1.515,29 €; 1.412,79 × 65 % = 918,31 -> 918 € (vorher mit dem Netto 908 €). 500 / 900 / 1.100 €: Brutto unter 2.000 €
+//  (Minijob/Übergangsbereich), Netto unverändert. 0 €: Mindestbetrag 300 €; 3.000 €: Höchstbetrag 1.800 €
 const egB = (vor) => T({ baby: 'bald', egVor: vor, miete: 500, gebJahr: 1995, heute: 2026.8 }, 'elterngeld', 'eg.ja');
-[[0, 300], [500, 386], [900, 615], [1100, 669], [1500, 908], [3000, 1800]].forEach(([vor, soll]) => {
+[[0, 300], [500, 386], [900, 615], [1100, 669], [1500, 918], [3000, 1800]].forEach(([vor, soll]) => {
   ck('[eg-satz] Elterngeld bei ' + vor + ' € netto vorher: ' + soll + ' €', egB(vor) && egB(vor).basis === E(soll) && [E(Math.floor(soll / 2)), E(Math.ceil(soll / 2))].includes(egB(vor).plus) && egB(vor).monate === 14, egB(vor));
 });
 // Mehrlinge und Teilzeit (§ 2 Abs. 3, § 2a Abs. 1 und 4, § 4a Abs. 2 BEEG, gesetze-im-internet.de, abgerufen 21.11.2026). Erwartungen von Hand bzw. mit
 // einem eigenen Python-Skript (Dezimalrechnung) aus dem Gesetzestext, nicht aus rules.js:
-//  Zwillinge 1.500 €: 1397,50 × 65 % = 908,38 + 300 = 1.208,38 € (Plus 604,19); Drillinge + 600 = 1.508,38 € (Plus 754,19); Drillinge 3.000 €: 1.800 + 600 = 2.400 € (Plus 1.200)
-//  Teilzeit 2.000/800: (1897,50 − 697,50) × 65 % = 780 €; Plus min(780, 1233,38 / 2 = 616,69) = 616,69 €
+//  Elterngeld-Netto nach § 2f BEEG (Befund E2, Werte siehe oben und test/referenz.js egNettoRef): 1.500 -> 1.515,29 €; 2.000 (kinderlos) -> 2.021,78 €;
+//  2.500 mit zwei Kindern (Steuerklasse II, Pflege 1,55 %) -> Brutto 3.579 €, Beiträge 748,01 €, Pauschale 751,59 € -> 2.496,42 €; Netto danach (800, 1.000) im
+//  Übergangsbereich unverändert.
+//  Zwillinge 1.500 €: 1412,79 × 65 % = 918,31 + 300 = 1.218,31 € (Plus 459,16 + 150 = 609,16); Drillinge + 600 = 1.518,31 € (Plus 759,16); Drillinge 3.000 €: 1.800 + 600 = 2.400 € (Plus 1.200)
+//  Teilzeit 2.000/800: (1919,28 − 697,50) × 65 % = 794,16 €; Plus min(794,16, 1247,53 / 2 = 623,77) = 623,77 €
 //  Teilzeit 1.200/500: q = 67 % (1097,50), (1097,50 − 397,50) × 67 % = 469 €; Plus min(469, 735,33 / 2 = 367,66) = 367,66 €
 //  Teilzeit 2.000/2.000 und 2.000/2.500: Unterschied 0 bzw. kein Unterschied -> Mindestbetrag 300 € (Plus 150 €, § 4a Abs. 2 Satz 3 Nr. 1)
 //  Deckel 2.770 €: vor 4.000 und 6.000, nach 1.000: (2770 − 897,50) × 65 % = 1.217,13 €; Plus min(1217,13, 1800 / 2) = 900 €; nach 2.900: 2.797,50 > 2.770 -> 300 €
-//  Teilzeit 2.500/1.000 + Geschwisterbonus + Zwillinge: (2397,50 − 897,50) × 65 % = 975 + 97,50 + 300 = 1.372,50 €;
-//   Plus: Kern min(975, 1558,38 / 2 = 779,19) = 779,19 + 77,92 + 150 = 1.007,11 €
+//  Teilzeit 2.500/1.000 + Geschwisterbonus + Zwillinge: (2393,92 − 897,50) × 65 % = 972,67 + 97,27 + 300 = 1.369,94 €;
+//   Plus: Kern min(972,67, 1556,05 / 2 = 778,02) = 778,02 + 77,80 + 150 = 1.005,83 €
 //  Teilzeit 1.100/700 + Bonus + Zwillinge: q = 67,1 % (997,50), (997,50 − 597,50) × 67,1 % = 268,40 -> 300 + 75 + 300 = 675 €; Plus: max(150, 268,40) = 268,40 + 37,50 + 150 = 455,90 €
 const egX = (o) => T(Object.assign({ baby: 'bald', miete: 500, gebJahr: 1995, heute: 2026.8 }, o), 'elterngeld', 'eg.ja');
 [
-  ['[eg-mehrlinge] Zwillinge, 1.500 € netto', { egVor: 1500, egKinder: '2' }, 1208.38, 604.19],
-  ['[eg-mehrlinge] Drillinge, 1.500 € netto', { egVor: 1500, egKinder: '3' }, 1508.38, 754.19],
+  ['[eg-mehrlinge] Zwillinge, 1.500 € netto', { egVor: 1500, egKinder: '2' }, 1218.31, 609.16],
+  ['[eg-mehrlinge] Drillinge, 1.500 € netto', { egVor: 1500, egKinder: '3' }, 1518.31, 759.16],
   ['[eg-mehrlinge] Zwillinge ohne Einkommen: 300 + 300', { egVor: 0, egKinder: '2' }, 600, 300],
   ['[eg-mehrlinge] Drillinge, 3.000 € netto: Höchstbetrag 1.800 + 600', { egVor: 3000, egKinder: '3' }, 2400, 1200],
-  ['[eg-teilzeit] Teilzeit 2.000 / 800', { egVor: 2000, egNach: 800 }, 780, 616.69],
+  ['[eg-teilzeit] Teilzeit 2.000 / 800', { egVor: 2000, egNach: 800 }, 794.16, 623.77],
   ['[eg-teilzeit] Teilzeit 1.200 / 500 (Satz 67 % nach dem Einkommen vorher)', { egVor: 1200, egNach: 500 }, 469, 367.66],
   ['[eg-teilzeit] Teilzeit: Netto nach = vor -> Mindestbetrag', { egVor: 2000, egNach: 2000 }, 300, 150],
   ['[eg-teilzeit] Teilzeit: Netto nach > vor -> Mindestbetrag', { egVor: 2000, egNach: 2500 }, 300, 150],
   ['[eg-teilzeit] Deckel 2.770 €: 4.000 / 1.000', { egVor: 4000, egNach: 1000 }, 1217.13, 900],
   ['[eg-teilzeit] Deckel 2.770 €: 6.000 / 1.000 gleich wie 4.000 / 1.000', { egVor: 6000, egNach: 1000 }, 1217.13, 900],
   ['[eg-teilzeit] Deckel 2.770 €: 4.000 / 2.900 -> Mindestbetrag', { egVor: 4000, egNach: 2900 }, 300, 150],
-  ['[eg-teilzeit] [eg-mehrlinge] Teilzeit + Geschwisterbonus + Zwillinge 2.500 / 1.000', { egVor: 2500, egNach: 1000, egKinder: '2', kids: 2, kidsU6: 2 }, 1372.5, 1007.11],
+  ['[eg-teilzeit] [eg-mehrlinge] Teilzeit + Geschwisterbonus + Zwillinge 2.500 / 1.000', { egVor: 2500, egNach: 1000, egKinder: '2', kids: 2, kidsU6: 2 }, 1369.94, 1005.83],
   ['[eg-teilzeit] [eg-mehrlinge] Teilzeit + Bonus + Zwillinge, Mindestbeträge 1.100 / 700', { egVor: 1100, egNach: 700, egKinder: '2', kids: 2, kidsU6: 2 }, 675, 455.9]
 ].forEach(([name, o, basis, plus]) => { const x = egX(o); ck(name + ': Basis ' + basis + ' €, ElterngeldPlus ' + plus + ' €', x && x.basis === E(basis) && x.plus === E(plus), x); });
 ck('[eg-teilzeit] Hinweise: Teilzeit eingerechnet bzw. Mindestbetrag, ElterngeldPlus-Obergrenze, ohne Netto danach Hinweis zum Eintragen',
-  K({ baby: 'da', egVor: 2000, egNach: 800, miete: 500 }, 'elterngeld').includes('eg.teilzeit') && T({ baby: 'da', egVor: 2000, egNach: 800, miete: 500 }, 'elterngeld', 'eg.teilzeitPlus').halb === E(616.69)
+  K({ baby: 'da', egVor: 2000, egNach: 800, miete: 500 }, 'elterngeld').includes('eg.teilzeit') && T({ baby: 'da', egVor: 2000, egNach: 800, miete: 500 }, 'elterngeld', 'eg.teilzeitPlus').halb === E(623.77)
   && K({ baby: 'da', egVor: 2000, egNach: 2500, miete: 500 }, 'elterngeld').includes('eg.teilzeitMin') && K({ baby: 'da', egVor: 2000, miete: 500 }, 'elterngeld').includes('eg.teilzeitOffen')
   && !K({ baby: 'da', egVor: 2000, miete: 500 }, 'elterngeld').includes('eg.teilzeit'));
 ck('[eg-mehrlinge] Hinweise Mehrlingszuschlag (auch ohne Betrag); Baby da: Zwillinge zählen nicht als Geschwister (§ 2a Abs. 1 Satz 2)',
@@ -429,7 +445,7 @@ const kizT = { adults: 2, kids: 2, art1: 'lohn', brutto: 3000, netto: 2300, miet
 const zahl = (x) => Number(String(x).replace(/\D/g, ''));
 ck('[kiz-mehr] Mehrbedarfe der Eltern (Schwangerschaft, Warmwasser) erhöhen den Kinderzuschlag', zahl(A({ ...kizT, schwanger: true }, 'kiz')) > zahl(A(kizT, 'kiz')) && zahl(A({ ...kizT, warmwasser: true }, 'kiz')) > zahl(A(kizT, 'kiz')));
 // Kindergeld, Bildung und Teilhabe, Unterhaltsvorschuss, BAföG
-ck('[kg-mehr] Kindergeld: Hinweis auf Arbeitslosigkeit bis 21, Freiwilligendienst, Übergangszeit, 20-Stunden-Grenze', K({ kids: 1 }, 'kindergeld').includes('kindergeld.mehr') && K({}, 'kindergeld').includes('kindergeld.mehr'));
+ck('[kg-mehr] Kindergeld: Hinweis auf arbeitsuchend gemeldete Kinder bis 21, Freiwilligendienst, Übergangszeit, 20-Stunden-Grenze', K({ kids: 1 }, 'kindergeld').includes('kindergeld.mehr') && K({}, 'kindergeld').includes('kindergeld.mehr'));
 ck('[kgbeh-25] Kindergeld für Kinder mit Behinderung: nur wenn die Behinderung vor 25 eingetreten ist', L({ bhPerson: 'erwNach25' }, 'kgBeh') === 'nein' && K({ bhPerson: 'erwNach25' }, 'kgBeh')[0] === 'kgBeh.nach25');
 ck('[but-bezug] Bildung und Teilhabe mit Wohngeld, Kinderzuschlag, Grundsicherung', ['wohngeld', 'kiz', 'grundsicherungsgeld', 'sozialamt'].every((b) => L({ kids: 1, bezug: { [b]: true } }, 'but') === 'ja'));
 ck('[but-inhalt] Schulbedarf 195 € und Teilhabe 15 €; Kinder unter 6 nur Teilhabe', T({ kids: 1, bezug: { wohngeld: true } }, 'but', 'but.inhalt').schul === E(195) && T({ kids: 1, bezug: { wohngeld: true } }, 'but', 'but.inhalt').teil === E(15) && !!T({ kids: 1, kidsU6: 1, bezug: { wohngeld: true } }, 'but', 'but.inhaltKlein'));
@@ -466,6 +482,21 @@ ck('[uvg-kindeink] Kinder unter 14 (Schulpflicht): Minijob zählt nicht; Kind 14
   L(uv({ kindEink: 300 }), 'uvg') === 'ja' && !K(uv({ kindEink: 300 }), 'uvg').includes('uvg.kindEink') && L(uv({ kids14: 1, kinder12: true, kindEink: 300 }), 'uvg') === 'vielleicht' && K(uv({ kids14: 1, kinder12: true, kindEink: 300 }), 'uvg').includes('uvg.kindEink'));
 ck('[uvg-kindeink] Mehrere Kinder: Einkommen eines älteren Kindes mindert nur dessen Betrag (Hinweis, Einstufung bleibt)', L(uv({ kids: 2, kids14: 1, kinder12: true, kindEink: 800 }), 'uvg') === 'ja' && K(uv({ kids: 2, kids14: 1, kinder12: true, kindEink: 800 }), 'uvg').includes('uvg.kindEink'));
 ck('[uvg-kindeink] Azubi-Einkommen mindert den geschätzten Unterhaltsvorschuss (Einkommen der Kinder für andere Leistungen)', R.derive(uvAzubi(600)).uvgEst === 394 - (600 - 102.5 - 100) / 2 && R.derive(uvAzubi(2000)).uvgEst === 0);
+// Kind von 12 oder 13 (Haken „ab 12“, kein Kind von 14 bis 17): dritte Altersstufe 394 € statt 299 € (§ 2 Abs. 1 UVG, § 1612a Abs. 1 Satz 3 Nr. 3 BGB;
+// Abgleich Runde 2, H1, UVG-RL 2.3: Kinder 13 und 8); ohne 600 € eigenes Einkommen nichts für dieses Kind (§ 1 Abs. 1a UVG)
+{ const est = (o) => R.derive(uv(o)).uvgEst;
+  ck('[uvg-zwoelf] Geschätzter Unterhaltsvorschuss: ein Kind 6-13 mit Haken ab 12 = 394 €; zwei Kinder 6-13 mit Haken = 299 + 394 €; mit Kind 14-17 bleibt das jüngere bei 299 €; unter 600 € brutto ohne das ältere Kind',
+    est({ kinder12: true, brutto: 1500, netto: 1200 }) === 394 && est({ kids: 2, kinder12: true, brutto: 1500, netto: 1200 }) === 299 + 394 && est({ kids: 2, kids14: 1, kinder12: true, brutto: 1500, netto: 1200 }) === 299 + 394
+    && est({ kids: 2, kidsU6: 1, kinder12: true, brutto: 1500, netto: 1200 }) === 227 + 394 && est({ kids: 2, kinder12: true, brutto: 400, netto: 380 }) === 299 && est({ kids: 2, brutto: 1500, netto: 1200 }) === 2 * 299,
+    [est({ kinder12: true, brutto: 1500, netto: 1200 }), est({ kids: 2, kinder12: true, brutto: 1500, netto: 1200 }), est({ kids: 2, kinder12: true, brutto: 400, netto: 380 })].join(' ')); }
+// Texte nach Prüfung Richtigkeit 21.11.2026 (Nr. 12, 15, 16): § 6b Abs. 2a BKGG, § 7c Abs. 1 SGB XI, RBeitrStV (gesetze-bayern.de)
+{ const fs = require('fs'), pth = require('path'), LANG = pth.join(__dirname, '..', 'src', 'lang');
+  const de = JSON.parse(fs.readFileSync(pth.join(LANG, 'de.json'), 'utf8'));
+  ck('[but-verjaehrung] Verjährung nur mit Wohngeld oder Kinderzuschlag, zwölf Monate, ohne „etwa“', /Wohngeld oder Kinderzuschlag/.test(de['s.but.tip']) && /zwölf Monate/.test(de['s.but.tip']) && !/etwa/.test(de['s.but.tip']), de['s.but.tip']);
+  ck('[pu-stuetzpunkt] Pflegestützpunkt nur „wo es ihn gibt“', /wo es ihn gibt/.test(de['pu.tipp.beratung']), de['pu.tipp.beratung']);
+  const alle = [];
+  (function lauf(d) { fs.readdirSync(d, { withFileTypes: true }).forEach((e) => { const f = pth.join(d, e.name); if (e.isDirectory()) lauf(f); else if (/\.json$/.test(e.name) && /RBStV/.test(fs.readFileSync(f, 'utf8'))) alle.push(pth.relative(LANG, f)); }); })(LANG);
+  ck('[rf-abk] Rundfunkbeitragsstaatsvertrag überall als RBeitrStV (auch Rechtsgrundlage der Karte)', alle.length === 0 && /RBeitrStV/.test(R.RECHT.rundfunk), alle.join(', ')); }
 ck('[uvg-rueckwirkung] Hinweis: rückwirkend höchstens ein Monat (§ 4 UVG), nur bei möglichem Anspruch', K(uv({}), 'uvg').includes('uvg.frist') && K(uv({ unterhalt: 100 }), 'uvg').includes('uvg.frist') && !K(uv({ unterhalt: 400 }), 'uvg').includes('uvg.frist'));
 ck('[uvg-mitwirkung] Hinweis: Angaben zum anderen Elternteil und Mitwirkung bei der Vaterschaft (§ 1 Abs. 3 UVG)', K(uv({}), 'uvg').includes('uvg.mitwirken'));
 ck('[uvg-aufenthalt] Asylverfahren oder Duldung: nur möglich mit Hinweis (deutsches Kind, eigener Titel des Kindes oder Beschäftigungsduldung, § 1 Abs. 2a UVG); geschätzter Betrag bleibt; ohne EU-Pass Hinweis auf Aufenthaltstitel, EU-Bürger ohne',
@@ -544,7 +575,7 @@ ck('[rf-bezug] Rundfunkbeitrag: Befreiung bei Grundsicherungsgeld', L({ bezug: {
 ck('[rf-asyl] Rundfunkbeitrag: Befreiung bei Asylbewerberleistungen möglich', K({ aufenthalt: 'asyl' }, 'rundfunk')[0] === 'rundfunk.asyl' && L({ aufenthalt: 'asyl' }, 'rundfunk') === 'vielleicht');
 ck('[rf-mehr] Rundfunkbeitrag: Hinweis auf weitere Befreiungen immer dabei', K({}, 'rundfunk').includes('rundfunk.mehr') && K({ bezug: { grundsicherungsgeld: true } }, 'rundfunk').includes('rundfunk.mehr'));
 ck('[rf-rf] Merkzeichen RF: Ermäßigung möglich', K({ mz: { RF: true }, gdb: '80', bhPerson: 'erwNach25', brutto: 3000, netto: 2200, art1: 'lohn', miete: 500 }, 'rundfunk')[0] === 'rundfunk.rf');
-// § 4 Abs. 1 RBStV: Befreiung auch bei Blindenhilfe, Hilfe zur Pflege und BAföG (nicht bei den Eltern)
+// § 4 Abs. 1 RBeitrStV: Befreiung auch bei Blindenhilfe, Hilfe zur Pflege und BAföG (nicht bei den Eltern)
 ck('[rf-weitere] Blindenhilfe möglich (Grundsicherung nicht): Rundfunkbefreiung möglich', K({ bhPerson: 'erwNach25', blind: 'blind', alter: true, art1: 'rente', brutto: 1500, netto: 1400, miete: 400 }, 'rundfunk')[0] === 'rundfunk.weitere');
 ck('[rf-weitere] BAföG in eigener Wohnung: Rundfunkbefreiung möglich', K({ ausbildung: 'ich', gebJahr: 2004, art1: 'lohn', brutto: 300, netto: 300, miete: 400 }, 'rundfunk')[0] === 'rundfunk.weitere');
 ck('[rf-weitere] BAföG bei den Eltern: keine Befreiung', L({ ausbildung: 'ich', gebJahr: 2004, art1: 'lohn', brutto: 300, netto: 300, miete: 0, wohnform: 'eltern' }, 'rundfunk') === 'nein');
@@ -569,9 +600,9 @@ Object.keys(WBSL).forEach((bl) => {
   ck('[wbs-land-grenze] ' + bl + ': genau an der Grenze wahrscheinlich, 12 € im Jahr darüber nur möglich', j(g1) === 'ja' && j(g1 + 12) === 'vielleicht', j(g1) + ' ' + j(g1 + 12));
 });
 ck('[wbs-land-grenze] Schleswig-Holstein Alleinerziehende mit 1 Kind 32.800 € (Tabelle Dynamisierungserlass 2025)', T({ kids: 1, art1: 'lohn', brutto: 1, netto: 1, bundesland: 'SH' }, 'wbs', 'wbs.landGrenze').grenze === E(32800));
-ck('[wbs-land-grenze] Kein falsches „nein“: Schwerbehinderung und gezahlter Unterhalt werden vor dem „nein“ abgezogen (NRW, 4.200 € brutto)',
-  L({ art1: 'lohn', brutto: 4200, netto: 2700, bundesland: 'NW' }, 'wbs') === 'nein' && L({ art1: 'lohn', brutto: 4200, netto: 2700, bundesland: 'NW', gdb: '100', bhPerson: 'ich' }, 'wbs') === 'vielleicht' &&
-  L({ art1: 'lohn', brutto: 4200, netto: 2700, bundesland: 'NW', uzBetrag: 400, uzAn: 'k1', uzTitel: true }, 'wbs') === 'vielleicht');
+ck('[wbs-land-grenze] Kein falsches „nein“: Schwerbehinderung und gezahlter Unterhalt werden vor dem „nein“ abgezogen (NRW, 4.350 € brutto; vor den 30 % auch der Arbeitnehmer-Pauschbetrag)',
+  L({ art1: 'lohn', brutto: 4350, netto: 2700, bundesland: 'NW' }, 'wbs') === 'nein' && L({ art1: 'lohn', brutto: 4350, netto: 2700, bundesland: 'NW', gdb: '100', bhPerson: 'ich' }, 'wbs') === 'vielleicht' &&
+  L({ art1: 'lohn', brutto: 4350, netto: 2700, bundesland: 'NW', uzBetrag: 400, uzAn: 'k1', uzTitel: true }, 'wbs') === 'vielleicht');
 ck('[wbs-land-grenze] Kein falsches „nein“ knapp über der Landesgrenze (NRW, 3.950 € brutto: 5 % Reserve)', L({ art1: 'lohn', brutto: 3950, netto: 2600, bundesland: 'NW' }, 'wbs') === 'vielleicht');
 
 // Elterngeld
@@ -646,9 +677,10 @@ const zKg = { kids: 1, art1: 'lohn', brutto: 2500, netto: 1800, miete: 700, miet
 ck('[zuk-einkommen] Krankgeschrieben (Lohnfortzahlung): Krankengeld 1.360 € ersetzt den Lohn, Grundsicherungsgeld danach wahrscheinlich -> „möglich“, Kinderzuschlag höher',
   L({ ...zKg, arbeitSit: '' }, 'ggeld') !== 'ja' && L(zKg, 'ggeld') === 'vielleicht' && ZR(zKg, 'ggeld').tx.some((t) => t[0] === 'zuk.kg' && t[1].a === E(1360)) && K(zKg, 'ggeld').includes('zuk.ohneLohn') && (K(zKg, 'kiz').includes('zuk.betragEins') || K(zKg, 'kiz').includes('zuk.betragSpanne')));
 const zEg = { art1: 'lohn', brutto: 2350, netto: 1600, miete: 650, mietstufe: 3, vermoegen: 1000, baby: 'bald', egVor: 1600 };
-// Elterngeld: 1.600 € Netto - 102,50 € (§ 2c Abs. 1 BEEG: 1.230 € / 12) = 1.497,50 € -> Untergrenze 65 %: 973,38 €, auf 10 € gerundet 970 €
-ck('[zuk-einkommen] Baby kommt bald (alleinstehend): Elterngeld rund 970 € statt Lohn, Wohngeld danach wahrscheinlich',
-  ZR(zEg, 'wohngeld').tx.some((t) => t[0] === 'zuk.eg' && t[1].a === E(970)) && L({ ...zEg, baby: '' }, 'wohngeld') === 'nein' && L(zEg, 'wohngeld') === 'vielleicht' && K(zEg, 'wohngeld').includes('zuk.ja'));
+// Elterngeld: 1.600 € Netto -> Elterngeld-Netto 1.616,57 € (§ 2f BEEG: Brutto 2.210 €, Beiträge 480,67 €, Pauschale 464,10 €; Befund E2) - 102,50 €
+// (§ 2c Abs. 1 BEEG: 1.230 € / 12) = 1.514,07 € -> Untergrenze 65 %: 984,15 €, auf 10 € gerundet 980 €
+ck('[zuk-einkommen] Baby kommt bald (alleinstehend): Elterngeld rund 980 € statt Lohn, Wohngeld danach wahrscheinlich',
+  ZR(zEg, 'wohngeld').tx.some((t) => t[0] === 'zuk.eg' && t[1].a === E(980)) && L({ ...zEg, baby: '' }, 'wohngeld') === 'nein' && L(zEg, 'wohngeld') === 'vielleicht' && K(zEg, 'wohngeld').includes('zuk.ja'));
 ck('[zuk-einkommen] Elterngeld bei Paaren: offen, wer es bekommt -> keine zweite Rechnung', !Z({ ...zEg, adults: 2, art2: 'lohn', brutto: 4000, brutto2: 1800, netto: 2900 }).zusammen.some((a) => a[0] === 'z.zuk.eg'));
 ck('[zuk-einkommen] Bekommt die Leistung schon (Einkommensart Arbeitslosengeld): keine zweite Rechnung', !Z({ ...zAlg, art1: 'alg', brutto: 1200, netto: 1200 }).zusammen.some((a) => /^z\.zuk/.test(a[0])));
 ck('[zuk-einkommen] Grundsicherungsgeld fällt danach weg: Hinweis aufs Überbrücken bis zur ersten Zahlung',
@@ -856,6 +888,63 @@ ck('[eu] EU-Bürger: Grundsicherung im Alter ausgeschlossen (§ 23 SGB XII) unte
   const ae16H = { adults: 1, kids: 2, kidsU6: 0, kids14: 2, art1: 'lohn', brutto: 4500, netto: 2998, miete: 900, mietstufe: 3, vermoegen: 0, bezug: { kindergeld: true }, heute: 2026.9 };
   ck('[kiz-ae16] Kinder 14 und 15: Bescheid-Rechnung mit 36 % 14,71 € (594 - 45 % von 2.620 - 1.332,68), Hauptrechner „möglich“ statt „eher nicht“', ae16.mehrAE === 202.68 && ae16.kiz === 14.71 && L(ae16H, 'kiz') === 'vielleicht' && K(ae16H, 'kiz').includes('kiz.ae7'), [ae16.kiz, L(ae16H, 'kiz')]);
 }
+
+// [rechenbefunde] Befunde aus docs/rechenplan (21.11.2026). Erwartungen von Hand aus den Gesetzen (Abruf 21.11.2026):
+// G2/K1/U1 – Unterhaltsvorschuss ist Einkommen des Kindes (§ 11 Abs. 1 Satz 1, § 9 Abs. 2 SGB II; § 6a Abs. 3 Satz 1 und 3 BKGG: 45 %;
+// § 14 Abs. 2 Nr. 21 WoGG). Sicher erwarteter UVG zählte schon vorher; neu: möglicher, nicht sicherer UVG verhindert „wahrscheinlich“.
+{ const al = { kids: 1, kidsU6: 1, art1: 'lohn', brutto: 1800, netto: 1350, miete: 750, mietstufe: 3, bundesland: 'BY', gebJahr: 1990, heute: 2026.9 };
+  const z = (o) => { const t = res(o).m.kiz.tx.find((x) => /^schaetz\./.test(x[0])); return t ? parseInt(t[1].a.replace(/\D/g, ''), 10) : null; };
+  // 45 % von 227 € = 102,15 € weniger Kinderzuschlag (Schätzung auf 10 € gerundet: 300 -> 190 €)
+  ck('[rechenbefunde-k1] Allein, Kind unter 6, UVG erwartet: Kinderzuschlag um 45 % von 227 € kleiner (300 -> 190 €)', z(al) === 300 && z({ ...al, unterhaltFehlt: true }) === 190, [z(al), z({ ...al, unterhaltFehlt: true })]);
+  const g = (o) => { const t = res(o).m.ggeld.tx.find((x) => x[0] === 'schaetz.eins'); return t ? parseInt(t[1].a.replace(/\D/g, ''), 10) : null; };
+  ck('[rechenbefunde-g2] Allein, Kind unter 6, UVG erwartet: Grundsicherungsgeld-Lücke um 227 € kleiner (640 -> 410 €)', g(al) === 640 && g({ ...al, unterhaltFehlt: true }) === 410, [g(al), g({ ...al, unterhaltFehlt: true })]);
+  const pa = { adults: 2, kids: 1, kidsU6: 1, art1: 'lohn', art2: 'ohne', brutto2: 0, miete: 900, mietstufe: 3, bundesland: 'BY', gebJahr: 1990, bezug: { kindergeld: true }, heute: 2026.9, unterhaltFehlt: true };
+  // Zweite Person ohne Angabe: mit Trauschein kein UVG (§ 1 Abs. 1 Nr. 2 UVG), ohne Trauschein 227 €. Vorsichtig: „möglich“ statt „wahrscheinlich“.
+  ck('[rechenbefunde-k1] Paar, zweite Person unbekannt, 3.400 €: Kinderzuschlag „möglich“ (mit UVG unter 60 €), mit Trauschein „wahrscheinlich“',
+    L({ ...pa, brutto: 3400, netto: 2550 }, 'kiz') === 'vielleicht' && K({ ...pa, brutto: 3400, netto: 2550 }, 'kiz').includes('kiz.rand') && L({ ...pa, brutto: 3400, netto: 2550, uvgPartner: 'ehe' }, 'kiz') === 'ja');
+  ck('[rechenbefunde-g2] Paar, zweite Person unbekannt, 3.000 €: Grundsicherungsgeld „möglich“, mit Trauschein „wahrscheinlich“',
+    L({ ...pa, brutto: 3000, netto: 2250 }, 'ggeld') === 'vielleicht' && L({ ...pa, brutto: 3000, netto: 2250, uvgPartner: 'ehe' }, 'ggeld') === 'ja');
+  ck('[rechenbefunde-u1] Paar, zweite Person unbekannt, 2.800 €: Wohngeld „möglich“, mit Trauschein „wahrscheinlich“',
+    L({ ...pa, brutto: 2800, netto: 2100 }, 'wohngeld') === 'vielleicht' && L({ ...pa, brutto: 2800, netto: 2100, uvgPartner: 'ehe' }, 'wohngeld') === 'ja'); }
+// WBS2/WBS4 – Bayern: Art. 4 Abs. 1 Satz 1 BayWoBindG mit Art. 5 Abs. 2 Nr. 1 und Abs. 3 BayWoFG (gesetze-bayern.de, Abruf 21.11.2026)
+{ const W = (o) => res({ adults: 1, art1: 'lohn', miete: 600, bundesland: 'BY', heute: 2026.9, ...o }).m.wbs.level;
+  // 3.500 € x 12 = 42.000 €; (42.000 - 1.230) x 0,7 = 28.539 € > 28.300 € -> „eher nicht“; mit 200 € Unterhalt (Titel) 28.539 - 2.400 = 26.139 € -> „möglich“
+  ck('[rechenbefunde-wbs2] Bayern, 42.000 € Lohn: ohne Unterhalt „eher nicht“, mit 200 € tituliertem Unterhalt „möglich“', W({ brutto: 3500, netto: 2400 }) === 'nein' && W({ brutto: 3500, netto: 2400, uzBetrag: 200, uzTitel: true, uzAn: 'k1' }) === 'vielleicht');
+  // 4.000 € x 12 = 48.000 €; (48.000 - 1.230) x 0,7 = 32.739 €; Unterhalt 700 € an ein Kind ohne Titel: höchstens 4.000 € -> 28.739 € > 28.300 € „eher nicht“;
+  // mit Titel 8.400 € -> 24.339 € „möglich“ (Art. 5 Abs. 3 Satz 2 BayWoFG)
+  ck('[rechenbefunde-wbs2] Bayern, 48.000 € Lohn, 700 € Unterhalt an ein Kind: ohne Titel höchstens 4.000 € („eher nicht“), mit Titel ganz („möglich“)',
+    W({ brutto: 4000, netto: 2700, uzBetrag: 700, uzAn: 'k1' }) === 'nein' && W({ brutto: 4000, netto: 2700, uzBetrag: 700, uzAn: 'k1', uzTitel: true }) === 'vielleicht');
+  // GdB 50 ohne Pflegegrad: 4.000 € (28.539 - 4.000 = 24.539 €) -> „möglich“ (vorher nach § 24 WoFG ohne Pflegegrad 0 €)
+  // Prüfung 21.11.2026: „3 oder mehr Kinder“ und „frühere Partner und Kinder“ nennen die Zahl der Kinder nicht -> kein Deckel (Art. 5 Abs. 3
+  // Satz 2 BayWoFG gilt je Person); früherer Partner allein: 6.000 € (32.739 − 6.000 = 26.739 € „möglich“; 53.000 € Lohn: 30.239 € „eher nicht“)
+  ck('[rechenbefunde-wbs2] Bayern, 48.000 € Lohn, 1.500 € Unterhalt ohne Titel an 3 oder mehr Kinder bzw. Partner und Kinder: „möglich“ (Zahl der Kinder unbekannt)',
+    W({ brutto: 4000, netto: 2700, uzBetrag: 1500, uzAn: 'k3' }) === 'vielleicht' && W({ brutto: 4000, netto: 2700, uzBetrag: 1500, uzAn: 'exk' }) === 'vielleicht');
+  ck('[rechenbefunde-wbs2] Bayern, 700 € Unterhalt ohne Titel an früheren Partner: höchstens 6.000 € (48.000 € „möglich“, 53.000 € „eher nicht“)',
+    W({ brutto: 4000, netto: 2700, uzBetrag: 700, uzAn: 'ex' }) === 'vielleicht' && W({ brutto: 4417, netto: 2900, uzBetrag: 700, uzAn: 'ex' }) === 'nein');
+  ck('[rechenbefunde-wbs4] Bayern, 42.000 € Lohn, GdB 50 ohne Pflegegrad: Freibetrag 4.000 € -> „möglich“', W({ brutto: 3500, netto: 2400, gdb: '50' }) === 'vielleicht'); }
+
+// B1 – BAföG-Einstufung mit dem Einkommen nach § 21 BAföG (gesetze-im-internet.de/baf_g/__21.html, Abruf 21.11.2026) statt Netto.
+// Paar, ein Kind in Ausbildung, Freibetrag 2.540 € (§ 25 Abs. 1 Nr. 1). Beiträge von Hand: KV 7,3 + 1,45, PV 1,8, RV 9,3, AV 1,3 = 21,15 %.
+{ const B = (b, nt) => res({ adults: 2, kids: 1, art1: 'lohn', art2: 'ohne', brutto: b, brutto2: 0, netto: nt, ausbildung: 'kind', miete: 700, heute: 2026.9 }).m.bafoeg.level;
+  // Prüfung 21.11.2026: Als Steuer zählt für „wahrscheinlich“ höchstens die Lohnsteuer laut Steuerbescheid (verheiratete Eltern: Splitting,
+  // Steuerklasse III; § 21 Abs. 1 Satz 3 Nr. 3, § 25 Abs. 1 Nr. 1 BAföG). 3.400 € brutto, 2.583 € netto (Steuerklasse III): Beiträge 21,15 % =
+  // 719,10 €, Steuer 97,90 €, Lohnsteuer III 97,83 €; (3.400 − 102,50) × (1 − 0,223) − 97,83 = 2.464,33 € ≤ 2.540 € -> „wahrscheinlich“
+  // (mit dem Netto 2.583 € „möglich“).
+  ck('[rechenbefunde-b1] BAföG Kind: 3.400 € brutto / 2.583 € netto (Steuerklasse III) -> Einkommen § 21 2.464,33 € ≤ 2.540 € „wahrscheinlich“', B(3400, 2583) === 'ja', B(3400, 2583));
+  // 3.800 € brutto, 2.650 € netto (Steuerklasse IV oder I): Brutto − Netto − Beiträge = 346,30 € wäre als Steuer zu hoch (Splitting: 168,83 €);
+  // (3.800 − 102,50) × (1 − 0,223) − 168,83 = 2.704,13 € > 2.540 € -> „möglich“, nicht „wahrscheinlich“
+  ck('[rechenbefunde-b1] BAföG Kind: 3.800 € brutto / 2.650 € netto -> Steuer höchstens nach Splitting, 2.704,13 € > 2.540 € „möglich“', B(3800, 2650) === 'vielleicht', B(3800, 2650));
+  // 7.000 € brutto, 4.800 € netto: Beiträge 742,00 + 613,22 = 1.355,22 €; Steuer 844,78 €; 6.897,50 − 1.433,33 (Höchstbetrag) − 844,78 = 4.619,39 €;
+  // (4.619,39 − 2.540) × 50 % = 1.039,70 € ≤ 1.078,50 € -> „möglich“ (mit Netto 4.800 €: 1.130 € -> „eher nicht“)
+  ck('[rechenbefunde-b1] BAföG Kind: 7.000 € brutto / 4.800 € netto -> Anrechnung 1.039,70 € unter dem höchsten Bedarf „möglich“', B(7000, 4800) === 'vielleicht', B(7000, 4800)); }
+
+// E2 – Elterngeld-Netto mit den Pauschalen nach § 2f BEEG (9 + 10 + 2 % = 21 %, gesetze-im-internet.de/beeg/__2f.html, Abruf 21.11.2026).
+// Allein, erstes Kind, 2.000 € netto, Steuerklasse I, kinderlos: Brutto 2.904 €, echte Beiträge 21,75 % = 631,62 €, Pauschale 609,84 €
+// -> Elterngeld-Netto 2.021,78 €; minus 102,50 € (§ 2c) = 1.919,28 €; 65 % = 1.247,53 € -> 1.248 € (mit dem Netto: 1.233 €).
+// 1.200 € netto liegt im Übergangsbereich (Brutto unter 2.000 €): unverändert (1.097,50 € × 67 % = 735 €).
+{ const EG = (v) => res({ adults: 1, baby: 'bald', egVor: v, heute: 2026.9 }).m.elterngeld.tx[0][1].basis;
+  ck('[rechenbefunde-e2] Elterngeld 2.000 € netto (kinderlos, Steuerklasse I): Elterngeld-Netto 2.021,78 € -> 1.248 €', EG(2000) === '1.248 €', EG(2000));
+  ck('[rechenbefunde-e2] Elterngeld 1.200 € netto (Übergangsbereich): unverändert 735 €', EG(1200) === '735 €', EG(1200)); }
 
 console.log(fails ? '\n' + fails + ' von ' + n + ' FEHLGESCHLAGEN' : '\nFall-Tests bestanden: ' + n + ' Prüfungen');
 process.exit(fails ? 1 : 0);

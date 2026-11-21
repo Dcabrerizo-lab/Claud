@@ -70,7 +70,7 @@ const PflegeFragen = (function () {
     '4.10': ['Kann die Person allein zur Toilette gehen und sich danach sauber machen?', 'Zählt: hingehen, hinsetzen, Kleidung richten, abwischen, spülen. Auch Toilettenstuhl, Urinflasche oder Steckbecken. Diese Frage zählt doppelt.'],
     '4.11': ['Kann die Person allein Einlagen wechseln oder Katheter oder Urostoma versorgen?', 'Wird nur gefragt, wenn die Person überwiegend oder ganz inkontinent ist oder einen Katheter oder ein Urostoma hat.'],
     '4.12': ['Kann die Person bei Stuhlinkontinenz allein sauber machen oder ein Stoma versorgen?', 'Wird nur gefragt, wenn die Person überwiegend oder ganz stuhlinkontinent ist oder ein künstlicher Darmausgang besteht.'],
-    '4.13': ['Wie wird die Person ernährt?', 'Nur wichtig, wenn eine Sonde oder Infusion nötig ist. „Teilweise“ gibt mehr Punkte als „vollständig“, weil dann zusätzlich beim normalen Essen geholfen wird.'],
+    '4.13': ['Wie wird die Person ernährt?', 'Nur wichtig, wenn eine Sonde oder Infusion nötig ist. „Sonde zusätzlich zum Essen“ gibt mehr Punkte als „fast nur über Sonde“, weil dann zusätzlich beim normalen Essen geholfen wird.'],
 
     '6.1': ['Kann die Person ihren Tag selbst einteilen und mit Änderungen zurechtkommen?', 'Zum Beispiel wissen, wann sie aufsteht, isst und schlafen geht, und mit einem verschobenen Termin klarkommen.'],
     '6.2': ['Kann die Person allein zur Ruhe kommen und schlafen?', 'Zählt: ins Bett gehen, einschlafen, durchschlafen. Muss jemand nachts helfen, beruhigen oder umlagern, ist das Hilfe.'],
@@ -145,10 +145,15 @@ const PflegeFragen = (function () {
   try { EINFACH = typeof PFLEGE_EINFACH !== 'undefined' ? PFLEGE_EINFACH : typeof require === 'function' ? require('../src/lang/einfach/pflege/pflege.json') : null; } catch (e) { EINFACH = null; }
   let einfach = false;
   function setEinfach(an) { einfach = !!an && !!EINFACH; }
+  // Andere App-Sprache: Übersetzungen aus src/lang/pflege/<Sprache>.json (Schlüssel „pfl.“ + Pfad mit Punkten, z. B. „pfl.text.1.1.0“).
+  // sprache(schluessel) liefert den Text oder nichts; fehlt er, bleibt der deutsche Standardtext. Werte, Stufen und Punkte ändern sich nie.
+  let sprache = null;
+  function setSprache(fn) { sprache = typeof fn === 'function' ? fn : null; }
+  function schluessel(pfad) { return 'pfl.' + pfad.join('.'); }
   function istEinfach() { return einfach; }
   // Text an Pfad (z. B. ['text', '1.1', 0]) in Einfacher Sprache, sonst der Standardtext
   function ein(pfad, std) {
-    if (!einfach) return std;
+    if (!einfach) { const s = sprache ? sprache(schluessel(pfad)) : null; return typeof s === 'string' && s.trim() ? s : std; }
     let v = EINFACH;
     for (const k of pfad) v = v == null ? null : v[k];
     return typeof v === 'string' && v !== '=' && v.trim() ? v : std;
@@ -182,10 +187,12 @@ const PflegeFragen = (function () {
   // „Wie oft …?“-Frage zu einem angekreuzten Punkt
   function m5Oft(id) {
     if (id === '5.12') return ein(['m5Oft', '5.12'], 'Wie oft ist die aufwendige Behandlung zu Hause nötig?');
+    const uebersetzt = !einfach && sprache ? sprache(schluessel(['m5Oft', id])) : null; // Übersetzung: eigene „Wie oft …?“-Frage je Punkt
+    if (typeof uebersetzt === 'string' && uebersetzt.trim()) return uebersetzt;
     return frage(id).replace(/^Muss jemand /, 'Wie oft muss jemand ');
   }
 
   return { GRUNDSATZ, KIND, VORFRAGE, TEXT, M5, M5_KURZ, M5_HINWEIS, M5_TIPP, frage, hinweis, m5Wert, m5Antworten, m5Oft,
-    EINFACH, setEinfach, istEinfach, ui, vorfrage, kurz, kind, grundsatz, antwortTexte, modul, m5Tipp };
+    EINFACH, setEinfach, istEinfach, setSprache, M5_OFT, M5_BESUCH, M5_AUFWENDIG, ui, vorfrage, kurz, kind, grundsatz, antwortTexte, modul, m5Tipp };
 })();
 if (typeof module !== 'undefined') module.exports = PflegeFragen;

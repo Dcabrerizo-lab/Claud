@@ -45,6 +45,44 @@ check('[az-speichern] nur Notizen der Checklisten', JSON.stringify(d.notiz) === 
 check('[az-speichern] Fortschritt', JSON.stringify(A.fortschritt(d, 'vorher')) === JSON.stringify({ n: 1, von: A.BEREICHE[0].punkte.length }));
 check('[az-speichern] kaputte Daten -> leer', JSON.stringify(A.normiere('x')) === JSON.stringify({ v: 1, ab: {}, notiz: {} }));
 
+// az-paragrafen: Paragrafen nur im Beratungsmodus; Laien sehen den Text ohne „(§ …)“ (Fmt.ohnePara), die Quellen bleiben vollständig.
+// Kleines Ersatz-DOM statt JSDOM (wenig Arbeitsspeicher): render() braucht nur getElementById, innerHTML und Listener.
+(() => {
+  const Fmt = require('../src/fmt.js');
+  const el = () => ({ innerHTML: '', value: '', addEventListener() {}, querySelector() { return null; }, focus() {} });
+  const box = el(), els = { azInhalt: box };
+  const altDoc = global.document, altFmt = global.Fmt;
+  global.document = { getElementById: (id) => els[id] || null, createElement: () => el(), head: { appendChild() {} } };
+  global.Fmt = Fmt;
+  let bm = false;
+  try {
+    A.speicherOrt({ laden: (cb) => cb(null), schreiben: (x, cb) => cb(null) });
+    A.beratungAbfrage(() => bm);
+    A.init({ t: (k, p) => String(de[k] || k).replace(/\{(\w+)\}/g, (m, x) => (p && p[x] != null ? p[x] : m)), zeige() {}, famversGrenze: () => '565 €' });
+    const ohneQuellen = (h) => h.replace(/<details class="mehr quellen[\s\S]*$/, '');
+    const pruefen = (id) => {
+      bm = false; A.oeffnen(id); const laie = box.innerHTML; A.zurueck();
+      bm = true; A.oeffnen(id); const fach = box.innerHTML; A.zurueck();
+      return { laie, fach };
+    };
+    const parGesamt = { laie: 0, fach: 0 };
+    A.BEREICHE.forEach((b) => {
+      const { laie, fach } = pruefen(b.id);
+      const imText = A.allePunkte(b).some((p) => /§|Art\. \d/.test(de['az.p.' + p.id + '.t'] || ''));
+      check('[az-paragrafen] Laienansicht ohne § im Text: ' + b.id, !/§|Art\.\s*\d/.test(ohneQuellen(laie)), (ohneQuellen(laie).match(/.{40}(§|Art\.\s*\d).{20}/) || [])[0]);
+      if (imText) check('[az-paragrafen] Beratungsmodus mit §: ' + b.id, /§/.test(ohneQuellen(fach)));
+      // Quellen am Seitenende bleiben in beiden Ansichten gleich
+      check('[az-paragrafen] Quellen unverändert: ' + b.id, (laie.match(/<details class="mehr quellen[\s\S]*$/) || [''])[0] === (fach.match(/<details class="mehr quellen[\s\S]*$/) || [''])[0]);
+      parGesamt.laie += (ohneQuellen(laie).match(/§/g) || []).length; parGesamt.fach += (ohneQuellen(fach).match(/§/g) || []).length;
+    });
+    check('[az-paragrafen] insgesamt: Fachansicht zeigt Paragrafen, Laienansicht keine', parGesamt.fach > 10 && parGesamt.laie === 0, parGesamt);
+    // Begriffe vor dem Paragrafen bleiben stehen: „(Erstausstattung, § 24 Abs. 3 SGB II)“ -> „(Erstausstattung)“
+    const bGeld = A.BEREICHE.find((b) => A.allePunkte(b).some((p) => p.id === 'erstausstattung'));
+    bm = false; A.oeffnen(bGeld.id); const h = box.innerHTML; A.zurueck();
+    check('[az-paragrafen] Begriff bleibt: (Erstausstattung)', h.includes('(Erstausstattung)'));
+  } finally { A.beratungAbfrage(null); global.document = altDoc; global.Fmt = altFmt; }
+})();
+
 // az-sprachen: alle 13 Sprachen haben alle Schlüssel, Platzhalter gleich, keine Rohschlüssel; Einfache Sprache nur bekannte Schlüssel
 LANGS.forEach((l) => {
   const f = path.join(__dirname, '..', 'src', 'lang', 'ausziehen', l + '.json');
@@ -70,6 +108,29 @@ Object.keys(ein).forEach((k) => {
   if (k in de) check('[az-sprachen] Einfache Sprache Zahlen ' + k, zahlen(ein[k]) === zahlen(de[k]), [zahlen(de[k]), zahlen(ein[k])]);
 });
 check('[az-sprachen] Einfache Sprache deckt die Hauptkacheln ab', A.HAUPT.every((id) => ein['az.' + id + '.h']));
+
+// Speicherfehler und kaputte Stände (Auftrag naechstes-update, Technik 1 und 2): Attrappe statt DOM
+{
+  const msg = { textContent: '' }, gesichert = [];
+  const altDoc = global.document;
+  global.document = { getElementById: (id) => (id === 'azSpeicherMsg' ? msg : null), createElement: () => ({}), head: { appendChild() {} } };
+  let roh = '{kaputt', schreibFehler = false;
+  A.speicherOrt({ laden: (cb) => cb(roh), schreiben: (t, cb) => cb(schreibFehler ? new Error('voll') : null), defekt: (t) => gesichert.push(t) });
+  A.init({ t: (k) => k, plug: () => null, zeige() {} });
+  check('[az-defekt] nicht lesbarer Stand: Rohtext unter lotse.ausziehen.defekt gesichert, Hinweis, leer gestartet', gesichert.length === 1 && gesichert[0] === '{kaputt' && msg.textContent === 'az.defekt' && JSON.stringify(A.daten()) === JSON.stringify(A.normiere ? A.normiere(null) : A.daten()), [gesichert, msg.textContent]);
+  roh = '42'; A.neuLaden();
+  check('[az-defekt] gültiges JSON, aber kein Objekt, gilt auch als kaputt', gesichert.length === 2 && gesichert[1] === '42');
+  roh = null; A.neuLaden();
+  check('[az-defekt] leerer Speicher: nichts gesichert, Hinweis verschwindet', gesichert.length === 2 && msg.textContent === '');
+  schreibFehler = true; A.laden({});
+  check('[az-speichern] Schreibfehler wird gemeldet (az.speicherFehler)', msg.textContent === 'az.speicherFehler', msg.textContent);
+  schreibFehler = false; A.laden({});
+  check('[az-speichern] nach erfolgreichem Speichern kein Hinweis', msg.textContent === '');
+  const app = fs.readFileSync(path.join(__dirname, '..', 'src', 'app.js'), 'utf8');
+  check('[az-speichern] src/app.js gibt nicht angenommenes Speichern weiter (kein festes cb(null)) und sichert kaputte Stände', app.includes("cb(Store.set('lotse.ausziehen', text) === false ? new Error('nicht gespeichert') : null)") && app.includes("speicherDefekt('lotse.ausziehen', text)"));
+  check('[az-defekt] lotse.ausziehen.defekt gehört zum Vorgang (PIN, Kopie, Löschen)', require('../src/vorgaenge.js').DATEN.includes('lotse.ausziehen.defekt'));
+  global.document = altDoc;
+}
 
 console.log((fehler ? 'FEHLER: ' + fehler : 'OK') + ' – Ich ziehe aus: ' + n + ' Prüfungen');
 process.exit(fehler ? 1 : 0);

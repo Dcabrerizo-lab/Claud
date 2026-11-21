@@ -89,5 +89,13 @@
   "kw.imp.nichts": "=",
   "kw.imp.f.format": "Das ist keine richtige SoLo-Datei.",
   "kw.imp.f.zuGross": "=",
-  "kw.imp.f.speicher": "Speichern geht gerade nicht. Ist SoLo gesperrt? Dann erst entsperren und noch einmal versuchen."
+  "kw.imp.f.speicher": "Speichern geht gerade nicht. Ist SoLo gesperrt? Dann erst entsperren und noch einmal versuchen.",
+  "kb.s1": "=",
+  "kb.s2": "=",
+  "kb.zaehler": "=",
+  "kb.weg.blatt": "=",
+  "kb.vorschau": "=",
+  "kb.vorschau.zu": "=",
+  "kw.imp.pinZeigen": "=",
+  "kw.qr.zuViel": "Das ist zu viel für einen QR-Code. Teile es als SoLo-Datei. Oder mach weniger Haken."
 }

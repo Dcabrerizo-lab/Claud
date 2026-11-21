@@ -23,7 +23,7 @@ const box = () => d.getElementById('puInhalt');
 const knopf = (txt) => [...box().querySelectorAll('button')].find((b) => b.textContent.trim() === txt);
 // gemeinsamer Zurück-Knopf oben (src/navigation.js); die Navigation gleicht den Verlauf danach ab
 const oben = () => d.querySelector('#v-pflegestart [data-nav-zurueck]');
-const offen = () => [...box().querySelectorAll(':scope > .pu-l')].map((s) => s.id.replace('pu-l-', ''));
+const offen = () => [...box().querySelectorAll(':scope > .pu-l, :scope > .pu-gruppe > .pu-l')].map((s) => s.id.replace('pu-l-', ''));
 const weitere = () => [...box().querySelectorAll('#pu-weitere .pu-l')].map((s) => s.id.replace('pu-l-', ''));
 const de = I18N.de;
 
@@ -46,8 +46,10 @@ setTimeout(() => {
   box().querySelector('.wahl[data-pg="3"]').click();
   const t3 = box().textContent;
   check('Pflegegrad 3: Überschrift', /Das gibt es bei Pflegegrad 3/.test(t3));
-  check('Pflegegrad 3: fünf wichtigste Leistungen offen', offen().join() === 'geld,dienst,entl,verh,tages', offen());
-  check('Pflegegrad 3: Rest unter „Weitere“, zugeklappt', weitere().length === 9 && d.getElementById('pu-weitere').open === false && /Weitere Leistungen \(9\)/.test(t3));
+  check('Pflegegrad 3: sechs wichtigste Leistungen offen', offen().join() === 'geld,dienst,kombi,entl,verh,tages', offen());
+  check('[rot-d] Pflegegrad 3: erst „Wer pflegt?“ (Pflegegeld, Pflegedienst, gemischt), dann „Zusätzlich (kein Geld aufs Konto …)“', [...d.querySelectorAll('#pu-wer > .pu-l')].map((x) => x.id).join() === 'pu-l-geld,pu-l-dienst,pu-l-kombi' && /^Zusätzlich \(kein Geld aufs Konto/.test(d.querySelector('#pu-zusatz .pu-gruppe-h').textContent) && [...d.querySelectorAll('#pu-zusatz > .pu-l')].length === 3);
+  check('[rot-d] Kombination: 6 Monate Bindung sichtbar; Pflicht-Beratung sichtbar unter Pflegegeld', /An die Aufteilung bist du 6 Monate gebunden/.test(d.querySelector('#pu-l-kombi .pu-wichtig').textContent) && /kann die Pflegekasse das Pflegegeld kürzen/.test(d.querySelector('#pu-l-geld .pu-wichtig').textContent));
+  check('Pflegegrad 3: Rest unter „Weitere“, zugeklappt', weitere().length === 8 && d.getElementById('pu-weitere').open === false && /Weitere Leistungen \(8\)/.test(t3));
   check('Pflegegrad 3: Pflegegeld 599 € pro Monat', /599 €\s*pro Monat/.test(d.getElementById('pu-l-geld').textContent));
   check('Pflegegrad 3: Pflegedienst bis 1.497 € pro Monat', /bis 1\.497 €\s*pro Monat/.test(d.getElementById('pu-l-dienst').textContent));
   check('[pu-ansicht] Jahresbudget als „pro Jahr“ (3.539 €) markiert', /bis 3\.539 €\s*pro Jahr/.test(d.getElementById('pu-l-verh').textContent) && !!d.querySelector('#pu-l-verh .pu-jahr'));
@@ -56,17 +58,18 @@ setTimeout(() => {
   check('Entlastungsbetrag: Familienentlastender Dienst bezahlbar, wenn anerkannt', /Familienentlastender Dienst \(FED\) kann so bezahlt werden, wenn er in deinem Bundesland anerkannt ist/.test(d.getElementById('pu-l-entl').textContent));
   check('Kombination mit Rechenbeispiel aus den Regeln (PG 3: 299,50 €)', /Beispiel Pflegegrad 3: Der Pflegedienst nutzt die Hälfte \(748,50 €\)\. Dann kommen noch 299,50 € Pflegegeld/.test(d.getElementById('pu-l-kombi').textContent), d.getElementById('pu-l-kombi').textContent);
   check('[recht-geltend] Kein Satz zu einer geplanten Pflegereform (nur geltendes Recht)', !/Pflegereform|geplant|nicht beschlossen|Entwurf/.test(t3));
-  check('[pu-korr] Beratungsbesuch nach § 37 Abs. 3 SGB XI: Pflicht halbjährlich ab PG 2, PG 4/5 auf Wunsch vierteljährlich', /Bei Pflegegrad 2 bis 5 kommt einmal im halben Jahr/.test(d.getElementById('pu-l-geld').textContent) && /Pflegegrad 4 und 5 geht das auf Wunsch auch jedes Vierteljahr/.test(d.getElementById('pu-l-geld').textContent) && !/4 und 5 einmal im Vierteljahr/.test(t3));
+  check('[pu-korr] Beratungsbesuch nach § 37 Abs. 3 SGB XI: Pflicht halbjährlich ab PG 2, PG 4/5 auf Wunsch vierteljährlich', /Mit Pflegegeld kommt einmal im halben Jahr eine kostenlose Pflicht-Beratung/.test(d.getElementById('pu-l-geld').textContent) && /Pflegegrad 4 und 5 geht das auf Wunsch auch jedes Vierteljahr/.test(d.getElementById('pu-l-geld').textContent) && !/4 und 5 einmal im Vierteljahr/.test(t3));
   check('[pu-korr] Verhinderungspflege durch Angehörige: Doppeltes Pflegegeld plus nachgewiesene Kosten', /Personen aus demselben Haushalt \(nicht beruflich\).*Doppelte des monatlichen Pflegegeldes\. Nachgewiesene Kosten wie Fahrt oder Verdienstausfall/.test(d.getElementById('pu-l-verh').textContent));
   check('[pu-korr] Aufs Konto: Pflegegeld und Wohngruppenzuschlag', /Aufs Konto kommen nur das Pflegegeld und, wer in einer ambulant betreuten Wohngruppe lebt, der Wohngruppenzuschlag/.test(t3));
   check('Stand und Quelle genannt', /Stand der Beträge: 14\.9\.2026 \(Bundesministerium für Gesundheit/.test(t3));
   check('Stellen nur als Art (Pflegekasse, Pflegestützpunkt), keine Anschrift', /Pflegestützpunkt/.test(t3) && !/\b\d{5}\b/.test(t3));
+  check('[rot-d] „Mehr dazu“ mit eindeutigem aria-label, ohne Beratungsmodus keine Paragrafen', d.querySelector('#pu-l-geld summary').getAttribute('aria-label') === 'Mehr dazu: Geld für die Pflege zu Hause (Pflegegeld)' && !/Rechtsgrundlage/.test(t3));
   const einl = box().querySelector('.pu-einl');
   check('[pu-aufr] Einleitung: ein Satz sichtbar, Rest zum Aufklappen (zu)', einl && einl.textContent.split(/[.!?](\s|$)/).filter((x) => x && x.trim()).length === 1 && box().querySelector('.pu-einl-mehr') && !box().querySelector('.pu-einl-mehr').open, einl && einl.textContent);
   const tipp = box().querySelector('details.tipp[data-tipp="pu.tipp.beratung"]');
   check('[pu-aufr] Hinweis Pflegekasse/Pflegestützpunkt als Tipp mit Symbol', tipp && tipp.querySelector('.tipp-sym svg') && tipp.querySelector('.tipp-kurz').textContent === de['pu.tipp.beratung.kurz']);
   const hk = d.getElementById('pu-schaetzen-knopf');
-  check('[pu-aufr] Grüner Hauptknopf „Pflegegrad selbst einschätzen“ direkt unter den Leistungen', hk && hk.className === 'btn' && hk.textContent === de['pu.schaetzen'] && hk.parentElement.previousElementSibling.classList.contains('pu-l') && hk.parentElement.nextElementSibling.id === 'pu-weitere');
+  check('[pu-aufr] Mit Pflegegrad: Nebenknopf „Höherstufung prüfen“ direkt unter den Leistungen', hk && hk.className === 'btn ghost' && hk.textContent === de['pa.hoeher'] && (hk.parentElement.previousElementSibling.classList.contains('pu-l') || hk.parentElement.previousElementSibling.classList.contains('pu-gruppe')) && hk.parentElement.nextElementSibling.id === 'pu-weitere');
   oben().click();
   box().querySelector('.wahl[data-pg="1"]').click();
   const t1 = box().textContent;
@@ -137,7 +140,7 @@ setTimeout(() => {
   check('[pflege-ergebnis] Pflege-Startseite: „Deine letzte Einschätzung: Pflegegrad X (Datum)“', ansicht() === 'pflegestart' && !!le && new RegExp('Deine letzte Einschätzung: Pflegegrad ' + pgE + ' \\(').test(le.textContent), le && le.textContent);
   check('[pflege-ergebnis] Pflege-Startseite: weiter genau zwei Kacheln', box().querySelectorAll('.weg-liste .weg').length === 2);
   le.querySelector('button').click();
-  check('[pflege-ergebnis] „Ergebnis ansehen“ öffnet direkt die Ergebnisseite', ansicht() === 'pflege' && /^Wahrscheinlich/.test(titel()));
+  check('[pflege-ergebnis] „Ergebnis zeigen“ öffnet direkt die Ergebnisseite', ansicht() === 'pflege' && /^Wahrscheinlich/.test(titel()));
   pa().querySelector('.pa-zur').click(); d.querySelector('#v-pflegestart [data-nav-zurueck]').click();
   // Aus dem Leistungs-Check: dort gibt es den Weg zurück zur Karte
   d.getElementById('goLeistungen').click(); d.getElementById('paStart').click();
@@ -149,7 +152,54 @@ setTimeout(() => {
   d.getElementById('goPflege').click();
   check('Englisch: Auswahl übersetzt', d.getElementById('pu-hilfe').textContent.indexOf(I18N.en['pu.hilfe']) >= 0);
   d.getElementById('pu-hilfe').click(); box().querySelector('.wahl[data-pg="2"]').click();
-  check('Englisch: Hinweis „nur Deutsch“ sichtbar', d.getElementById('puNurDe').hidden === false && d.getElementById('puNurDe').textContent === I18N.en['pu.nurDe']);
+  check('[pflege-sprachen] Englisch: Übersicht übersetzt (Überschrift, Pflegegeld), kein Hinweis „nur Deutsch“', d.getElementById('puNurDe').hidden === true && box().querySelector('.pf-frage').textContent === I18N.en['pfl.pu.h'].replace('{pg}', '2') && d.querySelector('#pu-l-geld h3').textContent === I18N.en['pfl.pu.geld.t'], box().querySelector('.pf-frage').textContent);
+  check('[pflege-sprachen] Englisch: Übersicht nicht mehr als Deutsch ausgezeichnet', !box().hasAttribute('lang') && !box().hasAttribute('dir'));
+  // Arabisch: Einschätzung bleibt Deutsch, aber als lang=de dir=ltr; „Zurück“ arabisch in RTL
+  sel.value = 'ar'; sel.dispatchEvent(new w.Event('change', { bubbles: true }));
+  d.getElementById('goPflege').click(); d.getElementById('pu-schaetzen').click();
+  const zk = pa().querySelector('.pa-zur');
+  check('[pflege-sprachen] Arabisch: Einschätzung übersetzt (Überschrift arabisch, kein Deutsch), nicht als Deutsch ausgezeichnet, Zurück arabisch', !pa().hasAttribute('lang') && /[\u0600-\u06FF]/.test(pa().querySelector('#pa-q').textContent) && !/Wahrscheinlich|Wie alt/.test(pa().textContent) && zk.textContent.indexOf(I18N.ar['nav.zurueck']) >= 0 && d.getElementById('paNurDe').hidden, pa().querySelector('#pa-q') && pa().querySelector('#pa-q').textContent);
+  // Gutachten vergleichen (UX-Audit D #3): Bereiche zugeklappt mit Zähler, eigene Einschätzung oben, Alter übernommen
+  const ber = [...d.querySelectorAll('#pf-module details.pf-bereich')];
+  check('[rot-d] Gutachten: 6 Bereiche zugeklappt mit „x von n eingetragen“', ber.length === 6 && ber.every((x) => !x.open && /· \d+ von \d+ eingetragen$/.test(x.querySelector('summary').textContent)));
+  d.getElementById('pf-alter').value = '1'; d.getElementById('pf-monate').value = '10'; d.getElementById('pf-alter').dispatchEvent(new w.Event('input', { bubbles: true }));
+  check('[rot-d] Gutachten: Kind unter 18 Monaten – Bereich 5 klappt mit der neuen Frage auf', !d.getElementById('pf-zeile-5K').hidden && d.getElementById('pf-bereich-5').open);
+  d.getElementById('pf-monate').value = '';
+  d.getElementById('pf-alter').value = '';
+  w.PruefpaketPflege.eigene({ stufen: { '1.1': 2 }, m5: {}, inkontinenz: { harn: false, stuhl: false }, alterJahre: '82' });
+  check('[rot-d] Gutachten: eigene Einschätzung oben, Alter 82 übernommen, „Alles leeren“ nicht mehr oben', !d.getElementById('pf-eigen-oben').hidden && /^Deine Einschätzung in SoLo/.test(d.getElementById('pf-eigen-oben').textContent) && d.getElementById('pf-eigen-oben').nextElementSibling.id === 'pf-form2' && d.getElementById('pf-alter').value === '82' && !!d.getElementById('pf-leeren').closest('.pf-leeren-zeile'));
+  // src/lang/pflege/de.json stimmt mit den deutschen Standardtexten der Einschätzung im Code überein (eine Quelle für die Übersetzung)
+  { const F = require('../erweiterungen/pflege-fragen.js'), P = require('../erweiterungen/pflege.js'), PD = require('../src/lang/pflege/de.json'), ab = [];
+    const soll = (k, v) => { if (PD[k] !== v) ab.push(k); };
+    for (const [id, v] of Object.entries(F.TEXT)) { soll('pfl.text.' + id + '.0', v[0]); soll('pfl.text.' + id + '.1', v[1]); }
+    for (const [id, v] of Object.entries(F.M5)) soll('pfl.m5.' + id, v);
+    for (const [id, v] of Object.entries(F.M5_KURZ)) soll('pfl.m5Kurz.' + id, v);
+    for (const [m, v] of Object.entries(F.VORFRAGE)) { soll('pfl.vorfrage.' + m + '.0', v.frage); soll('pfl.vorfrage.' + m + '.1', v.hinweis); }
+    for (const s of ['sel', 'fae', 'hfg', 'sonde']) P.SKALA[s].kurz.forEach((v, i) => soll('pfl.antworten.' + s + '.' + i, v));
+    const src = fs.readFileSync(path.join(__dirname, '..', 'erweiterungen', 'pflege-assistent.js'), 'utf8');
+    for (const m of src.matchAll(/T\('([a-zA-Z0-9.]+)', '((?:[^'\\]|\\.)*)'/g)) if (!m[1].startsWith('aktion.')) soll('pfl.ui.' + m[1], m[2]);
+    check('[pflege-sprachen] src/lang/pflege/de.json = deutsche Standardtexte im Code', ab.length === 0, ab.slice(0, 5)); }
+  // Somali und Paschtu (Entscheidung David 21.11.2026): Pflege-Seiten vorerst Deutsch mit Hinweis „nur auf Deutsch“ und lang=de dir=ltr,
+  // bis Muttersprachler geprüft haben (Entwürfe in docs/entwuerfe/sprachen/pflege-wartet/); Arabisch ist übersetzt
+  {
+    const sel2 = d.getElementById('lang');
+    const wechsel = (l) => { sel2.value = l; sel2.dispatchEvent(new w.Event('change', { bubbles: true })); };
+    const uebersicht = (l) => {
+      wechsel(l); d.getElementById('goPflege').click(); d.getElementById('pu-hilfe').click(); box().querySelector('.wahl[data-pg="2"]').click();
+      return { frage: box().querySelector('.pf-frage').textContent, geld: d.querySelector('#pu-l-geld h3').textContent, hinweis: !d.getElementById('puNurDe').hidden, lang: box().getAttribute('lang'), dir: box().getAttribute('dir') };
+    };
+    for (const l of ['so', 'ps']) {
+      const u = uebersicht(l);
+      check('[pflege-fallback] ' + l + ': Pflege-Übersicht auf Deutsch, mit Hinweis „nur auf Deutsch“, lang=de dir=ltr', u.frage === de['pfl.pu.h'].replace('{pg}', '2') && u.geld === de['pfl.pu.geld.t'] && u.hinweis && u.lang === 'de' && u.dir === 'ltr' && !!I18N[l]['pu.nurDe'] && d.getElementById('puNurDe').textContent === I18N[l]['pu.nurDe'], u);
+      oben().click(); oben().click(); d.getElementById('pu-schaetzen').click(); // Liste → Pflegegrad → Auswahl
+      check('[pflege-fallback] ' + l + ': Einschätzung auf Deutsch, lang=de dir=ltr, Hinweis sichtbar', pa().getAttribute('lang') === 'de' && pa().getAttribute('dir') === 'ltr' && !d.getElementById('paNurDe').hidden && !/[؀-ۿ]/.test(titel()), titel());
+      pa().querySelector('.pa-zur').click();
+    }
+    const a = uebersicht('ar');
+    check('[pflege-fallback] ar: Pflege-Übersicht auf Arabisch, ohne Hinweis, nicht als Deutsch ausgezeichnet', a.frage === I18N.ar['pfl.pu.h'].replace('{pg}', '2') && /[؀-ۿ]/.test(a.frage) && a.geld === I18N.ar['pfl.pu.geld.t'] && !a.hinweis && !a.lang && !a.dir, a);
+    oben().click(); oben().click();
+    wechsel('de');
+  }
   check('Keine Skriptfehler im Test', errors.length === 0, errors.join('; '));
   console.log(fails ? fails + ' FEHLER (Pflege-Start)' : '[pflege-start] Pflege-Startkachel: Auswahl, Pflegegrad, Übersicht und Zurück-Wege stimmen');
   process.exit(fails ? 1 : 0);

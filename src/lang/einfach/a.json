@@ -44,7 +44,7 @@
  "t.gsa.verm": "Geldvermögen über {schon} musst du zuerst nutzen. Ein Haus, in dem du selbst wohnst, zählt nicht mit. Ein angemessenes Auto zählt auch nicht mit.",
  "t.bafoeg.keine": "Du hast niemanden in Schule, Ausbildung oder Studium angegeben.",
  "t.bafoeg.keinKind": "Du hast kein Kind im Haushalt angegeben.",
- "t.bafoeg.kindJa": "Das Einkommen der Eltern ist niedriger als der Freibetrag von etwa {fb} netto im Monat. BAföG gibt es für Studium, Fachschulen und bestimmte Schulen. Zum Beispiel, wenn das Kind nicht bei den Eltern wohnt.",
+ "t.bafoeg.kindJa": "Das Einkommen der Eltern ist nach den Abzügen vom BAföG-Amt niedriger als der Freibetrag von etwa {fb} im Monat. BAföG gibt es für Studium, Fachschulen und bestimmte Schulen. Zum Beispiel, wenn das Kind nicht bei den Eltern wohnt.",
  "t.bafoeg.kindRand": "Das Einkommen ist höher als der Freibetrag von etwa {fb} im Monat. Dann wird das BAföG gekürzt. Es kann trotzdem reichen. Das Amt rechnet genau.",
  "t.bafoeg.kindNein": "Das Einkommen ist deutlich höher als der Freibetrag von etwa {fb} im Monat. Wahrscheinlich bleibt nichts übrig.",
  "t.bafoeg.ich": "BAföG hängt vor allem vom Einkommen der Eltern ab. Das fragen wir hier nicht ab. Manchmal zählt es nicht. Lass es vom Amt für Ausbildungsförderung ausrechnen.",

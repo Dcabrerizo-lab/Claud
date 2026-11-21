@@ -98,6 +98,52 @@ const MOCK = () => {
   for (const l of ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so']) { await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, l); ok('Sprache ' + l, (await p.locator('#cards .card').count()) === KARTEN.length); }
   await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'de');
 
+  // Sprachen nur bei Bedarf (src/sprachladen.js, Entscheidung David 21.11.2026): Startgröße, Dateien im Paket, Wechsel ohne Netz, Fehlerfall
+  {
+    const T = new Function(require('../scripts/build.js').i18nSource().replace(/if \(typeof module[^\n]*\n/, '') + '; return I18N;')();
+    const startBytes = fs.statSync(path.join(WWW, 'index.html')).size + fs.readdirSync(path.join(WWW, 'js')).reduce((a, f) => a + fs.statSync(path.join(WWW, 'js', f)).size, 0);
+    const langDir = path.join(WWW, 'lang'), langDateien = fs.existsSync(langDir) ? fs.readdirSync(langDir) : [];
+    const langBytes = langDateien.reduce((a, f) => a + fs.statSync(path.join(langDir, f)).size, 0);
+    console.log('Größe App-Paket (www): beim Start ' + (startBytes / 1024).toFixed(0) + ' KB, Sprachdateien zusammen ' + (langBytes / 1024).toFixed(0) + ' KB');
+    ok('[sprachladen] Beim Start geladen (index.html + js/) unter 3 MB', startBytes < 3 * 1024 * 1024, (startBytes / 1024).toFixed(0) + ' KB');
+    ok('[sprachladen] 12 Sprachdateien im App-Paket (alle außer Deutsch)', langDateien.length === 12 && !langDateien.includes('de.js') && Object.keys(T).filter((l) => l !== 'de').every((l) => langDateien.includes(l + '.js')), langDateien.join());
+    ok('[sprachladen] Sprachen nur aus dem App-Paket nachgeladen', reqs.some((u) => u === origin + '/lang/ar.js') && reqs.filter((u) => /\/lang\//.test(u)).every((u) => u.startsWith(origin + '/lang/')));
+    // Ohne Netz (Flugmodus): jede Anfrage außerhalb des App-Pakets wird abgebrochen; gespeicherte Sprache Ukrainisch, App neu starten
+    const ctxO = await b.newContext({ viewport: { width: 390, height: 844 }, locale: 'de-DE', serviceWorkers: 'block' });
+    await ctxO.addInitScript(MOCK);
+    const draussen = [];
+    await ctxO.route('**/*', (r) => { const u = r.request().url(); if (u.startsWith(origin)) return r.continue(); draussen.push(u); return r.abort('internetdisconnected'); });
+    const po = await ctxO.newPage(), errO = [];
+    po.on('pageerror', (e) => errO.push(e.message));
+    await po.addInitScript(SF_ALLES); await po.addInitScript(() => { try { localStorage.setItem('lotse-lang', 'uk'); } catch (e) {} });
+    await po.goto(origin + '/index.html', { waitUntil: 'domcontentloaded' });
+    const zustand = () => po.evaluate(() => ({ l: document.getElementById('app').getAttribute('lang'), dir: document.getElementById('app').getAttribute('dir'), nav: (document.querySelector('[data-t="nav.ordner"]') || {}).textContent, fehler: !!document.getElementById('sprachFehler'), wahl: document.getElementById('lang').value }));
+    let z = await zustand();
+    ok('[sprachladen] Neustart ohne Netz: App startet gleich auf Ukrainisch (Datei vor dem Programm eingebunden)', z.l === 'uk' && z.nav === T.uk['nav.ordner'], JSON.stringify(z));
+    const waehle = (l) => po.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, l);
+    for (const l of ['ar', 'so', 'uk']) {
+      await waehle(l);
+      await po.waitForFunction((x) => document.getElementById('app').getAttribute('lang') === x, l, { timeout: 5000 }).catch(() => {});
+      z = await zustand();
+      ok('[sprachladen] Ohne Netz Sprache wechseln: ' + l, z.l === l && z.nav === T[l]['nav.ordner'] && z.dir === T[l]['meta.dir'] && !z.fehler, JSON.stringify(z));
+    }
+    // Fehlerfall: Sprachdatei lädt nicht → Deutsch und kurzer Hinweis; später wieder wählbar
+    await po.route(origin + '/lang/fr.js', (r) => r.abort('failed'));
+    await waehle('fr');
+    await po.waitForSelector('#sprachFehler', { timeout: 5000 }).catch(() => {});
+    z = await zustand();
+    ok('[sprachladen] Sprache lädt nicht: Deutsch und Hinweis', z.l === 'de' && z.wahl === 'de' && z.fehler && z.nav === T.de['nav.ordner'], JSON.stringify(z));
+    await po.unroute(origin + '/lang/fr.js');
+    await waehle('fr');
+    await po.waitForFunction(() => document.getElementById('app').getAttribute('lang') === 'fr', null, { timeout: 5000 }).catch(() => {});
+    z = await zustand();
+    ok('[sprachladen] Danach geht die Sprache wieder, Hinweis weg', z.l === 'fr' && !z.fehler, JSON.stringify(z));
+    const nav = await po.evaluate(() => { const n = performance.getEntriesByType('navigation')[0]; return n ? Math.round(n.domContentLoadedEventEnd) : -1; });
+    console.log('Startzeit im Test (DOMContentLoaded, Ukrainisch, ohne Netz): ' + nav + ' ms');
+    ok('[sprachladen] Ohne Netz: keine Anfrage nach draußen, keine Skriptfehler', draussen.length === 0 && errO.length === 0, draussen.concat(errO).join('|'));
+    await ctxO.close();
+  }
+
   // Foto-Scan: Kamera -> Texterkennung -> Felder, Foto wird danach gelöscht
   await p.evaluate(() => document.getElementById('p1').click()); await setzeFeld(p, 'p-name', 'Maria Muster');
   // „Brief prüfen“: die Übersicht hat kein Scannen; in der Kachel Antragsformular: Kamera → Texterkennung → Felder erklärt
@@ -166,14 +212,17 @@ const MOCK = () => {
 
   // Antragsmappe
   // Grundsicherungsgeld zusätzlich wählen (falls angeboten), damit die vorausgefüllten Jobcenter-Formulare mitgeprüft werden
-  const mitGG = await p.evaluate(() => { const cb = document.querySelector('[data-pick="ggeld"]'); if (!cb) return false; cb.checked = true; cb.dispatchEvent(new Event('change', { bubbles: true })); return true; });
+  // Entweder oder: Weg „Wohngeld und Kinderzuschlag“ wählen (Optionsfeld), damit der Wohngeld-Link geprüft wird; Grundsicherungsgeld kommt danach als zweiter Weg
+  await p.evaluate(() => { const r = document.querySelector('#pick input[data-weg][value="a"]'); if (r) { r.checked = true; r.dispatchEvent(new Event('change', { bubbles: true })); } });
+  const mitGG = false;
   await p.click('#mappeMake'); ok('Mappe öffnet', await p.isVisible('#mappe'));
   const brief = await p.inputValue('#mappeText');
   ok('Entweder Formular oder formlos: kein formloser Brief für Wohngeld (Bayern) und Kindergeld, weil es den Formular-Link gibt', !/Betreff: Antrag auf Wohngeld/.test(brief) && !/Betreff: Antrag auf Kindergeld/.test(brief), brief.slice(0, 300));
-  const links = await p.$$eval('#mappeBody .forms a[href]', (e) => e.map((x) => x.getAttribute('href')));
+  const links = await p.$$eval('#aufAntraege .ant-form a[href]', (e) => e.map((x) => x.getAttribute('href')));
   ok('Formular-Links für Wohngeld (Bayern) und Kindergeld in der Mappe', links.some((u) => /stmb\.bayern\.de/.test(u)) && links.some((u) => /formulare-kindergeld/.test(u)), links.join(' '));
-  ok('Knöpfe einzeln: PDF teilen, kein doppelter Knopf „Teilen oder speichern“', (await p.textContent('#mappePrint')).includes('PDF') && !(await p.isVisible('#mappeShare')));
-  ok('Keine Doppelbeschriftung „oder“ auf den Mappe-Knöpfen', !(await p.evaluate(() => [...document.querySelectorAll('#mappe .btns button')].filter((b) => !b.hidden).some((b) => / oder | or /.test(b.textContent)))));
+  await p.evaluate(() => { document.getElementById('aufAbschickenD').open = true; }); // Ausgabe im letzten Schritt der Aufgabenliste
+  ok('Ein Ausgabe-Knopf „Drucken oder teilen“ (gleicher Name wie in der Ergebnisliste), kein doppelter Teilen-Knopf', (await p.textContent('#mappePrint')) === 'Drucken oder teilen' && !(await p.isVisible('#mappeShare')));
+  ok('Nur ein Hauptknopf in der Mappe', (await p.evaluate(() => [...document.querySelectorAll('#mappe button.btn:not(.ghost)')].filter((b) => !b.hidden).length)) === 1);
   await p.click('#mappePrint');
   await p.waitForFunction(() => window.__calls.some((c) => c[0] === 'Share.share' && c[1].files && /Antragsmappe/.test(c[1].files[0])), null, { timeout: 15000 }).catch(() => {});
   const shared = (await calls('Share.share')).find((o) => o.files && /Antragsmappe/.test(o.files[0]));
@@ -207,7 +256,7 @@ const MOCK = () => {
   await p.evaluate(() => { const s = document.getElementById('lang'); s.value = 'de'; s.dispatchEvent(new Event('change', { bubbles: true })); });
   // Amtliche Formulare: nur Links, kein Ausfüllen und Teilen von Vordrucken mehr
   ok('Kein Knopf zum Ausfüllen von Formularen, keine Formular-Dateien in der App', (await p.locator('#formsShare').count()) === 0 && !fs.existsSync(path.join(WWW, 'formulare')));
-  if (mitGG) ok('Mit Grundsicherungsgeld: Link auf die Formularseite der Bundesagentur, kein formloser Jobcenter-Brief', links.length >= 0 && (await p.$$eval('#mappeBody .forms a[href]', (e) => e.some((x) => /downloads-arbeitslos-arbeit-finden/.test(x.href)))) && !/Betreff: Antrag auf Grundsicherungsgeld/.test(await p.inputValue('#mappeText')));
+  if (mitGG) ok('Mit Grundsicherungsgeld: Link auf die Formularseite der Bundesagentur, kein formloser Jobcenter-Brief', links.length >= 0 && (await p.$$eval('#aufAntraege .ant-form a[href]', (e) => e.some((x) => /downloads-arbeitslos-arbeit-finden/.test(x.href)))) && !/Betreff: Antrag auf Grundsicherungsgeld/.test(await p.inputValue('#mappeText')));
   await p.screenshot({ path: path.join(require('os').tmpdir(), 'app-mappe.png') });
   await p.click('#mappeClose');
 
@@ -251,7 +300,7 @@ const MOCK = () => {
   const legalI = await pi.evaluate(() => document.getElementById('legal').textContent);
   ok('iPhone: Anbieter im Impressum Natascha Cabrerizo y Polo, nicht David', /Anbieter: Natascha Cabrerizo y Polo/.test(legalI.replace(/\s+/g, ' ')) && !/David/.test(legalI), legalI.slice(0, 200));
   if (await pi.isVisible('#schritte .sf-w2')) await pi.click('#schritte .sf-w2');
-  await pi.evaluate(() => document.getElementById('p1').click()); await setzeFeld(pi, 'p-name', 'Test'); await pi.evaluate(() => document.getElementById('mappeMake').click()); await pi.waitForSelector('#mappePrint', { state: 'visible', timeout: 5000 }).catch(() => {});
+  await pi.evaluate(() => document.getElementById('p1').click()); await setzeFeld(pi, 'p-name', 'Test'); await pi.evaluate(() => { document.getElementById('mappeMake').click(); document.getElementById('aufAbschickenD').open = true; }); await pi.waitForSelector('#mappePrint', { state: 'visible', timeout: 5000 }).catch(() => {});
   ok('iPhone: keine Android-Knöpfe Drucken/Speichern, PDF teilen vorhanden', !(await pi.isVisible('#mappeDruck')) && !(await pi.isVisible('#mappeSpeichern')) && (await pi.isVisible('#mappePrint')));
   await ctxI.close();
 

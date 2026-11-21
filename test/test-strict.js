@@ -4,7 +4,8 @@ const I18N = require('../dist/i18n.js');
 const KARTEN = require('./karten.js');
 let fails = 0, passes = 0;
 const check = (n, c, x) => { if (!c) { fails++; console.log('FAIL', n, x === undefined ? '' : x); } else passes++; };
-const base = { adults: 1, kids: 0, young: 0, brutto: 0, brutto2: '', netto: 0, miete: 600, mietstufe: '3', vermoegen: 2000, alter: false, erwerbsgemindert: false, behinderung: false, kinder12: false, unterhaltFehlt: false, alterGruppe: '30-39', ausbildung: '', pflegegrad: '', nichtArbeit: false, bezug: {} };
+// ohneWege: Handrechnungen je Leistung, ohne die Lage der zwei Wege (eigene Tests dazu in test/test.js)
+const base = { ohneWege: true, adults: 1, kids: 0, young: 0, brutto: 0, brutto2: '', netto: 0, miete: 600, mietstufe: '3', vermoegen: 2000, alter: false, erwerbsgemindert: false, behinderung: false, kinder12: false, unterhaltFehlt: false, alterGruppe: '30-39', ausbildung: '', pflegegrad: '', nichtArbeit: false, bezug: {} };
 const ev = (o) => R.evaluate({ ...base, ...o, bezug: { ...(o && o.bezug) } });
 const lv = (o, id) => ev(o).results.find((r) => r.id === id).level;
 const ID = KARTEN;
@@ -172,8 +173,9 @@ const pick = (a) => a[Math.floor(rnd() * a.length)];
 const randHH = () => {
   const brutto = rnd() < 0.15 ? 0 : Math.round(rnd() * 7000 / 10) * 10;
   const adults = pick([1, 1, 2]);
+  // ohneWege: Eigenschaften je Leistung (Monotonie); die zwei Wege koppeln Leistungen absichtlich (eigene Eigenschaften in test/test.js)
   return {
-    adults, kids: pick([0, 0, 1, 2, 3, 5]), young: pick([0, 0, 0, 1, 2]), brutto, brutto2: adults === 2 && rnd() < 0.5 ? Math.round(rnd() * brutto / 10) * 10 : '',
+    ohneWege: true, adults, kids: pick([0, 0, 1, 2, 3, 5]), young: pick([0, 0, 0, 1, 2]), brutto, brutto2: adults === 2 && rnd() < 0.5 ? Math.round(rnd() * brutto / 10) * 10 : '',
     netto: rnd() < 0.2 ? '' : Math.round(brutto * (0.6 + rnd() * 0.3)), miete: Math.round(rnd() * 1800 / 10) * 10, mietstufe: pick(['', '1', '2', '3', '4', '5', '6', '7']),
     vermoegen: pick([0, 500, 3000, 9000, 15000, 25000, 70000, 150000]), alter: rnd() < 0.15, erwerbsgemindert: rnd() < 0.1, behinderung: rnd() < 0.15, kinder12: rnd() < 0.3, unterhaltFehlt: rnd() < 0.3,
     alterGruppe: pick(['', '<30', '30-39', '40-49', '50+']), ausbildung: pick(['', '', 'kind', 'ich']), pflegegrad: pick(['', '', '', 'antrag', '1', '2', '3', '4', '5']), nichtArbeit: rnd() < 0.2,

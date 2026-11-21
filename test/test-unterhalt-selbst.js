@@ -66,7 +66,12 @@ ck('[unt-kiz] F4c Unterhalt über dem Bedarf mindert voll: etwa 30 €', m.kiz.l
 //   also über 2.540 + 2.157 = 4.697 €: mit Unterhalt 4.800 € darüber, ohne 4.000 € darunter -> „möglich“
 const f5 = { adults: 2, kids: 1, ausbildung: 'kind', art1: 'lohn', art2: 'unt', brutto: 6600, brutto2: 800, netto: 4800 };
 ck('[unt-bafoeg] F5 BAföG möglich (Unterhalt zählt nur mit Realsplitting)', ev(f5).bafoeg.level === 'vielleicht');
-ck('F5 Gegenprobe Rente 800 €: unwahrscheinlich', ev({ ...f5, art2: 'rente' }).bafoeg.level === 'nein');
+// Seit 21.11.2026 rechnet die Einstufung den Lohn nach § 21 BAföG (Befund B1): 5.800 € Lohn ergeben dann nur noch rund 4.072 €, mit 800 € Rente
+// (Anteil am Netto 582 €) 4.654 € < 4.697 € -> „möglich“. Gegenprobe deshalb mit 6.600 € Lohn, 800 € Rente, 5.300 € netto: Lohn-Anteil 4.727,03 €,
+// Beiträge 699,60 + 613,22 €, Steuer 560,15 €, (6.600 − 102,50) − 1.433,33 − 560,15 = 4.504,02 € + Rente 572,97 € = 5.076,99 € > 4.697 € -> „eher nicht“;
+// mit Unterhalt statt Rente (zählt nicht) 4.504,02 € -> „möglich“.
+const f5b = { ...f5, brutto: 7400, netto: 5300 };
+ck('F5 Gegenprobe Rente 800 €: unwahrscheinlich, mit Unterhalt möglich', ev({ ...f5b, art2: 'rente' }).bafoeg.level === 'nein' && ev(f5b).bafoeg.level === 'vielleicht');
 
 console.log(fails ? fails + ' von ' + n + ' Prüfungen fehlgeschlagen (Unterhalt für sich selbst)' : 'Unterhalt für sich selbst: ' + n + ' Prüfungen bestanden');
 if (fails) process.exit(1);

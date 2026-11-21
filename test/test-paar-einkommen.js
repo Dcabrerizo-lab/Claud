@@ -9,7 +9,8 @@
 'use strict';
 // Grenzen seit 21.11.2026 mit der 10-€-Schwelle (§ 21 Nr. 1 WoGG, gerundet ab 9,50 €), daher rund 25 € niedriger als vorher
 const R = require('./rules-de.js');
-const base = { kids: 0, young: 0, vermoegen: 0, bezug: {}, gebJahr: 1985, heute: 2026.9 };
+// ohneWege: Beträge je Leistung (Handrechnungen), ohne die Lage der zwei Wege (eigene Tests in test/test.js)
+const base = { ohneWege: true,  kids: 0, young: 0, vermoegen: 0, bezug: {}, gebJahr: 1985, heute: 2026.9 };
 let n = 0, fails = 0;
 const ck = (name, c, x) => { n++; if (!c) { fails++; console.log('FAIL', name, x === undefined ? '' : JSON.stringify(x)); } };
 const run = (o) => { const r = R.evaluate({ ...base, ...o }); const m = { _h: r.h }; r.results.forEach((x) => { m[x.id] = x; }); return m; };

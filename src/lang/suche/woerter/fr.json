@@ -150,5 +150,21 @@
   "remboursement",
   "trop-perçu",
   "Rückforderung"
+ ],
+ "p-hilfe": [
+  "allocation de soins",
+  "service de soins à domicile",
+  "soins de répit",
+  "soins de courte durée"
+ ],
+ "p-gutachten": [
+  "expertise de dépendance",
+  "vérifier l’expertise",
+  "contester le degré de dépendance"
+ ],
+ "o-import": [
+  "QR code",
+  "fichier SoLo",
+  "fichier de la consultation"
  ]
 }

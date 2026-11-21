@@ -1,5 +1,5 @@
 {
-  "lead": "Finde in etwa 5 Minuten heraus, welche Sozialleistungen dir vielleicht zustehen. Dann kannst du gleich den Antrag vorbereiten.",
+  "lead": "Finde heraus, welche Sozialleistungen dir vielleicht zustehen. Dann kannst du gleich den Antrag vorbereiten.",
   "sample": "Das ist nur ein Beispiel. Trage deine eigenen Werte ein.",
   "trans": "Die Namen der Leistungen und Ämter bleiben auf Deutsch. So kannst du sie dort nennen. Die Übersetzungen macht ein Computer. Sie können Fehler enthalten.",
   "kids.label": "Kinder unter 18 Jahren",
@@ -32,7 +32,6 @@
   "l.kurzZurueck": "Danach kannst du es noch kurz zurückholen. Etwa 10 Sekunden lang.",
   "vg.auto.unter": "Vorgänge löschen, die du länger nicht geändert hast",
   "vg.pin.unter": "Mit PIN kannst nur du deine Angaben auf diesem Gerät öffnen",
-  "karte.mappe": "Welche Unterlagen du brauchst und was du als Nächstes tust, steht in der Antragsmappe.",
   "vg.pin.t": "Mit einer PIN sind deine Angaben auf diesem Gerät verschlüsselt. Das heißt: Ohne PIN kann sie niemand lesen. Zum Beispiel, wenn jemand dein Handy nimmt. Das ist ein Sichtschutz. Gegen Fachleute mit Spezial-Werkzeug hilft er nicht sicher. Nach 2 Minuten im Hintergrund sperrt sich SoLo von selbst.",
   "vg.pin.erkl": "Die PIN sperrt die ganze App. Vergisst du sie, kommst du nicht mehr an deine Angaben. Das ist ein Sichtschutz, kein sicherer Schutz gegen Fachleute.",
   "vg.auto.t": "Bei jedem Vorgang steht das Datum. Nach diesem Datum löscht die App den Vorgang. Das passiert, wenn du die App das nächste Mal öffnest.",

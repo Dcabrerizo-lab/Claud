@@ -24,7 +24,8 @@ function replaceOnce(s, from, to, what) {
 
 need(MODS, 'zuerst: cd app && npm install');
 
-let html = render({ native: true }).html;
+const gebaut = render({ native: true });
+let html = gebaut.html;
 
 // Scan: In der App gibt es nur die Kamera mit Texterkennung auf dem Gerät
 const NATIVE_SCAN = [
@@ -118,6 +119,13 @@ html = html.replace(/ onsubmit="return false"/g, ' data-kein-senden');
 const rest = html.match(/<script(?![^>]*\ssrc=)[^>]*>|\son[a-z]+\s*=\s*["']/i);
 if (rest) throw new Error('App-Build: Inline-Skript oder Ereignisattribut übrig (CSP ohne unsafe-inline): ' + rest[0]);
 
+// Sprachen nur bei Bedarf (src/sprachladen.js): jede Sprache außer Deutsch als eigene Datei lang/<Sprache>.js im App-Paket.
+// Geladen wird lokal aus dem Paket (script-src 'self'), auch im Flugmodus; beim Start nur Deutsch und die gewählte Sprache.
+fs.mkdirSync(path.join(WWW, 'lang'), { recursive: true });
+const sprachDateien = Object.entries(gebaut.sprachDateien);
+if (sprachDateien.length < 12) throw new Error('App-Build: Sprachdateien fehlen (' + sprachDateien.length + ')');
+sprachDateien.forEach(([f, code]) => fs.writeFileSync(path.join(WWW, 'lang', f), code));
+
 // Sicherheitsrichtlinie: nur eigene Dateien, keine Inline-Skripte; fetch nur für die PDF-Schriften (gleicher Ursprung).
 // style-src behält 'unsafe-inline' (style-Attribute und <style> in der Vorlage; Stile führen keinen Code aus).
 const CSP = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; " +
@@ -132,4 +140,7 @@ const head = '<!doctype html>\n<html lang="de"><head><meta charset="utf-8">' +
 fs.writeFileSync(path.join(WWW, 'index.html'), head + html + '\n</body></html>\n');
 
 const kb = (f) => (fs.statSync(path.join(WWW, f)).size / 1024).toFixed(0);
+const startKb = (fs.statSync(path.join(WWW, 'index.html')).size + fs.readdirSync(path.join(WWW, 'js')).reduce((a, f) => a + fs.statSync(path.join(WWW, 'js', f)).size, 0)) / 1024;
+const langKb = sprachDateien.reduce((a, [, c]) => a + Buffer.byteLength(c), 0) / 1024;
+console.log('App-Build: beim Start geladen (index.html + js/)', startKb.toFixed(0), 'KB; Sprachdateien lang/ zusammen', langKb.toFixed(0), 'KB (je Sprache nur bei Bedarf)');
 console.log('App-Build: app/www/index.html', kb('index.html'), 'KB,', skriptNr, 'Skriptdateien, pdf.js', kb('pdf.js'), 'KB, pdf.js-Leser', kb('pdfjs/pdf.min.js'), '+', kb('pdfjs/pdf.worker.min.js'), 'KB, Schriften lokal');

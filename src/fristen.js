@@ -335,6 +335,7 @@ var FristenOrdner = (function () {
   }
   function meldungenLeeren() {
     Array.prototype.forEach.call(document.querySelectorAll('#friMsg, .fri-merken .msg, .fri-rueck-box'), function (m) { clearTimeout(m._uhr); m._uhr = null; m.textContent = ''; });
+    Array.prototype.forEach.call(document.querySelectorAll('.fri-merken-btn.fri-ist-gemerkt'), function (b) { b.textContent = t('fri.merken'); b.classList.remove('fri-ist-gemerkt'); }); // anderer Vorgang: nichts gemerkt
     var s = $('friStart'); if (s && s.getAttribute('data-art') === 'meldung') { var p = s.querySelector('p'); if (p) clearTimeout(p._uhr); s.remove(); }
   }
 
@@ -357,9 +358,12 @@ var FristenOrdner = (function () {
       if (opt.feld === 'fest' && !wert) { meldung(m, t('fri.feld.fest.fehlt')); feld.focus(); return; }
       var e = null; try { e = fn(wert); } catch (x) { e = null; }
       var r = hinzuIntern(e);
-      if (r.s === 'neu') meldung(m, t('fri.gemerkt', { titel: titelVon(r.e), datum: r.e.bis ? datumText(r.e.bis) : t('fri.wort.offen') }), function () { entfernen(r.id); meldung(m, t('fri.entfernt')); });
+      // Sichtbarer Zustand am Knopf selbst (UX-Audit B): „Gemerkt ✓“; Rückgängig stellt ihn zurück
+      if (r.s === 'neu' || r.s === 'da') { b.textContent = t('fri.gemerktKnopf'); b.classList.add('fri-ist-gemerkt'); }
+      if (r.s === 'neu') meldung(m, t('fri.gemerkt', { titel: titelVon(r.e), datum: r.e.bis ? datumText(r.e.bis) : t('fri.wort.offen') }), function () { entfernen(r.id); meldung(m, t('fri.entfernt')); b.textContent = t('fri.merken'); b.classList.remove('fri-ist-gemerkt'); });
       else meldung(m, antwort(r));
     });
+    b.classList.add('fri-merken-btn');
     b.setAttribute('aria-describedby', 'friMerkenT' + nr);
     box.appendChild(b);
     var hint = el('p', 'small muted', t('fri.merken.t')); hint.id = 'friMerkenT' + nr; box.appendChild(hint);
@@ -402,7 +406,7 @@ var FristenOrdner = (function () {
     var z = el('p', 'fri-bis');
     var w = el('span', 'pill ' + PILL[e.wort], t('fri.wort.' + e.wort)); w.title = t('fri.wort.' + e.wort + '.t');
     if (e.bis) { var bb = el('b', null, t('fri.bis', { datum: datumText(e.bis), rest: restText(e.bis, h) })); z.appendChild(bb); z.appendChild(document.createTextNode(' ')); }
-    z.appendChild(w); art.appendChild(z);
+    z.appendChild(w); z.appendChild(el('span', 'small muted fri-wort-t', ' ' + t('fri.wort.' + e.wort + '.t'))); art.appendChild(z); // Abzeichen gleich erklärt (UX-Audit B)
     if (e.art !== 'eigen') art.appendChild(el('p', 'small', t(widOffen(e) ? 'fri.wid.offen' : 'fri.art.' + e.art + '.t')));
     if (e.art === 'wid' && e.stelle === 'wg') art.appendChild(el('p', 'small', t('fri.wid.wg')));
     if (e.notiz) art.appendChild(el('p', 'small fri-notiz', e.notiz)); // nur als Text
@@ -410,7 +414,6 @@ var FristenOrdner = (function () {
     if (ab && e.bis) { var abTag = ab.getFullYear() + '-' + zwei(ab.getMonth() + 1) + '-' + zwei(ab.getDate()); if (abTag < e.bis) art.appendChild(el('p', 'small warn', t('fri.vorgangWeg', { datum: datumText(abTag), bis: datumText(e.bis) }))); }
     if (e.art !== 'eigen') {
       var d = el('details', 'fri-det mehr'), su = el('summary', null, t('fri.rechnung')); d.appendChild(su);
-      d.appendChild(el('p', null, t('fri.wort.' + e.wort + '.t')));
       if (e.wort !== 'fest' && e.wort !== 'offen') d.appendChild(el('p', null, rechnungText(e)));
       else if (e.wort === 'fest') d.appendChild(el('p', null, t('fri.rechnung.fest')));
       if (e.wort === 'gerechnet' || e.wort === 'ungefaehr') d.appendChild(el('p', 'small', t('fri.rechnung.feiertag')));
@@ -419,14 +422,14 @@ var FristenOrdner = (function () {
       art.appendChild(d);
     }
     var btns = el('div', 'btns');
-    btns.appendChild(knopfEl('btn ghost klein', t('fri.erledigt'), function () {
+    btns.appendChild(knopfEl('btn klein', t('fri.erledigt'), function () {
       setzeZustand(e, 'erledigt', heute());
       if (!aendern()) { setzeZustand(e, 'erledigt', null); neuZeichnen(); meldung($('friMsg'), t('fri.fehler')); return; }
       meldung($('friMsg'), t('fri.erledigt.ok'), function () { setzeZustand(e, 'erledigt', null); aendern(); });
       var hh = $('friH'); if (hh) hh.focus();
     }));
     btns.appendChild(knopfEl('btn ghost klein', t('fri.aendern'), function (ev) { aendernForm(art, e, ev.currentTarget); }));
-    btns.appendChild(knopfEl('btn ghost klein', t('fri.loeschen'), function () {
+    btns.appendChild(knopfEl('linkbtn fri-weg', t('fri.loeschen'), function () {
       var alt = JSON.parse(JSON.stringify(findeId(e.id)));
       entfernen(e.id);
       meldung($('friMsg'), t('fri.entfernt'), function () { if (!findeId(alt.id)) { daten.e.unshift(alt); aendern(); } });
@@ -559,7 +562,7 @@ var FristenOrdner = (function () {
       if (ctx.zeigeListe) ctx.zeigeListe();
     };
     if (eigen) {
-      btns.appendChild(knopfEl('btn ghost klein', t('fri.erledigt'), function () {
+      btns.appendChild(knopfEl('btn klein', t('fri.erledigt'), function () {
         setzeZustand(e, 'erledigt', h);
         var ok = sichern(); if (!ok) setzeZustand(e, 'erledigt', null);
         if (ctx.neu) ctx.neu(); render();

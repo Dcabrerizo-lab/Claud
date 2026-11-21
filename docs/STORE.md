@@ -100,9 +100,9 @@ Quellen: gesetze-im-internet.de, arbeitsagentur.de, familienportal.de, bmas.de, 
 Nur Deutsch (weitere Sprachen für die Neuigkeiten sind in dieser Datei nicht angelegt).
 
 ```
-Neu: Suche mit Lupe auf jeder Seite, auch mit Alltagswörtern. Einzelne Vorgänge mit eigener PIN sperren. Mit App-PIN Schutz vor Bildschirmfotos. Beratung: Blatt für Klienten, Weitergabe per QR-Code oder SoLo-Datei. Raten anbieten mit Empfehlung, Tarife vergleichen, Pflegegutachten vergleichen. Wichtige Sätze in Fremdsprachen auch auf Deutsch. Wohngeld, Kinderzuschlag, BAföG und weitere Leistungen genauer. Übersetzungen verbessert, Fehler behoben. Weiter alles offline auf deinem Gerät.
+Neu: Pflege jetzt in allen 13 Sprachen. Die Antragsmappe führt dich Schritt für Schritt wie eine Aufgabenliste. Gibt es zwei Wege (z. B. Wohngeld oder Grundsicherungsgeld), zeigt das Ergebnis beide. Geld und Schulden: Beratungsstelle in deiner Nähe suchen, Musterschreiben bei Mietschulden und drohender Stromsperre, Fristen klarer. SoLo-Dateien von der Beratung öffnen sich direkt. Sprachen laden schneller, auch offline. Besserer Datenschutz am iPhone. Viele Leistungen genauer gerechnet.
 ```
-(489 Zeichen; Version 1.9.0, Build 151. Text von 1.8.0 steht im Git-Verlauf.)
+(490 Zeichen; Version [Versionsname], Build [VersionCode] – legt David fest. Gilt nur, wenn die PRs #152–#173 im Build sind, sonst Sätze streichen: siehe docs/entwuerfe/release-naechstes.md. Text von 1.9.0 steht im Git-Verlauf.)
 
 ### Kategorie und Tags (Vorschlag)
 
@@ -119,7 +119,7 @@ Neu: Suche mit Lupe auf jeder Seite, auch mit Alltagswörtern. Einzelne Vorgäng
 | Welche Datentypen? | **„App-Informationen und Leistung“ → „Diagnose“** und **„Geräte- oder andere IDs“** (Kennung je Installation). Zweck jeweils: **Analyse**. Erhoben: ja. Geteilt: nein. Pflicht oder freiwillig: **Pflicht** (der Nutzer kann es nicht abschalten; es fällt nur an, wenn die Texterkennung benutzt wird). Alle anderen Datentypen: nein. |
 | Daten verschlüsselt übertragen? | **Ja** (laut Google per HTTPS) |
 | Lässt sich das abschalten? | Google beschreibt keinen Schalter dafür. Ohne diese Übertragung ginge es nur mit einer anderen Texterkennung (offen, nächstes Update). |
-| Können Nutzer das Löschen beantragen? | Ja für die Angaben in der App: „Alle Angaben löschen“ oder Deinstallation. Die Diagnosedaten liegen bei Google und hängen an keinem Konto in SoLo. |
+| Können Nutzer das Löschen beantragen? | Ja für die Angaben in der App: „Angaben löschen“ (geöffneter Vorgang), „Alles auf diesem Gerät löschen“ (alle Vorgänge und PIN) oder Deinstallation. Die Diagnosedaten liegen bei Google und hängen an keinem Konto in SoLo. |
 | Quellen (abgerufen am 21.11.2026) | Google, „ML Kit – Android data disclosure“ (developers.google.com/ml-kit/android-data-disclosure, Stand 15.07.2026); Google, „Text recognition v2 (Android)“ (developers.google.com/ml-kit/vision/text-recognition/v2/android: gebündelt = `com.google.mlkit:text-recognition`); Google Play Console-Hilfe, „Provide information for Google Play's Data safety section“ (support.google.com/googleplay/android-developer/answer/10787469). Ob SoLo die Daten tatsächlich sendet, ist nicht am Gerät gemessen (Netzwerkmitschnitt offen); bis dahin gilt Googles Aufstellung. |
 | Werbung | Nein |
 | Zielgruppe | Erwachsene (18+); nicht für Kinder gestaltet |
@@ -170,9 +170,9 @@ Wohngeld,Bürgergeld,Grundsicherung,Kinderzuschlag,Bescheid,Widerspruch,Pflegegr
 Gleicher Text wie „Neuigkeiten in dieser Version“ bei Google Play:
 
 ```
-Neu: Suche mit Lupe auf jeder Seite, auch mit Alltagswörtern. Einzelne Vorgänge mit eigener PIN sperren. Mit App-PIN Schutz vor Bildschirmfotos. Beratung: Blatt für Klienten, Weitergabe per QR-Code oder SoLo-Datei. Raten anbieten mit Empfehlung, Tarife vergleichen, Pflegegutachten vergleichen. Wichtige Sätze in Fremdsprachen auch auf Deutsch. Wohngeld, Kinderzuschlag, BAföG und weitere Leistungen genauer. Übersetzungen verbessert, Fehler behoben. Weiter alles offline auf deinem Gerät.
+Neu: Pflege jetzt in allen 13 Sprachen. Die Antragsmappe führt dich Schritt für Schritt wie eine Aufgabenliste. Gibt es zwei Wege (z. B. Wohngeld oder Grundsicherungsgeld), zeigt das Ergebnis beide. Geld und Schulden: Beratungsstelle in deiner Nähe suchen, Musterschreiben bei Mietschulden und drohender Stromsperre, Fristen klarer. SoLo-Dateien von der Beratung öffnen sich direkt. Sprachen laden schneller, auch offline. Besserer Datenschutz am iPhone. Viele Leistungen genauer gerechnet.
 ```
-(489 Zeichen; Version 1.9.0, Build 151. Text von 1.8.0 steht im Git-Verlauf.)
+(490 Zeichen; Version [Versionsname], Build [VersionCode] – legt David fest. Gilt nur, wenn die PRs #152–#173 im Build sind, sonst Sätze streichen: siehe docs/entwuerfe/release-naechstes.md. Text von 1.9.0 steht im Git-Verlauf.)
 
 ### URLs
 
@@ -189,21 +189,24 @@ Neu: Suche mit Lupe auf jeder Seite, auch mit Alltagswörtern. Einzelne Vorgäng
 - **Tracking:** Nein.
 - **Exportkontrolle:** In `Info.plist` ist `ITSAppUsesNonExemptEncryption = false` gesetzt (nur Standard-Verschlüsselung des Systems).
 - **Kamera:** Begründung steht in `Info.plist` (`NSCameraUsageDescription`).
+- **Dateityp .solo** (ab nächster Version): `Info.plist` meldet den eigenen Dateityp `com.Sozialleistungslotse.solo` (`CFBundleDocumentTypes`, `UTExportedTypeDeclarations`, `LSSupportsOpeningDocumentsInPlace = false`). Keine neue Berechtigung, keine Datenerfassung: Datenschutz-Angaben bleiben unverändert („keine Daten erfasst“). Android: Dateizuordnung im Manifest ohne neue Berechtigung, Datensicherheit in der Play Console unverändert.
 
 ### Hinweise für die App-Prüfung (App Review Information → Notes)
 
-Die Testschritte passen zu Version 1.8.0 (Startkacheln, Leiste unten: Start, Mein Ordner, Einstellungen; Beispiele sind nicht mehr sichtbar; Stand 21.11.2026).
+Die Testschritte passen zur Version [Versionsname] (Antragsmappe als Aufgabenliste mit „Drucken oder teilen“, SoLo-Datei direkt öffnen; Stand 21.11.2026).
 
 ```
 Die App läuft vollständig offline. Es gibt keine Anmeldung und kein Konto, ein Demo-Zugang ist nicht nötig. Die App überträgt keine Daten: keine Server, keine Werbung, kein Tracking. Alle Angaben bleiben auf dem Gerät.
 
-Zum Testen: Auf der Startseite „Welche Hilfen stehen mir zu?“ tippen, „Schritt für Schritt“ oder „Alles auf einer Seite“ wählen, einige Fragen beantworten (z. B. 1 Erwachsener, 1 Kind, Miete 600 €), Ergebnisse ansehen, unten „Antragsmappe erstellen“ → „PDF teilen“. Auf der Startseite „Ich habe einen Brief bekommen“ → eine Kachel (z. B. „Jobcenter“) → „Werte selbst eingeben“ zeigt die Prüfung eines Bescheids. „Pflegegrad selbst einschätzen“ öffnet sich über die Startkachel „Pflege“ oder den Knopf im Fragebogen unter Gesundheit. „Geld und Schulden“ → „Es ist dringend“ → „Was ist zuerst dran?“ zeigt den Krisen-Check. Die PIN-Sperre unter „Einstellungen“ ist freiwillig und für die Prüfung nicht nötig.
+Zum Testen: Auf der Startseite „Welche Hilfen stehen mir zu?“ tippen, „Schritt für Schritt“ oder „Alles auf einer Seite“ wählen, einige Fragen beantworten (z. B. 1 Erwachsener, 1 Kind, Miete 600 €), Ergebnisse ansehen, „Antrag vorbereiten“ tippen. Die Antragsmappe führt Schritt für Schritt durch die Aufgaben; im letzten Schritt „Drucken oder teilen“. Auf der Startseite „Ich habe einen Brief bekommen“ → eine Kachel (z. B. „Jobcenter“) → „Werte selbst eingeben“ zeigt die Prüfung eines Bescheids. „Pflegegrad selbst einschätzen“ öffnet sich über die Startkachel „Pflege“ oder den Knopf im Fragebogen unter Gesundheit. „Geld und Schulden“ → „Es ist dringend“ → „Was ist zuerst dran?“ zeigt den Krisen-Check. Die PIN-Sperre unter „Einstellungen“ ist freiwillig und für die Prüfung nicht nötig.
 
 Brief-Scan: „Diesen Brief scannen“ in der Kachel nutzt die Kamera. Die Texterkennung läuft lokal auf dem Gerät (Apple Vision), das Foto wird nicht gespeichert und nicht übertragen. „PDF wählen“ liest eine PDF-Datei ebenfalls nur auf dem Gerät.
 
+SoLo-Dateien (.solo) aus dem Beratungsmodus lassen sich über Teilen → SoLo öffnen; auch das läuft ohne Netzverbindung.
+
 Die App ist eine Orientierungshilfe, keine Rechtsberatung und keine App einer Behörde.
 ```
-(1.259 Zeichen)
+(1.466 Zeichen)
 
 ---
 

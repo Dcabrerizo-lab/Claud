@@ -12,7 +12,7 @@
   "kb.sprache": "Limba clientului",
   "kb.einfach": "Germană – limbaj simplu",
   "kb.daneben": "Germană alături",
-  "kb.teil.hilfen": "Rezultatul verificării ajutoarelor",
+  "kb.teil.hilfen": "Rezultatul verificării prestațiilor",
   "kb.teil.unterlagen": "Lista documentelor",
   "kb.teil.fristen": "Termene",
   "kb.teil.briefe": "Scrisori model (dosarul de cerere)",
@@ -56,7 +56,7 @@
   "kw.ordner": "De la consilierea ta",
   "kw.ordner.st": "Vezi, tipărește sau trimite",
   "kw.teil.state": "Date și completări din formulare",
-  "kw.teil.einfach": "Date (versiunea simplă)",
+  "kw.teil.einfach": "Date (verificare scurtă)",
   "kw.teil.pflegecheck": "Evaluarea nevoii de îngrijire (Pflege)",
   "kw.teil.pfaendung": "Protecție la executare (Pfändungsschutz)",
   "kw.teil.haushalt": "Bugetul gospodăriei",
@@ -89,5 +89,13 @@
   "kw.imp.nichts": "Nimic ales.",
   "kw.imp.f.format": "Acesta nu este un fișier SoLo valid.",
   "kw.imp.f.zuGross": "Fișierul este prea mare.",
-  "kw.imp.f.speicher": "Salvarea nu merge acum. Este SoLo blocat? Deblochează și încearcă din nou."
+  "kw.imp.f.speicher": "Salvarea nu merge acum. Este SoLo blocat? Deblochează și încearcă din nou.",
+  "kb.s1": "1 · Ce primește clientul tău?",
+  "kb.s2": "2 · Cum transmiți mai departe?",
+  "kb.zaehler": "{titel} ({n} din {m})",
+  "kb.weg.blatt": "Ca foaie: pe hârtie sau ca fișier",
+  "kb.vorschau": "Arată previzualizarea foii",
+  "kb.vorschau.zu": "Ascunde previzualizarea",
+  "kw.qr.zuViel": "E prea mult pentru un cod QR. Trimite ca fișier SoLo sau bifează mai puțin.",
+  "kw.imp.pinZeigen": "Arată PIN-ul"
 }

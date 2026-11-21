@@ -17,6 +17,7 @@ const appNamen = Object.fromEntries([
   'BriefLesen', 'PflegeAssistent', 'Pflege', 'PflegeFragen', 'PflegeImport',
   'BescheidGSA', 'BescheidKiZ', 'BescheidSGB2', 'BescheidWG', 'Fristen', 'Nebenkosten',
   'Widerspruch', 'Lizenz', 'BRIEF_EINFACH', 'Haushalt', 'Ausziehen', 'Schulden', 'Geld', 'Navigation', 'Schritte', 'FristenOrdner', 'Klient', 'Suche', 'DeNetz', 'LIZENZ_SCHLUESSEL', 'DEMO_LIZENZ', 'Vorgaenge',
+  'SprachLaden', 'SPRACH_QUELLE', // src/sprachladen.js (Sprachen nur bei Bedarf; SPRACH_QUELLE setzt scripts/build.js)
 ].map((n) => [n, 'readonly']));
 
 module.exports = [

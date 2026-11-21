@@ -2,6 +2,13 @@
 
 Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss steigen). Die Versionsnummer kommt aus dem Build.
 
+## Nächste Version (in Arbeit)
+
+| Bereich | Was ist neu |
+|---|---|
+| **SoLo-Datei direkt öffnen** (Android und iPhone) | Eine SoLo-Datei (.solo) aus Messenger, Mail oder Dateien-App öffnet sich direkt mit SoLo („Öffnen mit“ bzw. „Teilen“ → SoLo). SoLo zeigt „Mein Ordner“ → „Von der Beratung bekommen“ mit der PIN-Abfrage, danach wie bisher Vorschau und Speichern als neuer Vorgang. Gleiche strenge Prüfung wie „Datei öffnen“; eine falsche Datei ergibt nur einen Hinweis. Keine neue Berechtigung, kein Netz. iPhone: SoLo liest eine Kopie und löscht sie gleich danach. Android: Weil .solo kein eigener Dateityp ist, kann SoLo auch bei anderen Dateien (z. B. „application/octet-stream“) in der Auswahl stehen. |
+| **iPhone: stärkerer Speicherschutz** | Die Datei mit den Angaben ist jetzt nur lesbar, solange das iPhone entsperrt ist (Datenschutzklasse „vollständig“ statt „bis zum ersten Entsperren“). Vorhandene Dateien werden beim nächsten Öffnen umgestellt. SoLo speichert beim Verlassen der App sofort; bei gesperrtem Gerät lehnt SoLo das Schreiben ab und meldet es, statt still Daten zu verlieren. |
+
 ## Version 1.9.0 (VersionCode/Build 151, 21.11.2026)
 
 Stand: Sammelzweig für Update 1.9 (21.11.2026). Versionsnummer (VersionCode) legt David fest.
@@ -35,7 +42,7 @@ Stand: Sammelzweig für Update 1.9 (21.11.2026). Versionsnummer (VersionCode) le
 | **Landespflegegeld** | Hinweis: Das Geld kommt in der Regel bis 31. Januar des Folgejahres (keine feste Zusage). |
 | **Arbeitslosengeld, Krankengeld** | Spanne reicht jetzt auch für Steuerklasse III. |
 | **Rundfunkbeitrag** | Befreiung kann bis zu 3 Jahre rückwirkend gelten (§ 4 Abs. 4 RBStV). |
-| **Zuständige Stellen** | Sachsen-Anhalt: Landesamt für Soziales, Jugend und Gesundheit (LAS) seit 1.4.2026; Eingliederungshilfe beim Sozialamt. Anschriften außerhalb Bayerns nur noch aus amtlichen Seiten: 60 frühere Wikipedia-Anschriften geprüft (32 bestätigt, 15 korrigiert, 13 ohne Beleg → nur Name und Website). |
+| **Zuständige Stellen** | Sachsen-Anhalt: Landesamt für Soziales, Jugend und Gesundheit (LAS) seit 1.4.2026; Eingliederungshilfe beim Sozialamt. Anschriften außerhalb Bayerns nur noch aus amtlichen Seiten: 60 frühere Wikipedia-Anschriften geprüft (33 bestätigt, 15 korrigiert, 12 ohne Beleg → nur Name und Website; Nachprüfung 21.11.2026: Solingen bestätigt, Website gesperrt oder nicht abrufbar bei den übrigen 12). |
 
 ### Übersichtlicher
 
@@ -62,6 +69,9 @@ Stand: Sammelzweig für Update 1.9 (21.11.2026). Versionsnummer (VersionCode) le
 | **Vorgang wechseln ohne Reste** | Beim Wechsel des Vorgangs wird alles vom vorigen Klienten geleert (Scan, eingefügter Brief, Prüfungen, Namen in Schreiben, Antragsmappe, Blatt für Klienten, Pflege-Einschätzung). |
 | **iPhone: Angaben ohne Sicherung** | Die Angaben liegen in einer eigenen Datei, die iOS nicht in iCloud- oder Finder-Sicherungen aufnehmen soll (Hinweis an iOS, Apple garantiert das nicht). Alte Angaben werden beim ersten Start übernommen. |
 | **Keine Datei-Reste** | Beim Start werden liegengebliebene .solo-, PDF- und CSV-Dateien vom Teilen gelöscht. |
+| **Speichern ehrlich** | Haushaltsplan, Schulden-Liste und „Ich ziehe aus“ melden, wenn Speichern nicht geklappt hat (z. B. Vorgang gesperrt), statt still weiterzumachen. 13 Sprachen und Einfache Sprache. |
+| **Kaputte Daten nicht überschreiben** | Lässt sich ein gespeicherter Stand (Haushaltsplan, Schulden-Liste, „Ich ziehe aus“) nicht lesen, sichert SoLo ihn im selben Vorgang (lotse.<name>.defekt, mit PIN verschlüsselt wie der Rest), zeigt einen kurzen Hinweis und startet leer. |
+| **Weniger Rechenlast beim Scrollen** | Der Knopf „Zum Ergebnis“ beobachtet das Ergebnis (IntersectionObserver) statt bei jedem Scrollen zu messen; ältere Geräte ohne diese Funktion wie bisher. Werkzeug für Anschriften übernimmt nur noch amtliche Quellen (Impressum), nie Wikipedia. |
 | **Datenschutzerklärung** | Ergänzt: Einlesen von Briefen und PDF, Zwischenablage, Vorgang-PIN, Weitergabe per QR-Code/Datei (Messenger-Hinweis), Bildschirmfoto-Schutz, Diagnosedaten von Google ML Kit (nur Android), ältere iOS-Sicherungen. |
 | **Große Schrift (200 %)** | Lange Wörter in Kartentiteln werden umgebrochen, kein seitliches Scrollen. |
 | Technik | Gemeinsames Verschlüsselungs-Modul (src/krypto.js), alte verschlüsselte Daten bleiben lesbar. Neue Prüfwerkzeuge gegen amtliche Rechner (Wohngeld, Kinderzuschlag, BAföG, Elterngeld, Pfändung) – nicht in der App. |

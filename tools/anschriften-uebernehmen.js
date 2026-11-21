@@ -3,10 +3,10 @@
 //
 // Auswahl, von sicher nach weniger sicher. Die PLZ muss im selben Bundesland liegen (viele Landratsämter sitzen in der
 // benachbarten kreisfreien Stadt, z. B. Landkreis Heilbronn in Heilbronn); wo nur eine Quelle vorliegt, gelten strengere Regeln.
+// Quelle ist immer das Impressum der Behörde (amtlich). Wikipedia ist keine Quelle, sondern dient nur zum Abgleich.
 //  1. Impressum und Wikipedia nennen dieselbe Anschrift (gleiche PLZ, gleiche Straße)  -> Quelle „Impressum“
 //     (auch ohne Hausnummer, z. B. „Europaplatz“, „Kreishaus am Schloßplatz“)
-//  2. Wikipedia nennt eine vollständige Anschrift der Kreis-/Stadtverwaltung (Straße mit Nummer) -> Quelle „Wikipedia“
-//     (Impressen nennen oft zusätzlich Webagenturen, Portalbetreiber oder Datenschutzbeauftragte)
+//  2. (gesperrt) Anschrift nur aus Wikipedia wird nie übernommen
 //  3. Wikipedia nennt nur die Hausnummer: die Impressum-Anschrift mit derselben PLZ und Hausnummer -> „Impressum“
 //  4. Keine Wikipedia-Angabe: Impressum-Anschrift mit PLZ im eigenen Kreis und Straße mit Nummer -> „Impressum“
 //  5. Sonst keine Anschrift (die App nennt dann die Website der Behörde)
@@ -43,7 +43,7 @@ function pruefe(k, ags) {
 const norm = (s) => s.toLowerCase().replace(/ß/g, 'ss').replace(/str\.?(?=\s|$)/g, 'strasse').replace(/[^a-z0-9äöü]/g, '');
 const nummer = (z) => (z.match(/\d+/) || [''])[0];
 
-let ok = 0, ohne = 0, nBeide = 0, nWiki = 0, nNummer = 0, nNurImp = 0;
+let ok = 0, ohne = 0, nBeide = 0, nNummer = 0, nNurImp = 0;
 const bericht = [];
 Object.keys(DE.kreise).forEach((ags) => {
   const e = E[ags], b = DE.kreise[ags];
@@ -55,10 +55,9 @@ Object.keys(DE.kreise).forEach((ags) => {
   // 1. Übereinstimmung
   for (const w of wiki) {
     const i = imp.find((x) => x.plz === w.plz && norm(x.zeilen[0]) === norm(w.zeilen[0]));
-    if (i) { wahl = w; art = 'impressum'; nBeide++; break; }   // Schreibweise aus Wikipedia (einheitlich, Straße ausgeschrieben)
+    if (i) { wahl = i; art = 'impressum'; nBeide++; break; }   // Schreibweise aus dem Impressum (amtliche Quelle)
   }
-  // 2. Vollständige Wikipedia-Anschrift (keine Postfächer)
-  if (!wahl) { const w = wiki.find((x) => x.streng && !x.postfach); if (w) { wahl = w; art = 'wikipedia'; nWiki++; } }
+  // 2. Gesperrt: eine Anschrift nur aus Wikipedia wird nie übernommen (nur amtliche Quellen)
   // 3. Wikipedia nur mit Hausnummer: passende Impressum-Anschrift
   if (!wahl) {
     for (const w of wikiRoh) {
@@ -80,14 +79,15 @@ Object.keys(DE.kreise).forEach((ags) => {
     return;
   }
   b.anschrift = wahl.zeilen;
-  b.quelle = art === 'wikipedia' ? e.wikipedia : (e.impressum || e.web);
+  if (art !== 'impressum') throw new Error('Nur amtliche Quellen (Impressum): ' + ags); // Wikipedia ist gesperrt
+  b.quelle = e.impressum || e.web;
   b.quelleArt = art;
   b.stand = String(e.zeit || '').slice(0, 10).split('-').reverse().map(Number).join('.');
   ok++;
 });
-DE.stand = DE.stand.replace(/; Anschriften.*$/, '') + '; Anschriften: Impressum der Behörden und Wikipedia (Handy-Abruf), geprüft (PLZ im Land, Abgleich beider Quellen)';
+DE.stand = DE.stand.replace(/; Anschriften.*$/, '') + '; Anschriften: Impressum der Behörden (Handy-Abruf), geprüft (PLZ im Land, Abgleich mit Wikipedia, Wikipedia nie als Quelle)';
 fs.writeFileSync(DEF, JSON.stringify(DE, null, 1));
-const zus = `Anschriften übernommen: ${ok} von ${Object.keys(DE.kreise).length} (Impressum und Wikipedia gleich: ${nBeide}, nur Wikipedia: ${nWiki}, Impressum über Hausnummer bestätigt: ${nNummer}, nur Impressum: ${nNurImp}); ohne gesicherte Anschrift: ${ohne}`;
+const zus = `Anschriften übernommen: ${ok} von ${Object.keys(DE.kreise).length} (Impressum und Wikipedia gleich: ${nBeide}, Impressum über Hausnummer bestätigt: ${nNummer}, nur Impressum: ${nNurImp}); ohne gesicherte Anschrift: ${ohne}`;
 console.log(zus);
 if (berichtDatei) fs.writeFileSync(berichtDatei, zus + '\n\n' + bericht.join('\n') + '\n');
 else if (bericht.length) console.log(bericht.join('\n'));
