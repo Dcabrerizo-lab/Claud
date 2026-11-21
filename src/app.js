@@ -3111,6 +3111,7 @@
     paRueckPruefen(a); // Rückweg zur Pflege-Ergebnisseite nur auf der Unterseite selbst
     aktAnsicht = a;
     if (a === 'start') sucheRueck = '';
+    if (window.Suche && Suche.offen()) Suche.schliessen(false); // Such-Fenster zu, wenn die App die Ansicht wechselt (z. B. Leiste, Link)
     if (a === 'pflegeinfo' && !herkunft.pflegeinfo) herkunft.pflegeinfo = piZurueckZu; // z. B. über die Adresse #pflegeinfo geöffnet
     if (a !== vorA && herkunft[a] === vorA) herkunftT[a] = { von: vorA, t: vorT };
     $('app').setAttribute('data-ansicht', a);
