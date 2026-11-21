@@ -28,10 +28,17 @@ function attrappe(files, opt = {}) {
   const anzahl = await Klient.cacheAufraeumen(f);
   const weg = f.geloescht.map((o) => o.path).sort();
   ok('liest nur den App-Cache (CACHE, oberste Ebene)', f.gelesen.length === 1 && f.gelesen[0].directory === 'CACHE' && f.gelesen[0].path === '', f.gelesen);
-  ok('löscht .solo, .pdf und Seitenbilder', JSON.stringify(weg) === JSON.stringify(['Antragsmappe.pdf', 'SoLo-Unterlagen.SOLO', 'SoLo-Vorgang.solo', 'Widerspruch-Jobcenter.pdf', 'solo-pdfseite-1732190000000.jpg']), weg);
+  ok('löscht .solo, .pdf, Seitenbilder und die eigene CSV', JSON.stringify(weg) === JSON.stringify(['Antragsmappe.pdf', 'Haushaltsbuch-2026-11-21.csv', 'SoLo-Unterlagen.SOLO', 'SoLo-Vorgang.solo', 'Widerspruch-Jobcenter.pdf', 'solo-pdfseite-1732190000000.jpg']), weg);
   ok('alle Löschungen im CACHE', f.geloescht.every((o) => o.directory === 'CACHE'));
-  ok('Anzahl gelöschter Dateien = 5', anzahl === 5, anzahl);
-  ok('keine Ordner, keine fremden Dateien (Foto, CSV, .txt, .bak)', !weg.some((p) => /foto|csv|WebView|alt\.pdf|txt|bak/.test(p)));
+  ok('Anzahl gelöschter Dateien = 6', anzahl === 6, anzahl);
+  ok('keine Ordner, keine fremden Dateien (Foto, .txt, .bak)', !weg.some((p) => /foto|WebView|alt\.pdf|txt|bak/.test(p)));
+
+  // Prüfvermerk PR #104: CSV-Reste aus Haushaltsbuch, Belegen und Schulden-Liste (Geld-Daten) auch löschen, fremde CSV nicht
+  const c = attrappe(['Haushaltsbuch-2026-11-21.csv', 'Schulden-2026-11-21.csv', 'Belege-2026.csv', 'Haushaltsbuch.csv', 'meine-Belege-2026.csv', 'Schulden-2026-11-21.csv.bak', 'unter/Antrag.pdf', '..\\Antrag.pdf'].map((name) => ({ name, type: 'file' })));
+  ok('CSV-Reste der App gelöscht, andere CSV und Pfade bleiben', (await Klient.cacheAufraeumen(c)) === 3 && c.geloescht.map((o) => o.path).sort().join() === 'Belege-2026.csv,Haushaltsbuch-2026-11-21.csv,Schulden-2026-11-21.csv', c.geloescht);
+  // Die Namen müssen zu den Stellen passen, die die Dateien schreiben
+  const quelle = (f) => fs.readFileSync(path.join(__dirname, '..', 'src', f), 'utf8');
+  ok('Dateinamen im Code unverändert (Haushaltsbuch-, Belege-, Schulden-)', quelle('haushalt.js').includes("'Haushaltsbuch-' + isoTag(new Date()) + '.csv'") && quelle('haushalt.js').includes("'Belege-' + j + '.csv'") && quelle('schulden.js').includes("'Schulden-' + isoTag(new Date()) + '.csv'"));
 
   // Ältere Filesystem-Versionen: nur Namen
   const g = attrappe(['a.solo', 'b.pdf', 'c.png']);

@@ -463,7 +463,8 @@ Klient.cacheAufraeumen = (function () {
   // Reste vom Teilen: Die App schreibt .solo- und PDF-Dateien (und Seitenbilder beim Einlesen) kurz in ihren eigenen Cache
   // (Capacitor Filesystem, Directory.Cache = 'CACHE') und löscht sie nach dem Teilen. Wird die App dabei beendet, bleiben sie liegen.
   // Beim Start: nur Dateien direkt im App-Cache mit diesen Endungen bzw. diesem Namen löschen, keine Ordner, nichts außerhalb.
-  var CACHE_RESTE = /^[^/\\]+\.(?:solo|pdf)$|^solo-pdfseite-\d+\.jpg$/i;
+  // Dazu die CSV-Dateien aus dem Haushaltsbuch und der Schulden-Liste (src/haushalt.js, src/schulden.js): nur mit genau diesen Namen.
+  var CACHE_RESTE = /^[^/\\]+\.(?:solo|pdf)$|^solo-pdfseite-\d+\.jpg$|^(?:Haushaltsbuch|Schulden)-\d{4}-\d\d-\d\d\.csv$|^Belege-\d{4}\.csv$/i;
   function cacheAufraeumen(fsys) {
     if (!fsys || typeof fsys.readdir !== 'function' || typeof fsys.deleteFile !== 'function') return Promise.resolve(0);
     return Promise.resolve().then(function () { return fsys.readdir({ path: '', directory: 'CACHE' }); }).then(function (r) {
