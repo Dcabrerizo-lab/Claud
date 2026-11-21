@@ -215,7 +215,7 @@
   "t.pflege.pg2": "Pflegegeld للرعاية المنزلية: {geld} شهرياً عند درجة الرعاية {pg}. يُحوَّل إلى حسابك. بالإضافة إلى ذلك يوجد مبلغ التخفيف (Entlastungsbetrag) {ent} شهرياً: لا يُدفع نقداً، بل يدفع به صندوق الرعاية (Pflegekasse) مقابل مساعدات معتمدة في الحياة اليومية.",
   "z.ggBezug": "أنت تحصل على Grundsicherungsgeld (حتى يونيو 2026: Bürgergeld). Wohngeld وKinderzuschlag لا يجتمعان معه عادة. حزمة التعليم تمر غالباً عبر Jobcenter.",
   "z.wgKiz": "يمكن الجمع بين Wohngeld وKinderzuschlag. قدّم طلباً لكليهما حتى لو كان أحدهما على الحد.",
-  "z.gsaWg": "لا تُصرف Grundsicherung im Alter وWohngeld في الوقت نفسه. إذا كفى معاشك مع Wohngeld، يأتي Wohngeld أولًا. يتحقق Sozialamt من ذلك.",
+  "z.gsaWg": "لا يمكن الحصول على Grundsicherung im Alter وWohngeld في الوقت نفسه. اطلب فحص الاثنين واسأل أي طريق يعود عليك بالأكثر.",
   "z.ggVsWg": "لا يُصرف Grundsicherungsgeld مع Wohngeld وKinderzuschlag. إذا كفى Wohngeld وKinderzuschlag مع دخلك، فهما يأتيان أولًا. الجهات تتحقق من ذلك.",
   "z.kgZuerst": "قدّم طلب Kindergeld أولاً. بدون Kindergeld لا يوجد Kinderzuschlag.",
   "z.stichtag": "كثير من المساعدات لا تُدفع إلا من شهر الطلب. قدّم الطلب مبكراً حتى لو كان حراً.",
@@ -1649,7 +1649,8 @@
   "t.ggeld.vorrang": "على الأرجح يكفي Wohngeld وKinderzuschlag لأسرتك. عندها يأتيان أولًا ولا يُصرف Grundsicherungsgeld. الجهات تتحقق من ذلك.",
   "t.ggeld.vorrangWg": "على الأرجح يكفي Wohngeld لأسرتك. عندها يأتي أولًا ولا يُصرف Grundsicherungsgeld. الجهات تتحقق من ذلك.",
   "t.ggeld.vorrangKiz": "على الأرجح يكفي Kinderzuschlag لأسرتك. عندها يأتي أولًا ولا يُصرف Grundsicherungsgeld. الجهات تتحقق من ذلك.",
-  "t.gsa.vorrang": "على الأرجح يكفي Wohngeld مع معاشك التقاعدي. عندها يأتي أولًا ولا تُصرف Grundsicherung im Alter. يتحقق Sozialamt من ذلك.",
+  "eo.t": "لا يمكن الحصول على الاثنين معًا. الطريقان ممكنان لك.",
+  "eo.tipp": "نصيحة: اطلب فحص الاثنين واسأل أي طريق يعود عليك بالأكثر.",
   "t.wohngeld.verzicht": "على الأرجح لا يكفي Wohngeld وحده لأسرتك. عندها يكون Grundsicherungsgeld هو الطريق المعتاد. يجوز لك أن تأخذ Wohngeld بدلًا منه، لكنك تحصل غالبًا على مال أقل.",
   "t.wohngeld.verzichtKiz": "على الأرجح لا يكفي Wohngeld وKinderzuschlag لأسرتك. عندها يكون Grundsicherungsgeld هو الطريق المعتاد. يجوز لك أن تأخذ Wohngeld بدلًا منه، لكنك تحصل غالبًا على مال أقل.",
   "t.wohngeld.verzichtGsa": "على الأرجح لا يكفي Wohngeld مع معاشك التقاعدي. عندها تكون Grundsicherung im Alter هي الطريق المعتاد. يجوز لك أن تأخذ Wohngeld بدلًا منها، لكنك تحصل غالبًا على مال أقل."

@@ -435,13 +435,19 @@ console.log('Hinweis, nicht verwendete Schlüssel:', unused.length ? unused.join
   const a13 = W({ adults: 1, kids: 0, art1: 'lohn', brutto: 1300, miete: 500 });
   check('[wege] Allein, 1.300 € brutto, Miete 500: Grundsicherungsgeld üblicher Weg, Wohngeld nur „möglich“ mit Verzicht-Hinweis', a13.wege.lage === 'bUeblich' && lv(a13, 'ggeld') === 'ja' && betrag(a13, 'ggeld') && lv(a13, 'wohngeld') === 'vielleicht' && keys(a13, 'wohngeld').includes('wohngeld.verzicht'));
   const r9 = W({ adults: 1, kids: 0, art1: 'rente', brutto: 900, netto: 900, miete: 450, gebJahr: 1950 });
-  check('[wege] Rentner, 900 € Rente, Miete 450: Wohngeld geht vor (§ 2 SGB XII), Grundsicherung im Alter ohne Betrag', r9.wege && r9.wege.rente && r9.wege.lage === 'aVor' && lv(r9, 'gsa') === 'vielleicht' && keys(r9, 'gsa')[0] === 'gsa.vorrang' && !betrag(r9, 'gsa') && lv(r9, 'wohngeld') === 'ja');
+  // Rente: kein Vorrang, der den Anspruch nimmt (§ 2 Abs. 1 SGB XII ist keine Ausschlussnorm: BSG 23.03.2021, B 8 SO 2/20 R, bsg.bund.de, Abruf 21.11.2026)
+  check('[wege] Rentner, 900 € Rente, Miete 450: echte Wahl, Grundsicherung im Alter bleibt „wahrscheinlich“ mit Betrag, Wohngeld auch', r9.wege && r9.wege.rente && r9.wege.lage === 'wahl' && lv(r9, 'gsa') === 'ja' && !!betrag(r9, 'gsa') && get(r9, 'gsa').hl !== 'vorrang' && !keys(r9, 'gsa').includes('weg.unklar') && lv(r9, 'wohngeld') === 'ja' && !!r9.wege.aBetrag && !!r9.wege.bBetrag, JSON.stringify(r9.wege));
+  { const r7 = W({ adults: 1, kids: 0, art1: 'rente', brutto: 700, netto: 700, miete: 450, gebJahr: 1950 }), ohne = W({ adults: 1, kids: 0, art1: 'rente', brutto: 700, netto: 700, miete: 450, gebJahr: 1950, ohneWege: true });
+    check('[wege] Rentner, 700 € Rente: Grundsicherung im Alter mit zwei Wegen genau wie ohne (Stufe, Betrag); Wohngeld nie über „wahrscheinlich“ hinaus verändert außer Verzicht-Hinweis', r7.wege && r7.wege.rente && ['wahl', 'bUeblich'].includes(r7.wege.lage) && lv(r7, 'gsa') === lv(ohne, 'gsa') && lv(r7, 'gsa') === 'ja' && JSON.stringify(get(r7, 'gsa').tx) === JSON.stringify(get(ohne, 'gsa').tx) && (r7.wege.lage !== 'bUeblich' || keys(r7, 'wohngeld').includes('wohngeld.verzichtGsa')), JSON.stringify(r7.wege));
+    let schlecht = 0;
+    for (let rente = 300; rente <= 1600; rente += 50) for (const miete of [300, 450, 600, 800]) { const e = { adults: 1, kids: 0, art1: 'rente', brutto: rente, netto: rente, miete, gebJahr: 1950 }, m = W(e), o = W(Object.assign({ ohneWege: true }, e)); if (lv(m, 'gsa') !== lv(o, 'gsa') || JSON.stringify(get(m, 'gsa').tx) !== JSON.stringify(get(o, 'gsa').tx) || (m.wege && m.wege.rente && !['wahl', 'bUeblich'].includes(m.wege.lage))) schlecht++; }
+    check('[wege] Rente 300 bis 1.600 €, Miete 300 bis 800 €: zwei Wege ändern die Karte Grundsicherung im Alter nie; Lage nur „wahl“ oder „bUeblich“', schlecht === 0, schlecht); }
   const w13 = W({ adults: 2, kids: 2, art1: 'lohn', brutto: 1320, miete: 800 });
   check('[wege] Paar, 2 Kinder, 1.320 € brutto: kleine Lücke (erweiterter Zugang) -> echte Wahl, Beträge je Weg', w13.wege.lage === 'wahl' && w13.wege.aBetrag && w13.wege.bBetrag, JSON.stringify(w13.wege));
   check('[wege] Wer Grundsicherungsgeld schon bekommt: keine zwei Wege', W({ adults: 2, kids: 2, art1: 'lohn', brutto: 1500, miete: 800, bezug: { grundsicherungsgeld: true } }).wege === null);
   check('[wege] ohneWege (nur für Regeltests): jede Leistung für sich, Grundsicherungsgeld wie vorher „wahrscheinlich“ mit Betrag', (() => { const o = W({ adults: 2, kids: 2, art1: 'lohn', brutto: 2800, miete: 800, ohneWege: true }); return o.wege === null && lv(o, 'ggeld') === 'ja' && betrag(o, 'ggeld'); })());
   check('[wege] Gefährlicher Tipp „beide Anträge gleichzeitig“ ist weg (sperrt den erweiterten Zugang, § 6a Abs. 1a Nr. 3 BKGG)', !Object.keys(I18N.de).some((k) => /^ww\./.test(k)) && !Object.values(I18N.de).some((v) => /beide Anträge gleichzeitig/.test(v)));
-  check('[wege] Keine „Weg 1/2“-Namen mehr; „welcher Weg dir mehr bringt“ ersetzt', !Object.values(I18N.de).some((v) => /Weg [12]:|welcher Weg dir mehr bringt/.test(v)));
+  check('[wege] Keine „Weg 1/2“-Namen mehr; „welcher Weg dir mehr bringt“ nur noch bei Rente (dort echte Wahl: z.gsaWg, eo.tipp), kein Satz „Grundsicherung im Alter gibt es nicht“', !Object.values(I18N.de).some((v) => /Weg [12]:/.test(v)) && Object.keys(I18N.de).filter((k) => /welcher Weg dir mehr bringt/.test(I18N.de[k])).sort().join() === 'eo.tipp,z.gsaWg' && !('t.gsa.vorrang' in I18N.de) && !Object.values(I18N.de).some((v) => /Grundsicherung im Alter gibt es nicht\b(?! gleichzeitig)/.test(v)));
   // Eigenschaften über Zufallshaushalte
   let seed = 4711; const rnd = () => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; }; const pick = (a) => a[Math.floor(rnd() * a.length)];
   const bad = {};
@@ -455,6 +461,7 @@ console.log('Hinweis, nicht verwendete Schlüssel:', unused.length ? unused.join
     if (w.lage === 'unklar' && w.a.concat(w.b).some((id) => L(id) === 'ja')) bad.unklar = JSON.stringify(o);
     if (w.a.concat(w.b).some((id) => L(id) !== 'ja' && L(id) !== 'vielleicht')) bad.nichtPassend = JSON.stringify(o);
     if (w.a.concat(w.b).every((id) => L(id) === 'ja') && w.lage !== 'wahl') bad.alleJa = JSON.stringify(o);
+    if (w.rente && (!['wahl', 'bUeblich'].includes(w.lage) || get(r, 'gsa').hl === 'vorrang' || keys(r, 'gsa').includes('weg.unklar'))) bad.rente = JSON.stringify(o);
   }
   check('[wege] Zufallshaushalte (4.000): Lage und Einstufungen passen zusammen (nie alle Wege „wahrscheinlich“ mit Vorrang)', Object.keys(bad).length === 0, JSON.stringify(bad));
 }

@@ -29,7 +29,8 @@
   "t.ggeld.vorrang": "Wohngeld und Kinderzuschlag reichen für euch wahrscheinlich. Dann bekommt ihr diese zwei Hilfen und kein Grundsicherungsgeld. Das prüfen die Ämter.",
   "t.ggeld.vorrangWg": "Wohngeld reicht für dich wahrscheinlich. Dann bekommst du Wohngeld und kein Grundsicherungsgeld. Das prüfen die Ämter.",
   "t.ggeld.vorrangKiz": "Kinderzuschlag reicht für euch wahrscheinlich. Dann bekommt ihr Kinderzuschlag und kein Grundsicherungsgeld. Das prüfen die Ämter.",
-  "t.gsa.vorrang": "Mit Wohngeld reicht deine Rente wahrscheinlich. Dann bekommst du Wohngeld und keine Grundsicherung im Alter. Das prüft das Sozialamt.",
+  "eo.t": "Beides zusammen gibt es nicht. Für dich passen beide Wege.",
+  "eo.tipp": "Tipp: Lass beides prüfen. Frag, welcher Weg dir mehr bringt.",
   "t.wohngeld.verzicht": "Wohngeld reicht für dich wahrscheinlich nicht. Dann bekommst du meist Grundsicherungsgeld. Du kannst auch Wohngeld nehmen. Dann bekommst du aber meist weniger Geld.",
   "t.wohngeld.verzichtKiz": "Wohngeld und Kinderzuschlag reichen für euch wahrscheinlich nicht. Dann bekommt ihr meist Grundsicherungsgeld. Ihr könnt auch Wohngeld nehmen. Dann bekommt ihr aber meist weniger Geld.",
   "t.wohngeld.verzichtGsa": "Mit Wohngeld reicht deine Rente wahrscheinlich nicht. Dann bekommst du meist Grundsicherung im Alter. Du kannst auch Wohngeld nehmen. Dann bekommst du aber meist weniger Geld."

@@ -55,8 +55,9 @@ check('Unterhaltsvorschuss im Beispiel 1 wahrscheinlich', level('Unterhaltsvorsc
 
 // Beispiel 2
 beispiel('p2');
-// Seit 21.11.2026: zwei Wege (Grundsicherung im Alter oder Wohngeld), hier knapp: beide „möglich“ (docs/entwuerfe/entweder-oder.md)
-check('Beispiel 2: Grundsicherung im Alter und Wohngeld beide „möglich“ (zwei Wege, Abstand unter 50 €)', level('Grundsicherung im Alter und bei voller Erwerbsminderung') === 'vielleicht' && level('Wohngeld') === 'vielleicht' && !!d.getElementById('wege'), pills() + '');
+// Seit 21.11.2026: zwei Wege (Grundsicherung im Alter oder Wohngeld). Bei Rente echte Wahl: beide Karten bleiben „wahrscheinlich“ mit Betrag
+// (§ 2 Abs. 1 SGB XII nimmt den Anspruch nicht: BSG 23.03.2021, B 8 SO 2/20 R)
+check('Beispiel 2: Grundsicherung im Alter und Wohngeld beide „wahrscheinlich“ (zwei Wege, echte Wahl), Satz „welcher Weg dir mehr bringt“', level('Grundsicherung im Alter und bei voller Erwerbsminderung') === 'ja' && level('Wohngeld') === 'ja' && !!d.getElementById('wege') && /welcher Weg dir mehr bringt/.test(d.querySelector('#wege .wege-lage').textContent) && !/geht (es |Wohngeld )?vor/.test(d.getElementById('wege').textContent), pills() + '');
 check('Beispiel 2 füllt Formular und Auswahlfelder', d.getElementById('ek1Art').value === 'rente' && d.getElementById('ek1Brutto').value === '880' && d.getElementById('gebJahr').value === '1955' && d.getElementById('mietstufe').value === '3');
 check('[wege] Beispiel 2: Rahmen „Entweder oder“ mit den Karten Grundsicherung im Alter und Wohngeld, „oder“ dazwischen', !!d.querySelector('#wege #c-gsa') && !!d.querySelector('#wege #c-wohngeld') && !!d.querySelector('#wege .weg-oder'));
 check('[wege] Beispiel 2: Satz zur Lage sichtbar (nicht zugeklappt), Namen beschreibend statt „Weg 1/2“', d.querySelector('#wege .wege-lage').textContent.length > 20 && !d.querySelector('#wege .wege-lage').closest('details') && !/Weg [12]/.test(d.getElementById('wege').textContent));

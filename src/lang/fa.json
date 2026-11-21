@@ -215,7 +215,7 @@
   "t.pflege.pg2": "Pflegegeld برای مراقبت در خانه: {geld} در ماه با Pflegegrad {pg}. این مبلغ به حساب بانکی واریز می‌شود. علاوه بر این، مبلغ کمکی (Entlastungsbetrag) {ent} در ماه وجود دارد: این مبلغ نقدی پرداخت نمی‌شود، بلکه Pflegekasse با آن هزینه کمک‌های تأییدشده در زندگی روزمره را می‌پردازد.",
   "z.ggBezug": "شما Grundsicherungsgeld می‌گیرید (تا ژوئن 2026: Bürgergeld). Wohngeld و Kinderzuschlag معمولاً با آن جمع نمی‌شوند. بسته آموزشی (Bildungspaket) اغلب از طریق Jobcenter است.",
   "z.wgKiz": "Wohngeld و Kinderzuschlag را می‌توان با هم گرفت. هر دو را درخواست کنید، حتی اگر یکی از آن‌ها نزدیک به حد باشد.",
-  "z.gsaWg": "Grundsicherung im Alter و Wohngeld هم‌زمان داده نمی‌شوند. اگر حقوق بازنشستگی‌ات با Wohngeld کافی باشد، Wohngeld اولویت دارد. Sozialamt این را بررسی می‌کند.",
+  "z.gsaWg": "Grundsicherung im Alter و Wohngeld هم‌زمان پرداخت نمی‌شوند. بگذارید هر دو بررسی شوند و بپرسید کدام راه برای شما بیشتر می‌صرفد.",
   "z.ggVsWg": "Grundsicherungsgeld همراه با Wohngeld و Kinderzuschlag داده نمی‌شود. اگر Wohngeld و Kinderzuschlag با درآمدت کافی باشند، اولویت دارند. اداره‌ها این را بررسی می‌کنند.",
   "z.kgZuerst": "اول Kindergeld را درخواست کنید. بدون Kindergeld، Kinderzuschlag پرداخت نمی‌شود.",
   "z.stichtag": "بسیاری از کمک‌ها فقط از ماه درخواست به بعد پرداخت می‌شوند. درخواست را زود بدهید، حتی بدون فرم (formlos).",
@@ -1649,7 +1649,8 @@
   "t.ggeld.vorrang": "Wohngeld و Kinderzuschlag احتمالاً برای خانوار تو کافی‌اند. در این صورت اولویت دارند و Grundsicherungsgeld داده نمی‌شود. اداره‌ها این را بررسی می‌کنند.",
   "t.ggeld.vorrangWg": "Wohngeld احتمالاً برای خانوار تو کافی است. در این صورت اولویت دارد و Grundsicherungsgeld داده نمی‌شود. اداره‌ها این را بررسی می‌کنند.",
   "t.ggeld.vorrangKiz": "Kinderzuschlag احتمالاً برای خانوار تو کافی است. در این صورت اولویت دارد و Grundsicherungsgeld داده نمی‌شود. اداره‌ها این را بررسی می‌کنند.",
-  "t.gsa.vorrang": "Wohngeld همراه با حقوق بازنشستگی‌ات احتمالاً کافی است. در این صورت اولویت دارد و Grundsicherung im Alter داده نمی‌شود. Sozialamt این را بررسی می‌کند.",
+  "eo.t": "هر دو با هم ممکن نیست. هر دو راه برای شما ممکن است.",
+  "eo.tipp": "نکته: هر دو را بررسی کنید و بپرسید کدام راه برایتان بهتر است.",
   "t.wohngeld.verzicht": "Wohngeld به تنهایی احتمالاً برای خانوار تو کافی نیست. در این صورت راه معمول Grundsicherungsgeld است. می‌توانی به جای آن Wohngeld بگیری، اما معمولاً پول کمتری می‌گیری.",
   "t.wohngeld.verzichtKiz": "Wohngeld و Kinderzuschlag احتمالاً برای خانوار تو کافی نیستند. در این صورت راه معمول Grundsicherungsgeld است. می‌توانی به جای آن Wohngeld بگیری، اما معمولاً پول کمتری می‌گیری.",
   "t.wohngeld.verzichtGsa": "Wohngeld همراه با حقوق بازنشستگی‌ات احتمالاً کافی نیست. در این صورت راه معمول Grundsicherung im Alter است. می‌توانی به جای آن Wohngeld بگیری، اما معمولاً پول کمتری می‌گیری."

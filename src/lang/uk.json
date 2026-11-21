@@ -215,7 +215,7 @@
   "t.pflege.pg2": "Pflegegeld при догляді вдома: {geld} на місяць при ступені догляду {pg}. Гроші надходять на рахунок. Крім того, є сума розвантаження (Entlastungsbetrag) {ent} на місяць: вона не виплачується, каса догляду (Pflegekasse) оплачує нею визнану допомогу в побуті.",
   "z.ggBezug": "Ти отримуєш Grundsicherungsgeld (до червня 2026: Bürgergeld). Wohngeld і Kinderzuschlag зазвичай із ним не поєднуються. Пакет освіти часто оформлюється через Jobcenter.",
   "z.wgKiz": "Wohngeld і Kinderzuschlag можна поєднувати. Подай заяву на обидва, навіть якщо один із них на межі.",
-  "z.gsaWg": "Grundsicherung im Alter і Wohngeld одночасно не дають. Якщо пенсії разом із Wohngeld вистачає, Wohngeld іде першим. Sozialamt це перевіряє.",
+  "z.gsaWg": "Grundsicherung im Alter і Wohngeld одночасно не виплачуються. Нехай перевірять обидва і запитай, який шлях вигідніший.",
   "z.ggVsWg": "Grundsicherungsgeld не дають разом із Wohngeld і Kinderzuschlag. Якщо Wohngeld і Kinderzuschlag разом із твоїм доходом вистачає, вони йдуть першими. Установи це перевіряють.",
   "z.kgZuerst": "Спочатку оформ Kindergeld. Без Kindergeld Kinderzuschlag не виплачується.",
   "z.stichtag": "Багато виплат починаються лише з місяця подання заяви. Подай її рано, навіть у вільній формі.",
@@ -1649,7 +1649,8 @@
   "t.ggeld.vorrang": "Wohngeld і Kinderzuschlag для твоєї родини, найімовірніше, вистачить. Тоді вони йдуть першими, і Grundsicherungsgeld не дають. Установи це перевіряють.",
   "t.ggeld.vorrangWg": "Wohngeld для твоєї родини, найімовірніше, вистачить. Тоді воно йде першим, і Grundsicherungsgeld не дають. Установи це перевіряють.",
   "t.ggeld.vorrangKiz": "Kinderzuschlag для твоєї родини, найімовірніше, вистачить. Тоді він іде першим, і Grundsicherungsgeld не дають. Установи це перевіряють.",
-  "t.gsa.vorrang": "Разом із пенсією Wohngeld тобі, найімовірніше, вистачить. Тоді воно йде першим, і Grundsicherung im Alter не дають. Sozialamt це перевіряє.",
+  "eo.t": "Отримувати обидва одночасно не можна. Для тебе можливі обидва шляхи.",
+  "eo.tipp": "Порада: попроси перевірити обидва й запитай, який шлях дасть тобі більше.",
   "t.wohngeld.verzicht": "Самого Wohngeld для твоєї родини, найімовірніше, не вистачить. Тоді звичайний шлях — Grundsicherungsgeld. Ти можеш замість цього взяти Wohngeld, але зазвичай отримаєш менше грошей.",
   "t.wohngeld.verzichtKiz": "Wohngeld і Kinderzuschlag для твоєї родини, найімовірніше, не вистачить. Тоді звичайний шлях — Grundsicherungsgeld. Ти можеш замість цього взяти Wohngeld, але зазвичай отримаєш менше грошей.",
   "t.wohngeld.verzichtGsa": "Разом із пенсією Wohngeld тобі, найімовірніше, не вистачить. Тоді звичайний шлях — Grundsicherung im Alter. Ти можеш замість цього взяти Wohngeld, але зазвичай отримаєш менше грошей."

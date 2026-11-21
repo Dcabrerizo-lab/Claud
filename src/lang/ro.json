@@ -215,7 +215,7 @@
   "t.pflege.pg2": "Pflegegeld pentru îngrijire acasă: {geld} pe lună la gradul de îngrijire {pg}. Se virează în cont. În plus există suma de degrevare (Entlastungsbetrag) de {ent} pe lună: nu se plătește în bani, ci casa de îngrijire (Pflegekasse) plătește cu ea ajutoare recunoscute în viața de zi cu zi.",
   "z.ggBezug": "Primești Grundsicherungsgeld (până în iunie 2026: Bürgergeld). Wohngeld și Kinderzuschlag de obicei nu se potrivesc cu el. Pachetul de educație merge adesea prin Jobcenter.",
   "z.wgKiz": "Wohngeld și Kinderzuschlag se pot combina. Cere-le pe amândouă, chiar dacă unul este la limită.",
-  "z.gsaWg": "Grundsicherung im Alter și Wohngeld nu se acordă în același timp. Dacă pensia împreună cu Wohngeld ajunge, Wohngeld are prioritate. Sozialamt verifică acest lucru.",
+  "z.gsaWg": "Grundsicherung im Alter și Wohngeld nu se primesc în același timp. Fă-le verificate pe amândouă și întreabă care cale îți aduce mai mult.",
   "z.ggVsWg": "Grundsicherungsgeld nu se acordă împreună cu Wohngeld și Kinderzuschlag. Dacă Wohngeld și Kinderzuschlag ajung împreună cu venitul tău, ele au prioritate. Autoritățile verifică acest lucru.",
   "z.kgZuerst": "Cere mai întâi Kindergeld. Fără Kindergeld nu există Kinderzuschlag.",
   "z.stichtag": "Multe prestații se acordă abia din luna cererii. Depune cererea devreme, chiar și în formă liberă.",
@@ -1649,7 +1649,8 @@
   "t.ggeld.vorrang": "Wohngeld și Kinderzuschlag probabil ajung pentru gospodăria ta. Atunci au prioritate și nu se acordă Grundsicherungsgeld. Autoritățile verifică acest lucru.",
   "t.ggeld.vorrangWg": "Wohngeld probabil ajunge pentru gospodăria ta. Atunci are prioritate și nu se acordă Grundsicherungsgeld. Autoritățile verifică acest lucru.",
   "t.ggeld.vorrangKiz": "Kinderzuschlag probabil ajunge pentru gospodăria ta. Atunci are prioritate și nu se acordă Grundsicherungsgeld. Autoritățile verifică acest lucru.",
-  "t.gsa.vorrang": "Împreună cu pensia ta, Wohngeld probabil ajunge. Atunci are prioritate și nu se acordă Grundsicherung im Alter. Sozialamt verifică acest lucru.",
+  "eo.t": "Amândouă deodată nu se pot primi. Pentru tine sunt posibile ambele căi.",
+  "eo.tipp": "Sfat: cere verificarea ambelor și întreabă care cale îți aduce mai mult.",
   "t.wohngeld.verzicht": "Doar Wohngeld probabil nu ajunge pentru gospodăria ta. Atunci calea obișnuită este Grundsicherungsgeld. Poți lua în schimb Wohngeld, dar de obicei primești mai puțini bani.",
   "t.wohngeld.verzichtKiz": "Wohngeld și Kinderzuschlag probabil nu ajung pentru gospodăria ta. Atunci calea obișnuită este Grundsicherungsgeld. Poți lua în schimb Wohngeld, dar de obicei primești mai puțini bani.",
   "t.wohngeld.verzichtGsa": "Împreună cu pensia ta, Wohngeld probabil nu ajunge. Atunci calea obișnuită este Grundsicherung im Alter. Poți lua în schimb Wohngeld, dar de obicei primești mai puțini bani."
