@@ -286,7 +286,7 @@
   "tv.laufzeit.kurz": "Süre en fazla 1 yıl, bu süre için fiyat garantisiyle.",
   "tv.laufzeit": "Tüketici merkezleri (Verbraucherzentrale) yaklaşık 1 yıllık süre önerir. Fiyat garantisi en az bu kadar sürmelidir. Bazı fiyat garantileri fiyatın tüm kısımlarını kapsamaz. Bunu sözleşmede kontrol et.",
   "tv.kuendigung.kurz": "Eski sözleşmenin fesih süresini kontrol et.",
-  "tv.kuendigung": "Fesih süresi son faturanda yazar. Temel tedarikte (Grundversorgung) 2 hafta önceden feshedebilirsin. Sağlayıcı fiyatı artırırsa süresiz feshedebilirsin.",
+  "tv.kuendigung": "Fesih süresi son faturanda yazar. Temel tedarikte (Grundversorgung) 2 hafta önceden bildirerek feshedebilirsin. Sağlayıcı fiyatı artırırsa süre beklemeden hemen feshedebilirsin.",
   "tv.fernwaerme.kurz": "Bölgesel ısıtmada sağlayıcıyı değiştiremezsin.",
   "tv.fernwaerme": "Bölgesel ısıtmada (Fernwärme) santral ve borular aynı firmaya aittir. Bu yüzden değişiklik mümkün değildir. Buradaki karşılaştırma sadece elektrik ve gaz içindir.",
   "tv.vz.link": "Sağlayıcı değiştirme: nasıl yapılır – Verbraucherzentrale",

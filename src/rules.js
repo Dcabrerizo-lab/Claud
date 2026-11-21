@@ -1001,12 +1001,16 @@ const Rules = (function () {
     // (wogg/__14.html, wogg/__17.html, estg/__9a.html) am 21.11.2026; bestätigt mit dem amtlichen Wohngeldrechner des BMWSB (Differenztest
     // 21.11.2026). Die App kennt nur die Summe: „wahrscheinlich“ (yPess) wie ein einziges verdienendes Kind, „möglich“ (yOpt) verteilt auf
     // alle Kinder ab 6 Jahren und jungen Erwachsenen (je Kind ein Pauschbetrag und ein Freibetrag).
+    // Der Freibetrag (höchstens die eigenen Einnahmen, höchstens 100 €) mindert auch anderes Einkommen desselben Kindes (Unterhalt,
+    // Waisenrente, Unterhaltsvorschuss), wie im amtlichen Rechner je Haushaltsmitglied. Wem der Unterhalt gehört, weiß die App nicht:
+    // nur für die obere Schätzung, höchstens bis zur Höhe dieses Kinder-Einkommens.
     const kindAbzug = R.wgWerbung.lohn / 12 + R.wgKindFrei;
-    const kindNOpt = Math.max(1, (h.kids || 0) - (h.kidsU6 || 0) + (h.young || 0));
+    const kindNOpt = Math.max(1, (h.kids || 0) - (h.kidsU6 || 0) + (h.young || 0)), kindX = (h.kindEink || 0) / kindNOpt;
     // Über der Minijob-Grenze ist der eingegebene Betrag („so viel wie ankommt“) kleiner als der Bruttolohn, von dem das Wohngeld ausgeht
     // (brutto minus Pauschbetrag, dann 10 % je Abzugsart, § 16 WoGG). Vorsichtige Schätzung dort ohne Pauschbetrag, sonst zu günstig.
     const kindAbzugPess = (h.kindEink || 0) > h.minijob ? R.wgKindFrei : kindAbzug;
-    const kindPess = Math.max(0, (h.kindEink || 0) - kindAbzugPess), kindOpt = Math.max(0, (h.kindEink || 0) - kindNOpt * kindAbzug);
+    const kindPess = Math.max(0, (h.kindEink || 0) - kindAbzugPess);
+    const kindOpt = Math.max(-(h.kindZahl || 0), kindNOpt * (Math.max(0, kindX - R.wgWerbung.lohn / 12) - Math.min(kindX, R.wgKindFrei)));
     const extra = (h.kindZahl || 0) + (h.kapWG || 0) - freib - grFrei;
     const yPess = Math.max(0, yA + extra + kindPess - (h.uzWGpess || 0)), yOpt = Math.max(0, yB + extra + kindOpt - (h.uzWGopt || 0));
 

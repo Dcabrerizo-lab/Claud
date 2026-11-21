@@ -42,7 +42,7 @@
   "kw.pin.aus": "PIN olmadan: kodu veya dosyayı alan herkes okuyabilir.",
   "kw.pin.sagen": "Danışanın için PIN: {pin}",
   "kw.wie.h": "Ne kadar güvenli?",
-  "kw.wie.t": "PIN ile içerik şifrelenir ve PIN olmadan okunamaz. Bu bir göz hapsi koruması: 6 haneli bir PIN, çok fazla işlem gücüne sahip uzmanlara karşı güvenli koruma sağlamaz. Hiçbir şey bir sunucudan geçmez, içeriğin tamamı kodda veya dosyadadır.",
+  "kw.wie.t": "PIN ile içerik şifrelenir ve PIN olmadan okunamaz. Bu yalnızca meraklı bakışlara karşı bir korumadır: 6 haneli bir PIN, çok fazla işlem gücüne sahip uzmanlara karşı güvenli koruma sağlamaz. Hiçbir şey bir sunucudan geçmez, içeriğin tamamı kodda veya dosyadadır.",
   "kw.qr": "QR kodunu göster",
   "kw.datei": "SoLo dosyası olarak paylaş",
   "kw.bitte": "Bir dakika …",
