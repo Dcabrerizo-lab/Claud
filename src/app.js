@@ -1598,7 +1598,7 @@
   // ----- Druck und PDF: Briefe (förmlich, DIN 5008), Angabenblatt, Unterlagen- und Formularliste; am Bildschirm unsichtbar -----
   function druckUnterlagen(ids) {
     // Blöcke für Druck und PDF in der App-Sprache (Arabisch im PDF deutsch, siehe pdfPages)
-    var u = unterlagenPlan(ids), b = [{ t: 'h', text: t('f.docs') }];
+    var u = unterlagenPlan(ids), b = [{ t: 'h', text: t('f.auf.3') }];
     var nameLang = function (r) { return r.name + (lang === 'de' ? '' : ' (' + t('n.' + r.id) + ')'); };
     var li = function (p) { return { t: 'li', text: (p.ab ? '[x] ' : '[ ] ') + punktText(p) }; };
     if (u.gemeinsam.length) { b.push({ t: 'h', sub: true, text: t(u.alle ? 'f.unt.alle' : 'f.unt.mehrere') }); u.gemeinsam.forEach(function (p) { b.push(li(p)); }); }
