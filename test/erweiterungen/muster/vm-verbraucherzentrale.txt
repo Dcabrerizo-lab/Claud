@@ -1,0 +1,142 @@
+# Quelle: https://verbraucherzentrale-energieberatung.de/wp-content/uploads/2019/02/Beispiel-Nebenkostenabrechnung-gesamt.pdf (Verbraucherzentrale Energieberatung, Beispielabrechnung 2022)
+# Abgerufen: 21.11.2026. Musterbescheid mit erfundenen Daten (keine echten Personen). Text: pdftotext -layout, Seitenumbrüche als Formfeed.
+Nebenkostenabrechnung
+
+
+Erstellt im Auftrag von Maxim Mustermann
+
+Maxim Mustermann, Musterstraße 2, 23456 Ahrensbök
+
+
+
+Berta Beispiel                                      Wohnung 01 |EG links
+Beispielplatz 1                                     Beispielplatz 1
+12345 Berlin                                        12345 Berlin
+
+                                                    Abrechnungszeitraum: 01.01.2022 – 31.12.2022
+
+                                                    Abrechnung erstellt am 25.01.2023
+
+
+
+
+Sehr geehrte Frau Beispiel,
+
+ für Ihre Wohnung am Beispielplatz 1, 12345 Berlin haben wir
+ Ihren Kostenanteil errechnet:                                                       534,96 Euro
+ Abzüglich der vereinbarten Vorauszahlungen:                                 -       540,00 Euro   1
+ Ihr Guthaben:                                                                -        5,04 Euro
+
+
+Detaillierte Kostenaufstellung
+                                                          Menge       Preis
+ Brennstoffkosten             Art           Datum                                 Betrag
+                                                          in Liter   in Euro
+ + Anfangsbestand          leichtes                       5.400,00   2.692,38
+ + Rechnung                 Heizöl         11.02.2022   + 3.001,00   1.240,99
+ + Rechnung                                23.11.2022   + 4.000,00   2.113,44
+ - Restbestand                                          - 6.000,00   2.940,49
+   Summe                                                  6.401,00   3.106,32
+
+ weitere Kosten
+                               2
+ + Schornsteinfeger                        26.01.2022                   76,50
+ + Wartung                                 14.04.2022                  180,88
+ + Betriebsstrom                           09.01.2023                  252,50
+ +                                                                     456,61
+ Abrechnungsservice                                                    966,49
+   Summe
+
+ Kosten für Heizung und Wassererwärmung                              4.072,81     4.072,81 (1)
+
+ Kosten nur für Heizung
+ Miete Messanlage                                                      156,13      156,13 (2)
+
+ Kosten nur für Warmwasser
+ Miete Messanlage                                                      115,25      115,25 (3)
+    Kosten für Kaltwasser
+    + Kalt- und                       17.01.2023                   2.222,00
+    Abwasser                                                          61,41
+    +                                                                 41,22
+    Abrechnungsservice                                             2.324,63
+    + Miete Messanlage
+      Summe
+
+    Kosten für Kaltwasser                                          2.324,63     2.324,63 (4)
+
+    Nutzerbezogene Kosten                                             48,79        48,79
+
+    Gesamtkosten für Wohnung 01 |EG links, Beispielplatz 1, 12345              6.717, 61
+3   Berlin
+
+
+    Kostentrennung in Heizung und Warmwasser gemäß § 9 (3)
+    Heizkostenverordnung
+    Kosten für Heizung und Warmwassererwärmung                  4.072,81               (1)
+    Der Energieverbrauch für die Wassererwärmung wird
+    über einen vorerfassenden Wärmezähler gemessen.
+    Der Kostenanteil errechnet sich wie folgt:
+
+    B = Q2 /H                              Q = 18.570 kWh
+                                                H = 10 kWh
+                                (Heizwert pro Liter leichtes
+                                                     Heizöl)
+
+    B = 1.857,00 Liter leichtes Heizöl für die
+    Wassererwärmung
+    Kosten Heizung/Warmwassererwärmung:          4.072,81
+    Euro/
+                                                 6.401,00
+    Liter
+                                         =       0,6363
+    Euro/Liter
+4
+    Leichtes Heizöl für Warmwasser:              1.857,00
+    Liter
+                                         x       0,6363
+    Euro/Liter
+                                         =       1.181,61
+
+    Kosten für Wassererwärmung                     1.181,61    - 1.181,61
+    + Kosten gemäß (3)                               115,25
+    = Kostensumme für Warmwasser                   1.296,86                   1.296,86 (5)
+    verbleibende Kosten                                         2.891,20
+
+    Kosten für Heizung                             2.891,20
+    + Kosten gemäß (2)                               156,13
+    = Kostensumme für Heizung                      3.047,33                   3.047,33 (6)
+    Verteilung der Kosten
+                                                                                            x Ihre
+     Kostenart                  Betrag     : Gesamteinheiten        = Kosten je Einheit                   = Ihre Kosten
+                                                                                          Einheiten
+                                                                                                                                     6
+     Gesamtkosten               6.717,61
+     Kosten für Warmwasser      1.296,86                                                                                  (5)
+     30 % Grundkosten             389,06   468,87 m² Wohnfläche            0,82978224             58,93           48,90
+     70 % Verbrauchskosten        907,80   200,382 m³ Wasser               4,53034704            11,441           51,83
+5    Kosten für Heizung         3.047,33                                                                                  (6)
+     30 % Grundkosten             914,20 468,87 m² Wohnfläche              1,94979419             58,93          114,90
+     70 % Verbrauchskosten      2.133,13 42.547                            0,05013585             1.909           95,71              7
+                                         Verbrauchswerte
+     Kosten für Kaltwasser      2.324,63 493,512 m³ Wasser                 4,71038192            47,221          222,43   (4)
+     Nutzerbezogene Kosten         48,79
+     Darstellung der Lohn und                                                                                      1,19
+     Fahrtkosten
+                                                                                                                                      8
+     Ihre Gesamtkosten                                                                                           534,96
+
+     Ihre Vorauszahlung                                                                                      -   540,00         -
+
+     Ihr Guthaben                                                                                                  5,04
+
+
+
+    Darstellung der haushaltsnahen Dienstleistungen
+    Handwerkerrechnung
+     Art der               Zeitraum/ Rechnung                                  Davon Lohn- und               Ihr Anteil Lohn- und Fahrtkosten
+                                                         Betrag in Euro
+     Aufwendung                    vom                                           Fahrtkosten                                           in Euro
+     Schornsteinfeger           26.01.2022                         76,50            76,50                                                 5,49   9
+     Wartung                    14.04.2022                        180,88           180,88                                                12,95
+     Summe                                                                                                                               18,44
+
