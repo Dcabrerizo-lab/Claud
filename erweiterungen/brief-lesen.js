@@ -36,28 +36,90 @@ const BriefLesen = (function () {
   }
 
   // ---------- Zahlen und Daten ----------
-  // Beträge: 1.234,56 oder 1234,56 (mit oder ohne €); auch 1 234,56 aus der Texterkennung
-  const BETRAG = /(\d{1,3}(?:[.\s]\d{3})+|\d+),(\d{2})(?!\d)/g;
+  // Beträge: 1.234,56 oder 1234,56 (mit oder ohne €); auch 1 234,56 aus der Texterkennung.
+  // Ganze Euro nur mit Währung dahinter („1.570 Euro“, „214 €“), sonst wären Jahreszahlen, Paragrafen oder Hausnummern Beträge.
+  const BETRAG = /(\d{1,3}(?:[.\s]\d{3})+|\d+),(\d{2})(?!\d)|(\d{1,3}(?:\.\d{3})+|\d+)(?=\s?(?:€|EUR\b|Euro\b))(?![.,]\d)/g;
+  // Typische Fehler der Texterkennung in Zahlen ausgleichen (nur in Zahlenteilen, Wörter bleiben unverändert):
+  // O/o statt 0, l/I/| statt 1 („l.25O,OO“), Leerzeichen nach dem Komma („755, 00“), Punkt statt Komma („1.501.33“, „95.71 €“)
+  function zahlNorm(zeile) {
+    return String(zeile)
+      .replace(/(^|[\s(:=+-])([\dOolI|]{1,3}(?:[.\s][\dOolI|]{3})*[,.][\dOo]{2})(?=$|[\s€)*]|EUR|Euro)/g, (x, v, z) => (/\d/.test(z) || /^[0O]+,[0O]{2}$/.test(z) ? v + z.replace(/[Oo]/g, '0').replace(/[lI|]/g, '1') : x))
+      .replace(/(\d),[ \t](\d{2})(?![\d.,])/g, '$1,$2')
+      .replace(/(\d{1,3}(?:\.\d{3})+)\.(\d{2})(?![\d.])/g, '$1,$2')
+      .replace(/(^|[^\d.,])(\d+)\.(\d{2})(?=\s?(?:€|EUR\b|Euro\b))/g, '$1$2,$3');
+  }
   function betraege(zeile) {
     const out = []; let m; BETRAG.lastIndex = 0;
-    while ((m = BETRAG.exec(zeile))) out.push(+(m[1].replace(/[.\s]/g, '') + '.' + m[2]));
+    const z = zahlNorm(zeile);
+    while ((m = BETRAG.exec(z))) {
+      if (m[3] != null) { out.push(+m[3].replace(/\./g, '')); continue; }
+      let g = m[1];
+      // „DE06 8605 … 1214 12 674,92“: Ziffern davor gehören zu IBAN, Kundennummer o. Ä., Leerzeichen-Tausender dann nicht
+      if (/\s/.test(g) && /\d\s*$/.test(z.slice(0, m.index))) g = g.split(/\s/).pop();
+      out.push(+(g.replace(/[.\s]/g, '') + '.' + m[2]));
+    }
     return out;
   }
   const DATUM = /\b(\d{1,2})\.(\d{1,2})\.(20\d{2})\b/;
   function iso(m) { return `${m[3]}-${('0' + m[2]).slice(-2)}-${('0' + m[1]).slice(-2)}`; }
+  // Nur gültige Kalenderdaten: die Texterkennung liest „08.02.2023“ auch als „98.02.2023“; ein solches Datum bleibt leer
+  function gueltig(m) { const d = new Date(Date.UTC(+m[3], +m[2] - 1, +m[1])); return d.getUTCDate() === +m[1] && d.getUTCMonth() === +m[2] - 1; }
   function zeilen(text) { return String(text || '').split(/\r?\n/).map((z) => z.replace(/\s+/g, ' ').trim()).filter(Boolean); }
 
-  // Erster Betrag nach einem Stichwort: in derselben Zeile der letzte Betrag (bei Tabellen die Spalte „Gesamt“), sonst in der nächsten Zeile
+  // Spalte „Gesamt“ einer Tabellenzeile: steht hinten (Summe der anderen) oder vorn (BA-Berechnungsbogen: „Regelbedarf 1.250,00 451,00 451,00 348,00“)
+  // vorn: Im selben Dokument steht die Summe sonst vorn (siehe richtung); dann auch bei Zeilen, deren Einzelwerte falsch gelesen wurden
+  const summe = (a) => Math.round(a.reduce((x, y) => x + y, 0) * 100);
+  const hinten = (b) => b.length >= 3 && Math.abs(summe(b.slice(0, -1)) - Math.round(b[b.length - 1] * 100)) <= 2;
+  const vornS = (b) => b.length >= 3 && Math.abs(summe(b.slice(1)) - Math.round(b[0] * 100)) <= 2;
+  function gesamt(b, vorn) {
+    if (hinten(b)) return b[b.length - 1];
+    if (vornS(b) || (vorn && b.length >= 3)) return b[0];
+    return b[b.length - 1];
+  }
+  // Richtung der Spalte „Gesamt“ im ganzen Dokument: nur vorn, wenn mindestens eine Zeile vorn aufgeht und keine hinten
+  function richtung(z) {
+    let v = 0, h = 0;
+    for (const l of z) { const b = betraege(l); if (b.length < 3 || b.every((x) => x === b[0])) continue; if (hinten(b)) h++; else if (vornS(b)) v++; }
+    return v > 0 && h === 0;
+  }
+  // Erster Betrag nach einem Stichwort: in derselben Zeile die Spalte „Gesamt“, sonst in der nächsten Zeile
+  // opt.vor: Muster, die zuerst gesucht werden (z. B. „monatliches Gesamteinkommen“ vor dem Jahreswert „Gesamteinkommen“)
   function nach(z, muster, opt) {
     opt = opt || {};
+    if (opt.vor) { const w = nach(z, opt.vor, Object.assign({}, opt, { vor: null })); if (w != null) return w; }
     for (let i = 0; i < z.length; i++) {
       if (!muster.some((re) => re.test(z[i]))) continue;
       if (opt.ohne && opt.ohne.some((re) => re.test(z[i]))) continue;
-      let b = betraege(z[i]);
-      if (!b.length && i + 1 < z.length && !/[A-Za-zÄÖÜäöü]{4,}/.test(z[i + 1].replace(/EUR|Euro/g, ''))) b = betraege(z[i + 1]);
-      if (b.length) return opt.erster ? b[0] : b[b.length - 1];
+      // Nur Beträge ab dem Stichwort („von 912,40 € ergibt sich … ein monatliches Wohngeld von“ / „355,00 €“: nicht 912,40)
+      const ab = Math.min(...muster.map((re) => { const x = z[i].match(re); return x ? x.index : Infinity; }));
+      let b = betraege(z[i].slice(ab));
+      // sonst in der nächsten Zeile, wenn davor kein Wort steht („von 355,00 € monatlich bewilligt.“)
+      if (!b.length && i + 1 < z.length) { const n = zahlNorm(z[i + 1]), p = n.search(/\d/); if (p >= 0 && !/[A-Za-zÄÖÜäöü]{4,}/.test(n.slice(0, p))) b = betraege(z[i + 1]); }
+      if (b.length) return opt.erster ? b[0] : gesamt(b, opt.vorn);
     }
     return null;
+  }
+  // Tabellen aus PDF und Texterkennung: Bezeichnung über zwei Zeilen. Zwei Formen kommen vor:
+  //  A) Beträge in der ersten Zeile, Rest der Bezeichnung darunter („Mehrbedarf 24,92 10,37 …“ / „Warmwassererzeugung“; pdftotext)
+  //  B) Bezeichnung in ein oder zwei eigenen Zeilen, Beträge allein darunter („Mehrbedarf“ / „Warmwassererzeugung“ / „24,92 10,37 …“; pdf.js)
+  // Daraus wird eine Zeile „Bezeichnung Beträge“; die übrigen Zeilen bleiben unverändert.
+  const kurzLabel = (n) => !/\d/.test(n) && n.split(' ').length <= 3 && !/[:.!?]$/.test(n) && /^[A-Za-zÄÖÜäöüß]/.test(n);
+  const nurBetraege = (n) => betraege(n).length > 0 && !/[A-Za-zÄÖÜäöüß]{2,}/.test(zahlNorm(n).replace(/EUR|Euro/g, ''));
+  function zusammen(z) {
+    const out = z.slice();
+    for (let i = 0; i + 1 < z.length; i++) {
+      // B
+      if (kurzLabel(z[i]) && nurBetraege(z[i + 1])) { out[i] = z[i] + ' ' + z[i + 1]; continue; }
+      if (i + 2 < z.length && kurzLabel(z[i]) && kurzLabel(z[i + 1]) && nurBetraege(z[i + 2])) { out[i] = z[i] + ' ' + z[i + 1] + ' ' + z[i + 2]; continue; }
+      // A (nicht, wenn die Folgezeile selbst Bezeichnung von Beträgen darunter ist)
+      const b = betraege(z[i]), n = z[i + 1];
+      if (!b.length || !kurzLabel(n)) continue;
+      if (i + 2 < z.length && (nurBetraege(z[i + 2]) || (kurzLabel(z[i + 2]) && i + 3 < z.length && nurBetraege(z[i + 3])))) continue;
+      const p = zahlNorm(z[i]).search(/\d/);
+      if (p <= 0) continue;
+      out[i] = z[i].slice(0, p).trim() + ' ' + n + ' ' + z[i].slice(p).trim();
+    }
+    return out;
   }
   // Datum des Bescheids nur aus eindeutigen Mustern: „Datum: 12.03.2026“, „Bescheid vom 12.03.2026“ oder das Datum im Briefkopf
   // („Musterstadt, den 12.03.2026“ oder nur das Datum in einer eigenen Zeile). Ein anderes Datum (Bewilligungszeitraum,
@@ -65,9 +127,15 @@ const BriefLesen = (function () {
   function bescheidDatum(z) {
     const D = '(\\d{1,2}\\.\\d{1,2}\\.20\\d{2})';
     const muster = [new RegExp('(?:^|[^\\wäöüß])(?:Datum|Bescheiddatum)\\s*:?\\s*' + D, 'i'), new RegExp('\\bBescheid(?:es)? vom\\s*' + D, 'i')];
-    for (const re of muster) for (const zl of z.slice(0, 40)) { const m = zl.match(re); if (m) return iso(m[1].match(DATUM)); }
+    const gut = (x) => { const d = x.match(DATUM); return d && gueltig(d) ? iso(d) : null; };
+    for (const re of muster) for (const zl of z.slice(0, 40)) { const m = zl.match(re); if (m && gut(m[1])) return gut(m[1]); }
+    // Briefkopf als Spalten („Unser Zeichen   Datum“, darunter „64.4-412000   Frankfurt am Main,“ / „4125   03.06.2025“): Datum am Zeilenende
+    for (let i = 0; i < Math.min(z.length, 60); i++) {
+      if (!/(?:^|\s)Datum:?$/.test(z[i])) continue;
+      for (const zl of z.slice(i + 1, i + 6)) { if (/bis|Zeitraum|geboren|Geburt/i.test(zl)) break; const m = zl.match(new RegExp('(?:^|\\s)' + D + '$')); if (m && gut(m[1])) return gut(m[1]); }
+    }
     const kopf = new RegExp('^(?:[A-ZÄÖÜ][\\wäöüß .()/-]{1,40},\\s*(?:(?:den|am)\\s+)?)?' + D + '$');
-    for (const zl of z.slice(0, 15)) { if (/bis|Zeitraum|geboren|Geburt/i.test(zl)) continue; const m = zl.match(kopf); if (m) return iso(m[1].match(DATUM)); }
+    for (const zl of z.slice(0, 15)) { if (/bis|Zeitraum|geboren|Geburt/i.test(zl)) continue; const m = zl.match(kopf); if (m && gut(m[1])) return gut(m[1]); }
     return null;
   }
 
@@ -78,8 +146,8 @@ const BriefLesen = (function () {
       'bs-b-ae': [[/Alleinerziehend/i]],
       'bs-b-schw': [[/Schwanger|werdende Mütter/i]],
       'bs-b-ww': [[/Warmwasser/i]],
-      'bs-b-kdu': [[/Unterkunft und Heizung|Kosten der Unterkunft|Bedarfe für Unterkunft/i]],
-      'bs-b-eink': [[/anzurechnende[sn]? Einkommen|zu berücksichtigende[sn]? Einkommen|Einkommen (gesamt|insgesamt)/i], { ohne: [/Kindergeld/i] }],
+      'bs-b-kdu': [[/Unterkunft und Heizung|Kosten der Unterkunft|Bedarfe für Unterkunft|^KdU\b/i]],
+      'bs-b-eink': [[/anzurechnende[sn]? Einkommen|zu berücksichtigende[sn]? (Gesamt)?einkommen|Einkommen (gesamt|insgesamt)/i], { ohne: [/Kindergeld/i] }],
       'bs-b-kg': [[/Kindergeld/i]],
       'bs-b-zahl': [[/Zahlbetrag|Auszahlungsbetrag|Gesamtanspruch|Leistungsanspruch|monatliche[rn]? Gesamtbetrag/i]],
       'bs-heiz': [[/Heizkosten|Heizung\b/i], { ohne: [/Unterkunft und Heizung/i] }]
@@ -89,39 +157,53 @@ const BriefLesen = (function () {
       'ga-b-g': [[/Merkzeichen G|Mehrbedarf.{0,20}\bG\b|Gehbehinderung/i]],
       'ga-b-ww': [[/Warmwasser/i]],
       'ga-b-kdu': [[/Unterkunft und Heizung|Kosten der Unterkunft/i]],
-      'ga-b-eink': [[/anzurechnende[sn]? Einkommen|einzusetzende[sn]? Einkommen|Einkommen (gesamt|insgesamt)/i]],
-      'ga-b-zahl': [[/Zahlbetrag|Auszahlungsbetrag|Gesamtanspruch|monatliche[rn]? Leistung/i]],
+      'ga-b-eink': [[/anzurechnende[sn]? Einkommen|einzusetzende[sn]? Einkommen|Einkommen (gesamt|insgesamt)|Summe anrechenb(?:\.|are[sn]?) Einkommen/i]],
+      'ga-b-zahl': [[/Zahlbetrag|Auszahlungsbetrag|Gesamtanspruch|monatliche[rn]? Leistung|^Lfd\.? Anspruch|laufende[rn]? Anspruch/i]],
       'ga-heiz': [[/Heizkosten/i]]
     },
     wg: {
-      'wg-b-miete': [[/zu berücksichtigende Miete|berücksichtigungsfähige Miete|Höchstbetrag|Miete \/ Belastung|zu berücksichtigende Belastung/i]],
-      'wg-b-eink': [[/Gesamteinkommen/i]],
-      'wg-b-wg': [[/Wohngeld (in Höhe von|monatlich|beträgt)|monatliche[sn]? Wohngeld|Wohngeldbetrag/i]],
+      // Der Höchstbetrag ist nur die Grenze; die zu berücksichtigende Miete (mit Heizkosten- und CO2-Komponente) geht vor
+      'wg-b-miete': [[/Höchstbetrag|Miete \/ Belastung/i], { vor: [/zu berücksichtigende (Miete|Belastung)|berücksichtigungsfähige Miete/i] }],
+      // „Gesamteinkommen“ allein ist im Bescheid oft der Jahreswert; der monatliche Wert geht vor
+      'wg-b-eink': [[/Gesamteinkommen/i], { vor: [/monatliche[sn]? Gesamteinkommen/i], ohne: [/Jahres/i] }],
+      'wg-b-wg': [[/Wohngeld (in Höhe( von)?|monatlich|beträgt)|monatliche[sn]? Wohngeld|Wohngeldbetrag/i], { ohne: [/Kosten|abgezogen/i] }],
       'wg-kalt': [[/Bruttokaltmiete|Miete ohne Heizkosten/i]]
     },
     fk: {
-      'kz-b-bedarf': [[/Bedarf der Eltern|elterliche[rn]? Bedarf|Gesamtbedarf der Eltern/i]],
+      'kz-b-bedarf': [[/Bedarf der Eltern|elterliche[rn]? Bedarf|Gesamtbedarf der Eltern/i], { vor: [/gesamte[rn]? Bedarf der Eltern|Gesamtbedarf der Eltern/i], ohne: [/Regelbedarf/i] }],
       'kz-b-eink': [[/Einkommen der Eltern|elterliche[sn]? Einkommen|zu berücksichtigende[sn]? Einkommen/i]],
       'kz-b-kiz': [[/Kinderzuschlag.{0,30}(insgesamt|monatlich|gesamt|in Höhe)|Gesamtbetrag Kinderzuschlag/i]],
       'kz-wohn': [[/Wohnkosten|Kosten für Unterkunft|Miete und Heizung/i]]
     },
     vm: {
-      'nk-voraus': [[/geleistete Vorauszahlung|Ihre Vorauszahlung|Vorauszahlungen? (gesamt|insgesamt)|abzüglich Vorauszahlung/i]],
-      'nk-heiz': [[/Heizkosten.{0,25}(Ihr|Anteil)|Ihr Anteil Heiz|Heiz- und Warmwasserkosten/i]]
+      'nk-voraus': [[/geleistete Vorauszahlung|Ihre Vorauszahlung|Vorauszahlungen? (gesamt|insgesamt)|abzüglich (der )?(vereinbarten |geleisteten )?(Nebenkosten|Betriebskosten)?vorauszahlung/i]],
+      'nk-heiz': [[/^Heiz(ungs)?kosten\b/i], { vor: [/Heizkosten.{0,25}(Ihr|Anteil)|Ihr Anteil Heiz|Heiz- und Warmwasserkosten/i] }]
     }
   };
   // Nebenkosten: Posten mit Kosten für das Haus (erster Betrag) und Anteil (letzter Betrag)
-  const POSTEN = /^(Grundsteuer|Müll\w*|Abfall\w*|Wasser\w*|Abwasser|Kaltwasser|Entwässerung|Niederschlagswasser|Straßenreinigung|Hausreinigung|Treppenhausreinigung|Gebäudereinigung|Hausmeister\w*|Garten\w*|Allgemeinstrom|Beleuchtung|Strom (allgemein|Treppenhaus)|Versicherung\w*|Gebäudeversicherung|Haftpflicht\w*|Aufzug|Fahrstuhl|Schornstein\w*|Kabel\w*|Antenne|Ungeziefer\w*|Winterdienst|Verwaltung\w*|Instandhaltung\w*|Reparatur\w*|Bankgebühren|Porto|Rauchwarnmelder\w*|Wartung\w*)\b/i;
+  const POSTEN = /^(Grundsteuer|Müll\w*|Abfall\w*|Wasser\w*|Abwasser|Kaltwasser|Entwässerung|Niederschlagswasser|Straßenreinigung|Hausreinigung|Treppenhausreinigung|Gebäudereinigung|Hausmeister\w*|Garten\w*|Allgemeinstrom|Beleuchtung|Strom (allgemein|Treppenhaus)|Versicherung\w*|Gebäudeversicherung|Gebäude[ -]?(?:Haftpflicht[ -]?)?Versicherung|Haftpflicht\w*|Aufzug|Fahrstuhl|Schornstein\w*|Kabel\w*|Antenne|Ungeziefer\w*|Winterdienst|Verwaltung\w*|Instandhaltung\w*|Reparatur\w*|Bankgebühren|Porto|Rauchwarnmelder\w*|Wartung\w*)\b/i;
 
   function lies(text, art) {
     const z = zeilen(text);
     const e = art ? { art, titel: ARTEN[art] ? ARTEN[art].titel : '', sicher: 99 } : erkenne(text);
     const out = Object.assign({}, e, { datum: bescheidDatum(z), felder: {}, posten: [], text: String(text || '') });
-    const f = FELDER[out.art] || {};
-    for (const [id, [muster, opt]] of Object.entries(f)) { const w = nach(z, muster, opt); if (w != null) out.felder[id] = w; }
+    const f = FELDER[out.art] || {}, zz = zusammen(z);
+    const vorn = richtung(zz);
+    for (const [id, [muster, opt]] of Object.entries(f)) { const w = nach(zz, muster, Object.assign({ vorn }, opt)); if (w != null) out.felder[id] = w; }
+    if (out.art === 'jc' && out.felder['bs-b-kg'] != null && out.felder['bs-b-eink'] != null) {
+      // BA-Berechnungsbogen: „zu berücksichtigendes Gesamteinkommen“ enthält das Kindergeld (Zeile „Kindergeld“ unter „sonstiges Einkommen“);
+      // die Prüfung führt Kindergeld getrennt, deshalb hier ohne Kindergeld
+      const gz = zz.find((l) => /zu berücksichtigende[sn]? Gesamteinkommen/i.test(l) && betraege(l).length);
+      if (gz && gesamt(betraege(gz), vorn) === out.felder['bs-b-eink']) out.felder['bs-b-eink'] = Math.round((out.felder['bs-b-eink'] - out.felder['bs-b-kg']) * 100) / 100;
+    }
+    if (out.art === 'wg' && out.felder['wg-kalt'] == null) {
+      // Gesamtmiete minus Heizkosten („außer Betracht bleiben: Kosten des Betriebs der zentralen Heizung“) = Miete ohne Heizkosten
+      const gm = nach(zz, [/monatliche Gesamtmiete|Gesamtmiete/i]), hz = nach(zz, [/Kosten des Betriebs der zentralen Heizung|Heizkosten/i], { ohne: [/Komponente/i] });
+      if (gm != null && hz != null && hz < gm) out.felder['wg-kalt'] = Math.round((gm - hz) * 100) / 100;
+    }
     if (out.art === 'jc' || out.art === 'sa') {
       // Miete (ohne Heizung) aus Grundmiete + Nebenkosten
-      const gm = nach(z, [/Grundmiete|Kaltmiete|Nettokaltmiete/i]), nk = nach(z, [/^Nebenkosten|kalte Nebenkosten|Betriebskosten/i]);
+      const gm = nach(zz, [/Grundmiete|Kaltmiete|Nettokaltmiete/i], { vorn }), nk = nach(zz, [/^Nebenkosten|kalte Nebenkosten|Betriebskosten/i], { vorn });
       if (gm != null) out.felder[out.art === 'jc' ? 'bs-miete' : 'ga-miete'] = Math.round((gm + (nk || 0)) * 100) / 100;
     }
     if (out.art === 'wg') { const m = String(text).match(/(\d+)\s*(?:zu berücksichtigende )?Haushaltsmitglied/i); if (m) out.felder['wg-n'] = +m[1]; }
@@ -130,8 +212,8 @@ const BriefLesen = (function () {
     const ZIEL = { jc: { stelle: 'bs-jc', bg: 'bs-bg', az: 'bs-bg' }, sa: { stelle: 'ga-stelle', az: 'ga-az' }, wg: { stelle: 'wg-stelle', az: 'wg-az' }, fk: { kg: 'kz-kgnr' }, pk: { stelle: 'pf-kasse', vnr: 'pf-vnr' }, vm: { stelle: 'nk-verm' } }[out.art] || {};
     for (const [was, id] of Object.entries(ZIEL)) if (k[was] && out.felder[id] == null) out.felder[id] = k[was];
     if (out.art === 'vm') {
-      const m = String(text).match(/(?:Abrechnungszeitraum|Zeitraum)\s*:?\s*(?:vom\s*)?(\d{1,2}\.\d{1,2}\.20\d{2})\s*(?:bis|-|–)\s*(\d{1,2}\.\d{1,2}\.20\d{2})/i);
-      if (m) { out.felder['nk-von'] = iso(m[1].match(DATUM)); out.felder['nk-bis'] = iso(m[2].match(DATUM)); }
+      const m = String(text).match(/(?:Abrechnungszeitraum|Zeitraum)\s*:?\s*(?:vom\s*)?(\d{1,2}\.\d{1,2}\.20\d{2})\s*(?:bis|-|–|—|‒)\s*(\d{1,2}\.\d{1,2}\.20\d{2})/i);
+      if (m && gueltig(m[1].match(DATUM)) && gueltig(m[2].match(DATUM))) { out.felder['nk-von'] = iso(m[1].match(DATUM)); out.felder['nk-bis'] = iso(m[2].match(DATUM)); }
       const wfl = String(text).match(/(?:Ihre |Wohn)fläche\s*:?\s*(\d+(?:,\d+)?)\s*m/i); if (wfl) out.felder['nk-wfl'] = +wfl[1].replace(',', '.');
       const gfl = String(text).match(/Gesamt(?:wohn)?fläche\s*:?\s*(\d+(?:[.,]\d+)?)\s*m/i); if (gfl) out.felder['nk-gfl'] = +gfl[1].replace('.', '').replace(',', '.');
       for (const zl of z) {
@@ -146,11 +228,27 @@ const BriefLesen = (function () {
   // Kennungen für das Schreiben: Stelle (Briefkopf), Aktenzeichen, Nummer der Bedarfsgemeinschaft, Kindergeldnummer, Versichertennummer
   function kennungen(z, text) {
     const k = {};
-    const stelle = z.slice(0, 8).find((l) => /\b(Jobcenter|Landratsamt|Sozialamt|Bezirk|Stadt |Gemeinde|Wohngeld|Familienkasse|Pflegekasse|Krankenkasse|AOK|BKK|IKK|Barmer|DAK|Techniker|Knappschaft|Hausverwaltung|Immobilien|Wohnungs|Verwaltung)/i.test(l) && l.length <= 80 && !/\d{2}\.\d{2}\.\d{4}/.test(l));
-    if (stelle) k.stelle = stelle.trim();
+    const istStelle = (l) => /\b(Jobcenter|Landratsamt|Sozialamt|Bezirk|Stadt |Stadtverwaltung|Gemeinde|Wohngeld|Familienkasse|Pflegekasse|Krankenkasse|AOK|BKK|IKK|Barmer|DAK|Techniker|Knappschaft|Hausverwaltung|Immobilien|Wohnungs|Verwaltung)/i.test(l) && l.length <= 80 && !/\d{2}\.\d{2}\.\d{4}/.test(l) && !/@|E-Mail|Telefon|Sachbearbeit/i.test(l);
+    // Briefkopf: erste passende Zeile oben; pdf.js liefert den Kopf manchmal erst nach Fußzeile und Text, dann nur mit Postleitzahl
+    const stelle = z.slice(0, 8).find(istStelle) || z.slice(0, 40).find((l) => istStelle(l) && /\b\d{5}\b/.test(l));
+    if (stelle) k.stelle = stelle.replace(/[\s|_]+$/, '').trim(); // Rest eines Rahmens aus der Texterkennung („… am Main |“)
     const m = (re) => { const x = text.match(re); return x ? x[1].replace(/\s+/g, ' ').trim() : null; };
-    k.bg = m(/(?:BG-Nummer|BG-Nr\.?|Nummer der Bedarfsgemeinschaft|Bedarfsgemeinschaft(?:snummer)?(?:\s*Nr\.?)?)\s*:?\s*(\d{3}\s?[A-Z]?\s?\d{5,8})/i);
-    k.az = m(/(?:Aktenzeichen|Geschäftszeichen|Unser Zeichen|Az\.|Wohngeldnummer)\s*:?\s*([A-Za-z0-9][A-Za-z0-9.\/-]*(?: [A-Za-z0-9.\/-]+){0,3})\s*$/im);
+    // BG-Nummer: „123 A 12345“ oder wie im BA-Bescheid „73514//0000002“ (Dienststelle // laufende Nummer)
+    k.bg = m(/(?:BG-Nummer|BG-Nr\.?|Nummer der Bedarfsgemeinschaft|Bedarfsgemeinschaft(?:snummer)?(?:\s*Nr\.?)?)\s*:?\s*(\d{5}\s?\/\/\s?\d{5,8}|\d{3}\s?[A-Z]?\s?\d{5,8})/i);
+    // Zeichen muss eine Ziffer enthalten: sonst wäre im Spaltenkopf „Unser Zeichen   Datum“ das Wort „Datum“ das Zeichen
+    const az = text.match(/(?:Aktenzeichen|Geschäftszeichen|Unser Zeichen|Mein Zeichen|Az\.|Wohngeldnummer)\s*:?\s*([A-Za-z0-9][A-Za-z0-9.\/-]*(?: [A-Za-z0-9.\/-]+){0,3})\s*$/im);
+    k.az = az && /\d/.test(az[1]) ? az[1].replace(/\s+/g, ' ').trim() : null;
+    if (!k.az) {
+      // Spaltenkopf „Unser Zeichen“ ohne Wert, Wert genau darunter (nur mit erhaltenen Spalten, z. B. PDF-Layout; sonst unsicher und leer)
+      const roh = text.split(/\r?\n/);
+      for (let i = 0; i + 1 < roh.length && i < 60; i++) {
+        const sp = roh[i].search(/Unser Zeichen|Aktenzeichen|Geschäftszeichen/);
+        if (sp < 0 || /\d/.test(roh[i].slice(sp))) continue;
+        const w = /\S+/g; let x;
+        while ((x = w.exec(roh[i + 1]))) if (Math.abs(x.index - sp) <= 6 && /\d/.test(x[0]) && !DATUM.test(x[0]) && x[0].length >= 4) { k.az = x[0].replace(/,$/, ''); break; }
+        if (k.az) break;
+      }
+    }
     k.kg = m(/(?:Kindergeldnummer|Kindergeld-Nr\.?)\s*:?\s*(\d{3}\s?FK\s?\d{4,8})/i);
     k.vnr = m(/(?:Versichertennummer|Versicherten-Nr\.?|Krankenversichertennummer)\s*:?\s*([A-Z]\d{9})/i);
     return k;

@@ -1,0 +1,58 @@
+# Quelle: https://www.docutain.de/Content/PDF/Muster_Nebenkostenabrechnung.pdf (Docutain, Muster mit fiktiven Beispielangaben)
+# Abgerufen: 21.11.2026. Text wie in der App gelesen: pdf.js 3.11.174 + pdfZeilen aus src/app.js (tools/scan-muster.js --pdf).
+Scannen Sie den QR-Code und laden Sie kostenlos die Docutain Scan-App
+herunter, um Ihre Dokumente digital zu verwalten.
+Muster Nebenkostenabrechnung
+Name des Vermieters: [Vorname] [Nachname]
+Straße, Haus-Nr.: [Name Straße], [Hausnummer]
+PLZ, Stadt, Land: [PLZ], [Stadt], [Land]
+Name des Mieters: [Vorname] [Nachname]
+Straße, Haus-Nr.: [Name Straße], [Hausnummer]
+PLZ, Stadt, Land: [PLZ], [Stadt], [Land]
+Betreff: Nebenkostenabrechnung [Jahr], [Name Straße], [Hausnummer] in [PLZ] [Stadt]
+Sehr geehrte/r Herr/Frau [Nachname Mieter],
+anbei erhalten Sie die Nebenkostenabrechnung für das Jahr [Jahr]. Die Abrechnung beinhaltet den
+Zeitraum vom 01.01.[Jahr] – 31.12.[Jahr].
+Bitte überweisen Sie im Falle einer Nachzahlung den entsprechenden Betrag binnen 14 Tagen auf
+das Ihnen bekannte Vermieterkonto:
+Kontoinhaber: [Vorname, Nachname Vermieter] | IBAN: DEXXXXXXXXXX
+Im Falle eines Guthabens zu Ihren Gunsten, nutzen wir das uns bekannte Mieterkonto zur
+Auszahlung des überschüssigen Betrags.
+Eine Nachberechnung der Nebenkosten behalten wir uns für den Fall vor, dass sich die
+Betriebskostenbelastung infolge rückwirkender Erhöhung oder Ermäßigung verändert oder
+Betriebskosten zum Zeitpunkt der Abrechnung noch nicht bekannt waren.
+Mit freundlichen Grüßen,
+______________________
+Ort, Datum
+______________________
+[Name Vermieter/Hausverwaltung]
+Scannen Sie den QR-Code und laden Sie kostenlos die Docutain Scan-App
+herunter, um Ihre Dokumente digital zu verwalten.
+Nebenkostenabrechnung [Jahr]
+Abrechnungszeitraum: 01.01.[Jahr] – 31.12.[Jahr]
+Nutzungszeitraum: 01.01 .[Jahr] – 31.12.[Jahr]
+Name des Empfängers: [Vorname, Nachname Mieter]
+Straße, Haus-Nr.: [Name Straße], [Hausnummer]
+PLZ, Stadt, Land: [PLZ], [Stadt], [Land]
+Umlagefähige Ausgaben [mit fiktiven Beispielangaben]:
+Kostenart Gesamtkosten Umlageschlüssel Ihr Anteil
+Müllkosten 143,16€ 3 143,16€
+Grundsteuer 203,12€ 1 203,12€
+Heizkosten/ Heiznebenkosten 1.004,64€ 4 1.004,64€
+Wasser 293,65€ 4 293,65€
+Gebäude Haftpflicht Versicherung 510,96€ 3 510,96€
+…
+Summe 2.155,53€
+Umlageschlüssel (gemäß Angaben im Mietvertrag)
+1 = Wohnfläche
+2 = Wohneinheiten
+3 = Einzelabrechnung
+4 = Verbrauch
+Abzüglich Nebenkostenvorauszahlung pro Jahr: - 360,00 €
+Gesamtnachzahlung/Gesamterstattung: 1.795,53€
+Ihre Betriebskostenabrechnung weist eine Nachzahlung in Höhe von 1.795,53€ aus.
+Bitte überweisen Sie den entsprechenden Betrag binnen 14 Tagen auf das Ihnen bekannte
+Mieterkonto.
+Haben Sie uns für einen Lastschrifteinzug ermächtigt, werden wir den Betrag am TT.MM.JJJJ von
+Ihrem Konto einziehen.
+Die dazugehörigen Belege können Sie zur Überprüfung anfordern.
