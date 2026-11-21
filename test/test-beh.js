@@ -144,9 +144,10 @@ WB.forEach(([o, g]) => {
   check('WBS über Höchstwert nach Abzug => nein', lv({ ...o, brutto: NACH(mx) + 50 }, 'wbs') === 'nein' && get({ ...o, brutto: NACH(mx) + 50 }, 'wbs').tx[0][1].grenze === eur(mx));
   check('WBS knapp unter dem Höchstwert nach Abzug => möglich', lv({ ...o, brutto: NACH(mx) - 20 }, 'wbs') === 'vielleicht');
 });
-// Freibeträge nach dem Muster § 24 WoFG: GdB 100 oder ab 80 mit Pflegegrad 4.500 €, unter 80 mit Pflegegrad 2.100 €, ohne Pflegegrad (GdB 50-90) 0 €
-check('WBS: GdB 100 erweitert die "möglich"-Spanne um 4.500 € im Jahr', lv({ adults: 1, brutto: NACH(28300 + 4500) - 5, gdb: '100' }, 'wbs') === 'vielleicht' && lv({ adults: 1, brutto: NACH(28300 + 4500) + 20, gdb: '100' }, 'wbs') === 'nein' && lv({ adults: 1, brutto: NACH(28300) + 20 }, 'wbs') === 'nein');
-check('WBS: GdB 50 mit Pflegegrad 2.100 €, GdB 50 ohne Pflegegrad kein Freibetrag', lv({ adults: 1, brutto: NACH(28300 + 2100) - 5, gdb: '50', pflegegrad: '2' }, 'wbs') === 'vielleicht' && lv({ adults: 1, brutto: NACH(28300) + 20, gdb: '50' }, 'wbs') === 'nein');
+// Bayern: Art. 5 Abs. 2 Nr. 1 BayWoFG (über Art. 4 Abs. 1 BayWoBindG; gesetze-bayern.de, Abruf 21.11.2026): 4.000 € je Person mit GdB ab 50,
+// ohne Pflegegrad (bis 21.11.2026 nach dem Muster § 24 WoFG 4.500 / 2.100 € nur mit Pflegegrad; Befund WBS4)
+check('WBS Bayern: GdB 100 erweitert die "möglich"-Spanne um 4.000 € im Jahr', lv({ adults: 1, brutto: NACH(28300 + 4000) - 5, gdb: '100' }, 'wbs') === 'vielleicht' && lv({ adults: 1, brutto: NACH(28300 + 4000) + 20, gdb: '100' }, 'wbs') === 'nein' && lv({ adults: 1, brutto: NACH(28300) + 20 }, 'wbs') === 'nein');
+check('WBS Bayern: GdB 50 ohne Pflegegrad ebenfalls 4.000 €, Pflegegrad ändert nichts', lv({ adults: 1, brutto: NACH(28300 + 4000) - 5, gdb: '50' }, 'wbs') === 'vielleicht' && lv({ adults: 1, brutto: NACH(28300 + 4000) + 20, gdb: '50', pflegegrad: '2' }, 'wbs') === 'nein');
 check('WBS: Einkommen 0 => ja', lv({ brutto: 0 }, 'wbs') === 'ja');
 // Monotonie: mehr Einkommen kann das Ergebnis nur verschlechtern
 {

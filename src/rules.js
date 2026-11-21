@@ -151,7 +151,12 @@ const Rules = (function () {
     // Mehrlingszuschlag (§ 4a Abs. 2 Satz 3 Nr. 1–3). Quellen: gesetze-im-internet.de/beeg/__2.html, __2a.html, __4a.html, abgerufen 21.11.2026;
     // Familienportal (familienportal.de, FAQ „Wie viel Elterngeld kann ich bekommen?“, abgerufen 21.11.2026): „Als Netto-Einkommen vor der Geburt
     // werden maximal 2.770 Euro berücksichtigt“, ElterngeldPlus „mindestens 150 Euro“.
-    eg: { pausch: 1230 / 12, bonus: 0.1, bonusMin: 75, min: 300, max: 1800, satz: 0.67, satzHoch: 0.65, grenzeUnten: 1000, grenzeOben: 1200, monate: 12, partner: 2, einkommenGrenze: 175000, deckel: 2770, mehrling: 300 },
+    // svPausch (Befund E2, 21.11.2026): Abzüge für Sozialabgaben beim Elterngeld-Netto pauschal 9 % (Kranken- und Pflegeversicherung) + 10 %
+    // (Rentenversicherung) + 2 % (Arbeitsförderung) der Einnahmen, wenn Versicherungspflicht bestand; Minijob ohne Abzug; andere Regeln zur
+    // Beitragsbemessung (z. B. Beitragsbemessungsgrenzen) bleiben außer Betracht (§ 2f Abs. 1 bis 3 BEEG,
+    // https://www.gesetze-im-internet.de/beeg/__2f.html, Abruf 21.11.2026). Steuern nach § 2e BEEG (https://www.gesetze-im-internet.de/beeg/__2e.html,
+    // Abruf 21.11.2026) mit der Steuerklasse aus der Zeit vor der Geburt; siehe egNettoAmtlich. (svPausch steht am Ende von eg.)
+    eg: { pausch: 1230 / 12, bonus: 0.1, bonusMin: 75, min: 300, max: 1800, satz: 0.67, satzHoch: 0.65, grenzeUnten: 1000, grenzeOben: 1200, monate: 12, partner: 2, einkommenGrenze: 175000, deckel: 2770, mehrling: 300, svPausch: 0.09 + 0.10 + 0.02 },
     // Hilfe zur Pflege (§§ 61 ff., 85 SGB XII): Einkommensgrenze 2 × RS1 + Wohnkosten + 70 % RS1 je weiterer Person; Vermögen 10.000 € je Erwachsenem
     hzp: { grund: 2, familie: 0.7 },
     // Blindenhilfe (§ 72 SGB XII): gleiche Einkommensgrenze wie Hilfe zur Pflege (§ 85); vom Einkommen über der Grenze
@@ -307,8 +312,16 @@ const Rules = (function () {
     // Verordnung höhere Grenzen bis zu den Höchstwerten nach Art. 11 Abs. 1 BayWoFG festlegen (Art. 4 Abs. 3 BayWoBindG); ob das bei dir gilt, weiß die App nicht.
     wbs: { ein: 17500, zwei: 27500, weitere: 5000, kind: 1300, maxEin: 28300, maxZwei: 43200, maxWeitere: 10700, maxKind: 3200, maxAbzug: 0.3,
       // Freibeträge für Schwerbehinderte nach dem Muster § 24 WoFG: 4.500 € (GdB 100 oder ab 80 mit Pflegegrad), 2.100 € (unter 80 mit Pflegegrad).
-      // Bayerische Werte bitte fachlich prüfen; die App nutzt sie nur für „möglich“, nie für „wahrscheinlich“.
-      schwerbFreiHoch: 4500, schwerbFreiPflege: 2100 }
+      // Gelten nur noch in den anderen Ländern (Landesrecht dort nicht einzeln geprüft); die App nutzt sie nur für „möglich“, nie für „wahrscheinlich“.
+      schwerbFreiHoch: 4500, schwerbFreiPflege: 2100,
+      // Bayern (Befunde WBS2, WBS4): Für den WBS gelten Art. 4 bis 7 BayWoFG entsprechend (Art. 4 Abs. 1 Satz 1 BayWoBindG,
+      // https://www.gesetze-bayern.de/Content/Document/BayWoBindG-4, Abruf 21.11.2026). Art. 5 Abs. 2 BayWoFG
+      // (https://www.gesetze-bayern.de/Content/Document/BayWoFG-5, Abruf 21.11.2026): 4.000 € je Person mit GdB ab 50 (byFreiGdb), ohne
+      // Pflegegrad. Art. 5 Abs. 3: Unterhalt aufgrund gesetzlicher Unterhaltspflicht abziehbar, mit Titel, Bescheid oder notarieller
+      // Vereinbarung der festgelegte Betrag, sonst höchstens 4.000 € je nicht zum Haushalt gehörende Person (byUntPerson; Kind) bzw. 6.000 €
+      // für den früheren oder dauernd getrennt lebenden Ehegatten (byUntEx). Der Freibetrag 5.000 € für junge Ehepaare (Abs. 2 Nr. 2)
+      // fehlt, weil die App Ehe und Ehejahre nicht kennt (Befund WBS3).
+      byFreiGdb: 4000, byUntPerson: 4000, byUntEx: 6000 }
   };
 
   // ---------------------------------------------------------------
@@ -711,16 +724,32 @@ const Rules = (function () {
     // Unterhaltsvorschuss, den die Kinder bekommen würden (zählt als ihr Einkommen): nur Alleinerziehende (auch mit neuer Partnerschaft
     // ohne Trauschein), wenn Unterhalt fehlt; nicht im Wechselmodell (ein Kind). Asyl/Duldung: offen (deutsches Kind oder eigener Titel des Kindes).
     // Ab 12 Jahren nur mit eigenem Einkommen des Elternteils von mindestens 600 € (oder ohne Grundsicherung), daher dann ohne die Älteren.
-    let uvgEst = 0;
-    if ((adults === 1 || uvgPartner === 'neu') && kids > 0 && inp.unterhaltFehlt && !(uvgWechsel && kids === 1)) {
+    // uvgOffen (Befunde G2/K1/U1, Rechenplan 21.11.2026): Unterhaltsvorschuss, der möglich, aber nicht sicher ist, und darum nicht in uvgEst
+    // steckt: (a) zweite erwachsene Person ohne Angabe, wer sie ist (Ehepartner: kein UVG, § 1 Abs. 1 Nr. 2 UVG; neuer Partner ohne Trauschein:
+    // UVG), oder der andere Elternteil bei mehreren Kindern (§ 1 Abs. 3 UVG gilt nur für gemeinsame Kinder); (b) Kinder ab 12, wenn der
+    // Elternteil unter 600 € verdient: Sie bekommen UVG trotzdem, wenn sie kein Grundsicherungsgeld bekommen (§ 1 Abs. 1a Nr. 1 UVG), also
+    // gerade dann, wenn Kinderzuschlag oder Wohngeld die Hilfebedürftigkeit beenden. UVG ist Einkommen des Kindes (§ 11 Abs. 1 Satz 1 mit § 9 Abs. 2
+    // SGB II, § 6a Abs. 3 BKGG, § 14 Abs. 2 Nr. 21 WoGG). Gesetze abgerufen 21.11.2026: gesetze-im-internet.de/uhvorschg/__1.html,
+    // gesetze-im-internet.de/sgb_2/__11.html, gesetze-im-internet.de/bkgg_1996/__6a.html, gesetze-im-internet.de/wogg/__14.html. uvgOffen dient nur der vorsichtigen Seite
+    // („wahrscheinlich“ nur, wenn es auch mit diesem UVG noch reicht); uvgOffenGG: dasselbe ohne (b), weil mit Grundsicherungsgeld kein UVG ab 12.
+    let uvgEst = 0, uvgOffen = 0, uvgOffenGG = 0;
+    const uvgGrund = kids > 0 && inp.unterhaltFehlt && !(uvgWechsel && kids === 1);
+    const uvgFormel = (ab12raus) => {
       const mitte = kids - kidsU6 - kids14;
-      const ab12raus = !!inp.kinder12 && bruttoEigen < R.uvg.min12;
       // „Ein Kind ist 12 oder älter“ ohne Kind von 14 bis 17: Dann ist ein Kind der mittleren Gruppe 12 oder 13. Es bekommt den Betrag der
       // dritten Altersstufe (ab dem 13. Lebensjahr, also ab dem 12. Geburtstag: § 2 Abs. 1 UVG i. V. m. § 1612a Abs. 1 Satz 3 Nr. 3 BGB) oder,
       // wenn die Grenze ab 12 Jahren nicht erfüllt ist, nichts (§ 1 Abs. 1a UVG). Gesetze abgerufen 21.11.2026 (gesetze-im-internet.de/uhvorschg/__1.html,
       // gesetze-im-internet.de/bgb/__1612a.html). Mit einem Kind von 14 bis 17 bleibt offen, ob ein jüngeres Kind 12 oder 13 ist: dann 299 €.
       const mitte12 = !!inp.kinder12 && kids14 === 0 && mitte > 0 ? 1 : 0;
-      uvgEst = Math.max(0, kidsU6 * R.uvg.bis5 + (mitte - mitte12) * R.uvg.bis11 + (ab12raus ? 0 : (kids14 + mitte12) * R.uvg.bis17) - unterhalt - waisen - uvgKindAnr);
+      return Math.max(0, kidsU6 * R.uvg.bis5 + (mitte - mitte12) * R.uvg.bis11 + (ab12raus ? 0 : (kids14 + mitte12) * R.uvg.bis17) - unterhalt - waisen - uvgKindAnr);
+    };
+    const ab12raus = !!inp.kinder12 && bruttoEigen < R.uvg.min12;
+    if (uvgGrund && (adults === 1 || uvgPartner === 'neu')) {
+      uvgEst = uvgFormel(ab12raus);
+      uvgOffen = uvgFormel(false) - uvgEst;
+    } else if (uvgGrund && adults === 2 && (uvgPartner === '' || (uvgPartner === 'eltern' && kids > 1))) {
+      uvgOffen = uvgFormel(false);
+      uvgOffenGG = uvgFormel(ab12raus);
     }
     // Mehrbedarf für Alleinerziehende: 36 % bei einem Kind unter 7 oder 2-3 Kindern unter 16, sonst 12 % je Kind, höchstens 60 %
     let mehrAE = 0, mehrAEhoch = 0;
@@ -755,7 +784,7 @@ const Rules = (function () {
       autoWert: num(inp.autoWert), autoBraucht: !!inp.autoBraucht,
       hhAndere: inp.hhAndere === 'wg' || inp.hhAndere === 'verwandte' ? inp.hhAndere : '',
       eu: inp.aufenthalt === 'eu', euArbeit: inp.euArbeit === 'ja', euJahre5: inp.euJahre === 'ab5',
-      art1, art2, pers, liste: !!liste, kindEink, uvgEst, kindZahl: unterhalt + waisen + uvgEst, waisen, uvgPartner, uvgWechsel, bruttoEigen, uvgKindAnr, mehrAE, mehrAEhoch, alterGrenz,
+      art1, art2, pers, liste: !!liste, kindEink, uvgEst, uvgOffen, uvgOffenGG, kindZahl: unterhalt + waisen + uvgEst, waisen, uvgPartner, uvgWechsel, bruttoEigen, uvgKindAnr, mehrAE, mehrAEhoch, alterGrenz,
       egMehr, egOhneArbeit, egFreiSGB: sumIf((a, b) => a === 'eg' && b > egOhneArbeit ? R.elterngeldFrei : 0),
       // Versicherungspauschale (§ 6 Abs. 1 Nr. 1 GrusiGV) einmal je volljähriger Person, nicht zusätzlich neben Einkommen aus Arbeit (dort
       // steckt sie im Grundabsetzbetrag von 100 €, § 11b Abs. 2 SGB II). Ist der Lohn kleiner als 30 €, geht nur der vom Lohn nicht gedeckte
@@ -1047,7 +1076,9 @@ const Rules = (function () {
     const kindPess = Math.max(0, (h.kindEink || 0) - kindAbzugPess);
     const kindOpt = Math.max(-(h.kindZahl || 0), kindNOpt * (Math.max(0, kindX - R.wgWerbung.lohn / 12) - Math.min(kindX, R.wgKindFrei)));
     const extra = (h.kindZahl || 0) + (h.kapWG || 0) - freib - grFrei;
-    const yPess = Math.max(0, yA + extra + kindPess - (h.uzWGpess || 0)), yOpt = Math.max(0, yB + extra + kindOpt - (h.uzWGopt || 0));
+    // Unterhaltsvorschuss möglich, aber nicht sicher (h.uvgOffen, siehe derive; Befund U1): zählt als Einkommen (§ 14 Abs. 2 Nr. 21 WoGG,
+    // https://www.gesetze-im-internet.de/wogg/__14.html, Abruf 21.11.2026), deshalb in der vorsichtigen Schätzung (yPess) mit.
+    const yPess = Math.max(0, yA + extra + (h.uvgOffen || 0) + kindPess - (h.uzWGpess || 0)), yOpt = Math.max(0, yB + extra + kindOpt - (h.uzWGopt || 0));
 
     return { yMaxLo, yMaxHi, lo, hi, yPess, yOpt };
   }
@@ -1238,7 +1269,11 @@ const Rules = (function () {
     const lo = Math.max(10, r10(est)), hi = Math.max(10, r10(estHoch));
     const sch = hi > lo ? ['schaetz.spanne', { a: eur(lo), b: eur(hi) }] : ['schaetz.eins', { a: eur(lo) }];
     if (mitKiz < gesamtBedarf) return mkE('vielleicht', 'vielleicht', [['kiz.mitWg', { max: eur(R.kiz.max) }], sch]);
-    if (est >= R.kiz.ampelGruenAb) return mkE('ja', 'ja', [['kiz.ja', { max: eur(R.kiz.max) }], sch]);
+    // Unterhaltsvorschuss möglich, aber nicht sicher (h.uvgOffen, siehe derive): 45 % davon mindern den Kinderzuschlag (§ 6a Abs. 3 Satz 1
+    // und 3 BKGG, https://www.gesetze-im-internet.de/bkgg_1996/__6a.html, Abruf 21.11.2026); wer UVG nicht beantragt, riskiert nach Satz 4
+    // den Kinderzuschlag. „Wahrscheinlich“ deshalb nur, wenn es auch mit diesem UVG reicht; sonst „möglich“ (Befund K1).
+    const estU = h.uvgOffen > 0 ? estMit(bemessung, kindAnr + h.uvgOffen) : est;
+    if (est >= R.kiz.ampelGruenAb && estU >= R.kiz.ampelGruenAb) return mkE('ja', 'ja', [['kiz.ja', { max: eur(R.kiz.max) }], sch]);
     return mkE('vielleicht', 'vielleicht', [['kiz.rand', { max: eur(R.kiz.max) }], sch]);
   }
 
@@ -1251,8 +1286,18 @@ const Rules = (function () {
 
   // § 7 Abs. 4 SGB II: Wer eine Altersrente bezieht (auch vor der Regelaltersgrenze), bekommt kein Grundsicherungsgeld.
   // Die App kennt die Rentenart nicht: allein, nur Rente, Alter unbekannt oder ab 60 -> höchstens „möglich“ mit Hinweis.
+  // Unterhaltsvorschuss möglich, aber nicht sicher (h.uvgOffenGG, siehe derive; Befund G2): Er ist Einkommen des Kindes bis zu seinem
+  // Bedarf (§ 11 Abs. 1 Satz 1, § 9 Abs. 2 SGB II, https://www.gesetze-im-internet.de/sgb_2/__11.html, Abruf 21.11.2026) und vorrangig
+  // (§ 12a SGB II). „Wahrscheinlich“ nur, wenn es auch mit diesem UVG noch „wahrscheinlich“ bleibt; sonst „möglich“ ohne Betrag.
+  function ggeldUvgOffen(h, r) {
+    if (r.level !== 'ja' || !(h.uvgOffenGG > 0)) return r;
+    const mit = ggeldRechnung(Object.assign({}, h, { kindZahl: (h.kindZahl || 0) + h.uvgOffenGG, uvgOffenGG: 0 }));
+    if (mit.level === 'ja') return r;
+    const out = mk(r.id, 'vielleicht', 'vielleicht', r.tx.filter((t) => t[0].indexOf('schaetz.') !== 0).map((t) => (t[0] === 'bedarfJa' ? ['bedarfRand', t[1]] : t)));
+    return r.lage ? Object.defineProperty(out, 'lage', { value: r.lage }) : out;
+  }
   function grundsicherungsgeld(h) {
-    const r = ggeldRechnung(h);
+    const r = ggeldUvgOffen(h, ggeldRechnung(h));
     if (h.adults !== 1 || (r.level !== 'ja' && r.level !== 'vielleicht') || !vielleichtAltersrente(h)) return r;
     return mk(r.id, 'vielleicht', 'vielleicht', r.tx.slice(0, 1).concat([['ggeld.vorgezogen']], r.tx.slice(1)));
   }
@@ -1574,7 +1619,7 @@ const Rules = (function () {
   }
   // Einkommen je Person (Brutto b, Netto n) aus den Angaben; ohne Liste wird das Netto nach dem Brutto aufgeteilt
   function bafPers(h) {
-    if (h.liste) return h.pers.map((x) => ({ art: x[0], b: x[1], n: x[2], selbst: !!x[4], p: x[5] || 1 }));
+    if (h.liste) return h.pers.map((x) => ({ art: x[0], b: x[1], n: x[2], aus: !!x[3], selbst: !!x[4], p: x[5] || 1 }));
     return h.pers.map((x, i) => ({ art: x[0], b: x[1], n: h.brutto > 0 ? h.netto * x[1] / h.brutto : (i === 0 ? h.netto : 0), selbst: !!x[4], p: i + 1 }));
   }
   // Monatliches Einkommen nach § 21 BAföG [lo, hi] aus dem heutigen Einkommen. hi: nie kleiner als das Netto (Sozialpauschale 22,3 %
@@ -1602,6 +1647,36 @@ const Rules = (function () {
       lo += x.art === 'eg' ? nEg : x.art === 'unt' ? 0 : x.art === 'rente' ? 0.8 * n : x.art === 'lohn' && !x.selbst ? Math.max(0, 0.8 * n - 80) : 0.5 * n;
     });
     return { lo, hi, untHi };
+  }
+  // Einkommen der Eltern nach § 21 BAföG für die EINSTUFUNG beim Kind (Befund B1, Rechenplan 21.11.2026; bis dahin das Netto).
+  // § 21 Abs. 1 BAföG (https://www.gesetze-im-internet.de/baf_g/__21.html, Abruf 21.11.2026): positive Einkünfte (Lohn minus
+  // Arbeitnehmer-Pauschbetrag 1.230 €/Jahr, § 9a EStG) minus Einkommensteuer (hier: Brutto − Netto − geschätzte echte Beiträge);
+  // Abs. 2 Satz 1 Nr. 1: statt der Beiträge die Sozialpauschale 22,3 %, höchstens 17.200 €/Jahr (rentenversicherungspflichtige
+  // Arbeitnehmer; R.bafoeg.pausch, pauschMaxJahr). Das ist für jede Person mit Lohn und bekanntem Brutto „wie amtlich“, nur mit dem
+  // heutigen statt dem vorletzten Jahr (§ 24 Abs. 1) – das war beim Netto genauso. Ohne bekanntes Brutto (nur Auszahlung) oder bei
+  // anderen Einkommen weiß die App die Einkünfte nach § 21 nicht: für „wahrscheinlich“ (ja) dann das Netto wie bisher (nie zu günstig),
+  // für „eher nicht“ (nein) die vorsichtige untere Schätzung (Lohn aus der Auszahlung wie oben, Unterhalt für sich selbst 0 €,
+  // Elterngeld bis 300 € frei, sonst das Netto).
+  function bafEink21(h) {
+    let ja = 0, nein = 0, sumN = 0;
+    bafPers(h).forEach((x) => {
+      sumN += x.n;
+      if (x.art === 'ohne') return;
+      const n = Math.max(0, x.n);
+      if (x.art === 'lohn' && !x.selbst && x.b > 0) {
+        const e = Math.max(0, x.b - BAF.wkJahr / 12), basis = e - Math.min(e * BAF.pausch, BAF.pauschMaxJahr / 12);
+        const steuer = x.aus ? 0 : Math.max(0, x.b - n - svMonat(x.b, lohnAnnahmen(h, x.p)));
+        const v = Math.max(0, basis - steuer);
+        ja += x.aus ? n : v; nein += v;
+        return;
+      }
+      ja += n;
+      // wie bisher: Unterhalt für sich selbst ganz, Elterngeld bis 300 € abgezogen (Betrag laut Eingabe; ohne Liste das Brutto-Feld)
+      nein += n - (x.art === 'unt' ? (h.liste ? n : x.b) : x.art === 'eg' ? Math.min(R.elterngeldFrei, h.liste ? n : x.b) : 0);
+    });
+    // Rest des Netto, der keiner Person zugeordnet ist (Kapitalerträge über dem Freibetrag, h.netto): wie bisher voll
+    const rest = Math.max(0, h.netto - sumN);
+    return { ja: ja + rest, nein: nein + rest };
   }
   // Spanne in Text-Schlüssel: untere Grenze auf 10 € ab-, obere aufgerundet (die Spanne enthält den gerechneten Wert sicher)
   function bafSchaetz(min, max) {
@@ -1663,17 +1738,16 @@ const Rules = (function () {
       if (h.children === 0) return mk(id, 'nein', 'vorausFehlt', [['bafoeg.keinKind']]);
       const fb = (h.adults === 2 ? R.bafoeg.freiPaar : R.bafoeg.freiAllein) + Math.max(0, h.children - 1) * R.bafoeg.jeKind;
       const p = { fb: eur(fb) };
-      if (h.netto <= fb) return mk(id, 'ja', 'ja', [['bafoeg.kindJa', p]].concat(bafSchaetzKind(h)));
+      const e21 = bafEink21(h);
+      if (e21.ja <= fb) return mk(id, 'ja', 'ja', [['bafoeg.kindJa', p]].concat(bafSchaetzKind(h)));
       // Unterhalt eines Elternteils für sich selbst zählt beim BAföG nur, wenn er versteuert wird (Realsplitting, § 21 Abs. 1 BAföG
       // i. V. m. § 22 Nr. 1a EStG): ohne ihn unter der Grenze -> höchstens „möglich“
-      const untE = (h.pers || []).reduce((a, x) => a + (x[0] === 'unt' ? (h.liste ? x[2] : x[1]) : 0), 0);
       // § 25 Abs. 4 BAföG: angerechnet wird nur der Teil über dem Freibetrag, davon 50 % minus 5 % je Kind mit Freibetrag (Abruf 21.11.2026).
       // „Eher nicht“ erst, wenn diese Anrechnung den höchsten Bedarf (bedarfMax) übersteigt, und zwar auch dann, wenn Geschwister in
       // förderfähiger Ausbildung sind (dann kein Freibetrag 770 € für sie, Einkommen geteilt nach § 11 Abs. 4); sonst „möglich“
       const quote = R.bafoeg.anrechFrei - R.bafoeg.anrechFreiKind * Math.max(0, h.children - 1);
-      const egFrei = (h.pers || []).reduce((a, x) => a + (x[0] === 'eg' ? Math.min(R.elterngeldFrei, h.liste ? x[2] : x[1]) : 0), 0);
-      const kleinste = bafAnrElternSpanne(h, h.netto - untE - egFrei).aMitteMin;
-      if (quote <= 0 || (h.netto - untE - fb) * quote <= bafoegNullGrenze(R.bafoeg.bedarfMax) || kleinste <= bafoegNullGrenze(R.bafoeg.bedarfMax)) {
+      const kleinste = bafAnrElternSpanne(h, e21.nein).aMitteMin;
+      if (quote <= 0 || (e21.nein - fb) * quote <= bafoegNullGrenze(R.bafoeg.bedarfMax) || kleinste <= bafoegNullGrenze(R.bafoeg.bedarfMax)) {
         return mk(id, 'vielleicht', 'vielleicht', [['bafoeg.kindRand', p]].concat(bafSchaetzKind(h)));
       }
       return mk(id, 'nein', 'einkoHoch', [['bafoeg.kindNein', p]]);
@@ -1852,6 +1926,24 @@ const Rules = (function () {
     const bonus = o.bonus ? Math.max(E.bonusMin * f, kern * E.bonus) : 0; // § 2a Abs. 1: 10 %, mindestens 75 €
     return kern + bonus + E.mehrling * f * Math.max(0, (o.kinder || 1) - 1); // § 2a Abs. 4: je 300 € ab dem zweiten Kind der Geburt
   }
+  // Elterngeld-Netto nach §§ 2c, 2e, 2f BEEG aus dem eingegebenen Netto (Befund E2, 21.11.2026). Amtlich: Brutto − Steuern (Lohnsteuer,
+  // Solidaritätszuschlag, Kirchensteuer 8 % nach dem Programmablaufplan, § 2e) − Sozialabgaben pauschal 21 % (§ 2f) − 1/12 des
+  // Arbeitnehmer-Pauschbetrags (§ 2c, zieht elterngeldBerechnen ab). SoLo fragt nur das Netto: Es rechnet daraus das Brutto zurück
+  // (bruttoAusNetto, Steuerklasse wie lohnAnnahmen; Kinder vor der Geburt für die Pflegeversicherung) und ersetzt die echten Beiträge durch
+  // die Pauschale. Die Steuer bleibt dabei die im Netto enthaltene (gleiche Annahmen hin und zurück). Folge: Elterngeld-Netto = Netto +
+  // echte Beiträge − 21 % des Bruttos; bei gesetzlich Versicherten 2026 etwa 0,15 bis 0,75 % des Bruttos mehr als das Netto.
+  // Nicht nachgebaut (Betrag bleibt beim Netto): Minijob (§ 2f Abs. 2 Satz 2: keine Abzüge, Netto = Brutto) und Übergangsbereich bis 2.000 €
+  // (§ 2f Abs. 2 Satz 3 mit § 344 Abs. 4 SGB III). Privat Versicherte, Beamte, Kirchensteuer und ein anderes Steuerjahr (§ 2e Abs. 1: Programmablaufplan
+  // vom 1. Januar des Vorjahres der Geburt) kennt die App nicht; der Betrag bleibt eine Schätzung (Text eg.ja: „etwa“).
+  function egNettoAmtlich(h, netto, nachGeburt) {
+    if (!(netto > 0)) return netto;
+    const kinder = (h.kids || 0) + (h.young || 0) - (!nachGeburt && h.baby === 'da' ? (h.egKinder || 1) : 0) + (nachGeburt && h.baby === 'bald' ? (h.egKinder || 1) : 0);
+    const o = lohnAnnahmen(Object.assign({}, h, { kids: Math.max(0, kinder), young: 0 }), 1);
+    const P = lohnParam(o.heute || 2026);
+    const brutto = bruttoAusNetto(netto, o);
+    if (brutto <= P.uebergang) return netto;
+    return Math.round((netto + svMonat(brutto, o) - R.eg.svPausch * brutto) * 100) / 100;
+  }
   function elterngeld(h) {
     const id = 'elterngeld';
     if (!h.baby) return mk(id, 'nein', 'vorausFehlt', [['eg.keine']]);
@@ -1869,13 +1961,14 @@ const Rules = (function () {
       // Mehrlinge: Mitgezählt werden nur Kinder, für die es keinen Mehrlingszuschlag gibt (§ 2a Abs. 1 Satz 2), also das erste Kind der Geburt;
       // ist das Baby schon da, stecken alle Kinder der Geburt in kidsU6.
       const geschw = h.baby === 'bald' ? h.kidsU6 : Math.max(0, h.kidsU6 - kinder);
-      const o = { nach: h.egNach, kinder, bonus: geschw >= 2 };
-      const basis = elterngeldBerechnen(h.egVor, o), plus = elterngeldBerechnen(h.egVor, Object.assign({ plus: true }, o));
+      const vor = egNettoAmtlich(h, h.egVor, false), nach = h.egNach > 0 ? egNettoAmtlich(h, h.egNach, true) : h.egNach;
+      const o = { nach, kinder, bonus: geschw >= 2 };
+      const basis = elterngeldBerechnen(vor, o), plus = elterngeldBerechnen(vor, Object.assign({ plus: true }, o));
       tx.push(['eg.ja', { basis: eur(basis), plus: eur(plus), monate }], ['schaetz.eins', { a: eur(r10(basis)) }]);
       if (h.egNach > 0) {
-        const kern = elterngeldBerechnen(h.egVor, { nach: h.egNach });
+        const kern = elterngeldBerechnen(vor, { nach });
         tx.push([kern <= R.eg.min ? 'eg.teilzeitMin' : 'eg.teilzeit', { nach: eur(h.egNach), deckel: eur(R.eg.deckel), min: eur(R.eg.min) }],
-          ['eg.teilzeitPlus', { halb: eur(elterngeldBerechnen(h.egVor, { kinder, bonus: o.bonus }) / 2) }],
+          ['eg.teilzeitPlus', { halb: eur(elterngeldBerechnen(vor, { kinder, bonus: o.bonus }) / 2) }],
           ['eg.teilzeitStunden']); // § 1 Abs. 1 Nr. 4, Abs. 6 Nr. 1 BEEG: höchstens 32 Wochenstunden im Durchschnitt des Lebensmonats
       } else tx.push(['eg.teilzeitOffen']);
       if (kinder > 1) tx.push([kinder >= 3 ? 'eg.mehrlingeDrei' : 'eg.mehrlinge', mehr]);
@@ -2210,7 +2303,9 @@ const Rules = (function () {
     const erw = Object.keys(topf).reduce((a, p) => a + Math.min(R.wgWerbung.lohn, topf[p]), 0);
     return erw + Math.min(R.wgWerbung.lohn, (h.kindEink || 0) * 12);
   }
-  // Wohnberechtigungsschein Bayern (Art. 11 BayWoFG): Jahres-Einkommensgrenze
+  // Wohnberechtigungsschein Bayern: Jahres-Einkommensgrenze nach Art. 4 Abs. 1 BayWoBindG (17.500 / 27.500 €, + 5.000 € je weitere Person,
+  // + 1.300 € je Kind; https://www.gesetze-bayern.de/Content/Document/BayWoBindG-4, Abruf 21.11.2026). Mit hoechst: Höchstwerte nach
+  // Art. 11 Abs. 1 BayWoFG, bis zu denen eine Gemeinde die Grenze anheben darf (Art. 4 Abs. 3 BayWoBindG). Prüfung 21.11.2026: vorher nur „Art. 11 BayWoFG“.
   function wbsGrenze(h, hoechst) {
     const w = R.wbs;
     const ein = hoechst ? w.maxEin : w.ein, zwei = hoechst ? w.maxZwei : w.zwei, weitere = hoechst ? w.maxWeitere : w.weitere, kind = hoechst ? w.maxKind : w.kind;
@@ -2267,8 +2362,13 @@ const Rules = (function () {
     }
     const grenze = wbsGrenze(h, false), max = wbsGrenze(h, true);
     const jahr = (h.brutto + (h.kindEink || 0)) * 12;
-    const gd = gdbNum(h), pg = h.pflegegrad > 0;
-    const frei = (gd === 100 || (gd >= 80 && pg) ? R.wbs.schwerbFreiHoch : gd >= 50 && pg ? R.wbs.schwerbFreiPflege : 0) + (h.bhWeitere || 0) * R.wbs.schwerbFreiPflege;
+    const gd = gdbNum(h);
+    // Art. 5 Abs. 2 Nr. 1 und Abs. 3 BayWoFG (Quelle bei R.wbs.byFreiGdb): 4.000 € je Person mit GdB ab 50, dazu gezahlter Unterhalt
+    // (mit Titel ganz, sonst bis zu den Höchstbeträgen; an wen unbekannt: ganz, vorsichtige Seite gegen ein falsches „unwahrscheinlich“).
+    // Bis 21.11.2026 rechnete die App hier mit den Werten nach § 24 WoFG und ohne Unterhalt (Befunde WBS2, WBS4).
+    const uzJahr = (h.uzBetrag || 0) * 12;
+    const uzCapBY = h.uzAn ? ({ k1: 1, k2: 2, k3: 3, ex: 0, exk: 1 })[h.uzAn] * R.wbs.byUntPerson + (h.uzAn === 'ex' || h.uzAn === 'exk' ? R.wbs.byUntEx : 0) : Infinity;
+    const frei = (gd >= 50 ? R.wbs.byFreiGdb : 0) + (h.bhWeitere || 0) * R.wbs.byFreiGdb + (h.uzTitel ? uzJahr : Math.min(uzJahr, uzCapBY));
     // „wahrscheinlich“ nur mit dem Brutto (Text nennt das Bruttoeinkommen); für „möglich“ und „unwahrscheinlich“ erst den
     // Arbeitnehmer-Pauschbetrag, dann höchstens 30 % (Art. 6 Abs. 1 und 3 BayWoFG, siehe wbsWerbung)
     const netto = (jahr - wbsWerbung(h)) * (1 - R.wbs.maxAbzug) - frei;
@@ -2619,7 +2719,7 @@ const Rules = (function () {
     return { h, results: sorted, zusammen: zus, grenzen: vermGrenzen(h), wege };
   }
 
-  return { evaluate, famversGrenze, pflegeLeistungen, pflegeFuer, pflegeKombi, nettoLohn, bruttoAusNetto, nettoRente, bruttoAusNettoRente, lohnAnnahmen, pfaendung, pfaendFreibetrag, pkonto, RULES: R, WG, limits, wgYmax, wgUeber12, wgMiete, wgCap, wgHeiz, wgHoechst, wgBetrag, roman, sgb2Freibetrag, kizWohnanteil, haushaltsFreibetrag, derive, NAMES, STEPS, RECHT, ZUST_LAND, zustLand };
+  return { evaluate, egNettoAmtlich, famversGrenze, pflegeLeistungen, pflegeFuer, pflegeKombi, nettoLohn, bruttoAusNetto, nettoRente, bruttoAusNettoRente, lohnAnnahmen, pfaendung, pfaendFreibetrag, pkonto, RULES: R, WG, limits, wgYmax, wgUeber12, wgMiete, wgCap, wgHeiz, wgHoechst, wgBetrag, roman, sgb2Freibetrag, kizWohnanteil, haushaltsFreibetrag, derive, NAMES, STEPS, RECHT, ZUST_LAND, zustLand };
 })();
 
 if (typeof module !== 'undefined') module.exports = Rules;

@@ -91,9 +91,10 @@ function bafoegSolo(f) {
 function egSolo(f) {
   const kids = f.geschwister ? 2 : 0;
   // Teilzeit (Netto nach der Geburt) und Mehrlinge rechnet SoLo seit 21.11.2026 mit (§ 2 Abs. 3, § 2a Abs. 4 BEEG)
-  const e = R.evaluate({ baby: 'bald', egVor: f.vorher, egNach: f.nachher || '', egKinder: f.kinder > 1 ? String(f.kinder) : '', art1: 'lohn', brutto: 2000, netto: 1500, heute: HEUTE, kids, kidsU6: kids }).results.find((r) => r.id === 'elterngeld');
+  const inp = { baby: 'bald', egVor: f.vorher, egNach: f.nachher || '', egKinder: f.kinder > 1 ? String(f.kinder) : '', art1: 'lohn', brutto: 2000, netto: 1500, heute: HEUTE, kids, kidsU6: kids };
+  const e = R.evaluate(inp).results.find((r) => r.id === 'elterngeld');
   const p = e.tx[0][1];
-  return { basis: p.basis.eur, plus: p.plus.eur }; // SoLo zeigt volle Euro
+  return { basis: p.basis.eur, plus: p.plus.eur, inp }; // SoLo zeigt volle Euro; inp für das Elterngeld-Netto nach § 2f BEEG (egAbgleich)
 }
 function pfSolo(f) { return R.pfaendung(f.netto, f.personen); }
 
@@ -150,7 +151,7 @@ function auswerten(dir) {
     const z = { n: E.length, ohne: 0, einfach: { n: 0, gleich: 0, anders: [] }, teilzeit: { n: 0, gleich: 0, anders: [] }, mehrlinge: { n: 0, gleich: 0, anders: [] } };
     for (const x of E) {
       if (x.amtlich == null) { z.ohne++; continue; }
-      const s = egSolo(x.f), d = Math.round((s.basis - x.amtlich) * 100) / 100, a = Ref.egAbgleich(x.f, s.basis, x.amtlich);
+      const s = egSolo(x.f), d = Math.round((s.basis - x.amtlich) * 100) / 100, a = Ref.egAbgleich(x.f, s.basis, x.amtlich, s.inp);
       const g = x.f.kinder > 1 ? z.mehrlinge : x.f.nachher ? z.teilzeit : z.einfach;
       g.n++;
       if (a.fehler) g.anders.push({ i: x.i, f: x.f, solo: s.basis, amtlich: x.amtlich, diff: d, erwartet: a.diff, fehler: a.fehler }); else g.gleich++;

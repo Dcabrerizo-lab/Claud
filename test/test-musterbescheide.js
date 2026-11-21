@@ -164,7 +164,11 @@ ck('MB-SGB2 9.2: Freibetrag Minijob 603 € = 208,90 €', nah(F(603, false), 20
 
 // ---------- 21-22: Elterngeld, Mehrbedarf Alleinerziehende ----------
 {
-  const eg = (v) => karte({ baby: 'bald', egVor: v, art1: 'lohn', brutto: 2000, netto: 1500, kids: 0 }, 'elterngeld').tx[0][1];
+  // Seit 21.11.2026 rechnet SoLo aus dem eingegebenen Netto das Elterngeld-Netto mit den Pauschalen nach § 2f BEEG (Befund E2). Die Broschüre
+  // nennt das Elterngeld-Netto: Eingabe deshalb das Netto, aus dem SoLo genau dieses Elterngeld-Netto (+ 102,50 €) macht (Umkehrung per Halbierung).
+  const nettoFuer = (egNetto, inp) => { let lo = 0, hi = egNetto * 1.2 + 100; for (let i = 0; i < 60; i++) { const m = (lo + hi) / 2; if (R.egNettoAmtlich(R.derive(Object.assign({}, inp, { egVor: m })), m, false) < egNetto) lo = m; else hi = m; } return hi; };
+  const egInp = { baby: 'bald', art1: 'lohn', brutto: 2000, netto: 1500, kids: 0 };
+  const eg = (v) => karte(Object.assign({}, egInp, { egVor: nettoFuer(v, egInp) }), 'elterngeld').tx[0][1];
   // Die Broschüre nennt das Elterngeld-Netto (schon ohne Pauschbetrag). Eingabe in SoLo deshalb plus 102,50 € (§ 2c Abs. 1 BEEG: 1.230 € / 12)
   ck('EG-Br 1.4.1/1.7: Elterngeld-Netto 2.000 € -> 1.300 €, 1.000 € -> 670 € (Eingabe mit 102,50 € Pauschale)', eg(2102.5).basis.eur === 1300 && eg(1102.5).basis.eur === 670, [eg(2102.5), eg(1102.5)]);
   const ae = (kids, u6, k14) => R.derive({ adults: 1, kids, kidsU6: u6 || 0, kids14: k14 || 0, kidsAlter: true }).mehrAE;

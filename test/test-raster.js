@@ -247,7 +247,7 @@ for (let vor = 0; vor <= 3000; vor += 1) {
   schwelle++; n++;
   const e = { adults: 1, kids: 0, young: 0, baby: 'da', egVor: vor, bezug: {} };
   const t = Rules.evaluate(e).results.find((x) => x.id === 'elterngeld').tx.find((x) => x[0] === 'eg.ja');
-  const ref = Ref.elterngeld(vor);
+  const ref = Ref.elterngeld(vor, 0, { haushalt: Ref.egHaushalt(e) });
   if (!t || t[1].basis.eur !== Math.round(ref.basis) || t[1].plus.eur !== Math.round(ref.plus) || t[1].monate !== ref.monate) melde('Elterngeld: Betrag', e, { app: t && t[1], ref });
 }
 // Elterngeld mit Teilzeit und Mehrlingen (§ 2 Abs. 3, § 2a, § 4a BEEG): Netto vorher und nachher im Raster, Zwillinge/Drillinge, mit und ohne Geschwisterbonus
@@ -258,7 +258,7 @@ for (let vor = 0; vor <= 6000; vor += 37) {
         schwelle++; n++;
         const e = { adults: 1, kids: gs, kidsU6: gs, young: 0, baby: 'bald', egVor: vor, egNach: nach || '', egKinder: String(kinder), bezug: {} };
         const t = Rules.evaluate(e).results.find((x) => x.id === 'elterngeld').tx.find((x) => x[0] === 'eg.ja');
-        const ref = Ref.elterngeld(vor, gs, { nachher: nach, mehrlinge: kinder });
+        const ref = Ref.elterngeld(vor, gs, { nachher: nach, mehrlinge: kinder, haushalt: Ref.egHaushalt(e) });
         const nah = (a, b) => Math.abs(a - b) <= 0.5 + 1e-9; // auf den Euro wie angezeigt; genau x,50 € darf je nach Gleitkomma auf- oder abrunden
         if (!t || !nah(t[1].basis.eur, ref.basis) || !nah(t[1].plus.eur, ref.plus)) melde('Elterngeld Teilzeit/Mehrlinge: Betrag', e, { app: t && t[1], ref });
       }
@@ -304,13 +304,17 @@ for (let i = 0; i < 20000; i++) {
 }
 
 // Neue unabhängige Referenz für WBS, Pfändung und P-Konto (docs/rechenplan/): REFERENZ_FAELLE Zufallsfälle (Standard 300), Seed REFERENZ_SEED
-// (Standard 20261121, steht bei jeder Abweichung dabei). Bekannte Befunde (WBS1 Werbungskosten, WBS2 Unterhalt in Bayern) zählen als erwartet.
+// (Standard 20261121, steht bei jeder Abweichung dabei). Die früheren Befunde WBS1, WBS2, WBS4 sind behoben (keine erwarteten Abweichungen mehr).
 {
   const v = Ref.vergleich(Rules);
   v.fehler.forEach((f) => melde('Referenz ' + f.art + ' (Seed ' + f.seed + ', Fall ' + f.fall + ')', f.e || { netto: f.netto, pers: f.pers }, { app: f.app, ref: f.ref }));
-  // Befund WBS1 nachgestellt: allein, 3.400 € brutto, Bayern -> App „unwahrscheinlich“, nach §§ 21–24 WoFG mit Werbungskosten „möglich“
+  // Befunde WBS1/WBS2/WBS4 behoben: App und Referenz an festen Fällen (Bayern, allein): 3.400 € Lohn -> „möglich“ (Werbungskosten);
+  // 3.500 € Lohn „eher nicht“, mit 200 € tituliertem Unterhalt oder GdB 50 „möglich“ (Art. 5 Abs. 2 und 3 BayWoFG)
   const b1 = { adults: 1, kids: 0, young: 0, art1: 'lohn', brutto: 3400, netto: 2400, bundesland: 'BY', bezug: {}, gebJahr: 1985, miete: 700, vermoegen: 0 };
-  if (Ref.wbs(b1).level !== 'nein' || Ref.wbs(b1, { gesetz: true }).level !== 'vielleicht') melde('Referenz WBS: Befund WBS1 nicht mehr nachstellbar (behoben? Rechenplan anpassen)', b1, {});
+  [[b1, 'vielleicht'], [{ ...b1, brutto: 3500 }, 'nein'], [{ ...b1, brutto: 3500, uzBetrag: 200, uzTitel: true, uzAn: 'k1' }, 'vielleicht'], [{ ...b1, brutto: 3500, gdb: '50' }, 'vielleicht']].forEach(([f, soll]) => {
+    const app = Rules.evaluate(f).results.find((x) => x.id === 'wbs').level;
+    if (Ref.wbs(f).level !== soll || app !== soll) melde('Referenz WBS: fester Fall (WBS1/WBS2/WBS4)', f, { app, ref: Ref.wbs(f).level, soll });
+  });
   console.log('Referenz WBS/Pfändung/P-Konto: ' + v.anzahl + ' Fälle, Seed ' + v.seed + ', erwartete Abweichungen ' + JSON.stringify(v.erwartet));
 }
 

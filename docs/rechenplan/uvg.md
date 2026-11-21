@@ -26,6 +26,6 @@ Kinder unter 18 nach Altersgruppe (unter 6, 6–13, 14–17), „Kind ab 12“, 
 Mehrere Kinder mit Summen-Unterhalt, ab 12, Waisenrente ohne Haken, zweite Person ohne Angabe, Asyl.
 
 ## Befunde
-- **U1 (mittel):** UVG wird auf Grundsicherungsgeld, Kinderzuschlag und Wohngeld nicht angerechnet, solange er nur erwartet ist (siehe Befunde G2, K1). Die Beträge der Karten lassen sich deshalb nicht addieren.
+- **U1 (mittel, behoben 21.11.2026, claude/b-rechenbefunde):** Erwarteter UVG wurde schon angerechnet (`uvgEst` in `kindZahl`, für Grundsicherungsgeld, KiZ und Wohngeld). Offen war der mögliche, nicht sichere UVG (siehe G2, K1); beim Wohngeld zählt er jetzt in der vorsichtigen Schätzung `yPess` mit (§ 14 Abs. 2 Nr. 21 WoGG, Abruf 21.11.2026). Beispiel Paar, Kind unter 6, 2.800 € brutto, zweite Person ohne Angabe: Wohngeld vorher „wahrscheinlich“, jetzt „möglich“. Test `rechenbefunde-u1`.
 - **U2 (gering):** Gezahlter Unterhalt ist nur als Summe bekannt; Anrechnung je Kind (§ 2 Abs. 3) nur für ein Kind genau.
 - Hinweis: Änderungen am UVG plant ein anderer Zweig (claude/b-regeln-h12); hier nicht angefasst.
