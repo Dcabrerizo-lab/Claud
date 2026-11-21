@@ -53,7 +53,7 @@ const VERBOTEN = '#mappePrint, #mappeShare, #mappeCopy, #feedbackMail, #sc-take,
   // Ein zufälliges sichtbares, bedienbares Element
   const ziele = async () => p.evaluate((verboten) => {
     const vis = (el) => el.offsetParent !== null && !el.closest('[hidden]') && !el.disabled && el.getClientRects().length > 0;
-    const offen = document.querySelector('#mappe:not([hidden]), #legal:not([hidden])');
+    const offen = document.querySelector('#mappe:not([hidden]), #legal:not([hidden]), #suFenster:not([hidden])'); // offenes Blatt oder Such-Fenster: nur darin klicken (der Rest ist verdeckt)
     const wurzel = offen || document;
     const els = [...wurzel.querySelectorAll('button, input, select, summary, [role=button]')].filter((el) => vis(el) && !el.matches(verboten));
     return els.map((el, i) => { el.setAttribute('data-zufall', String(i)); return { i, tag: el.tagName.toLowerCase(), typ: el.type || '', id: el.id || '', weg: !!el.closest('#appnav, .nav-kopf, #leistungenKopf') || !el.closest('#v-leistungen'), text: (el.innerText || el.value || '').slice(0, 30), opts: el.tagName === 'SELECT' ? [...el.options].map((o) => o.value) : null }; });

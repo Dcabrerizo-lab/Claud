@@ -244,7 +244,14 @@ const Rules = (function () {
     // (mit 102 + 35 € nach § 13a Abs. 1, Flyer und FAQ, Abruf 21.11.2026); 1.088 € ist die vorsichtige Seite (eher „möglich“ als „eher nicht“).
     // Vermögen § 29 Abs. 1 Nr. 1: 15.000 € bis zur Vollendung des 30. Lebensjahres, danach 45.000 €; § 30: nur der Betrag darüber,
     // geteilt durch die Monate des Bewilligungszeitraums (in der Regel 12 Monate, § 50 Abs. 3), mindert den Bedarf (bafög.de Beispiel „Stefan“).
-    bafoeg: { freiAllein: 1690, freiPaar: 2540, jeKind: 770, anrechFrei: 0.5, anrechFreiKind: 0.05, bedarfMax: 1088, bwzMonate: 12, vermBis29: 15000, vermAb30: 45000 },
+    // § 29 Abs. 1 Nr. 2 und 3 BAföG (https://www.gesetze-im-internet.de/baf_g/__29.html, Abruf 21.11.2026): zusätzlich 2.300 € frei
+    // für den Ehegatten oder Lebenspartner und für jedes Kind des Auszubildenden (vermJePerson). Ob der Partner verheiratet ist und die
+    // Kinder eigene sind, fragt die App nicht: sie rechnet den Freibetrag mit (vorsichtige Seite, eher „möglich“ als „eher nicht“).
+    // § 14b Abs. 1 BAföG (https://www.gesetze-im-internet.de/baf_g/__14b.html, Abruf 21.11.2026): Kinderbetreuungszuschlag 160 € je
+    // eigenem Kind unter 14 im Haushalt erhöht den Bedarf (kindZuschlag; Alter unbekannt -> für jedes Kind, vorsichtige Seite).
+    // § 51 Abs. 3 und 4 BAföG (https://www.gesetze-im-internet.de/baf_g/__51.html, Abruf 21.11.2026): auf volle Euro gerundet,
+    // monatliche Beträge unter 10 € werden nicht gezahlt (minZahlung). „Eher nicht“ erst, wenn selbst ungerundet weniger als 9,50 € blieben.
+    bafoeg: { freiAllein: 1690, freiPaar: 2540, jeKind: 770, anrechFrei: 0.5, anrechFreiKind: 0.05, bedarfMax: 1088, bwzMonate: 12, vermBis29: 15000, vermAb30: 45000, vermJePerson: 2300, kindZuschlag: 160, minZahlung: 10 },
     pflege: { geld: { 2: 347, 3: 599, 4: 800, 5: 990 }, entlastung: 131 },
     // Pflege-Startkachel „Welche Unterstützung gibt es?“. Beträge oben (pflege, pflegeSach, pflegeTages, entlastungsbudget, beh.verbrauch,
     // beh.wohnumfeld). Quelle: BMG, Online-Ratgeber Pflege „Verhinderungspflege“, „Pflege zu Hause“, „Weitere Leistungen und Angebote zur
@@ -1390,6 +1397,8 @@ const Rules = (function () {
     const r = asylHoechstens(h, bafoeg0(h), 'bafoeg.asyl');
     return euAusschluss(h) ? hoechstensMoeglich(r, 'bafoeg.eu') : r;
   }
+  // § 51 Abs. 3 und 4 BAföG: Anrechnung, ab der sicher nichts mehr gezahlt wird (Rest ungerundet unter 9,50 € -> gerundet unter 10 €)
+  const bafoegNullGrenze = (bedarf) => bedarf - R.bafoeg.minZahlung + 0.5;
   function bafoeg0(h) {
     const id = 'bafoeg';
     if (!h.ausbildung) return mk(id, 'nein', 'vorausFehlt', [['bafoeg.keine']]);
@@ -1406,7 +1415,7 @@ const Rules = (function () {
       // „Eher nicht“ erst, wenn diese Anrechnung den höchsten Bedarf (bedarfMax) übersteigt; geteilt auf mehrere Geschwister in Ausbildung
       // (§ 11 Abs. 4) wäre sie kleiner -> darunter „möglich“
       const quote = R.bafoeg.anrechFrei - R.bafoeg.anrechFreiKind * Math.max(0, h.children - 1);
-      if (quote <= 0 || (h.netto - untE - fb) * quote <= R.bafoeg.bedarfMax) return mk(id, 'vielleicht', 'vielleicht', [['bafoeg.kindRand', p]]);
+      if (quote <= 0 || (h.netto - untE - fb) * quote <= bafoegNullGrenze(R.bafoeg.bedarfMax)) return mk(id, 'vielleicht', 'vielleicht', [['bafoeg.kindRand', p]]);
       return mk(id, 'nein', 'einkoHoch', [['bafoeg.kindNein', p]]);
     }
     // ich selbst: Elterneinkommen unbekannt
@@ -1414,11 +1423,14 @@ const Rules = (function () {
     if (h.gruppe === '50+' || (h.gruppe === '40-49' && !bafoegAlter(h))) {
       return mk(id, h.gruppe === '50+' ? 'nein' : 'vielleicht', h.gruppe === '50+' ? 'vorausFehlt' : 'vielleicht', [['bafoeg.alter']]);
     }
-    const vermGrenze = h.gruppe === '<30' ? R.bafoeg.vermBis29 : R.bafoeg.vermAb30; // § 29: 15.000 € bis zur Vollendung des 30. Lebensjahres
+    // § 29 Abs. 1: 15.000 € bis zur Vollendung des 30. Lebensjahres (sonst 45.000 €), dazu 2.300 € je Partner und je Kind
+    const vermGrenze = (h.gruppe === '<30' ? R.bafoeg.vermBis29 : R.bafoeg.vermAb30)
+      + R.bafoeg.vermJePerson * ((h.adults === 2 ? 1 : 0) + h.children);
+    const bedarfIch = R.bafoeg.bedarfMax + R.bafoeg.kindZuschlag * h.children; // § 14b Kinderbetreuungszuschlag
     // § 30 BAföG (Abruf 21.11.2026): nur der Betrag über dem Freibetrag, geteilt durch 12 Monate, mindert das BAföG. „Eher nicht“ erst,
     // wenn das mehr ist als der höchste Bedarf; darunter „möglich“ mit Hinweis
     const vermUeber = h.vermoegen + (h.autoWert || 0) - vermGrenze;
-    if (vermUeber / R.bafoeg.bwzMonate > R.bafoeg.bedarfMax) return mk(id, 'nein', 'vermHoch', [['bafoeg.vermHoch', { verm: eur(vermGrenze) }]]);
+    if (vermUeber / R.bafoeg.bwzMonate > bafoegNullGrenze(bedarfIch)) return mk(id, 'nein', 'vermHoch', [['bafoeg.vermHoch', { verm: eur(vermGrenze) }]]);
     if (vermUeber > 0) return mk(id, 'vielleicht', 'vielleicht', [['bafoeg.vermTeil', { verm: eur(vermGrenze), monat: eur(Math.round(vermUeber / R.bafoeg.bwzMonate)) }], ['bafoeg.ich']]);
     return mk(id, 'vielleicht', 'vielleicht', [['bafoeg.ich']]);
   }
@@ -1844,6 +1856,8 @@ const Rules = (function () {
     res.tx.push(['rundfunk.mehr']);
     return res;
   }
+  // Antragszeit (Text s.rundfunk.tip): Die Befreiung beginnt mit dem Ersten des Monats, in dem der Nachweis gilt, rückwirkend höchstens drei Jahre vor dem
+  // Ersten des Antragsmonats (§ 4 Abs. 4 Satz 1 und 2 RBStV, gesetze-bayern.de Dokument RBeitrStV-4, abgerufen 21.11.2026) – keine Zwei-Monats-Frist.
   function rundfunk0(h, gg, gsa, w) {
     const id = 'rundfunk';
     if (h.bezug.grundsicherungsgeld || h.bezug.sozialamt) return mk(id, 'ja', 'ja', [['rundfunk.bezug']]);
@@ -2036,6 +2050,13 @@ const Rules = (function () {
   // ---------------------------------------------------------------
   // Zuständige Stellen außerhalb Bayerns (ohne Anschrift). Nur Einträge, die als gesichert gelten; sonst die allgemeine Angabe ('_').
   // In Bayern nennt die App die Stelle mit Anschrift (behoerden.js). Bitte fachlich prüfen (Prüfliste).
+  // Sachsen-Anhalt (Prüfung Richtigkeit 21.11.2026, alle Seiten abgerufen 21.11.2026): Seit 1.4.2026 nimmt das Landesamt für Soziales, Jugend und
+  // Gesundheit (LAS) die Aufgaben der Sozialagentur und der Abteilung Soziales des Landesverwaltungsamts wahr (https://las.sachsen-anhalt.de/,
+  // geändert 27.10.2026). Ausweis: Referat Schwerbehindertenfeststellung des LAS (https://las.sachsen-anhalt.de/schwerbehindertenrecht, geändert
+  // 03.11.2026); Blindengeld: Referat Schwerbehindertenrecht, LBliGG des LAS (…/schwerbehindertenrecht/schwerbehindertenrecht-lbligg/blinden-gehoerlosengeld,
+  // geändert 10.08.2026); Eingliederungshilfe: Träger ist die frühere Sozialagentur, jetzt im LAS (…/themen/hilfe-fuer-menschen-mit-behinderung/
+  // wie-ist-die-eingliederungshilfe-organisiert, geändert 06.08.2026); den Antrag nimmt aber das Sozialamt vor Ort an („Sprechen Sie dazu bitte mit Ihrem
+  // Sozialamt vor Ort“, …/themen/hilfe-fuer-menschen-mit-behinderung, abgerufen 21.11.2026), darum nennt die App dort das Sozialamt. Ohne Anschrift (nur Name der Stelle).
   // ---------------------------------------------------------------
   const BL_NAME = { BW: 'Baden-Württemberg', BY: 'Bayern', BE: 'Berlin', BB: 'Brandenburg', HB: 'Bremen', HH: 'Hamburg', HE: 'Hessen', MV: 'Mecklenburg-Vorpommern',
     NI: 'Niedersachsen', NW: 'Nordrhein-Westfalen', RP: 'Rheinland-Pfalz', SL: 'Saarland', SN: 'Sachsen', ST: 'Sachsen-Anhalt', SH: 'Schleswig-Holstein', TH: 'Thüringen' };
@@ -2046,12 +2067,12 @@ const Rules = (function () {
       HB: 'Amt für Versorgung und Integration Bremen', HH: 'Versorgungsamt Hamburg', HE: 'Hessisches Amt für Versorgung und Soziales',
       MV: 'Landesamt für Gesundheit und Soziales (LAGuS)', NI: 'Niedersächsisches Landesamt für Soziales, Jugend und Familie', NW: 'Kreis bzw. kreisfreie Stadt (Versorgungsamt)',
       RP: 'Landesamt für Soziales, Jugend und Versorgung', SL: 'Landesamt für Soziales', SN: 'Landratsamt bzw. kreisfreie Stadt (Versorgungsamt)',
-      ST: 'Landesverwaltungsamt Sachsen-Anhalt (Versorgungsamt)', SH: 'Landesamt für soziale Dienste'
+      ST: 'Landesamt für Soziales, Jugend und Gesundheit Sachsen-Anhalt (LAS)', SH: 'Landesamt für soziale Dienste'
     },
     blindengeld: {
       _: 'Stelle für das Landesblindengeld (das Sozialamt deines Kreises oder deiner Stadt sagt dir, wer zuständig ist)',
       BE: 'Landesamt für Gesundheit und Soziales (LAGeSo)', HE: 'Landeswohlfahrtsverband Hessen', NW: 'Landschaftsverband Rheinland bzw. Westfalen-Lippe',
-      ST: 'Sozialagentur Sachsen-Anhalt', BW: 'Landratsamt bzw. Stadtkreis'
+      ST: 'Landesamt für Soziales, Jugend und Gesundheit Sachsen-Anhalt (LAS)', BW: 'Landratsamt bzw. Stadtkreis'
     },
     elterngeld: {
       _: 'Elterngeldstelle deines Kreises oder deiner Stadt',
@@ -2061,7 +2082,7 @@ const Rules = (function () {
     eingl: {
       _: 'Träger der Eingliederungshilfe (meist der Landkreis oder die kreisfreie Stadt; bei seelischer Behinderung von Kindern das Jugendamt)',
       HE: 'Landeswohlfahrtsverband Hessen (Erwachsene), Kreis oder Stadt (Kinder)', NW: 'Landschaftsverband Rheinland bzw. Westfalen-Lippe (Erwachsene), Kreis oder Stadt (Kinder)',
-      SL: 'Landesamt für Soziales', ST: 'Sozialagentur Sachsen-Anhalt', BE: 'Bezirksamt (Teilhabefachdienst)'
+      SL: 'Landesamt für Soziales', ST: 'Sozialamt deines Landkreises oder deiner kreisfreien Stadt (Träger: Landesamt für Soziales, Jugend und Gesundheit Sachsen-Anhalt, LAS)', BE: 'Bezirksamt (Teilhabefachdienst)'
     },
     arbeit: { _: 'Träger der Eingliederungshilfe (meist der Landkreis oder die kreisfreie Stadt)', HE: 'Landeswohlfahrtsverband Hessen', NW: 'Landschaftsverband Rheinland bzw. Westfalen-Lippe' },
     hzp: { _: 'Sozialamt deines Kreises oder deiner Stadt' },
@@ -2086,6 +2107,8 @@ const Rules = (function () {
     const u = { u: eur(h.uzBetrag) };
     results.forEach(function (r) {
       if (r.level === 'na' || (r.level === 'nein' && r.hl !== 'einkoHoch' && r.hl !== 'einkoNiedrig')) return;
+      // § 18 WoGG (abgerufen 21.11.2026): ohne Titel Höchstbeträge 3.000 €/Jahr je Kind bzw. 6.000 €/Jahr für frühere Partner; mit notarieller
+      // Vereinbarung, Unterhaltstitel oder Bescheid der dort festgelegte Betrag (Satz 2) – Text t.uz.wg und einfach/b.json gleichlautend.
       if (r.id === 'wohngeld') r.tx = r.tx.concat([['uz.wg', u]]);
       else if (r.id === 'kiz' || r.id === 'ggeld') r.tx = r.tx.concat([[h.uzTitel ? 'uz.sgb2Titel' : 'uz.sgb2Ohne', u]], r.id === 'ggeld' && r.level !== 'nein' ? [['uz.selbstbehalt']] : []);
       else if (r.id === 'gsa') r.tx = r.tx.concat([['uz.gsa', u], ['uz.selbstbehalt']]);

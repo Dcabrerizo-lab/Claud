@@ -13,7 +13,10 @@ async function durchlauf(p, antworten) {
     else if (a === 'skip') await p.click('#es-skip');
     else if (a.startsWith('mz:')) { const l = a.slice(3).split(',').filter(Boolean); for (const m of l) await p.click('[data-mz="' + m + '"]'); await p.click(l.length ? '#es-weiter' : '#es-keine'); }
     else if (a.startsWith('schon:')) { const l = a.slice(6).split(',').filter(Boolean); for (const m of l) await p.click('[data-schon="' + m + '"]'); await p.click(l.length ? '#es-weiter' : '#es-nichts'); }
-    else { await p.click('[data-es="' + a + '"]'); await p.waitForTimeout(450); } // Auswahl wird kurz gezeigt, dann geht es weiter
+    else { // Auswahl wird kurz gezeigt (350 ms), dann zeichnet die App die nächste Frage neu: warten, bis der Knopf weg ist (statt fester Wartezeit)
+      const k = await p.waitForSelector('[data-es="' + a + '"]'); await k.click();
+      await p.waitForFunction((e) => !e.isConnected, k, { timeout: 10000 });
+    }
   }
 }
 const ergebnis = (p) => p.evaluate(() => {

@@ -74,7 +74,10 @@
   "mektup",
   "resmi mektup",
   "posta",
-  "karar"
+  "karar",
+  "itiraz",
+  "Widerspruch",
+  "yanlış karar"
  ],
  "b-af": [
   "form",
@@ -144,5 +147,10 @@
  "mappe": [
   "başvuru",
   "başvuru dosyası"
+ ],
+ "b-jc": [
+  "geri ödeme",
+  "fazla ödeme",
+  "Rückforderung"
  ]
 }

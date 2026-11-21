@@ -12,6 +12,7 @@ const regeln = {
 // (im Browser werden die Dateien zu einer Seite zusammengefügt, in Node per require geladen)
 const appNamen = Object.fromEntries([
   'Weitergabe', // src/weitergabe.js (QR-Code und SoLo-Datei)
+  'Krypto', // src/krypto.js (gemeinsame Verschlüsselung für Vorgänge und Weitergabe)
   'Rules', 'Fmt', 'Plz', 'Behoerden', 'Formulare', 'I18N', 'I18N_EINFACH', 'PFLEGE_EINFACH',
   'BriefLesen', 'PflegeAssistent', 'Pflege', 'PflegeFragen', 'PflegeImport',
   'BescheidGSA', 'BescheidKiZ', 'BescheidSGB2', 'BescheidWG', 'Fristen', 'Nebenkosten',

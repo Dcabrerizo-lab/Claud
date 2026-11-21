@@ -462,12 +462,15 @@ function bafoeg0(e) {
     // § 25 Abs. 4 BAföG: vom Einkommen über dem Freibetrag 50 % frei, je weiteres Kind mit Freibetrag 5 % mehr; „nein“ erst, wenn der Rest
     // den höchsten Bedarf (475 + 380 + 185 + 48 = 1.088 €, §§ 13, 13a Abs. 2) übersteigt
     const anteil = 0.5 - 0.05 * Math.max(0, h.kids - 1);
-    return { level: h.netto <= frei ? 'ja' : anteil <= 0 || (h.netto - frei) * anteil <= 1088 ? 'vielleicht' : 'nein', frei };
+    // § 51 Abs. 3, 4 BAföG: unter 10 € (gerundet, also ungerundet unter 9,50 €) kein BAföG -> Grenze 1.088 − 9,50 €
+    return { level: h.netto <= frei ? 'ja' : anteil <= 0 || (h.netto - frei) * anteil <= 1088 - 9.5 ? 'vielleicht' : 'nein', frei };
   }
   if (h.gruppe === '50+') return { level: 'nein' };
   if (h.gruppe === '40-49' && !(h.jahre && h.jahre < 45)) return { level: 'vielleicht' };
   // §§ 29, 30 BAföG: nur der Betrag über dem Freibetrag, verteilt auf 12 Monate, mindert den Bedarf (höchstens 1.088 €)
-  if ((h.vermoegen + zahl(h.e.autoWert) - (h.gruppe === '<30' ? 15000 : 45000)) / 12 > 1088) return { level: 'nein' };
+  // § 29 Abs. 1 Nr. 2, 3: 2.300 € mehr je Partner und je Kind; § 14b: 160 € Kinderbetreuungszuschlag je Kind; § 51: unter 9,50 € ungerundet nichts
+  const grenzeV = (h.gruppe === '<30' ? 15000 : 45000) + 2300 * ((h.erwachsene === 2 ? 1 : 0) + h.kids);
+  if ((h.vermoegen + zahl(h.e.autoWert) - grenzeV) / 12 > 1088 + 160 * h.kids - 9.5) return { level: 'nein' };
   return { level: 'vielleicht' };
 }
 

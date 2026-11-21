@@ -74,7 +74,10 @@
   "lettre",
   "courrier",
   "courrier administratif",
-  "décision"
+  "décision",
+  "recours",
+  "contestation",
+  "Widerspruch"
  ],
  "b-af": [
   "formulaire",
@@ -142,5 +145,10 @@
  "mappe": [
   "demande",
   "dossier de demande"
+ ],
+ "b-jc": [
+  "remboursement",
+  "trop-perçu",
+  "Rückforderung"
  ]
 }

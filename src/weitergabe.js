@@ -19,7 +19,9 @@
 var Weitergabe = (function () {
   'use strict';
   var PREFIX = 'SOLO:';
-  var ITER = 600000, SALZ = 16, IV = 12;
+  // Krypto-Bausteine aus src/krypto.js (in der App davor eingebunden, in Node per require); Parameter dort, unverändert
+  var K = typeof Krypto !== 'undefined' ? Krypto : require('./krypto.js');
+  var ITER = K.ITER, SALZ = K.SALZ, IV = K.IV;
   var MAX_INHALT = 512 * 1024; // entpackter Inhalt (JSON) höchstens 512 KB
   var MAX_CODE = 1024 * 1024; // Kode höchstens 1 MB Text
   var MAX_DATEI = 2 * 1024 * 1024; // Datei höchstens 2 MB
@@ -41,24 +43,15 @@ var Weitergabe = (function () {
   function nurFelder(o, erlaubt) { return Object.keys(o).every(function (k) { return erlaubt.indexOf(k) >= 0; }); }
   function einfach(v) { return v == null || typeof v === 'boolean' || (typeof v === 'number' && isFinite(v)) || (typeof v === 'string' && v.length <= 200); }
   function flach(o) { return istObj(o) && Object.keys(o).every(function (k) { return einfach(o[k]); }); }
-  function zufall(n) { var a = new Uint8Array(n); globalThis.crypto.getRandomValues(a); return a; }
+  var zufall = K.zufall;
   function tagOk(s) { return typeof s === 'string' && /^\d{4}-\d\d-\d\d$/.test(s); }
   // Keine Steuerzeichen und keine Zeichen, die die Schreibrichtung umkehren (U+202A–U+202E: Text könnte anders aussehen, als er ist).
   // U+2066–U+2069 bleiben erlaubt: die App setzt sie selbst um Zahlen in Sprachen von rechts nach links (src/fmt.js).
   function steuerOk(s, mitZeilen) { return !(mitZeilen ? /[\u0000-\u0008\u000b-\u001f\u007f-\u009f\u2028\u2029\u202a-\u202e]/ : /[\u0000-\u001f\u007f-\u009f\u2028\u2029\u202a-\u202e]/).test(s); }
 
   // ---------- base64url ----------
-  function b64url(u8) {
-    var s = '', n = 0x8000;
-    for (var i = 0; i < u8.length; i += n) s += String.fromCharCode.apply(null, u8.subarray(i, i + n));
-    return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-  }
-  function unb64url(s) {
-    if (typeof s !== 'string' || !/^[A-Za-z0-9_-]*$/.test(s)) throw fehler('format');
-    var b = atob(s.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((s.length + 3) % 4));
-    var u = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) u[i] = b.charCodeAt(i);
-    return u;
-  }
+  var b64url = K.b64url;
+  function unb64url(s) { var u = K.unb64url(s); if (!u) throw fehler('format'); return u; }
   function verbinden(teile) {
     var n = teile.reduce(function (a, t) { return a + t.length; }, 0), u = new Uint8Array(n), p = 0;
     teile.forEach(function (t) { u.set(t, p); p += t.length; });
@@ -98,13 +91,7 @@ var Weitergabe = (function () {
   }
 
   // ---------- Verschlüsselung (WebCrypto) ----------
-  function webCrypto() { try { return !!(globalThis.crypto && globalThis.crypto.subtle && globalThis.TextEncoder); } catch (e) { return false; } }
-  function schluessel(pin, salz) {
-    var sc = globalThis.crypto.subtle;
-    return sc.importKey('raw', new TextEncoder().encode(String(pin)), 'PBKDF2', false, ['deriveKey']).then(function (k) {
-      return sc.deriveKey({ name: 'PBKDF2', salt: salz, iterations: ITER, hash: 'SHA-256' }, k, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
-    });
-  }
+  var webCrypto = K.webCrypto;
   function pinOk(pin) { return typeof pin === 'string' && /^\d{4,12}$/.test(pin); }
   // Vorschlag: 6 Ziffern, gleichverteilt (ohne Modulo-Verzerrung)
   function pinVorschlag() {
@@ -128,7 +115,7 @@ var Weitergabe = (function () {
       if (pin == null) return PREFIX + b64url(verbinden([new Uint8Array([1, merker]), x.d]));
       var salz = zufall(SALZ), iv = zufall(IV);
       var kopfB = new Uint8Array([1, merker]);
-      return schluessel(pin, salz).then(function (k) { return globalThis.crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv, additionalData: kopfB }, k, x.d); })
+      return K.schluessel(pin, salz, ITER).then(function (k) { return globalThis.crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv, additionalData: kopfB }, k, x.d); })
         .then(function (ct) { return PREFIX + b64url(verbinden([kopfB, salz, iv, new Uint8Array(ct)])); });
     });
   }
@@ -153,7 +140,7 @@ var Weitergabe = (function () {
       if (pin == null || pin === '') return Promise.reject(fehler('pin'));
       if (!webCrypto()) return Promise.reject(fehler('technik'));
       var salz = k.b.subarray(2, 2 + SALZ), iv = k.b.subarray(2 + SALZ, 2 + SALZ + IV), ct = k.b.subarray(2 + SALZ + IV);
-      daten = schluessel(String(pin), salz).then(function (key) { return globalThis.crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv, additionalData: k.b.slice(0, 2) }, key, ct); })
+      daten = K.schluessel(String(pin), salz, ITER).then(function (key) { return globalThis.crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv, additionalData: k.b.slice(0, 2) }, key, ct); })
         .then(function (pt) { return new Uint8Array(pt); }, function () { throw fehler('pinFalsch'); });
     } else daten = Promise.resolve(k.b.subarray(2));
     return daten.then(function (d) {

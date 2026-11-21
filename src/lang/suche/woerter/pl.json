@@ -73,7 +73,10 @@
   "list",
   "pismo z urzędu",
   "poczta",
-  "decyzja"
+  "decyzja",
+  "sprzeciw",
+  "odwołanie",
+  "Widerspruch"
  ],
  "b-af": [
   "formularz",
@@ -141,5 +144,10 @@
  "mappe": [
   "wniosek",
   "teczka wniosków"
+ ],
+ "b-jc": [
+  "zwrot pieniędzy",
+  "nadpłata",
+  "Rückforderung"
  ]
 }

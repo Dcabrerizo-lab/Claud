@@ -175,7 +175,15 @@ beispiel('p1');
 const pickBoxes = () => [...d.querySelectorAll('[data-pick]')];
 const okCount = cards().filter((c) => /pill (ja|vielleicht)/.test(c.querySelector('.pill').className)).length;
 check('Auswahl für die Ausfüllhilfe nennt alle passenden Leistungen', pickBoxes().length === okCount && okCount >= 4, pickBoxes().length + ' vs ' + okCount);
-check('Haken sind nur bei wahrscheinlichen Leistungen vorgesetzt', pickBoxes().every((cb) => cb.checked === (level(cb.closest('label').textContent.trim()) === 'ja')) && pickBoxes().some((cb) => cb.checked));
+// Entweder oder (Grundsicherungsgeld oder Wohngeld/Kinderzuschlag, § 7 Abs. 1 WoGG): keine dieser Leistungen vorab angehakt, Zeile f.pickWege
+const WEGE = ['ggeld', 'wohngeld', 'kiz', 'gsa'], wegeZeile = d.getElementById('pickWege');
+check('Haken sind nur bei wahrscheinlichen Leistungen vorgesetzt (außer bei „entweder oder“)', pickBoxes().every((cb) => cb.checked === (level(cb.closest('label').textContent.trim()) === 'ja' && !(wegeZeile && WEGE.includes(cb.getAttribute('data-pick'))))) && pickBoxes().some((cb) => cb.checked));
+{
+  const ids = pickBoxes().map((cb) => cb.getAttribute('data-pick')), an = (id) => { const c = d.querySelector('[data-pick="' + id + '"]'); return !!c && c.checked; };
+  const zweiWege = !!d.getElementById('zweiWege') || /Zwei Wege/.test(d.getElementById('ergebnis').textContent);
+  check('[zwei-wege] Beispiel 1 zeigt „Zwei Wege“ und bietet Grundsicherungsgeld und Wohngeld an', zweiWege && ids.includes('ggeld') && ids.includes('wohngeld'), ids.join());
+  check('[zwei-wege] Grundsicherungsgeld, Wohngeld und Kinderzuschlag nicht vorab angehakt, Zeile „nur entweder oder“ sichtbar', !an('ggeld') && !an('wohngeld') && !an('kiz') && !!wegeZeile && wegeZeile.textContent === I18N.de['f.pickWege'], ids.map((i) => i + ':' + an(i)).join());
+}
 check('Mappe ist anfangs geschlossen', d.getElementById('mappe').hidden === true);
 // nichts gewählt
 pickBoxes().forEach((cb) => { cb.checked = false; fire(cb, 'change'); });
@@ -264,12 +272,14 @@ setTimeout(() => {
   check('Titel ist ein Name', title === 'SoLo – Sozialleistungslotse');
   check('Dunkelmodus doppelt definiert', (html.match(/color-scheme: dark/g) || []).length >= 2);
   check('Kein horizontales Scrollen erzwungen', !/min-width:\s*\d{4,}px/.test(html));
+  check('Große Schrift: Kartentitel brechen lange Wörter um (kein seitliches Scrollen)', /\.card header > div \{ min-width: 0;/.test(html) && /\.card header h3, \.card \.desc, \.es-karte h3 \{ overflow-wrap: anywhere; hyphens: auto; \}/.test(html));
   check('Logische statt physische Abstände im Formular (RTL-fähig)', !/\.money input\s*\{[^}]*padding-right/.test(html) && /inset-inline-end/.test(html));
   check('Jedes Formularfeld hat eine Beschriftung', ['miete', 'mietstufe', 'ek1Art', 'ek1Brutto', 'ek1Netto', 'ek2Art', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'vermoegen', 'gebJahr', 'kindEink', 'ausbildung', 'pflegegrad', 'p-name', 'p-geb', 'p-strasse', 'p-ort', 'p-tel'].every((id) => d.querySelector('label[for="' + id + '"]')));
   // Grenze 6 MB (Entscheidung David 20.11.2026; davor 5 MB; bis 1.4: 2,5 MB; 19.11.2026: 3 MB für 13 Sprachen; 20.11.2026: 4 MB für Vorgänge speichern, Beratungsmodus, Pflege-Unterstützung, Schulden-Tipps, Haushaltsplan; 20.11.2026 nachmittags: 5 MB für Fristen, Schuldenliste, Energie, Mietgrenze, Kostensenkung, Paar-Einkommen – Entscheidung des Nutzers): eine einzige Datei, die offline läuft; der größte Teil sind PLZ-Daten (ganz Deutschland mit Mietenstufen), Behörden (Bayern), 13 Sprachen,
   // seit 1.4 auch „Brief prüfen“ und die Pflegegrad-Einschätzung (zusammen gut 200 KB)
   check('Web-Datei ist ein vollständiges Dokument mit UTF-8 und Viewport (Safari, Handy)', /^<!doctype html>/i.test(html) && /<meta charset="utf-8">/i.test(html.slice(0, 300)) && /name="viewport"/.test(html.slice(0, 400)));
-  check('Dateigröße unter 6 MB', html.length < 6 * 1024 * 1024, (html.length / 1024).toFixed(0) + ' KB');
+  // 21.11.2026: in Bytes gemessen (Buffer.byteLength, UTF-8) statt in Zeichen; Grenze vorläufig 7 MB – Entscheidung David steht noch aus
+  check('Dateigröße unter 7 MB (Bytes, vorläufig)', Buffer.byteLength(html, 'utf8') < 7 * 1024 * 1024, (Buffer.byteLength(html, 'utf8') / 1024).toFixed(0) + ' KB');
   // ----- Antrag scannen -----
   setLang('de');
   beispiel('p1');

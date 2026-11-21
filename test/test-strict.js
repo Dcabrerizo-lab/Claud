@@ -148,8 +148,8 @@ G('BAföG Kind: allein 1700 → vielleicht', { kids: 1, ausbildung: 'kind', nett
 G('BAföG Kind: zwei Kinder +770: 2460 → ja', { kids: 2, ausbildung: 'kind', netto: 2460 }, 'bafoeg', 'ja');
 G('BAföG ich: ab 50 → nein', { ausbildung: 'ich', alterGruppe: '50+' }, 'bafoeg', 'nein');
 G('BAföG ich: unter 30 Vermögen 15001 → möglich (nur 1 € über dem Freibetrag, § 30, Befund 11)', { ausbildung: 'ich', alterGruppe: '<30', vermoegen: 15001 }, 'bafoeg', 'vielleicht');
-G('BAföG ich: unter 30 Vermögen 28057 → nein (13.057 € : 12 > 1.088 €)', { ausbildung: 'ich', alterGruppe: '<30', vermoegen: 28057 }, 'bafoeg', 'nein');
-G('BAföG ich: unter 30 Vermögen 28056 → möglich (13.056 € : 12 = 1.088 €)', { ausbildung: 'ich', alterGruppe: '<30', vermoegen: 28056 }, 'bafoeg', 'vielleicht');
+G('BAföG ich: unter 30 Vermögen 27943 → nein (12.943 € : 12 > 1.088 € − 9,50 €, § 51 Abs. 3, 4)', { ausbildung: 'ich', alterGruppe: '<30', vermoegen: 27943 }, 'bafoeg', 'nein');
+G('BAföG ich: unter 30 Vermögen 27942 → möglich (12.942 € : 12 = 1.078,50 €, Rest 9,50 € -> gerundet 10 €)', { ausbildung: 'ich', alterGruppe: '<30', vermoegen: 27942 }, 'bafoeg', 'vielleicht');
 G('BAföG ich: unter 30 Vermögen 15000 → vielleicht', { ausbildung: 'ich', alterGruppe: '<30', vermoegen: 15000 }, 'bafoeg', 'vielleicht');
 G('BAföG: keine Ausbildung → nein', {}, 'bafoeg', 'nein');
 // Pflege
