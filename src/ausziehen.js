@@ -180,7 +180,8 @@ var Ausziehen = (function () {
   // ---------- Oberfläche ----------
   function t(k, p) { return ctx.t(k, p); }
   // Laienansicht (Beratungsmodus aus): Paragrafen in Klammern ausblenden wie im Rest der App (Fmt.ohnePara, tL in src/app.js); Quellen bleiben vollständig
-  function laie() { return !(ctx && ctx.beratung && ctx.beratung()) && typeof Fmt !== 'undefined' && !!Fmt.ohnePara; }
+  var beratungFn = null; // von src/app.js über Ausziehen.beratungAbfrage(fn)
+  function laie() { return !(beratungFn && beratungFn()) && typeof Fmt !== 'undefined' && !!Fmt.ohnePara; }
   function ohneP(s) { return laie() ? Fmt.ohnePara(s) : s; }
   function tL(k, p) { return ohneP(t(k, p)); }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }).replace(/§ /g, '§\u00a0'); } // „§ 22“ nicht umbrechen
@@ -333,7 +334,7 @@ var Ausziehen = (function () {
     // Inhalt und Daten (Tests)
     BEREICHE: BEREICHE, HAUPT: HAUPT, Q: Q, ABGERUFEN: ABGERUFEN, schluessel: schluessel, normiere: normiere, fortschritt: fortschritt, quelleText: quelleText, allePunkte: allePunkte,
     // Oberfläche
-    init: init, zeigen: function () { render(); }, zurueck: zurueck, sprache: function () { render(); }, speicherOrt: speicherOrt, oeffnen: function (id) { geh(id); },
+    init: init, zeigen: function () { render(); }, beratungAbfrage: function (fn) { beratungFn = typeof fn === 'function' ? fn : null; }, zurueck: zurueck, sprache: function () { render(); }, speicherOrt: speicherOrt, oeffnen: function (id) { geh(id); },
     daten: function () { return JSON.parse(JSON.stringify(daten)); }, laden: function (d) { daten = normiere(d); sichern(); render(); },
     // Nach einem Wechsel des Vorgangs: Haken und Notizen des geöffneten Vorgangs lesen (ohne zu schreiben); offen: Unterseite geöffnet?
     neuLaden: function () { speicher.laden(function (v) { try { daten = normiere(v ? JSON.parse(v) : null); } catch (e) { daten = leer(); } render(); }); },
