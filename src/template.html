@@ -329,7 +329,6 @@
   details summary { cursor: pointer; font-weight: 700; color: var(--accent); min-height: 44px; display: flex; align-items: center; }
   details .inner { display: grid; gap: 12px; padding-top: 8px; font-size: 0.95em; }
   details ul { margin: 4px 0 0; padding-inline-start: 20px; display: grid; gap: 4px; }
-  .karte-mappe { color: var(--muted); font-style: italic; }
   .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   details.optblock { border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; background: var(--surface); }
   details.optblock > summary { color: var(--ink); }
@@ -354,13 +353,28 @@
   .card.auf > details.karte[open] > summary { padding-bottom: 8px; }
   .card.auf .body, .card.auf .zust { margin-bottom: 10px; }
   /* Zwei Wege / Entweder oder: kurzer Tipp (details.mehr.tipp), darin die beiden Wege */
-  .ww-wege { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
-  .ww-weg { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; gap: 6px; align-content: start; }
-  .ww-weg h4 { margin: 0; font-size: 1em; }
-  .ww-l { display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 44px; color: var(--ink); text-decoration: none; border-top: 1px dashed var(--line); padding-top: 6px; }
-  .ww-l > span:first-child { text-decoration: underline; text-decoration-color: var(--accent); }
-  .ww-regel { margin: 0; }
-  .ww-tun { margin: 0; }
+  /* Entweder-oder: Rahmen mit den zwei Wegen über den Karten (wegeHtml in app.js), „oder“ dazwischen; der voraussichtliche Weg mit grünem Rand */
+  .wege { border: 2px solid var(--line); border-radius: 14px; padding: 14px; display: grid; gap: 10px; background: var(--bg); }
+  .wege > h3 { margin: 0; font-size: var(--fs-m); }
+  .wege-lage { margin: 0; }
+  .weg-gruppe { display: grid; gap: 8px; border: 1px solid var(--line); border-radius: 12px; padding: 10px; background: var(--surface); }
+  .weg-gruppe.weg-vor { border: 2px solid var(--ok); }
+  .weg-kopf { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+  .weg-kopf h4 { margin: 0; font-size: 1em; }
+  .weg-betrag { margin: 0; flex-basis: 100%; font-weight: 700; color: var(--ink); }
+  .weg-oder { margin: 0; text-align: center; font-weight: 700; color: var(--muted); }
+  .weg-oder span { display: inline-block; padding: 2px 12px; border: 1px solid var(--line); border-radius: var(--r-tag); background: var(--surface); }
+  .weg-nicht { margin: 0; }
+  .wege details.mehr { margin: 0; }
+  .wege details.mehr ul { margin: 0 0 6px; padding-inline-start: 20px; display: grid; gap: 6px; }
+  .dazu-h { margin: 10px 0 0; font-size: var(--fs-m); }
+  /* Aufgeklappte Karte: Kernsatz, Betrag, Knopf „Antrag vorbereiten“, Stelle in einer Zeile, Rest unter „Mehr dazu“ */
+  .card .kern-betrag { margin: 6px 0 0; font-weight: 700; }
+  .karte-antrag { margin: 10px 0 0; }
+  .karte-antrag .btn { width: 100%; }
+  .karte-stelle { margin: 8px 0 0; color: var(--muted); }
+  details.karte-details { margin-top: 6px; }
+  details.karte-details > :not(summary) { margin-bottom: 8px; }
   .karte-hinweis { background: var(--hint-bg); color: var(--hint); border-radius: 14px; padding: 8px 12px; margin: 8px 0 0; }
   /* Beratungsmodus: Rechtsgrundlage; Unterlagen-Checkliste; Übersicht der Mappe; Ergebnisblatt */
   .recht { margin: 8px 0 0; font-size: 0.92em; color: var(--muted); }
@@ -375,7 +389,6 @@
   .mappe-inhalt a { display: inline-block; padding: 10px 0; line-height: 1.4; }
   .eb-tab th .small { font-weight: 400; }
   .mappe-ende { margin: 16px 0; }
-  .eb-open { margin: 8px 0 0; }
   .eb-kuerzel input { max-width: 12em; }
   .ergblatt { overflow-x: auto; }
   .eb-titel { margin: 0 0 4px; }
@@ -905,7 +918,9 @@
   .card header h3 { font-size: 1.15em; font-weight: 700; }
   /* Große Schrift (200 %): lange Wörter im Kartentitel umbrechen statt seitlich zu scrollen */
   .card header > div { min-width: 0; flex: 1 1 10em; }
-  .card header h3, .card .desc, .es-karte h3 { overflow-wrap: anywhere; hyphens: auto; }
+  .card .desc, .es-karte h3 { overflow-wrap: anywhere; hyphens: auto; }
+  /* Kartentitel ohne Trennstrich (UX-Prüfung 21.11.2026: „Grundsiche-rungsgeld“); die Plakette rückt bei Bedarf unter den Titel */
+  .card header h3 { overflow-wrap: break-word; hyphens: manual; -webkit-hyphens: manual; }
   .together { border-inline-start-color: var(--accent); }
   .pill { border: 0; padding: 5px 12px; }
   .card .behoerde { border-radius: var(--r-ctl); border-inline-start-width: 4px; }
@@ -1842,7 +1857,6 @@
           <span class="count" id="count" aria-live="polite"></span>
           <p class="res-satz" id="resSatz" hidden></p>
           <p class="vertrauen" id="vertrauen"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg><span id="vertrauenT"></span></p>
-          <p class="eb-open"><button type="button" class="btn ghost" id="ebOpen" data-t="eb.btn" hidden></button></p>
           <p class="kb-open"><button type="button" class="btn ghost" id="kbOpen" data-t="kb.btn" hidden></button></p>
         </div>
         <p class="legende" id="legende" data-t="legende"></p>

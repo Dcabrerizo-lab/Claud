@@ -116,11 +116,12 @@ check('Hinweis zur unbekannten Mietenstufe', keys(t7b, 'wohngeld').includes('woh
 // 5) Vermögen, Freibeträge (Grenzfall 1.860 €: mit Werbungskostenpauschale seit dem Abgleich mit dem amtlichen Wohngeldrechner)
 check('Vermögen über 10.000 €: Grundsicherung im Alter nein', lv(ev({ brutto: 900, netto: 800, miete: 450, mietstufe: 2, alter: true, vermoegen: 15000 }), 'gsa') === 'nein');
 check('Vermögen über 60.000 €: Wohngeld nein', lv(ev({ brutto: 1000, netto: 900, miete: 450, mietstufe: 2, vermoegen: 80000 }), 'wohngeld') === 'nein');
-const nf = ev({ brutto: 1860, netto: 1500, miete: 600, mietstufe: 3, vermoegen: 0 });
+// Vermögen 15.000 €: kein Grundsicherungsgeld (Schonvermögen 10.000 €), damit nur der Freibetrag beim Wohngeld wirkt und nicht die Lage der zwei Wege
+const nf = ev({ brutto: 1860, netto: 1500, miete: 600, mietstufe: 3, vermoegen: 15000 });
 check('Freibetrag: ohne Behinderung Grenzbereich', lv(nf, 'wohngeld') === 'vielleicht');
-check('Freibetrag: mit Behinderung besser', lv(ev({ brutto: 1860, netto: 1500, miete: 600, mietstufe: 3, vermoegen: 0, behinderung: true }), 'wohngeld') === 'ja');
+check('Freibetrag: mit Behinderung besser', lv(ev({ brutto: 1860, netto: 1500, miete: 600, mietstufe: 3, vermoegen: 15000, behinderung: true }), 'wohngeld') === 'ja');
 // § 17 Nr. 1 WoGG: Pflegegrad allein gibt keinen Freibetrag; GdB 50 bis 99 nur zusammen mit Pflegebedürftigkeit; GdB 100 immer
-const wgL = (o) => lv(ev({ brutto: 1860, netto: 1500, miete: 600, mietstufe: 3, vermoegen: 0, ...o }), 'wohngeld');
+const wgL = (o) => lv(ev({ brutto: 1860, netto: 1500, miete: 600, mietstufe: 3, vermoegen: 15000, ...o }), 'wohngeld');
 check('Freibetrag: Pflegegrad allein gibt ihn nicht', wgL({ pflegegrad: '2' }) === wgL({}));
 check('Freibetrag: GdB 50 ohne Pflege gibt ihn nicht', wgL({ gdb: '50' }) === wgL({}));
 check('Freibetrag: GdB 50 mit Pflegegrad besser', wgL({ gdb: '50', pflegegrad: '2' }) === 'ja');
@@ -222,9 +223,10 @@ check('Wohngeld: Netto allein genügt NICHT (Wohngeld rechnet mit Brutto)', get(
   // Kinderbedarf 390 + 300 = 690, abzüglich 259 Kindergeld = 431 € anrechenbarer Unterhalt. Mit 1.000 € Unterhalt: Einkommen
   // 870 + 259 + 431 = 1.560 -> Lücke 60,56 -> noch „wahrscheinlich“ (bei voller Anrechnung wären es 2.129 € und damit „nein“).
   // Geburtsjahr 1986: Rente kann keine vorgezogene Altersrente sein (§ 7 Abs. 4 SGB II), z. B. Witwenrente
+  // Seit 21.11.2026 decken hier Wohngeld (und Kinderzuschlag) die Lücke: Grundsicherungsgeld „möglich“ mit Vorrang-Hinweis (§ 12a SGB II), nicht „nein“
   const gg = (u) => lv(ev({ kids: 1, brutto: 900, netto: 900, nichtArbeit: true, miete: 600, vermoegen: 0, unterhalt: u, gebJahr: 1986 }), 'ggeld');
-  check('Grundsicherungsgeld ohne Unterhalt: Lücke 394 € -> wahrscheinlich', gg('') === 'ja');
-  check('Grundsicherungsgeld mit 1.000 € Unterhalt: nur 431 € angerechnet -> Lücke 61 € (nicht nein)', gg(1000) === 'ja');
+  check('Grundsicherungsgeld ohne Unterhalt: Lücke 394 € -> nicht nein (Wohngeld geht vor)', gg('') === 'vielleicht' && get(ev({ kids: 1, brutto: 900, netto: 900, nichtArbeit: true, miete: 600, vermoegen: 0, gebJahr: 1986 }), 'ggeld').hl === 'vorrang');
+  check('Grundsicherungsgeld mit 1.000 € Unterhalt: nur 431 € angerechnet -> Lücke 61 € (nicht nein)', gg(1000) !== 'nein');
   check('Grundsicherungsgeld: 431 € und 1.000 € Unterhalt wirken gleich (Deckel beim Kinderbedarf)', gg(431) === gg(1000));
 
   // Eigenschaft: mehr Unterhalt verbessert keine Einstufung (über viele Haushalte)
@@ -237,7 +239,10 @@ check('Wohngeld: Netto allein genügt NICHT (Wohngeld rechnet mit Brutto)', get(
         // Ausnahme (gesetzlich gewollt): Wohngeld und Kinderzuschlag setzen genug Einkommen zum Leben voraus (hl einkoNiedrig,
         // § 6a Abs. 1 Nr. 3 BKGG, auch „nur zusammen mit Wohngeld“; Plausibilität beim Wohngeld). Dort darf mehr Einkommen die Leistung erst möglich machen.
         const ids = ['wohngeld', 'kiz', 'ggeld', 'gsa', 'uvg'];
-        const niedrig = ids.map((id) => get(r, id).hl === 'einkoNiedrig' || (get(r, id).tx || []).some((t) => t[0] === 'kiz.mitWg'));
+        // Ebenso die zwei Wege (seit 21.11.2026): Sinkt mit mehr Unterhalt der Kinderzuschlag, kann Grundsicherungsgeld der übliche Weg werden
+        // (vorher Vorrang oder unklar, Wohngeld dann mit Verzicht-Hinweis)
+        const wegeTx = (x) => x.hl === 'vorrang' || (x.tx || []).some((t) => /^(weg\.unklar|wohngeld\.verzicht)/.test(t[0]));
+        const niedrig = ids.map((id) => get(r, id).hl === 'einkoNiedrig' || (get(r, id).tx || []).some((t) => t[0] === 'kiz.mitWg') || wegeTx(get(r, id)));
         const now = ids.map((id) => rank[lv(r, id)]);
         if (last && now.some((v, i) => v < last.v[i] && !niedrig[i] && !last.niedrig[i])) bad.push([adults, kids, b, miete, alter, u].join('/'));
         last = { v: now, niedrig };
@@ -410,6 +415,48 @@ console.log('Hinweis, nicht verwendete Schlüssel:', unused.length ? unused.join
   check('[zust-land] Sachsen-Anhalt: Eingliederungshilfe beim Sozialamt vor Ort (Träger LAS)', /^Sozialamt deines Landkreises oder deiner kreisfreien Stadt \(Träger: Landesamt/.test(R2.zustLand('eingl', 'ST')));
   check('[zwei-wege] Zeile in der Antragsmappe widerspricht dem Tipp „beide Anträge“ nicht (alle 13 Sprachen übersetzt)', /Beantragen kannst du trotzdem beides\./.test(I18N.de['f.pickWege']) && /Beantragen kannst du trotzdem beides\./.test(require('../src/lang/einfach/f.json')['f.pickWege']) && Object.keys(I18N).every((l) => l === 'de' || (I18N[l]['f.pickWege'] && I18N[l]['f.pickWege'] !== I18N.de['f.pickWege'])));
   check('[zust-land] Sachsen-Anhalt: LAS für Ausweis, Blindengeld, Eingliederungshilfe; keine Sozialagentur mehr', ['ausweis', 'blindengeld', 'eingl'].every((id) => /Landesamt für Soziales, Jugend und Gesundheit Sachsen-Anhalt/.test(R2.zustLand(id, 'ST'))) && !/Sozialagentur|Landesverwaltungsamt/.test(JSON.stringify(R2.ZUST_LAND)));
+}
+
+// 13) Entweder-oder: zwei Wege (docs/entwuerfe/entweder-oder.md; § 12a SGB II, § 7 und § 8 WoGG, § 6a Abs. 1a BKGG, § 2 SGB XII; Abruf 21.11.2026).
+//     Beispiele aus dem Bericht (Mietenstufe III, kein Vermögen); Puffer 50 € (Produktentscheidung 21.11.2026)
+{
+  const W = (o) => Rules.evaluate({ vermoegen: 0, mietstufe: 3, gebJahr: 1990, bezug: {}, ...o });
+  const betrag = (r, id) => get(r, id).tx.some((t) => /^schaetz\./.test(t[0]));
+  const p28 = W({ adults: 2, kids: 2, art1: 'lohn', brutto: 2800, miete: 800 });
+  check('[wege] Paar, 2 Kinder, 2.800 € brutto: Wohngeld und Kinderzuschlag gehen voraussichtlich vor', p28.wege && p28.wege.lage === 'aVor' && p28.wege.a.join() === 'wohngeld,kiz' && p28.wege.b.join() === 'ggeld', JSON.stringify(p28.wege));
+  check('[wege] … Grundsicherungsgeld höchstens „möglich“, ohne Betrag, mit Vorrang-Satz (vorher „wahrscheinlich, 250 €“)', lv(p28, 'ggeld') === 'vielleicht' && get(p28, 'ggeld').hl === 'vorrang' && !betrag(p28, 'ggeld') && keys(p28, 'ggeld')[0] === 'ggeld.vorrang');
+  check('[wege] … Wohngeld und Kinderzuschlag bleiben „wahrscheinlich“, Summe des Wegs ohne Grundsicherungsgeld', lv(p28, 'wohngeld') === 'ja' && lv(p28, 'kiz') === 'ja' && p28.wege.aBetrag.lo.eur === 290 + 480 && p28.wege.aBetrag.hi.eur === 450 + 480 && p28.wege.bBetrag === null, JSON.stringify(p28.wege.aBetrag));
+  check('[wege] … Bildung und Teilhabe gibt es auf beiden Wegen: bleibt „wahrscheinlich“', lv(p28, 'but') === 'ja');
+  const p22 = W({ adults: 2, kids: 2, art1: 'lohn', brutto: 2200, miete: 800 });
+  check('[wege] Paar, 2 Kinder, 2.200 € brutto: Vorrang Wohngeld und Kinderzuschlag (vorher alle drei mit Betrag)', p22.wege.lage === 'aVor' && lv(p22, 'ggeld') === 'vielleicht' && !betrag(p22, 'ggeld'));
+  const p15 = W({ adults: 2, kids: 2, art1: 'lohn', brutto: 1500, miete: 800 });
+  check('[wege] Paar, 2 Kinder, 1.500 € brutto: weniger als 50 € Abstand -> unklar, beide Wege „möglich“, kein Vorrang-Satz', p15.wege.lage === 'unklar' && ['wohngeld', 'kiz', 'ggeld'].every((id) => lv(p15, id) === 'vielleicht' && keys(p15, id).includes('weg.unklar')) && !keys(p15, 'ggeld').includes('ggeld.vorrang'));
+  check('[wege] … Bildung und Teilhabe bleibt „wahrscheinlich“ (auf jedem Weg)', lv(p15, 'but') === 'ja');
+  const a13 = W({ adults: 1, kids: 0, art1: 'lohn', brutto: 1300, miete: 500 });
+  check('[wege] Allein, 1.300 € brutto, Miete 500: Grundsicherungsgeld üblicher Weg, Wohngeld nur „möglich“ mit Verzicht-Hinweis', a13.wege.lage === 'bUeblich' && lv(a13, 'ggeld') === 'ja' && betrag(a13, 'ggeld') && lv(a13, 'wohngeld') === 'vielleicht' && keys(a13, 'wohngeld').includes('wohngeld.verzicht'));
+  const r9 = W({ adults: 1, kids: 0, art1: 'rente', brutto: 900, netto: 900, miete: 450, gebJahr: 1950 });
+  check('[wege] Rentner, 900 € Rente, Miete 450: Wohngeld geht vor (§ 2 SGB XII), Grundsicherung im Alter ohne Betrag', r9.wege && r9.wege.rente && r9.wege.lage === 'aVor' && lv(r9, 'gsa') === 'vielleicht' && keys(r9, 'gsa')[0] === 'gsa.vorrang' && !betrag(r9, 'gsa') && lv(r9, 'wohngeld') === 'ja');
+  const w13 = W({ adults: 2, kids: 2, art1: 'lohn', brutto: 1320, miete: 800 });
+  check('[wege] Paar, 2 Kinder, 1.320 € brutto: kleine Lücke (erweiterter Zugang) -> echte Wahl, Beträge je Weg', w13.wege.lage === 'wahl' && w13.wege.aBetrag && w13.wege.bBetrag, JSON.stringify(w13.wege));
+  check('[wege] Wer Grundsicherungsgeld schon bekommt: keine zwei Wege', W({ adults: 2, kids: 2, art1: 'lohn', brutto: 1500, miete: 800, bezug: { grundsicherungsgeld: true } }).wege === null);
+  check('[wege] ohneWege (nur für Regeltests): jede Leistung für sich, Grundsicherungsgeld wie vorher „wahrscheinlich“ mit Betrag', (() => { const o = W({ adults: 2, kids: 2, art1: 'lohn', brutto: 2800, miete: 800, ohneWege: true }); return o.wege === null && lv(o, 'ggeld') === 'ja' && betrag(o, 'ggeld'); })());
+  check('[wege] Gefährlicher Tipp „beide Anträge gleichzeitig“ ist weg (sperrt den erweiterten Zugang, § 6a Abs. 1a Nr. 3 BKGG)', !Object.keys(I18N.de).some((k) => /^ww\./.test(k)) && !Object.values(I18N.de).some((v) => /beide Anträge gleichzeitig/.test(v)));
+  check('[wege] Keine „Weg 1/2“-Namen mehr; „welcher Weg dir mehr bringt“ ersetzt', !Object.values(I18N.de).some((v) => /Weg [12]:|welcher Weg dir mehr bringt/.test(v)));
+  // Eigenschaften über Zufallshaushalte
+  let seed = 4711; const rnd = () => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; }; const pick = (a) => a[Math.floor(rnd() * a.length)];
+  const bad = {};
+  for (let i = 0; i < 4000; i++) {
+    const o = { adults: pick([1, 2]), kids: pick([0, 1, 2, 3]), art1: pick(['lohn', 'lohn', 'rente', 'ohne']), brutto: pick([0, 600, 1000, 1400, 1800, 2200, 2800, 3600]), miete: pick([300, 500, 700, 900, 1200]), mietstufe: pick(['', 1, 3, 5, 7]), gebJahr: pick([1950, 1960, 1985, 1995]), vermoegen: pick([0, 3000, 12000]) };
+    if (o.art1 === 'rente') o.netto = Math.round(o.brutto * 0.89);
+    const r = W(o), w = r.wege; if (!w) continue;
+    const L = (id) => lv(r, id);
+    if (w.lage === 'aVor' && w.b.some((id) => L(id) === 'ja' || betrag(r, id))) bad.aVor = JSON.stringify(o);
+    if (w.lage === 'bUeblich' && L('wohngeld') === 'ja') bad.bUeblich = JSON.stringify(o);
+    if (w.lage === 'unklar' && w.a.concat(w.b).some((id) => L(id) === 'ja')) bad.unklar = JSON.stringify(o);
+    if (w.a.concat(w.b).some((id) => L(id) !== 'ja' && L(id) !== 'vielleicht')) bad.nichtPassend = JSON.stringify(o);
+    if (w.a.concat(w.b).every((id) => L(id) === 'ja') && w.lage !== 'wahl') bad.alleJa = JSON.stringify(o);
+  }
+  check('[wege] Zufallshaushalte (4.000): Lage und Einstufungen passen zusammen (nie alle Wege „wahrscheinlich“ mit Vorrang)', Object.keys(bad).length === 0, JSON.stringify(bad));
 }
 
 console.log(fails ? '\n' + fails + ' FEHLER' : '\nAlle Tests bestanden');

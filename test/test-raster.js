@@ -3,7 +3,10 @@
 // unwahrscheinlich, schon vorhanden) und die Zahlen (Bedarf, geschätzte Beträge).
 // Aufruf: node test/test-raster.js [Anzahl Zufallshaushalte, Standard 60000]
 'use strict';
-const Rules = require('../src/rules.js');
+// ohneWege: Eigenschaften je Leistung; die zwei Wege (Grundsicherungsgeld oder Wohngeld und Kinderzuschlag) koppeln Leistungen absichtlich
+// und haben eigene Tests in test/test.js
+const Rules0 = require('../src/rules.js');
+const Rules = Object.assign({}, Rules0, { evaluate: (e) => Rules0.evaluate(Object.assign({ ohneWege: true }, e)) });
 const Ref = require('./referenz.js');
 
 const N = Number(process.argv[2]) || 60000;
