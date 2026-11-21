@@ -92,7 +92,10 @@ const M = [
   ['Wohngeld: Freibetrag Kindereinkommen fehlt', 'wgKindFrei: 100', 'wgKindFrei: 0'],
   ['Wohngeld: Lohn der Kinder ohne Arbeitnehmer-Pauschbetrag (§ 14 Abs. 1 WoGG, § 9a EStG)', 'const kindAbzug = R.wgWerbung.lohn / 12 + R.wgKindFrei;', 'const kindAbzug = R.wgKindFrei;'],
   ['Wohngeld: vorsichtige Schätzung mit Pauschbetrag auch über der Minijob-Grenze (Auszahlung statt Brutto)', 'const kindAbzugPess = (h.kindEink || 0) > h.minijob ? R.wgKindFrei : kindAbzug;', 'const kindAbzugPess = kindAbzug;'],
-  ['Wohngeld: Freibetrag § 17 Nr. 4 WoGG nur einmal statt je Kind', 'kindOpt = Math.max(0, (h.kindEink || 0) - kindNOpt * kindAbzug);', 'kindOpt = Math.max(0, (h.kindEink || 0) - kindAbzug);'],
+  ['Wohngeld: Freibetrag § 17 Nr. 4 WoGG nur einmal statt je Kind', 'const kindNOpt = Math.max(1, (h.kids || 0) - (h.kidsU6 || 0) + (h.young || 0)), kindX', 'const kindNOpt = 1, kindX'],
+  ['Wohngeld: Freibetrag der Kinder mindert den Unterhalt desselben Kindes nicht (amtlicher Rechner, Lauf 2612 Nr. 96)', 'const kindOpt = Math.max(-(h.kindZahl || 0), kindNOpt', 'const kindOpt = Math.max(0, kindNOpt'],
+  ['Wohngeld: Freibetrag der Kinder mindert auch das Einkommen der Eltern (ohne Deckel beim Kinder-Einkommen)', 'const kindOpt = Math.max(-(h.kindZahl || 0), kindNOpt', 'const kindOpt = Math.max(-1e9, kindNOpt'],
+  ['Wohngeld: Freibetrag § 17 Nr. 4 WoGG höher als die eigenen Einnahmen des Kindes', '- Math.min(kindX, R.wgKindFrei)));', '- R.wgKindFrei));'],
   ['Grundsicherung: Grundrentenfreibetrag ohne Deckel', 'freiStaffel(gesB, R.grundrente, rs1)', 'freiStaffel(gesB, { sockel: 100, quote: 0.3, max: 1 }, rs1)'],
   ['Grundsicherung: Freibetrag für Betriebs-, Riester- oder private Rente fehlt', ' - freiStaffel(z, R.vorsorge, rs1); }', ' - 0; }'],
   ['Grundsicherung: Grundrentenfreibetrag auch auf die Betriebsrente', 'freiStaffel(gesB, R.grundrente, rs1)', 'freiStaffel(Math.max(n, b), R.grundrente, rs1)'],
@@ -142,7 +145,7 @@ fs.symlinkSync(path.join(ROOT, 'app', 'node_modules'), path.join(tmp, 'app', 'no
 const DATEI = (m) => m[3] || 'src/rules.js';
 const ORIG = {};
 M.forEach((m) => { ORIG[DATEI(m)] = ORIG[DATEI(m)] || fs.readFileSync(path.join(ROOT, DATEI(m)), 'utf8'); });
-const TESTS = ['test.js', 'test-netto.js', 'test-strict.js', 'test-beh.js', 'test-faelle.js', 'test-raster.js ' + (process.env.MUT_RASTER || 8000), 'test-pruefliste.js', 'test-einfach-gleich.js 3000', 'test-grenzen.js', 'test-formulare.js', 'test-amtlich.js', 'test-ba-beispiele.js', 'test-musterbescheide.js', 'test-paar-einkommen.js', 'test-eigenschaften.js ' + (process.env.MUT_EIGEN || 3000)];
+const TESTS = ['test.js', 'test-netto.js', 'test-strict.js', 'test-beh.js', 'test-faelle.js', 'test-raster.js ' + (process.env.MUT_RASTER || 8000), 'test-pruefliste.js', 'test-einfach-gleich.js 3000', 'test-grenzen.js', 'test-formulare.js', 'test-amtlich.js', 'test-amtlich-wohngeld.js', 'test-ba-beispiele.js', 'test-musterbescheide.js', 'test-paar-einkommen.js', 'test-eigenschaften.js ' + (process.env.MUT_EIGEN || 3000)];
 const laeuft = () => { try { for (const t of TESTS) execSync('node test/' + t, { cwd: tmp, stdio: 'ignore' }); return true; } catch (e) { return false; } };
 
 let unentdeckt = 0, geprueft = 0;

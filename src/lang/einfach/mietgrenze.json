@@ -16,7 +16,7 @@
  "wgmax.verwandte": "Wohnen Verwandte bei dir? Zum Beispiel deine Eltern oder deine erwachsenen Kinder? Dann zählen sie beim Wohngeld meistens mit. Dann darf die Miete höher sein.",
  "wgmax.mehr": "Was zählt beim Wohngeld als Miete?",
  "wgmax.d.kalt": "Beim Wohngeld zählt die Kaltmiete. Dazu kommen die Nebenkosten ohne Heizung, zum Beispiel Wasser und Müll. Nicht dazu zählen: Heizung, warmes Wasser, Strom, Garage.",
- "wgmax.d.heiz": "Für die Heizung rechnet das Amt immer mit einem festen Betrag: {heiz} im Monat. Das ist bei allen gleich. Egal, wie viel deine Heizung kostet. Das ist kein extra Geld. Es ist nur eine Zahl für die Rechnung.",
+ "wgmax.d.heiz": "Für die Heizung rechnet das Amt immer mit einem festen Betrag: {heiz} im Monat. Der Betrag hängt nur davon ab, wie viele Personen im Haushalt leben. Egal, wie viel deine Heizung kostet. Das ist kein extra Geld. Es ist nur eine Zahl für die Rechnung.",
  "wgmax.d.klima": "Im Höchstbetrag ist schon ein kleiner Zuschlag drin. Er heißt Klimakomponente: {klima}. Alle bekommen ihn. Du musst nichts nachweisen.",
  "wgmax.d.drueber": "Ist deine Miete höher? Dann bekommst du trotzdem Wohngeld, wenn alles andere passt. Es wird aber nur mit dem Höchstbetrag gerechnet. Den Rest zahlst du selbst.",
  "wgmax.d.personen": "Es zählen alle, die mit dir zusammen wohnen: dein Partner oder deine Partnerin, deine Kinder, deine Verwandten. Mitbewohner in einer WG zählen nicht.",
