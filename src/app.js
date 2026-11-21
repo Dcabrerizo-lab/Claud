@@ -3602,6 +3602,12 @@
       if (az && az.von && az.n) zeile('ausziehen', t('ordner.ausziehen'), t('ordner.ausziehen.n', { n: az.n, von: az.von }), '<path d="M4 20V9l8-5 8 5v11"/><path d="M14 14h6M17 11l3 3-3 3"/>', function () { oeffneVon('ausziehen', true); });
     }
     if (pa && pa.schaetzung) zeile('pflege', t('ordner.pflege'), paStandText(), '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>', function () { oeffneVon('pflegestart', true); });
+    // Blatt von der Beratung (Weitergabe per QR-Code/SoLo-Datei): beim Laden erneut streng geprüft, angezeigt nur als Text
+    if (window.Weitergabe && window.Klient && tresor && tresor.bereit()) {
+      var kbRoh = null; Store.get('lotse.klient-blatt', function (v) { kbRoh = v; });
+      var kbDoc = null; try { var kbP = kbRoh ? Weitergabe.pruefen({ s: 1, typ: 'auswahl', blatt: JSON.parse(kbRoh) }) : null; kbDoc = kbP && kbP.blatt; } catch (e) { kbDoc = null; }
+      if (kbDoc) zeile('beratung', t('kw.ordner'), t('kw.ordner.st', { n: kbDoc.abschnitte.length }), '<path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7M14 3v5h5"/>', function () { Klient.zeigen(kbDoc); });
+    }
     if (pf && pf.art && pf.schritt > 0) zeile('pfaendung', t('ordner.pfaendung'), t(pf.art === 'lohn' ? 'pf.lohn' : 'pf.konto'), '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/>', function () { oeffneVon('pfaendung', true); });
     ul.hidden = !ul.children.length;
   }
@@ -4371,7 +4377,32 @@
       native: function () { return NATIVE; },
       druckArt: function () { return NATIVE ? (plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen') : 'web'; },
       pdf: function (seiten, titel, name, msg, art, rtlHinweis) { pdfAusgeben(seiten, titel, name, msg, art, rtlHinweis); },
-      blatt: function (an) { $('app').classList.toggle('pm', !!an); if (an) { try { window.scrollTo(0, 0); } catch (e) {} } }
+      blatt: function (an) { $('app').classList.toggle('pm', !!an); if (an) { try { window.scrollTo(0, 0); } catch (e) {} } },
+      // Weitergabe (src/weitergabe.js): gespeicherte Eingaben des geöffneten Vorgangs (nur lesen) und Datei über das Teilen-Menü der App
+      vorgangDaten: function () {
+        var o = {}; if (!tresor || !tresor.bereit()) return o;
+        flush(); var a = tresor.aktiv(); if (!a) return o;
+        Vorgaenge.DATEN.forEach(function (k) { tresor.ueberall(k).forEach(function (v) { if (v.id === a.id && v.wert != null) o[k] = v.wert; }); });
+        return o;
+      },
+      nativDatei: function (name, text, msg) {
+        var fs = plug('Filesystem'), sh = plug('Share');
+        if (!fs || !sh) { msg.textContent = t('f.pdfFail'); return Promise.resolve(); }
+        return fs.writeFile({ path: name, data: text, directory: 'CACHE', encoding: 'utf8' })
+          .then(function (r) { return sh.share({ title: name, files: [r.uri] }).then(function () {}, function () {}); })
+          .then(function () { return fs.deleteFile({ path: name, directory: 'CACHE' }).catch(function () {}); })
+          .catch(function () { msg.textContent = t('f.pdfFail'); });
+      }
+    });
+  }
+  // Von der Beratung bekommen (src/weitergabe.js, für alle Nutzer): SoLo-Datei oder QR-Code → neuer Vorgang (bestehende nie überschreiben)
+  if (window.Weitergabe) {
+    Weitergabe.importInit({
+      t: t, bereit: function () { return !!(tresor && tresor.bereit()); },
+      importieren: function (name, daten) { flush(); var id = tresor.importieren(name, daten); if (id) vgRender(); return id; },
+      oeffnen: function (id) { vgOeffnen(id); },
+      // Fristen wie beim Laden prüfen (src/fristen.js normiere): Unbekanntes fällt weg; „Erinnerung beim Öffnen“ gilt dann wie für eigene Fristen
+      fristen: function (obj) { try { return JSON.stringify(window.FristenOrdner ? FristenOrdner.normiere(obj) : { v: 1, e: [] }); } catch (e) { return null; } }
     });
   }
   window.addEventListener('hashchange', function () { var a = location.hash.slice(1); if (ANSICHTEN.indexOf(a) >= 0 && a !== aktAnsicht) zeigeAnsicht(a, true); });

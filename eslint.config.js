@@ -11,6 +11,7 @@ const regeln = {
 // Namen, die eine Datei der App/Erweiterungen bereitstellt und eine andere nutzt
 // (im Browser werden die Dateien zu einer Seite zusammengefügt, in Node per require geladen)
 const appNamen = Object.fromEntries([
+  'Weitergabe', // src/weitergabe.js (QR-Code und SoLo-Datei)
   'Rules', 'Fmt', 'Plz', 'Behoerden', 'Formulare', 'I18N', 'I18N_EINFACH', 'PFLEGE_EINFACH',
   'BriefLesen', 'PflegeAssistent', 'Pflege', 'PflegeFragen', 'PflegeImport',
   'BescheidGSA', 'BescheidKiZ', 'BescheidSGB2', 'BescheidWG', 'Fristen', 'Nebenkosten',

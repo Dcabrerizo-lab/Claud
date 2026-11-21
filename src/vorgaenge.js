@@ -9,7 +9,8 @@
 const Vorgaenge = (function () {
   var zuletzt = null; // zuletzt angelegter Tresor (die App hat genau einen): für Vorgaenge.oeffneGesperrt
   var SCHLUESSEL = 'lotse.vorgaenge';
-  var DATEN = ['lotse.state', 'lotse.einfach', 'lotse.pflegecheck', 'lotse.pfaendung', 'lotse.haushalt', 'lotse.haken', 'lotse.ausziehen', 'lotse.fristliste', 'lotse.schulden', 'lotse.beratung-haken'];
+  var DATEN = ['lotse.state', 'lotse.einfach', 'lotse.pflegecheck', 'lotse.pfaendung', 'lotse.haushalt', 'lotse.haken', 'lotse.ausziehen', 'lotse.fristliste', 'lotse.schulden', 'lotse.beratung-haken', 'lotse.klient-blatt'];
+  // lotse.klient-blatt: Blatt, das die Beratung per QR-Code/SoLo-Datei weitergegeben hat (src/weitergabe.js), nur Daten, kein HTML
   var ITER = 600000; // PBKDF2-HMAC-SHA-256: Empfehlung OWASP Password Storage Cheat Sheet (Stand 2023/2026)
   var NAME_MAX = 24;
   var TAG = 86400000;
@@ -382,6 +383,16 @@ const Vorgaenge = (function () {
         if (!bereit) return null;
         var v = neu(name, {}, jetzt()); c.liste.push(v); c.aktiv = v.id;
         if (!key) klarDatenEntfernen();
+        speichern(); return v.id;
+      },
+      // Neuer Vorgang aus einer Weitergabe (QR-Code/SoLo-Datei, src/weitergabe.js): nur bekannte Datenschlüssel (Texte), der geöffnete Vorgang
+      // bleibt geöffnet, bestehende Vorgänge werden nie überschrieben
+      importieren: function (name, daten) {
+        if (!bereit || !daten || typeof daten !== 'object') return null;
+        var d = {}, n = 0;
+        DATEN.forEach(function (k) { if (Object.prototype.hasOwnProperty.call(daten, k) && typeof daten[k] === 'string') { d[k] = daten[k]; n++; } });
+        if (!n) return null;
+        var v = neu(name, d, jetzt()); c.liste.push(v);
         speichern(); return v.id;
       },
       umbenennen: function (id, name) {
