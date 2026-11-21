@@ -1,7 +1,7 @@
 // Fristen in „Mein Ordner“: Liste je Vorgang (lotse.fristliste in Vorgaenge.DATEN, mit PIN verschlüsselt, mitkopiert, mitgelöscht).
 // Kein eigener Bereich, kein Kalender, keine Mitteilung des Systems. Erinnerung nur als ruhiger Hinweis beim Öffnen, höchstens einmal am Tag.
-// Fristen aus „Brief prüfen“ kommen NUR auf Knopfdruck („Frist merken“) in die Liste. Das Ende eines Bewilligungszeitraums
-// (Haushaltsplan, lotse.haushalt → bewilligt) wird abgeleitet und nicht doppelt gespeichert.
+// Fristen aus „Brief prüfen“ kommen NUR auf Knopfdruck („Frist merken“) in die Liste. (Bis 1.8: Folgeanträge aus „Bewilligt bis“ im Haushaltsplan;
+// seit 1.9 entfernt, alte Angaben in lotse.haushalt und lotse.fristliste werden beim Laden ignoriert.)
 // Texte: src/lang/fristen/<Sprache>.json (Schlüssel „fri.*“), Einfache Sprache: src/lang/einfach/fristen.json.
 //
 // Rechnung (Quellen abgerufen am 20.11.2026, Entwurf docs/entwuerfe/fristen.md Abschnitt 4). SoLo nennt immer den frühesten möglichen Tag:
@@ -30,11 +30,9 @@
 var FristenOrdner = (function () {
   'use strict';
   var RE_TAG = /^\d{4}-\d\d-\d\d$/;
-  var ARTEN = ['wid', 'mit', 'anh', 'zahl', 'mb', 'vb', 'termin', 'frist', 'wb', 'eigen'];
+  var ARTEN = ['wid', 'mit', 'anh', 'zahl', 'mb', 'vb', 'termin', 'frist', 'eigen'];
   var STELLEN = ['jc', 'sa', 'wg', 'fk', 'pk', 'vm', 'gericht', 'andere'];
   var WORTE = ['fest', 'gerechnet', 'ungefaehr', 'offen'];
-  var LEISTUNGEN = ['sgb2', 'sgb12', 'wohngeld', 'kiz'];
-  var VORLAUF_TAGE = { sgb2: 42, sgb12: 42, wohngeld: 60, kiz: 42 }; // App-Regel wie Haushalt.VORLAUF_TAGE (kein Gesetz)
   var MAX = 50, TITEL_MAX = 60, NOTIZ_MAX = 200, ERLEDIGT_TAGE = 30, BALD = 7, VORBEI = 14;
 
   // ---------- Rechenkern (Daten immer 'JJJJ-MM-TT', ohne Uhrzeit) ----------
@@ -100,7 +98,6 @@ var FristenOrdner = (function () {
   // Ende und Wort einer Frist aus ihrer Grundlage. Ergebnis: { bis, wort, bekannt }
   function rechne(e) {
     var b = e.basis || {};
-    if (e.art === 'wb') return { bis: e.ende || null, wort: 'fest', bekannt: null };
     if (b.fest) return { bis: b.fest, wort: 'fest', bekannt: null };
     var z = null, frist = b.frist;
     if (e.art === 'wid') { z = bekanntgabe(b); frist = frist || '1M'; }
@@ -110,8 +107,7 @@ var FristenOrdner = (function () {
     return bis ? { bis: bis, wort: z.wort, bekannt: z.bekannt } : { bis: null, wort: 'offen', bekannt: null };
   }
   function widerspruch(datum, zugang, erhalten) { return rechne({ art: 'wid', basis: { datum: datum || null, zugang: zugang || null, erhalten: erhalten || null } }); }
-  function folgeantrag(l, ende) { return { art: 'wb', leistung: l, ende: ende, bis: ende, wort: 'fest', faellig: plusTage(ende, -(VORLAUF_TAGE[l] || 42)), id: 'wb-' + l + '-' + ende }; }
-  function faellig(e) { return e.art === 'wb' ? e.faellig || plusTage(e.bis, -(VORLAUF_TAGE[e.leistung] || 42)) : plusTage(e.bis, -BALD); }
+  function faellig(e) { return plusTage(e.bis, -BALD); }
 
   // Frist aus dem Text eines Briefs (Anhörung, Mitwirkung): rechnet nur, speichert nichts.
   var ZAHLWORT = { ein: 1, eine: 1, einem: 1, einer: 1, eines: 1, zwei: 2, drei: 3, vier: 4, 'fünf': 5, fuenf: 5, sechs: 6, sieben: 7, acht: 8, zehn: 10, zwölf: 12, zwoelf: 12 };
@@ -151,13 +147,13 @@ var FristenOrdner = (function () {
   function textSauber(s, max) { return String(s == null ? '' : s).replace(/[\u0000-\u001f\u007f-\u009f\u2028\u2029]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, max); }
   function titelSauber(s) { return textSauber(s, TITEL_MAX); }
   function tagOderNull(s) { return gueltigerTag(s) ? s : null; }
-  function leer() { return { v: 1, e: [], wb: {} }; }
+  function leer() { return { v: 1, e: [] }; }
   function neueId() {
     try { var a = new Uint8Array(4); globalThis.crypto.getRandomValues(a); return Array.prototype.map.call(a, function (b) { return (b + 256).toString(16).slice(1); }).join(''); } catch (e) { return Math.random().toString(16).slice(2, 10); }
   }
   // Ein Eintrag gegen feste Listen prüfen (aus art, stelle, wort werden Textschlüssel gebildet); Ende neu rechnen
   function eintragSauber(x) {
-    if (!x || typeof x !== 'object' || ARTEN.indexOf(x.art) < 0 || x.art === 'wb') return null;
+    if (!x || typeof x !== 'object' || ARTEN.indexOf(x.art) < 0) return null;
     var b = x.basis && typeof x.basis === 'object' ? x.basis : {};
     var e = {
       id: typeof x.id === 'string' && /^[a-z0-9]{1,16}$/.test(x.id) ? x.id : neueId(),
@@ -185,13 +181,7 @@ var FristenOrdner = (function () {
       x.e.sort(function (a, b) { return b.neu - a.neu; });
       if (x.e.length > MAX) x.e = kuerzen(x.e);
     }
-    if (d.wb && typeof d.wb === 'object') Object.keys(d.wb).forEach(function (k) {
-      var m = /^wb-(sgb2|sgb12|wohngeld|kiz)-(\d{4}-\d\d-\d\d)$/.exec(k), v = d.wb[k];
-      if (!m || !gueltigerTag(m[2]) || !v || typeof v !== 'object') return;
-      if (grenze && m[2] < grenze) return; // Zeitraum lange vorbei
-      var z = { erledigt: tagOderNull(v.erledigt), spaeter: tagOderNull(v.spaeter) };
-      if (z.erledigt || z.spaeter) x.wb[k] = z;
-    });
+    // d.wb (Zustand alter Folgeanträge bis 1.8) wird ignoriert
     return x;
   }
   // Auf 50 kürzen: offene bleiben (die neuesten), erledigte werden zuerst entfernt. liste: neueste zuerst
@@ -203,26 +193,12 @@ var FristenOrdner = (function () {
   // Dublettenschutz: gleiche Art, Stelle und gleiches Ende (bzw. gleiche Grundlage, solange das Datum fehlt)
   function schluessel(e) {
     if (e.schluessel) return 'k|' + e.schluessel;
-    if (e.art === 'wb') return 'wb-' + e.leistung + '-' + e.ende;
     var b = e.basis || {};
     var wann = e.bis || ('o' + (b.datum || '') + '/' + (b.zugang || '') + '/' + (b.erhalten || '') + '/' + (b.frist || ''));
     return e.art + '|' + (e.stelle || '') + '|' + (e.titel ? e.titel.toLowerCase() + '|' : '') + wann;
   }
-  // Folgeanträge aus dem Haushaltsplan (lotse.haushalt → bewilligt) mit ihrem Zustand aus der Fristliste
-  function wbAus(haushaltText, d, heute) {
-    var h = null; try { h = haushaltText ? JSON.parse(haushaltText) : null; } catch (e) { h = null; }
-    var bew = h && h.bewilligt && typeof h.bewilligt === 'object' ? h.bewilligt : {}, out = [];
-    LEISTUNGEN.forEach(function (l) {
-      if (!gueltigerTag(bew[l])) return;
-      var e = folgeantrag(l, bew[l]);
-      if (heute && diff(heute, e.ende) < -ERLEDIGT_TAGE) return;
-      var z = d && d.wb && d.wb[e.id] || {};
-      e.erledigt = z.erledigt || null; e.spaeter = z.spaeter || null; out.push(e);
-    });
-    return out;
-  }
   // Auswahl für den Hinweis beim Öffnen: offen, nicht „später“, endet in 0–7 Tagen oder seit 1–14 Tagen abgelaufen
-  // (Folgeantrag ab Ende − 42 bzw. − 60 Tage). Sortiert: früheres Ende zuerst (abgelaufen vor heute vor morgen), bei gleichem Tag „Fest“ zuerst.
+  // Sortiert: früheres Ende zuerst (abgelaufen vor heute vor morgen), bei gleichem Tag „Fest“ zuerst.
   function zeigen(liste, heute) {
     var rang = function (e) { return WORTE.indexOf(e.wort); };
     return liste.filter(function (e) {
@@ -236,12 +212,8 @@ var FristenOrdner = (function () {
       return (a.bis || '') < (b.bis || '') ? -1 : (a.bis || '') > (b.bis || '') ? 1 : WORTE.indexOf(a.wort) - WORTE.indexOf(b.wort);
     });
   }
-  // „Später erinnern“: kurze Fristen morgen; Folgeantrag in 7 Tagen, aber spätestens 7 Tage vor dem Ende; ab dem Ende morgen
-  function spaeterTag(e, heute) {
-    var morgen = plusTage(heute, 1);
-    if (e.art === 'wb' && heute < e.bis) { var x = plusTage(heute, 7), y = plusTage(e.bis, -7); if (y < x) x = y; return x > heute ? x : morgen; }
-    return morgen;
-  }
+  // „Später erinnern“: morgen
+  function spaeterTag(e, heute) { return plusTage(heute, 1); }
 
   // =====================================================================
   // Oberfläche
@@ -273,10 +245,8 @@ var FristenOrdner = (function () {
     if (n === -1) return t('fri.rest.gestern');
     return n > 1 ? t('fri.rest.tage', { n: String(n) }) : t('fri.rest.vorbei', { n: String(-n) });
   }
-  function leistungName(l) { return t('hb.wb.' + l); }
   function titelVon(e) {
     if (e.art === 'eigen' || (e.art === 'frist' && e.titel)) return e.titel;
-    if (e.art === 'wb') return t('fri.art.wb', { leistung: leistungName(e.leistung) });
     // Rechtsweg je Stelle: Wohngeld Verwaltungsrechtsweg (Widerspruch § 70 VwGO, je Land abgeschafft: dann Klage, § 68 Abs. 1 Satz 2, § 74 VwGO);
     // Brief ohne bekannte Stelle: Widerspruch, Einspruch (Kindergeld, § 355 AO) oder Klage. Die App legt sich dann nicht auf ein Wort fest.
     var s = t(widOffen(e) ? 'fri.art.wid.offen' : e.art === 'wid' && e.stelle === 'wg' ? 'fri.art.wid.wg' : 'fri.art.' + e.art, { stelle: e.stelle && e.stelle !== 'andere' ? t('fri.stelle.' + e.stelle) : '\u0000' });
@@ -286,9 +256,7 @@ var FristenOrdner = (function () {
   function bereit() { return !!(ctx && geladen && daten); }
   function aktivListe() {
     if (!bereit()) return [];
-    var h = heute(), hh = null;
-    try { var a = ctx.alle ? ctx.alle() : []; a.forEach(function (v) { if (v.aktiv) hh = v.haushalt; }); } catch (e) { hh = null; }
-    return daten.e.concat(wbAus(hh, daten, h));
+    return daten.e.slice();
   }
   // Speichern; fertig(ok) meldet, ob es geklappt hat (Speicher voll, gesperrt …)
   function sichern(fertig) {
@@ -305,8 +273,7 @@ var FristenOrdner = (function () {
   }
   function findeId(id) { return daten ? daten.e.filter(function (e) { return e.id === id; })[0] || null : null; }
   function setzeZustand(e, feld, wert) {
-    if (e.art === 'wb') { var z = daten.wb[e.id] || {}; z[feld] = wert; if (!z.erledigt && !z.spaeter) delete daten.wb[e.id]; else daten.wb[e.id] = z; }
-    else { var x = findeId(e.id); if (x) x[feld] = wert; }
+    var x = findeId(e.id); if (x) x[feld] = wert;
   }
   // Eingabe der Schnittstelle vereinheitlichen (Kurzform mit datum, unbekannte Art → 'frist')
   function eingabe(roh) {
@@ -436,15 +403,12 @@ var FristenOrdner = (function () {
     var w = el('span', 'pill ' + PILL[e.wort], t('fri.wort.' + e.wort)); w.title = t('fri.wort.' + e.wort + '.t');
     if (e.bis) { var bb = el('b', null, t('fri.bis', { datum: datumText(e.bis), rest: restText(e.bis, h) })); z.appendChild(bb); z.appendChild(document.createTextNode(' ')); }
     z.appendChild(w); art.appendChild(z);
-    if (e.art === 'wb') {
-      art.appendChild(el('p', 'small', t('fri.art.wb.t', { leistung: leistungName(e.leistung), ende: datumText(e.ende) })));
-      if (h > e.ende) art.appendChild(el('p', 'small warn', t('fri.art.wb.spaet')));
-    } else if (e.art !== 'eigen') art.appendChild(el('p', 'small', t(widOffen(e) ? 'fri.wid.offen' : 'fri.art.' + e.art + '.t')));
+    if (e.art !== 'eigen') art.appendChild(el('p', 'small', t(widOffen(e) ? 'fri.wid.offen' : 'fri.art.' + e.art + '.t')));
     if (e.art === 'wid' && e.stelle === 'wg') art.appendChild(el('p', 'small', t('fri.wid.wg')));
     if (e.notiz) art.appendChild(el('p', 'small fri-notiz', e.notiz)); // nur als Text
     var ab = ctx.ablauf ? ctx.ablauf() : null;
     if (ab && e.bis) { var abTag = ab.getFullYear() + '-' + zwei(ab.getMonth() + 1) + '-' + zwei(ab.getDate()); if (abTag < e.bis) art.appendChild(el('p', 'small warn', t('fri.vorgangWeg', { datum: datumText(abTag), bis: datumText(e.bis) }))); }
-    if (e.art !== 'wb' && e.art !== 'eigen') {
+    if (e.art !== 'eigen') {
       var d = el('details', 'fri-det mehr'), su = el('summary', null, t('fri.rechnung')); d.appendChild(su);
       d.appendChild(el('p', null, t('fri.wort.' + e.wort + '.t')));
       if (e.wort !== 'fest' && e.wort !== 'offen') d.appendChild(el('p', null, rechnungText(e)));
@@ -461,15 +425,13 @@ var FristenOrdner = (function () {
       meldung($('friMsg'), t('fri.erledigt.ok'), function () { setzeZustand(e, 'erledigt', null); aendern(); });
       var hh = $('friH'); if (hh) hh.focus();
     }));
-    if (e.art !== 'wb') {
-      btns.appendChild(knopfEl('btn ghost klein', t('fri.aendern'), function (ev) { aendernForm(art, e, ev.currentTarget); }));
-      btns.appendChild(knopfEl('btn ghost klein', t('fri.loeschen'), function () {
-        var alt = JSON.parse(JSON.stringify(findeId(e.id)));
-        entfernen(e.id);
-        meldung($('friMsg'), t('fri.entfernt'), function () { if (!findeId(alt.id)) { daten.e.unshift(alt); aendern(); } });
-        var hh = $('friH'); if (hh) hh.focus();
-      }));
-    }
+    btns.appendChild(knopfEl('btn ghost klein', t('fri.aendern'), function (ev) { aendernForm(art, e, ev.currentTarget); }));
+    btns.appendChild(knopfEl('btn ghost klein', t('fri.loeschen'), function () {
+      var alt = JSON.parse(JSON.stringify(findeId(e.id)));
+      entfernen(e.id);
+      meldung($('friMsg'), t('fri.entfernt'), function () { if (!findeId(alt.id)) { daten.e.unshift(alt); aendern(); } });
+      var hh = $('friH'); if (hh) hh.focus();
+    }));
     art.appendChild(btns);
     return art;
   }
@@ -552,7 +514,7 @@ var FristenOrdner = (function () {
     try { vg = ctx.alle ? ctx.alle() : []; } catch (e) { vg = []; }
     vg.forEach(function (v) {
       var d = v.aktiv && daten ? daten : normiere(v.fristliste, h);
-      d.e.concat(wbAus(v.haushalt, d, h)).forEach(function (e) { out.push({ e: e, vg: v }); });
+      d.e.forEach(function (e) { out.push({ e: e, vg: v }); });
     });
     var sortiert = zeigen(out.map(function (x) { return x.e; }), h);
     return { liste: sortiert.map(function (e) { return out.filter(function (x) { return x.e === e; })[0]; }), mehrereVg: vg.length > 1 };
@@ -617,7 +579,7 @@ var FristenOrdner = (function () {
   // ---------- Schalter „Erinnerung an Fristen beim Öffnen“ (Einstellungen → Erinnerungen) ----------
   function schalterSetzen() { var b = $('friHinweisBtn'); if (b) b.setAttribute('aria-checked', String(erlaubt)); }
 
-  // ctx = { t, datum(d), lang(), roh (Gerätespeicher ohne Vorgang), alle() → [{ id, name, aktiv, fristliste, haushalt }],
+  // ctx = { t, datum(d), lang(), roh (Gerätespeicher ohne Vorgang), alle() → [{ id, name, aktiv, fristliste }],
   //         ablauf() → Date|null (automatisches Löschen des geöffneten Vorgangs), oeffneVorgang(id), zeigeListe(), neu() (Karte neu zeichnen) }
   function init(c) {
     ctx = c;
@@ -644,9 +606,9 @@ var FristenOrdner = (function () {
   return {
     // Rechnung (Tests)
     plusTage: plusTage, werktag: werktag, feiertage: feiertage, ostern: ostern, plusMonate: plusMonate, endeMonat: endeMonat, endeWochen: endeWochen, endeTage: endeTage,
-    bekanntgabe: bekanntgabe, zugangEinfach: zugangEinfach, rechne: rechne, widerspruch: widerspruch, folgeantrag: folgeantrag, faellig: faellig, ausBrief: ausBrief,
-    dauerAusText: dauerAusText, zeigen: zeigen, spaeterTag: spaeterTag, schluessel: schluessel, normiere: normiere, eintragSauber: eintragSauber, wbAus: wbAus,
-    VORLAUF_TAGE: VORLAUF_TAGE, ARTEN: ARTEN, STELLEN: STELLEN, WORTE: WORTE, MAX: MAX, TITEL_MAX: TITEL_MAX,
+    bekanntgabe: bekanntgabe, zugangEinfach: zugangEinfach, rechne: rechne, widerspruch: widerspruch, faellig: faellig, ausBrief: ausBrief,
+    dauerAusText: dauerAusText, zeigen: zeigen, spaeterTag: spaeterTag, schluessel: schluessel, normiere: normiere, eintragSauber: eintragSauber,
+    ARTEN: ARTEN, STELLEN: STELLEN, WORTE: WORTE, MAX: MAX, TITEL_MAX: TITEL_MAX,
     // Oberfläche
     speicherOrt: speicherOrt, init: init, neuLaden: neuLaden, render: render, stand: stand, startHinweis: startHinweis,
     neu: function () { if (bereit()) neuZeichnen(); },

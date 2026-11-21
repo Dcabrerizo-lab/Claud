@@ -78,11 +78,48 @@ var Geld = (function () {
       '- Ich habe mit Ihrem Auftraggeber keinen Vertrag geschlossen. Die Forderung ist mir nicht bekannt.',
       '- Ich habe den Betrag bereits am [Datum] bezahlt. Einen Beleg lege ich bei.',
       'Ich erkenne die Forderung nicht an. Bitte stellen Sie Ihre Mahnungen ein und bestätigen Sie mir das schriftlich.', '', 'Mit freundlichen Grüßen', '', '[Unterschrift]'];
+    else if (art === 'rate') b = rateSchreiben(f);
     else b = ['Kundennummer oder Aktenzeichen: ' + az, '', 'Antrag auf eine Bescheinigung für mein Pfändungsschutzkonto (§ 903 ZPO)', '', 'Sehr geehrte Damen und Herren,', '',
       'mein Konto ist ein Pfändungsschutzkonto (P-Konto). Damit meine Bank die höheren Freibeträge berücksichtigt, bitte ich Sie um eine Bescheinigung nach § 903 ZPO.',
       'Bitte bescheinigen Sie, soweit Ihnen bekannt: die Höhe und Art der Leistungen, die Sie auf mein Konto überweisen, und den Zeitraum sowie die Zahl der Personen, denen ich Unterhalt gewähre, mit dem Geburtsdatum minderjähriger Kinder.',
       'Bitte schicken Sie mir die Bescheinigung an meine Anschrift oben.', '', 'Mit freundlichen Grüßen', '', '[Unterschrift]'];
     return kopf.concat(b).join('\n');
+  }
+
+  // Ratenzahlung anbieten (Seite „Raten anbieten“, mit Ratenempfehlung). rate: Betrag in Euro, so wie der Nutzer ihn einträgt oder übernimmt.
+  // Kostenfrage: Vor einer Raten- oder Stundungsvereinbarung muss ein Inkassodienstleister auf die Kosten hinweisen (§ 13a Abs. 3 RDG, Wortlaut
+  // abgerufen 20.11.2026 auf https://www.gesetze-im-internet.de/rdg/__13a.html); das Schreiben fragt deshalb allgemein nach den Kosten.
+  function rateText(v) { var r = einzeilig(v, 12).replace(/[^0-9.,]/g, ''); return r ? r + ' €' : '[Betrag] €'; }
+  function rateSchreiben(f) {
+    return ['Aktenzeichen: ' + (einzeilig(f.az, 60) || LUECKE.az), '', 'Angebot einer Ratenzahlung', '', 'Sehr geehrte Damen und Herren,', '',
+      'ich kann Ihre Forderung zurzeit nicht auf einmal bezahlen. Ich biete Ihnen an, monatlich ' + rateText(f.rate) + ' zu zahlen, erstmals zum [Datum der ersten Rate].',
+      'Bitte bestätigen Sie mir die Ratenzahlung schriftlich. Teilen Sie mir vorher mit, ob durch die Vereinbarung Kosten entstehen.',
+      'Solange ich die Raten pünktlich zahle, bitte ich Sie, von weiteren Maßnahmen abzusehen.', '', 'Mit freundlichen Grüßen', '', '[Unterschrift]'];
+  }
+
+  // ---------- Rate empfehlen (SoLo-Faustregel, keine Rechtsaussage; Auftrag David 21.11.2026) ----------
+  // Es gibt keine gesetzliche Formel für eine „machbare“ Rate. SoLo rechnet so (alles in Cent, ganzzahlig):
+  //  frei   = monatliche Einnahmen − monatliche Ausgaben aus dem Haushaltsplan (Haushalt.rest(), nur gelesen)
+  //  Puffer = 10 % der Einnahmen (auf den Cent aufgerundet), mindestens 50 € – für Unvorhergesehenes (Nachzahlung, Reparatur)
+  //  Rate   = frei − Puffer, abgerundet auf volle 5 €; unter 5 € keine Empfehlung, sondern Verweis auf die Schuldnerberatung
+  //  Mehrere offene Schulden mit Betrag: Gesamtrate anteilig nach Höhe der Forderung, je Gläubiger auf ganze Euro abgerundet
+  //  (die Summe der Teile ist also nie größer als die Gesamtrate; ein Rest von wenigen Euro bleibt ungeteilt).
+  // „Ausgefüllt“ heißt: Einnahmen eingetragen und mindestens eine eigene Ausgabe außer der Miete (Haushalt.rest().ausgefuellt).
+  var RATE = { pufferAnteil: 10, pufferMin: 5000, schritt: 500 };
+  function forderung(e) { var b = e && (typeof e.stand === 'number' ? e.stand : typeof e.anfang === 'number' ? e.anfang : null); return b > 0 ? b : 0; }
+  function rateEmpfehlung(hh, liste) {
+    if (!hh || !(hh.ein > 0) || !hh.ausgefuellt) return { art: 'ohnePlan' };
+    var ein = Math.round(hh.ein), aus = hh.aus > 0 ? Math.round(hh.aus) : 0;
+    var frei = ein - aus, puffer = Math.max(Math.ceil(ein * RATE.pufferAnteil / 100), RATE.pufferMin);
+    var roh = frei - puffer, rate = roh > 0 ? Math.floor(roh / RATE.schritt) * RATE.schritt : 0;
+    var r = { art: rate >= RATE.schritt ? 'rate' : 'keine', ein: ein, aus: aus, frei: frei, puffer: puffer, rate: rate >= RATE.schritt ? rate : 0, teile: [] };
+    if (r.art !== 'rate') return r;
+    var mit = (liste || []).filter(function (e) { return e && e.st !== 'erledigt' && forderung(e) > 0; });
+    if (mit.length < 2) return r;
+    var gesamt = mit.reduce(function (a, e) { return a + forderung(e); }, 0), euro = r.rate / 100;
+    r.gesamt = gesamt;
+    r.teile = mit.map(function (e) { return { id: e.id, g: e.g, forderung: forderung(e), rate: Math.floor(euro * forderung(e) / gesamt) * 100 }; });
+    return r;
   }
 
   // ---------- Bis zum Termin und Beratungsmappe (Haken je Vorgang, lotse.beratung-haken) ----------
@@ -100,7 +137,7 @@ var Geld = (function () {
 
   // ---------- Oberfläche ----------
   var ctx = null, haken = hakenLeer();
-  var st = { kc: { i: 0, a: {} }, ip: {}, ms: { art: '', g: '', adr: '', az: '', von: '', absender: '' } };
+  var st = { kc: { i: 0, a: {} }, ip: {}, ms: { art: '', g: '', adr: '', az: '', von: '', absender: '', rate: '' } };
   var speicher = {
     laden: function (cb) { try { cb(localStorage.getItem('lotse.beratung-haken')); } catch (e) { cb(null); } },
     schreiben: function (txt) { try { localStorage.setItem('lotse.beratung-haken', txt); } catch (e) { /* Speicher gesperrt */ } }
@@ -215,7 +252,7 @@ var Geld = (function () {
       box.appendChild(el('p', 'small muted', t('ms.hinweis')));
       return;
     }
-    frage(box, t('ms.' + m.art));
+    if (m.art === 'rate') box.appendChild(el('h3', 'ms-rate-h', t('ms.rate'))); else frage(box, t('ms.' + m.art));
     if (m.art === 'pkonto') box.appendChild(el('p', 'hint', t('ms.pkonto.lead')));
     if (m.art === 'wider') box.appendChild(el('p', 'warn', t('ms.wider.warn')));
     var liste = ctx.schulden ? ctx.schulden() : [];
@@ -242,6 +279,7 @@ var Geld = (function () {
     feld('ms-adr', 'adr', t('ms.adr'), true);
     var ohne = box.appendChild(el('p', 'small warn')); ohne.id = 'ms-ohne-adr';
     feld('ms-az', 'az', t('ms.az'));
+    if (m.art === 'rate') { var fr = feld('ms-rate', 'rate', t('ms.rate.feld')); fr.inputMode = 'decimal'; fr.maxLength = 12; }
     if (ber()) { var fb = feld('ms-abs', 'absender', 'Absender-Zusatz (z. B. „vertreten durch …“)'); fb.closest('.field').classList.add('ber-nur'); }
     var lt = el('label', '', t('ms.text')); lt.htmlFor = 'ms-text'; box.appendChild(lt);
     if (ctx.lang() !== 'de') box.appendChild(el('p', 'small hint', t('ms.de')));
@@ -251,13 +289,65 @@ var Geld = (function () {
     box.appendChild(msg);
     box.appendChild(el('p', 'small ms-hinweis', t('ms.hinweis')));
     function text() {
-      ta.value = schreiben(m.art, { g: m.g, adr: m.adr, az: m.az, absender: ber() ? m.absender : '', datum: ctx.datumDe ? ctx.datumDe(new Date()) : '' });
+      ta.value = schreiben(m.art, { g: m.g, adr: m.adr, az: m.az, rate: m.rate, absender: ber() ? m.absender : '', datum: ctx.datumDe ? ctx.datumDe(new Date()) : '' });
       ohne.textContent = zeilen(m.adr).length ? '' : t('ms.ohneAdr'); ohne.hidden = !ohne.textContent;
     }
     text();
   }
   function schreibenVorbelegen(art, e) {
-    st.ms = { art: art || '', g: e && e.g || '', adr: e && e.adr || '', az: e && e.az || '', von: e && e.id || '', absender: st.ms.absender || '' };
+    st.ms = { art: art || '', g: e && e.g || '', adr: e && e.adr || '', az: e && e.az || '', von: e && e.id || '', absender: st.ms.absender || '', rate: st.ms.rate || '' };
+  }
+
+  // Seite „Raten anbieten“: Empfehlung aus dem Haushaltsplan (oder Vermerk), Hinweis Anerkenntnis, darunter das Schreiben „Ratenzahlung anbieten“.
+  // Anerkenntnis: Ein Ratenangebot oder eine Abschlagszahlung kann die Forderung anerkennen; die Verjährung beginnt dann neu
+  // (§ 212 Abs. 1 Nr. 1 BGB, https://www.gesetze-im-internet.de/bgb/__212.html, abgerufen 20.11.2026). Darum vorher „Stimmt der Brief?“.
+  function eurCent(c) { return { eur: c / 100 }; }
+  function rateSeite(box, neu) {
+    var m = st.ms; if (m.art !== 'rate') { m.art = 'rate'; m.rate = m.rate || ''; }
+    var liste = ctx.schulden ? ctx.schulden() : [], e = rateEmpfehlung(ctx.haushalt ? ctx.haushalt() : null, liste);
+    var wo = box.appendChild(el('div', 'ra-empf')); wo.id = 'ra-empf';
+    if (e.art === 'ohnePlan') {
+      var v = wo.appendChild(el('p', 'small ra-ohne', t('ra.ohnePlan'))); v.id = 'ra-ohne';
+      btns(wo).appendChild(knopf('btn ghost klein', t('hb.kachel'), function () { ctx.ziel('haushalt'); }, { id: 'ra-zum-plan' }));
+    } else if (e.art === 'keine') {
+      wo.appendChild(el('p', 'warn ra-keine', t('ra.keine'))).id = 'ra-keine';
+      btns(wo).appendChild(knopf('btn ghost', t('sb.h'), function () { ctx.ziel('hilfe'); }, { id: 'ra-zur-beratung' }));
+    } else {
+      var k = wo.appendChild(el('div', 'hb-karte ra-karte'));
+      var erg = k.appendChild(el('p', 'hb-ergebnis', t('ra.empf', { b: eurCent(e.rate) }))); erg.id = 'ra-betrag';
+      var msg = el('p', 'small'); msg.setAttribute('aria-live', 'polite');
+      btns(k).appendChild(knopf('btn', t('ra.uebernehmen'), function () {
+        m.rate = String(e.rate / 100);
+        var f = document.getElementById('ms-rate'); if (f) { f.value = m.rate; f.dispatchEvent(new Event('input')); f.focus(); }
+        msg.textContent = t('ra.uebernommen');
+      }, { id: 'ra-uebernehmen' }));
+      k.appendChild(msg);
+      if (e.teile.length) {
+        k.appendChild(el('p', 'ra-auft-h', t('ra.auft.h')));
+        var tab = k.appendChild(el('table', 'pf-tab ra-auft')); tab.id = 'ra-auft';
+        var kopf = tab.createTHead().insertRow();
+        [t('ra.auft.g'), t('ra.auft.r')].forEach(function (x) { var th = el('th', '', x); th.scope = 'col'; kopf.appendChild(th); });
+        var tb = tab.createTBody();
+        e.teile.forEach(function (x) {
+          var tr = tb.insertRow(), dies = !!m.von && x.id === m.von;
+          if (dies) tr.className = 'ra-dies';
+          tr.insertCell().textContent = x.g + (dies ? ' (' + t('ra.auft.dies') + ')' : '');
+          tr.insertCell().textContent = t('ra.betrag', { b: eurCent(x.rate) });
+        });
+        var fuss = tab.createTFoot().insertRow();
+        fuss.insertCell().textContent = t('ra.auft.gesamt'); fuss.insertCell().textContent = t('ra.betrag', { b: eurCent(e.rate) });
+      }
+      var so = k.appendChild(el('details', 'mehr ra-so')); so.appendChild(el('summary', '', t('ra.so')));
+      so.appendChild(el('p', '', t('ra.so.1', { a: eurCent(e.ein), b: eurCent(e.aus), c: eurCent(e.frei) })));
+      so.appendChild(el('p', '', t('ra.so.2', { b: eurCent(e.puffer) })));
+      so.appendChild(el('p', '', t('ra.so.3', { b: eurCent(e.rate) })));
+      if (e.teile.length) so.appendChild(el('p', '', t('ra.so.4')));
+      so.appendChild(el('p', 'small', t('ra.so.5')));
+      k.appendChild(ctx.tipp('ra.tipp', 'ra-tipp'));
+    }
+    var w = box.appendChild(el('p', 'warn ra-warn', t('ra.warn'))); w.id = 'ra-warn';
+    btns(box).appendChild(knopf('btn ghost klein', t('ip.h'), function () { ctx.ziel('pruef'); }, { id: 'ra-zur-pruef' }));
+    schreibenSeite(box, neu, 'rate');
   }
 
   // Bis zum Termin: 6 Haken, je Zeile ein Sprung. Haken 4 (Liste) und 5 (Haushaltsplan) setzen sich von selbst.
@@ -351,15 +441,15 @@ var Geld = (function () {
   }
   function zuruecksetzen() { st.kc = { i: 0, a: {} }; st.ip = {}; }
   function init(c) { ctx = c; laden(); }
-  function neuLaden() { st = { kc: { i: 0, a: {} }, ip: {}, ms: { art: '', g: '', adr: '', az: '', von: '', absender: '' } }; pm = { netto: '', pers: 0, kg: 0 }; laden(); } // auch die Pfändungs-Maske leeren: keine Zahlen des vorigen Vorgangs
+  function neuLaden() { st = { kc: { i: 0, a: {} }, ip: {}, ms: { art: '', g: '', adr: '', az: '', von: '', absender: '', rate: '' } }; pm = { netto: '', pers: 0, kg: 0 }; laden(); } // auch die Pfändungs-Maske leeren: keine Zahlen des vorigen Vorgangs
 
   return {
     // Rechnung (Tests)
     KC: KC, KC_ZUERST: KC_ZUERST, krisenErgebnis: krisenErgebnis, IP: IP.map(function (x) { return x[0]; }), ipFehlend: ipFehlend, MUSTER: MUSTER, schreiben: schreiben,
-    LUECKE: LUECKE, WARTEN: WARTEN, hakenNormiere: hakenNormiere,
+    LUECKE: LUECKE, WARTEN: WARTEN, hakenNormiere: hakenNormiere, RATE: RATE, rateEmpfehlung: rateEmpfehlung,
     // Oberfläche
     init: init, speicherOrt: speicherOrt, neuLaden: neuLaden, krisenCheck: krisenCheck, pruefliste: pruefliste, schreibenSeite: schreibenSeite,
-    schreibenVorbelegen: schreibenVorbelegen, wartezeit: wartezeit, mappe: mappe, pfMaske: pfMaske, tiefe: tiefe, zurueck: zurueck, zuruecksetzen: zuruecksetzen,
+    schreibenVorbelegen: schreibenVorbelegen, rateSeite: rateSeite, wartezeit: wartezeit, mappe: mappe, pfMaske: pfMaske, tiefe: tiefe, zurueck: zurueck, zuruecksetzen: zuruecksetzen,
     kcStart: function () { st.kc = { i: 0, a: {} }; }, haken: function () { return JSON.parse(JSON.stringify(haken)); }
   };
 })();

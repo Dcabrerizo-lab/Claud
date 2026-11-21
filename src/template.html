@@ -406,6 +406,12 @@
   .sl-leer { margin: 6px 0 0; }
   .sl-summe { border: 1px solid var(--line); border-inline-start: 4px solid var(--c-pfaendung-t); border-radius: var(--r-card, 14px); background: var(--surface); padding: 12px 16px; display: grid; gap: 6px; margin: 8px 0; }
   .sl-summe p { margin: 0; }
+/* Ratenempfehlung (src/geld.js): Gläubiger des aktuellen Schreibens fett und mit Randbalken, zusätzlich als Text markiert */
+.ra-karte { margin: 8px 0 12px; }
+.ra-auft { width: 100%; }
+.ra-auft tr.ra-dies td { font-weight: 700; }
+.ra-auft tr.ra-dies td:first-child { border-inline-start: 4px solid var(--c-sparen-t); padding-inline-start: 8px; }
+.ra-auft tfoot td { font-weight: 700; border-top: 1px solid var(--line); }
   .sl-gesamt { font-size: 1.25em; font-weight: 700; }
   .sl-hh { display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 8px; }
   .sl-fehler { color: var(--bad); font-weight: 700; }
@@ -442,8 +448,9 @@
   .hb-sym { width: 36px; height: 36px; border-radius: 999px; display: grid; place-items: center; background: var(--c-sparen); color: var(--on-c); flex: none; }
   .hb-sym svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
   .hb-katfeld { display: grid; gap: 8px; }
-  /* Energiekosten-Check (src/haushalt.js energieBox): Ergebnis-Wort nach docs/FARBEN.md, Farbe nie allein */
+  /* Abschlag prüfen (src/haushalt.js abschlagBox, Seite „Strom“): Ergebnis-Wort nach docs/FARBEN.md, Farbe nie allein */
   .hb-en { display: grid; gap: 10px; }
+  #spAbschlag, #spTarif { margin: 0 0 14px; }
   .hb-en-ergebnis { display: grid; gap: 6px; } .hb-en-ergebnis p { margin: 0; }
   .hb-en-erg { font-size: 1.15em; font-weight: 700; padding: 12px 14px; border-radius: 12px; background: var(--na-bg); color: var(--ink); }
   .hb-en-erg.nach { background: var(--warn-bg); color: var(--warn); }
@@ -456,7 +463,6 @@
   .hb-en-tab { display: flex; align-items: center; gap: 8px; min-height: 48px; padding: 6px 10px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
   .hb-en-tab[aria-pressed="true"] { border: 2px solid var(--accent); background: var(--accent-soft); }
   .hb-en-felder { border: 0; padding: 0; margin: 0; display: grid; gap: 8px; } .hb-en-felder > legend { font-weight: 700; padding: 0; }
-  .hb-en-det > summary { font-weight: 600; cursor: pointer; padding: 8px 0; } .hb-en-det p { margin: 6px 0; }
   .hb-frage, .hb-hinweis { border: 2px solid var(--accent); border-radius: 12px; padding: 10px 12px; display: grid; gap: 8px; }
   .hb-frage p, .hb-hinweis p { margin: 0; }
   /* Haushaltsbuch: Beleg-Häkchen und Belegliste (keine neue Farbe) */
@@ -468,8 +474,7 @@
   .hb-bl-liste li { overflow-wrap: anywhere; }
   .hb-hinweise { display: grid; gap: 10px; }
   .hb-hinweise:empty, #hbSpeicherMsg:empty { display: none; }
-  .hb-mehr > summary, .hb-hw-det > summary, .hb-rb > summary, .hb-wb > summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font-weight: 600; }
-  .hb-start { margin: 8px 0 14px; }
+  .hb-mehr > summary, .hb-hw-det > summary, .hb-rb > summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font-weight: 600; }
   /* Fristen (src/fristen.js): Hinweis beim Öffnen nach Zustand (Bernstein bald, Rot abgelaufen), Liste in „Mein Ordner“ */
   .fri-start { margin: 8px 0 14px; border: 2px solid var(--warn); background: var(--warn-bg); color: var(--ink); border-radius: 12px; padding: 10px 12px; display: grid; gap: 8px; }
   .fri-start.vorbei { border-color: var(--bad); background: var(--bad-bg); }
