@@ -82,7 +82,10 @@ Erledigt (in 1.6.0): Aufgaben 1–7 – Fristen-Übersicht, Schulden-Liste, Ener
 4. Stichtagswerte bündeln
 5. `src/app.js` aufteilen
 
-### Vorgemerkt für die Version nach 1.7.0 (Build 149)
+### Erledigt in 1.8.0 (VersionCode 150, noch nicht gebaut)
+Geld und Schulden neu (PR #76: Krisen-Check, Post vom Inkasso, Schuldnerberatung, Beratungsmodus), Kachel „Mahnbescheid vom Gericht“ angeglichen, Sprachwahl nicht mehr auf „Deine Angaben“, Android-Test-App „SoLo Test“ (com.Sozialleistungslotse.test).
+
+### Vorgemerkt für die Version nach 1.8.0 (Build 150), aus der Planung nach 1.7.0 übernommen
 | Nr. | Vorhaben |
 |---|---|
 | 1 | App-Datei verkleinern (zurzeit etwa 6 MB) |
@@ -101,7 +104,7 @@ Erledigt (in 1.6.0): Aufgaben 1–7 – Fristen-Übersicht, Schulden-Liste, Ener
 | 6 | Direktlinks zu amtlichen Online-Anträgen |
 | 7 | Ausfüllhilfe mit Kopierknöpfen |
 | 8 | Beratungsstellen über PLZ |
-| 9 | Beratungsmodus ausbauen |
+| 9 | Beratungsmodus ausbauen (Teil für Geld und Schulden erledigt in 1.8.0) |
 | 10 | Freiwillige Rückmeldung |
 
 Regeln dafür: nur geltendes Recht (2027 erst ab 1.1.2027), Größengrenze 5 MB, jede Zahl und Anschrift mit amtlicher Quelle.

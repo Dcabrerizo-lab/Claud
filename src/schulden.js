@@ -236,15 +236,22 @@ var Schulden = (function () {
     box.textContent = '';
     if (eingabe) { renderEingabe(box); fokus(fokusId || 'sl-f-g'); return; }
     var heute = new Date(), s = summen(daten.liste), liste = sortiert(daten.liste, heute);
+    // Aufbau wie die anderen Seiten in „Geld und Schulden“ (Auftrag David 21.11.2026): oben die großen Kacheln, direkt darunter der grüne
+    // Hauptknopf, dann Summe, Reihenfolge und die Liste selbst
     if (!daten.liste.length) box.appendChild(el('p', 'sl-lead', t('sl.lead')));
-    if (s.n) box.appendChild(summenKarte(s));
-    var nb = el('div', 'btns');
+    box.appendChild(kacheln(s));
+    var nb = el('div', 'btns sl-neu-btns');
     nb.appendChild(knopf('btn', t('sl.neu'), function () { neueEingabe(null); render('sl-f-g'); }, { id: 'sl-neu' }));
     box.appendChild(nb);
-    if (!daten.liste.length) box.appendChild(el('p', 'muted', t('sl.leer')));
+    if (!daten.liste.length) box.appendChild(el('p', 'muted sl-leer', t('sl.leer')));
+    if (s.n) box.appendChild(summenKarte(s));
+    // Kopfkarte „Was ist zuerst wichtig?“: immer sichtbar, auch bei leerer Liste (Konzept U3); Begründung zum Aufklappen
+    box.appendChild(kopfKarte());
+    // Beratungsmodus (B1): Umschalter Karten/Tabelle, Tabelle sortierbar (nur Deutsch, nur hier)
+    if (beratung() && daten.liste.length) { box.appendChild(tabUmschalter()); if (ansicht.tab) box.appendChild(tabelle(liste, heute)); }
     // Gruppen nach Dringlichkeit
     var gruppen = [['frist', 'sl.stufe.frist'], ['dringend', 'sl.stufe.dringend'], [1, 'sl.stufe.1'], [2, 'sl.stufe.2'], [3, 'sl.stufe.3']];
-    gruppen.forEach(function (g) {
+    if (!(beratung() && ansicht.tab)) gruppen.forEach(function (g) {
       var teil = liste.filter(function (e) { return stufe(e) === g[0]; });
       if (!teil.length) return;
       var h = el('h3', 'sl-stufe', t(g[1])); h.id = 'sl-g-' + g[0]; box.appendChild(h);
@@ -258,27 +265,74 @@ var Schulden = (function () {
       erl.forEach(function (e) { ul2.appendChild(zeile(e, heute)); });
       de2.appendChild(ul2); box.appendChild(de2);
     }
-    // Erklärungen zum Aufklappen
-    var pr = aufklapp(t('sl.prio.h')); pr.appendChild(el('p', 'hint', t('sl.prio.lead'))); box.appendChild(pr);
-    var hi = aufklapp(t('sl.hilfe.h')); hi.id = 'slHilfe';
-    ['sl.hilfe.1', 'sl.hilfe.2', 'sl.hilfe.3', 'sl.hilfe.4', 'sl.hilfe.5'].forEach(function (k) { hi.appendChild(el('p', 'hint', t(k))); });
-    box.appendChild(hi);
-    var un = aufklapp(t('sl.u.h')), ulu = el('ul', 'sp-liste');
-    for (var i = 1; i <= 8; i++) ulu.appendChild(el('li', '', t('sl.u.' + i)));
-    un.appendChild(ulu); box.appendChild(un);
-    // Ausgaben und Sprünge
-    var ex = el('div', 'btns sl-export');
-    if (s.n) ex.appendChild(knopf('btn ghost', t('sl.druck'), blattOeffnen, { id: 'sl-druck' }));
-    if (daten.liste.length) ex.appendChild(knopf('btn ghost', t('sl.csv'), csvFragen, { id: 'sl-csv' }));
-    ex.appendChild(knopf('btn ghost', t('sl.hh.knopf'), function () { ctx.zeige('haushalt', true); }, { id: 'sl-hh' }));
-    ex.appendChild(knopf('btn ghost', t('sp.schulden.pf'), function () { ctx.zeige('pfaendung', true); }, { id: 'sl-pf' }));
-    box.appendChild(ex);
+    // Export als Tabelle gehört zur Liste: kleiner Knopf direkt darunter (Blatt, Beratung, Haushaltsplan und Pfändung sind Kacheln oben)
+    if (daten.liste.length) { var ex = el('div', 'btns sl-export'); ex.appendChild(knopf('btn ghost', t('sl.csv'), csvFragen, { id: 'sl-csv' })); box.appendChild(ex); }
     var fb = el('div', 'sl-frage-platz'); fb.id = 'slFrage'; box.appendChild(fb);
     if (frage && frage.art === 'csv') csvFrageZeigen(fb);
     var m = el('p', 'small'); m.id = 'slExportMsg'; m.setAttribute('aria-live', 'polite'); box.appendChild(m);
     // Quellen zugeklappt am Seitenende (gemeinsames Bauteil „Quellen und Stand“ aus src/app.js)
     box.appendChild(window.SoloMehr && window.SoloMehr.quellen ? window.SoloMehr.quellen([t('sp.schulden.quellen')]) : el('p', 'small muted', t('sp.schulden.quellen')));
     fokus(fokusId);
+  }
+  // Große Kacheln (uk-karte wie in „Geld und Schulden“): Symbol, Titel, kurzer Text; Titel und Texte wie auf den Kacheln dort
+  var SYM = {
+    hilfe: '<circle cx="9" cy="8" r="3"/><path d="M3 20c1-4 3-6 6-6s5 2 6 6"/><path d="M14 4h7v5h-4l-2 2V9h-1z"/>',
+    blatt: '<path d="M7 8V3h10v5"/><rect x="3" y="8" width="18" height="9" rx="2"/><path d="M7 14h10v7H7z"/>',
+    hh: '<path d="M4 7h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a1 1 0 0 1-1-1z"/><path d="M4 7l11-3v3"/><circle cx="16" cy="13.5" r="1"/>',
+    bleibt: '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/><path d="M15 3l-3 3-3-3"/>'
+  };
+  function kachel(id, sym, titel, text, fn) {
+    var k = ctx.kachel ? ctx.kachel('sl-k ' + id, SYM[sym], titel, text, fn) : null;
+    if (!k) { // ohne Kachel-Bauteil (Einzeltests): gleiche Klassen, nur Text
+      k = knopf('uk-karte sl-k ' + id, '', fn); var tx = el('span', 'sk-txt'); tx.appendChild(el('b', '', titel)); if (text) tx.appendChild(el('span', '', text)); k.appendChild(tx);
+    }
+    k.id = id; return k;
+  }
+  function kacheln(s) {
+    var r = el('div', 'uk-raster sl-kacheln');
+    if (ctx.geld) r.appendChild(kachel('sl-zur-beratung', 'hilfe', t('sb.h'), t('sb.h.t'), function () { ctx.geld('hilfe'); }));
+    if (s.n) r.appendChild(kachel('sl-druck', 'blatt', t('sl.druck'), t('sl.druck.t'), blattOeffnen));
+    r.appendChild(kachel('sl-hh', 'hh', t('hb.kachel'), t('hb.kachel.t'), function () { ctx.zeige('haushalt', true); }));
+    r.appendChild(kachel('sl-pf', 'bleibt', t('gs.bleibt'), t('home.pfaendung.t'), function () { ctx.zeige('pfaendung', true); }));
+    return r;
+  }
+  function kopfKarte() {
+    var k = el('div', 'sl-kopfkarte'); k.id = 'slKopf';
+    var h = el('h3', '', t('sl.prio.h')); h.id = 'sl-kopf-h'; k.appendChild(h);
+    var ol = el('ol', 'sl-reihe'); ['sl.kopf.1', 'sl.kopf.2', 'sl.kopf.3'].forEach(function (x) { ol.appendChild(el('li', '', t(x))); }); k.appendChild(ol);
+    var w = aufklapp(t('sl.warum.s')); w.appendChild(el('p', 'hint', t('sl.prio.lead'))); k.appendChild(w);
+    return k;
+  }
+  // Beratungsmodus: Tabelle aller offenen und erledigten Einträge; Sortierung nach Dringlichkeit (Standard), Gläubiger oder Betrag
+  var ansicht = { tab: false, sort: 'dringend' };
+  function tabUmschalter() {
+    var d = el('div', 'btns ber-nur sl-ber');
+    [['karten', 'Karten', false], ['tabelle', 'Tabelle', true]].forEach(function (x) {
+      d.appendChild(knopf('chip', x[1], function () { ansicht.tab = x[2]; render('sl-ansicht-' + x[0]); }, { id: 'sl-ansicht-' + x[0], 'aria-pressed': String(ansicht.tab === x[2]) }));
+    });
+    if (ansicht.tab) {
+      var s = el('select'); s.id = 'sl-sort'; s.setAttribute('aria-label', 'Sortierung');
+      [['dringend', 'nach Dringlichkeit'], ['g', 'nach Gläubiger'], ['betrag', 'nach Betrag']].forEach(function (x) { var o = el('option', '', x[1]); o.value = x[0]; s.appendChild(o); });
+      s.value = ansicht.sort; s.addEventListener('change', function () { ansicht.sort = s.value; render('sl-sort'); }); d.appendChild(s);
+    }
+    return d;
+  }
+  function tabelle(liste, heute) {
+    var l = liste.slice();
+    if (ansicht.sort === 'g') l.sort(function (a, b) { return String(a.g).localeCompare(String(b.g), 'de'); });
+    if (ansicht.sort === 'betrag') l.sort(function (a, b) { return (betrag(b) || 0) - (betrag(a) || 0); });
+    var tab = el('table', 'eb-tab sl-tabelle ber-nur'), tr = el('tr');
+    ['Gläubiger', 'Art', 'Aktenzeichen', 'Betrag', 'Rate', 'Stand', 'Frist'].forEach(function (x) { var c = el('th', '', x); c.scope = 'col'; tr.appendChild(c); });
+    var th = el('thead'); th.appendChild(tr); tab.appendChild(th);
+    var tb = el('tbody');
+    l.forEach(function (e) {
+      var r = el('tr'), f = fristInfo(e, heute), b = betrag(e), c0 = el('th'); c0.scope = 'row';
+      c0.appendChild(knopf('linkbtn', e.g, function () { neueEingabe(e); render('sl-f-g'); }, { id: 'sl-t-' + e.id })); r.appendChild(c0);
+      [artName(e.art, de), e.az || '', b === null ? '' : eur(b), e.rate > 0 ? eur(e.rate) : '', stName(e.st, de), f && !f.ohneDatum ? datum(f.bis) : ''].forEach(function (x) { r.appendChild(el('td', '', x)); });
+      tb.appendChild(r);
+    });
+    tab.appendChild(tb);
+    return tab;
   }
   function fokus(id) { var e = id && $(id); if (e) { try { e.focus(); } catch (x) { /* nicht fokussierbar */ } } }
   function summenKarte(s) {
@@ -330,6 +384,11 @@ var Schulden = (function () {
     }
     var bt = el('div', 'btns sl-knoepfe');
     bt.appendChild(knopf('btn ghost klein', t('sl.bearbeiten'), function () { neueEingabe(e); render('sl-f-g'); }, { 'aria-label': t('sl.bearbeiten') + ': ' + e.g, id: 'sl-b-' + e.id }));
+    // Zu Prüfliste (nur bei Inkasso oder Mahnung) und Musterschreiben mit Gläubiger, Anschrift und Aktenzeichen aus dem Eintrag (src/geld.js)
+    if (ctx.geld && st !== 'erledigt') {
+      if (e.st === 'inkasso' || e.st === 'mahnung') bt.appendChild(knopf('btn ghost klein', t('ip.h'), function () { ctx.geld('pruef', e); }, { 'aria-label': t('ip.h') + ': ' + e.g, id: 'sl-p-' + e.id }));
+      bt.appendChild(knopf('btn ghost klein', t('sl.e.schreiben'), function () { ctx.geld('schreiben', e); }, { 'aria-label': t('sl.e.schreiben') + ': ' + e.g, id: 'sl-s-' + e.id }));
+    }
     li.appendChild(bt);
     return li;
   }
@@ -390,7 +449,7 @@ var Schulden = (function () {
     };
     stSel.addEventListener('change', zuZeigen); zuZeigen();
     feld(f, 'sl-f-az', t('sl.f.az'), '', textInput('az', 40));
-    var mehr = aufklapp(t('sl.f.mehr'), 'pf-tipps sl-mehr'); if (eingabe.adr || eingabe.n) mehr.open = true;
+    var mehr = aufklapp(t('sl.f.mehr'), 'pf-tipps sl-mehr'); if (eingabe.adr || eingabe.n || beratung()) mehr.open = true; // Beratungsmodus: alle Felder offen
     feld(mehr, 'sl-f-adr', t('sl.f.anschrift'), t('sl.f.anschrift.h'), textInput('adr', 160, 'area'));
     feld(mehr, 'sl-f-n', t('sl.f.notiz'), '', textInput('n', 500, 'area'));
     f.appendChild(mehr);
@@ -439,7 +498,8 @@ var Schulden = (function () {
   }
 
   // ----- CSV-Export (gleicher Weg wie das Haushaltsbuch; vorher Hinweis) -----
-  function csvFragen() { frage = { art: 'csv', notiz: false }; render(); fokus('sl-csv-ja'); }
+  function csvFragen() { frage = { art: 'csv', notiz: beratung() }; // Beratungsmodus (B5): Notizen vorbelegt
+  render(); fokus('sl-csv-ja'); }
   function csvFrageZeigen(platz) {
     var q = el('div', 'hb-frage'); q.setAttribute('role', 'group');
     q.appendChild(el('p', '', t('sl.csv.warn')));
@@ -497,7 +557,7 @@ var Schulden = (function () {
     ki.addEventListener('input', function () { blattOpt.kuerzel = ki.value; blattSeite(); }); kf.appendChild(ki); bar.appendChild(kf);
     [['az', 'slMitAz', 'sl.druck.az'], ['adr', 'slMitAdr', 'sl.druck.anschrift'], ['notiz', 'slMitNotiz', 'sl.druck.notizen']].forEach(function (x) {
       var l = el('label', 'check'), c = el('input'); c.type = 'checkbox'; c.id = x[1]; c.checked = blattOpt[x[0]];
-      c.addEventListener('change', function () { blattOpt[x[0]] = c.checked; blattSeite(); });
+      c.addEventListener('change', function () { blattOpt[x[0]] = c.checked; blattOpt.geaendert = true; blattSeite(); });
       l.appendChild(c); l.appendChild(el('span', '', t(x[2]))); bar.appendChild(l);
     });
     if (hhZeile(true)) { // nur, wenn es einen Haushaltsplan gibt
@@ -587,6 +647,7 @@ var Schulden = (function () {
   }
   function blattOeffnen() {
     blattZurueck = document.activeElement;
+    if (beratung() && !blattOpt.geaendert) blattOpt.notiz = true; // Beratungsmodus (B5): Notizen mitdrucken vorbelegt
     var s = blattSection(); blattBar(); blattSeite();
     s.hidden = false;
     var app = $('app'); if (app) app.classList.add('pm');
@@ -608,6 +669,8 @@ var Schulden = (function () {
   function init(c) { ctx = c; daten = leer(); laden(function () { render(); }); }
   function zeigen() { eingabe = null; frage = null; render(); }
   function sprache() { render(); if (blattOffen()) { blattBar(); blattSeite(); } }
+  // Neuer Eintrag mit Vorbelegung (z. B. Stand „Mahnbescheid“ aus „Es ist dringend“)
+  function neu(vor) { neueEingabe(null); if (vor && STATUS.indexOf(vor.st) >= 0) eingabe.st = vor.st; render('sl-f-g'); }
   function zurueck() {
     if (blattOffen()) { blattSchliessen(); return true; }
     if (eingabe) { var id = eingabe.id; eingabe = null; render(id ? 'sl-e-' + id : 'sl-neu'); return true; }
@@ -632,7 +695,7 @@ var Schulden = (function () {
     vergleich: vergleich, fristEnde: fristEnde, fristEndeEinfach: fristEndeEinfach, fristRechner: fristRechner, fristInfo: fristInfo, fristVorbei: fristVorbei,
     feiertageBund: feiertageBund, fristen: fristen, csv: csv, pdfSeiten: function () { return pdfSeiten(); }, csvFeld: csvFeld, normiere: normiere, zuCent: zuCent,
     // Oberfläche
-    init: init, zeigen: zeigen, sprache: sprache, zurueck: zurueck, neuLaden: neuLaden, speicherOrt: speicherOrt, kurz: kurz,
+    init: init, zeigen: zeigen, sprache: sprache, zurueck: zurueck, neuLaden: neuLaden, speicherOrt: speicherOrt, kurz: kurz, neu: neu, blatt: blattOeffnen, blattOffen: blattOffen,
     daten: function () { return daten ? JSON.parse(JSON.stringify(daten)) : null; }
   };
 })();

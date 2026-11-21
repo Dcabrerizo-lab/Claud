@@ -21,7 +21,7 @@ const setze = (id, v) => { const e = $(id); e.value = v; e.dispatchEvent(new w.E
 const klick = (el) => el.dispatchEvent(new w.MouseEvent('click', { bubbles: true }));
 const tx = (e) => e.textContent.replace(/[\u00a0\u202f]/g, ' ');
 // Haushaltsplan öffnen wie in der App: Start → Geld und Schulden → Kachel „Mein Geld planen“
-const zumPlan = () => { klick($('goGeld')); klick(d.querySelector('#spInhalt .gs-planen')); };
+const zumPlan = () => { klick($('goGeld')); klick(d.querySelector('#spInhalt .gs-planen')); klick(d.querySelector('#spInhalt .gs-p-hh')); }; // „Mein Geld planen“ → Karte Haushaltsplan
 const knopf = (text, wurzel) => [...(wurzel || d).querySelectorAll('button')].find((b) => b.textContent.trim() === text);
 setTimeout(() => {
   try {

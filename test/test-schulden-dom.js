@@ -43,6 +43,11 @@ setTimeout(() => {
     check('[schuldenliste] Summe „etwa 512 €“, 1 offen', /Schulden zusammen: etwa 512 €/.test(tx($('slSumme'))) && /1 offene/.test($('slSumme').textContent), tx($('slSumme')));
     check('[schuldenliste] Pille „Mahnung bekommen“ als Warnung', !!d.querySelector('#slInhalt .pill.vielleicht') && d.querySelector('#slInhalt .pill.vielleicht').textContent === 'Mahnung bekommen');
     check('[schuldenliste] Begründung zum Aufklappen (Energie)', [...d.querySelectorAll('#slInhalt .sl-eintrag details')].some((x) => /100 €/.test(tx(x)) && !x.open));
+    // Aufbau wie in „Geld und Schulden“: große Kacheln oben, grüner Knopf direkt darunter, dann Summe und Liste
+    const kr = d.querySelector('#slInhalt > .uk-raster.sl-kacheln');
+    check('[schuldenliste] Kacheln oben: Beratung, Blatt, Haushaltsplan, Was bleibt mir?', kr && ['sl-zur-beratung', 'sl-druck', 'sl-hh', 'sl-pf'].every((id) => $(id) && $(id).parentNode === kr && $(id).classList.contains('uk-karte') && !!$(id).querySelector('.sk-txt b')), kr && kr.textContent);
+    check('[schuldenliste] grüner Knopf direkt unter den Kacheln, Summe danach', kr && kr.nextElementSibling && kr.nextElementSibling.contains($('sl-neu')) && kr.nextElementSibling.nextElementSibling === $('slSumme'));
+    check('[schuldenliste] CSV als Knopf unter der Liste', !!$('sl-csv') && !$('sl-csv').closest('.uk-raster'));
     // Fehlender Gläubiger
     klick($('sl-neu')); klick($('sl-speichern'));
     check('[schuldenliste] Pflichtfeld Gläubiger', !$('slEingabeMsg').hidden && d.activeElement === $('sl-f-g'));
