@@ -242,22 +242,20 @@ var Geld = (function () {
     };
     feld('ms-g', 'g', t('ms.g'));
     feld('ms-adr', 'adr', t('ms.adr'), true);
-    var ohne = box.appendChild(el('p', 'small warn')); ohne.id = 'ms-ohne-adr'; ohne.hidden = true; ohne.setAttribute('aria-live', 'polite');
+    var ohneBox = box.appendChild(el('div', 'ms-ohne-box')); ohneBox.hidden = true; // erst beim Drucken/Teilen sichtbar (dann blendet text() den Hinweis aus, sobald die Anschrift da ist)
+    var ohne = ohneBox.appendChild(el('p', 'small warn')); ohne.id = 'ms-ohne-adr'; ohne.setAttribute('aria-live', 'polite');
     feld('ms-az', 'az', t('ms.az'));
     if (ber()) { var fb = feld('ms-abs', 'absender', 'Absender-Zusatz (z. B. „vertreten durch …“)'); fb.closest('.field').classList.add('ber-nur'); }
     var lt = el('label', '', t('ms.text')); lt.htmlFor = 'ms-text'; box.appendChild(lt);
     if (ctx.lang() !== 'de') box.appendChild(el('p', 'small hint', t('ms.de')));
     var ta = el('textarea', 'ms-text'); ta.id = 'ms-text'; ta.rows = 16; ta.lang = 'de'; ta.dir = 'ltr'; box.appendChild(ta);
     var msg = el('p', 'small'); msg.setAttribute('aria-live', 'polite');
-    btns(box).appendChild(knopf('btn', t('hb.hw.briefAus'), function () { ohneAdr(true); ctx.textAusgeben(ta.value, 'Schreiben', msg); }, { id: 'ms-aus' }));
+    btns(box).appendChild(knopf('btn', t('hb.hw.briefAus'), function () { ohneBox.hidden = false; ctx.textAusgeben(ta.value, 'Schreiben', msg); }, { id: 'ms-aus' }));
     box.appendChild(msg);
     box.appendChild(el('p', 'small ms-hinweis', t('ms.hinweis')));
     function text() {
       ta.value = schreiben(m.art, { g: m.g, adr: m.adr, az: m.az, absender: ber() ? m.absender : '', datum: ctx.datumDe ? ctx.datumDe(new Date()) : '' });
-      ohneAdr(false);
-    }
-    function ohneAdr(ausgeben) { // beim Ausgeben einblenden, beim Eintragen der Anschrift wieder ausblenden
-      if (zeilen(m.adr).length) { ohne.textContent = ''; ohne.hidden = true; } else if (ausgeben) { ohne.textContent = t('ms.ohneAdr'); ohne.hidden = false; }
+      ohne.textContent = zeilen(m.adr).length ? '' : t('ms.ohneAdr'); ohne.hidden = !ohne.textContent;
     }
     text();
   }

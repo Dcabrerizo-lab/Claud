@@ -472,11 +472,11 @@ setTimeout(() => {
     kacheln()[1].click();
     const ta = d.getElementById('ms-text');
     check('[schreiben] Forderungsaufstellung: deutscher Text mit Lücken, Hinweis „keine Rechtsberatung“', ta && ta.lang === 'de' && /§ 13a Abs\. 1 und 2/.test(ta.value) && /\[Anschrift aus dem Brief\]/.test(ta.value) && /keine Rechtsberatung/.test(box.querySelector('.ms-hinweis').textContent));
-    check('[aufr-geld] „Die Anschrift fehlt noch“ nicht schon vor der Eingabe', d.getElementById('ms-ohne-adr').hidden);
+    check('[aufr-geld] „Die Anschrift fehlt noch“ nicht schon vor der Eingabe', !(() => { const o = d.getElementById('ms-ohne-adr'); return !o.hidden && !o.closest('.ms-ohne-box').hidden; })());
     w.print = () => {}; d.getElementById('ms-aus').click();
-    check('[aufr-geld] „Die Anschrift fehlt noch“ erst beim Drucken/Teilen, wenn die Anschrift leer ist', !d.getElementById('ms-ohne-adr').hidden && d.getElementById('ms-ohne-adr').textContent === I18N.de['ms.ohneAdr']);
+    check('[aufr-geld] „Die Anschrift fehlt noch“ erst beim Drucken/Teilen, wenn die Anschrift leer ist', (() => { const o = d.getElementById('ms-ohne-adr'); return !o.hidden && !o.closest('.ms-ohne-box').hidden; })() && d.getElementById('ms-ohne-adr').textContent === I18N.de['ms.ohneAdr']);
     { const aIn = d.getElementById('ms-adr'); aIn.value = 'Musterstraße 1'; aIn.dispatchEvent(new w.Event('input', { bubbles: true })); }
-    check('[aufr-geld] Anschrift eingetragen: Hinweis verschwindet', d.getElementById('ms-ohne-adr').hidden);
+    check('[aufr-geld] Anschrift eingetragen: Hinweis verschwindet', !(() => { const o = d.getElementById('ms-ohne-adr'); return !o.hidden && !o.closest('.ms-ohne-box').hidden; })());
     d.documentElement.classList.remove('druckt-brief');
     const gIn = d.getElementById('ms-g'); gIn.value = 'Muster <b>Inkasso</b> GmbH'; gIn.dispatchEvent(new w.Event('input', { bubbles: true }));
     check('[schreiben] Eingabe nur als Text eingesetzt', /Muster <b>Inkasso<\/b> GmbH/.test(ta.value) && !box.querySelector('b b'));
