@@ -31,8 +31,7 @@ async function pdfWeg(ordner) {
   const m = app.match(/function pdfZeilen\(items\) \{[\s\S]*?\n {2}\}/);
   if (!m) throw new Error('pdfZeilen nicht in src/app.js gefunden');
   const pdfZeilen = new Function(m[0] + '\nreturn pdfZeilen;')();
-  // pdf.js ab Version 4 nur noch als ES-Modul (legacy/build/pdf.mjs): per import() laden
-  const pdfjs = await import(require('url').pathToFileURL(path.join(process.env.PDFJS_DIR || path.join(__dirname, '..', 'app', 'node_modules', 'pdfjs-dist'), 'legacy', 'build', 'pdf.mjs')).href);
+  const pdfjs = require(path.join(process.env.PDFJS_DIR || path.join(__dirname, '..', 'app', 'node_modules', 'pdfjs-dist'), 'legacy', 'build', 'pdf.js'));
   for (const fa of require(path.join(MUSTER, 'erwartet.json'))) {
     const datei = path.join(ordner, PDF_DATEI[fa.datei]);
     if (!fs.existsSync(datei)) { console.log('fehlt:', datei); continue; }

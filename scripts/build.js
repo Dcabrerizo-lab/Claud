@@ -193,11 +193,10 @@ function render(opts = {}) {
 
 // Sicherheitsrichtlinie der Web-Version (Sicherheitsprüfung 21.11.2026, S9). Erlaubt genau das, was die Seite braucht:
 //  - Skripte: die eigenen (in der Datei, daher 'unsafe-inline'; die Web-Version ist eine einzelne HTML-Datei), Texterkennung von cdnjs
-//    (Tesseract) und jsDelivr (Worker, Kern, Sprachdaten), pdf.js von jsDelivr. Nachgeladenes Tesseract und pdf.js tragen eine Prüfsumme (SRI, src/app.js).
-//  - 'wasm-unsafe-eval': nur WebAssembly (Kern der Texterkennung, Bild-Dekoder von pdf.js), kein eval für JavaScript.
-//  - blob: bei den Skripten: Wird die Datei direkt geöffnet (file://, Ursprung „null“), startet der Browser den pdf.js-Worker aus der
-//    blob-Adresse nicht; pdf.js lädt denselben, mit Prüfsumme geprüften Code dann im Fenster (import). Ohne blob: scheitert das Lesen jeder
-//    PDF-Datei (test/e2e-pdf.js). Neben 'unsafe-inline' öffnet blob: nichts Zusätzliches.
+//    (Tesseract) und jsDelivr (Worker, Kern, Sprachdaten), pdf.js von cdnjs. Nachgeladenes Tesseract und pdf.js tragen eine Prüfsumme (SRI, src/app.js).
+//  - 'wasm-unsafe-eval': nur WebAssembly für den Kern der Texterkennung, kein eval für JavaScript (auch nicht für pdf.js: CVE-2024-4367).
+//  - blob: bei den Skripten: Der mit Prüfsumme geladene pdf.js-Worker startet aus einer blob-Adresse und lädt daraus sein Programm; kann der
+//    Browser keinen Worker starten, lädt pdf.js denselben Code im Fenster. Neben 'unsafe-inline' öffnet blob: nichts Zusätzliches.
 //  - Worker: blob-Adressen (Tesseract startet seinen Worker so, pdf.js den geprüften Worker), sonst nichts von außen.
 //  - Keine Plugins, keine fremde Basisadresse, kein Absenden von Formularen.
 const WEB_CSP = "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; " +

@@ -87,31 +87,26 @@ async function weitere() {
   const sri = (name) => (app.match(new RegExp(name + " = '(sha512-[A-Za-z0-9+/=]+)'")) || [])[1];
   const pdfSri = app.match(/PDFJS_SRI = \{ lib: '(sha512-[^']+)', worker: '(sha512-[^']+)' \}/);
   ck('[sri] Tesseract mit Prüfsumme (integrity, crossorigin) geladen', /sha512-[A-Za-z0-9+/]{86}==/.test(sri('TESS_SRI') || '') && /sc\.integrity = TESS_SRI; sc\.crossOrigin = 'anonymous';\s*sc\.src = 'https:\/\/cdnjs/.test(app));
-  ck('[sri] pdf.js: Programm mit integrity, Worker per fetch mit integrity (blob-Adresse)', !!pdfSri && /s\.integrity = PDFJS_SRI\.lib; s\.crossOrigin = 'anonymous';/.test(app) && /fetch\(basis \+ 'pdf\.worker\.min' \+ endung, \{ integrity: PDFJS_SRI\.worker/.test(app) && /workerSrc = URL\.createObjectURL/.test(app));
+  ck('[sri] pdf.js: Programm mit integrity, Worker per fetch mit integrity (blob-Adresse)', !!pdfSri && /s\.integrity = PDFJS_SRI\.lib; s\.crossOrigin = 'anonymous';/.test(app) && /fetch\(basis \+ 'pdf\.worker\.min\.js', \{ integrity: PDFJS_SRI\.worker/.test(app) && /workerSrc = URL\.createObjectURL/.test(app));
 
-  // S10 / CVE-2024-4367: pdf.js ab 4.2.67, App und Web dieselbe Version; jeder getDocument-Aufruf mit isEvalSupported: false (falls je zurückgestuft)
+  // S10 / CVE-2024-4367 (Entscheidung 21.11.2026, Prüfung PR 138): pdf.js bleibt 3.11.174, weil 4+/6 auf iOS 15 bis 17.3 nicht läuft.
+  // Die Lücke ist über die von Mozilla genannte Abhilfe geschlossen: isEvalSupported: false an JEDEM getDocument-Aufruf (GHSA-wgrm-67xf-hhpq).
+  // Dazu: keine CSP erlaubt eval für JavaScript. Ein Umstieg auf 4.2.67 oder neuer bleibt erlaubt (dann ist die Lücke im Programm behoben).
   const ver = (app.match(/var PDFJS_VER = '([\d.]+)'/) || [])[1] || '';
   const appPkg = require('../app/package.json');
   const ab = (v, min) => { const a = v.split('.').map(Number), b = min.split('.').map(Number); for (let i = 0; i < 3; i++) { if (a[i] !== b[i]) return a[i] > b[i]; } return true; };
-  ck('[pdfjs] Version mindestens 4.2.67 (CVE-2024-4367 behoben), gleich in src/app.js, app/package.json und scripts/build-app.js', ab(ver, '4.2.67') && appPkg.devDependencies['pdfjs-dist'] === ver && buildApp.includes("const PDFJS_VER = '" + ver + "'"), [ver, appPkg.devDependencies['pdfjs-dist']]);
-  const aufrufe = [...app.matchAll(/getDocument\(pdfOptionen\((\{[^}]*\})\)\)/g)].map((m) => m[1]);
-  ck('[pdfjs] jeder getDocument-Aufruf mit isEvalSupported: false', aufrufe.length >= 2 && aufrufe.every((x) => /isEvalSupported: false/.test(x)), aufrufe);
-  // Prüfung PR 138: pdf.js 6 hat die Dekoder für Fax-Bilder (CCITT), JBIG2 und JPEG 2000 nicht mehr im Programm. Ohne sie bleiben eingescannte
-  // Seiten weiß. Jeder Aufruf geht über pdfOptionen (eigene Klasse zum Laden, im Browser nur zwei Dateien und nur mit Prüfsumme).
-  ck('[pdfjs] kein getDocument-Aufruf ohne pdfOptionen (Bild-Dekoder für eingescannte PDFs)', (app.match(/getDocument\(/g) || []).length === aufrufe.length, (app.match(/getDocument\(/g) || []).length);
-  const wasmSri = [...((app.match(/var PDFJS_WASM = \{([\s\S]*?)\};/) || [])[1] || '').matchAll(/'([\w.]+)': '(sha512-[A-Za-z0-9+/]{86}==)'/g)].map((m) => [m[1], m[2]]);
-  ck('[pdfjs] Bild-Dekoder: jbig2.wasm und openjpeg.wasm mit Prüfsumme, im Browser per fetch mit integrity, sonst nichts nachladen', wasmSri.map((x) => x[0]).join() === 'jbig2.wasm,openjpeg.wasm' &&
-    /o\.useWorkerFetch = false; o\.BinaryDataFactory = PdfDaten;/.test(app) && /hasOwnProperty\.call\(PDFJS_WASM, name\)\) return Promise\.reject/.test(app) &&
-    /fetch\(pdfWasmBasis\(\) \+ name, NATIVE \? \{\} : \{ integrity: PDFJS_WASM\[name\], mode: 'cors', credentials: 'omit' \}\)/.test(app), wasmSri);
-  ck('[pdfjs] App-Build liefert die Bild-Dekoder mit Lizenztexten mit', ['jbig2.wasm', 'jbig2_nowasm_fallback.js', 'openjpeg.wasm', 'openjpeg_nowasm_fallback.js', 'LICENSE_JBIG2', 'LICENSE_OPENJPEG'].every((f) => buildApp.includes("'" + f + "'")));
-  ck('[csp-web] blob: bei den Skripten (Datei direkt geöffnet: pdf.js läuft ohne Worker aus der geprüften blob-Adresse)', teil(csp, 'script-src').includes('blob:') && teil(csp, 'worker-src').includes('blob:'));
-  ck('[pdfjs] Web lädt die Ausgabe „legacy“ derselben Version von jsDelivr', app.includes("'https://cdn.jsdelivr.net/npm/pdfjs-dist@' + PDFJS_VER + '/legacy/build/'"));
+  ck('[pdfjs] Version 3.11.174 (oder ab 4.2.67), gleich in src/app.js, app/package.json und scripts/build-app.js', (ver === '3.11.174' || ab(ver, '4.2.67')) && appPkg.devDependencies['pdfjs-dist'] === ver && buildApp.includes("const PDFJS_VER = '" + ver + "'"), [ver, appPkg.devDependencies['pdfjs-dist']]);
+  const aufrufe = [...app.matchAll(/getDocument\(([^;]*?)\)\.promise/g)].map((m) => m[1]);
+  ck('[pdfjs] jeder getDocument-Aufruf mit isEvalSupported: false (Abhilfe für CVE-2024-4367)', aufrufe.length >= 2 && aufrufe.length === (app.match(/getDocument\(/g) || []).length && aufrufe.every((x) => /^\{[^}]*isEvalSupported: false[^}]*\}$/.test(x)), aufrufe);
+  const muster = fs.readFileSync(path.join(ROOT, 'tools', 'scan-muster.js'), 'utf8');
+  ck('[pdfjs] auch das Werkzeug scan-muster.js öffnet PDFs nur mit isEvalSupported: false', (muster.match(/getDocument\(/g) || []).length === (muster.match(/getDocument\(\{[^}]*isEvalSupported: false/g) || []).length);
+  ck('[pdfjs] kein eval für JavaScript in der CSP von App und Web (zweite Sicherung)', !/unsafe-eval'/.test(csp.replace(/'wasm-unsafe-eval'/g, '')) && !/unsafe-eval/.test((buildApp.match(/const CSP = "([^"]+)" \+\s*"([^"]+)"/) || []).slice(1).join('') || 'unsafe-eval'));
+  ck('[pdfjs] Web lädt dieselbe Version von cdnjs', app.includes("'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/' + PDFJS_VER + '/'"));
+  ck('[csp-web] blob: bei den Skripten (pdf.js-Worker aus der geprüften blob-Adresse, Rückfall ohne Worker)', teil(csp, 'script-src').includes('blob:') && teil(csp, 'worker-src').includes('blob:'));
   const pdfjsDir = path.join(ROOT, 'app', 'node_modules', 'pdfjs-dist');
   if (fs.existsSync(path.join(pdfjsDir, 'package.json')) && pdfSri) { // nur wo app/node_modules installiert ist (CI-Schritt mit App-Abhängigkeiten)
-    const h = (f) => 'sha512-' + crypto.createHash('sha512').update(fs.readFileSync(path.join(pdfjsDir, 'legacy', 'build', f))).digest('base64');
-    ck('[sri] Prüfsummen passen zu den Dateien aus app/node_modules', h('pdf.min.mjs') === pdfSri[1] && h('pdf.worker.min.mjs') === pdfSri[2]);
-    const hw = (f) => 'sha512-' + crypto.createHash('sha512').update(fs.readFileSync(path.join(pdfjsDir, 'wasm', f))).digest('base64');
-    ck('[sri] Prüfsummen der Bild-Dekoder passen zu den Dateien aus app/node_modules', wasmSri.length === 2 && wasmSri.every((x) => hw(x[0]) === x[1]));
+    const h = (f) => 'sha512-' + crypto.createHash('sha512').update(fs.readFileSync(path.join(pdfjsDir, 'build', f))).digest('base64');
+    ck('[sri] Prüfsummen passen zu den Dateien aus app/node_modules', h('pdf.min.js') === pdfSri[1] && h('pdf.worker.min.js') === pdfSri[2]);
   }
 
   // S8: App-CSP ohne 'unsafe-inline' für Skripte; die Vorlage erfüllt die Voraussetzungen (nur einfache <script>-Blöcke, keine Ereignisattribute außer onsubmit="return false")

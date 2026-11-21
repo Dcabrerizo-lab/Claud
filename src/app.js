@@ -1964,7 +1964,7 @@
   var scanBilder = [];
   function scanBilderSetzen(liste) { scanBilder.forEach(function (u) { if (/^blob:/.test(u)) { try { URL.revokeObjectURL(u); } catch (e) {} } }); scanBilder = liste || []; }
   function pdfVorschau(file) {
-    return ladePdfjs().then(function (L) { return new Response(file).arrayBuffer().then(function (buf) { return L.getDocument(pdfOptionen({ data: new Uint8Array(buf), isEvalSupported: false })).promise; }); })
+    return ladePdfjs().then(function (L) { return new Response(file).arrayBuffer().then(function (buf) { return L.getDocument({ data: new Uint8Array(buf), isEvalSupported: false }).promise; }); })
       .then(function (doc) {
         var n = Math.min(doc.numPages, 4), bilder = [], i = 0;
         function naechste() {
@@ -2001,58 +2001,35 @@
 
   // ----- PDF lesen (pdf.js von Mozilla): digitale PDFs liefern ihren Text direkt; eingescannte Seiten (nur Bild, kein Text)
   // werden auf dem Gerät zu einem Bild und gehen durch dieselbe Texterkennung wie ein Foto. Die Datei verlässt das Gerät nicht.
-  // pdf.js 6.5.438 (Mozilla, Apache-2.0), Ausgabe „legacy“. ACHTUNG Mindestversion (Prüfung PR 138, 21.11.2026): Mozilla nennt für diese
-  // Ausgabe Chrome 125+ und Safari 18+ („mostly“; github.com/mozilla/pdf.js/wiki/Frequently-Asked-Questions, abgerufen 21.11.2026). Im Code:
-  // Klassenblock „static {}“ (Safari ab 16.4), Promise.withResolvers und AbortSignal.any ohne Ersatz (Safari ab 17.4, Chrome ab 119).
-  // Auf iOS 15 bis 17.3 und in einer Android-WebView unter 119 lässt sich damit KEINE PDF-Datei lesen (es kommt die Meldung „ließ sich nicht
-  // lesen“; Foto und Text einfügen gehen weiter). Android 7 bekommt höchstens WebView 119, also unter der Grenze von Mozilla. Mit 3.11.174 ging das. Vor einem Release entscheiden (siehe docs/entwuerfe/pruefungen-21-11/sicherheit-pr138.md). Ab 4.2.67 ist die Lücke
-  // CVE-2024-4367 (Schadcode beim Öffnen einer PDF) behoben; ab Version 5 gibt es in pdf.js gar kein eval mehr.
-  // App: mitgelieferte Dateien (app/www/pdfjs/, Endung .js, damit beide Plattformen sie als JavaScript ausliefern), offline.
-  // Browser: dieselben Dateien von jsDelivr (cdnjs führt die Ausgabe „legacy“ nicht), mit Prüfsumme (SRI): das Programm über
-  // integrity am Skript, der Worker wird mit integrity geladen und als blob-Adresse gestartet. Prüfsummen am 21.11.2026 an den
-  // Dateien aus npm (pdfjs-dist 6.5.438) berechnet und mit den Dateien von jsDelivr verglichen (Byte für Byte gleich).
-  var PDFJS_VER = '6.5.438', PDF_MAX_SEITEN = 12, pdfjsLaden = null, pdfMitBild = false;
-  var PDFJS_SRI = { lib: 'sha512-wkUHJyGunz3O08SZAvfpwT4TpeWSkxNedDRPF+xFJD/paaq6EiOq31EHDVTZneWztk17x3lIpvgsOyzkwwSDRA==', worker: 'sha512-eesCam8riLvsgdun5fCScFzrvpgGYiOFRwg2VXO7ycS/Mi38Df4BL7BbFMhJSQqCj3pXL4szUoDJ2UVIxUEAYA==' };
+  // pdf.js 3.11.174 (Mozilla, Apache-2.0), dieselbe Fassung wie bisher. Entscheidung 21.11.2026 (Prüfung PR 138): kein Umstieg auf 4+/6.
+  //  - Grund: pdf.js 6.5.438 läuft laut Mozilla erst ab Chrome 125 und Safari 18 (FAQ „Which browsers/environments are supported?“,
+  //    github.com/mozilla/pdf.js/wiki/Frequently-Asked-Questions, abgerufen 21.11.2026); schon ab 4.x steht „static {}“ im Code (Safari ab 16.4).
+  //    Die iOS-App läuft ab iOS 15, viele Nutzer haben ältere iPhones: dort ließe sich keine PDF-Datei mehr lesen.
+  //  - Lücke CVE-2024-4367 (Schadcode beim Öffnen einer PDF, betroffen bis 4.1.392, behoben in 4.2.67): Mozilla nennt als Abhilfe
+  //    „Set the option isEvalSupported to false“ (GitHub-Sicherheitshinweis GHSA-wgrm-67xf-hhpq, github.com/mozilla/pdf.js/security/advisories,
+  //    abgerufen 21.11.2026). Deshalb steht isEvalSupported: false an JEDEM getDocument-Aufruf (test/test-sicherheit.js prüft das);
+  //    zusätzlich verbietet die CSP von App und Web-Version eval für JavaScript.
+  //  - pdf.js 4+/6 erst, wenn eine iOS-Mindestversion ab 17.4 entschieden ist (übernächstes Update, docs/entwuerfe/geraetetest-1.9.md).
+  // 3.11.174 hat die Bild-Dekoder (Fax/CCITT, JBIG2, JPEG 2000) im Programm: keine Zusatzdateien nötig (test/app-test.js, test/e2e-pdf.js).
+  // App: mitgelieferte Dateien (app/www/pdfjs/), offline. Browser: von cdnjs, mit Prüfsumme (SRI): das Programm über integrity am Skript,
+  // der Worker wird mit integrity geladen und als blob-Adresse gestartet. Prüfsummen am 21.11.2026 an den Dateien aus npm
+  // (pdfjs-dist 3.11.174, build/) berechnet, mit den Dateien von cdnjs (Byte für Byte) und den Angaben von cdnjs (api.cdnjs.com) verglichen.
+  var PDFJS_VER = '3.11.174', PDF_MAX_SEITEN = 12, pdfjsLaden = null, pdfMitBild = false;
+  var PDFJS_SRI = { lib: 'sha512-q+4liFwdPC/bNdhUpZx6aXDx/h77yEQtn4I1slHydcbZK34nLaR3cAeYSJshoxIOq3mjEf7xJE8YWIUHMn+oCQ==', worker: 'sha512-BbrZ76UNZq5BhH7LL7pn9A4TKQpQeNCHOo65/akfelcIBbcVvYWOFQKPXIrykE3qZxYjmDX573oa4Ywsc7rpTw==' };
   var TESS_SRI = 'sha512-mpQLT7yiRJ06RkhNTYhVnvvr3c71il3h+wEI16ICc+fnFHxrBRoJrMmDJ8iBY04+U/FgTj7xah5Vbltq5pg+aQ==';
-  // Bild-Dekoder für eingescannte PDFs: Seit pdf.js 5 stecken die Dekoder für Fax-Bilder (CCITT, das übliche Format von Schwarz-Weiß-Scans),
-  // JBIG2 und JPEG 2000 nicht mehr im Programm, sondern in eigenen Dateien (wasm/). Ohne sie bleibt eine so eingescannte Seite weiß und
-  // die Texterkennung findet nichts (Prüfung PR 138, 21.11.2026). App: mitgeliefert (app/www/pdfjs/wasm/). Browser: von jsDelivr, nur
-  // die zwei hier genannten Dateien und nur mit Prüfsumme (SRI, an den Dateien aus npm berechnet und mit jsDelivr verglichen). pdf.js holt
-  // sie über diese Klasse im Fenster (useWorkerFetch: false), nicht selbst im Worker: so gilt die Prüfsumme auch hier.
-  // Ohne WebAssembly: App lädt die mitgelieferte JavaScript-Fassung (wasmUrl); im Browser gibt es dafür keine Prüfsumme, also keinen Rückfall.
-  var PDFJS_WASM = {
-    'jbig2.wasm': 'sha512-a+2Egw395zfykwW5Uf8hImg0SRV9b4vf7EkYfunIWz/aXQpaZZgejlCld6a0b7TUwxgRBJvSCmoWQ+i7X3afeg==',
-    'openjpeg.wasm': 'sha512-HIf/xkTr7I6rHVznoj+wbWAGkOYnhpBmlapPP4usBVNb/nTLo4d0xWjUxXHkZmstx2zl/mQ5dqWQCHTTEQqnEA=='
-  };
-  function pdfWasmBasis() { return NATIVE ? new URL('pdfjs/wasm/', document.baseURI).href : 'https://cdn.jsdelivr.net/npm/pdfjs-dist@' + PDFJS_VER + '/wasm/'; }
-  function PdfDaten() {}
-  PdfDaten.prototype.fetch = function (o) {
-    var name = o && o.kind === 'wasmUrl' ? String(o.filename) : '';
-    if (!Object.prototype.hasOwnProperty.call(PDFJS_WASM, name)) return Promise.reject(new Error('pdf-daten')); // Schriften, CMaps, anderes: nicht nachladen
-    return fetch(pdfWasmBasis() + name, NATIVE ? {} : { integrity: PDFJS_WASM[name], mode: 'cors', credentials: 'omit' }).then(function (r) {
-      if (!r.ok) throw new Error('pdf-daten');
-      return r.arrayBuffer();
-    }).then(function (b) { return new Uint8Array(b); });
-  };
-  function pdfOptionen(o) {
-    o.useWorkerFetch = false; o.BinaryDataFactory = PdfDaten;
-    if (NATIVE) o.wasmUrl = pdfWasmBasis();
-    return o;
-  }
   function ladePdfjs() {
     if (window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
     if (pdfjsLaden) return pdfjsLaden;
-    var basis = NATIVE ? 'pdfjs/' : 'https://cdn.jsdelivr.net/npm/pdfjs-dist@' + PDFJS_VER + '/legacy/build/';
-    var endung = NATIVE ? '.js' : '.mjs';
+    var basis = NATIVE ? 'pdfjs/' : 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/' + PDFJS_VER + '/'; // App: mitgeliefert, offline
     pdfjsLaden = new Promise(function (res, rej) {
       var weg = function (e) { pdfjsLaden = null; rej(e); };
-      var s = document.createElement('script'); s.type = 'module';
+      var s = document.createElement('script');
       if (!NATIVE) { s.integrity = PDFJS_SRI.lib; s.crossOrigin = 'anonymous'; }
-      s.src = basis + 'pdf.min' + endung;
+      s.src = basis + 'pdf.min.js';
       s.onload = function () {
         var L = window.pdfjsLib; if (!L) { weg(new Error('pdfjs')); return; }
-        if (NATIVE) { L.GlobalWorkerOptions.workerSrc = basis + 'pdf.worker.min' + endung; res(L); return; }
-        fetch(basis + 'pdf.worker.min' + endung, { integrity: PDFJS_SRI.worker, mode: 'cors', credentials: 'omit' }).then(function (r) {
+        if (NATIVE) { L.GlobalWorkerOptions.workerSrc = basis + 'pdf.worker.min.js'; res(L); return; }
+        fetch(basis + 'pdf.worker.min.js', { integrity: PDFJS_SRI.worker, mode: 'cors', credentials: 'omit' }).then(function (r) {
           if (!r.ok) throw new Error('worker');
           return r.blob();
         }).then(function (b) {
@@ -2097,7 +2074,7 @@
   }
   function pdfLesen(file, fortschritt) {
     return ladePdfjs().then(function (L) {
-      return new Response(file).arrayBuffer().then(function (buf) { return L.getDocument(pdfOptionen({ data: new Uint8Array(buf), isEvalSupported: false })).promise; });
+      return new Response(file).arrayBuffer().then(function (buf) { return L.getDocument({ data: new Uint8Array(buf), isEvalSupported: false }).promise; });
     }).then(function (doc) {
       var n = Math.min(doc.numPages, PDF_MAX_SEITEN), texte = [], i = 0;
       function naechste() {

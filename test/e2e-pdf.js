@@ -1,5 +1,5 @@
 // Klicktest: PDF wählen bei „Brief prüfen“ (Web-Version). Digitales PDF: Text wird direkt gelesen, Absender erkannt, Werte übernommen.
-// pdf.js kommt im Browser von jsDelivr (Ausgabe „legacy“, mit Prüfsumme); im Test liefert eine Weiterleitung dieselbe Version aus app/node_modules (gleiche Datei, kein Netz nötig).
+// pdf.js kommt im Browser von cdnjs (mit Prüfsumme); im Test liefert eine Weiterleitung dieselbe Version aus app/node_modules (gleiche Datei, kein Netz nötig).
 // Eingescannte PDFs (Seite als Bild → Texterkennung) prüft test/app-test.js mit der Texterkennung der App.
 'use strict';
 const { chromium } = require('playwright');
@@ -8,7 +8,7 @@ const SF_ALLES = () => { try { if (!localStorage.getItem('lotse.checkWeg')) { lo
 const path = require('path'), fs = require('fs'), os = require('os');
 const { digital } = require('./hilfe-pdf');
 const APP = 'file://' + path.join(__dirname, '..', 'dist', 'sozialleistungslotse.html');
-const PDFJS = path.join(__dirname, '..', 'app', 'node_modules', 'pdfjs-dist', 'legacy', 'build');
+const PDFJS = path.join(__dirname, '..', 'app', 'node_modules', 'pdfjs-dist', 'build');
 let n = 0, f = 0;
 const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, info !== undefined ? JSON.stringify(info) : ''); } };
 (async () => {
@@ -21,7 +21,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   const p = await (await b.newContext({ viewport: { width: 360, height: 760 }, locale: 'de-DE' })).newPage(); await p.addInitScript(SF_ALLES);
   const fehler = []; p.on('pageerror', (e) => fehler.push(e.message));
   let geladen = 0;
-  await p.route('https://cdn.jsdelivr.net/npm/pdfjs-dist@6.5.438/legacy/build/**', (r) => { geladen++; const name = r.request().url().split('/').pop(); r.fulfill({ path: path.join(PDFJS, name), contentType: 'application/javascript', headers: { 'Access-Control-Allow-Origin': '*' } }); });
+  await p.route('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/**', (r) => { geladen++; const name = r.request().url().split('/').pop(); r.fulfill({ path: path.join(PDFJS, name), contentType: 'application/javascript', headers: { 'Access-Control-Allow-Origin': '*' } }); });
   await p.goto(APP + '#briefe'); await p.waitForTimeout(300);
   ok('Übersicht ohne PDF-Knopf', !(await p.isVisible('#elPdf')));
   await p.click('#brief-jc');
@@ -32,7 +32,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Digitales PDF: Jobcenter-Bescheid gelesen', /Jobcenter/.test(await p.textContent('#elMsg')), await p.textContent('#elMsg'));
   ok('Digitales PDF: Beträge übernommen', (await p.inputValue('#bs-b-regel')) === '920' && (await p.inputValue('#bs-b-zahl')) === '1501.33' && (await p.inputValue('#bs-datum')) === '2026-03-12');
   ok('Digitales PDF: Formular nach dem Einlesen offen', await p.isVisible('#p-bescheid > :nth-child(2)'));
-  ok('pdf.js aus der festen Version 6.5.438 geladen', geladen >= 1);
+  ok('pdf.js aus der festen Version 3.11.174 geladen (Programm und Worker)', geladen >= 2, geladen);
   await p.click('#briefZurueck'); await p.click('#brief-wg');
   await p.setInputFiles('#elPdfFile', kaputt);
   await p.waitForFunction(() => /nicht lesen/.test(document.getElementById('elMsg').textContent), null, { timeout: 30000 }).catch(() => {});
@@ -45,14 +45,8 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   const out = await p.textContent('#sc-out');
   ok('Antragsformular aus PDF: Formularname und Felder erklärt', /Erkannt: Antrag auf Wohngeld/.test(out) && /Heizkosten/.test(out) && /Krankenkasse/.test(out), out.slice(0, 300));
   ok('Antragsformular aus PDF: Vorschau der Seite über der Liste', (await p.locator('#sc-out .sc-vorschau .sc-bild img').count()) >= 1);
-  // PDF mit Fax-Bild (CCITT, übliches Format von Schwarz-Weiß-Scans): pdf.js 6 braucht dafür den Dekoder jbig2.wasm. Die Web-Version holt ihn
-  // von jsDelivr, nur mit Prüfsumme (hier dieselbe Datei aus app/node_modules). Ohne Dekoder bliebe das Bild in der Vorschau weiß (Prüfung PR 138).
-  // Das PDF hat auch digitalen Text: so braucht der Test keine Texterkennung aus dem Netz.
-  let wasmGeladen = 0;
-  await p.route('https://cdn.jsdelivr.net/npm/pdfjs-dist@6.5.438/wasm/**', (r) => {
-    wasmGeladen++; const name = r.request().url().split('/').pop();
-    r.fulfill({ path: path.join(PDFJS, '..', '..', 'wasm', name), contentType: 'application/wasm', headers: { 'Access-Control-Allow-Origin': '*' } });
-  });
+  // PDF mit Fax-Bild (CCITT, übliches Format von Schwarz-Weiß-Scans): pdf.js 3.11.174 hat den Dekoder im Programm (pdf.js 6 bräuchte
+  // Zusatzdateien, sonst bliebe das Bild weiß; Prüfung PR 138). Das PDF hat auch digitalen Text: so braucht der Test keine Texterkennung aus dem Netz.
   const dunkel = () => p.evaluate(async () => {
     const im = document.querySelector('#sc-out .sc-vorschau .sc-bild img'); if (!im) return -1;
     await im.decode().catch(() => {});
@@ -63,7 +57,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   await p.setInputFiles('#sc-pdf', path.join(__dirname, 'daten', 'text-ccitt.pdf'));
   let mitBild = -1;
   for (let i = 0; i < 60 && !(mitBild > 4000); i++) { await p.waitForTimeout(500); mitBild = await dunkel().catch(() => -1); } // neue Vorschau abwarten
-  ok('PDF mit Fax-Bild: Dekoder mit Prüfsumme geladen, Bild in der Vorschau sichtbar', wasmGeladen >= 1 && mitBild > 4000 && mitBild > nurText * 2, { wasmGeladen, mitBild, nurText });
+  ok('PDF mit Fax-Bild: Bild in der Vorschau sichtbar (nicht weiß)', mitBild > 4000 && mitBild > nurText * 2, { mitBild, nurText });
   ok('Kein seitliches Scrollen', await p.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth));
   ok('Keine Skriptfehler', fehler.length === 0, fehler);
   await b.close(); fs.rmSync(tmp, { recursive: true, force: true });

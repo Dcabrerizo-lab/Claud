@@ -132,8 +132,8 @@ const MOCK = () => {
     ok('Eingescanntes PDF: Felder erklärt', /Erkannt: Antrag auf Wohngeld/.test(await p.textContent('#sc-out')));
     await p.setInputFiles('#sc-pdf', path.join(tmp, 'digital.pdf')); await warte(() => /Gesamtmiete monatlich/.test(document.getElementById('sc-out').textContent), null, 15000);
     ok('Digitales PDF in der App: Text direkt gelesen, keine Texterkennung nötig', (await calls('TextRecognition.recognize')).length === vorRec + 1 && /Gesamtmiete monatlich/.test(await p.textContent('#sc-out')));
-    // Eingescannte PDFs mit Fax-Bild (CCITT, übliches Format von Schwarz-Weiß-Scans) und JPEG 2000: pdf.js 6 braucht dafür die
-    // mitgelieferten Dekoder (app/www/pdfjs/wasm/). Ohne sie bliebe die Seite weiß und die Texterkennung bekäme ein leeres Bild (Prüfung PR 138).
+    // Eingescannte PDFs mit Fax-Bild (CCITT, übliches Format von Schwarz-Weiß-Scans) und JPEG 2000: pdf.js 3.11.174 hat die Dekoder im Programm.
+    // Bei einem Umstieg auf pdf.js 5+/6 müssten sie eigens mitgeliefert werden, sonst bliebe die Seite weiß (Prüfung PR 138).
     for (const [datei, art] of [['scan-ccitt.pdf', 'Fax-Bild (CCITT)'], ['scan-jpx.pdf', 'JPEG 2000']]) {
       const vor = (await calls('TextRecognition.recognize')).length;
       await p.setInputFiles('#sc-pdf', path.join(__dirname, 'daten', datei));

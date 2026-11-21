@@ -108,8 +108,8 @@ Nur am Gerät prüfbar. Im Code umgesetzt, aber ohne Gerätetest.
 
 | Nr. | Schritte | Erwartet | Android | iOS |
 |---|---|---|---|---|
-| 9.1 | Brief prüfen → „PDF wählen“: ein digitales PDF und ein eingescanntes PDF (pdf.js 6.5.438, neu). Beim eingescannten PDF möglichst einen Schwarz-Weiß-Scan vom Kopierer oder aus einer Scan-App nehmen (Fax-Bild/CCITT oder JBIG2) | Text bzw. Seitenbild wird gelesen; keine Fehlermeldung; die Vorschau zeigt die Seite, nicht ein weißes Blatt | | |
-| 9.1a | Dasselbe auf einem älteren Gerät: iPhone mit iOS 15, 16 oder 17 (vor 17.4) und Android 7 (WebView höchstens 119) | **Offen (Prüfung PR 138):** pdf.js 6.5.438 läuft laut Mozilla erst ab Safari 18 und Chrome 125. Erwartet wird hier die Meldung „Die PDF-Datei ließ sich nicht lesen …“; Foto und Text einfügen gehen weiter. Ergebnis notieren: davon hängt ab, ob 6.5.438 bleibt, die Mindestversion steigt oder 3.11.174 zurückkommt | | |
+| 9.1 | Brief prüfen → „PDF wählen“: ein digitales PDF und ein eingescanntes PDF (pdf.js bleibt 3.11.174; neu ist nur, wie die App die Skripte lädt). Beim eingescannten PDF möglichst einen Schwarz-Weiß-Scan vom Kopierer oder aus einer Scan-App nehmen | Text bzw. Seitenbild wird gelesen; keine Fehlermeldung; die Vorschau zeigt die Seite, nicht ein weißes Blatt | | |
+| 9.1a | Dasselbe auf einem älteren Gerät, wenn vorhanden: iPhone mit iOS 15, 16 oder 17 und Android 7 bis 9 | Wie 9.1: PDF-Lesen geht auch dort (deshalb bleibt pdf.js 3.11.174) | | |
 | 9.2 | Ganze App einmal durchklicken (Start, Hilfen-Check, Mappe, Brief prüfen, Einstellungen) | Alles bedienbar (Skripte liegen jetzt als eigene Dateien, strenge CSP ohne Inline-Skripte); Enter in einem Formularfeld lädt die App nicht neu | | |
 | 9.3 | Beratung → QR-Code scannen → Foto vom Code. Danach mit Dateimanager oder `adb shell ls /sdcard/Android/data/<Paket>/files/Pictures` nachsehen | Ordner enthält kein `JPEG_…jpg` mehr (Foto nach dem Lesen gelöscht); ebenso nach Neustart der App | | – |
 | 9.4 | Neue PIN „123456“ oder „4711“ festlegen (App-PIN und Vorgang-PIN) | Abgelehnt mit Meldung; „482910“ geht. Eine vorher festgelegte 4-stellige PIN entsperrt weiter | | |
@@ -120,6 +120,7 @@ Nur dokumentiert, nicht im Code geändert (braucht Gerät oder Entscheidung):
 - ML Kit (Android): Netzwerk-Mitschnitt wie Abschnitt 7. Danach Datenschutzerklärung, STORE.md und Play-Formular „Datensicherheit“ angleichen.
 - iOS-Datenschutzklasse: Die Datei der Angaben (SoloSpeicherPlugin.swift) hat weiter „bis zum ersten Entsperren“. Ein Wechsel auf `NSFileProtectionComplete` (Entitlement Data Protection) schützt das gesperrte Gerät besser, aber dann kann SoLo im Hintergrund bei gesperrtem Gerät nicht speichern (Speichern beim Verlassen der App kann scheitern). Erst am Gerät testen: Speichern beim Sperren, Wechsel in den Hintergrund, Sperre nach 2 Minuten.
 - PIN-Schlüssel an Android Keystore / iOS Keychain binden (Schutz gegen Kopie des Speichers): großer Umbau, vorgemerkt.
+- **Vermerk fürs übernächste Update:** pdf.js 4+/6 erst, wenn eine iOS-Mindestversion ab 17.4 entschieden ist. Grund: pdf.js 6.5.438 läuft laut Mozilla erst ab Chrome 125 / Safari 18; schon 4.x braucht Safari 16.4. Bis dahin bleibt 3.11.174 mit `isEvalSupported: false` (Abhilfe von Mozilla für CVE-2024-4367). Beim Umstieg beachten: Die Bild-Dekoder für eingescannte PDFs (Fax/CCITT, JBIG2, JPEG 2000) liegen ab pdf.js 5 in eigenen Dateien (`wasm/`) und müssen mitgeliefert werden; Einzelheiten in `docs/entwuerfe/pruefungen-21-11/sicherheit-pr138.md`.
 
 ## Ergebnis
 
