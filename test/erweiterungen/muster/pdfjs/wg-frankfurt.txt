@@ -1,0 +1,232 @@
+# Quelle: https://www.frankfurtpass.de/files/Musterbescheid_Wohngeld.pdf (Stadt Frankfurt am Main, Musterbescheid Wohngeld vom 03.06.2025)
+# Abgerufen: 21.11.2026. Text wie in der App gelesen: pdf.js 3.11.174 + pdfZeilen aus src/app.js (tools/scan-muster.js --pdf).
+VORSCHAU
+Stadtverwaltung (Amt 64), 60322 Frankfurt am Main
+Herrn
+Paul Mustermann
+Musterstr. 1
+60322 Frankfurt am Main
+Sachbearbeiter Team 44
+Zimmer -
+Durchwahl (069) 212 - 47100
+Telefax
+E-Mail wohngeld@stadt-frankfurt.de
+Sprechzeiten Telefonische Sprechzeiten der Fachabteilung:
+Mo - Do 8 - 16 Uhr,
+Fr 8 - 12 Uhr
+Persönliche Vorsprachen nur mit Termin.
+(bei Schriftwechsel angeben)
+Ihr Zeichen, Ihre Nachricht vom Unser Zeichen Datum
+64.4-412000
+4125
+Frankfurt am Main,
+03.06.2025
+Leistungen nach dem Wohngeldgesetz (WoGG)
+Sehr geehrter Herr Mustermann,
+auf Ihren Antrag auf Gewährung von Mietzuschuss eingegangen am 01.01.2025 wird Ihnen nach
+dem Wohngeldgesetz (WoGG) vom 24. September 2008 (BGBl. I S. 1856) in der jeweils geltenden
+Fassung folgender Bescheid erteilt:
+Für die Zeit vom 01.01.2025 bis 31.01.2025 wird Ihnen Wohngeld in Höhe
+von 355,00 € monatlich bewilligt.
+Da Sie keine Bankverbindung bei einem Geldinstitut innerhalb der Europäischen Union mitgeteilt
+haben, wird Ihnen das Wohngeld per Zahlungsanweisung zur Verrechnung über die Postbank
+ausgezahlt. Die dadurch veranlassten Kosten in Höhe von derzeit 2,10 € je Zahlung werden
+nach § 26 Abs. 2 Satz 2 WoGG vom Wohngeld abgezogen. Zudem können in Abhängigkeit von der
+Höhe des Auszahlungsbetrages weitere Kosten für Sie bei Auszahlung des Wohngeldbetrages am
+Schalter der Postbank anfallen.
+Das Wohngeld richtet sich gemäß § 4 WoGG nach
+- der Zahl der zu berücksichtigenden Haushaltsmitgliedern
+- der Höhe des monatlichen Gesamteinkommens sowie
+- der berücksichtigungsfähigen Miete oder Belastung.
+I. Haushaltsmitglieder
+In der Wohnung, für die Wohngeld geleistet wird, wohnen insgesamt 2 Haushaltsmitglied(er)
+Zum Haushalt zählen nach § 6 WoGG daher insgesamt 2 Haushaltsmitglied(er)
+II. Berechnung des Gesamteinkommens (Summe der Jahreseinkommen der
+Postanschrift: Adickesallee 67/69
+60322 Frankfurt am Main
+Persönliche Vorsprachen nur mit Termin.
+Telefon:
+Fax:
+Internet:
+(069) 212 - 47100 Telefonische Sprechzeiten der Fachabteilung:
+Mo - Do 8 - 16 Uhr,
+Fr 8 - 12 Uhr
+Seite 1 von 6
+BD_6.8.3.L.4120001.8
+VORSCHAU
+zum Haushalt rechnenden Haushaltsmitglieder) nach § 13 WoGG.
+Antragsteller/in: Paul Mustermann
+Bei der Ermittlung des Jahreseinkommens sind die im Bewilligungszeitraum zu erwartenden
+Einnahmen zugrunde gelegt worden.
+Erwerbsminderungsrente - brutto monatlich 1.470,00 € x 12 = 17.640,00 €
+Summe der Einnahmen = 17.640,00 €
+davon sind abzusetzen:
+Werbungskosten-Pauschbetrag bei Renten nach § 9a EStG - 102,00 €
+Positive Einkünfte = 17.538,00 €
+davon pauschaler Abzug 10% bei Entrichtung v. Pflichtbeitr. z. ges. KV u. PV - 1.753,80 €
+Jahreseinkommen nach § 14 WoGG = 15.784,20 €
+Ehegatte / Ehegattin: Erika Mustermann
+Bei der Ermittlung des Jahreseinkommens sind die im Bewilligungszeitraum zu erwartenden
+Einnahmen zugrunde gelegt worden.
+Arbeitslosengeld monatlich 620,00 € x 12 = 7.440,00 €
+Summe der Einnahmen = 7.440,00 €
+Positive Einkünfte = 7.440,00 €
+Jahreseinkommen nach § 14 WoGG = 7.440,00 €
+Gesamtsumme der Jahreseinkommen nach § 14 WoGG = 23.224,20 €
+Freibetrag nach § 17 Nr. 1 WoGG für eine schwerbehinderte Person(en) - 1.800,00 €
+Freibetrag nach § 17a WoGG (Erfüllung von mind. 33 Jahren Grundrentenzeiten
+oder vergleichbaren Zeiten) für
+Paul Mustermann - 3.378,00 €
+Gesamteinkommen = 18.046,20 €
+monatliches Gesamteinkommen = 1.503,85 €
+III. Wohnfläche 70,00 qm
+IV. monatliche Gesamtmiete = 900,00 €
+außer Betracht bleiben:
+Kosten des Betriebs der zentralen Heizung - 110,00 €
+Zwischensumme = 790,00 €
+Höchstbetrag für Miete nach § 12 WoGG (inkl. Klimakomponente) = 769,80 €
+CO2 Komponente = 18,60 €
+Dauerhafte Heizkostenkomponente = 124,00 €
+Zu berücksichtigende Miete inklusive aller Komponenten = 912,40 €
+V. Wohngeld
+Bei einem monatlichen Gesamteinkommen von 1.503,85 € und einer zu berücksichtigenden Miete
+von 912,40 € ergibt sich aufgrund der Berechnung nach § 19 WoGG ein monatliches Wohngeld von
+355,00 €.
+Seite 2 von 6
+VORSCHAU
+Belehrung über Mitteilungspflichten
+Sie sind nach § 27 Abs. 3 WoGG verpflichtet, der Wohngeldbehörde unverzüglich mitzuteilen, wenn
+sich im laufenden Bewilligungszeitraum nicht nur vorübergehend (länger als vier Monate)
+1. die Anzahl der zu berücksichtigenden Haushaltsmitglieder verringert
+oder die Anzahl der vom Wohngeld ausgeschlossenen Haushaltsmitglieder erhöht,
+2. die monatliche Miete von 790,00 € um mehr als 15 Prozent
+auf einen Betrag von weniger als 654,33 € verringert oder
+3. die Summe aus den monatlichen positiven Einkünften und den sonstigen zu berücksichtigenden
+monatlichen Einnahmen aller zu berücksichtigenden Haushaltsmitglieder von 2.081,50 €
+(24.978,00 € : 12), um mehr als 15 Prozent auf einen Betrag von 2.393,72 € erhöht.
+Eine Neuentscheidung von Amts wegen mit der Folge, dass das Wohngeld wegfällt oder verringert
+wird, ist auch dann möglich, wenn keine Mitteilungspflicht besteht.
+Bitte fügen Sie Ihrer Mitteilung über die geänderten Einkünfte aus selbständiger Arbeit,
+Gewerbebetrieb oder Land– und Forstwirtschaft als Nachweis den maßgeblichen
+Einkommensteuerbescheid des selbständig tätigen Haushaltsmitgliedes für den
+Bewilligungszeitraum (Gewinnermittlungszeitraum) bei.
+Nach § 28 Absatz 1 WoGG müssen Sie der Wohngeldbehörde unverzüglich (ohne schuldhaftes
+Zögern) mitteilen, wenn der Wohnraum, für den Wohngeld bewilligt ist, vor Ablauf des
+Bewilligungszeitraumes von keinem zu berücksichtigenden Haushaltsmitglied mehr genutzt wird.
+Dies gilt auch bei einem Umzug innerhalb des Hauses. Des Weiteren haben Sie der
+Wohngeldbehörde unverzüglich mitzuteilen, wenn kein zu berücksichtigendes Haushaltsmitglied
+mehr in dem betreffenden Wohnraum den Mittelpunkt der Lebensbeziehungen hat.
+Sie sind ferner nach § 28 Absatz 4 WoGG verpflichtet, der Wohngeldbehörde unverzüglich
+mitzuteilen, wenn für Sie selbst und/oder für ein zu berücksichtigendes Haushaltsmitglied ein
+Verwaltungsverfahren zur Feststellung von Grund und Höhe einer Leistung nach § 7 Absatz 1 oder
+Absatz 2 WoGG (Transferleistungen) begonnen hat oder eine solche Leistung bezogen wird. Die zu
+berücksichtigenden Haushaltsmitglieder sind verpflichtet, Ihnen den Erhalt von Transferleistungen
+mitzuteilen.
+Transferleistungen nach § 7 WoGG sind:
+1. Bürgergeld nach dem Zweiten Buch Sozialgesetzbuch, auch in den Fällen des § 25 des Zweiten
+Buches Sozialgesetzbuch,
+2. Leistungen für Auszubildende nach § 27 Absatz 3 des Zweiten Buches Sozialgesetzbuch, die als
+Zuschuss erbracht werden,
+3. Übergangsgeld in Höhe des Betrages des Bürgergeldes nach § 19 Absatz 1 Satz 1 des Zweiten
+Buches Sozialgesetzbuch nach § 21 Abs. 4 Satz 1 des Sechsten Buches Sozialgesetzbuch,
+4. Verletztengeld in Höhe des Betrages des Bürgergeldes nach § 19 Absatz 1 Satz 1 des Zweiten
+Buches Sozialgesetzbuch nach § 47 Abs. 2 des Siebten Buches Sozialgesetzbuch,
+5. Grundsicherung im Alter und bei Erwerbsminderung nach dem Zwölften Buch Sozialgesetzbuch,
+6. Hilfe zum Lebensunterhalt nach dem Zwölften Buch Sozialgesetzbuch,
+7. a) ergänzende Hilfe zum Lebensunterhalt oder
+b) andere Hilfen in einer stationären Einrichtung, die den Lebensunterhalt umfassen,
+nach dem Bundesversorgungsgesetz oder nach einem Gesetz, das dieses für anwendbar erklärt,
+8. Leistungen in besonderen Fällen und Grundleistungen nach dem Asylbewerberleistungsgesetz
+oder
+9. Leistungen nach dem Achten Buch Sozialgesetzbuch in Haushalten, zu denen ausschließlich
+Personen gehören, die diese Leistungen empfangen.
+Seite 3 von 6
+BD_6.8.3.L.4120001.8
+VORSCHAU
+Wer vorsätzlich oder leichtfertig - entgegen seiner Verpflichtung nach § 23 Absatz 1 Satz 1, Absatz 2
+oder Absatz 3 WoGG, auf Verlangen der Wohngeldbehörde Auskünfte zu geben, solche Auskünfte
+nicht, nicht richtig, nicht vollständig oder nicht rechtzeitig gibt oder - entgegen der Verpflichtung nach
+§ 23 Absatz 1 Satz 3 WoGG im Wohngeldantrag und im Erhöhungsantrag eine Angabe nicht richtig
+macht oder - entgegen seinen Mitteilungspflichten nach § 27 Absatz 3 Satz 1 und Absatz 4 oder § 28
+Absatz 1 Satz 2 oder Absatz 4 Satz 1 eine für den Wohngeldanspruch erhebliche Änderung in den
+Verhältnissen zur Haushaltsgröße, zu den vom Wohngeld ausgeschlossenen Haushaltsmitgliedern,
+zur monatlichen Miete oder Belastung sowie zum Gesamteinkommen, auch für zurückliegende
+Zeiträume nicht, nicht richtig, nicht vollständig oder nicht rechtzeitig mitteilt handelt ordnungswidrig.
+Die Ordnungswidrigkeit kann mit einer Geldbuße bis zu 2.000 € geahndet werden.
+Rechtsbehelfsbelehrung
+Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Widerspruch bei der Stadt
+Frankfurt am Main Der Magistrat Amt für Wohnungswesen erhoben werden.
+Sofern der Bescheid mit einer Auflage verbunden ist, kann Widerspruch auch nur gegen die Auflage
+erhoben werden.
+Dafür stehen folgende Möglichkeiten zur Verfügung:
+1. Schriftlich oder zur Niederschrift:
+Der Widerspruch kann schriftlich oder zur Niederschrift erhoben werden.
+Die Anschrift lautet: Adickesallee 67/69, 60322 Frankfurt am Main.
+2. Auf elektronischem Weg:
+Der Widerspruch kann auch elektronisch eingelegt werden. Die Übermittlung eines Widerspruchs in
+elektronischer Form kann gegenwärtig über das besondere elektronische Behördenpostfach
+(beBPO) erfolgen.
+Hinweise zur Rechtsbehelfsbelehrung:
+Die Einlegung eines Widerspruchs per einfacher E-Mail ist nicht zulässig und entfaltet keine
+rechtlichen Wirkungen. Dies betrifft auch per einfacher E-Mail übersandte Anhänge (z.B. als PDF
+oder JPG) mit Unterschrift. Um am elektronischen Rechtsverkehr teilnehmen zu können, müssen Sie
+sich zuvor auf der Internetseite https://mein-justizpostfach.bund.de/ ein persönliches Postfach für die
+Kommunikation mit Behörden und der Justiz einrichten.
+Hinweise
+Wohngeld kann auf Antrag für die Zeit nach Ablauf des Bewilligungszeitraums weitergeleistet
+werden. Damit das Wohngeld ohne Unterbrechung weitergezahlt werden kann, ist es notwendig,
+rechtzeitig – spätestens im Monat nach Ablauf des Bewilligungszeitraums – einen
+Weiterleistungsantrag zu stellen. Er sollte jedoch nicht früher als zwei Monate vor Ablauf des
+Bewilligungszeitraums gestellt werden. Hat sich im laufenden Bewilligungszeitraum die Zahl der zu
+berücksichtigenden Haushaltsmitglieder erhöht, die berücksichtigende Miete / Belastung um mehr
+als 10 Prozent erhöht (soweit die Obergrenze von 769,80 € noch nicht erreicht ist) oder das
+Gesamteinkommen um mehr als 10 Prozent verringert, wird Wohngeld auf Antrag neu bewilligt,
+wenn dies zu einer Erhöhung des Wohngeldes führt.
+Seite 4 von 6
+VORSCHAU
+Das Wohngeld wird als Zuschuss zur Miete / Belastung der Wohnung, für die das Wohngeld
+beantragt wurde, gewährt und ist für diesen Zweck zu verwenden.
+Der Bewilligungsbescheid wird vom Ersten des Monats an unwirksam, in dem der Wohnraum, für
+den Wohngeld bewilligt ist, von keinem zu berücksichtigenden Haushaltsmitglied mehr genutzt wird.
+Der Wohngeldanspruch fällt ferner für den Monat weg, in dem das Wohngeld vollständig oder
+überwiegend nicht zur Bezahlung der Miete oder zur Aufbringung der Belastung verwendet wird.
+Weiterhin wird der Bewilligungsbescheid von dem Zeitpunkt an unwirksam, ab dem ein
+berücksichtigtes Haushaltsmitglied nach §§ 7 und 8 Abs. 1 WoGG vom Wohngeld ausgeschlossen
+ist.
+Zu Unrecht erhaltene Leistungen sind zu erstatten.
+Ist Wohngeld nach § 50 des Zehnten Buches Sozialgesetzbuch (SGB X) zu erstatten, haften neben
+der wohngeldberechtigten Person die volljährigen und bei der Berechnung des Wohngeldes
+berücksichtigten Haushaltsmitglieder als Gesamtschuldner.
+Kennen Sie schon den Kinderzuschlag?
+Der Kinderzuschlag wird zusätzlich zum Wohngeld an Elternpaare und Alleinerziehende gezahlt.
+Prüfen Sie, ob ein Anspruch besteht: Voraussetzung ist, dass für die Kinder das Kindergeld (oder
+eine vergleichbare Leistung) bezogen wird, sie im elterlichen Haushalt leben, unter 25 Jahre alt und
+nicht verheiratet bzw. nicht verpartnert sind. Zudem muss Ihr monatliches Bruttoeinkommen
+mindestens 900 Euro (Elternpaare) oder 600 Euro (Alleinerziehende) betragen. Das Wohngeld wird
+bei der Berechnung des Kinderzuschlags nicht als Einkommen angerechnet.
+Mit dem KiZ-Lotsen können Sie einfach ermitteln, ob der Kinderzuschlag für Sie in Frage kommt:
+www.familienkasse.de. Sie können auf dieser Internetseite auch den Kinderzuschlag online
+beantragen und die erforderlichen Nachweise hochladen. Telefonisch ist die Familienkasse
+gebührenfrei unter 0800 4 555530 erreichbar.
+Elternbeiträge für die Betreuung von Kindern in Tageseinrichtungen (z. B. Kinderkrippen oder
+Kindergärten) und Kindertagespflege sind bis zum Schuleintritt Familien im Wohngeldbezug nicht
+zuzumuten und werden auf Antrag vom zuständigen Träger der öffentlichen Jugendhilfe erlassen
+bzw. übernommen.
+Möglicherweise kann auf gesonderten Antrag der wohngeldberechtigten Person beim ARD ZDF
+Deutschlandradio Beitragsservice (ehemals GEZ) in Härtefällen eine Befreiung von der
+Rundfunkbeitragspflicht eingeräumt werden. Ein Härtefall liegt vor, wenn die
+Einkommensüberschreitung, wegen derer eine bestimmte Sozialleistung (wie etwa der Hilfe zum
+Lebensunterhalt, der Grundsicherung im Alter und bei Erwerbsminderung, Bürgergeld) mangels
+Hilfebedürftigkeit versagt worden ist, niedriger ist, als der Rundfunkbeitrag (vgl. § 4 Abs. 6 des
+Rundfunkbeitragsstaatsvertrags der Länder).
+Diesem Bescheid ist die Bescheinigung - Hessenpass mobil - beigefügt, die Sie zum Erwerb eines
+vergünstigten Flatrate-Tickets für den öffentlichen Personennahverkehr berechtigt. Weitere
+Informationen entnehmen Sie bitte der Bescheinigung.
+Seite 5 von 6
+BD_6.8.3.L.4120001.8
+VORSCHAUVORSCHAU
+Dieser Bescheid wurde mit Hilfe einer automatischen Einrichtung erlassen und ist nach § 33 Abs. 5
+SGB X auch ohne Unterschrift und Namenswiedergabe rechtswirksam.
+Mit freundlichen Grüßen
+Ihre Wohngeldbehörde
+Seite 6 von 6
