@@ -48,17 +48,18 @@ check('Zusammenfassung zeigt Anzahl', /\d+ wahrscheinlich/.test(d.getElementById
 check('Unwahrscheinliche Leistungen sind eingeklappt gruppiert', d.querySelector('.neinbox') !== null && d.querySelector('.neinbox').open === false);
 check('Hinweis auf Beispielwerte sichtbar', d.getElementById('sampleNotice').hidden === false);
 check('Übersetzungs-Hinweis bei Deutsch versteckt', d.getElementById('transNotice').hidden === true);
-check('Treffer: Hinweis auf Unterlagen und nächste Schritte in der Antragsmappe', /Antragsmappe/.test((card('Wohngeld').querySelector('.karte-mappe') || {}).textContent || ''));
+check('Treffer: aufgeklappte Karte mit Knopf „Antrag vorbereiten“ (öffnet die Antragsmappe mit dieser Leistung)', ((card('Wohngeld').querySelector('[data-antrag="wohngeld"]') || {}).textContent || '') === I18N.de['akt.antrag']);
 check('Zusammenspiel-Hinweis Wohngeld und Kinderzuschlag steht in beiden Karten', /kombinieren/.test(d.getElementById('c-wohngeld').textContent) && /kombinieren/.test(d.getElementById('c-kiz').textContent));
 check('Neue Karten vorhanden', ['Grundsicherungsgeld', 'Unterhaltsvorschuss', 'BAföG', 'Pflegegeld und Entlastungsbetrag', 'Kindergeld'].every((n) => names().includes(n)));
 check('Unterhaltsvorschuss im Beispiel 1 wahrscheinlich', level('Unterhaltsvorschuss') === 'ja');
 
 // Beispiel 2
 beispiel('p2');
-check('Beispiel 2: Grundsicherung im Alter wahrscheinlich', level('Grundsicherung im Alter und bei voller Erwerbsminderung') === 'ja', pills() + '');
+// Seit 21.11.2026: zwei Wege (Grundsicherung im Alter oder Wohngeld), hier knapp: beide „möglich“ (docs/entwuerfe/entweder-oder.md)
+check('Beispiel 2: Grundsicherung im Alter und Wohngeld beide „möglich“ (zwei Wege, Abstand unter 50 €)', level('Grundsicherung im Alter und bei voller Erwerbsminderung') === 'vielleicht' && level('Wohngeld') === 'vielleicht' && !!d.getElementById('wege'), pills() + '');
 check('Beispiel 2 füllt Formular und Auswahlfelder', d.getElementById('ek1Art').value === 'rente' && d.getElementById('ek1Brutto').value === '880' && d.getElementById('gebJahr').value === '1955' && d.getElementById('mietstufe').value === '3');
-check('Beispiel 2: Kasten „Entweder oder“ mit Links zu beiden Karten', !!d.getElementById('entwederOder') && !!d.querySelector('#entwederOder a[href="#c-gsa"]') && !!d.querySelector('#entwederOder a[href="#c-wohngeld"]') && !d.getElementById('zweiWege'));
-check('Beispiel 2: Entweder-oder-Hinweis in den Karten Grundsicherung im Alter und Wohngeld', /nicht gleichzeitig/.test(d.getElementById('c-gsa').textContent) && /nicht gleichzeitig/.test(d.getElementById('c-wohngeld').textContent));
+check('[wege] Beispiel 2: Rahmen „Entweder oder“ mit den Karten Grundsicherung im Alter und Wohngeld, „oder“ dazwischen', !!d.querySelector('#wege #c-gsa') && !!d.querySelector('#wege #c-wohngeld') && !!d.querySelector('#wege .weg-oder'));
+check('[wege] Beispiel 2: Satz zur Lage sichtbar (nicht zugeklappt), Namen beschreibend statt „Weg 1/2“', d.querySelector('#wege .wege-lage').textContent.length > 20 && !d.querySelector('#wege .wege-lage').closest('details') && !/Weg [12]/.test(d.getElementById('wege').textContent));
 check('Ohne Kinder sind Kinder-Fragen ausgeblendet', [...d.querySelectorAll('.cond-kids')].every((e) => e.hidden === true));
 
 // Eingabe ändern
@@ -182,14 +183,14 @@ check('Auswahl für die Mappe nennt die passenden Leistungen (Haken, Weg-Leistun
   const radios = wegRadios(), werte = radios.map((r) => r.value).join();
   check('[weg] Beispiel 1: Wahl des Wegs mit drei Optionsfeldern (a, b, Ich weiß es noch nicht), genau eins gewählt', radios.length === 3 && werte === 'a,b,offen' && radios.filter((r) => r.checked).length === 1, werte);
   check('[weg] Beschreibende Namen statt „Weg A/B“', !/Weg [AB12]\b/.test(d.getElementById('pick').textContent) && d.getElementById('pick').textContent.indexOf(I18N.de['f.weg.offen']) >= 0);
-  check('[weg] Satz „Beträge nicht zusammenzählen“ steht bei der Wahl', d.querySelector('.weg-wahl').textContent.indexOf(I18N.de['f.weg.nichtZaehlen']) >= 0);
+  check('[weg] Satz „Beträge nicht zusammenzählen“ steht bei der Wahl', d.querySelector('.weg-wahl').textContent.indexOf(I18N.de['weg.nichtZaehlen']) >= 0);
   check('[weg] Weg-Leistungen haben keine eigenen Haken', !ids.includes('ggeld') && !ids.includes('wohngeld') && !ids.includes('kiz'), ids.join());
   check('[vorauswahl] Geld-Leistungen mit Betrag vorab angehakt (Kindergeld, Unterhaltsvorschuss), WBS/Rundfunk nicht', an('kindergeld') && an('uvg') && !an('wbs') && !an('rundfunk'), ids.map((i) => i + ':' + an(i)).join());
   check('[vorauswahl] WBS und Rundfunk zugeklappt unter „Weitere Hilfen“', !!d.querySelector('#pick .pick-spaeter [data-pick="wbs"]'));
   check('[vorauswahl] Kein Satz „siehe Tipp oben“ mehr', !/Tipp oben/.test(d.getElementById('pick').textContent) && !('f.pickWege' in I18N.de));
   // Weg „Ich weiß es noch nicht“: nichts aus der Gruppe, Notfall-Satz
   const offen = radios.find((r) => r.value === 'offen'); offen.checked = true; fire(offen, 'change');
-  check('[weg] „Ich weiß es noch nicht“: Satz zur Lage und Notfall-Satz', d.getElementById('pick').textContent.indexOf(I18N.de['f.weg.dringend']) >= 0);
+  check('[weg] „Ich weiß es noch nicht“: Satz zur Lage und Notfall-Satz', d.getElementById('pick').textContent.indexOf(I18N.de['weg.dringend']) >= 0);
   const a = wegRadios().find((r) => r.value === 'a'); a.checked = true; fire(a, 'change');
 }
 check('Mappe ist anfangs geschlossen', d.getElementById('mappe').hidden === true);
@@ -197,7 +198,7 @@ check('Mappe ist anfangs geschlossen', d.getElementById('mappe').hidden === true
 wegRadios().filter((r) => r.value === 'offen').forEach((r) => { r.checked = true; fire(r, 'change'); });
 pickBoxes().forEach((cb) => { cb.checked = false; fire(cb, 'change'); });
 d.getElementById('mappeMake').click();
-check('[hilfen-aufraeumen] Grüner Knopf direkt unter den passenden Karten, kein Kasten „Ausfüllhilfe“ im Ergebnis', (() => { const k = d.getElementById('mappeKnopf'); return k && !k.hidden && !d.getElementById('ergebnis').contains(d.getElementById('p-name')); })());
+check('[hilfen-aufraeumen] Grüner Knopf „Antrag vorbereiten“ direkt unter den passenden Karten, kein Kasten „Ausfüllhilfe“ im Ergebnis', (() => { const k = d.getElementById('mappeKnopf'), letzte = cards().filter((c) => /pill (ja|vielleicht)/.test(c.querySelector('.pill').className)).pop(); return k && !k.hidden && (k.previousElementSibling === letzte || k.previousElementSibling.contains(letzte)) && d.getElementById('mappeMake').textContent === I18N.de['akt.antrag'] && !d.getElementById('ergebnis').contains(d.getElementById('p-name')); })());
 check('Ohne Auswahl: Mappe öffnet mit Auswahl und Hinweis, keine leeren Briefe, Schritte 2–4 ausgeblendet', d.getElementById('mappe').hidden === false && d.getElementById('pickMsg').textContent === I18N.de['f.pick0'] && !d.querySelector('#mappeBody .page') && d.getElementById('auf-antraege').hidden && d.getElementById('auf-unterlagen').hidden);
 check('[aufgaben] Erster Punkt der Aufgabenliste: „Deine Angaben für die Briefe“ mit Status „fehlt noch“, aufgeklappt', d.querySelector('#mappeAufgaben > li').id === 'auf-angaben' && d.getElementById('statAngaben').textContent === I18N.de['f.st.fehlt'] && d.getElementById('aufAngaben').open);
 check('[absender] Kompakt: Name, Straße, PLZ und Ort sichtbar; Geburtsdatum und Telefon unter „mehr“', !d.getElementById('p-name').closest('details.mehr') && !!d.getElementById('p-geb').closest('details.mehr') && !!d.getElementById('p-tel').closest('details.mehr'));
@@ -325,7 +326,7 @@ setTimeout(() => {
   check('Titel ist ein Name', title === 'SoLo – Sozialleistungslotse');
   check('Dunkelmodus doppelt definiert', (html.match(/color-scheme: dark/g) || []).length >= 2);
   check('Kein horizontales Scrollen erzwungen', !/min-width:\s*\d{4,}px/.test(html));
-  check('Große Schrift: Kartentitel brechen lange Wörter um (kein seitliches Scrollen)', /\.card header > div \{ min-width: 0;/.test(html) && /\.card header h3, \.card \.desc, \.es-karte h3 \{ overflow-wrap: anywhere; hyphens: auto; \}/.test(html));
+  check('Große Schrift: Kartentitel brechen lange Wörter um (kein seitliches Scrollen)', /\.card header > div \{ min-width: 0;/.test(html) && /\.card header h3 \{ overflow-wrap: break-word; hyphens: manual;/.test(html));
   check('Logische statt physische Abstände im Formular (RTL-fähig)', !/\.money input\s*\{[^}]*padding-right/.test(html) && /inset-inline-end/.test(html));
   check('Jedes Formularfeld hat eine Beschriftung', ['miete', 'mietstufe', 'ek1Art', 'ek1Brutto', 'ek1Netto', 'ek2Art', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'vermoegen', 'gebJahr', 'kindEink', 'ausbildung', 'pflegegrad', 'p-name', 'p-geb', 'p-strasse', 'p-ort', 'p-tel'].every((id) => d.querySelector('label[for="' + id + '"]')));
   // Grenze 6 MB (Entscheidung David 20.11.2026; davor 5 MB; bis 1.4: 2,5 MB; 19.11.2026: 3 MB für 13 Sprachen; 20.11.2026: 4 MB für Vorgänge speichern, Beratungsmodus, Pflege-Unterstützung, Schulden-Tipps, Haushaltsplan; 20.11.2026 nachmittags: 5 MB für Fristen, Schuldenliste, Energie, Mietgrenze, Kostensenkung, Paar-Einkommen – Entscheidung des Nutzers): eine einzige Datei, die offline läuft; der größte Teil sind PLZ-Daten (ganz Deutschland mit Mietenstufen), Behörden (Bayern), 13 Sprachen,
@@ -352,7 +353,7 @@ setTimeout(() => {
   check('Scan: IBAN wird nie vorausgefüllt, steht in der Liste zum Selbst-Eintragen (zum Abhaken)', !rowOf('IBAN').querySelector('bdi') && !!rowOf('IBAN').querySelector('input[type=checkbox]') && /selbst/.test(d.getElementById('sc-out').textContent));
   check('Scan: Antragswort "Antrag auf Wohngeld" ist kein Feld', !rowOf('Antrag auf Wohngeld'));
   setLang('tr');
-  check('Scan: Erklärung folgt der Sprache (Türkisch), Wert bleibt deutsch', /adınız/.test(rowOf('Name, Vorname').textContent) && rowOf('Name, Vorname').querySelector('bdi').textContent === 'Maria Muster');
+  check('Scan: Erklärung folgt der Sprache (Türkisch, Du-Form), Wert bleibt deutsch', /adın/.test(rowOf('Name, Vorname').textContent) && rowOf('Name, Vorname').querySelector('bdi').textContent === 'Maria Muster');
   setLang('ar');
   check('Scan: Arabisch rendert, Formularzeile bleibt ltr/de', rowOf('Name, Vorname').querySelector('.sc-lab').getAttribute('dir') === 'ltr');
   setLang('de');

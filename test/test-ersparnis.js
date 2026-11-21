@@ -5,7 +5,8 @@ const R = require('../src/rules.js');
 let fails = 0;
 const check = (n, c, x) => { if (!c) { fails++; console.log('FAIL', n, x === undefined ? '' : JSON.stringify(x)); } else console.log('ok  ', n); };
 const card = (inp, id) => R.evaluate(inp).results.find((r) => r.id === id);
-const rentnerin = { adults: 1, kids: 0, young: 0, art1: 'rente', brutto: 900, netto: 800, miete: 500, mietstufe: 3, vermoegen: 4000, gebJahr: 1955, bezug: {}, heute: 2026.9 };
+// ohneWege: hier zählt nur der Vermögensschutz der Grundsicherung im Alter (Wohngeld ginge bei dieser Rente voraussichtlich vor)
+const rentnerin = { ohneWege: true, adults: 1, kids: 0, young: 0, art1: 'rente', brutto: 900, netto: 800, miete: 500, mietstufe: 3, vermoegen: 4000, gebJahr: 1955, bezug: {}, heute: 2026.9 };
 check('[verm-av] Riester/Rürup/Betriebsrente zählen nicht (GSA bleibt wahrscheinlich bei 50.000 € Riester)', card({ ...rentnerin, vermAV: 50000 }, 'gsa').level === 'ja');
 const lv = card({ ...rentnerin, vermLV: 9000 }, 'gsa');
 check('[verm-lv] Lebensversicherung über der Grenze: nur „möglich“ mit Hinweis', lv.level === 'vielleicht' && lv.tx.some((t) => t[0] === 'verm.lvUnsicher'), lv);

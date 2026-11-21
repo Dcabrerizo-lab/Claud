@@ -3,7 +3,8 @@
 const R = require('./rules-de.js');
 const KARTEN = require('./karten.js');
 require('./test-unterhalt-selbst.js'); // Musterfälle „Unterhalt für sich selbst“ (eigene Datei, läuft mit den Fall-Tests)
-const base = { adults: 1, kids: 0, young: 0, brutto: 0, brutto2: 0, netto: '', miete: 0, vermoegen: 0, bezug: {} };
+// ohneWege: Handrechnungen je Leistung (ohne die Lage der zwei Wege; die prüft test/test.js)
+const base = { ohneWege: true, adults: 1, kids: 0, young: 0, brutto: 0, brutto2: 0, netto: '', miete: 0, vermoegen: 0, bezug: {} };
 let n = 0, fails = 0;
 const ck = (name, c, x) => { n++; if (!c) { fails++; console.log('FAIL', name, x === undefined ? '' : x); } };
 const res = (o) => { const r = R.evaluate({ ...base, ...o }); const m = {}; r.results.forEach((x) => { m[x.id] = x; }); return { m, z: r.zusammen.map((a) => a[0]) }; };

@@ -10,7 +10,10 @@
 // Bekannte, schon vorgemerkte Lücken stehen in „bekannt“ und werden nur gemeldet (mit Verweis auf den Entwurf).
 // Aufruf: node test/test-abhaengigkeiten.js [Anzahl Haushalte, Standard 1500]   ·   --tabelle  gibt die beobachtete Tabelle aus
 'use strict';
-const Rules = require('../src/rules.js');
+// ohneWege: Eigenschaften je Leistung; die zwei Wege (Grundsicherungsgeld oder Wohngeld und Kinderzuschlag) koppeln Leistungen absichtlich
+// und haben eigene Tests in test/test.js
+const Rules0 = require('../src/rules.js');
+const Rules = Object.assign({}, Rules0, { evaluate: (e) => Rules0.evaluate(Object.assign({ ohneWege: true }, e)) });
 const KARTEN = require('./karten.js');
 const SOLL = require('./abhaengigkeiten.json');
 

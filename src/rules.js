@@ -38,6 +38,10 @@ const Rules = (function () {
       abzugMittel: 0.8
     },
     grundsicherung: { schonAllein: 10000, schonPaar: 20000, knappPuffer: 100, sicherAb: 50 },
+    // Entweder-oder (Grundsicherungsgeld oder Wohngeld und Kinderzuschlag; Grundsicherung im Alter oder Wohngeld): Abstand, ab dem die App
+    // einen Weg als voraussichtlich vorrangig zeigt. Liegt Weg „Wohngeld (und Kinderzuschlag)“ weniger als 50 € neben der Lücke, bleibt es offen
+    // (Produktentscheidung 21.11.2026, docs/entwuerfe/entweder-oder.md Abschnitt 4: die Beträge sind Schätzungen).
+    wege: { puffer: 50 },
     // § 12 Abs. 2 SGB II (neue Grundsicherung ab 1.7.2026): bis zur Vollendung des 30. Lebensjahres 5.000 €, ab dem 30. Geburtstag 10.000 €,
     // ab dem 40. 12.500 €, ab dem 50. 20.000 € je Person
     sgb2: { schon: { '': 10000, '<30': 5000, '30-39': 10000, '40-49': 12500, '50+': 20000 } },
@@ -780,6 +784,8 @@ const Rules = (function () {
       fehlt: { einkommen: !liste && blank(inp.brutto), netto: !liste && blank(inp.netto), vermoegen: blank(inp.vermoegen), miete: blank(inp.miete) && inp.wohnform !== 'heim' && inp.wohnform !== 'eltern' },
       adults, kids, kidsU6, kids14, young, persons, brutto, brutto2, erwerb: liste ? liste.some((x) => x[0] === 'lohn' && x[5] === 1) : pers[0][0] === 'lohn', erwerb2: liste ? liste.some((x) => x[0] === 'lohn' && x[5] === 2) : art2 === 'lohn', netto, nettoGiven, nettoGeschaetzt, kapJahr, kapWG, miete, vermoegen, unterhalt, regel, regelElt,
       children: kids + young,
+      // Nur für Regeltests (Handrechnungen einzelner Leistungen): jede Leistung für sich, ohne die Lage der zwei Wege (wegeLage, wegeAnwenden)
+      ohneWege: inp.ohneWege === true,
       alleinerz: adults === 1 && kids > 0,
       stufe: [1, 2, 3, 4, 5, 6, 7].indexOf(Number(inp.mietstufe)) >= 0 ? Number(inp.mietstufe) : null,
       alter,
@@ -1283,9 +1289,57 @@ const Rules = (function () {
     const behTx = (mb.fest ? [['mehr.teilhabe', { betrag: eur(mb.fest) }]] : []).concat(mb.offen - ma.offen ? [['ggeld.mehrBeh']] : [],
       h.bhPerson === 'erwVor25' && h.erwerbsgemindert ? [['ggeld.kindGsa']] : [], ma.tx, h.schwanger ? [['mehr.erstausstattung']] : [],
       h.kids > 0 && h.land && h.land !== 'BY' ? [['ggeld.schulbuch']] : [], h.miete > 0 ? [['kdu.angemessen']] : []);
-    if (luecke >= R.grundsicherung.sicherAb) return mk(id, 'ja', 'ja', bedarfTx('ja', bedarf).concat([['schaetz.eins', { a: eur(r10(luecke)) }]], behTx));
-    if (luecke > -(R.grundsicherung.knappPuffer + mb.offen + (h.mehrAEhoch || 0) - (h.mehrAE || 0))) return mk(id, 'vielleicht', 'vielleicht', bedarfTx('vielleicht', bedarf).concat(behTx));
-    return mk(id, 'nein', 'einkoHoch', bedarfTx('nein', bedarf));
+    let r;
+    if (luecke >= R.grundsicherung.sicherAb) r = mk(id, 'ja', 'ja', bedarfTx('ja', bedarf).concat([['schaetz.eins', { a: eur(r10(luecke)) }]], behTx));
+    else if (luecke > -(R.grundsicherung.knappPuffer + mb.offen + (h.mehrAEhoch || 0) - (h.mehrAE || 0))) r = mk(id, 'vielleicht', 'vielleicht', bedarfTx('vielleicht', bedarf).concat(behTx));
+    else return mk(id, 'nein', 'einkoHoch', bedarfTx('nein', bedarf));
+    // Vorrangige Leistungen (§ 12a Satz 1 und Satz 2 Nr. 2 SGB II): Reichen Wohngeld und Kinderzuschlag zusammen mit dem Einkommen für den
+    // Bedarf, gehen sie vor; dann gibt es kein Grundsicherungsgeld (https://www.gesetze-im-internet.de/sgb_2/__12a.html, Abruf 21.11.2026;
+    // Fachliche Weisungen der BA zu § 12a SGB II, Stand 01.07.2026, Rz. 12a.11 bis 12a.13, https://www.arbeitsagentur.de/datei/dok_ba029240.pdf,
+    // Abruf 21.11.2026). Bis 21.11.2026 rechnete die App die Lücke ohne diese Leistungen und zeigte alle drei Karten „wahrscheinlich“ mit Betrag
+    // (docs/entwuerfe/entweder-oder.md, Befunde 1 und 2). Die 3-Monats-Prognose kann die App nicht rechnen: darum „voraussichtlich“.
+    return wegeLage(r, wegA(h), luecke, h);
+  }
+  // Was Weg „Wohngeld und Kinderzuschlag“ vorsichtig gerechnet bringt: Wohngeld mit kleinem Abzug (wgVorsichtig, ohne Mietenstufe Stufe I)
+  // und der geschätzte Kinderzuschlag (untere Grenze). Nur Leistungen, die nach den Karten in Frage kommen. null: Weg gibt es nicht.
+  function wegA(h) {
+    if (h.bezug.grundsicherungsgeld || h.bezug.sozialamt) return null;
+    const offen = (x) => !!x && (x.level === 'ja' || x.level === 'vielleicht');
+    const wr = wohngeld(h), kr = h.children > 0 ? kinderzuschlag(h) : null;
+    if (!offen(wr) && !offen(kr)) return null;
+    const wg = offen(wr) ? wgVorsichtig(h) : 0;
+    let kz = 0;
+    if (offen(kr)) {
+      if (typeof kr.est === 'number') kz = kr.est;
+      else { const s = kr.tx.find((t) => t[0] === 'schaetz.eins' || t[0] === 'schaetz.spanne'); kz = s ? s[1].a.eur : 0; }
+    }
+    return { wg, kz, summe: wg + kz, kzOffen: offen(kr), wgOffen: offen(wr), kzReicht: offen(kr) && kr.hl !== 'einkoNiedrig' };
+  }
+  // Lage der zwei Wege (docs/entwuerfe/entweder-oder.md, Abschnitt 4; Puffer R.wege.puffer):
+  // aVor     – Wohngeld (und Kinderzuschlag) decken die Lücke: sie gehen voraussichtlich vor. Grundsicherungsgeld höchstens „möglich“, ohne Betrag.
+  // wahl     – es fehlen höchstens 100 € (erweiterter Zugang zum Kinderzuschlag, § 6a Abs. 1a BKGG, Absetzbeträge aus Arbeit mind. 100 €;
+  //            https://www.gesetze-im-internet.de/bkgg_1996/__6a.html, DA-KiZ Stand 20.02.2026 C.4.2, Abruf 21.11.2026): echte Wahl.
+  // bUeblich – Wohngeld (und Kinderzuschlag) reichen nicht: Grundsicherungsgeld ist der übliche Weg, Wohngeld nur durch Verzicht
+  //            (§ 8 Abs. 2 WoGG, https://www.gesetze-im-internet.de/wogg/__8.html, Abruf 21.11.2026).
+  // unklar   – weniger als 50 € Abstand: beide Wege „möglich“, kein Vorrang-Satz.
+  // rente: Grundsicherung im Alter oder Wohngeld; Sozialhilfe ist nachrangig (§ 2 Abs. 1 SGB XII, https://www.gesetze-im-internet.de/sgb_12/__2.html,
+  // Abruf 21.11.2026), Wohngeld nur durch Verzicht (§ 8 Abs. 2 WoGG). Ohne erweiterten Zugang.
+  function wegeLage(r, a, luecke, h, rente) {
+    if (!a || h.ohneWege) return r;
+    const d = a.summe - luecke, P = R.wege.puffer;
+    let lage;
+    if (d >= P) lage = 'aVor';
+    else if (d > -P) lage = 'unklar';
+    // Wahl nur, wenn auch die Karte Kinderzuschlag den erweiterten Zugang für erreichbar hält (kizRechnung0: nicht „Einkommen eher zu niedrig“)
+    else if (!rente && a.kzReicht && h.children > 0 && -d <= R.kiz.erweitert + P && haushaltsFreibetrag(h) >= R.kiz.erweitert) lage = 'wahl';
+    else lage = 'bUeblich';
+    let out = r;
+    if (lage === 'aVor') {
+      // Kein Betrag: Laien zählen ihn sonst zu Wohngeld und Kinderzuschlag dazu
+      const key = rente ? 'gsa.vorrang' : a.kzOffen ? (a.wg > 0 || a.wgOffen ? 'ggeld.vorrang' : 'ggeld.vorrangKiz') : 'ggeld.vorrangWg';
+      out = mk(r.id, 'vielleicht', 'vorrang', [[key]].concat(r.tx.filter((t) => t[0].indexOf('schaetz.') !== 0)));
+    } else if (lage === 'unklar') out = mk(r.id, 'vielleicht', r.level === 'ja' ? 'vielleicht' : r.hl, r.tx.concat([['weg.unklar']]));
+    return Object.defineProperty(out, 'lage', { value: lage }); // nicht aufzählbar: nur für evaluateKern
   }
 
   // ---------------------------------------------------------------
@@ -1457,12 +1511,19 @@ const Rules = (function () {
     // der Stadt Bochum: Ehepaar, beide G). Bei Paaren deshalb ein Hinweis, dass der Betrag dann höher ist (vorsichtige Seite).
     if (h.mzG && h.adults === 2 && !eigen) extra.push(['gsa.mzGBeide', { betrag: eur(R.mehr.g * regelP) }]);
     const ja = !h.alterGrenz;
+    let r;
     if (luecke >= R.grundsicherung.sicherAb) {
       const sch = offen ? ['schaetz.mind', { a: eur(r10(luecke)) }] : ['schaetz.eins', { a: eur(r10(luecke)) }];
-      return mk(id, ja ? 'ja' : 'vielleicht', ja ? 'ja' : 'vielleicht', bedarfTx('ja', bedarf).concat([sch], extra));
-    }
-    if (luecke > -(R.grundsicherung.knappPuffer + offen)) return mk(id, 'vielleicht', 'vielleicht', bedarfTx('vielleicht', bedarf).concat(extra));
-    return mk(id, 'nein', 'einkoHoch', bedarfTx('nein', bedarf));
+      r = mk(id, ja ? 'ja' : 'vielleicht', ja ? 'ja' : 'vielleicht', bedarfTx('ja', bedarf).concat([sch], extra));
+    } else if (luecke > -(R.grundsicherung.knappPuffer + offen)) r = mk(id, 'vielleicht', 'vielleicht', bedarfTx('vielleicht', bedarf).concat(extra));
+    else return mk(id, 'nein', 'einkoHoch', bedarfTx('nein', bedarf));
+    // Wohngeld geht vor, wenn es zusammen mit der Rente reicht (§ 2 Abs. 1 SGB XII; § 7 Abs. 1 Satz 1 Nr. 5 und Satz 3 Nr. 2 WoGG,
+    // https://www.gesetze-im-internet.de/wogg/__7.html, Abruf 21.11.2026). Nur im eigenen Haushalt (bei den Eltern oder im Wohnheim kein Wohngeld).
+    if (eigen || offen) return r;
+    const wr = wohngeld(h);
+    if (wr.level !== 'ja' && wr.level !== 'vielleicht') return r;
+    const wg = wgVorsichtig(h);
+    return wegeLage(r, { wg, kz: 0, summe: wg, kzOffen: false }, luecke, h, true);
   }
 
   // ---------------------------------------------------------------
@@ -2456,6 +2517,34 @@ const Rules = (function () {
       wohngeld: R.wohngeld.vermoegenErste + R.wohngeld.vermoegenJeWeitere * (h.persons - 1),
       kiz: h.persons <= 2 ? R.kiz.vermZwei : R.kiz.vermDrei + R.kiz.vermJeWeiteres * (h.persons - 3) };
   }
+  // Zwei Wege für die Anzeige (Ergebnisliste und Antragsmappe): Lage aus ggeldRechnung0 / grundsicherungAlter (wegeLage). Weichen die
+  // Rechnungen mit neuer Leistung (zukunft) oder angemessener Miete (kduGrenze) voneinander ab, ist die Lage „unklar“.
+  // Passt Wohngeld nach § 8 Abs. 2 WoGG nur durch Verzicht (bUeblich), zeigt die Wohngeld-Karte höchstens „möglich“ mit Hinweis.
+  // Ergebnis: null oder { lage, rente, a: [ids Weg Wohngeld (und Kinderzuschlag)], b: [Grundsicherungsgeld bzw. Grundsicherung im Alter],
+  //   aBetrag, bBetrag: { lo, hi, mind } (Summe der Schätzungen, mind: nicht für jede Leistung ein Betrag) oder null }
+  function wegeAnwenden(h, wg, kz, gg, gsa, lagen, lagenR) {
+    const offen = (x) => !!x && (x.level === 'ja' || x.level === 'vielleicht');
+    const kappe = (r) => { if (r.level === 'ja') { r.level = 'vielleicht'; if (r.hl === 'ja') r.hl = 'vielleicht'; } };
+    const zu = (r, key) => { if (!r.tx.some((t) => t[0] === key)) r.tx = r.tx.concat([[key]]); };
+    const lageAus = (l) => (l.every((x) => x === l[0]) ? l[0] || 'unklar' : 'unklar');
+    let rente = false, b, a, lage;
+    if (offen(gg) && !h.bezug.grundsicherungsgeld && !h.bezug.sozialamt && (offen(wg) || offen(kz))) { b = gg; a = [wg, kz].filter(offen); lage = lageAus(lagen); }
+    else if (offen(gsa) && offen(wg)) { rente = true; b = gsa; a = [wg]; lage = lageAus(lagenR); }
+    else return null;
+    if (lage === 'unklar') a.concat([b]).forEach((r) => { kappe(r); if (r.hl !== 'vorrang') zu(r, 'weg.unklar'); });
+    if (lage === 'bUeblich') { kappe(wg); zu(wg, rente ? 'wohngeld.verzichtGsa' : offen(kz) ? 'wohngeld.verzichtKiz' : 'wohngeld.verzicht'); }
+    const spanne = (rs) => {
+      let lo = 0, hi = 0, mind = false, irgend = false;
+      rs.forEach((r) => {
+        const s = r.tx.find((t) => /^schaetz\.(eins|spanne|bis|mind)$/.test(t[0]));
+        if (!s) { mind = true; return; }
+        irgend = true;
+        if (s[0] === 'schaetz.eins') { lo += s[1].a.eur; hi += s[1].a.eur; } else if (s[0] === 'schaetz.spanne') { lo += s[1].a.eur; hi += s[1].b.eur; } else if (s[0] === 'schaetz.bis') { hi += s[1].b.eur; mind = true; } else { lo += s[1].a.eur; hi += s[1].a.eur; mind = true; }
+      });
+      return irgend ? { lo: eur(lo), hi: eur(hi), mind } : null;
+    };
+    return { lage, rente, a: a.map((r) => r.id), b: [b.id], aBetrag: spanne(a), bBetrag: b.hl === 'vorrang' ? null : spanne([b]) };
+  }
   function evaluateKern(inp) {
     const h = derive(inp);
     const kg = kindergeld(h);
@@ -2464,13 +2553,17 @@ const Rules = (function () {
     let wg = wohngeld(h);
     let kz = kinderzuschlag(h);
     let gg = grundsicherungsgeld(h);
-    if (zk) { wg = mitZukunft(wg, wohngeld(zk.h), zk); kz = mitZukunft(kz, kinderzuschlag(zk.h), zk); gg = mitZukunft(gg, grundsicherungsgeld(zk.h), zk); }
+    const lagen = [gg.lage];
+    if (zk) { wg = mitZukunft(wg, wohngeld(zk.h), zk); kz = mitZukunft(kz, kinderzuschlag(zk.h), zk); const ggZ = grundsicherungsgeld(zk.h); lagen.push(ggZ.lage); gg = mitZukunft(gg, ggZ, zk); }
     const kdu = kduGrenze(h);
-    if (kdu && h.miete > kdu) gg = mitKdu(gg, grundsicherungsgeld(Object.assign({}, h, { miete: kdu })), kdu);
-    const but = bildungTeilhabe(h, wg, kz, gg);
-    const uvg = unterhaltsvorschuss(h, gg);
+    if (kdu && h.miete > kdu) { const ggK = grundsicherungsgeld(Object.assign({}, h, { miete: kdu })); lagen.push(ggK.lage); gg = mitKdu(gg, ggK, kdu); }
     let gsa = grundsicherungAlter(h);
-    if (kdu && h.miete > kdu) gsa = mitKdu(gsa, grundsicherungAlter(Object.assign({}, h, { miete: kdu })), kdu);
+    const lagenR = [gsa.lage];
+    if (kdu && h.miete > kdu) { const gsaK = grundsicherungAlter(Object.assign({}, h, { miete: kdu })); lagenR.push(gsaK.lage); gsa = mitKdu(gsa, gsaK, kdu); }
+    // Bildung und Teilhabe gibt es auf beiden Wegen (§ 6b BKGG, § 28 SGB II): Einstufung vor dem Kappen bei unklarem Weg
+    const but = bildungTeilhabe(h, wg, kz, gg);
+    const wege = h.ohneWege ? null : wegeAnwenden(h, wg, kz, gg, gsa, lagen, lagenR);
+    const uvg = unterhaltsvorschuss(h, gg);
     const baf = bafoeg(h);
     const pf = pflege(h);
     const hzp = hilfeZurPflege(h), blh = blindenhilfe(h);
@@ -2485,7 +2578,7 @@ const Rules = (function () {
     const zus = zusammenspiel(h, results);
     // Hinweis zur vorrangigen Leistung vor den allgemeinen Hinweisen (nicht eingerechnet, Verfahren, Stichtag)
     if (zk) { const i = zus.findIndex((z) => ['z.grenzen', 'z.verfahren', 'z.stichtag'].indexOf(z[0]) >= 0); zus.splice(i < 0 ? zus.length : i, 0, ['z.zuk.' + zk.quelle]); }
-    return { h, results: sorted, zusammen: zus, grenzen: vermGrenzen(h) };
+    return { h, results: sorted, zusammen: zus, grenzen: vermGrenzen(h), wege };
   }
 
   return { evaluate, famversGrenze, pflegeLeistungen, pflegeFuer, pflegeKombi, nettoLohn, bruttoAusNetto, nettoRente, bruttoAusNettoRente, lohnAnnahmen, pfaendung, pfaendFreibetrag, pkonto, RULES: R, WG, limits, wgYmax, wgUeber12, wgMiete, wgCap, wgHeiz, wgHoechst, wgBetrag, roman, sgb2Freibetrag, kizWohnanteil, haushaltsFreibetrag, derive, NAMES, STEPS, RECHT, ZUST_LAND, zustLand };
