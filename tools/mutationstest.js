@@ -117,7 +117,7 @@ if (ANZAHL > 1) console.log('Teil ' + TEIL + '/' + ANZAHL + ': ' + MEINE.length 
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'mut-'));
 for (const d of ['src', 'test', 'docs', 'dist', 'tools/amtliche-rechner']) fs.cpSync(path.join(ROOT, d), path.join(tmp, d), { recursive: true });
 // Einzelne Dateien, die die Tests zusätzlich lesen (Name der App, Webseite)
-for (const f of ['site', 'datenschutz.html', 'README.md', 'app/capacitor.config.json', 'app/android/app/src/main/res/values/strings.xml', 'app/android/app/build.gradle', 'app/ios/App/App/Info.plist', 'app/ios/App/App.xcodeproj/project.pbxproj']) {
+for (const f of ['site', 'datenschutz.html', 'README.md', 'app/capacitor.config.json', 'app/android/app/src/main/res/values/strings.xml', 'app/android/app/build.gradle', 'app/android/app/src/debug/res/values/strings.xml', 'app/android/app/src/main/AndroidManifest.xml', 'app/ios/App/App/Info.plist', 'app/ios/App/App.xcodeproj/project.pbxproj']) {
   fs.mkdirSync(path.dirname(path.join(tmp, f)), { recursive: true });
   fs.cpSync(path.join(ROOT, f), path.join(tmp, f), { recursive: true });
 }
