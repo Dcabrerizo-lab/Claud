@@ -454,6 +454,9 @@
   "Termin am {datum}": "=",
   "Antworten bis {datum}": "=",
   "Wann ist der Termin? (steht im Brief)": "=",
-  "Bis wann? (Datum aus dem Brief)": "="
+  "Bis wann? (Datum aus dem Brief)": "=",
+  "Bescheid Grundsicherungsgeld prüfen": "=",
+  "Anhörung vor einer Entscheidung": "Anhörung: Das Amt fragt dich vor der Entscheidung",
+  "Unterlagen nachreichen": "="
  }
 }

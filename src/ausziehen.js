@@ -64,6 +64,7 @@ var Ausziehen = (function () {
   var BEREICHE = [
     { id: 'vorher', liste: true, punkte: [
       { id: 'leisten', knopf: 'plan' },
+      // § 22 Abs. 5 SGB II: gilt für alle unter 25, die nach dem Umzug Bürgergeld/Grundsicherungsgeld brauchen (auch wenn bisher die Familie es bekommt); https://www.gesetze-im-internet.de/sgb_2/__22.html, abgerufen 21.11.2026
       { id: 'u25', q: ['sgb2_22_5', 'sgb2_24', 'sgb2_20'] },
       { id: 'suche', q: ['wofg27'], knopf: 'check' },
       { id: 'vertrag', q: ['bgb551'] },
@@ -198,8 +199,7 @@ var Ausziehen = (function () {
     '.az-punkt details>summary,.az-weitere>summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-weight:600;color:var(--accent)}' +
     '.az-punkt details p{margin:6px 0}.az-q{font-size:.85em;color:var(--muted)}.az-qliste{margin:0;padding-inline-start:18px}.az-qliste li{margin:4px 0}.az-qliste .az-q{margin:0}' +
     '.az-chip{display:inline-block;font-size:.85em;font-weight:700;border-radius:999px;padding:2px 10px;background:var(--warn-bg);color:var(--warn);justify-self:start}' +
-    '.az-stufe{margin:10px 0 0;font-size:1.1em;border-inline-start:6px solid var(--c-ausziehen);padding-inline-start:10px}' +
-    '.az-stufe.s-unnoetig{border-color:var(--muted)}' +
+    '.az-stufe{margin:14px 0 0;font-size:1.1em}' + // Stufen als schlichte Zwischenüberschrift (kein farbiger Randbalken), wie im Rest der App
     '.az textarea{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--field,var(--line));border-radius:10px;padding:10px 12px;width:100%;min-height:96px;resize:vertical;box-sizing:border-box}' +
     '#azSpeicherMsg:empty{display:none}' +
     '@media (forced-colors:active){.az-k{border:2px solid CanvasText}}';
@@ -274,7 +274,7 @@ var Ausziehen = (function () {
     } else {
       var oben = b.punkte.filter(function (p) { return !p.mehr; }), unten = b.punkte.filter(function (p) { return p.mehr; });
       h += '<ul class="az-liste">' + oben.map(function (p) { return punktHtml(p, b.liste); }).join('') + '</ul>';
-      if (unten.length) h += '<details class="az-weitere"' + (unten.some(function (p) { return daten.ab[p.id]; }) ? ' open' : '') + '><summary>' + esc(t('az.weitere', { n: unten.length })) + '</summary><ul class="az-liste">' + unten.map(function (p) { return punktHtml(p, b.liste); }).join('') + '</ul></details>';
+      if (unten.length) h += '<details class="az-weitere mehr mehr-liste"' + (unten.some(function (p) { return daten.ab[p.id]; }) ? ' open' : '') + '><summary>' + esc(t('az.weitere', { n: unten.length })) + '</summary><ul class="az-liste">' + unten.map(function (p) { return punktHtml(p, b.liste); }).join('') + '</ul></details>';
     }
     if (b.liste) h += '<div class="field"><label for="azNotiz">' + esc(t('az.notiz')) + '</label><textarea id="azNotiz" placeholder="' + esc(t('az.notiz.t')) + '"></textarea></div>';
     h += quellenHtml(b);

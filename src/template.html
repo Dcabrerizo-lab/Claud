@@ -391,6 +391,24 @@
   .eb-tab thead th { border-bottom-width: 2px; }
   .eb-tab .pill { white-space: nowrap; }
   .eb-hinweis { margin: 14px 0 0; font-size: 0.9em; }
+  /* Für Klient zusammenstellen (src/klient.js): zweispaltig Klient | Deutsch, auf dem Handy untereinander */
+  .kb-open { margin: 8px 0 0; }
+  .kb-wahl .kb-gruppe { border: 1px solid var(--line); border-radius: var(--r-feld); padding: 8px 12px; margin: 0 0 12px; }
+  .kb-wahl legend { font-weight: 700; padding: 0 4px; }
+  .kb-wahl .kb-pin input { max-width: 12em; }
+  .kb-ds { color: var(--muted); }
+  .kb-blatt h3, .kb-blatt h4 { margin: 14px 0 4px; }
+  .kb-blatt .kb-titel h3 { margin-top: 0; font-size: 1.3em; }
+  .kb-blatt p { margin: 2px 0; }
+  .kb-blatt pre { white-space: pre-wrap; font: inherit; font-size: 0.92em; border-inline-start: 3px solid var(--line); padding-inline-start: 10px; }
+  .kb-paar { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 18px; }
+  .kb-de { color: var(--muted); }
+  @media (max-width: 560px) { .kb-paar { grid-template-columns: 1fr; gap: 0; } .kb-paar .kb-de { margin-bottom: 6px; } }
+  @media print {
+    .kb-blatt, .kb-blatt * { color: #000 !important; background: #fff !important; }
+    .kb-paar { grid-template-columns: 1fr 1fr !important; }
+    .kb-zeile { break-inside: avoid; }
+  }
   @media print {
     .haken input { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .haken input:checked + span { text-decoration: none; color: #000; }
@@ -602,7 +620,7 @@
   .sc-titel span { color: var(--muted); font-weight: 400; }
   .sc-labs { margin: 0; padding-inline-start: 1.1em; display: grid; gap: 2px; }
 
-  .rules { background: transparent; border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px; }
+  .rules { background: transparent; margin: 8px 0; } /* „So rechnet der Check“: Aufklapper ohne eigenen Rahmen (wie überall details.mehr) */
   .rules details { border-top: 0; padding-top: 0; }
   .rules table { width: 100%; border-collapse: collapse; font-size: 0.92em; margin-top: 8px; }
   .rules th, .rules td { text-align: start; padding: 8px 8px 8px 0; padding-inline: 0 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
@@ -894,6 +912,8 @@
   #checkBox .pp-teil.pp-zu > :not(:first-child), #checkBox .pp-teil.pp-anders > :not(:first-child) { display: none !important; }
   /* Brief prüfen wie der Rest der App: runde weiße Karten mit Schatten statt eckiger Kästen */
   #checkBox.pp .card { border: 0; border-radius: var(--r-card); box-shadow: var(--shadow); padding: 20px; }
+  /* Der Einstieg jeder Brief-Stelle steht direkt auf der Seite wie die anderen Seiten (kein großer weißer Rahmen um den ganzen Inhalt) */
+  #checkBox.pp .pp-teil > .card:first-child { background: transparent; box-shadow: none; border-radius: 0; padding: 0; }
   #checkBox.pp fieldset { border-radius: var(--r-feld); }
   .pp-frist-box { display: grid; gap: 10px; margin: 12px 0 4px; }
   .pp-frist-box .frist { margin: 0; }
@@ -1085,6 +1105,10 @@
   .gs-box details.mehr.tipp, .frist details.mehr.tipp, .pf-jetzt details.mehr.tipp { border: 0; background: none; padding: 0; margin: 0; }
   details.mehr.tipp.tipp-warn { border-color: var(--warn); }
   details.mehr > :not(summary) { margin: 0 0 6px; color: var(--muted); font-size: .92em; font-weight: 400; }
+  /* Gleiches Aufklapp-Bauteil ohne Sonderrahmen: .mehr-block (Formular, Rechenweg) zeigt den Inhalt in normaler Schrift,
+     .mehr-liste („Weitere Punkte (4)“, „Weitere Leistungen“, Erledigt-Liste) ohne i-Symbol, weil darin Karten stehen */
+  details.mehr.mehr-block > :not(summary), details.mehr.mehr-liste > :not(summary) { color: var(--ink); font-size: 1em; margin: 0 0 10px; }
+  details.mehr.mehr-liste > summary::before { content: none; display: none; }
   .form-ende { display: grid; gap: 8px; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); }
   .rb-satz { margin: 12px 0 0; }
   .ww-mehr > :not(summary) { color: var(--ink); font-size: 1em; margin-bottom: 10px; }
@@ -1238,9 +1262,9 @@
       <p class="gruss-t" data-t="home.gruss.t"></p>
       <div class="start-raster">
         <button type="button" class="sk sk-haupt sk-leistungen" id="goLeistungen"><span class="sk-txt"><b data-t="home.leistungen"></b><span class="sk-meta" data-t="home.hero.meta"></span></span><span class="hero-los"><span data-t="home.los"></span><span class="pfeil" aria-hidden="true">→</span></span></button>
+        <button type="button" class="sk sk-pflege" id="goPflege"><span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/><path d="M9 12h6M12 9v6"/></svg></span><span class="sk-txt"><b data-t="home.pflege"></b><span data-t="home.pflege.t"></span></span></button>
         <button type="button" class="sk sk-briefe" id="goBriefe"><span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><span class="sk-txt"><b data-t="home.brief"></b><span data-t="home.brief.t"></span></span></button>
         <button type="button" class="sk sk-geld" id="goGeld"><span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M6 7l9.6-2.9A1 1 0 0 1 17 5v2"/><path d="M21 11h-4.5a2 2 0 0 0 0 4H21"/><circle cx="16.6" cy="13" r=".6"/></svg></span><span class="sk-txt"><b data-t="home.geld"></b><span data-t="home.geld.t"></span></span></button>
-        <button type="button" class="sk sk-pflege" id="goPflege"><span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/><path d="M9 12h6M12 9v6"/></svg></span><span class="sk-txt"><b data-t="home.pflege"></b><span data-t="home.pflege.t"></span></span></button>
         <button type="button" class="sk sk-ausziehen" id="goAusziehen"><span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 11l8-6 8 6v9H4z"/><path d="M10 20v-5h4v5"/><path d="M17 3l2 2-2 2"/></svg></span><span class="sk-txt"><b data-t="az.kachel"></b><span data-t="az.kachel.t"></span></span></button>
       </div>
       <p class="hinweis-koralle"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg><span data-t="home.sicher"></span></p>
@@ -1274,9 +1298,8 @@
         <p class="pp-hinweis small" id="ppNurDe" data-t="briefe.schreibenDe" hidden></p>
 <!--PRUEFPAKET-->
         <!-- Gemeinsame Kachel „Anderer Brief oder Formular“: erst einlesen (die App erkennt Formular oder Brief), darunter die Wahl von Hand -->
-        <section class="pp-teil" id="abWahl" aria-labelledby="h-abWahl" hidden>
+        <section class="pp-teil" id="abWahl" aria-labelledby="h-briefe" hidden>
           <div class="card">
-            <h2 id="h-abWahl" data-t="briefe.ab"></h2>
             <p data-t="briefe.ab.lead"></p>
             <p class="ab-oder" data-t="briefe.ab.wahl"></p>
             <div class="weg-liste" id="abUnter"></div>
@@ -1762,6 +1785,7 @@
           <p class="res-satz" id="resSatz" hidden></p>
           <p class="vertrauen" id="vertrauen"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg><span id="vertrauenT"></span></p>
           <p class="eb-open"><button type="button" class="btn ghost" id="ebOpen" data-t="eb.btn" hidden></button></p>
+          <p class="kb-open"><button type="button" class="btn ghost" id="kbOpen" data-t="kb.btn" hidden></button></p>
         </div>
         <p class="legende" id="legende" data-t="legende"></p>
         <nav id="overview" class="overview" hidden></nav>
@@ -1868,11 +1892,11 @@
         <!--ZURUECK cls=us-zurueck-->
         <h2 class="ans-h" data-t="set.about.h"></h2>
         <div class="set-gruppe">
-          <p class="small muted"><span id="appVersion"></span><br><span class="stand" id="stand"></span></p>
+          <p class="small muted"><span id="appVersion"></span><br><span class="stand"><span id="stand"></span> <span data-t="foot.3"></span></span></p>
           <p><button type="button" class="linkbtn" id="legalBtn2" data-t="legal.open"></button></p>
         </div>
         <div class="rules" id="feedback" hidden>
-          <details>
+          <details class="mehr mehr-block">
             <summary data-t="fb.h"></summary>
             <div class="inner">
               <p data-t="fb.text"></p>
@@ -1883,7 +1907,7 @@
         </div>
 
         <div class="rules">
-          <details>
+          <details class="mehr mehr-block">
             <summary data-t="rules.sum"></summary>
             <div class="inner">
               <p data-t="rules.intro"></p>
@@ -1929,7 +1953,6 @@
 
         <div class="foot">
           <p data-t="foot.1"></p>
-          <p data-t="foot.3"></p>
           <p hidden><button type="button" class="linkbtn" id="legalBtn" data-t="legal.open"></button></p>
         </div>
       </div>
@@ -2009,6 +2032,23 @@
       </div>
       <article class="page ergblatt" id="ebSeite"></article>
     </section>
+
+    <!-- Für Klient zusammenstellen (nur Beratungsmodus, src/klient.js): Auswahl per Haken, ein Blatt, Drucken oder Teilen -->
+    <section id="klientBlatt" hidden aria-labelledby="h-kb">
+      <div class="no-print"><!--ZURUECK id=kbClose--></div>
+      <div class="mappe-bar no-print">
+        <h2 id="h-kb" data-t="kb.h"></h2>
+        <p data-t="kb.intro"></p>
+        <div id="kbWahl" class="kb-wahl"></div>
+        <div class="btns">
+          <button type="button" class="btn" id="kbDruck" data-t="f.print"></button>
+          <button type="button" class="btn ghost" id="kbTeilen" data-t="kb.teilen"></button>
+        </div>
+        <p class="small kb-ds" id="kbDs" data-t="kb.datenschutz"></p>
+        <p class="msg" id="kbMsg" role="status"></p>
+      </div>
+      <article class="page kb-blatt" id="kbSeite"></article>
+    </section>
     </main>
   </div>
 
@@ -2052,6 +2092,7 @@ Behoerden.init(/*BEHOERDENDATA*/null);
 /*SCHULDEN*/
 /*GELD*/
 /*SCHRITTE*/
+/*KLIENT*/
 </script>
 <script>
 /*NAVIGATION*/

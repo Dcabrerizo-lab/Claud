@@ -111,6 +111,7 @@
     box.append(h('h2', { text: 'Ergebnis: das sagt das Gutachten' }),
       h('p', {}, h('span', { class: 'big', text: r.pg ? `Pflegegrad ${r.pg}` : 'Kein Pflegegrad' }), h('span', { class: 'muted', text: ` · ${zahl(r.gesamt)} von 100 Punkten` })),
       leiste(r.gesamt));
+    vergleichTabelle(g, r, box);
     for (const satz of P.zusammenfassung(g, r, Rules)) box.append(h('p', { text: satz }));
     // Bereiche als kleine Tabelle
     const tb = h('tbody', {}, [1, 2, 3, 4, 5, 6].map((m) => { const mo = r.module[m], zaehlt = !(m === 2 || m === 3) || r.zaehlt23 === m; return h('tr', {}, h('td', { text: P.MODUL[m].kurz }), h('td', { text: mo.bereichName }), h('td', { class: 'z', text: zaehlt ? `${zahl(mo.gewichtet)} / ${zahl(P.ANLAGE2[m].gew[4])}` : 'zählt nicht' })); }));
@@ -191,6 +192,36 @@
     const e16 = em['5.16'] != null ? +em['5.16'] : es['5.16'] != null ? +es['5.16'] : null, g16 = +g.m5['5.16'] || 0;
     if (e16 != null && e16 > g16) { const sk = P.SKALA.sel; ab.push({ typ: 'm5', id: '5.16', titel: '5.16 Diät oder ärztliche Anweisungen einhalten', ist: `„${sk.kurz[g16]}“ (${sk.stufen[g16]})`, soll: `„${sk.kurz[e16]}“ (${sk.stufen[e16]})`, wert: e16 }); }
     return { ab, fehlt };
+  }
+  // Eigene Einschätzung neben dem Gutachten: Punkte je Bereich (gewichtet nach Anlage 2 zu § 15 SGB XI, gerechnet von pflege.js), Unterschied hervorgehoben.
+  // Von den Bereichen 2 und 3 zählt nur der höhere (§ 15 Abs. 3 SGB XI); ein Bereich, der nicht zählt, geht mit 0 in den Unterschied ein. Keine eigenen Zahlen.
+  function vergleichTabelle(g, r, box) {
+    if (!eigen || !Object.keys(g.stufen).length) return;
+    const re = P.rechne(eigen);
+    const zaehlt = (x, m) => !(m === 2 || m === 3) || x.zaehlt23 === m;
+    const wert = (x, m) => (zaehlt(x, m) ? x.module[m].gewichtet : 0);
+    const r2 = (x) => Math.round(x * 100) / 100;
+    const diffText = (d) => (d > 0 ? '+' : d < 0 ? '−' : '') + zahl(Math.abs(d));
+    const zelle = (x, m) => (zaehlt(x, m) ? zahl(x.module[m].gewichtet) : tA('bp.vgl.zaehltNicht', 'zählt nicht'));
+    let mehr = 0;
+    const zeilen = [1, 2, 3, 4, 5, 6].map((m) => {
+      const d = r2(wert(re, m) - wert(r, m));
+      if (d > 0) mehr++;
+      return h('tr', { class: d > 0 ? 'pv-mehr' : null, 'data-m': String(m) }, h('td', { text: P.MODUL[m].kurz }), h('td', { class: 'z', text: zelle(re, m) }), h('td', { class: 'z', text: zelle(r, m) }),
+        h('td', { class: 'z' }, d > 0 ? h('strong', { text: diffText(d) }) : diffText(d)));
+    });
+    const dg = r2(re.gesamt - r.gesamt);
+    zeilen.push(h('tr', { class: 'pv-summe' + (dg > 0 ? ' pv-mehr' : '') }, h('th', { scope: 'row', text: tA('bp.vgl.gesamt', 'Zusammen') }), h('td', { class: 'z', text: zahl(re.gesamt) }), h('td', { class: 'z', text: zahl(r.gesamt) }),
+      h('td', { class: 'z' }, dg > 0 ? h('strong', { text: diffText(dg) }) : diffText(dg))));
+    const pgT = (x) => (x.pg ? tA('bp.vgl.pg', 'Pflegegrad {pg}', { pg: x.pg }) : tA('bp.vgl.kein', 'kein Pflegegrad'));
+    const kurz = mehr ? tA('bp.vgl.mehr', 'In {n} von 6 Bereichen gibt das Gutachten weniger Punkte als deine Einschätzung (fett markiert).', { n: mehr }) : tA('bp.vgl.keinMehr', 'In keinem Bereich gibt das Gutachten weniger Punkte als deine Einschätzung.');
+    const titel = tA('bp.vgl.h', 'Vergleich mit deiner Einschätzung');
+    box.append(h('section', { class: 'pv-vergleich', id: 'pf-vgl', 'aria-labelledby': 'pf-vgl-h' }, h('h3', { id: 'pf-vgl-h', text: titel }),
+      h('p', { id: 'pf-vgl-satz', text: tA('bp.vgl.satz', 'Deine Einschätzung: {e}. Gutachten: {g}.', { e: pgT(re), g: pgT(r) }) + ' ' + kurz }),
+      h('div', { class: 'tablewrap', tabindex: '0', role: 'region', 'aria-label': titel }, h('table', { class: 'modtab' },
+        h('thead', {}, h('tr', {}, h('th', { text: tA('bp.vgl.bereich', 'Bereich') }), h('th', { class: 'z', text: tA('bp.vgl.eigen', 'Deine Punkte') }), h('th', { class: 'z', text: tA('bp.vgl.gutachten', 'Gutachten') }), h('th', { class: 'z', text: tA('bp.vgl.diff', 'Unterschied') }))),
+        h('tbody', {}, zeilen))),
+      h('p', { class: 'small muted', text: tA('bp.vgl.klein', 'Punkte nach Gewichtung, wie die Pflegekasse rechnet (§ 15 SGB XI). Plus heißt: Deine Einschätzung gibt dort mehr Punkte. Darunter steht, bei welchen Fragen genau.') })));
   }
   function zeigeVergleich(g, r) {
     const info = $('pf-ab-info'); if (!info) return;
@@ -771,6 +802,7 @@ Ergebnis: Pflegegrad 2`;
   // § 84 Abs. 1, § 64 SGG; gesetze-im-internet.de, abgerufen 20.11.2026). Jobcenter: zuerst die Art des Briefs.
   const FRIST_OBEN = [['bs', 'p-bescheid', 'jc', 'bs-datum'], ['ga', 'p-gsa', 'sa', 'ga-datum'], ['wg', 'p-wg', 'wg', 'wg-datum'], ['kz', 'p-kiz', 'fk', 'kz-datum']];
   const ARTWAHL = [['bescheid', 'Bescheid (Entscheidung über Geld)'], ['termin', 'Einladung zu einem Termin'], ['anh', 'Anhörung (das Amt fragt, bevor es entscheidet)'], ['mit', 'Aufforderung, Unterlagen nachzureichen']];
+  const ART_KOPF = { bescheid: ['bp.jc.h', 'Bescheid Grundsicherungsgeld prüfen'], termin: ['bp.art.termin.h', 'Einladung zu einem Termin'], anh: ['bp.art.anh.h', 'Anhörung vor einer Entscheidung'], mit: ['bp.art.mit.h', 'Unterlagen nachreichen'] };
   const ART_ERKL = { termin: ['fri.art.termin.t', 'Kannst du nicht kommen, sag vorher ab und nenne den Grund.'], anh: ['fri.art.anh.t', 'Du darfst dich bis zu diesem Tag äußern.'], mit: ['fri.art.mit.t', 'Reiche die Unterlagen bis zu diesem Tag ein.'] };
   function fristOben(p, sec, stelle, datumId) {
     const karte = $(sec) && $(sec).querySelector('.card'), feld = $(datumId);
@@ -811,6 +843,11 @@ Ergebnis: Pflegegrad 2`;
       bescheidTeil.hidden = nb; anders.hidden = !nb;
       $(sec).classList.toggle('pp-anders', nb);
       const ein = document.getElementById('einlesen'); if (ein && karte.contains(ein)) ein.hidden = nb;
+      // Überschrift je Briefart; „Scanne den Bescheid …“, „Was prüft SoLo genau?“ und „Wörter im Bescheid“ nur beim Bescheid
+      const kopf = karte.querySelector('h2');
+      if (kopf) { const [hk, hd] = ART_KOPF[art]; kopf.setAttribute('data-t', hk); kopf.textContent = tA(hk, hd); }
+      const scanSatz = karte.querySelector('h2 + p'); if (scanSatz) scanSatz.hidden = nb;
+      karte.querySelectorAll(':scope > details').forEach((d) => { d.hidden = nb; });
       anders.replaceChildren();
       if (!nb) return;
       const [k, deText] = ART_ERKL[art];
@@ -823,9 +860,9 @@ Ergebnis: Pflegegrad 2`;
         if (window.FristenOrdner) fr.append(window.FristenOrdner.knopf(() => ({ art: art === 'termin' ? 'termin' : art, stelle: 'jc', bis: tagFeld.value, quelle: 'brief' })));
       };
       tagFeld.addEventListener('input', zeigeTag); tagFeld.addEventListener('change', zeigeTag);
-      anders.append(h('p', { text: tA(k, deText) }),
+      anders.append(...[h('p', { text: tA(k, deText) }),
         art === 'anh' ? h('p', { class: 'small', text: tA('bp.art.anh.t', 'Eine Anhörung ist noch keine Entscheidung. Erkläre kurz, wie es war, und lege Belege bei. Ein Widerspruch ist erst gegen den Bescheid danach möglich.') }) : null,
-        h('label', { for: 'bs-art-tag', text: tA(art === 'termin' ? 'bp.art.termin.tag' : 'bp.art.tag', art === 'termin' ? 'Wann ist der Termin? (steht im Brief)' : 'Bis wann? (Datum aus dem Brief)') }), tagFeld, fr);
+        h('label', { for: 'bs-art-tag', text: tA(art === 'termin' ? 'bp.art.termin.tag' : 'bp.art.tag', art === 'termin' ? 'Wann ist der Termin? (steht im Brief)' : 'Bis wann? (Datum aus dem Brief)') }), tagFeld, fr].filter(Boolean)); // ohne filter stünde „null“ im Text
     };
     feld.addEventListener('input', zeigeFrist); feld.addEventListener('change', zeigeFrist);
     zeigeFrist();
