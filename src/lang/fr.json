@@ -1163,6 +1163,8 @@
   "ordner.ausziehen.n": "{n} sur {von} fait",
   "ordner.pflege": "Évaluation de la dépendance",
   "ordner.pfaendung": "Saisie",
+  "or.leer": "Ici apparaissent tes délais et ce que tu enregistres dans SoLo. Tout reste sur ton appareil.",
+  "or.fristNeu": "Ajouter un délai",
   "einst.tab.einst": "Paramètres",
   "einst.tab.info": "Informations",
   "info.h": "Informations : comment le test calcule, d'où viennent les chiffres, remarques et mentions légales",

@@ -1163,6 +1163,8 @@
   "ordner.ausziehen.n": "{n} of {von} done",
   "ordner.pflege": "Care assessment",
   "ordner.pfaendung": "Garnishment",
+  "or.leer": "Your deadlines and what you save in SoLo appear here. Everything stays on your device.",
+  "or.fristNeu": "Add a deadline",
   "einst.tab.einst": "Settings",
   "einst.tab.info": "Information",
   "info.h": "Information: how the check calculates, where the figures come from, notes and legal",

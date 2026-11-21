@@ -160,7 +160,9 @@ const orZ = () => [...d.querySelectorAll('#ordnerKarten .zeile')].map((b) => b.i
 check('Mein Ordner: Leiste markiert Mein Ordner, kein Kopftext', navAkt() === 'ordner' && !$('v-ordner').hidden && w.getComputedStyle(d.querySelector('header.top')).position === 'absolute');
 check('[navigation] Mein Ordner: Vorgänge oben, ohne Kopfzeile „Geöffnet“ und ohne „Wechseln“', !$('ordnerKopf') && $('setHaushalte').compareDocumentPosition($('ordnerKarten')) === 4);
 check('Mein Ordner: letztes Ergebnis mit Zähler und Antragsmappe mit Auswahl', orZ()[0] === 'or-ergebnis' && /wahrscheinlich|möglich/.test($('or-ergebnis').textContent) && /Ausgewählt: 2/.test(($('or-mappe') || {}).textContent || ''), orZ().join());
-check('Mein Ordner: keine Fristen, kein leerer Bereich (Pflege, Pfändung ohne Angaben)', !$('or-fristen') && !/Frist/.test($('ordnerHaupt').textContent) && !$('or-pflege') && !$('or-pfaendung'));
+check('Mein Ordner: keine Fristen-Karte, kein leerer Bereich (Pflege, Pfändung ohne Angaben)', !$('or-fristen') && !/Frist/.test($('ordnerKarten').textContent) && !$('or-pflege') && !$('or-pfaendung'));
+check('Mein Ordner: „Frist eintragen“ immer erreichbar (ohne Platzhalter-Karte), öffnet die eigene Frist', !!$('orFristNeu') && $('orFristNeu').textContent === I18N.de['or.fristNeu'] && (($('orFristNeu').click(), !$('ordnerFristen').hidden && !!d.querySelector('#friListe .fri-eigen[open]'))));
+d.querySelector('#appnav [data-ansicht="ordner"]').click();
 $('or-ergebnis').click();
 check('Sprung zum Ergebnis: Leistungen offen, Leiste markiert Mein Ordner (Herkunft)', !$('v-leistungen').hidden && navAkt() === 'ordner');
 d.querySelector('#appnav [data-ansicht="ordner"]').click();

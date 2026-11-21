@@ -1163,6 +1163,8 @@
   "ordner.ausziehen.n": "{n} von {von} erledigt",
   "ordner.pflege": "Pflege-Einschätzung",
   "ordner.pfaendung": "Pfändung",
+  "or.leer": "Hier stehen deine Fristen und was du in SoLo speicherst. Alles bleibt auf deinem Gerät.",
+  "or.fristNeu": "Frist eintragen",
   "einst.tab.einst": "Einstellungen",
   "einst.tab.info": "Informationen",
   "info.h": "Informationen: so rechnet der Check, woher die Werte kommen, Hinweise und Rechtliches",
