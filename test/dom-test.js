@@ -300,18 +300,29 @@ setTimeout(async () => {
     check('[sprachladen] Offline-Wechsel nach ' + l + ': sofort übersetzt, alle Texte da', d.getElementById('app').getAttribute('lang') === l && JSON.stringify(I) === JSON.stringify(I18N[l]) && d.querySelector('[data-t="nav.ordner"]') && d.querySelector('[data-t="nav.ordner"]').textContent === I18N[l]['nav.ordner'] && !d.getElementById('sprachFehler'));
   });
   check('[sprachladen] Arabisch: rechts nach links nach dem Nachladen', (setLang('ar'), d.getElementById('app').getAttribute('dir') === 'rtl'));
-  // Fehlerfall: Datenblock fehlt (z. B. beschädigte Datei) → Deutsch und kurzer Hinweis
-  setLang('de');
-  // eine noch nicht geparste Sprache nehmen (geparste Blöcke sind schon entfernt)
-  const frBlock = d.querySelector('script[id^="solo-sprache-"]'), fehlL = frBlock ? frBlock.id.replace('solo-sprache-', '') : 'fr';
-  const frVor = frBlock && frBlock.nextSibling, frEltern = frBlock && frBlock.parentNode;
-  if (frBlock) frBlock.remove();
-  setLang(fehlL);
-  await new Promise((r) => setTimeout(r, 30));
-  check('[sprachladen] Sprache lädt nicht: Deutsch und Hinweis', !!frBlock && d.getElementById('app').getAttribute('lang') === 'de' && d.getElementById('lang').value === 'de' && !!d.getElementById('sprachFehler') && /Deutsch/.test(d.getElementById('sprachFehler').textContent) && d.querySelector('[data-t="nav.ordner"]').textContent === I18N.de['nav.ordner'], d.getElementById('sprachFehler') && d.getElementById('sprachFehler').textContent);
-  if (frBlock) frEltern.insertBefore(frBlock, frVor);
-  setLang(fehlL);
-  check('[sprachladen] Danach geht die Sprache wieder, Hinweis weg', !!frBlock && d.getElementById('app').getAttribute('lang') === fehlL && !d.getElementById('sprachFehler'), fehlL);
+  // Fehlerfall: Datenblock fehlt (z. B. beschädigte Datei) → Deutsch und kurzer Hinweis. Eigene kleine Seite: gespeicherte Sprache
+  // Französisch, Block für Französisch aus der Datei entfernt; Start und späterer Wechsel zeigen Deutsch mit Hinweis
+  {
+    const ohneFr = html.replace(/<script type="application\/json" id="solo-sprache-fr">[^<]*<\/script>\n/, '');
+    const st = { 'lotse-lang': 'fr' }, fehlerF = [];
+    const domF = new JSDOM('<!doctype html><html><head><meta charset="utf-8"></head><body>' + ohneFr + '</body></html>', {
+      runScripts: 'dangerously', pretendToBeVisual: true,
+      beforeParse(x) {
+        x.addEventListener('error', (e) => fehlerF.push(String(e.error || e.message)));
+        x.HTMLElement.prototype.scrollIntoView = function () {}; x.scrollTo = function () {};
+        Object.defineProperty(x, 'localStorage', { value: { getItem: (k) => (k in st ? st[k] : null), setItem: (k, v) => { st[k] = String(v); } }, configurable: true });
+      }
+    });
+    await new Promise((r) => setTimeout(r, 50));
+    const dF = domF.window.document, hF = () => dF.getElementById('sprachFehler');
+    check('[sprachladen] Sprache lädt nicht (beim Start): Deutsch und Hinweis', ohneFr.length < html.length && dF.getElementById('app').getAttribute('lang') === 'de' && dF.getElementById('lang').value === 'de' && !!hF() && /Deutsch/.test(hF().textContent) && dF.querySelector('[data-t="nav.ordner"]').textContent === I18N.de['nav.ordner'] && fehlerF.length === 0, (hF() && hF().textContent) + ' ' + fehlerF.join('|'));
+    const sF = dF.getElementById('lang'); sF.value = 'uk'; sF.dispatchEvent(new domF.window.Event('change', { bubbles: true }));
+    check('[sprachladen] Andere Sprache geht danach, Hinweis weg', dF.getElementById('app').getAttribute('lang') === 'uk' && !hF());
+    sF.value = 'fr'; sF.dispatchEvent(new domF.window.Event('change', { bubbles: true }));
+    await new Promise((r) => setTimeout(r, 30));
+    check('[sprachladen] Sprache lädt nicht (beim Wechsel): Deutsch und Hinweis', dF.getElementById('app').getAttribute('lang') === 'de' && !!hF());
+    domF.window.close();
+  }
   setLang('de');
   // ----- Antrag scannen -----
   setLang('de');
