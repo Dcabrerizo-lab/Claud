@@ -69,5 +69,9 @@
   "bp.vgl.zaehltNicht": "zählt nicht",
   "bp.vgl.pg": "Pflegegrad {pg}",
   "bp.vgl.kein": "kein Pflegegrad",
-  "bp.vgl.klein": "Punkte nach Gewichtung, wie die Pflegekasse rechnet (§ 15 SGB XI). Plus heißt: Deine Einschätzung gibt dort mehr Punkte. Darunter steht, bei welchen Fragen genau."
+  "bp.vgl.klein": "Punkte nach Gewichtung, wie die Pflegekasse rechnet (§ 15 SGB XI). Plus heißt: Deine Einschätzung gibt dort mehr Punkte. Darunter steht, bei welchen Fragen genau.",
+  "bp.erk.t": "Diese Werte hat SoLo aus dem Brief gelesen. Bitte vergleiche sie mit dem Brief.",
+  "bp.erk.ok": "Werte stimmen",
+  "bp.erk.warte": "Bitte zuerst die erkannten Werte prüfen.",
+  "bp.erk.feld": "Schwer zu lesen. Bitte genau prüfen."
 }

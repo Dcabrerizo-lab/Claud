@@ -69,5 +69,9 @@
   "bp.vgl.zaehltNicht": "sayılmaz",
   "bp.vgl.pg": "bakım derecesi (Pflegegrad) {pg}",
   "bp.vgl.kein": "bakım derecesi (Pflegegrad) yok",
-  "bp.vgl.klein": "Pflegekasse’nin hesapladığı gibi ağırlıklı puanlar (§ 15 SGB XI). Artı şu demek: senin değerlendirmen orada daha fazla puan veriyor. Aşağıda tam olarak hangi sorularda olduğu yazıyor."
+  "bp.vgl.klein": "Pflegekasse’nin hesapladığı gibi ağırlıklı puanlar (§ 15 SGB XI). Artı şu demek: senin değerlendirmen orada daha fazla puan veriyor. Aşağıda tam olarak hangi sorularda olduğu yazıyor.",
+  "bp.erk.t": "SoLo bu değerleri mektuptan okudu. Lütfen mektupla karşılaştır.",
+  "bp.erk.ok": "Değerler doğru",
+  "bp.erk.warte": "Lütfen önce tanınan değerleri kontrol et.",
+  "bp.erk.feld": "Okunması zor. Lütfen dikkatle kontrol et."
 }

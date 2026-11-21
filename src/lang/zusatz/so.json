@@ -69,5 +69,9 @@
   "bp.vgl.zaehltNicht": "lama tiriyo",
   "bp.vgl.pg": "heerka daryeelka (Pflegegrad) {pg}",
   "bp.vgl.kein": "heer daryeel (Pflegegrad) ma jiro",
-  "bp.vgl.klein": "Dhibco miisaaman, sida Pflegekasse u xisaabiso (§ 15 SGB XI). Lagu daray (+) waxay ka dhigan tahay: qiimayntaadu halkaas dhibco badan ayay bixisaa. Hoos waxaad ku arkaysaa su’aalaha saxda ah."
+  "bp.vgl.klein": "Dhibco miisaaman, sida Pflegekasse u xisaabiso (§ 15 SGB XI). Lagu daray (+) waxay ka dhigan tahay: qiimayntaadu halkaas dhibco badan ayay bixisaa. Hoos waxaad ku arkaysaa su’aalaha saxda ah.",
+  "bp.erk.t": "SoLo wuxuu qiimahan ka akhriyay warqadda. Fadlan la barbar dhig warqadda.",
+  "bp.erk.ok": "Qiimuhu waa sax",
+  "bp.erk.warte": "Fadlan marka hore hubi qiimaha la aqoonsaday.",
+  "bp.erk.feld": "Way adag tahay in la akhriyo. Fadlan si fiican u hubi."
 }

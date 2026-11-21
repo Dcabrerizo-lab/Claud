@@ -69,5 +69,9 @@
   "bp.vgl.zaehltNicht": "nie liczy się",
   "bp.vgl.pg": "stopień opieki (Pflegegrad) {pg}",
   "bp.vgl.kein": "brak stopnia opieki (Pflegegrad)",
-  "bp.vgl.klein": "Punkty ważone, tak jak liczy Pflegekasse (§ 15 SGB XI). Plus oznacza: Twoja ocena daje tam więcej punktów. Poniżej widać, przy których pytaniach dokładnie."
+  "bp.vgl.klein": "Punkty ważone, tak jak liczy Pflegekasse (§ 15 SGB XI). Plus oznacza: Twoja ocena daje tam więcej punktów. Poniżej widać, przy których pytaniach dokładnie.",
+  "bp.erk.t": "SoLo odczytał te wartości z pisma. Porównaj je z pismem.",
+  "bp.erk.ok": "Wartości się zgadzają",
+  "bp.erk.warte": "Najpierw sprawdź rozpoznane wartości.",
+  "bp.erk.feld": "Trudno odczytać. Sprawdź dokładnie."
 }
