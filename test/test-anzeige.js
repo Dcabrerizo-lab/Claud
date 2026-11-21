@@ -130,11 +130,10 @@ for (let i = 0; i < N; i++) {
       const teile = r.tx.map((x) => text(lang, 't.' + x[0], x[1]));
       const fehltKey = r.tx.filter((x, j) => teile[j] == null).map((x) => 't.' + x[0]);
       if (fehltKey.length) { melde('Text fehlt in der Sprachdatei', { ...fall, id: r.id, keys: fehltKey.join() }); continue; }
-      // Aufgeklappte Karte: Kernsatz, dann der Betrag (erster Schätzsatz), Rest unter „Mehr dazu“
+      // Aufgeklappte Karte: Kernsatz sichtbar, alle weiteren Sätze unter „Mehr dazu“ (UX-Prüfung 21.11.2026)
       const txt = a.querySelector('.body');
-      const body = txt && { textContent: [...txt.querySelectorAll('.txt .kern, .txt .kern-betrag, .karte-details .punkte > li')].map((x) => x.textContent).join(' ') };
-      const iB = r.tx.findIndex((x, j) => j > 0 && /^schaetz\./.test(x[0]));
-      const soll = iB > 0 ? [teile[0], teile[iB]].concat(teile.filter((x, j) => j > 0 && j !== iB)) : teile;
+      const body = txt && { textContent: [...txt.querySelectorAll('.txt .kern, .karte-details .punkte > li')].map((x) => x.textContent).join(' ') };
+      const soll = teile;
       if (!body || norm(body.textContent) !== norm(soll.join(' '))) melde('Kartentext passt nicht zur Rechnung', { ...fall, id: r.id, ist: body && body.textContent.slice(0, 300), soll: soll.join(' ').slice(0, 300) });
       // Jeder Betrag, für den der Text einen Platzhalter hat, steht so auf der Karte; Platzhalter des deutschen Textes gibt es auch in der Übersetzung
       r.tx.forEach((x) => {

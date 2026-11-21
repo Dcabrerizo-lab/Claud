@@ -357,8 +357,8 @@
   .wege { border: 2px solid var(--line); border-radius: 14px; padding: 14px; display: grid; gap: 10px; background: var(--bg); }
   .wege > h3 { margin: 0; font-size: var(--fs-m); }
   .wege-lage { margin: 0; }
-  .weg-gruppe { display: grid; gap: 8px; border: 1px solid var(--line); border-radius: 12px; padding: 10px; background: var(--surface); }
-  .weg-gruppe.weg-vor { border: 2px solid var(--ok); }
+  .weg-gruppe { display: grid; gap: 8px; }
+  .weg-gruppe.weg-vor { border: 2px solid var(--ok); border-radius: 12px; padding: 8px; }
   .weg-kopf { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
   .weg-kopf h4 { margin: 0; font-size: 1em; }
   .weg-betrag { margin: 0; flex-basis: 100%; font-weight: 700; color: var(--ink); }
@@ -369,7 +369,6 @@
   .wege details.mehr ul { margin: 0 0 6px; padding-inline-start: 20px; display: grid; gap: 6px; }
   .dazu-h { margin: 10px 0 0; font-size: var(--fs-m); }
   /* Aufgeklappte Karte: Kernsatz, Betrag, Knopf „Antrag vorbereiten“, Stelle in einer Zeile, Rest unter „Mehr dazu“ */
-  .card .kern-betrag { margin: 6px 0 0; font-weight: 700; }
   .karte-antrag { margin: 10px 0 0; }
   .karte-antrag .btn { width: 100%; }
   .karte-stelle { margin: 8px 0 0; color: var(--muted); }
@@ -917,7 +916,7 @@
   .card.dim { background: var(--surface); box-shadow: var(--shadow-s); }
   .card header h3 { font-size: 1.15em; font-weight: 700; }
   /* Große Schrift (200 %): lange Wörter im Kartentitel umbrechen statt seitlich zu scrollen */
-  .card header > div { min-width: 0; flex: 1 1 10em; }
+  .card header > div { min-width: 0; flex: 1 1 auto; } /* Breite nach dem Titel: passt die Plakette nicht daneben, rückt sie darunter (kein Umbruch mitten im Wort) */
   .card .desc, .es-karte h3 { overflow-wrap: anywhere; hyphens: auto; }
   /* Kartentitel ohne Trennstrich (UX-Prüfung 21.11.2026: „Grundsiche-rungsgeld“); die Plakette rückt bei Bedarf unter den Titel */
   .card header h3 { overflow-wrap: break-word; hyphens: manual; -webkit-hyphens: manual; }
@@ -1175,7 +1174,7 @@
   .start-sicher { display: flex; gap: 8px; align-items: center; margin: 14px 0 0; color: var(--muted); font-size: var(--fs-xs); }
   .start-sicher > svg { flex: none; width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
   .empf-mehr { margin: 10px 0 4px; }
-  .summary .res-satz { flex-basis: 100%; font-size: 1.05em; font-weight: 700; }
+  .summary .res-satz { flex-basis: 100%; font-size: 1.05em; font-weight: 700; hyphens: manual; -webkit-hyphens: manual; }
   .summary h2 { font-weight: 900; }
 /*PPSTIL*/
   /* ===== Gestaltungs-System (Design-Prüfung 20.11.2026, freigegeben; Doku: docs/FARBEN.md) =====

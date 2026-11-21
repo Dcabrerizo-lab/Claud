@@ -1099,15 +1099,14 @@
     var dim = r.level === 'nein' || r.level === 'na';
     var desc = lang === 'de' ? '' : t('n.' + r.id);
     var teile = r.tx.map(function (x) { return tL('t.' + x[0], x[1]); });
-    var iB = -1; r.tx.forEach(function (x, i) { if (iB < 0 && i > 0 && /^schaetz\./.test(x[0])) iB = i; });
-    var rest = teile.filter(function (x, i) { return i > 0 && i !== iB; });
+    var rest = teile.slice(1); // der ungefähre Betrag steht schon in der Kopfzeile (zeile2), sein Satz unter „Mehr dazu“
     var hinw = (kartenHinweise[r.id] || []).map(function (z) { return '<p class="karte-hinweis"><span aria-hidden="true">ⓘ </span>' + esc(tL(z[0], z[1])) + '</p>'; }).join('');
     var mehr = (rest.length ? '<ul class="punkte">' + rest.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : '') + genauerHtml(r) + hinw + rechtHtml(r) + zustHtml(r);
     return '<article class="card auf' + (dim ? ' dim' : '') + '" data-id="' + r.id + '" id="c-' + r.id + '"><details class="karte"><summary>' +
       '<header><div><h3' + (lang === 'de' ? '' : ' lang="de"') + '>' + esc(r.name) + '</h3>' + (desc ? '<div class="desc">' + esc(desc) + '</div>' : '') + '</div>' +
       '<span class="pill ' + r.level + '"><span aria-hidden="true">' + MARK[r.level] + '</span>' + esc(t('lvl.' + r.level)) + '</span></header>' +
       '<p class="head2">' + esc(beratung ? zeile2(r) : Fmt.ohnePara(zeile2(r))) + '</p><span class="karte-mehr" aria-hidden="true" data-mehr="' + esc(t('karte.mehr')) + '" data-weniger="' + esc(t('karte.weniger')) + '"></span></summary>' +
-      '<div class="body"><div class="txt"><p class="kern">' + esc(teile[0] || '') + '</p>' + (iB > 0 ? '<p class="kern-betrag">' + esc(teile[iB]) + '</p>' : '') + '</div>' +
+      '<div class="body"><div class="txt"><p class="kern">' + esc(teile[0] || '') + '</p></div>' +
       (antragMoeglich(r) ? '<p class="btns karte-antrag"><button type="button" class="btn" data-antrag="' + esc(r.id) + '">' + esc(t('akt.antrag')) + '</button></p>' : '') +
       (r.level === 'nein' ? '' : zustKurz(r)) +
       '<details class="mehr karte-details"><summary>' + esc(t('karte.details')) + '</summary>' + mehr + '</details></div></details></article>';
@@ -1169,10 +1168,11 @@
     var vor = w.lage === 'aVor' ? 'a' : w.lage === 'bUeblich' ? 'b' : '';
     var gruppe = function (seite) {
       var ids = seite === 'a' ? w.a : w.b, bet = wegBetrag(seite === 'a' ? w.aBetrag : w.bBetrag);
-      return '<div class="weg-gruppe' + (vor === seite ? ' weg-vor' : '') + '"><div class="weg-kopf"><h4>' + esc(wegName(w, seite)) + '</h4>' +
-        (vor === seite ? '<span class="pill ja"><span aria-hidden="true">✓</span>' + esc(t('weg.pill')) + '</span>' : '') +
-        (bet ? '<p class="weg-betrag">' + esc(ids.length > 1 ? t('weg.zusammen', { betrag: bet }) : bet) + '</p>' : '') + '</div>' +
-        ids.map(g).filter(Boolean).map(card).join('') + '</div>';
+      var karten = ids.map(g).filter(Boolean), pill = vor === seite ? '<span class="pill ja"><span aria-hidden="true">✓</span>' + esc(t('weg.pill')) + '</span>' : '';
+      // Eine Leistung: Name und Betrag stehen schon auf der Karte, über ihr nur die Plakette des voraussichtlichen Wegs
+      var kopf = karten.length > 1 ? '<div class="weg-kopf"><h4>' + esc(wegName(w, seite)) + '</h4>' + pill + (bet ? '<p class="weg-betrag">' + esc(t('weg.zusammen', { betrag: bet })) + '</p>' : '') + '</div>'
+        : pill ? '<div class="weg-kopf">' + pill + '</div>' : '';
+      return '<div class="weg-gruppe' + (vor === seite ? ' weg-vor' : '') + '">' + kopf + karten.map(card).join('') + '</div>';
     };
     var reihe = vor === 'b' ? ['b', 'a'] : ['a', 'b'];
     var kinder = (state.kids || 0) + (state.young || 0) > 0;
