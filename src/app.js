@@ -97,7 +97,7 @@
   // Erlaubte Arten für das zweite Einkommen einer Person (leer = keins)
   var EK_ZWEIT = ['', 'lohn', 'selbst', 'rente', 'alg', 'kg', 'eg', 'wfbm', 'unt'];
   function blankState() {
-    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', waisen: '', uvgPartner: '', uvgWechsel: false, kindEink: '', ek1bArt: '', ek1bBetrag: '', ek2bArt: '', ek2bBetrag: '', zusatzRente: '', baby: '', egVor: '', aufenthalt: '', miete: '', heizkosten: '', mietstufe: '', plz: '', plzPick: '', bundesland: '', vermoegen: '', gebJahr: '', arbeitSit: '', algMonate: '', krankWochen: '', lohnVorher: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', uzBetrag: '', uzAn: '', uzTitel: false, wohnart: '', hhAndere: '', autoWert: '', autoBraucht: false, euArbeit: '', euJahre: '', bezug: {} };
+    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', waisen: '', uvgPartner: '', uvgWechsel: false, kindEink: '', ek1bArt: '', ek1bBetrag: '', ek2bArt: '', ek2bBetrag: '', zusatzRente: '', baby: '', egVor: '', egKinder: '', egNach: '', aufenthalt: '', miete: '', heizkosten: '', mietstufe: '', plz: '', plzPick: '', bundesland: '', vermoegen: '', gebJahr: '', arbeitSit: '', algMonate: '', krankWochen: '', lohnVorher: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', uzBetrag: '', uzAn: '', uzTitel: false, wohnart: '', hhAndere: '', autoWert: '', autoBraucht: false, euArbeit: '', euJahre: '', bezug: {} };
   }
 
   function detect() {
@@ -277,7 +277,7 @@
     if (state.bhPerson !== 'erwVor25') reset(['bhSelbst']);
     if (state.emStd !== 'unter3' && state.emStd !== '3bis6') reset(['em5']);
     if (!state.bhPerson) reset(['mzG', 'mzGl', 'teilhabe', 'bhWeitere']);
-    if (!state.baby) reset(['egVor']);
+    if (!state.baby) reset(['egVor', 'egKinder', 'egNach']);
     if (state.kids + state.young === 0) reset(['kindEink']);
     // Unterhaltsvorschuss: Folgefragen nur, wenn Unterhalt fehlt; wer die zweite Person ist, nur bei zwei Erwachsenen
     if (!state.unterhaltFehlt || state.kids === 0) reset(['uvgWechsel', 'uvgPartner']);
@@ -608,6 +608,7 @@
     gd.push(['antrag', t('bh.gdb.antrag')]);
     fillSelect('gdb', gd, state.gdb);
     fillSelect('baby', [['', t('baby.0')], ['bald', t('baby.bald')], ['da', t('baby.da')]], state.baby);
+    fillSelect('egKinder', [['', t('egKinder.1')], ['2', t('egKinder.2')], ['3', t('egKinder.3')]], state.egKinder);
     fillSelect('uvgPartner', [['', t('uvgPartner.0')], ['neu', t('uvgPartner.neu')], ['ehe', t('uvgPartner.ehe')], ['eltern', t('uvgPartner.eltern')]], state.uvgPartner);
     fillSelect('aufenthalt', [['', t('aufenthalt.0')], ['eu', t('aufenthalt.eu')], ['asyl', t('aufenthalt.asyl')], ['ausreise', t('aufenthalt.ausreise')]], state.aufenthalt);
     fillSelect('euArbeit', [['', t('eu.arbeit.0')], ['ja', t('eu.arbeit.ja')], ['nein', t('eu.arbeit.nein')]], state.euArbeit);
@@ -779,8 +780,8 @@
   }
 
   var CHECKS = ['mzG', 'mzGl', 'algZeit', 'grundrente33', 'wfbmEssen', 'teilhabe', 'schwanger', 'ernaehrung', 'warmwasser', 'kinder12', 'kindKrank', 'unterhaltFehlt', 'uvgWechsel', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt', 'uzTitel', 'autoBraucht'];
-  var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'ek1bArt', 'ek2bArt', 'bhWeitere', 'baby', 'aufenthalt', 'uvgPartner', 'arbeitSit', 'algMonate', 'krankWochen', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd', 'uzAn', 'wohnart', 'hhAndere', 'euArbeit', 'euJahre'];
-  var NUMS = ['miete', 'heizkosten', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'waisen', 'kindEink', 'lohnVorher', 'ek1bBetrag', 'ek2bBetrag', 'egVor', 'vermoegen', 'uzBetrag', 'autoWert', 'zusatzRente'];
+  var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'ek1bArt', 'ek2bArt', 'bhWeitere', 'baby', 'egKinder', 'aufenthalt', 'uvgPartner', 'arbeitSit', 'algMonate', 'krankWochen', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd', 'uzAn', 'wohnart', 'hhAndere', 'euArbeit', 'euJahre'];
+  var NUMS = ['miete', 'heizkosten', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'waisen', 'kindEink', 'lohnVorher', 'ek1bBetrag', 'ek2bBetrag', 'egVor', 'egNach', 'vermoegen', 'uzBetrag', 'autoWert', 'zusatzRente'];
   var BEZUG = ['grundsicherungsgeld', 'sozialamt', 'wohngeld', 'kiz', 'kindergeld'];
 
   function writeForm() {
@@ -1401,6 +1402,9 @@
     if (s.baby === 'bald') b.push('Ein Baby wird erwartet');
     if (s.baby === 'da') b.push('Baby jünger als 14 Monate');
     if (s.egVor) b.push('Nettoeinkommen vor der Geburt (für das Elterngeld): ' + money(s.egVor) + ' im Monat');
+    if (s.baby && s.egKinder === '2') b.push('Zwillinge');
+    if (s.baby && s.egKinder === '3') b.push('Drillinge oder mehr Kinder bei einer Geburt');
+    if (s.egNach) b.push('Nettoeinkommen nach der Geburt in Teilzeit (für das Elterngeld): ' + money(s.egNach) + ' im Monat');
     if (s.aufenthalt === 'asyl') b.push('Im Asylverfahren (Aufenthaltsgestattung) oder mit Duldung');
     if (s.aufenthalt === 'ausreise') b.push('Ausreisepflichtig ohne Duldung');
     if (s.schwanger) b.push('Schwangerschaft (ab der 13. Woche)');

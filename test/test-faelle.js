@@ -284,6 +284,41 @@ const egB = (vor) => T({ baby: 'bald', egVor: vor, miete: 500, gebJahr: 1995, he
 [[0, 300], [500, 400], [900, 621], [1100, 681], [1500, 921], [3000, 1800]].forEach(([vor, soll]) => {
   ck('[eg-satz] Elterngeld bei ' + vor + ' € netto vorher: ' + soll + ' €', egB(vor) && egB(vor).basis === E(soll) && [E(Math.floor(soll / 2)), E(Math.ceil(soll / 2))].includes(egB(vor).plus) && egB(vor).monate === 14, egB(vor));
 });
+// Mehrlinge und Teilzeit (§ 2 Abs. 3, § 2a Abs. 1 und 4, § 4a Abs. 2 BEEG, gesetze-im-internet.de, abgerufen 21.11.2026). Erwartungen von Hand bzw. mit
+// einem eigenen Python-Skript (Dezimalrechnung) aus dem Gesetzestext, nicht aus rules.js:
+//  Zwillinge 1.500 €: 1416,67 × 65 % = 920,83 + 300 = 1.220,83 € (Plus 610,42); Drillinge + 600 = 1.520,83 € (Plus 760,42); Drillinge 3.000 €: 1.800 + 600 = 2.400 € (Plus 1.200)
+//  Teilzeit 2.000/800: (1916,67 − 716,67) × 65 % = 780 €; Plus min(780, 1245,83 / 2 = 622,92) = 622,92 €
+//  Teilzeit 1.200/500: q = 67 % (1116,67), (1116,67 − 416,67) × 67 % = 469 €; Plus min(469, 748,17 / 2 = 374,08) = 374,08 €
+//  Teilzeit 2.000/2.000 und 2.000/2.500: Unterschied 0 bzw. kein Unterschied -> Mindestbetrag 300 € (Plus 150 €, § 4a Abs. 2 Satz 3 Nr. 1)
+//  Deckel 2.770 €: vor 4.000 und 6.000, nach 1.000: (2770 − 916,67) × 65 % = 1.204,67 €; Plus min(1204,67, 1800 / 2) = 900 €; nach 2.900: 2.816,67 > 2.770 -> 300 €
+//  Teilzeit 2.500/1.000 + Geschwisterbonus + Zwillinge: (2416,67 − 916,67) × 65 % = 975 + 97,50 + 300 = 1.372,50 €;
+//   Plus: Kern min(975, 1570,83 / 2 = 785,42) = 785,42 + 78,54 + 150 = 1.013,96 €
+//  Teilzeit 1.100/700 + Bonus + Zwillinge: (1016,67 − 616,67) × 67 % = 268 -> 300 + 75 + 300 = 675 €; Plus: max(150, 268) = 268 + 37,50 + 150 = 455,50 €
+const egX = (o) => T(Object.assign({ baby: 'bald', miete: 500, gebJahr: 1995, heute: 2026.8 }, o), 'elterngeld', 'eg.ja');
+[
+  ['[eg-mehrlinge] Zwillinge, 1.500 € netto', { egVor: 1500, egKinder: '2' }, 1220.83, 610.42],
+  ['[eg-mehrlinge] Drillinge, 1.500 € netto', { egVor: 1500, egKinder: '3' }, 1520.83, 760.42],
+  ['[eg-mehrlinge] Zwillinge ohne Einkommen: 300 + 300', { egVor: 0, egKinder: '2' }, 600, 300],
+  ['[eg-mehrlinge] Drillinge, 3.000 € netto: Höchstbetrag 1.800 + 600', { egVor: 3000, egKinder: '3' }, 2400, 1200],
+  ['[eg-teilzeit] Teilzeit 2.000 / 800', { egVor: 2000, egNach: 800 }, 780, 622.92],
+  ['[eg-teilzeit] Teilzeit 1.200 / 500 (Satz 67 % nach dem Einkommen vorher)', { egVor: 1200, egNach: 500 }, 469, 374.08],
+  ['[eg-teilzeit] Teilzeit: Netto nach = vor -> Mindestbetrag', { egVor: 2000, egNach: 2000 }, 300, 150],
+  ['[eg-teilzeit] Teilzeit: Netto nach > vor -> Mindestbetrag', { egVor: 2000, egNach: 2500 }, 300, 150],
+  ['[eg-teilzeit] Deckel 2.770 €: 4.000 / 1.000', { egVor: 4000, egNach: 1000 }, 1204.67, 900],
+  ['[eg-teilzeit] Deckel 2.770 €: 6.000 / 1.000 gleich wie 4.000 / 1.000', { egVor: 6000, egNach: 1000 }, 1204.67, 900],
+  ['[eg-teilzeit] Deckel 2.770 €: 4.000 / 2.900 -> Mindestbetrag', { egVor: 4000, egNach: 2900 }, 300, 150],
+  ['[eg-teilzeit] [eg-mehrlinge] Teilzeit + Geschwisterbonus + Zwillinge 2.500 / 1.000', { egVor: 2500, egNach: 1000, egKinder: '2', kids: 2, kidsU6: 2 }, 1372.5, 1013.96],
+  ['[eg-teilzeit] [eg-mehrlinge] Teilzeit + Bonus + Zwillinge, Mindestbeträge 1.100 / 700', { egVor: 1100, egNach: 700, egKinder: '2', kids: 2, kidsU6: 2 }, 675, 455.5]
+].forEach(([name, o, basis, plus]) => { const x = egX(o); ck(name + ': Basis ' + basis + ' €, ElterngeldPlus ' + plus + ' €', x && x.basis === E(basis) && x.plus === E(plus), x); });
+ck('[eg-teilzeit] Hinweise: Teilzeit eingerechnet bzw. Mindestbetrag, ElterngeldPlus-Obergrenze, ohne Netto danach Hinweis zum Eintragen',
+  K({ baby: 'da', egVor: 2000, egNach: 800, miete: 500 }, 'elterngeld').includes('eg.teilzeit') && T({ baby: 'da', egVor: 2000, egNach: 800, miete: 500 }, 'elterngeld', 'eg.teilzeitPlus').halb === E(622.92)
+  && K({ baby: 'da', egVor: 2000, egNach: 2500, miete: 500 }, 'elterngeld').includes('eg.teilzeitMin') && K({ baby: 'da', egVor: 2000, miete: 500 }, 'elterngeld').includes('eg.teilzeitOffen')
+  && !K({ baby: 'da', egVor: 2000, miete: 500 }, 'elterngeld').includes('eg.teilzeit'));
+ck('[eg-mehrlinge] Hinweise Mehrlingszuschlag (auch ohne Betrag); Baby da: Zwillinge zählen nicht als Geschwister (§ 2a Abs. 1 Satz 2)',
+  T({ baby: 'bald', egVor: 1500, egKinder: '2', miete: 500 }, 'elterngeld', 'eg.mehrlinge').zuschlag === E(300) && K({ baby: 'bald', egVor: 1500, egKinder: '3', miete: 500 }, 'elterngeld').includes('eg.mehrlingeDrei')
+  && K({ baby: 'bald', egKinder: '2', miete: 500 }, 'elterngeld').includes('eg.mehrlingeOhne')
+  && !K({ baby: 'da', egVor: 1500, egKinder: '2', kids: 2, kidsU6: 2, miete: 500 }, 'elterngeld').some((k) => /geschwister/.test(k))
+  && K({ baby: 'da', egVor: 1500, egKinder: '2', kids: 3, kidsU6: 3, miete: 500 }, 'elterngeld').includes('eg.geschwisterVielleicht'));
 ck('Elterngeld ohne Kind: nein; ohne Betrag: möglich mit Spanne', L({ miete: 500 }, 'elterngeld') === 'nein' && L({ baby: 'da', miete: 500 }, 'elterngeld') === 'vielleicht' && K({ baby: 'da', miete: 500 }, 'elterngeld')[0] === 'eg.ohneBetrag');
 ck('Elterngeld schon bezogen: na', L({ baby: 'da', einkommen: [{ art: 'eg', b: 400 }], miete: 500 }, 'elterngeld') === 'na');
 // Hilfe zur Pflege: Einkommensgrenze 2 x 563 + Miete + 70 % von 563 je weiterer Person

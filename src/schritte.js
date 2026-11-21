@@ -69,6 +69,8 @@ var Schritte = (function () {
     { id: 'schwanger', b: 'haus', art: 'wahl', q: 'sf.q.schwanger', opts: JN },
     { id: 'baby', b: 'haus', art: 'wahl', q: 'sf.q.baby', opts: [['', 'baby.0'], ['bald', 'baby.bald'], ['da', 'baby.da']] },
     { id: 'egVor', b: 'haus', art: 'zahl', euro: true, skip: 'sf.weissNicht', q: 'sf.q.egVor', h: 'sf.h.egVor', wenn: function (s) { return !!s.baby; } },
+    { id: 'egKinder', b: 'haus', art: 'wahl', q: 'sf.q.egKinder', h: 'sf.h.egKinder', wenn: function (s) { return !!s.baby; }, opts: [['', 'egKinder.1'], ['2', 'egKinder.2'], ['3', 'egKinder.3']] },
+    { id: 'egNach', b: 'haus', art: 'zahl', euro: true, skip: 'sf.egNachKeine', q: 'sf.q.egNach', h: 'sf.h.egNach', wenn: function (s) { return !!s.baby; } },
     { id: 'aufenthalt', b: 'haus', art: 'wahl', q: 'sf.q.aufenthalt', h: 'sf.h.aufenthalt', opts: [['', 'aufenthalt.0'], ['eu', 'aufenthalt.eu'], ['asyl', 'aufenthalt.asyl'], ['ausreise', 'sf.a.ausreise']] },
     { id: 'euArbeit', b: 'haus', art: 'wahl', q: 'sf.q.euArbeit', h: 'sf.h.euArbeit', wenn: function (s) { return s.aufenthalt === 'eu'; }, opts: [['ja', 'sf.a.ja'], ['nein', 'sf.a.nein']] },
     { id: 'euJahre', b: 'haus', art: 'wahl', q: 'sf.q.euJahre', wenn: function (s) { return s.aufenthalt === 'eu'; }, opts: [['unter5', 'eu.jahre.unter5'], ['ab5', 'eu.jahre.ab5']] },

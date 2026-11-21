@@ -48,7 +48,7 @@ function haushalt() {
     uzBetrag: rnd() < 0.15 ? geld(900, 10) : '', uzAn: pick(['', 'k1', 'k2', 'ex', 'exk']), uzTitel: rnd() < 0.5,
     arbeitSit: pick(['', '', '', 'arbeitslos', 'krank']), algZeit: rnd() < 0.7, algMonate: pick(['', '12', '24', '36']),
     krankWochen: pick(['', 'unter6', 'laeuft', 'ende']), lohnVorher: pick(['', 1500, 2800, 4500, 7000]),
-    baby: pick(['', '', '', 'bald', 'da']), egVor: pick(['', 0, 900, 2000]), aufenthalt: rnd() < 0.05 ? 'asyl' : rnd() < 0.08 ? 'eu' : '',
+    baby: pick(['', '', '', 'bald', 'da']), egVor: pick(['', 0, 900, 2000]), egKinder: pick(['', '', '2', '3']), egNach: pick(['', '', 600, 2500]), aufenthalt: rnd() < 0.05 ? 'asyl' : rnd() < 0.08 ? 'eu' : '',
     ausbildung: pick(['', '', '', 'ich', 'kind', 'kindBetrieb']), pflegegrad: pick(['', '', '', 'antrag', '1', '2', '3', '5']),
     bhPerson: pick(['', '', '', 'ich', 'minder', 'erwVor25', 'erwNach25']), gdb: pick(['', '', '50', '80', '100', 'antrag']),
     blind: pick(['', '', '', '', 'blind', 'hoch']), emStd: pick(['', '', '', 'unter3', '3bis6', 'unklar']),

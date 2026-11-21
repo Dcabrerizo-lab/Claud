@@ -29,7 +29,11 @@ const M = [
   ['Unterhalt: Wohngeld ohne Titel schon vorsichtig abgezogen', 'const uzWGpess = uzTitel ? Math.min(uzBetrag, uzCap) : 0,', 'const uzWGpess = Math.min(uzBetrag, uzCap),'],
   ['Elterngeld: Untergrenze 65 % fehlt', 'q = Math.max(E.satzHoch, E.satz - Math.floor', 'q = Math.max(0, E.satz - Math.floor'],
   ['Elterngeld: 0,1 Punkte je 4 statt 2 €', 'Math.floor((E.grenzeUnten - n) / 2)', 'Math.floor((E.grenzeUnten - n) / 4)'],
-  ['Elterngeld: Mindestbetrag 300 € fehlt', 'return Math.min(E.max, Math.max(E.min, n * q));', 'return Math.min(E.max, n * q);'],
+  ['Elterngeld: Mindestbetrag 300 € fehlt', '    kern = Math.max(E.min * f, kern);', '    kern = Math.max(0, kern);'],
+  ['Elterngeld: Teilzeit-Deckel 2.770 € fehlt', 'Math.min(n, E.deckel)', 'n'],
+  ['Elterngeld: Mehrlingszuschlag fehlt', 'return kern + bonus + E.mehrling * f * Math.max(0, (o.kinder || 1) - 1);', 'return kern + bonus;'],
+  ['Elterngeld: ElterngeldPlus ohne Obergrenze (§ 4a Abs. 2 Satz 2)', 'if (o.plus) kern = Math.min(kern, Math.max(E.min, ohne) / 2);', 'if (o.plus) kern = kern / 2;'],
+  ['Elterngeld: Mindestbeträge beim ElterngeldPlus nicht halbiert', 'const f = o.plus ? 0.5 : 1;', 'const f = 1;'],
   ['Elterngeld: 12 statt 14 Monate', 'const monate = R.eg.monate + R.eg.partner;', 'const monate = R.eg.monate;'],
   // Abgleich 2 (21.11.2026): Befunde 10, 12, 14
   ['BAföG: Vermögensfreibetrag je Partner und Kind fehlt (§ 29 Abs. 1 Nr. 2, 3)', '+ R.bafoeg.vermJePerson * ((h.adults === 2 ? 1 : 0) + h.children);', '+ 0;'],

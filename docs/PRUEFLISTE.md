@@ -404,7 +404,8 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Geschwisterbonus 10 %, mindestens 75 € (§ 2a BEEG): bei zwei Kindern unter 6 eingerechnet, bei einem als Hinweis (unter 3?); amtlich geprüft | ✓ | `amtlich-elterngeld` |
 | Einkommensgrenze 175.000 € zu versteuerndes Einkommen (§ 1 Abs. 8); Mutterschaftsgeld wird angerechnet (§ 3) | ◐ | `eg-hinweise` |
 | Ausländer: Anspruch abhängig vom Aufenthaltstitel (§ 1 Abs. 7) | ◐ | `eg-asyl` |
-| Geschwisterbonus, Mehrlingszuschlag (§ 2a) | ○ (Anzahl und Alter der Geschwister werden nicht abgefragt; Spanne reicht bis 1.800 €) | |
+| Mehrlingszuschlag 300 € je weiteres Kind der Geburt, auch neben dem Geschwisterbonus (§ 2a Abs. 4); Kinder der Geburt zählen nicht als Geschwister (§ 2a Abs. 1 Satz 2); beim ElterngeldPlus halbiert (§ 4a Abs. 2 Satz 3 Nr. 3) (Abruf 21.11.2026) | ✓ | `eg-mehrlinge` |
+| Teilzeit nach der Geburt: Prozentsatz nach dem Einkommen vorher auf den Unterschied, Einkommen vorher höchstens 2.770 € (§ 2 Abs. 3), mindestens 300 € (§ 2 Abs. 4); ElterngeldPlus höchstens die Hälfte des Basiselterngelds ohne Einkommen, Mindestbetrag und Mindest-Geschwisterbonus halbiert (§ 4a Abs. 2) (Abruf 21.11.2026) | ✓ | `eg-teilzeit` |
 
 ## Mutterschaftsgeld (MuSchG, § 24i SGB V)
 <!-- karten: mutter -->

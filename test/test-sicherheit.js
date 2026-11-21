@@ -10,7 +10,7 @@ let n = 0, fails = 0;
 const ck = (name, c, x) => { n++; if (!c) { fails++; console.log('FAIL', name, x === undefined ? '' : x); } };
 const BOESE = '"><img src=x onerror="window.__xss=1"><script>window.__xss=1</script>';
 const p = { name: BOESE, geb: BOESE, strasse: BOESE, ort: '80331 ' + BOESE, tel: BOESE };
-const s = { adults: 1, kids: 2, ek1Art: 'lohn', ek1Brutto: '1500', ek1Netto: '1150', miete: BOESE, plz: BOESE, bundesland: BOESE, mietstufe: BOESE, vermoegen: BOESE, gebJahr: BOESE, bhPerson: BOESE, gdb: BOESE, aufenthalt: BOESE, baby: BOESE, egVor: BOESE, bezug: { [BOESE]: true } };
+const s = { adults: 1, kids: 2, ek1Art: 'lohn', ek1Brutto: '1500', ek1Netto: '1150', miete: BOESE, plz: BOESE, bundesland: BOESE, mietstufe: BOESE, vermoegen: BOESE, gebJahr: BOESE, bhPerson: BOESE, gdb: BOESE, aufenthalt: BOESE, baby: BOESE, egVor: BOESE, egKinder: BOESE, egNach: BOESE, bezug: { [BOESE]: true } };
 const store = { 'lotse.state': JSON.stringify({ s, p, e: true }), 'lotse.ack': '1', 'lotse.einfach': JSON.stringify({ es: { schritt: 3, antworten: { name: BOESE }, plz: BOESE, mz: { [BOESE]: true } }, an: false }) };
 const errors = [];
 const dom = new JSDOM('<!doctype html><html><head><meta charset="utf-8"></head><body>' + html + '</body></html>', {

@@ -84,7 +84,8 @@ function bafoegSolo(f) {
 }
 function egSolo(f) {
   const kids = f.geschwister ? 2 : 0;
-  const e = R.evaluate({ baby: 'bald', egVor: f.vorher, art1: 'lohn', brutto: 2000, netto: 1500, heute: HEUTE, kids, kidsU6: kids }).results.find((r) => r.id === 'elterngeld');
+  // Teilzeit (Netto nach der Geburt) und Mehrlinge rechnet SoLo seit 21.11.2026 mit (§ 2 Abs. 3, § 2a Abs. 4 BEEG)
+  const e = R.evaluate({ baby: 'bald', egVor: f.vorher, egNach: f.nachher || '', egKinder: f.kinder > 1 ? String(f.kinder) : '', art1: 'lohn', brutto: 2000, netto: 1500, heute: HEUTE, kids, kidsU6: kids }).results.find((r) => r.id === 'elterngeld');
   const p = e.tx[0][1];
   return { basis: p.basis.eur, plus: p.plus.eur }; // SoLo zeigt volle Euro
 }
@@ -122,16 +123,16 @@ function auswerten(dir) {
     }
     erg.bafoeg = z;
   }
-  // Elterngeld: Basiselterngeld auf 1 € genau. Teilzeit (Netto nach der Geburt) und Mehrlinge fragt SoLo nicht ab -> getrennt gezählt.
+  // Elterngeld: Basiselterngeld auf 1 € genau. Teilzeit (Netto nach der Geburt) und Mehrlinge rechnet SoLo mit; getrennt gezählt, damit Fehler auffallen.
   const E = lies(dir, 'elterngeld');
   if (E.length) {
-    const z = { n: E.length, ohne: 0, einfach: { n: 0, gleich: 0, anders: [] }, teilzeit: { n: 0, anders: [] }, mehrlinge: { n: 0, anders: [] } };
+    const z = { n: E.length, ohne: 0, einfach: { n: 0, gleich: 0, anders: [] }, teilzeit: { n: 0, gleich: 0, anders: [] }, mehrlinge: { n: 0, gleich: 0, anders: [] } };
     for (const x of E) {
       if (x.amtlich == null) { z.ohne++; continue; }
       const s = egSolo(x.f), d = Math.round((s.basis - x.amtlich) * 100) / 100;
       const g = x.f.kinder > 1 ? z.mehrlinge : x.f.nachher ? z.teilzeit : z.einfach;
       g.n++;
-      if (Math.abs(d) > 1) g.anders.push({ i: x.i, f: x.f, solo: s.basis, amtlich: x.amtlich, diff: d }); else if (g.gleich != null) g.gleich++;
+      if (Math.abs(d) > 1) g.anders.push({ i: x.i, f: x.f, solo: s.basis, amtlich: x.amtlich, diff: d }); else g.gleich++;
     }
     erg.elterngeld = z;
   }

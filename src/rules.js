@@ -132,7 +132,15 @@ const Rules = (function () {
     // kein Anspruch über 175.000 € zu versteuerndem Einkommen der Eltern (Geburten ab 1.4.2025, § 1 Abs. 8 BEEG)
     // pausch: ein Zwölftel des Arbeitnehmer-Pauschbetrags (§ 2c Abs. 1 BEEG). Bleibt bei 1.000 € / 12, obwohl der Wortlaut 1.230 € nahelegt:
     // Der Elterngeldrechner des Bundes rechnet nachweislich so (alle 33 Referenzfälle auf den Cent).
-    eg: { pausch: 1000 / 12, bonus: 0.1, bonusMin: 75, min: 300, max: 1800, satz: 0.67, satzHoch: 0.65, grenzeUnten: 1000, grenzeOben: 1200, monate: 12, partner: 2, einkommenGrenze: 175000 },
+    // Teilzeit nach der Geburt (§ 2 Abs. 3 BEEG): Prozentsatz nach Abs. 1/2 „des Unterschiedsbetrages“ der Einkommen vor und nach der Geburt;
+    // „Als Einkommen aus Erwerbstätigkeit vor der Geburt ist dabei höchstens der Betrag von 2 770 Euro anzusetzen“ (deckel). Mindestens 300 € (§ 2 Abs. 4).
+    // Mehrlingszuschlag (§ 2a Abs. 4 BEEG): „um je 300 Euro für das zweite und jedes weitere Kind“, auch neben dem Geschwisterbonus (mehrling).
+    // ElterngeldPlus (§ 4a Abs. 2 BEEG): „höchstens die Hälfte des Basiselterngeldes, das der berechtigten Person zustünde, wenn sie während des
+    // Elterngeldbezugs keine Einnahmen ... hätte“; dabei halbieren sich Mindestbetrag (§ 2 Abs. 4), Mindestbetrag des Geschwisterbonus und
+    // Mehrlingszuschlag (§ 4a Abs. 2 Satz 3 Nr. 1–3). Quellen: gesetze-im-internet.de/beeg/__2.html, __2a.html, __4a.html, abgerufen 21.11.2026;
+    // Familienportal (familienportal.de, FAQ „Wie viel Elterngeld kann ich bekommen?“, abgerufen 21.11.2026): „Als Netto-Einkommen vor der Geburt
+    // werden maximal 2.770 Euro berücksichtigt“, ElterngeldPlus „mindestens 150 Euro“.
+    eg: { pausch: 1000 / 12, bonus: 0.1, bonusMin: 75, min: 300, max: 1800, satz: 0.67, satzHoch: 0.65, grenzeUnten: 1000, grenzeOben: 1200, monate: 12, partner: 2, einkommenGrenze: 175000, deckel: 2770, mehrling: 300 },
     // Hilfe zur Pflege (§§ 61 ff., 85 SGB XII): Einkommensgrenze 2 × RS1 + Wohnkosten + 70 % RS1 je weiterer Person; Vermögen 10.000 € je Erwachsenem
     hzp: { grund: 2, familie: 0.7 },
     // Blindenhilfe (§ 72 SGB XII): gleiche Einkommensgrenze wie Hilfe zur Pflege (§ 85); vom Einkommen über der Grenze
@@ -730,7 +738,9 @@ const Rules = (function () {
       }, 0)
         : sumIf((a, b) => a !== 'lohn' && a !== 'ohne' && b > 0 ? Math.min(b, R.versPauschale) : 0),
       mzG: !!inp.mzG, mzGl: !!inp.mzGl || !!(inp.mz && inp.mz.Gl), mzRF: !!(inp.mz && inp.mz.RF), mzAG: !!(inp.mz && inp.mz.aG), wfbmJahre: num(inp.wfbmJahre), grundrente33: !!inp.grundrente33, zusatzRente: num(inp.zusatzRente), bhEinkHoch: !!inp.bhEinkHoch, teilhabe: !!inp.teilhabe, bhWeitere: Math.min(4, Math.max(0, inp.bhWeitere | 0)), schwanger: !!inp.schwanger, ernaehrung: !!inp.ernaehrung, warmwasser: !!inp.warmwasser, gebJahr: jahr,
-      baby: inp.baby === 'bald' || inp.baby === 'da' ? inp.baby : '', egVor: blank(inp.egVor) ? null : num(inp.egVor), asyl: inp.aufenthalt === 'asyl' || inp.aufenthalt === 'ausreise',
+      baby: inp.baby === 'bald' || inp.baby === 'da' ? inp.baby : '', egVor: blank(inp.egVor) ? null : num(inp.egVor),
+      // Elterngeld: Netto nach der Geburt bei Teilzeit (leer = keine Arbeit), Kinder dieser Geburt (Zwillinge 2, Drillinge oder mehr 3)
+      egNach: blank(inp.egNach) ? null : num(inp.egNach), egKinder: Math.min(3, Math.max(1, Number(inp.egKinder) | 0)), asyl: inp.aufenthalt === 'asyl' || inp.aufenthalt === 'ausreise',
       // ausreisepflichtig ohne Duldung (§ 1 Abs. 1 Nr. 5 AsylbLG): sonst wie asyl, aber kein Wohngeld und kein WBS
       ausreise: inp.aufenthalt === 'ausreise',
       // Bezug von Asylbewerberleistungen: Einkommensart „asylblg“ einer Person, nur zusammen mit Aufenthalt „asyl“
@@ -1576,15 +1586,27 @@ const Rules = (function () {
   }
 
   // Elterngeld (BEEG)
-  function elterngeldBerechnen(netto) {
-    const E = R.eg;
+  // Ein Monatsbetrag. vor/nach: Netto vor bzw. nach der Geburt (nach: null = keine Arbeit nach der Geburt), kinder: Kinder dieser Geburt,
+  // bonus: Geschwisterbonus sicher, plus: ElterngeldPlus statt Basiselterngeld. Regeln und Quellen bei R.eg.
+  function elterngeldBerechnen(netto, opt) {
+    const E = R.eg, o = opt || {};
     // Elterngeld-Netto: vom Netto noch ein Zwölftel des Arbeitnehmer-Pauschbetrags ab (§ 2c Abs. 1 BEEG; so rechnet der Elterngeldrechner des Bundes)
     const n = Math.max(0, netto - E.pausch);
     let q = E.satz;
     // § 2 Abs. 2 BEEG: 0,1 Prozentpunkte für je (volle) 2 € Abstand zur Grenze
     if (n < E.grenzeUnten) q = Math.min(1, E.satz + Math.floor((E.grenzeUnten - n) / 2) * 0.001);
     else if (n > E.grenzeOben) q = Math.max(E.satzHoch, E.satz - Math.floor((n - E.grenzeOben) / 2) * 0.001);
-    return Math.min(E.max, Math.max(E.min, n * q));
+    const ohne = Math.min(E.max, n * q); // ohne Einkommen nach der Geburt (§ 2 Abs. 1)
+    // § 2 Abs. 3: mit Einkommen nach der Geburt der Prozentsatz (nach dem Einkommen VOR der Geburt) des Unterschieds, vor höchstens 2.770 €;
+    // das Netto danach wie das davor um das Zwölftel des Pauschbetrags gemindert (wie der Elterngeldrechner des Bundes)
+    let kern = o.nach > 0 ? Math.min(E.max, q * Math.max(0, Math.min(n, E.deckel) - Math.max(0, o.nach - E.pausch))) : ohne;
+    const f = o.plus ? 0.5 : 1; // § 4a Abs. 2 Satz 3: Mindestbetrag, Mindest-Geschwisterbonus und Mehrlingszuschlag halbiert
+    kern = Math.max(E.min * f, kern);
+    // § 4a Abs. 2 Satz 2: ElterngeldPlus höchstens die Hälfte des Basiselterngelds ohne Einnahmen. Am Kern gedeckelt: Geschwisterbonus (10 %)
+    // und Mehrlingszuschlag kommen beim Basiselterngeld genauso dazu und werden beim ElterngeldPlus halbiert, das Ergebnis ist dasselbe.
+    if (o.plus) kern = Math.min(kern, Math.max(E.min, ohne) / 2);
+    const bonus = o.bonus ? Math.max(E.bonusMin * f, kern * E.bonus) : 0; // § 2a Abs. 1: 10 %, mindestens 75 €
+    return kern + bonus + E.mehrling * f * Math.max(0, (o.kinder || 1) - 1); // § 2a Abs. 4: je 300 € ab dem zweiten Kind der Geburt
   }
   function elterngeld(h) {
     const id = 'elterngeld';
@@ -1593,14 +1615,25 @@ const Rules = (function () {
     if (h.asyl) return mk(id, 'vielleicht', 'vielleicht', [['eg.asyl']]);
     const monate = R.eg.monate + R.eg.partner; // Paare zusammen 14, Alleinerziehende allein 14 (§ 4 Abs. 4, 6 BEEG)
     const tx = [];
-    if (h.egVor == null) tx.push(['eg.ohneBetrag', { min: eur(R.eg.min), max: eur(R.eg.max) }]);
-    else {
+    const kinder = h.egKinder, mehr = { zuschlag: eur(R.eg.mehrling) };
+    if (h.egVor == null) {
+      tx.push(['eg.ohneBetrag', { min: eur(R.eg.min), max: eur(R.eg.max) }]);
+      if (kinder > 1) tx.push(['eg.mehrlingeOhne', mehr]);
+    } else {
       // Geschwisterbonus (§ 2a Abs. 1 BEEG): 10 %, mindestens 75 €, wenn im Haushalt ein weiteres Kind unter 3 oder zwei unter 6 leben.
       // SoLo kennt nur Kinder unter 6: zwei oder mehr sicher, eines nur als Hinweis (ob es unter 3 ist, weiß SoLo nicht).
-      const geschw = h.baby === 'bald' ? h.kidsU6 : Math.max(0, h.kidsU6 - 1);
-      let basis = elterngeldBerechnen(h.egVor);
-      if (geschw >= 2) basis += Math.max(R.eg.bonusMin, basis * R.eg.bonus);
-      tx.push(['eg.ja', { basis: eur(basis), plus: eur(basis / 2), monate }], ['schaetz.eins', { a: eur(r10(basis)) }]);
+      // Mehrlinge: Mitgezählt werden nur Kinder, für die es keinen Mehrlingszuschlag gibt (§ 2a Abs. 1 Satz 2), also das erste Kind der Geburt;
+      // ist das Baby schon da, stecken alle Kinder der Geburt in kidsU6.
+      const geschw = h.baby === 'bald' ? h.kidsU6 : Math.max(0, h.kidsU6 - kinder);
+      const o = { nach: h.egNach, kinder, bonus: geschw >= 2 };
+      const basis = elterngeldBerechnen(h.egVor, o), plus = elterngeldBerechnen(h.egVor, Object.assign({ plus: true }, o));
+      tx.push(['eg.ja', { basis: eur(basis), plus: eur(plus), monate }], ['schaetz.eins', { a: eur(r10(basis)) }]);
+      if (h.egNach > 0) {
+        const kern = elterngeldBerechnen(h.egVor, { nach: h.egNach });
+        tx.push([kern <= R.eg.min ? 'eg.teilzeitMin' : 'eg.teilzeit', { nach: eur(h.egNach), deckel: eur(R.eg.deckel), min: eur(R.eg.min) }],
+          ['eg.teilzeitPlus', { halb: eur(elterngeldBerechnen(h.egVor, { kinder, bonus: o.bonus }) / 2) }]);
+      } else tx.push(['eg.teilzeitOffen']);
+      if (kinder > 1) tx.push([kinder >= 3 ? 'eg.mehrlingeDrei' : 'eg.mehrlinge', mehr]);
       if (geschw >= 2) tx.push(['eg.geschwister', { min: eur(R.eg.bonusMin) }]);
       else if (geschw === 1) tx.push(['eg.geschwisterVielleicht', { min: eur(R.eg.bonusMin) }]);
     }
@@ -2035,7 +2068,7 @@ const Rules = (function () {
     pausch: '§ 33b EStG', ausweis: '§§ 2, 152 SGB IX', blindengeld: 'Landesblindengeldgesetz (Bayern: BayBlindG)',
     pflegeplus: '§§ 39, 40, 42, 42a SGB XI', arbeit: '§ 61 SGB IX', rundfunk: '§ 4 RBStV', zuzahl: '§ 62 SGB V',
     bab: '§§ 56 ff. SGB III', wbs: '§ 27 WoFG, Einkommensgrenze § 9 Abs. 2 WoFG; in Ländern mit eigenem Gesetz Landesrecht', alg1: '§§ 136 ff. SGB III', krankengeld: '§§ 44 ff. SGB V',
-    srente: '§§ 37, 236a SGB VI', elterngeld: 'BEEG, §§ 1–2 BEEG', hzp: '§§ 61 ff. SGB XII', lpg: 'BayLPflGG',
+    srente: '§§ 37, 236a SGB VI', elterngeld: 'BEEG, §§ 1–2a, 4, 4a BEEG', hzp: '§§ 61 ff. SGB XII', lpg: 'BayLPflGG',
     mutter: '§ 19 MuSchG, § 24i SGB V', kkg: '§ 45 SGB V', blh: '§ 72 SGB XII', asylblg: 'AsylbLG'
   };
 
@@ -2132,13 +2165,15 @@ const Rules = (function () {
   // Wohngeld und Kinderzuschlag vor und zählt dort als Einkommen. Zweite Rechnung „sobald gezahlt“: Das Einkommen der ersten
   // Person (Lohn oder keins) wird durch die Leistung ersetzt (Mitte der geschätzten Spanne, ausgezahlter Betrag).
   // Nur die ausführliche Version, nur ohne Asyl; Elterngeld nur bei Alleinstehenden vor der Geburt (bei Paaren ist offen, wer es bekommt).
+  // Elterngeld nicht bei Teilzeit (der Lohn danach bliebe neben dem Elterngeld) und nicht bei Mehrlingen (Freibetrag 300 € vervielfacht sich mit der
+  // Zahl der Kinder, § 10 Abs. 4 BEEG, gesetze-im-internet.de/beeg/__10.html, abgerufen 21.11.2026): diese Rechnung bildet das nicht ab.
   const spanneMitte = (r) => { const t = r.tx.find((x) => x[0] === 'schaetz.spanne' || x[0] === 'schaetz.eins'); return t ? (t[0] === 'schaetz.eins' ? t[1].a.eur : (t[1].a.eur + t[1].b.eur) / 2) : 0; };
   function zukunft(inp, h, a1, krg, eg) {
     if (h.liste || h.asyl || (h.art1 !== 'lohn' && h.art1 !== 'ohne')) return null;
     let quelle = '', art = '', betrag = 0;
     if (a1.level === 'ja' && h.arbeitSit === 'arbeitslos' && h.lohnVorher > 0) { quelle = 'alg'; art = 'alg'; betrag = spanneMitte(a1); }
     else if ((krg.level === 'ja' || krg.level === 'vielleicht') && (h.krankWochen === 'unter6' || h.krankWochen === 'laeuft') && h.lohnVorher > 0) { quelle = 'kg'; art = 'kg'; betrag = spanneMitte(krg); }
-    else if (eg.level === 'ja' && h.baby === 'bald' && h.adults === 1 && h.egVor != null) { quelle = 'eg'; art = 'eg'; betrag = spanneMitte(eg); }
+    else if (eg.level === 'ja' && h.baby === 'bald' && h.adults === 1 && h.egVor != null && !(h.egNach > 0) && h.egKinder === 1) { quelle = 'eg'; art = 'eg'; betrag = spanneMitte(eg); }
     if (!quelle || !(betrag > 0)) return null;
     const b1 = h.brutto - h.brutto2;
     const netto1 = h.adults === 1 ? h.netto : h.brutto > 0 ? h.netto * b1 / h.brutto : 0;
