@@ -14,6 +14,7 @@
 //        liest amtlich-<art>*.json (Ausgabe der Abfrage), rechnet mit SoLo, listet Abweichungen > 1 € bzw. andere Einschätzung
 const fs = require('fs'), path = require('path');
 const R = require('../src/rules.js');
+const Ref = require('../test/referenz.js');
 const HEUTE = 2026.9;
 const N = { bafoeg: 200, elterngeld: 300, pfaendung: 300 };
 
@@ -123,16 +124,19 @@ function auswerten(dir) {
     }
     erg.bafoeg = z;
   }
-  // Elterngeld: Basiselterngeld auf 1 € genau. Teilzeit (Netto nach der Geburt) und Mehrlinge rechnet SoLo mit; getrennt gezählt, damit Fehler auffallen.
+  // Elterngeld (Basiselterngeld). SoLo rechnet nach § 2c Abs. 1 BEEG mit 102,50 € Abzug (1.230 € / 12), der Schnellrechner mit 83,33 €
+  // (Entscheidung David, 21.11.2026). Kein Toleranzband: amtlich muss auf den Cent der Formel mit 83,33 € entsprechen, SoLo auf den Euro der
+  // Formel mit 102,50 €; bei festem Satz Differenz = −Satz × 19,17 €, bei Mindest-/Höchstbetrag 0 € (test/referenz.js, egAbgleich).
+  // Teilzeit (Netto nach der Geburt) und Mehrlinge rechnet SoLo mit; getrennt gezählt, damit Fehler auffallen.
   const E = lies(dir, 'elterngeld');
   if (E.length) {
     const z = { n: E.length, ohne: 0, einfach: { n: 0, gleich: 0, anders: [] }, teilzeit: { n: 0, gleich: 0, anders: [] }, mehrlinge: { n: 0, gleich: 0, anders: [] } };
     for (const x of E) {
       if (x.amtlich == null) { z.ohne++; continue; }
-      const s = egSolo(x.f), d = Math.round((s.basis - x.amtlich) * 100) / 100;
+      const s = egSolo(x.f), d = Math.round((s.basis - x.amtlich) * 100) / 100, a = Ref.egAbgleich(x.f, s.basis, x.amtlich);
       const g = x.f.kinder > 1 ? z.mehrlinge : x.f.nachher ? z.teilzeit : z.einfach;
       g.n++;
-      if (Math.abs(d) > 1) g.anders.push({ i: x.i, f: x.f, solo: s.basis, amtlich: x.amtlich, diff: d }); else g.gleich++;
+      if (a.fehler) g.anders.push({ i: x.i, f: x.f, solo: s.basis, amtlich: x.amtlich, diff: d, erwartet: a.diff, fehler: a.fehler }); else g.gleich++;
     }
     erg.elterngeld = z;
   }
@@ -168,13 +172,13 @@ function bericht(erg) {
   }
   if (erg.elterngeld) {
     const z = erg.elterngeld;
-    L.push('## Elterngeld (Basiselterngeld, Schnellrechner)', '', '| Gruppe | Fälle | Abweichung > 1 € |', '|---|---|---|',
+    L.push('## Elterngeld (Basiselterngeld, Schnellrechner)', '', 'SoLo zieht nach § 2c Abs. 1 BEEG 102,50 € ab (1.230 € / 12), der Schnellrechner 83,33 €. Gezählt wird nur, was sich daraus nicht genau erklärt.', '', '| Gruppe | Fälle | nicht aus dem Pauschbetrag erklärt |', '|---|---|---|',
       '| ohne Teilzeit, ohne Mehrlinge (mit/ohne Geschwisterbonus) | ' + z.einfach.n + ' | ' + z.einfach.anders.length + ' |',
       '| Teilzeit nach der Geburt | ' + z.teilzeit.n + ' | ' + z.teilzeit.anders.length + ' |', '| Mehrlinge | ' + z.mehrlinge.n + ' | ' + z.mehrlinge.anders.length + ' |', '| amtlich ohne Ergebnis | ' + z.ohne + ' | |', '');
     for (const [name, g] of [['ohne Teilzeit/Mehrlinge', z.einfach], ['Teilzeit', z.teilzeit], ['Mehrlinge', z.mehrlinge]]) {
       if (!g.anders.length) continue;
-      L.push('### Abweichungen: ' + name, '', '| Nr. | Netto vorher | Netto nachher | Geschwister | Kinder | SoLo | amtlich | Differenz |', '|---|---|---|---|---|---|---|---|');
-      g.anders.slice(0, 25).forEach((a) => L.push('| ' + a.i + ' | ' + a.f.vorher + ' | ' + (a.f.nachher || '–') + ' | ' + (a.f.geschwister ? 'ja' : 'nein') + ' | ' + (a.f.kinder || 1) + ' | ' + eur(a.solo) + ' | ' + eur(a.amtlich) + ' | ' + eur(a.diff) + ' |'));
+      L.push('### Abweichungen: ' + name, '', '| Nr. | Netto vorher | Netto nachher | Geschwister | Kinder | SoLo | amtlich | Differenz | erwartete Differenz | Grund |', '|---|---|---|---|---|---|---|---|---|---|');
+      g.anders.slice(0, 25).forEach((a) => L.push('| ' + a.i + ' | ' + a.f.vorher + ' | ' + (a.f.nachher || '–') + ' | ' + (a.f.geschwister ? 'ja' : 'nein') + ' | ' + (a.f.kinder || 1) + ' | ' + eur(a.solo) + ' | ' + eur(a.amtlich) + ' | ' + eur(a.diff) + ' | ' + eur(a.erwartet) + ' | ' + a.fehler + ' |'));
       if (g.anders.length > 25) L.push('', '… und ' + (g.anders.length - 25) + ' weitere');
       L.push('');
     }

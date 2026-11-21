@@ -130,10 +130,15 @@ const Rules = (function () {
     // Elterngeld (§ 2 BEEG): 67 % des Nettos vor der Geburt (65 % ab 1.240 €, bis 100 % bei kleinem Einkommen), 300 bis 1.800 €;
     // ElterngeldPlus die Hälfte für doppelt so lange; Basiselterngeld 12 Monate, mit Partnermonaten oder alleinerziehend 14;
     // kein Anspruch über 175.000 € zu versteuerndem Einkommen der Eltern (Geburten ab 1.4.2025, § 1 Abs. 8 BEEG)
-    // pausch: ein Zwölftel des Arbeitnehmer-Pauschbetrags (§ 2c Abs. 1 BEEG). Bleibt bei 1.000 € / 12, weil der Elterngeld-Schnellrechner des Bundes
-    // nachweislich so rechnet (alle 33 Referenzfälle auf den Cent). OFFEN: Nach § 2c Abs. 1 Satz 4 und den Richtlinien zum BEEG (07/2026, Nr. 2c.1.4.0,
-    // bmbfsfj.bund.de, abgerufen 21.11.2026) gilt für Geburten ab 1.1.2025 ein Zwölftel von 1.230 € = 102,50 €. SoLo liegt damit bis etwa 13 € im Monat
-    // über dem Betrag der Elterngeldstelle (Anzeige „etwa“). Der Abzug gilt genauso für das Einkommen nach der Geburt (§ 2 Abs. 1 Satz 3).
+    // pausch: § 2c Abs. 1 Satz 1 BEEG: Einnahmen aus nichtselbstständiger Arbeit zählen, soweit sie „ein Zwölftel des Arbeitnehmer-Pauschbetrags“
+    // übersteigen. Satz 4: „Maßgeblich ist der Arbeitnehmer-Pauschbetrag nach § 9a Satz 1 Nummer 1 Buchstabe a des Einkommensteuergesetzes in der
+    // am 1. Januar des Kalenderjahres vor der Geburt des Kindes für dieses Jahr geltenden Fassung.“ § 9a Satz 1 Nr. 1 Buchst. a EStG: 1.230 €
+    // (seit 1.1.2023). Richtlinien zum BEEG (BMBFSFJ, 07/2026, Nr. 2c.1.4.0, bmbfsfj.bund.de): „ein Zwölftel von 1.230 Euro ... monatlichen Betrag
+    // von 102,50 Euro“, angewandt für Geburten ab 01.01.2025 (Geburten 2024: 1.200 €). SoLo rechnet nur laufende und baldige Geburten: 102,50 €. Quellen: gesetze-im-internet.de/beeg/__2c.html, /estg/__9a.html,
+    // abgerufen 21.11.2026. ACHTUNG: Der Elterngeld-Schnellrechner des Bundes (familienportal.de) rechnet abweichend mit 1.000 € / 12 = 83,33 €
+    // und zeigt deshalb bis etwa 13 € im Monat mehr (ohne Geschwisterbonus). SoLo rechnet bewusst nach dem Gesetz (Entscheidung David, 21.11.2026).
+    // Die Tests erklären den Unterschied zum Schnellrechner genau aus diesen 19,17 € (test/referenz.js, egAbgleich).
+    // Der Abzug gilt genauso für das Einkommen nach der Geburt (§ 2 Abs. 1 Satz 3).
     // Teilzeit nach der Geburt (§ 2 Abs. 3 BEEG): Prozentsatz nach Abs. 1/2 „des Unterschiedsbetrages“ der Einkommen vor und nach der Geburt;
     // „Als Einkommen aus Erwerbstätigkeit vor der Geburt ist dabei höchstens der Betrag von 2 770 Euro anzusetzen“ (deckel). Mindestens 300 € (§ 2 Abs. 4).
     // Mehrlingszuschlag (§ 2a Abs. 4 BEEG): „um je 300 Euro für das zweite und jedes weitere Kind“, auch neben dem Geschwisterbonus (mehrling).
@@ -142,7 +147,7 @@ const Rules = (function () {
     // Mehrlingszuschlag (§ 4a Abs. 2 Satz 3 Nr. 1–3). Quellen: gesetze-im-internet.de/beeg/__2.html, __2a.html, __4a.html, abgerufen 21.11.2026;
     // Familienportal (familienportal.de, FAQ „Wie viel Elterngeld kann ich bekommen?“, abgerufen 21.11.2026): „Als Netto-Einkommen vor der Geburt
     // werden maximal 2.770 Euro berücksichtigt“, ElterngeldPlus „mindestens 150 Euro“.
-    eg: { pausch: 1000 / 12, bonus: 0.1, bonusMin: 75, min: 300, max: 1800, satz: 0.67, satzHoch: 0.65, grenzeUnten: 1000, grenzeOben: 1200, monate: 12, partner: 2, einkommenGrenze: 175000, deckel: 2770, mehrling: 300 },
+    eg: { pausch: 1230 / 12, bonus: 0.1, bonusMin: 75, min: 300, max: 1800, satz: 0.67, satzHoch: 0.65, grenzeUnten: 1000, grenzeOben: 1200, monate: 12, partner: 2, einkommenGrenze: 175000, deckel: 2770, mehrling: 300 },
     // Hilfe zur Pflege (§§ 61 ff., 85 SGB XII): Einkommensgrenze 2 × RS1 + Wohnkosten + 70 % RS1 je weiterer Person; Vermögen 10.000 € je Erwachsenem
     hzp: { grund: 2, familie: 0.7 },
     // Blindenhilfe (§ 72 SGB XII): gleiche Einkommensgrenze wie Hilfe zur Pflege (§ 85); vom Einkommen über der Grenze
@@ -1602,7 +1607,7 @@ const Rules = (function () {
   // bonus: Geschwisterbonus sicher, plus: ElterngeldPlus statt Basiselterngeld. Regeln und Quellen bei R.eg.
   function elterngeldBerechnen(netto, opt) {
     const E = R.eg, o = opt || {};
-    // Elterngeld-Netto: vom Netto noch ein Zwölftel des Arbeitnehmer-Pauschbetrags ab (§ 2c Abs. 1 BEEG; so rechnet der Elterngeldrechner des Bundes)
+    // Elterngeld-Netto: vom Netto noch ein Zwölftel des Arbeitnehmer-Pauschbetrags ab (§ 2c Abs. 1 BEEG: 1.230 € / 12 = 102,50 €; der Schnellrechner des Bundes zieht nur 83,33 € ab, siehe R.eg)
     const n = Math.max(0, netto - E.pausch);
     let q = E.satz;
     // § 2 Abs. 2 BEEG: 0,1 Prozentpunkte für je (volle) 2 € Abstand zur Grenze
@@ -1610,7 +1615,7 @@ const Rules = (function () {
     else if (n > E.grenzeOben) q = Math.max(E.satzHoch, E.satz - Math.floor((n - E.grenzeOben) / 2) * 0.001);
     const ohne = Math.min(E.max, n * q); // ohne Einkommen nach der Geburt (§ 2 Abs. 1)
     // § 2 Abs. 3: mit Einkommen nach der Geburt der Prozentsatz (nach dem Einkommen VOR der Geburt) des Unterschieds, vor höchstens 2.770 €;
-    // das Netto danach wie das davor um das Zwölftel des Pauschbetrags gemindert (wie der Elterngeldrechner des Bundes)
+    // das Netto danach wie das davor um das Zwölftel des Pauschbetrags gemindert (§ 2 Abs. 1 Satz 3, § 2c Abs. 1)
     let kern = o.nach > 0 ? Math.min(E.max, q * Math.max(0, Math.min(n, E.deckel) - Math.max(0, o.nach - E.pausch))) : ohne;
     const f = o.plus ? 0.5 : 1; // § 4a Abs. 2 Satz 3: Mindestbetrag, Mindest-Geschwisterbonus und Mehrlingszuschlag halbiert
     kern = Math.max(E.min * f, kern);

@@ -165,7 +165,8 @@ ck('MB-SGB2 9.2: Freibetrag Minijob 603 € = 208,90 €', nah(F(603, false), 20
 // ---------- 21-22: Elterngeld, Mehrbedarf Alleinerziehende ----------
 {
   const eg = (v) => karte({ baby: 'bald', egVor: v, art1: 'lohn', brutto: 2000, netto: 1500, kids: 0 }, 'elterngeld').tx[0][1];
-  ck('EG-Br 1.4.1/1.7: Elterngeld-Netto 2.000 € -> 1.300 €, 1.000 € -> 670 € (Eingabe mit 83,33 € Pauschale)', eg(2083.33).basis.eur === 1300 && eg(1083.33).basis.eur === 670, [eg(2083.33), eg(1083.33)]);
+  // Die Broschüre nennt das Elterngeld-Netto (schon ohne Pauschbetrag). Eingabe in SoLo deshalb plus 102,50 € (§ 2c Abs. 1 BEEG: 1.230 € / 12)
+  ck('EG-Br 1.4.1/1.7: Elterngeld-Netto 2.000 € -> 1.300 €, 1.000 € -> 670 € (Eingabe mit 102,50 € Pauschale)', eg(2102.5).basis.eur === 1300 && eg(1102.5).basis.eur === 670, [eg(2102.5), eg(1102.5)]);
   const ae = (kids, u6, k14) => R.derive({ adults: 1, kids, kidsU6: u6 || 0, kids14: k14 || 0, kidsAlter: true }).mehrAE;
   ck('AE-2026: Mehrbedarf Alleinerziehende 67,56 / 202,68 / 270,24 / 337,80 €', nah(ae(1, 0, 1), 67.56) && nah(ae(1, 1, 0), 202.68) && nah(ae(4, 0, 0), 270.24) && nah(ae(5, 0, 0), 337.8), [ae(1, 0, 1), ae(1, 1, 0), ae(4, 0, 0), ae(5, 0, 0)]);
 }

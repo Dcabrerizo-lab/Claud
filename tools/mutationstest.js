@@ -59,6 +59,8 @@ const M = [
   ['Wohngeld: Mindestwerte Anlage 3 fehlen', '    M = Math.max(M, WG_MMIN[wgIdx(n)]); Y = Math.max(Y, WG_YMIN[wgIdx(n)]);', ''],
   ['Wohngeld: Werbungskostenpauschale fehlt', '    wgWerbung: { lohn: 1230, rente: 102 },', '    wgWerbung: { lohn: 0, rente: 0 },'],
   ['Elterngeld: Pauschbetrag § 2c BEEG fehlt', '    const n = Math.max(0, netto - E.pausch);', '    const n = Math.max(0, netto);'],
+  ['Elterngeld: Pauschbetrag 1.000 € (Schnellrechner) statt 1.230 € (§ 2c Abs. 1 Satz 4 BEEG)', 'eg: { pausch: 1230 / 12, bonus', 'eg: { pausch: 1000 / 12, bonus'],
+  ['Elterngeld: Pauschbetrag beim Netto nach der Geburt fehlt (§ 2 Abs. 1 Satz 3 BEEG)', 'Math.max(0, o.nach - E.pausch)', 'o.nach'],
   // Abgleich Musterbescheide 21.11.2026: Befund 1 (Plausibilitätsprüfung Nr. 15.01 WoGVwV mit Wohngeld) und Befund 2 (Vermögen Paar je Person, § 12 Abs. 2 SGB II)
   ['Wohngeld: Mindesteinkommen ohne das Wohngeld selbst (Befund 1)', "- (h.uzBetrag || 0) + wgVorsichtig(h, yPess);", "- (h.uzBetrag || 0);"],
   ['Grundsicherungsgeld: Paar-Vermögen mit Freibetrag der ältesten Person für beide (Befund 2)', "return h.adults === 2 && vMin && h.vermoegen > vMin ? hoechstensMoeglich(r, 'ggeld.vermAlter') : r;", 'return r;'],

@@ -533,10 +533,14 @@ function krankengeld(e) {
 
 
 // ---------- Elterngeld (§ 2 BEEG, wörtlich: 0,1 Prozentpunkte je volle 2 € Abstand) ----------
+const EG_PAUSCH = 1230 / 12;         // Gesetz: 102,50 € (gesetze-im-internet.de/beeg/__2c.html, /estg/__9a.html, abgerufen 21.11.2026)
+const EG_PAUSCH_RECHNER = 1000 / 12; // Elterngeld-Schnellrechner des Bundes (familienportal.de): 83,33 €, aus 1.033 abgefragten Fällen auf den Cent belegt
 function elterngeld(nettoVorher, geschwister, weitere) {
   // weitere: { nachher (Netto nach der Geburt bei Teilzeit), mehrlinge (Kinder der Geburt) }
   const w = weitere || {};
-  const pausch = 1000 / 12; // § 2c Abs. 1 BEEG: Netto minus 1/12 des Arbeitnehmer-Pauschbetrags (1.000 €), wie der Elterngeldrechner des Bundes
+  // § 2c Abs. 1 BEEG: Netto minus 1/12 des Arbeitnehmer-Pauschbetrags. Nach dem Gesetz 1.230 € (§ 9a Satz 1 Nr. 1 Buchst. a EStG in der Fassung
+  // vom 1. Januar des Jahres vor der Geburt, Satz 4), also 102,50 €. w.pausch nur für den Abgleich mit dem Schnellrechner des Bundes (egAbgleich).
+  const pausch = w.pausch != null ? w.pausch : EG_PAUSCH;
   const n = Math.max(0, nettoVorher - pausch);
   let prozent = 67;
   if (n < 1000) prozent = Math.min(100, 67 + Math.floor((1000 - n) / 2) * 0.1);
@@ -555,6 +559,38 @@ function elterngeld(nettoVorher, geschwister, weitere) {
   const g2 = Math.max(150, roh);
   const plus = Math.min(ohneArbeit / 2, g2 + (bonusSicher ? Math.max(37.5, g2 / 10) : 0) + zuschlag / 2);
   return { basis, plus, monate: 14 };
+}
+// Abgleich mit dem Elterngeld-Schnellrechner des Bundes. SoLo rechnet nach dem Gesetz mit 102,50 € Abzug, der Schnellrechner mit 83,33 €
+// (Entscheidung David, 21.11.2026). Der Unterschied wird nicht geduldet, sondern erklärt:
+//  1. Das amtliche Ergebnis muss auf den Cent der Formel mit 83,33 € entsprechen (sonst rechnet der Schnellrechner anders als angenommen).
+//  2. SoLo (volle Euro) muss der gleichen Formel mit 102,50 € entsprechen, also amtlich + erwartete Differenz.
+//  3. Die erwartete Differenz wird, wo der Prozentsatz auf beiden Seiten gleich ist, zusätzlich geschlossen nachgerechnet:
+//     −Satz × 19,17 € (230 € / 12; mit Geschwisterbonus über dem Mindestbonus × 1,1), 0 € bei Mindest- oder Höchstbetrag auf beiden Seiten.
+//     Bei Teilzeit hebt sich der Abzug im Unterschied der Einkommen auf (0 €), außer am Deckel 2.770 € oder wenn das Netto danach unter dem Abzug liegt.
+//     Im gleitenden Bereich (Satz ändert sich je 2 €) gibt es keine einfache Formel; dort gilt nur 1. und 2.
+// f: { vorher, nachher, geschwister, kinder } wie in den gespeicherten Fällen. Rückgabe: { fehler (Text oder null), diff, gruppe }.
+function egAbgleich(f, solo, amtlich) {
+  const g = f.geschwister ? 2 : 0, w = { nachher: f.nachher, mehrlinge: f.kinder }, D = EG_PAUSCH - EG_PAUSCH_RECHNER;
+  const rechner = elterngeld(f.vorher, g, Object.assign({ pausch: EG_PAUSCH_RECHNER }, w)).basis, gesetz = elterngeld(f.vorher, g, w).basis;
+  const diff = Math.round((gesetz - rechner) * 100) / 100;
+  const satz = (n) => (n < 1000 ? Math.min(100, 67 + Math.floor((1000 - n) / 2) * 0.1) : n > 1200 ? Math.max(65, 67 - Math.floor((n - 1200) / 2) * 0.1) : 67) / 100;
+  const n0 = Math.max(0, f.vorher - EG_PAUSCH_RECHNER), n1 = Math.max(0, f.vorher - EG_PAUSCH), q = satz(n1);
+  // Kern (ohne Bonus und Zuschlag) auf beiden Seiten, nur für die Einordnung in die Gruppen
+  const kern = (n, p) => (f.nachher > 0 ? Math.max(0, Math.min(n, 2770) - Math.max(0, f.nachher - p)) : n) * satz(n);
+  const k0 = kern(n0, EG_PAUSCH_RECHNER), k1 = kern(n1, EG_PAUSCH);
+  const bonus = (k) => (g >= 2 && k >= 750 ? 1.1 : 1);
+  let gruppe = 'gleitend', soll = null;
+  if ((k0 <= 300 && k1 <= 300) || (k0 >= 1800 && k1 >= 1800)) { gruppe = 'grenze'; soll = 0; }
+  else if (satz(n0) === q && k0 > 300 && k1 > 300 && k0 < 1800 && k1 < 1800 && bonus(k0) === bonus(k1)) {
+    if (!(f.nachher > 0)) { gruppe = 'satz'; soll = -q * D * bonus(k1); }
+    else if (n0 <= 2770 && f.nachher >= EG_PAUSCH) { gruppe = 'teilzeit'; soll = 0; }                   // Abzug hebt sich auf
+    else if (n1 >= 2770 && f.nachher >= EG_PAUSCH) { gruppe = 'teilzeit'; soll = q * D * bonus(k1); } // vorher gedeckelt, nachher 19,17 € weniger
+  }
+  let fehler = null;
+  if (Math.abs(rechner - amtlich) > 0.011) fehler = 'Schnellrechner ' + amtlich + ' € passt nicht zur Formel mit 83,33 € Abzug (' + rechner.toFixed(2) + ' €)';
+  else if (Math.abs(solo - gesetz) > 0.5 + 1e-6) fehler = 'SoLo ' + solo + ' €, erwartet ' + gesetz.toFixed(2) + ' € = amtlich ' + amtlich + ' € ' + (diff < 0 ? '− ' : '+ ') + Math.abs(diff).toFixed(2) + ' € (Abzug 102,50 statt 83,33 €)';
+  else if (soll != null && Math.abs(gesetz - rechner - soll) > 0.005) fehler = 'Differenz ' + diff + ' € statt ' + soll.toFixed(2) + ' € (' + gruppe + ', Satz ' + (q * 100).toFixed(1) + ' %)';
+  return { fehler, diff, gruppe, gesetz, rechner };
 }
 // ---------- Einkommensgrenze § 85 SGB XII (Hilfe zur Pflege, Blindenhilfe) und Schonvermögen ----------
 function grenze85(e) {
@@ -604,4 +640,4 @@ function kduGrenze(e) {
   return hoechst(st, n) * 1.1 + heiz(n);
 }
 
-module.exports = { kappe, euAus, kduGrenze, kuenftig, zusammen, elterngeld, grenze85, schon90, ASYL_NEIN, ASYL_MOEGLICH, haushalt, grundsicherungsgeld, wohngeld, kinderzuschlag, grundsicherungAlter, unterhaltsvorschuss, bafoeg, arbeitslosengeld, krankengeld, regelaltersgrenze, freibetragArbeit, RB };
+module.exports = { kappe, euAus, kduGrenze, kuenftig, zusammen, elterngeld, egAbgleich, EG_PAUSCH, EG_PAUSCH_RECHNER, grenze85, schon90, ASYL_NEIN, ASYL_MOEGLICH, haushalt, grundsicherungsgeld, wohngeld, kinderzuschlag, grundsicherungAlter, unterhaltsvorschuss, bafoeg, arbeitslosengeld, krankengeld, regelaltersgrenze, freibetragArbeit, RB };
