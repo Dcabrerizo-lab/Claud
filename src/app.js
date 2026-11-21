@@ -4176,6 +4176,20 @@
     }
     if (pf && pf.art && pf.schritt > 0) zeile('pfaendung', t('ordner.pfaendung'), t(pf.art === 'lohn' ? 'pf.lohn' : 'pf.konto'), '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/>', function () { oeffneVon('pfaendung', true); });
     ul.hidden = !ul.children.length;
+    // Klarer Einstieg (UX-Audit B, Update-Liste): ohne eigene Inhalte ein kurzer Satz; „Frist eintragen“ immer erreichbar, ohne Platzhalter-Karte
+    var ein = $('ordnerEinstieg');
+    if (!ein) { ein = vgEl('div', 'ordner-einstieg'); ein.id = 'ordnerEinstieg'; ul.insertAdjacentElement('afterend', ein); }
+    ein.innerHTML = '';
+    if (!ul.children.length) ein.appendChild(vgEl('p', 'muted', t('or.leer')));
+    if (window.FristenOrdner) {
+      var fb = vgEl('button', 'btn ghost', t('or.fristNeu')); fb.type = 'button'; fb.id = 'orFristNeu';
+      fb.addEventListener('click', function () {
+        usZeigen('ordner', 'fristen', true);
+        var d = document.querySelector('#friListe .fri-eigen'), i = $('friEigenTitel');
+        if (d) d.open = true; if (i) i.focus();
+      });
+      ein.appendChild(fb);
+    }
   }
   // Sperrbildschirm: deckt die App ab, bis die PIN stimmt
   function vgSperreZeigen() {
@@ -4630,6 +4644,9 @@
   function briefKopf() {
     var x = null; BRIEFE.concat(BRIEFE_UNTER).forEach(function (b) { if (b[0] === briefArt) x = b; });
     $('h-briefe').textContent = !x ? t('briefe.h') : briefArt === 'af' || briefArt === 'an' || briefArt === 'ab' ? t(x[1]) : t('briefe.von', { name: t(x[1]) });
+    // Eine sichtbare Überschrift (UX-Audit B): Hat die Prüfung eine eigene (z. B. „Bescheid Grundsicherungsgeld prüfen“), bleibt „Brief von: …“ nur für Screenreader
+    var sec = briefArt && BRIEF_TEIL[briefArt] && $(BRIEF_TEIL[briefArt]);
+    $('h-briefe').classList.toggle('vh', !!(sec && sec.querySelector('.card h2')));
   }
   // In einer Kachel: Formular der Prüfung zeigen (nach der Wahl „selbst eingeben“ oder nach dem Einlesen)
   function briefFormular(fokus) {

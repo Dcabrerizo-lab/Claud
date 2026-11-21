@@ -23,6 +23,9 @@ function starte() {
   });
   return { w: dom.window, d: dom.window.document, errors };
 }
+// Relative Daten (feste Daten kippen mit der Zeit in „Frist vorbei“)
+const tagIso = (t) => new Date(Date.now() + t * 864e5).toISOString().slice(0, 10);
+const VOR3 = tagIso(-3), IN10 = tagIso(10), BIS3 = require('../erweiterungen/fristen.js').widerspruch({ datum: VOR3 }).fristende.split('-').reverse().join('.');
 const klick = (w, el) => el.dispatchEvent(new w.MouseEvent('click', { bubbles: true }));
 const feuer = (w, el, typ) => el.dispatchEvent(new w.Event(typ, { bubbles: true }));
 
@@ -55,12 +58,12 @@ setTimeout(() => {
     setze('bs-miete', '500'); setze('bs-heiz', '80');
     setze('bs-b-regel', String(RB1)); setze('bs-b-kdu', '580'); setze('bs-b-zahl', String(RB1 + 580));
     check('S1: leere zweite Zeile: kein Vergleich mit Partner-Regelbedarf, SoLo fragt nach der Zeile', /leeren Personenzeile/.test($('bs-erg').textContent) && !/Stufen 2, 2/.test($('bs-erg').textContent), $('bs-erg').textContent.slice(0, 300));
-    setze('bs-datum', '2026-11-12');
+    setze('bs-datum', VOR3);
     klick(w, $('bs-wid-mach'));
     check('S1: leere Zeile: Widerspruch ohne Zahlen (kein „1.012 €“)', !/1\.012|Regelbedarfe/.test($('bs-wid-text').value) && /Begründung reiche ich nach/.test($('bs-wid-text').value));
     $('bs-personen').children[1].querySelector('button').click();
     check('S1: leere Zeile entfernt: Regelbedarf passt (eine Person, Stufe 1)', /Alles passt|Keine sichere Abweichung/.test($('bs-erg').textContent), $('bs-erg').textContent.slice(0, 300));
-    setze('bs-datum', '2026-11-12');
+    setze('bs-datum', VOR3);
     klick(w, $('bs-wid-mach'));
     check('S1: vollständig, kein Grund: Widerspruch ohne Zahlen-Begründung', !/Regelbedarfe/.test($('bs-wid-text').value) && /Begründung reiche ich nach/.test($('bs-wid-text').value), $('bs-wid-text').value.slice(0, 400));
     // Zu wenig Regelbedarf, aber ein Kind ohne Alter: keine Zahlen-Begründung, klare Liste, was fehlt
@@ -79,14 +82,14 @@ setTimeout(() => {
     // ---------- S2: Frist ganz oben, vor „Widerspruch erstellen“; Art des Briefs ----------
     const karte = $('p-bescheid').querySelector('.card'), box = $('bs-fristbox');
     check('S2: Frist-Bereich in der ersten Karte, nach dem Einlesen (Scannen zuerst, UX-Audit B)', !!box && karte.contains(box) && karte.contains($('bs-datum')) && !!($('einlesen').compareDocumentPosition(box) & 4));
-    check('S2: Datum 12.11.2026 -> „Widerspruch bis 16.12.2026“ im Frist-Muster', !!box.querySelector('.frist .frist-wann') && /16\.12\.2026/.test(box.querySelector('.frist-wann').textContent), box.textContent.slice(0, 200));
+    check('S2: Datum vor 3 Tagen -> „Widerspruch bis …“ im Frist-Muster (Ende aus erweiterungen/fristen.js)', !!box.querySelector('.frist .frist-wann') && !$('bs-vorbei-box') && box.querySelector('.frist-wann').textContent.includes(BIS3), box.textContent.slice(0, 200));
     check('S2: Frist steht vor dem Knopf „Widerspruch erstellen“', !!(box.compareDocumentPosition($('bs-wid-mach')) & 4));
     const anh = box.querySelector('input[name="bs-briefart"][value="anh"]');
     check('S2: Art des Briefs wählbar (Bescheid, Einladung, Anhörung, Unterlagen)', box.querySelectorAll('input[name="bs-briefart"]').length === 4);
     anh.checked = true; feuer(w, anh, 'change');
     check('S2: Anhörung: Nachrechnen ausgeblendet, Erklärung und Datumsfeld', $('p-bescheid').classList.contains('pp-anders') && !!$('bs-art-tag') && /äußern/.test(box.textContent));
-    setze('bs-art-tag', '2026-12-01');
-    check('S2: Anhörung: Tag aus dem Brief im Frist-Muster', /01\.12\.2026/.test(box.querySelector('.pp-art-anders .frist').textContent));
+    setze('bs-art-tag', IN10);
+    check('S2: Anhörung: Tag aus dem Brief im Frist-Muster', box.querySelector('.pp-art-anders .frist').textContent.includes(IN10.split('-').reverse().join('.')));
     const bes = box.querySelector('input[name="bs-briefart"][value="bescheid"]'); bes.checked = true; feuer(w, bes, 'change');
     check('S2: zurück zu Bescheid: Prüfung wieder sichtbar', !$('p-bescheid').classList.contains('pp-anders'));
 

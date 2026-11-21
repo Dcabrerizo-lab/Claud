@@ -1154,6 +1154,8 @@
   "ordner.ausziehen.n": "Tamamlanan: {n} / {von}",
   "ordner.pflege": "Bakım değerlendirmesi",
   "ordner.pfaendung": "Haciz",
+  "or.leer": "Sürelerin ve SoLo'da kaydettiklerin burada görünür. Her şey cihazında kalır.",
+  "or.fristNeu": "Süre ekle",
   "einst.tab.einst": "Ayarlar",
   "einst.tab.info": "Bilgiler",
   "info.h": "Bilgiler: Kontrol nasıl hesaplar, değerler nereden gelir, notlar ve hukuki bilgiler",

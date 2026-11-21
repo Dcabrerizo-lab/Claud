@@ -8,6 +8,8 @@ const SF_ALLES = () => { try { if (!localStorage.getItem('lotse.checkWeg')) { lo
 const path = require('path');
 const APP = 'file://' + path.join(__dirname, '..', 'dist', 'sozialleistungslotse.html');
 let n = 0, f = 0;
+const FR = require('../erweiterungen/fristen.js'); // Bescheid immer vor 10 Tagen (feste Daten kippen mit der Zeit)
+const BESCHEID = new Date(Date.now() - 10 * 864e5).toISOString().slice(0, 10), BIS = FR.widerspruch({ datum: BESCHEID }).fristende.split('-').reverse().join('.');
 const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, info !== undefined ? JSON.stringify(info) : ''); } };
 (async () => {
   const b = await chromium.launch();
@@ -54,8 +56,8 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   // Widerspruch mit Bescheiddatum: die Frist steht beim Schreiben, eine Liste gibt es nicht
   await p.click('#brief-pk');
   ok('Pflegekasse: kein zweites Textfeld „Text aus dem Gutachten“', !(await p.isVisible('#pf-text')) && !(await p.isVisible('#pf-lesen')));
-  if (await p.isVisible('#elSelbst')) await p.click('#elSelbst'); await p.fill('#pf-datum', '2026-11-10'); await p.click('#pf-wid-mach');
-  ok('Widerspruchsfrist steht beim Schreiben', /14\.12\.2026/.test(await p.textContent('#pf-frist')), await p.textContent('#pf-frist'));
+  if (await p.isVisible('#elSelbst')) await p.click('#elSelbst'); await p.fill('#pf-datum', BESCHEID); await p.click('#pf-wid-mach');
+  ok('Widerspruchsfrist steht beim Schreiben', (await p.textContent('#pf-frist')).includes(BIS), await p.textContent('#pf-frist'));
   ok('Nichts als Frist gespeichert', (await p.evaluate(() => localStorage.getItem('lotse.fristen'))) === null);
   await p.click('#briefZurueck');
   // Brief einlesen gibt es nur in den Kacheln: Text einfügen → Werte gelb markiert, Personen aus „Leistungen“
