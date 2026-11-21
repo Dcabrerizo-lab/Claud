@@ -627,6 +627,7 @@
     if (window.FristenOrdner) FristenOrdner.sprache(); // Fristen in „Mein Ordner“ (src/fristen.js)
     if (window.Ausziehen && Ausziehen.sprache) Ausziehen.sprache(); // „Ich ziehe aus“ (src/ausziehen.js) in der neuen Sprache zeichnen
     if (window.Schulden && Schulden.sprache) Schulden.sprache(); // Schulden-Liste (src/schulden.js)
+    if (window.Klient) Klient.sprache(); // „Für Klient zusammenstellen“ (src/klient.js)
     // Regeln älter als der nächste Stichtag (1. Januar): deutlich darauf hinweisen
     var veraltet = regelnVeraltet();
     $('altNotice').hidden = !veraltet; $('altNotice').textContent = veraltet ? t('alt.hinweis', { stand: standL() }) : '';
@@ -665,6 +666,7 @@
     render();
     if (!$('mappe').hidden) buildMappe();
     if (!$('ergBlatt').hidden) ebBauen();
+    if (window.Klient) Klient.sichtbar(); // aus: Knopf weg, offenes Blatt zu
     if (aktAnsicht === 'pfaendung') pfRender(false);
     if (aktAnsicht === 'sparen') spRender(false);
     if (aktAnsicht === 'haushalt' && window.Haushalt) Haushalt.sprache(); // Druckblatt nur im Beratungsmodus
@@ -1124,6 +1126,7 @@
     satz.hidden = !(passend > 0);
     satz.textContent = passend === 1 ? t('res.n1') : passend > 1 ? t('res.n', { n: passend }) : '';
     $('ebOpen').hidden = !(passend > 0);
+    if (window.Klient) Klient.sichtbar(passend > 0); // „Für Klient zusammenstellen“ nur im Beratungsmodus (src/klient.js)
     $('beratung').hidden = !started;
     $('resRb').hidden = !started; // „Erste Einschätzung, keine Rechtsberatung“ unter jedem Ergebnis
   }
@@ -3013,6 +3016,7 @@
   // Offene Blätter und Dialoge zuerst schließen (Zurück-Taste, Browser-Zurück, Wischen)
   function blattSchliessen() {
     if (!$('ergBlatt').hidden) { ebSchliessen(); return true; }
+    if (window.Klient && Klient.offen()) { Klient.schliessen(); return true; }
     if (window.Schulden && Schulden.blattOffen && Schulden.blattOffen() && aktAnsicht !== 'schulden') { Schulden.zurueck(); return true; }
     if (!$('legal').hidden) { closeLegal(); return true; }
     if (!$('mappe').hidden) { closeMappe(); return true; }
@@ -4069,6 +4073,62 @@
       planFertig: function () { return !!(window.Haushalt && Haushalt.rest().ausgefuellt); },
       mappeDrucken: window.Schulden ? function () { oeffneVon('schulden', true); Schulden.blatt(); } : null, // Druck: Blatt der Schulden-Liste mit Haushaltsplan und Unterlagenliste
       textAusgeben: function (text, titel, msg) { if (!NATIVE) { schreibenDrucken(text); return; } schreibenAusgeben({ value: text }, titel, plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen', msg); }
+    });
+  }
+  // ----- „Für Klient zusammenstellen“ (src/klient.js, nur Beratungsmodus): Inhalt aus vorhandenen Ergebnissen, kein neuer Rechtsinhalt -----
+  // Anderer Vorgang: dessen Angaben nur für die Dauer des Aufrufs einsetzen (Rechnen, Texte), danach den geöffneten Stand zurück. Nichts wird gespeichert.
+  function kbMitVorgang(daten, fn) {
+    if (!daten) return fn(null);
+    var alt = { s: state, p: person, h: haken, o: lastOut };
+    var lies = function (k) { var v = daten[k]; if (v == null) return null; if (typeof v !== 'string') return v; try { return JSON.parse(v); } catch (e) { return null; } };
+    try {
+      var d = lies('lotse.state'), hk = lies('lotse.haken');
+      state = Object.assign(blankState(), d && d.s ? migriereEinkommen(migriereFragen(JSON.parse(JSON.stringify(d.s)))) : {}); state.bezug = d && d.s && d.s.bezug || {};
+      person = Object.assign({ name: '', geb: '', strasse: '', ort: '', tel: '' }, d && d.p || {});
+      haken = hk && typeof hk === 'object' ? hk : {};
+      lastOut = d && d.s ? Rules.evaluate(state) : null;
+      return fn(daten);
+    } finally { state = alt.s; person = alt.p; haken = alt.h; lastOut = alt.o; }
+  }
+  function kbInhalt(daten) {
+    return kbMitVorgang(daten, function (d) {
+      var ohne = Fmt.ohnePara, out = { hilfen: [], unterlagen: [], fristen: [], briefe: [] };
+      if (!lastOut || (!d && !started)) return out;
+      out.hilfen = ebZeilen().map(function (z) { return { id: z.r.id, name: z.name, lvl: z.lvl, betrag: ohne(z.betrag), stelle: z.stelle, schritt: ohne(z.schritt) }; });
+      out.unterlagen = lastOut.results.filter(function (r) { return (r.level === 'ja' || r.level === 'vielleicht') && r.steps && r.steps.u; }).map(function (r) {
+        return { id: r.id, name: r.name + (lang === 'de' ? '' : ' (' + t('n.' + r.id) + ')'), items: r.steps.u.filter(function (k) { return !haken[r.id + '|' + k]; }).map(function (k) { return ohne(t(k)); }) };
+      });
+      if (window.FristenOrdner && FristenOrdner.offeneTexte) { try { out.fristen = d ? FristenOrdner.offeneTexte(d['lotse.fristliste'] || null, d['lotse.haushalt'] || null) : FristenOrdner.offeneTexte(); } catch (e) { out.fristen = []; } }
+      if (!d) out.briefe = briefIds().map(function (r) { return { id: r.id, name: r.name, text: letterText(r.id) }; }); // Musterschreiben nur aus dem geöffneten Vorgang (Antragsmappe)
+      return out;
+    });
+  }
+  if (window.Klient) {
+    Klient.init({
+      t: t, lang: function () { return lang; }, beratung: function () { return beratung; },
+      sprachen: function () { return Array.prototype.map.call($('lang').options, function (o) { return { code: o.value, name: o.textContent }; }); },
+      inSprache: function (l, ein, fn) { var a = lang, e = einfachSprache; lang = I18N[l] ? l : 'de'; einfachSprache = !!ein; try { return fn(); } finally { lang = a; einfachSprache = e; } },
+      inhalt: kbInhalt,
+      vorgaenge: function () {
+        if (!tresor || !tresor.bereit()) return [];
+        var a = tresor.aktiv(); return tresor.liste().map(function (v) { return { id: v.id, name: v.name, aktiv: !!a && v.id === a.id, gesperrt: !!v.gesperrt }; });
+      },
+      daten: function (id) { // offener anderer Vorgang: Werte nur lesen
+        var o = {}; if (!tresor || !tresor.bereit()) return o;
+        Vorgaenge.DATEN.forEach(function (k) { tresor.ueberall(k).forEach(function (v) { if (v.id === id && v.wert != null) o[k] = v.wert; }); });
+        return o;
+      },
+      // Gesperrter Vorgang: nur im Speicher entschlüsseln (Schnittstelle aus dem PIN-Zweig: tresor.oeffneGesperrt bzw. Vorgaenge.oeffneGesperrt), nie zurückschreiben
+      oeffneGesperrt: function (id, pin) {
+        var f = tresor && typeof tresor.oeffneGesperrt === 'function' ? tresor.oeffneGesperrt.bind(tresor) : (typeof Vorgaenge.oeffneGesperrt === 'function' ? Vorgaenge.oeffneGesperrt : null);
+        return f ? Promise.resolve(f(id, pin)) : Promise.reject(new Error('nicht verfügbar'));
+      },
+      datum: function (d, l) { var x = d instanceof Date ? d : new Date(String(d) + 'T12:00:00'); return Fmt.datum(x, l); },
+      rtl: function (l) { return !!(I18N[l] && I18N[l]['meta.dir'] === 'rtl'); },
+      native: function () { return NATIVE; },
+      druckArt: function () { return NATIVE ? (plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen') : 'web'; },
+      pdf: function (seiten, titel, name, msg, art, rtlHinweis) { pdfAusgeben(seiten, titel, name, msg, art, rtlHinweis); },
+      blatt: function (an) { $('app').classList.toggle('pm', !!an); if (an) { try { window.scrollTo(0, 0); } catch (e) {} } }
     });
   }
   window.addEventListener('hashchange', function () { var a = location.hash.slice(1); if (ANSICHTEN.indexOf(a) >= 0 && a !== aktAnsicht) zeigeAnsicht(a, true); });

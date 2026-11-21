@@ -3,6 +3,7 @@
 Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss steigen). Die Versionsnummer kommt aus dem Build.
 
 ## Nächste Version (in Arbeit)
+- **Beratungsmodus – „Für Klient zusammenstellen“**: Haken setzen (Ergebnis des Hilfen-Checks, Laufzettel „Das bringst du mit – bis …“, Fristen, Musterschreiben), daraus entsteht ein Blatt – auch in der Sprache des Klienten mit Deutsch daneben oder in Einfacher Sprache. Knöpfe „Drucken“ und „Teilen“ (Teilen-Menü des Handys, z. B. Messenger; im Browser Download) mit kurzem Datenschutz-Hinweis. Auch andere und gesperrte Vorgänge (nach PIN, nur im Speicher). Im Privatmodus ändert sich nichts.
 - **„Es ist dringend“ aufgeräumt**: alle Fälle gleich aufgebaut – Frist oben, „Das tust du jetzt“ in Schritten, kurze Tipps zum Aufklappen, Knöpfe, Quellen unten. Konto gepfändet mit Bescheinigung und Grundfreibetrag statt doppeltem Tipp; Strom-/Gassperre in 3 Schritten. „Stimmt der Brief?“: Hinweis „keine Rechtsberatung“ unter dem letzten Tipp.
 - **Ich ziehe aus – „Bevor du ausziehst“**: großer gerahmter Hinweis „Unter 25 und Grundsicherungsgeld?“ entfernt; das Thema steht in der normalen Karte „Unter 25 mit Grundsicherungsgeld: Zusicherung vor der Unterschrift“ (§ 22 Abs. 5 SGB II), jetzt im gleichen Design wie die anderen Karten.
 
