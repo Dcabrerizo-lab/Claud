@@ -612,7 +612,7 @@ var Haushalt = (function () {
         var l = el('label'); l.htmlFor = 'hb-brief'; l.textContent = t('hb.hw.briefLabel'); d.appendChild(l);
         var ta = el('textarea'); ta.id = 'hb-brief'; ta.rows = 12; ta.lang = 'de';
         var briefNeu = function () { ta.value = aenderungsBrief(ctx.euroDe(euroGanz(h.alt)), ctx.euroDe(euroGanz(h.neu)), ctx.datumDe(new Date()), ctx.absender ? ctx.absender() : null); };
-        if (ctx.absenderKasten) d.appendChild(ctx.absenderKasten(briefNeu)); // gespeicherter Absender, hier änderbar (gilt für alle Briefe)
+        if (ctx.absenderKasten) d.appendChild(ctx.absenderKasten(briefNeu, 'hb')); // gespeicherter Absender, hier änderbar (gilt für alle Briefe)
         briefNeu(); d.appendChild(ta);
         var m = el('p', 'small'); m.setAttribute('aria-live', 'polite');
         d.appendChild(knopf('btn', t('hb.hw.briefAus'), function () { ctx.textAusgeben(ta.value, 'Aenderungsmitteilung', m); }));

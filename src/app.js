@@ -1799,7 +1799,8 @@
     ABS_BRIEF.forEach(function (k) { Object.keys(ABS_BRIEF_FELD).forEach(function (f) { var el = briefFeld(k, f); if (el && el !== quelle && el.value !== absenderWert(f)) el.value = absenderWert(f); }); });
     document.querySelectorAll('input[data-abs]').forEach(function (el) { if (el !== quelle && el.value !== absenderWert(el.getAttribute('data-abs'))) el.value = absenderWert(el.getAttribute('data-abs')); });
     document.querySelectorAll('[data-abs-kurz]').forEach(absKurzSetzen);
-    absHoerer.forEach(function (fn) { try { fn(); } catch (e) {} });
+    absHoerer = absHoerer.filter(function (h) { return h.box.isConnected; }); // Kästen alter Seiten vergessen
+    absHoerer.forEach(function (h) { try { h.fn(); } catch (e) {} });
   }
   var absHoerer = [];
   function absenderSetzen(f, wert, quelle) {
@@ -1822,14 +1823,14 @@
     el.classList.toggle('fehlt', !z.length);
   }
   // Kompakter Absender-Block für Briefe außerhalb der Mappe (wie der Empfänger: eine Zeile, „ändern“ öffnet die Felder). onChange: Brief neu schreiben.
-  function absenderKasten(onChange) {
+  function absenderKasten(onChange, zweck) {
     var box = document.createElement('div'); box.className = 'abs-kasten';
     var kopf = box.appendChild(document.createElement('p')); kopf.className = 'abs-kopf';
     var lab = kopf.appendChild(document.createElement('b')); lab.textContent = t('f.abs.titel') + ': ';
     var kurz = kopf.appendChild(document.createElement('span')); kurz.setAttribute('data-abs-kurz', '1'); absKurzSetzen(kurz);
     var knopf = kopf.appendChild(document.createElement('button')); knopf.type = 'button'; knopf.className = 'linkbtn abs-aendern'; knopf.textContent = t('f.abs.aendern');
     var felder = box.appendChild(document.createElement('div')); felder.className = 'abs-felder'; felder.hidden = true;
-    var nr = (absenderKasten.n = (absenderKasten.n || 0) + 1);
+    var nr = String(zweck || 'b').replace(/[^a-z0-9]/gi, ''); // feste Kennung je Stelle (gleiche Seite = gleicher Aufbau)
     [['name', 'f.name'], ['strasse', 'f.strasse'], ['ort', 'f.ort']].forEach(function (x) {
       var f = felder.appendChild(document.createElement('div')); f.className = 'field';
       var l = f.appendChild(document.createElement('label')); l.textContent = t(x[1]); l.htmlFor = 'abs-' + nr + '-' + x[0];
@@ -1839,7 +1840,7 @@
     var hin = felder.appendChild(document.createElement('p')); hin.className = 'small'; hin.textContent = t('f.abs.hinweis');
     knopf.addEventListener('click', function () { felder.hidden = !felder.hidden; knopf.setAttribute('aria-expanded', String(!felder.hidden)); if (!felder.hidden) felder.querySelector('input').focus(); });
     knopf.setAttribute('aria-expanded', 'false');
-    if (onChange) absHoerer.push(function () { if (box.isConnected) onChange(); });
+    if (onChange) absHoerer.push({ box: box, fn: onChange });
     return box;
   }
   // Brief prüfen (Widerspruch, Antworten): die Absender-Felder sind dieselben Daten, Änderungen gelten für alle Briefe

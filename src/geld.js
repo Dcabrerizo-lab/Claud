@@ -315,7 +315,7 @@ var Geld = (function () {
       i.addEventListener('input', function () { m[k] = i.value; text(); });
       f.appendChild(i); return i;
     };
-    if (ctx.absenderKasten) box.appendChild(ctx.absenderKasten(function () { text(); })); // gespeicherter Absender, hier änderbar (gilt für alle Briefe)
+    if (ctx.absenderKasten) box.appendChild(ctx.absenderKasten(function () { text(); }, 'ms')); // gespeicherter Absender, hier änderbar (gilt für alle Briefe)
     feld('ms-g', 'g', t('ms.g'));
     feld('ms-adr', 'adr', t('ms.adr'), true);
     var ohneBox = box.appendChild(el('div', 'ms-ohne-box')); ohneBox.hidden = true; // erst beim Drucken/Teilen sichtbar (dann blendet text() den Hinweis aus, sobald die Anschrift da ist)
