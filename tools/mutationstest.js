@@ -80,6 +80,7 @@ const M = [
   ['Wohngeld: Freibetrag Alleinerziehende fehlt', 'if (h.alleinerz) freib += R.wohngeld.freibetragAlleinerzMonat;', ''],
   ['Wohngeld: Freibetrag Kindereinkommen fehlt', 'wgKindFrei: 100', 'wgKindFrei: 0'],
   ['Wohngeld: Lohn der Kinder ohne Arbeitnehmer-Pauschbetrag (§ 14 Abs. 1 WoGG, § 9a EStG)', 'const kindAbzug = R.wgWerbung.lohn / 12 + R.wgKindFrei;', 'const kindAbzug = R.wgKindFrei;'],
+  ['Wohngeld: vorsichtige Schätzung mit Pauschbetrag auch über der Minijob-Grenze (Auszahlung statt Brutto)', 'const kindAbzugPess = (h.kindEink || 0) > h.minijob ? R.wgKindFrei : kindAbzug;', 'const kindAbzugPess = kindAbzug;'],
   ['Wohngeld: Freibetrag § 17 Nr. 4 WoGG nur einmal statt je Kind', 'kindOpt = Math.max(0, (h.kindEink || 0) - kindNOpt * kindAbzug);', 'kindOpt = Math.max(0, (h.kindEink || 0) - kindAbzug);'],
   ['Grundsicherung: Grundrentenfreibetrag ohne Deckel', 'freiStaffel(gesetzlich, R.grundrente, rs1)', 'freiStaffel(gesetzlich, { sockel: 100, quote: 0.3, max: 1 }, rs1)'],
   ['Grundsicherung: Freibetrag für Betriebs-, Riester- oder private Rente fehlt', ' - freiStaffel(z, R.vorsorge, rs1); }', ' - 0; }'],

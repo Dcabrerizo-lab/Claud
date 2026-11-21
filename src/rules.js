@@ -968,7 +968,10 @@ const Rules = (function () {
     // alle Kinder ab 6 Jahren und jungen Erwachsenen (je Kind ein Pauschbetrag und ein Freibetrag).
     const kindAbzug = R.wgWerbung.lohn / 12 + R.wgKindFrei;
     const kindNOpt = Math.max(1, (h.kids || 0) - (h.kidsU6 || 0) + (h.young || 0));
-    const kindPess = Math.max(0, (h.kindEink || 0) - kindAbzug), kindOpt = Math.max(0, (h.kindEink || 0) - kindNOpt * kindAbzug);
+    // Über der Minijob-Grenze ist der eingegebene Betrag („so viel wie ankommt“) kleiner als der Bruttolohn, von dem das Wohngeld ausgeht
+    // (brutto minus Pauschbetrag, dann 10 % je Abzugsart, § 16 WoGG). Vorsichtige Schätzung dort ohne Pauschbetrag, sonst zu günstig.
+    const kindAbzugPess = (h.kindEink || 0) > h.minijob ? R.wgKindFrei : kindAbzug;
+    const kindPess = Math.max(0, (h.kindEink || 0) - kindAbzugPess), kindOpt = Math.max(0, (h.kindEink || 0) - kindNOpt * kindAbzug);
     const extra = (h.kindZahl || 0) + (h.kapWG || 0) - freib - grFrei;
     const yPess = Math.max(0, yA + extra + kindPess - (h.uzWGpess || 0)), yOpt = Math.max(0, yB + extra + kindOpt - (h.uzWGopt || 0));
 
