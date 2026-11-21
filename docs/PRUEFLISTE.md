@@ -405,7 +405,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 |---|---|---|
 | Beispiele der Broschüre „Elterngeld und Elternzeit“ (10/2025): 574 €, 1.625 €, Geschwisterbonus 1.430 € (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-eg` |
 | Basiselterngeld 67 %, Ersatzrate bis 100 % unter 1.000 €, bis 65 % über 1.200 € (§ 2 Abs. 2); mindestens 300 €, höchstens 1.800 €; ElterngeldPlus halb so hoch, doppelt so lange (§ 4a); bis zu 14 Monate (§ 4) | ✓ | `eg-satz` |
-| Elterngeld-Netto: Netto minus ein Zwölftel des Arbeitnehmer-Pauschbetrags (§ 2c Abs. 1 BEEG, 83,33 €); 33 Einkommen gleich wie der Elterngeldrechner des Bundes | ✓ | `amtlich-elterngeld` |
+| Elterngeld-Netto: Netto minus ein Zwölftel des Arbeitnehmer-Pauschbetrags (§ 2c Abs. 1 BEEG i. V. m. § 9a EStG: 1.230 € / 12 = 102,50 €; Entscheidung David 21.11.2026: Gesetz gilt). Unterschied zum Elterngeld-Schnellrechner des Bundes (rechnet mit 83,33 €) genau erklärt: bei festem Satz SoLo um Satz × 19,17 € niedriger, bei Mindest- und Höchstbetrag gleich | ✓ | `amtlich-elterngeld` |
 | Geschwisterbonus 10 %, mindestens 75 € (§ 2a BEEG): bei zwei Kindern unter 6 eingerechnet, bei einem als Hinweis (unter 3?); amtlich geprüft | ✓ | `amtlich-elterngeld` |
 | Einkommensgrenze 175.000 € zu versteuerndes Einkommen (§ 1 Abs. 8); Mutterschaftsgeld wird angerechnet (§ 3) | ◐ | `eg-hinweise` |
 | Ausländer: Anspruch abhängig vom Aufenthaltstitel (§ 1 Abs. 7) | ◐ | `eg-asyl` |
