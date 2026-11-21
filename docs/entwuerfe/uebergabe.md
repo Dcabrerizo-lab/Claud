@@ -73,7 +73,7 @@ Sprachen nur bei Bedarf laden (Datei real 6,35 MB, Grenze vorläufig 7 MB Bytes)
 - BAföG (BAföG Digital, 200 Fälle): 0 Widersprüche mit Stand inkl. #99/#104. SoLo zeigt keinen Betrag, 113/200 „möglich“ → Betrag/Spanne prüfen.
 - Elterngeld (Schnellrechner, 300 Fälle): ohne Teilzeit/Mehrlinge 180/180 gleich. FEHLER: Mehrlingszuschlag 300 € je weiteres Kind fehlt (§ 2a Abs. 4 BEEG). Teilzeit: SoLo bis 1.389 € zu hoch (nur Hinweis „anteilig weniger“) → richtig rechnen. ElterngeldPlus nicht geprüft.
 - Pfändung (Justiz NRW, 300 Fälle): 300/300 auf den Cent; BGBl.-Fundstelle in src/rules.js prüfen (weicht von Justiz NRW ab).
-- KiZ: Bericht steht aus (Agent lief noch, PR #103).
+- KiZ (KiZ-Lotse der Familienkasse, nur Ja/Nein, 360 Familien): 186 gleich, 163 SoLo „möglich“, 11 Widersprüche – alle Alleinerziehende mit hohem Lohn + Unterhalt/UVG: Lotse wertet Unterhalt nie mindernd, SoLo nach § 6a Abs. 3 BKGG (45 %) korrekt. Entscheidung (Claude, 21.11.): SoLo bleibt beim Gesetz; nächstes Update kurzer Hinweis „Der Rechner der Familienkasse kann günstiger rechnen – im Zweifel beantragen“. Nebenbefund: Mehrbedarf Alleinerziehende wegen grober Altersabfrage 20–32 € zu vorsichtig → Altersabfrage feiner. Bericht: pruefungen-21-11/kiz.md. Laufstart über tools/amtliche-rechner/kiz-vergleich-auftrag.txt (dispatch nur von main).
 Berichte: /home/claude/ausgabe/amtlich/ (alte Sitzung) – Kopien in docs/entwuerfe/pruefungen-21-11/ nachlegen.
 
 ## Sprachen (21.11.)
