@@ -193,7 +193,7 @@
   "t.gsa.verm": "Majątek pieniężny powyżej {schon} trzeba najpierw wykorzystać. Dom, w którym mieszkasz, i samochód o umiarkowanej wartości się nie liczą.",
   "t.bafoeg.keine": "Nie podano nikogo w szkole, nauce zawodu ani na studiach.",
   "t.bafoeg.keinKind": "Nie podano dziecka w gospodarstwie.",
-  "t.bafoeg.kindJa": "Dochód rodziców jest poniżej kwoty wolnej około {fb} netto miesięcznie. BAföG przysługuje na studia, szkoły zawodowe i niektóre szkoły, na przykład gdy dziecko nie mieszka z rodzicami.",
+  "t.bafoeg.kindJa": "Dochód rodziców jest poniżej kwoty wolnej około {fb} miesięcznie. BAföG przysługuje na studia, szkoły zawodowe i niektóre szkoły, na przykład gdy dziecko nie mieszka z rodzicami.",
   "t.bafoeg.kindRand": "Dochód jest powyżej kwoty wolnej około {fb} miesięcznie. BAföG jest wtedy zmniejszany, ale może nadal przysługiwać. Urząd liczy dokładnie.",
   "t.bafoeg.kindNein": "Dochód jest wyraźnie powyżej kwoty wolnej około {fb} miesięcznie. Prawdopodobnie nic nie zostanie.",
   "t.bafoeg.ich": "BAföG zależy głównie od dochodu rodziców, o który to sprawdzenie nie pyta. W niektórych przypadkach nie jest brany pod uwagę. Poproś Amt für Ausbildungsförderung o obliczenie.",

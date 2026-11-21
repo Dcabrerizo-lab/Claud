@@ -915,13 +915,25 @@ ck('[eu] EU-Bürger: Grundsicherung im Alter ausgeschlossen (§ 23 SGB XII) unte
   ck('[rechenbefunde-wbs2] Bayern, 48.000 € Lohn, 700 € Unterhalt an ein Kind: ohne Titel höchstens 4.000 € („eher nicht“), mit Titel ganz („möglich“)',
     W({ brutto: 4000, netto: 2700, uzBetrag: 700, uzAn: 'k1' }) === 'nein' && W({ brutto: 4000, netto: 2700, uzBetrag: 700, uzAn: 'k1', uzTitel: true }) === 'vielleicht');
   // GdB 50 ohne Pflegegrad: 4.000 € (28.539 - 4.000 = 24.539 €) -> „möglich“ (vorher nach § 24 WoFG ohne Pflegegrad 0 €)
+  // Prüfung 21.11.2026: „3 oder mehr Kinder“ und „frühere Partner und Kinder“ nennen die Zahl der Kinder nicht -> kein Deckel (Art. 5 Abs. 3
+  // Satz 2 BayWoFG gilt je Person); früherer Partner allein: 6.000 € (32.739 − 6.000 = 26.739 € „möglich“; 53.000 € Lohn: 30.239 € „eher nicht“)
+  ck('[rechenbefunde-wbs2] Bayern, 48.000 € Lohn, 1.500 € Unterhalt ohne Titel an 3 oder mehr Kinder bzw. Partner und Kinder: „möglich“ (Zahl der Kinder unbekannt)',
+    W({ brutto: 4000, netto: 2700, uzBetrag: 1500, uzAn: 'k3' }) === 'vielleicht' && W({ brutto: 4000, netto: 2700, uzBetrag: 1500, uzAn: 'exk' }) === 'vielleicht');
+  ck('[rechenbefunde-wbs2] Bayern, 700 € Unterhalt ohne Titel an früheren Partner: höchstens 6.000 € (48.000 € „möglich“, 53.000 € „eher nicht“)',
+    W({ brutto: 4000, netto: 2700, uzBetrag: 700, uzAn: 'ex' }) === 'vielleicht' && W({ brutto: 4417, netto: 2900, uzBetrag: 700, uzAn: 'ex' }) === 'nein');
   ck('[rechenbefunde-wbs4] Bayern, 42.000 € Lohn, GdB 50 ohne Pflegegrad: Freibetrag 4.000 € -> „möglich“', W({ brutto: 3500, netto: 2400, gdb: '50' }) === 'vielleicht'); }
 
 // B1 – BAföG-Einstufung mit dem Einkommen nach § 21 BAföG (gesetze-im-internet.de/baf_g/__21.html, Abruf 21.11.2026) statt Netto.
 // Paar, ein Kind in Ausbildung, Freibetrag 2.540 € (§ 25 Abs. 1 Nr. 1). Beiträge von Hand: KV 7,3 + 1,45, PV 1,8, RV 9,3, AV 1,3 = 21,15 %.
 { const B = (b, nt) => res({ adults: 2, kids: 1, art1: 'lohn', art2: 'ohne', brutto: b, brutto2: 0, netto: nt, ausbildung: 'kind', miete: 700, heute: 2026.9 }).m.bafoeg.level;
-  // 3.800 € brutto, 2.650 € netto: Steuer 3.800 − 2.650 − 803,70 = 346,30 €; (3.800 − 102,50) × (1 − 0,223) − 346,30 = 2.526,66 € ≤ 2.540 € -> „wahrscheinlich“ (mit Netto „möglich“)
-  ck('[rechenbefunde-b1] BAföG Kind: 3.800 € brutto / 2.650 € netto -> Einkommen § 21 2.526,66 € ≤ 2.540 € „wahrscheinlich“', B(3800, 2650) === 'ja', B(3800, 2650));
+  // Prüfung 21.11.2026: Als Steuer zählt für „wahrscheinlich“ höchstens die Lohnsteuer laut Steuerbescheid (verheiratete Eltern: Splitting,
+  // Steuerklasse III; § 21 Abs. 1 Satz 3 Nr. 3, § 25 Abs. 1 Nr. 1 BAföG). 3.400 € brutto, 2.583 € netto (Steuerklasse III): Beiträge 21,15 % =
+  // 719,10 €, Steuer 97,90 €, Lohnsteuer III 97,83 €; (3.400 − 102,50) × (1 − 0,223) − 97,83 = 2.464,33 € ≤ 2.540 € -> „wahrscheinlich“
+  // (mit dem Netto 2.583 € „möglich“).
+  ck('[rechenbefunde-b1] BAföG Kind: 3.400 € brutto / 2.583 € netto (Steuerklasse III) -> Einkommen § 21 2.464,33 € ≤ 2.540 € „wahrscheinlich“', B(3400, 2583) === 'ja', B(3400, 2583));
+  // 3.800 € brutto, 2.650 € netto (Steuerklasse IV oder I): Brutto − Netto − Beiträge = 346,30 € wäre als Steuer zu hoch (Splitting: 168,83 €);
+  // (3.800 − 102,50) × (1 − 0,223) − 168,83 = 2.704,13 € > 2.540 € -> „möglich“, nicht „wahrscheinlich“
+  ck('[rechenbefunde-b1] BAföG Kind: 3.800 € brutto / 2.650 € netto -> Steuer höchstens nach Splitting, 2.704,13 € > 2.540 € „möglich“', B(3800, 2650) === 'vielleicht', B(3800, 2650));
   // 7.000 € brutto, 4.800 € netto: Beiträge 742,00 + 613,22 = 1.355,22 €; Steuer 844,78 €; 6.897,50 − 1.433,33 (Höchstbetrag) − 844,78 = 4.619,39 €;
   // (4.619,39 − 2.540) × 50 % = 1.039,70 € ≤ 1.078,50 € -> „möglich“ (mit Netto 4.800 €: 1.130 € -> „eher nicht“)
   ck('[rechenbefunde-b1] BAföG Kind: 7.000 € brutto / 4.800 € netto -> Anrechnung 1.039,70 € unter dem höchsten Bedarf „möglich“', B(7000, 4800) === 'vielleicht', B(7000, 4800)); }

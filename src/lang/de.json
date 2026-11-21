@@ -193,7 +193,7 @@
   "t.gsa.verm": "Geldvermögen über {schon} muss zuerst eingesetzt werden. Ein selbst bewohntes Haus oder ein angemessenes Auto zählen nicht mit.",
   "t.bafoeg.keine": "Du hast niemanden in Schule, Ausbildung oder Studium angegeben.",
   "t.bafoeg.keinKind": "Du hast kein Kind im Haushalt angegeben.",
-  "t.bafoeg.kindJa": "Das Einkommen der Eltern liegt unter dem Freibetrag von etwa {fb} netto im Monat. BAföG gibt es für Studium, Fachschulen und bestimmte Schulen, zum Beispiel wenn das Kind nicht bei den Eltern wohnt.",
+  "t.bafoeg.kindJa": "Das Einkommen der Eltern liegt nach den Abzügen, die das BAföG-Amt macht, unter dem Freibetrag von etwa {fb} im Monat. BAföG gibt es für Studium, Fachschulen und bestimmte Schulen, zum Beispiel wenn das Kind nicht bei den Eltern wohnt.",
   "t.bafoeg.kindRand": "Das Einkommen liegt über dem Freibetrag von etwa {fb} im Monat. BAföG wird dann gekürzt, kann aber trotzdem reichen. Das Amt rechnet genau.",
   "t.bafoeg.kindNein": "Das Einkommen liegt deutlich über dem Freibetrag von etwa {fb} im Monat. Es bleibt voraussichtlich nichts übrig.",
   "t.bafoeg.ich": "BAföG hängt vor allem vom Einkommen der Eltern ab, das hier nicht abgefragt wird. In manchen Fällen zählt es nicht. Lass es vom Amt für Ausbildungsförderung rechnen.",

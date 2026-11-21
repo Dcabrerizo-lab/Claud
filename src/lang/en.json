@@ -193,7 +193,7 @@
   "t.gsa.verm": "Financial assets above {schon} have to be used first. A home you live in yourself or a reasonable car do not count.",
   "t.bafoeg.keine": "You did not state anyone in school, training or university.",
   "t.bafoeg.keinKind": "You did not state a child in the household.",
-  "t.bafoeg.kindJa": "The parents' income is below the allowance of about {fb} net per month. BAföG is paid for university, vocational colleges and certain schools, for example if the child does not live with the parents.",
+  "t.bafoeg.kindJa": "The parents' income is, after the deductions made by the BAföG office, below the allowance of about {fb} per month. BAföG is paid for university, vocational colleges and certain schools, for example if the child does not live with the parents.",
   "t.bafoeg.kindRand": "The income is above the allowance of about {fb} per month. BAföG is then reduced but can still be paid. The office calculates exactly.",
   "t.bafoeg.kindNein": "The income is well above the allowance of about {fb} per month. Probably nothing is left.",
   "t.bafoeg.ich": "BAföG depends mainly on the parents' income, which this check does not ask for. In some cases it does not count. Have the Amt für Ausbildungsförderung calculate it.",

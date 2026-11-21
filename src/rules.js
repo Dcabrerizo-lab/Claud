@@ -1658,7 +1658,7 @@ const Rules = (function () {
   // für „eher nicht“ (nein) die vorsichtige untere Schätzung (Lohn aus der Auszahlung wie oben, Unterhalt für sich selbst 0 €,
   // Elterngeld bis 300 € frei, sonst das Netto).
   function bafEink21(h) {
-    let ja = 0, nein = 0, sumN = 0;
+    let ja = 0, nein = 0, sumN = 0, basisL = 0, steuerL = 0, bruttoL = 0, zahlL = 0;
     bafPers(h).forEach((x) => {
       sumN += x.n;
       if (x.art === 'ohne') return;
@@ -1666,14 +1666,26 @@ const Rules = (function () {
       if (x.art === 'lohn' && !x.selbst && x.b > 0) {
         const e = Math.max(0, x.b - BAF.wkJahr / 12), basis = e - Math.min(e * BAF.pausch, BAF.pauschMaxJahr / 12);
         const steuer = x.aus ? 0 : Math.max(0, x.b - n - svMonat(x.b, lohnAnnahmen(h, x.p)));
-        const v = Math.max(0, basis - steuer);
-        ja += x.aus ? n : v; nein += v;
+        nein += Math.max(0, basis - steuer);
+        if (x.aus) ja += n; else { basisL += basis; steuerL += steuer; bruttoL += x.b; zahlL++; }
         return;
       }
       ja += n;
       // wie bisher: Unterhalt für sich selbst ganz, Elterngeld bis 300 € abgezogen (Betrag laut Eingabe; ohne Liste das Brutto-Feld)
       nein += n - (x.art === 'unt' ? (h.liste ? n : x.b) : x.art === 'eg' ? Math.min(R.elterngeldFrei, h.liste ? n : x.b) : 0);
     });
+    // Prüfung 21.11.2026: Für „wahrscheinlich“ zählt als Steuer höchstens die Lohnsteuer, die das Finanzamt am Ende festsetzt, nicht alles,
+    // was zwischen Brutto und Netto fehlt. Grund: Abgezogen wird nur die „zu leistende Einkommensteuer“ (§ 21 Abs. 1 Satz 3 Nr. 3 BAföG, laut
+    // Steuerbescheid, § 24 Abs. 2); der Freibetrag 2.540 € gilt nur für verheiratete Eltern (§ 25 Abs. 1 Nr. 1,
+    // https://www.gesetze-im-internet.de/baf_g/__25.html, Abruf 21.11.2026), sie werden zusammen veranlagt (Splitting). Ein Netto mit
+    // Steuerklasse IV/V oder I, mit Betriebsrente, Pfändung oder anderen Abzügen ließe die Steuer sonst zu hoch und das Einkommen zu klein
+    // erscheinen (falsches „wahrscheinlich“). Paar: Splittingtarif auf den gemeinsamen Lohn (Steuerklasse III, zweiter Pauschbetrag vorab
+    // abgezogen); allein: Steuerklasse wie lohnAnnahmen. Ohne Kirchensteuer und Solidaritätszuschlag (vorsichtig).
+    if (zahlL) {
+      const o = lohnAnnahmen(h, 1);
+      const amt = h.adults === 2 ? lohnsteuerMonat(Math.max(0, bruttoL - (zahlL - 1) * BAF.wkJahr / 12), Object.assign({}, o, { stkl: 3 })).lst : lohnsteuerMonat(bruttoL, o).lst;
+      ja += Math.max(0, basisL - Math.min(steuerL, amt));
+    }
     // Rest des Netto, der keiner Person zugeordnet ist (Kapitalerträge über dem Freibetrag, h.netto): wie bisher voll
     const rest = Math.max(0, h.netto - sumN);
     return { ja: ja + rest, nein: nein + rest };
@@ -1931,7 +1943,8 @@ const Rules = (function () {
   // Arbeitnehmer-Pauschbetrags (§ 2c, zieht elterngeldBerechnen ab). SoLo fragt nur das Netto: Es rechnet daraus das Brutto zurück
   // (bruttoAusNetto, Steuerklasse wie lohnAnnahmen; Kinder vor der Geburt für die Pflegeversicherung) und ersetzt die echten Beiträge durch
   // die Pauschale. Die Steuer bleibt dabei die im Netto enthaltene (gleiche Annahmen hin und zurück). Folge: Elterngeld-Netto = Netto +
-  // echte Beiträge − 21 % des Bruttos; bei gesetzlich Versicherten 2026 etwa 0,15 bis 0,75 % des Bruttos mehr als das Netto.
+  // echte Beiträge − 21 % des Bruttos; bei gesetzlich Versicherten 2026 je nach Kinderzahl (Pflegeversicherung) etwa 0,85 % des Bruttos weniger
+  // bis 0,75 % mehr als das Netto (kinderlos 21,75 %, ein Kind 21,15 %, fünf Kinder 20,15 % echte Beiträge; Prüfung 21.11.2026).
   // Nicht nachgebaut (Betrag bleibt beim Netto): Minijob (§ 2f Abs. 2 Satz 2: keine Abzüge, Netto = Brutto) und Übergangsbereich bis 2.000 €
   // (§ 2f Abs. 2 Satz 3 mit § 344 Abs. 4 SGB III). Privat Versicherte, Beamte, Kirchensteuer und ein anderes Steuerjahr (§ 2e Abs. 1: Programmablaufplan
   // vom 1. Januar des Vorjahres der Geburt) kennt die App nicht; der Betrag bleibt eine Schätzung (Text eg.ja: „etwa“).
@@ -2367,7 +2380,9 @@ const Rules = (function () {
     // (mit Titel ganz, sonst bis zu den Höchstbeträgen; an wen unbekannt: ganz, vorsichtige Seite gegen ein falsches „unwahrscheinlich“).
     // Bis 21.11.2026 rechnete die App hier mit den Werten nach § 24 WoFG und ohne Unterhalt (Befunde WBS2, WBS4).
     const uzJahr = (h.uzBetrag || 0) * 12;
-    const uzCapBY = h.uzAn ? ({ k1: 1, k2: 2, k3: 3, ex: 0, exk: 1 })[h.uzAn] * R.wbs.byUntPerson + (h.uzAn === 'ex' || h.uzAn === 'exk' ? R.wbs.byUntEx : 0) : Infinity;
+    // Prüfung 21.11.2026: „3 oder mehr Kinder“ (k3) und „frühere Partner und Kinder“ (exk) nennen die Zahl der Kinder nicht; der Höchstbetrag
+    // gilt je Person (Art. 5 Abs. 3 Satz 2 Nr. 2 und 3 BayWoFG). Dann ohne Deckel (wie „an wen unbekannt“), sonst wäre „unwahrscheinlich“ falsch.
+    const uzCapBY = h.uzAn === 'k1' || h.uzAn === 'k2' ? (h.uzAn === 'k1' ? 1 : 2) * R.wbs.byUntPerson : h.uzAn === 'ex' ? R.wbs.byUntEx : Infinity;
     const frei = (gd >= 50 ? R.wbs.byFreiGdb : 0) + (h.bhWeitere || 0) * R.wbs.byFreiGdb + (h.uzTitel ? uzJahr : Math.min(uzJahr, uzCapBY));
     // „wahrscheinlich“ nur mit dem Brutto (Text nennt das Bruttoeinkommen); für „möglich“ und „unwahrscheinlich“ erst den
     // Arbeitnehmer-Pauschbetrag, dann höchstens 30 % (Art. 6 Abs. 1 und 3 BayWoFG, siehe wbsWerbung)
