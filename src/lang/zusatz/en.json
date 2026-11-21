@@ -1,4 +1,7 @@
 {
+  "t.ggeld.vermAlter": "Whether your assets are below the protected amount depends on the age of both adults. The protected amount applies per person and is smaller for younger people. The Jobcenter checks this.",
+  "t.kiz.vermKnapp": "Your assets are just above the limit. Then only the Kinderzuschlag for the first month is reduced; after that you get it in full. The Familienkasse calculates the exact amount.",
+  "t.gsa.mzGBeide": "If both of you have the Merkzeichen G (mark G), each person gets an additional allowance (Mehrbedarf) of about {betrag}. The amount is then higher.",
   "ww.h0": "Two routes: Grundsicherungsgeld or housing benefit (Wohngeld)",
   "ww.a.t0": "Covers your whole need: standard rate, rent and heating, plus health insurance. In return there are duties: documents, appointments and looking for work.",
   "ww.b.h0": "Route 2: housing benefit (Wohngeld)",
@@ -28,6 +31,9 @@
   "bp.art.termin": "Invitation to an appointment",
   "bp.art.anh": "Hearing (Anhörung – the office asks before it decides)",
   "bp.art.mit": "Request to send in documents",
+  "bp.art.termin.h": "Invitation to an appointment",
+  "bp.art.anh.h": "Hearing (Anhörung) before a decision",
+  "bp.art.mit.h": "Sending in documents",
   "bp.art.anh.t": "A hearing is not yet a decision. Briefly explain what happened and add proof. You can only object to the decision that follows.",
   "bp.art.termin.am": "Appointment on {datum}",
   "bp.art.bis": "Deadline: by {datum}",
@@ -54,7 +60,17 @@
   "sp.vz.link": "Eating healthily on little money – tips from the Verbraucherzentrale",
   "sp.vz.t": "Page of the consumer advice centre in plain language. Opens in the browser.",
   "sp.vz.de": "The page is in German.",
-  "t.ggeld.vermAlter": "Whether your assets are below the protected amount depends on the age of both adults. The protected amount applies per person and is smaller for younger people. The Jobcenter checks this.",
-  "t.kiz.vermKnapp": "Your assets are just above the limit. Then only the Kinderzuschlag for the first month is reduced; after that you get it in full. The Familienkasse calculates the exact amount.",
-  "t.gsa.mzGBeide": "If both of you have the Merkzeichen G (mark G), each person gets an additional allowance (Mehrbedarf) of about {betrag}. The amount is then higher."
+  "bp.vgl.h": "Comparison with your own estimate",
+  "bp.vgl.satz": "Your estimate: {e}. Assessment: {g}.",
+  "bp.vgl.mehr": "In {n} of 6 areas the assessment gives fewer points than your estimate (marked in bold).",
+  "bp.vgl.keinMehr": "In no area does the assessment give fewer points than your estimate.",
+  "bp.vgl.bereich": "Area",
+  "bp.vgl.eigen": "Your points",
+  "bp.vgl.gutachten": "Assessment",
+  "bp.vgl.diff": "Difference",
+  "bp.vgl.gesamt": "Total",
+  "bp.vgl.zaehltNicht": "does not count",
+  "bp.vgl.pg": "care level (Pflegegrad) {pg}",
+  "bp.vgl.kein": "no care level (Pflegegrad)",
+  "bp.vgl.klein": "Weighted points, as the Pflegekasse calculates them (§ 15 SGB XI). Plus means: your estimate gives more points there. Below you can see which questions exactly."
 }

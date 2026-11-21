@@ -1,4 +1,7 @@
 {
+  "t.ggeld.vermAlter": "Si votre patrimoine est inférieur au montant protégé dépend de l’âge des deux adultes. Le montant protégé s’applique par personne et il est plus faible pour les plus jeunes. Le Jobcenter le vérifie.",
+  "t.kiz.vermKnapp": "Votre patrimoine dépasse à peine la limite. Dans ce cas, seul le Kinderzuschlag du premier mois est réduit ; ensuite, il est versé en entier. La Familienkasse calcule le montant exact.",
+  "t.gsa.mzGBeide": "Si vous avez tous les deux le Merkzeichen G (mention G), chaque personne reçoit un besoin supplémentaire (Mehrbedarf) d’environ {betrag}. Le montant est alors plus élevé.",
   "ww.h0": "Deux voies : Grundsicherungsgeld ou Wohngeld",
   "ww.a.t0": "Couvre tout le besoin : forfait de base, loyer et chauffage, plus l’assurance maladie. En échange, il y a des obligations : documents, rendez-vous et recherche d’emploi.",
   "ww.b.h0": "Voie 2 : Wohngeld",
@@ -28,6 +31,9 @@
   "bp.art.termin": "Convocation à un rendez-vous",
   "bp.art.anh": "Audition (Anhörung – le service demande avant de décider)",
   "bp.art.mit": "Demande d’envoyer des documents",
+  "bp.art.termin.h": "Convocation à un rendez-vous",
+  "bp.art.anh.h": "Audition (Anhörung) avant une décision",
+  "bp.art.mit.h": "Envoyer des documents",
   "bp.art.anh.t": "Une audition n’est pas encore une décision. Explique brièvement ce qui s’est passé et joins des justificatifs. Le recours n’est possible que contre la décision qui suit.",
   "bp.art.termin.am": "Rendez-vous le {datum}",
   "bp.art.bis": "Délai : jusqu’au {datum}",
@@ -54,7 +60,17 @@
   "sp.vz.link": "Bien manger avec peu d'argent – conseils de la Verbraucherzentrale",
   "sp.vz.t": "Page du centre de conseil aux consommateurs en langage simple. S'ouvre dans le navigateur.",
   "sp.vz.de": "La page est en allemand.",
-  "t.ggeld.vermAlter": "Si votre patrimoine est inférieur au montant protégé dépend de l’âge des deux adultes. Le montant protégé s’applique par personne et il est plus faible pour les plus jeunes. Le Jobcenter le vérifie.",
-  "t.kiz.vermKnapp": "Votre patrimoine dépasse à peine la limite. Dans ce cas, seul le Kinderzuschlag du premier mois est réduit ; ensuite, il est versé en entier. La Familienkasse calcule le montant exact.",
-  "t.gsa.mzGBeide": "Si vous avez tous les deux le Merkzeichen G (mention G), chaque personne reçoit un besoin supplémentaire (Mehrbedarf) d’environ {betrag}. Le montant est alors plus élevé."
+  "bp.vgl.h": "Comparaison avec ton estimation",
+  "bp.vgl.satz": "Ton estimation : {e}. Expertise : {g}.",
+  "bp.vgl.mehr": "Dans {n} domaines sur 6, l’expertise donne moins de points que ton estimation (en gras).",
+  "bp.vgl.keinMehr": "Dans aucun domaine, l’expertise ne donne moins de points que ton estimation.",
+  "bp.vgl.bereich": "Domaine",
+  "bp.vgl.eigen": "Tes points",
+  "bp.vgl.gutachten": "Expertise",
+  "bp.vgl.diff": "Différence",
+  "bp.vgl.gesamt": "Total",
+  "bp.vgl.zaehltNicht": "ne compte pas",
+  "bp.vgl.pg": "degré de dépendance (Pflegegrad) {pg}",
+  "bp.vgl.kein": "aucun degré de dépendance (Pflegegrad)",
+  "bp.vgl.klein": "Points pondérés, comme les calcule la Pflegekasse (§ 15 SGB XI). Plus signifie : ton estimation donne plus de points à cet endroit. En dessous, tu vois quelles questions exactement."
 }

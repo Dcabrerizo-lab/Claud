@@ -1,4 +1,7 @@
 {
+  "t.ggeld.vermAlter": "Varlığınızın muaf tutar altında kalıp kalmadığı iki yetişkinin de yaşına bağlıdır. Muaf tutar kişi başına geçerlidir ve daha gençler için daha düşüktür. Bunu Jobcenter kontrol eder.",
+  "t.kiz.vermKnapp": "Varlığınız sınırın biraz üzerinde. Bu durumda sadece ilk ayın Kinderzuschlag’ı azaltılır, sonra tam ödenir. Kesin tutarı Familienkasse hesaplar.",
+  "t.gsa.mzGBeide": "İkinizde de Merkzeichen G (G işareti) varsa, her kişi yaklaşık {betrag} ek ihtiyaç (Mehrbedarf) alır. O zaman tutar daha yüksektir.",
   "ww.h0": "İki yol: Grundsicherungsgeld veya Wohngeld",
   "ww.a.t0": "Tüm ihtiyacı karşılar: temel ihtiyaç, kira ve ısınma, ayrıca sağlık sigortası. Bunun karşılığında yükümlülükler var: belgeler, randevular ve iş arama.",
   "ww.b.h0": "2. yol: Wohngeld",
@@ -28,6 +31,9 @@
   "bp.art.termin": "Randevuya davet",
   "bp.art.anh": "Dinleme (Anhörung – kurum karar vermeden önce soruyor)",
   "bp.art.mit": "Belge gönderme talebi",
+  "bp.art.termin.h": "Randevuya davet",
+  "bp.art.anh.h": "Karardan önce dinleme (Anhörung)",
+  "bp.art.mit.h": "Belgeleri gönderme",
   "bp.art.anh.t": "Dinleme henüz bir karar değildir. Ne olduğunu kısaca açıkla ve kanıt ekle. İtiraz ancak sonraki karara karşı yapılabilir.",
   "bp.art.termin.am": "Randevu: {datum}",
   "bp.art.bis": "Süre: {datum} tarihine kadar",
@@ -54,7 +60,17 @@
   "sp.vz.link": "Az parayla sağlıklı beslenme – Verbraucherzentrale'den ipuçları",
   "sp.vz.t": "Tüketici danışma merkezinin sade dilde sayfası. Tarayıcıda açılır.",
   "sp.vz.de": "Sayfa Almancadır.",
-  "t.ggeld.vermAlter": "Varlığınızın muaf tutar altında kalıp kalmadığı iki yetişkinin de yaşına bağlıdır. Muaf tutar kişi başına geçerlidir ve daha gençler için daha düşüktür. Bunu Jobcenter kontrol eder.",
-  "t.kiz.vermKnapp": "Varlığınız sınırın biraz üzerinde. Bu durumda sadece ilk ayın Kinderzuschlag’ı azaltılır, sonra tam ödenir. Kesin tutarı Familienkasse hesaplar.",
-  "t.gsa.mzGBeide": "İkinizde de Merkzeichen G (G işareti) varsa, her kişi yaklaşık {betrag} ek ihtiyaç (Mehrbedarf) alır. O zaman tutar daha yüksektir."
+  "bp.vgl.h": "Kendi değerlendirmenle karşılaştırma",
+  "bp.vgl.satz": "Senin değerlendirmen: {e}. Rapor: {g}.",
+  "bp.vgl.mehr": "6 alanın {n} tanesinde rapor, senin değerlendirmenden daha az puan veriyor (kalın yazılı).",
+  "bp.vgl.keinMehr": "Hiçbir alanda rapor, senin değerlendirmenden daha az puan vermiyor.",
+  "bp.vgl.bereich": "Alan",
+  "bp.vgl.eigen": "Senin puanların",
+  "bp.vgl.gutachten": "Rapor",
+  "bp.vgl.diff": "Fark",
+  "bp.vgl.gesamt": "Toplam",
+  "bp.vgl.zaehltNicht": "sayılmaz",
+  "bp.vgl.pg": "bakım derecesi (Pflegegrad) {pg}",
+  "bp.vgl.kein": "bakım derecesi (Pflegegrad) yok",
+  "bp.vgl.klein": "Pflegekasse’nin hesapladığı gibi ağırlıklı puanlar (§ 15 SGB XI). Artı şu demek: senin değerlendirmen orada daha fazla puan veriyor. Aşağıda tam olarak hangi sorularda olduğu yazıyor."
 }

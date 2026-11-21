@@ -61,6 +61,12 @@ setTimeout(() => {
   check('[pu-korr] Aufs Konto: Pflegegeld und Wohngruppenzuschlag', /Aufs Konto kommen nur das Pflegegeld und, wer in einer ambulant betreuten Wohngruppe lebt, der Wohngruppenzuschlag/.test(t3));
   check('Stand und Quelle genannt', /Stand der Beträge: 14\.9\.2026 \(Bundesministerium für Gesundheit/.test(t3));
   check('Stellen nur als Art (Pflegekasse, Pflegestützpunkt), keine Anschrift', /Pflegestützpunkt/.test(t3) && !/\b\d{5}\b/.test(t3));
+  const einl = box().querySelector('.pu-einl');
+  check('[pu-aufr] Einleitung: ein Satz sichtbar, Rest zum Aufklappen (zu)', einl && einl.textContent.split(/[.!?](\s|$)/).filter((x) => x && x.trim()).length === 1 && box().querySelector('.pu-einl-mehr') && !box().querySelector('.pu-einl-mehr').open, einl && einl.textContent);
+  const tipp = box().querySelector('details.tipp[data-tipp="pu.tipp.beratung"]');
+  check('[pu-aufr] Hinweis Pflegekasse/Pflegestützpunkt als Tipp mit Symbol', tipp && tipp.querySelector('.tipp-sym svg') && tipp.querySelector('.tipp-kurz').textContent === de['pu.tipp.beratung.kurz']);
+  const hk = d.getElementById('pu-schaetzen-knopf');
+  check('[pu-aufr] Grüner Hauptknopf „Pflegegrad selbst einschätzen“ direkt unter den Leistungen', hk && hk.className === 'btn' && hk.textContent === de['pu.schaetzen'] && hk.parentElement.previousElementSibling.classList.contains('pu-l') && hk.parentElement.nextElementSibling.id === 'pu-weitere');
   oben().click();
   box().querySelector('.wahl[data-pg="1"]').click();
   const t1 = box().textContent;
@@ -98,7 +104,10 @@ setTimeout(() => {
   check('[pflege-ergebnis] Hinweis: nur Einschätzung, Pflegekasse entscheidet', /Das ist eine Einschätzung\. Entscheiden tut die Pflegekasse\./.test(pa().textContent));
   check('[pflege-ergebnis] Bedeutung mit Beträgen aus den Regeln (Pflegegeld, Pflegedienst)', new RegExp('Pflegegeld: ' + require('../src/rules.js').RULES.pflege.geld[pgE] + ' €').test(pa().querySelector('.pa-bedeutung').textContent) && /Pflegedienst: bis/.test(pa().querySelector('.pa-bedeutung').textContent), pa().querySelector('.pa-bedeutung').textContent);
   const kach = [...pa().querySelectorAll('.pa-kacheln > .uk-karte')];
-  check('[pflege-ergebnis] Drei Kacheln: Antrag, Was steht mir zu?, Gutachten', kach.length === 3 && kach[0].classList.contains('pa-k-antrag') && kach[1].classList.contains('pa-k-hilfen') && kach[2].classList.contains('pa-k-gutachten') && /Antrag an die Pflegekasse/.test(kach[0].textContent), kach.map((x) => x.textContent));
+  check('[pflege-ergebnis] Drei Kacheln in Reihenfolge: Pflegegrad beantragen, Mit dem Gutachten vergleichen, Was steht mir zu?', kach.length === 3 && kach[0].classList.contains('pa-k-antrag') && kach[1].classList.contains('pa-k-gutachten') && kach[2].classList.contains('pa-k-hilfen') && /Pflegegrad beantragen/.test(kach[0].textContent), kach.map((x) => x.textContent));
+  check('[pflege-ergebnis] Kachel „Mit dem Gutachten vergleichen“ mit Untertitel', /Mit dem Gutachten vergleichen/.test(kach[1].textContent) && /Gutachten vom Medizinischen Dienst scannen oder einfügen/.test(kach[1].textContent), kach[1].textContent);
+  const reihe = [...pa().children].map((x) => x.className);
+  check('[pflege-ergebnis] Reihenfolge: erst Ergebnis und Bedeutung, dann Kacheln', reihe.findIndex((c) => /pa-bedeutung/.test(c)) < reihe.findIndex((c) => /pa-kacheln/.test(c)) && reihe.findIndex((c) => /pa-kacheln/.test(c)) < reihe.findIndex((c) => /pa-punkte-box/.test(c)), reihe);
   check('[pflege-ergebnis] Keine großen Knöpfe mehr, nur Textlinks', pa().querySelectorAll('.btn').length === 0 && !!pa().querySelector('.pa-aendern'));
   check('[pflege-ergebnis] Aus der Pflege-Startseite: kein Sprung in den Leistungs-Check', !/Leistungs-Check/.test(pa().textContent));
   check('[pflege-ergebnis] Punkte je Bereich zum Aufklappen', !!pa().querySelector('details.pa-punkte-box') && !pa().querySelector('details.pa-punkte-box').open);
@@ -110,6 +119,13 @@ setTimeout(() => {
   check('[pflege-ergebnis] „← Zurück“ führt zur Ergebnisseite zurück', ansicht() === 'pflege' && /^Wahrscheinlich/.test(titel()));
   pa().querySelector('.pa-k-gutachten').click();
   check('[pflege-ergebnis] Gutachten vergleichen öffnet den Brief der Pflegekasse, Knopf heißt „← Zurück“', ansicht() === 'briefe' && /^← Zurück$/.test(d.getElementById('briefZurueck').textContent.trim()) && !d.getElementById('briefKachelKopf').hidden);
+  check('[pflege-vergleich] Gutachten-Prüfung offen, Selbsteinschätzung übergeben (noch ohne Gutachten-Werte keine Tabelle)', !d.getElementById('p-pflege').hidden && !d.getElementById('pf-vgl') && /Deine Einschätzung: Pflegegrad/.test((d.getElementById('pf-vergleich') || {}).textContent || ''), (d.getElementById('pf-vergleich') || {}).textContent);
+  d.getElementById('pf-1.1').value = '0'; d.getElementById('pf-form2').dispatchEvent(new w.Event('input', { bubbles: true }));
+  const vgl = d.getElementById('pf-vgl'), vz = vgl ? [...vgl.querySelectorAll('tbody tr')] : [];
+  check('[pflege-vergleich] Vergleichstabelle: 6 Bereiche und Summe, Spalten Bereich, Deine Punkte, Gutachten, Unterschied', vz.length === 7 && /Bereich.*Deine Punkte.*Gutachten.*Unterschied/.test(vgl.querySelector('thead').textContent), vgl && vgl.textContent);
+  const z1 = vz[0];
+  check('[pflege-vergleich] Unterschied hervorgehoben, wo das Gutachten weniger Punkte gibt', !!z1 && z1.classList.contains('pv-mehr') && /^\+/.test(z1.querySelector('strong').textContent) && /Pflegegrad|kein Pflegegrad/.test(d.getElementById('pf-vgl-satz').textContent), z1 && z1.textContent);
+  check('[pflege-vergleich] Tabelle steht im Ergebnis des Gutachtens', !!d.querySelector('#pf-erg #pf-vgl'));
   d.getElementById('briefZurueck').click();
   check('[pflege-ergebnis] Aus dem Brief zurück zur Ergebnisseite', ansicht() === 'pflege' && /^Wahrscheinlich/.test(titel()));
   pa().querySelector('.pa-k-antrag').click();
