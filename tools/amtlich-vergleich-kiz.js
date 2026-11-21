@@ -41,8 +41,13 @@ function faelle(N) {
     out.push({ alter, partner, brutto, netto, pBrutto, pNetto, uh, kalt, neben, heiz, miete: kalt + neben + heiz, vermoegen: z10(rnd() * 8000) });
   }
   // Gegenprobe: dieselbe Familie mit und ohne Unterhalt (prüft, ob der Lotse Einkommen der Kinder berücksichtigt)
-  const paare = out.map((f, i) => [f, i]).filter(([f]) => f.uh > 0).slice(0, 40).map(([f, i]) => Object.assign({}, f, { uh: 0, gegenprobeZu: i }));
-  return out.concat(paare);
+  // Die Gegenprobe folgt direkt auf ihre Familie, damit auch ein abgebrochener Lauf vollständige Paare hat.
+  const liste = []; let paare = 0;
+  for (const f of out) {
+    liste.push(f);
+    if (f.uh > 0 && paare < 40) { paare++; liste.push(Object.assign({}, f, { uh: 0, gegenprobeZu: liste.length - 1 })); }
+  }
+  return liste;
 }
 
 // ---------- SoLo-Seite ----------
@@ -98,13 +103,14 @@ async function abfragen(N, OUT) {
   const alle = faelle(N).slice(0, MAX_ABFRAGEN);
   const start = async () => { const b = await chromium.launch(process.env.HTTPS_PROXY ? { proxy: { server: process.env.HTTPS_PROXY } } : {}); return { b, p: await b.newPage({ viewport: { width: 1280, height: 1000 } }) }; };
   let { b, p } = await start(); const out = [];
-  for (let i = 0; i < alle.length; i++) {
+  const ende = Date.now() + (Number(process.env.ZEIT_MIN) || 170) * 60000; // Zeitbudget: rechtzeitig aufhören, damit das Artefakt hochgeladen wird
+  for (let i = 0; i < alle.length && Date.now() < ende; i++) {
     const f = alle[i], prot = i < 2 ? [] : null; let text = null;
     for (let v = 0; v < 2 && text === null; v++) {
       try { text = await lotse(p, f, prot); } catch (e) { text = null; try { await b.close(); } catch (x) { /* egal */ } ({ b, p } = await start()); await new Promise((r) => setTimeout(r, 5000)); }
     }
     out.push(Object.assign({ i, f, text: text && text.slice(0, 400), amtlich: text ? einstufen(text) : null }, prot ? { protokoll: prot } : {}));
-    if (out.length % 10 === 0) { fs.writeFileSync(OUT, JSON.stringify(out, null, 1)); console.log(out.length + ' Abfragen'); }
+    fs.writeFileSync(OUT, JSON.stringify(out, null, 1)); if (out.length % 10 === 0) console.log(out.length + ' Abfragen');
     await new Promise((r) => setTimeout(r, PAUSE_MS));
   }
   await b.close(); fs.writeFileSync(OUT, JSON.stringify(out, null, 1));
@@ -129,7 +135,7 @@ function auswerten(IN) {
     } else { z.widerspruch++; wider.push({ i: x.i, f: x.f, s, amtlich: x.amtlich, text: x.text }); }
   }
   // Gegenprobe Unterhalt
-  const gpErg = gp.map((x) => { const o = d.find((y) => y.i === x.f.gegenprobeZu); return { mit: o && o.amtlich, ohne: x.amtlich, soloMit: solo(o.f).level, soloOhne: solo(x.f).level, f: o.f }; });
+  const gpErg = gp.map((x) => { const o = d.find((y) => y.i === x.f.gegenprobeZu); if (!o) return null; return { mit: o && o.amtlich, ohne: x.amtlich, soloMit: solo(o.f).level, soloOhne: solo(x.f).level, f: o.f }; }).filter(Boolean);
   const lotseReagiert = gpErg.filter((g) => g.mit && g.ohne && g.mit !== g.ohne).length;
   const res = { n: haupt.length, z, wider, moeglich, grundAnders, intern, gegenprobe: { n: gpErg.length, lotseReagiert, soloReagiert: gpErg.filter((g) => g.soloMit !== g.soloOhne).length, faelle: gpErg } };
   console.log('KiZ-Lotse vs. SoLo: ' + res.n + ' Familien | Lotse ja ' + z.lotseJa + ', nein ' + z.lotseNein + ', ohne Ergebnis ' + z.offen);
