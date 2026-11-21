@@ -1,8 +1,12 @@
 # Differenztest Kinderzuschlag: zufällige Familien im KiZ-Lotsen der Familienkasse und in SoLo (tools/amtlich-vergleich-kiz.js).
-# Nur von Hand. Höflich: höchstens 400 Abfragen, 2,5 s Pause. Ergebnis als Artefakt "amtlich-kiz".
+# Von Hand (workflow_dispatch, sobald die Datei auf main liegt) oder durch Ändern von tools/amtliche-rechner/kiz-vergleich-auftrag.txt
+# auf einem Arbeitszweig (GitHub erlaubt workflow_dispatch nur für Workflows auf main). Höflich: höchstens 400 Abfragen, 2,5 s Pause. Ergebnis als Artefakt "amtlich-kiz".
 name: Amtlich KiZ-Vergleich
 
 on:
+  push:
+    branches-ignore: ['main']
+    paths: ['tools/amtliche-rechner/kiz-vergleich-auftrag.txt']
   workflow_dispatch:
     inputs:
       anzahl:
