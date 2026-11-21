@@ -510,11 +510,11 @@ var FristenOrdner = (function () {
 
   // Für „Für Klient zusammenstellen“ (src/klient.js): offene Fristen als Text, sortiert. Ohne Argument die des geöffneten Vorgangs,
   //  sonst aus einer gespeicherten Liste (lotse.fristliste eines anderen Vorgangs; nur gelesen, nie geschrieben). Texte in der aktuellen Sprache.
-  function offeneTexte(roh, haushalt) {
+  function offeneTexte(roh) {
     if (!ctx) return [];
     var h = heute(), liste;
     if (roh === undefined) liste = aktivListe();
-    else { var d = normiere(roh, h); liste = d.e.concat(wbAus(haushalt || null, d, h)); }
+    else liste = normiere(roh, h).e;
     return offeneSortiert(liste).map(function (e) { return { id: e.id, text: e.bis ? titelVon(e) + ': ' + datumText(e.bis) : titelVon(e) + ': ' + t('fri.wort.offen') }; });
   }
 

@@ -4135,7 +4135,7 @@
       out.unterlagen = lastOut.results.filter(function (r) { return (r.level === 'ja' || r.level === 'vielleicht') && r.steps && r.steps.u; }).map(function (r) {
         return { id: r.id, name: r.name + (lang === 'de' ? '' : ' (' + t('n.' + r.id) + ')'), items: r.steps.u.filter(function (k) { return !haken[r.id + '|' + k]; }).map(function (k) { return ohne(t(k)); }) };
       });
-      if (window.FristenOrdner && FristenOrdner.offeneTexte) { try { out.fristen = d ? FristenOrdner.offeneTexte(d['lotse.fristliste'] || null, d['lotse.haushalt'] || null) : FristenOrdner.offeneTexte(); } catch (e) { out.fristen = []; } }
+      if (window.FristenOrdner && FristenOrdner.offeneTexte) { try { out.fristen = d ? FristenOrdner.offeneTexte(d['lotse.fristliste'] || null) : FristenOrdner.offeneTexte(); } catch (e) { out.fristen = []; } }
       if (!d) out.briefe = briefIds().map(function (r) { return { id: r.id, name: r.name, text: letterText(r.id) }; }); // Musterschreiben nur aus dem geöffneten Vorgang (Antragsmappe)
       return out;
     });
