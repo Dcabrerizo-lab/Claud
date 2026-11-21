@@ -1,7 +1,7 @@
 # Store-Angaben
 
 Texte und Antworten zum Kopieren in die Google Play Console und App Store Connect.
-Stand: Version **1.8.0**, VersionCode/Build **150** (21.11.2026).
+Stand: Version **1.9.0**, VersionCode/Build **151** (21.11.2026).
 Alles muss zur [Datenschutzerklärung](../datenschutz.html) passen. Bei Änderungen an der App beide Stellen prüfen.
 Jedes Textfeld steht in einem eigenen Kasten zum Kopieren. Die Zahl in Klammern darunter ist die Zeichenzahl (per Skript gezählt, Leerzeichen und Zeilenumbrüche mitgezählt).
 Store-Texte nur auf Deutsch (bisher keine englischen Einträge).
@@ -10,7 +10,7 @@ Store-Texte nur auf Deutsch (bisher keine englischen Einträge).
 
 | Feld | Wert |
 |---|---|
-| Version | 1.8.0 (VersionCode/Build 150) |
+| Version | 1.9.0 (VersionCode/Build 151) |
 | Kategorie | Play: *Finanzen* · iOS: *Finanzen* (Zweitkategorie *Dienstprogramme*) |
 | Altersfreigabe | Ab 0 / 4+ (keine kritischen Inhalte) |
 | Preis | 1,49 € einmalig (Play Console: „Mit Google Play monetarisieren“), keine In-App-Käufe, keine Werbung, kein Abo. Tester bekommen Gutscheincodes. |
@@ -94,10 +94,12 @@ Wichtig: SoLo ist eine Orientierung, keine Rechtsberatung. Über deinen Anspruch
 
 ### Neuigkeiten in dieser Version (max. 500)
 
+Nur Deutsch (weitere Sprachen für die Neuigkeiten sind in dieser Datei nicht angelegt).
+
 ```
-Neu: Geld und Schulden neu geordnet. „Was ist zuerst dran?“ zeigt in 7 Fragen, was eilt. Neuer Fall „Geldstrafe: Haft droht“. Post vom Inkasso: prüfen, ob alle Pflichtangaben im Brief stehen, mit Musterschreiben. Schuldnerberatung: Stelle finden, Checkliste bis zum Termin, Beratungsmappe. Beratungsmodus mit Tabelle und Gesprächsnotiz. Schulden-Liste übersichtlicher. Sprachwahl auf der Startseite und in den Einstellungen. Kleine Fehler behoben. Weiter alles offline auf deinem Gerät.
+Neu: Suche mit Lupe auf jeder Seite, auch mit Alltagswörtern. Einzelne Vorgänge mit eigener PIN sperren. Mit App-PIN Schutz vor Bildschirmfotos. Beratung: Blatt für Klienten, Weitergabe per QR-Code oder SoLo-Datei. Raten anbieten mit Empfehlung, Tarife vergleichen, Pflegegutachten vergleichen. Wichtige Sätze in Fremdsprachen auch auf Deutsch. Wohngeld, Kinderzuschlag, BAföG und weitere Leistungen genauer. Übersetzungen verbessert, Fehler behoben. Weiter alles offline auf deinem Gerät.
 ```
-(486 Zeichen)
+(489 Zeichen; Version 1.9.0, Build 151. Text von 1.8.0 steht im Git-Verlauf.)
 
 ### Kategorie und Tags (Vorschlag)
 
@@ -110,9 +112,12 @@ Neu: Geld und Schulden neu geordnet. „Was ist zuerst dran?“ zeigt in 7 Frage
 
 | Frage | Antwort |
 |---|---|
-| Erhebt oder teilt die App Nutzerdaten? | **Nein.** Alle Daten werden nur auf dem Gerät verarbeitet (Google-Definition: Daten, die das Gerät nicht verlassen, gelten nicht als „erhoben“). Gilt auch für Netto-, Pfändungs- und Sparrechner, Brief- und Kassenzettel-Scan, Haushaltsbuch und gespeicherte Vorgänge (mit PIN verschlüsselt auf dem Gerät). Daten verlassen das Gerät nur, wenn der Nutzer selbst teilt (PDF, CSV). |
-| Daten verschlüsselt übertragen? | Nicht zutreffend (keine Übertragung) |
-| Können Nutzer das Löschen beantragen? | Ja: „Alle Angaben löschen“ in der App oder Deinstallation |
+| Erhebt oder teilt die App Nutzerdaten? | **Erhebt: Ja. Teilt: Nein.** Grund: Die Texterkennung Google ML Kit (`com.google.mlkit:text-recognition`, gebündelte Variante) sendet laut Google Diagnose- und Nutzungsdaten an Google. Google Play zählt auch Daten, die eine eingebaute Bibliothek vom Gerät sendet, als „erhoben“; sie müssen im Formular stehen. Die Angaben des Nutzers (Fragebogen, Briefe, Fotos, erkannter Text, Vorgänge) stehen nicht in Googles Aufstellung und bleiben auf dem Gerät. Sonst verlassen Daten das Gerät nur, wenn der Nutzer selbst teilt (PDF, CSV, SoLo-Datei, QR-Code). |
+| Welche Datentypen? | **„App-Informationen und Leistung“ → „Diagnose“** und **„Geräte- oder andere IDs“** (Kennung je Installation). Zweck jeweils: **Analyse**. Erhoben: ja. Geteilt: nein. Pflicht oder freiwillig: **Pflicht** (der Nutzer kann es nicht abschalten; es fällt nur an, wenn die Texterkennung benutzt wird). Alle anderen Datentypen: nein. |
+| Daten verschlüsselt übertragen? | **Ja** (laut Google per HTTPS) |
+| Lässt sich das abschalten? | Google beschreibt keinen Schalter dafür. Ohne diese Übertragung ginge es nur mit einer anderen Texterkennung (offen, nächstes Update). |
+| Können Nutzer das Löschen beantragen? | Ja für die Angaben in der App: „Alle Angaben löschen“ oder Deinstallation. Die Diagnosedaten liegen bei Google und hängen an keinem Konto in SoLo. |
+| Quellen (abgerufen am 21.11.2026) | Google, „ML Kit – Android data disclosure“ (developers.google.com/ml-kit/android-data-disclosure, Stand 15.07.2026); Google, „Text recognition v2 (Android)“ (developers.google.com/ml-kit/vision/text-recognition/v2/android: gebündelt = `com.google.mlkit:text-recognition`); Google Play Console-Hilfe, „Provide information for Google Play's Data safety section“ (support.google.com/googleplay/android-developer/answer/10787469). Ob SoLo die Daten tatsächlich sendet, ist nicht am Gerät gemessen (Netzwerkmitschnitt offen); bis dahin gilt Googles Aufstellung. |
 | Werbung | Nein |
 | Zielgruppe | Erwachsene (18+); nicht für Kinder gestaltet |
 | Gesundheits-Apps-Erklärung | Keine Gesundheits-App (Angaben zu Pflegegrad/Behinderung dienen nur der Leistungsprüfung, bleiben auf dem Gerät) |
@@ -162,9 +167,9 @@ Wohngeld,Bürgergeld,Grundsicherung,Kinderzuschlag,Bescheid,Widerspruch,Pflegegr
 Gleicher Text wie „Neuigkeiten in dieser Version“ bei Google Play:
 
 ```
-Neu: Geld und Schulden neu geordnet. „Was ist zuerst dran?“ zeigt in 7 Fragen, was eilt. Neuer Fall „Geldstrafe: Haft droht“. Post vom Inkasso: prüfen, ob alle Pflichtangaben im Brief stehen, mit Musterschreiben. Schuldnerberatung: Stelle finden, Checkliste bis zum Termin, Beratungsmappe. Beratungsmodus mit Tabelle und Gesprächsnotiz. Schulden-Liste übersichtlicher. Sprachwahl auf der Startseite und in den Einstellungen. Kleine Fehler behoben. Weiter alles offline auf deinem Gerät.
+Neu: Suche mit Lupe auf jeder Seite, auch mit Alltagswörtern. Einzelne Vorgänge mit eigener PIN sperren. Mit App-PIN Schutz vor Bildschirmfotos. Beratung: Blatt für Klienten, Weitergabe per QR-Code oder SoLo-Datei. Raten anbieten mit Empfehlung, Tarife vergleichen, Pflegegutachten vergleichen. Wichtige Sätze in Fremdsprachen auch auf Deutsch. Wohngeld, Kinderzuschlag, BAföG und weitere Leistungen genauer. Übersetzungen verbessert, Fehler behoben. Weiter alles offline auf deinem Gerät.
 ```
-(486 Zeichen)
+(489 Zeichen; Version 1.9.0, Build 151. Text von 1.8.0 steht im Git-Verlauf.)
 
 ### URLs
 

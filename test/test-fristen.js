@@ -142,7 +142,7 @@ const ck = (name, c, x) => { n++; if (!c) { fails++; console.log('FAIL', name, x
   ['fri.dauer.w', 'fri.dauer.w1', 'fri.dauer.t', 'fri.dauer.t1', 'fri.dauer.m', 'fri.dauer.m1', 'fri.karte', 'fri.h', 'fri.set.label', 'fri.set.t'].forEach((k) => benutzt.add(k));
   const fehlen = [...benutzt].filter((k) => !(k in de));
   ck('[fristen] Jeder benutzte Schlüssel steht in de.json', !fehlen.length, fehlen);
-  const zahlen = (s) => (String(s).replace(/\{[^}]*\}/g, ' ').match(/\d+/g) || []).sort().join(' ');
+  const { zahlen } = require('./hilf-zahlen.js'); // gemeinsame Zählfunktion (auch test-sprachen-zahlen.js)
   const platz = (s) => (String(s).match(/\{\w+\}/g) || []).sort().join(' ');
   for (const l of LANGS) {
     const f = path.join(DIR, l + '.json');

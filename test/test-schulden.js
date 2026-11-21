@@ -91,8 +91,7 @@ const DIR = path.join(__dirname, '..', 'src', 'lang', 'schulden');
 const LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so'];
 const de = JSON.parse(fs.readFileSync(path.join(DIR, 'de.json'), 'utf8'));
 const ph = (x) => (String(x).match(/\{\w+\}/g) || []).sort().join(',');
-const AR = '٠١٢٣٤٥٦٧٨٩';
-const zahlen = (x) => (String(x).replace(/[٠-٩]/g, (z) => AR.indexOf(z)).replace(/\{[^}]*\}/g, ' ').match(/\d+(?:[.,  ٫٬ ]\d{3})*(?:[.,٫]\d{1,2})?/g) || []).map((z) => z.replace(/\D/g, '').replace(/^0+(?=\d)/, '')).sort().join(' ');
+const { zahlen } = require('./hilf-zahlen.js'); // gemeinsame Zählfunktion (auch test-sprachen-zahlen.js)
 const code = fs.readFileSync(path.join(__dirname, '..', 'src', 'schulden.js'), 'utf8') + fs.readFileSync(path.join(__dirname, '..', 'src', 'geld.js'), 'utf8') + fs.readFileSync(path.join(__dirname, '..', 'src', 'app.js'), 'utf8') + fs.readFileSync(path.join(__dirname, '..', 'src', 'template.html'), 'utf8').replace(/data-t="([^"]+)"/g, "'$1'");
 S.ART.forEach((a) => ck('[schuldenliste] Text für Art ' + a, !!de['sl.art.' + a]));
 S.STATUS.forEach((a) => ck('[schuldenliste] Text für Stand ' + a, !!de['sl.st.' + a]));

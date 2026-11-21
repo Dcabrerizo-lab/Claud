@@ -103,7 +103,7 @@ const speicherText = () => Object.values(mem).join('\n');
   // Erneut sperren und ohne PIN löschen
   bearbeiten();
   knopf(zeileVon('Familie Geheim'), 'Mit PIN sperren').click();
-  d.getElementById('vgGPin').value = '1234'; d.getElementById('vgGPin2').value = '1234'; submit(d.getElementById('vgGForm'));
+  d.getElementById('vgGPin').value = '482917'; d.getElementById('vgGPin2').value = '482917'; submit(d.getElementById('vgGForm'));
   await bis(() => !!d.querySelector('#setHaushalte .vg-gesperrt'));
   bearbeiten();
   knopf(d.querySelector('#setHaushalte .vg-gesperrt'), 'Löschen').click();

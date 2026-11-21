@@ -191,16 +191,26 @@ function render(opts = {}) {
   return { html, i18n: parts.i18n };
 }
 
+// Sicherheitsrichtlinie der Web-Version (Sicherheitsprüfung 21.11.2026, S9). Erlaubt genau das, was die Seite braucht:
+//  - Skripte: die eigenen (in der Datei, daher 'unsafe-inline'; die Web-Version ist eine einzelne HTML-Datei), Texterkennung von cdnjs
+//    (Tesseract) und jsDelivr (Worker, Kern, Sprachdaten), pdf.js von jsDelivr. Nachgeladenes Tesseract und pdf.js tragen eine Prüfsumme (SRI, src/app.js).
+//  - 'wasm-unsafe-eval': nur WebAssembly für den Kern der Texterkennung, kein eval für JavaScript.
+//  - Worker: blob-Adressen (Tesseract startet seinen Worker so, pdf.js den geprüften Worker), sonst nichts von außen.
+//  - Keine Plugins, keine fremde Basisadresse, kein Absenden von Formularen.
+const WEB_CSP = "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; " +
+  "style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' data: blob: https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " +
+  "worker-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'none'";
+
 function build() {
   const { html, i18n } = render();
   fs.mkdirSync(DIST, { recursive: true });
   fs.writeFileSync(path.join(DIST, 'i18n.js'), i18n);
   // Eigenständige Datei (zum Öffnen im Browser, für die Webseite): mit Zeichensatz und Viewport. Ohne <meta charset> zeigt
   // Safari (WebKit) die Umlaute falsch; ohne Viewport ist die Seite auf dem Handy winzig. Die App setzt ihren Kopf selbst (build-app.js).
-  const doc = '<!doctype html>\n<html lang="de">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n<meta name="theme-color" content="#fffaf3" media="(prefers-color-scheme: light)">\n<meta name="theme-color" content="#1b1815" media="(prefers-color-scheme: dark)">\n<link rel="icon" href="data:,">\n</head>\n<body>\n' + html + '\n</body>\n</html>\n';
+  const doc = '<!doctype html>\n<html lang="de">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n<meta http-equiv="Content-Security-Policy" content="' + WEB_CSP + '">\n<meta name="theme-color" content="#fffaf3" media="(prefers-color-scheme: light)">\n<meta name="theme-color" content="#1b1815" media="(prefers-color-scheme: dark)">\n<link rel="icon" href="data:,">\n</head>\n<body>\n' + html + '\n</body>\n</html>\n';
   fs.writeFileSync(path.join(DIST, 'sozialleistungslotse.html'), doc);
   console.log('Web-Build: dist/sozialleistungslotse.html', (html.length / 1024).toFixed(1), 'KB');
 }
 
-module.exports = { render, i18nSource, LANGS, ROOT };
+module.exports = { render, i18nSource, LANGS, ROOT, WEB_CSP };
 if (require.main === module) build();

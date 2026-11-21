@@ -1,5 +1,5 @@
 {
   "t.ggeld.vermAlter": "Wie viel Geld ihr behalten dürft, hängt vom Alter von euch beiden ab. Bei jüngeren Menschen ist es weniger. Das Jobcenter prüft das.",
   "t.kiz.vermKnapp": "Ihr habt etwas mehr Geld als erlaubt, aber nur wenig. Dann gibt es im ersten Monat weniger Kinderzuschlag. Danach gibt es ihn ganz. Die Familienkasse rechnet das aus.",
-  "t.gsa.mzGBeide": "Habt ihr beide das Merkzeichen G? Dann gibt es für jeden von euch etwa {betrag} mehr."
+  "t.gsa.mzGBeide": "Habt ihr beide das Merkzeichen G? Dann kann es für jeden von euch etwa {betrag} mehr geben. Das Sozialamt prüft das."
 }

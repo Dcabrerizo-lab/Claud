@@ -1,5 +1,5 @@
 // Klicktest: PDF wählen bei „Brief prüfen“ (Web-Version). Digitales PDF: Text wird direkt gelesen, Absender erkannt, Werte übernommen.
-// pdf.js kommt im Browser von cdnjs; im Test liefert eine Weiterleitung dieselbe Version aus app/node_modules (gleiche Datei, kein Netz nötig).
+// pdf.js kommt im Browser von jsDelivr (Ausgabe „legacy“, mit Prüfsumme); im Test liefert eine Weiterleitung dieselbe Version aus app/node_modules (gleiche Datei, kein Netz nötig).
 // Eingescannte PDFs (Seite als Bild → Texterkennung) prüft test/app-test.js mit der Texterkennung der App.
 'use strict';
 const { chromium } = require('playwright');
@@ -8,7 +8,7 @@ const SF_ALLES = () => { try { if (!localStorage.getItem('lotse.checkWeg')) { lo
 const path = require('path'), fs = require('fs'), os = require('os');
 const { digital } = require('./hilfe-pdf');
 const APP = 'file://' + path.join(__dirname, '..', 'dist', 'sozialleistungslotse.html');
-const PDFJS = path.join(__dirname, '..', 'app', 'node_modules', 'pdfjs-dist', 'build');
+const PDFJS = path.join(__dirname, '..', 'app', 'node_modules', 'pdfjs-dist', 'legacy', 'build');
 let n = 0, f = 0;
 const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, info !== undefined ? JSON.stringify(info) : ''); } };
 (async () => {
@@ -21,7 +21,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   const p = await (await b.newContext({ viewport: { width: 360, height: 760 }, locale: 'de-DE' })).newPage(); await p.addInitScript(SF_ALLES);
   const fehler = []; p.on('pageerror', (e) => fehler.push(e.message));
   let geladen = 0;
-  await p.route('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/**', (r) => { geladen++; const name = r.request().url().split('/').pop(); r.fulfill({ path: path.join(PDFJS, name), contentType: 'application/javascript', headers: { 'Access-Control-Allow-Origin': '*' } }); });
+  await p.route('https://cdn.jsdelivr.net/npm/pdfjs-dist@6.5.438/legacy/build/**', (r) => { geladen++; const name = r.request().url().split('/').pop(); r.fulfill({ path: path.join(PDFJS, name), contentType: 'application/javascript', headers: { 'Access-Control-Allow-Origin': '*' } }); });
   await p.goto(APP + '#briefe'); await p.waitForTimeout(300);
   ok('Übersicht ohne PDF-Knopf', !(await p.isVisible('#elPdf')));
   await p.click('#brief-jc');
@@ -32,7 +32,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Digitales PDF: Jobcenter-Bescheid gelesen', /Jobcenter/.test(await p.textContent('#elMsg')), await p.textContent('#elMsg'));
   ok('Digitales PDF: Beträge übernommen', (await p.inputValue('#bs-b-regel')) === '920' && (await p.inputValue('#bs-b-zahl')) === '1501.33' && (await p.inputValue('#bs-datum')) === '2026-03-12');
   ok('Digitales PDF: Formular nach dem Einlesen offen', await p.isVisible('#p-bescheid > :nth-child(2)'));
-  ok('pdf.js aus der festen Version 3.11.174 geladen', geladen >= 1);
+  ok('pdf.js aus der festen Version 6.5.438 geladen', geladen >= 1);
   await p.click('#briefZurueck'); await p.click('#brief-wg');
   await p.setInputFiles('#elPdfFile', kaputt);
   await p.waitForFunction(() => /nicht lesen/.test(document.getElementById('elMsg').textContent), null, { timeout: 30000 }).catch(() => {});

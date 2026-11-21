@@ -105,6 +105,11 @@ const VERBOTEN = '#mappePrint, #mappeShare, #mappeCopy, #feedbackMail, #sc-take,
   }
   await b.close();
   if (fehler.length) { console.log('FEHLER Zufalls-Klicktest' + SHARD.name + ' (Startwert ' + START + '):'); [...new Set(fehler)].slice(0, 5).forEach((f) => console.log('- ' + f)); process.exit(1); }
-  if (besucht.einfach < SCHRITTE / 20 || !besucht.mappe || !besucht.karten) { console.log('FEHLER Zufalls-Klicktest erreicht nicht alle Bereiche: ' + JSON.stringify(besucht)); process.exit(1); }
+  // Abdeckung: streng (rot) lokal und im schweren Lauf; im PR-Lauf (ZUFALL_ABDECKUNG=warnen) nur Warnung, weil test/e2e-rundgang.js
+  // dort jeden dieser Bereiche fest besucht und prüft. Fehler der App (oben) bleiben immer rot.
+  if (besucht.einfach < SCHRITTE / 20 || !besucht.mappe || !besucht.karten) {
+    if (process.env.ZUFALL_ABDECKUNG === 'warnen') console.log('::warning title=Zufalls-Klicktest Abdeckung::erreicht nicht alle Bereiche ' + JSON.stringify(besucht) + SHARD.name + ' (Pflichtbesuche prüft e2e-rundgang.js)');
+    else { console.log('FEHLER Zufalls-Klicktest erreicht nicht alle Bereiche: ' + JSON.stringify(besucht)); process.exit(1); }
+  }
   console.log('[zufall-klick] Zufalls-Klicktest' + SHARD.name + ' bestanden (Startwert ' + START + '): ' + SCHRITTE + ' zufällige Bedienschritte ohne Skriptfehler, kaputte Anzeige, seitliches Scrollen oder Sackgasse (Schritte in der einfachen Version ' + besucht.einfach + ', mit Ergebniskarten ' + besucht.karten + ', in der Antragsmappe ' + besucht.mappe + ')');
 })().catch((e) => { console.log('ABSTURZ', e.message); process.exit(1); });

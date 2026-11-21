@@ -450,7 +450,9 @@ var Weitergabe = (function () {
     ui = c;
     var sc = $('kwScan'), da = $('kwDatei'), de = $('kwDateiEin'), fo = $('kwFotoEin');
     if (sc && fo) sc.addEventListener('click', function () { if (!scanMoeglich()) { aufklappen(); meldung('kw.imp.keinScan'); return; } meldung(''); fo.value = ''; fo.click(); });
-    if (fo) fo.addEventListener('change', function () { var f = fo.files && fo.files[0]; fo.value = ''; ausBild(f); });
+    // Nach dem Lesen das Foto löschen (Android legt es im App-Bilderordner ab und löscht es nicht; ui.fotoWeg in src/app.js)
+    var fotoWeg = function () { try { if (ui && ui.fotoWeg) ui.fotoWeg(); } catch (e) {} };
+    if (fo) fo.addEventListener('change', function () { var f = fo.files && fo.files[0]; fo.value = ''; if (!f) return; ausBild(f).then(fotoWeg, fotoWeg); });
     if (da && de) da.addEventListener('click', function () { meldung(''); de.value = ''; de.click(); });
     if (de) de.addEventListener('change', function () { var f = de.files && de.files[0]; ausDateiEin(f); });
   }
