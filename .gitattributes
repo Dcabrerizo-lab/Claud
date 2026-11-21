@@ -10,3 +10,9 @@ app/package-lock.json linguist-generated=true
 *.png binary
 *.woff2 binary
 *.ttf binary
+# Angehängte Listen ohne Konflikt zusammenführen (beide Seiten bleiben). Reste wie doppelte Zeilen meldet
+# test/test-doku-zusammenfuehrung.js. NICHT für JSON (Sprachdateien), das würde ungültig.
+docs/AENDERUNGEN.md merge=union
+docs/PRUEFBERICHT.md merge=union
+docs/PRUEFLISTE.md merge=union
+test/listen/*.txt merge=union

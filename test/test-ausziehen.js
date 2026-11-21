@@ -6,7 +6,7 @@ const LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'f
 let fehler = 0, n = 0;
 const check = (name, ok, info) => { n++; if (!ok) { fehler++; console.log('FAIL ' + name + (info !== undefined ? ' -> ' + JSON.stringify(info) : '')); } };
 const keys = A.schluessel();
-const zahlen = (s) => String(s).replace(/[٠-٩]/g, (c) => '٠١٢٣٤٥٦٧٨٩'.indexOf(c)).replace(/[۰-۹]/g, (c) => '۰۱۲۳۴۵۶۷۸۹'.indexOf(c)).replace(/\{[^}]*\}/g, ' ').replace(/(\d) (?=\d)/g, '$1').match(/\d+/g)?.sort().join(' ') || '';
+const { zahlen } = require('./hilf-zahlen.js'); // gemeinsame Zählfunktion (auch test-sprachen-zahlen.js)
 const de = require('../src/lang/ausziehen/de.json');
 
 // az-aufbau: Übersicht höchstens 8 Kacheln, jede Kachel ein Bereich; Checklisten mit Punkten

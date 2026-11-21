@@ -7,14 +7,23 @@
   "t.kgBeh.nach25": "25",
   "t.kgBeh.ja": "25",
   "t.kgBeh.pruefen": "2026 25",
-  "ausb.hint": "10",
   "t.krank.78": "3 6 78",
   "t.pflege.rente": "10 2 30",
   "t.srente.allg": "2 35 5 50",
   "t.kindergeld.familiengeld": "2024 2025 3 3",
-  "sp.schulden.miete": "2 2 569"
+  "sp.schulden.miete": "2 2 569",
+  "schritte/sf.h.ausbildung": "10"
  },
  "en": {
   "s.kindergeld.tip": "6"
+ },
+ "fa-AF": {
+  "klient/kw.wie.t": "6"
+ },
+ "fa": {
+  "klient/kw.wie.t": "6"
+ },
+ "ps": {
+  "klient/kw.wie.t": "6"
  }
 }
