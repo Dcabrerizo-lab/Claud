@@ -89,5 +89,12 @@
   "kw.imp.nichts": "Nic nie wybrano.",
   "kw.imp.f.format": "To nie jest prawidłowy plik SoLo.",
   "kw.imp.f.zuGross": "Plik jest za duży.",
-  "kw.imp.f.speicher": "Zapisywanie teraz nie działa. Czy SoLo jest zablokowane? Odblokuj i spróbuj ponownie."
+  "kw.imp.f.speicher": "Zapisywanie teraz nie działa. Czy SoLo jest zablokowane? Odblokuj i spróbuj ponownie.",
+  "kb.s1": "1 · Co otrzyma twój klient?",
+  "kb.s2": "2 · Jak to przekażesz?",
+  "kb.zaehler": "{titel} ({n} z {m})",
+  "kb.weg.blatt": "Jako arkusz: na papierze lub jako plik",
+  "kb.vorschau": "Pokaż podgląd arkusza",
+  "kb.vorschau.zu": "Ukryj podgląd",
+  "kw.qr.zuViel": "To za dużo na kod QR. Udostępnij jako plik SoLo albo zaznacz mniej."
 }

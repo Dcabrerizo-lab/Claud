@@ -49,6 +49,12 @@ const dateiWaehlen = (w, input, text) => { Object.defineProperty(input, 'files',
   $('beratungBtn').click();
   $('kbOpen').click();
   check('Weitergabe-Bereich im Blatt sichtbar, PIN standardmäßig an (6 Ziffern)', !$('kwBox').hidden && $('kwPinAn').checked && /^\d{3} \d{3}$/.test($('kwPin').textContent));
+  const passt0 = await w.Klient.qrPruefen();
+  check('[rot-d] QR-Vorprüfung: Hinweis „zu viel“ schon vor dem Tippen genau dann, wenn es nicht passt', $('kwQrHinweis').hidden === !!passt0 && $('kwQrBtn').hasAttribute('aria-disabled') === !passt0);
+  const auf = d.querySelector('#kbHilfenAuf');
+  check('[rot-d] Klient-Seite: zwei Schritte, Gruppen zugeklappt mit Zähler, Vorschau zugeklappt', d.querySelectorAll('#klientBlatt .kb-schritt').length === 2 && auf && !auf.open && /\(\d+ von \d+\)$/.test(auf.querySelector('summary').textContent) && $('kbSeite').classList.contains('kb-zu') && $('kbVorschau').getAttribute('aria-expanded') === 'false');
+  $('kbVorschau').click();
+  check('[rot-d] Vorschau zeigen klappt das Blatt auf', !$('kbSeite').classList.contains('kb-zu') && $('kbVorschau').getAttribute('aria-expanded') === 'true');
   check('Auswahl a/b: „Nur ausgewählte Teile“ voreingestellt', $('kwModus-blatt').checked && !$('kwModus-vorgang').checked && !!$('kbHilfen'));
   // (b) nur gewählte Teile → QR
   [...d.querySelectorAll('#kbHilfen input[data-kb]')].slice(1).forEach((c) => { c.checked = false; fire(w, c, 'change'); });

@@ -390,6 +390,16 @@
   .kb-open { margin: 8px 0 0; }
   .kb-wahl .kb-gruppe { border: 1px solid var(--line); border-radius: var(--r-feld); padding: 8px 12px; margin: 0 0 12px; }
   .kb-wahl legend { font-weight: 700; padding: 0 4px; }
+  .kb-schritt { margin: 18px 0 8px; font-size: 1.1em; }
+  .kb-wahl > .kb-schritt { margin-top: 4px; }
+  .kb-wahl details.kb-auf { border: 1px solid var(--line); border-radius: var(--r-feld); padding: 0 12px; margin: 0 0 10px; }
+  .kb-wahl details.kb-auf > summary { font-weight: 700; min-height: 44px; display: flex; align-items: center; cursor: pointer; }
+  .kb-wahl details.kb-auf .kb-gruppe { border: 0; padding: 0 0 8px; margin: 0; }
+  .kb-weg { margin: 4px 0; }
+  .kw-box h4 { margin: 6px 0 4px; font-size: 1em; }
+  .kw-qr-zuviel { margin: 6px 0; }
+  .kb-vorschau-kopf { margin: 14px 0 0; }
+  @media screen { .kb-blatt.kb-zu { display: none; } }
   .kb-wahl .kb-pin input { max-width: 12em; }
   .kb-ds { color: var(--muted); }
   .kw-box { border-top: 1px solid var(--line); margin-top: 14px; padding-top: 6px; }
@@ -2108,6 +2118,9 @@
         <h2 id="h-kb" data-t="kb.h"></h2>
         <p data-t="kb.intro"></p>
         <div id="kbWahl" class="kb-wahl"></div>
+        <!-- Schritt 2: Wie gibst du es weiter? Als Blatt (Drucken / Teilen) oder an die SoLo-App (QR-Code / SoLo-Datei) -->
+        <h3 class="kb-schritt" id="kbS2" data-t="kb.s2"></h3>
+        <p class="kb-weg" id="kbWegBlatt"><b data-t="kb.weg.blatt"></b></p>
         <div class="btns">
           <button type="button" class="btn" id="kbDruck" data-t="f.print"></button>
           <button type="button" class="btn ghost" id="kbTeilen" data-t="kb.teilen"></button>
@@ -2115,8 +2128,9 @@
         <p class="small kb-ds" id="kbDs" data-t="kb.datenschutz"></p>
         <p class="msg" id="kbMsg" role="status"></p>
         <div id="kwBox" class="kw-box" hidden></div><!-- Weitergabe an die SoLo-App des Klienten: QR-Code, SoLo-Datei (src/weitergabe.js) -->
+        <div class="kb-vorschau-kopf" id="kbVorschauKopf"><button type="button" class="btn ghost" id="kbVorschau" aria-expanded="false" aria-controls="kbSeite" data-t="kb.vorschau"></button></div>
       </div>
-      <article class="page kb-blatt" id="kbSeite"></article>
+      <article class="page kb-blatt kb-zu" id="kbSeite"></article>
     </section>
     </main>
   </div>
