@@ -2,6 +2,7 @@ const { JSDOM } = require('jsdom');
 const fs = require('fs');
 const I18N = require('../dist/i18n.js');
 const KARTEN = require('./karten.js');
+const FmtN = require('../src/fmt.js');
 const html = fs.readFileSync(__dirname + '/../dist/sozialleistungslotse.html', 'utf8');
 const errors = [];
 const store = {};
@@ -437,10 +438,10 @@ setTimeout(() => {
     const faelle = kacheln().map((b) => b.className.match(/gs-d-([a-z]+)/)[1]);
     check('[geld] Es ist dringend: Krisen-Check als erste Karte, dann Konto, Strom/Gas, Mahnbescheid, Wohnung, Geldstrafe', faelle.join() === 'check,konto,strom,mahn,miete,geld', faelle.join());
     kacheln()[3].click();
-    check('[geld] Mahnbescheid: Frist und erster Schritt oben, Einzelheiten zugeklappt', box.querySelector('.gs-frist p').textContent === I18N.de['gs.d.mahn.frist'] && box.querySelector('.gs-schritt p').textContent === I18N.de['gs.d.mahn.schritt'] && !box.querySelector('details[data-fall="mahn"]').open);
+    check('[geld] Mahnbescheid: Frist offen (kurz fett, Einzelheiten ohne Paragrafen), erster Schritt oben, Einzelheiten zugeklappt', box.querySelector('.gs-frist .gs-frist-kurz b').textContent === I18N.de['gs.d.mahn.frist.kurz'] && box.querySelector('.gs-frist .gs-frist-lang').textContent === FmtN.ohnePara(I18N.de['gs.d.mahn.frist']) && !box.querySelector('.gs-frist details') && box.querySelector('.gs-schritt p').textContent === I18N.de['gs.d.mahn.schritt'] && !box.querySelector('details[data-fall="mahn"]').open);
     const fall = (f) => box.querySelector('[data-fall="' + f + '"] p').textContent;
     check('[schulden-korr] Vollstreckungsbescheid: darf sofort gepfändet werden, Einspruch 2 Wochen (Notfrist), stoppt nicht von selbst; Widerspruch bis zum Vollstreckungsbescheid', /solange das Gericht noch keinen Vollstreckungsbescheid erlassen hat \(§ 694 ZPO\)/.test(fall('mahn')) && /darf sofort gepfändet werden \(§ 700 ZPO\)\. Dagegen hilft nur noch ein Einspruch\. Er muss innerhalb von 2 Wochen/.test(fall('mahn')) && /Notfrist, §§ 700, 339 ZPO/.test(fall('mahn')) && /nicht von selbst.*§ 719 ZPO/.test(fall('mahn')));
-    check('[geld] Mahnbescheid nennt die 2-Wochen-Frist mit Quelle', /2 Wochen.*§ 692 ZPO/.test(box.querySelector('.gs-frist p').textContent));
+    check('[geld] Mahnbescheid nennt die 2-Wochen-Frist mit Quelle (Paragraf in „Quellen“, UX-Audit C Nr. 18)', /2 Wochen/.test(box.querySelector('.gs-frist-lang').textContent) && !/§/.test(box.querySelector('.gs-frist').textContent) && /Gesetze auf dieser Seite: § 692 ZPO; §§ 700, 339 ZPO/.test(box.querySelector('.quellen').textContent));
     check('[geld] Mahnbescheid: Knopf „In die Schulden-Liste eintragen“ als Hauptknopf (UX-Audit C)', !!box.querySelector('.gs-in-liste') && !box.querySelector('.gs-in-liste').classList.contains('ghost'));
     // Aufräumen 21.11.2026: alle Fälle gleich aufgebaut – Frist, „Das tust du jetzt“, Knöpfe (Beratungsstelle zuletzt), Quellen
     const aufbau = () => [...box.children].map((e) => (e.className.match(/pf-frage|gs-frist|gs-schritt|gs-tipps|gs-freibetrag|gs-knoepfe|quellen/) || ['?'])[0]).join();
@@ -456,11 +457,17 @@ setTimeout(() => {
       check('[schulden-korr] Strom/Gas: 2 Abschläge und 100 €, 4 Wochen Androhung, 8 Werktage, zinsfreie Raten (§§ 41f, 41g EnWG)', /2 Monatsabschlägen und mindestens 100 € .*§ 41f EnWG/.test(fall('strom')) && /4 Wochen vorher angedroht und 8 Werktage/.test(sx) && /zinsfrei anbieten \(§ 41g EnWG\)/.test(sx) && /Strom und Gas/.test(fall('strom')) && !/StromGVV/.test(sx));
       check('[aufraeumen] Strom/Gas: 3 Schritte (Raten, Härte, Darlehen), Tipp „Sperre erst ab …“ darunter, ohne Wiederholung von sp.schulden.strom', [...box.querySelectorAll('.gs-schritt details')].map((x) => x.getAttribute('data-tipp')).join() === 'gs.d.strom.schritt,gs.d.strom.haerte,gs.d.strom.darlehen' && box.querySelector('.gs-tipps [data-tipp="gs.d.strom.grenze"]') && !box.querySelector('[data-tipp="sp.schulden.strom"]') && /Darlehen/.test(sx)); }
     check('[geld] Strom/Gas: Knopf „Abschlag prüfen“', !!box.querySelector('.gs-abschlag'));
+    box.querySelector('.gs-brief').click();
+    { const tx = d.getElementById('ms-text').value; check('[ux-c] Strom/Gas: Muster mit beiden Fällen (Grundversorgung § 41g EnWG / anderer Tarif ohne Anspruch)', /Abwendungsvereinbarung mit zinsfreien Raten \(§ 41g EnWG\)/.test(tx) && /Anderer Tarif: Ich bitte um eine Ratenzahlung\./.test(tx) && box.querySelector('.gs-brief-lead').textContent === I18N.de['gs.d.strom.brief.lead']); }
+    zur();
     zur(); kacheln()[4].click();
-    check('[schulden-korr] Mietschulden: ordentliche Kündigung kann trotz Schonfrist bestehen bleiben', /ordentlich \(mit Frist\) gekündigt.*trotz Zahlung bestehen bleiben/.test(fall('miete')) && /§ 569 BGB/.test(box.querySelector('.gs-frist p').textContent));
-    check('[ux-c] Mietschulden: Frist-Kurztext verleitet nicht zum Abwarten, alle offenen Mieten (Rechtsprüfung 21.11.2026)', box.querySelector('.gs-frist .tipp-kurz').textContent === 'Sofort handeln. Warte nicht auf die Klage.' && /Alle offenen Mieten.*2 Monate.*§ 569 BGB/.test(box.querySelector('.gs-frist p').textContent));
+    check('[schulden-korr] Mietschulden: ordentliche Kündigung kann trotz Schonfrist bestehen bleiben', /ordentlich \(mit Frist\) gekündigt.*trotz Zahlung bestehen bleiben/.test(fall('miete')) && /§ 569 BGB/.test(box.querySelector('.quellen').textContent));
+    check('[ux-c] Mietschulden: Frist-Kurztext verleitet nicht zum Abwarten, alle offenen Mieten (Rechtsprüfung 21.11.2026)', box.querySelector('.gs-frist-kurz').textContent === 'Sofort handeln. Warte nicht auf die Klage.' && /Alle offenen Mieten.*2 Monate/.test(box.querySelector('.gs-frist-lang').textContent));
+    box.querySelector('.gs-brief').click();
+    check('[ux-c] Mietschulden: Hauptknopf öffnet Muster „Antrag auf Übernahme der Mietschulden“ (Wortlaut Rechtsprüfung, Empfänger nur als Art der Stelle)', box.querySelector('.pf-frage').textContent === I18N.de['gs.d.miete.brief'] && /ich beantrage die Übernahme meiner Mietschulden, um die Wohnung zu sichern \(Jobcenter: § 22 Abs\. 8 SGB II · Sozialamt: § 36 SGB XII\)\. Mir droht der Verlust der Wohnung\./.test(d.getElementById('ms-text').value) && /\[Name der Firma oder Stelle\]/.test(d.getElementById('ms-text').value) && !d.getElementById('ms-von') && /Darlehen/.test(box.querySelector('.gs-brief-lead').textContent));
+    zur(); check('[ux-c] Zurück aus dem Muster: wieder die Seite Mietschulden', box.querySelector('.pf-frage').textContent === I18N.de['gs.d.miete'] && !!box.querySelector('.gs-frist'));
     zur(); kacheln()[5].click();
-    check('[geld] Geldstrafe: Frist mit § 43 StGB (1 Tag für 2 Tagessätze), Schritt mit § 459a StPO und Art. 293 EGStGB', /1 Tag Haft für 2 Tagessätze \(§ 43 StGB\)/.test(box.querySelector('.gs-frist p').textContent) && /§ 459a StPO/.test(box.querySelector('.gs-schritt p').textContent) && /Art\. 293 EGStGB/.test(box.querySelector('.gs-schritt p').textContent));
+    check('[geld] Geldstrafe: Frist mit § 43 StGB (1 Tag für 2 Tagessätze), Schritt mit § 459a StPO und Art. 293 EGStGB', /1 Tag Haft für 2 Tagessätze/.test(box.querySelector('.gs-frist-lang').textContent) && /§ 43 StGB/.test(box.querySelector('.quellen').textContent) && /§ 459a StPO/.test(box.querySelector('.gs-schritt p').textContent) && /Art\. 293 EGStGB/.test(box.querySelector('.gs-schritt p').textContent));
     zur();
     // Krisen-Check: eine Frage je Bildschirm, Ergebnis höchstens 3 „zuerst“, immer „Beratungsstelle finden“ am Ende
     kacheln()[0].click();
@@ -470,6 +477,7 @@ setTimeout(() => {
     const danach = [...box.querySelectorAll('ol.kc-weiter li:not(.kc-ende) .uk-karte')].map((b) => b.className.match(/kc-z-([a-z]+)/)[1]);
     check('[krisencheck] Ergebnis: Mahnbescheid, Miete, Strom zuerst; Konto danach; am Ende Beratungsstelle finden', zuerst.join() === 'mahn,miete,strom' && danach.join() === 'konto' && !!box.querySelector('.kc-ende .kc-z-finden'), zuerst.join() + '|' + danach.join());
     check('[ux-c] Krisen-Check-Ergebnis: eine Überschrift, Beratung als 5. Schritt', !box.textContent.includes(I18N.de['kc.h']) && box.querySelectorAll('.pf-frage').length === 1 && box.querySelector('ol.kc-weiter').lastChild.querySelector('.kc-z-finden') && box.querySelector('ol.kc-weiter').start === 4);
+    check('[ux-c] Krisen-Check-Ergebnis: je Karte Frist oder Grund', box.querySelector('.kc-z-mahn').textContent.includes(I18N.de['gs.d.mahn.frist.kurz']) && box.querySelector('.kc-z-miete').textContent.includes(I18N.de['gs.d.miete.frist.kurz']) && box.querySelector('.kc-z-konto').textContent.includes(I18N.de['gs.d.konto.frist.kurz']));
     box.querySelector('.kc-z-miete').click();
     check('[krisencheck] Ergebniskarte springt in den Fall', box.querySelector('.pf-frage').textContent === I18N.de['gs.d.miete']);
     zur(); zur();

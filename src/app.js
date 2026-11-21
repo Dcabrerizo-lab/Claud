@@ -2713,6 +2713,7 @@
   //  Strom/Gas: sp.schulden.strom in Schritte zerlegt, Wortlaut unverändert (gs.d.strom.haerte, gs.d.strom.darlehen; Darlehen § 22 Abs. 8 SGB II,
   //  § 36 SGB XII) und Tipp gs.d.strom.grenze (§ 41f EnWG: 2 Monatsabschläge, mindestens 100 €; abgerufen 20.11.2026, gesetze-im-internet.de).
   var GS_D_SCHRITTE = { konto: ['gs.d.konto.schritt', 'pf.tipp.bescheinigung'], strom: ['gs.d.strom.schritt', 'gs.d.strom.haerte', 'gs.d.strom.darlehen'], geld: ['gs.d.geld.schritt'] };
+  var GS_BRIEF = { miete: ['gs.d.miete.brief', 'gs.d.miete.brief.lead'], strom: ['gs.d.strom.brief', 'gs.d.strom.brief.lead'] }; // Hauptknopf + Muster (UX-Audit C Nr. 5)
   var GS_D_TIPPS = { strom: ['gs.d.strom.grenze'] };
   // Post vom Inkasso: Prüfliste (§ 13a RDG), Musterschreiben, Raten anbieten, Gerichtspost. „Gelber Umschlag vom Gericht?“ ist nur ein Link:
   //  öffnet direkt die Seite „Es ist dringend → Mahnbescheid vom Gericht“ (keine zweite Fassung); „Zurück“ führt von dort zu „Post vom Inkasso“.
@@ -2865,6 +2866,15 @@
       p(t('gs.d.wahl'), 'hint');
       var r1 = raster();
       GS_DRINGEND.forEach(function (x) { r1.appendChild(skKachel('gs-d-' + x[0], x[2], t(x[1]), x[3] ? t(x[3]) : '', function () { sp.fall = x[0]; if (x[0] === 'check') Geld.kcStart(); spRender(true); })); });
+    } else if (sp.bereich === 'dringend' && /-brief$/.test(sp.fall)) {
+      // Musterschreiben zur Notfallseite (UX-Audit C Nr. 5, Wortlaut nach docs/entwuerfe/rechtsfragen-rot.md 2a/2b): Miete → Antrag auf
+      //  Übernahme der Mietschulden (§ 22 Abs. 8 SGB II, § 36 SGB XII), Strom/Gas → Bitte um Raten bzw. Abwendungsvereinbarung (§ 41g EnWG).
+      //  Empfänger nur als Art der Stelle (Hinweis gs.d.*.brief.lead), keine Anschrift.
+      var bf = sp.fall.split('-')[0];
+      p(t(GS_BRIEF[bf][0]), 'pf-frage');
+      p(tL(GS_BRIEF[bf][1]), 'hint gs-brief-lead');
+      Geld.schreibenSeite(box, function (id) { spRender(false, id); }, bf);
+      box.appendChild(quellenEl([t('sp.schulden.quellen')]));
     } else if (sp.bereich === 'dringend' && sp.fall === 'check') {
       Geld.krisenCheck(box, function () { spRender(false); var f = $('kc-erg') || $('kc-ja'); if (f) { if (f.id === 'kc-erg') f.focus(); else { var q = $('kc-q'); if (q) { q.tabIndex = -1; q.focus(); } } } });
     } else if (sp.bereich === 'dringend') {
@@ -2874,7 +2884,10 @@
       p(t(fx[1]), 'pf-frage');
       var fd = document.createElement('div'); fd.className = 'frist gs-frist'; fd.setAttribute('role', 'note'); // Frist im gemeinsamen Muster .frist (#68)
       var fh = document.createElement('h3'); fh.textContent = t('gs.frist'); fd.appendChild(fh);
-      tipp('gs.d.' + sp.fall + '.frist', '', fd); box.appendChild(fd);
+      // Frist offen statt zugeklappt (UX-Audit C Nr. 6): kurzer Satz fett, Einzelheiten direkt darunter
+      var fk = document.createElement('p'); fk.className = 'gs-frist-kurz'; var fb = document.createElement('b'); fb.textContent = t('gs.d.' + sp.fall + '.frist.kurz'); fk.appendChild(fb); fd.appendChild(fk);
+      var fl = document.createElement('p'); fl.className = 'gs-frist-lang'; fl.textContent = t('gs.d.' + sp.fall + '.frist'); fd.appendChild(fl);
+      box.appendChild(fd);
       var jd = document.createElement('div'); jd.className = 'pf-jetzt gs-schritt';
       var jh = document.createElement('h3'); jh.textContent = t('pf.jetzt.h'); jd.appendChild(jh);
       var jol = document.createElement('ol'); jol.className = 'tipp-liste'; jd.appendChild(jol);
@@ -2894,9 +2907,18 @@
       var gk = function (cls, txt, fn) { gb.appendChild(nhKnopf(cls, esc(txt), null, fn)); };
       if (sp.fall === 'konto') { gk('btn sp-rechner', t('sp.schulden.pf'), pfKonto); gk('btn ghost gs-besch', t('ms.pkonto'), pfBescheinigung); }
       if (sp.fall === 'strom' && window.Haushalt) gk('btn ghost gs-abschlag', t('pl.abschlag'), abschlagPruefen);
+      if ((sp.fall === 'miete' || sp.fall === 'strom') && window.Geld) { var bfa = sp.fall; gk('btn gs-brief', t(GS_BRIEF[bfa][0]), function () { Geld.schreibenVorbelegen(bfa); sp.fall = bfa + '-brief'; spRender(true); }); }
       if (sp.fall === 'mahn' && window.Schulden) gk('btn gs-in-liste', t('gs.d.mahn.liste'), function () { oeffneVon('schulden', true); Schulden.neu({ st: 'mahnbescheid' }); });
       gk('btn ghost gs-zur-hilfe', t('sb.finden'), function () { gsOeffne('hilfe'); sp.fall = 'finden'; spRender(true); });
-      box.appendChild(quellenEl(sp.fall === 'konto' ? [t('sp.schulden.quellen'), t('pf.stand')] : [t('sp.schulden.quellen')]));
+      // Laienansicht (UX-Audit C Nr. 18): Paragrafen aus dem offenen Text der Notfallseite (Frist) in die Quellen verschieben. Zugeklappte
+      //  Einzelheiten behalten die Fundstelle (für den Behördengang); im Beratungsmodus bleibt alles im Text.
+      var gsGes = [];
+      if (!beratung) box.querySelectorAll('.gs-frist p').forEach(function (e) {
+        if (e.children.length || !/§|Art\.\s*\d/.test(e.textContent)) return;
+        (e.textContent.match(/\(([^()]*)\)/g) || []).forEach(function (m) { var i = m.search(/§|Art\.\s*\d/); if (i >= 0) { var g = m.slice(i, -1).trim(); if (gsGes.indexOf(g) < 0) gsGes.push(g); } });
+        e.textContent = Fmt.ohnePara(e.textContent);
+      });
+      box.appendChild(quellenEl((sp.fall === 'konto' ? [t('sp.schulden.quellen'), t('pf.stand')] : [t('sp.schulden.quellen')]).concat(gsGes.length ? [t('gs.gesetze', { g: gsGes.join('; ') })] : [])));
     } else if (sp.bereich === 'inkasso' && !sp.fall) {
       p(t('gs.inkasso'), 'pf-frage');
       unterkarten(GS_INKASSO, 'gs-i-');
@@ -2980,6 +3002,7 @@
   function spEbeneZurueck() {
     if (sp.fall && sp.von) { var von = sp.von; gsOeffne(von); return true; } // Link-Kachel (Gelber Umschlag): zurück zu „Post vom Inkasso“
     if (window.Geld && Geld.zurueck(sp.fall)) return true;
+    if (sp.bereich === 'dringend' && /-brief$/.test(sp.fall)) { sp.fall = sp.fall.split('-')[0]; return true; } // Musterschreiben → Notfallseite
     if (sp.thema && sp.fall.indexOf('-') > 0) sp.fall = sp.fall.split('-')[0]; // Rechner → Kacheln Strom/Gas
     else if (sp.fall) sp.fall = '';
     else if (sp.thema) sp.thema = '';

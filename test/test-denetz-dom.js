@@ -59,7 +59,7 @@ const zeilen = (root) => [...(root || d).querySelectorAll('.de-netz')];
   const fr = box().querySelector('.gs-frist');
   const zf = zeilen(fr);
   check('Fremdsprache: deutsche Zeile in der Frist (kurzer Satz)', zf.some((z) => z.getAttribute('data-de') === I18N.de['gs.d.mahn.frist.kurz']), zf.map((z) => z.textContent).join(' | '));
-  check('Fremdsprache: deutsche Zeile auch beim ausführlichen Frist-Text', zf.some((z) => z.getAttribute('data-de') === I18N.de['gs.d.mahn.frist']));
+  check('Fremdsprache: deutsche Zeile auch beim ausführlichen Frist-Text (mit oder ohne Paragrafen, UX-Audit C Nr. 18)', zf.some((z) => [I18N.de['gs.d.mahn.frist'], require('../src/fmt.js').ohnePara(I18N.de['gs.d.mahn.frist'])].includes(z.getAttribute('data-de'))));
   check('Frist: kein Satz doppelt', new Set(zf.map((z) => z.getAttribute('data-de'))).size === zf.length);
   check('Es ist dringend: Schritt mit deutscher Zeile', zeilen(box().querySelector('.gs-schritt')).some((z) => z.getAttribute('data-de') === I18N.de['gs.d.mahn.schritt.kurz']));
   const z0 = zf[0];

@@ -128,5 +128,10 @@
   "ra.so.4": "Hast du mehrere Schulden? Dann bekommen zuerst Miete, Strom, Unterhalt, Geld-Strafen und Kranken-Versicherung Geld. Dann Buß-Gelder und Ämter. Zum Schluss Banken, Inkasso und Versand-Handel. In jeder Gruppe bekommen große Schulden mehr. Wir runden ab auf ganze Euro.",
   "ra.so.5": "Das ist nur eine Hilfe von SoLo. Das ist keine Rechts-Beratung. Du entscheidest selbst.",
   "ra.tipp.kurz": "Biete nur an, was du jeden Monat sicher zahlen kannst.",
-  "ra.tipp": "Manche Kosten kommen nur ab und zu. Zum Beispiel Nach-Zahlungen oder Reparaturen. Fang lieber klein an. Mehr zahlen kannst du später immer noch."
+  "ra.tipp": "Manche Kosten kommen nur ab und zu. Zum Beispiel Nach-Zahlungen oder Reparaturen. Fang lieber klein an. Mehr zahlen kannst du später immer noch.",
+  "gs.d.miete.brief": "Antrag: Das Amt soll die Miet-Schulden zahlen",
+  "gs.d.miete.brief.lead": "Bekommst du Grundsicherungs-Geld? Dann schick den Antrag an das Jobcenter. Sonst an das Sozial-Amt. Das Amt entscheidet. Meistens gibt es das Geld als Darlehen. Das heißt: Du zahlst es später zurück.",
+  "gs.d.strom.brief": "Mit dem Versorger Raten ausmachen",
+  "gs.d.strom.brief.lead": "Auf der Rechnung steht, ob du in der Grund-Versorgung bist. Lass im Brief nur stehen, was zu dir passt.",
+  "gs.gesetze": "Gesetze auf dieser Seite: {g}"
 }

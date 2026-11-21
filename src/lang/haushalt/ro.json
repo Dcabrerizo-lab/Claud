@@ -286,7 +286,7 @@
   "tv.laufzeit.kurz": "Durata maximă 1 an, cu garanție de preț pentru această perioadă.",
   "tv.laufzeit": "Centrele pentru consumatori (Verbraucherzentrale) recomandă o durată de aproximativ 1 an. Garanția de preț ar trebui să dureze cel puțin la fel de mult. Unele garanții nu acoperă toate părțile prețului. Verifică în contract.",
   "tv.kuendigung.kurz": "Verifică termenul de reziliere al contractului vechi.",
-  "tv.kuendigung": "Termenul de reziliere este pe ultima factură. În furnizarea de bază (Grundversorgung) poți rezilia cu un termen de 2 săptămâni. Dacă furnizorul crește prețul, poți rezilia fără termen.",
+  "tv.kuendigung": "Termenul de reziliere este pe ultima factură. În furnizarea de bază (Grundversorgung) poți rezilia cu un termen de 2 săptămâni. Dacă furnizorul crește prețul, poți rezilia fără termen, cu efect din ziua în care se aplică noul preț.",
   "tv.fernwaerme.kurz": "La termoficare nu poți schimba furnizorul.",
   "tv.fernwaerme": "La termoficare (Fernwärme), centrala și conductele aparțin aceleiași firme. De aceea schimbarea nu este posibilă. Această comparație este doar pentru curent și gaz.",
   "tv.vz.link": "Schimbarea furnizorului: cum funcționează – Verbraucherzentrale",
