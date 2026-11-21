@@ -2828,8 +2828,8 @@
   }
   // Eine Ebene zurück innerhalb von „Geld und Schulden“; false = schon auf der obersten Ebene
   function spEbeneZurueck() {
-    if (window.Geld && Geld.zurueck(sp.fall)) return true;
     if (sp.fall && sp.von) { var von = sp.von; gsOeffne(von); return true; } // Link-Kachel (Gelber Umschlag): zurück zu „Post vom Inkasso“
+    if (window.Geld && Geld.zurueck(sp.fall)) return true;
     if (sp.fall) sp.fall = '';
     else if (sp.thema) sp.thema = '';
     else if (sp.bereich) sp.bereich = '';
