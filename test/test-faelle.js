@@ -270,6 +270,16 @@ ck('[wg-grundrente] Wohngeld: Grundrentenfreibetrag (§ 17a WoGG) wirkt', JSON.s
   ck('[wbs-stufen] Unter der Grundgrenze: niedrigste Stufe; Länder mit nur einer Grenze ohne Stufenliste; „eher nicht“ ohne Stufen',
     /stufeDu:WBS 140/.test(st(W('BE', 1000))) && st(W('HE', 1000)) === '' && st(W('BE', 9000)) === '' && W('BE', 9000).level === 'nein', [st(W('BE', 1000)), st(W('HE', 1000)), W('BE', 9000).level].join(' | '));
   ck('[wbs-stufen] Höchste Stufe jedes Landes = Faktor „hoch“ (Grenze für „eher nicht“)', Object.keys(R.RULES.wbsStufen).every((bl) => { const S = R.RULES.wbsStufen[bl], L = R.RULES.wbsLand[bl]; const f = S[S.length - 1][1]; return Math.abs((typeof f === 'number' ? f : f.ein / L.ein) - L.hoch) < 0.001 && S[0][1] === 1; })); }
+// WBS: Arbeitnehmer-Pauschbetrag 1.230 € je Person mit Lohn vor den 30 % (Art. 6 Abs. 1 und 3 BayWoFG, § 21 WoFG, § 9a EStG; Abgleich Runde 2, H2)
+{ const W = (o) => R.evaluate(Object.assign({ adults: 1, art1: 'lohn', miete: 600, heute: 2026.9 }, o)).results.find((x) => x.id === 'wbs');
+  const k = (r) => r.tx.map((t) => t[0] + (t[1] && t[1].name ? ':' + t[1].name : '')).join(' ');
+  ck('[wbs-werbung] Schleswig-Holstein, allein, 34.080 € Lohn: (34.080 − 1.230) × 0,7 = 22.995 € ≤ 23.000 € -> nach Abzügen 1. Förderweg (SH-WBS, Fußnote)',
+    /stufeVielleicht:1\. Förderweg/.test(k(W({ brutto: 2840, netto: 2000, bundesland: 'SH' }))), k(W({ brutto: 2840, netto: 2000, bundesland: 'SH' })));
+  ck('[wbs-werbung] Bayern, allein, 25.800 € Lohn: (25.800 − 1.230) × 0,7 = 17.199 € ≤ 17.500 € -> „möglich“ mit Grundgrenze (wbs.rand), selbstständig nicht',
+    k(W({ brutto: 2150, netto: 1500 })) === 'wbs.rand wbs.abzug' && k(W({ brutto: 2150, netto: 1500, art1: 'selbst' })) === 'wbs.gebiet wbs.abzug', k(W({ brutto: 2150, netto: 1500 })));
+  ck('[wbs-werbung] Bayern, allein, 41.400 € Lohn: (41.400 − 1.230) × 0,7 = 28.119 € ≤ 28.300 € -> nicht „eher nicht“; selbstständig 41.400 € und Lohn 42.600 € „eher nicht“',
+    W({ brutto: 3450, netto: 2300 }).level === 'vielleicht' && W({ brutto: 3450, netto: 2300, art1: 'selbst' }).level === 'nein' && W({ brutto: 3550, netto: 2300 }).level === 'nein');
+  ck('[wbs-werbung] „wahrscheinlich“ bleibt beim Brutto: 17.520 € Lohn allein in Bayern nur „möglich“', W({ brutto: 1460, netto: 1100 }).level === 'vielleicht'); }
 
 // Heizkosten (freiwillig): Wohngeld rechnet mit der Bruttokaltmiete = Warmmiete minus Heizkosten (ohne Angabe: Heizkostenkomponente)
 // 1 Person, Stufe III, 500 € warm, 1.200 € Lohn: mit 60 € Heizung Kaltmiete 440 € -> M = 440 + 110,40; Y = (1.200 - 102,50) x 0,7 -> 340 € (wie amtlicher Rechner)
@@ -429,7 +439,7 @@ const kizT = { adults: 2, kids: 2, art1: 'lohn', brutto: 3000, netto: 2300, miet
 const zahl = (x) => Number(String(x).replace(/\D/g, ''));
 ck('[kiz-mehr] Mehrbedarfe der Eltern (Schwangerschaft, Warmwasser) erhöhen den Kinderzuschlag', zahl(A({ ...kizT, schwanger: true }, 'kiz')) > zahl(A(kizT, 'kiz')) && zahl(A({ ...kizT, warmwasser: true }, 'kiz')) > zahl(A(kizT, 'kiz')));
 // Kindergeld, Bildung und Teilhabe, Unterhaltsvorschuss, BAföG
-ck('[kg-mehr] Kindergeld: Hinweis auf Arbeitslosigkeit bis 21, Freiwilligendienst, Übergangszeit, 20-Stunden-Grenze', K({ kids: 1 }, 'kindergeld').includes('kindergeld.mehr') && K({}, 'kindergeld').includes('kindergeld.mehr'));
+ck('[kg-mehr] Kindergeld: Hinweis auf arbeitsuchend gemeldete Kinder bis 21, Freiwilligendienst, Übergangszeit, 20-Stunden-Grenze', K({ kids: 1 }, 'kindergeld').includes('kindergeld.mehr') && K({}, 'kindergeld').includes('kindergeld.mehr'));
 ck('[kgbeh-25] Kindergeld für Kinder mit Behinderung: nur wenn die Behinderung vor 25 eingetreten ist', L({ bhPerson: 'erwNach25' }, 'kgBeh') === 'nein' && K({ bhPerson: 'erwNach25' }, 'kgBeh')[0] === 'kgBeh.nach25');
 ck('[but-bezug] Bildung und Teilhabe mit Wohngeld, Kinderzuschlag, Grundsicherung', ['wohngeld', 'kiz', 'grundsicherungsgeld', 'sozialamt'].every((b) => L({ kids: 1, bezug: { [b]: true } }, 'but') === 'ja'));
 ck('[but-inhalt] Schulbedarf 195 € und Teilhabe 15 €; Kinder unter 6 nur Teilhabe', T({ kids: 1, bezug: { wohngeld: true } }, 'but', 'but.inhalt').schul === E(195) && T({ kids: 1, bezug: { wohngeld: true } }, 'but', 'but.inhalt').teil === E(15) && !!T({ kids: 1, kidsU6: 1, bezug: { wohngeld: true } }, 'but', 'but.inhaltKlein'));
@@ -466,6 +476,21 @@ ck('[uvg-kindeink] Kinder unter 14 (Schulpflicht): Minijob zählt nicht; Kind 14
   L(uv({ kindEink: 300 }), 'uvg') === 'ja' && !K(uv({ kindEink: 300 }), 'uvg').includes('uvg.kindEink') && L(uv({ kids14: 1, kinder12: true, kindEink: 300 }), 'uvg') === 'vielleicht' && K(uv({ kids14: 1, kinder12: true, kindEink: 300 }), 'uvg').includes('uvg.kindEink'));
 ck('[uvg-kindeink] Mehrere Kinder: Einkommen eines älteren Kindes mindert nur dessen Betrag (Hinweis, Einstufung bleibt)', L(uv({ kids: 2, kids14: 1, kinder12: true, kindEink: 800 }), 'uvg') === 'ja' && K(uv({ kids: 2, kids14: 1, kinder12: true, kindEink: 800 }), 'uvg').includes('uvg.kindEink'));
 ck('[uvg-kindeink] Azubi-Einkommen mindert den geschätzten Unterhaltsvorschuss (Einkommen der Kinder für andere Leistungen)', R.derive(uvAzubi(600)).uvgEst === 394 - (600 - 102.5 - 100) / 2 && R.derive(uvAzubi(2000)).uvgEst === 0);
+// Kind von 12 oder 13 (Haken „ab 12“, kein Kind von 14 bis 17): dritte Altersstufe 394 € statt 299 € (§ 2 Abs. 1 UVG, § 1612a Abs. 1 Satz 3 Nr. 3 BGB;
+// Abgleich Runde 2, H1, UVG-RL 2.3: Kinder 13 und 8); ohne 600 € eigenes Einkommen nichts für dieses Kind (§ 1 Abs. 1a UVG)
+{ const est = (o) => R.derive(uv(o)).uvgEst;
+  ck('[uvg-zwoelf] Geschätzter Unterhaltsvorschuss: ein Kind 6-13 mit Haken ab 12 = 394 €; zwei Kinder 6-13 mit Haken = 299 + 394 €; mit Kind 14-17 bleibt das jüngere bei 299 €; unter 600 € brutto ohne das ältere Kind',
+    est({ kinder12: true, brutto: 1500, netto: 1200 }) === 394 && est({ kids: 2, kinder12: true, brutto: 1500, netto: 1200 }) === 299 + 394 && est({ kids: 2, kids14: 1, kinder12: true, brutto: 1500, netto: 1200 }) === 299 + 394
+    && est({ kids: 2, kidsU6: 1, kinder12: true, brutto: 1500, netto: 1200 }) === 227 + 394 && est({ kids: 2, kinder12: true, brutto: 400, netto: 380 }) === 299 && est({ kids: 2, brutto: 1500, netto: 1200 }) === 2 * 299,
+    [est({ kinder12: true, brutto: 1500, netto: 1200 }), est({ kids: 2, kinder12: true, brutto: 1500, netto: 1200 }), est({ kids: 2, kinder12: true, brutto: 400, netto: 380 })].join(' ')); }
+// Texte nach Prüfung Richtigkeit 21.11.2026 (Nr. 12, 15, 16): § 6b Abs. 2a BKGG, § 7c Abs. 1 SGB XI, RBeitrStV (gesetze-bayern.de)
+{ const fs = require('fs'), pth = require('path'), LANG = pth.join(__dirname, '..', 'src', 'lang');
+  const de = JSON.parse(fs.readFileSync(pth.join(LANG, 'de.json'), 'utf8'));
+  ck('[but-verjaehrung] Verjährung nur mit Wohngeld oder Kinderzuschlag, zwölf Monate, ohne „etwa“', /Wohngeld oder Kinderzuschlag/.test(de['s.but.tip']) && /zwölf Monate/.test(de['s.but.tip']) && !/etwa/.test(de['s.but.tip']), de['s.but.tip']);
+  ck('[pu-stuetzpunkt] Pflegestützpunkt nur „wo es ihn gibt“', /wo es ihn gibt/.test(de['pu.tipp.beratung']), de['pu.tipp.beratung']);
+  const alle = [];
+  (function lauf(d) { fs.readdirSync(d, { withFileTypes: true }).forEach((e) => { const f = pth.join(d, e.name); if (e.isDirectory()) lauf(f); else if (/\.json$/.test(e.name) && /RBStV/.test(fs.readFileSync(f, 'utf8'))) alle.push(pth.relative(LANG, f)); }); })(LANG);
+  ck('[rf-abk] Rundfunkbeitragsstaatsvertrag überall als RBeitrStV (auch Rechtsgrundlage der Karte)', alle.length === 0 && /RBeitrStV/.test(R.RECHT.rundfunk), alle.join(', ')); }
 ck('[uvg-rueckwirkung] Hinweis: rückwirkend höchstens ein Monat (§ 4 UVG), nur bei möglichem Anspruch', K(uv({}), 'uvg').includes('uvg.frist') && K(uv({ unterhalt: 100 }), 'uvg').includes('uvg.frist') && !K(uv({ unterhalt: 400 }), 'uvg').includes('uvg.frist'));
 ck('[uvg-mitwirkung] Hinweis: Angaben zum anderen Elternteil und Mitwirkung bei der Vaterschaft (§ 1 Abs. 3 UVG)', K(uv({}), 'uvg').includes('uvg.mitwirken'));
 ck('[uvg-aufenthalt] Asylverfahren oder Duldung: nur möglich mit Hinweis (deutsches Kind, eigener Titel des Kindes oder Beschäftigungsduldung, § 1 Abs. 2a UVG); geschätzter Betrag bleibt; ohne EU-Pass Hinweis auf Aufenthaltstitel, EU-Bürger ohne',
@@ -544,7 +569,7 @@ ck('[rf-bezug] Rundfunkbeitrag: Befreiung bei Grundsicherungsgeld', L({ bezug: {
 ck('[rf-asyl] Rundfunkbeitrag: Befreiung bei Asylbewerberleistungen möglich', K({ aufenthalt: 'asyl' }, 'rundfunk')[0] === 'rundfunk.asyl' && L({ aufenthalt: 'asyl' }, 'rundfunk') === 'vielleicht');
 ck('[rf-mehr] Rundfunkbeitrag: Hinweis auf weitere Befreiungen immer dabei', K({}, 'rundfunk').includes('rundfunk.mehr') && K({ bezug: { grundsicherungsgeld: true } }, 'rundfunk').includes('rundfunk.mehr'));
 ck('[rf-rf] Merkzeichen RF: Ermäßigung möglich', K({ mz: { RF: true }, gdb: '80', bhPerson: 'erwNach25', brutto: 3000, netto: 2200, art1: 'lohn', miete: 500 }, 'rundfunk')[0] === 'rundfunk.rf');
-// § 4 Abs. 1 RBStV: Befreiung auch bei Blindenhilfe, Hilfe zur Pflege und BAföG (nicht bei den Eltern)
+// § 4 Abs. 1 RBeitrStV: Befreiung auch bei Blindenhilfe, Hilfe zur Pflege und BAföG (nicht bei den Eltern)
 ck('[rf-weitere] Blindenhilfe möglich (Grundsicherung nicht): Rundfunkbefreiung möglich', K({ bhPerson: 'erwNach25', blind: 'blind', alter: true, art1: 'rente', brutto: 1500, netto: 1400, miete: 400 }, 'rundfunk')[0] === 'rundfunk.weitere');
 ck('[rf-weitere] BAföG in eigener Wohnung: Rundfunkbefreiung möglich', K({ ausbildung: 'ich', gebJahr: 2004, art1: 'lohn', brutto: 300, netto: 300, miete: 400 }, 'rundfunk')[0] === 'rundfunk.weitere');
 ck('[rf-weitere] BAföG bei den Eltern: keine Befreiung', L({ ausbildung: 'ich', gebJahr: 2004, art1: 'lohn', brutto: 300, netto: 300, miete: 0, wohnform: 'eltern' }, 'rundfunk') === 'nein');
@@ -569,9 +594,9 @@ Object.keys(WBSL).forEach((bl) => {
   ck('[wbs-land-grenze] ' + bl + ': genau an der Grenze wahrscheinlich, 12 € im Jahr darüber nur möglich', j(g1) === 'ja' && j(g1 + 12) === 'vielleicht', j(g1) + ' ' + j(g1 + 12));
 });
 ck('[wbs-land-grenze] Schleswig-Holstein Alleinerziehende mit 1 Kind 32.800 € (Tabelle Dynamisierungserlass 2025)', T({ kids: 1, art1: 'lohn', brutto: 1, netto: 1, bundesland: 'SH' }, 'wbs', 'wbs.landGrenze').grenze === E(32800));
-ck('[wbs-land-grenze] Kein falsches „nein“: Schwerbehinderung und gezahlter Unterhalt werden vor dem „nein“ abgezogen (NRW, 4.200 € brutto)',
-  L({ art1: 'lohn', brutto: 4200, netto: 2700, bundesland: 'NW' }, 'wbs') === 'nein' && L({ art1: 'lohn', brutto: 4200, netto: 2700, bundesland: 'NW', gdb: '100', bhPerson: 'ich' }, 'wbs') === 'vielleicht' &&
-  L({ art1: 'lohn', brutto: 4200, netto: 2700, bundesland: 'NW', uzBetrag: 400, uzAn: 'k1', uzTitel: true }, 'wbs') === 'vielleicht');
+ck('[wbs-land-grenze] Kein falsches „nein“: Schwerbehinderung und gezahlter Unterhalt werden vor dem „nein“ abgezogen (NRW, 4.350 € brutto; vor den 30 % auch der Arbeitnehmer-Pauschbetrag)',
+  L({ art1: 'lohn', brutto: 4350, netto: 2700, bundesland: 'NW' }, 'wbs') === 'nein' && L({ art1: 'lohn', brutto: 4350, netto: 2700, bundesland: 'NW', gdb: '100', bhPerson: 'ich' }, 'wbs') === 'vielleicht' &&
+  L({ art1: 'lohn', brutto: 4350, netto: 2700, bundesland: 'NW', uzBetrag: 400, uzAn: 'k1', uzTitel: true }, 'wbs') === 'vielleicht');
 ck('[wbs-land-grenze] Kein falsches „nein“ knapp über der Landesgrenze (NRW, 3.950 € brutto: 5 % Reserve)', L({ art1: 'lohn', brutto: 3950, netto: 2600, bundesland: 'NW' }, 'wbs') === 'vielleicht');
 
 // Elterngeld

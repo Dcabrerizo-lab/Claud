@@ -711,7 +711,12 @@ const Rules = (function () {
     if ((adults === 1 || uvgPartner === 'neu') && kids > 0 && inp.unterhaltFehlt && !(uvgWechsel && kids === 1)) {
       const mitte = kids - kidsU6 - kids14;
       const ab12raus = !!inp.kinder12 && bruttoEigen < R.uvg.min12;
-      uvgEst = Math.max(0, kidsU6 * R.uvg.bis5 + mitte * R.uvg.bis11 + (ab12raus ? 0 : kids14 * R.uvg.bis17) - unterhalt - waisen - uvgKindAnr);
+      // „Ein Kind ist 12 oder älter“ ohne Kind von 14 bis 17: Dann ist ein Kind der mittleren Gruppe 12 oder 13. Es bekommt den Betrag der
+      // dritten Altersstufe (ab dem 13. Lebensjahr, also ab dem 12. Geburtstag: § 2 Abs. 1 UVG i. V. m. § 1612a Abs. 1 Satz 3 Nr. 3 BGB) oder,
+      // wenn die Grenze ab 12 Jahren nicht erfüllt ist, nichts (§ 1 Abs. 1a UVG). Gesetze abgerufen 21.11.2026 (gesetze-im-internet.de/uhvorschg/__1.html,
+      // gesetze-im-internet.de/bgb/__1612a.html). Mit einem Kind von 14 bis 17 bleibt offen, ob ein jüngeres Kind 12 oder 13 ist: dann 299 €.
+      const mitte12 = !!inp.kinder12 && kids14 === 0 && mitte > 0 ? 1 : 0;
+      uvgEst = Math.max(0, kidsU6 * R.uvg.bis5 + (mitte - mitte12) * R.uvg.bis11 + (ab12raus ? 0 : (kids14 + mitte12) * R.uvg.bis17) - unterhalt - waisen - uvgKindAnr);
     }
     // Mehrbedarf für Alleinerziehende: 36 % bei einem Kind unter 7 oder 2-3 Kindern unter 16, sonst 12 % je Kind, höchstens 60 %
     let mehrAE = 0, mehrAEhoch = 0;
@@ -2075,17 +2080,17 @@ const Rules = (function () {
     return res;
   }
   // Antragszeit (Text s.rundfunk.tip): Die Befreiung beginnt mit dem Ersten des Monats, in dem der Nachweis gilt, rückwirkend höchstens drei Jahre vor dem
-  // Ersten des Antragsmonats (§ 4 Abs. 4 Satz 1 und 2 RBStV, gesetze-bayern.de Dokument RBeitrStV-4, abgerufen 21.11.2026) – keine Zwei-Monats-Frist.
+  // Ersten des Antragsmonats (§ 4 Abs. 4 Satz 1 und 2 RBeitrStV, gesetze-bayern.de Dokument RBeitrStV-4, abgerufen 21.11.2026) – keine Zwei-Monats-Frist.
   function rundfunk0(h, gg, gsa, w) {
     const id = 'rundfunk';
     if (h.bezug.grundsicherungsgeld || h.bezug.sozialamt) return mk(id, 'ja', 'ja', [['rundfunk.bezug']]);
-    // § 4 Abs. 1 Nr. 4 RBStV: Empfänger von Leistungen nach dem Asylbewerberleistungsgesetz (https://bravors.brandenburg.de/vertraege/rbstv/5,
+    // § 4 Abs. 1 Nr. 4 RBeitrStV: Empfänger von Leistungen nach dem Asylbewerberleistungsgesetz (https://bravors.brandenburg.de/vertraege/rbstv/5,
     // Abruf 20.11.2026; gleicher Staatsvertrag in allen Ländern). Mit Bezug (h.asylBezug) „bekommst du“, sonst „möglich“
     if (h.asylBezug) return mk(id, 'ja', 'ja', [['rundfunk.asyl']]);
     if (h.asyl) return mk(id, 'vielleicht', 'butMoeglich', [['rundfunk.asyl']]);
     if (gg.level === 'ja' || gsa.level === 'ja') return mk(id, 'vielleicht', 'butMoeglich', [['rundfunk.folgt']]);
     if (gg.level === 'vielleicht' || gsa.level === 'vielleicht') return mk(id, 'vielleicht', 'butMoeglich', [['rundfunk.haerte']]);
-    // § 4 Abs. 1 RBStV, weitere Befreiungsgründe: Hilfe zur Pflege (SGB XII), Blindenhilfe (§ 72 SGB XII), BAföG nicht bei den Eltern
+    // § 4 Abs. 1 RBeitrStV, weitere Befreiungsgründe: Hilfe zur Pflege (SGB XII), Blindenhilfe (§ 72 SGB XII), BAföG nicht bei den Eltern
     const okW = (r) => r && (r.level === 'ja' || r.level === 'vielleicht');
     if (okW(w.hzp) || okW(w.blh) || (okW(w.baf) && h.ausbildung === 'ich' && h.wohnform !== 'eltern')) return mk(id, 'vielleicht', 'butMoeglich', [['rundfunk.weitere']].concat(h.mzRF ? [['rundfunk.rf']] : []));
     if (h.mzRF) return mk(id, 'vielleicht', 'vielleicht', [['rundfunk.rf']]);
@@ -2116,6 +2121,25 @@ const Rules = (function () {
     return mk(id, 'vielleicht', 'vielleicht', asyl.concat([['bab.ja']]));
   }
 
+  // Arbeitnehmer-Pauschbetrag beim WBS (im Jahr): Zum Jahreseinkommen zählen die positiven Einkünfte nach § 2 Abs. 1 und 2 EStG
+  // (Art. 6 Abs. 1 BayWoFG, https://www.gesetze-bayern.de/Content/Document/BayWoFG-6, Abruf 21.11.2026; über Art. 4 Abs. 1 BayWoBindG
+  // auch für den WBS; Bund: § 21 Abs. 1 WoFG, https://www.gesetze-im-internet.de/wofg/__21.html, Abruf 21.11.2026). Beim Lohn sind
+  // Einkünfte der Lohn nach Werbungskosten, mindestens nach dem Arbeitnehmer-Pauschbetrag von 1.230 € (§ 9a Satz 1 Nr. 1 Buchst. a EStG,
+  // https://www.gesetze-im-internet.de/estg/__9a.html, Abruf 21.11.2026). Erst danach kommen die pauschalen Abzüge von je 10 %
+  // (Art. 6 Abs. 3 BayWoFG, § 23 WoFG). Der Pauschbetrag gilt einmal je Person (höchstens bis zur Höhe ihres Lohns); nicht bei
+  // Selbstständigen (Gewinn). Eigenes Einkommen der Kinder (Ausbildungsvergütung, Minijob) mindestens einmal (sicher nur ein Pauschbetrag,
+  // weil die App die Summe aller Kinder kennt). Beispiel: Schleswig-Holstein, Anlage 1 Einkommensgrenzen Wohnraumförderung ab 06.01.2026,
+  // Fußnote zur Tabelle (Lohn vor Abzug: 1.230 € je erwerbstätige Person).
+  function wbsWerbung(h) {
+    const topf = {};
+    (h.pers || []).forEach(function (x, i) {
+      if (x[4] || !(x[0] === 'lohn' || x[0] === 'wfbm') || !(x[1] > 0)) return;
+      const p = h.liste ? x[5] : i + 1;
+      topf[p] = (topf[p] || 0) + x[1] * 12;
+    });
+    const erw = Object.keys(topf).reduce((a, p) => a + Math.min(R.wgWerbung.lohn, topf[p]), 0);
+    return erw + Math.min(R.wgWerbung.lohn, (h.kindEink || 0) * 12);
+  }
   // Wohnberechtigungsschein Bayern (Art. 11 BayWoFG): Jahres-Einkommensgrenze
   function wbsGrenze(h, hoechst) {
     const w = R.wbs;
@@ -2137,6 +2161,9 @@ const Rules = (function () {
     // Das Brutto ist nie kleiner als das maßgebliche Gesamteinkommen; liegt es unter der Bundesgrenze, ist der WBS wahrscheinlich.
     if (h.land && h.land !== 'BY') {
       const jahr = (h.brutto + (h.kindEink || 0)) * 12;
+      // Arbeitnehmer-Pauschbetrag nur für „möglich“ und gegen ein falsches „unwahrscheinlich“: Die Landesgesetze sind nicht alle einzeln
+      // geprüft; „wahrscheinlich“ bleibt beim Brutto.
+      const wkW = wbsWerbung(h);
       const gr = (w) => {
         let g = (h.persons <= 1 ? w.ein : w.zwei + (h.persons - 2) * w.weitere) + h.children * w.kind;
         if (w.plus1 && h.persons <= 1) g += w.plus1; else if (w.plus2 && h.persons === 2) g += w.plus2;
@@ -2151,7 +2178,7 @@ const Rules = (function () {
         const stufenTx = (sicher) => {
           if (!ST.length) return [];
           const liste = ST.map((x) => ['wbs.stufe', { name: x[0], grenze: eur(r10(gS(x[1]))) }]);
-          const nachAbzug = jahr * (1 - R.wbs.maxAbzug) - freiS;
+          const nachAbzug = (jahr - wkW) * (1 - R.wbs.maxAbzug) - freiS;
           const du = ST.find((x) => jahr <= gS(x[1])), vl = ST.find((x) => nachAbzug <= gS(x[1]));
           return liste.concat(du ? [['wbs.stufeDu', { name: du[0] }]] : vl ? [['wbs.stufeVielleicht', { name: vl[0] }]] : []);
         };
@@ -2162,7 +2189,7 @@ const Rules = (function () {
         // darüber hinaus auch nicht mit der höchsten Landesstufe. 5 % Reserve, weil die Länder ihre Grenzen fortschreiben.
         const gdL = gdbNum(h), pgL = h.pflegegrad > 0;
         const freiL = (gdL === 100 || (gdL >= 80 && pgL) ? R.wbs.schwerbFreiHoch : gdL >= 50 && pgL ? R.wbs.schwerbFreiPflege : 0) + (h.bhWeitere || 0) * R.wbs.schwerbFreiPflege + (h.uzBetrag || 0) * 12;
-        if (L.hoch && jahr * (1 - R.wbs.maxAbzug) - freiL > grenze * L.hoch * 1.05) return mk(id, 'nein', 'einkoHoch', [['wbs.landHoch', { land, grenze: eur(grenze * L.hoch) }]]);
+        if (L.hoch && (jahr - wkW) * (1 - R.wbs.maxAbzug) - freiL > grenze * L.hoch * 1.05) return mk(id, 'nein', 'einkoHoch', [['wbs.landHoch', { land, grenze: eur(grenze * L.hoch) }]]);
         return mk(id, 'vielleicht', 'vielleicht', [['wbs.landUeber', { land, grenze: eur(grenze), stand: L.stand }]].concat(stufenTx(), [['wbs.landStelle']]));
       }
       const bund = gr(R.wbsBund);
@@ -2172,7 +2199,9 @@ const Rules = (function () {
     const jahr = (h.brutto + (h.kindEink || 0)) * 12;
     const gd = gdbNum(h), pg = h.pflegegrad > 0;
     const frei = (gd === 100 || (gd >= 80 && pg) ? R.wbs.schwerbFreiHoch : gd >= 50 && pg ? R.wbs.schwerbFreiPflege : 0) + (h.bhWeitere || 0) * R.wbs.schwerbFreiPflege;
-    const netto = jahr * (1 - R.wbs.maxAbzug) - frei;
+    // „wahrscheinlich“ nur mit dem Brutto (Text nennt das Bruttoeinkommen); für „möglich“ und „unwahrscheinlich“ erst den
+    // Arbeitnehmer-Pauschbetrag, dann höchstens 30 % (Art. 6 Abs. 1 und 3 BayWoFG, siehe wbsWerbung)
+    const netto = (jahr - wbsWerbung(h)) * (1 - R.wbs.maxAbzug) - frei;
     if (jahr <= grenze) return mk(id, 'ja', 'ja', [['wbs.ja', { grenze: eur(grenze) }], ['wbs.abzug']]);
     if (netto <= grenze) return mk(id, 'vielleicht', 'vielleicht', [['wbs.rand', { grenze: eur(grenze) }], ['wbs.abzug']]);
     if (netto <= max) return mk(id, 'vielleicht', 'vielleicht', [['wbs.gebiet', { grenze: eur(grenze), max: eur(max) }], ['wbs.abzug']]);
@@ -2238,7 +2267,7 @@ const Rules = (function () {
     uvg: 'Unterhaltsvorschussgesetz, §§ 1–4 UVG', gsa: '§§ 41 ff. SGB XII', bafoeg: 'BAföG', pflege: '§§ 36–38, 41, 44, 45b SGB XI',
     kgBeh: '§ 32 Abs. 4 Satz 1 Nr. 3 EStG', emrente: '§ 43 SGB VI', eingl: '§§ 90 ff. SGB IX; Kinder mit seelischer Behinderung: § 35a SGB VIII',
     pausch: '§ 33b EStG', ausweis: '§§ 2, 152 SGB IX', blindengeld: 'Landesblindengeldgesetz (Bayern: BayBlindG)',
-    pflegeplus: '§§ 39, 40, 42, 42a SGB XI', arbeit: '§ 61 SGB IX', rundfunk: '§ 4 RBStV', zuzahl: '§ 62 SGB V',
+    pflegeplus: '§§ 39, 40, 42, 42a SGB XI', arbeit: '§ 61 SGB IX', rundfunk: '§ 4 RBeitrStV', zuzahl: '§ 62 SGB V',
     bab: '§§ 56 ff. SGB III', wbs: '§ 27 WoFG, Einkommensgrenze § 9 Abs. 2 WoFG; in Ländern mit eigenem Gesetz Landesrecht', alg1: '§§ 136 ff. SGB III', krankengeld: '§§ 44 ff. SGB V',
     srente: '§§ 37, 236a SGB VI', elterngeld: 'BEEG, §§ 1–2a, 4, 4a BEEG', hzp: '§§ 61 ff. SGB XII', lpg: 'BayLPflGG',
     mutter: '§ 19 MuSchG, § 24i SGB V', kkg: '§ 45 SGB V', blh: '§ 72 SGB XII', asylblg: 'AsylbLG'

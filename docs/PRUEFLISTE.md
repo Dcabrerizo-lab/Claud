@@ -73,8 +73,8 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Freibetrag für Betriebs-, Riester- und private Rente (§ 82 Abs. 4), Grundrentenfreibetrag nur auf die gesetzliche Rente | ✓ | `gsa-zusatzrente` |
 | Kinderzuschlag: anderes Elterneinkommen über dem Bedarf voll, Arbeitseinkommen zu 45 % (§ 6a Abs. 6 BKGG) | ✓ | `kiz-anderes` |
 | Versicherungspauschale 30 € einmal je Person, nicht neben Arbeitseinkommen (§ 6 Bürgergeld-V, § 11b Abs. 2 SGB II) | ✓ | `vpausch-person` |
-| Rundfunkbeitrag: Befreiung auch bei Blindenhilfe, Hilfe zur Pflege, BAföG nicht bei den Eltern (§ 4 Abs. 1 RBStV) | ✓ | `rf-weitere` |
-| Rundfunkbeitrag: Befreiung ab dem Monat, in dem der Bescheid gilt, rückwirkend höchstens 3 Jahre vor dem Antragsmonat, keine Zwei-Monats-Frist (§ 4 Abs. 4 RBStV, abgerufen 21.11.2026; Text s.rundfunk.tip) | ✓ | `rf-frist` |
+| Rundfunkbeitrag: Befreiung auch bei Blindenhilfe, Hilfe zur Pflege, BAföG nicht bei den Eltern (§ 4 Abs. 1 RBeitrStV) | ✓ | `rf-weitere` |
+| Rundfunkbeitrag: Befreiung ab dem Monat, in dem der Bescheid gilt, rückwirkend höchstens 3 Jahre vor dem Antragsmonat, keine Zwei-Monats-Frist (§ 4 Abs. 4 RBeitrStV, abgerufen 21.11.2026; Text s.rundfunk.tip) | ✓ | `rf-frist` |
 | Grundrentenfreibetrag höchstens so hoch wie die Rente | ✓ | `gsa-grundrente-klein` |
 | Mehrbedarf G 17 % (§ 30 Abs. 1) | ✓ | `gsa-mb-g` |
 | Mehrbedarf Alleinerziehende (§ 30 Abs. 3) | ✓ | `gsa-mb-ae` |
@@ -155,7 +155,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 |---|---|---|
 | 2027: antragsloses Kindergeld bei Geburt (§ 67 Abs. 2 i. V. m. § 69 Satz 3 EStG n. F.; Gesetz vom 15.10.2026, BGBl. 2026 I Nr. 307, ausgegeben 20.10.2026, in Kraft 1.1.2027) als Hinweis erst ab 1.1.2027, ohne Prognose; Entwurf 267 € wird nicht angezeigt, gerechnet wird mit 259 € | ✓ | `recht-geltend` |
 | 259 € je Kind und Monat (2026); bis 18, bis 25 in Ausbildung oder Studium (§ 32 Abs. 4 Nr. 2) | ✓ | `kg-betrag` |
-| Bis 21 arbeitslos gemeldet, bis 25 Freiwilligendienst, Ausbildungsplatzsuche, Übergangszeit bis 4 Monate; nach erster Ausbildung höchstens 20 Stunden Arbeit (§ 32 Abs. 4) | ◐ | `kg-mehr` |
+| Bis 21 ohne Arbeit und bei der Agentur für Arbeit arbeitsuchend gemeldet (§ 32 Abs. 4 Satz 1 Nr. 1 EStG, gesetze-im-internet.de, abgerufen 21.11.2026; Text t.kindergeld.mehr), bis 25 Freiwilligendienst, Ausbildungsplatzsuche, Übergangszeit bis 4 Monate; nach erster Ausbildung höchstens 20 Stunden Arbeit (§ 32 Abs. 4) | ◐ | `kg-mehr` |
 | Ausländer: nur mit bestimmten Aufenthaltstiteln (§ 62 Abs. 2) | ◐ | `kg-asyl` |
 | Bayern: Familiengeld (250 €, ab dem 3. Kind 300 €, 13. bis 36. Lebensmonat) und Krippengeld (bis 100 €) nur noch für Kinder, die bis Ende 2024 geboren sind | ◐ (Geburtsdatum der Kinder wird nicht abgefragt, daher Hinweis) | `kg-familiengeld` |
 | Bayern: angekündigtes Kinderstartgeld | ○ (nach neueren Berichten nicht eingeführt; ohne amtliche Bestätigung nicht erwähnt) | |
@@ -177,6 +177,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Asylverfahren oder Duldung: Bildung und Teilhabe auch mit Asylbewerberleistungen (§ 3 Abs. 4 AsylbLG), „möglich“ statt „nein“ (Abruf 20.11.2026) | ◐ | `but-asyl` |
 | Anspruch bei Grundsicherungsgeld, Grundsicherung, Wohngeld oder Kinderzuschlag | ✓ | `but-bezug` |
 | Schulbedarf und Teilhabe 15 € im Monat; bei Kindern unter 6 nur Teilhabe | ✓ | `but-inhalt` |
+| Hinweis Verjährung (Text s.but.tip): nur mit Wohngeld oder Kinderzuschlag, zwölf Monate nach Ablauf des Monats, in dem der Anspruch entstanden ist (§ 6b Abs. 2a BKGG, gesetze-im-internet.de, abgerufen 21.11.2026) | ✓ | `but-verjaehrung` |
 | Junge Erwachsene nur in der Schule, nicht mit Ausbildungsvergütung | ✓ | `but-azubi` |
 | Kita und Tagespflege ohne Kostenbeitrag bei Grundsicherung, Wohngeld, Kinderzuschlag, Asylbewerberleistungen (§ 90 Abs. 4 SGB VIII) | ✓ | `but-kita` |
 | Hort für Schulkinder ebenso ohne Kostenbeitrag, auf Antrag beim Jugendamt; nicht Mittagsbetreuung/Offener Ganztag der Schule (§ 90 Abs. 4, § 22 Abs. 1 SGB VIII, Abruf 20.11.2026) | ✓ | `but-hort` |
@@ -189,6 +190,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Beispiele UVG-RL 2.5.4.4 (Ausbildungsvergütung 700 €: Anrechnung 248,75 €) und 1.3.1 (ab 40 % beim anderen Elternteil kein Anspruch) (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-uvg` |
 | Beträge je Altersstufe 0–5 / 6–11 / 12–17 (nach Abzug des Kindergeldes) | ✓ | `uvg-betrag` |
 | Beträge 2026 = Mindestunterhalt 486/558/653 € minus volles Kindergeld 259 € (§ 2 Abs. 1 und 2; BMBFSFJ, Einlegeblatt 2026) | ✓ | `uvg-amtlich` |
+| Geschätzter Unterhaltsvorschuss als Einkommen der Kinder: Haken „ein Kind ist 12 oder älter“ ohne Kind von 14 bis 17, dann ein Kind von 6 bis 13 mit 394 € (dritte Altersstufe ab dem 13. Lebensjahr, § 2 Abs. 1 UVG mit § 1612a Abs. 1 Satz 3 Nr. 3 BGB) oder ohne 600 € eigenes Einkommen mit 0 € (§ 1 Abs. 1a UVG); abgerufen 21.11.2026 (Abgleich Runde 2, H1; UVG-RL 2.3) | ✓ | `uvg-zwoelf` |
 | Gezahlter Unterhalt wird je Kind angerechnet (§ 2 Abs. 3 Nr. 1); „unwahrscheinlich“ nur bei einem Kind, wenn er den höchsten Betrag nach Alter erreicht; bei mehreren Kindern höchstens „möglich“ (nur die Summe bekannt) | ✓ | `uvg-anrechnung`, `uvg-hand` |
 | Waisenrente (auch Halbwaisenrente nach Tod des anderen Elternteils) wird angerechnet (§ 1 Abs. 1 Nr. 3 b, § 2 Abs. 3 Nr. 2) und zählt bei anderen Leistungen als Einkommen der Kinder | ✓ | `uvg-waise` |
 | Waisenrente eingetragen, aber nicht angekreuzt, dass Unterhalt fehlt oder der andere Elternteil gestorben ist: „möglich“ mit Hinweis, den Haken zu setzen (Waisenrente deutet auf einen verstorbenen Elternteil, § 1 Abs. 1 Nr. 3 b) | ✓ | `uvg-witwe` |
@@ -240,6 +242,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 |---|---|---|
 | Kombinationsleistung Pflegegrad 3, Pflegedienst 1.092,81 €: 161,73 € (Infoblatt Landkreis Esslingen 8/2025) (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-pflege` |
 | Pflegegeld, Entlastungsbetrag | ✓ | `pfl-geld` |
+| Beratung (Text pu.tipp.beratung): Pflegekasse und, wo es ihn gibt, Pflegestützpunkt (Pflegestützpunkte nur, wo das Land sie bestimmt hat, § 7c Abs. 1 SGB XI, gesetze-im-internet.de, abgerufen 21.11.2026) | ✓ | `pu-stuetzpunkt` |
 | Verhinderungspflege, Kurzzeitpflege (Entlastungsbudget 3.539 €), Pflegehilfsmittel, Wohnumfeld | ✓ | `pfl-plus` |
 | Pflegesachleistung und Kombinationsleistung (§§ 36, 38), Tages- und Nachtpflege (§ 41) | ✓ | `pfl-sach` |
 | Rentenversicherung für pflegende Angehörige (§ 44) | ◐ | `pfl-rente` |
@@ -374,13 +377,14 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Belastungsgrenze 2 % / 1 % bei chronisch Kranken (GdB ab 60 oder Pflegegrad 3–5) | ✓ | `kv-zuzahl` |
 | Fahrtkosten zur ambulanten Behandlung bei aG, Bl, H oder Pflegegrad 3 (mit Einschränkung) bis 5 (§ 60) | ◐ | `kv-fahrt` |
 
-## Rundfunkbeitrag (RBStV)
+## Rundfunkbeitrag (RBeitrStV)
 <!-- karten: rundfunk -->
 
 | Regel | Status | Test |
 |---|---|---|
 | Befreiung bei Grundsicherungsgeld und Grundsicherung (§ 4 Abs. 1) | ✓ | `rf-bezug` |
 | Befreiung bei Asylbewerberleistungen (§ 4 Abs. 1 Nr. 4) | ✓ | `rf-asyl` |
+| Eine Abkürzung für den Staatsvertrag in allen Texten: RBeitrStV (so führt ihn gesetze-bayern.de, abgerufen 21.11.2026) | ✓ | `rf-abk` |
 | Weitere Befreiungen: BAföG, Berufsausbildungsbeihilfe außerhalb des Elternhauses, Hilfe zur Pflege, Blindenhilfe, Taubblindheit; Härtefall | ◐ | `rf-mehr` |
 | Ermäßigung auf ein Drittel bei Merkzeichen RF (§ 4 Abs. 2) | ◐ | `rf-rf` |
 
@@ -392,6 +396,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Asylverfahren oder Duldung: WBS nur bei Möglichkeit eines dauerhaften Wohnsitzes (§ 27 Abs. 2 WoFG, Art. 14 Abs. 2 BayWoFG): „unwahrscheinlich“ mit Hinweis auf Ausnahmen (z. B. Ausbildungsduldung: VG Berlin, Urteil vom 25.06.2019, VG 8 K 202.18) und Wohnungsamt (Entscheidung David 20.11.2026; Abruf 20.11.2026) | ◐ | `wbs-asyl` |
 | Einkommensgrenzen nach Haushaltsgröße und Kindern; höhere Grenzen per Gebietsverordnung | ✓ | `wbs-grenze` |
 | Freibetrag Schwerbehinderte nach § 24 WoFG (4.500 € / 2.100 €) | ✓ | `wbs-schwerb` |
+| Arbeitnehmer-Pauschbetrag 1.230 € je Person mit Lohn (und einmal für Einkommen der Kinder) vor den pauschalen 30 % abgezogen (Art. 6 Abs. 1 und 3 BayWoFG über Art. 4 Abs. 1 BayWoBindG; § 21, § 23 WoFG; § 9a Satz 1 Nr. 1 Buchst. a EStG; abgerufen 21.11.2026); nur für „möglich“ und „unwahrscheinlich“, „wahrscheinlich“ bleibt beim Brutto (Abgleich Runde 2, H2; SH-Tabelle ab 06.01.2026, Fußnote) | ✓ | `wbs-werbung` |
 | Länder ohne belegte Landesgrenze (Saarland): unter den Bundeswerten (§ 9 Abs. 2 WoFG: 12.000 / 18.000 €, + 4.100 € je weitere Person, + 500 € je Kind) „wahrscheinlich“, sonst „möglich“ | ◐ | `wbs-land` |
 | Landesgrenzen aller übrigen 15 Länder nach amtlichen Quellen (Tabelle `docs/WBS-GRENZEN.md`), mit Aufrundung (RP, SH) und Zuschlag für 1-2 Personen (SH); auf den Euro geprüft; „nein“ nur über der höchsten Stufe nach 30 % Abzug, Freibeträgen und gezahltem Unterhalt mit 5 % Reserve | ✓ | `wbs-land-grenze` |
 | WBS-Stufen je Land (Berlin WBS 140/180/220, Förderwege HH/SH/MV, NRW Gruppe A/B, HB, RP, ST, TH) mit Grenzen und erreichter Stufe | ✓ | `wbs-stufen` |
@@ -443,7 +448,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 |---|---|---|
 | Eigene Leistung bei Aufenthaltsgestattung, Duldung, Ausreisepflicht (§ 1); Analogleistungen nach 36 Monaten (§ 2) | ✓ / ◐ | `asyl-ja` |
 | Ausschluss vom Grundsicherungsgeld, von der Grundsicherung im Alter und vom Kinderzuschlag; Wohnberechtigungsschein „unwahrscheinlich“; Wohngeld nur ohne AsylbLG-Bezug (§ 7 Abs. 1 Satz 1 Nr. 8 WoGG) | ✓ | `asyl-ausschluss` |
-| Einkommensart „Asylbewerberleistungen“ (nur bei Aufenthalt „asyl“ wählbar): Karte „bekommst du schon“, Wohngeld „unwahrscheinlich“ (§ 7 Abs. 1 Satz 1 Nr. 8 WoGG), Bildung und Teilhabe „bekommst du“ über das Sozialamt (§ 3 Abs. 4 AsylbLG), Kita ohne Beitrag (§ 90 Abs. 4 Satz 2 SGB VIII), Rundfunkbeitrag befreit (§ 4 Abs. 1 Nr. 4 RBStV); Zuzahlung unverändert „möglich“ (Abruf 20.11.2026) | ✓ | `asyl-bezug` |
+| Einkommensart „Asylbewerberleistungen“ (nur bei Aufenthalt „asyl“ wählbar): Karte „bekommst du schon“, Wohngeld „unwahrscheinlich“ (§ 7 Abs. 1 Satz 1 Nr. 8 WoGG), Bildung und Teilhabe „bekommst du“ über das Sozialamt (§ 3 Abs. 4 AsylbLG), Kita ohne Beitrag (§ 90 Abs. 4 Satz 2 SGB VIII), Rundfunkbeitrag befreit (§ 4 Abs. 1 Nr. 4 RBeitrStV); Zuzahlung unverändert „möglich“ (Abruf 20.11.2026) | ✓ | `asyl-bezug` |
 | Höhe der Leistungen (Bedarfsstufen, Sachleistungen in Unterkünften) | ○ (hängt von der Unterbringung ab; die Stelle rechnet) | |
 
 ## Zuständige Stellen außerhalb Bayerns
@@ -547,7 +552,7 @@ Geld und Schulden → „Meine Schulden-Liste“. Grundlage: docs/entwuerfe/schu
 | Plan: Einnahmen minus feste Ausgaben in Cent, Ergebnis auf ganze Euro („etwa“); Monatswechsel, wiederkehrende Ausgaben (31. → Monatsletzter), Vormonat | ✓ | `hb-plan` |
 | Kassenzettel: Gesamtsumme (ZU ZAHLEN, SUMME, GESAMT, EUR), Datum (nicht Zukunft, höchstens 3 Jahre alt), Geschäft und Kategorie; nur Vorschlag, nie ungefragt gespeichert; Foto nicht gespeichert | ✓ | `hb-kassenzettel` |
 | Eine Datenquelle mit dem Leistungs-Check (Netto, Miete warm, Unterhalt für die Kinder, Kinderzahl → Kindergeld); vorhandene Werte nur nach Rückfrage; Brutto, Art (Lohn/Rente), Heizung, Kindergeld-Bezug nie still übernommen | ✓ | `hb-uebernahme` |
-| Hinweise (seit 1.9 nur in der Auswertung, nicht mehr unter der Eingabe; „Bewilligt bis“ entfernt) nur bei Auslöser, höchstens 2 sichtbar, „Nicht mehr zeigen“: Einkommensänderung (§ 60 SGB I), Nebenkosten-Nachzahlung (§ 22 Abs. 1 SGB II, § 35 SGB XII), Darlehen (§ 24 Abs. 1, § 42a SGB II, § 37 Abs. 1 SGB XII), Bildung und Teilhabe (§ 28 SGB II, § 34 SGB XII, § 6b BKGG), Rundfunkbeitrag (§ 4 Abs. 1 RBStV) | ✓ | `hb-hinweise` |
+| Hinweise (seit 1.9 nur in der Auswertung, nicht mehr unter der Eingabe; „Bewilligt bis“ entfernt) nur bei Auslöser, höchstens 2 sichtbar, „Nicht mehr zeigen“: Einkommensänderung (§ 60 SGB I), Nebenkosten-Nachzahlung (§ 22 Abs. 1 SGB II, § 35 SGB XII), Darlehen (§ 24 Abs. 1, § 42a SGB II, § 37 Abs. 1 SGB XII), Bildung und Teilhabe (§ 28 SGB II, § 34 SGB XII, § 6b BKGG), Rundfunkbeitrag (§ 4 Abs. 1 RBeitrStV) | ✓ | `hb-hinweise` |
 | Regelbedarf zur Orientierung: Anteile nach § 5 RBEG (434,96 €), Stufe 1 aus den Werten der App | ✓ | `hb-regelbedarf` |
 | Korrekturen: Meldepflicht je Leistung (Grundsicherungsgeld/Sozialhilfe sofort nach § 60 Abs. 1 SGB I, Wohngeld bei dauerhaft mehr als 15 % nach § 27 Abs. 3 WoGG, Kinderzuschlag meist erst beim nächsten Antrag; abgerufen 20.11.2026), Vorlage „Änderung melden“ nur bei Grundsicherungsgeld oder Sozialhilfe; Nachzahlung: Antrag im Monat der Fälligkeit; ganzes Haushaltsbuch löschen mit Rückgängig; je Vorgang gespeichert und mit PIN verschlüsselt | ✓ | `hb-korr` |
 | Abschlag prüfen (seit 1.9 auf den Seiten „Strom“ und „Heizen“, erst Kacheln Strom/Gas, „Zurück“ je eine Ebene; ohne Brief, Plan-Hinweis, Destatis-Vergleich, Warmwasser und Zusatztipps): Jahresverbrauch aus zwei Zählerständen (× 365, mind. 14 Tage, unter 60 Tagen „ungenau“, bei Gas und Heizen mit Strom unter 330 Tagen „ungenau“ mit Jahreszeit-Hinweis, über 2 Jahre Hinweis) oder von der Rechnung; Gas in m³ nur mit Faktor von der Rechnung; Kosten mit eigenem Preis oder Destatis-Durchschnitt 37,97 / 11,58 ct/kWh (PM Nr. 345 vom 30.09.2026, 1. Hj. 2026); 11 oder 12 Abschläge; „passt ungefähr“ bis 30 € bzw. 5 % (Faustregel, keine Gesetzesgrenze); Ergebnis immer „möglich“; Arbeitspreis und Gas-Faktor mit bis zu 4 Nachkommastellen; Ablesung älter als 31 Tage: „Bitte lies den Zähler neu ab“. Tarife vergleichen (offline, nichts gespeichert): Jahreskosten = kWh × ct + 12 × Grundpreis, Cent-genau gerundet; Bonus nur im 1. Jahr (Verbraucherzentrale, Bonus-Tarife, Stand 05.08.2026); Hinweise Bonus, keine Vorkasse/Pakettarife (VZ RLP 03/2020, VZ Hamburg 04.09.2025), Laufzeit/Preisgarantie (VZ 29.07.2026), Kündigungsfrist (Grundversorgung 2 Wochen, VZ 28.10.2026/11.11.2026), Fernwärme kein Wechsel (VZ 09.07.2025); Link nur zur Verbraucherzentrale (einfache Sprache), keine Portale | ◐ | `en-check`, `tv` |

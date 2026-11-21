@@ -96,8 +96,17 @@ const stufen = (e) => { const m = {}; Rules.evaluate(e).results.forEach((r) => {
 const beob = {}; KARTEN.forEach((k) => { beob[k] = {}; });
 const fehler = [];
 const ausschlussVerstoss = {};
-for (let i = 0; i < N; i++) {
-  const basis = zufall();
+// Feste Zusatzhaushalte für seltene Abhängigkeiten, die der Zufall leicht verfehlt (nach den Zufallshaushalten, ändern deren Folge nicht):
+// WBS und Pflegegrad wirken nur zusammen mit GdB 50 bis 99 knapp an der höchsten Grenze (Freibetrag nach dem Muster § 24 WoFG).
+// Seit dem Arbeitnehmer-Pauschbetrag beim WBS (Abgleich Runde 2, H2, 21.11.2026) traf der Zufall diesen Fall nicht mehr.
+const FEST = [
+  { adults: 1, kids: 0, kidsU6: 0, young: 0, art1: 'lohn', art2: '', brutto: 3800, brutto2: '', netto: 2500, miete: 600, mietstufe: '3', vermoegen: 0, gebJahr: 1980,
+    heute: HEUTE, unterhaltFehlt: false, unterhalt: '', pflegegrad: '', bhPerson: 'ich', gdb: '80', blind: '', mzG: false, ausbildung: '', aufenthalt: '',
+    babBetrieb: false, babWohnt: false, bhSelbst: false, wfbm: false, kindKrank: false, baby: '', egVor: '', wohnart: '', hhAndere: '', autoWert: '',
+    autoBraucht: false, euArbeit: '', euJahre: '', arbeitSit: '', algZeit: false, krankWochen: '', lohnVorher: '', bundesland: 'BY', bezug: {} }
+];
+for (let i = 0; i < N + FEST.length; i++) {
+  const basis = i < N ? zufall() : FEST[i - N];
   for (const [m, werte] of Object.entries(MERKMALE)) {
     const erg = werte.map((v) => { const e = setze(basis, m, v); return { v, e, s: stufen(e) }; });
     for (const k of KARTEN) {

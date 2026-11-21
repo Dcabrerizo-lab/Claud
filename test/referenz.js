@@ -78,7 +78,11 @@ function haushalt(e) {
   const allein = erwachsene === 1 || e.uvgPartner === 'neu';
   if (allein && kinder > 0 && e.unterhaltFehlt && !(e.uvgWechsel && kinder === 1)) {
     const ohneAeltere = !!e.kinder12 && brutto - brutto2 < 600;
-    uvg = Math.max(0, u6 * UVG.u6 + mitte * UVG.u12 + (ohneAeltere ? 0 : k14 * UVG.u18) - unterhalt - waisen - azubiAnr);
+    // Haken „ab 12“ ohne Kind von 14 bis 17: ein 6- bis 13-jähriges Kind ist 12 oder 13 und gehört zur dritten Altersstufe
+    // (§ 2 Abs. 1 UVG mit § 1612a Abs. 1 Satz 3 Nr. 3 BGB: ab dem 13. Lebensjahr; abgerufen 21.11.2026)
+    const zwoelf = e.kinder12 && k14 === 0 && mitte >= 1 ? 1 : 0;
+    const aeltere = k14 + zwoelf;
+    uvg = Math.max(0, u6 * UVG.u6 + (mitte - zwoelf) * UVG.u12 + (ohneAeltere ? 0 : aeltere * UVG.u18) - unterhalt - waisen - azubiAnr);
   }
   // Mehrbedarf Alleinerziehende (§ 21 Abs. 3 SGB II): 36 % (1 Kind < 7 oder 2-3 Kinder < 16) oder 12 % je Kind, max. 60 %
   let mehrAE = 0;
