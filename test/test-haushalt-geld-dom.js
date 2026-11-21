@@ -72,9 +72,10 @@ setTimeout(() => {
     klick($('hb-bl-nach'));
     check('[hb-belege-heute] „Nächstes Jahr“ nicht über das laufende Jahr hinaus', tx(bl().querySelector('summary')) === 'Belege ' + jahr && $('hb-bl-nach').disabled && d.activeElement === $('hb-bl-vor'));
     // Knopf „Belegliste“ im Hinweis öffnet die Liste
-    klick($('hb-tab-plan'));
+    klick($('hb-tab-plan')); check('[hb-geld] Kein Hinweis mehr unter der Eingabe im Plan (nur in der Auswertung)', !$('hb-hw-pflege'));
+    klick($('hb-tab-ausw')); bl().open = false;
     const bk = knopf('Belegliste', $('hb-hw-pflege') || d);
-    check('[hb-geld] Hinweis auch im Plan, Knopf „Belegliste“', !!bk);
+    check('[hb-geld] Hinweis in der Auswertung, Knopf „Belegliste“', !!bk);
     if (bk) { klick(bk); check('[hb-geld] „Belegliste“ öffnet Auswertung mit offener Liste', $('hb-tab-ausw').getAttribute('aria-pressed') === 'true' && bl().open && d.activeElement === $('hb-bl-sum')); }
     klick($('hb-tab-ausw'));
     klick(knopf('Nicht mehr zeigen', $('hb-hw-pflege')));

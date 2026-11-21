@@ -166,10 +166,11 @@
     'sp.heizen.1': 'thermo', 'sp.heizen.2': 'fenster', 'sp.heizen.3': 'heizung', 'sp.heizen.4': 'wind', 'sp.heizen.5': 'einreichen',
     'sp.essen.1': 'liste', 'sp.essen.2': 'blatt', 'sp.essen.3': 'frost', 'sp.essen.4': 'korb', 'sp.essen.5': 'teller',
     'sp.vertraege.1': 'radio', 'sp.vertraege.3': 'ticket', 'sp.vertraege.5': 'bank', 'sp.vertraege.6': 'schere',
+    'tv.bonus': 'geld', 'tv.vorkasse': 'warn', 'tv.laufzeit': 'kalender', 'tv.kuendigung': 'uhr', 'tv.fernwaerme': 'heizung',
     'sp.schulden.1': 'post', 'sp.schulden.2': 'haus', 'sp.schulden.3': 'stopp',
     'sp.schulden.inkasso': 'lupe', 'sp.schulden.rate': 'kalender', 'sp.schulden.unserioes': 'warn', 'sp.schulden.insolvenz': 'waage',
-    'sp.schulden.konto': 'schild', 'sp.schulden.strom': 'blitz', 'sp.schulden.mahn': 'waage', 'sp.schulden.miete': 'haus',
-    'gs.d.konto.frist': 'uhr', 'gs.d.konto.schritt': 'bank', 'gs.d.strom.frist': 'uhr', 'gs.d.strom.schritt': 'telefon',
+    'sp.schulden.strom': 'blitz', 'sp.schulden.mahn': 'waage', 'sp.schulden.miete': 'haus',
+    'gs.d.konto.frist': 'uhr', 'gs.d.konto.schritt': 'bank', 'gs.d.strom.frist': 'uhr', 'gs.d.strom.schritt': 'telefon', 'gs.d.strom.haerte': 'post', 'gs.d.strom.darlehen': 'einreichen', 'gs.d.strom.grenze': 'blitz',
     'gs.d.mahn.frist': 'uhr', 'gs.d.mahn.schritt': 'post', 'gs.d.miete.frist': 'uhr', 'gs.d.miete.schritt': 'einreichen',
     'pf.tipp.unterhalt': 'warn', 'pf.tipp.unterhaltspflichten': 'lupe', 'pf.tipp.mehr': 'waage', 'pf.tipp.beratung': 'person', 'pf.tipp.einmal': 'geld',
     'ip.w1': 'stopp', 'ip.w2': 'kalender', 'ip.w3': 'post', 'sb.ordner': 'liste', 'gs.d.geld.frist': 'uhr', 'gs.d.geld.schritt': 'telefon',
@@ -2604,6 +2605,12 @@
     ['miete', 'gs.d.miete', '<path d="M4 11l8-6 8 6v9H4z"/><path d="M10 20v-5h4v5"/>'],
     ['geld', 'gs.d.geld', '<path d="M12 4v16M6 20h12M5 7h14"/><path d="M5 7l-3 6h6zM19 7l-3 6h6z"/>']
   ];
+  // Schritte je Fall unter „Das tust du jetzt“ (Standard: erster Schritt + sp.schulden.<fall>) und kurze Tipps darunter (Aufräumen 21.11.2026).
+  //  Konto: Bescheinigung für den höheren Freibetrag (pf.tipp.bescheinigung, § 903 ZPO) statt sp.schulden.konto (wiederholte nur Umwandeln und Rechner).
+  //  Strom/Gas: sp.schulden.strom in Schritte zerlegt, Wortlaut unverändert (gs.d.strom.haerte, gs.d.strom.darlehen; Darlehen § 22 Abs. 8 SGB II,
+  //  § 36 SGB XII) und Tipp gs.d.strom.grenze (§ 41f EnWG: 2 Monatsabschläge, mindestens 100 €; abgerufen 20.11.2026, gesetze-im-internet.de).
+  var GS_D_SCHRITTE = { konto: ['gs.d.konto.schritt', 'pf.tipp.bescheinigung'], strom: ['gs.d.strom.schritt', 'gs.d.strom.haerte', 'gs.d.strom.darlehen'], geld: ['gs.d.geld.schritt'] };
+  var GS_D_TIPPS = { strom: ['gs.d.strom.grenze'] };
   // Post vom Inkasso: Prüfliste (§ 13a RDG), Musterschreiben, Raten anbieten, Gerichtspost (Sprung zum Mahnbescheid)
   var GS_INKASSO = [
     ['pruef', 'ip.h', 'ip.h.t', '<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5M8.5 11l2 2 3.5-3.5"/>'],
@@ -2646,6 +2653,29 @@
   // Essen: Link zur Verbraucherzentrale statt eigener Rezepte (Entscheidung David 20.11.2026). Verbraucherzentrale Bundesverband,
   // „So geht gesunde Ernährung mit wenig Geld“ (Seite in einfacher Sprache, Stand der Seite 14.06.2024, abgerufen 20.11.2026).
   var SP_VZ_URL = 'https://www.verbraucherzentrale.de/lebensmittel/so-geht-gesunde-ernaehrung-mit-wenig-geld-96404';
+  // Seiten „Strom“ und „Heizen“: zwei Werkzeuge als Kacheln (Abschlag prüfen, Tarife vergleichen), danach je Werkzeug die Kacheln Strom und Gas.
+  // sp.fall = 'abschlag' | 'tarif' (Kacheln Strom/Gas) bzw. 'abschlag-strom', 'tarif-gas' … (Rechner). „Zurück“ führt je eine Ebene hoch.
+  var EN_WERKZEUGE = [
+    ['abschlag', 'pl.abschlag', 'pl.abschlag.t', '<path d="M13 2L4 14h7l-1 8 9-12h-7z"/><circle cx="18" cy="18" r="4"/><path d="M18 16v2l1.2 1"/>'],
+    ['tarif', 'hb.tv.kachel', 'hb.tv.kachel.t', '<path d="M4 7h11M4 7l3-3M4 7l3 3M20 17H9M20 17l-3-3M20 17l-3 3"/>']
+  ];
+  // Tarife vergleichen: Hinweise (Tipp-Komponente). Quellen (abgerufen 21.11.2026):
+  //  Bonus nur im 1. Jahr: Verbraucherzentrale Bundesverband, „Was Sie bei Bonus-Tarifen für Strom und Gas beachten sollten“ (Stand 05.08.2026);
+  //  „So finden Sie den passenden Strom- oder Gastarif“ (Stand 29.07.2026): Bonus nicht einrechnen, Laufzeit etwa 1 Jahr mit Preisgarantie.
+  //  Keine Vorkasse, keine Pakettarife: Verbraucherzentrale Rheinland-Pfalz, „Stromanbieterwechsel“ (Stand 03/2020); Vorkasse auch Verbraucherzentrale
+  //  Hamburg, „Strom und Gas: So wechseln Sie den Anbieter“ (Stand 04.09.2025; Laufzeit höchstens 12 Monate, Preisgarantie für die Erstlaufzeit).
+  //  Kündigungsfrist steht auf der letzten Rechnung; Grundversorgung 2 Wochen: Verbraucherzentrale Bundesverband, „So können Sie Ihren Anbieter von Strom
+  //  und Gas wechseln“ (einfache Sprache, Stand 28.10.2026); „So läuft der Anbieterwechsel bei Strom und Gas ab“ (Stand 11.11.2026): 14 Tage.
+  //  Fernwärme: „Bei Fernwärme ist der Wechsel des Wärmelieferanten nicht möglich“ (Verbraucherzentrale Bundesverband, „Fernwärme: Kosten sparen
+  //  und gleichzeitig das Klima schonen“, Stand 09.07.2025).
+  var TV_TIPPS = ['tv.bonus', 'tv.vorkasse', 'tv.laufzeit', 'tv.kuendigung', 'tv.fernwaerme'];
+  // Link zum Anbieterwechsel (neutral, keine Vergleichsportale): Verbraucherzentrale Bundesverband, Seite in einfacher Sprache, Stand 28.10.2026, abgerufen 21.11.2026
+  var TV_VZ_URL = 'https://www.verbraucherzentrale.de/de-x-simple/energie/so-koennen-sie-ihren-anbieter-von-strom-und-gas-wechseln-88520';
+  function linkKarte(box, id, url, titel, text) { // Linkkarte (öffnet extern; in der App über das Browser-Plugin, siehe Klick auf a[href])
+    var vz = document.createElement('a'); vz.className = 'uk-karte sp-link-karte'; vz.href = url; vz.target = '_blank'; vz.rel = 'noopener'; vz.id = id;
+    vz.innerHTML = '<span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></span><span class="sk-txt"><b>' + esc(titel) + '</b><span>' + esc(text) + (lang !== 'de' ? ' ' + esc(t('sp.vz.de')) : '') + '</span></span>';
+    box.appendChild(vz);
+  }
 
   var sp = { bereich: '', fall: '', thema: '' };
   // Kachel in der Form der Startseite (Klasse sk): Symbol, Titel, kurzer Text
@@ -2670,7 +2700,7 @@
   }
   function pfBescheinigung() { pf = { art: 'besch', schritt: 1, netto: pf.netto, pers: pf.pers, kg: pf.kg, kiz: pf.kiz }; oeffneVon('pfaendung', true); }
   function pfKonto() { pf = { art: 'konto', schritt: 1, netto: pf.netto, pers: pf.pers, kg: pf.kg, kiz: pf.kiz }; oeffneVon('pfaendung', true); }
-  function abschlagPruefen() { oeffneVon('haushalt', true); if (window.Haushalt && Haushalt.energie) Haushalt.energie(); }
+  function abschlagPruefen() { gsSprung('sparen', 'strom', 'abschlag'); } // „Abschlag prüfen“ auf der Seite „Strom“: erst die Kacheln Strom/Gas (Haushalt.abschlag)
   // Ziele aus dem Krisen-Check, „Bis zum Termin“ und der Schulden-Liste
   function gsZiel(z) {
     if (['mahn', 'geld', 'miete', 'strom', 'konto'].indexOf(z) >= 0) { gsSprung('dringend', '', z); return; }
@@ -2730,26 +2760,41 @@
       Geld.krisenCheck(box, function () { spRender(false); var f = $('kc-erg') || $('kc-ja'); if (f) { if (f.id === 'kc-erg') f.focus(); else { var q = $('kc-q'); if (q) { q.tabIndex = -1; q.focus(); } } } });
     } else if (sp.bereich === 'dringend') {
       var fx = GS_DRINGEND.filter(function (x) { return x[0] === sp.fall; })[0];
+      // Alle Fälle gleich aufgebaut (Aufräumen 21.11.2026): Frist (.frist) → „Das tust du jetzt“ (Schritte, Einzelheiten zum Aufklappen)
+      // → Knöpfe (nächster Schritt in der App, zuletzt Beratungsstelle) → Quellen. Texte unverändert, nur geordnet.
       p(t(fx[1]), 'pf-frage');
-      [['gs-frist', 'gs.frist', '.frist'], ['gs-schritt', 'gs.schritt', '.schritt']].forEach(function (z) {
-        var d = document.createElement('div'); d.className = (z[0] === 'gs-frist' ? 'frist ' : 'gs-box ') + z[0]; if (z[0] === 'gs-frist') d.setAttribute('role', 'note'); // Frist im gemeinsamen Muster .frist (#68)
-        var h3 = document.createElement('h3'); h3.textContent = t(z[1]); d.appendChild(h3);
-        tipp('gs.d.' + sp.fall + z[2], '', d);
-        box.appendChild(d);
+      var fd = document.createElement('div'); fd.className = 'frist gs-frist'; fd.setAttribute('role', 'note'); // Frist im gemeinsamen Muster .frist (#68)
+      var fh = document.createElement('h3'); fh.textContent = t('gs.frist'); fd.appendChild(fh);
+      tipp('gs.d.' + sp.fall + '.frist', '', fd); box.appendChild(fd);
+      var jd = document.createElement('div'); jd.className = 'pf-jetzt gs-schritt';
+      var jh = document.createElement('h3'); jh.textContent = t('pf.jetzt.h'); jd.appendChild(jh);
+      var jol = document.createElement('ol'); jol.className = 'tipp-liste'; jd.appendChild(jol);
+      (GS_D_SCHRITTE[sp.fall] || ['gs.d.' + sp.fall + '.schritt', 'sp.schulden.' + sp.fall]).forEach(function (k, i) {
+        var li = document.createElement('li'); tipp(k, i && k.indexOf('sp.schulden.') === 0 ? sp.fall : '', li); jol.appendChild(li);
       });
-      // je Fall genau ein nächster Schritt in der App
-      if (sp.fall === 'konto') { knopf('btn sp-rechner', t('sp.schulden.pf'), pfKonto); knopf('btn ghost gs-besch', t('ms.pkonto'), pfBescheinigung); }
-      if (sp.fall === 'strom' && window.Haushalt) knopf('btn ghost gs-abschlag', t('pl.abschlag'), abschlagPruefen);
-      if (sp.fall === 'mahn' && window.Schulden) knopf('btn ghost gs-in-liste', t('gs.d.mahn.liste'), function () { oeffneVon('schulden', true); Schulden.neu({ st: 'mahnbescheid' }); });
-      if (sp.fall !== 'geld') tipp('sp.schulden.' + sp.fall, sp.fall);
-      knopf('btn ghost gs-zur-hilfe', t('sb.finden'), function () { gsOeffne('hilfe'); sp.fall = 'finden'; spRender(true); });
-      box.appendChild(quellenEl([t('sp.schulden.quellen')]));
+      box.appendChild(jd);
+      if (GS_D_TIPPS[sp.fall]) { var gt = document.createElement('div'); gt.className = 'gs-tipps'; box.appendChild(gt); GS_D_TIPPS[sp.fall].forEach(function (k) { tipp(k, sp.fall, gt); }); }
+      if (sp.fall === 'konto') { // Grundfreibetrag aus den geprüften Werten (Rules.RULES.pfaendung, Pfändungsfreigrenzenbekanntmachung 2026, § 899 Abs. 1 ZPO)
+        var kf = Rules.pkonto({ personen: 0, kindergeldKinder: 0 }), rtlK = I18N[lang] && I18N[lang]['meta.dir'] === 'rtl';
+        if (new Date().toISOString().slice(0, 10) <= Rules.RULES.pfaendung.gueltigBis) {
+          var ft = document.createElement('table'); ft.className = 'pf-tab gs-freibetrag'; var fr0 = ft.insertRow();
+          fr0.insertCell().textContent = t('pf.k.sockel'); fr0.insertCell().textContent = Fmt.euro(kf.sockel, lang, rtlK); box.appendChild(ft);
+        }
+      }
+      var gb = document.createElement('div'); gb.className = 'btns gs-knoepfe'; box.appendChild(gb);
+      var gk = function (cls, txt, fn) { gb.appendChild(nhKnopf(cls, esc(txt), null, fn)); };
+      if (sp.fall === 'konto') { gk('btn sp-rechner', t('sp.schulden.pf'), pfKonto); gk('btn ghost gs-besch', t('ms.pkonto'), pfBescheinigung); }
+      if (sp.fall === 'strom' && window.Haushalt) gk('btn ghost gs-abschlag', t('pl.abschlag'), abschlagPruefen);
+      if (sp.fall === 'mahn' && window.Schulden) gk('btn ghost gs-in-liste', t('gs.d.mahn.liste'), function () { oeffneVon('schulden', true); Schulden.neu({ st: 'mahnbescheid' }); });
+      gk('btn ghost gs-zur-hilfe', t('sb.finden'), function () { gsOeffne('hilfe'); sp.fall = 'finden'; spRender(true); });
+      box.appendChild(quellenEl(sp.fall === 'konto' ? [t('sp.schulden.quellen'), t('pf.stand')] : [t('sp.schulden.quellen')]));
     } else if (sp.bereich === 'inkasso' && !sp.fall) {
       p(t('gs.inkasso'), 'pf-frage');
       unterkarten(GS_INKASSO, 'gs-i-');
     } else if (sp.bereich === 'inkasso' && sp.fall === 'pruef') {
       Geld.pruefliste(box, neu);
-      tipp('sp.schulden.inkasso', 'inkasso');
+      // Hinweise zusammen: Inkasso-Tipp direkt nach den Warnungen, „Erste Einschätzung, keine Rechtsberatung“ (ip.hinweis) darunter
+      var ipH = box.querySelector('.ip-hinweis'); box.insertBefore(tippEl('sp.schulden.inkasso', 'sp-fall'), ipH).setAttribute('data-fall', 'inkasso');
       box.appendChild(quellenEl([t('sp.schulden.quellen')]));
     } else if (sp.bereich === 'inkasso' && sp.fall === 'schreiben') {
       Geld.schreibenSeite(box, neu);
@@ -2781,26 +2826,39 @@
         tipp('sp.schulden.unserioes', 'unserioes');
       }
       box.appendChild(quellenEl([t('sp.schulden.quellen')]));
-    } else if (!sp.thema) { // Mein Geld planen: Haushaltsplan, Abschlag prüfen, darunter die Themen von „Geld sparen im Alltag“
+    } else if (!sp.thema) { // Mein Geld planen: Haushaltsplan, darunter die Themen von „Geld sparen im Alltag“
       p(t('gs.planen'), 'pf-frage');
       var rp = raster();
       if (window.Haushalt) {
         rp.appendChild(skKachel('gs-p-hh', '<path d="M4 7h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a1 1 0 0 1-1-1z"/><path d="M4 7l11-3v3"/><circle cx="16" cy="13.5" r="1"/>', t('hb.kachel'), t('hb.kachel.t'), function () { oeffneVon('haushalt', true); }));
-        rp.appendChild(skKachel('gs-p-abschlag', '<path d="M13 2L4 14h7l-1 8 9-12h-7z"/><circle cx="18" cy="18" r="4"/><path d="M18 16v2l1.2 1"/>', t('pl.abschlag'), t('pl.abschlag.t'), abschlagPruefen));
       }
       var h3 = document.createElement('h3'); h3.className = 'gs-sparen-h'; h3.textContent = t('sp.h'); box.appendChild(h3);
       var r2 = raster();
       SP_THEMEN.forEach(function (x) { r2.appendChild(skKachel('gs-t-' + x[0], x[4], t(x[1]), t(x[2]), function () { sp.thema = x[0]; spRender(true); })); });
     } else {
       var th = SP_THEMEN.filter(function (x) { return x[0] === sp.thema; })[0];
-      p(t(th[1]), 'pf-frage');
-      tippListe(SP_TIPPS[sp.thema], 'sp-tipps', true);
-      if (sp.thema === 'essen') { // Linkkarte (öffnet extern; in der App über das Browser-Plugin, siehe Klick auf a[href])
-        var vz = document.createElement('a'); vz.className = 'uk-karte sp-link-karte'; vz.href = SP_VZ_URL; vz.target = '_blank'; vz.rel = 'noopener'; vz.id = 'sp-vz';
-        vz.innerHTML = '<span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></span><span class="sk-txt"><b>' + esc(t('sp.vz.link')) + '</b><span>' + esc(t('sp.vz.t')) + (lang !== 'de' ? ' ' + esc(t('sp.vz.de')) : '') + '</span></span>';
-        box.appendChild(vz);
+      var enSeite = (sp.thema === 'strom' || sp.thema === 'heizen') && window.Haushalt && Haushalt.abschlag;
+      var wz = sp.fall.split('-'), wzx = EN_WERKZEUGE.filter(function (x) { return x[0] === wz[0]; })[0];
+      if (enSeite && wzx && !wz[1]) { // Werkzeug gewählt: erst Strom oder Gas
+        p(t(wzx[1]), 'pf-frage');
+        var re = raster();
+        [['strom', SP_THEMEN[0][4]], ['gas', SP_THEMEN[1][4]]].forEach(function (x) { re.appendChild(skKachel('gs-e-' + wz[0] + '-' + x[0], x[1], t('hb.en.tab.' + x[0]), '', function () { sp.fall = wz[0] + '-' + x[0]; spRender(true); })); });
+      } else if (enSeite && wzx) { // Rechner für eine Sparte
+        p(t(wzx[1]), 'pf-frage');
+        var zb = document.createElement('div'); zb.id = wz[0] === 'tarif' ? 'spTarif' : 'spAbschlag'; box.appendChild(zb);
+        if (wz[0] === 'tarif') {
+          Haushalt.tarif(zb, wz[1]);
+          tippListe(TV_TIPPS, 'sp-tipps tv-tipps', true);
+          linkKarte(box, 'tv-vz', TV_VZ_URL, t('tv.vz.link'), t('tv.vz.t'));
+          box.appendChild(quellenEl([t('tv.quellen')]));
+        } else Haushalt.abschlag(zb, wz[1]);
+      } else {
+        p(t(th[1]), 'pf-frage');
+        if (enSeite) { var rw = raster(); EN_WERKZEUGE.forEach(function (x) { rw.appendChild(skKachel('gs-e-' + x[0], x[3], t(x[1]), t(x[2]), function () { sp.fall = x[0]; spRender(true); })); }); }
+        tippListe(SP_TIPPS[sp.thema], 'sp-tipps', true);
+        if (sp.thema === 'essen') linkKarte(box, 'sp-vz', SP_VZ_URL, t('sp.vz.link'), t('sp.vz.t'));
+        box.appendChild(quellenEl([t('sp.quellen')]));
       }
-      box.appendChild(quellenEl([t('sp.quellen')]));
     }
     if (fokusId && $(fokusId)) { $(fokusId).focus(); return; }
     if (fokus) { var h = box.querySelector('.pf-frage'); if (h) { h.setAttribute('tabindex', '-1'); h.focus(); } }
@@ -2808,7 +2866,8 @@
   // Eine Ebene zurück innerhalb von „Geld und Schulden“; false = schon auf der obersten Ebene
   function spEbeneZurueck() {
     if (window.Geld && Geld.zurueck(sp.fall)) return true;
-    if (sp.fall) sp.fall = '';
+    if (sp.thema && sp.fall.indexOf('-') > 0) sp.fall = sp.fall.split('-')[0]; // Rechner → Kacheln Strom/Gas
+    else if (sp.fall) sp.fall = '';
     else if (sp.thema) sp.thema = '';
     else if (sp.bereich) sp.bereich = '';
     else return false;
@@ -2974,7 +3033,7 @@
     var a = aktAnsicht, sub = '', d = 0, x;
     if (a === 'pflege') { d = (pa.antworten && +pa.antworten.pos) || 0; sub = 'q' + d; }
     else if (a === 'pfaendung') { d = pf.schritt; sub = pf.art + d; }
-    else if (a === 'sparen') { d = (sp.bereich ? 1 : 0) + (sp.fall ? 1 : 0) + (sp.thema ? 1 : 0) + (window.Geld ? Geld.tiefe(sp.fall) : 0); sub = sp.bereich ? [sp.bereich, sp.fall || sp.thema].filter(Boolean).join('-') + (window.Geld && Geld.tiefe(sp.fall) ? '-w' : '') : ''; }
+    else if (a === 'sparen') { d = (sp.bereich ? 1 : 0) + (sp.fall ? 1 : 0) + (sp.thema ? 1 : 0) + (sp.thema && sp.fall.indexOf('-') > 0 ? 1 : 0) + (window.Geld ? Geld.tiefe(sp.fall) : 0); sub = sp.bereich ? [sp.bereich, sp.thema, sp.fall].filter(Boolean).join('-') + (window.Geld && Geld.tiefe(sp.fall) ? '-w' : '') : ''; }
     else if (a === 'schulden') { x = $('slBlatt'); d = ($('slEingabe') ? 1 : 0) + (x && !x.hidden ? 1 : 0); sub = d ? 'e' + d : ''; }
     else if (a === 'ausziehen') { d = window.Ausziehen && Ausziehen.offen() ? 1 : 0; sub = d ? 'offen' : ''; }
     else if (a === 'briefe') { d = $('checkBox').hidden ? 0 : 1; sub = d ? (briefArt || '') : ''; }
@@ -3011,7 +3070,7 @@
     }
     if ((a === 'einst' || a === 'ordner') && sub) usZeigen(a, sub, true);
     else if (a === 'briefe' && BRIEF_TEIL[sub]) briefOeffnen(sub);
-    else if (a === 'sparen' && sub) { var sx = sub.split('-'); if (sx[0] === 'sparen') sx[0] = 'planen'; gsOeffne(sx[0]); if (sx[1]) { if (sx[0] === 'planen') sp.thema = sx[1]; else sp.fall = sx[1]; } spRender(true); }
+    else if (a === 'sparen' && sub) { var sx = sub.split('-'); if (sx[0] === 'sparen') sx[0] = 'planen'; gsOeffne(sx[0]); if (sx[1]) { if (sx[0] === 'planen') { sp.thema = sx[1]; if (sx[2] && EN_WERKZEUGE.some(function (w) { return w[0] === sx[2]; })) sp.fall = sx[2] + (sx[3] === 'strom' || sx[3] === 'gas' ? '-' + sx[3] : ''); } else sp.fall = sx[1]; } spRender(true); }
     else if (a === 'pflegestart' && /^pg/.test(sub)) puOeffnen('pg');
     else if (a === 'pflegestart' && /^liste\d$/.test(sub)) puOeffnen('liste', +sub.slice(5));
   }
@@ -3991,8 +4050,7 @@
       grenzen: function () { try { return started && edited ? Rules.evaluate(state).grenzen : null; } catch (e) { return null; } },
       setze: function (werte) { if (started && !edited) state = blankState(); Object.assign(state, werte); writeForm(); buildSelects(); touched(); },
       zeige: oeffneVon, regeln: function () { return Rules.RULES; }, plug: plug, nativ: NATIVE,
-      fristenNeu: function () { if (window.FristenOrdner) FristenOrdner.neu(); },
-      sparen: function (thema) { gsSprung('sparen', thema); }, // Energiekosten-Check: „Mehr Spartipps“ → Geld und Schulden → Sparen im Alltag
+      sparen: function (thema) { gsSprung('sparen', thema); }, // Auswertung: „Mehr Spartipps“ → Geld und Schulden → Sparen im Alltag
       foto: NATIVE ? fotoText : null, bild: ocr,
       textAusgeben: function (text, titel, msg) { if (!NATIVE) { schreibenDrucken(text); return; } schreibenAusgeben({ value: text }, titel, plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen', msg); }
     });
@@ -4007,8 +4065,7 @@
       t: tL, lang: function () { return lang; }, datum: function (d) { return Fmt.datum(d, lang); }, roh: StoreRoh, neu: ordnerRender,
       alle: function () {
         if (!tresor || !tresor.bereit()) return [];
-        var h = tresor.ueberall('lotse.haushalt');
-        return tresor.ueberall('lotse.fristliste').map(function (v, i) { return { id: v.id, name: v.name, aktiv: v.aktiv, fristliste: v.wert, haushalt: h[i] ? h[i].wert : null }; });
+        return tresor.ueberall('lotse.fristliste').map(function (v) { return { id: v.id, name: v.name, aktiv: v.aktiv, fristliste: v.wert }; });
       },
       ablauf: function () { var a = tresor && tresor.bereit() ? tresor.aktiv() : null; return a && a.ablauf ? new Date(a.ablauf) : null; },
       oeffneVorgang: vgOeffnen,
