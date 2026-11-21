@@ -16,7 +16,7 @@ const BescheidGSA = (function () {
   // § 82 Abs. 3 Satz 1: 30 % des Einkommens aus Arbeit, höchstens 50 % der Regelbedarfsstufe 1
   function freiArbeit(n, R) { return n > 0 ? Math.min(R.gsaArbeit.quote * n, R.gsaArbeit.max * R.regelbedarf.alleinstehend) : 0; }
 
-  // e = { personen: [{ mzG, renteNetto, grundrente33, zusatzRente, lohnNetto, sonstiges, versicherungen }], warmwasserDezentral,
+  // e = { personen: [{ mzG, renteNetto, renteBrutto (gesetzliche Rente vor Kranken- und Pflegeversicherung, für § 82a), grundrente33, zusatzRente, lohnNetto, sonstiges, versicherungen }], warmwasserDezentral,
   //       miete: { tatsaechlich, heizung }, bescheid: { regel, mehrG, mehrWW, kdu, einkommen, zahlbetrag } }
   function pruefe(e, Rules) {
     const R = Rules.RULES, ps = (e.personen || []).filter(Boolean).slice(0, 2);
@@ -28,7 +28,10 @@ const BescheidGSA = (function () {
     let einkommen = 0; const teile = [];
     for (const p of ps) {
       const rente = z(p.renteNetto), zus = z(p.zusatzRente), lohn = z(p.lohnNetto), sonst = z(p.sonstiges), vers = z(p.versicherungen);
-      const fG = p.grundrente33 ? freiGrundrente(rente, R) : 0, fV = freiVorsorge(zus, R), fA = freiArbeit(lohn, R);
+      // § 82a Abs. 1 SGB XII (https://www.gesetze-im-internet.de/sgb_12/__82a.html, Abruf 21.11.2026): Freibetrag aus der gesetzlichen Rente
+      // brutto (Broschüre Rentenversicherung „Die Grundsicherung“ 5/2026, S. 18). Ohne Brutto aus dem Netto (kann zu klein sein, Hinweis in grenzen).
+      const brutto = Math.max(rente, z(p.renteBrutto));
+      const fG = p.grundrente33 ? Math.min(rente, freiGrundrente(brutto, R)) : 0, fV = freiVorsorge(zus, R), fA = freiArbeit(lohn, R);
       const anr = Math.max(0, rente - fG + zus - fV + lohn - fA + sonst - vers);
       einkommen += anr;
       teile.push({ freiGrundrente: c2(fG), freiVorsorge: c2(fV), freiArbeit: c2(fA), versicherungen: c2(vers), anrechenbar: c2(anr) });
@@ -64,9 +67,10 @@ const BescheidGSA = (function () {
     }
     const bedarf = c2(regel + mehrG + mehrWW + (kdu ? kdu.anerkannt : kduIst));
     const zahl = c2(Math.max(0, bedarf - einkommen));
+    const ohneBrutto = ps.some((p) => p.grundrente33 && z(p.renteNetto) > 0 && !(z(p.renteBrutto) > 0));
     const res = { posten, kdu, teile, erwartet: { regel, mehrG, mehrWW, einkommen, bedarf, zahlbetrag: zahl }, gruende: posten.filter((p) => p.wirkung === 'zuWenig' || p.wirkung === 'pruefen'),
       zuWenigImMonat: c2(posten.filter((p) => p.wirkung === 'zuWenig').reduce((s, p) => s + p.diff, 0)),
-      grenzen: 'Nicht geprüft: kostenaufwändige Ernährung, Mehrbedarf 35 % bei Eingliederungshilfe, einmalige Bedarfe, Vermögen, Einkommen aus Vermietung oder Selbständigkeit, Angemessenheit der Miete. Wohngeld und Grundsicherung schließen sich aus.' };
+      grenzen: 'Nicht geprüft: kostenaufwändige Ernährung, Mehrbedarf 35 % bei Eingliederungshilfe, einmalige Bedarfe, Vermögen, Einkommen aus Vermietung oder Selbständigkeit, Angemessenheit der Miete. Wohngeld und Grundsicherung schließen sich aus.' + (ohneBrutto ? ' Grundrenten-Freibetrag aus der Netto-Rente gerechnet, weil die Bruttorente fehlt; mit der Bruttorente kann er etwas höher sein (§ 82a SGB XII).' : '') };
     if (!leer(b.zahlbetrag)) res.zahlbetrag = { bescheid: z(b.zahlbetrag), erwartet: zahl, diff: c2(zahl - z(b.zahlbetrag)) };
     return res;
   }

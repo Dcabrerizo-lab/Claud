@@ -22,7 +22,8 @@ for (let st = 1; st <= 7; st++) for (let n = 1; n <= 12; n++) {
   const klima = n <= 5 ? [19.2, 24.8, 29.6, 34.4, 39.2][n - 1] : 39.2 + (n - 5) * 4.8;
   const heiz = n <= 5 ? [110.4, 142.6, 170.2, 197.8, 225.4][n - 1] : 225.4 + (n - 5) * 27.6;
   const M = hb + klima + heiz;
-  let lo = 0, hi = 20000; for (let i = 0; i < 100; i++) { const mid = (lo + hi) / 2; if (wogg(n, M, mid) > 0) lo = mid; else hi = mid; }
+  // Grenze: ungerundetes Wohngeld 9,50 € (unter 10 € kein Wohngeld, § 21 Nr. 1 WoGG; kaufmännisch gerundet, Anlage 3 Nr. 3 WoGG)
+  let lo = 0, hi = 20000; for (let i = 0; i < 100; i++) { const mid = (lo + hi) / 2; if (wogg(n, M, mid) > 9.5) lo = mid; else hi = mid; }
   const [g10, g30] = Rules.limits(st, n);
   tabCount += 2;
   if (Math.abs(g10 - lo / 0.9) > 0.01) { tabFails++; console.log('Grenze 10 % weicht ab', st, n, g10, lo / 0.9); }
@@ -72,7 +73,10 @@ check('T1 Hinweis Grundsicherungsgeld gegen Wohngeld', t1.zusammen.some((z) => z
 
 const t2 = ev({ brutto: 880, netto: 780, miete: 480, mietstufe: 3, vermoegen: 4000, alter: true, alterGruppe: '50+' });
 check('T2 Rentnerin: Grundsicherung im Alter ja', lv(t2, 'gsa') === 'ja', lv(t2, 'gsa'));
-check('T2 Wohngeld nur möglich (Mindesteinkommen)', lv(t2, 'wohngeld') === 'vielleicht' && get(t2, 'wohngeld').hl === 'einkoNiedrig');
+// Plausibilitätsprüfung Nr. 15.01 WoGVwV zählt das Wohngeld mit: 780 + rund 310 Wohngeld >= Miete 480 + 80 % von 563 (Befund 1, 21.11.2026)
+check('T2 Wohngeld: Mindesteinkommen mit Wohngeld erreicht, Betrag sichtbar', get(t2, 'wohngeld').hl !== 'einkoNiedrig' && get(t2, 'wohngeld').tx.some((x) => /^schaetz\./.test(x[0])), get(t2, 'wohngeld'));
+const t2b = ev({ brutto: 400, netto: 380, miete: 480, mietstufe: 3, vermoegen: 4000, alter: true, alterGruppe: '50+' });
+check('T2b Rentnerin mit 400 € Rente: Wohngeld nur möglich (Mindesteinkommen)', lv(t2b, 'wohngeld') === 'vielleicht' && get(t2b, 'wohngeld').hl === 'einkoNiedrig', get(t2b, 'wohngeld'));
 check('T2 Kinder-Leistungen, UVG, BAföG, Pflege nein', ['kiz', 'but', 'uvg', 'bafoeg', 'pflege', 'kindergeld'].every((id) => lv(t2, id) === 'nein'));
 check('T2 Grundsicherungsgeld nein (Sozialamt zuständig)', lv(t2, 'ggeld') === 'nein' && get(t2, 'ggeld').hl === 'andereStelle');
 
@@ -131,7 +135,8 @@ check('Kindergeld: schon bezogen = na', lv(ev({ kids: 1, bezug: { kindergeld: tr
 // 7) Grundsicherungsgeld
 check('Grundsicherungsgeld: Schonvermögen bis 30 Jahre 5.000', lv(ev({ brutto: 0, miete: 400, vermoegen: 6000, alterGruppe: '<30' }), 'ggeld') === 'nein' && get(ev({ brutto: 0, miete: 400, vermoegen: 6000, alterGruppe: '<30' }), 'ggeld').hl === 'vermHoch');
 check('Grundsicherungsgeld: ab 50 Jahren 15.000 sind erlaubt', lv(ev({ brutto: 0, miete: 400, vermoegen: 15000, alterGruppe: '50+' }), 'ggeld') === 'ja');
-check('Grundsicherungsgeld: Paar verdoppelt Schonvermögen', lv(ev({ adults: 2, brutto: 0, miete: 500, vermoegen: 19000, alterGruppe: '30-39' }), 'ggeld') === 'ja');
+check('Grundsicherungsgeld: Paar, Freibetrag je Person (sicher 10.000 + 5.000)', lv(ev({ adults: 2, brutto: 0, miete: 500, vermoegen: 15000, alterGruppe: '30-39' }), 'ggeld') === 'ja');
+check('Grundsicherungsgeld: Paar 19.000 hängt vom Alter der zweiten Person ab -> möglich mit Hinweis', (() => { const g = get(ev({ adults: 2, brutto: 0, miete: 500, vermoegen: 19000, alterGruppe: '30-39' }), 'ggeld'); return g.level === 'vielleicht' && g.tx[0][0] === 'ggeld.vermAlter'; })());
 check('Grundsicherungsgeld: Alter -> Sozialamt zuständig', get(ev({ alter: true, miete: 400 }), 'ggeld').hl === 'andereStelle');
 check('Grundsicherungsgeld: Erwerbsminderung -> Sozialamt zuständig', get(ev({ erwerbsgemindert: true, miete: 400 }), 'ggeld').hl === 'andereStelle');
 check('Grundsicherungsgeld: Einkommen über Bedarf nein', lv(ev({ brutto: 3000, netto: 2400, miete: 600 }), 'ggeld') === 'nein');
@@ -155,7 +160,8 @@ check('BAföG: Kind, etwas über Freibetrag vielleicht', lv(ev({ kids: 1, netto:
 check('BAföG: Kind, weit über Freibetrag nein', lv(ev({ kids: 1, netto: 4000, ausbildung: 'kind' }), 'bafoeg') === 'nein');
 check('BAföG: Paar mit 2 jungen Erwachsenen, Freibetrag 2.540 + 770', lv(ev({ adults: 2, young: 2, netto: 3300, ausbildung: 'kind' }), 'bafoeg') === 'ja' && lv(ev({ adults: 2, young: 2, netto: 3400, ausbildung: 'kind' }), 'bafoeg') === 'vielleicht');
 check('BAföG: Kind angegeben, aber kein Kind im Haushalt nein', lv(ev({ ausbildung: 'kind', netto: 1000 }), 'bafoeg') === 'nein');
-check('BAföG: selbst, Vermögen über 15.000 bis 29 nein', lv(ev({ ausbildung: 'ich', alterGruppe: '<30', vermoegen: 20000 }), 'bafoeg') === 'nein');
+check('BAföG: selbst, Vermögen 20.000 bis 29: nur 5.000 € darüber zählen, möglich (§ 30 BAföG)', lv(ev({ ausbildung: 'ich', alterGruppe: '<30', vermoegen: 20000 }), 'bafoeg') === 'vielleicht');
+check('BAföG: selbst, Vermögen 30.000 bis 29: 15.000 € : 12 über dem Bedarf, nein', lv(ev({ ausbildung: 'ich', alterGruppe: '<30', vermoegen: 30000 }), 'bafoeg') === 'nein');
 check('BAföG: selbst, Vermögen im Rahmen vielleicht', lv(ev({ ausbildung: 'ich', alterGruppe: '<30', vermoegen: 5000 }), 'bafoeg') === 'vielleicht');
 check('BAföG: selbst, ab 50 nein, 41 bis 50 vielleicht', lv(ev({ ausbildung: 'ich', alterGruppe: '50+' }), 'bafoeg') === 'nein' && lv(ev({ ausbildung: 'ich', alterGruppe: '40-49' }), 'bafoeg') === 'vielleicht');
 

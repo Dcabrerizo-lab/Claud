@@ -1,0 +1,146 @@
+{
+ "l-wohngeld": [
+  "aide au logement",
+  "allocation logement",
+  "loyer trop cher"
+ ],
+ "l-ggeld": [
+  "revenu de base",
+  "aide sociale",
+  "chômage",
+  "RSA"
+ ],
+ "l-gsa": [
+  "retraite trop basse",
+  "petite retraite",
+  "minimum vieillesse"
+ ],
+ "l-kindergeld": [
+  "allocations familiales",
+  "allocation pour enfant"
+ ],
+ "l-kiz": [
+  "supplément pour enfant"
+ ],
+ "l-but": [
+  "sortie scolaire",
+  "voyage scolaire",
+  "fournitures scolaires",
+  "soutien scolaire",
+  "cantine"
+ ],
+ "l-uvg": [
+  "pension alimentaire",
+  "le père ne paie pas",
+  "parent isolé"
+ ],
+ "p-schaetzen": [
+  "niveau de dépendance",
+  "degré de dépendance"
+ ],
+ "pflege": [
+  "soins",
+  "dépendance",
+  "aidant"
+ ],
+ "l-ausweis": [
+  "carte handicap",
+  "handicap"
+ ],
+ "l-rundfunk": [
+  "redevance télé",
+  "redevance audiovisuelle",
+  "GEZ"
+ ],
+ "l-alg1": [
+  "chômeur",
+  "perte d emploi",
+  "allocation chômage"
+ ],
+ "l-elterngeld": [
+  "allocation parentale",
+  "bébé"
+ ],
+ "l-mutter": [
+  "enceinte",
+  "grossesse",
+  "congé maternité"
+ ],
+ "l-asylblg": [
+  "asile",
+  "réfugié"
+ ],
+ "brief": [
+  "lettre",
+  "courrier",
+  "courrier administratif",
+  "décision"
+ ],
+ "b-af": [
+  "formulaire",
+  "remplir formulaire"
+ ],
+ "g-konto": [
+  "compte saisi",
+  "compte bloqué",
+  "saisie sur compte"
+ ],
+ "g-strom": [
+  "coupure électricité",
+  "électricité coupée",
+  "coupure gaz"
+ ],
+ "g-mahn": [
+  "lettre du tribunal",
+  "enveloppe jaune",
+  "injonction de payer"
+ ],
+ "g-miete": [
+  "expulsion",
+  "résiliation du bail",
+  "loyers impayés"
+ ],
+ "g-inkasso": [
+  "recouvrement",
+  "société de recouvrement"
+ ],
+ "g-rate": [
+  "paiement échelonné",
+  "échéancier"
+ ],
+ "g-hilfe": [
+  "conseil en dettes",
+  "aide endettement"
+ ],
+ "g-ablauf": [
+  "faillite personnelle",
+  "insolvabilité"
+ ],
+ "geld": [
+  "argent",
+  "dettes"
+ ],
+ "g-haushalt": [
+  "budget",
+  "dépenses"
+ ],
+ "ausziehen": [
+  "déménager",
+  "premier appartement",
+  "quitter la maison"
+ ],
+ "e-anzeige": [
+  "langue",
+  "changer la langue",
+  "taille du texte"
+ ],
+ "e-sicher": [
+  "code PIN",
+  "mot de passe",
+  "supprimer les données"
+ ],
+ "mappe": [
+  "demande",
+  "dossier de demande"
+ ]
+}

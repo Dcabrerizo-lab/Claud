@@ -4,6 +4,12 @@
 // in allen Vergleichsfällen höchstens 1 € Unterschied (Rundung des amtlichen Rechners), deshalb gilt bis 1 € als „passt“.
 // Rechtsgrundlagen: §§ 11, 12 (Höchstbeträge, Heizkosten- und Klimakomponente), 14–17 (Einkommen, Pauschalabzug, Freibeträge),
 // 19 (Formel), 21 Nr. 1 WoGG (unter 10 € kein Wohngeld).
+// § 17a WoGG (https://www.gesetze-im-internet.de/wogg/__17a.html, Abruf 21.11.2026): Freibetrag bei mindestens 33 Jahren Grundrentenzeiten,
+// 1.200 € im Jahr aus der gesetzlichen Rente plus 30 % des Rests, höchstens 12 × 50 % der Regelbedarfsstufe 1 (2026: 281,50 € im Monat).
+// Art 'rente33' (oder grundrente33: true) = gesetzliche Rente mit 33 Jahren Grundrentenzeiten. Abgleich: Musterbescheid Wohngeld der Stadt
+// Frankfurt a. M. vom 03.06.2025 („Freibetrag nach § 17a WoGG 3.378 €“, Wohngeld 355 €).
+// § 19 Abs. 3 WoGG (https://www.gesetze-im-internet.de/wogg/__19.html, Abruf 21.11.2026): ab dem 13. Haushaltsmitglied je Person 65 € mehr,
+// höchstens bis zur zu berücksichtigenden Miete (Rules.wgUeber12).
 const BescheidWG = (function () {
   'use strict';
   const TOL = 1;
@@ -17,7 +23,7 @@ const BescheidWG = (function () {
   // Werbungskosten: tatsächliche, sonst Pauschbetrag (Lohn 1.230 €, Rente 102 € im Jahr), höchstens das Einkommen
   function werbung(m, R) {
     if (m.werbung != null && m.werbung !== '') return Math.min(z(m.werbung), z(m.brutto));
-    const p = m.art === 'lohn' ? R.wgWerbung.lohn / 12 : m.art === 'rente' ? R.wgWerbung.rente / 12 : 0;
+    const p = m.art === 'lohn' ? R.wgWerbung.lohn / 12 : m.art === 'rente' || m.art === 'rente33' ? R.wgWerbung.rente / 12 : 0;
     return Math.min(p, z(m.brutto));
   }
 
@@ -28,9 +34,13 @@ const BescheidWG = (function () {
     const hoechst = Rules.wgCap(st, n), heiz = Rules.wgHeiz(n);
     const kalt = z(f.bruttokalt);
     const miete = Math.min(kalt, hoechst) + heiz;
-    let eink = 0; const teile = [];
+    let eink = 0, grFrei = 0; const teile = [];
     for (const m of f.mitglieder || []) {
       const b = z(m.brutto);
+      if (b > 0 && (m.art === 'rente33' || (m.art === 'rente' && m.grundrente33))) {
+        // Freibetrag „vom Einkommen aus der gesetzlichen Rente“ (§ 17a Abs. 1 Satz 2 WoGG): nie höher als die Rente selbst
+        grFrei += Math.min(b, R.grundrente.sockel + R.grundrente.quote * Math.max(0, b - R.grundrente.sockel), R.grundrente.max * R.regelbedarf.alleinstehend);
+      }
       let anr = 0;
       if (b > 0) {
         if (m.art === 'eg') anr = Math.max(0, b - R.elterngeldFrei); // Elterngeld bis 300 € ist kein Einkommen (§ 10 BEEG)
@@ -42,15 +52,17 @@ const BescheidWG = (function () {
     let frei = 0;
     if (f.alleinerziehend) frei += R.wohngeld.freibetragAlleinerzMonat; // § 17 Nr. 3 WoGG
     frei += Math.max(0, Math.round(z(f.schwerbehindert))) * R.wohngeld.freibetragBehinderungMonat; // § 17 Nr. 1 WoGG
+    frei += grFrei; // § 17a WoGG
     eink = Math.max(0, eink - frei);
     const roh = Rules.wgBetrag(n, miete, eink);
     let wg = Math.max(0, Math.round(roh));
     if (wg < 10) wg = 0; // § 21 Nr. 1 WoGG
+    wg = Rules.wgUeber12(n, wg, miete); // § 19 Abs. 3 WoGG
     return { personen: n, stufe: st, hoechstbetrag: c2(hoechst), heizkomponente: c2(heiz), miete: c2(miete), mieteGekappt: kalt > hoechst, einkommen: c2(eink), freibetraege: c2(frei), teile, wohngeld: wg };
   }
   function ausBescheid(n, M, Y, Rules) {
     let w = Math.max(0, Math.round(Rules.wgBetrag(n, z(M), z(Y))));
-    return w < 10 ? 0 : w;
+    return Rules.wgUeber12(n, w < 10 ? 0 : w, z(M));
   }
 
   // e = { ...f, bescheid: { miete, einkommen, wohngeld } } (Beträge im Monat)
@@ -83,7 +95,7 @@ const BescheidWG = (function () {
     }
     const gesamt = posten.find((p) => p.key === 'wohngeld');
     return { rechnung: r, posten, gruende: posten.filter((p) => p.grund), zuWenigImMonat: gesamt && gesamt.wirkung === 'zuWenig' ? gesamt.diff : 0,
-      grenzen: 'Nicht geprüft: Mietenstufe der Gemeinde (bitte aus dem Bescheid übernehmen), Einkommen aus Selbständigkeit, Vermögen, Untermiete, Wohneigentum (Lastenzuschuss), Freibeträge für Kinder mit eigenem Einkommen und für Pflegepersonen, Einkommen über ein ganzes Jahr mit wechselnden Beträgen.' };
+      grenzen: 'Nicht geprüft: Mietenstufe der Gemeinde (bitte aus dem Bescheid übernehmen), Einkommen aus Selbständigkeit, Vermögen, Untermiete, Wohneigentum (Lastenzuschuss), Freibeträge für Kinder mit eigenem Einkommen und für Pflegepersonen, Grundrentenfreibetrag bei Betriebs- oder Privatrenten (gilt nur für die gesetzliche Rente), Einkommen über ein ganzes Jahr mit wechselnden Beträgen.' };
   }
   function eur(x) { return (Math.round(x * 100) / 100).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €'; }
   return { rechne, pruefe, ausBescheid, abzugAus };
