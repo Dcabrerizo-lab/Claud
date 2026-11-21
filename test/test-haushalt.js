@@ -106,7 +106,7 @@ check('Übernahme: ALG ohne Brutto -> nichts fehlt', H.uebernahme({ adults: 1, e
 
 // Speicherdaten prüfen (kaputte Daten nicht übernehmen)
 const nd = H.normiere({ plan: { kg: 'x', leist: 500, aus: { miete: 1, essen: 100 } }, buch: [{ d: '2026-11-01', c: 100, k: 'essen' }, { d: 'kaputt', c: 5 }, { d: '2026-11-01', c: -1 }], weg: { a: true, b: 'ja' }, bewilligt: { sgb2: '2027-01-31', kiz: 'bald' }, ekBasis: 100000 });
-check('Normieren', nd.plan.kg === null && nd.plan.leist === 500 && nd.plan.aus.miete === undefined && nd.plan.aus.essen === 100 && nd.buch.length === 1 && nd.weg.a && !nd.weg.b && nd.bewilligt.sgb2 === '2027-01-31' && !nd.bewilligt.kiz && nd.ekBasis === 100000, nd);
+check('Normieren', nd.plan.kg === null && nd.plan.leist === 500 && nd.plan.aus.miete === undefined && nd.plan.aus.essen === 100 && nd.buch.length === 1 && nd.weg.a && !nd.weg.b && !('bewilligt' in nd) && nd.ekBasis === 100000, nd); // „Bewilligt bis“ seit 1.9 entfernt: alte Angaben werden ignoriert
 check('Normieren: Müll', H.normiere('quatsch').buch.length === 0 && H.normiere(null).v === 1);
 
 // Hinweise: Auslöser, Höchstzahl (die Oberfläche zeigt 2, Rest aufklappbar), „Nicht mehr zeigen“
@@ -124,14 +124,12 @@ check('Hinweis: Sozialtarif/Rundfunk nur mit passender Leistung oder knapp', ids
   H.hinweisListe({ aus: { handy: 3000 }, bezug: { sozialamt: true }, heute })[0].rundfunk === true && H.hinweisListe({ aus: { energie: 3000 }, ergebnis: { rundfunk: 'nein' }, knapp: true, heute }).find((x) => x.id === 'tarif').rundfunk === false &&
   ids(H.hinweisListe({ eintraege: [{ c: 1836, k: 'sonst', n: 'Rundfunkbeitrag' }], ergebnis: { rundfunk: 'vielleicht' }, heute })) === 'tarif');
 check('Hinweis: Einkommen deutlich geändert', ids(H.hinweisListe({ ekBasis: 150000, ekJetzt: 120000, heute })) === 'ek' && ids(H.hinweisListe({ ekBasis: 150000, ekJetzt: 145000, heute })) === '');
-check('Hinweis: Weiterbewilligung kurz vorher, nicht zu früh, nicht danach', ids(H.hinweisListe({ bewilligt: { sgb2: '2026-12-31' }, heute })) === 'wb-sgb2-2026-12-31' &&
-  ids(H.hinweisListe({ bewilligt: { sgb2: '2027-03-31' }, heute })) === '' && ids(H.hinweisListe({ bewilligt: { sgb2: '2026-11-19' }, heute })) === '' && ids(H.hinweisListe({ bewilligt: { wohngeld: '2027-01-15' }, heute })) === 'wb-wohngeld-2027-01-15');
-const alle = H.hinweisListe({ bewilligt: { kiz: '2026-12-01' }, ekBasis: 100000, ekJetzt: 50000, knapp: true, eintraege: [{ c: 50000, k: 'kinder', n: 'Nachzahlung Klassenfahrt, Kühlschrank kaputt' }], aus: { raten: 1000, handy: 1 }, ein: 100000, bezug: { grundsicherungsgeld: true }, heute });
-check('[hb-hinweise] Hinweise nach Wirkung sortiert', ids(alle) === 'wb-kiz-2026-12-01,ek,knapp,nk,kaputt,but,schulden,tarif', ids(alle));
+check('„Bewilligt bis“ entfernt: alte Angaben erzeugen keinen Hinweis mehr', ids(H.hinweisListe({ bewilligt: { sgb2: '2026-12-31' }, heute })) === '');
+const alle = H.hinweisListe({ ekBasis: 100000, ekJetzt: 50000, knapp: true, eintraege: [{ c: 50000, k: 'kinder', n: 'Nachzahlung Klassenfahrt, Kühlschrank kaputt' }], aus: { raten: 1000, handy: 1 }, ein: 100000, bezug: { grundsicherungsgeld: true }, heute });
+check('[hb-hinweise] Hinweise nach Wirkung sortiert', ids(alle) === 'ek,knapp,nk,kaputt,but,schulden,tarif', ids(alle));
 check('Nicht mehr zeigen', ids(H.hinweisListe({ knapp: true, aus: { raten: 1 }, weg: { knapp: true }, heute })) === 'schulden');
 const tpl = fs.readFileSync(path.join(__dirname, '..', 'src', 'haushalt.js'), 'utf8');
 check('Oberfläche zeigt höchstens 2 Hinweise, Rest unter „Weitere Hinweise“', /liste\.slice\(0, 2\)/.test(tpl) && /liste\.slice\(2\)/.test(tpl) && /hb\.hw\.weitere/.test(tpl));
-check('Vorlauf wie erweiterungen/fristen.js', (() => { const F = require('../erweiterungen/fristen.js'); return F.erinnerung({ leistung: 'sgb2', ende: '2027-01-31' }).erinnerungAm === F.plusTage('2027-01-31', -H.VORLAUF_TAGE.sgb2) && F.erinnerung({ leistung: 'wohngeld', ende: '2027-01-31' }).erinnerungAm === F.plusTage('2027-01-31', -H.VORLAUF_TAGE.wohngeld); })());
 const brief = H.aenderungsBrief('1.500 €', '1.200 €', '20.11.2026');
 check('Änderungsmitteilung nennt § 60 SGB I und beide Beträge', /§ 60 Abs\. 1 Satz 1 Nr\. 2 SGB I/.test(brief) && /1\.500 €/.test(brief) && /1\.200 €/.test(brief));
 
@@ -154,7 +152,7 @@ LANGS.forEach((l) => {
 const genutzt = new Set();
 for (const m of tpl.matchAll(/'(hb\.[\w.]+)'/g)) if (!m[1].endsWith('.')) genutzt.add(m[1]);
 ['hb.f.', 'hb.hw.', 'hb.k.', 'hb.quelle.', 'hb.tipp.', 'hb.tab.', 'hb.wb.', 'hb.rb.'].forEach((p) => {
-  const teile = { 'hb.f.': ['brutto', 'art', 'kinder', 'heiz', 'gas', 'plz', 'leist'], 'hb.hw.': ['wb', 'ek', 'knapp', 'nk', 'kaputt', 'but', 'schulden', 'tarif', 'tarif0'].flatMap((x) => [x, x + '.d']),
+  const teile = { 'hb.f.': ['brutto', 'art', 'kinder', 'heiz', 'gas', 'plz', 'leist'], 'hb.hw.': ['ek', 'knapp', 'nk', 'kaputt', 'but', 'schulden', 'tarif', 'tarif0'].flatMap((x) => [x, x + '.d']),
     'hb.k.': H.KAT, 'hb.quelle.': H.KAT, 'hb.tipp.': H.KAT, 'hb.tab.': ['plan', 'buch', 'ausw'], 'hb.wb.': ['sgb2', 'sgb12', 'wohngeld', 'kiz'], 'hb.rb.': ['essen', 'energie', 'handy', 'mobil'] }[p];
   teile.forEach((x) => genutzt.add(p + x));
 });
