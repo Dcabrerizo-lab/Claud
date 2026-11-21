@@ -19,7 +19,7 @@
     "e2e:basis": "node test/e2e-beh.js && node test/e2e-einfach.js && node test/e2e-klein.js && node test/e2e-briefe.js && node test/e2e-pflege.js && node test/e2e-pdf.js && node test/a11y.js",
     "e2e:zufall": "node test/e2e-zufall.js 400",
     "build:erweiterungen": "node scripts/build-erweiterungen.js",
-    "test:erweiterungen": "node test/erweiterungen/test-pflege.js && node test/erweiterungen/test-pflege-fragen.js && node test/erweiterungen/test-brief-lesen.js && node test/erweiterungen/test-kostensenkung.js && node test/erweiterungen/test-bescheid.js && node test/erweiterungen/test-gsa.js && node test/erweiterungen/test-wohngeld.js && node test/erweiterungen/test-kiz.js && node test/erweiterungen/test-nebenkosten.js && node test/erweiterungen/test-lizenz.js && node test/erweiterungen/e2e-vorschau.js",
+    "test:erweiterungen": "node test/erweiterungen/test-pflege.js && node test/erweiterungen/test-pflege-fragen.js && node test/erweiterungen/test-brief-lesen.js && node test/erweiterungen/test-kostensenkung.js && node test/erweiterungen/test-bescheid.js && node test/erweiterungen/test-gsa.js && node test/erweiterungen/test-wohngeld.js && node test/erweiterungen/test-kiz.js && node test/erweiterungen/test-nebenkosten.js && node test/erweiterungen/test-muster-bescheide.js && node test/erweiterungen/test-lizenz.js && node test/erweiterungen/e2e-vorschau.js",
     "lint": "eslint \"src/*.js\" \"erweiterungen/*.js\" \"scripts/*.js\" \"tools/*.js\" \"test/*.js\" \"test/erweiterungen/*.js\" eslint.config.js"
   },
   "devDependencies": {

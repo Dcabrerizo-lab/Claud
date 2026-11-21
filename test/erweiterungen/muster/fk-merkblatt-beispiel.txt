@@ -1,0 +1,68 @@
+# Quelle: https://www.arbeitsagentur.de/datei/kiz2-merkblattkinderzuschlag_ba015395.pdf (BA Merkblatt Kinderzuschlag, Stand Juli 2026, S. 14–15, Beispiel 1 und 2)
+# Abgerufen: 21.11.2026. Musterbescheid mit erfundenen Daten (keine echten Personen). Text: pdftotext -layout, Seitenumbrüche als Formfeed.
+                 Umfang angerechnet.
+
+
+
+
+14
+Beispiel 1: Reduzierung        des    Kinderzuschlags    durch
+Einkommen der Eltern
+
+Ein Ehepaar lebt mit drei Kindern, die acht, zehn und zwölf
+Jahre alt sind, in einem gemeinsamen Haushalt. Die monatliche
+Miete beträgt 900 Euro. Der Vater hat ein monatliches Brutto-
+Einkommen in Höhe von 2.500 Euro. Es ergibt sich bei ihm ein
+zu berücksichtigendes Einkommen in Höhe von 1.585 Euro. Die
+Mutter hat ein monatliches Brutto-Einkommen von 750 Euro. Es
+ergibt sich ein zu berücksichtigendes Einkommen in Höhe von
+330 Euro. Außerdem erhalten sie monatlich Wohngeld in Höhe
+von 500 Euro.
+
+Das zu berücksichtigende Einkommen der Eltern in Höhe von
+1.915 Euro (Vater 1.585 Euro, Mutter 330 Euro) ist höher als ihr
+eigener Bedarf in Höhe von 1.570 Euro.
+
+  Regelbedarf der Eltern     Mutter                 506 Euro
+  nach SGB II
+                             Vater                  506 Euro
++ Anteile der Wohnkostern    62 %
+  der Eltern                 von 900 Euro Miete     558 Euro
+= gesamter Bedarf der Eltern                        1.570 Euro
+
+Der übersteigende Betrag von 345 Euro ist daher auf den
+Kinderzuschlag für die drei Kinder anzurechnen. Die Anrechnung
+erfolgt jedoch nur zu 45 Prozent, weil das Einkommen aus
+Erwerbstätigkeit erzielt wird. Das heißt, es werden 155,25 Euro
+(45 % von 345 Euro) auf den Kinderzuschlag von 891 Euro (3 x
+297 Euro) angerechnet und Kinderzuschlag gerundet in Höhe von
+736 Euro an die Familie gezahlt.
+
+
+
+
+                                                                   15
+     Beispiel 2: Reduzierung        des      Kinderzuschlags     durch
+     Einkommen der Eltern
+
+     Ein Ehepaar lebt mit seinem achtjährigen Kind in einem
+     gemeinsamen Haushalt. Die monatliche Miete beträgt 800 Euro.
+     Der Vater hat ein monatliches Brutto-Einkommen in Höhe von
+     3.300 Euro. Es ergibt sich ein zu berücksichtigendes Einkommen
+     in Höhe von 2.100 Euro. Die Mutter hat kein eigenes Einkommen.
+
+     Das zu berücksichtigende Einkommen der Eltern in Höhe von
+     2.100 Euro ist höher als ihr eigener Bedarf in Höhe von 1.676 Euro.
+
+       Regelbedarf der Eltern       Mutter                     506 Euro
+       nach SGB II
+                                    Vater                      506 Euro
+     + Anteile der Wohnkostern      83 %
+       der Eltern                   von 800 Euro Miete         664 Euro
+     = gesamter Bedarf der Eltern                           1.676 Euro
+
+     Der übersteigende Betrag von 424 Euro ist daher auf den
+     Kinderzuschlag anzurechnen. Die Anrechnung erfolgt jedoch nur
+     zu 45 Prozent, weil das Einkommen aus Erwerbstätigkeit erzielt
+     wird. Das heißt, es werden 190,80 Euro (45 % von 424 Euro) auf
+     den Kinderzuschlag von 297 Euro angerechnet und Kinderzuschlag
