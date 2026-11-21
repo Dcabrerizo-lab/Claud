@@ -33,6 +33,7 @@
   "plz.was": "=",
   "vg.ordner.t": "Hier sind deine gespeicherten Angaben und Briefe. Alles bleibt auf diesem Gerät.",
   "bp.art.termin.tag": "=",
+  "wg.plzStufe": "Gerechnet mit Mietenstufe {stufe} für {ort}. Gehört deine Adresse zu einem anderen Ort, kann der Betrag anders sein.",
   "bp.art.tag": "=",
   "bp.datum": "=",
   "bp.datum.t": "Trag das Datum ein. Dann zeigt SoLo sofort die Frist für den Widerspruch.",

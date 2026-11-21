@@ -62,6 +62,15 @@ setze({ miete: 1500, plz: '84416' });
 check('Spanne + darüber: „je nach Mietenstufe nur … bis …“', /je nach Mietenstufe nur .+ bis .+\./.test(txt()) && !/Dann zählen nur/.test(txt()) && /geschätzt/.test(txt()), txt());
 setze({ miete: 1500, heizkosten: 100, plz: '84416' });
 check('Spanne + darüber mit Heizkosten: ohne „geschätzt“', /liegt darüber\. Dann zählen je nach Mietenstufe nur/.test(txt()) && !/geschätzt/.test(txt()), txt());
+// Wohngeld-Karte: Stufe nur aus der PLZ → „Gerechnet mit Mietenstufe … für {Ort}“ (Rechtsprüfung 21.11.2026, Frage 4)
+setze({ miete: 650, plz: '93047', ek1Art: 'lohn', ek1Brutto: 1700, ek1Netto: 1300 });
+{
+  const k = d.getElementById('c-wohngeld'), h = k && k.querySelector('.wg-stufe'), lvl = k && k.querySelector('.pill').className;
+  check('Wohngeld-Karte: Hinweis „Gerechnet mit Mietenstufe … für Regensburg“ mit Ort als deutsch ausgezeichnet', !/ja|vielleicht/.test(lvl || '') || (h && /^ⓘ Gerechnet mit Mietenstufe [IV]+ für Regensburg\. Gehört deine Adresse zu einer anderen Gemeinde, kann der Betrag anders sein\.$/.test(norm(h.textContent)) && h.querySelector('bdi[lang="de"]')), (lvl || '') + ' ' + (h ? h.textContent : 'kein Hinweis'));
+  check('Wohngeld-Karte: Testfall hat ein passendes Wohngeld (sonst prüft der Fall nichts)', /ja|vielleicht/.test(lvl || ''), lvl);
+}
+setze({ miete: 650, plz: '93047', mietstufe: '1', ek1Art: 'lohn', ek1Brutto: 1700, ek1Netto: 1300 });
+check('Wohngeld-Karte: selbst gewählte andere Stufe – kein PLZ-Hinweis', !d.querySelector('#c-wohngeld .wg-stufe'));
 // 11) PLZ mit einem Ort ohne bekannte Stufe (14542): ganze Spanne I bis VII, nicht die engere
 setze({ miete: 700, plz: '14542', adults: 1, kids: 0, kidsU6: 0 });
 check('Ort ohne Stufe: Spanne I bis VII (380,20 bis 696,20)', /380,20/.test(txt()) && /696,20/.test(txt()), txt());

@@ -61,6 +61,7 @@
   "bp.vb.verh": "Ai fost împiedicat fără să fie vina ta (de exemplu în spital)? Atunci trimite imediat contestația și scrie de ce nu s-a putut mai devreme („Antrag auf Wiedereinsetzung”, cerere de repunere în termen). Ai puțin timp pentru asta: {zeit} după ce piedica a dispărut.",
   "bp.vb.2w": "2 săptămâni",
   "bp.vb.1m": "1 lună",
+  "wg.plzStufe": "Calculat cu treapta de chirie {stufe} pentru {ort}. Dacă adresa ta ține de altă comună, suma poate fi diferită.",
   "bp.vb.erfolg": "Dacă ai succes decide instituția. SoLo nu poate promite asta.",
   "bp.vb.quellen": "Surse: (§ 44 SGB X; § 40 Abs. 1 SGB II; § 116a SGB XII; §§ 66, 67, 84 SGG; Wohngeld: §§ 58, 60, 70 VwGO).",
   "bp.vb.zugang": "Ziua în care scrisoarea a sosit cu adevărat (dacă mai târziu)",

@@ -1,5 +1,5 @@
 {
-  "check": ["Welche Hilfen", "Was steht mir zu", "Anspruch", "Sozialleistungen", "Leistungen", "Hilfen-Check", "Geld vom Staat", "Zuschuss", "Kita-Gebühren", "Kitagebühren", "Kita kostenlos", "Hilfe beantragen"],
+  "check": ["Welche Hilfen", "Was steht mir zu", "Anspruch", "Sozialleistungen", "Leistungen", "Hilfen-Check", "Leistungs-Check", "Geld vom Staat", "Zuschuss", "Kita-Gebühren", "Kitagebühren", "Kita kostenlos", "Hilfe beantragen"],
   "l-wohngeld": ["Mietzuschuss", "Mietzuschuß", "Zuschuss zur Miete", "Miete zu hoch", "Miethilfe", "Lastenzuschuss", "Wohnkosten"],
   "l-ggeld": ["Bürgergeld", "Hartz 4", "Hartz IV", "Hartz vier", "ALG 2", "ALG II", "Arbeitslosengeld 2", "Arbeitslosengeld II", "Stütze", "Grundsicherung", "Sozialgeld", "Jobcenter Geld", "Neue Grundsicherung", "kein Geld zum Leben"],
   "l-gsa": ["Rente zu niedrig", "Rente reicht nicht", "kleine Rente", "Grundsicherung im Alter", "Sozialhilfe", "Altersarmut", "Erwerbsminderung", "Sozialamt Geld"],
