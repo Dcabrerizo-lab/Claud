@@ -33,6 +33,13 @@ ok('Paar: Mehrbedarf G nur für die Person mit G', G.pruefe({ personen: [{ mzG: 
 ok('Warmwasser 2,3 %', G.pruefe({ personen: [{}], warmwasserDezentral: true }, Rules).erwartet.mehrWW === 12.95);
 ok('Versicherungsbeiträge werden abgezogen', G.pruefe({ personen: [{ renteNetto: 800, versicherungen: 25 }] }, Rules).erwartet.einkommen === 775);
 ok('Ohne Grundrentenzeiten kein Freibetrag', G.pruefe({ personen: [{ renteNetto: 800 }] }, Rules).erwartet.einkommen === 800);
+// Befund 14 (Abgleich 2, 21.11.2026): § 82a Abs. 1 SGB XII rechnet aus der Bruttorente (DRV „Die Grundsicherung“ 5/2026, S. 18)
+const gb = G.pruefe({ personen: [{ renteNetto: 535, renteBrutto: 600, grundrente33: true }] }, Rules);
+ok('Grundrente brutto 600 / netto 535: Freibetrag 250,00 aus dem Brutto', gb.teile[0].freiGrundrente === 250 && gb.erwartet.einkommen === 285, gb.teile);
+ok('Harald F. (DRV S. 18): brutto 870, netto 776 -> Freibetrag 281,50', G.pruefe({ personen: [{ renteNetto: 776, renteBrutto: 870, grundrente33: true }] }, Rules).teile[0].freiGrundrente === 281.5);
+const gn = G.pruefe({ personen: [{ renteNetto: 535, grundrente33: true }] }, Rules);
+ok('Ohne Brutto: Freibetrag aus dem Netto (230,50) und Hinweis in „Nicht geprüft“', gn.teile[0].freiGrundrente === 230.5 && /Bruttorente fehlt/.test(gn.grenzen), gn);
+ok('Mit Brutto kein Hinweis', !/Bruttorente fehlt/.test(gb.grenzen));
 const kd = G.pruefe({ personen: [{}], miete: { tatsaechlich: 600, heizung: 80 }, bescheid: { kdu: 560 } }, Rules);
 ok('Gekürzte Unterkunft → prüfen, nicht sicher zu wenig', kd.posten[0].wirkung === 'pruefen' && kd.zuWenigImMonat === 0);
 ok('Widerspruch Grundsicherung im Alter', /Widerspruch gegen den Bescheid über Leistungen der Grundsicherung im Alter und bei Erwerbsminderung vom 16\.11\.2026/.test(W.text({ art: 'gsa', bescheidDatum: '2026-11-16', heute: '2026-11-17', punkte: W.punkteSGB2(r) })));
@@ -42,11 +49,12 @@ let rnd = 777; const zuf = () => (rnd = (rnd * 1103515245 + 12345) % 2147483648)
 let verglichen = 0;
 for (let i = 0; i < 1500; i++) {
   const netto = Math.round(200 + zuf() * 1100), miete = Math.round((300 + zuf() * 600) / 10) * 10, gr = zuf() < 0.5;
-  const inp = { adults: 1, kids: 0, art1: 'rente', brutto: Math.round(netto * 1.12), netto, miete, mietstufe: '3', vermoegen: 0, alter: true, grundrente33: gr, bezug: {} };
+  const brutto = Math.round(netto * 1.12);
+  const inp = { adults: 1, kids: 0, art1: 'rente', brutto, netto, miete, mietstufe: '3', vermoegen: 0, alter: true, grundrente33: gr, bezug: {} };
   const app = Rules.evaluate(inp).results.find((x) => x.id === 'gsa');
   const sch = app && app.tx.find((t) => t[0] === 'schaetz.eins');
   if (!sch) continue;
-  const c = G.pruefe({ personen: [{ renteNetto: netto, grundrente33: gr }], miete: { tatsaechlich: miete } }, Rules);
+  const c = G.pruefe({ personen: [{ renteNetto: netto, renteBrutto: brutto, grundrente33: gr }], miete: { tatsaechlich: miete } }, Rules);
   verglichen++;
   const r10 = Math.round(c.erwartet.zahlbetrag / 10) * 10;
   if (r10 !== sch[1].a.eur) ok(`Fall ${i}: gleicher Betrag wie die App`, false, { inp, app: sch[1].a.eur, check: c.erwartet.zahlbetrag });

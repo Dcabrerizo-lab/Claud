@@ -35,7 +35,11 @@ G('GG: Vermögen 10000 → ja', { vermoegen: 10000 }, 'ggeld', 'ja');
 G('GG: unter 30, Vermögen 5001 → nein', { alterGruppe: '<30', vermoegen: 5001 }, 'ggeld', 'nein');
 G('GG: unter 30, Vermögen 5000 → ja', { alterGruppe: '<30', vermoegen: 5000 }, 'ggeld', 'ja');
 G('GG: ab 50 Vermögen 20000 → ja', { alterGruppe: '50+', vermoegen: 20000 }, 'ggeld', 'ja');
-G('GG: Paar 2×51+ Vermögen 40000 → ja, 40001 → nein', { adults: 2, alterGruppe: '50+', vermoegen: 40000 }, 'ggeld', 'ja');
+// Paar: Freibetrag je Person nach eigenem Alter (§ 12 Abs. 2 SGB II); die App kennt nur das Alter der ältesten Person.
+// Sicher frei: 20.000 + 5.000 (zweite Person könnte unter 30 sein); bis 40.000 nur „möglich“ (Abgleich Musterbescheide 21.11.2026, Befund 2)
+G('GG: Paar 2×51+ Vermögen 25000 → ja', { adults: 2, alterGruppe: '50+', vermoegen: 25000 }, 'ggeld', 'ja');
+G('GG: Paar 2×51+ Vermögen 25001 → vielleicht', { adults: 2, alterGruppe: '50+', vermoegen: 25001 }, 'ggeld', 'vielleicht');
+G('GG: Paar 2×51+ Vermögen 40000 → vielleicht', { adults: 2, alterGruppe: '50+', vermoegen: 40000 }, 'ggeld', 'vielleicht');
 G('GG: Paar 2×51+ Vermögen 40001 → nein', { adults: 2, alterGruppe: '50+', vermoegen: 40001 }, 'ggeld', 'nein');
 G('GG: Paar zwei Verdiener 1500+1500: Einkommen 1604, Bedarf 1812 → ja', { adults: 2, brutto: 3000, brutto2: 1500, netto: 2300, miete: 800 }, 'ggeld', 'ja');
 G('GG: gleiches Paar, ein Verdiener gerechnet: Einkommen 1952 → nein', { adults: 2, brutto: 3000, netto: 2300, miete: 800 }, 'ggeld', 'nein');
@@ -58,14 +62,17 @@ check('nichtArbeit: Freibetrag 0', R.haushaltsFreibetrag(R.derive({ ...base, bru
 // Schonvermögen: Kinder zählen mit 5.000 € (§ 12 Abs. 2 SGB II)
 G('GG: Alleinerziehend 31–40 mit 1 Kind: Grenze 15.000 → ja', { kids: 1, vermoegen: 15000 }, 'ggeld', 'ja');
 G('GG: Alleinerziehend 31–40 mit 1 Kind: 15.001 → nein', { kids: 1, vermoegen: 15001 }, 'ggeld', 'nein');
-G('GG: Paar 31–40 mit 2 Kindern: Grenze 30.000 → ja', { adults: 2, kids: 2, vermoegen: 30000 }, 'ggeld', 'ja');
+G('GG: Paar 31–40 mit 2 Kindern: 25.000 → ja', { adults: 2, kids: 2, vermoegen: 25000 }, 'ggeld', 'ja');
+G('GG: Paar 31–40 mit 2 Kindern: Grenze 30.000 → vielleicht (Alter der zweiten Person offen)', { adults: 2, kids: 2, vermoegen: 30000 }, 'ggeld', 'vielleicht');
 G('GG: Paar 31–40 mit 2 Kindern: 30.001 → nein', { adults: 2, kids: 2, vermoegen: 30001 }, 'ggeld', 'nein');
 // Kinderzuschlag Vermögen (Familienkasse): 2 Personen 55.000, 3 Personen 70.000, +15.000 je weiteres Kind
 G('KiZ: 2 Personen, 55.000 → ja', { kids: 1, brutto: 2000, netto: 1450, vermoegen: 55000 }, 'kiz', 'ja');
-G('KiZ: 2 Personen, 55.001 → nein', { kids: 1, brutto: 2000, netto: 1450, vermoegen: 55001 }, 'kiz', 'nein');
+// § 6a Abs. 3 Satz 6/7 BKGG: knapp darüber mindert nur den 1. Monat -> „möglich“; über Grenze + Monatsbetrag (höchstens 297 € je Kind) -> nein
+G('KiZ: 2 Personen, 55.001 → vielleicht (nur 1. Monat gekürzt)', { kids: 1, brutto: 2000, netto: 1450, vermoegen: 55001 }, 'kiz', 'vielleicht');
+G('KiZ: 2 Personen, 55.298 → nein', { kids: 1, brutto: 2000, netto: 1450, vermoegen: 55298 }, 'kiz', 'nein');
 G('KiZ: allein mit Kind, 1.500 € brutto, 600 € Miete: reicht nur mit Wohngeld → möglich (wie KiZ-Lotse ohne Wohngeld: hilfebedürftig)', { kids: 1, brutto: 1500, netto: 1200 }, 'kiz', 'vielleicht');
-G('KiZ: 3 Personen, 70.001 → nein', { adults: 2, kids: 1, brutto: 2000, netto: 1700, vermoegen: 70001 }, 'kiz', 'nein');
-G('KiZ: 4 Personen, 85.001 → nein', { adults: 2, kids: 2, brutto: 2600, netto: 2050, vermoegen: 85001 }, 'kiz', 'nein');
+G('KiZ: 3 Personen, 70.298 → nein', { adults: 2, kids: 1, brutto: 2000, netto: 1700, vermoegen: 70298 }, 'kiz', 'nein');
+G('KiZ: 4 Personen, 85.595 → nein', { adults: 2, kids: 2, brutto: 2600, netto: 2050, vermoegen: 85595 }, 'kiz', 'nein');
 G('KiZ: 4 Personen, 85.000 → ja', { adults: 2, kids: 2, brutto: 2600, netto: 2050, vermoegen: 85000 }, 'kiz', 'ja');
 // Grundsicherung im Alter
 G('GSA: Lücke 163 → ja', { alter: true, art1: 'rente', netto: 880, miete: 480 }, 'gsa', 'ja');
@@ -79,14 +86,16 @@ G('GSA: Paar Vermögen 20001 → nein', { alter: true, adults: 2, netto: 500, ve
 G('GSA: Erwerbsminderung zählt', { erwerbsgemindert: true, netto: 400 }, 'gsa', 'ja');
 G('GSA: weder alt noch erwerbsgemindert → nein', { netto: 400 }, 'gsa', 'nein');
 G('GSA: Bezug → na', { alter: true, bezug: { sozialamt: true } }, 'gsa', 'na');
-// Wohngeld Stufe III, 1 Person, Höchstmiete: Grenzen 1800 / 2285 € brutto (mit Werbungskosten-Pauschbetrag 102,50 €, § 14 WoGG / § 9a EStG; geprüft mit dem amtlichen Wohngeldrechner)
+// Wohngeld Stufe III, 1 Person, Höchstmiete: Grenzen 1779 / 2258 € brutto (mit Werbungskosten-Pauschbetrag 102,50 €, § 14 WoGG / § 9a EStG).
+// Grenze = Einkommen, bei dem das ungerundete Wohngeld 9,50 € erreicht (unter 10 € kein Wohngeld, § 21 Nr. 1 WoGG; Rundung Anlage 3 Nr. 3).
+// Bis 21.11.2026 1800 / 2285 € (Wohngeld 0,11 €, also gar keins).
 G('WG: 1600 brutto → ja', { brutto: 1600, netto: 1300 }, 'wohngeld', 'ja');
 G('WG: 1900 brutto → vielleicht', { brutto: 1900, netto: 1500 }, 'wohngeld', 'vielleicht');
 G('WG: 2300 brutto → nein', { brutto: 2300, netto: 1700 }, 'wohngeld', 'nein');
-G('WG: Grenze 1800 (Stufe III, 1 Person, Höchstmiete) → ja', { brutto: 1800, netto: 1300, miete: 700 }, 'wohngeld', 'ja');
-G('WG: 1801 → vielleicht', { brutto: 1801, netto: 1300, miete: 700 }, 'wohngeld', 'vielleicht');
-G('WG: Obergrenze 2285 → vielleicht', { brutto: 2285, netto: 1700, miete: 700 }, 'wohngeld', 'vielleicht');
-G('WG: 2286 → nein', { brutto: 2286, netto: 1700, miete: 700 }, 'wohngeld', 'nein');
+G('WG: Grenze 1779 (Stufe III, 1 Person, Höchstmiete) → ja', { brutto: 1779, netto: 1300, miete: 700 }, 'wohngeld', 'ja');
+G('WG: 1780 → vielleicht', { brutto: 1780, netto: 1300, miete: 700 }, 'wohngeld', 'vielleicht');
+G('WG: Obergrenze 2258 → vielleicht', { brutto: 2258, netto: 1700, miete: 700 }, 'wohngeld', 'vielleicht');
+G('WG: 2259 → nein', { brutto: 2259, netto: 1700, miete: 700 }, 'wohngeld', 'nein');
 G('WG: Behinderung 1800: 1800−187,5 = 1612,5 → ja', { brutto: 1800, netto: 1400, behinderung: true }, 'wohngeld', 'ja');
 G('WG: ohne Behinderung 1800 → vielleicht', { brutto: 1800, netto: 1400 }, 'wohngeld', 'vielleicht');
 G('WG: Alleinerziehend 1 Kind 2350: (2350·0,9−110 = 2005 ≤ 2264·0,9) → ja', { kids: 1, brutto: 2350, netto: 1900, miete: 700 }, 'wohngeld', 'ja');
@@ -108,7 +117,7 @@ G('WG: günstige Miete 300, 2000 brutto → nein', { brutto: 2000, netto: 1500, 
 G('WG: günstige Miete 300, 1300 brutto → ja', { brutto: 1300, netto: 1100, miete: 300 }, 'wohngeld', 'ja');
 G('WG: Miete 700 (über Höchstmiete), 1900 brutto → vielleicht', { brutto: 1900, netto: 1500, miete: 700 }, 'wohngeld', 'vielleicht');
 check('Wohngeld-Formel: Grenzeinkommen steigt mit der Miete', R.wgYmax(2, 400) < R.wgYmax(2, 500) && R.wgYmax(2, 500) < R.wgYmax(2, 600));
-check('Wohngeld-Formel: Wohngeld an der Grenze ist null', (() => { const M = 450, Y = R.wgYmax(3, M), [a, b, c] = [0.02, 2.917e-4, 2.45e-5]; return Math.abs(M - (a + b * M + c * Y) * Y) < 1e-6; })());
+check('Wohngeld-Formel: Wohngeld an der Grenze ist 9,50 € (gerundet 10 €, § 21 Nr. 1 WoGG)', (() => { const M = 450, Y = R.wgYmax(3, M), [a, b, c] = [0.02, 2.917e-4, 2.45e-5]; return Math.abs(1.15 * (M - (a + b * M + c * Y) * Y) - 9.5) < 1e-6; })());
 // Kinderzuschlag
 G('KiZ: Paar 2 Kinder 2600/2050 → ja (Schätzung ca. 412 €)', { adults: 2, kids: 2, brutto: 2600, netto: 2050, miete: 950 }, 'kiz', 'ja');
 G('KiZ: Paar unter 900 brutto → nein', { adults: 2, kids: 1, brutto: 899, netto: 800 }, 'kiz', 'nein');
@@ -132,12 +141,15 @@ G('KG: schon bezogen → na', { kids: 1, bezug: { kindergeld: true } }, 'kinderg
 // BAföG
 G('BAföG Kind: Paar 2400 ≤ 2540 → ja', { adults: 2, kids: 1, ausbildung: 'kind', netto: 2400 }, 'bafoeg', 'ja');
 G('BAföG Kind: Paar 3000 → vielleicht', { adults: 2, kids: 1, ausbildung: 'kind', netto: 3000 }, 'bafoeg', 'vielleicht');
-G('BAföG Kind: Paar 4000 → nein', { adults: 2, kids: 1, ausbildung: 'kind', netto: 4000 }, 'bafoeg', 'nein');
+G('BAföG Kind: Paar 5000 → nein (50 % von 2.460 € über dem Freibetrag > 1.088 € Bedarf, § 25 Abs. 4)', { adults: 2, kids: 1, ausbildung: 'kind', netto: 5000 }, 'bafoeg', 'nein');
+G('BAföG Kind: Paar 4000 → möglich (Anrechnung 730 € < Bedarf, Befund 10)', { adults: 2, kids: 1, ausbildung: 'kind', netto: 4000 }, 'bafoeg', 'vielleicht');
 G('BAföG Kind: allein 1600 → ja', { kids: 1, ausbildung: 'kind', netto: 1600 }, 'bafoeg', 'ja');
 G('BAföG Kind: allein 1700 → vielleicht', { kids: 1, ausbildung: 'kind', netto: 1700 }, 'bafoeg', 'vielleicht');
 G('BAföG Kind: zwei Kinder +770: 2460 → ja', { kids: 2, ausbildung: 'kind', netto: 2460 }, 'bafoeg', 'ja');
 G('BAföG ich: ab 50 → nein', { ausbildung: 'ich', alterGruppe: '50+' }, 'bafoeg', 'nein');
-G('BAföG ich: unter 30 Vermögen 15001 → nein', { ausbildung: 'ich', alterGruppe: '<30', vermoegen: 15001 }, 'bafoeg', 'nein');
+G('BAföG ich: unter 30 Vermögen 15001 → möglich (nur 1 € über dem Freibetrag, § 30, Befund 11)', { ausbildung: 'ich', alterGruppe: '<30', vermoegen: 15001 }, 'bafoeg', 'vielleicht');
+G('BAföG ich: unter 30 Vermögen 28057 → nein (13.057 € : 12 > 1.088 €)', { ausbildung: 'ich', alterGruppe: '<30', vermoegen: 28057 }, 'bafoeg', 'nein');
+G('BAföG ich: unter 30 Vermögen 28056 → möglich (13.056 € : 12 = 1.088 €)', { ausbildung: 'ich', alterGruppe: '<30', vermoegen: 28056 }, 'bafoeg', 'vielleicht');
 G('BAföG ich: unter 30 Vermögen 15000 → vielleicht', { ausbildung: 'ich', alterGruppe: '<30', vermoegen: 15000 }, 'bafoeg', 'vielleicht');
 G('BAföG: keine Ausbildung → nein', {}, 'bafoeg', 'nein');
 // Pflege

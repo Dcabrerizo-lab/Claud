@@ -644,6 +644,7 @@
     if (window.Ausziehen && Ausziehen.sprache) Ausziehen.sprache(); // „Ich ziehe aus“ (src/ausziehen.js) in der neuen Sprache zeichnen
     if (window.Schulden && Schulden.sprache) Schulden.sprache(); // Schulden-Liste (src/schulden.js)
     if (window.Klient) Klient.sprache(); // „Für Klient zusammenstellen“ (src/klient.js)
+    if (window.Suche) Suche.sprache(); // Suche (Lupe, src/suche.js)
     // Regeln älter als der nächste Stichtag (1. Januar): deutlich darauf hinweisen
     var veraltet = regelnVeraltet();
     $('altNotice').hidden = !veraltet; $('altNotice').textContent = veraltet ? t('alt.hinweis', { stand: standL() }) : '';
@@ -1967,7 +1968,7 @@
 
   // ----- PDF lesen (pdf.js von Mozilla): digitale PDFs liefern ihren Text direkt; eingescannte Seiten (nur Bild, kein Text)
   // werden auf dem Gerät zu einem Bild und gehen durch dieselbe Texterkennung wie ein Foto. Die Datei verlässt das Gerät nicht.
-  var PDFJS_VER = '3.11.174', PDF_MAX_SEITEN = 12, pdfjsLaden = null;
+  var PDFJS_VER = '3.11.174', PDF_MAX_SEITEN = 12, pdfjsLaden = null, pdfMitBild = false;
   function ladePdfjs() {
     if (window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
     if (pdfjsLaden) return pdfjsLaden;
@@ -2022,7 +2023,8 @@
         return doc.getPage(i).then(function (page) {
           return page.getTextContent().then(function (tc) {
             var t1 = pdfZeilen(tc.items);
-            return t1.replace(/\s/g, '').length >= 40 ? t1 : seiteAlsBild(page).then(bildText); // kaum Text: eingescannte Seite
+            if (t1.replace(/\s/g, '').length >= 40) return t1;
+            pdfMitBild = true; return seiteAlsBild(page).then(bildText); // kaum Text: eingescannte Seite
           });
         }).then(function (t1) { texte.push(t1); return naechste(); });
       }
@@ -2031,10 +2033,14 @@
   }
   function istPdf(f) { return !!f && (/pdf/i.test(f.type || '') || /\.pdf$/i.test(f.name || '')); }
 
+  // Zuletzt von Tesseract als unsicher gemeldete Wörter mit Ziffern (Konfidenz unter 70 von 100); „Brief prüfen“ markiert passende Werte farbig.
+  // Die Texterkennung des Geräts (ML Kit / Vision) liefert keine Konfidenz, dort gelten nur Plausibilitätsregeln (erweiterungen/vorschau.js).
+  var ocrUnsicher = [];
   function ocr(file) {
     var work = loadTess().then(function (T) {
       return T.createWorker('deu', 1, { langPath: 'https://cdn.jsdelivr.net/npm/@tesseract.js-data/deu/4.0.0_best_int' }).then(function (w) {
-        return w.recognize(file).then(function (r) { return w.terminate().then(function () { return r.data.text; }, function () { return r.data.text; }); });
+        return w.recognize(file).then(function (r) {
+          try { ocrUnsicher = ocrUnsicher.concat(((r.data && r.data.words) || []).filter(function (x) { return x && x.confidence < 70 && /\d/.test(x.text || ''); }).map(function (x) { return x.text; })); } catch (e) {} return w.terminate().then(function () { return r.data.text; }, function () { return r.data.text; }); });
       });
     });
     var limit = new Promise(function (_, rej) { setTimeout(function () { rej(new Error('timeout')); }, 120000); });
@@ -3033,6 +3039,7 @@
   }
   function zurueckSchritt() {
     var a = aktAnsicht, b;
+    if (sucheRueck && navEbene().pfad === sucheRueck) { sucheZurStart(); return true; } // von einem Suchtreffer: Zurück führt zur Startseite mit offenem Such-Fenster
     if (paRueck && a === paRueck && (a !== 'pflegestart' || pu.schritt === 'liste')) { if (a === 'briefe') briefOeffnen(null); paErgebnisZeigen(); return true; } // Unterseite der Pflege-Ergebnisseite
     if (a === 'pflege') { b = document.querySelector('#pflegeAssist .pa-zur'); if (b) b.click(); else paVerlassen(); return true; }
     if (a === 'pflegeinfo') { piZurueckTun(); return true; }
@@ -3080,6 +3087,7 @@
   }
   // Offene Blätter und Dialoge zuerst schließen (Zurück-Taste, Browser-Zurück, Wischen)
   function blattSchliessen() {
+    if (window.Suche && Suche.schliessen(true)) return true; // Such-Fenster (Lupe) zuerst; man bleibt auf der Seite
     if (!$('ergBlatt').hidden) { ebSchliessen(); return true; }
     if (window.Klient && Klient.offen()) { Klient.schliessen(); return true; }
     if (window.Schulden && Schulden.blattOffen && Schulden.blattOffen() && aktAnsicht !== 'schulden') { Schulden.zurueck(); return true; }
@@ -3133,6 +3141,7 @@
     var vorA = aktAnsicht, vorT = navBereit ? navEbene().tiefe : 0;
     paRueckPruefen(a); // Rückweg zur Pflege-Ergebnisseite nur auf der Unterseite selbst
     aktAnsicht = a;
+    if (a === 'start') sucheRueck = '';
     if (a === 'pflegeinfo' && !herkunft.pflegeinfo) herkunft.pflegeinfo = piZurueckZu; // z. B. über die Adresse #pflegeinfo geöffnet
     if (a !== vorA && herkunft[a] === vorA) herkunftT[a] = { von: vorA, t: vorT };
     $('app').setAttribute('data-ansicht', a);
@@ -3208,12 +3217,12 @@
   function vgHintergrund(weg) {
     if (weg) { vgHinterAb = Date.now(); return; }
     var war = vgHinterAb; vgHinterAb = 0;
-    if (war && tresor && tresor.pinAn() && tresor.bereit() && Date.now() - war >= VG_SPERRE_MS) vgSperrenJetzt();
+    if (war && tresor && tresor.bereit() && (tresor.pinAn() || tresor.aktiv().gesperrt) && Date.now() - war >= VG_SPERRE_MS) vgSperrenJetzt(); // auch ein einzeln gesperrter Vorgang ist danach wieder zu
     else if (war && Date.now() - war >= VG_SPERRE_MS && window.FristenOrdner) FristenOrdner.startHinweis(); // „Öffnen“ nach 2 Minuten im Hintergrund (höchstens einmal am Tag)
   }
   document.addEventListener('visibilitychange', function () { vgHintergrund(document.visibilityState === 'hidden'); });
   // Mit PIN schneller speichern: beim Verlassen eines Feldes sofort
-  document.addEventListener('focusout', function (e) { if (tresor && tresor.pinAn() && tresor.bereit() && e.target && /^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName) && saveTimer) flush(); });
+  document.addEventListener('focusout', function (e) { if (tresor && tresor.bereit() && (tresor.pinAn() || tresor.aktiv().gesperrt) && e.target && /^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName) && saveTimer) flush(); });
   // Web: in einem anderen Fenster geändert -> neu laden, damit nichts überschrieben wird
   window.addEventListener('storage', function (e) { if (e.key === Vorgaenge.SCHLUESSEL) { clearTimeout(saveTimer); saveTimer = null; vgNeuStart(); } });
   // Angaben des geöffneten Vorgangs neu laden (nach Wechsel, neuem Vorgang, Löschen)
@@ -3345,26 +3354,40 @@
       bb.addEventListener('click', function () { vgBearb = !vgBearb; vgRender(); var x = $('vgBearb'); if (x) x.focus(); });
       kopfZ.appendChild(bb);
     }
+    if (!mehrere && Vorgaenge.webCrypto() && a.name && !a.gesperrt) { // ein Vorgang mit Namen: Sperren ohne „Bearbeiten“
+      var se = vgEl('button', 'chip', t('vgp.sperren')); se.type = 'button'; se.id = 'vgGSperrenEins'; se.setAttribute('aria-expanded', 'false');
+      se.addEventListener('click', function () { vgGForm(kopfZ, se, liste[0], 'sperren'); });
+      kopfZ.appendChild(se);
+    }
     g.appendChild(kopfZ);
     if (!mehrere) h3.classList.add('vh'); // ein Vorgang: keine Liste, Überschrift nur für Screenreader
     var msg = vgEl('p', 'msg', msgAlt); msg.id = 'vgMsg'; msg.setAttribute('role', 'status');
     var ul = vgEl('ul', 'vg-liste');
     if (mehrere) liste.forEach(function (v) {
-      var offen = v.id === a.id, li = vgEl('li', offen ? 'vg-offen' : '');
-      var z = vgEl(offen ? 'div' : 'button', 'vg-zeile'); if (!offen) { z.type = 'button'; z.addEventListener('click', function () { vgOeffnen(v.id); var h = $('vgH'); if (h) h.focus(); }); }
-      z.setAttribute('data-vg-name', vgName(v));
+      var offen = v.id === a.id, zu = v.gesperrt && !v.offen, li = vgEl('li', (offen ? 'vg-offen' : '') + (v.gesperrt ? ' vg-gesperrt' : ''));
+      var z = vgEl(offen ? 'div' : 'button', 'vg-zeile'); if (!offen) { z.type = 'button'; z.addEventListener('click', function () { if (zu) { vgGForm(li, z, v, 'oeffnen'); return; } vgOeffnen(v.id); var h = $('vgH'); if (h) h.focus(); }); }
+      if (zu) z.setAttribute('aria-expanded', 'false');
+      z.setAttribute('data-vg-name', zu ? vgGTitel(v) : vgName(v));
       if (offen) z.setAttribute('aria-current', 'true');
-      z.appendChild(vgEl('span', 'vg-kreis', vgKuerzel(v))).setAttribute('aria-hidden', 'true');
-      var tx = vgEl('span', 'vg-txt'); tx.appendChild(vgEl('b', null, vgName(v)));
-      var st = vgEl('span', 'vg-st', offen ? t('vg.offen') : t('vg.geaendert', { datum: vgDatum(v.geaendert) }));
+      if (v.gesperrt) z.appendChild(vgSchloss()); else z.appendChild(vgEl('span', 'vg-kreis', vgKuerzel(v))).setAttribute('aria-hidden', 'true');
+      // Gesperrt und zu: nur neutraler Titel (und ein freiwilliger Kurzname), kein Datum
+      var tx = vgEl('span', 'vg-txt'); tx.appendChild(vgEl('b', null, zu ? t('vgp.titel') : vgName(v)));
+      var st = vgEl('span', 'vg-st', offen ? t(v.gesperrt ? 'vgp.st.offen' : 'vg.offen') : zu ? (v.name || t('vgp.st.zu')) : t('vg.geaendert', { datum: vgDatum(v.geaendert) }));
       tx.appendChild(st);
-      if (v.ablauf) tx.appendChild(vgEl('span', 'vg-st vg-ablauf', t('vg.loeschtAm', { datum: vgDatum(v.ablauf) })));
+      if (v.ablauf && !zu) tx.appendChild(vgEl('span', 'vg-st vg-ablauf', t('vg.loeschtAm', { datum: vgDatum(v.ablauf) })));
       z.appendChild(tx);
       z.appendChild(vgEl('span', offen ? 'vg-haken' : 'zeile-pfeil', offen ? '✓' : '›')).setAttribute('aria-hidden', 'true');
       li.appendChild(z);
       if (vgBearb) {
         var btns = vgEl('div', 'btns');
-        var knopf = function (key, fn, cls) { var b = vgEl('button', cls || 'chip', t(key)); b.type = 'button'; b.setAttribute('aria-label', t(key) + ': ' + vgName(v)); b.addEventListener('click', fn); btns.appendChild(b); return b; };
+        var knopf = function (key, fn, cls) { var b = vgEl('button', cls || 'chip', t(key)); b.type = 'button'; b.setAttribute('aria-label', t(key) + ': ' + (zu ? vgGTitel(v) : vgName(v))); b.addEventListener('click', fn); btns.appendChild(b); return b; };
+        if (v.gesperrt) { // gesperrt: nur Sperre aufheben (mit PIN) und Löschen (ohne PIN, mit Rückfrage)
+          var ak = knopf('vgp.aufheben', function () { vgGForm(li, ak, v, 'aufheben'); }); ak.setAttribute('aria-expanded', 'false');
+          var lg = knopf('vg.loeschen', function () {
+            loeschFragen(li, lg, loeschEinsTitel({ name: zu ? vgGTitel(v) : v.name }), loeschWas(), function () { vgLoeschen(v.id, $('vgMsg')); var h = $('vgH'); if (h) h.focus(); }, true);
+          }, 'chip vg-weg');
+          li.appendChild(btns); ul.appendChild(li); return;
+        }
         knopf('vg.umbenennen', function () {
           var neuN = vgEl('form', 'vg-form vg-umb'); neuN.setAttribute('novalidate', '');
           var l = vgEl('label', null, t('vg.name.label')); l.setAttribute('for', 'vgUmb-' + v.id);
@@ -3378,6 +3401,7 @@
           flush();
           if (tresor.kopie(v.id, vgKopieName(vgName(v)))) { vgNeuLaden(); vgMsg(t('vg.geoeffnet', { name: vgName(tresor.aktiv()) })); var h = $('vgH'); if (h) h.focus(); }
         });
+        if (Vorgaenge.webCrypto()) { var sk = knopf('vgp.sperren', function () { vgGForm(li, sk, v, 'sperren'); }); sk.setAttribute('aria-expanded', 'false'); }
         var lk = knopf('vg.loeschen', function () {
           loeschFragen(li, lk, loeschEinsTitel(v), loeschWas(), function () { vgLoeschen(v.id, $('vgMsg')); var h = $('vgH'); if (h) h.focus(); }, true);
         }, 'chip vg-weg');
@@ -3480,6 +3504,67 @@
     lz('vgAlle', t('l.alle'), t('l.alleWas'), function () { angabenLoeschen(true); vgFormAuf = false; vgBearb = false; $('loeschMsg').textContent = t('l.okAlle'); var h = $('h-sicher'); if (h) h.focus(); });
     if (alt && $(alt) && alt !== 'vgMsg' && alt !== 'vgMsgS') { try { $(alt).focus({ preventScroll: true }); } catch (e) {} }
     else if (!$('es-sicher').hidden && (!document.activeElement || document.activeElement === document.body)) { var hs = $('h-sicher'); hs.tabIndex = -1; hs.focus({ preventScroll: true }); } // Knopf neu gezeichnet: Fokus auf die Überschrift
+  }
+  // ----- Einzelne Vorgänge mit eigener PIN sperren (Vorgaenge: gSperren, gOeffnen, gAufheben) -----
+  // Gesperrt: in der Liste nur „Gesperrter Vorgang“ und Schloss (Kurzname nur, wenn ausdrücklich eingetragen). Öffnen verlangt die PIN;
+  // nach dem Wechsel und dem Neustart ist er wieder zu. Fristen darin erscheinen nur, solange er geöffnet ist. Löschen geht ohne PIN.
+  function vgGTitel(v) { return v.name ? t('vgp.titel') + ' ' + v.name : t('vgp.titel'); }
+  function vgSchloss() {
+    var k = vgEl('span', 'vg-kreis vg-schloss'); k.setAttribute('aria-hidden', 'true');
+    var ns = 'http://www.w3.org/2000/svg', svg = document.createElementNS(ns, 'svg'); svg.setAttribute('viewBox', '0 0 24 24');
+    [['rect', { x: '5', y: '11', width: '14', height: '10', rx: '2' }], ['path', { d: 'M8 11V8a4 4 0 0 1 8 0v3' }]].forEach(function (x) {
+      var e = document.createElementNS(ns, x[0]); Object.keys(x[1]).forEach(function (n) { e.setAttribute(n, x[1][n]); }); svg.appendChild(e);
+    });
+    k.appendChild(svg); return k;
+  }
+  // art: 'sperren' (PIN zweimal, freiwilliger Kurzname, kurze Erklärung), 'oeffnen' oder 'aufheben' (PIN einmal)
+  function vgGForm(nach, ausloeser, v, art) {
+    var alt = $('vgGForm'); if (alt) { var gleich = alt.getAttribute('data-vg') === v.id + art; alt.remove(); document.querySelectorAll('[aria-expanded="true"]').forEach(function (x) { if (x.closest('#setHaushalte')) x.setAttribute('aria-expanded', 'false'); }); if (gleich) { ausloeser.focus(); return; } }
+    ausloeser.setAttribute('aria-expanded', 'true');
+    var f = vgEl('form', 'vg-form vg-gform'); f.id = 'vgGForm'; f.setAttribute('novalidate', ''); f.setAttribute('data-vg', v.id + art);
+    var feld = function (id, key, max, typ) {
+      var l = vgEl('label', null, t(key)); l.setAttribute('for', id);
+      var i = vgEl('input'); i.id = id; i.type = typ || 'password'; i.setAttribute('autocomplete', 'off'); i.maxLength = max;
+      if (!typ) i.setAttribute('inputmode', 'numeric');
+      f.appendChild(l); f.appendChild(i); return i;
+    };
+    var p1 = feld('vgGPin', art === 'sperren' ? 'vgp.pinNeu' : 'vgp.pin', 8), p2 = art === 'sperren' ? feld('vgGPin2', 'vg.pin.label2', 8) : null, kurz = null;
+    if (art === 'sperren') {
+      kurz = feld('vgGKurz', 'vgp.kurz', Vorgaenge.NAME_MAX, 'text'); kurz.setAttribute('aria-describedby', 'vgGKurzH');
+      var kh = vgEl('p', 'small muted', t('vgp.kurz.t')); kh.id = 'vgGKurzH'; f.appendChild(kh);
+      var er = vgEl('ul', 'small vg-gerkl'); ['vgp.t0', 'vgp.t1', 'vgp.t2', 'vgp.t3'].forEach(function (k) { er.appendChild(vgEl('li', null, t(k))); }); f.appendChild(er);
+    } else f.appendChild(vgEl('p', 'small muted', t('vgp.vergessen')));
+    var b = vgEl('button', 'btn', t(art === 'sperren' ? 'vgp.sperren' : art === 'oeffnen' ? 'vgp.oeffnen' : 'vgp.aufheben')); b.type = 'submit'; f.appendChild(b);
+    var m = vgEl('p', 'msg'); m.setAttribute('role', 'status'); f.appendChild(m);
+    var warten = function (ms) { b.disabled = true; m.textContent = t('vg.sperre.warten', { s: String(Math.ceil(ms / 1000)) }); setTimeout(function () { if (document.body.contains(b)) { b.disabled = false; m.textContent = ''; } }, ms); };
+    f.addEventListener('submit', function (e) {
+      e.preventDefault(); if (b.disabled) return;
+      var pin = p1.value;
+      if (!Vorgaenge.VPIN_RE.test(pin)) { m.textContent = t('vgp.format'); p1.focus(); return; }
+      if (p2 && pin !== p2.value) { m.textContent = t('vg.pin.ungleich'); p2.focus(); return; }
+      b.disabled = true; m.textContent = t('vg.bitte');
+      if (undoFn) undoWeg(); // „Rückgängig“ (nach Löschen) holt keinen Stand von vor dem Sperren zurück
+      flush(); var vorher = tresor.aktiv().id;
+      if (art === 'sperren') {
+        tresor.gSperren(v.id, pin, kurz.value).then(function (ok) {
+          p1.value = ''; p2.value = '';
+          if (!ok) { b.disabled = false; m.textContent = t('vg.fehler.speicher'); return; }
+          if (tresor.aktiv().id !== vorher) { clearTimeout(saveTimer); saveTimer = null; vgNeuLaden(); } else vgRender(); // der geöffnete wurde gesperrt: ein anderer ist jetzt offen
+          vgMsg(t('vgp.ok')); var h = $('vgH'); if (h) h.focus();
+        });
+        return;
+      }
+      tresor[art === 'oeffnen' ? 'gOeffnen' : 'gAufheben'](v.id, pin).then(function (r) {
+        p1.value = '';
+        if (!r.ok) { b.disabled = false; m.textContent = t('vg.sperre.falsch'); if (r.warten) warten(r.warten); p1.focus(); return; }
+        if (undoFn) undoWeg();
+        if (tresor.aktiv().id !== vorher) { clearTimeout(saveTimer); saveTimer = null; vgNeuLaden(); } else vgRender();
+        vgMsg(art === 'oeffnen' ? t('vg.geoeffnet', { name: vgName(tresor.aktiv()) }) : t('vgp.aufgehoben')); var h = $('vgH'); if (h) h.focus();
+      });
+    });
+    if (nach.tagName === 'LI') nach.appendChild(f); else nach.parentNode.insertBefore(f, nach.nextSibling);
+    var rest = tresor.gWarten(v.id); if (rest > 0) warten(rest);
+    p1.focus();
   }
   // PIN festlegen, ändern (mitAlt) oder ausschalten (nurAus). Ändern und Ausschalten fragen die bisherige PIN ab.
   // PIN-Feld schließen, ohne etwas zu ändern (Abbrechen): Schalter und Speicher bleiben, wie sie sind
@@ -3592,6 +3677,12 @@
       if (az && az.von && az.n) zeile('ausziehen', t('ordner.ausziehen'), t('ordner.ausziehen.n', { n: az.n, von: az.von }), '<path d="M4 20V9l8-5 8 5v11"/><path d="M14 14h6M17 11l3 3-3 3"/>', function () { oeffneVon('ausziehen', true); });
     }
     if (pa && pa.schaetzung) zeile('pflege', t('ordner.pflege'), paStandText(), '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>', function () { oeffneVon('pflegestart', true); });
+    // Blatt von der Beratung (Weitergabe per QR-Code/SoLo-Datei): beim Laden erneut streng geprüft, angezeigt nur als Text
+    if (window.Weitergabe && window.Klient && tresor && tresor.bereit()) {
+      var kbRoh = null; Store.get('lotse.klient-blatt', function (v) { kbRoh = v; });
+      var kbDoc = null; try { var kbP = kbRoh ? Weitergabe.pruefen({ s: 1, typ: 'auswahl', blatt: JSON.parse(kbRoh) }) : null; kbDoc = kbP && kbP.blatt; } catch (e) { kbDoc = null; }
+      if (kbDoc) zeile('beratung', t('kw.ordner'), t('kw.ordner.st', { n: kbDoc.abschnitte.length }), '<path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7M14 3v5h5"/>', function () { Klient.zeigen(kbDoc); });
+    }
     if (pf && pf.art && pf.schritt > 0) zeile('pfaendung', t('ordner.pfaendung'), t(pf.art === 'lohn' ? 'pf.lohn' : 'pf.konto'), '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/>', function () { oeffneVon('pfaendung', true); });
     ul.hidden = !ul.children.length;
   }
@@ -3702,7 +3793,7 @@
   var paVonStart = false; // Einschätzung aus der Pflege-Startkachel geöffnet: „Zurück“ führt zur Auswahl
   var paRueck = ''; // Unterseite, die aus der Ergebnisseite geöffnet wurde ('briefe', 'leistungen', 'pflegestart'): „← Zurück“ führt zur Ergebnisseite
   function paVomLeistungsCheck() { return !paVonStart && herkunftVon('pflege') === 'leistungen'; }
-  function paVerlassen() { paRueck = ''; if (paVonStart) puOeffnen('wahl'); else if (herkunftVon('pflege') === 'leistungen') paZurueck('paStart'); else zurueckZurHerkunft('pflege'); }
+  function paVerlassen() { if (aktAnsicht === 'pflege' && sucheRueck.indexOf('pflege/') === 0) { sucheZurStart(); return; } paRueck = ''; if (paVonStart) puOeffnen('wahl'); else if (herkunftVon('pflege') === 'leistungen') paZurueck('paStart'); else zurueckZurHerkunft('pflege'); }
   // Unterseite der Ergebnisseite öffnen: Rückweg merken
   function paUnterseite(ziel) { paRueck = ziel; if (aktAnsicht === ziel) paRueckPruefen(ziel); }
   // Beim Ansichtswechsel: Rückweg nur auf der Unterseite selbst (der gemeinsame „← Zurück“ führt dann über zurueckSchritt zur Ergebnisseite)
@@ -4088,7 +4179,7 @@
     if (!briefArt) briefOeffnen(r.art);
     if (r.art === 'pk') { $('pf-text').value = text; $('pf-lesen').click(); briefFormular(); elNachricht(t('el.erkanntPk', { titel: ppEin(r.titel) })); return; }
     if (r.art === 'af') { setScanResult(scanFromText(text)); elNachricht(t('el.erkanntOhne', { titel: ppEin(r.titel) })); return; }
-    var n = window.PruefpaketLesen ? window.PruefpaketLesen.fuelle(r.art, r, haushalt()) : 0;
+    var n = window.PruefpaketLesen ? window.PruefpaketLesen.fuelle(r.art, r, haushalt(), elQuelle) : 0;
     briefFormular();
     elNachricht(n ? t('el.erkannt', { titel: ppEin(r.titel), n: String(n) }) : t('el.keineWerte', { titel: ppEin(r.titel) }));
   }
@@ -4108,24 +4199,28 @@
       }).then(function (r) { weg(); res(((r && r.lines) || []).join('\n')); }, function (e) { weg(); rej(e); });
     });
   }
-  function elFertig(text) { elBusy = false; $('elScan').disabled = false; elGesammelt = (elGesammelt ? elGesammelt + '\n' : '') + text; elPlatz(); textLesen(elGesammelt); }
+  // Woher der gelesene Text stammt: Foto (Texterkennung) oder Text/PDF. Bei Fotos prüft „Brief prüfen“ zusätzlich die Plausibilität.
+  var elQuelle = { foto: false, unsicher: [] };
+  function elQuelleNeu(foto) { if (!elGesammelt) elQuelle = { foto: false, unsicher: [] }; if (foto) elQuelle.foto = true; ocrUnsicher = []; }
+  function elFertig(text) { elQuelle.unsicher = elQuelle.unsicher.concat(ocrUnsicher); ocrUnsicher = []; elBusy = false; $('elScan').disabled = false; elGesammelt = (elGesammelt ? elGesammelt + '\n' : '') + text; elPlatz(); textLesen(elGesammelt); }
   function elFehler(e) { elBusy = false; $('elScan').disabled = false; elNachricht(/cancel/i.test(String(e && (e.message || e) || '')) ? '' : t('el.fehler')); }
   $('elScan').addEventListener('click', function () {
     if (elBusy) return;
-    if (NATIVE) { elBusy = true; $('elScan').disabled = true; elNachricht(t('el.lese')); fotoText().then(elFertig, elFehler); return; }
+    if (NATIVE) { elBusy = true; $('elScan').disabled = true; elNachricht(t('el.lese')); elQuelleNeu(true); fotoText().then(elFertig, elFehler); return; }
     $('elFile').value = ''; $('elFile').click();
   });
   $('elPdf').addEventListener('click', function () { if (elBusy) return; $('elPdfFile').value = ''; $('elPdfFile').click(); });
   $('elPdfFile').addEventListener('change', function () {
     var f = $('elPdfFile').files && $('elPdfFile').files[0]; if (!f || elBusy) return;
     elBusy = true; $('elScan').disabled = true; $('elPdf').disabled = true;
+    var vorher = elQuelle; elQuelle = { foto: false, unsicher: [] }; ocrUnsicher = []; pdfMitBild = false;
     pdfLesen(f, function (i, n) { elNachricht(t('el.pdfSeite', { n: String(i), m: String(n) })); }).then(function (text) {
-      $('elPdf').disabled = false; elGesammelt = ''; elFertig(text);
-    }, function () { elBusy = false; $('elScan').disabled = false; $('elPdf').disabled = false; elNachricht(t('el.pdfFehler')); });
+      $('elPdf').disabled = false; elGesammelt = ''; if (pdfMitBild) elQuelle.foto = true; elFertig(text);
+    }, function () { elQuelle = vorher; elBusy = false; $('elScan').disabled = false; $('elPdf').disabled = false; elNachricht(t('el.pdfFehler')); });
   });
   $('elFile').addEventListener('change', function () {
     var f = $('elFile').files && $('elFile').files[0]; if (!f) return;
-    elBusy = true; $('elScan').disabled = true; elNachricht(t('el.lese'));
+    elBusy = true; $('elScan').disabled = true; elNachricht(t('el.lese')); elQuelleNeu(true);
     ocr(f).then(elFertig, elFehler);
   });
   $('elPaste').addEventListener('click', function () { var box = $('elPasteBox'); box.hidden = !box.hidden; $('elPaste').setAttribute('aria-expanded', String(!box.hidden)); if (!box.hidden) $('elText').focus(); });
@@ -4138,7 +4233,7 @@
   if ($('an-eingabe')) $('an-eingabe').hidden = true; // in der App liest das Einlesen oben den Brief
   // Antragsformular: Hinweis auf das Nachladen der Texterkennung gilt nur für die Web-Version; in der App liest das Gerät selbst
   if (NATIVE && $('scLocalNote')) { $('scLocalNote').setAttribute('data-t', 'el.privat'); $('scLocalNote').textContent = t('el.privat'); }
-  $('elLesen').addEventListener('click', function () { elGesammelt = ''; textLesen($('elText').value); });
+  $('elLesen').addEventListener('click', function () { elGesammelt = ''; elQuelle = { foto: false, unsicher: [] }; textLesen($('elText').value); });
 
   function briefZurueckTun() {
     elGesammelt = ''; var war = null, k, art = null; document.querySelectorAll('#checkBox .pp-teil').forEach(function (s) { if (!s.hidden) war = s.id; });
@@ -4272,6 +4367,67 @@
       return out;
     });
   }
+  // ----- Suche (Lupe oben auf jeder Seite, src/suche.js): Treffer öffnen die Seite über die vorhandenen Wege; „Zurück“ führt zur Startseite mit Suche -----
+  var sucheRueck = ''; // Ebene (navEbene().pfad), die ein Suchtreffer geöffnet hat
+  function sucheTitel(z, de) {
+    var k = z[2];
+    if (k.indexOf('N:') === 0) return de || lang === 'de' ? Rules.NAMES[k.slice(2)] : t('n.' + k.slice(2));
+    return de ? (I18N.de[k] || '') : t(k);
+  }
+  function sucheZurStart() {
+    var a = aktAnsicht;
+    if (a === 'sparen') gsOeffne('');
+    if (a === 'einst' || a === 'ordner') usZeigen(a, '', false);
+    if (a === 'briefe' && briefArt) briefOeffnen(null);
+    if (a === 'pflegestart') pu.schritt = 'wahl';
+    if (a === 'pfaendung') { pf.art = ''; pf.schritt = 0; }
+    if (a === 'ausziehen' && window.Ausziehen) for (var i = 0; i < 6 && Ausziehen.offen(); i++) Ausziehen.zurueck();
+    herkunft = {}; sucheRueck = '';
+    zeigeAnsicht('start', false);
+    window.scrollTo(0, 0);
+    Suche.fokus();
+  }
+  function sucheGehe(id) {
+    var k = id.split('-'), x = k.slice(1).join('-'), DR = ['konto', 'strom', 'mahn', 'miete', 'check'];
+    // Aus dem Such-Fenster (Lupe) direkt von der aktuellen Seite aus öffnen, ohne Umweg über die Startseite (der Verlauf würde sonst zurückspringen);
+    // „Zurück“ führt trotzdem zur Startseite mit Suche (sucheRueck)
+    if (aktAnsicht !== 'start') { herkunft = {}; if (aktAnsicht === 'einst' || aktAnsicht === 'ordner') usZeigen(aktAnsicht, '', false); if (aktAnsicht === 'briefe' && briefArt) briefOeffnen(null); }
+    if (id === 'check') oeffneVon('leistungen', true);
+    else if (k[0] === 'l') { // Leistung: Hilfen-Check; gibt es schon ein Ergebnis, direkt zur Karte der Leistung
+      oeffneVon('leistungen', true);
+      var c = $('c-' + x); if (c && !c.closest('[hidden]')) { var d = c.closest('details:not(.karte)'); if (d) d.open = true; karteAuf('c-' + x); try { c.scrollIntoView({ block: 'start' }); } catch (e) {} var s = c.querySelector('summary'); if (s) s.focus({ preventScroll: true }); }
+    }
+    else if (id === 'brief') oeffneVon('briefe', true);
+    else if (k[0] === 'b') { if (briefArt) briefOeffnen(null); oeffneVon('briefe', false); briefOeffnen(x); }
+    else if (id === 'geld') { gsOeffne(''); oeffneVon('sparen', true); }
+    else if (id === 'g-bleibt' || id === 'g-lohn') { pf = { art: id === 'g-lohn' ? 'lohn' : '', schritt: id === 'g-lohn' ? 1 : 0, netto: pf.netto, pers: pf.pers, kg: pf.kg, kiz: pf.kiz }; oeffneVon('pfaendung', true); }
+    else if (id === 'g-pkonto') pfBescheinigung();
+    else if (id === 'g-liste') oeffneVon('schulden', true);
+    else if (id === 'g-haushalt') oeffneVon('haushalt', true);
+    else if (id === 'g-dringend' || id === 'g-inkasso' || id === 'g-hilfe' || id === 'g-planen') gsSprung(x);
+    else if (id === 'g-geldstrafe' || DR.indexOf(x) >= 0) gsSprung('dringend', '', id === 'g-geldstrafe' ? 'geld' : x);
+    else if (['pruef', 'schreiben', 'rate'].indexOf(x) >= 0) { if (x === 'schreiben') Geld.schreibenVorbelegen(''); gsSprung('inkasso', '', x); }
+    else if (['finden', 'termin', 'ablauf'].indexOf(x) >= 0 || id === 'g-bmappe') gsSprung('hilfe', '', id === 'g-bmappe' ? 'mappe' : x);
+    else if (k[1] === 'sp') gsSprung('planen', k[2]);
+    else if (id === 'g-abschlag' || id === 'g-tarif') gsSprung('planen', 'strom', x);
+    else if (id === 'pflege') puOeffnen('wahl');
+    else if (id === 'p-hilfe') puOeffnen('pg');
+    else if (id === 'p-schaetzen') paOeffnen(true);
+    else if (id === 'ausziehen' || k[0] === 'a') { $('goAusziehen').click(); if (k[0] === 'a' && window.Ausziehen) Ausziehen.oeffnen(x); }
+    // Antragsmappe: seit dem aufgeräumten Hilfen-Check (#95) über den grünen Knopf „Briefe … machen“ unter den Karten; ohne Ergebnis nur der Leistungs-Check
+    else if (id === 'mappe') { oeffneVon('leistungen', true); var mk = $('mappeMake'); if (mk && !mk.closest('[hidden]')) { try { mk.scrollIntoView({ block: 'center' }); } catch (e) {} mk.focus({ preventScroll: true }); } }
+    else if (id === 'einst' || id === 'ordner') { usZeigen(id, '', false); zeigeAnsicht(id, true); }
+    else if (k[0] === 'e') { zeigeAnsicht('einst', false); usZeigen('einst', x, true); }
+    else if (id === 'o-fristen') { zeigeAnsicht('ordner', false); usZeigen('ordner', 'fristen', true); }
+    else if (id === 'o-ergebnis') { oeffneVon('leistungen', false); var e = $('ergebnis'); if (e) { try { e.scrollIntoView({ block: 'start' }); } catch (x2) {} e.focus({ preventScroll: true }); } }
+    if (aktAnsicht !== 'start') { sucheRueck = navEbene().pfad; if (navBereit) Navigation.melde(); }
+  }
+  if (window.Suche) {
+    Suche.init({ t: t, lang: function () { return lang; }, schluessel: function () { return lang + (lang === 'de' && einfachSprache ? '-e' : ''); },
+      titel: function (z) { return sucheTitel(z, false); }, titelDe: function (z) { return sucheTitel(z, true); },
+      gehe: sucheGehe, check: function () { sucheGehe('check'); } });
+    Suche.sprache();
+  }
   if (window.Klient) {
     Klient.init({
       t: t, lang: function () { return lang; }, beratung: function () { return beratung; },
@@ -4298,7 +4454,32 @@
       native: function () { return NATIVE; },
       druckArt: function () { return NATIVE ? (plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen') : 'web'; },
       pdf: function (seiten, titel, name, msg, art, rtlHinweis) { pdfAusgeben(seiten, titel, name, msg, art, rtlHinweis); },
-      blatt: function (an) { $('app').classList.toggle('pm', !!an); if (an) { try { window.scrollTo(0, 0); } catch (e) {} } }
+      blatt: function (an) { $('app').classList.toggle('pm', !!an); if (an) { try { window.scrollTo(0, 0); } catch (e) {} } },
+      // Weitergabe (src/weitergabe.js): gespeicherte Eingaben des geöffneten Vorgangs (nur lesen) und Datei über das Teilen-Menü der App
+      vorgangDaten: function () {
+        var o = {}; if (!tresor || !tresor.bereit()) return o;
+        flush(); var a = tresor.aktiv(); if (!a) return o;
+        Vorgaenge.DATEN.forEach(function (k) { tresor.ueberall(k).forEach(function (v) { if (v.id === a.id && v.wert != null) o[k] = v.wert; }); });
+        return o;
+      },
+      nativDatei: function (name, text, msg) {
+        var fs = plug('Filesystem'), sh = plug('Share');
+        if (!fs || !sh) { msg.textContent = t('f.pdfFail'); return Promise.resolve(); }
+        return fs.writeFile({ path: name, data: text, directory: 'CACHE', encoding: 'utf8' })
+          .then(function (r) { return sh.share({ title: name, files: [r.uri] }).then(function () {}, function () {}); })
+          .then(function () { return fs.deleteFile({ path: name, directory: 'CACHE' }).catch(function () {}); })
+          .catch(function () { msg.textContent = t('f.pdfFail'); });
+      }
+    });
+  }
+  // Von der Beratung bekommen (src/weitergabe.js, für alle Nutzer): SoLo-Datei oder QR-Code → neuer Vorgang (bestehende nie überschreiben)
+  if (window.Weitergabe) {
+    Weitergabe.importInit({
+      t: t, bereit: function () { return !!(tresor && tresor.bereit()); },
+      importieren: function (name, daten) { flush(); var id = tresor.importieren(name, daten); if (id) vgRender(); return id; },
+      oeffnen: function (id) { vgOeffnen(id); },
+      // Fristen wie beim Laden prüfen (src/fristen.js normiere): Unbekanntes fällt weg; „Erinnerung beim Öffnen“ gilt dann wie für eigene Fristen
+      fristen: function (obj) { try { return JSON.stringify(window.FristenOrdner ? FristenOrdner.normiere(obj) : { v: 1, e: [] }); } catch (e) { return null; } }
     });
   }
   window.addEventListener('hashchange', function () { var a = location.hash.slice(1); if (ANSICHTEN.indexOf(a) >= 0 && a !== aktAnsicht) zeigeAnsicht(a, true); });

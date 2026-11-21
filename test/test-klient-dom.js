@@ -122,7 +122,7 @@ function teil2() {
     inSprache: (l, e, fn) => fn(), inhalt,
     vorgaenge: () => [{ id: 'a', name: 'M.B.', aktiv: true }, { id: 'b', name: 'Geheimer Name', gesperrt: true }],
     daten: () => ({}),
-    oeffneGesperrt: (id, pin) => (pin === '1234' ? Promise.resolve({ geheim: true }) : Promise.reject(new Error('PIN'))),
+    oeffneGesperrt: (id, pin) => (pin === '1234' ? Promise.resolve({ geheim: true }) : Promise.reject(Object.assign(new Error(pin === '9999' ? 'warten' : 'falsche PIN'), pin === '9999' ? { warten: 30000, falsch: false } : { falsch: true, warten: 0 }))),
     schreiben: () => { geschrieben++; },
     datum: () => '01.01.2027', rtl: () => false, native: () => nativ, druckArt: () => 'drucken',
     pdf: (seiten, titel, name, msg, art) => { pdfAufruf = { seiten, name, art }; }, blatt: () => {}
@@ -139,8 +139,11 @@ function teil2() {
   sel.value = 'b'; fire(sel, 'change');
   check('Modul: Auswahl fragt die PIN ab', !d.querySelector('.kb-pin').hidden && d.activeElement === $('kbPin'));
   $('kbPin').value = '0000'; $('kbPinOk').click();
-  setTimeout(() => {
+  setTimeout(async () => {
     check('Modul: Falsche PIN: nicht verwendbar, zurück zum geöffneten Vorgang, Meldung', $('kbVorgang').value === 'a' && /Kindergeld/.test($('kbSeite').textContent) && !/Wohngeld/.test($('kbSeite').textContent) && $('kbVgMsg').textContent === DE['kb.pinFalsch']);
+    { const s3 = $('kbVorgang'); s3.value = 'b'; fire(s3, 'change'); $('kbPin').value = '9999'; $('kbPinOk').click(); }
+    await new Promise((r) => setTimeout(r, 0));
+    check('Modul: Wartezeit nach Fehlversuchen: eigene Meldung mit Sekunden, nicht „PIN falsch“', $('kbVgMsg').textContent === DE['vg.sperre.warten'].replace('{s}', '30') && $('kbVorgang').value === 'a');
     const s2 = $('kbVorgang'); s2.value = 'b'; fire(s2, 'change');
     $('kbPin').value = '1234'; $('kbPinOk').click();
     setTimeout(() => {

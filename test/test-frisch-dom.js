@@ -105,6 +105,22 @@ setTimeout(() => {
     check('netto: Wohngeld-Karte nennt alle fehlenden Angaben auf einmal (Postleitzahl, Brutto)', !!wg && wg.textContent.indexOf(I18N.de['gn.plz']) >= 0 && wg.textContent.indexOf(I18N.de['gn.brutto']) >= 0, wg && wg.textContent.slice(0, 600));
     check('netto: Vermögen wird nicht doppelt genannt', !!wg && wg.textContent.split(I18N.de['gn.vermoegen']).length - 1 <= 1);
 
+    // ---------- Erkannte Werte aus dem Brief: erst prüfen, dann Ergebnis ----------
+    kachel('jc');
+    if ($('elText').closest('[hidden]')) klick(w, $('elPaste'));
+    $('elText').value = 'Jobcenter Musterstadt\nDatum: 12.03.2026\nGrundsicherungsgeld nach dem SGB II\nRegelbedarf 563,00\nKosten der Unterkunft und Heizung 755,00\nZahlbetrag 1.318,00';
+    klick(w, $('elLesen'));
+    check('erkannt: Hinweiszeile oben mit „Werte stimmen“', !$('bs-erk').hidden && $('bs-erk').textContent.indexOf(I18N.de['bp.erk.t']) >= 0 && !!$('bs-erk-ok'));
+    check('erkannt: Felder markiert', $('bs-b-regel').classList.contains('pp-erkannt') && $('bs-b-zahl').classList.contains('pp-erkannt'));
+    check('erkannt: Ergebnis wartet auf Prüfung', $('bs-erg').textContent.indexOf(I18N.de['bp.erk.warte']) >= 0, $('bs-erg').textContent.slice(0, 200));
+    check('erkannt: eingefügter Text ohne „schwer zu lesen“', !d.querySelector('#p-bescheid .pp-unsicher'));
+    w.__solo.lang('en');
+    check('erkannt: Hinweis übersetzt (Englisch)', $('bs-erk-ok').textContent === I18N.en['bp.erk.ok'] && $('bs-erg').textContent.indexOf(I18N.en['bp.erk.warte']) >= 0, [$('bs-erk-ok').textContent, $('bs-erg').textContent.slice(0, 120)]);
+    w.__solo.lang('de');
+    klick(w, $('bs-erk-ok'));
+    check('erkannt: nach „Werte stimmen“ Markierung weg und Ergebnis da', $('bs-erk').hidden && !d.querySelector('#p-bescheid .pp-erkannt') && $('bs-erg').textContent.indexOf(I18N.de['bp.erk.warte']) < 0);
+    klick(w, $('briefZurueck'));
+
     // ---------- Stand mit übersetztem Monat ----------
     w.__solo.lang('ar');
     check('S7: Arabisch: Stand ohne deutschen Monatsnamen', !/November/.test($('stand').textContent) && /2026/.test($('stand').textContent), $('stand').textContent);
