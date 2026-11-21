@@ -19,6 +19,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   // Auf den Zustand warten statt fester Wartezeit; trifft er nicht ein, schlägt die folgende Prüfung fehl
   const warte = (fn, arg) => p.waitForFunction(fn, arg, { timeout: 5000 }).catch(() => {});
   const sichtbar = (sel) => p.waitForSelector(sel, { state: 'visible', timeout: 5000 }).catch(() => {});
+  const DIAG = async (m) => console.log('DIAG', m, JSON.stringify(await p.evaluate(() => { const e = document.getElementById('paStart'); const kette = []; for (let x = e; x && x !== document.body; x = x.parentElement) { const cs = getComputedStyle(x); if (x.hidden || cs.display === 'none' || cs.visibility === 'hidden') kette.push((x.id || x.className || x.tagName) + (x.hidden ? '[hidden]' : '') + ':' + cs.display); } return { hash: location.hash, views: [...document.querySelectorAll('[id^=v-]')].filter((v) => !v.hidden).map((v) => v.id), kette, text: e && e.textContent, rect: e && JSON.stringify(e.getBoundingClientRect()) }; })));
   await p.goto(APP + '#leistungen'); await sichtbar('#paStart');
   ok('Knopf im Fragebogen', await p.isVisible('#paStart') && /einschätzen/.test(await p.textContent('#paStart')));
   await p.click('#paStart');
@@ -110,7 +111,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   await p.selectOption('#pflegegrad', '1'); await warte(() => /nicht ausgezahlt/.test(document.getElementById('c-pflege').textContent) && /Höherstufung/.test(document.getElementById('paStart').textContent));
   ok('Karte sagt klar: Entlastungsbetrag wird nicht ausgezahlt', /nicht ausgezahlt/.test(await p.textContent('#c-pflege')));
   ok('Mit Pflegegrad: Knopf „Höherstufung prüfen“', /Höherstufung/.test(await p.textContent('#paStart')));
-  await p.click('#paStart');
+  await DIAG('vor 113'); await p.click('#paStart');
   for (let i = 0; i < 80 && !/Wahrscheinlich/.test(await frage()); i++) {
     const an = await p.$('#pflegeAssist .es-btn.an'); if (an) await an.click(); else await p.click('text=Weiß ich nicht');
   }
@@ -149,14 +150,14 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Schreiben enthält Bereich 5 und Inkontinenz mit Beschreibung', /5\.1 Medikamente richten und geben: .*1-mal am Tag, .*3-mal am Tag\. Dreimal täglich Tabletten richten\./.test(s2) && /Harninkontinenz/.test(s2), s2.slice(0, 900));
   // Säugling: Frage 4.K
   await p.evaluate(() => { localStorage.removeItem('lotse.pflegecheck'); location.hash = '#leistungen'; }); await p.reload(); await sichtbar('#paStart');
-  await p.click('#paStart'); await p.fill('#pa-jahre', '1');
+  await DIAG('vor 152'); await p.click('#paStart'); await p.fill('#pa-jahre', '1');
   ok('Unter 2 Jahren: Monate werden gefragt', await p.isVisible('#pa-monate'));
   await p.fill('#pa-monate', '10'); await p.click('text=Weiter ➜');
   await tippe('Nein'); await tippe('Nein'); await tippe('Nein'); await tippe('Ja');
   ok('Kind 10 Monate: Frage zum Füttern statt Waschen', /Füttern/.test(await frage()), await frage());
   ok('Kind: Erklärungen erwähnen den Vergleich mit gesunden Kindern', true);
   // Fremde Sprache: Hinweis „nur auf Deutsch“
-  await p.click('text=Später weitermachen'); await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'tr'); await p.click('#paStart');
+  await p.click('text=Später weitermachen'); await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'tr'); await DIAG('vor 159'); await p.click('#paStart');
   ok('Türkisch: Hinweis, dass die Einschätzung auf Deutsch ist', await p.isVisible('#paNurDe'));
   ok('Keine Skriptfehler', fehler.length === 0, fehler);
   await b.close();
