@@ -1197,6 +1197,7 @@
 
   function render() {
     syncEinkommen(); folgefragen(); ekFelder(); weitereWarnungen();
+    if ($('clearLink') && window.Schritte && !Schritte.weg()) $('clearLink').hidden = !started; // Startwahl: „Angaben löschen“ erst mit Angaben
     document.querySelectorAll('.cond-kids').forEach(function (el) { el.hidden = state.kids === 0; });
     document.querySelectorAll('.cond-adults2').forEach(function (el) { el.hidden = state.adults !== 2; });
     var gu = started && gebUngueltig(); // ungültiges Geburtsjahr: nicht rechnen

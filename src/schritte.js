@@ -211,8 +211,8 @@ var Schritte = (function () {
         // Kurzer Check für Menschen mit Behinderung: dritte Wahl oben (Klick behandelt src/app.js über die Kennung einfachBtn)
         '<p class="es-link sf-kurz">' + knopf('linkbtn', '<span data-t="einfach.btn">' + esc(t('einfach.btn')) + '</span>', ' id="einfachBtn" aria-pressed="false"') + '</p>';
     }
-    if (!weg && !ctx.begonnen()) return h + '</div>'; // Startwahl ohne Angaben: nichts zu löschen (UX-Audit A, Aufgabe 11)
-    return h + knopf('linkbtn sf-loeschen', esc(t('l.link')), ' id="clearLink"') + '</div>';
+    // Startwahl ohne Angaben: nichts zu löschen (UX-Audit A, Aufgabe 11); die App blendet den Knopf ein, sobald es Angaben gibt (render in app.js)
+    return h + knopf('linkbtn sf-loeschen', esc(t('l.link')), ' id="clearLink"' + (!weg && !ctx.begonnen() ? ' hidden' : '')) + '</div>';
   }
   function leisteEinsetzen() {
     var k = box.querySelector('.sf-kopf');
