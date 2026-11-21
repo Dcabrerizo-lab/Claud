@@ -72,6 +72,7 @@ const PflegeAssistent = (function () {
   function start(box, opt) {
     opt = opt || {};
     F.setEinfach(!!opt.einfach); // Einfache Sprache (nur Deutsch): setzt die App beim Start
+    F.setSprache(opt.sprache || null); // andere App-Sprache: Übersetzungen (src/lang/pflege), sonst Deutsch
     const a = migriere(Object.assign(neu(), opt.antworten || {}));
     const pgAktuell = opt.pgAktuell == null || opt.pgAktuell === '' ? null : +opt.pgAktuell;
     const merken = () => { if (opt.speichern) try { opt.speichern(JSON.parse(JSON.stringify(a))); } catch (e) {} };
@@ -80,7 +81,8 @@ const PflegeAssistent = (function () {
     // Andere App-Sprache (opt.app = { lang, dir, zurueck }): Inhalt bleibt Deutsch und wird als lang="de" dir="ltr" ausgezeichnet (WCAG 3.1.2),
     // nur „Zurück“ steht in der App-Sprache und Schreibrichtung (Pfeil wird in RTL über CSS gespiegelt).
     const fremd = opt.app && opt.app.lang && opt.app.lang !== 'de' ? opt.app : null;
-    if (fremd) { box.setAttribute('lang', 'de'); box.setAttribute('dir', 'ltr'); } else { box.removeAttribute('lang'); box.removeAttribute('dir'); }
+    // Übersetzt (opt.app.uebersetzt): Inhalt in der App-Sprache, keine Auszeichnung als Deutsch
+    if (fremd && !fremd.uebersetzt) { box.setAttribute('lang', 'de'); box.setAttribute('dir', 'ltr'); } else { box.removeAttribute('lang'); box.removeAttribute('dir'); }
     const zurKnopf = (fn) => fremd
       ? h('button', { type: 'button', class: 'linkbtn pa-zur', onclick: fn, lang: fremd.lang, dir: fremd.dir || 'ltr' }, h('span', { class: 'nav-pfeil', 'aria-hidden': 'true', text: '←' }), ' ', h('span', { text: fremd.zurueck || 'Zurück' }))
       : h('button', { type: 'button', class: 'linkbtn pa-zur', onclick: fn, text: T('zurueck', '← Zurück') });
@@ -204,7 +206,7 @@ const PflegeAssistent = (function () {
       const tu = (x) => () => x.fn(r, JSON.parse(JSON.stringify(a)), g);
       // Texte der Aktionen: mit „id“ gibt es eine einfache Fassung (ui „aktion.<id>.titel/text“, bei Pflegegrad 0 „text0“)
       const txt = (x, k) => { const std = typeof x[k] === 'function' ? x[k](r, pgAktuell) : x[k];
-        return x.id && F.istEinfach() ? T('aktion.' + x.id + '.' + k + (k === 'text' && !r.pg && x.id === 'hilfen' ? '0' : ''), std, { pg: r.pg }) : std; };
+        return x.id ? T('aktion.' + x.id + '.' + k + (k === 'text' && !r.pg && x.id === 'hilfen' ? '0' : ''), std, { pg: r.pg }) : std; }; // einfache Fassung oder Übersetzung
       const kacheln = sichtbar.filter((x) => x.kachel).slice(0, 3), links = sichtbar.filter((x) => !x.kachel);
       if (kacheln.length) box.append(h('div', { class: 'pa-kacheln' }, kacheln.map((x) => h('button', { type: 'button', class: 'uk-karte pa-k-' + x.kachel, onclick: tu(x) },
         h('span', { class: 'sk-sym', 'aria-hidden': 'true' }, symbol(x.sym || [])), h('span', { class: 'sk-txt' }, h('b', { text: txt(x, 'titel') }), x.text ? h('span', { text: txt(x, 'text') }) : null)))));

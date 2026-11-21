@@ -3886,12 +3886,16 @@
     hilfen: ['M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z', 'M9 12h6M12 9v6'],
     gutachten: ['M7 3h10a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z', 'M8 8h8M8 12h5', 'M13.5 16l1.8 1.8 3.2-3.6']
   };
+  // Pflege-Texte übersetzt? (src/lang/pflege/<Sprache>.json; eigener Schlüssel, nicht der deutsche Rückfall von t())
+  function pflUebersetzt() { return lang !== 'de' && !!I18N[lang] && Object.prototype.hasOwnProperty.call(I18N[lang], 'pfl.text.1.1.0'); }
+  function pflSprache(k) { return pflUebersetzt() && Object.prototype.hasOwnProperty.call(I18N[lang], k) ? I18N[lang][k] : null; }
   function paStarten(zumErgebnis) {
-    $('paNurDe').hidden = lang === 'de';
+    $('paNurDe').hidden = lang === 'de' || pflUebersetzt();
     var pgJetzt = paEchterPg();
     PflegeAssistent.start($('pflegeAssist'), {
       pgAktuell: pgJetzt, antworten: pa.antworten, ergebnis: zumErgebnis === true, einfach: lang === 'de' && einfachSprache,
-      app: { lang: lang, dir: (I18N[lang] && I18N[lang]['meta.dir']) || 'ltr', zurueck: t('nav.zurueck') }, // fremde Sprache: Inhalt lang=de dir=ltr, „Zurück“ übersetzt
+      app: { lang: lang, dir: (I18N[lang] && I18N[lang]['meta.dir']) || 'ltr', zurueck: t('nav.zurueck'), uebersetzt: pflUebersetzt() }, // fremde Sprache ohne Übersetzung: Inhalt lang=de dir=ltr
+      sprache: pflSprache, // Übersetzungen der Einschätzung (src/lang/pflege/<Sprache>.json)
       speichern: function (a) { pa.antworten = a; paSpeichern(); },
       beimErgebnis: paMerken,
       abbrechen: paVerlassen,
@@ -3943,63 +3947,49 @@
   // Beratungsbesuch: § 37 Abs. 3 Satz 1 SGB XI (gesetze-im-internet.de, abgerufen 20.11.2026): Pflegegrad 2–5 halbjährlich Pflicht, 4 und 5 auf Wunsch vierteljährlich
   function pflegeInfoBauen() {
     var R = Rules.RULES, box = $('pflegeInfo');
-    if (box.children.length) return;
+    if (box.children.length && box.getAttribute('data-sprache') === lang) return; // nach einem Sprachwechsel neu bauen
+    box.textContent = ''; box.setAttribute('data-sprache', lang);
     var el = function (tag, text, cls) { var e = document.createElement(tag); if (text != null) e.textContent = text; if (cls) e.className = cls; return e; };
     var je = function (o) { return [2, 3, 4, 5].map(function (g) { return 'PG ' + g + ': ' + piEuro(o[g]); }).join(' · '); };
-    box.appendChild(el('h2', 'So funktionieren die Leistungen der Pflegekasse')).id = 'h-pflegeinfo';
-    box.appendChild(el('p', 'Aufs Konto kommen nur das Pflegegeld und, wer in einer ambulant betreuten Wohngruppe lebt, der Wohngruppenzuschlag. Alles andere sind Budgets: Die Pflegekasse bezahlt damit Hilfe, Dienste oder Lieferungen, meistens gegen Rechnung. Wer die Budgets nicht nutzt, verschenkt Geld.', 'lead'));
+    // Texte: src/lang/pflege/<Sprache>.json (Schlüssel „pfl.pi.*“), Beträge aus den Rechenregeln
+    var bis = function (x) { return t('pfl.pu.bis', { betrag: x }); };
+    box.appendChild(el('h2', t('pfl.pi.h'))).id = 'h-pflegeinfo';
+    box.appendChild(el('p', t('pfl.pi.lead'), 'lead'));
     var zeilen = [
-      ['Pflegegeld', 'Geld aufs Konto, jeden Monat', je(R.pflege.geld), 'geld', 'pi-geld'],
-      ['Pflegedienst (Pflegesachleistung)', 'Budget: Der Pflegedienst rechnet direkt mit der Pflegekasse ab', 'bis ' + je(R.pflegeSach), 'budget', 'pi-dienst'],
-      ['Entlastungsbetrag', 'Budget: Die Pflegekasse bezahlt Rechnungen anerkannter Anbieter', piEuro(R.pflege.entlastung) + ' im Monat, ab Pflegegrad 1', 'budget', 'pi-entl'],
-      ['Verhinderungs- und Kurzzeitpflege', 'Budget: Für die Vertretung, wenn die Pflegeperson ausfällt', 'zusammen ' + piEuro(R.entlastungsbudget) + ' im Jahr, ab Pflegegrad 2', 'budget', 'pi-verh'],
-      ['Tages- und Nachtpflege', 'Budget: Die Einrichtung rechnet mit der Pflegekasse ab', 'bis ' + je(R.pflegeTages), 'budget', 'pi-dienst'],
-      ['Pflegehilfsmittel zum Verbrauch', 'Lieferung, zum Beispiel als Pflegebox', 'bis ' + piEuro(R.beh.verbrauch) + ' im Monat', 'budget', 'pi-hilfs'],
-      ['Umbau der Wohnung', 'Zuschuss, vor dem Umbau beantragen', 'bis ' + piEuro(R.beh.wohnumfeld) + ' je Maßnahme', 'budget', 'pi-hilfs']];
-    var tw = el('div', null, 'tabwrap'); tw.setAttribute('role', 'region'); tw.setAttribute('aria-label', 'Geld oder Budget'); tw.tabIndex = 0;
+      ['geld', je(R.pflege.geld), 'geld', 'pi-geld'],
+      ['dienst', bis(je(R.pflegeSach)), 'budget', 'pi-dienst'],
+      ['entl', t('pfl.pi.z.entl.h', { betrag: piEuro(R.pflege.entlastung) }), 'budget', 'pi-entl'],
+      ['verh', t('pfl.pi.z.verh.h', { betrag: piEuro(R.entlastungsbudget) }), 'budget', 'pi-verh'],
+      ['tages', bis(je(R.pflegeTages)), 'budget', 'pi-dienst'],
+      ['hilfs', t('pfl.pi.z.hilfs.h', { betrag: piEuro(R.beh.verbrauch) }), 'budget', 'pi-hilfs'],
+      ['umbau', t('pfl.pi.z.umbau.h', { betrag: piEuro(R.beh.wohnumfeld) }), 'budget', 'pi-hilfs']];
+    var tw = el('div', null, 'tabwrap'); tw.setAttribute('role', 'region'); tw.setAttribute('aria-label', t('pfl.pi.tab')); tw.tabIndex = 0;
     var tb = el('table'), th = el('thead'), tr0 = el('tr');
-    ['Leistung', 'Wie es ankommt', 'Höhe'].forEach(function (x) { tr0.appendChild(el('th', x)); }); th.appendChild(tr0); tb.appendChild(th);
+    ['leistung', 'wie', 'hoehe'].forEach(function (x) { tr0.appendChild(el('th', t('pfl.pi.sp.' + x))); }); th.appendChild(tr0); tb.appendChild(th);
     var body = el('tbody');
     zeilen.forEach(function (z) {
       var tr = el('tr'), td0 = el('td'), ln = el('button', null, 'pi-link pi-link-tab'); ln.type = 'button';
-      ln.appendChild(document.createTextNode(z[0])); var pf = el('span', ' ›'); pf.setAttribute('aria-hidden', 'true'); ln.appendChild(pf);
-      ln.addEventListener('click', function () { piAbschnitt(z[4]); }); td0.appendChild(ln); tr.appendChild(td0); var td = el('td'); td.appendChild(el('span', z[3] === 'geld' ? 'Geld · ' : 'Budget · ', z[3])); td.appendChild(document.createTextNode(z[1].replace(/^Budget: |^Geld aufs Konto, /, function (m) { return m === 'Geld aufs Konto, ' ? 'aufs Konto, ' : ''; }))); tr.appendChild(td); tr.appendChild(el('td', z[2])); body.appendChild(tr); });
+      ln.appendChild(document.createTextNode(t('pfl.pi.z.' + z[0]))); var pf = el('span', ' ›'); pf.setAttribute('aria-hidden', 'true'); ln.appendChild(pf);
+      ln.addEventListener('click', function () { piAbschnitt(z[3]); }); td0.appendChild(ln); tr.appendChild(td0);
+      var td = el('td'); td.appendChild(el('span', t('pfl.pi.art.' + z[2]) + ' · ', z[2])); td.appendChild(document.createTextNode(t('pfl.pi.z.' + z[0] + '.w'))); tr.appendChild(td);
+      tr.appendChild(el('td', z[1])); body.appendChild(tr); });
     tb.appendChild(body); tw.appendChild(tb); box.appendChild(tw);
-    var abschnitt = function (id, titel, absaetze, liste) {
-      var d = el('details'); d.id = id; d.appendChild(el('summary', titel));
-      absaetze.forEach(function (p) { d.appendChild(el('p', p)); });
-      if (liste) { var ul = el('ul'); liste.forEach(function (x) { ul.appendChild(el('li', x)); }); d.appendChild(ul); }
+    var abschnitt = function (id, n, liste, w) {
+      var k = 'pfl.' + id.replace('-', '.') + '.', d = el('details'); d.id = id; d.appendChild(el('summary', t(k + 'h', w)));
+      for (var i = 0; i < n; i++) d.appendChild(el('p', t(k + i, w)));
+      if (liste) { var ul = el('ul'); for (var j = 0; j < liste; j++) ul.appendChild(el('li', t(k + 'l' + j))); d.appendChild(ul); }
       box.appendChild(d);
     };
-    abschnitt('pi-geld', 'Pflegegeld: Geld für die Pflege durch Angehörige', [
-      'Wenn Angehörige, Freunde oder Nachbarn pflegen, zahlt die Pflegekasse ab Pflegegrad 2 jeden Monat Pflegegeld aufs Konto der gepflegten Person. Sie kann frei entscheiden, wofür sie es verwendet, zum Beispiel als Dankeschön an die Pflegeperson.',
-      'Pflicht: Bei Pflegegrad 2 bis 5 kommt einmal im halben Jahr eine kostenlose Beratung ins Haus. Bei Pflegegrad 4 und 5 geht das auf Wunsch auch jedes Vierteljahr. Fällt die Pflicht-Beratung aus, kann die Pflegekasse das Pflegegeld kürzen.']);
-    abschnitt('pi-dienst', 'Pflegedienst: Sachleistung und Kombination', [
-      'Kommt ein Pflegedienst, rechnet er direkt mit der Pflegekasse ab. Du bekommst dafür kein Geld, aber auch keine Rechnung, solange das Budget reicht.',
-      'Nutzt der Pflegedienst nur einen Teil des Budgets, zahlt die Pflegekasse den Rest anteilig als Pflegegeld aus. Das heißt Kombinationsleistung.']);
-    abschnitt('pi-entl', 'Entlastungsbetrag: ' + piEuro(R.pflege.entlastung) + ' im Monat, aber nicht aufs Konto', [
-      'Den Entlastungsbetrag gibt es ab Pflegegrad 1. Er wird nicht ausgezahlt. Die Pflegekasse bezahlt damit Hilfen, die die Pflegeperson entlasten.',
-      'So geht es: Der Anbieter rechnet direkt mit der Pflegekasse ab, oder du bezahlst selbst und schickst die Rechnung zur Erstattung ein. Der Anbieter muss in deinem Bundesland anerkannt sein. Die Pflegekasse hat eine Liste.',
-      'Nicht genutzte Beträge sammeln sich an. Du kannst sie bis zum 30. Juni des Folgejahres nutzen, danach verfallen sie.'],
-      ['Haushaltshilfe, Einkaufen, Begleitung zum Arzt', 'Betreuung zu Hause oder in einer Betreuungsgruppe', 'Eigenanteile bei Tages- oder Kurzzeitpflege']);
-    abschnitt('pi-verh', 'Verhinderungspflege und Kurzzeitpflege: Vertretung für die Pflegeperson', [
-      'Ab Pflegegrad 2 haben beide einen gemeinsamen Jahresbetrag von ' + piEuro(R.entlastungsbudget) + '. Auch das ist kein Geld aufs Konto: Die Pflegekasse bezahlt damit die Vertretung.',
-      'Verhinderungspflege: Die Pflegeperson macht Urlaub, ist krank oder braucht ein paar Stunden Pause. Dann pflegt jemand anderes zu Hause, zum Beispiel ein Pflegedienst, Bekannte oder Nachbarn.',
-      'Vertreten nahe Angehörige oder Personen aus demselben Haushalt (nicht beruflich), zahlt die Pflegekasse höchstens das Doppelte des monatlichen Pflegegeldes. Nachgewiesene Kosten wie Fahrt oder Verdienstausfall können dazukommen (bis zum Jahresbetrag).',
-      'Kurzzeitpflege: Die gepflegte Person wohnt für eine Zeit in einer Pflegeeinrichtung, zum Beispiel nach einem Krankenhausaufenthalt.',
-      // Rechtsprüfung 21.11.2026 (docs/entwuerfe/rechtsfragen-rot.md, Frage 3): volles Pflegegeld bei stundenweiser Vertretung steht nicht im Gesetz
-      // (§ 37 Abs. 2 SGB XI; BMG „Verhinderungspflege“ nur „auch stundenweise“) → nur „möglich“. Frist: § 39 Abs. 1 Satz 2 SGB XI.
-      'Während der Vertretung zahlt die Pflegekasse bis zu 8 Wochen im Jahr die Hälfte des Pflegegelds weiter. Wird nur stundenweise vertreten (weniger als 8 Stunden am Tag), kann das volle Pflegegeld weiterlaufen. Frag dazu bei deiner Pflegekasse nach.',
-      'Tipp: Den Antrag kannst du auch nachträglich stellen, spätestens bis zum Ende des folgenden Jahres. Hebe alle Rechnungen und Quittungen auf.']);
-    abschnitt('pi-hilfs', 'Pflegehilfsmittel und Umbau der Wohnung', [
-      'Pflegehilfsmittel zum Verbrauch, zum Beispiel Einmalhandschuhe, Desinfektion oder Bettschutz, gibt es bis ' + piEuro(R.beh.verbrauch) + ' im Monat. Meist kommt eine Box nach Hause, die der Anbieter mit der Pflegekasse abrechnet.',
-      'Größere Hilfsmittel wie ein Pflegebett oder ein Rollator werden meist leihweise gestellt.',
-      'Für einen Umbau, zum Beispiel eine bodengleiche Dusche oder Haltegriffe, gibt es bis ' + piEuro(R.beh.wohnumfeld) + ' je Maßnahme. Wichtig: vor dem Umbau beantragen, mit Kostenvoranschlag.']);
-    abschnitt('pi-gut', 'Gut zu wissen für pflegende Angehörige', [
-      'Wer mindestens 10 Stunden in der Woche an mindestens 2 Tagen pflegt und höchstens 30 Stunden arbeitet, für den zahlt die Pflegekasse Rentenbeiträge.',
-      'In der Steuererklärung gibt es den Pflege-Pauschbetrag.',
-      'Pflegeberatung ist kostenlos, bei der Pflegekasse oder im Pflegestützpunkt. Dort hilft man auch beim Antrag.']);
-    box.appendChild(quellenEl(['Stand der Beträge: ' + (R.stand || 'November 2026') + '. Den genauen Anspruch legt die Pflegekasse fest.']));
+    abschnitt('pi-geld', 2);
+    abschnitt('pi-dienst', 2);
+    abschnitt('pi-entl', 3, 3, { betrag: piEuro(R.pflege.entlastung) });
+    // pi-verh: Rechtsprüfung 21.11.2026 (docs/entwuerfe/rechtsfragen-rot.md, Frage 3): volles Pflegegeld bei stundenweiser Vertretung steht nicht im Gesetz
+    // (§ 37 Abs. 2 SGB XI; BMG „Verhinderungspflege“ nur „auch stundenweise“) → nur „möglich“. Frist: § 39 Abs. 1 Satz 2 SGB XI.
+    abschnitt('pi-verh', 6, 0, { betrag: piEuro(R.entlastungsbudget) });
+    abschnitt('pi-hilfs', 3, 0, null);
+    var hilfs = $('pi-hilfs').querySelectorAll('p'); hilfs[0].textContent = t('pfl.pi.hilfs.0', { betrag: piEuro(R.beh.verbrauch) }); hilfs[2].textContent = t('pfl.pi.hilfs.2', { betrag: piEuro(R.beh.wohnumfeld) });
+    abschnitt('pi-gut', 3);
+    box.appendChild(quellenEl([t('pfl.pi.stand', { stand: R.stand || 'November 2026' })]));
   }
   // Abschnitt aufklappen, hinscrollen und den Fokus auf seine Überschrift setzen
   function piAbschnitt(id) {
@@ -4010,8 +4000,8 @@
   }
   function pflegeInfo(zurueckZu, fokus, abschnitt) {
     piZurueckZu = zurueckZu || 'leistungen'; piFokus = fokus || null; herkunft.pflegeinfo = piZurueckZu;
-    pflegeInfoBauen(); $('piNurDe').hidden = lang === 'de';
-    if (lang !== 'de') { $('pflegeInfo').setAttribute('lang', 'de'); $('pflegeInfo').setAttribute('dir', 'ltr'); } else { $('pflegeInfo').removeAttribute('lang'); $('pflegeInfo').removeAttribute('dir'); }
+    pflegeInfoBauen(); $('piNurDe').hidden = lang === 'de' || pflUebersetzt();
+    if (lang !== 'de' && !pflUebersetzt()) { $('pflegeInfo').setAttribute('lang', 'de'); $('pflegeInfo').setAttribute('dir', 'ltr'); } else { $('pflegeInfo').removeAttribute('lang'); $('pflegeInfo').removeAttribute('dir'); }
     document.querySelectorAll('#pflegeInfo details').forEach(function (d) { d.open = false; });
     zeigeAnsicht('pflegeinfo', !abschnitt);
     if (abschnitt) piAbschnitt(abschnitt);
@@ -4029,54 +4019,25 @@
   // Ab Pflegegrad 2 (UX-Audit D #4, Rechtsprüfung 21.11.2026 Frage 3): erst die Wahl „Wer pflegt?“ (Pflegegeld, Pflegedienst, gemischt),
   // dann was zusätzlich geht (kein Geld aufs Konto). Beträge aus den Regeln, „bis“ bei Budgets.
   var PU_GRUPPEN = [
-    { id: 'pu-wer', titel: 'Wer pflegt? Du kannst wählen:', teile: [['geld', 'Familie, Freunde oder Nachbarn pflegen'], ['dienst', 'Ein Pflegedienst pflegt'], ['kombi', 'Beides gemischt']] },
-    { id: 'pu-zusatz', titel: 'Zusätzlich (kein Geld aufs Konto, die Pflegekasse bezahlt Rechnungen):', teile: [['entl'], ['verh'], ['tages']] }
+    { id: 'pu-wer', titel: 'pfl.pu.wer.h', teile: [['geld', 'pfl.pu.wer.geld'], ['dienst', 'pfl.pu.wer.dienst'], ['kombi', 'pfl.pu.wer.kombi']] },
+    { id: 'pu-zusatz', titel: 'pfl.pu.zusatz.h', teile: [['entl'], ['verh'], ['tages']] }
   ];
-  var PU_ART = { konto: 'Geld aufs Konto', budget: 'Budget: Die Pflegekasse bezahlt', zuschuss: 'Zuschuss', frei: 'Kostenlos', schutz: 'Absicherung' };
-  var PU_EINHEIT = { monat: 'pro Monat', jahr: 'pro Jahr', mass: 'je Maßnahme' };
+
+  // Texte der Übersicht: src/lang/pflege/<Sprache>.json (Schlüssel „pfl.pu.<id>.t|x|m0…|w“), Beträge im Beispiel aus den Rechenregeln
+  var PU_MEHR = { geld: 1, dienst: 2, entl: 3, verh: 6, tages: 2, kombi: 1, hilfs: 1, notruf: 0, umbau: 1, wg: 0, kurs: 0, beratung: 1, rente: 1, zeit: 1 };
   function puTexte(pg) {
     var R = Rules.RULES;
     var kombiPg = pg >= 2 ? pg : 2, halb = R.pflegeSach[kombiPg] / 2;
     var e2 = function (x) { return Number(x).toLocaleString('de-DE', { minimumFractionDigits: x % 1 ? 2 : 0, maximumFractionDigits: 2 }) + ' €'; };
-    return {
-      geld: ['Geld für die Pflege zu Hause (Pflegegeld)', 'Kommt aufs Konto, wenn Angehörige, Freunde oder Nachbarn pflegen. Die gepflegte Person entscheidet frei, wofür sie es verwendet.',
-        ['Bei Pflegegrad 4 und 5 geht das auf Wunsch auch jedes Vierteljahr.'],
-        // sichtbar unter dem Betrag (§ 37 Abs. 3 SGB XI; Wortlaut Rechtsprüfung 21.11.2026: „kann kürzen“)
-        'Mit Pflegegeld kommt einmal im halben Jahr eine kostenlose Pflicht-Beratung ins Haus. Fällt sie aus, kann die Pflegekasse das Pflegegeld kürzen.'],
-      dienst: ['Pflegedienst kommt ins Haus (Pflegesachleistung)', 'Kein Geld aufs Konto: Der Pflegedienst rechnet bis zu diesem Betrag direkt mit der Pflegekasse ab.',
-        ['Geht statt Pflegegeld oder zusammen damit (siehe „Pflegedienst und Pflegegeld gemischt“).',
-          'Was der Pflegedienst in einem Monat nicht braucht, kannst du bis zu 40 % des Betrags auch für anerkannte Hilfen im Alltag nutzen (Umwandlung). Die Rechnungen reichst du bei der Pflegekasse ein.']],
-      entl: ['Geld für Hilfe im Alltag (Entlastungsbetrag)', 'Kein Geld aufs Konto: Die Pflegekasse bezahlt damit Rechnungen anerkannter Anbieter, zum Beispiel für Haushaltshilfe, Betreuung oder Begleitung.',
-        (pg === 1 ? ['Bei Pflegegrad 1 darf damit auch ein Pflegedienst zum Beispiel bei der Körperpflege helfen.'] : []).concat([
-          'Auch für Tages- und Nachtpflege oder Kurzzeitpflege, zum Beispiel für den Eigenanteil.',
-          'Auch ein Familienentlastender Dienst (FED) kann so bezahlt werden, wenn er in deinem Bundesland anerkannt ist. Das sind Dienste, die Familien mit einem Angehörigen mit Behinderung stundenweise entlasten, zum Beispiel mit Betreuung.',
-          'Nicht genutzte Beträge sammeln sich an. Was am Jahresende übrig ist, kannst du noch bis zum 30. Juni des nächsten Jahres nutzen.'])],
-      verh: ['Vertretung, wenn die Pflegeperson ausfällt (Verhinderungs- und Kurzzeitpflege)', 'Ein gemeinsames Budget pro Jahr für beides. Kein Geld aufs Konto: Die Pflegekasse bezahlt damit die Vertretung.',
-        ['Verhinderungspflege: Die Pflegeperson hat Urlaub, ist krank oder braucht eine Pause. Dann pflegt jemand anderes zu Hause, zum Beispiel ein Pflegedienst, eine Einzelpflegekraft oder Ehrenamtliche. Höchstens 8 Wochen im Jahr.',
-          'Das geht auch stundenweise, zum Beispiel für einen Nachmittag. Stundenweise Betreuung bieten unter anderem Familienentlastende Dienste an. Eine Bezahlung als Verhinderungspflege ist möglich: Frag vorher bei der Pflegekasse nach.',
-          'Kurzzeitpflege: Die gepflegte Person wohnt für eine Zeit in einer Pflegeeinrichtung, zum Beispiel nach dem Krankenhaus. Höchstens 8 Wochen im Jahr.',
-          'Während der Vertretung zahlt die Pflegekasse bis zu 8 Wochen im Jahr die Hälfte des Pflegegeldes weiter.',
-          'Vertreten nahe Angehörige oder Personen aus demselben Haushalt (nicht beruflich), zahlt die Pflegekasse höchstens das Doppelte des monatlichen Pflegegeldes. Nachgewiesene Kosten wie Fahrt oder Verdienstausfall können dazukommen (bis zum Jahresbetrag).', // § 39 Abs. 3 SGB XI (abgerufen 20.11.2026)
-          'Rechnungen aufheben: Die Erstattung kannst du nachträglich beantragen, spätestens bis zum Ende des folgenden Jahres.']],
-      tages: ['Tagespflege oder Nachtpflege (teilstationäre Pflege)', 'Die Person ist tagsüber oder nachts in einer Einrichtung. Die Einrichtung rechnet bis zu diesem Betrag direkt mit der Pflegekasse ab.',
-        ['Gibt es zusätzlich: Pflegegeld und Pflegedienst werden dafür nicht gekürzt.', 'Die Fahrt zur Einrichtung gehört dazu. Essen und Unterkunft zahlst du selbst; dafür kann der Entlastungsbetrag helfen.']],
-      kombi: ['Pflegedienst und Pflegegeld gemischt (Kombinationsleistung)', 'Nutzt der Pflegedienst nur einen Teil seines Budgets, kommt der Rest anteilig als Pflegegeld aufs Konto.',
-        ['Beispiel Pflegegrad ' + kombiPg + ': Der Pflegedienst nutzt die Hälfte (' + e2(halb) + '). Dann kommen noch ' + e2(Rules.pflegeKombi(kombiPg, halb)) + ' Pflegegeld im Monat aufs Konto.'],
-        'An die Aufteilung bist du 6 Monate gebunden.'], // § 38 Satz 3 SGB XI (Rechtsprüfung 21.11.2026, Frage 3)
-      hilfs: ['Pflegebox mit Handschuhen und Co. (Pflegehilfsmittel zum Verbrauch)', 'Zum Beispiel Einmalhandschuhe, Desinfektion oder Bettschutz. Meist kommt eine Lieferung, der Anbieter rechnet mit der Pflegekasse ab.',
-        ['Ein Pflegebett gibt es meist leihweise; den Antrag stellst du bei der Pflegekasse.']],
-      notruf: ['Notrufknopf für zu Hause (Hausnotruf)', 'Ein Zuschuss der Pflegekasse ist möglich, wenn die Person oft allein ist und im Notfall Hilfe rufen können muss.', []],
-      umbau: ['Umbau der Wohnung (wohnumfeldverbessernde Maßnahmen)', 'Zuschuss zum Beispiel für eine bodengleiche Dusche, Haltegriffe oder einen Treppenlift. Wichtig: vor dem Umbau beantragen, mit Kostenvoranschlag.',
-        ['Wohnen mehrere Pflegebedürftige zusammen, gibt es den Zuschuss für jede Person, zusammen bis zum Vierfachen.']],
-      wg: ['Zuschlag für Pflege-Wohngemeinschaften (Wohngruppenzuschlag)', 'Für eine Pflege-WG mit mindestens 3 Pflegebedürftigen und einer gemeinsam beauftragten Kraft für Alltag und Organisation (Präsenzkraft). Das Geld ist für diese Kraft gedacht.', []],
-      kurs: ['Kostenlose Kurse für Angehörige (Pflegekurse)', 'Pflege lernen, zum Beispiel richtig heben und lagern. Auch zu Hause möglich. Kostenlos, auch ohne Pflegegrad.', []],
-      beratung: ['Kostenlose Beratung (Pflegeberatung)', 'Bei der Pflegekasse oder im Pflegestützpunkt. Dort hilft man beim Antrag und beim Planen der Hilfen.',
-        ['Pflegeberatung steht allen zu, die Leistungen bekommen oder beantragt haben. Angehörige können dabei sein.']],
-      rente: ['Rente für pflegende Angehörige (Rentenversicherungsbeiträge)', 'Wer ohne Bezahlung mindestens 10 Stunden pro Woche an mindestens 2 Tagen pflegt und höchstens 30 Stunden pro Woche arbeitet: Die Pflegekasse zahlt Rentenbeiträge. Das bringt Rentenpunkte.',
-        ['Wie viel, hängt vom Pflegegrad ab und davon, ob Pflegegeld, Pflegedienst oder beides genutzt wird. Gib die Pflegeperson bei der Pflegekasse an; sie prüft das.']],
-      zeit: ['Frei von der Arbeit für die Pflege (Pflegezeit, Familienpflegezeit)', 'Bis 10 Arbeitstage frei, wenn plötzlich Pflege zu organisieren ist, mit Pflegeunterstützungsgeld. Pflegezeit bis 6 Monate, Familienpflegezeit bis 24 Monate.',
-        ['Pflegezeit und Familienpflegezeit gelten nur in größeren Betrieben. Frag beim Arbeitgeber nach.']]
-    };
+    var w = { pg: String(kombiPg), halb: e2(halb), rest: e2(Rules.pflegeKombi(kombiPg, halb)) }, o = {};
+    Object.keys(PU_MEHR).forEach(function (id) {
+      var k = 'pfl.pu.' + id + '.', m = [];
+      for (var i = 0; i < PU_MEHR[id]; i++) m.push(t(k + 'm' + i, w));
+      o[id] = [t(k + 't'), t(k + 'x'), m];
+      if (Object.prototype.hasOwnProperty.call(I18N.de, k + 'w')) o[id].push(t(k + 'w'));
+    });
+    if (pg === 1) o.entl[2].unshift(t('pfl.pu.entl.pg1'));
+    return o;
   }
   function puOeffnen(schritt, pg, vonErgebnis) {
     pu.schritt = schritt || 'wahl';
@@ -4090,9 +4051,9 @@
     var el = function (tag, text, cls) { var e = document.createElement(tag); if (text != null) e.textContent = text; if (cls) e.className = cls; return e; };
     var p = function (txt, cls) { return box.appendChild(el('p', txt, cls)); };
     // „← Zurück“ steht oben (gemeinsamer Knopf, src/navigation.js; eine Ebene: Liste → Pflegegrad → Auswahl → Start)
-    $('puNurDe').hidden = lang === 'de' || pu.schritt === 'wahl';
+    $('puNurDe').hidden = lang === 'de' || pu.schritt === 'wahl' || pflUebersetzt();
     // Übersicht nach Pflegegrad ist nur Deutsch: in anderen Sprachen als lang="de" dir="ltr" auszeichnen (Satzzeichen und Beträge kippen sonst in RTL)
-    if (lang !== 'de' && pu.schritt === 'liste') { box.setAttribute('lang', 'de'); box.setAttribute('dir', 'ltr'); } else { box.removeAttribute('lang'); box.removeAttribute('dir'); }
+    if (lang !== 'de' && pu.schritt === 'liste' && !pflUebersetzt()) { box.setAttribute('lang', 'de'); box.setAttribute('dir', 'ltr'); } else { box.removeAttribute('lang'); box.removeAttribute('dir'); }
     var vonErg = paRueck === 'pflegestart' && pu.schritt === 'liste'; // aus der Pflege-Ergebnisseite geöffnet
     if (pu.schritt === 'wahl') {
       p(t('pu.wahl'), 'pf-frage');
@@ -4120,21 +4081,18 @@
     } else {
       var pg = pu.pg || 0, liste = Rules.pflegeFuer(pg), tx = puTexte(pg), U = Rules.RULES.pflegeUnterst;
       var top = PU_TOP[Math.min(pg, 2)];
-      p(pg ? 'Das gibt es bei Pflegegrad ' + pg : 'Das gibt es ohne Pflegegrad', 'pf-frage');
+      p(pg ? t('pfl.pu.h', { pg: String(pg) }) : t('pfl.pu.h0'), 'pf-frage');
       // Einleitung: ein Satz sichtbar, der Rest zum Aufklappen (gleiches Bauteil details.mehr); Inhalt unverändert
       var einl = function (satz, titel, rest) {
         p(satz, 'hint pu-einl');
         var m = box.appendChild(el('details', null, 'mehr pu-einl-mehr')); m.appendChild(el('summary', titel));
         rest.forEach(function (x) { m.appendChild(el('p', x)); });
       };
-      if (pg >= 2) einl('Das meiste sind Budgets: Die Pflegekasse bezahlt damit Hilfe, meistens gegen Rechnung.', 'Was kommt aufs Konto?',
-        ['Aufs Konto kommen nur das Pflegegeld und, wer in einer ambulant betreuten Wohngruppe lebt, der Wohngruppenzuschlag. Wer die Budgets nicht nutzt, verschenkt Hilfe.']);
-      else if (pg === 1) einl('Bei Pflegegrad 1 gibt es noch kein Pflegegeld und keinen Pflegedienst als Sachleistung.', 'Was gibt es stattdessen?',
-        ['Es gibt aber Budgets und Zuschüsse. Die Pflegekasse bezahlt damit Hilfe, meistens gegen Rechnung.']);
+      if (pg >= 2) einl(t('pfl.pu.einl2'), t('pfl.pu.einl2.h'), [t('pfl.pu.einl2.m0')]);
+      else if (pg === 1) einl(t('pfl.pu.einl1'), t('pfl.pu.einl1.h'), [t('pfl.pu.einl1.m0')]);
       else {
         // § 2 PflegeZG mit § 7 Abs. 4 Satz 2 PflegeZG (gesetze-im-internet.de, abgerufen 20.11.2026): gilt schon bei voraussichtlicher Pflegebedürftigkeit
-        einl('Geld und Budgets der Pflegekasse gibt es erst mit einem Pflegegrad; diese Hilfen gibt es schon vorher.', 'Wie bekomme ich einen Pflegegrad?',
-          ['Den Antrag stellst du bei der Pflegekasse; ein Anruf genügt.', 'Tritt die Pflege plötzlich ein, dürfen Angehörige bis zu 10 Arbeitstage der Arbeit fernbleiben, um die Pflege zu organisieren. Das gilt schon, wenn ein Pflegegrad voraussichtlich kommt. Als Lohnersatz gibt es auf Antrag das Pflegeunterstützungsgeld der Pflegekasse.']);
+        einl(t('pfl.pu.einl0'), t('pfl.pu.einl0.h'), [t('pfl.pu.einl0.m0'), t('pfl.pu.einl0.m1')]);
       }
       var karte = function (l, ziel, wer) {
         var z = tx[l.id], d = el('section', null, 'pu-l pu-' + l.art); d.id = 'pu-l-' + l.id;
@@ -4142,26 +4100,26 @@
         d.appendChild(el('h3', z[0]));
         if (l.wert != null) {
           var b = el('p', null, 'pu-betrag' + (l.einheit === 'jahr' ? ' pu-jahr' : ''));
-          b.appendChild(el('b', (l.bis ? 'bis ' : '') + piEuro(l.wert)));
+          b.appendChild(el('b', l.bis ? t('pfl.pu.bis', { betrag: piEuro(l.wert) }) : piEuro(l.wert)));
           b.appendChild(document.createTextNode(' '));
-          b.appendChild(el('span', PU_EINHEIT[l.einheit], 'pu-einheit'));
+          b.appendChild(el('span', t('pfl.pu.einheit.' + l.einheit), 'pu-einheit'));
           d.appendChild(b);
         }
-        d.appendChild(el('p', PU_ART[l.art], 'pu-art small'));
+        d.appendChild(el('p', t('pfl.pu.art.' + l.art), 'pu-art small'));
         d.appendChild(el('p', z[1]));
         if (z[3]) d.appendChild(el('p', z[3], 'pu-wichtig'));
-        var m = el('details'), ms = m.appendChild(el('summary', 'Mehr dazu'));
-        ms.setAttribute('aria-label', 'Mehr dazu: ' + z[0]); // für Screenreader unterscheidbar (UX-Audit D #6)
+        var m = el('details'), ms = m.appendChild(el('summary', t('pfl.pu.mehr')));
+        ms.setAttribute('aria-label', t('pfl.pu.mehrZu', { titel: z[0] })); // für Screenreader unterscheidbar (UX-Audit D #6)
         z[2].forEach(function (x) { m.appendChild(el('p', x)); });
-        if (beratung) m.appendChild(el('p', 'Rechtsgrundlage: ' + l.recht, 'small muted')); // Paragrafen nur im Beratungsmodus, wie die Einstellung verspricht
+        if (beratung) m.appendChild(el('p', t('pfl.pu.recht', { recht: l.recht }), 'small muted')); // Paragrafen nur im Beratungsmodus, wie die Einstellung verspricht
         d.appendChild(m);
         ziel.appendChild(d);
       };
       var finde = function (id) { return liste.filter(function (l) { return l.id === id; })[0]; };
       if (pg >= 2) PU_GRUPPEN.forEach(function (g) {
         var sec = box.appendChild(el('section', null, 'pu-gruppe')); sec.id = g.id;
-        sec.appendChild(el('h3', g.titel, 'pu-gruppe-h'));
-        g.teile.forEach(function (x) { var l = finde(x[0]); if (l) karte(l, sec, x[1]); });
+        sec.appendChild(el('h3', t(g.titel), 'pu-gruppe-h'));
+        g.teile.forEach(function (x) { var l = finde(x[0]); if (l) karte(l, sec, x[1] ? t(x[1]) : null); });
       });
       else top.map(finde).filter(Boolean).forEach(function (l) { karte(l, box); });
       // Grüner Hauptknopf unter den Leistungen: Pflegegrad selbst einschätzen (ohne Grad: für den Antrag; mit Grad 1 bis 4: passt ein höherer?).
@@ -4170,18 +4128,18 @@
       if (pg < 5 && !vonErg && typeof PflegeAssistent !== 'undefined') {
         var hk = box.appendChild(el('div', null, 'btns pu-haupt'));
         var hkb = hk.appendChild(nhKnopf(pg ? 'btn ghost' : 'btn', esc(t(pg ? 'pa.hoeher' : 'pu.schaetzen')), null, function () { paOeffnen(true); })); hkb.id = 'pu-schaetzen-knopf';
-        if (lang !== 'de') { hkb.setAttribute('lang', lang); hkb.setAttribute('dir', (I18N[lang] && I18N[lang]['meta.dir']) || 'ltr'); } // übersetzt im deutschen Block
+        if (lang !== 'de' && !pflUebersetzt()) { hkb.setAttribute('lang', lang); hkb.setAttribute('dir', (I18N[lang] && I18N[lang]['meta.dir']) || 'ltr'); } // übersetzt im deutschen Block
       }
       var rest = liste.filter(function (l) { return top.indexOf(l.id) < 0; });
       if (rest.length) {
         var w = el('details', null, 'pu-weitere mehr mehr-liste'); w.id = 'pu-weitere';
-        w.appendChild(el('summary', 'Weitere Leistungen (' + rest.length + ')'));
+        w.appendChild(el('summary', t('pfl.pu.weitere', { n: String(rest.length) })));
         rest.forEach(function (l) { karte(l, w); });
         box.appendChild(w);
       }
       // Pflegeberatung ist kostenlos: § 7a Abs. 1 SGB XI, Pflegestützpunkte § 7c SGB XI (gesetze-im-internet.de, abgerufen 21.11.2026)
-      var tp = box.appendChild(tippEl('pu.tipp.beratung')); if (lang !== 'de') { tp.setAttribute('lang', lang); tp.setAttribute('dir', (I18N[lang] && I18N[lang]['meta.dir']) || 'ltr'); } // übersetzter Tipp in App-Sprache
-      box.appendChild(quellenEl(['Stand der Beträge: ' + U.stand + ' (' + U.quelle + '). Den genauen Anspruch legt die Pflegekasse fest.']));
+      var tp = box.appendChild(tippEl('pu.tipp.beratung')); if (lang !== 'de' && !pflUebersetzt()) { tp.setAttribute('lang', lang); tp.setAttribute('dir', (I18N[lang] && I18N[lang]['meta.dir']) || 'ltr'); } // übersetzter Tipp in App-Sprache
+      box.appendChild(quellenEl([t('pfl.pu.stand', { stand: U.stand, quelle: U.quelle })]));
     }
     if (fokus) { var h = box.querySelector('.pf-frage'); if (h) { h.setAttribute('tabindex', '-1'); h.focus(); } }
   }
