@@ -480,6 +480,11 @@ var Weitergabe = (function () {
     if (ios) return /^file:\/\/\/[^?#]*\.solo$/i.test(url);
     return /^content:\/\/[^/?#]+\/[^#]*$/i.test(url);
   }
+  // iOS: Kopie, die iOS beim Öffnen für SoLo angelegt hat (Documents/Inbox oder tmp/<App>-Inbox). Nur solche Dateien löscht SoLo.
+  function nativKopie(url) {
+    var p; try { p = decodeURIComponent(String(url)); } catch (e) { return false; }
+    return p.split('/').indexOf('..') < 0 && /\/(Documents\/Inbox|tmp\/[^/]+-Inbox)\/[^/]+\.solo$/i.test(p);
+  }
   // Kurzer Fingerabdruck der Adresse (FNV-1a): nur zum Wiedererkennen, kein Dateiname im Speicher
   function adrMerk(url) { var h = 0x811c9dc5; for (var i = 0; i < url.length; i++) { h ^= url.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(16); }
   // gemerkt: [[Fingerabdruck, Zeit], …] dieser Sitzung (sessionStorage, übersteht das Neuladen der Seite)
@@ -498,7 +503,8 @@ var Weitergabe = (function () {
     try { if (nat.zeigen) nat.zeigen(); } catch (e) {}
     var fertig = function (x) {
       // iOS: die Kopie in Documents/Inbox gleich wieder löschen (gelesen oder nicht)
-      var w = nat.ios && fs && fs.deleteFile ? Promise.resolve().then(function () { return fs.deleteFile({ path: url }); }).catch(function () {}) : Promise.resolve();
+      // Gelöscht wird nur in den Eingangsordnern von iOS (nativKopie); eine Datei an einem anderen Ort wäre das Original und bleibt liegen
+      var w = nat.ios && nativKopie(url) && fs && fs.deleteFile ? Promise.resolve().then(function () { return fs.deleteFile({ path: url }); }).catch(function () {}) : Promise.resolve();
       return w.then(function () { delete laufend[url]; return x; });
     };
     if (!fs || !fs.readFile) { aufklappen(); meldung('kw.f.technik'); return fertig(false); }
@@ -506,7 +512,11 @@ var Weitergabe = (function () {
     var gr = fs.stat ? Promise.resolve().then(function () { return fs.stat({ path: url }); }).then(function (s) { return s && typeof s.size === 'number' && s.size >= 0 ? s.size : 0; }, function () { return 0; }) : Promise.resolve(0);
     return gr.then(function (size) {
       return ausDateiEin({ size: size, text: function () {
-        return Promise.resolve().then(function () { return fs.readFile({ path: url, encoding: 'utf8' }); })
+        // Android: höchstens MAX_DATEI + 1 Byte lesen. Die Größe oben meldet die fremde App (kann fehlen oder falsch sein);
+        // ohne Grenze könnte eine riesige oder endlose Datei den Arbeitsspeicher füllen. ausDatei meldet dann „zu groß“.
+        // iOS liest die eigene Kopie, dort ist die Größe von stat verlässlich.
+        var o = { path: url, encoding: 'utf8' }; if (!nat.ios) o.length = MAX_DATEI + 1;
+        return Promise.resolve().then(function () { return fs.readFile(o); })
           .then(function (r) { if (!r || typeof r.data !== 'string') throw fehler('format'); return r.data; });
       } });
     }).then(fertig, function () { return fertig(false); });
@@ -534,7 +544,7 @@ var Weitergabe = (function () {
   }
 
   return { importInit: importInit, importStart: start, importLeeren: importLeeren, ausBild: ausBild, ausDateiEin: ausDateiEin, importSpeichern: speichernImport, scanMoeglich: scanMoeglich,
-    nativInit: nativInit, nativOeffnen: nativOeffnen, nativErlaubt: nativErlaubt,
+    nativInit: nativInit, nativOeffnen: nativOeffnen, nativErlaubt: nativErlaubt, nativKopie: nativKopie,
     PREFIX: PREFIX, ITER: ITER, QR_MAX: QR_MAX, FELDER: FELDER, MAX_INHALT: MAX_INHALT, MAX_DATEI: MAX_DATEI,
     packen: packen, auspacken: auspacken, brauchtPin: brauchtPin, istCode: istCode, datei: datei, ausDatei: ausDatei, pruefen: pruefen,
     pinVorschlag: pinVorschlag, pinOk: pinOk, kannKomprimieren: kannKomprimieren, webCrypto: webCrypto, qrMatrix: qrMatrix, qrSvg: qrSvg,
