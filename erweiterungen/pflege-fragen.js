@@ -70,7 +70,7 @@ const PflegeFragen = (function () {
     '4.10': ['Kann die Person allein zur Toilette gehen und sich danach sauber machen?', 'Zählt: hingehen, hinsetzen, Kleidung richten, abwischen, spülen. Auch Toilettenstuhl, Urinflasche oder Steckbecken. Diese Frage zählt doppelt.'],
     '4.11': ['Kann die Person allein Einlagen wechseln oder Katheter oder Urostoma versorgen?', 'Wird nur gefragt, wenn die Person überwiegend oder ganz inkontinent ist oder einen Katheter oder ein Urostoma hat.'],
     '4.12': ['Kann die Person bei Stuhlinkontinenz allein sauber machen oder ein Stoma versorgen?', 'Wird nur gefragt, wenn die Person überwiegend oder ganz stuhlinkontinent ist oder ein künstlicher Darmausgang besteht.'],
-    '4.13': ['Wie wird die Person ernährt?', 'Nur wichtig, wenn eine Sonde oder Infusion nötig ist. „Teilweise“ gibt mehr Punkte als „vollständig“, weil dann zusätzlich beim normalen Essen geholfen wird.'],
+    '4.13': ['Wie wird die Person ernährt?', 'Nur wichtig, wenn eine Sonde oder Infusion nötig ist. „Sonde zusätzlich zum Essen“ gibt mehr Punkte als „fast nur über Sonde“, weil dann zusätzlich beim normalen Essen geholfen wird.'],
 
     '6.1': ['Kann die Person ihren Tag selbst einteilen und mit Änderungen zurechtkommen?', 'Zum Beispiel wissen, wann sie aufsteht, isst und schlafen geht, und mit einem verschobenen Termin klarkommen.'],
     '6.2': ['Kann die Person allein zur Ruhe kommen und schlafen?', 'Zählt: ins Bett gehen, einschlafen, durchschlafen. Muss jemand nachts helfen, beruhigen oder umlagern, ist das Hilfe.'],
