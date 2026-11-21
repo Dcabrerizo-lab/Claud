@@ -153,5 +153,6 @@
   "sf.a.ortJa": "Oui, c’est correct",
   "sf.a.ortNein": "Non, un autre lieu",
   "sf.h.plzOrt": "Le niveau de loyer dépend de ta commune, pas du code postal. Il détermine le loyer maximal pris en compte pour le Wohngeld. La décision qui fait foi revient à la Wohngeldstelle.",
-  "sf.ueb.rest": "Non, 0 ou rien indiqué ({n})"
+  "sf.ueb.rest": "Non, 0 ou rien indiqué ({n})",
+  "sf.wahl.kurz.t": "Peu de questions, pour une personne"
 }

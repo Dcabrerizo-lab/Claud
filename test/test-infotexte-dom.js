@@ -76,7 +76,7 @@ setTimeout(() => {
   d.querySelector('#appnav [data-ansicht=start]') && d.querySelector('#appnav [data-ansicht=start]').click();
   $('goLeistungen').click();
   check('Kurzer Check als Wahl oben (vor dem Formular, nicht am Formularende); keine sichtbaren Beispiele', !d.querySelector('.form-ende') && $('einfachBtn') && $('einfachBtn').compareDocumentPosition($('form')) & w.Node.DOCUMENT_POSITION_FOLLOWING && $('presets').hidden);
-  check('Löschen: Textknopf oben in „Deine Angaben“ (vor dem Formular)', !$('clearBtn') && $('clearLink').classList.contains('linkbtn') && $('clearLink').compareDocumentPosition($('form')) & w.Node.DOCUMENT_POSITION_FOLLOWING);
+  check('Löschen: auf der Startwahl ohne Angaben kein „Angaben löschen“ (UX-Audit A, Aufgabe 11), kein alter Löschknopf', !$('clearBtn') && !$('clearLink'));
   const hinweise = [...d.querySelectorAll('#form .hint')].filter(sichtbar);
   check('Formular leer: höchstens 8 sichtbare Feldhinweise', hinweise.length <= 8, hinweise.map((x) => x.textContent.slice(0, 30)));
   check('Alle ⓘ-Bauteile zu, Überschrift als Frage', [...d.querySelectorAll('#form details.mehr')].every((x) => !x.open && /\?$/.test(x.querySelector('summary').textContent)), [...d.querySelectorAll('#form details.mehr summary')].map((x) => x.textContent));

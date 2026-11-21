@@ -60,6 +60,7 @@ const ohne = (o) => JSON.stringify(o.results.map((r) => [r.id, r.level, r.tx]));
   let A = app(store);
   check('Beim Öffnen: Auswahl mit zwei Karten, Formular ausgeblendet', A.$('sfWahlSchritt') && A.$('sfWahlAlles') && A.appEl.classList.contains('sf-an') && A.frage() === L['sf.wahl.h']);
   check('Startwahl: keine Klasse sf-frage (Übersetzungshinweis sichtbar)', !A.appEl.classList.contains('sf-frage'));
+  check('Startwahl ohne Angaben: kein „Angaben löschen“; Kurzer Check mit Untertitel', !A.$('clearLink') && A.$('schritte').querySelector('.sf-w3').textContent.includes(L['sf.wahl.kurz.t']));
   check('Karten: Schritt für Schritt (empfohlen) und Alles auf einer Seite', A.$('sfWahlSchritt').textContent.includes(L['sf.wahl.schritt.t']) && A.$('sfWahlAlles').textContent.includes(L['sf.wahl.alles.t']));
   A.$('sfWahlAlles').click();
   check('Alles auf einer Seite: Formular sichtbar, oben die Wahl (gedrückt: Alles auf einer Seite) und „Angaben löschen“', !A.appEl.classList.contains('sf-an') && A.$('sfWegAlles').getAttribute('aria-pressed') === 'true' && A.$('sfWegSchritt').textContent === L['sf.wahl.schritt'] && !!A.$('clearLink') && A.$('sfLeiste').compareDocumentPosition(A.$('h-form')) & 4 && store['lotse.checkWeg'] === 'alles');

@@ -153,5 +153,6 @@
   "sf.a.ortJa": "Tak, zgadza się",
   "sf.a.ortNein": "Nie, inna miejscowość",
   "sf.h.plzOrt": "Stopień czynszu zależy od twojej gminy, nie od kodu pocztowego. Od niego zależy, ile czynszu najwyżej liczy się przy Wohngeld. Wiążąco decyduje Wohngeldstelle.",
-  "sf.ueb.rest": "Nie, 0 lub brak odpowiedzi ({n})"
+  "sf.ueb.rest": "Nie, 0 lub brak odpowiedzi ({n})",
+  "sf.wahl.kurz.t": "Kilka pytań, dla jednej osoby"
 }

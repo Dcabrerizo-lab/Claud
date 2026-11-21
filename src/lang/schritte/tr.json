@@ -153,5 +153,6 @@
   "sf.a.ortJa": "Evet, doğru",
   "sf.a.ortNein": "Hayır, başka bir yer",
   "sf.h.plzOrt": "Kira kademesi posta koduna değil, belediyene bağlıdır. Wohngeld’de en fazla ne kadar kiranın sayılacağı buna göre belirlenir. Bağlayıcı kararı Wohngeldstelle verir.",
-  "sf.ueb.rest": "Hayır, 0 veya bilgi yok ({n})"
+  "sf.ueb.rest": "Hayır, 0 veya bilgi yok ({n})",
+  "sf.wahl.kurz.t": "Birkaç soru, tek kişi için"
 }

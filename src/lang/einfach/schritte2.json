@@ -137,5 +137,6 @@
   "sf.a.ortJa": "=",
   "sf.a.ortNein": "=",
   "sf.h.plzOrt": "Die Mietenstufe hängt von deinem Ort ab. Nicht von der Postleitzahl. Danach richtet sich, wie viel Miete beim Wohngeld höchstens zählt. Die Wohngeldstelle entscheidet.",
-  "sf.ueb.rest": "="
+  "sf.ueb.rest": "=",
+  "sf.wahl.kurz.t": "Wenige Fragen. Für eine Person."
 }
