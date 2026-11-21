@@ -3605,17 +3605,21 @@
       speichern: function (a) { pa.antworten = a; paSpeichern(); },
       beimErgebnis: paMerken,
       abbrechen: paVerlassen,
+      // Reihenfolge (David 21.11.2026): zuerst der passende Antrag (noch kein Pflegegrad: beantragen; Einschätzung höher: Höherstufung),
+      // dann „Mit dem Gutachten vergleichen“, dann „Was steht mir zu?“. Höchstens 3 Kacheln.
       aktionen: [
-        { id: 'antrag', kachel: 'antrag', sym: PA_SYM.antrag, titel: 'Antrag an die Pflegekasse', text: 'Mit der Antragsmappe, deine Daten sind schon drin', wenn: function (r, pg) { return pg == null && r.pg >= 1; }, fn: function (r) {
+        { id: 'antrag', kachel: 'antrag', sym: PA_SYM.antrag, titel: 'Pflegegrad beantragen', text: 'Mit der Antragsmappe, deine Daten sind schon drin', wenn: function (r, pg) { return pg == null && r.pg >= 1; }, fn: function (r) {
           paUebernehmen(r); picked.pflege = true; pickedUser.pflege = true; if (lastOut) renderPick(lastOut.results);
           paZurueck('mappeMake'); paUnterseite('leistungen'); } },
         { id: 'hoeher', kachel: 'antrag', sym: PA_SYM.antrag, titel: 'Höherstufung beantragen', text: 'Schreiben an die Pflegekasse mit deinen Antworten', wenn: function (r, pg) { return pg != null && r.pg > pg; }, fn: function (r, a, g) {
           paUebernehmen(r); zeigeAnsicht('briefe', false); briefOeffnen('pk'); paUnterseite('briefe');
           if (window.PruefpaketPflege) { window.PruefpaketPflege.setze(g, 'hoeher'); briefFormular(); } } },
+        // Nach dem Antrag (falls passend): mit dem Gutachten vergleichen. Öffnet die Gutachten-Prüfung (wie Brief → Pflegekasse); briefOeffnen('pk') übergibt die Antworten
+        // dieser Einschätzung (PruefpaketPflege.eigene), die Prüfung zeigt dann eigene Punkte je Bereich neben dem Gutachten. „← Zurück“ führt hierher.
+        { id: 'gutachten', kachel: 'gutachten', sym: PA_SYM.gutachten, titel: 'Mit dem Gutachten vergleichen', text: 'Gutachten vom Medizinischen Dienst scannen oder einfügen', fn: function () {
+          zeigeAnsicht('briefe', false); briefOeffnen('pk'); paUnterseite('briefe'); } },
         { id: 'hilfen', kachel: 'hilfen', sym: PA_SYM.hilfen, titel: 'Was steht mir zu?', text: function (r) { return r.pg ? 'Unterstützung bei Pflegegrad ' + r.pg : 'Hilfen schon ohne Pflegegrad'; }, fn: function (r) {
           paUnterseite('pflegestart'); puOeffnen('liste', r.pg || 0, true); } },
-        { id: 'gutachten', kachel: 'gutachten', sym: PA_SYM.gutachten, titel: 'Mit dem Gutachten vergleichen', text: 'Brief der Pflegekasse prüfen', fn: function () {
-          zeigeAnsicht('briefe', false); briefOeffnen('pk'); paUnterseite('briefe'); } },
         // In den Leistungs-Check nur, wenn man von dort gekommen ist
         { id: 'zurueck', titel: 'Zurück zum Leistungs-Check', wenn: paVomLeistungsCheck, fn: function (r) { paUebernehmen(r); paRueck = ''; paZurueck('c-pflege'); } }
       ]
