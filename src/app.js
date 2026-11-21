@@ -917,7 +917,7 @@
       var z = e.target && e.target.closest ? e.target : null; if (!z) return;
       if (z.closest('#mappeMake')) openMappe();
       else if (z.closest('#ebOpen')) ebOeffnen();
-      else if (z.closest('[data-antrag]')) antragFuer(z.closest('[data-antrag]').getAttribute('data-antrag'));
+      else if (z.closest('[data-antrag]') && !window.SoloMappe) antragFuer(z.closest('[data-antrag]').getAttribute('data-antrag')); // mit Antragsmappe (SoloMappe) übernimmt deren Klick-Handler
     });
     // Auswahl der Leistungen in der Mappe: Mappe sofort neu aufbauen
     $('pick').addEventListener('change', function () { if (!$('mappe').hidden) buildMappe(); });
@@ -1661,10 +1661,9 @@
   }
 
   // „Antrag vorbereiten“ an einer Ergebniskarte: Antragsmappe mit dieser Leistung angehakt. Gehört die Leistung zu einem der zwei Wege,
-  // werden die Leistungen des anderen Wegs abgewählt (beides zusammen gibt es nicht). Bietet die Mappe eine eigene Funktion
-  // (window.SoloMappe.oeffnenMit, Antragsmappe), wird sie genutzt.
+  // werden die Leistungen des anderen Wegs abgewählt (beides zusammen gibt es nicht). Bietet die Antragsmappe eine eigene Schnittstelle
+  // (window.SoloMappe mit Klick-Handler für data-antrag), übernimmt sie den Klick.
   function antragFuer(id) {
-    if (window.SoloMappe && typeof window.SoloMappe.oeffnenMit === 'function') { window.SoloMappe.oeffnenMit(id); return; }
     var w = lastOut && lastOut.wege;
     if (w) { var andere = w.a.indexOf(id) >= 0 ? w.b : w.b.indexOf(id) >= 0 ? w.a : []; andere.forEach(function (x) { pickedUser[x] = false; }); }
     pickedUser[id] = true;
