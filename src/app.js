@@ -2591,7 +2591,9 @@
     ['hilfe', 'sb.h', 'sb.h.t', '<circle cx="9" cy="8" r="3"/><path d="M3 20c1-4 3-6 6-6s5 2 6 6"/><path d="M14 4h7v5h-4l-2 2V9h-1z"/>']
   ];
   // Es ist dringend: zuerst der Krisen-Check, dann je Fall Frist und erster Schritt, Einzelheiten zum Aufklappen (Texte sp.schulden.<fall>).
-  //  konto: § 850k Abs. 1 ZPO (Umwandlung, 4. Geschäftstag), § 899 Abs. 1 ZPO (Umwandlung binnen eines Monats schützt gesperrtes Guthaben);
+  //  konto: § 850k Abs. 1 und 2 ZPO (Umwandlung, 4. Geschäftstag), § 899 Abs. 1 ZPO (Umwandlung binnen eines Monats schützt gesperrtes Guthaben);
+  //  „Jeder darf nur ein P-Konto haben“ (im Schritt gs.d.konto.schritt, aufklappbar): § 850k Abs. 3 Satz 1 ZPO „Jede Person darf nur ein
+  //  Pfändungsschutzkonto unterhalten.“ (https://www.gesetze-im-internet.de/zpo/__850k.html, abgerufen 21.11.2026; früher Abs. 8 a. F.);
   //  strom: §§ 41f, 41g EnWG; mahn: §§ 692 Abs. 1 Nr. 3, 694, 700, 339 ZPO; miete: § 569 Abs. 3 Nr. 2 BGB, § 22 Abs. 8 SGB II, § 36 SGB XII
   //  (alle abgerufen 20.11.2026 auf gesetze-im-internet.de).
   //  geld (Geldstrafe, Texte gs.d.geld.*, inhaltlich wie sl.warum.geldstrafe): § 43 StGB (2 Tagessätze = 1 Tag Ersatzfreiheitsstrafe),
@@ -2611,21 +2613,22 @@
   //  § 36 SGB XII) und Tipp gs.d.strom.grenze (§ 41f EnWG: 2 Monatsabschläge, mindestens 100 €; abgerufen 20.11.2026, gesetze-im-internet.de).
   var GS_D_SCHRITTE = { konto: ['gs.d.konto.schritt', 'pf.tipp.bescheinigung'], strom: ['gs.d.strom.schritt', 'gs.d.strom.haerte', 'gs.d.strom.darlehen'], geld: ['gs.d.geld.schritt'] };
   var GS_D_TIPPS = { strom: ['gs.d.strom.grenze'] };
-  // Post vom Inkasso: Prüfliste (§ 13a RDG), Musterschreiben, Raten anbieten, Gerichtspost (Sprung zum Mahnbescheid)
+  // Post vom Inkasso: Prüfliste (§ 13a RDG), Musterschreiben, Raten anbieten, Gerichtspost. „Gelber Umschlag vom Gericht?“ ist nur ein Link:
+  //  öffnet direkt die Seite „Es ist dringend → Mahnbescheid vom Gericht“ (keine zweite Fassung); „Zurück“ führt von dort zu „Post vom Inkasso“.
   var GS_INKASSO = [
     ['pruef', 'ip.h', 'ip.h.t', '<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5M8.5 11l2 2 3.5-3.5"/>'],
     ['schreiben', 'ms.h', 'ms.h.t', '<path d="M6 3h9l4 4v14H6z"/><path d="M9 17l1-3 6-6 2 2-6 6z"/>'],
     ['rate', 'gs.rate', 'gs.rate.t', '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>'],
     ['gelb', 'gs.gelb', 'gs.gelb.t', '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>']
   ];
-  // Schuldnerberatung: Beratungsstelle finden (sl.hilfe.1–5), Bis zum Termin, Beratungsmappe, Ablauf und Privatinsolvenz, unseriöse Anbieter
+  // Schuldnerberatung: Beratungsstelle finden (sl.hilfe.1–5, mit dem Tipp zu unseriösen Anbietern), Bis zum Termin, Beratungsmappe, Ablauf und
+  //  Privatinsolvenz. Eigene Kachel „Vorsicht: unseriöse Anbieter“ entfernt (Aufräumen 21.11.2026): ihr einziger Inhalt war derselbe Tipp.
   //  Ablauf (sb.ablauf.lead): AG SBV „Konzept Soziale Schuldnerberatung“ (2018), S. 10–14; Privatinsolvenz §§ 287, 305 InsO (abgerufen 20.11.2026).
   var GS_HILFE = [
     ['finden', 'sb.finden', 'sb.finden.t', '<path d="M12 21s-6-6.5-6-11a6 6 0 0 1 12 0c0 4.5-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/>'],
     ['termin', 'sb.termin', 'sb.termin.t', '<path d="M7 3h10M7 21h10M8 3c0 5 8 5 8 9s-8 4-8 9M16 3c0 5-8 5-8 9s8 4 8 9"/>'],
     ['mappe', 'sb.mappe', 'sb.mappe.t', '<path d="M3 6h7l2 2h9v11H3z"/><path d="M8 13h8"/>'],
-    ['ablauf', 'sb.ablauf', 'sb.ablauf.t', '<circle cx="5" cy="18" r="2"/><circle cx="12" cy="9" r="2"/><circle cx="19" cy="15" r="2"/><path d="M6.5 16.5l4-6M13.5 10.5l4 3"/>'],
-    ['unser', 'sb.unser', 'sb.unser.t', '<path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/>']
+    ['ablauf', 'sb.ablauf', 'sb.ablauf.t', '<circle cx="5" cy="18" r="2"/><circle cx="12" cy="9" r="2"/><circle cx="19" cy="15" r="2"/><path d="M6.5 16.5l4-6M13.5 10.5l4 3"/>']
   ];
   // Sparen im Alltag (jetzt unter „Mein Geld planen“): Strom, Heizen, Essen (mit Link zur Verbraucherzentrale), Verträge
   var SP_THEMEN = [
@@ -2677,7 +2680,7 @@
     box.appendChild(vz);
   }
 
-  var sp = { bereich: '', fall: '', thema: '' };
+  var sp = { bereich: '', fall: '', thema: '', von: '' }; // von: Bereich, aus dem eine Link-Kachel kam (Zurück dorthin)
   // Kachel in der Form der Startseite (Klasse sk): Symbol, Titel, kurzer Text
   // Deutscher Amtsbegriff in Klammern in einer Übersetzung (z. B. „(Mahnbescheid)“): als lang="de" auszeichnen, damit er wie deutscher
   // Text getrennt wird (mit Trennstrich, auch in Arabisch/Persisch richtig herum) statt mitten im Wort ohne Strich umzubrechen (schmale Kachel, 390 px)
@@ -2688,7 +2691,7 @@
   function skKachel(cls, sym, titel, text, fn) {
     return nhKnopf('uk-karte ' + cls, '<span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + sym + '</svg></span><span class="sk-txt"><b>' + kachelTitel(titel) + '</b>' + (text ? '<span>' + esc(text) + '</span>' : '') + '</span>', null, fn);
   }
-  function gsOeffne(bereich) { sp.bereich = bereich; sp.fall = ''; sp.thema = ''; if (bereich === 'dringend' && window.Geld) Geld.kcStart(); }
+  function gsOeffne(bereich) { sp.bereich = bereich; sp.fall = ''; sp.thema = ''; sp.von = ''; if (bereich === 'dringend' && window.Geld) Geld.kcStart(); }
   // Sprung aus einer Unteransicht (Pfändung, Haushaltsplan, Schulden-Liste) in einen Teil von „Geld und Schulden“: Herkunft bleibt die der
   // Startkachel, damit „Zurück“ eine Ebene hoch führt (Teil → Kacheln → Startseite) und nicht im Kreis zwischen zwei Ansichten
   function gsSprung(bereich, thema, fall) {
@@ -2723,12 +2726,12 @@
     var tipp = function (key, fall, ziel, laien) { var dt = tippEl(key, fall ? 'sp-fall' : '', laien); if (fall) dt.setAttribute('data-fall', fall); (ziel || box).appendChild(dt); return dt; };
     var tippListe = function (keys, cls, laien) { var ul = document.createElement('ul'); ul.className = 'tipp-liste ' + cls; box.appendChild(ul); keys.forEach(function (k) { var li = document.createElement('li'); tipp(k, '', li, laien); ul.appendChild(li); }); return ul; };
     var neu = function (id) { spRender(false, id); };
-    // Unterkarten [id, Titel, Untertitel, Symbol]; „Gelber Umschlag“ springt zum Fall Mahnbescheid
+    // Unterkarten [id, Titel, Untertitel, Symbol]; „Gelber Umschlag“ springt direkt zum Fall Mahnbescheid (Zurück: wieder hierher)
     var unterkarten = function (liste, prefix) {
       var r = raster();
       liste.forEach(function (x) {
         r.appendChild(skKachel(prefix + x[0], x[3], t(x[1]), t(x[2]), function () {
-          if (x[0] === 'gelb') { gsOeffne('dringend'); sp.fall = 'mahn'; spRender(true); return; }
+          if (x[0] === 'gelb') { gsOeffne('dringend'); sp.fall = 'mahn'; sp.von = 'inkasso'; spRender(true); return; }
           sp.fall = x[0]; if (x[0] === 'schreiben') Geld.schreibenVorbelegen(''); spRender(true);
         }));
       });
@@ -2816,14 +2819,11 @@
         var hb = document.createElement('div'); hb.className = 'gs-box gs-schritt gs-beratung'; box.appendChild(hb);
         ['sl.hilfe.1', 'sl.hilfe.4', 'sl.hilfe.5', 'sl.hilfe.2', 'sl.hilfe.3'].forEach(function (k) { var e = document.createElement('p'); e.textContent = t(k); hb.appendChild(e); });
         tipp('sp.schulden.unserioes', 'unserioes');
-      } else if (sp.fall === 'ablauf') {
+      } else { // ablauf
         p(t('sb.ablauf'), 'pf-frage');
         p(t('sb.ablauf.lead'), 'hint');
         tippListe(['sp.schulden.1', 'sp.schulden.2', 'sp.schulden.3'], 'sp-schritte');
         tipp('sp.schulden.insolvenz', 'insolvenz');
-      } else {
-        p(t('sb.unser'), 'pf-frage');
-        tipp('sp.schulden.unserioes', 'unserioes');
       }
       box.appendChild(quellenEl([t('sp.schulden.quellen')]));
     } else if (!sp.thema) { // Mein Geld planen: Haushaltsplan, darunter die Themen von „Geld sparen im Alltag“
@@ -2865,6 +2865,7 @@
   }
   // Eine Ebene zurück innerhalb von „Geld und Schulden“; false = schon auf der obersten Ebene
   function spEbeneZurueck() {
+    if (sp.fall && sp.von) { var von = sp.von; gsOeffne(von); return true; } // Link-Kachel (Gelber Umschlag): zurück zu „Post vom Inkasso“
     if (window.Geld && Geld.zurueck(sp.fall)) return true;
     if (sp.thema && sp.fall.indexOf('-') > 0) sp.fall = sp.fall.split('-')[0]; // Rechner → Kacheln Strom/Gas
     else if (sp.fall) sp.fall = '';
@@ -3625,17 +3626,21 @@
       speichern: function (a) { pa.antworten = a; paSpeichern(); },
       beimErgebnis: paMerken,
       abbrechen: paVerlassen,
+      // Reihenfolge (David 21.11.2026): zuerst der passende Antrag (noch kein Pflegegrad: beantragen; Einschätzung höher: Höherstufung),
+      // dann „Mit dem Gutachten vergleichen“, dann „Was steht mir zu?“. Höchstens 3 Kacheln.
       aktionen: [
-        { id: 'antrag', kachel: 'antrag', sym: PA_SYM.antrag, titel: 'Antrag an die Pflegekasse', text: 'Mit der Antragsmappe, deine Daten sind schon drin', wenn: function (r, pg) { return pg == null && r.pg >= 1; }, fn: function (r) {
+        { id: 'antrag', kachel: 'antrag', sym: PA_SYM.antrag, titel: 'Pflegegrad beantragen', text: 'Mit der Antragsmappe, deine Daten sind schon drin', wenn: function (r, pg) { return pg == null && r.pg >= 1; }, fn: function (r) {
           paUebernehmen(r); picked.pflege = true; pickedUser.pflege = true; if (lastOut) renderPick(lastOut.results);
           paZurueck('mappeMake'); paUnterseite('leistungen'); } },
         { id: 'hoeher', kachel: 'antrag', sym: PA_SYM.antrag, titel: 'Höherstufung beantragen', text: 'Schreiben an die Pflegekasse mit deinen Antworten', wenn: function (r, pg) { return pg != null && r.pg > pg; }, fn: function (r, a, g) {
           paUebernehmen(r); zeigeAnsicht('briefe', false); briefOeffnen('pk'); paUnterseite('briefe');
           if (window.PruefpaketPflege) { window.PruefpaketPflege.setze(g, 'hoeher'); briefFormular(); } } },
+        // Nach dem Antrag (falls passend): mit dem Gutachten vergleichen. Öffnet die Gutachten-Prüfung (wie Brief → Pflegekasse); briefOeffnen('pk') übergibt die Antworten
+        // dieser Einschätzung (PruefpaketPflege.eigene), die Prüfung zeigt dann eigene Punkte je Bereich neben dem Gutachten. „← Zurück“ führt hierher.
+        { id: 'gutachten', kachel: 'gutachten', sym: PA_SYM.gutachten, titel: 'Mit dem Gutachten vergleichen', text: 'Gutachten vom Medizinischen Dienst scannen oder einfügen', fn: function () {
+          zeigeAnsicht('briefe', false); briefOeffnen('pk'); paUnterseite('briefe'); } },
         { id: 'hilfen', kachel: 'hilfen', sym: PA_SYM.hilfen, titel: 'Was steht mir zu?', text: function (r) { return r.pg ? 'Unterstützung bei Pflegegrad ' + r.pg : 'Hilfen schon ohne Pflegegrad'; }, fn: function (r) {
           paUnterseite('pflegestart'); puOeffnen('liste', r.pg || 0, true); } },
-        { id: 'gutachten', kachel: 'gutachten', sym: PA_SYM.gutachten, titel: 'Mit dem Gutachten vergleichen', text: 'Brief der Pflegekasse prüfen', fn: function () {
-          zeigeAnsicht('briefe', false); briefOeffnen('pk'); paUnterseite('briefe'); } },
         // In den Leistungs-Check nur, wenn man von dort gekommen ist
         { id: 'zurueck', titel: 'Zurück zum Leistungs-Check', wenn: paVomLeistungsCheck, fn: function (r) { paUebernehmen(r); paRueck = ''; paZurueck('c-pflege'); } }
       ]
