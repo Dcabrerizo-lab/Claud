@@ -236,7 +236,9 @@ function wohngeld(h) {
   // WoGG). Nur die Summe bekannt: vorsichtig ein verdienendes Kind, günstig verteilt auf alle Kinder ab 6 und jungen Erwachsenen.
   const kindAb = 1230 / 12 + 1200 / 12, kindN = Math.max(1, h.kinder - h.u6 + h.jung);
   const plus = h.unterhalt + h.waisen + h.uvg;
-  const kindVorsichtig = Math.max(0, h.kindEink - kindAb), kindGuenstig = Math.max(0, h.kindEink - kindN * kindAb);
+  // günstig: der Freibetrag (bis zu den eigenen Einnahmen) darf Unterhalt/Waisenrente/Unterhaltsvorschuss der Kinder mindern
+  const kindX = h.kindEink / kindN;
+  const kindVorsichtig = Math.max(0, h.kindEink - kindAb), kindGuenstig = Math.max(-plus, kindN * (Math.max(0, kindX - 1230 / 12) - Math.min(kindX, 100)));
   const uzVorsichtig = h.uzFest ? Math.min(h.uz, h.uzDeckel) : 0, uzGuenstig = h.uzFest ? h.uz : Math.min(h.uz, h.uzDeckel);
   const yPess = Math.max(0, h.p.reduce((s, x) => s + (x.brutto - werbung(x)) * (1 - abzugAus(x, 0)), 0) + plus + kindVorsichtig - frei - uzVorsichtig);
   const yOpt = Math.max(0, h.p.reduce((s, x) => s + (x.brutto - werbung(x)) * (1 - abzugAus(x, 1)), 0) + plus + kindGuenstig - frei - uzGuenstig);
