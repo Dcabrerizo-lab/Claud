@@ -1457,7 +1457,7 @@
   "gs.frist": "Termin",
   "gs.d.konto.frist": "W ciągu miesiąca od dotarcia zajęcia do banku. Wtedy chronione są też już zablokowane środki (§ 899 Abs. 1 ZPO).",
   "gs.d.konto.frist.kurz": "Przekształć konto w ciągu 1 miesiąca od zajęcia.",
-  "gs.d.konto.schritt": "Od razu poproś bank o zamianę konta osobistego na konto chronione przed zajęciem (P-Konto). Bank musi to zrobić najpóźniej od 4. dnia roboczego po twoim wniosku (§ 850k ZPO).",
+  "gs.d.konto.schritt": "Od razu poproś bank o zamianę konta osobistego na konto chronione przed zajęciem (P-Konto). Bank musi to zrobić najpóźniej od 4. dnia roboczego po twoim wniosku (§ 850k ZPO). Każdy może mieć tylko jedno P-Konto (§ 850k Abs. 3 ZPO).",
   "gs.d.konto.schritt.kurz": "Od razu przekształć konto bieżące w P-Konto.",
   "gs.d.strom.frist": "O odcięciu trzeba uprzedzić 4 tygodnie wcześniej i zapowiedzieć je 8 dni roboczych wcześniej (§ 41f EnWG).",
   "gs.d.strom.frist.kurz": "Odcięcie: groźba 4 tygodnie wcześniej, zapowiedź 8 dni roboczych wcześniej.",

@@ -4,6 +4,7 @@ Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss ste
 
 ## Nächste Version (in Arbeit)
 - **„Es ist dringend“ aufgeräumt**: alle Fälle gleich aufgebaut – Frist oben, „Das tust du jetzt“ in Schritten, kurze Tipps zum Aufklappen, Knöpfe, Quellen unten. Konto gepfändet mit Bescheinigung und Grundfreibetrag statt doppeltem Tipp; Strom-/Gassperre in 3 Schritten. „Stimmt der Brief?“: Hinweis „keine Rechtsberatung“ unter dem letzten Tipp.
+- **Geld und Schulden ohne Dopplungen**: Schuldnerberatung ohne eigene Kachel „unseriöse Anbieter“ (Tipp steht in „Beratungsstelle finden“); „Gelber Umschlag vom Gericht?“ führt direkt zum Mahnbescheid, „Zurück“ wieder zu „Post vom Inkasso“; „Schreiben an Gläubiger“ ohne P-Konto-Bescheinigung (bleibt unter „Was bleibt mir?“); „Die Anschrift fehlt noch“ erst beim Drucken/Teilen; Konto gepfändet: wieder „Jeder darf nur ein P-Konto haben“ (§ 850k Abs. 3 ZPO).
 - **Haushaltsplan aufgeräumt**: Unter der Eingabe steht nichts mehr. Hinweise stehen in der Auswertung, das Druckblatt auch, die Tabelle (CSV) im Haushaltsbuch. Die Übernahme in den Leistungs-Check steht in der Karte, die bei knappem Geld erscheint.
 - **„Bewilligt bis“ entfernt** (auch die Erinnerung an den Folgeantrag in den Fristen). Alte Angaben werden einfach nicht mehr verwendet.
 - **Abschlag prüfen** jetzt auf den Seiten „Strom“ und „Heizen“: erst Strom oder Gas wählen, dann nur die Prüfung (Nachzahlung oder Guthaben, ungefähr). Ohne Musterbrief und Zusatz-Tipps.
