@@ -1124,6 +1124,7 @@
   "t.eg.teilzeit": "Netul tău cu normă parțială ({nach}) este inclus: Elterngeld se plătește din diferența față de netul dinaintea nașterii. Din netul dinaintea nașterii contează cel mult {deckel}.",
   "t.eg.teilzeitMin": "Netul tău cu normă parțială ({nach}) este inclus. Este atât de mare încât rămâne doar suma minimă de {min} (din netul dinaintea nașterii contează cel mult {deckel}).",
   "t.eg.teilzeitPlus": "Cu normă parțială, ElterngeldPlus are o limită: jumătate din Basiselterngeld fără muncă după naștere (aici {halb}). Poate fi deci la fel de mare ca Basiselterngeld, dar durează de două ori mai mult.",
+  "t.eg.teilzeitStunden": "Important: primești Elterngeld numai dacă lucrezi în medie cel mult 32 de ore pe săptămână.",
   "t.eg.mehrlinge": "Este inclus suplimentul pentru gemeni (Mehrlingszuschlag): cu {zuschlag} mai mult pe lună (la ElterngeldPlus jumătate).",
   "t.eg.mehrlingeDrei": "Este inclus suplimentul pentru tripleți (Mehrlingszuschlag): câte {zuschlag} în plus pe lună pentru al doilea și al treilea copil (la ElterngeldPlus jumătate). Pentru fiecare copil în plus se adaugă încă {zuschlag}.",
   "t.eg.mehrlingeOhne": "La nașteri multiple se adaugă câte {zuschlag} pe lună pentru al doilea și fiecare copil următor (Mehrlingszuschlag).",

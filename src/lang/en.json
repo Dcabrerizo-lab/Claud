@@ -1124,6 +1124,7 @@
   "t.eg.teilzeit": "Your part-time net ({nach}) is included: Elterngeld is paid on the difference from the net before the birth. At most {deckel} of the net before the birth counts.",
   "t.eg.teilzeitMin": "Your part-time net ({nach}) is included. It is so high that only the minimum amount of {min} remains (at most {deckel} of the net before the birth counts).",
   "t.eg.teilzeitPlus": "With part-time work, ElterngeldPlus has an upper limit: half of the basic Elterngeld without work after the birth (here {halb}). So it can be as high as the basic Elterngeld, but lasts twice as long.",
+  "t.eg.teilzeitStunden": "Important: you only get Elterngeld if you work no more than 32 hours a week on average.",
   "t.eg.mehrlinge": "This includes the supplement for twins (Mehrlingszuschlag): {zuschlag} more a month (half with ElterngeldPlus).",
   "t.eg.mehrlingeDrei": "This includes the supplement for triplets (Mehrlingszuschlag): {zuschlag} more a month each for the second and third child (half with ElterngeldPlus). Each further child adds another {zuschlag}.",
   "t.eg.mehrlingeOhne": "With twins or more, {zuschlag} a month is added for the second and each further child (Mehrlingszuschlag).",

@@ -1124,6 +1124,7 @@
   "t.eg.teilzeit": "Ton net à temps partiel ({nach}) est pris en compte : l'Elterngeld est versé sur la différence avec le net d'avant la naissance. Du net d'avant la naissance, {deckel} au plus sont retenus.",
   "t.eg.teilzeitMin": "Ton net à temps partiel ({nach}) est pris en compte. Il est si élevé qu'il ne reste que le montant minimum de {min} (du net d'avant la naissance, {deckel} au plus sont retenus).",
   "t.eg.teilzeitPlus": "Avec un temps partiel, l'ElterngeldPlus a un plafond : la moitié du Basiselterngeld sans travail après la naissance (ici {halb}). Il peut donc être aussi élevé que le Basiselterngeld, mais dure deux fois plus longtemps.",
+  "t.eg.teilzeitStunden": "Important : tu ne reçois l'Elterngeld que si tu travailles au plus 32 heures par semaine en moyenne.",
   "t.eg.mehrlinge": "Ce montant comprend le supplément pour jumeaux (Mehrlingszuschlag) : {zuschlag} de plus par mois (la moitié avec ElterngeldPlus).",
   "t.eg.mehrlingeDrei": "Ce montant comprend le supplément pour triplés (Mehrlingszuschlag) : {zuschlag} de plus par mois pour le deuxième et pour le troisième enfant (la moitié avec ElterngeldPlus). Chaque enfant supplémentaire ajoute encore {zuschlag}.",
   "t.eg.mehrlingeOhne": "Pour des naissances multiples, {zuschlag} par mois s'ajoutent pour le deuxième enfant et chaque enfant suivant (Mehrlingszuschlag).",

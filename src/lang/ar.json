@@ -1124,6 +1124,7 @@
   "t.eg.teilzeit": "تم احتساب صافيك من الدوام الجزئي ({nach}): يُدفع Elterngeld على الفرق عن الصافي قبل الولادة. ويُحتسب من الصافي قبل الولادة {deckel} كحد أقصى.",
   "t.eg.teilzeitMin": "تم احتساب صافيك من الدوام الجزئي ({nach}). وهو مرتفع بحيث يبقى الحد الأدنى فقط وهو {min} (يُحتسب من الصافي قبل الولادة {deckel} كحد أقصى).",
   "t.eg.teilzeitPlus": "مع الدوام الجزئي يوجد حد أعلى لـ ElterngeldPlus: نصف Basiselterngeld بدون عمل بعد الولادة (هنا {halb}). لذلك قد يكون بمقدار Basiselterngeld نفسه، لكن لمدة مضاعفة.",
+  "t.eg.teilzeitStunden": "مهم: تحصل على Elterngeld فقط إذا كنت تعمل 32 ساعة في الأسبوع كحد أقصى في المتوسط.",
   "t.eg.mehrlinge": "يشمل ذلك علاوة التوائم (Mehrlingszuschlag): {zuschlag} إضافية شهريًا (النصف مع ElterngeldPlus).",
   "t.eg.mehrlingeDrei": "يشمل ذلك علاوة التوائم الثلاثة (Mehrlingszuschlag): {zuschlag} إضافية شهريًا عن كل من الطفل الثاني والثالث (النصف مع ElterngeldPlus). وعن كل طفل إضافي آخر تُضاف {zuschlag} أخرى.",
   "t.eg.mehrlingeOhne": "عند ولادة التوائم تُضاف {zuschlag} شهريًا عن الطفل الثاني وكل طفل إضافي (Mehrlingszuschlag).",

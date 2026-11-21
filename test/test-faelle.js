@@ -398,6 +398,24 @@ ck('[gsa-ernaehrung] Krankenkost: Hinweis und nur „mindestens“', K({ alter: 
 const wgT = (o) => JSON.stringify(res({ miete: 650, mietstufe: 3, vermoegen: 0, ...o }).m.wohngeld.tx);
 const lohn = [{ art: 'lohn', b: 1400, n: 1100 }];
 ck('[wg-eg300] Elterngeld bis 300 € ist kein Einkommen: 250 € und 300 € ändern nichts, 500 € schon', wgT({ einkommen: lohn.concat([{ art: 'eg', b: 300 }]) }) === wgT({ einkommen: lohn }) && wgT({ einkommen: lohn.concat([{ art: 'eg', b: 250 }]) }) === wgT({ einkommen: lohn }) && wgT({ einkommen: lohn.concat([{ art: 'eg', b: 500 }]) }) !== wgT({ einkommen: lohn }));
+// Schon laufendes Elterngeld bei Mehrlingen (§ 10 Abs. 4 und 5 BEEG, gesetze-im-internet.de/beeg/__10.html; Richtlinien zum BEEG 07/2026 Nr. 10.4:
+// „bei Drillingen ... 900 Euro monatlich frei“, Nr. 10.5.2: bei SGB II, SGB XII, Kinderzuschlag keine Vervielfachung; abgerufen 21.11.2026).
+// Erwartung aus dem Gesetz: Wohngeld: Zwillinge 600 € und Drillinge 900 € Elterngeld sind kein Einkommen. Grundsicherungsgeld: 600 € bei Zwillingen sind
+// Mindestbetrag plus Mehrlingszuschlag (kein Einkommen vor der Geburt) und zählen voll; von 900 € bleiben 300 € frei, es zählen ebenfalls 600 €.
+{
+  const zw = { baby: 'da', egKinder: '2', kids: 2, kidsU6: 2 }, dr = { baby: 'da', egKinder: '3', kids: 3, kidsU6: 3 };
+  const mitEg = (b) => lohn.concat([{ art: 'eg', b }]);
+  ck('[eg-mehrlinge-frei] Wohngeld: Elterngeld bei Zwillingen bis 600 €, bei Drillingen bis 900 € kein Einkommen; darüber und ohne Mehrlinge schon',
+    wgT({ ...zw, einkommen: mitEg(600) }) === wgT({ ...zw, einkommen: lohn }) && wgT({ ...dr, einkommen: mitEg(900) }) === wgT({ ...dr, einkommen: lohn })
+    && wgT({ ...zw, einkommen: mitEg(900) }) === wgT({ ...zw, egKinder: '', einkommen: mitEg(600) }) && wgT({ ...zw, einkommen: mitEg(900) }) !== wgT({ ...zw, einkommen: lohn })
+    && wgT({ ...zw, baby: 'bald', einkommen: mitEg(600) }) === wgT({ ...zw, baby: 'bald', egKinder: '', einkommen: mitEg(600) }));
+  const gg = (o, b) => JSON.stringify(A({ ...o, einkommen: [{ art: 'eg', b }], miete: 500 }, 'ggeld'));
+  ck('[eg-mehrlinge-frei] Grundsicherungsgeld: 600 € Elterngeld bei Zwillingen zählen voll (wie 900 € mit 300 € Freibetrag), Freibetrag nicht vervielfacht',
+    gg(zw, 600) === gg(zw, 900) && gg(zw, 600) !== gg(zw, 601) && gg(zw, 1000) !== gg(zw, 900) && gg(dr, 900) === gg(dr, 1200) && gg({ ...zw, egKinder: '' }, 600) === gg({ ...zw, egKinder: '' }, 300), [gg(zw, 600), gg(zw, 900), gg(zw, 601)]);
+  ck('[eg-teilzeit] Hinweis auf höchstens 32 Wochenstunden nur mit Arbeit nach der Geburt (§ 1 Abs. 6 Nr. 1 BEEG)',
+    K({ baby: 'da', egVor: 2000, egNach: 2500, miete: 500 }, 'elterngeld').includes('eg.teilzeitStunden') && K({ baby: 'da', egVor: 2000, egNach: 800, miete: 500 }, 'elterngeld').includes('eg.teilzeitStunden')
+    && !K({ baby: 'da', egVor: 2000, miete: 500 }, 'elterngeld').includes('eg.teilzeitStunden'));
+}
 ck('[wg-keinEink] Pflegegeld ist kein Einkommen: Pflegegrad ändert das Wohngeld nicht', wgT({ art1: 'lohn', brutto: 1700, netto: 1300 }) === wgT({ art1: 'lohn', brutto: 1700, netto: 1300, pflegegrad: '3' }));
 const wgKE = { adults: 2, young: 1, art1: 'lohn', brutto: 2700, netto: 2000 };
 ck('[wg-kindeink] Einkommen des Kindes: bis 202,50 € im Monat frei (Pauschbetrag 102,50 € + Freibetrag 100 €), 500 € mindern', wgT(wgKE) === wgT({ ...wgKE, kindEink: 100 }) && wgT(wgKE) === wgT({ ...wgKE, kindEink: 202 }) && wgT(wgKE) !== wgT({ ...wgKE, kindEink: 500 }));

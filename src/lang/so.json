@@ -1124,6 +1124,7 @@
   "t.eg.teilzeit": "Netto-gaaga shaqada waqti-dhiman ({nach}) waa lagu daray: Elterngeld waxaa la bixiyaa farqiga u dhexeeya netto-gii ka hor dhalmada. Netto-gii ka hor dhalmada waxaa laga tiriyaa ugu badnaan {deckel}.",
   "t.eg.teilzeitMin": "Netto-gaaga shaqada waqti-dhiman ({nach}) waa lagu daray. Wuu sareeyaa oo waxaa kaliya hadhaya lacagta ugu yar oo ah {min} (netto-gii ka hor dhalmada waxaa laga tiriyaa ugu badnaan {deckel}).",
   "t.eg.teilzeitPlus": "Shaqada waqti-dhiman, ElterngeldPlus wuxuu leeyahay xad sare: kala badh Basiselterngeld haddii aan dhalmada kadib la shaqeyn (halkan {halb}). Sidaa darteed wuxuu la mid noqon karaa Basiselterngeld, laakiin laba jeer ayuu ka dheer yahay.",
+  "t.eg.teilzeitStunden": "Muhiim: Elterngeld waxaa la bixiyaa oo keliya haddii aad celcelis ahaan shaqeyso ugu badnaan 32 saacadood toddobaadkii.",
   "t.eg.mehrlinge": "Waxaa ku jira lacagta dheeriga ah ee mataanaha (Mehrlingszuschlag): {zuschlag} dheeri ah bishii (ElterngeldPlus kala badh).",
   "t.eg.mehrlingeDrei": "Waxaa ku jira lacagta dheeriga ah ee saddex ilmood (Mehrlingszuschlag): {zuschlag} dheeri ah bishii mid kasta ilmaha labaad iyo saddexaad (ElterngeldPlus kala badh). Ilmo kasta oo kale waxaa loogu daraa {zuschlag} kale.",
   "t.eg.mehrlingeOhne": "Marka dhowr ilmood hal mar dhashaan, ilmaha labaad iyo mid kasta oo kale waxaa bishii loogu daraa {zuschlag} (Mehrlingszuschlag).",

@@ -1124,6 +1124,7 @@
   "t.eg.teilzeit": "Yarı zamanlı netin ({nach}) hesaba katıldı: Elterngeld doğum öncesi netle aradaki fark üzerinden ödenir. Doğum öncesi netten en fazla {deckel} sayılır.",
   "t.eg.teilzeitMin": "Yarı zamanlı netin ({nach}) hesaba katıldı. O kadar yüksek ki yalnızca {min} asgari tutar kalıyor (doğum öncesi netten en fazla {deckel} sayılır).",
   "t.eg.teilzeitPlus": "Yarı zamanlı çalışmada ElterngeldPlus için bir üst sınır vardır: doğumdan sonra çalışmadan alınacak Basiselterngeld'in yarısı (burada {halb}). Bu yüzden Basiselterngeld kadar yüksek olabilir, ama iki kat uzun sürer.",
+  "t.eg.teilzeitStunden": "Önemli: Elterngeld yalnızca haftada ortalama en fazla 32 saat çalışıyorsan ödenir.",
   "t.eg.mehrlinge": "Buna ikizler için ek ödeme (Mehrlingszuschlag) dahildir: ayda {zuschlag} daha fazla (ElterngeldPlus'ta yarısı).",
   "t.eg.mehrlingeDrei": "Buna üçüzler için ek ödeme (Mehrlingszuschlag) dahildir: ikinci ve üçüncü çocuk için ayda ayrı ayrı {zuschlag} daha fazla (ElterngeldPlus'ta yarısı). Her ek çocuk için bir {zuschlag} daha eklenir.",
   "t.eg.mehrlingeOhne": "Çoğul doğumlarda ikinci ve her ek çocuk için ayda {zuschlag} eklenir (Mehrlingszuschlag).",

@@ -1124,6 +1124,7 @@
   "t.eg.teilzeit": "Twoje netto z pracy w niepełnym wymiarze ({nach}) jest uwzględnione: Elterngeld liczy się od różnicy względem netto przed porodem. Z netto przed porodem liczy się najwyżej {deckel}.",
   "t.eg.teilzeitMin": "Twoje netto z pracy w niepełnym wymiarze ({nach}) jest uwzględnione. Jest tak wysokie, że zostaje tylko kwota minimalna {min} (z netto przed porodem liczy się najwyżej {deckel}).",
   "t.eg.teilzeitPlus": "Przy pracy w niepełnym wymiarze ElterngeldPlus ma górną granicę: połowę Basiselterngeld bez pracy po porodzie (tutaj {halb}). Może więc być tak wysoki jak Basiselterngeld, ale trwa dwa razy dłużej.",
+  "t.eg.teilzeitStunden": "Ważne: Elterngeld przysługuje tylko wtedy, gdy pracujesz średnio najwyżej 32 godziny w tygodniu.",
   "t.eg.mehrlinge": "Obejmuje to dodatek na bliźnięta (Mehrlingszuschlag): {zuschlag} więcej miesięcznie (przy ElterngeldPlus połowa).",
   "t.eg.mehrlingeDrei": "Obejmuje to dodatek na trojaczki (Mehrlingszuschlag): po {zuschlag} więcej miesięcznie na drugie i trzecie dziecko (przy ElterngeldPlus połowa). Za każde kolejne dziecko dochodzi jeszcze {zuschlag}.",
   "t.eg.mehrlingeOhne": "Przy porodzie mnogim za drugie i każde kolejne dziecko dochodzi po {zuschlag} miesięcznie (Mehrlingszuschlag).",

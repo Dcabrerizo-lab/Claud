@@ -1124,6 +1124,7 @@
   "t.eg.teilzeit": "Dein Netto in Teilzeit ({nach}) ist eingerechnet: Elterngeld gibt es für den Unterschied zum Netto vor der Geburt. Vom Netto vor der Geburt zählen dabei höchstens {deckel}.",
   "t.eg.teilzeitMin": "Dein Netto in Teilzeit ({nach}) ist eingerechnet. Es ist so hoch, dass nur der Mindestbetrag von {min} bleibt (vom Netto vor der Geburt zählen höchstens {deckel}).",
   "t.eg.teilzeitPlus": "Beim ElterngeldPlus gilt mit Teilzeit eine Obergrenze: die Hälfte des Basiselterngelds ohne Arbeit nach der Geburt (hier {halb}). Es kann deshalb so hoch sein wie das Basiselterngeld, läuft aber doppelt so lange.",
+  "t.eg.teilzeitStunden": "Wichtig: Elterngeld gibt es nur, wenn du im Durchschnitt höchstens 32 Stunden in der Woche arbeitest.",
   "t.eg.mehrlinge": "Darin ist der Mehrlingszuschlag für Zwillinge enthalten: {zuschlag} mehr im Monat (beim ElterngeldPlus die Hälfte).",
   "t.eg.mehrlingeDrei": "Darin ist der Mehrlingszuschlag für Drillinge enthalten: je {zuschlag} mehr im Monat für das zweite und das dritte Kind (beim ElterngeldPlus die Hälfte). Für jedes weitere Kind kommen noch einmal {zuschlag} dazu.",
   "t.eg.mehrlingeOhne": "Bei Mehrlingen kommen für das zweite und jedes weitere Kind je {zuschlag} im Monat dazu (Mehrlingszuschlag).",

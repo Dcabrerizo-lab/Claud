@@ -130,8 +130,10 @@ const Rules = (function () {
     // Elterngeld (§ 2 BEEG): 67 % des Nettos vor der Geburt (65 % ab 1.240 €, bis 100 % bei kleinem Einkommen), 300 bis 1.800 €;
     // ElterngeldPlus die Hälfte für doppelt so lange; Basiselterngeld 12 Monate, mit Partnermonaten oder alleinerziehend 14;
     // kein Anspruch über 175.000 € zu versteuerndem Einkommen der Eltern (Geburten ab 1.4.2025, § 1 Abs. 8 BEEG)
-    // pausch: ein Zwölftel des Arbeitnehmer-Pauschbetrags (§ 2c Abs. 1 BEEG). Bleibt bei 1.000 € / 12, obwohl der Wortlaut 1.230 € nahelegt:
-    // Der Elterngeldrechner des Bundes rechnet nachweislich so (alle 33 Referenzfälle auf den Cent).
+    // pausch: ein Zwölftel des Arbeitnehmer-Pauschbetrags (§ 2c Abs. 1 BEEG). Bleibt bei 1.000 € / 12, weil der Elterngeld-Schnellrechner des Bundes
+    // nachweislich so rechnet (alle 33 Referenzfälle auf den Cent). OFFEN: Nach § 2c Abs. 1 Satz 4 und den Richtlinien zum BEEG (07/2026, Nr. 2c.1.4.0,
+    // bmbfsfj.bund.de, abgerufen 21.11.2026) gilt für Geburten ab 1.1.2025 ein Zwölftel von 1.230 € = 102,50 €. SoLo liegt damit bis etwa 13 € im Monat
+    // über dem Betrag der Elterngeldstelle (Anzeige „etwa“). Der Abzug gilt genauso für das Einkommen nach der Geburt (§ 2 Abs. 1 Satz 3).
     // Teilzeit nach der Geburt (§ 2 Abs. 3 BEEG): Prozentsatz nach Abs. 1/2 „des Unterschiedsbetrages“ der Einkommen vor und nach der Geburt;
     // „Als Einkommen aus Erwerbstätigkeit vor der Geburt ist dabei höchstens der Betrag von 2 770 Euro anzusetzen“ (deckel). Mindestens 300 € (§ 2 Abs. 4).
     // Mehrlingszuschlag (§ 2a Abs. 4 BEEG): „um je 300 Euro für das zweite und jedes weitere Kind“, auch neben dem Geschwisterbonus (mehrling).
@@ -655,6 +657,12 @@ const Rules = (function () {
     const AUSZ = { alg: 1, kg: 1, eg: 1, wfbm: 1, unt: 1 };
     const pers = liste ? (liste.length ? liste : [['ohne', 0]]) : adults === 2 ? [[art1, brutto - brutto2, 0, !!inp.aus1 || !!AUSZ[art1], inp.art1 === 'selbst'], [art2, brutto2, 0, !!AUSZ[art2], inp.art2 === 'selbst']] : [[art1, brutto, 0, !!inp.aus1 || !!AUSZ[art1], inp.art1 === 'selbst']];
     const sumIf = (f) => pers.reduce((a, x) => a + f(x[0], x[1]), 0);
+    // Mehrlinge und schon laufendes Elterngeld (Baby ist da): Kinder dieser Geburt. Beim Wohngeld vervielfacht sich der Freibetrag von 300 € mit der
+    // Zahl der Kinder (§ 10 Abs. 4 BEEG), bei Grundsicherung, Sozialhilfe und Kinderzuschlag nicht (§ 10 Abs. 5 Satz 1; Richtlinien zum BEEG 07/2026
+    // Nr. 10.4, 10.5.2, bmbfsfj.bund.de, abgerufen 21.11.2026). Dort gibt es den Freibetrag nur mit Einkommen vor der Geburt: SoLo nimmt das an, wenn
+    // das Elterngeld über dem Mindestbetrag liegt, bei Mehrlingen über Mindestbetrag plus Mehrlingszuschlag (Zwillinge 600 €, Drillinge 900 €).
+    const egMehr = inp.baby === 'da' ? Math.min(3, Math.max(1, Number(inp.egKinder) | 0)) : 1;
+    const egOhneArbeit = R.elterngeldFrei + R.eg.mehrling * (egMehr - 1);
     // Unterhalt, den die Person selbst an andere zahlt (Kinder, die nicht im Haushalt leben, frühere Partner), im Monat.
     // Grundsicherungsgeld und Kinderzuschlag: abgezogen, soweit festgelegt (Unterhaltstitel, Jugendamtsurkunde, notarielle
     // Vereinbarung) und wirklich gezahlt (§ 11b Abs. 1 Satz 1 Nr. 7 SGB II). Wohngeld: Höchstbeträge nach § 18 WoGG; mit
@@ -724,7 +732,7 @@ const Rules = (function () {
       hhAndere: inp.hhAndere === 'wg' || inp.hhAndere === 'verwandte' ? inp.hhAndere : '',
       eu: inp.aufenthalt === 'eu', euArbeit: inp.euArbeit === 'ja', euJahre5: inp.euJahre === 'ab5',
       art1, art2, pers, liste: !!liste, kindEink, uvgEst, kindZahl: unterhalt + waisen + uvgEst, waisen, uvgPartner, uvgWechsel, bruttoEigen, uvgKindAnr, mehrAE, mehrAEhoch, alterGrenz,
-      egFreiSGB: sumIf((a, b) => a === 'eg' && b > R.elterngeldFrei ? R.elterngeldFrei : 0),
+      egMehr, egOhneArbeit, egFreiSGB: sumIf((a, b) => a === 'eg' && b > egOhneArbeit ? R.elterngeldFrei : 0),
       // Versicherungspauschale (§ 6 Abs. 1 Nr. 1 GrusiGV) einmal je volljähriger Person, nicht zusätzlich neben Einkommen aus Arbeit (dort
       // steckt sie im Grundabsetzbetrag von 100 €, § 11b Abs. 2 SGB II). Ist der Lohn kleiner als 30 €, geht nur der vom Lohn nicht gedeckte
       // Rest vom anderen Einkommen derselben Person ab (BA, Fachliche Weisungen §§ 11-11b SGB II Rz. 11.155 mit Beispiel).
@@ -970,7 +978,7 @@ const Rules = (function () {
       const p = persNr(x, i), t = tab(x);
       const ab = [t[0], Math.max(t[1], abHi[p] || 0)];
       const wkHier = wkTeil[i]; wkSum += wkHier;
-      const zaehlt = x[0] === 'eg' ? Math.max(0, x[1] - R.elterngeldFrei) : x[1] - wkHier;
+      const zaehlt = x[0] === 'eg' ? Math.max(0, x[1] - R.elterngeldFrei * (h.egMehr || 1)) : x[1] - wkHier;
       // Unterhalt für sich selbst: mit Realsplitting sonstige Einkünfte (§ 22 Nr. 1a EStG) nach Werbungskosten-Pauschbetrag 102 € (§ 9a Satz 1
       // Nr. 3 EStG, zusammen mit Renten derselben Person), sonst voll (§ 14 Abs. 2 Nr. 19 und 20 WoGG). Die App weiß das nicht: Pauschbetrag
       // nur für „möglich“ (yB), aus dem Rest, den die Renten der Person nicht verbraucht haben.
@@ -1352,7 +1360,7 @@ const Rules = (function () {
         return a + e - frei;
       }
       if (art === 'lohn') return a + n;
-      if (art === 'eg') return a + Math.max(0, n - (b > R.elterngeldFrei ? R.elterngeldFrei : 0));
+      if (art === 'eg') return a + Math.max(0, n - (b > (h.egOhneArbeit || R.elterngeldFrei) ? R.elterngeldFrei : 0));
       // Rente: Grundrentenfreibetrag nur auf die gesetzliche Rente (§ 82a), Freibetrag für zusätzliche Altersvorsorge auf Betriebs-, Riester- oder private Rente (§ 82 Abs. 4)
       // § 82a Abs. 1 SGB XII (https://www.gesetze-im-internet.de/sgb_12/__82a.html, Abruf 21.11.2026): 100 € + 30 % „aus der gesetzlichen Rente“,
       // also aus der Bruttorente (Broschüre der Rentenversicherung „Die Grundsicherung“, 5/2026, S. 18: „Brutto Rente 870,00“ -> 281,50 €).
@@ -1635,7 +1643,8 @@ const Rules = (function () {
       if (h.egNach > 0) {
         const kern = elterngeldBerechnen(h.egVor, { nach: h.egNach });
         tx.push([kern <= R.eg.min ? 'eg.teilzeitMin' : 'eg.teilzeit', { nach: eur(h.egNach), deckel: eur(R.eg.deckel), min: eur(R.eg.min) }],
-          ['eg.teilzeitPlus', { halb: eur(elterngeldBerechnen(h.egVor, { kinder, bonus: o.bonus }) / 2) }]);
+          ['eg.teilzeitPlus', { halb: eur(elterngeldBerechnen(h.egVor, { kinder, bonus: o.bonus }) / 2) }],
+          ['eg.teilzeitStunden']); // § 1 Abs. 1 Nr. 4, Abs. 6 Nr. 1 BEEG: höchstens 32 Wochenstunden im Durchschnitt des Lebensmonats
       } else tx.push(['eg.teilzeitOffen']);
       if (kinder > 1) tx.push([kinder >= 3 ? 'eg.mehrlingeDrei' : 'eg.mehrlinge', mehr]);
       if (geschw >= 2) tx.push(['eg.geschwister', { min: eur(R.eg.bonusMin) }]);

@@ -27,6 +27,8 @@ function regelaltersgrenze(jahr) {
 }
 
 // Haushalt aus den Eingaben aufbauen: Liste der Personen mit Rolle, Alter(sgruppe) und Einkommen
+// Kinder der Geburt bei schon laufendem Elterngeld (Baby ist da): Zwillinge 2, Drillinge oder mehr 3 (§ 10 Abs. 4 BEEG)
+function egMehrlinge(e) { return e && e.baby === 'da' ? Math.min(3, Math.max(1, Number(e.egKinder) | 0)) : 1; }
 function haushalt(e) {
   const erwachsene = e.adults === 2 ? 2 : 1;
   const kinder = Math.max(0, e.kids | 0), jung = Math.max(0, e.young | 0);
@@ -102,7 +104,7 @@ function elternEinkommenSGB2(h) {
   h.p.forEach((x) => {
     if (x.art === 'lohn') abzug += freibetragArbeit(x.brutto, h.kinder > 0);
     else if (x.art !== 'ohne' && x.brutto > 0) abzug += 30; // Versicherungspauschale
-    if (x.art === 'eg' && x.brutto > 300) abzug += 300; // § 10 Abs. 5 BEEG
+    if (x.art === 'eg' && x.brutto > 300 * egMehrlinge(h.e)) abzug += 300; // § 10 Abs. 5 BEEG: nur mit Einkommen vor der Geburt, bei Mehrlingen nicht vervielfacht
   });
   if (h.uzFest) abzug += h.uz; // § 11b Abs. 1 Satz 1 Nr. 7 SGB II
   return Math.max(0, h.netto - abzug);
@@ -227,7 +229,7 @@ function wohngeld(h) {
   const pg = ['1', '2', '3', '4', '5'].indexOf(String(e.pflegegrad)) >= 0;
   let frei = (gdb === 100 || (gdb >= 50 && pg) ? 150 : 0) + (h.erwachsene === 1 && h.kinder > 0 ? 110 : 0);
   frei += Math.min(4, Math.max(0, e.bhWeitere | 0)) * 150; // weitere schwerbehinderte Haushaltsmitglieder
-  frei += h.p.reduce((s, x) => s + (x.art === 'eg' ? Math.min(300, x.brutto) : 0), 0);
+  frei += h.p.reduce((s, x) => s + (x.art === 'eg' ? Math.min(300 * egMehrlinge(e), x.brutto) : 0), 0); // § 10 Abs. 1 und 4 BEEG
   // § 17a WoGG: Grundrentenfreibetrag je Rente, nur auf die gesetzliche Rente (ohne enthaltene Betriebs-, Riester- oder private Rente)
   if (e.grundrente33) {
     let offenWG = zahl(e.zusatzRente);
@@ -270,7 +272,7 @@ function minderungElternKiZ(h, bedarf) {
   let anders = 0;
   h.p.forEach((x) => {
     const n = s > 0 ? h.netto * x.brutto / s : h.netto / h.p.length;
-    if (['rente', 'alg', 'kg', 'eg'].indexOf(x.art) >= 0) anders += n - 30 * (x.brutto > 0 ? 1 : 0) - (x.art === 'eg' && x.brutto > 300 ? 300 : 0);
+    if (['rente', 'alg', 'kg', 'eg'].indexOf(x.art) >= 0) anders += n - 30 * (x.brutto > 0 ? 1 : 0) - (x.art === 'eg' && x.brutto > 300 * egMehrlinge(h.e) ? 300 : 0);
   });
   anders = Math.min(gesamt, Math.max(0, anders));
   if (anders <= bedarf) return 0.45 * Math.max(0, gesamt - bedarf);
@@ -354,7 +356,7 @@ function einkommenSGB12(e, h) {
   for (const x of posten) {
     if (x.art === 'wfbm') { const lohn = Math.max(0, x.n - 52); const frei = Math.min(lohn, rs1 / 8 + 0.5 * Math.max(0, lohn - rs1 / 8)); summe += lohn - frei; }
     else if (x.art === 'lohn') summe += x.n - Math.min(0.3 * x.n, 0.5 * rs1);
-    else if (x.art === 'eg') summe += Math.max(0, x.n - ((x.b != null ? x.b : x.n) > 300 ? 300 : 0));
+    else if (x.art === 'eg') summe += Math.max(0, x.n - ((x.b != null ? x.b : x.n) > 300 * egMehrlinge(e) ? 300 : 0));
     else if (x.art === 'rente') {
       const zus = Math.min(offen, Math.max(0, x.n)); offen -= zus;
       const zusB = Math.min(offenB, Math.max(0, x.b || 0)); offenB -= zusB;
