@@ -295,3 +295,18 @@ Unabhängige Prüfung. Gesetzestexte am 21.11.2026 direkt abgerufen (gesetze-im-
 | Der amtliche Rechner zieht den Freibetrag nicht über das Einkommen des Kindes hinaus ab (Fälle mit 90–150 € Kinderlohn stimmen auf den Euro). SoLo rechnet genauso | in Ordnung | keine | Differenzlauf |
 | `erweiterungen/bescheid-wg.js`: Pauschbetrag gilt dort schon je Mitglied mit Lohn; Freibetrag für Kinder steht weiter unter „Nicht geprüft“. Kein Widerspruch | in Ordnung | keine | – |
 | Offen: Bestätigungslauf Startwert 2612 (GitHub-Lauf 44905512224) lief bei der Prüfung noch. Der Differenztest enthält nur Minijobs bis 600 €, keine Ausbildungsvergütung mit Abzügen | offen | Ergebnis abwarten | – |
+
+## Prüfvermerk (21.11.2026) – PR #110 Nachprüfung: Freibetrag der Kinder und Unterhalt
+
+Unabhängige Nachprüfung der Commits nach 60551af. Gesetzestexte am 21.11.2026 direkt abgerufen (gesetze-im-internet.de).
+
+| Befund | Schwere | Korrektur | Quelle |
+|---|---|---|---|
+| Freibetrag § 17 Nr. 4 WoGG mindert auch den Unterhalt desselben Kindes: Der Wortlaut trägt das. Die Freibeträge werden von der Summe der Jahreseinkommen abgezogen (§ 13 Abs. 1), nicht nur vom Lohn. Der Freibetrag bemisst sich an den „Einnahmen“ (vor Pauschbetrag), höchstens 1.200 € im Jahr. Bei 110 € Lohn bleiben 7,50 € Einkünfte, 100 € Freibetrag: 92,50 € mindern den Unterhalt (amtlicher Rechner, Lauf 2612 Nr. 96: 487 €) | in Ordnung | keine | https://www.gesetze-im-internet.de/wogg/__13.html, https://www.gesetze-im-internet.de/wogg/__17.html, https://www.gesetze-im-internet.de/wogg/__14.html |
+| Deckel „höchstens bis zum übrigen Einkommen der Kinder“: steht so nicht im Gesetz (§ 13 Abs. 1 kennt keine Grenze je Mitglied). SoLo folgt hier dem amtlichen Rechner (Fälle ohne Unterhalt stimmen nur mit Deckel auf den Euro). Der Deckel ist die vorsichtigere Lesart, also keine zu hohe Zusage | gering, offen | keine; Rechtsfrage bleibt als Hinweis stehen | § 13 Abs. 1, § 17 Nr. 4 WoGG; Differenzlauf 2611 |
+| Schätzlogik: vorsichtig = ein verdienendes Kind, Freibetrag nur gegen den Lohn (nie gegen Unterhalt); obere Schätzung = Lohn gleichmäßig auf alle Kinder ab 6 und jungen Erwachsenen. Die Funktion je Kind ist konvex, die gleichmäßige Verteilung ist deshalb wirklich der günstigste Fall. Obere Schätzung nie über der vorsichtigen, führt nur zu „möglich“ | in Ordnung | keine | Nachrechnung |
+| Obere Schätzung rechnet den Deckel gegen den Unterhalt aller Kinder zusammen (auch Kinder unter 6) und über der Minijob-Grenze mit der Auszahlung statt dem Brutto. Beides nur günstigster Fall, kein „wahrscheinlich“ | gering | keine | – |
+| Mutationstest: `test-amtlich-wohngeld.js` lief im Mutationstest gar nicht mit. Für die neue Regel (Unterhalt-Ausgleich, Deckel, Freibetrag höchstens die Einnahmen) gab es keine Mutation | mittel | Test in die Liste aufgenommen, 3 Mutationen ergänzt (alle entdeckt, einzeln geprüft) | `tools/mutationstest.js` |
+| `docs/PRUEFLISTE.md` nannte noch 12 Fälle und nichts zum Unterhalt; Testkopf ohne Nr. 96 | gering | berichtigt (13 Fälle, Unterhalt-Regel) | – |
+| Nr. 96 ist der einzige amtliche Fall mit Lohn unter 202,50 € und Unterhalt. Kein amtlicher Fall mit zwei Kindern und Unterhalt, keiner mit Waisenrente | offen | weitere Fälle im nächsten Differenzlauf | – |
+
