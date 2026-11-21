@@ -96,5 +96,6 @@
   "kb.weg.blatt": "Jako arkusz: na papierze lub jako plik",
   "kb.vorschau": "Pokaż podgląd arkusza",
   "kb.vorschau.zu": "Ukryj podgląd",
-  "kw.qr.zuViel": "To za dużo na kod QR. Udostępnij jako plik SoLo albo zaznacz mniej."
+  "kw.qr.zuViel": "To za dużo na kod QR. Udostępnij jako plik SoLo albo zaznacz mniej.",
+  "kw.imp.pinZeigen": "Pokaż PIN"
 }

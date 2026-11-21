@@ -332,9 +332,17 @@ var Weitergabe = (function () {
     var l = el('label', null, tt('kw.imp.pin')), i = el('input');
     i.type = 'password'; i.id = 'kwImpPin'; i.setAttribute('inputmode', 'numeric'); i.setAttribute('autocomplete', 'off'); i.maxLength = 12; l.setAttribute('for', 'kwImpPin');
     var ok = el('button', 'btn', tt('kw.imp.pinOk')); ok.type = 'submit'; ok.id = 'kwImpPinOk';
-    f.appendChild(el('p', 'small', tt('kw.imp.pinT'))); f.appendChild(l); f.appendChild(i); f.appendChild(ok);
-    f.appendChild(knopf('btn ghost', tt('kw.imp.abbrechen'), 'kwImpAbbr', function () { boxWeg(); meldung(''); }));
-    f.addEventListener('submit', function (e) { e.preventDefault(); var p = String(i.value || ''); i.value = ''; ok.disabled = true; entpacken(p).then(function () { ok.disabled = false; }); });
+    // Fehler rot direkt über dem Feld (GOV.UK-Muster, UX-Audit D #9); Feld bleibt gefüllt; „PIN zeigen“ für alle, die Punkte schlecht lesen
+    var fe = el('p', 'kw-feldfehler'); fe.id = 'kwImpPinFehler'; fe.hidden = true; fe.setAttribute('role', 'alert');
+    i.setAttribute('aria-describedby', 'kwImpPinFehler');
+    var zeig = knopf('linkbtn kw-pinzeigen', tt('kw.imp.pinZeigen'), 'kwImpPinZeigen', function () {
+      var an = i.type === 'password'; i.type = an ? 'text' : 'password'; zeig.setAttribute('aria-pressed', an ? 'true' : 'false'); });
+    zeig.setAttribute('aria-pressed', 'false');
+    f.appendChild(el('p', 'small', tt('kw.imp.pinT'))); f.appendChild(l); f.appendChild(fe); f.appendChild(i); f.appendChild(zeig);
+    var reihe = el('div', 'btns'); reihe.appendChild(ok);
+    reihe.appendChild(knopf('linkbtn', tt('kw.imp.abbrechen'), 'kwImpAbbr', function () { boxWeg(); meldung(''); }));
+    f.appendChild(reihe);
+    f.addEventListener('submit', function (e) { e.preventDefault(); var p = String(i.value || ''); fe.hidden = true; i.removeAttribute('aria-invalid'); ok.disabled = true; entpacken(p).then(function () { ok.disabled = false; }); });
     b.appendChild(f);
     try { i.focus(); } catch (e) {}
     return Promise.resolve(true);
@@ -345,6 +353,8 @@ var Weitergabe = (function () {
     return auspacken(code, p).then(function (o) { if (l !== lauf) return false; inhalt = o; meldung(''); vorschau(); return true; }, function (e) {
       if (l !== lauf) return false;
       meldung(IMP_FEHLER[e && e.art] || 'kw.imp.f.format');
+      var fe = $('kwImpPinFehler'), pi = $('kwImpPin');
+      if (e && e.art === 'pinFalsch' && fe && pi) { fe.textContent = tt('kw.imp.pinFalsch'); fe.hidden = false; pi.setAttribute('aria-invalid', 'true'); meldung(''); try { pi.focus(); pi.select(); } catch (x) {} }
       if (!(e && e.art === 'pinFalsch')) boxWeg();
       return false;
     });
