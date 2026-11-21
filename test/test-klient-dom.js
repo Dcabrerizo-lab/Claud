@@ -128,34 +128,34 @@ function teil2() {
     pdf: (seiten, titel, name, msg, art) => { pdfAufruf = { seiten, name, art }; }, blatt: () => {}
   });
   K.sichtbar(true);
-  check('[Modul] Knopf im Beratungsmodus mit Ergebnis sichtbar', !$('kbOpen').hidden);
+  check('Modul: Knopf im Beratungsmodus mit Ergebnis sichtbar', !$('kbOpen').hidden);
   K.oeffnen();
-  check('[Modul] XSS: Name nur als Text, kein Bild, kein Skript', !d.querySelector('#kbSeite img') && !d.querySelector('#kbWahl img') && !w.boese && /<img/.test($('kbSeite').textContent));
-  check('[Modul] Musterschreiben angeboten, aber nicht vorausgewählt (Name und Anschrift)', !!d.querySelector('#kbBriefe input[data-kb="b|kindergeld"]') && !d.querySelector('#kbBriefe input').checked && !/Sehr geehrte/.test($('kbSeite').textContent));
+  check('Modul: XSS: Name nur als Text, kein Bild, kein Skript', !d.querySelector('#kbSeite img') && !d.querySelector('#kbWahl img') && !w.boese && /<img/.test($('kbSeite').textContent));
+  check('Modul: Musterschreiben angeboten, aber nicht vorausgewählt (Name und Anschrift)', !!d.querySelector('#kbBriefe input[data-kb="b|kindergeld"]') && !d.querySelector('#kbBriefe input').checked && !/Sehr geehrte/.test($('kbSeite').textContent));
   const bcb = d.querySelector('#kbBriefe input'); bcb.checked = true; fire(bcb, 'change');
-  check('[Modul] Musterschreiben angehakt: steht im Blatt (deutsch)', /Sehr geehrte/.test($('kbSeite').textContent));
+  check('Modul: Musterschreiben angehakt: steht im Blatt (deutsch)', /Sehr geehrte/.test($('kbSeite').textContent));
   const sel = $('kbVorgang'), opt = [...sel.options];
-  check('[Modul] Gesperrter Vorgang neutral mit Schloss, ohne Namen', opt.length === 2 && opt[1].textContent === '🔒 ' + DE['kb.gesperrt'] && !/Geheimer/.test(sel.textContent));
+  check('Modul: Gesperrter Vorgang neutral mit Schloss, ohne Namen', opt.length === 2 && opt[1].textContent === '🔒 ' + DE['kb.gesperrt'] && !/Geheimer/.test(sel.textContent));
   sel.value = 'b'; fire(sel, 'change');
-  check('[Modul] Auswahl fragt die PIN ab', !d.querySelector('.kb-pin').hidden && d.activeElement === $('kbPin'));
+  check('Modul: Auswahl fragt die PIN ab', !d.querySelector('.kb-pin').hidden && d.activeElement === $('kbPin'));
   $('kbPin').value = '0000'; $('kbPinOk').click();
   setTimeout(() => {
-    check('[Modul] Falsche PIN: nicht verwendbar, zurück zum geöffneten Vorgang, Meldung', $('kbVorgang').value === 'a' && /Kindergeld/.test($('kbSeite').textContent) && !/Wohngeld/.test($('kbSeite').textContent) && $('kbVgMsg').textContent === DE['kb.pinFalsch']);
+    check('Modul: Falsche PIN: nicht verwendbar, zurück zum geöffneten Vorgang, Meldung', $('kbVorgang').value === 'a' && /Kindergeld/.test($('kbSeite').textContent) && !/Wohngeld/.test($('kbSeite').textContent) && $('kbVgMsg').textContent === DE['kb.pinFalsch']);
     const s2 = $('kbVorgang'); s2.value = 'b'; fire(s2, 'change');
     $('kbPin').value = '1234'; $('kbPinOk').click();
     setTimeout(() => {
-      check('[Modul] Richtige PIN: Inhalt des gesperrten Vorgangs (nur im Speicher), PIN-Feld geleert', /Wohngeld/.test($('kbSeite').textContent) && /Widerspruch: 01\.12\.2026/.test($('kbSeite').textContent) && $('kbPin').value === '');
-      check('[Modul] Nichts zurückgeschrieben', geschrieben === 0);
+      check('Modul: Richtige PIN: Inhalt des gesperrten Vorgangs (nur im Speicher), PIN-Feld geleert', /Wohngeld/.test($('kbSeite').textContent) && /Widerspruch: 01\.12\.2026/.test($('kbSeite').textContent) && $('kbPin').value === '');
+      check('Modul: Nichts zurückgeschrieben', geschrieben === 0);
       K.drucken();
-      check('[Modul] App: Drucken über die vorhandene PDF-Erzeugung', pdfAufruf && pdfAufruf.art === 'drucken' && pdfAufruf.name === 'SoLo-Klient.pdf' && pdfAufruf.seiten[0].blocks.some((b) => /Wohngeld/.test(b.text)));
+      check('Modul: App: Drucken über die vorhandene PDF-Erzeugung', pdfAufruf && pdfAufruf.art === 'drucken' && pdfAufruf.name === 'SoLo-Klient.pdf' && pdfAufruf.seiten[0].blocks.some((b) => /Wohngeld/.test(b.text)));
       nativ = true; pdfAufruf = null; K.teilen();
-      check('[Modul] App: Teilen über das Share-Plugin (PDF-Datei)', pdfAufruf && pdfAufruf.art === 'teilen');
+      check('Modul: App: Teilen über das Share-Plugin (PDF-Datei)', pdfAufruf && pdfAufruf.art === 'teilen');
       K.schliessen();
-      check('[Modul] Schließen vergisst den entsperrten Vorgang', $('kbSeite').textContent === '' && $('kbWahl').textContent === '');
+      check('Modul: Schließen vergisst den entsperrten Vorgang', $('kbSeite').textContent === '' && $('kbWahl').textContent === '');
       K.oeffnen();
-      check('[Modul] Neu öffnen: wieder der geöffnete Vorgang', /Kindergeld/.test($('kbSeite').textContent) && !/Wohngeld/.test($('kbSeite').textContent));
+      check('Modul: Neu öffnen: wieder der geöffnete Vorgang', /Kindergeld/.test($('kbSeite').textContent) && !/Wohngeld/.test($('kbSeite').textContent));
       beratung = false; K.sichtbar();
-      check('[Modul] Privatmodus: Knopf weg, Blatt zu', $('kbOpen').hidden && $('klientBlatt').hidden);
+      check('Modul: Privatmodus: Knopf weg, Blatt zu', $('kbOpen').hidden && $('klientBlatt').hidden);
       console.log(fails ? fails + ' Fehler' : 'Alle Prüfungen bestanden');
       process.exit(fails ? 1 : 0);
     }, 20);
