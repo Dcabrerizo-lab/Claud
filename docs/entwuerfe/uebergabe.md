@@ -34,3 +34,24 @@ Sprachen nur bei Bedarf laden (Datei real 6,35 MB, Grenze vorläufig 7 MB Bytes)
 - Nicht ständig nachfragen; alle nötigen Internetseiten dürfen aufgerufen werden.
 - Agenten-Regeln: docs/entwuerfe/agenten-regeln.md (Kopie von /home/claude/bau2.md; Inhalt u. a.: Worktrees unter /home/claude/wt-*, node_modules-Symlink, Maschine 2 Kerne → lokal nur Einzeltests, Commit-Fuß, konflikt-check, PR per gh api REST).
 - Technik: In neuen Klonen `git config --add remote.origin.fetch '+refs/heads/claude/*:refs/remotes/origin/claude/*'` setzen, sonst sind origin/claude/* veraltet.
+
+## Genehmigungen und Entscheidungen von David (vollständig, Stand 21.11.)
+| Thema | Entscheidung |
+|---|---|
+| GitHub | voller Zugriff in jeder Sitzung; Repo Dcabrerizo-lab/Claud mit Push anbinden, ohne Nachfrage |
+| PRs/Merges | PRs automatisch anlegen und nach grünen Tests mergen (gebündelt); kein Push auf main, kein Force-Push |
+| Nachfragen | nicht ständig fragen; nur bei echten Weichenstellungen. Alle nötigen Internetseiten dürfen aufgerufen werden |
+| Tempo | Vorrang; parallele Agenten so viele wie sinnvoll; Fable dort, wo es um Recht, Beträge, Sicherheit geht |
+| Wünsche „fürs nächste Update“ | sofort fertig machen (bauen, prüfen, testen, in Sammelzweig) – nur nicht bauen; schwere Tests erst zum Schluss |
+| Nach einem fertigen Update | direkt mit dem nächsten weitermachen |
+| Dieses Update (1.9) | KEIN Build für Android/Apple |
+| Builds/Store | nur auf ausdrückliche Anweisung; Play-Console-Upload macht David selbst; TestFlight nur nach Freigabe |
+| Upload-Schlüssel | liegt NICHT in der neuen Sitzung (nur in der alten). Für einen Build schickt David den Schlüssel als Zip (CLAUDE.md). Nie ins Repo/Chat |
+| App-Größe | Variante A: Test misst Bytes, Grenze vorläufig 7 MB; Sprachen-nur-bei-Bedarf im nächsten Update |
+| Anrede | tr/ru/uk/fr/pl durchgehend höfliche Form (nächstes Update) |
+| Sicherheitsnetz Sprachen | deutscher Originalsatz unter wichtigen Sätzen (Schalter, Standard an) |
+| Anschriften | nur mit amtlicher Quelle; Wikipedia-Adressen nur, wenn amtlich bestätigt |
+| Korrektheit | amtliche Quellen mit Datum; unsicher → „möglich“; Werte ab 1.1.2027 erst ab dann; jedes Update mit Aktualitätsprüfung vollumfänglich + Fable |
+| Lizenzschutz Berater | noch offen – erst mit David besprechen |
+| Muttersprachler | keine verfügbar → Rückübersetzung (Fable) + amtliches Glossar + Deutsch-Netz; „mit Fehlern darf nichts veröffentlicht werden“ |
+| Termine | Vorprüfung Update 2027 am 1.12.2026, Prüfung am 20.12.2026 (geplante Aufgaben) |
