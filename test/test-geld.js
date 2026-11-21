@@ -102,7 +102,9 @@ ck('[rate-vor] reicht die Rate nicht für die vorrangigen Schulden, bekommt Inka
 rp = RE(200000, 150000, [{ id: 'b', g: 'Amt', art: 'behoerde', stand: 5000 }, { id: 'i', g: 'Inkasso', art: 'inkasso', stand: 50000 }, { id: 'u', g: 'Unterhalt', art: 'unterhalt', stand: 5000 }]);
 ck('[rate-vor] Reihenfolge Stufe 1, 2, 3', rp.teile.map((x) => x.id + ':' + x.rate).join() === 'u:5000,b:5000,i:20000', rp.teile);
 const rs = G.schreiben('rate', { g: 'Muster Inkasso', az: 'K-1', rate: '125' });
-ck('[rate] Schreiben: Vorbehalt ohne Anerkennung einer Rechtspflicht, kein Anerkenntnis von Zinsen und Kosten', /ohne Anerkennung einer Rechtspflicht/.test(rs) && /kein Anerkenntnis, insbesondere nicht von Zinsen und Kosten/.test(rs));
+ck('[rate] Schreiben: Vorbehalt ohne Anerkennung einer Rechtspflicht, kein Anerkenntnis von Zinsen und Kosten', /ohne Anerkennung einer Rechtspflicht/.test(rs) && /Es ist kein Anerkenntnis der Forderung, insbesondere nicht von Zinsen und Kosten\./.test(rs) && !/Soweit ich/.test(rs));
+{ const fs2 = require('fs'), pf = require('path'), dir = pf.join(__dirname, '..', 'src', 'lang', 'schulden');
+  ck('[rate-pf] Hinweis „nichts pfändbar“ nennt in allen Sprachen auch die Geldstrafe (Staatsanwaltschaft)', fs2.readdirSync(dir).filter((f) => /\.json$/.test(f)).every((f) => /Geldstrafe/.test(require(pf.join(dir, f))['ra.unpf']) && /Staatsanwaltschaft/.test(require(pf.join(dir, f))['ra.unpf'])) && /Geld-Strafe/.test(require('../src/lang/einfach/geld.json')['ra.unpf'])); }
 ck('[rate] Schreiben: Rate eingesetzt, ohne Rate Lücke, Kostenfrage, keine Wertung', /monatlich 125 € zu zahlen/.test(rs) && /monatlich \[Betrag\] €/.test(G.schreiben('rate', {})) && /Kosten entstehen/.test(rs) && !/verjährt|unberechtigt/.test(rs) && G.schreiben('rate', { rate: '12<b>x' }).includes('monatlich 12 €'));
 ck('[rate] Rechenweg und Quelle Anerkenntnis im Code', /SoLo-Faustregel/.test(src) && /§ 212 Abs\. 1 Nr\. 1 BGB/.test(src) && /§ 13a Abs\. 3 RDG/.test(src));
 

@@ -111,7 +111,7 @@
   "f.which": "For which benefits?",
   "f.none": "No benefit to prepare right now.",
   "f.pick0": "Please choose at least one benefit.",
-  "f.pickWege": "Some of these benefits are either-or: you can only get one of them (see the tip above). That is why they are not ticked in advance. Tick yourself what you want to apply for.",
+  "f.pickWege": "Some of these benefits are either-or: you can only get one of them (see the tip above). You can still apply for both. That is why they are not ticked in advance. Tick yourself what you want to apply for.",
   "f.print": "Print",
   "f.copy": "Copy text",
   "f.copied": "Copied.",

@@ -244,7 +244,7 @@
   "ra.uebernommen": "Taksit artık mektupta.",
   "ra.ohnePlan": "Bütçe planına gelirlerini, kiranı ve yemek giderlerini yaz. O zaman sana bir taksit önerelim.",
   "ra.keine": "Şu anda taksit için pay kalmıyor. Borç danışmanlığından (Schuldnerberatung) yardım al.",
-  "ra.unpf": "Haciz tablosuna (Pfändungstabelle) göre alacaklılar şu anda gelirinden hiçbir şeye haciz koyduramaz. Bu yüzden borç danışmanlığına (Schuldnerberatung) gitmeden taksit teklif etme. Kira veya elektrik borçlarında yine de kira sözleşmesinin feshi ya da kesinti tehlikesi vardır: önce bunlarla ilgilen.",
+  "ra.unpf": "Haciz tablosuna (Pfändungstabelle) göre alacaklılar şu anda gelirinden hiçbir şeye haciz koyduramaz. Bu yüzden borç danışmanlığına (Schuldnerberatung) gitmeden taksit teklif etme. Kira veya elektrik borçlarında yine de kira sözleşmesinin feshi ya da kesinti tehlikesi vardır: önce bunlarla ilgilen. Aynısı adli para cezası (Geldstrafe) için de geçerlidir: savcılığa (Staatsanwaltschaft) taksit imkânını sor.",
   "ra.warn": "Taksit teklifi, alacağın kabulü sayılabilir. Bu yüzden önce alacağın doğru olup olmadığını kontrol et.",
   "ra.auft.h": "Borçlarına dağılım (önce önemli borçlar)",
   "ra.auft.g": "Alacaklı",

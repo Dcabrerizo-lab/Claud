@@ -97,7 +97,7 @@ var Geld = (function () {
   function rateSchreiben(f) {
     return ['Aktenzeichen: ' + (einzeilig(f.az, 60) || LUECKE.az), '', 'Angebot einer Ratenzahlung', '', 'Sehr geehrte Damen und Herren,', '',
       'ich kann Ihre Forderung zurzeit nicht auf einmal bezahlen. Ich biete Ihnen an, monatlich ' + rateText(f.rate) + ' zu zahlen, erstmals zum [Datum der ersten Rate].',
-      'Dieses Angebot mache ich ohne Anerkennung einer Rechtspflicht. Soweit ich die Forderung noch nicht prüfen konnte oder sie bestreite, ist es kein Anerkenntnis, insbesondere nicht von Zinsen und Kosten.',
+      'Dieses Angebot mache ich ohne Anerkennung einer Rechtspflicht. Es ist kein Anerkenntnis der Forderung, insbesondere nicht von Zinsen und Kosten.',
       'Bitte bestätigen Sie mir die Ratenzahlung schriftlich. Teilen Sie mir vorher mit, ob durch die Vereinbarung Kosten entstehen.',
       'Solange ich die Raten pünktlich zahle, bitte ich Sie, von weiteren Maßnahmen abzusehen.', '', 'Mit freundlichen Grüßen', '', '[Unterschrift]'];
   }
@@ -358,6 +358,8 @@ var Geld = (function () {
       btns(k).appendChild(knopf('btn', t('ra.uebernehmen'), function () {
         // Schreiben an einen Gläubiger aus der Aufteilung: dessen Teil, sonst die Gesamtrate
         var mein = e.teile.filter(function (x) { return !!m.von && x.id === m.von; })[0];
+        // Dieser Gläubiger ist laut Aufteilung erst später dran: keine Rate von 0 € ins Schreiben setzen (Prüfung PR #105, 21.11.2026)
+        if (mein && !mein.rate) { msg.textContent = t(e.vorrang ? 'ra.vor' : 'ra.keine'); return; }
         m.rate = String((mein ? mein.rate : e.rate) / 100);
         var f = document.getElementById('ms-rate'); if (f) { f.value = m.rate; f.dispatchEvent(new Event('input')); f.focus(); }
         msg.textContent = t('ra.uebernommen');

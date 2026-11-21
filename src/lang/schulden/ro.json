@@ -244,7 +244,7 @@
   "ra.uebernommen": "Rata este acum în scrisoare.",
   "ra.ohnePlan": "Trece în planul de buget veniturile, chiria și cheltuielile pentru mâncare. Apoi îți propunem o rată.",
   "ra.keine": "Acum nu rămâne loc pentru o rată. Cere ajutor la consilierea pentru datorii (Schuldnerberatung).",
-  "ra.unpf": "Conform tabelului de poprire (Pfändungstabelle), creditorii nu ar putea popri acum nimic din venitul tău. De aceea nu oferi o rată înainte de a merge la consilierea pentru datorii (Schuldnerberatung). La datorii la chirie sau curent te pot amenința totuși rezilierea chiriei sau debranșarea: ocupă-te mai întâi de ele.",
+  "ra.unpf": "Conform tabelului de poprire (Pfändungstabelle), creditorii nu ar putea popri acum nimic din venitul tău. De aceea nu oferi o rată înainte de a merge la consilierea pentru datorii (Schuldnerberatung). La datorii la chirie sau curent te pot amenința totuși rezilierea chiriei sau debranșarea: ocupă-te mai întâi de ele. Același lucru este valabil pentru o amendă penală (Geldstrafe): întreabă parchetul (Staatsanwaltschaft) despre rate.",
   "ra.warn": "O ofertă de plată în rate poate fi considerată recunoașterea datoriei. De aceea verifică mai întâi dacă datoria este corectă.",
   "ra.auft.h": "Împărțirea pe datoriile tale (întâi datoriile importante)",
   "ra.auft.g": "Creditor",

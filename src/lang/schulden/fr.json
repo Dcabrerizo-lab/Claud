@@ -244,7 +244,7 @@
   "ra.uebernommen": "La mensualité figure maintenant dans la lettre.",
   "ra.ohnePlan": "Indique dans le budget tes revenus, ton loyer et tes dépenses de nourriture. Nous te proposerons alors une mensualité.",
   "ra.keine": "Pour l’instant, il ne reste aucune marge pour une mensualité. Fais-toi aider par un service de conseil en dettes (Schuldnerberatung).",
-  "ra.unpf": "D’après le barème de saisie (Pfändungstabelle), les créanciers ne pourraient rien saisir sur tes revenus pour le moment. N’offre donc pas de mensualité avant d’avoir consulté un service de conseil en dettes (Schuldnerberatung). Pour des dettes de loyer ou d’électricité, une résiliation du bail ou une coupure restent possibles : occupe-toi d’abord de celles-ci.",
+  "ra.unpf": "D’après le barème de saisie (Pfändungstabelle), les créanciers ne pourraient rien saisir sur tes revenus pour le moment. N’offre donc pas de mensualité avant d’avoir consulté un service de conseil en dettes (Schuldnerberatung). Pour des dettes de loyer ou d’électricité, une résiliation du bail ou une coupure restent possibles : occupe-toi d’abord de celles-ci. Il en va de même pour une amende pénale (Geldstrafe) : demande un paiement échelonné au parquet (Staatsanwaltschaft).",
   "ra.warn": "Proposer des mensualités peut valoir reconnaissance de la créance. Vérifie donc d’abord si la créance est correcte.",
   "ra.auft.h": "Répartition entre tes dettes (dettes importantes d’abord)",
   "ra.auft.g": "Créancier",

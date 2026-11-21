@@ -111,7 +111,7 @@
   "f.which": "Pour quelles prestations ?",
   "f.none": "Aucune prestation à préparer pour le moment.",
   "f.pick0": "Choisis au moins une prestation.",
-  "f.pickWege": "Certaines de ces prestations sont exclusives l’une de l’autre (voir le conseil plus haut). C’est pourquoi elles ne sont pas cochées d’avance. Coche toi-même ce que tu veux demander.",
+  "f.pickWege": "Certaines de ces prestations sont exclusives l’une de l’autre (voir le conseil plus haut). Tu peux quand même demander les deux. C’est pourquoi elles ne sont pas cochées d’avance. Coche toi-même ce que tu veux demander.",
   "f.print": "Imprimer",
   "f.copy": "Copier le texte",
   "f.copied": "Copié.",

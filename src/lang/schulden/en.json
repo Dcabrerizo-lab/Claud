@@ -244,7 +244,7 @@
   "ra.uebernommen": "The instalment is now in the letter.",
   "ra.ohnePlan": "Enter your income, your rent and your food costs in the budget plan. Then we will suggest an instalment.",
   "ra.keine": "Right now there is no room for an instalment. Get help from a debt counselling service (Schuldnerberatung).",
-  "ra.unpf": "According to the garnishment table (Pfändungstabelle), creditors could not seize anything from your income at the moment. So do not offer an instalment before you have seen a debt counselling service (Schuldnerberatung). With rent or electricity debts, you can still face termination of your tenancy or a cut-off: deal with these first.",
+  "ra.unpf": "According to the garnishment table (Pfändungstabelle), creditors could not seize anything from your income at the moment. So do not offer an instalment before you have seen a debt counselling service (Schuldnerberatung). With rent or electricity debts, you can still face termination of your tenancy or a cut-off: deal with these first. The same applies to a criminal fine (Geldstrafe): ask the public prosecutor (Staatsanwaltschaft) about instalments.",
   "ra.warn": "Offering instalments can count as acknowledging the claim. So check first whether the claim is correct.",
   "ra.auft.h": "Split across your debts (important debts first)",
   "ra.auft.g": "Creditor",
