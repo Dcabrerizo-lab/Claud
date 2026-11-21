@@ -9,6 +9,8 @@ import Capacitor
 class MainViewController: CAPBridgeViewController {
     override open func capacitorDidLoad() {
         bridge?.registerPluginInstance(TextRecognitionPlugin())
+        bridge?.registerPluginInstance(SoloSpeicherPlugin()) // Angaben ohne iCloud-/Finder-Sicherung (SoloSpeicherPlugin.swift)
+        bridge?.registerPluginInstance(SoloSchutzPlugin()) // Abdeckung im App-Wechsler bei App-PIN
         // capacitorDidLoad läuft in loadView, nachdem die WebView erzeugt ist und bevor die Startseite lädt (viewDidLoad)
         guard let webView = webView else { return }
         webView.allowsBackForwardNavigationGestures = true

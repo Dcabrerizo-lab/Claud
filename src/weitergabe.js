@@ -310,6 +310,7 @@ var Weitergabe = (function () {
   // ---------- Öffnen beim Klienten (Mein Ordner, für alle Nutzer): Datei oder QR-Code → Vorschau → neuer Vorgang ----------
   // ctx = { t, bereit() (Speicher offen, nicht gesperrt), importieren(name, daten) → id|null, oeffnen(id), fristen(obj) → bereinigte Liste (JSON-Text) }
   var ui = null, code = null, inhalt = null;
+  var lauf = 0; // zählt bei jedem Schließen hoch: ein Ergebnis, das erst danach fertig wird (Entschlüsseln, Datei lesen), wird verworfen
   function $(id) { return document.getElementById(id); }
   function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
   function knopf(cls, txt, id, fn) { var b = el('button', cls, txt); b.type = 'button'; if (id) b.id = id; b.addEventListener('click', fn); return b; }
@@ -317,7 +318,9 @@ var Weitergabe = (function () {
   function meldung(k, p) { var m = $('kwImpMsg'); if (m) m.textContent = k ? tt(k, p) : ''; }
   var IMP_FEHLER = { format: 'kw.imp.f.format', zuGross: 'kw.imp.f.zuGross', kaputt: 'kw.imp.f.format', schema: 'kw.imp.f.format', technik: 'kw.f.technik', pinFalsch: 'kw.imp.pinFalsch' };
   function box() { var b = $('kwImpBox'); if (b) { b.textContent = ''; b.hidden = false; } return b; }
-  function boxWeg() { var b = $('kwImpBox'); if (b) { b.textContent = ''; b.hidden = true; } code = null; inhalt = null; }
+  function boxWeg() { var b = $('kwImpBox'); if (b) { b.textContent = ''; b.hidden = true; } code = null; inhalt = null; lauf++; }
+  // App: Wechsel des Vorgangs, Löschen. Vorschau, PIN-Abfrage, Meldung und Dateiauswahl weg; laufendes Entschlüsseln zeigt danach nichts mehr an.
+  function importLeeren() { boxWeg(); if (ui) meldung(''); ['kwDateiEin', 'kwFotoEin'].forEach(function (id) { var e = $(id); if (e) e.value = ''; }); }
   function aufklappen() { var d = $('kwImport'); if (d && 'open' in d) d.open = true; }
   // Einstieg mit einem Kode (aus Datei oder QR-Code)
   function start(c) {
@@ -338,7 +341,9 @@ var Weitergabe = (function () {
   }
   function entpacken(p) {
     meldung('kw.bitte');
-    return auspacken(code, p).then(function (o) { inhalt = o; meldung(''); vorschau(); return true; }, function (e) {
+    var l = lauf;
+    return auspacken(code, p).then(function (o) { if (l !== lauf) return false; inhalt = o; meldung(''); vorschau(); return true; }, function (e) {
+      if (l !== lauf) return false;
       meldung(IMP_FEHLER[e && e.art] || 'kw.imp.f.format');
       if (!(e && e.art === 'pinFalsch')) boxWeg();
       return false;
@@ -421,21 +426,25 @@ var Weitergabe = (function () {
     meldung('kw.bitte');
     var det;
     try { det = new globalThis.BarcodeDetector({ formats: ['qr_code'] }); } catch (e) { meldung('kw.imp.keinScan'); return Promise.resolve(false); }
+    var l = lauf;
     return globalThis.createImageBitmap(datei).then(function (bild) { return det.detect(bild); }).then(function (treffer) {
+      if (l !== lauf) return false;
       var t = (treffer || []).map(function (x) { return x && x.rawValue; }).filter(function (v) { return typeof v === 'string' && istCode(v); })[0];
       if (!t) { meldung('kw.imp.keinCode'); return false; }
       return start(t);
-    }, function () { meldung('kw.imp.keinCode'); return false; });
+    }, function () { if (l === lauf) meldung('kw.imp.keinCode'); return false; });
   }
   function ausDateiEin(datei) {
     if (!datei) return Promise.resolve(false);
     boxWeg(); aufklappen(); meldung(''); // alte Vorschau oder Meldung nie neben einer neuen Datei stehen lassen
     if (datei.size > MAX_DATEI) { meldung('kw.imp.f.zuGross'); return Promise.resolve(false); }
     var lesen = typeof datei.text === 'function' ? datei.text() : new Promise(function (res, rej) { var r = new FileReader(); r.onload = function () { res(String(r.result)); }; r.onerror = rej; r.readAsText(datei); });
+    var l = lauf;
     return lesen.then(function (txt) {
+      if (l !== lauf) return false;
       var c; try { c = ausDatei(txt); } catch (e) { meldung(IMP_FEHLER[e.art] || 'kw.imp.f.format'); return false; }
       return start(c);
-    }, function () { meldung('kw.imp.f.format'); return false; });
+    }, function () { if (l === lauf) meldung('kw.imp.f.format'); return false; });
   }
   function importInit(c) {
     ui = c;
@@ -446,7 +455,7 @@ var Weitergabe = (function () {
     if (de) de.addEventListener('change', function () { var f = de.files && de.files[0]; ausDateiEin(f); });
   }
 
-  return { importInit: importInit, importStart: start, ausBild: ausBild, ausDateiEin: ausDateiEin, importSpeichern: speichernImport, scanMoeglich: scanMoeglich,
+  return { importInit: importInit, importStart: start, importLeeren: importLeeren, ausBild: ausBild, ausDateiEin: ausDateiEin, importSpeichern: speichernImport, scanMoeglich: scanMoeglich,
     PREFIX: PREFIX, ITER: ITER, QR_MAX: QR_MAX, FELDER: FELDER, MAX_INHALT: MAX_INHALT, MAX_DATEI: MAX_DATEI,
     packen: packen, auspacken: auspacken, brauchtPin: brauchtPin, istCode: istCode, datei: datei, ausDatei: ausDatei, pruefen: pruefen,
     pinVorschlag: pinVorschlag, pinOk: pinOk, kannKomprimieren: kannKomprimieren, webCrypto: webCrypto, qrMatrix: qrMatrix, qrSvg: qrSvg,
