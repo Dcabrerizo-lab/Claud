@@ -55,7 +55,8 @@ check('Unterhaltsvorschuss im Beispiel 1 wahrscheinlich', level('Unterhaltsvorsc
 
 // Beispiel 2
 beispiel('p2');
-check('Beispiel 2: Grundsicherung im Alter wahrscheinlich', level('Grundsicherung im Alter und bei voller Erwerbsminderung') === 'ja', pills() + '');
+// Seit 21.11.2026: zwei Wege (Grundsicherung im Alter oder Wohngeld), hier knapp: beide „möglich“ (docs/entwuerfe/entweder-oder.md)
+check('Beispiel 2: Grundsicherung im Alter und Wohngeld beide „möglich“ (zwei Wege, Abstand unter 50 €)', level('Grundsicherung im Alter und bei voller Erwerbsminderung') === 'vielleicht' && level('Wohngeld') === 'vielleicht' && !!d.getElementById('wege'), pills() + '');
 check('Beispiel 2 füllt Formular und Auswahlfelder', d.getElementById('ek1Art').value === 'rente' && d.getElementById('ek1Brutto').value === '880' && d.getElementById('gebJahr').value === '1955' && d.getElementById('mietstufe').value === '3');
 check('[wege] Beispiel 2: Rahmen „Entweder oder“ mit den Karten Grundsicherung im Alter und Wohngeld, „oder“ dazwischen', !!d.querySelector('#wege #c-gsa') && !!d.querySelector('#wege #c-wohngeld') && !!d.querySelector('#wege .weg-oder'));
 check('[wege] Beispiel 2: Satz zur Lage sichtbar (nicht zugeklappt), Namen beschreibend statt „Weg 1/2“', d.querySelector('#wege .wege-lage').textContent.length > 20 && !d.querySelector('#wege .wege-lage').closest('details') && !/Weg [12]/.test(d.getElementById('wege').textContent));
@@ -276,7 +277,7 @@ setTimeout(() => {
   check('Titel ist ein Name', title === 'SoLo – Sozialleistungslotse');
   check('Dunkelmodus doppelt definiert', (html.match(/color-scheme: dark/g) || []).length >= 2);
   check('Kein horizontales Scrollen erzwungen', !/min-width:\s*\d{4,}px/.test(html));
-  check('Große Schrift: Kartentitel brechen lange Wörter um (kein seitliches Scrollen)', /\.card header > div \{ min-width: 0;/.test(html) && /\.card header h3, \.card \.desc, \.es-karte h3 \{ overflow-wrap: anywhere; hyphens: auto; \}/.test(html));
+  check('Große Schrift: Kartentitel brechen lange Wörter um (kein seitliches Scrollen)', /\.card header > div \{ min-width: 0;/.test(html) && /\.card header h3 \{ overflow-wrap: break-word; hyphens: manual;/.test(html));
   check('Logische statt physische Abstände im Formular (RTL-fähig)', !/\.money input\s*\{[^}]*padding-right/.test(html) && /inset-inline-end/.test(html));
   check('Jedes Formularfeld hat eine Beschriftung', ['miete', 'mietstufe', 'ek1Art', 'ek1Brutto', 'ek1Netto', 'ek2Art', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'vermoegen', 'gebJahr', 'kindEink', 'ausbildung', 'pflegegrad', 'p-name', 'p-geb', 'p-strasse', 'p-ort', 'p-tel'].every((id) => d.querySelector('label[for="' + id + '"]')));
   // Grenze 6 MB (Entscheidung David 20.11.2026; davor 5 MB; bis 1.4: 2,5 MB; 19.11.2026: 3 MB für 13 Sprachen; 20.11.2026: 4 MB für Vorgänge speichern, Beratungsmodus, Pflege-Unterstützung, Schulden-Tipps, Haushaltsplan; 20.11.2026 nachmittags: 5 MB für Fristen, Schuldenliste, Energie, Mietgrenze, Kostensenkung, Paar-Einkommen – Entscheidung des Nutzers): eine einzige Datei, die offline läuft; der größte Teil sind PLZ-Daten (ganz Deutschland mit Mietenstufen), Behörden (Bayern), 13 Sprachen,
@@ -303,7 +304,7 @@ setTimeout(() => {
   check('Scan: IBAN wird nie vorausgefüllt, steht in der Liste zum Selbst-Eintragen (zum Abhaken)', !rowOf('IBAN').querySelector('bdi') && !!rowOf('IBAN').querySelector('input[type=checkbox]') && /selbst/.test(d.getElementById('sc-out').textContent));
   check('Scan: Antragswort "Antrag auf Wohngeld" ist kein Feld', !rowOf('Antrag auf Wohngeld'));
   setLang('tr');
-  check('Scan: Erklärung folgt der Sprache (Türkisch), Wert bleibt deutsch', /adınız/.test(rowOf('Name, Vorname').textContent) && rowOf('Name, Vorname').querySelector('bdi').textContent === 'Maria Muster');
+  check('Scan: Erklärung folgt der Sprache (Türkisch), Wert bleibt deutsch', /adın/.test(rowOf('Name, Vorname').textContent) && rowOf('Name, Vorname').querySelector('bdi').textContent === 'Maria Muster');
   setLang('ar');
   check('Scan: Arabisch rendert, Formularzeile bleibt ltr/de', rowOf('Name, Vorname').querySelector('.sc-lab').getAttribute('dir') === 'ltr');
   setLang('de');
