@@ -42,18 +42,19 @@ SoLo – Sozialleistungslotse
 ### Vollständige Beschreibung (max. 4.000)
 
 Hinweis: Google Play zeigt keine Markdown-Formatierung. Deshalb stehen die Zwischenüberschriften als eigene Zeilen ohne Sternchen.
+Die letzte Zeile (Quellen, „keine App einer Behörde“) verlangt Google Play bei Apps mit staatlichen Informationen: gut sichtbare Quellen in der Beschreibung und der klare Hinweis, dass die App keine Behörde vertritt (Play Console-Hilfe, „Requirements for apps that communicate government information“, support.google.com/googleplay/android-developer/answer/9514050, abgerufen am 21.11.2026). Nicht streichen. Kurzbeschreibung (75 von 80) hat dafür keinen Platz; das ist nicht verlangt.
 
 ```
 Steht dir Wohngeld zu? Kinderzuschlag? Grundsicherung? SoLo prüft in etwa 5 Minuten 31 Sozialleistungen und Vergünstigungen. Die App zeigt dir, was wahrscheinlich, möglich oder unwahrscheinlich ist, mit den nächsten Schritten, der zuständigen Stelle und den nötigen Unterlagen.
 
 Einfach zu bedienen
-Unten in der Leiste: Start, Mein Ordner und Einstellungen. Fragen Schritt für Schritt oder alles auf einer Seite. Zuerst siehst du, was jetzt zählt, Details klappst du auf.
+Fragen Schritt für Schritt oder alles auf einer Seite. Zuerst siehst du, was jetzt zählt, Details klappst du auf.
 
 Was die App prüft
 Kindergeld, Elterngeld, Mutterschaftsgeld, Wohngeld, Kinderzuschlag, Grundsicherungsgeld, Arbeitslosengeld I, Krankengeld, Kinderkrankengeld, Bildung und Teilhabe, Unterhaltsvorschuss, Grundsicherung im Alter und bei Erwerbsminderung, BAföG, Berufsausbildungsbeihilfe, Pflegegeld, Entlastungsbetrag, Verhinderungspflege und Pflegehilfsmittel, Bayerisches Landespflegegeld, Hilfe zur Pflege, Leistungen bei Behinderung (Pauschbetrag, Schwerbehindertenausweis, Eingliederungshilfe, Budget für Arbeit, Erwerbsminderungsrente, Altersrente für schwerbehinderte Menschen), Landesblindengeld, Blindenhilfe, Wohnberechtigungsschein, Befreiung vom Rundfunkbeitrag und von Zuzahlungen, Leistungen nach dem Asylbewerberleistungsgesetz.
 
 Mein Ordner
-Speichere deine Angaben als Vorgang, zum Beispiel einen je Haushalt, und öffne sie später wieder. Eine PIN schützt sie vor fremden Blicken. Dazu kommen eine Checkliste der Unterlagen und ein Ergebnisblatt zum Drucken oder Mitgeben. Die Fristen-Übersicht zeigt, was bis wann zu tun ist.
+Speichere deine Angaben als Vorgang, etwa je Haushalt, und öffne sie später wieder. Eine PIN schützt sie. Dazu kommen eine Checkliste der Unterlagen und ein Ergebnisblatt zum Drucken oder Mitgeben. Die Fristen-Übersicht zeigt, was bis wann zu tun ist.
 
 Geld und Schulden
 - Es ist dringend: Bei Kontopfändung, Stromsperre, Mahnbescheid oder Kündigung siehst du Frist und ersten Schritt.
@@ -80,7 +81,7 @@ Für Beratungsstellen
 Der Beratungsmodus zeigt bei den Ergebnissen die Rechtsgrundlagen mit Paragrafen, bei Schulden auch Tabelle und Gesprächsnotiz.
 
 Auch in Einfacher Sprache und in 13 Sprachen
-Deutsch, Englisch, Türkisch, Arabisch, Russisch, Ukrainisch, Polnisch, Rumänisch, Französisch, Dari, Farsi, Paschtu und Somali. Amtsbegriffe bleiben deutsch, damit du sie beim Amt wiedererkennst.
+Deutsch, Englisch, Türkisch, Arabisch, Russisch, Ukrainisch, Polnisch, Rumänisch, Französisch, Dari, Farsi, Paschtu und Somali. Amtsbegriffe bleiben deutsch, wie beim Amt.
 
 Deine Daten bleiben bei dir
 Keine Anmeldung, keine Server, keine Werbung, kein Tracking. Alles wird offline auf deinem Gerät berechnet und gespeichert. Auch Brief- und Kassenzettel-Scan laufen nur auf deinem Gerät.
@@ -88,9 +89,11 @@ Keine Anmeldung, keine Server, keine Werbung, kein Tracking. Alles wird offline 
 Für ganz Deutschland
 Die Leistungen werden für alle Bundesländer geprüft. Für Bayern nennt SoLo die zuständige Stelle mit Anschrift, in den anderen Ländern die Art der Stelle oder die Anschrift des Kreises.
 
-Wichtig: SoLo ist eine Orientierung, keine Rechtsberatung. Über deinen Anspruch entscheidet immer die zuständige Stelle. SoLo ist keine App einer Behörde. Rechtsstand: November 2026.
+Wichtig: SoLo ist eine Orientierung, keine Rechtsberatung. Über deinen Anspruch entscheidet immer die zuständige Stelle. Rechtsstand: November 2026.
+
+Quellen: gesetze-im-internet.de, arbeitsagentur.de, familienportal.de, bmas.de, deutsche-rentenversicherung.de. SoLo ist keine App einer Behörde.
 ```
-(3.986 Zeichen)
+(3.982 Zeichen)
 
 ### Neuigkeiten in dieser Version (max. 500)
 
@@ -122,7 +125,7 @@ Neu: Suche mit Lupe auf jeder Seite, auch mit Alltagswörtern. Einzelne Vorgäng
 | Zielgruppe | Erwachsene (18+); nicht für Kinder gestaltet |
 | Gesundheits-Apps-Erklärung | Keine Gesundheits-App (Angaben zu Pflegegrad/Behinderung dienen nur der Leistungsprüfung, bleiben auf dem Gerät) |
 | Finanz-Apps-Erklärung | Keine Finanzdienstleistung (keine Kredite, kein Zahlungsverkehr, keine Anlageberatung); Rechner nur zur Orientierung |
-| Behörden-App? | **Nein.** In Beschreibung und Screenshots nicht den Eindruck einer offiziellen Behörden-App erwecken (Play-Richtlinie „Irreführende Behauptungen“). |
+| Behörden-App? | **Nein.** In Beschreibung und Screenshots nicht den Eindruck einer offiziellen Behörden-App erwecken (Play-Richtlinie „Irreführende Behauptungen“). Quellenzeile und Hinweis „keine App einer Behörde“ stehen am Ende der Beschreibung (Pflicht für Apps mit staatlichen Informationen, answer/9514050). |
 
 ---
 
@@ -151,7 +154,7 @@ Welche Hilfen stehen dir zu? Prüfe 31 Sozialleistungen, lass Briefe vom Amt nac
 
 ### Beschreibung (max. 4.000)
 
-Gleicher Text wie bei Google Play (siehe oben, Abschnitt „Vollständige Beschreibung“). App Store Connect zeigt ebenfalls keine Formatierung.
+Gleicher Text wie bei Google Play (siehe oben, Abschnitt „Vollständige Beschreibung“). App Store Connect zeigt ebenfalls keine Formatierung. Damit stehen Quellenzeile und Behörden-Hinweis auch hier (3.982 Zeichen).
 
 ### Schlüsselwörter (max. 100, kommagetrennt, ohne Leerzeichen)
 
