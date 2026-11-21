@@ -227,23 +227,17 @@ var Ausziehen = (function () {
     if (!m || FRIST_WORT.test(m[2])) return [absatz];
     return [m[1], m[2]];
   }
-  // Paragrafen im Laientext nur im Beratungsmodus (UX-Audit D #6; Einstellung verspricht „ausgeschaltet ohne Paragrafen“).
-  // „(§ 551 BGB)“ fällt weg, „(Abzweigung, § 74 EStG)“ wird „(Abzweigung)“. Die Quellen am Seitenende bleiben.
-  function ohnePar(s) {
-    if (ctx.beratung && ctx.beratung()) return s;
-    return String(s).replace(/\(([^()§]*?)[,،]\s*§[^()]*\)/g, '($1)').replace(/\s*\(§[^()]*\)/g, '');
-  }
   function punktHtml(p, liste) {
     var ok = liste && daten.ab[p.id];
     var h = '<li class="az-punkt' + (ok ? ' ok' : '') + '" id="az-p-' + p.id + '">';
     if (liste) h += '<label class="az-check"><input type="checkbox" data-az-ab="' + p.id + '"' + (ok ? ' checked' : '') + '><span>' + esc(t('az.p.' + p.id)) + '</span></label>';
     else h += '<p class="az-titel">' + esc(t('az.p.' + p.id)) + '</p>';
     if (p.moeglich) h += '<span class="az-chip">' + esc(t('az.moeglich')) + '</span>';
-    var roh = ohnePar(t('az.p.' + p.id + '.t', p.id === 'kv' && ctx.famversGrenze ? { grenze: ctx.famversGrenze() } : null)).split('\n');
+    var roh = t('az.p.' + p.id + '.t', p.id === 'kv' && ctx.famversGrenze ? { grenze: ctx.famversGrenze() } : null).split('\n');
     var det = roh.map(function (s) { return '<p>' + esc(s) + '</p>'; }).join('');
     if (!liste) {
       // Info-Punkte: der erste Satzblock gleich sichtbar, der Rest zum Aufklappen
-      var deRoh = typeof I18N !== 'undefined' && I18N.de && I18N.de['az.p.' + p.id + '.t'] && ohnePar(I18N.de['az.p.' + p.id + '.t']);
+      var deRoh = typeof I18N !== 'undefined' && I18N.de && I18N.de['az.p.' + p.id + '.t'];
       var teile = (roh.length === 1 && deRoh && deRoh.indexOf('\n') < 0 ? ersterSatz(roh[0], deRoh) : roh).map(function (x) { return '<p>' + esc(x) + '</p>'; });
       h += teile[0].replace('<p>', '<p class="az-kurz">');
       var rest = teile.slice(1).join('') + (p.knopf ? '<div class="btns">' + knopfHtml(p.knopf) + '</div>' : '');
