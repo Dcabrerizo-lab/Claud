@@ -3987,8 +3987,10 @@
       'Verhinderungspflege: Die Pflegeperson macht Urlaub, ist krank oder braucht ein paar Stunden Pause. Dann pflegt jemand anderes zu Hause, zum Beispiel ein Pflegedienst, Bekannte oder Nachbarn.',
       'Vertreten nahe Angehörige oder Personen aus demselben Haushalt (nicht beruflich), zahlt die Pflegekasse höchstens das Doppelte des monatlichen Pflegegeldes. Nachgewiesene Kosten wie Fahrt oder Verdienstausfall können dazukommen (bis zum Jahresbetrag).',
       'Kurzzeitpflege: Die gepflegte Person wohnt für eine Zeit in einer Pflegeeinrichtung, zum Beispiel nach einem Krankenhausaufenthalt.',
-      'Während der Vertretung zahlt die Pflegekasse bis zu 8 Wochen im Jahr die Hälfte des Pflegegelds weiter. Wer nur stundenweise vertreten wird (weniger als 8 Stunden am Tag), behält das volle Pflegegeld.',
-      'Tipp: Den Antrag kannst du auch nachträglich stellen. Hebe alle Rechnungen und Quittungen auf.']);
+      // Rechtsprüfung 21.11.2026 (docs/entwuerfe/rechtsfragen-rot.md, Frage 3): volles Pflegegeld bei stundenweiser Vertretung steht nicht im Gesetz
+      // (§ 37 Abs. 2 SGB XI; BMG „Verhinderungspflege“ nur „auch stundenweise“) → nur „möglich“. Frist: § 39 Abs. 1 Satz 2 SGB XI.
+      'Während der Vertretung zahlt die Pflegekasse bis zu 8 Wochen im Jahr die Hälfte des Pflegegelds weiter. Wird nur stundenweise vertreten (weniger als 8 Stunden am Tag), kann das volle Pflegegeld weiterlaufen. Frag dazu bei deiner Pflegekasse nach.',
+      'Tipp: Den Antrag kannst du auch nachträglich stellen, spätestens bis zum Ende des folgenden Jahres. Hebe alle Rechnungen und Quittungen auf.']);
     abschnitt('pi-hilfs', 'Pflegehilfsmittel und Umbau der Wohnung', [
       'Pflegehilfsmittel zum Verbrauch, zum Beispiel Einmalhandschuhe, Desinfektion oder Bettschutz, gibt es bis ' + piEuro(R.beh.verbrauch) + ' im Monat. Meist kommt eine Box nach Hause, die der Anbieter mit der Pflegekasse abrechnet.',
       'Größere Hilfsmittel wie ein Pflegebett oder ein Rollator werden meist leihweise gestellt.',
