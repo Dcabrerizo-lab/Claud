@@ -1280,8 +1280,18 @@ const Rules = (function () {
 
   // § 7 Abs. 4 SGB II: Wer eine Altersrente bezieht (auch vor der Regelaltersgrenze), bekommt kein Grundsicherungsgeld.
   // Die App kennt die Rentenart nicht: allein, nur Rente, Alter unbekannt oder ab 60 -> höchstens „möglich“ mit Hinweis.
+  // Unterhaltsvorschuss möglich, aber nicht sicher (h.uvgOffenGG, siehe derive; Befund G2): Er ist Einkommen des Kindes bis zu seinem
+  // Bedarf (§ 11 Abs. 1 Satz 1, § 9 Abs. 2 SGB II, https://www.gesetze-im-internet.de/sgb_2/__11.html, Abruf 21.11.2026) und vorrangig
+  // (§ 12a SGB II). „Wahrscheinlich“ nur, wenn es auch mit diesem UVG noch „wahrscheinlich“ bleibt; sonst „möglich“ ohne Betrag.
+  function ggeldUvgOffen(h, r) {
+    if (r.level !== 'ja' || !(h.uvgOffenGG > 0)) return r;
+    const mit = ggeldRechnung(Object.assign({}, h, { kindZahl: (h.kindZahl || 0) + h.uvgOffenGG, uvgOffenGG: 0 }));
+    if (mit.level === 'ja') return r;
+    const out = mk(r.id, 'vielleicht', 'vielleicht', r.tx.filter((t) => t[0].indexOf('schaetz.') !== 0).map((t) => (t[0] === 'bedarfJa' ? ['bedarfRand', t[1]] : t)));
+    return r.lage ? Object.defineProperty(out, 'lage', { value: r.lage }) : out;
+  }
   function grundsicherungsgeld(h) {
-    const r = ggeldRechnung(h);
+    const r = ggeldUvgOffen(h, ggeldRechnung(h));
     if (h.adults !== 1 || (r.level !== 'ja' && r.level !== 'vielleicht') || !vielleichtAltersrente(h)) return r;
     return mk(r.id, 'vielleicht', 'vielleicht', r.tx.slice(0, 1).concat([['ggeld.vorgezogen']], r.tx.slice(1)));
   }
@@ -1323,10 +1333,6 @@ const Rules = (function () {
     const behTx = (mb.fest ? [['mehr.teilhabe', { betrag: eur(mb.fest) }]] : []).concat(mb.offen - ma.offen ? [['ggeld.mehrBeh']] : [],
       h.bhPerson === 'erwVor25' && h.erwerbsgemindert ? [['ggeld.kindGsa']] : [], ma.tx, h.schwanger ? [['mehr.erstausstattung']] : [],
       h.kids > 0 && h.land && h.land !== 'BY' ? [['ggeld.schulbuch']] : [], h.miete > 0 ? [['kdu.angemessen']] : []);
-    // Unterhaltsvorschuss möglich, aber nicht sicher (h.uvgOffenGG, siehe derive; Befund G2): Er ist Einkommen des Kindes bis zu seinem
-    // Bedarf (§ 11 Abs. 1 Satz 1, § 9 Abs. 2 SGB II) und vorrangig (§ 12a SGB II). „Wahrscheinlich“ nur, wenn die Lücke auch damit bleibt.
-    const offenAnr = h.uvgOffenGG > 0 ? unterhaltAnrechenbar(Object.assign({}, h, { kindZahl: (h.kindZahl || 0) + h.uvgOffenGG })) - unterhaltAnrechenbar(h) : 0;
-    if (luecke >= R.grundsicherung.sicherAb && luecke - offenAnr < R.grundsicherung.sicherAb) return mk(id, 'vielleicht', 'vielleicht', bedarfTx('vielleicht', bedarf).concat(behTx));
     if (luecke >= R.grundsicherung.sicherAb) return mk(id, 'ja', 'ja', bedarfTx('ja', bedarf).concat([['schaetz.eins', { a: eur(r10(luecke)) }]], behTx));
     if (luecke > -(R.grundsicherung.knappPuffer + mb.offen + (h.mehrAEhoch || 0) - (h.mehrAE || 0))) return mk(id, 'vielleicht', 'vielleicht', bedarfTx('vielleicht', bedarf).concat(behTx));
     return mk(id, 'nein', 'einkoHoch', bedarfTx('nein', bedarf));
