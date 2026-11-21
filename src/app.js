@@ -4150,9 +4150,10 @@
         d.appendChild(el('p', PU_ART[l.art], 'pu-art small'));
         d.appendChild(el('p', z[1]));
         if (z[3]) d.appendChild(el('p', z[3], 'pu-wichtig'));
-        var m = el('details'); m.appendChild(el('summary', 'Mehr dazu'));
+        var m = el('details'), ms = m.appendChild(el('summary', 'Mehr dazu'));
+        ms.setAttribute('aria-label', 'Mehr dazu: ' + z[0]); // für Screenreader unterscheidbar (UX-Audit D #6)
         z[2].forEach(function (x) { m.appendChild(el('p', x)); });
-        m.appendChild(el('p', 'Rechtsgrundlage: ' + l.recht, 'small muted'));
+        if (beratung) m.appendChild(el('p', 'Rechtsgrundlage: ' + l.recht, 'small muted')); // Paragrafen nur im Beratungsmodus, wie die Einstellung verspricht
         d.appendChild(m);
         ziel.appendChild(d);
       };
@@ -4165,7 +4166,12 @@
       else top.map(finde).filter(Boolean).forEach(function (l) { karte(l, box); });
       // Grüner Hauptknopf unter den Leistungen: Pflegegrad selbst einschätzen (ohne Grad: für den Antrag; mit Grad 1 bis 4: passt ein höherer?).
       // Nicht bei Grad 5 und nicht, wenn die Seite aus der Ergebnisseite der Einschätzung geöffnet wurde.
-      if (pg < 5 && !vonErg && typeof PflegeAssistent !== 'undefined') { var hk = box.appendChild(el('div', null, 'btns pu-haupt')); hk.appendChild(nhKnopf('btn', esc(t('pu.schaetzen')), null, function () { paOeffnen(true); })).id = 'pu-schaetzen-knopf'; }
+      // Mit Pflegegrad (UX-Audit D #5): Nebenknopf „Reicht der Pflegegrad noch? Höherstufung prüfen“ statt grünem Hauptknopf
+      if (pg < 5 && !vonErg && typeof PflegeAssistent !== 'undefined') {
+        var hk = box.appendChild(el('div', null, 'btns pu-haupt'));
+        var hkb = hk.appendChild(nhKnopf(pg ? 'btn ghost' : 'btn', esc(t(pg ? 'pa.hoeher' : 'pu.schaetzen')), null, function () { paOeffnen(true); })); hkb.id = 'pu-schaetzen-knopf';
+        if (lang !== 'de') { hkb.setAttribute('lang', lang); hkb.setAttribute('dir', (I18N[lang] && I18N[lang]['meta.dir']) || 'ltr'); } // übersetzt im deutschen Block
+      }
       var rest = liste.filter(function (l) { return top.indexOf(l.id) < 0; });
       if (rest.length) {
         var w = el('details', null, 'pu-weitere mehr mehr-liste'); w.id = 'pu-weitere';

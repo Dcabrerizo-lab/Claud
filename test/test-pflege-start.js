@@ -63,12 +63,13 @@ setTimeout(() => {
   check('[pu-korr] Aufs Konto: Pflegegeld und Wohngruppenzuschlag', /Aufs Konto kommen nur das Pflegegeld und, wer in einer ambulant betreuten Wohngruppe lebt, der Wohngruppenzuschlag/.test(t3));
   check('Stand und Quelle genannt', /Stand der Beträge: 14\.9\.2026 \(Bundesministerium für Gesundheit/.test(t3));
   check('Stellen nur als Art (Pflegekasse, Pflegestützpunkt), keine Anschrift', /Pflegestützpunkt/.test(t3) && !/\b\d{5}\b/.test(t3));
+  check('[rot-d] „Mehr dazu“ mit eindeutigem aria-label, ohne Beratungsmodus keine Paragrafen', d.querySelector('#pu-l-geld summary').getAttribute('aria-label') === 'Mehr dazu: Geld für die Pflege zu Hause (Pflegegeld)' && !/Rechtsgrundlage/.test(t3));
   const einl = box().querySelector('.pu-einl');
   check('[pu-aufr] Einleitung: ein Satz sichtbar, Rest zum Aufklappen (zu)', einl && einl.textContent.split(/[.!?](\s|$)/).filter((x) => x && x.trim()).length === 1 && box().querySelector('.pu-einl-mehr') && !box().querySelector('.pu-einl-mehr').open, einl && einl.textContent);
   const tipp = box().querySelector('details.tipp[data-tipp="pu.tipp.beratung"]');
   check('[pu-aufr] Hinweis Pflegekasse/Pflegestützpunkt als Tipp mit Symbol', tipp && tipp.querySelector('.tipp-sym svg') && tipp.querySelector('.tipp-kurz').textContent === de['pu.tipp.beratung.kurz']);
   const hk = d.getElementById('pu-schaetzen-knopf');
-  check('[pu-aufr] Grüner Hauptknopf „Pflegegrad selbst einschätzen“ direkt unter den Leistungen', hk && hk.className === 'btn' && hk.textContent === de['pu.schaetzen'] && (hk.parentElement.previousElementSibling.classList.contains('pu-l') || hk.parentElement.previousElementSibling.classList.contains('pu-gruppe')) && hk.parentElement.nextElementSibling.id === 'pu-weitere');
+  check('[pu-aufr] Mit Pflegegrad: Nebenknopf „Höherstufung prüfen“ direkt unter den Leistungen', hk && hk.className === 'btn ghost' && hk.textContent === de['pa.hoeher'] && (hk.parentElement.previousElementSibling.classList.contains('pu-l') || hk.parentElement.previousElementSibling.classList.contains('pu-gruppe')) && hk.parentElement.nextElementSibling.id === 'pu-weitere');
   oben().click();
   box().querySelector('.wahl[data-pg="1"]').click();
   const t1 = box().textContent;
