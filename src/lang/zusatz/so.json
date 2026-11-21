@@ -67,6 +67,12 @@
   "bp.pf.h": "Hubi qiimaynta daryeelka",
   "bp.pf.p": "Iskaan garee qiimaynta ama dooro PDF. SoLo ayaa dib u xisaabinaya dhibcaha.",
   "bp.sa.h": "Hubi go'aanka sugnaanta aasaasiga ah ee gabowga (Grundsicherung im Alter)",
+  "briefe.nurDe": "Foomka iyo natiijadu hadda waxay ku jiraan Jarmal oo keliya. Waraaqaha loo diro hay'adaha had iyo jeer waa Jarmal.",
+  "plz.wohnort": "Meesha aad degan tahay: {ort} · Mietenstufe {stufe}",
+  "plz.aendern": "Beddel",
+  "plz.stimmt": "Meeshu ma sax baa? Mietenstufe waxay ku xiran tahay degmadaada, ma aha lambarka boostada.",
+  "plz.was": "Waa maxay Mietenstufe?",
+  "vg.ordner.t": "Halkan waxaa ku jira xogtaada iyo waraaqahaaga la kaydiyay. Wax walba waxay ku jiraan qalabkan.",
   "bp.wg.h": "Hubi go'aanka Wohngeld",
   "bp.wg.p": "Iskaan garee go'aanka Wohngeld. SoLo ayaa dib ugu xisaabinaya sida sharciga kaalmada guriga.",
   "bp.kz.h": "Hubi go'aanka Kinderzuschlag",
@@ -117,11 +123,5 @@
   "bp.vgl.pg": "heerka daryeelka (Pflegegrad) {pg}",
   "bp.vgl.kein": "heer daryeel (Pflegegrad) ma jiro",
   "bp.vgl.klein": "Dhibco miisaaman, sida Pflegekasse u xisaabiso (§ 15 SGB XI). Calaamadda (+) waxay ka dhigan tahay: qiimayntaadu halkaas dhibco ka badan ayay bixisaa. Hoos waxaa ku qoran su’aalaha ay si gaar ah u khusayso.",
-  "t.bafoeg.vermTeil": "Hantidaadu waxay ka badan tahay qadarka la cafiyay ee {verm}. 2.300 € dheeraad ah waxaa la bixiyaa oo keliya xaas ama lammaane diiwaangashan iyo carruur kasta oo adiga kuu dhalatay. Kaliya qaybta ka sarreysa qadarka la cafiyay ayaa la xisaabiyaa: waxaa loo qaybiyaa 12 bilood, waxayna BAföG ka dhimaysaa qiyaastii {monat} bishiiba. Amt für Ausbildungsförderung ayaa si sax ah u xisaabiya.",
-  "briefe.nurDe": "Foomka iyo natiijadu hadda waxay ku jiraan Jarmal oo keliya. Waraaqaha loo diro hay'adaha had iyo jeer waa Jarmal.",
-  "plz.wohnort": "Meesha aad degan tahay: {ort} · Mietenstufe {stufe}",
-  "plz.aendern": "Beddel",
-  "plz.stimmt": "Meeshu ma sax baa? Mietenstufe waxay ku xiran tahay degmadaada, ma aha lambarka boostada.",
-  "plz.was": "Waa maxay Mietenstufe?",
-  "vg.ordner.t": "Halkan waxaa ku jira xogtaada iyo waraaqahaaga la kaydiyay. Wax walba waxay ku jiraan qalabkan."
+  "t.bafoeg.vermTeil": "Hantidaadu waxay ka badan tahay qadarka la cafiyay ee {verm}. 2.300 € dheeraad ah waxaa la bixiyaa oo keliya xaas ama lammaane diiwaangashan iyo carruur kasta oo adiga kuu dhalatay. Kaliya qaybta ka sarreysa qadarka la cafiyay ayaa la xisaabiyaa: waxaa loo qaybiyaa 12 bilood, waxayna BAföG ka dhimaysaa qiyaastii {monat} bishiiba. Amt für Ausbildungsförderung ayaa si sax ah u xisaabiya."
 }

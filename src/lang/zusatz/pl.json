@@ -67,6 +67,12 @@
   "bp.pf.h": "Sprawdź orzeczenie o opiece",
   "bp.pf.p": "Zeskanuj orzeczenie albo wybierz PDF. SoLo przeliczy punkty.",
   "bp.sa.h": "Sprawdź decyzję o zabezpieczeniu podstawowym na starość (Grundsicherung im Alter)",
+  "briefe.nurDe": "Formularz i wynik są na razie tylko po niemiecku. Pisma do urzędów są zawsze po niemiecku.",
+  "plz.wohnort": "Miejsce zamieszkania: {ort} · Stopień czynszu {stufe}",
+  "plz.aendern": "Zmień",
+  "plz.stimmt": "Czy miejscowość się zgadza? Stopień czynszu zależy od twojej gminy, nie od kodu pocztowego.",
+  "plz.was": "Co to jest stopień czynszu?",
+  "vg.ordner.t": "Tutaj są twoje zapisane dane i pisma. Wszystko zostaje na tym urządzeniu.",
   "bp.wg.h": "Sprawdź decyzję o Wohngeld",
   "bp.wg.p": "Zeskanuj decyzję o Wohngeld (Wohngeldbescheid). SoLo przeliczy ją według ustawy o dodatku mieszkaniowym (Wohngeldgesetz).",
   "bp.kz.h": "Sprawdź decyzję o Kinderzuschlag",
@@ -117,11 +123,5 @@
   "bp.vgl.pg": "stopień opieki (Pflegegrad) {pg}",
   "bp.vgl.kein": "brak stopnia opieki (Pflegegrad)",
   "bp.vgl.klein": "Punkty ważone, tak jak liczy Pflegekasse (§ 15 SGB XI). Plus oznacza: Twoja ocena daje tam więcej punktów. Poniżej widać, przy których pytaniach dokładnie.",
-  "t.bafoeg.vermTeil": "Majątek przekracza kwotę wolną {verm}. Dodatkowe 2300 € przysługują tylko na małżonka lub zarejestrowanego partnera i na każde własne dziecko. Liczy się tylko nadwyżka ponad kwotę wolną: rozłożona na 12 miesięcy zmniejsza BAföG o około {monat} miesięcznie. Dokładnie wylicza to Amt für Ausbildungsförderung.",
-  "briefe.nurDe": "Formularz i wynik są na razie tylko po niemiecku. Pisma do urzędów są zawsze po niemiecku.",
-  "plz.wohnort": "Miejsce zamieszkania: {ort} · Stopień czynszu {stufe}",
-  "plz.aendern": "Zmień",
-  "plz.stimmt": "Czy miejscowość się zgadza? Stopień czynszu zależy od twojej gminy, nie od kodu pocztowego.",
-  "plz.was": "Co to jest stopień czynszu?",
-  "vg.ordner.t": "Tutaj są twoje zapisane dane i pisma. Wszystko zostaje na tym urządzeniu."
+  "t.bafoeg.vermTeil": "Majątek przekracza kwotę wolną {verm}. Dodatkowe 2300 € przysługują tylko na małżonka lub zarejestrowanego partnera i na każde własne dziecko. Liczy się tylko nadwyżka ponad kwotę wolną: rozłożona na 12 miesięcy zmniejsza BAföG o około {monat} miesięcznie. Dokładnie wylicza to Amt für Ausbildungsförderung."
 }
